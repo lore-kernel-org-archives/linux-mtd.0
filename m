@@ -1,22 +1,25 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
+Received: from [2001:41c8:1:5384::2] (helo=cassiel.sirena.org.uk)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VW03h-0000ek-An
- for linux-mtd@lists.infradead.org; Tue, 15 Oct 2013 08:32:53 +0000
-From: "Shah, Minal" <minal.shah@ti.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: RE: MTD utils v1.5.0: MEMERASE64 ioctl failed error
-Date: Tue, 15 Oct 2013 08:32:23 +0000
-Message-ID: <566CE8F1DB913147957287757DA6396B3E9D6A93@DBDE04.ent.ti.com>
-References: <566CE8F1DB913147957287757DA6396B3E9D5FD4@DBDE04.ent.ti.com>
- <20131011222459.GQ23337@ld-irv-0074.broadcom.com>
-In-Reply-To: <20131011222459.GQ23337@ld-irv-0074.broadcom.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1VW2d5-0004g5-Pw
+ for linux-mtd@lists.infradead.org; Tue, 15 Oct 2013 11:17:36 +0000
+Date: Tue, 15 Oct 2013 12:16:47 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Sourav Poddar <sourav.poddar@ti.com>
+Message-ID: <20131015111647.GX2443@sirena.org.uk>
+References: <52566ACC.1080100@ti.com> <20131010101410.GG21581@sirena.org.uk>
+ <52568AA3.9080203@ti.com> <20131011100839.GA21581@sirena.org.uk>
+ <525CDB77.4040201@ti.com>
 MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Mukherjee,
- Somnath" <somnath@ti.com>, Mike Frysinger <vapier@gentoo.org>, "Gupta,
- Pekon" <pekon@ti.com>, "Parikh, Urmil" <urmil@ti.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="ggR29xXiuDg+1tef"
+Content-Disposition: inline
+In-Reply-To: <525CDB77.4040201@ti.com>
+Subject: Re: [PATCH 1/3] spi/qspi: Add memory mapped read support.
+Cc: Peter Korsgaard <peter@korsgaard.com>, Trent Piepho <tpiepho@gmail.com>,
+ balbi@ti.com, "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "spi-devel-general@lists.sourceforge.net"
+ <spi-devel-general@lists.sourceforge.net>, computersforpeace@gmail.com,
+ dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,62 +29,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
-Thanks a lot for the explanation; I understood the reason for failure.
 
-> So why do you want to erase bad blocks?
-The reason why I want to erase bad blocks is because they actually don't se=
-em to be bad.=20
-Block0 itself is shown as bad.
-I have few partitions (like MLO and u-boot env) of size equal to 1 erase bl=
-ock. The block is marked as bad and hence I cannot write anything to this p=
-artition.=20
-One of the solutions is to increase that partition size to 2 blocks so even=
- if 1 block is bad then it will atleast be able to write to the other block=
- of the same partition. But I don't think I should do this while the block =
-is not really bad (what if all the blocks for some reason are marked as bad=
- while they are actually not).
+--ggR29xXiuDg+1tef
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-This question came in my mind from the fact that "nand scrub" command is al=
-lowed from u-boot which allows to also completely erase all the bad blocks;=
- so why not from the kernel level.
+On Tue, Oct 15, 2013 at 11:36:47AM +0530, Sourav Poddar wrote:
 
-Regards,
-Minal
+> But there is one problem which I faced while trying to achieve the
+> above. Currently, spi
+> framework takes care of the runtime clock control part in
+> pump_message(spi.c). So, at the
+> beginning of each transfer, there is a "get_sync" while at the end
+> there is a "put_sync". Now, if
+> I try to do a memcpy in flash and bypass the SPI framework, there is
+> a data abort as the SPI
+> controller clocks are cut.
 
------Original Message-----
-From: Brian Norris [mailto:computersforpeace@gmail.com]=20
-Sent: Saturday, October 12, 2013 3:55 AM
-To: Shah, Minal
-Cc: Mike Frysinger; Mukherjee, Somnath; linux-mtd@lists.infradead.org; Gupt=
-a, Pekon; Parikh, Urmil
-Subject: Re: MTD utils v1.5.0: MEMERASE64 ioctl failed error
+Can you fix this by enabling the clock is enabled when you return the
+buffer to the MTD layer and then disabling the clock when the buffer is
+released?
 
-Hi Minal,
+--ggR29xXiuDg+1tef
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-On Wed, Oct 09, 2013 at 05:05:11AM +0000, Shah, Minal wrote:
-> I am using MTD utils version 1.5.0 for DRA7 (Vayu) platform.
->=20
-> I have bad blocks in some of my NAND partitions which I am not able to er=
-ase from linux kernel.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
 
-MTD does not allow erasing bad blocks. This is prohibited by NAND
-datasheets. There are occasions where, for debugging purposes, one might
-need to erase a "bad" block that is not actually bad, but MTD does not
-provide an interface for doing this. An interface for doing so was
-discussed a while back, but nothing was merged.
+iQIcBAEBAgAGBQJSXSQbAAoJELSic+t+oim9UoEP/1DpXoqne9tuthSftsoI5uUr
+vyJKZmk4WI3Ra3T1xqcDtym2AnT6wj5UZEIzqKZvQeUUk7INVVBwE3uhHyvd6SmC
+ydumo8pnffc0WERKErQo2vpMpSotZhORDjxRAIzJxeTlZFk45OjeoW38DqhOnryU
+x2rBDmIlArs1OfoZWkofkvwhcnOFrOel+9R68elxECgrZOIr/j0fZU8xqUPCw+ex
+BJeg9SRSLcaL3U+xY7pQJp89glJc61/T9bQ+XYTzHbZrNoqiB8q/qL0pxkS1EtrC
+rsdD7pmxF3q770sIPWSM80zpIFKkzl8Lzci8KaZgzzr8fdktUJ/JONxSYVFdiP+3
+rfaGxYsGoWfGEzOVjvQFZ9ln+ldNEoN1oPg7fDbw2EuAgFZpp7OE+2+al9HWsG4C
+RJ5OvfvqzB0lbuA248ov12MM2Yc0i+Cjn74pwIQ1CcG0BV5MFMY9g2+z7MUVhJdh
+KjIrUBgX8EOJXi5oHzcOwpWJT8nFJaAnigpe7pK0Gmk38SlP8O1pkkIzIsWKHY9h
+4LMW9LJjUsPaKmCjZPLhAjNXk5MBGIthTW5AcYlRiqiG+gohg52ZO2ASk0XEiaL+
+xk0jA5Del6uwbo7+WyLTl43VkT6KMidN8K+lf33iU1nXGTT+dgr/vWj4jtX3EqUC
+3pgT/IfDelfIG1WZ4c87
+=L2B4
+-----END PGP SIGNATURE-----
 
-> Using "-N" option in flash_eraseall ideally should have allowed erasing t=
-he bad block but I land up in "MEMERASE64 ioctl failed" error.=20
-
-"-N" just means that the user-space tool (flash_erase) won't try to skip
-bad blocks. But that doesn't circumvent the in-kernel protection that
-prevents the erase from succeeding. So the "Input/output" error you see
-is completely expected and currently unavoidable, unless you modify your
-kernel to remove this protection.
-
-[snip]
-
-So why do you want to erase bad blocks?
-
-Brian
+--ggR29xXiuDg+1tef--
