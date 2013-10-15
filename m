@@ -1,23 +1,22 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
+Received: from arroyo.ext.ti.com ([192.94.94.40])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VVxnE-0005vs-Ac
- for linux-mtd@lists.infradead.org; Tue, 15 Oct 2013 06:07:44 +0000
-Message-ID: <525CDB77.4040201@ti.com>
-Date: Tue, 15 Oct 2013 11:36:47 +0530
-From: Sourav Poddar <sourav.poddar@ti.com>
+ id 1VW03h-0000ek-An
+ for linux-mtd@lists.infradead.org; Tue, 15 Oct 2013 08:32:53 +0000
+From: "Shah, Minal" <minal.shah@ti.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: RE: MTD utils v1.5.0: MEMERASE64 ioctl failed error
+Date: Tue, 15 Oct 2013 08:32:23 +0000
+Message-ID: <566CE8F1DB913147957287757DA6396B3E9D6A93@DBDE04.ent.ti.com>
+References: <566CE8F1DB913147957287757DA6396B3E9D5FD4@DBDE04.ent.ti.com>
+ <20131011222459.GQ23337@ld-irv-0074.broadcom.com>
+In-Reply-To: <20131011222459.GQ23337@ld-irv-0074.broadcom.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] spi/qspi: Add memory mapped read support.
-References: <52566ACC.1080100@ti.com> <20131010101410.GG21581@sirena.org.uk>
- <52568AA3.9080203@ti.com> <20131011100839.GA21581@sirena.org.uk>
-In-Reply-To: <20131011100839.GA21581@sirena.org.uk>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Peter Korsgaard <peter@korsgaard.com>, Trent Piepho <tpiepho@gmail.com>,
- balbi@ti.com, "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "spi-devel-general@lists.sourceforge.net"
- <spi-devel-general@lists.sourceforge.net>, computersforpeace@gmail.com,
- dwmw2@infradead.org
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Mukherjee,
+ Somnath" <somnath@ti.com>, Mike Frysinger <vapier@gentoo.org>, "Gupta,
+ Pekon" <pekon@ti.com>, "Parikh, Urmil" <urmil@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,37 +26,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Mark,
-On Friday 11 October 2013 03:38 PM, Mark Brown wrote:
-> On Thu, Oct 10, 2013 at 04:38:19PM +0530, Sourav Poddar wrote:
->> On Thursday 10 October 2013 03:44 PM, Mark Brown wrote:
->>> Essentially what it looks like this hardware is trying to do is adapt a
->>> serial flash so it looks more like a parallel flash.  It's not clear
->>> that this is a good idea if we are already able to understand serial
->>> flash though.
->> Do you have any idea of how to go about implementing it in a more
->> cleaner way?(taking care of all what the spi controller hardware needs to
->> do for the memory mapped mode.). I understand doing a memcpy in the caller
->> itself, but how to tackle the spi controller configuration at that
->> point of time.
-> You'd need to lock the bus and return the address for the caller to use
-> until it released the lock.  Like I say I'd want to see numbers on this
-> helping though.
->
-I explored the whole scenario at hand and tried to create something 
-based on previous
-feedbacks that memcpy should be done only at the flash layer and the entire
-spi framework should be bypassed.
+Hi Brian,
+Thanks a lot for the explanation; I understood the reason for failure.
 
-But there is one problem which I faced while trying to achieve the 
-above. Currently, spi
-framework takes care of the runtime clock control part in 
-pump_message(spi.c). So, at the
-beginning of each transfer, there is a "get_sync" while at the end there 
-is a "put_sync". Now, if
-I try to do a memcpy in flash and bypass the SPI framework, there is a 
-data abort as the SPI
-controller clocks are cut.
+> So why do you want to erase bad blocks?
+The reason why I want to erase bad blocks is because they actually don't se=
+em to be bad.=20
+Block0 itself is shown as bad.
+I have few partitions (like MLO and u-boot env) of size equal to 1 erase bl=
+ock. The block is marked as bad and hence I cannot write anything to this p=
+artition.=20
+One of the solutions is to increase that partition size to 2 blocks so even=
+ if 1 block is bad then it will atleast be able to write to the other block=
+ of the same partition. But I don't think I should do this while the block =
+is not really bad (what if all the blocks for some reason are marked as bad=
+ while they are actually not).
 
->> Memory mapped is  a spi controller feature rather than a flash.
-> The way it appears to be implemented is pretty flash specific isn't it?
+This question came in my mind from the fact that "nand scrub" command is al=
+lowed from u-boot which allows to also completely erase all the bad blocks;=
+ so why not from the kernel level.
+
+Regards,
+Minal
+
+-----Original Message-----
+From: Brian Norris [mailto:computersforpeace@gmail.com]=20
+Sent: Saturday, October 12, 2013 3:55 AM
+To: Shah, Minal
+Cc: Mike Frysinger; Mukherjee, Somnath; linux-mtd@lists.infradead.org; Gupt=
+a, Pekon; Parikh, Urmil
+Subject: Re: MTD utils v1.5.0: MEMERASE64 ioctl failed error
+
+Hi Minal,
+
+On Wed, Oct 09, 2013 at 05:05:11AM +0000, Shah, Minal wrote:
+> I am using MTD utils version 1.5.0 for DRA7 (Vayu) platform.
+>=20
+> I have bad blocks in some of my NAND partitions which I am not able to er=
+ase from linux kernel.
+
+MTD does not allow erasing bad blocks. This is prohibited by NAND
+datasheets. There are occasions where, for debugging purposes, one might
+need to erase a "bad" block that is not actually bad, but MTD does not
+provide an interface for doing this. An interface for doing so was
+discussed a while back, but nothing was merged.
+
+> Using "-N" option in flash_eraseall ideally should have allowed erasing t=
+he bad block but I land up in "MEMERASE64 ioctl failed" error.=20
+
+"-N" just means that the user-space tool (flash_erase) won't try to skip
+bad blocks. But that doesn't circumvent the in-kernel protection that
+prevents the erase from succeeding. So the "Input/output" error you see
+is completely expected and currently unavoidable, unless you modify your
+kernel to remove this protection.
+
+[snip]
+
+So why do you want to erase bad blocks?
+
+Brian
