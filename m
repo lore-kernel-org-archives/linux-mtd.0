@@ -1,32 +1,21 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
+Received: from mail-ob0-x22e.google.com ([2607:f8b0:4003:c01::22e])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VW7uF-0006Ve-EM
- for linux-mtd@lists.infradead.org; Tue, 15 Oct 2013 16:55:39 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Mark Brown <broonie@kernel.org>
-Subject: RE: [PATCH 1/3] spi/qspi: Add memory mapped read support.
-Date: Tue, 15 Oct 2013 16:54:34 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA234E2@DBDE04.ent.ti.com>
-References: <52566ACC.1080100@ti.com> <20131010101410.GG21581@sirena.org.uk>
- <52568AA3.9080203@ti.com> <20131011100839.GA21581@sirena.org.uk>
- <525CDB77.4040201@ti.com> <20131015111647.GX2443@sirena.org.uk>
- <525D2BB3.4020705@ti.com> <20131015124656.GM2443@sirena.org.uk>
- <525D41E2.30206@ti.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA23446@DBDE04.ent.ti.com>
- <20131015160101.GS2443@sirena.org.uk>
-In-Reply-To: <20131015160101.GS2443@sirena.org.uk>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1VW86Q-0006n7-Nc
+ for linux-mtd@lists.infradead.org; Tue, 15 Oct 2013 17:08:15 +0000
+Received: by mail-ob0-f174.google.com with SMTP id wm4so6107448obc.5
+ for <linux-mtd@lists.infradead.org>; Tue, 15 Oct 2013 10:07:52 -0700 (PDT)
+Date: Tue, 15 Oct 2013 10:07:47 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Priyanka Jain <Priyanka.Jain@freescale.com>
+Subject: Re: [PATCH][v2] mtd: m25p80: Add support for Micron N25Q512A memory
+Message-ID: <20131015170742.GR23337@ld-irv-0074.broadcom.com>
+References: <1381815545-4518-1-git-send-email-Priyanka.Jain@freescale.com>
 MIME-Version: 1.0
-Cc: Peter Korsgaard <peter@korsgaard.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>, "Balbi,
- Felipe" <balbi@ti.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "spi-devel-general@lists.sourceforge.net"
- <spi-devel-general@lists.sourceforge.net>, "Poddar,
- Sourav" <sourav.poddar@ti.com>, Trent Piepho <tpiepho@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1381815545-4518-1-git-send-email-Priyanka.Jain@freescale.com>
+Cc: marex@denx.de, artem.bityutskiy@linux.intel.com,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,18 +25,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> From: Mark Brown [mailto:broonie@kernel.org]
-> > On Tue, Oct 15, 2013 at 03:33:19PM +0000, Gupta, Pekon wrote:
-> > Problem here..
-> > spi_sync() is not blocking, that means it would just add a spi_message
-> > to queue and return. And it depends on kthread_worker when it pumps
-> > this spi_message to QPSI controller driver for actual configuration.
-> > So this is actually a race-condition. You cannot use spi_sync() to conf=
-igure.
->=20
-> No, spi_sync() is blocking - spi_async() is non-blocking.
+On Tue, Oct 15, 2013 at 11:09:05AM +0530, Priyanka Jain wrote:
+> Micron N25Q512A is a spi flash memory with following features:
+> -64MB size, 1.8V, Mulitple I/O, 4KB Sector erase memory.
+> -Memory is organised as 1024(64KB) main sectors.
+> -Each sector is divided into 256 pages.
+> -Register set/Opcodes are similar to other N25Q family products.
+> 
+> Signed-off-by: Priyanka Jain <Priyanka.Jain@freescale.com>
 
-Sorry my bad, I must have been dreaming or something.
-Yes, it's spi_sync() is blocking, its clearly written in its comments too..
+Applied to l2-mtd.git. Thanks!
 
-with regards, pekon
+Brian
