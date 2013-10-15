@@ -1,17 +1,18 @@
-Received: from mail-db9lp0253.outbound.messaging.microsoft.com
- ([213.199.154.253] helo=db9outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VVxMH-00058e-Ho
- for linux-mtd@lists.infradead.org; Tue, 15 Oct 2013 05:39:54 +0000
-From: Priyanka Jain <Priyanka.Jain@freescale.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH][v2] mtd: m25p80: Add support for Micron N25Q512A memory
-Date: Tue, 15 Oct 2013 11:09:05 +0530
-Message-ID: <1381815545-4518-1-git-send-email-Priyanka.Jain@freescale.com>
+From: Pekon Gupta <pekon@ti.com>
+To: <mark.rutland@arm.com>, <olof@lixom.net>, <computersforpeace@gmail.com>,
+ <dedekind1@gmail.com>, <tony@atomide.com>, <bcousson@baylibre.com>
+Subject: [PATCH v9 1/9] mtd: nand: omap: combine different flavours of 1-bit
+ hamming ecc schemes
+Date: Tue, 15 Oct 2013 11:19:49 +0530
+Message-ID: <1381816197-20477-2-git-send-email-pekon@ti.com>
+In-Reply-To: <1381816197-20477-1-git-send-email-pekon@ti.com>
+References: <1381816197-20477-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Cc: marex@denx.de, artem.bityutskiy@linux.intel.com,
- computersforpeace@gmail.com, Priyanka Jain <Priyanka.Jain@freescale.com>
+Cc: devicetree@vger.kernel.org, Pawel.Moll@arm.com, arnd@arndb.de,
+ swarren@wwwdotorg.org, ijc+devicetree@hellion.org.uk, avinashphilipk@gmail.com,
+ balbi@ti.com, robherring2@gmail.com, Pekon Gupta <pekon@ti.com>,
+ linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,32 +22,129 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Micron N25Q512A is a spi flash memory with following features:
--64MB size, 1.8V, Mulitple I/O, 4KB Sector erase memory.
--Memory is organised as 1024(64KB) main sectors.
--Each sector is divided into 256 pages.
--Register set/Opcodes are similar to other N25Q family products.
+OMAP NAND driver currently supports multiple flavours of 1-bit Hamming
+ecc-scheme, like:
+- OMAP_ECC_HAMMING_CODE_DEFAULT
+	1-bit hamming ecc code using software library
+- OMAP_ECC_HAMMING_CODE_HW
+	1-bit hamming ecc-code using GPMC h/w engine
+- OMAP_ECC_HAMMING_CODE_HW_ROMCODE
+	1-bit hamming ecc-code using GPMC h/w engin with ecc-layout compatible
+	to ROM code.
 
-Signed-off-by: Priyanka Jain <Priyanka.Jain@freescale.com>
+This patch combines above multiple ecc-schemes into single implementation:
+- OMAP_ECC_HAM1_CODE_HW
+	1-bit hamming ecc-code using GPMC h/w engine with ROM-code compatible
+	ecc-layout.
+
+Signed-off-by: Pekon Gupta <pekon@ti.com>
+Reviewed-by: Felipe Balbi <balbi@ti.com>
+Acked-by: Tony Lindgren <tony@atomide.com>
 ---
- Changes for v2:
-	Corrected number of sectors to 1024 based on
-	inputs from Marek Vasut and Brian Norris
+ Documentation/devicetree/bindings/mtd/gpmc-nand.txt | 8 ++++----
+ arch/arm/mach-omap2/board-flash.c                   | 2 +-
+ arch/arm/mach-omap2/gpmc.c                          | 4 +---
+ drivers/mtd/nand/omap2.c                            | 9 +++------
+ include/linux/platform_data/mtd-nand-omap2.h        | 6 +-----
+ 5 files changed, 10 insertions(+), 19 deletions(-)
 
- drivers/mtd/devices/m25p80.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
-
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 26b14f9..94e3b53 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -774,6 +774,7 @@ static const struct spi_device_id m25p_ids[] = {
- 	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024, 256, 0) },
- 	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024, 256, 0) },
- 	{ "n25q256a", INFO(0x20ba19, 0, 64 * 1024, 512, SECT_4K) },
-+	{ "n25q512a", INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K) },
+diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+index df338cb..25ee232 100644
+--- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+@@ -22,10 +22,10 @@ Optional properties:
+ 				width of 8 is assumed.
  
- 	/* PMC */
- 	{ "pm25lv512", INFO(0, 0, 32 * 1024, 2, SECT_4K_PMC) },
+  - ti,nand-ecc-opt:		A string setting the ECC layout to use. One of:
+-
+-		"sw"		Software method (default)
+-		"hw"		Hardware method
+-		"hw-romcode"	gpmc hamming mode method & romcode layout
++		"sw"		<deprecated> use "ham1" instead
++		"hw"		<deprecated> use "ham1" instead
++		"hw-romcode"	<deprecated> use "ham1" instead
++		"ham1"		1-bit Hamming ecc code
+ 		"bch4"		4-bit BCH ecc code
+ 		"bch8"		8-bit BCH ecc code
+ 
+diff --git a/arch/arm/mach-omap2/board-flash.c b/arch/arm/mach-omap2/board-flash.c
+index fc20a61..ac82512 100644
+--- a/arch/arm/mach-omap2/board-flash.c
++++ b/arch/arm/mach-omap2/board-flash.c
+@@ -142,7 +142,7 @@ __init board_nand_init(struct mtd_partition *nand_parts, u8 nr_parts, u8 cs,
+ 	board_nand_data.nr_parts	= nr_parts;
+ 	board_nand_data.devsize		= nand_type;
+ 
+-	board_nand_data.ecc_opt = OMAP_ECC_HAMMING_CODE_DEFAULT;
++	board_nand_data.ecc_opt = OMAP_ECC_BCH8_CODE_HW;
+ 	gpmc_nand_init(&board_nand_data, gpmc_t);
+ }
+ #endif /* CONFIG_MTD_NAND_OMAP2 || CONFIG_MTD_NAND_OMAP2_MODULE */
+diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
+index 579697a..c9fb353 100644
+--- a/arch/arm/mach-omap2/gpmc.c
++++ b/arch/arm/mach-omap2/gpmc.c
+@@ -1342,9 +1342,7 @@ static void __maybe_unused gpmc_read_timings_dt(struct device_node *np,
+ #ifdef CONFIG_MTD_NAND
+ 
+ static const char * const nand_ecc_opts[] = {
+-	[OMAP_ECC_HAMMING_CODE_DEFAULT]		= "sw",
+-	[OMAP_ECC_HAMMING_CODE_HW]		= "hw",
+-	[OMAP_ECC_HAMMING_CODE_HW_ROMCODE]	= "hw-romcode",
++	[OMAP_ECC_HAM1_CODE_HW]			= "ham1",
+ 	[OMAP_ECC_BCH4_CODE_HW]			= "bch4",
+ 	[OMAP_ECC_BCH8_CODE_HW]			= "bch8",
+ };
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index 4ecf0e5..8d521aa 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -1993,10 +1993,7 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	/* select the ecc type */
+-	if (pdata->ecc_opt == OMAP_ECC_HAMMING_CODE_DEFAULT)
+-		info->nand.ecc.mode = NAND_ECC_SOFT;
+-	else if ((pdata->ecc_opt == OMAP_ECC_HAMMING_CODE_HW) ||
+-		(pdata->ecc_opt == OMAP_ECC_HAMMING_CODE_HW_ROMCODE)) {
++	if (pdata->ecc_opt == OMAP_ECC_HAM1_CODE_HW) {
+ 		info->nand.ecc.bytes            = 3;
+ 		info->nand.ecc.size             = 512;
+ 		info->nand.ecc.strength         = 1;
+@@ -2025,7 +2022,7 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	/* rom code layout */
+-	if (pdata->ecc_opt == OMAP_ECC_HAMMING_CODE_HW_ROMCODE) {
++	if (pdata->ecc_opt == OMAP_ECC_HAM1_CODE_HW) {
+ 
+ 		if (info->nand.options & NAND_BUSWIDTH_16)
+ 			offset = 2;
+@@ -2033,7 +2030,7 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 			offset = 1;
+ 			info->nand.badblock_pattern = &bb_descrip_flashbased;
+ 		}
+-		omap_oobinfo.eccbytes = 3 * (info->mtd.oobsize/16);
++		omap_oobinfo.eccbytes = 3 * (info->mtd.writesize / 512);
+ 		for (i = 0; i < omap_oobinfo.eccbytes; i++)
+ 			omap_oobinfo.eccpos[i] = i+offset;
+ 
+diff --git a/include/linux/platform_data/mtd-nand-omap2.h b/include/linux/platform_data/mtd-nand-omap2.h
+index 6bf9ef4..cb5a54a 100644
+--- a/include/linux/platform_data/mtd-nand-omap2.h
++++ b/include/linux/platform_data/mtd-nand-omap2.h
+@@ -23,11 +23,7 @@ enum nand_io {
+ };
+ 
+ enum omap_ecc {
+-		/* 1-bit ecc: stored at end of spare area */
+-	OMAP_ECC_HAMMING_CODE_DEFAULT = 0, /* Default, s/w method */
+-	OMAP_ECC_HAMMING_CODE_HW, /* gpmc to detect the error */
+-		/* 1-bit ecc: stored at beginning of spare area as romcode */
+-	OMAP_ECC_HAMMING_CODE_HW_ROMCODE, /* gpmc method & romcode layout */
++	OMAP_ECC_HAM1_CODE_HW = 0, /* 1-bit Hamming ecc code */
+ 	OMAP_ECC_BCH4_CODE_HW, /* 4-bit BCH ecc code */
+ 	OMAP_ECC_BCH8_CODE_HW, /* 8-bit BCH ecc code */
+ };
 -- 
-1.7.4.1
+1.8.1
