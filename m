@@ -1,26 +1,26 @@
-Received: from mail-ie0-x230.google.com ([2607:f8b0:4001:c03::230])
+Received: from mail-ie0-x233.google.com ([2607:f8b0:4001:c03::233])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VWA2k-00021A-Ew
- for linux-mtd@lists.infradead.org; Tue, 15 Oct 2013 19:12:35 +0000
-Received: by mail-ie0-f176.google.com with SMTP id u16so8566664iet.35
- for <linux-mtd@lists.infradead.org>; Tue, 15 Oct 2013 12:12:12 -0700 (PDT)
-Date: Tue, 15 Oct 2013 12:12:05 -0700
+ id 1VWA7J-0002Ac-Vv
+ for linux-mtd@lists.infradead.org; Tue, 15 Oct 2013 19:17:18 +0000
+Received: by mail-ie0-f179.google.com with SMTP id aq17so13959678iec.38
+ for <linux-mtd@lists.infradead.org>; Tue, 15 Oct 2013 12:16:56 -0700 (PDT)
+Date: Tue, 15 Oct 2013 12:16:52 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Mike Frysinger <vapier@gentoo.org>
-Subject: Re: MTD utils v1.5.0: MEMERASE64 ioctl failed error
-Message-ID: <20131015191205.GT23337@ld-irv-0074.broadcom.com>
-References: <566CE8F1DB913147957287757DA6396B3E9D5FD4@DBDE04.ent.ti.com>
- <20131011222459.GQ23337@ld-irv-0074.broadcom.com>
- <566CE8F1DB913147957287757DA6396B3E9D6A93@DBDE04.ent.ti.com>
- <201310151226.51513.vapier@gentoo.org>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH 0/2] pxa3xx: Data buffer dynamic allocation
+Message-ID: <20131015191652.GU23337@ld-irv-0074.broadcom.com>
+References: <1380911438-24240-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20131009114803.GA31294@localhost> <5255455C.6060606@gmail.com>
+ <20131009140312.GC31294@localhost>
+ <20131015182903.GA2454@localhost>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <201310151226.51513.vapier@gentoo.org>
-Cc: "Mukherjee, Somnath" <somnath@ti.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
- Pekon" <pekon@ti.com>, "Shah, Minal" <minal.shah@ti.com>, "Parikh,
- Urmil" <urmil@ti.com>
+In-Reply-To: <20131015182903.GA2454@localhost>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Lior Amsalem <alior@marvell.com>, Tawfik Bayouk <tawfik@marvell.com>,
+ Daniel Mack <zonque@gmail.com>, linux-mtd@lists.infradead.org,
+ Gregory Clement <gregory.clement@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,43 +30,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 15, 2013 at 12:26:48PM -0400, Mike Frysinger wrote:
-> On Tuesday 15 October 2013 04:32:23 Shah, Minal wrote:
-> > Hi Brian,
-> > Thanks a lot for the explanation; I understood the reason for failure.
+Hi Ezequiel,
+
+On Tue, Oct 15, 2013 at 03:29:04PM -0300, Ezequiel Garcia wrote:
+> On Wed, Oct 09, 2013 at 11:03:13AM -0300, Ezequiel Garcia wrote:
+> > On Wed, Oct 09, 2013 at 02:00:28PM +0200, Daniel Mack wrote:
+> > > On 09.10.2013 13:48, Ezequiel Garcia wrote:
+> > > > On Fri, Oct 04, 2013 at 03:30:36PM -0300, Ezequiel Garcia wrote:
+> > > >> As part of my work to support the NAND controllers in Armada 370/XP SoC
+> > > >> here's a tiny set of patches to replace the currently data buffer allocation
+> > > >> based in a hardcoded buffer size, into a dynamic scheme.
+> > > >>
+> > > >> We first use kmalloc to request a 256 bytes (big enough for the ONFI paramater
+> > > >> page) and then re-allocate (either with kmalloc or using DMA allocators) using
+> > > >> the detected page size.
+> > > >>
+> > > >> The first patch is required to perform the initial NAND operations (READID
+> > > >> and friends) using programmable I/O since the DMA buffers are not ready
+> > > >> at such early stage.
+> > > >>
+> > > >> The second patch performs to actual dynamic allocation and it's exactly
+> > > >> the same patch I sent a few weeks ago:
+> > > >>
+> > > >>   http://patchwork.ozlabs.org/patch/275982/
+> > > >>
+> > > >> Daniel: Can you test these two If they look fine we can add them now,
+> > > >> being an improvement to the driver pxa3xx beyond the Armada 370/XP effort.
+> > > > 
+> > > > Daniel: sorry to bother, any luck testing this?
+> > > 
+> > > Sorry for the delay, got other things to do lately ...
+> > > 
 > > 
-> > > So why do you want to erase bad blocks?
+> > No problem, thanks for testing.
 > > 
-> > The reason why I want to erase bad blocks is because they actually don't
-> > seem to be bad. Block0 itself is shown as bad.
-> > I have few partitions (like MLO and u-boot env) of size equal to 1 erase
-> > block. The block is marked as bad and hence I cannot write anything to
-> > this partition. One of the solutions is to increase that partition size to
-> > 2 blocks so even if 1 block is bad then it will atleast be able to write
-> > to the other block of the same partition. But I don't think I should do
-> > this while the block is not really bad (what if all the blocks for some
-> > reason are marked as bad while they are actually not).
+> > > I tested these two patches successfully on my board with both use_dma=0
+> > > and =1. Nice :) You can take my
+> > > 
+> > > 	Tested-by: Daniel Mack <zonque@gmail.com>
+> > > 
 > > 
-> > This question came in my mind from the fact that "nand scrub" command is
-> > allowed from u-boot which allows to also completely erase all the bad
-> > blocks; so why not from the kernel level.
+> > Good news! Brian: all yours :)
+> > 
 > 
-> as mentioned, there was discussion some time ago about adding this 
-> functionality.  but the work never finished.  if you're interested, i'd suggest 
-> picking up the work there.
+> Brian: any chance you pick these two soon? :-)
 
-Really old work:
-
-  http://lists.infradead.org/pipermail/linux-mtd/2010-October/032577.html
-
-More recent discussion:
-
-  http://thread.gmane.org/gmane.linux.drivers.mtd/41624/
-
-There were several proposals thrown around, and we ended up in a cycle
-of over-engineering suggestions. I don't really see why we can't just
-implement an ioctl (MEMNUKE? MEMFORCEERASE? MEMSCRUB?) that skips the
-"don't erase bad blocks" check in MEMERASE64. There may be other
-reasonable alternatives, but I would warn against anything too complex.
+I think I overlooked these once your other gigantic patch set came. I'll
+take a look at them now.
 
 Brian
