@@ -1,19 +1,29 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from mail-ie0-x22e.google.com ([2607:f8b0:4001:c03::22e])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VW8c9-0007hI-5W
- for linux-mtd@lists.infradead.org; Tue, 15 Oct 2013 17:41:02 +0000
-To: dedekind1@gmail.com
-From: Wolfgang Denk <wd@denx.de>
-Subject: Re: Grow UBI device?
+ id 1VW8wd-0000Bk-51
+ for linux-mtd@lists.infradead.org; Tue, 15 Oct 2013 18:02:11 +0000
+Received: by mail-ie0-f174.google.com with SMTP id qd12so10710280ieb.5
+ for <linux-mtd@lists.infradead.org>; Tue, 15 Oct 2013 11:01:47 -0700 (PDT)
+Date: Tue, 15 Oct 2013 11:01:42 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Sourav Poddar <sourav.poddar@ti.com>
+Subject: Re: [PATCH 1/3] spi/qspi: Add memory mapped read support.
+Message-ID: <20131015180142.GS23337@ld-irv-0074.broadcom.com>
+References: <52566ACC.1080100@ti.com> <20131010101410.GG21581@sirena.org.uk>
+ <52568AA3.9080203@ti.com> <20131011100839.GA21581@sirena.org.uk>
+ <525CDB77.4040201@ti.com> <20131015111647.GX2443@sirena.org.uk>
+ <525D2BB3.4020705@ti.com> <20131015124656.GM2443@sirena.org.uk>
+ <525D41E2.30206@ti.com>
 MIME-Version: 1.0
-Content-type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8bit
-In-reply-to: <1381393038.7875.83.camel@sauron.fi.intel.com>
-References: <20131008192846.A25E7380A65@gemini.denx.de>
- <1381393038.7875.83.camel@sauron.fi.intel.com>
-Date: Tue, 15 Oct 2013 19:40:31 +0200
-Message-Id: <20131015174031.E52CF380420@gemini.denx.de>
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <525D41E2.30206@ti.com>
+Cc: Peter Korsgaard <peter@korsgaard.com>, balbi@ti.com,
+ Mark Brown <broonie@kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "spi-devel-general@lists.sourceforge.net"
+ <spi-devel-general@lists.sourceforge.net>, Trent Piepho <tpiepho@gmail.com>,
+ dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,128 +33,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Artem,
+Hi Sourav,
 
-In message <1381393038.7875.83.camel@sauron.fi.intel.com> you wrote:
-> Wolfgang, people already answered you, and frankly I did not read all
-> the answers :-) But here is my brief version.
-
-Thanks.
-
-> On Tue, 2013-10-08 at 21:28 +0200, Wolfgang Denk wrote:
-> > I'm looking for a clever way to migrate devices (in the field) from
-> > JFFS2 to UBI/UBIFS.  In the end result, I want to have single UBI
-> > device (which covers the whole NAND chip) with several volumes used
-> > with UBIFS.  Unfortunately I must keep some of the existing data.
+On Tue, Oct 15, 2013 at 06:53:46PM +0530, Sourav Poddar wrote:
+> On Tuesday 15 October 2013 06:16 PM, Mark Brown wrote:
+> >On Tue, Oct 15, 2013 at 05:19:07PM +0530, Sourav Poddar wrote:
+> >>On Tuesday 15 October 2013 04:46 PM, Mark Brown wrote:
+> >>>Can you fix this by enabling the clock is enabled when you return the
+> >>>buffer to the MTD layer and then disabling the clock when the buffer is
+> >>>released?
+> >>Sorry, I did not get you here. With memory mapped read, there is no
+> >>buffer exchanged, everything takes place at the mtd layer only, what gets
+> >>exchanged is just the memory mapped address.
+> >The buffer is the memory mapped address - part of getting the address
+> >should be preparing the hardware for it.
+> >
+> >>      if (spi->mode&&  SPI_RX_MMAP) {
+> >>          printk("memory mapped mode set\n");
+> >>-        flash->mmap_read = true;
+> >>+        flash->mmap_read = spi->memory_map;
+> >So this probably needs to be a function call to get the buffer (and a
+> >corresponding one to free it).
+> So, the flow can be something like this:
 > 
-> And I guess there is no temporary storage where you could copy JFFS2
-> files, re-format the flash, and copy the files back.
-
-Correct.
-
-> > It would be nice if I could start with a UBI device that is smaller
-> > than the NAND, so I can keep an existing MTD partition with a JFFS2
-> > file system.
+> drivers/mtd/devices/m25p80.c
+> get_flash_buf()
+> {
+>     lock();
 > 
-> You mean that on the existing systems, you already have an extra MTD
-> partition, or you somehow can create one.
+>      t[0] = GET_BUFFER;
+>      t[1] = buf;
+>      ......
 > 
-> Then you want to UBI/UBIFS-format the extra partition. Then copy
-> required JFFS2 files there. And then kill JFFS2 partitions and "merge"
-> them with the extra partition, and end up with UBI/UBIFS covering all
-> the space.
-
-Correct.
-
-> > Is there a way to "grow" the existing UBI device so that it now also
-> > covers the rest of the NAND chip?  Or is my only option to create a
-> > second UBI device?
+>      spi_sync();
 > 
-> I think so, unless you use the fastmap feature. Suppose you don't.
-
-We don't.  We may want to do this later, but certainly not during this
-migration steps.
-
-> 1. Format mtd2 with UBI. Just erasing should be OK, or you can use
-> ubiformat: http://www.linux-mtd.infradead.org/faq/ubi.html#L_ubierase
+>     unlock();
+> }
 > 
-> Then you attach mtd2 (ubiattach) and you get an UBI device (/dev/ubiX).
+> mtd_read
+> {
+>     get_flash_buf();
 > 
-> 2. Create a volume on /dev/ubiX which spans entire UBI device
-> (ubimkvol -t AFAIR). You end up with UBI volume /dev/ubiX_0.
+>     if (flash->buf) {
+>         memcpy();
+>        return 0;
+>   }
+> }
 > 
-> 3. And here is important part - you format /dev/ubiX_0 with JFFS2 but
-> correctly.
+> Not sure, if free buf is needed as devm_* variant is used to allocate that
+> memory.
 
-With JFFS2?  I would expect to see "UBIFS" here?
+I believe you are misplacing the discussion of devm_* variants. devm_*
+is only useful for resources allocated/mapped released/unmapped at probe
+and release time. They do not magically remove the burden of resource
+management for I/O and other dynamic operations.
 
-> UBIFS has this "automatic expand" feature. Which means that if the UBI
-> volume underneath it becomes larger, UBIFS will expand automatically and
-> take the entire (larger) UBI volume.
-> 
-> However, there is a _limit_ to how much UBIFS can expand from the
-> original size. And you want to watch this limit and make it big enough.
-> 
-> The limit is connected with the "-c" option of mkfs.ubifs. Please, check
-> the docs - they explain what exactly -c controls and how it is related
-> to the maximum UBIFS file-system size:
-> 
-> http://www.linux-mtd.infradead.org/faq/ubifs.html#L_max_leb_cnt
-> 
-> So, select proper -c.
+In this case, you are not working at probe time, and you are not
+actually allocating any memory--your 'get_flash_buf()' and corresponding
+'release_flash_buf()' would not be allocating memory but would be
+ensuring that the HW and driver is in the correct state.
 
-Thanks for the poointer.  I would have missed this.
-
-> If you do not use mkfs.ubifs, but just attach /dev/ubiX_0, the UBIFS
-> kernel driver will format the volume automatically. It will select the
-> -c value itself. Since this value is power of 2, it will just take the
-> smallest power-of-2 value. It may be OK for your purposes, may be not.
-> It is safer to use mkfs.ubifs with explicit -c.
-
-Agreed.  It would have worked in our case, as mtd1 is 32 MB and mtd2
-is 96 MB on a 128 MB NAND device, but it's much better to have full
-control.
-
-> 4. Copy important files from JFFS2-mtd1 to UBIFS-UBI-mtd2.
-> 
-> 5. Erase mtd1 (or you can do this later too)
-> 
-> 6. I do not know how you do this, but kill mtd1, and resize mtd2.
-> Probably mtd2 will then be named mtd1 after reboot. If you always refer
-> your MTD partitions and UBI volumes by name, you should not suffer to
-> much from mtd2 becoming mtd1.
-
-The plan is to just have another mtd3 which covers the whole device.
-So I would detach UBI from mtd2 and re-attach to mtd3.
-
-> Lets suppose there is no rename, for simplicity.
-> 
-> 7. Make sure former JFFS2-mtd1 eraseblocks are erased (unless you did
-> this at step 5).
-> 
-> 8. Attach mtd2 to UBI. UBI will automatically "take" the new
-> eraseblocks, erase them and write UBI headers there, and make available.
-> 
-> 9. Volume size will still be the same, and you need to re-size it using
-> ubiresize.
-> 
-> 10. Mount the resized volume. UBI will enlarge itself.
-
-That's just amazing :-)
-
-> Problem solved.
-> 
-> Surely you do not want power cuts during this operations. If you need to
-> survive power cuts, I guess it is possible, but more complex.
-
-Thanks a lot for all the help, it's highly appreciated!
-
-Best regards,
-
-Wolfgang Denk
-
--- 
-DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
-"At least they're __________EXPERIENCED incompetents"
+Brian
