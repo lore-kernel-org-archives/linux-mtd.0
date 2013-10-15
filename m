@@ -1,29 +1,25 @@
-Received: from mail-ie0-x22a.google.com ([2607:f8b0:4001:c03::22a])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VW984-0000X7-Vk
- for linux-mtd@lists.infradead.org; Tue, 15 Oct 2013 18:14:01 +0000
-Received: by mail-ie0-f170.google.com with SMTP id at1so1400938iec.29
- for <linux-mtd@lists.infradead.org>; Tue, 15 Oct 2013 11:13:39 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20131015180142.GS23337@ld-irv-0074.broadcom.com>
-References: <52566ACC.1080100@ti.com> <20131010101410.GG21581@sirena.org.uk>
- <52568AA3.9080203@ti.com> <20131011100839.GA21581@sirena.org.uk>
- <525CDB77.4040201@ti.com> <20131015111647.GX2443@sirena.org.uk>
- <525D2BB3.4020705@ti.com> <20131015124656.GM2443@sirena.org.uk>
- <525D41E2.30206@ti.com>
- <20131015180142.GS23337@ld-irv-0074.broadcom.com>
-Date: Tue, 15 Oct 2013 11:13:38 -0700
-Message-ID: <CA+7tXigv1Q3BPE3uhzdJpx3DsqUpxzrBUaPfWR-i15PsVtMWsQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] spi/qspi: Add memory mapped read support.
-From: Trent Piepho <tpiepho@gmail.com>
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VW9Mu-0000sC-8E
+ for linux-mtd@lists.infradead.org; Tue, 15 Oct 2013 18:29:21 +0000
+Date: Tue, 15 Oct 2013 15:29:04 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Peter Korsgaard <peter@korsgaard.com>, balbi@ti.com,
- Mark Brown <broonie@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "spi-devel-general@lists.sourceforge.net"
- <spi-devel-general@lists.sourceforge.net>,
- Sourav Poddar <sourav.poddar@ti.com>, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH 0/2] pxa3xx: Data buffer dynamic allocation
+Message-ID: <20131015182903.GA2454@localhost>
+References: <1380911438-24240-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20131009114803.GA31294@localhost> <5255455C.6060606@gmail.com>
+ <20131009140312.GC31294@localhost>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20131009140312.GC31294@localhost>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Lior Amsalem <alior@marvell.com>, Tawfik Bayouk <tawfik@marvell.com>,
+ Daniel Mack <zonque@gmail.com>, linux-mtd@lists.infradead.org,
+ Gregory Clement <gregory.clement@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,48 +29,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 15, 2013 at 11:01 AM, Brian Norris
-<computersforpeace@gmail.com> wrote:
->> So, the flow can be something like this:
->>
->> drivers/mtd/devices/m25p80.c
->> get_flash_buf()
->> {
->>     lock();
->>
->>      t[0] = GET_BUFFER;
->>      t[1] = buf;
->>      ......
->>
->>      spi_sync();
->>
->>     unlock();
->> }
->>
->> mtd_read
->> {
->>     get_flash_buf();
->>
->>     if (flash->buf) {
->>         memcpy();
->>        return 0;
->>   }
->> }
->>
->> Not sure, if free buf is needed as devm_* variant is used to allocate that
->> memory.
->
-> I believe you are misplacing the discussion of devm_* variants. devm_*
-> is only useful for resources allocated/mapped released/unmapped at probe
-> and release time. They do not magically remove the burden of resource
-> management for I/O and other dynamic operations.
+On Wed, Oct 09, 2013 at 11:03:13AM -0300, Ezequiel Garcia wrote:
+> On Wed, Oct 09, 2013 at 02:00:28PM +0200, Daniel Mack wrote:
+> > On 09.10.2013 13:48, Ezequiel Garcia wrote:
+> > > On Fri, Oct 04, 2013 at 03:30:36PM -0300, Ezequiel Garcia wrote:
+> > >> As part of my work to support the NAND controllers in Armada 370/XP SoC
+> > >> here's a tiny set of patches to replace the currently data buffer allocation
+> > >> based in a hardcoded buffer size, into a dynamic scheme.
+> > >>
+> > >> We first use kmalloc to request a 256 bytes (big enough for the ONFI paramater
+> > >> page) and then re-allocate (either with kmalloc or using DMA allocators) using
+> > >> the detected page size.
+> > >>
+> > >> The first patch is required to perform the initial NAND operations (READID
+> > >> and friends) using programmable I/O since the DMA buffers are not ready
+> > >> at such early stage.
+> > >>
+> > >> The second patch performs to actual dynamic allocation and it's exactly
+> > >> the same patch I sent a few weeks ago:
+> > >>
+> > >>   http://patchwork.ozlabs.org/patch/275982/
+> > >>
+> > >> Daniel: Can you test these two If they look fine we can add them now,
+> > >> being an improvement to the driver pxa3xx beyond the Armada 370/XP effort.
+> > > 
+> > > Daniel: sorry to bother, any luck testing this?
+> > 
+> > Sorry for the delay, got other things to do lately ...
+> > 
+> 
+> No problem, thanks for testing.
+> 
+> > I tested these two patches successfully on my board with both use_dma=0
+> > and =1. Nice :) You can take my
+> > 
+> > 	Tested-by: Daniel Mack <zonque@gmail.com>
+> > 
+> 
+> Good news! Brian: all yours :)
+> 
 
-Are there any numbers to show if memory mapped read support is a
-benefit in Linux?  There is some question as to whether it's useful at
-all or not.
+Brian: any chance you pick these two soon? :-)
 
-If it is, I think low latency for small reads is probably one of the
-only advantages.  To do that, you aren't going to want to deal with
-device PM for every single read.  It would make more sense to turn the
-hardware on when the MTD device is opened and leave it on until
-closed.
+Thanks!
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
