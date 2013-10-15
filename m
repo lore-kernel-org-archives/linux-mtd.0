@@ -1,23 +1,19 @@
-Received: from mail-oa0-x233.google.com ([2607:f8b0:4003:c02::233])
+Received: from mail-out.m-online.net ([212.18.0.9])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VW8Ky-00079a-I3
- for linux-mtd@lists.infradead.org; Tue, 15 Oct 2013 17:23:18 +0000
-Received: by mail-oa0-f51.google.com with SMTP id h16so5982209oag.24
- for <linux-mtd@lists.infradead.org>; Tue, 15 Oct 2013 10:22:54 -0700 (PDT)
+ id 1VW8c9-0007hI-5W
+ for linux-mtd@lists.infradead.org; Tue, 15 Oct 2013 17:41:02 +0000
+To: dedekind1@gmail.com
+From: Wolfgang Denk <wd@denx.de>
+Subject: Re: Grow UBI device?
 MIME-Version: 1.0
-In-Reply-To: <201310120317.12174.marex@denx.de>
-References: <201310071824.01028.marex@denx.de>
- <201310091214.02740.marex@denx.de>
- <20131009214401.GD23337@ld-irv-0074.broadcom.com>
- <201310120317.12174.marex@denx.de>
-Date: Tue, 15 Oct 2013 10:22:54 -0700
-Message-ID: <CAN8TOE8OO0_TpKJJU8ab1M=60zyZ9H7fhZBVw7AaM=pUAwOEuQ@mail.gmail.com>
-Subject: Re: N25Q256A 13E40
-From: Brian Norris <computersforpeace@gmail.com>
-To: Marek Vasut <marex@denx.de>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-type: text/plain; charset=UTF-8
+Content-transfer-encoding: 8bit
+In-reply-to: <1381393038.7875.83.camel@sauron.fi.intel.com>
+References: <20131008192846.A25E7380A65@gemini.denx.de>
+ <1381393038.7875.83.camel@sauron.fi.intel.com>
+Date: Tue, 15 Oct 2013 19:40:31 +0200
+Message-Id: <20131015174031.E52CF380420@gemini.denx.de>
+Cc: MTD Maling List <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,65 +23,128 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Marek,
+Dear Artem,
 
-On Fri, Oct 11, 2013 at 6:17 PM, Marek Vasut <marex@denx.de> wrote:
+In message <1381393038.7875.83.camel@sauron.fi.intel.com> you wrote:
+> Wolfgang, people already answered you, and frankly I did not read all
+> the answers :-) But here is my brief version.
 
->> On Wed, Oct 09, 2013 at 12:14:02PM +0200, Marek Vasut wrote:
->> > > On Mon, Oct 7, 2013 at 9:24 AM, Marek Vasut <marex@denx.de> wrote:
->> > > > Let's talk about our favourite chip :) I just got my hands on
->> > > > N25Q256A . Since there was quite a flurry of patches for this and
->> > > > similar chips and I got it working on a different chip with exactly
->> > > > the same IDs and type, I'd would expect linux to work with this one
->> > > > too. Guess what ... ;-)
->> > > >
->> > > > This particular incarnation of N25Q256A completely ignores the 4-byte
->> > > > ERASE (0xdc) command. Apparently, if I look closely, it's N25Q256A
->> > > > 13E40 variant and seeing the Note #14 (datasheet page 30 / below
->> > > > Table 18. Command set), quoting:
->> > > >
->> > > > 14.This command is only for part numbers N25Q256A83ESF40x and
->> > > > N25Q256A83E1240x.
->> > >
->> > > This note also applies to PAGE_PROGRAM_4B (0x12) as well, right?
->> >
->> > Yeah, both ERASE_4B and PP_4B or whatever they're called there.
->> > Interestingly enough, READ_4B works ;-/
->>
->> Well, the READ_4B consistency is (unintentionally?) helpful for my
->> systems, as we have begun implementing a jumper switch so that the boot
->> ROM will know whether to use FAST_READ or FAST_READ_4B. Since
->> essentially all large SPI flash at *least* support the READ_4B command
->> (as you noted), we can reliably boot from the flash, no matter what mode
->> it is left in. After booting, we can choose the appropriate mode for
->> programming/erasing.
->
-> I wish I had such a bootrom. In my case (freescale imx28), the bootrom can just
-> do 3-byte operation and that's it. I believe the only way around here is to
-> power-cycle the spi flash before the bootrom starts using it.
+Thanks.
 
-Well, such is life when dealing with these flash. Manufacturers
-apparently didn't understand the impact that adding incompatible
-mode-switches to such fundamental commands would have :(
+> On Tue, 2013-10-08 at 21:28 +0200, Wolfgang Denk wrote:
+> > I'm looking for a clever way to migrate devices (in the field) from
+> > JFFS2 to UBI/UBIFS.  In the end result, I want to have single UBI
+> > device (which covers the whole NAND chip) with several volumes used
+> > with UBIFS.  Unfortunately I must keep some of the existing data.
+> 
+> And I guess there is no temporary storage where you could copy JFFS2
+> files, re-format the flash, and copy the files back.
 
->> > > [Now that I went back to look at some more code:] Wait, but we don't
->> > > even try to use the 4-byte dedicated commands like 0xdc on Micron
->> > > flash, so why are you having this problem? The code currently stands
->> >
->> > > as:
->> > The JEDEC_MFR for this flash Micron N25Q256A is CFI_MFR_ST (I wonder
->> > why).
->>
->> Probably some series of acquisitions?
->>
->> But you didn't quite answer my question. Are you having problems with
->> this Micron/ST/something-that's-not-AMD-or-Spansion flash using the
->> current mainline? Or did you only have trouble when you tried modifying
->> the code to use the dedicated 4-byte addressing commands?
->
-> Urgh, I just noticed I did exactly this. I modified the driver to enable this 4-
-> byte opcodes and then just forgot about it. Pardon my stupidity :(
+Correct.
 
-No problem. The manufacturers haven't made this an easy problem.
+> > It would be nice if I could start with a UBI device that is smaller
+> > than the NAND, so I can keep an existing MTD partition with a JFFS2
+> > file system.
+> 
+> You mean that on the existing systems, you already have an extra MTD
+> partition, or you somehow can create one.
+> 
+> Then you want to UBI/UBIFS-format the extra partition. Then copy
+> required JFFS2 files there. And then kill JFFS2 partitions and "merge"
+> them with the extra partition, and end up with UBI/UBIFS covering all
+> the space.
 
-Brian
+Correct.
+
+> > Is there a way to "grow" the existing UBI device so that it now also
+> > covers the rest of the NAND chip?  Or is my only option to create a
+> > second UBI device?
+> 
+> I think so, unless you use the fastmap feature. Suppose you don't.
+
+We don't.  We may want to do this later, but certainly not during this
+migration steps.
+
+> 1. Format mtd2 with UBI. Just erasing should be OK, or you can use
+> ubiformat: http://www.linux-mtd.infradead.org/faq/ubi.html#L_ubierase
+> 
+> Then you attach mtd2 (ubiattach) and you get an UBI device (/dev/ubiX).
+> 
+> 2. Create a volume on /dev/ubiX which spans entire UBI device
+> (ubimkvol -t AFAIR). You end up with UBI volume /dev/ubiX_0.
+> 
+> 3. And here is important part - you format /dev/ubiX_0 with JFFS2 but
+> correctly.
+
+With JFFS2?  I would expect to see "UBIFS" here?
+
+> UBIFS has this "automatic expand" feature. Which means that if the UBI
+> volume underneath it becomes larger, UBIFS will expand automatically and
+> take the entire (larger) UBI volume.
+> 
+> However, there is a _limit_ to how much UBIFS can expand from the
+> original size. And you want to watch this limit and make it big enough.
+> 
+> The limit is connected with the "-c" option of mkfs.ubifs. Please, check
+> the docs - they explain what exactly -c controls and how it is related
+> to the maximum UBIFS file-system size:
+> 
+> http://www.linux-mtd.infradead.org/faq/ubifs.html#L_max_leb_cnt
+> 
+> So, select proper -c.
+
+Thanks for the poointer.  I would have missed this.
+
+> If you do not use mkfs.ubifs, but just attach /dev/ubiX_0, the UBIFS
+> kernel driver will format the volume automatically. It will select the
+> -c value itself. Since this value is power of 2, it will just take the
+> smallest power-of-2 value. It may be OK for your purposes, may be not.
+> It is safer to use mkfs.ubifs with explicit -c.
+
+Agreed.  It would have worked in our case, as mtd1 is 32 MB and mtd2
+is 96 MB on a 128 MB NAND device, but it's much better to have full
+control.
+
+> 4. Copy important files from JFFS2-mtd1 to UBIFS-UBI-mtd2.
+> 
+> 5. Erase mtd1 (or you can do this later too)
+> 
+> 6. I do not know how you do this, but kill mtd1, and resize mtd2.
+> Probably mtd2 will then be named mtd1 after reboot. If you always refer
+> your MTD partitions and UBI volumes by name, you should not suffer to
+> much from mtd2 becoming mtd1.
+
+The plan is to just have another mtd3 which covers the whole device.
+So I would detach UBI from mtd2 and re-attach to mtd3.
+
+> Lets suppose there is no rename, for simplicity.
+> 
+> 7. Make sure former JFFS2-mtd1 eraseblocks are erased (unless you did
+> this at step 5).
+> 
+> 8. Attach mtd2 to UBI. UBI will automatically "take" the new
+> eraseblocks, erase them and write UBI headers there, and make available.
+> 
+> 9. Volume size will still be the same, and you need to re-size it using
+> ubiresize.
+> 
+> 10. Mount the resized volume. UBI will enlarge itself.
+
+That's just amazing :-)
+
+> Problem solved.
+> 
+> Surely you do not want power cuts during this operations. If you need to
+> survive power cuts, I guess it is possible, but more complex.
+
+Thanks a lot for all the help, it's highly appreciated!
+
+Best regards,
+
+Wolfgang Denk
+
+-- 
+DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
+"At least they're __________EXPERIENCED incompetents"
