@@ -1,23 +1,29 @@
-Received: from smtp.newsguy.com ([74.209.136.69])
+Received: from devils.ext.ti.com ([198.47.26.153])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VW5S4-00018a-FY
- for linux-mtd@lists.infradead.org; Tue, 15 Oct 2013 14:18:25 +0000
-Message-ID: <525D4E87.7010908@newsguy.com>
-Date: Tue, 15 Oct 2013 07:17:43 -0700
-From: Mike Dunn <mikedunn@newsguy.com>
+ id 1VW6de-0004AX-6X
+ for linux-mtd@lists.infradead.org; Tue, 15 Oct 2013 15:34:26 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: "Poddar, Sourav" <sourav.poddar@ti.com>, Mark Brown <broonie@kernel.org>
+Subject: RE: [PATCH 1/3] spi/qspi: Add memory mapped read support.
+Date: Tue, 15 Oct 2013 15:33:19 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA23446@DBDE04.ent.ti.com>
+References: <52566ACC.1080100@ti.com> <20131010101410.GG21581@sirena.org.uk>
+ <52568AA3.9080203@ti.com> <20131011100839.GA21581@sirena.org.uk>
+ <525CDB77.4040201@ti.com> <20131015111647.GX2443@sirena.org.uk>
+ <525D2BB3.4020705@ti.com> <20131015124656.GM2443@sirena.org.uk>
+ <525D41E2.30206@ti.com>
+In-Reply-To: <525D41E2.30206@ti.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-To: "Shah, Minal" <minal.shah@ti.com>
-Subject: Re: MTD utils v1.5.0: MEMERASE64 ioctl failed error
-References: <566CE8F1DB913147957287757DA6396B3E9D5FD4@DBDE04.ent.ti.com>
- <20131011222459.GQ23337@ld-irv-0074.broadcom.com>
- <566CE8F1DB913147957287757DA6396B3E9D6A93@DBDE04.ent.ti.com>
-In-Reply-To: <566CE8F1DB913147957287757DA6396B3E9D6A93@DBDE04.ent.ti.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: Mike Frysinger <vapier@gentoo.org>, "Mukherjee, Somnath" <somnath@ti.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
- Pekon" <pekon@ti.com>, Brian Norris <computersforpeace@gmail.com>, "Parikh,
- Urmil" <urmil@ti.com>
+Cc: Peter Korsgaard <peter@korsgaard.com>, Trent Piepho <tpiepho@gmail.com>,
+ "Balbi, Felipe" <balbi@ti.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "spi-devel-general@lists.sourceforge.net"
+ <spi-devel-general@lists.sourceforge.net>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,49 +33,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/15/2013 01:32 AM, Shah, Minal wrote:
-> Hi Brian,
-> Thanks a lot for the explanation; I understood the reason for failure.
-> 
->> So why do you want to erase bad blocks?
-> The reason why I want to erase bad blocks is because they actually don't seem to be bad. 
-> Block0 itself is shown as bad.
-> I have few partitions (like MLO and u-boot env) of size equal to 1 erase block. The block is marked as bad and hence I cannot write anything to this partition. 
-> One of the solutions is to increase that partition size to 2 blocks so even if 1 block is bad then it will atleast be able to write to the other block of the same partition. But I don't think I should do this while the block is not really bad (what if all the blocks for some reason are marked as bad while they are actually not).
-> 
-> This question came in my mind from the fact that "nand scrub" command is allowed from u-boot which allows to also completely erase all the bad blocks; so why not from the kernel level.
-> 
-> Regards,
-> Minal
-> 
-> -----Original Message-----
-> From: Brian Norris [mailto:computersforpeace@gmail.com] 
-> Sent: Saturday, October 12, 2013 3:55 AM
-> To: Shah, Minal
-> Cc: Mike Frysinger; Mukherjee, Somnath; linux-mtd@lists.infradead.org; Gupta, Pekon; Parikh, Urmil
-> Subject: Re: MTD utils v1.5.0: MEMERASE64 ioctl failed error
-> 
-> Hi Minal,
-> 
-> On Wed, Oct 09, 2013 at 05:05:11AM +0000, Shah, Minal wrote:
->> I am using MTD utils version 1.5.0 for DRA7 (Vayu) platform.
->>
->> I have bad blocks in some of my NAND partitions which I am not able to erase from linux kernel.
-> 
-> MTD does not allow erasing bad blocks. This is prohibited by NAND
-> datasheets. There are occasions where, for debugging purposes, one might
-> need to erase a "bad" block that is not actually bad, but MTD does not
-> provide an interface for doing this. An interface for doing so was
-> discussed a while back, but nothing was merged.
 
 
-Yes, this is a shortcoming in mtd, I think.  Blocks can be marked as bad, but
-never "un-marked".  This is the reason I needed a module parameter
-"ignore_badblocks" in the docg4 driver.
+> From:  Poddar, Sourav
+> > On Tuesday 15 October 2013 06:16 PM, Mark Brown wrote:
+> > On Tue, Oct 15, 2013 at 05:19:07PM +0530, Sourav Poddar wrote:
+> >> On Tuesday 15 October 2013 04:46 PM, Mark Brown wrote:
+> >>> Can you fix this by enabling the clock is enabled when you return the
+> >>> buffer to the MTD layer and then disabling the clock when the buffer =
+is
+> >>> released?
+> >> Sorry, I did not get you here. With memory mapped read, there is no
+> >> buffer exchanged, everything takes place at the mtd layer only, what g=
+ets
+> >> exchanged is just the memory mapped address.
+> > The buffer is the memory mapped address - part of getting the address
+> > should be preparing the hardware for it.
+> >
+> >>       if (spi->mode&&  SPI_RX_MMAP) {
+> >>           printk("memory mapped mode set\n");
+> >> -        flash->mmap_read =3D true;
+> >> +        flash->mmap_read =3D spi->memory_map;
+> > So this probably needs to be a function call to get the buffer (and a
+> > corresponding one to free it).
+> So, the flow can be something like this:
+>=20
+> drivers/mtd/devices/m25p80.c
+> get_flash_buf()
+> {
+>      lock();
+>=20
+>       t[0] =3D GET_BUFFER;
+>       t[1] =3D buf;
+>       ......
+>=20
+>       spi_sync();
+>=20
+>      unlock();
+> }
+>=20
+Problem here..
+spi_sync() is not blocking, that means it would just add a spi_message
+to queue and return. And it depends on kthread_worker when it pumps
+this spi_message to QPSI controller driver for actual configuration.
+So this is actually a race-condition. You cannot use spi_sync() to configur=
+e.
 
-But any solution is complicated by the diversity of methods for marking bad
-blocks (fixed or relocatable flash table, oob marker), and various reasons why
-it is so marked (factory, user).  This is why u-boot says that 'nand scrub' is
-potentially "unsafe".  You have to know the internals of your device.
+(refer my comments in previous emails).
+If you really want to configure QSPI controller just before memcpy(),
+Then you need to somehow prevent spi kthead_worker from accessing.
+This you can do by locking the spi_meesage queue/list at that time.
 
-Mike
+
+> mtd_read
+> {
+>      get_flash_buf();
+>=20
+>      if (flash->buf) {
+>          memcpy();
+>         return 0;
+>    }
+> }
+>=20
+> Not sure, if free buf is needed as devm_* variant is used to allocate tha=
+t
+> memory.
+>=20
+>=20
+> }
+
+With regards, pekon
