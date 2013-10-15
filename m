@@ -1,27 +1,29 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
+Received: from mail-ie0-x22a.google.com ([2607:f8b0:4001:c03::22a])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VW95b-0000Sx-2u
- for linux-mtd@lists.infradead.org; Tue, 15 Oct 2013 18:11:27 +0000
-Message-ID: <525D8515.6070702@ti.com>
-Date: Tue, 15 Oct 2013 23:40:29 +0530
-From: Sourav Poddar <sourav.poddar@ti.com>
+ id 1VW984-0000X7-Vk
+ for linux-mtd@lists.infradead.org; Tue, 15 Oct 2013 18:14:01 +0000
+Received: by mail-ie0-f170.google.com with SMTP id at1so1400938iec.29
+ for <linux-mtd@lists.infradead.org>; Tue, 15 Oct 2013 11:13:39 -0700 (PDT)
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 1/3] spi/qspi: Add memory mapped read support.
+In-Reply-To: <20131015180142.GS23337@ld-irv-0074.broadcom.com>
 References: <52566ACC.1080100@ti.com> <20131010101410.GG21581@sirena.org.uk>
  <52568AA3.9080203@ti.com> <20131011100839.GA21581@sirena.org.uk>
  <525CDB77.4040201@ti.com> <20131015111647.GX2443@sirena.org.uk>
  <525D2BB3.4020705@ti.com> <20131015124656.GM2443@sirena.org.uk>
- <525D41E2.30206@ti.com> <20131015180142.GS23337@ld-irv-0074.broadcom.com>
-In-Reply-To: <20131015180142.GS23337@ld-irv-0074.broadcom.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+ <525D41E2.30206@ti.com>
+ <20131015180142.GS23337@ld-irv-0074.broadcom.com>
+Date: Tue, 15 Oct 2013 11:13:38 -0700
+Message-ID: <CA+7tXigv1Q3BPE3uhzdJpx3DsqUpxzrBUaPfWR-i15PsVtMWsQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] spi/qspi: Add memory mapped read support.
+From: Trent Piepho <tpiepho@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Cc: Peter Korsgaard <peter@korsgaard.com>, balbi@ti.com,
  Mark Brown <broonie@kernel.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "spi-devel-general@lists.sourceforge.net"
- <spi-devel-general@lists.sourceforge.net>, Trent Piepho <tpiepho@gmail.com>,
- dwmw2@infradead.org
+ <spi-devel-general@lists.sourceforge.net>,
+ Sourav Poddar <sourav.poddar@ti.com>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,72 +33,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
-On Tuesday 15 October 2013 11:31 PM, Brian Norris wrote:
-> Hi Sourav,
->
-> On Tue, Oct 15, 2013 at 06:53:46PM +0530, Sourav Poddar wrote:
->> On Tuesday 15 October 2013 06:16 PM, Mark Brown wrote:
->>> On Tue, Oct 15, 2013 at 05:19:07PM +0530, Sourav Poddar wrote:
->>>> On Tuesday 15 October 2013 04:46 PM, Mark Brown wrote:
->>>>> Can you fix this by enabling the clock is enabled when you return the
->>>>> buffer to the MTD layer and then disabling the clock when the buffer is
->>>>> released?
->>>> Sorry, I did not get you here. With memory mapped read, there is no
->>>> buffer exchanged, everything takes place at the mtd layer only, what gets
->>>> exchanged is just the memory mapped address.
->>> The buffer is the memory mapped address - part of getting the address
->>> should be preparing the hardware for it.
->>>
->>>>       if (spi->mode&&   SPI_RX_MMAP) {
->>>>           printk("memory mapped mode set\n");
->>>> -        flash->mmap_read = true;
->>>> +        flash->mmap_read = spi->memory_map;
->>> So this probably needs to be a function call to get the buffer (and a
->>> corresponding one to free it).
+On Tue, Oct 15, 2013 at 11:01 AM, Brian Norris
+<computersforpeace@gmail.com> wrote:
 >> So, the flow can be something like this:
 >>
 >> drivers/mtd/devices/m25p80.c
 >> get_flash_buf()
 >> {
->>      lock();
+>>     lock();
 >>
->>       t[0] = GET_BUFFER;
->>       t[1] = buf;
->>       ......
+>>      t[0] = GET_BUFFER;
+>>      t[1] = buf;
+>>      ......
 >>
->>       spi_sync();
+>>      spi_sync();
 >>
->>      unlock();
+>>     unlock();
 >> }
 >>
 >> mtd_read
 >> {
->>      get_flash_buf();
+>>     get_flash_buf();
 >>
->>      if (flash->buf) {
->>          memcpy();
->>         return 0;
->>    }
+>>     if (flash->buf) {
+>>         memcpy();
+>>        return 0;
+>>   }
 >> }
 >>
 >> Not sure, if free buf is needed as devm_* variant is used to allocate that
 >> memory.
+>
 > I believe you are misplacing the discussion of devm_* variants. devm_*
 > is only useful for resources allocated/mapped released/unmapped at probe
 > and release time. They do not magically remove the burden of resource
 > management for I/O and other dynamic operations.
->
-> In this case, you are not working at probe time, and you are not
-> actually allocating any memory--your 'get_flash_buf()' and corresponding
-> 'release_flash_buf()' would not be allocating memory but would be
-> ensuring that the HW and driver is in the correct state.
->
-> Brian
-Thanks for the reply. I got this.
 
-It will be helpful if you can also comment on the thought process till 
-now, as you can see from the
-series that enabling quad and memory mapped support will effect both the 
-SPI controller and
-m25p80 side. If the changes proposed on m25p80 looks good to you.
+Are there any numbers to show if memory mapped read support is a
+benefit in Linux?  There is some question as to whether it's useful at
+all or not.
+
+If it is, I think low latency for small reads is probably one of the
+only advantages.  To do that, you aren't going to want to deal with
+device PM for every single read.  It would make more sense to turn the
+hardware on when the MTD device is opened and leave it on until
+closed.
