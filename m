@@ -1,18 +1,23 @@
-From: Pekon Gupta <pekon@ti.com>
-To: <mark.rutland@arm.com>, <olof@lixom.net>, <computersforpeace@gmail.com>,
- <dedekind1@gmail.com>, <tony@atomide.com>, <bcousson@baylibre.com>
-Subject: [PATCH v9 9/9] mtd: nand: omap: updated devm_xx for all resource
- allocation and free calls
-Date: Tue, 15 Oct 2013 11:19:57 +0530
-Message-ID: <1381816197-20477-10-git-send-email-pekon@ti.com>
-In-Reply-To: <1381816197-20477-1-git-send-email-pekon@ti.com>
-References: <1381816197-20477-1-git-send-email-pekon@ti.com>
+Received: from devils.ext.ti.com ([198.47.26.153])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VVxnE-0005vs-Ac
+ for linux-mtd@lists.infradead.org; Tue, 15 Oct 2013 06:07:44 +0000
+Message-ID: <525CDB77.4040201@ti.com>
+Date: Tue, 15 Oct 2013 11:36:47 +0530
+From: Sourav Poddar <sourav.poddar@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: devicetree@vger.kernel.org, Pawel.Moll@arm.com, arnd@arndb.de,
- swarren@wwwdotorg.org, ijc+devicetree@hellion.org.uk, avinashphilipk@gmail.com,
- balbi@ti.com, robherring2@gmail.com, Pekon Gupta <pekon@ti.com>,
- linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org, dwmw2@infradead.org
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/3] spi/qspi: Add memory mapped read support.
+References: <52566ACC.1080100@ti.com> <20131010101410.GG21581@sirena.org.uk>
+ <52568AA3.9080203@ti.com> <20131011100839.GA21581@sirena.org.uk>
+In-Reply-To: <20131011100839.GA21581@sirena.org.uk>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Peter Korsgaard <peter@korsgaard.com>, Trent Piepho <tpiepho@gmail.com>,
+ balbi@ti.com, "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "spi-devel-general@lists.sourceforge.net"
+ <spi-devel-general@lists.sourceforge.net>, computersforpeace@gmail.com,
+ dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,131 +27,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-"Managed Device Resource" or devm_xx calls takes care of automatic freeing
-of the resource in case of:
-- failure during driver probe
-- failure during resource allocation
-- detaching or unloading of driver module (rmmod)
-Reference: Documentation/driver-model/devres.txt
+Hi Mark,
+On Friday 11 October 2013 03:38 PM, Mark Brown wrote:
+> On Thu, Oct 10, 2013 at 04:38:19PM +0530, Sourav Poddar wrote:
+>> On Thursday 10 October 2013 03:44 PM, Mark Brown wrote:
+>>> Essentially what it looks like this hardware is trying to do is adapt a
+>>> serial flash so it looks more like a parallel flash.  It's not clear
+>>> that this is a good idea if we are already able to understand serial
+>>> flash though.
+>> Do you have any idea of how to go about implementing it in a more
+>> cleaner way?(taking care of all what the spi controller hardware needs to
+>> do for the memory mapped mode.). I understand doing a memcpy in the caller
+>> itself, but how to tackle the spi controller configuration at that
+>> point of time.
+> You'd need to lock the bus and return the address for the caller to use
+> until it released the lock.  Like I say I'd want to see numbers on this
+> helping though.
+>
+I explored the whole scenario at hand and tried to create something 
+based on previous
+feedbacks that memcpy should be done only at the flash layer and the entire
+spi framework should be bypassed.
 
-Though OMAP NAND driver handles freeing of resource allocation in most of
-the cases, but using devm_xx provides more clean and effortless approach
-to handle all such cases.
+But there is one problem which I faced while trying to achieve the 
+above. Currently, spi
+framework takes care of the runtime clock control part in 
+pump_message(spi.c). So, at the
+beginning of each transfer, there is a "get_sync" while at the end there 
+is a "put_sync". Now, if
+I try to do a memcpy in flash and bypass the SPI framework, there is a 
+data abort as the SPI
+controller clocks are cut.
 
-Signed-off-by: Pekon Gupta <pekon@ti.com>
----
- drivers/mtd/nand/omap2.c | 44 ++++++++++++++------------------------------
- 1 file changed, 14 insertions(+), 30 deletions(-)
-
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 769ff65..0ed0d6f 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -1642,7 +1642,8 @@ static int omap_nand_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 	}
- 
--	info = kzalloc(sizeof(struct omap_nand_info), GFP_KERNEL);
-+	info = devm_kzalloc(&pdev->dev, sizeof(struct omap_nand_info),
-+				GFP_KERNEL);
- 	if (!info)
- 		return -ENOMEM;
- 
-@@ -1667,19 +1668,20 @@ static int omap_nand_probe(struct platform_device *pdev)
- 	if (res == NULL) {
- 		err = -EINVAL;
- 		dev_err(&pdev->dev, "error getting memory resource\n");
--		goto out_free_info;
-+		goto out_release_mem_region;
- 	}
- 
- 	info->phys_base = res->start;
- 	info->mem_size = resource_size(res);
- 
--	if (!request_mem_region(info->phys_base, info->mem_size,
--				pdev->dev.driver->name)) {
-+	if (!devm_request_mem_region(&pdev->dev, info->phys_base,
-+				info->mem_size,	pdev->dev.driver->name)) {
- 		err = -EBUSY;
--		goto out_free_info;
-+		goto out_release_mem_region;
- 	}
- 
--	nand_chip->IO_ADDR_R = ioremap(info->phys_base, info->mem_size);
-+	nand_chip->IO_ADDR_R = devm_ioremap(&pdev->dev, info->phys_base,
-+						info->mem_size);
- 	if (!nand_chip->IO_ADDR_R) {
- 		err = -ENOMEM;
- 		goto out_release_mem_region;
-@@ -1781,8 +1783,9 @@ static int omap_nand_probe(struct platform_device *pdev)
- 			err = -ENODEV;
- 			goto out_release_mem_region;
- 		}
--		err = request_irq(info->gpmc_irq_fifo,	omap_nand_irq,
--					IRQF_SHARED, "gpmc-nand-fifo", info);
-+		err = devm_request_irq(&pdev->dev, info->gpmc_irq_fifo,
-+					omap_nand_irq, IRQF_SHARED,
-+					"gpmc-nand-fifo", info);
- 		if (err) {
- 			dev_err(&pdev->dev, "requesting irq(%d) error:%d",
- 						info->gpmc_irq_fifo, err);
-@@ -1796,8 +1799,9 @@ static int omap_nand_probe(struct platform_device *pdev)
- 			err = -ENODEV;
- 			goto out_release_mem_region;
- 		}
--		err = request_irq(info->gpmc_irq_count,	omap_nand_irq,
--					IRQF_SHARED, "gpmc-nand-count", info);
-+		err = devm_request_irq(&pdev->dev, info->gpmc_irq_count,
-+					omap_nand_irq, IRQF_SHARED,
-+					"gpmc-nand-count", info);
- 		if (err) {
- 			dev_err(&pdev->dev, "requesting irq(%d) error:%d",
- 						info->gpmc_irq_count, err);
-@@ -2010,45 +2014,25 @@ static int omap_nand_probe(struct platform_device *pdev)
- out_release_mem_region:
- 	if (info->dma)
- 		dma_release_channel(info->dma);
--	if (info->gpmc_irq_count > 0)
--		free_irq(info->gpmc_irq_count, info);
--	if (info->gpmc_irq_fifo > 0)
--		free_irq(info->gpmc_irq_fifo, info);
--	release_mem_region(info->phys_base, info->mem_size);
--out_free_info:
- 	if (info->nand.ecc.priv) {
- 		nand_bch_free(info->nand.ecc.priv);
- 		info->nand.ecc.priv = NULL;
- 	}
--	kfree(info);
--
- 	return err;
- }
- 
- static int omap_nand_remove(struct platform_device *pdev)
- {
- 	struct mtd_info *mtd = platform_get_drvdata(pdev);
--	struct nand_chip *nand_chip = mtd->priv;
- 	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
- 							mtd);
- 	if (info->nand.ecc.priv) {
- 		nand_bch_free(info->nand.ecc.priv);
- 		info->nand.ecc.priv = NULL;
- 	}
--
- 	if (info->dma)
- 		dma_release_channel(info->dma);
--
--	if (info->gpmc_irq_count > 0)
--		free_irq(info->gpmc_irq_count, info);
--	if (info->gpmc_irq_fifo > 0)
--		free_irq(info->gpmc_irq_fifo, info);
--
--	/* Release NAND device, its internal structures and partitions */
- 	nand_release(mtd);
--	iounmap(nand_chip->IO_ADDR_R);
--	release_mem_region(info->phys_base, info->mem_size);
--	kfree(info);
- 	return 0;
- }
- 
--- 
-1.8.1
+>> Memory mapped is  a spi controller feature rather than a flash.
+> The way it appears to be implemented is pretty flash specific isn't it?
