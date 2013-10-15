@@ -1,29 +1,30 @@
-Received: from [2001:41c8:1:5384::2] (helo=cassiel.sirena.org.uk)
+Received: from mail-ie0-x234.google.com ([2607:f8b0:4001:c03::234])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VWBj0-0005ir-Mt
- for linux-mtd@lists.infradead.org; Tue, 15 Oct 2013 21:00:19 +0000
-Date: Tue, 15 Oct 2013 21:59:52 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Trent Piepho <tpiepho@gmail.com>
-Message-ID: <20131015205952.GY2443@sirena.org.uk>
-References: <20131010101410.GG21581@sirena.org.uk> <52568AA3.9080203@ti.com>
- <20131011100839.GA21581@sirena.org.uk> <525CDB77.4040201@ti.com>
- <20131015111647.GX2443@sirena.org.uk> <525D2BB3.4020705@ti.com>
- <20131015124656.GM2443@sirena.org.uk> <525D41E2.30206@ti.com>
+ id 1VWBly-0005oC-S2
+ for linux-mtd@lists.infradead.org; Tue, 15 Oct 2013 21:03:23 +0000
+Received: by mail-ie0-f180.google.com with SMTP id e14so11359314iej.11
+ for <linux-mtd@lists.infradead.org>; Tue, 15 Oct 2013 14:03:01 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20131015205254.GX2443@sirena.org.uk>
+References: <52568AA3.9080203@ti.com> <20131011100839.GA21581@sirena.org.uk>
+ <525CDB77.4040201@ti.com> <20131015111647.GX2443@sirena.org.uk>
+ <525D2BB3.4020705@ti.com> <20131015124656.GM2443@sirena.org.uk>
+ <525D41E2.30206@ti.com>
  <20131015180142.GS23337@ld-irv-0074.broadcom.com>
  <CA+7tXigv1Q3BPE3uhzdJpx3DsqUpxzrBUaPfWR-i15PsVtMWsQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="aGDTCmeut6Neuydu"
-Content-Disposition: inline
-In-Reply-To: <CA+7tXigv1Q3BPE3uhzdJpx3DsqUpxzrBUaPfWR-i15PsVtMWsQ@mail.gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EA23640@DBDE04.ent.ti.com>
+ <20131015205254.GX2443@sirena.org.uk>
+Date: Tue, 15 Oct 2013 14:03:01 -0700
+Message-ID: <CA+7tXijF8VTsA3Mk3j8Qe7r0nqr+Xri6=GDfEZGH74Doup5=eA@mail.gmail.com>
 Subject: Re: [PATCH 1/3] spi/qspi: Add memory mapped read support.
-Cc: Peter Korsgaard <peter@korsgaard.com>, balbi@ti.com,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "spi-devel-general@lists.sourceforge.net"
- <spi-devel-general@lists.sourceforge.net>,
- Sourav Poddar <sourav.poddar@ti.com>,
- Brian Norris <computersforpeace@gmail.com>,
+From: Trent Piepho <tpiepho@gmail.com>
+To: Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Peter Korsgaard <peter@korsgaard.com>, "Balbi, Felipe" <balbi@ti.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
+ Pekon" <pekon@ti.com>, "spi-devel-general@lists.sourceforge.net"
+ <spi-devel-general@lists.sourceforge.net>, "Poddar,
+ Sourav" <sourav.poddar@ti.com>, Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -34,41 +35,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Tue, Oct 15, 2013 at 1:52 PM, Mark Brown <broonie@kernel.org> wrote:
+> On Tue, Oct 15, 2013 at 06:33:23PM +0000, Gupta, Pekon wrote:
+>
+>> Therefore early suggestions were to make 'MM_MODE' as default
+>> (if device enables it via DT). This means:
+>> (1) switch to 'SPI_MODE' _only_ when required for commands like
+>>  mtd_erase, etc. and switch back to 'MM_MODE' when done.
+>> (2) And keep your controller clocks on.
+>
+> This sounds like a policy decision, I don't see any reason for it to be
+> in DT.  What works well with one application stack may not be the best
+> choice for another and future developments may change what's most
+> sensible for a given system, it shouldn't be fixed in the DT.
 
---aGDTCmeut6Neuydu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I could see the driver using the transfer size to decide, memory
+mapped or SPI with DMA.  Small transfers via memory mapped access and
+larger would use DMA.  The spi-mxs driver does this to decide PIO or
+DMA.  The threshold size is hard coded in the driver.  If you wanted
+to be able to change it, I would think a sysfs attribute would be the
+way to do that.
 
-On Tue, Oct 15, 2013 at 11:13:38AM -0700, Trent Piepho wrote:
-
-> If it is, I think low latency for small reads is probably one of the
-> only advantages.  To do that, you aren't going to want to deal with
-> device PM for every single read.  It would make more sense to turn the
-> hardware on when the MTD device is opened and leave it on until
-> closed.
-
-Autosuspend *might* be efficient enough.
-
---aGDTCmeut6Neuydu
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSXazFAAoJELSic+t+oim9q3sP/0/z3rGC+jhW9R8TmbOgA3xD
-5dQUCpl5iqkGJtCejSMMh7FmWOiu0333ITPq0Gty7TZqj+f74ewTe2ehkvFxBmg3
-NpYPUQIXElxqFOQlxpPnFYhPo0+OdJaXOR9f3ttHDkdopdCoYAqiflms0jxeZFAd
-wFfOqbMKilAdl68zAlUPCq1EMk5A5blNHX7FK5m+LBNlvGX7XSHf1QCU/D/vNDup
-5bDpkZTr8K6AtCa7Mc50+zhqr08g2kD9UNsn1nI8fdUQ+UWse5LU9t98/TbesY3H
-ljoD1vBiJ0wMdYnmY0PWvScLeKFa3lxEoq3J1gRi5jBPTiYk4zF+Hp3oARPstuTO
-wHt6L9YIInl6YFIZK1GQeyn6IYaKbF+LSxQ9P1vQuo8cWkcHIVEdxNgsbnqCuhLt
-HJNUDjAaha9Cfx7gLwg4ICh3+3qj5BF0j7nQnEh9UYhhS8fmc6Ec9JqQGH0eDnYU
-qpLTQ/5gJlrBsNq1Ho6C2/+wbRTMjdMFGg+k9GZJQdF/8MtDxb4XJoAc228JeTKu
-4Mob7bfpwsGHPoF87wMrF+kg+Dq3q8WHvnsDPxBEYeYTcuDaPYClNJqHenoM6ftJ
-/XmbGAN93p2Bvls3xn7lWjjFvsDU0ZOgry2oXLpETN+8E0CkspCpMdOAjucXgs7+
-UYTQo5zP2++UH17Zd8zh
-=QbaT
------END PGP SIGNATURE-----
-
---aGDTCmeut6Neuydu--
+It does get tricky when you're dealing with flash roms, as people
+often want to boot from those really fast, so you want the kernel to
+know how to use them in the fastest way before it boots as opposed to
+after booting when it's obviously too late to configure the kernel to
+boot faster.
