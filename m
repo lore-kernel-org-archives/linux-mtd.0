@@ -1,22 +1,20 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VWOIv-0003mZ-Mh
- for linux-mtd@lists.infradead.org; Wed, 16 Oct 2013 10:26:14 +0000
-Date: Wed, 16 Oct 2013 07:25:58 -0300
+ id 1VWOvJ-0004gM-Mb
+ for linux-mtd@lists.infradead.org; Wed, 16 Oct 2013 11:05:54 +0000
+Date: Wed, 16 Oct 2013 08:05:39 -0300
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 2/2] mtd: nand: pxa3xx: Allocate data buffer on detected
- flash size
-Message-ID: <20131016102557.GA2518@localhost>
+Subject: Re: [PATCH 0/2] pxa3xx: Data buffer dynamic allocation
+Message-ID: <20131016110538.GB2518@localhost>
 References: <1380911438-24240-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1380911438-24240-3-git-send-email-ezequiel.garcia@free-electrons.com>
- <20131015194159.GV23337@ld-irv-0074.broadcom.com>
+ <20131015204741.GW23337@ld-irv-0074.broadcom.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20131015194159.GV23337@ld-irv-0074.broadcom.com>
+In-Reply-To: <20131015204741.GW23337@ld-irv-0074.broadcom.com>
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
  Lior Amsalem <alior@marvell.com>, Tawfik Bayouk <tawfik@marvell.com>,
  Daniel Mack <zonque@gmail.com>, linux-mtd@lists.infradead.org,
@@ -30,49 +28,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 15, 2013 at 12:41:59PM -0700, Brian Norris wrote:
-> On Fri, Oct 04, 2013 at 03:30:38PM -0300, Ezequiel Garcia wrote:
-> > This commit replaces the currently hardcoded buffer size, by a
-> > dynamic detection scheme. First a small 256 bytes buffer is allocated
-> > so the device can be detected (using READID and friends commands).
-> > 
-> > After detection, this buffer is released and a new buffer is allocated
-> > to acommodate the page size plus out-of-band size.
-> > 
-> > Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> > ---
-> >  drivers/mtd/nand/pxa3xx_nand.c | 45 ++++++++++++++++++++++++++++--------------
-> >  1 file changed, 30 insertions(+), 15 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-> > index a47c67f..bfb2b9f 100644
-> > --- a/drivers/mtd/nand/pxa3xx_nand.c
-> > +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> > @@ -39,6 +39,13 @@
-> >  #define NAND_STOP_DELAY		(2 * HZ/50)
-> >  #define PAGE_CHUNK_SIZE		(2048)
-> >  
-> > +/*
-> > + * Define a buffer size for the initial command that detects the flash device:
-> > + * STATUS, READID and PARAM. The largest of these is the PARAM command,
-> > + * needing 256 bytes.
-> > + */
-> > +#define INIT_BUFFER_SIZE	256
-> > +
+On Tue, Oct 15, 2013 at 01:47:41PM -0700, Brian Norris wrote:
+> Hi Ezequiel,
 > 
-> Actually, PARAM tries to get 768 bytes in nand_base.c to retrieve the
-> redundant copies, but your current driver implementation seems to ignore
-> the 2nd and 3rd parameter pages by returning 0xFF.
+> On Fri, Oct 04, 2013 at 03:30:36PM -0300, Ezequiel Garcia wrote:
+> > As part of my work to support the NAND controllers in Armada 370/XP SoC
+> > here's a tiny set of patches to replace the currently data buffer allocation
+> > based in a hardcoded buffer size, into a dynamic scheme.
+> > 
+> > We first use kmalloc to request a 256 bytes (big enough for the ONFI paramater
+> > page) and then re-allocate (either with kmalloc or using DMA allocators) using
+> > the detected page size.
+> > 
+> > The first patch is required to perform the initial NAND operations (READID
+> > and friends) using programmable I/O since the DMA buffers are not ready
+> > at such early stage.
+> > 
+> > The second patch performs to actual dynamic allocation and it's exactly
+> > the same patch I sent a few weeks ago:
+> > 
+> >   http://patchwork.ozlabs.org/patch/275982/
+> > 
+> > Daniel: Can you test these two If they look fine we can add them now,
+> > being an improvement to the driver pxa3xx beyond the Armada 370/XP effort.
 > 
-> So this is not a criticism of the current patch, but you may want to
-> consider improving your NAND_CMD_PARAM support (also, you don't support
-> NAND_CMD_RNDOUT, which is now used for extended parameter page support).
+> Thanks for sending these out separately from your other series. They are
+> independently useful and look good to me. And thanks, Daniel, for the
+> testing.
+> 
+> Pushed to l2-mtd.git!
 > 
 
-Ah, good input. I'll research a bit more and try to cook a patch, it doesn't
-sound like a lot of work, and it would be nice to have better command support.
-
-Thanks,
+Great, thanks!
 -- 
 Ezequiel García, Free Electrons
 Embedded Linux, Kernel and Android Engineering
