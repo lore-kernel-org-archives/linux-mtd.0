@@ -1,31 +1,26 @@
-Received: from [2001:41c8:1:5384::2] (helo=cassiel.sirena.org.uk)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VWCph-0007mO-Ah
- for linux-mtd@lists.infradead.org; Tue, 15 Oct 2013 22:11:19 +0000
-Date: Tue, 15 Oct 2013 23:10:52 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Trent Piepho <tpiepho@gmail.com>
-Message-ID: <20131015221052.GB2443@sirena.org.uk>
-References: <525CDB77.4040201@ti.com> <20131015111647.GX2443@sirena.org.uk>
- <525D2BB3.4020705@ti.com> <20131015124656.GM2443@sirena.org.uk>
- <525D41E2.30206@ti.com>
- <20131015180142.GS23337@ld-irv-0074.broadcom.com>
- <CA+7tXigv1Q3BPE3uhzdJpx3DsqUpxzrBUaPfWR-i15PsVtMWsQ@mail.gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA23640@DBDE04.ent.ti.com>
- <20131015205254.GX2443@sirena.org.uk>
- <CA+7tXijF8VTsA3Mk3j8Qe7r0nqr+Xri6=GDfEZGH74Doup5=eA@mail.gmail.com>
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VWOIv-0003mZ-Mh
+ for linux-mtd@lists.infradead.org; Wed, 16 Oct 2013 10:26:14 +0000
+Date: Wed, 16 Oct 2013 07:25:58 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 2/2] mtd: nand: pxa3xx: Allocate data buffer on detected
+ flash size
+Message-ID: <20131016102557.GA2518@localhost>
+References: <1380911438-24240-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1380911438-24240-3-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20131015194159.GV23337@ld-irv-0074.broadcom.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="DBn2EsnvkVzqM8Y9"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CA+7tXijF8VTsA3Mk3j8Qe7r0nqr+Xri6=GDfEZGH74Doup5=eA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] spi/qspi: Add memory mapped read support.
-Cc: Peter Korsgaard <peter@korsgaard.com>, "Balbi, Felipe" <balbi@ti.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
- Pekon" <pekon@ti.com>, "spi-devel-general@lists.sourceforge.net"
- <spi-devel-general@lists.sourceforge.net>, "Poddar,
- Sourav" <sourav.poddar@ti.com>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20131015194159.GV23337@ld-irv-0074.broadcom.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Lior Amsalem <alior@marvell.com>, Tawfik Bayouk <tawfik@marvell.com>,
+ Daniel Mack <zonque@gmail.com>, linux-mtd@lists.infradead.org,
+ Gregory Clement <gregory.clement@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,41 +30,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Tue, Oct 15, 2013 at 12:41:59PM -0700, Brian Norris wrote:
+> On Fri, Oct 04, 2013 at 03:30:38PM -0300, Ezequiel Garcia wrote:
+> > This commit replaces the currently hardcoded buffer size, by a
+> > dynamic detection scheme. First a small 256 bytes buffer is allocated
+> > so the device can be detected (using READID and friends commands).
+> > 
+> > After detection, this buffer is released and a new buffer is allocated
+> > to acommodate the page size plus out-of-band size.
+> > 
+> > Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> > ---
+> >  drivers/mtd/nand/pxa3xx_nand.c | 45 ++++++++++++++++++++++++++++--------------
+> >  1 file changed, 30 insertions(+), 15 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+> > index a47c67f..bfb2b9f 100644
+> > --- a/drivers/mtd/nand/pxa3xx_nand.c
+> > +++ b/drivers/mtd/nand/pxa3xx_nand.c
+> > @@ -39,6 +39,13 @@
+> >  #define NAND_STOP_DELAY		(2 * HZ/50)
+> >  #define PAGE_CHUNK_SIZE		(2048)
+> >  
+> > +/*
+> > + * Define a buffer size for the initial command that detects the flash device:
+> > + * STATUS, READID and PARAM. The largest of these is the PARAM command,
+> > + * needing 256 bytes.
+> > + */
+> > +#define INIT_BUFFER_SIZE	256
+> > +
+> 
+> Actually, PARAM tries to get 768 bytes in nand_base.c to retrieve the
+> redundant copies, but your current driver implementation seems to ignore
+> the 2nd and 3rd parameter pages by returning 0xFF.
+> 
+> So this is not a criticism of the current patch, but you may want to
+> consider improving your NAND_CMD_PARAM support (also, you don't support
+> NAND_CMD_RNDOUT, which is now used for extended parameter page support).
+> 
 
---DBn2EsnvkVzqM8Y9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Ah, good input. I'll research a bit more and try to cook a patch, it doesn't
+sound like a lot of work, and it would be nice to have better command support.
 
-On Tue, Oct 15, 2013 at 02:03:01PM -0700, Trent Piepho wrote:
-
-> It does get tricky when you're dealing with flash roms, as people
-> often want to boot from those really fast, so you want the kernel to
-> know how to use them in the fastest way before it boots as opposed to
-> after booting when it's obviously too late to configure the kernel to
-> boot faster.
-
-I'd guess that having fast as the default would be sane enough, though.
-
---DBn2EsnvkVzqM8Y9
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSXb1pAAoJELSic+t+oim9Kc0P/ia6nYernMVCnEqdb0A2/3DV
-KIfs3KxaHrXQS3uFsWkWxjWv6LGrNLelJWuSMuCXpg4HFMCI0U58S6Wquv1iHKME
-7IEYZ/D1CV2f5jyH114CPCV4HKvLq9HpdUILSxG7YlKZFgn+8vBKxQsnEgyrAhdG
-44FvX4WYC2yINKiwkWEwACzcgviSYsA8aBsQ3WShCx6VI253q0QAWxNu8bJb6Ugd
-telKx6F6G4UGi/78Twe8adT2L4YeZiIESHFW7usuqQVol5RHdWNQZMRZSaKf+fdK
-KEODvfuNp8of+tJETLfpgfTu5xcy0Q5Jcxqc35nh7+fKv3MA94HWNZworSfPH4Yv
-pW0WmhgNLf1UYBvmMn3CioI7rAXr+H9JtxspQBYWKiJ/4oMsTaMCWhfMGbHWAg1r
-CcP/83wOkqSPhVK2rOzksl34foaNuji81XqgMp0/Rvp0zHP+TxP4NB7x8o6FSui+
-QyBK9wtwjDKU6cMW33ScpLYQPTs+ebGghvBOnO0iklF4BrzYjeeCKEbswUJ+u6wf
-5W+J6TN42BIGF37npbrdwMsLw7+YlGz/wBs1dyw25+RbrDVfHYv2nulW2a6qKiJM
-khYlgqQBvwPbthpVWT5sDcG4GZ0Re+WTaerSADDbKdjfwGSR1T7tAwJTLDrKrSSh
-W5et8CwoCZfUfOdKi/7g
-=Viu2
------END PGP SIGNATURE-----
-
---DBn2EsnvkVzqM8Y9--
+Thanks,
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
