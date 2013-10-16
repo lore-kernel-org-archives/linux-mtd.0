@@ -1,15 +1,20 @@
-Received: from [2001:41c8:1:5384::2] (helo=cassiel.sirena.org.uk)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VWQ1s-0006RA-DI
- for linux-mtd@lists.infradead.org; Wed, 16 Oct 2013 12:16:44 +0000
-From: Mark Brown <broonie@kernel.org>
-To: David Woodhouse <dwmw2@infradead.org>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Date: Wed, 16 Oct 2013 13:16:14 +0100
-Message-Id: <1381925774-10301-1-git-send-email-broonie@kernel.org>
-Subject: [PATCH] mtd: dataflash: Say if we find a device we don't support
-Cc: linaro-kernel@lists.linaro.org, linux-mtd@lists.infradead.org,
- Mark Brown <broonie@linaro.org>
+Received: from userp1040.oracle.com ([156.151.31.81])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VWRjq-00009E-MM
+ for linux-mtd@lists.infradead.org; Wed, 16 Oct 2013 14:06:15 +0000
+From: Dave Kleikamp <dave.kleikamp@oracle.com>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH V9 32/33] ubifs: convert file ops from aio_read/write to
+ read/write_iter
+Date: Wed, 16 Oct 2013 09:04:45 -0500
+Message-Id: <1381932286-14978-33-git-send-email-dave.kleikamp@oracle.com>
+In-Reply-To: <1381932286-14978-1-git-send-email-dave.kleikamp@oracle.com>
+References: <1381932286-14978-1-git-send-email-dave.kleikamp@oracle.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, Christoph Hellwig <hch@infradead.org>,
+ Dave Kleikamp <dave.kleikamp@oracle.com>, linux-mtd@lists.infradead.org,
+ linux-fsdevel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+ Zach Brown <zab@zabbo.net>, "Maxim V. Patlasov" <mpatlasov@parallels.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,30 +24,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Mark Brown <broonie@linaro.org>
-
-Ensure that the error message if we identify a flash we don't know how to
-talk to is displayed on the console in order to aid diagnostics. While
-we're at convert the message to use dev_info() rather than our hand rolled
-version of it for consistency.
-
-Signed-off-by: Mark Brown <broonie@linaro.org>
+Signed-off-by: Dave Kleikamp <dave.kleikamp@oracle.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: linux-mtd@lists.infradead.org
 ---
- drivers/mtd/devices/mtd_dataflash.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/ubifs/file.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
-index 1cfbfcf..4a47b02 100644
---- a/drivers/mtd/devices/mtd_dataflash.c
-+++ b/drivers/mtd/devices/mtd_dataflash.c
-@@ -879,7 +879,7 @@ static int dataflash_probe(struct spi_device *spi)
- 		break;
- 	/* obsolete AT45DB1282 not (yet?) supported */
- 	default:
--		pr_debug("%s: unsupported device (%x)\n", dev_name(&spi->dev),
-+		dev_info(&spi->dev, "unsupported device (%x)\n",
- 				status & 0x3c);
- 		status = -ENODEV;
- 	}
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index 123c79b..22924e0 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -44,7 +44,7 @@
+  * 'ubifs_writepage()' we are only guaranteed that the page is locked.
+  *
+  * Similarly, @i_mutex is not always locked in 'ubifs_readpage()', e.g., the
+- * read-ahead path does not lock it ("sys_read -> generic_file_aio_read ->
++ * read-ahead path does not lock it ("sys_read -> generic_file_read_iter ->
+  * ondemand_readahead -> readpage"). In case of readahead, @I_SYNC flag is not
+  * set as well. However, UBIFS disables readahead.
+  */
+@@ -1396,8 +1396,8 @@ static int update_mctime(struct ubifs_info *c, struct inode *inode)
+ 	return 0;
+ }
+ 
+-static ssize_t ubifs_aio_write(struct kiocb *iocb, const struct iovec *iov,
+-			       unsigned long nr_segs, loff_t pos)
++static ssize_t ubifs_write_iter(struct kiocb *iocb, struct iov_iter *iter,
++				loff_t pos)
+ {
+ 	int err;
+ 	struct inode *inode = iocb->ki_filp->f_mapping->host;
+@@ -1407,7 +1407,7 @@ static ssize_t ubifs_aio_write(struct kiocb *iocb, const struct iovec *iov,
+ 	if (err)
+ 		return err;
+ 
+-	return generic_file_aio_write(iocb, iov, nr_segs, pos);
++	return generic_file_write_iter(iocb, iter, pos);
+ }
+ 
+ static int ubifs_set_page_dirty(struct page *page)
+@@ -1583,8 +1583,8 @@ const struct file_operations ubifs_file_operations = {
+ 	.llseek         = generic_file_llseek,
+ 	.read           = do_sync_read,
+ 	.write          = do_sync_write,
+-	.aio_read       = generic_file_aio_read,
+-	.aio_write      = ubifs_aio_write,
++	.read_iter       = generic_file_read_iter,
++	.write_iter      = ubifs_write_iter,
+ 	.mmap           = ubifs_file_mmap,
+ 	.fsync          = ubifs_fsync,
+ 	.unlocked_ioctl = ubifs_ioctl,
 -- 
-1.8.4.rc3
+1.8.4
