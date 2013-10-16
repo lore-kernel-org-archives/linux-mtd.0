@@ -1,27 +1,30 @@
-Received: from mail-qa0-x22e.google.com ([2607:f8b0:400d:c00::22e])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VWZUp-0000cw-AI
- for linux-mtd@lists.infradead.org; Wed, 16 Oct 2013 22:23:16 +0000
-Received: by mail-qa0-f46.google.com with SMTP id j15so5008247qaq.12
- for <linux-mtd@lists.infradead.org>; Wed, 16 Oct 2013 15:22:53 -0700 (PDT)
-Date: Wed, 16 Oct 2013 15:22:48 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Pekon Gupta <pekon@ti.com>
-Subject: Re: [PATCH v9 4/9] mtd: nand: omap: enable auto-detection of
- bus-width for omap-nand drivers
-Message-ID: <20131016222248.GZ23337@ld-irv-0074.broadcom.com>
-References: <1381816197-20477-1-git-send-email-pekon@ti.com>
- <1381816197-20477-5-git-send-email-pekon@ti.com>
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VWaX0-0003S1-7G
+ for linux-mtd@lists.infradead.org; Wed, 16 Oct 2013 23:29:35 +0000
+Date: Wed, 16 Oct 2013 20:29:16 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 00/21] Armada 370/XP NAND support
+Message-ID: <20131016232916.GA5362@localhost>
+References: <1379606505-2529-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20130926195615.GK23337@ld-irv-0074.broadcom.com>
+ <20130930122428.GA2417@localhost>
+ <20131003000253.GX23337@ld-irv-0074.broadcom.com>
+ <20131004194203.GB20476@localhost>
+ <20131005000649.GZ23337@ld-irv-0074.broadcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1381816197-20477-5-git-send-email-pekon@ti.com>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, arnd@arndb.de,
- Pawel.Moll@arm.com, dedekind1@gmail.com, tony@atomide.com,
- ijc+devicetree@hellion.org.uk, avinashphilipk@gmail.com, balbi@ti.com,
- robherring2@gmail.com, bcousson@baylibre.com, swarren@wwwdotorg.org,
- olof@lixom.net, linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
- dwmw2@infradead.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20131005000649.GZ23337@ld-irv-0074.broadcom.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Lior Amsalem <alior@marvell.com>, Jason Cooper <jason@lakedaemon.net>,
+ Tawfik Bayouk <tawfik@marvell.com>, Artem Bityutskiy <dedekind1@gmail.com>,
+ Daniel Mack <zonque@gmail.com>, Huang Shijie <b32955@freescale.com>,
+ linux-mtd@lists.infradead.org,
+ Gregory Clement <gregory.clement@free-electrons.com>, Willy Tarreau <w@1wt.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,66 +34,135 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 15, 2013 at 11:19:52AM +0530, Pekon Gupta wrote:
-> Autodetection of NAND device bus-width was added in generic NAND driver as
-> part of following commit
-> 	commit 64b37b2a63eb2f80b65c7185f0013f8ffc637ae3
-> 	Author:     Matthieu CASTET <matthieu.castet@parrot.com>
-> 	AuthorDate: 2012-11-06
-> 	mtd: nand: add NAND_BUSWIDTH_AUTO to autodetect bus width
-> This patch enables this feature for OMAP2 NAND driver
+Brian,
+
+Let's continue the discussion about this controller and its ECC engine.
+
+Sorry for the delayed reply. Also please bare with me as I'm not an MTD,
+NAND or ECC expert; so feel free to correct any mis-understandings on
+my side.
+
+On Fri, Oct 04, 2013 at 05:06:49PM -0700, Brian Norris wrote:
+> On Fri, Oct 04, 2013 at 04:42:04PM -0300, Ezequiel Garcia wrote:
+> > On Wed, Oct 02, 2013 at 05:02:53PM -0700, Brian Norris wrote:
+> > > On Mon, Sep 30, 2013 at 09:24:29AM -0300, Ezequiel Garcia wrote:
+> > > > Notice that this means you can control the ECC strength: since the ECC
+> > > > is always 30B, and it's calculated on the transfered chunk you can
+> > > > configure the controller to transfer the page in 1024B chunks and get a
+> > > > 30B ECC for each of this chunk, thus doubling the ECC strength.
+> > > 
+> > > This is a little odd. Your ECC HW is not parameterized by ECC strength,
+> > > but instead by ECC sector size? I think I have some comments for patch
+> > > 5, relevant to this topic.
+> > > 
+> > 
+> > Indeed. When ECC engine in the controller is set to do BCH, it always
+> > store a 30-byte ECC code. This 30-byte code is calculated on the
+> > transfered chunk, and since the chunk size is configurable we can
+> > effectively configure the ECC strength.
+> > 
+> > The specification says
 > 
-> Signed-off-by: Pekon Gupta <pekon@ti.com>
-> ---
->  drivers/mtd/nand/omap2.c | 29 ++++++++++++++++-------------
->  1 file changed, 16 insertions(+), 13 deletions(-)
+> Is there a public URL for the specification?
 > 
-> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> index 5596368..57a3f51 100644
-> --- a/drivers/mtd/nand/omap2.c
-> +++ b/drivers/mtd/nand/omap2.c
 
-[...]
+Not yet, but we're working very hard to get the spec to be published.
 
-> @@ -1904,6 +1903,21 @@ static int omap_nand_probe(struct platform_device *pdev)
->  		nand_chip->chip_delay = 50;
->  	}
->  
-> +	/* scan for NAND device connected to chip controller */
-> +	if (nand_scan_ident(mtd, 1, NULL)) {
-> +		err = -ENXIO;
-> +		goto out_release_mem_region;
-> +	}
-> +	if ((nand_chip->options & NAND_BUSWIDTH_16) !=
-> +			(pdata->devsize & NAND_BUSWIDTH_16)) {
-> +		pr_err("%s: detected %s device but driver configured for %s\n",
-> +			DRIVER_NAME,
-> +			(nand_chip->options & NAND_BUSWIDTH_16) ? "x16" : "x8",
-> +			(pdata->devsize & NAND_BUSWIDTH_16) ? "x16" : "x8");
+> > the ECC BCH engine can correct up to 16-bits, which means:
+> 
+> Is this your interpretation, or are you quoting the spec?
+> 
 
-I'm not sure on the policy choice here; if you're using BUSWIDTH_AUTO,
-do you even want to try to configure the buswidth by platform data?
-You're not really getting the full use out of NAND_BUSWIDTH_AUTO because
-the platform data has to guess the same buswidth that nand_base.c
-determines. This is worse than the previous behavior, in which you would
-try both buswidths if the specified type failed.
+I'm quoting the spec.
 
-IOW, what are you trying to achieve with auto-buswidth? Automatic
-determination of the buswidth or just automatic validation? What do you
-achieve with platform data's selection of buswidth? Specification of the
-buswidth or just a hint? Do the goals conflict? Perhaps you can just
-warn, and not error out if the two selections don't match? Or maybe you
-really wanted to replace the platform data selection mechanism entirely
-with auto-buswidth?
+> > if the chunk is 2048 bytes you get BCH-4, and if the chunk
+> > is set to be 1024 bytes, you get BCH-8.
+> 
+> That doesn't really make sense to me. If you can't post a public URL,
+> can you paste the relevant text for this?
+> 
 
-> +		err = -EINVAL;
-> +		goto out_release_mem_region;
-> +	}
-> +
->  	switch (pdata->xfer_type) {
->  	case NAND_OMAP_PREFETCH_POLLED:
->  		nand_chip->read_buf   = omap_read_buf_pref;
+I guess the above is not clear: I didn't mean BCH-4 or BCH-8 over any region.
+Instead, I meant that: the spec says the ECC BCH engine can correct up to 16 bits
+'per region', where 'region' is the amount of data the controller is
+configured to transfer (which is arbitrary).
 
-[...]
+So, if you set the controller to transfer 2048B you can correct up to 16
+bits on this 2048B region, or 4 bits per 512B, hence BCH-4.
 
-Brian
+If you set the controller to transfer 1024B you can correct up to 16
+bits on this 1024B region, or 8 bits per 512B, hence BCH-8.
+
+> Most NAND specifies a required correctability of something like "correct
+> 1 bit error per 512 bytes" or "correct 4 bits per 512 bytes". These are
+> not the same as "correct 1 bit per 2048 bytes" and "correct 4 bits per
+> 2048 bytes", respectively, for obvious reasons.
+> 
+> So your "BCH-4" over a "2048 byte chunk" could be interpreted in
+> multiple ways. I'll list a few.
+> 
+> (1) BCH-4 usually means 4 bit correction over a 512 byte region, to
+>     match most SLC that might specify 4-bit correction. Applied to your
+>     hardware, it could possibly be that the 2048 byte region is actually
+>     4 smaller regions which are corrected separately, each with 4 bit
+>     correction. The ECC metadata just happens to be stored in 30 bytes
+>     of OOB (each 512-byte "sub-step" uses 7.5 bytes of spare area??)
+> 
+>     Another way to look at this: perhaps your ECC "chunk size" (the
+>     contiguous region over which your ECC is applied and transferred
+>     atomically) is different than the "correction region" (the region
+>     over which a certain number of bits may be corrected).
+> 
+
+Yes, the above (1) matches this hardware, expect for one point. The
+specifications says that "the BCH engine corrects up to 16 errors
+over the entire page". So there aren't any "smaller" regions, and the
+hardware operates on the entire page.
+
+However, the BCH does not operate on the "page" but rather on the
+transfered region (which is configurable). So, as I explained above,
+you can actually correct 16 bits per 2048B or 16 bits per 1024B depending
+on the way you configure the controller.
+
+Is this clearer now?
+
+> 
+> Barring more lucid documentation, you might want to verify this with
+> some tests. If you can support raw (no ECC) programming, this is a case
+> where you could induce bit errors and see how many can be corrected in
+> various patterns. But that's only necessary if your documentation sucks
+> too badly or is not public.
+> 
+
+Hm.. I'll see if I can do this. It sounds like an interesting test.
+
+> Regarding patch 5 (might as well mention it here), you are only checking
+> the ecc_strength_ds field for 4. You are not checking ecc_step_ds, which
+> likely will be 512 or 1024. Both parameters are relevant to determining
+> what ECC types are strong enough.
+
+Yup, those checks are really crappy in this v1, I have a v2 ready to be
+submitted that takes care of this in a much cleaner (and safer way).
+
+> But it's confusing enough right now to
+> even determine what your hardware means when you say "BCH-4", so we
+> might not be ready to handle this yet...
+> 
+
+Regarding this: I'd really like to understand better this 'step' concept
+and it applicability on this controller. So any clarification is welcome :)
+
+As far as I can see: currently the hardware does ECC corrections in a
+completely transparent fashion and merely 'reports' the no. of corrected
+bits through some IRQ plus some registers.
+Therefore, it implements the ecc.{read,write}_page() functions.
+
+So, why should I tell the NAND core any of the ECC details?
+
+I see other drivers need to implement some of the functions in the
+nand_ecc_ctrl struct, such as: hwctl(), calculate() or correct().
+However, I can't see how any of that applies on this controller.
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
