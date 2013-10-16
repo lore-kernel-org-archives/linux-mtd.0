@@ -1,21 +1,21 @@
-Received: from mail-ie0-x22f.google.com ([2607:f8b0:4001:c03::22f])
+Received: from mail-qa0-x22e.google.com ([2607:f8b0:400d:c00::22e])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VWYg8-0007Si-Ox
- for linux-mtd@lists.infradead.org; Wed, 16 Oct 2013 21:30:53 +0000
-Received: by mail-ie0-f175.google.com with SMTP id aq17so2356885iec.20
- for <linux-mtd@lists.infradead.org>; Wed, 16 Oct 2013 14:30:31 -0700 (PDT)
-Date: Wed, 16 Oct 2013 14:30:24 -0700
+ id 1VWZUp-0000cw-AI
+ for linux-mtd@lists.infradead.org; Wed, 16 Oct 2013 22:23:16 +0000
+Received: by mail-qa0-f46.google.com with SMTP id j15so5008247qaq.12
+ for <linux-mtd@lists.infradead.org>; Wed, 16 Oct 2013 15:22:53 -0700 (PDT)
+Date: Wed, 16 Oct 2013 15:22:48 -0700
 From: Brian Norris <computersforpeace@gmail.com>
 To: Pekon Gupta <pekon@ti.com>
-Subject: Re: [PATCH v9 3/9] mtd: nand: omap: cleanup: replace local
- references with generic framework names
-Message-ID: <20131016213024.GY23337@ld-irv-0074.broadcom.com>
+Subject: Re: [PATCH v9 4/9] mtd: nand: omap: enable auto-detection of
+ bus-width for omap-nand drivers
+Message-ID: <20131016222248.GZ23337@ld-irv-0074.broadcom.com>
 References: <1381816197-20477-1-git-send-email-pekon@ti.com>
- <1381816197-20477-4-git-send-email-pekon@ti.com>
+ <1381816197-20477-5-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1381816197-20477-4-git-send-email-pekon@ti.com>
+In-Reply-To: <1381816197-20477-5-git-send-email-pekon@ti.com>
 Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, arnd@arndb.de,
  Pawel.Moll@arm.com, dedekind1@gmail.com, tony@atomide.com,
  ijc+devicetree@hellion.org.uk, avinashphilipk@gmail.com, balbi@ti.com,
@@ -31,62 +31,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Pekon,
-
-On Tue, Oct 15, 2013 at 11:19:51AM +0530, Pekon Gupta wrote:
-> This patch updates following in omap_nand_probe() and omap_nand_remove()
-> - replaces "info->nand" with "nand_chip" (struct nand_chip *nand_chip)
-> - replaces "info->mtd" with "mtd" (struct mtd_info *mtd)
-> - white-space and formatting cleanup
+On Tue, Oct 15, 2013 at 11:19:52AM +0530, Pekon Gupta wrote:
+> Autodetection of NAND device bus-width was added in generic NAND driver as
+> part of following commit
+> 	commit 64b37b2a63eb2f80b65c7185f0013f8ffc637ae3
+> 	Author:     Matthieu CASTET <matthieu.castet@parrot.com>
+> 	AuthorDate: 2012-11-06
+> 	mtd: nand: add NAND_BUSWIDTH_AUTO to autodetect bus width
+> This patch enables this feature for OMAP2 NAND driver
 > 
 > Signed-off-by: Pekon Gupta <pekon@ti.com>
-
-This patch looks good. Thanks for being consistent.
-
 > ---
->  drivers/mtd/nand/omap2.c | 112 ++++++++++++++++++++++++-----------------------
->  1 file changed, 57 insertions(+), 55 deletions(-)
+>  drivers/mtd/nand/omap2.c | 29 ++++++++++++++++-------------
+>  1 file changed, 16 insertions(+), 13 deletions(-)
 > 
 > diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> index 8d521aa..5596368 100644
+> index 5596368..57a3f51 100644
 > --- a/drivers/mtd/nand/omap2.c
 > +++ b/drivers/mtd/nand/omap2.c
 
-...
+[...]
 
-> @@ -1846,17 +1848,16 @@ static int omap_nand_probe(struct platform_device *pdev)
->  	spin_lock_init(&info->controller.lock);
->  	init_waitqueue_head(&info->controller.wq);
+> @@ -1904,6 +1903,21 @@ static int omap_nand_probe(struct platform_device *pdev)
+>  		nand_chip->chip_delay = 50;
+>  	}
 >  
-> -	info->pdev = pdev;
-> -
-> +	info->pdev		= pdev;
->  	info->gpmc_cs		= pdata->cs;
->  	info->reg		= pdata->reg;
-> -
-> -	info->mtd.priv		= &info->nand;
-> -	info->mtd.name		= dev_name(&pdev->dev);
-> -	info->mtd.owner		= THIS_MODULE;
-> -
-> -	info->nand.options	= pdata->devsize;
-> -	info->nand.options	|= NAND_SKIP_BBTSCAN;
-> +	mtd			= &info->mtd;
-> +	mtd->priv		= &info->nand;
-> +	mtd->name		= dev_name(&pdev->dev);
-> +	mtd->owner		= THIS_MODULE;
-> +	nand_chip		= &info->nand;
-> +	nand_chip->options	= pdata->devsize;
+> +	/* scan for NAND device connected to chip controller */
+> +	if (nand_scan_ident(mtd, 1, NULL)) {
+> +		err = -ENXIO;
+> +		goto out_release_mem_region;
+> +	}
+> +	if ((nand_chip->options & NAND_BUSWIDTH_16) !=
+> +			(pdata->devsize & NAND_BUSWIDTH_16)) {
+> +		pr_err("%s: detected %s device but driver configured for %s\n",
+> +			DRIVER_NAME,
+> +			(nand_chip->options & NAND_BUSWIDTH_16) ? "x16" : "x8",
+> +			(pdata->devsize & NAND_BUSWIDTH_16) ? "x16" : "x8");
 
-Trivial side comment: the 'devsize' field is not named very
-informatively. It is apparently just a way to specify nand_chip.options,
-and it is only actually used for setting a buswidth. (It is also badly
-named nand_type in other places.) Not sure if it's worth improving, or
-even dropping at some later point in time.
+I'm not sure on the policy choice here; if you're using BUSWIDTH_AUTO,
+do you even want to try to configure the buswidth by platform data?
+You're not really getting the full use out of NAND_BUSWIDTH_AUTO because
+the platform data has to guess the same buswidth that nand_base.c
+determines. This is worse than the previous behavior, in which you would
+try both buswidths if the specified type failed.
 
-> +	nand_chip->options	|= NAND_SKIP_BBTSCAN;
->  #ifdef CONFIG_MTD_NAND_OMAP_BCH
->  	info->of_node		= pdata->of_node;
->  #endif
+IOW, what are you trying to achieve with auto-buswidth? Automatic
+determination of the buswidth or just automatic validation? What do you
+achieve with platform data's selection of buswidth? Specification of the
+buswidth or just a hint? Do the goals conflict? Perhaps you can just
+warn, and not error out if the two selections don't match? Or maybe you
+really wanted to replace the platform data selection mechanism entirely
+with auto-buswidth?
+
+> +		err = -EINVAL;
+> +		goto out_release_mem_region;
+> +	}
+> +
+>  	switch (pdata->xfer_type) {
+>  	case NAND_OMAP_PREFETCH_POLLED:
+>  		nand_chip->read_buf   = omap_read_buf_pref;
 
 [...]
 
