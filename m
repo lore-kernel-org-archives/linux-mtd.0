@@ -1,33 +1,30 @@
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: RE: [PATCH v9 7/9] mtd: nand: omap: use drivers/mtd/nand/nand_bch.c
- wrapper for BCH ECC instead of lib/bch.c
-Date: Thu, 17 Oct 2013 10:14:40 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA27C63@DBDE04.ent.ti.com>
-References: <1381816197-20477-1-git-send-email-pekon@ti.com>
- <1381816197-20477-8-git-send-email-pekon@ti.com>
- <20131017022237.GC23337@ld-irv-0074.broadcom.com>
-In-Reply-To: <20131017022237.GC23337@ld-irv-0074.broadcom.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from arroyo.ext.ti.com ([192.94.94.40])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VWmeK-0002jV-FG
+ for linux-mtd@lists.infradead.org; Thu, 17 Oct 2013 12:25:56 +0000
+Message-ID: <525FD715.50703@ti.com>
+Date: Thu, 17 Oct 2013 17:54:53 +0530
+From: Sourav Poddar <sourav.poddar@ti.com>
 MIME-Version: 1.0
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "arnd@arndb.de" <arnd@arndb.de>, "Pawel.Moll@arm.com" <Pawel.Moll@arm.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "tony@atomide.com" <tony@atomide.com>,
- "jp.francois@cynove.com" <jp.francois@cynove.com>,
- "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>,
- "avinashphilipk@gmail.com" <avinashphilipk@gmail.com>, "Balbi,
- Felipe" <balbi@ti.com>, "robherring2@gmail.com" <robherring2@gmail.com>,
- "bcousson@baylibre.com" <bcousson@baylibre.com>,
- "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>,
- "olof@lixom.net" <olof@lixom.net>,
+To: "Gupta, Pekon" <pekon@ti.com>, Trent Piepho <tpiepho@gmail.com>, Mark
+ Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/3] spi/qspi: Add memory mapped read support.
+References: <52566ACC.1080100@ti.com> <20131010101410.GG21581@sirena.org.uk>
+ <52568AA3.9080203@ti.com> <20131011100839.GA21581@sirena.org.uk>
+ <525CDB77.4040201@ti.com> <20131015111647.GX2443@sirena.org.uk>
+ <525D2BB3.4020705@ti.com> <20131015124656.GM2443@sirena.org.uk>
+ <525D41E2.30206@ti.com> <20131015180142.GS23337@ld-irv-0074.broadcom.com>
+ <CA+7tXigv1Q3BPE3uhzdJpx3DsqUpxzrBUaPfWR-i15PsVtMWsQ@mail.gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EA23640@DBDE04.ent.ti.com>
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA23640@DBDE04.ent.ti.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Peter Korsgaard <peter@korsgaard.com>, "Balbi, Felipe" <balbi@ti.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ivan Djelic <ivan.djelic@parrot.com>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+ "spi-devel-general@lists.sourceforge.net"
+ <spi-devel-general@lists.sourceforge.net>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,123 +34,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> From: Brian Norris [mailto:computersforpeace@gmail.com]
-> > On Tue, Oct 15, 2013 at 11:19:55AM +0530, Pekon Gupta wrote:
-[snip]
+Hi All,
+On Wednesday 16 October 2013 12:03 AM, Gupta, Pekon wrote:
+>> From: Trent Piepho
+>> Are there any numbers to show if memory mapped read support is a
+>> benefit in Linux?  There is some question as to whether it's useful at
+>> all or not.
+>>
+>> If it is, I think low latency for small reads is probably one of the
+>> only advantages.  To do that, you aren't going to want to deal with
+>> device PM for every single read.  It would make more sense to turn the
+>> hardware on when the MTD device is opened and leave it on until
+>> closed.
+>>
+> +1
+>
+> Therefore early suggestions were to make 'MM_MODE' as default
+> (if device enables it via DT). This means:
+> (1) switch to 'SPI_MODE' _only_ when required for commands like
+>   mtd_erase, etc. and switch back to 'MM_MODE' when done.
+> (2) And keep your controller clocks on.
+>
+> This would ensure that you do minimum config-switching when using
+> MM_MODE. And would thus achieve low latency, and no driver intervention.
+>
+> Yes, real thruput numbers would help clear the picture here ..
+>
+> with regards, pekon
+I did some throughput measurement to get some number on the
+read side. Here are my observations:
 
-> > diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-> > index d885298..5836039 100644
-> > --- a/drivers/mtd/nand/Kconfig
-> > +++ b/drivers/mtd/nand/Kconfig
-> > @@ -96,35 +96,13 @@ config MTD_NAND_OMAP2
-> >
-> >  config MTD_NAND_OMAP_BCH
-> >  	depends on MTD_NAND && MTD_NAND_OMAP2 && ARCH_OMAP3
-> > -	tristate "Enable support for hardware BCH error correction"
-> > +	tristate "Support hardware based BCH error correction"
-> >  	default n
-> >  	select BCH
-> > -	select BCH_CONST_PARAMS
->=20
-> Do you know what will happen now if someone configures
-> BCH_CONST_PARAMS?
-> Would this cause problems?
->=20
-As per comments in lib/bch.c=20
----------------------------=20
-* Option CONFIG_BCH_CONST_PARAMS can be used to force fixed values of
- * parameters m and t; thus allowing extra compiler optimizations and provi=
-ding
- * better (up to 2x) encoding performance. Using this option makes sense wh=
-en
- * (m,t) are fixed and known in advance, e.g. when using BCH error correcti=
-on
- * on a particular NAND flash device.
----------------------------
-'BCH_CONST_PARAMS' is required for optimization when BCH algorithm
-is fixed. But in omap-nand case selection of type of BCH algorithm
-(BCH4 or BCH8) comes from DT binding "ti,nand-ecc-opts".
+Case1:
+--------
+  Using SPI framework.
 
-If enabled (CONFIG_BCH_CONST_PARAMS) will optimize lib/bch.c
-for BCH8 algorithm by default, so=20
-CASE: if BCH8 is selected by DT, then no issues
-CASE: if BCH4 is selected  then nand_bch_init() fails with following error
-+ if (!info->nand.ecc.priv) {
-		pr_err("nand: error: unable to use s/w BCH library\n");
-		err =3D -EINVAL;
-		goto out_release_mem_region;
-}
+   Setup:
+     Here, the actual memcpy is done in the spi controller, and flash
+     communicates to the qspi controller to do the memcpy using the
+     SPI framework. This is what is propsed in the $subject patch.
 
-[snip]=20
+   Measurement method:
+     used jiffies_to_msecs  at the beginning and at the end of the 
+mtd_read api
+    and calculated the difference.
 
-> >  if MTD_NAND_OMAP_BCH
-> >  config BCH_CONST_M
->=20
-> Do you need to to also kill of the Kconfig stuff for BCH_CONST_M and
-> BCH_CONST_T, which were tied to the MTD_NAND_OMAP_BCH4 and
-> MTD_NAND_OMAP_BCH8 configs you just removed?
->=20
-Thanks, good catch. I dint really notice.
-So, the driver is now updated to separate out two flavours of BCHx scheme.
-(a) OMAP_ECC_BCHx_CODE_HW: which uses ELM hardware
-(b) OMAP_ECC_BCHx_CODE_HW_DETECTION_SW: which uses lib/bch.c
-These BCH_CONST_M and BCH_CONST_T now belongs to (b) family only.
--  if MTD_NAND_OMAP_BCH
-+ if MTD_NAND_ECC_BCH
-       config BCH_CONST_M
-(I'll update that)..
+   Result:
+      Tried a transfer of 32KB, which takes around 20 ms of time to read.
 
 
-> > diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-[snip]
-> > -		info->bch =3D init_bch(nand_chip->ecc.bytes,
-> > -					nand_chip->ecc.strength,
-> > -					OMAP_ECC_BCH8_POLYNOMIAL);
-> > -		if (!info->bch) {
-> > +		info->nand.ecc.priv	=3D nand_bch_init(mtd,
-> > +						info->nand.ecc.size,
-> > +						info->nand.ecc.bytes,
-> > +						&info->nand.ecc.layout);
->=20
-> Are you sure nand_bch_init() is a proper drop-in replacement for the
-> implementation you had based on init_bch()? It looks to me like they at
-> least use a differnt polynomial value (0x201b vs. 0). Is this a problem
-> for backwards compatibility?
->=20
-It's not the polynomial value =3D 0. Rather 0x201b is selected in both case=
-s
-Refer below code.
----------------
-When init_bch(m,t, 0) is called from nand_bch_init() then,
-lib/bch.c @@ init_bch(int m, int t, unsigned int prim_poly)
-(a)	/* default primitive polynomials */
-	static const unsigned int prim_poly_tab[] =3D {
-		0x25, 0x43, 0x83, 0x11d, 0x211, 0x409, 0x805, 0x1053, 0x201b,
-		0x402b, 0x8003,
-	};
-(b)	/* select a primitive polynomial for generating GF(2^m) */
-	if (prim_poly =3D=3D 0)
-		prim_poly =3D prim_poly_tab[m-min_m];
-(c) And, const int min_m =3D 5;
+Case2:
+--------
+  Bypassing SPI framework.
 
-So, for BCH8 m=3D13, min_m=3D5; So=20
-prim_poly =3D prim_poly_tab[13-5] =3D prim_poly_tab[8] =3D 0x201b
----------------
+   Setup:
+     Here, the actual memcpy is done in the mtd read api itself, by 
+getting the
+     memmap address from the spi controller.
 
-Hence, there is no change in polynomial, it's just that instead of
-hard-coding the value, polynomial selection depends on 'm' and 't'.
+   Measurement method:
+     used jiffies_to_msecs  before and after memcpy and calculated the 
+difference.
 
+   Result:
+      Tried a transfer of 32KB, which takes around 10 ms of time to read.
 
-
-> [...]
->=20
-> A related question: do we have any current users of this driver that can
-> provide testing results for this series? Or is this work just tested
-> with new hardware?
->=20
-Got a tested-by: jp.francois@cynove.com for BCH4
-But that was in May,2013 :-)
-http://lists.infradead.org/pipermail/linux-mtd/2013-May/047065.html
-
-
-with regards, pekon
+So, time reduced almost to half while bypassing the SPI framework.
