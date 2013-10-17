@@ -1,31 +1,19 @@
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: RE: [PATCH v9 4/9] mtd: nand: omap: enable auto-detection of
- bus-width for omap-nand drivers
-Date: Thu, 17 Oct 2013 04:42:23 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA27917@DBDE04.ent.ti.com>
-References: <1381816197-20477-1-git-send-email-pekon@ti.com>
- <1381816197-20477-5-git-send-email-pekon@ti.com>
- <20131016222248.GZ23337@ld-irv-0074.broadcom.com>
-In-Reply-To: <20131016222248.GZ23337@ld-irv-0074.broadcom.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "arnd@arndb.de" <arnd@arndb.de>, "Pawel.Moll@arm.com" <Pawel.Moll@arm.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "tony@atomide.com" <tony@atomide.com>,
- "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>,
- "avinashphilipk@gmail.com" <avinashphilipk@gmail.com>, "Balbi,
- Felipe" <balbi@ti.com>, "robherring2@gmail.com" <robherring2@gmail.com>,
- "bcousson@baylibre.com" <bcousson@baylibre.com>,
- "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>,
- "olof@lixom.net" <olof@lixom.net>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VWjpR-00061Z-12
+ for linux-mtd@lists.infradead.org; Thu, 17 Oct 2013 09:25:13 +0000
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: nand: pxa3xx: Fix registered MTD name
+Date: Thu, 17 Oct 2013 06:24:57 -0300
+Message-Id: <1382001897-2709-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Lior Amsalem <alior@marvell.com>, Daniel Mack <zonque@gmail.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,64 +23,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+In a recent commit:
 
-> From: Brian Norris [mailto:computersforpeace@gmail.com]
-> > On Tue, Oct 15, 2013 at 11:19:52AM +0530, Pekon Gupta wrote:
-> > Autodetection of NAND device bus-width was added in generic NAND
-> driver as
-[...]
-> > @@ -1904,6 +1903,21 @@ static int omap_nand_probe(struct
-> platform_device *pdev)
-> >  		nand_chip->chip_delay =3D 50;
-> >  	}
-> >
-> > +	/* scan for NAND device connected to chip controller */
-> > +	if (nand_scan_ident(mtd, 1, NULL)) {
-> > +		err =3D -ENXIO;
-> > +		goto out_release_mem_region;
-> > +	}
-> > +	if ((nand_chip->options & NAND_BUSWIDTH_16) !=3D
-> > +			(pdata->devsize & NAND_BUSWIDTH_16)) {
-> > +		pr_err("%s: detected %s device but driver configured for
-> %s\n",
-> > +			DRIVER_NAME,
-> > +			(nand_chip->options & NAND_BUSWIDTH_16) ?
-> "x16" : "x8",
-> > +			(pdata->devsize & NAND_BUSWIDTH_16) ? "x16" :
-> "x8");
->=20
-> I'm not sure on the policy choice here; if you're using BUSWIDTH_AUTO,
-> do you even want to try to configure the buswidth by platform data?
-> You're not really getting the full use out of NAND_BUSWIDTH_AUTO because
-> the platform data has to guess the same buswidth that nand_base.c
-> determines. This is worse than the previous behavior, in which you would
-> try both buswidths if the specified type failed.
->=20
-> IOW, what are you trying to achieve with auto-buswidth? Automatic
-> determination of the buswidth or just automatic validation? What do you
-> achieve with platform data's selection of buswidth? Specification of the
-> buswidth or just a hint? Do the goals conflict? Perhaps you can just
-> warn, and not error out if the two selections don't match? Or maybe you
-> really wanted to replace the platform data selection mechanism entirely
-> with auto-buswidth?
->=20
-This is 'automatic validation' of value set in DT binding "nand-bus-width"
-So this approach is other way round, where controller is configured
-based on DT binding "nand-bus-width" and then it checks whether
-device actual buswidth matches DT binding value or not.
+  commit f455578dd961087a5cf94730d9f6489bb1d355f0
+  Author: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+  Date:   Mon Aug 12 14:14:53 2013 -0300
 
-- GPMC controller is pre-configured to support "x8" or "x16" device based
-   on DT binding "nand-bus-width".
-   Reference: $LINUX/arch/arm/mach-omap2/gpmc.c
-  @@gpmc_probe_nand_child()
-	val =3D of_get_nand_bus_width(child);
+  mtd: nand: pxa3xx: Remove hardcoded mtd name
 
-- But, bus-width of NAND device is only known during NAND driver
-   Probe in nand_scan_ident().
+  There's no advantage in using a hardcoded name for the mtd device.
+  Instead use the provided by the platform_device.
 
-Going forward when all NAND devices are compliant to ONFI,
-then we can deprecate "nand-bus-width".
+The MTD name was changed to use the one provided by the platform_device.
+However, this can be problematic as some users want to set partitions
+using the kernel parameter 'mtdpart', where the name is needed.
 
+For that reason, using a simpler and easier to remember name such
+as 'pxa3xx-nand' is certainly a better choice.
 
-with regards, pekon
+Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+---
+ drivers/mtd/nand/pxa3xx_nand.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index aa75adf..6ec3810 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -46,6 +46,8 @@
+  */
+ #define INIT_BUFFER_SIZE	256
+ 
++#define DRIVER_NAME		"pxa3xx-nand"
++
+ /* registers and bit definitions */
+ #define NDCR		(0x00) /* Control register */
+ #define NDTR0CS0	(0x04) /* Timing Parameter 0 for CS0 */
+@@ -1339,7 +1341,7 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
+ 	for (cs = 0; cs < pdata->num_cs; cs++) {
+ 		struct mtd_info *mtd = info->host[cs]->mtd;
+ 
+-		mtd->name = pdev->name;
++		mtd->name = DRIVER_NAME;
+ 		info->cs = cs;
+ 		ret = pxa3xx_nand_scan(mtd);
+ 		if (ret) {
+@@ -1425,7 +1427,7 @@ static int pxa3xx_nand_resume(struct platform_device *pdev)
+ 
+ static struct platform_driver pxa3xx_nand_driver = {
+ 	.driver = {
+-		.name	= "pxa3xx-nand",
++		.name	= DRIVER_NAME,
+ 		.of_match_table = pxa3xx_nand_dt_ids,
+ 	},
+ 	.probe		= pxa3xx_nand_probe,
+-- 
+1.8.1.5
