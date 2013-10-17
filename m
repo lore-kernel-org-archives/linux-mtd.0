@@ -1,31 +1,37 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
+Received: from mail-ie0-x235.google.com ([2607:f8b0:4001:c03::235])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VWnFb-00047D-UG
- for linux-mtd@lists.infradead.org; Thu, 17 Oct 2013 13:04:28 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Mark Brown <broonie@kernel.org>, "Poddar, Sourav" <sourav.poddar@ti.com>,
- Trent Piepho <tpiepho@gmail.com>
-Subject: RE: [PATCH 1/3] spi/qspi: Add memory mapped read support.
-Date: Thu, 17 Oct 2013 13:03:26 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA27E10@DBDE04.ent.ti.com>
-References: <20131011100839.GA21581@sirena.org.uk> <525CDB77.4040201@ti.com>
- <20131015111647.GX2443@sirena.org.uk> <525D2BB3.4020705@ti.com>
- <20131015124656.GM2443@sirena.org.uk> <525D41E2.30206@ti.com>
- <20131015180142.GS23337@ld-irv-0074.broadcom.com>
- <CA+7tXigv1Q3BPE3uhzdJpx3DsqUpxzrBUaPfWR-i15PsVtMWsQ@mail.gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA23640@DBDE04.ent.ti.com>
- <525FD715.50703@ti.com> <20131017123850.GN2443@sirena.org.uk>
-In-Reply-To: <20131017123850.GN2443@sirena.org.uk>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1VWsLK-00077H-7l
+ for linux-mtd@lists.infradead.org; Thu, 17 Oct 2013 18:30:43 +0000
+Received: by mail-ie0-f181.google.com with SMTP id ar20so4490361iec.26
+ for <linux-mtd@lists.infradead.org>; Thu, 17 Oct 2013 11:30:20 -0700 (PDT)
+Date: Thu, 17 Oct 2013 11:30:16 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: "Gupta, Pekon" <pekon@ti.com>
+Subject: Re: [PATCH v9 4/9] mtd: nand: omap: enable auto-detection of
+ bus-width for omap-nand drivers
+Message-ID: <20131017183016.GG23337@ld-irv-0074.broadcom.com>
+References: <1381816197-20477-1-git-send-email-pekon@ti.com>
+ <1381816197-20477-5-git-send-email-pekon@ti.com>
+ <20131016222248.GZ23337@ld-irv-0074.broadcom.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EA27917@DBDE04.ent.ti.com>
 MIME-Version: 1.0
-Cc: Peter Korsgaard <peter@korsgaard.com>, "Balbi, Felipe" <balbi@ti.com>,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA27917@DBDE04.ent.ti.com>
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "arnd@arndb.de" <arnd@arndb.de>, "Pawel.Moll@arm.com" <Pawel.Moll@arm.com>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ "tony@atomide.com" <tony@atomide.com>,
+ "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>,
+ "avinashphilipk@gmail.com" <avinashphilipk@gmail.com>, "Balbi,
+ Felipe" <balbi@ti.com>, "robherring2@gmail.com" <robherring2@gmail.com>,
+ "bcousson@baylibre.com" <bcousson@baylibre.com>,
+ "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>,
+ "olof@lixom.net" <olof@lixom.net>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "spi-devel-general@lists.sourceforge.net"
- <spi-devel-general@lists.sourceforge.net>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,46 +41,102 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Mark,
+On Thu, Oct 17, 2013 at 04:42:23AM +0000, Pekon Gupta wrote:
+> > From: Brian Norris [mailto:computersforpeace@gmail.com]
+> > > On Tue, Oct 15, 2013 at 11:19:52AM +0530, Pekon Gupta wrote:
+> > > Autodetection of NAND device bus-width was added in generic NAND
+> > driver as
+> [...]
+> > > @@ -1904,6 +1903,21 @@ static int omap_nand_probe(struct
+> > platform_device *pdev)
+> > >  		nand_chip->chip_delay = 50;
+> > >  	}
+> > >
+> > > +	/* scan for NAND device connected to chip controller */
+> > > +	if (nand_scan_ident(mtd, 1, NULL)) {
+> > > +		err = -ENXIO;
+> > > +		goto out_release_mem_region;
+> > > +	}
+> > > +	if ((nand_chip->options & NAND_BUSWIDTH_16) !=
+> > > +			(pdata->devsize & NAND_BUSWIDTH_16)) {
+> > > +		pr_err("%s: detected %s device but driver configured for
+> > %s\n",
+> > > +			DRIVER_NAME,
+> > > +			(nand_chip->options & NAND_BUSWIDTH_16) ?
+> > "x16" : "x8",
+> > > +			(pdata->devsize & NAND_BUSWIDTH_16) ? "x16" :
+> > "x8");
+> > 
+> > I'm not sure on the policy choice here; if you're using BUSWIDTH_AUTO,
+> > do you even want to try to configure the buswidth by platform data?
+> > You're not really getting the full use out of NAND_BUSWIDTH_AUTO because
+> > the platform data has to guess the same buswidth that nand_base.c
+> > determines. This is worse than the previous behavior, in which you would
+> > try both buswidths if the specified type failed.
+> > 
+> > IOW, what are you trying to achieve with auto-buswidth? Automatic
+> > determination of the buswidth or just automatic validation? What do you
+> > achieve with platform data's selection of buswidth? Specification of the
+> > buswidth or just a hint? Do the goals conflict? Perhaps you can just
+> > warn, and not error out if the two selections don't match? Or maybe you
+> > really wanted to replace the platform data selection mechanism entirely
+> > with auto-buswidth?
+> > 
+> This is 'automatic validation' of value set in DT binding "nand-bus-width"
 
-> From: Mark Brown [mailto:broonie@kernel.org]
-> > On Thu, Oct 17, 2013 at 05:54:53PM +0530, Sourav Poddar wrote:
-> >   Setup:
-> >     Here, the actual memcpy is done in the spi controller, and flash
-> >     communicates to the qspi controller to do the memcpy using the
-> >     SPI framework. This is what is propsed in the $subject patch.
->=20
-> >   Setup:
-> >     Here, the actual memcpy is done in the mtd read api itself, by
-> > getting the
-> >     memmap address from the spi controller.
->=20
-> > So, time reduced almost to half while bypassing the SPI framework.
->=20
-> The interesting case for benchmarking here is more a comparison between
-> normal DMA driven transfers and the memcpy().  Some consideration of the
-> CPU load would also be interesting here, if the SoC is waiting for the
-> flash then it's probably useful if it can make progress on other things.
->=20
-So in this CASE-2:  SPI framework is bypassed: mtd_read() becomes
-mtd_read() {
-	if (flash->mmap_mode)
-		if (dma_available)
-			read_via_dma(destination, source, length);
-		else
-			memcpy(destination, source, length);
-	else
-		/* use spi frame-work by default */
-}
+You mean you intend for the patched driver to simply validate, not
+configure the buswidth?
 
-Are you looking for comparison between  read_via_dma() v/s memcpy() ?
+> So this approach is other way round, where controller is configured
+> based on DT binding "nand-bus-width" and then it checks whether
+> device actual buswidth matches DT binding value or not.
 
-If yes, then unfortunately we are bit constrained because our controller
-does not support DMA. So, we have to depend on CPU based memcpy()
-only. However, use of DMA can be added as an independent patch on
-top of this CASE-2 patch.
+If this is the case, then you really don't want to use
+NAND_BUSWIDTH_AUTO. The default nand_base.c just *validates* the
+pre-selected buswidth and exits with an error, in much the same way that
+you're doing here (you're just duplicating the functionality).
+NAND_BUSWIDTH_AUTO is useful if you want to turn control of the buswidth
+configuration entirely over to nand_base.c.
 
-So will the base patch for CASE-2  (with SPI framework is bypassed) help ?
+> - GPMC controller is pre-configured to support "x8" or "x16" device based
+>    on DT binding "nand-bus-width".
+>    Reference: $LINUX/arch/arm/mach-omap2/gpmc.c
+>   @@gpmc_probe_nand_child()
+> 	val = of_get_nand_bus_width(child);
+> 
+> - But, bus-width of NAND device is only known during NAND driver
+>    Probe in nand_scan_ident().
+> 
+> Going forward when all NAND devices are compliant to ONFI,
+> then we can deprecate "nand-bus-width".
 
+Buswidth auto-detection is not actually restricted to ONFI. nand_base.c
+has (corretly, AFAIK) been detecting buswidths for a long time, using
+some form of ID decode detection. But it was just that: detection. It
+did not actually configure the buswidth, since it left that
+responsibility to the low-level driver to get right.
 
-with regards, pekon
+Another thing to consider: I think this current patch is a regression
+from previous behavior. Previously, you would run nand_scan_ident()
+twice if the first one failed; once with the platform-configured
+buswidth and once with the opposite. But now, you only run
+nand_scan_ident() once, and then you quit if it detects differently than
+you expected.
+
+My opinion: the platform- and device-tree-provided buswidth is
+unnecessary; it was previouisly only a suggestion which your driver
+would readily discard, and it isn't really needed now. You can probably
+get by with just NAND_BUSWIDTH_AUTO and (at most) a warning if the
+auto-configured buswidth is different than the platform specified.
+
+But the real point: you need to clearly communicate what you are
+choosing in this patch. Either you want to
+
+ (1) strictly follow the buswidth provided by the platform or
+
+ (2) use the nand_base.c BUSWIDTH_AUTO automatic configuration.
+
+Trying to mix both (as your patch currently does) just makes everything
+worse.
+
+Brian
