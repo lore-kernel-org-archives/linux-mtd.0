@@ -1,21 +1,21 @@
-Received: from mail-ie0-x236.google.com ([2607:f8b0:4001:c03::236])
+Received: from mail-ie0-x232.google.com ([2607:f8b0:4001:c03::232])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VWcrw-0006EU-CH
- for linux-mtd@lists.infradead.org; Thu, 17 Oct 2013 01:59:21 +0000
-Received: by mail-ie0-f182.google.com with SMTP id as1so2810813iec.41
- for <linux-mtd@lists.infradead.org>; Wed, 16 Oct 2013 18:58:59 -0700 (PDT)
-Date: Wed, 16 Oct 2013 18:58:54 -0700
+ id 1VWd7f-0006QV-0N
+ for linux-mtd@lists.infradead.org; Thu, 17 Oct 2013 02:15:35 +0000
+Received: by mail-ie0-f178.google.com with SMTP id to1so3851287ieb.9
+ for <linux-mtd@lists.infradead.org>; Wed, 16 Oct 2013 19:15:14 -0700 (PDT)
+Date: Wed, 16 Oct 2013 19:06:58 -0700
 From: Brian Norris <computersforpeace@gmail.com>
 To: Pekon Gupta <pekon@ti.com>
-Subject: Re: [PATCH v9 5/9] mtd:nand:omap2: clean-up BCHx_HW and BCHx_SW
- ECC configurations in device_probe
-Message-ID: <20131017015854.GA23337@ld-irv-0074.broadcom.com>
+Subject: Re: [PATCH v9 6/9] mtd: nand: omap: clean-up ecc layout for BCH
+ ecc schemes
+Message-ID: <20131017020658.GB23337@ld-irv-0074.broadcom.com>
 References: <1381816197-20477-1-git-send-email-pekon@ti.com>
- <1381816197-20477-6-git-send-email-pekon@ti.com>
+ <1381816197-20477-7-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1381816197-20477-6-git-send-email-pekon@ti.com>
+In-Reply-To: <1381816197-20477-7-git-send-email-pekon@ti.com>
 Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, arnd@arndb.de,
  Pawel.Moll@arm.com, dedekind1@gmail.com, tony@atomide.com,
  ijc+devicetree@hellion.org.uk, avinashphilipk@gmail.com, balbi@ti.com,
@@ -31,56 +31,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 15, 2013 at 11:19:53AM +0530, Pekon Gupta wrote:
-> current implementation in omap3_init_bch() has some redundant code like:
-> (1) omap3_init_bch() re-probes the DT-binding to detect presence of ELM h/w
->     engine on SoC. And based on that it selects implemetation of ecc-scheme.
->     However, this is already done as part of GPMC DT parsing.
-> (2) As omap3_init_bch() serves as common function for configuring all types of
->     BCHx ecc-schemes, so there are multiple levels of redudant if..then..else
->     checks while populating nand_chip->ecc.
-> 
-> This patch make following changes to OMAP NAND driver:
-> (1) removes omap3_init_bch(): each ecc-scheme is individually configured in
->     omap_nand_probe() there by removing redundant if..then..else checks.
-> (2) adds is_elm_present(): re-probing of ELM device via DT is not required as
->     it's done in GPMC driver probe. Thus is_elm_present() just initializes ELM
->     driver with NAND probe data, when ecc-scheme with h/w based error-detection
->     is used.
-> (3) separates out configuration of different flavours of "BCH4" and "BCH8"
->     ecc-schemes as given in below table
-> (4) conditionally compiles callbacks implementations of ecc.hwctl(),
->     ecc.calculate(), ecc.correct() to avoid warning of un-used functions.
-> 
-> +---------------------------------------+---------------+---------------+
-> | ECC scheme                            |ECC calculation|Error detection|
-> +---------------------------------------+---------------+---------------+
-> |OMAP_ECC_HAM1_CODE_HW                  |H/W (GPMC)     |S/W            |
-> +---------------------------------------+---------------+---------------+
-> |OMAP_ECC_BCH4_CODE_HW_DETECTION_SW     |H/W (GPMC)     |S/W (lib/bch.c)|
-> | (needs CONFIG_MTD_NAND_ECC_BCH)       |               |               |
-> |                                       |               |               |
-> |OMAP_ECC_BCH4_CODE_HW                  |H/W (GPMC)     |H/W (ELM)      |
-> | (needs CONFIG_MTD_NAND_OMAP_BCH &&    |               |               |
-> |        ti,elm-id)                     |               |               |
-> +---------------------------------------+---------------+---------------+
-> |OMAP_ECC_BCH8_CODE_HW_DETECTION_SW     |H/W (GPMC)     |S/W (lib/bch.c)|
-> | (needs CONFIG_MTD_NAND_ECC_BCH)       |               |               |
-> |                                       |               |               |
-> |OMAP_ECC_BCH8_CODE_HW                  |H/W (GPMC)     |H/W (ELM)      |
-> | (needs CONFIG_MTD_NAND_OMAP_BCH &&    |               |               |
-> |        ti,elm-id)                     |               |               |
-> +---------------------------------------+---------------+---------------+
-> 
-> - 'CONFIG_MTD_NAND_ECC_BCH' is generic KConfig required to build lib/bch.c
->     which is required for ECC error detection done in software.
->     (mainly used for legacy platforms which do not have on-chip ELM engine)
-> 
-> - 'CONFIG_MTD_NAND_OMAP_BCH' is OMAP specific Kconfig to detemine presence
->     on ELM h/w engine on SoC.
+On Tue, Oct 15, 2013 at 11:19:54AM +0530, Pekon Gupta wrote:
+> In current implementation omap3_init_bch_tail() is a common function to
+> define ecc layout for different BCHx ecc schemes.This patch:
+> (1) removes omap3_init_bch_tail() and defines ecc layout for individual
+>     ecc-schemes along with populating their nand_chip->ecc data in
+>     omap_nand_probe(). This improves the readability and scalability of
+>     code for add new ecc schemes in future.
+> (2) removes 'struct nand_bbt_descr bb_descrip_flashbased' because default
+>     nand_bbt_descr in nand_bbt.c matches the same (.len=1 for x8 devices).
+> (3) add the check to see if NAND device has enough OOB/Spare bytes to
+>     store ECC signature of whole page, as defined by ecc-scheme.
 > 
 > Signed-off-by: Pekon Gupta <pekon@ti.com>
 
-This patch looks good to me.
+This patch also looks OK.
 
 Brian
