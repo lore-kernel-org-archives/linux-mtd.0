@@ -1,9 +1,9 @@
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-arm-kernel@lists.infradead.org>,
 	<linux-mtd@lists.infradead.org>
-Subject: [PATCH v2 21/27] mtd: nand: pxa3xx: Add a read/write buffers markers
-Date: Fri, 18 Oct 2013 20:02:48 -0300
-Message-Id: <1382137374-21251-22-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH v2 23/27] mtd: nand: pxa3xx: Add multiple chunk write support
+Date: Fri, 18 Oct 2013 20:02:50 -0300
+Message-Id: <1382137374-21251-24-git-send-email-ezequiel.garcia@free-electrons.com>
 In-Reply-To: <1382137374-21251-1-git-send-email-ezequiel.garcia@free-electrons.com>
 References: <1382137374-21251-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Lior Amsalem <alior@marvell.com>,
@@ -22,111 +22,146 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In preparation to support multiple (aka chunked, aka splitted)
-page I/O, this commit adds 'data_buff_pos' and 'oob_buff_pos' fields
-to keep track of where the next read (or write) should be done.
+This commit adds write support for large pages (4 KiB, 8 KiB).
+Such support is implemented by issuing a multiple command sequence,
+transfering a set of 2 KiB chunks per transaction.
 
-This will allow multiple calls to handle_data_pio() to continue
-the read (or write) operation.
+The splitted command sequence requires to send the SEQIN command
+independently of the PAGEPROG command and therefore it's set as
+an execution command.
+
+Since PAGEPROG enables ECC, each 2 KiB chunk of data is written
+together with ECC code at a controller-fixed location within
+the flash page.
+
+Currently, only devices with a 4 KiB page size has been tested.
 
 Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 ---
- drivers/mtd/nand/pxa3xx_nand.c | 40 +++++++++++++++++++++++++++++-----------
- 1 file changed, 29 insertions(+), 11 deletions(-)
+ drivers/mtd/nand/pxa3xx_nand.c | 83 ++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 75 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index f6070f6..84ae555 100644
+index b297b22..5e92ef8 100644
 --- a/drivers/mtd/nand/pxa3xx_nand.c
 +++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -174,6 +174,8 @@ struct pxa3xx_nand_info {
- 	unsigned int 		buf_start;
- 	unsigned int		buf_count;
- 	unsigned int		buf_size;
-+	unsigned int		data_buff_pos;
-+	unsigned int		oob_buff_pos;
+@@ -780,6 +780,20 @@ static int prepare_set_command(struct pxa3xx_nand_info *info, int command,
  
- 	/* DMA information */
- 	int			drcmr_dat;
-@@ -342,11 +344,12 @@ static void pxa3xx_nand_set_timing(struct pxa3xx_nand_host *host,
-  * spare and ECC configuration.
-  * Only applicable to READ0, READOOB and PAGEPROG commands.
-  */
--static void pxa3xx_set_datasize(struct pxa3xx_nand_info *info)
-+static void pxa3xx_set_datasize(struct pxa3xx_nand_info *info,
-+				struct mtd_info *mtd)
- {
- 	int oob_enable = info->reg_ndcr & NDCR_SPARE_EN;
- 
--	info->data_size = info->fifo_size;
-+	info->data_size = mtd->writesize;
- 	if (!oob_enable)
- 		info->oob_size = 0;
- 	else if (info->use_ecc)
-@@ -434,26 +437,39 @@ static void disable_int(struct pxa3xx_nand_info *info, uint32_t int_mask)
- 
- static void handle_data_pio(struct pxa3xx_nand_info *info)
- {
-+	unsigned int do_bytes = min(info->data_size, info->fifo_size);
+ 		info->buf_start = column;
+ 		set_command_address(info, mtd->writesize, 0, page_addr);
 +
- 	switch (info->state) {
- 	case STATE_PIO_WRITING:
--		__raw_writesl(info->mmio_base + NDDB, info->data_buff,
--				DIV_ROUND_UP(info->data_size, 4));
-+		__raw_writesl(info->mmio_base + NDDB,
-+			      info->data_buff + info->data_buff_pos,
-+			      DIV_ROUND_UP(do_bytes, 4));
-+
- 		if (info->oob_size > 0)
--			__raw_writesl(info->mmio_base + NDDB, info->oob_buff,
--					DIV_ROUND_UP(info->oob_size, 4));
-+			__raw_writesl(info->mmio_base + NDDB,
-+				      info->oob_buff + info->oob_buff_pos,
-+				      DIV_ROUND_UP(info->oob_size, 4));
++		/*
++		 * Multiple page programming needs to execute the initial
++		 * SEQIN command that sets the page address.
++		 */
++		if (mtd->writesize > PAGE_CHUNK_SIZE) {
++			info->ndcb0 |= NDCB0_CMD_TYPE(0x1)
++				| NDCB0_EXT_CMD_TYPE(ext_cmd_type)
++				| addr_cycle
++				| command;
++			/* No data transfer in this case */
++			info->data_size = 0;
++			exec_cmd = 1;
++		}
  		break;
- 	case STATE_PIO_READING:
--		__raw_readsl(info->mmio_base + NDDB, info->data_buff,
--				DIV_ROUND_UP(info->data_size, 4));
-+		__raw_readsl(info->mmio_base + NDDB,
-+			     info->data_buff + info->data_buff_pos,
-+			     DIV_ROUND_UP(do_bytes, 4));
-+
- 		if (info->oob_size > 0)
--			__raw_readsl(info->mmio_base + NDDB, info->oob_buff,
--					DIV_ROUND_UP(info->oob_size, 4));
-+			__raw_readsl(info->mmio_base + NDDB,
-+				     info->oob_buff + info->oob_buff_pos,
-+				     DIV_ROUND_UP(info->oob_size, 4));
- 		break;
- 	default:
- 		dev_err(&info->pdev->dev, "%s: invalid state %d\n", __func__,
- 				info->state);
- 		BUG();
- 	}
-+
-+	/* Update buffer pointers for multi-page read/write */
-+	info->data_buff_pos += do_bytes;
-+	info->oob_buff_pos += info->oob_size;
-+	info->data_size -= do_bytes;
- }
  
- #ifdef ARCH_HAS_DMA
-@@ -621,6 +637,8 @@ static void prepare_start_command(struct pxa3xx_nand_info *info, int command)
- 	info->buf_start		= 0;
- 	info->buf_count		= 0;
- 	info->oob_size		= 0;
-+	info->data_buff_pos	= 0;
-+	info->oob_buff_pos	= 0;
- 	info->use_ecc		= 0;
- 	info->use_spare		= 1;
- 	info->retcode		= ERR_NONE;
-@@ -631,7 +649,7 @@ static void prepare_start_command(struct pxa3xx_nand_info *info, int command)
  	case NAND_CMD_PAGEPROG:
- 		info->use_ecc = 1;
- 	case NAND_CMD_READOOB:
--		pxa3xx_set_datasize(info);
-+		pxa3xx_set_datasize(info, mtd);
+@@ -789,13 +803,40 @@ static int prepare_set_command(struct pxa3xx_nand_info *info, int command,
+ 			break;
+ 		}
+ 
+-		info->ndcb0 |= NDCB0_CMD_TYPE(0x1)
+-				| NDCB0_AUTO_RS
+-				| NDCB0_ST_ROW_EN
+-				| NDCB0_DBC
+-				| (NAND_CMD_PAGEPROG << 8)
+-				| NAND_CMD_SEQIN
+-				| addr_cycle;
++		/* Second command setting for large pages */
++		if (mtd->writesize > PAGE_CHUNK_SIZE) {
++			/*
++			 * Multiple page write uses the 'extended command'
++			 * field. This can be used to issue a command dispatch
++			 * or a naked-write depending on the current stage.
++			 */
++			info->ndcb0 |= NDCB0_CMD_TYPE(0x1)
++					| NDCB0_LEN_OVRD
++					| NDCB0_EXT_CMD_TYPE(ext_cmd_type);
++			info->ndcb3 = info->chunk_size +
++				      info->oob_size;
++
++			/*
++			 * This is the command dispatch that completes a chunked
++			 * page program operation.
++			 */
++			if (info->data_size == 0) {
++				info->ndcb0 = NDCB0_CMD_TYPE(0x1)
++					| NDCB0_EXT_CMD_TYPE(ext_cmd_type)
++					| command;
++				info->ndcb1 = 0;
++				info->ndcb2 = 0;
++				info->ndcb3 = 0;
++			}
++		} else {
++			info->ndcb0 |= NDCB0_CMD_TYPE(0x1)
++					| NDCB0_AUTO_RS
++					| NDCB0_ST_ROW_EN
++					| NDCB0_DBC
++					| (NAND_CMD_PAGEPROG << 8)
++					| NAND_CMD_SEQIN
++					| addr_cycle;
++		}
  		break;
+ 
  	case NAND_CMD_PARAM:
- 		info->use_spare = 0;
+@@ -942,6 +983,15 @@ static void armada370_nand_cmdfunc(struct mtd_info *mtd,
+ 	case NAND_CMD_READOOB:
+ 		ext_cmd_type = EXT_CMD_TYPE_MONO;
+ 		break;
++	case NAND_CMD_SEQIN:
++		ext_cmd_type = EXT_CMD_TYPE_DISPATCH;
++		break;
++	case NAND_CMD_PAGEPROG:
++		ext_cmd_type = EXT_CMD_TYPE_NAKED_RW;
++		break;
++	default:
++		ext_cmd_type = -1;
++		break;
+ 	}
+ 
+ 	prepare_start_command(info, command);
+@@ -979,7 +1029,16 @@ static void armada370_nand_cmdfunc(struct mtd_info *mtd,
+ 		}
+ 
+ 		/* Check if the sequence is complete */
+-		if (info->data_size == 0)
++		if (info->data_size == 0 && command != NAND_CMD_PAGEPROG)
++			break;
++
++		/*
++		 * After a splitted program command sequence has issued
++		 * the command dispatch, the command sequence is complete.
++		 */
++		if (info->data_size == 0 &&
++		    command == NAND_CMD_PAGEPROG &&
++		    ext_cmd_type == EXT_CMD_TYPE_DISPATCH)
+ 			break;
+ 
+ 		if (command == NAND_CMD_READ0 || command == NAND_CMD_READOOB) {
+@@ -988,6 +1047,14 @@ static void armada370_nand_cmdfunc(struct mtd_info *mtd,
+ 				ext_cmd_type = EXT_CMD_TYPE_LAST_RW;
+ 			else
+ 				ext_cmd_type = EXT_CMD_TYPE_NAKED_RW;
++
++		/*
++		 * If a splitted program command has no more data to transfer,
++		 * the command dispatch must be issued to complete.
++		 */
++		} else if (command == NAND_CMD_PAGEPROG &&
++			   info->data_size == 0) {
++				ext_cmd_type = EXT_CMD_TYPE_DISPATCH;
+ 		}
+ 	} while (1);
+ 
 -- 
 1.8.1.5
