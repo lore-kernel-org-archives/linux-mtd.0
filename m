@@ -1,10 +1,10 @@
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-arm-kernel@lists.infradead.org>,
 	<linux-mtd@lists.infradead.org>
-Subject: [PATCH v2 26/27] ARM: mvebu: Enable NAND controller in Armada XP GP
- board
-Date: Fri, 18 Oct 2013 20:02:53 -0300
-Message-Id: <1382137374-21251-27-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH v2 27/27] ARM: mvebu: Enable NAND controller in Armada 370
+ Mirabox
+Date: Fri, 18 Oct 2013 20:02:54 -0300
+Message-Id: <1382137374-21251-28-git-send-email-ezequiel.garcia@free-electrons.com>
 In-Reply-To: <1382137374-21251-1-git-send-email-ezequiel.garcia@free-electrons.com>
 References: <1382137374-21251-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Lior Amsalem <alior@marvell.com>,
@@ -23,24 +23,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The Armada XP GP board has a NAND flash, so enable it in the devicetree.
+The Armada 370 Mirabox has a NAND flash, so enable it in the devicetree
+and add the partitions as prepared in the factory images.
 
-In order to skip the driver's custom device detection and use only ONFI
-detection, the "marvell,keep-config" parameter is used.
-This is needed because we haven't support for setting the timings
-parameters yet and must rely in bootloader's.
+In order to skip the driver's custom device detection and use only
+ONFI detection, the "marvell,keep-config" parameter is used.
+This is needed because we have no support for setting the timings parameters yet.
 
 Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 ---
- arch/arm/boot/dts/armada-xp-gp.dts | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ arch/arm/boot/dts/armada-370-mirabox.dts | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-diff --git a/arch/arm/boot/dts/armada-xp-gp.dts b/arch/arm/boot/dts/armada-xp-gp.dts
-index 2298e4a..274e2ad 100644
---- a/arch/arm/boot/dts/armada-xp-gp.dts
-+++ b/arch/arm/boot/dts/armada-xp-gp.dts
-@@ -175,6 +175,14 @@
- 					spi-max-frequency = <108000000>;
+diff --git a/arch/arm/boot/dts/armada-370-mirabox.dts b/arch/arm/boot/dts/armada-370-mirabox.dts
+index 2471d9d..1e73017 100644
+--- a/arch/arm/boot/dts/armada-370-mirabox.dts
++++ b/arch/arm/boot/dts/armada-370-mirabox.dts
+@@ -139,6 +139,27 @@
+ 					reg = <0x25>;
  				};
  			};
 +
@@ -50,6 +50,19 @@ index 2298e4a..274e2ad 100644
 +				marvell,nand-keep-config;
 +				marvell,nand-enable-arbiter;
 +				nand-on-flash-bbt;
++
++				partition@0 {
++					label = "U-Boot";
++					reg = <0 0x400000>;
++				};
++				partition@400000 {
++					label = "Linux";
++					reg = <0x400000 0x400000>;
++				};
++				partition@800000 {
++					label = "Filesystem";
++					reg = <0x800000 0x3f800000>;
++				};
 +			};
  		};
  	};
