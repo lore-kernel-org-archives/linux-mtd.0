@@ -1,25 +1,18 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VXFmV-0005px-3Q
- for linux-mtd@lists.infradead.org; Fri, 18 Oct 2013 19:32:22 +0000
-Date: Fri, 18 Oct 2013 16:32:12 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v2] mtd: nand: pxa3xx: Fix registered MTD name
-Message-ID: <20131018193211.GA30464@localhost>
-References: <1382120072-30057-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <CAN8TOE-hxcaj79hTxDMzP1On69n=3QdBy45fjePLrQuzSvnnyw@mail.gmail.com>
+Received: from mail-wg0-f41.google.com ([74.125.82.41])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VXH38-0007HM-3H
+ for linux-mtd@lists.infradead.org; Fri, 18 Oct 2013 20:53:35 +0000
+Received: by mail-wg0-f41.google.com with SMTP id b13so2541294wgh.2
+ for <linux-mtd@lists.infradead.org>; Fri, 18 Oct 2013 13:53:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAN8TOE-hxcaj79hTxDMzP1On69n=3QdBy45fjePLrQuzSvnnyw@mail.gmail.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>, Daniel Mack <zonque@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>
+In-Reply-To: <CAJ+vNU1JWZp=JoBDJALh59yFybGZ0iQxMEYy8qvTFGDLhyRzqg@mail.gmail.com>
+References: <CAJ+vNU1JWZp=JoBDJALh59yFybGZ0iQxMEYy8qvTFGDLhyRzqg@mail.gmail.com>
+Date: Fri, 18 Oct 2013 13:45:33 -0700
+Message-ID: <CAJ+vNU0yDJcUaw5=6V1rFbecW3Y+6qOw40S3nJ4eeDwjZwdcCw@mail.gmail.com>
+Subject: Re: gpmi-mtd ecc regression
+From: Tim Harvey <tharvey@gateworks.com>
+To: linux-mtd@lists.infradead.org, Huang Shijie <b32955@freescale.com>
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,90 +22,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 18, 2013 at 12:15:39PM -0700, Brian Norris wrote:
-> On Fri, Oct 18, 2013 at 11:14 AM, Ezequiel Garcia
-> <ezequiel.garcia@free-electrons.com> wrote:
-> > In a recent commit:
-> >
-> >   commit f455578dd961087a5cf94730d9f6489bb1d355f0
-> >   Author: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> >   Date:   Mon Aug 12 14:14:53 2013 -0300
-> >
-> >   mtd: nand: pxa3xx: Remove hardcoded mtd name
-> >
-> >   There's no advantage in using a hardcoded name for the mtd device.
-> >   Instead use the provided by the platform_device.
-> >
-> > The MTD name was changed to use the one provided by the platform_device.
-> > However, this can be problematic as some users want to set partitions
-> > using the kernel parameter 'mtdpart', where the name is needed.
-> >
-> > Therefore, to avoid regressions in users relying in 'mtdpart' we revert
-> > the change and use the previous one 'pxa3xx_nand-0'.
-> >
-> > Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> 
-> Should this be marked for -stable (or squeezed into 3.12-rc now), so
-> we don't leave the regression in 3.12?
-> 
+On Fri, Oct 18, 2013 at 10:03 AM, Tim Harvey <tharvey@gateworks.com> wrote:
+> Huang,
+>
+> The patch you made to obtain ECC info from the chip
+> (http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/drivers/mtd/nand/gpmi-nand?id=2febcdf84b75aae627c61f0a5bf531a69299966c)
+> has caused a regression for an i.MX6 board I'm working with that uses
+> NAND and ubifs.
+>
+> I'm using a Micron MT29F8G08
+> (http://download.micron.com/pdf/datasheets/flash/nand/2_4_8gb_nand_m49a.pdf)
+> which has:
+> page size: 2112 bytes (2048 + 64 bytes)
+> block size: 1056 words (1024 + 32 words)
+> plane size: 2 planes x 1024 blocks per plane
+> device size: 2Gb: 2048 blocks
+> ecc: 4bit
+>
+> The legacy_set_geometry function comes up with:
+> gf_len=13
+> ecc_strength=8
+> page_size=2112
+> metadata_size=10
+> ecc_chunk_size=512
+> ecc_chunk_count=4
+> payload_size=2048
+> auxiliary_size=16
+> auxiliary_status_offset=12
+> block_mark_byte_offset=1999
+>
+> and the new set_geometry_by_ecc_info comes up with:
+> gf_len=13
+> ecc_strength=4
 
-Yes, I think that if we're still on time to fix v3.12 it would be great.
-(Sorry for taking care of my own crap so late!).
+digging more into the issue I believe the problem is that the 'chip'
+has an internal 4-bit ECC which is now being used, whereas what we
+want is the BCH's ECC to be used (which would use 8bit ECC with a NAND
+device with a pagesize of 2048 + 64 OOB).  If I force ecc_stength such
+as:
 
-> > ---
-> > v1->v2:
-> >   * Use exactly the same name as before, and avoid regressions
-> >     instead of using any seemingly better or cleaner one.
-> >
-> >  drivers/mtd/nand/pxa3xx_nand.c | 6 ++++--
-> >  1 file changed, 4 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-> > index aa75adf..4d53e8e 100644
-> > --- a/drivers/mtd/nand/pxa3xx_nand.c
-> > +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> > @@ -46,6 +46,8 @@
-> >   */
-> >  #define INIT_BUFFER_SIZE       256
-> >
-> > +#define DRIVER_NAME            "pxa3xx_nand-0"
-> > +
-> >  /* registers and bit definitions */
-> >  #define NDCR           (0x00) /* Control register */
-> >  #define NDTR0CS0       (0x04) /* Timing Parameter 0 for CS0 */
-> > @@ -1339,7 +1341,7 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
-> >         for (cs = 0; cs < pdata->num_cs; cs++) {
-> >                 struct mtd_info *mtd = info->host[cs]->mtd;
-> >
-> > -               mtd->name = pdev->name;
-> > +               mtd->name = DRIVER_NAME;
-> >                 info->cs = cs;
-> >                 ret = pxa3xx_nand_scan(mtd);
-> >                 if (ret) {
-> > @@ -1425,7 +1427,7 @@ static int pxa3xx_nand_resume(struct platform_device *pdev)
-> >
-> >  static struct platform_driver pxa3xx_nand_driver = {
-> >         .driver = {
-> > -               .name   = "pxa3xx-nand",
-> > +               .name   = DRIVER_NAME,
-> >                 .of_match_table = pxa3xx_nand_dt_ids,
-> >         },
-> >         .probe          = pxa3xx_nand_probe,
-> 
-> For mtdparts' sake, do we need both the driver name and the MTD name
-> to be the same? Or could we just stick the  "pxa3xx_nand-0" directly
-> in mtd->name only, where it's needed for compatibility, and allow the
-> driver name to be cleaner? Or is that a silly idea?
-> 
+@@ -143,7 +143,7 @@ static bool set_geometry_by_ecc_info(struct
+gpmi_nand_data *this)
+                return false;
+        }
+        geo->ecc_chunk_size = chip->ecc_step_ds;
+-       geo->ecc_strength = round_up(chip->ecc_strength_ds, 2);
++       geo->ecc_strength = 8;
+        if (!gpmi_check_ecc(this))
+                return false;
 
-Hm... What's the impact of the driver's name?
+@@ -208,6 +208,7 @@ static bool set_geometry_by_ecc_info(struct
+gpmi_nand_data *this)
 
-I know it's just a small bloat, but still I don't like to see two stupid
-strings "pxa3xx-nand" and "pxa3xx_nand-0" bloating our kernels, so
-that's why I chose a common macro :-)
+then I have no issues.
 
-What do you think?
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+Does this make sense and if so should we be using the chip's reported
+ecc strength at all?
+
+Tim
