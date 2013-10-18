@@ -1,10 +1,9 @@
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-arm-kernel@lists.infradead.org>,
 	<linux-mtd@lists.infradead.org>
-Subject: [PATCH v2 17/27] mtd: nand: pxa3xx: Remove READ0 switch/case
- falltrough
-Date: Fri, 18 Oct 2013 20:02:44 -0300
-Message-Id: <1382137374-21251-18-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH v2 13/27] mtd: nand: pxa3xx: Add bad block handling
+Date: Fri, 18 Oct 2013 20:02:40 -0300
+Message-Id: <1382137374-21251-14-git-send-email-ezequiel.garcia@free-electrons.com>
 In-Reply-To: <1382137374-21251-1-git-send-email-ezequiel.garcia@free-electrons.com>
 References: <1382137374-21251-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Lior Amsalem <alior@marvell.com>,
@@ -23,31 +22,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-READ0 and READOOB command preparation has a falltrough to SEQIN
-case, where the command address is specified.
-This is certainly confusing and makes the code less readable with
-no added value. Let's remove it.
+Add support for flash-based bad block table using Marvell's
+custom in-flash bad block table layout. The support is enabled
+a 'flash_bbt' platform data or device tree parameter.
 
 Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 ---
- drivers/mtd/nand/pxa3xx_nand.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/mtd/nand/pxa3xx_nand.c                | 33 +++++++++++++++++++++++++++
+ include/linux/platform_data/mtd-nand-pxa3xx.h |  3 +++
+ 2 files changed, 36 insertions(+)
 
 diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index e9d0dde..cc5bcd1 100644
+index 1ceccb6..451ebb6 100644
 --- a/drivers/mtd/nand/pxa3xx_nand.c
 +++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -674,6 +674,11 @@ static int prepare_command_pool(struct pxa3xx_nand_info *info, int command,
- 		if (mtd->writesize >= PAGE_CHUNK_SIZE)
- 			info->ndcb0 |= NDCB0_DBC | (NAND_CMD_READSTART << 8);
+@@ -24,6 +24,7 @@
+ #include <linux/slab.h>
+ #include <linux/of.h>
+ #include <linux/of_device.h>
++#include <linux/of_mtd.h>
  
-+		set_command_address(info, mtd->writesize, column, page_addr);
-+		info->buf_count = mtd->writesize + mtd->oobsize;
-+		memset(info->data_buff, 0xFF, info->buf_count);
-+		break;
+ #if defined(CONFIG_ARCH_PXA) || defined(CONFIG_ARCH_MMP)
+ #define ARCH_HAS_DMA
+@@ -245,6 +246,29 @@ static struct pxa3xx_nand_flash builtin_flash_types[] = {
+ { "256MiB 16-bit", 0xba20,  64, 2048, 16, 16, 2048, &timing[3] },
+ };
+ 
++static u8 bbt_pattern[] = {'M', 'V', 'B', 'b', 't', '0' };
++static u8 bbt_mirror_pattern[] = {'1', 't', 'b', 'B', 'V', 'M' };
 +
- 	case NAND_CMD_SEQIN:
++static struct nand_bbt_descr bbt_main_descr = {
++	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
++		| NAND_BBT_2BIT | NAND_BBT_VERSION,
++	.offs =	8,
++	.len = 6,
++	.veroffs = 14,
++	.maxblocks = 8,		/* Last 8 blocks in each chip */
++	.pattern = bbt_pattern
++};
++
++static struct nand_bbt_descr bbt_mirror_descr = {
++	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
++		| NAND_BBT_2BIT | NAND_BBT_VERSION,
++	.offs =	8,
++	.len = 6,
++	.veroffs = 14,
++	.maxblocks = 8,		/* Last 8 blocks in each chip */
++	.pattern = bbt_mirror_pattern
++};
++
+ /* Define a default flash type setting serve as flash detecting only */
+ #define DEFAULT_FLASH_TYPE (&builtin_flash_types[0])
  
- 		set_command_address(info, mtd->writesize, column, page_addr);
+@@ -1129,6 +1153,14 @@ KEEP_CONFIG:
+ 
+ 	if (nand_scan_ident(mtd, 1, def))
+ 		return -ENODEV;
++
++	if (pdata->flash_bbt) {
++		chip->bbt_options |= NAND_BBT_USE_FLASH |
++				     NAND_BBT_NO_OOB_BBM;
++		chip->bbt_td = &bbt_main_descr;
++		chip->bbt_md = &bbt_mirror_descr;
++	}
++
+ 	/* calculate addressing information */
+ 	if (mtd->writesize >= 2048)
+ 		host->col_addr_cycles = 2;
+@@ -1324,6 +1356,7 @@ static int pxa3xx_nand_probe_dt(struct platform_device *pdev)
+ 	if (of_get_property(np, "marvell,nand-keep-config", NULL))
+ 		pdata->keep_config = 1;
+ 	of_property_read_u32(np, "num-cs", &pdata->num_cs);
++	pdata->flash_bbt = of_get_nand_on_flash_bbt(np);
+ 
+ 	pdev->dev.platform_data = pdata;
+ 
+diff --git a/include/linux/platform_data/mtd-nand-pxa3xx.h b/include/linux/platform_data/mtd-nand-pxa3xx.h
+index ffb8019..a941471 100644
+--- a/include/linux/platform_data/mtd-nand-pxa3xx.h
++++ b/include/linux/platform_data/mtd-nand-pxa3xx.h
+@@ -55,6 +55,9 @@ struct pxa3xx_nand_platform_data {
+ 	/* indicate how many chip selects will be used */
+ 	int	num_cs;
+ 
++	/* use an flash-based bad block table */
++	bool	flash_bbt;
++
+ 	const struct mtd_partition		*parts[NUM_CHIP_SELECT];
+ 	unsigned int				nr_parts[NUM_CHIP_SELECT];
+ 
 -- 
 1.8.1.5
