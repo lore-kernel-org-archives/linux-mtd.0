@@ -1,10 +1,10 @@
 From: Pekon Gupta <pekon@ti.com>
 To: <mark.rutland@arm.com>, <olof@lixom.net>, <computersforpeace@gmail.com>,
  <dedekind1@gmail.com>
-Subject: [PATCH v10 03/10] mtd: nand: omap: cleanup: replace local references
- with generic framework names
-Date: Sat, 19 Oct 2013 14:14:07 +0530
-Message-ID: <1382172254-12448-4-git-send-email-pekon@ti.com>
+Subject: [PATCH v10 04/10] mtd: nand: omap: fix device scan: NAND_CMD_READID,
+ NAND_CMD_RESET, CMD_CMD_PARAM use only x8 bus
+Date: Sat, 19 Oct 2013 14:14:08 +0530
+Message-ID: <1382172254-12448-5-git-send-email-pekon@ti.com>
 In-Reply-To: <1382172254-12448-1-git-send-email-pekon@ti.com>
 References: <1382172254-12448-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
@@ -24,256 +24,106 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch updates following in omap_nand_probe() and omap_nand_remove()
-- replaces "info->nand" with "nand_chip" (struct nand_chip *nand_chip)
-- replaces "info->mtd" with "mtd" (struct mtd_info *mtd)
-- white-space and formatting cleanup
+As per comments below, NAND_CMD_RESET, NAND_CMD_READID, and NAND_CMD_PARAM would
+work only in x8 mode.
+    commit 64b37b2a63eb2f80b65c7185f0013f8ffc637ae3
+    Author:     Matthieu CASTET <matthieu.castet@parrot.com>
+    AuthorDate: 2012-11-06
+    Note that nand_scan_ident send command (NAND_CMD_RESET, NAND_CMD_READID, NAND_CMD_PARAM), address and read data
+    The ONFI specificication is not very clear for x16 device if high byte of address should be driven to 0,
+    but according to [1] it should be ok to not drive it during autodetection.
+
+    [1]
+    3.3.2. Target Initialization
+
+    [...]
+    The Read ID and Read Parameter Page commands only use the lower 8-bits of the data bus.
+    The host shall not issue commands that use a word data width on x16 devices until the host
+    determines the device supports a 16-bit data bus width in the parameter page.
+
+Thus this patch run nand_scan_ident() with driver configured as x8 device.
+Once the NAND device is detected, and its ONFI params are read, the driver
+is re-configured based on device-width as passed by DT bindinig 'nand-bus-width'
+
+In-case there is a mis-match between the DT binding 'nand-bus-width' and actual
+device-width detected during nand_get_flash_type() then probe returns failure.
+
+All other low-level callback updates happen after the device detection.
 
 Signed-off-by: Pekon Gupta <pekon@ti.com>
 ---
- drivers/mtd/nand/omap2.c | 112 ++++++++++++++++++++++++-----------------------
- 1 file changed, 57 insertions(+), 55 deletions(-)
+ drivers/mtd/nand/omap2.c | 45 +++++++++++++++++++++++++++++++++------------
+ 1 file changed, 33 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 8d521aa..5596368 100644
+index 5596368..d29edda 100644
 --- a/drivers/mtd/nand/omap2.c
 +++ b/drivers/mtd/nand/omap2.c
-@@ -1824,10 +1824,12 @@ static int omap_nand_probe(struct platform_device *pdev)
- {
- 	struct omap_nand_info		*info;
- 	struct omap_nand_platform_data	*pdata;
-+	struct mtd_info			*mtd;
-+	struct nand_chip		*nand_chip;
- 	int				err;
- 	int				i, offset;
--	dma_cap_mask_t mask;
--	unsigned sig;
-+	dma_cap_mask_t			mask;
-+	unsigned			sig;
- 	struct resource			*res;
- 	struct mtd_part_parser_data	ppdata = {};
- 
-@@ -1846,17 +1848,16 @@ static int omap_nand_probe(struct platform_device *pdev)
- 	spin_lock_init(&info->controller.lock);
- 	init_waitqueue_head(&info->controller.wq);
- 
--	info->pdev = pdev;
--
-+	info->pdev		= pdev;
- 	info->gpmc_cs		= pdata->cs;
- 	info->reg		= pdata->reg;
--
--	info->mtd.priv		= &info->nand;
--	info->mtd.name		= dev_name(&pdev->dev);
--	info->mtd.owner		= THIS_MODULE;
--
--	info->nand.options	= pdata->devsize;
--	info->nand.options	|= NAND_SKIP_BBTSCAN;
-+	mtd			= &info->mtd;
-+	mtd->priv		= &info->nand;
-+	mtd->name		= dev_name(&pdev->dev);
-+	mtd->owner		= THIS_MODULE;
-+	nand_chip		= &info->nand;
-+	nand_chip->options	= pdata->devsize;
-+	nand_chip->options	|= NAND_SKIP_BBTSCAN;
+@@ -1856,7 +1856,6 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 	mtd->name		= dev_name(&pdev->dev);
+ 	mtd->owner		= THIS_MODULE;
+ 	nand_chip		= &info->nand;
+-	nand_chip->options	= pdata->devsize;
+ 	nand_chip->options	|= NAND_SKIP_BBTSCAN;
  #ifdef CONFIG_MTD_NAND_OMAP_BCH
  	info->of_node		= pdata->of_node;
- #endif
-@@ -1877,16 +1878,16 @@ static int omap_nand_probe(struct platform_device *pdev)
- 		goto out_free_info;
+@@ -1904,6 +1903,39 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 		nand_chip->chip_delay = 50;
  	}
  
--	info->nand.IO_ADDR_R = ioremap(info->phys_base, info->mem_size);
--	if (!info->nand.IO_ADDR_R) {
-+	nand_chip->IO_ADDR_R = ioremap(info->phys_base, info->mem_size);
-+	if (!nand_chip->IO_ADDR_R) {
- 		err = -ENOMEM;
- 		goto out_release_mem_region;
- 	}
- 
--	info->nand.controller = &info->controller;
-+	nand_chip->controller = &info->controller;
- 
--	info->nand.IO_ADDR_W = info->nand.IO_ADDR_R;
--	info->nand.cmd_ctrl  = omap_hwcontrol;
-+	nand_chip->IO_ADDR_W = nand_chip->IO_ADDR_R;
-+	nand_chip->cmd_ctrl  = omap_hwcontrol;
- 
- 	/*
- 	 * If RDY/BSY line is connected to OMAP then use the omap ready
-@@ -1896,26 +1897,26 @@ static int omap_nand_probe(struct platform_device *pdev)
- 	 * device and read status register until you get a failure or success
- 	 */
- 	if (pdata->dev_ready) {
--		info->nand.dev_ready = omap_dev_ready;
--		info->nand.chip_delay = 0;
-+		nand_chip->dev_ready = omap_dev_ready;
-+		nand_chip->chip_delay = 0;
- 	} else {
--		info->nand.waitfunc = omap_wait;
--		info->nand.chip_delay = 50;
-+		nand_chip->waitfunc = omap_wait;
-+		nand_chip->chip_delay = 50;
- 	}
- 
++	/* scan NAND device connected to chip controller */
++	/* configure driver in x8 mode to read ONFI parameter page, as
++	 * NAND_CMD_READID & NAND_CMD_PARAM may not work in x16 mode */
++	nand_chip->options &= ~NAND_BUSWIDTH_16;
++	if (nand_scan_ident(mtd, 1, NULL)) {
++		/* nand_scan_ident failed */
++		if (pdata->devsize) {
++			/* may be because of mis-match of device-width,
++			 * platform data (DT binding) also says its x16 device
++			 * So re-scan with proper device-width */
++			nand_chip->options |= pdata->devsize;
++			if (nand_scan_ident(mtd, 1, NULL)) {
++				err = -ENXIO;
++				goto out_release_mem_region;
++			}
++		} else {
++			/* some genuine failure, because even platform-data
++			 * (DT binding) says that bus-width is x8 */
++			err = -ENXIO;
++			goto out_release_mem_region;
++		}
++	} else {
++		/* nand_scan_ident passed with x8 mode */
++		if (pdata->devsize) {
++			/* but platform-data (DT binding) say its x16 device */
++			pr_err("%s: incorrect bus-width config\n", DRIVER_NAME);
++			err = -EINVAL;
++			err = -ENXIO;
++			goto out_release_mem_region;
++		}
++	}
++
++	/* re-populate low-level callbacks based on xfer modes */
  	switch (pdata->xfer_type) {
  	case NAND_OMAP_PREFETCH_POLLED:
--		info->nand.read_buf   = omap_read_buf_pref;
--		info->nand.write_buf  = omap_write_buf_pref;
-+		nand_chip->read_buf   = omap_read_buf_pref;
-+		nand_chip->write_buf  = omap_write_buf_pref;
- 		break;
- 
- 	case NAND_OMAP_POLLED:
--		if (info->nand.options & NAND_BUSWIDTH_16) {
--			info->nand.read_buf   = omap_read_buf16;
--			info->nand.write_buf  = omap_write_buf16;
-+		if (nand_chip->options & NAND_BUSWIDTH_16) {
-+			nand_chip->read_buf   = omap_read_buf16;
-+			nand_chip->write_buf  = omap_write_buf16;
- 		} else {
--			info->nand.read_buf   = omap_read_buf8;
--			info->nand.write_buf  = omap_write_buf8;
-+			nand_chip->read_buf   = omap_read_buf8;
-+			nand_chip->write_buf  = omap_write_buf8;
+ 		nand_chip->read_buf   = omap_read_buf_pref;
+@@ -2011,17 +2043,6 @@ static int omap_nand_probe(struct platform_device *pdev)
  		}
- 		break;
+ 	}
  
-@@ -1944,8 +1945,8 @@ static int omap_nand_probe(struct platform_device *pdev)
- 					err);
- 				goto out_release_mem_region;
- 			}
--			info->nand.read_buf   = omap_read_buf_dma_pref;
--			info->nand.write_buf  = omap_write_buf_dma_pref;
-+			nand_chip->read_buf   = omap_read_buf_dma_pref;
-+			nand_chip->write_buf  = omap_write_buf_dma_pref;
- 		}
- 		break;
- 
-@@ -1980,8 +1981,8 @@ static int omap_nand_probe(struct platform_device *pdev)
- 			goto out_release_mem_region;
- 		}
- 
--		info->nand.read_buf  = omap_read_buf_irq_pref;
--		info->nand.write_buf = omap_write_buf_irq_pref;
-+		nand_chip->read_buf  = omap_read_buf_irq_pref;
-+		nand_chip->write_buf = omap_write_buf_irq_pref;
- 
- 		break;
- 
-@@ -1994,16 +1995,16 @@ static int omap_nand_probe(struct platform_device *pdev)
- 
- 	/* select the ecc type */
- 	if (pdata->ecc_opt == OMAP_ECC_HAM1_CODE_HW) {
--		info->nand.ecc.bytes            = 3;
--		info->nand.ecc.size             = 512;
--		info->nand.ecc.strength         = 1;
--		info->nand.ecc.calculate        = omap_calculate_ecc;
--		info->nand.ecc.hwctl            = omap_enable_hwecc;
--		info->nand.ecc.correct          = omap_correct_data;
--		info->nand.ecc.mode             = NAND_ECC_HW;
-+		nand_chip->ecc.bytes            = 3;
-+		nand_chip->ecc.size             = 512;
-+		nand_chip->ecc.strength         = 1;
-+		nand_chip->ecc.calculate        = omap_calculate_ecc;
-+		nand_chip->ecc.hwctl            = omap_enable_hwecc;
-+		nand_chip->ecc.correct          = omap_correct_data;
-+		nand_chip->ecc.mode             = NAND_ECC_HW;
- 	} else if ((pdata->ecc_opt == OMAP_ECC_BCH4_CODE_HW) ||
- 		   (pdata->ecc_opt == OMAP_ECC_BCH8_CODE_HW)) {
--		err = omap3_init_bch(&info->mtd, pdata->ecc_opt);
-+		err = omap3_init_bch(mtd, pdata->ecc_opt);
- 		if (err) {
- 			err = -EINVAL;
- 			goto out_release_mem_region;
-@@ -2013,9 +2014,9 @@ static int omap_nand_probe(struct platform_device *pdev)
- 	/* DIP switches on some boards change between 8 and 16 bit
- 	 * bus widths for flash.  Try the other width if the first try fails.
- 	 */
--	if (nand_scan_ident(&info->mtd, 1, NULL)) {
--		info->nand.options ^= NAND_BUSWIDTH_16;
--		if (nand_scan_ident(&info->mtd, 1, NULL)) {
-+	if (nand_scan_ident(mtd, 1, NULL)) {
-+		nand_chip->options ^= NAND_BUSWIDTH_16;
-+		if (nand_scan_ident(mtd, 1, NULL)) {
- 			err = -ENXIO;
- 			goto out_release_mem_region;
- 		}
-@@ -2024,25 +2025,25 @@ static int omap_nand_probe(struct platform_device *pdev)
+-	/* DIP switches on some boards change between 8 and 16 bit
+-	 * bus widths for flash.  Try the other width if the first try fails.
+-	 */
+-	if (nand_scan_ident(mtd, 1, NULL)) {
+-		nand_chip->options ^= NAND_BUSWIDTH_16;
+-		if (nand_scan_ident(mtd, 1, NULL)) {
+-			err = -ENXIO;
+-			goto out_release_mem_region;
+-		}
+-	}
+-
  	/* rom code layout */
  	if (pdata->ecc_opt == OMAP_ECC_HAM1_CODE_HW) {
  
--		if (info->nand.options & NAND_BUSWIDTH_16)
-+		if (nand_chip->options & NAND_BUSWIDTH_16) {
- 			offset = 2;
--		else {
-+		} else {
- 			offset = 1;
--			info->nand.badblock_pattern = &bb_descrip_flashbased;
-+			nand_chip->badblock_pattern = &bb_descrip_flashbased;
- 		}
--		omap_oobinfo.eccbytes = 3 * (info->mtd.writesize / 512);
-+		omap_oobinfo.eccbytes = 3 * (mtd->writesize / 512);
- 		for (i = 0; i < omap_oobinfo.eccbytes; i++)
- 			omap_oobinfo.eccpos[i] = i+offset;
- 
- 		omap_oobinfo.oobfree->offset = offset + omap_oobinfo.eccbytes;
--		omap_oobinfo.oobfree->length = info->mtd.oobsize -
-+		omap_oobinfo.oobfree->length = mtd->oobsize -
- 					(offset + omap_oobinfo.eccbytes);
- 
--		info->nand.ecc.layout = &omap_oobinfo;
-+		nand_chip->ecc.layout = &omap_oobinfo;
- 	} else if ((pdata->ecc_opt == OMAP_ECC_BCH4_CODE_HW) ||
- 		   (pdata->ecc_opt == OMAP_ECC_BCH8_CODE_HW)) {
- 		/* build OOB layout for BCH ECC correction */
--		err = omap3_init_bch_tail(&info->mtd);
-+		err = omap3_init_bch_tail(mtd);
- 		if (err) {
- 			err = -EINVAL;
- 			goto out_release_mem_region;
-@@ -2050,16 +2051,16 @@ static int omap_nand_probe(struct platform_device *pdev)
- 	}
- 
- 	/* second phase scan */
--	if (nand_scan_tail(&info->mtd)) {
-+	if (nand_scan_tail(mtd)) {
- 		err = -ENXIO;
- 		goto out_release_mem_region;
- 	}
- 
- 	ppdata.of_node = pdata->of_node;
--	mtd_device_parse_register(&info->mtd, NULL, &ppdata, pdata->parts,
-+	mtd_device_parse_register(mtd, NULL, &ppdata, pdata->parts,
- 				  pdata->nr_parts);
- 
--	platform_set_drvdata(pdev, &info->mtd);
-+	platform_set_drvdata(pdev, mtd);
- 
- 	return 0;
- 
-@@ -2080,9 +2081,10 @@ out_free_info:
- static int omap_nand_remove(struct platform_device *pdev)
- {
- 	struct mtd_info *mtd = platform_get_drvdata(pdev);
-+	struct nand_chip *nand_chip = mtd->priv;
- 	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
- 							mtd);
--	omap3_free_bch(&info->mtd);
-+	omap3_free_bch(mtd);
- 
- 	if (info->dma)
- 		dma_release_channel(info->dma);
-@@ -2093,8 +2095,8 @@ static int omap_nand_remove(struct platform_device *pdev)
- 		free_irq(info->gpmc_irq_fifo, info);
- 
- 	/* Release NAND device, its internal structures and partitions */
--	nand_release(&info->mtd);
--	iounmap(info->nand.IO_ADDR_R);
-+	nand_release(mtd);
-+	iounmap(nand_chip->IO_ADDR_R);
- 	release_mem_region(info->phys_base, info->mem_size);
- 	kfree(info);
- 	return 0;
 -- 
 1.8.1
