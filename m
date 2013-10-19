@@ -1,25 +1,22 @@
-Received: from mail-bk0-f45.google.com ([209.85.214.45])
+Received: from mail-bk0-x22b.google.com ([2a00:1450:4008:c01::22b])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VXLTv-0006a8-55
- for linux-mtd@lists.infradead.org; Sat, 19 Oct 2013 01:37:31 +0000
-Received: by mail-bk0-f45.google.com with SMTP id mx11so15899bkb.32
- for <linux-mtd@lists.infradead.org>; Fri, 18 Oct 2013 18:37:06 -0700 (PDT)
+ id 1VXLrT-0006on-VX
+ for linux-mtd@lists.infradead.org; Sat, 19 Oct 2013 02:01:52 +0000
+Received: by mail-bk0-f43.google.com with SMTP id mz13so18720bkb.2
+ for <linux-mtd@lists.infradead.org>; Fri, 18 Oct 2013 19:01:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20131018193211.GA30464@localhost>
-References: <1382120072-30057-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <CAN8TOE-hxcaj79hTxDMzP1On69n=3QdBy45fjePLrQuzSvnnyw@mail.gmail.com>
- <20131018193211.GA30464@localhost>
-Date: Fri, 18 Oct 2013 18:37:06 -0700
-Message-ID: <CAN8TOE8L2jQ3nFxf5hxSw8qnFK3m4NuexbZ=yuwoS=uoFiVAnw@mail.gmail.com>
-Subject: Re: [PATCH v2] mtd: nand: pxa3xx: Fix registered MTD name
+In-Reply-To: <5260DA32.4090502@freescale.com>
+References: <1377595747-21033-1-git-send-email-b32955@freescale.com>
+ <5260DA32.4090502@freescale.com>
+Date: Fri, 18 Oct 2013 19:01:26 -0700
+Message-ID: <CAN8TOE8xDdRF4Hf+p4JMAixWfkxkbKCZB-fqpPA6yiMHYm=Qew@mail.gmail.com>
+Subject: Re: [PATCH V2 0/4] mtd: gpmi: support two nand chips at most
 From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>, Daniel Mack <zonque@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>
+To: Huang Shijie <b32955@freescale.com>
+Content-Type: text/plain; charset=GB2312
+Content-Transfer-Encoding: quoted-printable
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,80 +26,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 18, 2013 at 12:32 PM, Ezequiel Garcia
-<ezequiel.garcia@free-electrons.com> wrote:
-> On Fri, Oct 18, 2013 at 12:15:39PM -0700, Brian Norris wrote:
->> On Fri, Oct 18, 2013 at 11:14 AM, Ezequiel Garcia
->> <ezequiel.garcia@free-electrons.com> wrote:
-[...]
->> >  drivers/mtd/nand/pxa3xx_nand.c | 6 ++++--
->> >  1 file changed, 4 insertions(+), 2 deletions(-)
->> >
->> > diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
->> > index aa75adf..4d53e8e 100644
->> > --- a/drivers/mtd/nand/pxa3xx_nand.c
->> > +++ b/drivers/mtd/nand/pxa3xx_nand.c
->> > @@ -46,6 +46,8 @@
->> >   */
->> >  #define INIT_BUFFER_SIZE       256
->> >
->> > +#define DRIVER_NAME            "pxa3xx_nand-0"
->> > +
->> >  /* registers and bit definitions */
->> >  #define NDCR           (0x00) /* Control register */
->> >  #define NDTR0CS0       (0x04) /* Timing Parameter 0 for CS0 */
->> > @@ -1339,7 +1341,7 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
->> >         for (cs = 0; cs < pdata->num_cs; cs++) {
->> >                 struct mtd_info *mtd = info->host[cs]->mtd;
->> >
->> > -               mtd->name = pdev->name;
->> > +               mtd->name = DRIVER_NAME;
->> >                 info->cs = cs;
->> >                 ret = pxa3xx_nand_scan(mtd);
->> >                 if (ret) {
->> > @@ -1425,7 +1427,7 @@ static int pxa3xx_nand_resume(struct platform_device *pdev)
->> >
->> >  static struct platform_driver pxa3xx_nand_driver = {
->> >         .driver = {
->> > -               .name   = "pxa3xx-nand",
->> > +               .name   = DRIVER_NAME,
->> >                 .of_match_table = pxa3xx_nand_dt_ids,
->> >         },
->> >         .probe          = pxa3xx_nand_probe,
+On Thu, Oct 17, 2013 at 11:50 PM, Huang Shijie <b32955@freescale.com> wrote=
+:
+> =D3=DA 2013=C4=EA08=D4=C227=C8=D5 17:29, Huang Shijie =D0=B4=B5=C0:
+>> Current gpmi-nand driver only supports one chips. But we may meet
+>> some embarrassing situation, such as Micron MT29F32G08QAA.
+>> This nand chip has two DIEs internally. Each die has its own chip select=
+ pin,
+>> so this chip acts as two nand chips.
 >>
->> For mtdparts' sake, do we need both the driver name and the MTD name
->> to be the same? Or could we just stick the  "pxa3xx_nand-0" directly
->> in mtd->name only, where it's needed for compatibility, and allow the
->> driver name to be cleaner? Or is that a silly idea?
+>> If we only scan one chip, we may find that we only get 2G for this chip,
+>> but in actually, this chip's size is 4G.
 >>
->
-> Hm... What's the impact of the driver's name?
+>> So scan two chips by default.
+>>
+>> In order to support two nand chips, we have to do the following:
+>>    1.) Decouple the chip select from the DMA channel,
+>>        We can use the dma 0 to access all the nand chips.
+>>
+>>    2.) fix the wrong method of checking the ready/busy status.
+>>       In the imx6, all the ready/busy pins are binding together, we
+>>       should check ready/busy status of chip 0 for the all the chips.
+>>
+>> Tested this patch set with MT29F32G08QAA.
+>>
+>> To Brian:
+>>       My "better" solution was proved to be a bad idea. So i resend this
+>>       patch set again.
+>>
+>> v1 --> v2:
+>>       [0] rebase on the latest l2-mtd tree.
+>>
+>> Huang Shijie (4):
+>>   mtd: gpmi: decouple the chip select from the DMA channel
+>>   mtd: gpmi: use DMA channel 0 for all the nand chips
+>>   mtd: gpmi: scan two nand chips
+>>   mtd: gpmi: imx6: fix the wrong method for checking ready/busy
+>>
+>>  drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |   13 +++++++++++++
+>>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    7 +++----
+>>  drivers/mtd/nand/gpmi-nand/gpmi-regs.h |    3 +++
+>>  3 files changed, 19 insertions(+), 4 deletions(-)
+>>
+> Hi Artem & Brian:
+> Could you please merge this patch set?
+> it seems you have missed this patch set.
 
-I meant to ask you the exact same question, because I'm lazy :)
+Yes, I seem to have overlooked this set. I think it must have come in
+parallel with your MLC patch set, so I delayed it until the MLC patch
+set settled down?
 
-I'm not sure exactly. I thought it affected the device name (which is
-important to users; it's exposed in sysfs in potentially important
-ways), but that actually comes from the platform-device allocation or
-from device tree. The most visible way I know of is that it prefixes
-the messages seen via the dev_{printk,err,info,warn,..}() print
-functions. This could be annoying, but not horrible.
+Anyway, I'll revisit this soon. But I probably need to take care of
+your mtd-utils updates first, since they should go along with the MLC
+patch set.
 
-The driver name does show up in /sys/bus/platform/drivers, but I'm not
-sure if that's ever expected to be stable.
+And on top of that (to update the world on daily status), I seem to be
+tripping over some UBIFS bugs that are inhibiting the validation I'm
+trying to do for some new hardware. So, I'm all-around pretty busy!
+I'll get myself together next week, hopefully.
 
-> I know it's just a small bloat, but still I don't like to see two stupid
-> strings "pxa3xx-nand" and "pxa3xx_nand-0" bloating our kernels, so
-> that's why I chose a common macro :-)
+In the meantime, other people's code could use some extra eyes. I know
+Ezequiel just sent out a 27 (!) patch series today. There's also the
+pending cmdline.c patch from months ago, where Cai Zhiyong wanted to
+migrate our command line partition parser to a common
+block/cmdline-parser.c. Part of her work (for block devices) is
+upstream already, and part has just sat on our mailing list without
+eyes to test it...
 
-That's fine.
+See: http://lists.infradead.org/pipermail/linux-mtd/2013-August/048101.html
 
-> What do you think?
-
-I'm fine with just making both use DRIVER_NAME. So I'd take this patch as-is.
-
-One possible consequence: it makes things a little more fragile if
-people want to change one or both in the future, not noticing that
-while the driver name may (?) be changed harmlessly, it can cause
-mtdparts=... breakage.
+And finally, I believe Tim Harvey has just reported ECC regressions
+for GPMI NAND on some of your code that made it into 3.12 so far. That
+issue is probably more urgent than new features.
 
 Brian
