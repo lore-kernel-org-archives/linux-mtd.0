@@ -1,20 +1,35 @@
-From: Pekon Gupta <pekon@ti.com>
-To: <mark.rutland@arm.com>, <olof@lixom.net>, <computersforpeace@gmail.com>,
- <dedekind1@gmail.com>
-Subject: [PATCH v10 10/10] mtd: nand: omap: remove selection of BCH ecc-scheme
- via KConfig
-Date: Sat, 19 Oct 2013 14:14:14 +0530
-Message-ID: <1382172254-12448-11-git-send-email-pekon@ti.com>
-In-Reply-To: <1382172254-12448-1-git-send-email-pekon@ti.com>
-References: <1382172254-12448-1-git-send-email-pekon@ti.com>
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: RE: [PATCH v9 4/9] mtd: nand: omap: enable auto-detection of
+ bus-width for omap-nand drivers
+Date: Sat, 19 Oct 2013 09:11:39 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA28D68@DBDE04.ent.ti.com>
+References: <1381816197-20477-1-git-send-email-pekon@ti.com>
+ <1381816197-20477-5-git-send-email-pekon@ti.com>
+ <20131016222248.GZ23337@ld-irv-0074.broadcom.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EA27917@DBDE04.ent.ti.com>
+ <20131017183016.GG23337@ld-irv-0074.broadcom.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EA280A4@DBDE04.ent.ti.com>
+ <20131017214349.GH23337@ld-irv-0074.broadcom.com>
+In-Reply-To: <20131017214349.GH23337@ld-irv-0074.broadcom.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: devicetree@vger.kernel.org, Pawel.Moll@arm.com, arnd@arndb.de,
- swarren@wwwdotorg.org, tony@atomide.com, jp.francois@cynove.com,
- ijc+devicetree@hellion.org.uk, avinashphilipk@gmail.com, balbi@ti.com,
- robherring2@gmail.com, Pekon Gupta <pekon@ti.com>, bcousson@baylibre.com,
- linux-mtd@lists.infradead.org, ivan.djelic@parrot.com,
- linux-omap@vger.kernel.org, dwmw2@infradead.org
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "arnd@arndb.de" <arnd@arndb.de>, "Pawel.Moll@arm.com" <Pawel.Moll@arm.com>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ "tony@atomide.com" <tony@atomide.com>,
+ "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>,
+ "avinashphilipk@gmail.com" <avinashphilipk@gmail.com>, "Balbi,
+ Felipe" <balbi@ti.com>, "robherring2@gmail.com" <robherring2@gmail.com>,
+ "bcousson@baylibre.com" <bcousson@baylibre.com>,
+ "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>,
+ "olof@lixom.net" <olof@lixom.net>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,73 +39,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-With OMAP NAND driver updates, selection of ecc-scheme:
-*DT enabled kernel*
- 	depends on ti,nand-ecc-opt and ti,elm-id DT bindings.
-*Non DT enabled kernel*
-	depends on elm_dev and ecc-scheme passed along with platform-data
-	from board file.
+Hi Brian,
 
-So, selection of ecc-scheme (BCH8 or BCH4) from KConfig can be removed
+> From: Brian Norris [mailto:computersforpeace@gmail.com]
+> On Thu, Oct 17, 2013 at 09:00:27PM +0000, Pekon Gupta wrote:
+> > > From: Brian Norris [mailto:computersforpeace@gmail.com]
+> > > > On Thu, Oct 17, 2013 at 04:42:23AM +0000, Pekon Gupta wrote:
+ [...]
 
-Signed-off-by: Pekon Gupta <pekon@ti.com>
----
- drivers/mtd/nand/Kconfig | 40 ++++++----------------------------------
- 1 file changed, 6 insertions(+), 34 deletions(-)
+> > > But the real point: you need to clearly communicate what you are
+> > > choosing in this patch. Either you want to
+> > >
+> > >  (1) strictly follow the buswidth provided by the platform or
+> > >
+> > >  (2) use the nand_base.c BUSWIDTH_AUTO automatic configuration.
+> > >
+> > Ideally, I would like to go with (2), but that would need other changes
+> > in-order to re-configure GPMC with newly parsed ONFI data, which
+> > can be a separate patch-set.
+>=20
+> What exactly needs changed to support this? It looks like this omap2
+> NAND driver doesn't make assumptions about 8-bit vs. 16-bit until after
+> nand_scan_ident(). But maybe there is something I missed.
+>=20
+The GPMC driver will be touched by NAND_BUSWIDTH_AUTO change.
+There are two set of configurations in GPMC controller..
+(a) device based configurations:
+  These are static configurations derived on DT bindings for each
+  chip-select (like NAND signal timings, etc). These done on GPMC probe.
+(b) ecc-scheme based configurations:
+  These are dynamic configurations done in NAND driver in
+  chip->ecc.hwctl() and are refreshed at each NAND accesss.
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index d885298..93ae6a6 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -96,43 +96,15 @@ config MTD_NAND_OMAP2
- 
- config MTD_NAND_OMAP_BCH
- 	depends on MTD_NAND && MTD_NAND_OMAP2 && ARCH_OMAP3
--	tristate "Enable support for hardware BCH error correction"
-+	tristate "Support hardware based BCH error correction"
- 	default n
- 	select BCH
--	select BCH_CONST_PARAMS
- 	help
--	 Support for hardware BCH error correction.
--
--choice
--	prompt "BCH error correction capability"
--	depends on MTD_NAND_OMAP_BCH
--
--config MTD_NAND_OMAP_BCH8
--	bool "8 bits / 512 bytes (recommended)"
--	help
--	 Support correcting up to 8 bitflips per 512-byte block.
--	 This will use 13 bytes of spare area per 512 bytes of page data.
--	 This is the recommended mode, as 4-bit mode does not work
--	 on some OMAP3 revisions, due to a hardware bug.
--
--config MTD_NAND_OMAP_BCH4
--	bool "4 bits / 512 bytes"
--	help
--	 Support correcting up to 4 bitflips per 512-byte block.
--	 This will use 7 bytes of spare area per 512 bytes of page data.
--	 Note that this mode does not work on some OMAP3 revisions, due to a
--	 hardware bug. Please check your OMAP datasheet before selecting this
--	 mode.
--
--endchoice
--
--if MTD_NAND_OMAP_BCH
--config BCH_CONST_M
--	default 13
--config BCH_CONST_T
--	default 4 if MTD_NAND_OMAP_BCH4
--	default 8 if MTD_NAND_OMAP_BCH8
--endif
-+	  This config enables the ELM hardware engine, which can be used to
-+	  locate and correct errors when using BCH ECC scheme. This offloads
-+	  the cpu from doing ECC error searching and correction. However some
-+	  legacy OMAP families like OMAP2xxx, OMAP3xxx do not have ELM engine
-+	  so they should not enable this config symbol.
- 
- config MTD_NAND_IDS
- 	tristate
--- 
-1.8.1
+However, 'nand-bus-width' configuration is part of both (1) and (2).
+Thus, both 'OMAP NAND driver' and 'GPMC driver' need to be
+consistent in programming  'nand-bus-width' otherwise ecc-engine
+would not work.
+Thus, I'm proceeding with (1) DT based parsing of 'nand-bus-width'.
+
+
+> > Thus, I would drop this patch for now. And go with (1),
+>=20
+> OK, but to drop this patch entirely would still not be (1); it would
+> still leave the possibility of calling nand_scan_ident() twice, and it
+> puts you in a middle ground between (1) and (2). That's fine if it works
+> for you, but I just want to acknowledge that now: this driver requires
+> changes to become either (1) or (2).
+>=20
+I have re-posted [PATCH v10 4/10] with this updates. However, please
+take into account that some limitation of dual programming require
+such probe. New patch also call nand_scan_ident() twice, but only
+on certain pre-determined conditions, not in all failure.
+Once I convert to NAND_BUSWIDTH_AUTO these should get clean,
+ as I would update both GPMC and NAND driver for this.
+(Till then this was most optimal solution I could think of)..
+
+
+> Does your series need a rebase if we're removing this patch? Or you're
+> rewriting/simplifying it to the following two points? (Perhaps it's
+> best to separate this portion to its own patch (set) and discussion,
+> since it is independent of your ECC rewrite.)
+>=20
+> > with following
+> > updates in  omap_nand_probe().
+> >
+> > (a) perform nand_scan_ident() in "x8" mode, so that ONFI params are
+> >     read and device-info (chip->writesize, chip->oobsize) are populated=
+.
+>=20
+> OK.
+>=20
+> > (b) Then switch to "x8" or "x16" mode based on "nand-bus-width"
+> >     as passed from GPMC driver to NAND driver via platform-data.
+> >    And re-populate mtd->byte, mtd-read_buf, mtd->write_buf.
+>=20
+> I'm not sure if switching buswidth after nand_scan_ident() is really
+> supported, but I'll hold off until I see the code you're proposing.
+>=20
+I have re-posted [PATCH v10 4/10] with this updates.
+Please accept this ...
+
+
+with regards, pekon
