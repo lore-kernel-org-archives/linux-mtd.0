@@ -1,31 +1,20 @@
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: RE: [PATCH v9 3/9] mtd: nand: omap: cleanup: replace local
- references with generic framework names
-Date: Sat, 19 Oct 2013 05:10:51 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA28C91@DBDE04.ent.ti.com>
-References: <1381816197-20477-1-git-send-email-pekon@ti.com>
- <1381816197-20477-4-git-send-email-pekon@ti.com>
- <20131016213024.GY23337@ld-irv-0074.broadcom.com>
-In-Reply-To: <20131016213024.GY23337@ld-irv-0074.broadcom.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "arnd@arndb.de" <arnd@arndb.de>, "Pawel.Moll@arm.com" <Pawel.Moll@arm.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "tony@atomide.com" <tony@atomide.com>,
- "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>,
- "avinashphilipk@gmail.com" <avinashphilipk@gmail.com>, "Balbi,
- Felipe" <balbi@ti.com>, "robherring2@gmail.com" <robherring2@gmail.com>,
- "bcousson@baylibre.com" <bcousson@baylibre.com>,
- "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>,
- "olof@lixom.net" <olof@lixom.net>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+Date: Sat, 19 Oct 2013 08:35:35 +0200
+From: Willy Tarreau <w@1wt.eu>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH v2 00/27] Armada 370/XP NAND support
+Message-ID: <20131019063535.GC20157@1wt.eu>
+References: <1382137374-21251-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1382137374-21251-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: Lior Amsalem <alior@marvell.com>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>,
+ Daniel Mack <zonque@gmail.com>, linux-mtd@lists.infradead.org,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,49 +24,139 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> From: Brian Norris [mailto:computersforpeace@gmail.com]
-> > On Tue, Oct 15, 2013 at 11:19:51AM +0530, Pekon Gupta wrote:
-> > This patch updates following in omap_nand_probe() and
-> omap_nand_remove()
-> > - replaces "info->nand" with "nand_chip" (struct nand_chip *nand_chip)
-> > - replaces "info->mtd" with "mtd" (struct mtd_info *mtd)
-> > - white-space and formatting cleanup
-> >
-> > Signed-off-by: Pekon Gupta <pekon@ti.com>
->=20
-> This patch looks good. Thanks for being consistent.
->=20
+Hi Ezequiel,
 
-> > diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> > index 8d521aa..5596368 100644
-> > --- a/drivers/mtd/nand/omap2.c
-> > +++ b/drivers/mtd/nand/omap2.c
->=20
-> ...
->=20
-> > @@ -1846,17 +1848,16 @@ static int omap_nand_probe(struct
-> > -
-> > -	info->nand.options	=3D pdata->devsize;
-> > -	info->nand.options	|=3D NAND_SKIP_BBTSCAN;
-> > +	mtd			=3D &info->mtd;
-> > +	mtd->priv		=3D &info->nand;
-> > +	mtd->name		=3D dev_name(&pdev->dev);
-> > +	mtd->owner		=3D THIS_MODULE;
-> > +	nand_chip		=3D &info->nand;
-> > +	nand_chip->options	=3D pdata->devsize;
->=20
-> Trivial side comment: the 'devsize' field is not named very
-> informatively. It is apparently just a way to specify nand_chip.options,
-> and it is only actually used for setting a buswidth. (It is also badly
-> named nand_type in other places.) Not sure if it's worth improving, or
-> even dropping at some later point in time.
->=20
-For now I'm keeping this name consistent for now, as this would require
-touching GPMC driver also, where 'devsize' is used to configure
-GPMC controller registers.
+On Fri, Oct 18, 2013 at 08:02:27PM -0300, Ezequiel Garcia wrote:
+> Hi guys,
+> 
+> This is the v2 of the work implementing NAND support in Armada 370/XP SoCs.
+> This series is probably not yet complete (see below), but I feel like
+> we're really closer now :-)
+> 
+> As in the previous version and given I don't have any public datasheet
+> to show, I'll try to write some of the most relevant parts of the controller.
+> 
+> * NFCv2 controller background
+> 
+> The controller has a 2176 bytes FIFO buffer. Therefore, in order to support
+> larger pages, I/O operations on 4 KiB and 8 KiB pages is done with a set of
+> chunked transfers.
+> 
+> For instance, if we choose a 2048 data chunk and set "BCH" ECC (see below)
+> we'll have this layout in the pages:
+> 
+>   ------------------------------------------------------------------------------
+>   | 2048B data | 32B spare | 30B ECC || 2048B data | 32B spare | 30B ECC | ... |
+>   ------------------------------------------------------------------------------
+> 
+> The driver reads the data and spare portions independently and builds an internal
+> buffer with this layout (in the 4 KiB page case):
+> 
+>   ------------------------------------------
+>   |     4096B data     |     64B spare     |
+>   ------------------------------------------
+> 
+> Also, for the READOOB command the driver disables the ECC and reads a 'spare + ECC'
+> OOB, one per chunk read.
+> 
+>   -------------------------------------------------------------------
+>   |     4096B data     |  32B spare | 30B ECC | 32B spare | 30B ECC |
+>   -------------------------------------------------------------------
+> 
+> So, in order to achieve reading (for instance), we issue several READ0 commands
+> (with some additional controller-specific magic) and read two chunks of 2080B
+> (2048 data + 32 spare) each.
+> The driver accomodates this data to expose the NAND core a contiguous buffer
+> (4096 data + spare) or (4096 + spare + ECC + spare + ECC).
+> 
+> * ECC
+> 
+> The controller has built-in hardware ECC capabilities. In addition it is
+> configurable between two modes: 1) Hamming, 2) BCH.
+> 
+> Note that the actual BCH mode: BCH-4 or BCH-8 will depend on the way
+> the controller is configured to transfer the data.
+> 
+> In the BCH mode the ECC code will be calculated for each transfered chunk
+> and expected to be located (when reading/programming) right after the spare
+> bytes as the figure above shows.
+> 
+> So, repeating the above scheme, a 2048B data chunk will be followed by 32B
+> spare, and then the ECC controller will read/write the ECC code (30B in
+> this case):
+> 
+>   ------------------------------------
+>   | 2048B data | 32B spare | 30B ECC |
+>   ------------------------------------
+> 
+> If the ECC mode is 'BCH' then the ECC is *always* 30 bytes long.
+> If the ECC mode is 'Hamming' the ECC is 6 bytes long, for each 512B block.
+> So in Hamming mode, a 2048B page will have a 24B ECC.
+> 
+> Despite all of the above, the controller requires the driver to only read or
+> write in multiples of 8-bytes, because the data buffer is 64-bits.
+> 
+> * Changes from v1
+> 
+> Aside from several changes based in Brian's feedback, the main changes
+> from v1 are:
+> 
+>   * The controller's clock source is now fully modeled, see patche 1 to 4.
+>     Of course, none of those patches should be taken through the mtd
+>     subsystem, but I'm adding them here for completeness.
+> 
+>   * The chip's cmdfunc() is now independently implemented in each SoC variant.
+>     The rationale behind this decision is that 'chunked' I/O is the only tested
+>     mode on the Armada370 variant, while the old 'vanilla' I/O is the only
+>     tested mode on the PXA variant.
+> 
+>     So it's safer to have an implementation for each variant.
+> 
+>   * Added support for BCH-8, in other words: 8-bits of correction in a 512-byte
+>     region. This is obtained by using a data chunk size of 1024B, thus doubling
+>     the ECC BCH strength, as per this ECC engine mechanism.
+> 
+>   * The ECC layout in use, which must be set according to the page size and
+>     desired ECC strength is now strictly chosen to match only the tested
+>     combinations.
+> 
+> * Pending stuff
+> 
+>   1. Factory bad blocks handling
+> 
+>   Currently, there's no factory bad block initial scan (when the bad block
+>   table is missing). The ECC BCH requires to layout the device's pages in
+>   a splitted "data + OOB + data + OOB" way. This layout being different from
+>   the factory layout. In other words,
+> 
+>   Factory view:
+> 
+>   -----------------------------------------------
+>   |                    Data           |x  OOB   |
+>   -----------------------------------------------
+> 
+>   Driver's view:
+> 
+>   -----------------------------------------------
+>   |      Data      | OOB |      Data   x  | OOB |
+>   -----------------------------------------------
+> 
+>   It can be seen from the above, that the factory bad block marker must be
+>   searched within the 'data' region, and not in the usual OOB region.
+> 
+>   This seems to be similar to the gpmi-nand driver, yet I really find its
+>   'bad block swapping' solution odd, so I'm trying to find something
+>   cleaner.
+> 
+>   2. ECC modeling
+> 
+>   Although I've exposed some ECC information in the ECC layout, I'm still
+>   not sure why is this needed, or if it's needed at all.
+> 
 
-I'll keep this feedback as pending for independent patch where I probe
-driver with "NAND_BUSWIDTH_AUTO".
+I strongly believe that all the information above is very valuable and
+that it's a shame to lose it in a cover message. It would definitely
+make sense to have this in a doc file.
 
-
-with regards, pekon
+Best regards,
+Willy
