@@ -1,21 +1,27 @@
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Huang Shijie
- <b32955@freescale.com>
-Subject: RE: [PATCH] mtd: nand: use a local variable to simplify the
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VXqeA-0006lE-6r
+ for linux-mtd@lists.infradead.org; Sun, 20 Oct 2013 10:54:11 +0000
+Date: Sun, 20 Oct 2013 07:54:00 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: "Gupta, Pekon" <pekon@ti.com>
+Subject: Re: [PATCH] mtd: nand: use a local variable to simplify the
  nand_scan_tail
-Date: Sun, 20 Oct 2013 07:01:11 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA28EB9@DBDE04.ent.ti.com>
+Message-ID: <20131020105359.GA2465@localhost>
 References: <1382077253-21709-1-git-send-email-b32955@freescale.com>
  <20980858CB6D3A4BAE95CA194937D5E73EA2866E@DBDE04.ent.ti.com>
  <20131019130846.GB2470@localhost>
-In-Reply-To: <20131019130846.GB2470@localhost>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ <20980858CB6D3A4BAE95CA194937D5E73EA28EB9@DBDE04.ent.ti.com>
 MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA28EB9@DBDE04.ent.ti.com>
+Cc: Huang Shijie <b32955@freescale.com>,
  "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
  "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,35 +32,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiBGcm9tOiBFemVxdWllbCBHYXJjaWEgW21haWx0bzplemVxdWllbC5nYXJjaWFAZnJlZS1lbGVj
-dHJvbnMuY29tXQ0KPiA+IE9uIEZyaSwgT2N0IDE4LCAyMDEzIGF0IDAyOjExOjE5UE0gKzAwMDAs
-IEd1cHRhLCBQZWtvbiB3cm90ZToNCj4gPiA+IEZyb206IEh1YW5nIFNoaWppZQ0KPiA+ID4gVGhl
-cmUgYXJlIHRvbyBtYW55ICJjaGlwLT5lY2MiIGluIHRoZSBuYW5kX3NjYW5fdGFpbCgpIHdoaWNo
-IG1ha2VzIHRoZQ0KPiA+ID4gZXllcw0KPiA+ID4gc29yZS4NCj4gPiA+DQo+ID4gPiBUaGlzIHBh
-dGNoIHVzZXMgYSBsb2NhbCB2YXJpYWJsZSAiZWNjIiB0byByZXBsYWNlIHRoZSAiY2hpcC0+ZWNj
-IiB0bw0KPiA+ID4gbWFrZSB0aGUgY29kZSBtb3JlIGdyYWNlZnVsLg0KPiA+ID4NCj4gPiA+IERv
-IHRoZSBjb2RlIGNoYW5nZSB3aXRoICJzL2NoaXAtPmVjY1wuL2VjYy0+L2ciIGluIHRoZSBuYW5k
-X3NjYW5fdGFpbCwNCj4gPiA+IGFuZCBhbHNvIGNoYW5nZSBzb21lIGxpbmVzIGJ5IGhhbmQuDQo+
-ID4gPg0KPiA+ID4gU2lnbmVkLW9mZi1ieTogSHVhbmcgU2hpamllIDxiMzI5NTVAZnJlZXNjYWxl
-LmNvbT4NCj4gPiA+DQo+ID4gUGVyc29uYWxseSBJIHdvbid0IHByZWZlciBzdWNoIHN0YW5kLWFs
-b25lIGNsZWFudXAgIF91bmxlc3NfIHRoZXJlIGlzDQo+ID4gbWFqb3IgZHJpdmVyIHJlLXdyaXRl
-IG9mIHRoZSBjb2RlLCBiZWNhdXNlIHRoaXMgYnJlYWtzIHRoZSB0cmFjZWFiaWxpdHkNCj4gPiB2
-aWEgJ2dpdCBibGFtZScuIEFuZCBldmVuIGluIHRoYXQgY2FzZSwgdGhpcyBjaGFuZ2Ugc2hvdWxk
-IGJlIGFwcGxpZWQgZmlyc3QsDQo+ID4gYW5kIHRoZSBvdGhlciBmdW5jdGlvbmFsIHVwZGF0ZXMg
-bGF0ZXIuDQo+ID4NCj4gDQo+IEhtLi4gSSdtIG5vdCBzdXJlIEkgYWdyZWUgaGVyZS4gSSBsaWtl
-IHRoaXMgcGF0Y2ggYW5kIEkgbGlrZSB0aGUgZWZmZWN0DQo+IGl0IGhhcyBvbiBuYW5kX3NjYW5f
-dGFpbCgpLg0KPiANCj4gT24gYSBwZXJzb25hbCBub3RlLCBJIGhhcmRseSBldmVyIHVzZSBnaXQg
-YmxhbWUgYXQgYWxsIChiZWNhdXNlIGl0J3MgZGVhZA0KPiBzbG93KS4gSW5zdGVhZCwgSSBqdXN0
-IHJ1biBnaXQgbG9nICR7ZmlsZX0gYW5kIGdldCB0aGUgbGF0ZXN0IGNoYW5nZXMgb24NCj4gdGhh
-dCBmaWxlLg0KPiANCkl0cyByYXRoZXIgZGlmZmljdWx0IHRvIHVzZSAnZ2l0IGxvZycgZXNwZWNp
-YWxseSB3aGVuIHlvdSBhcmUgdHJhY2luZyBvciBkZWJ1Z2dpbmcNCmEgZ2VuZXJpYyBkcml2ZXIs
-IGFuZCB3YW50IHRvIGtub3cgd2h5IHRoaXMgcGllY2Ugb2YgY29kZSB3YXMgaW50cm9kdWNlZCwN
-CmFuZCB0aGUgaWRlYSBiZWhpbmQgaXQuICdnaXQgbG9nJyB3b27igJl0IHNob3cgbGluZSBieSBs
-aW5lIGNvbW1pdCBkZXRhaWxzLg0KDQpTbywgSSdtIG5vdCBhZ2FpbnN0IHRoaXMgY2xlYW4tdXAs
-IGp1c3QgdGhhdCBwbGVhc2Ugc2NoZWR1bGUgdGhpcyBwYXRjaA0KKmJlZm9yZSBzb21lIG1ham9y
-IHJlLXdyaXRlIG9mIG5hbmRfc2Nhbl90YWlsKCkqLCBzbyB0aGF0IHRoZSAnZ2l0IGJsYW1lJw0K
-aXMgcHJlc2VydmVkIGZvciB0aGUgbmV3IGNoYW5nZXMgYWZ0ZXIgdGhpcyBjbGVhbnVwLg0KSSBy
-ZW1lbWJlciB0aGVyZSBpcyBhbm90aGVyIG1ham9yIHBhdGNoIGZyb20gU2hpamllIGZvciByZW5h
-bWluZw0KY2hpcC0+ZWNjLnNpemUgYW5kIGFkZGluZyB0aGVtIGFzIHN5c2ZzIGVudHJ5LiBHb29k
-IHRvIG1lcmdlIGFsbCBzdWNoDQpyZW5hbWluZyBwYXRjaGVzIGluIG9uZS1nby4NCg0KDQpXaXRo
-IHJlZ2FyZHMsIHBla29uDQo=
+On Sun, Oct 20, 2013 at 07:01:11AM +0000, Gupta, Pekon wrote:
+> > From: Ezequiel Garcia [mailto:ezequiel.garcia@free-electrons.com]
+> > > On Fri, Oct 18, 2013 at 02:11:19PM +0000, Gupta, Pekon wrote:
+> > > > From: Huang Shijie
+> > > > There are too many "chip->ecc" in the nand_scan_tail() which makes the
+> > > > eyes
+> > > > sore.
+> > > >
+> > > > This patch uses a local variable "ecc" to replace the "chip->ecc" to
+> > > > make the code more graceful.
+> > > >
+> > > > Do the code change with "s/chip->ecc\./ecc->/g" in the nand_scan_tail,
+> > > > and also change some lines by hand.
+> > > >
+> > > > Signed-off-by: Huang Shijie <b32955@freescale.com>
+> > > >
+> > > Personally I won't prefer such stand-alone cleanup  _unless_ there is
+> > > major driver re-write of the code, because this breaks the traceability
+> > > via 'git blame'. And even in that case, this change should be applied first,
+> > > and the other functional updates later.
+> > >
+> > 
+> > Hm.. I'm not sure I agree here. I like this patch and I like the effect
+> > it has on nand_scan_tail().
+> > 
+> > On a personal note, I hardly ever use git blame at all (because it's dead
+> > slow). Instead, I just run git log ${file} and get the latest changes on
+> > that file.
+> > 
+> Its rather difficult to use 'git log' especially when you are tracing or debugging
+> a generic driver, and want to know why this piece of code was introduced,
+> and the idea behind it. 'git log' won’t show line by line commit details.
+> 
+
+Quite the opposite 'git log --patch' shows the commit details.
+Or maybe you need something that I'm not aware of?
+
+I really don't think we should dis-encourage cleanups -in what ever form
+and time they might come- just to preserve the last 'major' author of a file.
+
+But this is just my two cents...
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
