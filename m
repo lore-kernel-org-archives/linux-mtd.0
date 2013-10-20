@@ -1,18 +1,22 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by casper.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VXdwP-0002Nj-CY
- for linux-mtd@lists.infradead.org; Sat, 19 Oct 2013 21:20:09 +0000
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: <linux-mtd@lists.infradead.org>, Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v3] mtd: nand: pxa3xx: Fix registered MTD name
-Date: Sat, 19 Oct 2013 18:19:25 -0300
-Message-Id: <1382217565-11312-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>, Daniel Mack <zonque@gmail.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Huang Shijie
+ <b32955@freescale.com>
+Subject: RE: [PATCH] mtd: nand: use a local variable to simplify the
+ nand_scan_tail
+Date: Sun, 20 Oct 2013 07:01:11 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA28EB9@DBDE04.ent.ti.com>
+References: <1382077253-21709-1-git-send-email-b32955@freescale.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EA2866E@DBDE04.ent.ti.com>
+ <20131019130846.GB2470@localhost>
+In-Reply-To: <20131019130846.GB2470@localhost>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,61 +26,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In a recent commit:
-
-  commit f455578dd961087a5cf94730d9f6489bb1d355f0
-  Author: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-  Date:   Mon Aug 12 14:14:53 2013 -0300
-
-  mtd: nand: pxa3xx: Remove hardcoded mtd name
-
-  There's no advantage in using a hardcoded name for the mtd device.
-  Instead use the provided by the platform_device.
-
-The MTD name was changed to use the one provided by the platform_device.
-However, this can be problematic as some users want to set partitions
-using the kernel parameter 'mtdparts', where the name is needed.
-
-Therefore, to avoid regressions in users relying in 'mtdparts' we revert
-the change and use the previous one 'pxa3xx_nand-0'.
-
-While at it, let's put a big comment and prevent this change from happening
-ever again.
-
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
----
-v2->v3:
-  * Limit the name change to mtd->name. This means that driver's name
-    and the mtd->name will be different. We do this because:
-    1. We want to read a simpler 'pxa3xx-nand' driver name in
-       kernel messages and other kernel reports.
-    2. We're forced to use the silly name 'pxa3xx_nand-0' for backwards
-       compatibility.
-
-v1->v2:
-  * Use exactly the same name as before, and avoid regressions
-    instead of using any seemingly better or cleaner one.
-
- drivers/mtd/nand/pxa3xx_nand.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index cbc7240..bae1573 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -1749,7 +1749,12 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
- 	for (cs = 0; cs < pdata->num_cs; cs++) {
- 		struct mtd_info *mtd = info->host[cs]->mtd;
- 
--		mtd->name = pdev->name;
-+		/*
-+		 * The mtd name matches the one used in 'mtdparts' kernel
-+		 * parameter. This name cannot be changed or otherwise
-+		 * user's mtd partitions configuration would get broken.
-+		 */
-+		mtd->name = "pxa3xx_nand-0";
- 		info->cs = cs;
- 		ret = pxa3xx_nand_scan(mtd);
- 		if (ret) {
--- 
-1.8.1.5
+PiBGcm9tOiBFemVxdWllbCBHYXJjaWEgW21haWx0bzplemVxdWllbC5nYXJjaWFAZnJlZS1lbGVj
+dHJvbnMuY29tXQ0KPiA+IE9uIEZyaSwgT2N0IDE4LCAyMDEzIGF0IDAyOjExOjE5UE0gKzAwMDAs
+IEd1cHRhLCBQZWtvbiB3cm90ZToNCj4gPiA+IEZyb206IEh1YW5nIFNoaWppZQ0KPiA+ID4gVGhl
+cmUgYXJlIHRvbyBtYW55ICJjaGlwLT5lY2MiIGluIHRoZSBuYW5kX3NjYW5fdGFpbCgpIHdoaWNo
+IG1ha2VzIHRoZQ0KPiA+ID4gZXllcw0KPiA+ID4gc29yZS4NCj4gPiA+DQo+ID4gPiBUaGlzIHBh
+dGNoIHVzZXMgYSBsb2NhbCB2YXJpYWJsZSAiZWNjIiB0byByZXBsYWNlIHRoZSAiY2hpcC0+ZWNj
+IiB0bw0KPiA+ID4gbWFrZSB0aGUgY29kZSBtb3JlIGdyYWNlZnVsLg0KPiA+ID4NCj4gPiA+IERv
+IHRoZSBjb2RlIGNoYW5nZSB3aXRoICJzL2NoaXAtPmVjY1wuL2VjYy0+L2ciIGluIHRoZSBuYW5k
+X3NjYW5fdGFpbCwNCj4gPiA+IGFuZCBhbHNvIGNoYW5nZSBzb21lIGxpbmVzIGJ5IGhhbmQuDQo+
+ID4gPg0KPiA+ID4gU2lnbmVkLW9mZi1ieTogSHVhbmcgU2hpamllIDxiMzI5NTVAZnJlZXNjYWxl
+LmNvbT4NCj4gPiA+DQo+ID4gUGVyc29uYWxseSBJIHdvbid0IHByZWZlciBzdWNoIHN0YW5kLWFs
+b25lIGNsZWFudXAgIF91bmxlc3NfIHRoZXJlIGlzDQo+ID4gbWFqb3IgZHJpdmVyIHJlLXdyaXRl
+IG9mIHRoZSBjb2RlLCBiZWNhdXNlIHRoaXMgYnJlYWtzIHRoZSB0cmFjZWFiaWxpdHkNCj4gPiB2
+aWEgJ2dpdCBibGFtZScuIEFuZCBldmVuIGluIHRoYXQgY2FzZSwgdGhpcyBjaGFuZ2Ugc2hvdWxk
+IGJlIGFwcGxpZWQgZmlyc3QsDQo+ID4gYW5kIHRoZSBvdGhlciBmdW5jdGlvbmFsIHVwZGF0ZXMg
+bGF0ZXIuDQo+ID4NCj4gDQo+IEhtLi4gSSdtIG5vdCBzdXJlIEkgYWdyZWUgaGVyZS4gSSBsaWtl
+IHRoaXMgcGF0Y2ggYW5kIEkgbGlrZSB0aGUgZWZmZWN0DQo+IGl0IGhhcyBvbiBuYW5kX3NjYW5f
+dGFpbCgpLg0KPiANCj4gT24gYSBwZXJzb25hbCBub3RlLCBJIGhhcmRseSBldmVyIHVzZSBnaXQg
+YmxhbWUgYXQgYWxsIChiZWNhdXNlIGl0J3MgZGVhZA0KPiBzbG93KS4gSW5zdGVhZCwgSSBqdXN0
+IHJ1biBnaXQgbG9nICR7ZmlsZX0gYW5kIGdldCB0aGUgbGF0ZXN0IGNoYW5nZXMgb24NCj4gdGhh
+dCBmaWxlLg0KPiANCkl0cyByYXRoZXIgZGlmZmljdWx0IHRvIHVzZSAnZ2l0IGxvZycgZXNwZWNp
+YWxseSB3aGVuIHlvdSBhcmUgdHJhY2luZyBvciBkZWJ1Z2dpbmcNCmEgZ2VuZXJpYyBkcml2ZXIs
+IGFuZCB3YW50IHRvIGtub3cgd2h5IHRoaXMgcGllY2Ugb2YgY29kZSB3YXMgaW50cm9kdWNlZCwN
+CmFuZCB0aGUgaWRlYSBiZWhpbmQgaXQuICdnaXQgbG9nJyB3b27igJl0IHNob3cgbGluZSBieSBs
+aW5lIGNvbW1pdCBkZXRhaWxzLg0KDQpTbywgSSdtIG5vdCBhZ2FpbnN0IHRoaXMgY2xlYW4tdXAs
+IGp1c3QgdGhhdCBwbGVhc2Ugc2NoZWR1bGUgdGhpcyBwYXRjaA0KKmJlZm9yZSBzb21lIG1ham9y
+IHJlLXdyaXRlIG9mIG5hbmRfc2Nhbl90YWlsKCkqLCBzbyB0aGF0IHRoZSAnZ2l0IGJsYW1lJw0K
+aXMgcHJlc2VydmVkIGZvciB0aGUgbmV3IGNoYW5nZXMgYWZ0ZXIgdGhpcyBjbGVhbnVwLg0KSSBy
+ZW1lbWJlciB0aGVyZSBpcyBhbm90aGVyIG1ham9yIHBhdGNoIGZyb20gU2hpamllIGZvciByZW5h
+bWluZw0KY2hpcC0+ZWNjLnNpemUgYW5kIGFkZGluZyB0aGVtIGFzIHN5c2ZzIGVudHJ5LiBHb29k
+IHRvIG1lcmdlIGFsbCBzdWNoDQpyZW5hbWluZyBwYXRjaGVzIGluIG9uZS1nby4NCg0KDQpXaXRo
+IHJlZ2FyZHMsIHBla29uDQo=
