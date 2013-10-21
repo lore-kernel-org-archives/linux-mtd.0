@@ -1,23 +1,21 @@
-Received: from am1ehsobe002.messaging.microsoft.com ([213.199.154.205]
- helo=am1outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VYAsy-0004U0-PH
- for linux-mtd@lists.infradead.org; Mon, 21 Oct 2013 08:30:49 +0000
-Message-ID: <5264E6A9.6070400@freescale.com>
-Date: Mon, 21 Oct 2013 16:32:41 +0800
-From: Huang Shijie <b32955@freescale.com>
-MIME-Version: 1.0
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [PATCH V2 0/4] mtd: gpmi: support two nand chips at most
-References: <1377595747-21033-1-git-send-email-b32955@freescale.com>	<5260DA32.4090502@freescale.com>
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Huang Shijie <b32955@freescale.com>
+Subject: RE: [PATCH V2 0/4] mtd: gpmi: support two nand chips at most
+Date: Mon, 21 Oct 2013 09:02:59 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA29221@DBDE04.ent.ti.com>
+References: <1377595747-21033-1-git-send-email-b32955@freescale.com>
+ <5260DA32.4090502@freescale.com>
  <CAN8TOE8xDdRF4Hf+p4JMAixWfkxkbKCZB-fqpPA6yiMHYm=Qew@mail.gmail.com>
  <5264A220.2070900@freescale.com>
  <20980858CB6D3A4BAE95CA194937D5E73EA2910B@DBDE04.ent.ti.com>
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA2910B@DBDE04.ent.ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
+ <5264E6A9.6070400@freescale.com>
+In-Reply-To: <5264E6A9.6070400@freescale.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Cc: David
+ Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,40 +27,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B410=E6=9C=8821=E6=97=A5 14:01, Gupta, Pekon =E5=86=99=
-=E9=81=93:
-> Hi Shijie,
->
->> From: Huang Shijie
->>
->> I am too busy too, i am starting to code the Qspi driver now.
->>
-> (1)
-> Your controller uses LUT based approach, So in case, you are planning t=
-o
-> follow DT based approach of populating flash information in your QSPI
-> controller then I can help you to put that as part of generic framework
-> so that both ti-qspi and fsl-qspi can re-use it.
-it's very good.
-> (2)
-> Also, would you be interested in deriving generic framework for serial
-> NOR something like mtd/spinor/.. where m25p80 can plug-in ?
-
-yes.
-
-Do you have any solution about the generic framework for spi nor?
-
-i want to chage the m25p80.c, and make it not only work for SPI drivers,=20
-but also can work for SPI-NOR(QSPI) driver.
-
-thanks
-Huang Shijie
-
-
-> Based on the following cleaned up version of mtd/spinand/...
-> https://lkml.org/lkml/2013/6/26/88
-> by Mona Anonuevo<manonuevo@micron.com>
->
->
-> with regards, pekon
->
+SGksDQoNCj4gRnJvbTogSHVhbmcgU2hpamllIFttYWlsdG86YjMyOTU1QGZyZWVzY2FsZS5jb21d
+DQo+IOS6jiAyMDEz5bm0MTDmnIgyMeaXpSAxNDowMSwgR3VwdGEsIFBla29uIOWGmemBkzoNCj4g
+PiBIaSBTaGlqaWUsDQo+ID4NCj4gPj4gRnJvbTogSHVhbmcgU2hpamllDQo+ID4+DQo+ID4+IEkg
+YW0gdG9vIGJ1c3kgdG9vLCBpIGFtIHN0YXJ0aW5nIHRvIGNvZGUgdGhlIFFzcGkgZHJpdmVyIG5v
+dy4NCj4gPj4NCj4gPiAoMSkNCj4gPiBZb3VyIGNvbnRyb2xsZXIgdXNlcyBMVVQgYmFzZWQgYXBw
+cm9hY2gsIFNvIGluIGNhc2UsIHlvdSBhcmUgcGxhbm5pbmcgdG8NCj4gPiBmb2xsb3cgRFQgYmFz
+ZWQgYXBwcm9hY2ggb2YgcG9wdWxhdGluZyBmbGFzaCBpbmZvcm1hdGlvbiBpbiB5b3VyIFFTUEkN
+Cj4gPiBjb250cm9sbGVyIHRoZW4gSSBjYW4gaGVscCB5b3UgdG8gcHV0IHRoYXQgYXMgcGFydCBv
+ZiBnZW5lcmljIGZyYW1ld29yaw0KPiA+IHNvIHRoYXQgYm90aCB0aS1xc3BpIGFuZCBmc2wtcXNw
+aSBjYW4gcmUtdXNlIGl0Lg0KPiBpdCdzIHZlcnkgZ29vZC4NCj4gPiAoMikNCj4gPiBBbHNvLCB3
+b3VsZCB5b3UgYmUgaW50ZXJlc3RlZCBpbiBkZXJpdmluZyBnZW5lcmljIGZyYW1ld29yayBmb3Ig
+c2VyaWFsDQo+ID4gTk9SIHNvbWV0aGluZyBsaWtlIG10ZC9zcGlub3IvLi4gd2hlcmUgbTI1cDgw
+IGNhbiBwbHVnLWluID8NCj4gDQo+IHllcy4NCj4gDQo+IERvIHlvdSBoYXZlIGFueSBzb2x1dGlv
+biBhYm91dCB0aGUgZ2VuZXJpYyBmcmFtZXdvcmsgZm9yIHNwaSBub3I/DQo+IA0KPiBpIHdhbnQg
+dG8gY2hhZ2UgdGhlIG0yNXA4MC5jLCBhbmQgbWFrZSBpdCBub3Qgb25seSB3b3JrIGZvciBTUEkg
+ZHJpdmVycywNCj4gYnV0IGFsc28gY2FuIHdvcmsgZm9yIFNQSS1OT1IoUVNQSSkgZHJpdmVyLg0K
+PiANClRoYW5rcywgYnV0IGluIHRoYXQgY2FzZSwgcGxlYXNlIGRvIG5vdCBhZGQgZ2VuZXJpYyBj
+b2RlIGluIG0yNXA4MC5jLg0KTGV0IGl0IGxpdmUgYXMgZHJpdmVyIGZvciBOT1IgZGV2aWNlcywg
+YmVjYXVzZSBpdCBzdXBwb3J0cyB0b28gbWFueSBvdGhlcg0KZGV2aWNlcy4gUmF0aGVyIEkgd2Fz
+IHRoaW5raW5nIG9uIGZvbGxvd2luZyB3YXlzOg0KDQoqIFN0ZXAtMTogZGVmaW5lIGFuIGludGVy
+ZmFjZSBiZXR3ZWVuIFNQSS1OT1IgYW5kIE1URCAqDQorIGNyZWF0ZSBpbmNsdWRlL2xpbnV4L210
+ZC9zcGlub3IuaA0Kc3RydWN0IHNwaW5vciB7DQoJLyogbW9kZXMgKi8NCgllbnVtIG1vZGVzIHsg
+TU1fTU9ERSwgU1BJX01PREUgfTsNCgkvKiBlcmFzZSBvcGVyYXRpb24gKi8JDQoJdWludDMyIGVy
+YXNlX29wY29kZTsNCgl1aW50MzIgZXJhc2VfZHVtbXlfY3ljbGVzOw0KCWludCAoKiBlcmFzZV9k
+b25lKSAoLi4uKTsNCgkvKiByZWFkIG9wZXJhdGlvbiAqLw0KCXVpbnQzMiByZWFkX29wY29kZTsN
+Cgl1aW50MzIgcmVhZF9kdW1teV9jeWNsZXM7DQoJaW50ICgqcmVhZF9kb25lKSAoLi4uKTsNCgkv
+KiB3cml0ZSBvcGVyYXRpb24gKi8NCglbLi4uXQ0KfQ0KVGhpcyBpcyBzaW1pbGFyIHRvIHN0cnVj
+dCBuYW5kX2NoaXAgaW4gaW5jbHVkZS9saW51eC9tdGQvbmFuZC5oDQpCdXQgc3BlY2lmaWMgdG8g
+U1BJIE5PUiBkZXZpY2UgYXR0cmlidXRlcy4NCg0KDQoqIFN0ZXAtMjogIHNwYXduIG91dCBnZW5l
+cmljIGNvZGUgZnJvbSBtMjVwODAgaW50byBnZW5lcmljIGZyYW1ld29yayAqDQpfKG1haW50YWlu
+aW5nIG9yaWdpbmFsIGF1dGhvcnNoaXApXw0KKyBjcmVhdGUgL2RyaXZlci9tdGQvc3Bpbm9yL3Nw
+aW5vci5jDQptMjVwODBfZXJhc2UoKSAtPiBzcGlub3JfZXJhc2UobXRkLCAuLi4pDQptMjVwODBf
+cmVhZCgpIC0+IHNwaW5vcl9yZWFkKCBtdGQsIGZyb20sIGxlbiwgKmJ1ZiwgLi4uICkNCm0yNXA4
+MF93cml0ZSgpIC0+IHNwaW5vcl93cml0ZSAobXRkLCB0bywgbGVuLCAqYnVmLCAuLi4gKQ0KDQpJ
+ZiB5b3UgYWxyZWFkeSBoYXZlIGRvbmUgc29tZSB3b3JrIG9uIG0yNXA4MC5jIHRoZW4gcGxlYXNl
+IHNlZSBpZg0KeW91IGNhbiBjb252ZXJ0IG9uIGFib3ZlIHRob3VnaHRzIGFuZCBwb3N0IGl0LiBJ
+J2xsIHJldmlldyB0aGVtIGFuZA0KYWRkIG1vcmUgc3R1ZmYgYW5kIGNsZWFudXBzLiANCkVsc2Us
+IEkgcGxhbiB0byBkbyB0aGF0IGZyb20gc2NyYXRjaCBidXQgbmVlZCBzb21ldGltZSwgYXMgSSdt
+IGJpdCBzdHVjaw0KaW4gc29tZSBvbWFwMi1uYW5kIGRyaXZlciBjbGVhbi11cCBhY3Rpdml0aWVz
+Lg0KTGV0IG1lIGtub3cgd2hhdCBzdWl0cyB5b3UsIGFzIHBlciB5b3VyIFFTUEktRlNMIGRyaXZl
+ciB0aW1lbGluZXMuLg0KDQoNCndpdGggcmVnYXJkcywgcGVrb24NCg==
