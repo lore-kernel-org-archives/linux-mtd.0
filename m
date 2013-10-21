@@ -1,20 +1,25 @@
-Received: from forward4m.mail.yandex.net ([2a02:6b8:0:2519::3:13])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VYI0m-0007Qk-Ch
- for linux-mtd@lists.infradead.org; Mon, 21 Oct 2013 16:07:21 +0000
-From: Konstantin Tokarev <annulen@yandex.ru>
-To: Brent Taylor <motobud@gmail.com>
-In-Reply-To: <CAP+RiCAVuUEfyjg02+ZjeFXgUuaRW+fuMB490Ce2Hq_4qHBL=A@mail.gmail.com>
-References: <55541379679397@web20h.yandex.ru>
- <CAP+RiCAVuUEfyjg02+ZjeFXgUuaRW+fuMB490Ce2Hq_4qHBL=A@mail.gmail.com>
-Subject: Re: lz4hc compression in UBIFS?
+Received: from mail-ob0-x235.google.com ([2607:f8b0:4003:c01::235])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VYJU5-0000ZP-KP
+ for linux-mtd@lists.infradead.org; Mon, 21 Oct 2013 17:41:42 +0000
+Received: by mail-ob0-f181.google.com with SMTP id va2so6293262obc.12
+ for <linux-mtd@lists.infradead.org>; Mon, 21 Oct 2013 10:41:20 -0700 (PDT)
 MIME-Version: 1.0
-Message-Id: <183031382371160@web6m.yandex.ru>
-Date: Mon, 21 Oct 2013 19:59:20 +0400
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset=koi8-r
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+In-Reply-To: <5264DFF7.2090702@freescale.com>
+References: <CAJ+vNU1JWZp=JoBDJALh59yFybGZ0iQxMEYy8qvTFGDLhyRzqg@mail.gmail.com>
+ <52649FDA.1030804@freescale.com>
+ <CAN8TOE9+ez=t-1n+jd5d3tu+EB9YJKFeM2RKAHBf059L5TYM7A@mail.gmail.com>
+ <5264DFF7.2090702@freescale.com>
+Date: Mon, 21 Oct 2013 10:41:17 -0700
+Message-ID: <CAN8TOE-swY_uA3u3OBt3ip-F=s3_H5hDZE=uDE5VNBGCeZc-XA@mail.gmail.com>
+Subject: Re: gpmi-mtd ecc regression
+From: Brian Norris <computersforpeace@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Content-Type: text/plain; charset=GB2312
+Content-Transfer-Encoding: quoted-printable
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Tim Harvey <tharvey@gateworks.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,40 +29,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Mon, Oct 21, 2013 at 1:04 AM, Huang Shijie <b32955@freescale.com> wrote:
+> =D3=DA 2013=C4=EA10=D4=C221=C8=D5 15:21, Brian Norris =D0=B4=B5=C0:
+>> Well, we do prioritize "no regressions", rather than new features. So
+>> we may have to do this until a proper solution can be formed.
+> ok.
+>
+> I will create a patch to fix this regression.
 
+Yes. We should either get it into 3.12 or mark it -stable.
 
-04.10.2013, 07:09, "Brent Taylor" <motobud@gmail.com>:
-> Here is a patch based on linux-3.12-rc3. šI haven't performed any
-> performance testing UBIFS using lz4hc, but I can mount UBIFS volumes
-> and haven't seen any problems yet. šThe only think I know that isn't
-> correct about the patch is the description for the Kconfig element for
-> select lz4hc as a compression option. šI only copied the description
-> from the lzo description.
+> And it seems i have to add new devicetree property to enable the JFFS2
+> support.
 
-Hi Brent,
+We cannot use device-tree to enable JFFS2 (a purely software issue),
+but you could use it to specify the ECC strength or layout. Be sure to
+CC devicetree@vger.kernel.org on any new bindings, since they need to
+review bindings and tend to have good input.
 
-I'm testing your patch on my SH4 device. When I create new partition
-with lz4hc compressor, it works fine: I can copy file into it, and
-md5sums of original and copy match. However, after reboot I cannot
-read the file anymore:
-
-UBIFS error (pid 1101): ubifs_decompress: cannot decompress 934 bytes, compressor lz4hc, error -22
-UBIFS error (pid 1101): read_block: bad data node (block 1, inode 65)
-UBIFS error (pid 1101): do_readpage: cannot read page 1 of inode 65, error -22
-
-The same error appears if I use lz4hc-compressed ubifs image to flash rootfs
-(using patched mkfs.ubifs).
-
-Decompression error occurs in lz4_uncompress() function (lib/lz4/lz4_decompress.c),
-on the line 101:
-
-/* Error: offset create reference outside destination buffer */
-if (unlikely(ref < (BYTE *const) dest))
-    goto _output_error;
-
-Brent: are you able to read data from lz4hc volume on your device?
-Anyone: any ideas what may happen here?
-
--- 
-Regards,
-Konstantin
+Brian
