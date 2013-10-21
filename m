@@ -1,16 +1,15 @@
-Received: from mail-ea0-x232.google.com ([2a00:1450:4013:c01::232])
+Received: from mail-ea0-x22d.google.com ([2a00:1450:4013:c01::22d])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VYMBt-0003Et-NM
- for linux-mtd@lists.infradead.org; Mon, 21 Oct 2013 20:35:06 +0000
-Received: by mail-ea0-f178.google.com with SMTP id a15so3822587eae.9
- for <linux-mtd@lists.infradead.org>; Mon, 21 Oct 2013 13:34:42 -0700 (PDT)
+ id 1VYMCr-0003GA-OL
+ for linux-mtd@lists.infradead.org; Mon, 21 Oct 2013 20:36:06 +0000
+Received: by mail-ea0-f173.google.com with SMTP id g10so3764320eak.4
+ for <linux-mtd@lists.infradead.org>; Mon, 21 Oct 2013 13:35:42 -0700 (PDT)
 From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 To: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>,
  David Woodhouse <David.Woodhouse@intel.com>
-Subject: [RESEND][PATCH V2] mtd: bcm47xxpart: detect block aligned Squashfs
- partition
-Date: Mon, 21 Oct 2013 22:34:37 +0200
-Message-Id: <1382387677-22006-1-git-send-email-zajec5@gmail.com>
+Subject: [RESEND][PATCH] mtd: bcm47xxpart: detect "factory" partition
+Date: Mon, 21 Oct 2013 22:35:34 +0200
+Message-Id: <1382387734-22049-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -25,17 +24,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Most of the bcm47xx devices use TRX format for storing kernel and some
-partition like Squashfs or JFFS2. This is pretty flexible solution, CFE
-(the bootloader) just writes (and later boots) TRX at some hardcoded
-place and paritions can vary in the size.
-
-However some devices don't use TRX format. Very recently we have
-discovered ZTE H218N that has kernel and rootfs partitions at some
-"random" places.
-
-This patch allows Linux find a rootfs partition after installing custom
-image with a CFE bootloader.
+A new type of partition with magic FCTY was found on Huawei E970:
+46 43 54 59 4b 51 37 4e  41 42 31 38 41 32 39 30  |FCTYKQ7NAB18A290|
 
 Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
 ---
@@ -43,30 +33,30 @@ Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
  1 file changed, 8 insertions(+)
 
 diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
-index 9279a91..61213f9 100644
+index 61213f9..20ef301 100644
 --- a/drivers/mtd/bcm47xxpart.c
 +++ b/drivers/mtd/bcm47xxpart.c
-@@ -32,6 +32,7 @@
- #define ML_MAGIC1			0x39685a42
- #define ML_MAGIC2			0x26594131
- #define TRX_MAGIC			0x30524448
-+#define SQSH_MAGIC			0x71736873	/* shsq */
+@@ -27,6 +27,7 @@
  
- struct trx_header {
- 	uint32_t magic;
-@@ -167,6 +168,13 @@ static int bcm47xxpart_parse(struct mtd_info *master,
- 			offset = rounddown(offset + trx->length, blocksize);
+ /* Magics */
+ #define BOARD_DATA_MAGIC		0x5246504D	/* MPFR */
++#define FACTORY_MAGIC			0x59544346	/* FCTY */
+ #define POT_MAGIC1			0x54544f50	/* POTT */
+ #define POT_MAGIC2			0x504f		/* OP */
+ #define ML_MAGIC1			0x39685a42
+@@ -111,6 +112,13 @@ static int bcm47xxpart_parse(struct mtd_info *master,
  			continue;
  		}
-+
-+		/* Squashfs on devices not using TRX */
-+		if (buf[0x000 / 4] == SQSH_MAGIC) {
-+			bcm47xxpart_add_part(&parts[curr_part++], "rootfs",
-+					     offset, 0);
+ 
++		/* Found on Huawei E970 */
++		if (buf[0x000 / 4] == FACTORY_MAGIC) {
++			bcm47xxpart_add_part(&parts[curr_part++], "factory",
++					     offset, MTD_WRITEABLE);
 +			continue;
 +		}
- 	}
- 
- 	/* Look for NVRAM at the end of the last block. */
++
+ 		/* POT(TOP) */
+ 		if (buf[0x000 / 4] == POT_MAGIC1 &&
+ 		    (buf[0x004 / 4] & 0xFFFF) == POT_MAGIC2) {
 -- 
 1.7.10.4
