@@ -1,20 +1,21 @@
-Received: from am1ehsobe006.messaging.microsoft.com ([213.199.154.209]
- helo=am1outboundpool.messaging.microsoft.com)
+Received: from ch1ehsobe001.messaging.microsoft.com ([216.32.181.181]
+ helo=ch1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VY6GU-0000yh-JJ
- for linux-mtd@lists.infradead.org; Mon, 21 Oct 2013 03:34:47 +0000
-Message-ID: <5264A0B4.1050300@freescale.com>
-Date: Mon, 21 Oct 2013 09:04:12 +0530
-From: Prabhakar Kushwaha <prabhakar@freescale.com>
+ id 1VY6Ja-00013T-Mw
+ for linux-mtd@lists.infradead.org; Mon, 21 Oct 2013 03:37:59 +0000
+Message-ID: <5264A220.2070900@freescale.com>
+Date: Mon, 21 Oct 2013 11:40:16 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-To: Prabhakar Kushwaha <prabhakar@freescale.com>,
- <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH] driver/mtd/ifc: Read Status while programming NAND flash
-References: <1380780401-6640-1-git-send-email-prabhakar@freescale.com>
-In-Reply-To: <1380780401-6640-1-git-send-email-prabhakar@freescale.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: scottwood@freescale.com, dedekind1@gmail.com
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH V2 0/4] mtd: gpmi: support two nand chips at most
+References: <1377595747-21033-1-git-send-email-b32955@freescale.com>	<5260DA32.4090502@freescale.com>
+ <CAN8TOE8xDdRF4Hf+p4JMAixWfkxkbKCZB-fqpPA6yiMHYm=Qew@mail.gmail.com>
+In-Reply-To: <CAN8TOE8xDdRF4Hf+p4JMAixWfkxkbKCZB-fqpPA6yiMHYm=Qew@mail.gmail.com>
+Content-Type: text/plain; charset="GB2312"
+Content-Transfer-Encoding: quoted-printable
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,91 +25,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
-
-This patch is present in upstream review list from a long time.
-There are no review comments.
-
-So, I request you to pick this patch for linux-mtd.git repository.
-
-Regards,
-Prabhakar
-
-
-On 10/03/2013 11:36 AM, Prabhakar Kushwaha wrote:
-> as per controller description,
->    "While programming a NAND flash, status read should never skipped.
->     Because it may happen that a new command is issued to the NAND Flash,
->     even when the device has not yet finished processing the previous request.
->     This may result in unpredictable behaviour."
+=D3=DA 2013=C4=EA10=D4=C219=C8=D5 10:01, Brian Norris =D0=B4=B5=C0:
+> Yes, I seem to have overlooked this set. I think it must have come in
+> parallel with your MLC patch set, so I delayed it until the MLC patch
+> set settled down?
 >
-> IFC controller never polls for R/B signal after command send. It just return
-> control to software. This behaviour may not occur with NAND flash access.
-> because new commands are sent after polling R/B signal. But it may happen
-> in scenario where GPCM-ASIC and NAND flash device are working simultaneously.
+this patch set has no relationship with MLC patch.
+
+> Anyway, I'll revisit this soon. But I probably need to take care of
+> your mtd-utils updates first, since they should go along with the MLC
+> patch set.
 >
-> Update the controller driver to take care of this requirement
->
-> Signed-off-by: Prabhakar Kushwaha <prabhakar@freescale.com>
-> ---
->   drivers/mtd/nand/fsl_ifc_nand.c |   34 ++++++++++++++++++++++++----------
->   1 file changed, 24 insertions(+), 10 deletions(-)
->
-> diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
-> index a14885b..eb150f1 100644
-> --- a/drivers/mtd/nand/fsl_ifc_nand.c
-> +++ b/drivers/mtd/nand/fsl_ifc_nand.c
-> @@ -504,20 +504,29 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, unsigned int command,
->   		if (mtd->writesize > 512) {
->   			nand_fcr0 =
->   				(NAND_CMD_SEQIN << IFC_NAND_FCR0_CMD0_SHIFT) |
-> -				(NAND_CMD_PAGEPROG << IFC_NAND_FCR0_CMD1_SHIFT);
-> +				(NAND_CMD_STATUS << IFC_NAND_FCR0_CMD1_SHIFT) |
-> +				(NAND_CMD_PAGEPROG << IFC_NAND_FCR0_CMD2_SHIFT);
->   
->   			iowrite32be(
-> -				(IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
-> -				(IFC_FIR_OP_CA0 << IFC_NAND_FIR0_OP1_SHIFT) |
-> -				(IFC_FIR_OP_RA0 << IFC_NAND_FIR0_OP2_SHIFT) |
-> -				(IFC_FIR_OP_WBCD << IFC_NAND_FIR0_OP3_SHIFT) |
-> -				(IFC_FIR_OP_CW1 << IFC_NAND_FIR0_OP4_SHIFT),
-> -				&ifc->ifc_nand.nand_fir0);
-> +				 (IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
-> +				 (IFC_FIR_OP_CA0 << IFC_NAND_FIR0_OP1_SHIFT) |
-> +				 (IFC_FIR_OP_RA0 << IFC_NAND_FIR0_OP2_SHIFT) |
-> +				 (IFC_FIR_OP_WBCD  << IFC_NAND_FIR0_OP3_SHIFT) |
-> +				 (IFC_FIR_OP_CMD2 << IFC_NAND_FIR0_OP4_SHIFT),
-> +				 &ifc->ifc_nand.nand_fir0);
-> +			iowrite32be(
-> +				 (IFC_FIR_OP_CW1 << IFC_NAND_FIR1_OP5_SHIFT) |
-> +				 (IFC_FIR_OP_RDSTAT <<
-> +					IFC_NAND_FIR1_OP6_SHIFT) |
-> +				 (IFC_FIR_OP_NOP << IFC_NAND_FIR1_OP7_SHIFT),
-> +				 &ifc->ifc_nand.nand_fir1);
->   		} else {
->   			nand_fcr0 = ((NAND_CMD_PAGEPROG <<
->   					IFC_NAND_FCR0_CMD1_SHIFT) |
->   				    (NAND_CMD_SEQIN <<
-> -					IFC_NAND_FCR0_CMD2_SHIFT));
-> +					IFC_NAND_FCR0_CMD2_SHIFT) |
-> +				    (NAND_CMD_STATUS <<
-> +					IFC_NAND_FCR0_CMD3_SHIFT));
->   
->   			iowrite32be(
->   				(IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
-> @@ -526,8 +535,13 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, unsigned int command,
->   				(IFC_FIR_OP_RA0 << IFC_NAND_FIR0_OP3_SHIFT) |
->   				(IFC_FIR_OP_WBCD << IFC_NAND_FIR0_OP4_SHIFT),
->   				&ifc->ifc_nand.nand_fir0);
-> -			iowrite32be(IFC_FIR_OP_CW1 << IFC_NAND_FIR1_OP5_SHIFT,
-> -				    &ifc->ifc_nand.nand_fir1);
-> +			iowrite32be(
-> +				 (IFC_FIR_OP_CMD1 << IFC_NAND_FIR1_OP5_SHIFT) |
-> +				 (IFC_FIR_OP_CW3 << IFC_NAND_FIR1_OP6_SHIFT) |
-> +				 (IFC_FIR_OP_RDSTAT <<
-> +					IFC_NAND_FIR1_OP7_SHIFT) |
-> +				 (IFC_FIR_OP_NOP << IFC_NAND_FIR1_OP8_SHIFT),
-> +				  &ifc->ifc_nand.nand_fir1);
->   
->   			if (column >= mtd->writesize)
->   				nand_fcr0 |=
+> And on top of that (to update the world on daily status), I seem to be
+> tripping over some UBIFS bugs that are inhibiting the validation I'm
+> trying to do for some new hardware. So, I'm all-around pretty busy!
+> I'll get myself together next week, hopefully.
+understood.
+
+
+I am too busy too, i am starting to code the Qspi driver now.
+I was blocked by a bluetooth/uart/dma issue last month.
+> In the meantime, other people's code could use some extra eyes. I know
+> Ezequiel just sent out a 27 (!) patch series today. There's also the
+> pending cmdline.c patch from months ago, where Cai Zhiyong wanted to
+> migrate our command line partition parser to a common
+> block/cmdline-parser.c. Part of her work (for block devices) is
+I like Cai zhiyong's patch. But I do not have time to test his patch.
+
+
+thanks
+Huang Shijie
