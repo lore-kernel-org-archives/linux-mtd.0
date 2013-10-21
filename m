@@ -1,25 +1,28 @@
-Received: from mail-ob0-x235.google.com ([2607:f8b0:4003:c01::235])
+Received: from mail-oa0-x235.google.com ([2607:f8b0:4003:c02::235])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VYJU5-0000ZP-KP
- for linux-mtd@lists.infradead.org; Mon, 21 Oct 2013 17:41:42 +0000
-Received: by mail-ob0-f181.google.com with SMTP id va2so6293262obc.12
- for <linux-mtd@lists.infradead.org>; Mon, 21 Oct 2013 10:41:20 -0700 (PDT)
+ id 1VYJab-0000hw-0P
+ for linux-mtd@lists.infradead.org; Mon, 21 Oct 2013 17:48:25 +0000
+Received: by mail-oa0-f53.google.com with SMTP id n12so4008183oag.12
+ for <linux-mtd@lists.infradead.org>; Mon, 21 Oct 2013 10:48:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <5264DFF7.2090702@freescale.com>
-References: <CAJ+vNU1JWZp=JoBDJALh59yFybGZ0iQxMEYy8qvTFGDLhyRzqg@mail.gmail.com>
- <52649FDA.1030804@freescale.com>
- <CAN8TOE9+ez=t-1n+jd5d3tu+EB9YJKFeM2RKAHBf059L5TYM7A@mail.gmail.com>
- <5264DFF7.2090702@freescale.com>
-Date: Mon, 21 Oct 2013 10:41:17 -0700
-Message-ID: <CAN8TOE-swY_uA3u3OBt3ip-F=s3_H5hDZE=uDE5VNBGCeZc-XA@mail.gmail.com>
-Subject: Re: gpmi-mtd ecc regression
+In-Reply-To: <20131020105359.GA2465@localhost>
+References: <1382077253-21709-1-git-send-email-b32955@freescale.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EA2866E@DBDE04.ent.ti.com>
+ <20131019130846.GB2470@localhost>
+ <20980858CB6D3A4BAE95CA194937D5E73EA28EB9@DBDE04.ent.ti.com>
+ <20131020105359.GA2465@localhost>
+Date: Mon, 21 Oct 2013 10:48:03 -0700
+Message-ID: <CAN8TOE8btxKEhKGX-wVD5Bo2UcsouHSWSLZjYPqn+R-jiXj5Zw@mail.gmail.com>
+Subject: Re: [PATCH] mtd: nand: use a local variable to simplify the
+ nand_scan_tail
 From: Brian Norris <computersforpeace@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Content-Type: text/plain; charset=GB2312
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: quoted-printable
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Tim Harvey <tharvey@gateworks.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: Huang Shijie <b32955@freescale.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, "Gupta, Pekon" <pekon@ti.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,22 +32,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Oct 21, 2013 at 1:04 AM, Huang Shijie <b32955@freescale.com> wrote:
-> =D3=DA 2013=C4=EA10=D4=C221=C8=D5 15:21, Brian Norris =D0=B4=B5=C0:
->> Well, we do prioritize "no regressions", rather than new features. So
->> we may have to do this until a proper solution can be formed.
-> ok.
+On Sun, Oct 20, 2013 at 3:54 AM, Ezequiel Garcia
+<ezequiel.garcia@free-electrons.com> wrote:
+> On Sun, Oct 20, 2013 at 07:01:11AM +0000, Gupta, Pekon wrote:
+>> > From: Ezequiel Garcia [mailto:ezequiel.garcia@free-electrons.com]
+>> > > On Fri, Oct 18, 2013 at 02:11:19PM +0000, Gupta, Pekon wrote:
+>> > > Personally I won't prefer such stand-alone cleanup  _unless_ there i=
+s
+>> > > major driver re-write of the code, because this breaks the traceabil=
+ity
+>> > > via 'git blame'. And even in that case, this change should be applie=
+d first,
+>> > > and the other functional updates later.
+>> > >
+>> >
+>> > Hm.. I'm not sure I agree here. I like this patch and I like the effec=
+t
+>> > it has on nand_scan_tail().
+>> >
+>> > On a personal note, I hardly ever use git blame at all (because it's d=
+ead
+>> > slow). Instead, I just run git log ${file} and get the latest changes =
+on
+>> > that file.
+>> >
+>> Its rather difficult to use 'git log' especially when you are tracing or=
+ debugging
+>> a generic driver, and want to know why this piece of code was introduced=
+,
+>> and the idea behind it. 'git log' won=92t show line by line commit detai=
+ls.
 >
-> I will create a patch to fix this regression.
+> Quite the opposite 'git log --patch' shows the commit details.
+> Or maybe you need something that I'm not aware of?
+>
+> I really don't think we should dis-encourage cleanups -in what ever form
+> and time they might come- just to preserve the last 'major' author of a f=
+ile.
 
-Yes. We should either get it into 3.12 or mark it -stable.
-
-> And it seems i have to add new devicetree property to enable the JFFS2
-> support.
-
-We cannot use device-tree to enable JFFS2 (a purely software issue),
-but you could use it to specify the ECC strength or layout. Be sure to
-CC devicetree@vger.kernel.org on any new bindings, since they need to
-review bindings and tend to have good input.
+I'm fairly neutral regarding the value of this particular patch (it
+doesn't add a lot of value to me) but I agree with Ezequiel's
+sentiment. Unless we have a stronger reason for avoiding this change,
+I will probably take it.
 
 Brian
