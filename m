@@ -1,21 +1,21 @@
-Received: from mail-ie0-x229.google.com ([2607:f8b0:4001:c03::229])
+Received: from mail-ea0-x232.google.com ([2a00:1450:4013:c01::232])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VYK1a-0001AG-PY
- for linux-mtd@lists.infradead.org; Mon, 21 Oct 2013 18:16:19 +0000
-Received: by mail-ie0-f169.google.com with SMTP id ar20so12520383iec.28
- for <linux-mtd@lists.infradead.org>; Mon, 21 Oct 2013 11:15:57 -0700 (PDT)
-Date: Mon, 21 Oct 2013 11:15:53 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: nand: hack ONFI for non-power-of-2 dimensions
-Message-ID: <20131021181553.GJ23337@ld-irv-0074.broadcom.com>
-References: <1377656358-7053-1-git-send-email-computersforpeace@gmail.com>
+ id 1VYMBt-0003Et-NM
+ for linux-mtd@lists.infradead.org; Mon, 21 Oct 2013 20:35:06 +0000
+Received: by mail-ea0-f178.google.com with SMTP id a15so3822587eae.9
+ for <linux-mtd@lists.infradead.org>; Mon, 21 Oct 2013 13:34:42 -0700 (PDT)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>,
+ David Woodhouse <David.Woodhouse@intel.com>
+Subject: [RESEND][PATCH V2] mtd: bcm47xxpart: detect block aligned Squashfs
+ partition
+Date: Mon, 21 Oct 2013 22:34:37 +0200
+Message-Id: <1382387677-22006-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1377656358-7053-1-git-send-email-computersforpeace@gmail.com>
-Cc: Huang Shijie <b32955@freescale.com>, David Woodhouse <dwmw2@infradead.org>,
- stable@vger.kernel.org, Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Hauke Mehrtens <hauke@hauke-m.de>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,59 +25,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Aug 27, 2013 at 07:19:18PM -0700, Brian Norris wrote:
-> Some bright specification writers decided to write this in the ONFI spec
-> (from ONFI 3.0, Section 3.1):
-> 
->   "The number of blocks and number of pages per block is not required to
->   be a power of two. In the case where one of these values is not a
->   power of two, the corresponding address shall be rounded to an
->   integral number of bits such that it addresses a range up to the
->   subsequent power of two value. The host shall not access upper
->   addresses in a range that is shown as not supported."
-> 
-> This breaks every assumption MTD makes about NAND block/chip-size
-> dimensions -- they *must* be a power of two!
-> 
-> And of course, an enterprising manufacturer has made use of this lovely
-> freedom. Exhibit A: Micron MT29F32G08CBADAWP
-> 
->   "- Plane size: 2 planes x 1064 blocks per plane
->    - Device size: 32Gb: 2128 blockss [sic]"
-> 
-> This quickly hits a BUG() in nand_base.c, since the extra dimensions
-> overflow so we think it's a second chip (on my single-chip setup):
-> 
->     ONFI param page 0 valid
->     ONFI flash detected
->     NAND device: Manufacturer ID: 0x2c, Chip ID: 0x44 (Micron MT29F32G08CBADAWP), 4256MiB, page size: 8192, OOB size: 744
->     ------------[ cut here ]------------
->     kernel BUG at drivers/mtd/nand/nand_base.c:203!
->     Internal error: Oops - BUG: 0 [#1] SMP ARM
->     [... trim ...]
->     [<c02cf3e4>] (nand_select_chip+0x18/0x2c) from [<c02d25c0>] (nand_do_read_ops+0x90/0x424)
->     [<c02d25c0>] (nand_do_read_ops+0x90/0x424) from [<c02d2dd8>] (nand_read+0x54/0x78)
->     [<c02d2dd8>] (nand_read+0x54/0x78) from [<c02ad2c8>] (mtd_read+0x84/0xbc)
->     [<c02ad2c8>] (mtd_read+0x84/0xbc) from [<c02d4b28>] (scan_read.clone.4+0x4c/0x64)
->     [<c02d4b28>] (scan_read.clone.4+0x4c/0x64) from [<c02d4c88>] (search_bbt+0x148/0x290)
->     [<c02d4c88>] (search_bbt+0x148/0x290) from [<c02d4ea4>] (nand_scan_bbt+0xd4/0x5c0)
->     [... trim ...]
->     ---[ end trace 0c9363860d865ff2 ]---
-> 
-> So to fix this, just truncate these dimensions down to the greatest
-> power-of-2 dimension that is less than or equal to the specified
-> dimension.
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Cc: <stable@vger.kernel.org>
+Most of the bcm47xx devices use TRX format for storing kernel and some
+partition like Squashfs or JFFS2. This is pretty flexible solution, CFE
+(the bootloader) just writes (and later boots) TRX at some hardcoded
+place and paritions can vary in the size.
 
-I've not heard any comments about this, but I've been using this patch
-for a few months on most of my kernels, and I just ran into another
-(unpatched) kernel/board that trips over this same problem. Unless
-someone screams...
+However some devices don't use TRX format. Very recently we have
+discovered ZTE H218N that has kernel and rootfs partitions at some
+"random" places.
 
-... applied to l2-mtd.git, with CC -stable. Although it is a bugfix, I
-think it should wait until next merge window so it can sit in -next for
-a while.
+This patch allows Linux find a rootfs partition after installing custom
+image with a CFE bootloader.
 
-Brian
+Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+---
+ drivers/mtd/bcm47xxpart.c |    8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
+index 9279a91..61213f9 100644
+--- a/drivers/mtd/bcm47xxpart.c
++++ b/drivers/mtd/bcm47xxpart.c
+@@ -32,6 +32,7 @@
+ #define ML_MAGIC1			0x39685a42
+ #define ML_MAGIC2			0x26594131
+ #define TRX_MAGIC			0x30524448
++#define SQSH_MAGIC			0x71736873	/* shsq */
+ 
+ struct trx_header {
+ 	uint32_t magic;
+@@ -167,6 +168,13 @@ static int bcm47xxpart_parse(struct mtd_info *master,
+ 			offset = rounddown(offset + trx->length, blocksize);
+ 			continue;
+ 		}
++
++		/* Squashfs on devices not using TRX */
++		if (buf[0x000 / 4] == SQSH_MAGIC) {
++			bcm47xxpart_add_part(&parts[curr_part++], "rootfs",
++					     offset, 0);
++			continue;
++		}
+ 	}
+ 
+ 	/* Look for NVRAM at the end of the last block. */
+-- 
+1.7.10.4
