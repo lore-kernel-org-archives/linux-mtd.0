@@ -1,22 +1,23 @@
-Date: Sun, 20 Oct 2013 15:24:41 -0400
-From: Jason Cooper <jason@lakedaemon.net>
-To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Subject: Re: [PATCH v2 00/27] Armada 370/XP NAND support
-Message-ID: <20131020192441.GC15169@titan.lakedaemon.net>
-References: <1382137374-21251-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <20131019063535.GC20157@1wt.eu>
- <20131019142549.GO22434@titan.lakedaemon.net>
- <20131019162158.GA3044@localhost> <20131020195049.7e683d0f@skate>
+Received: from ch1ehsobe006.messaging.microsoft.com ([216.32.181.186]
+ helo=ch1outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VY5fB-0000Se-A2
+ for linux-mtd@lists.infradead.org; Mon, 21 Oct 2013 02:56:13 +0000
+Message-ID: <52649857.2040306@freescale.com>
+Date: Mon, 21 Oct 2013 10:58:31 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20131020195049.7e683d0f@skate>
-Cc: Lior Amsalem <alior@marvell.com>, Tawfik Bayouk <tawfik@marvell.com>,
- Daniel Mack <zonque@gmail.com>, linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>, Willy Tarreau <w@1wt.eu>,
- linux-arm-kernel@lists.infradead.org
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH v3 00/10] About the SLC/MLC
+References: <1377509808-29363-1-git-send-email-b32955@freescale.com>
+ <20130826144153.568f2b1c@skate> <20130827033020.GA2182@gmail.com>
+ <20131019133205.GD2470@localhost>
+In-Reply-To: <20131019133205.GD2470@localhost>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, dedekind1@gmail.com,
+ dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+ computersforpeace@gmail.com, Huang Shijie <shijie8@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,40 +27,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Oct 20, 2013 at 07:50:49PM +0200, Thomas Petazzoni wrote:
-> Dear Ezequiel Garcia,
-> 
-> On Sat, 19 Oct 2013 13:21:59 -0300, Ezequiel Garcia wrote:
-> 
-> > > > I strongly believe that all the information above is very valuable and
-> > > > that it's a shame to lose it in a cover message. It would definitely
-> > > > make sense to have this in a doc file.
-> > > 
-> > > Agreed.  Great work Ezequiel!  Let's capture this in Documentation/.
-> > > 
-> > 
-> > Wait a second!
-> > 
-> >   $ ls Documentation/mtd/ | wc -l
-> >   1
-> > 
-> > Isn't documenting deprecated? ...
-> > 
-> > Just kiddin'! I'll add this and the other cover to Documentation/
-> > so typos and english fixes are welcome!
-> 
-> I certainly agree this documentation should be kept, but I'm wondering
-> if keeping it as a comment inside the driver doesn't make more sense.
+=E4=BA=8E 2013=E5=B9=B410=E6=9C=8819=E6=97=A5 21:32, Ezequiel Garcia =E5=86=
+=99=E9=81=93:
+> Do you mean that JFFS2 will write twice: one write to the spare region,
+> one write in the data region, with no erase between those two?
+yes. The first time to write the clean marker, the another is to write=20
+the data.
 
-That's a _long_ comment...
-
-> This document is really more about specific implementation details, and
-> the next person looking at the driver is not very likely to search such
-> details in Documentation/, in my opinion.
-
-A succinct comment in the code pointing to the Documentation/ should be
-sufficient.
-
-thx,
-
-Jason.
+thanks
+Huang Shijie
