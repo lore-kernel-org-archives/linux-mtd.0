@@ -1,22 +1,27 @@
-Received: from mail-ie0-x229.google.com ([2607:f8b0:4001:c03::229])
+Received: from mail-oa0-x22d.google.com ([2607:f8b0:4003:c02::22d])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VYh8a-0002jw-KR
- for linux-mtd@lists.infradead.org; Tue, 22 Oct 2013 18:57:05 +0000
-Received: by mail-ie0-f169.google.com with SMTP id ar20so2577686iec.0
- for <linux-mtd@lists.infradead.org>; Tue, 22 Oct 2013 11:56:43 -0700 (PDT)
-Date: Tue, 22 Oct 2013 11:56:39 -0700
+ id 1VYiNo-0004KA-8K
+ for linux-mtd@lists.infradead.org; Tue, 22 Oct 2013 20:16:53 +0000
+Received: by mail-oa0-f45.google.com with SMTP id i4so7100683oah.18
+ for <linux-mtd@lists.infradead.org>; Tue, 22 Oct 2013 13:16:31 -0700 (PDT)
+Date: Tue, 22 Oct 2013 13:16:24 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH] mtd: gpmi: fix the ecc regression
-Message-ID: <20131022185639.GK23337@ld-irv-0074.broadcom.com>
-References: <1382418628-4521-1-git-send-email-b32955@freescale.com>
+To: Pekon Gupta <pekon@ti.com>
+Subject: Re: [PATCH v10 04/10] mtd: nand: omap: fix device scan:
+ NAND_CMD_READID, NAND_CMD_RESET, CMD_CMD_PARAM use only x8 bus
+Message-ID: <20131022201624.GL23337@ld-irv-0074.broadcom.com>
+References: <1382172254-12448-1-git-send-email-pekon@ti.com>
+ <1382172254-12448-5-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1382418628-4521-1-git-send-email-b32955@freescale.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- dedekind1@gmail.com, tharvey@gateworks.com, linux-mtd@lists.infradead.org,
- dwmw2@infradead.org
+In-Reply-To: <1382172254-12448-5-git-send-email-pekon@ti.com>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, arnd@arndb.de,
+ Pawel.Moll@arm.com, ijc+devicetree@hellion.org.uk, tony@atomide.com,
+ jp.francois@cynove.com, dedekind1@gmail.com, avinashphilipk@gmail.com,
+ balbi@ti.com, robherring2@gmail.com, bcousson@baylibre.com,
+ swarren@wwwdotorg.org, olof@lixom.net, linux-mtd@lists.infradead.org,
+ ivan.djelic@parrot.com, linux-omap@vger.kernel.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,101 +31,164 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Huang,
+Hi Pekon,
 
-On Tue, Oct 22, 2013 at 01:10:28PM +0800, Huang Shijie wrote:
-> The patch "2febcdf mtd: gpmi: set the BCHs geometry with the ecc info"
-> makes the gpmi to use the ECC info provided by the MTD code, and creates
-> a different NAND ecc layout for the BCH which brings a regression to us:
->    We can not mount the ubifs which was created by the old NAND ecc layout.
+On Sat, Oct 19, 2013 at 02:14:08PM +0530, Pekon Gupta wrote:
+> As per comments below, NAND_CMD_RESET, NAND_CMD_READID, and NAND_CMD_PARAM would
+> work only in x8 mode.
+>     commit 64b37b2a63eb2f80b65c7185f0013f8ffc637ae3
+>     Author:     Matthieu CASTET <matthieu.castet@parrot.com>
+>     AuthorDate: 2012-11-06
+>     Note that nand_scan_ident send command (NAND_CMD_RESET, NAND_CMD_READID, NAND_CMD_PARAM), address and read data
+>     The ONFI specificication is not very clear for x16 device if high byte of address should be driven to 0,
+>     but according to [1] it should be ok to not drive it during autodetection.
 > 
-> This patch adds a new property : "fsl,use-mtd-ecc-info".
-
-You have a regression in your driver. You need to fix the regression
-first, so we can get that into 3.12 (or at this point, more likely
--stable). This could be something like you simple diff you sent earlier.
-
-*After* we fix the regression, we can discuss new DT bindings.
-
-> If we do not enable it, we will use the ecc strength calculated by ourselves
-> and use all the OOB area (this is the legacy method);
+>     [1]
+>     3.3.2. Target Initialization
 > 
-> If we enable it, we will use the ecc strength provided by the MTD layer,
-> and create a new NAND ecc layout which may has free space in the OOB
-> (for some SLC nand, we may support the JFFS2 with the new NAND ecc layout).
+>     [...]
+>     The Read ID and Read Parameter Page commands only use the lower 8-bits of the data bus.
+>     The host shall not issue commands that use a word data width on x16 devices until the host
+>     determines the device supports a 16-bit data bus width in the parameter page.
 > 
-> Signed-off-by: Huang Shijie <b32955@freescale.com>
+> Thus this patch run nand_scan_ident() with driver configured as x8 device.
+
+So are you saying that the driver currently doesn't work if you started
+in x16 buswidth? Are you having problems with a particular setup? What
+sort of devices are you testing?
+
+Running nand_scan_ident() with x8 when the device is actualy x16 will
+just cause nand_scan_ident() to abort with an error. It doesn't help you
+with the fact that RESET/READID/PARAM need special 8-bit handling on x16
+devices, so you're not solving the problem alluded to by Matthieu.
+
+> Once the NAND device is detected, and its ONFI params are read, the driver
+> is re-configured based on device-width as passed by DT bindinig 'nand-bus-width'
+> 
+> In-case there is a mis-match between the DT binding 'nand-bus-width' and actual
+> device-width detected during nand_get_flash_type() then probe returns failure.
+> 
+> All other low-level callback updates happen after the device detection.
+> 
+> Signed-off-by: Pekon Gupta <pekon@ti.com>
+
+What is your patch trying to solve? It seems like it's just a distortion
+of the same code that existed previously. It tries running
+nand_scan_ident() in one buswidth configuration, and then it tries the
+other if it failed. You still aren't doing either of the options we
+talked about previously. I'll repeat them:
+
+(1) You specify the buswidth given by device-tree/platform-data; if this
+    is incorrect, you fail
+
+(2) You auto-configure using NAND_BUSWIDTH_AUTO, and you use that to
+    validate the platform data; you just warn if the buswidth provided
+    by device-tree/platform-data was incorrect
+
+Am I sensing that you are having some implementation problem with one of
+these? You really shouldn't need to run nand_scan_ident() twice.
+
+Or perhaps the "solution" in this patch is just that you're moving
+around the reassignment of the callback functions? If so, this is not
+obvious... see below.
+
 > ---
->  .../devicetree/bindings/mtd/gpmi-nand.txt          |    4 ++++
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.c             |    7 ++++++-
->  2 files changed, 10 insertions(+), 1 deletions(-)
+>  drivers/mtd/nand/omap2.c | 45 +++++++++++++++++++++++++++++++++------------
+>  1 file changed, 33 insertions(+), 12 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
-> index 551b2a1..fe84a3d 100644
-> --- a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
-> +++ b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
-> @@ -17,6 +17,10 @@ Required properties:
->  Optional properties:
->    - nand-on-flash-bbt: boolean to enable on flash bbt option if not
->                         present false
-> +  - fsl,use-mtd-ecc-info: By enabling this boolean property, the gpmi can uses
-> +                       the MTD's ECC info (if the MTD has). So we may have free
-> +                       space in the OOB area, and we may support the JFFS2 with
-> +                       some SLC nand, such as Micron's SLC nand.
-
-As Mark mentioned, this description is very Linux-specific. And
-honestly, I don't even understand what this description means except
-that I reviewed your patches and this recent regression report. It is
-not self explanatory at all.
-
-Rhetorical question: What is "the MTD's ECC info"? What am I specifying
-by putting this property in the device tree?
-
-(Answer (?): you're looking for the ECC requirements from the data
-sheet, which happens to be automatically discoverable in some cases.)
-
-... so why don't you just add a DT property to actually specify the ECC
-selection itself, rather than indirectly specifying it through a vague
-specification and knowledge of how your driver handles it?
-
-Or, is the difference between your "legacy" and "new" layout more than
-just the choice of ECC strength and step size? If so, then this should
-be documented [1], and that well-specified difference in layout should
-become part of the DT binding.
-
->  The device tree may optionally contain sub-nodes describing partitions of the
->  address space. See partition.txt for more detail.
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> index 5a1bbc7..62c0712 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> @@ -271,7 +271,9 @@ static int legacy_set_geometry(struct gpmi_nand_data *this)
->  		dev_err(this->dev,
->  			"We can not support this nand chip."
->  			" Its required ecc strength(%d) is beyond our"
-> -			" capability(%d).\n", geo->ecc_strength,
-> +			" capability(%d). If you have not enabled the"
-> +			"'fsl,use-mtd-ecc-info', enable it and try again.\n",
-> +			geo->ecc_strength,
->  			(GPMI_IS_MX6Q(this) ? MX6_ECC_STRENGTH_MAX
->  					: MXS_ECC_STRENGTH_MAX));
->  		return -EINVAL;
-> @@ -352,6 +354,9 @@ static int legacy_set_geometry(struct gpmi_nand_data *this)
+> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+> index 5596368..d29edda 100644
+> --- a/drivers/mtd/nand/omap2.c
+> +++ b/drivers/mtd/nand/omap2.c
+> @@ -1856,7 +1856,6 @@ static int omap_nand_probe(struct platform_device *pdev)
+>  	mtd->name		= dev_name(&pdev->dev);
+>  	mtd->owner		= THIS_MODULE;
+>  	nand_chip		= &info->nand;
+> -	nand_chip->options	= pdata->devsize;
+>  	nand_chip->options	|= NAND_SKIP_BBTSCAN;
+>  #ifdef CONFIG_MTD_NAND_OMAP_BCH
+>  	info->of_node		= pdata->of_node;
+> @@ -1904,6 +1903,39 @@ static int omap_nand_probe(struct platform_device *pdev)
+>  		nand_chip->chip_delay = 50;
+>  	}
 >  
->  int common_nfc_set_geometry(struct gpmi_nand_data *this)
->  {
-> +	if (!of_property_read_bool(this->dev->of_node, "fsl,use-mtd-ecc-info"))
-> +		return legacy_set_geometry(this);
-> +
->  	return set_geometry_by_ecc_info(this) ? 0 : legacy_set_geometry(this);
->  }
+> +	/* scan NAND device connected to chip controller */
 
-Your first patch just needs to involve rearranging the calls to
-legacy_set_geometry() and set_geometry_by_ecc_info() without any new
-help from device tree.
+Why is this comment separated from the comment below it? Either give a
+newline between them (if they're really separate) or make it a single
+comment block.
+
+> +	/* configure driver in x8 mode to read ONFI parameter page, as
+> +	 * NAND_CMD_READID & NAND_CMD_PARAM may not work in x16 mode */
+> +	nand_chip->options &= ~NAND_BUSWIDTH_16;
+> +	if (nand_scan_ident(mtd, 1, NULL)) {
+> +		/* nand_scan_ident failed */
+> +		if (pdata->devsize) {
+> +			/* may be because of mis-match of device-width,
+> +			 * platform data (DT binding) also says its x16 device
+> +			 * So re-scan with proper device-width */
+> +			nand_chip->options |= pdata->devsize;
+> +			if (nand_scan_ident(mtd, 1, NULL)) {
+> +				err = -ENXIO;
+> +				goto out_release_mem_region;
+> +			}
+> +		} else {
+> +			/* some genuine failure, because even platform-data
+> +			 * (DT binding) says that bus-width is x8 */
+> +			err = -ENXIO;
+> +			goto out_release_mem_region;
+> +		}
+> +	} else {
+> +		/* nand_scan_ident passed with x8 mode */
+> +		if (pdata->devsize) {
+> +			/* but platform-data (DT binding) say its x16 device */
+> +			pr_err("%s: incorrect bus-width config\n", DRIVER_NAME);
+
+You only print this message in one case (detect x8, but DT said x16) and
+not the other (detect x16, but DT said x8). This is a result of your
+unnecessarily complicated logic here.
+
+> +			err = -EINVAL;
+> +			err = -ENXIO;
+> +			goto out_release_mem_region;
+> +		}
+> +	}
+> +
+> +	/* re-populate low-level callbacks based on xfer modes */
+
+So am I to understand that the main purpose of this patch is not about
+the detection of the buswidth type, but about the (re)assignment of the
+callback functions? If so, you aren't making it very clear. (I wasn't
+paying too much attention to the fact that this code block is being
+moved across all the callback assignments.) The above code is just a
+more verbose way of doing the same thing as the code you're replacing,
+with an extra check to compare with the device-tree/platform-data.
+
+>  	switch (pdata->xfer_type) {
+>  	case NAND_OMAP_PREFETCH_POLLED:
+>  		nand_chip->read_buf   = omap_read_buf_pref;
+> @@ -2011,17 +2043,6 @@ static int omap_nand_probe(struct platform_device *pdev)
+>  		}
+>  	}
+>  
+> -	/* DIP switches on some boards change between 8 and 16 bit
+> -	 * bus widths for flash.  Try the other width if the first try fails.
+> -	 */
+> -	if (nand_scan_ident(mtd, 1, NULL)) {
+> -		nand_chip->options ^= NAND_BUSWIDTH_16;
+> -		if (nand_scan_ident(mtd, 1, NULL)) {
+> -			err = -ENXIO;
+> -			goto out_release_mem_region;
+> -		}
+> -	}
+> -
+>  	/* rom code layout */
+>  	if (pdata->ecc_opt == OMAP_ECC_HAM1_CODE_HW) {
+>  
+
+Anyway, I'm just going to have to flat out NAK this patch for now.
+Please rework the series without this patch and we can continue
+discussion of this patch independently (for one, this thread does not
+need to CC all of the device-tree folks).
 
 Brian
-
-[1] Is it somewhere in your 50-line comments in
-drivers/mtd/nand/gpmi-nand/gpmi-nand.c? Perhaps this should migrate to
-Documentation/
