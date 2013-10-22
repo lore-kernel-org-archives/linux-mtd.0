@@ -1,20 +1,22 @@
-Received: from mail-ea0-x22d.google.com ([2a00:1450:4013:c01::22d])
+Received: from mail-ob0-x22e.google.com ([2607:f8b0:4003:c01::22e])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VYMCr-0003GA-OL
- for linux-mtd@lists.infradead.org; Mon, 21 Oct 2013 20:36:06 +0000
-Received: by mail-ea0-f173.google.com with SMTP id g10so3764320eak.4
- for <linux-mtd@lists.infradead.org>; Mon, 21 Oct 2013 13:35:42 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>,
- David Woodhouse <David.Woodhouse@intel.com>
-Subject: [RESEND][PATCH] mtd: bcm47xxpart: detect "factory" partition
-Date: Mon, 21 Oct 2013 22:35:34 +0200
-Message-Id: <1382387734-22049-1-git-send-email-zajec5@gmail.com>
+ id 1VYStH-0001Ex-85
+ for linux-mtd@lists.infradead.org; Tue, 22 Oct 2013 03:44:20 +0000
+Received: by mail-ob0-f174.google.com with SMTP id vb8so2390558obc.19
+ for <linux-mtd@lists.infradead.org>; Mon, 21 Oct 2013 20:43:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Hauke Mehrtens <hauke@hauke-m.de>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+In-Reply-To: <183031382371160@web6m.yandex.ru>
+References: <55541379679397@web20h.yandex.ru>
+ <CAP+RiCAVuUEfyjg02+ZjeFXgUuaRW+fuMB490Ce2Hq_4qHBL=A@mail.gmail.com>
+ <183031382371160@web6m.yandex.ru>
+Date: Mon, 21 Oct 2013 22:43:52 -0500
+Message-ID: <CAP+RiCDKgRqi8_Y4OMqyJyCUpKJW5BVE=hNwp3WzQ7PuOMWGMw@mail.gmail.com>
+Subject: Re: lz4hc compression in UBIFS?
+From: Brent Taylor <motobud@gmail.com>
+To: Konstantin Tokarev <annulen@yandex.ru>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,39 +26,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-A new type of partition with magic FCTY was found on Huawei E970:
-46 43 54 59 4b 51 37 4e  41 42 31 38 41 32 39 30  |FCTYKQ7NAB18A290|
+On Mon, Oct 21, 2013 at 10:59 AM, Konstantin Tokarev <annulen@yandex.ru> wrote:
+>
+>
+> 04.10.2013, 07:09, "Brent Taylor" <motobud@gmail.com>:
+>> Here is a patch based on linux-3.12-rc3.  I haven't performed any
+>> performance testing UBIFS using lz4hc, but I can mount UBIFS volumes
+>> and haven't seen any problems yet.  The only think I know that isn't
+>> correct about the patch is the description for the Kconfig element for
+>> select lz4hc as a compression option.  I only copied the description
+>> from the lzo description.
+>
+> Hi Brent,
+>
+> I'm testing your patch on my SH4 device. When I create new partition
+> with lz4hc compressor, it works fine: I can copy file into it, and
+> md5sums of original and copy match. However, after reboot I cannot
+> read the file anymore:
+>
+> UBIFS error (pid 1101): ubifs_decompress: cannot decompress 934 bytes, compressor lz4hc, error -22
+> UBIFS error (pid 1101): read_block: bad data node (block 1, inode 65)
+> UBIFS error (pid 1101): do_readpage: cannot read page 1 of inode 65, error -22
+>
+> The same error appears if I use lz4hc-compressed ubifs image to flash rootfs
+> (using patched mkfs.ubifs).
+>
+> Decompression error occurs in lz4_uncompress() function (lib/lz4/lz4_decompress.c),
+> on the line 101:
+>
+> /* Error: offset create reference outside destination buffer */
+> if (unlikely(ref < (BYTE *const) dest))
+>     goto _output_error;
+>
+> Brent: are you able to read data from lz4hc volume on your device?
+> Anyone: any ideas what may happen here?
+>
+> --
+> Regards,
+> Konstantin
 
-Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
----
- drivers/mtd/bcm47xxpart.c |    8 ++++++++
- 1 file changed, 8 insertions(+)
+Konstantin,
+   I haven't seen anything like that on my at91sam9m10g45-ek
+development board.  I haven't used a flash image from mkfs.ubifs yet.
+Is it possible the file system was not umounted cleanly before the
+reboot and UBIFS went through a recovery procedure?  Maybe something
+breaks with lz4hc when UBIFS does a recovery?  That's just a guess.
 
-diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
-index 61213f9..20ef301 100644
---- a/drivers/mtd/bcm47xxpart.c
-+++ b/drivers/mtd/bcm47xxpart.c
-@@ -27,6 +27,7 @@
- 
- /* Magics */
- #define BOARD_DATA_MAGIC		0x5246504D	/* MPFR */
-+#define FACTORY_MAGIC			0x59544346	/* FCTY */
- #define POT_MAGIC1			0x54544f50	/* POTT */
- #define POT_MAGIC2			0x504f		/* OP */
- #define ML_MAGIC1			0x39685a42
-@@ -111,6 +112,13 @@ static int bcm47xxpart_parse(struct mtd_info *master,
- 			continue;
- 		}
- 
-+		/* Found on Huawei E970 */
-+		if (buf[0x000 / 4] == FACTORY_MAGIC) {
-+			bcm47xxpart_add_part(&parts[curr_part++], "factory",
-+					     offset, MTD_WRITEABLE);
-+			continue;
-+		}
-+
- 		/* POT(TOP) */
- 		if (buf[0x000 / 4] == POT_MAGIC1 &&
- 		    (buf[0x004 / 4] & 0xFFFF) == POT_MAGIC2) {
--- 
-1.7.10.4
+Regards,
+Brent
