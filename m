@@ -1,19 +1,27 @@
-Received: from moutng.kundenserver.de ([212.227.126.186])
+Received: from szxga01-in.huawei.com ([119.145.14.64])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VYbju-0002hi-6P
- for linux-mtd@lists.infradead.org; Tue, 22 Oct 2013 13:11:20 +0000
-Message-ID: <5266794F.8020504@ammonit.com>
-Date: Tue, 22 Oct 2013 15:10:39 +0200
-From: =?ISO-8859-15?Q?Steffen_K=FChn?= <sk@ammonit.com>
+ id 1VYbmc-0002li-UP
+ for linux-mtd@lists.infradead.org; Tue, 22 Oct 2013 13:14:06 +0000
+From: Caizhiyong <caizhiyong@hisilicon.com>
+To: Andrew Morton <akpm@linux-foundation.org>, Ezequiel Garcia
+ <ezequiel.garcia@free-electrons.com>
+Subject: [PATCH 1/2] block: remove unrelated header files and export symbol
+Date: Tue, 22 Oct 2013 13:12:44 +0000
+Message-ID: <C3050A4DBA34F345975765E43127F10F1C084C73@szxeml512-mbs.china.huawei.com>
+References: <C3050A4DBA34F345975765E43127F10F1C0643B8@szxeml512-mbx.china.huawei.com>
+ <20131020120603.GA18678@localhost>
+In-Reply-To: <20131020120603.GA18678@localhost>
+Content-Language: zh-CN
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: problem with ecc errors and ubifs
-References: <52666705.8040000@ammonit.com>
- <alpine.DEB.2.00.1310221356080.28562@lnxricardw.se.axis.com>
-In-Reply-To: <alpine.DEB.2.00.1310221356080.28562@lnxricardw.se.axis.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Karel Zak <kzak@redhat.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Shmulik
+ Ladkani <shmulik.ladkani@gmail.com>,
+ "Wanglin \(Albert\)" <albert.wanglin@hisilicon.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,25 +31,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Ricard,
-
-thanks for your answer.
-
-> The risk would be that eventually the number of errors would grow past
-> the ECC capability and subsequently lead to unreadable data. If there
-> indeed is a bug in the scrubbing mechanism, I agree it would be better
-> to just correct the bits and hope not too many of them flip. But it
-> would be better to try and fix the problem with scrubbing...
-
-I agree with you that a fix of the scrubbing mechanism would be better.
-Unfortunately, the problem is very hard to reproduce (and debug).
-
-And perhaps it is already solved? My kernel is not the newest. But it is
-not possible to change the version because we have some patches (related
-to other hardware) which only works with kernel 3.2.
-
-Do you know about some important bug fixes which have something to do
-with the "scrubbing" in the last months?
-
-Best
-Steffen
+RnJvbTogQ2FpWmhpeW9uZyA8Y2FpemhpeW9uZ0BodWF3ZWkuY29tPg0KU3ViamVjdDogYmxvY2s6
+IHJlbW92ZSB1bnJlbGF0ZWQgaGVhZGVyIGZpbGVzIGFuZCBleHBvcnQgc3ltYm9sDQoNClRoaXMg
+cGF0Y2ggZml4IHVwIHRoZSBmb2xsb3dpbmcgaXRlbXM6DQogLSByZW1vdmUgdW5yZWxhdGVkIGhl
+YWRlciBmaWxlcy4NCiAtIGV4cG9ydCBpbnRlcmZhY2UgZnVuY3Rpb24uDQogLSBtb2RpZnkgZnVu
+Y3Rpb24gY21kbGluZV9wYXJ0c19wYXJzZSByZXR1cm4gdmFsdWUsIHRoaXMgd2lsbCBtYWtlDQog
+ICBpdCBtb3JlIGZyaWVuZGx5IGZvciB0aGUgY2FsbGVyLg0KDQpTaWduZWQtb2ZmLWJ5OiBDYWla
+aGl5b25nIDxjYWl6aGl5b25nQGh1YXdlaS5jb20+DQotLS0NCiBibG9jay9jbWRsaW5lLXBhcnNl
+ci5jICAgICAgICAgfCAxOCArKysrKysrKysrKy0tLS0tLS0NCiBpbmNsdWRlL2xpbnV4L2NtZGxp
+bmUtcGFyc2VyLmggfCAgOCArKysrLS0tLQ0KIDIgZmlsZXMgY2hhbmdlZCwgMTUgaW5zZXJ0aW9u
+cygrKSwgMTEgZGVsZXRpb25zKC0pDQoNCmRpZmYgLS1naXQgYS9ibG9jay9jbWRsaW5lLXBhcnNl
+ci5jIGIvYmxvY2svY21kbGluZS1wYXJzZXIuYw0KaW5kZXggY2MyNjM3Zi4uOWRiYzY3ZSAxMDA2
+NDQNCi0tLSBhL2Jsb2NrL2NtZGxpbmUtcGFyc2VyLmMNCisrKyBiL2Jsb2NrL2NtZGxpbmUtcGFy
+c2VyLmMNCkBAIC00LDggKzQsNyBAQA0KICAqIFdyaXR0ZW4gYnkgQ2FpIFpoaXlvbmcgPGNhaXpo
+aXlvbmdAaHVhd2VpLmNvbT4NCiAgKg0KICAqLw0KLSNpbmNsdWRlIDxsaW51eC9idWZmZXJfaGVh
+ZC5oPg0KLSNpbmNsdWRlIDxsaW51eC9tb2R1bGUuaD4NCisjaW5jbHVkZSA8bGludXgvZXhwb3J0
+Lmg+DQogI2luY2x1ZGUgPGxpbnV4L2NtZGxpbmUtcGFyc2VyLmg+DQogDQogc3RhdGljIGludCBw
+YXJzZV9zdWJwYXJ0KHN0cnVjdCBjbWRsaW5lX3N1YnBhcnQgKipzdWJwYXJ0LCBjaGFyICpwYXJ0
+ZGVmKQ0KQEAgLTE1OSw2ICsxNTgsNyBAQCB2b2lkIGNtZGxpbmVfcGFydHNfZnJlZShzdHJ1Y3Qg
+Y21kbGluZV9wYXJ0cyAqKnBhcnRzKQ0KIAkJKnBhcnRzID0gbmV4dF9wYXJ0czsNCiAJfQ0KIH0N
+CitFWFBPUlRfU1lNQk9MKGNtZGxpbmVfcGFydHNfZnJlZSk7DQogDQogaW50IGNtZGxpbmVfcGFy
+dHNfcGFyc2Uoc3RydWN0IGNtZGxpbmVfcGFydHMgKipwYXJ0cywgY29uc3QgY2hhciAqY21kbGlu
+ZSkNCiB7DQpAQCAtMjA2LDYgKzIwNiw3IEBAIGZhaWw6DQogCWNtZGxpbmVfcGFydHNfZnJlZShw
+YXJ0cyk7DQogCWdvdG8gZG9uZTsNCiB9DQorRVhQT1JUX1NZTUJPTChjbWRsaW5lX3BhcnRzX3Bh
+cnNlKTsNCiANCiBzdHJ1Y3QgY21kbGluZV9wYXJ0cyAqY21kbGluZV9wYXJ0c19maW5kKHN0cnVj
+dCBjbWRsaW5lX3BhcnRzICpwYXJ0cywNCiAJCQkJCSBjb25zdCBjaGFyICpiZGV2KQ0KQEAgLTIx
+NCwxNyArMjE1LDE3IEBAIHN0cnVjdCBjbWRsaW5lX3BhcnRzICpjbWRsaW5lX3BhcnRzX2ZpbmQo
+c3RydWN0IGNtZGxpbmVfcGFydHMgKnBhcnRzLA0KIAkJcGFydHMgPSBwYXJ0cy0+bmV4dF9wYXJ0
+czsNCiAJcmV0dXJuIHBhcnRzOw0KIH0NCitFWFBPUlRfU1lNQk9MKGNtZGxpbmVfcGFydHNfZmlu
+ZCk7DQogDQogLyoNCiAgKiAgYWRkX3BhcnQoKQ0KICAqICAgIDAgc3VjY2Vzcy4NCiAgKiAgICAx
+IGNhbiBub3QgYWRkIHNvIG1hbnkgcGFydGl0aW9ucy4NCiAgKi8NCi12b2lkIGNtZGxpbmVfcGFy
+dHNfc2V0KHN0cnVjdCBjbWRsaW5lX3BhcnRzICpwYXJ0cywgc2VjdG9yX3QgZGlza19zaXplLA0K
+LQkJICAgICAgIGludCBzbG90LA0KLQkJICAgICAgIGludCAoKmFkZF9wYXJ0KShpbnQsIHN0cnVj
+dCBjbWRsaW5lX3N1YnBhcnQgKiwgdm9pZCAqKSwNCi0JCSAgICAgICB2b2lkICpwYXJhbSkNCi0N
+CitpbnQgY21kbGluZV9wYXJ0c19zZXQoc3RydWN0IGNtZGxpbmVfcGFydHMgKnBhcnRzLCBzZWN0
+b3JfdCBkaXNrX3NpemUsDQorCQkgICAgICBpbnQgc2xvdCwNCisJCSAgICAgIGludCAoKmFkZF9w
+YXJ0KShpbnQsIHN0cnVjdCBjbWRsaW5lX3N1YnBhcnQgKiwgdm9pZCAqKSwNCisJCSAgICAgIHZv
+aWQgKnBhcmFtKQ0KIHsNCiAJc2VjdG9yX3QgZnJvbSA9IDA7DQogCXN0cnVjdCBjbWRsaW5lX3N1
+YnBhcnQgKnN1YnBhcnQ7DQpAQCAtMjQ3LDQgKzI0OCw3IEBAIHZvaWQgY21kbGluZV9wYXJ0c19z
+ZXQoc3RydWN0IGNtZGxpbmVfcGFydHMgKnBhcnRzLCBzZWN0b3JfdCBkaXNrX3NpemUsDQogCQlp
+ZiAoYWRkX3BhcnQoc2xvdCwgc3VicGFydCwgcGFyYW0pKQ0KIAkJCWJyZWFrOw0KIAl9DQorDQor
+CXJldHVybiBzbG90Ow0KIH0NCitFWFBPUlRfU1lNQk9MKGNtZGxpbmVfcGFydHNfc2V0KTsNCmRp
+ZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L2NtZGxpbmUtcGFyc2VyLmggYi9pbmNsdWRlL2xpbnV4
+L2NtZGxpbmUtcGFyc2VyLmgNCmluZGV4IDk4ZTg5MmUuLjQzYjY1YTkgMTAwNjQ0DQotLS0gYS9p
+bmNsdWRlL2xpbnV4L2NtZGxpbmUtcGFyc2VyLmgNCisrKyBiL2luY2x1ZGUvbGludXgvY21kbGlu
+ZS1wYXJzZXIuaA0KQEAgLTM1LDkgKzM1LDkgQEAgaW50IGNtZGxpbmVfcGFydHNfcGFyc2Uoc3Ry
+dWN0IGNtZGxpbmVfcGFydHMgKipwYXJ0cywgY29uc3QgY2hhciAqY21kbGluZSk7DQogc3RydWN0
+IGNtZGxpbmVfcGFydHMgKmNtZGxpbmVfcGFydHNfZmluZChzdHJ1Y3QgY21kbGluZV9wYXJ0cyAq
+cGFydHMsDQogCQkJCQkgY29uc3QgY2hhciAqYmRldik7DQogDQotdm9pZCBjbWRsaW5lX3BhcnRz
+X3NldChzdHJ1Y3QgY21kbGluZV9wYXJ0cyAqcGFydHMsIHNlY3Rvcl90IGRpc2tfc2l6ZSwNCi0J
+CSAgICAgICBpbnQgc2xvdCwNCi0JCSAgICAgICBpbnQgKCphZGRfcGFydCkoaW50LCBzdHJ1Y3Qg
+Y21kbGluZV9zdWJwYXJ0ICosIHZvaWQgKiksDQotCQkgICAgICAgdm9pZCAqcGFyYW0pOw0KK2lu
+dCBjbWRsaW5lX3BhcnRzX3NldChzdHJ1Y3QgY21kbGluZV9wYXJ0cyAqcGFydHMsIHNlY3Rvcl90
+IGRpc2tfc2l6ZSwNCisJCSAgICAgIGludCBzbG90LA0KKwkJICAgICAgaW50ICgqYWRkX3BhcnQp
+KGludCwgc3RydWN0IGNtZGxpbmVfc3VicGFydCAqLCB2b2lkICopLA0KKwkJICAgICAgdm9pZCAq
+cGFyYW0pOw0KIA0KICNlbmRpZiAvKiBDTURMSU5FUEFSU0VIICovDQotLSANCjEuOC4xLjUNCg0K
