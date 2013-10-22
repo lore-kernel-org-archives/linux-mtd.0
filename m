@@ -1,20 +1,22 @@
-Received: from smtp.newsguy.com ([74.209.136.69])
+Received: from mail-ie0-x229.google.com ([2607:f8b0:4001:c03::229])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VYgr0-0002Tn-SN
- for linux-mtd@lists.infradead.org; Tue, 22 Oct 2013 18:38:55 +0000
-Message-ID: <5266C623.50404@newsguy.com>
-Date: Tue, 22 Oct 2013 11:38:27 -0700
-From: Mike Dunn <mikedunn@newsguy.com>
+ id 1VYh8a-0002jw-KR
+ for linux-mtd@lists.infradead.org; Tue, 22 Oct 2013 18:57:05 +0000
+Received: by mail-ie0-f169.google.com with SMTP id ar20so2577686iec.0
+ for <linux-mtd@lists.infradead.org>; Tue, 22 Oct 2013 11:56:43 -0700 (PDT)
+Date: Tue, 22 Oct 2013 11:56:39 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH] mtd: gpmi: fix the ecc regression
+Message-ID: <20131022185639.GK23337@ld-irv-0074.broadcom.com>
+References: <1382418628-4521-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-To: Ivan Djelic <ivan.djelic@parrot.com>
-Subject: Re: How to handle ECC in erased pages?
-References: <alpine.DEB.2.00.1310221610570.28562@lnxricardw.se.axis.com>
- <20131022161028.GA10922@parrot.com>
-In-Reply-To: <20131022161028.GA10922@parrot.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: Linux mtd <linux-mtd@lists.infradead.org>,
- Ricard Wanderlof <ricard.wanderlof@axis.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1382418628-4521-1-git-send-email-b32955@freescale.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ dedekind1@gmail.com, tharvey@gateworks.com, linux-mtd@lists.infradead.org,
+ dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,113 +26,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/22/2013 09:10 AM, Ivan Djelic wrote:
-> On Tue, Oct 22, 2013 at 04:58:09PM +0200, Ricard Wanderlof wrote:
->>
->> When erasing a page in a NAND flash all the bits are erased to ones
->> so all bytes are 0xff . This presents a potential problem with the
->> ECC, in that if the ECC for an all-ff block of data is not itself
->> all-ff, there will be ECC errors when reading an erased page.
->>
->> This is handled in the software Hamming and BCH cases by XOR masking
->> the ECC with a bitmask such that the ECC of an erased block of data
->> is in fact all-ff.
->>
->> In some cases however, there are hardware NAND flash controllers
->> with built-in ECC generation and management, i.e. the controller
->> writes the ECC to the OOB automatically when writing a page, and
->> automatically corrects potential bit errors using the ECC stored in
->> the OOB when reading. In this case there is no way to influence the
->> actual ECC bits written to the flash.
->>
->> I've come across such a controller, which in fact does return an ECC
->> error for an erased page. I'm trying to figure out a reasonable way
->> to deal with this. The first step would be to verify that the page
->> indeed is erased if it supposed to be, but that is compounded by the
->> fact that bitflips could occur in an erased page, so that the data
->> in fact is not all-ff when it should be, but should still be
->> considered 'erased', because assuming that ECC were properly
->> applied, this case would be handled transparently.
->>
->> One existing case I've come across while looking through the
->> existing NAND flash drivers is denali.c which when it detects an
->> uncorrectable ECC error, scans the whole data and spare areas of the
->> page for an all-ff condition - this would fail if there were in fact
->> a bit flip.
->>
->> davinci_nand.c uses an XOR mask for 1 bit ECC, but checks the ECC
->> for an all-ff condition, deciding that the page is erased if that is
->> the case. Again this ignores the problem of a bit flip in the ECC
->> data area of an erased page.
->>
->> fmsc_nand.c when encountering a page with more errors that the
->> correction algorithm can handle (BCH-8 in this case), counts the
->> number of 0 bits in the main and spare areas of the page; if the
->> number of 0 bits is less than 8 it considers the page erased. This
->> would seem to be the most correct approach so far, but requires
->> quite a lot of work (i.e. scanning through all bytes in the page) in
->> order to accomplish this.
->>
->> One thing I was considering was if when using UBI and ubifs erased
->> blocks are read at all in normal operation. In fact this doesn't
->> seem to be the case; once the partition has been formatted and/or
->> mounted UBI doesn't need to do any scanning operations on the data.
->> I did a quick empirical test by adding a printk in
->> nand.c:nand_read_page_swecc() when an empty page is read, the
->> 'reading blank page' printk was triggered during mount for a couple
->> of pages (probably while reading the index pages for UBI), but not
->> afterwards, until the file system started to fill up, when I assume
->> some form of garbage collection was being trigged. Writing a big
->> file to a new ubifs volume didn't cause any blank page printouts
->> except for the ones occurring during mount.'
->>
->> All in all it seems then that the performance penalty of explicitly
->> checking pages that are supposedly erased would be rather small,
->> because it is not done very often.
->>
->> Any other thoughts on this?
-> 
-> Hi Ricard,
-> 
-> Here are a few additional strategies, depending on the information
-> provided by your hardware controller:
-> 
-> 1. You have access to hardware-calculated ECC bytes
-> 
-> Upon ECC failure, you can compare calculated ECC bytes with the known
-> ECC sequence of an erased page. If they match, and spare ECC bytes are
-> all-ff (with a limited number of bitflips allowed), then you can assume
-> the page is erased and just ignore the ECC failure. If those conditions
-> are not met, you still need to check the entire erased page for bitflips.
-> This is quite efficient, because as you said erased pages are not read
-> very often, an even then, only erased pages with bitflips are checked.
-> 
-> 2. You do not have access to hardware-calculated ECC bytes
-> 
-> Upon ECC failure, you need to distinguish programmed pages from erased
-> pages. You can do so efficently by comparing spare ECC bytes with an
-> all-ff sequence, allowing a limited number of bitflips. But what if an
-> all-ff sequence with a few bitflips happens to be a valid ECC sequence
-> of your hardware controller ? One possible robustness improvement is to
-> use one or several available spare bytes as a "programmed page" marker.
-> This idea is to always program those marker bytes to 0; reading back the
-> marker (againg with a bitflip tolerance) allows to distinguish programmed
-> pages from erased pages. This trick is used on some NAND devices with
-> on-die ECC; such devices do not attempt to correct bitflips if the marker
-> bytes indicate an erased page.
+Hi Huang,
 
+On Tue, Oct 22, 2013 at 01:10:28PM +0800, Huang Shijie wrote:
+> The patch "2febcdf mtd: gpmi: set the BCHs geometry with the ecc info"
+> makes the gpmi to use the ECC info provided by the MTD code, and creates
+> a different NAND ecc layout for the BCH which brings a regression to us:
+>    We can not mount the ubifs which was created by the old NAND ecc layout.
+> 
+> This patch adds a new property : "fsl,use-mtd-ecc-info".
 
-FYI... The docg4 uses this strategy in the driver code, per Ivan's suggestion.
-One byte in oob is reserved as the "programmed page" marker, which is set to
-zero when the page is written.  The docg4 device has hardware that only
-partially handles the BCH algorithm; basically error detection in hardware, but
-correction in software.  The hardware generates an XOR of the ecc calculated
-from the data read from the page with the ecc bytes read from oob.  When a blank
-page is read error-free, the bytes generated by the hardware are a known value,
-so we know that a blank page was just read.  If the hardware does not generate
-this value, the marker byte is examined.  If more than half of its bits are set,
-the page is assumed to be blank, but with bitflips.  The overhead of checking
-all 8 bits in a byte is modest, and it only runs when bitflips have actually
-ocurred.
+You have a regression in your driver. You need to fix the regression
+first, so we can get that into 3.12 (or at this point, more likely
+-stable). This could be something like you simple diff you sent earlier.
 
-Mike
+*After* we fix the regression, we can discuss new DT bindings.
+
+> If we do not enable it, we will use the ecc strength calculated by ourselves
+> and use all the OOB area (this is the legacy method);
+> 
+> If we enable it, we will use the ecc strength provided by the MTD layer,
+> and create a new NAND ecc layout which may has free space in the OOB
+> (for some SLC nand, we may support the JFFS2 with the new NAND ecc layout).
+> 
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
+> ---
+>  .../devicetree/bindings/mtd/gpmi-nand.txt          |    4 ++++
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c             |    7 ++++++-
+>  2 files changed, 10 insertions(+), 1 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
+> index 551b2a1..fe84a3d 100644
+> --- a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
+> +++ b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
+> @@ -17,6 +17,10 @@ Required properties:
+>  Optional properties:
+>    - nand-on-flash-bbt: boolean to enable on flash bbt option if not
+>                         present false
+> +  - fsl,use-mtd-ecc-info: By enabling this boolean property, the gpmi can uses
+> +                       the MTD's ECC info (if the MTD has). So we may have free
+> +                       space in the OOB area, and we may support the JFFS2 with
+> +                       some SLC nand, such as Micron's SLC nand.
+
+As Mark mentioned, this description is very Linux-specific. And
+honestly, I don't even understand what this description means except
+that I reviewed your patches and this recent regression report. It is
+not self explanatory at all.
+
+Rhetorical question: What is "the MTD's ECC info"? What am I specifying
+by putting this property in the device tree?
+
+(Answer (?): you're looking for the ECC requirements from the data
+sheet, which happens to be automatically discoverable in some cases.)
+
+... so why don't you just add a DT property to actually specify the ECC
+selection itself, rather than indirectly specifying it through a vague
+specification and knowledge of how your driver handles it?
+
+Or, is the difference between your "legacy" and "new" layout more than
+just the choice of ECC strength and step size? If so, then this should
+be documented [1], and that well-specified difference in layout should
+become part of the DT binding.
+
+>  The device tree may optionally contain sub-nodes describing partitions of the
+>  address space. See partition.txt for more detail.
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> index 5a1bbc7..62c0712 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> @@ -271,7 +271,9 @@ static int legacy_set_geometry(struct gpmi_nand_data *this)
+>  		dev_err(this->dev,
+>  			"We can not support this nand chip."
+>  			" Its required ecc strength(%d) is beyond our"
+> -			" capability(%d).\n", geo->ecc_strength,
+> +			" capability(%d). If you have not enabled the"
+> +			"'fsl,use-mtd-ecc-info', enable it and try again.\n",
+> +			geo->ecc_strength,
+>  			(GPMI_IS_MX6Q(this) ? MX6_ECC_STRENGTH_MAX
+>  					: MXS_ECC_STRENGTH_MAX));
+>  		return -EINVAL;
+> @@ -352,6 +354,9 @@ static int legacy_set_geometry(struct gpmi_nand_data *this)
+>  
+>  int common_nfc_set_geometry(struct gpmi_nand_data *this)
+>  {
+> +	if (!of_property_read_bool(this->dev->of_node, "fsl,use-mtd-ecc-info"))
+> +		return legacy_set_geometry(this);
+> +
+>  	return set_geometry_by_ecc_info(this) ? 0 : legacy_set_geometry(this);
+>  }
+
+Your first patch just needs to involve rearranging the calls to
+legacy_set_geometry() and set_geometry_by_ecc_info() without any new
+help from device tree.
+
+Brian
+
+[1] Is it somewhere in your 50-line comments in
+drivers/mtd/nand/gpmi-nand/gpmi-nand.c? Perhaps this should migrate to
+Documentation/
