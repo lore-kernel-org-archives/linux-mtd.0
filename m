@@ -1,22 +1,21 @@
-Received: from mail-ob0-x22e.google.com ([2607:f8b0:4003:c01::22e])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VYStH-0001Ex-85
- for linux-mtd@lists.infradead.org; Tue, 22 Oct 2013 03:44:20 +0000
-Received: by mail-ob0-f174.google.com with SMTP id vb8so2390558obc.19
- for <linux-mtd@lists.infradead.org>; Mon, 21 Oct 2013 20:43:55 -0700 (PDT)
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Huang Shijie <shijie8@gmail.com>, Thomas Petazzoni
+ <thomas.petazzoni@free-electrons.com>
+Subject: RE: [PATCH v3 00/10] About the SLC/MLC
+Date: Tue, 22 Oct 2013 05:11:37 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA297AE@DBDE04.ent.ti.com>
+References: <1377509808-29363-1-git-send-email-b32955@freescale.com>
+ <20130826144153.568f2b1c@skate> <20130827033020.GA2182@gmail.com>
+In-Reply-To: <20130827033020.GA2182@gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <183031382371160@web6m.yandex.ru>
-References: <55541379679397@web20h.yandex.ru>
- <CAP+RiCAVuUEfyjg02+ZjeFXgUuaRW+fuMB490Ce2Hq_4qHBL=A@mail.gmail.com>
- <183031382371160@web6m.yandex.ru>
-Date: Mon, 21 Oct 2013 22:43:52 -0500
-Message-ID: <CAP+RiCDKgRqi8_Y4OMqyJyCUpKJW5BVE=hNwp3WzQ7PuOMWGMw@mail.gmail.com>
-Subject: Re: lz4hc compression in UBIFS?
-From: Brent Taylor <motobud@gmail.com>
-To: Konstantin Tokarev <annulen@yandex.ru>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Huang Shijie <b32955@freescale.com>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,51 +25,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Oct 21, 2013 at 10:59 AM, Konstantin Tokarev <annulen@yandex.ru> wrote:
->
->
-> 04.10.2013, 07:09, "Brent Taylor" <motobud@gmail.com>:
->> Here is a patch based on linux-3.12-rc3.  I haven't performed any
->> performance testing UBIFS using lz4hc, but I can mount UBIFS volumes
->> and haven't seen any problems yet.  The only think I know that isn't
->> correct about the patch is the description for the Kconfig element for
->> select lz4hc as a compression option.  I only copied the description
->> from the lzo description.
->
-> Hi Brent,
->
-> I'm testing your patch on my SH4 device. When I create new partition
-> with lz4hc compressor, it works fine: I can copy file into it, and
-> md5sums of original and copy match. However, after reboot I cannot
-> read the file anymore:
->
-> UBIFS error (pid 1101): ubifs_decompress: cannot decompress 934 bytes, compressor lz4hc, error -22
-> UBIFS error (pid 1101): read_block: bad data node (block 1, inode 65)
-> UBIFS error (pid 1101): do_readpage: cannot read page 1 of inode 65, error -22
->
-> The same error appears if I use lz4hc-compressed ubifs image to flash rootfs
-> (using patched mkfs.ubifs).
->
-> Decompression error occurs in lz4_uncompress() function (lib/lz4/lz4_decompress.c),
-> on the line 101:
->
-> /* Error: offset create reference outside destination buffer */
-> if (unlikely(ref < (BYTE *const) dest))
->     goto _output_error;
->
-> Brent: are you able to read data from lz4hc volume on your device?
-> Anyone: any ideas what may happen here?
->
-> --
-> Regards,
-> Konstantin
+> From:  Huang Shijie
+> On Mon, Aug 26, 2013 at 02:41:53PM +0200, Thomas Petazzoni wrote:
+> > Dear Huang Shijie,
+> >
+> > On Mon, 26 Aug 2013 17:36:38 +0800, Huang Shijie wrote:
+> > > In current mtd code, the MTD_NANDFLASH is used to represent both the
+> > > SLC nand MLC(including the TLC). But we already have the
+> MTD_MLCNANDFLASH
+> > > to stand for the MLC. What is worse is that the JFFS2 may run on the =
+MLC
+> > > nand with current code. For the reason of READ/WRITE disturbance, the
+> JFFS2
+> > > should runs on the SLC only,
+> >
+> > Pardon the probably very silly question, but would you mind giving more
+> > details about why JFFS2 is not appropriate on MLC flashes? Is there
+> > anything that UBI/UBIFS does that JFFS2 isn't doing to take into
+> > account read/write disturbance?
+> I try to explain it.
+>=20
+> For the UBIFS, it will writes the page(including the oob) only one time;
+> but for jffs2, it may writes the page(including the oob) twice, one for t=
+he
+> marker, one for the real data.
+>=20
+> For the MLC, the write disturbance will cause some bitflips in this
+> page. Since you write a page twice, so in the jffs2, you will meet
+> uncorrectable
+> ECC error.
+>=20
+But, doesn't JFFS2 checks for the blank page before second-write of data ?
+UBI does it here..
+File: $KERNEL/drivers/mtd/ubi/io.c
+@@ubi_io_write (... )
+[...]
+	err =3D ubi_self_check_all_ff(ubi, pnum, offset, len);
 
-Konstantin,
-   I haven't seen anything like that on my at91sam9m10g45-ek
-development board.  I haven't used a flash image from mkfs.ubifs yet.
-Is it possible the file system was not umounted cleanly before the
-reboot and UBIFS went through a recovery procedure?  Maybe something
-breaks with lz4hc when UBIFS does a recovery?  That's just a guess.
+So, isn't it better to add this check in JFFS2 code so that its more
+bit-flips tolerant ?
+This way bit-flips caused by first write to OOB (cleanmarker) would be
+caught before using that page for data write. And so MLC should also be
+good for JFFS2..
 
-Regards,
-Brent
+with regards, pekon
