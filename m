@@ -1,27 +1,20 @@
-Received: from va3ehsobe005.messaging.microsoft.com ([216.32.180.31]
- helo=va3outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VYXpf-0005ti-8C
- for linux-mtd@lists.infradead.org; Tue, 22 Oct 2013 09:00:56 +0000
-Message-ID: <52663F57.5060701@freescale.com>
-Date: Tue, 22 Oct 2013 17:03:19 +0800
-From: Huang Shijie <b32955@freescale.com>
+Received: from forward18.mail.yandex.net ([2a02:6b8:0:1402::3])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VYYv8-0007MP-0g
+ for linux-mtd@lists.infradead.org; Tue, 22 Oct 2013 10:10:40 +0000
+From: Konstantin Tokarev <annulen@yandex.ru>
+To: Brent Taylor <motobud@gmail.com>
+In-Reply-To: <CAP+RiCDKgRqi8_Y4OMqyJyCUpKJW5BVE=hNwp3WzQ7PuOMWGMw@mail.gmail.com>
+References: <55541379679397@web20h.yandex.ru>
+ <CAP+RiCAVuUEfyjg02+ZjeFXgUuaRW+fuMB490Ce2Hq_4qHBL=A@mail.gmail.com>
+ <183031382371160@web6m.yandex.ru>
+ <CAP+RiCDKgRqi8_Y4OMqyJyCUpKJW5BVE=hNwp3WzQ7PuOMWGMw@mail.gmail.com>
+Subject: Re: lz4hc compression in UBIFS?
 MIME-Version: 1.0
-To: Sourav Poddar <sourav.poddar@ti.com>
-Subject: Re: [PATCH V2 0/4] mtd: gpmi: support two nand chips at most
-References: <1377595747-21033-1-git-send-email-b32955@freescale.com>	<5260DA32.4090502@freescale.com>
- <CAN8TOE8xDdRF4Hf+p4JMAixWfkxkbKCZB-fqpPA6yiMHYm=Qew@mail.gmail.com>
- <5264A220.2070900@freescale.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA2910B@DBDE04.ent.ti.com>
- <5264E6A9.6070400@freescale.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA29221@DBDE04.ent.ti.com>
- <5266347A.6060000@freescale.com> <52663895.9040907@ti.com>
-In-Reply-To: <52663895.9040907@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Message-Id: <139841382436609@web24g.yandex.ru>
+Date: Tue, 22 Oct 2013 14:10:09 +0400
+Content-Type: multipart/mixed; boundary="----==--bound.13986.web24g.yandex.ru"
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, "Gupta, Pekon" <pekon@ti.com>,
  Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -32,23 +25,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B410=E6=9C=8822=E6=97=A5 16:34, Sourav Poddar =E5=86=
-=99=E9=81=93:
-> Hi Huang,
-> Did you get the chance to follow the three patch series which I had sen=
-t?
-> One of the patch modifies m25p80 to add support for spnasion and=20
-> macronix quad read
-> support. If that looks cool also to you[1], we can push for that=20
-> patch. So that, our further works
-> on m25p80 will be reduced.
+
+------==--bound.13986.web24g.yandex.ru
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=koi8-r
+
+
+
+22.10.2013, 07:43, "Brent Taylor" <motobud@gmail.com>:
+> On Mon, Oct 21, 2013 at 10:59 AM, Konstantin Tokarev <annulen@yandex.ru> wrote:
 >
-> [1]:  http://permalink.gmane.org/gmane.linux.drivers.mtd/48755
-to Brian:
-   could you please check Sourav's patch?
+>> š04.10.2013, 07:09, "Brent Taylor" <motobud@gmail.com>:
+>>> šHere is a patch based on linux-3.12-rc3. šI haven't performed any
+>>> šperformance testing UBIFS using lz4hc, but I can mount UBIFS volumes
+>>> šand haven't seen any problems yet. šThe only think I know that isn't
+>>> šcorrect about the patch is the description for the Kconfig element for
+>>> šselect lz4hc as a compression option. šI only copied the description
+>>> šfrom the lzo description.
+>> šHi Brent,
+>>
+>> šI'm testing your patch on my SH4 device. When I create new partition
+>> šwith lz4hc compressor, it works fine: I can copy file into it, and
+>> šmd5sums of original and copy match. However, after reboot I cannot
+>> šread the file anymore:
+>>
+>> šUBIFS error (pid 1101): ubifs_decompress: cannot decompress 934 bytes, compressor lz4hc, error -22
+>> šUBIFS error (pid 1101): read_block: bad data node (block 1, inode 65)
+>> šUBIFS error (pid 1101): do_readpage: cannot read page 1 of inode 65, error -22
+>>
+>> šThe same error appears if I use lz4hc-compressed ubifs image to flash rootfs
+>> š(using patched mkfs.ubifs).
+>>
+>> šDecompression error occurs in lz4_uncompress() function (lib/lz4/lz4_decompress.c),
+>> šon the line 101:
+>>
+>> š/* Error: offset create reference outside destination buffer */
+>> šif (unlikely(ref < (BYTE *const) dest))
+>> šššššgoto _output_error;
+>>
+>> šBrent: are you able to read data from lz4hc volume on your device?
+>> šAnyone: any ideas what may happen here?
+>>
+>> š--
+>> šRegards,
+>> šKonstantin
+>
+> Konstantin,
+> šššI haven't seen anything like that on my at91sam9m10g45-ek
+> development board. šI haven't used a flash image from mkfs.ubifs yet.
+> Is it possible the file system was not umounted cleanly before the
+> reboot and UBIFS went through a recovery procedure? šMaybe something
+> breaks with lz4hc when UBIFS does a recovery? šThat's just a guess.
 
-If you think his patch is ok, please merge it, and i can do my work base=20
-on his patch.
+Could you save attached file on lz4hc volume, umount it and mount again?
+I get aforementioned error when doing `cat set11.cfg`
 
-thanks
-Huang Shijie
+-- 
+Regards,
+Konstantin
+------==--bound.13986.web24g.yandex.ru
+Content-Disposition: attachment;
+	filename="set11.cfg"
+Content-Transfer-Encoding: base64
+Content-Type: application/octet-stream;
+	name="set11.cfg"
+
+PSB0cnVlCiAgICBoaWRlU2luZ2xlU3VidGl0bGUgPSB0cnVlCiAgICBoaWRlU2luZ2xlQXVkaW9U
+cmFjayA9IHRydWUKICAgIDtzaG93UmVjb21lbmRlZCA9IHRydWUKICAgIDtzaG93UmVtb3RlVXJs
+ID0gdHJ1ZQogICAgO3VzZUlmcmFtZVJld2luZCA9IHRydWUKICAgIGlmcmFtZVJld2luZFRpCg==
+------==--bound.13986.web24g.yandex.ru--
