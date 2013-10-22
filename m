@@ -1,19 +1,20 @@
-Date: Tue, 22 Oct 2013 14:34:50 +0100
-From: Mark Rutland <mark.rutland@arm.com>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH] mtd: gpmi: fix the ecc regression
-Message-ID: <20131022133446.GA2766@kartoffel>
-References: <1382418628-4521-1-git-send-email-b32955@freescale.com>
+Received: from ra.se.axis.com ([195.60.68.13])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VYcgY-000411-BY
+ for linux-mtd@lists.infradead.org; Tue, 22 Oct 2013 14:11:50 +0000
+Date: Tue, 22 Oct 2013 16:10:56 +0200
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: =?ISO-8859-15?Q?Steffen_K=FChn?= <sk@ammonit.com>
+Subject: Re: problem with ecc errors and ubifs
+In-Reply-To: <5266794F.8020504@ammonit.com>
+Message-ID: <alpine.DEB.2.00.1310221610040.28562@lnxricardw.se.axis.com>
+References: <52666705.8040000@ammonit.com>
+ <alpine.DEB.2.00.1310221356080.28562@lnxricardw.se.axis.com>
+ <5266794F.8020504@ammonit.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1382418628-4521-1-git-send-email-b32955@freescale.com>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "tharvey@gateworks.com" <tharvey@gateworks.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+Content-Type: text/plain; charset="iso-8859-15"; format=flowed
+Content-Transfer-Encoding: 8BIT
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,85 +24,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 22, 2013 at 06:10:28AM +0100, Huang Shijie wrote:
-> The patch "2febcdf mtd: gpmi: set the BCHs geometry with the ecc info"
-> makes the gpmi to use the ECC info provided by the MTD code, and creates
-> a different NAND ecc layout for the BCH which brings a regression to us:
->    We can not mount the ubifs which was created by the old NAND ecc layout.
-> 
-> This patch adds a new property : "fsl,use-mtd-ecc-info".
 
-This name sounds _extremely_ Linux-specific, and that's not the direction I'd
-like to see bindings take.
+On Tue, 22 Oct 2013, Steffen Kühn wrote:
 
-> 
-> If we do not enable it, we will use the ecc strength calculated by ourselves
-> and use all the OOB area (this is the legacy method);
-> 
-> If we enable it, we will use the ecc strength provided by the MTD layer,
-> and create a new NAND ecc layout which may has free space in the OOB
-> (for some SLC nand, we may support the JFFS2 with the new NAND ecc layout).
+> thanks for your answer.
+>
+>> The risk would be that eventually the number of errors would grow past
+>> the ECC capability and subsequently lead to unreadable data. If there
+>> indeed is a bug in the scrubbing mechanism, I agree it would be better
+>> to just correct the bits and hope not too many of them flip. But it
+>> would be better to try and fix the problem with scrubbing...
+>
+> I agree with you that a fix of the scrubbing mechanism would be better.
+> Unfortunately, the problem is very hard to reproduce (and debug).
 
-If the patch you referenced changed the layout without maintainng backwards
-compatibility, it sounds like it is broken and has caused a regression.
+So it happens very seldom then?
 
-This is a work around, not a fix.
+> And perhaps it is already solved? My kernel is not the newest. But it is
+> not possible to change the version because we have some patches (related
+> to other hardware) which only works with kernel 3.2.
+>
+> Do you know about some important bug fixes which have something to do
+> with the "scrubbing" in the last months?
 
-> 
-> Signed-off-by: Huang Shijie <b32955@freescale.com>
-> ---
->  .../devicetree/bindings/mtd/gpmi-nand.txt          |    4 ++++
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.c             |    7 ++++++-
->  2 files changed, 10 insertions(+), 1 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
-> index 551b2a1..fe84a3d 100644
-> --- a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
-> +++ b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
-> @@ -17,6 +17,10 @@ Required properties:
->  Optional properties:
->    - nand-on-flash-bbt: boolean to enable on flash bbt option if not
->                         present false
-> +  - fsl,use-mtd-ecc-info: By enabling this boolean property, the gpmi can uses
-> +                       the MTD's ECC info (if the MTD has). So we may have free
-> +                       space in the OOB area, and we may support the JFFS2 with
-> +                       some SLC nand, such as Micron's SLC nand.
+Not offhand, but I don't keep track of all corrected bugs. A quick scan in 
+the mailing list archives might be useful.
 
-I'm not very familiar with MTDs. Where exactly does this ECC info come from? Is
-it data internal to Linux, or is it probed from the device itself?
-
->  
->  The device tree may optionally contain sub-nodes describing partitions of the
->  address space. See partition.txt for more detail.
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> index 5a1bbc7..62c0712 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> @@ -271,7 +271,9 @@ static int legacy_set_geometry(struct gpmi_nand_data *this)
->  		dev_err(this->dev,
->  			"We can not support this nand chip."
->  			" Its required ecc strength(%d) is beyond our"
-> -			" capability(%d).\n", geo->ecc_strength,
-> +			" capability(%d). If you have not enabled the"
-> +			"'fsl,use-mtd-ecc-info', enable it and try again.\n",
-> +			geo->ecc_strength,
-
-Why are we telling people to do that with no description as to when to do so?
-Can we not just fall back to this instead?
-
->  			(GPMI_IS_MX6Q(this) ? MX6_ECC_STRENGTH_MAX
->  					: MXS_ECC_STRENGTH_MAX));
->  		return -EINVAL;
-> @@ -352,6 +354,9 @@ static int legacy_set_geometry(struct gpmi_nand_data *this)
->  
->  int common_nfc_set_geometry(struct gpmi_nand_data *this)
->  {
-> +	if (!of_property_read_bool(this->dev->of_node, "fsl,use-mtd-ecc-info"))
-> +		return legacy_set_geometry(this);
-> +
->  	return set_geometry_by_ecc_info(this) ? 0 : legacy_set_geometry(this);
-
-This looks like it could be reorganised to fall back if necessary.
-
-Thanks,
-Mark.
+/Ricard
+-- 
+Ricard Wolf Wanderlöf                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
