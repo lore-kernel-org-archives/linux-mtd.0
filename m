@@ -1,20 +1,21 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from mail-vc0-x234.google.com ([2607:f8b0:400c:c03::234])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VYr4s-000420-Cr
- for linux-mtd@lists.infradead.org; Wed, 23 Oct 2013 05:33:55 +0000
-From: Marek Vasut <marex@denx.de>
-To: linux-mtd@lists.infradead.org
-Subject: Re: gpmi-mtd ecc regression
-Date: Wed, 23 Oct 2013 07:33:33 +0200
-References: <CAJ+vNU1JWZp=JoBDJALh59yFybGZ0iQxMEYy8qvTFGDLhyRzqg@mail.gmail.com>
- <52649FDA.1030804@freescale.com>
-In-Reply-To: <52649FDA.1030804@freescale.com>
+ id 1VYrL4-0004IW-Lm
+ for linux-mtd@lists.infradead.org; Wed, 23 Oct 2013 05:50:39 +0000
+Received: by mail-vc0-f180.google.com with SMTP id lc6so168364vcb.39
+ for <linux-mtd@lists.infradead.org>; Tue, 22 Oct 2013 22:50:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <201310230733.33285.marex@denx.de>
-Cc: Huang Shijie <b32955@freescale.com>, Tim Harvey <tharvey@gateworks.com>
+In-Reply-To: <20131022153313.GA11923@infradead.org>
+References: <20131022153313.GA11923@infradead.org>
+Date: Wed, 23 Oct 2013 07:50:17 +0200
+Message-ID: <CAFLxGvwk0gbejxk6hmnu+Cw=TgXGh0=MKgSyKtm7nTVJiBBgeg@mail.gmail.com>
+Subject: Re: [PATCH, RFC] what's the point of mtd_inodefs?
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: Christoph Hellwig <hch@infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>,
+ kirill@shutemov.name
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,72 +25,197 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Huang Shijie,
+On Tue, Oct 22, 2013 at 5:33 PM, Christoph Hellwig <hch@infradead.org> wrote:
+> I've been looking at mtdchar as part of a bigger series touching all
+> kidns of places and really wonder what the point of mtd_inodefs is.
 
-> =E4=BA=8E 2013=E5=B9=B410=E6=9C=8819=E6=97=A5 01:03, Tim Harvey =E5=86=99=
-=E9=81=93:
-> > Huang,
-> >=20
-> > The patch you made to obtain ECC info from the chip
-> > (http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/=
-dr
-> > ivers/mtd/nand/gpmi-nand?id=3D2febcdf84b75aae627c61f0a5bf531a69299966c)=
- has
-> > caused a regression for an i.MX6 board I'm working with that uses NAND
-> > and ubifs.
-> >=20
-> > I'm using a Micron MT29F8G08
-> > (http://download.micron.com/pdf/datasheets/flash/nand/2_4_8gb_nand_m49a=
-=2Ep
-> > df) which has:
-> > page size: 2112 bytes (2048 + 64 bytes)
-> > block size: 1056 words (1024 + 32 words)
-> > plane size: 2 planes x 1024 blocks per plane
-> > device size: 2Gb: 2048 blocks
-> > ecc: 4bit
-> >=20
-> > The legacy_set_geometry function comes up with:
-> > gf_len=3D13
-> > ecc_strength=3D8
-> > page_size=3D2112
-> > metadata_size=3D10
-> > ecc_chunk_size=3D512
-> > ecc_chunk_count=3D4
-> > payload_size=3D2048
-> > auxiliary_size=3D16
-> > auxiliary_status_offset=3D12
-> > block_mark_byte_offset=3D1999
-> >=20
-> > and the new set_geometry_by_ecc_info comes up with:
-> > gf_len=3D13
-> > ecc_strength=3D4
-> > page_size=3D2084
-> > metadata_size=3D10
-> > ecc_chunk_size=3D512
-> > ecc_chunk_count=3D4
-> > payload_size=3D2048
-> > auxiliary_size=3D16
-> > auxiliary_status_offset=3D12
-> > block_mark_byte_offset=3D2018
-> > block_mark_bit_offset=3D4
-> >=20
-> > There are two discrepancies above:
-> >   a) ecc_strength - this part has 4bit ecc but being detected as 8?
-> >   b) page_size - the legacy function includes oob in page size, and the
-> >=20
-> > new one does not
-> >=20
-> > which is correct?
->=20
-> In theory, both are correct.
->=20
-> I am in an embarrass state now:
-> [1] we can support the jffs2, when we use the set_geometry_by_ecc_info()
-> to set the NAND layout.
->=20
-> [2] if we still use the legacy_set_geometry() to set the NAND layout, we
-> can not support the jffs2 for GPMI.
+As far I can tell it was introduced because of that issue:
+http://lists.infradead.org/pipermail/linux-mtd/2010-April/029593.html
 
-It's exactly the other way around if you're talking about JFFS2 compatibili=
-ty=20
-with the 2.6.35 FSL kernel ;-)
+> We use it to make the file->f_mapping of the mtdchar device point to
+> the mapping of it's inodes, but there's nothing special happening with
+> mtd_inodefs inodes.  It seems to me like simply switching the
+> backing_dev_info to the mtd one, similarly to what we do for /dev/mem
+> and friends would be enough for mtdchar.
+>
+> If this works for the intended use case I'd love to add this series
+> to my to be posted series as it would simplify it greatly.
+>
+>
+> diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+> index 684bfa3..a7c9f37 100644
+> --- a/drivers/mtd/mtdchar.c
+> +++ b/drivers/mtd/mtdchar.c
+> @@ -48,7 +48,6 @@ static DEFINE_MUTEX(mtd_mutex);
+>   */
+>  struct mtd_file_info {
+>         struct mtd_info *mtd;
+> -       struct inode *ino;
+>         enum mtd_file_modes mode;
+>  };
+>
+> @@ -58,10 +57,6 @@ static loff_t mtdchar_lseek(struct file *file, loff_t offset, int orig)
+>         return fixed_size_llseek(file, offset, orig, mfi->mtd->size);
+>  }
+>
+> -static int count;
+> -static struct vfsmount *mnt;
+> -static struct file_system_type mtd_inodefs_type;
+> -
+>  static int mtdchar_open(struct inode *inode, struct file *file)
+>  {
+>         int minor = iminor(inode);
+> @@ -69,7 +64,6 @@ static int mtdchar_open(struct inode *inode, struct file *file)
+>         int ret = 0;
+>         struct mtd_info *mtd;
+>         struct mtd_file_info *mfi;
+> -       struct inode *mtd_ino;
+>
+>         pr_debug("MTD_open\n");
+>
+> @@ -77,60 +71,42 @@ static int mtdchar_open(struct inode *inode, struct file *file)
+>         if ((file->f_mode & FMODE_WRITE) && (minor & 1))
+>                 return -EACCES;
+>
+> -       ret = simple_pin_fs(&mtd_inodefs_type, &mnt, &count);
+> -       if (ret)
+> -               return ret;
+> -
+>         mutex_lock(&mtd_mutex);
+> -       mtd = get_mtd_device(NULL, devnum);
+>
+> +       mtd = get_mtd_device(NULL, devnum);
+>         if (IS_ERR(mtd)) {
+>                 ret = PTR_ERR(mtd);
+> -               goto out;
+> +               goto out_unlock;
+>         }
+>
+>         if (mtd->type == MTD_ABSENT) {
+>                 ret = -ENODEV;
+> -               goto out1;
+> -       }
+> -
+> -       mtd_ino = iget_locked(mnt->mnt_sb, devnum);
+> -       if (!mtd_ino) {
+> -               ret = -ENOMEM;
+> -               goto out1;
+> +               goto out_put_device;
+>         }
+> -       if (mtd_ino->i_state & I_NEW) {
+> -               mtd_ino->i_private = mtd;
+> -               mtd_ino->i_mode = S_IFCHR;
+> -               mtd_ino->i_data.backing_dev_info = mtd->backing_dev_info;
+> -               unlock_new_inode(mtd_ino);
+> -       }
+> -       file->f_mapping = mtd_ino->i_mapping;
+>
+>         /* You can't open it RW if it's not a writeable device */
+>         if ((file->f_mode & FMODE_WRITE) && !(mtd->flags & MTD_WRITEABLE)) {
+>                 ret = -EACCES;
+> -               goto out2;
+> +               goto out_put_device;
+>         }
+>
+>         mfi = kzalloc(sizeof(*mfi), GFP_KERNEL);
+>         if (!mfi) {
+>                 ret = -ENOMEM;
+> -               goto out2;
+> +               goto out_put_device;
+>         }
+> -       mfi->ino = mtd_ino;
+>         mfi->mtd = mtd;
+> +
+>         file->private_data = mfi;
+> +       file->f_mapping->backing_dev_info = mtd->backing_dev_info;
+> +
+>         mutex_unlock(&mtd_mutex);
+>         return 0;
+>
+> -out2:
+> -       iput(mtd_ino);
+> -out1:
+> +out_put_device:
+>         put_mtd_device(mtd);
+> -out:
+> +out_unlock:
+>         mutex_unlock(&mtd_mutex);
+> -       simple_release_fs(&mnt, &count);
+>         return ret;
+>  } /* mtdchar_open */
+>
+> @@ -147,12 +123,9 @@ static int mtdchar_close(struct inode *inode, struct file *file)
+>         if ((file->f_mode & FMODE_WRITE))
+>                 mtd_sync(mtd);
+>
+> -       iput(mfi->ino);
+> -
+>         put_mtd_device(mtd);
+>         file->private_data = NULL;
+>         kfree(mfi);
+> -       simple_release_fs(&mnt, &count);
+>
+>         return 0;
+>  } /* mtdchar_close */
+> @@ -1147,24 +1120,6 @@ static const struct file_operations mtd_fops = {
+>  #endif
+>  };
+>
+> -static const struct super_operations mtd_ops = {
+> -       .drop_inode = generic_delete_inode,
+> -       .statfs = simple_statfs,
+> -};
+> -
+> -static struct dentry *mtd_inodefs_mount(struct file_system_type *fs_type,
+> -                               int flags, const char *dev_name, void *data)
+> -{
+> -       return mount_pseudo(fs_type, "mtd_inode:", &mtd_ops, NULL, MTD_INODE_FS_MAGIC);
+> -}
+> -
+> -static struct file_system_type mtd_inodefs_type = {
+> -       .name = "mtd_inodefs",
+> -       .mount = mtd_inodefs_mount,
+> -       .kill_sb = kill_anon_super,
+> -};
+> -MODULE_ALIAS_FS("mtd_inodefs");
+> -
+>  int __init init_mtdchar(void)
+>  {
+>         int ret;
+> @@ -1174,26 +1129,12 @@ int __init init_mtdchar(void)
+>         if (ret < 0) {
+>                 pr_err("Can't allocate major number %d for MTD\n",
+>                        MTD_CHAR_MAJOR);
+> -               return ret;
+>         }
+> -
+> -       ret = register_filesystem(&mtd_inodefs_type);
+> -       if (ret) {
+> -               pr_err("Can't register mtd_inodefs filesystem, error %d\n",
+> -                      ret);
+> -               goto err_unregister_chdev;
+> -       }
+> -
+> -       return ret;
+> -
+> -err_unregister_chdev:
+> -       __unregister_chrdev(MTD_CHAR_MAJOR, 0, 1 << MINORBITS, "mtd");
+>         return ret;
+>  }
+>
+>  void __exit cleanup_mtdchar(void)
+>  {
+> -       unregister_filesystem(&mtd_inodefs_type);
+>         __unregister_chrdev(MTD_CHAR_MAJOR, 0, 1 << MINORBITS, "mtd");
+>  }
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+
+
+-- 
+Thanks,
+//richard
