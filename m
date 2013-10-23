@@ -1,23 +1,20 @@
-Received: from mail-we0-x22a.google.com ([2a00:1450:400c:c03::22a])
+Received: from mail-qc0-x22c.google.com ([2607:f8b0:400d:c01::22c])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VZ17p-0002Np-8D
- for linux-mtd@lists.infradead.org; Wed, 23 Oct 2013 16:17:38 +0000
-Received: by mail-we0-f170.google.com with SMTP id u57so1073507wes.15
- for <linux-mtd@lists.infradead.org>; Wed, 23 Oct 2013 09:17:15 -0700 (PDT)
-Message-ID: <1382545032.8882.3.camel@karhu.quadriga.com>
-Subject: Re: problem with ecc errors and ubifs
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Date: Wed, 23 Oct 2013 17:17:12 +0100
-In-Reply-To: <alpine.DEB.2.00.1310221356080.28562@lnxricardw.se.axis.com>
-References: <52666705.8040000@ammonit.com>
- <alpine.DEB.2.00.1310221356080.28562@lnxricardw.se.axis.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Steffen =?ISO-8859-1?Q?K=FChn?= <sk@ammonit.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+ id 1VZ1XL-0002ty-7A
+ for linux-mtd@lists.infradead.org; Wed, 23 Oct 2013 16:44:00 +0000
+Received: by mail-qc0-f172.google.com with SMTP id c9so622667qcz.31
+ for <linux-mtd@lists.infradead.org>; Wed, 23 Oct 2013 09:43:36 -0700 (PDT)
+Date: Wed, 23 Oct 2013 09:43:32 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Prabhakar Kushwaha <prabhakar@freescale.com>
+Subject: Re: [PATCH] driver/mtd/IFC: Add support of 8K page size NAND flash
+Message-ID: <20131023164332.GU23337@ld-irv-0074.broadcom.com>
+References: <1380021083-15986-1-git-send-email-prabhakar@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1380021083-15986-1-git-send-email-prabhakar@freescale.com>
+Cc: scottwood@freescale.com, linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,21 +24,153 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2013-10-22 at 14:05 +0200, Ricard Wanderlof wrote:
-> I know there have been discussions that when using ECC that can correct 
-> more than a single bit in a given area, to not trigger scrubbing as soon 
-> as a single bit goes bad, but use a threshold mechanism, so that scrubbing 
-> is triggered first when, say, half the maximum amount of bits need 
-> correcting (e.g. in your case when 4 bits need correcting), the reason 
-> being that flashes which require multibit ecc tend to have bits here and 
-> there that flip rather quickly after writing, so triggering on them leads 
-> to undue scrubbing and hence wear on the flash.
+On Tue, Sep 24, 2013 at 04:41:23PM +0530, Prabhakar Kushwaha wrote:
+> Current IFC driver supports till 4K page size NAND flash.
+> Add support of 8K Page size NAND flash
+>   - Add nand_ecclayout for 4 bit & 8 bit ecc
+>   - Defines constants
+>   - also fix ecc.strength for 8bit ecc of 8K page size NAND
+> 
+> Signed-off-by: Prabhakar Kushwaha <prabhakar@freescale.com>
 
-We already have this stuff in mainline kernels for rather long time. See
-the 'bitflip_threshold' variable in the mtd_info data structures. We
-have a good piece of documentation in
-Documentation/ABI/testing/sysfs-class-mtd
+These ECC layouts are rather horrendous and large, but they're the best
+we've got...
 
--- 
-Best Regards,
-Artem Bityutskiy
+Pushed to l2-mtd.git with compile testing only. Let me know if there are
+any Tested-by's (or NAK's).
+
+Brian
+
+> ---
+>  git://git.infradead.org/linux-mtd.git branch master
+>  
+>  arch/powerpc/include/asm/fsl_ifc.h |    2 +
+>  drivers/mtd/nand/fsl_ifc_nand.c    |   77 ++++++++++++++++++++++++++++++++++++
+>  2 files changed, 79 insertions(+)
+> 
+> diff --git a/arch/powerpc/include/asm/fsl_ifc.h b/arch/powerpc/include/asm/fsl_ifc.h
+> index b8a4b9b..f49ddb1 100644
+> --- a/arch/powerpc/include/asm/fsl_ifc.h
+> +++ b/arch/powerpc/include/asm/fsl_ifc.h
+> @@ -93,6 +93,7 @@
+>  #define CSOR_NAND_PGS_512		0x00000000
+>  #define CSOR_NAND_PGS_2K		0x00080000
+>  #define CSOR_NAND_PGS_4K		0x00100000
+> +#define CSOR_NAND_PGS_8K		0x00180000
+>  /* Spare region Size */
+>  #define CSOR_NAND_SPRZ_MASK		0x0000E000
+>  #define CSOR_NAND_SPRZ_SHIFT		13
+> @@ -102,6 +103,7 @@
+>  #define CSOR_NAND_SPRZ_210		0x00006000
+>  #define CSOR_NAND_SPRZ_218		0x00008000
+>  #define CSOR_NAND_SPRZ_224		0x0000A000
+> +#define CSOR_NAND_SPRZ_CSOR_EXT		0x0000C000
+>  /* Pages Per Block */
+>  #define CSOR_NAND_PB_MASK		0x00000700
+>  #define CSOR_NAND_PB_SHIFT		8
+> diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
+> index 317a771..a14885b 100644
+> --- a/drivers/mtd/nand/fsl_ifc_nand.c
+> +++ b/drivers/mtd/nand/fsl_ifc_nand.c
+> @@ -135,6 +135,69 @@ static struct nand_ecclayout oob_4096_ecc8 = {
+>  	.oobfree = { {2, 6}, {136, 82} },
+>  };
+>  
+> +/* 8192-byte page size with 4-bit ECC */
+> +static struct nand_ecclayout oob_8192_ecc4 = {
+> +	.eccbytes = 128,
+> +	.eccpos = {
+> +		8, 9, 10, 11, 12, 13, 14, 15,
+> +		16, 17, 18, 19, 20, 21, 22, 23,
+> +		24, 25, 26, 27, 28, 29, 30, 31,
+> +		32, 33, 34, 35, 36, 37, 38, 39,
+> +		40, 41, 42, 43, 44, 45, 46, 47,
+> +		48, 49, 50, 51, 52, 53, 54, 55,
+> +		56, 57, 58, 59, 60, 61, 62, 63,
+> +		64, 65, 66, 67, 68, 69, 70, 71,
+> +		72, 73, 74, 75, 76, 77, 78, 79,
+> +		80, 81, 82, 83, 84, 85, 86, 87,
+> +		88, 89, 90, 91, 92, 93, 94, 95,
+> +		96, 97, 98, 99, 100, 101, 102, 103,
+> +		104, 105, 106, 107, 108, 109, 110, 111,
+> +		112, 113, 114, 115, 116, 117, 118, 119,
+> +		120, 121, 122, 123, 124, 125, 126, 127,
+> +		128, 129, 130, 131, 132, 133, 134, 135,
+> +	},
+> +	.oobfree = { {2, 6}, {136, 208} },
+> +};
+> +
+> +/* 8192-byte page size with 8-bit ECC -- requires 218-byte OOB */
+> +static struct nand_ecclayout oob_8192_ecc8 = {
+> +	.eccbytes = 256,
+> +	.eccpos = {
+> +		8, 9, 10, 11, 12, 13, 14, 15,
+> +		16, 17, 18, 19, 20, 21, 22, 23,
+> +		24, 25, 26, 27, 28, 29, 30, 31,
+> +		32, 33, 34, 35, 36, 37, 38, 39,
+> +		40, 41, 42, 43, 44, 45, 46, 47,
+> +		48, 49, 50, 51, 52, 53, 54, 55,
+> +		56, 57, 58, 59, 60, 61, 62, 63,
+> +		64, 65, 66, 67, 68, 69, 70, 71,
+> +		72, 73, 74, 75, 76, 77, 78, 79,
+> +		80, 81, 82, 83, 84, 85, 86, 87,
+> +		88, 89, 90, 91, 92, 93, 94, 95,
+> +		96, 97, 98, 99, 100, 101, 102, 103,
+> +		104, 105, 106, 107, 108, 109, 110, 111,
+> +		112, 113, 114, 115, 116, 117, 118, 119,
+> +		120, 121, 122, 123, 124, 125, 126, 127,
+> +		128, 129, 130, 131, 132, 133, 134, 135,
+> +		136, 137, 138, 139, 140, 141, 142, 143,
+> +		144, 145, 146, 147, 148, 149, 150, 151,
+> +		152, 153, 154, 155, 156, 157, 158, 159,
+> +		160, 161, 162, 163, 164, 165, 166, 167,
+> +		168, 169, 170, 171, 172, 173, 174, 175,
+> +		176, 177, 178, 179, 180, 181, 182, 183,
+> +		184, 185, 186, 187, 188, 189, 190, 191,
+> +		192, 193, 194, 195, 196, 197, 198, 199,
+> +		200, 201, 202, 203, 204, 205, 206, 207,
+> +		208, 209, 210, 211, 212, 213, 214, 215,
+> +		216, 217, 218, 219, 220, 221, 222, 223,
+> +		224, 225, 226, 227, 228, 229, 230, 231,
+> +		232, 233, 234, 235, 236, 237, 238, 239,
+> +		240, 241, 242, 243, 244, 245, 246, 247,
+> +		248, 249, 250, 251, 252, 253, 254, 255,
+> +		256, 257, 258, 259, 260, 261, 262, 263,
+> +	},
+> +	.oobfree = { {2, 6}, {264, 80} },
+> +};
+>  
+>  /*
+>   * Generic flash bbt descriptors
+> @@ -872,11 +935,25 @@ static int fsl_ifc_chip_init(struct fsl_ifc_mtd *priv)
+>  		} else {
+>  			layout = &oob_4096_ecc8;
+>  			chip->ecc.bytes = 16;
+> +			chip->ecc.strength = 8;
+>  		}
+>  
+>  		priv->bufnum_mask = 1;
+>  		break;
+>  
+> +	case CSOR_NAND_PGS_8K:
+> +		if ((csor & CSOR_NAND_ECC_MODE_MASK) ==
+> +		    CSOR_NAND_ECC_MODE_4) {
+> +			layout = &oob_8192_ecc4;
+> +		} else {
+> +			layout = &oob_8192_ecc8;
+> +			chip->ecc.bytes = 16;
+> +			chip->ecc.strength = 8;
+> +		}
+> +
+> +		priv->bufnum_mask = 0;
+> +	break;
+> +
+>  	default:
+>  		dev_err(priv->dev, "bad csor %#x: bad page size\n", csor);
+>  		return -ENODEV;
+> -- 
+> 1.7.9.5
+> 
+> 
+> 
+> 
