@@ -1,28 +1,15 @@
-Received: from plane.gmane.org ([80.91.229.3])
+Received: from mail-oa0-x22c.google.com ([2607:f8b0:4003:c02::22c])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VZ37a-00052c-6y
- for linux-mtd@lists.infradead.org; Wed, 23 Oct 2013 18:25:31 +0000
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1VZ379-0002Jc-S6
- for linux-mtd@lists.infradead.org; Wed, 23 Oct 2013 20:25:04 +0200
-Received: from AMontsouris-651-1-138-229.w90-46.abo.wanadoo.fr
- ([90.46.109.229]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <linux-mtd@lists.infradead.org>; Wed, 23 Oct 2013 20:25:03 +0200
-Received: from yann.collet.73 by
- AMontsouris-651-1-138-229.w90-46.abo.wanadoo.fr with local (Gmexim 0.1
- (Debian)) id 1AlnuQ-0007hv-00
- for <linux-mtd@lists.infradead.org>; Wed, 23 Oct 2013 20:25:03 +0200
-To: linux-mtd@lists.infradead.org
-From: Yann Collet <yann.collet.73@gmail.com>
-Subject: Re: lz4hc compression in UBIFS?
-Date: Wed, 23 Oct 2013 18:19:48 +0000 (UTC)
-Message-ID: <loom.20131023T201657-894@post.gmane.org>
-References: <55541379679397@web20h.yandex.ru>
- <CAP+RiCAVuUEfyjg02+ZjeFXgUuaRW+fuMB490Ce2Hq_4qHBL=A@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+ id 1VZ5F5-0007m6-Va
+ for linux-mtd@lists.infradead.org; Wed, 23 Oct 2013 20:41:24 +0000
+Received: by mail-oa0-f44.google.com with SMTP id l20so1469251oag.17
+ for <linux-mtd@lists.infradead.org>; Wed, 23 Oct 2013 13:41:02 -0700 (PDT)
+From: Brian Norris <computersforpeace@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: m25p80: add support for Macronix mx25l3255e
+Date: Wed, 23 Oct 2013 13:40:42 -0700
+Message-Id: <1382560842-428-1-git-send-email-computersforpeace@gmail.com>
+Cc: Marek Vasut <marex@denx.de>, Brian Norris <computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,21 +19,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-UBIFS error (pid 4288): ubifs_decompress: cannot decompress 12 bytes,
-(...)
-        data size      12
-        data:
-        00000000: 1f 00 01 00 ff e8 50 00 00 00 00 00
+A new 32Gbit SPI NOR flash from Macronix. Nothing special.
 
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Cc: Marek Vasut <marex@denx.de>
+---
+ drivers/mtd/devices/m25p80.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-The compressed format is correct.
-It describes a flow of 00, of size ~500.
-
-So the problem seems more likely on the decompression side.
-
-Are you sure you are providing "12" as the "input size" parameter ? and that 
-the "maximum output size" parameter is correctly provided ? (i.e. >= to 
-original data size)
-
-
-Regards 
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 8d6c87be..72c37f0 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -778,6 +778,7 @@ static const struct spi_device_id m25p_ids[] = {
+ 	{ "mx25l8005",   INFO(0xc22014, 0, 64 * 1024,  16, 0) },
+ 	{ "mx25l1606e",  INFO(0xc22015, 0, 64 * 1024,  32, SECT_4K) },
+ 	{ "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64, 0) },
++	{ "mx25l3255e",  INFO(0xc29e16, 0, 64 * 1024,  64, SECT_4K) },
+ 	{ "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128, 0) },
+ 	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
+ 	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
+-- 
+1.8.4
