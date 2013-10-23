@@ -1,40 +1,28 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VYxy3-0005Yu-CF
- for linux-mtd@lists.infradead.org; Wed, 23 Oct 2013 12:55:20 +0000
-Date: Wed, 23 Oct 2013 09:55:17 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v10 04/10] mtd: nand: omap: fix device scan:
- NAND_CMD_READID, NAND_CMD_RESET, CMD_CMD_PARAM use only x8 bus
-Message-ID: <20131023125516.GA2458@localhost>
-References: <1382172254-12448-1-git-send-email-pekon@ti.com>
- <1382172254-12448-5-git-send-email-pekon@ti.com>
- <20131022201624.GL23337@ld-irv-0074.broadcom.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA29DB8@DBDE04.ent.ti.com>
- <5267690C.9080005@gmail.com>
+Received: from mail-wg0-x234.google.com ([2a00:1450:400c:c00::234])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VYxzR-0005ac-09
+ for linux-mtd@lists.infradead.org; Wed, 23 Oct 2013 12:56:45 +0000
+Received: by mail-wg0-f52.google.com with SMTP id f12so767934wgh.7
+ for <linux-mtd@lists.infradead.org>; Wed, 23 Oct 2013 05:56:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5267690C.9080005@gmail.com>
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "arnd@arndb.de" <arnd@arndb.de>, "Pawel.Moll@arm.com" <Pawel.Moll@arm.com>,
- "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>,
- "tony@atomide.com" <tony@atomide.com>,
- "avinashphilipk@gmail.com" <avinashphilipk@gmail.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "jp.francois@cynove.com" <jp.francois@cynove.com>, "Balbi,
- Felipe" <balbi@ti.com>, "olof@lixom.net" <olof@lixom.net>,
- "robherring2@gmail.com" <robherring2@gmail.com>, "Gupta, Pekon" <pekon@ti.com>,
- "bcousson@baylibre.com" <bcousson@baylibre.com>,
- "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>,
+In-Reply-To: <300471382514034@web11h.yandex.ru>
+References: <55541379679397@web20h.yandex.ru>
+ <CAP+RiCAVuUEfyjg02+ZjeFXgUuaRW+fuMB490Ce2Hq_4qHBL=A@mail.gmail.com>
+ <183031382371160@web6m.yandex.ru>
+ <CAP+RiCDKgRqi8_Y4OMqyJyCUpKJW5BVE=hNwp3WzQ7PuOMWGMw@mail.gmail.com>
+ <139841382436609@web24g.yandex.ru>
+ <CAP+RiCDVTMb6RE5kGCYSyMCF9JMpSUAM5jS4YPObkbBu=zD59g@mail.gmail.com>
+ <300471382514034@web11h.yandex.ru>
+Date: Wed, 23 Oct 2013 07:49:24 -0500
+Message-ID: <CAP+RiCBSPAHc2aM9byRjhFVePRU-1ODL9aJvN2Y65S4Ddj4sDA@mail.gmail.com>
+Subject: Re: lz4hc compression in UBIFS?
+From: Brent Taylor <motobud@gmail.com>
+To: Konstantin Tokarev <annulen@yandex.ru>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "ivan.djelic@parrot.com" <ivan.djelic@parrot.com>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -44,49 +32,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Brian,
+On Wed, Oct 23, 2013 at 2:40 AM, Konstantin Tokarev <annulen@yandex.ru> wrote:
+>
+>
+> 23.10.2013, 09:26, "Brent Taylor" <motobud@gmail.com>:
+>> Konstantin,
+>>    I did my testing with data from /dev/urandom (which I now realize
+>> wasn't the best choice of data source), but if I use /dev/zero (which
+>> actually causes data compression to occur), the decompressor fails.  I
+>> don't know the internal workings of the lz4hc compressor or the lz4
+>> decompressor.  I couldn't find any examples of any code in the kernel
+>> actually using the compressor.  I've cc'ed the maintainers of the
+>> lz4hc_compress.c to see if they my have some more insight to the
+>> issue.
+>
+> Does decompressor fail for you with the same error messages?
+>
+> Have you tried to copy my file to the volume? It looks like minimal test case
+> for my board, if I remove any line decompressor works fine.
+>
+> --
+> Regards,
+> Konstantin
 
-On Tue, Oct 22, 2013 at 11:13:32PM -0700, Brian Norris wrote:
-> On 10/22/2013 10:07 PM, Gupta, Pekon wrote:
-> >> From: Brian Norris [mailto:computersforpeace@gmail.com]
-> >> On Sat, Oct 19, 2013 at 02:14:08PM +0530, Pekon Gupta wrote:
-> > [...]
-> > 
-> >>>
-> >>> Thus this patch run nand_scan_ident() with driver configured as x8 device.
-> >>
-> >> So are you saying that the driver currently doesn't work if you started
-> >> in x16 buswidth? Are you having problems with a particular setup? What
-> >> sort of devices are you testing?
-> >>
-> > No, I'm saying that you cannot read ONFI params in x16 mode.
-> > And, that is what was pointed out in following commit log also ..
-> > (Reference to 3.3.2. Target Initialization: given above)
-> > So, if I run nand_scan_ident() in x16 mode, my ONFI detection would 
-> > fail for sure ..
-> 
-> But you cannot just run nand_scan_ident() with !(chip->options &
-> NAND_BUSWIDTH_16) when your devices is x16. You need to solve the ONFI
-> detection problem while correctly specifying NAND_BUSWIDTH_16.
-> 
-> Since you didn't answer the other 2 questions there: are you testing any
-> x16 devices?
-> 
+Yes, I get the same error, here's a dump from UBIFS when I cat a file
+filled with data from /dev/zero:
 
-I'm jumping on this thread without having read all the discussion, sorry
-about that.
+UBIFS error (pid 4288): ubifs_decompress: cannot decompress 12 bytes,
+compressor lz4hc, error -22
+UBIFS error (pid 4288): read_block: bad data node (block 0, inode 71)
+        magic          0x6101831
+        crc            0xff61a078
+        node_type      1 (data node)
+        group_type     0 (no node group)
+        sqnum          2700
+        len            60
+        key            (71, data, 0)
+        size           512
+        compr_typ      3
+        data size      12
+        data:
+        00000000: 1f 00 01 00 ff e8 50 00 00 00 00 00
+UBIFS error (pid 4288): do_readpage: cannot read page 0 of inode 71, error -22
+cat: /opt/data/zero.bin: Input/output error
 
-FWIW, I have a Beaglebone with a 16-bit bus NAND attached to it.
-
-Coincidentally, yesterday I was doing some tests as I'm ramping up the
-NAND and I found that weird double nand_scan_ident() call.
-The whole thing looks buggy to me, so I'm happy to help, review, test
-and patches to take care of this.
-
-I'm using some TI SDK with some ancient v3.2.x (with no git history!),
-but from this discussion it seems the issue is still present in
-mainline.
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+Steps to reproduce are:
+1.  Create a file with all zeros: dd if=/dev/zero bs=512 count=1
+of=/opt/data/zero.bin
+2.  Unmount ubifs and detach ubi partition
+3.  attach ubi partition and mount ubifs
+4. cat /opt/data/zero.bin
