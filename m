@@ -1,28 +1,28 @@
-Received: from forward5h.mail.yandex.net ([84.201.186.23])
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VYyfn-0006oF-Nj
- for linux-mtd@lists.infradead.org; Wed, 23 Oct 2013 13:40:32 +0000
-From: Konstantin Tokarev <annulen@yandex.ru>
-To: Brent Taylor <motobud@gmail.com>
-In-Reply-To: <CAP+RiCBSPAHc2aM9byRjhFVePRU-1ODL9aJvN2Y65S4Ddj4sDA@mail.gmail.com>
-References: <55541379679397@web20h.yandex.ru>
- <CAP+RiCAVuUEfyjg02+ZjeFXgUuaRW+fuMB490Ce2Hq_4qHBL=A@mail.gmail.com>
- <183031382371160@web6m.yandex.ru>
- <CAP+RiCDKgRqi8_Y4OMqyJyCUpKJW5BVE=hNwp3WzQ7PuOMWGMw@mail.gmail.com>
- <139841382436609@web24g.yandex.ru>
- <CAP+RiCDVTMb6RE5kGCYSyMCF9JMpSUAM5jS4YPObkbBu=zD59g@mail.gmail.com>
- <300471382514034@web11h.yandex.ru>
- <CAP+RiCBSPAHc2aM9byRjhFVePRU-1ODL9aJvN2Y65S4Ddj4sDA@mail.gmail.com>
-Subject: Re: lz4hc compression in UBIFS?
+ id 1VYyk5-0006yI-7Y
+ for linux-mtd@lists.infradead.org; Wed, 23 Oct 2013 13:44:58 +0000
+Date: Wed, 23 Oct 2013 10:44:51 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Pekon Gupta <pekon@ti.com>
+Subject: Re: [PATCH v10 10/10] mtd: nand: omap: remove selection of BCH
+ ecc-scheme via KConfig
+Message-ID: <20131023134450.GE2458@localhost>
+References: <1382172254-12448-1-git-send-email-pekon@ti.com>
+ <1382172254-12448-11-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
-Message-Id: <133391382535580@web11h.yandex.ru>
-Date: Wed, 23 Oct 2013 17:39:40 +0400
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset=koi8-r
-Cc: "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+In-Reply-To: <1382172254-12448-11-git-send-email-pekon@ti.com>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org,
+ ijc+devicetree@hellion.org.uk, linux-omap@vger.kernel.org, arnd@arndb.de,
+ Pawel.Moll@arm.com, dedekind1@gmail.com, tony@atomide.com,
+ avinashphilipk@gmail.com, swarren@wwwdotorg.org, jp.francois@cynove.com,
+ balbi@ti.com, robherring2@gmail.com, bcousson@baylibre.com, olof@lixom.net,
+ linux-mtd@lists.infradead.org, ivan.djelic@parrot.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,60 +32,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Gupta,
 
+I already have a question :-)
 
-23.10.2013, 16:49, "Brent Taylor" <motobud@gmail.com>:
-> On Wed, Oct 23, 2013 at 2:40 AM, Konstantin Tokarev <annulen@yandex.ru> wrote:
->
->> ö23.10.2013, 09:26, "Brent Taylor" <motobud@gmail.com>:
->>> öKonstantin,
->>> ööööI did my testing with data from /dev/urandom (which I now realize
->>> öwasn't the best choice of data source), but if I use /dev/zero (which
->>> öactually causes data compression to occur), the decompressor fails. öI
->>> ödon't know the internal workings of the lz4hc compressor or the lz4
->>> ödecompressor. öI couldn't find any examples of any code in the kernel
->>> öactually using the compressor. öI've cc'ed the maintainers of the
->>> ölz4hc_compress.c to see if they my have some more insight to the
->>> öissue.
->> öDoes decompressor fail for you with the same error messages?
->>
->> öHave you tried to copy my file to the volume? It looks like minimal test case
->> öfor my board, if I remove any line decompressor works fine.
->>
->> ö--
->> öRegards,
->> öKonstantin
->
-> Yes, I get the same error, here's a dump from UBIFS when I cat a file
-> filled with data from /dev/zero:
->
-> UBIFS error (pid 4288): ubifs_decompress: cannot decompress 12 bytes,
-> compressor lz4hc, error -22
-> UBIFS error (pid 4288): read_block: bad data node (block 0, inode 71)
-> öööööööömagic ööööööööö0x6101831
-> ööööööööcrc ööööööööööö0xff61a078
-> öööööööönode_type ööööö1 (data node)
-> öööööööögroup_type öööö0 (no node group)
-> öööööööösqnum ööööööööö2700
-> öööööööölen ööööööööööö60
-> öööööööökey ööööööööööö(71, data, 0)
-> öööööööösize öööööööööö512
-> ööööööööcompr_typ ööööö3
-> öööööööödata size ööööö12
-> öööööööödata:
-> öööööööö00000000: 1f 00 01 00 ff e8 50 00 00 00 00 00
-> UBIFS error (pid 4288): do_readpage: cannot read page 0 of inode 71, error -22
-> cat: /opt/data/zero.bin: Input/output error
->
-> Steps to reproduce are:
-> 1. öCreate a file with all zeros: dd if=/dev/zero bs=512 count=1
-> of=/opt/data/zero.bin
-> 2. öUnmount ubifs and detach ubi partition
-> 3. öattach ubi partition and mount ubifs
-> 4. cat /opt/data/zero.bin
+On Sat, Oct 19, 2013 at 02:14:14PM +0530, Pekon Gupta wrote:
+> With OMAP NAND driver updates, selection of ecc-scheme:
+> *DT enabled kernel*
+>  	depends on ti,nand-ecc-opt and ti,elm-id DT bindings.
+> *Non DT enabled kernel*
+> 	depends on elm_dev and ecc-scheme passed along with platform-data
+> 	from board file.
+> 
+> So, selection of ecc-scheme (BCH8 or BCH4) from KConfig can be removed
+> 
+> Signed-off-by: Pekon Gupta <pekon@ti.com>
+> ---
+>  drivers/mtd/nand/Kconfig | 40 ++++++----------------------------------
+>  1 file changed, 6 insertions(+), 34 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+> index d885298..93ae6a6 100644
+> --- a/drivers/mtd/nand/Kconfig
+> +++ b/drivers/mtd/nand/Kconfig
+> @@ -96,43 +96,15 @@ config MTD_NAND_OMAP2
+>  
+>  config MTD_NAND_OMAP_BCH
+>  	depends on MTD_NAND && MTD_NAND_OMAP2 && ARCH_OMAP3
 
-Reproduced here.
+I'm wondering how are you testing this in your SOC_AM33XX board (which
+is not ARCH_OMAP3). You probably have ARCH_OMAP3 always selected?
+
+IMO, no need to depend on any ARCH_xxx, just make it depend on the driver
+option itself, which already depends on ARCH_OMAP2PLUS (which is the bigger
+SoC family).
+
+Care to send a one-patch fix for that, so this *independent* bug can be
+taken by Brian? Please add my Reported-by when you do so.
 
 -- 
-Regards,
-Konstantin
+Ezequiel Garc√≠a, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
