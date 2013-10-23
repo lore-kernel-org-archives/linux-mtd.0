@@ -1,42 +1,28 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
+Received: from forward5h.mail.yandex.net ([84.201.186.23])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VYyQk-0006Lt-Fp
- for linux-mtd@lists.infradead.org; Wed, 23 Oct 2013 13:24:59 +0000
-Date: Wed, 23 Oct 2013 10:24:58 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [PATCH v10 04/10] mtd: nand: omap: fix device scan:
- NAND_CMD_READID, NAND_CMD_RESET, CMD_CMD_PARAM use only x8 bus
-Message-ID: <20131023132457.GD2458@localhost>
-References: <1382172254-12448-1-git-send-email-pekon@ti.com>
- <1382172254-12448-5-git-send-email-pekon@ti.com>
- <20131022201624.GL23337@ld-irv-0074.broadcom.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA29DB8@DBDE04.ent.ti.com>
- <5267690C.9080005@gmail.com> <20131023125516.GA2458@localhost>
- <20980858CB6D3A4BAE95CA194937D5E73EA2A0CB@DBDE04.ent.ti.com>
+ id 1VYyfn-0006oF-Nj
+ for linux-mtd@lists.infradead.org; Wed, 23 Oct 2013 13:40:32 +0000
+From: Konstantin Tokarev <annulen@yandex.ru>
+To: Brent Taylor <motobud@gmail.com>
+In-Reply-To: <CAP+RiCBSPAHc2aM9byRjhFVePRU-1ODL9aJvN2Y65S4Ddj4sDA@mail.gmail.com>
+References: <55541379679397@web20h.yandex.ru>
+ <CAP+RiCAVuUEfyjg02+ZjeFXgUuaRW+fuMB490Ce2Hq_4qHBL=A@mail.gmail.com>
+ <183031382371160@web6m.yandex.ru>
+ <CAP+RiCDKgRqi8_Y4OMqyJyCUpKJW5BVE=hNwp3WzQ7PuOMWGMw@mail.gmail.com>
+ <139841382436609@web24g.yandex.ru>
+ <CAP+RiCDVTMb6RE5kGCYSyMCF9JMpSUAM5jS4YPObkbBu=zD59g@mail.gmail.com>
+ <300471382514034@web11h.yandex.ru>
+ <CAP+RiCBSPAHc2aM9byRjhFVePRU-1ODL9aJvN2Y65S4Ddj4sDA@mail.gmail.com>
+Subject: Re: lz4hc compression in UBIFS?
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Message-Id: <133391382535580@web11h.yandex.ru>
+Date: Wed, 23 Oct 2013 17:39:40 +0400
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA2A0CB@DBDE04.ent.ti.com>
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "arnd@arndb.de" <arnd@arndb.de>, "Pawel.Moll@arm.com" <Pawel.Moll@arm.com>,
- "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>,
- "tony@atomide.com" <tony@atomide.com>,
- "avinashphilipk@gmail.com" <avinashphilipk@gmail.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "jp.francois@cynove.com" <jp.francois@cynove.com>, "Balbi,
- Felipe" <balbi@ti.com>, "olof@lixom.net" <olof@lixom.net>,
- "robherring2@gmail.com" <robherring2@gmail.com>,
- "bcousson@baylibre.com" <bcousson@baylibre.com>,
- "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>,
+Content-Type: text/plain; charset=koi8-r
+Cc: "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "ivan.djelic@parrot.com" <ivan.djelic@parrot.com>,
- Brian Norris <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -46,72 +32,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Gupta,
 
-On Wed, Oct 23, 2013 at 01:15:20PM +0000, Gupta, Pekon wrote:
-> Hi,
-> 
-> > From: Ezequiel Garcia [mailto:ezequiel.garcia@free-electrons.com]
-> [...]
-> > FWIW, I have a Beaglebone with a 16-bit bus NAND attached to it.
-> > 
-> > Coincidentally, yesterday I was doing some tests as I'm ramping up the
-> > NAND and I found that weird double nand_scan_ident() call.
-> > The whole thing looks buggy to me, so I'm happy to help, review, test
-> > and patches to take care of this.
-> > 
-> Yes, thanks .. that would be of great help.. 
-> And may be your experience of Atmel drivers would help me here..
-> 
 
-It's not Atmel, but Marvell :-)
+23.10.2013, 16:49, "Brent Taylor" <motobud@gmail.com>:
+> On Wed, Oct 23, 2013 at 2:40 AM, Konstantin Tokarev <annulen@yandex.ru> wrote:
+>
+>> ö23.10.2013, 09:26, "Brent Taylor" <motobud@gmail.com>:
+>>> öKonstantin,
+>>> ööööI did my testing with data from /dev/urandom (which I now realize
+>>> öwasn't the best choice of data source), but if I use /dev/zero (which
+>>> öactually causes data compression to occur), the decompressor fails. öI
+>>> ödon't know the internal workings of the lz4hc compressor or the lz4
+>>> ödecompressor. öI couldn't find any examples of any code in the kernel
+>>> öactually using the compressor. öI've cc'ed the maintainers of the
+>>> ölz4hc_compress.c to see if they my have some more insight to the
+>>> öissue.
+>> öDoes decompressor fail for you with the same error messages?
+>>
+>> öHave you tried to copy my file to the volume? It looks like minimal test case
+>> öfor my board, if I remove any line decompressor works fine.
+>>
+>> ö--
+>> öRegards,
+>> öKonstantin
+>
+> Yes, I get the same error, here's a dump from UBIFS when I cat a file
+> filled with data from /dev/zero:
+>
+> UBIFS error (pid 4288): ubifs_decompress: cannot decompress 12 bytes,
+> compressor lz4hc, error -22
+> UBIFS error (pid 4288): read_block: bad data node (block 0, inode 71)
+> öööööööömagic ööööööööö0x6101831
+> ööööööööcrc ööööööööööö0xff61a078
+> öööööööönode_type ööööö1 (data node)
+> öööööööögroup_type öööö0 (no node group)
+> öööööööösqnum ööööööööö2700
+> öööööööölen ööööööööööö60
+> öööööööökey ööööööööööö(71, data, 0)
+> öööööööösize öööööööööö512
+> ööööööööcompr_typ ööööö3
+> öööööööödata size ööööö12
+> öööööööödata:
+> öööööööö00000000: 1f 00 01 00 ff e8 50 00 00 00 00 00
+> UBIFS error (pid 4288): do_readpage: cannot read page 0 of inode 71, error -22
+> cat: /opt/data/zero.bin: Input/output error
+>
+> Steps to reproduce are:
+> 1. öCreate a file with all zeros: dd if=/dev/zero bs=512 count=1
+> of=/opt/data/zero.bin
+> 2. öUnmount ubifs and detach ubi partition
+> 3. öattach ubi partition and mount ubifs
+> 4. cat /opt/data/zero.bin
 
-> *Correct, should not be double calls to nand_scan_ident()..*
-> But there is a constrain in nand_base.c, that it does not allow ONFI
-> page reading in x16 mode.. So how to overcome that..
-> 
-> I see the similar implementation in your ATMEL driver, it does not use
-> NAND_BUSWIDTH_AUTO so how do you perform ONFI read
-> for x16 devices ?
-> drivers/mtd/nand/atmel_nand.c @@atmel_nand_probe()
-> /* here you move to x16 mode based on your DT or platform data */
-> 	if (host->board.bus_width_16)	/* 16-bit bus width */
-> 		nand_chip->options |= NAND_BUSWIDTH_16;
-> /* And then you call nand_scan_ident */
-> /* first scan to find the device and get the page size */
-> 	if (nand_scan_ident(mtd, 1, NULL)) {
-> 		res = -ENXIO;
-> 		goto err_scan_ident;
-> 	}
-> 
-> Wouldn't this fail, _unless_ your device is listed in nand_flash_id[] ?
-> because it would not be able to read ONFI params.. 
-> Refer below commit.. 
-> commit 0ce82b7f7b7373b16ecf7b5725e21e2975204500
-> Author:     Matthieu CASTET <matthieu.castet@parrot.com>
-> AuthorDate: 2013-01-16
-> 
-> 
+Reproduced here.
 
-Not my driver, but I'm taking a look at it now. Not sure if I'll get
-into something here.
-
-> 
-> 
-> > I'm using some TI SDK with some ancient v3.2.x (with no git history!),
-> > but from this discussion it seems the issue is still present in
-> > mainline.
-> > 
-> Aah sorry, then you might have some problem here in rebasing the
-> patches. But still if you can, thanks much ..
-> 
-
-I'm currently trying mainline (just for this issue not for my product).
-I just need some time to prepare the bootargs and write a DT node for
-the NAND cape.
-
-Again, not sure if I'll make some progress, but I'll give it a shot :-)
 -- 
-Ezequiel Garc√≠a, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+Regards,
+Konstantin
