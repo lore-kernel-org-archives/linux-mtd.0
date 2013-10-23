@@ -1,21 +1,35 @@
-Date: Wed, 23 Oct 2013 07:28:23 -0400
-From: Jason Cooper <jason@lakedaemon.net>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH v2 01/27] clk: mvebu: Add Core Divider clock
-Message-ID: <20131023112823.GF24520@titan.lakedaemon.net>
-References: <1382137374-21251-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1382137374-21251-2-git-send-email-ezequiel.garcia@free-electrons.com>
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: RE: [PATCH v10 04/10] mtd: nand: omap: fix device scan:
+ NAND_CMD_READID, NAND_CMD_RESET, CMD_CMD_PARAM use only x8 bus
+Date: Wed, 23 Oct 2013 12:30:16 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA2A049@DBDE04.ent.ti.com>
+References: <1382172254-12448-1-git-send-email-pekon@ti.com>
+ <1382172254-12448-5-git-send-email-pekon@ti.com>
+ <20131022201624.GL23337@ld-irv-0074.broadcom.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EA29DB8@DBDE04.ent.ti.com>
+ <5267690C.9080005@gmail.com>
+In-Reply-To: <5267690C.9080005@gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1382137374-21251-2-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: Lior Amsalem <alior@marvell.com>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Tawfik Bayouk <tawfik@marvell.com>, Daniel Mack <zonque@gmail.com>,
- linux-mtd@lists.infradead.org,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>, Willy Tarreau <w@1wt.eu>,
- linux-arm-kernel@lists.infradead.org
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "arnd@arndb.de" <arnd@arndb.de>, "Pawel.Moll@arm.com" <Pawel.Moll@arm.com>,
+ "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>,
+ "tony@atomide.com" <tony@atomide.com>,
+ "jp.francois@cynove.com" <jp.francois@cynove.com>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ "avinashphilipk@gmail.com" <avinashphilipk@gmail.com>, "Balbi,
+ Felipe" <balbi@ti.com>, "robherring2@gmail.com" <robherring2@gmail.com>,
+ "bcousson@baylibre.com" <bcousson@baylibre.com>,
+ "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>,
+ "olof@lixom.net" <olof@lixom.net>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "ivan.djelic@parrot.com" <ivan.djelic@parrot.com>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,305 +39,137 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ezequiel,
+Hi Brian,
 
-MikeT took this the other day.
+> From: Brian Norris [mailto:computersforpeace@gmail.com]
+> > On 10/22/2013 10:07 PM, Gupta, Pekon wrote:
+> >> From: Brian Norris [mailto:computersforpeace@gmail.com]
+> >> On Sat, Oct 19, 2013 at 02:14:08PM +0530, Pekon Gupta wrote:
 
-As such, I've taken in patches 2-4 inclusive into mvebu/dt.  That should
-be the last items for this window.
+[...]
 
-Please drop them from your series next time around.
+>> So are you saying that the driver currently doesn't work if you started
+>> in x16 buswidth? Are you having problems with a particular setup? What
+>> sort of devices are you testing?
+>>
+...
+> Since you didn't answer the other 2 questions there: are you testing any
+> x16 devices?
+>=20
 
-thx,
+Ans-1: Yes, I'm testing on following boards:
+  (a) AM335x-EVM which has x8 Micron device.
+  http://www.ti.com/tool/tmdxevm3358
+  (b) beaglebone with 'NAND cape', which has x16 Micron device.
+  http://beagleboardtoys.info/index.php?title=3DBeagleBone_4Gb_16-Bit_NAND_=
+Module
+  (c) AM437x board (which has 4K page NAND from Macronix).
+  (d) Also would be testing on DRA7xx again having Micron Device.
 
-Jason.
+Ans-2:
+Its not the setup but rather constrain in nand_base.c which prevents
+reading of ONFI params in x16 mode. Please read below..
 
-On Fri, Oct 18, 2013 at 08:02:28PM -0300, Ezequiel Garcia wrote:
-> This commit introduces a new group of clocks present in Armada 370/XP
-> SoCs (called "Core Divider" clocks) and add a provider for them.
-> The only clock supported for now is the NAND clock (ndclk), but the
-> infrastructure to add the rest is already set.
-> 
-> Reviewed-by: Gregory CLEMENT <gregory.clement@free-electrons.com>
-> Acked-by: Jason Cooper <jason@lakedaemon.net>
-> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> ---
->  drivers/clk/mvebu/Kconfig       |   5 +
->  drivers/clk/mvebu/Makefile      |   1 +
->  drivers/clk/mvebu/clk-corediv.c | 223 ++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 229 insertions(+)
->  create mode 100644 drivers/clk/mvebu/clk-corediv.c
-> 
-> diff --git a/drivers/clk/mvebu/Kconfig b/drivers/clk/mvebu/Kconfig
-> index 0b0f3e7..c339b82 100644
-> --- a/drivers/clk/mvebu/Kconfig
-> +++ b/drivers/clk/mvebu/Kconfig
-> @@ -4,15 +4,20 @@ config MVEBU_CLK_COMMON
->  config MVEBU_CLK_CPU
->  	bool
->  
-> +config MVEBU_CLK_COREDIV
-> +	bool
-> +
->  config ARMADA_370_CLK
->  	bool
->  	select MVEBU_CLK_COMMON
->  	select MVEBU_CLK_CPU
-> +	select MVEBU_CLK_COREDIV
->  
->  config ARMADA_XP_CLK
->  	bool
->  	select MVEBU_CLK_COMMON
->  	select MVEBU_CLK_CPU
-> +	select MVEBU_CLK_COREDIV
->  
->  config DOVE_CLK
->  	bool
-> diff --git a/drivers/clk/mvebu/Makefile b/drivers/clk/mvebu/Makefile
-> index 1c7e70c..21bbfb4 100644
-> --- a/drivers/clk/mvebu/Makefile
-> +++ b/drivers/clk/mvebu/Makefile
-> @@ -1,5 +1,6 @@
->  obj-$(CONFIG_MVEBU_CLK_COMMON)	+= common.o
->  obj-$(CONFIG_MVEBU_CLK_CPU) 	+= clk-cpu.o
-> +obj-$(CONFIG_MVEBU_CLK_COREDIV)	+= clk-corediv.o
->  
->  obj-$(CONFIG_ARMADA_370_CLK)	+= armada-370.o
->  obj-$(CONFIG_ARMADA_XP_CLK)	+= armada-xp.o
-> diff --git a/drivers/clk/mvebu/clk-corediv.c b/drivers/clk/mvebu/clk-corediv.c
-> new file mode 100644
-> index 0000000..7162615
-> --- /dev/null
-> +++ b/drivers/clk/mvebu/clk-corediv.c
-> @@ -0,0 +1,223 @@
-> +/*
-> + * MVEBU Core divider clock
-> + *
-> + * Copyright (C) 2013 Marvell
-> + *
-> + * Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> + *
-> + * This file is licensed under the terms of the GNU General Public
-> + * License version 2.  This program is licensed "as is" without any
-> + * warranty of any kind, whether express or implied.
-> + */
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/clk-provider.h>
-> +#include <linux/of_address.h>
-> +#include <linux/slab.h>
-> +#include <linux/delay.h>
-> +#include "common.h"
-> +
-> +#define CORE_CLK_DIV_RATIO_MASK		0xff
-> +#define CORE_CLK_DIV_RATIO_RELOAD	BIT(8)
-> +#define CORE_CLK_DIV_ENABLE_OFFSET	24
-> +#define CORE_CLK_DIV_RATIO_OFFSET	0x8
-> +
-> +struct clk_corediv_desc {
-> +	unsigned int mask;
-> +	unsigned int offset;
-> +	unsigned int fieldbit;
-> +};
-> +
-> +struct clk_corediv {
-> +	struct clk_hw hw;
-> +	void __iomem *reg;
-> +	struct clk_corediv_desc desc;
-> +	spinlock_t lock;
-> +};
-> +
-> +static struct clk_onecell_data clk_data;
-> +
-> +static const struct clk_corediv_desc mvebu_corediv_desc[] __initconst = {
-> +	{ .mask = 0x3f, .offset = 8, .fieldbit = 1 }, /* NAND clock */
-> +};
-> +
-> +#define to_corediv_clk(p) container_of(p, struct clk_corediv, hw)
-> +
-> +static int clk_corediv_is_enabled(struct clk_hw *hwclk)
-> +{
-> +	struct clk_corediv *corediv = to_corediv_clk(hwclk);
-> +	struct clk_corediv_desc *desc = &corediv->desc;
-> +	u32 enable_mask = BIT(desc->fieldbit) << CORE_CLK_DIV_ENABLE_OFFSET;
-> +
-> +	return !!(readl(corediv->reg) & enable_mask);
-> +}
-> +
-> +static int clk_corediv_enable(struct clk_hw *hwclk)
-> +{
-> +	struct clk_corediv *corediv = to_corediv_clk(hwclk);
-> +	struct clk_corediv_desc *desc = &corediv->desc;
-> +	unsigned long flags = 0;
-> +	u32 reg;
-> +
-> +	spin_lock_irqsave(&corediv->lock, flags);
-> +
-> +	reg = readl(corediv->reg);
-> +	reg |= (BIT(desc->fieldbit) << CORE_CLK_DIV_ENABLE_OFFSET);
-> +	writel(reg, corediv->reg);
-> +
-> +	spin_unlock_irqrestore(&corediv->lock, flags);
-> +
-> +	return 0;
-> +}
-> +
-> +static void clk_corediv_disable(struct clk_hw *hwclk)
-> +{
-> +	struct clk_corediv *corediv = to_corediv_clk(hwclk);
-> +	struct clk_corediv_desc *desc = &corediv->desc;
-> +	unsigned long flags = 0;
-> +	u32 reg;
-> +
-> +	spin_lock_irqsave(&corediv->lock, flags);
-> +
-> +	reg = readl(corediv->reg);
-> +	reg &= ~(BIT(desc->fieldbit) << CORE_CLK_DIV_ENABLE_OFFSET);
-> +	writel(reg, corediv->reg);
-> +
-> +	spin_unlock_irqrestore(&corediv->lock, flags);
-> +}
-> +
-> +static unsigned long clk_corediv_recalc_rate(struct clk_hw *hwclk,
-> +					 unsigned long parent_rate)
-> +{
-> +	struct clk_corediv *corediv = to_corediv_clk(hwclk);
-> +	struct clk_corediv_desc *desc = &corediv->desc;
-> +	u32 reg, div;
-> +
-> +	reg = readl(corediv->reg + CORE_CLK_DIV_RATIO_OFFSET);
-> +	div = (reg >> desc->offset) & desc->mask;
-> +	return parent_rate / div;
-> +}
-> +
-> +static long clk_corediv_round_rate(struct clk_hw *hwclk, unsigned long rate,
-> +			       unsigned long *parent_rate)
-> +{
-> +	/* Valid ratio are 1:4, 1:5, 1:6 and 1:8 */
-> +	u32 div;
-> +
-> +	div = *parent_rate / rate;
-> +	if (div < 4)
-> +		div = 4;
-> +	else if (div > 6)
-> +		div = 8;
-> +
-> +	return *parent_rate / div;
-> +}
-> +
-> +static int clk_corediv_set_rate(struct clk_hw *hwclk, unsigned long rate,
-> +			    unsigned long parent_rate)
-> +{
-> +	struct clk_corediv *corediv = to_corediv_clk(hwclk);
-> +	struct clk_corediv_desc *desc = &corediv->desc;
-> +	unsigned long flags = 0;
-> +	u32 reg, div;
-> +
-> +	div = parent_rate / rate;
-> +
-> +	spin_lock_irqsave(&corediv->lock, flags);
-> +
-> +	/* Write new divider to the divider ratio register */
-> +	reg = readl(corediv->reg + CORE_CLK_DIV_RATIO_OFFSET);
-> +	reg &= ~(desc->mask << desc->offset);
-> +	reg |= (div & desc->mask) << desc->offset;
-> +	writel(reg, corediv->reg + CORE_CLK_DIV_RATIO_OFFSET);
-> +
-> +	/* Set reload-force for this clock */
-> +	reg = readl(corediv->reg) | BIT(desc->fieldbit);
-> +	writel(reg, corediv->reg);
-> +
-> +	/* Now trigger the clock update */
-> +	reg = readl(corediv->reg) | CORE_CLK_DIV_RATIO_RELOAD;
-> +	writel(reg, corediv->reg);
-> +
-> +	/*
-> +	 * Wait for clocks to settle down, and then clear all the
-> +	 * ratios request and the reload request.
-> +	 */
-> +	udelay(1000);
-> +	reg &= ~(CORE_CLK_DIV_RATIO_MASK | CORE_CLK_DIV_RATIO_RELOAD);
-> +	writel(reg, corediv->reg);
-> +	udelay(1000);
-> +
-> +	spin_unlock_irqrestore(&corediv->lock, flags);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct clk_ops corediv_ops = {
-> +	.enable = clk_corediv_enable,
-> +	.disable = clk_corediv_disable,
-> +	.is_enabled = clk_corediv_is_enabled,
-> +	.recalc_rate = clk_corediv_recalc_rate,
-> +	.round_rate = clk_corediv_round_rate,
-> +	.set_rate = clk_corediv_set_rate,
-> +};
-> +
-> +static void __init mvebu_corediv_clk_init(struct device_node *node)
-> +{
-> +	struct clk_init_data init;
-> +	struct clk_corediv *corediv;
-> +	struct clk **clks;
-> +	void __iomem *base;
-> +	const char *parent_name;
-> +	const char *clk_name;
-> +	int i;
-> +
-> +	base = of_iomap(node, 0);
-> +	if (WARN_ON(!base))
-> +		return;
-> +
-> +	parent_name = of_clk_get_parent_name(node, 0);
-> +
-> +	clk_data.clk_num = ARRAY_SIZE(mvebu_corediv_desc);
-> +
-> +	/* clks holds the clock array */
-> +	clks = kcalloc(clk_data.clk_num, sizeof(struct clk *),
-> +				GFP_KERNEL);
-> +	if (WARN_ON(!clks))
-> +		goto err_unmap;
-> +	/* corediv holds the clock specific array */
-> +	corediv = kcalloc(clk_data.clk_num, sizeof(struct clk_corediv),
-> +				GFP_KERNEL);
-> +	if (WARN_ON(!corediv))
-> +		goto err_free_clks;
-> +
-> +	spin_lock_init(&corediv->lock);
-> +
-> +	for (i = 0; i < clk_data.clk_num; i++) {
-> +		of_property_read_string_index(node, "clock-output-names",
-> +					      i, &clk_name);
-> +		init.num_parents = 1;
-> +		init.parent_names = &parent_name;
-> +		init.name = clk_name;
-> +		init.ops = &corediv_ops;
-> +		init.flags = 0;
-> +
-> +		corediv[i].desc = mvebu_corediv_desc[i];
-> +		corediv[i].reg = base;
-> +		corediv[i].hw.init = &init;
-> +
-> +		clks[i] = clk_register(NULL, &corediv[i].hw);
-> +		WARN_ON(IS_ERR(clks[i]));
-> +	}
-> +
-> +	clk_data.clks = clks;
-> +	of_clk_add_provider(node, of_clk_src_onecell_get, &clk_data);
-> +	return;
-> +
-> +err_free_clks:
-> +	kfree(clks);
-> +err_unmap:
-> +	iounmap(base);
-> +}
-> +CLK_OF_DECLARE(mvebu_corediv_clk, "marvell,armada-370-corediv-clock",
-> +	       mvebu_corediv_clk_init);
-> -- 
-> 1.8.1.5
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+Ans-3:
+Mostly are either x8 or x16 SLC NAND device.
+
+
+[...]
+
+> You NEVER need to call nand_scan_ident() twice for the same chip.
+> Period. I will reject any patch that retains this pattern. It is wrong,
+> and I seriously doubt the code does what you think it does when you do th=
+is.
+>=20
+> I think nand_scan_ident() may have a weak point where it won't support
+> ONFI properly for x16 devices. I believe NAND_BUSWIDTH_AUTO was added
+> to
+> help with this fact. (I don't have any x16 devices to test it.) But if
+> this is a problem for you, fix it. Don't work around it.
+>=20
+So, here comes the conflict..=20
+If I'm _not_ using NAND_BUSWIDTH_AUTO, how should I read the ONFI=20
+params on x16 device ? I don't think there is any way because of following
+code in generic nand_base.c
+@@ nand_flash_onfi_detect()
+/*
+ * ONFI must be probed in 8-bit mode or with NAND_BUSWIDTH_AUTO, not
+ * with NAND_BUSWIDTH_16
+ */
+if (chip->options & NAND_BUSWIDTH_16) {
+	pr_err("ONFI cannot be probed in 16-bit mode; aborting\n");
+	return 0;
+}
+
+Introduced in commit..
+commit 0ce82b7f7b7373b16ecf7b5725e21e2975204500
+Author:     Matthieu CASTET <matthieu.castet@parrot.com>
+AuthorDate: 2013-01-16
+
+And, I think this commit has implicitly made NAND_BUSWIDTH_AUTO
+*mandatory* to be supported by every driver for interfacing with
+x16 NAND devices. Isn't it ?
+(unless you add every x16 device present in market to nand_flash_id[])
+
+ [...]
+
+> nand_base is designed (and it's documented in the comments) that the
+> driver must set the buswidth correctly BEFORE calling nand_scan_ident().
+> You may not use nand_scan_ident() as a trial-and-error identification
+> function.
+>=20
+> So, to properly do (1), you should only have something like this, just
+> like all the other NAND drivers:
+>=20
+>   nand_chip->options =3D pdata->devsize & NAND_BUSWIDTH_16;
+>=20
+>   ret =3D nand_scan_ident(...);
+>   if (ret) {
+>       // exit with error code...
+>   }
+>=20
+For a x16 device.. This would *always* fail for x16 device, unless device
+is listed in nand_flash_id[]. isn't  it ?
+because you cannot read ONFI params in x16 mode, and your device is
+not listed in nand_flash_ids[], so your device would not get identified.
+
+And I sincerely don't know how other NAND drivers are probing
+x16 NAND devices _without_ enabling NAND_BUSWIDTH_AUTO.
+(may be by adding every supported NAND device to nand_flash_id[]
+look-up table, which is not recommended).
+
+
+> If there is a problem with this, then you have to fix your driver or
+> nand_scan_ident(). Perhaps you have to adjust your readbuf() or
+> cmdfunc() callbacks to do this. But do not add complicated workaround
+> logic in your driver.
+>=20
+chip->cmdfunc() and chip->readbufs() are all fine. Rather I let the
+generic driver set them for nand_scan_ident().
+So, all this calling nand_scan_ident() twice was done because of
+previously mentioned reasons..
+
+
+> [snipping the rest]
+>=20
+> I read your patch, and I gave you my review. I will not accept this
+> patch, nor any patch that works around nand_scan_ident() by calling it
+> twice. Fix the framework if the framework is giving you problems.
+>=20
+It's a chicken and egg problem,=20
+I have no solution but all I can say is the above commit, which converted
+WARNING into ERROR, until all drivers adapt to NAND_BUSWIDTH_AUTO.
+
+Anyway I have to do nand_scan_ident() somewhere before populating
+the chip->ecc.layout and other fields.. so can't drop the patch..
+But I'll put your suggestion, instead of my mine.
+
+> I believe that this patch is not integral to the rest of the series, so
+> I will repeat: separate this patch out so I can take the rest of this
+> series without it.
+>=20
+I'll replace the patch with your suggestions,
+So, that you have both versions. Please pick whichever you like :-)
+
+
+with regards, pekon
