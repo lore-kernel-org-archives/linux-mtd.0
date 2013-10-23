@@ -1,25 +1,16 @@
-Received: from mail-oa0-f42.google.com ([209.85.219.42])
+Received: from mail-oa0-x231.google.com ([2607:f8b0:4003:c02::231])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VZ74I-0001BL-Vq
- for linux-mtd@lists.infradead.org; Wed, 23 Oct 2013 22:38:23 +0000
-Received: by mail-oa0-f42.google.com with SMTP id k14so1626711oag.15
- for <linux-mtd@lists.infradead.org>; Wed, 23 Oct 2013 15:37:59 -0700 (PDT)
-Date: Wed, 23 Oct 2013 15:37:55 -0700
+ id 1VZ76t-0001ES-1V
+ for linux-mtd@lists.infradead.org; Wed, 23 Oct 2013 22:41:03 +0000
+Received: by mail-oa0-f49.google.com with SMTP id j10so1594366oah.22
+ for <linux-mtd@lists.infradead.org>; Wed, 23 Oct 2013 15:40:42 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH V2 0/4] mtd: gpmi: support two nand chips at most
-Message-ID: <20131023223755.GX23337@ld-irv-0074.broadcom.com>
-References: <1377595747-21033-1-git-send-email-b32955@freescale.com>
- <5260DA32.4090502@freescale.com>
- <CAN8TOE8xDdRF4Hf+p4JMAixWfkxkbKCZB-fqpPA6yiMHYm=Qew@mail.gmail.com>
- <5264A220.2070900@freescale.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5264A220.2070900@freescale.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH v2] mtd: m25p80: add support for Macronix mx25l3255e
+Date: Wed, 23 Oct 2013 15:40:03 -0700
+Message-Id: <1382568003-2356-1-git-send-email-computersforpeace@gmail.com>
+Cc: Marek Vasut <marex@denx.de>, Peter Korsgaard <peter@korsgaard.com>,
+ Brian Norris <computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,49 +20,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Oct 21, 2013 at 11:40:16AM +0800, Huang Shijie wrote:
-> 于 2013年10月19日 10:01, Brian Norris 写道:
-> > Yes, I seem to have overlooked this set. I think it must have come in
-> > parallel with your MLC patch set, so I delayed it until the MLC patch
-> > set settled down?
-> >
-> this patch set has no relationship with MLC patch.
+A new 32Mbit SPI NOR flash from Macronix. Nothing special.
 
-Well, it did touch the same driver, and your patch set kept evolving so
-I chose to focus on just one of your patch sets at a time there...
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Cc: Marek Vasut <marex@denx.de>
+---
+v2: correct "Gbit" to "MBit" in patch description
 
-I'll take a look now.
+ drivers/mtd/devices/m25p80.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> > Anyway, I'll revisit this soon. But I probably need to take care of
-> > your mtd-utils updates first, since they should go along with the MLC
-> > patch set.
-> >
-> > And on top of that (to update the world on daily status), I seem to be
-> > tripping over some UBIFS bugs that are inhibiting the validation I'm
-> > trying to do for some new hardware. So, I'm all-around pretty busy!
-> > I'll get myself together next week, hopefully.
-> understood.
-> 
-> 
-> I am too busy too, i am starting to code the Qspi driver now.
-> I was blocked by a bluetooth/uart/dma issue last month.
-> > In the meantime, other people's code could use some extra eyes. I know
-> > Ezequiel just sent out a 27 (!) patch series today. There's also the
-> > pending cmdline.c patch from months ago, where Cai Zhiyong wanted to
-> > migrate our command line partition parser to a common
-> > block/cmdline-parser.c. Part of her work (for block devices) is
-> I like Cai zhiyong's patch. But I do not have time to test his patch.
-
-Well, this represents a bad community mentality, where people have time
-to submit plenty of code for their own drivers, and ask a lot from
-maintainers to review and merge their code, yet they do not have any
-time to review others' work. I believe that bearing the sole
-responsibility of code review is a major contributing factor in both
-Artem's and my long latency to merging patches.
-
-That said, I understand that people get very busy sometimes, and I don't
-mean to particularly focus on you, Huang. This is a general pattern that
-I've seen, and I have done the same thing previously, where I simply did
-not have (and did not make) time to review others' work much.
-
-Brian
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 8d6c87be..72c37f0 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -778,6 +778,7 @@ static const struct spi_device_id m25p_ids[] = {
+ 	{ "mx25l8005",   INFO(0xc22014, 0, 64 * 1024,  16, 0) },
+ 	{ "mx25l1606e",  INFO(0xc22015, 0, 64 * 1024,  32, SECT_4K) },
+ 	{ "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64, 0) },
++	{ "mx25l3255e",  INFO(0xc29e16, 0, 64 * 1024,  64, SECT_4K) },
+ 	{ "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128, 0) },
+ 	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
+ 	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
+-- 
+1.8.4
