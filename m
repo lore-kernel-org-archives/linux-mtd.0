@@ -1,22 +1,28 @@
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Brian Norris
- <computersforpeace@gmail.com>
-Subject: RE: [PATCH v10 04/10] mtd: nand: omap: fix device scan:
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VYyQk-0006Lt-Fp
+ for linux-mtd@lists.infradead.org; Wed, 23 Oct 2013 13:24:59 +0000
+Date: Wed, 23 Oct 2013 10:24:58 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: "Gupta, Pekon" <pekon@ti.com>
+Subject: Re: [PATCH v10 04/10] mtd: nand: omap: fix device scan:
  NAND_CMD_READID, NAND_CMD_RESET, CMD_CMD_PARAM use only x8 bus
-Date: Wed, 23 Oct 2013 13:15:20 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA2A0CB@DBDE04.ent.ti.com>
+Message-ID: <20131023132457.GD2458@localhost>
 References: <1382172254-12448-1-git-send-email-pekon@ti.com>
  <1382172254-12448-5-git-send-email-pekon@ti.com>
  <20131022201624.GL23337@ld-irv-0074.broadcom.com>
  <20980858CB6D3A4BAE95CA194937D5E73EA29DB8@DBDE04.ent.ti.com>
  <5267690C.9080005@gmail.com> <20131023125516.GA2458@localhost>
-In-Reply-To: <20131023125516.GA2458@localhost>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ <20980858CB6D3A4BAE95CA194937D5E73EA2A0CB@DBDE04.ent.ti.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA2A0CB@DBDE04.ent.ti.com>
 Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>,
  "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
  "arnd@arndb.de" <arnd@arndb.de>, "Pawel.Moll@arm.com" <Pawel.Moll@arm.com>,
  "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>,
  "tony@atomide.com" <tony@atomide.com>,
@@ -29,7 +35,7 @@ Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>,
  "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "ivan.djelic@parrot.com" <ivan.djelic@parrot.com>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ Brian Norris <computersforpeace@gmail.com>,
  "dwmw2@infradead.org" <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -40,37 +46,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGksDQoNCj4gRnJvbTogRXplcXVpZWwgR2FyY2lhIFttYWlsdG86ZXplcXVpZWwuZ2FyY2lhQGZy
-ZWUtZWxlY3Ryb25zLmNvbV0NClsuLi5dDQo+IEZXSVcsIEkgaGF2ZSBhIEJlYWdsZWJvbmUgd2l0
-aCBhIDE2LWJpdCBidXMgTkFORCBhdHRhY2hlZCB0byBpdC4NCj4gDQo+IENvaW5jaWRlbnRhbGx5
-LCB5ZXN0ZXJkYXkgSSB3YXMgZG9pbmcgc29tZSB0ZXN0cyBhcyBJJ20gcmFtcGluZyB1cCB0aGUN
-Cj4gTkFORCBhbmQgSSBmb3VuZCB0aGF0IHdlaXJkIGRvdWJsZSBuYW5kX3NjYW5faWRlbnQoKSBj
-YWxsLg0KPiBUaGUgd2hvbGUgdGhpbmcgbG9va3MgYnVnZ3kgdG8gbWUsIHNvIEknbSBoYXBweSB0
-byBoZWxwLCByZXZpZXcsIHRlc3QNCj4gYW5kIHBhdGNoZXMgdG8gdGFrZSBjYXJlIG9mIHRoaXMu
-DQo+IA0KWWVzLCB0aGFua3MgLi4gdGhhdCB3b3VsZCBiZSBvZiBncmVhdCBoZWxwLi4gDQpBbmQg
-bWF5IGJlIHlvdXIgZXhwZXJpZW5jZSBvZiBBdG1lbCBkcml2ZXJzIHdvdWxkIGhlbHAgbWUgaGVy
-ZS4uDQoNCipDb3JyZWN0LCBzaG91bGQgbm90IGJlIGRvdWJsZSBjYWxscyB0byBuYW5kX3NjYW5f
-aWRlbnQoKS4uKg0KQnV0IHRoZXJlIGlzIGEgY29uc3RyYWluIGluIG5hbmRfYmFzZS5jLCB0aGF0
-IGl0IGRvZXMgbm90IGFsbG93IE9ORkkNCnBhZ2UgcmVhZGluZyBpbiB4MTYgbW9kZS4uIFNvIGhv
-dyB0byBvdmVyY29tZSB0aGF0Li4NCg0KSSBzZWUgdGhlIHNpbWlsYXIgaW1wbGVtZW50YXRpb24g
-aW4geW91ciBBVE1FTCBkcml2ZXIsIGl0IGRvZXMgbm90IHVzZQ0KTkFORF9CVVNXSURUSF9BVVRP
-IHNvIGhvdyBkbyB5b3UgcGVyZm9ybSBPTkZJIHJlYWQNCmZvciB4MTYgZGV2aWNlcyA/DQpkcml2
-ZXJzL210ZC9uYW5kL2F0bWVsX25hbmQuYyBAQGF0bWVsX25hbmRfcHJvYmUoKQ0KLyogaGVyZSB5
-b3UgbW92ZSB0byB4MTYgbW9kZSBiYXNlZCBvbiB5b3VyIERUIG9yIHBsYXRmb3JtIGRhdGEgKi8N
-CglpZiAoaG9zdC0+Ym9hcmQuYnVzX3dpZHRoXzE2KQkvKiAxNi1iaXQgYnVzIHdpZHRoICovDQoJ
-CW5hbmRfY2hpcC0+b3B0aW9ucyB8PSBOQU5EX0JVU1dJRFRIXzE2Ow0KLyogQW5kIHRoZW4geW91
-IGNhbGwgbmFuZF9zY2FuX2lkZW50ICovDQovKiBmaXJzdCBzY2FuIHRvIGZpbmQgdGhlIGRldmlj
-ZSBhbmQgZ2V0IHRoZSBwYWdlIHNpemUgKi8NCglpZiAobmFuZF9zY2FuX2lkZW50KG10ZCwgMSwg
-TlVMTCkpIHsNCgkJcmVzID0gLUVOWElPOw0KCQlnb3RvIGVycl9zY2FuX2lkZW50Ow0KCX0NCg0K
-V291bGRuJ3QgdGhpcyBmYWlsLCBfdW5sZXNzXyB5b3VyIGRldmljZSBpcyBsaXN0ZWQgaW4gbmFu
-ZF9mbGFzaF9pZFtdID8NCmJlY2F1c2UgaXQgd291bGQgbm90IGJlIGFibGUgdG8gcmVhZCBPTkZJ
-IHBhcmFtcy4uIA0KUmVmZXIgYmVsb3cgY29tbWl0Li4gDQpjb21taXQgMGNlODJiN2Y3YjczNzNi
-MTZlY2Y3YjU3MjVlMjFlMjk3NTIwNDUwMA0KQXV0aG9yOiAgICAgTWF0dGhpZXUgQ0FTVEVUIDxt
-YXR0aGlldS5jYXN0ZXRAcGFycm90LmNvbT4NCkF1dGhvckRhdGU6IDIwMTMtMDEtMTYNCg0KVGhh
-bmtzIGZvciBwaXRjaGluZyBpbiwgdGhpcyB3b3VsZCBoZWxwIG1lIHRvIHVuZGVyc3RhbmQgdGhp
-cyBiZXR0ZXIuDQoNCg0KDQo+IEknbSB1c2luZyBzb21lIFRJIFNESyB3aXRoIHNvbWUgYW5jaWVu
-dCB2My4yLnggKHdpdGggbm8gZ2l0IGhpc3RvcnkhKSwNCj4gYnV0IGZyb20gdGhpcyBkaXNjdXNz
-aW9uIGl0IHNlZW1zIHRoZSBpc3N1ZSBpcyBzdGlsbCBwcmVzZW50IGluDQo+IG1haW5saW5lLg0K
-PiANCkFhaCBzb3JyeSwgdGhlbiB5b3UgbWlnaHQgaGF2ZSBzb21lIHByb2JsZW0gaGVyZSBpbiBy
-ZWJhc2luZyB0aGUNCnBhdGNoZXMuIEJ1dCBzdGlsbCBpZiB5b3UgY2FuLCB0aGFua3MgbXVjaCAu
-Lg0KDQoNCndpdGggcmVnYXJkcywgcGVrb24NCg==
+Hi Gupta,
+
+On Wed, Oct 23, 2013 at 01:15:20PM +0000, Gupta, Pekon wrote:
+> Hi,
+> 
+> > From: Ezequiel Garcia [mailto:ezequiel.garcia@free-electrons.com]
+> [...]
+> > FWIW, I have a Beaglebone with a 16-bit bus NAND attached to it.
+> > 
+> > Coincidentally, yesterday I was doing some tests as I'm ramping up the
+> > NAND and I found that weird double nand_scan_ident() call.
+> > The whole thing looks buggy to me, so I'm happy to help, review, test
+> > and patches to take care of this.
+> > 
+> Yes, thanks .. that would be of great help.. 
+> And may be your experience of Atmel drivers would help me here..
+> 
+
+It's not Atmel, but Marvell :-)
+
+> *Correct, should not be double calls to nand_scan_ident()..*
+> But there is a constrain in nand_base.c, that it does not allow ONFI
+> page reading in x16 mode.. So how to overcome that..
+> 
+> I see the similar implementation in your ATMEL driver, it does not use
+> NAND_BUSWIDTH_AUTO so how do you perform ONFI read
+> for x16 devices ?
+> drivers/mtd/nand/atmel_nand.c @@atmel_nand_probe()
+> /* here you move to x16 mode based on your DT or platform data */
+> 	if (host->board.bus_width_16)	/* 16-bit bus width */
+> 		nand_chip->options |= NAND_BUSWIDTH_16;
+> /* And then you call nand_scan_ident */
+> /* first scan to find the device and get the page size */
+> 	if (nand_scan_ident(mtd, 1, NULL)) {
+> 		res = -ENXIO;
+> 		goto err_scan_ident;
+> 	}
+> 
+> Wouldn't this fail, _unless_ your device is listed in nand_flash_id[] ?
+> because it would not be able to read ONFI params.. 
+> Refer below commit.. 
+> commit 0ce82b7f7b7373b16ecf7b5725e21e2975204500
+> Author:     Matthieu CASTET <matthieu.castet@parrot.com>
+> AuthorDate: 2013-01-16
+> 
+> 
+
+Not my driver, but I'm taking a look at it now. Not sure if I'll get
+into something here.
+
+> 
+> 
+> > I'm using some TI SDK with some ancient v3.2.x (with no git history!),
+> > but from this discussion it seems the issue is still present in
+> > mainline.
+> > 
+> Aah sorry, then you might have some problem here in rebasing the
+> patches. But still if you can, thanks much ..
+> 
+
+I'm currently trying mainline (just for this issue not for my product).
+I just need some time to prepare the bootargs and write a DT node for
+the NAND cape.
+
+Again, not sure if I'll make some progress, but I'll give it a shot :-)
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
