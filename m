@@ -1,25 +1,20 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
+Received: from devils.ext.ti.com ([198.47.26.153])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VZP8j-0000xX-4H
- for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 17:56:10 +0000
-Message-ID: <52695F15.8090309@ti.com>
-Date: Thu, 24 Oct 2013 23:25:33 +0530
+ id 1VZP9R-0000zZ-2w
+ for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 17:56:53 +0000
+Message-ID: <52695F49.20907@ti.com>
+Date: Thu, 24 Oct 2013 23:26:25 +0530
 From: Sourav Poddar <sourav.poddar@ti.com>
 MIME-Version: 1.0
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCHv3 2/3] drivers: mtd: devices: Add quad read support.
-References: <1381332284-21822-1-git-send-email-sourav.poddar@ti.com>
- <1381332284-21822-3-git-send-email-sourav.poddar@ti.com>
- <20131024010619.GA23337@ld-irv-0074.broadcom.com> <5268B3B8.4090807@ti.com>
- <20131024073400.GA9863@norris.computersforpeace.net>
- <5268DE0B.7040208@ti.com> <20131024170754.GA20061@ld-irv-0074.broadcom.com>
-In-Reply-To: <20131024170754.GA20061@ld-irv-0074.broadcom.com>
+Subject: Re: [PATCH 1/5] mtd: m25p80: fix allocation size
+References: <1382583503-13748-1-git-send-email-computersforpeace@gmail.com>
+ <20131024171729.GB20061@ld-irv-0074.broadcom.com>
+In-Reply-To: <20131024171729.GB20061@ld-irv-0074.broadcom.com>
 Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Marek Vasut <marex@denx.de>, Jagan Teki <jagannadh.teki@gmail.com>,
- balbi@ti.com, Huang Shijie <b32955@freescale.com>, broonie@kernel.org,
- linux-mtd@lists.infradead.org, spi-devel-general@lists.sourceforge.net,
- dwmw2@infradead.org
+Cc: Marek Vasut <marex@denx.de>, linux-mtd@lists.infradead.org,
+ stable@vger.kernel.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,40 +24,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
-On Thursday 24 October 2013 10:37 PM, Brian Norris wrote:
-> On Thu, Oct 24, 2013 at 02:14:59PM +0530, Sourav Poddar wrote:
->> On Thursday 24 October 2013 01:04 PM, Brian Norris wrote:
->>> I just submitted my cleanups which (among other things) fixes this bug.
->>> I believe I CC'd you. Go ahead and review it, and if it works to your
->>> liking, please just base your work on top of it. I'll apply some or all
->>> of that series if no one objects.
->>>
->> Ok.
-> I'll push parts the reviewed parts of my patch series now, so you can
-> base off them. (I'm still open to comments on them, though.)
->
->>> Do all parts that support quad read also support all the other quad
->>> opcodes (like quad program)?
->>>
->> I have Spansion and Macronix flash with me.
+On Thursday 24 October 2013 10:47 PM, Brian Norris wrote:
+> On Wed, Oct 23, 2013 at 07:58:19PM -0700, Brian Norris wrote:
+>> This patch fixes two memory errors:
 >>
->> For spansion,
->> supported quad commands are:
->> QOR(0x6b) which is what I am using.
->> QIOR(0xeb)
->> DDR QIOR(0xed)
+>> 1. During a probe failure (in mtd_device_parse_register?) the command
+>>     buffer would not be freed.
 >>
->> For macronix,
->> QOR(0x6b) which is what I am using.
->> QIOR(0xeb)
-> So it seems there are flash which support quad read but not quad
-> program. So the flag I recommended (M25P80_QUAD) should be made specific
-> to quad read (M25P80_QUAD_READ) I guess, since we may support page
-> program eventually.
+>> 2. The command buffer's size is determined based on the 'fast_read'
+>>     boolean, but the assignment of fast_read is made after this
+>>     allocation. Thus, the buffer may be allocated "too small".
+>>
+>> To fix the first, just switch to the devres version of kzalloc.
+>>
+>> To fix the second, increase MAX_CMD_SIZE unconditionally. It's not worth
+>> saving a byte to fiddle around with the conditions here.
+>>
+>> This problem was reported by Yuhang Wang a while back.
+>>
+>> Signed-off-by: Brian Norris<computersforpeace@gmail.com>
+>> Reported-by: Yuhang Wang<wangyuhang2014@gmail.com>
+>> Cc:<stable@vger.kernel.org>
+> I pushed patches 1, 2, and 3 to l2-mtd.git (for Sourav's sake).
+Thanks!
+> I'll
+> wait a little while on the others. Comments are still welcome on the
+> whole series, though.
 >
-Sounds good. I will take care of this in my next version.
-
-
-~Sourav
 > Brian
