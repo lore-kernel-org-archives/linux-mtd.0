@@ -1,22 +1,41 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
+Received: from mail-ie0-x22a.google.com ([2607:f8b0:4001:c03::22a])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VZPyK-0002Ma-M7
- for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 18:49:30 +0000
-Message-ID: <52696B9A.4070505@ti.com>
-Date: Fri, 25 Oct 2013 00:18:58 +0530
-From: Sourav Poddar <sourav.poddar@ti.com>
+ id 1VZQuk-0003YE-U3
+ for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 19:49:51 +0000
+Received: by mail-ie0-f170.google.com with SMTP id at1so4918806iec.29
+ for <linux-mtd@lists.infradead.org>; Thu, 24 Oct 2013 12:49:29 -0700 (PDT)
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 4/5] mtd: m25p80: remove M25PXX_USE_FAST_READ Kconfig
-References: <1382583503-13748-1-git-send-email-computersforpeace@gmail.com>
- <1382583503-13748-4-git-send-email-computersforpeace@gmail.com>
- <5268E35C.2030000@ti.com> <5268E495.5010707@ti.com>
- <20131024173912.GC20061@ld-irv-0074.broadcom.com>
-In-Reply-To: <20131024173912.GC20061@ld-irv-0074.broadcom.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Marek Vasut <marex@denx.de>, linux-mtd@lists.infradead.org,
- Artem Bityutskiy <dedekind1@gmail.com>
+In-Reply-To: <20131023141352.GG2458@localhost>
+References: <1382172254-12448-1-git-send-email-pekon@ti.com>
+ <1382172254-12448-11-git-send-email-pekon@ti.com>
+ <20131023134450.GE2458@localhost>
+ <20980858CB6D3A4BAE95CA194937D5E73EA2A130@DBDE04.ent.ti.com>
+ <20131023141352.GG2458@localhost>
+From: Javier Martinez Canillas <martinez.javier@gmail.com>
+Date: Thu, 24 Oct 2013 21:49:09 +0200
+Message-ID: <CAAwP0s0M=KruCVUana+5Nfm-0nkMGTg1OAatKzCrDeHOXuqd6A@mail.gmail.com>
+Subject: Re: [PATCH v10 10/10] mtd: nand: omap: remove selection of BCH
+ ecc-scheme via KConfig
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "arnd@arndb.de" <arnd@arndb.de>, "Pawel.Moll@arm.com" <Pawel.Moll@arm.com>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ "tony@atomide.com" <tony@atomide.com>,
+ "avinashphilipk@gmail.com" <avinashphilipk@gmail.com>,
+ "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>,
+ "jp.francois@cynove.com" <jp.francois@cynove.com>, "Balbi,
+ Felipe" <balbi@ti.com>, "robherring2@gmail.com" <robherring2@gmail.com>,
+ "Gupta, Pekon" <pekon@ti.com>, "bcousson@baylibre.com" <bcousson@baylibre.com>,
+ "olof@lixom.net" <olof@lixom.net>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "ivan.djelic@parrot.com" <ivan.djelic@parrot.com>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,69 +45,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 24 October 2013 11:09 PM, Brian Norris wrote:
-> On Thu, Oct 24, 2013 at 02:42:53PM +0530, Sourav Poddar wrote:
->> On Thursday 24 October 2013 02:37 PM, Sourav Poddar wrote:
->>> On Thursday 24 October 2013 08:28 AM, Brian Norris wrote:
->>>> --- a/drivers/mtd/devices/m25p80.c
->>>> +++ b/drivers/mtd/devices/m25p80.c
->>>> @@ -1055,13 +1055,14 @@ static int m25p_probe(struct spi_device *spi)
->>>>       flash->page_size = info->page_size;
->>>>       flash->mtd.writebufsize = flash->page_size;
->>>>
->>>> -    flash->fast_read = false;
->>>> -    if (np&&   of_property_read_bool(np, "m25p,fast-read"))
->>>> +    if (np)
->>>> +        /* If we were instantiated by DT, use it */
->>>> +        flash->fast_read = of_property_read_bool(np, "m25p,fast-read");
->>>> +    else
->>>> +        /* If we weren't instantiated by DT, default to fast-read */
->>>>           flash->fast_read = true;
->>>>
->>> This comment is in sync with my quad read mode support patch on
->>> the mtd list.
->>>
->>> Here, you are defaulting the fast read to be true.
-> It was already default true for non-DT case where
-> M25PXX_USE_FAST_READ=y. I believe my code is purely a refactoring of the
-> code, assuming M25PXX_USE_FAST_READ is always enabled (and removing the
-> Kconfig).
+Hi Ezequiel
+
+On Wed, Oct 23, 2013 at 4:13 PM, Ezequiel Garcia
+<ezequiel.garcia@free-electrons.com> wrote:
+> Pekon,
 >
->>> Once I add quad mode
->>> on top of this, I will set flash->quad_read = true. So, we will have both
->>> fast and quad read set(which will not be correct). So, it is
->>> necessary to default to fast read ?
-> I think my patch is a correct refactoring by itself. Any problem your
-> quad read patch has with it would still be a problem without this patch.
+> On Wed, Oct 23, 2013 at 01:55:58PM +0000, Gupta, Pekon wrote:
+>> >
+>> > I'm wondering how are you testing this in your SOC_AM33XX board (which
+>> > is not ARCH_OMAP3). You probably have ARCH_OMAP3 always selected?
+>> >
+>> Yes, omap2plus_defconfig is a super set..
+>> arch/arm/configs/omap2plus_defconfig automatically enables ARCH_OMAP3.
+>>
 >
-True, my bad I didn't realise that for internal testing I disable
-fast read option in menuconfig.
-> So, without quad-read support, we should default to fast-read unless the
-> chip doesn't support it. I think this is reasonable.
+> Yes, but I always remove what I won't use to reduce build time.
 >
-> Now, once you add quad-read, you need to have quad-read override
-> fast-read.
+> And  now that you bring this issue. IMHO, the AM33xx family is going
+> to be more and more widely used, so maybe introducing an am33xx_defconfig
+> makes sense.
 >
->> Though, we will hit this scenario only for a non dt case. For dt
->> case, things will be fine.
-> Yes, but we need to make sure things make sense for all cases.
->
-Yes.
->>>> -#ifdef CONFIG_M25PXX_USE_FAST_READ
->>>> -    flash->fast_read = true;
->>>> -#endif
->>>> +    /* Some devices cannot do fast-read, no matter what DT tells us */
->>>>       if (info->flags&   M25P_NO_FR)
->>>>           flash->fast_read = false;
->>>>
-> I just realized this: fast-read and quad-read are mutually exclusive, so
-> the field that is currently 'bool m25p.fast_read' could easily just become
-correct.
-> an 'enum m25p.read_type' (with values M25P_READ_NORMAL, M25P_READ_FAST,
-> M25P_READ_QUAD). That may or may not help your quad read patch.
->
-> I can delay this patch until others have looked at it, if you'd like.
-> You can resubmit your quad read patch without this patch 4. (But I think
-> this patch will help clean up your patch slightly.)
-Ok. I will include this patch and try to cleanup.
-> Brian
+> Or is the trend to have the least possible amount of defconfigs?
+
+I'm not familiar with AM33xx so I don't know how similar is to OMAP3
+but we used to have different defconfigs for each OMAP board before
+and consolidated everything in only two defconfigs: omap1_defconfig to
+be used for all OMAP1 devices and omap2plus_defconfig to be used for
+all OMAP2+ (i.e: OMAP{2,3,4,5}) devices.
+
+Those have all the common kconfig options and board vendors can
+customize to fit their needs and have a delta with something like:
+
+$ ./scripts/kconfig/merge_config.sh
+arch/arm/configs/omap2plus_defconfig /foo/bar/igep_defconfig
+
+Again I'm not familiar with AM33xx but what I do know is that we
+should keep defconfigs to a minimum.
+
+> --
+> Ezequiel Garc=C3=ADa, Free Electrons
+> Embedded Linux, Kernel and Android Engineering
+> http://free-electrons.com
+> --
+
+Best regards,
+Javier
