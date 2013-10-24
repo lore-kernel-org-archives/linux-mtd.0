@@ -1,20 +1,21 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
+Received: from arroyo.ext.ti.com ([192.94.94.40])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VZGnj-0002Gc-IQ
- for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 09:01:56 +0000
-Message-ID: <5268E1E8.5020909@ti.com>
-Date: Thu, 24 Oct 2013 14:31:28 +0530
+ id 1VZGoF-0002Ip-Lc
+ for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 09:02:28 +0000
+Message-ID: <5268E206.5080602@ti.com>
+Date: Thu, 24 Oct 2013 14:31:58 +0530
 From: Sourav Poddar <sourav.poddar@ti.com>
 MIME-Version: 1.0
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 3/5] mtd: m25p80: re-align ID entries
+Subject: Re: [PATCH 5/5] mtd: m25p80: remove 'disabled' device check
 References: <1382583503-13748-1-git-send-email-computersforpeace@gmail.com>
- <1382583503-13748-3-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1382583503-13748-3-git-send-email-computersforpeace@gmail.com>
+ <1382583503-13748-5-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1382583503-13748-5-git-send-email-computersforpeace@gmail.com>
 Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Marek Vasut <marex@denx.de>, linux-mtd@lists.infradead.org,
- Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Marek Vasut <marex@denx.de>, devicetree@vger.kernel.org,
+ Artem Bityutskiy <dedekind1@gmail.com>, Rob Herring <rob.herring@calxeda.com>,
+ linux-mtd@lists.infradead.org, Grant Likely <grant.likely@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,68 +26,43 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Thursday 24 October 2013 08:28 AM, Brian Norris wrote:
-> No change in the table data.
+> It seems like the following commit was never necessary
+>
+>      commit 5f949137952020214cd167093dd7be448f21c079
+>      Author: Shaohui Xie<Shaohui.Xie@freescale.com>
+>      Date:   Fri Oct 14 15:49:00 2011 +0800
+>
+>          mtd: m25p80: don't probe device which has status of 'disabled'
+>
+> because it duplicates the code in of_platform_device_create_pdata()
+> which ensures that 'disabled' nodes are never instantiated.
+>
+> Also, drop the __maybe_unused.
 >
 > Signed-off-by: Brian Norris<computersforpeace@gmail.com>
+> Cc: Grant Likely<grant.likely@linaro.org>
+> Cc: Rob Herring<rob.herring@calxeda.com>
+> Cc:<devicetree@vger.kernel.org>
 Reviewed-by: Sourav Poddar <sourav.poddar@ti.com>
 > ---
->   drivers/mtd/devices/m25p80.c | 32 ++++++++++++++++----------------
->   1 file changed, 16 insertions(+), 16 deletions(-)
+>   drivers/mtd/devices/m25p80.c | 7 +------
+>   1 file changed, 1 insertion(+), 6 deletions(-)
 >
 > diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 7c4cbad..7e3ec7a 100644
+> index d6c5c57..a1dc49a 100644
 > --- a/drivers/mtd/devices/m25p80.c
 > +++ b/drivers/mtd/devices/m25p80.c
-> @@ -740,19 +740,19 @@ static const struct spi_device_id m25p_ids[] = {
->   	{ "at45db081d", INFO(0x1f2500, 0, 64 * 1024, 16, SECT_4K) },
+> @@ -935,12 +935,7 @@ static int m25p_probe(struct spi_device *spi)
+>   	struct flash_info		*info;
+>   	unsigned			i;
+>   	struct mtd_part_parser_data	ppdata;
+> -	struct device_node __maybe_unused *np = spi->dev.of_node;
+> -
+> -#ifdef CONFIG_MTD_OF_PARTS
+> -	if (!of_device_is_available(np))
+> -		return -ENODEV;
+> -#endif
+> +	struct device_node *np = spi->dev.of_node;
 >
->   	/* EON -- en25xxx */
-> -	{ "en25f32", INFO(0x1c3116, 0, 64 * 1024,  64, SECT_4K) },
-> -	{ "en25p32", INFO(0x1c2016, 0, 64 * 1024,  64, 0) },
-> -	{ "en25q32b", INFO(0x1c3016, 0, 64 * 1024,  64, 0) },
-> -	{ "en25p64", INFO(0x1c2017, 0, 64 * 1024, 128, 0) },
-> -	{ "en25q64", INFO(0x1c3017, 0, 64 * 1024, 128, SECT_4K) },
-> -	{ "en25qh256", INFO(0x1c7019, 0, 64 * 1024, 512, 0) },
-> +	{ "en25f32",    INFO(0x1c3116, 0, 64 * 1024,   64, SECT_4K) },
-> +	{ "en25p32",    INFO(0x1c2016, 0, 64 * 1024,   64, 0) },
-> +	{ "en25q32b",   INFO(0x1c3016, 0, 64 * 1024,   64, 0) },
-> +	{ "en25p64",    INFO(0x1c2017, 0, 64 * 1024,  128, 0) },
-> +	{ "en25q64",    INFO(0x1c3017, 0, 64 * 1024,  128, SECT_4K) },
-> +	{ "en25qh256",  INFO(0x1c7019, 0, 64 * 1024,  512, 0) },
->
->   	/* ESMT */
->   	{ "f25l32pa", INFO(0x8c2016, 0, 64 * 1024, 64, SECT_4K) },
->
->   	/* Everspin */
-> -	{ "mr25h256", CAT25_INFO(  32 * 1024, 1, 256, 2, M25P_NO_ERASE | M25P_NO_FR) },
-> -	{ "mr25h10", CAT25_INFO(128 * 1024, 1, 256, 3, M25P_NO_ERASE | M25P_NO_FR) },
-> +	{ "mr25h256", CAT25_INFO( 32 * 1024, 1, 256, 2, M25P_NO_ERASE | M25P_NO_FR) },
-> +	{ "mr25h10",  CAT25_INFO(128 * 1024, 1, 256, 3, M25P_NO_ERASE | M25P_NO_FR) },
->
->   	/* GigaDevice */
->   	{ "gd25q32", INFO(0xc84016, 0, 64 * 1024,  64, SECT_4K) },
-> @@ -777,16 +777,16 @@ static const struct spi_device_id m25p_ids[] = {
->   	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, 0) },
->
->   	/* Micron */
-> -	{ "n25q064",  INFO(0x20ba17, 0, 64 * 1024, 128, 0) },
-> -	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024, 256, 0) },
-> -	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024, 256, 0) },
-> -	{ "n25q256a", INFO(0x20ba19, 0, 64 * 1024, 512, SECT_4K) },
-> -	{ "n25q512a", INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K) },
-> +	{ "n25q064",     INFO(0x20ba17, 0, 64 * 1024,  128, 0) },
-> +	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, 0) },
-> +	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, 0) },
-> +	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K) },
-> +	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K) },
->
->   	/* PMC */
-> -	{ "pm25lv512", INFO(0, 0, 32 * 1024, 2, SECT_4K_PMC) },
-> -	{ "pm25lv010", INFO(0, 0, 32 * 1024, 4, SECT_4K_PMC) },
-> -	{ "pm25lq032", INFO(0x7f9d46, 0, 64 * 1024,  64, SECT_4K) },
-> +	{ "pm25lv512",   INFO(0,        0, 32 * 1024,    2, SECT_4K_PMC) },
-> +	{ "pm25lv010",   INFO(0,        0, 32 * 1024,    4, SECT_4K_PMC) },
-> +	{ "pm25lq032",   INFO(0x7f9d46, 0, 64 * 1024,   64, SECT_4K) },
->
->   	/* Spansion -- single (large) sector size only, at least
->   	 * for the chips listed here (without boot sectors).
+>   	/* Platform data helps sort out which chip type we have, as
+>   	 * well as how this board partitions it.  If we don't have
