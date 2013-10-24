@@ -1,16 +1,18 @@
-Received: from mail-oa0-x235.google.com ([2607:f8b0:4003:c02::235])
+Received: from mail-ob0-x229.google.com ([2607:f8b0:4003:c01::229])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VZB8f-00044O-V8
- for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 02:59:10 +0000
-Received: by mail-oa0-f53.google.com with SMTP id n12so1786425oag.26
- for <linux-mtd@lists.infradead.org>; Wed, 23 Oct 2013 19:58:46 -0700 (PDT)
+ id 1VZB8l-00044f-RV
+ for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 02:59:16 +0000
+Received: by mail-ob0-f169.google.com with SMTP id uz6so1204080obc.0
+ for <linux-mtd@lists.infradead.org>; Wed, 23 Oct 2013 19:58:51 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 1/5] mtd: m25p80: fix allocation size
-Date: Wed, 23 Oct 2013 19:58:19 -0700
-Message-Id: <1382583503-13748-1-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 2/5] mtd: m25p80: remove obsolete FIXME
+Date: Wed, 23 Oct 2013 19:58:20 -0700
+Message-Id: <1382583503-13748-2-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1382583503-13748-1-git-send-email-computersforpeace@gmail.com>
+References: <1382583503-13748-1-git-send-email-computersforpeace@gmail.com>
 Cc: Marek Vasut <marex@denx.de>, sourav.poddar@ti.com,
- Brian Norris <computersforpeace@gmail.com>, stable@vger.kernel.org,
+ Brian Norris <computersforpeace@gmail.com>,
  Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -21,78 +23,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch fixes two memory errors:
-
-1. During a probe failure (in mtd_device_parse_register?) the command
-   buffer would not be freed.
-
-2. The command buffer's size is determined based on the 'fast_read'
-   boolean, but the assignment of fast_read is made after this
-   allocation. Thus, the buffer may be allocated "too small".
-
-To fix the first, just switch to the devres version of kzalloc.
-
-To fix the second, increase MAX_CMD_SIZE unconditionally. It's not worth
-saving a byte to fiddle around with the conditions here.
-
-This problem was reported by Yuhang Wang a while back.
+The FIXME and NOTE have already been fixed (we have FAST_READ support).
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Reported-by: Yuhang Wang <wangyuhang2014@gmail.com>
-Cc: <stable@vger.kernel.org>
 ---
- drivers/mtd/devices/m25p80.c | 20 +++++++-------------
- 1 file changed, 7 insertions(+), 13 deletions(-)
+ drivers/mtd/devices/m25p80.c | 9 ---------
+ 1 file changed, 9 deletions(-)
 
 diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 8d6c87be..63a95ac 100644
+index 63a95ac..7c4cbad 100644
 --- a/drivers/mtd/devices/m25p80.c
 +++ b/drivers/mtd/devices/m25p80.c
-@@ -78,7 +78,7 @@
+@@ -367,10 +367,6 @@ static int m25p80_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	spi_message_init(&m);
+ 	memset(t, 0, (sizeof t));
  
- /* Define max times to check status register before we give up. */
- #define	MAX_READY_WAIT_JIFFIES	(40 * HZ)	/* M25P16 specs 40s max chip erase */
--#define	MAX_CMD_SIZE		5
-+#define	MAX_CMD_SIZE		6
- 
- #define JEDEC_MFR(_jedec_id)	((_jedec_id) >> 16)
- 
-@@ -996,15 +996,13 @@ static int m25p_probe(struct spi_device *spi)
- 		}
+-	/* NOTE:
+-	 * OPCODE_FAST_READ (if available) is faster.
+-	 * Should add 1 byte DUMMY_BYTE.
+-	 */
+ 	t[0].tx_buf = flash->command;
+ 	t[0].len = m25p_cmdsz(flash) + (flash->fast_read ? 1 : 0);
+ 	spi_message_add_tail(&t[0], &m);
+@@ -388,11 +384,6 @@ static int m25p80_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 		return 1;
  	}
  
--	flash = kzalloc(sizeof *flash, GFP_KERNEL);
-+	flash = devm_kzalloc(&spi->dev, sizeof(*flash), GFP_KERNEL);
- 	if (!flash)
- 		return -ENOMEM;
--	flash->command = kmalloc(MAX_CMD_SIZE + (flash->fast_read ? 1 : 0),
--					GFP_KERNEL);
--	if (!flash->command) {
--		kfree(flash);
-+
-+	flash->command = devm_kzalloc(&spi->dev, MAX_CMD_SIZE, GFP_KERNEL);
-+	if (!flash->command)
- 		return -ENOMEM;
--	}
- 
- 	flash->spi = spi;
- 	mutex_init(&flash->lock);
-@@ -1137,14 +1135,10 @@ static int m25p_probe(struct spi_device *spi)
- static int m25p_remove(struct spi_device *spi)
- {
- 	struct m25p	*flash = spi_get_drvdata(spi);
--	int		status;
- 
- 	/* Clean up MTD stuff. */
--	status = mtd_device_unregister(&flash->mtd);
--	if (status == 0) {
--		kfree(flash->command);
--		kfree(flash);
--	}
-+	mtd_device_unregister(&flash->mtd);
-+
- 	return 0;
- }
- 
+-	/* FIXME switch to OPCODE_FAST_READ.  It's required for higher
+-	 * clocks; and at this writing, every chip this driver handles
+-	 * supports that opcode.
+-	 */
+-
+ 	/* Set up the write data buffer. */
+ 	opcode = flash->read_opcode;
+ 	flash->command[0] = opcode;
 -- 
 1.8.4
