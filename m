@@ -1,22 +1,23 @@
-Received: from mail-oa0-x234.google.com ([2607:f8b0:4003:c02::234])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VZTcl-0006rM-FN
- for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 22:43:28 +0000
-Received: by mail-oa0-f52.google.com with SMTP id n10so201875oag.11
- for <linux-mtd@lists.infradead.org>; Thu, 24 Oct 2013 15:43:05 -0700 (PDT)
-Date: Thu, 24 Oct 2013 15:43:00 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VZTj1-0006zX-EZ
+ for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 22:49:56 +0000
+Date: Thu, 24 Oct 2013 19:49:24 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
 Subject: Re: [PATCH v11 04/10] mtd: nand: omap: use DT specified bus-width
  only for scanning NAND device
-Message-ID: <20131024224300.GG20061@ld-irv-0074.broadcom.com>
+Message-ID: <20131024224923.GA20462@localhost>
 References: <1382619026-4182-1-git-send-email-pekon@ti.com>
  <1382619026-4182-5-git-send-email-pekon@ti.com>
  <20131024212714.GB2520@localhost>
+ <20131024224300.GG20061@ld-irv-0074.broadcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20131024212714.GB2520@localhost>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20131024224300.GG20061@ld-irv-0074.broadcom.com>
 Cc: mark.rutland@arm.com, tony@atomide.com, linux-mtd@lists.infradead.org,
  Matthieu Castet <matthieu.castet@parrot.com>, ivan.djelic@parrot.com,
  Pawel.Moll@arm.com, Alexander Shiyan <shc_work@mail.ru>, swarren@wwwdotorg.org,
@@ -34,84 +35,105 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Oct 24, 2013 at 06:27:15PM -0300, Ezequiel Garcia wrote:
-> On Thu, Oct 24, 2013 at 06:20:20PM +0530, Pekon Gupta wrote:
-> > This patch:
-> > - calls nand_scan_ident() using bus-width as passed by DT
-> > - removes double calls to nand_scan_ident(), incase first call fails
-> >   then omap_nand_probe just returns error.
+On Thu, Oct 24, 2013 at 03:43:00PM -0700, Brian Norris wrote:
+> On Thu, Oct 24, 2013 at 06:27:15PM -0300, Ezequiel Garcia wrote:
+> > On Thu, Oct 24, 2013 at 06:20:20PM +0530, Pekon Gupta wrote:
+> > > This patch:
+> > > - calls nand_scan_ident() using bus-width as passed by DT
+> > > - removes double calls to nand_scan_ident(), incase first call fails
+> > >   then omap_nand_probe just returns error.
+> > > 
+> > > Signed-off-by: Pekon Gupta <pekon@ti.com>
+> > > ---
+> > >  drivers/mtd/nand/omap2.c | 21 +++++++++------------
+> > >  1 file changed, 9 insertions(+), 12 deletions(-)
+> > > 
+> > > diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+> > > index 5596368..f464321 100644
+> > > --- a/drivers/mtd/nand/omap2.c
+> > > +++ b/drivers/mtd/nand/omap2.c
+> > > @@ -1856,7 +1856,6 @@ static int omap_nand_probe(struct platform_device *pdev)
+> > >  	mtd->name		= dev_name(&pdev->dev);
+> > >  	mtd->owner		= THIS_MODULE;
+> > >  	nand_chip		= &info->nand;
+> > > -	nand_chip->options	= pdata->devsize;
+> > >  	nand_chip->options	|= NAND_SKIP_BBTSCAN;
+> > >  #ifdef CONFIG_MTD_NAND_OMAP_BCH
+> > >  	info->of_node		= pdata->of_node;
+> > > @@ -1904,6 +1903,15 @@ static int omap_nand_probe(struct platform_device *pdev)
+> > >  		nand_chip->chip_delay = 50;
+> > >  	}
+> > >  
+> > > +	/* scan NAND device connected to chip controller */
+> > > +	nand_chip->options |= pdata->devsize & NAND_BUSWIDTH_16;
 > > 
-> > Signed-off-by: Pekon Gupta <pekon@ti.com>
-> > ---
-> >  drivers/mtd/nand/omap2.c | 21 +++++++++------------
-> >  1 file changed, 9 insertions(+), 12 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> > index 5596368..f464321 100644
-> > --- a/drivers/mtd/nand/omap2.c
-> > +++ b/drivers/mtd/nand/omap2.c
-> > @@ -1856,7 +1856,6 @@ static int omap_nand_probe(struct platform_device *pdev)
-> >  	mtd->name		= dev_name(&pdev->dev);
-> >  	mtd->owner		= THIS_MODULE;
-> >  	nand_chip		= &info->nand;
-> > -	nand_chip->options	= pdata->devsize;
-> >  	nand_chip->options	|= NAND_SKIP_BBTSCAN;
-> >  #ifdef CONFIG_MTD_NAND_OMAP_BCH
-> >  	info->of_node		= pdata->of_node;
-> > @@ -1904,6 +1903,15 @@ static int omap_nand_probe(struct platform_device *pdev)
-> >  		nand_chip->chip_delay = 50;
-> >  	}
-> >  
-> > +	/* scan NAND device connected to chip controller */
-> > +	nand_chip->options |= pdata->devsize & NAND_BUSWIDTH_16;
+> > Hm.. this only works if the device is listed in nand_flash_ids[] array,
+> > so that ONFI detection is not used.
 > 
-> Hm.. this only works if the device is listed in nand_flash_ids[] array,
-> so that ONFI detection is not used.
+> But this is no more broken than it used to be, no? I mean, you would
+> never properly detect an x16 ONFI flash with the old
+> double-nand_scan_ident() method, right?
+> 
 
-But this is no more broken than it used to be, no? I mean, you would
-never properly detect an x16 ONFI flash with the old
-double-nand_scan_ident() method, right?
+That's right. But the issue is not really fixed either.
 
-> To make ONFI detection work I think you
-> need to do as Brian suggested and use NAND_BUSWIDTH_AUTO.
+> > To make ONFI detection work I think you
+> > need to do as Brian suggested and use NAND_BUSWIDTH_AUTO.
+> 
+> I think that is the correct way forward. But Pekon seems to think that
+> will require more invasive changes to the GPMC code. But I'm not sure
+> why.
+> 
 
-I think that is the correct way forward. But Pekon seems to think that
-will require more invasive changes to the GPMC code. But I'm not sure
-why.
+Hm... not sure. AFAIK, the GPMC should be *already* configured prior to the
+NAND driver being probed.
 
-> (Odd: why is there no current user of that auto-width option?)
+> > (Odd: why is there no current user of that auto-width option?)
+> 
+> Hmm, I could have sworn somebody was using that... I know there was some
+> pending work on using it for GPIO NAND, but Alexander Shiyan never
+> followed up on the latest comments. It also seems like the original
+> author (Matthieu Castet) was working on OMAP support about a year ago,
+> but things stalled when there wasn't proper mainline support for much of
+> it:
+> 
+>   http://thread.gmane.org/gmane.linux.ports.arm.omap/88550/focus=44770
+> 
+> Personally, I've only ever used x8 NAND, so I don't have much to go on
+> here.
+> 
+> > Anyway, I really think we should fix this now and independently
+> > of the evolution of this ECC DT binding discussion.
+> > That way you can keep sending a smaller ECC DT binding patchset and
+> > make reviewers focus on what's really important in each case.
+> 
+> AFAIK, the ECC DT bindings were all approved, and the code looked OK to
+> my knowledge, except for this single patch. I had recommended either its
+> total removal or its simplification (i.e., this current patch).
+> 
 
-Hmm, I could have sworn somebody was using that... I know there was some
-pending work on using it for GPIO NAND, but Alexander Shiyan never
-followed up on the latest comments. It also seems like the original
-author (Matthieu Castet) was working on OMAP support about a year ago,
-but things stalled when there wasn't proper mainline support for much of
-it:
+FWIW, I'm in favor of *completely* dropping whatever doesn't belong
+to the ECC DT binding.
 
-  http://thread.gmane.org/gmane.linux.ports.arm.omap/88550/focus=44770
+> I will be taking a last look and queueing this series up soon, I
+> believe.
+> 
+> > I have a few fixes (based on your work) and I'll send them now, after
+> > I complete the tests. We can continue our discussion there.
+> 
+> I'll take a look at those soon.
+> 
 
-Personally, I've only ever used x8 NAND, so I don't have much to go on
-here.
+Ok, cool.
 
-> Anyway, I really think we should fix this now and independently
-> of the evolution of this ECC DT binding discussion.
-> That way you can keep sending a smaller ECC DT binding patchset and
-> make reviewers focus on what's really important in each case.
+> So am I to understand you have hardware for testing Pekon's work now,
+> Ezequiel? That will be great if we can have better Reviewed-by/Tested-by
+> results.
+> 
 
-AFAIK, the ECC DT bindings were all approved, and the code looked OK to
-my knowledge, except for this single patch. I had recommended either its
-total removal or its simplification (i.e., this current patch).
-
-I will be taking a last look and queueing this series up soon, I
-believe.
-
-> I have a few fixes (based on your work) and I'll send them now, after
-> I complete the tests. We can continue our discussion there.
-
-I'll take a look at those soon.
-
-So am I to understand you have hardware for testing Pekon's work now,
-Ezequiel? That will be great if we can have better Reviewed-by/Tested-by
-results.
-
-Brian
+Yup, I gave it quick test actually, but nothing deep. Let me test some
+more maybe later today/tomorrow. I just wanted to sort this out first.
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
