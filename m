@@ -1,20 +1,21 @@
-Received: from mail-oa0-x22b.google.com ([2607:f8b0:4003:c02::22b])
+Received: from mail-ie0-x22b.google.com ([2607:f8b0:4001:c03::22b])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VZ7PX-0001TB-6y
- for linux-mtd@lists.infradead.org; Wed, 23 Oct 2013 23:00:20 +0000
-Received: by mail-oa0-f43.google.com with SMTP id m1so1622479oag.16
- for <linux-mtd@lists.infradead.org>; Wed, 23 Oct 2013 15:59:58 -0700 (PDT)
-Date: Wed, 23 Oct 2013 15:59:54 -0700
+ id 1VZ8ht-0002NB-MG
+ for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 00:23:22 +0000
+Received: by mail-ie0-f171.google.com with SMTP id tp5so2726718ieb.30
+ for <linux-mtd@lists.infradead.org>; Wed, 23 Oct 2013 17:23:00 -0700 (PDT)
+Date: Wed, 23 Oct 2013 17:22:53 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH V2 0/4] mtd: gpmi: support two nand chips at most
-Message-ID: <20131023225954.GY23337@ld-irv-0074.broadcom.com>
-References: <1377595747-21033-1-git-send-email-b32955@freescale.com>
+To: Sourav Poddar <sourav.poddar@ti.com>
+Subject: Re: [PATCH 0/3]Add quad/memory mapped support for SPI flash.
+Message-ID: <20131024002253.GZ23337@ld-irv-0074.broadcom.com>
+References: <1381332284-21822-1-git-send-email-sourav.poddar@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1377595747-21033-1-git-send-email-b32955@freescale.com>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org, dedekind1@gmail.com
+In-Reply-To: <1381332284-21822-1-git-send-email-sourav.poddar@ti.com>
+Cc: spi-devel-general@lists.sourceforge.net, broonie@kernel.org,
+ dwmw2@infradead.org, balbi@ti.com, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,27 +25,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Aug 27, 2013 at 05:29:03PM +0800, Huang Shijie wrote:
-> Current gpmi-nand driver only supports one chips. But we may meet
-> some embarrassing situation, such as Micron MT29F32G08QAA.
-> This nand chip has two DIEs internally. Each die has its own chip select pin,
-> so this chip acts as two nand chips.
-> 
-> If we only scan one chip, we may find that we only get 2G for this chip,
-> but in actually, this chip's size is 4G.
-> 
-> So scan two chips by default.
-> 
-> In order to support two nand chips, we have to do the following:
->    1.) Decouple the chip select from the DMA channel,
->        We can use the dma 0 to access all the nand chips.
-> 
->    2.) fix the wrong method of checking the ready/busy status.
->       In the imx6, all the ready/busy pins are binding together, we
->       should check ready/busy status of chip 0 for the all the chips. 
-> 
-> Tested this patch set with MT29F32G08QAA.
+Hi Sourav,
 
-I fixed up some typos in patch 4 and pushed the series. Thanks!
+I must admit, I missed some of this series due to a combination of
+strange Gmail filtering (I just learned that a filter for "PATCH"
+doesn't match "PATCHv3" in Gmail...) and the inconsistent naming in your
+patch series. (I see PATCH, PATCHv3, and RFC/PATCH.) I'll try to prevent
+that in the future.
+
+On Wed, Oct 09, 2013 at 08:54:41PM +0530, Sourav Poddar wrote:
+> This patch add quad/memory mapped support in flash driver(m25p80).
+
+Does "memory mapped" supoprt need to be in the same series as quad read
+support? Those are very different topics, it seems.
+
+> Added support for quad memory mapped for TI qspi controller also.
+> 
+> This patch has been tested with some internal dts data.
+
+Your patches use new DT bindings which are not documented. If you are
+adding bindings, please document them in
+Documentation/devicetree/bindings/ and CC devicetree@vger.kernel.org.
+(You only need to CC them for the binding documenation, not necessarily
+all your code changes.)
+
+That being said, I'm not sure you need some of the bindings that you're
+using. I'll comment on the affected patch(es).
 
 Brian
