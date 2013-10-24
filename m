@@ -1,24 +1,22 @@
-Received: from mail-oa0-x22c.google.com ([2607:f8b0:4003:c02::22c])
+Received: from mail-ob0-x229.google.com ([2607:f8b0:4003:c01::229])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VZTCF-0006Rp-Rp
- for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 22:16:04 +0000
-Received: by mail-oa0-f44.google.com with SMTP id l20so173808oag.3
- for <linux-mtd@lists.infradead.org>; Thu, 24 Oct 2013 15:15:42 -0700 (PDT)
-Date: Thu, 24 Oct 2013 15:15:36 -0700
+ id 1VZTFp-0006VW-NS
+ for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 22:19:46 +0000
+Received: by mail-ob0-f169.google.com with SMTP id uz6so181837obc.0
+ for <linux-mtd@lists.infradead.org>; Thu, 24 Oct 2013 15:19:24 -0700 (PDT)
+Date: Thu, 24 Oct 2013 15:19:20 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH v3] mtd: nand: pxa3xx: Fix registered MTD name
-Message-ID: <20131024221536.GE20061@ld-irv-0074.broadcom.com>
-References: <1382217565-11312-1-git-send-email-ezequiel.garcia@free-electrons.com>
+To: Huang Shijie <b32955@freescale.com>, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH v2 fix] mtd: gpmi: fix the ecc regression
+Message-ID: <20131024221920.GF20061@ld-irv-0074.broadcom.com>
+References: <1382602484-12023-1-git-send-email-b32955@freescale.com>
+ <1382604496-28118-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1382217565-11312-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>, Daniel Mack <zonque@gmail.com>,
- linux-mtd@lists.infradead.org,
- Gregory Clement <gregory.clement@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>
+In-Reply-To: <1382604496-28118-1-git-send-email-b32955@freescale.com>
+Cc: tharvey@gateworks.com, linux-mtd@lists.infradead.org,
+ stable@vger.kernel.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,35 +26,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Oct 19, 2013 at 06:19:25PM -0300, Ezequiel Garcia wrote:
-> In a recent commit:
+On Thu, Oct 24, 2013 at 04:48:16PM +0800, Huang Shijie wrote:
+> The legacy ecc layout is to use all the OOB area by computing the ecc strength
+> and ecc step size ourselves.
 > 
->   commit f455578dd961087a5cf94730d9f6489bb1d355f0
->   Author: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
->   Date:   Mon Aug 12 14:14:53 2013 -0300
+> The patch "2febcdf mtd: gpmi: set the BCHs geometry with the ecc info"
+> makes the gpmi to use the ECC info(ecc strength and ecc step size)
+> provided by the MTD code, and creates a different NAND ecc layout
+> for the BCH , and use the new ecc layout, this brings a regression to us:
+>    We can not mount the ubifs which was created by the old NAND ecc layout.
 > 
->   mtd: nand: pxa3xx: Remove hardcoded mtd name
+> This patch fixes this issue by use the legacy ecc layout firstly, if it fails
+> we try to use the new ecc layout.
 > 
->   There's no advantage in using a hardcoded name for the mtd device.
->   Instead use the provided by the platform_device.
-> 
-> The MTD name was changed to use the one provided by the platform_device.
-> However, this can be problematic as some users want to set partitions
-> using the kernel parameter 'mtdparts', where the name is needed.
-> 
-> Therefore, to avoid regressions in users relying in 'mtdparts' we revert
-> the change and use the previous one 'pxa3xx_nand-0'.
-> 
-> While at it, let's put a big comment and prevent this change from happening
-> ever again.
-> 
-> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
+> Cc: stable@vger.kernel.org
 
-Pushed to linux-mtd.git, in hopes to submit a pull request for 3.12.
+I fixed up the language a little, dropped the 'stable', and pushed to
+linux-mtd.git (in hopes of sending another pull request for 3.12). I'll
+see if David wants to weigh in first.
 
-David, I have pushed and signed (with my new key) this and Huang's
-regression fix to linux-mtd.git. I can send a pull request, or you can
-just drop my tag and do it yourself. I'm not sure how long to wait at
-this stage in the release cycle...
+Feel free to send your updated DT binding patch(es).
 
 Brian
