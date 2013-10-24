@@ -1,19 +1,20 @@
-Received: from mail-ob0-x22c.google.com ([2607:f8b0:4003:c01::22c])
+Received: from mail-oa0-x22e.google.com ([2607:f8b0:4003:c02::22e])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VZB8w-00044k-Q9
- for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 02:59:27 +0000
-Received: by mail-ob0-f172.google.com with SMTP id gq1so1737301obb.17
- for <linux-mtd@lists.infradead.org>; Wed, 23 Oct 2013 19:59:05 -0700 (PDT)
+ id 1VZB9U-00047A-CF
+ for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 03:00:00 +0000
+Received: by mail-oa0-f46.google.com with SMTP id g12so1838541oah.33
+ for <linux-mtd@lists.infradead.org>; Wed, 23 Oct 2013 19:59:39 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 4/5] mtd: m25p80: remove M25PXX_USE_FAST_READ Kconfig
-Date: Wed, 23 Oct 2013 19:58:22 -0700
-Message-Id: <1382583503-13748-4-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 5/5] mtd: m25p80: remove 'disabled' device check
+Date: Wed, 23 Oct 2013 19:58:23 -0700
+Message-Id: <1382583503-13748-5-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1382583503-13748-1-git-send-email-computersforpeace@gmail.com>
 References: <1382583503-13748-1-git-send-email-computersforpeace@gmail.com>
-Cc: Marek Vasut <marex@denx.de>, sourav.poddar@ti.com,
- Brian Norris <computersforpeace@gmail.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Marek Vasut <marex@denx.de>, devicetree@vger.kernel.org,
+ Artem Bityutskiy <dedekind1@gmail.com>, Rob Herring <rob.herring@calxeda.com>,
+ Grant Likely <grant.likely@linaro.org>, sourav.poddar@ti.com,
+ Brian Norris <computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,56 +24,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Remove the compile-time option for FAST_READ, since we have run-time
-support for detecting it.
+It seems like the following commit was never necessary
+
+    commit 5f949137952020214cd167093dd7be448f21c079
+    Author: Shaohui Xie <Shaohui.Xie@freescale.com>
+    Date:   Fri Oct 14 15:49:00 2011 +0800
+
+        mtd: m25p80: don't probe device which has status of 'disabled'
+
+because it duplicates the code in of_platform_device_create_pdata()
+which ensures that 'disabled' nodes are never instantiated.
+
+Also, drop the __maybe_unused.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Cc: Grant Likely <grant.likely@linaro.org>
+Cc: Rob Herring <rob.herring@calxeda.com>
+Cc: <devicetree@vger.kernel.org>
 ---
- drivers/mtd/devices/Kconfig  |  7 -------
- drivers/mtd/devices/m25p80.c | 11 ++++++-----
- 2 files changed, 6 insertions(+), 12 deletions(-)
+ drivers/mtd/devices/m25p80.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
-index 74ab4b7..0128138 100644
---- a/drivers/mtd/devices/Kconfig
-+++ b/drivers/mtd/devices/Kconfig
-@@ -95,13 +95,6 @@ config MTD_M25P80
- 	  if you want to specify device partitioning or to use a device which
- 	  doesn't support the JEDEC ID instruction.
- 
--config M25PXX_USE_FAST_READ
--	bool "Use FAST_READ OPCode allowing SPI CLK >= 50MHz"
--	depends on MTD_M25P80
--	default y
--	help
--	  This option enables FAST_READ access supported by ST M25Pxx.
--
- config MTD_SPEAR_SMI
- 	tristate "SPEAR MTD NOR Support through SMI controller"
- 	depends on PLAT_SPEAR
 diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 7e3ec7a..d6c5c57 100644
+index d6c5c57..a1dc49a 100644
 --- a/drivers/mtd/devices/m25p80.c
 +++ b/drivers/mtd/devices/m25p80.c
-@@ -1055,13 +1055,14 @@ static int m25p_probe(struct spi_device *spi)
- 	flash->page_size = info->page_size;
- 	flash->mtd.writebufsize = flash->page_size;
- 
--	flash->fast_read = false;
--	if (np && of_property_read_bool(np, "m25p,fast-read"))
-+	if (np)
-+		/* If we were instantiated by DT, use it */
-+		flash->fast_read = of_property_read_bool(np, "m25p,fast-read");
-+	else
-+		/* If we weren't instantiated by DT, default to fast-read */
- 		flash->fast_read = true;
- 
--#ifdef CONFIG_M25PXX_USE_FAST_READ
--	flash->fast_read = true;
+@@ -935,12 +935,7 @@ static int m25p_probe(struct spi_device *spi)
+ 	struct flash_info		*info;
+ 	unsigned			i;
+ 	struct mtd_part_parser_data	ppdata;
+-	struct device_node __maybe_unused *np = spi->dev.of_node;
+-
+-#ifdef CONFIG_MTD_OF_PARTS
+-	if (!of_device_is_available(np))
+-		return -ENODEV;
 -#endif
-+	/* Some devices cannot do fast-read, no matter what DT tells us */
- 	if (info->flags & M25P_NO_FR)
- 		flash->fast_read = false;
++	struct device_node *np = spi->dev.of_node;
  
+ 	/* Platform data helps sort out which chip type we have, as
+ 	 * well as how this board partitions it.  If we don't have
 -- 
 1.8.4
