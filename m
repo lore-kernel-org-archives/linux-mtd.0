@@ -1,44 +1,27 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VZKdT-0008I0-J7
- for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 13:07:36 +0000
-Date: Thu, 24 Oct 2013 10:07:04 -0300
+ id 1VZLM6-0001EA-36
+ for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 13:53:42 +0000
+Date: Thu, 24 Oct 2013 10:52:59 -0300
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [PATCH v10 04/10] mtd: nand: omap: fix device scan:
- NAND_CMD_READID, NAND_CMD_RESET, CMD_CMD_PARAM use only x8 bus
-Message-ID: <20131024130703.GA9958@localhost>
-References: <1382172254-12448-1-git-send-email-pekon@ti.com>
- <1382172254-12448-5-git-send-email-pekon@ti.com>
- <20131022201624.GL23337@ld-irv-0074.broadcom.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA29DB8@DBDE04.ent.ti.com>
- <5267690C.9080005@gmail.com> <20131023125516.GA2458@localhost>
- <20980858CB6D3A4BAE95CA194937D5E73EA2A0CB@DBDE04.ent.ti.com>
- <20131023132457.GD2458@localhost> <20131023144652.GI2458@localhost>
- <20980858CB6D3A4BAE95CA194937D5E73EA2A783@DBDE04.ent.ti.com>
+To: Pekon Gupta <pekon@ti.com>
+Subject: Re: [PATCH v11 00/10] [PATCH v10 00/10] mtd:nand:omap2: clean-up of
+ supported ECC schemes
+Message-ID: <20131024135258.GC9958@localhost>
+References: <1382619026-4182-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA2A783@DBDE04.ent.ti.com>
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "arnd@arndb.de" <arnd@arndb.de>, "Pawel.Moll@arm.com" <Pawel.Moll@arm.com>,
- "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>,
- "tony@atomide.com" <tony@atomide.com>,
- "avinashphilipk@gmail.com" <avinashphilipk@gmail.com>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "jp.francois@cynove.com" <jp.francois@cynove.com>, "Balbi,
- Felipe" <balbi@ti.com>, "olof@lixom.net" <olof@lixom.net>,
- "robherring2@gmail.com" <robherring2@gmail.com>,
- "bcousson@baylibre.com" <bcousson@baylibre.com>,
- "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "ivan.djelic@parrot.com" <ivan.djelic@parrot.com>,
- Brian Norris <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+In-Reply-To: <1382619026-4182-1-git-send-email-pekon@ti.com>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org,
+ ijc+devicetree@hellion.org.uk, linux-omap@vger.kernel.org, arnd@arndb.de,
+ Pawel.Moll@arm.com, dedekind1@gmail.com, tony@atomide.com,
+ avinashphilipk@gmail.com, swarren@wwwdotorg.org, jp.francois@cynove.com,
+ balbi@ti.com, robherring2@gmail.com, bcousson@baylibre.com, olof@lixom.net,
+ linux-mtd@lists.infradead.org, ivan.djelic@parrot.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -48,37 +31,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Pekon,
+Hi Pekon,
 
-On Thu, Oct 24, 2013 at 12:59:26PM +0000, Gupta, Pekon wrote:
-> Hi Ezequiel,
-> 
-> > From: Ezequiel Garcia [mailto:ezequiel.garcia@free-electrons.com]
-> > I won't be able to make too much progress without some help or without
-> > squeezing my brains out :P
-> > 
-> > Care to push some git branch on some random repo with DT support for
-> > the NAND cape in the Beaglebone?
-> > 
-> Apologies for delay, I was testing and preparing a newer version of patch-set..
-> 
-> Please find the beagle-bone DTS attached. However, consider this as RFC
-> only, as I'm waiting for current series which has some DT-binding updates
-> to get accepted first.
-> 
-> Commit log in the patch would also guide you for some board tweaks
-> for enabling NAND cape on beagle-bone (LT/white)..
-> (I have recently sent v11 of the patch series incorporating last few
->  comments from Brian about nand_scan_ident().)
-> 
+Just as suggestion, I think you should reconsider your 'upstream strategy'.
 
-Thanks! I'll give this a try.
+On Thu, Oct 24, 2013 at 06:20:16PM +0530, Pekon Gupta wrote:
+[..]
+> 
+> Pekon Gupta (10):
+>   ARM: OMAP2+: cleaned-up DT support of various ECC schemes
+>   mtd: nand: omap: combine different flavours of 1-bit hamming ecc schemes
+>   mtd: nand: omap: cleanup: replace local references with generic framework names
 
-Anyway, for future reference, it's really easier for testers and
-reviewers to just push the code in some public git repo (github? gitorious?).
+IMHO, this patch about the dobule nand_scan_ident():
+>   mtd: nand: omap: use DT specified bus-width only for scanning NAND device
 
-This way I don't have to apply the patches from my mailbox,
-but just checkout a branch...
+is a fix unrelated to this series and can be pushed independently.
+Maybe you can try to send it as a one-patch fix?
+
+>   mtd:nand:omap2: clean-up BCHx_HW and BCHx_SW ECC configurations in device_probe
+>   mtd: nand: omap: clean-up ecc layout for BCH ecc schemes
+>   mtd: nand: omap: use drivers/mtd/nand/nand_bch.c wrapper for BCH ECC instead of lib/bch.c
+>   ARM: dts: AM33xx: updated default ECC scheme in nand-ecc-opt
+
+And also this patch:
+>   mtd: nand: omap: updated devm_xx for all resource allocation and free calls
+
+doesn't seem to belong to this series.
+
+I think tou could send those two independently and ask Brian to merge them earlier
+if appropriate.
+
+But again, this is just a suggestion.
 -- 
 Ezequiel García, Free Electrons
 Embedded Linux, Kernel and Android Engineering
