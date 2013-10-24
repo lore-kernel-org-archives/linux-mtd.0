@@ -1,21 +1,21 @@
-Received: from forward16.mail.yandex.net ([2a02:6b8:0:1402::1])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VZMdX-0003SL-5O
- for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 15:15:49 +0000
-From: Konstantin Tokarev <annulen@yandex.ru>
-To: Yann Collet <yann.collet.73@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Brent Taylor <motobud@gmail.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- linux-kernel@vger.kernel.org, akpm@linux-foundation.org
-In-Reply-To: <237221382623942@web21m.yandex.ru>
-References: <55541379679397@web20h.yandex.ru>
- <CAP+RiCAVuUEfyjg02+ZjeFXgUuaRW+fuMB490Ce2Hq_4qHBL=A@mail.gmail.com>
- <loom.20131023T201657-894@post.gmane.org> <237221382623942@web21m.yandex.ru>
-Subject: Re: lz4hc compression in UBIFS?
+Received: from mail-ie0-x230.google.com ([2607:f8b0:4001:c03::230])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VZNz7-000825-5f
+ for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 16:42:09 +0000
+Received: by mail-ie0-f176.google.com with SMTP id u16so4194432iet.7
+ for <linux-mtd@lists.infradead.org>; Thu, 24 Oct 2013 09:41:48 -0700 (PDT)
+Date: Thu, 24 Oct 2013 09:41:44 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: UBIFS: assert failed in ubifs_tnc_next_ent
+Message-ID: <20131024164144.GC23337@ld-irv-0074.broadcom.com>
+References: <20131023220950.GW23337@ld-irv-0074.broadcom.com>
+ <20131024013150.GB23337@ld-irv-0074.broadcom.com>
 MIME-Version: 1.0
-Message-Id: <106621382627723@web13g.yandex.ru>
-Date: Thu, 24 Oct 2013 19:15:23 +0400
-Content-Type: multipart/mixed; boundary="----==--bound.10663.web13g.yandex.ru"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20131024013150.GB23337@ld-irv-0074.broadcom.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,71 +25,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, Oct 23, 2013 at 06:31:50PM -0700, Brian Norris wrote:
+> I'll retry on 3.12-rc and with a few extra backported
+> fixes on 3.8.
 
-------==--bound.10663.web13g.yandex.ru
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset=koi8-r
+It looks like I was just missing a few upstream bugfixes. That's what I
+get for not properly following -stable properly :(
 
+With the additional backporting of these two commits, my filesystem
+tests survived overnight:
 
+  commit 2928f0d0c5ebd6c9605c0d98207a44376387c298
+  Author: Adam Thomas <adamthomas1111@gmail.com>
+  Date:   Sat Feb 2 22:32:31 2013 +0000
 
-24.10.2013, 18:20, "Konstantin Tokarev" <annulen@yandex.ru>:
-> 23.10.2013, 22:26, "Yann Collet" <yann.collet.73@gmail.com>:
->
->> šUBIFS error (pid 4288): ubifs_decompress: cannot decompress 12 bytes,
->> š(...)
->> šššššššššdata size ššššš12
->> šššššššššdata:
->> ššššššššš00000000: 1f 00 01 00 ff e8 50 00 00 00 00 00
->>
->> šThe compressed format is correct.
->> šIt describes a flow of 00, of size ~500.
->>
->> šSo the problem seems more likely on the decompression side.
->>
->> šAre you sure you are providing "12" as the "input size" parameter ? and that
->> šthe "maximum output size" parameter is correctly provided ? (i.e. >= to
->> šoriginal data size)
->
-> Decompression code in kernel[1] is heavily modified. In particular, lz4_uncompress
-> function (used in this case) does not have input size parameter at all,
-> while it's present in lz4_uncompress_unknownoutputsize.
->
-> [1] lib/lz4/lz4_decompress.c
+      UBIFS: fix use of freed ubifs_orphan objects
 
-Attached patch to crypto API wrapper for lz4hc seems to fix the issue. I can save
-and read files on LZ4HC-compressed volume, and I'm running on LZ4HC-compressed rootfs,
-flashed from mkfs.ubifs generated image (patch by Elie De Brauwer). My software
-works correctly.
+  commit 8afd500cb52a5d00bab4525dd5a560d199f979b9
+  Author: Adam Thomas <adamthomas1111@gmail.com>
+  Date:   Sat Feb 2 22:35:08 2013 +0000
 
-Unfortunately, on my board LZ4HC-compressed UBIFS volume performs noticeable worse
-than LZO, while still faster than zlib. I guess the reason is that CPU is no longer a
-bottleneck for my system, but NAND speed.
+      UBIFS: fix double free of ubifs_orphan objects
 
-Thank you all for your help!
+Sorry for the noise. I guess this is a lesson for others, though. Greg
+KH isn't joking when he says "all users must upgrade"!
 
--- 
-Regards,
-Konstantin
-------==--bound.10663.web13g.yandex.ru
-Content-Disposition: attachment;
-	filename="crypto_lz4.patch"
-Content-Transfer-Encoding: base64
-Content-Type: text/x-diff;
-	name="crypto_lz4.patch"
-
-ZGlmZiAtLWdpdCBhL2NyeXB0by9sejQuYyBiL2NyeXB0by9sejQuYwppbmRleCA0NTg2ZGQxLi45
-MWEwNjEzIDEwMDY0NAotLS0gYS9jcnlwdG8vbHo0LmMKKysrIGIvY3J5cHRvL2x6NC5jCkBAIC02
-Niw5ICs2Niw4IEBAIHN0YXRpYyBpbnQgbHo0X2RlY29tcHJlc3NfY3J5cHRvKHN0cnVjdCBjcnlw
-dG9fdGZtICp0Zm0sIGNvbnN0IHU4ICpzcmMsCiB7CiAJaW50IGVycjsKIAlzaXplX3QgdG1wX2xl
-biA9ICpkbGVuOwotCXNpemVfdCBfX3NsZW4gPSBzbGVuOwogCi0JZXJyID0gbHo0X2RlY29tcHJl
-c3Moc3JjLCAmX19zbGVuLCBkc3QsIHRtcF9sZW4pOworCWVyciA9IGx6NF9kZWNvbXByZXNzX3Vu
-a25vd25vdXRwdXRzaXplKHNyYywgc2xlbiwgZHN0LCAmdG1wX2xlbik7CiAJaWYgKGVyciA8IDAp
-CiAJCXJldHVybiAtRUlOVkFMOwogCmRpZmYgLS1naXQgYS9jcnlwdG8vbHo0aGMuYyBiL2NyeXB0
-by9sejRoYy5jCmluZGV4IDE1MWJhMzEuLjk5ODc3NDEgMTAwNjQ0Ci0tLSBhL2NyeXB0by9sejRo
-Yy5jCisrKyBiL2NyeXB0by9sejRoYy5jCkBAIC02Niw5ICs2Niw4IEBAIHN0YXRpYyBpbnQgbHo0
-aGNfZGVjb21wcmVzc19jcnlwdG8oc3RydWN0IGNyeXB0b190Zm0gKnRmbSwgY29uc3QgdTggKnNy
-YywKIHsKIAlpbnQgZXJyOwogCXNpemVfdCB0bXBfbGVuID0gKmRsZW47Ci0Jc2l6ZV90IF9fc2xl
-biA9IHNsZW47CiAKLQllcnIgPSBsejRfZGVjb21wcmVzcyhzcmMsICZfX3NsZW4sIGRzdCwgdG1w
-X2xlbik7CisJZXJyID0gbHo0X2RlY29tcHJlc3NfdW5rbm93bm91dHB1dHNpemUoc3JjLCBzbGVu
-LCBkc3QsICZ0bXBfbGVuKTsKIAlpZiAoZXJyIDwgMCkKIAkJcmV0dXJuIC1FSU5WQUw7CiAK
-------==--bound.10663.web13g.yandex.ru--
+Brian
