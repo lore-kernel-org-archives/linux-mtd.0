@@ -1,20 +1,22 @@
-Received: from mail-ob0-x22d.google.com ([2607:f8b0:4003:c01::22d])
+Received: from arroyo.ext.ti.com ([192.94.94.40])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VZPfl-0001qm-5u
- for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 18:30:17 +0000
-Received: by mail-ob0-f173.google.com with SMTP id gq1so2744879obb.18
- for <linux-mtd@lists.infradead.org>; Thu, 24 Oct 2013 11:29:56 -0700 (PDT)
-Date: Thu, 24 Oct 2013 11:29:51 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH v2] flash_erase: check the nand type
-Message-ID: <20131024182951.GD20061@ld-irv-0074.broadcom.com>
-References: <1382612391-13036-1-git-send-email-b32955@freescale.com>
+ id 1VZPyK-0002Ma-M7
+ for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 18:49:30 +0000
+Message-ID: <52696B9A.4070505@ti.com>
+Date: Fri, 25 Oct 2013 00:18:58 +0530
+From: Sourav Poddar <sourav.poddar@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1382612391-13036-1-git-send-email-b32955@freescale.com>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org, dedekind1@gmail.com
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 4/5] mtd: m25p80: remove M25PXX_USE_FAST_READ Kconfig
+References: <1382583503-13748-1-git-send-email-computersforpeace@gmail.com>
+ <1382583503-13748-4-git-send-email-computersforpeace@gmail.com>
+ <5268E35C.2030000@ti.com> <5268E495.5010707@ti.com>
+ <20131024173912.GC20061@ld-irv-0074.broadcom.com>
+In-Reply-To: <20131024173912.GC20061@ld-irv-0074.broadcom.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Marek Vasut <marex@denx.de>, linux-mtd@lists.infradead.org,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,30 +26,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Oct 24, 2013 at 06:59:51PM +0800, Huang Shijie wrote:
-> Now, the MTD_NANDFLASH stands for SLC nand, and the MTD_MLCNANDFLASH
-> stands for the MLC nand.
-> 
-> This patch includes the stdbool.h, and changes the "isNAND" to boolean type,
-> and checks the right nand type for the MLC and SLC nand.
-> 
-> If the user wants to format a MLC nand for JFFS2, we will print out a message
-> to warn him, and exit right now.
-> 
-> Signed-off-by: Huang Shijie <b32955@freescale.com>
-
-Thanks for the update. Pushed to mtd-utils.git.
-
-BTW, this is not a problem with your patch, but MLC typically have large
-OOB sizes which have outgrown the outdated ioctl(MEMGETOOBSEL), so
---jffs2 would have broken for them anyway. I just tested this on my
-system. On an old kernel (where MLC is still detected as MTD_NANDFLASH)
-I get:
-
-  # flash_erase -j /dev/mtd1 0 1 
-  flash_erase: error!: /dev/mtd1: unable to get NAND oobinfo
-               error 22 (Invalid argument)
-
-There's not much we can do about this.
-
-Brian
+On Thursday 24 October 2013 11:09 PM, Brian Norris wrote:
+> On Thu, Oct 24, 2013 at 02:42:53PM +0530, Sourav Poddar wrote:
+>> On Thursday 24 October 2013 02:37 PM, Sourav Poddar wrote:
+>>> On Thursday 24 October 2013 08:28 AM, Brian Norris wrote:
+>>>> --- a/drivers/mtd/devices/m25p80.c
+>>>> +++ b/drivers/mtd/devices/m25p80.c
+>>>> @@ -1055,13 +1055,14 @@ static int m25p_probe(struct spi_device *spi)
+>>>>       flash->page_size = info->page_size;
+>>>>       flash->mtd.writebufsize = flash->page_size;
+>>>>
+>>>> -    flash->fast_read = false;
+>>>> -    if (np&&   of_property_read_bool(np, "m25p,fast-read"))
+>>>> +    if (np)
+>>>> +        /* If we were instantiated by DT, use it */
+>>>> +        flash->fast_read = of_property_read_bool(np, "m25p,fast-read");
+>>>> +    else
+>>>> +        /* If we weren't instantiated by DT, default to fast-read */
+>>>>           flash->fast_read = true;
+>>>>
+>>> This comment is in sync with my quad read mode support patch on
+>>> the mtd list.
+>>>
+>>> Here, you are defaulting the fast read to be true.
+> It was already default true for non-DT case where
+> M25PXX_USE_FAST_READ=y. I believe my code is purely a refactoring of the
+> code, assuming M25PXX_USE_FAST_READ is always enabled (and removing the
+> Kconfig).
+>
+>>> Once I add quad mode
+>>> on top of this, I will set flash->quad_read = true. So, we will have both
+>>> fast and quad read set(which will not be correct). So, it is
+>>> necessary to default to fast read ?
+> I think my patch is a correct refactoring by itself. Any problem your
+> quad read patch has with it would still be a problem without this patch.
+>
+True, my bad I didn't realise that for internal testing I disable
+fast read option in menuconfig.
+> So, without quad-read support, we should default to fast-read unless the
+> chip doesn't support it. I think this is reasonable.
+>
+> Now, once you add quad-read, you need to have quad-read override
+> fast-read.
+>
+>> Though, we will hit this scenario only for a non dt case. For dt
+>> case, things will be fine.
+> Yes, but we need to make sure things make sense for all cases.
+>
+Yes.
+>>>> -#ifdef CONFIG_M25PXX_USE_FAST_READ
+>>>> -    flash->fast_read = true;
+>>>> -#endif
+>>>> +    /* Some devices cannot do fast-read, no matter what DT tells us */
+>>>>       if (info->flags&   M25P_NO_FR)
+>>>>           flash->fast_read = false;
+>>>>
+> I just realized this: fast-read and quad-read are mutually exclusive, so
+> the field that is currently 'bool m25p.fast_read' could easily just become
+correct.
+> an 'enum m25p.read_type' (with values M25P_READ_NORMAL, M25P_READ_FAST,
+> M25P_READ_QUAD). That may or may not help your quad read patch.
+>
+> I can delay this patch until others have looked at it, if you'd like.
+> You can resubmit your quad read patch without this patch 4. (But I think
+> this patch will help clean up your patch slightly.)
+Ok. I will include this patch and try to cleanup.
+> Brian
