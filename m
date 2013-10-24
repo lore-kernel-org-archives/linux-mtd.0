@@ -1,19 +1,24 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VZT9L-0006Kz-Sy
- for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 22:13:05 +0000
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: <linux-mtd@lists.infradead.org>,
-	<linux-omap@vger.kernel.org>
-Subject: [PATCH 5/5] mtd: nand: omap2: Use devm_ioremap_resource
-Date: Thu, 24 Oct 2013 19:12:17 -0300
-Message-Id: <1382652737-20239-6-git-send-email-ezequiel.garcia@free-electrons.com>
-In-Reply-To: <1382652737-20239-1-git-send-email-ezequiel.garcia@free-electrons.com>
-References: <1382652737-20239-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>, Pekon Gupta <pekon@ti.com>,
- Felipe Balbi <balbi@ti.com>
+Received: from mail-oa0-x22c.google.com ([2607:f8b0:4003:c02::22c])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VZTCF-0006Rp-Rp
+ for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 22:16:04 +0000
+Received: by mail-oa0-f44.google.com with SMTP id l20so173808oag.3
+ for <linux-mtd@lists.infradead.org>; Thu, 24 Oct 2013 15:15:42 -0700 (PDT)
+Date: Thu, 24 Oct 2013 15:15:36 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH v3] mtd: nand: pxa3xx: Fix registered MTD name
+Message-ID: <20131024221536.GE20061@ld-irv-0074.broadcom.com>
+References: <1382217565-11312-1-git-send-email-ezequiel.garcia@free-electrons.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1382217565-11312-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Lior Amsalem <alior@marvell.com>, Daniel Mack <zonque@gmail.com>,
+ linux-mtd@lists.infradead.org,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,85 +28,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This simplifies the code and makes it less error-prone.
+On Sat, Oct 19, 2013 at 06:19:25PM -0300, Ezequiel Garcia wrote:
+> In a recent commit:
+> 
+>   commit f455578dd961087a5cf94730d9f6489bb1d355f0
+>   Author: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+>   Date:   Mon Aug 12 14:14:53 2013 -0300
+> 
+>   mtd: nand: pxa3xx: Remove hardcoded mtd name
+> 
+>   There's no advantage in using a hardcoded name for the mtd device.
+>   Instead use the provided by the platform_device.
+> 
+> The MTD name was changed to use the one provided by the platform_device.
+> However, this can be problematic as some users want to set partitions
+> using the kernel parameter 'mtdparts', where the name is needed.
+> 
+> Therefore, to avoid regressions in users relying in 'mtdparts' we revert
+> the change and use the previous one 'pxa3xx_nand-0'.
+> 
+> While at it, let's put a big comment and prevent this change from happening
+> ever again.
+> 
+> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
----
- drivers/mtd/nand/omap2.c | 30 +++++++-----------------------
- 1 file changed, 7 insertions(+), 23 deletions(-)
+Pushed to linux-mtd.git, in hopes to submit a pull request for 3.12.
 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index d4cafb0..c11e831 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -1830,6 +1830,7 @@ static int omap_nand_probe(struct platform_device *pdev)
- 	unsigned sig;
- 	struct resource			*res;
- 	struct mtd_part_parser_data	ppdata = {};
-+	void __iomem			*base;
- 
- 	pdata = dev_get_platdata(&pdev->dev);
- 	if (pdata == NULL) {
-@@ -1861,29 +1862,15 @@ static int omap_nand_probe(struct platform_device *pdev)
- #endif
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	if (res == NULL) {
--		err = -EINVAL;
--		dev_err(&pdev->dev, "error getting memory resource\n");
--		goto out_free_info;
--	}
--
--	info->phys_base = res->start;
--	info->mem_size = resource_size(res);
--
--	if (!request_mem_region(info->phys_base, info->mem_size,
--				pdev->dev.driver->name)) {
--		err = -EBUSY;
--		goto out_free_info;
--	}
--
--	info->nand.IO_ADDR_R = ioremap(info->phys_base, info->mem_size);
--	if (!info->nand.IO_ADDR_R) {
--		err = -ENOMEM;
--		goto out_release_mem_region;
-+	base = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR(base)) {
-+		err = PTR_ERR(base);
-+		return err;
- 	}
- 
- 	info->nand.controller = &info->controller;
- 
-+	info->nand.IO_ADDR_R = base;
- 	info->nand.IO_ADDR_W = info->nand.IO_ADDR_R;
- 	info->nand.cmd_ctrl  = omap_hwcontrol;
- 
-@@ -1904,7 +1891,7 @@ static int omap_nand_probe(struct platform_device *pdev)
- 
- 	err = nand_scan_ident(&info->mtd, 1, NULL);
- 	if (err < 0)
--		goto out_release_mem_region;
-+		return err;
- 
- 	switch (pdata->xfer_type) {
- 	case NAND_OMAP_PREFETCH_POLLED:
-@@ -2065,7 +2052,6 @@ out_release_mem_region:
- 		free_irq(info->gpmc_irq_count, info);
- 	if (info->gpmc_irq_fifo > 0)
- 		free_irq(info->gpmc_irq_fifo, info);
--	release_mem_region(info->phys_base, info->mem_size);
- 	return err;
- }
- 
-@@ -2086,8 +2072,6 @@ static int omap_nand_remove(struct platform_device *pdev)
- 
- 	/* Release NAND device, its internal structures and partitions */
- 	nand_release(&info->mtd);
--	iounmap(info->nand.IO_ADDR_R);
--	release_mem_region(info->phys_base, info->mem_size);
- 	return 0;
- }
- 
--- 
-1.8.1.5
+David, I have pushed and signed (with my new key) this and Huang's
+regression fix to linux-mtd.git. I can send a pull request, or you can
+just drop my tag and do it yourself. I'm not sure how long to wait at
+this stage in the release cycle...
+
+Brian
