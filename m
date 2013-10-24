@@ -1,20 +1,20 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
+Received: from mail-ob0-x22d.google.com ([2607:f8b0:4003:c01::22d])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VZP9R-0000zZ-2w
- for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 17:56:53 +0000
-Message-ID: <52695F49.20907@ti.com>
-Date: Thu, 24 Oct 2013 23:26:25 +0530
-From: Sourav Poddar <sourav.poddar@ti.com>
+ id 1VZPfl-0001qm-5u
+ for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 18:30:17 +0000
+Received: by mail-ob0-f173.google.com with SMTP id gq1so2744879obb.18
+ for <linux-mtd@lists.infradead.org>; Thu, 24 Oct 2013 11:29:56 -0700 (PDT)
+Date: Thu, 24 Oct 2013 11:29:51 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH v2] flash_erase: check the nand type
+Message-ID: <20131024182951.GD20061@ld-irv-0074.broadcom.com>
+References: <1382612391-13036-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 1/5] mtd: m25p80: fix allocation size
-References: <1382583503-13748-1-git-send-email-computersforpeace@gmail.com>
- <20131024171729.GB20061@ld-irv-0074.broadcom.com>
-In-Reply-To: <20131024171729.GB20061@ld-irv-0074.broadcom.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Marek Vasut <marex@denx.de>, linux-mtd@lists.infradead.org,
- stable@vger.kernel.org, Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1382612391-13036-1-git-send-email-b32955@freescale.com>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,31 +24,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 24 October 2013 10:47 PM, Brian Norris wrote:
-> On Wed, Oct 23, 2013 at 07:58:19PM -0700, Brian Norris wrote:
->> This patch fixes two memory errors:
->>
->> 1. During a probe failure (in mtd_device_parse_register?) the command
->>     buffer would not be freed.
->>
->> 2. The command buffer's size is determined based on the 'fast_read'
->>     boolean, but the assignment of fast_read is made after this
->>     allocation. Thus, the buffer may be allocated "too small".
->>
->> To fix the first, just switch to the devres version of kzalloc.
->>
->> To fix the second, increase MAX_CMD_SIZE unconditionally. It's not worth
->> saving a byte to fiddle around with the conditions here.
->>
->> This problem was reported by Yuhang Wang a while back.
->>
->> Signed-off-by: Brian Norris<computersforpeace@gmail.com>
->> Reported-by: Yuhang Wang<wangyuhang2014@gmail.com>
->> Cc:<stable@vger.kernel.org>
-> I pushed patches 1, 2, and 3 to l2-mtd.git (for Sourav's sake).
-Thanks!
-> I'll
-> wait a little while on the others. Comments are still welcome on the
-> whole series, though.
->
-> Brian
+On Thu, Oct 24, 2013 at 06:59:51PM +0800, Huang Shijie wrote:
+> Now, the MTD_NANDFLASH stands for SLC nand, and the MTD_MLCNANDFLASH
+> stands for the MLC nand.
+> 
+> This patch includes the stdbool.h, and changes the "isNAND" to boolean type,
+> and checks the right nand type for the MLC and SLC nand.
+> 
+> If the user wants to format a MLC nand for JFFS2, we will print out a message
+> to warn him, and exit right now.
+> 
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
+
+Thanks for the update. Pushed to mtd-utils.git.
+
+BTW, this is not a problem with your patch, but MLC typically have large
+OOB sizes which have outgrown the outdated ioctl(MEMGETOOBSEL), so
+--jffs2 would have broken for them anyway. I just tested this on my
+system. On an old kernel (where MLC is still detected as MTD_NANDFLASH)
+I get:
+
+  # flash_erase -j /dev/mtd1 0 1 
+  flash_erase: error!: /dev/mtd1: unable to get NAND oobinfo
+               error 22 (Invalid argument)
+
+There's not much we can do about this.
+
+Brian
