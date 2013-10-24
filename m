@@ -1,20 +1,20 @@
-Received: from mail-oa0-x22e.google.com ([2607:f8b0:4003:c02::22e])
+Received: from comal.ext.ti.com ([198.47.26.152])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VZB9U-00047A-CF
- for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 03:00:00 +0000
-Received: by mail-oa0-f46.google.com with SMTP id g12so1838541oah.33
- for <linux-mtd@lists.infradead.org>; Wed, 23 Oct 2013 19:59:39 -0700 (PDT)
-From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 5/5] mtd: m25p80: remove 'disabled' device check
-Date: Wed, 23 Oct 2013 19:58:23 -0700
-Message-Id: <1382583503-13748-5-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1382583503-13748-1-git-send-email-computersforpeace@gmail.com>
-References: <1382583503-13748-1-git-send-email-computersforpeace@gmail.com>
-Cc: Marek Vasut <marex@denx.de>, devicetree@vger.kernel.org,
- Artem Bityutskiy <dedekind1@gmail.com>, Rob Herring <rob.herring@calxeda.com>,
- Grant Likely <grant.likely@linaro.org>, sourav.poddar@ti.com,
- Brian Norris <computersforpeace@gmail.com>
+ id 1VZCtY-0005CA-7L
+ for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 04:51:40 +0000
+Message-ID: <5268A73C.7020800@ti.com>
+Date: Thu, 24 Oct 2013 10:21:08 +0530
+From: Sourav Poddar <sourav.poddar@ti.com>
+MIME-Version: 1.0
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 0/3]Add quad/memory mapped support for SPI flash.
+References: <1381332284-21822-1-git-send-email-sourav.poddar@ti.com>
+ <20131024002253.GZ23337@ld-irv-0074.broadcom.com>
+In-Reply-To: <20131024002253.GZ23337@ld-irv-0074.broadcom.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: spi-devel-general@lists.sourceforge.net, broonie@kernel.org,
+ dwmw2@infradead.org, balbi@ti.com, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,44 +24,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It seems like the following commit was never necessary
+Hi Brian,
 
-    commit 5f949137952020214cd167093dd7be448f21c079
-    Author: Shaohui Xie <Shaohui.Xie@freescale.com>
-    Date:   Fri Oct 14 15:49:00 2011 +0800
-
-        mtd: m25p80: don't probe device which has status of 'disabled'
-
-because it duplicates the code in of_platform_device_create_pdata()
-which ensures that 'disabled' nodes are never instantiated.
-
-Also, drop the __maybe_unused.
-
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Cc: Grant Likely <grant.likely@linaro.org>
-Cc: Rob Herring <rob.herring@calxeda.com>
-Cc: <devicetree@vger.kernel.org>
----
- drivers/mtd/devices/m25p80.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
-
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index d6c5c57..a1dc49a 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -935,12 +935,7 @@ static int m25p_probe(struct spi_device *spi)
- 	struct flash_info		*info;
- 	unsigned			i;
- 	struct mtd_part_parser_data	ppdata;
--	struct device_node __maybe_unused *np = spi->dev.of_node;
--
--#ifdef CONFIG_MTD_OF_PARTS
--	if (!of_device_is_available(np))
--		return -ENODEV;
--#endif
-+	struct device_node *np = spi->dev.of_node;
- 
- 	/* Platform data helps sort out which chip type we have, as
- 	 * well as how this board partitions it.  If we don't have
--- 
-1.8.4
+Thanks for the reply.
+On Thursday 24 October 2013 05:52 AM, Brian Norris wrote:
+> Hi Sourav,
+>
+> I must admit, I missed some of this series due to a combination of
+> strange Gmail filtering (I just learned that a filter for "PATCH"
+> doesn't match "PATCHv3" in Gmail...) and the inconsistent naming in your
+> patch series. (I see PATCH, PATCHv3, and RFC/PATCH.) I'll try to prevent
+> that in the future.
+>
+Sorry for this, I tried to keep the tag according to the status of
+the patch. I will try to be uniform in my patch subject.
+> On Wed, Oct 09, 2013 at 08:54:41PM +0530, Sourav Poddar wrote:
+>> This patch add quad/memory mapped support in flash driver(m25p80).
+> Does "memory mapped" supoprt need to be in the same series as quad read
+> support? Those are very different topics, it seems.
+>
+Yes, this are different topic and I can send you the quad support
+seperately as a single patch ?
+>> Added support for quad memory mapped for TI qspi controller also.
+>>
+>> This patch has been tested with some internal dts data.
+> Your patches use new DT bindings which are not documented. If you are
+> adding bindings, please document them in
+> Documentation/devicetree/bindings/ and CC devicetree@vger.kernel.org.
+> (You only need to CC them for the binding documenation, not necessarily
+> all your code changes.)
+Ok. I will take care of this.
+> That being said, I'm not sure you need some of the bindings that you're
+> using. I'll comment on the affected patch(es).
+>
+> Brian
