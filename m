@@ -1,20 +1,22 @@
-Received: from mail-oa0-x22c.google.com ([2607:f8b0:4003:c02::22c])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VZOXy-0000GR-OM
- for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 17:18:11 +0000
-Received: by mail-oa0-f44.google.com with SMTP id l20so2740460oag.3
- for <linux-mtd@lists.infradead.org>; Thu, 24 Oct 2013 10:17:49 -0700 (PDT)
-Date: Thu, 24 Oct 2013 10:17:29 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 1/5] mtd: m25p80: fix allocation size
-Message-ID: <20131024171729.GB20061@ld-irv-0074.broadcom.com>
-References: <1382583503-13748-1-git-send-email-computersforpeace@gmail.com>
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VZOkx-0000T6-0x
+ for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 17:31:35 +0000
+Date: Thu, 24 Oct 2013 14:31:04 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: UBIFS: assert failed in ubifs_tnc_next_ent
+Message-ID: <20131024173103.GA2500@localhost>
+References: <20131023220950.GW23337@ld-irv-0074.broadcom.com>
+ <20131024013150.GB23337@ld-irv-0074.broadcom.com>
+ <20131024164144.GC23337@ld-irv-0074.broadcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1382583503-13748-1-git-send-email-computersforpeace@gmail.com>
-Cc: Marek Vasut <marex@denx.de>, sourav.poddar@ti.com, stable@vger.kernel.org,
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20131024164144.GC23337@ld-irv-0074.broadcom.com>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
  Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,29 +27,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Oct 23, 2013 at 07:58:19PM -0700, Brian Norris wrote:
-> This patch fixes two memory errors:
+On Thu, Oct 24, 2013 at 09:41:44AM -0700, Brian Norris wrote:
+> On Wed, Oct 23, 2013 at 06:31:50PM -0700, Brian Norris wrote:
+> > I'll retry on 3.12-rc and with a few extra backported
+> > fixes on 3.8.
 > 
-> 1. During a probe failure (in mtd_device_parse_register?) the command
->    buffer would not be freed.
+> It looks like I was just missing a few upstream bugfixes. That's what I
+> get for not properly following -stable properly :(
 > 
-> 2. The command buffer's size is determined based on the 'fast_read'
->    boolean, but the assignment of fast_read is made after this
->    allocation. Thus, the buffer may be allocated "too small".
+> With the additional backporting of these two commits, my filesystem
+> tests survived overnight:
 > 
-> To fix the first, just switch to the devres version of kzalloc.
+>   commit 2928f0d0c5ebd6c9605c0d98207a44376387c298
+>   Author: Adam Thomas <adamthomas1111@gmail.com>
+>   Date:   Sat Feb 2 22:32:31 2013 +0000
 > 
-> To fix the second, increase MAX_CMD_SIZE unconditionally. It's not worth
-> saving a byte to fiddle around with the conditions here.
+>       UBIFS: fix use of freed ubifs_orphan objects
 > 
-> This problem was reported by Yuhang Wang a while back.
+>   commit 8afd500cb52a5d00bab4525dd5a560d199f979b9
+>   Author: Adam Thomas <adamthomas1111@gmail.com>
+>   Date:   Sat Feb 2 22:35:08 2013 +0000
 > 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Reported-by: Yuhang Wang <wangyuhang2014@gmail.com>
-> Cc: <stable@vger.kernel.org>
+>       UBIFS: fix double free of ubifs_orphan objects
+> 
+> Sorry for the noise. I guess this is a lesson for others, though. Greg
+> KH isn't joking when he says "all users must upgrade"!
+> 
 
-I pushed patches 1, 2, and 3 to l2-mtd.git (for Sourav's sake). I'll
-wait a little while on the others. Comments are still welcome on the
-whole series, though.
+Interesting findings and interesting lesson :-)
 
-Brian
+I'll keep this in mind and thanks for sharing your findings!
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
