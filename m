@@ -1,17 +1,19 @@
-Received: from co1ehsobe006.messaging.microsoft.com ([216.32.180.189]
- helo=co1outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VZEL2-0006Cv-8r
- for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 06:24:08 +0000
-From: Huang Shijie <b32955@freescale.com>
-To: <dwmw2@infradead.org>
-Subject: [PATCH for mtd-utils] flash_erase: check the nand type
-Date: Thu, 24 Oct 2013 14:06:06 +0800
-Message-ID: <1382594766-27467-1-git-send-email-b32955@freescale.com>
+Received: from svrmail01.thanos.ch ([178.33.90.139])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VZEZ9-0006QP-4T
+ for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 06:38:43 +0000
+Date: Thu, 24 Oct 2013 07:37:43 +0200
+From: "anthonyna" <thanos@stargate-vortex.com> 
+To: <baytimirova@gov-murman.ru>, <stopnazi.bg@gmail.com>,
+ <orp.marfino@gmail.com>, <jamboree@ulscout.ru>,
+ <linux-mtd@lists.infradead.org>
+Subject: =?koi8-r?Q?=FC=D4=CF_=D7=CE=D1=D4=CE=CF?=
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, dedekind1@gmail.com
+Content-Type: text/plain;
+	charset="koi8-r";
+Content-Transfer-Encoding: base64 
+Message-Id: <20131024061334.0AD5326D65@svrmail01.thanos.ch>
+Reply-To: anthonyna <dev9tka@iscsinc.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,44 +23,5 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now, the MTD_NANDFLASH stands for SLC nand, and the MTD_MLCNANDFLASH
-stands for the MLC nand.
-
-This patch checks the right nand type for the MLC and SLC nand.
-And if it is a MLC nand, we do not write cleanmarker for it, only print
-out a message to warn the user.
-
-Signed-off-by: Huang Shijie <b32955@freescale.com>
----
- flash_erase.c |    9 ++++++++-
- 1 files changed, 8 insertions(+), 1 deletions(-)
-
-diff --git a/flash_erase.c b/flash_erase.c
-index 1421cf9..dd75334 100644
---- a/flash_erase.c
-+++ b/flash_erase.c
-@@ -184,7 +184,8 @@ int main(int argc, char *argv[])
- 
- 	eb_start = start / mtd.eb_size;
- 
--	isNAND = mtd.type == MTD_NANDFLASH ? 1 : 0;
-+	isNAND = (mtd.type == MTD_NANDFLASH || mtd.type == MTD_MLCNANDFLASH)
-+			? 1 : 0;
- 
- 	if (jffs2) {
- 		cleanmarker.magic = cpu_to_je16 (JFFS2_MAGIC_BITMASK);
-@@ -272,6 +273,12 @@ int main(int argc, char *argv[])
- 
- 		/* write cleanmarker */
- 		if (isNAND) {
-+			if (mtd.type == MTD_MLCNANDFLASH) {
-+				sys_errmsg("%s: we can't write the cleanmarker "
-+					"for the MLC nand.", mtd_device);
-+				continue;
-+			}
-+
- 			if (mtd_write_oob(mtd_desc, &mtd, fd, (uint64_t)offset + clmpos, clmlen, &cleanmarker) != 0) {
- 				sys_errmsg("%s: MTD writeoob failure", mtd_device);
- 				continue;
--- 
-1.7.2.rc3
+99kg2sHQ0s/T1M8g09XNxcXUxSDOwcjPxMnU2CDR2tnLINMg19PRy8nNIN7V1sXaxc3Dxc0gaHR0
+cDovL3d3dy5oYW1lYXUtZGUta2VyeWFyZ29uLmNvbS90bXAvempmbXUuaHRtDQo=
