@@ -1,27 +1,20 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
+Received: from forward2m.mail.yandex.net ([2a02:6b8:0:2519::3:11])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VZLM6-0001EA-36
- for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 13:53:42 +0000
-Date: Thu, 24 Oct 2013 10:52:59 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Pekon Gupta <pekon@ti.com>
-Subject: Re: [PATCH v11 00/10] [PATCH v10 00/10] mtd:nand:omap2: clean-up of
- supported ECC schemes
-Message-ID: <20131024135258.GC9958@localhost>
-References: <1382619026-4182-1-git-send-email-pekon@ti.com>
+ id 1VZLlH-0001xC-AQ
+ for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 14:19:43 +0000
+From: Konstantin Tokarev <annulen@yandex.ru>
+To: Yann Collet <yann.collet.73@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+In-Reply-To: <loom.20131023T201657-894@post.gmane.org>
+References: <55541379679397@web20h.yandex.ru>
+ <CAP+RiCAVuUEfyjg02+ZjeFXgUuaRW+fuMB490Ce2Hq_4qHBL=A@mail.gmail.com>
+ <loom.20131023T201657-894@post.gmane.org>
+Subject: Re: lz4hc compression in UBIFS?
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Message-Id: <237221382623942@web21m.yandex.ru>
+Date: Thu, 24 Oct 2013 18:12:22 +0400
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1382619026-4182-1-git-send-email-pekon@ti.com>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org,
- ijc+devicetree@hellion.org.uk, linux-omap@vger.kernel.org, arnd@arndb.de,
- Pawel.Moll@arm.com, dedekind1@gmail.com, tony@atomide.com,
- avinashphilipk@gmail.com, swarren@wwwdotorg.org, jp.francois@cynove.com,
- balbi@ti.com, robherring2@gmail.com, bcousson@baylibre.com, olof@lixom.net,
- linux-mtd@lists.infradead.org, ivan.djelic@parrot.com,
- computersforpeace@gmail.com, dwmw2@infradead.org
+Content-Type: text/plain; charset=koi8-r
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,39 +24,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Pekon,
 
-Just as suggestion, I think you should reconsider your 'upstream strategy'.
 
-On Thu, Oct 24, 2013 at 06:20:16PM +0530, Pekon Gupta wrote:
-[..]
-> 
-> Pekon Gupta (10):
->   ARM: OMAP2+: cleaned-up DT support of various ECC schemes
->   mtd: nand: omap: combine different flavours of 1-bit hamming ecc schemes
->   mtd: nand: omap: cleanup: replace local references with generic framework names
+23.10.2013, 22:26, "Yann Collet" <yann.collet.73@gmail.com>:
+> UBIFS error (pid 4288): ubifs_decompress: cannot decompress 12 bytes,
+> (...)
+> öööööööödata size ööööö12
+> öööööööödata:
+> öööööööö00000000: 1f 00 01 00 ff e8 50 00 00 00 00 00
+>
+> The compressed format is correct.
+> It describes a flow of 00, of size ~500.
+>
+> So the problem seems more likely on the decompression side.
+>
+> Are you sure you are providing "12" as the "input size" parameter ? and that
+> the "maximum output size" parameter is correctly provided ? (i.e. >= to
+> original data size)
+>
 
-IMHO, this patch about the dobule nand_scan_ident():
->   mtd: nand: omap: use DT specified bus-width only for scanning NAND device
+Decompression code in kernel[1] is heavily modified. In particular, lz4_uncompress
+function (used in this case) does not have input size parameter at all,
+while it's present in lz4_uncompress_unknownoutputsize.
 
-is a fix unrelated to this series and can be pushed independently.
-Maybe you can try to send it as a one-patch fix?
+[1] lib/lz4/lz4_decompress.c
 
->   mtd:nand:omap2: clean-up BCHx_HW and BCHx_SW ECC configurations in device_probe
->   mtd: nand: omap: clean-up ecc layout for BCH ecc schemes
->   mtd: nand: omap: use drivers/mtd/nand/nand_bch.c wrapper for BCH ECC instead of lib/bch.c
->   ARM: dts: AM33xx: updated default ECC scheme in nand-ecc-opt
-
-And also this patch:
->   mtd: nand: omap: updated devm_xx for all resource allocation and free calls
-
-doesn't seem to belong to this series.
-
-I think tou could send those two independently and ask Brian to merge them earlier
-if appropriate.
-
-But again, this is just a suggestion.
 -- 
-Ezequiel Garc√≠a, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+Regards,
+Konstantin
