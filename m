@@ -1,23 +1,25 @@
-Received: from mail-ob0-x233.google.com ([2607:f8b0:4003:c01::233])
+Received: from bear.ext.ti.com ([192.94.94.41])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VZOsj-0000iG-TQ
- for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 17:39:38 +0000
-Received: by mail-ob0-f179.google.com with SMTP id uy5so2653059obc.38
- for <linux-mtd@lists.infradead.org>; Thu, 24 Oct 2013 10:39:16 -0700 (PDT)
-Date: Thu, 24 Oct 2013 10:39:12 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Sourav Poddar <sourav.poddar@ti.com>
-Subject: Re: [PATCH 4/5] mtd: m25p80: remove M25PXX_USE_FAST_READ Kconfig
-Message-ID: <20131024173912.GC20061@ld-irv-0074.broadcom.com>
-References: <1382583503-13748-1-git-send-email-computersforpeace@gmail.com>
- <1382583503-13748-4-git-send-email-computersforpeace@gmail.com>
- <5268E35C.2030000@ti.com> <5268E495.5010707@ti.com>
+ id 1VZP8j-0000xX-4H
+ for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 17:56:10 +0000
+Message-ID: <52695F15.8090309@ti.com>
+Date: Thu, 24 Oct 2013 23:25:33 +0530
+From: Sourav Poddar <sourav.poddar@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5268E495.5010707@ti.com>
-Cc: Marek Vasut <marex@denx.de>, linux-mtd@lists.infradead.org,
- Artem Bityutskiy <dedekind1@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCHv3 2/3] drivers: mtd: devices: Add quad read support.
+References: <1381332284-21822-1-git-send-email-sourav.poddar@ti.com>
+ <1381332284-21822-3-git-send-email-sourav.poddar@ti.com>
+ <20131024010619.GA23337@ld-irv-0074.broadcom.com> <5268B3B8.4090807@ti.com>
+ <20131024073400.GA9863@norris.computersforpeace.net>
+ <5268DE0B.7040208@ti.com> <20131024170754.GA20061@ld-irv-0074.broadcom.com>
+In-Reply-To: <20131024170754.GA20061@ld-irv-0074.broadcom.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Marek Vasut <marex@denx.de>, Jagan Teki <jagannadh.teki@gmail.com>,
+ balbi@ti.com, Huang Shijie <b32955@freescale.com>, broonie@kernel.org,
+ linux-mtd@lists.infradead.org, spi-devel-general@lists.sourceforge.net,
+ dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,69 +29,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Oct 24, 2013 at 02:42:53PM +0530, Sourav Poddar wrote:
-> On Thursday 24 October 2013 02:37 PM, Sourav Poddar wrote:
-> >On Thursday 24 October 2013 08:28 AM, Brian Norris wrote:
-> >>--- a/drivers/mtd/devices/m25p80.c
-> >>+++ b/drivers/mtd/devices/m25p80.c
-> >>@@ -1055,13 +1055,14 @@ static int m25p_probe(struct spi_device *spi)
-> >>      flash->page_size = info->page_size;
-> >>      flash->mtd.writebufsize = flash->page_size;
-> >>
-> >>-    flash->fast_read = false;
-> >>-    if (np&&  of_property_read_bool(np, "m25p,fast-read"))
-> >>+    if (np)
-> >>+        /* If we were instantiated by DT, use it */
-> >>+        flash->fast_read = of_property_read_bool(np, "m25p,fast-read");
-> >>+    else
-> >>+        /* If we weren't instantiated by DT, default to fast-read */
-> >>          flash->fast_read = true;
-> >>
-> >This comment is in sync with my quad read mode support patch on
-> >the mtd list.
-> >
-> >Here, you are defaulting the fast read to be true.
+Hi Brian,
+On Thursday 24 October 2013 10:37 PM, Brian Norris wrote:
+> On Thu, Oct 24, 2013 at 02:14:59PM +0530, Sourav Poddar wrote:
+>> On Thursday 24 October 2013 01:04 PM, Brian Norris wrote:
+>>> I just submitted my cleanups which (among other things) fixes this bug.
+>>> I believe I CC'd you. Go ahead and review it, and if it works to your
+>>> liking, please just base your work on top of it. I'll apply some or all
+>>> of that series if no one objects.
+>>>
+>> Ok.
+> I'll push parts the reviewed parts of my patch series now, so you can
+> base off them. (I'm still open to comments on them, though.)
+>
+>>> Do all parts that support quad read also support all the other quad
+>>> opcodes (like quad program)?
+>>>
+>> I have Spansion and Macronix flash with me.
+>>
+>> For spansion,
+>> supported quad commands are:
+>> QOR(0x6b) which is what I am using.
+>> QIOR(0xeb)
+>> DDR QIOR(0xed)
+>>
+>> For macronix,
+>> QOR(0x6b) which is what I am using.
+>> QIOR(0xeb)
+> So it seems there are flash which support quad read but not quad
+> program. So the flag I recommended (M25P80_QUAD) should be made specific
+> to quad read (M25P80_QUAD_READ) I guess, since we may support page
+> program eventually.
+>
+Sounds good. I will take care of this in my next version.
 
-It was already default true for non-DT case where
-M25PXX_USE_FAST_READ=y. I believe my code is purely a refactoring of the
-code, assuming M25PXX_USE_FAST_READ is always enabled (and removing the
-Kconfig).
 
-> >Once I add quad mode
-> >on top of this, I will set flash->quad_read = true. So, we will have both
-> >fast and quad read set(which will not be correct). So, it is
-> >necessary to default to fast read ?
-
-I think my patch is a correct refactoring by itself. Any problem your
-quad read patch has with it would still be a problem without this patch.
-
-So, without quad-read support, we should default to fast-read unless the
-chip doesn't support it. I think this is reasonable.
-
-Now, once you add quad-read, you need to have quad-read override
-fast-read.
-
-> Though, we will hit this scenario only for a non dt case. For dt
-> case, things will be fine.
-
-Yes, but we need to make sure things make sense for all cases.
-
-> >>-#ifdef CONFIG_M25PXX_USE_FAST_READ
-> >>-    flash->fast_read = true;
-> >>-#endif
-> >>+    /* Some devices cannot do fast-read, no matter what DT tells us */
-> >>      if (info->flags&  M25P_NO_FR)
-> >>          flash->fast_read = false;
-> >>
-> >
-
-I just realized this: fast-read and quad-read are mutually exclusive, so
-the field that is currently 'bool m25p.fast_read' could easily just become
-an 'enum m25p.read_type' (with values M25P_READ_NORMAL, M25P_READ_FAST,
-M25P_READ_QUAD). That may or may not help your quad read patch.
-
-I can delay this patch until others have looked at it, if you'd like.
-You can resubmit your quad read patch without this patch 4. (But I think
-this patch will help clean up your patch slightly.)
-
-Brian
+~Sourav
+> Brian
