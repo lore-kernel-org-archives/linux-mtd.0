@@ -1,28 +1,21 @@
-Received: from mail-ie0-x236.google.com ([2607:f8b0:4001:c03::236])
+Received: from mail-oa0-x22c.google.com ([2607:f8b0:4003:c02::22c])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VZOOV-0008W1-IC
- for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 17:08:24 +0000
-Received: by mail-ie0-f182.google.com with SMTP id as1so4457185iec.27
- for <linux-mtd@lists.infradead.org>; Thu, 24 Oct 2013 10:08:02 -0700 (PDT)
-Date: Thu, 24 Oct 2013 10:07:54 -0700
+ id 1VZOXy-0000GR-OM
+ for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 17:18:11 +0000
+Received: by mail-oa0-f44.google.com with SMTP id l20so2740460oag.3
+ for <linux-mtd@lists.infradead.org>; Thu, 24 Oct 2013 10:17:49 -0700 (PDT)
+Date: Thu, 24 Oct 2013 10:17:29 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Sourav Poddar <sourav.poddar@ti.com>
-Subject: Re: [PATCHv3 2/3] drivers: mtd: devices: Add quad read support.
-Message-ID: <20131024170754.GA20061@ld-irv-0074.broadcom.com>
-References: <1381332284-21822-1-git-send-email-sourav.poddar@ti.com>
- <1381332284-21822-3-git-send-email-sourav.poddar@ti.com>
- <20131024010619.GA23337@ld-irv-0074.broadcom.com>
- <5268B3B8.4090807@ti.com>
- <20131024073400.GA9863@norris.computersforpeace.net>
- <5268DE0B.7040208@ti.com>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 1/5] mtd: m25p80: fix allocation size
+Message-ID: <20131024171729.GB20061@ld-irv-0074.broadcom.com>
+References: <1382583503-13748-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5268DE0B.7040208@ti.com>
-Cc: Marek Vasut <marex@denx.de>, Jagan Teki <jagannadh.teki@gmail.com>,
- balbi@ti.com, Huang Shijie <b32955@freescale.com>, broonie@kernel.org,
- linux-mtd@lists.infradead.org, spi-devel-general@lists.sourceforge.net,
- dwmw2@infradead.org
+In-Reply-To: <1382583503-13748-1-git-send-email-computersforpeace@gmail.com>
+Cc: Marek Vasut <marex@denx.de>, sourav.poddar@ti.com, stable@vger.kernel.org,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,36 +25,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Oct 24, 2013 at 02:14:59PM +0530, Sourav Poddar wrote:
-> On Thursday 24 October 2013 01:04 PM, Brian Norris wrote:
-> >I just submitted my cleanups which (among other things) fixes this bug.
-> >I believe I CC'd you. Go ahead and review it, and if it works to your
-> >liking, please just base your work on top of it. I'll apply some or all
-> >of that series if no one objects.
-> >
-> Ok.
-
-I'll push parts the reviewed parts of my patch series now, so you can
-base off them. (I'm still open to comments on them, though.)
-
-> >Do all parts that support quad read also support all the other quad
-> >opcodes (like quad program)?
-> >
-> I have Spansion and Macronix flash with me.
+On Wed, Oct 23, 2013 at 07:58:19PM -0700, Brian Norris wrote:
+> This patch fixes two memory errors:
 > 
-> For spansion,
-> supported quad commands are:
-> QOR(0x6b) which is what I am using.
-> QIOR(0xeb)
-> DDR QIOR(0xed)
+> 1. During a probe failure (in mtd_device_parse_register?) the command
+>    buffer would not be freed.
 > 
-> For macronix,
-> QOR(0x6b) which is what I am using.
-> QIOR(0xeb)
+> 2. The command buffer's size is determined based on the 'fast_read'
+>    boolean, but the assignment of fast_read is made after this
+>    allocation. Thus, the buffer may be allocated "too small".
+> 
+> To fix the first, just switch to the devres version of kzalloc.
+> 
+> To fix the second, increase MAX_CMD_SIZE unconditionally. It's not worth
+> saving a byte to fiddle around with the conditions here.
+> 
+> This problem was reported by Yuhang Wang a while back.
+> 
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Reported-by: Yuhang Wang <wangyuhang2014@gmail.com>
+> Cc: <stable@vger.kernel.org>
 
-So it seems there are flash which support quad read but not quad
-program. So the flag I recommended (M25P80_QUAD) should be made specific
-to quad read (M25P80_QUAD_READ) I guess, since we may support page
-program eventually.
+I pushed patches 1, 2, and 3 to l2-mtd.git (for Sourav's sake). I'll
+wait a little while on the others. Comments are still welcome on the
+whole series, though.
 
 Brian
