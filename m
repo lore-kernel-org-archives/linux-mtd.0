@@ -1,21 +1,19 @@
-Received: from mail-we0-f175.google.com ([74.125.82.175])
+Received: from co9ehsobe003.messaging.microsoft.com ([207.46.163.26]
+ helo=co9outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VZV3x-0008BX-5T
- for linux-mtd@lists.infradead.org; Fri, 25 Oct 2013 00:15:37 +0000
-Received: by mail-we0-f175.google.com with SMTP id t61so3026305wes.6
- for <linux-mtd@lists.infradead.org>; Thu, 24 Oct 2013 17:15:12 -0700 (PDT)
-Sender: Grant Likely <glikely@secretlab.ca>
-From: Grant Likely <grant.likely@linaro.org>
-Subject: Re: [PATCH 5/5] mtd: m25p80: remove 'disabled' device check
-To: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-In-Reply-To: <1382583503-13748-5-git-send-email-computersforpeace@gmail.com>
-References: <1382583503-13748-1-git-send-email-computersforpeace@gmail.com>
- <1382583503-13748-5-git-send-email-computersforpeace@gmail.com>
-Date: Fri, 25 Oct 2013 01:15:09 +0100
-Message-Id: <20131025001509.1924FC403B6@trevor.secretlab.ca>
-Cc: Marek Vasut <marex@denx.de>, devicetree@vger.kernel.org,
- Artem Bityutskiy <dedekind1@gmail.com>, Rob Herring <rob.herring@calxeda.com>,
- sourav.poddar@ti.com, Brian Norris <computersforpeace@gmail.com>
+ id 1VZdAN-00065V-VL
+ for linux-mtd@lists.infradead.org; Fri, 25 Oct 2013 08:54:48 +0000
+From: Huang Shijie <b32955@freescale.com>
+To: <dwmw2@infradead.org>
+Subject: [PATCH] mtd: gpmi: add a new DT property to use the datasheet's
+ minimum required ECC
+Date: Fri, 25 Oct 2013 16:36:24 +0800
+Message-ID: <1382690184-27124-1-git-send-email-b32955@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: devicetree@vger.kernel.org, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org, Huang Shijie <b32955@freescale.com>,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,51 +23,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 23 Oct 2013 19:58:23 -0700, Brian Norris <computersforpeace@gmail.com> wrote:
-> It seems like the following commit was never necessary
-> 
->     commit 5f949137952020214cd167093dd7be448f21c079
->     Author: Shaohui Xie <Shaohui.Xie@freescale.com>
->     Date:   Fri Oct 14 15:49:00 2011 +0800
-> 
->         mtd: m25p80: don't probe device which has status of 'disabled'
-> 
-> because it duplicates the code in of_platform_device_create_pdata()
-> which ensures that 'disabled' nodes are never instantiated.
-> 
-> Also, drop the __maybe_unused.
+In default way, we use the ecc-strength/ecc-step-size calculated by ourselves
+and use all the OOB area.
 
-Looks reasonable.
+This patch adds a new property : "fsl,use-minimum-ecc"
 
-Reviewed-by: Grant Likely <grant.likely@linaro.org>
+If we enable it, we will use the datasheet's minimum required ECC provided by
+the MTD layer (the ecc_strength_ds/ecc_strength_ds fields in the nand_chip{}).
+So we may have free space in the OOB area by using the minimum ECC, and we may
+support JFFS2 with some SLC NANDs, such as Micron's SLC NAND.
 
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Cc: Grant Likely <grant.likely@linaro.org>
-> Cc: Rob Herring <rob.herring@calxeda.com>
-> Cc: <devicetree@vger.kernel.org>
-> ---
->  drivers/mtd/devices/m25p80.c | 7 +------
->  1 file changed, 1 insertion(+), 6 deletions(-)
-> 
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index d6c5c57..a1dc49a 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -935,12 +935,7 @@ static int m25p_probe(struct spi_device *spi)
->  	struct flash_info		*info;
->  	unsigned			i;
->  	struct mtd_part_parser_data	ppdata;
-> -	struct device_node __maybe_unused *np = spi->dev.of_node;
-> -
-> -#ifdef CONFIG_MTD_OF_PARTS
-> -	if (!of_device_is_available(np))
-> -		return -ENODEV;
-> -#endif
-> +	struct device_node *np = spi->dev.of_node;
->  
->  	/* Platform data helps sort out which chip type we have, as
->  	 * well as how this board partitions it.  If we don't have
-> -- 
-> 1.8.4
-> 
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+---
+ .../devicetree/bindings/mtd/gpmi-nand.txt          |    6 ++++++
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c             |    4 ++++
+ 2 files changed, 10 insertions(+), 0 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
+index 551b2a1..7a5afa8 100644
+--- a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
+@@ -17,6 +17,12 @@ Required properties:
+ Optional properties:
+   - nand-on-flash-bbt: boolean to enable on flash bbt option if not
+                        present false
++  - fsl,use-minimum-ecc: By enabling this boolean property, the gpmi will try
++                       to use the datasheet's minimum required ECC provided by
++                       the MTD layer (the ecc_strength_ds/ecc_strength_ds fields
++                       in the nand_chip{}). So we may have free space in the OOB
++                       area by using the minimum ECC, and we may support JFFS2
++                       with some SLC NANDs, such as Micron's SLC NAND.
+ 
+ The device tree may optionally contain sub-nodes describing partitions of the
+ address space. See partition.txt for more detail.
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 43a62e8..d0ae7f4 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -352,6 +352,10 @@ static int legacy_set_geometry(struct gpmi_nand_data *this)
+ 
+ int common_nfc_set_geometry(struct gpmi_nand_data *this)
+ {
++	if (of_property_read_bool(this->dev->of_node, "fsl,use-minimum-ecc"))
++		return set_geometry_by_ecc_info(this) ? 0 :
++						legacy_set_geometry(this);
++
+ 	return legacy_set_geometry(this) ?
+ 		(!set_geometry_by_ecc_info(this)) : 0;
+ }
+-- 
+1.7.2.rc3
