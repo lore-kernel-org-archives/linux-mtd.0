@@ -1,25 +1,21 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VZTkK-00071m-4w
- for linux-mtd@lists.infradead.org; Thu, 24 Oct 2013 22:51:16 +0000
-Date: Thu, 24 Oct 2013 19:50:50 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Belisko Marek <marek.belisko@gmail.com>
-Subject: Re: [PATCH 4/5] mtd: nand: omap2: Use devm_kzalloc
-Message-ID: <20131024225049.GB20462@localhost>
-References: <1382652737-20239-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1382652737-20239-5-git-send-email-ezequiel.garcia@free-electrons.com>
- <CAAfyv37SL94Ohwqqs6u5AMvdj4aAgQMGRe_9zze=TcS5An_U0w@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAAfyv37SL94Ohwqqs6u5AMvdj4aAgQMGRe_9zze=TcS5An_U0w@mail.gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Pekon Gupta <pekon@ti.com>, Felipe Balbi <balbi@ti.com>
+Received: from mail-we0-f175.google.com ([74.125.82.175])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VZV3x-0008BX-5T
+ for linux-mtd@lists.infradead.org; Fri, 25 Oct 2013 00:15:37 +0000
+Received: by mail-we0-f175.google.com with SMTP id t61so3026305wes.6
+ for <linux-mtd@lists.infradead.org>; Thu, 24 Oct 2013 17:15:12 -0700 (PDT)
+Sender: Grant Likely <glikely@secretlab.ca>
+From: Grant Likely <grant.likely@linaro.org>
+Subject: Re: [PATCH 5/5] mtd: m25p80: remove 'disabled' device check
+To: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+In-Reply-To: <1382583503-13748-5-git-send-email-computersforpeace@gmail.com>
+References: <1382583503-13748-1-git-send-email-computersforpeace@gmail.com>
+ <1382583503-13748-5-git-send-email-computersforpeace@gmail.com>
+Date: Fri, 25 Oct 2013 01:15:09 +0100
+Message-Id: <20131025001509.1924FC403B6@trevor.secretlab.ca>
+Cc: Marek Vasut <marex@denx.de>, devicetree@vger.kernel.org,
+ Artem Bityutskiy <dedekind1@gmail.com>, Rob Herring <rob.herring@calxeda.com>,
+ sourav.poddar@ti.com, Brian Norris <computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,44 +25,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 25, 2013 at 12:24:38AM +0200, Belisko Marek wrote:
-> Hi,
+On Wed, 23 Oct 2013 19:58:23 -0700, Brian Norris <computersforpeace@gmail.com> wrote:
+> It seems like the following commit was never necessary
 > 
-> On Fri, Oct 25, 2013 at 12:12 AM, Ezequiel Garcia
-> <ezequiel.garcia@free-electrons.com> wrote:
-> > This simplifies the error path and makes the code less error-prone.
-> >
-> > Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> > ---
-> >  drivers/mtd/nand/omap2.c | 6 +-----
-> >  1 file changed, 1 insertion(+), 5 deletions(-)
-> >
-> > diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> > index e01a936..d4cafb0 100644
-> > --- a/drivers/mtd/nand/omap2.c
-> > +++ b/drivers/mtd/nand/omap2.c
-> > @@ -1837,7 +1837,7 @@ static int omap_nand_probe(struct platform_device *pdev)
-> >                 return -ENODEV;
-> >         }
-> >
-> > -       info = kzalloc(sizeof(struct omap_nand_info), GFP_KERNEL);
-> > +       info = devm_kzalloc(&pdev->dev, sizeof(*info), GFP_KERNEL);
-> >         if (!info)
-> >                 return -ENOMEM;
-> >
-> > @@ -2066,9 +2066,6 @@ out_release_mem_region:
-> >         if (info->gpmc_irq_fifo > 0)
-> >                 free_irq(info->gpmc_irq_fifo, info);
-> >         release_mem_region(info->phys_base, info->mem_size);
-> > -out_free_info:
-> You remove ^^^^ statement but it's still used in line ~1868 as return when
-> cannot get resource.
+>     commit 5f949137952020214cd167093dd7be448f21c079
+>     Author: Shaohui Xie <Shaohui.Xie@freescale.com>
+>     Date:   Fri Oct 14 15:49:00 2011 +0800
+> 
+>         mtd: m25p80: don't probe device which has status of 'disabled'
+> 
+> because it duplicates the code in of_platform_device_create_pdata()
+> which ensures that 'disabled' nodes are never instantiated.
+> 
+> Also, drop the __maybe_unused.
 
-Right, I missed that. This happens when you do two cleanups at once and then
-try to commit them separatedly!
+Looks reasonable.
 
-Thanks!
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+Reviewed-by: Grant Likely <grant.likely@linaro.org>
+
+> 
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Cc: Grant Likely <grant.likely@linaro.org>
+> Cc: Rob Herring <rob.herring@calxeda.com>
+> Cc: <devicetree@vger.kernel.org>
+> ---
+>  drivers/mtd/devices/m25p80.c | 7 +------
+>  1 file changed, 1 insertion(+), 6 deletions(-)
+> 
+> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+> index d6c5c57..a1dc49a 100644
+> --- a/drivers/mtd/devices/m25p80.c
+> +++ b/drivers/mtd/devices/m25p80.c
+> @@ -935,12 +935,7 @@ static int m25p_probe(struct spi_device *spi)
+>  	struct flash_info		*info;
+>  	unsigned			i;
+>  	struct mtd_part_parser_data	ppdata;
+> -	struct device_node __maybe_unused *np = spi->dev.of_node;
+> -
+> -#ifdef CONFIG_MTD_OF_PARTS
+> -	if (!of_device_is_available(np))
+> -		return -ENODEV;
+> -#endif
+> +	struct device_node *np = spi->dev.of_node;
+>  
+>  	/* Platform data helps sort out which chip type we have, as
+>  	 * well as how this board partitions it.  If we don't have
+> -- 
+> 1.8.4
+> 
