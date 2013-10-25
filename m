@@ -1,14 +1,14 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VZeTS-00086B-J9
- for linux-mtd@lists.infradead.org; Fri, 25 Oct 2013 10:18:35 +0000
+ id 1VZeTS-000860-JC
+ for linux-mtd@lists.infradead.org; Fri, 25 Oct 2013 10:18:36 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>,
 	<linux-omap@vger.kernel.org>
-Subject: [PATCH v2 4/5] mtd: nand: omap2: Use devm_kzalloc
-Date: Fri, 25 Oct 2013 07:17:56 -0300
-Message-Id: <1382696277-9063-5-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH v2 2/5] mtd: nand: omap2: Fix device detection path
+Date: Fri, 25 Oct 2013 07:17:54 -0300
+Message-Id: <1382696277-9063-3-git-send-email-ezequiel.garcia@free-electrons.com>
 In-Reply-To: <1382696277-9063-1-git-send-email-ezequiel.garcia@free-electrons.com>
 References: <1382696277-9063-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: marek.belisko@gmail.com,
@@ -24,42 +24,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This simplifies the error path and makes the code less error-prone.
+From: Pekon Gupta <pekon@ti.com>
 
+Because the device bus can be 8-bit or 16-bit width, yet ONFI detection
+cannot work in 16-bit mode, we need to set the NAND_BUSWIDTH_AUTO option
+which allows proper initialization configuration.
+
+Once the bus width is detected, nand_scan_ident() updates the nand_chip struct
+'option' field to use the appropriate read/write functions and configure
+the ECC engine.
+
+Signed-off-by: Pekon Gupta <pekon@ti.com>
+[rebased and clean-up a bit pekon's original work]
 Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 ---
- drivers/mtd/nand/omap2.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/mtd/nand/omap2.c | 18 +++++-------------
+ 1 file changed, 5 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index e01a936..d3155b2 100644
+index 4ecf0e5..e01a936 100644
 --- a/drivers/mtd/nand/omap2.c
 +++ b/drivers/mtd/nand/omap2.c
-@@ -1837,7 +1837,7 @@ static int omap_nand_probe(struct platform_device *pdev)
- 		return -ENODEV;
+@@ -1855,8 +1855,7 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 	info->mtd.name		= dev_name(&pdev->dev);
+ 	info->mtd.owner		= THIS_MODULE;
+ 
+-	info->nand.options	= pdata->devsize;
+-	info->nand.options	|= NAND_SKIP_BBTSCAN;
++	info->nand.options	|= NAND_SKIP_BBTSCAN | NAND_BUSWIDTH_AUTO;
+ #ifdef CONFIG_MTD_NAND_OMAP_BCH
+ 	info->of_node		= pdata->of_node;
+ #endif
+@@ -1903,6 +1902,10 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 		info->nand.chip_delay = 50;
  	}
  
--	info = kzalloc(sizeof(struct omap_nand_info), GFP_KERNEL);
-+	info = devm_kzalloc(&pdev->dev, sizeof(*info), GFP_KERNEL);
- 	if (!info)
- 		return -ENOMEM;
++	err = nand_scan_ident(&info->mtd, 1, NULL);
++	if (err < 0)
++		goto out_release_mem_region;
++
+ 	switch (pdata->xfer_type) {
+ 	case NAND_OMAP_PREFETCH_POLLED:
+ 		info->nand.read_buf   = omap_read_buf_pref;
+@@ -2013,17 +2016,6 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 		}
+ 	}
  
-@@ -2067,8 +2067,6 @@ out_release_mem_region:
- 		free_irq(info->gpmc_irq_fifo, info);
- 	release_mem_region(info->phys_base, info->mem_size);
- out_free_info:
--	kfree(info);
+-	/* DIP switches on some boards change between 8 and 16 bit
+-	 * bus widths for flash.  Try the other width if the first try fails.
+-	 */
+-	if (nand_scan_ident(&info->mtd, 1, NULL)) {
+-		info->nand.options ^= NAND_BUSWIDTH_16;
+-		if (nand_scan_ident(&info->mtd, 1, NULL)) {
+-			err = -ENXIO;
+-			goto out_release_mem_region;
+-		}
+-	}
 -
- 	return err;
- }
- 
-@@ -2091,7 +2089,6 @@ static int omap_nand_remove(struct platform_device *pdev)
- 	nand_release(&info->mtd);
- 	iounmap(info->nand.IO_ADDR_R);
- 	release_mem_region(info->phys_base, info->mem_size);
--	kfree(info);
- 	return 0;
- }
+ 	/* rom code layout */
+ 	if (pdata->ecc_opt == OMAP_ECC_HAMMING_CODE_HW_ROMCODE) {
  
 -- 
 1.8.1.5
