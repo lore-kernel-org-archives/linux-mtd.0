@@ -1,20 +1,18 @@
-Message-ID: <1382707782.8522.140.camel@shinybook.infradead.org>
-Subject: Re: [PATCH V2] mtd: gpmi: fix the ecc regression
+Message-ID: <1382708194.8522.145.camel@shinybook.infradead.org>
+Subject: Re: [PATCH v2 fix] mtd: gpmi: fix the ecc regression
 From: David Woodhouse <dwmw2@infradead.org>
-To: Huang Shijie <shijie8@gmail.com>
-Date: Fri, 25 Oct 2013 14:29:42 +0100
-In-Reply-To: <20131026013258.GA3195@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Fri, 25 Oct 2013 14:36:34 +0100
+In-Reply-To: <20131024221920.GF20061@ld-irv-0074.broadcom.com>
 References: <1382602484-12023-1-git-send-email-b32955@freescale.com>
- <1382702607.8522.110.camel@shinybook.infradead.org>
- <1382703654.8522.114.camel@shinybook.infradead.org>
- <20131026013258.GA3195@gmail.com>
+ <1382604496-28118-1-git-send-email-b32955@freescale.com>
+ <20131024221920.GF20061@ld-irv-0074.broadcom.com>
 Content-Type: multipart/signed; micalg="sha-1";
  protocol="application/x-pkcs7-signature";
- boundary="=-ng64TVN/vkZD5iY6+7JK"
+ boundary="=-FngTQhhjxylZerq8KXlU"
 Mime-Version: 1.0
-Cc: Marek Vasut <marex@denx.de>, dedekind1@gmail.com, tharvey@gateworks.com,
- stable@vger.kernel.org, Huang Shijie <b32955@freescale.com>,
- linux-mtd@lists.infradead.org, computersforpeace@gmail.com
+Cc: Huang Shijie <b32955@freescale.com>, tharvey@gateworks.com,
+ linux-mtd@lists.infradead.org, stable@vger.kernel.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,26 +23,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-ng64TVN/vkZD5iY6+7JK
+--=-FngTQhhjxylZerq8KXlU
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2013-10-25 at 21:33 -0400, Huang Shijie wrote:
->=20
->   I am ok with your patch. but we will meet a compiler warning, since
->   the set_geometry_by_ecc_info() is not referenced.
+On Thu, 2013-10-24 at 15:19 -0700, Brian Norris wrote:
+> I fixed up the language a little, dropped the 'stable', and pushed to
+> linux-mtd.git (in hopes of sending another pull request for 3.12). I'll
+> see if David wants to weigh in first.
 
-Yeah, I predicted that but at this stage with *hours* to catch Linux and
-get it into 3.12, I think that's the better option. I'll note it in the
-commit comment.
+You're fine. Go ahead and send the request if you're happy to do so.
 
-Thanks for the prompt feedback.
+Thanks.
 
 --=20
 dwmw2
 
 
---=-ng64TVN/vkZD5iY6+7JK
+--=-FngTQhhjxylZerq8KXlU
 Content-Type: application/x-pkcs7-signature; name="smime.p7s"
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Transfer-Encoding: base64
@@ -138,18 +134,18 @@ bhXkgdT2t1V1bNAxggNvMIIDawIBATCBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0
 Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2
 BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgMG
 hc4wCQYFKw4DAhoFAKCCAa8wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUx
-DxcNMTMxMDI1MTMyOTQyWjAjBgkqhkiG9w0BCQQxFgQUJZewUh+nzzyEzkk0Qv1dAt1r8jYwgaUG
+DxcNMTMxMDI1MTMzNjM0WjAjBgkqhkiG9w0BCQQxFgQUtSfqPjm6LrgIoMk/tjDPNLp2jNowgaUG
 CSsGAQQBgjcQBDGBlzCBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0ZC4x
 KzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2BgNVBAMTL1N0
 YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgMGhc4wgacGCyqG
 SIb3DQEJEAILMYGXoIGUMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjEr
 MCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYGA1UEAxMvU3Rh
 cnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0ECAwaFzjANBgkqhkiG
-9w0BAQEFAASCAQBCq5KYmtE3WbtsYO7H7qRUD/wFZnxyIEo+hZUhEBKHbpA2528K9p0Cl2sdy1Kx
-rM92usaJshLELbmg28T5qd9BU9g0sxAZA+IrJvUPs31rCmAQd728+fYWWKBwFkfgSDrWKZTui0Ym
-cNlISmzLmliMK8iVn6ebydrILBuPgrVgp3XR/vrCfc5k6dbo1untdBvJse9TczgslYg2I20xTPxC
-R/EF6nOvXrJIiJRHXrojY+BjTSWyOkO9cI5zY5yc65LdeMw+246xEPY8fM1vJ8Z59lnOOAWKnMAU
-/aNIbw7POBRyZtgQeKLv+Nq4RxEIA41x0Sbirg7abqKazbkD6iUlAAAAAAAA
+9w0BAQEFAASCAQAoXP2k3cTW5XAJ5QMKkcmiHDPepT1dSEKAEOralMzQBVQPc67jGSH7wt6SRL9o
+FcZiCIAHS8Zo3D4kZyUSWFDt9Hs2+Mf32MCZkf0tvQDCmqFQv5cG5otAJX3W3r+irm0nnLKiRIAk
+NV+p9esHFOPhcVERke1GmRkLuXipBUz7GmVhEInECxsswVcP8Bu0dJWDUx6YylSm9Z75KnjdeFZx
+TCCnKPXJpqct0+6oG1ahLxaVSTxttx5vMv2wjlU+0Eo6IxHETpypl2umsBhy8XBwZC+mU+erX4hv
+NziJtsIkVehYcyBiL+t2Wy/K4eDP9lYMiR7YLHrf1lH4tRpJlZueAAAAAAAA
 
 
---=-ng64TVN/vkZD5iY6+7JK--
+--=-FngTQhhjxylZerq8KXlU--
