@@ -1,26 +1,22 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VZfQf-0001i7-Eh
- for linux-mtd@lists.infradead.org; Fri, 25 Oct 2013 11:19:46 +0000
-Date: Fri, 25 Oct 2013 08:19:07 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [PATCH v2 4/5] mtd: nand: omap2: Use devm_kzalloc
-Message-ID: <20131025111906.GC2489@localhost>
+Received: from devils.ext.ti.com ([198.47.26.153])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VZfXI-0001yo-Go
+ for linux-mtd@lists.infradead.org; Fri, 25 Oct 2013 11:26:37 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Brian Norris
+ <computersforpeace@gmail.com>
+Subject: RE: [PATCH v2 3/5] mtd: nand: omap2: Fix OMAP_BCH option dependency
+Date: Fri, 25 Oct 2013 11:26:06 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA2AE93@DBDE04.ent.ti.com>
 References: <1382696277-9063-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1382696277-9063-5-git-send-email-ezequiel.garcia@free-electrons.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA2AD60@DBDE04.ent.ti.com>
- <20131025104246.GA2489@localhost>
- <20980858CB6D3A4BAE95CA194937D5E73EA2AE0F@DBDE04.ent.ti.com>
+ <1382696277-9063-4-git-send-email-ezequiel.garcia@free-electrons.com>
+In-Reply-To: <1382696277-9063-4-git-send-email-ezequiel.garcia@free-electrons.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA2AE0F@DBDE04.ent.ti.com>
 Cc: "marek.belisko@gmail.com" <marek.belisko@gmail.com>,
  "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- Brian Norris <computersforpeace@gmail.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Balbi,
  Felipe" <balbi@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -32,62 +28,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 25, 2013 at 11:09:14AM +0000, Gupta, Pekon wrote:
-> > From: Ezequiel Garcia [mailto:ezequiel.garcia@free-electrons.com]
-> > 
-> > Hm.. well the problem with that patch is that it's in the middle of an
-> > unrelated series. As I already told you, I think you should have pushed
-> > that as a one-patch fix. Have you seen that suggestion?
-> > 
-> Yes, I know.. actually the original patch series, when it started somewhere
-> April (or before) is very different from the version v11 now :-).
-> This devm_ update was added in middle of v6-v7 version change
-> (Most of the changes since first version of this patchset is captured in 
-> Cover-letter).
-> 
-> 
+> From: Ezequiel Garcia [mailto:ezequiel.garcia@free-electrons.com]
+> Subject: [PATCH v2 3/5] mtd: nand: omap2: Fix OMAP_BCH option
+> dependency
+>=20
+> This option does not need to depend in MTD_NAND, for it's enclosed
+> under it. Also, it's wrong to make it depend in ARCH_OMAP3 only
+> since the controller is used in a wider range of SoCs.
+>=20
+> Instead, just leave the dependency on the OMAP2 driver option.
+>=20
+> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> ---
+>  drivers/mtd/nand/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+> index d885298..8187466 100644
+> --- a/drivers/mtd/nand/Kconfig
+> +++ b/drivers/mtd/nand/Kconfig
+> @@ -95,7 +95,7 @@ config MTD_NAND_OMAP2
+>  	  platforms.
+>=20
+>  config MTD_NAND_OMAP_BCH
+> -	depends on MTD_NAND && MTD_NAND_OMAP2 && ARCH_OMAP3
+> +	depends on MTD_NAND_OMAP2
+>  	tristate "Enable support for hardware BCH error correction"
+>  	default n
+>  	select BCH
+> --
+> 1.8.1.5
 
-Well, in order to *avoid* having a patchset flowing for 5 months and 11
-revisions you coudl try to keep series small. You could have that single
-fix merged if you send it alone. Not sure why you insist in *not* doing
-that.
+Acked-by: Pekon Gupta <pekon@ti.com>
+Reported-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 
-> > On the other side, you're fixing too many things in that single patch,
-> > for my taste. Maybe I'm not the smarter developer, but going through
-> > that patch is not easy to catch if there's no mistake done.
-> > 
-> > Usually if it's possible to split a patch (maintaining consistency) it makes
-> > the reviewing process easier.
-> > If you'd rather send this devm_xxx change yourself that's fine by me,
-> > 
-> Ahh nothing like that.. Brian had already reviewed these couple of times
-
-Ah, good. In that case you should add "Reviewed-by" if Brian already
-reviewed it. IMHO, the patch could be cleaner and the commit message
-could be better.
-
-> And it was only [Patch 04/10] which was last one remaining..
-
-Yes, and because you added *another* patch to the series you keep
-spinning patchset versions.
-
-> I just said it because this might show up in merge conflict .. or rejects..
-> 
-> > but *please* split the patch in two and write proper commit messages.
-> > 
-> > Anyway: this is just a silly change, the important one is the other
-> > nand_scan_ident() fix. Could you help me review that?
-> > 
-> > I'm interested in knowing how will that work with 8-bit and 16-bit devices.
-> > --
-> Yes, I'm just preparing the scenario where BUSWIDTH_AUTO would fail..
-> unless you do GPMC driver changes also.. same issue was found by
-> Matthieu CASTET (matthieu.castet@parrot.com)
-> (please see my other mail)
-> 
-
-OK, let's try to focus in that patch alone, I'd like to move forward.
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+with regards, pekon
