@@ -1,17 +1,16 @@
-Received: from mail-wg0-x22b.google.com ([2a00:1450:400c:c00::22b])
+Received: from mail-we0-x236.google.com ([2a00:1450:400c:c03::236])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Va0wj-0006D4-0y
- for linux-mtd@lists.infradead.org; Sat, 26 Oct 2013 10:18:17 +0000
-Received: by mail-wg0-f43.google.com with SMTP id b13so4841956wgh.10
- for <linux-mtd@lists.infradead.org>; Sat, 26 Oct 2013 03:17:54 -0700 (PDT)
-Message-ID: <1382782672.5901.25.camel@karhu.quadriga.com>
-Subject: Re: Patching mkfs.ubifs.c for running under Windows ?
+ id 1Va14w-0006Ma-VV
+ for linux-mtd@lists.infradead.org; Sat, 26 Oct 2013 10:26:47 +0000
+Received: by mail-we0-f182.google.com with SMTP id t61so4907166wes.27
+ for <linux-mtd@lists.infradead.org>; Sat, 26 Oct 2013 03:26:23 -0700 (PDT)
+Message-ID: <1382783181.5901.26.camel@karhu.quadriga.com>
+Subject: Re: [PATCH] mtd-utils: Makefile: add LDFLAGS_mkfs.ubifs
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: gutemine <gutemine@oozoon.de>
-Date: Sat, 26 Oct 2013 11:17:52 +0100
-In-Reply-To: <7c74c0d714e8e87daebbfd0163642d71@localhost>
-References: <mailman.6.1379692801.23497.linux-mtd@lists.infradead.org>
- <7c74c0d714e8e87daebbfd0163642d71@localhost>
+To: Aaron Sierra <asierra@xes-inc.com>
+Date: Sat, 26 Oct 2013 11:26:21 +0100
+In-Reply-To: <a8879fac-dd29-4ed5-8977-89aec49473f2@zimbra>
+References: <a8879fac-dd29-4ed5-8977-89aec49473f2@zimbra>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -26,15 +25,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2013-09-21 at 12:58 +0200, gutemine wrote:
-> As users of ubidump under Windows now asked me for getting also the
-> possibility to re-pack their extracted ubifs images, I'm considering to
-> patch mkfs.ubifs.c, so that it handles also the Windows hard and softlinks
-> and my dummy device files correctly.
+On Fri, 2013-09-27 at 11:34 -0500, Aaron Sierra wrote:
+> The build rule for mkfs.ubifs was missing an LDFLAGS_* variable like
+> mkfs.jffs2 had. This prevented mkfs.ubifs from being built against
+> explicit external libraries which is needed when cross-compiling.
+> 
+> This also adds UUIDCPPFLAGS and UUIDLDFLAGS variables to support the
+> mkfs.ubifs build.
+> 
+> Signed-off-by: Aaron Sierra <asierra@xes-inc.com>
 
-Generally, I am OK with making the code support windows, why not? But
-this should be done very nicely and should not be intrusive. I guess you
-should send patches and then we'll see.
+Looks good, pushed to mtd-utils.git, thank you!
 
 -- 
 Best Regards,
