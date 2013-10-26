@@ -1,20 +1,20 @@
-Received: from mail-we0-x236.google.com ([2a00:1450:400c:c03::236])
+Received: from mail-wi0-x230.google.com ([2a00:1450:400c:c05::230])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Va14w-0006Ma-VV
- for linux-mtd@lists.infradead.org; Sat, 26 Oct 2013 10:26:47 +0000
-Received: by mail-we0-f182.google.com with SMTP id t61so4907166wes.27
- for <linux-mtd@lists.infradead.org>; Sat, 26 Oct 2013 03:26:23 -0700 (PDT)
-Message-ID: <1382783181.5901.26.camel@karhu.quadriga.com>
-Subject: Re: [PATCH] mtd-utils: Makefile: add LDFLAGS_mkfs.ubifs
+ id 1Va1DQ-0006Qb-Kz
+ for linux-mtd@lists.infradead.org; Sat, 26 Oct 2013 10:35:33 +0000
+Received: by mail-wi0-f176.google.com with SMTP id l12so2062170wiv.9
+ for <linux-mtd@lists.infradead.org>; Sat, 26 Oct 2013 03:35:09 -0700 (PDT)
+Message-ID: <1382783707.5901.27.camel@karhu.quadriga.com>
+Subject: Re: [PATCH] ubifs: Correct data corruption range
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Aaron Sierra <asierra@xes-inc.com>
-Date: Sat, 26 Oct 2013 11:26:21 +0100
-In-Reply-To: <a8879fac-dd29-4ed5-8977-89aec49473f2@zimbra>
-References: <a8879fac-dd29-4ed5-8977-89aec49473f2@zimbra>
+To: Mats =?ISO-8859-1?Q?K=E4rrman?= <Mats.Karrman@tritech.se>
+Date: Sat, 26 Oct 2013 11:35:07 +0100
+In-Reply-To: <ED3E0BCACD909541BA94A34C4A164D4C4FCDE5DF@post.tritech.se>
+References: <ED3E0BCACD909541BA94A34C4A164D4C4FCDE5DF@post.tritech.se>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: 8bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,17 +25,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2013-09-27 at 11:34 -0500, Aaron Sierra wrote:
-> The build rule for mkfs.ubifs was missing an LDFLAGS_* variable like
-> mkfs.jffs2 had. This prevented mkfs.ubifs from being built against
-> explicit external libraries which is needed when cross-compiling.
+On Wed, 2013-08-21 at 13:24 +0000, Mats Kärrman wrote:
+> With power-cut emulation, it is possible that sometimes no data at all is
+> corrupted and that confusing messages are printed due to errors in the
+> computation of data corruption range.
 > 
-> This also adds UUIDCPPFLAGS and UUIDLDFLAGS variables to support the
-> mkfs.ubifs build.
+> [1] The start of the range should be [0..len-1], not [0..len].
+> [2] The end of the range should always be at least 1 greater than the start.
 > 
-> Signed-off-by: Aaron Sierra <asierra@xes-inc.com>
+> Signed-off-by: Mats Karrman <mats.karrman@tritech.se>
 
-Looks good, pushed to mtd-utils.git, thank you!
+Picked to linux-ubifs.git, thanks!
 
 -- 
 Best Regards,
