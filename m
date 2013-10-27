@@ -1,19 +1,19 @@
 Received: from mail-out.m-online.net ([212.18.0.9])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VaTFC-0001t2-33
- for linux-mtd@lists.infradead.org; Sun, 27 Oct 2013 16:31:15 +0000
+ id 1VaTGx-0001xh-GU
+ for linux-mtd@lists.infradead.org; Sun, 27 Oct 2013 16:33:03 +0000
 From: Marek Vasut <marex@denx.de>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 2/5] mtd: m25p80: remove obsolete FIXME
-Date: Sun, 27 Oct 2013 17:30:52 +0100
+Subject: Re: [PATCH 4/5] mtd: m25p80: remove M25PXX_USE_FAST_READ Kconfig
+Date: Sun, 27 Oct 2013 17:32:42 +0100
 References: <1382583503-13748-1-git-send-email-computersforpeace@gmail.com>
- <1382583503-13748-2-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1382583503-13748-2-git-send-email-computersforpeace@gmail.com>
+ <1382583503-13748-4-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1382583503-13748-4-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
 Content-Type: Text/Plain;
   charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Message-Id: <201310271730.52634.marex@denx.de>
+Message-Id: <201310271732.42518.marex@denx.de>
 Cc: sourav.poddar@ti.com, linux-mtd@lists.infradead.org,
  Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,44 +27,54 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Brian,
 
-> The FIXME and NOTE have already been fixed (we have FAST_READ support).
+> Remove the compile-time option for FAST_READ, since we have run-time
+> support for detecting it.
 > 
 > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 > ---
->  drivers/mtd/devices/m25p80.c | 9 ---------
->  1 file changed, 9 deletions(-)
+>  drivers/mtd/devices/Kconfig  |  7 -------
+>  drivers/mtd/devices/m25p80.c | 11 ++++++-----
+>  2 files changed, 6 insertions(+), 12 deletions(-)
 > 
+> diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
+> index 74ab4b7..0128138 100644
+> --- a/drivers/mtd/devices/Kconfig
+> +++ b/drivers/mtd/devices/Kconfig
+> @@ -95,13 +95,6 @@ config MTD_M25P80
+>  	  if you want to specify device partitioning or to use a device which
+>  	  doesn't support the JEDEC ID instruction.
+> 
+> -config M25PXX_USE_FAST_READ
+> -	bool "Use FAST_READ OPCode allowing SPI CLK >= 50MHz"
+> -	depends on MTD_M25P80
+> -	default y
+> -	help
+> -	  This option enables FAST_READ access supported by ST M25Pxx.
+> -
+>  config MTD_SPEAR_SMI
+>  	tristate "SPEAR MTD NOR Support through SMI controller"
+>  	depends on PLAT_SPEAR
 > diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 63a95ac..7c4cbad 100644
+> index 7e3ec7a..d6c5c57 100644
 > --- a/drivers/mtd/devices/m25p80.c
 > +++ b/drivers/mtd/devices/m25p80.c
-> @@ -367,10 +367,6 @@ static int m25p80_read(struct mtd_info *mtd, loff_t
-> from, size_t len, spi_message_init(&m);
->  	memset(t, 0, (sizeof t));
+> @@ -1055,13 +1055,14 @@ static int m25p_probe(struct spi_device *spi)
+>  	flash->page_size = info->page_size;
+>  	flash->mtd.writebufsize = flash->page_size;
 > 
-> -	/* NOTE:
-> -	 * OPCODE_FAST_READ (if available) is faster.
-> -	 * Should add 1 byte DUMMY_BYTE.
-> -	 */
->  	t[0].tx_buf = flash->command;
->  	t[0].len = m25p_cmdsz(flash) + (flash->fast_read ? 1 : 0);
->  	spi_message_add_tail(&t[0], &m);
-> @@ -388,11 +384,6 @@ static int m25p80_read(struct mtd_info *mtd, loff_t
-> from, size_t len, return 1;
->  	}
-> 
-> -	/* FIXME switch to OPCODE_FAST_READ.  It's required for higher
-> -	 * clocks; and at this writing, every chip this driver handles
-> -	 * supports that opcode.
-> -	 */
-> -
->  	/* Set up the write data buffer. */
->  	opcode = flash->read_opcode;
->  	flash->command[0] = opcode;
+> -	flash->fast_read = false;
+> -	if (np && of_property_read_bool(np, "m25p,fast-read"))
+> +	if (np)
+> +		/* If we were instantiated by DT, use it */
+> +		flash->fast_read = of_property_read_bool(np, "m25p,fast-read");
+> +	else
+> +		/* If we weren't instantiated by DT, default to fast-read */
+>  		flash->fast_read = true;
 
-Makes great share of sense ;-)
+We should default to FALSE , unless explicitly requested by DT, am I wrong? 
+Otherwise this might break the old chips.
 
-Acked-by: Marek Vasut <marex@denx.de>
+[...]
 
 Best regards,
 Marek Vasut
