@@ -1,21 +1,20 @@
 Received: from mail-out.m-online.net ([212.18.0.9])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VaTGx-0001xh-GU
- for linux-mtd@lists.infradead.org; Sun, 27 Oct 2013 16:33:03 +0000
+ id 1VaTT8-00025V-TW
+ for linux-mtd@lists.infradead.org; Sun, 27 Oct 2013 16:45:39 +0000
 From: Marek Vasut <marex@denx.de>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 4/5] mtd: m25p80: remove M25PXX_USE_FAST_READ Kconfig
-Date: Sun, 27 Oct 2013 17:32:42 +0100
-References: <1382583503-13748-1-git-send-email-computersforpeace@gmail.com>
- <1382583503-13748-4-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1382583503-13748-4-git-send-email-computersforpeace@gmail.com>
+To: Sourav Poddar <sourav.poddar@ti.com>
+Subject: Re: [PATCH] drivers: mtd: m25p80: Add quad read support.
+Date: Sun, 27 Oct 2013 17:45:16 +0100
+References: <1382693145-15750-1-git-send-email-sourav.poddar@ti.com>
+In-Reply-To: <1382693145-15750-1-git-send-email-sourav.poddar@ti.com>
 MIME-Version: 1.0
 Content-Type: Text/Plain;
   charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Message-Id: <201310271732.42518.marex@denx.de>
-Cc: sourav.poddar@ti.com, linux-mtd@lists.infradead.org,
- Artem Bityutskiy <dedekind1@gmail.com>
+Message-Id: <201310271745.17152.marex@denx.de>
+Cc: computersforpeace@gmail.com, linux-mtd@lists.infradead.org, balbi@ti.com,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,56 +24,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
-
-> Remove the compile-time option for FAST_READ, since we have run-time
-> support for detecting it.
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> ---
->  drivers/mtd/devices/Kconfig  |  7 -------
->  drivers/mtd/devices/m25p80.c | 11 ++++++-----
->  2 files changed, 6 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
-> index 74ab4b7..0128138 100644
-> --- a/drivers/mtd/devices/Kconfig
-> +++ b/drivers/mtd/devices/Kconfig
-> @@ -95,13 +95,6 @@ config MTD_M25P80
->  	  if you want to specify device partitioning or to use a device which
->  	  doesn't support the JEDEC ID instruction.
-> 
-> -config M25PXX_USE_FAST_READ
-> -	bool "Use FAST_READ OPCode allowing SPI CLK >= 50MHz"
-> -	depends on MTD_M25P80
-> -	default y
-> -	help
-> -	  This option enables FAST_READ access supported by ST M25Pxx.
-> -
->  config MTD_SPEAR_SMI
->  	tristate "SPEAR MTD NOR Support through SMI controller"
->  	depends on PLAT_SPEAR
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 7e3ec7a..d6c5c57 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -1055,13 +1055,14 @@ static int m25p_probe(struct spi_device *spi)
->  	flash->page_size = info->page_size;
->  	flash->mtd.writebufsize = flash->page_size;
-> 
-> -	flash->fast_read = false;
-> -	if (np && of_property_read_bool(np, "m25p,fast-read"))
-> +	if (np)
-> +		/* If we were instantiated by DT, use it */
-> +		flash->fast_read = of_property_read_bool(np, "m25p,fast-read");
-> +	else
-> +		/* If we weren't instantiated by DT, default to fast-read */
->  		flash->fast_read = true;
-
-We should default to FALSE , unless explicitly requested by DT, am I wrong? 
-Otherwise this might break the old chips.
+Dear Sourav Poddar,
 
 [...]
 
-Best regards,
-Marek Vasut
+> +static int macronix_quad_enable(struct m25p *flash)
+> +{
+> +	int ret, val;
+> +	u8 cmd[2];
+> +	cmd[0] = OPCODE_WRSR;
+> +
+> +	val = read_sr(flash);
+> +	cmd[1] = val | SR_QUAD_EN_MX;
+> +	write_enable(flash);
+> +
+> +	spi_write(flash->spi, &cmd, 2);
+> +
+> +	if (wait_till_ready(flash))
+> +		return 1;
+> +
+> +	ret = read_sr(flash);
+
+Maybe read_sr() and read_cr() shall be fixed to return retval only and the val 
+shall be passed to them as an argument pointer? Aka. ret = read_sr(flash, &val);
+
+That way, this dangerous construct below could become:
+
+if (!(val & SR_....)) {
+	dev_err();
+	ret = -EINVAL;
+}
+
+return ret;
+
+It will also let us prevent mixing of error codes and register values, which is 
+pretty ugly practice.
+
+> +	if (!(ret > 0 && (ret & SR_QUAD_EN_MX))) {
+> +		dev_err(&flash->spi->dev,
+> +			"Macronix Quad bit not set");
+> +		return -EINVAL;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+
+[...]
+
+> +static inline int set_quad_mode(struct m25p *flash, u32 jedec_id)
+> +{
+> +	int status;
+> +
+> +	switch (JEDEC_MFR(jedec_id)) {
+> +	case CFI_MFR_MACRONIX:
+> +		status = macronix_quad_enable(flash);
+> +		if (status) {
+> +			dev_err(&flash->spi->dev,
+> +				"Macronix quad not enable");
+
+"Macronix quad-read not enabled" would be more sensible, DTTO below.
+
+> +			return -EINVAL;
+> +		}
+> +		return status;
+> +	default:
+> +		status = spansion_quad_enable(flash);
+> +		if (status) {
+> +			dev_err(&flash->spi->dev,
+> +				"Spansion quad not enable");
+> +			return -EINVAL;
+> +		}
+> +		return status;
+> +	}
+> +}
+
+[...]
+
+> @@ -774,7 +906,7 @@ static const struct spi_device_id m25p_ids[] = {
+>  	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
+>  	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, 0) },
+>  	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
+> -	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, 0) },
+> +	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, M25P80_QUAD_READ) },
+
+I'm not convinced enabling 4-bit mode should be hard-coded in the MTD driver. 
+There might be a board which uses this chip in 1-bit mode.
+
+We have a setup with Spansion chip here which uses 1-bit addressing in U-Boot, 
+but uses 4-bit addressing in Linux. We use a DT property to configure the SPI 
+bus width for that and I think that's a way to go. Note that there also are 
+chips which use 2-bit wide SPI communication.
+
+[...]
