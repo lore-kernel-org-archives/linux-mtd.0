@@ -1,21 +1,22 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from mail-vb0-x22b.google.com ([2607:f8b0:400c:c02::22b])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VaVNk-0003mx-6a
- for linux-mtd@lists.infradead.org; Sun, 27 Oct 2013 18:48:12 +0000
-From: Marek Vasut <marex@denx.de>
-To: Sourav Poddar <sourav.poddar@ti.com>
-Subject: Re: [PATCH] drivers: mtd: m25p80: Add quad read support.
-Date: Sun, 27 Oct 2013 19:47:49 +0100
-References: <1382693145-15750-1-git-send-email-sourav.poddar@ti.com>
- <201310271930.34528.marex@denx.de> <526D5D73.9060104@ti.com>
-In-Reply-To: <526D5D73.9060104@ti.com>
+ id 1VaZ94-00070i-6B
+ for linux-mtd@lists.infradead.org; Sun, 27 Oct 2013 22:49:19 +0000
+Received: by mail-vb0-f43.google.com with SMTP id g10so4132879vbg.16
+ for <linux-mtd@lists.infradead.org>; Sun, 27 Oct 2013 15:48:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201310271947.49904.marex@denx.de>
-Cc: computersforpeace@gmail.com, linux-mtd@lists.infradead.org, balbi@ti.com,
- dedekind1@gmail.com
+In-Reply-To: <201310271730.12065.marex@denx.de>
+References: <1382583503-13748-1-git-send-email-computersforpeace@gmail.com>
+ <201310271730.12065.marex@denx.de>
+Date: Sun, 27 Oct 2013 15:48:48 -0700
+Message-ID: <CAN8TOE-LWj7+6NRZbKJDz=fvVgMVtRvA5UqJ5AvLAwG+jRpgpw@mail.gmail.com>
+Subject: Re: [PATCH 1/5] mtd: m25p80: fix allocation size
+From: Brian Norris <computersforpeace@gmail.com>
+To: Marek Vasut <marex@denx.de>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Sourav Poddar <sourav.poddar@ti.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ stable@vger.kernel.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,77 +26,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Sourav Poddar,
+On Sun, Oct 27, 2013 at 9:30 AM, Marek Vasut <marex@denx.de> wrote:
+> Hi Brian,
+>
+> [...]
+>
+>> @@ -1137,14 +1135,10 @@ static int m25p_probe(struct spi_device *spi)
+>>  static int m25p_remove(struct spi_device *spi)
+>>  {
+>>       struct m25p     *flash = spi_get_drvdata(spi);
+>> -     int             status;
+>>
+>>       /* Clean up MTD stuff. */
+>> -     status = mtd_device_unregister(&flash->mtd);
+>> -     if (status == 0) {
+>> -             kfree(flash->command);
+>> -             kfree(flash);
+>> -     }
+>> +     mtd_device_unregister(&flash->mtd);
+>> +
+>>       return 0;
+>>  }
+>
+> I wonder if we shouldn't return "status" in here in case mtd_device_unregister()
+> failed.
 
-> Dear Marek,
-> 
-> On Monday 28 October 2013 12:00 AM, Marek Vasut wrote:
-> > Dear Sourav Poddar,
-> > 
-> >> Dear Marek,
-> >> 
-> >> On Sunday 27 October 2013 10:15 PM, Marek Vasut wrote:
-> >>> Dear Sourav Poddar,
-> >>> 
-> >>> [...]
-> > 
-> > [...]
-> > 
-> >>>> @@ -774,7 +906,7 @@ static const struct spi_device_id m25p_ids[] = {
-> >>>> 
-> >>>>    	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
-> >>>>    	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, 0) },
-> >>>>    	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
-> >>>> 
-> >>>> -	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, 0) },
-> >>>> +	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024,
-> >>>> M25P80_QUAD_READ) },
-> >>> 
-> >>> I'm not convinced enabling 4-bit mode should be hard-coded in the MTD
-> >>> driver. There might be a board which uses this chip in 1-bit mode.
-> >>> 
-> >>> We have a setup with Spansion chip here which uses 1-bit addressing in
-> >>> U-Boot, but uses 4-bit addressing in Linux. We use a DT property to
-> >>> configure the SPI bus width for that and I think that's a way to go.
-> >>> Note that there also are chips which use 2-bit wide SPI communication.
-> >> 
-> >> Yes, but if you trace down the patch below, you will see its not hard
-> >> coded. Enabling quad read mode depends on the following:
-> >> 
-> >> 1. Whether flash chip supports it.
-> >> 
-> >>           This information comes from the flash which we are setting
-> >>           above.
-> >> 
-> >> 2. Whether SPI controller supports it.
-> >> 
-> >>               This information is the check down below in the
-> >> 
-> >> patch(spi->mode&  SPI_RX_QUAD).
-> >> 
-> >>               spi->mode is set to "SINGLE/DUAL/QUAD" in the SPI
-> >>               framework
-> >> 
-> >> based on the
-> >> 
-> >>              dt property "spi-tx/rx-bus-width".
-> >> 
-> >> So, unless you set spi->mode to SPI_RX_QUAD by setting
-> >> "spi-rx-bus-width" to 4 in dt, default
-> >> will be 1 bit mode only.
-> > 
-> > So this M25P80_QUAD_READ flag tells us "this chip supports quad read",
-> > not "force enable quad read" .
-> 
-> Yes, correct.
-> 
-> > All right, thanks for clearing this up. I hope it's
-> > documented somewhere elsewhere than in this email ;-)
-> 
-> Its added as a comment under struct flash_info where
-> this flag is defined.
+Sure, I thought of that earlier actually. I may send a trivial
+follow-up patch for this.
 
-Thank you!
-
-Best regards,
-Marek Vasut
+Thanks,
+Brian
