@@ -1,21 +1,20 @@
-Received: from mail-wi0-x230.google.com ([2a00:1450:400c:c05::230])
+Received: from mail-out.m-online.net ([212.18.0.10])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Va1DQ-0006Qb-Kz
- for linux-mtd@lists.infradead.org; Sat, 26 Oct 2013 10:35:33 +0000
-Received: by mail-wi0-f176.google.com with SMTP id l12so2062170wiv.9
- for <linux-mtd@lists.infradead.org>; Sat, 26 Oct 2013 03:35:09 -0700 (PDT)
-Message-ID: <1382783707.5901.27.camel@karhu.quadriga.com>
-Subject: Re: [PATCH] ubifs: Correct data corruption range
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mats =?ISO-8859-1?Q?K=E4rrman?= <Mats.Karrman@tritech.se>
-Date: Sat, 26 Oct 2013 11:35:07 +0100
-In-Reply-To: <ED3E0BCACD909541BA94A34C4A164D4C4FCDE5DF@post.tritech.se>
-References: <ED3E0BCACD909541BA94A34C4A164D4C4FCDE5DF@post.tritech.se>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+ id 1VaTEZ-0001ry-Jp
+ for linux-mtd@lists.infradead.org; Sun, 27 Oct 2013 16:30:35 +0000
+From: Marek Vasut <marex@denx.de>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 1/5] mtd: m25p80: fix allocation size
+Date: Sun, 27 Oct 2013 17:30:11 +0100
+References: <1382583503-13748-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1382583503-13748-1-git-send-email-computersforpeace@gmail.com>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201310271730.12065.marex@denx.de>
+Cc: sourav.poddar@ti.com, linux-mtd@lists.infradead.org, stable@vger.kernel.org,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,18 +24,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2013-08-21 at 13:24 +0000, Mats Kärrman wrote:
-> With power-cut emulation, it is possible that sometimes no data at all is
-> corrupted and that confusing messages are printed due to errors in the
-> computation of data corruption range.
-> 
-> [1] The start of the range should be [0..len-1], not [0..len].
-> [2] The end of the range should always be at least 1 greater than the start.
-> 
-> Signed-off-by: Mats Karrman <mats.karrman@tritech.se>
+Hi Brian,
 
-Picked to linux-ubifs.git, thanks!
+[...]
 
--- 
-Best Regards,
-Artem Bityutskiy
+> @@ -1137,14 +1135,10 @@ static int m25p_probe(struct spi_device *spi)
+>  static int m25p_remove(struct spi_device *spi)
+>  {
+>  	struct m25p	*flash = spi_get_drvdata(spi);
+> -	int		status;
+> 
+>  	/* Clean up MTD stuff. */
+> -	status = mtd_device_unregister(&flash->mtd);
+> -	if (status == 0) {
+> -		kfree(flash->command);
+> -		kfree(flash);
+> -	}
+> +	mtd_device_unregister(&flash->mtd);
+> +
+>  	return 0;
+>  }
+
+I wonder if we shouldn't return "status" in here in case mtd_device_unregister() 
+failed.
+
+Best regards,
+Marek Vasut
