@@ -1,27 +1,23 @@
-Received: from mailout.micron.com ([137.201.242.129])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vaer1-0002wW-1p
- for linux-mtd@lists.infradead.org; Mon, 28 Oct 2013 04:55:03 +0000
-From: =?utf-8?B?UWkgV2FuZyDnjovotbcgKHFpd2FuZyk=?= <qiwang@micron.com>
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: [PATCH 1/1]  MTD: UBI:  try to avoid program data to NOR flash
- after erasure interrupted
-Date: Mon, 28 Oct 2013 04:54:36 +0000
-Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A770B1B97@NTXXIAMBX02.xacn.micron.com>
-References: <71CF8D7F32C5C24C9CD1D0E02D52498A77082AC5@NTXXIAMBX02.xacn.micron.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A77082DDB@NTXXIAMBX02.xacn.micron.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A770AED11@NTXXIAMBX02.xacn.micron.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A770AED44@NTXXIAMBX02.xacn.micron.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A770AED67@NTXXIAMBX02.xacn.micron.com>
- <1382779164.5901.1.camel@karhu.quadriga.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from mail-out.m-online.net ([212.18.0.9])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VaiUS-0006ki-UN
+ for linux-mtd@lists.infradead.org; Mon, 28 Oct 2013 08:48:02 +0000
+From: Marek Vasut <marex@denx.de>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 1/5] mtd: m25p80: fix allocation size
+Date: Mon, 28 Oct 2013 08:54:15 +0100
+References: <1382583503-13748-1-git-send-email-computersforpeace@gmail.com>
+ <201310271730.12065.marex@denx.de>
+ <CAN8TOE-LWj7+6NRZbKJDz=fvVgMVtRvA5UqJ5AvLAwG+jRpgpw@mail.gmail.com>
+In-Reply-To: <CAN8TOE-LWj7+6NRZbKJDz=fvVgMVtRvA5UqJ5AvLAwG+jRpgpw@mail.gmail.com>
 MIME-Version: 1.0
-Cc: =?utf-8?B?UWkgV2FuZyDnjovotbcgKHFpd2FuZyk=?= <qiwang@micron.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201310280854.15268.marex@denx.de>
+Cc: Sourav Poddar <sourav.poddar@ti.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ stable@vger.kernel.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,69 +27,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gU2EsIDIwMTMtMTAtMjYgYXQgMDU6MTkgKzAwMDAsIEFydGVtIEJpdHl1dHNraXkgd3JvdGU6
-DQo+T24gVGh1LCAyMDEzLTEwLTEwIGF0IDA4OjI4ICswMDAwLCBRaSBXYW5nIOeOi+i1tyAocWl3
-YW5nKSB3cm90ZToNCj4+IEJ1dCBJIHdhbnQgdG8gc2F5IHRoZSBwb3RlbnRpYWwgcmlzayBpcyBp
-ZiBsb3cgbGV2ZWwgZHJpdmVyIHByb2dyYW0gZGF0YSB0byANCj4+IHRoaXMgYmxvY2ssIGl0IHdp
-bGwgZ2V0IOKAnHRpbWVvdXQgZXJyb3LigJ0uIEFuZCB0aGUgdGltZW91dCBwZXJpb2QgY291bGQg
-YmUgdmVyeSANCj4+IGxvbmcoYWxtb3N0IHNldmVyYWwgbWludXRlcyksIGR1cmluZyB0aGlzIHBl
-cmlvZCwgYW55IG9wZXJhdGlvbiBvbiBOT1IgZmxhc2ggDQo+PiBjYW5ub3QgYmUgYWNjZXB0LiBz
-byBwcm9ncmFtIGRhdGEgdG8gYSBlcmFzdXJlIGludGVycnVwdGVkIGJsb2NrIGlzbuKAmXQgYSAN
-Cj4+IHNlbnNpYmxlIGFjdGlvbi4gaW4gb3JkZXIgdG8gYXZvaWQgcHJvZ3JhbSBhIGVyYXN1cmUg
-aW50ZXJydXB0ZWQgYmxvY2ssIA0KPj4gSSBzdWdnZXN0IFVCSUZTIGNhbiByZWFkIHRoaXMgYmxv
-Y2sgYmVmb3JlIHByb2dyYW0gZGF0YS4gdGhlIGNvZGUgY2hhbmdpbmcgYXMgYmVsb3c6DQo+DQo+
-WWVzLCByZWFkaW5nIGZpcnN0IHNvdW5kcyBsaWtlIGEgZ29vZCBpZGVhLiBXb3VsZCB5b3UgcGxl
-YXNlIHNlbmQgYQ0KPnBhdGNoIGltcGxlbWVudGluZyBpdD8NCg0KRnJvbTogUWkgV2FuZyA8cWl3
-YW5nQG1pY3Jvbi5jb20+DQoNCm5vcl9lcmFzZV9wcmVwYXJlKCkgd2lsbCBiZSBjYWxsZWQgYmVm
-b3JlIGVyYXNlIGEgTk9SIGZsYXNoLCBpdCB3aWxsIHByb2dyYW0gJzAnDQppbnRvIGEgYmxvY2sg
-dG8gbWFyayB0aGlzIGJsb2NrLiBCdXQgcHJvZ3JhbSBkYXRhIGludG8gYSBlcmFzdXJlIGludGVy
-cnVwdGVkIGJsb2NrDQpjYW4gY2F1c2UgcHJvZ3JhbSB0aW10b3V0KHNldmVyYWwgbWludXRlcyBh
-dCBtb3N0KSBlcnJvciwgY291bGQgaW1wYWN0IG90aGVyIA0Kb3BlcmF0aW9uIG9uIE5PUiBmbGFz
-aC4gU28gVUJJRlMgY2FuIHJlYWQgdGhpcyBibG9jayBmaXJzdCB0byBhdm9pZCB1bm5lZWRlZCAN
-CnByb2dyYW0gb3BlcmF0aW9uLiANCg0KVGhpcyBwYXRjaCB0cnkgdG8gcHV0IHJlYWQgb3BlcmF0
-aW9uIGF0IGF0IGhlYWQgb2Ygd3JpdGUgb3BlcmF0aW9uIGluIA0Kbm9yX2VyYXNlX3ByZXBhcmUo
-KSwgcmVhZCBvdXQgdGhlIGRhdGEuIA0KSWYgdGhlIGRhdGEgaXMgYWxyZWFkeSBjb3JydXB0LCB0
-aGVuIG5vIG5lZWQgdG8gcHJvZ3JhbSBhbnkgZGF0YSBpbnRvIHRoaXMgYmxvY2ssIA0KanVzdCBn
-byB0byBlcmFzZSB0aGlzIGJsb2NrLg0KDQpTaWduZWQtb2ZmLWJ5OiBRaSBXYW5nIDxxaXdhbmdA
-cWl3YW5nQG1pY3Jvbi5jb20+DQotLS0NCmRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC91YmkvaW8u
-YyBiL2RyaXZlcnMvbXRkL3ViaS9pby5jDQppbmRleCBiZjc5ZGVmLi5iZTZhYjU2IDEwMDY0NA0K
-LS0tIGEvZHJpdmVycy9tdGQvdWJpL2lvLmMNCisrKyBiL2RyaXZlcnMvbXRkL3ViaS9pby5jDQpA
-QCAtNTA5LDI2ICs1MDksMTAgQEAgc3RhdGljIGludCBub3JfZXJhc2VfcHJlcGFyZShzdHJ1Y3Qg
-dWJpX2RldmljZSAqdWJpLCBpbnQgcG51bSkNCiAJc3RydWN0IHViaV92aWRfaGRyIHZpZF9oZHI7
-DQogDQogCS8qDQotCSAqIEl0IGlzIGltcG9ydGFudCB0byBmaXJzdCBpbnZhbGlkYXRlIHRoZSBF
-QyBoZWFkZXIsIGFuZCB0aGVuIHRoZSBWSUQNCi0JICogaGVhZGVyLiBPdGhlcndpc2UgYSBwb3dl
-ciBjdXQgbWF5IGxlYWQgdG8gdmFsaWQgRUMgaGVhZGVyIGFuZA0KLQkgKiBpbnZhbGlkIFZJRCBo
-ZWFkZXIsIGluIHdoaWNoIGNhc2UgVUJJIHdpbGwgdHJlYXQgdGhpcyBQRUIgYXMNCi0JICogY29y
-cnVwdGVkIGFuZCB3aWxsIHRyeSB0byBwcmVzZXJ2ZSBpdCwgYW5kIHByaW50IHNjYXJ5IHdhcm5p
-bmdzLg0KLQkgKi8NCi0JYWRkciA9IChsb2ZmX3QpcG51bSAqIHViaS0+cGViX3NpemU7DQotCWVy
-ciA9IG10ZF93cml0ZSh1YmktPm10ZCwgYWRkciwgNCwgJndyaXR0ZW4sICh2b2lkICopJmRhdGEp
-Ow0KLQlpZiAoIWVycikgew0KLQkJYWRkciArPSB1YmktPnZpZF9oZHJfYWxvZmZzZXQ7DQotCQll
-cnIgPSBtdGRfd3JpdGUodWJpLT5tdGQsIGFkZHIsIDQsICZ3cml0dGVuLCAodm9pZCAqKSZkYXRh
-KTsNCi0JCWlmICghZXJyKQ0KLQkJCXJldHVybiAwOw0KLQl9DQotDQotCS8qDQotCSAqIFdlIGZh
-aWxlZCB0byB3cml0ZSB0byB0aGUgbWVkaWEuIFRoaXMgd2FzIG9ic2VydmVkIHdpdGggU3BhbnNp
-b24NCi0JICogUzI5R0w1MTJOIE5PUiBmbGFzaC4gTW9zdCBwcm9iYWJseSB0aGUgcHJldmlvdXNs
-eSBlcmFzZWJsb2NrIGVyYXN1cmUNCisJICogTW9zdCBwcm9iYWJseSB0aGUgcHJldmlvdXNseSBl
-cmFzZWJsb2NrIGVyYXN1cmUNCiAJICogd2FzIGludGVycnVwdGVkIGF0IGEgdmVyeSBpbmFwcHJv
-cHJpYXRlIG1vbWVudCwgc28gaXQgYmVjYW1lDQotCSAqIHVud3JpdGFibGUuIEluIHRoaXMgY2Fz
-ZSB3ZSBwcm9iYWJseSBhbnl3YXkgaGF2ZSBnYXJiYWdlIGluIHRoaXMNCi0JICogUEVCLg0KKwkg
-KiB1bndyaXRhYmxlLiBJbiBvcmRlciB0byBhdm9pZCBwcm9ncmFtIGRhdGEgaW50byBhIHVud3Jp
-dGFibGUgYmxvY2ssDQorCSAqIHJlYWQgdGhpcyBibG9jayBmaXJzdCwgYW5kIGNoZWNrIGlmIGRv
-IG5lZWQgdG8gcHJvZ3JhbSBpdC4gIA0KIAkgKi8NCiAJZXJyMSA9IHViaV9pb19yZWFkX3ZpZF9o
-ZHIodWJpLCBwbnVtLCAmdmlkX2hkciwgMCk7DQogCWlmIChlcnIxID09IFVCSV9JT19CQURfSERS
-X0VCQURNU0cgfHwgZXJyMSA9PSBVQklfSU9fQkFEX0hEUiB8fA0KQEAgLTU0Nyw2ICs1MzEsMjIg
-QEAgc3RhdGljIGludCBub3JfZXJhc2VfcHJlcGFyZShzdHJ1Y3QgdWJpX2RldmljZSAqdWJpLCBp
-bnQgcG51bSkNCiAJfQ0KIA0KIAkvKg0KKwkgKiBWSUQgb3IgRUMgaXMgdmFsaWQsIG5lZWQgdG8g
-Y29ycnVwdCB0aGVzZSBoZWFkZXIgYmVmb3JlIGVyYXNlIG9wZXJhdGlvbi4gIA0KKwkgKiBJdCBp
-cyBpbXBvcnRhbnQgdG8gZmlyc3QgaW52YWxpZGF0ZSB0aGUgRUMgaGVhZGVyLCBhbmQgdGhlbiB0
-aGUgVklEDQorCSAqIGhlYWRlci4gT3RoZXJ3aXNlIGEgcG93ZXIgY3V0IG1heSBsZWFkIHRvIHZh
-bGlkIEVDIGhlYWRlciBhbmQNCisJICogaW52YWxpZCBWSUQgaGVhZGVyLCBpbiB3aGljaCBjYXNl
-IFVCSSB3aWxsIHRyZWF0IHRoaXMgUEVCIGFzDQorCSAqIGNvcnJ1cHRlZCBhbmQgd2lsbCB0cnkg
-dG8gcHJlc2VydmUgaXQsIGFuZCBwcmludCBzY2FyeSB3YXJuaW5ncy4NCisJICovDQorCWFkZHIg
-PSAobG9mZl90KXBudW0gKiB1YmktPnBlYl9zaXplOw0KKwllcnIgPSBtdGRfd3JpdGUodWJpLT5t
-dGQsIGFkZHIsIDQsICZ3cml0dGVuLCAodm9pZCAqKSZkYXRhKTsNCisJaWYgKCFlcnIpIHsNCisJ
-CWFkZHIgKz0gdWJpLT52aWRfaGRyX2Fsb2Zmc2V0Ow0KKwkJZXJyID0gbXRkX3dyaXRlKHViaS0+
-bXRkLCBhZGRyLCA0LCAmd3JpdHRlbiwgKHZvaWQgKikmZGF0YSk7DQorCQlpZiAoIWVycikNCisJ
-CQlyZXR1cm4gMDsNCisJfQ0KKw0KKwkvKg0KIAkgKiBUaGUgUEVCIGNvbnRhaW5zIGEgdmFsaWQg
-VklEIGhlYWRlciwgYnV0IHdlIGNhbm5vdCBpbnZhbGlkYXRlIGl0Lg0KIAkgKiBTdXBwb3NlZGx5
-IHRoZSBmbGFzaCBtZWRpYSBvciB0aGUgZHJpdmVyIGlzIHNjcmV3ZWQgdXAsIHNvIHJldHVybiBh
-bg0KIAkgKiBlcnJvci4NCi0tLQ0KDQo=
+Hi Brian,
+
+> On Sun, Oct 27, 2013 at 9:30 AM, Marek Vasut <marex@denx.de> wrote:
+> > Hi Brian,
+> > 
+> > [...]
+> > 
+> >> @@ -1137,14 +1135,10 @@ static int m25p_probe(struct spi_device *spi)
+> >> 
+> >>  static int m25p_remove(struct spi_device *spi)
+> >>  {
+> >>  
+> >>       struct m25p     *flash = spi_get_drvdata(spi);
+> >> 
+> >> -     int             status;
+> >> 
+> >>       /* Clean up MTD stuff. */
+> >> 
+> >> -     status = mtd_device_unregister(&flash->mtd);
+> >> -     if (status == 0) {
+> >> -             kfree(flash->command);
+> >> -             kfree(flash);
+> >> -     }
+> >> +     mtd_device_unregister(&flash->mtd);
+> >> +
+> >> 
+> >>       return 0;
+> >>  
+> >>  }
+> > 
+> > I wonder if we shouldn't return "status" in here in case
+> > mtd_device_unregister() failed.
+> 
+> Sure, I thought of that earlier actually. I may send a trivial
+> follow-up patch for this.
+
+Sounds good, certainly better than mixing two things into one patch. Thanks!
+
+Best regards,
+Marek Vasut
