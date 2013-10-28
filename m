@@ -1,19 +1,27 @@
-Received: from va3ehsobe004.messaging.microsoft.com ([216.32.180.14]
- helo=va3outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VadQz-0001jt-Jz
- for linux-mtd@lists.infradead.org; Mon, 28 Oct 2013 03:24:06 +0000
-From: Huang Shijie <b32955@freescale.com>
-To: <dwmw2@infradead.org>
-Subject: [PATCH v2] mtd: gpmi: add a new DT property to use the datasheet's
- minimum required ECC
-Date: Mon, 28 Oct 2013 11:05:17 +0800
-Message-ID: <1382929517-22606-1-git-send-email-b32955@freescale.com>
+Received: from mailout.micron.com ([137.201.242.129])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Vaelq-0002rE-2L
+ for linux-mtd@lists.infradead.org; Mon, 28 Oct 2013 04:49:43 +0000
+From: =?utf-8?B?UWkgV2FuZyDnjovotbcgKHFpd2FuZyk=?= <qiwang@micron.com>
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: [PATCH 1/1]  MTD: UBI:  try to avoid program data to NOR flash
+ after erasure interrupted
+Date: Mon, 28 Oct 2013 04:49:11 +0000
+Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A770B1B87@NTXXIAMBX02.xacn.micron.com>
+References: <71CF8D7F32C5C24C9CD1D0E02D52498A77082AC5@NTXXIAMBX02.xacn.micron.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A77082DDB@NTXXIAMBX02.xacn.micron.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A770AED11@NTXXIAMBX02.xacn.micron.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A770AED44@NTXXIAMBX02.xacn.micron.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A770AED67@NTXXIAMBX02.xacn.micron.com>
+ <1382779164.5901.1.camel@karhu.quadriga.com>
+In-Reply-To: <1382779164.5901.1.camel@karhu.quadriga.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: devicetree@vger.kernel.org, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, Huang Shijie <b32955@freescale.com>,
- dedekind1@gmail.com
+Cc: Adrian Hunter <adrian.hunter@intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,59 +31,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In default way, we use the ecc_strength/ecc_step size calculated by ourselves
-and use all the OOB area.
-
-This patch adds a new property : "fsl,use-minimum-ecc"
-
-If we enable it, we will firstly try to use the datasheet's minimum required
-ECC provided by the MTD layer (the ecc_strength_ds/ecc_step_ds fields
-in the nand_chip{}). So we may have free space in the OOB area by using the
-minimum ECC, and we may support JFFS2 with some SLC NANDs, such as Micron's
-SLC NAND.
-
-If we fail to use the minimum ECC, we will use the legacy method to calculate
-the ecc_strength and ecc_step size.
-
-Signed-off-by: Huang Shijie <b32955@freescale.com>
----
-v1 --> v2:
-	based on David's patch to fix the regression.
----
- .../devicetree/bindings/mtd/gpmi-nand.txt          |    6 ++++++
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c             |    3 +++
- 2 files changed, 9 insertions(+), 0 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
-index 551b2a1..4297795 100644
---- a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
-@@ -17,6 +17,12 @@ Required properties:
- Optional properties:
-   - nand-on-flash-bbt: boolean to enable on flash bbt option if not
-                        present false
-+  - fsl,use-minimum-ecc: By enabling this boolean property, the gpmi will try
-+                       to use the datasheet's minimum required ECC provided by
-+                       the MTD layer (the ecc_strength_ds/ecc_step_ds fields
-+                       in the nand_chip{}). So we may have free space in the OOB
-+                       area by using the minimum ECC, and we may support JFFS2
-+                       with some SLC NANDs, such as Micron's SLC NAND.
- 
- The device tree may optionally contain sub-nodes describing partitions of the
- address space. See partition.txt for more detail.
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 7ac2280..3ec55d0 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -352,6 +352,9 @@ static int legacy_set_geometry(struct gpmi_nand_data *this)
- 
- int common_nfc_set_geometry(struct gpmi_nand_data *this)
- {
-+	if (of_property_read_bool(this->dev->of_node, "fsl,use-minimum-ecc")
-+		&& set_geometry_by_ecc_info(this))
-+		return 0;
- 	return legacy_set_geometry(this);
- }
- 
--- 
-1.7.2.rc3
+T24gU2EsIDIwMTMtMTAtMjYgYXQgMDU6MTkgKzAwMDAsIEFydGVtIEJpdHl1dHNraXkgd3JvdGU6
+DQo+T24gVGh1LCAyMDEzLTEwLTEwIGF0IDA4OjI4ICswMDAwLCBRaSBXYW5nIOeOi+i1tyAocWl3
+YW5nKSB3cm90ZToNCj4+IEJ1dCBJIHdhbnQgdG8gc2F5IHRoZSBwb3RlbnRpYWwgcmlzayBpcyBp
+ZiBsb3cgbGV2ZWwgZHJpdmVyIHByb2dyYW0gZGF0YSB0byANCj4+IHRoaXMgYmxvY2ssIGl0IHdp
+bGwgZ2V0IOKAnHRpbWVvdXQgZXJyb3LigJ0uIEFuZCB0aGUgdGltZW91dCBwZXJpb2QgY291bGQg
+YmUgdmVyeSANCj4+IGxvbmcoYWxtb3N0IHNldmVyYWwgbWludXRlcyksIGR1cmluZyB0aGlzIHBl
+cmlvZCwgYW55IG9wZXJhdGlvbiBvbiBOT1IgZmxhc2ggDQo+PiBjYW5ub3QgYmUgYWNjZXB0LiBz
+byBwcm9ncmFtIGRhdGEgdG8gYSBlcmFzdXJlIGludGVycnVwdGVkIGJsb2NrIGlzbuKAmXQgYSAN
+Cj4+IHNlbnNpYmxlIGFjdGlvbi4gaW4gb3JkZXIgdG8gYXZvaWQgcHJvZ3JhbSBhIGVyYXN1cmUg
+aW50ZXJydXB0ZWQgYmxvY2ssIA0KPj4gSSBzdWdnZXN0IFVCSUZTIGNhbiByZWFkIHRoaXMgYmxv
+Y2sgYmVmb3JlIHByb2dyYW0gZGF0YS4gdGhlIGNvZGUgY2hhbmdpbmcgYXMgYmVsb3c6DQo+DQo+
+WWVzLCByZWFkaW5nIGZpcnN0IHNvdW5kcyBsaWtlIGEgZ29vZCBpZGVhLiBXb3VsZCB5b3UgcGxl
+YXNlIHNlbmQgYQ0KPnBhdGNoIGltcGxlbWVudGluZyBpdD8NCg0KRnJvbTogUWkgV2FuZyA8cWl3
+YW5nQG1pY3Jvbi5jb20+DQoNCm5vcl9lcmFzZV9wcmVwYXJlKCkgd2lsbCBiZSBjYWxsZWQgYmVm
+b3JlIGVyYXNlIGEgTk9SIGZsYXNoLCBpdCB3aWxsIHByb2dyYW0gJzAnDQppbnRvIGEgYmxvY2sg
+dG8gbWFyayB0aGlzIGJsb2NrLiBCdXQgcHJvZ3JhbSBkYXRhIGludG8gYSBlcmFzdXJlIGludGVy
+cnVwdGVkIGJsb2NrDQpjYW4gY2F1c2UgcHJvZ3JhbSB0aW10b3V0KHNldmVyYWwgbWludXRlcyBh
+dCBtb3N0KSBlcnJvciwgY291bGQgaW1wYWN0IG90aGVyIA0Kb3BlcmF0aW9uIG9uIE5PUiBmbGFz
+aC4gU28gVUJJRlMgY2FuIHJlYWQgdGhpcyBibG9jayBmaXJzdCB0byBhdm9pZCB1bm5lZWRlZCAN
+CnByb2dyYW0gb3BlcmF0aW9uLiANCg0KVGhpcyBwYXRjaCB0cnkgdG8gcHV0IHJlYWQgb3BlcmF0
+aW9uIGF0IGF0IGhlYWQgb2Ygd3JpdGUgb3BlcmF0aW9uIGluIA0Kbm9yX2VyYXNlX3ByZXBhcmUo
+KSwgcmVhZCBvdXQgdGhlIGRhdGEuIA0KSWYgdGhlIGRhdGEgaXMgYWxyZWFkeSBjb3JydXB0LCB0
+aGVuIG5vIG5lZWQgdG8gcHJvZ3JhbSBhbnkgZGF0YSBpbnRvIHRoaXMgYmxvY2ssIA0KanVzdCBn
+byB0byBlcmFzZSB0aGlzIGJsb2NrLg0KDQpTaWduZWQtb2ZmLWJ5OiBRaSBXYW5nIDxxaXdhbmdA
+cWl3YW5nQG1pY3Jvbi5jb20+DQotLS0NCmRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC91YmkvaW8u
+YyBiL2RyaXZlcnMvbXRkL3ViaS9pby5jDQppbmRleCBiZjc5ZGVmLi5iZTZhYjU2IDEwMDY0NA0K
+LS0tIGEvZHJpdmVycy9tdGQvdWJpL2lvLmMNCisrKyBiL2RyaXZlcnMvbXRkL3ViaS9pby5jDQpA
+QCAtNTA5LDI2ICs1MDksMTAgQEAgc3RhdGljIGludCBub3JfZXJhc2VfcHJlcGFyZShzdHJ1Y3Qg
+dWJpX2RldmljZSAqdWJpLCBpbnQgcG51bSkNCiAJc3RydWN0IHViaV92aWRfaGRyIHZpZF9oZHI7
+DQogDQogCS8qDQotCSAqIEl0IGlzIGltcG9ydGFudCB0byBmaXJzdCBpbnZhbGlkYXRlIHRoZSBF
+QyBoZWFkZXIsIGFuZCB0aGVuIHRoZSBWSUQNCi0JICogaGVhZGVyLiBPdGhlcndpc2UgYSBwb3dl
+ciBjdXQgbWF5IGxlYWQgdG8gdmFsaWQgRUMgaGVhZGVyIGFuZA0KLQkgKiBpbnZhbGlkIFZJRCBo
+ZWFkZXIsIGluIHdoaWNoIGNhc2UgVUJJIHdpbGwgdHJlYXQgdGhpcyBQRUIgYXMNCi0JICogY29y
+cnVwdGVkIGFuZCB3aWxsIHRyeSB0byBwcmVzZXJ2ZSBpdCwgYW5kIHByaW50IHNjYXJ5IHdhcm5p
+bmdzLg0KLQkgKi8NCi0JYWRkciA9IChsb2ZmX3QpcG51bSAqIHViaS0+cGViX3NpemU7DQotCWVy
+ciA9IG10ZF93cml0ZSh1YmktPm10ZCwgYWRkciwgNCwgJndyaXR0ZW4sICh2b2lkICopJmRhdGEp
+Ow0KLQlpZiAoIWVycikgew0KLQkJYWRkciArPSB1YmktPnZpZF9oZHJfYWxvZmZzZXQ7DQotCQll
+cnIgPSBtdGRfd3JpdGUodWJpLT5tdGQsIGFkZHIsIDQsICZ3cml0dGVuLCAodm9pZCAqKSZkYXRh
+KTsNCi0JCWlmICghZXJyKQ0KLQkJCXJldHVybiAwOw0KLQl9DQotDQotCS8qDQotCSAqIFdlIGZh
+aWxlZCB0byB3cml0ZSB0byB0aGUgbWVkaWEuIFRoaXMgd2FzIG9ic2VydmVkIHdpdGggU3BhbnNp
+b24NCi0JICogUzI5R0w1MTJOIE5PUiBmbGFzaC4gTW9zdCBwcm9iYWJseSB0aGUgcHJldmlvdXNs
+eSBlcmFzZWJsb2NrIGVyYXN1cmUNCisJICogTW9zdCBwcm9iYWJseSB0aGUgcHJldmlvdXNseSBl
+cmFzZWJsb2NrIGVyYXN1cmUNCiAJICogd2FzIGludGVycnVwdGVkIGF0IGEgdmVyeSBpbmFwcHJv
+cHJpYXRlIG1vbWVudCwgc28gaXQgYmVjYW1lDQotCSAqIHVud3JpdGFibGUuIEluIHRoaXMgY2Fz
+ZSB3ZSBwcm9iYWJseSBhbnl3YXkgaGF2ZSBnYXJiYWdlIGluIHRoaXMNCi0JICogUEVCLg0KKwkg
+KiB1bndyaXRhYmxlLiBJbiBvcmRlciB0byBhdm9pZCBwcm9ncmFtIGRhdGEgaW50byBhIHVud3Jp
+dGFibGUgYmxvY2ssDQorCSAqIHJlYWQgdGhpcyBibG9jayBmaXJzdCwgYW5kIGNoZWNrIGlmIGRv
+IG5lZWQgdG8gcHJvZ3JhbSBpdC4gIA0KIAkgKi8NCiAJZXJyMSA9IHViaV9pb19yZWFkX3ZpZF9o
+ZHIodWJpLCBwbnVtLCAmdmlkX2hkciwgMCk7DQogCWlmIChlcnIxID09IFVCSV9JT19CQURfSERS
+X0VCQURNU0cgfHwgZXJyMSA9PSBVQklfSU9fQkFEX0hEUiB8fA0KQEAgLTU0Nyw2ICs1MzEsMjIg
+QEAgc3RhdGljIGludCBub3JfZXJhc2VfcHJlcGFyZShzdHJ1Y3QgdWJpX2RldmljZSAqdWJpLCBp
+bnQgcG51bSkNCiAJfQ0KIA0KIAkvKg0KKwkgKiBWSUQgb3IgRUMgaXMgdmFsaWQsIG5lZWQgdG8g
+Y29ycnVwdCB0aGVzZSBoZWFkZXIgYmVmb3JlIGVyYXNlIG9wZXJhdGlvbi4gIA0KKwkgKiBJdCBp
+cyBpbXBvcnRhbnQgdG8gZmlyc3QgaW52YWxpZGF0ZSB0aGUgRUMgaGVhZGVyLCBhbmQgdGhlbiB0
+aGUgVklEDQorCSAqIGhlYWRlci4gT3RoZXJ3aXNlIGEgcG93ZXIgY3V0IG1heSBsZWFkIHRvIHZh
+bGlkIEVDIGhlYWRlciBhbmQNCisJICogaW52YWxpZCBWSUQgaGVhZGVyLCBpbiB3aGljaCBjYXNl
+IFVCSSB3aWxsIHRyZWF0IHRoaXMgUEVCIGFzDQorCSAqIGNvcnJ1cHRlZCBhbmQgd2lsbCB0cnkg
+dG8gcHJlc2VydmUgaXQsIGFuZCBwcmludCBzY2FyeSB3YXJuaW5ncy4NCisJICovDQorCWFkZHIg
+PSAobG9mZl90KXBudW0gKiB1YmktPnBlYl9zaXplOw0KKwllcnIgPSBtdGRfd3JpdGUodWJpLT5t
+dGQsIGFkZHIsIDQsICZ3cml0dGVuLCAodm9pZCAqKSZkYXRhKTsNCisJaWYgKCFlcnIpIHsNCisJ
+CWFkZHIgKz0gdWJpLT52aWRfaGRyX2Fsb2Zmc2V0Ow0KKwkJZXJyID0gbXRkX3dyaXRlKHViaS0+
+bXRkLCBhZGRyLCA0LCAmd3JpdHRlbiwgKHZvaWQgKikmZGF0YSk7DQorCQlpZiAoIWVycikNCisJ
+CQlyZXR1cm4gMDsNCisJfQ0KKw0KKwkvKg0KIAkgKiBUaGUgUEVCIGNvbnRhaW5zIGEgdmFsaWQg
+VklEIGhlYWRlciwgYnV0IHdlIGNhbm5vdCBpbnZhbGlkYXRlIGl0Lg0KIAkgKiBTdXBwb3NlZGx5
+IHRoZSBmbGFzaCBtZWRpYSBvciB0aGUgZHJpdmVyIGlzIHNjcmV3ZWQgdXAsIHNvIHJldHVybiBh
+bg0KIAkgKiBlcnJvci4NCi0tLQ0KDQo=
