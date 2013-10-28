@@ -1,27 +1,18 @@
-Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
+Received: from mail.kset.org ([161.53.74.125])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VapxT-0002Xb-4g
- for linux-mtd@lists.infradead.org; Mon, 28 Oct 2013 16:46:27 +0000
-Received: by mail-pa0-f43.google.com with SMTP id hz1so7389236pad.30
- for <linux-mtd@lists.infradead.org>; Mon, 28 Oct 2013 09:46:04 -0700 (PDT)
+ id 1VauvW-0005mW-7e
+ for linux-mtd@lists.infradead.org; Mon, 28 Oct 2013 22:04:46 +0000
+Message-ID: <D2F17A35F4A84A2BA7D38EFD6A1E9475@uavzfph>
+From: "superpacsthet" <dorijan@kset.org>
+To: <accountably@sibtel.ru>, <guomeihao@163.com>, <mail@gosacad.karelia.ru>,
+ <mir@n-m.ru>, <linux-mtd@lists.infradead.org>
+Subject: =?iso-8859-5?Q?=B7=D4=E0=D0=D2=E1=E2=D2=E3=D9=E2=D5?=
+Date: Mon, 28 Oct 2013 22:56:54 +0100
 MIME-Version: 1.0
-In-Reply-To: <3901382977358@web14h.yandex.ru>
-References: <55541379679397@web20h.yandex.ru>
- <CAP+RiCAVuUEfyjg02+ZjeFXgUuaRW+fuMB490Ce2Hq_4qHBL=A@mail.gmail.com>
- <loom.20131023T201657-894@post.gmane.org> <237221382623942@web21m.yandex.ru>
- <106621382627723@web13g.yandex.ru> <3901382977358@web14h.yandex.ru>
-From: Florian Fainelli <f.fainelli@gmail.com>
-Date: Mon, 28 Oct 2013 09:45:23 -0700
-Message-ID: <CAGVrzcYj91m=rC5ye9eAo=eMN0mBzk9-Bv8K6myTpnH28PLUxQ@mail.gmail.com>
-Subject: Re: lz4hc compression in UBIFS?
-To: Konstantin Tokarev <annulen@yandex.ru>
-Content-Type: text/plain; charset=UTF-8
-Cc: Artem Bityutskiy <dedekind1@gmail.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Yann Collet <yann.collet.73@gmail.com>,
- "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
- Brent Taylor <motobud@gmail.com>
+Content-Type: text/plain;
+	charset="iso-8859-5";
+Content-Transfer-Encoding: quoted-printable
+Reply-To: superpacsthet <lookingforlove@enterprisemission.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,24 +22,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2013/10/28 Konstantin Tokarev <annulen@yandex.ru>:
->
->
-> 24.10.2013, 19:15, "Konstantin Tokarev" <annulen@yandex.ru>:
->> Attached patch to crypto API wrapper for lz4hc seems to fix the issue. I can save
->> and read files on LZ4HC-compressed volume, and I'm running on LZ4HC-compressed rootfs,
->> flashed from mkfs.ubifs generated image (patch by Elie De Brauwer). My software
->> works correctly.
->>
->> Unfortunately, on my board LZ4HC-compressed UBIFS volume performs noticeable worse
->> than LZO, while still faster than zlib. I guess the reason is that CPU is no longer a
->> bottleneck for my system, but NAND speed.
->>
->> Thank you all for your help!
->
-> Can anyone review the correctness of my patch? Looks like API of LZ4 decompressor is
-> used wrong way in crypto API.
-
-Can you make a formal submission of it? That would probably help reviewing it.
---
-Florian
+=C2=DE=E7=DD=D5=D9=E8=D0=EF =E1=D8=E1=E2=D5=DC=D0 =DF=DE=D4=D0=E7=D8 =D8=D7=
+=E3=E7=D0=D5=DC=DE=D3=DE =DC=D0=E2=D5=E0=D8=D0=DB=D0 - =E4=DE=DA=E3=E1=D8=
+=E0=DE=D2=DA=D0 =DD=D0 =D8=E2=DE=D3. =C1=DF=D5=E6=DA=E3=E0=E1 =D4=DB=EF =DD=
+=DE=D2=D5=DD=EC=DA=D8=E5 =E2=D0=DA =D6=D5 =E3=D3=DB=E3=D1=DB=F1=DD=DD=EB=E5=
+. =B8=E1=DF=DE=DB=EC=D7=E3=EE=E2=E1=EF =E0=D5=D4=E7=D0=D9=E8=D8=D5 =DC=D5=
+=E2=DE=D4=EB. =C3=D2=D5=DB=D8=E7=D8=E2=EC =DA=E0=E3=D3 =DE=D1=E9=D5=DD=D8=
+=EF. =D7=D0=DF=DE=DB=EB=E5=D0=E2=EC =E0=D0=D7=D2=D8=E2=EC=D5=DC, =DF=DE=E3=
+=DF=E0=D0=D6=DD=EF=E2=EC =DF=D0=DC=EF=E2=EC. =B1=DE=DB=D5=D5 =DF=DE=D4=E0=
+=DE=D1=DD=DE =E2=E3=E2: http://www.blackdevil.weboldala.net/modules/mod_b=
+ackup2/cwvsb.htm .
