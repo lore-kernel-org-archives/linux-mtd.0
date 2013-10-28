@@ -1,15 +1,24 @@
-Received: from relay1.mentorg.com ([192.94.38.131])
+Received: from forward1h.mail.yandex.net ([2a02:6b8:0:f05::10])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VapNy-0001Xl-MQ
- for linux-mtd@lists.infradead.org; Mon, 28 Oct 2013 16:09:47 +0000
-From: Vladimir Zapolskiy <vladimir_zapolskiy@mentor.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd: mtdchar: return expected errors on mmap() call
-Date: Mon, 28 Oct 2013 18:08:15 +0200
-Message-ID: <1382976495-1250-1-git-send-email-vladimir_zapolskiy@mentor.com>
+ id 1Vapaq-0001uB-T7
+ for linux-mtd@lists.infradead.org; Mon, 28 Oct 2013 16:23:06 +0000
+From: Konstantin Tokarev <annulen@yandex.ru>
+To: Yann Collet <yann.collet.73@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brent Taylor <motobud@gmail.com>, Artem Bityutskiy <dedekind1@gmail.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "akpm@linux-foundation.org" <akpm@linux-foundation.org>
+In-Reply-To: <106621382627723@web13g.yandex.ru>
+References: <55541379679397@web20h.yandex.ru>
+ <CAP+RiCAVuUEfyjg02+ZjeFXgUuaRW+fuMB490Ce2Hq_4qHBL=A@mail.gmail.com>
+ <loom.20131023T201657-894@post.gmane.org> <237221382623942@web21m.yandex.ru>
+ <106621382627723@web13g.yandex.ru>
+Subject: Re: lz4hc compression in UBIFS?
 MIME-Version: 1.0
+Message-Id: <3901382977358@web14h.yandex.ru>
+Date: Mon, 28 Oct 2013 20:22:38 +0400
+Content-Transfer-Encoding: 7bit
 Content-Type: text/plain
-Cc: David Woodhouse <David.Woodhouse@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,40 +28,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-According both to POSIX.1-2008 and Linux Programmer's Manual mmap()
-syscall shouldn't return undocumented ENOSYS, this change replaces
-the errno with more appropriate ENODEV and EACCESS.
 
-Signed-off-by: Vladimir Zapolskiy <vladimir_zapolskiy@mentor.com>
-Cc: David Woodhouse <David.Woodhouse@intel.com>
----
- drivers/mtd/mtdchar.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 684bfa3..a4c026e 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -1099,7 +1099,7 @@ static unsigned long mtdchar_get_unmapped_area(struct file *file,
- 		return (unsigned long) -EINVAL;
- 
- 	ret = mtd_get_unmapped_area(mtd, len, offset, flags);
--	return ret == -EOPNOTSUPP ? -ENOSYS : ret;
-+	return ret == -EOPNOTSUPP ? -ENODEV : ret;
- }
- #endif
- 
-@@ -1124,9 +1124,9 @@ static int mtdchar_mmap(struct file *file, struct vm_area_struct *vma)
- #endif
- 		return vm_iomap_memory(vma, map->phys, map->size);
- 	}
--	return -ENOSYS;
-+	return -ENODEV;
- #else
--	return vma->vm_flags & VM_SHARED ? 0 : -ENOSYS;
-+	return vma->vm_flags & VM_SHARED ? 0 : -EACCES;
- #endif
- }
- 
+24.10.2013, 19:15, "Konstantin Tokarev" <annulen@yandex.ru>:
+> Attached patch to crypto API wrapper for lz4hc seems to fix the issue. I can save
+> and read files on LZ4HC-compressed volume, and I'm running on LZ4HC-compressed rootfs,
+> flashed from mkfs.ubifs generated image (patch by Elie De Brauwer). My software
+> works correctly.
+>
+> Unfortunately, on my board LZ4HC-compressed UBIFS volume performs noticeable worse
+> than LZO, while still faster than zlib. I guess the reason is that CPU is no longer a
+> bottleneck for my system, but NAND speed.
+>
+> Thank you all for your help!
+
+Can anyone review the correctness of my patch? Looks like API of LZ4 decompressor is
+used wrong way in crypto API.
+
 -- 
-1.7.10.4
+Regards,
+Konstantin
