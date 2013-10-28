@@ -1,23 +1,24 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from mail-ve0-f173.google.com ([209.85.128.173])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VaiUS-0006ki-UN
- for linux-mtd@lists.infradead.org; Mon, 28 Oct 2013 08:48:02 +0000
-From: Marek Vasut <marex@denx.de>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 1/5] mtd: m25p80: fix allocation size
-Date: Mon, 28 Oct 2013 08:54:15 +0100
-References: <1382583503-13748-1-git-send-email-computersforpeace@gmail.com>
- <201310271730.12065.marex@denx.de>
- <CAN8TOE-LWj7+6NRZbKJDz=fvVgMVtRvA5UqJ5AvLAwG+jRpgpw@mail.gmail.com>
-In-Reply-To: <CAN8TOE-LWj7+6NRZbKJDz=fvVgMVtRvA5UqJ5AvLAwG+jRpgpw@mail.gmail.com>
+ id 1VakM7-0001V3-NL
+ for linux-mtd@lists.infradead.org; Mon, 28 Oct 2013 10:47:32 +0000
+Received: by mail-ve0-f173.google.com with SMTP id jw12so4799676veb.4
+ for <linux-mtd@lists.infradead.org>; Mon, 28 Oct 2013 03:47:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201310280854.15268.marex@denx.de>
-Cc: Sourav Poddar <sourav.poddar@ti.com>,
+In-Reply-To: <CAGVrzcY7RD0AFvkPLvoCSe5iFFtwXnLthVepJ=XrR4bhMPN6_A@mail.gmail.com>
+References: <mailman.6.1379692801.23497.linux-mtd@lists.infradead.org>
+ <7c74c0d714e8e87daebbfd0163642d71@localhost>
+ <1382782672.5901.25.camel@karhu.quadriga.com>
+ <CAGVrzcY7RD0AFvkPLvoCSe5iFFtwXnLthVepJ=XrR4bhMPN6_A@mail.gmail.com>
+Date: Mon, 28 Oct 2013 11:47:06 +0100
+Message-ID: <CAFLxGvyt2w31v7v1cmvKBE6=hLkY1G-v31srsoQz82ktxg7SAg@mail.gmail.com>
+Subject: Re: Patching mkfs.ubifs.c for running under Windows ?
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: Florian Fainelli <florian@openwrt.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: gutemine <gutemine@oozoon.de>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- stable@vger.kernel.org, Artem Bityutskiy <dedekind1@gmail.com>
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,43 +28,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+On Mon, Oct 28, 2013 at 2:38 AM, Florian Fainelli <florian@openwrt.org> wrote:
+> Hello,
+>
+> 2013/10/26 Artem Bityutskiy <dedekind1@gmail.com>:
+>> On Sat, 2013-09-21 at 12:58 +0200, gutemine wrote:
+>>> As users of ubidump under Windows now asked me for getting also the
+>>> possibility to re-pack their extracted ubifs images, I'm considering to
+>>> patch mkfs.ubifs.c, so that it handles also the Windows hard and softlinks
+>>> and my dummy device files correctly.
+>>
+>> Generally, I am OK with making the code support windows, why not? But
+>> this should be done very nicely and should not be intrusive. I guess you
+>> should send patches and then we'll see.
+>
+> We do have some patches in OpenWrt to make mtd-utils build and work
+> under FreeBSD and Cygwin here:
+>
+> https://dev.openwrt.org/browser/trunk/tools/mtd-utils/patches
+>
+> in particular:
+> https://dev.openwrt.org/browser/trunk/tools/mtd-utils/patches/110-portability.patch
+> https://dev.openwrt.org/browser/trunk/tools/mtd-utils/patches/120-cygwin_fixes.patch
+> https://dev.openwrt.org/browser/trunk/tools/mtd-utils/patches/134-freebsd_loff_t.patch
+>
+> Not sure how acceptable they look like to you?
 
-> On Sun, Oct 27, 2013 at 9:30 AM, Marek Vasut <marex@denx.de> wrote:
-> > Hi Brian,
-> > 
-> > [...]
-> > 
-> >> @@ -1137,14 +1135,10 @@ static int m25p_probe(struct spi_device *spi)
-> >> 
-> >>  static int m25p_remove(struct spi_device *spi)
-> >>  {
-> >>  
-> >>       struct m25p     *flash = spi_get_drvdata(spi);
-> >> 
-> >> -     int             status;
-> >> 
-> >>       /* Clean up MTD stuff. */
-> >> 
-> >> -     status = mtd_device_unregister(&flash->mtd);
-> >> -     if (status == 0) {
-> >> -             kfree(flash->command);
-> >> -             kfree(flash);
-> >> -     }
-> >> +     mtd_device_unregister(&flash->mtd);
-> >> +
-> >> 
-> >>       return 0;
-> >>  
-> >>  }
-> > 
-> > I wonder if we shouldn't return "status" in here in case
-> > mtd_device_unregister() failed.
-> 
-> Sure, I thought of that earlier actually. I may send a trivial
-> follow-up patch for this.
+Looks not that bad. :-)
+But why do you need the file "include/cygwin/bits-byteswap.h"?
 
-Sounds good, certainly better than mixing two things into one patch. Thanks!
+Artem, what do you think?
+IMHO adding cygwin support is less intrusive than adding native win32 support.
 
-Best regards,
-Marek Vasut
+-- 
+Thanks,
+//richard
