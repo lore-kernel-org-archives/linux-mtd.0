@@ -1,21 +1,19 @@
 Received: from va3ehsobe004.messaging.microsoft.com ([216.32.180.14]
  helo=va3outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vacyq-0001RW-EB
- for linux-mtd@lists.infradead.org; Mon, 28 Oct 2013 02:55:00 +0000
-Message-ID: <526DD29D.2070407@freescale.com>
-Date: Mon, 28 Oct 2013 10:57:33 +0800
+ id 1VadQz-0001jt-Jz
+ for linux-mtd@lists.infradead.org; Mon, 28 Oct 2013 03:24:06 +0000
 From: Huang Shijie <b32955@freescale.com>
+To: <dwmw2@infradead.org>
+Subject: [PATCH v2] mtd: gpmi: add a new DT property to use the datasheet's
+ minimum required ECC
+Date: Mon, 28 Oct 2013 11:05:17 +0800
+Message-ID: <1382929517-22606-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-To: <dedekind1@gmail.com>
-Subject: Re: [PATCH] ubi: attach: do not return -EINVAL if the
- mtd->numeraseregions is 1
-References: <1379470659-12158-1-git-send-email-b32955@freescale.com>
- <1382780870.5901.20.camel@karhu.quadriga.com>
-In-Reply-To: <1382780870.5901.20.camel@karhu.quadriga.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
+Content-Type: text/plain
+Cc: devicetree@vger.kernel.org, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org, Huang Shijie <b32955@freescale.com>,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,57 +23,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B410=E6=9C=8826=E6=97=A5 17:47, Artem Bityutskiy =E5=
-=86=99=E9=81=93:
-> What is 'numeraseregions =3D=3D 1'? How is it different to 'numerasereg=
-ions
-> =3D=3D 0'?
->
-> Is the "main" area covered by mtd->size, or 'mtd->size' spans the entir=
-e
-> chip and includes all the regions?
->
-i think the mtd->size spans the entire chip and include the all the regio=
-ns.
+In default way, we use the ecc_strength/ecc_step size calculated by ourselves
+and use all the OOB area.
 
+This patch adds a new property : "fsl,use-minimum-ecc"
 
-> What is the flash you are dealing with? Surely this is not gpmi-nand?
-I meet this bug with a Micron's Parallel Nor: M29W256GL
-it is not used by the gpmi-nand, it's used by weim driver:=20
-drivers/bus/imx-weim.c
+If we enable it, we will firstly try to use the datasheet's minimum required
+ECC provided by the MTD layer (the ecc_strength_ds/ecc_step_ds fields
+in the nand_chip{}). So we may have free space in the OOB area by using the
+minimum ECC, and we may support JFFS2 with some SLC NANDs, such as Micron's
+SLC NAND.
 
-this NOR's Number of erase block regions is 1, i quote the test here,=20
-see page 50
-(i will send you the datasheet in a private email):
+If we fail to use the minimum ECC, we will use the legacy method to calculate
+the ecc_strength and ecc_step size.
 
-"
-   It specifes the number of regions containning contiguous erase blocks=20
-of the same size.
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+---
+v1 --> v2:
+	based on David's patch to fix the regression.
+---
+ .../devicetree/bindings/mtd/gpmi-nand.txt          |    6 ++++++
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c             |    3 +++
+ 2 files changed, 9 insertions(+), 0 deletions(-)
 
-"
-
-please see allocate_partition():
-
-  =20
--------------------------------------------------------------------------=
---------
-   if (master->numeraseregions > 1) {
-       ................
-   } else {
-       /* Single erase size */
-   }
-
-  =20
--------------------------------------------------------------------------=
---------
-
-this NOR is 32MB, its master partion has 1 for "numeraseregions". if we=20
-add a 32MB slave partition
-  to this NOR, the slave partition does NOT inherit the numeraseregions=20
-of the master partition.
-So the ubiattach will succeed with the slave partition.
-
-But if we attach the master partition directly, we will fails.
-
-thanks
-Huang Shijie
+diff --git a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
+index 551b2a1..4297795 100644
+--- a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
+@@ -17,6 +17,12 @@ Required properties:
+ Optional properties:
+   - nand-on-flash-bbt: boolean to enable on flash bbt option if not
+                        present false
++  - fsl,use-minimum-ecc: By enabling this boolean property, the gpmi will try
++                       to use the datasheet's minimum required ECC provided by
++                       the MTD layer (the ecc_strength_ds/ecc_step_ds fields
++                       in the nand_chip{}). So we may have free space in the OOB
++                       area by using the minimum ECC, and we may support JFFS2
++                       with some SLC NANDs, such as Micron's SLC NAND.
+ 
+ The device tree may optionally contain sub-nodes describing partitions of the
+ address space. See partition.txt for more detail.
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 7ac2280..3ec55d0 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -352,6 +352,9 @@ static int legacy_set_geometry(struct gpmi_nand_data *this)
+ 
+ int common_nfc_set_geometry(struct gpmi_nand_data *this)
+ {
++	if (of_property_read_bool(this->dev->of_node, "fsl,use-minimum-ecc")
++		&& set_geometry_by_ecc_info(this))
++		return 0;
+ 	return legacy_set_geometry(this);
+ }
+ 
+-- 
+1.7.2.rc3
