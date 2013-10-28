@@ -1,18 +1,31 @@
-Received: from mail.kset.org ([161.53.74.125])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VauvW-0005mW-7e
- for linux-mtd@lists.infradead.org; Mon, 28 Oct 2013 22:04:46 +0000
-Message-ID: <D2F17A35F4A84A2BA7D38EFD6A1E9475@uavzfph>
-From: "superpacsthet" <dorijan@kset.org>
-To: <accountably@sibtel.ru>, <guomeihao@163.com>, <mail@gosacad.karelia.ru>,
- <mir@n-m.ru>, <linux-mtd@lists.infradead.org>
-Subject: =?iso-8859-5?Q?=B7=D4=E0=D0=D2=E1=E2=D2=E3=D9=E2=D5?=
-Date: Mon, 28 Oct 2013 22:56:54 +0100
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-5";
-Content-Transfer-Encoding: quoted-printable
-Reply-To: superpacsthet <lookingforlove@enterprisemission.com>
+From: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+To: linux-sh@vger.kernel.org
+Subject: [PATCH 00/19] Enable various Renesas drivers on all ARM platforms
+Date: Tue, 29 Oct 2013 00:46:48 +0100
+Message-Id: <1383004027-25036-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
+Cc: linux-fbdev@vger.kernel.org, Wolfram Sang <wsa@the-dreams.de>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Guennadi Liakhovetski <g.liakhovetski+renesas@gmail.com>,
+ Thierry Reding <thierry.reding@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-i2c@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>,
+ Joerg Roedel <joro@8bytes.org>, Magnus Damm <magnus.damm@gmail.com>,
+ Eduardo Valentin <eduardo.valentin@ti.com>,
+ Tomi Valkeinen <tomi.valkeinen@ti.com>, linux-serial@vger.kernel.org,
+ linux-input@vger.kernel.org, Zhang Rui <rui.zhang@intel.com>,
+ Chris Ball <cjb@laptop.org>,
+ Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
+ linux-media@vger.kernel.org, linux-pwm@vger.kernel.org,
+ Samuel Ortiz <samuel@sortiz.org>, linux-pm@vger.kernel.org,
+ Ian Molton <ian@mnementh.co.uk>, Mark Brown <broonie@kernel.org>,
+ linux-arm-kernel@lists.infradead.org,
+ Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+ iommu@lists.linux-foundation.org, netdev@vger.kernel.org,
+ dmaengine@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
+ "David S. Miller" <davem@davemloft.net>,
+ Mauro Carvalho Chehab <m.chehab@samsung.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,13 +35,104 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=C2=DE=E7=DD=D5=D9=E8=D0=EF =E1=D8=E1=E2=D5=DC=D0 =DF=DE=D4=D0=E7=D8 =D8=D7=
-=E3=E7=D0=D5=DC=DE=D3=DE =DC=D0=E2=D5=E0=D8=D0=DB=D0 - =E4=DE=DA=E3=E1=D8=
-=E0=DE=D2=DA=D0 =DD=D0 =D8=E2=DE=D3. =C1=DF=D5=E6=DA=E3=E0=E1 =D4=DB=EF =DD=
-=DE=D2=D5=DD=EC=DA=D8=E5 =E2=D0=DA =D6=D5 =E3=D3=DB=E3=D1=DB=F1=DD=DD=EB=E5=
-. =B8=E1=DF=DE=DB=EC=D7=E3=EE=E2=E1=EF =E0=D5=D4=E7=D0=D9=E8=D8=D5 =DC=D5=
-=E2=DE=D4=EB. =C3=D2=D5=DB=D8=E7=D8=E2=EC =DA=E0=E3=D3 =DE=D1=E9=D5=DD=D8=
-=EF. =D7=D0=DF=DE=DB=EB=E5=D0=E2=EC =E0=D0=D7=D2=D8=E2=EC=D5=DC, =DF=DE=E3=
-=DF=E0=D0=D6=DD=EF=E2=EC =DF=D0=DC=EF=E2=EC. =B1=DE=DB=D5=D5 =DF=DE=D4=E0=
-=DE=D1=DD=DE =E2=E3=E2: http://www.blackdevil.weboldala.net/modules/mod_b=
-ackup2/cwvsb.htm .
+Hello,
+
+This patch series, based on v3.12-rc7, prepares various Renesas drivers
+for migration to multiplatform kernels by enabling their compilation or
+otherwise fixing them on all ARM platforms. The patches are pretty
+straightforward and are described in their commit message.
+
+I'd like to get all these patches merged in v3.14. As they will need to go
+through their respective subsystems' trees, I would appreciate if all
+maintainers involved could notify me when they merge patches from this series
+in their tree to help me tracking the merge status. I don't plan to send pull
+requests individually for these patches, and I will repost patches
+individually if changes are requested during review.
+
+If you believe the issue should be solved in a different way (for instance by
+removing the architecture dependency completely) please reply to the cover
+letter to let other maintainers chime in.
+
+Cc: Chris Ball <cjb@laptop.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: dmaengine@vger.kernel.org
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: Eduardo Valentin <eduardo.valentin@ti.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Guennadi Liakhovetski <g.liakhovetski+renesas@gmail.com>
+Cc: Ian Molton <ian@mnementh.co.uk>
+Cc: iommu@lists.linux-foundation.org
+Cc: Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>
+Cc: Joerg Roedel <joro@8bytes.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-fbdev@vger.kernel.org
+Cc: linux-i2c@vger.kernel.org
+Cc: linux-input@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-media@vger.kernel.org
+Cc: linux-mmc@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org
+Cc: linux-pm@vger.kernel.org
+Cc: linux-pwm@vger.kernel.org
+Cc: linux-serial@vger.kernel.org
+Cc: linux-spi@vger.kernel.org
+Cc: Magnus Damm <magnus.damm@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Mauro Carvalho Chehab <m.chehab@samsung.com>
+Cc: netdev@vger.kernel.org
+Cc: Samuel Ortiz <samuel@sortiz.org>
+Cc: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Cc: Thierry Reding <thierry.reding@gmail.com>
+Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Cc: Vinod Koul <vinod.koul@intel.com>
+Cc: Wolfram Sang <wsa@the-dreams.de>
+Cc: Zhang Rui <rui.zhang@intel.com>
+
+Laurent Pinchart (19):
+  serial: sh-sci: Enable the driver on all ARM platforms
+  DMA: shdma: Enable the driver on all ARM platforms
+  i2c: sh_mobile: Enable the driver on all ARM platforms
+  input: sh_keysc: Enable the driver on all ARM platforms
+  iommu: shmobile: Enable the driver on all ARM platforms
+  i2c: rcar: Enable the driver on all ARM platforms
+  v4l: sh_vou: Enable the driver on all ARM platforms
+  mmc: sdhi: Enable the driver on all ARM platforms
+  mmc: sh_mmcif: Enable the driver on all ARM platforms
+  mtd: sh_flctl: Enable the driver on all ARM platforms
+  net: sh_eth: Set receive alignment correctly on all ARM platforms
+  irda: sh_irda: Enable the driver on all ARM platforms
+  pinctrl: sh-pfc: Enable the driver on all ARM platforms
+  pwm: pwm-renesas-tpu: Enable the driver on all ARM platforms
+  sh: intc: Enable the driver on all ARM platforms
+  spi: sh_msiof: Enable the driver on all ARM platforms
+  spi: sh_hspi: Enable the driver on all ARM platforms
+  thermal: rcar-thermal: Enable the driver on all ARM platforms
+  fbdev: sh-mobile-lcdcfb: Enable the driver on all ARM platforms
+
+ drivers/dma/sh/Kconfig                | 2 +-
+ drivers/dma/sh/shdmac.c               | 6 +++---
+ drivers/i2c/busses/Kconfig            | 4 ++--
+ drivers/input/keyboard/Kconfig        | 2 +-
+ drivers/iommu/Kconfig                 | 2 +-
+ drivers/media/platform/Kconfig        | 2 +-
+ drivers/mmc/host/Kconfig              | 4 ++--
+ drivers/mmc/host/tmio_mmc_dma.c       | 2 +-
+ drivers/mtd/nand/Kconfig              | 2 +-
+ drivers/net/ethernet/renesas/sh_eth.c | 2 +-
+ drivers/net/ethernet/renesas/sh_eth.h | 2 +-
+ drivers/net/irda/Kconfig              | 2 +-
+ drivers/pinctrl/Makefile              | 2 +-
+ drivers/pinctrl/sh-pfc/Kconfig        | 2 +-
+ drivers/pwm/Kconfig                   | 2 +-
+ drivers/sh/intc/Kconfig               | 2 +-
+ drivers/spi/Kconfig                   | 4 ++--
+ drivers/thermal/Kconfig               | 2 +-
+ drivers/tty/serial/Kconfig            | 2 +-
+ drivers/video/Kconfig                 | 6 +++---
+ 20 files changed, 27 insertions(+), 27 deletions(-)
+
+-- 
+Regards,
+
+Laurent Pinchart
