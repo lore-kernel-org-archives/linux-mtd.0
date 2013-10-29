@@ -1,19 +1,18 @@
-Date: Tue, 29 Oct 2013 15:04:27 +0900
-From: Simon Horman <horms@verge.net.au>
+Date: Tue, 29 Oct 2013 10:12:17 +0100 (CET)
+From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
 To: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
 Subject: Re: [PATCH 00/19] Enable various Renesas drivers on all ARM platforms
-Message-ID: <20131029060427.GF11580@verge.net.au>
+In-Reply-To: <1383004027-25036-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
+Message-ID: <Pine.LNX.4.64.1310291009121.8404@axis700.grange>
 References: <1383004027-25036-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1383004027-25036-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
-Cc: linux-fbdev@vger.kernel.org, Wolfram Sang <wsa@the-dreams.de>,
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-fbdev@vger.kernel.org, linux-sh@vger.kernel.org,
  Linus Walleij <linus.walleij@linaro.org>,
  Guennadi Liakhovetski <g.liakhovetski+renesas@gmail.com>,
  Thierry Reding <thierry.reding@gmail.com>, linux-mtd@lists.infradead.org,
  linux-i2c@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>,
- Joerg Roedel <joro@8bytes.org>, linux-sh@vger.kernel.org,
+ Joerg Roedel <joro@8bytes.org>, Wolfram Sang <wsa@the-dreams.de>,
  Magnus Damm <magnus.damm@gmail.com>,
  Eduardo Valentin <eduardo.valentin@ti.com>,
  Tomi Valkeinen <tomi.valkeinen@ti.com>, linux-serial@vger.kernel.org,
@@ -41,7 +40,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 29, 2013 at 12:46:48AM +0100, Laurent Pinchart wrote:
+Hi Laurent
+
+On Tue, 29 Oct 2013, Laurent Pinchart wrote:
+
 > Hello,
 > 
 > This patch series, based on v3.12-rc7, prepares various Renesas drivers
@@ -60,9 +62,13 @@ On Tue, Oct 29, 2013 at 12:46:48AM +0100, Laurent Pinchart wrote:
 > removing the architecture dependency completely) please reply to the cover
 > letter to let other maintainers chime in.
 
-I think this is a step in a good direction.
-However, I think it would be even better if the architecture dependency was
-removed completely.
+Exactly this was my doubt. If we let these drivers build on all ARM 
+platforms... Maybe we should just let them build everywhere? Unless there 
+are real ARM dependencies. Maybe you could try to remove the restriction 
+and try to build them all on x86?
+
+Thanks
+Guennadi
 
 > 
 > Cc: Chris Ball <cjb@laptop.org>
@@ -149,9 +155,8 @@ removed completely.
 > 
 > Laurent Pinchart
 > 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
+
+---
+Guennadi Liakhovetski, Ph.D.
+Freelance Open-Source Software Developer
+http://www.open-technology.de/
