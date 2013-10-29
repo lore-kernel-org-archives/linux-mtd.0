@@ -1,39 +1,17 @@
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Subject: Re: [PATCH 00/19] Enable various Renesas drivers on all ARM platforms
-Date: Tue, 29 Oct 2013 10:46:18 +0100
-Message-ID: <4271216.r5b5qx4BLA@avalon>
-In-Reply-To: <Pine.LNX.4.64.1310291009121.8404@axis700.grange>
-References: <1383004027-25036-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
- <Pine.LNX.4.64.1310291009121.8404@axis700.grange>
+Received: from mail-db9lp0252.outbound.messaging.microsoft.com
+ ([213.199.154.252] helo=db9outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Vb6xG-00084B-5g
+ for linux-mtd@lists.infradead.org; Tue, 29 Oct 2013 10:55:23 +0000
+From: Fabio Estevam <fabio.estevam@freescale.com>
+To: <dwmw2@infradead.org>
+Subject: [PATCH] mtd: gpmi: Remove unused set_geometry_by_ecc_info()
+Date: Tue, 29 Oct 2013 08:54:44 -0200
+Message-ID: <1383044084-6532-1-git-send-email-fabio.estevam@freescale.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-Cc: linux-fbdev@vger.kernel.org, linux-sh@vger.kernel.org,
- Linus Walleij <linus.walleij@linaro.org>,
- Guennadi Liakhovetski <g.liakhovetski+renesas@gmail.com>,
- Thierry Reding <thierry.reding@gmail.com>, linux-mtd@lists.infradead.org,
- linux-i2c@vger.kernel.org,
- Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
- Vinod Koul <vinod.koul@intel.com>, Joerg Roedel <joro@8bytes.org>,
- Wolfram Sang <wsa@the-dreams.de>, Magnus Damm <magnus.damm@gmail.com>,
- Eduardo Valentin <eduardo.valentin@ti.com>,
- Tomi Valkeinen <tomi.valkeinen@ti.com>, linux-serial@vger.kernel.org,
- linux-input@vger.kernel.org, Zhang Rui <rui.zhang@intel.com>,
- Chris Ball <cjb@laptop.org>,
- Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
- linux-media@vger.kernel.org, linux-pwm@vger.kernel.org,
- Samuel Ortiz <samuel@sortiz.org>, linux-pm@vger.kernel.org,
- Ian Molton <ian@mnementh.co.uk>, Mark Brown <broonie@kernel.org>,
- linux-arm-kernel@lists.infradead.org,
- Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-mmc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
- iommu@lists.linux-foundation.org, Simon Horman <horms@verge.net.au>,
- netdev@vger.kernel.org, dmaengine@vger.kernel.org,
- David Woodhouse <dwmw2@infradead.org>, "David S. Miller" <davem@davemloft.net>,
- Mauro Carvalho Chehab <m.chehab@samsung.com>
+Content-Type: text/plain
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, b32955@freescale.com,
+ computersforpeace@gmail.com, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -43,119 +21,150 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Simon and Guennadi,
+Commit 031e2777e0 (mtd: gpmi: fix ECC regression) removed the usage of 
+set_geometry_by_ecc_info(), which causes the following build warning:
 
-On Tuesday 29 October 2013 10:12:17 Guennadi Liakhovetski wrote:
-> On Tue, 29 Oct 2013, Laurent Pinchart wrote:
-> > Hello,
-> > 
-> > This patch series, based on v3.12-rc7, prepares various Renesas drivers
-> > for migration to multiplatform kernels by enabling their compilation or
-> > otherwise fixing them on all ARM platforms. The patches are pretty
-> > straightforward and are described in their commit message.
-> > 
-> > I'd like to get all these patches merged in v3.14. As they will need to go
-> > through their respective subsystems' trees, I would appreciate if all
-> > maintainers involved could notify me when they merge patches from this
-> > series in their tree to help me tracking the merge status. I don't plan
-> > to send pull requests individually for these patches, and I will repost
-> > patches individually if changes are requested during review.
-> > 
-> > If you believe the issue should be solved in a different way (for instance
-> > by removing the architecture dependency completely) please reply to the
-> > cover letter to let other maintainers chime in.
-> 
-> Exactly this was my doubt. If we let these drivers build on all ARM
-> platforms... Maybe we should just let them build everywhere? Unless there
-> are real ARM dependencies. Maybe you could try to remove the restriction
-> and try to build them all on x86?
+drivers/mtd/nand/gpmi-nand/gpmi-nand.c:123:13: warning: 'set_geometry_by_ecc_info' defined but not used [-Wunused-function]
 
-My concern is that they might not build on some architectures for which I 
-don't have a cross-compiler. For instance not all architecture define ioread32 
-and iowrite32, which some drivers might rely on. What about depending on 
-SUPERH || ARM || COMPILE_TEST to start with, in order not to push compilation 
-breakages to mainline ?
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 124 ---------------------------------
+ 1 file changed, 124 deletions(-)
 
-> > Cc: Chris Ball <cjb@laptop.org>
-> > Cc: "David S. Miller" <davem@davemloft.net>
-> > Cc: David Woodhouse <dwmw2@infradead.org>
-> > Cc: dmaengine@vger.kernel.org
-> > Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> > Cc: Eduardo Valentin <eduardo.valentin@ti.com>
-> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Cc: Guennadi Liakhovetski <g.liakhovetski+renesas@gmail.com>
-> > Cc: Ian Molton <ian@mnementh.co.uk>
-> > Cc: iommu@lists.linux-foundation.org
-> > Cc: Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>
-> > Cc: Joerg Roedel <joro@8bytes.org>
-> > Cc: Linus Walleij <linus.walleij@linaro.org>
-> > Cc: linux-fbdev@vger.kernel.org
-> > Cc: linux-i2c@vger.kernel.org
-> > Cc: linux-input@vger.kernel.org
-> > Cc: linux-kernel@vger.kernel.org
-> > Cc: linux-media@vger.kernel.org
-> > Cc: linux-mmc@vger.kernel.org
-> > Cc: linux-mtd@lists.infradead.org
-> > Cc: linux-pm@vger.kernel.org
-> > Cc: linux-pwm@vger.kernel.org
-> > Cc: linux-serial@vger.kernel.org
-> > Cc: linux-spi@vger.kernel.org
-> > Cc: Magnus Damm <magnus.damm@gmail.com>
-> > Cc: Mark Brown <broonie@kernel.org>
-> > Cc: Mauro Carvalho Chehab <m.chehab@samsung.com>
-> > Cc: netdev@vger.kernel.org
-> > Cc: Samuel Ortiz <samuel@sortiz.org>
-> > Cc: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-> > Cc: Thierry Reding <thierry.reding@gmail.com>
-> > Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
-> > Cc: Vinod Koul <vinod.koul@intel.com>
-> > Cc: Wolfram Sang <wsa@the-dreams.de>
-> > Cc: Zhang Rui <rui.zhang@intel.com>
-> > 
-> > Laurent Pinchart (19):
-> >   serial: sh-sci: Enable the driver on all ARM platforms
-> >   DMA: shdma: Enable the driver on all ARM platforms
-> >   i2c: sh_mobile: Enable the driver on all ARM platforms
-> >   input: sh_keysc: Enable the driver on all ARM platforms
-> >   iommu: shmobile: Enable the driver on all ARM platforms
-> >   i2c: rcar: Enable the driver on all ARM platforms
-> >   v4l: sh_vou: Enable the driver on all ARM platforms
-> >   mmc: sdhi: Enable the driver on all ARM platforms
-> >   mmc: sh_mmcif: Enable the driver on all ARM platforms
-> >   mtd: sh_flctl: Enable the driver on all ARM platforms
-> >   net: sh_eth: Set receive alignment correctly on all ARM platforms
-> >   irda: sh_irda: Enable the driver on all ARM platforms
-> >   pinctrl: sh-pfc: Enable the driver on all ARM platforms
-> >   pwm: pwm-renesas-tpu: Enable the driver on all ARM platforms
-> >   sh: intc: Enable the driver on all ARM platforms
-> >   spi: sh_msiof: Enable the driver on all ARM platforms
-> >   spi: sh_hspi: Enable the driver on all ARM platforms
-> >   thermal: rcar-thermal: Enable the driver on all ARM platforms
-> >   fbdev: sh-mobile-lcdcfb: Enable the driver on all ARM platforms
-> >  
-> >  drivers/dma/sh/Kconfig                | 2 +-
-> >  drivers/dma/sh/shdmac.c               | 6 +++---
-> >  drivers/i2c/busses/Kconfig            | 4 ++--
-> >  drivers/input/keyboard/Kconfig        | 2 +-
-> >  drivers/iommu/Kconfig                 | 2 +-
-> >  drivers/media/platform/Kconfig        | 2 +-
-> >  drivers/mmc/host/Kconfig              | 4 ++--
-> >  drivers/mmc/host/tmio_mmc_dma.c       | 2 +-
-> >  drivers/mtd/nand/Kconfig              | 2 +-
-> >  drivers/net/ethernet/renesas/sh_eth.c | 2 +-
-> >  drivers/net/ethernet/renesas/sh_eth.h | 2 +-
-> >  drivers/net/irda/Kconfig              | 2 +-
-> >  drivers/pinctrl/Makefile              | 2 +-
-> >  drivers/pinctrl/sh-pfc/Kconfig        | 2 +-
-> >  drivers/pwm/Kconfig                   | 2 +-
-> >  drivers/sh/intc/Kconfig               | 2 +-
-> >  drivers/spi/Kconfig                   | 4 ++--
-> >  drivers/thermal/Kconfig               | 2 +-
-> >  drivers/tty/serial/Kconfig            | 2 +-
-> >  drivers/video/Kconfig                 | 6 +++---
-> >  20 files changed, 27 insertions(+), 27 deletions(-)
-
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 7ac2280..b13d41a 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -114,130 +114,6 @@ static inline bool gpmi_check_ecc(struct gpmi_nand_data *this)
+ 	return true;
+ }
+ 
+-/*
+- * If we can get the ECC information from the nand chip, we do not
+- * need to calculate them ourselves.
+- *
+- * We may have available oob space in this case.
+- */
+-static bool set_geometry_by_ecc_info(struct gpmi_nand_data *this)
+-{
+-	struct bch_geometry *geo = &this->bch_geometry;
+-	struct mtd_info *mtd = &this->mtd;
+-	struct nand_chip *chip = mtd->priv;
+-	struct nand_oobfree *of = gpmi_hw_ecclayout.oobfree;
+-	unsigned int block_mark_bit_offset;
+-
+-	if (!(chip->ecc_strength_ds > 0 && chip->ecc_step_ds > 0))
+-		return false;
+-
+-	switch (chip->ecc_step_ds) {
+-	case SZ_512:
+-		geo->gf_len = 13;
+-		break;
+-	case SZ_1K:
+-		geo->gf_len = 14;
+-		break;
+-	default:
+-		dev_err(this->dev,
+-			"unsupported nand chip. ecc bits : %d, ecc size : %d\n",
+-			chip->ecc_strength_ds, chip->ecc_step_ds);
+-		return false;
+-	}
+-	geo->ecc_chunk_size = chip->ecc_step_ds;
+-	geo->ecc_strength = round_up(chip->ecc_strength_ds, 2);
+-	if (!gpmi_check_ecc(this))
+-		return false;
+-
+-	/* Keep the C >= O */
+-	if (geo->ecc_chunk_size < mtd->oobsize) {
+-		dev_err(this->dev,
+-			"unsupported nand chip. ecc size: %d, oob size : %d\n",
+-			chip->ecc_step_ds, mtd->oobsize);
+-		return false;
+-	}
+-
+-	/* The default value, see comment in the legacy_set_geometry(). */
+-	geo->metadata_size = 10;
+-
+-	geo->ecc_chunk_count = mtd->writesize / geo->ecc_chunk_size;
+-
+-	/*
+-	 * Now, the NAND chip with 2K page(data chunk is 512byte) shows below:
+-	 *
+-	 *    |                          P                            |
+-	 *    |<----------------------------------------------------->|
+-	 *    |                                                       |
+-	 *    |                                        (Block Mark)   |
+-	 *    |                      P'                      |      | |     |
+-	 *    |<-------------------------------------------->|  D   | |  O' |
+-	 *    |                                              |<---->| |<--->|
+-	 *    V                                              V      V V     V
+-	 *    +---+----------+-+----------+-+----------+-+----------+-+-----+
+-	 *    | M |   data   |E|   data   |E|   data   |E|   data   |E|     |
+-	 *    +---+----------+-+----------+-+----------+-+----------+-+-----+
+-	 *                                                   ^              ^
+-	 *                                                   |      O       |
+-	 *                                                   |<------------>|
+-	 *                                                   |              |
+-	 *
+-	 *	P : the page size for BCH module.
+-	 *	E : The ECC strength.
+-	 *	G : the length of Galois Field.
+-	 *	N : The chunk count of per page.
+-	 *	M : the metasize of per page.
+-	 *	C : the ecc chunk size, aka the "data" above.
+-	 *	P': the nand chip's page size.
+-	 *	O : the nand chip's oob size.
+-	 *	O': the free oob.
+-	 *
+-	 *	The formula for P is :
+-	 *
+-	 *	            E * G * N
+-	 *	       P = ------------ + P' + M
+-	 *                      8
+-	 *
+-	 * The position of block mark moves forward in the ECC-based view
+-	 * of page, and the delta is:
+-	 *
+-	 *                   E * G * (N - 1)
+-	 *             D = (---------------- + M)
+-	 *                          8
+-	 *
+-	 * Please see the comment in legacy_set_geometry().
+-	 * With the condition C >= O , we still can get same result.
+-	 * So the bit position of the physical block mark within the ECC-based
+-	 * view of the page is :
+-	 *             (P' - D) * 8
+-	 */
+-	geo->page_size = mtd->writesize + geo->metadata_size +
+-		(geo->gf_len * geo->ecc_strength * geo->ecc_chunk_count) / 8;
+-
+-	/* The available oob size we have. */
+-	if (geo->page_size < mtd->writesize + mtd->oobsize) {
+-		of->offset = geo->page_size - mtd->writesize;
+-		of->length = mtd->oobsize - of->offset;
+-	}
+-
+-	geo->payload_size = mtd->writesize;
+-
+-	geo->auxiliary_status_offset = ALIGN(geo->metadata_size, 4);
+-	geo->auxiliary_size = ALIGN(geo->metadata_size, 4)
+-				+ ALIGN(geo->ecc_chunk_count, 4);
+-
+-	if (!this->swap_block_mark)
+-		return true;
+-
+-	/* For bit swap. */
+-	block_mark_bit_offset = mtd->writesize * 8 -
+-		(geo->ecc_strength * geo->gf_len * (geo->ecc_chunk_count - 1)
+-				+ geo->metadata_size * 8);
+-
+-	geo->block_mark_byte_offset = block_mark_bit_offset / 8;
+-	geo->block_mark_bit_offset  = block_mark_bit_offset % 8;
+-	return true;
+-}
+-
+ static int legacy_set_geometry(struct gpmi_nand_data *this)
+ {
+ 	struct bch_geometry *geo = &this->bch_geometry;
 -- 
-Regards,
-
-Laurent Pinchart
+1.8.1.2
