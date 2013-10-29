@@ -1,20 +1,37 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vb2Jc-0005Q6-2K
- for linux-mtd@lists.infradead.org; Tue, 29 Oct 2013 05:58:09 +0000
-Message-ID: <526F4E53.1050706@ti.com>
-Date: Tue, 29 Oct 2013 11:27:39 +0530
-From: Sourav Poddar <sourav.poddar@ti.com>
+Date: Tue, 29 Oct 2013 15:04:27 +0900
+From: Simon Horman <horms@verge.net.au>
+To: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+Subject: Re: [PATCH 00/19] Enable various Renesas drivers on all ARM platforms
+Message-ID: <20131029060427.GF11580@verge.net.au>
+References: <1383004027-25036-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
 MIME-Version: 1.0
-To: Marek Vasut <marex@denx.de>
-Subject: Re: [PATCH] drivers: mtd: m25p80: Add quad read support.
-References: <1382693145-15750-1-git-send-email-sourav.poddar@ti.com>
- <201310271745.17152.marex@denx.de>
-In-Reply-To: <201310271745.17152.marex@denx.de>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: computersforpeace@gmail.com, linux-mtd@lists.infradead.org, balbi@ti.com,
- dedekind1@gmail.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1383004027-25036-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
+Cc: linux-fbdev@vger.kernel.org, Wolfram Sang <wsa@the-dreams.de>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Guennadi Liakhovetski <g.liakhovetski+renesas@gmail.com>,
+ Thierry Reding <thierry.reding@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-i2c@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>,
+ Joerg Roedel <joro@8bytes.org>, linux-sh@vger.kernel.org,
+ Magnus Damm <magnus.damm@gmail.com>,
+ Eduardo Valentin <eduardo.valentin@ti.com>,
+ Tomi Valkeinen <tomi.valkeinen@ti.com>, linux-serial@vger.kernel.org,
+ linux-input@vger.kernel.org, Zhang Rui <rui.zhang@intel.com>,
+ Chris Ball <cjb@laptop.org>,
+ Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
+ linux-media@vger.kernel.org, linux-pwm@vger.kernel.org,
+ Samuel Ortiz <samuel@sortiz.org>, linux-pm@vger.kernel.org,
+ Ian Molton <ian@mnementh.co.uk>, Mark Brown <broonie@kernel.org>,
+ linux-arm-kernel@lists.infradead.org,
+ Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+ iommu@lists.linux-foundation.org, netdev@vger.kernel.org,
+ dmaengine@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
+ "David S. Miller" <davem@davemloft.net>,
+ Mauro Carvalho Chehab <m.chehab@samsung.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,102 +41,117 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-On Sunday 27 October 2013 10:15 PM, Marek Vasut wrote:
-> Dear Sourav Poddar,
->
-> [...]
->
->> +static int macronix_quad_enable(struct m25p *flash)
->> +{
->> +	int ret, val;
->> +	u8 cmd[2];
->> +	cmd[0] = OPCODE_WRSR;
->> +
->> +	val = read_sr(flash);
->> +	cmd[1] = val | SR_QUAD_EN_MX;
->> +	write_enable(flash);
->> +
->> +	spi_write(flash->spi,&cmd, 2);
->> +
->> +	if (wait_till_ready(flash))
->> +		return 1;
->> +
->> +	ret = read_sr(flash);
-> Maybe read_sr() and read_cr() shall be fixed to return retval only and the val
-> shall be passed to them as an argument pointer? Aka. ret = read_sr(flash,&val);
->
-> That way, this dangerous construct below could become:
->
-> if (!(val&  SR_....)) {
-> 	dev_err();
-> 	ret = -EINVAL;
-> }
->
-> return ret;
-I was trying to work on it and realise, we dont need to pass val directly.
-We can continue returning the val and can still cleanup the below code as
-u suggetsed above.
-if (!(ret & SR_....)) {
-     dev_err();
-     ret = -EINVAL;
-}
+On Tue, Oct 29, 2013 at 12:46:48AM +0100, Laurent Pinchart wrote:
+> Hello,
+> 
+> This patch series, based on v3.12-rc7, prepares various Renesas drivers
+> for migration to multiplatform kernels by enabling their compilation or
+> otherwise fixing them on all ARM platforms. The patches are pretty
+> straightforward and are described in their commit message.
+> 
+> I'd like to get all these patches merged in v3.14. As they will need to go
+> through their respective subsystems' trees, I would appreciate if all
+> maintainers involved could notify me when they merge patches from this series
+> in their tree to help me tracking the merge status. I don't plan to send pull
+> requests individually for these patches, and I will repost patches
+> individually if changes are requested during review.
+> 
+> If you believe the issue should be solved in a different way (for instance by
+> removing the architecture dependency completely) please reply to the cover
+> letter to let other maintainers chime in.
 
+I think this is a step in a good direction.
+However, I think it would be even better if the architecture dependency was
+removed completely.
 
-> It will also let us prevent mixing of error codes and register values, which is
-> pretty ugly practice.
->
->> +	if (!(ret>  0&&  (ret&  SR_QUAD_EN_MX))) {
->> +		dev_err(&flash->spi->dev,
->> +			"Macronix Quad bit not set");
->> +		return -EINVAL;
->> +	}
->> +
->> +	return 0;
->> +}
->> +
-> [...]
->
->> +static inline int set_quad_mode(struct m25p *flash, u32 jedec_id)
->> +{
->> +	int status;
->> +
->> +	switch (JEDEC_MFR(jedec_id)) {
->> +	case CFI_MFR_MACRONIX:
->> +		status = macronix_quad_enable(flash);
->> +		if (status) {
->> +			dev_err(&flash->spi->dev,
->> +				"Macronix quad not enable");
-> "Macronix quad-read not enabled" would be more sensible, DTTO below.
->
->> +			return -EINVAL;
->> +		}
->> +		return status;
->> +	default:
->> +		status = spansion_quad_enable(flash);
->> +		if (status) {
->> +			dev_err(&flash->spi->dev,
->> +				"Spansion quad not enable");
->> +			return -EINVAL;
->> +		}
->> +		return status;
->> +	}
->> +}
-> [...]
->
->> @@ -774,7 +906,7 @@ static const struct spi_device_id m25p_ids[] = {
->>   	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
->>   	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, 0) },
->>   	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
->> -	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, 0) },
->> +	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, M25P80_QUAD_READ) },
-> I'm not convinced enabling 4-bit mode should be hard-coded in the MTD driver.
-> There might be a board which uses this chip in 1-bit mode.
->
-> We have a setup with Spansion chip here which uses 1-bit addressing in U-Boot,
-> but uses 4-bit addressing in Linux. We use a DT property to configure the SPI
-> bus width for that and I think that's a way to go. Note that there also are
-> chips which use 2-bit wide SPI communication.
->
-> [...]
->
+> 
+> Cc: Chris Ball <cjb@laptop.org>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: dmaengine@vger.kernel.org
+> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Cc: Eduardo Valentin <eduardo.valentin@ti.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Guennadi Liakhovetski <g.liakhovetski+renesas@gmail.com>
+> Cc: Ian Molton <ian@mnementh.co.uk>
+> Cc: iommu@lists.linux-foundation.org
+> Cc: Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: linux-fbdev@vger.kernel.org
+> Cc: linux-i2c@vger.kernel.org
+> Cc: linux-input@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-media@vger.kernel.org
+> Cc: linux-mmc@vger.kernel.org
+> Cc: linux-mtd@lists.infradead.org
+> Cc: linux-pm@vger.kernel.org
+> Cc: linux-pwm@vger.kernel.org
+> Cc: linux-serial@vger.kernel.org
+> Cc: linux-spi@vger.kernel.org
+> Cc: Magnus Damm <magnus.damm@gmail.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Mauro Carvalho Chehab <m.chehab@samsung.com>
+> Cc: netdev@vger.kernel.org
+> Cc: Samuel Ortiz <samuel@sortiz.org>
+> Cc: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+> Cc: Thierry Reding <thierry.reding@gmail.com>
+> Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
+> Cc: Vinod Koul <vinod.koul@intel.com>
+> Cc: Wolfram Sang <wsa@the-dreams.de>
+> Cc: Zhang Rui <rui.zhang@intel.com>
+> 
+> Laurent Pinchart (19):
+>   serial: sh-sci: Enable the driver on all ARM platforms
+>   DMA: shdma: Enable the driver on all ARM platforms
+>   i2c: sh_mobile: Enable the driver on all ARM platforms
+>   input: sh_keysc: Enable the driver on all ARM platforms
+>   iommu: shmobile: Enable the driver on all ARM platforms
+>   i2c: rcar: Enable the driver on all ARM platforms
+>   v4l: sh_vou: Enable the driver on all ARM platforms
+>   mmc: sdhi: Enable the driver on all ARM platforms
+>   mmc: sh_mmcif: Enable the driver on all ARM platforms
+>   mtd: sh_flctl: Enable the driver on all ARM platforms
+>   net: sh_eth: Set receive alignment correctly on all ARM platforms
+>   irda: sh_irda: Enable the driver on all ARM platforms
+>   pinctrl: sh-pfc: Enable the driver on all ARM platforms
+>   pwm: pwm-renesas-tpu: Enable the driver on all ARM platforms
+>   sh: intc: Enable the driver on all ARM platforms
+>   spi: sh_msiof: Enable the driver on all ARM platforms
+>   spi: sh_hspi: Enable the driver on all ARM platforms
+>   thermal: rcar-thermal: Enable the driver on all ARM platforms
+>   fbdev: sh-mobile-lcdcfb: Enable the driver on all ARM platforms
+> 
+>  drivers/dma/sh/Kconfig                | 2 +-
+>  drivers/dma/sh/shdmac.c               | 6 +++---
+>  drivers/i2c/busses/Kconfig            | 4 ++--
+>  drivers/input/keyboard/Kconfig        | 2 +-
+>  drivers/iommu/Kconfig                 | 2 +-
+>  drivers/media/platform/Kconfig        | 2 +-
+>  drivers/mmc/host/Kconfig              | 4 ++--
+>  drivers/mmc/host/tmio_mmc_dma.c       | 2 +-
+>  drivers/mtd/nand/Kconfig              | 2 +-
+>  drivers/net/ethernet/renesas/sh_eth.c | 2 +-
+>  drivers/net/ethernet/renesas/sh_eth.h | 2 +-
+>  drivers/net/irda/Kconfig              | 2 +-
+>  drivers/pinctrl/Makefile              | 2 +-
+>  drivers/pinctrl/sh-pfc/Kconfig        | 2 +-
+>  drivers/pwm/Kconfig                   | 2 +-
+>  drivers/sh/intc/Kconfig               | 2 +-
+>  drivers/spi/Kconfig                   | 4 ++--
+>  drivers/thermal/Kconfig               | 2 +-
+>  drivers/tty/serial/Kconfig            | 2 +-
+>  drivers/video/Kconfig                 | 6 +++---
+>  20 files changed, 27 insertions(+), 27 deletions(-)
+> 
+> -- 
+> Regards,
+> 
+> Laurent Pinchart
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
