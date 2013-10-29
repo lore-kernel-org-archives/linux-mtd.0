@@ -1,25 +1,21 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VbB6R-0003aa-Nq
- for linux-mtd@lists.infradead.org; Tue, 29 Oct 2013 15:21:08 +0000
-Message-ID: <1383060043.29619.54.camel@sauron.fi.intel.com>
-Subject: Re: Patching mkfs.ubifs.c for running under Windows ?
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Tue, 29 Oct 2013 17:20:43 +0200
-In-Reply-To: <CAFLxGvyt2w31v7v1cmvKBE6=hLkY1G-v31srsoQz82ktxg7SAg@mail.gmail.com>
-References: <mailman.6.1379692801.23497.linux-mtd@lists.infradead.org>
- <7c74c0d714e8e87daebbfd0163642d71@localhost>
- <1382782672.5901.25.camel@karhu.quadriga.com>
- <CAGVrzcY7RD0AFvkPLvoCSe5iFFtwXnLthVepJ=XrR4bhMPN6_A@mail.gmail.com>
- <CAFLxGvyt2w31v7v1cmvKBE6=hLkY1G-v31srsoQz82ktxg7SAg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
+Received: from mail-out.m-online.net ([212.18.0.9])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VbBD3-0003rb-CK
+ for linux-mtd@lists.infradead.org; Tue, 29 Oct 2013 15:27:58 +0000
+From: Marek Vasut <marex@denx.de>
+To: Sourav Poddar <sourav.poddar@ti.com>
+Subject: Re: [PATCH] drivers: mtd: m25p80: Add quad read support.
+Date: Tue, 29 Oct 2013 16:27:33 +0100
+References: <1382693145-15750-1-git-send-email-sourav.poddar@ti.com>
+ <201310291501.06051.marex@denx.de> <526FC153.1020004@ti.com>
+In-Reply-To: <526FC153.1020004@ti.com>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: gutemine <gutemine@oozoon.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Florian Fainelli <florian@openwrt.org>
-Reply-To: dedekind1@gmail.com
+Message-Id: <201310291627.34003.marex@denx.de>
+Cc: computersforpeace@gmail.com, linux-mtd@lists.infradead.org, balbi@ti.com,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,26 +25,129 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2013-10-28 at 11:47 +0100, Richard Weinberger wrote:
-> > https://dev.openwrt.org/browser/trunk/tools/mtd-utils/patches
-> >
-> > in particular:
-> > https://dev.openwrt.org/browser/trunk/tools/mtd-utils/patches/110-portability.patch
-> > https://dev.openwrt.org/browser/trunk/tools/mtd-utils/patches/120-cygwin_fixes.patch
-> > https://dev.openwrt.org/browser/trunk/tools/mtd-utils/patches/134-freebsd_loff_t.patch
-> >
-> > Not sure how acceptable they look like to you?
-> 
-> Looks not that bad. :-)
-> But why do you need the file "include/cygwin/bits-byteswap.h"?
-> 
-> Artem, what do you think?
-> IMHO adding cygwin support is less intrusive than adding native win32 support.
+Dear Sourav Poddar,
 
-I would clean-up these patches even more, and split them further. But
-yes, it looks like these could be turned into something not so intrusive
-and maintainable and be merged if MTD users need them.
+> Dear Marek Vasut,
+> 
+> On Tuesday 29 October 2013 07:31 PM, Marek Vasut wrote:
+> > Dear Sourav Poddar,
+> > 
+> >> Hi,
+> >> 
+> >> On Sunday 27 October 2013 10:15 PM, Marek Vasut wrote:
+> >>> Dear Sourav Poddar,
+> >>> 
+> >>> [...]
+> >>> 
+> >>>> +static int macronix_quad_enable(struct m25p *flash)
+> >>>> +{
+> >>>> +	int ret, val;
+> >>>> +	u8 cmd[2];
+> >>>> +	cmd[0] = OPCODE_WRSR;
+> >>>> +
+> >>>> +	val = read_sr(flash);
+> >>>> +	cmd[1] = val | SR_QUAD_EN_MX;
+> >>>> +	write_enable(flash);
+> >>>> +
+> >>>> +	spi_write(flash->spi,&cmd, 2);
+> >>>> +
+> >>>> +	if (wait_till_ready(flash))
+> >>>> +		return 1;
+> >>>> +
+> >>>> +	ret = read_sr(flash);
+> >>> 
+> >>> Maybe read_sr() and read_cr() shall be fixed to return retval only and
+> >>> the val shall be passed to them as an argument pointer? Aka. ret =
+> >>> read_sr(flash,&val);
+> >>> 
+> >>> That way, this dangerous construct below could become:
+> >>> 
+> >>> if (!(val&   SR_....)) {
+> >>> 
+> >>> 	dev_err();
+> >>> 	ret = -EINVAL;
+> >>> 
+> >>> }
+> >>> 
+> >>> return ret;
+> >> 
+> >> I was trying to work on it and realise, we dont need to pass val
+> >> directly. We can continue returning the val and can still cleanup the
+> >> below code as u suggetsed above.
+> >> if (!(ret&  SR_....)) {
+> >> 
+> >>       dev_err();
+> >>       ret = -EINVAL;
+> >> 
+> >> }
+> > 
+> > Uh oh, no. This doesn't seem right. I'd like to be able to clearly check
+> > if the function failed to read the register altogether OR if not, check
+> > the returned value of the register. Mixing these two together won't do
+> > us good. But maybe I just fail to understand your proposal, if so, then
+> > I appologize.
+> 
+> Yes, what I am trying to propose is to eliminate the return error check.
 
--- 
-Best Regards,
-Artem Bityutskiy
+But we want to be able to check if there is a failure :)
+
+> The check whether register read has happened correctly is embedded in
+> read_sr/read_cr function itself.
+>          if (retval < 0) {
+>                  dev_err(&flash->spi->dev, "error %d reading SR\n",
+>                                  (int) retval);
+>                  return retval;
+>          }
+> Same goes for read_cr.
+> So, if the above condition is not hit, we simply return the read value and
+> check it with the respective bits.
+
+Look here:
+
+ 107 static int read_sr(struct m25p *flash)
+ 108 {
+ 109         ssize_t retval;
+ 110         u8 code = OPCODE_RDSR;
+ 111         u8 val;
+ 112 
+ 113         retval = spi_write_then_read(flash->spi, &code, 1, &val, 1);
+ 114 
+ 115         if (retval < 0) {
+ 116                 dev_err(&flash->spi->dev, "error %d reading SR\n",
+ 117                                 (int) retval);
+ 118                 return retval;
+
+here you return error value IFF spi_write_then_read() fails for some reason.
+
+ 119         }
+ 120 
+ 121         return val;
+
+here you return actual value of the register.
+
+ 122 }
+
+This is how I'd change the function to make it less error-prone:
+
+*107 static int read_sr(struct m25p *flash, u8 *rval)
+ 108 {
+ 109         ssize_t retval;
+ 110         u8 code = OPCODE_RDSR;
+ 111         u8 val;
+ 112 
+ 113         retval = spi_write_then_read(flash->spi, &code, 1, &val, 1);
+ 114 
+ 115         if (retval < 0) {
+ 116                 dev_err(&flash->spi->dev, "error %d reading SR\n",
+ 117                                 (int) retval);
+ 118                 return retval;
+ 119         }
+*120         *rval = val;
+*121         return 0;
+ 122 }
+
+This way, you can check if the SPI read failed and if so, handle it in some way. 
+The return value would only be valid if this function returned 0.
+
+Best regards,
+Marek Vasut
