@@ -1,41 +1,20 @@
-Date: Tue, 29 Oct 2013 10:58:34 -0700
-From: Mark Brown <broonie@kernel.org>
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Message-ID: <20131029175834.GD20251@sirena.org.uk>
-References: <1383004027-25036-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
- <1577821.Q7gttkPE2J@avalon> <20131029172331.GA20251@sirena.org.uk>
- <1422562.0L87CDt5Gd@avalon>
+Received: from comal.ext.ti.com ([198.47.26.152])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VbE7l-0006Um-Al
+ for linux-mtd@lists.infradead.org; Tue, 29 Oct 2013 18:34:42 +0000
+Message-ID: <526FFFA0.8040800@ti.com>
+Date: Wed, 30 Oct 2013 00:04:08 +0530
+From: Sourav Poddar <sourav.poddar@ti.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="d9ADC0YsG2v16Js0"
-Content-Disposition: inline
-In-Reply-To: <1422562.0L87CDt5Gd@avalon>
-Subject: Re: [PATCH 00/19] Enable various Renesas drivers on all ARM platforms
-Cc: linux-fbdev@vger.kernel.org, Wolfram Sang <wsa@the-dreams.de>,
- Linus Walleij <linus.walleij@linaro.org>,
- Guennadi Liakhovetski <g.liakhovetski+renesas@gmail.com>,
- Thierry Reding <thierry.reding@gmail.com>, linux-mtd@lists.infradead.org,
- linux-i2c@vger.kernel.org,
- Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
- Vinod Koul <vinod.koul@intel.com>, Joerg Roedel <joro@8bytes.org>,
- linux-sh@vger.kernel.org, Magnus Damm <magnus.damm@gmail.com>,
- Eduardo Valentin <eduardo.valentin@ti.com>,
- Tomi Valkeinen <tomi.valkeinen@ti.com>, linux-serial@vger.kernel.org,
- linux-input@vger.kernel.org, Zhang Rui <rui.zhang@intel.com>,
- Chris Ball <cjb@laptop.org>,
- Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
- linux-media@vger.kernel.org, linux-pwm@vger.kernel.org,
- Samuel Ortiz <samuel@sortiz.org>, linux-pm@vger.kernel.org,
- Ian Molton <ian@mnementh.co.uk>, Simon Horman <horms@verge.net.au>,
- linux-arm-kernel@lists.infradead.org,
- Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-mmc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
- iommu@lists.linux-foundation.org, netdev@vger.kernel.org,
- dmaengine@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
- "David S. Miller" <davem@davemloft.net>,
- Mauro Carvalho Chehab <m.chehab@samsung.com>
+To: Marek Vasut <marex@denx.de>, <computersforpeace@gmail.com>
+Subject: Re: [PATCH] drivers: mtd: m25p80: Add quad read support.
+References: <1382693145-15750-1-git-send-email-sourav.poddar@ti.com>
+ <201310291627.34003.marex@denx.de> <526FE7B9.3000602@ti.com>
+ <201310291808.58939.marex@denx.de> <526FEC7D.6060403@ti.com>
+In-Reply-To: <526FEC7D.6060403@ti.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, balbi@ti.com, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -45,63 +24,171 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
---d9ADC0YsG2v16Js0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Oct 29, 2013 at 06:29:59PM +0100, Laurent Pinchart wrote:
-> On Tuesday 29 October 2013 10:23:31 Mark Brown wrote:
-> > On Tue, Oct 29, 2013 at 06:05:53PM +0100, Laurent Pinchart wrote:
-> > > The first one is that I can't compile-test all those drivers on all
-> > > architectures. The spi-sh-msiof driver, for instance, uses
-> > > io(read|write)(16|
-
-> > Which architectures are these and is there not a symbol we can depend on
-> > for them?
-
-> arch/cris for instance. We can use readl/writel instead (maybe it would b=
-e=20
-> time to rationalize and document the I/O accessors across all architectur=
-es,=20
-> but that's another topic).
-
-It'd certainly be sensible, or adding a config option to depend on if
-you rely on these functions.
-
-> My point is that there might be other issues that I won't be able to easi=
-ly=20
-> catch. This would break compilation for everybody for no reason, as the=
-=20
-> drivers are useless on non-SuperH, non-ARM platforms. That's why I believ=
-e=20
-> COMPILE_TEST would be a better option as a first step.
-
-Yes, it would - please do that.  Note that it won't stop anyone running
-into build issues on other architectures though, it's just about
-stopping Kconfig noise.
-
---d9ADC0YsG2v16Js0
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSb/dHAAoJELSic+t+oim9ddQP/i1RCiwSI2llH07cDu0C60zD
-gD/NLQYokpqOLuYQkIqY/ODY7avbL/f0ZuAbQ6BhfmQWWaX9sDLM1YmJTbbYEcFr
-rhCqyLRj7dWwM+R4j5HkiZ5rSNxKJS6D5kPHdkwS7BJyxlyzaIHlbxb49V4WKfwB
-UH3YFNpz4QbkFg2vE8/trXMW2roqYxKTEal5OktM0EeMHPhjFYZQmXyOin5Fd3Re
-yp4gCnSDZ+rHEZjPevraos5ZTf4IGB57EaFYk8whSuG/U1hzepXShgCPF76eJjmZ
-VoyrL+ZXPn67V8Tiym/GHOROG9bSzUvoKTvXB7SF0t0WY2ypgFGrNOQFfDOBYqkL
-9s3o+k3hPdmDenFZXUL4qpW/CX9Q0XsapsCKfK1wPXHRLgKWa/oUlLOfQZFIXNFU
-yNXqvnrOlq6T8B5wqohi9ZvwqlDVWtsSc43mE8pfIkgd/Dr24QlhOHsmlee7nq+y
-KeZKoZ4tIEsYuYSYZV8UG1SvBw2WSTH0tEvkHOr6kJpdUwNrQ7llEvw531KMqvsF
-eJ+AfYZcPM7tNPRTDwvqNeJW1qgsVdCan7U2UcIUWjx26Bz49eb6VykEcQx9LnRJ
-J+egZaXBWhep+9xCuk+fskdIKlawPmxy2ImBh9M8Fn7o/UnDdAmMuI3xE8k/njRp
-5YMTmmm5fewQmrrmmAws
-=dlcY
------END PGP SIGNATURE-----
-
---d9ADC0YsG2v16Js0--
+On Tuesday 29 October 2013 10:42 PM, Sourav Poddar wrote:
+> On Tuesday 29 October 2013 10:38 PM, Marek Vasut wrote:
+>> Dear Sourav Poddar,
+>>
+>>> On Tuesday 29 October 2013 08:57 PM, Marek Vasut wrote:
+>>>> Dear Sourav Poddar,
+>>>>
+>>>>> Dear Marek Vasut,
+>>>>>
+>>>>> On Tuesday 29 October 2013 07:31 PM, Marek Vasut wrote:
+>>>>>> Dear Sourav Poddar,
+>>>>>>
+>>>>>>> Hi,
+>>>>>>>
+>>>>>>> On Sunday 27 October 2013 10:15 PM, Marek Vasut wrote:
+>>>>>>>> Dear Sourav Poddar,
+>>>>>>>>
+>>>>>>>> [...]
+>>>>>>>>
+>>>>>>>>> +static int macronix_quad_enable(struct m25p *flash)
+>>>>>>>>> +{
+>>>>>>>>> +    int ret, val;
+>>>>>>>>> +    u8 cmd[2];
+>>>>>>>>> +    cmd[0] = OPCODE_WRSR;
+>>>>>>>>> +
+>>>>>>>>> +    val = read_sr(flash);
+>>>>>>>>> +    cmd[1] = val | SR_QUAD_EN_MX;
+>>>>>>>>> +    write_enable(flash);
+>>>>>>>>> +
+>>>>>>>>> +    spi_write(flash->spi,&cmd, 2);
+>>>>>>>>> +
+>>>>>>>>> +    if (wait_till_ready(flash))
+>>>>>>>>> +        return 1;
+>>>>>>>>> +
+>>>>>>>>> +    ret = read_sr(flash);
+>>>>>>>> Maybe read_sr() and read_cr() shall be fixed to return retval only
+>>>>>>>> and the val shall be passed to them as an argument pointer? 
+>>>>>>>> Aka. ret
+>>>>>>>> = read_sr(flash,&val);
+>>>>>>>>
+>>>>>>>> That way, this dangerous construct below could become:
+>>>>>>>>
+>>>>>>>> if (!(val&     SR_....)) {
+>>>>>>>>
+>>>>>>>>     dev_err();
+>>>>>>>>     ret = -EINVAL;
+>>>>>>>>
+>>>>>>>> }
+>>>>>>>>
+>>>>>>>> return ret;
+>>>>>>> I was trying to work on it and realise, we dont need to pass val
+>>>>>>> directly. We can continue returning the val and can still 
+>>>>>>> cleanup the
+>>>>>>> below code as u suggetsed above.
+>>>>>>> if (!(ret&    SR_....)) {
+>>>>>>>
+>>>>>>>         dev_err();
+>>>>>>>         ret = -EINVAL;
+>>>>>>>
+>>>>>>> }
+>>>>>> Uh oh, no. This doesn't seem right. I'd like to be able to clearly
+>>>>>> check if the function failed to read the register altogether OR if
+>>>>>> not, check the returned value of the register. Mixing these two
+>>>>>> together won't do us good. But maybe I just fail to understand your
+>>>>>> proposal, if so, then I appologize.
+>>>>> Yes, what I am trying to propose is to eliminate the return error 
+>>>>> check.
+>>>> But we want to be able to check if there is a failure :)
+>>>>
+>>>>> The check whether register read has happened correctly is embedded in
+>>>>> read_sr/read_cr function itself.
+>>>>>
+>>>>>            if (retval<   0) {
+>>>>>
+>>>>>                    dev_err(&flash->spi->dev, "error %d reading SR\n",
+>>>>>
+>>>>>                                    (int) retval);
+>>>>>
+>>>>>                    return retval;
+>>>>>
+>>>>>            }
+>>>>>
+>>>>> Same goes for read_cr.
+>>>>> So, if the above condition is not hit, we simply return the read 
+>>>>> value
+>>>>> and check it with the respective bits.
+>>>> Look here:
+>>>>    107 static int read_sr(struct m25p *flash)
+>>>>    108 {
+>>>>    109         ssize_t retval;
+>>>>    110         u8 code = OPCODE_RDSR;
+>>>>    111         u8 val;
+>>>>    112
+>>>>    113         retval = spi_write_then_read(flash->spi,&code, 
+>>>> 1,&val, 1);
+>>>>    114
+>>>>    115         if (retval<   0) {
+>>>>    116                 dev_err(&flash->spi->dev, "error %d reading 
+>>>> SR\n",
+>>>>    117                                 (int) retval);
+>>>>    118                 return retval;
+>>>>
+>>>> here you return error value IFF spi_write_then_read() fails for some
+>>>> reason.
+>>>>
+>>>>    119         }
+>>>>    120
+>>>>    121         return val;
+>>>>
+>>>> here you return actual value of the register.
+>>>>
+>>>>    122 }
+>>>>
+>>>> This is how I'd change the function to make it less error-prone:
+>>>>
+>>>> *107 static int read_sr(struct m25p *flash, u8 *rval)
+>>>>
+>>>>    108 {
+>>>>    109         ssize_t retval;
+>>>>    110         u8 code = OPCODE_RDSR;
+>>>>    111         u8 val;
+>>>>    112
+>>>>    113         retval = spi_write_then_read(flash->spi,&code, 
+>>>> 1,&val, 1);
+>>>>    114
+>>>>    115         if (retval<   0) {
+>>>>    116                 dev_err(&flash->spi->dev, "error %d reading 
+>>>> SR\n",
+>>>>    117                                 (int) retval);
+>>>>    118                 return retval;
+>>>>    119         }
+>>>>
+>>>> *120         *rval = val;
+>>>> *121         return 0;
+>>>>
+>>>>    122 }
+>>>>
+>>>> This way, you can check if the SPI read failed and if so, handle it in
+>>>> some way. The return value would only be valid if this function 
+>>>> returned
+>>>> 0.
+>>> I got this, but do you think its necessary to have two checks for 
+>>> verifying
+>>> whether read passed. ?
+>> Yes of course it is necessary, how else would you be able to tell if 
+>> the value
+>> is valid ? Sure, you can depend on negative integer here and on the 
+>> fact that
+>> the u8 will never be 32-bits wide (to produce a negative integer when 
+>> the return
+>> value is valid), but personally I think this is error-prone as hell.
+>>
+>>> If I go by your code above, after returning from above,
+>>> check for return value for successful read
+>>> and then check the respective bit set(SR_*). ?
+>> Yes, you will be checking the bit in SR only if you are sure the 
+>> value is valid.
+> hmm..alrite I will do the cleanup and send v2.
+I think it will be better to take the above recommended cleanup as a 
+seperate patch
+on top of $subject patch? Since, read_sr is not only used by the pieces 
+added in this patch.
+There are other already available apis in the driver which make use of 
+this function.
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
