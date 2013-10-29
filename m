@@ -1,21 +1,41 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VbCqk-000260-84
- for linux-mtd@lists.infradead.org; Tue, 29 Oct 2013 17:13:03 +0000
-Message-ID: <526FEC7D.6060403@ti.com>
-Date: Tue, 29 Oct 2013 22:42:29 +0530
-From: Sourav Poddar <sourav.poddar@ti.com>
+Date: Tue, 29 Oct 2013 10:23:31 -0700
+From: Mark Brown <broonie@kernel.org>
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Message-ID: <20131029172331.GA20251@sirena.org.uk>
+References: <1383004027-25036-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
+ <20131029060427.GF11580@verge.net.au>
+ <20131029160449.GD16686@sirena.org.uk> <1577821.Q7gttkPE2J@avalon>
 MIME-Version: 1.0
-To: Marek Vasut <marex@denx.de>
-Subject: Re: [PATCH] drivers: mtd: m25p80: Add quad read support.
-References: <1382693145-15750-1-git-send-email-sourav.poddar@ti.com>
- <201310291627.34003.marex@denx.de> <526FE7B9.3000602@ti.com>
- <201310291808.58939.marex@denx.de>
-In-Reply-To: <201310291808.58939.marex@denx.de>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: computersforpeace@gmail.com, linux-mtd@lists.infradead.org, balbi@ti.com,
- dedekind1@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="wac7ysb48OaltWcw"
+Content-Disposition: inline
+In-Reply-To: <1577821.Q7gttkPE2J@avalon>
+Subject: Re: [PATCH 00/19] Enable various Renesas drivers on all ARM platforms
+Cc: linux-fbdev@vger.kernel.org, Wolfram Sang <wsa@the-dreams.de>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Guennadi Liakhovetski <g.liakhovetski+renesas@gmail.com>,
+ Thierry Reding <thierry.reding@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-i2c@vger.kernel.org,
+ Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+ Vinod Koul <vinod.koul@intel.com>, Joerg Roedel <joro@8bytes.org>,
+ linux-sh@vger.kernel.org, Magnus Damm <magnus.damm@gmail.com>,
+ Eduardo Valentin <eduardo.valentin@ti.com>,
+ Tomi Valkeinen <tomi.valkeinen@ti.com>, linux-serial@vger.kernel.org,
+ linux-input@vger.kernel.org, Zhang Rui <rui.zhang@intel.com>,
+ Chris Ball <cjb@laptop.org>,
+ Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
+ linux-media@vger.kernel.org, linux-pwm@vger.kernel.org,
+ Samuel Ortiz <samuel@sortiz.org>, linux-pm@vger.kernel.org,
+ Ian Molton <ian@mnementh.co.uk>, Simon Horman <horms@verge.net.au>,
+ linux-arm-kernel@lists.infradead.org,
+ Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+ iommu@lists.linux-foundation.org, netdev@vger.kernel.org,
+ dmaengine@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
+ "David S. Miller" <davem@davemloft.net>,
+ Mauro Carvalho Chehab <m.chehab@samsung.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,146 +45,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 29 October 2013 10:38 PM, Marek Vasut wrote:
-> Dear Sourav Poddar,
->
->> On Tuesday 29 October 2013 08:57 PM, Marek Vasut wrote:
->>> Dear Sourav Poddar,
->>>
->>>> Dear Marek Vasut,
->>>>
->>>> On Tuesday 29 October 2013 07:31 PM, Marek Vasut wrote:
->>>>> Dear Sourav Poddar,
->>>>>
->>>>>> Hi,
->>>>>>
->>>>>> On Sunday 27 October 2013 10:15 PM, Marek Vasut wrote:
->>>>>>> Dear Sourav Poddar,
->>>>>>>
->>>>>>> [...]
->>>>>>>
->>>>>>>> +static int macronix_quad_enable(struct m25p *flash)
->>>>>>>> +{
->>>>>>>> +	int ret, val;
->>>>>>>> +	u8 cmd[2];
->>>>>>>> +	cmd[0] = OPCODE_WRSR;
->>>>>>>> +
->>>>>>>> +	val = read_sr(flash);
->>>>>>>> +	cmd[1] = val | SR_QUAD_EN_MX;
->>>>>>>> +	write_enable(flash);
->>>>>>>> +
->>>>>>>> +	spi_write(flash->spi,&cmd, 2);
->>>>>>>> +
->>>>>>>> +	if (wait_till_ready(flash))
->>>>>>>> +		return 1;
->>>>>>>> +
->>>>>>>> +	ret = read_sr(flash);
->>>>>>> Maybe read_sr() and read_cr() shall be fixed to return retval only
->>>>>>> and the val shall be passed to them as an argument pointer? Aka. ret
->>>>>>> = read_sr(flash,&val);
->>>>>>>
->>>>>>> That way, this dangerous construct below could become:
->>>>>>>
->>>>>>> if (!(val&     SR_....)) {
->>>>>>>
->>>>>>> 	dev_err();
->>>>>>> 	ret = -EINVAL;
->>>>>>>
->>>>>>> }
->>>>>>>
->>>>>>> return ret;
->>>>>> I was trying to work on it and realise, we dont need to pass val
->>>>>> directly. We can continue returning the val and can still cleanup the
->>>>>> below code as u suggetsed above.
->>>>>> if (!(ret&    SR_....)) {
->>>>>>
->>>>>>         dev_err();
->>>>>>         ret = -EINVAL;
->>>>>>
->>>>>> }
->>>>> Uh oh, no. This doesn't seem right. I'd like to be able to clearly
->>>>> check if the function failed to read the register altogether OR if
->>>>> not, check the returned value of the register. Mixing these two
->>>>> together won't do us good. But maybe I just fail to understand your
->>>>> proposal, if so, then I appologize.
->>>> Yes, what I am trying to propose is to eliminate the return error check.
->>> But we want to be able to check if there is a failure :)
->>>
->>>> The check whether register read has happened correctly is embedded in
->>>> read_sr/read_cr function itself.
->>>>
->>>>            if (retval<   0) {
->>>>
->>>>                    dev_err(&flash->spi->dev, "error %d reading SR\n",
->>>>
->>>>                                    (int) retval);
->>>>
->>>>                    return retval;
->>>>
->>>>            }
->>>>
->>>> Same goes for read_cr.
->>>> So, if the above condition is not hit, we simply return the read value
->>>> and check it with the respective bits.
->>> Look here:
->>>    107 static int read_sr(struct m25p *flash)
->>>    108 {
->>>    109         ssize_t retval;
->>>    110         u8 code = OPCODE_RDSR;
->>>    111         u8 val;
->>>    112
->>>    113         retval = spi_write_then_read(flash->spi,&code, 1,&val, 1);
->>>    114
->>>    115         if (retval<   0) {
->>>    116                 dev_err(&flash->spi->dev, "error %d reading SR\n",
->>>    117                                 (int) retval);
->>>    118                 return retval;
->>>
->>> here you return error value IFF spi_write_then_read() fails for some
->>> reason.
->>>
->>>    119         }
->>>    120
->>>    121         return val;
->>>
->>> here you return actual value of the register.
->>>
->>>    122 }
->>>
->>> This is how I'd change the function to make it less error-prone:
->>>
->>> *107 static int read_sr(struct m25p *flash, u8 *rval)
->>>
->>>    108 {
->>>    109         ssize_t retval;
->>>    110         u8 code = OPCODE_RDSR;
->>>    111         u8 val;
->>>    112
->>>    113         retval = spi_write_then_read(flash->spi,&code, 1,&val, 1);
->>>    114
->>>    115         if (retval<   0) {
->>>    116                 dev_err(&flash->spi->dev, "error %d reading SR\n",
->>>    117                                 (int) retval);
->>>    118                 return retval;
->>>    119         }
->>>
->>> *120         *rval = val;
->>> *121         return 0;
->>>
->>>    122 }
->>>
->>> This way, you can check if the SPI read failed and if so, handle it in
->>> some way. The return value would only be valid if this function returned
->>> 0.
->> I got this, but do you think its necessary to have two checks for verifying
->> whether read passed. ?
-> Yes of course it is necessary, how else would you be able to tell if the value
-> is valid ? Sure, you can depend on negative integer here and on the fact that
-> the u8 will never be 32-bits wide (to produce a negative integer when the return
-> value is valid), but personally I think this is error-prone as hell.
->
->> If I go by your code above, after returning from above,
->> check for return value for successful read
->> and then check the respective bit set(SR_*). ?
-> Yes, you will be checking the bit in SR only if you are sure the value is valid.
-hmm..alrite I will do the cleanup and send v2.
+
+--wac7ysb48OaltWcw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Oct 29, 2013 at 06:05:53PM +0100, Laurent Pinchart wrote:
+
+> The first one is that I can't compile-test all those drivers on all=20
+> architectures. The spi-sh-msiof driver, for instance, uses io(read|write)=
+(16|
+
+Which architectures are these and is there not a symbol we can depend on
+for them?
+
+> 32) which are not available on all architectures. There might be other si=
+milar=20
+> problems that I can't catch, and I don't want to introduce build breakage=
+s in=20
+> the kernel.
+
+This is easy enough to handle if we do run into issues, it seems better
+to get things available than try to step through architecture by
+architecture.
+
+> The second reason is that, as the IP cores have never been used on anythi=
+ng=20
+> but SuperH and ARM, I don't like the idea of clobbering the config proces=
+s=20
+> with drivers that are useless on the target architecture. Now that we hav=
+e a=20
+> COMPILE_TEST Kconfig option, my preference would thus go to SUPERH || ARM=
+ ||=20
+> COMPILE_TEST over no dependency at all.
+
+That's not what you did, though - you're not adding COMPILE_TEST.
+
+--wac7ysb48OaltWcw
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSb+8QAAoJELSic+t+oim9cO4P/0CNsXH4RTd+b7gkEaGIE5FB
+749OqmwnlVvQPjycW5R0GiBevc7Iw9QehjcuZlE4aviXL6IWaPDr3tAOsTEuf+RZ
+mVZ8NLpDCdPHzLG9/2LPPZ3JcsOAbayMDkjlLZL3Ozf0eimalO7f5Lkuj5qPHcop
+FP8gmnlApKD9xCWamFEm+XJy7NGEMdzhuUUdJcDiAQ64sMfc40YBpdkbBH8GR/jp
+OG07H8nOdyGWfL516EBO4yK5bHrP7oIJIBFL8KXrf5aQVx4gRoqouX7OjVvBl7uY
+qZlCpOZY8aow93HdJlC/skjiKCAR33kXFmVShNF6FgDpzCkWHwQ38oU2kH0KqL+L
+YbpZeZbZ6ZW2s6je9cwlq+KZG2ngYdVYPozN+a+jyLlLMDGXKjOaHU4Ctrf25jr8
+0WU70ZaDfARfn4kJ3pRs0CTmRmAZXezVlPQZkKp57IqAlogCgzDNkIvL17DbCy1C
+HkloKaMlvlUgOBJolYNvpas7V/cRz2BB132UXoIvSI94EkXCkQJ3vVvrLmXncbG3
+TNCyyLGe5uzBeC2z5CnIoGRTmX8rMjDVsmK81f0YCCoaLMWXUc/CG6V1pRurcmdN
+bNC9b0miP+ZLoxe6enERCPcqK8YM1m/d2pMv9EzDRw6kG6Htu8T1DjxQOpHWeOTG
+aWRAEtmK2IU5cZjenCxT
+=r5xl
+-----END PGP SIGNATURE-----
+
+--wac7ysb48OaltWcw--
