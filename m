@@ -1,21 +1,39 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VbBD3-0003rb-CK
- for linux-mtd@lists.infradead.org; Tue, 29 Oct 2013 15:27:58 +0000
-From: Marek Vasut <marex@denx.de>
-To: Sourav Poddar <sourav.poddar@ti.com>
-Subject: Re: [PATCH] drivers: mtd: m25p80: Add quad read support.
-Date: Tue, 29 Oct 2013 16:27:33 +0100
-References: <1382693145-15750-1-git-send-email-sourav.poddar@ti.com>
- <201310291501.06051.marex@denx.de> <526FC153.1020004@ti.com>
-In-Reply-To: <526FC153.1020004@ti.com>
+Date: Tue, 29 Oct 2013 09:04:49 -0700
+From: Mark Brown <broonie@kernel.org>
+To: Simon Horman <horms@verge.net.au>
+Message-ID: <20131029160449.GD16686@sirena.org.uk>
+References: <1383004027-25036-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
+ <20131029060427.GF11580@verge.net.au>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201310291627.34003.marex@denx.de>
-Cc: computersforpeace@gmail.com, linux-mtd@lists.infradead.org, balbi@ti.com,
- dedekind1@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="2iBwrppp/7QCDedR"
+Content-Disposition: inline
+In-Reply-To: <20131029060427.GF11580@verge.net.au>
+Subject: Re: [PATCH 00/19] Enable various Renesas drivers on all ARM platforms
+Cc: linux-fbdev@vger.kernel.org, Wolfram Sang <wsa@the-dreams.de>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Guennadi Liakhovetski <g.liakhovetski+renesas@gmail.com>,
+ Thierry Reding <thierry.reding@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-i2c@vger.kernel.org,
+ Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+ Vinod Koul <vinod.koul@intel.com>, Joerg Roedel <joro@8bytes.org>,
+ linux-sh@vger.kernel.org, Magnus Damm <magnus.damm@gmail.com>,
+ Eduardo Valentin <eduardo.valentin@ti.com>,
+ Tomi Valkeinen <tomi.valkeinen@ti.com>, linux-serial@vger.kernel.org,
+ linux-input@vger.kernel.org, Zhang Rui <rui.zhang@intel.com>,
+ Chris Ball <cjb@laptop.org>,
+ Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
+ linux-media@vger.kernel.org, linux-pwm@vger.kernel.org,
+ Samuel Ortiz <samuel@sortiz.org>, linux-pm@vger.kernel.org,
+ Ian Molton <ian@mnementh.co.uk>, linux-arm-kernel@lists.infradead.org,
+ Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+ iommu@lists.linux-foundation.org, netdev@vger.kernel.org,
+ dmaengine@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
+ "David S. Miller" <davem@davemloft.net>,
+ Mauro Carvalho Chehab <m.chehab@samsung.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,129 +43,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Sourav Poddar,
 
-> Dear Marek Vasut,
-> 
-> On Tuesday 29 October 2013 07:31 PM, Marek Vasut wrote:
-> > Dear Sourav Poddar,
-> > 
-> >> Hi,
-> >> 
-> >> On Sunday 27 October 2013 10:15 PM, Marek Vasut wrote:
-> >>> Dear Sourav Poddar,
-> >>> 
-> >>> [...]
-> >>> 
-> >>>> +static int macronix_quad_enable(struct m25p *flash)
-> >>>> +{
-> >>>> +	int ret, val;
-> >>>> +	u8 cmd[2];
-> >>>> +	cmd[0] = OPCODE_WRSR;
-> >>>> +
-> >>>> +	val = read_sr(flash);
-> >>>> +	cmd[1] = val | SR_QUAD_EN_MX;
-> >>>> +	write_enable(flash);
-> >>>> +
-> >>>> +	spi_write(flash->spi,&cmd, 2);
-> >>>> +
-> >>>> +	if (wait_till_ready(flash))
-> >>>> +		return 1;
-> >>>> +
-> >>>> +	ret = read_sr(flash);
-> >>> 
-> >>> Maybe read_sr() and read_cr() shall be fixed to return retval only and
-> >>> the val shall be passed to them as an argument pointer? Aka. ret =
-> >>> read_sr(flash,&val);
-> >>> 
-> >>> That way, this dangerous construct below could become:
-> >>> 
-> >>> if (!(val&   SR_....)) {
-> >>> 
-> >>> 	dev_err();
-> >>> 	ret = -EINVAL;
-> >>> 
-> >>> }
-> >>> 
-> >>> return ret;
-> >> 
-> >> I was trying to work on it and realise, we dont need to pass val
-> >> directly. We can continue returning the val and can still cleanup the
-> >> below code as u suggetsed above.
-> >> if (!(ret&  SR_....)) {
-> >> 
-> >>       dev_err();
-> >>       ret = -EINVAL;
-> >> 
-> >> }
-> > 
-> > Uh oh, no. This doesn't seem right. I'd like to be able to clearly check
-> > if the function failed to read the register altogether OR if not, check
-> > the returned value of the register. Mixing these two together won't do
-> > us good. But maybe I just fail to understand your proposal, if so, then
-> > I appologize.
-> 
-> Yes, what I am trying to propose is to eliminate the return error check.
+--2iBwrppp/7QCDedR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-But we want to be able to check if there is a failure :)
+On Tue, Oct 29, 2013 at 03:04:27PM +0900, Simon Horman wrote:
 
-> The check whether register read has happened correctly is embedded in
-> read_sr/read_cr function itself.
->          if (retval < 0) {
->                  dev_err(&flash->spi->dev, "error %d reading SR\n",
->                                  (int) retval);
->                  return retval;
->          }
-> Same goes for read_cr.
-> So, if the above condition is not hit, we simply return the read value and
-> check it with the respective bits.
+> I think this is a step in a good direction.
+> However, I think it would be even better if the architecture dependency was
+> removed completely.
 
-Look here:
+Yes, please.
 
- 107 static int read_sr(struct m25p *flash)
- 108 {
- 109         ssize_t retval;
- 110         u8 code = OPCODE_RDSR;
- 111         u8 val;
- 112 
- 113         retval = spi_write_then_read(flash->spi, &code, 1, &val, 1);
- 114 
- 115         if (retval < 0) {
- 116                 dev_err(&flash->spi->dev, "error %d reading SR\n",
- 117                                 (int) retval);
- 118                 return retval;
+--2iBwrppp/7QCDedR
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-here you return error value IFF spi_write_then_read() fails for some reason.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
 
- 119         }
- 120 
- 121         return val;
+iQIcBAEBAgAGBQJSb9yZAAoJELSic+t+oim9bYwP/iUUXI14zyW5LzIhwP6LBlEr
+FOYrZVwQxqUbnA4hDctQCmrA9VikBRNUmlDoUx+xxNNRLd7Zelm2iC8xQh4U1JJX
+9pJ/yv1FHi4EBNmWRK7gL9RXEUM7U4Jt1/nPgW64Kw7ooMwsKmMssrDmwm8xorRD
+iFvd4kY6ZiYz1m5Qvn1rQM05qskN1xGR0jdaxhH8DMCkhA0UyGhLoeFWXDy68T1A
+fsJQrF5mRjO/DNqgI/DqetC8gGy1gjyqETra6Ah730luxYN8bZxbmmbjBc4pYDtY
+7pjRnqVjPMCG+seGgAzlCkgk8t56mHfkrzSRnF0IZ4q5PW4uY1QpzuEs2vB3SI/A
+bS3SD8i71t88jsQ0G/skXAbme0Rl2J+7al3DDMJpUf8yCbFQTZoeFSbe75PgA5Dl
+C6D/7nuK8BIQw5/SV+iCVFN99nKXvJZHFc8wdB7YbXnSQCUdmCLnbkkjYS7HxkQ/
+4OB+XjOgVcGeDCjJrL38LrarJIu588qHe6Cz+8wlJvmV/B9pRWwsXNz2OzU8gSPp
+9RKDNPrpaF+aEoYONBJkHIJf8nqBKipk4xFOmOVxEoMA8oGCAAKltM/ktJdgdfir
+Kb+MgiqubYkjFUFJ08WBqs+L63H4mHQ3JcYAw9NsAiKf1XKJuwdIwddhPlrgTvrQ
+HY0P0bFfzdsgfQfvQ5gC
+=3XLW
+-----END PGP SIGNATURE-----
 
-here you return actual value of the register.
-
- 122 }
-
-This is how I'd change the function to make it less error-prone:
-
-*107 static int read_sr(struct m25p *flash, u8 *rval)
- 108 {
- 109         ssize_t retval;
- 110         u8 code = OPCODE_RDSR;
- 111         u8 val;
- 112 
- 113         retval = spi_write_then_read(flash->spi, &code, 1, &val, 1);
- 114 
- 115         if (retval < 0) {
- 116                 dev_err(&flash->spi->dev, "error %d reading SR\n",
- 117                                 (int) retval);
- 118                 return retval;
- 119         }
-*120         *rval = val;
-*121         return 0;
- 122 }
-
-This way, you can check if the SPI read failed and if so, handle it in some way. 
-The return value would only be valid if this function returned 0.
-
-Best regards,
-Marek Vasut
+--2iBwrppp/7QCDedR--
