@@ -1,47 +1,21 @@
-Received: from mail-ob0-f171.google.com ([209.85.214.171])
+Received: from bear.ext.ti.com ([192.94.94.41])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VbCAJ-0007h9-Jr
- for linux-mtd@lists.infradead.org; Tue, 29 Oct 2013 16:29:12 +0000
-Received: by mail-ob0-f171.google.com with SMTP id wn1so113970obc.16
- for <linux-mtd@lists.infradead.org>; Tue, 29 Oct 2013 09:28:49 -0700 (PDT)
+ id 1VbCX1-0008QQ-GA
+ for linux-mtd@lists.infradead.org; Tue, 29 Oct 2013 16:52:41 +0000
+Message-ID: <526FE7B9.3000602@ti.com>
+Date: Tue, 29 Oct 2013 22:22:09 +0530
+From: Sourav Poddar <sourav.poddar@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <1383004027-25036-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
-References: <1383004027-25036-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
-Date: Tue, 29 Oct 2013 09:28:48 -0700
-Message-ID: <CACRpkdbKk=n=6tU=9fD05Gu9utpQSZ1qrK7EqLf5qwaV7eHBWA@mail.gmail.com>
-Subject: Re: [PATCH 00/19] Enable various Renesas drivers on all ARM platforms
-From: Linus Walleij <linus.walleij@linaro.org>
-To: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
- "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
- Guennadi Liakhovetski <g.liakhovetski+renesas@gmail.com>,
- Thierry Reding <thierry.reding@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
- Vinod Koul <vinod.koul@intel.com>, Joerg Roedel <joro@8bytes.org>,
- Wolfram Sang <wsa@the-dreams.de>, Magnus Damm <magnus.damm@gmail.com>,
- Eduardo Valentin <eduardo.valentin@ti.com>,
- Tomi Valkeinen <tomi.valkeinen@ti.com>,
- "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
- Linux Input <linux-input@vger.kernel.org>, Zhang Rui <rui.zhang@intel.com>,
- Chris Ball <cjb@laptop.org>,
- Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
- "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
- "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
- Samuel Ortiz <samuel@sortiz.org>,
- "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
- Ian Molton <ian@mnementh.co.uk>, Mark Brown <broonie@kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- linux-spi@vger.kernel.org, iommu@lists.linux-foundation.org,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>, dmaengine@vger.kernel.org,
- David Woodhouse <dwmw2@infradead.org>, "David S. Miller" <davem@davemloft.net>,
- Mauro Carvalho Chehab <m.chehab@samsung.com>
+To: Marek Vasut <marex@denx.de>
+Subject: Re: [PATCH] drivers: mtd: m25p80: Add quad read support.
+References: <1382693145-15750-1-git-send-email-sourav.poddar@ti.com>
+ <201310291501.06051.marex@denx.de> <526FC153.1020004@ti.com>
+ <201310291627.34003.marex@denx.de>
+In-Reply-To: <201310291627.34003.marex@denx.de>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: computersforpeace@gmail.com, linux-mtd@lists.infradead.org, balbi@ti.com,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -51,21 +25,130 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Oct 28, 2013 at 4:46 PM, Laurent Pinchart
-<laurent.pinchart+renesas@ideasonboard.com> wrote:
+On Tuesday 29 October 2013 08:57 PM, Marek Vasut wrote:
+> Dear Sourav Poddar,
+>
+>> Dear Marek Vasut,
+>>
+>> On Tuesday 29 October 2013 07:31 PM, Marek Vasut wrote:
+>>> Dear Sourav Poddar,
+>>>
+>>>> Hi,
+>>>>
+>>>> On Sunday 27 October 2013 10:15 PM, Marek Vasut wrote:
+>>>>> Dear Sourav Poddar,
+>>>>>
+>>>>> [...]
+>>>>>
+>>>>>> +static int macronix_quad_enable(struct m25p *flash)
+>>>>>> +{
+>>>>>> +	int ret, val;
+>>>>>> +	u8 cmd[2];
+>>>>>> +	cmd[0] = OPCODE_WRSR;
+>>>>>> +
+>>>>>> +	val = read_sr(flash);
+>>>>>> +	cmd[1] = val | SR_QUAD_EN_MX;
+>>>>>> +	write_enable(flash);
+>>>>>> +
+>>>>>> +	spi_write(flash->spi,&cmd, 2);
+>>>>>> +
+>>>>>> +	if (wait_till_ready(flash))
+>>>>>> +		return 1;
+>>>>>> +
+>>>>>> +	ret = read_sr(flash);
+>>>>> Maybe read_sr() and read_cr() shall be fixed to return retval only and
+>>>>> the val shall be passed to them as an argument pointer? Aka. ret =
+>>>>> read_sr(flash,&val);
+>>>>>
+>>>>> That way, this dangerous construct below could become:
+>>>>>
+>>>>> if (!(val&    SR_....)) {
+>>>>>
+>>>>> 	dev_err();
+>>>>> 	ret = -EINVAL;
+>>>>>
+>>>>> }
+>>>>>
+>>>>> return ret;
+>>>> I was trying to work on it and realise, we dont need to pass val
+>>>> directly. We can continue returning the val and can still cleanup the
+>>>> below code as u suggetsed above.
+>>>> if (!(ret&   SR_....)) {
+>>>>
+>>>>        dev_err();
+>>>>        ret = -EINVAL;
+>>>>
+>>>> }
+>>> Uh oh, no. This doesn't seem right. I'd like to be able to clearly check
+>>> if the function failed to read the register altogether OR if not, check
+>>> the returned value of the register. Mixing these two together won't do
+>>> us good. But maybe I just fail to understand your proposal, if so, then
+>>> I appologize.
+>> Yes, what I am trying to propose is to eliminate the return error check.
+> But we want to be able to check if there is a failure :)
+>
+>> The check whether register read has happened correctly is embedded in
+>> read_sr/read_cr function itself.
+>>           if (retval<  0) {
+>>                   dev_err(&flash->spi->dev, "error %d reading SR\n",
+>>                                   (int) retval);
+>>                   return retval;
+>>           }
+>> Same goes for read_cr.
+>> So, if the above condition is not hit, we simply return the read value and
+>> check it with the respective bits.
+> Look here:
+>
+>   107 static int read_sr(struct m25p *flash)
+>   108 {
+>   109         ssize_t retval;
+>   110         u8 code = OPCODE_RDSR;
+>   111         u8 val;
+>   112
+>   113         retval = spi_write_then_read(flash->spi,&code, 1,&val, 1);
+>   114
+>   115         if (retval<  0) {
+>   116                 dev_err(&flash->spi->dev, "error %d reading SR\n",
+>   117                                 (int) retval);
+>   118                 return retval;
+>
+> here you return error value IFF spi_write_then_read() fails for some reason.
+>
+>   119         }
+>   120
+>   121         return val;
+>
+> here you return actual value of the register.
+>
+>   122 }
+>
+> This is how I'd change the function to make it less error-prone:
+>
+> *107 static int read_sr(struct m25p *flash, u8 *rval)
+>   108 {
+>   109         ssize_t retval;
+>   110         u8 code = OPCODE_RDSR;
+>   111         u8 val;
+>   112
+>   113         retval = spi_write_then_read(flash->spi,&code, 1,&val, 1);
+>   114
+>   115         if (retval<  0) {
+>   116                 dev_err(&flash->spi->dev, "error %d reading SR\n",
+>   117                                 (int) retval);
+>   118                 return retval;
+>   119         }
+> *120         *rval = val;
+> *121         return 0;
+>   122 }
+>
+> This way, you can check if the SPI read failed and if so, handle it in some way.
+> The return value would only be valid if this function returned 0.
+>
+I got this, but do you think its necessary to have two checks for verifying
+whether read passed. ?
+If I go by your code above, after returning from above,
+check for return value for successful read
+and then check the respective bit set(SR_*). ?
 
-> If you believe the issue should be solved in a different way (for instance by
-> removing the architecture dependency completely) please reply to the cover
-> letter to let other maintainers chime in.
-
-I have no real opinions on whether this is a good itermediate step towards
-complete arch-independence or not, but I just noticed that you still
-have the <mach/*> hierarchy in mach-shmobile/include/mach/*, and
-grep:ing around this seems totally unnecessary, I think it would be
-easy to produce a patch set eliminating <mach/*> from shmobile.
-
-(Usually we will just move all the headers down into the
-mach-shmobile folder.)
-
-Yours,
-Linus Walleij
+> Best regards,
+> Marek Vasut
