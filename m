@@ -1,25 +1,31 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VbFgw-000486-4c
- for linux-mtd@lists.infradead.org; Tue, 29 Oct 2013 20:15:07 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: RE: [PATCH v2 0/5] Assorted OMAP2 NAND clean-ups
-Date: Tue, 29 Oct 2013 20:14:34 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA2BADF@DBDE04.ent.ti.com>
-References: <1382696277-9063-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA2AE2A@DBDE04.ent.ti.com>
- <20131025114836.GD2489@localhost>
-In-Reply-To: <20131025114836.GD2489@localhost>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-Cc: "marek.belisko@gmail.com" <marek.belisko@gmail.com>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Balbi,
- Felipe" <balbi@ti.com>
+From: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+To: linux-sh@vger.kernel.org
+Subject: [PATCH v2 00/19] Enable various Renesas drivers on all ARM platforms
+Date: Tue, 29 Oct 2013 23:37:35 +0100
+Message-Id: <1383086274-11049-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
+Cc: linux-fbdev@vger.kernel.org, Wolfram Sang <wsa@the-dreams.de>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Guennadi Liakhovetski <g.liakhovetski+renesas@gmail.com>,
+ Thierry Reding <thierry.reding@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-i2c@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>,
+ Joerg Roedel <joro@8bytes.org>, Magnus Damm <magnus.damm@gmail.com>,
+ Eduardo Valentin <eduardo.valentin@ti.com>,
+ Tomi Valkeinen <tomi.valkeinen@ti.com>, linux-serial@vger.kernel.org,
+ linux-input@vger.kernel.org, Zhang Rui <rui.zhang@intel.com>,
+ Chris Ball <cjb@laptop.org>,
+ Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
+ linux-media@vger.kernel.org, linux-pwm@vger.kernel.org,
+ Samuel Ortiz <samuel@sortiz.org>, linux-pm@vger.kernel.org,
+ Ian Molton <ian@mnementh.co.uk>, Mark Brown <broonie@kernel.org>,
+ linux-arm-kernel@lists.infradead.org,
+ Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+ iommu@lists.linux-foundation.org, netdev@vger.kernel.org,
+ dmaengine@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
+ "David S. Miller" <davem@davemloft.net>,
+ Mauro Carvalho Chehab <m.chehab@samsung.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,77 +35,112 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgRXplcXVpZWwgR2FyY2lhLA0KDQpTb3JyeSBJJ20gYml0IG91dCBvZiBteSBwbGFjZS4uIHNv
-IG5vdCBhYmxlIHRvIHN5bmMgb2Z0ZW4gd2l0aCBtYWlscy4uDQpIb3dldmVyIHBseiBzZWUgbXkg
-cmVwbGllcyBiZWxvdy4uDQoNClsuLi5dDQoNCj4gPg0KPiA+ID4gUGVrb24sIEJyaWFuOiBEbyB5
-b3UgdGhpbmsgdGhpcyBzb2x1dGlvbiBtaWdodCB3b3JrIGZvciA4LWJpdCBhbmQgMTYtYml0DQo+
-ID4gPiBkZXZpY2VzPw0KPiA+ID4NCj4gPiBJIHRoaW5rIE5BTkRfQlVTV0lEVEhfQVVUTyAod2l0
-aG91dCBHUE1DIGNoYW5nZXMpIHdvdWxkIGZhaWwgaW4NCj4gPiBmb2xsb3dpbmcgc2NlbmFyaW9z
-Li4NCj4gPg0KPiA+IENhc2UtMTogY29uZmlndXJpbmcgZ3BtYyxkZXZpY2Utd2lkdGg9MSBmcm9t
-IERUIHdoZW4gdXNpbmcgeDE2IGRldmljZS4NCj4gDQo+IC4uLiB3aGljaCBpcyB3cm9uZy4gVGhh
-dCdzIHdoeSB3ZSBoYXZlIGEgRFQgcHJvcGVydHkgdG8gY29uZmlndXJlIHRoYXQuDQo+IFRoZSBH
-UE1DICptdXN0KiBiZSBwcm9wZXJseSBjb25maWd1cmVkLg0KPiANCk5vLCBJIHRoaW5rIHRoZSBt
-YWluIGludGVudGlvbiBvZiB1c2luZyBOQU5EX0JVU1dJRFRIX0FVVE8gaXMgdGhhdA0KeW91ciBj
-b250cm9sbGVyIHNob3VsZCBub3QgZGVwZW5kIG9uIERUIG9yIGFueSBvdGhlciB1c2VyLWlucHV0
-IHRvIGRldGVjdA0KTkFORCBidXMtd2lkdGgsICh3aGV0aGVyIGl0cyBncG1jLGRldmljZS13aWR0
-aCBvciBhbnl0aGluZyBlbHNlKS4NCg0KDQo+ID4gQXMgeW91ciBOQU5EIGRyaXZlciBpcyB1c2lu
-ZyBOQU5EX0JVU1dJRFRIX0FVVE8sIGl0IHNob3VsZA0KPiA+IGlnbm9yZSB0aGlzIERUIGNvbmZp
-ZywgYW5kIGJhc2VkIG9uIE9ORkkgcGFyYW1zIGl0IHNob3VsZCB3b3JrIGFzIHgxNg0KPiA+DQo+
-IA0KPiBIbS4uIEkgZG9uJ3QgdGhpbmsgc28uIFRoZSBhdXRvLXN0dWZmIGlzIGp1c3QgZm9yIHRo
-ZSBOQU5EIGRyaXZlciwgbm90DQo+IGZvciB0aGUgbWVtb3J5IGNvbnRyb2xsZXIuIEkgZG9uJ3Qg
-a25vdyBtdWNoIGFib3V0IGhhcmR3YXJlLCBidXQgaW4gbXkNCj4gbWluZA0KPiBJIGltYWdpbmUg
-dGhlbSBhcyBkaWZmZXJlbnQgY29udHJvbGxlcnMuDQo+IA0KVEkncyBHUE1DIGhhcmR3YXJlIGVu
-Z2luZSBjYW4gZG8gbXVjaCBtb3JlIHRoYW4gc3VwcG9ydGluZyBvbmx5DQpOQU5EIGRldmljZXMs
-IHRoZXJlZm9yZSB0aGVyZSBpcyBhbiBpbmRlcGVuZGVudCBHUE1DIGRyaXZlciwgYW5kDQpkZXBl
-bmRlbnQgTkFORCBkcml2ZXIuIA0KU28gd2hlbiBhIE5BTkQgZGV2aWNlIGlzIGNvbm5lY3RlZCBh
-bGwgR1BNQyBkcml2ZXIgZG9lcyBpcyBpbml0aWFsaXplcw0KR1BNQyBoYXJkd2FyZSBiYXNlZCBv
-biBzdGF0aWMgRFQgYmluZGluZ3MsIGFuZCBwYXNzIHRoZSBjb250cm9sIHRvDQpOQU5EIGRyaXZl
-ci4gQnV0IHRoZXJlIHNob3VsZCBiZSBhIG1lY2hhbmlzbSB0byBvdmVycmlkZSB0aGVzZQ0Kc3Rh
-dGljIERUIGNvbmZpZ3VyYXRpb25zIGRvbmUgaW4gR1BNQyBkcml2ZXIgYnkgTkFORCBkcml2ZXIu
-DQooaXQgaXMgdGhpcyBwaWVjZSB3aGljaCBpcyBtaXNzaW5nIHRvZGF5KS4NCg0KDQo+ID4gQ2Fz
-ZS0yOiBjb25maWd1cmluZyBncG1jLGRldmljZS13aWR0aD0yIGZyb20gRFQgd2hlbiB1c2luZyB4
-OCBkZXZpY2UuDQo+IA0KPiAuLi4gd2hpY2ggaXMgYWxzbyB3cm9uZy4NCj4gDQo+IE9uY2UgYWdh
-aW4sIHlvdSdyZSBtaXMtY29uZmlndXJpbmcgdGhlIEdQTUMuIFdlIGNhbm5vdCBleHBlY3QgdGhl
-IE5BTkQNCj4gZHJpdmVyIHRvIHdvcmsgcHJvcGVybHkgaWYgdGhlIEdQTUMgaXMgbm90IHByb3Bl
-cmx5IGluaXRpYWxpemVkLCBkb24ndA0KPiB5b3UgdGhpbms/DQo+IA0KPiA+IEFjdHVhbGx5IGhh
-dmluZyBOQU5EX0JVU1dJRFRIX0FVVE8gd291bGQgcmVxdWlyZSBjaGFuZ2UgaW4gR1BNQw0KPiA+
-IGRyaXZlciBhbHNvLi4gcGxlYXNlIHJlZmVyIG15IGNvbW1lbnRzIGluLi4NCj4gPiBodHRwOi8v
-bGlzdHMuaW5mcmFkZWFkLm9yZy9waXBlcm1haWwvbGludXgtbXRkLzIwMTMtT2N0b2Jlci8wNDky
-ODQuaHRtbA0KPiA+DQo+IA0KPiBXZWxsLCBJIHRoaW5rIHRoZSBhcHByb2FjaCBzaG91bGQgYmUg
-ZGlmZmVyZW50IGFuZCBtdWNoIHNpbXBsZXI6IEdQTUMNCj4gKm11c3QqIGJlIHByb3Blcmx5IGNv
-bmZpZ3VyZWQgYW5kIHRoZW4gTkFORCBjYW4gZG8gT05GSSBkZXRlY3Rpb24NCj4gc3RhcnRpbmcg
-aW4gOC1iaXQgYW5kIHRoZW4gc3dpdGNoaW5nIHRvIDE2LWJpdCBpZiBuZWVkZWQuDQo+IA0KPiBU
-aGlzIGlzIHdoYXQgdGhpcyBwYXRjaCBpcyBkb2luZzogaXQgX2ZpeGVzXyB0aGUgTkFORCBkcml2
-ZXIgT05GSSBkZXRlY3Rpb24sDQo+IF9wcm92aWRlZF8gdGhlIEdQTUMgaXMgd2VsbC1wcmVwYXJl
-ZC4NCj4gDQo+IFlvdSBzZWVtIHRvIHRoaW5rIHRoYXQgR1BNQyArIE5BTkQgc2hvdWxkIGJlIGFi
-bGUgdG8gYXV0b21hZ2ljYWxseSBkZXRlY3QNCj4gdGhlIGRldmljZSBhbmQgd29yaywgYnV0IEkg
-ZG9uJ3QgdGhpbmsgdGhhdCdzIGV2ZW4gcGh5c2ljYWxseSBwb3NzaWJsZSwgZm9yDQo+IHRoZSBy
-ZWFzb25zIHlvdSBoYXZlIGp1c3QgZXhwb3NlZC4NCj4gDQo+IEkgdGhpbmsgdGhpcyBmaXggaXMg
-c2ltcGxlIGVub3VnaC4NCj4gDQpObywgSSBzdGlsbCB0aGluayB0aGVyZSBzaG91bGQgYmUgYSB3
-YXkgdG8gdGVsbCB0aGUgdXNlciB0aGF0IHRoZXJlIGlzIGENCm1pcy1tYXRjaCBiZXR3ZWVuIGJ1
-cy13aWR0aCBjb25maWd1cmVkIGluIERULCBhbmQgdGhhdCBkZXRlY3RlZA0KYnkgT05GSSBwcm9i
-ZS4gSWYgaXQgd2FzIHN0cmFpZ2h0IGZvcndhcmQsIHRoaXMgd291bGQgaGF2ZSBiZWVuIGFscmVh
-ZHkNCmFjY2VwdGVkIGVhcmxpZXIgOi0pDQoNCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL3Bp
-cGVybWFpbC9saW51eC1tdGQvMjAxMy1PY3RvYmVyLzA0OTE1NC5odG1sDQoNCihyZWFkIHRoZSBj
-b21tZW50cyBmcm9tIEJyaWFuIGJ5IGZvbGxvd2luZyBhYm92ZSBwYXRjaCB0aHJlYWQpDQoNClBy
-b2JsZW0gaXMgaWYgdGhlcmUgaXMgYSBtaXMtbWF0Y2ggaW4geW91ciBidXMtd2lkdGggZHVlIHRv
-IGluY29ycmVjdA0KR1BNQyBEVCBiaW5kaW5nIGNvbmZpZ3VyYXRpb25zLCBzdGlsbCBOQU5EIHBy
-b2JlIGFuZCBldmVyeXRoaW5nIHdpbGwNCnBhc3MgY29ycmVjdGx5LCBiZWNhdXNlIG5hbmRfc2Nh
-bl9pZGVudCgpIHVzZXMgcmVhZF9ieXRlKCkgd2hpY2gNCnJldHVybnMgc2FtZSBmb3IgYm90aCB4
-OCBhbmQgeDE2IGRldmljZXMuDQpZb3Ugd2lsbCBmaW5kIGlzc3VlcyB3aGVuIHlvdSBhY3R1YWxs
-eSBkbyBwYWdlIHJlYWRzIGFuZCB3cml0ZXMuIEFuZA0KdGhpcyBpcyB3aGVyZSB5b3Ugd291bGQg
-c2VlIGNvcnJ1cHRlZCBoYWxmLXBhZ2UgZGF0YS4gQW5kIHVzZXINCndvdWxkIGJlIGNsdWVsZXNz
-IG9uIHdoeSBoZSBpcyBzZWVpbmcgc3VjaCBlcnJhdGljIGJlaGF2aW9yLg0KDQpUaGlzIGlzIHdo
-eSBJIGFkZGVkIGNoZWNrcyBmb3IgbWlzbWF0Y2ggb2YgRFQgYmluZGluZyByaWdodCBkdXJpbmcN
-Cm5hbmQgcHJvYmUoKSwgaW4gYWJvdmUgbWVudGlvbmVkIHBhdGNoLiBJIGNvdWxkIGp1c3QgcmVt
-b3ZlIGNhbGxpbmcNCm5hbmRfc2Nhbl9pZGVudCgpIHNlY29uZC10aW1lIGFuZCBpdCBiZWNvbWVz
-IHlvdXIgcGF0Y2gsIGJ1dCB0aGVuDQppdCB3b3VsZCBiZSBqdXN0IHZhbGlkYXRpbmcgdGhlIERU
-IHNldHRpbmcsIG5vdCBwdXJlIGF1dG8tZGV0ZWN0aW9uLg0KDQoNCj4gDQo+IEJUVzogVGhlIEdQ
-TUMgY29kZSBpZ25vcmVzIHRoZSBEVCB2YWx1ZSBpbiAnZ3BtYyxkZXZpY2Utd2lkdGgnIGFuZCB1
-c2VzDQo+ICduYW5kLWJ1cy13aWR0aCcgaW5zdGVhZCwgYnV0IHRoYXQncyBhIGRpZmZlcmVudCBi
-dWcgYW5kIGEgZGlmZmVyZW50IGZpeCA6KQ0KPiANCkkgdGhpbmsgeW91IG1lYW4gdGhlIG9wcG9z
-aWUuLiBHUE1DIGRyaXZlciB1c2VzIGdwbWMsZGV2aWNlLXdpZHRoLi4NClJlZmVyOiAkS0VSTkVM
-L2FyY2gvYXJtL21hY2gtb21hcDIvZ3BtYy5jDQpAQGdwbWNfcmVhZF9zZXR0aW5nc19kdCguLi4p
-DQoJb2ZfcHJvcGVydHlfcmVhZF91MzIobnAsICJncG1jLGRldmljZS13aWR0aCIsICZwLT5kZXZp
-Y2Vfd2lkdGgpOw0KDQonbmFuZC1idXMtd2lkdGgnIGlzIG5vdCB1c2VkIGFueXdoZXJlIGluc3Rl
-YWQuLg0KDQoNCndpdGggcmVnYXJkcywgcGVrb24NCg==
+Hello,
+
+This patch series, based on v3.12-rc7, prepares various Renesas drivers
+for migration to multiplatform kernels by enabling their compilation or
+otherwise fixing them on all ARM platforms. The patches are pretty
+straightforward and are described in their commit message.
+
+Changes since v1:
+
+- The drivers can also be selected when COMPILE_TEST is enabled, regardless of
+  the architecture. This should provide a good compromise between wide build
+  test coverage and not clobbering configuration with drivers useless on
+  non-SuperH, non-ARM platforms.
+
+- DMA configuration is now unconditional in patch 08/19
+
+I'd like to get all these patches merged in v3.14. As they will need to go
+through their respective subsystems' trees, I would appreciate if all
+maintainers involved could notify me when they merge patches from this series
+in their tree to help me tracking the merge status. I don't plan to send pull
+requests individually for these patches, and I will repost patches
+individually if changes are requested during review.
+
+If you believe the issue should be solved in a different way please reply to
+the cover letter to let other maintainers chime in.
+
+Cc: Chris Ball <cjb@laptop.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: Eduardo Valentin <eduardo.valentin@ti.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Guennadi Liakhovetski <g.liakhovetski+renesas@gmail.com>
+Cc: Ian Molton <ian@mnementh.co.uk>
+Cc: iommu@lists.linux-foundation.org
+Cc: Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>
+Cc: Joerg Roedel <joro@8bytes.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: Magnus Damm <magnus.damm@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Mauro Carvalho Chehab <m.chehab@samsung.com>
+Cc: Samuel Ortiz <samuel@sortiz.org>
+Cc: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Cc: Thierry Reding <thierry.reding@gmail.com>
+Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Cc: Vinod Koul <vinod.koul@intel.com>
+Cc: Wolfram Sang <wsa@the-dreams.de>
+Cc: Zhang Rui <rui.zhang@intel.com>
+Cc: dmaengine@vger.kernel.org
+Cc: linux-fbdev@vger.kernel.org
+Cc: linux-i2c@vger.kernel.org
+Cc: linux-input@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-media@vger.kernel.org
+Cc: linux-mmc@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org
+Cc: linux-pm@vger.kernel.org
+Cc: linux-pwm@vger.kernel.org
+Cc: linux-serial@vger.kernel.org
+Cc: linux-spi@vger.kernel.org
+Cc: netdev@vger.kernel.org
+
+Laurent Pinchart (19):
+  serial: sh-sci: Enable the driver on all ARM platforms
+  DMA: shdma: Enable the driver on all ARM platforms
+  i2c: sh_mobile: Enable the driver on all ARM platforms
+  input: sh_keysc: Enable the driver on all ARM platforms
+  iommu: shmobile: Enable the driver on all ARM platforms
+  i2c: rcar: Enable the driver on all ARM platforms
+  v4l: sh_vou: Enable the driver on all ARM platforms
+  mmc: sdhi: Enable the driver on all ARM platforms
+  mmc: sh_mmcif: Enable the driver on all ARM platforms
+  mtd: sh_flctl: Enable the driver on all ARM platforms
+  net: sh_eth: Set receive alignment correctly on all ARM platforms
+  irda: sh_irda: Enable the driver on all ARM platforms
+  pinctrl: sh-pfc: Enable the driver on all ARM platforms
+  pwm: pwm-renesas-tpu: Enable the driver on all ARM platforms
+  sh: intc: Enable the driver on all ARM platforms
+  spi: sh_msiof: Enable the driver on all ARM platforms
+  spi: sh_hspi: Enable the driver on all ARM platforms
+  thermal: rcar-thermal: Enable the driver on all ARM platforms
+  fbdev: sh-mobile-lcdcfb: Enable the driver on all ARM platforms
+
+ drivers/dma/sh/Kconfig                | 2 +-
+ drivers/dma/sh/shdmac.c               | 6 +++---
+ drivers/i2c/busses/Kconfig            | 4 ++--
+ drivers/input/keyboard/Kconfig        | 2 +-
+ drivers/iommu/Kconfig                 | 2 +-
+ drivers/media/platform/Kconfig        | 2 +-
+ drivers/mmc/host/Kconfig              | 4 ++--
+ drivers/mmc/host/tmio_mmc_dma.c       | 4 +---
+ drivers/mtd/nand/Kconfig              | 2 +-
+ drivers/net/ethernet/renesas/sh_eth.c | 2 +-
+ drivers/net/ethernet/renesas/sh_eth.h | 2 +-
+ drivers/net/irda/Kconfig              | 2 +-
+ drivers/pinctrl/Makefile              | 2 +-
+ drivers/pinctrl/sh-pfc/Kconfig        | 2 +-
+ drivers/pwm/Kconfig                   | 2 +-
+ drivers/sh/intc/Kconfig               | 2 +-
+ drivers/spi/Kconfig                   | 4 ++--
+ drivers/thermal/Kconfig               | 2 +-
+ drivers/tty/serial/Kconfig            | 2 +-
+ drivers/video/Kconfig                 | 6 +++---
+ 20 files changed, 27 insertions(+), 29 deletions(-)
+
+-- 
+Regards,
+
+Laurent Pinchart
