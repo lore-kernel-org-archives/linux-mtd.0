@@ -1,32 +1,23 @@
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Brian Norris <computersforpeace@gmail.com>, Ezequiel Garcia
- <ezequiel.garcia@free-electrons.com>
-Subject: RE: [PATCH v11 00/10] [PATCH v10 00/10] mtd:nand:omap2: clean-up of
- supported ECC schemes
-Date: Wed, 30 Oct 2013 21:30:24 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA2D43E@DBDE04.ent.ti.com>
-References: <1382619026-4182-1-git-send-email-pekon@ti.com>
- <20131024135258.GC9958@localhost>
- <CAN8TOE_KQxW4-6KgjQDczyB31wmYB_y9Tirxa34GWQGgY39sNQ@mail.gmail.com>
-In-Reply-To: <CAN8TOE_KQxW4-6KgjQDczyB31wmYB_y9Tirxa34GWQGgY39sNQ@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail-oa0-x235.google.com ([2607:f8b0:4003:c02::235])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VbdSs-0007kO-J9
+ for linux-mtd@lists.infradead.org; Wed, 30 Oct 2013 21:38:13 +0000
+Received: by mail-oa0-f53.google.com with SMTP id n12so2117261oag.26
+ for <linux-mtd@lists.infradead.org>; Wed, 30 Oct 2013 14:37:50 -0700 (PDT)
+Date: Wed, 30 Oct 2013 17:37:41 -0400
+From: Brian Norris <computersforpeace@gmail.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH -next] mtd: remove duplicated include from mtdcore.c
+Message-ID: <20131030213741.GA20059@norris.computersforpeace.net>
+References: <CAPgLHd8=fLjqnKEoTB2C+7R=Nz7bdV0D5ttO29em=P8nX-Tvag@mail.gmail.com>
+ <20131030095640.GC2453@localhost>
 MIME-Version: 1.0
-Cc: Mark Rutland <mark.rutland@arm.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Ian
- Campbell <ijc+devicetree@hellion.org.uk>, Pawel Moll <Pawel.Moll@arm.com>,
- Arnd Bergmann <arnd@arndb.de>, Artem Bityutskiy <dedekind1@gmail.com>,
- "tony@atomide.com" <tony@atomide.com>,
- Avinash Philip <avinashphilipk@gmail.com>,
- Stephen Warren <swarren@wwwdotorg.org>,
- "jp.francois@cynove.com" <jp.francois@cynove.com>, "Balbi,
- Felipe" <balbi@ti.com>, Rob Herring <robherring2@gmail.com>,
- Benoit Cousson <bcousson@baylibre.com>, "olof@lixom.net" <olof@lixom.net>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ivan Djelic <ivan.djelic@parrot.com>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20131030095640.GC2453@localhost>
+Cc: linux-mtd@lists.infradead.org, yongjun_wei@trendmicro.com.cn,
+ Wei Yongjun <weiyj.lk@gmail.com>, dwmw2@infradead.org,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,38 +27,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> From: Brian Norris [mailto:computersforpeace@gmail.com]
-[...]
+On Wed, Oct 30, 2013 at 06:56:41AM -0300, Ezequiel Garcia wrote:
+> On Wed, Oct 30, 2013 at 01:34:22PM +0800, Wei Yongjun wrote:
+> > From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+> > 
+> > Remove duplicated include.
+> > 
+> > Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+> > ---
+> >  drivers/mtd/mtdcore.c | 1 -
+> >  1 file changed, 1 deletion(-)
+> > 
+> > diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> > index 7189089..92311a5 100644
+> > --- a/drivers/mtd/mtdcore.c
+> > +++ b/drivers/mtd/mtdcore.c
+> > @@ -37,7 +37,6 @@
+> >  #include <linux/backing-dev.h>
+> >  #include <linux/gfp.h>
+> >  #include <linux/slab.h>
+> > -#include <linux/major.h>
+> >  
+> >  #include <linux/mtd/mtd.h>
+> >  #include <linux/mtd/partitions.h>
+> > 
+> > 
+> 
+> Acked-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 
-> I agree with Ezequiel's thoughts, since the excessive amount of noise
-> in this patch series has delayed it significantly. But at this point,
-> I think it has stabilized; we have reviews from the DT folks (thanks
-> guys; please comment if you have an official "ack" to give), and I
-> think we've retained backwards compatibility properly; I've combed
-> through it a few times over the months; we have a third-party tester;
-> and at this point, I'm sure we're all sick of this.
->=20
-> So, without further delay: pushed all patches except path 8 to l2-mtd.git=
-.
->=20
-Thanks much ..
-I'll ensure that my next series are more logically aligned.
+Pushed to l2-mtd.git, thanks Wei! It probably could just be squashed
+into the original patch, but I'm not sure it's actually worth the
+rebase.
 
-
-> Tony, you mentioned the DTS update in patch 8 going in via an ARM
-> tree? This patch is not urgent, and it should probably wait until we
-> know what release the rest of the series makes it into. This may
-> depend on David Woodhouse's recommendation, but I'm not sure this
-> series will have enough time baking in linux-next before entering
-> mainline in 3.13 (the merge window is approaching).
->=20
-> Pekon/Ezequiel/others: please feel free to send any follow up cleanups
-> for this driver. I'll take a look at what Ezequiel has already sent
-> out and see if it's still applicable on top.
->=20
-Yes, I have other pending series, which I'll resend after rebasing on
-this v11. But those are limited to internal NAND driver clean-up only
-And do not touch DT or any other dependent driver.
-
-
-with regards, pekon
+Brian
