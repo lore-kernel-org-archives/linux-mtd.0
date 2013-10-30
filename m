@@ -1,23 +1,21 @@
-Received: from mail-oa0-x235.google.com ([2607:f8b0:4003:c02::235])
+Received: from mail-ob0-x22e.google.com ([2607:f8b0:4003:c01::22e])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VbdSs-0007kO-J9
- for linux-mtd@lists.infradead.org; Wed, 30 Oct 2013 21:38:13 +0000
-Received: by mail-oa0-f53.google.com with SMTP id n12so2117261oag.26
- for <linux-mtd@lists.infradead.org>; Wed, 30 Oct 2013 14:37:50 -0700 (PDT)
-Date: Wed, 30 Oct 2013 17:37:41 -0400
+ id 1Vbdn8-0008T1-P0
+ for linux-mtd@lists.infradead.org; Wed, 30 Oct 2013 21:59:07 +0000
+Received: by mail-ob0-f174.google.com with SMTP id vb8so2163469obc.33
+ for <linux-mtd@lists.infradead.org>; Wed, 30 Oct 2013 14:58:45 -0700 (PDT)
+Date: Wed, 30 Oct 2013 17:58:36 -0400
 From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH -next] mtd: remove duplicated include from mtdcore.c
-Message-ID: <20131030213741.GA20059@norris.computersforpeace.net>
-References: <CAPgLHd8=fLjqnKEoTB2C+7R=Nz7bdV0D5ttO29em=P8nX-Tvag@mail.gmail.com>
- <20131030095640.GC2453@localhost>
+To: Sachin Kamat <sachin.kamat@linaro.org>
+Subject: Re: [PATCH 1/1] mtd: mxc_nand: Include linux/of.h header
+Message-ID: <20131030215836.GB20059@norris.computersforpeace.net>
+References: <1382093195-31929-1-git-send-email-sachin.kamat@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20131030095640.GC2453@localhost>
-Cc: linux-mtd@lists.infradead.org, yongjun_wei@trendmicro.com.cn,
- Wei Yongjun <weiyj.lk@gmail.com>, dwmw2@infradead.org,
- linux-kernel@vger.kernel.org
+In-Reply-To: <1382093195-31929-1-git-send-email-sachin.kamat@linaro.org>
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+ artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,36 +25,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Oct 30, 2013 at 06:56:41AM -0300, Ezequiel Garcia wrote:
-> On Wed, Oct 30, 2013 at 01:34:22PM +0800, Wei Yongjun wrote:
-> > From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
-> > 
-> > Remove duplicated include.
-> > 
-> > Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
-> > ---
-> >  drivers/mtd/mtdcore.c | 1 -
-> >  1 file changed, 1 deletion(-)
-> > 
-> > diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> > index 7189089..92311a5 100644
-> > --- a/drivers/mtd/mtdcore.c
-> > +++ b/drivers/mtd/mtdcore.c
-> > @@ -37,7 +37,6 @@
-> >  #include <linux/backing-dev.h>
-> >  #include <linux/gfp.h>
-> >  #include <linux/slab.h>
-> > -#include <linux/major.h>
-> >  
-> >  #include <linux/mtd/mtd.h>
-> >  #include <linux/mtd/partitions.h>
-> > 
-> > 
+On Fri, Oct 18, 2013 at 04:16:35PM +0530, Sachin Kamat wrote:
+> 'of_match_ptr' is defined in linux/of.h. Include it explicitly to
+> avoid build breakage in the future.
 > 
-> Acked-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+> ---
+>  drivers/mtd/nand/mxc_nand.c |    1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+> index ce8242b..1037755 100644
+> --- a/drivers/mtd/nand/mxc_nand.c
+> +++ b/drivers/mtd/nand/mxc_nand.c
+> @@ -32,6 +32,7 @@
+>  #include <linux/io.h>
+>  #include <linux/irq.h>
+>  #include <linux/completion.h>
+> +#include <linux/of.h>
+>  #include <linux/of_device.h>
+>  #include <linux/of_mtd.h>
 
-Pushed to l2-mtd.git, thanks Wei! It probably could just be squashed
-into the original patch, but I'm not sure it's actually worth the
-rebase.
+I'm not really sure this is all that necessary (are of_device.h or
+of_mtd.h ever not going to include the appropriate of.h header?), but
+since we have the patch (and I see that you've been spamming around the
+other subsystems with similar patches)...
+
+Applied to l2-mtd.git.
 
 Brian
