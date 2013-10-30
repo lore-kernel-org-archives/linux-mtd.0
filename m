@@ -1,21 +1,20 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VbSNL-0001kn-AJ
- for linux-mtd@lists.infradead.org; Wed, 30 Oct 2013 09:47:44 +0000
-From: Marek Vasut <marex@denx.de>
-To: Sourav Poddar <sourav.poddar@ti.com>
-Subject: Re: [PATCH] drivers: mtd: m25p80: Add quad read support.
-Date: Tue, 29 Oct 2013 19:24:27 +0100
-References: <1382693145-15750-1-git-send-email-sourav.poddar@ti.com>
- <201310291808.58939.marex@denx.de> <526FEC7D.6060403@ti.com>
-In-Reply-To: <526FEC7D.6060403@ti.com>
-MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201310291924.28110.marex@denx.de>
-Cc: computersforpeace@gmail.com, linux-mtd@lists.infradead.org, balbi@ti.com,
- dedekind1@gmail.com
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VbSSz-00041V-85
+ for linux-mtd@lists.infradead.org; Wed, 30 Oct 2013 09:53:33 +0000
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: <linux-omap@vger.kernel.org>,
+	<linux-mtd@lists.infradead.org>
+Subject: [PATCH 1/1] mtd: nand: omap2: Fix device detection path
+Date: Wed, 30 Oct 2013 06:53:08 -0300
+Message-Id: <1383126788-27426-2-git-send-email-ezequiel.garcia@free-electrons.com>
+In-Reply-To: <1383126788-27426-1-git-send-email-ezequiel.garcia@free-electrons.com>
+References: <1383126788-27426-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: marek.belisko@gmail.com,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>, Pekon Gupta <pekon@ti.com>,
+ Felipe Balbi <balbi@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,33 +24,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Sourav Poddar,
+Because the device bus can be 8-bit or 16-bit width, yet ONFI detection
+cannot work in 16-bit mode, we need to set the NAND_BUSWIDTH_AUTO option
+which allows proper initialization configuration.
 
-[...]
+Once the bus width is detected, nand_scan_ident() updates the nand_chip struct
+'option' field to use the appropriate read/write functions and configure
+the ECC engine.
 
-> >>> This way, you can check if the SPI read failed and if so, handle it in
-> >>> some way. The return value would only be valid if this function
-> >>> returned 0.
-> >> 
-> >> I got this, but do you think its necessary to have two checks for
-> >> verifying whether read passed. ?
-> > 
-> > Yes of course it is necessary, how else would you be able to tell if the
-> > value is valid ? Sure, you can depend on negative integer here and on
-> > the fact that the u8 will never be 32-bits wide (to produce a negative
-> > integer when the return value is valid), but personally I think this is
-> > error-prone as hell.
-> > 
-> >> If I go by your code above, after returning from above,
-> >> check for return value for successful read
-> >> and then check the respective bit set(SR_*). ?
-> > 
-> > Yes, you will be checking the bit in SR only if you are sure the value is
-> > valid.
-> 
-> hmm..alrite I will do the cleanup and send v2.
+Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+---
+ drivers/mtd/nand/omap2.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Brian, does this make sense? I'd hate to misguide someone.
-
-Best regards,
-Marek Vasut
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index ec40b8d..c71206b 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -1662,7 +1662,7 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 	mtd->owner		= THIS_MODULE;
+ 	nand_chip		= &info->nand;
+ 	nand_chip->ecc.priv	= NULL;
+-	nand_chip->options	|= NAND_SKIP_BBTSCAN;
++	nand_chip->options	|= NAND_SKIP_BBTSCAN | NAND_BUSWIDTH_AUTO;
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	if (res == NULL) {
+@@ -1708,7 +1708,6 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	/* scan NAND device connected to chip controller */
+-	nand_chip->options |= pdata->devsize & NAND_BUSWIDTH_16;
+ 	if (nand_scan_ident(mtd, 1, NULL)) {
+ 		pr_err("nand device scan failed, may be bus-width mismatch\n");
+ 		err = -ENXIO;
+-- 
+1.8.1.5
