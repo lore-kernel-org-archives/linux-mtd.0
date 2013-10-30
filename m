@@ -1,21 +1,26 @@
-Received: from mail-ob0-x22b.google.com ([2607:f8b0:4003:c01::22b])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vbf3N-000216-Mo
- for linux-mtd@lists.infradead.org; Wed, 30 Oct 2013 23:19:58 +0000
-Received: by mail-ob0-f171.google.com with SMTP id wn1so2240175obc.30
- for <linux-mtd@lists.infradead.org>; Wed, 30 Oct 2013 16:19:36 -0700 (PDT)
-Date: Wed, 30 Oct 2013 19:19:31 -0400
-From: Brian Norris <computersforpeace@gmail.com>
-To: Sourav Poddar <sourav.poddar@ti.com>
-Subject: Re: [Rebase/PATCHv2] drivers: mtd: m25p80: Add quad read support.
-Message-ID: <20131030231930.GD20059@norris.computersforpeace.net>
-References: <1383124802-25079-1-git-send-email-sourav.poddar@ti.com>
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by casper.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Vbf3r-00031t-5p
+ for linux-mtd@lists.infradead.org; Wed, 30 Oct 2013 23:20:27 +0000
+Date: Wed, 30 Oct 2013 20:19:57 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: "Gupta, Pekon" <pekon@ti.com>
+Subject: Re: [PATCH 0/1] Fix OMAP2 NAND ONFI device detection
+Message-ID: <20131030231956.GA2489@localhost>
+References: <1383126788-27426-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20131030191414.GA16668@norris.computersforpeace.net>
+ <20980858CB6D3A4BAE95CA194937D5E73EA2D41D@DBDE04.ent.ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1383124802-25079-1-git-send-email-sourav.poddar@ti.com>
-Cc: marex@denx.de, linux-mtd@lists.infradead.org, balbi@ti.com,
- dedekind1@gmail.com
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA2D41D@DBDE04.ent.ti.com>
+Cc: "marek.belisko@gmail.com" <marek.belisko@gmail.com>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Balbi,
+ Felipe" <balbi@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,105 +30,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Oct 30, 2013 at 02:50:02PM +0530, Sourav Poddar wrote:
-> Some flash also support quad read mode.
-> Adding support for adding quad mode in m25p80
-> for spansion and macronix flash.
-> 
-> Signed-off-by: Sourav Poddar <sourav.poddar@ti.com>
-> ---
-> Rebase this on latest l2mtd.
-> v1->v2:
-> Small dev_err message fix to make it
-> mode appropriate.
-> v1: http://patchwork.ozlabs.org/patch/286109/
-> 
-> There is one cleanup suggestion from Marek Vasut on read_sr
-> value. I will take that up as a seperate patch, once this 
-> patch gets done.
-> 
-> 
->  drivers/mtd/devices/m25p80.c |  160 ++++++++++++++++++++++++++++++++++++++++--
->  1 files changed, 155 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 5897889..ba4dd8b 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
+Pekon,
 
-[...]
+Let me answer this one alone, given it's an important question.
 
-> @@ -76,6 +79,10 @@
->  #define	SR_BP2			0x10	/* Block protect 2 */
->  #define	SR_SRWD			0x80	/* SR write protect */
->  
-> +/* Configuration Register bits. */
-> +#define CR_QUAD_EN_SPAN		0x2     /* Spansion Quad I/O */
-> +#define SR_QUAD_EN_MX		0x40    /* Macronix Quad I/O */
+On Wed, Oct 30, 2013 at 09:18:53PM +0000, Gupta, Pekon wrote:
+> > 
+> > I'm not sure, of course, but I don't see why not. It's more likely to
+> > break for x16 than it is for x8.
+> > 
+> Another question here is ..
+> The above patch assumes that user has configured GPMC bus-width
+> correctly, so if user is already providing GPMC bus-width information
+> via DT, then do we really need to detect NAND device bus-width again
+> using NAND_BUSWIDTH_AUTO ?
+>
 
-Two little bits of style here:
- - The other bitfields have a tab after #define (although this comes out
-   to 1 character-width of whitespace, so it looks like a space)
- - We already have a listing for several Status Register (SR_*)
-   bitfields; I think it makes some sense to group the SR_QUAD_EN_MX
-   with the other SR_* bits and keep the CR_* macro separate. That could
-   help with keeping the difference between CR and SR clearer.
+Hm.. I think you're forgetting the original motivation for this patch,
+which was initially explained by you :-) The problem is ONFI doesn't work
+in 16-bit mode.
 
-> +
->  /* Define max times to check status register before we give up. */
->  #define	MAX_READY_WAIT_JIFFIES	(40 * HZ)	/* M25P16 specs 40s max chip erase */
->  #define	MAX_CMD_SIZE		6
-> @@ -95,6 +102,7 @@ struct m25p {
->  	u8			program_opcode;
->  	u8			*command;
->  	bool			fast_read;
-> +	bool                    quad_read;
+Let me clarify. Since GPMC and NAND widths *must* match (otherwise, it
+wouldn't make much sense, right?) we don't really need to autodetect the
+NAND width.
 
-Did you have a response to my earlier suggestion that the fast_read and
-quad_read fields be combined to a single field? This could easily be an
-enum, and I think it could help some of the other code. It also wouldn't
-require us to remember that quad_read takes precedence over fast_read
-(which you do implicitly in this patch). And we can already foresee
-additional switches needed if we add the DDR command types (Huang was
-looking at this?), so we should just get it right now.
+However, since ONFI doesn't work in 16-bit mode, we would have to do
+something like this (untested pseudo code):
 
-You could, perhaps, make this two patches: one for converting the bool
-to an enum, and the other for supporting quad-read.
+  nand_scan_ident(...);
 
-Or if you're having trouble, I could cook the first patch up.
+  if (platform_data->devsize == 16)
+  	nand_chip->options |= NAND_BUSWIDTH_16;
 
->  };
->  
->  static inline struct m25p *mtd_to_m25p(struct mtd_info *mtd)
+And in some cases we might even get away with such solution. However,
+we can't guarantee nand_scan_ident() doesn't need to swith to 16-bit mode
+inside to perform other commands (maybe some ONFI extended parameter page).
 
-[...]
+Therefore, and given the width can be autodetected in any case (array
+or ONFI based carry such information) it's much cleaner to simply do:
 
-> @@ -1077,6 +1221,12 @@ static int m25p_probe(struct spi_device *spi)
->  		flash->addr_width = 4;
->  		if (JEDEC_MFR(info->jedec_id) == CFI_MFR_AMD) {
->  			/* Dedicated 4-byte command set */
-> +			if (flash->quad_read)
-> +				flash->read_opcode = OPCODE_QUAD_READ_4B;
-> +			else
-> +				flash->read_opcode = flash->fast_read ?
-> +					OPCODE_FAST_READ_4B :
-> +					OPCODE_NORM_READ_4B;
+  nand_chip->options |= NAND_BUSWIDTH_AUTOMAGIC;
+  nand_scan_ident(...);
 
-Besides the repetition below (already mentioned by Huang), the above
-assignment is kind of ugly again, mixing ?: and if/else. If we're
-keeping the fast_read/quad_read bools, it should be:
+See? Much cleaner, no?
 
-	if (flash->quad_read)
-		flash->read_opcode = OPCODE_QUAD_READ_4B;
-	else if (flash->fast_read)
-		flash->read_opcode = OPCODE_FAST_READ_4B;
-	else
-		flash->read_opcode = OPCODE_NORM_READ_4B;
+And remember: the fact that we must know the device width to configure
+the GPMC correctly (which being a hardware parameter belongs to the DT)
+is OMAP specific. Other SoCs might not have such memory controller
+and thus won't need such knowledge before hand, although that sounds
+unlikely to me.
 
-(or if we use an enum, it's just a switch statement...)
+The outcome of this discussion seems to be that no driver should ever
+need to specify the 'nand-bus-width' DT property, as Brian
+previously suggested, right?
 
->  			flash->read_opcode = flash->fast_read ?
->  				OPCODE_FAST_READ_4B :
->  				OPCODE_NORM_READ_4B;
-
-Brian
+I must admit I'm a bit puzzled by seeing most drivers setting 16-bit
+before calling nand_scan_ident(). I guess none of them relies on ONFI?
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
