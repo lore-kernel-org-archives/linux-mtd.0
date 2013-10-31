@@ -1,21 +1,20 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VbxB2-00088u-Sd
- for linux-mtd@lists.infradead.org; Thu, 31 Oct 2013 18:41:05 +0000
-Date: Thu, 31 Oct 2013 15:40:46 -0300
+ by casper.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VbxYg-0004Zd-9q
+ for linux-mtd@lists.infradead.org; Thu, 31 Oct 2013 19:05:30 +0000
+Date: Thu, 31 Oct 2013 16:04:33 -0300
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Konstantin Tokarev <annulen@yandex.ru>
-Subject: Re: Flashing UBIFS image to gluebi mtd
-Message-ID: <20131031184045.GA2498@localhost>
-References: <72811383227314@web24j.yandex.ru> <20131031150844.GA1092@localhost>
- <16161383242430@web27h.yandex.ru>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH] mtd: nand_bbt: kill NAND_BBT_SCANALLPAGES
+Message-ID: <20131031190432.GB2498@localhost>
+References: <1383186575-31328-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <16161383242430@web27h.yandex.ru>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+In-Reply-To: <1383186575-31328-1-git-send-email-computersforpeace@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Pekon Gupta <pekon@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,56 +24,121 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Oct 31, 2013 at 10:00:30PM +0400, Konstantin Tokarev wrote:
+On Wed, Oct 30, 2013 at 10:29:35PM -0400, Brian Norris wrote:
+> Now that the last user of NAND_BBT_SCANALLPAGES has been removed, let's
+> kill this peculiar BBT feature flag.
 > 
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+
+Reviewed-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+
+> ---
+>  Documentation/DocBook/mtdnand.tmpl |  2 --
+>  drivers/mtd/nand/nand_bbt.c        | 37 +++----------------------------------
+>  include/linux/mtd/bbm.h            |  2 --
+>  3 files changed, 3 insertions(+), 38 deletions(-)
 > 
-> 31.10.2013, 19:08, "Ezequiel Garcia" <ezequiel.garcia@free-electrons.com>:
-> > Hi Konstantin,
-> >
-> > On Thu, Oct 31, 2013 at 05:48:34PM +0400, Konstantin Tokarev wrote:
-> >
-> >>  I'm migrating rootfs of device from SquashFS on top of gluebi to UBIFS.
-> >
-> > Sounds like you could use ubiblock for that setup, which is suitable
-> > for squashfs, and completely independent of ubifs (thus less cpu and
-> > memory hungry and easier to setup).
+> diff --git a/Documentation/DocBook/mtdnand.tmpl b/Documentation/DocBook/mtdnand.tmpl
+> index a248f42a121e..cd11926e07c7 100644
+> --- a/Documentation/DocBook/mtdnand.tmpl
+> +++ b/Documentation/DocBook/mtdnand.tmpl
+> @@ -1222,8 +1222,6 @@ in this page</entry>
+>  #define NAND_BBT_VERSION	0x00000100
+>  /* Create a bbt if none axists */
+>  #define NAND_BBT_CREATE		0x00000200
+> -/* Search good / bad pattern through all pages of a block */
+> -#define NAND_BBT_SCANALLPAGES	0x00000400
+>  /* Write bbt if neccecary */
+>  #define NAND_BBT_WRITE		0x00001000
+>  /* Read and write back block contents when writing bbt */
+> diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+> index c75b6a7c6ea4..c0615d1526f9 100644
+> --- a/drivers/mtd/nand/nand_bbt.c
+> +++ b/drivers/mtd/nand/nand_bbt.c
+> @@ -412,25 +412,6 @@ static void read_abs_bbts(struct mtd_info *mtd, uint8_t *buf,
+>  	}
+>  }
+>  
+> -/* Scan a given block full */
+> -static int scan_block_full(struct mtd_info *mtd, struct nand_bbt_descr *bd,
+> -			   loff_t offs, uint8_t *buf, size_t readlen,
+> -			   int scanlen, int numpages)
+> -{
+> -	int ret, j;
+> -
+> -	ret = scan_read_oob(mtd, buf, offs, readlen);
+> -	/* Ignore ECC errors when checking for BBM */
+> -	if (ret && !mtd_is_bitflip_or_eccerr(ret))
+> -		return ret;
+> -
+> -	for (j = 0; j < numpages; j++, buf += scanlen) {
+> -		if (check_pattern(buf, scanlen, mtd->writesize, bd))
+> -			return 1;
+> -	}
+> -	return 0;
+> -}
+> -
+>  /* Scan a given block partially */
+>  static int scan_block_fast(struct mtd_info *mtd, struct nand_bbt_descr *bd,
+>  			   loff_t offs, uint8_t *buf, int numpages)
+> @@ -477,24 +458,17 @@ static int create_bbt(struct mtd_info *mtd, uint8_t *buf,
+>  	struct nand_bbt_descr *bd, int chip)
+>  {
+>  	struct nand_chip *this = mtd->priv;
+> -	int i, numblocks, numpages, scanlen;
+> +	int i, numblocks, numpages;
+>  	int startblock;
+>  	loff_t from;
+> -	size_t readlen;
+>  
+>  	pr_info("Scanning device for bad blocks\n");
+>  
+> -	if (bd->options & NAND_BBT_SCANALLPAGES)
+> -		numpages = 1 << (this->bbt_erase_shift - this->page_shift);
+> -	else if (bd->options & NAND_BBT_SCAN2NDPAGE)
+> +	if (bd->options & NAND_BBT_SCAN2NDPAGE)
+>  		numpages = 2;
+>  	else
+>  		numpages = 1;
+>  
+> -	/* We need only read few bytes from the OOB area */
+> -	scanlen = 0;
+> -	readlen = bd->len;
+> -
+>  	if (chip == -1) {
+>  		numblocks = mtd->size >> this->bbt_erase_shift;
+>  		startblock = 0;
+> @@ -519,12 +493,7 @@ static int create_bbt(struct mtd_info *mtd, uint8_t *buf,
+>  
+>  		BUG_ON(bd->options & NAND_BBT_NO_OOB);
+>  
+> -		if (bd->options & NAND_BBT_SCANALLPAGES)
+> -			ret = scan_block_full(mtd, bd, from, buf, readlen,
+> -					      scanlen, numpages);
+> -		else
+> -			ret = scan_block_fast(mtd, bd, from, buf, numpages);
+> -
+> +		ret = scan_block_fast(mtd, bd, from, buf, numpages);
+>  		if (ret < 0)
+>  			return ret;
+>  
+> diff --git a/include/linux/mtd/bbm.h b/include/linux/mtd/bbm.h
+> index 95fc482cef36..36bb6a503f19 100644
+> --- a/include/linux/mtd/bbm.h
+> +++ b/include/linux/mtd/bbm.h
+> @@ -91,8 +91,6 @@ struct nand_bbt_descr {
+>   * with NAND_BBT_CREATE.
+>   */
+>  #define NAND_BBT_CREATE_EMPTY	0x00000400
+> -/* Search good / bad pattern through all pages of a block */
+> -#define NAND_BBT_SCANALLPAGES	0x00000800
+>  /* Write bbt if neccecary */
+>  #define NAND_BBT_WRITE		0x00002000
+>  /* Read and write back block contents when writing bbt */
+> -- 
+> 1.8.1.2
 > 
-> Could you elaborate this a bit more? Do you mean that block device emultaion
-> layer on top of UBI + FS on top of that can work faster than UBIFS on top of
-> UBI?
-> 
 
-Given you provided no details, I'm not sure why you're migrating from squashfs
-(which is a read-only, block oriented fs) to ubifs (which supports r/w on MTD).
-But anyway, let me do this homework for you :-)
-
-So, you had squashfs on top of gluebi, right? I guess you had this:
-
-  mtd (plus your NAND driver) -> ubi -> gluebi/mtd -> mtdblock -> squashfs
-
-On the other side, using ubiblock to emulate the block device you'd
-end up with this:
-
-  mtd (plus your NAND driver) -> ubi -> ubiblock -> squashfs
-
-Which is less memory (cpu?) hungry than the first alternative.
-The latest git branch also contained a non-cached option which
-has shown some good behavior, given squashfs does its own caching.
-
-But of course, this is _NOT_ a replacement for UBIFS, and using ubiblock
-for R/W is strictly discouraged.
-
-And here's the (already ancient) discussion:
-
-http://lists.infradead.org/pipermail/linux-mtd/2012-November/045011.html
-
-And the v2:
-http://lists.infradead.org/pipermail/linux-mtd/2012-December/045274.html
-
-I'll post the latest work as soon as I find some time, but you're free
-to pursue your own research.
-
-Hope it helps and best of lucks!
 -- 
 Ezequiel García, Free Electrons
 Embedded Linux, Kernel and Android Engineering
