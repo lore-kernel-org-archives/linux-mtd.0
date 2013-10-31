@@ -1,21 +1,23 @@
-Date: Thu, 31 Oct 2013 12:58:09 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
- Brian Norris <computersforpeace@gmail.com>,
- Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH v2 00/27] Armada 370/XP NAND support
-Message-ID: <20131031155808.GB2468@localhost>
-References: <1382137374-21251-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Received: from mail-ie0-x232.google.com ([2607:f8b0:4001:c03::232])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VbukY-00047u-4M
+ for linux-mtd@lists.infradead.org; Thu, 31 Oct 2013 16:05:34 +0000
+Received: by mail-ie0-f178.google.com with SMTP id x13so5287715ief.23
+ for <linux-mtd@lists.infradead.org>; Thu, 31 Oct 2013 09:05:12 -0700 (PDT)
+Date: Thu, 31 Oct 2013 12:05:06 -0400
+From: Brian Norris <computersforpeace@gmail.com>
+To: Sourav Poddar <sourav.poddar@ti.com>
+Subject: Re: [Rebase/PATCHv2] drivers: mtd: m25p80: Add quad read support.
+Message-ID: <20131031160506.GC4700@norris.computersforpeace.net>
+References: <1383124802-25079-1-git-send-email-sourav.poddar@ti.com>
+ <20131030231930.GD20059@norris.computersforpeace.net>
+ <5271E423.9030506@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1382137374-21251-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: Lior Amsalem <alior@marvell.com>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>,
- Daniel Mack <zonque@gmail.com>,
- Gregory Clement <gregory.clement@free-electrons.com>, Willy Tarreau <w@1wt.eu>
+In-Reply-To: <5271E423.9030506@ti.com>
+Cc: marex@denx.de, linux-mtd@lists.infradead.org, balbi@ti.com,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,233 +27,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Brian,
+On Thu, Oct 31, 2013 at 10:31:23AM +0530, Sourav Poddar wrote:
+> On Thursday 31 October 2013 04:49 AM, Brian Norris wrote:
+> >On Wed, Oct 30, 2013 at 02:50:02PM +0530, Sourav Poddar wrote:
+> >>@@ -95,6 +102,7 @@ struct m25p {
+> >>  	u8			program_opcode;
+> >>  	u8			*command;
+> >>  	bool			fast_read;
+> >>+	bool                    quad_read;
+> >Did you have a response to my earlier suggestion that the fast_read and
+> >quad_read fields be combined to a single field? This could easily be an
+> >enum, and I think it could help some of the other code. It also wouldn't
+> >require us to remember that quad_read takes precedence over fast_read
+> >(which you do implicitly in this patch). And we can already foresee
+> >additional switches needed if we add the DDR command types (Huang was
+> >looking at this?), so we should just get it right now.
+> >
+> >You could, perhaps, make this two patches: one for converting the bool
+> >to an enum, and the other for supporting quad-read.
+> >
+> I read that, and I was planning to take that as a seperate
+> excercise, but yes I
+> will cook this into two independent patches.
 
-Can we start discussing this patchset?
-I realize is a big series, but better starting sooner than later! :)
+I think it is good to require the correct design principle (and
+appropriate cleanup) before adding new features.
 
-In particular... (see below)
-
-On Fri, Oct 18, 2013 at 08:02:27PM -0300, Ezequiel Garcia wrote:
-> Hi guys,
-> 
-> This is the v2 of the work implementing NAND support in Armada 370/XP SoCs.
-> This series is probably not yet complete (see below), but I feel like
-> we're really closer now :-)
-> 
-> As in the previous version and given I don't have any public datasheet
-> to show, I'll try to write some of the most relevant parts of the controller.
-> 
-> * NFCv2 controller background
-> 
-> The controller has a 2176 bytes FIFO buffer. Therefore, in order to support
-> larger pages, I/O operations on 4 KiB and 8 KiB pages is done with a set of
-> chunked transfers.
-> 
-> For instance, if we choose a 2048 data chunk and set "BCH" ECC (see below)
-> we'll have this layout in the pages:
-> 
->   ------------------------------------------------------------------------------
->   | 2048B data | 32B spare | 30B ECC || 2048B data | 32B spare | 30B ECC | ... |
->   ------------------------------------------------------------------------------
-> 
-> The driver reads the data and spare portions independently and builds an internal
-> buffer with this layout (in the 4 KiB page case):
-> 
->   ------------------------------------------
->   |     4096B data     |     64B spare     |
->   ------------------------------------------
-> 
-> Also, for the READOOB command the driver disables the ECC and reads a 'spare + ECC'
-> OOB, one per chunk read.
-> 
->   -------------------------------------------------------------------
->   |     4096B data     |  32B spare | 30B ECC | 32B spare | 30B ECC |
->   -------------------------------------------------------------------
-> 
-> So, in order to achieve reading (for instance), we issue several READ0 commands
-> (with some additional controller-specific magic) and read two chunks of 2080B
-> (2048 data + 32 spare) each.
-> The driver accomodates this data to expose the NAND core a contiguous buffer
-> (4096 data + spare) or (4096 + spare + ECC + spare + ECC).
-> 
-> * ECC
-> 
-> The controller has built-in hardware ECC capabilities. In addition it is
-> configurable between two modes: 1) Hamming, 2) BCH.
-> 
-> Note that the actual BCH mode: BCH-4 or BCH-8 will depend on the way
-> the controller is configured to transfer the data.
-> 
-> In the BCH mode the ECC code will be calculated for each transfered chunk
-> and expected to be located (when reading/programming) right after the spare
-> bytes as the figure above shows.
-> 
-> So, repeating the above scheme, a 2048B data chunk will be followed by 32B
-> spare, and then the ECC controller will read/write the ECC code (30B in
-> this case):
-> 
->   ------------------------------------
->   | 2048B data | 32B spare | 30B ECC |
->   ------------------------------------
-> 
-> If the ECC mode is 'BCH' then the ECC is *always* 30 bytes long.
-> If the ECC mode is 'Hamming' the ECC is 6 bytes long, for each 512B block.
-> So in Hamming mode, a 2048B page will have a 24B ECC.
-> 
-> Despite all of the above, the controller requires the driver to only read or
-> write in multiples of 8-bytes, because the data buffer is 64-bits.
-> 
-> * Changes from v1
-> 
-> Aside from several changes based in Brian's feedback, the main changes
-> from v1 are:
-> 
->   * The controller's clock source is now fully modeled, see patche 1 to 4.
->     Of course, none of those patches should be taken through the mtd
->     subsystem, but I'm adding them here for completeness.
-> 
->   * The chip's cmdfunc() is now independently implemented in each SoC variant.
->     The rationale behind this decision is that 'chunked' I/O is the only tested
->     mode on the Armada370 variant, while the old 'vanilla' I/O is the only
->     tested mode on the PXA variant.
-> 
->     So it's safer to have an implementation for each variant.
-> 
->   * Added support for BCH-8, in other words: 8-bits of correction in a 512-byte
->     region. This is obtained by using a data chunk size of 1024B, thus doubling
->     the ECC BCH strength, as per this ECC engine mechanism.
-> 
->   * The ECC layout in use, which must be set according to the page size and
->     desired ECC strength is now strictly chosen to match only the tested
->     combinations.
-> 
-> * Pending stuff
-> 
->   1. Factory bad blocks handling
-> 
->   Currently, there's no factory bad block initial scan (when the bad block
->   table is missing). The ECC BCH requires to layout the device's pages in
->   a splitted "data + OOB + data + OOB" way. This layout being different from
->   the factory layout. In other words,
-> 
->   Factory view:
-> 
->   -----------------------------------------------
->   |                    Data           |x  OOB   |
->   -----------------------------------------------
-> 
->   Driver's view:
-> 
->   -----------------------------------------------
->   |      Data      | OOB |      Data   x  | OOB |
->   -----------------------------------------------
-> 
->   It can be seen from the above, that the factory bad block marker must be
->   searched within the 'data' region, and not in the usual OOB region.
-> 
->   This seems to be similar to the gpmi-nand driver, yet I really find its
->   'bad block swapping' solution odd, so I'm trying to find something
->   cleaner.
-> 
->   2. ECC modeling
-> 
->   Although I've exposed some ECC information in the ECC layout, I'm still
->   not sure why is this needed, or if it's needed at all.
-> 
-> * About this patchset
-> 
-> This is based in l2-mtd's master branch and I've pushed a branch to our
-> github in case anyone wants to test it:
-> 
->   https://github.com/MISL-EBU-System-SW/mainline-public/tree/l2-mtd/upstream-nand-v2
-> 
-> Just as the previous, this series is complex and lengthy and any feedback will
-> be highly appreciated as well as questions, suggestions or flames. Also, I hope
-> our brave PXA regression tester Daniel Mack finds some time to give it a ride
-> and report any issues. Daniel: I think owe you several beers already.
-> 
-> * About Mirabox testing
-> 
-> As this work is not considered completely stable, be extra careful when trying
-> on the Mirabox. The Mirabox has the bootloader at NAND, and there's some risk
-> to brick the board.
-> 
-> That said: I've been using the driver on my Mirabox for several days doing
-> simple long-run NAND activity and everything worked fine.
-> 
-> If despite this you happen to brick the board, Willy Tarreau has provided
-> excellent instructions to un-brick the Mirabox:
-> 
->   http://1wt.eu/articles/mirabox-vs-guruplug/
-> 
-> Thanks!
-> 
-> Ezequiel Garcia (27):
->   clk: mvebu: Add Core Divider clock
->   ARM: mvebu: Add Core Divider clock device-tree binding
->   ARM: mvebu: Add a 2 GHz fixed-clock Armada 370/XP
->   ARM: mvebu: Add the core-divider clock to Armada 370/XP
->   mtd: nand: pxa3xx: Make config menu show supported platforms
->   mtd: nand: pxa3xx: Prevent sub-page writes
->   mtd: nand: pxa3xx: Early variant detection
->   mtd: nand: pxa3xx: Use chip->cmdfunc instead of the internal
->   mtd: nand: pxa3xx: Split FIFO size from to-be-read FIFO count
->   mtd: nand: pxa3xx: Replace host->page_size by mtd->writesize
->   mtd: nand: pxa3xx: Disable OOB on arbitrary length commands
->   mtd: nand: pxa3xx: Use a completion to signal device ready
->   mtd: nand: pxa3xx: Add bad block handling
->   mtd: nand: pxa3xx: Add driver-specific ECC BCH support
-^^
-This one and ...
-
->   mtd: nand: pxa3xx: Clear cmd buffer #3 (NDCB3) on command start
->   mtd: nand: pxa3xx: Add helper function to set page address
->   mtd: nand: pxa3xx: Remove READ0 switch/case falltrough
->   mtd: nand: pxa3xx: Split prepare_command_pool() in two stages
->   mtd: nand: pxa3xx: Move the data buffer clean to
->     prepare_start_command()
->   mtd: nand: pxa3xx: Fix SEQIN column address set
->   mtd: nand: pxa3xx: Add a read/write buffers markers
->   mtd: nand: pxa3xx: Introduce multiple page I/O support
-^^^
-.. this one seems to me like the most conflicting patches as
-they extend the ECC, adding BCH. Could you review them and
-provide any comments?
-
->   mtd: nand: pxa3xx: Add multiple chunk write support
->   mtd: nand: pxa3xx: Add ECC BCH correctable errors detection
->   ARM: mvebu: Add support for NAND controller in Armada 370/XP
->   ARM: mvebu: Enable NAND controller in Armada XP GP board
->   ARM: mvebu: Enable NAND controller in Armada 370 Mirabox
-> 
->  .../bindings/clock/mvebu-corediv-clock.txt         |  19 +
->  arch/arm/boot/dts/armada-370-mirabox.dts           |  21 +
->  arch/arm/boot/dts/armada-370-xp.dtsi               |  26 +
->  arch/arm/boot/dts/armada-xp-gp.dts                 |   8 +
->  drivers/clk/mvebu/Kconfig                          |   5 +
->  drivers/clk/mvebu/Makefile                         |   1 +
->  drivers/clk/mvebu/clk-corediv.c                    | 223 +++++++
->  drivers/mtd/nand/Kconfig                           |   4 +-
->  drivers/mtd/nand/pxa3xx_nand.c                     | 686 ++++++++++++++++-----
->  include/linux/platform_data/mtd-nand-pxa3xx.h      |   3 +
->  10 files changed, 856 insertions(+), 140 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/clock/mvebu-corediv-clock.txt
->  create mode 100644 drivers/clk/mvebu/clk-corediv.c
-> 
-> -- 
-> 1.8.1.5
-> 
-
-Huang: It seems gpmi-nand driver has some similar quirks,
-so I'd like if you could take some time to review my patches.
-
-I realise that you might be busy with your own patches, but the
-best way of having them cross-reviewed is by doing some review
-on others work.
-
-Thanks!
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+Brian
