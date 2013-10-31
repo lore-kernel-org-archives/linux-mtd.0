@@ -1,20 +1,18 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by casper.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VbpNk-0001co-QV
- for linux-mtd@lists.infradead.org; Thu, 31 Oct 2013 10:21:41 +0000
-Date: Thu, 31 Oct 2013 07:20:39 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] mtd: nand_bbt: kill NAND_BBT_SCANALLPAGES
-Message-ID: <20131031102038.GA2391@localhost>
-References: <1383186575-31328-1-git-send-email-computersforpeace@gmail.com>
+Received: from forward11.mail.yandex.net ([2a02:6b8:0:801::1])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VbscP-0000Um-MS
+ for linux-mtd@lists.infradead.org; Thu, 31 Oct 2013 13:49:03 +0000
+Received: from web24j.yandex.ru (web24j.yandex.ru [5.45.198.65])
+ by forward11.mail.yandex.net (Yandex) with ESMTP id 3B273E8070C
+ for <linux-mtd@lists.infradead.org>; Thu, 31 Oct 2013 17:48:35 +0400 (MSK)
+From: Konstantin Tokarev <annulen@yandex.ru>
+To: linux-mtd@lists.infradead.org
+Subject: Flashing UBIFS image to gluebi mtd
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1383186575-31328-1-git-send-email-computersforpeace@gmail.com>
-Cc: linux-mtd@lists.infradead.org, Pekon Gupta <pekon@ti.com>
+Message-Id: <72811383227314@web24j.yandex.ru>
+Date: Thu, 31 Oct 2013 17:48:34 +0400
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,22 +22,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Oct 30, 2013 at 10:29:35PM -0400, Brian Norris wrote:
-> Now that the last user of NAND_BBT_SCANALLPAGES has been removed, let's
-> kill this peculiar BBT feature flag.
-> 
+Hi all,
 
-I must admit I also find this option a bit puzzling.
+I'm migrating rootfs of device from SquashFS on top of gluebi to UBIFS. However, old version of
+firmware upgrade program writes UBIFS image to gluebi mtd device instead of using recommended
+volume update procedure. While it works for SquashFS images, writing UBIFS image leads to
+the next errors messages in random moments:
 
-However, I'm wondering what happens if a manufacturer specifies
-the bad block mark is in some page at the middle of a block.
+UBI error: ubi_io_read: error -77 while reading 76 bytes from PEB 769:26000, read 0 bytes
+UBIFS error (pid 383): ubifs_read_node: cannot read node 2 from LEB 347:21904, error -5
+UBIFS warning (pid 383): ubifs_ro_mode: switched to read-only mode, error -5
 
-AFAIK, some of them do exactly that, and I've always thought
-this option was the solution for such cases.
+However, when device is rebooted first time after upgrade, UBIFS mounts successfully.
 
-So, is this really no longer needed?
+Do you have any idea what is going on and how to destinguish "broken" UBIFS volume from
+correctly flashed via ubi volume device?
 
 -- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+Regards,
+Konstantin
