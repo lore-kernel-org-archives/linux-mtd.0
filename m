@@ -1,18 +1,20 @@
-Received: from forward5h.mail.yandex.net ([2a02:6b8:0:f05::5])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VbwYB-0007T1-EK
- for linux-mtd@lists.infradead.org; Thu, 31 Oct 2013 18:00:57 +0000
-From: Konstantin Tokarev <annulen@yandex.ru>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-In-Reply-To: <20131031150844.GA1092@localhost>
-References: <72811383227314@web24j.yandex.ru> <20131031150844.GA1092@localhost>
-Subject: Re: Flashing UBIFS image to gluebi mtd
 MIME-Version: 1.0
-Message-Id: <16161383242430@web27h.yandex.ru>
-Date: Thu, 31 Oct 2013 22:00:30 +0400
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset=koi8-r
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+In-Reply-To: <20131031155808.GB2468@localhost>
+References: <1382137374-21251-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20131031155808.GB2468@localhost>
+Date: Thu, 31 Oct 2013 14:22:33 -0400
+Message-ID: <CAN8TOE-XdPgHykzzJtpkQ3ApTLXjZ+hCiAPpOBCZqa7uVt=kcA@mail.gmail.com>
+Subject: Re: [PATCH v2 00/27] Armada 370/XP NAND support
+From: Brian Norris <computersforpeace@gmail.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Lior Amsalem <alior@marvell.com>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>,
+ Daniel Mack <zonque@gmail.com>, Huang Shijie <b32955@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Gregory Clement <gregory.clement@free-electrons.com>, Willy Tarreau <w@1wt.eu>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,27 +24,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, Oct 31, 2013 at 12:58:09PM -0300, Ezequiel Garcia wrote:
+> Can we start discussing this patchset?
+> I realize is a big series, but better starting sooner than later! :)
 
+Yeah, I'm still figuring out prioritization here. I got a little
+side-tracked on a few other patch series, some of which had
+dependencies on each other. I will take a look at yours next.
 
-31.10.2013, 19:08, "Ezequiel Garcia" <ezequiel.garcia@free-electrons.com>:
-> Hi Konstantin,
->
-> On Thu, Oct 31, 2013 at 05:48:34PM +0400, Konstantin Tokarev wrote:
->
->> šI'm migrating rootfs of device from SquashFS on top of gluebi to UBIFS.
->
-> Sounds like you could use ubiblock for that setup, which is suitable
-> for squashfs, and completely independent of ubifs (thus less cpu and
-> memory hungry and easier to setup).
+...
 
-Could you elaborate this a bit more? Do you mean that block device emultaion
-layer on top of UBI + FS on top of that can work faster than UBIFS on top of
-UBI?
+> >   mtd: nand: pxa3xx: Introduce multiple page I/O support
+> ^^^
+> .. this one seems to me like the most conflicting patches as
+> they extend the ECC, adding BCH. Could you review them and
+> provide any comments?
 
-Btw, I'm more interested in finding out in what way my UBIFS volume can be
-broken in given scenario and how can I detect it (to reflash once again,
-using UBI-aware updater this time).
+Sure thing.
 
--- 
-Regards,
-Konstantin
+Brian
