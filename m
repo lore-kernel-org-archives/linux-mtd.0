@@ -1,16 +1,29 @@
-Received: from mail-oa0-x22e.google.com ([2607:f8b0:4003:c02::22e])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vbi1y-0005GV-LD
- for linux-mtd@lists.infradead.org; Thu, 31 Oct 2013 02:30:43 +0000
-Received: by mail-oa0-f46.google.com with SMTP id g12so2410002oah.19
- for <linux-mtd@lists.infradead.org>; Wed, 30 Oct 2013 19:30:19 -0700 (PDT)
-From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd: nand_bbt: kill NAND_BBT_SCANALLPAGES
-Date: Wed, 30 Oct 2013 22:29:35 -0400
-Message-Id: <1383186575-31328-1-git-send-email-computersforpeace@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>, Pekon Gupta <pekon@ti.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Received: from mailout.micron.com ([137.201.242.129])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VbjXp-0006Kd-0Y
+ for linux-mtd@lists.infradead.org; Thu, 31 Oct 2013 04:07:42 +0000
+From: =?utf-8?B?UWkgV2FuZyDnjovotbcgKHFpd2FuZyk=?= <qiwang@micron.com>
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>
+Subject: RE: [PATCH 1/1]  MTD: UBI:  try to avoid program data to NOR flash
+ after erasure interrupted
+Date: Thu, 31 Oct 2013 04:07:10 +0000
+Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A770B220C@NTXXIAMBX02.xacn.micron.com>
+References: <71CF8D7F32C5C24C9CD1D0E02D52498A77082AC5@NTXXIAMBX02.xacn.micron.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A77082DDB@NTXXIAMBX02.xacn.micron.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A770AED11@NTXXIAMBX02.xacn.micron.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A770AED44@NTXXIAMBX02.xacn.micron.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A770AED67@NTXXIAMBX02.xacn.micron.com>
+ <1382779164.5901.1.camel@karhu.quadriga.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A770B1B97@NTXXIAMBX02.xacn.micron.com>
+ <1383059901.29619.52.camel@sauron.fi.intel.com>
+In-Reply-To: <1383059901.29619.52.camel@sauron.fi.intel.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Adrian
+ Hunter <adrian.hunter@intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,112 +33,144 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now that the last user of NAND_BBT_SCANALLPAGES has been removed, let's
-kill this peculiar BBT feature flag.
-
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
- Documentation/DocBook/mtdnand.tmpl |  2 --
- drivers/mtd/nand/nand_bbt.c        | 37 +++----------------------------------
- include/linux/mtd/bbm.h            |  2 --
- 3 files changed, 3 insertions(+), 38 deletions(-)
-
-diff --git a/Documentation/DocBook/mtdnand.tmpl b/Documentation/DocBook/mtdnand.tmpl
-index a248f42a121e..cd11926e07c7 100644
---- a/Documentation/DocBook/mtdnand.tmpl
-+++ b/Documentation/DocBook/mtdnand.tmpl
-@@ -1222,8 +1222,6 @@ in this page</entry>
- #define NAND_BBT_VERSION	0x00000100
- /* Create a bbt if none axists */
- #define NAND_BBT_CREATE		0x00000200
--/* Search good / bad pattern through all pages of a block */
--#define NAND_BBT_SCANALLPAGES	0x00000400
- /* Write bbt if neccecary */
- #define NAND_BBT_WRITE		0x00001000
- /* Read and write back block contents when writing bbt */
-diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-index c75b6a7c6ea4..c0615d1526f9 100644
---- a/drivers/mtd/nand/nand_bbt.c
-+++ b/drivers/mtd/nand/nand_bbt.c
-@@ -412,25 +412,6 @@ static void read_abs_bbts(struct mtd_info *mtd, uint8_t *buf,
- 	}
- }
- 
--/* Scan a given block full */
--static int scan_block_full(struct mtd_info *mtd, struct nand_bbt_descr *bd,
--			   loff_t offs, uint8_t *buf, size_t readlen,
--			   int scanlen, int numpages)
--{
--	int ret, j;
--
--	ret = scan_read_oob(mtd, buf, offs, readlen);
--	/* Ignore ECC errors when checking for BBM */
--	if (ret && !mtd_is_bitflip_or_eccerr(ret))
--		return ret;
--
--	for (j = 0; j < numpages; j++, buf += scanlen) {
--		if (check_pattern(buf, scanlen, mtd->writesize, bd))
--			return 1;
--	}
--	return 0;
--}
--
- /* Scan a given block partially */
- static int scan_block_fast(struct mtd_info *mtd, struct nand_bbt_descr *bd,
- 			   loff_t offs, uint8_t *buf, int numpages)
-@@ -477,24 +458,17 @@ static int create_bbt(struct mtd_info *mtd, uint8_t *buf,
- 	struct nand_bbt_descr *bd, int chip)
- {
- 	struct nand_chip *this = mtd->priv;
--	int i, numblocks, numpages, scanlen;
-+	int i, numblocks, numpages;
- 	int startblock;
- 	loff_t from;
--	size_t readlen;
- 
- 	pr_info("Scanning device for bad blocks\n");
- 
--	if (bd->options & NAND_BBT_SCANALLPAGES)
--		numpages = 1 << (this->bbt_erase_shift - this->page_shift);
--	else if (bd->options & NAND_BBT_SCAN2NDPAGE)
-+	if (bd->options & NAND_BBT_SCAN2NDPAGE)
- 		numpages = 2;
- 	else
- 		numpages = 1;
- 
--	/* We need only read few bytes from the OOB area */
--	scanlen = 0;
--	readlen = bd->len;
--
- 	if (chip == -1) {
- 		numblocks = mtd->size >> this->bbt_erase_shift;
- 		startblock = 0;
-@@ -519,12 +493,7 @@ static int create_bbt(struct mtd_info *mtd, uint8_t *buf,
- 
- 		BUG_ON(bd->options & NAND_BBT_NO_OOB);
- 
--		if (bd->options & NAND_BBT_SCANALLPAGES)
--			ret = scan_block_full(mtd, bd, from, buf, readlen,
--					      scanlen, numpages);
--		else
--			ret = scan_block_fast(mtd, bd, from, buf, numpages);
--
-+		ret = scan_block_fast(mtd, bd, from, buf, numpages);
- 		if (ret < 0)
- 			return ret;
- 
-diff --git a/include/linux/mtd/bbm.h b/include/linux/mtd/bbm.h
-index 95fc482cef36..36bb6a503f19 100644
---- a/include/linux/mtd/bbm.h
-+++ b/include/linux/mtd/bbm.h
-@@ -91,8 +91,6 @@ struct nand_bbt_descr {
-  * with NAND_BBT_CREATE.
-  */
- #define NAND_BBT_CREATE_EMPTY	0x00000400
--/* Search good / bad pattern through all pages of a block */
--#define NAND_BBT_SCANALLPAGES	0x00000800
- /* Write bbt if neccecary */
- #define NAND_BBT_WRITE		0x00002000
- /* Read and write back block contents when writing bbt */
--- 
-1.8.1.2
+T24gVHVlLCAyMDEzLTEwLTI5IGF0IDExOjE5ICswMDAwLCBBcnRlbSBCaXR5dXRza2l5IHdyb3Rl
+Og0KPiBPbiBNb24sIDIwMTMtMTAtMjggYXQgMDQ6NTQgKzAwMDAsIFFpIFdhbmcg546L6LW3IChx
+aXdhbmcpIHdyb3RlOg0KPiA+IE9uIFNhLCAyMDEzLTEwLTI2IGF0IDA1OjE5ICswMDAwLCBBcnRl
+bSBCaXR5dXRza2l5IHdyb3RlOg0KPiA+ID4gT24gVGh1LCAyMDEzLTEwLTEwIGF0IDA4OjI4ICsw
+MDAwLCBRaSBXYW5nIOeOi+i1tyAocWl3YW5nKSB3cm90ZToNCj4gPiA+ID4gQnV0IEkgd2FudCB0
+byBzYXkgdGhlIHBvdGVudGlhbCByaXNrIGlzIGlmIGxvdyBsZXZlbCBkcml2ZXIgcHJvZ3JhbSBk
+YXRhIHRvIA0KPiA+ID4gPiB0aGlzIGJsb2NrLCBpdCB3aWxsIGdldCDigJx0aW1lb3V0IGVycm9y
+4oCdLiBBbmQgdGhlIHRpbWVvdXQgcGVyaW9kIGNvdWxkIGJlIHZlcnkgDQo+ID4gPiA+IGxvbmco
+YWxtb3N0IHNldmVyYWwgbWludXRlcyksIGR1cmluZyB0aGlzIHBlcmlvZCwgYW55IG9wZXJhdGlv
+biBvbiBOT1IgZmxhc2ggDQo+ID4gPiA+IGNhbm5vdCBiZSBhY2NlcHQuIHNvIHByb2dyYW0gZGF0
+YSB0byBhIGVyYXN1cmUgaW50ZXJydXB0ZWQgYmxvY2sgaXNu4oCZdCBhIA0KPiA+ID4gPiBzZW5z
+aWJsZSBhY3Rpb24uIGluIG9yZGVyIHRvIGF2b2lkIHByb2dyYW0gYSBlcmFzdXJlIGludGVycnVw
+dGVkIGJsb2NrLCANCj4gPiA+ID4gSSBzdWdnZXN0IFVCSUZTIGNhbiByZWFkIHRoaXMgYmxvY2sg
+YmVmb3JlIHByb2dyYW0gZGF0YS4gdGhlIGNvZGUgY2hhbmdpbmcgYXMgYmVsb3c6DQo+ID4gPiAN
+Cj4gPiA+IFllcywgcmVhZGluZyBmaXJzdCBzb3VuZHMgbGlrZSBhIGdvb2QgaWRlYS4gV291bGQg
+eW91IHBsZWFzZSBzZW5kIGENCj4gPiA+IHBhdGNoIGltcGxlbWVudGluZyBpdD8NCj4gPiANCj4g
+PiBGcm9tOiBRaSBXYW5nIDxxaXdhbmdAbWljcm9uLmNvbT4NCj4gPiANCj4gPiBub3JfZXJhc2Vf
+cHJlcGFyZSgpIHdpbGwgYmUgY2FsbGVkIGJlZm9yZSBlcmFzZSBhIE5PUiBmbGFzaCwgaXQgd2ls
+bCBwcm9ncmFtICcwJw0KPiA+IGludG8gYSBibG9jayB0byBtYXJrIHRoaXMgYmxvY2suIEJ1dCBw
+cm9ncmFtIGRhdGEgaW50byBhIGVyYXN1cmUgaW50ZXJydXB0ZWQgYmxvY2sNCj4gPiBjYW4gY2F1
+c2UgcHJvZ3JhbSB0aW10b3V0KHNldmVyYWwgbWludXRlcyBhdCBtb3N0KSBlcnJvciwgY291bGQg
+aW1wYWN0IG90aGVyIA0KPiA+IG9wZXJhdGlvbiBvbiBOT1IgZmxhc2guIFNvIFVCSUZTIGNhbiBy
+ZWFkIHRoaXMgYmxvY2sgZmlyc3QgdG8gYXZvaWQgdW5uZWVkZWQgDQo+ID4gcHJvZ3JhbSBvcGVy
+YXRpb24uIA0KPiA+IA0KPiA+IFRoaXMgcGF0Y2ggdHJ5IHRvIHB1dCByZWFkIG9wZXJhdGlvbiBh
+dCBhdCBoZWFkIG9mIHdyaXRlIG9wZXJhdGlvbiBpbiANCj4gPiBub3JfZXJhc2VfcHJlcGFyZSgp
+LCByZWFkIG91dCB0aGUgZGF0YS4gDQo+ID4gSWYgdGhlIGRhdGEgaXMgYWxyZWFkeSBjb3JydXB0
+LCB0aGVuIG5vIG5lZWQgdG8gcHJvZ3JhbSBhbnkgZGF0YSBpbnRvIHRoaXMgYmxvY2ssIA0KPiA+
+IGp1c3QgZ28gdG8gZXJhc2UgdGhpcyBibG9jay4NCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBR
+aSBXYW5nIDxxaXdhbmdAcWl3YW5nQG1pY3Jvbi5jb20+DQo+ID4gLS0tDQo+ID4gZGlmZiAtLWdp
+dCBhL2RyaXZlcnMvbXRkL3ViaS9pby5jIGIvZHJpdmVycy9tdGQvdWJpL2lvLmMNCj4gPiBpbmRl
+eCBiZjc5ZGVmLi5iZTZhYjU2IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvbXRkL3ViaS9pby5j
+DQo+ID4gKysrIGIvZHJpdmVycy9tdGQvdWJpL2lvLmMNCj4gPiBAQCAtNTA5LDI2ICs1MDksMTAg
+QEAgc3RhdGljIGludCBub3JfZXJhc2VfcHJlcGFyZShzdHJ1Y3QgdWJpX2RldmljZSAqdWJpLCBp
+bnQgcG51bSkNCj4gPiAgCXN0cnVjdCB1YmlfdmlkX2hkciB2aWRfaGRyOw0KPiA+ICANCj4gPiAg
+CS8qDQo+ID4gLQkgKiBJdCBpcyBpbXBvcnRhbnQgdG8gZmlyc3QgaW52YWxpZGF0ZSB0aGUgRUMg
+aGVhZGVyLCBhbmQgdGhlbiB0aGUgVklEDQo+ID4gLQkgKiBoZWFkZXIuIE90aGVyd2lzZSBhIHBv
+d2VyIGN1dCBtYXkgbGVhZCB0byB2YWxpZCBFQyBoZWFkZXIgYW5kDQo+ID4gLQkgKiBpbnZhbGlk
+IFZJRCBoZWFkZXIsIGluIHdoaWNoIGNhc2UgVUJJIHdpbGwgdHJlYXQgdGhpcyBQRUIgYXMNCj4g
+PiAtCSAqIGNvcnJ1cHRlZCBhbmQgd2lsbCB0cnkgdG8gcHJlc2VydmUgaXQsIGFuZCBwcmludCBz
+Y2FyeSB3YXJuaW5ncy4NCj4gPiAtCSAqLw0KPiA+IC0JYWRkciA9IChsb2ZmX3QpcG51bSAqIHVi
+aS0+cGViX3NpemU7DQo+ID4gLQllcnIgPSBtdGRfd3JpdGUodWJpLT5tdGQsIGFkZHIsIDQsICZ3
+cml0dGVuLCAodm9pZCAqKSZkYXRhKTsNCj4gPiAtCWlmICghZXJyKSB7DQo+ID4gLQkJYWRkciAr
+PSB1YmktPnZpZF9oZHJfYWxvZmZzZXQ7DQo+ID4gLQkJZXJyID0gbXRkX3dyaXRlKHViaS0+bXRk
+LCBhZGRyLCA0LCAmd3JpdHRlbiwgKHZvaWQgKikmZGF0YSk7DQo+ID4gLQkJaWYgKCFlcnIpDQo+
+ID4gLQkJCXJldHVybiAwOw0KPiA+IC0JfQ0KPiANCj4gSG93IGFib3V0IHN0cnVjdHVyaW5nIHRo
+ZSBjb2RlIHRoaXMgd2F5Og0KPiANCj4gaWYgKEVDIGhlYWRlciBpcyBnb29kKQ0KPiAgICAgIGlu
+dmFsaWRhdGUgRUMgaGVhZGVyKCkNCj4gaWYgKFZJRCBoZWFkZXIgaXMgZ29vZCkNCj4gICAgICBp
+bnZhbGlkYXRlIFZJRCBoZWFkZXIoKQ0KPiANCj4gVGhlbiB5b3UnbGwgaGFuZGxlIHRoZSBjYXNl
+IHdoZW4gb25seSBvbmUgb2YgdGhlIGhlYWRlcnMgaXMgYWxyZWFkeQ0KPiBjb3JydXB0ZWQuDQo+
+DQo+IC0tIA0KPiBCZXN0IFJlZ2FyZHMsDQo+IEFydGVtIEJpdHl1dHNraXkNCg0KDQpIaSBBcnRl
+bToNClBsZWFzZSBjaGVjayBiZWxvdyBwYXRjaC4gDQoNCkZyb206IFFpIFdhbmcgPHFpd2FuZ0Bt
+aWNyb24uY29tPg0KDQpub3JfZXJhc2VfcHJlcGFyZSgpIHdpbGwgYmUgY2FsbGVkIGJlZm9yZSBl
+cmFzZSBhIE5PUiBmbGFzaCwgaXQgd2lsbCBwcm9ncmFtICcwJw0KaW50byBhIGJsb2NrIHRvIG1h
+cmsgdGhpcyBibG9jay4gQnV0IHByb2dyYW0gZGF0YSBpbnRvIGEgZXJhc3VyZSBpbnRlcnJ1cHRl
+ZCBibG9jaw0KY2FuIGNhdXNlIHByb2dyYW0gdGltdG91dChzZXZlcmFsIG1pbnV0ZXMgYXQgbW9z
+dCkgZXJyb3IsIGNvdWxkIGltcGFjdCBvdGhlciANCm9wZXJhdGlvbiBvbiBOT1IgZmxhc2guIFNv
+IFVCSUZTIGNhbiByZWFkIHRoaXMgYmxvY2sgZmlyc3QgdG8gYXZvaWQgdW5uZWVkZWQgDQpwcm9n
+cmFtIG9wZXJhdGlvbi4gDQogDQpUaGlzIHBhdGNoIHRyeSB0byBwdXQgcmVhZCBvcGVyYXRpb24g
+YXQgYXQgaGVhZCBvZiB3cml0ZSBvcGVyYXRpb24gaW4gDQpub3JfZXJhc2VfcHJlcGFyZSgpLCBy
+ZWFkIG91dCB0aGUgZGF0YS4gDQpJZiB0aGUgZGF0YSBpcyBhbHJlYWR5IGNvcnJ1cHQsIHRoZW4g
+bm8gbmVlZCB0byBwcm9ncmFtIGFueSBkYXRhIGludG8gdGhpcyBibG9jaywgDQpqdXN0IGdvIHRv
+IGVyYXNlIHRoaXMgYmxvY2suDQoNClNpZ25lZC1vZmYtYnk6IFFpIFdhbmcgPHFpd2FuZ0BxaXdh
+bmdAbWljcm9uLmNvbT4NCi0tLQ0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3ViaS9pby5jIGIv
+ZHJpdmVycy9tdGQvdWJpL2lvLmMNCmluZGV4IGJmNzlkZWYuLjBmZGFjYTkgMTAwNjQ0DQotLS0g
+YS9kcml2ZXJzL210ZC91YmkvaW8uYw0KKysrIGIvZHJpdmVycy9tdGQvdWJpL2lvLmMNCkBAIC00
+OTksNTkgKzQ5OSw0NCBAQCBzdGF0aWMgaW50IG5vcl9lcmFzZV9wcmVwYXJlKHN0cnVjdCB1Ymlf
+ZGV2aWNlICp1YmksIGludCBwbnVtKQ0KIAlzaXplX3Qgd3JpdHRlbjsNCiAJbG9mZl90IGFkZHI7
+DQogCXVpbnQzMl90IGRhdGEgPSAwOw0KLQkvKg0KLQkgKiBOb3RlLCB3ZSBjYW5ub3QgZ2VuZXJh
+bGx5IGRlZmluZSBWSUQgaGVhZGVyIGJ1ZmZlcnMgb24gc3RhY2ssDQotCSAqIGJlY2F1c2Ugb2Yg
+dGhlIHdheSB3ZSBkZWFsIHdpdGggdGhlc2UgYnVmZmVycyAoc2VlIHRoZSBoZWFkZXINCi0JICog
+Y29tbWVudCBpbiB0aGlzIGZpbGUpLiBCdXQgd2Uga25vdyB0aGlzIGlzIGEgTk9SLXNwZWNpZmlj
+IHBpZWNlIG9mDQotCSAqIGNvZGUsIHNvIHdlIGNhbiBkbyB0aGlzLiBCdXQgeWVzLCB0aGlzIGlz
+IGVycm9yLXByb25lIGFuZCB3ZSBzaG91bGQNCi0JICogKHByZS0pYWxsb2NhdGUgVklEIGhlYWRl
+ciBidWZmZXIgaW5zdGVhZC4NCi0JICovDQogCXN0cnVjdCB1YmlfdmlkX2hkciB2aWRfaGRyOw0K
+KwlzdHJ1Y3QgdWJpX2VjX2hkciBlY19oZHI7DQorDQorCWFkZHIgPSAobG9mZl90KXBudW0gKiB1
+YmktPnBlYl9zaXplOw0KIA0KIAkvKg0KKwkgKiBJZiBWSUQgb3IgRUMgaXMgdmFsaWQsIG5lZWQg
+dG8gY29ycnVwdCBpdCBiZWZvcmUgZXJhc2Ugb3BlcmF0aW9uLiAgDQogCSAqIEl0IGlzIGltcG9y
+dGFudCB0byBmaXJzdCBpbnZhbGlkYXRlIHRoZSBFQyBoZWFkZXIsIGFuZCB0aGVuIHRoZSBWSUQN
+CiAJICogaGVhZGVyLiBPdGhlcndpc2UgYSBwb3dlciBjdXQgbWF5IGxlYWQgdG8gdmFsaWQgRUMg
+aGVhZGVyIGFuZA0KIAkgKiBpbnZhbGlkIFZJRCBoZWFkZXIsIGluIHdoaWNoIGNhc2UgVUJJIHdp
+bGwgdHJlYXQgdGhpcyBQRUIgYXMNCiAJICogY29ycnVwdGVkIGFuZCB3aWxsIHRyeSB0byBwcmVz
+ZXJ2ZSBpdCwgYW5kIHByaW50IHNjYXJ5IHdhcm5pbmdzLg0KIAkgKi8NCi0JYWRkciA9IChsb2Zm
+X3QpcG51bSAqIHViaS0+cGViX3NpemU7DQotCWVyciA9IG10ZF93cml0ZSh1YmktPm10ZCwgYWRk
+ciwgNCwgJndyaXR0ZW4sICh2b2lkICopJmRhdGEpOw0KLQlpZiAoIWVycikgew0KLQkJYWRkciAr
+PSB1YmktPnZpZF9oZHJfYWxvZmZzZXQ7DQotCQllcnIgPSBtdGRfd3JpdGUodWJpLT5tdGQsIGFk
+ZHIsIDQsICZ3cml0dGVuLCAodm9pZCAqKSZkYXRhKTsNCi0JCWlmICghZXJyKQ0KLQkJCXJldHVy
+biAwOw0KKwllcnIgPSB1YmlfaW9fcmVhZF9lY19oZHIodWJpLCBwbnVtLCAmZWNfaGRyLCAwKTsN
+CisJaWYgKGVyciAhPSBVQklfSU9fQkFEX0hEUl9FQkFETVNHICYmIGVyciAhPSBVQklfSU9fQkFE
+X0hEUiAmJg0KKwkgICAgZXJyICE9IFVCSV9JT19GRil7DQorCQllcnIxID0gbXRkX3dyaXRlKHVi
+aS0+bXRkLCBhZGRyLCA0LCAmd3JpdHRlbiwgKHZvaWQgKikmZGF0YSk7DQorCQlpZihlcnIxKQ0K
+KwkJCWdvdG8gZXJyb3I7DQogCX0NCiANCi0JLyoNCi0JICogV2UgZmFpbGVkIHRvIHdyaXRlIHRv
+IHRoZSBtZWRpYS4gVGhpcyB3YXMgb2JzZXJ2ZWQgd2l0aCBTcGFuc2lvbg0KLQkgKiBTMjlHTDUx
+Mk4gTk9SIGZsYXNoLiBNb3N0IHByb2JhYmx5IHRoZSBwcmV2aW91c2x5IGVyYXNlYmxvY2sgZXJh
+c3VyZQ0KLQkgKiB3YXMgaW50ZXJydXB0ZWQgYXQgYSB2ZXJ5IGluYXBwcm9wcmlhdGUgbW9tZW50
+LCBzbyBpdCBiZWNhbWUNCi0JICogdW53cml0YWJsZS4gSW4gdGhpcyBjYXNlIHdlIHByb2JhYmx5
+IGFueXdheSBoYXZlIGdhcmJhZ2UgaW4gdGhpcw0KLQkgKiBQRUIuDQotCSAqLw0KLQllcnIxID0g
+dWJpX2lvX3JlYWRfdmlkX2hkcih1YmksIHBudW0sICZ2aWRfaGRyLCAwKTsNCi0JaWYgKGVycjEg
+PT0gVUJJX0lPX0JBRF9IRFJfRUJBRE1TRyB8fCBlcnIxID09IFVCSV9JT19CQURfSERSIHx8DQot
+CSAgICBlcnIxID09IFVCSV9JT19GRikgew0KLQkJc3RydWN0IHViaV9lY19oZHIgZWNfaGRyOw0K
+LQ0KLQkJZXJyMSA9IHViaV9pb19yZWFkX2VjX2hkcih1YmksIHBudW0sICZlY19oZHIsIDApOw0K
+LQkJaWYgKGVycjEgPT0gVUJJX0lPX0JBRF9IRFJfRUJBRE1TRyB8fCBlcnIxID09IFVCSV9JT19C
+QURfSERSIHx8DQotCQkgICAgZXJyMSA9PSBVQklfSU9fRkYpDQotCQkJLyoNCi0JCQkgKiBCb3Ro
+IFZJRCBhbmQgRUMgaGVhZGVycyBhcmUgY29ycnVwdGVkLCBzbyB3ZSBjYW4NCi0JCQkgKiBzYWZl
+bHkgZXJhc2UgdGhpcyBQRUIgYW5kIG5vdCBhZnJhaWQgdGhhdCBpdCB3aWxsIGJlDQotCQkJICog
+dHJlYXRlZCBhcyBhIHZhbGlkIFBFQiBpbiBjYXNlIG9mIGFuIHVuY2xlYW4gcmVib290Lg0KLQkJ
+CSAqLw0KLQkJCXJldHVybiAwOw0KKwllcnIgPSB1YmlfaW9fcmVhZF92aWRfaGRyKHViaSwgcG51
+bSwgJnZpZF9oZHIsIDApOw0KKwlpZiAoZXJyICE9IFVCSV9JT19CQURfSERSX0VCQURNU0cgJiYg
+ZXJyICE9IFVCSV9JT19CQURfSERSICYmDQorCSAgICBlcnIgIT0gVUJJX0lPX0ZGKXsNCisJICAg
+IAlhZGRyICs9IHViaS0+dmlkX2hkcl9hbG9mZnNldDsNCisJCWVycjEgPSBtdGRfd3JpdGUodWJp
+LT5tdGQsIGFkZHIsIDQsICZ3cml0dGVuLCAodm9pZCAqKSZkYXRhKTsNCisJCWlmIChlcnIxKQ0K
+KwkJCWdvdG8gZXJyb3I7CQ0KIAl9DQogDQorCXJldHVybiAwOw0KKwkNCitlcnJvcjoNCiAJLyoN
+Ci0JICogVGhlIFBFQiBjb250YWlucyBhIHZhbGlkIFZJRCBoZWFkZXIsIGJ1dCB3ZSBjYW5ub3Qg
+aW52YWxpZGF0ZSBpdC4NCisJICogVGhlIFBFQiBjb250YWlucyBhIHZhbGlkIFZJRCBvciBFQyBo
+ZWFkZXIsIGJ1dCB3ZSBjYW5ub3QgaW52YWxpZGF0ZSBpdC4NCiAJICogU3VwcG9zZWRseSB0aGUg
+Zmxhc2ggbWVkaWEgb3IgdGhlIGRyaXZlciBpcyBzY3Jld2VkIHVwLCBzbyByZXR1cm4gYW4NCiAJ
+ICogZXJyb3IuDQogCSAqLw0KLQl1YmlfZXJyKCJjYW5ub3QgaW52YWxpZGF0ZSBQRUIgJWQsIHdy
+aXRlIHJldHVybmVkICVkIHJlYWQgcmV0dXJuZWQgJWQiLA0KKwl1YmlfZXJyKCJjYW5ub3QgaW52
+YWxpZGF0ZSBQRUIgJWQsIHJlYWQgcmV0dXJuZWQgJWQgd3JpdGUgcmV0dXJuZWQgJWQgIiwNCiAJ
+CXBudW0sIGVyciwgZXJyMSk7DQogCXViaV9kdW1wX2ZsYXNoKHViaSwgcG51bSwgMCwgdWJpLT5w
+ZWJfc2l6ZSk7DQogCXJldHVybiAtRUlPOw0KLS0tDQoNCk15IENvbW1lbnRzIGZvciBhYm92ZSBj
+aGFuZ2luZzoNCjEuIA0KCS0JLyoNCgktCSAqIE5vdGUsIHdlIGNhbm5vdCBnZW5lcmFsbHkgZGVm
+aW5lIFZJRCBoZWFkZXIgYnVmZmVycyBvbiBzdGFjaywNCgktCSAqIGJlY2F1c2Ugb2YgdGhlIHdh
+eSB3ZSBkZWFsIHdpdGggdGhlc2UgYnVmZmVycyAoc2VlIHRoZSBoZWFkZXINCgktCSAqIGNvbW1l
+bnQgaW4gdGhpcyBmaWxlKS4gQnV0IHdlIGtub3cgdGhpcyBpcyBhIE5PUi1zcGVjaWZpYyBwaWVj
+ZSBvZg0KCS0JICogY29kZSwgc28gd2UgY2FuIGRvIHRoaXMuIEJ1dCB5ZXMsIHRoaXMgaXMgZXJy
+b3ItcHJvbmUgYW5kIHdlIHNob3VsZA0KCS0JICogKHByZS0pYWxsb2NhdGUgVklEIGhlYWRlciBi
+dWZmZXIgaW5zdGVhZC4NCgktCSAqLw0KCUkgcmVtb3ZlIGFib3ZlIGNvbW1lbnQsIGJlY2F1c2Ug
+SSBwcmUtYWxsb2NhdGUgVklEIGhlYWRlciBhbmQgRUMgaGVhZGVyIHRvZ2V0aGVyLiANCglTbyBJ
+IHRoaW5rIG5vIG5lZWQgdG8gZW1waGFzaXplIFZJRCBoZWFkZXIgYnVmZmVycyBjYW5ub3QgYmUg
+b24gc3RhY2suDQoJKE1heWJlIG15IHVuZGVyc3RhbmRpbmcgYWJvdXQgdGhpcyBjb21tZW50IGlz
+IGVycm9yLCBpZiBzbywgcGxlYXNlIGNvcnJlY3QgbWUpDQoNCjIuDQoJd2h5IHVzZQ0KCSJpZiAo
+ZXJyICE9IFVCSV9JT19CQURfSERSX0VCQURNU0cgJiYgZXJyICE9IFVCSV9JT19CQURfSERSICYm
+IGVyciAhPSBVQklfSU9fRkYpIg0KCWJ1dCBub3QgDQoJImlmICghZXJyKSIgDQoJdG8ganVkZ2Ug
+aWYgbmVlZCB0byBwcm9ncmFtICcwJyB0byBpbnZhbGlkIHRoaXMgYmxvY2suDQoNCglJbiBjYXNl
+IGVyciA9PSBVQklfSU9fRkZfQklURkxJUFMsIGVyciA9PSBVQklfSU9fQklURkxJUFMgb3IgdW5l
+eHBlY3RlZCB2YWx1ZSByZXR1cm4NCglmcm9tIHJlYWQgZnVuY3Rpb24sIEkgdGhpbmsgVUJJIHN0
+aWxsIG5lZWQgdG8gaW52YWxpZCB0aGlzIGJsb2NrIGZvciBhYm92ZSBtZW50aW9uZWQgDQoJY29u
+ZGl0aW9uLiBTbyBJIHVzZQ0KCSJpZiAoZXJyICE9IFVCSV9JT19CQURfSERSX0VCQURNU0cgJiYg
+ZXJyICE9IFVCSV9JT19CQURfSERSICYmIGVyciAhPSBVQklfSU9fRkYpIg0KCXRvIGp1ZGdlLiAg
+DQoNCg0KUGxlYXNlIG1ha2UgbWUga25vd24gaWYgbXkgdW5kZXJzdGFuZGluZyBpc24ndCByaWdo
+dC4gDQpUaGFua3MNCg0KDQoNCg==
