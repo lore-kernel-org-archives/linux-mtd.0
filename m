@@ -1,23 +1,23 @@
-Received: from mail-ie0-x232.google.com ([2607:f8b0:4001:c03::232])
+Received: from mail-ob0-x22b.google.com ([2607:f8b0:4003:c01::22b])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VbukY-00047u-4M
- for linux-mtd@lists.infradead.org; Thu, 31 Oct 2013 16:05:34 +0000
-Received: by mail-ie0-f178.google.com with SMTP id x13so5287715ief.23
- for <linux-mtd@lists.infradead.org>; Thu, 31 Oct 2013 09:05:12 -0700 (PDT)
-Date: Thu, 31 Oct 2013 12:05:06 -0400
+ id 1VbwQE-0007Hd-FS
+ for linux-mtd@lists.infradead.org; Thu, 31 Oct 2013 17:52:43 +0000
+Received: by mail-ob0-f171.google.com with SMTP id wn1so3436283obc.30
+ for <linux-mtd@lists.infradead.org>; Thu, 31 Oct 2013 10:52:18 -0700 (PDT)
+Date: Thu, 31 Oct 2013 13:52:00 -0400
 From: Brian Norris <computersforpeace@gmail.com>
-To: Sourav Poddar <sourav.poddar@ti.com>
-Subject: Re: [Rebase/PATCHv2] drivers: mtd: m25p80: Add quad read support.
-Message-ID: <20131031160506.GC4700@norris.computersforpeace.net>
-References: <1383124802-25079-1-git-send-email-sourav.poddar@ti.com>
- <20131030231930.GD20059@norris.computersforpeace.net>
- <5271E423.9030506@ti.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH] mtd: nand_bbt: kill NAND_BBT_SCANALLPAGES
+Message-ID: <20131031175200.GA7401@norris.computersforpeace.net>
+References: <1383186575-31328-1-git-send-email-computersforpeace@gmail.com>
+ <20131031102038.GA2391@localhost>
+ <20131031152245.GB4700@norris.computersforpeace.net>
+ <20131031153242.GB1092@localhost>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5271E423.9030506@ti.com>
-Cc: marex@denx.de, linux-mtd@lists.infradead.org, balbi@ti.com,
- dedekind1@gmail.com
+In-Reply-To: <20131031153242.GB1092@localhost>
+Cc: linux-mtd@lists.infradead.org, Pekon Gupta <pekon@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,30 +27,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Oct 31, 2013 at 10:31:23AM +0530, Sourav Poddar wrote:
-> On Thursday 31 October 2013 04:49 AM, Brian Norris wrote:
-> >On Wed, Oct 30, 2013 at 02:50:02PM +0530, Sourav Poddar wrote:
-> >>@@ -95,6 +102,7 @@ struct m25p {
-> >>  	u8			program_opcode;
-> >>  	u8			*command;
-> >>  	bool			fast_read;
-> >>+	bool                    quad_read;
-> >Did you have a response to my earlier suggestion that the fast_read and
-> >quad_read fields be combined to a single field? This could easily be an
-> >enum, and I think it could help some of the other code. It also wouldn't
-> >require us to remember that quad_read takes precedence over fast_read
-> >(which you do implicitly in this patch). And we can already foresee
-> >additional switches needed if we add the DDR command types (Huang was
-> >looking at this?), so we should just get it right now.
-> >
-> >You could, perhaps, make this two patches: one for converting the bool
-> >to an enum, and the other for supporting quad-read.
-> >
-> I read that, and I was planning to take that as a seperate
-> excercise, but yes I
-> will cook this into two independent patches.
+On Thu, Oct 31, 2013 at 12:32:43PM -0300, Ezequiel Garcia wrote:
+> But do we have any mechanism to scan a *particular*
+> page?
 
-I think it is good to require the correct design principle (and
-appropriate cleanup) before adding new features.
+No. But if we need it, we can develop a proper one. For instance, I
+think a properly flexible approach could involve some kind of bitmap,
+where each bit represents a particular page (e.g., a 32-bit bitmap where
+the first 16 bits represent the first 16 pages and the last 16 represent
+the last 16 pages).
+
+I think, though, that modern NAND are converging to only a few types of
+bad block marker locations, and our currently available flags (without
+SCANALLPAGES) are sufficient.
 
 Brian
