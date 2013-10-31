@@ -1,20 +1,38 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VbkOG-0006s3-Pf
- for linux-mtd@lists.infradead.org; Thu, 31 Oct 2013 05:01:53 +0000
-Message-ID: <5271E423.9030506@ti.com>
-Date: Thu, 31 Oct 2013 10:31:23 +0530
-From: Sourav Poddar <sourav.poddar@ti.com>
+Date: Thu, 31 Oct 2013 14:52:28 +0900
+From: Simon Horman <horms@verge.net.au>
+To: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+Subject: Re: [PATCH v2 00/19] Enable various Renesas drivers on all ARM
+ platforms
+Message-ID: <20131031055228.GS1603@verge.net.au>
+References: <1383086274-11049-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [Rebase/PATCHv2] drivers: mtd: m25p80: Add quad read support.
-References: <1383124802-25079-1-git-send-email-sourav.poddar@ti.com>
- <20131030231930.GD20059@norris.computersforpeace.net>
-In-Reply-To: <20131030231930.GD20059@norris.computersforpeace.net>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: marex@denx.de, linux-mtd@lists.infradead.org, balbi@ti.com,
- dedekind1@gmail.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1383086274-11049-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
+Cc: linux-fbdev@vger.kernel.org, Wolfram Sang <wsa@the-dreams.de>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Guennadi Liakhovetski <g.liakhovetski+renesas@gmail.com>,
+ Thierry Reding <thierry.reding@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-i2c@vger.kernel.org, Vinod Koul <vinod.koul@intel.com>,
+ Joerg Roedel <joro@8bytes.org>, linux-sh@vger.kernel.org,
+ Magnus Damm <magnus.damm@gmail.com>,
+ Eduardo Valentin <eduardo.valentin@ti.com>,
+ Tomi Valkeinen <tomi.valkeinen@ti.com>, linux-serial@vger.kernel.org,
+ linux-input@vger.kernel.org, Zhang Rui <rui.zhang@intel.com>,
+ Chris Ball <cjb@laptop.org>,
+ Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
+ linux-media@vger.kernel.org, linux-pwm@vger.kernel.org,
+ Samuel Ortiz <samuel@sortiz.org>, linux-pm@vger.kernel.org,
+ Ian Molton <ian@mnementh.co.uk>, Mark Brown <broonie@kernel.org>,
+ linux-arm-kernel@lists.infradead.org,
+ Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+ iommu@lists.linux-foundation.org, netdev@vger.kernel.org,
+ dmaengine@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
+ "David S. Miller" <davem@davemloft.net>,
+ Mauro Carvalho Chehab <m.chehab@samsung.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,105 +42,124 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 31 October 2013 04:49 AM, Brian Norris wrote:
-> On Wed, Oct 30, 2013 at 02:50:02PM +0530, Sourav Poddar wrote:
->> Some flash also support quad read mode.
->> Adding support for adding quad mode in m25p80
->> for spansion and macronix flash.
->>
->> Signed-off-by: Sourav Poddar<sourav.poddar@ti.com>
->> ---
->> Rebase this on latest l2mtd.
->> v1->v2:
->> Small dev_err message fix to make it
->> mode appropriate.
->> v1: http://patchwork.ozlabs.org/patch/286109/
->>
->> There is one cleanup suggestion from Marek Vasut on read_sr
->> value. I will take that up as a seperate patch, once this
->> patch gets done.
->>
->>
->>   drivers/mtd/devices/m25p80.c |  160 ++++++++++++++++++++++++++++++++++++++++--
->>   1 files changed, 155 insertions(+), 5 deletions(-)
->>
->> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
->> index 5897889..ba4dd8b 100644
->> --- a/drivers/mtd/devices/m25p80.c
->> +++ b/drivers/mtd/devices/m25p80.c
-> [...]
->
->> @@ -76,6 +79,10 @@
->>   #define	SR_BP2			0x10	/* Block protect 2 */
->>   #define	SR_SRWD			0x80	/* SR write protect */
->>
->> +/* Configuration Register bits. */
->> +#define CR_QUAD_EN_SPAN		0x2     /* Spansion Quad I/O */
->> +#define SR_QUAD_EN_MX		0x40    /* Macronix Quad I/O */
-> Two little bits of style here:
->   - The other bitfields have a tab after #define (although this comes out
->     to 1 character-width of whitespace, so it looks like a space)
->   - We already have a listing for several Status Register (SR_*)
->     bitfields; I think it makes some sense to group the SR_QUAD_EN_MX
->     with the other SR_* bits and keep the CR_* macro separate. That could
->     help with keeping the difference between CR and SR clearer.
->
-Ok. Will change.
->> +
->>   /* Define max times to check status register before we give up. */
->>   #define	MAX_READY_WAIT_JIFFIES	(40 * HZ)	/* M25P16 specs 40s max chip erase */
->>   #define	MAX_CMD_SIZE		6
->> @@ -95,6 +102,7 @@ struct m25p {
->>   	u8			program_opcode;
->>   	u8			*command;
->>   	bool			fast_read;
->> +	bool                    quad_read;
-> Did you have a response to my earlier suggestion that the fast_read and
-> quad_read fields be combined to a single field? This could easily be an
-> enum, and I think it could help some of the other code. It also wouldn't
-> require us to remember that quad_read takes precedence over fast_read
-> (which you do implicitly in this patch). And we can already foresee
-> additional switches needed if we add the DDR command types (Huang was
-> looking at this?), so we should just get it right now.
->
-> You could, perhaps, make this two patches: one for converting the bool
-> to an enum, and the other for supporting quad-read.
->
-I read that, and I was planning to take that as a seperate excercise, 
-but yes I
-will cook this into two independent patches.
-> Or if you're having trouble, I could cook the first patch up.
->
->>   };
->>
->>   static inline struct m25p *mtd_to_m25p(struct mtd_info *mtd)
-> [...]
->
->> @@ -1077,6 +1221,12 @@ static int m25p_probe(struct spi_device *spi)
->>   		flash->addr_width = 4;
->>   		if (JEDEC_MFR(info->jedec_id) == CFI_MFR_AMD) {
->>   			/* Dedicated 4-byte command set */
->> +			if (flash->quad_read)
->> +				flash->read_opcode = OPCODE_QUAD_READ_4B;
->> +			else
->> +				flash->read_opcode = flash->fast_read ?
->> +					OPCODE_FAST_READ_4B :
->> +					OPCODE_NORM_READ_4B;
-> Besides the repetition below (already mentioned by Huang), the above
-> assignment is kind of ugly again, mixing ?: and if/else. If we're
-> keeping the fast_read/quad_read bools, it should be:
->
-> 	if (flash->quad_read)
-> 		flash->read_opcode = OPCODE_QUAD_READ_4B;
-> 	else if (flash->fast_read)
-> 		flash->read_opcode = OPCODE_FAST_READ_4B;
-> 	else
-> 		flash->read_opcode = OPCODE_NORM_READ_4B;
->
-> (or if we use an enum, it's just a switch statement...)
->
-Ok.
->>   			flash->read_opcode = flash->fast_read ?
->>   				OPCODE_FAST_READ_4B :
->>   				OPCODE_NORM_READ_4B;
-> Brian
+On Tue, Oct 29, 2013 at 11:37:35PM +0100, Laurent Pinchart wrote:
+> Hello,
+> 
+> This patch series, based on v3.12-rc7, prepares various Renesas drivers
+> for migration to multiplatform kernels by enabling their compilation or
+> otherwise fixing them on all ARM platforms. The patches are pretty
+> straightforward and are described in their commit message.
+> 
+> Changes since v1:
+> 
+> - The drivers can also be selected when COMPILE_TEST is enabled, regardless of
+>   the architecture. This should provide a good compromise between wide build
+>   test coverage and not clobbering configuration with drivers useless on
+>   non-SuperH, non-ARM platforms.
+> 
+> - DMA configuration is now unconditional in patch 08/19
+> 
+> I'd like to get all these patches merged in v3.14. As they will need to go
+> through their respective subsystems' trees, I would appreciate if all
+> maintainers involved could notify me when they merge patches from this series
+> in their tree to help me tracking the merge status. I don't plan to send pull
+> requests individually for these patches, and I will repost patches
+> individually if changes are requested during review.
+> 
+> If you believe the issue should be solved in a different way please reply to
+> the cover letter to let other maintainers chime in.
+
+All patches, including the v3 ones present in the thread at this time:
+
+Acked-by: Simon Horman <horms@verge.net.au>
+
+> Cc: Chris Ball <cjb@laptop.org>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> Cc: Eduardo Valentin <eduardo.valentin@ti.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Guennadi Liakhovetski <g.liakhovetski+renesas@gmail.com>
+> Cc: Ian Molton <ian@mnementh.co.uk>
+> Cc: iommu@lists.linux-foundation.org
+> Cc: Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Magnus Damm <magnus.damm@gmail.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Mauro Carvalho Chehab <m.chehab@samsung.com>
+> Cc: Samuel Ortiz <samuel@sortiz.org>
+> Cc: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+> Cc: Thierry Reding <thierry.reding@gmail.com>
+> Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
+> Cc: Vinod Koul <vinod.koul@intel.com>
+> Cc: Wolfram Sang <wsa@the-dreams.de>
+> Cc: Zhang Rui <rui.zhang@intel.com>
+> Cc: dmaengine@vger.kernel.org
+> Cc: linux-fbdev@vger.kernel.org
+> Cc: linux-i2c@vger.kernel.org
+> Cc: linux-input@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-media@vger.kernel.org
+> Cc: linux-mmc@vger.kernel.org
+> Cc: linux-mtd@lists.infradead.org
+> Cc: linux-pm@vger.kernel.org
+> Cc: linux-pwm@vger.kernel.org
+> Cc: linux-serial@vger.kernel.org
+> Cc: linux-spi@vger.kernel.org
+> Cc: netdev@vger.kernel.org
+> 
+> Laurent Pinchart (19):
+>   serial: sh-sci: Enable the driver on all ARM platforms
+>   DMA: shdma: Enable the driver on all ARM platforms
+>   i2c: sh_mobile: Enable the driver on all ARM platforms
+>   input: sh_keysc: Enable the driver on all ARM platforms
+>   iommu: shmobile: Enable the driver on all ARM platforms
+>   i2c: rcar: Enable the driver on all ARM platforms
+>   v4l: sh_vou: Enable the driver on all ARM platforms
+>   mmc: sdhi: Enable the driver on all ARM platforms
+>   mmc: sh_mmcif: Enable the driver on all ARM platforms
+>   mtd: sh_flctl: Enable the driver on all ARM platforms
+>   net: sh_eth: Set receive alignment correctly on all ARM platforms
+>   irda: sh_irda: Enable the driver on all ARM platforms
+>   pinctrl: sh-pfc: Enable the driver on all ARM platforms
+>   pwm: pwm-renesas-tpu: Enable the driver on all ARM platforms
+>   sh: intc: Enable the driver on all ARM platforms
+>   spi: sh_msiof: Enable the driver on all ARM platforms
+>   spi: sh_hspi: Enable the driver on all ARM platforms
+>   thermal: rcar-thermal: Enable the driver on all ARM platforms
+>   fbdev: sh-mobile-lcdcfb: Enable the driver on all ARM platforms
+> 
+>  drivers/dma/sh/Kconfig                | 2 +-
+>  drivers/dma/sh/shdmac.c               | 6 +++---
+>  drivers/i2c/busses/Kconfig            | 4 ++--
+>  drivers/input/keyboard/Kconfig        | 2 +-
+>  drivers/iommu/Kconfig                 | 2 +-
+>  drivers/media/platform/Kconfig        | 2 +-
+>  drivers/mmc/host/Kconfig              | 4 ++--
+>  drivers/mmc/host/tmio_mmc_dma.c       | 4 +---
+>  drivers/mtd/nand/Kconfig              | 2 +-
+>  drivers/net/ethernet/renesas/sh_eth.c | 2 +-
+>  drivers/net/ethernet/renesas/sh_eth.h | 2 +-
+>  drivers/net/irda/Kconfig              | 2 +-
+>  drivers/pinctrl/Makefile              | 2 +-
+>  drivers/pinctrl/sh-pfc/Kconfig        | 2 +-
+>  drivers/pwm/Kconfig                   | 2 +-
+>  drivers/sh/intc/Kconfig               | 2 +-
+>  drivers/spi/Kconfig                   | 4 ++--
+>  drivers/thermal/Kconfig               | 2 +-
+>  drivers/tty/serial/Kconfig            | 2 +-
+>  drivers/video/Kconfig                 | 6 +++---
+>  20 files changed, 27 insertions(+), 29 deletions(-)
+> 
+> -- 
+> Regards,
+> 
+> Laurent Pinchart
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
