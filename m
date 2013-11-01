@@ -1,33 +1,35 @@
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Tony Lindgren <tony@atomide.com>, Brian Norris
- <computersforpeace@gmail.com>
-Subject: RE: [PATCH v11 00/10] [PATCH v10 00/10] mtd:nand:omap2: clean-up of
- supported ECC schemes
-Date: Fri, 1 Nov 2013 20:10:55 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA2DAD3@DBDE04.ent.ti.com>
-References: <1382619026-4182-1-git-send-email-pekon@ti.com>
- <20131024135258.GC9958@localhost>
- <CAN8TOE_KQxW4-6KgjQDczyB31wmYB_y9Tirxa34GWQGgY39sNQ@mail.gmail.com>
- <20131031212348.GK15154@atomide.com>
-In-Reply-To: <20131031212348.GK15154@atomide.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: Mark Rutland <mark.rutland@arm.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Arnd Bergmann <arnd@arndb.de>, Pawel Moll <Pawel.Moll@arm.com>, Artem
- Bityutskiy <dedekind1@gmail.com>,
- "jp.francois@cynove.com" <jp.francois@cynove.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Avinash Philip <avinashphilipk@gmail.com>, "Balbi, Felipe" <balbi@ti.com>,
- "olof@lixom.net" <olof@lixom.net>, Rob Herring <robherring2@gmail.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Stephen Warren <swarren@wwwdotorg.org>, Benoit Cousson <bcousson@baylibre.com>,
- Ivan Djelic <ivan.djelic@parrot.com>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from e7.ny.us.ibm.com ([32.97.182.137])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VcNON-00033K-My
+ for linux-mtd@lists.infradead.org; Fri, 01 Nov 2013 22:40:38 +0000
+Received: from /spool/local
+ by e7.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
+ Violators will be prosecuted
+ for <linux-mtd@lists.infradead.org> from <cody@linux.vnet.ibm.com>;
+ Fri, 1 Nov 2013 18:40:12 -0400
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com
+ [9.57.198.24])
+ by d01dlp02.pok.ibm.com (Postfix) with ESMTP id 0B49A6E8040
+ for <linux-mtd@lists.infradead.org>; Fri,  1 Nov 2013 18:40:10 -0400 (EDT)
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+ by b01cxnp22034.gho.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+ rA1MeBfa60817608
+ for <linux-mtd@lists.infradead.org>; Fri, 1 Nov 2013 22:40:11 GMT
+Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
+ by d01av02.pok.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
+ rA1MeBbh002912
+ for <linux-mtd@lists.infradead.org>; Fri, 1 Nov 2013 20:40:11 -0200
+From: Cody P Schafer <cody@linux.vnet.ibm.com>
+To: Adrian Hunter <adrian.hunter@intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH 3/8] fs/ubifs: use rbtree postorder iteration helper instead
+ of opencoding
+Date: Fri,  1 Nov 2013 15:38:47 -0700
+Message-Id: <1383345566-25087-3-git-send-email-cody@linux.vnet.ibm.com>
+In-Reply-To: <1383345566-25087-1-git-send-email-cody@linux.vnet.ibm.com>
+References: <1383345566-25087-1-git-send-email-cody@linux.vnet.ibm.com>
+Cc: linux-mtd@lists.infradead.org, Cody P Schafer <cody@linux.vnet.ibm.com>,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,21 +39,227 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Tony,
+Use rbtree_postorder_for_each_entry_safe() to destroy the rbtree instead
+of opencoding an alternate postorder iteration that modifies the tree
 
-> From: Tony Lindgren
-> > * Brian Norris <computersforpeace@gmail.com> [131029 21:00]:
-> > Tony, you mentioned the DTS update in patch 8 going in via an ARM
-> > tree? This patch is not urgent, and it should probably wait until we
-> > know what release the rest of the series makes it into. This may
-> > depend on David Woodhouse's recommendation, but I'm not sure this
-> > series will have enough time baking in linux-next before entering
-> > mainline in 3.13 (the merge window is approaching).
->=20
-> Yes Benoit or I can apply that patch if Pekon pings me or resends
-> that patch when it's OK to merge it.
->=20
-Yes, I'll keep track of this and would resend you and Benoit the .dts patch
-separately when this these binding updates are merged in kernel.
+Signed-off-by: Cody P Schafer <cody@linux.vnet.ibm.com>
+---
+ fs/ubifs/debug.c    | 22 +++-------------------
+ fs/ubifs/log.c      | 21 ++-------------------
+ fs/ubifs/orphan.c   | 21 ++-------------------
+ fs/ubifs/recovery.c | 21 +++------------------
+ fs/ubifs/super.c    | 24 ++++--------------------
+ fs/ubifs/tnc.c      | 22 +++-------------------
+ 6 files changed, 17 insertions(+), 114 deletions(-)
 
-with regards, pekon
+diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
+index 6e025e0..378c179 100644
+--- a/fs/ubifs/debug.c
++++ b/fs/ubifs/debug.c
+@@ -2118,26 +2118,10 @@ out_free:
+  */
+ static void free_inodes(struct fsck_data *fsckd)
+ {
+-	struct rb_node *this = fsckd->inodes.rb_node;
+-	struct fsck_inode *fscki;
++	struct fsck_inode *fscki, *n;
+ 
+-	while (this) {
+-		if (this->rb_left)
+-			this = this->rb_left;
+-		else if (this->rb_right)
+-			this = this->rb_right;
+-		else {
+-			fscki = rb_entry(this, struct fsck_inode, rb);
+-			this = rb_parent(this);
+-			if (this) {
+-				if (this->rb_left == &fscki->rb)
+-					this->rb_left = NULL;
+-				else
+-					this->rb_right = NULL;
+-			}
+-			kfree(fscki);
+-		}
+-	}
++	rbtree_postorder_for_each_entry_safe(fscki, n, &fsckd->inodes, rb)
++		kfree(fscki);
+ }
+ 
+ /**
+diff --git a/fs/ubifs/log.c b/fs/ubifs/log.c
+index 36bd4ef..a902c59 100644
+--- a/fs/ubifs/log.c
++++ b/fs/ubifs/log.c
+@@ -574,27 +574,10 @@ static int done_already(struct rb_root *done_tree, int lnum)
+  */
+ static void destroy_done_tree(struct rb_root *done_tree)
+ {
+-	struct rb_node *this = done_tree->rb_node;
+-	struct done_ref *dr;
++	struct done_ref *dr, *n;
+ 
+-	while (this) {
+-		if (this->rb_left) {
+-			this = this->rb_left;
+-			continue;
+-		} else if (this->rb_right) {
+-			this = this->rb_right;
+-			continue;
+-		}
+-		dr = rb_entry(this, struct done_ref, rb);
+-		this = rb_parent(this);
+-		if (this) {
+-			if (this->rb_left == &dr->rb)
+-				this->rb_left = NULL;
+-			else
+-				this->rb_right = NULL;
+-		}
++	rbtree_postorder_for_each_entry_safe(dr, n, done_tree, rb)
+ 		kfree(dr);
+-	}
+ }
+ 
+ /**
+diff --git a/fs/ubifs/orphan.c b/fs/ubifs/orphan.c
+index ba32da3..f1c3e5a1 100644
+--- a/fs/ubifs/orphan.c
++++ b/fs/ubifs/orphan.c
+@@ -815,27 +815,10 @@ static int dbg_find_check_orphan(struct rb_root *root, ino_t inum)
+ 
+ static void dbg_free_check_tree(struct rb_root *root)
+ {
+-	struct rb_node *this = root->rb_node;
+-	struct check_orphan *o;
++	struct check_orphan *o, *n;
+ 
+-	while (this) {
+-		if (this->rb_left) {
+-			this = this->rb_left;
+-			continue;
+-		} else if (this->rb_right) {
+-			this = this->rb_right;
+-			continue;
+-		}
+-		o = rb_entry(this, struct check_orphan, rb);
+-		this = rb_parent(this);
+-		if (this) {
+-			if (this->rb_left == &o->rb)
+-				this->rb_left = NULL;
+-			else
+-				this->rb_right = NULL;
+-		}
++	rbtree_postorder_for_each_entry_safe(o, n, root, rb)
+ 		kfree(o);
+-	}
+ }
+ 
+ static int dbg_orphan_check(struct ubifs_info *c, struct ubifs_zbranch *zbr,
+diff --git a/fs/ubifs/recovery.c b/fs/ubifs/recovery.c
+index 065096e..c14adb2 100644
+--- a/fs/ubifs/recovery.c
++++ b/fs/ubifs/recovery.c
+@@ -1335,29 +1335,14 @@ static void remove_ino(struct ubifs_info *c, ino_t inum)
+  */
+ void ubifs_destroy_size_tree(struct ubifs_info *c)
+ {
+-	struct rb_node *this = c->size_tree.rb_node;
+-	struct size_entry *e;
++	struct size_entry *e, *n;
+ 
+-	while (this) {
+-		if (this->rb_left) {
+-			this = this->rb_left;
+-			continue;
+-		} else if (this->rb_right) {
+-			this = this->rb_right;
+-			continue;
+-		}
+-		e = rb_entry(this, struct size_entry, rb);
++	rbtree_postorder_for_each_entry_safe(e, n, &c->size_tree, rb) {
+ 		if (e->inode)
+ 			iput(e->inode);
+-		this = rb_parent(this);
+-		if (this) {
+-			if (this->rb_left == &e->rb)
+-				this->rb_left = NULL;
+-			else
+-				this->rb_right = NULL;
+-		}
+ 		kfree(e);
+ 	}
++
+ 	c->size_tree = RB_ROOT;
+ }
+ 
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 3e4aa72..14a5891 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -873,26 +873,10 @@ static void free_orphans(struct ubifs_info *c)
+  */
+ static void free_buds(struct ubifs_info *c)
+ {
+-	struct rb_node *this = c->buds.rb_node;
+-	struct ubifs_bud *bud;
+-
+-	while (this) {
+-		if (this->rb_left)
+-			this = this->rb_left;
+-		else if (this->rb_right)
+-			this = this->rb_right;
+-		else {
+-			bud = rb_entry(this, struct ubifs_bud, rb);
+-			this = rb_parent(this);
+-			if (this) {
+-				if (this->rb_left == &bud->rb)
+-					this->rb_left = NULL;
+-				else
+-					this->rb_right = NULL;
+-			}
+-			kfree(bud);
+-		}
+-	}
++	struct ubifs_bud *bud, *n;
++
++	rbtree_postorder_for_each_entry_safe(bud, n, &c->buds, rb)
++		kfree(bud);
+ }
+ 
+ /**
+diff --git a/fs/ubifs/tnc.c b/fs/ubifs/tnc.c
+index 349f31a..9083bc7 100644
+--- a/fs/ubifs/tnc.c
++++ b/fs/ubifs/tnc.c
+@@ -178,27 +178,11 @@ static int ins_clr_old_idx_znode(struct ubifs_info *c,
+  */
+ void destroy_old_idx(struct ubifs_info *c)
+ {
+-	struct rb_node *this = c->old_idx.rb_node;
+-	struct ubifs_old_idx *old_idx;
++	struct ubifs_old_idx *old_idx, *n;
+ 
+-	while (this) {
+-		if (this->rb_left) {
+-			this = this->rb_left;
+-			continue;
+-		} else if (this->rb_right) {
+-			this = this->rb_right;
+-			continue;
+-		}
+-		old_idx = rb_entry(this, struct ubifs_old_idx, rb);
+-		this = rb_parent(this);
+-		if (this) {
+-			if (this->rb_left == &old_idx->rb)
+-				this->rb_left = NULL;
+-			else
+-				this->rb_right = NULL;
+-		}
++	rbtree_postorder_for_each_entry_safe(old_idx, n, &c->old_idx, rb)
+ 		kfree(old_idx);
+-	}
++
+ 	c->old_idx = RB_ROOT;
+ }
+ 
+-- 
+1.8.4.2
