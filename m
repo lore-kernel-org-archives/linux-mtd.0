@@ -1,30 +1,19 @@
-Received: from mailout3.samsung.com ([203.254.224.33])
+Received: from ra.se.axis.com ([195.60.68.13])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vc4Jx-0007A8-0k
- for linux-mtd@lists.infradead.org; Fri, 01 Nov 2013 02:18:48 +0000
-Received: from epcpsbgr5.samsung.com
- (u145.gpu120.samsung.co.kr [203.254.230.145])
- by mailout3.samsung.com (Oracle Communications Messaging Server 7u4-24.01
- (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0MVK00HVFBOE22C0@mailout3.samsung.com> for
- linux-mtd@lists.infradead.org; Fri, 01 Nov 2013 11:18:19 +0900 (KST)
-From: Jingoo Han <jg1.han@samsung.com>
-To: 'Wei Yongjun' <weiyj.lk@gmail.com>
-References: <CAPgLHd8V06KzBcPmFywSfNxM0q6=s86xn-AdLKeY9h5JZ_nP7g@mail.gmail.com>
-In-reply-to: <CAPgLHd8V06KzBcPmFywSfNxM0q6=s86xn-AdLKeY9h5JZ_nP7g@mail.gmail.com>
-Subject: Re: [PATCH -next] mtd: nand: omap: fix error return code in
- omap_nand_probe()
-Date: Fri, 01 Nov 2013 11:18:19 +0900
-Message-id: <001101ced6a8$a18a2c80$e49e8580$%han@samsung.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=us-ascii
-Content-transfer-encoding: 7bit
-Content-language: ko
-Cc: tony@atomide.com, artem.bityutskiy@linux.intel.com,
- 'Jingoo Han' <jg1.han@samsung.com>, linux-kernel@vger.kernel.org,
- zonque@gmail.com, yongjun_wei@trendmicro.com.cn, avinashphilip@ti.com,
- pekon@ti.com, linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org
+ id 1Vc9Tc-0001ZY-2A
+ for linux-mtd@lists.infradead.org; Fri, 01 Nov 2013 07:49:04 +0000
+Date: Fri, 1 Nov 2013 08:48:38 +0100
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Konstantin Tokarev <annulen@yandex.ru>
+Subject: Re: Flashing UBIFS image to gluebi mtd
+In-Reply-To: <16161383242430@web27h.yandex.ru>
+Message-ID: <alpine.DEB.2.00.1311010844450.29641@lnxricardw.se.axis.com>
+References: <72811383227314@web24j.yandex.ru>
+ <20131031150844.GA1092@localhost> <16161383242430@web27h.yandex.ru>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-15"; format=flowed
+Content-Transfer-Encoding: 8BIT
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,35 +23,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday, November 01, 2013 9:16 AM, Wei Yongjun wrote:
-> 
-> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
-> 
-> Fix to return a negative error code from the error handling
-> case instead of 0, as done elsewhere in this function.
 
-Commit message is right? :-(
+On Thu, 31 Oct 2013, Konstantin Tokarev wrote:
 
-Best regards,
-Jingoo Han
+>
+>
+> 31.10.2013, 19:08, "Ezequiel Garcia" <ezequiel.garcia@free-electrons.com>:
+>> Hi Konstantin,
+>>
+>> On Thu, Oct 31, 2013 at 05:48:34PM +0400, Konstantin Tokarev wrote:
+>>
+>>>  I'm migrating rootfs of device from SquashFS on top of gluebi to UBIFS.
+>>
+>> Sounds like you could use ubiblock for that setup, which is suitable
+>> for squashfs, and completely independent of ubifs (thus less cpu and
+>> memory hungry and easier to setup).
+>
+> Could you elaborate this a bit more? Do you mean that block device emultaion
+> layer on top of UBI + FS on top of that can work faster than UBIFS on top of
+> UBI?
+>
+> Btw, I'm more interested in finding out in what way my UBIFS volume can be
+> broken in given scenario and how can I detect it (to reflash once again,
+> using UBI-aware updater this time).
 
-> 
-> Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
-> ---
->  drivers/mtd/nand/omap2.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> index ec40b8d..f777250 100644
-> --- a/drivers/mtd/nand/omap2.c
-> +++ b/drivers/mtd/nand/omap2.c
-> @@ -1953,7 +1953,8 @@ static int omap_nand_probe(struct platform_device *pdev)
->  		nand_chip->ecc.read_page	= omap_read_page_bch;
->  		nand_chip->ecc.write_page	= omap_write_page_bch;
->  		/* This ECC scheme requires ELM H/W block */
-> -		if (is_elm_present(info, pdata->elm_of_node, BCH8_ECC) < 0) {
-> +		err = is_elm_present(info, pdata->elm_of_node, BCH8_ECC);
-> +		if (err < 0) {
->  			pr_err("nand: error: could not initialize ELM\n");
->  			goto return_error;
->  		}
+You didn't mention how you overwrote your UBI partition with new data. dd 
+? nandwrite ? I'm getting the impression your problem is based on the fact 
+that when updating the firmware, you are using update firmware which is 
+not UBI aware, and you don't get UBI-awareness on the system until you've 
+done the update. A chicken-and-egg-situation. One solution in that case 
+would be to have an intermediate firmware which was identical to what was 
+in the device to start with but that had an UBI-aware upgrade application.
+
+Also I don't think you mentioned exactly your old setup. I'm assuming 
+squashfs on top of mtd, with no UBI involved, right?
+
+/Ricard
+-- 
+Ricard Wolf Wanderlöf                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
