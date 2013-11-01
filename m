@@ -1,22 +1,22 @@
-Received: from forward3m.mail.yandex.net ([2a02:6b8:0:2519::3:12])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VcCdg-0004KC-NB
- for linux-mtd@lists.infradead.org; Fri, 01 Nov 2013 11:11:43 +0000
-From: Konstantin Tokarev <annulen@yandex.ru>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-In-Reply-To: <alpine.DEB.2.00.1311011036080.29641@lnxricardw.se.axis.com>
-References: <72811383227314@web24j.yandex.ru>
- <20131031150844.GA1092@localhost> <16161383242430@web27h.yandex.ru>
- <alpine.DEB.2.00.1311010844450.29641@lnxricardw.se.axis.com>
- <620221383297125@web13h.yandex.ru>
- <alpine.DEB.2.00.1311011036080.29641@lnxricardw.se.axis.com>
-Subject: Re: Flashing UBIFS image to gluebi mtd
+Received: from mail-out.m-online.net ([212.18.0.10])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VcDoF-00069o-Cz
+ for linux-mtd@lists.infradead.org; Fri, 01 Nov 2013 12:26:40 +0000
+From: Marek Vasut <marex@denx.de>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 4/5] mtd: m25p80: remove M25PXX_USE_FAST_READ Kconfig
+Date: Fri, 1 Nov 2013 13:26:15 +0100
+References: <1382583503-13748-1-git-send-email-computersforpeace@gmail.com>
+ <201310311021.42620.marex@denx.de>
+ <20131031145520.GA4700@norris.computersforpeace.net>
+In-Reply-To: <20131031145520.GA4700@norris.computersforpeace.net>
 MIME-Version: 1.0
-Message-Id: <638781383304257@web27m.yandex.ru>
-Date: Fri, 01 Nov 2013 15:10:57 +0400
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset=koi8-r
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201311011326.15201.marex@denx.de>
+Cc: sourav.poddar@ti.com, linux-mtd@lists.infradead.org,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,72 +26,160 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-01.11.2013, 13:43, "Ricard Wanderlof" <ricard.wanderlof@axis.com>:
+Hi Brian,
 
-> šOn Fri, 1 Nov 2013, Konstantin Tokarev wrote:
->>>> šššBtw, I'm more interested in finding out in what way my UBIFS volume can be
->>>> šššbroken in given scenario and how can I detect it (to reflash once again,
->>>> šššusing UBI-aware updater this time).
->>> ššYou didn't mention how you overwrote your UBI partition with new data. dd
->>> šš? nandwrite ?
->> ššI write data to mtd device file (gluebi-based in this case) using write()
->> ššfunction, one mtd eraseblock at a time. Effectively it's the same as dd.
-> šHow do you handle potential bad blocks in the flash ?
+> Hi Marek,
+> 
+> On Thu, Oct 31, 2013 at 10:21:42AM +0100, Marek Vasut wrote:
+> > Dear Brian Norris,
+> > 
+> > > On Sun, Oct 27, 2013 at 05:32:42PM +0100, Marek Vasut wrote:
+> > > > Hi Brian,
+> > > > 
+> > > > > Remove the compile-time option for FAST_READ, since we have
+> > > > > run-time support for detecting it.
+> > > > > 
+> > > > > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> > > > > ---
+> > > > > 
+> > > > >  drivers/mtd/devices/Kconfig  |  7 -------
+> > > > >  drivers/mtd/devices/m25p80.c | 11 ++++++-----
+> > > > >  2 files changed, 6 insertions(+), 12 deletions(-)
+> > > > > 
+> > > > > diff --git a/drivers/mtd/devices/m25p80.c
+> > > > > b/drivers/mtd/devices/m25p80.c index 7e3ec7a..d6c5c57 100644
+> > > > > --- a/drivers/mtd/devices/m25p80.c
+> > > > > +++ b/drivers/mtd/devices/m25p80.c
+> > > > > @@ -1055,13 +1055,14 @@ static int m25p_probe(struct spi_device
+> > > > > *spi)
+> > > > > 
+> > > > >  	flash->page_size = info->page_size;
+> > > > >  	flash->mtd.writebufsize = flash->page_size;
+> > > > > 
+> > > > > -	flash->fast_read = false;
+> > > > > -	if (np && of_property_read_bool(np, "m25p,fast-read"))
+> > > > > +	if (np)
+> > > > > +		/* If we were instantiated by DT, use it */
+> > > > > +		flash->fast_read = of_property_read_bool(np, "m25p,fast-
+read");
+> > > > > +	else
+> > > > > +		/* If we weren't instantiated by DT, default to fast-
+read */
+> > > > > 
+> > > > >  		flash->fast_read = true;
+> > > > 
+> > > > We should default to FALSE , unless explicitly requested by DT, am I
+> > > > wrong? Otherwise this might break the old chips.
+> > > 
+> > > I believe my patch is simply a refactoring of the existing code with
+> > > the assumption that M25PXX_USE_FAST_READ=y.
+> 
+> Ah, my statement was wrong: for DT-instantiated devices, my patch
+> "defaulted" as if M25PXX_USE_FAST_READ=n; for devices without a DT node,
+> it defaulted as if M25PXX_USE_FAST_READ=y.
 
-Bad blocks are detected using ioctl on mtd device (MEMGETBADBLOCK) and skipped,
-though AFAIU gluebi mtd cannot have bad blocks.
+I'd say old devices (which are not DT capable even) might actually be less able 
+to support the FAST READ opcode. But I think we're reaching a point where we 
+cannot clearly tell and either way we will break some devices here. If that's 
+the case, let's do it ;-)
 
->>> ššAlso I don't think you mentioned exactly your old setup. I'm assuming
->>> ššsquashfs on top of mtd, with no UBI involved, right?
->> ššNo, on top of UBI (to handle bad blocks and wear leveling).
-> šSorry, my bad, reading your post again I see that you explicitly stated
-> šsquashfs on top of gluebi ...
->>> ššI'm getting the impression your problem is based on the fact
->>> ššthat when updating the firmware, you are using update firmware which is
->>> ššnot UBI aware, and you don't get UBI-awareness on the system until you've
->>> ššdone the update.
->> ššExactly.
-> š... which means that you've been running UBI all the time, but not ubifs.
-> š(?)
+> > > (In my experience, everyone has
+> > > it set to y. Perhaps I'm wrong.)
+> > 
+> > OK, this is where we diverged. I always set FAST_READ to =n and only
+> > enabled it via this DT prop if I was dead sure the chip could do it.
+> 
+> Right, that actually makes sense, and your mode is not affected by my
+> patch. For DT-enabled devices, we default to the DT property.
+> 
+> The only mode that has less flexibility is for platform devices
+> (non-DT), where we only use normal read for devices that can't handle
+> FAST READ.
 
-Yes.
+And there we should disable it by default to play safe, no ?
 
-I guess that we should have written SquashFS images using UBI volume update
-procedure as well, to UBI device instead of gluebi MTD. Code was written to
-write filesystems like JFFS2 to raw MTD's and just reused here without second
-thought.
+> > > Now, it's unclear to me what this Kconfig was used for. It's the wrong
+> > > approach for controlling fast read on a per-controller or
+> > > per-flash-device basis, as it provides a blunt hammer to disable it for
+> > > ALL systems which might use the same kernel (think multiplatform
+> > > kernels). And now we have a better alternative: the M25P_NO_FR flag for
+> > > flash which do not support fast-read.
+> > 
+> > This Kconfig was entirely wrong. I suspect it was there from the old
+> > times to force-enable the fast read and was meant for simple systems
+> > with one SPI NOR. Multiplatform kernels weren't taken into consideration
+> > here, the thing was added 5 years ago.
+> 
+> Sure, I agree.
+> 
+> > commit 2230b76b3838a37167f80487c694d8691248da9f
+> > Date:   Fri Apr 25 12:07:32 2008 +0800
+> > 
+> >     [MTD] m25p80: add FAST_READ access support to M25Pxx
+> > > 
+> > > However, if we come across SPI controllers which can't handle this,
+> > > then we might have a problem. Such a situation would really suggest
+> > > that we need to identify whether a SPI controller supports fast-read,
+> > > not just the flash device.
+> > 
+> > The FAST_READ is entirely flash-device thing, it has nothing to do with
+> > the controller. I wonder why there's this 50 MHz limit in the kernel
+> > config at all.
+> 
+> I have a Spansion S25FL128S datasheet which says:
+> 
+>   "The maximum operating clock frequency for the READ command is 50
+>   MHz."
+> 
+> And:
+> 
+>   "The maximum operating clock frequency for FAST READ command is 133
+>   MHz."
+> 
+> But this does suggest, as you say, that the controller provides no
+> limitation on using FAST READ. However, the extra dummy cycles would be
+> a *slight* penalty for using FAST READ instead of (normal) READ when run
+> at a frequency under which either would suffice. But this likely isn't a
+> significant problem.
 
->>> ššA chicken-and-egg-situation. One solution in that case
->>> ššwould be to have an intermediate firmware which was identical to what was
->>> ššin the device to start with but that had an UBI-aware upgrade application.
->> ššNot a solution, because end user of device might skip this intermediate
->> ššfirmware accidentally.
-> šI was afraid of that ... :-)
->> ššIt would be perfectly OK if rootfs failed to mount after update because
->> ššit led to reflash once again with the same firmware. It would be possible
->> ššto do any new consistency check, because initramfs software had already
->> ššbeen upgraded.
->>
->> ššThe problem is that incorrectly flashed UBIFS mounts without error,
->> ššall content is readable and has valid md5sums, and file write and
->> ššmv operations also succeed.
-> šBut in your original post, the following line was present in the log:
->
-> šUBIFS warning (pid 383): ubifs_ro_mode: switched to read-only mode, error
-> š-5
->
-> šindicating that writing had been switched off due to the errors detected.
-> šOf course, this might be arbitrary depending on exactly which errors
-> šhappened to occur at that particular boot instance.
+Certainly. All we need to know is whether or not does the chip support FAST READ 
+and if so, we can use it.
 
-I've read code of gluebi_write in gluebi.c, vol_cdev_ioctl in cdev.c, and
-ubi_start_update in upd.c - looks like the only difference between correct
-update and what is done in my case is that volume is not wiped out before
-writing new volume image here.
+> > My understanding of FAST_READ is that after you send FAST_READ opcode,
+> > you can read all you want until CS is toggled, only then you can send
+> > another opcode. The "slow" READ opcode on the other hand has to be sent
+> > for each block.
+> 
+> As Sourav said in his response, I don't believe this is true. AIUI, the
+> only differences are the dummy cycles and the maximum clock frequency.
 
-(I know that raw mtd on NAND should be erased as well, but this is not done
-for gluebi MTD because our code erases MTD only if MTD type == MTD_NANDFLASH)
+Aka. "slow" READ can also read as many bytes as seen fit ?
 
--- 
-Regards,
-Konstantin
+> > > (Side note: IMO, given the fact that we have to have an ID table for
+> > > these flash anyway, the DT property simply provides redundant
+> > > information.
+> > 
+> > Side note: I wonder how we should handle exotic chips like the N25Q256A
+> > which recycle the ID for different chips with different capabilities
+> > though. We might need to have some DT props.
+> 
+> Cross that bridge when/if we come to it, I guess? :) Do you know of any
+> current problems with this device?
+
+This particular one? Not in this context, but there are many otherwise.
+
+> > > In the case of the quad-read patch, we were able to
+> > > identify this early to avoid an unnecessary DT binding. But in this
+> > > case, we also have an indication of controller support for quad I/O...)
+> > 
+> > Yes. I see your point why the fast-read might be redundant.
+> > 
+> > > If you still object to this patch, I can drop the patch from l2-mtd.git
+> > > for now. Then Sourav will need to rebase his patch again.
+> 
+> So what do you think? I feel like my current patch is the right way to
+> go, but I think I could update the description to be more verbose, since
+> there are obviously a few other issues coming into play here.
+
+Yes, I won't hold it any longer. If someone complains, we will know where the 
+wind blows from anyway and then we can fix his platform properly.
