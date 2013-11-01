@@ -1,23 +1,33 @@
-Received: from mail-vb0-x233.google.com ([2607:f8b0:400c:c02::233])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VcJY2-0006Zq-Jt
- for linux-mtd@lists.infradead.org; Fri, 01 Nov 2013 18:34:19 +0000
-Received: by mail-vb0-f51.google.com with SMTP id w5so2554160vbf.24
- for <linux-mtd@lists.infradead.org>; Fri, 01 Nov 2013 11:33:57 -0700 (PDT)
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Tony Lindgren <tony@atomide.com>, Brian Norris
+ <computersforpeace@gmail.com>
+Subject: RE: [PATCH v11 00/10] [PATCH v10 00/10] mtd:nand:omap2: clean-up of
+ supported ECC schemes
+Date: Fri, 1 Nov 2013 20:10:55 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA2DAD3@DBDE04.ent.ti.com>
+References: <1382619026-4182-1-git-send-email-pekon@ti.com>
+ <20131024135258.GC9958@localhost>
+ <CAN8TOE_KQxW4-6KgjQDczyB31wmYB_y9Tirxa34GWQGgY39sNQ@mail.gmail.com>
+ <20131031212348.GK15154@atomide.com>
+In-Reply-To: <20131031212348.GK15154@atomide.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <1383296488.2722.74.camel@sauron.fi.intel.com>
-References: <1383186575-31328-1-git-send-email-computersforpeace@gmail.com>
- <20131031190432.GB2498@localhost>
- <1383296488.2722.74.camel@sauron.fi.intel.com>
-Date: Fri, 1 Nov 2013 14:33:57 -0400
-Message-ID: <CAN8TOE8LRzLTHcGDCb86t0P7fz-c-WNMy4PjpPGgEL9SYgh2gg@mail.gmail.com>
-Subject: Re: [PATCH] mtd: nand_bbt: kill NAND_BBT_SCANALLPAGES
-From: Brian Norris <computersforpeace@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Pekon Gupta <pekon@ti.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>, Pawel Moll <Pawel.Moll@arm.com>, Artem
+ Bityutskiy <dedekind1@gmail.com>,
+ "jp.francois@cynove.com" <jp.francois@cynove.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Avinash Philip <avinashphilipk@gmail.com>, "Balbi, Felipe" <balbi@ti.com>,
+ "olof@lixom.net" <olof@lixom.net>, Rob Herring <robherring2@gmail.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Stephen Warren <swarren@wwwdotorg.org>, Benoit Cousson <bcousson@baylibre.com>,
+ Ivan Djelic <ivan.djelic@parrot.com>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,20 +37,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Nov 1, 2013 at 5:01 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Thu, 2013-10-31 at 16:04 -0300, Ezequiel Garcia wrote:
->> On Wed, Oct 30, 2013 at 10:29:35PM -0400, Brian Norris wrote:
->> > Now that the last user of NAND_BBT_SCANALLPAGES has been removed, let's
->> > kill this peculiar BBT feature flag.
->> >
->> > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
->>
->> Reviewed-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
->
-> Yes, I do agree that we do not need to keep dead code just in case.
->
-> Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Hi Tony,
 
-Pushed to l2-mtd.git.
+> From: Tony Lindgren
+> > * Brian Norris <computersforpeace@gmail.com> [131029 21:00]:
+> > Tony, you mentioned the DTS update in patch 8 going in via an ARM
+> > tree? This patch is not urgent, and it should probably wait until we
+> > know what release the rest of the series makes it into. This may
+> > depend on David Woodhouse's recommendation, but I'm not sure this
+> > series will have enough time baking in linux-next before entering
+> > mainline in 3.13 (the merge window is approaching).
+>=20
+> Yes Benoit or I can apply that patch if Pekon pings me or resends
+> that patch when it's OK to merge it.
+>=20
+Yes, I'll keep track of this and would resend you and Benoit the .dts patch
+separately when this these binding updates are merged in kernel.
 
-Brian
+with regards, pekon
