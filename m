@@ -1,34 +1,22 @@
-Received: from e39.co.us.ibm.com ([32.97.110.160])
+Received: from devils.ext.ti.com ([198.47.26.153])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VcNOT-00033N-3X
- for linux-mtd@lists.infradead.org; Fri, 01 Nov 2013 22:40:42 +0000
-Received: from /spool/local
- by e39.co.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
- Violators will be prosecuted
- for <linux-mtd@lists.infradead.org> from <cody@linux.vnet.ibm.com>;
- Fri, 1 Nov 2013 16:40:19 -0600
-Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com
- [9.57.198.29])
- by d01dlp02.pok.ibm.com (Postfix) with ESMTP id D5DC26E803C
- for <linux-mtd@lists.infradead.org>; Fri,  1 Nov 2013 18:40:14 -0400 (EDT)
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
- by b01cxnp23034.gho.pok.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
- rA1MeGQA2162986
- for <linux-mtd@lists.infradead.org>; Fri, 1 Nov 2013 22:40:16 GMT
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
- by d01av02.pok.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP id
- rA1MeFZC003166
- for <linux-mtd@lists.infradead.org>; Fri, 1 Nov 2013 20:40:16 -0200
-From: Cody P Schafer <cody@linux.vnet.ibm.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 5/8] fs/jffs2: use rbtree postorder iteration helper instead
- of opencoding
-Date: Fri,  1 Nov 2013 15:38:49 -0700
-Message-Id: <1383345566-25087-5-git-send-email-cody@linux.vnet.ibm.com>
-In-Reply-To: <1383345566-25087-1-git-send-email-cody@linux.vnet.ibm.com>
-References: <1383345566-25087-1-git-send-email-cody@linux.vnet.ibm.com>
-Cc: linux-mtd@lists.infradead.org, Cody P Schafer <cody@linux.vnet.ibm.com>,
- linux-kernel@vger.kernel.org
+ id 1VcU4n-00065g-1W
+ for linux-mtd@lists.infradead.org; Sat, 02 Nov 2013 05:48:49 +0000
+Message-ID: <52749222.2000707@ti.com>
+Date: Sat, 2 Nov 2013 11:18:18 +0530
+From: Sourav Poddar <sourav.poddar@ti.com>
+MIME-Version: 1.0
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [Rebase/PATCHv2] drivers: mtd: m25p80: Add quad read support.
+References: <1383124802-25079-1-git-send-email-sourav.poddar@ti.com>
+ <20131030231930.GD20059@norris.computersforpeace.net>
+ <5271E423.9030506@ti.com>
+ <20131031160506.GC4700@norris.computersforpeace.net>
+In-Reply-To: <20131031160506.GC4700@norris.computersforpeace.net>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: marex@denx.de, linux-mtd@lists.infradead.org, balbi@ti.com,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,105 +26,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use rbtree_postorder_for_each_entry_safe() to destroy the rbtree instead
-of opencoding an alternate postorder iteration that modifies the tree
+Hi Brian,
+On Thursday 31 October 2013 09:35 PM, Brian Norris wrote:
+> On Thu, Oct 31, 2013 at 10:31:23AM +0530, Sourav Poddar wrote:
+>> On Thursday 31 October 2013 04:49 AM, Brian Norris wrote:
+>>> On Wed, Oct 30, 2013 at 02:50:02PM +0530, Sourav Poddar wrote:
+>>>> @@ -95,6 +102,7 @@ struct m25p {
+>>>>   	u8			program_opcode;
+>>>>   	u8			*command;
+>>>>   	bool			fast_read;
+>>>> +	bool                    quad_read;
+>>> Did you have a response to my earlier suggestion that the fast_read and
+>>> quad_read fields be combined to a single field? This could easily be an
+>>> enum, and I think it could help some of the other code. It also wouldn't
+>>> require us to remember that quad_read takes precedence over fast_read
+>>> (which you do implicitly in this patch). And we can already foresee
+>>> additional switches needed if we add the DDR command types (Huang was
+>>> looking at this?), so we should just get it right now.
+>>>
+>>> You could, perhaps, make this two patches: one for converting the bool
+>>> to an enum, and the other for supporting quad-read.
+>>>
+>> I read that, and I was planning to take that as a seperate
+>> excercise, but yes I
+>> will cook this into two independent patches.
+> I think it is good to require the correct design principle (and
+> appropriate cleanup) before adding new features.
+>
+True, as per your suggestion, I will cook this up into two seperate patches.
+One for converting bools into enum.
+second for adding quad support.
 
-Signed-off-by: Cody P Schafer <cody@linux.vnet.ibm.com>
----
- fs/jffs2/nodelist.c  | 28 ++--------------------------
- fs/jffs2/readinode.c | 26 +++-----------------------
- 2 files changed, 5 insertions(+), 49 deletions(-)
-
-diff --git a/fs/jffs2/nodelist.c b/fs/jffs2/nodelist.c
-index 975a1f5..9a5449b 100644
---- a/fs/jffs2/nodelist.c
-+++ b/fs/jffs2/nodelist.c
-@@ -564,25 +564,10 @@ struct jffs2_node_frag *jffs2_lookup_node_frag(struct rb_root *fragtree, uint32_
-    they're killed. */
- void jffs2_kill_fragtree(struct rb_root *root, struct jffs2_sb_info *c)
- {
--	struct jffs2_node_frag *frag;
--	struct jffs2_node_frag *parent;
--
--	if (!root->rb_node)
--		return;
-+	struct jffs2_node_frag *frag, *next;
- 
- 	dbg_fragtree("killing\n");
--
--	frag = (rb_entry(root->rb_node, struct jffs2_node_frag, rb));
--	while(frag) {
--		if (frag->rb.rb_left) {
--			frag = frag_left(frag);
--			continue;
--		}
--		if (frag->rb.rb_right) {
--			frag = frag_right(frag);
--			continue;
--		}
--
-+	rbtree_postorder_for_each_entry_safe(frag, next, root, rb) {
- 		if (frag->node && !(--frag->node->frags)) {
- 			/* Not a hole, and it's the final remaining frag
- 			   of this node. Free the node */
-@@ -591,17 +576,8 @@ void jffs2_kill_fragtree(struct rb_root *root, struct jffs2_sb_info *c)
- 
- 			jffs2_free_full_dnode(frag->node);
- 		}
--		parent = frag_parent(frag);
--		if (parent) {
--			if (frag_left(parent) == frag)
--				parent->rb.rb_left = NULL;
--			else
--				parent->rb.rb_right = NULL;
--		}
- 
- 		jffs2_free_node_frag(frag);
--		frag = parent;
--
- 		cond_resched();
- 	}
- }
-diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
-index ae81b01..386303d 100644
---- a/fs/jffs2/readinode.c
-+++ b/fs/jffs2/readinode.c
-@@ -543,33 +543,13 @@ static int jffs2_build_inode_fragtree(struct jffs2_sb_info *c,
- 
- static void jffs2_free_tmp_dnode_info_list(struct rb_root *list)
- {
--	struct rb_node *this;
--	struct jffs2_tmp_dnode_info *tn;
--
--	this = list->rb_node;
-+	struct jffs2_tmp_dnode_info *tn, *next;
- 
--	/* Now at bottom of tree */
--	while (this) {
--		if (this->rb_left)
--			this = this->rb_left;
--		else if (this->rb_right)
--			this = this->rb_right;
--		else {
--			tn = rb_entry(this, struct jffs2_tmp_dnode_info, rb);
-+	rbtree_postorder_for_each_entry_safe(tn, next, list, rb) {
- 			jffs2_free_full_dnode(tn->fn);
- 			jffs2_free_tmp_dnode_info(tn);
--
--			this = rb_parent(this);
--			if (!this)
--				break;
--
--			if (this->rb_left == &tn->rb)
--				this->rb_left = NULL;
--			else if (this->rb_right == &tn->rb)
--				this->rb_right = NULL;
--			else BUG();
--		}
- 	}
-+
- 	*list = RB_ROOT;
- }
- 
--- 
-1.8.4.2
+Few clarifications here:
+1, I hope I can use l2-mtd to rebase my patch, I was seeing a mail about
+reverting certain patch, which I suppose is not required now.
+2. Your patches were refactoring of the current code, where you were 
+defaulting the
+   read opcode to fast read. If you carefully see my quad read patch, 
+based on conditions,
+   I am assigning read opcode to quad or fast read, and by default, I am 
+keeping it at
+  NORMAL READ. The reason behind this is that I think fast/dual/quad are 
+special cases, which needs to
+  be set explicitly based on certain dt parameters and by default, we 
+should stick to NORMAL read.
+I hope you are fine with this approach too?
+> Brian
