@@ -1,15 +1,15 @@
-Date: Sun, 3 Nov 2013 16:32:40 -0500
+Date: Sun, 3 Nov 2013 17:36:50 -0500
 From: Huang Shijie <shijie8@gmail.com>
 To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH v2 08/27] mtd: nand: pxa3xx: Use chip->cmdfunc instead of
- the internal
-Message-ID: <20131103213237.GB5896@gmail.com>
+Subject: Re: [PATCH v2 09/27] mtd: nand: pxa3xx: Split FIFO size from
+ to-be-read FIFO count
+Message-ID: <20131103223646.GC5896@gmail.com>
 References: <1382137374-21251-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1382137374-21251-9-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1382137374-21251-10-git-send-email-ezequiel.garcia@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1382137374-21251-9-git-send-email-ezequiel.garcia@free-electrons.com>
+In-Reply-To: <1382137374-21251-10-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Lior Amsalem <alior@marvell.com>,
  Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
  Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>,
@@ -26,24 +26,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 18, 2013 at 08:02:35PM -0300, Ezequiel Garcia wrote:
-> @@ -1011,14 +1011,16 @@ static void pxa3xx_nand_free_buff(struct pxa3xx_nand_info *info)
->  static int pxa3xx_nand_sensing(struct pxa3xx_nand_info *info)
->  {
->  	struct mtd_info *mtd;
-> +	struct nand_chip *chip;
->  	int ret;
-Please add a empty line here.
-
->  	mtd = info->host[info->cs]->mtd;
-> +	chip = mtd->priv;
->  	/* use the common timing to make a try */
->  	ret = pxa3xx_nand_config_flash(info, &builtin_flash_types[0]);
->  	if (ret)
->  		return ret;
+On Fri, Oct 18, 2013 at 08:02:36PM -0300, Ezequiel Garcia wrote:
 >  
-> -	pxa3xx_nand_cmdfunc(mtd, NAND_CMD_RESET, 0, 0);
-> +	chip->cmdfunc(mtd, NAND_CMD_RESET, 0, 0);
->  	if (info->is_ready)
->  		return 0;
-Reviewed-by: Huang Shijie <shijie8@gmail.com>
+> -	switch (host->page_size) {
+> +	switch (info->fifo_size) {
+>  	case 2048:
+	
+there is a item in the builtin_flash_types:
+{ "4GiB 8-bit",    0xd7ec, 128, 4096,  8,  8, 8192, &timing[1] },
+
+The original host->page_size could be 4096, how can the old code support
+this nand with page-size is 4096?
+
+thanks
+Huang Shijie
