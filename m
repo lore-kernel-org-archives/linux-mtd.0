@@ -1,20 +1,22 @@
-Date: Mon, 4 Nov 2013 09:01:11 -0300
+Date: Mon, 4 Nov 2013 09:13:06 -0300
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: Huang Shijie <shijie8@gmail.com>
-Subject: Re: [PATCH v2 07/27] mtd: nand: pxa3xx: Early variant detection
-Message-ID: <20131104120110.GC2516@localhost>
+Subject: Re: [PATCH v2 09/27] mtd: nand: pxa3xx: Split FIFO size from
+ to-be-read FIFO count
+Message-ID: <20131104121305.GD2516@localhost>
 References: <1382137374-21251-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1382137374-21251-8-git-send-email-ezequiel.garcia@free-electrons.com>
- <20131103211856.GA5896@gmail.com>
+ <1382137374-21251-10-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20131103223646.GC5896@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20131103211856.GA5896@gmail.com>
+In-Reply-To: <20131103223646.GC5896@gmail.com>
 Cc: Lior Amsalem <alior@marvell.com>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, eric.y.miao@gmail.com,
  Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>,
- Daniel Mack <zonque@gmail.com>, linux-mtd@lists.infradead.org,
+ haojian.zhuang@gmail.com, Daniel Mack <zonque@gmail.com>,
+ linux-mtd@lists.infradead.org,
  Gregory Clement <gregory.clement@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>, Willy Tarreau <w@1wt.eu>,
  linux-arm-kernel@lists.infradead.org
@@ -27,27 +29,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Nov 03, 2013 at 04:18:58PM -0500, Huang Shijie wrote:
-> On Fri, Oct 18, 2013 at 08:02:34PM -0300, Ezequiel Garcia wrote:
-> > In order to customize early settings depending on the detected SoC variant,
-> what's the early settings depending on the variant?
-
-We need to detect the variant *before* alloc_nand_resource(),
-in order to set a different cmdfunc() for each variant.
-
-Having a separate cmdfunc() is, IMO, the best solution for two
-reasons:
-
-1. We keep the legacy pxa platform away from our intrusive changes,
-which such platform won't use.
-
-2. The 'splitted' command semantic is weird and complex enough
-to live in its own function.
-
-> could you add them in the commit?
+On Sun, Nov 03, 2013 at 05:36:50PM -0500, Huang Shijie wrote:
+> On Fri, Oct 18, 2013 at 08:02:36PM -0300, Ezequiel Garcia wrote:
+> >  
+> > -	switch (host->page_size) {
+> > +	switch (info->fifo_size) {
+> >  	case 2048:
+> 	
+> there is a item in the builtin_flash_types:
+> { "4GiB 8-bit",    0xd7ec, 128, 4096,  8,  8, 8192, &timing[1] },
+> 
+> The original host->page_size could be 4096, how can the old code support
+> this nand with page-size is 4096?
 > 
 
-Yes, that sound better. Thanks for the feedback.
+Ah, nice catch. I completely missed that line!
+
+I've rechecked the PXA3xx spec. but it makes no mention to supporting
+4096 (and it doesn't mention the FIFO buffer's size).
+
+On the other side, and AFAIK, the 'splitted' command semantics in the
+NFCv2 (the one I'm working on) was added specifically to support
+page-size of 4096 and 8192.
+
+In other words, I'm not sure how could the old code support 4096!
+The support was adding long ago, in this commit:
+
+commit d3490dfdbc453a16bc7f3cff731c9f7851735ab3
+Author: Haojian Zhuang <haojian.zhuang@marvell.com>
+Date:   Thu Sep 10 14:33:30 2009 +0800
+
+pxa3xx_nand: add new nand chip support
+
+Support samsung 2GbX8 and 32GbX8 nand flash.
+Support micron 4GbX8 and 4GbX16 nand flash.
+
+Signed-off-by: Haojian Zhuang <haojian.zhuang@marvell.com>
+Signed-off-by: Eric Miao <eric.y.miao@gmail.com>
+
+So, maybe they can provide some answers. Haojian? Eric?
 -- 
 Ezequiel García, Free Electrons
 Embedded Linux, Kernel and Android Engineering
