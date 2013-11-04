@@ -1,22 +1,21 @@
-Date: Mon, 4 Nov 2013 09:13:06 -0300
+Date: Mon, 4 Nov 2013 09:24:54 -0300
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: Huang Shijie <shijie8@gmail.com>
-Subject: Re: [PATCH v2 09/27] mtd: nand: pxa3xx: Split FIFO size from
- to-be-read FIFO count
-Message-ID: <20131104121305.GD2516@localhost>
+Subject: Re: [PATCH v2 10/27] mtd: nand: pxa3xx: Replace host->page_size by
+ mtd->writesize
+Message-ID: <20131104122453.GE2516@localhost>
 References: <1382137374-21251-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1382137374-21251-10-git-send-email-ezequiel.garcia@free-electrons.com>
- <20131103223646.GC5896@gmail.com>
+ <1382137374-21251-11-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20131103225211.GD5896@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20131103223646.GC5896@gmail.com>
+In-Reply-To: <20131103225211.GD5896@gmail.com>
 Cc: Lior Amsalem <alior@marvell.com>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, eric.y.miao@gmail.com,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
  Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>,
- haojian.zhuang@gmail.com, Daniel Mack <zonque@gmail.com>,
- linux-mtd@lists.infradead.org,
+ Daniel Mack <zonque@gmail.com>, linux-mtd@lists.infradead.org,
  Gregory Clement <gregory.clement@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>, Willy Tarreau <w@1wt.eu>,
  linux-arm-kernel@lists.infradead.org
@@ -29,45 +28,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Nov 03, 2013 at 05:36:50PM -0500, Huang Shijie wrote:
-> On Fri, Oct 18, 2013 at 08:02:36PM -0300, Ezequiel Garcia wrote:
+On Sun, Nov 03, 2013 at 05:52:13PM -0500, Huang Shijie wrote:
+> On Fri, Oct 18, 2013 at 08:02:37PM -0300, Ezequiel Garcia wrote:
+> > There's no need to privately store the device page size as it's
+> > available in mtd structure field mtd->writesize.
+> > Also, this removes the hardcoded page size value, leaving the
+> > auto-detected value only.
+> > 
+> > Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> > ---
+> >  drivers/mtd/nand/pxa3xx_nand.c | 8 ++------
+> >  1 file changed, 2 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+> > index fe2e27c..83ba036 100644
+> > --- a/drivers/mtd/nand/pxa3xx_nand.c
+> > +++ b/drivers/mtd/nand/pxa3xx_nand.c
+> > @@ -149,7 +149,6 @@ struct pxa3xx_nand_host {
+> >  	void			*info_data;
 > >  
-> > -	switch (host->page_size) {
-> > +	switch (info->fifo_size) {
-> >  	case 2048:
-> 	
-> there is a item in the builtin_flash_types:
-> { "4GiB 8-bit",    0xd7ec, 128, 4096,  8,  8, 8192, &timing[1] },
+> >  	/* page size of attached chip */
+> > -	unsigned int		page_size;
+> >  	int			use_ecc;
+> >  	int			cs;
+> >  
+> > @@ -612,12 +611,12 @@ static int prepare_command_pool(struct pxa3xx_nand_info *info, int command,
+> >  			info->buf_start += mtd->writesize;
+> >  
+> >  		/* Second command setting for large pages */
+> > -		if (host->page_size >= PAGE_CHUNK_SIZE)
+> > +		if (mtd->writesize >= PAGE_CHUNK_SIZE)
+> >  			info->ndcb0 |= NDCB0_DBC | (NAND_CMD_READSTART << 8);
+> >  
+> >  	case NAND_CMD_SEQIN:
+> >  		/* small page addr setting */
+> > -		if (unlikely(host->page_size < PAGE_CHUNK_SIZE)) {
+> > +		if (unlikely(mtd->writesize < PAGE_CHUNK_SIZE)) {
+> >  			info->ndcb1 = ((page_addr & 0xFFFFFF) << 8)
+> >  					| (column & 0xFF);
+> >  
+> > @@ -891,7 +890,6 @@ static int pxa3xx_nand_config_flash(struct pxa3xx_nand_info *info,
+> >  	}
+> >  
+> >  	/* calculate flash information */
+> > -	host->page_size = f->page_size;
+> you remove this line, but how the following code get the right value:?
 > 
-> The original host->page_size could be 4096, how can the old code support
-> this nand with page-size is 4096?
+> 	chip->ecc.size = host->page_size;
+> this line in the pxa3xx_nand_scan.
 > 
 
-Ah, nice catch. I completely missed that line!
+Ah, nice catch. I guess it splipped through the million rebases I did...
 
-I've rechecked the PXA3xx spec. but it makes no mention to supporting
-4096 (and it doesn't mention the FIFO buffer's size).
-
-On the other side, and AFAIK, the 'splitted' command semantics in the
-NFCv2 (the one I'm working on) was added specifically to support
-page-size of 4096 and 8192.
-
-In other words, I'm not sure how could the old code support 4096!
-The support was adding long ago, in this commit:
-
-commit d3490dfdbc453a16bc7f3cff731c9f7851735ab3
-Author: Haojian Zhuang <haojian.zhuang@marvell.com>
-Date:   Thu Sep 10 14:33:30 2009 +0800
-
-pxa3xx_nand: add new nand chip support
-
-Support samsung 2GbX8 and 32GbX8 nand flash.
-Support micron 4GbX8 and 4GbX16 nand flash.
-
-Signed-off-by: Haojian Zhuang <haojian.zhuang@marvell.com>
-Signed-off-by: Eric Miao <eric.y.miao@gmail.com>
-
-So, maybe they can provide some answers. Haojian? Eric?
+Thanks,
 -- 
 Ezequiel García, Free Electrons
 Embedded Linux, Kernel and Android Engineering
