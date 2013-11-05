@@ -1,22 +1,22 @@
-Date: Tue, 5 Nov 2013 11:51:36 -0800
+Received: from mail-qc0-x236.google.com ([2607:f8b0:400d:c01::236])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Vdmuo-00049Q-Sm
+ for linux-mtd@lists.infradead.org; Tue, 05 Nov 2013 20:07:55 +0000
+Received: by mail-qc0-f182.google.com with SMTP id n7so5143508qcx.13
+ for <linux-mtd@lists.infradead.org>; Tue, 05 Nov 2013 12:07:33 -0800 (PST)
+Date: Tue, 5 Nov 2013 12:07:29 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH v3 12/28] mtd: nand: pxa3xx: Use a completion to signal
- device ready
-Message-ID: <20131105195136.GS20061@ld-irv-0074.broadcom.com>
-References: <1383656135-8627-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1383656135-8627-13-git-send-email-ezequiel.garcia@free-electrons.com>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH v2] mtd: gpmi: add a new DT property to use the
+ datasheet's minimum required ECC
+Message-ID: <20131105200729.GT20061@ld-irv-0074.broadcom.com>
+References: <1382929517-22606-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1383656135-8627-13-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: Lior Amsalem <alior@marvell.com>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>,
- Daniel Mack <zonque@gmail.com>, Huang Shijie <b32955@freescale.com>,
- linux-mtd@lists.infradead.org,
- Gregory Clement <gregory.clement@free-electrons.com>, Willy Tarreau <w@1wt.eu>,
- linux-arm-kernel@lists.infradead.org
+In-Reply-To: <1382929517-22606-1-git-send-email-b32955@freescale.com>
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ dwmw2@infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,218 +26,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Nov 05, 2013 at 09:55:19AM -0300, Ezequiel Garcia wrote:
-> Apparently, the expected behavior of the waitfunc() NAND chip call
-> is to wait for the device to be READY (this is a standard chip line).
-> However, the current implementation does almost nothing, which opens
-> a possibility to issue a command to a non-ready device.
+On Mon, Oct 28, 2013 at 11:05:17AM +0800, Huang Shijie wrote:
+> In default way, we use the ecc_strength/ecc_step size calculated by ourselves
+> and use all the OOB area.
 > 
-> Fix this by adding a new completion to wait for the ready event to arrive.
+> This patch adds a new property : "fsl,use-minimum-ecc"
 > 
-> Because the "is ready" flag is cleared from the controller status
-> register, it's needed to store that state in the driver, and because the
-> field is accesed from an interruption, the field needs to be of an
-> atomic type.
+> If we enable it, we will firstly try to use the datasheet's minimum required
+> ECC provided by the MTD layer (the ecc_strength_ds/ecc_step_ds fields
+> in the nand_chip{}). So we may have free space in the OOB area by using the
+> minimum ECC, and we may support JFFS2 with some SLC NANDs, such as Micron's
+> SLC NAND.
 > 
-> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> If we fail to use the minimum ECC, we will use the legacy method to calculate
+> the ecc_strength and ecc_step size.
+> 
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
 > ---
->  drivers/mtd/nand/pxa3xx_nand.c | 45 +++++++++++++++++++++++++++++-------------
->  1 file changed, 31 insertions(+), 14 deletions(-)
+> v1 --> v2:
+> 	based on David's patch to fix the regression.
+> ---
+>  .../devicetree/bindings/mtd/gpmi-nand.txt          |    6 ++++++
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c             |    3 +++
+>  2 files changed, 9 insertions(+), 0 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-> index 2fb0f38..e198c94 100644
-> --- a/drivers/mtd/nand/pxa3xx_nand.c
-> +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> @@ -35,6 +35,7 @@
->  
->  #include <linux/platform_data/mtd-nand-pxa3xx.h>
->  
-> +#define NAND_DEV_READY_TIMEOUT  50
->  #define	CHIP_DELAY_TIMEOUT	(2 * HZ/10)
->  #define NAND_STOP_DELAY		(2 * HZ/50)
->  #define PAGE_CHUNK_SIZE		(2048)
-> @@ -166,7 +167,7 @@ struct pxa3xx_nand_info {
->  	struct clk		*clk;
->  	void __iomem		*mmio_base;
->  	unsigned long		mmio_phys;
-> -	struct completion	cmd_complete;
-> +	struct completion	cmd_complete, dev_ready;
+> diff --git a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
+> index 551b2a1..4297795 100644
+> --- a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
+> +++ b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
+> @@ -17,6 +17,12 @@ Required properties:
+>  Optional properties:
+>    - nand-on-flash-bbt: boolean to enable on flash bbt option if not
+>                         present false
+> +  - fsl,use-minimum-ecc: By enabling this boolean property, the gpmi will try
+> +                       to use the datasheet's minimum required ECC provided by
+> +                       the MTD layer (the ecc_strength_ds/ecc_step_ds fields
+> +                       in the nand_chip{}). So we may have free space in the OOB
+> +                       area by using the minimum ECC, and we may support JFFS2
+> +                       with some SLC NANDs, such as Micron's SLC NAND.
 
-I still kinda think this could be consolidated into one completion,
-under which cmdfunc() performs all the necessary waiting (for both the
-"command complete" and "device ready" signals), but I think this is not
-a big advantage right now, considering your code is not too complex
-right now.
+This description still uses Linux-isms/MTD-isms (ecc_strength_ds,
+ecc_step_ds, nand_chip{}, JFFS2). I would personally write this as
+something like the following:
 
->  
->  	unsigned int 		buf_start;
->  	unsigned int		buf_count;
-> @@ -196,7 +197,13 @@ struct pxa3xx_nand_info {
->  	int			use_ecc;	/* use HW ECC ? */
->  	int			use_dma;	/* use DMA ? */
->  	int			use_spare;	/* use spare ? */
-> -	int			is_ready;
-> +
-> +	/*
-> +	 * The is_ready flag is accesed from several places,
-> +	 * including an interruption hander. We need an atomic
-> +	 * type to avoid races.
-> +	 */
-> +	atomic_t		is_ready;
+  - fsl,use-minimum-ecc: Protect this NAND flash with the minimum ECC
+			 strength required. The required ECC strength is
+			 automatically discoverable for some flash
+			 (e.g., according to the ONFI standard).
+			 However, note that if this strength is not
+			 discoverable, the software may choose an
+			 implementation-defined ECC scheme.
 
-I believe your handling of this 'is_ready' bit is a little unwise, as
-you are actually creating extra concurrency that is unneeded. I'll
-summarize what you're doing with this 'is_ready' field:
-
-  cmdfunc() -> sets info->is_ready=0 for appropriate commands
-            -> kicks off the hardware
-
-The following two sequences may then occur concurrently:
-
-  (1) pxa3xx_nand_irq -> ready interrupt occurs
-                      -> set info->is_ready=1
-		      -> signal 'dev_ready' completion
-
-  (2) waitfunc -> check info->is_ready, if it is 0...
-                  |_ ... wait for the dev_ready completion
-
-Instead of setting info->is_ready=1 under (1), you could set it in (2),
-after the completion (or timeout). This avoids the concurrency, since
-cmdfunc() and waitfunc() are sequential. This also avoids a benign race
-in which you may not even call wait_for_completion() in (2) in the
-following scenario:
-
-  * Suppose waitfunc is delayed a long time
-  * The IRQ handler...
-    - receives the 'ready' interrupt
-    - clears info->is_ready
-    - calls complete(&info->dev_ready)
-  * waitfunc() finally executes
-    - because info->is_ready==1, it skips the wait_for_completion...(),
-      leaving your completion unbalanced
-
-This influences a comment I have below regarding your re-initialization
-of the completion struct.
+Is that enough weaseling? Any comments from the DT folks, or shall we
+simply take this binding without review?
 
 >  
->  	unsigned int		fifo_size;	/* max. data size in the FIFO */
->  	unsigned int		data_size;	/* data to be read from FIFO */
-> @@ -478,7 +485,7 @@ static void start_data_dma(struct pxa3xx_nand_info *info)
->  static irqreturn_t pxa3xx_nand_irq(int irq, void *devid)
->  {
->  	struct pxa3xx_nand_info *info = devid;
-> -	unsigned int status, is_completed = 0;
-> +	unsigned int status, is_completed = 0, is_ready = 0;
->  	unsigned int ready, cmd_done;
->  
->  	if (info->cs == 0) {
-> @@ -514,8 +521,9 @@ static irqreturn_t pxa3xx_nand_irq(int irq, void *devid)
->  		is_completed = 1;
->  	}
->  	if (status & ready) {
-> -		info->is_ready = 1;
-> +		atomic_set(&info->is_ready, 1);
+>  The device tree may optionally contain sub-nodes describing partitions of the
+>  address space. See partition.txt for more detail.
 
-According to my suggestions, I don't think you need to set
-info->is_ready=1 here.
-
->  		info->state = STATE_READY;
-> +		is_ready = 1;
->  	}
->  
->  	if (status & NDSR_WRCMDREQ) {
-> @@ -544,6 +552,8 @@ static irqreturn_t pxa3xx_nand_irq(int irq, void *devid)
->  	nand_writel(info, NDSR, status);
->  	if (is_completed)
->  		complete(&info->cmd_complete);
-> +	if (is_ready)
-> +		complete(&info->dev_ready);
->  NORMAL_IRQ_EXIT:
->  	return IRQ_HANDLED;
->  }
-> @@ -574,7 +584,6 @@ static int prepare_command_pool(struct pxa3xx_nand_info *info, int command,
->  	info->oob_size		= 0;
->  	info->use_ecc		= 0;
->  	info->use_spare		= 1;
-> -	info->is_ready		= 0;
->  	info->retcode		= ERR_NONE;
->  	if (info->cs != 0)
->  		info->ndcb0 = NDCB0_CSEL;
-> @@ -747,6 +756,8 @@ static void pxa3xx_nand_cmdfunc(struct mtd_info *mtd, unsigned command,
->  	exec_cmd = prepare_command_pool(info, command, column, page_addr);
->  	if (exec_cmd) {
->  		init_completion(&info->cmd_complete);
-> +		init_completion(&info->dev_ready);
-
-Do you really need to init the completions each time you run a command?
-AIUI, the only reason you would need to do this is if you aren't
-matching up your calls to complete() and wait_for_completion*()
-properly, so that you simply dodge the issue and reset the completion
-count each time. This might be a result of the complexity of your
-2-completion signalling design.
-
-> +		atomic_set(&info->is_ready, 0);
->  		pxa3xx_nand_start(info);
->  
->  		ret = wait_for_completion_timeout(&info->cmd_complete,
-> @@ -859,21 +870,27 @@ static int pxa3xx_nand_waitfunc(struct mtd_info *mtd, struct nand_chip *this)
->  {
->  	struct pxa3xx_nand_host *host = mtd->priv;
->  	struct pxa3xx_nand_info *info = host->info_data;
-> +	int ret;
-> +
-> +	/* Need to wait? */
-> +	if (!atomic_read(&info->is_ready)) {
-
-This read of info->is_ready will no longer need to be atomic, because
-you never modify it from the IRQ context--only from the cmdfunc() and
-waitfunc().
-
-> +		ret = wait_for_completion_timeout(&info->dev_ready,
-> +				CHIP_DELAY_TIMEOUT);
-
-I think you can just do a (non-atomic) info->is_ready=1 here.
-
-> +		if (!ret) {
-> +			dev_err(&info->pdev->dev, "Ready time out!!!\n");
-> +			return NAND_STATUS_FAIL;
-> +		}
-> +	}
->  
->  	/* pxa3xx_nand_send_command has waited for command complete */
->  	if (this->state == FL_WRITING || this->state == FL_ERASING) {
->  		if (info->retcode == ERR_NONE)
->  			return 0;
-> -		else {
-> -			/*
-> -			 * any error make it return 0x01 which will tell
-> -			 * the caller the erase and write fail
-> -			 */
-> -			return 0x01;
-> -		}
-> +		else
-> +			return NAND_STATUS_FAIL;
->  	}
->  
-> -	return 0;
-> +	return NAND_STATUS_READY;
->  }
->  
->  static int pxa3xx_nand_config_flash(struct pxa3xx_nand_info *info,
-> @@ -1026,7 +1043,7 @@ static int pxa3xx_nand_sensing(struct pxa3xx_nand_info *info)
->  		return ret;
->  
->  	chip->cmdfunc(mtd, NAND_CMD_RESET, 0, 0);
-> -	if (info->is_ready)
-> +	if (atomic_read(&info->is_ready))
-
-Does this need to wait on the dev_ready completion? I'm not sure I can
-guarantee there is no race on info->is_ready here, but then that means
-I'm not sure the code is correct even with the atomic read (which I
-don't think will be necessary, according to my suggestion above).
-
->  		return 0;
->  
->  	return -ENODEV;
+...
 
 Brian
