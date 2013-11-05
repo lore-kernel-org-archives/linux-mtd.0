@@ -1,14 +1,15 @@
-Date: Tue, 5 Nov 2013 10:23:01 -0800
+Date: Tue, 5 Nov 2013 10:31:56 -0800
 From: Brian Norris <computersforpeace@gmail.com>
 To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH v3 13/28] mtd: nand: pxa3xx: Add bad block handling
-Message-ID: <20131105182301.GN20061@ld-irv-0074.broadcom.com>
+Subject: Re: [PATCH v3 14/28] mtd: nand: pxa3xx: Add driver-specific ECC
+ BCH support
+Message-ID: <20131105183156.GO20061@ld-irv-0074.broadcom.com>
 References: <1383656135-8627-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1383656135-8627-14-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1383656135-8627-15-git-send-email-ezequiel.garcia@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1383656135-8627-14-git-send-email-ezequiel.garcia@free-electrons.com>
+In-Reply-To: <1383656135-8627-15-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Lior Amsalem <alior@marvell.com>,
  Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
  Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>,
@@ -25,54 +26,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ezequiel,
-
-I wrote up some comments on your v2 series while on a plane Sunday, but
-I didn't make time to send them out until now. Oh well.
-
-On Tue, Nov 05, 2013 at 09:55:20AM -0300, Ezequiel Garcia wrote:
+On Tue, Nov 05, 2013 at 09:55:21AM -0300, Ezequiel Garcia wrote:
 > --- a/drivers/mtd/nand/pxa3xx_nand.c
 > +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> @@ -1128,6 +1152,14 @@ KEEP_CONFIG:
+> @@ -1073,6 +1075,43 @@ static int pxa3xx_nand_sensing(struct pxa3xx_nand_info *info)
+>  	return -ENODEV;
+>  }
 >  
->  	if (nand_scan_ident(mtd, 1, def))
->  		return -ENODEV;
+> +static int pxa_ecc_init(struct pxa3xx_nand_info *info,
+> +			struct nand_ecc_ctrl *ecc,
+> +			int strength, int page_size)
+> +{
+> +	/*
+> +	 * We don't use strength here as the PXA variant
+> +	 * is used with non-ONFI compliant devices.
+
+Hmm, rather than assuming you never get any relevant 'strength' info
+from nand_base, could you check if it is zero and only ignore it if it
+is zero? But if it is non-zero, you could at least use it to validate
+the strength settings below.
+
+At the same time, I would also caution against fragile ECC determination
+methods that can indirectly cause regressions in the future, such as
+with Huang's recent GPMI ECC layout regressions. Perhaps you'll want a
+DT binding for the ECC strength to future proof this? (Not a
+requirement; just a thought.)
+
+> +	 */
+> +	if (page_size == 2048) {
+> +		ecc->mode = NAND_ECC_HW;
+> +		ecc->size = 512;
+> +		ecc->strength = 1;
+
+I assume this is actually a 1-bit ECC, not just a dummy value? Note that
+the ecc->strength and ecc->size fields are used by nand_base for some
+bitflip calculations and are also exposed via sysfs.
+
 > +
-> +	if (pdata->flash_bbt) {
-> +		chip->bbt_options |= NAND_BBT_USE_FLASH |
-> +				     NAND_BBT_NO_OOB_BBM;
-
-You're using NAND_BBT_NO_OOB_BBM? So you are unable to write bad block
-markers to flash at all? Is this related to your independent patch for
-trying to scan BBM from the data area? Could you instead write a
-nand_chip.block_markbad() callback routine that would program BBM to the
-appropriate data area?
-
-Or, if you really want to avoid programming new BBMs, then you should
-probably describe this decision in the patch description more clearly.
-
-> +		chip->bbt_td = &bbt_main_descr;
-> +		chip->bbt_md = &bbt_mirror_descr;
+> +		info->spare_size = 40;
+> +		info->ecc_size = 24;
+> +		return 1;
+> +
+> +	} else if (page_size == 512) {
+> +		ecc->mode = NAND_ECC_HW;
+> +		ecc->size = 512;
+> +		ecc->strength = 1;
+> +
+> +		info->spare_size = 8;
+> +		info->ecc_size = 8;
+> +		return 1;
 > +	}
+> +	return 0;
+> +}
 > +
->  	/* calculate addressing information */
->  	if (mtd->writesize >= 2048)
->  		host->col_addr_cycles = 2;
-> @@ -1323,6 +1355,7 @@ static int pxa3xx_nand_probe_dt(struct platform_device *pdev)
->  	if (of_get_property(np, "marvell,nand-keep-config", NULL))
->  		pdata->keep_config = 1;
->  	of_property_read_u32(np, "num-cs", &pdata->num_cs);
-> +	pdata->flash_bbt = of_get_nand_on_flash_bbt(np);
-
-Now that you're using the "nand-on-flash-bbt" property, you should
-document it in Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
-like the other drivers do. (It's already documented generically in
-Documentation/.../nand.txt, but I think it's good practice to explicitly
-note which drivers support the binding, since nand_base doesn't do this
-generically for all NAND drivers.)
-
->  
->  	pdev->dev.platform_data = pdata;
->  
+> +static int armada370_ecc_init(struct pxa3xx_nand_info *info,
+> +			      struct nand_ecc_ctrl *ecc,
+> +			      int strength, int page_size)
+> +{
+> +	/* Unimplemented yet */
+> +	return 0;
+> +}
+> +
+>  static int pxa3xx_nand_scan(struct mtd_info *mtd)
+>  {
+>  	struct pxa3xx_nand_host *host = mtd->priv;
 
 Brian
