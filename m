@@ -1,26 +1,27 @@
-Received: from mail-vc0-x22d.google.com ([2607:f8b0:400c:c03::22d])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vdof6-0006N0-SZ
- for linux-mtd@lists.infradead.org; Tue, 05 Nov 2013 21:59:51 +0000
-Received: by mail-vc0-f173.google.com with SMTP id lh4so6139023vcb.32
- for <linux-mtd@lists.infradead.org>; Tue, 05 Nov 2013 13:59:25 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <001101ced6a8$a18a2c80$e49e8580$%han@samsung.com>
-References: <CAPgLHd8V06KzBcPmFywSfNxM0q6=s86xn-AdLKeY9h5JZ_nP7g@mail.gmail.com>
- <001101ced6a8$a18a2c80$e49e8580$%han@samsung.com>
-Date: Tue, 5 Nov 2013 13:59:25 -0800
-Message-ID: <CAN8TOE9Eac0LDA+Ke_OCPc_AQGnyYB806pO8JP-qOB1Dr8N2pg@mail.gmail.com>
-Subject: Re: [PATCH -next] mtd: nand: omap: fix error return code in
- omap_nand_probe()
-From: Brian Norris <computersforpeace@gmail.com>
-To: Jingoo Han <jg1.han@samsung.com>, "Gupta, Pekon" <pekon@ti.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Wei Yongjun <weiyj.lk@gmail.com>, "tony@atomide.com" <tony@atomide.com>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Linux Kernel <linux-kernel@vger.kernel.org>, Daniel Mack <zonque@gmail.com>,
- yongjun_wei@trendmicro.com.cn, avinashphilip@ti.com,
+Received: from mail.linuxfoundation.org ([140.211.169.12])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VdpLi-0007GB-1t
+ for linux-mtd@lists.infradead.org; Tue, 05 Nov 2013 22:43:51 +0000
+Date: Tue, 5 Nov 2013 14:43:28 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Caizhiyong <caizhiyong@hisilicon.com>
+Subject: Re: [PATCH 2/2]  mtd: cmdlinepart: use cmdline partition parser lib
+Message-Id: <20131105144328.fb5a6a1d423776b324771706@linux-foundation.org>
+In-Reply-To: <C3050A4DBA34F345975765E43127F10F1C084C81@szxeml512-mbs.china.huawei.com>
+References: <C3050A4DBA34F345975765E43127F10F1C0643B8@szxeml512-mbx.china.huawei.com>
+ <20131020120603.GA18678@localhost>
+ <C3050A4DBA34F345975765E43127F10F1C084C81@szxeml512-mbs.china.huawei.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Karel Zak <kzak@redhat.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ "Wanglin \(Albert\)" <albert.wanglin@hisilicon.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,24 +31,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Oct 31, 2013 at 7:18 PM, Jingoo Han <jg1.han@samsung.com> wrote:
-> On Friday, November 01, 2013 9:16 AM, Wei Yongjun wrote:
->>
->> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
->>
->> Fix to return a negative error code from the error handling
->> case instead of 0, as done elsewhere in this function.
->
-> Commit message is right? :-(
+On Tue, 22 Oct 2013 13:14:17 +0000 Caizhiyong <caizhiyong@hisilicon.com> wrote:
 
-It sounds OK by my reading. Unless you're having trouble parsing what
-"as done elsewhere in this function" is being applied to. (IOW, is the
-rest of the function returning a negative error code on the error
-paths, or is it returning 0? Of course the answer is the former, but
-it's possible to misread it.) If it helps, I can try to tweak the
-wording a bit when applying this patch.
+> In the previous version, adjust the cmdline parser code to library-style
+> code, and move it to a separate file "block/cmdline-parser.c", we can use
+> it in some client code. there is no any functionality change in the adjusting.
+> 
+> this patch use cmdline parser lib.
+> 
+> For further information, see "https://lkml.org/lkml/2013/8/6/550"
 
-Pekon, can I get an Acked-by?
-
-Thanks,
-Brian
+Thanks for doing this.  Could we please get some acked-by's or,
+preferably, tested-by's from the MTD people?
