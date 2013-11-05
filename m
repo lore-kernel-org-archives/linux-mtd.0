@@ -1,24 +1,42 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VdfJV-0006vC-3H
- for linux-mtd@lists.infradead.org; Tue, 05 Nov 2013 12:00:54 +0000
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 1/1] mtd: nand: Allow bad block markers to be found in the
- data region
-Date: Tue,  5 Nov 2013 09:00:21 -0300
-Message-Id: <1383652821-3557-2-git-send-email-ezequiel.garcia@free-electrons.com>
-In-Reply-To: <1383652821-3557-1-git-send-email-ezequiel.garcia@free-electrons.com>
-References: <1383652821-3557-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: Lior Amsalem <alior@marvell.com>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Tawfik Bayouk <tawfik@marvell.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- Huang Shijie <b32955@freescale.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Message-ID: <5278DEF8.2030101@asianux.com>
+Date: Tue, 05 Nov 2013 20:05:12 +0800
+From: Chen Gang <gang.chen@asianux.com>
+MIME-Version: 1.0
+To: David Howells <dhowells@redhat.com>
+Subject: Re: [PATCH trivial] include: uapi: standard all files' macro prefix
+ and suffix, excluding "linux/" sub-directory
+References: <52786742.1080509@asianux.com> <51FB6216.6010008@asianux.com>
+ <11907.1383602624@warthog.procyon.org.uk>
+ <13981.1383649896@warthog.procyon.org.uk>
+In-Reply-To: <13981.1383649896@warthog.procyon.org.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: xen-devel@lists.xensource.com, jeremy@goop.org, airlied@linux.ie,
+ daniel.vetter@ffwll.ch, alsa-devel@alsa-project.org,
+ dri-devel@lists.freedesktop.org, perex@perex.cz, thierry.reding@gmail.com,
+ linux-mtd@lists.infradead.org, sean.hefty@intel.com,
+ virtualization@lists.linux-foundation.org,
+ Linux-Arch <linux-arch@vger.kernel.org>,
+ "kgene.kim@samsung.com" <kgene.kim@samsung.com>, tbergstrom@nvidia.com,
+ jy0922.shim@samsung.com, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+ roland@purestorage.com, Takashi Iwai <tiwai@suse.de>,
+ Tomi Valkeinen <tomi.valkeinen@ti.com>, mtk.manpages@gmail.com,
+ fcoe-devel@open-fcoe.org, Paul McKenney <paulmck@linux.vnet.ibm.com>,
+ "plagnioj@jcrosoft.com" <plagnioj@jcrosoft.com>, Arnd Bergmann <arnd@arndb.de>,
+ swarren@wwwdotorg.org, intel-gfx@lists.freedesktop.org, inki.dae@samsung.com,
+ "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>,
+ Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+ linux-tegra@vger.kernel.org, davej@redhat.com,
+ Thomas Gleixner <tglx@linutronix.de>, robert.w.love@intel.com,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ 'Jiri Kosina' <trivial@kernel.org>, dedekind1@gmail.com,
+ sw0312.kim@samsung.com,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ JBottomley@parallels.com,
+ "kyungmin.park@samsung.com" <kyungmin.park@samsung.com>,
+ "Eric W. Biederman" <ebiederm@xmission.com>,
+ Andrew Morton <akpm@linux-foundation.org>, dwmw2@infradead.org,
+ David Miller <davem@davemloft.net>, shanim@mellanox.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,80 +46,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some NAND controllers provide its own unique view of a flash device's page,
-where the page is partitioned into several DATA,OOB regions.
-In other words, a flash that's specified by the manufacturer as:
+On 11/05/2013 07:11 PM, David Howells wrote:
+> Chen Gang <gang.chen@asianux.com> wrote:
+> 
+>>> Userspace sometimes depends on the name in the guard macro:-/
+>>
+>> "the guard macro" is only for prevent itself from being included by
+>> multiple times (an id used by itself -- like a handle), it is not an id
+>> to let other files know about it (it is not a normal using way).
+> 
+> Whilst that *should* be true, it isn't actually true.  See:
+> 
+> 	grep -r _LINUX_.*_H /usr/include/ | grep -v ^/usr/include/linux/
+> 
+> for example.  Also who knows what all those autoconf scripts out there look
+> for?
+> 
 
-|-------------------------|
-|         DATA      | OOB |
-|-------------------------|
+Oh... the real world is really not quite perfect. :-/
 
-is actually handled by the driver/controller as:
 
-|-------------------------|
-| DATA | OOB | DATA | OOB |
-|-------------------------|
+> However, thinking about it some more, you're probably safe with respect to
+> userspace as scripts/headers_install.h strips off the _UAPI prefix on the
+> guard macros - just as long as you don't change the rest of the macro name.
+> 
 
-This has a peculiar side-effect: the bad block marker is located at a position
-that is regarded as the data region in the controller's view.
+In honest, I really did not think more about it.
 
-Therefore, when the device is scanned for bad blocks (for the first
-time) and the bad block table is built using the factory-marked blocks,
-these markers are never found.
+Only adding _UAPI (not touch others) can completely fix one style issue:
+separate "uapi/*" from other sub-directories in "include/*"
 
-To address this case, we introduce a new option NAND_BBT_DATA_BBM.
-Such option is used to read the data region of a a given page, instead
-of the oob region, in the scan_block_fast() function. The page is read
-as usual, using the length and offset parameters set in the bad block pattern.
+So for me, we can continue improve this patch: add "_UAPI" for all guard
+macro under "include/uapi/*" (also include "include/uapi/linux").
 
-Given drivers can customize the bad block pattern to match its specific
-requirements, the new option allows to search for a bad block marker at
-*any* position within a page.
 
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
----
- drivers/mtd/nand/nand_bbt.c | 11 +++++++++--
- include/linux/mtd/bbm.h     |  4 ++++
- 2 files changed, 13 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-index c0615d1..3f712cc 100644
---- a/drivers/mtd/nand/nand_bbt.c
-+++ b/drivers/mtd/nand/nand_bbt.c
-@@ -419,10 +419,17 @@ static int scan_block_fast(struct mtd_info *mtd, struct nand_bbt_descr *bd,
- 	struct mtd_oob_ops ops;
- 	int j, ret;
- 
-+	if (bd->options & NAND_BBT_DATA_BBM) {
-+		ops.oobbuf = (buf + mtd->writesize);
-+		ops.datbuf = buf;
-+		ops.len = mtd->writesize;
-+	} else {
-+		ops.oobbuf = buf;
-+		ops.datbuf = NULL;
-+		ops.len = 0;
-+	}
- 	ops.ooblen = mtd->oobsize;
--	ops.oobbuf = buf;
- 	ops.ooboffs = 0;
--	ops.datbuf = NULL;
- 	ops.mode = MTD_OPS_PLACE_OOB;
- 
- 	for (j = 0; j < numpages; j++) {
-diff --git a/include/linux/mtd/bbm.h b/include/linux/mtd/bbm.h
-index 36bb6a5..75d590d 100644
---- a/include/linux/mtd/bbm.h
-+++ b/include/linux/mtd/bbm.h
-@@ -114,6 +114,10 @@ struct nand_bbt_descr {
-  * entire spare area. Must be used with NAND_BBT_USE_FLASH.
-  */
- #define NAND_BBT_NO_OOB_BBM	0x00080000
-+/*
-+ * Search for bad block marker in the data region, instead of the OOB.
-+ */
-+#define NAND_BBT_DATA_BBM	0x00100000
- 
- /*
-  * Flag set by nand_create_default_bbt_descr(), marking that the nand_bbt_descr
+Thanks.
 -- 
-1.8.1.5
+Chen Gang
