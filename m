@@ -1,27 +1,24 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VdpqX-0007xc-OB
- for linux-mtd@lists.infradead.org; Tue, 05 Nov 2013 23:15:42 +0000
-Date: Tue, 5 Nov 2013 20:15:22 -0300
+Date: Tue, 5 Nov 2013 20:24:26 -0300
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 0/1] Bad block markers here, there and everywhere
-Message-ID: <20131105231522.GC11759@localhost>
-References: <1383652821-3557-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <20131105180743.GM20061@ld-irv-0074.broadcom.com>
- <20131105230126.GB11759@localhost>
+Subject: Re: [PATCH v3 14/28] mtd: nand: pxa3xx: Add driver-specific ECC BCH
+ support
+Message-ID: <20131105232425.GD11759@localhost>
+References: <1383656135-8627-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1383656135-8627-15-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20131105183156.GO20061@ld-irv-0074.broadcom.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20131105230126.GB11759@localhost>
+In-Reply-To: <20131105183156.GO20061@ld-irv-0074.broadcom.com>
 Cc: Lior Amsalem <alior@marvell.com>,
  Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Tawfik Bayouk <tawfik@marvell.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- Gregory Clement <gregory.clement@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>
+ Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>,
+ Daniel Mack <zonque@gmail.com>, Huang Shijie <b32955@freescale.com>,
+ linux-mtd@lists.infradead.org,
+ Gregory Clement <gregory.clement@free-electrons.com>, Willy Tarreau <w@1wt.eu>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,61 +28,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Nov 05, 2013 at 08:01:26PM -0300, Ezequiel Garcia wrote:
-> On Tue, Nov 05, 2013 at 10:07:43AM -0800, Brian Norris wrote:
-> > On Tue, Nov 05, 2013 at 09:00:20AM -0300, Ezequiel Garcia wrote:
-> > > This commit adds a new option called NAND_BBT_DATA_BBM. The change itself
-> > > is pretty small and simple to understand: when the badblock_pattern sets the
-> > > NAND_BBT_DATA_BBM option, scan_block_fast() reads the data region instead
-> > > of the OOB region.
-> > 
-> > I think this type of scanning method is better suited to a different
-> > type of solution: implement a custom nand_chip.bad_block() call-back.
+On Tue, Nov 05, 2013 at 10:31:56AM -0800, Brian Norris wrote:
+> On Tue, Nov 05, 2013 at 09:55:21AM -0300, Ezequiel Garcia wrote:
+> > --- a/drivers/mtd/nand/pxa3xx_nand.c
+> > +++ b/drivers/mtd/nand/pxa3xx_nand.c
+> > @@ -1073,6 +1075,43 @@ static int pxa3xx_nand_sensing(struct pxa3xx_nand_info *info)
+> >  	return -ENODEV;
+> >  }
+> >  
+> > +static int pxa_ecc_init(struct pxa3xx_nand_info *info,
+> > +			struct nand_ecc_ctrl *ecc,
+> > +			int strength, int page_size)
+> > +{
+> > +	/*
+> > +	 * We don't use strength here as the PXA variant
+> > +	 * is used with non-ONFI compliant devices.
 > 
-> Fully agreed (I guess you mean block_bad() right?)
+> Hmm, rather than assuming you never get any relevant 'strength' info
+> from nand_base, could you check if it is zero and only ignore it if it
+> is zero? But if it is non-zero, you could at least use it to validate
+> the strength settings below.
 > 
-> > Unfortunately, nand_base/nand_bbt are kind of inconsistent, so that some
-> > code paths use nand_chip.bad_block() and some use nand_bbt.c's scanning
-> > code to check for bad block markers, so this is not currently a good
-> > solution.
-> > 
+> At the same time, I would also caution against fragile ECC determination
+> methods that can indirectly cause regressions in the future, such as
+> with Huang's recent GPMI ECC layout regressions. Perhaps you'll want a
+> DT binding for the ECC strength to future proof this? (Not a
+> requirement; just a thought.)
 > 
-> Which is why I couldn't implement a custom block_bad(). My particular
-> use case (which could match others) needs this customization in the
-> first scan. After that, once the bad block table is built, the in-flash
-> bad block markers are never touched.
-> 
-> > I've been meaning to follow through with an improved version of this
-> > patch for a while:
-> > 
-> >   http://lists.infradead.org/pipermail/linux-mtd/2012-June/042571.html
-> > 
-> > Such a patch provides several benefits, one of them being that drivers
-> > like yours can easily provide a custom BBM location. What do you think?
-> > 
-> 
-> Of course, that sounds much more flexible. Let me pick it where Matthieu left,
-> I'll read the patch and prepare something to discuss.
-> 
-> On the other side, I'm seeing the above patch was a bit argued :/ I'm
-> not sure why it got never merged, maybe you can give me some heads up
-> about potential drawbacks?
 
-After reading the patch and reading the code, now I'm even more confused :)
+Well, for the PXA path, as I don't have this hardware enabled to test
+I try do clean-ups and change but without *functionality changes*.
 
-The first thing that seems odd is the fact that the scan_block_fast()
-path matches a pattern (which can be several bytes long), whereas the
-default nand_block_bad() seem to check for just one byte.
+So, you'll notice this pxa_ecc_init() is a different way of doing the
+old initialization:
 
-This may or may not be an issue, after some thought, but it's not
-a trivial change, IMHO.
+       chip->ecc.mode = NAND_ECC_HW;
+       chip->ecc.size = info->fifo_size;
+       chip->ecc.strength = 1;
 
-The second thing, which was already discussed back in June-2012 is the
-fact that scan_block_fast() uses mtd_read_oob() to read, but
-nand_block_bad() just issues a READOOB command.
+And in fact...
 
-So, what do you propose? If you can give me some guidelines I've no problem
-in preparing a (first/draft) patch to trigger the discussion.
+> > +	 */
+> > +	if (page_size == 2048) {
+> > +		ecc->mode = NAND_ECC_HW;
+> > +		ecc->size = 512;
+
+To match the previous code, this should be "ecc->size = 2048"! :/
+
+> > +		ecc->strength = 1;
+> 
+> I assume this is actually a 1-bit ECC, not just a dummy value? Note that
+> the ecc->strength and ecc->size fields are used by nand_base for some
+> bitflip calculations and are also exposed via sysfs.
+> 
+
+Right. Well, as I said: I tried not to change anything that I'm not able
+to fully test.
+
+> > +
+> > +		info->spare_size = 40;
+> > +		info->ecc_size = 24;
+> > +		return 1;
+> > +
+> > +	} else if (page_size == 512) {
+> > +		ecc->mode = NAND_ECC_HW;
+> > +		ecc->size = 512;
+> > +		ecc->strength = 1;
+> > +
+> > +		info->spare_size = 8;
+> > +		info->ecc_size = 8;
+> > +		return 1;
+> > +	}
+> > +	return 0;
+> > +}
+> > +
+> > +static int armada370_ecc_init(struct pxa3xx_nand_info *info,
+> > +			      struct nand_ecc_ctrl *ecc,
+> > +			      int strength, int page_size)
+> > +{
+> > +	/* Unimplemented yet */
+> > +	return 0;
+> > +}
+> > +
+> >  static int pxa3xx_nand_scan(struct mtd_info *mtd)
+> >  {
+> >  	struct pxa3xx_nand_host *host = mtd->priv;
+
 -- 
 Ezequiel García, Free Electrons
 Embedded Linux, Kernel and Android Engineering
