@@ -1,22 +1,24 @@
-Received: from 1wt.eu ([62.212.114.60])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vdi5h-0004l8-TF
- for linux-mtd@lists.infradead.org; Tue, 05 Nov 2013 14:58:50 +0000
-Date: Tue, 5 Nov 2013 15:57:48 +0100
-From: Willy Tarreau <w@1wt.eu>
+Date: Tue, 5 Nov 2013 10:15:31 -0500
+From: Jason Cooper <jason@lakedaemon.net>
 To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: Ubiblock users call (Re: mvneta / openblocks switch)
-Message-ID: <20131105145748.GE17316@1wt.eu>
-References: <20131031135322.GN26784@titan.lakedaemon.net>
- <52738D6A.1010900@hitachi.com> <20131101130528.716e53d9@skate>
- <20131105103555.GD16420@1wt.eu> <5278E824.8050405@hitachi.com>
- <20131105135323.GA17316@1wt.eu> <20131105144003.GB9632@localhost>
-Mime-Version: 1.0
+Subject: Re: [PATCH v3 25/28] ARM: mvebu: Add support for NAND controller
+ in Armada 370/XP
+Message-ID: <20131105151531.GK3060@titan.lakedaemon.net>
+References: <1383656135-8627-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1383656135-8627-26-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20131105132905.GJ3060@titan.lakedaemon.net>
+ <20131105135145.GA2676@localhost>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20131105144003.GB9632@localhost>
-Cc: piergiorgio.beruto@gmail.com, Mike Frysinger <vapier@gentoo.org>,
- linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+In-Reply-To: <20131105135145.GA2676@localhost>
+Cc: Lior Amsalem <alior@marvell.com>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Tawfik Bayouk <tawfik@marvell.com>, Daniel Mack <zonque@gmail.com>,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>, Willy Tarreau <w@1wt.eu>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,85 +28,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ezequiel,
-
-On Tue, Nov 05, 2013 at 11:40:04AM -0300, Ezequiel Garcia wrote:
-> On Tue, Nov 05, 2013 at 02:53:23PM +0100, Willy Tarreau wrote:
+On Tue, Nov 05, 2013 at 10:51:46AM -0300, Ezequiel Garcia wrote:
+> On Tue, Nov 05, 2013 at 08:29:05AM -0500, Jason Cooper wrote:
+> > On Tue, Nov 05, 2013 at 09:55:32AM -0300, Ezequiel Garcia wrote:
+> > > The Armada 370 and Armada XP SoC have a NAND controller (aka NFCv2).
+> > > This commit adds support for it in Armada 370 and Armada XP SoC
+> > > common devicetree.
 > > > 
-> > > Hmm, could you tell me which github branch is good to try?
-> 
-> [...]
-> 
+> > > Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> > > ---
+> > >  arch/arm/boot/dts/armada-370-xp.dtsi | 9 +++++++++
+> > >  1 file changed, 9 insertions(+)
+> > > 
+> > > diff --git a/arch/arm/boot/dts/armada-370-xp.dtsi b/arch/arm/boot/dts/armada-370-xp.dtsi
+> > > index 01e69fc..b4e6898 100644
+> > > --- a/arch/arm/boot/dts/armada-370-xp.dtsi
+> > > +++ b/arch/arm/boot/dts/armada-370-xp.dtsi
+> > > @@ -258,6 +258,15 @@
+> > >  				status = "disabled";
+> > >  			};
+> > >  
+> > > +			nand@d0000 {
+> > > +				compatible = "marvell,armada370-nand";
 > > 
-> > then I have set up a large collection of patches, including Ezequiel's work
-> > on the NAND flash, his UBI block devices and
-> [...]
+> > Could you please provide a separate patch updating the devicetree
+> > binding documentation?  You can also Cc the entire series to the
+> > devicetree ml as long as the documentation patch is easy to find in the
+> > series.  eg 'dt: binding: ...'
+> > 
 > 
-> Hey Willy,
-> 
-> Which patches have you taken for UBI block device?
+> Hm.. actually the controller already supports the new compatible string
+> so the binding documentation should be added now.
 
-I found a patch you posted on a list (probably linux-mtd but I'm not certain)
-which received very little feedback. I wanted to give it a try and found that
-it was easy to integrate and that it worked fine out of the box.
+$ git grep -n 'marvell,armada370-nand' -- Documentation/devicetree/bindings/
+$
 
-> Can you describe your usage?
+Perhaps in v3.13-rc1?
 
-I wanted to avoid ubifs for having used too many non-recoverable FS
-corruptions with it in the past (most likely due to a faulty NAND in
-the iomega Iconnect, or at least problems with the timings). More
-importantly, seeing that there is no fsck equivalent for it is not
-something to reassure me, because each time I got an issue, it was
-not possible to remount the FS nor to fix it and everything was lost.
+> And I'd rather do that in a separate patch, to avoid cluttering the poor
+> devicetree people with an unrelated 28-piece patch :-)
 
-Still, I like the idea of UBI and wanted to experiment with something
-like this to offer a block device interface. And before starting any
-work, I googled around, thinking "probably someone will already have
-had this idea". I found your patch and gave it a try. I only played
-with it for one evening and did not have any more time to power my
-mirabox on since. But I see some potential in it. Having the ability
-to support partitions, various FS types, etc... makes it easier to
-migrate systems designed to work this way to NAND-based devices. This
-is probably also one reason for the success of eMMC which tends to
-replace raw NAND on some new boards.
+No (really), according to Grant and Mark during the closing session, I
+asked this specific question.  They _do_ want the entire series so they
+can refer to the corresponding code changes if necessary.  As I stated
+above, we can make their job easier by making the binding a separate
+patch that is clearly marked as such.
 
-For example, one of my distro's boot scripts automatically detects
-the available partitions, checks for a mountable FS there, then
-locates the current config and loads it. With a block device, I have
-nothing to change at all. With other solutions, I have to reconsider
-the boot process.
+> BTW: who should take such a patch? I'm still a little lost regarding
+> who takes the binding or dts patches for a given subsystem.
 
-> I've been wanting to push this upstream since a long while, and the patches
-> seem ready. However, given I'm not using these *at all*, I'd like to have some
-> real users supporting the feature addition.
+The appropriate sub-system maintainer still takes the patches, we simply
+wait a bit for the DT binding maintainers to chime in.  If they don't
+after a few weeks, we can take it without their Ack.
 
-I definitely am a supporter. It's still too early for me to judge whether the
-design is the best one or not, but the feature of presenting a reliable block
-device on top of a NAND is clearly appealing to make NAND-based devices work
-more similarly to other devices found in the x86 world and reduce the porting
-effort. I was a bit sad to see that your work received to little feedback, and
-am ashamed for not having sent you any since (nor retried your two latest
-pxa3xx patch series).
+If the maintainer is unsure, or needs help reviewing the binding, they
+can always ping the DT folks for assistance.
 
-> Just for reference, the latest work is here:
-> 
-> http://git.free-electrons.com/users/ezequiel-garcia/linux/log/?h=ubiblock-v4-two-cache
->
-> And the user stuff:
-> 
-> http://git.free-electrons.com/users/ezequiel-garcia/mtd-utils/log/?h=ubiblkvol
+thx,
 
-Ah excellent, thank you for the links!
-
-One thing I noticed is that my mirabox's u-boot is able to read and write an
-UBI volume, but IIRC, it can read what I format from linux but if I write from
-u-boot, the linux cannot reread it. That's where I remember it was late in the
-night and I had to go back home, then I haven't had an opportunity to try again
-since.
-
-I would find it really convenient to be able to ubi-write a block image from
-u-boot and read it from Linux using the same format. It would ease the
-(re)installation process making abstraction of bad blocks.
-
-Best regards,
-Willy
+Jason.
