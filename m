@@ -1,21 +1,24 @@
-Received: from mail-ve0-x22a.google.com ([2607:f8b0:400c:c01::22a])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VdhRf-0003KL-VM
- for linux-mtd@lists.infradead.org; Tue, 05 Nov 2013 14:17:28 +0000
-Received: by mail-ve0-f170.google.com with SMTP id oy12so2552199veb.29
- for <linux-mtd@lists.infradead.org>; Tue, 05 Nov 2013 06:17:03 -0800 (PST)
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Vdhnz-000483-RE
+ for linux-mtd@lists.infradead.org; Tue, 05 Nov 2013 14:40:32 +0000
+Date: Tue, 5 Nov 2013 11:40:04 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Willy Tarreau <w@1wt.eu>
+Subject: Ubiblock users call (Re: mvneta / openblocks switch)
+Message-ID: <20131105144003.GB9632@localhost>
+References: <20131031135322.GN26784@titan.lakedaemon.net>
+ <52738D6A.1010900@hitachi.com> <20131101130528.716e53d9@skate>
+ <20131105103555.GD16420@1wt.eu> <5278E824.8050405@hitachi.com>
+ <20131105135323.GA17316@1wt.eu>
 MIME-Version: 1.0
-In-Reply-To: <52785CF5.80809@freescale.com>
-References: <CAOMZO5Bciab5+FoJ1q45+wUt8Kxw=+2na552KwqS9Z7yqbp+UA@mail.gmail.com>
- <52785CF5.80809@freescale.com>
-Date: Tue, 5 Nov 2013 12:17:03 -0200
-Message-ID: <CAOMZO5Djx5C9oV2GHWuN-M9cqXRAaP0axwcgwiAc4R3N2DSRWQ@mail.gmail.com>
-Subject: Re: gpmi_nand crashes on mx23
-From: Fabio Estevam <festevam@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20131105135323.GA17316@1wt.eu>
+Cc: piergiorgio.beruto@gmail.com, Mike Frysinger <vapier@gentoo.org>,
+ linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,17 +28,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Huang,
+On Tue, Nov 05, 2013 at 02:53:23PM +0100, Willy Tarreau wrote:
+> > 
+> > Hmm, could you tell me which github branch is good to try?
 
-On Tue, Nov 5, 2013 at 12:50 AM, Huang Shijie <b32955@freescale.com> wrote:
-> could you email the uboot for imx23?
->
-> I have not touched the imx23 board for a long long time.
+[...]
 
-Please use U-boot 2013.10 and follow these steps to flash U-boot
-binary into the SD:
-http://git.denx.de/?p=u-boot.git;a=blob;f=doc/README.mxs;h=2919bbfee13fdd12096a611c26664a4a6cb7b91a;hb=HEAD
+> 
+> then I have set up a large collection of patches, including Ezequiel's work
+> on the NAND flash, his UBI block devices and
+[...]
 
-Regards,
+Hey Willy,
 
-Fabio Estevam
+Which patches have you taken for UBI block device? Can you describe your usage?
+
+I've been wanting to push this upstream since a long while, and the patches
+seem ready. However, given I'm not using these *at all*, I'd like to have some
+real users supporting the feature addition.
+
+Just for reference, the latest work is here:
+
+http://git.free-electrons.com/users/ezequiel-garcia/linux/log/?h=ubiblock-v4-two-cache
+
+And the user stuff:
+
+http://git.free-electrons.com/users/ezequiel-garcia/mtd-utils/log/?h=ubiblkvol
+
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
