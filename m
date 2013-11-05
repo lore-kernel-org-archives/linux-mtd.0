@@ -1,42 +1,16 @@
-Message-ID: <5278DEF8.2030101@asianux.com>
-Date: Tue, 05 Nov 2013 20:05:12 +0800
-From: Chen Gang <gang.chen@asianux.com>
-MIME-Version: 1.0
-To: David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH trivial] include: uapi: standard all files' macro prefix
- and suffix, excluding "linux/" sub-directory
-References: <52786742.1080509@asianux.com> <51FB6216.6010008@asianux.com>
- <11907.1383602624@warthog.procyon.org.uk>
- <13981.1383649896@warthog.procyon.org.uk>
-In-Reply-To: <13981.1383649896@warthog.procyon.org.uk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: xen-devel@lists.xensource.com, jeremy@goop.org, airlied@linux.ie,
- daniel.vetter@ffwll.ch, alsa-devel@alsa-project.org,
- dri-devel@lists.freedesktop.org, perex@perex.cz, thierry.reding@gmail.com,
- linux-mtd@lists.infradead.org, sean.hefty@intel.com,
- virtualization@lists.linux-foundation.org,
- Linux-Arch <linux-arch@vger.kernel.org>,
- "kgene.kim@samsung.com" <kgene.kim@samsung.com>, tbergstrom@nvidia.com,
- jy0922.shim@samsung.com, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
- roland@purestorage.com, Takashi Iwai <tiwai@suse.de>,
- Tomi Valkeinen <tomi.valkeinen@ti.com>, mtk.manpages@gmail.com,
- fcoe-devel@open-fcoe.org, Paul McKenney <paulmck@linux.vnet.ibm.com>,
- "plagnioj@jcrosoft.com" <plagnioj@jcrosoft.com>, Arnd Bergmann <arnd@arndb.de>,
- swarren@wwwdotorg.org, intel-gfx@lists.freedesktop.org, inki.dae@samsung.com,
- "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>,
- Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
- linux-tegra@vger.kernel.org, davej@redhat.com,
- Thomas Gleixner <tglx@linutronix.de>, robert.w.love@intel.com,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- 'Jiri Kosina' <trivial@kernel.org>, dedekind1@gmail.com,
- sw0312.kim@samsung.com,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- JBottomley@parallels.com,
- "kyungmin.park@samsung.com" <kyungmin.park@samsung.com>,
- "Eric W. Biederman" <ebiederm@xmission.com>,
- Andrew Morton <akpm@linux-foundation.org>, dwmw2@infradead.org,
- David Miller <davem@davemloft.net>, shanim@mellanox.com
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: <linux-mtd@lists.infradead.org>,
+	<linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH v3 00/28] Armada 370/XP NAND support
+Date: Tue,  5 Nov 2013 09:55:07 -0300
+Message-Id: <1383656135-8627-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: Lior Amsalem <alior@marvell.com>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>,
+ Daniel Mack <zonque@gmail.com>, Huang Shijie <b32955@freescale.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>, Willy Tarreau <w@1wt.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -46,40 +20,115 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/05/2013 07:11 PM, David Howells wrote:
-> Chen Gang <gang.chen@asianux.com> wrote:
-> 
->>> Userspace sometimes depends on the name in the guard macro:-/
->>
->> "the guard macro" is only for prevent itself from being included by
->> multiple times (an id used by itself -- like a handle), it is not an id
->> to let other files know about it (it is not a normal using way).
-> 
-> Whilst that *should* be true, it isn't actually true.  See:
-> 
-> 	grep -r _LINUX_.*_H /usr/include/ | grep -v ^/usr/include/linux/
-> 
-> for example.  Also who knows what all those autoconf scripts out there look
-> for?
-> 
+Behold the Armada 370/XP SoCs v3 patchset!
 
-Oh... the real world is really not quite perfect. :-/
+This time the details about the controller have been added to
+Documentation/mtd/nand/pxa3xx-nand.txt, so I'd appreciate if you could review
+the docs as well.
 
+It's worth noting that the *only* previously remaining issue (the bad block
+factory initial detection) has been addressed by this recent patch:
 
-> However, thinking about it some more, you're probably safe with respect to
-> userspace as scripts/headers_install.h strips off the _UAPI prefix on the
-> guard macros - just as long as you don't change the rest of the macro name.
-> 
+  http://patchwork.ozlabs.org/patch/288482/
 
-In honest, I really did not think more about it.
+If the change is accepted,  I'll send a simple follow-up patch to make use
+of the new option.
 
-Only adding _UAPI (not touch others) can completely fix one style issue:
-separate "uapi/*" from other sub-directories in "include/*"
+In other words, this series is now _complete_, and so I've switched to
+"get-feedback-and-resubmit" mode :-)
 
-So for me, we can continue improve this patch: add "_UAPI" for all guard
-macro under "include/uapi/*" (also include "include/uapi/linux").
+Patches 1-4, adding the clock infrastructure have already been merged
+and will be dropped once this series can be based on v3.13-rc1.
+I'm including them just for completeness.
 
+Based in l2-mtd's master branch. Also, I've pushed a branch to our github
+in case anyone wants to test it:
 
-Thanks.
+  https://github.com/MISL-EBU-System-SW/mainline-public/tree/l2-mtd/upstream-nand-v3
+
+Thanks!
+
+* Changes from v2 (some minor fixes as per Huang's good feedback)
+
+  * Add some more details to the commit log in patch
+    "mtd: nand: pxa3xx: Early variant detection"
+
+  * Add an empty line between variable declaration and function body
+    in patch "mtd: nand: pxa3xx: Use chip->cmdfunc instead of the internal".
+
+  * Fix a build break caused by incomplete variable replacement:
+    "mtd: nand: pxa3xx: Replace host->page_size by mtd->writesize"
+
+* Changes from v1
+
+Aside from several changes based in Brian's feedback, the main changes
+from v1 are:
+
+  * The controller's clock source is now fully modeled, see patche 1 to 4.
+    Of course, none of those patches should be taken through the mtd
+    subsystem, but I'm adding them here for completeness.
+
+  * The chip's cmdfunc() is now independently implemented in each SoC variant.
+    The rationale behind this decision is that 'chunked' I/O is the only tested
+    mode on the Armada370 variant, while the old 'vanilla' I/O is the only
+    tested mode on the PXA variant.
+
+    So it's safer to have an implementation for each variant.
+
+  * Added support for BCH-8, in other words: 8-bits of correction in a 512-byte
+    region. This is obtained by using a data chunk size of 1024B, thus doubling
+    the ECC BCH strength, as per this ECC engine mechanism.
+
+  * The ECC layout in use, which must be set according to the page size and
+    desired ECC strength is now strictly chosen to match only the tested
+    combinations.
+
+Ezequiel Garcia (28):
+  clk: mvebu: Add Core Divider clock
+  ARM: mvebu: Add Core Divider clock device-tree binding
+  ARM: mvebu: Add a 2 GHz fixed-clock Armada 370/XP
+  ARM: mvebu: Add the core-divider clock to Armada 370/XP
+  mtd: nand: pxa3xx: Make config menu show supported platforms
+  mtd: nand: pxa3xx: Prevent sub-page writes
+  mtd: nand: pxa3xx: Early variant detection
+  mtd: nand: pxa3xx: Use chip->cmdfunc instead of the internal
+  mtd: nand: pxa3xx: Split FIFO size from to-be-read FIFO count
+  mtd: nand: pxa3xx: Replace host->page_size by mtd->writesize
+  mtd: nand: pxa3xx: Add a nice comment to pxa3xx_set_datasize()
+  mtd: nand: pxa3xx: Use a completion to signal device ready
+  mtd: nand: pxa3xx: Add bad block handling
+  mtd: nand: pxa3xx: Add driver-specific ECC BCH support
+  mtd: nand: pxa3xx: Clear cmd buffer #3 (NDCB3) on command start
+  mtd: nand: pxa3xx: Add helper function to set page address
+  mtd: nand: pxa3xx: Remove READ0 switch/case falltrough
+  mtd: nand: pxa3xx: Split prepare_command_pool() in two stages
+  mtd: nand: pxa3xx: Move the data buffer clean to
+    prepare_start_command()
+  mtd: nand: pxa3xx: Fix SEQIN column address set
+  mtd: nand: pxa3xx: Add a read/write buffers markers
+  mtd: nand: pxa3xx: Introduce multiple page I/O support
+  mtd: nand: pxa3xx: Add multiple chunk write support
+  mtd: nand: pxa3xx: Add ECC BCH correctable errors detection
+  ARM: mvebu: Add support for NAND controller in Armada 370/XP
+  ARM: mvebu: Enable NAND controller in Armada XP GP board
+  ARM: mvebu: Enable NAND controller in Armada 370 Mirabox
+  mtd: nand: pxa3xx: Add documentation about the controller
+
+ .../bindings/clock/mvebu-corediv-clock.txt         |  19 +
+ Documentation/mtd/nand/pxa3xx-nand.txt             | 101 +++
+ arch/arm/boot/dts/armada-370-mirabox.dts           |  21 +
+ arch/arm/boot/dts/armada-370-xp.dtsi               |  26 +
+ arch/arm/boot/dts/armada-xp-gp.dts                 |   8 +
+ drivers/clk/mvebu/Kconfig                          |   5 +
+ drivers/clk/mvebu/Makefile                         |   1 +
+ drivers/clk/mvebu/clk-corediv.c                    | 223 +++++++
+ drivers/mtd/nand/Kconfig                           |   4 +-
+ drivers/mtd/nand/pxa3xx_nand.c                     | 683 ++++++++++++++++-----
+ include/linux/platform_data/mtd-nand-pxa3xx.h      |   3 +
+ 11 files changed, 955 insertions(+), 139 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/mvebu-corediv-clock.txt
+ create mode 100644 Documentation/mtd/nand/pxa3xx-nand.txt
+ create mode 100644 drivers/clk/mvebu/clk-corediv.c
+
 -- 
-Chen Gang
+1.8.1.5
