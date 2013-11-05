@@ -1,24 +1,21 @@
-Date: Tue, 5 Nov 2013 10:51:46 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Jason Cooper <jason@lakedaemon.net>
-Subject: Re: [PATCH v3 25/28] ARM: mvebu: Add support for NAND controller in
- Armada 370/XP
-Message-ID: <20131105135145.GA2676@localhost>
-References: <1383656135-8627-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1383656135-8627-26-git-send-email-ezequiel.garcia@free-electrons.com>
- <20131105132905.GJ3060@titan.lakedaemon.net>
+Received: from mail-ve0-x22a.google.com ([2607:f8b0:400c:c01::22a])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VdhRf-0003KL-VM
+ for linux-mtd@lists.infradead.org; Tue, 05 Nov 2013 14:17:28 +0000
+Received: by mail-ve0-f170.google.com with SMTP id oy12so2552199veb.29
+ for <linux-mtd@lists.infradead.org>; Tue, 05 Nov 2013 06:17:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20131105132905.GJ3060@titan.lakedaemon.net>
-Cc: Lior Amsalem <alior@marvell.com>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Tawfik Bayouk <tawfik@marvell.com>, Daniel Mack <zonque@gmail.com>,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>, Willy Tarreau <w@1wt.eu>,
- linux-arm-kernel@lists.infradead.org
+In-Reply-To: <52785CF5.80809@freescale.com>
+References: <CAOMZO5Bciab5+FoJ1q45+wUt8Kxw=+2na552KwqS9Z7yqbp+UA@mail.gmail.com>
+ <52785CF5.80809@freescale.com>
+Date: Tue, 5 Nov 2013 12:17:03 -0200
+Message-ID: <CAOMZO5Djx5C9oV2GHWuN-M9cqXRAaP0axwcgwiAc4R3N2DSRWQ@mail.gmail.com>
+Subject: Re: gpmi_nand crashes on mx23
+From: Fabio Estevam <festevam@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,44 +25,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Nov 05, 2013 at 08:29:05AM -0500, Jason Cooper wrote:
-> On Tue, Nov 05, 2013 at 09:55:32AM -0300, Ezequiel Garcia wrote:
-> > The Armada 370 and Armada XP SoC have a NAND controller (aka NFCv2).
-> > This commit adds support for it in Armada 370 and Armada XP SoC
-> > common devicetree.
-> > 
-> > Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> > ---
-> >  arch/arm/boot/dts/armada-370-xp.dtsi | 9 +++++++++
-> >  1 file changed, 9 insertions(+)
-> > 
-> > diff --git a/arch/arm/boot/dts/armada-370-xp.dtsi b/arch/arm/boot/dts/armada-370-xp.dtsi
-> > index 01e69fc..b4e6898 100644
-> > --- a/arch/arm/boot/dts/armada-370-xp.dtsi
-> > +++ b/arch/arm/boot/dts/armada-370-xp.dtsi
-> > @@ -258,6 +258,15 @@
-> >  				status = "disabled";
-> >  			};
-> >  
-> > +			nand@d0000 {
-> > +				compatible = "marvell,armada370-nand";
-> 
-> Could you please provide a separate patch updating the devicetree
-> binding documentation?  You can also Cc the entire series to the
-> devicetree ml as long as the documentation patch is easy to find in the
-> series.  eg 'dt: binding: ...'
-> 
+Hi Huang,
 
-Hm.. actually the controller already supports the new compatible string
-so the binding documentation should be added now.
+On Tue, Nov 5, 2013 at 12:50 AM, Huang Shijie <b32955@freescale.com> wrote:
+> could you email the uboot for imx23?
+>
+> I have not touched the imx23 board for a long long time.
 
-And I'd rather do that in a separate patch, to avoid cluttering the poor
-devicetree people with an unrelated 28-piece patch :-)
+Please use U-boot 2013.10 and follow these steps to flash U-boot
+binary into the SD:
+http://git.denx.de/?p=u-boot.git;a=blob;f=doc/README.mxs;h=2919bbfee13fdd12096a611c26664a4a6cb7b91a;hb=HEAD
 
-BTW: who should take such a patch? I'm still a little lost regarding
-who takes the binding or dts patches for a given subsystem.
+Regards,
 
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+Fabio Estevam
