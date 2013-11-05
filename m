@@ -1,15 +1,17 @@
-Date: Tue, 5 Nov 2013 08:29:05 -0500
-From: Jason Cooper <jason@lakedaemon.net>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH v3 25/28] ARM: mvebu: Add support for NAND controller
- in Armada 370/XP
-Message-ID: <20131105132905.GJ3060@titan.lakedaemon.net>
+Date: Tue, 5 Nov 2013 10:51:46 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Jason Cooper <jason@lakedaemon.net>
+Subject: Re: [PATCH v3 25/28] ARM: mvebu: Add support for NAND controller in
+ Armada 370/XP
+Message-ID: <20131105135145.GA2676@localhost>
 References: <1383656135-8627-1-git-send-email-ezequiel.garcia@free-electrons.com>
  <1383656135-8627-26-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20131105132905.GJ3060@titan.lakedaemon.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1383656135-8627-26-git-send-email-ezequiel.garcia@free-electrons.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20131105132905.GJ3060@titan.lakedaemon.net>
 Cc: Lior Amsalem <alior@marvell.com>,
  Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
  Tawfik Bayouk <tawfik@marvell.com>, Daniel Mack <zonque@gmail.com>,
@@ -26,32 +28,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Nov 05, 2013 at 09:55:32AM -0300, Ezequiel Garcia wrote:
-> The Armada 370 and Armada XP SoC have a NAND controller (aka NFCv2).
-> This commit adds support for it in Armada 370 and Armada XP SoC
-> common devicetree.
+On Tue, Nov 05, 2013 at 08:29:05AM -0500, Jason Cooper wrote:
+> On Tue, Nov 05, 2013 at 09:55:32AM -0300, Ezequiel Garcia wrote:
+> > The Armada 370 and Armada XP SoC have a NAND controller (aka NFCv2).
+> > This commit adds support for it in Armada 370 and Armada XP SoC
+> > common devicetree.
+> > 
+> > Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> > ---
+> >  arch/arm/boot/dts/armada-370-xp.dtsi | 9 +++++++++
+> >  1 file changed, 9 insertions(+)
+> > 
+> > diff --git a/arch/arm/boot/dts/armada-370-xp.dtsi b/arch/arm/boot/dts/armada-370-xp.dtsi
+> > index 01e69fc..b4e6898 100644
+> > --- a/arch/arm/boot/dts/armada-370-xp.dtsi
+> > +++ b/arch/arm/boot/dts/armada-370-xp.dtsi
+> > @@ -258,6 +258,15 @@
+> >  				status = "disabled";
+> >  			};
+> >  
+> > +			nand@d0000 {
+> > +				compatible = "marvell,armada370-nand";
 > 
-> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> ---
->  arch/arm/boot/dts/armada-370-xp.dtsi | 9 +++++++++
->  1 file changed, 9 insertions(+)
+> Could you please provide a separate patch updating the devicetree
+> binding documentation?  You can also Cc the entire series to the
+> devicetree ml as long as the documentation patch is easy to find in the
+> series.  eg 'dt: binding: ...'
 > 
-> diff --git a/arch/arm/boot/dts/armada-370-xp.dtsi b/arch/arm/boot/dts/armada-370-xp.dtsi
-> index 01e69fc..b4e6898 100644
-> --- a/arch/arm/boot/dts/armada-370-xp.dtsi
-> +++ b/arch/arm/boot/dts/armada-370-xp.dtsi
-> @@ -258,6 +258,15 @@
->  				status = "disabled";
->  			};
->  
-> +			nand@d0000 {
-> +				compatible = "marvell,armada370-nand";
 
-Could you please provide a separate patch updating the devicetree
-binding documentation?  You can also Cc the entire series to the
-devicetree ml as long as the documentation patch is easy to find in the
-series.  eg 'dt: binding: ...'
+Hm.. actually the controller already supports the new compatible string
+so the binding documentation should be added now.
 
-thx,
+And I'd rather do that in a separate patch, to avoid cluttering the poor
+devicetree people with an unrelated 28-piece patch :-)
 
-Jason.
+BTW: who should take such a patch? I'm still a little lost regarding
+who takes the binding or dts patches for a given subsystem.
+
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
