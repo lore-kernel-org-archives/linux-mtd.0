@@ -1,13 +1,18 @@
-From: Huang Shijie <b32955@freescale.com>
-To: <dwmw2@infradead.org>
-Subject: [PATCH bugfix] mtd: gpmi: serialize all the dma operations
-Date: Wed, 6 Nov 2013 16:53:27 +0800
-Message-ID: <1383728007-15564-1-git-send-email-b32955@freescale.com>
+Received: from mail-lb0-f176.google.com ([209.85.217.176])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VdzTQ-0000jt-78
+ for linux-mtd@lists.infradead.org; Wed, 06 Nov 2013 09:32:30 +0000
+Received: by mail-lb0-f176.google.com with SMTP id z5so7544867lbh.35
+ for <linux-mtd@lists.infradead.org>; Wed, 06 Nov 2013 01:32:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: dedekind1@gmail.com, stable@vger.kernel.org,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- computersforpeace@gmail.com, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <CAAQYJAtGEVUY98Z1gthPbYCMG_A8yWC-d+c-bJeGWUhTF0WbVw@mail.gmail.com>
+References: <CAAQYJAtGEVUY98Z1gthPbYCMG_A8yWC-d+c-bJeGWUhTF0WbVw@mail.gmail.com>
+Date: Wed, 6 Nov 2013 10:32:01 +0100
+Message-ID: <CAAQYJAuq7X7vuKWJk3Uts0wfHGtHt3OQAtTh+7sZasq2XLA+EQ@mail.gmail.com>
+Subject: Re: Issues unlocking LH28F640BF NOR flash
+From: Andrea Adami <andrea.adami@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,144 +22,519 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-[1] The gpmi uses the nand_command_lp to issue the commands to NAND chips.
-    It will issue a DMA operation when it handles a NAND_CMD_NONE control
-    command. So when we read a page(NAND_CMD_READ0) from the NAND, we may send
-    two DMA operations back-to-back.
+On Mon, Oct 28, 2013 at 12:17 PM, Andrea Adami <andrea.adami@gmail.com> wrote:
+> Hi all,
+>
+> I'm trying to fixup the flash on the Zaurus SL-5500 that is locked on boot.
+>
+> The 2 chips are 4Mbix16 LH28F640BFHE-PTTL90 on a 32 bit wide bus
+> (sa1100) and they appear interleaved: D0-D15 on one chip and D16-D31
+> on the other.
+> The specifics don't even mention an 8bit mode. See [1] and [2].
+> Primary command set (16bit Vendor ID 0003H) so it is Sharp, detected
+> as Intel P_ID_INTEL_STD even if it seems explicitely Extended...the
+> Sharp-specific extended query is: major 1  minor  3
+>
+> With jedec_probe they are detected as expected with interleave of 2
+> and buswidth of 32bit, see logs [3].
+>
+> I need to boot from flash so all the drivers are compiled in kernel.
+> Now the issue is that from userspace flash_unlock /dev/mtd2 stalls and
+> doesn't finish.
+> From the kernel side, I've managed to add a fixup for this Sharp chip
+> (standard fixup is only for CFI_MFR_INTEL /Strataflash) to
+> jedec_fixup_table and to countertest I've even hacked
+> uapi/mtd/mtd-abi.h and added MTD_POWERUP_LOCK to MTD_CAP_NORFLASH.
+>
+> Strangely all is fine when the cfi/jedec drivers and the sa1100 map
+> are compiled as modules,  otherwise the kernel won't finish boot (as
+> from userspace).
+>
+> How can that happen?
+>
+> Thanks in advance for your help
+>
+> Andrea
+>
+> P.S.
+> Once done I'll try to see why CFI detection fails on gen_probe:
+> gen_probe:genprobe_ident_chips: CFI: Found no sa1100-0 device at location zero
+>
+> [1] Datasheet v. 2.41
+> http://www.datasheetarchive.com/dlmain/Datasheets-314/276727.pdf
+>
+> [2] Appendix v. 2.44
+> http://www.datasheetarchive.com/dl/Datasheet-019/DSA00340384.pdf
+>
+> [3]
+> root@collie:~# depmod -a
+> root@collie:~# modprobe cfi_util dyndbg==pmf
+> root@collie:~# modprobe cfi_cmdset_0001 dyndbg==pmf
+> root@collie:~# modprobe gen_probe dyndbg==pmf
+> root@collie:~# modprobe cfi_probe dyndbg==pmf
+> root@collie:~# modprobe jedec_probe dyndbg==pmf
+> root@collie:~# modprobe sa1100_flash dyndbg==pmf
+> jedec_probe:jedec_reset: reset unlock called 555 2aa
+> jedec_probe:jedec_probe_chip: Search for id:(b0 b0) interleave(4) type(1)
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: MTD jedec_match(): Check fit 0x00000000 +
+> 0x00800000 = 0x00800000
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_reset: reset unlock called 555 aaa
+> jedec_probe:jedec_probe_chip: Search for id:(b0 b0) interleave(4) type(1)
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: MTD jedec_match(): Check fit 0x00000000 +
+> 0x00800000 = 0x00800000
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_reset: reset unlock called 5555 2aaa
+> jedec_probe:jedec_probe_chip: Search for id:(b0 b0) interleave(4) type(1)
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: MTD jedec_match(): Check fit 0x00000000 +
+> 0x00800000 = 0x00800000
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_reset: reset unlock called aaa 554
+> jedec_probe:jedec_probe_chip: Search for id:(b0 b0) interleave(4) type(1)
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: MTD jedec_match(): Check fit 0x00000000 +
+> 0x00800000 = 0x00800000
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_reset: reset unlock called aaa 555
+> jedec_probe:jedec_probe_chip: Search for id:(b0 b0) interleave(4) type(1)
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: MTD jedec_match(): Check fit 0x00000000 +
+> 0x00800000 = 0x00800000
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_reset: reset unlock called aaaa 5555
+> jedec_probe:jedec_probe_chip: Search for id:(b0 b0) interleave(4) type(1)
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: MTD jedec_match(): Check fit 0x00000000 +
+> 0x00800000 = 0x00800000
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_probe_chip: Search for id:(b0 b0) interleave(4) type(1)
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: MTD jedec_match(): Check fit 0x00000000 +
+> 0x00800000 = 0x00800000
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_match: jedec_match(): ID is not 8bit
+> jedec_probe:jedec_reset: reset unlock called 2aa 155
+> jedec_probe:jedec_probe_chip: Search for id:(b0 01) interleave(4) type(2)
+> jedec_probe:jedec_reset: reset unlock called 2aa 555
+> jedec_probe:jedec_probe_chip: Search for id:(b0 01) interleave(4) type(2)
+> jedec_probe:jedec_reset: reset unlock called 2aaa 1555
+> jedec_probe:jedec_probe_chip: Search for id:(b0 01) interleave(4) type(2)
+> jedec_probe:jedec_reset: reset unlock called 555 2aa
+> jedec_probe:jedec_probe_chip: Search for id:(b0 01) interleave(4) type(2)
+> jedec_probe:jedec_reset: reset unlock called 555 2aa
+> jedec_probe:jedec_probe_chip: Search for id:(b0 01) interleave(4) type(2)
+> jedec_probe:jedec_reset: reset unlock called 5555 2aaa
+> jedec_probe:jedec_probe_chip: Search for id:(b0 01) interleave(4) type(2)
+> jedec_probe:jedec_probe_chip: Search for id:(b0 01) interleave(4) type(2)
+> jedec_probe:jedec_reset: reset unlock called 155 aa
+> jedec_probe:jedec_probe_chip: Search for id:(b000b0 00) interleave(4) type(4)
+> jedec_probe:jedec_reset: reset unlock called 155 2aa
+> jedec_probe:jedec_probe_chip: Search for id:(b000b0 00) interleave(4) type(4)
+> jedec_probe:jedec_reset: reset unlock called 1555 aaa
+> jedec_probe:jedec_probe_chip: Search for id:(b000b0 00) interleave(4) type(4)
+> jedec_probe:jedec_reset: reset unlock called 2aa 155
+> jedec_probe:jedec_probe_chip: Search for id:(b000b0 00) interleave(4) type(4)
+> jedec_probe:jedec_reset: reset unlock called 2aa 155
+> jedec_probe:jedec_probe_chip: Search for id:(b000b0 00) interleave(4) type(4)
+> jedec_probe:jedec_reset: reset unlock called 2aaa 1555
+> jedec_probe:jedec_probe_chip: Search for id:(b000b0 00) interleave(4) type(4)
+> jedec_probe:jedec_probe_chip: Search for id:(b000b0 00) interleave(4) type(4)
+> jedec_probe:jedec_reset: reset unlock called 2aa 155
+> jedec_probe:jedec_probe_chip: Search for id:(b0 b0) interleave(2) type(2)
+> jedec_probe:jedec_match: MTD jedec_match(): Check fit 0x00000000 +
+> 0x00800000 = 0x00800000
+> jedec_probe:jedec_match: MTD jedec_match(): check unlock addrs 0x02aa 0x0155
+> jedec_probe:jedec_match: MTD jedec_match(): check ID's disappear when
+> not in ID mode
+> jedec_probe:jedec_reset: reset unlock called 2aa 155
+> jedec_probe:jedec_match: MTD jedec_match(): return to ID mode
+> jedec_probe:jedec_probe_chip: MTD jedec_probe_chip(): matched device
+> 0xb0,0xb0 unlock_addrs: 0x02aa 0x0155
+> Found: LH28F640BF
+> sa1100-0: Found 2 x16 devices at 0x0 in 32-bit bank
+> sa1100-0: Found different chip or no chip at all (mfr 0x4, id 0x3001)
+> at 0x1000000
+> erase region 0: offset=0x0,size=0x20000,blocks=127
+> erase region 1: offset=0xfe0000,size=0x4000,blocks=8
+> SA1100 flash: CFI device at 0x00000000, 16MiB, 32-bit
+> Creating 3 MTD partitions on "sa1100":
+> 0x000000000000-0x0000000c0000 : "bootloader"
+> 0x0000000c0000-0x0000001c0000 : "kernel"
+> 0x0000001c0000-0x000000fe0000 : "rootfs"
+> root@collie:~#
 
-    If we do not serialize the two DMA operations, we will meet a bug when
 
-    1.1) we enable CONFIG_DMA_API_DEBUG, CONFIG_DMADEVICES_DEBUG,
-         and CONFIG_DEBUG_SG.
+Some updates:
 
-    1.2) Use the following commands in an UART console and a SSH console:
-         cmd 1: while true;do dd if=/dev/mtd0 of=/dev/null;done
-         cmd 1: while true;do dd if=/dev/mmcblk0 of=/dev/null;done
+1) unlocking 'freeze' with mtd/cfi built in kernel disappears adding
+full debug to the kernel. Some extra delay does the magic?
 
-    The kernel log shows below:
-    -----------------------------------------------------------------
-    kernel BUG at lib/scatterlist.c:28!
-    Unable to handle kernel NULL pointer dereference at virtual address 00000000
-      .........................
-    [<80044a0c>] (__bug+0x18/0x24) from [<80249b74>] (sg_next+0x48/0x4c)
-    [<80249b74>] (sg_next+0x48/0x4c) from [<80255398>] (debug_dma_unmap_sg+0x170/0x1a4)
-    [<80255398>] (debug_dma_unmap_sg+0x170/0x1a4) from [<8004af58>] (dma_unmap_sg+0x14/0x6c)
-    [<8004af58>] (dma_unmap_sg+0x14/0x6c) from [<8027e594>] (mxs_dma_tasklet+0x18/0x1c)
-    [<8027e594>] (mxs_dma_tasklet+0x18/0x1c) from [<8007d444>] (tasklet_action+0x114/0x164)
-    -----------------------------------------------------------------
+2) hacked CFI detection: the cfi_probe can't detect the chips. Fixup needed?
 
-    1.3) Assume the two DMA operations is X (first) and Y (second).
-         The root cause of the bug:
-         X's tasklet mxs_dma_tasklet trid to unmap the scatterlist, while Y is
-         trying to set up a new DMA operation with the _SAME_ scatterlist in
-         another ARM core.
+I forced the detection in cfi_util and got:
 
-[2] This patch adds a wait queue and two helpers gpmi_enter_dma/gpmi_exit_dma to
-    serialize all the DMA operations.
+sa1100-0: Found 2 x16 devices at 0x0 in 32-bit bank. Manufacturer ID
+0x0000b0 Chip ID 0x0000b0
+sa1100-0: Found 2 x16 devices at 0x1000000 in 32-bit bank
+Intel/Sharp Extended Query Table at 0x0039
+Intel/Sharp Extended Query Table at 0x0039
+Intel/Sharp Extended Query Table at 0x0039
+Using buffer write method
+cfi_cmdset_0001: Erase suspend on write enabled
+erase region 0: offset=0x0,size=0x20000,blocks=127
+erase region 1: offset=0xfe0000,size=0x4000,blocks=8
+erase region 2: offset=0x1000000,size=0x20000,blocks=127
+erase region 3: offset=0x1fe0000,size=0x4000,blocks=8
+sa1100-0: 2 set(s) of 2 interleaved chips --> 2 partitions of 16384 KiB
+SA1100 flash: CFI device at 0x00000000, 32MiB, 32-bit
+Creating 3 MTD partitions on "sa1100":
+0x000000000000-0x0000000c0000 : "bootloader"
+0x0000000c0000-0x0000001c0000 : "kernel"
+0x0000001c0000-0x000000fe0000 : "rootfs"
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
-Cc: stable@vger.kernel.org
----
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   24 ++++++++++++++++++++++++
- drivers/mtd/nand/gpmi-nand/gpmi-nand.h |    2 ++
- 2 files changed, 26 insertions(+), 0 deletions(-)
+And the NOR is even unlocked on boot (support instant individual block locking).
 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 71df69e..b849b92 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -392,6 +392,20 @@ void prepare_data_dma(struct gpmi_nand_data *this, enum dma_data_direction dr)
- 	}
- }
- 
-+static void gpmi_enter_dma(struct gpmi_nand_data *this)
-+{
-+	/* Wait until the previous DMA is finished. */
-+	wait_event(this->dma_wait, !this->dma_is_working);
-+
-+	this->dma_is_working = true;
-+}
-+
-+static void gpmi_exit_dma(struct gpmi_nand_data *this)
-+{
-+	this->dma_is_working = false;
-+	wake_up(&this->dma_wait);
-+}
-+
- /* This will be called after the DMA operation is finished. */
- static void dma_irq_callback(void *param)
- {
-@@ -424,6 +438,7 @@ static void dma_irq_callback(void *param)
- 	default:
- 		pr_err("in wrong DMA operation.\n");
- 	}
-+	gpmi_exit_dma(this);
- }
- 
- int start_dma_without_bch_irq(struct gpmi_nand_data *this,
-@@ -906,6 +921,8 @@ static void gpmi_cmd_ctrl(struct mtd_info *mtd, int data, unsigned int ctrl)
- 	if (!this->command_length)
- 		return;
- 
-+	gpmi_enter_dma(this);
-+
- 	ret = gpmi_send_command(this);
- 	if (ret)
- 		pr_err("Chip: %u, Error %d\n", this->current_chip, ret);
-@@ -943,6 +960,8 @@ static void gpmi_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
- 	this->upper_buf	= buf;
- 	this->upper_len	= len;
- 
-+	gpmi_enter_dma(this);
-+
- 	gpmi_read_data(this);
- }
- 
-@@ -955,6 +974,8 @@ static void gpmi_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
- 	this->upper_buf	= (uint8_t *)buf;
- 	this->upper_len	= len;
- 
-+	gpmi_enter_dma(this);
-+
- 	gpmi_send_data(this);
- }
- 
-@@ -1031,6 +1052,7 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	int           ret;
- 
- 	pr_debug("page number is : %d\n", page);
-+	gpmi_enter_dma(this);
- 	ret = read_page_prepare(this, buf, mtd->writesize,
- 					this->payload_virt, this->payload_phys,
- 					nfc_geo->payload_size,
-@@ -1107,6 +1129,7 @@ static int gpmi_ecc_write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	int        ret;
- 
- 	pr_debug("ecc write page.\n");
-+	gpmi_enter_dma(this);
- 	if (this->swap_block_mark) {
- 		/*
- 		 * If control arrives here, we're doing block mark swapping.
-@@ -1745,6 +1768,7 @@ static int gpmi_nand_probe(struct platform_device *pdev)
- 	platform_set_drvdata(pdev, this);
- 	this->pdev  = pdev;
- 	this->dev   = &pdev->dev;
-+	init_waitqueue_head(&this->dma_wait);
- 
- 	ret = acquire_resources(this);
- 	if (ret)
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-index a7685e3..9597615 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-@@ -160,6 +160,8 @@ struct gpmi_nand_data {
- 
- 	/* for DMA operations */
- 	bool			direct_dma_map_ok;
-+	bool			dma_is_working;
-+	wait_queue_head_t	dma_wait;
- 
- 	struct scatterlist	cmd_sgl;
- 	char			*cmd_buffer;
--- 
-1.7.2.rc3
+If it is worth, I'll do some more tests with jedec debugging the
+freezing I see during unlocking of monolithic kernel but I'd rather
+prefer to move on CFI and debug the (mis)detection.
+
+Finally, what to do with the entry in jedec_probe? Remove it?
+If we decide to keep it, one little fix is needed because in theory
+this part is P_ID_INTEL_STD ( 3)
+Well, that's even strange because it supports the Extended commandset...
+
+
+Regards
+
+Andrea
