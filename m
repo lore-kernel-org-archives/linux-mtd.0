@@ -1,23 +1,25 @@
-Received: from 1wt.eu ([62.212.114.60])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VdwdQ-0005cU-0F
- for linux-mtd@lists.infradead.org; Wed, 06 Nov 2013 06:30:36 +0000
-Date: Wed, 6 Nov 2013 07:30:07 +0100
-From: Willy Tarreau <w@1wt.eu>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: Ubiblock users call (Re: mvneta / openblocks switch)
-Message-ID: <20131106063007.GA17145@1wt.eu>
-References: <20131031135322.GN26784@titan.lakedaemon.net>
- <52738D6A.1010900@hitachi.com> <20131101130528.716e53d9@skate>
- <20131105103555.GD16420@1wt.eu> <5278E824.8050405@hitachi.com>
- <20131105135323.GA17316@1wt.eu> <20131105144003.GB9632@localhost>
- <20131105145748.GE17316@1wt.eu>
+Date: Wed, 6 Nov 2013 09:24:35 +0100
+From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+To: Jason Cooper <jason@lakedaemon.net>
+Subject: Re: [PATCH v3 25/28] ARM: mvebu: Add support for NAND controller in
+ Armada 370/XP
+Message-ID: <20131106092435.5f95aa55@skate>
+In-Reply-To: <20131105151531.GK3060@titan.lakedaemon.net>
+References: <1383656135-8627-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1383656135-8627-26-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20131105132905.GJ3060@titan.lakedaemon.net>
+ <20131105135145.GA2676@localhost>
+ <20131105151531.GK3060@titan.lakedaemon.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20131105145748.GE17316@1wt.eu>
-Cc: piergiorgio.beruto@gmail.com, Mike Frysinger <vapier@gentoo.org>,
- linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: Lior Amsalem <alior@marvell.com>, Tawfik Bayouk <tawfik@marvell.com>,
+ Daniel Mack <zonque@gmail.com>, Huang Shijie <b32955@freescale.com>,
+ linux-mtd@lists.infradead.org,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>, Willy Tarreau <w@1wt.eu>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,39 +29,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ezequiel,
+Dear Jason Cooper,
 
-On Tue, Nov 05, 2013 at 03:57:48PM +0100, Willy Tarreau wrote:
-> > Can you describe your usage?
->
-> For example, one of my distro's boot scripts automatically detects
-> the available partitions, checks for a mountable FS there, then
-> locates the current config and loads it. With a block device, I have
-> nothing to change at all. With other solutions, I have to reconsider
-> the boot process.
+On Tue, 5 Nov 2013 10:15:31 -0500, Jason Cooper wrote:
 
-BTW, I forgot to describe the initial use case I had in mind which led to this:
-many of my machines (including the test ones) boot from a rootfs which is a
-squashfs stored as an initrd image. At the moment, the squashfs is read by
-u-boot from the NAND into memory and the kernel boots from this. Loading a 10
-MB rootfs from NAND to RAM takes 1-2 seconds depending on the device, and
-consumes 10 MB of RAM all the time. Also, you're always at risk that some bad
-blocks appear in the middle of this image (I had one device where I had to
-change the location of the initrd partition because of
-this).
+> > And I'd rather do that in a separate patch, to avoid cluttering the poor
+> > devicetree people with an unrelated 28-piece patch :-)
+> 
+> No (really), according to Grant and Mark during the closing session, I
+> asked this specific question.  They _do_ want the entire series so they
+> can refer to the corresponding code changes if necessary.  As I stated
+> above, we can make their job easier by making the binding a separate
+> patch that is clearly marked as such.
 
-With ubiblock, I can totally solve this issue :
-  - u-boot does not read anymore the initrd, thus saving time and RAM
-  - kernel simply mounts the squashfs at boot from ubiblock, resulting
-    in direct accesses
-  - ubi would take care of bad blocks itself
+Interesting, because I had understood exactly the opposite from the
+discussions at the ARM kernel summit. But maybe the DT folks changed
+their mind between the ARM kernel summit and the closing session of the
+kernel summit :-)
 
-Doing so prevents me from upgrading the image since it's always mounted,
-which is why I wanted to try to write it from u-boot. It did not work so
-I wanted to use 2 images and upgrade one while running on the other one.
-But I did not make any progress on this yet.
-
-I'll definitely give your latest patches a try, I just don't know when :-)
-
-Best regards,
-Willy
+Thomas
+-- 
+Thomas Petazzoni, CTO, Free Electrons
+Embedded Linux, Kernel and Android engineering
+http://free-electrons.com
