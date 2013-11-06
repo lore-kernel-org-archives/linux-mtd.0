@@ -1,23 +1,23 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VeAV0-00046b-Nl
- for linux-mtd@lists.infradead.org; Wed, 06 Nov 2013 21:18:51 +0000
-Date: Wed, 6 Nov 2013 18:18:34 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [PATCH 0/1] Fix OMAP2 NAND ONFI device detection
-Message-ID: <20131106211833.GB12624@localhost>
+Received: from comal.ext.ti.com ([198.47.26.152])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VeB9T-00058c-Aq
+ for linux-mtd@lists.infradead.org; Wed, 06 Nov 2013 22:00:40 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: RE: [PATCH 0/1] Fix OMAP2 NAND ONFI device detection
+Date: Wed, 6 Nov 2013 22:00:09 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA31BB3@DBDE04.ent.ti.com>
 References: <1383126788-27426-1-git-send-email-ezequiel.garcia@free-electrons.com>
  <20131030191414.GA16668@norris.computersforpeace.net>
  <20980858CB6D3A4BAE95CA194937D5E73EA2D41D@DBDE04.ent.ti.com>
  <20131030231956.GA2489@localhost>
  <20980858CB6D3A4BAE95CA194937D5E73EA31B19@DBDE04.ent.ti.com>
+ <20131106211833.GB12624@localhost>
+In-Reply-To: <20131106211833.GB12624@localhost>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA31B19@DBDE04.ent.ti.com>
 Cc: "marek.belisko@gmail.com" <marek.belisko@gmail.com>,
  "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -32,91 +32,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Nov 06, 2013 at 08:54:56PM +0000, Gupta, Pekon wrote:
-> > From: Ezequiel Garcia [mailto:ezequiel.garcia@free-electrons.com]
-> > > On Wed, Oct 30, 2013 at 09:18:53PM +0000, Gupta, Pekon wrote:
-> > > >
-> > > > I'm not sure, of course, but I don't see why not. It's more likely to
-> > > > break for x16 than it is for x8.
-> > > >
-> > > Another question here is ..
-> > > The above patch assumes that user has configured GPMC bus-width
-> > > correctly, so if user is already providing GPMC bus-width information
-> > > via DT, then do we really need to detect NAND device bus-width again
-> > > using NAND_BUSWIDTH_AUTO ?
-> > >
-> > 
-> > Hm.. I think you're forgetting the original motivation for this patch,
-> > which was initially explained by you :-) The problem is ONFI doesn't work
-> > in 16-bit mode.
-> > 
-> > Let me clarify. Since GPMC and NAND widths *must* match (otherwise, it
-> > wouldn't make much sense, right?) we don't really need to autodetect the
-> > NAND width.
-> > 
-> > However, since ONFI doesn't work in 16-bit mode, we would have to do
-> > something like this (untested pseudo code):
-> > 
-> >   nand_scan_ident(...);
-> > 
-> >   if (platform_data->devsize == 16)
-> >   	nand_chip->options |= NAND_BUSWIDTH_16;
-> > 
-> > And in some cases we might even get away with such solution. However,
-> > we can't guarantee nand_scan_ident() doesn't need to swith to 16-bit mode
-> > inside to perform other commands (maybe some ONFI extended parameter
-> > page).
-> > 
-> > Therefore, and given the width can be autodetected in any case (array
-> > or ONFI based carry such information) it's much cleaner to simply do:
-> > 
-> >   nand_chip->options |= NAND_BUSWIDTH_AUTOMAGIC;
-> >   nand_scan_ident(...);
-> > 
-> > See? Much cleaner, no?
-> > 
-> but still dependent on DT property for GPMC configurations...
-> I preferred NAND bus-width detection to be completely independent
-> of 'any' DT property.
-> 
-
-I think we're still mixing GPMC and NAND, and I don't think it's sane.
-
-> > And remember: the fact that we must know the device width to configure
-> > the GPMC correctly (which being a hardware parameter belongs to the DT)
-> > is OMAP specific. Other SoCs might not have such memory controller
-> > and thus won't need such knowledge before hand, although that sounds
-> > unlikely to me.
-> > 
-> > The outcome of this discussion seems to be that no driver should ever
-> > need to specify the 'nand-bus-width' DT property, as Brian
-> > previously suggested, right?
-> > 
-> Right.. And this is where I'm suggesting that in-order to completely
-> eliminate the dependency on 'nand-bus-width' DT property, you need
-> to also update GPMC driver, so that its registers can be re-configured with
-> correct NAND bus-width after nand_scan_ident().
-> 
-
-
-Well, as I said: I don't think there's any technical reason why you
-can't just export a GPMC function to re-configure it from the NAND
-driver. I just think it's ugly, and not useful.
-
-So, I think you (or me, or anybody else) can push an RFC/PATCH to see
-how ugly would that really be. Maybe it's not so bad.
-
-But: on the other hand, I'd really like you to convince me as to
-why is it so bad to require the DTB to have the proper GPMC bus width.
-
-Once again:
-1. the NAND devices aren't hot-pluggable
-2. the "user" (who is actually an engineer, not some regular dummy user)
-knows perfectly well the width of the device.
-
-What's the problem with describing the hardware in the DT and saving us
-lots of runtime re-configuration trouble?
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+PiBGcm9tOiBFemVxdWllbCBHYXJjaWENClsuLi5dDQoNCj4gQnV0OiBvbiB0aGUgb3RoZXIgaGFu
+ZCwgSSdkIHJlYWxseSBsaWtlIHlvdSB0byBjb252aW5jZSBtZSBhcyB0bw0KPiB3aHkgaXMgaXQg
+c28gYmFkIHRvIHJlcXVpcmUgdGhlIERUQiB0byBoYXZlIHRoZSBwcm9wZXIgR1BNQyBidXMgd2lk
+dGguDQo+IA0KTm8gaXRzIG5vdCBhdCBhbGwgYmFkLCBhbGwgSSB3YW50IGlzIGVpdGhlciBvZiB0
+aGUgb25lIHdheSAobm90IG1peHR1cmUgb2YgYm90aCkuDQotIEVpdGhlciBkZXBlbmQgb24gRFQg
+Y29tcGxldGVseSAod2hpY2ggaXMgY3VycmVudCBjYXNlIGZvciBhbGwgZHJpdmVycykNCi0gT1Ig
+ZGVwZW5kIG9uIE9ORkkgYW5kIG5hbmRfZmxhc2hfaWRbXSBmb3IgYnVzLXdpZHRoIGRldGVjdGlv
+bi4NCg0KDQo+IE9uY2UgYWdhaW46DQo+IDEuIHRoZSBOQU5EIGRldmljZXMgYXJlbid0IGhvdC1w
+bHVnZ2FibGUNCj4gMi4gdGhlICJ1c2VyIiAod2hvIGlzIGFjdHVhbGx5IGFuIGVuZ2luZWVyLCBu
+b3Qgc29tZSByZWd1bGFyIGR1bW15IHVzZXIpDQo+IGtub3dzIHBlcmZlY3RseSB3ZWxsIHRoZSB3
+aWR0aCBvZiB0aGUgZGV2aWNlLg0KPiANCj4gV2hhdCdzIHRoZSBwcm9ibGVtIHdpdGggZGVzY3Jp
+YmluZyB0aGUgaGFyZHdhcmUgaW4gdGhlIERUIGFuZCBzYXZpbmcgdXMNCj4gbG90cyBvZiBydW50
+aW1lIHJlLWNvbmZpZ3VyYXRpb24gdHJvdWJsZT8NCg0KSSBhZ3JlZSB3aXRoIGJvdGggeW91ciBh
+cmd1bWVudHMgYWJvdmUuDQpTbyBzaG91bGRuJ3Qgd2Uga2lsbCBOQU5EX0JVU1dJRFRIX0FVVE8g
+Pw0KQW5kIHByb2JhYmx5IHRoZXJlZm9yZSAgTkFORF9CVVNXSURUSF9BVVRPIGlzbid0IHRoYXQg
+cG9wdWxhci4NCg0KTm93IHdoYXQgcmVtYWlucyBpcyBPTkZJIHByb2JlLCB3aGljaCBzaG91bGQg
+YWx3YXlzIGhhcHBlbiBpbiB4OCBtb2RlLg0KU28gZm9yIHRoYXQgYmVsb3cgcGF0Y2ggc2hvdWxk
+IGJlIHN1ZmZpY2llbnQgLi4NCg0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KZGlmZiAtLWdpdCBh
+L2RyaXZlcnMvbXRkL25hbmQvbmFuZF9iYXNlLmMgYi9kcml2ZXJzL210ZC9uYW5kL25hbmRfYmFz
+ZS5jDQppbmRleCBlYzFkYjFlLi5kMTIyMGZiIDEwMDY0NA0KLS0tIGEvZHJpdmVycy9tdGQvbmFu
+ZC9uYW5kX2Jhc2UuYw0KKysrIGIvZHJpdmVycy9tdGQvbmFuZC9uYW5kX2Jhc2UuYw0KQEAgLTI5
+NDIsMTQgKzI5NDIsOCBAQCBzdGF0aWMgaW50IG5hbmRfZmxhc2hfZGV0ZWN0X29uZmkoc3RydWN0
+IG10ZF9pbmZvICptdGQsIHN0cnVjdCBuYW5kX2NoaXAgKmNoaXAsDQogICAgICAgICAgICAgICAg
+Y2hpcC0+cmVhZF9ieXRlKG10ZCkgIT0gJ0YnIHx8IGNoaXAtPnJlYWRfYnl0ZShtdGQpICE9ICdJ
+JykNCiAgICAgICAgICAgICAgICByZXR1cm4gMDsNCg0KLSAgICAgICAvKg0KLSAgICAgICAgKiBP
+TkZJIG11c3QgYmUgcHJvYmVkIGluIDgtYml0IG1vZGUgb3Igd2l0aCBOQU5EX0JVU1dJRFRIX0FV
+VE8sIG5vdA0KLSAgICAgICAgKiB3aXRoIE5BTkRfQlVTV0lEVEhfMTYNCi0gICAgICAgICovDQot
+ICAgICAgIGlmIChjaGlwLT5vcHRpb25zICYgTkFORF9CVVNXSURUSF8xNikgew0KLSAgICAgICAg
+ICAgICAgIHByX2VycigiT05GSSBjYW5ub3QgYmUgcHJvYmVkIGluIDE2LWJpdCBtb2RlOyBhYm9y
+dGluZ1xuIik7DQotICAgICAgICAgICAgICAgcmV0dXJuIDA7DQotICAgICAgIH0NCisgICAgICAg
+LyogT05GSSBtdXN0IGJlIHByb2JlZCBpbiA4LWJpdCBtb2RlIG9ubHkgKi8NCisgICAgICAgbmFu
+ZF9zZXRfZGVmYXVsdHMoY2hpcCwgMCk7DQoNCiAgICAgICAgY2hpcC0+Y21kZnVuYyhtdGQsIE5B
+TkRfQ01EX1BBUkFNLCAwLCAtMSk7DQogICAgICAgIGZvciAoaSA9IDA7IGkgPCAzOyBpKyspIHsN
+CkBAIC0yOTYyLDcgKzI5NTYsNyBAQCBzdGF0aWMgaW50IG5hbmRfZmxhc2hfZGV0ZWN0X29uZmko
+c3RydWN0IG10ZF9pbmZvICptdGQsIHN0cnVjdCBuYW5kX2NoaXAgKmNoaXAsDQoNCiAgICAgICAg
+aWYgKGkgPT0gMykgew0KICAgICAgICAgICAgICAgIHByX2VycigiQ291bGQgbm90IGZpbmQgdmFs
+aWQgT05GSSBwYXJhbWV0ZXIgcGFnZTsgYWJvcnRpbmdcbiIpOw0KLSAgICAgICAgICAgICAgIHJl
+dHVybiAwOw0KKyAgICAgICAgICAgICAgIGdvdG8gcmV0dXJuX2Vycm9yOw0KICAgICAgICB9DQoN
+CiAgICAgICAgLyogQ2hlY2sgdmVyc2lvbiAqLw0KQEAgLTI5ODAsNyArMjk3NCw3IEBAIHN0YXRp
+YyBpbnQgbmFuZF9mbGFzaF9kZXRlY3Rfb25maShzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgc3RydWN0
+IG5hbmRfY2hpcCAqY2hpcCwNCg0KICAgICAgICBpZiAoIWNoaXAtPm9uZmlfdmVyc2lvbikgew0K
+ICAgICAgICAgICAgICAgIHByX2luZm8oIiVzOiB1bnN1cHBvcnRlZCBPTkZJIHZlcnNpb246ICVk
+XG4iLCBfX2Z1bmNfXywgdmFsKTsNCi0gICAgICAgICAgICAgICByZXR1cm4gMDsNCisgICAgICAg
+ICAgICAgICBnb3RvIHJldHVybl9lcnJvcjsNCiAgICAgICAgfQ0KDQogICAgICAgIHNhbml0aXpl
+X3N0cmluZyhwLT5tYW51ZmFjdHVyZXIsIHNpemVvZihwLT5tYW51ZmFjdHVyZXIpKTsNCkBAIC0z
+MDMzLDYgKzMwMjcsMTIgQEAgc3RhdGljIGludCBuYW5kX2ZsYXNoX2RldGVjdF9vbmZpKHN0cnVj
+dCBtdGRfaW5mbyAqbXRkLCBzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwLA0KICAgICAgICB9DQoNCiAg
+ICAgICAgcmV0dXJuIDE7DQorDQorcmV0dXJuX2Vycm9yOg0KKyAgICAgICAvKiByZXZlcnQgb3Jp
+Z2luYWwgYnVzLXdpZHRoICovDQorICAgICAgIG5hbmRfc2V0X2RlZmF1bHRzKCBjaGlwLT5vcHRp
+b25zICYgTkFORF9CVVNXSURUSF8xNik7DQorICAgICAgIHJldHVybiAwOw0KKw0KIH0NCg0KIC8q
+DQotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tIA0KDQoNCndpdGggcmVnYXJkcywgcGVrb24NCg==
