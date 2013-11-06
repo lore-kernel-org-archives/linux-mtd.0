@@ -1,30 +1,23 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
+Received: from mail-ve0-x236.google.com ([2607:f8b0:400c:c01::236])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ve7Vy-0007qM-34
- for linux-mtd@lists.infradead.org; Wed, 06 Nov 2013 18:07:40 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Brian Norris <computersforpeace@gmail.com>, Wei Yongjun
- <weiyj.lk@gmail.com>
-Subject: RE: [PATCH -next] mtd: nand: omap: fix error return code in
- omap_nand_probe()
-Date: Wed, 6 Nov 2013 18:06:25 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA31818@DBDE04.ent.ti.com>
-References: <CAPgLHd8V06KzBcPmFywSfNxM0q6=s86xn-AdLKeY9h5JZ_nP7g@mail.gmail.com>
- <001101ced6a8$a18a2c80$e49e8580$%han@samsung.com>
- <CAN8TOE9Eac0LDA+Ke_OCPc_AQGnyYB806pO8JP-qOB1Dr8N2pg@mail.gmail.com>
-In-Reply-To: <CAN8TOE9Eac0LDA+Ke_OCPc_AQGnyYB806pO8JP-qOB1Dr8N2pg@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1Ve7Wr-0007uj-63
+ for linux-mtd@lists.infradead.org; Wed, 06 Nov 2013 18:08:33 +0000
+Received: by mail-ve0-f182.google.com with SMTP id c14so3801278vea.41
+ for <linux-mtd@lists.infradead.org>; Wed, 06 Nov 2013 10:08:09 -0800 (PST)
 MIME-Version: 1.0
-Cc: "tony@atomide.com" <tony@atomide.com>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Jingoo Han <jg1.han@samsung.com>, Linux Kernel <linux-kernel@vger.kernel.org>,
- Daniel Mack <zonque@gmail.com>,
- "yongjun_wei@trendmicro.com.cn" <yongjun_wei@trendmicro.com.cn>,
- "avinashphilip@ti.com" <avinashphilip@ti.com>,
+In-Reply-To: <1383758172-29798-2-git-send-email-festevam@gmail.com>
+References: <1383758172-29798-1-git-send-email-festevam@gmail.com>
+ <1383758172-29798-2-git-send-email-festevam@gmail.com>
+Date: Wed, 6 Nov 2013 10:08:09 -0800
+Message-ID: <CAN8TOE8GZyL6T7XdFyPrNozT2hAXawUqmVFRBX=xgYyHu4fS-Q@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mtd: gpmi: Revert "mtd: gpmi: remove the nand_scan()"
+From: Brian Norris <computersforpeace@gmail.com>
+To: Fabio Estevam <festevam@gmail.com>, Huang Shijie <b32955@freescale.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marex@denx.de>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>
+ David Woodhouse <dwmw2@infradead.org>,
+ Fabio Estevam <fabio.estevam@freescale.com>, stable@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,28 +27,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> From: Brian Norris [mailto:computersforpeace@gmail.com]
-> > On Thu, Oct 31, 2013 at 7:18 PM, Jingoo Han <jg1.han@samsung.com>
-> >> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
-> >>
-> >> Fix to return a negative error code from the error handling
-> >> case instead of 0, as done elsewhere in this function.
-> >
-> > Commit message is right? :-(
->=20
-> It sounds OK by my reading. Unless you're having trouble parsing what
-> "as done elsewhere in this function" is being applied to. (IOW, is the
-> rest of the function returning a negative error code on the error
-> paths, or is it returning 0? Of course the answer is the former, but
-> it's possible to misread it.) If it helps, I can try to tweak the
-> wording a bit when applying this patch.
->=20
-> Pekon, can I get an Acked-by?
->=20
-Yes sure .. Sorry I was away from both mailbox and boards.
-Acked-by: Pekon Gupta <pekon@ti.com>
+On Wed, Nov 6, 2013 at 9:16 AM, Fabio Estevam <festevam@gmail.com> wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
+>
+> Commit f720e7ce (mtd: gpmi: remove the nand_scan()) caused the following
+> regression on mx23:
 
-And thanks much Wei Yongjun for fixing this .
+...
 
+> This reverts commit f720e7ce510bf79f029be45ce200ccfce5551280.
+>
+> Cc: <stable@vger.kernel.org> #3.12
+> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+> ---
+> Kernel 3.11 boots fine on mx23, but 3.12 fails because of this commit.
 
-with regards, pekon
+I seriously doubt that a total revert is the correct answer to this
+problem. Can you pick up the discussion with Huang on the mailing
+list, or at least explain what the actual root cause is? Have you been
+going through some private communication on this issue? A proper
+bugfix with an identified issue is preferable to a blind revert.
+
+Huang, is the DMA patch you sent related, or is it a totally different bug?
+
+Brian
