@@ -1,24 +1,22 @@
+Received: from tx2ehsobe005.messaging.microsoft.com ([65.55.88.15]
+ helo=tx2outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Vdsz2-00038O-7v
+ for linux-mtd@lists.infradead.org; Wed, 06 Nov 2013 02:36:40 +0000
+Message-ID: <5279ABDF.7070709@freescale.com>
+Date: Wed, 6 Nov 2013 10:39:27 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <CAN8TOE_ZmcsvShKY273KQCaopJEXgtXVR1XY9pP5EKkUK+bUbA@mail.gmail.com>
-References: <1383656135-8627-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1383656135-8627-23-git-send-email-ezequiel.garcia@free-electrons.com>
- <20131105190432.GQ20061@ld-irv-0074.broadcom.com>
- <20131106011351.GH11759@localhost>
- <CAN8TOE_ZmcsvShKY273KQCaopJEXgtXVR1XY9pP5EKkUK+bUbA@mail.gmail.com>
-Date: Tue, 5 Nov 2013 18:27:25 -0800
-Message-ID: <CAN8TOE8ogqQqFoPN0=tjOmf-jMzeSPA8iwqGSy9hcUE6ODFGFw@mail.gmail.com>
-Subject: Re: [PATCH v3 22/28] mtd: nand: pxa3xx: Introduce multiple page I/O
- support
-From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Lior Amsalem <alior@marvell.com>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>,
- Daniel Mack <zonque@gmail.com>, Huang Shijie <b32955@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Gregory Clement <gregory.clement@free-electrons.com>, Willy Tarreau <w@1wt.eu>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v2] mtd: gpmi: add a new DT property to use the datasheet's
+ minimum required ECC
+References: <1382929517-22606-1-git-send-email-b32955@freescale.com>
+ <20131105200729.GT20061@ld-irv-0074.broadcom.com>
+In-Reply-To: <20131105200729.GT20061@ld-irv-0074.broadcom.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ dwmw2@infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,41 +26,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Nov 5, 2013 at 6:20 PM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> On Tue, Nov 5, 2013 at 5:13 PM, Ezequiel Garcia <ezequiel.garcia@free-electrons.com> wrote:
->> So, why should I tell the NAND core any of the ECC details?
+=E4=BA=8E 2013=E5=B9=B411=E6=9C=8806=E6=97=A5 04:07, Brian Norris =E5=86=99=
+=E9=81=93:
+> This description still uses Linux-isms/MTD-isms (ecc_strength_ds,
+> ecc_step_ds, nand_chip{}, JFFS2). I would personally write this as
+> something like the following:
 >
-> Because MTD/NAND now implements a bitflip threshold based on the
-> reported ECC strength and step size. See commit:
->
->   commit edbc4540e02c201bdd4f4d498ebb6ed517fd36e2
->   Author: Mike Dunn <mikedunn@newsguy.com>
->   Date:   Wed Apr 25 12:06:11 2012 -0700
->
->       mtd: driver _read() returns max_bitflips; mtd_read() returns -EUCLEAN
->
-> and some of the other related code and documentation, such as in this commit:
->
->   commit d062d4ede877fcd2ecc4c6262abad09a6f32950a
->   Author: Mike Dunn <mikedunn@newsguy.com>
->   Date:   Wed Apr 25 12:06:08 2012 -0700
->
->       mtd: bitflip_threshold added to mtd_info and sysfs
->
-> If you don't have the correct strength, then this may not work as
-> intended. (I realized now that the ECC step size doesn't play a part
-> in the bitflip threshold process; only the strength is required to be
-> correct.)
+>    - fsl,use-minimum-ecc: Protect this NAND flash with the minimum ECC
+> 			 strength required. The required ECC strength is
+> 			 automatically discoverable for some flash
+> 			 (e.g., according to the ONFI standard).
+> 			 However, note that if this strength is not
+> 			 discoverable, the software may choose an
+> 			 implementation-defined ECC scheme.
+this description is better then mine.
 
-To clarify a bit further: the ECC step size doesn't play a part in
-nand_base when dealing with max_bitflips, but it is implicit in the
-specification: the driver should be returning the maximum number of
-bitflips corrected in a single ECC sector of the page that was read.
-So if your driver reports ECC strength of 8 over a 512 byte step, then
-you should report a number in the range of 0 to 8, representing
-bitflips in a 512B sector. If you don't have this granularity (which
-it looks like you might not?) then maybe your strength-per-sector
-should really be 16-per-2048B or 16-per-1024B, etc.
-
-Brian
+thanks
+Huang Shijie
