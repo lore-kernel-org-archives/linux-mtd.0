@@ -1,18 +1,17 @@
-Date: Tue, 5 Nov 2013 21:46:42 -0300
+Date: Tue, 5 Nov 2013 22:13:52 -0300
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v3 12/28] mtd: nand: pxa3xx: Use a completion to signal
- device ready
-Message-ID: <20131106004641.GG11759@localhost>
+Subject: Re: [PATCH v3 22/28] mtd: nand: pxa3xx: Introduce multiple page I/O
+ support
+Message-ID: <20131106011351.GH11759@localhost>
 References: <1383656135-8627-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1383656135-8627-13-git-send-email-ezequiel.garcia@free-electrons.com>
- <20131105195136.GS20061@ld-irv-0074.broadcom.com>
- <20131106002759.GF11759@localhost>
+ <1383656135-8627-23-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20131105190432.GQ20061@ld-irv-0074.broadcom.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20131106002759.GF11759@localhost>
+In-Reply-To: <20131105190432.GQ20061@ld-irv-0074.broadcom.com>
 Cc: Lior Amsalem <alior@marvell.com>,
  Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
  Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>,
@@ -29,34 +28,192 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Nov 05, 2013 at 09:27:59PM -0300, Ezequiel Garcia wrote:
-> > 
-> > I believe your handling of this 'is_ready' bit is a little unwise, as
-> > you are actually creating extra concurrency that is unneeded. I'll
-> > summarize what you're doing with this 'is_ready' field:
-> > 
-> >   cmdfunc() -> sets info->is_ready=0 for appropriate commands
-> >             -> kicks off the hardware
-> > 
-> > The following two sequences may then occur concurrently:
-> > 
-> >   (1) pxa3xx_nand_irq -> ready interrupt occurs
-> >                       -> set info->is_ready=1
-> > 		      -> signal 'dev_ready' completion
-> > 
-> >   (2) waitfunc -> check info->is_ready, if it is 0...
-> >                   |_ ... wait for the dev_ready completion
-> > 
-> > Instead of setting info->is_ready=1 under (1), you could set it in (2),
+On Tue, Nov 05, 2013 at 11:04:32AM -0800, Brian Norris wrote:
+> On Tue, Nov 05, 2013 at 09:55:29AM -0300, Ezequiel Garcia wrote:
+> > --- a/drivers/mtd/nand/pxa3xx_nand.c
+> > +++ b/drivers/mtd/nand/pxa3xx_nand.c
+> > @@ -826,7 +887,8 @@ static void pxa3xx_nand_cmdfunc(struct mtd_info *mtd, unsigned command,
+> >  	prepare_start_command(info, command);
+> >  
+> >  	info->state = STATE_PREPARED;
+> > -	exec_cmd = prepare_set_command(info, command, column, page_addr);
+> > +	exec_cmd = prepare_set_command(info, command, -1, column, page_addr);
+> 
+> Is it safe to use -1 for the third parameter (ext_cmd_type)? AFAICT,
+> this doesn't make for correct input to the NDCB0_EXT_CMD_TYPE() macro.
+> 
 
-So, after some more careful thought and some testings, it seems you're
-correct. Setting is_read in waitfunc() results in a non-racy solution and
-the atomic_t can go away.
+Right. Probably '0' is a saner value.
 
-I'll take a look at the other remaining issues and see about preparing
-a v4, so we can try to converge quick enough for v3.14.
+> > +
+> >  	if (exec_cmd) {
+> >  		init_completion(&info->cmd_complete);
+> >  		init_completion(&info->dev_ready);
+> > @@ -844,6 +906,91 @@ static void pxa3xx_nand_cmdfunc(struct mtd_info *mtd, unsigned command,
+> >  	info->state = STATE_IDLE;
+> >  }
+> >  
+> > +static void armada370_nand_cmdfunc(struct mtd_info *mtd,
+> > +				   const unsigned command,
+> > +				   int column, int page_addr)
+> > +{
+> > +	struct pxa3xx_nand_host *host = mtd->priv;
+> > +	struct pxa3xx_nand_info *info = host->info_data;
+> > +	int ret, exec_cmd, ext_cmd_type;
+> > +
+> > +	/*
+> > +	 * if this is a x16 device ,then convert the input
+> 
+> Misplaced comma/whitespace.
+> 
 
-Thanks!
+Ack.
+
+> > +	 * "byte" address into a "word" address appropriate
+> > +	 * for indexing a word-oriented device
+> > +	 */
+> > +	if (info->reg_ndcr & NDCR_DWIDTH_M)
+> > +		column /= 2;
+> > +
+> > +	/*
+> > +	 * There may be different NAND chip hooked to
+> > +	 * different chip select, so check whether
+> > +	 * chip select has been changed, if yes, reset the timing
+> > +	 */
+> > +	if (info->cs != host->cs) {
+> > +		info->cs = host->cs;
+> > +		nand_writel(info, NDTR0CS0, info->ndtr0cs0);
+> > +		nand_writel(info, NDTR1CS0, info->ndtr1cs0);
+> > +	}
+> > +
+> > +	/* Select the extended command for the first command */
+> > +	switch (command) {
+> > +	case NAND_CMD_READ0:
+> > +	case NAND_CMD_READOOB:
+> > +		ext_cmd_type = EXT_CMD_TYPE_MONO;
+> > +		break;
+> > +	}
+> 
+> You have no default case for this switch statement, leaving ext_cmd_type
+> uninitialized in some cases. You add the other cases in a later patch,
+> but this patch is temporarily broken.
+> 
+
+Right, I'll add a zero-valued default.
+
+> > +
+> > +	prepare_start_command(info, command);
+> > +
+> > +	/*
+> > +	 * Prepare the "is ready" completion before starting a command
+> > +	 * transaction sequence. If the command is not executed the
+> > +	 * completion will be completed, see below.
+> > +	 *
+> > +	 * We can do that inside the loop because the command variable
+> > +	 * is invariant and thus so is the exec_cmd.
+> > +	 */
+> > +	atomic_set(&info->is_ready, 0);
+> > +	init_completion(&info->dev_ready);
+> > +	do {
+> > +		info->state = STATE_PREPARED;
+> > +		exec_cmd = prepare_set_command(info, command, ext_cmd_type,
+> > +					       column, page_addr);
+> 
+> [...]
+> 
+> > @@ -1155,7 +1306,30 @@ static int armada370_ecc_init(struct pxa3xx_nand_info *info,
+> >  			      struct nand_ecc_ctrl *ecc,
+> >  			      int strength, int page_size)
+> >  {
+> > -	/* Unimplemented yet */
+> > +	if (strength == 4 && page_size == 4096) {
+> 
+> You compare only to ecc_strength_ds, and not ecc_step_ds. While it is
+> likely that a 4-bit ECC NAND will have a 512-byte ECC step size, you
+> should probably check this.
+> 
+
+OK.
+
+> What about strength < 4? Shouldn't you be able to support a 1-bit ECC
+> NAND with your 4-bit ECC?
+> 
+
+Yes, probably. The rationale behind these xxx_ecc_init() functions is
+to only validate the devices I've tested or that are known to work.
+
+That said, maybe I'm being too paranoid.
+
+> Also, do you plan to support non-ONFI NAND?
+
+Not for the time being. (Are there any new non-ONFI NAND devices?)
+
+> Remember that nand_base
+> doesn't guarantee giving you a non-zero ECC strength. You might need a
+> DT binding to specify this, if it's not automatically detectable.
+> 
+
+Given this series is already long and complex, I'd like to push as much
+features as possible to follow-up patches. That way we can support the
+current boards out there now (Mirabox's a relevant example) and add support
+for more later, gradually.
+
+> > +		ecc->mode = NAND_ECC_HW;
+> > +		ecc->size = 512;
+> > +		ecc->layout = &ecc_layout_4KB_bch4bit;
+> > +		ecc->strength = 4;
+> > +
+> > +		info->ecc_bch = 1;
+> > +		info->chunk_size = 2048;
+> > +		info->spare_size = 32;
+> > +		info->ecc_size = 32;
+> > +		return 1;
+> > +
+> > +	} else if (strength == 8 && page_size == 4096) {
+> > +		ecc->mode = NAND_ECC_HW;
+> > +		ecc->size = 512;
+> > +		ecc->layout = &ecc_layout_4KB_bch8bit;
+> > +		ecc->strength = 8;
+> 
+> These ECC parameters (8-bit per 512 and 4-bit per 512) sound reasonable
+> and consistent with other ECC schemes I've seen. But I'm still not clear
+> if we are 100% certain that matches the actual hardware implementation.
+> Did you do any further research since the last time we talked about
+> this?
+> 
+
+Yes, and I tried to answer your questions in detail in the cover letters
+(which now is in a patch for Documentation/mtd/nand/...) and in past
+discussion.
+
+See for instance: http://permalink.gmane.org/gmane.linux.drivers.mtd/48895.
+
+Feel free to ask any further clarification about how the ECC engine
+works. If you think it'll help, I can write a separate mail describing
+it (to the best of my knowledge) and we can discuss there.
+
+In particular, the above link contains a question that is still
+unanswered and that would help me understand this better.
+I'll copy-paste it here:
+
+"""
+Regarding this: I'd really like to understand better this 'step' concept
+and it applicability on this controller. So any clarification is welcome
+:)
+
+As far as I can see: currently the hardware does ECC corrections in a
+completely transparent fashion and merely 'reports' the no. of corrected
+bits through some IRQ plus some registers.
+Therefore, it implements the ecc.{read,write}_page() functions.
+
+So, why should I tell the NAND core any of the ECC details?
+
+I see other drivers need to implement some of the functions in the
+nand_ecc_ctrl struct, such as: hwctl(), calculate() or correct().
+However, I can't see how any of that applies on this controller.
+"""
+
+Thanks a lot for reviewing all of this!
 -- 
 Ezequiel García, Free Electrons
 Embedded Linux, Kernel and Android Engineering
