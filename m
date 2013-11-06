@@ -1,28 +1,16 @@
-Date: Wed, 6 Nov 2013 13:56:54 +0100
-From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-To: Jason Cooper <jason@lakedaemon.net>
-Subject: Re: [PATCH v3 25/28] ARM: mvebu: Add support for NAND controller in
- Armada 370/XP
-Message-ID: <20131106135654.336e06c3@skate>
-In-Reply-To: <20131106114244.GC8308@titan.lakedaemon.net>
-References: <1383656135-8627-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1383656135-8627-26-git-send-email-ezequiel.garcia@free-electrons.com>
- <20131105132905.GJ3060@titan.lakedaemon.net>
- <20131105135145.GA2676@localhost>
- <20131105151531.GK3060@titan.lakedaemon.net>
- <20131106092435.5f95aa55@skate>
- <20131106114244.GC8308@titan.lakedaemon.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: Mark Rutland <mark.rutland@arm.com>, Lior Amsalem <alior@marvell.com>,
- Tawfik Bayouk <tawfik@marvell.com>, Daniel Mack <zonque@gmail.com>,
- Grant Likely <grant.likely@secretlab.ca>, Huang Shijie <b32955@freescale.com>,
- linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>, Willy Tarreau <w@1wt.eu>,
- linux-arm-kernel@lists.infradead.org
+Received: from devils.ext.ti.com ([198.47.26.153])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Ve4DP-0001nT-18
+ for linux-mtd@lists.infradead.org; Wed, 06 Nov 2013 14:36:15 +0000
+From: Sourav Poddar <sourav.poddar@ti.com>
+To: <computersforpeace@gmail.com>
+Subject: [PATCHv3 0/2] m25p80: QUAD read support + cleanup.
+Date: Wed, 6 Nov 2013 20:05:33 +0530
+Message-ID: <1383748535-20462-1-git-send-email-sourav.poddar@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: marex@denx.de, Sourav Poddar <sourav.poddar@ti.com>,
+ linux-mtd@lists.infradead.org, balbi@ti.com, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,37 +20,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Jason Cooper,
+Patch series does the following:
+1. Cleanup the m25p80 driver to convert bool check for
+   read into an enum. This will help adding more read 
+   commands into the driver easily.
 
-On Wed, 6 Nov 2013 06:42:44 -0500, Jason Cooper wrote:
+2. Add quad read support for spansion and macronix flash devices.
 
-> > Interesting, because I had understood exactly the opposite from the
-> > discussions at the ARM kernel summit. But maybe the DT folks changed
-> > their mind between the ARM kernel summit and the closing session of
-> > the kernel summit :-)
-> 
-> Yes, that's why I asked the question.  Mark Rutland said he wanted to
-> see the code changes when he was reviewing a binding.  Which is indeed
-> the opposite of what we had arrived at during the ARM mini-summit.
-> 
-> So I asked Grant (last question of the Q&A) what he wanted us to tell
-> the contributors.  He said (bad paraphrasing here) "I have better
-> filters now for finding the binding changes, so send the whole series"
-> 
-> As him and Mark aren't the only reviewers, I took the extra step of
-> saying send the DT bindings as a separate patch with it clearly
-> identified in the subject line...
+Sourav Poddar (2):
+  drivers: mtd: m25p80: convert "bool" read type into an enum
+  drivers: mtd: m25p80: Add quad read support.
 
-Ok, thanks for the clarification. Those rules seem to be changing from
-one day to the next, not really easy to follow :)
-
-Is there some .txt file in Documentation/ that explains what the DT
-maintainers expect?
-
-Thanks,
-
-Thomas
--- 
-Thomas Petazzoni, CTO, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
+ drivers/mtd/devices/m25p80.c |  220 ++++++++++++++++++++++++++++++++++++++----
+ 1 files changed, 202 insertions(+), 18 deletions(-)
