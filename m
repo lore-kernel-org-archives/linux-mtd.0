@@ -1,16 +1,16 @@
-Received: from mail-vb0-x233.google.com ([2607:f8b0:400c:c02::233])
+Received: from mail-qc0-x22d.google.com ([2607:f8b0:400d:c01::22d])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ve59R-0003qa-ES
- for linux-mtd@lists.infradead.org; Wed, 06 Nov 2013 15:36:14 +0000
-Received: by mail-vb0-f51.google.com with SMTP id w5so3483980vbf.38
- for <linux-mtd@lists.infradead.org>; Wed, 06 Nov 2013 07:35:49 -0800 (PST)
-MIME-Version: 1.0
-From: Fernando Silveira <fsilveira@gmail.com>
-Date: Wed, 6 Nov 2013 13:35:05 -0200
-Message-ID: <CAGZNvdqt=1K4cd4xLu+2k9KpUa5U_Hu0w1xi_aCwOn7pXiRVBg@mail.gmail.com>
-Subject: Bad blocks while attaching UBIFS
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+ id 1Ve6it-0006dq-3i
+ for linux-mtd@lists.infradead.org; Wed, 06 Nov 2013 17:16:55 +0000
+Received: by mail-qc0-f173.google.com with SMTP id l13so6206668qcy.32
+ for <linux-mtd@lists.infradead.org>; Wed, 06 Nov 2013 09:16:31 -0800 (PST)
+From: Fabio Estevam <festevam@gmail.com>
+To: computersforpeace@gmail.com
+Subject: [PATCH 1/2] mtd: gpmi: Revert "mtd: gpmi: scan two nand chips"
+Date: Wed,  6 Nov 2013 15:16:11 -0200
+Message-Id: <1383758172-29798-1-git-send-email-festevam@gmail.com>
+Cc: marex@denx.de, b32955@freescale.com, dwmw2@infradead.org,
+ Fabio Estevam <fabio.estevam@freescale.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,40 +20,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
-I'm using an yet unreleased NAND flash controller with my own MTD
-driver and everything is working perfectly except for one thing: after
-a few weeks UBIFS begins to throw some error messages while attaching
-and a few days later it just doesn't attach anymore. I know bad blocks
-are supposed to appear after rewriting lots of data but it seems to me
-that UBIFS is not marking the "attach" blocks as bad nor wear leveling
-the "attach/info" sector. The error message follows below:
+This revert is needed so that the revert of commit f720e7ce5 
+("mtd: gpmi: remove the nand_scan()") can be succesfully applied.
 
-UBI: attaching mtd3 to ubi0
-UBI: physical eraseblock size:   2097152 bytes (2048 KiB)
-UBI: logical eraseblock size:    2080768 bytes
-UBI: smallest flash I/O unit:    8192
-UBI: VID header offset:          8192 (aligned 8192)
-UBI: data offset:                16384
-[my mtd driver printing error messages while trying to read a block]
-UBI error: ubi_io_read: error -5 while reading 64 bytes from PEB
-3394:0, read 0 bytes
+This reverts commit cdef39de399fc6806f85c60ef97c9e394b3a92d4.
 
-Note that once a UBIFS file system starts to fail, that PEB indicated
-in the "ubi_io_read" error seems to never change. I'll take a closer
-look at this detail if I see more errors.
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-My questions are:
-
-  1. Does UBIFS mark a bad block when it is failing to attach?
-  2. If yes, what might be wrong with my driver?
-  3. If not, what should I do to prevent a failure while attaching?
-
-PS: I rarely see a bad block being set/found by UBIFS, but the errors
-in the attach procedure are VERY frequent.
-
-Regards,
-
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 7ac2280..a5c60c4 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -1674,7 +1674,7 @@ static int gpmi_nfc_init(struct gpmi_nand_data *this)
+ 	if (ret)
+ 		goto err_out;
+ 
+-	ret = nand_scan_ident(mtd, 2, NULL);
++	ret = nand_scan_ident(mtd, 1, NULL);
+ 	if (ret)
+ 		goto err_out;
+ 
 -- 
-Fernando Silveira
+1.8.1.2
