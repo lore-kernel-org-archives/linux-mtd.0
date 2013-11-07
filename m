@@ -1,17 +1,16 @@
-Date: Thu, 7 Nov 2013 10:43:06 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Josh Wu <josh.wu@atmel.com>
-Subject: Re: [PATCH] mtd: atmel_nand: fix bug driver will in a dead lock if
- no nand detected
-Message-ID: <20131107184306.GX20061@ld-irv-0074.broadcom.com>
-References: <1383645547-21813-1-git-send-email-josh.wu@atmel.com>
+Received: from mail-wi0-x22b.google.com ([2a00:1450:400c:c05::22b])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VeUZc-0007m4-O8
+ for linux-mtd@lists.infradead.org; Thu, 07 Nov 2013 18:44:57 +0000
+Received: by mail-wi0-f171.google.com with SMTP id f4so1086598wiw.16
+ for <linux-mtd@lists.infradead.org>; Thu, 07 Nov 2013 10:44:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1383645547-21813-1-git-send-email-josh.wu@atmel.com>
-Cc: nicolas.ferre@atmel.com, plagnioj@jcrosoft.com,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- dedekind1@gmail.com
+Date: Thu, 7 Nov 2013 11:44:34 -0700
+Message-ID: <CACwUX0PEYGsNMDvy85EsrApWzNU3iTyY-1KHMaj1ay0xxKX6RQ@mail.gmail.com>
+Subject: UBIFS recovery taking too long
+From: David Mosberger-Tang <dmosberger@gmail.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,31 +20,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Nov 05, 2013 at 05:59:07PM +0800, Josh Wu wrote:
-> In the atmel driver probe function, the code shows like following:
->   atmel_nand_probe(...) {
->         ...
-> 
->   err_nand_ioremap:
->         platform_driver_unregister(&atmel_nand_nfc_driver);
->         return res;
->   }
-> 
-> If no nand flash detected, the driver probe function will goto
-> err_nand_ioremap label.
-> Then platform_driver_unregister() will be called. It will get the
-> lock of atmel_nand device since it is parent of nfc_device. The
-> problem is the lock is already hold by atmel_nand_probe itself.
-> So system will be in a dead lock.
-> 
-> This patch just simply removed to platform_driver_unregister() call.
-> When atmel_nand driver is quit the platform_driver_unregister() will
-> be called in atmel_nand_remove().
-> 
-> Signed-off-by: Josh Wu <josh.wu@atmel.com>
+We recently encountered a strange issue where UBIFS recovery is
+suddenly taking a lot longer than usual (v3.7-based kernel).  In our
+case, recovery took about 30 seconds.  This caused a serious problem
+because our watchdog timer was set to 15 seconds, effectively
+rendering the devices unbootable.
 
-Pushed to l2-mtd.git, with a little extra note and a
-Cc: <stable@vger.kernel.org>
+Does anybody know what triggers this slow recovery mode?  Also, how
+can we calculate a worst-case recovery time for a given flash
+chip-size.
 
 Thanks,
-Brian
+
+  --david
