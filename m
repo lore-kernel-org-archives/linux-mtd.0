@@ -1,22 +1,16 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VeKy9-0000em-H5
- for linux-mtd@lists.infradead.org; Thu, 07 Nov 2013 08:29:38 +0000
-Message-ID: <527B4F54.9010000@ti.com>
-Date: Thu, 7 Nov 2013 13:59:08 +0530
-From: Sourav Poddar <sourav.poddar@ti.com>
+Date: Thu, 7 Nov 2013 00:39:32 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Josh Wu <josh.wu@atmel.com>
+Subject: Re: [PATCH] mtd: atmel_nand: fix bug driver will in a dead lock if
+ no nand detected
+Message-ID: <20131107083932.GJ3805@norris.computersforpeace.net>
+References: <1383645547-21813-1-git-send-email-josh.wu@atmel.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 1/2] drivers: mtd: m25p80: convert "bool" read check into
- an enum
-References: <1383748535-20462-1-git-send-email-sourav.poddar@ti.com>
- <1383748535-20462-2-git-send-email-sourav.poddar@ti.com>
- <201311062124.37279.marex@denx.de>
- <20131107080646.GE3805@norris.computersforpeace.net>
-In-Reply-To: <20131107080646.GE3805@norris.computersforpeace.net>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Marek Vasut <marex@denx.de>, linux-mtd@lists.infradead.org, balbi@ti.com,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1383645547-21813-1-git-send-email-josh.wu@atmel.com>
+Cc: nicolas.ferre@atmel.com, plagnioj@jcrosoft.com,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
  dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,73 +21,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 07 November 2013 01:36 PM, Brian Norris wrote:
-> On Wed, Nov 06, 2013 at 09:24:37PM +0100, Marek Vasut wrote:
->> Dear Sourav Poddar,
->>
->>> This is a cleanup prior to adding quad read support. This will fecilitate
->>> easy addition of more read commands check under an enum rather that
->>> defining a seperate bool for it.
->>>
->>> Signed-off-by: Sourav Poddar<sourav.poddar@ti.com>
->>> Suggested-by: Brian Norris<computersforpeace@gmail.com>
->>> ---
->>>   drivers/mtd/devices/m25p80.c |   71
->>> +++++++++++++++++++++++++++++++++-------- 1 files changed, 57
->>> insertions(+), 14 deletions(-)
->>>
->>> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
->>> index 7eda71d..cfafdce 100644
->>> --- a/drivers/mtd/devices/m25p80.c
->>> +++ b/drivers/mtd/devices/m25p80.c
->>> @@ -84,6 +84,11 @@
->>>
->>>   /*************************************************************************
->>> ***/
->>>
->>> +enum read_type {
->>> +	M25P80_NORMAL = 0,
->>> +	M25P80_FAST,
->>> +};
->>> +
->>>   struct m25p {
->>>   	struct spi_device	*spi;
->>>   	struct mutex		lock;
->>> @@ -94,7 +99,7 @@ struct m25p {
->>>   	u8			read_opcode;
->>>   	u8			program_opcode;
->>>   	u8			*command;
->>> -	bool			fast_read;
->>> +	enum read_type		flash_read;
->>>   };
->>>
->>>   static inline struct m25p *mtd_to_m25p(struct mtd_info *mtd)
->>> @@ -350,6 +355,24 @@ static int m25p80_erase(struct mtd_info *mtd, struct
->>> erase_info *instr) }
->>>
->>>   /*
->>> + * Dummy Cycle calculation for different type of read.
->>> + * It can be used to support more commands with
->>> + * different dummy cycle requirement.
->>> + */
->>> +static inline int m25p80_dummy_cycles_read(struct m25p *flash)
->>> +{
->>> +	switch (flash->flash_read) {
->>> +	case M25P80_FAST:
->>> +		return 1;
->>> +	case M25P80_NORMAL:
->>> +		return 0;
->>> +	default:
->>> +		dev_err(&flash->spi->dev, "No valid read type supported");
->> Does dev_err() insert newlines automatically?
-> Not sure if this is a rhetorical question, but I'll answer: no,
-> dev_err() does not insert newlines automatically. The string parameter
-> should contain the '\n'.
->
-> This pair of patches looks good otherwise. I'll see if others have
-> reviews to make, and I can just fixup the newlines if that's the only
-> change to make.
->
-Thanks a lot Brian.
-> Thanks,
-> Brian
+Hi Josh,
+
+On Tue, Nov 05, 2013 at 05:59:07PM +0800, Josh Wu wrote:
+> In the atmel driver probe function, the code shows like following:
+>   atmel_nand_probe(...) {
+>         ...
+> 
+>   err_nand_ioremap:
+>         platform_driver_unregister(&atmel_nand_nfc_driver);
+>         return res;
+>   }
+> 
+> If no nand flash detected, the driver probe function will goto
+> err_nand_ioremap label.
+> Then platform_driver_unregister() will be called. It will get the
+> lock of atmel_nand device since it is parent of nfc_device. The
+> problem is the lock is already hold by atmel_nand_probe itself.
+> So system will be in a dead lock.
+> 
+> This patch just simply removed to platform_driver_unregister() call.
+> When atmel_nand driver is quit the platform_driver_unregister() will
+> be called in atmel_nand_remove().
+
+The real key, here, is that the platform-driver probe() has no business
+un-registering another driver, right? Shouldn't both drivers just be
+registered/unregistered in the module init/exit, and not in probe()?
+
+Also, should this be marked for -stable?
+
+> Signed-off-by: Josh Wu <josh.wu@atmel.com>
+> ---
+>  drivers/mtd/nand/atmel_nand.c |    1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+> index ef9c9f5..469d4e2 100644
+> --- a/drivers/mtd/nand/atmel_nand.c
+> +++ b/drivers/mtd/nand/atmel_nand.c
+> @@ -2142,7 +2142,6 @@ err_no_card:
+>  	if (host->dma_chan)
+>  		dma_release_channel(host->dma_chan);
+>  err_nand_ioremap:
+> -	platform_driver_unregister(&atmel_nand_nfc_driver);
+>  	return res;
+>  }
+>  
+
+Brian
