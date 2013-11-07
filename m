@@ -1,37 +1,20 @@
-Received: from e39.co.us.ibm.com ([32.97.110.160])
+Received: from tx2ehsobe001.messaging.microsoft.com ([65.55.88.11]
+ helo=tx2outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VeEdu-0000kc-Jq
- for linux-mtd@lists.infradead.org; Thu, 07 Nov 2013 01:44:20 +0000
-Received: from /spool/local
- by e39.co.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
- Violators will be prosecuted
- for <linux-mtd@lists.infradead.org> from <cody@linux.vnet.ibm.com>;
- Wed, 6 Nov 2013 18:43:58 -0700
-Received: from d03relay01.boulder.ibm.com (d03relay01.boulder.ibm.com
- [9.17.195.226])
- by d03dlp02.boulder.ibm.com (Postfix) with ESMTP id 04B133E40040
- for <linux-mtd@lists.infradead.org>; Wed,  6 Nov 2013 18:43:57 -0700 (MST)
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
- by d03relay01.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
- rA71hu3M366688
- for <linux-mtd@lists.infradead.org>; Wed, 6 Nov 2013 18:43:56 -0700
-Received: from d03av01.boulder.ibm.com (localhost [127.0.0.1])
- by d03av01.boulder.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
- rA71htPQ031856
- for <linux-mtd@lists.infradead.org>; Wed, 6 Nov 2013 18:43:56 -0700
-From: Cody P Schafer <cody@linux.vnet.ibm.com>
-To: Andrew Morton <akpm@linux-foundation.org>,
- EXT4 <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>,
- rostedt@goodmis.org, Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH v2 10/11] mtd/ubi: use rbtree postorder iteration helper
- instead of opencoding
-Date: Wed,  6 Nov 2013 17:42:39 -0800
-Message-Id: <1383788572-25938-11-git-send-email-cody@linux.vnet.ibm.com>
-In-Reply-To: <1383788572-25938-1-git-send-email-cody@linux.vnet.ibm.com>
-References: <1383788572-25938-1-git-send-email-cody@linux.vnet.ibm.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Cody P Schafer <cody@linux.vnet.ibm.com>, LKML <linux-kernel@vger.kernel.org>,
- linux-mtd@lists.infradead.org
+ id 1VeFY9-0001mP-RD
+ for linux-mtd@lists.infradead.org; Thu, 07 Nov 2013 02:42:26 +0000
+Message-ID: <527AFEB6.20004@freescale.com>
+Date: Thu, 7 Nov 2013 10:45:10 +0800
+From: Huang Shijie <b32955@freescale.com>
+MIME-Version: 1.0
+To: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH 1/2] mtd: gpmi: Revert "mtd: gpmi: scan two nand chips"
+References: <1383758172-29798-1-git-send-email-festevam@gmail.com>
+In-Reply-To: <1383758172-29798-1-git-send-email-festevam@gmail.com>
+Content-Type: text/plain; charset="GB2312"
+Content-Transfer-Encoding: quoted-printable
+Cc: marex@denx.de, linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org, Fabio Estevam <fabio.estevam@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,126 +24,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use rbtree_postorder_for_each_entry_safe() to destroy the rbtree instead
-of opencoding an alternate postorder iteration that modifies the tree
+=D3=DA 2013=C4=EA11=D4=C207=C8=D5 01:16, Fabio Estevam =D0=B4=B5=C0:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
+>
+> This revert is needed so that the revert of commit f720e7ce5=20
+> ("mtd: gpmi: remove the nand_scan()") can be succesfully applied.
+>
+> This reverts commit cdef39de399fc6806f85c60ef97c9e394b3a92d4.
+>
+> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+> ---
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/=
+gpmi-nand/gpmi-nand.c
+> index 7ac2280..a5c60c4 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> @@ -1674,7 +1674,7 @@ static int gpmi_nfc_init(struct gpmi_nand_data *t=
+his)
+>  	if (ret)
+>  		goto err_out;
+> =20
+> -	ret =3D nand_scan_ident(mtd, 2, NULL);
+> +	ret =3D nand_scan_ident(mtd, 1, NULL);
+>  	if (ret)
+>  		goto err_out;
+> =20
+Please do not revert the patches.
 
-Signed-off-by: Cody P Schafer <cody@linux.vnet.ibm.com>
----
- drivers/mtd/ubi/attach.c | 49 +++++++-----------------------------------------
- drivers/mtd/ubi/wl.c     | 25 +++---------------------
- 2 files changed, 10 insertions(+), 64 deletions(-)
+It's not the right way to fix this.
+I will spend some time to this bug today.
 
-diff --git a/drivers/mtd/ubi/attach.c b/drivers/mtd/ubi/attach.c
-index c071d41..6de0786 100644
---- a/drivers/mtd/ubi/attach.c
-+++ b/drivers/mtd/ubi/attach.c
-@@ -1133,27 +1133,11 @@ static int late_analysis(struct ubi_device *ubi, struct ubi_attach_info *ai)
-  */
- static void destroy_av(struct ubi_attach_info *ai, struct ubi_ainf_volume *av)
- {
--	struct ubi_ainf_peb *aeb;
--	struct rb_node *this = av->root.rb_node;
--
--	while (this) {
--		if (this->rb_left)
--			this = this->rb_left;
--		else if (this->rb_right)
--			this = this->rb_right;
--		else {
--			aeb = rb_entry(this, struct ubi_ainf_peb, u.rb);
--			this = rb_parent(this);
--			if (this) {
--				if (this->rb_left == &aeb->u.rb)
--					this->rb_left = NULL;
--				else
--					this->rb_right = NULL;
--			}
-+	struct ubi_ainf_peb *aeb, *next;
-+
-+	rbtree_postorder_for_each_entry_safe(aeb, next, &av->root, u.rb)
-+		kmem_cache_free(ai->aeb_slab_cache, aeb);
- 
--			kmem_cache_free(ai->aeb_slab_cache, aeb);
--		}
--	}
- 	kfree(av);
- }
- 
-@@ -1164,8 +1148,7 @@ static void destroy_av(struct ubi_attach_info *ai, struct ubi_ainf_volume *av)
- static void destroy_ai(struct ubi_attach_info *ai)
- {
- 	struct ubi_ainf_peb *aeb, *aeb_tmp;
--	struct ubi_ainf_volume *av;
--	struct rb_node *rb;
-+	struct ubi_ainf_volume *av, *next;
- 
- 	list_for_each_entry_safe(aeb, aeb_tmp, &ai->alien, u.list) {
- 		list_del(&aeb->u.list);
-@@ -1185,26 +1168,8 @@ static void destroy_ai(struct ubi_attach_info *ai)
- 	}
- 
- 	/* Destroy the volume RB-tree */
--	rb = ai->volumes.rb_node;
--	while (rb) {
--		if (rb->rb_left)
--			rb = rb->rb_left;
--		else if (rb->rb_right)
--			rb = rb->rb_right;
--		else {
--			av = rb_entry(rb, struct ubi_ainf_volume, rb);
--
--			rb = rb_parent(rb);
--			if (rb) {
--				if (rb->rb_left == &av->rb)
--					rb->rb_left = NULL;
--				else
--					rb->rb_right = NULL;
--			}
--
--			destroy_av(ai, av);
--		}
--	}
-+	rbtree_postorder_for_each_entry_safe(av, next, &ai->volumes, rb)
-+		destroy_av(ai, av);
- 
- 	if (ai->aeb_slab_cache)
- 		kmem_cache_destroy(ai->aeb_slab_cache);
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index c95bfb1..1af3899 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -1760,29 +1760,10 @@ int ubi_wl_flush(struct ubi_device *ubi, int vol_id, int lnum)
-  */
- static void tree_destroy(struct rb_root *root)
- {
--	struct rb_node *rb;
--	struct ubi_wl_entry *e;
--
--	rb = root->rb_node;
--	while (rb) {
--		if (rb->rb_left)
--			rb = rb->rb_left;
--		else if (rb->rb_right)
--			rb = rb->rb_right;
--		else {
--			e = rb_entry(rb, struct ubi_wl_entry, u.rb);
--
--			rb = rb_parent(rb);
--			if (rb) {
--				if (rb->rb_left == &e->u.rb)
--					rb->rb_left = NULL;
--				else
--					rb->rb_right = NULL;
--			}
-+	struct ubi_wl_entry *e, *next;
- 
--			kmem_cache_free(ubi_wl_entry_slab, e);
--		}
--	}
-+	rbtree_postorder_for_each_entry_safe(e, next, root, u.rb)
-+		kmem_cache_free(ubi_wl_entry_slab, e);
- }
- 
- /**
--- 
-1.8.4.2
+thanks
+
+Huang Shijie
