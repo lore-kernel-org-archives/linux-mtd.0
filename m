@@ -1,22 +1,21 @@
-Received: from mail-ve0-x233.google.com ([2607:f8b0:400c:c01::233])
+Received: from mail-vc0-x22d.google.com ([2607:f8b0:400c:c03::22d])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VePXf-0006wK-4c
- for linux-mtd@lists.infradead.org; Thu, 07 Nov 2013 13:22:36 +0000
-Received: by mail-ve0-f179.google.com with SMTP id cz12so375859veb.10
- for <linux-mtd@lists.infradead.org>; Thu, 07 Nov 2013 05:22:12 -0800 (PST)
+ id 1VeQga-0000iF-Cd
+ for linux-mtd@lists.infradead.org; Thu, 07 Nov 2013 14:35:53 +0000
+Received: by mail-vc0-f173.google.com with SMTP id lh4so419413vcb.32
+ for <linux-mtd@lists.infradead.org>; Thu, 07 Nov 2013 06:35:30 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1383817597-31992-2-git-send-email-b32955@freescale.com>
-References: <1383817597-31992-1-git-send-email-b32955@freescale.com>
- <1383817597-31992-2-git-send-email-b32955@freescale.com>
-Date: Thu, 7 Nov 2013 11:22:12 -0200
-Message-ID: <CAOMZO5AohNc7Z41AApMHugsApQxS3J+1jUZyFrjjAJ8PXuB_aQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mtd: gpmi: only scan two chips for imx6
-From: Fabio Estevam <festevam@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
+In-Reply-To: <527B7CD1.1020105@codeaurora.org>
+References: <527B7CD1.1020105@codeaurora.org>
+Date: Thu, 7 Nov 2013 15:35:30 +0100
+Message-ID: <CAFLxGvx=8vcDzUcA6vG_84X8snYkDLBkyboQZmDTUdDgi3xccQ@mail.gmail.com>
+Subject: Re: [mtd] possible bug in nandsim
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: Tanya Brokhman <tlinder@codeaurora.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: dedekind@infradead.org, dedekind@oktetlabs.ru,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ pratibha@codeaurora.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,18 +25,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 7, 2013 at 7:46 AM, Huang Shijie <b32955@freescale.com> wrote:
-> We cannot scan two chips for imx23 and imx28:
->   imx23: the Ready-Busy1 line is not connected for some board.
->   imx28: we do not set the pinctrl for Ready-Busy1
+On Thu, Nov 7, 2013 at 12:43 PM, Tanya Brokhman <tlinder@codeaurora.org> wrote:
+> Hi
 >
-> So we only scan two chips for imx6.
+> I've recently started working with the nand simulator. For my testing
+> purposes I have to use it with a cache file. Bellow are the commands I run:
+>
+> modprobe nandsim first_id_byte=0x20 second_id_byte=0xaa third_id_byte=0x00
+> fourth_id_byte=0x15 cache_file=cache_file.txt
+> modprobe ubi mtd=0 fm_autoconvert=1
+>
+> Unfortunately, when trying the above I noticed that the next time i load
+> nandsim and ubi on top of it the fastmap data is not saved at cache_file.txt
+> and the device comes up as clean. Meaning, the cache file feature of the
+> nandsim isn't working properly.
 
-What happens if Ready-Busy1 line is not connected on some mx6 board?
-You cannot assume that all boards
-have this line connected and configured in pinctrl just like you
-mentioned for mx23 and mx28.
+IIRC this feature is really meant as a cache and not persistent storage.
 
-Regards,
+> So while debugging this I think I found the root cause:
+> unsigned long *pages_written from struct nandsim also needs saving.
+> Otherwise while reading a page (at read_page()) we enter the following code
+> flow:
+>
+> if (!test_bit(ns->regs.row, ns->pages_written)) {
+>                 memset(ns->buf.byte, 0xFF, num);
+> } else {
+>
+> thus, ignoring the content of the cache file.
+>
+> I've fixed this internally in my build by just saving the content of
+> pages_written to a file on __exit and reading from that file on __init.
+>
+> I was wondering if someone had done this in a more elegant way perhaps?
+>
+> If not, I'll beautify my patch and share.
+>
+> Thanks,
+> Tanya Brokhman
+> --
+> QUALCOMM ISRAEL, on behalf of Qualcomm Innovation Center, Inc. is a member
+> of Code Aurora Forum, hosted by The Linux Foundation
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
-Fabio Estevam
+
+
+-- 
+Thanks,
+//richard
