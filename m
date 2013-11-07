@@ -1,19 +1,21 @@
-Date: Thu, 7 Nov 2013 10:09:42 -0800
+Received: from mail-ie0-x232.google.com ([2607:f8b0:4001:c03::232])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VeULY-0007Ti-05
+ for linux-mtd@lists.infradead.org; Thu, 07 Nov 2013 18:30:24 +0000
+Received: by mail-ie0-f178.google.com with SMTP id x13so1455429ief.23
+ for <linux-mtd@lists.infradead.org>; Thu, 07 Nov 2013 10:30:00 -0800 (PST)
+Date: Thu, 7 Nov 2013 10:29:55 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Josh Wu <josh.wu@atmel.com>
-Subject: Re: [PATCH] mtd: atmel_nand: fix bug driver will in a dead lock if
- no nand detected
-Message-ID: <20131107180942.GU20061@ld-irv-0074.broadcom.com>
-References: <1383645547-21813-1-git-send-email-josh.wu@atmel.com>
- <20131107083932.GJ3805@norris.computersforpeace.net>
- <527B6ADF.1090201@atmel.com>
+To: Sourav Poddar <sourav.poddar@ti.com>
+Subject: Re: [PATCHv3 0/2] m25p80: QUAD read support + cleanup.
+Message-ID: <20131107182955.GV20061@ld-irv-0074.broadcom.com>
+References: <1383748535-20462-1-git-send-email-sourav.poddar@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <527B6ADF.1090201@atmel.com>
-Cc: nicolas.ferre@atmel.com, plagnioj@jcrosoft.com,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- dedekind1@gmail.com
+In-Reply-To: <1383748535-20462-1-git-send-email-sourav.poddar@ti.com>
+Cc: marex@denx.de, Huang Shijie <b32955@freescale.com>,
+ linux-mtd@lists.infradead.org, balbi@ti.com, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,60 +25,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 07, 2013 at 06:26:39PM +0800, Josh Wu wrote:
-> Hi, Brian
-> 
-> On 11/7/2013 4:39 PM, Brian Norris wrote:
-> >Hi Josh,
-> >
-> >On Tue, Nov 05, 2013 at 05:59:07PM +0800, Josh Wu wrote:
-> >>In the atmel driver probe function, the code shows like following:
-> >>   atmel_nand_probe(...) {
-> >>         ...
-> >>
-> >>   err_nand_ioremap:
-> >>         platform_driver_unregister(&atmel_nand_nfc_driver);
-> >>         return res;
-> >>   }
-> >>
-> >>If no nand flash detected, the driver probe function will goto
-> >>err_nand_ioremap label.
-> >>Then platform_driver_unregister() will be called. It will get the
-> >>lock of atmel_nand device since it is parent of nfc_device. The
-> >>problem is the lock is already hold by atmel_nand_probe itself.
-> >>So system will be in a dead lock.
-> >>
-> >>This patch just simply removed to platform_driver_unregister() call.
-> >>When atmel_nand driver is quit the platform_driver_unregister() will
-> >>be called in atmel_nand_remove().
-> >The real key, here, is that the platform-driver probe() has no business
-> >un-registering another driver, right?
-> 
-> right.
-> 
-> >Shouldn't both drivers just be
-> >registered/unregistered in the module init/exit, and not in probe()?
-> 
-> currently the NFC driver is registered in the beginning of nand
-> probe function. After NFC driver is initialized, the rest of the
-> nand probe function
-> will check the NFC driver status.
-> I am not sure it is proper to registered another driver in a probe().
++ Huang
 
-This whole 2-driver registration process seems like a totally racy mess.
-Unless I'm reading this wrong, the code is entirely wrong. You are not
-properly expressing the dependency between the NFC device and the
-atmel_nand device, so I think you're relying purely on happenstance that
-when the NAND probe registers the NFC driver, it will complete the NFC
-probe before the NAND probe reaches:
+On Wed, Nov 06, 2013 at 08:05:33PM +0530, Sourav Poddar wrote:
+> Patch series does the following:
+> 1. Cleanup the m25p80 driver to convert bool check for
+>    read into an enum. This will help adding more read 
+>    commands into the driver easily.
+> 
+> 2. Add quad read support for spansion and macronix flash devices.
 
-  if (nand_nfc.is_initialized) {
-    ...
-
-This is a race, no?
-
-Anyway, I think the current patch (fixing a deadlock) is still ready for
-stable, while I would expect you can fix up this racy situation in a
-subsequent patch. Or perhaps I'm misreading something?
+Do we have any testing results? I know that some QSPI controllers still
+need some more work to be able to support this, but has someone tested
+this current patch set with a "true" SPI controller on mainline?
 
 Brian
