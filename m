@@ -1,19 +1,16 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VeNOq-0004Ko-LP
- for linux-mtd@lists.infradead.org; Thu, 07 Nov 2013 11:05:21 +0000
-Message-ID: <1383822296.2722.186.camel@sauron.fi.intel.com>
-Subject: Re: Bad blocks while attaching UBIFS
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Fernando Silveira <fsilveira@gmail.com>
-Date: Thu, 07 Nov 2013 13:04:56 +0200
-In-Reply-To: <CAGZNvdqt=1K4cd4xLu+2k9KpUa5U_Hu0w1xi_aCwOn7pXiRVBg@mail.gmail.com>
-References: <CAGZNvdqt=1K4cd4xLu+2k9KpUa5U_Hu0w1xi_aCwOn7pXiRVBg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
+Received: from smtp.codeaurora.org ([198.145.11.231])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VeNzw-00050i-1o
+ for linux-mtd@lists.infradead.org; Thu, 07 Nov 2013 11:43:41 +0000
+Message-ID: <527B7CD1.1020105@codeaurora.org>
+Date: Thu, 07 Nov 2013 13:43:13 +0200
+From: Tanya Brokhman <tlinder@codeaurora.org>
+MIME-Version: 1.0
+To: dedekind@infradead.org, linux-mtd@lists.infradead.org,
+ dedekind@oktetlabs.ru, pratibha@codeaurora.org
+Subject: [mtd] possible bug in nandsim
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,44 +20,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2013-11-06 at 13:35 -0200, Fernando Silveira wrote:
-> Hi,
-> 
-> I'm using an yet unreleased NAND flash controller with my own MTD
-> driver and everything is working perfectly except for one thing: after
-> a few weeks UBIFS begins to throw some error messages while attaching
-> and a few days later it just doesn't attach anymore. I know bad blocks
-> are supposed to appear after rewriting lots of data but it seems to me
-> that UBIFS is not marking the "attach" blocks as bad nor wear leveling
-> the "attach/info" sector. The error message follows below:
-> 
-> UBI: attaching mtd3 to ubi0
-> UBI: physical eraseblock size:   2097152 bytes (2048 KiB)
-> UBI: logical eraseblock size:    2080768 bytes
-> UBI: smallest flash I/O unit:    8192
-> UBI: VID header offset:          8192 (aligned 8192)
-> UBI: data offset:                16384
-> [my mtd driver printing error messages while trying to read a block]
-> UBI error: ubi_io_read: error -5 while reading 64 bytes from PEB
-> 3394:0, read 0 bytes
-> 
-> Note that once a UBIFS file system starts to fail, that PEB indicated
-> in the "ubi_io_read" error seems to never change. I'll take a closer
-> look at this detail if I see more errors.
-> 
-> My questions are:
-> 
->   1. Does UBIFS mark a bad block when it is failing to attach?
+Hi
 
-UBI marks eraseblocks as bad when it cannot write or erase. And blocks
-are not marked a s bad right away. Instead, they are first "tortured",
-and if the torture test fails, then the eraseblock is marked as bad.
+I've recently started working with the nand simulator. For my testing 
+purposes I have to use it with a cache file. Bellow are the commands I run:
 
->   2. If yes, what might be wrong with my driver?
+modprobe nandsim first_id_byte=0x20 second_id_byte=0xaa 
+third_id_byte=0x00 fourth_id_byte=0x15 cache_file=cache_file.txt
+modprobe ubi mtd=0 fm_autoconvert=1
 
-Does it handle short reads properly? Please, run mtd tests to validate
-your driver.
+Unfortunately, when trying the above I noticed that the next time i load 
+nandsim and ubi on top of it the fastmap data is not saved at 
+cache_file.txt and the device comes up as clean. Meaning, the cache file 
+feature of the nandsim isn't working properly.
 
+So while debugging this I think I found the root cause:
+unsigned long *pages_written from struct nandsim also needs saving. 
+Otherwise while reading a page (at read_page()) we enter the following 
+code flow:
+
+if (!test_bit(ns->regs.row, ns->pages_written)) {
+		memset(ns->buf.byte, 0xFF, num);
+} else {
+
+thus, ignoring the content of the cache file.
+
+I've fixed this internally in my build by just saving the content of 
+pages_written to a file on __exit and reading from that file on __init.
+
+I was wondering if someone had done this in a more elegant way perhaps?
+
+If not, I'll beautify my patch and share.
+
+Thanks,
+Tanya Brokhman
 -- 
-Best Regards,
-Artem Bityutskiy
+QUALCOMM ISRAEL, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
