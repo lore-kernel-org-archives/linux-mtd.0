@@ -1,10 +1,10 @@
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
  <devicetree@vger.kernel.org>
-Subject: [PATCH v4 12/31] mtd: nand: pxa3xx: Split FIFO size from to-be-read
- FIFO count
-Date: Thu,  7 Nov 2013 12:17:16 -0300
-Message-Id: <1383837455-30721-13-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH v4 13/31] mtd: nand: pxa3xx: Replace host->page_size by
+ mtd->writesize
+Date: Thu,  7 Nov 2013 12:17:17 -0300
+Message-Id: <1383837455-30721-14-git-send-email-ezequiel.garcia@free-electrons.com>
 In-Reply-To: <1383837455-30721-1-git-send-email-ezequiel.garcia@free-electrons.com>
 References: <1383837455-30721-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Lior Amsalem <alior@marvell.com>,
@@ -23,73 +23,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Introduce a fifo_size field to represent the size of the controller's
-FIFO buffer, and use it to distinguish that size from the amount
-of data bytes to be read from the FIFO.
-
-This is important to support devices with pages larger than the
-controller's internal FIFO, that need to read the pages in FIFO-sized
-chunks.
-
-In particular, the current code is at least confusing, for it mixes
-all the different sizes involved: FIFO size, page size and data size.
-
-This commit starts the cleaning by removing the info->page_size field
-that is not currently used. The host->page_size field should also
-be removed and use always mtd->writesize instead. Follow up commits
-will clean this up.
+There's no need to privately store the device page size as it's
+available in mtd structure field mtd->writesize.
+Also, this removes the hardcoded page size value, leaving the
+auto-detected value only.
 
 Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 ---
- drivers/mtd/nand/pxa3xx_nand.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ drivers/mtd/nand/pxa3xx_nand.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index d153ba8..6a69deb 100644
+index 6a69deb..dd8a7cf 100644
 --- a/drivers/mtd/nand/pxa3xx_nand.c
 +++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -201,8 +201,8 @@ struct pxa3xx_nand_info {
- 	int			use_spare;	/* use spare ? */
- 	int			is_ready;
+@@ -151,7 +151,6 @@ struct pxa3xx_nand_host {
+ 	void			*info_data;
  
--	unsigned int		page_size;	/* page size of attached chip */
--	unsigned int		data_size;	/* data size in FIFO */
-+	unsigned int		fifo_size;	/* max. data size in the FIFO */
-+	unsigned int		data_size;	/* data to be read from FIFO */
- 	unsigned int		oob_size;
- 	int 			retcode;
+ 	/* page size of attached chip */
+-	unsigned int		page_size;
+ 	int			use_ecc;
+ 	int			cs;
  
-@@ -307,16 +307,15 @@ static void pxa3xx_nand_set_timing(struct pxa3xx_nand_host *host,
+@@ -614,12 +613,12 @@ static int prepare_command_pool(struct pxa3xx_nand_info *info, int command,
+ 			info->buf_start += mtd->writesize;
  
- static void pxa3xx_set_datasize(struct pxa3xx_nand_info *info)
- {
--	struct pxa3xx_nand_host *host = info->host[info->cs];
- 	int oob_enable = info->reg_ndcr & NDCR_SPARE_EN;
+ 		/* Second command setting for large pages */
+-		if (host->page_size >= PAGE_CHUNK_SIZE)
++		if (mtd->writesize >= PAGE_CHUNK_SIZE)
+ 			info->ndcb0 |= NDCB0_DBC | (NAND_CMD_READSTART << 8);
  
--	info->data_size = host->page_size;
-+	info->data_size = info->fifo_size;
- 	if (!oob_enable) {
- 		info->oob_size = 0;
- 		return;
+ 	case NAND_CMD_SEQIN:
+ 		/* small page addr setting */
+-		if (unlikely(host->page_size < PAGE_CHUNK_SIZE)) {
++		if (unlikely(mtd->writesize < PAGE_CHUNK_SIZE)) {
+ 			info->ndcb1 = ((page_addr & 0xFFFFFF) << 8)
+ 					| (column & 0xFF);
+ 
+@@ -895,7 +894,6 @@ static int pxa3xx_nand_config_flash(struct pxa3xx_nand_info *info,
  	}
  
--	switch (host->page_size) {
-+	switch (info->fifo_size) {
- 	case 2048:
- 		info->oob_size = (info->use_ecc) ? 40 : 64;
- 		break;
-@@ -933,9 +932,12 @@ static int pxa3xx_nand_detect_config(struct pxa3xx_nand_info *info)
- 	uint32_t ndcr = nand_readl(info, NDCR);
+ 	/* calculate flash information */
+-	host->page_size = f->page_size;
+ 	host->read_id_bytes = (f->page_size == 2048) ? 4 : 2;
  
+ 	/* calculate addressing information */
+@@ -934,11 +932,9 @@ static int pxa3xx_nand_detect_config(struct pxa3xx_nand_info *info)
  	if (ndcr & NDCR_PAGE_SZ) {
-+		/* Controller's FIFO size */
-+		info->fifo_size = 2048;
- 		host->page_size = 2048;
+ 		/* Controller's FIFO size */
+ 		info->fifo_size = 2048;
+-		host->page_size = 2048;
  		host->read_id_bytes = 4;
  	} else {
-+		info->fifo_size = 512;
- 		host->page_size = 512;
+ 		info->fifo_size = 512;
+-		host->page_size = 512;
  		host->read_id_bytes = 2;
  	}
+ 
+@@ -1106,7 +1102,7 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
+ 	def = pxa3xx_flash_ids;
+ KEEP_CONFIG:
+ 	chip->ecc.mode = NAND_ECC_HW;
+-	chip->ecc.size = host->page_size;
++	chip->ecc.size = info->fifo_size;
+ 	chip->ecc.strength = 1;
+ 
+ 	if (info->reg_ndcr & NDCR_DWIDTH_M)
 -- 
 1.8.1.5
