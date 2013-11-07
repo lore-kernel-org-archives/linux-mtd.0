@@ -1,19 +1,22 @@
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: <linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
- <devicetree@vger.kernel.org>
-Subject: [PATCH v4 31/31] ARM: mvebu: Enable NAND controller in Armada 370
- Mirabox
-Date: Thu,  7 Nov 2013 12:17:35 -0300
-Message-Id: <1383837455-30721-32-git-send-email-ezequiel.garcia@free-electrons.com>
-In-Reply-To: <1383837455-30721-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Date: Thu, 7 Nov 2013 10:32:10 -0500
+From: Jason Cooper <jason@lakedaemon.net>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH v4 05/31] mtd: nand: pxa3xx: devicetree binding update
+Message-ID: <20131107153210.GK8308@titan.lakedaemon.net>
 References: <1383837455-30721-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: Lior Amsalem <alior@marvell.com>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>,
- Daniel Mack <zonque@gmail.com>, Huang Shijie <b32955@freescale.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ <1383837455-30721-6-git-send-email-ezequiel.garcia@free-electrons.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1383837455-30721-6-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: Lior Amsalem <alior@marvell.com>, devicetree@vger.kernel.org,
+ Tawfik Bayouk <tawfik@marvell.com>, Willy Tarreau <w@1wt.eu>,
+ Huang Shijie <b32955@freescale.com>, Daniel Mack <zonque@gmail.com>,
+ linux-mtd@lists.infradead.org,
  Gregory Clement <gregory.clement@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>, Willy Tarreau <w@1wt.eu>
+ Brian Norris <computersforpeace@gmail.com>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,49 +26,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The Armada 370 Mirabox has a NAND flash, so enable it in the devicetree
-and add the partitions as prepared in the factory images.
+On Thu, Nov 07, 2013 at 12:17:09PM -0300, Ezequiel Garcia wrote:
+> Since the driver supports the new compatible string, the binding
+> documentation must be updated to reflect it.
+> 
+> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> ---
+>  Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 
-In order to skip the driver's custom device detection and use only
-ONFI detection, the "marvell,keep-config" parameter is used.
-This is needed because we have no support for setting the timings parameters yet.
+Thanks for adding this, but please remember to update the Subject
+string in the future.  Both this patch and the next one are changing the
+Documentation/ portion of the tree, not drivers/.
 
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
----
- arch/arm/boot/dts/armada-370-mirabox.dts | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+And,
 
-diff --git a/arch/arm/boot/dts/armada-370-mirabox.dts b/arch/arm/boot/dts/armada-370-mirabox.dts
-index 2471d9d..1e73017 100644
---- a/arch/arm/boot/dts/armada-370-mirabox.dts
-+++ b/arch/arm/boot/dts/armada-370-mirabox.dts
-@@ -139,6 +139,27 @@
- 					reg = <0x25>;
- 				};
- 			};
-+
-+			nand@d0000 {
-+				status = "okay";
-+				num-cs = <1>;
-+				marvell,nand-keep-config;
-+				marvell,nand-enable-arbiter;
-+				nand-on-flash-bbt;
-+
-+				partition@0 {
-+					label = "U-Boot";
-+					reg = <0 0x400000>;
-+				};
-+				partition@400000 {
-+					label = "Linux";
-+					reg = <0x400000 0x400000>;
-+				};
-+				partition@800000 {
-+					label = "Filesystem";
-+					reg = <0x800000 0x3f800000>;
-+				};
-+			};
- 		};
- 	};
- };
--- 
-1.8.1.5
+Acked-by: Jason Cooper <jason@lakedaemon.net>
+
+thx,
+
+Jason.
+
+> diff --git a/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt b/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
+> index f1421e2..bed8390 100644
+> --- a/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
+> +++ b/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
+> @@ -2,7 +2,9 @@ PXA3xx NAND DT bindings
+>  
+>  Required properties:
+>  
+> - - compatible:		Should be "marvell,pxa3xx-nand"
+> + - compatible:		Should be set to one of the following:
+> +			marvell,pxa3xx-nand
+> +			marvell,armada370-nand
+>   - reg: 		The register base for the controller
+>   - interrupts:		The interrupt to map
+>   - #address-cells:	Set to <1> if the node includes partitions
+> -- 
+> 1.8.1.5
+> 
