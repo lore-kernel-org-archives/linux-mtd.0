@@ -1,21 +1,21 @@
-Received: from mail-pb0-x229.google.com ([2607:f8b0:400e:c01::229])
+Received: from mail-pb0-x22d.google.com ([2607:f8b0:400e:c01::22d])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VeKiV-00007o-Vd
- for linux-mtd@lists.infradead.org; Thu, 07 Nov 2013 08:13:29 +0000
-Received: by mail-pb0-f41.google.com with SMTP id wy17so254782pbc.0
- for <linux-mtd@lists.infradead.org>; Thu, 07 Nov 2013 00:13:06 -0800 (PST)
-Date: Thu, 7 Nov 2013 00:13:03 -0800
+ id 1VeKjJ-0000A1-W0
+ for linux-mtd@lists.infradead.org; Thu, 07 Nov 2013 08:14:20 +0000
+Received: by mail-pb0-f45.google.com with SMTP id ma3so247450pbc.18
+ for <linux-mtd@lists.infradead.org>; Thu, 07 Nov 2013 00:13:56 -0800 (PST)
+Date: Thu, 7 Nov 2013 00:13:52 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH] mtd: nand: use a local variable to simplify the
- nand_scan_tail
-Message-ID: <20131107081303.GF3805@norris.computersforpeace.net>
-References: <1382077253-21709-1-git-send-email-b32955@freescale.com>
+To: Michael Opdenacker <michael.opdenacker@free-electrons.com>
+Subject: Re: [PATCH] mtd: nand: remove deprecated IRQF_DISABLED
+Message-ID: <20131107081352.GG3805@norris.computersforpeace.net>
+References: <1381645292-9499-1-git-send-email-michael.opdenacker@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1382077253-21709-1-git-send-email-b32955@freescale.com>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org, dedekind1@gmail.com
+In-Reply-To: <1381645292-9499-1-git-send-email-michael.opdenacker@free-electrons.com>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,18 +25,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 18, 2013 at 02:20:53PM +0800, Huang Shijie wrote:
-> There are too many "chip->ecc" in the nand_scan_tail() which makes the eyes
-> sore.
+On Sun, Oct 13, 2013 at 08:21:32AM +0200, Michael Opdenacker wrote:
+> This patch proposes to remove the use of the IRQF_DISABLED flag
 > 
-> This patch uses a local variable "ecc" to replace the "chip->ecc" to
-> make the code more graceful.
+> It's a NOOP since 2.6.35 and it will be removed one day.
 > 
-> Do the code change with "s/chip->ecc\./ecc->/g" in the nand_scan_tail,
-> and also change some lines by hand.
-> 
-> Signed-off-by: Huang Shijie <b32955@freescale.com>
+> Signed-off-by: Michael Opdenacker <michael.opdenacker@free-electrons.com>
 
-Pushed to l2-mtd.git.
+Pushed to l2-mtd.git. Thanks!
 
 Brian
