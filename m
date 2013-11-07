@@ -1,25 +1,15 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VeUcl-0007qa-K1
- for linux-mtd@lists.infradead.org; Thu, 07 Nov 2013 18:48:12 +0000
-Date: Thu, 7 Nov 2013 15:47:52 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Tanya Brokhman <tlinder@codeaurora.org>
-Subject: Re: [mtd] possible bug in nandsim
-Message-ID: <20131107184751.GB30917@localhost>
-References: <527B7CD1.1020105@codeaurora.org>
- <CAFLxGvx=8vcDzUcA6vG_84X8snYkDLBkyboQZmDTUdDgi3xccQ@mail.gmail.com>
- <20131107145848.GA32004@localhost>
- <527BD5C2.8050903@codeaurora.org>
+Date: Thu, 7 Nov 2013 13:12:29 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH bugfix] mtd: gpmi: serialize all the dma operations
+Message-ID: <20131107211229.GY20061@ld-irv-0074.broadcom.com>
+References: <1383728007-15564-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <527BD5C2.8050903@codeaurora.org>
-Cc: pratibha@codeaurora.org, Richard Weinberger <richard.weinberger@gmail.com>,
- dedekind@oktetlabs.ru, fastcat@gmail.com, dedekind@infradead.org,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+In-Reply-To: <1383728007-15564-1-git-send-email-b32955@freescale.com>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org, stable@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,33 +19,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 07, 2013 at 08:02:42PM +0200, Tanya Brokhman wrote:
-> Hello Ezequiel,
-> 
-> On 11/7/2013 4:58 PM, Ezequiel Garcia wrote:
-> > AFAIK Richard is right, the feature is just a non-persistent cache.
-> >
-> > However a patch was submitted (and never reviewed) recently to
-> > apparently add persistent behavior:
-> >
-> >    http://patchwork.ozlabs.org/patch/277974/
-> >
-> > Tanya: Can you test or review the patch and provide a formal
-> > Tested/Reviewed-by? I'd be interested in seeing that move forward :)
-> >
-> > Thanks!
-> >
-> 
-> This is exactly the behavior I need for my testing purposes! Thank you. 
+Hi Huang,
 
-You're welcome.
-
-> At the moment I have that with my (ugly) fix. I will try to validate 
-> your patch and help it get integrated.
+On Wed, Nov 06, 2013 at 04:53:27PM +0800, Huang Shijie wrote:
+> [1] The gpmi uses the nand_command_lp to issue the commands to NAND chips.
+>     It will issue a DMA operation when it handles a NAND_CMD_NONE control
+>     command. So when we read a page(NAND_CMD_READ0) from the NAND, we may send
+>     two DMA operations back-to-back.
 > 
+>     If we do not serialize the two DMA operations, we will meet a bug when
+> 
+>     1.1) we enable CONFIG_DMA_API_DEBUG, CONFIG_DMADEVICES_DEBUG,
+>          and CONFIG_DEBUG_SG.
+> 
+>     1.2) Use the following commands in an UART console and a SSH console:
+>          cmd 1: while true;do dd if=/dev/mtd0 of=/dev/null;done
+>          cmd 1: while true;do dd if=/dev/mmcblk0 of=/dev/null;done
 
-FWIW: it's not "my" patch.
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+How does mmcblk0 have anything to do with the GPMI NAND DMA?
+
+>     The kernel log shows below:
+>     -----------------------------------------------------------------
+>     kernel BUG at lib/scatterlist.c:28!
+>     Unable to handle kernel NULL pointer dereference at virtual address 00000000
+>       .........................
+>     [<80044a0c>] (__bug+0x18/0x24) from [<80249b74>] (sg_next+0x48/0x4c)
+>     [<80249b74>] (sg_next+0x48/0x4c) from [<80255398>] (debug_dma_unmap_sg+0x170/0x1a4)
+>     [<80255398>] (debug_dma_unmap_sg+0x170/0x1a4) from [<8004af58>] (dma_unmap_sg+0x14/0x6c)
+>     [<8004af58>] (dma_unmap_sg+0x14/0x6c) from [<8027e594>] (mxs_dma_tasklet+0x18/0x1c)
+>     [<8027e594>] (mxs_dma_tasklet+0x18/0x1c) from [<8007d444>] (tasklet_action+0x114/0x164)
+>     -----------------------------------------------------------------
+> 
+>     1.3) Assume the two DMA operations is X (first) and Y (second).
+>          The root cause of the bug:
+>          X's tasklet mxs_dma_tasklet trid to unmap the scatterlist, while Y is
+>          trying to set up a new DMA operation with the _SAME_ scatterlist in
+>          another ARM core.
+
+How are X and Y occurring concurrently? MTD/NAND has locking such that
+only one I/O operation is working on the chip at one time, right?
+
+> [2] This patch adds a wait queue and two helpers gpmi_enter_dma/gpmi_exit_dma to
+>     serialize all the DMA operations.
+
+If you really need this serialization, wouldn't a spinlock or mutex
+suffice?
+
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
+> Cc: stable@vger.kernel.org
+
+Perhaps I'm missing some things, but I don't feel like the problem is
+sufficiently well described, and I'm not sure this is the right
+solution. But please, educate me.
+
+Brian
