@@ -1,18 +1,19 @@
-Message-ID: <527B718B.7060806@atmel.com>
-Date: Thu, 7 Nov 2013 11:55:07 +0100
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
-MIME-Version: 1.0
-To: Josh Wu <josh.wu@atmel.com>, Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] mtd: atmel_nand: fix bug driver will in a dead lock if
- no nand detected
-References: <1383645547-21813-1-git-send-email-josh.wu@atmel.com>
- <20131107083932.GJ3805@norris.computersforpeace.net>
- <527B6ADF.1090201@atmel.com>
-In-Reply-To: <527B6ADF.1090201@atmel.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Received: from mga02.intel.com ([134.134.136.20])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VeNOq-0004Ko-LP
+ for linux-mtd@lists.infradead.org; Thu, 07 Nov 2013 11:05:21 +0000
+Message-ID: <1383822296.2722.186.camel@sauron.fi.intel.com>
+Subject: Re: Bad blocks while attaching UBIFS
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Fernando Silveira <fsilveira@gmail.com>
+Date: Thu, 07 Nov 2013 13:04:56 +0200
+In-Reply-To: <CAGZNvdqt=1K4cd4xLu+2k9KpUa5U_Hu0w1xi_aCwOn7pXiRVBg@mail.gmail.com>
+References: <CAGZNvdqt=1K4cd4xLu+2k9KpUa5U_Hu0w1xi_aCwOn7pXiRVBg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: plagnioj@jcrosoft.com, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, dedekind1@gmail.com
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,82 +23,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 07/11/2013 11:26, Josh Wu :
-> Hi, Brian
->
-> On 11/7/2013 4:39 PM, Brian Norris wrote:
->> Hi Josh,
->>
->> On Tue, Nov 05, 2013 at 05:59:07PM +0800, Josh Wu wrote:
->>> In the atmel driver probe function, the code shows like following:
->>>     atmel_nand_probe(...) {
->>>           ...
->>>
->>>     err_nand_ioremap:
->>>           platform_driver_unregister(&atmel_nand_nfc_driver);
->>>           return res;
->>>     }
->>>
->>> If no nand flash detected, the driver probe function will goto
->>> err_nand_ioremap label.
->>> Then platform_driver_unregister() will be called. It will get the
->>> lock of atmel_nand device since it is parent of nfc_device. The
->>> problem is the lock is already hold by atmel_nand_probe itself.
->>> So system will be in a dead lock.
->>>
->>> This patch just simply removed to platform_driver_unregister() call.
->>> When atmel_nand driver is quit the platform_driver_unregister() will
->>> be called in atmel_nand_remove().
->> The real key, here, is that the platform-driver probe() has no business
->> un-registering another driver, right?
->
-> right.
->
->> Shouldn't both drivers just be
->> registered/unregistered in the module init/exit, and not in probe()?
->
-> currently the NFC driver is registered in the beginning of nand probe
-> function. After NFC driver is initialized, the rest of the nand probe
-> function
-> will check the NFC driver status.
-> I am not sure it is proper to registered another driver in a probe().
->
->>
->> Also, should this be marked for -stable?
->
-> Shouldn't cc to stable after the patch is merged in mtd mail list?
+On Wed, 2013-11-06 at 13:35 -0200, Fernando Silveira wrote:
+> Hi,
+> 
+> I'm using an yet unreleased NAND flash controller with my own MTD
+> driver and everything is working perfectly except for one thing: after
+> a few weeks UBIFS begins to throw some error messages while attaching
+> and a few days later it just doesn't attach anymore. I know bad blocks
+> are supposed to appear after rewriting lots of data but it seems to me
+> that UBIFS is not marking the "attach" blocks as bad nor wear leveling
+> the "attach/info" sector. The error message follows below:
+> 
+> UBI: attaching mtd3 to ubi0
+> UBI: physical eraseblock size:   2097152 bytes (2048 KiB)
+> UBI: logical eraseblock size:    2080768 bytes
+> UBI: smallest flash I/O unit:    8192
+> UBI: VID header offset:          8192 (aligned 8192)
+> UBI: data offset:                16384
+> [my mtd driver printing error messages while trying to read a block]
+> UBI error: ubi_io_read: error -5 while reading 64 bytes from PEB
+> 3394:0, read 0 bytes
+> 
+> Note that once a UBIFS file system starts to fail, that PEB indicated
+> in the "ubi_io_read" error seems to never change. I'll take a closer
+> look at this detail if I see more errors.
+> 
+> My questions are:
+> 
+>   1. Does UBIFS mark a bad block when it is failing to attach?
 
-Whether you add a Cc: tag in your signature location or you send another 
-patch to the stable mailing list *but* only when the patch is accepted 
-in Linus' git tree.
+UBI marks eraseblocks as bad when it cannot write or erase. And blocks
+are not marked a s bad right away. Instead, they are first "tortured",
+and if the torture test fails, then the eraseblock is marked as bad.
 
-You can find the information in
-Documentation/stable_kernel_rules.txt
+>   2. If yes, what might be wrong with my driver?
 
-Bye,
-
->>> Signed-off-by: Josh Wu <josh.wu@atmel.com>
->>> ---
->>>    drivers/mtd/nand/atmel_nand.c |    1 -
->>>    1 file changed, 1 deletion(-)
->>>
->>> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
->>> index ef9c9f5..469d4e2 100644
->>> --- a/drivers/mtd/nand/atmel_nand.c
->>> +++ b/drivers/mtd/nand/atmel_nand.c
->>> @@ -2142,7 +2142,6 @@ err_no_card:
->>>    	if (host->dma_chan)
->>>    		dma_release_channel(host->dma_chan);
->>>    err_nand_ioremap:
->>> -	platform_driver_unregister(&atmel_nand_nfc_driver);
->>>    	return res;
->>>    }
->>>
->> Brian
->
->
->
-
+Does it handle short reads properly? Please, run mtd tests to validate
+your driver.
 
 -- 
-Nicolas Ferre
+Best Regards,
+Artem Bityutskiy
