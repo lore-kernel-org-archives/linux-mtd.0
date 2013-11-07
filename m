@@ -1,20 +1,42 @@
-Received: from tx2ehsobe001.messaging.microsoft.com ([65.55.88.11]
- helo=tx2outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VeFY9-0001mP-RD
- for linux-mtd@lists.infradead.org; Thu, 07 Nov 2013 02:42:26 +0000
-Message-ID: <527AFEB6.20004@freescale.com>
-Date: Thu, 7 Nov 2013 10:45:10 +0800
-From: Huang Shijie <b32955@freescale.com>
+Message-ID: <527B009C.4060905@asianux.com>
+Date: Thu, 07 Nov 2013 10:53:16 +0800
+From: Chen Gang <gang.chen@asianux.com>
 MIME-Version: 1.0
-To: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH 1/2] mtd: gpmi: Revert "mtd: gpmi: scan two nand chips"
-References: <1383758172-29798-1-git-send-email-festevam@gmail.com>
-In-Reply-To: <1383758172-29798-1-git-send-email-festevam@gmail.com>
-Content-Type: text/plain; charset="GB2312"
-Content-Transfer-Encoding: quoted-printable
-Cc: marex@denx.de, linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, Fabio Estevam <fabio.estevam@freescale.com>
+To: David Howells <dhowells@redhat.com>
+Subject: Re: [PATCH trivial] include: uapi: standard all files' macro prefix
+ and suffix, excluding "linux/" sub-directory
+References: <52786742.1080509@asianux.com> <51FB6216.6010008@asianux.com>
+ <11907.1383602624@warthog.procyon.org.uk>
+ <13981.1383649896@warthog.procyon.org.uk> <5278DEF8.2030101@asianux.com>
+In-Reply-To: <5278DEF8.2030101@asianux.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: xen-devel@lists.xensource.com, jeremy@goop.org, airlied@linux.ie,
+ daniel.vetter@ffwll.ch, alsa-devel@alsa-project.org,
+ dri-devel@lists.freedesktop.org, perex@perex.cz, thierry.reding@gmail.com,
+ linux-mtd@lists.infradead.org, sean.hefty@intel.com,
+ virtualization@lists.linux-foundation.org,
+ Linux-Arch <linux-arch@vger.kernel.org>,
+ "kgene.kim@samsung.com" <kgene.kim@samsung.com>, tbergstrom@nvidia.com,
+ jy0922.shim@samsung.com, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+ roland@purestorage.com, Takashi Iwai <tiwai@suse.de>,
+ Tomi Valkeinen <tomi.valkeinen@ti.com>, mtk.manpages@gmail.com,
+ fcoe-devel@open-fcoe.org, Paul McKenney <paulmck@linux.vnet.ibm.com>,
+ "plagnioj@jcrosoft.com" <plagnioj@jcrosoft.com>, Arnd Bergmann <arnd@arndb.de>,
+ swarren@wwwdotorg.org, intel-gfx@lists.freedesktop.org, inki.dae@samsung.com,
+ "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>,
+ Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+ linux-tegra@vger.kernel.org, davej@redhat.com,
+ Thomas Gleixner <tglx@linutronix.de>, robert.w.love@intel.com,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ 'Jiri Kosina' <trivial@kernel.org>, dedekind1@gmail.com,
+ sw0312.kim@samsung.com,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ JBottomley@parallels.com,
+ "kyungmin.park@samsung.com" <kyungmin.park@samsung.com>,
+ "Eric W. Biederman" <ebiederm@xmission.com>,
+ Andrew Morton <akpm@linux-foundation.org>, dwmw2@infradead.org,
+ David Miller <davem@davemloft.net>, shanim@mellanox.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,39 +46,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=D3=DA 2013=C4=EA11=D4=C207=C8=D5 01:16, Fabio Estevam =D0=B4=B5=C0:
-> From: Fabio Estevam <fabio.estevam@freescale.com>
->
-> This revert is needed so that the revert of commit f720e7ce5=20
-> ("mtd: gpmi: remove the nand_scan()") can be succesfully applied.
->
-> This reverts commit cdef39de399fc6806f85c60ef97c9e394b3a92d4.
->
-> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
-> ---
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/=
-gpmi-nand/gpmi-nand.c
-> index 7ac2280..a5c60c4 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> @@ -1674,7 +1674,7 @@ static int gpmi_nfc_init(struct gpmi_nand_data *t=
-his)
->  	if (ret)
->  		goto err_out;
-> =20
-> -	ret =3D nand_scan_ident(mtd, 2, NULL);
-> +	ret =3D nand_scan_ident(mtd, 1, NULL);
->  	if (ret)
->  		goto err_out;
-> =20
-Please do not revert the patches.
+On 11/05/2013 08:05 PM, Chen Gang wrote:
+> On 11/05/2013 07:11 PM, David Howells wrote:
+>> Chen Gang <gang.chen@asianux.com> wrote:
+>>
+>>>> Userspace sometimes depends on the name in the guard macro:-/
+>>>
+>>> "the guard macro" is only for prevent itself from being included by
+>>> multiple times (an id used by itself -- like a handle), it is not an id
+>>> to let other files know about it (it is not a normal using way).
+>>
+>> Whilst that *should* be true, it isn't actually true.  See:
+>>
+>> 	grep -r _LINUX_.*_H /usr/include/ | grep -v ^/usr/include/linux/
+>>
+>> for example.  Also who knows what all those autoconf scripts out there look
+>> for?
+>>
+> 
+> Oh... the real world is really not quite perfect. :-/
+> 
+> 
+>> However, thinking about it some more, you're probably safe with respect to
+>> userspace as scripts/headers_install.h strips off the _UAPI prefix on the
+>> guard macros - just as long as you don't change the rest of the macro name.
+>>
+> 
 
-It's not the right way to fix this.
-I will spend some time to this bug today.
+I will preparing the patch for it, it will cover "include/uapi/*" and
+"arch/*/include/uapi/*", the patch will only add "_UAPI" for the guard
+macros which miss it.
 
-thanks
+Welcome any additional suggestions and completions.
 
-Huang Shijie
+Thanks.
+
+> In honest, I really did not think more about it.
+> 
+> Only adding _UAPI (not touch others) can completely fix one style issue:
+> separate "uapi/*" from other sub-directories in "include/*"
+> 
+> So for me, we can continue improve this patch: add "_UAPI" for all guard
+> macro under "include/uapi/*" (also include "include/uapi/linux").
+> 
+> 
+> Thanks.
+> 
+
+
+-- 
+Chen Gang
