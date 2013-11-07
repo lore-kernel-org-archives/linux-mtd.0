@@ -1,24 +1,22 @@
-Date: Thu, 7 Nov 2013 12:54:08 -0500
-From: Jason Cooper <jason@lakedaemon.net>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH v4 05/31] mtd: nand: pxa3xx: devicetree binding update
-Message-ID: <20131107175408.GL8308@titan.lakedaemon.net>
-References: <1383837455-30721-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1383837455-30721-6-git-send-email-ezequiel.garcia@free-electrons.com>
- <20131107153210.GK8308@titan.lakedaemon.net>
- <20131107164132.GA30917@localhost>
+Received: from smtp.codeaurora.org ([198.145.11.231])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VeTvB-0006vk-SG
+ for linux-mtd@lists.infradead.org; Thu, 07 Nov 2013 18:03:10 +0000
+Message-ID: <527BD5C2.8050903@codeaurora.org>
+Date: Thu, 07 Nov 2013 20:02:42 +0200
+From: Tanya Brokhman <tlinder@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20131107164132.GA30917@localhost>
-Cc: Lior Amsalem <alior@marvell.com>, devicetree@vger.kernel.org,
- Tawfik Bayouk <tawfik@marvell.com>, Willy Tarreau <w@1wt.eu>,
- Huang Shijie <b32955@freescale.com>, Daniel Mack <zonque@gmail.com>,
- linux-mtd@lists.infradead.org,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- linux-arm-kernel@lists.infradead.org
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [mtd] possible bug in nandsim
+References: <527B7CD1.1020105@codeaurora.org>
+ <CAFLxGvx=8vcDzUcA6vG_84X8snYkDLBkyboQZmDTUdDgi3xccQ@mail.gmail.com>
+ <20131107145848.GA32004@localhost>
+In-Reply-To: <20131107145848.GA32004@localhost>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: pratibha@codeaurora.org, Richard Weinberger <richard.weinberger@gmail.com>,
+ dedekind@oktetlabs.ru, fastcat@gmail.com, dedekind@infradead.org,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,33 +26,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 07, 2013 at 01:41:33PM -0300, Ezequiel Garcia wrote:
-> On Thu, Nov 07, 2013 at 10:32:10AM -0500, Jason Cooper wrote:
-> > On Thu, Nov 07, 2013 at 12:17:09PM -0300, Ezequiel Garcia wrote:
-> > > Since the driver supports the new compatible string, the binding
-> > > documentation must be updated to reflect it.
-> > > 
-> > > Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> > > ---
-> > >  Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt | 4 +++-
-> > >  1 file changed, 3 insertions(+), 1 deletion(-)
-> > 
-> > Thanks for adding this, but please remember to update the Subject
-> > string in the future.  Both this patch and the next one are changing the
-> > Documentation/ portion of the tree, not drivers/.
-> > 
-> 
-> Come again?
-> 
-> You mean "[PATCH] Documentation: mtd: nand: Do this"
-> 
-> In that case: sorry, I do it differently on purpose, it looks better
-> to me (focus the affected driver), but maybe I'm wrong.
+Hello Ezequiel,
 
-but it makes it more difficult for devicetree binding reviewers to find
-the patch in the series.  Perhaps having 'binding' in the Subject is
-sufficient.  We'll see how things unfold over the next few days.
+On 11/7/2013 4:58 PM, Ezequiel Garcia wrote:
+> AFAIK Richard is right, the feature is just a non-persistent cache.
+>
+> However a patch was submitted (and never reviewed) recently to
+> apparently add persistent behavior:
+>
+>    http://patchwork.ozlabs.org/patch/277974/
+>
+> Tanya: Can you test or review the patch and provide a formal
+> Tested/Reviewed-by? I'd be interested in seeing that move forward :)
+>
+> Thanks!
+>
 
-thx,
+This is exactly the behavior I need for my testing purposes! Thank you. 
+At the moment I have that with my (ugly) fix. I will try to validate 
+your patch and help it get integrated.
 
-Jason.
+-- 
+QUALCOMM ISRAEL, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
