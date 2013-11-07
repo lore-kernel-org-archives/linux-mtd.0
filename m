@@ -1,24 +1,20 @@
-Date: Thu, 7 Nov 2013 20:45:00 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 26/31] mtd: nand: pxa3xx: Introduce multiple page I/O
- support
-Message-ID: <20131107234459.GB2467@localhost>
-References: <1383837455-30721-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1383837455-30721-27-git-send-email-ezequiel.garcia@free-electrons.com>
+Received: from mail.mymeteor.ie ([212.129.64.9])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VeZN0-0006Bj-T9
+ for linux-mtd@lists.infradead.org; Thu, 07 Nov 2013 23:52:17 +0000
+Date: Thu, 7 Nov 2013 23:51:49 +0000 (added by postmaster@mail.mymeteor.ie)
+Message-ID: <524ECDA3004D019C@mail.mymeteor.ie> (added by
+ postmaster@mail.mymeteor.ie)
+From: cbaker@mytocn.com
+Subject: =?koi8-r?B?88/X08XL0sXUztnFIOnOxs/UxcjOz8zPx8nJINPQxcPT?=
+ =?koi8-r?B?zNXWwg==?=
+To: <linux-mtd@lists.infradead.org>, <mir@n-m.ru>, <mail@gosacad.karelia.ru>,
+ <guomeihao@163.com>, <accountably@sibtel.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1383837455-30721-27-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: Lior Amsalem <alior@marvell.com>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>,
- Daniel Mack <zonque@gmail.com>, Huang Shijie <b32955@freescale.com>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>, Willy Tarreau <w@1wt.eu>
+Content-Type: text/plain;
+	charset="koi8-r";
+Content-Transfer-Encoding: base64
+Reply-To: cbaker@mytocn.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,83 +24,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
-
-I have a concern about the ECC mode and strength determination.
-
-On Thu, Nov 07, 2013 at 12:17:30PM -0300, Ezequiel Garcia wrote:
-[..]
-> @@ -1152,7 +1289,28 @@ static int armada370_ecc_init(struct pxa3xx_nand_info *info,
->  			      struct nand_ecc_ctrl *ecc,
->  			      int strength, int page_size)
->  {
-> -	/* Unimplemented yet */
-> +	if (strength == 4 && page_size == 4096) {
-> +		info->ecc_bch = 1;
-> +		info->chunk_size = 2048;
-> +		info->spare_size = 32;
-> +		info->ecc_size = 32;
-> +		ecc->mode = NAND_ECC_HW;
-> +		ecc->size = info->chunk_size;
-> +		ecc->layout = &ecc_layout_4KB_bch4bit;
-> +		ecc->strength = 16;
-> +		return 1;
-> +
-> +	} else if (strength == 8 && page_size == 4096) {
-> +		info->ecc_bch = 1;
-> +		info->chunk_size = 1024;
-> +		info->spare_size = 0;
-> +		info->ecc_size = 32;
-> +		ecc->mode = NAND_ECC_HW;
-> +		ecc->size = info->chunk_size;
-> +		ecc->layout = &ecc_layout_4KB_bch8bit;
-> +		ecc->strength = 16;
-> +		return 1;
-> +	}
->  	return 0;
->  }
->  
-
-The above shows I tried to be very careful (aka paranoid) in the ECC
-mode determination. Please note that what I call "ECC mode", is
-determined by the chunk->size value only.
-
-As the included documentation explains this controller supports two
-different BCH ECC strength: 16-over-1024, or 16-over-2048. Setting the chunk
-size to either 1024 or 2048 is what determines which of the above will
-actually take effect.
-
-In past mails, we've refered to these two as BCH4 or BCH8, but this is not
-really accurate (as Brian has pointed out) so I droped that terms in
-favor of the real thing: 16 correctable bits over 1024 data bytes, or
-16 correctable bits over 2048 data bytes.
-
-In turn, such BCH mode setting affects heavily the page layout, because
-after each transfered chunk (which is either 1024+spare or 2048+spare)
-the controller reads and writes a 30B ECC region.
-
-In other words, the kernel cannot arbitrarily change this setting, or
-the image won't be readable/writeable any longer.
-
-For this reason, I'm starting to think the above method of picking
-the "ECC mode" based solely on the page size or the strength is slightly
-fragile (future developers might come and "improve" the driver breaking
-images).
-
-Besides: what if a user wants the kernel to use a "higher" than
-required strength?
-
-In conclusion: I'm starting to think a better (and long-term safer)
-approach is to set the ECC mode in the DT. I know this sucks, but from
-my point of view the flash device contains an image that "must" be
-read/write with a given ECC mode, and this ECC mode is by no means
-discoverable.
-
-Now, let's suppose we want to set this in the DT: what property
-would we use? "marvell,nand-ecc-opt = 16-2048"? (a bit odd, no?).
-
-What do you think?
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+79PV3cXT1NfJ1NggzMneztXAINDSwcvUycvVINDP0sHazs/PwtLB2s7FxSwg0M/E2sHO0dTY09Eg
+1dfMxcvB1MXM2M7ZzSDExczPzS4g98nExc/L1dLTIMTM0SDOz9fFztjLycgg1MHLINbFINDSz8TX
+yc7V1NnILiDQ0s/K1Mkgwc7HzMnK08vJyiDR2tnLINTF0MXS2CDMwMLPzdUgzsXTzM/Wzs8gLiDw
+z9TSxcLM0cDU09Eg2sHTxcvSxd7Fzs7ZxSDcy9PQ0sXT0y3NxdTPxNkuIO/Czs/XydTYIMvS1ccg
+z8Ldxc7J0S4g98XMycvPzMXQzsXK28HRIM/Sx8HOydrBw8nRINDPxMHeySDP18zBxMXXwcXNz8fP
+INXexcLOz8fPIM3B1MXSycHMwSAtIMPFzNggzsEgydTPxy4g98XCOiBodHRwOi8vZ29vLmdsLzVs
+ZmgzNiAuDQo=
