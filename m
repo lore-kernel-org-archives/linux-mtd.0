@@ -1,18 +1,19 @@
-Message-ID: <527B6ADF.1090201@atmel.com>
-Date: Thu, 7 Nov 2013 18:26:39 +0800
-From: Josh Wu <josh.wu@atmel.com>
+Received: from tx2ehsobe001.messaging.microsoft.com ([65.55.88.11]
+ helo=tx2outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VeMpR-0003SJ-S3
+ for linux-mtd@lists.infradead.org; Thu, 07 Nov 2013 10:28:46 +0000
+From: Huang Shijie <b32955@freescale.com>
+To: <dwmw2@infradead.org>
+Subject: [PATCH v3] mtd: gpmi: add a new DT property to use the datasheet's
+ minimum required ECC
+Date: Thu, 7 Nov 2013 18:07:38 +0800
+Message-ID: <1383818858-5410-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] mtd: atmel_nand: fix bug driver will in a dead lock if
- no nand detected
-References: <1383645547-21813-1-git-send-email-josh.wu@atmel.com>
- <20131107083932.GJ3805@norris.computersforpeace.net>
-In-Reply-To: <20131107083932.GJ3805@norris.computersforpeace.net>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: nicolas.ferre@atmel.com, plagnioj@jcrosoft.com,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- dedekind1@gmail.com
+Content-Type: text/plain
+Cc: devicetree@vger.kernel.org, dedekind1@gmail.com, t.figa@samsung.com,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ computersforpeace@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,69 +23,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Brian
+In default way, we use the ecc_strength/ecc_step size calculated by ourselves
+and use all the OOB area.
 
-On 11/7/2013 4:39 PM, Brian Norris wrote:
-> Hi Josh,
->
-> On Tue, Nov 05, 2013 at 05:59:07PM +0800, Josh Wu wrote:
->> In the atmel driver probe function, the code shows like following:
->>    atmel_nand_probe(...) {
->>          ...
->>
->>    err_nand_ioremap:
->>          platform_driver_unregister(&atmel_nand_nfc_driver);
->>          return res;
->>    }
->>
->> If no nand flash detected, the driver probe function will goto
->> err_nand_ioremap label.
->> Then platform_driver_unregister() will be called. It will get the
->> lock of atmel_nand device since it is parent of nfc_device. The
->> problem is the lock is already hold by atmel_nand_probe itself.
->> So system will be in a dead lock.
->>
->> This patch just simply removed to platform_driver_unregister() call.
->> When atmel_nand driver is quit the platform_driver_unregister() will
->> be called in atmel_nand_remove().
-> The real key, here, is that the platform-driver probe() has no business
-> un-registering another driver, right?
+This patch adds a new property : "fsl,use-minimum-ecc"
 
-right.
+If we enable it, we will firstly try to use the datasheet's minimum required
+ECC provided by the MTD layer (the ecc_strength_ds/ecc_step_ds fields
+in the nand_chip{}). So we may have free space in the OOB area by using the
+minimum ECC, and we may support JFFS2 with some SLC NANDs, such as Micron's
+SLC NAND.
 
-> Shouldn't both drivers just be
-> registered/unregistered in the module init/exit, and not in probe()?
+If we fail to use the minimum ECC, we will use the legacy method to calculate
+the ecc_strength and ecc_step size.
 
-currently the NFC driver is registered in the beginning of nand probe 
-function. After NFC driver is initialized, the rest of the nand probe 
-function
-will check the NFC driver status.
-I am not sure it is proper to registered another driver in a probe().
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+---
+v1 -- > v2: rebase this patch on the latest l2-mtd.
+v2 -- > v3: change the descriptions.
+---
+ .../devicetree/bindings/mtd/gpmi-nand.txt          |    8 ++++++++
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c             |    3 +++
+ 2 files changed, 11 insertions(+), 0 deletions(-)
 
->
-> Also, should this be marked for -stable?
-
-Shouldn't cc to stable after the patch is merged in mtd mail list?
-
-Best Regards,
-Josh Wu
-
->
->> Signed-off-by: Josh Wu <josh.wu@atmel.com>
->> ---
->>   drivers/mtd/nand/atmel_nand.c |    1 -
->>   1 file changed, 1 deletion(-)
->>
->> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
->> index ef9c9f5..469d4e2 100644
->> --- a/drivers/mtd/nand/atmel_nand.c
->> +++ b/drivers/mtd/nand/atmel_nand.c
->> @@ -2142,7 +2142,6 @@ err_no_card:
->>   	if (host->dma_chan)
->>   		dma_release_channel(host->dma_chan);
->>   err_nand_ioremap:
->> -	platform_driver_unregister(&atmel_nand_nfc_driver);
->>   	return res;
->>   }
->>   
-> Brian
+diff --git a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
+index 551b2a1..458d596 100644
+--- a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
+@@ -17,6 +17,14 @@ Required properties:
+ Optional properties:
+   - nand-on-flash-bbt: boolean to enable on flash bbt option if not
+                        present false
++  - fsl,use-minimum-ecc: Protect this NAND flash with the minimum ECC
++                       strength required. The required ECC strength is
++                       automatically discoverable for some flash
++                       (e.g., according to the ONFI standard).
++                       However, note that if this strength is not
++                       discoverable or this property is not enabled,
++                       the software may chooses an implementation-defined
++                       ECC scheme.
+ 
+ The device tree may optionally contain sub-nodes describing partitions of the
+ address space. See partition.txt for more detail.
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 8f4e5b1..b849b92 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -353,6 +353,9 @@ static int legacy_set_geometry(struct gpmi_nand_data *this)
+ 
+ int common_nfc_set_geometry(struct gpmi_nand_data *this)
+ {
++	if (of_property_read_bool(this->dev->of_node, "fsl,use-minimum-ecc")
++		&& set_geometry_by_ecc_info(this))
++		return 0;
+ 	return legacy_set_geometry(this);
+ }
+ 
+-- 
+1.7.2.rc3
