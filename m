@@ -1,15 +1,15 @@
-Received: from mail-ve0-x22a.google.com ([2607:f8b0:400c:c01::22a])
+Received: from mail-ve0-x233.google.com ([2607:f8b0:400c:c01::233])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VePK4-0006dE-Qv
- for linux-mtd@lists.infradead.org; Thu, 07 Nov 2013 13:08:33 +0000
-Received: by mail-ve0-f170.google.com with SMTP id oy12so354050veb.1
- for <linux-mtd@lists.infradead.org>; Thu, 07 Nov 2013 05:08:10 -0800 (PST)
+ id 1VePXf-0006wK-4c
+ for linux-mtd@lists.infradead.org; Thu, 07 Nov 2013 13:22:36 +0000
+Received: by mail-ve0-f179.google.com with SMTP id cz12so375859veb.10
+ for <linux-mtd@lists.infradead.org>; Thu, 07 Nov 2013 05:22:12 -0800 (PST)
 MIME-Version: 1.0
 In-Reply-To: <1383817597-31992-2-git-send-email-b32955@freescale.com>
 References: <1383817597-31992-1-git-send-email-b32955@freescale.com>
  <1383817597-31992-2-git-send-email-b32955@freescale.com>
-Date: Thu, 7 Nov 2013 11:08:10 -0200
-Message-ID: <CAOMZO5Beu+B0U8rie5YVFa64kvNPj0oAjgV=pEEEy1u95Uwyxg@mail.gmail.com>
+Date: Thu, 7 Nov 2013 11:22:12 -0200
+Message-ID: <CAOMZO5AohNc7Z41AApMHugsApQxS3J+1jUZyFrjjAJ8PXuB_aQ@mail.gmail.com>
 Subject: Re: [PATCH 2/2] mtd: gpmi: only scan two chips for imx6
 From: Fabio Estevam <festevam@gmail.com>
 To: Huang Shijie <b32955@freescale.com>
@@ -32,12 +32,11 @@ On Thu, Nov 7, 2013 at 7:46 AM, Huang Shijie <b32955@freescale.com> wrote:
 >   imx28: we do not set the pinctrl for Ready-Busy1
 >
 > So we only scan two chips for imx6.
->
-> Signed-off-by: Huang Shijie <b32955@freescale.com>
 
-You missed to Cc stable on this one.
-
-If only 1/2 gets into stable we still see the crash.
+What happens if Ready-Busy1 line is not connected on some mx6 board?
+You cannot assume that all boards
+have this line connected and configured in pinctrl just like you
+mentioned for mx23 and mx28.
 
 Regards,
 
