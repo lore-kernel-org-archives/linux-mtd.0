@@ -1,42 +1,30 @@
-Message-ID: <527B009C.4060905@asianux.com>
-Date: Thu, 07 Nov 2013 10:53:16 +0800
-From: Chen Gang <gang.chen@asianux.com>
+Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VeJrS-0007U2-U8
+ for linux-mtd@lists.infradead.org; Thu, 07 Nov 2013 07:18:42 +0000
+Received: by mail-pa0-f41.google.com with SMTP id rd3so197556pab.14
+ for <linux-mtd@lists.infradead.org>; Wed, 06 Nov 2013 23:18:17 -0800 (PST)
+Date: Wed, 6 Nov 2013 23:18:07 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH -next] mtd: nand: omap: fix error return code in
+ omap_nand_probe()
+Message-ID: <20131107071807.GA3805@norris.computersforpeace.net>
+References: <CAPgLHd8V06KzBcPmFywSfNxM0q6=s86xn-AdLKeY9h5JZ_nP7g@mail.gmail.com>
+ <001101ced6a8$a18a2c80$e49e8580$%han@samsung.com>
+ <CAN8TOE9Eac0LDA+Ke_OCPc_AQGnyYB806pO8JP-qOB1Dr8N2pg@mail.gmail.com>
+ <20131105224526.GA11759@localhost>
 MIME-Version: 1.0
-To: David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH trivial] include: uapi: standard all files' macro prefix
- and suffix, excluding "linux/" sub-directory
-References: <52786742.1080509@asianux.com> <51FB6216.6010008@asianux.com>
- <11907.1383602624@warthog.procyon.org.uk>
- <13981.1383649896@warthog.procyon.org.uk> <5278DEF8.2030101@asianux.com>
-In-Reply-To: <5278DEF8.2030101@asianux.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: xen-devel@lists.xensource.com, jeremy@goop.org, airlied@linux.ie,
- daniel.vetter@ffwll.ch, alsa-devel@alsa-project.org,
- dri-devel@lists.freedesktop.org, perex@perex.cz, thierry.reding@gmail.com,
- linux-mtd@lists.infradead.org, sean.hefty@intel.com,
- virtualization@lists.linux-foundation.org,
- Linux-Arch <linux-arch@vger.kernel.org>,
- "kgene.kim@samsung.com" <kgene.kim@samsung.com>, tbergstrom@nvidia.com,
- jy0922.shim@samsung.com, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
- roland@purestorage.com, Takashi Iwai <tiwai@suse.de>,
- Tomi Valkeinen <tomi.valkeinen@ti.com>, mtk.manpages@gmail.com,
- fcoe-devel@open-fcoe.org, Paul McKenney <paulmck@linux.vnet.ibm.com>,
- "plagnioj@jcrosoft.com" <plagnioj@jcrosoft.com>, Arnd Bergmann <arnd@arndb.de>,
- swarren@wwwdotorg.org, intel-gfx@lists.freedesktop.org, inki.dae@samsung.com,
- "linux-samsung-soc@vger.kernel.org" <linux-samsung-soc@vger.kernel.org>,
- Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
- linux-tegra@vger.kernel.org, davej@redhat.com,
- Thomas Gleixner <tglx@linutronix.de>, robert.w.love@intel.com,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- 'Jiri Kosina' <trivial@kernel.org>, dedekind1@gmail.com,
- sw0312.kim@samsung.com,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- JBottomley@parallels.com,
- "kyungmin.park@samsung.com" <kyungmin.park@samsung.com>,
- "Eric W. Biederman" <ebiederm@xmission.com>,
- Andrew Morton <akpm@linux-foundation.org>, dwmw2@infradead.org,
- David Miller <davem@davemloft.net>, shanim@mellanox.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20131105224526.GA11759@localhost>
+Cc: Wei Yongjun <weiyj.lk@gmail.com>, "tony@atomide.com" <tony@atomide.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Jingoo Han <jg1.han@samsung.com>, Linux Kernel <linux-kernel@vger.kernel.org>,
+ Daniel Mack <zonque@gmail.com>, yongjun_wei@trendmicro.com.cn,
+ avinashphilip@ti.com, "Gupta, Pekon" <pekon@ti.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -46,53 +34,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/05/2013 08:05 PM, Chen Gang wrote:
-> On 11/05/2013 07:11 PM, David Howells wrote:
->> Chen Gang <gang.chen@asianux.com> wrote:
->>
->>>> Userspace sometimes depends on the name in the guard macro:-/
->>>
->>> "the guard macro" is only for prevent itself from being included by
->>> multiple times (an id used by itself -- like a handle), it is not an id
->>> to let other files know about it (it is not a normal using way).
->>
->> Whilst that *should* be true, it isn't actually true.  See:
->>
->> 	grep -r _LINUX_.*_H /usr/include/ | grep -v ^/usr/include/linux/
->>
->> for example.  Also who knows what all those autoconf scripts out there look
->> for?
->>
+On Tue, Nov 05, 2013 at 07:45:27PM -0300, Ezequiel Garcia wrote:
+> On Tue, Nov 05, 2013 at 01:59:25PM -0800, Brian Norris wrote:
+> > On Thu, Oct 31, 2013 at 7:18 PM, Jingoo Han <jg1.han@samsung.com> wrote:
+> > > On Friday, November 01, 2013 9:16 AM, Wei Yongjun wrote:
+> > >>
+> > >> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+> > >>
+> > >> Fix to return a negative error code from the error handling
+> > >> case instead of 0, as done elsewhere in this function.
+> > >
+> > > Commit message is right? :-(
+> > 
+> > It sounds OK by my reading. Unless you're having trouble parsing what
+> > "as done elsewhere in this function" is being applied to. (IOW, is the
+> > rest of the function returning a negative error code on the error
+> > paths, or is it returning 0? Of course the answer is the former, but
+> > it's possible to misread it.) If it helps, I can try to tweak the
+> > wording a bit when applying this patch.
+> > 
+> > Pekon, can I get an Acked-by?
+> > 
 > 
-> Oh... the real world is really not quite perfect. :-/
-> 
-> 
->> However, thinking about it some more, you're probably safe with respect to
->> userspace as scripts/headers_install.h strips off the _UAPI prefix on the
->> guard macros - just as long as you don't change the rest of the macro name.
->>
-> 
+> I guess you'd prefer Pekon's ack than mine, but anyway:
 
-I will preparing the patch for it, it will cover "include/uapi/*" and
-"arch/*/include/uapi/*", the patch will only add "_UAPI" for the guard
-macros which miss it.
+Eh, this patch was pretty small anyway. But extra eyes are good.
 
-Welcome any additional suggestions and completions.
+> Acked-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 
 Thanks.
 
-> In honest, I really did not think more about it.
+> I'd like to point out this driver has other "mis-behaviors" in returning codes
+> in some other places.
 > 
-> Only adding _UAPI (not touch others) can completely fix one style issue:
-> separate "uapi/*" from other sub-directories in "include/*"
+> In particular, this pattern can be found repeatedly:
 > 
-> So for me, we can continue improve this patch: add "_UAPI" for all guard
-> macro under "include/uapi/*" (also include "include/uapi/linux").
+> 	if (do_something()) {
+> 		err = -ENXIO;
+> 		goto some_other_place;
+> 	}
 > 
+> Which should probably be:
 > 
-> Thanks.
-> 
+> 	err = do_something();
+> 	if (err)
+> 		goto some_other_place;
 
+Yeah, these could be made more consistent. If the callee is choosing
+good error codes, then we can just return them. But this is mostly
+cosmetic.
 
--- 
-Chen Gang
+> Wei: maybe you'd like to prepare some more patches?
+
+Brian
