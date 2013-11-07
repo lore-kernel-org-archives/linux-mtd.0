@@ -1,30 +1,37 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VeBjy-0005kA-U7
- for linux-mtd@lists.infradead.org; Wed, 06 Nov 2013 22:38:24 +0000
-Date: Wed, 6 Nov 2013 19:38:02 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [PATCH 0/1] Fix OMAP2 NAND ONFI device detection
-Message-ID: <20131106223801.GA20184@localhost>
-References: <1383126788-27426-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <20131030191414.GA16668@norris.computersforpeace.net>
- <20980858CB6D3A4BAE95CA194937D5E73EA2D41D@DBDE04.ent.ti.com>
- <20131030231956.GA2489@localhost>
- <20980858CB6D3A4BAE95CA194937D5E73EA31B19@DBDE04.ent.ti.com>
- <20131106211833.GB12624@localhost>
- <20980858CB6D3A4BAE95CA194937D5E73EA31BB3@DBDE04.ent.ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA31BB3@DBDE04.ent.ti.com>
-Cc: "marek.belisko@gmail.com" <marek.belisko@gmail.com>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Balbi,
- Felipe" <balbi@ti.com>
+Received: from e39.co.us.ibm.com ([32.97.110.160])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VeEdq-0000kW-0V
+ for linux-mtd@lists.infradead.org; Thu, 07 Nov 2013 01:44:15 +0000
+Received: from /spool/local
+ by e39.co.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
+ Violators will be prosecuted
+ for <linux-mtd@lists.infradead.org> from <cody@linux.vnet.ibm.com>;
+ Wed, 6 Nov 2013 18:43:51 -0700
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+ [9.17.195.227])
+ by d03dlp01.boulder.ibm.com (Postfix) with ESMTP id D04831FF001B
+ for <linux-mtd@lists.infradead.org>; Wed,  6 Nov 2013 18:43:32 -0700 (MST)
+Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
+ by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v10.0) with ESMTP id
+ rA71hlhq245812
+ for <linux-mtd@lists.infradead.org>; Wed, 6 Nov 2013 18:43:48 -0700
+Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
+ by d03av04.boulder.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
+ rA71hklx029724
+ for <linux-mtd@lists.infradead.org>; Wed, 6 Nov 2013 18:43:47 -0700
+From: Cody P Schafer <cody@linux.vnet.ibm.com>
+To: Andrew Morton <akpm@linux-foundation.org>,
+ EXT4 <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>,
+ rostedt@goodmis.org, Adrian Hunter <adrian.hunter@intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH v2 06/11] fs/ubifs: use rbtree postorder iteration helper
+ instead of opencoding
+Date: Wed,  6 Nov 2013 17:42:35 -0800
+Message-Id: <1383788572-25938-7-git-send-email-cody@linux.vnet.ibm.com>
+In-Reply-To: <1383788572-25938-1-git-send-email-cody@linux.vnet.ibm.com>
+References: <1383788572-25938-1-git-send-email-cody@linux.vnet.ibm.com>
+Cc: linux-mtd@lists.infradead.org, Cody P Schafer <cody@linux.vnet.ibm.com>,
+ LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,100 +41,227 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Nov 06, 2013 at 10:00:09PM +0000, Gupta, Pekon wrote:
-> > From: Ezequiel Garcia
-> [...]
-> 
-> > But: on the other hand, I'd really like you to convince me as to
-> > why is it so bad to require the DTB to have the proper GPMC bus width.
-> > 
-> No its not at all bad, all I want is either of the one way (not mixture of both).
-> - Either depend on DT completely (which is current case for all drivers)
-> - OR depend on ONFI and nand_flash_id[] for bus-width detection.
-> 
-> 
-> > Once again:
-> > 1. the NAND devices aren't hot-pluggable
-> > 2. the "user" (who is actually an engineer, not some regular dummy user)
-> > knows perfectly well the width of the device.
-> > 
-> > What's the problem with describing the hardware in the DT and saving us
-> > lots of runtime re-configuration trouble?
-> 
-> I agree with both your arguments above.
-> So shouldn't we kill NAND_BUSWIDTH_AUTO ?
-> And probably therefore  NAND_BUSWIDTH_AUTO isn't that popular.
-> 
-> Now what remains is ONFI probe, which should always happen in x8 mode.
-> So for that below patch should be sufficient ..
-> 
+Use rbtree_postorder_for_each_entry_safe() to destroy the rbtree instead
+of opencoding an alternate postorder iteration that modifies the tree
 
-Hm.. that might work. Maybe you should submit this as RFC/PATCH to catch
-the attention of some more people. And we can keep discussing on this
-new idea...
+Signed-off-by: Cody P Schafer <cody@linux.vnet.ibm.com>
+---
+ fs/ubifs/debug.c    | 22 +++-------------------
+ fs/ubifs/log.c      | 21 ++-------------------
+ fs/ubifs/orphan.c   | 21 ++-------------------
+ fs/ubifs/recovery.c | 21 +++------------------
+ fs/ubifs/super.c    | 24 ++++--------------------
+ fs/ubifs/tnc.c      | 22 +++-------------------
+ 6 files changed, 17 insertions(+), 114 deletions(-)
 
-I should get an 8-bit module for the BBB, so this means I'll be able
-to run 8-bit and 16-bit tests.
-
-> ----------------------
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index ec1db1e..d1220fb 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -2942,14 +2942,8 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
->                 chip->read_byte(mtd) != 'F' || chip->read_byte(mtd) != 'I')
->                 return 0;
-> 
-> -       /*
-> -        * ONFI must be probed in 8-bit mode or with NAND_BUSWIDTH_AUTO, not
-> -        * with NAND_BUSWIDTH_16
-> -        */
-> -       if (chip->options & NAND_BUSWIDTH_16) {
-> -               pr_err("ONFI cannot be probed in 16-bit mode; aborting\n");
-> -               return 0;
-> -       }
-> +       /* ONFI must be probed in 8-bit mode only */
-> +       nand_set_defaults(chip, 0);
-> 
->         chip->cmdfunc(mtd, NAND_CMD_PARAM, 0, -1);
->         for (i = 0; i < 3; i++) {
-> @@ -2962,7 +2956,7 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
-> 
->         if (i == 3) {
->                 pr_err("Could not find valid ONFI parameter page; aborting\n");
-> -               return 0;
-> +               goto return_error;
->         }
-> 
->         /* Check version */
-> @@ -2980,7 +2974,7 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
-> 
->         if (!chip->onfi_version) {
->                 pr_info("%s: unsupported ONFI version: %d\n", __func__, val);
-> -               return 0;
-> +               goto return_error;
->         }
-> 
->         sanitize_string(p->manufacturer, sizeof(p->manufacturer));
-> @@ -3033,6 +3027,12 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
->         }
-> 
->         return 1;
-> +
-> +return_error:
-> +       /* revert original bus-width */
-> +       nand_set_defaults( chip->options & NAND_BUSWIDTH_16);
-> +       return 0;
-> +
->  }
-> 
->  /*
-> ------------------------- 
-> 
-> 
-> with regards, pekon
-
+diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
+index 6e025e0..378c179 100644
+--- a/fs/ubifs/debug.c
++++ b/fs/ubifs/debug.c
+@@ -2118,26 +2118,10 @@ out_free:
+  */
+ static void free_inodes(struct fsck_data *fsckd)
+ {
+-	struct rb_node *this = fsckd->inodes.rb_node;
+-	struct fsck_inode *fscki;
++	struct fsck_inode *fscki, *n;
+ 
+-	while (this) {
+-		if (this->rb_left)
+-			this = this->rb_left;
+-		else if (this->rb_right)
+-			this = this->rb_right;
+-		else {
+-			fscki = rb_entry(this, struct fsck_inode, rb);
+-			this = rb_parent(this);
+-			if (this) {
+-				if (this->rb_left == &fscki->rb)
+-					this->rb_left = NULL;
+-				else
+-					this->rb_right = NULL;
+-			}
+-			kfree(fscki);
+-		}
+-	}
++	rbtree_postorder_for_each_entry_safe(fscki, n, &fsckd->inodes, rb)
++		kfree(fscki);
+ }
+ 
+ /**
+diff --git a/fs/ubifs/log.c b/fs/ubifs/log.c
+index 36bd4ef..a902c59 100644
+--- a/fs/ubifs/log.c
++++ b/fs/ubifs/log.c
+@@ -574,27 +574,10 @@ static int done_already(struct rb_root *done_tree, int lnum)
+  */
+ static void destroy_done_tree(struct rb_root *done_tree)
+ {
+-	struct rb_node *this = done_tree->rb_node;
+-	struct done_ref *dr;
++	struct done_ref *dr, *n;
+ 
+-	while (this) {
+-		if (this->rb_left) {
+-			this = this->rb_left;
+-			continue;
+-		} else if (this->rb_right) {
+-			this = this->rb_right;
+-			continue;
+-		}
+-		dr = rb_entry(this, struct done_ref, rb);
+-		this = rb_parent(this);
+-		if (this) {
+-			if (this->rb_left == &dr->rb)
+-				this->rb_left = NULL;
+-			else
+-				this->rb_right = NULL;
+-		}
++	rbtree_postorder_for_each_entry_safe(dr, n, done_tree, rb)
+ 		kfree(dr);
+-	}
+ }
+ 
+ /**
+diff --git a/fs/ubifs/orphan.c b/fs/ubifs/orphan.c
+index ba32da3..f1c3e5a1 100644
+--- a/fs/ubifs/orphan.c
++++ b/fs/ubifs/orphan.c
+@@ -815,27 +815,10 @@ static int dbg_find_check_orphan(struct rb_root *root, ino_t inum)
+ 
+ static void dbg_free_check_tree(struct rb_root *root)
+ {
+-	struct rb_node *this = root->rb_node;
+-	struct check_orphan *o;
++	struct check_orphan *o, *n;
+ 
+-	while (this) {
+-		if (this->rb_left) {
+-			this = this->rb_left;
+-			continue;
+-		} else if (this->rb_right) {
+-			this = this->rb_right;
+-			continue;
+-		}
+-		o = rb_entry(this, struct check_orphan, rb);
+-		this = rb_parent(this);
+-		if (this) {
+-			if (this->rb_left == &o->rb)
+-				this->rb_left = NULL;
+-			else
+-				this->rb_right = NULL;
+-		}
++	rbtree_postorder_for_each_entry_safe(o, n, root, rb)
+ 		kfree(o);
+-	}
+ }
+ 
+ static int dbg_orphan_check(struct ubifs_info *c, struct ubifs_zbranch *zbr,
+diff --git a/fs/ubifs/recovery.c b/fs/ubifs/recovery.c
+index 065096e..c14adb2 100644
+--- a/fs/ubifs/recovery.c
++++ b/fs/ubifs/recovery.c
+@@ -1335,29 +1335,14 @@ static void remove_ino(struct ubifs_info *c, ino_t inum)
+  */
+ void ubifs_destroy_size_tree(struct ubifs_info *c)
+ {
+-	struct rb_node *this = c->size_tree.rb_node;
+-	struct size_entry *e;
++	struct size_entry *e, *n;
+ 
+-	while (this) {
+-		if (this->rb_left) {
+-			this = this->rb_left;
+-			continue;
+-		} else if (this->rb_right) {
+-			this = this->rb_right;
+-			continue;
+-		}
+-		e = rb_entry(this, struct size_entry, rb);
++	rbtree_postorder_for_each_entry_safe(e, n, &c->size_tree, rb) {
+ 		if (e->inode)
+ 			iput(e->inode);
+-		this = rb_parent(this);
+-		if (this) {
+-			if (this->rb_left == &e->rb)
+-				this->rb_left = NULL;
+-			else
+-				this->rb_right = NULL;
+-		}
+ 		kfree(e);
+ 	}
++
+ 	c->size_tree = RB_ROOT;
+ }
+ 
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 3e4aa72..14a5891 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -873,26 +873,10 @@ static void free_orphans(struct ubifs_info *c)
+  */
+ static void free_buds(struct ubifs_info *c)
+ {
+-	struct rb_node *this = c->buds.rb_node;
+-	struct ubifs_bud *bud;
+-
+-	while (this) {
+-		if (this->rb_left)
+-			this = this->rb_left;
+-		else if (this->rb_right)
+-			this = this->rb_right;
+-		else {
+-			bud = rb_entry(this, struct ubifs_bud, rb);
+-			this = rb_parent(this);
+-			if (this) {
+-				if (this->rb_left == &bud->rb)
+-					this->rb_left = NULL;
+-				else
+-					this->rb_right = NULL;
+-			}
+-			kfree(bud);
+-		}
+-	}
++	struct ubifs_bud *bud, *n;
++
++	rbtree_postorder_for_each_entry_safe(bud, n, &c->buds, rb)
++		kfree(bud);
+ }
+ 
+ /**
+diff --git a/fs/ubifs/tnc.c b/fs/ubifs/tnc.c
+index 349f31a..9083bc7 100644
+--- a/fs/ubifs/tnc.c
++++ b/fs/ubifs/tnc.c
+@@ -178,27 +178,11 @@ static int ins_clr_old_idx_znode(struct ubifs_info *c,
+  */
+ void destroy_old_idx(struct ubifs_info *c)
+ {
+-	struct rb_node *this = c->old_idx.rb_node;
+-	struct ubifs_old_idx *old_idx;
++	struct ubifs_old_idx *old_idx, *n;
+ 
+-	while (this) {
+-		if (this->rb_left) {
+-			this = this->rb_left;
+-			continue;
+-		} else if (this->rb_right) {
+-			this = this->rb_right;
+-			continue;
+-		}
+-		old_idx = rb_entry(this, struct ubifs_old_idx, rb);
+-		this = rb_parent(this);
+-		if (this) {
+-			if (this->rb_left == &old_idx->rb)
+-				this->rb_left = NULL;
+-			else
+-				this->rb_right = NULL;
+-		}
++	rbtree_postorder_for_each_entry_safe(old_idx, n, &c->old_idx, rb)
+ 		kfree(old_idx);
+-	}
++
+ 	c->old_idx = RB_ROOT;
+ }
+ 
 -- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+1.8.4.2
