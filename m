@@ -1,24 +1,25 @@
-Date: Thu, 7 Nov 2013 13:41:33 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Jason Cooper <jason@lakedaemon.net>
-Subject: Re: [PATCH v4 05/31] mtd: nand: pxa3xx: devicetree binding update
-Message-ID: <20131107164132.GA30917@localhost>
-References: <1383837455-30721-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1383837455-30721-6-git-send-email-ezequiel.garcia@free-electrons.com>
- <20131107153210.GK8308@titan.lakedaemon.net>
+Received: from mail-qe0-x22a.google.com ([2607:f8b0:400d:c02::22a])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VeTVd-00068d-QO
+ for linux-mtd@lists.infradead.org; Thu, 07 Nov 2013 17:36:46 +0000
+Received: by mail-qe0-f42.google.com with SMTP id gc15so788319qeb.29
+ for <linux-mtd@lists.infradead.org>; Thu, 07 Nov 2013 09:36:21 -0800 (PST)
+Message-ID: <527BCF93.6030207@gmail.com>
+Date: Thu, 07 Nov 2013 12:36:19 -0500
+From: Matthew Gabeler-Lee <fastcat@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20131107153210.GK8308@titan.lakedaemon.net>
-Cc: Lior Amsalem <alior@marvell.com>, devicetree@vger.kernel.org,
- Tawfik Bayouk <tawfik@marvell.com>, Willy Tarreau <w@1wt.eu>,
- Huang Shijie <b32955@freescale.com>, Daniel Mack <zonque@gmail.com>,
- linux-mtd@lists.infradead.org,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- linux-arm-kernel@lists.infradead.org
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Subject: Re: [PATCH] mtd: nandsim: Allow nandsim to re-use persisted data
+References: <alpine.DEB.2.10.1309251518370.22371@cheetah.fastcat.org>
+ <CAFLxGvydWpQr_hMN8G=YViqgOOpJ=iSUu1sY0Eiurp-z=X55gQ@mail.gmail.com>
+In-Reply-To: <CAFLxGvydWpQr_hMN8G=YViqgOOpJ=iSUu1sY0Eiurp-z=X55gQ@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: pratibha@codeaurora.org,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Tanya Brokhman <tlinder@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,59 +29,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 07, 2013 at 10:32:10AM -0500, Jason Cooper wrote:
-> On Thu, Nov 07, 2013 at 12:17:09PM -0300, Ezequiel Garcia wrote:
-> > Since the driver supports the new compatible string, the binding
-> > documentation must be updated to reflect it.
-> > 
-> > Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> > ---
-> >  Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt | 4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletion(-)
+On 11/07/2013 10:12 AM, Richard Weinberger wrote:
+> Hi!
+
+Hi! Thanks for taking a look at this.  PS: First kernel patch I've ever
+done...
+
+> On Wed, Sep 25, 2013 at 9:25 PM, Matthew Gabeler-Lee <fastcat@gmail.com> wrote:
+>> @@ -592,6 +595,9 @@ static int alloc_device(struct nandsim *ns)
+>>                         err = -ENOMEM;
+>>                         goto err_close;
+>>                 }
+>> +               if (cache_file_written) {
+>> +                       memset(ns->pages_written, 0xFF, ns->geom.pgnum);
+>> +               }
 > 
-> Thanks for adding this, but please remember to update the Subject
-> string in the future.  Both this patch and the next one are changing the
-> Documentation/ portion of the tree, not drivers/.
+> Hmm, that's a very ugly hack.
+> It will slow down nandsim because now it will ask the file cache every time.
 > 
+> If you want persistent storage we'd need a sane file format with header
+> which contains the page_written bitmask, the nand geometry, etc....
 
-Come again?
+Agreed that it's a hack.  My thought process was to a) minimize the
+changes and b) have the resulting persisted image be usable to write to
+a real flash device, if that was desired.  I'm not sure if the OOB data
+would make part b not actually work, though.  I agree that a real file
+format (or split files) that tracks metadata would be better overall.
+It would beg for some userspace tools to work with it.
 
-You mean "[PATCH] Documentation: mtd: nand: Do this"
-
-In that case: sorry, I do it differently on purpose, it looks better
-to me (focus the affected driver), but maybe I'm wrong.
-
-> And,
-> 
-> Acked-by: Jason Cooper <jason@lakedaemon.net>
-> 
-
-Thanks!
-
-> thx,
-> 
-> Jason.
-> 
-> > diff --git a/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt b/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
-> > index f1421e2..bed8390 100644
-> > --- a/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
-> > +++ b/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
-> > @@ -2,7 +2,9 @@ PXA3xx NAND DT bindings
-> >  
-> >  Required properties:
-> >  
-> > - - compatible:		Should be "marvell,pxa3xx-nand"
-> > + - compatible:		Should be set to one of the following:
-> > +			marvell,pxa3xx-nand
-> > +			marvell,armada370-nand
-> >   - reg: 		The register base for the controller
-> >   - interrupts:		The interrupt to map
-> >   - #address-cells:	Set to <1> if the node includes partitions
-> > -- 
-> > 1.8.1.5
-> > 
-
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+As far as performance is concerned, if considering a real file format,
+in my testing it appeared that the non-aligned writes resulting from the
+OOB bytes may also have been a problem.  AFAICT my application (UBI/FS)
+never actually accesses those OOB bytes, so getting creative with where
+they are stored in a file format could have some benefits.
