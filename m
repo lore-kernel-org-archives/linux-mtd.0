@@ -1,20 +1,25 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
+Received: from mail-vb0-x229.google.com ([2607:f8b0:400c:c02::229])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VelTW-0002yb-1i
- for linux-mtd@lists.infradead.org; Fri, 08 Nov 2013 12:47:46 +0000
-Message-ID: <527CDD4C.6030600@ti.com>
-Date: Fri, 8 Nov 2013 18:17:08 +0530
-From: Sourav Poddar <sourav.poddar@ti.com>
+ id 1VelVg-00032n-Np
+ for linux-mtd@lists.infradead.org; Fri, 08 Nov 2013 12:50:01 +0000
+Received: by mail-vb0-f41.google.com with SMTP id w8so1375186vbj.0
+ for <linux-mtd@lists.infradead.org>; Fri, 08 Nov 2013 04:49:38 -0800 (PST)
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCHv3 0/2] m25p80: QUAD read support + cleanup.
-References: <1383748535-20462-1-git-send-email-sourav.poddar@ti.com>
- <20131107182955.GV20061@ld-irv-0074.broadcom.com> <527C677E.1030404@ti.com>
-In-Reply-To: <527C677E.1030404@ti.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: marex@denx.de, Huang Shijie <b32955@freescale.com>,
- linux-mtd@lists.infradead.org, balbi@ti.com, dedekind1@gmail.com
+In-Reply-To: <527C5611.2030001@freescale.com>
+References: <1383817597-31992-1-git-send-email-b32955@freescale.com>
+ <CAOMZO5CibxEVym6Y9rPC4ExfOJkV+FQxkqPvEOkp5GtYcKoKKw@mail.gmail.com>
+ <527C5611.2030001@freescale.com>
+Date: Fri, 8 Nov 2013 10:49:35 -0200
+Message-ID: <CAOMZO5DpuPopY6p4uCeSoDqHRqbQ8gN3mLTUaipdPDP443DU3g@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mtd: gpmi: fix the NULL pointer
+From: Fabio Estevam <festevam@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, stable@vger.kernel.org,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,65 +29,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday 08 November 2013 09:54 AM, Sourav Poddar wrote:
-> Hi Brian,
-> On Thursday 07 November 2013 11:59 PM, Brian Norris wrote:
->> + Huang
->>
->> On Wed, Nov 06, 2013 at 08:05:33PM +0530, Sourav Poddar wrote:
->>> Patch series does the following:
->>> 1. Cleanup the m25p80 driver to convert bool check for
->>>     read into an enum. This will help adding more read
->>>     commands into the driver easily.
->>>
->>> 2. Add quad read support for spansion and macronix flash devices.
->> Do we have any testing results? I know that some QSPI controllers still
->> need some more work to be able to support this, but has someone tested
->> this current patch set with a "true" SPI controller on mainline?
->>
-> I have tested this with a 3.12-rc6  based internal kernel(as dt 
-> patches are not in).
->  You can check the controller at drivers/spi/spi-ti-qspi.c. From 
-> driver perspective, there
-> is an additional patch[1] required, it was pulled in by Mark, and I 
-> can see it in his tree.
-> Testing details:
-> flash_erase the entire chip
-> mtd write the flash with a particular pattern
-> mtd read the flash
-> diff the write and the read value.
+On Fri, Nov 8, 2013 at 1:10 AM, Huang Shijie <b32955@freescale.com> wrote:
+> =E4=BA=8E 2013=E5=B9=B411=E6=9C=8807=E6=97=A5 21:07, Fabio Estevam =E5=86=
+=99=E9=81=93:
 >
-Just to add more info:
-I have tested this on
-1. DRA7xx having Spansion S25FL256S flash
-2. AM43xx having Macronix MX66L51235F
-> [1]:
-> Add dual/quad read mode bit flag for the master controller.
-> These check will be used in the spi framework to determine
-> whether the master controller can do dual/quad read respectively.
+>> Why buffer[FINGERPRINT_LEN + 1] instead of buffer[FINGERPRINT_LEN] ?
 >
-> Signed-off-by: Sourav Poddar <sourav.poddar@ti.com>
-> ---
-> v1->v2
-> Added dual mode bit also.
->  drivers/spi/spi-ti-qspi.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
->
-> diff --git a/drivers/spi/spi-ti-qspi.c b/drivers/spi/spi-ti-qspi.c
-> index e12d962..7a45c3e 100644
-> --- a/drivers/spi/spi-ti-qspi.c
-> +++ b/drivers/spi/spi-ti-qspi.c
-> @@ -472,7 +472,7 @@ static int ti_qspi_probe(struct platform_device 
-> *pdev)
->      if (!master)
->          return -ENOMEM;
->
-> -    master->mode_bits = SPI_CPOL | SPI_CPHA;
-> +    master->mode_bits = SPI_CPOL | SPI_CPHA | SPI_RX_DUAL | SPI_RX_QUAD;
->
->      master->bus_num = -1;
->      master->flags = SPI_MASTER_HALF_DUPLEX;
->
->> Bri
->> an
->
+> just for the safe guard. "+1" is to simulate the terminal '\0' of the
+> string.
+> Of course, it's ok to use the buffer[FINGERPINGT_LEN].
+
+Then please send a v2 without the +1. Let's save one byte ;-)
+
+Regards,
+
+Fabio Estevam
