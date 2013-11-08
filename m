@@ -1,24 +1,16 @@
-Date: Thu, 7 Nov 2013 16:46:00 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH v4 26/31] mtd: nand: pxa3xx: Introduce multiple page
- I/O support
-Message-ID: <20131108004600.GZ20061@ld-irv-0074.broadcom.com>
-References: <1383837455-30721-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1383837455-30721-27-git-send-email-ezequiel.garcia@free-electrons.com>
- <20131107234459.GB2467@localhost>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20131107234459.GB2467@localhost>
-Cc: Lior Amsalem <alior@marvell.com>, devicetree@vger.kernel.org,
- Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>,
- Willy Tarreau <w@1wt.eu>, Huang Shijie <b32955@freescale.com>,
- linux-mtd@lists.infradead.org,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Daniel Mack <zonque@gmail.com>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- linux-arm-kernel@lists.infradead.org
+Received: from mail-qa0-x231.google.com ([2607:f8b0:400d:c00::231])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Veass-0007wr-8N
+ for linux-mtd@lists.infradead.org; Fri, 08 Nov 2013 01:29:15 +0000
+Received: by mail-qa0-f49.google.com with SMTP id cm18so1169264qab.8
+ for <linux-mtd@lists.infradead.org>; Thu, 07 Nov 2013 17:28:52 -0800 (PST)
+From: Fabio Estevam <festevam@gmail.com>
+To: computersforpeace@gmail.com
+Subject: [PATCH] mtd: gpmi-lib: Make checkpatch happy
+Date: Thu,  7 Nov 2013 23:28:43 -0200
+Message-Id: <1383874123-30125-1-git-send-email-festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, b32955@freescale.com,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,99 +20,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+From: Fabio Estevam <fabio.estevam@freescale.com>
 
-I haven't taken a look at all your changes yet, but I'll get this
-comment off my chest while it's still fresh :)
+Fix the following checkpatch warnings:
 
-On Thu, Nov 07, 2013 at 08:45:00PM -0300, Ezequiel Garcia wrote:
-> Hello,
-> 
-> I have a concern about the ECC mode and strength determination.
-> 
-> On Thu, Nov 07, 2013 at 12:17:30PM -0300, Ezequiel Garcia wrote:
-> [..]
-> > @@ -1152,7 +1289,28 @@ static int armada370_ecc_init(struct pxa3xx_nand_info *info,
-> >  			      struct nand_ecc_ctrl *ecc,
-> >  			      int strength, int page_size)
-> >  {
-> > -	/* Unimplemented yet */
-> > +	if (strength == 4 && page_size == 4096) {
-> > +		info->ecc_bch = 1;
-> > +		info->chunk_size = 2048;
-> > +		info->spare_size = 32;
-> > +		info->ecc_size = 32;
-> > +		ecc->mode = NAND_ECC_HW;
-> > +		ecc->size = info->chunk_size;
-> > +		ecc->layout = &ecc_layout_4KB_bch4bit;
-> > +		ecc->strength = 16;
-> > +		return 1;
-> > +
-> > +	} else if (strength == 8 && page_size == 4096) {
-> > +		info->ecc_bch = 1;
-> > +		info->chunk_size = 1024;
-> > +		info->spare_size = 0;
-> > +		info->ecc_size = 32;
-> > +		ecc->mode = NAND_ECC_HW;
-> > +		ecc->size = info->chunk_size;
-> > +		ecc->layout = &ecc_layout_4KB_bch8bit;
-> > +		ecc->strength = 16;
-> > +		return 1;
-> > +	}
-> >  	return 0;
-> >  }
-> >  
-> 
-> The above shows I tried to be very careful (aka paranoid) in the ECC
-> mode determination. Please note that what I call "ECC mode", is
-> determined by the chunk->size value only.
-> 
-> As the included documentation explains this controller supports two
-> different BCH ECC strength: 16-over-1024, or 16-over-2048. Setting the chunk
-> size to either 1024 or 2048 is what determines which of the above will
-> actually take effect.
-> 
-> In past mails, we've refered to these two as BCH4 or BCH8, but this is not
-> really accurate (as Brian has pointed out) so I droped that terms in
-> favor of the real thing: 16 correctable bits over 1024 data bytes, or
-> 16 correctable bits over 2048 data bytes.
-> 
-> In turn, such BCH mode setting affects heavily the page layout, because
-> after each transfered chunk (which is either 1024+spare or 2048+spare)
-> the controller reads and writes a 30B ECC region.
-> 
-> In other words, the kernel cannot arbitrarily change this setting, or
-> the image won't be readable/writeable any longer.
-> 
-> For this reason, I'm starting to think the above method of picking
-> the "ECC mode" based solely on the page size or the strength is slightly
-> fragile (future developers might come and "improve" the driver breaking
-> images).
-> 
-> Besides: what if a user wants the kernel to use a "higher" than
-> required strength?
-> 
-> In conclusion: I'm starting to think a better (and long-term safer)
-> approach is to set the ECC mode in the DT. I know this sucks, but from
-> my point of view the flash device contains an image that "must" be
-> read/write with a given ECC mode, and this ECC mode is by no means
-> discoverable.
+WARNING: line over 80 characters
+#268: FILE: mtd/nand/gpmi-nand/gpmi-lib.c:268:
++	* consecutive reboots. The latter case has not been seen on the MX23 yet,
 
-I think that's the way to go, in general. We can get by with
-"implementation defined behavior" (i.e., make the driver do what makes
-sense) for now, but to avoid breakage in the future, the bootloader
-needs to specify what ECC configuration is required -- via DT. But your
-current patch is still probably fine without it, since you're supporting
-new hardware.
+WARNING: space prohibited before semicolon
+#356: FILE: mtd/nand/gpmi-nand/gpmi-lib.c:356:
++		(target.tRHOH_in_ns >= 0) ;
 
-> Now, let's suppose we want to set this in the DT: what property
-> would we use? "marvell,nand-ecc-opt = 16-2048"? (a bit odd, no?).
-> 
-> What do you think?
+WARNING: space prohibited before semicolon
+#1006: FILE: mtd/nand/gpmi-nand/gpmi-lib.c:1006:
++		BF_GPMI_TIMING0_DATA_SETUP(hw.data_setup_in_cycles)       ;
 
-If ECC is purely determined by the chunk size, then why not just:
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ drivers/mtd/nand/gpmi-nand/gpmi-lib.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-  marvell,nand-chunk-size = 2048;
-  (with a value of 2048, 1024, or 512?)
-
-Brian
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+index aaced29..c7a578c 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+@@ -265,8 +265,8 @@ int bch_set_geometry(struct gpmi_nand_data *this)
+ 	* chip, otherwise it will lock up. So we skip resetting BCH on the MX23.
+ 	* On the other hand, the MX28 needs the reset, because one case has been
+ 	* seen where the BCH produced ECC errors constantly after 10000
+-	* consecutive reboots. The latter case has not been seen on the MX23 yet,
+-	* still we don't know if it could happen there as well.
++	* consecutive reboots. The latter case has not been seen on the MX23
++	* yet, still we don't know if it could happen there as well.
+ 	*/
+ 	ret = gpmi_reset_block(r->bch_regs, GPMI_IS_MX23(this));
+ 	if (ret)
+@@ -353,7 +353,7 @@ static int gpmi_nfc_compute_hardware_timing(struct gpmi_nand_data *this,
+ 	improved_timing_is_available =
+ 		(target.tREA_in_ns  >= 0) &&
+ 		(target.tRLOH_in_ns >= 0) &&
+-		(target.tRHOH_in_ns >= 0) ;
++		(target.tRHOH_in_ns >= 0);
+ 
+ 	/* Inspect the clock. */
+ 	nfc->clock_frequency_in_hz = clk_get_rate(r->clock[0]);
+@@ -1003,7 +1003,7 @@ void gpmi_begin(struct gpmi_nand_data *this)
+ 	/* [1] Set HW_GPMI_TIMING0 */
+ 	reg = BF_GPMI_TIMING0_ADDRESS_SETUP(hw.address_setup_in_cycles) |
+ 		BF_GPMI_TIMING0_DATA_HOLD(hw.data_hold_in_cycles)         |
+-		BF_GPMI_TIMING0_DATA_SETUP(hw.data_setup_in_cycles)       ;
++		BF_GPMI_TIMING0_DATA_SETUP(hw.data_setup_in_cycles);
+ 
+ 	writel(reg, gpmi_regs + HW_GPMI_TIMING0);
+ 
+-- 
+1.8.1.2
