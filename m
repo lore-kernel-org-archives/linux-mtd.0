@@ -1,22 +1,20 @@
-Received: from co9ehsobe005.messaging.microsoft.com ([207.46.163.28]
- helo=co9outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VecfY-0001Wo-6y
- for linux-mtd@lists.infradead.org; Fri, 08 Nov 2013 03:23:37 +0000
-Message-ID: <527C59E4.9080902@freescale.com>
-Date: Fri, 8 Nov 2013 11:26:28 +0800
-From: Huang Shijie <b32955@freescale.com>
+Message-ID: <527C5E96.40805@atmel.com>
+Date: Fri, 8 Nov 2013 11:46:30 +0800
+From: Josh Wu <josh.wu@atmel.com>
 MIME-Version: 1.0
-To: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH 2/2] mtd: gpmi: only scan two chips for imx6
-References: <1383817597-31992-1-git-send-email-b32955@freescale.com>	<1383817597-31992-2-git-send-email-b32955@freescale.com>
- <CAOMZO5AohNc7Z41AApMHugsApQxS3J+1jUZyFrjjAJ8PXuB_aQ@mail.gmail.com>
-In-Reply-To: <CAOMZO5AohNc7Z41AApMHugsApQxS3J+1jUZyFrjjAJ8PXuB_aQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH] mtd: atmel_nand: fix bug driver will in a dead lock if
+ no nand detected
+References: <1383645547-21813-1-git-send-email-josh.wu@atmel.com>
+ <20131107083932.GJ3805@norris.computersforpeace.net>
+ <527B6ADF.1090201@atmel.com>
+ <20131107180942.GU20061@ld-irv-0074.broadcom.com>
+In-Reply-To: <20131107180942.GU20061@ld-irv-0074.broadcom.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: nicolas.ferre@atmel.com, plagnioj@jcrosoft.com,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,30 +24,102 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B411=E6=9C=8807=E6=97=A5 21:22, Fabio Estevam =E5=86=
-=99=E9=81=93:
-> On Thu, Nov 7, 2013 at 7:46 AM, Huang Shijie<b32955@freescale.com>  wro=
-te:
->> We cannot scan two chips for imx23 and imx28:
->>    imx23: the Ready-Busy1 line is not connected for some board.
->>    imx28: we do not set the pinctrl for Ready-Busy1
+Hi, Brain
+
+I resend with non-html format to make it acceptable in mail list.
+
+On 11/8/2013 2:09 AM, Brian Norris wrote:
+> On Thu, Nov 07, 2013 at 06:26:39PM +0800, Josh Wu wrote:
+>> Hi, Brian
 >>
->> So we only scan two chips for imx6.
-> What happens if Ready-Busy1 line is not connected on some mx6 board?
-> You cannot assume that all boards
-we will meet a DMA timeout.
+>> On 11/7/2013 4:39 PM, Brian Norris wrote:
+>>> Hi Josh,
+>>>
+>>> On Tue, Nov 05, 2013 at 05:59:07PM +0800, Josh Wu wrote:
+>>>> In the atmel driver probe function, the code shows like following:
+>>>>    atmel_nand_probe(...) {
+>>>>          ...
+>>>>
+>>>>    err_nand_ioremap:
+>>>>          platform_driver_unregister(&atmel_nand_nfc_driver);
+>>>>          return res;
+>>>>    }
+>>>>
+>>>> If no nand flash detected, the driver probe function will goto
+>>>> err_nand_ioremap label.
+>>>> Then platform_driver_unregister() will be called. It will get the
+>>>> lock of atmel_nand device since it is parent of nfc_device. The
+>>>> problem is the lock is already hold by atmel_nand_probe itself.
+>>>> So system will be in a dead lock.
+>>>>
+>>>> This patch just simply removed to platform_driver_unregister() call.
+>>>> When atmel_nand driver is quit the platform_driver_unregister() will
+>>>> be called in atmel_nand_remove().
+>>> The real key, here, is that the platform-driver probe() has no business
+>>> un-registering another driver, right?
+>> right.
+>>
+>>> Shouldn't both drivers just be
+>>> registered/unregistered in the module init/exit, and not in probe()?
+>> currently the NFC driver is registered in the beginning of nand
+>> probe function. After NFC driver is initialized, the rest of the
+>> nand probe function
+>> will check the NFC driver status.
+>> I am not sure it is proper to registered another driver in a probe().
+> This whole 2-driver registration process seems like a totally racy mess.
+> Unless I'm reading this wrong, the code is entirely wrong. You are not
+> properly expressing the dependency between the NFC device and the
+> atmel_nand device, so I think you're relying purely on happenstance that
+> when the NAND probe registers the NFC driver, it will complete the NFC
+> probe before the NAND probe reaches:
+>
+>    if (nand_nfc.is_initialized) {
+>      ...
 
-All the imx6's boards supporting the gpmi have the RB1 now.
-the customer's boards will follow our boards, so their boards also=20
-should have the RB1 line too.
+Yes, exactly.
+And the NAND probe will also load the NFC device before it reach above 
+check code.
+That is what I want: make *nfc probe function* is running before reach 
+above check code.
 
-> have this line connected and configured in pinctrl just like you
-> mentioned for mx23 and mx28.
-Please check the schematics for imx23/imx28/imx6x.
-For imx6, the line is OR-combined with the RB0.
-For imx23-evk,imx28-evk, the RB1 line is a seperate line, not OR with=20
-the RB0.
-     and the pinctrls does not have RB1.
+>
+> This is a race, no?
 
-thanks
-Huang Shijie
+So I don't think there is a race, as NFC probe will always run before 
+the check code:
+   if (nand_nfc.is_initialized) {
+     ...
+
+>
+> Anyway, I think the current patch (fixing a deadlock) is still ready for
+> stable, while I would expect you can fix up this racy situation in a
+> subsequent patch. Or perhaps I'm misreading something?
+
+I think my subsequent patch is to move the register/unregister() 
+function to the module_init/exit().
+And in the module_init(), make sure register NFC driver before NAND driver.
+That means I will revert the change that convert module_init/exit() to 
+module_platform_driver_probe().
+
+So the whole flow will like that:
+
+module_init()
+   register nfc driver
+   register nand driver
+
+nand driver probe() {
+     # register nfc driver --> move to module_init()
+     populate nfc device
+       since nfc driver is registered, so nfc_probe() is called (init nfc)
+     check whether nfc is initialized
+     ...
+   }
+
+module_exit()
+   unregister nand driver
+   unregister nfc driver
+
+>
+> Brian
+Best Regards,
+Josh Wu
