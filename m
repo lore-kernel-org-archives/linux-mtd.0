@@ -1,23 +1,23 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vei8f-0006Xq-Fz
- for linux-mtd@lists.infradead.org; Fri, 08 Nov 2013 09:14:02 +0000
-Date: Fri, 8 Nov 2013 06:13:47 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Caizhiyong <caizhiyong@hisilicon.com>
-Subject: Re: [PATCH 2/2]  mtd: cmdlinepart: use cmdline partition parser lib
-Message-ID: <20131108091216.GA2365@localhost>
+Received: from szxga02-in.huawei.com ([119.145.14.65])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Vej0M-0007YG-TW
+ for linux-mtd@lists.infradead.org; Fri, 08 Nov 2013 10:09:33 +0000
+From: Caizhiyong <caizhiyong@hisilicon.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: RE: [PATCH 2/2]  mtd: cmdlinepart: use cmdline partition parser lib
+Date: Fri, 8 Nov 2013 09:58:19 +0000
+Message-ID: <C3050A4DBA34F345975765E43127F10F1C08B2F6@szxeml512-mbs.china.huawei.com>
 References: <C3050A4DBA34F345975765E43127F10F1C0643B8@szxeml512-mbx.china.huawei.com>
  <20131020120603.GA18678@localhost>
  <C3050A4DBA34F345975765E43127F10F1C084C81@szxeml512-mbs.china.huawei.com>
  <20131105144328.fb5a6a1d423776b324771706@linux-foundation.org>
  <C3050A4DBA34F345975765E43127F10F1C08B274@szxeml512-mbs.china.huawei.com>
+ <20131108091216.GA2365@localhost>
+In-Reply-To: <20131108091216.GA2365@localhost>
+Content-Language: zh-CN
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <C3050A4DBA34F345975765E43127F10F1C08B274@szxeml512-mbs.china.huawei.com>
 Cc: Brian Norris <computersforpeace@gmail.com>,
  Artem Bityutskiy <dedekind1@gmail.com>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
@@ -35,25 +35,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Nov 08, 2013 at 06:53:29AM +0000, Caizhiyong wrote:
-> >> For further information, see "https://lkml.org/lkml/2013/8/6/550"
-> > 
-> > Thanks for doing this.  Could we please get some acked-by's or,
-> > preferably, tested-by's from the MTD people?
-> 
-> Acked-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-
-I don't remember acking this patch! Instead, I do remember asking
-for the test results, prooving the this change has _no_ change of
-behavior compared to the MTD parsing code:
-
-https://lkml.org/lkml/2013/10/25/164
-
-Such results was never posted and unless we see those, I think
-I'd rather NACK this patch instead. I like the cleanup, but only
-if it's guaranteed to _not_ brake things, specially when dealing
-with a kernel parameter.
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+PiBTdWNoIHJlc3VsdHMgd2FzIG5ldmVyIHBvc3RlZCBhbmQgdW5sZXNzIHdlIHNlZSB0aG9zZSwg
+SSB0aGluaw0KPiBJJ2QgcmF0aGVyIE5BQ0sgdGhpcyBwYXRjaCBpbnN0ZWFkLiBJIGxpa2UgdGhl
+IGNsZWFudXAsIGJ1dCBvbmx5DQo+IGlmIGl0J3MgZ3VhcmFudGVlZCB0byBfbm90XyBicmFrZSB0
+aGluZ3MsIHNwZWNpYWxseSB3aGVuIGRlYWxpbmcNCj4gd2l0aCBhIGtlcm5lbCBwYXJhbWV0ZXIu
+DQoNCkRvIHlvdSBoYXZlIHNvbWUgdGVzdCBjYXNlIG9yIHRlc3Qgc3RhbmRhcmQgZm9yIG1lIHBl
+cmZvcm0uDQoNCj4gLS0NCj4gRXplcXVpZWwgR2FyY8OtYSwgRnJlZSBFbGVjdHJvbnMNCj4gRW1i
+ZWRkZWQgTGludXgsIEtlcm5lbCBhbmQgQW5kcm9pZCBFbmdpbmVlcmluZw0KPiBodHRwOi8vZnJl
+ZS1lbGVjdHJvbnMuY29tDQo=
