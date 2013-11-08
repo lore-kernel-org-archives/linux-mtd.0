@@ -1,31 +1,20 @@
-Received: from szxga02-in.huawei.com ([119.145.14.65])
+Received: from arroyo.ext.ti.com ([192.94.94.40])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vej0M-0007YG-TW
- for linux-mtd@lists.infradead.org; Fri, 08 Nov 2013 10:09:33 +0000
-From: Caizhiyong <caizhiyong@hisilicon.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: RE: [PATCH 2/2]  mtd: cmdlinepart: use cmdline partition parser lib
-Date: Fri, 8 Nov 2013 09:58:19 +0000
-Message-ID: <C3050A4DBA34F345975765E43127F10F1C08B2F6@szxeml512-mbs.china.huawei.com>
-References: <C3050A4DBA34F345975765E43127F10F1C0643B8@szxeml512-mbx.china.huawei.com>
- <20131020120603.GA18678@localhost>
- <C3050A4DBA34F345975765E43127F10F1C084C81@szxeml512-mbs.china.huawei.com>
- <20131105144328.fb5a6a1d423776b324771706@linux-foundation.org>
- <C3050A4DBA34F345975765E43127F10F1C08B274@szxeml512-mbs.china.huawei.com>
- <20131108091216.GA2365@localhost>
-In-Reply-To: <20131108091216.GA2365@localhost>
-Content-Language: zh-CN
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1VelTW-0002yb-1i
+ for linux-mtd@lists.infradead.org; Fri, 08 Nov 2013 12:47:46 +0000
+Message-ID: <527CDD4C.6030600@ti.com>
+Date: Fri, 8 Nov 2013 18:17:08 +0530
+From: Sourav Poddar <sourav.poddar@ti.com>
 MIME-Version: 1.0
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Karel Zak <kzak@redhat.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- "Wanglin \(Albert\)" <albert.wanglin@hisilicon.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCHv3 0/2] m25p80: QUAD read support + cleanup.
+References: <1383748535-20462-1-git-send-email-sourav.poddar@ti.com>
+ <20131107182955.GV20061@ld-irv-0074.broadcom.com> <527C677E.1030404@ti.com>
+In-Reply-To: <527C677E.1030404@ti.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: marex@denx.de, Huang Shijie <b32955@freescale.com>,
+ linux-mtd@lists.infradead.org, balbi@ti.com, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,11 +24,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiBTdWNoIHJlc3VsdHMgd2FzIG5ldmVyIHBvc3RlZCBhbmQgdW5sZXNzIHdlIHNlZSB0aG9zZSwg
-SSB0aGluaw0KPiBJJ2QgcmF0aGVyIE5BQ0sgdGhpcyBwYXRjaCBpbnN0ZWFkLiBJIGxpa2UgdGhl
-IGNsZWFudXAsIGJ1dCBvbmx5DQo+IGlmIGl0J3MgZ3VhcmFudGVlZCB0byBfbm90XyBicmFrZSB0
-aGluZ3MsIHNwZWNpYWxseSB3aGVuIGRlYWxpbmcNCj4gd2l0aCBhIGtlcm5lbCBwYXJhbWV0ZXIu
-DQoNCkRvIHlvdSBoYXZlIHNvbWUgdGVzdCBjYXNlIG9yIHRlc3Qgc3RhbmRhcmQgZm9yIG1lIHBl
-cmZvcm0uDQoNCj4gLS0NCj4gRXplcXVpZWwgR2FyY8OtYSwgRnJlZSBFbGVjdHJvbnMNCj4gRW1i
-ZWRkZWQgTGludXgsIEtlcm5lbCBhbmQgQW5kcm9pZCBFbmdpbmVlcmluZw0KPiBodHRwOi8vZnJl
-ZS1lbGVjdHJvbnMuY29tDQo=
+On Friday 08 November 2013 09:54 AM, Sourav Poddar wrote:
+> Hi Brian,
+> On Thursday 07 November 2013 11:59 PM, Brian Norris wrote:
+>> + Huang
+>>
+>> On Wed, Nov 06, 2013 at 08:05:33PM +0530, Sourav Poddar wrote:
+>>> Patch series does the following:
+>>> 1. Cleanup the m25p80 driver to convert bool check for
+>>>     read into an enum. This will help adding more read
+>>>     commands into the driver easily.
+>>>
+>>> 2. Add quad read support for spansion and macronix flash devices.
+>> Do we have any testing results? I know that some QSPI controllers still
+>> need some more work to be able to support this, but has someone tested
+>> this current patch set with a "true" SPI controller on mainline?
+>>
+> I have tested this with a 3.12-rc6  based internal kernel(as dt 
+> patches are not in).
+>  You can check the controller at drivers/spi/spi-ti-qspi.c. From 
+> driver perspective, there
+> is an additional patch[1] required, it was pulled in by Mark, and I 
+> can see it in his tree.
+> Testing details:
+> flash_erase the entire chip
+> mtd write the flash with a particular pattern
+> mtd read the flash
+> diff the write and the read value.
+>
+Just to add more info:
+I have tested this on
+1. DRA7xx having Spansion S25FL256S flash
+2. AM43xx having Macronix MX66L51235F
+> [1]:
+> Add dual/quad read mode bit flag for the master controller.
+> These check will be used in the spi framework to determine
+> whether the master controller can do dual/quad read respectively.
+>
+> Signed-off-by: Sourav Poddar <sourav.poddar@ti.com>
+> ---
+> v1->v2
+> Added dual mode bit also.
+>  drivers/spi/spi-ti-qspi.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+>
+> diff --git a/drivers/spi/spi-ti-qspi.c b/drivers/spi/spi-ti-qspi.c
+> index e12d962..7a45c3e 100644
+> --- a/drivers/spi/spi-ti-qspi.c
+> +++ b/drivers/spi/spi-ti-qspi.c
+> @@ -472,7 +472,7 @@ static int ti_qspi_probe(struct platform_device 
+> *pdev)
+>      if (!master)
+>          return -ENOMEM;
+>
+> -    master->mode_bits = SPI_CPOL | SPI_CPHA;
+> +    master->mode_bits = SPI_CPOL | SPI_CPHA | SPI_RX_DUAL | SPI_RX_QUAD;
+>
+>      master->bus_num = -1;
+>      master->flags = SPI_MASTER_HALF_DUPLEX;
+>
+>> Bri
+>> an
+>
