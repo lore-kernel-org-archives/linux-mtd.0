@@ -1,13 +1,12 @@
 Received: from szxga01-in.huawei.com ([119.145.14.64])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vf6yV-0007wn-VJ
- for linux-mtd@lists.infradead.org; Sat, 09 Nov 2013 11:45:14 +0000
+ id 1Vf70O-0007zs-1R
+ for linux-mtd@lists.infradead.org; Sat, 09 Nov 2013 11:47:10 +0000
 From: Caizhiyong <caizhiyong@hisilicon.com>
 To: Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH 2/2] mtd: cmdlinepart: support master name is not set when
- parser partition
-Date: Sat, 9 Nov 2013 11:43:06 +0000
-Message-ID: <C3050A4DBA34F345975765E43127F10F1C08B3EA@szxeml512-mbs.china.huawei.com>
+Subject: [PATCH] block: cmdline-parser: perfect cmdline format checking
+Date: Sat, 9 Nov 2013 11:45:14 +0000
+Message-ID: <C3050A4DBA34F345975765E43127F10F1C08B3FB@szxeml512-mbs.china.huawei.com>
 Content-Language: zh-CN
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
@@ -30,69 +29,230 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 From: Cai Zhiyong <caizhiyong@huawei.com>
-Date: Sat, 9 Nov 2013 17:54:12 +0800
-Subject: [PATCH 2/2] mtd: cmdlinepart: support master name is not set when =
-parser partition
+Date: Sat, 9 Nov 2013 19:27:38 +0800
+Subject: [PATCH] block: cmdline-parser: perfect cmdline format checking
 
  -Fix compile warning with value and function undeclared.
   this reported by <fengguang.wu@intel.com> and
   Randy Dunlap <rdunlap@infradead.org>
 
- -support master name is not set when parser partition.
-  this feature is supported in the old parser.
+ -perfect cmdline format checking, make the error information clear
+  for understand, make this lib fully equivalent to the old parser
+  in drivers/mtd/cmdlinepart.c
 
 Signed-off-by: Cai Zhiyong <caizhiyong@huawei.com>
 ---
- drivers/mtd/Kconfig       |  1 +
- drivers/mtd/cmdlinepart.c | 10 ++++++++--
- 2 files changed, 9 insertions(+), 2 deletions(-)
+ block/cmdline-parser.c         | 86 +++++++++++++++++++++++++++++++-------=
+----
+ include/linux/cmdline-parser.h |  1 +
+ 2 files changed, 65 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-index daf544a..f8f45e0 100644
---- a/drivers/mtd/Kconfig
-+++ b/drivers/mtd/Kconfig
-@@ -76,6 +76,7 @@ endif # MTD_REDBOOT_PARTS
- config MTD_CMDLINE_PARTS
- 	tristate "Command line partition table parsing"
- 	select BLK_CMDLINE_PARSER
-+	depends on BLOCK
- 	depends on MTD
- 	---help---
- 	  Allow generic configuration of the MTD partition tables via the kernel
-diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
-index ba934a4..2074164 100644
---- a/drivers/mtd/cmdlinepart.c
-+++ b/drivers/mtd/cmdlinepart.c
-@@ -54,6 +54,7 @@
-   */
-=20
- #include <linux/kernel.h>
+diff --git a/block/cmdline-parser.c b/block/cmdline-parser.c
+index 9dbc67e..39b6cf4 100644
+--- a/block/cmdline-parser.c
++++ b/block/cmdline-parser.c
+@@ -6,10 +6,15 @@
+  */
+ #include <linux/export.h>
+ #include <linux/cmdline-parser.h>
 +#include <linux/slab.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
- #include <linux/module.h>
-@@ -108,7 +109,12 @@ static int parse_cmdline_partitions(struct mtd_info *m=
-aster,
- 	if (!mtd_cmdline_parts)
- 		return 0;
-=20
--	parts =3D cmdline_parts_find(mtd_cmdline_parts, master->name);
-+	/* If master->name is not set, return the first device partition. */
-+	if (!master->name)
-+		parts =3D mtd_cmdline_parts->next_parts;
-+	else
-+		parts =3D cmdline_parts_find(mtd_cmdline_parts, master->name);
 +
- 	if (!parts)
- 		return 0;
++#define PARSER                       "cmdline-parser: "
 =20
-@@ -143,5 +149,5 @@ MODULE_PARM_DESC(mtdparts, "Partitioning specification"=
-);
- module_param(mtdparts, charp, 0);
+ static int parse_subpart(struct cmdline_subpart **subpart, char *partdef)
+ {
+ 	int ret =3D 0;
++	int lastpart =3D 0;
++	char *partorg =3D partdef;
+ 	struct cmdline_subpart *new_subpart;
 =20
- MODULE_LICENSE("GPL");
--MODULE_AUTHOR("Marius Groeger <mag@sysgo.de>");
-+MODULE_AUTHOR("Cai Zhiyong <caizhiyong@huawei.com>");
- MODULE_DESCRIPTION("Command line configuration of MTD partitions");
+ 	*subpart =3D NULL;
+@@ -21,10 +26,12 @@ static int parse_subpart(struct cmdline_subpart **subpa=
+rt, char *partdef)
+ 	if (*partdef =3D=3D '-') {
+ 		new_subpart->size =3D (sector_t)(~0ULL);
+ 		partdef++;
++		lastpart =3D 1;
+ 	} else {
+ 		new_subpart->size =3D (sector_t)memparse(partdef, &partdef);
+ 		if (new_subpart->size < (sector_t)PAGE_SIZE) {
+-			pr_warn("cmdline partition size is invalid.");
++			pr_warn(PARSER "partition '%s' size '0x%llx' too small.",
++				partorg, new_subpart->size);
+ 			ret =3D -EINVAL;
+ 			goto fail;
+ 		}
+@@ -42,13 +49,19 @@ static int parse_subpart(struct cmdline_subpart **subpa=
+rt, char *partdef)
+ 		char *next =3D strchr(++partdef, ')');
+=20
+ 		if (!next) {
+-			pr_warn("cmdline partition format is invalid.");
++			pr_warn(PARSER "partition '%s' has no closing ')' "
++				"found in partition name.", partorg);
+ 			ret =3D -EINVAL;
+ 			goto fail;
+ 		}
+=20
+-		length =3D min_t(int, next - partdef,
+-			       sizeof(new_subpart->name) - 1);
++		length =3D (int)(next - partdef);
++		if (length > sizeof(new_subpart->name) - 1) {
++			pr_warn(PARSER "partition '%s' partition name too long,"
++				" truncating.", partorg);
++			length =3D sizeof(new_subpart->name) - 1;
++		}
++
+ 		strncpy(new_subpart->name, partdef, length);
+ 		new_subpart->name[length] =3D '\0';
+=20
+@@ -68,8 +81,15 @@ static int parse_subpart(struct cmdline_subpart **subpar=
+t, char *partdef)
+ 		partdef +=3D 2;
+ 	}
+=20
++	if (*partdef) {
++		pr_warn(PARSER "partition '%s' has bad character '%c' after"
++			" partition.", partorg, *partdef);
++		ret =3D -EINVAL;
++		goto fail;
++	}
++
+ 	*subpart =3D new_subpart;
+-	return 0;
++	return lastpart;
+ fail:
+ 	kfree(new_subpart);
+ 	return ret;
+@@ -86,14 +106,13 @@ static void free_subpart(struct cmdline_parts *parts)
+ 	}
+ }
+=20
+-static int parse_parts(struct cmdline_parts **parts, const char *bdevdef)
++static int parse_parts(struct cmdline_parts **parts, char *bdevdef)
+ {
+ 	int ret =3D -EINVAL;
+ 	char *next;
+ 	int length;
+ 	struct cmdline_subpart **next_subpart;
+ 	struct cmdline_parts *newparts;
+-	char buf[BDEVNAME_SIZE + 32 + 4];
+=20
+ 	*parts =3D NULL;
+=20
+@@ -102,14 +121,21 @@ static int parse_parts(struct cmdline_parts **parts, =
+const char *bdevdef)
+ 		return -ENOMEM;
+=20
+ 	next =3D strchr(bdevdef, ':');
+-	if (!next) {
+-		pr_warn("cmdline partition has no block device.");
++	if (!next || next =3D=3D bdevdef) {
++		pr_warn(PARSER "partition '%s' has no block device.", bdevdef);
+ 		goto fail;
+ 	}
+=20
+-	length =3D min_t(int, next - bdevdef, sizeof(newparts->name) - 1);
++	length =3D (int)(next - bdevdef);
++	if (length > sizeof(newparts->name) - 1) {
++		pr_warn(PARSER "partition '%s' device name too long, "
++			"truncating.", bdevdef);
++		length =3D sizeof(newparts->name) - 1;
++	}
++
+ 	strncpy(newparts->name, bdevdef, length);
+ 	newparts->name[length] =3D '\0';
++
+ 	newparts->nr_subparts =3D 0;
+=20
+ 	next_subpart =3D &newparts->subpart;
+@@ -117,23 +143,26 @@ static int parse_parts(struct cmdline_parts **parts, =
+const char *bdevdef)
+ 	while (next && *(++next)) {
+ 		bdevdef =3D next;
+ 		next =3D strchr(bdevdef, ',');
++		if (next)
++			*next =3D '\0';
+=20
+-		length =3D (!next) ? (sizeof(buf) - 1) :
+-			min_t(int, next - bdevdef, sizeof(buf) - 1);
+-
+-		strncpy(buf, bdevdef, length);
+-		buf[length] =3D '\0';
+-
+-		ret =3D parse_subpart(next_subpart, buf);
+-		if (ret)
++		ret =3D parse_subpart(next_subpart, bdevdef);
++		if (ret < 0) {
+ 			goto fail;
++		} else if (ret > 0 && next) {
++			pr_warn(PARSER "no partitions allowed after a "
++				"fill-up partition.");
++			ret =3D -EINVAL;
++			goto fail;
++		}
+=20
+ 		newparts->nr_subparts++;
+ 		next_subpart =3D &(*next_subpart)->next_subpart;
+ 	}
+=20
+ 	if (!newparts->subpart) {
+-		pr_warn("cmdline partition has no valid partition.");
++		pr_warn(PARSER "block device '%s' has no valid"
++			" partition.", newparts->name);
+ 		ret =3D -EINVAL;
+ 		goto fail;
+ 	}
+@@ -192,7 +221,7 @@ int cmdline_parts_parse(struct cmdline_parts **parts, c=
+onst char *cmdline)
+ 	}
+=20
+ 	if (!*parts) {
+-		pr_warn("cmdline partition has no valid partition.");
++		pr_warn(PARSER "no found valid partition.");
+ 		ret =3D -EINVAL;
+ 		goto fail;
+ 	}
+@@ -237,11 +266,24 @@ int cmdline_parts_set(struct cmdline_parts *parts, se=
+ctor_t disk_size,
+ 		else
+ 			from =3D subpart->from;
+=20
+-		if (from >=3D disk_size)
++		if (subpart->name[0] =3D=3D '\0')
++			snprintf(subpart->name, sizeof(subpart->name),
++				 "partition%03d", slot);
++
++		if (from >=3D disk_size) {
++			pr_warn(PARSER "partition '%s' offset exceeds device"
++				" '%s' size '0x%llx', ignoring.",
++				subpart->name, parts->name, disk_size);
+ 			break;
++		}
+=20
+-		if (subpart->size > (disk_size - from))
++		if (subpart->size > (disk_size - from)) {
++			if (subpart->size !=3D (sector_t)(~0ULL))
++				pr_warn(PARSER "partition '%s' size exceeds "
++					"device '%s' size '0x%llx', truncating.",
++					subpart->name, parts->name, disk_size);
+ 			subpart->size =3D disk_size - from;
++		}
+=20
+ 		from +=3D subpart->size;
+=20
+diff --git a/include/linux/cmdline-parser.h b/include/linux/cmdline-parser.=
+h
+index 43b65a9..c6491b2 100644
+--- a/include/linux/cmdline-parser.h
++++ b/include/linux/cmdline-parser.h
+@@ -8,6 +8,7 @@
+ #define CMDLINEPARSEH
+=20
+ #include <linux/blkdev.h>
++#include <linux/fs.h>
+=20
+ /* partition flags */
+ #define PF_RDONLY                   0x01 /* Device is read only */
 --=20
 1.8.1.5
