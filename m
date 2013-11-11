@@ -1,16 +1,25 @@
-Received: from mail-qc0-x235.google.com ([2607:f8b0:400d:c01::235])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VfuzR-0006lX-TE
- for linux-mtd@lists.infradead.org; Mon, 11 Nov 2013 17:09:30 +0000
-Received: by mail-qc0-f181.google.com with SMTP id w4so4405456qcr.12
- for <linux-mtd@lists.infradead.org>; Mon, 11 Nov 2013 09:09:08 -0800 (PST)
-From: Fabio Estevam <festevam@gmail.com>
-To: computersforpeace@gmail.com
-Subject: [PATCH] mtd: gpmi: Fix NULL pointer dereference
-Date: Mon, 11 Nov 2013 15:08:47 -0200
-Message-Id: <1384189727-19563-1-git-send-email-festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, b32955@freescale.com,
- linux-mtd@lists.infradead.org, stable@vger.kernel.org
+From: "Khoronzhuk, Ivan" <ivan.khoronzhuk@ti.com>
+To: "Shilimkar, Santosh" <santosh.shilimkar@ti.com>, Rob Landley
+ <rob@landley.net>, Russell King <linux@arm.linux.org.uk>
+Subject: [PATCH 08/12] memory: davinci-aemif: add bindings for AEMIF driver
+Date: Mon, 11 Nov 2013 17:09:01 +0000
+Message-ID: <4F5844B3A985794BA902E12C070812375F8D3A@DNCE04.ent.ti.com>
+References: <1384187188-5776-1-git-send-email-ivan.khoronzhuk@ti.com>,
+ <1384187188-5776-9-git-send-email-ivan.khoronzhuk@ti.com>
+In-Reply-To: <1384187188-5776-9-git-send-email-ivan.khoronzhuk@ti.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "Strashko,
+ Grygorii" <grygorii.strashko@ti.com>, Pawel Moll <pawel.moll@arm.com>,
+ Stephen Warren <swarren@wwwdotorg.org>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@kernel.crashing.org>, Rob Herring <rob.herring@calxeda.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,85 +29,267 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Fabio Estevam <fabio.estevam@freescale.com>
-
-Currently mx23_check_transcription_stamp() uses chip->buffers->databuf
-as its buffer, which is allocated by nand_scan_tail().
-
-Since commit 720e7ce5 ("mtd: gpmi: remove the nand_scan()"), 
-mx23_check_transcription_stamp() is called before nand_scan_tail(), which causes
-a NULL pointer dereference:
-
-[    1.150000] NAND device: Manufacturer ID: 0xec, Chip ID: 0xd7 (Samsung NAND 4GiB 3,3V 8-bit), 4096MiB, page size: 4096, OOB size: 8
-[    1.160000] Unable to handle kernel NULL pointer dereference at virtual address 000005d0
-[    1.170000] pgd = c0004000
-[    1.170000] [000005d0] *pgd=00000000
-[    1.180000] Internal error: Oops: 5 [#1] ARM
-[    1.180000] Modules linked in:
-[    1.180000] CPU: 0 PID: 1 Comm: swapper Not tainted 3.12.0 #89
-[    1.180000] task: c7440000 ti: c743a000 task.ti: c743a000
-[    1.180000] PC is at memcmp+0x10/0x54
-[    1.180000] LR is at gpmi_nand_probe+0x42c/0x894
-[    1.180000] pc : [<c025fcb0>]    lr : [<c02f6a68>]    psr: 20000053
-[    1.180000] sp : c743be2c  ip : 600000d3  fp : ffffffff
-[    1.180000] r10: 000005d0  r9 : c02f5f08  r8 : 00000000
-[    1.180000] r7 : c75858a8  r6 : c75858a8  r5 : c7585b18  r4 : c7585800
-[    1.180000] r3 : 000005d0  r2 : 00000004  r1 : c05c33e4  r0 : 000005d0
-[    1.180000] Flags: nzCv  IRQs on  FIQs off  Mode SVC_32  ISA ARM  Segment kernel
-[    1.180000] Control: 0005317f  Table: 40004000  DAC: 00000017
-[    1.180000] Process swapper (pid: 1, stack limit = 0xc743a1c0)
-
-In order to fix this problem, allocate the buffer locally via kzalloc().
-
-Also, as mx23_check_transcription_stamp() can return en error code now, adapt
-the logic in mx23_boot_init() to take this into account.
-
-Cc: <stable@vger.kernel.org> # 3.12
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index a9830ff..e090280 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -1342,7 +1342,7 @@ static int mx23_check_transcription_stamp(struct gpmi_nand_data *this)
- 	unsigned int search_area_size_in_strides;
- 	unsigned int stride;
- 	unsigned int page;
--	uint8_t *buffer = chip->buffers->databuf;
-+	uint8_t *buffer;
- 	int saved_chip_number;
- 	int found_an_ncb_fingerprint = false;
- 
-@@ -1352,6 +1352,9 @@ static int mx23_check_transcription_stamp(struct gpmi_nand_data *this)
- 	saved_chip_number = this->current_chip;
- 	chip->select_chip(mtd, 0);
- 
-+	buffer = kzalloc(strlen(fingerprint) * sizeof(*buffer), GFP_KERNEL);
-+	if (!buffer)
-+		return -ENOMEM;
- 	/*
- 	 * Loop through the first search area, looking for the NCB fingerprint.
- 	 */
-@@ -1380,6 +1383,8 @@ static int mx23_check_transcription_stamp(struct gpmi_nand_data *this)
- 
- 	chip->select_chip(mtd, saved_chip_number);
- 
-+	kfree(buffer);
-+
- 	if (found_an_ncb_fingerprint)
- 		dev_dbg(dev, "\tFound a fingerprint\n");
- 	else
-@@ -1488,7 +1493,7 @@ static int mx23_boot_init(struct gpmi_nand_data  *this)
- 	 * transcription stamp. If we find it, then we don't have to do
- 	 * anything -- the block marks are already transcribed.
- 	 */
--	if (mx23_check_transcription_stamp(this))
-+	if (mx23_check_transcription_stamp(this) > 0)
- 		return 0;
- 
- 	/*
--- 
-1.8.1.2
+Add bindings for AEMIF controller drivers/memory/davinici-aemif.c=0A=
+=0A=
+Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>=0A=
+---=0A=
+ .../bindings/memory-controllers/davinci-aemif.txt  |  198 ++++++++++++++++=
+++++=0A=
+ 1 file changed, 198 insertions(+)=0A=
+ create mode 100644 Documentation/devicetree/bindings/memory-controllers/da=
+vinci-aemif.txt=0A=
+=0A=
+diff --git a/Documentation/devicetree/bindings/memory-controllers/davinci-a=
+emif.txt b/Documentation/devicetree/bindings/memory-controllers/davinci-aem=
+if.txt=0A=
+new file mode 100644=0A=
+index 0000000..5e5319a=0A=
+--- /dev/null=0A=
++++ b/Documentation/devicetree/bindings/memory-controllers/davinci-aemif.tx=
+t=0A=
+@@ -0,0 +1,198 @@=0A=
++* Device tree bindings for Texas instruments Davinci/Keystone AEMIF contro=
+ller=0A=
++=0A=
++Th Async External Memory Interface (EMIF16/AEMIF) controller is intended t=
+o=0A=
++provide a glue-less interface to a variety of asynchronous memory devices =
+like=0A=
++ASRA M, NOR and NAND memory. A total of 256M bytes of any of these memorie=
+s=0A=
++can be accessed at any given time via four chip selects with 64M byte acce=
+ss=0A=
++per chip select. Synchronous memories such as DDR1 SD RAM, SDR SDRAM=0A=
++and Mobile SDR are not supported.=0A=
++=0A=
++Documentation:=0A=
++Davinci DM646x - http://www.ti.com/lit/ug/sprueq7c/sprueq7c.pdf=0A=
++OMAP-L138 - http://www.ti.com/lit/ug/spruh77a/spruh77a.pdf=0A=
++Kestone - http://www.ti.com/lit/ug/sprugz3a/sprugz3a.pdf=0A=
++=0A=
++Required properties:=0A=
++=0A=
++- compatible:          "ti,davinci-aemif"=0A=
++                       "ti,keystone-aemif"=0A=
++                       "ti,omap-L138-aemif"=0A=
++=0A=
++- #address-cells:      Must be 2. The first cell is the memory partition=
+=0A=
++                       number. The 0 partition is for chip selects. And th=
+e=0A=
++                       second cell is the offset into the partition, for t=
+he 0=0A=
++                       partition it corresponds to chip select offset.=0A=
++=0A=
++- #size-cells:         Must be set to 1.=0A=
++=0A=
++- reg:                 contains offset/length value for AEMIF control regi=
+sters=0A=
++                       space.=0A=
++=0A=
++- ranges:              Must be set up to reflect the memory layout for 4=
+=0A=
++                       chipselects and for AEMIF control range.=0A=
++=0A=
++- clocks:              phandle reference to the controller clock. Required=
+ only=0A=
++                       if clock tree data present in device tree.=0A=
++                       See clock-bindings.txt=0A=
++=0A=
++- clock-names:         clock name. It has to be "aemif". Required only if =
+clock=0A=
++                       tree data present in device tree, in another case d=
+on't=0A=
++                       use it.=0A=
++                       See clock-bindings.txt=0A=
++=0A=
++- clock-ranges:                Empty property indicating that child nodes =
+can inherit=0A=
++                       named clocks. Required only if clock tree data pres=
+ent=0A=
++                       in device tree.=0A=
++                       See clock-bindings.txt=0A=
++=0A=
++=0A=
++Child chip-select (cs) nodes contain the memory devices nodes connected to=
+=0A=
++such as NOR (e.g. cfi-flash) and NAND (ti,davinci-nand, see davinci-nand.t=
+xt).=0A=
++There might be board specific devices like FPGAs.=0A=
++=0A=
++Required child cs node properties:=0A=
++=0A=
++- compatible:          "ti,davinci-cs"=0A=
++=0A=
++- #address-cells:      Must be 2. The first cell is the memory partition=
+=0A=
++                       number. The 0 partition is for chip selects. And th=
+e=0A=
++                       second cell is the offset into the partition, for t=
+he 0=0A=
++                       partition it corresponds to chip select offset.=0A=
++=0A=
++- #size-cells:         Must be 1.=0A=
++=0A=
++- ranges:              Empty property indicating that child nodes can inhe=
+rit=0A=
++                       memory layout.=0A=
++=0A=
++- clock-ranges:                Empty property indicating that child nodes =
+can inherit=0A=
++                       named clocks. Required only if clock tree data pres=
+ent=0A=
++                       in device tree.=0A=
++=0A=
++Optional child cs node properties:=0A=
++=0A=
++=0A=
++- ti,bus-width:                        width of the asynchronous device's =
+data bus=0A=
++                               8 or 16 if not preset 8=0A=
++=0A=
++- ti,davinci-cs-ss:            enable/disable select strobe mode=0A=
++                               In select strobe mode chip select behaves a=
+s=0A=
++                               the strobe and is active only during the st=
+robe=0A=
++                               period. If present then enable.=0A=
++=0A=
++- ti,davinci-cs-ew:            enable/disable extended wait mode=0A=
++                               if set, the controller monitors the EMIFWAI=
+T pin=0A=
++                               mapped to that chip select to determine if =
+the=0A=
++                               device wants to extend the strobe period. I=
+f=0A=
++                               present then enable.=0A=
++=0A=
++- ti,davinci-cs-ta:            minimum turn around time, ns=0A=
++                               Time between the end of one asynchronous me=
+mory=0A=
++                               access and the start of another asynchronou=
+s=0A=
++                               memory access. This delay is not incurred=
+=0A=
++                               between a read followed by read or a write=
+=0A=
++                               followed by a write to same chip select.=0A=
++=0A=
++- ti,davinci-cs-rsetup:                read setup width, ns=0A=
++                               Time between the beginning of a memory cycl=
+e=0A=
++                               and the activation of read strobe.=0A=
++                               Minimum value is 1 (0 treated as 1).=0A=
++=0A=
++- ti,davinci-cs-rstobe:                read strobe width, ns=0A=
++                               Time between the activation and deactivatio=
+n of=0A=
++                               the read strobe.=0A=
++                               Minimum value is 1 (0 treated as 1).=0A=
++=0A=
++- ti,davinci-cs-rhold:         read hold width, ns=0A=
++                               Time between the deactivation of the read=
+=0A=
++                               strobe and the end of the cycle (which may =
+be=0A=
++                               either an address change or the deactivatio=
+n of=0A=
++                               the chip select signal.=0A=
++                               Minimum value is 1 (0 treated as 1).=0A=
++=0A=
++- ti,davinci-cs-wsetup:                write setup width, ns=0A=
++                               Time between the beginning of a memory cycl=
+e=0A=
++                               and the activation of write strobe.=0A=
++                               Minimum value is 1 (0 treated as 1).=0A=
++=0A=
++- ti,davinci-cs-wstrobe:       write strobe width, ns=0A=
++                               Time between the activation and deactivatio=
+n of=0A=
++                               the write strobe.=0A=
++                               Minimum value is 1 (0 treated as 1).=0A=
++=0A=
++- ti,davinci-cs-whold:         write hold width, ns=0A=
++                               Time between the deactivation of the write=
+=0A=
++                               strobe and the end of the cycle (which may =
+be=0A=
++                               either an address change or the deactivatio=
+n of=0A=
++                               the chip select signal.=0A=
++                               Minimum value is 1 (0 treated as 1).=0A=
++=0A=
++If any of the above parameters are absent, current parameter value will be=
+ taken=0A=
++from the corresponding HW reg.=0A=
++=0A=
++The name for cs node must be in format csN, where N is the cs number.=0A=
++For compatibles "ti,davinci-aemif" and "ti,keystone-aemif" N =3D [0-3].=0A=
++For compatible "ti,omap-L138-aemif" N =3D [2-5].=0A=
++=0A=
++Example for aemif, davinci nand and nor flash chip select shown below.=0A=
++=0A=
++memory-controller@21000A00 {=0A=
++       compatible =3D "ti,keystone-aemif";=0A=
++       #address-cells =3D <2>;=0A=
++       #size-cells =3D <1>;=0A=
++       clocks =3D <&clkaemif 0>;=0A=
++       clock-names =3D "aemif";=0A=
++       clock-ranges;=0A=
++       reg =3D <0x2100A00 0x00000100>;=0A=
++       ranges =3D <0 0 0x70000000 0x10000000=0A=
++                 1 0 0x21000A00 0x0000100>;=0A=
++=0A=
++       nand:cs2 {=0A=
++               compatible =3D "ti,davinci-cs";=0A=
++               #address-cells =3D <2>;=0A=
++               #size-cells =3D <1>;=0A=
++               clock-ranges;=0A=
++               ranges;=0A=
++=0A=
++               /* all timings in nanoseconds */=0A=
++               ti,davinci-cs-ta =3D <0>;=0A=
++               ti,davinci-cs-rhold =3D <7>;=0A=
++               ti,davinci-cs-rstrobe =3D <42>;=0A=
++               ti,davinci-cs-rsetup =3D <14>;=0A=
++               ti,davinci-cs-whold =3D <7>;=0A=
++               ti,davinci-cs-wstrobe =3D <42>;=0A=
++               ti,davinci-cs-wsetup =3D <14>;=0A=
++=0A=
++               nand@0,0x8000000 {=0A=
++                       compatible =3D "ti,davinci-nand";=0A=
++                       reg =3D <0 0x8000000 0x4000000=0A=
++                              1 0x0000000 0x0000100>;=0A=
++=0A=
++                       .. see davinci-nand.txt=0A=
++               };=0A=
++       };=0A=
++=0A=
++       nor:cs0 {=0A=
++               compatible =3D "ti,davinci-cs";=0A=
++               #address-cells =3D <2>;=0A=
++               #size-cells =3D <1>;=0A=
++               clock-ranges;=0A=
++               ranges;=0A=
++=0A=
++               /* all timings in nanoseconds */=0A=
++               ti,davinci-cs-ta =3D <0>;=0A=
++               ti,davinci-cs-rhold =3D <8>;=0A=
++               ti,davinci-cs-rstrobe =3D <40>;=0A=
++               ti,davinci-cs-rsetup =3D <14>;=0A=
++               ti,davinci-cs-whold =3D <7>;=0A=
++               ti,davinci-cs-wstrobe =3D <40>;=0A=
++               ti,davinci-cs-wsetup =3D <14>;=0A=
++               ti,davinci-cs-asize =3D <1>;=0A=
++=0A=
++               flash@0,0x0000000 {=0A=
++                       compatible =3D "cfi-flash";=0A=
++                       reg =3D <0 0x0000000 0x4000000>;=0A=
++=0A=
++                       ...=0A=
++               };=0A=
++       };=0A=
++};=0A=
+--=0A=
+1.7.9.5=0A=
+=0A=
