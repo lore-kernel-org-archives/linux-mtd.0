@@ -1,18 +1,30 @@
-Received: from mail-pb0-x235.google.com ([2607:f8b0:400e:c01::235])
+Received: from mail-pb0-x234.google.com ([2607:f8b0:400e:c01::234])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VfVCm-0004CT-Ex
- for linux-mtd@lists.infradead.org; Sun, 10 Nov 2013 13:37:33 +0000
-Received: by mail-pb0-f53.google.com with SMTP id up7so4054965pbc.40
- for <linux-mtd@lists.infradead.org>; Sun, 10 Nov 2013 05:37:10 -0800 (PST)
+ id 1VfVhK-0004Pt-Pe
+ for linux-mtd@lists.infradead.org; Sun, 10 Nov 2013 14:09:09 +0000
+Received: by mail-pb0-f52.google.com with SMTP id rr4so4076961pbb.25
+ for <linux-mtd@lists.infradead.org>; Sun, 10 Nov 2013 06:08:45 -0800 (PST)
+Date: Sun, 10 Nov 2013 22:06:59 -0500
 From: Huang Shijie <shijie8@gmail.com>
-To: dwmw2@infradead.org
-Subject: [PATCH] mtd: gpmi: wake up the process at the end of the DMA callback
-Date: Sun, 10 Nov 2013 21:28:48 -0500
-Message-Id: <1384136928-4585-1-git-send-email-shijie8@gmail.com>
-In-Reply-To: <1383728007-15564-1-git-send-email-b32955@freescale.com>
-References: <1383728007-15564-1-git-send-email-b32955@freescale.com>
-Cc: Huang Shijie <shijie8@gmail.com>, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, stable@vger.kernel.org, dedekind1@gmail.com
+To: Caizhiyong <caizhiyong@hisilicon.com>
+Subject: Re: [PATCH 2/2] mtd: cmdlinepart: support master name is not set
+ when parser partition
+Message-ID: <20131111030657.GA9406@gmail.com>
+References: <C3050A4DBA34F345975765E43127F10F1C08B3EA@szxeml512-mbs.china.huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <C3050A4DBA34F345975765E43127F10F1C08B3EA@szxeml512-mbs.china.huawei.com>
+Cc: "fengguang.wu@intel.com" <fengguang.wu@intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ "Wanglin \(Albert\)" <albert.wanglin@hisilicon.com>,
+ Randy Dunlap <rdunlap@infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Karel Zak <kzak@redhat.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Brian Norris <computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,106 +34,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-[1] The gpmi uses the nand_command_lp to issue the commands to NAND chips.
-    The gpmi issues a DMA operation with gpmi_cmd_ctrl when it handles
-    a NAND_CMD_NONE control command. So when we read a page(NAND_CMD_READ0)
-    from the NAND, we may send two DMA operations back-to-back.
+On Sat, Nov 09, 2013 at 11:43:06AM +0000, Caizhiyong wrote:
+> From: Cai Zhiyong <caizhiyong@huawei.com>
+> Date: Sat, 9 Nov 2013 17:54:12 +0800
+>  
+> @@ -143,5 +149,5 @@ MODULE_PARM_DESC(mtdparts, "Partitioning specification");
+>  module_param(mtdparts, charp, 0);
+>  
+>  MODULE_LICENSE("GPL");
+> -MODULE_AUTHOR("Marius Groeger <mag@sysgo.de>");
+> +MODULE_AUTHOR("Cai Zhiyong <caizhiyong@huawei.com>");
+I tested this patch with several cases, it is ok.
 
-    If we do not serialize the two DMA operations, we will meet a bug when
+But is it neccessary to change the author line?
 
-    1.1) we enable CONFIG_DMA_API_DEBUG, CONFIG_DMADEVICES_DEBUG,
-         and CONFIG_DEBUG_SG.
-
-    1.2) Use the following commands in an UART console and a SSH console:
-         cmd 1: while true;do dd if=/dev/mtd0 of=/dev/null;done
-         cmd 1: while true;do dd if=/dev/mmcblk0 of=/dev/null;done
-
-    The kernel log shows below:
-    -----------------------------------------------------------------
-    kernel BUG at lib/scatterlist.c:28!
-    Unable to handle kernel NULL pointer dereference at virtual address 00000000
-      .........................
-    [<80044a0c>] (__bug+0x18/0x24) from [<80249b74>] (sg_next+0x48/0x4c)
-    [<80249b74>] (sg_next+0x48/0x4c) from [<80255398>] (debug_dma_unmap_sg+0x170/0x1a4)
-    [<80255398>] (debug_dma_unmap_sg+0x170/0x1a4) from [<8004af58>] (dma_unmap_sg+0x14/0x6c)
-    [<8004af58>] (dma_unmap_sg+0x14/0x6c) from [<8027e594>] (mxs_dma_tasklet+0x18/0x1c)
-    [<8027e594>] (mxs_dma_tasklet+0x18/0x1c) from [<8007d444>] (tasklet_action+0x114/0x164)
-    -----------------------------------------------------------------
-
-    1.3) Assume the two DMA operations is X (first) and Y (second).
-
-         The root cause of the bug:
-	   Assume process P issues DMA X, and sleep on the completion
-	 @this->dma_done. X's tasklet callback is dma_irq_callback. It firstly
-	 wake up the process sleeping on the completion @this->dma_done,
-	 and then trid to unmap the scatterlist S. The waked process P will
-	 issue Y in another ARM core. Y initializes S->sg_magic to zero
-	 with sg_init_one(), while dma_irq_callback is unmapping S at the same
-	 time.
-
-	 See the diagram:
-
-                   ARM core 0              |         ARM core 1
-	 -------------------------------------------------------------
-         (P issues DMA X, then sleep)  --> |
-                                           |
-         (X's tasklet wakes P)         --> |
-                                           |
-                                           | <-- (P begin to issue DMA Y)
-                                           |
-         (X's tasklet unmap the            |
-      scatterlist S with dma_unmap_sg) --> | <-- (Y calls sg_init_one() to init
-                                           |      scatterlist S)
-                                           |
-
-[2] This patch serialize both the X and Y in the following way:
-     Unmap the DMA scatterlist S firstly, and wake up the process at the end
-     of the DMA callback, in such a way, Y will be executed after X.
-
-     After this patch:
-
-                   ARM core 0              |         ARM core 1
-	 -------------------------------------------------------------
-         (P issues DMA X, then sleep)  --> |
-                                           |
-         (X's tasklet wakes P)         --> |
-                                           |
-         (X's tasklet unmap the            |
-      scatterlist S with dma_unmap_sg) --> |
-                                           |
-                                           | <-- (P begin to issue DMA Y)
-                                           |
-                                           | <-- (Y calls sg_init_one() to init
-                                           |     scatterlist S)
-                                           |
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Huang Shijie <shijie8@gmail.com>
----
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 4b6d802..f8dc560 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -394,8 +394,6 @@ static void dma_irq_callback(void *param)
- 	struct gpmi_nand_data *this = param;
- 	struct completion *dma_c = &this->dma_done;
- 
--	complete(dma_c);
--
- 	switch (this->dma_type) {
- 	case DMA_FOR_COMMAND:
- 		dma_unmap_sg(this->dev, &this->cmd_sgl, 1, DMA_TO_DEVICE);
-@@ -420,6 +418,8 @@ static void dma_irq_callback(void *param)
- 	default:
- 		pr_err("in wrong DMA operation.\n");
- 	}
-+
-+	complete(dma_c);
- }
- 
- int start_dma_without_bch_irq(struct gpmi_nand_data *this,
--- 
-1.7.4.4
+thanks
+Huang Shijie
