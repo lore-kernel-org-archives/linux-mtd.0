@@ -1,12 +1,13 @@
 From: "Khoronzhuk, Ivan" <ivan.khoronzhuk@ti.com>
 To: "Shilimkar, Santosh" <santosh.shilimkar@ti.com>, Rob Landley
  <rob@landley.net>, Russell King <linux@arm.linux.org.uk>
-Subject: [PATCH 04/12] mtd: nand: davinci: move bindings under mtd
-Date: Mon, 11 Nov 2013 16:55:09 +0000
-Message-ID: <4F5844B3A985794BA902E12C070812375F8D08@DNCE04.ent.ti.com>
+Subject: [PATCH 02/12] mtd: nand: davinci: check required
+ ti,davinci-chipselect property
+Date: Mon, 11 Nov 2013 16:53:17 +0000
+Message-ID: <4F5844B3A985794BA902E12C070812375F8CEF@DNCE04.ent.ti.com>
 References: <1384187188-5776-1-git-send-email-ivan.khoronzhuk@ti.com>,
- <1384187188-5776-5-git-send-email-ivan.khoronzhuk@ti.com>
-In-Reply-To: <1384187188-5776-5-git-send-email-ivan.khoronzhuk@ti.com>
+ <1384187188-5776-3-git-send-email-ivan.khoronzhuk@ti.com>
+In-Reply-To: <1384187188-5776-3-git-send-email-ivan.khoronzhuk@ti.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
@@ -29,21 +30,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Move bindings under mtd. Do this in order to make davinci-nand=0A=
-driver usable by keystone architecture.=0A=
+The property "ti,davinci-chipselect" is required. So we have to check=0A=
+if it is set.=0A=
 =0A=
 Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>=0A=
 ---=0A=
- .../{arm/davinci/nand.txt =3D> mtd/davinci-nand.txt} |    0=0A=
- 1 file changed, 0 insertions(+), 0 deletions(-)=0A=
- rename Documentation/devicetree/bindings/{arm/davinci/nand.txt =3D> mtd/da=
-vinci-nand.txt} (100%)=0A=
+ drivers/mtd/nand/davinci_nand.c |   10 +++++++++-=0A=
+ 1 file changed, 9 insertions(+), 1 deletion(-)=0A=
 =0A=
-diff --git a/Documentation/devicetree/bindings/arm/davinci/nand.txt b/Docum=
-entation/devicetree/bindings/mtd/davinci-nand.txt=0A=
-similarity index 100%=0A=
-rename from Documentation/devicetree/bindings/arm/davinci/nand.txt=0A=
-rename to Documentation/devicetree/bindings/mtd/davinci-nand.txt=0A=
+diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nan=
+d.c=0A=
+index d87213f..8e1c88e 100644=0A=
+--- a/drivers/mtd/nand/davinci_nand.c=0A=
++++ b/drivers/mtd/nand/davinci_nand.c=0A=
+@@ -541,10 +541,14 @@ static struct davinci_nand_pdata=0A=
+                                GFP_KERNEL);=0A=
+                pdev->dev.platform_data =3D pdata;=0A=
+                if (!pdata)=0A=
+-                       return NULL;=0A=
++                       return ERR_PTR(-ENOMEM);=0A=
++=0A=
+                if (!of_property_read_u32(pdev->dev.of_node,=0A=
+                        "ti,davinci-chipselect", &prop))=0A=
+                        pdev->id =3D prop;=0A=
++               else=0A=
++                       return ERR_PTR(-EINVAL);=0A=
++=0A=
+                if (!of_property_read_u32(pdev->dev.of_node,=0A=
+                        "ti,davinci-mask-ale", &prop))=0A=
+                        pdata->mask_ale =3D prop;=0A=
+@@ -598,6 +602,10 @@ static int __init nand_davinci_probe(struct platform_d=
+evice *pdev)=0A=
+        nand_ecc_modes_t                ecc_mode;=0A=
+=0A=
+        pdata =3D nand_davinci_get_pdata(pdev);=0A=
++       if (IS_ERR(pdata)) {=0A=
++               return PTR_ERR(pdata);=0A=
++       }=0A=
++=0A=
+        /* insist on board-specific configuration */=0A=
+        if (!pdata)=0A=
+                return -ENODEV;=0A=
 --=0A=
 1.7.9.5=0A=
 =0A=
