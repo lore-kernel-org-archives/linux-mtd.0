@@ -1,15 +1,14 @@
 From: "Khoronzhuk, Ivan" <ivan.khoronzhuk@ti.com>
 To: "Shilimkar, Santosh" <santosh.shilimkar@ti.com>, Rob Landley
  <rob@landley.net>, Russell King <linux@arm.linux.org.uk>
-Subject: [PATCH 02/12] mtd: nand: davinci: check required
- ti,davinci-chipselect property
-Date: Mon, 11 Nov 2013 16:53:17 +0000
-Message-ID: <4F5844B3A985794BA902E12C070812375F8CEF@DNCE04.ent.ti.com>
+Subject: [PATCH 05/12] mtd: nand: davinci: extend description of bindings
+Date: Mon, 11 Nov 2013 16:58:54 +0000
+Message-ID: <4F5844B3A985794BA902E12C070812375F8D14@DNCE04.ent.ti.com>
 References: <1384187188-5776-1-git-send-email-ivan.khoronzhuk@ti.com>,
- <1384187188-5776-3-git-send-email-ivan.khoronzhuk@ti.com>
-In-Reply-To: <1384187188-5776-3-git-send-email-ivan.khoronzhuk@ti.com>
+ <1384187188-5776-6-git-send-email-ivan.khoronzhuk@ti.com>
+In-Reply-To: <1384187188-5776-6-git-send-email-ivan.khoronzhuk@ti.com>
 Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="Windows-1252"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 Cc: Mark Rutland <mark.rutland@arm.com>,
@@ -30,47 +29,127 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The property "ti,davinci-chipselect" is required. So we have to check=0A=
-if it is set.=0A=
+Extend bindings for davinci_nand driver to be more clear.=0A=
 =0A=
 Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>=0A=
 ---=0A=
- drivers/mtd/nand/davinci_nand.c |   10 +++++++++-=0A=
- 1 file changed, 9 insertions(+), 1 deletion(-)=0A=
+ .../devicetree/bindings/mtd/davinci-nand.txt       |   77 ++++++++++++++--=
+----=0A=
+ 1 file changed, 54 insertions(+), 23 deletions(-)=0A=
 =0A=
-diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nan=
-d.c=0A=
-index d87213f..8e1c88e 100644=0A=
---- a/drivers/mtd/nand/davinci_nand.c=0A=
-+++ b/drivers/mtd/nand/davinci_nand.c=0A=
-@@ -541,10 +541,14 @@ static struct davinci_nand_pdata=0A=
-                                GFP_KERNEL);=0A=
-                pdev->dev.platform_data =3D pdata;=0A=
-                if (!pdata)=0A=
--                       return NULL;=0A=
-+                       return ERR_PTR(-ENOMEM);=0A=
-+=0A=
-                if (!of_property_read_u32(pdev->dev.of_node,=0A=
-                        "ti,davinci-chipselect", &prop))=0A=
-                        pdev->id =3D prop;=0A=
-+               else=0A=
-+                       return ERR_PTR(-EINVAL);=0A=
-+=0A=
-                if (!of_property_read_u32(pdev->dev.of_node,=0A=
-                        "ti,davinci-mask-ale", &prop))=0A=
-                        pdata->mask_ale =3D prop;=0A=
-@@ -598,6 +602,10 @@ static int __init nand_davinci_probe(struct platform_d=
-evice *pdev)=0A=
-        nand_ecc_modes_t                ecc_mode;=0A=
+diff --git a/Documentation/devicetree/bindings/mtd/davinci-nand.txt b/Docum=
+entation/devicetree/bindings/mtd/davinci-nand.txt=0A=
+index 3545ea7..d2a3fc0 100644=0A=
+--- a/Documentation/devicetree/bindings/mtd/davinci-nand.txt=0A=
++++ b/Documentation/devicetree/bindings/mtd/davinci-nand.txt=0A=
+@@ -1,36 +1,67 @@=0A=
+-* Texas Instruments Davinci NAND=0A=
++Device tree bindings for Texas instruments Davinci NAND controller=0A=
 =0A=
-        pdata =3D nand_davinci_get_pdata(pdev);=0A=
-+       if (IS_ERR(pdata)) {=0A=
-+               return PTR_ERR(pdata);=0A=
-+       }=0A=
+-This file provides information, what the device node for the=0A=
+-davinci nand interface contain.=0A=
++This file provides information, what the device node for the davinci NAND=
+=0A=
++interface contains.=0A=
 +=0A=
-        /* insist on board-specific configuration */=0A=
-        if (!pdata)=0A=
-                return -ENODEV;=0A=
++Documentation:=0A=
++Davinci DM646x - http://www.ti.com/lit/ug/sprueq7c/sprueq7c.pdf=0A=
+=0A=
+ Required properties:=0A=
+-- compatible: "ti,davinci-nand";=0A=
+-- reg : contain 2 offset/length values:=0A=
+-        - offset and length for the access window=0A=
+-        - offset and length for accessing the aemif control registers=0A=
+-- ti,davinci-chipselect: Indicates on the davinci_nand driver which=0A=
+-                         chipselect is used for accessing the nand.=0A=
++=0A=
++- compatible:                  "ti,davinci-nand"=0A=
++=0A=
++- reg:                         Contains 2 offset/length values:=0A=
++                               - offset and length for the access window.=
+=0A=
++                               - offset and length for accessing the AEMIF=
+=0A=
++                               control registers.=0A=
++=0A=
++- ti,davinci-chipselect:       number of chipselect. Indicates on the=0A=
++                               davinci_nand driver which chipselect is use=
+d=0A=
++                               for accessing the nand.=0A=
++                               Can be in the range [0-3].=0A=
+=0A=
+ Recommended properties :=0A=
+-- ti,davinci-mask-ale: mask for ale=0A=
+-- ti,davinci-mask-cle: mask for cle=0A=
+-- ti,davinci-mask-chipsel: mask for chipselect=0A=
+-- ti,davinci-ecc-mode: ECC mode valid values for davinci driver:=0A=
+-               - "none"=0A=
+-               - "soft"=0A=
+-               - "hw"=0A=
+-- ti,davinci-ecc-bits: used ECC bits, currently supported 1 or 4.=0A=
+-- ti,davinci-nand-buswidth: buswidth 8 or 16=0A=
+-- ti,davinci-nand-use-bbt: use flash based bad block table support.=0A=
+-=0A=
+-nand device bindings may contain additional sub-nodes describing=0A=
+-partitions of the address space. See partition.txt for more detail.=0A=
++=0A=
++- ti,davinci-mask-ale:         mask for ALE. Needed for executing address=
+=0A=
++                               phase. These offset will be added to the ba=
+se=0A=
++                               address for the chip select space the NAND =
+Flash=0A=
++                               device is connected to.=0A=
++                               If not set equal to 0x08.=0A=
++=0A=
++- ti,davinci-mask-cle:         mask for CLE. Needed for executing command=
+=0A=
++                               phase. These offset will be added to the ba=
+se=0A=
++                               address for the chip select space the NAND =
+Flash=0A=
++                               device is connected to.=0A=
++                               If not set equal to 0x10.=0A=
++=0A=
++- ti,davinci-mask-chipsel:     mask for chipselect address. Needed to mask=
+=0A=
++                               addresses for given chipselect.=0A=
++=0A=
++- ti,davinci-ecc-mode:         operation mode of the NAND ecc mode. ECC mo=
+de=0A=
++                               valid values for davinci driver:=0A=
++                               - "none"=0A=
++                               - "soft"=0A=
++                               - "hw"=0A=
++=0A=
++- ti,davinci-ecc-bits:         used ECC bits, currently supported 1 or 4.=
+=0A=
++=0A=
++- ti,davinci-nand-buswidth:    buswidth 8 or 16.=0A=
++=0A=
++- ti,davinci-nand-use-bbt:     use flash based bad block table support. OO=
+B=0A=
++                               identifier is saved in OOB area.=0A=
++=0A=
++Nand device bindings may contain additional sub-nodes describing partition=
+s of=0A=
++the address space. See partition.txt for more detail. The NAND Flash timin=
+g=0A=
++values must be programmed in the chip select=92s node of AEMIF=0A=
++memory-controller (see Documentation/devicetree/bindings/memory-controller=
+s/=0A=
++davinci-aemif.txt).=0A=
+=0A=
+ Example(da850 EVM ):=0A=
++=0A=
+ nand_cs3@62000000 {=0A=
+        compatible =3D "ti,davinci-nand";=0A=
+        reg =3D <0x62000000 0x807ff=0A=
+-               0x68000000 0x8000>;=0A=
++              0x68000000 0x8000>;=0A=
+        ti,davinci-chipselect =3D <1>;=0A=
+        ti,davinci-mask-ale =3D <0>;=0A=
+        ti,davinci-mask-cle =3D <0>;=0A=
 --=0A=
 1.7.9.5=0A=
 =0A=
