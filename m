@@ -1,14 +1,25 @@
-Received: from softlayer.compulab.co.il ([50.23.254.55] helo=compulab.co.il)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VfyVe-0004e4-4Q
- for linux-mtd@lists.infradead.org; Mon, 11 Nov 2013 20:54:58 +0000
-From: Igor Grinberg <grinberg@compulab.co.il>
-To: David Woodhouse <dwmw2@infradead.org>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Subject: [PATCH] mtd: m25p80: add support for m25px16
-Date: Mon, 11 Nov 2013 22:55:29 +0200
-Message-Id: <1384203329-24998-1-git-send-email-grinberg@compulab.co.il>
-Cc: linux-mtd@lists.infradead.org, Igor Grinberg <grinberg@compulab.co.il>
+Received: from mail.linuxfoundation.org ([140.211.169.12])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Vg10F-0005FO-I3
+ for linux-mtd@lists.infradead.org; Mon, 11 Nov 2013 23:34:46 +0000
+Date: Mon, 11 Nov 2013 15:34:20 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Caizhiyong <caizhiyong@hisilicon.com>
+Subject: Re: [PATCH] block: cmdline-parser: perfect cmdline format checking
+Message-Id: <20131111153420.d4e9c4ef2a90e70bfb01fd83@linux-foundation.org>
+In-Reply-To: <C3050A4DBA34F345975765E43127F10F1C08B3FB@szxeml512-mbs.china.huawei.com>
+References: <C3050A4DBA34F345975765E43127F10F1C08B3FB@szxeml512-mbs.china.huawei.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: "fengguang.wu@intel.com" <fengguang.wu@intel.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Randy Dunlap <rdunlap@infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Karel Zak <kzak@redhat.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>,
+ "Wanglin \(Albert\)" <albert.wanglin@hisilicon.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,24 +29,652 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add support for Micron m25px16 spi flash chip.
+On Sat, 9 Nov 2013 11:45:14 +0000 Caizhiyong <caizhiyong@hisilicon.com> wro=
+te:
 
-Signed-off-by: Igor Grinberg <grinberg@compulab.co.il>
----
- drivers/mtd/devices/m25p80.c | 1 +
- 1 file changed, 1 insertion(+)
+> From: Cai Zhiyong <caizhiyong@huawei.com>
+> Date: Sat, 9 Nov 2013 19:27:38 +0800
+> Subject: [PATCH] block: cmdline-parser: perfect cmdline format checking
+>=20
+>  -Fix compile warning with value and function undeclared.
+>   this reported by <fengguang.wu@intel.com> and
+>   Randy Dunlap <rdunlap@infradead.org>
+>=20
+>  -perfect cmdline format checking, make the error information clear
+>   for understand, make this lib fully equivalent to the old parser
+>   in drivers/mtd/cmdlinepart.c
+>=20
+> ...
+>
+> +#define PARSER                       "cmdline-parser: "
+> ...
+> -			pr_warn("cmdline partition size is invalid.");
+> +			pr_warn(PARSER "partition '%s' size '0x%llx' too small.",
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 6bc9618..1da91c8 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -855,6 +855,7 @@ static const struct spi_device_id m25p_ids[] = {
- 	{ "m25pe80", INFO(0x208014,  0, 64 * 1024, 16,       0) },
- 	{ "m25pe16", INFO(0x208015,  0, 64 * 1024, 32, SECT_4K) },
- 
-+	{ "m25px16",    INFO(0x207115,  0, 64 * 1024, 32, SECT_4K) },
- 	{ "m25px32",    INFO(0x207116,  0, 64 * 1024, 64, SECT_4K) },
- 	{ "m25px32-s0", INFO(0x207316,  0, 64 * 1024, 64, SECT_4K) },
- 	{ "m25px32-s1", INFO(0x206316,  0, 64 * 1024, 64, SECT_4K) },
--- 
-1.8.1.5
+You can use the standard pr_fmt() mechanism instead of this.
+
+
+
+This was a large change from the previous version!
+
+ block/cmdline-parser.c         |   86 +++++--
+ drivers/mtd/Kconfig            |    1=20
+ drivers/mtd/cmdlinepart.c      |  345 +++++++++++++++++++++++++++----
+ include/linux/cmdline-parser.h |    1=20
+ 4 files changed, 371 insertions(+), 62 deletions(-)
+
+diff -puN block/cmdline-parser.c~mtd-cmdlinepart-use-cmdline-partition-pars=
+er-lib-fix block/cmdline-parser.c
+--- a/block/cmdline-parser.c~mtd-cmdlinepart-use-cmdline-partition-parser-l=
+ib-fix
++++ a/block/cmdline-parser.c
+@@ -6,10 +6,15 @@
+  */
+ #include <linux/export.h>
+ #include <linux/cmdline-parser.h>
++#include <linux/slab.h>
++
++#define PARSER                       "cmdline-parser: "
+=20
+ static int parse_subpart(struct cmdline_subpart **subpart, char *partdef)
+ {
+ 	int ret =3D 0;
++	int lastpart =3D 0;
++	char *partorg =3D partdef;
+ 	struct cmdline_subpart *new_subpart;
+=20
+ 	*subpart =3D NULL;
+@@ -21,10 +26,12 @@ static int parse_subpart(struct cmdline_
+ 	if (*partdef =3D=3D '-') {
+ 		new_subpart->size =3D (sector_t)(~0ULL);
+ 		partdef++;
++		lastpart =3D 1;
+ 	} else {
+ 		new_subpart->size =3D (sector_t)memparse(partdef, &partdef);
+ 		if (new_subpart->size < (sector_t)PAGE_SIZE) {
+-			pr_warn("cmdline partition size is invalid.");
++			pr_warn(PARSER "partition '%s' size '0x%llx' too small.",
++				partorg, new_subpart->size);
+ 			ret =3D -EINVAL;
+ 			goto fail;
+ 		}
+@@ -42,13 +49,19 @@ static int parse_subpart(struct cmdline_
+ 		char *next =3D strchr(++partdef, ')');
+=20
+ 		if (!next) {
+-			pr_warn("cmdline partition format is invalid.");
++			pr_warn(PARSER "partition '%s' has no closing ')' "
++				"found in partition name.", partorg);
+ 			ret =3D -EINVAL;
+ 			goto fail;
+ 		}
+=20
+-		length =3D min_t(int, next - partdef,
+-			       sizeof(new_subpart->name) - 1);
++		length =3D (int)(next - partdef);
++		if (length > sizeof(new_subpart->name) - 1) {
++			pr_warn(PARSER "partition '%s' partition name too long,"
++				" truncating.", partorg);
++			length =3D sizeof(new_subpart->name) - 1;
++		}
++
+ 		strncpy(new_subpart->name, partdef, length);
+ 		new_subpart->name[length] =3D '\0';
+=20
+@@ -68,8 +81,15 @@ static int parse_subpart(struct cmdline_
+ 		partdef +=3D 2;
+ 	}
+=20
++	if (*partdef) {
++		pr_warn(PARSER "partition '%s' has bad character '%c' after"
++			" partition.", partorg, *partdef);
++		ret =3D -EINVAL;
++		goto fail;
++	}
++
+ 	*subpart =3D new_subpart;
+-	return 0;
++	return lastpart;
+ fail:
+ 	kfree(new_subpart);
+ 	return ret;
+@@ -86,14 +106,13 @@ static void free_subpart(struct cmdline_
+ 	}
+ }
+=20
+-static int parse_parts(struct cmdline_parts **parts, const char *bdevdef)
++static int parse_parts(struct cmdline_parts **parts, char *bdevdef)
+ {
+ 	int ret =3D -EINVAL;
+ 	char *next;
+ 	int length;
+ 	struct cmdline_subpart **next_subpart;
+ 	struct cmdline_parts *newparts;
+-	char buf[BDEVNAME_SIZE + 32 + 4];
+=20
+ 	*parts =3D NULL;
+=20
+@@ -102,14 +121,21 @@ static int parse_parts(struct cmdline_pa
+ 		return -ENOMEM;
+=20
+ 	next =3D strchr(bdevdef, ':');
+-	if (!next) {
+-		pr_warn("cmdline partition has no block device.");
++	if (!next || next =3D=3D bdevdef) {
++		pr_warn(PARSER "partition '%s' has no block device.", bdevdef);
+ 		goto fail;
+ 	}
+=20
+-	length =3D min_t(int, next - bdevdef, sizeof(newparts->name) - 1);
++	length =3D (int)(next - bdevdef);
++	if (length > sizeof(newparts->name) - 1) {
++		pr_warn(PARSER "partition '%s' device name too long, "
++			"truncating.", bdevdef);
++		length =3D sizeof(newparts->name) - 1;
++	}
++
+ 	strncpy(newparts->name, bdevdef, length);
+ 	newparts->name[length] =3D '\0';
++
+ 	newparts->nr_subparts =3D 0;
+=20
+ 	next_subpart =3D &newparts->subpart;
+@@ -117,23 +143,26 @@ static int parse_parts(struct cmdline_pa
+ 	while (next && *(++next)) {
+ 		bdevdef =3D next;
+ 		next =3D strchr(bdevdef, ',');
++		if (next)
++			*next =3D '\0';
+=20
+-		length =3D (!next) ? (sizeof(buf) - 1) :
+-			min_t(int, next - bdevdef, sizeof(buf) - 1);
+-
+-		strncpy(buf, bdevdef, length);
+-		buf[length] =3D '\0';
+-
+-		ret =3D parse_subpart(next_subpart, buf);
+-		if (ret)
++		ret =3D parse_subpart(next_subpart, bdevdef);
++		if (ret < 0) {
+ 			goto fail;
++		} else if (ret > 0 && next) {
++			pr_warn(PARSER "no partitions allowed after a "
++				"fill-up partition.");
++			ret =3D -EINVAL;
++			goto fail;
++		}
+=20
+ 		newparts->nr_subparts++;
+ 		next_subpart =3D &(*next_subpart)->next_subpart;
+ 	}
+=20
+ 	if (!newparts->subpart) {
+-		pr_warn("cmdline partition has no valid partition.");
++		pr_warn(PARSER "block device '%s' has no valid"
++			" partition.", newparts->name);
+ 		ret =3D -EINVAL;
+ 		goto fail;
+ 	}
+@@ -192,7 +221,7 @@ int cmdline_parts_parse(struct cmdline_p
+ 	}
+=20
+ 	if (!*parts) {
+-		pr_warn("cmdline partition has no valid partition.");
++		pr_warn(PARSER "no found valid partition.");
+ 		ret =3D -EINVAL;
+ 		goto fail;
+ 	}
+@@ -237,11 +266,24 @@ int cmdline_parts_set(struct cmdline_par
+ 		else
+ 			from =3D subpart->from;
+=20
+-		if (from >=3D disk_size)
++		if (subpart->name[0] =3D=3D '\0')
++			snprintf(subpart->name, sizeof(subpart->name),
++				 "partition%03d", slot);
++
++		if (from >=3D disk_size) {
++			pr_warn(PARSER "partition '%s' offset exceeds device"
++				" '%s' size '0x%llx', ignoring.",
++				subpart->name, parts->name, disk_size);
+ 			break;
++		}
+=20
+-		if (subpart->size > (disk_size - from))
++		if (subpart->size > (disk_size - from)) {
++			if (subpart->size !=3D (sector_t)(~0ULL))
++				pr_warn(PARSER "partition '%s' size exceeds "
++					"device '%s' size '0x%llx', truncating.",
++					subpart->name, parts->name, disk_size);
+ 			subpart->size =3D disk_size - from;
++		}
+=20
+ 		from +=3D subpart->size;
+=20
+diff -puN drivers/mtd/Kconfig~mtd-cmdlinepart-use-cmdline-partition-parser-=
+lib-fix drivers/mtd/Kconfig
+--- a/drivers/mtd/Kconfig~mtd-cmdlinepart-use-cmdline-partition-parser-lib-=
+fix
++++ a/drivers/mtd/Kconfig
+@@ -75,7 +75,6 @@ endif # MTD_REDBOOT_PARTS
+=20
+ config MTD_CMDLINE_PARTS
+ 	tristate "Command line partition table parsing"
+-	select BLK_CMDLINE_PARSER
+ 	depends on MTD
+ 	---help---
+ 	  Allow generic configuration of the MTD partition tables via the kernel
+diff -puN drivers/mtd/cmdlinepart.c~mtd-cmdlinepart-use-cmdline-partition-p=
+arser-lib-fix drivers/mtd/cmdlinepart.c
+--- a/drivers/mtd/cmdlinepart.c~mtd-cmdlinepart-use-cmdline-partition-parse=
+r-lib-fix
++++ a/drivers/mtd/cmdlinepart.c
+@@ -47,79 +47,344 @@
+  * 1 NOR Flash with 2 partitions, 1 NAND with one
+  * edb7312-nor:256k(ARMboot)ro,-(root);edb7312-nand:-(home)
+  */
+- /*
+-  * Copyright =A9 2013 Cai Zhiyong <caizhiyong@huawei.com>
+-  * Rewrite the cmdline parser code, adjust it to a library-style code.
+-  * this module only use the cmdline parser lib.
+-  */
+=20
+ #include <linux/kernel.h>
++#include <linux/slab.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/module.h>
+ #include <linux/err.h>
+-#include <linux/cmdline-parser.h>
+=20
++/* error message prefix */
++#define ERRP "mtd: "
++
++/* debug macro */
++#if 0
++#define dbg(x) do { printk("DEBUG-CMDLINE-PART: "); printk x; } while(0)
++#else
++#define dbg(x)
++#endif
++
++
++/* special size referring to all the remaining space in a partition */
++#define SIZE_REMAINING ULLONG_MAX
++#define OFFSET_CONTINUOUS ULLONG_MAX
++
++struct cmdline_mtd_partition {
++	struct cmdline_mtd_partition *next;
++	char *mtd_id;
++	int num_parts;
++	struct mtd_partition *parts;
++};
++
++/* mtdpart_setup() parses into here */
++static struct cmdline_mtd_partition *partitions;
++
++/* the command line passed to mtdpart_setup() */
+ static char *mtdparts;
+-static struct cmdline_parts *mtd_cmdline_parts;
++static char *cmdline;
++static int cmdline_parsed;
+=20
+-static int add_part(int slot, struct cmdline_subpart *subpart, void *param)
++/*
++ * Parse one partition definition for an MTD. Since there can be many
++ * comma separated partition definitions, this function calls itself
++ * recursively until no more partition definitions are found. Nice side
++ * effect: the memory to keep the mtd_partition structs and the names
++ * is allocated upon the last definition being found. At that point the
++ * syntax has been verified ok.
++ */
++static struct mtd_partition * newpart(char *s,
++				      char **retptr,
++				      int *num_parts,
++				      int this_part,
++				      unsigned char **extra_mem_ptr,
++				      int extra_mem_size)
+ {
+-	struct mtd_partition *mtdpart =3D &((struct mtd_partition *)param)[slot];
++	struct mtd_partition *parts;
++	unsigned long long size, offset =3D OFFSET_CONTINUOUS;
++	char *name;
++	int name_len;
++	unsigned char *extra_mem;
++	char delim;
++	unsigned int mask_flags;
++
++	/* fetch the partition size */
++	if (*s =3D=3D '-') {
++		/* assign all remaining space to this partition */
++		size =3D SIZE_REMAINING;
++		s++;
++	} else {
++		size =3D memparse(s, &s);
++		if (size < PAGE_SIZE) {
++			printk(KERN_ERR ERRP "partition size too small (%llx)\n",
++			       size);
++			return ERR_PTR(-EINVAL);
++		}
++	}
+=20
+-	mtdpart->offset =3D subpart->from;
+-	mtdpart->size =3D subpart->size;
+-	mtdpart->name =3D subpart->name;
+-	mtdpart->mask_flags =3D 0;
++	/* fetch partition name and flags */
++	mask_flags =3D 0; /* this is going to be a regular partition */
++	delim =3D 0;
++
++	/* check for offset */
++	if (*s =3D=3D '@') {
++		s++;
++		offset =3D memparse(s, &s);
++	}
+=20
+-	if (subpart->flags & PF_RDONLY)
+-		mtdpart->mask_flags |=3D MTD_WRITEABLE;
++	/* now look for name */
++	if (*s =3D=3D '(')
++		delim =3D ')';
++
++	if (delim) {
++		char *p;
++
++		name =3D ++s;
++		p =3D strchr(name, delim);
++		if (!p) {
++			printk(KERN_ERR ERRP "no closing %c found in partition name\n", delim);
++			return ERR_PTR(-EINVAL);
++		}
++		name_len =3D p - name;
++		s =3D p + 1;
++	} else {
++		name =3D NULL;
++		name_len =3D 13; /* Partition_000 */
++	}
+=20
+-	if (subpart->flags & PF_POWERUP_LOCK)
+-		mtdpart->mask_flags |=3D MTD_POWERUP_LOCK;
++	/* record name length for memory allocation later */
++	extra_mem_size +=3D name_len + 1;
+=20
+-	return 0;
++	/* test for options */
++	if (strncmp(s, "ro", 2) =3D=3D 0) {
++		mask_flags |=3D MTD_WRITEABLE;
++		s +=3D 2;
++	}
++
++	/* if lk is found do NOT unlock the MTD partition*/
++	if (strncmp(s, "lk", 2) =3D=3D 0) {
++		mask_flags |=3D MTD_POWERUP_LOCK;
++		s +=3D 2;
++	}
++
++	/* test if more partitions are following */
++	if (*s =3D=3D ',') {
++		if (size =3D=3D SIZE_REMAINING) {
++			printk(KERN_ERR ERRP "no partitions allowed after a fill-up partition\n=
+");
++			return ERR_PTR(-EINVAL);
++		}
++		/* more partitions follow, parse them */
++		parts =3D newpart(s + 1, &s, num_parts, this_part + 1,
++				&extra_mem, extra_mem_size);
++		if (IS_ERR(parts))
++			return parts;
++	} else {
++		/* this is the last partition: allocate space for all */
++		int alloc_size;
++
++		*num_parts =3D this_part + 1;
++		alloc_size =3D *num_parts * sizeof(struct mtd_partition) +
++			     extra_mem_size;
++
++		parts =3D kzalloc(alloc_size, GFP_KERNEL);
++		if (!parts)
++			return ERR_PTR(-ENOMEM);
++		extra_mem =3D (unsigned char *)(parts + *num_parts);
++	}
++
++	/* enter this partition (offset will be calculated later if it is zero at=
+ this point) */
++	parts[this_part].size =3D size;
++	parts[this_part].offset =3D offset;
++	parts[this_part].mask_flags =3D mask_flags;
++	if (name)
++		strlcpy(extra_mem, name, name_len + 1);
++	else
++		sprintf(extra_mem, "Partition_%03d", this_part);
++	parts[this_part].name =3D extra_mem;
++	extra_mem +=3D name_len + 1;
++
++	dbg(("partition %d: name <%s>, offset %llx, size %llx, mask flags %x\n",
++	     this_part, parts[this_part].name, parts[this_part].offset,
++	     parts[this_part].size, parts[this_part].mask_flags));
++
++	/* return (updated) pointer to extra_mem memory */
++	if (extra_mem_ptr)
++		*extra_mem_ptr =3D extra_mem;
++
++	/* return (updated) pointer command line string */
++	*retptr =3D s;
++
++	/* return partition table */
++	return parts;
+ }
+=20
+-static int __init mtdpart_setup(char *s)
++/*
++ * Parse the command line.
++ */
++static int mtdpart_setup_real(char *s)
+ {
+-	mtdparts =3D s;
+-	return 1;
++	cmdline_parsed =3D 1;
++
++	for( ; s !=3D NULL; )
++	{
++		struct cmdline_mtd_partition *this_mtd;
++		struct mtd_partition *parts;
++		int mtd_id_len, num_parts;
++		char *p, *mtd_id;
++
++		mtd_id =3D s;
++
++		/* fetch <mtd-id> */
++		p =3D strchr(s, ':');
++		if (!p) {
++			printk(KERN_ERR ERRP "no mtd-id\n");
++			return -EINVAL;
++		}
++		mtd_id_len =3D p - mtd_id;
++
++		dbg(("parsing <%s>\n", p+1));
++
++		/*
++		 * parse one mtd. have it reserve memory for the
++		 * struct cmdline_mtd_partition and the mtd-id string.
++		 */
++		parts =3D newpart(p + 1,		/* cmdline */
++				&s,		/* out: updated cmdline ptr */
++				&num_parts,	/* out: number of parts */
++				0,		/* first partition */
++				(unsigned char**)&this_mtd, /* out: extra mem */
++				mtd_id_len + 1 + sizeof(*this_mtd) +
++				sizeof(void*)-1 /*alignment*/);
++		if (IS_ERR(parts)) {
++			/*
++			 * An error occurred. We're either:
++			 * a) out of memory, or
++			 * b) in the middle of the partition spec
++			 * Either way, this mtd is hosed and we're
++			 * unlikely to succeed in parsing any more
++			 */
++			 return PTR_ERR(parts);
++		 }
++
++		/* align this_mtd */
++		this_mtd =3D (struct cmdline_mtd_partition *)
++				ALIGN((unsigned long)this_mtd, sizeof(void *));
++		/* enter results */
++		this_mtd->parts =3D parts;
++		this_mtd->num_parts =3D num_parts;
++		this_mtd->mtd_id =3D (char*)(this_mtd + 1);
++		strlcpy(this_mtd->mtd_id, mtd_id, mtd_id_len + 1);
++
++		/* link into chain */
++		this_mtd->next =3D partitions;
++		partitions =3D this_mtd;
++
++		dbg(("mtdid=3D<%s> num_parts=3D<%d>\n",
++		     this_mtd->mtd_id, this_mtd->num_parts));
++
++
++		/* EOS - we're done */
++		if (*s =3D=3D 0)
++			break;
++
++		/* does another spec follow? */
++		if (*s !=3D ';') {
++			printk(KERN_ERR ERRP "bad character after partition (%c)\n", *s);
++			return -EINVAL;
++		}
++		s++;
++	}
++
++	return 0;
+ }
+-__setup("mtdparts=3D", mtdpart_setup);
+=20
++/*
++ * Main function to be called from the MTD mapping driver/device to
++ * obtain the partitioning information. At this point the command line
++ * arguments will actually be parsed and turned to struct mtd_partition
++ * information. It returns partitions for the requested mtd device, or
++ * the first one in the chain if a NULL mtd_id is passed in.
++ */
+ static int parse_cmdline_partitions(struct mtd_info *master,
+ 				    struct mtd_partition **pparts,
+ 				    struct mtd_part_parser_data *data)
+ {
+-	struct cmdline_parts *parts;
+-
+-	if (mtdparts) {
+-		if (mtd_cmdline_parts)
+-			cmdline_parts_free(&mtd_cmdline_parts);
++	unsigned long long offset;
++	int i, err;
++	struct cmdline_mtd_partition *part;
++	const char *mtd_id =3D master->name;
++
++	/* parse command line */
++	if (!cmdline_parsed) {
++		err =3D mtdpart_setup_real(cmdline);
++		if (err)
++			return err;
++	}
+=20
+-		if (cmdline_parts_parse(&mtd_cmdline_parts, mtdparts)) {
+-			mtdparts =3D NULL;
+-			return -EINVAL;
+-		}
+-		mtdparts =3D NULL;
++	/*
++	 * Search for the partition definition matching master->name.
++	 * If master->name is not set, stop at first partition definition.
++	 */
++	for (part =3D partitions; part; part =3D part->next) {
++		if ((!mtd_id) || (!strcmp(part->mtd_id, mtd_id)))
++			break;
+ 	}
+=20
+-	if (!mtd_cmdline_parts)
++	if (!part)
+ 		return 0;
+=20
+-	parts =3D cmdline_parts_find(mtd_cmdline_parts, master->name);
+-	if (!parts)
+-		return 0;
++	for (i =3D 0, offset =3D 0; i < part->num_parts; i++) {
++		if (part->parts[i].offset =3D=3D OFFSET_CONTINUOUS)
++			part->parts[i].offset =3D offset;
++		else
++			offset =3D part->parts[i].offset;
++
++		if (part->parts[i].size =3D=3D SIZE_REMAINING)
++			part->parts[i].size =3D master->size - offset;
++
++		if (offset + part->parts[i].size > master->size) {
++			printk(KERN_WARNING ERRP
++			       "%s: partitioning exceeds flash size, truncating\n",
++			       part->mtd_id);
++			part->parts[i].size =3D master->size - offset;
++		}
++		offset +=3D part->parts[i].size;
++
++		if (part->parts[i].size =3D=3D 0) {
++			printk(KERN_WARNING ERRP
++			       "%s: skipping zero sized partition\n",
++			       part->mtd_id);
++			part->num_parts--;
++			memmove(&part->parts[i], &part->parts[i + 1],
++				sizeof(*part->parts) * (part->num_parts - i));
++			i--;
++		}
++	}
+=20
+-	*pparts =3D kzalloc(sizeof(**pparts) * parts->nr_subparts, GFP_KERNEL);
++	*pparts =3D kmemdup(part->parts, sizeof(*part->parts) * part->num_parts,
++			  GFP_KERNEL);
+ 	if (!*pparts)
+ 		return -ENOMEM;
+=20
+-	return cmdline_parts_set(parts, master->size, 0, add_part,
+-				 (void *)*pparts);
++	return part->num_parts;
+ }
+=20
++
++/*
++ * This is the handler for our kernel parameter, called from
++ * main.c::checksetup(). Note that we can not yet kmalloc() anything,
++ * so we only save the commandline for later processing.
++ *
++ * This function needs to be visible for bootloaders.
++ */
++static int __init mtdpart_setup(char *s)
++{
++	cmdline =3D s;
++	return 1;
++}
++
++__setup("mtdparts=3D", mtdpart_setup);
++
+ static struct mtd_part_parser cmdline_parser =3D {
+ 	.owner =3D THIS_MODULE,
+ 	.parse_fn =3D parse_cmdline_partitions,
+@@ -128,6 +393,8 @@ static struct mtd_part_parser cmdline_pa
+=20
+ static int __init cmdline_parser_init(void)
+ {
++	if (mtdparts)
++		mtdpart_setup(mtdparts);
+ 	return register_mtd_parser(&cmdline_parser);
+ }
+=20
+diff -puN include/linux/cmdline-parser.h~mtd-cmdlinepart-use-cmdline-partit=
+ion-parser-lib-fix include/linux/cmdline-parser.h
+--- a/include/linux/cmdline-parser.h~mtd-cmdlinepart-use-cmdline-partition-=
+parser-lib-fix
++++ a/include/linux/cmdline-parser.h
+@@ -9,6 +9,7 @@
+=20
+ #include <linux/fs.h>
+ #include <linux/blkdev.h>
++#include <linux/fs.h>
+=20
+ /* partition flags */
+ #define PF_RDONLY                   0x01 /* Device is read only */
+_
