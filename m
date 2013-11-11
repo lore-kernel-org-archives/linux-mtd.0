@@ -1,25 +1,21 @@
-From: "Khoronzhuk, Ivan" <ivan.khoronzhuk@ti.com>
-To: "Shilimkar, Santosh" <santosh.shilimkar@ti.com>, Rob Landley
- <rob@landley.net>, Russell King <linux@arm.linux.org.uk>
-Subject: [PATCH 12/12] arm: dts: keystone: add AEMIF/NAND device entry
-Date: Mon, 11 Nov 2013 17:13:01 +0000
-Message-ID: <4F5844B3A985794BA902E12C070812375F8D71@DNCE04.ent.ti.com>
-References: <1384187188-5776-1-git-send-email-ivan.khoronzhuk@ti.com>,
- <1384187188-5776-13-git-send-email-ivan.khoronzhuk@ti.com>
-In-Reply-To: <1384187188-5776-13-git-send-email-ivan.khoronzhuk@ti.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail-ie0-x234.google.com ([2607:f8b0:4001:c03::234])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Vfw9N-0000fn-Hu
+ for linux-mtd@lists.infradead.org; Mon, 11 Nov 2013 18:23:50 +0000
+Received: by mail-ie0-f180.google.com with SMTP id qd12so160109ieb.11
+ for <linux-mtd@lists.infradead.org>; Mon, 11 Nov 2013 10:23:27 -0800 (PST)
+Date: Mon, 11 Nov 2013 10:23:24 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Fabio Estevam <festevam@gmail.com>, Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH] mtd: gpmi: Fix NULL pointer dereference
+Message-ID: <20131111182324.GE20061@ld-irv-0074.broadcom.com>
+References: <1384189727-19563-1-git-send-email-festevam@gmail.com>
 MIME-Version: 1.0
-Cc: Mark Rutland <mark.rutland@arm.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "Strashko,
- Grygorii" <grygorii.strashko@ti.com>, Pawel Moll <pawel.moll@arm.com>,
- Stephen Warren <swarren@wwwdotorg.org>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@kernel.crashing.org>, Rob Herring <rob.herring@calxeda.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1384189727-19563-1-git-send-email-festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, linux-mtd@lists.infradead.org,
+ stable@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,94 +25,124 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add AEMIF/NAND device entry.=0A=
-=0A=
-Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>=0A=
----=0A=
- arch/arm/boot/dts/keystone.dts |   63 ++++++++++++++++++++++++++++++++++++=
-++++=0A=
- 1 file changed, 63 insertions(+)=0A=
-=0A=
-diff --git a/arch/arm/boot/dts/keystone.dts b/arch/arm/boot/dts/keystone.dt=
-s=0A=
-index 100bdf5..998da98 100644=0A=
---- a/arch/arm/boot/dts/keystone.dts=0A=
-+++ b/arch/arm/boot/dts/keystone.dts=0A=
-@@ -179,5 +179,68 @@=0A=
-                        interrupts =3D <GIC_SPI 300 IRQ_TYPE_EDGE_RISING>;=
-=0A=
-                        clocks =3D <&clkspi>;=0A=
-                };=0A=
-+=0A=
-+               aemif@021000A00 {=0A=
-+                       compatible =3D "ti,keystone-aemif";=0A=
-+                       #address-cells =3D <2>;=0A=
-+                       #size-cells =3D <1>;=0A=
-+                       clocks =3D <&clkaemif>;=0A=
-+                       clock-names =3D "aemif";=0A=
-+                       clock-ranges;=0A=
-+=0A=
-+                       reg =3D <0x2100A00 0x00000100>;=0A=
-+                       ranges =3D <0 0 0x30000000 0x10000000=0A=
-+                                 1 0 0x21000A00 0x00000100>;=0A=
-+=0A=
-+                       nand:cs0 {=0A=
-+                               compatible =3D "ti,davinci-cs";=0A=
-+                               #address-cells =3D <2>;=0A=
-+                               #size-cells =3D <1>;=0A=
-+                               clock-ranges;=0A=
-+                               ranges;=0A=
-+=0A=
-+                               /* all timings in nanoseconds */=0A=
-+                               ti,davinci-cs-ta =3D <12>;=0A=
-+                               ti,davinci-cs-rhold =3D <6>;=0A=
-+                               ti,davinci-cs-rstrobe =3D <23>;=0A=
-+                               ti,davinci-cs-rsetup =3D <9>;=0A=
-+                               ti,davinci-cs-whold =3D <8>;=0A=
-+                               ti,davinci-cs-wstrobe =3D <23>;=0A=
-+                               ti,davinci-cs-wsetup =3D <8>;=0A=
-+=0A=
-+                               nand@0,0 {=0A=
-+                                       compatible =3D "ti,keystone-nand";=
-=0A=
-+                                       #address-cells =3D <1>;=0A=
-+                                       #size-cells =3D <1>;=0A=
-+                                       reg =3D <0 0 0x4000000=0A=
-+                                              1 0 0x0000100>;=0A=
-+=0A=
-+                                       ti,davinci-chipselect =3D <0>;=0A=
-+                                       ti,davinci-mask-ale =3D <0x2000>;=
-=0A=
-+                                       ti,davinci-mask-cle =3D <0x4000>;=
-=0A=
-+                                       ti,davinci-mask-chipsel =3D <0>;=0A=
-+                                       nand-ecc-mode =3D "hw";=0A=
-+                                       ti,davinci-ecc-bits =3D <4>;=0A=
-+                                       nand-on-flash-bbt;=0A=
-+=0A=
-+                                       partition@0 {=0A=
-+                                               label =3D "u-boot";=0A=
-+                                               reg =3D <0x0 0x100000>;=0A=
-+                                               read-only;=0A=
-+                                       };=0A=
-+=0A=
-+                                       partition@100000 {=0A=
-+                                               label =3D "params";=0A=
-+                                               reg =3D <0x100000 0x80000>;=
-=0A=
-+                                               read-only;=0A=
-+                                       };=0A=
-+=0A=
-+                                       partition@180000 {=0A=
-+                                               label =3D "ubifs";=0A=
-+                                               reg =3D <0x180000 0x7E80000=
->;=0A=
-+                                       };=0A=
-+                               };=0A=
-+                       };=0A=
-+               };=0A=
-        };=0A=
- };=0A=
---=0A=
-1.7.9.5=0A=
-=0A=
+Hi Fabio, Huang,
+
+On Mon, Nov 11, 2013 at 03:08:47PM -0200, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@freescale.com>
+> 
+> Currently mx23_check_transcription_stamp() uses chip->buffers->databuf
+> as its buffer, which is allocated by nand_scan_tail().
+> 
+> Since commit 720e7ce5 ("mtd: gpmi: remove the nand_scan()"), 
+> mx23_check_transcription_stamp() is called before nand_scan_tail(), which causes
+> a NULL pointer dereference:
+> 
+> [    1.150000] NAND device: Manufacturer ID: 0xec, Chip ID: 0xd7 (Samsung NAND 4GiB 3,3V 8-bit), 4096MiB, page size: 4096, OOB size: 8
+> [    1.160000] Unable to handle kernel NULL pointer dereference at virtual address 000005d0
+> [    1.170000] pgd = c0004000
+> [    1.170000] [000005d0] *pgd=00000000
+> [    1.180000] Internal error: Oops: 5 [#1] ARM
+> [    1.180000] Modules linked in:
+> [    1.180000] CPU: 0 PID: 1 Comm: swapper Not tainted 3.12.0 #89
+> [    1.180000] task: c7440000 ti: c743a000 task.ti: c743a000
+> [    1.180000] PC is at memcmp+0x10/0x54
+> [    1.180000] LR is at gpmi_nand_probe+0x42c/0x894
+> [    1.180000] pc : [<c025fcb0>]    lr : [<c02f6a68>]    psr: 20000053
+> [    1.180000] sp : c743be2c  ip : 600000d3  fp : ffffffff
+> [    1.180000] r10: 000005d0  r9 : c02f5f08  r8 : 00000000
+> [    1.180000] r7 : c75858a8  r6 : c75858a8  r5 : c7585b18  r4 : c7585800
+> [    1.180000] r3 : 000005d0  r2 : 00000004  r1 : c05c33e4  r0 : 000005d0
+> [    1.180000] Flags: nzCv  IRQs on  FIQs off  Mode SVC_32  ISA ARM  Segment kernel
+> [    1.180000] Control: 0005317f  Table: 40004000  DAC: 00000017
+> [    1.180000] Process swapper (pid: 1, stack limit = 0xc743a1c0)
+> 
+> In order to fix this problem, allocate the buffer locally via kzalloc().
+> 
+> Also, as mx23_check_transcription_stamp() can return en error code now, adapt
+> the logic in mx23_boot_init() to take this into account.
+> 
+> Cc: <stable@vger.kernel.org> # 3.12
+> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+
+OK, so there seem to be 3 forms of this patch now.
+
+(1) The first used stack memory for potential DMA transactions. This is
+    wrong. (Good catch, Huang.)
+
+(2) The second switched the whole NAND buffer over to a kzalloc'd
+    buffer, with NAND_OWN_BUFFERS. I'm not a huge fan of
+    NAND_OWN_BUFFERS, and I think drivers should only be using it if
+    they really need it, for special buffer placement or some other good
+    reason. You just happen to need a buffer "too early", where you can
+    really just allocate a small temporary buffer.
+
+(3) This third form (the patch I'm replying to) just temporarily uses a
+    kzalloc'd buffer for the fingerprint transactions, without exposing
+    this buffer for use anywhere else.
+
+I think fix 3 has the proper middle ground, especially for a -stable
+fix, where we want to change as little as necessary. Can we get a
+Tested-by or Acked-by from you, Huang? I'd like to get this fix in soon.
+
+> ---
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> index a9830ff..e090280 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> @@ -1342,7 +1342,7 @@ static int mx23_check_transcription_stamp(struct gpmi_nand_data *this)
+>  	unsigned int search_area_size_in_strides;
+>  	unsigned int stride;
+>  	unsigned int page;
+> -	uint8_t *buffer = chip->buffers->databuf;
+> +	uint8_t *buffer;
+>  	int saved_chip_number;
+>  	int found_an_ncb_fingerprint = false;
+>  
+> @@ -1352,6 +1352,9 @@ static int mx23_check_transcription_stamp(struct gpmi_nand_data *this)
+>  	saved_chip_number = this->current_chip;
+>  	chip->select_chip(mtd, 0);
+>  
+> +	buffer = kzalloc(strlen(fingerprint) * sizeof(*buffer), GFP_KERNEL);
+
+I think you might want to drop '* sizeof(*buffer)'. We really just want
+strlen(fingerprint), no matter what data type we're using for the
+'buffer' pointer.
+
+> +	if (!buffer)
+> +		return -ENOMEM;
+>  	/*
+>  	 * Loop through the first search area, looking for the NCB fingerprint.
+>  	 */
+> @@ -1380,6 +1383,8 @@ static int mx23_check_transcription_stamp(struct gpmi_nand_data *this)
+>  
+>  	chip->select_chip(mtd, saved_chip_number);
+>  
+> +	kfree(buffer);
+> +
+>  	if (found_an_ncb_fingerprint)
+>  		dev_dbg(dev, "\tFound a fingerprint\n");
+>  	else
+> @@ -1488,7 +1493,7 @@ static int mx23_boot_init(struct gpmi_nand_data  *this)
+>  	 * transcription stamp. If we find it, then we don't have to do
+>  	 * anything -- the block marks are already transcribed.
+>  	 */
+> -	if (mx23_check_transcription_stamp(this))
+> +	if (mx23_check_transcription_stamp(this) > 0)
+>  		return 0;
+
+You might want to capture and return the negative error code path,
+rather than ignoring it. e.g.:
+
+	ret = mx23_check_transcription_stamp(this);
+	if (ret < 0)
+		return ret;
+	else if (ret)
+  		return 0;
+
+>  
+>  	/*
+
+Brian
