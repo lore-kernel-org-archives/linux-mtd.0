@@ -1,24 +1,19 @@
-Received: from mail-ve0-x22a.google.com ([2607:f8b0:400c:c01::22a])
+Received: from mail-pd0-f179.google.com ([209.85.192.179])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VfqoJ-0005yH-7C
- for linux-mtd@lists.infradead.org; Mon, 11 Nov 2013 12:41:44 +0000
-Received: by mail-ve0-f170.google.com with SMTP id db12so313825veb.15
- for <linux-mtd@lists.infradead.org>; Mon, 11 Nov 2013 04:41:20 -0800 (PST)
+ id 1Vfrrq-0007Fl-JF
+ for linux-mtd@lists.infradead.org; Mon, 11 Nov 2013 13:49:27 +0000
+Received: by mail-pd0-f179.google.com with SMTP id y10so5210005pdj.38
+ for <linux-mtd@lists.infradead.org>; Mon, 11 Nov 2013 05:49:04 -0800 (PST)
+Date: Mon, 11 Nov 2013 13:48:58 +0000
+From: Lee Jones <lee.jones@linaro.org>
+To: linux-mtd@lists.infradead.org, spi-devel-general@lists.sourceforge.net
+Subject: [RFC] New SPI based Serial Flash Controller driver
+Message-ID: <20131111134858.GI22184@lee--X1>
 MIME-Version: 1.0
-In-Reply-To: <5280BA70.3000107@freescale.com>
-References: <20131108175119.GA20061@ld-irv-0074.broadcom.com>
- <1384166419-23568-1-git-send-email-b32955@freescale.com>
- <5280BA70.3000107@freescale.com>
-Date: Mon, 11 Nov 2013 10:41:20 -0200
-Message-ID: <CAOMZO5Aq7Q-Qz=KBJ-jZkOsf+E+XPjerdRO5YTtvjbF6UxWQxg@mail.gmail.com>
-Subject: Re: [PATCH V2] mtd: gpmi: fix the NULL pointer
-From: Fabio Estevam <festevam@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, stable@vger.kernel.org,
- Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+Cc: olivier.clergeaud@st.com, angus.clark@st.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,15 +23,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Huang,
+Hi,
 
-On Mon, Nov 11, 2013 at 9:07 AM, Huang Shijie <b32955@freescale.com> wrote:
+I'm in the process of porting a BSP SPI based Serial Flash Controller
+to the latest kernel version with a view to pushing it upstream.
 
-> Hi Fabio:
-> could you test this patch too?
+Historically, this driver was based on some basic functionality
+pilfered from the m25p80 driver (mainly the device look-up-table and
+thelike), but since then has forked into a fully functional driver in
+its own right - due to lack of Dual and Quad Mode support in
+Mainline. I am under the impression that support for these modes are
+due to land shortly, or the patches are at least on the MLs.
 
-Will test it later today and will let you know the result.
+The current theory is that we can start to utilise some of the m25p80
+driver, which would alleviate a great deal of duplication by our own
+driver. We would still be required to add a smallish driver to
+intercept the messages to ensure they are written to the controller in
+the correct manor.
 
-Regards,
+Can you tell me if there are any other controllers which work in this
+way? If there are can you point me to them please? If not, tell me I'm
+spouting nonsense and feel free to advice me on the correct method
+that these kinds of things should be handled.
 
-Fabio Estevam
+Any help will be gratefully received.
+
+Kind regards,
+Lee
+
+-- 
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
