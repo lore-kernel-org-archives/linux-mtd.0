@@ -1,20 +1,21 @@
-Received: from mail-bk0-x234.google.com ([2a00:1450:4008:c01::234])
+Received: from ch1ehsobe003.messaging.microsoft.com ([216.32.181.183]
+ helo=ch1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vfkpr-0005xi-2i
- for linux-mtd@lists.infradead.org; Mon, 11 Nov 2013 06:18:57 +0000
-Received: by mail-bk0-f52.google.com with SMTP id v10so1525496bkz.11
- for <linux-mtd@lists.infradead.org>; Sun, 10 Nov 2013 22:18:32 -0800 (PST)
+ id 1VfnmP-0001ka-Hu
+ for linux-mtd@lists.infradead.org; Mon, 11 Nov 2013 09:27:34 +0000
+Message-ID: <5280A3AC.4020305@freescale.com>
+Date: Mon, 11 Nov 2013 17:30:20 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-Date: Mon, 11 Nov 2013 14:18:29 +0800
-Message-ID: <CAPgLHd-qf8Zj0gWgJh3_WMZOAx5-H6aABrVFqRsAw=XkOfDdmw@mail.gmail.com>
-Subject: [PATCH] MIPS: Alchemy: add missing platform_set_drvdata() in
- au1550nd_probe()
-From: Wei Yongjun <weiyj.lk@gmail.com>
-To: dwmw2@infradead.org, wfp5p@virginia.edu, artem.bityutskiy@linux.intel.com,
- jg1.han@samsung.com, computersforpeace@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: yongjun_wei@trendmicro.com.cn, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 1/2] mtd: gpmi: fix the NULL pointer
+References: <1383817597-31992-1-git-send-email-b32955@freescale.com>
+ <20131108175119.GA20061@ld-irv-0074.broadcom.com>
+In-Reply-To: <20131108175119.GA20061@ld-irv-0074.broadcom.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org, stable@vger.kernel.org,
+ festevam@gmail.com, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,26 +25,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+=E4=BA=8E 2013=E5=B9=B411=E6=9C=8809=E6=97=A5 01:51, Brian Norris =E5=86=99=
+=E9=81=93:
+> Thanks for looking into this quickly, BTW.
+this patch is not good, it uses the data in the stack to do the DMA=20
+transfer.
 
-Add missing platform_set_drvdata() in au1550nd_probe(), otherwise
-calling platform_get_drvdata() in remove returns NULL.
+I will send a new patch to fix this NULL issue.
 
-Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
----
- drivers/mtd/nand/au1550nd.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/mtd/nand/au1550nd.c b/drivers/mtd/nand/au1550nd.c
-index ae8dd7c..909b673 100644
---- a/drivers/mtd/nand/au1550nd.c
-+++ b/drivers/mtd/nand/au1550nd.c
-@@ -480,6 +480,8 @@ static int au1550nd_probe(struct platform_device *pdev)
- 
- 	mtd_device_register(&ctx->info, pd->parts, pd->num_parts);
- 
-+	platform_set_drvdata(pdev, ctx);
-+
- 	return 0;
- 
- out3:
+thanks
+Huang Shijie
