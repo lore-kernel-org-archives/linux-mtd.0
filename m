@@ -1,15 +1,15 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VgDA6-0003qQ-DP
- for linux-mtd@lists.infradead.org; Tue, 12 Nov 2013 12:33:43 +0000
-Message-ID: <1384259597.15824.136.camel@sauron.fi.intel.com>
-Subject: [GIT PULL] UBI changes for 3.13-rc1
+ id 1VgDA7-0003qS-Ko
+ for linux-mtd@lists.infradead.org; Tue, 12 Nov 2013 12:33:44 +0000
+Message-ID: <1384259599.15824.137.camel@sauron.fi.intel.com>
+Subject: [GIT PULL] UBIFS changes for 3.13-rc1
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Tue, 12 Nov 2013 14:33:17 +0200
+Date: Tue, 12 Nov 2013 14:33:19 +0200
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Cc: linux-mtd <linux-mtd@lists.infradead.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Reply-To: dedekind1@gmail.com
@@ -24,41 +24,37 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Linus,
 
-The following changes since commit b36f4be3de1b123d8601de062e7dbfc904f305fb:
+The following changes since commit d4e4ab86bcba5a72779c43dc1459f71fea3d89c8:
 
-  Linux 3.11-rc6 (2013-08-18 14:36:53 -0700)
+  Linux 3.11-rc5 (2013-08-11 18:04:20 -0700)
 
 are available in the git repository at:
 
-  git://git.infradead.org/linux-ubi.git tags/upstream-3.13-rc1
+  git://git.infradead.org/linux-ubifs.git tags/upstream-3.13-rc1
 
-for you to fetch changes up to ae0d146955665411a6d4cea5e0893429cfc52807:
+for you to fetch changes up to 58a4e23703b22c331b01fbd0c12161aadaa6d50b:
 
-  UBI: Add some asserts to ubi_attach_fastmap() (2013-10-03 19:42:51 +0300)
-
-----------------------------------------------------------------
-A bunch of fixes for the fastmap feature, which is still new and rather
-experimental. It looks like it starts getting more users. No significant
-changes for the "classical" non-fastmap UBI.
+  UBIFS: correct data corruption range (2013-10-26 11:33:38 +0100)
 
 ----------------------------------------------------------------
-Richard Genoud (2):
-      UBI: fastmap: fix backward compatibility with image_seq
-      UBI: simplify image sequence test
+Mostly fixes for the power cut emulation UBIFS mode, and only one functional
+change which fixes a return error code.
 
-Richard Weinberger (7):
-      UBI: Fix PEB leak in wear_leveling_worker()
-      UBI: Fix invalidate_fastmap()
-      UBI: fix refill_wl_user_pool()
-      UBI: Fix error path in scan_pool()
-      UBI: Call scan_all() with correct offset in error case
-      UBI: Fix memory leak in ubi_attach_fastmap() error path
-      UBI: Add some asserts to ubi_attach_fastmap()
+----------------------------------------------------------------
+Mats Kärrman (2):
+      UBIFS: remove invalid warn msg with tst_recovery enabled
+      UBIFS: correct data corruption range
 
- drivers/mtd/ubi/attach.c  | 11 ++++++-----
- drivers/mtd/ubi/fastmap.c | 46 ++++++++++++++++++++++++++++++++++++++--------
- drivers/mtd/ubi/wl.c      |  7 +++----
- 3 files changed, 47 insertions(+), 17 deletions(-)
+Wei Yongjun (1):
+      UBIFS: fix return code
+
+wang.bo116@zte.com.cn (1):
+      UBIFS: remove unnecessary code in ubifs_garbage_collect
+
+ fs/ubifs/debug.c | 13 +++++++------
+ fs/ubifs/gc.c    |  3 +--
+ fs/ubifs/super.c |  8 ++++++--
+ 3 files changed, 14 insertions(+), 10 deletions(-)
 
 -- 
 Best Regards,
