@@ -1,12 +1,12 @@
-Received: from jacques.telenet-ops.be ([195.130.132.50])
+Received: from juliette.telenet-ops.be ([195.130.137.74])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VgJJk-00083z-Rk
- for linux-mtd@lists.infradead.org; Tue, 12 Nov 2013 19:08:05 +0000
+ id 1VgJMU-0008Bt-2i
+ for linux-mtd@lists.infradead.org; Tue, 12 Nov 2013 19:10:56 +0000
 From: Geert Uytterhoeven <geert@linux-m68k.org>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 10/12] mtd: ms02-nv: Remove superfluous name cast
-Date: Tue, 12 Nov 2013 20:07:23 +0100
-Message-Id: <1384283245-9419-11-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH 02/12] mtd: Remove superfluous name casts
+Date: Tue, 12 Nov 2013 20:07:15 +0100
+Message-Id: <1384283245-9419-3-git-send-email-geert@linux-m68k.org>
 In-Reply-To: <1384283245-9419-1-git-send-email-geert@linux-m68k.org>
 References: <1384283245-9419-1-git-send-email-geert@linux-m68k.org>
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -21,27 +21,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-mtd_info.name is "const char *"
+map_info.name is "const char *"
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: David Woodhouse <dwmw2@infradead.org>
 Cc: linux-mtd@lists.infradead.org
 ---
- drivers/mtd/devices/ms02-nv.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/maps/pxa2xx-flash.c |    2 +-
+ drivers/mtd/maps/sun_uflash.c   |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/devices/ms02-nv.c b/drivers/mtd/devices/ms02-nv.c
-index 182849d39c61..5c8b322ba904 100644
---- a/drivers/mtd/devices/ms02-nv.c
-+++ b/drivers/mtd/devices/ms02-nv.c
-@@ -205,7 +205,7 @@ static int __init ms02nv_init_one(ulong addr)
- 	mtd->type = MTD_RAM;
- 	mtd->flags = MTD_CAP_RAM;
- 	mtd->size = fixsize;
--	mtd->name = (char *)ms02nv_name;
-+	mtd->name = ms02nv_name;
- 	mtd->owner = THIS_MODULE;
- 	mtd->_read = ms02nv_read;
- 	mtd->_write = ms02nv_write;
+diff --git a/drivers/mtd/maps/pxa2xx-flash.c b/drivers/mtd/maps/pxa2xx-flash.c
+index d210d131fef2..63b52f7080fa 100644
+--- a/drivers/mtd/maps/pxa2xx-flash.c
++++ b/drivers/mtd/maps/pxa2xx-flash.c
+@@ -61,7 +61,7 @@ static int pxa2xx_flash_probe(struct platform_device *pdev)
+ 	if (!info)
+ 		return -ENOMEM;
+ 
+-	info->map.name = (char *) flash->name;
++	info->map.name = flash->name;
+ 	info->map.bankwidth = flash->width;
+ 	info->map.phys = res->start;
+ 	info->map.size = resource_size(res);
+diff --git a/drivers/mtd/maps/sun_uflash.c b/drivers/mtd/maps/sun_uflash.c
+index d467f3b11c96..39cc4181f025 100644
+--- a/drivers/mtd/maps/sun_uflash.c
++++ b/drivers/mtd/maps/sun_uflash.c
+@@ -75,7 +75,7 @@ int uflash_devinit(struct platform_device *op, struct device_node *dp)
+ 
+ 	up->name = of_get_property(dp, "model", NULL);
+ 	if (up->name && 0 < strlen(up->name))
+-		up->map.name = (char *)up->name;
++		up->map.name = up->name;
+ 
+ 	up->map.phys = op->resource[0].start;
+ 
 -- 
 1.7.9.5
