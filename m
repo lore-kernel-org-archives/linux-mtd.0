@@ -1,22 +1,25 @@
-Received: from mail-ob0-x22c.google.com ([2607:f8b0:4003:c01::22c])
+Received: from mail-vb0-f44.google.com ([209.85.212.44])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vg4VG-0001RO-Mt
- for linux-mtd@lists.infradead.org; Tue, 12 Nov 2013 03:18:59 +0000
-Received: by mail-ob0-f172.google.com with SMTP id wm4so5345548obc.3
- for <linux-mtd@lists.infradead.org>; Mon, 11 Nov 2013 19:18:37 -0800 (PST)
-Date: Mon, 11 Nov 2013 19:18:33 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH V2] mtd: gpmi: fix the NULL pointer
-Message-ID: <20131112031833.GI20061@ld-irv-0074.broadcom.com>
-References: <20131108175119.GA20061@ld-irv-0074.broadcom.com>
- <1384166419-23568-1-git-send-email-b32955@freescale.com>
+ id 1Vg4tu-0001sf-SW
+ for linux-mtd@lists.infradead.org; Tue, 12 Nov 2013 03:44:27 +0000
+Received: by mail-vb0-f44.google.com with SMTP id 11so3880387vbe.31
+ for <linux-mtd@lists.infradead.org>; Mon, 11 Nov 2013 19:44:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1384166419-23568-1-git-send-email-b32955@freescale.com>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org, stable@vger.kernel.org,
- dedekind1@gmail.com
+In-Reply-To: <528196CF.9090404@freescale.com>
+References: <1384189727-19563-1-git-send-email-festevam@gmail.com>
+ <20131111182324.GE20061@ld-irv-0074.broadcom.com>
+ <528196CF.9090404@freescale.com>
+Date: Tue, 12 Nov 2013 01:44:01 -0200
+Message-ID: <CAOMZO5BzXhrbDtkFMPmYPnQp+X2=gSEJGc+3U8H+QrGdgRgCxw@mail.gmail.com>
+Subject: Re: [PATCH] mtd: gpmi: Fix NULL pointer dereference
+From: Fabio Estevam <festevam@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Fabio Estevam <fabio.estevam@freescale.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ stable@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,91 +29,116 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Huang,
+On Tue, Nov 12, 2013 at 12:47 AM, Huang Shijie <b32955@freescale.com> wrote=
+:
+> =E4=BA=8E 2013=E5=B9=B411=E6=9C=8812=E6=97=A5 02:23, Brian Norris =E5=86=
+=99=E9=81=93:
 
-On Mon, Nov 11, 2013 at 06:40:19PM +0800, Huang Shijie wrote:
-> The imx23 board will check the fingerprint, so it will call the
-> mx23_check_transcription_stamp. This function will use @chip->buffers->databuf
-> as its buffer which is allocated in the nand_scan_tail().
-> 
-> Unfortunately, the mx23_check_transcription_stamp is called before the
-> nand_scan_tail(). So we will meet a NULL pointer bug:
-> 
-> --------------------------------------------------------------------
-> [    1.150000] NAND device: Manufacturer ID: 0xec, Chip ID: 0xd7 (Samsung NAND 4GiB 3,3V 8-bit), 4096MiB, page size: 4096, OOB size: 8
-> [    1.160000] Unable to handle kernel NULL pointer dereference at virtual address 000005d0
-> [    1.170000] pgd = c0004000
-> [    1.170000] [000005d0] *pgd=00000000
-> [    1.180000] Internal error: Oops: 5 [#1] ARM
-> [    1.180000] Modules linked in:
-> [    1.180000] CPU: 0 PID: 1 Comm: swapper Not tainted 3.12.0 #89
-> [    1.180000] task: c7440000 ti: c743a000 task.ti: c743a000
-> [    1.180000] PC is at memcmp+0x10/0x54
-> [    1.180000] LR is at gpmi_nand_probe+0x42c/0x894
-> [    1.180000] pc : [<c025fcb0>]    lr : [<c02f6a68>]    psr: 20000053
-> [    1.180000] sp : c743be2c  ip : 600000d3  fp : ffffffff
-> [    1.180000] r10: 000005d0  r9 : c02f5f08  r8 : 00000000
-> [    1.180000] r7 : c75858a8  r6 : c75858a8  r5 : c7585b18  r4 : c7585800
-> [    1.180000] r3 : 000005d0  r2 : 00000004  r1 : c05c33e4  r0 : 000005d0
-> [    1.180000] Flags: nzCv  IRQs on  FIQs off  Mode SVC_32  ISA ARM  Segment kernel
-> [    1.180000] Control: 0005317f  Table: 40004000  DAC: 00000017
-> [    1.180000] Process swapper (pid: 1, stack limit = 0xc743a1c0)
-> --------------------------------------------------------------------
-> 
-> This patch does two things:
->  1.) Allocates the @chip->buffers itself, and set the NAND_OWN_BUFFERS
->      for chip->options.
->  2.) Also initialize the @chip->oob_poi which is used by the
->      mx23_write_transcription_stamp(). We replace the @chip->ecc.write_page_raw
->      with chip->write_buf, since the the @chip->ecc.write_page_raw is
->      initialize in the nand_scan_tail() too. If we not do so, we will meet
->      a NULL pointer too.
+> For imx23, the work flow is like this:
+> [1] first check the fingerprint, if we can find it, we will return
+> immediately.
+> [2] if [1] failed, such as you erase all the partitions, the gpmi will ca=
+ll
+> mx23_write_transcription_stamp() to write the fingerprint.
+>
+> So the @chip->buffer is not only used by the
+> mx23_check_transcription_stamp(),
+> but _also_ used by the mx23_write_transcription_stamp() when the gpmi
+> can not find any
+> fingerprint in the NAND page.
+>
+>
+> That's why i use the NAND_OWN_BUFFERS, the buffer can be used by both
+> the mx23_check_transcription_stamp()
+> and mx23_write_transcription_stamp().
 
-It seems like your GPMI init structure is yet again trying to circumvent
-nand_base. I think there is a better solution that can help you avoid
-working around things that *should* be initialized in nand_scan_tail.
-I'll explain.
+Understood.
 
-Your current init sequence consists of the following:
+What if we just allocate the 4-byte buffer once on probe?
 
- |_ nand_scan_ident
- |_ nand_init_last
-   |_ gpmi_init_last
-     |_ gpmi_pre_bbt_scan
-       |_ gpmi_set_geometry
-       |_ nand_boot_init
-         |_ mx23_boot_init
-           |_ mx23_check_transcription_stamp (*)
-           |_ mx23_write_transcription_stamp (*)
- |_ nand_scan_tail
+Like this:
 
-The (*) portions are incorrect right now. But they also seem to be
-related to bad block scanning, not the initial configuration of the
-device. Furthermore, they depend on some functionality of
-nand_scan_tail.
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index a9830ff..647da1b 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -1342,7 +1342,6 @@ static int mx23_check_transcription_stamp(struct
+gpmi_nand_data *this)
+     unsigned int search_area_size_in_strides;
+     unsigned int stride;
+     unsigned int page;
+-    uint8_t *buffer =3D chip->buffers->databuf;
+     int saved_chip_number;
+     int found_an_ncb_fingerprint =3D false;
 
-So I would recommend the following: set the NAND_SKIP_BBTSCAN, then
-rearrange to the following call structure:
+@@ -1368,10 +1367,10 @@ static int
+mx23_check_transcription_stamp(struct gpmi_nand_data *this)
+          * and starts in the 12th byte of the page.
+          */
+         chip->cmdfunc(mtd, NAND_CMD_READ0, 12, page);
+-        chip->read_buf(mtd, buffer, strlen(fingerprint));
++        chip->read_buf(mtd, this->buffer, strlen(fingerprint));
 
- |_ nand_scan_ident
- |_ chip->options |= NAND_SKIP_BBTSCAN;
- |_ nand_init_last
-   |_ gpmi_init_last [1]
-     |_ gpmi_set_geometry
- |_ nand_scan_tail
- |_ gpmi_pre_bbt_scan [2]
-   |_ nand_boot_init
-     |_ mx23_boot_init
-       |_ mx23_check_transcription_stamp
-       |_ mx23_write_transcription_stamp
- |_ chip->scan_bbt() [3]
+         /* Look for the fingerprint. */
+-        if (!memcmp(buffer, fingerprint, strlen(fingerprint))) {
++        if (!memcmp(this->buffer, fingerprint, strlen(fingerprint))) {
+             found_an_ncb_fingerprint =3D true;
+             break;
+         }
+@@ -1401,7 +1400,6 @@ static int mx23_write_transcription_stamp(struct
+gpmi_nand_data *this)
+     unsigned int block;
+     unsigned int stride;
+     unsigned int page;
+-    uint8_t      *buffer =3D chip->buffers->databuf;
+     int saved_chip_number;
+     int status;
 
-Regarding [1] and [2]: we can split apart the code from gpmi_init_last()
-so that have the stuff that is *only* necessary to do before [3] placed
-under [2]. That way, nand_scan_tail() will initialize remaining pieces,
-and all you have to do is configure and run your BBT scan. No more
-dancing around uninitialized callback functions or buffers.
+@@ -1442,9 +1440,9 @@ static int mx23_write_transcription_stamp(struct
+gpmi_nand_data *this)
+     }
 
-What do you think?
+     /* Write the NCB fingerprint into the page buffer. */
+-    memset(buffer, ~0, mtd->writesize);
++    memset(this->buffer, ~0, mtd->writesize);
+     memset(chip->oob_poi, ~0, mtd->oobsize);
+-    memcpy(buffer + 12, fingerprint, strlen(fingerprint));
++    memcpy(this->buffer + 12, fingerprint, strlen(fingerprint));
 
-Brian
+     /* Loop through the first search area, writing NCB fingerprints. */
+     dev_dbg(dev, "Writing NCB fingerprints...\n");
+@@ -1455,7 +1453,7 @@ static int mx23_write_transcription_stamp(struct
+gpmi_nand_data *this)
+         /* Write the first page of the current stride. */
+         dev_dbg(dev, "Writing an NCB fingerprint in page 0x%x\n", page);
+         chip->cmdfunc(mtd, NAND_CMD_SEQIN, 0x00, page);
+-        chip->ecc.write_page_raw(mtd, chip, buffer, 0);
++        chip->ecc.write_page_raw(mtd, chip, this->buffer, 0);
+         chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
+
+         /* Wait for the write to finish. */
+@@ -1728,6 +1726,10 @@ static int gpmi_nand_probe(struct platform_device *p=
+dev)
+         return -ENOMEM;
+     }
+
++    this->buffer =3D devm_kzalloc(&pdev->dev, strlen(fingerprint), GFP_KER=
+NEL);
++    if (!this->buffer)
++        return -ENOMEM;
++
+     platform_set_drvdata(pdev, this);
+     this->pdev  =3D pdev;
+     this->dev   =3D &pdev->dev;
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+index a7685e3..e88114c 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+@@ -186,6 +186,7 @@ struct gpmi_nand_data {
+
+     /* private */
+     void            *private;
++    uint8_t         *buffer;
+ };
