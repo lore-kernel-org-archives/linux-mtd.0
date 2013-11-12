@@ -1,17 +1,14 @@
-Received: from juliette.telenet-ops.be ([195.130.137.74])
+Received: from gerard.telenet-ops.be ([195.130.132.48])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VgJMU-0008Bt-2i
- for linux-mtd@lists.infradead.org; Tue, 12 Nov 2013 19:10:56 +0000
+ id 1VgJNb-0008EV-8C
+ for linux-mtd@lists.infradead.org; Tue, 12 Nov 2013 19:12:04 +0000
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH 02/12] mtd: Remove superfluous name casts
-Date: Tue, 12 Nov 2013 20:07:15 +0100
-Message-Id: <1384283245-9419-3-git-send-email-geert@linux-m68k.org>
-In-Reply-To: <1384283245-9419-1-git-send-email-geert@linux-m68k.org>
-References: <1384283245-9419-1-git-send-email-geert@linux-m68k.org>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>, linux-mtd@lists.infradead.org
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] mtd: Make mtd_partition.name const
+Date: Tue, 12 Nov 2013 20:11:26 +0100
+Message-Id: <1384283486-10348-1-git-send-email-geert@linux-m68k.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,41 +18,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-map_info.name is "const char *"
+This allows to drop a few casts.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: linux-mtd@lists.infradead.org
 ---
- drivers/mtd/maps/pxa2xx-flash.c |    2 +-
- drivers/mtd/maps/sun_uflash.c   |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/mtdpart.c          |    2 +-
+ drivers/mtd/ofpart.c           |    4 ++--
+ include/linux/mtd/partitions.h |    4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/maps/pxa2xx-flash.c b/drivers/mtd/maps/pxa2xx-flash.c
-index d210d131fef2..63b52f7080fa 100644
---- a/drivers/mtd/maps/pxa2xx-flash.c
-+++ b/drivers/mtd/maps/pxa2xx-flash.c
-@@ -61,7 +61,7 @@ static int pxa2xx_flash_probe(struct platform_device *pdev)
- 	if (!info)
- 		return -ENOMEM;
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index 6e732c3820c1..67a89bb45943 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -534,7 +534,7 @@ out_register:
+ 	return slave;
+ }
  
--	info->map.name = (char *) flash->name;
-+	info->map.name = flash->name;
- 	info->map.bankwidth = flash->width;
- 	info->map.phys = res->start;
- 	info->map.size = resource_size(res);
-diff --git a/drivers/mtd/maps/sun_uflash.c b/drivers/mtd/maps/sun_uflash.c
-index d467f3b11c96..39cc4181f025 100644
---- a/drivers/mtd/maps/sun_uflash.c
-+++ b/drivers/mtd/maps/sun_uflash.c
-@@ -75,7 +75,7 @@ int uflash_devinit(struct platform_device *op, struct device_node *dp)
+-int mtd_add_partition(struct mtd_info *master, char *name,
++int mtd_add_partition(struct mtd_info *master, const char *name,
+ 		      long long offset, long long length)
+ {
+ 	struct mtd_partition part;
+diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
+index d64f8c30945f..f0a708bf9b0e 100644
+--- a/drivers/mtd/ofpart.c
++++ b/drivers/mtd/ofpart.c
+@@ -81,7 +81,7 @@ static int parse_ofpart_partitions(struct mtd_info *master,
+ 		partname = of_get_property(pp, "label", &len);
+ 		if (!partname)
+ 			partname = of_get_property(pp, "name", &len);
+-		(*pparts)[i].name = (char *)partname;
++		(*pparts)[i].name = partname;
  
- 	up->name = of_get_property(dp, "model", NULL);
- 	if (up->name && 0 < strlen(up->name))
--		up->map.name = (char *)up->name;
-+		up->map.name = up->name;
+ 		if (of_get_property(pp, "read-only", &len))
+ 			(*pparts)[i].mask_flags |= MTD_WRITEABLE;
+@@ -152,7 +152,7 @@ static int parse_ofoldpart_partitions(struct mtd_info *master,
+ 		if (names && (plen > 0)) {
+ 			int len = strlen(names) + 1;
  
- 	up->map.phys = op->resource[0].start;
+-			(*pparts)[i].name = (char *)names;
++			(*pparts)[i].name = names;
+ 			plen -= len;
+ 			names += len;
+ 		} else {
+diff --git a/include/linux/mtd/partitions.h b/include/linux/mtd/partitions.h
+index 1f8d24bdafda..335ffca10c10 100644
+--- a/include/linux/mtd/partitions.h
++++ b/include/linux/mtd/partitions.h
+@@ -37,7 +37,7 @@
+  */
  
+ struct mtd_partition {
+-	char *name;			/* identifier string */
++	const char *name;		/* identifier string */
+ 	uint64_t size;			/* partition size */
+ 	uint64_t offset;		/* offset within the master MTD space */
+ 	uint32_t mask_flags;		/* master MTD flags to mask out for this partition */
+@@ -80,7 +80,7 @@ extern int register_mtd_parser(struct mtd_part_parser *parser);
+ extern int deregister_mtd_parser(struct mtd_part_parser *parser);
+ 
+ int mtd_is_partition(const struct mtd_info *mtd);
+-int mtd_add_partition(struct mtd_info *master, char *name,
++int mtd_add_partition(struct mtd_info *master, const char *name,
+ 		      long long offset, long long length);
+ int mtd_del_partition(struct mtd_info *master, int partno);
+ uint64_t mtd_get_device_size(const struct mtd_info *mtd);
 -- 
 1.7.9.5
