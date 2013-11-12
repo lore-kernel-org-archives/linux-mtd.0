@@ -1,20 +1,21 @@
-Received: from mail-ve0-x229.google.com ([2607:f8b0:400c:c01::229])
+Received: from mail-ob0-x22f.google.com ([2607:f8b0:4003:c01::22f])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VgIvh-0007PT-LP
- for linux-mtd@lists.infradead.org; Tue, 12 Nov 2013 18:43:14 +0000
-Received: by mail-ve0-f169.google.com with SMTP id pa12so2196378veb.0
- for <linux-mtd@lists.infradead.org>; Tue, 12 Nov 2013 10:42:51 -0800 (PST)
+ id 1VgJ1B-0007bn-9z
+ for linux-mtd@lists.infradead.org; Tue, 12 Nov 2013 18:48:54 +0000
+Received: by mail-ob0-f175.google.com with SMTP id va2so6326139obc.20
+ for <linux-mtd@lists.infradead.org>; Tue, 12 Nov 2013 10:48:32 -0800 (PST)
+Date: Tue, 12 Nov 2013 10:43:04 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH v3] mtd: gpmi: fix the NULL pointer
+Message-ID: <20131112184304.GL20061@ld-irv-0074.broadcom.com>
+References: <1384230188-29585-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <1383822296.2722.186.camel@sauron.fi.intel.com>
-References: <CAGZNvdqt=1K4cd4xLu+2k9KpUa5U_Hu0w1xi_aCwOn7pXiRVBg@mail.gmail.com>
- <1383822296.2722.186.camel@sauron.fi.intel.com>
-From: Fernando Silveira <fsilveira@gmail.com>
-Date: Tue, 12 Nov 2013 16:42:11 -0200
-Message-ID: <CAGZNvdqLb50U9JHG8Voouug0Oqqb27-N0Lkvrbt-r-0xXgkm1g@mail.gmail.com>
-Subject: Re: Bad blocks while attaching UBIFS
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1384230188-29585-1-git-send-email-b32955@freescale.com>
+Cc: fabio.estevam@freescale.com, linux-mtd@lists.infradead.org,
+ dwmw2@infradead.org, stable@vger.kernel.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,27 +25,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 7, 2013 at 9:04 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
->>   2. If yes, what might be wrong with my driver?
->
-> Does it handle short reads properly? Please, run mtd tests to validate
-> your driver.
+On Tue, Nov 12, 2013 at 12:23:08PM +0800, Huang Shijie wrote:
+> The imx23 board will check the fingerprint, so it will call the
+> mx23_check_transcription_stamp. This function will use @chip->buffers->databuf
+> as its buffer which is allocated in the nand_scan_tail().
+> 
+> Unfortunately, the mx23_check_transcription_stamp is called before the
+> nand_scan_tail(). So we will meet a NULL pointer bug:
+> 
+> --------------------------------------------------------------------
+> [    1.150000] NAND device: Manufacturer ID: 0xec, Chip ID: 0xd7 (Samsung NAND 4GiB 3,3V 8-bit), 4096MiB, page size: 4096, OOB size: 8
+> [    1.160000] Unable to handle kernel NULL pointer dereference at virtual address 000005d0
+> [    1.170000] pgd = c0004000
+> [    1.170000] [000005d0] *pgd=00000000
+> [    1.180000] Internal error: Oops: 5 [#1] ARM
+> [    1.180000] Modules linked in:
+> [    1.180000] CPU: 0 PID: 1 Comm: swapper Not tainted 3.12.0 #89
+> [    1.180000] task: c7440000 ti: c743a000 task.ti: c743a000
+> [    1.180000] PC is at memcmp+0x10/0x54
+> [    1.180000] LR is at gpmi_nand_probe+0x42c/0x894
+> [    1.180000] pc : [<c025fcb0>]    lr : [<c02f6a68>]    psr: 20000053
+> [    1.180000] sp : c743be2c  ip : 600000d3  fp : ffffffff
+> [    1.180000] r10: 000005d0  r9 : c02f5f08  r8 : 00000000
+> [    1.180000] r7 : c75858a8  r6 : c75858a8  r5 : c7585b18  r4 : c7585800
+> [    1.180000] r3 : 000005d0  r2 : 00000004  r1 : c05c33e4  r0 : 000005d0
+> [    1.180000] Flags: nzCv  IRQs on  FIQs off  Mode SVC_32  ISA ARM  Segment kernel
+> [    1.180000] Control: 0005317f  Table: 40004000  DAC: 00000017
+> [    1.180000] Process swapper (pid: 1, stack limit = 0xc743a1c0)
+> --------------------------------------------------------------------
+> 
+> This patch rearrange the init procedure:
+>    Set the NAND_SKIP_BBTSCAN to skip the nand scan firstly, and after we
+>    set the proper settings, we will call the chip->scan_bbt() manually.
+> 
+> Cc: stable@vger.kernel.org
+> Reported-by: Fabio Estevam <festevam@gmail.com>
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
 
-There is a bug in the error detection algorithm within my driver/flash
-controller and I'm debugging it to fix the problem.
+This looks good. Thanks guys. Pushed to l2-mtd.git.
 
-In the mean time I'd like to know if a simple UBI attach procedure
-(e.g. "ubi.mtd=root" at the Linux cmdline) writes anything to the
-flash or not. And what about a read-only mount of a UBIFS partition?
-Does it write anything?
+I'm not sure how much sense all your function names make now; for
+instance, gpmi_pre_bbt_scan() doesn't have anything to do with the BBT
+scan any more, does it?
 
-I'm worried about it because my flash has a VERY low limit for
-erasing/writing blocks and I'd like to avoid passing read-only
-arguments to the "mtdparts" parameter (e.g.
-"mtdparts=mynand:8m(boot),-(root)ro") and base only whether I write to
-/dev/ubiX or mount the UBIFS partitions in read-write mode.
-
-Regards.
-
--- 
-Fernando Silveira
+Brian
