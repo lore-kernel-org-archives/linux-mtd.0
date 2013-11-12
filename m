@@ -1,24 +1,21 @@
-Received: from mail-vc0-x231.google.com ([2607:f8b0:400c:c03::231])
+Received: from co9ehsobe003.messaging.microsoft.com ([207.46.163.26]
+ helo=co9outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vg49f-00012v-Qh
- for linux-mtd@lists.infradead.org; Tue, 12 Nov 2013 02:56:40 +0000
-Received: by mail-vc0-f177.google.com with SMTP id id10so1762252vcb.8
- for <linux-mtd@lists.infradead.org>; Mon, 11 Nov 2013 18:56:18 -0800 (PST)
+ id 1Vg4Tp-0001Os-VL
+ for linux-mtd@lists.infradead.org; Tue, 12 Nov 2013 03:17:30 +0000
+Message-ID: <52819E75.6010809@freescale.com>
+Date: Tue, 12 Nov 2013 11:20:21 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <528196CF.9090404@freescale.com>
-References: <1384189727-19563-1-git-send-email-festevam@gmail.com>
- <20131111182324.GE20061@ld-irv-0074.broadcom.com>
- <528196CF.9090404@freescale.com>
-Date: Mon, 11 Nov 2013 18:56:18 -0800
-Message-ID: <CAN8TOE9YhVKKXK6q4kZc0GBmmK_MO7gPSi+nkZFM07krO=3_zQ@mail.gmail.com>
-Subject: Re: [PATCH] mtd: gpmi: Fix NULL pointer dereference
-From: Brian Norris <computersforpeace@gmail.com>
 To: Huang Shijie <b32955@freescale.com>
-Content-Type: text/plain; charset=GB2312
+Subject: Re: [PATCH V2] mtd: gpmi: fix the NULL pointer
+References: <20131108175119.GA20061@ld-irv-0074.broadcom.com>
+ <1384166419-23568-1-git-send-email-b32955@freescale.com>
+In-Reply-To: <1384166419-23568-1-git-send-email-b32955@freescale.com>
+Content-Type: text/plain; charset="GB2312"
 Content-Transfer-Encoding: quoted-printable
-Cc: Fabio Estevam <fabio.estevam@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Fabio Estevam <festevam@gmail.com>, stable@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org, stable@vger.kernel.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,36 +25,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Nov 11, 2013 at 6:47 PM, Huang Shijie <b32955@freescale.com> wrote:
-> =D3=DA 2013=C4=EA11=D4=C212=C8=D5 02:23, Brian Norris =D0=B4=B5=C0:
->> (2) The second switched the whole NAND buffer over to a kzalloc'd
->>     buffer, with NAND_OWN_BUFFERS. I'm not a huge fan of
->>     NAND_OWN_BUFFERS, and I think drivers should only be using it if
->>     they really need it, for special buffer placement or some other good
->>     reason. You just happen to need a buffer "too early", where you can
->>     really just allocate a small temporary buffer.
-> why I use the NAND_OWN_BUFFERS? just for a small temporary buffer?
-> the answer is no.
->
-> For imx23, the work flow is like this:
-> [1] first check the fingerprint, if we can find it, we will return
-> immediately.
-> [2] if [1] failed, such as you erase all the partitions, the gpmi will ca=
-ll
-> mx23_write_transcription_stamp() to write the fingerprint.
->
-> So the @chip->buffer is not only used by the
-> mx23_check_transcription_stamp(),
-> but _also_ used by the mx23_write_transcription_stamp() when the gpmi
-> can not find any
-> fingerprint in the NAND page.
+=D3=DA 2013=C4=EA11=D4=C211=C8=D5 18:40, Huang Shijie =D0=B4=B5=C0:
+> +	chip->buffers =3D kzalloc(sizeof(*chip->buffers), GFP_KERNEL);
+> +	if (!chip->buffers)
+> +		return -ENOMEM;
+> +	chip->options |=3D NAND_OWN_BUFFERS;
+It has a memory leak for the NAND_OWN_BUFFERS. i should free this buffer
+myself too.
 
-Right, thanks for pointing this out.
-
-> That's why i use the NAND_OWN_BUFFERS, the buffer can be used by both
-> the mx23_check_transcription_stamp()
-> and mx23_write_transcription_stamp().
-
-I will resume discussion on your NAND_OWN_BUFFERS patch.
-
-Brian
+thanks
+Huang Shijie
