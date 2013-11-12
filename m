@@ -1,21 +1,21 @@
-Received: from mail-vb0-x22f.google.com ([2607:f8b0:400c:c02::22f])
+Received: from mail-vc0-x231.google.com ([2607:f8b0:400c:c03::231])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vg44p-0000wa-FT
- for linux-mtd@lists.infradead.org; Tue, 12 Nov 2013 02:51:40 +0000
-Received: by mail-vb0-f47.google.com with SMTP id g10so1560383vbg.6
- for <linux-mtd@lists.infradead.org>; Mon, 11 Nov 2013 18:51:18 -0800 (PST)
+ id 1Vg49f-00012v-Qh
+ for linux-mtd@lists.infradead.org; Tue, 12 Nov 2013 02:56:40 +0000
+Received: by mail-vc0-f177.google.com with SMTP id id10so1762252vcb.8
+ for <linux-mtd@lists.infradead.org>; Mon, 11 Nov 2013 18:56:18 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAN8TOE8BV5NpX06MUGCcN2-Th=oAh9KzQUXAANRJtMi9CyrXNQ@mail.gmail.com>
-References: <1384197222-23783-1-git-send-email-festevam@gmail.com>
- <528192F1.5040300@freescale.com>
- <CAN8TOE8BV5NpX06MUGCcN2-Th=oAh9KzQUXAANRJtMi9CyrXNQ@mail.gmail.com>
-Date: Mon, 11 Nov 2013 18:51:17 -0800
-Message-ID: <CAN8TOE82YCFSWRSfch3TX1KkU_Jm1GzT5N2EhEiV2QSuVH-HGQ@mail.gmail.com>
-Subject: Re: [PATCH v2] mtd: gpmi: Fix NULL pointer dereference
+In-Reply-To: <528196CF.9090404@freescale.com>
+References: <1384189727-19563-1-git-send-email-festevam@gmail.com>
+ <20131111182324.GE20061@ld-irv-0074.broadcom.com>
+ <528196CF.9090404@freescale.com>
+Date: Mon, 11 Nov 2013 18:56:18 -0800
+Message-ID: <CAN8TOE9YhVKKXK6q4kZc0GBmmK_MO7gPSi+nkZFM07krO=3_zQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd: gpmi: Fix NULL pointer dereference
 From: Brian Norris <computersforpeace@gmail.com>
 To: Huang Shijie <b32955@freescale.com>
-Content-Type: text/plain; charset=ISO-2022-JP
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=GB2312
+Content-Transfer-Encoding: quoted-printable
 Cc: Fabio Estevam <fabio.estevam@freescale.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  Fabio Estevam <festevam@gmail.com>, stable@vger.kernel.org
@@ -28,31 +28,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Nov 11, 2013 at 6:47 PM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> On Mon, Nov 11, 2013 at 6:31 PM, Huang Shijie <b32955@freescale.com> wrote:
->> 于 2013年11月12日 03:13, Fabio Estevam 写道:
->> In actually, this patch only fixes partial of the bug.
->>
->> When we login the rootfs, and erase all the mtd partitions, and reboot
->> the mx23 again,
->> you will meet a NULL pointer too. Why? because the
->> mx23_write_transcription_stamp() will work
->> again.
+On Mon, Nov 11, 2013 at 6:47 PM, Huang Shijie <b32955@freescale.com> wrote:
+> =D3=DA 2013=C4=EA11=D4=C212=C8=D5 02:23, Brian Norris =D0=B4=B5=C0:
+>> (2) The second switched the whole NAND buffer over to a kzalloc'd
+>>     buffer, with NAND_OWN_BUFFERS. I'm not a huge fan of
+>>     NAND_OWN_BUFFERS, and I think drivers should only be using it if
+>>     they really need it, for special buffer placement or some other good
+>>     reason. You just happen to need a buffer "too early", where you can
+>>     really just allocate a small temporary buffer.
+> why I use the NAND_OWN_BUFFERS? just for a small temporary buffer?
+> the answer is no.
 >
-> But how is this reboot situation a different case? As far as the
-> kernel is concerned, this reboot would be the same as any other
-> boot...
+> For imx23, the work flow is like this:
+> [1] first check the fingerprint, if we can find it, we will return
+> immediately.
+> [2] if [1] failed, such as you erase all the partitions, the gpmi will ca=
+ll
+> mx23_write_transcription_stamp() to write the fingerprint.
 >
-> What NULL pointer are you talking about for this reboot case? AFAICT,
-> the only identified NULL pointer was on the 'buffer' in
-> mx23_write_transcription_stamp(), and Fabio's patch ensures that this
-> buffer points to a proper memory region. So where's your NULL pointer?
+> So the @chip->buffer is not only used by the
+> mx23_check_transcription_stamp(),
+> but _also_ used by the mx23_write_transcription_stamp() when the gpmi
+> can not find any
+> fingerprint in the NAND page.
 
-I'm sorry, I just read Huang's response to the other patch, and I
-realized I was mixing up mx23_check_transcription_stamp() and
-mx23_write_transcription_stamp(). So Huang has a valid point: this
-patch is incorrect. I'll resume discussion on Huang's version of this
-patch.
+Right, thanks for pointing this out.
+
+> That's why i use the NAND_OWN_BUFFERS, the buffer can be used by both
+> the mx23_check_transcription_stamp()
+> and mx23_write_transcription_stamp().
+
+I will resume discussion on your NAND_OWN_BUFFERS patch.
 
 Brian
