@@ -1,24 +1,23 @@
-Received: from szxga01-in.huawei.com ([119.145.14.64])
+Received: from mail-vc0-x22e.google.com ([2607:f8b0:400c:c03::22e])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vg9Ks-0007L3-Is
- for linux-mtd@lists.infradead.org; Tue, 12 Nov 2013 08:28:36 +0000
-From: Caizhiyong <caizhiyong@hisilicon.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH] block: cmdline-parser: perfect cmdline format checking
-Date: Tue, 12 Nov 2013 08:19:13 +0000
-Message-ID: <C3050A4DBA34F345975765E43127F10F1C08B6DD@szxeml512-mbs.china.huawei.com>
-Content-Language: zh-CN
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1VgCdU-0003Hh-A7
+ for linux-mtd@lists.infradead.org; Tue, 12 Nov 2013 12:00:01 +0000
+Received: by mail-vc0-f174.google.com with SMTP id ld13so4156979vcb.33
+ for <linux-mtd@lists.infradead.org>; Tue, 12 Nov 2013 03:59:38 -0800 (PST)
 MIME-Version: 1.0
-Cc: "fengguang.wu@intel.com" <fengguang.wu@intel.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Artem Bityutskiy <dedekind1@gmail.com>, Randy Dunlap <rdunlap@infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Karel Zak <kzak@redhat.com>,
+In-Reply-To: <1384230188-29585-1-git-send-email-b32955@freescale.com>
+References: <1384230188-29585-1-git-send-email-b32955@freescale.com>
+Date: Tue, 12 Nov 2013 09:59:38 -0200
+Message-ID: <CAOMZO5A26K9tMPEjRMoMP9ZEAsiV_kwGYO5NX=5uA3nF=zn7Zw@mail.gmail.com>
+Subject: Re: [PATCH v3] mtd: gpmi: fix the NULL pointer
+From: Fabio Estevam <festevam@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: Fabio Estevam <fabio.estevam@freescale.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>, stable@vger.kernel.org,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>, Joe Perches <joe@perches.com>,
- "Wanglin \(Albert\)" <albert.wanglin@hisilicon.com>
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,234 +27,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Cai Zhiyong <caizhiyong@huawei.com>
-Date: Tue, 12 Nov 2013 15:50:42 +0800
-Subject: [PATCH] block: cmdline-parser: perfect cmdline format checking
+On Tue, Nov 12, 2013 at 2:23 AM, Huang Shijie <b32955@freescale.com> wrote:
+> The imx23 board will check the fingerprint, so it will call the
+> mx23_check_transcription_stamp. This function will use @chip->buffers->databuf
+> as its buffer which is allocated in the nand_scan_tail().
+>
+> Unfortunately, the mx23_check_transcription_stamp is called before the
+> nand_scan_tail(). So we will meet a NULL pointer bug:
+>
+> --------------------------------------------------------------------
+> [    1.150000] NAND device: Manufacturer ID: 0xec, Chip ID: 0xd7 (Samsung NAND 4GiB 3,3V 8-bit), 4096MiB, page size: 4096, OOB size: 8
+> [    1.160000] Unable to handle kernel NULL pointer dereference at virtual address 000005d0
+> [    1.170000] pgd = c0004000
+> [    1.170000] [000005d0] *pgd=00000000
+> [    1.180000] Internal error: Oops: 5 [#1] ARM
+> [    1.180000] Modules linked in:
+> [    1.180000] CPU: 0 PID: 1 Comm: swapper Not tainted 3.12.0 #89
+> [    1.180000] task: c7440000 ti: c743a000 task.ti: c743a000
+> [    1.180000] PC is at memcmp+0x10/0x54
+> [    1.180000] LR is at gpmi_nand_probe+0x42c/0x894
+> [    1.180000] pc : [<c025fcb0>]    lr : [<c02f6a68>]    psr: 20000053
+> [    1.180000] sp : c743be2c  ip : 600000d3  fp : ffffffff
+> [    1.180000] r10: 000005d0  r9 : c02f5f08  r8 : 00000000
+> [    1.180000] r7 : c75858a8  r6 : c75858a8  r5 : c7585b18  r4 : c7585800
+> [    1.180000] r3 : 000005d0  r2 : 00000004  r1 : c05c33e4  r0 : 000005d0
+> [    1.180000] Flags: nzCv  IRQs on  FIQs off  Mode SVC_32  ISA ARM  Segment kernel
+> [    1.180000] Control: 0005317f  Table: 40004000  DAC: 00000017
+> [    1.180000] Process swapper (pid: 1, stack limit = 0xc743a1c0)
+> --------------------------------------------------------------------
+>
+> This patch rearrange the init procedure:
+>    Set the NAND_SKIP_BBTSCAN to skip the nand scan firstly, and after we
+>    set the proper settings, we will call the chip->scan_bbt() manually.
+>
+> Cc: stable@vger.kernel.org
+> Reported-by: Fabio Estevam <festevam@gmail.com>
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
 
- -Fix compile warning with value and function undeclared.
-  this reported by <fengguang.wu@intel.com> and
-  Randy Dunlap <rdunlap@infradead.org>
+Tested-by: Fabio Estevam <fabio.estevam@freescale.com>
 
- -perfect cmdline format checking, make the error information clear
-  for understand, make this lib fully equivalent to the old parser
-  in drivers/mtd/cmdlinepart.c
-
-I tested each branch of this patch change, it is ok.
-
-Signed-off-by: Cai Zhiyong <caizhiyong@huawei.com>
----
- block/cmdline-parser.c         | 83 +++++++++++++++++++++++++++++++-------=
-----
- include/linux/cmdline-parser.h |  1 +
- 2 files changed, 62 insertions(+), 22 deletions(-)
-
-diff --git a/block/cmdline-parser.c b/block/cmdline-parser.c
-index 9dbc67e..4833936 100644
---- a/block/cmdline-parser.c
-+++ b/block/cmdline-parser.c
-@@ -4,12 +4,17 @@
-  * Written by Cai Zhiyong <caizhiyong@huawei.com>
-  *
-  */
-+#define pr_fmt(fmt) "cmdline-parser: " fmt
-+
- #include <linux/export.h>
- #include <linux/cmdline-parser.h>
-+#include <linux/slab.h>
-=20
- static int parse_subpart(struct cmdline_subpart **subpart, char *partdef)
- {
- 	int ret =3D 0;
-+	int lastpart =3D 0;
-+	char *partorg =3D partdef;
- 	struct cmdline_subpart *new_subpart;
-=20
- 	*subpart =3D NULL;
-@@ -21,10 +26,12 @@ static int parse_subpart(struct cmdline_subpart **subpa=
-rt, char *partdef)
- 	if (*partdef =3D=3D '-') {
- 		new_subpart->size =3D (sector_t)(~0ULL);
- 		partdef++;
-+		lastpart =3D 1;
- 	} else {
- 		new_subpart->size =3D (sector_t)memparse(partdef, &partdef);
- 		if (new_subpart->size < (sector_t)PAGE_SIZE) {
--			pr_warn("cmdline partition size is invalid.");
-+			pr_warn("partition '%s' size '0x%llx' too small.\n",
-+				partorg, new_subpart->size);
- 			ret =3D -EINVAL;
- 			goto fail;
- 		}
-@@ -42,13 +49,19 @@ static int parse_subpart(struct cmdline_subpart **subpa=
-rt, char *partdef)
- 		char *next =3D strchr(++partdef, ')');
-=20
- 		if (!next) {
--			pr_warn("cmdline partition format is invalid.");
-+			pr_warn("partition '%s' has no closing ')' found in partition name.\n",
-+				partorg);
- 			ret =3D -EINVAL;
- 			goto fail;
- 		}
-=20
--		length =3D min_t(int, next - partdef,
--			       sizeof(new_subpart->name) - 1);
-+		length =3D (int)(next - partdef);
-+		if (length > sizeof(new_subpart->name) - 1) {
-+			pr_warn("partition '%s' partition name too long, truncating.\n",
-+				partorg);
-+			length =3D sizeof(new_subpart->name) - 1;
-+		}
-+
- 		strncpy(new_subpart->name, partdef, length);
- 		new_subpart->name[length] =3D '\0';
-=20
-@@ -68,8 +81,15 @@ static int parse_subpart(struct cmdline_subpart **subpar=
-t, char *partdef)
- 		partdef +=3D 2;
- 	}
-=20
-+	if (*partdef) {
-+		pr_warn("partition '%s' has bad character '%c' after partition.\n",
-+			partorg, *partdef);
-+		ret =3D -EINVAL;
-+		goto fail;
-+	}
-+
- 	*subpart =3D new_subpart;
--	return 0;
-+	return lastpart;
- fail:
- 	kfree(new_subpart);
- 	return ret;
-@@ -86,14 +106,13 @@ static void free_subpart(struct cmdline_parts *parts)
- 	}
- }
-=20
--static int parse_parts(struct cmdline_parts **parts, const char *bdevdef)
-+static int parse_parts(struct cmdline_parts **parts, char *bdevdef)
- {
- 	int ret =3D -EINVAL;
- 	char *next;
- 	int length;
- 	struct cmdline_subpart **next_subpart;
- 	struct cmdline_parts *newparts;
--	char buf[BDEVNAME_SIZE + 32 + 4];
-=20
- 	*parts =3D NULL;
-=20
-@@ -102,14 +121,21 @@ static int parse_parts(struct cmdline_parts **parts, =
-const char *bdevdef)
- 		return -ENOMEM;
-=20
- 	next =3D strchr(bdevdef, ':');
--	if (!next) {
--		pr_warn("cmdline partition has no block device.");
-+	if (!next || next =3D=3D bdevdef) {
-+		pr_warn("partition '%s' has no block device.\n", bdevdef);
- 		goto fail;
- 	}
-=20
--	length =3D min_t(int, next - bdevdef, sizeof(newparts->name) - 1);
-+	length =3D (int)(next - bdevdef);
-+	if (length > sizeof(newparts->name) - 1) {
-+		pr_warn("partition '%s' device name too long, truncating.\n",
-+			bdevdef);
-+		length =3D sizeof(newparts->name) - 1;
-+	}
-+
- 	strncpy(newparts->name, bdevdef, length);
- 	newparts->name[length] =3D '\0';
-+
- 	newparts->nr_subparts =3D 0;
-=20
- 	next_subpart =3D &newparts->subpart;
-@@ -117,23 +143,25 @@ static int parse_parts(struct cmdline_parts **parts, =
-const char *bdevdef)
- 	while (next && *(++next)) {
- 		bdevdef =3D next;
- 		next =3D strchr(bdevdef, ',');
-+		if (next)
-+			*next =3D '\0';
-=20
--		length =3D (!next) ? (sizeof(buf) - 1) :
--			min_t(int, next - bdevdef, sizeof(buf) - 1);
--
--		strncpy(buf, bdevdef, length);
--		buf[length] =3D '\0';
--
--		ret =3D parse_subpart(next_subpart, buf);
--		if (ret)
-+		ret =3D parse_subpart(next_subpart, bdevdef);
-+		if (ret < 0) {
- 			goto fail;
-+		} else if (ret > 0 && next) {
-+			pr_warn("no partitions allowed after a fill-up partition.\n");
-+			ret =3D -EINVAL;
-+			goto fail;
-+		}
-=20
- 		newparts->nr_subparts++;
- 		next_subpart =3D &(*next_subpart)->next_subpart;
- 	}
-=20
- 	if (!newparts->subpart) {
--		pr_warn("cmdline partition has no valid partition.");
-+		pr_warn("block device '%s' has no valid partition.\n",
-+			newparts->name);
- 		ret =3D -EINVAL;
- 		goto fail;
- 	}
-@@ -192,7 +220,7 @@ int cmdline_parts_parse(struct cmdline_parts **parts, c=
-onst char *cmdline)
- 	}
-=20
- 	if (!*parts) {
--		pr_warn("cmdline partition has no valid partition.");
-+		pr_warn("no found valid partition.\n");
- 		ret =3D -EINVAL;
- 		goto fail;
- 	}
-@@ -237,11 +265,22 @@ int cmdline_parts_set(struct cmdline_parts *parts, se=
-ctor_t disk_size,
- 		else
- 			from =3D subpart->from;
-=20
--		if (from >=3D disk_size)
-+		if (subpart->name[0] =3D=3D '\0')
-+			snprintf(subpart->name, sizeof(subpart->name),
-+				 "partition%03d", slot);
-+
-+		if (from >=3D disk_size) {
-+			pr_warn("partition '%s' offset exceeds device '%s' size '0x%llx', ignor=
-ing.\n",
-+				subpart->name, parts->name, disk_size);
- 			break;
-+		}
-=20
--		if (subpart->size > (disk_size - from))
-+		if (subpart->size > (disk_size - from)) {
-+			if (subpart->size !=3D (sector_t)(~0ULL))
-+				pr_warn("partition '%s' size exceeds device '%s' size '0x%llx', trunca=
-ting.\n",
-+					subpart->name, parts->name, disk_size);
- 			subpart->size =3D disk_size - from;
-+		}
-=20
- 		from +=3D subpart->size;
-=20
-diff --git a/include/linux/cmdline-parser.h b/include/linux/cmdline-parser.=
-h
-index 43b65a9..c6491b2 100644
---- a/include/linux/cmdline-parser.h
-+++ b/include/linux/cmdline-parser.h
-@@ -8,6 +8,7 @@
- #define CMDLINEPARSEH
-=20
- #include <linux/blkdev.h>
-+#include <linux/fs.h>
-=20
- /* partition flags */
- #define PF_RDONLY                   0x01 /* Device is read only */
---=20
-1.8.1.5
+Thanks
