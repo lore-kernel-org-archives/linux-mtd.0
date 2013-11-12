@@ -1,25 +1,18 @@
-Received: from mail-ob0-x22e.google.com ([2607:f8b0:4003:c01::22e])
+Received: from tx2ehsobe001.messaging.microsoft.com ([65.55.88.11]
+ helo=tx2outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vg5aN-0002IW-8J
- for linux-mtd@lists.infradead.org; Tue, 12 Nov 2013 04:28:20 +0000
-Received: by mail-ob0-f174.google.com with SMTP id uy5so3345064obc.33
- for <linux-mtd@lists.infradead.org>; Mon, 11 Nov 2013 20:27:56 -0800 (PST)
-Date: Mon, 11 Nov 2013 20:27:53 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH V2] mtd: gpmi: fix the NULL pointer
-Message-ID: <20131112042753.GJ20061@ld-irv-0074.broadcom.com>
-References: <20131108175119.GA20061@ld-irv-0074.broadcom.com>
- <1384166419-23568-1-git-send-email-b32955@freescale.com>
- <20131112031833.GI20061@ld-irv-0074.broadcom.com>
- <5281A058.1080501@freescale.com>
+ id 1Vg5uM-0002XG-0s
+ for linux-mtd@lists.infradead.org; Tue, 12 Nov 2013 04:48:59 +0000
+From: Huang Shijie <b32955@freescale.com>
+To: <dwmw2@infradead.org>
+Subject: [PATCH v3] mtd: gpmi: fix the NULL pointer
+Date: Tue, 12 Nov 2013 12:23:08 +0800
+Message-ID: <1384230188-29585-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5281A058.1080501@freescale.com>
-Cc: fabio.estevam@freescale.com, dedekind1@gmail.com, dwmw2@infradead.org,
- stable@vger.kernel.org, linux-mtd@lists.infradead.org, festevam@gmail.com
+Content-Type: text/plain
+Cc: fabio.estevam@freescale.com, dedekind1@gmail.com, stable@vger.kernel.org,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ computersforpeace@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,39 +22,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ Fabio, in case he missed this (it was also in HTML, so it might not
-have gotten through the filters)
+The imx23 board will check the fingerprint, so it will call the
+mx23_check_transcription_stamp. This function will use @chip->buffers->databuf
+as its buffer which is allocated in the nand_scan_tail().
 
-On Tue, Nov 12, 2013 at 11:28:24AM +0800, Huang Shijie wrote:
-> 于 2013年11月12日 11:18, Brian Norris 写道:
-> 
->     So I would recommend the following: set the NAND_SKIP_BBTSCAN, then
->     rearrange to the following call structure:
-> 
->      |_ nand_scan_ident
->      |_ chip->options |= NAND_SKIP_BBTSCAN;
->      |_ nand_init_last
->        |_ gpmi_init_last [1]
->          |_ gpmi_set_geometry
->      |_ nand_scan_tail
->      |_ gpmi_pre_bbt_scan [2]
->        |_ nand_boot_init
->          |_ mx23_boot_init
->            |_ mx23_check_transcription_stamp
->            |_ mx23_write_transcription_stamp
->      |_ chip->scan_bbt() [3]
-> 
->     Regarding [1] and [2]: we can split apart the code from gpmi_init_last()
->     so that have the stuff that is *only* necessary to do before [3] placed
->     under [2]. That way, nand_scan_tail() will initialize remaining pieces,
->     and all you have to do is configure and run your BBT scan. No more
->     dancing around uninitialized callback functions or buffers.
-> 
->     What do you think?
-> 
-> it's ok to me. I will code the patch right now, and send out it after i test
-> it.
+Unfortunately, the mx23_check_transcription_stamp is called before the
+nand_scan_tail(). So we will meet a NULL pointer bug:
 
-Sounds good.
+--------------------------------------------------------------------
+[    1.150000] NAND device: Manufacturer ID: 0xec, Chip ID: 0xd7 (Samsung NAND 4GiB 3,3V 8-bit), 4096MiB, page size: 4096, OOB size: 8
+[    1.160000] Unable to handle kernel NULL pointer dereference at virtual address 000005d0
+[    1.170000] pgd = c0004000
+[    1.170000] [000005d0] *pgd=00000000
+[    1.180000] Internal error: Oops: 5 [#1] ARM
+[    1.180000] Modules linked in:
+[    1.180000] CPU: 0 PID: 1 Comm: swapper Not tainted 3.12.0 #89
+[    1.180000] task: c7440000 ti: c743a000 task.ti: c743a000
+[    1.180000] PC is at memcmp+0x10/0x54
+[    1.180000] LR is at gpmi_nand_probe+0x42c/0x894
+[    1.180000] pc : [<c025fcb0>]    lr : [<c02f6a68>]    psr: 20000053
+[    1.180000] sp : c743be2c  ip : 600000d3  fp : ffffffff
+[    1.180000] r10: 000005d0  r9 : c02f5f08  r8 : 00000000
+[    1.180000] r7 : c75858a8  r6 : c75858a8  r5 : c7585b18  r4 : c7585800
+[    1.180000] r3 : 000005d0  r2 : 00000004  r1 : c05c33e4  r0 : 000005d0
+[    1.180000] Flags: nzCv  IRQs on  FIQs off  Mode SVC_32  ISA ARM  Segment kernel
+[    1.180000] Control: 0005317f  Table: 40004000  DAC: 00000017
+[    1.180000] Process swapper (pid: 1, stack limit = 0xc743a1c0)
+--------------------------------------------------------------------
 
-Brian
+This patch rearrange the init procedure:
+   Set the NAND_SKIP_BBTSCAN to skip the nand scan firstly, and after we
+   set the proper settings, we will call the chip->scan_bbt() manually.
+
+Cc: stable@vger.kernel.org
+Reported-by: Fabio Estevam <festevam@gmail.com>
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   14 +++++++-------
+ 1 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 6e74917..c82b15e 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -1578,8 +1578,6 @@ static int gpmi_set_geometry(struct gpmi_nand_data *this)
+ 
+ static int gpmi_pre_bbt_scan(struct gpmi_nand_data  *this)
+ {
+-	int ret;
+-
+ 	/* Set up swap_block_mark, must be set before the gpmi_set_geometry() */
+ 	if (GPMI_IS_MX23(this))
+ 		this->swap_block_mark = false;
+@@ -1587,12 +1585,8 @@ static int gpmi_pre_bbt_scan(struct gpmi_nand_data  *this)
+ 		this->swap_block_mark = true;
+ 
+ 	/* Set up the medium geometry */
+-	ret = gpmi_set_geometry(this);
+-	if (ret)
+-		return ret;
++	return gpmi_set_geometry(this);
+ 
+-	/* NAND boot init, depends on the gpmi_set_geometry(). */
+-	return nand_boot_init(this);
+ }
+ 
+ static void gpmi_nfc_exit(struct gpmi_nand_data *this)
+@@ -1682,10 +1676,16 @@ static int gpmi_nfc_init(struct gpmi_nand_data *this)
+ 	if (ret)
+ 		goto err_out;
+ 
++	chip->options |= NAND_SKIP_BBTSCAN;
+ 	ret = nand_scan_tail(mtd);
+ 	if (ret)
+ 		goto err_out;
+ 
++	ret = nand_boot_init(this);
++	if (ret)
++		goto err_out;
++	chip->scan_bbt(mtd);
++
+ 	ppdata.of_node = this->pdev->dev.of_node;
+ 	ret = mtd_device_parse_register(mtd, NULL, &ppdata, NULL, 0);
+ 	if (ret)
+-- 
+1.7.2.rc3
