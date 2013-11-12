@@ -1,23 +1,27 @@
-Received: from mail-vc0-x230.google.com ([2607:f8b0:400c:c03::230])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VgKKm-0001lD-3m
- for linux-mtd@lists.infradead.org; Tue, 12 Nov 2013 20:13:12 +0000
-Received: by mail-vc0-f176.google.com with SMTP id ia6so4569556vcb.7
- for <linux-mtd@lists.infradead.org>; Tue, 12 Nov 2013 12:12:49 -0800 (PST)
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by casper.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VgKqz-0003m6-QZ
+ for linux-mtd@lists.infradead.org; Tue, 12 Nov 2013 20:46:31 +0000
+Date: Tue, 12 Nov 2013 17:45:56 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v2 3/5] mtd: nand: omap2: Fix OMAP_BCH option dependency
+Message-ID: <20131112204555.GA20260@localhost>
+References: <1382696277-9063-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1382696277-9063-4-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EA2AE93@DBDE04.ent.ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20131107075645.GD3805@norris.computersforpeace.net>
-References: <20131107075645.GD3805@norris.computersforpeace.net>
-Date: Tue, 12 Nov 2013 12:12:49 -0800
-Message-ID: <CAN8TOE-XHzfgE1V2-aQ-Oh5GqKimPhQBS0XJbnsCtuVMapmk0A@mail.gmail.com>
-Subject: Re: [MTD] 3.13 pull request?
-From: Brian Norris <computersforpeace@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Huang Shijie <b32955@freescale.com>,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA2AE93@DBDE04.ent.ti.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ "marek.belisko@gmail.com" <marek.belisko@gmail.com>, "Balbi,
+ Felipe" <balbi@ti.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  Pekon Gupta <pekon@ti.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,40 +31,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello David,
+On Fri, Oct 25, 2013 at 11:26:06AM +0000, Gupta, Pekon wrote:
+> > From: Ezequiel Garcia [mailto:ezequiel.garcia@free-electrons.com]
+> > Subject: [PATCH v2 3/5] mtd: nand: omap2: Fix OMAP_BCH option
+> > dependency
+> > 
+> > This option does not need to depend in MTD_NAND, for it's enclosed
+> > under it. Also, it's wrong to make it depend in ARCH_OMAP3 only
+> > since the controller is used in a wider range of SoCs.
+> > 
+> > Instead, just leave the dependency on the OMAP2 driver option.
+> > 
+> > Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> > ---
+> >  drivers/mtd/nand/Kconfig | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+> > index d885298..8187466 100644
+> > --- a/drivers/mtd/nand/Kconfig
+> > +++ b/drivers/mtd/nand/Kconfig
+> > @@ -95,7 +95,7 @@ config MTD_NAND_OMAP2
+> >  	  platforms.
+> > 
+> >  config MTD_NAND_OMAP_BCH
+> > -	depends on MTD_NAND && MTD_NAND_OMAP2 && ARCH_OMAP3
+> > +	depends on MTD_NAND_OMAP2
+> >  	tristate "Enable support for hardware BCH error correction"
+> >  	default n
+> >  	select BCH
+> > --
+> > 1.8.1.5
+> 
+> Acked-by: Pekon Gupta <pekon@ti.com>
 
-Ping?
+Brian,
 
-On Wed, Nov 6, 2013 at 11:56 PM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> It's that season again; are you prepping a pull request for 3.13? I
-> guess technically, the merge window doesn't start for a few days
-> (according to Linus), but he's been merging stuff for 3.13 already...
->
-> Anyway, let me know what you're thinking, or else I'll scrape together
-> something myself.
+I almost forgot about this one, and I just came across the issue
+while configuring my board.
 
-I'll give approx. 24 hours, or else I'll send the request myself.
+I believe this one is simple enough to be pulled in for v3.14
+(it could be in v3.13, but it's already too late).
 
-> Some things of note:
->
-> There is at least one gpmi regression reported against 3.12, with no
-> proper fix posted yet. Huang has at least one other -stable bugfix patch
-> out there that hasn't gotten reviewed yet. If it's a good fix, hopefully
-> it can get into 3.13 (a later -rc, I guess?).
-
-Since my last email, I believe we've gotten good fixes for a few
-different GPMI issues, some of which should be going to -stable. They
-are queued up.
-
-I'm pushing other fixes to a 'next' branch, so that they don't get in
-the way of the merge window.
-
-> A large portion of Pekon's OMAP updates has been queued up; they've
-> gotten a pretty hard beating over reviews, and they've gotten a little
-> external testing (at least Ezequiel; not sure of others), but they've
-> only sat in linux-next for about a week now.
->
-> Everything else should be pretty benign, I think.
-
-Brian
+Or maybe you're not taking stuff for v3.14 yet...
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
