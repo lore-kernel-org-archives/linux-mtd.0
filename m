@@ -1,14 +1,22 @@
-Received: from gerard.telenet-ops.be ([195.130.132.48])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VgJNb-0008EV-8C
- for linux-mtd@lists.infradead.org; Tue, 12 Nov 2013 19:12:04 +0000
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] mtd: Make mtd_partition.name const
-Date: Tue, 12 Nov 2013 20:11:26 +0100
-Message-Id: <1384283486-10348-1-git-send-email-geert@linux-m68k.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+Received: from mail-qc0-f177.google.com ([209.85.216.177])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VgJOp-0008HO-SY
+ for linux-mtd@lists.infradead.org; Tue, 12 Nov 2013 19:13:20 +0000
+Received: by mail-qc0-f177.google.com with SMTP id b10so3148417qcw.36
+ for <linux-mtd@lists.infradead.org>; Tue, 12 Nov 2013 11:12:58 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <1384283245-9419-4-git-send-email-geert@linux-m68k.org>
+References: <1384283245-9419-1-git-send-email-geert@linux-m68k.org>
+ <1384283245-9419-4-git-send-email-geert@linux-m68k.org>
+Date: Tue, 12 Nov 2013 11:12:57 -0800
+Message-ID: <CAOesGMiPJU9sRWptxqC_GsvBX0jdsbhfGpvG0OKpL98Q1o1YfQ@mail.gmail.com>
+Subject: Re: [PATCH 03/12] mtd: pasemi_nand.c: Remove superfluous name cast
+From: Olof Johansson <olof@lixom.net>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,71 +26,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This allows to drop a few casts.
+On Tue, Nov 12, 2013 at 11:07 AM, Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> device_driver.name is "const char *"
+>
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: Olof Johansson <olof@lixom.net>
+> Cc: linux-mtd@lists.infradead.org
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- drivers/mtd/mtdpart.c          |    2 +-
- drivers/mtd/ofpart.c           |    4 ++--
- include/linux/mtd/partitions.h |    4 ++--
- 3 files changed, 5 insertions(+), 5 deletions(-)
+Acked-by: Olof Johansson <olof@lixom.net>
 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 6e732c3820c1..67a89bb45943 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -534,7 +534,7 @@ out_register:
- 	return slave;
- }
- 
--int mtd_add_partition(struct mtd_info *master, char *name,
-+int mtd_add_partition(struct mtd_info *master, const char *name,
- 		      long long offset, long long length)
- {
- 	struct mtd_partition part;
-diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
-index d64f8c30945f..f0a708bf9b0e 100644
---- a/drivers/mtd/ofpart.c
-+++ b/drivers/mtd/ofpart.c
-@@ -81,7 +81,7 @@ static int parse_ofpart_partitions(struct mtd_info *master,
- 		partname = of_get_property(pp, "label", &len);
- 		if (!partname)
- 			partname = of_get_property(pp, "name", &len);
--		(*pparts)[i].name = (char *)partname;
-+		(*pparts)[i].name = partname;
- 
- 		if (of_get_property(pp, "read-only", &len))
- 			(*pparts)[i].mask_flags |= MTD_WRITEABLE;
-@@ -152,7 +152,7 @@ static int parse_ofoldpart_partitions(struct mtd_info *master,
- 		if (names && (plen > 0)) {
- 			int len = strlen(names) + 1;
- 
--			(*pparts)[i].name = (char *)names;
-+			(*pparts)[i].name = names;
- 			plen -= len;
- 			names += len;
- 		} else {
-diff --git a/include/linux/mtd/partitions.h b/include/linux/mtd/partitions.h
-index 1f8d24bdafda..335ffca10c10 100644
---- a/include/linux/mtd/partitions.h
-+++ b/include/linux/mtd/partitions.h
-@@ -37,7 +37,7 @@
-  */
- 
- struct mtd_partition {
--	char *name;			/* identifier string */
-+	const char *name;		/* identifier string */
- 	uint64_t size;			/* partition size */
- 	uint64_t offset;		/* offset within the master MTD space */
- 	uint32_t mask_flags;		/* master MTD flags to mask out for this partition */
-@@ -80,7 +80,7 @@ extern int register_mtd_parser(struct mtd_part_parser *parser);
- extern int deregister_mtd_parser(struct mtd_part_parser *parser);
- 
- int mtd_is_partition(const struct mtd_info *mtd);
--int mtd_add_partition(struct mtd_info *master, char *name,
-+int mtd_add_partition(struct mtd_info *master, const char *name,
- 		      long long offset, long long length);
- int mtd_del_partition(struct mtd_info *master, int partno);
- uint64_t mtd_get_device_size(const struct mtd_info *mtd);
--- 
-1.7.9.5
+
+-Olof
