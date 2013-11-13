@@ -1,15 +1,27 @@
-Received: from smtp20.mail.ru ([94.100.176.173])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VgZ75-0006AE-8p
- for linux-mtd@lists.infradead.org; Wed, 13 Nov 2013 12:00:04 +0000
-From: Alexander Shiyan <shc_work@mail.ru>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH v2] mtd: nand: diskonchip: Request memory region prior
- ioremap()
-Date: Wed, 13 Nov 2013 15:59:25 +0400
-Message-Id: <1384343965-29682-1-git-send-email-shc_work@mail.ru>
-Cc: David Woodhouse <dwmw2@infradead.org>, Alexander Shiyan <shc_work@mail.ru>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Message-ID: <52838941.4060207@ti.com>
+Date: Wed, 13 Nov 2013 09:14:25 -0500
+From: Santosh Shilimkar <santosh.shilimkar@ti.com>
+MIME-Version: 1.0
+To: Sekhar Nori <nsekhar@ti.com>
+Subject: Re: [PATCH 10/12] mtd: nand: davinci: don't set timings if AEMIF
+ is used
+References: <1384187188-5776-1-git-send-email-ivan.khoronzhuk@ti.com>,
+ <1384187188-5776-11-git-send-email-ivan.khoronzhuk@ti.com>
+ <4F5844B3A985794BA902E12C070812375F8D53@DNCE04.ent.ti.com>
+ <528307F0.6000805@ti.com>
+In-Reply-To: <528307F0.6000805@ti.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "Strashko,
+ Grygorii" <grygorii.strashko@ti.com>, Russell King <linux@arm.linux.org.uk>,
+ Pawel Moll <pawel.moll@arm.com>, Stephen Warren <swarren@wwwdotorg.org>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@kernel.crashing.org>, Rob Herring <rob.herring@calxeda.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Rob Landley <rob@landley.net>, "Khoronzhuk, Ivan" <ivan.khoronzhuk@ti.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,53 +31,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds request_mem_region() prior ioremap() for diskonchip
-driver. This will allow to check if memory region is occupied by any
-other device, for example in case if we have memory region for several
-optional devices and only one device can be used at once.
+On Wednesday 13 November 2013 12:02 AM, Sekhar Nori wrote:
+> On Monday 11 November 2013 10:40 PM, Khoronzhuk, Ivan wrote:
+>> If Davinci AEMIF is used we don't need to set timings and bus width.
+>> It is done by AEMIF driver (drivers/memory/davinci-aemfi.c).
+>>
+>> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+>> ---
+>>  drivers/mtd/nand/davinci_nand.c |   22 +++++++++++++++-------
+>>  1 file changed, 15 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
+>> index 4705214..879e915 100644
+>> --- a/drivers/mtd/nand/davinci_nand.c
+>> +++ b/drivers/mtd/nand/davinci_nand.c
+>> @@ -742,27 +742,35 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
+>>                 goto err_clk_enable;
+>>         }
+>>
+>> +#if !IS_ENABLED(CONFIG_TI_DAVINCI_AEMIF)
+> 
+> This is a hack! Just because AEMIF driver is enabled, it does not
+> guarantee that the timings have been setup by it. Instead of configuring
+> timings in two drivers, why not just convert everyone over to use the
+> new driver. Dont worry about breaking old platforms, I will help test
+> and ack them.
+> 
+How about you take a stab at and convert the DaVinci code over to make
+use of new driver. We are trying to re-use as much as possible from the
+common drivers and also making an option so that the DaVinci arch can
+move over to these drivers if they want to.
 
-Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
----
- drivers/mtd/nand/diskonchip.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+Thanks.
 
-diff --git a/drivers/mtd/nand/diskonchip.c b/drivers/mtd/nand/diskonchip.c
-index b68a495..0afafa0 100644
---- a/drivers/mtd/nand/diskonchip.c
-+++ b/drivers/mtd/nand/diskonchip.c
-@@ -1440,10 +1440,13 @@ static int __init doc_probe(unsigned long physadr)
- 	int reg, len, numchips;
- 	int ret = 0;
- 
-+	if (!request_mem_region(physadr, DOC_IOREMAP_LEN, NULL))
-+		return -EBUSY;
- 	virtadr = ioremap(physadr, DOC_IOREMAP_LEN);
- 	if (!virtadr) {
- 		printk(KERN_ERR "Diskonchip ioremap failed: 0x%x bytes at 0x%lx\n", DOC_IOREMAP_LEN, physadr);
--		return -EIO;
-+		ret = -EIO;
-+		goto error_ioremap;
- 	}
- 
- 	/* It's not possible to cleanly detect the DiskOnChip - the
-@@ -1629,6 +1632,10 @@ static int __init doc_probe(unsigned long physadr)
- 	WriteDOC(save_control, virtadr, DOCControl);
-  fail:
- 	iounmap(virtadr);
-+
-+error_ioremap:
-+	release_mem_region(physadr, DOC_IOREMAP_LEN);
-+
- 	return ret;
- }
- 
-@@ -1645,6 +1652,7 @@ static void release_nanddoc(void)
- 		nextmtd = doc->nextdoc;
- 		nand_release(mtd);
- 		iounmap(doc->virtadr);
-+		release_mem_region(doc->physadr, DOC_IOREMAP_LEN);
- 		kfree(mtd);
- 	}
- }
--- 
-1.8.1.5
+Regards,
+Santosh
