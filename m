@@ -1,22 +1,24 @@
-Received: from mail-ie0-x22c.google.com ([2607:f8b0:4001:c03::22c])
+Received: from mail-ie0-f169.google.com ([209.85.223.169])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VgiGQ-0006Gl-Rd
- for linux-mtd@lists.infradead.org; Wed, 13 Nov 2013 21:46:19 +0000
-Received: by mail-ie0-f172.google.com with SMTP id to1so1527342ieb.17
- for <linux-mtd@lists.infradead.org>; Wed, 13 Nov 2013 13:45:54 -0800 (PST)
-Date: Wed, 13 Nov 2013 13:45:48 -0800
+ id 1VgiXX-0006f8-0i
+ for linux-mtd@lists.infradead.org; Wed, 13 Nov 2013 22:03:59 +0000
+Received: by mail-ie0-f169.google.com with SMTP id tp5so1553663ieb.0
+ for <linux-mtd@lists.infradead.org>; Wed, 13 Nov 2013 14:03:34 -0800 (PST)
+Date: Wed, 13 Nov 2013 14:03:30 -0800
 From: Brian Norris <computersforpeace@gmail.com>
 To: Pekon Gupta <pekon@ti.com>
-Subject: Re: [PATCH v3 2/4] mtd: nand: omap: optimize chip->ecc.calculate()
- for H/W ECC schemes
-Message-ID: <20131113214548.GH9468@ld-irv-0074.broadcom.com>
+Subject: Re: [PATCH v3 3/4] mtd: nand: omap: optimize chip->ecc.hwctl() for
+ H/W ECC schemes
+Message-ID: <20131113220330.GI9468@ld-irv-0074.broadcom.com>
 References: <1383385576-26095-1-git-send-email-pekon@ti.com>
- <1383385576-26095-3-git-send-email-pekon@ti.com>
+ <1383385576-26095-4-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1383385576-26095-3-git-send-email-pekon@ti.com>
-Cc: linux-mtd@lists.infradead.org, balbi@ti.com, dedekind1@gmail.com
+In-Reply-To: <1383385576-26095-4-git-send-email-pekon@ti.com>
+Cc: linux-mtd@lists.infradead.org,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, balbi@ti.com,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,94 +28,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Pekon,
-
-On Sat, Nov 02, 2013 at 03:16:14PM +0530, Pekon Gupta wrote:
-> chip->ecc.calculate() is used for calculating and fetching of ECC syndrome by
-> processing the data passed during Read/Write accesses.
+On Sat, Nov 02, 2013 at 03:16:15PM +0530, Pekon Gupta wrote:
+> chip->ecc.hwctl() is used for preparing the H/W controller before read/write
+> NAND accesses (like assigning data-buf, enabling ECC scheme configs, etc.)
 > 
-> All H/W based ECC schemes supported in omap2-nand driver use GPMC controller
-> to calculate ECC syndrome. But each BCHx_ECC scheme implements its own function
-> to process and fetch ECC syndrom from GPMC controller.
+> Though all ECC schemes in OMAP NAND driver use GPMC controller for generating
+> ECC syndrome (for both Read/Write accesses). But but in current code
+
+s/But but/but/
+
+:)
+
+> HAM1_ECC and BCHx_ECC schemes implement individual function to achieve this.
+> This patch merges the GPMC configuration code for all ECC schemes into
+> single omap_enable_hwecc(), thus adding scalability for future ECC schemes.
 > 
-> This patch tries to merges the common code for different BCHx_ECC schemes into
-> single omap_calculate_ecc_bch(), And adds schemes specific post-possessing
-> after fetching ECC-syndrome. This removes redundant code and adds scalability
-> for future ECC-schemes. This patch:
-> - [un-touched]	omap_calculate_ecc():		Used for HAM1_ECC
-> - [merged]	omap3_calculate_ecc_bch4():	Used for BCH4_HW_DETECTION_SW
-> - [merged]	omap3_calculate_ecc_bch8():	Used for BCH8_HW_DETECTION_SW
-> - [merged]	omap3_calculate_ecc_bch():	Used for BCH4_HW and BCH8_HW
-> - [new]		omap_calculate_ecc_bch():	Now used for all BCHx_ECC
-
-This patch looks pretty good. Good job simplifying some things. It still
-looks like there is some more repetition that could be shortened, but
-that may be a little more difficult of a task.
-
+>  omap_enable_hwecc() + omap3_enable_hwecc_bch() -> omap_enable_hwecc()
 > 
 > Signed-off-by: Pekon Gupta <pekon@ti.com>
 > ---
->  drivers/mtd/nand/omap2.c | 245 ++++++++++++++++++-----------------------------
->  1 file changed, 92 insertions(+), 153 deletions(-)
+>  drivers/mtd/nand/omap2.c | 212 +++++++++++++++++------------------------------
+>  1 file changed, 74 insertions(+), 138 deletions(-)
 > 
 > diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> index c946f22..1f59505 100644
+> index 1f59505..3a99e29 100644
 > --- a/drivers/mtd/nand/omap2.c
 > +++ b/drivers/mtd/nand/omap2.c
-> @@ -146,7 +146,11 @@ static u_char bch8_vector[] = {0xf3, 0xdb, 0x14, 0x16, 0x8b, 0xd2, 0xbe, 0xcc,
->  	0xac, 0x6b, 0xff, 0x99, 0x7b};
->  static u_char bch4_vector[] = {0x00, 0x6b, 0x31, 0xdd, 0x41, 0xbc, 0x10};
->  #endif
-> -
-> +#if defined(CONFIG_MTD_NAND_ECC_BCH) || defined(CONFIG_MTD_NAND_OMAP_BCH)
-> +static u8  bch4_polynomial[] = {0x28, 0x13, 0xcc, 0x39, 0x96, 0xac, 0x7f};
-> +static u8  bch8_polynomial[] = {0xef, 0x51, 0x2e, 0x09, 0xed, 0x93, 0x9a, 0xc2,
-> +				0x97, 0x79, 0xe5, 0x24, 0xb5};
-> +#endif
->  /* oob info generated runtime depending on ecc algorithm and layout selected */
->  static struct nand_ecclayout omap_oobinfo;
+> @@ -33,6 +33,10 @@
+>  #define	DRIVER_NAME	"omap2-nand"
+>  #define	OMAP_NAND_TIMEOUT_MS	5000
 >  
-> @@ -934,9 +938,11 @@ static int omap_calculate_ecc(struct mtd_info *mtd, const u_char *dat,
->  	u32 val;
+> +#define GPMC_ECC_READ		0 /* Reset Hardware ECC for read */
+> +#define GPMC_ECC_WRITE		1 /* Reset Hardware ECC for write */
+> +#define GPMC_ECC_READSYN	2 /* Reset before syndrom is read back */
+> +
+>  #define NAND_Ecc_P1e		(1 << 0)
+>  #define NAND_Ecc_P2e		(1 << 1)
+>  #define NAND_Ecc_P4e		(1 << 2)
+> @@ -101,13 +105,9 @@
+>  #define P4o_s(a)	(TF(a & NAND_Ecc_P4o)		<< 1)
 >  
->  	val = readl(info->reg.gpmc_ecc_config);
-> -	if (((val >> ECC_CONFIG_CS_SHIFT)  & ~CS_MASK) != info->gpmc_cs)
-> +	if (((val >> 1) & 0x07) != info->gpmc_cs) {
+>  #define	PREFETCH_CONFIG1_CS_SHIFT	24
+> -#define	ECC_CONFIG_CS_SHIFT		1
 
-Why are you dropping the macros in favor of magic numbers? You do this
-in a few places.
+You stopped using this macro in a different patch, so this removal is
+unrelated to this patch. But I'm not sure the code is better without
+these macros anyway... I'll leave it to your discretion, I guess.
 
-> +		pr_err("%s: invalid ECC configuration for chip-select=%d",
-> +				DRIVER_NAME, info->gpmc_cs);
->  		return -EINVAL;
-> -
-> +	}
->  	/* read ecc result */
->  	val = readl(info->reg.gpmc_ecc1_result);
->  	*ecc_code++ = val;          /* P128e, ..., P1e */
-> @@ -1125,172 +1131,105 @@ static void omap3_enable_hwecc_bch(struct mtd_info *mtd, int mode)
+>  #define	CS_MASK				0x7
+>  #define	ENABLE_PREFETCH			(0x1 << 7)
+>  #define	DMA_MPU_MODE_SHIFT		2
+> -#define	ECCSIZE0_SHIFT			12
+> -#define	ECCSIZE1_SHIFT			22
+> -#define	ECC1RESULTSIZE			0x1
+>  #define	ECCCLEAR			0x100
+>  #define	ECC1				0x1
+>  #define	PREFETCH_FIFOTHRESHOLD_MAX	0x40
+
 ...
->  
-> -	nsectors = ((readl(info->reg.gpmc_ecc_config) >> 4) & 0x7) + 1;
-> -	/*
-> -	 * find BCH scheme used
-> -	 * 0 -> BCH4
-> -	 * 1 -> BCH8
-> -	 */
-> -	eccbchtsel = ((readl(info->reg.gpmc_ecc_config) >> 12) & 0x3);
-> +	val = readl(info->reg.gpmc_ecc_config);
-> +	if (((val >> 1) & 0x07) != info->gpmc_cs) {
 
-This seems to be the same construct from earlier. Why not use the macros
-that explain the shift and mask?
-
-> +		pr_err("%s: invalid ECC configuration for chip-select=%d",
-> +				DRIVER_NAME, info->gpmc_cs);
-> +		return -EINVAL;
-> +	}
-> +	nsectors = ((readl(gpmc_regs->gpmc_ecc_config) >> 4) & 0x7) + 1;
->  
->  	for (i = 0; i < nsectors; i++) {
-...
+The rest looks OK but very hard for me to verify. Do we have any
+testers? Any platforms to check for regressions?
 
 Brian
