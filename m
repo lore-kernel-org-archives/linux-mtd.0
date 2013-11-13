@@ -1,13 +1,15 @@
 Received: from smtp45.i.mail.ru ([94.100.177.105])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VgZ5u-00065F-O2
+ id 1VgZ5u-00065G-O3
  for linux-mtd@lists.infradead.org; Wed, 13 Nov 2013 11:58:53 +0000
 From: Alexander Shiyan <shc_work@mail.ru>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH v5 1/3] mtd: nand: gpio: Add DT property to automatically
- determine bus width
-Date: Wed, 13 Nov 2013 15:58:02 +0400
-Message-Id: <1384343884-29622-1-git-send-email-shc_work@mail.ru>
+Subject: [PATCH v5 2/3] mtd: nand: gpio: Use devm_gpio_request_one() where
+ possible
+Date: Wed, 13 Nov 2013 15:58:03 +0400
+Message-Id: <1384343884-29622-2-git-send-email-shc_work@mail.ru>
+In-Reply-To: <1384343884-29622-1-git-send-email-shc_work@mail.ru>
+References: <1384343884-29622-1-git-send-email-shc_work@mail.ru>
 Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
  Ian Campbell <ijc+devicetree@hellion.org.uk>,
  Russell King <linux@arm.linux.org.uk>, Alexander Shiyan <shc_work@mail.ru>,
@@ -24,70 +26,106 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds a property to automatically determine the NAND
-bus width by CFI/ONFI information from chip. This property works
-if the bus width is not specified explicitly.
+Patch replaces devm_gpio_request() by devm_gpio_request_one()
+function and adds a helper for set/clear WP signal. This change
+simplify source code a bit.
 
 Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
 ---
- .../devicetree/bindings/mtd/gpio-control-nand.txt        |  3 +++
- drivers/mtd/nand/gpio.c                                  | 16 ++++++++++++----
- 2 files changed, 15 insertions(+), 4 deletions(-)
+ drivers/mtd/nand/gpio.c | 37 ++++++++++++++++++++-----------------
+ 1 file changed, 20 insertions(+), 17 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt b/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
-index 36ef07d..fe4e960 100644
---- a/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
-@@ -19,6 +19,9 @@ Optional properties:
-   defaults to 1 byte.
- - chip-delay : chip dependent delay for transferring data from array to
-   read registers (tR).  If not present then a default of 20us is used.
-+- gpio-control-nand,bank-width-auto : Device bus width is determined
-+  automatically by CFI/ONFI information from chip if "bank-width"
-+  parameter is omitted (Boolean).
- - gpio-control-nand,io-sync-reg : A 64-bit physical address for a read
-   location used to guard against bus reordering with regards to accesses to
-   the GPIO's and the NAND flash data bus.  If present, then after changing
 diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
-index e826f89..8ec731d 100644
+index 8ec731d..a3286c8 100644
 --- a/drivers/mtd/nand/gpio.c
 +++ b/drivers/mtd/nand/gpio.c
-@@ -116,6 +116,9 @@ static int gpio_nand_get_config_of(const struct device *dev,
- 			dev_err(dev, "invalid bank-width %u\n", val);
- 			return -EINVAL;
- 		}
-+	} else if (of_property_read_bool(dev->of_node,
-+					 "gpio-control-nand,bank-width-auto")) {
-+		plat->options |= NAND_BUSWIDTH_AUTO;
- 	}
+@@ -189,14 +189,20 @@ gpio_nand_get_io_sync(struct platform_device *pdev)
+ 	return platform_get_resource(pdev, IORESOURCE_MEM, 1);
+ }
  
- 	plat->gpio_rdy = of_get_gpio(dev->of_node, 0);
-@@ -223,6 +226,15 @@ static int gpio_nand_probe(struct platform_device *pdev)
- 	if (IS_ERR(chip->IO_ADDR_R))
- 		return PTR_ERR(chip->IO_ADDR_R);
++static void gpio_nand_set_wp(struct gpiomtd *gpiomtd, int val)
++{
++	if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
++		gpio_set_value(gpiomtd->plat.gpio_nwp, val);
++}
++
+ static int gpio_nand_remove(struct platform_device *pdev)
+ {
+ 	struct gpiomtd *gpiomtd = platform_get_drvdata(pdev);
  
-+	ret = gpio_nand_get_config(&pdev->dev, &gpiomtd->plat);
-+	if (ret)
-+		return ret;
+ 	nand_release(&gpiomtd->mtd_info);
+ 
+-	if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
+-		gpio_set_value(gpiomtd->plat.gpio_nwp, 0);
++	gpio_nand_set_wp(gpiomtd, 0);
 +
-+	/* Only 8-bit bus wide is possible if size is 1 */
-+	if (resource_size(res) < 2)
-+		gpiomtd->plat.options &= ~(NAND_BUSWIDTH_16 |
-+					   NAND_BUSWIDTH_AUTO);
-+
- 	res = gpio_nand_get_io_sync(pdev);
- 	if (res) {
- 		gpiomtd->io_sync = devm_ioremap_resource(&pdev->dev, res);
-@@ -230,10 +242,6 @@ static int gpio_nand_probe(struct platform_device *pdev)
+ 	gpio_set_value(gpiomtd->plat.gpio_nce, 1);
+ 
+ 	return 0;
+@@ -242,34 +248,33 @@ static int gpio_nand_probe(struct platform_device *pdev)
  			return PTR_ERR(gpiomtd->io_sync);
  	}
  
--	ret = gpio_nand_get_config(&pdev->dev, &gpiomtd->plat);
--	if (ret)
--		return ret;
--
- 	ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_nce, "NAND NCE");
+-	ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_nce, "NAND NCE");
++	ret = devm_gpio_request_one(&pdev->dev, gpiomtd->plat.gpio_nce,
++				    GPIOF_OUT_INIT_HIGH, "NAND NCE");
  	if (ret)
  		return ret;
+-	gpio_direction_output(gpiomtd->plat.gpio_nce, 1);
+ 
+ 	if (gpio_is_valid(gpiomtd->plat.gpio_nwp)) {
+-		ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_nwp,
+-					"NAND NWP");
++		ret = devm_gpio_request_one(&pdev->dev, gpiomtd->plat.gpio_nwp,
++					    GPIOF_OUT_INIT_LOW, "NAND NWP");
+ 		if (ret)
+ 			return ret;
+ 	}
+ 
+-	ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_ale, "NAND ALE");
++	ret = devm_gpio_request_one(&pdev->dev, gpiomtd->plat.gpio_ale,
++				    GPIOF_OUT_INIT_LOW, "NAND ALE");
+ 	if (ret)
+ 		return ret;
+-	gpio_direction_output(gpiomtd->plat.gpio_ale, 0);
+ 
+-	ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_cle, "NAND CLE");
++	ret = devm_gpio_request_one(&pdev->dev, gpiomtd->plat.gpio_cle,
++				    GPIOF_OUT_INIT_LOW, "NAND CLE");
+ 	if (ret)
+ 		return ret;
+-	gpio_direction_output(gpiomtd->plat.gpio_cle, 0);
+ 
+ 	if (gpio_is_valid(gpiomtd->plat.gpio_rdy)) {
+-		ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_rdy,
+-					"NAND RDY");
++		ret = devm_gpio_request_one(&pdev->dev, gpiomtd->plat.gpio_rdy,
++					    GPIOF_IN, "NAND RDY");
+ 		if (ret)
+ 			return ret;
+-		gpio_direction_input(gpiomtd->plat.gpio_rdy);
+ 		chip->dev_ready = gpio_nand_devready;
+ 	}
+ 
+@@ -284,8 +289,7 @@ static int gpio_nand_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, gpiomtd);
+ 
+-	if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
+-		gpio_direction_output(gpiomtd->plat.gpio_nwp, 1);
++	gpio_nand_set_wp(gpiomtd, 1);
+ 
+ 	if (nand_scan(&gpiomtd->mtd_info, 1)) {
+ 		ret = -ENXIO;
+@@ -304,8 +308,7 @@ static int gpio_nand_probe(struct platform_device *pdev)
+ 		return 0;
+ 
+ err_wp:
+-	if (gpio_is_valid(gpiomtd->plat.gpio_nwp))
+-		gpio_set_value(gpiomtd->plat.gpio_nwp, 0);
++	gpio_nand_set_wp(gpiomtd, 0);
+ 
+ 	return ret;
+ }
 -- 
 1.8.1.5
