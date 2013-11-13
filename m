@@ -1,27 +1,23 @@
-Message-ID: <528307F0.6000805@ti.com>
-Date: Wed, 13 Nov 2013 10:32:40 +0530
-From: Sekhar Nori <nsekhar@ti.com>
+Date: Wed, 13 Nov 2013 00:44:18 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Josh Wu <josh.wu@atmel.com>
+Subject: Re: [PATCH] mtd: atmel_nand: fix bug driver will in a dead lock if
+ no nand detected
+Message-ID: <20131113084418.GA16999@norris.computersforpeace.net>
+References: <1383645547-21813-1-git-send-email-josh.wu@atmel.com>
+ <20131107083932.GJ3805@norris.computersforpeace.net>
+ <527B6ADF.1090201@atmel.com>
+ <20131107180942.GU20061@ld-irv-0074.broadcom.com>
+ <527C5E96.40805@atmel.com>
+ <20131113001022.GC9468@ld-irv-0074.broadcom.com>
+ <5282F164.3040509@atmel.com>
 MIME-Version: 1.0
-To: "Khoronzhuk, Ivan" <ivan.khoronzhuk@ti.com>, "Shilimkar, Santosh"
- <santosh.shilimkar@ti.com>, Rob Landley <rob@landley.net>, Russell King
- <linux@arm.linux.org.uk>
-Subject: Re: [PATCH 10/12] mtd: nand: davinci: don't set timings if AEMIF
- is used
-References: <1384187188-5776-1-git-send-email-ivan.khoronzhuk@ti.com>,
- <1384187188-5776-11-git-send-email-ivan.khoronzhuk@ti.com>
- <4F5844B3A985794BA902E12C070812375F8D53@DNCE04.ent.ti.com>
-In-Reply-To: <4F5844B3A985794BA902E12C070812375F8D53@DNCE04.ent.ti.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: Mark Rutland <mark.rutland@arm.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "Strashko,
- Grygorii" <grygorii.strashko@ti.com>, Pawel Moll <pawel.moll@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Stephen Warren <swarren@wwwdotorg.org>, Kumar Gala <galak@kernel.crashing.org>,
- Rob Herring <rob.herring@calxeda.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5282F164.3040509@atmel.com>
+Cc: dedekind1@gmail.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ nicolas.ferre@atmel.com, linux-mtd@lists.infradead.org, plagnioj@jcrosoft.com,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,30 +27,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 11 November 2013 10:40 PM, Khoronzhuk, Ivan wrote:
-> If Davinci AEMIF is used we don't need to set timings and bus width.
-> It is done by AEMIF driver (drivers/memory/davinci-aemfi.c).
-> 
-> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
-> ---
->  drivers/mtd/nand/davinci_nand.c |   22 +++++++++++++++-------
->  1 file changed, 15 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-> index 4705214..879e915 100644
-> --- a/drivers/mtd/nand/davinci_nand.c
-> +++ b/drivers/mtd/nand/davinci_nand.c
-> @@ -742,27 +742,35 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
->                 goto err_clk_enable;
->         }
-> 
-> +#if !IS_ENABLED(CONFIG_TI_DAVINCI_AEMIF)
+Hi Josh,
 
-This is a hack! Just because AEMIF driver is enabled, it does not
-guarantee that the timings have been setup by it. Instead of configuring
-timings in two drivers, why not just convert everyone over to use the
-new driver. Dont worry about breaking old platforms, I will help test
-and ack them.
+On Wed, Nov 13, 2013 at 11:26:28AM +0800, Josh Wu wrote:
+> On 11/13/2013 8:10 AM, Brian Norris wrote:
+> >On Fri, Nov 08, 2013 at 11:46:30AM +0800, Josh Wu wrote:
+> >>On 11/8/2013 2:09 AM, Brian Norris wrote:
+> >>>   if (nand_nfc.is_initialized) {
+> >>>     ...
+> >>Yes, exactly.
+> >>And the NAND probe will also load the NFC device before it reach
+> >>above check code.
+> >No, it loads the *driver*, not the *device*. I'm not familiar with the
+> >driver core guarantees, but I don't think you can guarantee that just
+> >because a driver was registered before another that the corresponding
+> >devices will be probed in that order. Or are you relying on the
+> >dependencies captured by device tree? (I don't think even the
+> >parent/child dependency between NAND/NFC gives you enough.)
+> 
+> I put  more code here to make it clearer:
+> 
+> arch/arm/boot/dts/sama5d3.dtsi:
+> nand0: nand@60000000 {
+>             compatible = "atmel,at91rm9200-nand";
+>             ...
+>             ranges;
+>             ...
+>             nfc@70000000 {
+>                 compatible = "atmel,sama5d3-nfc";
+>                 ...
+>             };
+>         };
 
-Thanks,
-Sekhar
+Ah, so you're focusing purely on the device tree support? It seems this
+driver also supports traditional platform devices, but nobody uses NFC
+without DT? That explains some things.
+
+> drivers/mtd/nand/atmel_nand.c
+> int atmel_of_init_port() {
+>    ...
+>    /* load the nfc driver if there is */
+>   of_platform_populate(np, NULL, NULL, host->dev);   # <--- Manually
+> populate the sub node (NFC node) to load NFC driver
+>   ...
+> }
+
+Right, that makes sense. So the ordering of the driver registration
+stuff is kind of a distraction in this case, then. It's this portion of
+the NAND probe that triggers bus_probe_device() to initialize the NFC
+device before continuing on.
+
+[snip rest of explanation; thanks!]
+
+So I don't think you have a problem for device tree platforms. But if
+someone were to try to instantiate these devices via
+platform_device_register(), they will have a problem.
+
+Please, do follow up with the cleanup to the driver registration that
+you mentioned.
+
+Brian
