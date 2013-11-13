@@ -1,18 +1,31 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VgDAH-0003rH-Lv
- for linux-mtd@lists.infradead.org; Tue, 12 Nov 2013 12:33:54 +0000
-Message-ID: <1384259609.15824.138.camel@sauron.fi.intel.com>
-Subject: [GIT PULL] UBI changes for 3.13-rc1
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Tue, 12 Nov 2013 14:33:29 +0200
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Reply-To: dedekind1@gmail.com
+Received: from mail-pd0-x22c.google.com ([2607:f8b0:400e:c02::22c])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VgEbV-0006jp-I6
+ for linux-mtd@lists.infradead.org; Tue, 12 Nov 2013 14:06:06 +0000
+Received: by mail-pd0-f172.google.com with SMTP id w10so6954776pde.3
+ for <linux-mtd@lists.infradead.org>; Tue, 12 Nov 2013 06:05:40 -0800 (PST)
+Date: Tue, 12 Nov 2013 22:03:57 -0500
+From: Huang Shijie <shijie8@gmail.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH 2/2] mtd: cmdlinepart: support master name is not set
+ when parser partition
+Message-ID: <20131113030351.GA8465@gmail.com>
+References: <C3050A4DBA34F345975765E43127F10F1C08B3EA@szxeml512-mbs.china.huawei.com>
+ <20131111030657.GA9406@gmail.com> <20131110180900.GA2478@localhost>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20131110180900.GA2478@localhost>
+Cc: "Wanglin \(Albert\)" <albert.wanglin@hisilicon.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Caizhiyong <caizhiyong@hisilicon.com>,
+ Randy Dunlap <rdunlap@infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Karel Zak <kzak@redhat.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Shmulik Ladkani <shmulik.ladkani@gmail.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ "fengguang.wu@intel.com" <fengguang.wu@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,44 +35,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Linus,
+On Sun, Nov 10, 2013 at 03:09:02PM -0300, Ezequiel Garcia wrote:
+> 
+> Can you summarize such cases? Or maybe better, just share them all :)
+I just test it with cases such as(my nand is just 1G):
+   (1) mtdparts=gpmi-nand:16m(boot),16m(kernel),600m(dtb),600m(ok),-(rootfs)
+   (2) mtdparts=gpmi-nand:16m(boot),16m(kernel),600m(ok),-(rootfs)
+   (3) mtdparts=gpmi-nand:16m(boot),16m(kernel),600m(dtb),600m(ok),600m(ok2),-(rootfs)
 
-The following changes since commit b36f4be3de1b123d8601de062e7dbfc904f305fb:
-
-  Linux 3.11-rc6 (2013-08-18 14:36:53 -0700)
-
-are available in the git repository at:
-
-  git://git.infradead.org/linux-ubi.git tags/upstream-3.13-rc1
-
-for you to fetch changes up to ae0d146955665411a6d4cea5e0893429cfc52807:
-
-  UBI: Add some asserts to ubi_attach_fastmap() (2013-10-03 19:42:51 +0300)
-
-----------------------------------------------------------------
-A bunch of fixes for the fastmap feature, which is still new and rather
-experimental. It looks like it starts getting more users. No significant
-changes for the "classical" non-fastmap UBI.
-
-----------------------------------------------------------------
-Richard Genoud (2):
-      UBI: fastmap: fix backward compatibility with image_seq
-      UBI: simplify image sequence test
-
-Richard Weinberger (7):
-      UBI: Fix PEB leak in wear_leveling_worker()
-      UBI: Fix invalidate_fastmap()
-      UBI: fix refill_wl_user_pool()
-      UBI: Fix error path in scan_pool()
-      UBI: Call scan_all() with correct offset in error case
-      UBI: Fix memory leak in ubi_attach_fastmap() error path
-      UBI: Add some asserts to ubi_attach_fastmap()
-
- drivers/mtd/ubi/attach.c  | 11 ++++++-----
- drivers/mtd/ubi/fastmap.c | 46 ++++++++++++++++++++++++++++++++++++++--------
- drivers/mtd/ubi/wl.c      |  7 +++----
- 3 files changed, 47 insertions(+), 17 deletions(-)
-
--- 
-Best Regards,
-Artem Bityutskiy
+thanks
+Huang Shijie
