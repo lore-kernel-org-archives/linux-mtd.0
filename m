@@ -1,16 +1,16 @@
-Received: from mail-oa0-f42.google.com ([209.85.219.42])
+Received: from mail-oa0-f49.google.com ([209.85.219.49])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VgxpK-0000rq-5T
+ id 1VgxpK-0000rx-1A
  for linux-mtd@lists.infradead.org; Thu, 14 Nov 2013 14:23:41 +0000
-Received: by mail-oa0-f42.google.com with SMTP id h16so2299175oag.29
- for <linux-mtd@lists.infradead.org>; Thu, 14 Nov 2013 06:23:02 -0800 (PST)
+Received: by mail-oa0-f49.google.com with SMTP id h16so2266453oag.8
+ for <linux-mtd@lists.infradead.org>; Thu, 14 Nov 2013 06:23:04 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 05/10] mtd: st_spi_fsm: Supply a method to read from the FSM's
- FIFO
-Date: Thu, 14 Nov 2013 14:22:31 +0000
-Message-Id: <1384438956-31153-6-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 06/10] mtd: st_spi_fsm: Supply defines for the possible flash
+ command opcodes
+Date: Thu, 14 Nov 2013 14:22:32 +0000
+Message-Id: <1384438956-31153-7-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1384438956-31153-1-git-send-email-lee.jones@linaro.org>
 References: <1384438956-31153-1-git-send-email-lee.jones@linaro.org>
 Cc: linux-mtd@lists.infradead.org, linus.walleij@linaro.org,
@@ -24,51 +24,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When invoked the driver will attempt to read any available data from
-the FSM's data register. Any data collected from this FIFO would have
-originated from the flash chip.
+Flash chip commands are issued using a set of predefined opcodes. These
+are mostly the same for all flash devices, but do differ on occasion.
+This patch supplies the majority of the key ones which will be used in
+this driver.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/devices/st_spi_fsm.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ drivers/mtd/devices/st_spi_fsm.c | 38 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
 
 diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index 02619ee..a1c2857 100644
+index a1c2857..6691eaf 100644
 --- a/drivers/mtd/devices/st_spi_fsm.c
 +++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -94,6 +94,32 @@ static void stfsm_wait_seq(struct stfsm *fsm)
- 	dev_err(fsm->dev, "timeout on sequence completion\n");
- }
+@@ -30,6 +30,44 @@
  
-+static void stfsm_read_fifo(struct stfsm *fsm, uint32_t *buf,
-+			    const uint32_t size)
-+{
-+	uint32_t remaining = size >> 2;
-+	uint32_t avail;
-+	uint32_t words;
+ #define FLASH_SAFE_FREQ		10000000UL                         /* 10 MHz */
+ 
++/* Flash Commands */
++#define FLASH_CMD_WREN		0x06
++#define FLASH_CMD_WRDI		0x04
++#define FLASH_CMD_RDID		0x9f
++#define FLASH_CMD_RDSR		0x05
++#define FLASH_CMD_RDSR2		0x35
++#define FLASH_CMD_WRSR		0x01
++#define FLASH_CMD_SE_4K		0x20
++#define FLASH_CMD_SE_32K	0x52
++#define FLASH_CMD_SE		0xd8
++#define FLASH_CMD_CHIPERASE	0xc7
++#define FLASH_CMD_WRVCR		0x81
++#define FLASH_CMD_RDVCR		0x85
 +
-+	dev_dbg(fsm->dev, "Reading %d bytes from FIFO\n", size);
++#define FLASH_CMD_READ		0x03	/* READ */
++#define FLASH_CMD_READ_FAST	0x0b	/* FAST READ */
++#define FLASH_CMD_READ_1_1_2	0x3b	/* DUAL OUTPUT READ */
++#define FLASH_CMD_READ_1_2_2	0xbb	/* DUAL I/O READ */
++#define FLASH_CMD_READ_1_1_4	0x6b	/* QUAD OUTPUT READ */
++#define FLASH_CMD_READ_1_4_4	0xeb	/* QUAD I/O READ */
 +
-+	BUG_ON((((uint32_t)buf) & 0x3) || (size & 0x3));
++#define FLASH_CMD_WRITE		0x02	/* PAGE PROGRAM */
++#define FLASH_CMD_WRITE_1_1_2	0xa2	/* DUAL INPUT PROGRAM */
++#define FLASH_CMD_WRITE_1_2_2	0xd2	/* DUAL INPUT EXT PROGRAM */
++#define FLASH_CMD_WRITE_1_1_4	0x32	/* QUAD INPUT PROGRAM */
++#define FLASH_CMD_WRITE_1_4_4	0x12	/* QUAD INPUT EXT PROGRAM */
 +
-+	while (remaining) {
-+		for (;;) {
-+			avail = stfsm_fifo_available(fsm);
-+			if (avail)
-+				break;
-+			udelay(1);
-+		}
-+		words = min(avail, remaining);
-+		remaining -= words;
++#define FLASH_CMD_EN4B_ADDR	0xb7	/* Enter 4-byte address mode */
++#define FLASH_CMD_EX4B_ADDR	0xe9	/* Exit 4-byte address mode */
 +
-+		readsl(fsm->base + SPI_FAST_SEQ_DATA_REG, buf, words);
-+		buf += words;
-+	}
-+}
++/* READ commands with 32-bit addressing (N25Q256 and S25FLxxxS) */
++#define FLASH_CMD_READ4		0x13
++#define FLASH_CMD_READ4_FAST	0x0c
++#define FLASH_CMD_READ4_1_1_2	0x3c
++#define FLASH_CMD_READ4_1_2_2	0xbc
++#define FLASH_CMD_READ4_1_1_4	0x6c
++#define FLASH_CMD_READ4_1_4_4	0xec
 +
- static void stfsm_clear_fifo(struct stfsm *fsm)
- {
- 	uint32_t avail;
+ struct stfsm {
+ 	struct device		*dev;
+ 	void __iomem		*base;
 -- 
 1.8.1.2
