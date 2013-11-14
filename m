@@ -1,16 +1,16 @@
-Received: from mail-ob0-f169.google.com ([209.85.214.169])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VgxpX-0001Yy-Rl
- for linux-mtd@lists.infradead.org; Thu, 14 Nov 2013 14:23:36 +0000
-Received: by mail-ob0-f169.google.com with SMTP id wn1so2255830obc.28
- for <linux-mtd@lists.infradead.org>; Thu, 14 Nov 2013 06:23:10 -0800 (PST)
+Received: from mail-oa0-f42.google.com ([209.85.219.42])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VgxpK-0000rq-5T
+ for linux-mtd@lists.infradead.org; Thu, 14 Nov 2013 14:23:41 +0000
+Received: by mail-oa0-f42.google.com with SMTP id h16so2299175oag.29
+ for <linux-mtd@lists.infradead.org>; Thu, 14 Nov 2013 06:23:02 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 09/10] mtd: st_spi_fsm: Dynamically setup flash device based
- on JEDEC ID
-Date: Thu, 14 Nov 2013 14:22:35 +0000
-Message-Id: <1384438956-31153-10-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 05/10] mtd: st_spi_fsm: Supply a method to read from the FSM's
+ FIFO
+Date: Thu, 14 Nov 2013 14:22:31 +0000
+Message-Id: <1384438956-31153-6-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1384438956-31153-1-git-send-email-lee.jones@linaro.org>
 References: <1384438956-31153-1-git-send-email-lee.jones@linaro.org>
 Cc: linux-mtd@lists.infradead.org, linus.walleij@linaro.org,
@@ -24,77 +24,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Using previously added infrastructure we can now extract a device's JEDEC
-ID, compare it to a list of known and supported devices and make assumptions
-based on known characteristics of a given chip.
+When invoked the driver will attempt to read any available data from
+the FSM's data register. Any data collected from this FIFO would have
+originated from the flash chip.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/devices/st_spi_fsm.c | 24 +++++++++++++++++++++++-
- 1 file changed, 23 insertions(+), 1 deletion(-)
+ drivers/mtd/devices/st_spi_fsm.c | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
 diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index 230024c..42dd4d9 100644
+index 02619ee..a1c2857 100644
 --- a/drivers/mtd/devices/st_spi_fsm.c
 +++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -357,6 +357,7 @@ static int stfsm_read_jedec(struct stfsm *fsm, uint8_t *const jedec)
+@@ -94,6 +94,32 @@ static void stfsm_wait_seq(struct stfsm *fsm)
+ 	dev_err(fsm->dev, "timeout on sequence completion\n");
+ }
  
- static struct flash_info * stfsm_jedec_probe(struct stfsm *fsm)
- {
-+	struct flash_info	*info;
- 	u16                     ext_jedec;
- 	u32			jedec;
- 	u8			id[5];
-@@ -380,6 +381,15 @@ static struct flash_info * stfsm_jedec_probe(struct stfsm *fsm)
- 	dev_dbg(fsm->dev, "JEDEC =  0x%08x [%02x %02x %02x %02x %02x]\n",
- 		jedec, id[0], id[1], id[2], id[3], id[4]);
- 
-+	for (info = flash_types; info->name; info++) {
-+		if (info->jedec_id == jedec) {
-+			if (info->ext_id && info->ext_id != ext_jedec)
-+				continue;
-+			return info;
++static void stfsm_read_fifo(struct stfsm *fsm, uint32_t *buf,
++			    const uint32_t size)
++{
++	uint32_t remaining = size >> 2;
++	uint32_t avail;
++	uint32_t words;
++
++	dev_dbg(fsm->dev, "Reading %d bytes from FIFO\n", size);
++
++	BUG_ON((((uint32_t)buf) & 0x3) || (size & 0x3));
++
++	while (remaining) {
++		for (;;) {
++			avail = stfsm_fifo_available(fsm);
++			if (avail)
++				break;
++			udelay(1);
 +		}
++		words = min(avail, remaining);
++		remaining -= words;
++
++		readsl(fsm->base + SPI_FAST_SEQ_DATA_REG, buf, words);
++		buf += words;
 +	}
-+	dev_err(fsm->dev, "Unrecognized JEDEC id %06x\n", jedec);
++}
 +
- 	return NULL;
- }
- 
-@@ -490,6 +500,7 @@ static int stfsm_init(struct stfsm *fsm)
- static int stfsm_probe(struct platform_device *pdev)
+ static void stfsm_clear_fifo(struct stfsm *fsm)
  {
- 	struct device_node *np = pdev->dev.of_node;
-+	struct flash_info *info;
- 	struct resource *res;
- 	struct stfsm *fsm;
- 	int ret;
-@@ -536,7 +547,9 @@ static int stfsm_probe(struct platform_device *pdev)
- 	}
- 
- 	/* Detect SPI FLASH device */
--	stfsm_jedec_probe(fsm);
-+	info = stfsm_jedec_probe(fsm);
-+	if (!info)
-+		return -ENODEV;
- 
- 	platform_set_drvdata(pdev, fsm);
- 
-@@ -545,6 +558,15 @@ static int stfsm_probe(struct platform_device *pdev)
- 	fsm->mtd.writesize    = 4;
- 	fsm->mtd.writebufsize = fsm->mtd.writesize;
- 	fsm->mtd.flags        = MTD_CAP_NORFLASH;
-+	fsm->mtd.size         = info->sector_size * info->n_sectors;
-+	fsm->mtd.erasesize    = info->sector_size;
-+
-+	dev_err(&pdev->dev,
-+		"Found serial flash device: %s\n"
-+		" size = %llx (%lldMiB) erasesize = 0x%08x (%uKiB)\n",
-+		info->name,
-+		(long long)fsm->mtd.size, (long long)(fsm->mtd.size >> 20),
-+		fsm->mtd.erasesize, (fsm->mtd.erasesize >> 10));
- 
- 	return mtd_device_parse_register(&fsm->mtd, NULL, NULL, NULL, 0);
- }
+ 	uint32_t avail;
 -- 
 1.8.1.2
