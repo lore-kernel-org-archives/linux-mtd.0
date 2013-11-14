@@ -1,14 +1,15 @@
-Date: Thu, 14 Nov 2013 14:12:12 -0800
+Date: Thu, 14 Nov 2013 14:18:14 -0800
 From: Brian Norris <computersforpeace@gmail.com>
 To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH v5 03/14] mtd: nand: pxa3xx: Add bad block handling
-Message-ID: <20131114221212.GR9468@ld-irv-0074.broadcom.com>
+Subject: Re: [PATCH v5 05/14] mtd: nand: pxa3xx: Clear cmd buffer #3
+ (NDCB3) on command start
+Message-ID: <20131114221814.GS9468@ld-irv-0074.broadcom.com>
 References: <1384464339-6817-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1384464339-6817-4-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1384464339-6817-6-git-send-email-ezequiel.garcia@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1384464339-6817-4-git-send-email-ezequiel.garcia@free-electrons.com>
+In-Reply-To: <1384464339-6817-6-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Lior Amsalem <alior@marvell.com>,
  Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
  Gregory Clement <gregory.clement@free-electrons.com>,
@@ -22,19 +23,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 14, 2013 at 06:25:28PM -0300, Ezequiel Garcia wrote:
-> --- a/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
-> +++ b/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
-> @@ -15,6 +15,8 @@ Optional properties:
->   - marvell,nand-keep-config:	Set to keep the NAND controller config as set
->  				by the bootloader
->   - num-cs:			Number of chipselect lines to usw
-> + - nand-on-flash-bbt: 		boolean to enable on flash bbt option if
-> +				not present false
+On Thu, Nov 14, 2013 at 06:25:30PM -0300, Ezequiel Garcia wrote:
+> Command buffer #3 is not properly cleared and it keeps the last
+> set value. Fix this by clearing when a command is setup.
+> 
+> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 
-It's not really your problem, but I just noticed that this binding
-description is particularly badly worded! No need to change it in this
-patch, since it's a copy-and-paste from the generic nand.txt, but it's
-probably worth rewriting all of them sometime.
+Does this have any bugfix ramifications for -stable? You started using
+ndcb3 in:
+
+commit 41a634303f8dbf97c8087773b9d66914d2a9c0fd
+Author: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Date:   Mon Aug 12 14:14:51 2013 -0300
+
+    mtd: nand: pxa3xx: Use 'length override' in ONFI paramater page read
+
+This was merged for 3.12.
 
 Brian
