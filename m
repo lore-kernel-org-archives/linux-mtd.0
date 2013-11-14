@@ -1,23 +1,26 @@
-Received: from mail-pb0-x234.google.com ([2607:f8b0:400e:c01::234])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VgyP1-0002OU-Rh
- for linux-mtd@lists.infradead.org; Thu, 14 Nov 2013 15:00:16 +0000
-Received: by mail-pb0-f52.google.com with SMTP id wy17so950728pbc.25
- for <linux-mtd@lists.infradead.org>; Thu, 14 Nov 2013 06:59:53 -0800 (PST)
-Date: Thu, 14 Nov 2013 22:51:25 -0500
-From: Huang Shijie <shijie8@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH 5/8] mtd: gpmi: use devm_ioremap_resource
-Message-ID: <20131115035122.GA3904@gmail.com>
-References: <1384410351-2169-1-git-send-email-b32955@freescale.com>
- <1384410351-2169-6-git-send-email-b32955@freescale.com>
- <20131114135033.GB7076@localhost>
+Date: Thu, 14 Nov 2013 12:40:27 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v4 26/31] mtd: nand: pxa3xx: Introduce multiple page I/O
+ support
+Message-ID: <20131114154026.GD7076@localhost>
+References: <1383837455-30721-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1383837455-30721-27-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20131107234459.GB2467@localhost>
+ <20131108004600.GZ20061@ld-irv-0074.broadcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20131114135033.GB7076@localhost>
-Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, dwmw2@infradead.org, dedekind1@gmail.com
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20131108004600.GZ20061@ld-irv-0074.broadcom.com>
+Cc: Lior Amsalem <alior@marvell.com>, devicetree@vger.kernel.org,
+ Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>,
+ Willy Tarreau <w@1wt.eu>, Huang Shijie <b32955@freescale.com>,
+ linux-mtd@lists.infradead.org,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Daniel Mack <zonque@gmail.com>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,10 +30,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 14, 2013 at 10:50:34AM -0300, Ezequiel Garcia wrote:
-> So, this is an improvement, and it's fine to do so. I'm just warning
-> about a change in the driver's behavior.
-thanks, got it.
+On Thu, Nov 07, 2013 at 04:46:00PM -0800, Brian Norris wrote:
+> 
+> I haven't taken a look at all your changes yet, but I'll get this
 
+Any comments on the v4?
 
-Huang Shijie
+I don't think there are any open issues to reply, but maybe my memory
+is failing, so feel free to refresh it :-)
+
+I'll re-submit the series as soon as v3.13-rc1 is out.
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
