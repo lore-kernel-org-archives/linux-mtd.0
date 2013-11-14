@@ -1,23 +1,24 @@
-Date: Thu, 14 Nov 2013 11:00:04 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH v4 06/31] mtd: nand: pxa3xx: Add documentation about
- the controller
-Message-ID: <20131114190004.GP9468@ld-irv-0074.broadcom.com>
-References: <1383837455-30721-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1383837455-30721-7-git-send-email-ezequiel.garcia@free-electrons.com>
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Vh2Aq-0001NR-2U
+ for linux-mtd@lists.infradead.org; Thu, 14 Nov 2013 19:01:52 +0000
+Date: Thu, 14 Nov 2013 16:01:33 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v3 3/4] mtd: nand: omap: optimize chip->ecc.hwctl() for
+ H/W ECC schemes
+Message-ID: <20131114190132.GC9912@localhost>
+References: <1383385576-26095-1-git-send-email-pekon@ti.com>
+ <1383385576-26095-4-git-send-email-pekon@ti.com>
+ <20131113220330.GI9468@ld-irv-0074.broadcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1383837455-30721-7-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: Lior Amsalem <alior@marvell.com>, devicetree@vger.kernel.org,
- Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>,
- linux-doc@vger.kernel.org, Willy Tarreau <w@1wt.eu>,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Daniel Mack <zonque@gmail.com>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- linux-arm-kernel@lists.infradead.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20131113220330.GI9468@ld-irv-0074.broadcom.com>
+Cc: linux-mtd@lists.infradead.org, Pekon Gupta <pekon@ti.com>, balbi@ti.com,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,43 +28,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 07, 2013 at 12:17:10PM -0300, Ezequiel Garcia wrote:
-> Given there's no public specification to this date, and in order
-> to capture some important details and singularities about the
-> controller let's document them once and for good.
+On Wed, Nov 13, 2013 at 02:03:30PM -0800, Brian Norris wrote:
+> On Sat, Nov 02, 2013 at 03:16:15PM +0530, Pekon Gupta wrote:
+> > chip->ecc.hwctl() is used for preparing the H/W controller before read/write
+> > NAND accesses (like assigning data-buf, enabling ECC scheme configs, etc.)
+> > 
+> > Though all ECC schemes in OMAP NAND driver use GPMC controller for generating
+> > ECC syndrome (for both Read/Write accesses). But but in current code
+> 
+> s/But but/but/
+> 
+> :)
+> 
+> > HAM1_ECC and BCHx_ECC schemes implement individual function to achieve this.
+> > This patch merges the GPMC configuration code for all ECC schemes into
+> > single omap_enable_hwecc(), thus adding scalability for future ECC schemes.
+> > 
+> >  omap_enable_hwecc() + omap3_enable_hwecc_bch() -> omap_enable_hwecc()
+> > 
+> > Signed-off-by: Pekon Gupta <pekon@ti.com>
+> > ---
+> >  drivers/mtd/nand/omap2.c | 212 +++++++++++++++++------------------------------
+> >  1 file changed, 74 insertions(+), 138 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+> > index 1f59505..3a99e29 100644
+> > --- a/drivers/mtd/nand/omap2.c
+> > +++ b/drivers/mtd/nand/omap2.c
+> > @@ -33,6 +33,10 @@
+> >  #define	DRIVER_NAME	"omap2-nand"
+> >  #define	OMAP_NAND_TIMEOUT_MS	5000
+> >  
+> > +#define GPMC_ECC_READ		0 /* Reset Hardware ECC for read */
+> > +#define GPMC_ECC_WRITE		1 /* Reset Hardware ECC for write */
+> > +#define GPMC_ECC_READSYN	2 /* Reset before syndrom is read back */
+> > +
+> >  #define NAND_Ecc_P1e		(1 << 0)
+> >  #define NAND_Ecc_P2e		(1 << 1)
+> >  #define NAND_Ecc_P4e		(1 << 2)
+> > @@ -101,13 +105,9 @@
+> >  #define P4o_s(a)	(TF(a & NAND_Ecc_P4o)		<< 1)
+> >  
+> >  #define	PREFETCH_CONFIG1_CS_SHIFT	24
+> > -#define	ECC_CONFIG_CS_SHIFT		1
+> 
+> You stopped using this macro in a different patch, so this removal is
+> unrelated to this patch. But I'm not sure the code is better without
+> these macros anyway... I'll leave it to your discretion, I guess.
+> 
+> >  #define	CS_MASK				0x7
+> >  #define	ENABLE_PREFETCH			(0x1 << 7)
+> >  #define	DMA_MPU_MODE_SHIFT		2
+> > -#define	ECCSIZE0_SHIFT			12
+> > -#define	ECCSIZE1_SHIFT			22
+> > -#define	ECC1RESULTSIZE			0x1
+> >  #define	ECCCLEAR			0x100
+> >  #define	ECC1				0x1
+> >  #define	PREFETCH_FIFOTHRESHOLD_MAX	0x40
+> 
+> ...
+> 
+> The rest looks OK but very hard for me to verify. Do we have any
+> testers? Any platforms to check for regressions?
+> 
 
-Made a few small tweaks for spelling and such (see the following diff)
-and pushed patches 5 through 14 to l2-mtd.git/next.
+I have 8-bit and 16-bit NAND modules to test this.
 
-Thanks,
-Brian
-
-diff --git a/Documentation/mtd/nand/pxa3xx-nand.txt b/Documentation/mtd/nand/pxa3xx-nand.txt
-index 00e601c..840fd41 100644
---- a/Documentation/mtd/nand/pxa3xx-nand.txt
-+++ b/Documentation/mtd/nand/pxa3xx-nand.txt
-@@ -36,7 +36,7 @@ OOB, one per chunk read.
- So, in order to achieve reading (for instance), we issue several READ0 commands
- (with some additional controller-specific magic) and read two chunks of 2080B
- (2048 data + 32 spare) each.
--The driver accomodates this data to expose the NAND core a contiguous buffer
-+The driver accommodates this data to expose the NAND core a contiguous buffer
- (4096 data + spare) or (4096 + spare + ECC + spare + ECC).
- 
- ECC
-@@ -81,7 +81,7 @@ an *entire* page.
- Factory bad blocks handling
- ===========================
- 
--Given the ECC BCH requires to layout the device's pages in a splitted
-+Given the ECC BCH requires to layout the device's pages in a split
- data/OOB/data/OOB way, the controller has a view of the flash page that's
- different from the specified (aka the manufacturer's) view. In other words,
- 
-@@ -109,5 +109,5 @@ disabled by using the NAND_BBT_NO_OOB_BBM option in the driver. The rationale
- for this is that there's no point in marking a block as bad, because good
- blocks are also 'marked as bad' (in the OOB BBM sense) under normal usage.
- 
--Instead, the drive relies in the bad block table alone, and should only perform
-+Instead, the driver relies on the bad block table alone, and should only perform
- the bad block scan on the very first time (when the device hasn't been used).
+Pekon: Are you sending a new version of the whole patchset?
+Please Cc me and I'll see about testing it.
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
