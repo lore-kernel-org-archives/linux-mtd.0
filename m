@@ -1,13 +1,13 @@
-Received: from ch1ehsobe005.messaging.microsoft.com ([216.32.181.185]
- helo=ch1outboundpool.messaging.microsoft.com)
+Received: from mail-db8lp0186.outbound.messaging.microsoft.com
+ ([213.199.154.186] helo=db8outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VgqjT-0007hC-Bl
- for linux-mtd@lists.infradead.org; Thu, 14 Nov 2013 06:48:52 +0000
+ id 1Vgqja-0007hW-BT
+ for linux-mtd@lists.infradead.org; Thu, 14 Nov 2013 06:48:59 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH 6/8] mtd: gpmi: use devm_request_irq
-Date: Thu, 14 Nov 2013 14:25:49 +0800
-Message-ID: <1384410351-2169-7-git-send-email-b32955@freescale.com>
+Subject: [PATCH 8/8] mtd: gpmi: change pr_debug to dev_dbg
+Date: Thu, 14 Nov 2013 14:25:51 +0800
+Message-ID: <1384410351-2169-9-git-send-email-b32955@freescale.com>
 In-Reply-To: <1384410351-2169-1-git-send-email-b32955@freescale.com>
 References: <1384410351-2169-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
@@ -23,93 +23,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use devm_request_irq to simplify the code.
-Also remove the unused fields of structure resources{}.
+Change all the pr_debug to dev_dbg.
+Remove the pr_fmt too, since we do not need it.
 
 Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   27 +++++----------------------
- drivers/mtd/nand/gpmi-nand/gpmi-nand.h |    2 --
- 2 files changed, 5 insertions(+), 24 deletions(-)
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   13 +++++--------
+ 1 files changed, 5 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 1f99038..5617876 100644
+index 85d2be2..4b8df4a 100644
 --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
 +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -503,7 +503,6 @@ static int acquire_register_block(struct gpmi_nand_data *this,
- static int acquire_bch_irq(struct gpmi_nand_data *this, irq_handler_t irq_h)
- {
- 	struct platform_device *pdev = this->pdev;
--	struct resources *res = &this->resources;
- 	const char *res_name = GPMI_NAND_BCH_INTERRUPT_RES_NAME;
- 	struct resource *r;
- 	int err;
-@@ -514,24 +513,11 @@ static int acquire_bch_irq(struct gpmi_nand_data *this, irq_handler_t irq_h)
- 		return -ENODEV;
- 	}
- 
--	err = request_irq(r->start, irq_h, 0, res_name, this);
--	if (err) {
--		pr_err("Can't own %s\n", res_name);
--		return err;
--	}
+@@ -18,9 +18,6 @@
+  * with this program; if not, write to the Free Software Foundation, Inc.,
+  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+  */
 -
--	res->bch_low_interrupt = r->start;
--	res->bch_high_interrupt = r->end;
--	return 0;
--}
+-#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 -
--static void release_bch_irq(struct gpmi_nand_data *this)
--{
--	struct resources *res = &this->resources;
--	int i = res->bch_low_interrupt;
-+	err = devm_request_irq(this->dev, r->start, irq_h, 0, res_name, this);
-+	if (err)
-+		dev_err(this->dev, "error requesting BCH IRQ\n");
+ #include <linux/clk.h>
+ #include <linux/slab.h>
+ #include <linux/interrupt.h>
+@@ -885,7 +882,7 @@ static void gpmi_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
+ 	struct nand_chip *chip = mtd->priv;
+ 	struct gpmi_nand_data *this = chip->priv;
  
--	for (; i <= res->bch_high_interrupt; i++)
--		free_irq(i, this);
-+	return err;
- }
+-	pr_debug("len is %d\n", len);
++	dev_dbg(this->dev, "len is %d\n", len);
+ 	this->upper_buf	= buf;
+ 	this->upper_len	= len;
  
- static void release_dma_channels(struct gpmi_nand_data *this)
-@@ -635,7 +621,7 @@ static int acquire_resources(struct gpmi_nand_data *this)
+@@ -897,7 +894,7 @@ static void gpmi_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
+ 	struct nand_chip *chip = mtd->priv;
+ 	struct gpmi_nand_data *this = chip->priv;
  
- 	ret = acquire_dma_channels(this);
- 	if (ret)
--		goto exit_dma_channels;
-+		goto exit_regs;
+-	pr_debug("len is %d\n", len);
++	dev_dbg(this->dev, "len is %d\n", len);
+ 	this->upper_buf	= (uint8_t *)buf;
+ 	this->upper_len	= len;
  
- 	ret = gpmi_get_clks(this);
- 	if (ret)
-@@ -644,15 +630,12 @@ static int acquire_resources(struct gpmi_nand_data *this)
+@@ -976,7 +973,7 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 	unsigned int  max_bitflips = 0;
+ 	int           ret;
  
- exit_clock:
- 	release_dma_channels(this);
--exit_dma_channels:
--	release_bch_irq(this);
- exit_regs:
- 	return ret;
- }
+-	pr_debug("page number is : %d\n", page);
++	dev_dbg(this->dev, "page number is : %d\n", page);
+ 	ret = read_page_prepare(this, buf, mtd->writesize,
+ 					this->payload_virt, this->payload_phys,
+ 					nfc_geo->payload_size,
+@@ -1052,7 +1049,7 @@ static int gpmi_ecc_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 	dma_addr_t auxiliary_phys;
+ 	int        ret;
  
- static void release_resources(struct gpmi_nand_data *this)
+-	pr_debug("ecc write page.\n");
++	dev_dbg(this->dev, "ecc write page.\n");
+ 	if (this->swap_block_mark) {
+ 		/*
+ 		 * If control arrives here, we're doing block mark swapping.
+@@ -1190,7 +1187,7 @@ static int gpmi_ecc_read_oob(struct mtd_info *mtd, struct nand_chip *chip,
  {
--	release_bch_irq(this);
- 	release_dma_channels(this);
- }
+ 	struct gpmi_nand_data *this = chip->priv;
  
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-index a7685e3..4c801fa 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-@@ -26,8 +26,6 @@
- struct resources {
- 	void __iomem  *gpmi_regs;
- 	void __iomem  *bch_regs;
--	unsigned int  bch_low_interrupt;
--	unsigned int  bch_high_interrupt;
- 	unsigned int  dma_low_channel;
- 	unsigned int  dma_high_channel;
- 	struct clk    *clock[GPMI_CLK_MAX];
+-	pr_debug("page number is %d\n", page);
++	dev_dbg(this->dev, "page number is %d\n", page);
+ 	/* clear the OOB buffer */
+ 	memset(chip->oob_poi, ~0, mtd->oobsize);
+ 
 -- 
 1.7.2.rc3
