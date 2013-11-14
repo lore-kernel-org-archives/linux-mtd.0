@@ -1,17 +1,19 @@
-Received: from mail-oa0-f45.google.com ([209.85.219.45])
+Received: from mail-oa0-f42.google.com ([209.85.219.42])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VgxpE-0000ra-Ao
- for linux-mtd@lists.infradead.org; Thu, 14 Nov 2013 14:23:17 +0000
-Received: by mail-oa0-f45.google.com with SMTP id m1so2287690oag.18
- for <linux-mtd@lists.infradead.org>; Thu, 14 Nov 2013 06:22:52 -0800 (PST)
+ id 1VgxpF-0000rl-KE
+ for linux-mtd@lists.infradead.org; Thu, 14 Nov 2013 14:23:26 +0000
+Received: by mail-oa0-f42.google.com with SMTP id h16so2297922oag.1
+ for <linux-mtd@lists.infradead.org>; Thu, 14 Nov 2013 06:23:00 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 00/10] mtd: st_spi_fsm: Add new device
-Date: Thu, 14 Nov 2013 14:22:26 +0000
-Message-Id: <1384438956-31153-1-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 04/10] mtd: st_spi_fsm: Supply framework for device requests
+Date: Thu, 14 Nov 2013 14:22:30 +0000
+Message-Id: <1384438956-31153-5-git-send-email-lee.jones@linaro.org>
+In-Reply-To: <1384438956-31153-1-git-send-email-lee.jones@linaro.org>
+References: <1384438956-31153-1-git-send-email-lee.jones@linaro.org>
 Cc: linux-mtd@lists.infradead.org, linus.walleij@linaro.org,
- dwmw2@infradead.org, angus.clark@st.com
+ Lee Jones <lee.jones@linaro.org>, dwmw2@infradead.org, angus.clark@st.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,14 +23,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-First stab at getting this thing Mainlined. It doesn't do a great deal
-yet, but we are able to initialise the device and dynamically set it up
-correctly based on an extracted JEDEC ID.
+The FSM hardware works by setting a predetermined sequence of register
+writes. Rather than open coding them inside each functional block we're
+going to define them in a series of formatted 'sequence structures'.
+This patch provides the framework which shall be used for every action.
 
- arch/arm/boot/dts/stih416-b2105.dts    |  10 ++
- arch/arm/boot/dts/stih416-pinctrl.dtsi |  12 +++
- drivers/mtd/devices/Kconfig            |   7 ++
- drivers/mtd/devices/Makefile           |   1 +
- drivers/mtd/devices/st_spi_fsm.c       | 605 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- drivers/mtd/devices/st_spi_fsm.h       | 187 ++++++++++++++++++++++++++++++++
- 6 files changed, 822 insertions(+)
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ drivers/mtd/devices/st_spi_fsm.c | 49 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
+
+diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
+index f560343..02619ee 100644
+--- a/drivers/mtd/devices/st_spi_fsm.c
++++ b/drivers/mtd/devices/st_spi_fsm.c
+@@ -40,11 +40,60 @@ struct stfsm {
+ 	uint32_t		fifo_dir_delay;
+ };
+ 
++struct stfsm_seq {
++	uint32_t data_size;
++	uint32_t addr1;
++	uint32_t addr2;
++	uint32_t addr_cfg;
++	uint32_t seq_opc[5];
++	uint32_t mode;
++	uint32_t dummy;
++	uint32_t status;
++	uint8_t  seq[16];
++	uint32_t seq_cfg;
++} __attribute__((__packed__, aligned(4)));
++#define STFSM_SEQ_SIZE sizeof(struct stfsm_seq)
++
++static inline int stfsm_is_idle(struct stfsm *fsm)
++{
++	return readl(fsm->base + SPI_FAST_SEQ_STA) & 0x10;
++}
++
+ static inline uint32_t stfsm_fifo_available(struct stfsm *fsm)
+ {
+ 	return (readl(fsm->base + SPI_FAST_SEQ_STA) >> 5) & 0x7f;
+ }
+ 
++static inline void stfsm_load_seq(struct stfsm *fsm,
++				  const struct stfsm_seq *seq)
++{
++	void __iomem *dst = fsm->base + SPI_FAST_SEQ_TRANSFER_SIZE;
++	const uint32_t *src = (const uint32_t *)seq;
++	int words = STFSM_SEQ_SIZE / sizeof(uint32_t);
++
++	BUG_ON(!stfsm_is_idle(fsm));
++
++	while (words--) {
++		writel(*src, dst);
++		src++;
++		dst += 4;
++	}
++}
++
++static void stfsm_wait_seq(struct stfsm *fsm)
++{
++	unsigned long timeo = jiffies + HZ;
++
++	while (time_before(jiffies, timeo)) {
++		if (stfsm_is_idle(fsm))
++			return;
++
++		cond_resched();
++	}
++
++	dev_err(fsm->dev, "timeout on sequence completion\n");
++}
++
+ static void stfsm_clear_fifo(struct stfsm *fsm)
+ {
+ 	uint32_t avail;
+-- 
+1.8.1.2
