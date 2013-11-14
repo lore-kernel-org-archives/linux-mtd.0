@@ -1,13 +1,13 @@
-Received: from co1ehsobe003.messaging.microsoft.com ([216.32.180.186]
- helo=co1outboundpool.messaging.microsoft.com)
+Received: from ch1ehsobe005.messaging.microsoft.com ([216.32.181.185]
+ helo=ch1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VgqjP-0007fq-Uo
- for linux-mtd@lists.infradead.org; Thu, 14 Nov 2013 06:48:48 +0000
+ id 1VgqjT-0007hC-Bl
+ for linux-mtd@lists.infradead.org; Thu, 14 Nov 2013 06:48:52 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH 5/8] mtd: gpmi: use devm_ioremap_resource
-Date: Thu, 14 Nov 2013 14:25:48 +0800
-Message-ID: <1384410351-2169-6-git-send-email-b32955@freescale.com>
+Subject: [PATCH 6/8] mtd: gpmi: use devm_request_irq
+Date: Thu, 14 Nov 2013 14:25:49 +0800
+Message-ID: <1384410351-2169-7-git-send-email-b32955@freescale.com>
 In-Reply-To: <1384410351-2169-1-git-send-email-b32955@freescale.com>
 References: <1384410351-2169-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
@@ -23,68 +23,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use the devm_ioremap_resource to simplify the code.
+Use devm_request_irq to simplify the code.
+Also remove the unused fields of structure resources{}.
 
 Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   26 +++-----------------------
- 1 files changed, 3 insertions(+), 23 deletions(-)
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   27 +++++----------------------
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.h |    2 --
+ 2 files changed, 5 insertions(+), 24 deletions(-)
 
 diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 36ef60a..1f99038 100644
+index 1f99038..5617876 100644
 --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
 +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -486,16 +486,9 @@ static int acquire_register_block(struct gpmi_nand_data *this,
- 	void __iomem *p;
- 
- 	r = platform_get_resource_byname(pdev, IORESOURCE_MEM, res_name);
--	if (!r) {
--		pr_err("Can't get resource for %s\n", res_name);
--		return -ENODEV;
--	}
--
--	p = ioremap(r->start, resource_size(r));
--	if (!p) {
--		pr_err("Can't remap %s\n", res_name);
--		return -ENOMEM;
--	}
-+	p = devm_ioremap_resource(&pdev->dev, r);
-+	if (IS_ERR(p))
-+		return PTR_ERR(p);
- 
- 	if (!strcmp(res_name, GPMI_NAND_GPMI_REGS_ADDR_RES_NAME))
- 		res->gpmi_regs = p;
-@@ -507,17 +500,6 @@ static int acquire_register_block(struct gpmi_nand_data *this,
- 	return 0;
- }
- 
--static void release_register_block(struct gpmi_nand_data *this)
--{
--	struct resources *res = &this->resources;
--	if (res->gpmi_regs)
--		iounmap(res->gpmi_regs);
--	if (res->bch_regs)
--		iounmap(res->bch_regs);
--	res->gpmi_regs = NULL;
--	res->bch_regs = NULL;
--}
--
+@@ -503,7 +503,6 @@ static int acquire_register_block(struct gpmi_nand_data *this,
  static int acquire_bch_irq(struct gpmi_nand_data *this, irq_handler_t irq_h)
  {
  	struct platform_device *pdev = this->pdev;
-@@ -665,13 +647,11 @@ exit_clock:
- exit_dma_channels:
- 	release_bch_irq(this);
+-	struct resources *res = &this->resources;
+ 	const char *res_name = GPMI_NAND_BCH_INTERRUPT_RES_NAME;
+ 	struct resource *r;
+ 	int err;
+@@ -514,24 +513,11 @@ static int acquire_bch_irq(struct gpmi_nand_data *this, irq_handler_t irq_h)
+ 		return -ENODEV;
+ 	}
+ 
+-	err = request_irq(r->start, irq_h, 0, res_name, this);
+-	if (err) {
+-		pr_err("Can't own %s\n", res_name);
+-		return err;
+-	}
+-
+-	res->bch_low_interrupt = r->start;
+-	res->bch_high_interrupt = r->end;
+-	return 0;
+-}
+-
+-static void release_bch_irq(struct gpmi_nand_data *this)
+-{
+-	struct resources *res = &this->resources;
+-	int i = res->bch_low_interrupt;
++	err = devm_request_irq(this->dev, r->start, irq_h, 0, res_name, this);
++	if (err)
++		dev_err(this->dev, "error requesting BCH IRQ\n");
+ 
+-	for (; i <= res->bch_high_interrupt; i++)
+-		free_irq(i, this);
++	return err;
+ }
+ 
+ static void release_dma_channels(struct gpmi_nand_data *this)
+@@ -635,7 +621,7 @@ static int acquire_resources(struct gpmi_nand_data *this)
+ 
+ 	ret = acquire_dma_channels(this);
+ 	if (ret)
+-		goto exit_dma_channels;
++		goto exit_regs;
+ 
+ 	ret = gpmi_get_clks(this);
+ 	if (ret)
+@@ -644,15 +630,12 @@ static int acquire_resources(struct gpmi_nand_data *this)
+ 
+ exit_clock:
+ 	release_dma_channels(this);
+-exit_dma_channels:
+-	release_bch_irq(this);
  exit_regs:
--	release_register_block(this);
  	return ret;
  }
  
  static void release_resources(struct gpmi_nand_data *this)
  {
--	release_register_block(this);
- 	release_bch_irq(this);
+-	release_bch_irq(this);
  	release_dma_channels(this);
  }
+ 
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+index a7685e3..4c801fa 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+@@ -26,8 +26,6 @@
+ struct resources {
+ 	void __iomem  *gpmi_regs;
+ 	void __iomem  *bch_regs;
+-	unsigned int  bch_low_interrupt;
+-	unsigned int  bch_high_interrupt;
+ 	unsigned int  dma_low_channel;
+ 	unsigned int  dma_high_channel;
+ 	struct clk    *clock[GPMI_CLK_MAX];
 -- 
 1.7.2.rc3
