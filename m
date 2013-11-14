@@ -1,29 +1,18 @@
-Received: from mail-qe0-x231.google.com ([2607:f8b0:400d:c02::231])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vh4qD-0005qU-3K
- for linux-mtd@lists.infradead.org; Thu, 14 Nov 2013 21:52:46 +0000
-Received: by mail-qe0-f49.google.com with SMTP id i11so1707915qej.36
- for <linux-mtd@lists.infradead.org>; Thu, 14 Nov 2013 13:52:23 -0800 (PST)
-Date: Thu, 14 Nov 2013 13:52:18 -0800
+Date: Thu, 14 Nov 2013 14:12:12 -0800
 From: Brian Norris <computersforpeace@gmail.com>
 To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH 0/1] Bad block markers here, there and everywhere
-Message-ID: <20131114215218.GQ9468@ld-irv-0074.broadcom.com>
-References: <1383652821-3557-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <20131105180743.GM20061@ld-irv-0074.broadcom.com>
- <20131105230126.GB11759@localhost>
- <20131105231522.GC11759@localhost>
- <20131114185845.GB9912@localhost>
+Subject: Re: [PATCH v5 03/14] mtd: nand: pxa3xx: Add bad block handling
+Message-ID: <20131114221212.GR9468@ld-irv-0074.broadcom.com>
+References: <1384464339-6817-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1384464339-6817-4-git-send-email-ezequiel.garcia@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20131114185845.GB9912@localhost>
+In-Reply-To: <1384464339-6817-4-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Lior Amsalem <alior@marvell.com>,
  Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Tawfik Bayouk <tawfik@marvell.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
  Gregory Clement <gregory.clement@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,92 +22,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 14, 2013 at 03:58:46PM -0300, Ezequiel Garcia wrote:
-> On Tue, Nov 05, 2013 at 08:15:22PM -0300, Ezequiel Garcia wrote:
-> > On Tue, Nov 05, 2013 at 08:01:26PM -0300, Ezequiel Garcia wrote:
-> > > On Tue, Nov 05, 2013 at 10:07:43AM -0800, Brian Norris wrote:
-> > > > On Tue, Nov 05, 2013 at 09:00:20AM -0300, Ezequiel Garcia wrote:
-> > > > > This commit adds a new option called NAND_BBT_DATA_BBM. The change itself
-> > > > > is pretty small and simple to understand: when the badblock_pattern sets the
-> > > > > NAND_BBT_DATA_BBM option, scan_block_fast() reads the data region instead
-> > > > > of the OOB region.
-> > > > 
-> > > > I think this type of scanning method is better suited to a different
-> > > > type of solution: implement a custom nand_chip.bad_block() call-back.
-> > > 
-> > > Fully agreed (I guess you mean block_bad() right?)
-> > > 
-> > > > Unfortunately, nand_base/nand_bbt are kind of inconsistent, so that some
-> > > > code paths use nand_chip.bad_block() and some use nand_bbt.c's scanning
-> > > > code to check for bad block markers, so this is not currently a good
-> > > > solution.
-> > > > 
-> > > 
-> > > Which is why I couldn't implement a custom block_bad(). My particular
-> > > use case (which could match others) needs this customization in the
-> > > first scan. After that, once the bad block table is built, the in-flash
-> > > bad block markers are never touched.
-> > > 
-> > > > I've been meaning to follow through with an improved version of this
-> > > > patch for a while:
-> > > > 
-> > > >   http://lists.infradead.org/pipermail/linux-mtd/2012-June/042571.html
-> > > > 
-> > > > Such a patch provides several benefits, one of them being that drivers
-> > > > like yours can easily provide a custom BBM location. What do you think?
-> > > > 
-> > > 
-> > > Of course, that sounds much more flexible. Let me pick it where Matthieu left,
-> > > I'll read the patch and prepare something to discuss.
-> > > 
-> > > On the other side, I'm seeing the above patch was a bit argued :/ I'm
-> > > not sure why it got never merged, maybe you can give me some heads up
-> > > about potential drawbacks?
-> > 
-> > After reading the patch and reading the code, now I'm even more confused :)
-> > 
-> > The first thing that seems odd is the fact that the scan_block_fast()
-> > path matches a pattern (which can be several bytes long), whereas the
-> > default nand_block_bad() seem to check for just one byte.
-> > 
-> > This may or may not be an issue, after some thought, but it's not
-> > a trivial change, IMHO.
-> > 
-> > The second thing, which was already discussed back in June-2012 is the
-> > fact that scan_block_fast() uses mtd_read_oob() to read, but
-> > nand_block_bad() just issues a READOOB command.
-> > 
-> > So, what do you propose? If you can give me some guidelines I've no problem
-> > in preparing a (first/draft) patch to trigger the discussion.
-> 
-> Ping?
-> 
-> This is an important issue for the pxa3xx driver and I'd like to move
-> forward with it.
-> 
-> However, as I previously said I'd like to discuss some more about your
-> proposal: currently scan_block_fast() uses mtd_read_oob() to read, and
-> nand_block_bad() issues a READOOB command, so it's not trivial to
-> replace the former with the latter.
-> 
-> Ideas?
+On Thu, Nov 14, 2013 at 06:25:28PM -0300, Ezequiel Garcia wrote:
+> --- a/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
+> +++ b/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
+> @@ -15,6 +15,8 @@ Optional properties:
+>   - marvell,nand-keep-config:	Set to keep the NAND controller config as set
+>  				by the bootloader
+>   - num-cs:			Number of chipselect lines to usw
+> + - nand-on-flash-bbt: 		boolean to enable on flash bbt option if
+> +				not present false
 
-I believe my plan was to totally kill of the nand_chip.badblock_pattern
-field first, since that's the source of unnecessary complexity (and a
-perverted mixture of "BBT" (table) and "BBM" (marker)).
-
-Most drivers already just use the default markers from
-nand_base/nand_bbt, and any remaining ones can either just tweak the
-nand_chip.badblockpos/nand_chip.bbt_options or (like pxa3xx_nand) can
-define their own nand_chip.block_bad() callback, I think. Once there are
-no users with a custom badblock_pattern, I think the nand_base
-nand_block_bad() implementation should be equivalent to the nand_bbt
-scan_block_fast() checks.
-
-I think I started to do all of this a while back (and I have a few
-changes queued somewhere), but I stalled on some problem. Or maybe I
-just didn't make the time to finish testing it properly. But now that we
-have a good reason to do so, I can get back to this issue--either
-submitting or reviewing patches, and testing on my setups.
+It's not really your problem, but I just noticed that this binding
+description is particularly badly worded! No need to change it in this
+patch, since it's a copy-and-paste from the generic nand.txt, but it's
+probably worth rewriting all of them sometime.
 
 Brian
