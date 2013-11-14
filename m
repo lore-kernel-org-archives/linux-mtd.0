@@ -1,13 +1,14 @@
-Received: from mail-db9lp0251.outbound.messaging.microsoft.com
- ([213.199.154.251] helo=db9outboundpool.messaging.microsoft.com)
+Received: from mail-db8lp0185.outbound.messaging.microsoft.com
+ ([213.199.154.185] helo=db8outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vgqja-0007ha-SM
- for linux-mtd@lists.infradead.org; Thu, 14 Nov 2013 06:49:02 +0000
+ id 1Vgqkj-0007oN-2H
+ for linux-mtd@lists.infradead.org; Thu, 14 Nov 2013 06:50:09 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH 7/8] mtd: gpmi: change pr_err to dev_err
-Date: Thu, 14 Nov 2013 14:25:50 +0800
-Message-ID: <1384410351-2169-8-git-send-email-b32955@freescale.com>
+Subject: [PATCH 4/8] mtd: gpmi: rename the functions from gpmi_nfc_* to
+ gpmi_nand_*
+Date: Thu, 14 Nov 2013 14:25:47 +0800
+Message-ID: <1384410351-2169-5-git-send-email-b32955@freescale.com>
 In-Reply-To: <1384410351-2169-1-git-send-email-b32955@freescale.com>
 References: <1384410351-2169-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
@@ -23,365 +24,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There are pr_err and dev_err in the gpmi driver now.
-It makes people confused.
-
-This patch changes all the pr_err to dev_err except the one
-in the gpmi_reset_block().
+The gpmi_nfc_* is the legacy name. In order to avoid the confusion,
+The patch renames the gpmi_nfc_* functions to gpmi_nand_*.
 
 Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
- drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |   67 ++++++++++++++++++-------------
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   43 ++++++++++----------
- 2 files changed, 61 insertions(+), 49 deletions(-)
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-index 10a6f07..82ac4a3 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-@@ -208,30 +208,41 @@ void gpmi_dump_info(struct gpmi_nand_data *this)
- 	u32 reg;
- 	int i;
- 
--	pr_err("Show GPMI registers :\n");
-+	dev_err(this->dev, "Show GPMI registers :\n");
- 	for (i = 0; i <= HW_GPMI_DEBUG / 0x10 + 1; i++) {
- 		reg = readl(r->gpmi_regs + i * 0x10);
--		pr_err("offset 0x%.3x : 0x%.8x\n", i * 0x10, reg);
-+		dev_err(this->dev, "offset 0x%.3x : 0x%.8x\n", i * 0x10, reg);
- 	}
- 
- 	/* start to print out the BCH info */
--	pr_err("Show BCH registers :\n");
-+	dev_err(this->dev, "Show BCH registers :\n");
- 	for (i = 0; i <= HW_BCH_VERSION / 0x10 + 1; i++) {
- 		reg = readl(r->bch_regs + i * 0x10);
--		pr_err("offset 0x%.3x : 0x%.8x\n", i * 0x10, reg);
-+		dev_err(this->dev, "offset 0x%.3x : 0x%.8x\n", i * 0x10, reg);
- 	}
--	pr_err("BCH Geometry :\n");
--	pr_err("GF length              : %u\n", geo->gf_len);
--	pr_err("ECC Strength           : %u\n", geo->ecc_strength);
--	pr_err("Page Size in Bytes     : %u\n", geo->page_size);
--	pr_err("Metadata Size in Bytes : %u\n", geo->metadata_size);
--	pr_err("ECC Chunk Size in Bytes: %u\n", geo->ecc_chunk_size);
--	pr_err("ECC Chunk Count        : %u\n", geo->ecc_chunk_count);
--	pr_err("Payload Size in Bytes  : %u\n", geo->payload_size);
--	pr_err("Auxiliary Size in Bytes: %u\n", geo->auxiliary_size);
--	pr_err("Auxiliary Status Offset: %u\n", geo->auxiliary_status_offset);
--	pr_err("Block Mark Byte Offset : %u\n", geo->block_mark_byte_offset);
--	pr_err("Block Mark Bit Offset  : %u\n", geo->block_mark_bit_offset);
-+	dev_err(this->dev, "BCH Geometry :\n"
-+		"GF length              : %u\n"
-+		"ECC Strength           : %u\n"
-+		"Page Size in Bytes     : %u\n"
-+		"Metadata Size in Bytes : %u\n"
-+		"ECC Chunk Size in Bytes: %u\n"
-+		"ECC Chunk Count        : %u\n"
-+		"Payload Size in Bytes  : %u\n"
-+		"Auxiliary Size in Bytes: %u\n"
-+		"Auxiliary Status Offset: %u\n"
-+		"Block Mark Byte Offset : %u\n"
-+		"Block Mark Bit Offset  : %u\n",
-+		geo->gf_len,
-+		geo->ecc_strength,
-+		geo->page_size,
-+		geo->metadata_size,
-+		geo->ecc_chunk_size,
-+		geo->ecc_chunk_count,
-+		geo->payload_size,
-+		geo->auxiliary_size,
-+		geo->auxiliary_status_offset,
-+		geo->block_mark_byte_offset,
-+		geo->block_mark_bit_offset);
- }
- 
- /* Configures the geometry for BCH.  */
-@@ -993,7 +1004,7 @@ void gpmi_begin(struct gpmi_nand_data *this)
- 	/* Enable the clock. */
- 	ret = gpmi_enable_clk(this);
- 	if (ret) {
--		pr_err("We failed in enable the clk\n");
-+		dev_err(this->dev, "We failed in enable the clk\n");
- 		goto err_out;
- 	}
- 
-@@ -1097,7 +1108,7 @@ int gpmi_is_ready(struct gpmi_nand_data *this, unsigned chip)
- 		mask = MX28_BF_GPMI_STAT_READY_BUSY(1 << chip);
- 		reg = readl(r->gpmi_regs + HW_GPMI_STAT);
- 	} else
--		pr_err("unknow arch.\n");
-+		dev_err(this->dev, "unknow arch.\n");
- 	return reg & mask;
- }
- 
-@@ -1129,7 +1140,7 @@ int gpmi_send_command(struct gpmi_nand_data *this)
- 					(struct scatterlist *)pio,
- 					ARRAY_SIZE(pio), DMA_TRANS_NONE, 0);
- 	if (!desc) {
--		pr_err("step 1 error\n");
-+		dev_err(this->dev, "step 1 error\n");
- 		return -1;
- 	}
- 
-@@ -1143,7 +1154,7 @@ int gpmi_send_command(struct gpmi_nand_data *this)
- 				DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
- 
- 	if (!desc) {
--		pr_err("step 2 error\n");
-+		dev_err(this->dev, "step 2 error\n");
- 		return -1;
- 	}
- 
-@@ -1175,7 +1186,7 @@ int gpmi_send_data(struct gpmi_nand_data *this)
- 	desc = dmaengine_prep_slave_sg(channel, (struct scatterlist *)pio,
- 					ARRAY_SIZE(pio), DMA_TRANS_NONE, 0);
- 	if (!desc) {
--		pr_err("step 1 error\n");
-+		dev_err(this->dev, "step 1 error\n");
- 		return -1;
- 	}
- 
-@@ -1185,7 +1196,7 @@ int gpmi_send_data(struct gpmi_nand_data *this)
- 					1, DMA_MEM_TO_DEV,
- 					DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
- 	if (!desc) {
--		pr_err("step 2 error\n");
-+		dev_err(this->dev, "step 2 error\n");
- 		return -1;
- 	}
- 	/* [3] submit the DMA */
-@@ -1212,7 +1223,7 @@ int gpmi_read_data(struct gpmi_nand_data *this)
- 					(struct scatterlist *)pio,
- 					ARRAY_SIZE(pio), DMA_TRANS_NONE, 0);
- 	if (!desc) {
--		pr_err("step 1 error\n");
-+		dev_err(this->dev, "step 1 error\n");
- 		return -1;
- 	}
- 
-@@ -1222,7 +1233,7 @@ int gpmi_read_data(struct gpmi_nand_data *this)
- 					1, DMA_DEV_TO_MEM,
- 					DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
- 	if (!desc) {
--		pr_err("step 2 error\n");
-+		dev_err(this->dev, "step 2 error\n");
- 		return -1;
- 	}
- 
-@@ -1270,7 +1281,7 @@ int gpmi_send_page(struct gpmi_nand_data *this,
- 					ARRAY_SIZE(pio), DMA_TRANS_NONE,
- 					DMA_CTRL_ACK);
- 	if (!desc) {
--		pr_err("step 2 error\n");
-+		dev_err(this->dev, "step 2 error\n");
- 		return -1;
- 	}
- 	set_dma_type(this, DMA_FOR_WRITE_ECC_PAGE);
-@@ -1305,7 +1316,7 @@ int gpmi_read_page(struct gpmi_nand_data *this,
- 				(struct scatterlist *)pio, 2,
- 				DMA_TRANS_NONE, 0);
- 	if (!desc) {
--		pr_err("step 1 error\n");
-+		dev_err(this->dev, "step 1 error\n");
- 		return -1;
- 	}
- 
-@@ -1335,7 +1346,7 @@ int gpmi_read_page(struct gpmi_nand_data *this,
- 					ARRAY_SIZE(pio), DMA_TRANS_NONE,
- 					DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
- 	if (!desc) {
--		pr_err("step 2 error\n");
-+		dev_err(this->dev, "step 2 error\n");
- 		return -1;
- 	}
- 
-@@ -1356,7 +1367,7 @@ int gpmi_read_page(struct gpmi_nand_data *this,
- 				DMA_TRANS_NONE,
- 				DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
- 	if (!desc) {
--		pr_err("step 3 error\n");
-+		dev_err(this->dev, "step 3 error\n");
- 		return -1;
- 	}
- 
 diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 5617876..85d2be2 100644
+index 1faf198..36ef60a 100644
 --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
 +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -385,7 +385,7 @@ void prepare_data_dma(struct gpmi_nand_data *this, enum dma_data_direction dr)
+@@ -1561,7 +1561,7 @@ static int gpmi_set_geometry(struct gpmi_nand_data *this)
+ 	return gpmi_alloc_dma_buffer(this);
+ }
  
- 		ret = dma_map_sg(this->dev, sgl, 1, dr);
- 		if (ret == 0)
--			pr_err("DMA mapping failed.\n");
-+			dev_err(this->dev, "DMA mapping failed.\n");
- 
- 		this->direct_dma_map_ok = false;
- 	}
-@@ -419,7 +419,7 @@ static void dma_irq_callback(void *param)
- 		break;
- 
- 	default:
--		pr_err("in wrong DMA operation.\n");
-+		dev_err(this->dev, "in wrong DMA operation.\n");
- 	}
- 
- 	complete(dma_c);
-@@ -441,7 +441,8 @@ int start_dma_without_bch_irq(struct gpmi_nand_data *this,
- 	/* Wait for the interrupt from the DMA block. */
- 	err = wait_for_completion_timeout(dma_c, msecs_to_jiffies(1000));
- 	if (!err) {
--		pr_err("DMA timeout, last DMA :%d\n", this->last_dma_type);
-+		dev_err(this->dev, "DMA timeout, last DMA :%d\n",
-+			this->last_dma_type);
- 		gpmi_dump_info(this);
- 		return -ETIMEDOUT;
- 	}
-@@ -470,7 +471,8 @@ int start_dma_with_bch_irq(struct gpmi_nand_data *this,
- 	/* Wait for the interrupt from the BCH block. */
- 	err = wait_for_completion_timeout(bch_c, msecs_to_jiffies(1000));
- 	if (!err) {
--		pr_err("BCH timeout, last DMA :%d\n", this->last_dma_type);
-+		dev_err(this->dev, "BCH timeout, last DMA :%d\n",
-+			this->last_dma_type);
- 		gpmi_dump_info(this);
- 		return -ETIMEDOUT;
- 	}
-@@ -495,7 +497,7 @@ static int acquire_register_block(struct gpmi_nand_data *this,
- 	else if (!strcmp(res_name, GPMI_NAND_BCH_REGS_ADDR_RES_NAME))
- 		res->bch_regs = p;
- 	else
--		pr_err("unknown resource name : %s\n", res_name);
-+		dev_err(this->dev, "unknown resource name : %s\n", res_name);
- 
+-static void gpmi_nfc_exit(struct gpmi_nand_data *this)
++static void gpmi_nand_exit(struct gpmi_nand_data *this)
+ {
+ 	nand_release(&this->mtd);
+ 	gpmi_free_dma_buffer(this);
+@@ -1604,7 +1604,7 @@ static int gpmi_init_last(struct gpmi_nand_data *this)
  	return 0;
  }
-@@ -509,7 +511,7 @@ static int acquire_bch_irq(struct gpmi_nand_data *this, irq_handler_t irq_h)
  
- 	r = platform_get_resource_byname(pdev, IORESOURCE_IRQ, res_name);
- 	if (!r) {
--		pr_err("Can't get resource for %s\n", res_name);
-+		dev_err(this->dev, "Can't get resource for %s\n", res_name);
- 		return -ENODEV;
- 	}
+-static int gpmi_nfc_init(struct gpmi_nand_data *this)
++static int gpmi_nand_init(struct gpmi_nand_data *this)
+ {
+ 	struct mtd_info  *mtd = &this->mtd;
+ 	struct nand_chip *chip = &this->nand;
+@@ -1668,7 +1668,7 @@ static int gpmi_nfc_init(struct gpmi_nand_data *this)
+ 	return 0;
  
-@@ -538,7 +540,7 @@ static int acquire_dma_channels(struct gpmi_nand_data *this)
- 	/* request dma channel */
- 	dma_chan = dma_request_slave_channel(&pdev->dev, "rx-tx");
- 	if (!dma_chan) {
--		pr_err("Failed to request DMA channel.\n");
-+		dev_err(this->dev, "Failed to request DMA channel.\n");
- 		goto acquire_err;
- 	}
- 
-@@ -681,8 +683,7 @@ static int read_page_prepare(struct gpmi_nand_data *this,
- 						length, DMA_FROM_DEVICE);
- 		if (dma_mapping_error(dev, dest_phys)) {
- 			if (alt_size < length) {
--				pr_err("%s, Alternate buffer is too small\n",
--					__func__);
-+				dev_err(dev, "Alternate buffer is too small\n");
- 				return -ENOMEM;
- 			}
- 			goto map_failed;
-@@ -732,8 +733,7 @@ static int send_page_prepare(struct gpmi_nand_data *this,
- 						DMA_TO_DEVICE);
- 		if (dma_mapping_error(dev, source_phys)) {
- 			if (alt_size < length) {
--				pr_err("%s, Alternate buffer is too small\n",
--					__func__);
-+				dev_err(dev, "Alternate buffer is too small\n");
- 				return -ENOMEM;
- 			}
- 			goto map_failed;
-@@ -821,7 +821,7 @@ static int gpmi_alloc_dma_buffer(struct gpmi_nand_data *this)
- 
- error_alloc:
- 	gpmi_free_dma_buffer(this);
--	pr_err("Error allocating DMA buffers!\n");
-+	dev_err(dev, "Error allocating DMA buffers!\n");
- 	return -ENOMEM;
+ err_out:
+-	gpmi_nfc_exit(this);
++	gpmi_nand_exit(this);
+ 	return ret;
  }
  
-@@ -853,7 +853,8 @@ static void gpmi_cmd_ctrl(struct mtd_info *mtd, int data, unsigned int ctrl)
- 
- 	ret = gpmi_send_command(this);
+@@ -1725,7 +1725,7 @@ static int gpmi_nand_probe(struct platform_device *pdev)
  	if (ret)
--		pr_err("Chip: %u, Error %d\n", this->current_chip, ret);
-+		dev_err(this->dev, "Chip: %u, Error %d\n",
-+			this->current_chip, ret);
+ 		goto exit_nfc_init;
  
- 	this->command_length = 0;
+-	ret = gpmi_nfc_init(this);
++	ret = gpmi_nand_init(this);
+ 	if (ret)
+ 		goto exit_nfc_init;
+ 
+@@ -1745,7 +1745,7 @@ static int gpmi_nand_remove(struct platform_device *pdev)
+ {
+ 	struct gpmi_nand_data *this = platform_get_drvdata(pdev);
+ 
+-	gpmi_nfc_exit(this);
++	gpmi_nand_exit(this);
+ 	release_resources(this);
+ 	return 0;
  }
-@@ -981,7 +982,7 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 					nfc_geo->payload_size,
- 					&payload_virt, &payload_phys);
- 	if (ret) {
--		pr_err("Inadequate DMA buffer\n");
-+		dev_err(this->dev, "Inadequate DMA buffer\n");
- 		ret = -ENOMEM;
- 		return ret;
- 	}
-@@ -995,7 +996,7 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 			nfc_geo->payload_size,
- 			payload_virt, payload_phys);
- 	if (ret) {
--		pr_err("Error in ECC-based read: %d\n", ret);
-+		dev_err(this->dev, "Error in ECC-based read: %d\n", ret);
- 		return ret;
- 	}
- 
-@@ -1081,7 +1082,7 @@ static int gpmi_ecc_write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 				nfc_geo->payload_size,
- 				&payload_virt, &payload_phys);
- 		if (ret) {
--			pr_err("Inadequate payload DMA buffer\n");
-+			dev_err(this->dev, "Inadequate payload DMA buffer\n");
- 			return 0;
- 		}
- 
-@@ -1091,7 +1092,7 @@ static int gpmi_ecc_write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 				nfc_geo->auxiliary_size,
- 				&auxiliary_virt, &auxiliary_phys);
- 		if (ret) {
--			pr_err("Inadequate auxiliary DMA buffer\n");
-+			dev_err(this->dev, "Inadequate auxiliary DMA buffer\n");
- 			goto exit_auxiliary;
- 		}
- 	}
-@@ -1099,7 +1100,7 @@ static int gpmi_ecc_write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	/* Ask the NFC. */
- 	ret = gpmi_send_page(this, payload_phys, auxiliary_phys);
- 	if (ret)
--		pr_err("Error in ECC-based write: %d\n", ret);
-+		dev_err(this->dev, "Error in ECC-based write: %d\n", ret);
- 
- 	if (!this->swap_block_mark) {
- 		send_page_end(this, chip->oob_poi, mtd->oobsize,
-@@ -1516,7 +1517,7 @@ static int gpmi_set_geometry(struct gpmi_nand_data *this)
- 	/* Set up the NFC geometry which is used by BCH. */
- 	ret = bch_set_geometry(this);
- 	if (ret) {
--		pr_err("Error setting BCH geometry : %d\n", ret);
-+		dev_err(this->dev, "Error setting BCH geometry : %d\n", ret);
- 		return ret;
- 	}
- 
-@@ -1666,13 +1667,13 @@ static int gpmi_nand_probe(struct platform_device *pdev)
- 	if (of_id) {
- 		pdev->id_entry = of_id->data;
- 	} else {
--		pr_err("Failed to find the right device id.\n");
-+		dev_err(&pdev->dev, "Failed to find the right device id.\n");
- 		return -ENODEV;
- 	}
- 
- 	this = devm_kzalloc(&pdev->dev, sizeof(*this), GFP_KERNEL);
- 	if (!this) {
--		pr_err("Failed to allocate per-device memory\n");
-+		dev_err(&pdev->dev, "Failed to allocate per-device memory\n");
- 		return -ENOMEM;
- 	}
- 
 -- 
 1.7.2.rc3
