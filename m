@@ -1,24 +1,24 @@
-Received: from mx1.redhat.com ([209.132.183.28])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VhKNW-0000sw-Pt
- for linux-mtd@lists.infradead.org; Fri, 15 Nov 2013 14:28:11 +0000
-Subject: Re: [Cluster-devel] [PATCH 0/6] list: introduce
- list_last_entry_or_null()
-From: Steven Whitehouse <swhiteho@redhat.com>
-To: Christoph Hellwig <hch@infradead.org>
-In-Reply-To: <20131115141100.GA17659@infradead.org>
-References: <5285A33C.4040808@oracle.com>
- <20131115141100.GA17659@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 15 Nov 2013 14:26:53 +0000
-Message-ID: <1384525613.2747.60.camel@menhir>
-Mime-Version: 1.0
+Message-ID: <52862FED.20501@gmail.com>
+Date: Fri, 15 Nov 2013 15:30:05 +0100
+From: Daniel Mack <zonque@gmail.com>
+MIME-Version: 1.0
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH v5 00/14] Armada 370/XP NAND support
+References: <1384464339-6817-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20131114230436.GV9468@ld-irv-0074.broadcom.com>
+ <20131114230540.GW9468@ld-irv-0074.broadcom.com>
+ <20131114231528.GA9793@localhost> <5285D44C.7080501@gmail.com>
+ <20131115130711.GA2496@localhost> <528625EA.8060406@gmail.com>
+ <20131115142659.GB2496@localhost>
+In-Reply-To: <20131115142659.GB2496@localhost>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Cc: jfs-discussion@lists.sourceforge.net, jiri@resnulli.us,
- gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
- "xfs@oss.sgi.com" <xfs@oss.sgi.com>, cluster-devel@redhat.com,
- Jeff Liu <jeff.liu@oracle.com>, linux-mtd@lists.infradead.org, oleg@redhat.com,
- akpm@linux-foundation.org
+Cc: Lior Amsalem <alior@marvell.com>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ linux-mtd@lists.infradead.org,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,31 +28,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-On Fri, 2013-11-15 at 06:11 -0800, Christoph Hellwig wrote:
-> On Fri, Nov 15, 2013 at 12:29:48PM +0800, Jeff Liu wrote:
-> > Hi Folks,
-> > 
-> > This patch is trying to introduce a new list helper to retrieve the
-> > last entry or return NULL if the list is empty corresponding to it,
-> > which is inspired by Jiri Pirko's list_first_entry_or_null().
+On 11/15/2013 03:27 PM, Ezequiel Garcia wrote:
+> On Fri, Nov 15, 2013 at 02:47:22PM +0100, Daniel Mack wrote:
+>> On 11/15/2013 02:07 PM, Ezequiel Garcia wrote:
+>>> On Fri, Nov 15, 2013 at 08:59:08AM +0100, Daniel Mack wrote:
+>>>> On 11/15/2013 12:15 AM, Ezequiel Garcia wrote:
+>>>>> On Thu, Nov 14, 2013 at 03:05:40PM -0800, Brian Norris wrote:
+>>>>>> + Daniel (missed the CC)
+>>>>>>
+>>>>>> On Thu, Nov 14, 2013 at 03:04:36PM -0800, Brian Norris wrote:
+>>>>>>> On Thu, Nov 14, 2013 at 06:25:25PM -0300, Ezequiel Garcia wrote:
+>>>>>>>> * Changes from v4
+>>>>>>>>
+>>>>>>>>   * Rebased on top of l2-mtd.git origin/next branch
+>>>>>>>>
+>>>>>>>>   * Fixed is_ready flag reset, renamed by a more descriptive
+>>>>>>>>     and readble "need_wait".
+>>>>>>>>
+>>>>>>>
+>>>>>>> ...
+>>>>>>>
+>>>>>>> I think this series is now good as-is. Pushing to l2-mtd.git/next.
+>>>>>>> Thanks for the efforts! I can submit my extra diff from patch 12 as a
+>>>>>>> separate patch for review.
+>>>>>>>
+>>>>>>> Do you have any available regression tests? Or was there somebody else
+>>>>>>> we could run this by for some Tested-by's? Daniel Mack, perhaps?
+>>>>>>
+>>>>>> Brian
+>>>>>
+>>>>> Yes, if Daniel (or anybody else) can push a Tested-by, that's better because
+>>>>> he's a "third-party" tester.
+>>>>
+>>>> Yes. Sorry, I could only partially follow all the discussions around
+>>>> these patch sets, but I can certainly do a quick regression test on my
+>>>> pxa3xx platform.
+>>>>
+>>>> Ezequiel, could you maybe point me to a repository where I can pull
+>>>> everything from you want me to have a look at?
+>>>>
+>>>
+>>> Latest work is at the next branch in l2-mtd.git:
+>>>
+>>> http://git.infradead.org/l2-mtd.git/shortlog/refs/heads/next
+>>>
+>>> You could try that, with Brian's latest patch:
+>>>
+>>> http://patchwork.ozlabs.org/patch/291408/
+>>
+>> Thanks Ezequiel! Tested with and without DMA on my PXA3xx platform and
+>> it seems to work just well. Awesome work :)
+>>
+>> [    2.675715] NAND device: Manufacturer ID: 0x20, Chip ID: 0xa1 (ST
+>> Micro NAND01GR3B2CZA6)
+>> [    2.683965] NAND device: 128MiB, SLC, page size: 2048, OOB size: 64
+>> [    2.690867] Scanning device for bad blocks
+>> [    2.977987] Bad eraseblock 528 at 0x000004200000
+>> [    2.983394] Bad eraseblock 529 at 0x000004220000
+>> [    3.251150] 4 ofpart partitions found on MTD device pxa3xx_nand-0
+>> [    3.257313] Creating 4 MTD partitions on "pxa3xx_nand-0":
+>> [    3.263051] 0x000000000000-0x0000000a0000 : "Bootloader"
+>> [    3.278845] 0x0000000a0000-0x0000000c0000 : "BootloaderEnvironment"
+>> [    3.296388] 0x0000000c0000-0x000000120000 : "BootloaderSplashScreen"
+>> [    3.314704] 0x000000120000-0x000008000000 : "UBI"
+>>
 > 
-> How did we end up with the stupid _or_null prefix there?  I think the
-> functionality is useful, but the naming is way to verbose, especially
-> given that a list_first_entry or list_last_entry that optimizes away
-> that one check doesn't seem useful.
-> 
-> Instead of encoding detailed semantics in the name a good kerneldoc
-> comment is way better.
-> 
+> Good news! Have you tried with Brian's patch [1]?
 
-Also, in two of the cases (patch 3 and patch 6) we don't want NULL in
-the case that the list is empty, and instead want another pointer which,
-after the patches, requires an extra "if". Now I suspect that the
-optimizer will sort that out (I've not checked) so its probably not too
-big an issue. However, if instead of returning NULL for list empty, we
-had an extra argument to the function, then it could return whatever
-pointer was required for each case, whether NULL or otherwise,
+Yes. l2-mtd 'next' branch + Brian's patch.
 
-Steve.
+> In that case, is this a Tested-by?
+> 
+> [1] http://patchwork.ozlabs.org/patch/291408/
+
+  Tested-by: Daniel Mack <zonque@gmail.com>
+
+
+Daniel
