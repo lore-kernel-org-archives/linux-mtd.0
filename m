@@ -1,13 +1,14 @@
-Received: from aserp1040.oracle.com ([141.146.126.69])
+Received: from userp1040.oracle.com ([156.151.31.81])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VhB4W-0004xy-Bo
- for linux-mtd@lists.infradead.org; Fri, 15 Nov 2013 04:31:56 +0000
-Message-ID: <5285A39C.4030507@oracle.com>
-Date: Fri, 15 Nov 2013 12:31:24 +0800
+ id 1VhB5u-00051p-O7
+ for linux-mtd@lists.infradead.org; Fri, 15 Nov 2013 04:33:23 +0000
+Message-ID: <5285A3F4.4040000@oracle.com>
+Date: Fri, 15 Nov 2013 12:32:52 +0800
 From: Jeff Liu <jeff.liu@oracle.com>
 MIME-Version: 1.0
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 2/6] xfs: simplify xfs_ail_max() via list_last_entry_or_null()
+Subject: [PATCH 3/6] gfs2: simplify current_tail() via
+ list_last_entry_or_null()
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Cc: jfs-discussion@lists.sourceforge.net, jiri@resnulli.us,
@@ -25,62 +26,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Jie Liu <jeff.liu@oracle.com>
 
-Simplify xfs_ail_max() with list_last_entry_or_null(), and move it to
-xfs_trans_priv.h as an inline function as now it is one line.
+Simplify the code in current_tail() via list_last_entry_or_null().
 
 Signed-off-by: Jie Liu <jeff.liu@oracle.com>
 ---
- fs/xfs/xfs_trans_ail.c  | 14 --------------
- fs/xfs/xfs_trans_priv.h | 12 ++++++++++++
- 2 files changed, 12 insertions(+), 14 deletions(-)
+ fs/gfs2/log.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/fs/xfs/xfs_trans_ail.c b/fs/xfs/xfs_trans_ail.c
-index a728735..af605d0 100644
---- a/fs/xfs/xfs_trans_ail.c
-+++ b/fs/xfs/xfs_trans_ail.c
-@@ -62,20 +62,6 @@ xfs_ail_check(
- #endif /* DEBUG */
+diff --git a/fs/gfs2/log.c b/fs/gfs2/log.c
+index 610613f..555f767 100644
+--- a/fs/gfs2/log.c
++++ b/fs/gfs2/log.c
+@@ -441,13 +441,9 @@ static unsigned int current_tail(struct gfs2_sbd *sdp)
  
- /*
-- * Return a pointer to the last item in the AIL.  If the AIL is empty, then
-- * return NULL.
-- */
--static xfs_log_item_t *
--xfs_ail_max(
--	struct xfs_ail  *ailp)
--{
--	if (list_empty(&ailp->xa_ail))
--		return NULL;
--
--	return list_entry(ailp->xa_ail.prev, xfs_log_item_t, li_ail);
--}
--
--/*
-  * Return a pointer to the item which follows the given item in the AIL.  If
-  * the given item is the last item in the list, then return NULL.
-  */
-diff --git a/fs/xfs/xfs_trans_priv.h b/fs/xfs/xfs_trans_priv.h
-index 12e86af..b1d93ae 100644
---- a/fs/xfs/xfs_trans_priv.h
-+++ b/fs/xfs/xfs_trans_priv.h
-@@ -97,6 +97,18 @@ xfs_ail_min(
- 					li_ail);
- }
+ 	spin_lock(&sdp->sd_ail_lock);
  
-+/*
-+ * Return a pointer to the last item in the AIL.  If the AIL is empty, then
-+ * return NULL.
-+ */
-+static inline struct xfs_log_item *
-+xfs_ail_max(
-+	struct xfs_ail  *ailp)
-+{
-+	return list_last_entry_or_null(&ailp->xa_ail, struct xfs_log_item,
-+				       li_ail);
-+}
-+
- static inline void
- xfs_trans_ail_update(
- 	struct xfs_ail		*ailp,
+-	if (list_empty(&sdp->sd_ail1_list)) {
+-		tail = sdp->sd_log_head;
+-	} else {
+-		tr = list_entry(sdp->sd_ail1_list.prev, struct gfs2_trans,
+-				tr_list);
+-		tail = tr->tr_first;
+-	}
++	tr = list_last_entry_or_null(&sdp->sd_ail1_list, struct gfs2_trans,
++				     tr_list);
++	tail = tr ? tr->tr_first : sdp->sd_log_head;
+ 
+ 	spin_unlock(&sdp->sd_ail_lock);
+ 
 -- 
 1.8.3.2
