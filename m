@@ -1,13 +1,13 @@
-Received: from userp1040.oracle.com ([156.151.31.81])
+Received: from aserp1040.oracle.com ([141.146.126.69])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VhB5u-00051p-O7
- for linux-mtd@lists.infradead.org; Fri, 15 Nov 2013 04:33:23 +0000
-Message-ID: <5285A3F4.4040000@oracle.com>
-Date: Fri, 15 Nov 2013 12:32:52 +0800
+ id 1VhB6v-00053t-Q0
+ for linux-mtd@lists.infradead.org; Fri, 15 Nov 2013 04:34:26 +0000
+Message-ID: <5285A434.2080608@oracle.com>
+Date: Fri, 15 Nov 2013 12:33:56 +0800
 From: Jeff Liu <jeff.liu@oracle.com>
 MIME-Version: 1.0
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 3/6] gfs2: simplify current_tail() via
+Subject: [PATCH 4/6] ubifs: simplify drop_last_node() via
  list_last_entry_or_null()
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
@@ -26,33 +26,32 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Jie Liu <jeff.liu@oracle.com>
 
-Simplify the code in current_tail() via list_last_entry_or_null().
+Simplify the code in drop_last_node() via list_last_entry_or_null().
 
 Signed-off-by: Jie Liu <jeff.liu@oracle.com>
 ---
- fs/gfs2/log.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ fs/ubifs/recovery.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/fs/gfs2/log.c b/fs/gfs2/log.c
-index 610613f..555f767 100644
---- a/fs/gfs2/log.c
-+++ b/fs/gfs2/log.c
-@@ -441,13 +441,9 @@ static unsigned int current_tail(struct gfs2_sbd *sdp)
+diff --git a/fs/ubifs/recovery.c b/fs/ubifs/recovery.c
+index 065096e..e46c394 100644
+--- a/fs/ubifs/recovery.c
++++ b/fs/ubifs/recovery.c
+@@ -603,12 +603,10 @@ static void drop_last_group(struct ubifs_scan_leb *sleb, int *offs)
+  */
+ static void drop_last_node(struct ubifs_scan_leb *sleb, int *offs)
+ {
+-	struct ubifs_scan_node *snod;
+-
+-	if (!list_empty(&sleb->nodes)) {
+-		snod = list_entry(sleb->nodes.prev, struct ubifs_scan_node,
+-				  list);
++	struct ubifs_scan_node *snod = list_last_entry_or_null(&sleb->nodes,
++				       struct ubifs_scan_node, list);
  
- 	spin_lock(&sdp->sd_ail_lock);
- 
--	if (list_empty(&sdp->sd_ail1_list)) {
--		tail = sdp->sd_log_head;
--	} else {
--		tr = list_entry(sdp->sd_ail1_list.prev, struct gfs2_trans,
--				tr_list);
--		tail = tr->tr_first;
--	}
-+	tr = list_last_entry_or_null(&sdp->sd_ail1_list, struct gfs2_trans,
-+				     tr_list);
-+	tail = tr ? tr->tr_first : sdp->sd_log_head;
- 
- 	spin_unlock(&sdp->sd_ail_lock);
- 
++	if (snod) {
+ 		dbg_rcvry("dropping last node at %d:%d",
+ 			  sleb->lnum, snod->offs);
+ 		*offs = snod->offs;
 -- 
 1.8.3.2
