@@ -1,13 +1,13 @@
 Received: from userp1040.oracle.com ([156.151.31.81])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VhB35-0004vR-EA
- for linux-mtd@lists.infradead.org; Fri, 15 Nov 2013 04:30:28 +0000
-Message-ID: <5285A33C.4040808@oracle.com>
-Date: Fri, 15 Nov 2013 12:29:48 +0800
+ id 1VhB4M-0004xw-Kj
+ for linux-mtd@lists.infradead.org; Fri, 15 Nov 2013 04:31:47 +0000
+Message-ID: <5285A393.8000808@oracle.com>
+Date: Fri, 15 Nov 2013 12:31:15 +0800
 From: Jeff Liu <jeff.liu@oracle.com>
 MIME-Version: 1.0
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 0/6] list: introduce list_last_entry_or_null()
+Subject: [PATCH 1/6] list: introduce list_last_entry_or_null()
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Cc: jfs-discussion@lists.sourceforge.net, jiri@resnulli.us,
@@ -23,22 +23,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Folks,
+From: Jie Liu <jeff.liu@oracle.com>
 
-This patch is trying to introduce a new list helper to retrieve the
-last entry or return NULL if the list is empty corresponding to it,
-which is inspired by Jiri Pirko's list_first_entry_or_null().
+Introduce a trivial helper list_last_entry_or_null() to fetch the
+last entry from a list, return NULL if the list is empty.
 
-With this trivial helper, we could get a little benefit to simplify
-the code logic of xfs_ail_max() and make the code looks a bit more
-consistent with xfs_ail_min() which has already been simplified
-via list_first_entry_or_null().
+Signed-off-by: Jie Liu <jeff.liu@oracle.com>
+---
+ include/linux/list.h | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-Moreover, as a per simple grep against fs as well as driver's tree,
-I think there are some other places could make use of it for similar
-purpose, here I spread this helper over some file systems as well.
-
-Any comments are welcome!
-
-Thanks,
--Jeff
+diff --git a/include/linux/list.h b/include/linux/list.h
+index ef95941..3337249 100644
+--- a/include/linux/list.h
++++ b/include/linux/list.h
+@@ -384,6 +384,17 @@ static inline void list_splice_tail_init(struct list_head *list,
+ 	(!list_empty(ptr) ? list_first_entry(ptr, type, member) : NULL)
+ 
+ /**
++ * list_last_entry_or_null - get the last element from a list
++ * @ptr:	the list head to take the element from.
++ * @type:	the type of the struct this is embedded in.
++ * @member:	the name of the list_struct within the struct.
++ *
++ * Note that if the list is empty, it returns NULL.
++ */
++#define list_last_entry_or_null(ptr, type, member) \
++	(!list_empty(ptr) ? list_last_entry(ptr, type, member) : NULL)
++
++/**
+  * list_next_entry - get the next element in list
+  * @pos:	the type * to cursor
+  * @member:	the name of the list_struct within the struct.
+-- 
+1.8.3.2
