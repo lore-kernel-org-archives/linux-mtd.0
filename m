@@ -1,23 +1,21 @@
-Received: from aserp1040.oracle.com ([141.146.126.69])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VhBMe-0005I7-4b
- for linux-mtd@lists.infradead.org; Fri, 15 Nov 2013 04:50:41 +0000
-Message-ID: <5285A7FF.1000901@oracle.com>
-Date: Fri, 15 Nov 2013 12:50:07 +0800
-From: Jeff Liu <jeff.liu@oracle.com>
+Message-ID: <5285D44C.7080501@gmail.com>
+Date: Fri, 15 Nov 2013 08:59:08 +0100
+From: Daniel Mack <zonque@gmail.com>
 MIME-Version: 1.0
-To: shaggy@kernel.org
-Subject: Re: [PATCH 6/6] jfs: simplify lmLogSync() via
- list_last_entry_or_null()
-References: <5285A483.3040009@oracle.com>
-In-Reply-To: <5285A483.3040009@oracle.com>
-Content-Type: text/plain; charset=ISO-8859-1
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v5 00/14] Armada 370/XP NAND support
+References: <1384464339-6817-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20131114230436.GV9468@ld-irv-0074.broadcom.com>
+ <20131114230540.GW9468@ld-irv-0074.broadcom.com>
+ <20131114231528.GA9793@localhost>
+In-Reply-To: <20131114231528.GA9793@localhost>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Cc: jfs-discussion@lists.sourceforge.net, jiri@resnulli.us,
- gregkh@linuxfoundation.org, oleg@redhat.com,
- "xfs@oss.sgi.com" <xfs@oss.sgi.com>, cluster-devel@redhat.com,
- linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
- linux-kernel@vger.kernel.org
+Cc: Lior Amsalem <alior@marvell.com>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,43 +25,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Dave and all,
+On 11/15/2013 12:15 AM, Ezequiel Garcia wrote:
+> On Thu, Nov 14, 2013 at 03:05:40PM -0800, Brian Norris wrote:
+>> + Daniel (missed the CC)
+>>
+>> On Thu, Nov 14, 2013 at 03:04:36PM -0800, Brian Norris wrote:
+>>> On Thu, Nov 14, 2013 at 06:25:25PM -0300, Ezequiel Garcia wrote:
+>>>> * Changes from v4
+>>>>
+>>>>   * Rebased on top of l2-mtd.git origin/next branch
+>>>>
+>>>>   * Fixed is_ready flag reset, renamed by a more descriptive
+>>>>     and readble "need_wait".
+>>>>
+>>>
+>>> ...
+>>>
+>>> I think this series is now good as-is. Pushing to l2-mtd.git/next.
+>>> Thanks for the efforts! I can submit my extra diff from patch 12 as a
+>>> separate patch for review.
+>>>
+>>> Do you have any available regression tests? Or was there somebody else
+>>> we could run this by for some Tested-by's? Daniel Mack, perhaps?
+>>
+>> Brian
+> 
+> Yes, if Daniel (or anybody else) can push a Tested-by, that's better because
+> he's a "third-party" tester.
 
-Please ignore this patch from this series.
+Yes. Sorry, I could only partially follow all the discussions around
+these patch sets, but I can certainly do a quick regression test on my
+pxa3xx platform.
 
-On 11/15 2013 12:35 PM, Jeff Liu wrote:
-> From: Jie Liu <jeff.liu@oracle.com>
-> 
-> Simplify the code in lmLogSync() via list_last_entry_or_null().
-> 
-> Signed-off-by: Jie Liu <jeff.liu@oracle.com>
-> ---
->  fs/jfs/jfs_logmgr.c | 10 +++-------
->  1 file changed, 3 insertions(+), 7 deletions(-)
-> 
-> diff --git a/fs/jfs/jfs_logmgr.c b/fs/jfs/jfs_logmgr.c
-> index 7b565d0..2f90779 100644
-> --- a/fs/jfs/jfs_logmgr.c
-> +++ b/fs/jfs/jfs_logmgr.c
-> @@ -963,13 +963,9 @@ static int lmLogSync(struct jfs_log * log, int hard_sync)
->  
->  	if (log->sync == log->syncpt) {
->  		LOGSYNC_LOCK(log, flags);
-> -		if (list_empty(&log->synclist))
-> -			log->sync = log->lsn;
-> -		else {
-> -			lp = list_entry(log->synclist.next,
-> -					struct logsyncblk, synclist);
-> -			log->sync = lp->lsn;
-> -		}
-> +		lp = list_last_entry_or_null(&log->synclist, struct logsyncblk,
-> +					     synclist);
-Here it could be simplified via list_first_entry_or_null(), my apology for this mistake.
-> +		log->sync = lp ? lp->lsn : log->lsn;
->  		LOGSYNC_UNLOCK(log, flags);
->  
->  	}
-> 
+Ezequiel, could you maybe point me to a repository where I can pull
+everything from you want me to have a look at?
+
 
 Thanks,
--Jeff
+Daniel
