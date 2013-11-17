@@ -1,26 +1,21 @@
-Date: Fri, 15 Nov 2013 15:35:40 -0300
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VhuQD-0004bX-Te
+ for linux-mtd@lists.infradead.org; Sun, 17 Nov 2013 04:57:22 +0000
+Date: Sun, 17 Nov 2013 01:57:05 -0300
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v5 00/14] Armada 370/XP NAND support
-Message-ID: <20131115183539.GB9252@localhost>
-References: <1384464339-6817-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <20131114230436.GV9468@ld-irv-0074.broadcom.com>
- <20131114230540.GW9468@ld-irv-0074.broadcom.com>
- <20131114231528.GA9793@localhost> <5285D44C.7080501@gmail.com>
- <20131115130711.GA2496@localhost> <528625EA.8060406@gmail.com>
- <20131115142659.GB2496@localhost> <52862FED.20501@gmail.com>
- <CAN8TOE88uoitm+8J6fXAnAWf1Rb4favyVqCvjCU+WHdBZ9m8cA@mail.gmail.com>
+Subject: Re: [PATCH] mtd: nand: pxa3xx: make ECC configuration checks more
+ explicit
+Message-ID: <20131117045704.GA17731@localhost>
+References: <1384471108-28188-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAN8TOE88uoitm+8J6fXAnAWf1Rb4favyVqCvjCU+WHdBZ9m8cA@mail.gmail.com>
-Cc: Lior Amsalem <alior@marvell.com>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Daniel Mack <zonque@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+In-Reply-To: <1384471108-28188-1-git-send-email-computersforpeace@gmail.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,94 +25,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Nov 15, 2013 at 10:05:35AM -0800, Brian Norris wrote:
-> On Fri, Nov 15, 2013 at 6:30 AM, Daniel Mack <zonque@gmail.com> wrote:
-> > On 11/15/2013 03:27 PM, Ezequiel Garcia wrote:
-> >> On Fri, Nov 15, 2013 at 02:47:22PM +0100, Daniel Mack wrote:
-> >>> On 11/15/2013 02:07 PM, Ezequiel Garcia wrote:
-> >>>> On Fri, Nov 15, 2013 at 08:59:08AM +0100, Daniel Mack wrote:
-> >>>>> On 11/15/2013 12:15 AM, Ezequiel Garcia wrote:
-> >>>>>> On Thu, Nov 14, 2013 at 03:05:40PM -0800, Brian Norris wrote:
-> >>>>>>> + Daniel (missed the CC)
-> >>>>>>>
-> >>>>>>> On Thu, Nov 14, 2013 at 03:04:36PM -0800, Brian Norris wrote:
-> >>>>>>>> On Thu, Nov 14, 2013 at 06:25:25PM -0300, Ezequiel Garcia wrote:
-> >>>>>>>>> * Changes from v4
-> >>>>>>>>>
-> >>>>>>>>>   * Rebased on top of l2-mtd.git origin/next branch
-> >>>>>>>>>
-> >>>>>>>>>   * Fixed is_ready flag reset, renamed by a more descriptive
-> >>>>>>>>>     and readble "need_wait".
-> >>>>>>>>>
-> >>>>>>>>
-> >>>>>>>> ...
-> >>>>>>>>
-> >>>>>>>> I think this series is now good as-is. Pushing to l2-mtd.git/next.
-> >>>>>>>> Thanks for the efforts! I can submit my extra diff from patch 12 as a
-> >>>>>>>> separate patch for review.
-> >>>>>>>>
-> >>>>>>>> Do you have any available regression tests? Or was there somebody else
-> >>>>>>>> we could run this by for some Tested-by's? Daniel Mack, perhaps?
-> >>>>>>>
-> >>>>>>> Brian
-> >>>>>>
-> >>>>>> Yes, if Daniel (or anybody else) can push a Tested-by, that's better because
-> >>>>>> he's a "third-party" tester.
-> >>>>>
-> >>>>> Yes. Sorry, I could only partially follow all the discussions around
-> >>>>> these patch sets, but I can certainly do a quick regression test on my
-> >>>>> pxa3xx platform.
-> >>>>>
-> >>>>> Ezequiel, could you maybe point me to a repository where I can pull
-> >>>>> everything from you want me to have a look at?
-> >>>>>
-> >>>>
-> >>>> Latest work is at the next branch in l2-mtd.git:
-> >>>>
-> >>>> http://git.infradead.org/l2-mtd.git/shortlog/refs/heads/next
-> >>>>
-> >>>> You could try that, with Brian's latest patch:
-> >>>>
-> >>>> http://patchwork.ozlabs.org/patch/291408/
-> >>>
-> >>> Thanks Ezequiel! Tested with and without DMA on my PXA3xx platform and
-> >>> it seems to work just well. Awesome work :)
-> >>>
-> >>> [    2.675715] NAND device: Manufacturer ID: 0x20, Chip ID: 0xa1 (ST
-> >>> Micro NAND01GR3B2CZA6)
-> >>> [    2.683965] NAND device: 128MiB, SLC, page size: 2048, OOB size: 64
-> >>> [    2.690867] Scanning device for bad blocks
-> >>> [    2.977987] Bad eraseblock 528 at 0x000004200000
-> >>> [    2.983394] Bad eraseblock 529 at 0x000004220000
-> >>> [    3.251150] 4 ofpart partitions found on MTD device pxa3xx_nand-0
-> >>> [    3.257313] Creating 4 MTD partitions on "pxa3xx_nand-0":
-> >>> [    3.263051] 0x000000000000-0x0000000a0000 : "Bootloader"
-> >>> [    3.278845] 0x0000000a0000-0x0000000c0000 : "BootloaderEnvironment"
-> >>> [    3.296388] 0x0000000c0000-0x000000120000 : "BootloaderSplashScreen"
-> >>> [    3.314704] 0x000000120000-0x000008000000 : "UBI"
-> >>>
-> >>
-> >> Good news! Have you tried with Brian's patch [1]?
-> >
-> > Yes. l2-mtd 'next' branch + Brian's patch.
-> >
-> >> In that case, is this a Tested-by?
-> >>
-> >> [1] http://patchwork.ozlabs.org/patch/291408/
-> >
-> >   Tested-by: Daniel Mack <zonque@gmail.com>
+On Thu, Nov 14, 2013 at 03:18:28PM -0800, Brian Norris wrote:
+> The Armada BCH configuration in this driver uses one of the two
+> following ECC schemes:
 > 
-> Well, that last patch wouldn't be relevant to the PXA platform,
-
-Ah, right. Forgot about that.
-
-> but I'll add your Tested-by to the whole series. Thanks!
+>  16-bit correction per 2048 bytes
+>  16-bit correction per 1024 bytes
 > 
-> Ezequiel, is that an "acked-by" for my last patch?
+> These are sufficient for mapping to the 4-bit per 512-bytes and 8-bit
+> per 512-bytes (respectively) minimum correctability requirements of many
+> common NAND.
 > 
+> The current code only checks for the required strength (4-bit or 8-bit)
+> without checking the ECC step size that is associated with that strength
+> (and simply assumes it is 512). While that is often a safe assumption to
+> make, let's make it explicit, since we have that information.
+> 
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 
-No, I want to give it a try on the boards. I just haven't found
-time to work on it.
+Acked-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+
+> ---
+>  drivers/mtd/nand/pxa3xx_nand.c | 15 ++++++++++++---
+>  1 file changed, 12 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+> index cec81f0..3d143fe 100644
+> --- a/drivers/mtd/nand/pxa3xx_nand.c
+> +++ b/drivers/mtd/nand/pxa3xx_nand.c
+> @@ -1364,9 +1364,13 @@ static int pxa_ecc_init(struct pxa3xx_nand_info *info,
+>  
+>  static int armada370_ecc_init(struct pxa3xx_nand_info *info,
+>  			      struct nand_ecc_ctrl *ecc,
+> -			      int strength, int page_size)
+> +			      int strength, int ecc_stepsize, int page_size)
+>  {
+> -	if (strength == 4 && page_size == 4096) {
+> +	/*
+> +	 * Required ECC: 4-bit correction per 512 bytes
+> +	 * Select: 16-bit correction per 2048 bytes
+> +	 */
+> +	if (strength == 4 && ecc_stepsize == 512 && page_size == 4096) {
+>  		info->ecc_bch = 1;
+>  		info->chunk_size = 2048;
+>  		info->spare_size = 32;
+> @@ -1377,7 +1381,11 @@ static int armada370_ecc_init(struct pxa3xx_nand_info *info,
+>  		ecc->strength = 16;
+>  		return 1;
+>  
+> -	} else if (strength == 8 && page_size == 4096) {
+> +	/*
+> +	 * Required ECC: 8-bit correction per 512 bytes
+> +	 * Select: 16-bit correction per 1024 bytes
+> +	 */
+> +	} else if (strength == 8 && ecc_stepsize == 512 && page_size == 4096) {
+>  		info->ecc_bch = 1;
+>  		info->chunk_size = 1024;
+>  		info->spare_size = 0;
+> @@ -1485,6 +1493,7 @@ KEEP_CONFIG:
+>  	if (info->variant == PXA3XX_NAND_VARIANT_ARMADA370)
+>  		ret = armada370_ecc_init(info, &chip->ecc,
+>  				   chip->ecc_strength_ds,
+> +				   chip->ecc_step_ds,
+>  				   mtd->writesize);
+>  	else
+>  		ret = pxa_ecc_init(info, &chip->ecc,
+> -- 
+> 1.8.4.2
+> 
 
 -- 
 Ezequiel García, Free Electrons
