@@ -1,22 +1,22 @@
-Received: from smtprelay0157.hostedemail.com ([216.40.44.157]
- helo=smtprelay.hostedemail.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ViB5x-000725-Bt
- for linux-mtd@lists.infradead.org; Sun, 17 Nov 2013 22:45:33 +0000
-Message-ID: <1384728305.14335.4.camel@joe-AO722>
-Subject: Re: [PATCH] jffs2: fix sparse errors: directive in argument list
-From: Joe Perches <joe@perches.com>
-To: Erico Nunes <nunes.erico@gmail.com>
-Date: Sun, 17 Nov 2013 14:45:05 -0800
+Received: from mail-yh0-x230.google.com ([2607:f8b0:4002:c01::230])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ViBBo-000766-NQ
+ for linux-mtd@lists.infradead.org; Sun, 17 Nov 2013 22:51:37 +0000
+Received: by mail-yh0-f48.google.com with SMTP id f10so2957246yha.7
+ for <linux-mtd@lists.infradead.org>; Sun, 17 Nov 2013 14:51:14 -0800 (PST)
+From: Erico Nunes <nunes.erico@gmail.com>
+To: joe@perches.com
+Subject: [PATCH] jffs2: fix sparse errors: directive in argument list
+Date: Sun, 17 Nov 2013 20:43:21 -0200
+Message-Id: <1384728201-13509-1-git-send-email-nunes.erico@gmail.com>
 In-Reply-To: <CAK4VdL2nKEE+xb=HtMGNsMGNR_ivUn_WnLi7X-rrXT0fpGbSTw@mail.gmail.com>
-References: <1384719513-27386-1-git-send-email-nunes.erico@gmail.com>
- <1384724403.2727.22.camel@joe-AO722>
- <CAK4VdL2nKEE+xb=HtMGNsMGNR_ivUn_WnLi7X-rrXT0fpGbSTw@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>, linux-sparse@vger.kernel.org,
- dwmw2 <dwmw2@infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
+References: <CAK4VdL2nKEE+xb=HtMGNsMGNR_ivUn_WnLi7X-rrXT0fpGbSTw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, linux-sparse@vger.kernel.org,
+ dwmw2@infradead.org, linux-kernel@vger.kernel.org,
+ Erico Nunes <nunes.erico@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,24 +26,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2013-11-17 at 20:34 -0200, Erico Nunes wrote:
-> Do you mean it as an error in the sparse tool?
+This patch fixes the following errors reported when running sparse:
+fs/jffs2/super.c:378:1: error: directive in argument list
+fs/jffs2/super.c:380:1: error: directive in argument list
+fs/jffs2/super.c:381:1: error: directive in argument list
+fs/jffs2/super.c:383:1: error: directive in argument list
 
-Yes.  I think it's a defect in how sparse
-treats string concatenation.
+Signed-off-by: Erico Nunes <nunes.erico@gmail.com>
+---
+ fs/jffs2/super.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-That style:
-
-	printk("%s\n",
-#ifdef FOO
-	"foo"
-#endif
-#ifdef BAR
-	"bar"
-#endif
-	"string");
-
-is pretty common in the kernel sources.
-
-The patch itself is otherwise fine, but
-perhaps unnecessary.
+diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
+index 0defb1c..ec9e16f 100644
+--- a/fs/jffs2/super.c
++++ b/fs/jffs2/super.c
+@@ -361,6 +361,14 @@ MODULE_ALIAS_FS("jffs2");
+ static int __init init_jffs2_fs(void)
+ {
+ 	int ret;
++	const char desc[] = "version 2.2."
++#ifdef CONFIG_JFFS2_FS_WRITEBUFFER
++		" (NAND)"
++#endif
++#ifdef CONFIG_JFFS2_SUMMARY
++		" (SUMMARY) "
++#endif
++		" © 2001-2006 Red Hat, Inc.";
+ 
+ 	/* Paranoia checks for on-medium structures. If we ask GCC
+ 	   to pack them with __attribute__((packed)) then it _also_
+@@ -374,14 +382,7 @@ static int __init init_jffs2_fs(void)
+ 	BUILD_BUG_ON(sizeof(struct jffs2_raw_inode) != 68);
+ 	BUILD_BUG_ON(sizeof(struct jffs2_raw_summary) != 32);
+ 
+-	pr_info("version 2.2."
+-#ifdef CONFIG_JFFS2_FS_WRITEBUFFER
+-	       " (NAND)"
+-#endif
+-#ifdef CONFIG_JFFS2_SUMMARY
+-	       " (SUMMARY) "
+-#endif
+-	       " © 2001-2006 Red Hat, Inc.\n");
++	pr_info("%s\n", desc);
+ 
+ 	jffs2_inode_cachep = kmem_cache_create("jffs2_i",
+ 					     sizeof(struct jffs2_inode_info),
+-- 
+1.8.4.2
