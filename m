@@ -1,7 +1,15 @@
-Date: Mon, 18 Nov 2013 15:16:51 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Lee Jones <lee.jones@linaro.org>
-Message-ID: <20131118151651.GE24408@sirena.org.uk>
+Received: from mail-oa0-f54.google.com ([209.85.219.54])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ViQnf-00068M-Oz
+ for linux-mtd@lists.infradead.org; Mon, 18 Nov 2013 15:31:44 +0000
+Received: by mail-oa0-f54.google.com with SMTP id h16so1304919oag.13
+ for <linux-mtd@lists.infradead.org>; Mon, 18 Nov 2013 07:31:21 -0800 (PST)
+Date: Mon, 18 Nov 2013 15:31:10 +0000
+From: Lee Jones <lee.jones@linaro.org>
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 02/10] mtd: st_spi_fsm: Supply all register address and
+ bit logic defines
+Message-ID: <20131118153110.GN13640@lee--X1>
 References: <1384438956-31153-1-git-send-email-lee.jones@linaro.org>
  <1384438956-31153-3-git-send-email-lee.jones@linaro.org>
  <CACRpkdaccxcTfKc-y7rPEH1H3yua3ubLvuvTzWnMs1rOwjiVNw@mail.gmail.com>
@@ -10,13 +18,12 @@ References: <1384438956-31153-1-git-send-email-lee.jones@linaro.org>
  <20131118142447.GJ13640@lee--X1>
  <20131118144512.GB24408@sirena.org.uk>
  <20131118145614.GM13640@lee--X1>
+ <20131118151651.GE24408@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="phCU5ROyZO6kBE05"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20131118145614.GM13640@lee--X1>
-Subject: Re: [PATCH 02/10] mtd: st_spi_fsm: Supply all register address and
- bit logic defines
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20131118151651.GE24408@sirena.org.uk>
 Cc: angus.clark@st.com, Linus Walleij <linus.walleij@linaro.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
@@ -31,41 +38,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Mon, 18 Nov 2013, Mark Brown wrote:
 
---phCU5ROyZO6kBE05
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> On Mon, Nov 18, 2013 at 02:56:14PM +0000, Lee Jones wrote:
+> 
+> > I think it's a good idea for people using the m25p80, but still
+> > doesn't effect us. All of our chips are dynamically probable. We are
+> 
+> This doesn't seem realistic, you're assuming that system integrators
+> won't go and use chips you've not heard of and at least in the case of
+> things like quad read my understanding is that the commands aren't
+> standardised so the host just has to know what to write.
 
-On Mon, Nov 18, 2013 at 02:56:14PM +0000, Lee Jones wrote:
+I'm not following? What are you suggesting?
 
-> I think it's a good idea for people using the m25p80, but still
-> doesn't effect us. All of our chips are dynamically probable. We are
+After some analysis we have come to the conclusion that using m25p80
+is not feasible. It makes more sense for this to be an
+orthogonal/stand-alone driver.
 
-This doesn't seem realistic, you're assuming that system integrators
-won't go and use chips you've not heard of and at least in the case of
-things like quad read my understanding is that the commands aren't
-standardised so the host just has to know what to write.
-
---phCU5ROyZO6kBE05
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSii9gAAoJELSic+t+oim97VMQAIr/c+A1QBszwCN/PYourA/2
-buiZBEUuCQdCtOa5UfDmXb6FowgakhFvnIQbprHnGD2TeVN6wQT8XFDhw8WIbGvo
-G63QVPz9pxGMKBTSSf9Obdlcsw7eBKopuXB75W+der2C3H6nj6mL1naOy4YbJKDv
-bf0xYmRiBAKdxlU0gcIWXbx9ddb2q2jTKBO6JaWVhbHmjbASQJ7SQP1G/22SJqka
-/Wqc8W2A3R1zyaSIlu6sD3CoNZPSN5fgpml8V+8GCY6k4EQHDlJ9Gh0Pt+f4jKXG
-BgMZvyfzlClMXHxMwXnwp0sQ/meSPo7sxY4nr9hGTAvXCvx4ZiVsD4LdLnI32Bgk
-cjdhKoUT1IVajvvO8fNtoK5hkwM4bBzRv5GCgu/yrhEtjlZQQTtrqtSTBpG4uo81
-XnF4kEX0z9yh39w6e1297xJ+Alm8pVKbVB5pP6KRtyLNh59kZtC6EUdeMBv7FQwn
-DYM24YEyeA4p/kuIcT9iCnQssjA7kHivOdVEeP1j1os8aAgYht3g8djiqJ6gC1oS
-vMWGCYQm6fgJsW5a6v+uHeEaIrJ7LVWVNig9VMzER0ZEfHX71l+/D2IIeTuyXIYb
-pOUvoxNABX24S5ACZNDBaYcEE0XyDSc55hHP4119DJF4JIh2M+XvTIQIaRJxOouE
-x5I7vHxlInLnNOL81X7o
-=/UnB
------END PGP SIGNATURE-----
-
---phCU5ROyZO6kBE05--
+-- 
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
