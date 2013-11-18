@@ -1,25 +1,26 @@
-Date: Mon, 18 Nov 2013 10:10:09 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH v3 22/28] mtd: nand: pxa3xx: Introduce multiple page
- I/O support
-Message-ID: <20131118181009.GZ9468@ld-irv-0074.broadcom.com>
-References: <1383656135-8627-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1383656135-8627-23-git-send-email-ezequiel.garcia@free-electrons.com>
- <20131105190432.GQ20061@ld-irv-0074.broadcom.com>
- <20131106011351.GH11759@localhost>
- <CAN8TOE_ZmcsvShKY273KQCaopJEXgtXVR1XY9pP5EKkUK+bUbA@mail.gmail.com>
- <20131106113210.GB2616@localhost>
+Message-ID: <528A5B95.3040808@ti.com>
+Date: Mon, 18 Nov 2013 20:25:25 +0200
+From: "ivan.khoronzhuk" <ivan.khoronzhuk@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20131106113210.GB2616@localhost>
-Cc: Lior Amsalem <alior@marvell.com>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>,
- Daniel Mack <zonque@gmail.com>, Huang Shijie <b32955@freescale.com>,
+To: Santosh Shilimkar <santosh.shilimkar@ti.com>
+Subject: Re: [PATCH 02/12] mtd: nand: davinci: check required ti,
+ davinci-chipselect property
+References: <1384187188-5776-1-git-send-email-ivan.khoronzhuk@ti.com>,
+ <1384187188-5776-3-git-send-email-ivan.khoronzhuk@ti.com>
+ <4F5844B3A985794BA902E12C070812375F8CEF@DNCE04.ent.ti.com>
+ <52824E2F.9090302@ti.com>
+In-Reply-To: <52824E2F.9090302@ti.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "Strashko,
+ Grygorii" <grygorii.strashko@ti.com>, Russell King <linux@arm.linux.org.uk>,
+ Pawel Moll <pawel.moll@arm.com>, Stephen Warren <swarren@wwwdotorg.org>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@kernel.crashing.org>, Rob Herring <rob.herring@calxeda.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Gregory Clement <gregory.clement@free-electrons.com>, Willy Tarreau <w@1wt.eu>,
+ Rob Landley <rob@landley.net>,
  "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,63 +31,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ezequiel,
+On 11/12/2013 05:50 PM, Santosh Shilimkar wrote:
+> On Monday 11 November 2013 11:53 AM, Khoronzhuk, Ivan wrote:
+>> The property "ti,davinci-chipselect" is required. So we have to check
+>> if it is set.
+>>
+>> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+>> ---
+>>   drivers/mtd/nand/davinci_nand.c |   10 +++++++++-
+>>   1 file changed, 9 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
+>> index d87213f..8e1c88e 100644
+>> --- a/drivers/mtd/nand/davinci_nand.c
+>> +++ b/drivers/mtd/nand/davinci_nand.c
+>> @@ -541,10 +541,14 @@ static struct davinci_nand_pdata
+>>                                  GFP_KERNEL);
+>>                  pdev->dev.platform_data = pdata;
+>>                  if (!pdata)
+>> -                       return NULL;
+>> +                       return ERR_PTR(-ENOMEM);
+>> +
+> This change don't follow commit message.
+>
 
-There's one question of yours that I think hasn't been addressed:
+I'll move it to separate patch, that will be first patch
 
-On Wed, Nov 06, 2013 at 08:32:11AM -0300, Ezequiel Garcia wrote:
-> Having followed (part) of the OMAP DT ECC discussion, I'm thinking:
-> wouldn't it be good to have an 'nand-ecc-strength' property in the DT?
-> 
-> It would match the ecc_strength_ds field. This way, the ECC mode
-> selection is left to the driver and not to the user.
-> On the other side, this can cause some severe incompatibilities
-> unless such driver *always* make the *same* selection.
+>>                  if (!of_property_read_u32(pdev->dev.of_node,
+>>                          "ti,davinci-chipselect", &prop))
+>>                          pdev->id = prop;
+>> +               else
+>> +                       return ERR_PTR(-EINVAL);
+>> +
+> So the check already exist but the error case wasn't handled.
+> This should be reflected in change log.
+>
 
-I'm not quite so sure about the whole question of ECC in device tree.
-There seems to be 2 subtly different properties we might want to
-capture:
+The error will be handled at return by:
+	pdata = nand_davinci_get_pdata(pdev);
+  	if (IS_ERR(pdata))
+		return PTR_ERR(pdata);
 
-1) What is the minimum ECC required for the flash?
+or did you mean I should add dev_err().
 
-2) What is the exact ECC layout/strength/type used for this flash?
-   (i.e., what is the bootloader using?)
+>>                  if (!of_property_read_u32(pdev->dev.of_node,
+>>                          "ti,davinci-mask-ale", &prop))
+>>                          pdata->mask_ale = prop;
+>> @@ -598,6 +602,10 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
+>>          nand_ecc_modes_t                ecc_mode;
+>>
+>>          pdata = nand_davinci_get_pdata(pdev);
+>> +       if (IS_ERR(pdata)) {
+>> +               return PTR_ERR(pdata);
+>> +       }
+>> +
+> Again not related to commit log. You might want to split this patch
+> then.
+>
 
-The first is quite generic: the property consists of a stength and step
-size. (But this is also duplicated in ONFI, and our full-ID device
-table.)
+I'll move it in the same separate patch.
 
-Still, I think a property for #1 could be useful, for those chips that
-are not discoverable. And if we (you?) add it, it should be done at the
-nand_base level, I think, so its binding is shared by all drivers.
+> Regards,
+> Santosh
+>
 
-I'm not quite sure how we identify the appropriate struct device_node
-for nand_base to use, though. Maybe we should force drivers to
-initialize a new mtd_info.of_node field? And then maybe this could also
-be integrated into the 'ofpart' parser, which currently requires drivers
-to pass a device_node via the mtd_part_parser_data struct?
 
-Property #2 is very driver/hardware specific, and it may not be easy to
-capture this information properly using the same set of properties for
-all NAND drivers. For example, "BCH-8" is not the same on all systems;
-and even on the same system a software BCH-X could potentially be very
-different than (and incompatible with) a BCH-X as provided by hardware.
-And different hardware provides wildly different choices regarding ECC,
-so I'm not convinced that we could create a good generic binding for
-describing #2.
-
-But I think a property like #2 is necessary for many platforms that need
-to eliminate the problem that you mention, where drivers must always
-make the same selection. Essentially, we're assuming bootloader/driver
-co-design, rather than properly communicating this information via a
-shared data structure like device tree.
-
-Now, it's another question as to whether we need a property for both #1
-and #2. The latter would probably just override the former, but that
-doesn't mean that the former is unnecessary...
-
-Anyway, I'll stop having a conversation with myself now. If you think
-something should be done, I'm willing to listen and help integrate a
-solution.
-
-Brian
+-- 
+Regards,
+Ivan Khoronzhuk
