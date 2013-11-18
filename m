@@ -1,23 +1,25 @@
-Received: from userp1040.oracle.com ([156.151.31.81])
+Received: from mail-oa0-f51.google.com ([209.85.219.51])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ViHa7-0002il-BH
- for linux-mtd@lists.infradead.org; Mon, 18 Nov 2013 05:41:08 +0000
-Message-ID: <5289A89E.2050105@oracle.com>
-Date: Mon, 18 Nov 2013 13:41:50 +0800
-From: Jeff Liu <jeff.liu@oracle.com>
+ id 1ViKw5-0005dm-Al
+ for linux-mtd@lists.infradead.org; Mon, 18 Nov 2013 09:16:01 +0000
+Received: by mail-oa0-f51.google.com with SMTP id i7so1617128oag.38
+ for <linux-mtd@lists.infradead.org>; Mon, 18 Nov 2013 01:15:37 -0800 (PST)
 MIME-Version: 1.0
-To: Oleg Nesterov <oleg@redhat.com>
-Subject: Re: introduce list_get_first/last (Was: [PATCH 3/6] gfs2: simplify
- current_tail() via list_last_entry_or_null())
-References: <5285A3F4.4040000@oracle.com> <20131115163957.GA28467@redhat.com>
- <20131115171259.GA10687@redhat.com>
-In-Reply-To: <20131115171259.GA10687@redhat.com>
+In-Reply-To: <1384438956-31153-3-git-send-email-lee.jones@linaro.org>
+References: <1384438956-31153-1-git-send-email-lee.jones@linaro.org>
+ <1384438956-31153-3-git-send-email-lee.jones@linaro.org>
+Date: Mon, 18 Nov 2013 10:15:36 +0100
+Message-ID: <CACRpkdaccxcTfKc-y7rPEH1H3yua3ubLvuvTzWnMs1rOwjiVNw@mail.gmail.com>
+Subject: Re: [PATCH 02/10] mtd: st_spi_fsm: Supply all register address and
+ bit logic defines
+From: Linus Walleij <linus.walleij@linaro.org>
+To: Lee Jones <lee.jones@linaro.org>
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: jfs-discussion@lists.sourceforge.net, jiri@resnulli.us,
- gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
- "xfs@oss.sgi.com" <xfs@oss.sgi.com>, cluster-devel@redhat.com,
- linux-mtd@lists.infradead.org, akpm@linux-foundation.org
+Cc: angus.clark@st.com, Mark Brown <broonie@linaro.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,115 +29,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Oleg,
+On Thu, Nov 14, 2013 at 3:22 PM, Lee Jones <lee.jones@linaro.org> wrote:
 
-Sorry for my late response!
+> Here we provide the FSM's register addresses, register bit names/offsets
+> and some commands which will prove useful as we start bulk the FMS's
+> driver out with functionality.
+>
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-On 11/16/2013 01:12 AM, Oleg Nesterov wrote:
+OK...
 
-> On 11/15, Oleg Nesterov wrote:
->>
->> But probably list_last_entry() makes sense in the "else" branch,
->> athough this is minor.
->>
->>
->> Off-topic. Not sure this really makes sense, but I was thinking about
->>
->> 	list_get_first(pos, head, member)	\
->> 		((pos) = list_first_entry(head, typeof(*pos), member))
->>
->> and list_get_first() last of course. The obvious advantage is that
->> compared to
->>
->> 	tr = list_last_entry(sdp->sd_ail1_list, struct gfs2_trans, tr_list);
->>
->> above you do not need to type "struct gfs2_trans",
->>
->> 	list_get_last(tr, sdp->sd_ail1_list, tr_list);
->>
->> looks a bit better.
-> 
-> And list.h can use it too.
-> 
-> So how about the patch below? I can't decide whether it cleanups or
-> uglfies the code, I do not trust my taste ;) But to me it looks a
-> bit better this way.
+> +/*
+> + * FSM SPI Controller Registers
+> + */
+> +#define SPI_CLOCKDIV                   0x0010
+> +#define SPI_MODESELECT                 0x0018
+> +#define SPI_CONFIGDATA                 0x0020
+(...)
 
-I personally think this is better for GFS2 case if I understood correctly,
-and it can make the existing list helper a bit neat per my taste :)
+So what we want to know here is whether this is a general-purpose
+SPI block, or if it's a special-purpose SPI block that can only be
+used for accessing flashes.
 
-The current list_first_entry() works fine consider a common pattern below:
-while (!list_empty(ptr)) {
-	struct dummy *p = list_first_entry(ptr, struct dummy, member);
+If it's the former that part should be broken out into drivers/spi
+of course...
 
-	....
-}
+But the register map seems a bit special-purpose so it could
+very well be that this is for flash control only. So maybe you can
+spill some beans from a datasheet here?
 
-But I'm not sure if we can find out more external use cases can get
-benefits with list_get_first/last...
+A clock divider at offset 0x10 already tells us that this is probably
+a PL022 derivate, just that we don't know how much it has
+been hacked with... does this thing contain AMBA identifiers
+at the end of the IO-region, usually at 0x0fe0 thru 0x0fff?
 
-Thanks,
--Jeff
-
-> 
-> Oleg.
-> --
-> 
-> diff --git a/include/linux/list.h b/include/linux/list.h
-> index ef95941..f52aba8 100644
-> --- a/include/linux/list.h
-> +++ b/include/linux/list.h
-> @@ -372,6 +372,12 @@ static inline void list_splice_tail_init(struct list_head *list,
->  #define list_last_entry(ptr, type, member) \
->  	list_entry((ptr)->prev, type, member)
->  
-> +#define list_get_first(pos, head, member)	\
-> +	((pos) = list_first_entry(head, typeof(*(pos)), member))
-> +
-> +#define list_get_last(pos, head, member)	\
-> +	((pos) = list_last_entry(head, typeof(*(pos)), member))
-> +
->  /**
->   * list_first_entry_or_null - get the first element from a list
->   * @ptr:	the list head to take the element from.
-> @@ -443,7 +449,7 @@ static inline void list_splice_tail_init(struct list_head *list,
->   * @member:	the name of the list_struct within the struct.
->   */
->  #define list_for_each_entry(pos, head, member)				\
-> -	for (pos = list_first_entry(head, typeof(*pos), member);	\
-> +	for (list_get_first(pos, head, member);				\
->  	     &pos->member != (head);					\
->  	     pos = list_next_entry(pos, member))
->  
-> @@ -454,7 +460,7 @@ static inline void list_splice_tail_init(struct list_head *list,
->   * @member:	the name of the list_struct within the struct.
->   */
->  #define list_for_each_entry_reverse(pos, head, member)			\
-> -	for (pos = list_last_entry(head, typeof(*pos), member);		\
-> +	for (list_get_last(pos, head, member);				\
->  	     &pos->member != (head); 					\
->  	     pos = list_prev_entry(pos, member))
->  
-> @@ -517,7 +523,7 @@ static inline void list_splice_tail_init(struct list_head *list,
->   * @member:	the name of the list_struct within the struct.
->   */
->  #define list_for_each_entry_safe(pos, n, head, member)			\
-> -	for (pos = list_first_entry(head, typeof(*pos), member),	\
-> +	for (list_get_first(pos, head, member),				\
->  		n = list_next_entry(pos, member);			\
->  	     &pos->member != (head); 					\
->  	     pos = n, n = list_next_entry(n, member))
-> @@ -564,7 +570,7 @@ static inline void list_splice_tail_init(struct list_head *list,
->   * of list entry.
->   */
->  #define list_for_each_entry_safe_reverse(pos, n, head, member)		\
-> -	for (pos = list_last_entry(head, typeof(*pos), member),		\
-> +	for (list_get_last(pos, head, member),				\
->  		n = list_prev_entry(pos, member);			\
->  	     &pos->member != (head); 					\
->  	     pos = n, n = list_prev_entry(n, member))
-> 
-> _______________________________________________
-> xfs mailing list
-> xfs@oss.sgi.com
-> http://oss.sgi.com/mailman/listinfo/xfs
+Yours,
+Linus Walleij
