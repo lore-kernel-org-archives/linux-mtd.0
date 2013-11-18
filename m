@@ -1,27 +1,28 @@
-Date: Mon, 18 Nov 2013 15:33:26 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v3 22/28] mtd: nand: pxa3xx: Introduce multiple page I/O
- support
-Message-ID: <20131118183325.GC21975@localhost>
-References: <1383656135-8627-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1383656135-8627-23-git-send-email-ezequiel.garcia@free-electrons.com>
- <20131105190432.GQ20061@ld-irv-0074.broadcom.com>
- <20131106011351.GH11759@localhost>
- <CAN8TOE_ZmcsvShKY273KQCaopJEXgtXVR1XY9pP5EKkUK+bUbA@mail.gmail.com>
- <20131106113210.GB2616@localhost>
- <20131118181009.GZ9468@ld-irv-0074.broadcom.com>
+Date: Mon, 18 Nov 2013 18:35:55 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Lee Jones <lee.jones@linaro.org>
+Message-ID: <20131118183555.GQ2674@sirena.org.uk>
+References: <20131118133940.GC14306@sirena.org.uk>
+ <20131118142447.GJ13640@lee--X1>
+ <20131118144512.GB24408@sirena.org.uk>
+ <20131118145614.GM13640@lee--X1>
+ <20131118151651.GE24408@sirena.org.uk>
+ <20131118153110.GN13640@lee--X1>
+ <20131118154137.GA28334@sirena.org.uk>
+ <20131118160226.GO13640@lee--X1>
+ <20131118172243.GO2674@sirena.org.uk>
+ <20131118173201.GP13640@lee--X1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="A7FgPGrDEcSmmdo/"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20131118181009.GZ9468@ld-irv-0074.broadcom.com>
-Cc: Lior Amsalem <alior@marvell.com>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>,
- Daniel Mack <zonque@gmail.com>, Huang Shijie <b32955@freescale.com>,
+In-Reply-To: <20131118173201.GP13640@lee--X1>
+Subject: Re: [PATCH 02/10] mtd: st_spi_fsm: Supply all register address and
+ bit logic defines
+Cc: angus.clark@st.com, Linus Walleij <linus.walleij@linaro.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Gregory Clement <gregory.clement@free-electrons.com>, Willy Tarreau <w@1wt.eu>,
+ David Woodhouse <dwmw2@infradead.org>,
  "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -32,78 +33,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Nov 18, 2013 at 10:10:09AM -0800, Brian Norris wrote:
-> Hi Ezequiel,
-> 
-> There's one question of yours that I think hasn't been addressed:
-> 
-> On Wed, Nov 06, 2013 at 08:32:11AM -0300, Ezequiel Garcia wrote:
-> > Having followed (part) of the OMAP DT ECC discussion, I'm thinking:
-> > wouldn't it be good to have an 'nand-ecc-strength' property in the DT?
-> > 
-> > It would match the ecc_strength_ds field. This way, the ECC mode
-> > selection is left to the driver and not to the user.
-> > On the other side, this can cause some severe incompatibilities
-> > unless such driver *always* make the *same* selection.
-> 
-> I'm not quite so sure about the whole question of ECC in device tree.
-> There seems to be 2 subtly different properties we might want to
-> capture:
-> 
-> 1) What is the minimum ECC required for the flash?
-> 
-> 2) What is the exact ECC layout/strength/type used for this flash?
->    (i.e., what is the bootloader using?)
-> 
-> The first is quite generic: the property consists of a stength and step
-> size. (But this is also duplicated in ONFI, and our full-ID device
-> table.)
-> 
-> Still, I think a property for #1 could be useful, for those chips that
-> are not discoverable. And if we (you?) add it, it should be done at the
-> nand_base level, I think, so its binding is shared by all drivers.
-> 
-> I'm not quite sure how we identify the appropriate struct device_node
-> for nand_base to use, though. Maybe we should force drivers to
-> initialize a new mtd_info.of_node field? And then maybe this could also
-> be integrated into the 'ofpart' parser, which currently requires drivers
-> to pass a device_node via the mtd_part_parser_data struct?
-> 
-> Property #2 is very driver/hardware specific, and it may not be easy to
-> capture this information properly using the same set of properties for
-> all NAND drivers. For example, "BCH-8" is not the same on all systems;
-> and even on the same system a software BCH-X could potentially be very
-> different than (and incompatible with) a BCH-X as provided by hardware.
-> And different hardware provides wildly different choices regarding ECC,
-> so I'm not convinced that we could create a good generic binding for
-> describing #2.
-> 
-> But I think a property like #2 is necessary for many platforms that need
-> to eliminate the problem that you mention, where drivers must always
-> make the same selection. Essentially, we're assuming bootloader/driver
-> co-design, rather than properly communicating this information via a
-> shared data structure like device tree.
-> 
-> Now, it's another question as to whether we need a property for both #1
-> and #2. The latter would probably just override the former, but that
-> doesn't mean that the former is unnecessary...
-> 
 
-I completely agree with all of the above, but I'm still a bit uncertain
-about how useful implementing #1 would be.
+--A7FgPGrDEcSmmdo/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-As you say, encoding the specific (per-driver) ECC information in the
-devicetree seems the safest way of dealing with that.
+On Mon, Nov 18, 2013 at 05:32:01PM +0000, Lee Jones wrote:
 
-On the other side, I fail to clearly see a valid use case for reporting
-the "minimum" ECC required strength in the devicetree.
+> I can get a patch out tomorrow if the MTD guys agree. Where are they
+> by the way? I haven't seen hide nor hair of them since sending out the
+> patch set.
 
-If I'm not missing anything, then I'd say just implement #2, for each driver
-that needs it. I know that pxa3xx-nand should have it to avoid future issues.
-This item is on top of my NAND TODO list.
+They tend to do big batches of things intermittently AFAICT.
 
-Thanks for following the discussion!
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+--A7FgPGrDEcSmmdo/
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSil4HAAoJELSic+t+oim9D9UP/0+UElI8z8jptE72Y2aix/6Q
+WdKFJh3y/bTD8lVH9rwq9MYSAV7iZJm5W4fb89bg6KE4tPIaQ1zaFdLxaGmpODdr
+TAsQwBWqbAw3qxRWJCb+OAugBQv96eOdC/CgpIXZ7frwENqx77YVCyEhSqQH8g/y
+8/w3aF+fPKc1ZWlkz5aURbrHqTtUeTW6egqNIh4o7WlBnSWj2jjOcUO8GJHDYsiR
+n2nOZfmaoGNNMo01uHdMX65HihJyEPpNxz7VqST+R7KNNZuQfKaAHfB1+vn2I8XP
+c7lK2pF2F/nCg8dJiL5zZPlCe/B0kqOMG6744IWgfR75qicd5A34IgLZ27xhXSVP
+CCmzLWnakE8SSS3hFI76aaEfOs4Ot0RUPSRthpSJC4P8XOOiXr/5dTArxSrkEHrO
+f0B/BGBzSce5dW8Ir2TOAfLePciPhEM8IQqTO2Ywb1kpcYU1nnkw6MEuNtWu5xYR
+HThvaxjkUJECPqXDDZhdH2k/yVnWxa0Pvx8dTqrNGk/7pkG8efSbWcZlj3jLfrMI
+W4ZeC0NH57vMhI4xAz8p5fdJ9rDaTt2x09PnWi902Co01Q3i+0EIfFtDpRR0IN7f
+3rsWBJCtrAScNCx0nc+NHIc1xDqjuPMg5EQtrvJmEBh4Cw/gvnvIg6y59VfatvGq
+968M97CCru78NUeD1wTJ
+=PG3B
+-----END PGP SIGNATURE-----
+
+--A7FgPGrDEcSmmdo/--
