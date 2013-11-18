@@ -1,20 +1,23 @@
-Received: from mail-oa0-f51.google.com ([209.85.219.51])
+Received: from mail-ob0-f174.google.com ([209.85.214.174])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ViKw5-0005dm-Al
- for linux-mtd@lists.infradead.org; Mon, 18 Nov 2013 09:16:01 +0000
-Received: by mail-oa0-f51.google.com with SMTP id i7so1617128oag.38
- for <linux-mtd@lists.infradead.org>; Mon, 18 Nov 2013 01:15:37 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <1384438956-31153-3-git-send-email-lee.jones@linaro.org>
-References: <1384438956-31153-1-git-send-email-lee.jones@linaro.org>
- <1384438956-31153-3-git-send-email-lee.jones@linaro.org>
-Date: Mon, 18 Nov 2013 10:15:36 +0100
-Message-ID: <CACRpkdaccxcTfKc-y7rPEH1H3yua3ubLvuvTzWnMs1rOwjiVNw@mail.gmail.com>
+ id 1ViLCX-00060R-Jo
+ for linux-mtd@lists.infradead.org; Mon, 18 Nov 2013 09:33:02 +0000
+Received: by mail-ob0-f174.google.com with SMTP id wn1so312169obc.33
+ for <linux-mtd@lists.infradead.org>; Mon, 18 Nov 2013 01:32:39 -0800 (PST)
+Date: Mon, 18 Nov 2013 09:32:29 +0000
+From: Lee Jones <lee.jones@linaro.org>
+To: Linus Walleij <linus.walleij@linaro.org>
 Subject: Re: [PATCH 02/10] mtd: st_spi_fsm: Supply all register address and
  bit logic defines
-From: Linus Walleij <linus.walleij@linaro.org>
-To: Lee Jones <lee.jones@linaro.org>
-Content-Type: text/plain; charset=ISO-8859-1
+Message-ID: <20131118093229.GB13640@lee--X1>
+References: <1384438956-31153-1-git-send-email-lee.jones@linaro.org>
+ <1384438956-31153-3-git-send-email-lee.jones@linaro.org>
+ <CACRpkdaccxcTfKc-y7rPEH1H3yua3ubLvuvTzWnMs1rOwjiVNw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACRpkdaccxcTfKc-y7rPEH1H3yua3ubLvuvTzWnMs1rOwjiVNw@mail.gmail.com>
 Cc: angus.clark@st.com, Mark Brown <broonie@linaro.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
@@ -29,39 +32,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 14, 2013 at 3:22 PM, Lee Jones <lee.jones@linaro.org> wrote:
+On Mon, 18 Nov 2013, Linus Walleij wrote:
 
-> Here we provide the FSM's register addresses, register bit names/offsets
-> and some commands which will prove useful as we start bulk the FMS's
-> driver out with functionality.
->
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> On Thu, Nov 14, 2013 at 3:22 PM, Lee Jones <lee.jones@linaro.org> wrote:
+> 
+> > Here we provide the FSM's register addresses, register bit names/offsets
+> > and some commands which will prove useful as we start bulk the FMS's
+> > driver out with functionality.
+> >
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> 
+> OK...
+> 
+> > +/*
+> > + * FSM SPI Controller Registers
+> > + */
+> > +#define SPI_CLOCKDIV                   0x0010
+> > +#define SPI_MODESELECT                 0x0018
+> > +#define SPI_CONFIGDATA                 0x0020
+> (...)
+> 
+> So what we want to know here is whether this is a general-purpose
+> SPI block, or if it's a special-purpose SPI block that can only be
+> used for accessing flashes.
+> 
+> If it's the former that part should be broken out into drivers/spi
+> of course...
+> 
+> But the register map seems a bit special-purpose so it could
+> very well be that this is for flash control only. So maybe you can
+> spill some beans from a datasheet here?
+> 
+> A clock divider at offset 0x10 already tells us that this is probably
+> a PL022 derivate, just that we don't know how much it has
+> been hacked with... does this thing contain AMBA identifiers
+> at the end of the IO-region, usually at 0x0fe0 thru 0x0fff?
 
-OK...
+You've just opened a massive can of worms. Let me try to catch and put
+them all back as quickly as possible.
 
-> +/*
-> + * FSM SPI Controller Registers
-> + */
-> +#define SPI_CLOCKDIV                   0x0010
-> +#define SPI_MODESELECT                 0x0018
-> +#define SPI_CONFIGDATA                 0x0020
-(...)
+The FSM Controller is a derivative of an SPI controller, but it's so
+highly specialised that it can't do anything else but talk to Serial
+Flash devices.
 
-So what we want to know here is whether this is a general-purpose
-SPI block, or if it's a special-purpose SPI block that can only be
-used for accessing flashes.
+I've actually travelled down the route of separating the SPI
+Controller parts to drivers/spi. It's possible to do that and perhaps
+we could then use the generic m25p80 Serial Flash driver as the
+back-end, but it would be incredibly complicated and would mean we'd
+need to duplicate almost all of the m25p80 driver into the SPI
+Controller. The Falcon SPI driver tried to do something similar, but
+now looks broken due to some incompatible changes in m25p80. We also
+want to avoid putting ourselves in that position of fragility.
 
-If it's the former that part should be broken out into drivers/spi
-of course...
+There are a list of other reasons why this wouldn't work well. I have
+asked the original author of this driver (whom I've spent quite a few
+hours in face-to-face meetings with over the past couple of weeks) to 
+jot them all down so I can reply to these kinds of requests, but I
+just don't have it yet.
 
-But the register map seems a bit special-purpose so it could
-very well be that this is for flash control only. So maybe you can
-spill some beans from a datasheet here?
+Take my word for it for now and I'll get back to you when I can.
 
-A clock divider at offset 0x10 already tells us that this is probably
-a PL022 derivate, just that we don't know how much it has
-been hacked with... does this thing contain AMBA identifiers
-at the end of the IO-region, usually at 0x0fe0 thru 0x0fff?
-
-Yours,
-Linus Walleij
+-- 
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
