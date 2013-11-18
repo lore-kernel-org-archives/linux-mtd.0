@@ -1,15 +1,24 @@
-From: Gerhard Sittig <gsi@denx.de>
-To: linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
- Anatolij Gustschin <agust@denx.de>, Mike Turquette <mturquette@linaro.org>
-Subject: [PATCH v5 12/17] mtd: mpc5121_nfc: adjust for OF based clock lookup
-Date: Mon, 18 Nov 2013 00:06:12 +0100
-Message-Id: <1384729577-7336-13-git-send-email-gsi@denx.de>
-In-Reply-To: <1384729577-7336-1-git-send-email-gsi@denx.de>
-References: <1384729577-7336-1-git-send-email-gsi@denx.de>
-Cc: Detlev Zundel <dzu@denx.de>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Gerhard Sittig <gsi@denx.de>, linux-mtd@lists.infradead.org,
- Scott Wood <scottwood@freescale.com>, David Woodhouse <dwmw2@infradead.org>
+Received: from [2002:c35c:fd02::1] (helo=ZenIV.linux.org.uk)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ViDja-0000TA-Sn
+ for linux-mtd@lists.infradead.org; Mon, 18 Nov 2013 01:34:40 +0000
+Date: Mon, 18 Nov 2013 01:33:49 +0000
+From: Al Viro <viro@ZenIV.linux.org.uk>
+To: Joe Perches <joe@perches.com>
+Subject: Re: [PATCH] jffs2: fix sparse errors: directive in argument list
+Message-ID: <20131118013349.GM13318@ZenIV.linux.org.uk>
+References: <1384719513-27386-1-git-send-email-nunes.erico@gmail.com>
+ <1384724403.2727.22.camel@joe-AO722>
+ <CAK4VdL2nKEE+xb=HtMGNsMGNR_ivUn_WnLi7X-rrXT0fpGbSTw@mail.gmail.com>
+ <1384728305.14335.4.camel@joe-AO722>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1384728305.14335.4.camel@joe-AO722>
+Sender: Al Viro <viro@ftp.linux.org.uk>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>, linux-sparse@vger.kernel.org,
+ dwmw2 <dwmw2@infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>,
+ Erico Nunes <nunes.erico@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,30 +28,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-after device tree based clock lookup became available, the NAND
-flash driver need no longer use the previous global "nfc_clk" name,
-but should use the "ipg" clock name specific to the OF node
+On Sun, Nov 17, 2013 at 02:45:05PM -0800, Joe Perches wrote:
+> On Sun, 2013-11-17 at 20:34 -0200, Erico Nunes wrote:
+> > Do you mean it as an error in the sparse tool?
+> 
+> Yes.  I think it's a defect in how sparse
+> treats string concatenation.
+> 
+> That style:
+> 
+> 	printk("%s\n",
+> #ifdef FOO
+> 	"foo"
+> #endif
+> #ifdef BAR
+> 	"bar"
+> #endif
+> 	"string");
+> 
+> is pretty common in the kernel sources.
 
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Cc: linux-mtd@lists.infradead.org
-Signed-off-by: Gerhard Sittig <gsi@denx.de>
----
- drivers/mtd/nand/mpc5121_nfc.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+... and it's perfectly fine, until somebody starts playing in nasal
+daemon country and do that in *macro* arguments.  And a nasal daemon
+country it is - it's an undefined behaviour.  See 6.10.3p11 in C99.
+And trying to define a semantics for that gets real ugly real fast.
+sparse matches gcc behaviour (I hope), but it warns about such abuses.
+It's a defect, all right - one being reported by sparse.
 
-diff --git a/drivers/mtd/nand/mpc5121_nfc.c b/drivers/mtd/nand/mpc5121_nfc.c
-index 3c60a000b426..35a51a5aa537 100644
---- a/drivers/mtd/nand/mpc5121_nfc.c
-+++ b/drivers/mtd/nand/mpc5121_nfc.c
-@@ -729,7 +729,7 @@ static int mpc5121_nfc_probe(struct platform_device *op)
- 	of_node_put(rootnode);
- 
- 	/* Enable NFC clock */
--	clk = devm_clk_get(dev, "nfc_clk");
-+	clk = devm_clk_get(dev, "ipg");
- 	if (IS_ERR(clk)) {
- 		dev_err(dev, "Unable to acquire NFC clock!\n");
- 		retval = PTR_ERR(clk);
--- 
-1.7.10.4
+Folks, please, RTFStandard if you decide to play clever games with
+preprocessing.  Chapter 6.10 is not particulary long or complicated.
+C99 has improved the preprocessor semantics a whole lot compared to
+the earlier horrible mess (mostly by defining it in terms of token
+stream transformations rather then text ones), but it's still very
+easy to abuse...
