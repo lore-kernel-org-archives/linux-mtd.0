@@ -1,28 +1,28 @@
-Received: from mail-ie0-x22d.google.com ([2607:f8b0:4001:c03::22d])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ViTgs-0002hJ-Bo
- for linux-mtd@lists.infradead.org; Mon, 18 Nov 2013 18:36:55 +0000
-Received: by mail-ie0-f173.google.com with SMTP id x13so9412820ief.18
- for <linux-mtd@lists.infradead.org>; Mon, 18 Nov 2013 10:36:32 -0800 (PST)
-Date: Mon, 18 Nov 2013 10:36:26 -0800
+Date: Mon, 18 Nov 2013 10:50:59 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Angus Clark <angus.clark@st.com>
-Subject: Re: [PATCH 8/8] mtd: nand: use ECC, if present, when scanning OOB
-Message-ID: <20131118183626.GA9468@ld-irv-0074.broadcom.com>
-References: <1340408145-24531-1-git-send-email-computersforpeace@gmail.com>
- <1340408145-24531-9-git-send-email-computersforpeace@gmail.com>
- <4FFBDDB0.6010605@parrot.com>
- <CAN8TOE8g9FjgJuj+1RuQx3afaY_Huo29PZBNvXVt2-p17OF_tQ@mail.gmail.com>
- <527BAA32.3020901@st.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH v3 22/28] mtd: nand: pxa3xx: Introduce multiple page
+ I/O support
+Message-ID: <20131118185059.GB9468@ld-irv-0074.broadcom.com>
+References: <1383656135-8627-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1383656135-8627-23-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20131105190432.GQ20061@ld-irv-0074.broadcom.com>
+ <20131106011351.GH11759@localhost>
+ <CAN8TOE_ZmcsvShKY273KQCaopJEXgtXVR1XY9pP5EKkUK+bUbA@mail.gmail.com>
+ <20131106113210.GB2616@localhost>
+ <20131118181009.GZ9468@ld-irv-0074.broadcom.com>
+ <20131118183325.GC21975@localhost>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <527BAA32.3020901@st.com>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>,
- Matthieu CASTET <matthieu.castet@parrot.com>, linux-mtd@lists.infradead.org,
- Shmulik Ladkani <shmulik.ladkani@gmail.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Ivan Djelic <ivan.djelic@parrot.com>
+In-Reply-To: <20131118183325.GC21975@localhost>
+Cc: Lior Amsalem <alior@marvell.com>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Jason Cooper <jason@lakedaemon.net>, Tawfik Bayouk <tawfik@marvell.com>,
+ Daniel Mack <zonque@gmail.com>, Huang Shijie <b32955@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Gregory Clement <gregory.clement@free-electrons.com>, Willy Tarreau <w@1wt.eu>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,96 +32,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Angus,
+Hi Ezequiel,
 
-On Thu, Nov 07, 2013 at 02:56:50PM +0000, Angus Clark wrote:
-> Firstly, apologies for dragging up an issue that dates back well over a year!
-
-No problem. Some of these same issues have been nagging at me in the
-back of my head, actually. I don't think this problem is solved
-completely correctly, so it's good you bring it up!
-
-> While preparing to upstream an out-of-tree NAND driver, we have fallen foul of
-> the change from MTD_OPS_RAW to MTD_OPS_PLACE_OOB in nand_bbt.c:scan_read_oob().
+On Mon, Nov 18, 2013 at 03:33:26PM -0300, Ezequiel Garcia wrote:
+> On Mon, Nov 18, 2013 at 10:10:09AM -0800, Brian Norris wrote:
+> > There's one question of yours that I think hasn't been addressed:
+> > 
+> > On Wed, Nov 06, 2013 at 08:32:11AM -0300, Ezequiel Garcia wrote:
+> > > Having followed (part) of the OMAP DT ECC discussion, I'm thinking:
+> > > wouldn't it be good to have an 'nand-ecc-strength' property in the DT?
+> > > 
+> > > It would match the ecc_strength_ds field. This way, the ECC mode
+> > > selection is left to the driver and not to the user.
+> > > On the other side, this can cause some severe incompatibilities
+> > > unless such driver *always* make the *same* selection.
+> > 
+> > I'm not quite so sure about the whole question of ECC in device tree.
+> > There seems to be 2 subtly different properties we might want to
+> > capture:
+> > 
+> > 1) What is the minimum ECC required for the flash?
+> > 
+> > 2) What is the exact ECC layout/strength/type used for this flash?
+> >    (i.e., what is the bootloader using?)
+> > 
+> > The first is quite generic: the property consists of a stength and step
+> > size. (But this is also duplicated in ONFI, and our full-ID device
+> > table.)
+> > 
+> > Still, I think a property for #1 could be useful, for those chips that
+> > are not discoverable. And if we (you?) add it, it should be done at the
+> > nand_base level, I think, so its binding is shared by all drivers.
+> > 
+> > I'm not quite sure how we identify the appropriate struct device_node
+> > for nand_base to use, though. Maybe we should force drivers to
+> > initialize a new mtd_info.of_node field? And then maybe this could also
+> > be integrated into the 'ofpart' parser, which currently requires drivers
+> > to pass a device_node via the mtd_part_parser_data struct?
+> > 
+> > Property #2 is very driver/hardware specific, and it may not be easy to
+> > capture this information properly using the same set of properties for
+> > all NAND drivers. For example, "BCH-8" is not the same on all systems;
+> > and even on the same system a software BCH-X could potentially be very
+> > different than (and incompatible with) a BCH-X as provided by hardware.
+> > And different hardware provides wildly different choices regarding ECC,
+> > so I'm not convinced that we could create a good generic binding for
+> > describing #2.
+> > 
+> > But I think a property like #2 is necessary for many platforms that need
+> > to eliminate the problem that you mention, where drivers must always
+> > make the same selection. Essentially, we're assuming bootloader/driver
+> > co-design, rather than properly communicating this information via a
+> > shared data structure like device tree.
+> > 
+> > Now, it's another question as to whether we need a property for both #1
+> > and #2. The latter would probably just override the former, but that
+> > doesn't mean that the former is unnecessary...
+> > 
 > 
-> One issue relates to what is at best a hack within our own driver, and that is
-> for us to deal with :-)  However, I also have a concern that the patch could
-> result in genuine bad blocks escaping detection.
+> I completely agree with all of the above, but I'm still a bit uncertain
+> about how useful implementing #1 would be.
 > 
-> As I understand it, the patch was attempting to address the following situation:
->     - NAND-resident BBTs are not used.
->     - The BBT is re-created on each boot by scanning for MBBM.
->     - A page write yields one or more bit-flips in the location used for the
-> MBBM, resulting in non-0xff data being present.
->     - The non-0xff data is then misinterpreted as a MBBM on a subsequent boot,
-> giving a false bad-block.
+> As you say, encoding the specific (per-driver) ECC information in the
+> devicetree seems the safest way of dealing with that.
 > 
-> In cases where the ECC scheme covers the MBBM location, then I can see that
-> enabling the ECC would cause the non-0xff data to be corrected, and therefore
-> avoid the block being falsely identified as bad.
+> On the other side, I fail to clearly see a valid use case for reporting
+> the "minimum" ECC required strength in the devicetree.
+> 
+> If I'm not missing anything, then I'd say just implement #2, for each driver
+> that needs it. I know that pxa3xx-nand should have it to avoid future issues.
+> This item is on top of my NAND TODO list.
 
-This is more or less the situation that was being addressed. But my
-particular situation was actually targeting situations in which a BBT is
-used "most of the time", but sometimes (for various reasons) the BBT may
-be erased/corrupted and need rebuilt on an unclean flash. But it's a
-similar scenario either way, IMO.
+Well, Huang kinda dodged #2 for now in GPMI NAND, by hacking in a
+'fsl,use-minimum-ecc' property. That potentially yields less work for
+the bootloader; it just defers the "minimum ECC" choice to Linux. This
+is certainly less specific, and it leaves the door open just a bit for
+Linux to inadvertently make incompatible changes...
 
-> However, I can also construct a situation where a genuine MBBM gets "corrected"
-> to 0xff.  Consider, for example, an 8-bit ECC scheme covering the MBBM location,
-> where the ECC for a sector of all 0xff data is also all 0xff.  In this case, a
-> MBBM of 0x00, with the remaining data all 0xff, would get "corrected" to 0xff.
-> Although perhaps a slightly contrived example, the S/W BCH ECC included in the
-> kernel scheme can be driven in this way, and I have seen blocks marked as bad
-> with this pattern in the past.
+But the more I think about it, the more I think that #2 is really the
+right way. And yes, I think pxa3xx-nand should do #2.
 
-Yes, I suspected that this may be possible. But I never observed it
-myself (I don't use SW ECC; I only use my HW ECC).
+Huang,
 
-> It is difficult to know if your particular system could suffer in this way.  It
-> all depends on the nature of your ECC scheme.  I guess my concern is that the
-> patch deviates from what is recommended by the NAND manufacturers, and that it
-> makes certain assumptions on how the ECC scheme operates.
+Do you have a good reason why you needed GPMI NAND to choose the ECC
+configuration (a la "miminum ECC") instead of fully specifying your ECC
+selection in device tree? I recall most of your arguments were about
+using an ECC strength that leaves room for user data in OOB (e.g., with
+JFFS2). But you could have done the same thing by creating a proper DT
+property to describe the desidered ECC strength, with no real
+disadvantage, right?
 
-My system cannot suffer in this way, because (unfortunately) my HW ECC
-does not consider all-0xff to be valid ECC. So it cannot correct
-bitflips in erased pages, nor can it "correct" a bad block marker from
-0x00 to 0xff.
-
-I'm not sure it's a deviation from manufacturer recommendations, since
-manufacturers make no statement about what to do if the BBT fails. But
-they do seem to imply that you should build the BBT once and never
-revisit the bad block markers.
-
-I agree that my patch does make a few assumptions about the ECC scheme.
-
-> My own view is that the only safe way to record and track bad blocks is to use
-> NAND-resident BBTs; after all, if a block is bad then there is no guarantee that
-> an attempt to write a MBBM would succeed.  NAND-resident BBTs would also avoid
-> the problem the patch was attempting fix in the first place.
-
-I agree that BBTs should be used (I use them). However, they do not
-solve my original problem completely: how can a BBT be rebuilt robustly?
-
-I think that my original approach (use ECC while scanning BBMs) is not
-100% correct, but I don't think dropping it is 100% correct either.
-Rather, I would prefer taking some form of Matthieu's patch (linked in
-the reply that you're bringing up from > 1 year ago!) so that we use the
-'badblockbits' parameter appropriately. Then I would be fine with
-scanning BBMs in RAW mode, and I think we can satisfy both my use case
-and yours safely.
-
-> On 07/13/2012 06:39 PM, Brian Norris wrote:
-> > On Tue, Jul 10, 2012 at 12:45 AM, Matthieu CASTET <matthieu.castet@parrot.com> wrote:
-> >> http://thread.gmane.org/gmane.linux.drivers.mtd/42243 ?
-
-BTW, this patch came into discussion again recently for other reasons:
-
-  http://lists.infradead.org/pipermail/linux-mtd/2013-November/049692.html
-
-Anything more you can contribute to this general conversation would be
-more than welcome! I think Ezequiel and I are still interested in
-unifying some of nand_bbt and nand_base, regarding BBM scanning, and I
-think we can resolve several pending issues by doing so.
-
-Thanks,
 Brian
