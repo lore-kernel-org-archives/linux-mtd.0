@@ -1,27 +1,27 @@
-Received: from mail-ob0-f174.google.com ([209.85.214.174])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ViLCX-00060R-Jo
- for linux-mtd@lists.infradead.org; Mon, 18 Nov 2013 09:33:02 +0000
-Received: by mail-ob0-f174.google.com with SMTP id wn1so312169obc.33
- for <linux-mtd@lists.infradead.org>; Mon, 18 Nov 2013 01:32:39 -0800 (PST)
-Date: Mon, 18 Nov 2013 09:32:29 +0000
-From: Lee Jones <lee.jones@linaro.org>
-To: Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH 02/10] mtd: st_spi_fsm: Supply all register address and
- bit logic defines
-Message-ID: <20131118093229.GB13640@lee--X1>
-References: <1384438956-31153-1-git-send-email-lee.jones@linaro.org>
- <1384438956-31153-3-git-send-email-lee.jones@linaro.org>
- <CACRpkdaccxcTfKc-y7rPEH1H3yua3ubLvuvTzWnMs1rOwjiVNw@mail.gmail.com>
+Message-ID: <5289FB9C.6060204@ti.com>
+Date: Mon, 18 Nov 2013 13:35:56 +0200
+From: Grygorii Strashko <grygorii.strashko@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACRpkdaccxcTfKc-y7rPEH1H3yua3ubLvuvTzWnMs1rOwjiVNw@mail.gmail.com>
-Cc: angus.clark@st.com, Mark Brown <broonie@linaro.org>,
+To: Santosh Shilimkar <santosh.shilimkar@ti.com>, "Khoronzhuk, Ivan"
+ <ivan.khoronzhuk@ti.com>
+Subject: Re: [PATCH 10/12] mtd: nand: davinci: don't set timings if AEMIF
+ is used
+References: <1384187188-5776-1-git-send-email-ivan.khoronzhuk@ti.com>,
+ <1384187188-5776-11-git-send-email-ivan.khoronzhuk@ti.com>
+ <4F5844B3A985794BA902E12C070812375F8D53@DNCE04.ent.ti.com>
+ <528253B7.2060408@ti.com>
+In-Reply-To: <528253B7.2060408@ti.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Russell King <linux@arm.linux.org.uk>, Pawel Moll <pawel.moll@arm.com>,
+ Stephen Warren <swarren@wwwdotorg.org>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>, Sekhar Nori <nsekhar@ti.com>,
+ Kumar Gala <galak@kernel.crashing.org>, Rob Herring <rob.herring@calxeda.com>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>,
+ Rob Landley <rob@landley.net>,
  "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -32,68 +32,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 18 Nov 2013, Linus Walleij wrote:
+On 11/12/2013 06:13 PM, Santosh Shilimkar wrote:
+> On Monday 11 November 2013 12:10 PM, Khoronzhuk, Ivan wrote:
+>> If Davinci AEMIF is used we don't need to set timings and bus width.
+>> It is done by AEMIF driver (drivers/memory/davinci-aemfi.c).
+>>
+>> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+>> ---
+>>   drivers/mtd/nand/davinci_nand.c |   22 +++++++++++++++-------
+>>   1 file changed, 15 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
+>> index 4705214..879e915 100644
+>> --- a/drivers/mtd/nand/davinci_nand.c
+>> +++ b/drivers/mtd/nand/davinci_nand.c
+>> @@ -742,27 +742,35 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
+>>                  goto err_clk_enable;
+>>          }
+>>
+>> +#if !IS_ENABLED(CONFIG_TI_DAVINCI_AEMIF)
+>>
+> Instead above #if, just use a variable.
+> 	bool aemif = IS_ENABLED(CONFIG_TI_DAVINCI_AEMIF) and then skip
+> the below code. #if block in the middle of the code looks ugly.
 
-> On Thu, Nov 14, 2013 at 3:22 PM, Lee Jones <lee.jones@linaro.org> wrote:
-> 
-> > Here we provide the FSM's register addresses, register bit names/offsets
-> > and some commands which will prove useful as we start bulk the FMS's
-> > driver out with functionality.
-> >
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> 
-> OK...
-> 
-> > +/*
-> > + * FSM SPI Controller Registers
-> > + */
-> > +#define SPI_CLOCKDIV                   0x0010
-> > +#define SPI_MODESELECT                 0x0018
-> > +#define SPI_CONFIGDATA                 0x0020
-> (...)
-> 
-> So what we want to know here is whether this is a general-purpose
-> SPI block, or if it's a special-purpose SPI block that can only be
-> used for accessing flashes.
-> 
-> If it's the former that part should be broken out into drivers/spi
-> of course...
-> 
-> But the register map seems a bit special-purpose so it could
-> very well be that this is for flash control only. So maybe you can
-> spill some beans from a datasheet here?
-> 
-> A clock divider at offset 0x10 already tells us that this is probably
-> a PL022 derivate, just that we don't know how much it has
-> been hacked with... does this thing contain AMBA identifiers
-> at the end of the IO-region, usually at 0x0fe0 thru 0x0fff?
+Yes, this is the hack.
+The problem is that this part of code contains the call of Davinci 
+platform function davinci_aemif_setup_timing() which is not accessible 
+if Kernel is built for Keystone only.
+That's why "#if" has been used.
 
-You've just opened a massive can of worms. Let me try to catch and put
-them all back as quickly as possible.
+This part of code has to be removed together with Davinci aemif platform 
+code (aemif.c), once Davinci will be converted to DT and use
+new driver.
 
-The FSM Controller is a derivative of an SPI controller, but it's so
-highly specialised that it can't do anything else but talk to Serial
-Flash devices.
+The corresponding comment can be added here. Is it ok?
 
-I've actually travelled down the route of separating the SPI
-Controller parts to drivers/spi. It's possible to do that and perhaps
-we could then use the generic m25p80 Serial Flash driver as the
-back-end, but it would be incredibly complicated and would mean we'd
-need to duplicate almost all of the m25p80 driver into the SPI
-Controller. The Falcon SPI driver tried to do something similar, but
-now looks broken due to some incompatible changes in m25p80. We also
-want to avoid putting ourselves in that position of fragility.
-
-There are a list of other reasons why this wouldn't work well. I have
-asked the original author of this driver (whom I've spent quite a few
-hours in face-to-face meetings with over the past couple of weeks) to 
-jot them all down so I can reply to these kinds of requests, but I
-just don't have it yet.
-
-Take my word for it for now and I'll get back to you when I can.
-
--- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+>
+> Other than that patch looks fine to me.
+>
+> Regards,
+> Santosh
+>
