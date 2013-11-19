@@ -1,22 +1,21 @@
-Received: from mail-ie0-x22d.google.com ([2607:f8b0:4001:c03::22d])
+Received: from co9ehsobe003.messaging.microsoft.com ([207.46.163.26]
+ helo=co9outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ViVVY-0006QH-VC
- for linux-mtd@lists.infradead.org; Mon, 18 Nov 2013 20:33:21 +0000
-Received: by mail-ie0-f173.google.com with SMTP id x13so9336732ief.4
- for <linux-mtd@lists.infradead.org>; Mon, 18 Nov 2013 12:33:00 -0800 (PST)
-Date: Mon, 18 Nov 2013 12:32:55 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Alexander Shiyan <shc_work@mail.ru>
-Subject: Re: [PATCH v2] mtd: nand: diskonchip: Request memory region prior
- ioremap()
-Message-ID: <20131118203255.GF9468@ld-irv-0074.broadcom.com>
-References: <1384343965-29682-1-git-send-email-shc_work@mail.ru>
+ id 1Vib2G-0004Vi-SU
+ for linux-mtd@lists.infradead.org; Tue, 19 Nov 2013 02:27:29 +0000
+Message-ID: <528ACD45.7030900@freescale.com>
+Date: Tue, 19 Nov 2013 10:30:29 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1384343965-29682-1-git-send-email-shc_work@mail.ru>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Artem Bityutskiy <dedekind1@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 7/8] mtd: gpmi: change pr_err to dev_err
+References: <1384410351-2169-1-git-send-email-b32955@freescale.com>
+ <1384410351-2169-8-git-send-email-b32955@freescale.com>
+ <20131118202340.GC9468@ld-irv-0074.broadcom.com>
+In-Reply-To: <20131118202340.GC9468@ld-irv-0074.broadcom.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,14 +25,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Nov 13, 2013 at 03:59:25PM +0400, Alexander Shiyan wrote:
-> This patch adds request_mem_region() prior ioremap() for diskonchip
-> driver. This will allow to check if memory region is occupied by any
-> other device, for example in case if we have memory region for several
-> optional devices and only one device can be used at once.
-> 
-> Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
+=E4=BA=8E 2013=E5=B9=B411=E6=9C=8819=E6=97=A5 04:23, Brian Norris =E5=86=99=
+=E9=81=93:
+> Hmm, many of these pr_err() are wholely uninformative. They are only
+> useful for someone who is doing low-level debugging fo the driver, not
+> for users. At most, they should be {dev_dbg,pr_debug} messages, but
+> really, they should be removed.
+ok. I will remove these lines in the next patch.
 
-Looks good. Pushed to l2-mtd.git/next. Thanks!
-
-Brian
+thanks
+Huang Shijie
