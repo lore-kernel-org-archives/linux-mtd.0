@@ -1,13 +1,13 @@
-Received: from va3ehsobe004.messaging.microsoft.com ([216.32.180.14]
+Received: from va3ehsobe010.messaging.microsoft.com ([216.32.180.30]
  helo=va3outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VibsW-0005Kc-Sc
- for linux-mtd@lists.infradead.org; Tue, 19 Nov 2013 03:21:31 +0000
+ id 1Vibsa-0005Kh-Px
+ for linux-mtd@lists.infradead.org; Tue, 19 Nov 2013 03:21:33 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH v2 1/3] mtd: gpmi: remove the unnecessary pr_err()
-Date: Tue, 19 Nov 2013 10:57:50 +0800
-Message-ID: <1384829872-8714-2-git-send-email-b32955@freescale.com>
+Subject: [PATCH v2 3/3] mtd: gpmi: change pr_debug to dev_dbg
+Date: Tue, 19 Nov 2013 10:57:52 +0800
+Message-ID: <1384829872-8714-4-git-send-email-b32955@freescale.com>
 In-Reply-To: <1384829872-8714-1-git-send-email-b32955@freescale.com>
 References: <1384829872-8714-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
@@ -23,149 +23,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The error messages for the failure of dmaengine_prep_slave_sg are
-not necessary, this patch removes all these pr_err, and returns with
-the proper error code -EINVAL, not -1.
+change all the pr_debug to dev_dbg.
 
 Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
- drivers/mtd/nand/gpmi-nand/gpmi-lib.c |   63 +++++++++++---------------------
- 1 files changed, 22 insertions(+), 41 deletions(-)
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   13 +++++--------
+ 1 files changed, 5 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-index 10a6f07..45b9a3d 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-@@ -1128,10 +1128,8 @@ int gpmi_send_command(struct gpmi_nand_data *this)
- 	desc = dmaengine_prep_slave_sg(channel,
- 					(struct scatterlist *)pio,
- 					ARRAY_SIZE(pio), DMA_TRANS_NONE, 0);
--	if (!desc) {
--		pr_err("step 1 error\n");
--		return -1;
--	}
-+	if (!desc)
-+		return -EINVAL;
- 
- 	/* [2] send out the COMMAND + ADDRESS string stored in @buffer */
- 	sgl = &this->cmd_sgl;
-@@ -1141,11 +1139,8 @@ int gpmi_send_command(struct gpmi_nand_data *this)
- 	desc = dmaengine_prep_slave_sg(channel,
- 				sgl, 1, DMA_MEM_TO_DEV,
- 				DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 85d2be2..4b8df4a 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -18,9 +18,6 @@
+  * with this program; if not, write to the Free Software Foundation, Inc.,
+  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+  */
 -
--	if (!desc) {
--		pr_err("step 2 error\n");
--		return -1;
--	}
-+	if (!desc)
-+		return -EINVAL;
+-#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+-
+ #include <linux/clk.h>
+ #include <linux/slab.h>
+ #include <linux/interrupt.h>
+@@ -885,7 +882,7 @@ static void gpmi_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
+ 	struct nand_chip *chip = mtd->priv;
+ 	struct gpmi_nand_data *this = chip->priv;
  
- 	/* [3] submit the DMA */
- 	set_dma_type(this, DMA_FOR_COMMAND);
-@@ -1174,20 +1169,17 @@ int gpmi_send_data(struct gpmi_nand_data *this)
- 	pio[1] = 0;
- 	desc = dmaengine_prep_slave_sg(channel, (struct scatterlist *)pio,
- 					ARRAY_SIZE(pio), DMA_TRANS_NONE, 0);
--	if (!desc) {
--		pr_err("step 1 error\n");
--		return -1;
--	}
-+	if (!desc)
-+		return -EINVAL;
+-	pr_debug("len is %d\n", len);
++	dev_dbg(this->dev, "len is %d\n", len);
+ 	this->upper_buf	= buf;
+ 	this->upper_len	= len;
  
- 	/* [2] send DMA request */
- 	prepare_data_dma(this, DMA_TO_DEVICE);
- 	desc = dmaengine_prep_slave_sg(channel, &this->data_sgl,
- 					1, DMA_MEM_TO_DEV,
- 					DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
--	if (!desc) {
--		pr_err("step 2 error\n");
--		return -1;
--	}
-+	if (!desc)
-+		return -EINVAL;
-+
- 	/* [3] submit the DMA */
- 	set_dma_type(this, DMA_FOR_WRITE_DATA);
- 	return start_dma_without_bch_irq(this, desc);
-@@ -1211,20 +1203,16 @@ int gpmi_read_data(struct gpmi_nand_data *this)
- 	desc = dmaengine_prep_slave_sg(channel,
- 					(struct scatterlist *)pio,
- 					ARRAY_SIZE(pio), DMA_TRANS_NONE, 0);
--	if (!desc) {
--		pr_err("step 1 error\n");
--		return -1;
--	}
-+	if (!desc)
-+		return -EINVAL;
+@@ -897,7 +894,7 @@ static void gpmi_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
+ 	struct nand_chip *chip = mtd->priv;
+ 	struct gpmi_nand_data *this = chip->priv;
  
- 	/* [2] : send DMA request */
- 	prepare_data_dma(this, DMA_FROM_DEVICE);
- 	desc = dmaengine_prep_slave_sg(channel, &this->data_sgl,
- 					1, DMA_DEV_TO_MEM,
- 					DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
--	if (!desc) {
--		pr_err("step 2 error\n");
--		return -1;
--	}
-+	if (!desc)
-+		return -EINVAL;
+-	pr_debug("len is %d\n", len);
++	dev_dbg(this->dev, "len is %d\n", len);
+ 	this->upper_buf	= (uint8_t *)buf;
+ 	this->upper_len	= len;
  
- 	/* [3] : submit the DMA */
- 	set_dma_type(this, DMA_FOR_READ_DATA);
-@@ -1269,10 +1257,9 @@ int gpmi_send_page(struct gpmi_nand_data *this,
- 					(struct scatterlist *)pio,
- 					ARRAY_SIZE(pio), DMA_TRANS_NONE,
- 					DMA_CTRL_ACK);
--	if (!desc) {
--		pr_err("step 2 error\n");
--		return -1;
--	}
-+	if (!desc)
-+		return -EINVAL;
-+
- 	set_dma_type(this, DMA_FOR_WRITE_ECC_PAGE);
- 	return start_dma_with_bch_irq(this, desc);
- }
-@@ -1304,10 +1291,8 @@ int gpmi_read_page(struct gpmi_nand_data *this,
- 	desc = dmaengine_prep_slave_sg(channel,
- 				(struct scatterlist *)pio, 2,
- 				DMA_TRANS_NONE, 0);
--	if (!desc) {
--		pr_err("step 1 error\n");
--		return -1;
--	}
-+	if (!desc)
-+		return -EINVAL;
+@@ -976,7 +973,7 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 	unsigned int  max_bitflips = 0;
+ 	int           ret;
  
- 	/* [2] Enable the BCH block and read. */
- 	command_mode = BV_GPMI_CTRL0_COMMAND_MODE__READ;
-@@ -1334,10 +1319,8 @@ int gpmi_read_page(struct gpmi_nand_data *this,
- 					(struct scatterlist *)pio,
- 					ARRAY_SIZE(pio), DMA_TRANS_NONE,
- 					DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
--	if (!desc) {
--		pr_err("step 2 error\n");
--		return -1;
--	}
-+	if (!desc)
-+		return -EINVAL;
+-	pr_debug("page number is : %d\n", page);
++	dev_dbg(this->dev, "page number is : %d\n", page);
+ 	ret = read_page_prepare(this, buf, mtd->writesize,
+ 					this->payload_virt, this->payload_phys,
+ 					nfc_geo->payload_size,
+@@ -1052,7 +1049,7 @@ static int gpmi_ecc_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 	dma_addr_t auxiliary_phys;
+ 	int        ret;
  
- 	/* [3] Disable the BCH block */
- 	command_mode = BV_GPMI_CTRL0_COMMAND_MODE__WAIT_FOR_READY;
-@@ -1355,10 +1338,8 @@ int gpmi_read_page(struct gpmi_nand_data *this,
- 				(struct scatterlist *)pio, 3,
- 				DMA_TRANS_NONE,
- 				DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
--	if (!desc) {
--		pr_err("step 3 error\n");
--		return -1;
--	}
-+	if (!desc)
-+		return -EINVAL;
+-	pr_debug("ecc write page.\n");
++	dev_dbg(this->dev, "ecc write page.\n");
+ 	if (this->swap_block_mark) {
+ 		/*
+ 		 * If control arrives here, we're doing block mark swapping.
+@@ -1190,7 +1187,7 @@ static int gpmi_ecc_read_oob(struct mtd_info *mtd, struct nand_chip *chip,
+ {
+ 	struct gpmi_nand_data *this = chip->priv;
  
- 	/* [4] submit the DMA */
- 	set_dma_type(this, DMA_FOR_READ_ECC_PAGE);
+-	pr_debug("page number is %d\n", page);
++	dev_dbg(this->dev, "page number is %d\n", page);
+ 	/* clear the OOB buffer */
+ 	memset(chip->oob_poi, ~0, mtd->oobsize);
+ 
 -- 
 1.7.2.rc3
