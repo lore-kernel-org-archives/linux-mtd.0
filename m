@@ -1,19 +1,18 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vj6lj-0005N2-3w
- for linux-mtd@lists.infradead.org; Wed, 20 Nov 2013 12:20:32 +0000
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 2/2] mtd: Add PXA3xx NAND driver to MAINTAINERS
-Date: Wed, 20 Nov 2013 09:20:09 -0300
-Message-Id: <1384950009-13767-3-git-send-email-ezequiel.garcia@free-electrons.com>
-In-Reply-To: <1384950009-13767-1-git-send-email-ezequiel.garcia@free-electrons.com>
-References: <1384950009-13767-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+From: Bryan Evenson <bevenson@melinkcorp.com>
+To: "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, Artem Bityutskiy
+ <artem.bityutskiy@linux.intel.com>, Adrian Hunter <adrian.hunter@intel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Wed, 20 Nov 2013 09:04:25 -0500
+Subject: RE: at91: ubi: UBIFS error (pid 1): ubifs_iget: failed to read
+ inode 1, error -2
+Message-ID: <91586D499ADFD74FBCFB8425266A5DE40153BB2BE711@pluto.melinkcorp.local>
+References: <91586D499ADFD74FBCFB8425266A5DE40153BB2BE545@pluto.melinkcorp.local>
+In-Reply-To: <91586D499ADFD74FBCFB8425266A5DE40153BB2BE545@pluto.melinkcorp.local>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,30 +22,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add the pxa3xx-nand driver which supports PXA3xx and Armada 370/XP SoC
-family to MAINTAINERS to ensure I get proper Cc on patches.
+Adding appropriate UBIFS maintainers and the mtd mailing list to the thread=
+ as this deals with the UBIFS.
 
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
----
- MAINTAINERS | 6 ++++++
- 1 file changed, 6 insertions(+)
+> -----Original Message-----
+> From: linux-arm-kernel [mailto:linux-arm-kernel-
+> bounces@lists.infradead.org] On Behalf Of Bryan Evenson
+> Sent: Tuesday, November 19, 2013 2:46 PM
+> To: linux-arm-kernel@lists.infradead.org
+> Subject: at91: ubi: UBIFS error (pid 1): ubifs_iget: failed to read
+> inode 1, error -2
+>=20
+> I am using an Atmel AT91SAM9G25 board with Micron's MT29F2G08ABAEAWP
+> NAND flash.  I am on Atmel's variant of the 3.6.9 kernel.
+> Specifically, I'm using https://github.com/linux4sam/linux-
+> at91/tree/linux-3.6.9-at91 commit
+> 5fe012d4aee98ef82df66e6763882c735902ed0f.   I have several boards in
+> which I see the error message shown in the message subject when the
+> device is reset due to a power cycle and the device fails to continue
+> to load the filesystem.  On one board I erased and re-wrote the
+> filesystem and the device is working just fine through multiple power
+> cycles.  My questions are:
+>=20
+> 1. Is this a known issue with the version of the kernel that I am
+> using?  I've searched this mailing list and the latest mainline kernel
+> commits, and I didn't see anything directly related to this issue.
+> 2. If so, is there a fix in a later kernel version?
+> 3. If not, what would be helpful in figuring out what is going on?  I
+> still have a bad device that I haven't touched the flash on.
+>=20
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d4145f7..e596b93 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5566,6 +5566,12 @@ F:	include/linux/mtd/nand.h
- F:	include/linux/mtd/nand_ecc.h
- F:	include/linux/mtd/nand_bch.h
- 
-+PXA3xx NAND DRIVER
-+M:	Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-+L:	linux-mtd@lists.infradead.org
-+S:	Maintained
-+F:	drivers/mtd/nand/pxa3xx-nand.c
-+
- MEN A21 WATCHDOG DRIVER
- M:  	Johannes Thumshirn <johannes.thumshirn@men.de>
- L:	linux-watchdog@vger.kernel.org
--- 
-1.8.1.5
+I took a deeper look at the commit history of the kernel I am using, and th=
+e last UBI/UBIFS patches to my kernel that I found in the mainline kernel a=
+re:
+
+UBIFS: fix mounting problems after power cuts
+UBIFS: introduce categorized lprops counter
+
+which were merged into the mainline kernel on 2012-11-15.  I don't see any =
+UBI/UBIFS related patches since then that specifically mention the error I'=
+m seeing.  However, there are a few notable bugs that have been fixed since=
+ then such as:
+
+UBIFS: fix use of freed ubifs_orphan objects
+UBIFS: fix double free of ubifs_orphan objects
+ubifs: wait for page writeback to provide stable pages
+UBIFS: prepare to fix a horrid bug
+UBIFS: fix a horrid bug
+UBI: Fix PEB leak in wear_leveling_worker()
+
+Could not having these fixes in place lead to the issue I'm seeing if there=
+ is a power cut?  The kernel I am using does not yet have support for fastm=
+ap and I am using the default UBI/UBIFS configuration (4096 wear-leveling, =
+2% reserved eraseblocks for bad eraseblock handling).  The boards on which =
+I am having an issue are test boards that have been in use long enough that=
+ wear-leveling should be occurring.  And as previously noted, I still have =
+at least one board in its broken state if the flash image would be useful f=
+or someone (or if someone knows what I should be looking for to figure out =
+what happened).
+
+Thanks,
+Bryan
+
+> Thanks,
+> Bryan
+>=20
+>=20
+>=20
+>=20
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
