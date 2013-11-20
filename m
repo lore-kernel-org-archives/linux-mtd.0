@@ -1,22 +1,16 @@
-Message-ID: <528D1DD6.9010808@ti.com>
-Date: Wed, 20 Nov 2013 22:38:46 +0200
-From: "ivan.khoronzhuk" <ivan.khoronzhuk@ti.com>
+Received: from omr-d01.mx.aol.com ([205.188.252.208])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VjFG3-0007cw-Gr
+ for linux-mtd@lists.infradead.org; Wed, 20 Nov 2013 21:24:24 +0000
+To: linux-mtd@lists.infradead.org, manjunatha.mv@p1di.com,
+ al.feczko@timesys.com
+Content-Transfer-Encoding: quoted-printable
+Subject: I am my own boss
 MIME-Version: 1.0
-To: Santosh Shilimkar <santosh.shilimkar@ti.com>, Grygorii Strashko
- <grygorii.strashko@ti.com>
-Subject: Re: [PATCH 0/3] Reuse davinci-nand driver for Keystone arch
-References: <1384964699-15134-1-git-send-email-ivan.khoronzhuk@ti.com>
- <528D18EC.6000501@ti.com> <528D1C94.7010100@ti.com>
-In-Reply-To: <528D1C94.7010100@ti.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Russell King <linux@arm.linux.org.uk>, Pawel Moll <pawel.moll@arm.com>,
- Stephen Warren <swarren@wwwdotorg.org>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@kernel.crashing.org>, Rob Herring <rob.herring@calxeda.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Rob Landley <rob@landley.net>, linux-arm-kernel@lists.infradead.org
+From: Guna <guna1980@aol.in>
+Content-Type: text/plain; charset="us-ascii"; format=flowed
+Message-Id: <8D0B44DF52260B4-7E4-43013@webmail-m154.sysops.aol.com>
+Date: Wed, 20 Nov 2013 16:23:57 -0500 (EST)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,28 +20,5 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/20/2013 10:33 PM, Santosh Shilimkar wrote:
-> On Wednesday 20 November 2013 03:17 PM, Grygorii Strashko wrote:
->> On 11/20/2013 06:24 PM, Ivan Khoronzhuk wrote:
->>> This series contains updates of Davinci nand driver, in order to be
->>> reused for Keystone platform.
->>>
->>> Depends on:
->>> - Davinci nand driver fixes and updates:
->>>     https://lkml.org/lkml/2013/11/20/271
->>
->> ^^^^ I suggest to merge this series with above one as it
->> should not break anything.
->>
-> I agree. That way the mtd patch series can go
-> together nicely.
->
-> Regards,
-> Santosh
->
-
-Ok, I will combine them
-
--- 
-Regards,
-Ivan Khoronzhuk
+Make A Pr0f1t w1th y0ur mak1ng health mach1ne=20
+http://coach-parenting.com/www.yahoo.com.send.friend41.php?jvi=3Dogihigj
