@@ -1,23 +1,18 @@
-From: Arnd Bergmann <arnd@arndb.de>
-To: linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 6/7] mtd: nand: davinci: extend description of bindings
-Date: Wed, 20 Nov 2013 16:46:21 +0100
-References: <1384960945-14528-1-git-send-email-ivan.khoronzhuk@ti.com>
- <1384960945-14528-7-git-send-email-ivan.khoronzhuk@ti.com>
-In-Reply-To: <1384960945-14528-7-git-send-email-ivan.khoronzhuk@ti.com>
+From: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+To: Santosh Shilimkar <santosh.shilimkar@ti.com>, Rob Landley
+ <rob@landley.net>, Russell King <linux@arm.linux.org.uk>
+Subject: [PATCH 0/2] Introduce AEMIF driver for Davinci/Keystone archs
+Date: Wed, 20 Nov 2013 17:46:54 +0200
+Message-ID: <1384962416-14862-1-git-send-email-ivan.khoronzhuk@ti.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201311201646.21435.arnd@arndb.de>
+Content-Type: text/plain
 Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- grygorii.strashko@ti.com, Russell King <linux@arm.linux.org.uk>,
- Pawel Moll <pawel.moll@arm.com>, Stephen Warren <swarren@wwwdotorg.org>,
+ grygorii.strashko@ti.com, Pawel Moll <pawel.moll@arm.com>,
+ Stephen Warren <swarren@wwwdotorg.org>, gregkh@linuxfoundation.org,
  Ian Campbell <ijc+devicetree@hellion.org.uk>,
  Kumar Gala <galak@kernel.crashing.org>, Rob Herring <rob.herring@calxeda.com>,
- linux-kernel@vger.kernel.org, Santosh Shilimkar <santosh.shilimkar@ti.com>,
- Rob Landley <rob@landley.net>, Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>,
- linux-mtd@lists.infradead.org
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,18 +22,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 20 November 2013, Ivan Khoronzhuk wrote:
-> Extend bindings for davinci_nand driver to be more clear.
-> 
-> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
-> ---
->  .../devicetree/bindings/mtd/davinci-nand.txt       |   77 ++++++++++++++------
->  1 file changed, 54 insertions(+), 23 deletions(-)
+These patches introduce Async External Memory Interface (EMIF16/AEMIF)
+controller driver for Davinci/Keystone archs.
 
-Hi Ivan,
+V1:
+https://lkml.org/lkml/2013/11/11/352
 
-The changes look good to me, but please clarify in the changeset description
-above whether this is a backwards-compatible change, a clarification without
-semantic changes, or an incompatible change (which should be avoided).
+Ivan Khoronzhuk (2):
+  memory: ti-aemif: introduce AEMIF driver
+  memory: ti-aemif: add bindings for AEMIF driver
 
-	Arnd
+ .../bindings/memory-controllers/ti-aemif.txt       |  198 ++++++++++
+ drivers/memory/Kconfig                             |   11 +
+ drivers/memory/Makefile                            |    1 +
+ drivers/memory/ti-aemif.c                          |  415 ++++++++++++++++++++
+ 4 files changed, 625 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/memory-controllers/ti-aemif.txt
+ create mode 100644 drivers/memory/ti-aemif.c
+
+-- 
+1.7.9.5
