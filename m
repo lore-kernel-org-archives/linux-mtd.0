@@ -1,30 +1,17 @@
-Received: from 11.mo5.mail-out.ovh.net ([46.105.47.167]
- helo=mo5.mail-out.ovh.net)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VjCNw-0001e3-6e
- for linux-mtd@lists.infradead.org; Wed, 20 Nov 2013 18:20:21 +0000
-Received: from mail194.ha.ovh.net (gw6.ovh.net [213.251.189.206])
- by mo5.mail-out.ovh.net (Postfix) with SMTP id 467EBFF8DC4
- for <linux-mtd@lists.infradead.org>; Wed, 20 Nov 2013 19:21:12 +0100 (CET)
-Date: Wed, 20 Nov 2013 19:21:02 +0100
-From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
-To: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
-Subject: Re: [PATCH 2/2] memory: ti-aemif: add bindings for AEMIF driver
-Message-ID: <20131120182102.GK14627@ns203013.ovh.net>
-References: <1384962416-14862-1-git-send-email-ivan.khoronzhuk@ti.com>
- <1384962416-14862-3-git-send-email-ivan.khoronzhuk@ti.com>
+Date: Wed, 20 Nov 2013 19:27:27 +0100
+From: Wolfram Sang <wsa@the-dreams.de>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [RFC] mtd: gpmc: add BCH support for plain AM335x
+Message-ID: <20131120182727.GA11169@katana>
+References: <1384969152-10411-1-git-send-email-wsa@the-dreams.de>
+ <20131120175733.GA27064@localhost>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="envbJBWh7q8WU6mo"
 Content-Disposition: inline
-In-Reply-To: <1384962416-14862-3-git-send-email-ivan.khoronzhuk@ti.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- grygorii.strashko@ti.com, Russell King <linux@arm.linux.org.uk>,
- Pawel Moll <pawel.moll@arm.com>, Stephen Warren <swarren@wwwdotorg.org>,
- gregkh@linuxfoundation.org, Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@kernel.crashing.org>, Rob Herring <rob.herring@calxeda.com>,
- linux-kernel@vger.kernel.org, Santosh Shilimkar <santosh.shilimkar@ti.com>,
- Rob Landley <rob@landley.net>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20131120175733.GA27064@localhost>
+Cc: Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,33 +21,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> +				the chip select signal.
-> +				Minimum value is 1 (0 treated as 1).
-> +
-> +- ti,cs-wsetup:		write setup width, ns
-> +				Time between the beginning of a memory cycle
-> +				and the activation of write strobe.
-> +				Minimum value is 1 (0 treated as 1).
-> +
-> +- ti,cs-wstrobe:	write strobe width, ns
-> +				Time between the activation and deactivation of
-> +				the write strobe.
-> +				Minimum value is 1 (0 treated as 1).
-> +
-> +- ti,cs-whold:		write hold width, ns
-> +				Time between the deactivation of the write
-> +				strobe and the end of the cycle (which may be
-> +				either an address change or the deactivation of
-> +				the chip select signal.
-> +				Minimum value is 1 (0 treated as 1).
-> +
-> +If any of the above parameters are absent, current parameter value will be taken
-> +from the corresponding HW reg.
-> +
-> +The name for cs node must be in format csN, where N is the cs number.
 
-this is wired we should use reg instead to represent the cs as done for SPI
-or a an other property
+--envbJBWh7q8WU6mo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Best Regards,
-J.
+> A similar patch has been already merged and you can pick it from l2-mtd
+> next branch:
+>=20
+> http://git.infradead.org/l2-mtd.git/commitdiff/1900cdf03057030497e967614c=
+4b19296b6ac460
+
+Great, thanks!
+
+--envbJBWh7q8WU6mo
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.15 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSjP8OAAoJEBQN5MwUoCm2mdoQAJ68/1b40dHt7GO8FW7oNLkn
+yjJFPBypkk7TWo1re+Vo+vK60HxpbCm/Sm3mff/3JL4hksIZOeksvJ6LSELWUulN
+0kHHnZPsmkDaW3VwS44oThEQOLl33MlxSnlyuYiUdgQDvF0Z/YNF4b7vw1BqhZWQ
+WL0xnKJ/zb+aGgo8Ekb6TzmPu1StEBlE7gGSaPQbf1UlY+5AUSruW0wYY1dw2hor
+YatgtIY8kdCJrRhohBAshYzaFzB+1SmHH77eyXKR1Atloq8ipZ+3FT3ypbem3b0f
+xa2jGxRFiXNYcm2DEjKzuBIxIaqSlHiuvh3wUofrue70ZH9GoRKmPUK1xjzyBN6m
+t/3FwzUlSim/s9C9vd/tylt8w+0fNHSySjPO7kXso5MKssGhpYSAGDhSZCFMLeFC
+B7PRt+eO1SH9HCT5VRAl/qQqBgh6VwTCNFp6HxmLS1mLheL6WqAdAwbhfBNzZC01
+gpJcfKSgkj87/veXeegtXPAWqd8tRi9tOqCQyG1V7PkdErCx66zgSWL4OWfTpS14
+OKM+ETKSeSuwjd1+dTClCPghyBJQA8QPQgtdqVMgm22fOxJrY33+Dz/oXD51NhnC
+xxKI/mXwN+IA2izueZR0Poazikc2m5srqYlcDSVNwPD+dOcEftwMOXAkE5aoZ+wD
+Ku7w6NcRizK7bN2R2LKd
+=3Orw
+-----END PGP SIGNATURE-----
+
+--envbJBWh7q8WU6mo--
