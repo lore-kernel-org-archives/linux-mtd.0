@@ -1,17 +1,20 @@
-Date: Wed, 20 Nov 2013 19:27:27 +0100
-From: Wolfram Sang <wsa@the-dreams.de>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [RFC] mtd: gpmc: add BCH support for plain AM335x
-Message-ID: <20131120182727.GA11169@katana>
-References: <1384969152-10411-1-git-send-email-wsa@the-dreams.de>
- <20131120175733.GA27064@localhost>
+Received: from mail-ie0-x22c.google.com ([2607:f8b0:4001:c03::22c])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VjCWa-00023j-Ty
+ for linux-mtd@lists.infradead.org; Wed, 20 Nov 2013 18:29:17 +0000
+Received: by mail-ie0-f172.google.com with SMTP id qd12so5140480ieb.3
+ for <linux-mtd@lists.infradead.org>; Wed, 20 Nov 2013 10:28:54 -0800 (PST)
+Date: Wed, 20 Nov 2013 10:23:09 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH v3 0/2] the clean-up for gpmi
+Message-ID: <20131120182309.GH9468@ld-irv-0074.broadcom.com>
+References: <1384913384-27991-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="envbJBWh7q8WU6mo"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20131120175733.GA27064@localhost>
-Cc: Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <1384913384-27991-1-git-send-email-b32955@freescale.com>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,40 +24,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, Nov 20, 2013 at 10:09:42AM +0800, Huang Shijie wrote:
+> v2 --> v3:
+> 	remove the prints for OOM.
+> 
+> Huang Shijie (2):
+>   mtd: gpmi: change pr_err to dev_err
+>   mtd: gpmi: change pr_debug to dev_dbg
 
---envbJBWh7q8WU6mo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Pushed both to l2-mtd.git/next. Thanks!
 
-> A similar patch has been already merged and you can pick it from l2-mtd
-> next branch:
->=20
-> http://git.infradead.org/l2-mtd.git/commitdiff/1900cdf03057030497e967614c=
-4b19296b6ac460
-
-Great, thanks!
-
---envbJBWh7q8WU6mo
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.15 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSjP8OAAoJEBQN5MwUoCm2mdoQAJ68/1b40dHt7GO8FW7oNLkn
-yjJFPBypkk7TWo1re+Vo+vK60HxpbCm/Sm3mff/3JL4hksIZOeksvJ6LSELWUulN
-0kHHnZPsmkDaW3VwS44oThEQOLl33MlxSnlyuYiUdgQDvF0Z/YNF4b7vw1BqhZWQ
-WL0xnKJ/zb+aGgo8Ekb6TzmPu1StEBlE7gGSaPQbf1UlY+5AUSruW0wYY1dw2hor
-YatgtIY8kdCJrRhohBAshYzaFzB+1SmHH77eyXKR1Atloq8ipZ+3FT3ypbem3b0f
-xa2jGxRFiXNYcm2DEjKzuBIxIaqSlHiuvh3wUofrue70ZH9GoRKmPUK1xjzyBN6m
-t/3FwzUlSim/s9C9vd/tylt8w+0fNHSySjPO7kXso5MKssGhpYSAGDhSZCFMLeFC
-B7PRt+eO1SH9HCT5VRAl/qQqBgh6VwTCNFp6HxmLS1mLheL6WqAdAwbhfBNzZC01
-gpJcfKSgkj87/veXeegtXPAWqd8tRi9tOqCQyG1V7PkdErCx66zgSWL4OWfTpS14
-OKM+ETKSeSuwjd1+dTClCPghyBJQA8QPQgtdqVMgm22fOxJrY33+Dz/oXD51NhnC
-xxKI/mXwN+IA2izueZR0Poazikc2m5srqYlcDSVNwPD+dOcEftwMOXAkE5aoZ+wD
-Ku7w6NcRizK7bN2R2LKd
-=3Orw
------END PGP SIGNATURE-----
-
---envbJBWh7q8WU6mo--
+Brian
