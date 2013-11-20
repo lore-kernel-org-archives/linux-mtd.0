@@ -1,20 +1,23 @@
-From: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
-To: Santosh Shilimkar <santosh.shilimkar@ti.com>, Rob Landley
- <rob@landley.net>, Russell King <linux@arm.linux.org.uk>
-Subject: [PATCH 7/7] mtd: nand: davinci: adjust DT properties to MTD generic
-Date: Wed, 20 Nov 2013 17:22:25 +0200
-Message-ID: <1384960945-14528-8-git-send-email-ivan.khoronzhuk@ti.com>
-In-Reply-To: <1384960945-14528-1-git-send-email-ivan.khoronzhuk@ti.com>
+From: Arnd Bergmann <arnd@arndb.de>
+To: linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 6/7] mtd: nand: davinci: extend description of bindings
+Date: Wed, 20 Nov 2013 16:46:21 +0100
 References: <1384960945-14528-1-git-send-email-ivan.khoronzhuk@ti.com>
+ <1384960945-14528-7-git-send-email-ivan.khoronzhuk@ti.com>
+In-Reply-To: <1384960945-14528-7-git-send-email-ivan.khoronzhuk@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201311201646.21435.arnd@arndb.de>
 Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- grygorii.strashko@ti.com, Pawel Moll <pawel.moll@arm.com>,
- Stephen Warren <swarren@wwwdotorg.org>,
+ grygorii.strashko@ti.com, Russell King <linux@arm.linux.org.uk>,
+ Pawel Moll <pawel.moll@arm.com>, Stephen Warren <swarren@wwwdotorg.org>,
  Ian Campbell <ijc+devicetree@hellion.org.uk>,
  Kumar Gala <galak@kernel.crashing.org>, Rob Herring <rob.herring@calxeda.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>, linux-arm-kernel@lists.infradead.org
+ linux-kernel@vger.kernel.org, Santosh Shilimkar <santosh.shilimkar@ti.com>,
+ Rob Landley <rob@landley.net>, Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,107 +27,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The properties davinci-ecc-mode, davinci-nand-use-bbt, davinci-nand-buswidth
-are MTD generic. Correct names for them are: nand-ecc-mode, nand-on-flash-bbt,
-nand-bus-width accordingly. So rename them in dts and documentation.
+On Wednesday 20 November 2013, Ivan Khoronzhuk wrote:
+> Extend bindings for davinci_nand driver to be more clear.
+> 
+> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+> ---
+>  .../devicetree/bindings/mtd/davinci-nand.txt       |   77 ++++++++++++++------
+>  1 file changed, 54 insertions(+), 23 deletions(-)
 
-Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
----
- .../devicetree/bindings/mtd/davinci-nand.txt       |   25 ++++++++++++++++----
- drivers/mtd/nand/davinci_nand.c                    |   11 ++++++---
- 2 files changed, 28 insertions(+), 8 deletions(-)
+Hi Ivan,
 
-diff --git a/Documentation/devicetree/bindings/mtd/davinci-nand.txt b/Documentation/devicetree/bindings/mtd/davinci-nand.txt
-index d2a3fc0..befaa5b 100644
---- a/Documentation/devicetree/bindings/mtd/davinci-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/davinci-nand.txt
-@@ -37,7 +37,7 @@ Recommended properties :
- - ti,davinci-mask-chipsel:	mask for chipselect address. Needed to mask
- 				addresses for given chipselect.
- 
--- ti,davinci-ecc-mode:		operation mode of the NAND ecc mode. ECC mode
-+- nand-ecc-mode:		operation mode of the NAND ecc mode. ECC mode
- 				valid values for davinci driver:
- 				- "none"
- 				- "soft"
-@@ -45,10 +45,25 @@ Recommended properties :
- 
- - ti,davinci-ecc-bits:		used ECC bits, currently supported 1 or 4.
- 
--- ti,davinci-nand-buswidth:	buswidth 8 or 16.
-+- nand-bus-width:		buswidth 8 or 16. If not present 8.
-+
-+- nand-on-flash-bbt:		use flash based bad block table support. OOB
-+				identifier is saved in OOB area. If not present
-+				false.
-+
-+Deprecated properties:
-+
-+- ti,davinci-ecc-mode:		operation mode of the NAND ecc mode. ECC mode
-+				valid values for davinci driver:
-+				- "none"
-+				- "soft"
-+				- "hw"
-+
-+- ti,davinci-nand-buswidth:	buswidth 8 or 16. If not present 8.
- 
- - ti,davinci-nand-use-bbt:	use flash based bad block table support. OOB
--				identifier is saved in OOB area.
-+				identifier is saved in OOB area. If not present
-+				false.
- 
- Nand device bindings may contain additional sub-nodes describing partitions of
- the address space. See partition.txt for more detail. The NAND Flash timing
-@@ -66,9 +81,9 @@ nand_cs3@62000000 {
- 	ti,davinci-mask-ale = <0>;
- 	ti,davinci-mask-cle = <0>;
- 	ti,davinci-mask-chipsel = <0>;
--	ti,davinci-ecc-mode = "hw";
-+	nand-ecc-mode = "hw";
- 	ti,davinci-ecc-bits = <4>;
--	ti,davinci-nand-use-bbt;
-+	nand-on-flash-bbt;
- 
- 	partition@180000 {
- 		label = "ubifs";
-diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-index c0be223..f7b21b8 100644
---- a/drivers/mtd/nand/davinci_nand.c
-+++ b/drivers/mtd/nand/davinci_nand.c
-@@ -534,7 +534,6 @@ static struct davinci_nand_pdata
- 		struct davinci_nand_pdata *pdata;
- 		const char *mode;
- 		u32 prop;
--		int len;
- 
- 		pdata =  devm_kzalloc(&pdev->dev,
- 				sizeof(struct davinci_nand_pdata),
-@@ -558,6 +557,8 @@ static struct davinci_nand_pdata
- 			"ti,davinci-mask-chipsel", &prop))
- 			pdata->mask_chipsel = prop;
- 		if (!of_property_read_string(pdev->dev.of_node,
-+			"nand-ecc-mode", &mode) ||
-+		    !of_property_read_string(pdev->dev.of_node,
- 			"ti,davinci-ecc-mode", &mode)) {
- 			if (!strncmp("none", mode, 4))
- 				pdata->ecc_mode = NAND_ECC_NONE;
-@@ -570,11 +571,15 @@ static struct davinci_nand_pdata
- 			"ti,davinci-ecc-bits", &prop))
- 			pdata->ecc_bits = prop;
- 		if (!of_property_read_u32(pdev->dev.of_node,
-+			"nand-bus-width", &prop) ||
-+		    !of_property_read_u32(pdev->dev.of_node,
- 			"ti,davinci-nand-buswidth", &prop))
- 			if (prop == 16)
- 				pdata->options |= NAND_BUSWIDTH_16;
--		if (of_find_property(pdev->dev.of_node,
--			"ti,davinci-nand-use-bbt", &len))
-+		if (of_property_read_bool(pdev->dev.of_node,
-+			"nand-on-flash-bbt") ||
-+		    of_property_read_bool(pdev->dev.of_node,
-+			"ti,davinci-nand-use-bbt"))
- 			pdata->bbt_options = NAND_BBT_USE_FLASH;
- 	}
- 
--- 
-1.7.9.5
+The changes look good to me, but please clarify in the changeset description
+above whether this is a backwards-compatible change, a clarification without
+semantic changes, or an incompatible change (which should be avoided).
+
+	Arnd
