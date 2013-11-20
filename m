@@ -1,20 +1,10 @@
-From: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
-To: Santosh Shilimkar <santosh.shilimkar@ti.com>, Rob Landley
- <rob@landley.net>, Russell King <linux@arm.linux.org.uk>
-Subject: [PATCH 3/3] mtd: nand: davinci: don't request AEMIF address range
-Date: Wed, 20 Nov 2013 18:24:59 +0200
-Message-ID: <1384964699-15134-4-git-send-email-ivan.khoronzhuk@ti.com>
-In-Reply-To: <1384964699-15134-1-git-send-email-ivan.khoronzhuk@ti.com>
-References: <1384964699-15134-1-git-send-email-ivan.khoronzhuk@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- grygorii.strashko@ti.com, Pawel Moll <pawel.moll@arm.com>,
- Stephen Warren <swarren@wwwdotorg.org>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@kernel.crashing.org>, Rob Herring <rob.herring@calxeda.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>, linux-arm-kernel@lists.infradead.org
+From: Wolfram Sang <wsa@the-dreams.de>
+To: linux-mtd@lists.infradead.org
+Subject: [RFC] mtd: gpmc: add BCH support for plain AM335x
+Date: Wed, 20 Nov 2013 18:39:12 +0100
+Message-Id: <1384969152-10411-1-git-send-email-wsa@the-dreams.de>
+Cc: Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, Wolfram Sang <wsa@the-dreams.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,37 +14,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The TI AEMIF driver registers are used to setup timings for each chip
-select. The same registers range is used to setup NAND settings.
-The AEMIF and NAND drivers not use the same registers in this range.
+When building a kernel without OMAP3 support but only AM335x, we can't
+activate the needed MTD_NAND_OMAP_BCH symbol.
 
-In case with TI AEMIF driver, the memory address range is requested
-already by AEMIF, so we cannot request it twice, just ioremap.
-
-Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
-Acked-by: Santosh Shilimkar <santosh.shilimkar@ti.com>
+Signed-off-by: Wolfram Sang <wsa@the-dreams.de>
 ---
- drivers/mtd/nand/davinci_nand.c |    8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-index e904364..aa30708 100644
---- a/drivers/mtd/nand/davinci_nand.c
-+++ b/drivers/mtd/nand/davinci_nand.c
-@@ -638,9 +638,11 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
- 	if (IS_ERR(vaddr))
- 		return PTR_ERR(vaddr);
+Actually, I wonder if this is fix will scale. Maybe someone with more insight
+about TI SoCs could find a better expression of supported SoCs. This is the
+only one I could test .
+
+ drivers/mtd/nand/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 93ae6a6..f9455e4 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -95,7 +95,7 @@ config MTD_NAND_OMAP2
+ 	  platforms.
  
--	base = devm_ioremap_resource(&pdev->dev, res2);
--	if (IS_ERR(base))
--		return PTR_ERR(base);
-+	base = devm_ioremap(&pdev->dev, res2->start, resource_size(res2));
-+	if (!base) {
-+		dev_err(&pdev->dev, "ioremap failed for resource %pR\n", res2);
-+		return -EADDRNOTAVAIL;
-+	}
- 
- 	info->dev		= &pdev->dev;
- 	info->base		= base;
+ config MTD_NAND_OMAP_BCH
+-	depends on MTD_NAND && MTD_NAND_OMAP2 && ARCH_OMAP3
++	depends on MTD_NAND && MTD_NAND_OMAP2 && (ARCH_OMAP3 || SOC_AM33XX)
+ 	tristate "Support hardware based BCH error correction"
+ 	default n
+ 	select BCH
 -- 
-1.7.9.5
+1.8.4.2
