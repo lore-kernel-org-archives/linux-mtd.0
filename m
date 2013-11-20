@@ -1,22 +1,20 @@
-Message-ID: <528CDB1C.1010806@ti.com>
-Date: Wed, 20 Nov 2013 17:54:04 +0200
-From: "ivan.khoronzhuk" <ivan.khoronzhuk@ti.com>
+From: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+To: Santosh Shilimkar <santosh.shilimkar@ti.com>, Rob Landley
+ <rob@landley.net>, Russell King <linux@arm.linux.org.uk>
+Subject: [PATCH 1/3] mtd: nand: davinci: reuse driver for Keystone arch
+Date: Wed, 20 Nov 2013 18:24:57 +0200
+Message-ID: <1384964699-15134-2-git-send-email-ivan.khoronzhuk@ti.com>
+In-Reply-To: <1384964699-15134-1-git-send-email-ivan.khoronzhuk@ti.com>
+References: <1384964699-15134-1-git-send-email-ivan.khoronzhuk@ti.com>
 MIME-Version: 1.0
-To: Arnd Bergmann <arnd@arndb.de>, <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 6/7] mtd: nand: davinci: extend description of bindings
-References: <1384960945-14528-1-git-send-email-ivan.khoronzhuk@ti.com>
- <1384960945-14528-7-git-send-email-ivan.khoronzhuk@ti.com>
- <201311201646.21435.arnd@arndb.de>
-In-Reply-To: <201311201646.21435.arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- grygorii.strashko@ti.com, Russell King <linux@arm.linux.org.uk>,
- Pawel Moll <pawel.moll@arm.com>, Stephen Warren <swarren@wwwdotorg.org>,
+ grygorii.strashko@ti.com, Pawel Moll <pawel.moll@arm.com>,
+ Stephen Warren <swarren@wwwdotorg.org>,
  Ian Campbell <ijc+devicetree@hellion.org.uk>,
  Kumar Gala <galak@kernel.crashing.org>, Rob Herring <rob.herring@calxeda.com>,
- linux-kernel@vger.kernel.org, Santosh Shilimkar <santosh.shilimkar@ti.com>,
- Rob Landley <rob@landley.net>, linux-mtd@lists.infradead.org
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,27 +24,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/20/2013 05:46 PM, Arnd Bergmann wrote:
-> On Wednesday 20 November 2013, Ivan Khoronzhuk wrote:
->> Extend bindings for davinci_nand driver to be more clear.
->>
->> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
->> ---
->>   .../devicetree/bindings/mtd/davinci-nand.txt       |   77 ++++++++++++++------
->>   1 file changed, 54 insertions(+), 23 deletions(-)
->
-> Hi Ivan,
->
-> The changes look good to me, but please clarify in the changeset description
-> above whether this is a backwards-compatible change, a clarification without
-> semantic changes, or an incompatible change (which should be avoided).
->
-> 	Arnd
->
+The Keystone arch has compatible nand device, so reuse it.
+In case with Keystone it depends on TI_AEMIF because AEMIF
+driver is responsible to set timings.
 
-This is a clarification only, without semantic changes.
-Thanks, I'll update.
+See http://www.ti.com/lit/ug/sprugz3a/sprugz3a.pdf
 
+Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+---
+ .../devicetree/bindings/mtd/davinci-nand.txt       |    8 +++++---
+ drivers/mtd/nand/Kconfig                           |    6 +++---
+ drivers/mtd/nand/davinci_nand.c                    |    1 +
+ 3 files changed, 9 insertions(+), 6 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/mtd/davinci-nand.txt b/Documentation/devicetree/bindings/mtd/davinci-nand.txt
+index befaa5b..cfb18ab 100644
+--- a/Documentation/devicetree/bindings/mtd/davinci-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/davinci-nand.txt
+@@ -1,14 +1,16 @@
+-Device tree bindings for Texas instruments Davinci NAND controller
++Device tree bindings for Texas instruments Davinci/Keystone NAND controller
+ 
+-This file provides information, what the device node for the davinci NAND
+-interface contains.
++This file provides information, what the device node for the davinci/keystone
++NAND interface contains.
+ 
+ Documentation:
+ Davinci DM646x - http://www.ti.com/lit/ug/sprueq7c/sprueq7c.pdf
++Kestone - http://www.ti.com/lit/ug/sprugz3a/sprugz3a.pdf
+ 
+ Required properties:
+ 
+ - compatible:			"ti,davinci-nand"
++				"ti,keystone-nand"
+ 
+ - reg:				Contains 2 offset/length values:
+ 				- offset and length for the access window.
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index d885298..8bf69c7 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -492,11 +492,11 @@ config MTD_NAND_SH_FLCTL
+ 	  for NAND Flash using FLCTL.
+ 
+ config MTD_NAND_DAVINCI
+-        tristate "Support NAND on DaVinci SoC"
+-        depends on ARCH_DAVINCI
++        tristate "Support NAND on DaVinci/Keystone SoC"
++        depends on ARCH_DAVINCI || (ARCH_KEYSTONE && TI_AEMIF)
+         help
+ 	  Enable the driver for NAND flash chips on Texas Instruments
+-	  DaVinci processors.
++	  DaVinci/Keystone processors.
+ 
+ config MTD_NAND_TXX9NDFMC
+ 	tristate "NAND Flash support for TXx9 SoC"
+diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
+index f7b21b8..8459720 100644
+--- a/drivers/mtd/nand/davinci_nand.c
++++ b/drivers/mtd/nand/davinci_nand.c
+@@ -523,6 +523,7 @@ static struct nand_ecclayout hwecc4_2048 __initconst = {
+ #if defined(CONFIG_OF)
+ static const struct of_device_id davinci_nand_of_match[] = {
+ 	{.compatible = "ti,davinci-nand", },
++	{.compatible = "ti,keystone-nand", },
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, davinci_nand_of_match);
 -- 
-Regards,
-Ivan Khoronzhuk
+1.7.9.5
