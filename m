@@ -1,18 +1,17 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vj6Fa-0004N6-Ja
- for linux-mtd@lists.infradead.org; Wed, 20 Nov 2013 11:47:19 +0000
-Date: Wed, 20 Nov 2013 08:46:55 -0300
+ id 1Vj6lj-0005N5-3x
+ for linux-mtd@lists.infradead.org; Wed, 20 Nov 2013 12:20:32 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: linux-mtd@lists.infradead.org
-Subject: Regarding the l2-mtd branch in linux-next
-Message-ID: <20131120114654.GA26240@localhost>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-Cc: Brian Norris <computersforpeace@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH 0/2] Regarding NAND core and drivers maintenance
+Date: Wed, 20 Nov 2013 09:20:07 -0300
+Message-Id: <1384950009-13767-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,16 +21,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Brian,
+Hi all,
 
-Can you explain in detail the differences between l2-mtd/master and
-l2-mtd/next?
+As it's obvious from the mailing list activity, in the past months Brian
+Norris took the NAND maintainership role. In my opinion, he's been doing
+a terrific work and as a result the reviewing cycle is now considerably
+shorter.
 
-I'm seeing linux-next merges the former, but instead maybe it should
-be the latter?
+Great work, Brian!
 
-What do you think?
+This position is not at all easy, due to each NAND driver being filled
+with hardware controller specificities. For that reason, I think it
+would be healthy to take another step in setting maintainership
+responsabilites.
+
+My proposal (copy-pasted from the media subsystem) is to define
+sub-maintainers, one for each NAND driver, in addition to the top-level
+NAND subsystem maintainer.
+
+When a patch comes for a given driver, the _ideal_ situation would be
+for the sub-maintainer to Ack-it first.
+
+And to formalize this proposal, I'm pushing a couple patches: the first
+adds Brian to MAINTAINERS, as the NAND maintainer.
+
+Then, I'm adding myself as sub-maintainer to the pxa3xx-nand driver.
+This way, scripts/get_maintainers.pl will show my mail and I'll get
+CCed by occasional or new contributors.
+
+How does this sound?
+
+Ezequiel Garcia (2):
+  mtd: Add NAND device drivers to MAINTAINERS
+  mtd: Add PXA3xx NAND driver to MAINTAINERS
+
+ MAINTAINERS | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+
 -- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+1.8.1.5
