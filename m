@@ -1,22 +1,20 @@
-Received: from mail-la0-x22e.google.com ([2a00:1450:4010:c03::22e])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VjRzo-0006ZD-FS
- for linux-mtd@lists.infradead.org; Thu, 21 Nov 2013 11:00:30 +0000
-Received: by mail-la0-f46.google.com with SMTP id eh20so8302432lab.5
- for <linux-mtd@lists.infradead.org>; Thu, 21 Nov 2013 03:00:04 -0800 (PST)
+Received: from eu1sys200aog120.obsmtp.com ([207.126.144.149])
+ by merlin.infradead.org with smtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VjS7w-0006sf-38
+ for linux-mtd@lists.infradead.org; Thu, 21 Nov 2013 11:08:52 +0000
+Message-ID: <528DE9A8.6060207@st.com>
+Date: Thu, 21 Nov 2013 11:08:24 +0000
+From: Angus Clark <angus.clark@st.com>
 MIME-Version: 1.0
-In-Reply-To: <1385024065-29965-1-git-send-email-zhanghonghui@innofidei.com>
-References: <1385024065-29965-1-git-send-email-zhanghonghui@innofidei.com>
-From: Richard Genoud <richard.genoud@gmail.com>
-Date: Thu, 21 Nov 2013 11:59:44 +0100
-Message-ID: <CACQ1gAiLesYEWmHkivAF=t8ekCFM=yDDyzkJTtduavNjp1g6wA@mail.gmail.com>
-Subject: Re: [PATCH] Make the mtdblock read/write skip the bad nand sector
-To: Hans Zhang <zhanghonghui@innofidei.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- zhouguangming@innofidei.com
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH] mtd: m25p80: add support for Spansion s25fl128s chip
+References: <1384937569-23893-1-git-send-email-b32955@freescale.com>
+ <528C8C1B.7090902@st.com> <528DC1DB.2090007@freescale.com>
+ <528DCFBD.9000905@st.com> <528DD70B.8010602@freescale.com>
+In-Reply-To: <528DD70B.8010602@freescale.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Cc: Angus CLARK <angus.clark@st.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,83 +24,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2013/11/21 Hans Zhang <zhanghonghui@innofidei.com>:
->  When read/write the nandblock device, it will abort writing if
->  there's a bad block, it's reasonable to skip the bad block and
->  finish the data writing.
->  The data reading procedure should also skip the bad block since
->  there's no data write to the block.
->
-> --v2:
->  use the wrapped mtd_block_isbad instand of mtd->block_isbad
->
-> Signed-off-by: Hans Zhang <zhanghonghui@innofidei.com>
-> ---
->  drivers/mtd/mtdblock.c |   17 +++++++++++++++++
->  1 files changed, 17 insertions(+), 0 deletions(-)
->
-> diff --git a/drivers/mtd/mtdblock.c b/drivers/mtd/mtdblock.c
-> index 485ea75..4f6acd1 100644
-> --- a/drivers/mtd/mtdblock.c
-> +++ b/drivers/mtd/mtdblock.c
-> @@ -124,6 +124,13 @@ static int write_cached_data (struct mtdblk_dev *mtdblk)
->                         "at 0x%lx, size 0x%x\n", mtd->name,
->                         mtdblk->cache_offset, mtdblk->cache_size);
->
-> +retry:
-> +       ret = mtd_block_isbad(mtd, mtdblk->cache_offset);
-> +       if (ret > 0) {
-> +               mtdblk->cache_offset += mtdblk->cache_size;
-> +               goto retry;
-> +       }
-> +
->         ret = erase_write (mtd, mtdblk->cache_offset,
->                            mtdblk->cache_size, mtdblk->cache_data);
->         if (ret)
-> @@ -163,6 +170,11 @@ static int do_cached_write (struct mtdblk_dev *mtdblk, unsigned long pos,
->                         size = len;
->
->                 if (size == sect_size) {
-> +                       ret = mtd_block_isbad(mtd, pos);
-> +                       if (ret > 0) {
-> +                               pos += sect_size;
-> +                               continue;
-> +                       }
->                         /*
->                          * We are covering a whole sector.  Thus there is no
->                          * need to bother with the cache while it may still be
-> @@ -242,6 +254,11 @@ static int do_cached_read (struct mtdblk_dev *mtdblk, unsigned long pos,
->                     mtdblk->cache_offset == sect_start) {
->                         memcpy (buf, mtdblk->cache_data + offset, size);
->                 } else {
-> +                       ret = mtd_block_isbad(mtd, pos);
-> +                       if (ret > 0) {
-> +                               pos += sect_size;
-> +                               continue;
-> +                       }
->                         ret = mtd_read(mtd, pos, size, &retlen, buf);
->                         if (ret)
->                                 return ret;
-> --
-> 1.7.1
->
->
+On 11/21/2013 09:48 AM, Huang Shijie wrote:
+> 于 2013年11月21日 17:17, Angus Clark 写道:
+>> No, the s25fl129p1 only supports SDR "Quad Output Read" and "Quad I/O
+>> Read".  I
+>> thought the M25P80_QUAD_READ flag was for the SDR operations though,
+>> hence why I
+>> said the m25p80 driver was not sensitive to the differences between
+>> s25fl129p1
+>> and s25fl128s1.  Is that not the case?
+> the target of adding this item is to support the DDR quad read.
+> So we should add a new item for this nor.
 
-I don't think it's a good idea to skip bad blocks at mtd level.
-That will definitely break the userspace.
-The nanddump mtd-tool for instance has a bad block handling argument:
---bb=METHOD, where METHOD can be `padbad', `dumpbad', or `skipbad':
-    padbad:  dump flash data, substituting 0xFF for any bad blocks
-    dumpbad: dump flash data, including any bad blocks
-    skipbad: dump good data, completely skipping any bad blocks (default)
+Assuming you a referring to the same M25P80_QUAD_READ flag as introduced by
+"[PATCH] drivers: mtd: m25p80: Add quad read support.", then the flag invokes
+OPCODE_QUAD_READ = 0x6b, which corresponds to the Spansion *SDR* "QOR" command.
+ The DDR QUAD Read command is 0xed, "DDRQIOR" (there is no DDR equivalent of
+"QOR").  So, again, I believe the m25p80 driver is not sensitive to the
+differences between s25fl129p1 and s25fl128s1; the M25P80_QUAD_READ flag, as is
+stands, applies equally to both.
 
-The bad block handling is done by the upper layer (UBI/jffs2...) not by mtd.
+Cheers,
 
-So, if you really need to read/write the mtd layer from userspace and
-jump bad block, you'll have to use the MEMGETBADBLOCK ioctl to check
-if the block is bad before reading/writing.
+Angus
 
-But using UBI is usually a better option.
-
-
-Richard.
+-- 
+-------------------------------------
+Angus Clark
+ST Microelectronics (R&D) Ltd.
+1000 Aztec West, Bristol, BS32 4SQ
+email: angus.clark@st.com
+tel: +44 (0) 1454 462389
+st-tina: 065 2389
+-------------------------------------
