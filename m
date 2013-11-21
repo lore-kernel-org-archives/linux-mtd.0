@@ -1,18 +1,28 @@
-Received: from 71-19-161-253.dedicated.allstream.net ([71.19.161.253]
- helo=nsa.nbspaymentsolutions.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VjXiJ-0000Zk-SA
- for linux-mtd@lists.infradead.org; Thu, 21 Nov 2013 17:06:48 +0000
-Received: from DeadDuck (unknown [172.20.177.82])
- by nsa.nbspaymentsolutions.com (Postfix) with ESMTP id D9E723FC4AD
- for <linux-mtd@lists.infradead.org>; Thu, 21 Nov 2013 12:08:43 -0500 (EST)
-From: Bill Pringlemeir <bpringlemeir@nbsps.com>
-To: linux-mtd@lists.infradead.org
-Subject: VF610+ColdFireM54418 controller.
-Date: Thu, 21 Nov 2013 12:01:21 -0500
-Message-ID: <87siupheou.fsf@nbsps.com>
+Message-ID: <528E3DD4.7030607@ti.com>
+Date: Thu, 21 Nov 2013 22:37:32 +0530
+From: Sekhar Nori <nsekhar@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+To: Santosh Shilimkar <santosh.shilimkar@ti.com>
+Subject: Re: [PATCH 10/12] mtd: nand: davinci: don't set timings if AEMIF
+ is used
+References: <1384187188-5776-1-git-send-email-ivan.khoronzhuk@ti.com>,
+ <1384187188-5776-11-git-send-email-ivan.khoronzhuk@ti.com>
+ <4F5844B3A985794BA902E12C070812375F8D53@DNCE04.ent.ti.com>
+ <528307F0.6000805@ti.com> <52838941.4060207@ti.com> <5284ABB9.70608@ti.com>
+ <5284DFE7.70308@ti.com>
+In-Reply-To: <5284DFE7.70308@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "Strashko,
+ Grygorii" <grygorii.strashko@ti.com>, Russell King <linux@arm.linux.org.uk>,
+ Pawel Moll <pawel.moll@arm.com>, Stephen Warren <swarren@wwwdotorg.org>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@kernel.crashing.org>, Rob Herring <rob.herring@calxeda.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Rob Landley <rob@landley.net>, "Khoronzhuk, Ivan" <ivan.khoronzhuk@ti.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,41 +32,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 11/14/2013 8:06 PM, Santosh Shilimkar wrote:
+> On Thursday 14 November 2013 05:53 AM, Nori, Sekhar wrote:
+>> On Wednesday 13 November 2013 07:44 PM, Santosh Shilimkar wrote:
+>>> On Wednesday 13 November 2013 12:02 AM, Sekhar Nori wrote:
+>>>> On Monday 11 November 2013 10:40 PM, Khoronzhuk, Ivan wrote:
+>>>>> If Davinci AEMIF is used we don't need to set timings and bus width.
+>>>>> It is done by AEMIF driver (drivers/memory/davinci-aemfi.c).
+>>>>>
+>>>>> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+>>>>> ---
+>>>>>  drivers/mtd/nand/davinci_nand.c |   22 +++++++++++++++-------
+>>>>>  1 file changed, 15 insertions(+), 7 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
+>>>>> index 4705214..879e915 100644
+>>>>> --- a/drivers/mtd/nand/davinci_nand.c
+>>>>> +++ b/drivers/mtd/nand/davinci_nand.c
+>>>>> @@ -742,27 +742,35 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
+>>>>>                 goto err_clk_enable;
+>>>>>         }
+>>>>>
+>>>>> +#if !IS_ENABLED(CONFIG_TI_DAVINCI_AEMIF)
+>>>>
+>>>> This is a hack! Just because AEMIF driver is enabled, it does not
+>>>> guarantee that the timings have been setup by it. Instead of configuring
+>>>> timings in two drivers, why not just convert everyone over to use the
+>>>> new driver. Dont worry about breaking old platforms, I will help test
+>>>> and ack them.
+>>>>
+>>> How about you take a stab at and convert the DaVinci code over to make
+>>> use of new driver. We are trying to re-use as much as possible from the
+>>> common drivers and also making an option so that the DaVinci arch can
+>>> move over to these drivers if they want to.
+>>
+>> Sure I could.
+>>
+> Thanks
+> 
+>> Ivan,
+>>
+>> The AEMIF driver does not use platfrom_data currently. Is that something
+>> you can add or you want me to take a stab at that as well?
+>>
+> The AEMIF new driver is device tree only and thats the direction. So the
+> better thing would be to convert Davinci to DT and then make use of this
+> new driver. Thats how most of the new drivers used on arm socs are
+> moving. Adding platform data to new driver is a step in backward
+> direction so I would want to avoid that.
 
-There are some mtd drivers for this NAND flash controller on the web.
+Yes, that would be the ideal way. But the reality is that there is close
+to zero chance of all the DaVinci platforms using AEMIF ever getting
+converted to DT. This means that we will never be able to get rid of
+this piece of code.
 
-Eg,
- https://dev.openwrt.org/browser/trunk/target/linux/coldfire/patches/016-Add-nand-driver-support-for-M54418TWR-board.patch?rev=31546
- https://github.com/Timesys/linux-timesys/blob/3.0-mvf/drivers/mtd/nand/fsl_nfc.c
+I do agree platform data is not the direction you want to take on ARM
+but at the same time its not really a deprecated mechanism as far as the
+broader kernel is concerned.
 
-The device has 9K SRAM for main and spare areas.  The register layout
-is,
-
-  off name      desc
-   00 NFC_CMD1    Flash command 1
-   04 NFC_CMD2    Flash command 2
-   08 NFC_CAR     Column address
-   0C NFC_RAR     Row address 
-   10 NFC_RPT     Flash command repeat
-   14 NFC_RAI     Row address increment
-   18 NFC_SR1     Flash status 1 *read only*
-   1C NFC_SR2     Flash status 2 *read only*
-   20 NFC_DMA_CH1 DMA channel 1 address
-   24 NFC_DMACFG  DMA configuration
-   28 NFC_SWAP    Cach swap
-   2C NFC_SECSZ   Sector size
-   30 NFC_CFG     Flash configuration
-   34 NFC_DMA_CH2 DMA channel 2 address
-   38 NFC_ISR     Interrupt status
-
-All registers are 32bit R/W unless noted, from section 31.3 of the
-Vybrid NAND chapter.
-
-Is anyone working on support for this chip set?  
-Is there an existing driver that can be adapted?  
-Is the 'fsl_nfc' name appropriate?  If not, what name?
-Is there any reason an updated driver won't be considered for the
-mainline?
+So, can we consider adding platform data mechanism to the AEMIF driver?
 
 Thanks,
-Bill Pringlemeir.
+Sekhar
