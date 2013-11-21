@@ -1,28 +1,21 @@
-Received: from mail-la0-f46.google.com ([209.85.215.46])
+Received: from mail-qa0-x233.google.com ([2607:f8b0:400d:c00::233])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VjYJn-0001Yj-No
- for linux-mtd@lists.infradead.org; Thu, 21 Nov 2013 17:45:32 +0000
-Received: by mail-la0-f46.google.com with SMTP id eh20so60830lab.19
- for <linux-mtd@lists.infradead.org>; Thu, 21 Nov 2013 09:45:07 -0800 (PST)
+ id 1VjZG4-0003UD-13
+ for linux-mtd@lists.infradead.org; Thu, 21 Nov 2013 18:45:44 +0000
+Received: by mail-qa0-f51.google.com with SMTP id o15so4120051qap.10
+ for <linux-mtd@lists.infradead.org>; Thu, 21 Nov 2013 10:45:22 -0800 (PST)
+Date: Thu, 21 Nov 2013 10:45:17 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH 0/2] Regarding NAND core and drivers maintenance
+Message-ID: <20131121184517.GJ9468@ld-irv-0074.broadcom.com>
+References: <1384950009-13767-1-git-send-email-ezequiel.garcia@free-electrons.com>
 MIME-Version: 1.0
-In-Reply-To: <1385033305-13179-1-git-send-email-ivan.khoronzhuk@ti.com>
-References: <1385033305-13179-1-git-send-email-ivan.khoronzhuk@ti.com>
-Date: Thu, 21 Nov 2013 19:45:06 +0200
-Message-ID: <CAArO44tOemuo0PyWMuwwGBb77Lt4_pqbDoKWzROLBi0HGC8F7A@mail.gmail.com>
-Subject: Re: [PATCH v2 00/10] Reuse davinci-nand driver for Keystone arch
-From: Taras Kondratiuk <taras.kondratiuk@linaro.org>
-To: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Grygorii Strashko <grygorii.strashko@ti.com>,
- Russell King <linux@arm.linux.org.uk>, Pawel Moll <pawel.moll@arm.com>,
- Stephen Warren <swarren@wwwdotorg.org>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@kernel.crashing.org>, Rob Herring <rob.herring@calxeda.com>,
- open list <linux-kernel@vger.kernel.org>,
- Santosh Shilimkar <santosh.shilimkar@ti.com>, Rob Landley <rob@landley.net>,
- linux-mtd@lists.infradead.org,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1384950009-13767-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,31 +25,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 21 November 2013 13:28, Ivan Khoronzhuk <ivan.khoronzhuk@ti.com> wrote:
-> This series contains fixes and updates of Davinci nand driver in
-> order to reuse it for Keystone platform.
->
-> The series is combination of two following series:
-> - Davinci nand driver fixes and updates:
->   https://lkml.org/lkml/2013/11/20/271
-> - Reuse davinci-nand driver for Keystone arch
->   https://lkml.org/lkml/2013/11/20/315
->
-> Ivan Khoronzhuk (10):
->   mtd: nand: davinci: fix driver registration
->   mtd: nand: davinci: return ENOMEM if memory allocation is failed
->   mtd: nand: davinci: check required ti,davinci-chipselect property
->   mtd: nand: davinci: simplify error handling
->   mtd: nand: davinci: move bindings under mtd
->   mtd: nand: davinci: extend description of bindings
->   mtd: nand: davinci: adjust DT properties to MTD generic
->   mtd: nand: davinci: reuse driver for Keystone arch
->   mtd: nand: davinci: don't set timings if AEMIF is used
->   mtd: nand: davinci: don't request AEMIF address range
+On Wed, Nov 20, 2013 at 09:20:07AM -0300, Ezequiel Garcia wrote:
+> As it's obvious from the mailing list activity, in the past months Brian
+> Norris took the NAND maintainership role. In my opinion, he's been doing
+> a terrific work and as a result the reviewing cycle is now considerably
+> shorter.
+> 
+> Great work, Brian!
 
-For all series:
-Reviewed-by: Taras Kondratiuk <taras@ti.com>
+Thanks!
 
--- 
-Regards,
-Taras Kondratiuk
+> This position is not at all easy, due to each NAND driver being filled
+> with hardware controller specificities. For that reason, I think it
+> would be healthy to take another step in setting maintainership
+> responsabilites.
+> 
+> My proposal (copy-pasted from the media subsystem) is to define
+> sub-maintainers, one for each NAND driver, in addition to the top-level
+> NAND subsystem maintainer.
+
+I believe the offering is open, for any who are in a situation to
+maintain particular drivers. You may note that there are a few NAND
+drivers which are listed as "maintained" by others, either under their
+corresponding ARM architecture, or standalone. And as you mention, this
+arrangement is common in some other subsystems.
+
+I don't suppose that every NAND driver will need a dedicated maintainer,
+but active ones which have interested, knowledgeable developers might be
+good candidates.
+
+> When a patch comes for a given driver, the _ideal_ situation would be
+> for the sub-maintainer to Ack-it first.
+> 
+> And to formalize this proposal, I'm pushing a couple patches: the first
+> adds Brian to MAINTAINERS, as the NAND maintainer.
+> 
+> Then, I'm adding myself as sub-maintainer to the pxa3xx-nand driver.
+> This way, scripts/get_maintainers.pl will show my mail and I'll get
+> CCed by occasional or new contributors.
+> 
+> How does this sound?
+
+For the idea:
+
+Acked-by: Brian Norris <computersforpeace@gmail.com>
+
+I think patch 1 would need a little tweaking, though.
+
+I'd also like David's or Artem's comments. I know that Artem, for one,
+claimed to not want to put himself in an official role as MTD
+maintainer, even though he was taking much of this responsibility
+previously.
+
+Brian
