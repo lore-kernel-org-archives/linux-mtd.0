@@ -1,20 +1,17 @@
-Received: from tx2ehsobe001.messaging.microsoft.com ([65.55.88.11]
- helo=tx2outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VjPQ0-0003DT-Fz
- for linux-mtd@lists.infradead.org; Thu, 21 Nov 2013 08:15:21 +0000
-Message-ID: <528DC1DB.2090007@freescale.com>
-Date: Thu, 21 Nov 2013 16:18:35 +0800
-From: Huang Shijie <b32955@freescale.com>
-MIME-Version: 1.0
-To: Angus Clark <angus.clark@st.com>
-Subject: Re: [PATCH] mtd: m25p80: add support for Spansion s25fl128s chip
-References: <1384937569-23893-1-git-send-email-b32955@freescale.com>
- <528C8C1B.7090902@st.com>
-In-Reply-To: <528C8C1B.7090902@st.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Received: from mail.innofidei.com ([203.86.34.34])
+ by casper.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VjPt6-000300-Hq
+ for linux-mtd@lists.infradead.org; Thu, 21 Nov 2013 08:45:26 +0000
+Received: from centos-pf.localdomain by innofidei.com (Cipher TLSv1:-SHA:128)
+ (MDaemon PRO v12.5.3) with ESMTP id md50000628015.msg
+ for <linux-mtd@lists.infradead.org>; Thu, 21 Nov 2013 16:39:44 +0800
+From: Hans Zhang <zhanghonghui@innofidei.com>
+To: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH] Make the mtdblock read/write skip the bad nand sector
+Date: Thu, 21 Nov 2013 16:39:04 +0800
+Message-Id: <1385023144-10721-1-git-send-email-zhanghonghui@innofidei.com>
+Cc: Hans Zhang <zhanghonghui@innofidei.com>, zhouguangming@innofidei.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,72 +21,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B411=E6=9C=8820=E6=97=A5 18:16, Angus Clark =E5=86=99=
-=E9=81=93:
-> Hi Huang Shijie,
->
-> On 11/20/2013 08:52 AM, Huang Shijie wrote:
->> This chip supports the quad read.
->>
->> Signed-off-by: Huang Shijie<b32955@freescale.com>
->> ---
->>   drivers/mtd/devices/m25p80.c |    1 +
->>   1 files changed, 1 insertions(+), 0 deletions(-)
->>
->> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80=
-.c
->> index 7dc2c14..720899b 100644
->> --- a/drivers/mtd/devices/m25p80.c
->> +++ b/drivers/mtd/devices/m25p80.c
->> @@ -941,6 +941,7 @@ static const struct spi_device_id m25p_ids[] =3D {
->>   	 */
->>   	{ "s25sl032p",  INFO(0x010215, 0x4d00,  64 * 1024,  64, 0) },
->>   	{ "s25sl064p",  INFO(0x010216, 0x4d00,  64 * 1024, 128, 0) },
->> +	{ "s25fl128s",	INFO(0x012018, 0x4d01,  64 * 1024, 256, M25P80_QUAD_R=
-EAD) },
->>   	{ "s25fl256s0", INFO(0x010219, 0x4d00, 256 * 1024, 128, 0) },
->>   	{ "s25fl256s1", INFO(0x010219, 0x4d01,  64 * 1024, 512, M25P80_QUAD=
-_READ) },
->>   	{ "s25fl512s",  INFO(0x010220, 0x4d00, 256 * 1024, 256, 0) },
-> I would suggest using the name "s25fl128s1" to indicate the 64KiB secto=
-r variant
-> [1].  However, I would also point out that there is already an entry in=
- the
-> table that matches the jedec_id/ext_id:
->
-> 	{ "s25fl129p1", INFO(0x012018, 0x4d01,  64 * 1024, 256, 0) },
-yes.
-> As far as I can tell, the m25p80.c driver is not sensitive to the diffe=
-rences
-> between the 'P' and the 'S' generations; both support M25P80_QUAD_READ,=
- so the
-> flag could be added to the s25fl129p1 entry if required.
->
-Does the s25fl129p1 support the DDR quad read?
-I do not have the datasheet.
+ When read/write the nandblock device, it will abort writing if
+ there's a bad block, it's reasonable to skip the bad block and
+ finish the data writing.
+ The data reading procedure should also skip the bad block since
+ there's no data write to the block.
 
-it's a little strange if we add the flag to the s25fl129p1.
-The one who wants to enable the s25fl128s on its board, will add the the=20
-name s25fl129p1 in the DTS.
+Signed-off-by: Hans Zhang <zhanghonghui@innofidei.com>
+---
+ drivers/mtd/mtdblock.c |   22 ++++++++++++++++++++++
+ 1 files changed, 22 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/mtd/mtdblock.c b/drivers/mtd/mtdblock.c
+index 485ea75..66e3b23 100644
+--- a/drivers/mtd/mtdblock.c
++++ b/drivers/mtd/mtdblock.c
+@@ -124,6 +124,14 @@ static int write_cached_data (struct mtdblk_dev *mtdblk)
+ 			"at 0x%lx, size 0x%x\n", mtd->name,
+ 			mtdblk->cache_offset, mtdblk->cache_size);
+ 
++retry:
++	if (mtd->block_isbad) {
++		ret = mtd->block_isbad(mtd, mtdblk->cache_offset);
++		if (ret > 0) {
++			mtdblk->cache_offset += mtdblk->cache_size;
++			goto retry;
++		}
++	}
+ 	ret = erase_write (mtd, mtdblk->cache_offset,
+ 			   mtdblk->cache_size, mtdblk->cache_data);
+ 	if (ret)
+@@ -163,6 +171,13 @@ static int do_cached_write (struct mtdblk_dev *mtdblk, unsigned long pos,
+ 			size = len;
+ 
+ 		if (size == sect_size) {
++			if (mtd->block_isbad) {
++				ret = mtd->block_isbad(mtd, pos);
++				if (ret > 0) {
++					pos += sect_size;
++					continue;
++				}
++			}
+ 			/*
+ 			 * We are covering a whole sector.  Thus there is no
+ 			 * need to bother with the cache while it may still be
+@@ -242,6 +257,13 @@ static int do_cached_read (struct mtdblk_dev *mtdblk, unsigned long pos,
+ 		    mtdblk->cache_offset == sect_start) {
+ 			memcpy (buf, mtdblk->cache_data + offset, size);
+ 		} else {
++			if (mtd->block_isbad) {
++				ret = mtd->block_isbad(mtd, pos);
++				if (ret > 0) {
++					pos += sect_size;
++					continue;
++				}
++			}
+ 			ret = mtd_read(mtd, pos, size, &retlen, buf);
+ 			if (ret)
+ 				return ret;
+-- 
+1.7.1
 
 
-
-> If it was deemed necessary to differentiate between the 'P' and 'S', th=
-en the
-> jedec_probe() code would need to be updated to consider the 6th READID =
-byte
-> (0x80 for 'S').
->
-yes. I also think we should probe the 6th READID byte.
-> Cheers,
->
-> Angus
->
-> [1] The name should really be "s25fl128s0" where the appended '0' repre=
-sents the
-> "model number" 0 for uniform 64KiB sectors.  However, all the other Spa=
-nsion
-yes. the s25fl128s0 is beter.
-
-thanks
-Huang Shijie
+“This E-mail and its attachments may contain legally privileged or confidential information from Innofidei Corporation. Any unauthorized copy, use, disclosure or distribution of this information is strictly prohibited. If you are not the intended recipient, please notify the sender immediately by E-mail or telephone and delete this E-mail and all its attachments immediately.
+本邮件及其附件内容可能包含创毅公司享有专有法律权利的或者需要保密的信息。严禁任何人未经发件人许可以任何形式复制、使用、披露或者散发此项信息。如果您不是该收件人，请您立即通过邮件或者电话通知发件人并立即删除本邮件及其附件内容.”
