@@ -1,21 +1,19 @@
-Received: from 71-19-161-253.dedicated.allstream.net ([71.19.161.253]
- helo=nsa.nbspaymentsolutions.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VjcG8-0007wV-AW
- for linux-mtd@lists.infradead.org; Thu, 21 Nov 2013 21:58:01 +0000
-Received: from DeadDuck (unknown [172.20.177.82])
- by nsa.nbspaymentsolutions.com (Postfix) with ESMTP id ED03A3FC4CD
- for <linux-mtd@lists.infradead.org>; Thu, 21 Nov 2013 16:59:51 -0500 (EST)
-From: Bill Pringlemeir <bpringlemeir@nbsps.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: VF610+ColdFireM54418 controller.
-References: <87siupheou.fsf@nbsps.com>
-Date: Thu, 21 Nov 2013 16:52:28 -0500
-In-Reply-To: <87siupheou.fsf@nbsps.com> (Bill Pringlemeir's message of "Thu,
- 21 Nov 2013 12:01:21 -0500")
-Message-ID: <87k3g1h17n.fsf@nbsps.com>
+Received: from mail-wg0-x235.google.com ([2a00:1450:400c:c00::235])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Vjdgw-0001IU-6I
+ for linux-mtd@lists.infradead.org; Thu, 21 Nov 2013 23:29:47 +0000
+Received: by mail-wg0-f53.google.com with SMTP id b13so460155wgh.20
+ for <linux-mtd@lists.infradead.org>; Thu, 21 Nov 2013 15:29:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <CAGZNvdpag-DDUwYKGYaLs17St6P_LRk7EKDtPzuLcsGT324YTw@mail.gmail.com>
+References: <CAGZNvdpag-DDUwYKGYaLs17St6P_LRk7EKDtPzuLcsGT324YTw@mail.gmail.com>
+Date: Fri, 22 Nov 2013 00:29:23 +0100
+Message-ID: <CAFLxGvyz6bz+eKm1gsBE70ud9m31kBbghJWYV6T2n3racZChpA@mail.gmail.com>
+Subject: Re: UBI attach, UBIFS mount and blocks writing
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: Fernando Silveira <fsilveira@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,18 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 21 Nov 2013, bpringlemeir@nbsps.com wrote:
+On Thu, Nov 21, 2013 at 6:33 PM, Fernando Silveira <fsilveira@gmail.com> wrote:
+> Hi,
+>
+> Does a simple UBI attach procedure (e.g. "ubi.mtd=root" at the Linux
+> cmdline or "ubiattach -m 1") writes something to the flash? What about
+> a simple read-write mount of a UBIFS partition?
+>
+> I'm worried about it because my flash has a VERY low limit for
+> erasing/writing blocks and I'd like to avoid passing read-only
+> arguments to the "mtdparts" parameter (e.g.
+> "mtdparts=mynand:8m(boot),-(root)ro") and base only whether I write to
+> a UBI device or write files to UBIFS partitions in read-write mode.
 
-> All registers are 32bit R/W unless noted, from section 31.3 of the
-> Vybrid NAND chapter.
+UBI does wear-leveling, it tests block and replaces them.
+UBIFS has for example a journal, which has to be processed at mount time.
+The short answer is yes, both can issue writes.
 
-> Is there an existing driver that can be adapted?  
-
-It looks like the mpc5125 SOC has the same NAND controller; the CPU/SOC
-has support in the tree, but no NAND controller in mpc5125twr.dts.  The
-registers and buffers differ from the mpc5121 NAND controller which is
-in the tree; the difference between the mpc5125+vf610+ColdFireM54418
-NAND controller and the mpc5121 NAND controller look significant to me.
-
-Fwiw,
-Bill Pringlemeir.
+-- 
+Thanks,
+//richard
