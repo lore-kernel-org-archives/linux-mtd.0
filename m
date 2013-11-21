@@ -1,20 +1,18 @@
-From: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
-To: Santosh Shilimkar <santosh.shilimkar@ti.com>, Rob Landley
- <rob@landley.net>, Russell King <linux@arm.linux.org.uk>
-Subject: [PATCH v2 2/2] memory: ti-aemif: add bindings for AEMIF driver
-Date: Thu, 21 Nov 2013 13:30:37 +0200
-Message-ID: <1385033437-13235-3-git-send-email-ivan.khoronzhuk@ti.com>
-In-Reply-To: <1385033437-13235-1-git-send-email-ivan.khoronzhuk@ti.com>
-References: <1385033437-13235-1-git-send-email-ivan.khoronzhuk@ti.com>
+Received: from 71-19-161-253.dedicated.allstream.net ([71.19.161.253]
+ helo=nsa.nbspaymentsolutions.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VjXiJ-0000Zk-SA
+ for linux-mtd@lists.infradead.org; Thu, 21 Nov 2013 17:06:48 +0000
+Received: from DeadDuck (unknown [172.20.177.82])
+ by nsa.nbspaymentsolutions.com (Postfix) with ESMTP id D9E723FC4AD
+ for <linux-mtd@lists.infradead.org>; Thu, 21 Nov 2013 12:08:43 -0500 (EST)
+From: Bill Pringlemeir <bpringlemeir@nbsps.com>
+To: linux-mtd@lists.infradead.org
+Subject: VF610+ColdFireM54418 controller.
+Date: Thu, 21 Nov 2013 12:01:21 -0500
+Message-ID: <87siupheou.fsf@nbsps.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- grygorii.strashko@ti.com, Pawel Moll <pawel.moll@arm.com>,
- Stephen Warren <swarren@wwwdotorg.org>, gregkh@linuxfoundation.org,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@kernel.crashing.org>, Rob Herring <rob.herring@calxeda.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,220 +22,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add bindings for AEMIF controller drivers/memory/ti-aemif.c
 
-Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
----
- .../bindings/memory-controllers/ti-aemif.txt       |  201 ++++++++++++++++++++
- 1 file changed, 201 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/memory-controllers/ti-aemif.txt
+There are some mtd drivers for this NAND flash controller on the web.
 
-diff --git a/Documentation/devicetree/bindings/memory-controllers/ti-aemif.txt b/Documentation/devicetree/bindings/memory-controllers/ti-aemif.txt
-new file mode 100644
-index 0000000..7fc7efe
---- /dev/null
-+++ b/Documentation/devicetree/bindings/memory-controllers/ti-aemif.txt
-@@ -0,0 +1,201 @@
-+* Device tree bindings for Texas instruments AEMIF controller
-+
-+Th Async External Memory Interface (EMIF16/AEMIF) controller is intended to
-+provide a glue-less interface to a variety of asynchronous memory devices like
-+ASRA M, NOR and NAND memory. A total of 256M bytes of any of these memories
-+can be accessed at any given time via four chip selects with 64M byte access
-+per chip select. Synchronous memories such as DDR1 SD RAM, SDR SDRAM
-+and Mobile SDR are not supported.
-+
-+Documentation:
-+Davinci DM646x - http://www.ti.com/lit/ug/sprueq7c/sprueq7c.pdf
-+OMAP-L138 - http://www.ti.com/lit/ug/spruh77a/spruh77a.pdf
-+Kestone - http://www.ti.com/lit/ug/sprugz3a/sprugz3a.pdf
-+
-+Required properties:
-+
-+- compatible:		"ti,davinci-aemif"
-+			"ti,keystone-aemif"
-+			"ti,omap-L138-aemif"
-+
-+- #address-cells:	Must be 2. The first cell is the memory partition
-+			number. The 0 partition is for chip selects. And the
-+			second cell is the offset into the partition, for the 0
-+			partition it corresponds to chip select offset.
-+
-+- #size-cells:		Must be set to 1.
-+
-+- reg:			contains offset/length value for AEMIF control registers
-+			space.
-+
-+- ranges:		Must be set up to reflect the memory layout for 4
-+			chipselects and for AEMIF control range.
-+
-+- clocks:		phandle reference to the controller clock. Required only
-+			if clock tree data present in device tree.
-+			See clock-bindings.txt
-+
-+- clock-names:		clock name. It has to be "aemif". Required only if clock
-+			tree data present in device tree, in another case don't
-+			use it.
-+			See clock-bindings.txt
-+
-+- clock-ranges:		Empty property indicating that child nodes can inherit
-+			named clocks. Required only if clock tree data present
-+			in device tree.
-+			See clock-bindings.txt
-+
-+
-+Child chip-select (cs) nodes contain the memory devices nodes connected to
-+such as NOR (e.g. cfi-flash) and NAND (ti,davinci-nand, see davinci-nand.txt).
-+There might be board specific devices like FPGAs.
-+
-+Required child cs node properties:
-+
-+- compatible:		"ti,aemif-cs"
-+
-+- #address-cells:	Must be 2. The first cell is the memory partition
-+			number. The 0 partition is for chip selects. And the
-+			second cell is the offset into the partition, for the 0
-+			partition it corresponds to chip select offset.
-+
-+- #size-cells:		Must be 1.
-+
-+- ranges:		Empty property indicating that child nodes can inherit
-+			memory layout.
-+
-+- clock-ranges:		Empty property indicating that child nodes can inherit
-+			named clocks. Required only if clock tree data present
-+			in device tree.
-+
-+- ti,cs-chipselect:	number of chipselect. Indicates on the aemif driver
-+			which chipselect is used for accessing the memory. For
-+			compatibles "ti,davinci-aemif" and "ti,keystone-aemif"
-+			it can be in range [0-3]. For compatible
-+			"ti,omap-L138-aemif" range is [2-5].
-+
-+Optional child cs node properties:
-+
-+- ti,bus-width:			width of the asynchronous device's data bus
-+				8 or 16 if not preset 8
-+
-+- ti,cs-ss:		enable/disable select strobe mode
-+				In select strobe mode chip select behaves as
-+				the strobe and is active only during the strobe
-+				period. If present then enable.
-+
-+- ti,cs-ew:		enable/disable extended wait mode
-+				if set, the controller monitors the EMIFWAIT pin
-+				mapped to that chip select to determine if the
-+				device wants to extend the strobe period. If
-+				present then enable.
-+
-+- ti,cs-ta:		minimum turn around time, ns
-+				Time between the end of one asynchronous memory
-+				access and the start of another asynchronous
-+				memory access. This delay is not incurred
-+				between a read followed by read or a write
-+				followed by a write to same chip select.
-+
-+- ti,cs-rsetup:		read setup width, ns
-+				Time between the beginning of a memory cycle
-+				and the activation of read strobe.
-+				Minimum value is 1 (0 treated as 1).
-+
-+- ti,cs-rstobe:		read strobe width, ns
-+				Time between the activation and deactivation of
-+				the read strobe.
-+				Minimum value is 1 (0 treated as 1).
-+
-+- ti,cs-rhold:		read hold width, ns
-+				Time between the deactivation of the read
-+				strobe and the end of the cycle (which may be
-+				either an address change or the deactivation of
-+				the chip select signal.
-+				Minimum value is 1 (0 treated as 1).
-+
-+- ti,cs-wsetup:		write setup width, ns
-+				Time between the beginning of a memory cycle
-+				and the activation of write strobe.
-+				Minimum value is 1 (0 treated as 1).
-+
-+- ti,cs-wstrobe:	write strobe width, ns
-+				Time between the activation and deactivation of
-+				the write strobe.
-+				Minimum value is 1 (0 treated as 1).
-+
-+- ti,cs-whold:		write hold width, ns
-+				Time between the deactivation of the write
-+				strobe and the end of the cycle (which may be
-+				either an address change or the deactivation of
-+				the chip select signal.
-+				Minimum value is 1 (0 treated as 1).
-+
-+If any of the above parameters are absent, current parameter value will be taken
-+from the corresponding HW reg.
-+
-+Example for aemif, davinci nand and nor flash chip select shown below.
-+
-+memory-controller@21000A00 {
-+	compatible = "ti,keystone-aemif";
-+	#address-cells = <2>;
-+	#size-cells = <1>;
-+	clocks = <&clkaemif 0>;
-+	clock-names = "aemif";
-+	clock-ranges;
-+	reg = <0x2100A00 0x00000100>;
-+	ranges = <0 0 0x70000000 0x10000000
-+		  1 0 0x21000A00 0x0000100>;
-+
-+	nand:cs2 {
-+		compatible = "ti,aemif-cs";
-+		#address-cells = <2>;
-+		#size-cells = <1>;
-+		clock-ranges;
-+		ranges;
-+
-+		ti,cs-chipselect = <2>;
-+		/* all timings in nanoseconds */
-+		ti,cs-ta = <0>;
-+		ti,cs-rhold = <7>;
-+		ti,cs-rstrobe = <42>;
-+		ti,cs-rsetup = <14>;
-+		ti,cs-whold = <7>;
-+		ti,cs-wstrobe = <42>;
-+		ti,cs-wsetup = <14>;
-+
-+		nand@0,0x8000000 {
-+			compatible = "ti,davinci-nand";
-+			reg = <0 0x8000000 0x4000000
-+			       1 0x0000000 0x0000100>;
-+
-+			.. see davinci-nand.txt
-+		};
-+	};
-+
-+	nor:cs0 {
-+		compatible = "ti,aemif-cs";
-+		#address-cells = <2>;
-+		#size-cells = <1>;
-+		clock-ranges;
-+		ranges;
-+
-+		ti,cs-chipselect = <0>;
-+		/* all timings in nanoseconds */
-+		ti,cs-ta = <0>;
-+		ti,cs-rhold = <8>;
-+		ti,cs-rstrobe = <40>;
-+		ti,cs-rsetup = <14>;
-+		ti,cs-whold = <7>;
-+		ti,cs-wstrobe = <40>;
-+		ti,cs-wsetup = <14>;
-+		ti,cs-asize = <1>;
-+
-+		flash@0,0x0000000 {
-+			compatible = "cfi-flash";
-+			reg = <0 0x0000000 0x4000000>;
-+
-+			...
-+		};
-+	};
-+};
--- 
-1.7.9.5
+Eg,
+ https://dev.openwrt.org/browser/trunk/target/linux/coldfire/patches/016-Add-nand-driver-support-for-M54418TWR-board.patch?rev=31546
+ https://github.com/Timesys/linux-timesys/blob/3.0-mvf/drivers/mtd/nand/fsl_nfc.c
+
+The device has 9K SRAM for main and spare areas.  The register layout
+is,
+
+  off name      desc
+   00 NFC_CMD1    Flash command 1
+   04 NFC_CMD2    Flash command 2
+   08 NFC_CAR     Column address
+   0C NFC_RAR     Row address 
+   10 NFC_RPT     Flash command repeat
+   14 NFC_RAI     Row address increment
+   18 NFC_SR1     Flash status 1 *read only*
+   1C NFC_SR2     Flash status 2 *read only*
+   20 NFC_DMA_CH1 DMA channel 1 address
+   24 NFC_DMACFG  DMA configuration
+   28 NFC_SWAP    Cach swap
+   2C NFC_SECSZ   Sector size
+   30 NFC_CFG     Flash configuration
+   34 NFC_DMA_CH2 DMA channel 2 address
+   38 NFC_ISR     Interrupt status
+
+All registers are 32bit R/W unless noted, from section 31.3 of the
+Vybrid NAND chapter.
+
+Is anyone working on support for this chip set?  
+Is there an existing driver that can be adapted?  
+Is the 'fsl_nfc' name appropriate?  If not, what name?
+Is there any reason an updated driver won't be considered for the
+mainline?
+
+Thanks,
+Bill Pringlemeir.
