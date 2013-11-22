@@ -1,16 +1,16 @@
-Received: from mail-pa0-f44.google.com ([209.85.220.44])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VjtXB-000314-6S
+Received: from mail-pd0-f182.google.com ([209.85.192.182])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VjtXD-0007tm-65
  for linux-mtd@lists.infradead.org; Fri, 22 Nov 2013 16:24:47 +0000
-Received: by mail-pa0-f44.google.com with SMTP id fa1so1520764pad.3
- for <linux-mtd@lists.infradead.org>; Fri, 22 Nov 2013 08:24:23 -0800 (PST)
+Received: by mail-pd0-f182.google.com with SMTP id v10so1457813pde.27
+ for <linux-mtd@lists.infradead.org>; Fri, 22 Nov 2013 08:24:26 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  dwmw2@infradead.org, linux-mtd@lists.infradead.org, angus.clark@st.com
-Subject: [PATCH 22/23] mtd: st_spi_fsm: Provide the default read/write
+Subject: [PATCH 23/23] mtd: st_spi_fsm: Supply the N25Qxxx specific read
  configurations
-Date: Fri, 22 Nov 2013 16:22:59 +0000
-Message-Id: <1385137380-28968-23-git-send-email-lee.jones@linaro.org>
+Date: Fri, 22 Nov 2013 16:23:00 +0000
+Message-Id: <1385137380-28968-24-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1385137380-28968-1-git-send-email-lee.jones@linaro.org>
 References: <1385137380-28968-1-git-send-email-lee.jones@linaro.org>
 Cc: linus.walleij@linaro.org, Lee Jones <lee.jones@linaro.org>
@@ -23,56 +23,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Message sequences can vary depending on how many pads (lines) are
-required to address the chip (mode & dummy), how many data pads (lines)
-are required to write out to the chip which will determine speed
-amongst other things which are detailed by the SFDP specification. We
-are able to use multiple configurations for each chip, but they need
-to me matched to a device's capabilities. These configurations are
-listed in preference order - most preferred first.
+The N25Qxxx Serial Flash devices required different sequence
+configurations depending on whether they're running in 24bit (3Byte)
+or 32bit (4Byte) mode. We provide those here.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/devices/st_spi_fsm.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+ drivers/mtd/devices/st_spi_fsm.c | 43 ++++++++++++++++++++++++++++++++++++++++
+ drivers/mtd/devices/st_spi_fsm.h | 10 ++++++++++
+ 2 files changed, 53 insertions(+)
 
 diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index 475bbd1..2b7df68 100644
+index 2b7df68..c906739 100644
 --- a/drivers/mtd/devices/st_spi_fsm.c
 +++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -30,6 +30,33 @@
- 
- static struct stfsm_seq stfsm_seq_en_32bit_addr;/* Dynamically populated */
+@@ -57,6 +57,49 @@ static struct seq_rw_config default_write_configs[] = {
+ 	{0x00,			 0,			 0, 0, 0, 0x00, 0, 0},
+ };
  
 +/*
-+ * FSM message sequence configurations:
-+ *
-+ * All configs are presented in order of preference
++ * [N25Qxxx] Configuration
 + */
++#define N25Q_VCR_DUMMY_CYCLES(x)	(((x) & 0xf) << 4)
++#define N25Q_VCR_XIP_DISABLED		((uint8_t)0x1 << 3)
++#define N25Q_VCR_WRAP_CONT		0x3
 +
-+/* Default READ configurations, in order of preference */
-+static struct seq_rw_config default_read_configs[] = {
-+	{FLASH_FLAG_READ_1_4_4, FLASH_CMD_READ_1_4_4,	0, 4, 4, 0x00, 2, 4},
-+	{FLASH_FLAG_READ_1_1_4, FLASH_CMD_READ_1_1_4,	0, 1, 4, 0x00, 4, 0},
-+	{FLASH_FLAG_READ_1_2_2, FLASH_CMD_READ_1_2_2,	0, 2, 2, 0x00, 4, 0},
++/* N25Q 3-byte Address READ configurations
++ *	- 'FAST' variants configured for 8 dummy cycles.
++ *
++ * Note, the number of dummy cycles used for 'FAST' READ operations is
++ * configurable and would normally be tuned according to the READ command and
++ * operating frequency.  However, this applies universally to all 'FAST' READ
++ * commands, including those used by the SPIBoot controller, and remains in
++ * force until the device is power-cycled.  Since the SPIBoot controller is
++ * hard-wired to use 8 dummy cycles, we must configure the device to also use 8
++ * cycles.
++ */
++static struct seq_rw_config n25q_read3_configs[] = {
++	{FLASH_FLAG_READ_1_4_4, FLASH_CMD_READ_1_4_4,	0, 4, 4, 0x00, 0, 8},
++	{FLASH_FLAG_READ_1_1_4, FLASH_CMD_READ_1_1_4,	0, 1, 4, 0x00, 0, 8},
++	{FLASH_FLAG_READ_1_2_2, FLASH_CMD_READ_1_2_2,	0, 2, 2, 0x00, 0, 8},
 +	{FLASH_FLAG_READ_1_1_2, FLASH_CMD_READ_1_1_2,	0, 1, 2, 0x00, 0, 8},
 +	{FLASH_FLAG_READ_FAST,	FLASH_CMD_READ_FAST,	0, 1, 1, 0x00, 0, 8},
-+	{FLASH_FLAG_READ_WRITE, FLASH_CMD_READ,		0, 1, 1, 0x00, 0, 0},
++	{FLASH_FLAG_READ_WRITE, FLASH_CMD_READ,	        0, 1, 1, 0x00, 0, 0},
 +	{0x00,			0,			0, 0, 0, 0x00, 0, 0},
 +};
 +
-+/* Default WRITE configurations */
-+static struct seq_rw_config default_write_configs[] = {
-+	{FLASH_FLAG_WRITE_1_4_4, FLASH_CMD_WRITE_1_4_4, 1, 4, 4, 0x00, 0, 0},
-+	{FLASH_FLAG_WRITE_1_1_4, FLASH_CMD_WRITE_1_1_4, 1, 1, 4, 0x00, 0, 0},
-+	{FLASH_FLAG_WRITE_1_2_2, FLASH_CMD_WRITE_1_2_2, 1, 2, 2, 0x00, 0, 0},
-+	{FLASH_FLAG_WRITE_1_1_2, FLASH_CMD_WRITE_1_1_2, 1, 1, 2, 0x00, 0, 0},
-+	{FLASH_FLAG_READ_WRITE,  FLASH_CMD_WRITE,       1, 1, 1, 0x00, 0, 0},
-+	{0x00,			 0,			 0, 0, 0, 0x00, 0, 0},
++/* N25Q 4-byte Address READ configurations
++ *	- use special 4-byte address READ commands (reduces overheads, and
++ *        reduces risk of hitting watchdog reset issues).
++ *	- 'FAST' variants configured for 8 dummy cycles (see note above.)
++ */
++static struct seq_rw_config n25q_read4_configs[] = {
++	{FLASH_FLAG_READ_1_4_4, FLASH_CMD_READ4_1_4_4,	0, 4, 4, 0x00, 0, 8},
++	{FLASH_FLAG_READ_1_1_4, FLASH_CMD_READ4_1_1_4,	0, 1, 4, 0x00, 0, 8},
++	{FLASH_FLAG_READ_1_2_2, FLASH_CMD_READ4_1_2_2,	0, 2, 2, 0x00, 0, 8},
++	{FLASH_FLAG_READ_1_1_2, FLASH_CMD_READ4_1_1_2,	0, 1, 2, 0x00, 0, 8},
++	{FLASH_FLAG_READ_FAST,	FLASH_CMD_READ4_FAST,	0, 1, 1, 0x00, 0, 8},
++	{FLASH_FLAG_READ_WRITE, FLASH_CMD_READ4,	0, 1, 1, 0x00, 0, 0},
++	{0x00,			0,			0, 0, 0, 0x00, 0, 0},
 +};
 +
  static struct stfsm_seq stfsm_seq_read_jedec = {
  	.data_size = TRANSFER_SIZE(8),
  	.seq_opc[0] = (SEQ_OPC_PADS_1 |
+diff --git a/drivers/mtd/devices/st_spi_fsm.h b/drivers/mtd/devices/st_spi_fsm.h
+index 8eb9e20..163c09f 100644
+--- a/drivers/mtd/devices/st_spi_fsm.h
++++ b/drivers/mtd/devices/st_spi_fsm.h
+@@ -229,6 +229,15 @@
+ #define FLASH_CMD_READ4_1_1_4	0x6c
+ #define FLASH_CMD_READ4_1_4_4	0xec
+ 
++/*
++ * Flags to tweak operation of default read/write/erase routines
++ */
++#define CFG_READ_TOGGLE_32BIT_ADDR	0x00000001
++#define CFG_WRITE_TOGGLE_32BIT_ADDR	0x00000002
++#define CFG_WRITE_EX_32BIT_ADDR_DELAY	0x00000004
++#define CFG_ERASESEC_TOGGLE_32BIT_ADDR	0x00000008
++#define CFG_S25FL_CHECK_ERROR_FLAGS	0x00000010
++
+ struct stfsm {
+ 	struct device		*dev;
+ 	void __iomem		*base;
+@@ -237,6 +246,7 @@ struct stfsm {
+ 	struct mutex		lock;
+ 	struct flash_info 	*info;
+ 
++	uint32_t		configuration;
+ 	uint32_t		fifo_dir_delay;
+ 	bool			booted_from_spi;
+ 	bool			reset_signal;
 -- 
 1.8.1.2
