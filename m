@@ -1,27 +1,16 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VjpAx-0004GB-CQ
- for linux-mtd@lists.infradead.org; Fri, 22 Nov 2013 11:45:32 +0000
-Date: Fri, 22 Nov 2013 08:45:10 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Hans Zhang <zhanghonghui@innofidei.com>
-Subject: Re: [PATCH] Make the mtdblock read/write skip the bad nand sector
-Message-ID: <20131122114509.GB2414@localhost>
-References: <1385024065-29965-1-git-send-email-zhanghonghui@innofidei.com>
- <CACQ1gAiLesYEWmHkivAF=t8ekCFM=yDDyzkJTtduavNjp1g6wA@mail.gmail.com>
- <528EB1E3.7030101@innofidei.com> <20131122015237.GB3509@localhost>
- <528EBD0B.5010006@innofidei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <528EBD0B.5010006@innofidei.com>
-Cc: Richard Genoud <richard.genoud@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- zhouguangming@innofidei.com
+Received: from mail-pd0-f172.google.com ([209.85.192.172])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VjtWA-0002qV-L1
+ for linux-mtd@lists.infradead.org; Fri, 22 Nov 2013 16:23:43 +0000
+Received: by mail-pd0-f172.google.com with SMTP id g10so1456584pdj.17
+ for <linux-mtd@lists.infradead.org>; Fri, 22 Nov 2013 08:23:21 -0800 (PST)
+From: Lee Jones <lee.jones@linaro.org>
+To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ dwmw2@infradead.org, linux-mtd@lists.infradead.org, angus.clark@st.com
+Subject: [PATCH 00/23] mtd: st_spi_fsm: Add new device
+Date: Fri, 22 Nov 2013 16:22:37 +0000
+Message-Id: <1385137380-28968-1-git-send-email-lee.jones@linaro.org>
+Cc: linus.walleij@linaro.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,32 +20,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Nov 22, 2013 at 10:10:19AM +0800, Hans Zhang wrote:
-> On 2013/11/22 9:52, Ezequiel Garcia wrote:
-> > On Fri, Nov 22, 2013 at 09:22:43AM +0800, Hans Zhang wrote:
-> >> On 2013/11/21 18:59, Richard Genoud wrote:
-> >>
-> >> Here's my scenario, I want to write nand through mtdblock by dd command
-> > You could get some better support by explaining why do you want to write
-> > to a NAND through mtdblock. It sounds a bit ackward to me, but I'm sure
-> > you have a good reason for it!
-> >
-> > Let's hear it :-)
-> 
-> Thanks for your reply.
-> This is for my embed system upgrade, I reserved one nand partition for filesystem
-> environment which will load to DDR while uboot booting.
-> This filesystem.uboot file should be able to read both by uboot and kernel, and
-> maybe written by uboot and kernel. There will be no filesystems upon the nand in
-> case the loader may not support some filesystem types while uboot booting.
-> 
-> Seems that the trimmed environment of OS has get rid of the mtd-tools, So the dd
-> command was the most convenience tools to use by hand.
-> 
+The first bunch of these patches have been on the MLs before, but 
+didn't receive a great deal of attention for the most part. We are
+a little more featureful this time however. We can now successfully
+setup and configure the N25Q256. We still can't read/write/erase
+it though. I'll start work on that next week and will provide it in
+the next instalment.
 
-I still don't understand why are you using mtdblock. Why can't you write
-through the char device?
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+ arch/arm/boot/dts/stih416-b2105.dts     |  14 +++
+ arch/arm/boot/dts/stih416-pinctrl.dtsi  |  12 ++
+ drivers/mtd/devices/Kconfig             |   7 ++
+ drivers/mtd/devices/Makefile            |   1 +
+ drivers/mtd/devices/serial_flash_cmds.h |  91 ++++++++++++++
+ drivers/mtd/devices/st_spi_fsm.c        | 737 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ drivers/mtd/devices/st_spi_fsm.h        | 419 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 7 files changed, 1281 insertions(+)
