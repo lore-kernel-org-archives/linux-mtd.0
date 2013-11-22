@@ -1,18 +1,28 @@
-Received: from mail-pd0-f172.google.com ([209.85.192.172])
- by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VjtWT-0004m0-36
- for linux-mtd@lists.infradead.org; Fri, 22 Nov 2013 16:24:04 +0000
-Received: by mail-pd0-f172.google.com with SMTP id g10so1448523pdj.3
- for <linux-mtd@lists.infradead.org>; Fri, 22 Nov 2013 08:23:39 -0800 (PST)
-From: Lee Jones <lee.jones@linaro.org>
-To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- dwmw2@infradead.org, linux-mtd@lists.infradead.org, angus.clark@st.com
-Subject: [PATCH 07/23] mtd: st_spi_fsm: Add support for JEDEC ID extraction
-Date: Fri, 22 Nov 2013 16:22:44 +0000
-Message-Id: <1385137380-28968-8-git-send-email-lee.jones@linaro.org>
-In-Reply-To: <1385137380-28968-1-git-send-email-lee.jones@linaro.org>
-References: <1385137380-28968-1-git-send-email-lee.jones@linaro.org>
-Cc: linus.walleij@linaro.org, Lee Jones <lee.jones@linaro.org>
+Message-ID: <528F968F.40306@ti.com>
+Date: Fri, 22 Nov 2013 12:38:23 -0500
+From: Santosh Shilimkar <santosh.shilimkar@ti.com>
+MIME-Version: 1.0
+To: "Nori, Sekhar" <nsekhar@ti.com>
+Subject: Re: [PATCH 10/12] mtd: nand: davinci: don't set timings if AEMIF
+ is used
+References: <1384187188-5776-1-git-send-email-ivan.khoronzhuk@ti.com>,
+ <1384187188-5776-11-git-send-email-ivan.khoronzhuk@ti.com>
+ <4F5844B3A985794BA902E12C070812375F8D53@DNCE04.ent.ti.com>
+ <528307F0.6000805@ti.com> <52838941.4060207@ti.com> <5284ABB9.70608@ti.com>
+ <5284DFE7.70308@ti.com> <528E3DD4.7030607@ti.com>
+In-Reply-To: <528E3DD4.7030607@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "Strashko,
+ Grygorii" <grygorii.strashko@ti.com>, Russell King <linux@arm.linux.org.uk>,
+ Pawel Moll <pawel.moll@arm.com>, Stephen Warren <swarren@wwwdotorg.org>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@kernel.crashing.org>, Rob Herring <rob.herring@calxeda.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Rob Landley <rob@landley.net>, "Khoronzhuk, Ivan" <ivan.khoronzhuk@ti.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,95 +32,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Once we start supporting devices it will be handy go detect them
-dynamically. This will be done using the chip's unique JEDEC ID. This
-patch allows us to extract a device's JEDEC ID using the a predefined
-FSM register write sequence.
+On Thursday 21 November 2013 12:07 PM, Nori, Sekhar wrote:
+> On 11/14/2013 8:06 PM, Santosh Shilimkar wrote:
+>> On Thursday 14 November 2013 05:53 AM, Nori, Sekhar wrote:
+>>> On Wednesday 13 November 2013 07:44 PM, Santosh Shilimkar wrote:
+>>>> On Wednesday 13 November 2013 12:02 AM, Sekhar Nori wrote:
+>>>>> On Monday 11 November 2013 10:40 PM, Khoronzhuk, Ivan wrote:
+>>>>>> If Davinci AEMIF is used we don't need to set timings and bus width.
+>>>>>> It is done by AEMIF driver (drivers/memory/davinci-aemfi.c).
+>>>>>>
+>>>>>> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+>>>>>> ---
+>>>>>>  drivers/mtd/nand/davinci_nand.c |   22 +++++++++++++++-------
+>>>>>>  1 file changed, 15 insertions(+), 7 deletions(-)
+>>>>>>
+>>>>>> diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
+>>>>>> index 4705214..879e915 100644
+>>>>>> --- a/drivers/mtd/nand/davinci_nand.c
+>>>>>> +++ b/drivers/mtd/nand/davinci_nand.c
+>>>>>> @@ -742,27 +742,35 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
+>>>>>>                 goto err_clk_enable;
+>>>>>>         }
+>>>>>>
+>>>>>> +#if !IS_ENABLED(CONFIG_TI_DAVINCI_AEMIF)
+>>>>>
+>>>>> This is a hack! Just because AEMIF driver is enabled, it does not
+>>>>> guarantee that the timings have been setup by it. Instead of configuring
+>>>>> timings in two drivers, why not just convert everyone over to use the
+>>>>> new driver. Dont worry about breaking old platforms, I will help test
+>>>>> and ack them.
+>>>>>
+>>>> How about you take a stab at and convert the DaVinci code over to make
+>>>> use of new driver. We are trying to re-use as much as possible from the
+>>>> common drivers and also making an option so that the DaVinci arch can
+>>>> move over to these drivers if they want to.
+>>>
+>>> Sure I could.
+>>>
+>> Thanks
+>>
+>>> Ivan,
+>>>
+>>> The AEMIF driver does not use platfrom_data currently. Is that something
+>>> you can add or you want me to take a stab at that as well?
+>>>
+>> The AEMIF new driver is device tree only and thats the direction. So the
+>> better thing would be to convert Davinci to DT and then make use of this
+>> new driver. Thats how most of the new drivers used on arm socs are
+>> moving. Adding platform data to new driver is a step in backward
+>> direction so I would want to avoid that.
+> 
+> Yes, that would be the ideal way. But the reality is that there is close
+> to zero chance of all the DaVinci platforms using AEMIF ever getting
+> converted to DT. This means that we will never be able to get rid of
+> this piece of code.
+>
+Well that means some of those platforms support will get deprecated
+soon considering other basic frameworks like irq, timer wheel etc
+is assuming the DT direction. But its your call because if you
+want those platforms to live, you need to convert them to DT.
+ 
+> I do agree platform data is not the direction you want to take on ARM
+> but at the same time its not really a deprecated mechanism as far as the
+> broader kernel is concerned.
+> 
+> So, can we consider adding platform data mechanism to the AEMIF driver?
+> 
+Sorry but answer is "NO". If the above hack is really bothering you,
+we can actually rip out the above code in question and move it
+to mach-davinci. Infact thats the best direction to make the
+mtd nandn driver independent of any platform quirks(dt, pdata etc)
 
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/mtd/devices/st_spi_fsm.c | 55 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 55 insertions(+)
+Ivan already has a patch to do that and he is going to post
+that patch. With that patch, we won't need $subject patch.
 
-diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index 73c55b4..f937329 100644
---- a/drivers/mtd/devices/st_spi_fsm.c
-+++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -25,6 +25,22 @@
- 
- #include "st_spi_fsm.h"
- 
-+static struct stfsm_seq stfsm_seq_read_jedec = {
-+	.data_size = TRANSFER_SIZE(8),
-+	.seq_opc[0] = (SEQ_OPC_PADS_1 |
-+		       SEQ_OPC_CYCLES(8) |
-+		       SEQ_OPC_OPCODE(FLASH_CMD_RDID)),
-+	.seq = {
-+		STFSM_INST_CMD1,
-+		STFSM_INST_DATA_READ,
-+		STFSM_INST_STOP,
-+	},
-+	.seq_cfg = (SEQ_CFG_PADS_1 |
-+		    SEQ_CFG_READNOTWRITE |
-+		    SEQ_CFG_CSDEASSERT |
-+		    SEQ_CFG_STARTSEQ),
-+};
-+
- static inline int stfsm_is_idle(struct stfsm *fsm)
- {
- 	return readl(fsm->base + SPI_FAST_SEQ_STA) & 0x10;
-@@ -91,6 +107,42 @@ static void stfsm_read_fifo(struct stfsm *fsm, uint32_t *buf,
- 	}
- }
- 
-+static void stfsm_read_jedec(struct stfsm *fsm, uint8_t *const jedec)
-+{
-+	const struct stfsm_seq *seq = &stfsm_seq_read_jedec;
-+	uint32_t tmp[2];
-+
-+	stfsm_load_seq(fsm, seq);
-+
-+	stfsm_read_fifo(fsm, tmp, 8);
-+
-+	memcpy(jedec, tmp, 5);
-+
-+	stfsm_wait_seq(fsm);
-+}
-+
-+static struct flash_info * stfsm_jedec_probe(struct stfsm *fsm)
-+{
-+	u16                     ext_jedec;
-+	u32			jedec;
-+	u8			id[5];
-+
-+	stfsm_read_jedec(fsm, id);
-+
-+	jedec     = id[0] << 16 | id[1] << 8 | id[2];
-+	/*
-+	 * JEDEC also defines an optional "extended device information"
-+	 * string for after vendor-specific data, after the three bytes
-+	 * we use here. Supporting some chips might require using it.
-+	 */
-+	ext_jedec = id[3] << 8  | id[4];
-+
-+	dev_dbg(fsm->dev, "JEDEC =  0x%08x [%02x %02x %02x %02x %02x]\n",
-+		jedec, id[0], id[1], id[2], id[3], id[4]);
-+
-+	return NULL;
-+}
-+
- static void stfsm_clear_fifo(struct stfsm *fsm)
- {
- 	uint32_t avail;
-@@ -243,6 +295,9 @@ static int stfsm_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
-+	/* Detect SPI FLASH device */
-+	stfsm_jedec_probe(fsm);
-+
- 	platform_set_drvdata(pdev, fsm);
- 
- 	fsm->mtd.dev.parent	= &pdev->dev;
--- 
-1.8.1.2
+Regards,
+Santosh
