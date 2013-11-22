@@ -1,16 +1,15 @@
-Received: from mail-pa0-f51.google.com ([209.85.220.51])
+Received: from mail-pd0-f172.google.com ([209.85.192.172])
  by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VjtWc-0004mK-Gy
- for linux-mtd@lists.infradead.org; Fri, 22 Nov 2013 16:24:11 +0000
-Received: by mail-pa0-f51.google.com with SMTP id fa1so1501756pad.24
- for <linux-mtd@lists.infradead.org>; Fri, 22 Nov 2013 08:23:48 -0800 (PST)
+ id 1VjtWT-0004m0-36
+ for linux-mtd@lists.infradead.org; Fri, 22 Nov 2013 16:24:04 +0000
+Received: by mail-pd0-f172.google.com with SMTP id g10so1448523pdj.3
+ for <linux-mtd@lists.infradead.org>; Fri, 22 Nov 2013 08:23:39 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  dwmw2@infradead.org, linux-mtd@lists.infradead.org, angus.clark@st.com
-Subject: [PATCH 10/23] mtd: st_spi_fsm: Dynamically setup flash device based
- on JEDEC ID
-Date: Fri, 22 Nov 2013 16:22:47 +0000
-Message-Id: <1385137380-28968-11-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 07/23] mtd: st_spi_fsm: Add support for JEDEC ID extraction
+Date: Fri, 22 Nov 2013 16:22:44 +0000
+Message-Id: <1385137380-28968-8-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1385137380-28968-1-git-send-email-lee.jones@linaro.org>
 References: <1385137380-28968-1-git-send-email-lee.jones@linaro.org>
 Cc: linus.walleij@linaro.org, Lee Jones <lee.jones@linaro.org>
@@ -23,92 +22,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Using previously added infrastructure we can now extract a device's JEDEC
-ID, compare it to a list of known and supported devices and make assumptions
-based on known characteristics of a given chip.
+Once we start supporting devices it will be handy go detect them
+dynamically. This will be done using the chip's unique JEDEC ID. This
+patch allows us to extract a device's JEDEC ID using the a predefined
+FSM register write sequence.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/devices/st_spi_fsm.c | 26 +++++++++++++++++++++++++-
- drivers/mtd/devices/st_spi_fsm.h |  1 +
- 2 files changed, 26 insertions(+), 1 deletion(-)
+ drivers/mtd/devices/st_spi_fsm.c | 55 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 55 insertions(+)
 
 diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index ddab76f..a66dbac 100644
+index 73c55b4..f937329 100644
 --- a/drivers/mtd/devices/st_spi_fsm.c
 +++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -124,6 +124,7 @@ static void stfsm_read_jedec(struct stfsm *fsm, uint8_t *const jedec)
+@@ -25,6 +25,22 @@
  
- static struct flash_info * stfsm_jedec_probe(struct stfsm *fsm)
- {
-+	struct flash_info	*info;
- 	u16                     ext_jedec;
- 	u32			jedec;
- 	u8			id[5];
-@@ -141,6 +142,15 @@ static struct flash_info * stfsm_jedec_probe(struct stfsm *fsm)
- 	dev_dbg(fsm->dev, "JEDEC =  0x%08x [%02x %02x %02x %02x %02x]\n",
- 		jedec, id[0], id[1], id[2], id[3], id[4]);
+ #include "st_spi_fsm.h"
  
-+	for (info = flash_types; info->name; info++) {
-+		if (info->jedec_id == jedec) {
-+			if (info->ext_id && info->ext_id != ext_jedec)
-+				continue;
-+			return info;
-+		}
-+	}
-+	dev_err(fsm->dev, "Unrecognized JEDEC id %06x\n", jedec);
++static struct stfsm_seq stfsm_seq_read_jedec = {
++	.data_size = TRANSFER_SIZE(8),
++	.seq_opc[0] = (SEQ_OPC_PADS_1 |
++		       SEQ_OPC_CYCLES(8) |
++		       SEQ_OPC_OPCODE(FLASH_CMD_RDID)),
++	.seq = {
++		STFSM_INST_CMD1,
++		STFSM_INST_DATA_READ,
++		STFSM_INST_STOP,
++	},
++	.seq_cfg = (SEQ_CFG_PADS_1 |
++		    SEQ_CFG_READNOTWRITE |
++		    SEQ_CFG_CSDEASSERT |
++		    SEQ_CFG_STARTSEQ),
++};
 +
- 	return NULL;
+ static inline int stfsm_is_idle(struct stfsm *fsm)
+ {
+ 	return readl(fsm->base + SPI_FAST_SEQ_STA) & 0x10;
+@@ -91,6 +107,42 @@ static void stfsm_read_fifo(struct stfsm *fsm, uint32_t *buf,
+ 	}
  }
  
-@@ -251,6 +261,7 @@ static int stfsm_init(struct stfsm *fsm)
- static int stfsm_probe(struct platform_device *pdev)
++static void stfsm_read_jedec(struct stfsm *fsm, uint8_t *const jedec)
++{
++	const struct stfsm_seq *seq = &stfsm_seq_read_jedec;
++	uint32_t tmp[2];
++
++	stfsm_load_seq(fsm, seq);
++
++	stfsm_read_fifo(fsm, tmp, 8);
++
++	memcpy(jedec, tmp, 5);
++
++	stfsm_wait_seq(fsm);
++}
++
++static struct flash_info * stfsm_jedec_probe(struct stfsm *fsm)
++{
++	u16                     ext_jedec;
++	u32			jedec;
++	u8			id[5];
++
++	stfsm_read_jedec(fsm, id);
++
++	jedec     = id[0] << 16 | id[1] << 8 | id[2];
++	/*
++	 * JEDEC also defines an optional "extended device information"
++	 * string for after vendor-specific data, after the three bytes
++	 * we use here. Supporting some chips might require using it.
++	 */
++	ext_jedec = id[3] << 8  | id[4];
++
++	dev_dbg(fsm->dev, "JEDEC =  0x%08x [%02x %02x %02x %02x %02x]\n",
++		jedec, id[0], id[1], id[2], id[3], id[4]);
++
++	return NULL;
++}
++
+ static void stfsm_clear_fifo(struct stfsm *fsm)
  {
- 	struct device_node *np = pdev->dev.of_node;
-+	struct flash_info *info;
- 	struct resource *res;
- 	struct stfsm *fsm;
- 	int ret;
-@@ -297,7 +308,11 @@ static int stfsm_probe(struct platform_device *pdev)
+ 	uint32_t avail;
+@@ -243,6 +295,9 @@ static int stfsm_probe(struct platform_device *pdev)
+ 		return ret;
  	}
  
- 	/* Detect SPI FLASH device */
--	stfsm_jedec_probe(fsm);
-+	info = stfsm_jedec_probe(fsm);
-+	if (!info)
-+		return -ENODEV;
++	/* Detect SPI FLASH device */
++	stfsm_jedec_probe(fsm);
 +
-+	fsm->info = info;
- 
  	platform_set_drvdata(pdev, fsm);
  
-@@ -306,6 +321,15 @@ static int stfsm_probe(struct platform_device *pdev)
- 	fsm->mtd.writesize	= 4;
- 	fsm->mtd.writebufsize	= fsm->mtd.writesize;
- 	fsm->mtd.flags		= MTD_CAP_NORFLASH;
-+	fsm->mtd.size		= info->sector_size * info->n_sectors;
-+	fsm->mtd.erasesize	= info->sector_size;
-+
-+	dev_err(&pdev->dev,
-+		"Found serial flash device: %s\n"
-+		" size = %llx (%lldMiB) erasesize = 0x%08x (%uKiB)\n",
-+		info->name,
-+		(long long)fsm->mtd.size, (long long)(fsm->mtd.size >> 20),
-+		fsm->mtd.erasesize, (fsm->mtd.erasesize >> 10));
- 
- 	return mtd_device_parse_register(&fsm->mtd, NULL, NULL, NULL, 0);
- }
-diff --git a/drivers/mtd/devices/st_spi_fsm.h b/drivers/mtd/devices/st_spi_fsm.h
-index e4e5bfa..60341f2 100644
---- a/drivers/mtd/devices/st_spi_fsm.h
-+++ b/drivers/mtd/devices/st_spi_fsm.h
-@@ -235,6 +235,7 @@ struct stfsm {
- 	struct resource		*region;
- 	struct mtd_info		mtd;
- 	struct mutex		lock;
-+	struct flash_info 	*info;
- 
- 	uint32_t		fifo_dir_delay;
- };
+ 	fsm->mtd.dev.parent	= &pdev->dev;
 -- 
 1.8.1.2
