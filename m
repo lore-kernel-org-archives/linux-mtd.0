@@ -1,16 +1,16 @@
-Received: from mail-pb0-f52.google.com ([209.85.160.52])
+Received: from mail-pb0-f43.google.com ([209.85.160.43])
  by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VjtXE-0005CW-EM
- for linux-mtd@lists.infradead.org; Fri, 22 Nov 2013 16:24:49 +0000
-Received: by mail-pb0-f52.google.com with SMTP id uo5so1508417pbc.11
- for <linux-mtd@lists.infradead.org>; Fri, 22 Nov 2013 08:24:20 -0800 (PST)
+ id 1VjtX6-00057P-PU
+ for linux-mtd@lists.infradead.org; Fri, 22 Nov 2013 16:24:41 +0000
+Received: by mail-pb0-f43.google.com with SMTP id rq2so1502661pbb.16
+ for <linux-mtd@lists.infradead.org>; Fri, 22 Nov 2013 08:24:14 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  dwmw2@infradead.org, linux-mtd@lists.infradead.org, angus.clark@st.com
-Subject: [PATCH 21/23] mtd: st_spi_fsm: Update the flash Volatile
- Configuration Register
-Date: Fri, 22 Nov 2013 16:22:58 +0000
-Message-Id: <1385137380-28968-22-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 19/23] mtd: st_spi_fsm: Add a check to if the chip can handle
+ an SoC reset
+Date: Fri, 22 Nov 2013 16:22:56 +0000
+Message-Id: <1385137380-28968-20-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1385137380-28968-1-git-send-email-lee.jones@linaro.org>
 References: <1385137380-28968-1-git-send-email-lee.jones@linaro.org>
 Cc: linus.walleij@linaro.org, Lee Jones <lee.jones@linaro.org>
@@ -23,64 +23,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The FSM Serial Flash Controller is driven by issuing a standard set of
-register writes we call a message sequence. This patch supplies a method
-to prepare the message sequence responsible for updating a chip's VCR.
+Based on information we can obtain though platform specific data and/or
+chip capabilities we are able to determine whether or not we can handle
+a SoC reset or not. To find out why this is important please read the
+comment provided in the patch.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/devices/st_spi_fsm.c | 32 ++++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+ drivers/mtd/devices/st_spi_fsm.c | 38 ++++++++++++++++++++++++++++++++++++++
+ drivers/mtd/devices/st_spi_fsm.h |  2 ++
+ 2 files changed, 40 insertions(+)
 
 diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index b99b4c1..475bbd1 100644
+index 85abf9a..9a66c99 100644
 --- a/drivers/mtd/devices/st_spi_fsm.c
 +++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -90,6 +90,23 @@ static int stfsm_n25q_prepare_en_32bit_addr_seq(struct stfsm_seq *seq)
- 	return 0;
+@@ -128,6 +128,40 @@ static void stfsm_wait_seq(struct stfsm *fsm)
+ 	dev_err(fsm->dev, "timeout on sequence completion\n");
  }
  
-+static struct stfsm_seq stfsm_seq_wrvcr = {
-+	.seq_opc[0] = (SEQ_OPC_PADS_1 | SEQ_OPC_CYCLES(8) |
-+		       SEQ_OPC_OPCODE(FLASH_CMD_WREN) | SEQ_OPC_CSDEASSERT),
-+	.seq_opc[1] = (SEQ_OPC_PADS_1 | SEQ_OPC_CYCLES(8) |
-+		       SEQ_OPC_OPCODE(FLASH_CMD_WRVCR)),
-+	.seq = {
-+		STFSM_INST_CMD1,
-+		STFSM_INST_CMD2,
-+		STFSM_INST_STA_WR1,
-+		STFSM_INST_STOP,
-+	},
-+	.seq_cfg = (SEQ_CFG_PADS_1 |
-+		    SEQ_CFG_READNOTWRITE |
-+		    SEQ_CFG_CSDEASSERT |
-+		    SEQ_CFG_STARTSEQ),
-+};
-+
- static inline int stfsm_is_idle(struct stfsm *fsm)
- {
- 	return readl(fsm->base + SPI_FAST_SEQ_STA) & 0x10;
-@@ -147,6 +164,21 @@ static int stfsm_enter_32bit_addr(struct stfsm *fsm, int enter)
- 	return 0;
- }
- 
-+static int stfsm_wrvcr(struct stfsm *fsm, uint8_t data)
++/*
++ * SoC reset on 'boot-from-spi' systems
++ *
++ * Certain modes of operation cause the Flash device to enter a particular state
++ * for a period of time (e.g. 'Erase Sector', 'Quad Enable', and 'Enter 32-bit
++ * Addr' commands).  On boot-from-spi systems, it is important to consider what
++ * happens if a warm reset occurs during this period.  The SPIBoot controller
++ * assumes that Flash device is in its default reset state, 24-bit address mode,
++ * and ready to accept commands.  This can be achieved using some form of
++ * on-board logic/controller to force a device POR in response to a SoC-level
++ * reset or by making use of the device reset signal if available (limited
++ * number of devices only).
++ *
++ * Failure to take such precautions can cause problems following a warm reset.
++ * For some operations (e.g. ERASE), there is little that can be done.  For
++ * other modes of operation (e.g. 32-bit addressing), options are often
++ * available that can help minimise the window in which a reset could cause a
++ * problem.
++ *
++ */
++static bool stfsm_can_handle_soc_reset(struct stfsm *fsm)
 +{
-+	struct stfsm_seq *seq = &stfsm_seq_wrvcr;
++	/* Reset signal is available on the board and supported by the device */
++	if (fsm->reset_signal && fsm->info->flags & FLASH_FLAG_RESET)
++		return true;
 +
-+	dev_dbg(fsm->dev, "writing VCR 0x%02x\n", data);
++	/* Board-level logic forces a power-on-reset */
++	if (fsm->reset_por)
++		return true;
 +
-+	seq->status = (STA_DATA_BYTE1(data) | STA_PADS_1 | STA_CSDEASSERT);
-+
-+	stfsm_load_seq(fsm, seq);
-+
-+	stfsm_wait_seq(fsm);
-+
-+	return 0;
++	/* Reset is not properly handled and may result in failure to reboot */
++	return false;
 +}
 +
- /*
-  * SoC reset on 'boot-from-spi' systems
-  *
+ /* Configure 'addr_cfg' according to addressing mode */
+ static void stfsm_prepare_erasesec_seq(struct stfsm *fsm,
+ 				       struct stfsm_seq *seq)
+@@ -442,6 +476,10 @@ static void stfsm_fetch_platform_configs(struct platform_device *pdev)
+ 		goto boot_device_fail;
+ 	}
+ 
++	fsm->reset_signal = of_property_read_bool(np, "st,reset-signal");
++
++	fsm->reset_por = of_property_read_bool(np, "st,reset-por");
++
+ 	/* Where in the syscon the boot device information lives */
+ 	ret = of_property_read_u32(np, "boot-device-reg", &boot_device_reg);
+ 	if (ret)
+diff --git a/drivers/mtd/devices/st_spi_fsm.h b/drivers/mtd/devices/st_spi_fsm.h
+index 2e12bff..8eb9e20 100644
+--- a/drivers/mtd/devices/st_spi_fsm.h
++++ b/drivers/mtd/devices/st_spi_fsm.h
+@@ -239,6 +239,8 @@ struct stfsm {
+ 
+ 	uint32_t		fifo_dir_delay;
+ 	bool			booted_from_spi;
++	bool			reset_signal;
++	bool			reset_por;
+ };
+ 
+ struct stfsm_seq {
 -- 
 1.8.1.2
