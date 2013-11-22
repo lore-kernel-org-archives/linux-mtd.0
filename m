@@ -1,16 +1,16 @@
-Received: from mail-pb0-f48.google.com ([209.85.160.48])
+Received: from mail-pa0-f44.google.com ([209.85.220.44])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VjtX5-0002ze-29
- for linux-mtd@lists.infradead.org; Fri, 22 Nov 2013 16:24:41 +0000
-Received: by mail-pb0-f48.google.com with SMTP id md12so1496043pbc.21
- for <linux-mtd@lists.infradead.org>; Fri, 22 Nov 2013 08:24:17 -0800 (PST)
+ id 1VjtXB-000314-6S
+ for linux-mtd@lists.infradead.org; Fri, 22 Nov 2013 16:24:47 +0000
+Received: by mail-pa0-f44.google.com with SMTP id fa1so1520764pad.3
+ for <linux-mtd@lists.infradead.org>; Fri, 22 Nov 2013 08:24:23 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  dwmw2@infradead.org, linux-mtd@lists.infradead.org, angus.clark@st.com
-Subject: [PATCH 20/23] mtd: st_spi_fsm: Provide a method to put the chip into
- 32bit addressing mode
-Date: Fri, 22 Nov 2013 16:22:57 +0000
-Message-Id: <1385137380-28968-21-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 22/23] mtd: st_spi_fsm: Provide the default read/write
+ configurations
+Date: Fri, 22 Nov 2013 16:22:59 +0000
+Message-Id: <1385137380-28968-23-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1385137380-28968-1-git-send-email-lee.jones@linaro.org>
 References: <1385137380-28968-1-git-send-email-lee.jones@linaro.org>
 Cc: linus.walleij@linaro.org, Lee Jones <lee.jones@linaro.org>
@@ -23,53 +23,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Most Serial Flash chips support 24bit addressing as a default but more
-recent incarnations can support 32bit. Based on information provided
-though platform specific data and capabilities we can determine whether
-or not our current chip can. This patch provides a means to setup the
-FSM message sequence to put the chip into 32bit mode.
+Message sequences can vary depending on how many pads (lines) are
+required to address the chip (mode & dummy), how many data pads (lines)
+are required to write out to the chip which will determine speed
+amongst other things which are detailed by the SFDP specification. We
+are able to use multiple configurations for each chip, but they need
+to me matched to a device's capabilities. These configurations are
+listed in preference order - most preferred first.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/devices/st_spi_fsm.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ drivers/mtd/devices/st_spi_fsm.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
 diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index 9a66c99..b99b4c1 100644
+index 475bbd1..2b7df68 100644
 --- a/drivers/mtd/devices/st_spi_fsm.c
 +++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -28,6 +28,8 @@
- #include "st_spi_fsm.h"
- #include "serial_flash_cmds.h"
+@@ -30,6 +30,33 @@
  
-+static struct stfsm_seq stfsm_seq_en_32bit_addr;/* Dynamically populated */
+ static struct stfsm_seq stfsm_seq_en_32bit_addr;/* Dynamically populated */
+ 
++/*
++ * FSM message sequence configurations:
++ *
++ * All configs are presented in order of preference
++ */
++
++/* Default READ configurations, in order of preference */
++static struct seq_rw_config default_read_configs[] = {
++	{FLASH_FLAG_READ_1_4_4, FLASH_CMD_READ_1_4_4,	0, 4, 4, 0x00, 2, 4},
++	{FLASH_FLAG_READ_1_1_4, FLASH_CMD_READ_1_1_4,	0, 1, 4, 0x00, 4, 0},
++	{FLASH_FLAG_READ_1_2_2, FLASH_CMD_READ_1_2_2,	0, 2, 2, 0x00, 4, 0},
++	{FLASH_FLAG_READ_1_1_2, FLASH_CMD_READ_1_1_2,	0, 1, 2, 0x00, 0, 8},
++	{FLASH_FLAG_READ_FAST,	FLASH_CMD_READ_FAST,	0, 1, 1, 0x00, 0, 8},
++	{FLASH_FLAG_READ_WRITE, FLASH_CMD_READ,		0, 1, 1, 0x00, 0, 0},
++	{0x00,			0,			0, 0, 0, 0x00, 0, 0},
++};
++
++/* Default WRITE configurations */
++static struct seq_rw_config default_write_configs[] = {
++	{FLASH_FLAG_WRITE_1_4_4, FLASH_CMD_WRITE_1_4_4, 1, 4, 4, 0x00, 0, 0},
++	{FLASH_FLAG_WRITE_1_1_4, FLASH_CMD_WRITE_1_1_4, 1, 1, 4, 0x00, 0, 0},
++	{FLASH_FLAG_WRITE_1_2_2, FLASH_CMD_WRITE_1_2_2, 1, 2, 2, 0x00, 0, 0},
++	{FLASH_FLAG_WRITE_1_1_2, FLASH_CMD_WRITE_1_1_2, 1, 1, 2, 0x00, 0, 0},
++	{FLASH_FLAG_READ_WRITE,  FLASH_CMD_WRITE,       1, 1, 1, 0x00, 0, 0},
++	{0x00,			 0,			 0, 0, 0, 0x00, 0, 0},
++};
 +
  static struct stfsm_seq stfsm_seq_read_jedec = {
  	.data_size = TRANSFER_SIZE(8),
  	.seq_opc[0] = (SEQ_OPC_PADS_1 |
-@@ -128,6 +130,23 @@ static void stfsm_wait_seq(struct stfsm *fsm)
- 	dev_err(fsm->dev, "timeout on sequence completion\n");
- }
- 
-+static int stfsm_enter_32bit_addr(struct stfsm *fsm, int enter)
-+{
-+	struct stfsm_seq *seq = &stfsm_seq_en_32bit_addr;
-+	uint32_t cmd = enter ? FLASH_CMD_EN4B_ADDR : FLASH_CMD_EX4B_ADDR;
-+
-+	seq->seq_opc[0] = (SEQ_OPC_PADS_1 |
-+			   SEQ_OPC_CYCLES(8) |
-+			   SEQ_OPC_OPCODE(cmd) |
-+			   SEQ_OPC_CSDEASSERT);
-+
-+	stfsm_load_seq(fsm, seq);
-+
-+	stfsm_wait_seq(fsm);
-+
-+	return 0;
-+}
-+
- /*
-  * SoC reset on 'boot-from-spi' systems
-  *
 -- 
 1.8.1.2
