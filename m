@@ -1,16 +1,16 @@
-Received: from mail-pa0-f47.google.com ([209.85.220.47])
+Received: from mail-pa0-f51.google.com ([209.85.220.51])
  by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VjtWf-0004oA-E5
- for linux-mtd@lists.infradead.org; Fri, 22 Nov 2013 16:24:14 +0000
-Received: by mail-pa0-f47.google.com with SMTP id kq14so1499171pab.6
- for <linux-mtd@lists.infradead.org>; Fri, 22 Nov 2013 08:23:51 -0800 (PST)
+ id 1VjtWc-0004mK-Gy
+ for linux-mtd@lists.infradead.org; Fri, 22 Nov 2013 16:24:11 +0000
+Received: by mail-pa0-f51.google.com with SMTP id fa1so1501756pad.24
+ for <linux-mtd@lists.infradead.org>; Fri, 22 Nov 2013 08:23:48 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  dwmw2@infradead.org, linux-mtd@lists.infradead.org, angus.clark@st.com
-Subject: [PATCH 11/23] ARM: STi: Add support for the FSM Serial Flash
- Controller
-Date: Fri, 22 Nov 2013 16:22:48 +0000
-Message-Id: <1385137380-28968-12-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 10/23] mtd: st_spi_fsm: Dynamically setup flash device based
+ on JEDEC ID
+Date: Fri, 22 Nov 2013 16:22:47 +0000
+Message-Id: <1385137380-28968-11-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1385137380-28968-1-git-send-email-lee.jones@linaro.org>
 References: <1385137380-28968-1-git-send-email-lee.jones@linaro.org>
 Cc: linus.walleij@linaro.org, Lee Jones <lee.jones@linaro.org>
@@ -23,62 +23,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Here we add the necessary device nodes required for successful device
-probing and Pinctrl setup for the FSM.
+Using previously added infrastructure we can now extract a device's JEDEC
+ID, compare it to a list of known and supported devices and make assumptions
+based on known characteristics of a given chip.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- arch/arm/boot/dts/stih416-b2105.dts    | 14 ++++++++++++++
- arch/arm/boot/dts/stih416-pinctrl.dtsi | 12 ++++++++++++
- 2 files changed, 26 insertions(+)
+ drivers/mtd/devices/st_spi_fsm.c | 26 +++++++++++++++++++++++++-
+ drivers/mtd/devices/st_spi_fsm.h |  1 +
+ 2 files changed, 26 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/stih416-b2105.dts b/arch/arm/boot/dts/stih416-b2105.dts
-index e518eb0..7acdfdf 100644
---- a/arch/arm/boot/dts/stih416-b2105.dts
-+++ b/arch/arm/boot/dts/stih416-b2105.dts
-@@ -33,6 +33,20 @@
- 			status = "okay";
- 		};
+diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
+index ddab76f..a66dbac 100644
+--- a/drivers/mtd/devices/st_spi_fsm.c
++++ b/drivers/mtd/devices/st_spi_fsm.c
+@@ -124,6 +124,7 @@ static void stfsm_read_jedec(struct stfsm *fsm, uint8_t *const jedec)
  
-+		/* FSM */
-+		spifsm: spifsm@fe902000{
-+		        compatible         = "st,spi-fsm", "simple-bus";
-+		        reg                =  <0xfe902000 0x1000>;
-+		        reg-names          = "spi-fsm";
-+		        pinctrl-0          = <&pinctrl_fsm>;
-+
-+			st,syscfg	   = <&syscfg_rear>;
-+		        st,boot-device-reg = <0x958>;
-+		        st,boot-device-spi = <0x1a>;
-+
-+		        status = "okay";
-+		};
-+
- 		leds {
- 			compatible	= "gpio-leds";
- 			fp_led {
-diff --git a/arch/arm/boot/dts/stih416-pinctrl.dtsi b/arch/arm/boot/dts/stih416-pinctrl.dtsi
-index 10bb4df..9a48710 100644
---- a/arch/arm/boot/dts/stih416-pinctrl.dtsi
-+++ b/arch/arm/boot/dts/stih416-pinctrl.dtsi
-@@ -235,6 +235,18 @@
- 				};
- 			};
+ static struct flash_info * stfsm_jedec_probe(struct stfsm *fsm)
+ {
++	struct flash_info	*info;
+ 	u16                     ext_jedec;
+ 	u32			jedec;
+ 	u8			id[5];
+@@ -141,6 +142,15 @@ static struct flash_info * stfsm_jedec_probe(struct stfsm *fsm)
+ 	dev_dbg(fsm->dev, "JEDEC =  0x%08x [%02x %02x %02x %02x %02x]\n",
+ 		jedec, id[0], id[1], id[2], id[3], id[4]);
  
-+			fsm {
-+				pinctrl_fsm: fsm {
-+					st,pins {
-+						spi-fsm-clk     = <&PIO12 2     OUT     ALT1>;
-+						spi-fsm-cs      = <&PIO12 3     OUT     ALT1>;
-+						spi-fsm-mosi    = <&PIO12 4     OUT     ALT1>;
-+						spi-fsm-miso    = <&PIO12 5     IN      ALT1>;
-+						spi-fsm-hol     = <&PIO12 6     OUT     ALT1>;
-+						spi-fsm-wp      = <&PIO12 7     OUT     ALT1>;
-+					};
-+				};
-+			};
- 		};
++	for (info = flash_types; info->name; info++) {
++		if (info->jedec_id == jedec) {
++			if (info->ext_id && info->ext_id != ext_jedec)
++				continue;
++			return info;
++		}
++	}
++	dev_err(fsm->dev, "Unrecognized JEDEC id %06x\n", jedec);
++
+ 	return NULL;
+ }
  
- 		pin-controller-rear {
+@@ -251,6 +261,7 @@ static int stfsm_init(struct stfsm *fsm)
+ static int stfsm_probe(struct platform_device *pdev)
+ {
+ 	struct device_node *np = pdev->dev.of_node;
++	struct flash_info *info;
+ 	struct resource *res;
+ 	struct stfsm *fsm;
+ 	int ret;
+@@ -297,7 +308,11 @@ static int stfsm_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	/* Detect SPI FLASH device */
+-	stfsm_jedec_probe(fsm);
++	info = stfsm_jedec_probe(fsm);
++	if (!info)
++		return -ENODEV;
++
++	fsm->info = info;
+ 
+ 	platform_set_drvdata(pdev, fsm);
+ 
+@@ -306,6 +321,15 @@ static int stfsm_probe(struct platform_device *pdev)
+ 	fsm->mtd.writesize	= 4;
+ 	fsm->mtd.writebufsize	= fsm->mtd.writesize;
+ 	fsm->mtd.flags		= MTD_CAP_NORFLASH;
++	fsm->mtd.size		= info->sector_size * info->n_sectors;
++	fsm->mtd.erasesize	= info->sector_size;
++
++	dev_err(&pdev->dev,
++		"Found serial flash device: %s\n"
++		" size = %llx (%lldMiB) erasesize = 0x%08x (%uKiB)\n",
++		info->name,
++		(long long)fsm->mtd.size, (long long)(fsm->mtd.size >> 20),
++		fsm->mtd.erasesize, (fsm->mtd.erasesize >> 10));
+ 
+ 	return mtd_device_parse_register(&fsm->mtd, NULL, NULL, NULL, 0);
+ }
+diff --git a/drivers/mtd/devices/st_spi_fsm.h b/drivers/mtd/devices/st_spi_fsm.h
+index e4e5bfa..60341f2 100644
+--- a/drivers/mtd/devices/st_spi_fsm.h
++++ b/drivers/mtd/devices/st_spi_fsm.h
+@@ -235,6 +235,7 @@ struct stfsm {
+ 	struct resource		*region;
+ 	struct mtd_info		mtd;
+ 	struct mutex		lock;
++	struct flash_info 	*info;
+ 
+ 	uint32_t		fifo_dir_delay;
+ };
 -- 
 1.8.1.2
