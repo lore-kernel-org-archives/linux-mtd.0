@@ -1,16 +1,16 @@
-Received: from mail-pb0-f43.google.com ([209.85.160.43])
+Received: from mail-pd0-f172.google.com ([209.85.192.172])
  by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VjtX6-00057P-PU
- for linux-mtd@lists.infradead.org; Fri, 22 Nov 2013 16:24:41 +0000
-Received: by mail-pb0-f43.google.com with SMTP id rq2so1502661pbb.16
- for <linux-mtd@lists.infradead.org>; Fri, 22 Nov 2013 08:24:14 -0800 (PST)
+ id 1VjtWh-0004qc-Uu
+ for linux-mtd@lists.infradead.org; Fri, 22 Nov 2013 16:24:16 +0000
+Received: by mail-pd0-f172.google.com with SMTP id g10so1457285pdj.17
+ for <linux-mtd@lists.infradead.org>; Fri, 22 Nov 2013 08:23:54 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  dwmw2@infradead.org, linux-mtd@lists.infradead.org, angus.clark@st.com
-Subject: [PATCH 19/23] mtd: st_spi_fsm: Add a check to if the chip can handle
- an SoC reset
-Date: Fri, 22 Nov 2013 16:22:56 +0000
-Message-Id: <1385137380-28968-20-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 12/23] mtd: st_spi_fsm: Search for preferred FSM message
+ sequence configurations
+Date: Fri, 22 Nov 2013 16:22:49 +0000
+Message-Id: <1385137380-28968-13-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1385137380-28968-1-git-send-email-lee.jones@linaro.org>
 References: <1385137380-28968-1-git-send-email-lee.jones@linaro.org>
 Cc: linus.walleij@linaro.org, Lee Jones <lee.jones@linaro.org>
@@ -23,85 +23,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Based on information we can obtain though platform specific data and/or
-chip capabilities we are able to determine whether or not we can handle
-a SoC reset or not. To find out why this is important please read the
-comment provided in the patch.
+Here we provide a means to traverse though all supplied FSM message
+sequence configurations and pick one based on our chip's capabilities.
+The first one we match will be the preferred one, as they are
+presented in order of preference.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/devices/st_spi_fsm.c | 38 ++++++++++++++++++++++++++++++++++++++
- drivers/mtd/devices/st_spi_fsm.h |  2 ++
- 2 files changed, 40 insertions(+)
+ drivers/mtd/devices/st_spi_fsm.c | 15 +++++++++++++++
+ drivers/mtd/devices/st_spi_fsm.h | 12 ++++++++++++
+ 2 files changed, 27 insertions(+)
 
 diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index 85abf9a..9a66c99 100644
+index a66dbac..0b32fef 100644
 --- a/drivers/mtd/devices/st_spi_fsm.c
 +++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -128,6 +128,40 @@ static void stfsm_wait_seq(struct stfsm *fsm)
+@@ -82,6 +82,21 @@ static void stfsm_wait_seq(struct stfsm *fsm)
  	dev_err(fsm->dev, "timeout on sequence completion\n");
  }
  
-+/*
-+ * SoC reset on 'boot-from-spi' systems
-+ *
-+ * Certain modes of operation cause the Flash device to enter a particular state
-+ * for a period of time (e.g. 'Erase Sector', 'Quad Enable', and 'Enter 32-bit
-+ * Addr' commands).  On boot-from-spi systems, it is important to consider what
-+ * happens if a warm reset occurs during this period.  The SPIBoot controller
-+ * assumes that Flash device is in its default reset state, 24-bit address mode,
-+ * and ready to accept commands.  This can be achieved using some form of
-+ * on-board logic/controller to force a device POR in response to a SoC-level
-+ * reset or by making use of the device reset signal if available (limited
-+ * number of devices only).
-+ *
-+ * Failure to take such precautions can cause problems following a warm reset.
-+ * For some operations (e.g. ERASE), there is little that can be done.  For
-+ * other modes of operation (e.g. 32-bit addressing), options are often
-+ * available that can help minimise the window in which a reset could cause a
-+ * problem.
-+ *
-+ */
-+static bool stfsm_can_handle_soc_reset(struct stfsm *fsm)
++/* Search for preferred configuration based on available flags */
++static struct seq_rw_config *
++stfsm_search_seq_rw_configs(struct stfsm *fsm,
++			    struct seq_rw_config cfgs[])
 +{
-+	/* Reset signal is available on the board and supported by the device */
-+	if (fsm->reset_signal && fsm->info->flags & FLASH_FLAG_RESET)
-+		return true;
++	struct seq_rw_config *config;
++	int flags = fsm->info->flags;
 +
-+	/* Board-level logic forces a power-on-reset */
-+	if (fsm->reset_por)
-+		return true;
++	for (config = cfgs; cfgs->cmd != 0; config++)
++		if ((config->flags & flags) == config->flags)
++			return config;
 +
-+	/* Reset is not properly handled and may result in failure to reboot */
-+	return false;
++	return NULL;
 +}
 +
- /* Configure 'addr_cfg' according to addressing mode */
- static void stfsm_prepare_erasesec_seq(struct stfsm *fsm,
- 				       struct stfsm_seq *seq)
-@@ -442,6 +476,10 @@ static void stfsm_fetch_platform_configs(struct platform_device *pdev)
- 		goto boot_device_fail;
- 	}
- 
-+	fsm->reset_signal = of_property_read_bool(np, "st,reset-signal");
-+
-+	fsm->reset_por = of_property_read_bool(np, "st,reset-por");
-+
- 	/* Where in the syscon the boot device information lives */
- 	ret = of_property_read_u32(np, "boot-device-reg", &boot_device_reg);
- 	if (ret)
+ static void stfsm_read_fifo(struct stfsm *fsm, uint32_t *buf,
+ 			    const uint32_t size)
+ {
 diff --git a/drivers/mtd/devices/st_spi_fsm.h b/drivers/mtd/devices/st_spi_fsm.h
-index 2e12bff..8eb9e20 100644
+index 60341f2..737ecd9 100644
 --- a/drivers/mtd/devices/st_spi_fsm.h
 +++ b/drivers/mtd/devices/st_spi_fsm.h
-@@ -239,6 +239,8 @@ struct stfsm {
+@@ -254,6 +254,18 @@ struct stfsm_seq {
+ } __attribute__((__packed__, aligned(4)));
+ #define STFSM_SEQ_SIZE sizeof(struct stfsm_seq)
  
- 	uint32_t		fifo_dir_delay;
- 	bool			booted_from_spi;
-+	bool			reset_signal;
-+	bool			reset_por;
- };
- 
- struct stfsm_seq {
++/* Parameters to configure a READ or WRITE FSM sequence */
++struct seq_rw_config {
++	uint32_t	flags;		/* flags to support config */
++	uint8_t		cmd;		/* FLASH command */
++	int		write;		/* Write Sequence */
++	uint8_t		addr_pads;	/* No. of addr pads (MODE & DUMMY) */
++	uint8_t		data_pads;	/* No. of data pads */
++	uint8_t		mode_data;	/* MODE data */
++	uint8_t		mode_cycles;	/* No. of MODE cycles */
++	uint8_t		dummy_cycles;	/* No. of DUMMY cycles */
++};
++
+ /* SPI Flash Device Table */
+ struct flash_info {
+ 	char		*name;
 -- 
 1.8.1.2
