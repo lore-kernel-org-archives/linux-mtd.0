@@ -1,16 +1,16 @@
-Received: from mail-pd0-f172.google.com ([209.85.192.172])
+Received: from mail-pb0-f48.google.com ([209.85.160.48])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VjtWy-0002ye-OT
- for linux-mtd@lists.infradead.org; Fri, 22 Nov 2013 16:24:38 +0000
-Received: by mail-pd0-f172.google.com with SMTP id g10so1457678pdj.17
- for <linux-mtd@lists.infradead.org>; Fri, 22 Nov 2013 08:24:11 -0800 (PST)
+ id 1VjtX5-0002ze-29
+ for linux-mtd@lists.infradead.org; Fri, 22 Nov 2013 16:24:41 +0000
+Received: by mail-pb0-f48.google.com with SMTP id md12so1496043pbc.21
+ for <linux-mtd@lists.infradead.org>; Fri, 22 Nov 2013 08:24:17 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  dwmw2@infradead.org, linux-mtd@lists.infradead.org, angus.clark@st.com
-Subject: [PATCH 18/23] mtd: st_spi_fsm: Prepare read/write sequences according
- to configuration
-Date: Fri, 22 Nov 2013 16:22:55 +0000
-Message-Id: <1385137380-28968-19-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 20/23] mtd: st_spi_fsm: Provide a method to put the chip into
+ 32bit addressing mode
+Date: Fri, 22 Nov 2013 16:22:57 +0000
+Message-Id: <1385137380-28968-21-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1385137380-28968-1-git-send-email-lee.jones@linaro.org>
 References: <1385137380-28968-1-git-send-email-lee.jones@linaro.org>
 Cc: linus.walleij@linaro.org, Lee Jones <lee.jones@linaro.org>
@@ -23,42 +23,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Firstly we search for our preference read/write configuration based on a
-given chip's capabilities. Then we actually set up the message sequence
-accordingly.
+Most Serial Flash chips support 24bit addressing as a default but more
+recent incarnations can support 32bit. Based on information provided
+though platform specific data and capabilities we can determine whether
+or not our current chip can. This patch provides a means to setup the
+FSM message sequence to put the chip into 32bit mode.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/devices/st_spi_fsm.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ drivers/mtd/devices/st_spi_fsm.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
 diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index a56fb98..85abf9a 100644
+index 9a66c99..b99b4c1 100644
 --- a/drivers/mtd/devices/st_spi_fsm.c
 +++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -225,6 +225,23 @@ static void stfsm_prepare_rw_seq(struct stfsm *fsm,
- 	seq->seq[i++] = STFSM_INST_STOP;
+@@ -28,6 +28,8 @@
+ #include "st_spi_fsm.h"
+ #include "serial_flash_cmds.h"
+ 
++static struct stfsm_seq stfsm_seq_en_32bit_addr;/* Dynamically populated */
++
+ static struct stfsm_seq stfsm_seq_read_jedec = {
+ 	.data_size = TRANSFER_SIZE(8),
+ 	.seq_opc[0] = (SEQ_OPC_PADS_1 |
+@@ -128,6 +130,23 @@ static void stfsm_wait_seq(struct stfsm *fsm)
+ 	dev_err(fsm->dev, "timeout on sequence completion\n");
  }
  
-+static int stfsm_search_prepare_rw_seq(struct stfsm *fsm,
-+				       struct stfsm_seq *seq,
-+				       struct seq_rw_config *cfgs)
++static int stfsm_enter_32bit_addr(struct stfsm *fsm, int enter)
 +{
-+	struct seq_rw_config *config;
++	struct stfsm_seq *seq = &stfsm_seq_en_32bit_addr;
++	uint32_t cmd = enter ? FLASH_CMD_EN4B_ADDR : FLASH_CMD_EX4B_ADDR;
 +
-+	config = stfsm_search_seq_rw_configs(fsm, cfgs);
-+	if (!config) {
-+		dev_err(fsm->dev, "failed to find suitable config\n");
-+		return -EINVAL;
-+	}
++	seq->seq_opc[0] = (SEQ_OPC_PADS_1 |
++			   SEQ_OPC_CYCLES(8) |
++			   SEQ_OPC_OPCODE(cmd) |
++			   SEQ_OPC_CSDEASSERT);
 +
-+	stfsm_prepare_rw_seq(fsm, seq, config);
++	stfsm_load_seq(fsm, seq);
++
++	stfsm_wait_seq(fsm);
 +
 +	return 0;
 +}
 +
- static void stfsm_read_fifo(struct stfsm *fsm, uint32_t *buf,
- 			    const uint32_t size)
- {
+ /*
+  * SoC reset on 'boot-from-spi' systems
+  *
 -- 
 1.8.1.2
