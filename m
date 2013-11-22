@@ -1,28 +1,32 @@
-Message-ID: <528F968F.40306@ti.com>
-Date: Fri, 22 Nov 2013 12:38:23 -0500
-From: Santosh Shilimkar <santosh.shilimkar@ti.com>
+Received: from 6.mo2.mail-out.ovh.net ([87.98.165.38]
+ helo=mo2.mail-out.ovh.net)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Vjvg6-0007P6-V0
+ for linux-mtd@lists.infradead.org; Fri, 22 Nov 2013 18:42:07 +0000
+Received: from mail437.ha.ovh.net (gw6.ovh.net [213.251.189.206])
+ by mo2.mail-out.ovh.net (Postfix) with SMTP id B711FFF9F06
+ for <linux-mtd@lists.infradead.org>; Fri, 22 Nov 2013 19:41:45 +0100 (CET)
+Date: Fri, 22 Nov 2013 19:42:47 +0100
+From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+To: "ivan.khoronzhuk" <ivan.khoronzhuk@ti.com>,
+ Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH 2/2] memory: ti-aemif: add bindings for AEMIF driver
+Message-ID: <20131122184247.GO14627@ns203013.ovh.net>
+References: <1384962416-14862-1-git-send-email-ivan.khoronzhuk@ti.com>
+ <1384962416-14862-3-git-send-email-ivan.khoronzhuk@ti.com>
+ <20131120182102.GK14627@ns203013.ovh.net> <528D076A.8070806@ti.com>
 MIME-Version: 1.0
-To: "Nori, Sekhar" <nsekhar@ti.com>
-Subject: Re: [PATCH 10/12] mtd: nand: davinci: don't set timings if AEMIF
- is used
-References: <1384187188-5776-1-git-send-email-ivan.khoronzhuk@ti.com>,
- <1384187188-5776-11-git-send-email-ivan.khoronzhuk@ti.com>
- <4F5844B3A985794BA902E12C070812375F8D53@DNCE04.ent.ti.com>
- <528307F0.6000805@ti.com> <52838941.4060207@ti.com> <5284ABB9.70608@ti.com>
- <5284DFE7.70308@ti.com> <528E3DD4.7030607@ti.com>
-In-Reply-To: <528E3DD4.7030607@ti.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Cc: Mark Rutland <mark.rutland@arm.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "Strashko,
- Grygorii" <grygorii.strashko@ti.com>, Russell King <linux@arm.linux.org.uk>,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <528D076A.8070806@ti.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ grygorii.strashko@ti.com, Russell King <linux@arm.linux.org.uk>,
  Pawel Moll <pawel.moll@arm.com>, Stephen Warren <swarren@wwwdotorg.org>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ gregkh@linuxfoundation.org, Ian Campbell <ijc+devicetree@hellion.org.uk>,
  Kumar Gala <galak@kernel.crashing.org>, Rob Herring <rob.herring@calxeda.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Rob Landley <rob@landley.net>, "Khoronzhuk, Ivan" <ivan.khoronzhuk@ti.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+ linux-kernel@vger.kernel.org, Santosh Shilimkar <santosh.shilimkar@ti.com>,
+ Rob Landley <rob@landley.net>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,79 +36,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 21 November 2013 12:07 PM, Nori, Sekhar wrote:
-> On 11/14/2013 8:06 PM, Santosh Shilimkar wrote:
->> On Thursday 14 November 2013 05:53 AM, Nori, Sekhar wrote:
->>> On Wednesday 13 November 2013 07:44 PM, Santosh Shilimkar wrote:
->>>> On Wednesday 13 November 2013 12:02 AM, Sekhar Nori wrote:
->>>>> On Monday 11 November 2013 10:40 PM, Khoronzhuk, Ivan wrote:
->>>>>> If Davinci AEMIF is used we don't need to set timings and bus width.
->>>>>> It is done by AEMIF driver (drivers/memory/davinci-aemfi.c).
->>>>>>
->>>>>> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
->>>>>> ---
->>>>>>  drivers/mtd/nand/davinci_nand.c |   22 +++++++++++++++-------
->>>>>>  1 file changed, 15 insertions(+), 7 deletions(-)
->>>>>>
->>>>>> diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
->>>>>> index 4705214..879e915 100644
->>>>>> --- a/drivers/mtd/nand/davinci_nand.c
->>>>>> +++ b/drivers/mtd/nand/davinci_nand.c
->>>>>> @@ -742,27 +742,35 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
->>>>>>                 goto err_clk_enable;
->>>>>>         }
->>>>>>
->>>>>> +#if !IS_ENABLED(CONFIG_TI_DAVINCI_AEMIF)
->>>>>
->>>>> This is a hack! Just because AEMIF driver is enabled, it does not
->>>>> guarantee that the timings have been setup by it. Instead of configuring
->>>>> timings in two drivers, why not just convert everyone over to use the
->>>>> new driver. Dont worry about breaking old platforms, I will help test
->>>>> and ack them.
->>>>>
->>>> How about you take a stab at and convert the DaVinci code over to make
->>>> use of new driver. We are trying to re-use as much as possible from the
->>>> common drivers and also making an option so that the DaVinci arch can
->>>> move over to these drivers if they want to.
->>>
->>> Sure I could.
->>>
->> Thanks
->>
->>> Ivan,
->>>
->>> The AEMIF driver does not use platfrom_data currently. Is that something
->>> you can add or you want me to take a stab at that as well?
->>>
->> The AEMIF new driver is device tree only and thats the direction. So the
->> better thing would be to convert Davinci to DT and then make use of this
->> new driver. Thats how most of the new drivers used on arm socs are
->> moving. Adding platform data to new driver is a step in backward
->> direction so I would want to avoid that.
+On 21:03 Wed 20 Nov     , ivan.khoronzhuk wrote:
+> On 11/20/2013 08:21 PM, Jean-Christophe PLAGNIOL-VILLARD wrote:
+> >> +				the chip select signal.
+> >> +				Minimum value is 1 (0 treated as 1).
+> >> +
+> >> +- ti,cs-wsetup:		write setup width, ns
+> >> +				Time between the beginning of a memory cycle
+> >> +				and the activation of write strobe.
+> >> +				Minimum value is 1 (0 treated as 1).
+> >> +
+> >> +- ti,cs-wstrobe:	write strobe width, ns
+> >> +				Time between the activation and deactivation of
+> >> +				the write strobe.
+> >> +				Minimum value is 1 (0 treated as 1).
+> >> +
+> >> +- ti,cs-whold:		write hold width, ns
+> >> +				Time between the deactivation of the write
+> >> +				strobe and the end of the cycle (which may be
+> >> +				either an address change or the deactivation of
+> >> +				the chip select signal.
+> >> +				Minimum value is 1 (0 treated as 1).
+> >> +
+> >> +If any of the above parameters are absent, current parameter value will be taken
+> >> +from the corresponding HW reg.
+> >> +
+> >> +The name for cs node must be in format csN, where N is the cs number.
+> > 
+> > this is wired we should use reg instead to represent the cs as done for SPI
+> > or a an other property
+> > 
+> > Best Regards,
+> > J.
+> > 
 > 
-> Yes, that would be the ideal way. But the reality is that there is close
-> to zero chance of all the DaVinci platforms using AEMIF ever getting
-> converted to DT. This means that we will never be able to get rid of
-> this piece of code.
->
-Well that means some of those platforms support will get deprecated
-soon considering other basic frameworks like irq, timer wheel etc
-is assuming the DT direction. But its your call because if you
-want those platforms to live, you need to convert them to DT.
- 
-> I do agree platform data is not the direction you want to take on ARM
-> but at the same time its not really a deprecated mechanism as far as the
-> broader kernel is concerned.
+> Ok, I will add new property cs-chipselect like following :
 > 
-> So, can we consider adding platform data mechanism to the AEMIF driver?
+> ti,cs-chipselect:	number of chipselect. Indicates on the
+> 			aemif driver which chipselect is used
+> 			for accessing the memory.
+> 			For compatibles "ti,davinci-aemif" and 
+> 			"ti,keystone-aemif" it can be in range [0-3].
+> 			For compatible "ti,omap-L138-aemif" range is [2-5].
 > 
-Sorry but answer is "NO". If the above hack is really bothering you,
-we can actually rip out the above code in question and move it
-to mach-davinci. Infact thats the best direction to make the
-mtd nandn driver independent of any platform quirks(dt, pdata etc)
+> Is it OK?
 
-Ivan already has a patch to do that and he is going to post
-that patch. With that patch, we won't need $subject patch.
+yes
 
-Regards,
-Santosh
+I just have one issue the whole memory concept
+
+for me we should do as done on pinctrl have a phandle on the device that
+require it and handle it at device core level
+
+as the memory controller is not necessarely on the same bus as the memory
+device them selves
+
+Best Regards,
+J.
+> 
+> -- 
+> Regards,
+> Ivan Khoronzhuk
