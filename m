@@ -1,20 +1,26 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vjfns-0003Dn-Oj
- for linux-mtd@lists.infradead.org; Fri, 22 Nov 2013 01:45:05 +0000
-Date: Thu, 21 Nov 2013 22:44:51 -0300
+ id 1VjfvP-0003J8-U8
+ for linux-mtd@lists.infradead.org; Fri, 22 Nov 2013 01:52:52 +0000
+Date: Thu, 21 Nov 2013 22:52:38 -0300
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Fernando Silveira <fsilveira@gmail.com>
-Subject: Re: UBI attach, UBIFS mount and blocks writing
-Message-ID: <20131122014450.GA3509@localhost>
-References: <CAGZNvdpag-DDUwYKGYaLs17St6P_LRk7EKDtPzuLcsGT324YTw@mail.gmail.com>
+To: Hans Zhang <zhanghonghui@innofidei.com>
+Subject: Re: [PATCH] Make the mtdblock read/write skip the bad nand sector
+Message-ID: <20131122015237.GB3509@localhost>
+References: <1385024065-29965-1-git-send-email-zhanghonghui@innofidei.com>
+ <CACQ1gAiLesYEWmHkivAF=t8ekCFM=yDDyzkJTtduavNjp1g6wA@mail.gmail.com>
+ <528EB1E3.7030101@innofidei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAGZNvdpag-DDUwYKGYaLs17St6P_LRk7EKDtPzuLcsGT324YTw@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <528EB1E3.7030101@innofidei.com>
+Cc: Richard Genoud <richard.genoud@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ zhouguangming@innofidei.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,15 +30,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fernando,
-
-On Thu, Nov 21, 2013 at 03:33:28PM -0200, Fernando Silveira wrote:
+On Fri, Nov 22, 2013 at 09:22:43AM +0800, Hans Zhang wrote:
+> On 2013/11/21 18:59, Richard Genoud wrote:
 > 
-> I'm worried about it because my flash has a VERY low limit for
-> erasing/writing blocks and I'd like to avoid passing read-only
+> Here's my scenario, I want to write nand through mtdblock by dd command
 
-Which kind of flash is this?
+You could get some better support by explaining why do you want to write
+to a NAND through mtdblock. It sounds a bit ackward to me, but I'm sure
+you have a good reason for it!
 
+Let's hear it :-)
 -- 
 Ezequiel García, Free Electrons
 Embedded Linux, Kernel and Android Engineering
