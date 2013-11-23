@@ -1,20 +1,17 @@
-Received: from chs3.ampledns.com ([216.246.23.156])
+Received: from mail-lb0-f193.google.com ([209.85.217.193])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vk1Wp-0008Oa-2d
- for linux-mtd@lists.infradead.org; Sat, 23 Nov 2013 00:56:55 +0000
-Message-ID: <20131123003855.58211wk377k13egv@www.pamelagreson.co.za>
-Date: Sat, 23 Nov 2013 00:38:55 +0200
-From: Pamela Collins Greson <collinz42@gmail.com>
-To: undisclosed-recipients:;
-Subject: Hej =?iso-8859-1?b?S+RyYQ==?=
+ id 1VkAaC-000423-Jf
+ for linux-mtd@lists.infradead.org; Sat, 23 Nov 2013 10:37:02 +0000
+Received: by mail-lb0-f193.google.com with SMTP id w7so405827lbi.0
+ for <linux-mtd@lists.infradead.org>; Sat, 23 Nov 2013 02:36:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=ISO-8859-1;
- DelSp="Yes";
- format="flowed"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-Reply-To: pamelagreson@live.com
+Date: Sat, 23 Nov 2013 11:36:37 +0100
+Message-ID: <CAES10a717CqU=CM7sp160n9k2z+rs7xRjJ1-0ygc_+a+ofv0Lw@mail.gmail.com>
+Subject: PRIVATE MESSAGE
+From: OSBORNES SOLICITORS LLP <djholditch@crimson.ua.edu>
+To: undisclosed-recipients:;
+Content-Type: text/plain; charset=ISO-8859-1
+Reply-To: Osbornes@mail2world.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,15 +21,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hej Kära,
-   Jag är Pamela Greson med namn, jag är från Norge :)
-Jag är romantisk, och singel.
-Jag söker en trevlig och snygg man ..!
-Jag fick e-post från Sverige gul sida.
-Svara på min mail, och jag kommer att skicka mycket bilder av mig och  
-berätta om mig själv.
-Tycker du om kyssar?
-Tycker du 69?
-Talar du engelska?
-Skriv mig snart!
-Pamela Greson
+-- 
+This is to inform you that an inheritance was bequeathed in your
+favour. Letters were posted to you to this regards, but returned
+undelivered. Kindly contact me once you recieve this email for more
+information.
+
+Sincerely
+Barr Mark Freedman
