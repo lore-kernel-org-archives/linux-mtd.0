@@ -1,23 +1,21 @@
-From: Arnd Bergmann <arnd@arndb.de>
-To: linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 1/3] mtd: nand: davinci: reuse driver for Keystone arch
-Date: Sat, 23 Nov 2013 19:15:29 +0100
-References: <1384964699-15134-1-git-send-email-ivan.khoronzhuk@ti.com>
- <1384964699-15134-2-git-send-email-ivan.khoronzhuk@ti.com>
-In-Reply-To: <1384964699-15134-2-git-send-email-ivan.khoronzhuk@ti.com>
+Received: from correo.dipucr.es ([195.235.171.16])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VkOvL-0003dK-Eb
+ for linux-mtd@lists.infradead.org; Sun, 24 Nov 2013 01:55:48 +0000
+Date: Sun, 24 Nov 2013 01:45:24 +0100
+To: <info@dubna-development.ru>, <tech@aqwell.ru>,
+ <linux-mtd@lists.infradead.org>, <info@smart-tourist.ru>
+From: "kamelia07" <pf1311@laposte.net>
+Subject: =?windows-1251?Q?=E2=F1=E5_=F0=E0=E2=ED=EE_=F5=EE=F2=FC_?=
+ =?windows-1251?Q?=EA=E0=EA=E0=FF_=E6=E5=ED=F9=E8=ED=E0_?=
+ =?windows-1251?Q?=E1=F3=E4=E5=F2_=EE=F2_=C2=E0=F1_=E2_=FD?=
+ =?windows-1251?Q?=EA=F1=F2=E0=E7=E5?=
+Message-ID: <4520478.20131124020314@laposte.net>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201311231915.29643.arnd@arndb.de>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- grygorii.strashko@ti.com, Russell King <linux@arm.linux.org.uk>,
- Pawel Moll <pawel.moll@arm.com>, Stephen Warren <swarren@wwwdotorg.org>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@kernel.crashing.org>, Rob Herring <rob.herring@calxeda.com>,
- linux-kernel@vger.kernel.org, Santosh Shilimkar <santosh.shilimkar@ti.com>,
- Rob Landley <rob@landley.net>, Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>,
- linux-mtd@lists.infradead.org
+Content-Type: text/plain;
+	charset="windows-1251";
+Content-Transfer-Encoding: base64
+Reply-To: kamelia07 <pf1311@laposte.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,20 +25,5 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 20 November 2013, Ivan Khoronzhuk wrote:
-> --- a/drivers/mtd/nand/davinci_nand.c
-> +++ b/drivers/mtd/nand/davinci_nand.c
-> @@ -523,6 +523,7 @@ static struct nand_ecclayout hwecc4_2048 __initconst = {
->  #if defined(CONFIG_OF)
->  static const struct of_device_id davinci_nand_of_match[] = {
->         {.compatible = "ti,davinci-nand", },
-> +       {.compatible = "ti,keystone-nand", },
->         {},
->  };
->  MODULE_DEVICE_TABLE(of, davinci_nand_of_match);
-
-Same comment as for the watchdog driver: when the devices are actually compatible,
-the driver does not need to know the new string, the preferred method is to
-set both strings from the .dts file.
-
-	Arnd
+zeDo4e7r5eUgz/Du6Ofi7uTo8uXr/O376SDv8/L8IO7h5fHv5ffo8vwg7ODk4Owg8+Tu4uvl8uLu
+8OXt6OUgaHR0cDovL2dvby5nbC8yREMyUHENCg==
