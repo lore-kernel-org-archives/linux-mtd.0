@@ -1,21 +1,17 @@
-Received: from mailout.micron.com ([137.201.242.129])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VkZVr-0003C1-Sf
- for linux-mtd@lists.infradead.org; Sun, 24 Nov 2013 13:14:12 +0000
-From: =?gb2312?B?UWkgV2FuZyDN9cbwIChxaXdhbmcp?= <qiwang@micron.com>
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: [PATCH 1/1]  MTD: UBI:  avoid program operation on  NOR flash after
- erasure interrupted
-Date: Sun, 24 Nov 2013 13:13:43 +0000
-Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A770B54B1@NTXXIAMBX02.xacn.micron.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+From: arno@natisbad.org (Arnaud Ebalard)
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH v5 00/14] Armada 370/XP NAND support
+References: <1384464339-6817-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Date: Sun, 24 Nov 2013 15:08:46 +0100
+Message-ID: <87d2lp28pd.fsf@natisbad.org>
 MIME-Version: 1.0
-Cc: =?gb2312?B?UWkgV2FuZyDN9cbwIChxaXdhbmcp?= <qiwang@micron.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain
+Cc: Lior Amsalem <alior@marvell.com>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ linux-mtd@lists.infradead.org,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,76 +21,134 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGk6DQpBcyB3ZSB0YWxrZWQgaW4gbWFpbCBiZWZvcmUsIHBsZWFzZSBjaGVjayBteSBwYXRjaCBh
-cyBiZWxvdzoNCg0KRnJvbTogUWkgV2FuZyA8cWl3YW5nQG1pY3Jvbi5jb20+DQoNCm5vcl9lcmFz
-ZV9wcmVwYXJlKCkgd2lsbCBiZSBjYWxsZWQgYmVmb3JlIGVyYXNlIGEgTk9SIGZsYXNoLCBpdCB3
-aWxsIHByb2dyYW0gJzAnDQppbnRvIGEgYmxvY2sgdG8gbWFyayB0aGlzIGJsb2NrLiBCdXQgcHJv
-Z3JhbSBkYXRhIGludG8gYSBlcmFzdXJlIGludGVycnVwdGVkIGJsb2NrDQpjYW4gY2F1c2UgcHJv
-Z3JhbSB0aW10b3V0KHNldmVyYWwgbWludXRlcyBhdCBtb3N0KSBlcnJvciwgY291bGQgaW1wYWN0
-IG90aGVyIA0Kb3BlcmF0aW9uIG9uIE5PUiBmbGFzaC4gU28gVUJJRlMgY2FuIHJlYWQgdGhpcyBi
-bG9jayBmaXJzdCB0byBhdm9pZCB1bm5lZWRlZCANCnByb2dyYW0gb3BlcmF0aW9uLiANCg0KVGhp
-cyBwYXRjaCB0cnkgdG8gcHV0IHJlYWQgb3BlcmF0aW9uIGF0IGhlYWQgb2Ygd3JpdGUgb3BlcmF0
-aW9uIGluIA0Kbm9yX2VyYXNlX3ByZXBhcmUoKSwgcmVhZCBvdXQgdGhlIGRhdGEuIA0KSWYgdGhl
-IGRhdGEgaXMgYWxyZWFkeSBjb3JydXB0LCB0aGVuIG5vIG5lZWQgdG8gcHJvZ3JhbSBhbnkgZGF0
-YSBpbnRvIHRoaXMgYmxvY2ssIA0KanVzdCBnbyB0byBlcmFzZSB0aGlzIGJsb2NrLg0KDQpTaWdu
-ZWQtb2ZmLWJ5OiBRaSBXYW5nIDxxaXdhbmdAcWl3YW5nQG1pY3Jvbi5jb20+DQotLS0NCmRpZmYg
-LS1naXQgYS9kcml2ZXJzL210ZC91YmkvaW8uYyBiL2RyaXZlcnMvbXRkL3ViaS9pby5jDQppbmRl
-eCBiZjc5ZGVmLi4wYTYzNDNkIDEwMDY0NA0KLS0tIGEvZHJpdmVycy9tdGQvdWJpL2lvLmMNCisr
-KyBiL2RyaXZlcnMvbXRkL3ViaS9pby5jDQpAQCAtNDk5LDYgKzQ5OSw3IEBAIHN0YXRpYyBpbnQg
-bm9yX2VyYXNlX3ByZXBhcmUoc3RydWN0IHViaV9kZXZpY2UgKnViaSwgaW50IHBudW0pDQogCXNp
-emVfdCB3cml0dGVuOw0KIAlsb2ZmX3QgYWRkcjsNCiAJdWludDMyX3QgZGF0YSA9IDA7DQorCXN0
-cnVjdCB1YmlfZWNfaGRyIGVjX2hkcjsNCiAJLyoNCiAJICogTm90ZSwgd2UgY2Fubm90IGdlbmVy
-YWxseSBkZWZpbmUgVklEIGhlYWRlciBidWZmZXJzIG9uIHN0YWNrLA0KIAkgKiBiZWNhdXNlIG9m
-IHRoZSB3YXkgd2UgZGVhbCB3aXRoIHRoZXNlIGJ1ZmZlcnMgKHNlZSB0aGUgaGVhZGVyDQpAQCAt
-NTA5LDQ5ICs1MTAsMzggQEAgc3RhdGljIGludCBub3JfZXJhc2VfcHJlcGFyZShzdHJ1Y3QgdWJp
-X2RldmljZSAqdWJpLCBpbnQgcG51bSkNCiAJc3RydWN0IHViaV92aWRfaGRyIHZpZF9oZHI7DQog
-DQogCS8qDQorCSAqIElmIFZJRCBvciBFQyBpcyB2YWxpZCwgbmVlZCB0byBjb3JydXB0IGl0IGJl
-Zm9yZSBlcmFzZSBvcGVyYXRpb24uICANCiAJICogSXQgaXMgaW1wb3J0YW50IHRvIGZpcnN0IGlu
-dmFsaWRhdGUgdGhlIEVDIGhlYWRlciwgYW5kIHRoZW4gdGhlIFZJRA0KIAkgKiBoZWFkZXIuIE90
-aGVyd2lzZSBhIHBvd2VyIGN1dCBtYXkgbGVhZCB0byB2YWxpZCBFQyBoZWFkZXIgYW5kDQogCSAq
-IGludmFsaWQgVklEIGhlYWRlciwgaW4gd2hpY2ggY2FzZSBVQkkgd2lsbCB0cmVhdCB0aGlzIFBF
-QiBhcw0KIAkgKiBjb3JydXB0ZWQgYW5kIHdpbGwgdHJ5IHRvIHByZXNlcnZlIGl0LCBhbmQgcHJp
-bnQgc2Nhcnkgd2FybmluZ3MuDQogCSAqLw0KIAlhZGRyID0gKGxvZmZfdClwbnVtICogdWJpLT5w
-ZWJfc2l6ZTsNCi0JZXJyID0gbXRkX3dyaXRlKHViaS0+bXRkLCBhZGRyLCA0LCAmd3JpdHRlbiwg
-KHZvaWQgKikmZGF0YSk7DQotCWlmICghZXJyKSB7DQotCQlhZGRyICs9IHViaS0+dmlkX2hkcl9h
-bG9mZnNldDsNCi0JCWVyciA9IG10ZF93cml0ZSh1YmktPm10ZCwgYWRkciwgNCwgJndyaXR0ZW4s
-ICh2b2lkICopJmRhdGEpOw0KLQkJaWYgKCFlcnIpDQotCQkJcmV0dXJuIDA7DQorCWVyciA9IHVi
-aV9pb19yZWFkX2VjX2hkcih1YmksIHBudW0sICZlY19oZHIsIDApOw0KKwlpZiAoZXJyICE9IFVC
-SV9JT19CQURfSERSX0VCQURNU0cgJiYgZXJyICE9IFVCSV9JT19CQURfSERSICYmDQorCSAgICBl
-cnIgIT0gVUJJX0lPX0ZGKXsNCisJCWVycjEgPSBtdGRfd3JpdGUodWJpLT5tdGQsIGFkZHIsIDQs
-ICZ3cml0dGVuLCAodm9pZCAqKSZkYXRhKTsNCisJCWlmKGVycjEpDQorCQkJZ290byBlcnJvcjsN
-CiAJfQ0KIA0KLQkvKg0KLQkgKiBXZSBmYWlsZWQgdG8gd3JpdGUgdG8gdGhlIG1lZGlhLiBUaGlz
-IHdhcyBvYnNlcnZlZCB3aXRoIFNwYW5zaW9uDQotCSAqIFMyOUdMNTEyTiBOT1IgZmxhc2guIE1v
-c3QgcHJvYmFibHkgdGhlIHByZXZpb3VzbHkgZXJhc2VibG9jayBlcmFzdXJlDQotCSAqIHdhcyBp
-bnRlcnJ1cHRlZCBhdCBhIHZlcnkgaW5hcHByb3ByaWF0ZSBtb21lbnQsIHNvIGl0IGJlY2FtZQ0K
-LQkgKiB1bndyaXRhYmxlLiBJbiB0aGlzIGNhc2Ugd2UgcHJvYmFibHkgYW55d2F5IGhhdmUgZ2Fy
-YmFnZSBpbiB0aGlzDQotCSAqIFBFQi4NCi0JICovDQotCWVycjEgPSB1YmlfaW9fcmVhZF92aWRf
-aGRyKHViaSwgcG51bSwgJnZpZF9oZHIsIDApOw0KLQlpZiAoZXJyMSA9PSBVQklfSU9fQkFEX0hE
-Ul9FQkFETVNHIHx8IGVycjEgPT0gVUJJX0lPX0JBRF9IRFIgfHwNCi0JICAgIGVycjEgPT0gVUJJ
-X0lPX0ZGKSB7DQotCQlzdHJ1Y3QgdWJpX2VjX2hkciBlY19oZHI7DQotDQotCQllcnIxID0gdWJp
-X2lvX3JlYWRfZWNfaGRyKHViaSwgcG51bSwgJmVjX2hkciwgMCk7DQotCQlpZiAoZXJyMSA9PSBV
-QklfSU9fQkFEX0hEUl9FQkFETVNHIHx8IGVycjEgPT0gVUJJX0lPX0JBRF9IRFIgfHwNCi0JCSAg
-ICBlcnIxID09IFVCSV9JT19GRikNCi0JCQkvKg0KLQkJCSAqIEJvdGggVklEIGFuZCBFQyBoZWFk
-ZXJzIGFyZSBjb3JydXB0ZWQsIHNvIHdlIGNhbg0KLQkJCSAqIHNhZmVseSBlcmFzZSB0aGlzIFBF
-QiBhbmQgbm90IGFmcmFpZCB0aGF0IGl0IHdpbGwgYmUNCi0JCQkgKiB0cmVhdGVkIGFzIGEgdmFs
-aWQgUEVCIGluIGNhc2Ugb2YgYW4gdW5jbGVhbiByZWJvb3QuDQotCQkJICovDQotCQkJcmV0dXJu
-IDA7DQorCWVyciA9IHViaV9pb19yZWFkX3ZpZF9oZHIodWJpLCBwbnVtLCAmdmlkX2hkciwgMCk7
-DQorCWlmIChlcnIgIT0gVUJJX0lPX0JBRF9IRFJfRUJBRE1TRyAmJiBlcnIgIT0gVUJJX0lPX0JB
-RF9IRFIgJiYNCisJICAgIGVyciAhPSBVQklfSU9fRkYpew0KKwkgICAgCWFkZHIgKz0gdWJpLT52
-aWRfaGRyX2Fsb2Zmc2V0Ow0KKwkJZXJyMSA9IG10ZF93cml0ZSh1YmktPm10ZCwgYWRkciwgNCwg
-JndyaXR0ZW4sICh2b2lkICopJmRhdGEpOw0KKwkJaWYgKGVycjEpDQorCQkJZ290byBlcnJvcjsJ
-DQogCX0NCisJcmV0dXJuIDA7DQogDQorZXJyb3I6DQogCS8qDQotCSAqIFRoZSBQRUIgY29udGFp
-bnMgYSB2YWxpZCBWSUQgaGVhZGVyLCBidXQgd2UgY2Fubm90IGludmFsaWRhdGUgaXQuDQorCSAq
-IFRoZSBQRUIgY29udGFpbnMgYSB2YWxpZCBWSUQgb3IgRUMgaGVhZGVyLCBidXQgd2UgY2Fubm90
-IGludmFsaWRhdGUgaXQuDQogCSAqIFN1cHBvc2VkbHkgdGhlIGZsYXNoIG1lZGlhIG9yIHRoZSBk
-cml2ZXIgaXMgc2NyZXdlZCB1cCwgc28gcmV0dXJuIGFuDQogCSAqIGVycm9yLg0KIAkgKi8NCi0J
-dWJpX2VycigiY2Fubm90IGludmFsaWRhdGUgUEVCICVkLCB3cml0ZSByZXR1cm5lZCAlZCByZWFk
-IHJldHVybmVkICVkIiwNCisJdWJpX2VycigiY2Fubm90IGludmFsaWRhdGUgUEVCICVkLCByZWFk
-IHJldHVybmVkICVkIHdyaXRlIHJldHVybmVkICVkIiwNCiAJCXBudW0sIGVyciwgZXJyMSk7DQog
-CXViaV9kdW1wX2ZsYXNoKHViaSwgcG51bSwgMCwgdWJpLT5wZWJfc2l6ZSk7DQogCXJldHVybiAt
-RUlPOw0KLS0tDQoNCkkgaGF2ZSB0ZXN0ZWQgdGhpcyBwYXRjaCBvbiBNaWNyb24gTk9SIGZsYXNo
-LCBwYXJ0IG51bWJlciBpc6O6SlMyOEY1MTJNMjlFV0hBLg0KSWYgaGF2ZSBhbnkgcXVlc3Rpb25z
-LCBwbGVhc2UgbGV0IG1lIGtub3cuIA0KVGhhbmsgeW91DQoNCkJlc3QgUmVnYXJkcywgDQpRaSBX
-YW5nIM31xvANCkVTRyBBUEFDIEFFIA0KVGVsOiA4Ni0wMjEtMzg5OTcxNTgNCk1vYmlsZTogODYt
-MTUyMDE5NTgyMDINCkVtYWlsOiBxaXdhbmdAbWljcm9uLmNvbQ0KQWRkcmVzczogTm8gNjAxIEZh
-c2FpIFJkLCBQdWRvbmcsIFNoYW5naGFpLCBDaGluYSwgMjAwMTMxDQo=
+Hi Ezequiel,
+
+Ezequiel Garcia <ezequiel.garcia@free-electrons.com> writes:
+
+> Ezequiel Garcia (14):
+>   mtd: nand: pxa3xx: Use a completion to signal device ready
+>   mtd: nand: pxa3xx: Use waitfunc() to wait for the device to be ready
+>   mtd: nand: pxa3xx: Add bad block handling
+>   mtd: nand: pxa3xx: Add driver-specific ECC BCH support
+>   mtd: nand: pxa3xx: Clear cmd buffer #3 (NDCB3) on command start
+>   mtd: nand: pxa3xx: Add helper function to set page address
+>   mtd: nand: pxa3xx: Remove READ0 switch/case falltrough
+>   mtd: nand: pxa3xx: Split prepare_command_pool() in two stages
+>   mtd: nand: pxa3xx: Move the data buffer clean to
+>     prepare_start_command()
+>   mtd: nand: pxa3xx: Fix SEQIN column address set
+>   mtd: nand: pxa3xx: Add a read/write buffers markers
+>   mtd: nand: pxa3xx: Introduce multiple page I/O support
+>   mtd: nand: pxa3xx: Add multiple chunk write support
+>   mtd: nand: pxa3xx: Add ECC BCH correctable errors detection
+>
+>  .../devicetree/bindings/mtd/pxa3xx-nand.txt        |   2 +
+>  drivers/mtd/nand/pxa3xx_nand.c                     | 613 +++++++++++++++++----
+>  include/linux/platform_data/mtd-nand-pxa3xx.h      |   3 +
+>  3 files changed, 505 insertions(+), 113 deletions(-)
+
+As ReadyNAS 102, 104 and 2120 all depend on your driver, I decided to
+give v4 a change on a 102. As a side note, all those device have the
+same NAND chip, i.e. a 128 MB hynix H27U1G8F2BTR. Additionally, this is
+also the chip found on ReadyNAS Duo v2, which is perfectly handled by
+orion-nand driver.
+
+With your 31 patches in my quilt set against current linus tree (w/
+2 to 4 of 31 disabled as they are already in Linus tree), I modified
+my .dts in the following way:
+
+ nand@d0000 {
+         status = "okay";
+         num-cs = <1>;
+         marvell,nand-keep-config;
+         marvell,nand-enable-arbiter;
+         nand-on-flash-bbt;
+
+
+  [followed by partitions]
+
+ }
+
+At boot, I get the following:
+
+[   80.189852] pxa3xx-nand d00d0000.nand: This platform can't do DMA on this device
+[   80.197454] NAND device: Manufacturer ID: 0xad, Chip ID: 0xf1 (Hynix H27U1G8F2BTR-BC)
+[   80.205308] NAND device: 128MiB, SLC, page size: 2048, OOB size: 64
+[   80.211594] pxa3xx-nand d00d0000.nand: ECC strength 1 at page size 2048 is not supported
+[   80.219699] pxa3xx-nand d00d0000.nand: failed to scan nand at cs 0
+
+I took a look and I guess this is due to armada370_ecc_init() (your
+Armada version of the pxa_ecc_init() you also introduced) which contains
+the following:
+
+static int armada370_ecc_init(struct pxa3xx_nand_info *info,
+			      struct nand_ecc_ctrl *ecc,
+			      int strength, int page_size)
+{
+	if (strength == 4 && page_size == 4096) {
+		info->ecc_bch = 1;
+		info->chunk_size = 2048;
+		info->spare_size = 32;
+		info->ecc_size = 32;
+		ecc->mode = NAND_ECC_HW;
+		ecc->size = info->chunk_size;
+		ecc->layout = &ecc_layout_4KB_bch4bit;
+		ecc->strength = 16;
+		return 1;
+
+	} else if (strength == 8 && page_size == 4096) {
+		info->ecc_bch = 1;
+		info->chunk_size = 1024;
+		info->spare_size = 0;
+		info->ecc_size = 32;
+		ecc->mode = NAND_ECC_HW;
+		ecc->size = info->chunk_size;
+		ecc->layout = &ecc_layout_4KB_bch8bit;
+		ecc->strength = 16;
+		return 1;
+	}
+	return 0;
+}
+
+i.e. return 0 because it does not support page size and strength of the
+chip. I also guess this works fine on the Armada mirabox and XP GP
+boards you have which both include a 1GB NAND flash w/ higher page size
+and ECC strength.
+
+I wonder if you could extend your support support to lower page size and
+strength. I'd be happy to test it on a 370 and XP based platfom.
+
+If it can help, here is what Netgear 2.6.31.8 kernel reports for the
+chip on the Duo v2: 
+
+Using Hamming 1-bit ECC for NAND device
+NAND device: Manufacturer ID: 0xad, Chip ID: 0xf1 (Hynix NAND 128MiB 3,3V 8-bit)
+Scanning device for bad blocks
+Using static partition definition
+Creating 5 MTD partitions on "nand_mtd":
+0x000000000000-0x000000180000 : "u-boot"
+0x000000180000-0x0000001a0000 : "u-boot-env"
+0x000000200000-0x000000800000 : "uImage"
+0x000000800000-0x000001800000 : "minirootfs"
+0x000001800000-0x000008000000 : "jffs2"
+
+Here is what 3.11 kernel reports for the chip on the duo v2:
+
+ONFI param page 0 valid
+ONFI flash detected
+NAND device: Manufacturer ID: 0xad, Chip ID: 0xf1 (Hynix H27U1G8F2BTR-BC), 128MiB, page size: 2048, OOB size: 64
+Scanning device for bad blocks
+mtd: no mtd-id
+5 ofpart partitions found on MTD device orion_nand
+Creating 5 MTD partitions on "orion_nand":
+0x000000000000-0x000000180000 : "u-boot"
+0x000000180000-0x0000001a0000 : "u-boot-env"
+0x000000200000-0x000000800000 : "uImage"
+0x000000800000-0x000001800000 : "minirootfs"
+0x000001800000-0x000008000000 : "jffs2"
+
+Anyway, thanks for that work!
+
+Cheers,
+
+a+
