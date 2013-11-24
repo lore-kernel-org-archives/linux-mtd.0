@@ -1,28 +1,21 @@
-Message-ID: <5291CB01.1010506@ti.com>
-Date: Sun, 24 Nov 2013 15:16:41 +0530
-From: Sekhar Nori <nsekhar@ti.com>
+Received: from mailout.micron.com ([137.201.242.129])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VkZVr-0003C1-Sf
+ for linux-mtd@lists.infradead.org; Sun, 24 Nov 2013 13:14:12 +0000
+From: =?gb2312?B?UWkgV2FuZyDN9cbwIChxaXdhbmcp?= <qiwang@micron.com>
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: [PATCH 1/1]  MTD: UBI:  avoid program operation on  NOR flash after
+ erasure interrupted
+Date: Sun, 24 Nov 2013 13:13:43 +0000
+Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A770B54B1@NTXXIAMBX02.xacn.micron.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-To: Santosh Shilimkar <santosh.shilimkar@ti.com>
-Subject: Re: [PATCH 10/12] mtd: nand: davinci: don't set timings if AEMIF
- is used
-References: <1384187188-5776-1-git-send-email-ivan.khoronzhuk@ti.com>,
- <1384187188-5776-11-git-send-email-ivan.khoronzhuk@ti.com>
- <4F5844B3A985794BA902E12C070812375F8D53@DNCE04.ent.ti.com>
- <528307F0.6000805@ti.com> <52838941.4060207@ti.com> <5284ABB9.70608@ti.com>
- <5284DFE7.70308@ti.com> <528E3DD4.7030607@ti.com> <528F968F.40306@ti.com>
-In-Reply-To: <528F968F.40306@ti.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Cc: Mark Rutland <mark.rutland@arm.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "Strashko,
- Grygorii" <grygorii.strashko@ti.com>, Russell King <linux@arm.linux.org.uk>,
- Pawel Moll <pawel.moll@arm.com>, Stephen Warren <swarren@wwwdotorg.org>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@kernel.crashing.org>, Rob Herring <rob.herring@calxeda.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Rob Landley <rob@landley.net>, "Khoronzhuk, Ivan" <ivan.khoronzhuk@ti.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Cc: =?gb2312?B?UWkgV2FuZyDN9cbwIChxaXdhbmcp?= <qiwang@micron.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,83 +25,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday 22 November 2013 11:08 PM, Santosh Shilimkar wrote:
-> On Thursday 21 November 2013 12:07 PM, Nori, Sekhar wrote:
->> On 11/14/2013 8:06 PM, Santosh Shilimkar wrote:
->>> On Thursday 14 November 2013 05:53 AM, Nori, Sekhar wrote:
->>>> On Wednesday 13 November 2013 07:44 PM, Santosh Shilimkar wrote:
->>>>> On Wednesday 13 November 2013 12:02 AM, Sekhar Nori wrote:
->>>>>> On Monday 11 November 2013 10:40 PM, Khoronzhuk, Ivan wrote:
->>>>>>> If Davinci AEMIF is used we don't need to set timings and bus width.
->>>>>>> It is done by AEMIF driver (drivers/memory/davinci-aemfi.c).
->>>>>>>
->>>>>>> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
->>>>>>> ---
->>>>>>>  drivers/mtd/nand/davinci_nand.c |   22 +++++++++++++++-------
->>>>>>>  1 file changed, 15 insertions(+), 7 deletions(-)
->>>>>>>
->>>>>>> diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
->>>>>>> index 4705214..879e915 100644
->>>>>>> --- a/drivers/mtd/nand/davinci_nand.c
->>>>>>> +++ b/drivers/mtd/nand/davinci_nand.c
->>>>>>> @@ -742,27 +742,35 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
->>>>>>>                 goto err_clk_enable;
->>>>>>>         }
->>>>>>>
->>>>>>> +#if !IS_ENABLED(CONFIG_TI_DAVINCI_AEMIF)
->>>>>>
->>>>>> This is a hack! Just because AEMIF driver is enabled, it does not
->>>>>> guarantee that the timings have been setup by it. Instead of configuring
->>>>>> timings in two drivers, why not just convert everyone over to use the
->>>>>> new driver. Dont worry about breaking old platforms, I will help test
->>>>>> and ack them.
->>>>>>
->>>>> How about you take a stab at and convert the DaVinci code over to make
->>>>> use of new driver. We are trying to re-use as much as possible from the
->>>>> common drivers and also making an option so that the DaVinci arch can
->>>>> move over to these drivers if they want to.
->>>>
->>>> Sure I could.
->>>>
->>> Thanks
->>>
->>>> Ivan,
->>>>
->>>> The AEMIF driver does not use platfrom_data currently. Is that something
->>>> you can add or you want me to take a stab at that as well?
->>>>
->>> The AEMIF new driver is device tree only and thats the direction. So the
->>> better thing would be to convert Davinci to DT and then make use of this
->>> new driver. Thats how most of the new drivers used on arm socs are
->>> moving. Adding platform data to new driver is a step in backward
->>> direction so I would want to avoid that.
->>
->> Yes, that would be the ideal way. But the reality is that there is close
->> to zero chance of all the DaVinci platforms using AEMIF ever getting
->> converted to DT. This means that we will never be able to get rid of
->> this piece of code.
->>
-> Well that means some of those platforms support will get deprecated
-> soon considering other basic frameworks like irq, timer wheel etc
-> is assuming the DT direction. But its your call because if you
-> want those platforms to live, you need to convert them to DT.
->  
->> I do agree platform data is not the direction you want to take on ARM
->> but at the same time its not really a deprecated mechanism as far as the
->> broader kernel is concerned.
->>
->> So, can we consider adding platform data mechanism to the AEMIF driver?
->>
-> Sorry but answer is "NO". If the above hack is really bothering you,
-> we can actually rip out the above code in question and move it
-> to mach-davinci. Infact thats the best direction to make the
-> mtd nandn driver independent of any platform quirks(dt, pdata etc)
-> 
-> Ivan already has a patch to do that and he is going to post
-> that patch. With that patch, we won't need $subject patch.
-> 
-
-Okay I will wait for the patch.
-
-Thanks,
-Sekhar
+SGk6DQpBcyB3ZSB0YWxrZWQgaW4gbWFpbCBiZWZvcmUsIHBsZWFzZSBjaGVjayBteSBwYXRjaCBh
+cyBiZWxvdzoNCg0KRnJvbTogUWkgV2FuZyA8cWl3YW5nQG1pY3Jvbi5jb20+DQoNCm5vcl9lcmFz
+ZV9wcmVwYXJlKCkgd2lsbCBiZSBjYWxsZWQgYmVmb3JlIGVyYXNlIGEgTk9SIGZsYXNoLCBpdCB3
+aWxsIHByb2dyYW0gJzAnDQppbnRvIGEgYmxvY2sgdG8gbWFyayB0aGlzIGJsb2NrLiBCdXQgcHJv
+Z3JhbSBkYXRhIGludG8gYSBlcmFzdXJlIGludGVycnVwdGVkIGJsb2NrDQpjYW4gY2F1c2UgcHJv
+Z3JhbSB0aW10b3V0KHNldmVyYWwgbWludXRlcyBhdCBtb3N0KSBlcnJvciwgY291bGQgaW1wYWN0
+IG90aGVyIA0Kb3BlcmF0aW9uIG9uIE5PUiBmbGFzaC4gU28gVUJJRlMgY2FuIHJlYWQgdGhpcyBi
+bG9jayBmaXJzdCB0byBhdm9pZCB1bm5lZWRlZCANCnByb2dyYW0gb3BlcmF0aW9uLiANCg0KVGhp
+cyBwYXRjaCB0cnkgdG8gcHV0IHJlYWQgb3BlcmF0aW9uIGF0IGhlYWQgb2Ygd3JpdGUgb3BlcmF0
+aW9uIGluIA0Kbm9yX2VyYXNlX3ByZXBhcmUoKSwgcmVhZCBvdXQgdGhlIGRhdGEuIA0KSWYgdGhl
+IGRhdGEgaXMgYWxyZWFkeSBjb3JydXB0LCB0aGVuIG5vIG5lZWQgdG8gcHJvZ3JhbSBhbnkgZGF0
+YSBpbnRvIHRoaXMgYmxvY2ssIA0KanVzdCBnbyB0byBlcmFzZSB0aGlzIGJsb2NrLg0KDQpTaWdu
+ZWQtb2ZmLWJ5OiBRaSBXYW5nIDxxaXdhbmdAcWl3YW5nQG1pY3Jvbi5jb20+DQotLS0NCmRpZmYg
+LS1naXQgYS9kcml2ZXJzL210ZC91YmkvaW8uYyBiL2RyaXZlcnMvbXRkL3ViaS9pby5jDQppbmRl
+eCBiZjc5ZGVmLi4wYTYzNDNkIDEwMDY0NA0KLS0tIGEvZHJpdmVycy9tdGQvdWJpL2lvLmMNCisr
+KyBiL2RyaXZlcnMvbXRkL3ViaS9pby5jDQpAQCAtNDk5LDYgKzQ5OSw3IEBAIHN0YXRpYyBpbnQg
+bm9yX2VyYXNlX3ByZXBhcmUoc3RydWN0IHViaV9kZXZpY2UgKnViaSwgaW50IHBudW0pDQogCXNp
+emVfdCB3cml0dGVuOw0KIAlsb2ZmX3QgYWRkcjsNCiAJdWludDMyX3QgZGF0YSA9IDA7DQorCXN0
+cnVjdCB1YmlfZWNfaGRyIGVjX2hkcjsNCiAJLyoNCiAJICogTm90ZSwgd2UgY2Fubm90IGdlbmVy
+YWxseSBkZWZpbmUgVklEIGhlYWRlciBidWZmZXJzIG9uIHN0YWNrLA0KIAkgKiBiZWNhdXNlIG9m
+IHRoZSB3YXkgd2UgZGVhbCB3aXRoIHRoZXNlIGJ1ZmZlcnMgKHNlZSB0aGUgaGVhZGVyDQpAQCAt
+NTA5LDQ5ICs1MTAsMzggQEAgc3RhdGljIGludCBub3JfZXJhc2VfcHJlcGFyZShzdHJ1Y3QgdWJp
+X2RldmljZSAqdWJpLCBpbnQgcG51bSkNCiAJc3RydWN0IHViaV92aWRfaGRyIHZpZF9oZHI7DQog
+DQogCS8qDQorCSAqIElmIFZJRCBvciBFQyBpcyB2YWxpZCwgbmVlZCB0byBjb3JydXB0IGl0IGJl
+Zm9yZSBlcmFzZSBvcGVyYXRpb24uICANCiAJICogSXQgaXMgaW1wb3J0YW50IHRvIGZpcnN0IGlu
+dmFsaWRhdGUgdGhlIEVDIGhlYWRlciwgYW5kIHRoZW4gdGhlIFZJRA0KIAkgKiBoZWFkZXIuIE90
+aGVyd2lzZSBhIHBvd2VyIGN1dCBtYXkgbGVhZCB0byB2YWxpZCBFQyBoZWFkZXIgYW5kDQogCSAq
+IGludmFsaWQgVklEIGhlYWRlciwgaW4gd2hpY2ggY2FzZSBVQkkgd2lsbCB0cmVhdCB0aGlzIFBF
+QiBhcw0KIAkgKiBjb3JydXB0ZWQgYW5kIHdpbGwgdHJ5IHRvIHByZXNlcnZlIGl0LCBhbmQgcHJp
+bnQgc2Nhcnkgd2FybmluZ3MuDQogCSAqLw0KIAlhZGRyID0gKGxvZmZfdClwbnVtICogdWJpLT5w
+ZWJfc2l6ZTsNCi0JZXJyID0gbXRkX3dyaXRlKHViaS0+bXRkLCBhZGRyLCA0LCAmd3JpdHRlbiwg
+KHZvaWQgKikmZGF0YSk7DQotCWlmICghZXJyKSB7DQotCQlhZGRyICs9IHViaS0+dmlkX2hkcl9h
+bG9mZnNldDsNCi0JCWVyciA9IG10ZF93cml0ZSh1YmktPm10ZCwgYWRkciwgNCwgJndyaXR0ZW4s
+ICh2b2lkICopJmRhdGEpOw0KLQkJaWYgKCFlcnIpDQotCQkJcmV0dXJuIDA7DQorCWVyciA9IHVi
+aV9pb19yZWFkX2VjX2hkcih1YmksIHBudW0sICZlY19oZHIsIDApOw0KKwlpZiAoZXJyICE9IFVC
+SV9JT19CQURfSERSX0VCQURNU0cgJiYgZXJyICE9IFVCSV9JT19CQURfSERSICYmDQorCSAgICBl
+cnIgIT0gVUJJX0lPX0ZGKXsNCisJCWVycjEgPSBtdGRfd3JpdGUodWJpLT5tdGQsIGFkZHIsIDQs
+ICZ3cml0dGVuLCAodm9pZCAqKSZkYXRhKTsNCisJCWlmKGVycjEpDQorCQkJZ290byBlcnJvcjsN
+CiAJfQ0KIA0KLQkvKg0KLQkgKiBXZSBmYWlsZWQgdG8gd3JpdGUgdG8gdGhlIG1lZGlhLiBUaGlz
+IHdhcyBvYnNlcnZlZCB3aXRoIFNwYW5zaW9uDQotCSAqIFMyOUdMNTEyTiBOT1IgZmxhc2guIE1v
+c3QgcHJvYmFibHkgdGhlIHByZXZpb3VzbHkgZXJhc2VibG9jayBlcmFzdXJlDQotCSAqIHdhcyBp
+bnRlcnJ1cHRlZCBhdCBhIHZlcnkgaW5hcHByb3ByaWF0ZSBtb21lbnQsIHNvIGl0IGJlY2FtZQ0K
+LQkgKiB1bndyaXRhYmxlLiBJbiB0aGlzIGNhc2Ugd2UgcHJvYmFibHkgYW55d2F5IGhhdmUgZ2Fy
+YmFnZSBpbiB0aGlzDQotCSAqIFBFQi4NCi0JICovDQotCWVycjEgPSB1YmlfaW9fcmVhZF92aWRf
+aGRyKHViaSwgcG51bSwgJnZpZF9oZHIsIDApOw0KLQlpZiAoZXJyMSA9PSBVQklfSU9fQkFEX0hE
+Ul9FQkFETVNHIHx8IGVycjEgPT0gVUJJX0lPX0JBRF9IRFIgfHwNCi0JICAgIGVycjEgPT0gVUJJ
+X0lPX0ZGKSB7DQotCQlzdHJ1Y3QgdWJpX2VjX2hkciBlY19oZHI7DQotDQotCQllcnIxID0gdWJp
+X2lvX3JlYWRfZWNfaGRyKHViaSwgcG51bSwgJmVjX2hkciwgMCk7DQotCQlpZiAoZXJyMSA9PSBV
+QklfSU9fQkFEX0hEUl9FQkFETVNHIHx8IGVycjEgPT0gVUJJX0lPX0JBRF9IRFIgfHwNCi0JCSAg
+ICBlcnIxID09IFVCSV9JT19GRikNCi0JCQkvKg0KLQkJCSAqIEJvdGggVklEIGFuZCBFQyBoZWFk
+ZXJzIGFyZSBjb3JydXB0ZWQsIHNvIHdlIGNhbg0KLQkJCSAqIHNhZmVseSBlcmFzZSB0aGlzIFBF
+QiBhbmQgbm90IGFmcmFpZCB0aGF0IGl0IHdpbGwgYmUNCi0JCQkgKiB0cmVhdGVkIGFzIGEgdmFs
+aWQgUEVCIGluIGNhc2Ugb2YgYW4gdW5jbGVhbiByZWJvb3QuDQotCQkJICovDQotCQkJcmV0dXJu
+IDA7DQorCWVyciA9IHViaV9pb19yZWFkX3ZpZF9oZHIodWJpLCBwbnVtLCAmdmlkX2hkciwgMCk7
+DQorCWlmIChlcnIgIT0gVUJJX0lPX0JBRF9IRFJfRUJBRE1TRyAmJiBlcnIgIT0gVUJJX0lPX0JB
+RF9IRFIgJiYNCisJICAgIGVyciAhPSBVQklfSU9fRkYpew0KKwkgICAgCWFkZHIgKz0gdWJpLT52
+aWRfaGRyX2Fsb2Zmc2V0Ow0KKwkJZXJyMSA9IG10ZF93cml0ZSh1YmktPm10ZCwgYWRkciwgNCwg
+JndyaXR0ZW4sICh2b2lkICopJmRhdGEpOw0KKwkJaWYgKGVycjEpDQorCQkJZ290byBlcnJvcjsJ
+DQogCX0NCisJcmV0dXJuIDA7DQogDQorZXJyb3I6DQogCS8qDQotCSAqIFRoZSBQRUIgY29udGFp
+bnMgYSB2YWxpZCBWSUQgaGVhZGVyLCBidXQgd2UgY2Fubm90IGludmFsaWRhdGUgaXQuDQorCSAq
+IFRoZSBQRUIgY29udGFpbnMgYSB2YWxpZCBWSUQgb3IgRUMgaGVhZGVyLCBidXQgd2UgY2Fubm90
+IGludmFsaWRhdGUgaXQuDQogCSAqIFN1cHBvc2VkbHkgdGhlIGZsYXNoIG1lZGlhIG9yIHRoZSBk
+cml2ZXIgaXMgc2NyZXdlZCB1cCwgc28gcmV0dXJuIGFuDQogCSAqIGVycm9yLg0KIAkgKi8NCi0J
+dWJpX2VycigiY2Fubm90IGludmFsaWRhdGUgUEVCICVkLCB3cml0ZSByZXR1cm5lZCAlZCByZWFk
+IHJldHVybmVkICVkIiwNCisJdWJpX2VycigiY2Fubm90IGludmFsaWRhdGUgUEVCICVkLCByZWFk
+IHJldHVybmVkICVkIHdyaXRlIHJldHVybmVkICVkIiwNCiAJCXBudW0sIGVyciwgZXJyMSk7DQog
+CXViaV9kdW1wX2ZsYXNoKHViaSwgcG51bSwgMCwgdWJpLT5wZWJfc2l6ZSk7DQogCXJldHVybiAt
+RUlPOw0KLS0tDQoNCkkgaGF2ZSB0ZXN0ZWQgdGhpcyBwYXRjaCBvbiBNaWNyb24gTk9SIGZsYXNo
+LCBwYXJ0IG51bWJlciBpc6O6SlMyOEY1MTJNMjlFV0hBLg0KSWYgaGF2ZSBhbnkgcXVlc3Rpb25z
+LCBwbGVhc2UgbGV0IG1lIGtub3cuIA0KVGhhbmsgeW91DQoNCkJlc3QgUmVnYXJkcywgDQpRaSBX
+YW5nIM31xvANCkVTRyBBUEFDIEFFIA0KVGVsOiA4Ni0wMjEtMzg5OTcxNTgNCk1vYmlsZTogODYt
+MTUyMDE5NTgyMDINCkVtYWlsOiBxaXdhbmdAbWljcm9uLmNvbQ0KQWRkcmVzczogTm8gNjAxIEZh
+c2FpIFJkLCBQdWRvbmcsIFNoYW5naGFpLCBDaGluYSwgMjAwMTMxDQo=
