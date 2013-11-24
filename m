@@ -1,19 +1,29 @@
-Date: Sun, 24 Nov 2013 15:22:39 +0100
-From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-To: arno@natisbad.org (Arnaud Ebalard)
-Subject: Re: [PATCH v5 00/14] Armada 370/XP NAND support
-Message-ID: <20131124152239.01777cf9@skate>
-In-Reply-To: <87d2lp28pd.fsf@natisbad.org>
-References: <1384464339-6817-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <87d2lp28pd.fsf@natisbad.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: Lior Amsalem <alior@marvell.com>, linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- linux-arm-kernel@lists.infradead.org
+Date: Sun, 24 Nov 2013 19:39:08 +0100
+From: Gerhard Sittig <gsi@denx.de>
+To: linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
+ Anatolij Gustschin <agust@denx.de>, Mike Turquette <mturquette@linaro.org>
+Subject: Re: [PATCH v5 00/17] add COMMON_CLK support for PowerPC MPC512x
+Message-ID: <20131124183908.GG2760@book.gsilab.sittig.org>
+References: <1384729577-7336-1-git-send-email-gsi@denx.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1384729577-7336-1-git-send-email-gsi@denx.de>
+Cc: Mark Rutland <mark.rutland@arm.com>, Detlev Zundel <dzu@denx.de>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-mtd@lists.infradead.org, Jiri Slaby <jslaby@suse.cz>,
+ Kumar Gala <galak@kernel.crashing.org>, linux-serial@vger.kernel.org,
+ Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+ Wolfgang Grandegger <wg@grandegger.com>, linux-media@vger.kernel.org,
+ devicetree@vger.kernel.org, Ian Campbell <ian.campbell@citrix.com>,
+ Pawel Moll <pawel.moll@arm.com>, Stephen Warren <swarren@wwwdotorg.org>,
+ Rob Herring <rob.herring@calxeda.com>, linux-can@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>,
+ Scott Wood <scottwood@freescale.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
+ linux-spi@vger.kernel.org, Paul Mackerras <paulus@samba.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Mauro Carvalho Chehab <m.chehab@samsung.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,40 +33,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Arnaud Ebalard,
+On Mon, Nov 18, 2013 at 00:06 +0100, Gerhard Sittig wrote:
+> 
+> the series is based on v3.12, but I'll rebase against v3.13-rc1
+> (when available) or any other subtree upon request
 
-On Sun, 24 Nov 2013 15:08:46 +0100, Arnaud Ebalard wrote:
+Now that v3.13-rc1 is out, I noticed that the series no longer
+applies cleanly (minor context changes and conflicts) and needs
+minor adjustment.
 
-> [   80.189852] pxa3xx-nand d00d0000.nand: This platform can't do DMA on this device
-> [   80.197454] NAND device: Manufacturer ID: 0xad, Chip ID: 0xf1 (Hynix H27U1G8F2BTR-BC)
-> [   80.205308] NAND device: 128MiB, SLC, page size: 2048, OOB size: 64
-> [   80.211594] pxa3xx-nand d00d0000.nand: ECC strength 1 at page size 2048 is not supported
-> [   80.219699] pxa3xx-nand d00d0000.nand: failed to scan nand at cs 0
+Compilation of 4/17 requires <linux/of_address.h> which no longer
+is included implicitly.
 
-[...]
+PPC_CLOCK removal in 7/17 should remove <asm/clk_interface.h> as
+well after all references to this header file have gone.  (And
+the context of the patch has changed.)
 
-> i.e. return 0 because it does not support page size and strength of the
-> chip. I also guess this works fine on the Armada mirabox and XP GP
-> boards you have which both include a 1GB NAND flash w/ higher page size
-> and ECC strength.
+The context of 16/17 for DIU initialization has changed.
 
-Right, that's correct. Ezequiel will expand on this, but we
-intentionally excluded the cases we couldn't test, such as 2048 bytes
-page size.
+I'll wait for a few more days whether there is more feedback for
+v5 (especially on the device tree backwards compat approach),
+then will rebase and send out v6 of the series.
 
-> I wonder if you could extend your support support to lower page size and
-> strength. I'd be happy to test it on a 370 and XP based platfom.
 
-We were just waiting for people to have practical cases that we can
-test, so I'm sure Ezequiel will provide patches to support 2048 bytes
-page size.
-
-Thanks for your testing, very useful!
-
-Best regards,
-
-Thomas
+virtually yours
+Gerhard Sittig
 -- 
-Thomas Petazzoni, CTO, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
+DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
+HRB 165235 Munich, Office: Kirchenstr. 5, D-82194 Groebenzell, Germany
+Phone: +49-8142-66989-0 Fax: +49-8142-66989-80  Email: office@denx.de
