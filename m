@@ -1,25 +1,30 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by casper.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VkxWb-0002UC-10
- for linux-mtd@lists.infradead.org; Mon, 25 Nov 2013 14:52:35 +0000
-Date: Mon, 25 Nov 2013 11:52:18 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [PATCH] mtd: nand: auto-detection of NAND bus-width from ONFI
- param or nand_id[]
-Message-ID: <20131125145217.GA14485@localhost>
-References: <1385382728-7913-1-git-send-email-pekon@ti.com>
- <20131125125647.GF2408@localhost>
- <20980858CB6D3A4BAE95CA194937D5E73EA4E675@DBDE04.ent.ti.com>
+Received: from mail-wg0-f41.google.com ([74.125.82.41])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Vkxpz-0001mH-Pk
+ for linux-mtd@lists.infradead.org; Mon, 25 Nov 2013 15:12:36 +0000
+Received: by mail-wg0-f41.google.com with SMTP id y10so1284478wgg.0
+ for <linux-mtd@lists.infradead.org>; Mon, 25 Nov 2013 07:12:10 -0800 (PST)
+Sender: Peter Korsgaard <jacmet@gmail.com>
+From: Peter Korsgaard <jacmet@sunsite.dk>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH] Make the mtdblock read/write skip the bad nand sector
+References: <528EB1E3.7030101@innofidei.com> <20131122015237.GB3509@localhost>
+ <528EBD0B.5010006@innofidei.com> <20131122114509.GB2414@localhost>
+ <5292A7E7.5060003@innofidei.com> <20131125101147.GA2408@localhost>
+ <CACQ1gAi26WeiopptcZmBp6h0a5TacLo5mvVCOm6-H_1HtnwvXg@mail.gmail.com>
+ <529334D9.2030204@innofidei.com> <20131125115238.GC2408@localhost>
+ <1385381770.24518.18.camel@shinybook.infradead.org>
+ <20131125123012.GE2408@localhost>
+Date: Mon, 25 Nov 2013 16:12:06 +0100
+In-Reply-To: <20131125123012.GE2408@localhost> (Ezequiel Garcia's message of
+ "Mon, 25 Nov 2013 09:30:13 -0300")
+Message-ID: <87fvqkldmh.fsf@dell.be.48ers.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA4E675@DBDE04.ent.ti.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Balbi,
- Felipe" <balbi@ti.com>, Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Cc: Richard Genoud <richard.genoud@gmail.com>, zhouguangming@innofidei.com,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Hans Zhang <zhanghonghui@innofidei.com>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,55 +34,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Nov 25, 2013 at 01:26:11PM +0000, Gupta, Pekon wrote:
-> Hi Ezequiel,
-> 
-> 
-> > From: Ezequiel Garcia [mailto:ezequiel.garcia@free-electrons.com]
-> > Thanks for taking care of this! :-)
-> > 
-> Yes, I was waiting for -rc1 to be TI-GPMC driver which still gets configured
-> from DT independently. However that’s a separate discussion already
-> going in your earlier thread.
-> 
-> 
-> > > On Mon, Nov 25, 2013 at 06:02:08PM +0530, Pekon Gupta wrote:
-> [...]
-> > > +
-> > > +	/* re-configure driver is bus-width was incorrectly configured */
-> > > +	if (busw != (chip->options & NAND_BUSWIDTH_16)) {
-> > > +		pr_warn("reconfiguring NAND bus width to %d instead %d
-> > bit\n",
-> > > +			   busw ? 16 : 8,
-> > > +			   (chip->options & NAND_BUSWIDTH_16) ? 16 : 8);
-> > > +		chip->options = (chip->options & ~NAND_BUSWIDTH_16) |
-> > busw;
-> > 
-> > Looking at this makes me wonder why are we *re* configuring, instead of
-> > just configuring. I mean, why do we keep the NAND_BUSWIDTH_16 setting?
-> > 
-> > What use case might need the user to set it, before hand?
-> > 
-> Nothing.. I just said reconfiguring, bcoz some driver already configure
-> 'chip->options & NAND_BUSWIDTH_16' pre-hand before calling
-> nand_scan_ident(). So, I wanted to convey that this patch should not
-> affect any of their functionality. And no change is should be required.
-> 
-> Need this to get tested with -ve testing on different boards.. 
-> (like setting in-correct DT binding nand-bus-width and driver should still
-> be able to detect and probe ONFI params) Then only it proves that this
-> patch is actually auto-detecting bus-width under all cases for all controllers.
-> 
+>>>>> "Ezequiel" == Ezequiel Garcia <ezequiel.garcia@free-electrons.com> writes:
 
-You seem to keep insisting with the kernel auto-fixing after wrong DT
-configuration. I don't think that should matter.
+Hi,
 
-My point is: why don't we *remove* the devicetree property nand-bus-width and the
-NAND_BUSWIDTH_16 entirely, together with this patch?
+ > Thanks a lot for the insight. After reading this, I'm wondering what's
+ > preventing us from killing MTD block support altogether. Artem, already
+ > suggested it a while back...
 
-Sounds like the user shouldn't need to mess with any of these, since we
-are able to auto-configure things for him.
+People using squashfs/cramfs/readonly ext2/.. on a NOR flash?
+
 -- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+Bye, Peter Korsgaard
