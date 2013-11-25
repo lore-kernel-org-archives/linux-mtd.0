@@ -1,25 +1,17 @@
-Received: from mailout4.samsung.com ([203.254.224.34])
+Received: from devils.ext.ti.com ([198.47.26.153])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vkmn7-0003dK-B1
- for linux-mtd@lists.infradead.org; Mon, 25 Nov 2013 03:24:55 +0000
-Received: from epcpsbgr4.samsung.com
- (u144.gpu120.samsung.co.kr [203.254.230.144])
- by mailout4.samsung.com (Oracle Communications Messaging Server 7u4-24.01
- (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0MWS006FNUSNLV70@mailout4.samsung.com> for
- linux-mtd@lists.infradead.org; Mon, 25 Nov 2013 12:24:23 +0900 (KST)
-From: Jingoo Han <jg1.han@samsung.com>
-To: 'Brian Norris' <computersforpeace@gmail.com>
-Subject: [PATCH] mtd: dataflash: remove unnecessary spi_set_drvdata()
-Date: Mon, 25 Nov 2013 12:24:22 +0900
-Message-id: <002401cee98d$d603d900$820b8b00$%han@samsung.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=us-ascii
-Content-transfer-encoding: 7bit
-Content-language: ko
-Cc: 'Artem Bityutskiy' <artem.bityutskiy@linux.intel.com>,
- 'Jingoo Han' <jg1.han@samsung.com>, 'David Woodhouse' <dwmw2@infradead.org>,
- linux-mtd@lists.infradead.org
+ id 1Vkt6q-0001FX-QI
+ for linux-mtd@lists.infradead.org; Mon, 25 Nov 2013 10:09:41 +0000
+From: Pekon Gupta <pekon@ti.com>
+To: Brain Norris <computersforpeace@gmail.com>, Artem Bityutskiy
+ <dedekind1@gmail.com>
+Subject: [PATCH v4 0/4] optimize and clean-up of OMAP NAND and ELM driver
+Date: Mon, 25 Nov 2013 15:38:57 +0530
+Message-ID: <1385374141-10934-1-git-send-email-pekon@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: linux-mtd <linux-mtd@lists.infradead.org>, Pekon Gupta <pekon@ti.com>,
+ ezequiel.garcia@free-electrons.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,38 +21,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The driver core clears the driver data to NULL after device_release
-or on probe failure. Thus, it is not needed to manually clear the
-device driver data to NULL.
 
-Signed-off-by: Jingoo Han <jg1.han@samsung.com>
----
- drivers/mtd/devices/mtd_dataflash.c |    5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+*changes from v3* (feedbacks from Brian Norris <computersforpeace@gmail.com>)
+[PATCH 2/4] reverted back macros used for clearing & masking gpmc_ecc_config reg
+[PATCH 4/4]
+- updated: using 'pr_fmt(fmt)' to suffix DRIVER_NAME to error messages
+- removed: local 'eccsteps' in ELM driver, instead using nand_chip->ecc.steps
+- cleanup: consitent use of DRIVER_NAME and removed irrelavant white-space changes
 
-diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
-index 4a47b02..624069d 100644
---- a/drivers/mtd/devices/mtd_dataflash.c
-+++ b/drivers/mtd/devices/mtd_dataflash.c
-@@ -669,7 +669,6 @@ static int add_dataflash_otp(struct spi_device *spi, char *name, int nr_pages,
- 	if (!err)
- 		return 0;
- 
--	spi_set_drvdata(spi, NULL);
- 	kfree(priv);
- 	return err;
- }
-@@ -899,10 +898,8 @@ static int dataflash_remove(struct spi_device *spi)
- 	pr_debug("%s: remove\n", dev_name(&spi->dev));
- 
- 	status = mtd_device_unregister(&flash->mtd);
--	if (status == 0) {
--		spi_set_drvdata(spi, NULL);
-+	if (status == 0)
- 		kfree(flash);
--	}
- 	return status;
- }
- 
+
+*changes from v2 (rebased)*
+- rebased on [PATCH v11] mtd:nand:omap2: clean-up of supported ECC schemes
+http://lists.infradead.org/pipermail/linux-mtd/2013-October/049410.html
+
+
+*changes from v1 (minor)*
+- rebased for newer version of previous patch-set
+	[PATCH v7 0/6] mtd:nand:omap2: clean-up of supported ECC schemes
+	http://lists.infradead.org/pipermail/linux-mtd/2013-October/048983.html
+- code cleanup and formating updates
+
+*original v1*
+This patch series builds the base for adding support for newer H/W based ECC
+schemes for NAND flash. This patch series 
+- cleans-up redundant code among various
+- optimizes ecc calculation and correction paths
+- improves scalability and readability, for adding newer ecc-schemes in future.
+This patch affects following data-paths: 
+[PATCH 1/4] nand_chip->ecc.correct(): Detects and corrects ECC errors on read accesses.
+[PATCH 2/4] nand_chip->ecc.calculate(): Calculates and fetches ECC syndrome from controller.
+[PATCH 3/4] nand_chip->ecc.hwctl(): Configures H/W controller for Read/Write data acccesses.
+[PATCH 4/4] ELM driver: add checks and updates code for scalability.
+
+Pekon Gupta (4):
+  mtd: nand: omap: optimized chip->ecc.correct() for H/W ECC schemes
+  mtd: nand: omap: optimize chip->ecc.calculate() for H/W ECC schemes
+  mtd: nand: omap: optimize chip->ecc.hwctl() for H/W ECC schemes
+  mtd: devices: elm: add checks ELM H/W constrains, driver code cleanup
+
+ drivers/mtd/devices/elm.c         | 127 ++++---
+ drivers/mtd/nand/omap2.c          | 698 +++++++++++++-------------------------
+ include/linux/platform_data/elm.h |   6 +-
+ 3 files changed, 318 insertions(+), 513 deletions(-)
+
 -- 
-1.7.10.4
+1.8.1
