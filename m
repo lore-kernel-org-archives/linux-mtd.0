@@ -1,30 +1,21 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vkuis-0004LE-3Q
- for linux-mtd@lists.infradead.org; Mon, 25 Nov 2013 11:53:02 +0000
-Date: Mon, 25 Nov 2013 08:52:39 -0300
+Date: Mon, 25 Nov 2013 09:03:36 -0300
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Hans Zhang <zhanghonghui@innofidei.com>
-Subject: Re: [PATCH] Make the mtdblock read/write skip the bad nand sector
-Message-ID: <20131125115238.GC2408@localhost>
-References: <1385024065-29965-1-git-send-email-zhanghonghui@innofidei.com>
- <CACQ1gAiLesYEWmHkivAF=t8ekCFM=yDDyzkJTtduavNjp1g6wA@mail.gmail.com>
- <528EB1E3.7030101@innofidei.com> <20131122015237.GB3509@localhost>
- <528EBD0B.5010006@innofidei.com> <20131122114509.GB2414@localhost>
- <5292A7E7.5060003@innofidei.com> <20131125101147.GA2408@localhost>
- <CACQ1gAi26WeiopptcZmBp6h0a5TacLo5mvVCOm6-H_1HtnwvXg@mail.gmail.com>
- <529334D9.2030204@innofidei.com>
+To: Arnaud Ebalard <arno@natisbad.org>
+Subject: Re: [PATCH v5 00/14] Armada 370/XP NAND support
+Message-ID: <20131125120335.GD2408@localhost>
+References: <1384464339-6817-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <87d2lp28pd.fsf@natisbad.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <529334D9.2030204@innofidei.com>
-Cc: Richard Genoud <richard.genoud@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- zhouguangming@innofidei.com
+In-Reply-To: <87d2lp28pd.fsf@natisbad.org>
+Cc: Lior Amsalem <alior@marvell.com>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ linux-mtd@lists.infradead.org,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,49 +25,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Nov 25, 2013 at 07:30:33PM +0800, Hans Zhang wrote:
-> On 2013/11/25 18:23, Richard Genoud wrote:
-> >
-> > Well, yes, write through the char device would be a solution.
-> >> But, *why* are you writing through mtdblock instead?
-> >>
-> >>> I think that maybe it's an optional approach through mtdblock in case we do not have
-> >>> the mtd-tools in our environments, we do provider a simpler way to write the NAND
-> >>> through mtdblock.
-> >>>
-> >> Uh? simpler? Writing through mtdchat is as simple as it gets:
-> >>
-> >>   $ cat some_file.img > /dev/mtd0
-> >>
-> >> Sorry, but I'm still confused at what are you trying to accomplish.
-> > I think that what Hans wants to do is:
-> >  $ cat some_file.img > /dev/mtd0
-> > And that doesn't fail on a bad block but jumps over it.
-> > ... Which is a bad idea.
-> > But, likeyou, I didn't figured out why mtdblock instead of mtdchar.
-> >
-> >
+Hi Arnaud,
+
+On Sun, Nov 24, 2013 at 03:08:46PM +0100, Arnaud Ebalard wrote:
 > 
-> I'm sorry it's my mistake, I thought the NAND need to be erased explicitly in userspace
-> before written when through the mtdchar device. That's why I use the mtdblock instead of
-> mtdchar.
+> As ReadyNAS 102, 104 and 2120 all depend on your driver, I decided to
+> give v4 a change on a 102. As a side note, all those device have the
+> same NAND chip, i.e. a 128 MB hynix H27U1G8F2BTR. Additionally, this is
+> also the chip found on ReadyNAS Duo v2, which is perfectly handled by
+> orion-nand driver.
+> 
+> With your 31 patches in my quilt set against current linus tree (w/
+> 2 to 4 of 31 disabled as they are already in Linus tree), I modified
+> my .dts in the following way:
+> 
+>  nand@d0000 {
+>          status = "okay";
+>          num-cs = <1>;
+>          marvell,nand-keep-config;
+>          marvell,nand-enable-arbiter;
+>          nand-on-flash-bbt;
 > 
 
-Your understanding is correct: NAND *must* be erased explictly in userspace
-before writing. However, keep in mind the following additional constraints:
+Great! Thanks for giving NAND a chance :-)
 
-* Writing should be always performed using 'nandwrite',
-  not tools such as 'cat' or 'dd'.
+Could you try using the devicetree snippet below?
 
-* An mtdblock shouldn't be used to access directly the NAND from
-  userspace. AFAICS, the primarily usage of mtdblock is to be able to
-  mount JFFS2.
+nand@d0000 {
+	/* HACK: Use legacy compatible to handle smaller pages */
+	compatible = "marvell,pxa3xx-nand";
+	status = "okay";
+	num-cs = <1>;
+	marvell,nand-keep-config;
+	marvell,nand-enable-arbiter;
+	nand-on-flash-bbt;
 
-Out of curiosity, what's your NAND layout? What FS are you using?
-Unless you have some special requirement, you should be using UBI to
-access the device (and not MTD).
+	/* partitions */
+};
 
-Just a suggestion...
+Please check if your device is detected and try to do some reading
+first. If that works, you can try to mount the filesystem, or write
+a new kernel.
+
+If the above works, I'll prepare a proper patch.
+
+Thanks!
 -- 
 Ezequiel García, Free Electrons
 Embedded Linux, Kernel and Android Engineering
