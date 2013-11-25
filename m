@@ -1,22 +1,23 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vkviu-0005ko-OT
- for linux-mtd@lists.infradead.org; Mon, 25 Nov 2013 12:57:10 +0000
-Date: Mon, 25 Nov 2013 09:56:48 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Pekon Gupta <pekon@ti.com>
-Subject: Re: [PATCH] mtd: nand: auto-detection of NAND bus-width from ONFI
+Received: from arroyo.ext.ti.com ([192.94.94.40])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VkwBU-0006pc-FK
+ for linux-mtd@lists.infradead.org; Mon, 25 Nov 2013 13:26:41 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: RE: [PATCH] mtd: nand: auto-detection of NAND bus-width from ONFI
  param or nand_id[]
-Message-ID: <20131125125647.GF2408@localhost>
+Date: Mon, 25 Nov 2013 13:26:11 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA4E675@DBDE04.ent.ti.com>
 References: <1385382728-7913-1-git-send-email-pekon@ti.com>
+ <20131125125647.GF2408@localhost>
+In-Reply-To: <20131125125647.GF2408@localhost>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1385382728-7913-1-git-send-email-pekon@ti.com>
-Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- balbi@ti.com, Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Balbi,
+ Felipe" <balbi@ti.com>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,61 +27,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Pekon,
-
-Thanks for taking care of this! :-)
-
-On Mon, Nov 25, 2013 at 06:02:08PM +0530, Pekon Gupta wrote:
-> This patch is alternative implementation for following commit which introduced
-> NAND_BUSWIDTH_AUTO for detection of bus-width during device probe
->    commit 64b37b2a63eb2f80b65c7185f0013f8ffc637ae3
->    Author:     Matthieu CASTET <matthieu.castet@parrot.com>
->    AuthorDate: 2012-11-06
-> 
-> As NAND device is identified only during nand_scan_ident(), so this patch 
-> assumes that NAND driver may un-initialized or partially congigured while
-> calling nand_scan_ident(). Hence, this patch does following:
-> 
-> (1) Temporarily configures 'bus-width=x8' mode before reading ONFI parameters,
->  (as required by ONFI spec Refer[*]), and then reverts to original bus-width.
->  This allows nand_flash_detect_onfi() to read ONFI paramers page even if
->  bus-width was un-initialized or incorrectly configured.
-> 
-> (2) reconfigures driver with correct bus-width determined by:
->  - either by reading ONFI param OR
->  - as found in nand_flash_id[] table
->  So, any driver-specific callback overrides should be done post nand_scan_ident.
-> 
-> This patch removes any dependency on either 'DT binding' or 'platform data' to
-> for determining NAND device bus-width.
-> 
-> [*] Reference: ONFI spec version 3.1 (section 3.5.3. Target Initialization)
->     "The Read ID and Read Parameter Page commands only use the lower 8-bits
->      of the data bus. The host shall not issue commands that use a word
->      data width on x16 devices until the host determines the device supports
->      a 16-bit data bus width in the parameter page."
-> 
-> 
-> Signed-off-by: Pekon Gupta <pekon@ti.com>
-> ---
->  drivers/mtd/nand/nand_base.c | 43 ++++++++++++++++++-------------------------
->  include/linux/mtd/nand.h     |  7 -------
->  2 files changed, 18 insertions(+), 32 deletions(-)
-> 
-[..]
-> +
-> +	/* re-configure driver is bus-width was incorrectly configured */
-> +	if (busw != (chip->options & NAND_BUSWIDTH_16)) {
-> +		pr_warn("reconfiguring NAND bus width to %d instead %d bit\n",
-> +			   busw ? 16 : 8,
-> +			   (chip->options & NAND_BUSWIDTH_16) ? 16 : 8);
-> +		chip->options = (chip->options & ~NAND_BUSWIDTH_16) | busw;
-
-Looking at this makes me wonder why are we *re* configuring, instead of
-just configuring. I mean, why do we keep the NAND_BUSWIDTH_16 setting?
-
-What use case might need the user to set it, before hand?
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+SGkgRXplcXVpZWwsDQoNCg0KPiBGcm9tOiBFemVxdWllbCBHYXJjaWEgW21haWx0bzplemVxdWll
+bC5nYXJjaWFAZnJlZS1lbGVjdHJvbnMuY29tXQ0KPiBUaGFua3MgZm9yIHRha2luZyBjYXJlIG9m
+IHRoaXMhIDotKQ0KPiANClllcywgSSB3YXMgd2FpdGluZyBmb3IgLXJjMSB0byBiZSBUSS1HUE1D
+IGRyaXZlciB3aGljaCBzdGlsbCBnZXRzIGNvbmZpZ3VyZWQNCmZyb20gRFQgaW5kZXBlbmRlbnRs
+eS4gSG93ZXZlciB0aGF04oCZcyBhIHNlcGFyYXRlIGRpc2N1c3Npb24gYWxyZWFkeQ0KZ29pbmcg
+aW4geW91ciBlYXJsaWVyIHRocmVhZC4NCg0KDQo+ID4gT24gTW9uLCBOb3YgMjUsIDIwMTMgYXQg
+MDY6MDI6MDhQTSArMDUzMCwgUGVrb24gR3VwdGEgd3JvdGU6DQpbLi4uXQ0KPiA+ICsNCj4gPiAr
+CS8qIHJlLWNvbmZpZ3VyZSBkcml2ZXIgaXMgYnVzLXdpZHRoIHdhcyBpbmNvcnJlY3RseSBjb25m
+aWd1cmVkICovDQo+ID4gKwlpZiAoYnVzdyAhPSAoY2hpcC0+b3B0aW9ucyAmIE5BTkRfQlVTV0lE
+VEhfMTYpKSB7DQo+ID4gKwkJcHJfd2FybigicmVjb25maWd1cmluZyBOQU5EIGJ1cyB3aWR0aCB0
+byAlZCBpbnN0ZWFkICVkDQo+IGJpdFxuIiwNCj4gPiArCQkJICAgYnVzdyA/IDE2IDogOCwNCj4g
+PiArCQkJICAgKGNoaXAtPm9wdGlvbnMgJiBOQU5EX0JVU1dJRFRIXzE2KSA/IDE2IDogOCk7DQo+
+ID4gKwkJY2hpcC0+b3B0aW9ucyA9IChjaGlwLT5vcHRpb25zICYgfk5BTkRfQlVTV0lEVEhfMTYp
+IHwNCj4gYnVzdzsNCj4gDQo+IExvb2tpbmcgYXQgdGhpcyBtYWtlcyBtZSB3b25kZXIgd2h5IGFy
+ZSB3ZSAqcmUqIGNvbmZpZ3VyaW5nLCBpbnN0ZWFkIG9mDQo+IGp1c3QgY29uZmlndXJpbmcuIEkg
+bWVhbiwgd2h5IGRvIHdlIGtlZXAgdGhlIE5BTkRfQlVTV0lEVEhfMTYgc2V0dGluZz8NCj4gDQo+
+IFdoYXQgdXNlIGNhc2UgbWlnaHQgbmVlZCB0aGUgdXNlciB0byBzZXQgaXQsIGJlZm9yZSBoYW5k
+Pw0KPiANCk5vdGhpbmcuLiBJIGp1c3Qgc2FpZCByZWNvbmZpZ3VyaW5nLCBiY296IHNvbWUgZHJp
+dmVyIGFscmVhZHkgY29uZmlndXJlDQonY2hpcC0+b3B0aW9ucyAmIE5BTkRfQlVTV0lEVEhfMTYn
+IHByZS1oYW5kIGJlZm9yZSBjYWxsaW5nDQpuYW5kX3NjYW5faWRlbnQoKS4gU28sIEkgd2FudGVk
+IHRvIGNvbnZleSB0aGF0IHRoaXMgcGF0Y2ggc2hvdWxkIG5vdA0KYWZmZWN0IGFueSBvZiB0aGVp
+ciBmdW5jdGlvbmFsaXR5LiBBbmQgbm8gY2hhbmdlIGlzIHNob3VsZCBiZSByZXF1aXJlZC4NCg0K
+TmVlZCB0aGlzIHRvIGdldCB0ZXN0ZWQgd2l0aCAtdmUgdGVzdGluZyBvbiBkaWZmZXJlbnQgYm9h
+cmRzLi4gDQoobGlrZSBzZXR0aW5nIGluLWNvcnJlY3QgRFQgYmluZGluZyBuYW5kLWJ1cy13aWR0
+aCBhbmQgZHJpdmVyIHNob3VsZCBzdGlsbA0KYmUgYWJsZSB0byBkZXRlY3QgYW5kIHByb2JlIE9O
+RkkgcGFyYW1zKSBUaGVuIG9ubHkgaXQgcHJvdmVzIHRoYXQgdGhpcw0KcGF0Y2ggaXMgYWN0dWFs
+bHkgYXV0by1kZXRlY3RpbmcgYnVzLXdpZHRoIHVuZGVyIGFsbCBjYXNlcyBmb3IgYWxsIGNvbnRy
+b2xsZXJzLg0KDQoNCndpdGggcmVnYXJkcywgcGVrb24NCg==
