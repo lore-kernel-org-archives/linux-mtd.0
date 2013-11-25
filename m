@@ -1,27 +1,17 @@
-Received: from mail-lb0-x22c.google.com ([2a00:1450:4010:c04::22c])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VktKh-0001lv-Bd
- for linux-mtd@lists.infradead.org; Mon, 25 Nov 2013 10:23:59 +0000
-Received: by mail-lb0-f172.google.com with SMTP id z5so3007160lbh.3
- for <linux-mtd@lists.infradead.org>; Mon, 25 Nov 2013 02:23:34 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <20131125101147.GA2408@localhost>
-References: <1385024065-29965-1-git-send-email-zhanghonghui@innofidei.com>
- <CACQ1gAiLesYEWmHkivAF=t8ekCFM=yDDyzkJTtduavNjp1g6wA@mail.gmail.com>
- <528EB1E3.7030101@innofidei.com> <20131122015237.GB3509@localhost>
- <528EBD0B.5010006@innofidei.com> <20131122114509.GB2414@localhost>
- <5292A7E7.5060003@innofidei.com> <20131125101147.GA2408@localhost>
-From: Richard Genoud <richard.genoud@gmail.com>
-Date: Mon, 25 Nov 2013 11:23:14 +0100
-Message-ID: <CACQ1gAi26WeiopptcZmBp6h0a5TacLo5mvVCOm6-H_1HtnwvXg@mail.gmail.com>
-Subject: Re: [PATCH] Make the mtdblock read/write skip the bad nand sector
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Hans Zhang <zhanghonghui@innofidei.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- zhouguangming@innofidei.com
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VkuNH-0003mV-ID
+ for linux-mtd@lists.infradead.org; Mon, 25 Nov 2013 11:30:44 +0000
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [RFC/PATCH] mtd: nand: Refactor print messages
+Date: Mon, 25 Nov 2013 08:30:31 -0300
+Message-Id: <1385379031-27766-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: Huang Shijie <b32955@freescale.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Pekon Gupta <pekon@ti.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,38 +21,104 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2013/11/25 Ezequiel Garcia <ezequiel.garcia@free-electrons.com>:
-> On Mon, Nov 25, 2013 at 09:29:11AM +0800, Hans Zhang wrote:
->> On 2013/11/22 19:45, Ezequiel Garcia wrote:
->> >> Thanks for your reply.
->> >> This is for my embed system upgrade, I reserved one nand partition for filesystem
->> >> environment which will load to DDR while uboot booting.
->> >> This filesystem.uboot file should be able to read both by uboot and kernel, and
->> >> maybe written by uboot and kernel. There will be no filesystems upon the nand in
->> >> case the loader may not support some filesystem types while uboot booting.
->> >>
->> >> Seems that the trimmed environment of OS has get rid of the mtd-tools, So the dd
->> >> command was the most convenience tools to use by hand.
->> >>
->> > I still don't understand why are you using mtdblock. Why can't you write
->> > through the char device?
->>
->> Well, yes, write through the char device would be a solution.
->
-> But, *why* are you writing through mtdblock instead?
->
->> I think that maybe it's an optional approach through mtdblock in case we do not have
->> the mtd-tools in our environments, we do provider a simpler way to write the NAND
->> through mtdblock.
->>
->
-> Uh? simpler? Writing through mtdchat is as simple as it gets:
->
->   $ cat some_file.img > /dev/mtd0
->
-> Sorry, but I'm still confused at what are you trying to accomplish.
-I think that what Hans wants to do is:
- $ cat some_file.img > /dev/mtd0
-And that doesn't fail on a bad block but jumps over it.
-... Which is a bad idea.
-But, likeyou, I didn't figured out why mtdblock instead of mtdchar.
+Add a nice "nand:" prefix to all pr_xxx() messages. This allows
+to get rid of the "NAND" words in messages, given the context
+is already given by the prefix.
+
+Remove the __func__ report from messages where it's not needed and refactor
+the device detection messages to show itself in several lines.
+
+Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+---
+Currently, we report found devices with:
+
+NAND device: Manufacturer ID: 0xec, Chip ID: 0xdc (Samsung NAND 512MiB 3,3V 8-bit)
+NAND device: 512MiB, SLC, page size: 2048, OOB size: 64
+
+And after this change, the above is:
+
+nand: device found, Manufacturer ID: 0xec, Chip ID: 0xdc
+nand: Samsung NAND 512MiB 3,3V 8-bit
+nand: 512MiB, SLC, page size: 2048, OOB size: 64
+
+ drivers/mtd/nand/nand_base.c | 27 ++++++++++++++-------------
+ 1 file changed, 14 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index bd39f7b..4bdc0df 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -29,6 +29,8 @@
+  *
+  */
+ 
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
++
+ #include <linux/module.h>
+ #include <linux/delay.h>
+ #include <linux/errno.h>
+@@ -2979,7 +2981,7 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+ 		chip->onfi_version = 10;
+ 
+ 	if (!chip->onfi_version) {
+-		pr_info("%s: unsupported ONFI version: %d\n", __func__, val);
++		pr_info("unsupported ONFI version: %d\n", val);
+ 		return 0;
+ 	}
+ 
+@@ -3372,8 +3374,8 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
+ 		id_data[i] = chip->read_byte(mtd);
+ 
+ 	if (id_data[0] != *maf_id || id_data[1] != *dev_id) {
+-		pr_info("%s: second ID read did not match "
+-			"%02x,%02x against %02x,%02x\n", __func__,
++		pr_info("second ID read did not match "
++			"%02x,%02x against %02x,%02x\n",
+ 			*maf_id, *dev_id, id_data[0], id_data[1]);
+ 		return ERR_PTR(-ENODEV);
+ 	}
+@@ -3440,10 +3442,10 @@ ident_done:
+ 		 * Check, if buswidth is correct. Hardware drivers should set
+ 		 * chip correct!
+ 		 */
+-		pr_info("NAND device: Manufacturer ID:"
+-			" 0x%02x, Chip ID: 0x%02x (%s %s)\n", *maf_id,
+-			*dev_id, nand_manuf_ids[maf_idx].name, mtd->name);
+-		pr_warn("NAND bus width %d instead %d bit\n",
++		pr_info("device found, Manufacturer ID: 0x%02x, Chip ID: 0x%02x\n",
++			*maf_id, *dev_id);
++		pr_info("%s %s\n", nand_manuf_ids[maf_idx].name, mtd->name);
++		pr_warn("bus width %d instead %d bit\n",
+ 			   (chip->options & NAND_BUSWIDTH_16) ? 16 : 8,
+ 			   busw ? 16 : 8);
+ 		return ERR_PTR(-EINVAL);
+@@ -3472,14 +3474,13 @@ ident_done:
+ 	if (mtd->writesize > 512 && chip->cmdfunc == nand_command)
+ 		chip->cmdfunc = nand_command_lp;
+ 
+-	pr_info("NAND device: Manufacturer ID: 0x%02x, Chip ID: 0x%02x (%s %s)\n",
+-		*maf_id, *dev_id, nand_manuf_ids[maf_idx].name,
++	pr_info("device found, Manufacturer ID: 0x%02x, Chip ID: 0x%02x\n",
++		*maf_id, *dev_id);
++	pr_info("%s %s\n", nand_manuf_ids[maf_idx].name,
+ 		chip->onfi_version ? chip->onfi_params.model : type->name);
+-
+-	pr_info("NAND device: %dMiB, %s, page size: %d, OOB size: %d\n",
++	pr_info("%dMiB, %s, page size: %d, OOB size: %d\n",
+ 		(int)(chip->chipsize >> 20), nand_is_slc(chip) ? "SLC" : "MLC",
+ 		mtd->writesize, mtd->oobsize);
+-
+ 	return type;
+ }
+ 
+@@ -3535,7 +3536,7 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
+ 		chip->select_chip(mtd, -1);
+ 	}
+ 	if (i > 1)
+-		pr_info("%d NAND chips detected\n", i);
++		pr_info("%d chips detected\n", i);
+ 
+ 	/* Store the number of chips and calc total size for mtd */
+ 	chip->numchips = i;
+-- 
+1.8.1.5
