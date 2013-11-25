@@ -1,21 +1,22 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VkwH7-00070L-QP
- for linux-mtd@lists.infradead.org; Mon, 25 Nov 2013 13:32:30 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: RE: [PATCH] mtd: nand: auto-detection of NAND bus-width from ONFI
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by casper.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VkxWb-0002UC-10
+ for linux-mtd@lists.infradead.org; Mon, 25 Nov 2013 14:52:35 +0000
+Date: Mon, 25 Nov 2013 11:52:18 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: "Gupta, Pekon" <pekon@ti.com>
+Subject: Re: [PATCH] mtd: nand: auto-detection of NAND bus-width from ONFI
  param or nand_id[]
-Date: Mon, 25 Nov 2013 13:32:01 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA4E6A5@DBDE04.ent.ti.com>
+Message-ID: <20131125145217.GA14485@localhost>
 References: <1385382728-7913-1-git-send-email-pekon@ti.com>
  <20131125125647.GF2408@localhost>
  <20980858CB6D3A4BAE95CA194937D5E73EA4E675@DBDE04.ent.ti.com>
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA4E675@DBDE04.ent.ti.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA4E675@DBDE04.ent.ti.com>
 Cc: Brian Norris <computersforpeace@gmail.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Balbi,
  Felipe" <balbi@ti.com>, Artem Bityutskiy <dedekind1@gmail.com>
@@ -28,15 +29,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiBGcm9tOiBHdXB0YSwgUGVrb24NCj4gPiA+IEZyb206IEV6ZXF1aWVsIEdhcmNpYSBbbWFpbHRv
-OmV6ZXF1aWVsLmdhcmNpYUBmcmVlLWVsZWN0cm9ucy5jb21dDQo+ID4gVGhhbmtzIGZvciB0YWtp
-bmcgY2FyZSBvZiB0aGlzISA6LSkNCj4gPg0KPiBZZXMsIEkgd2FzIHdhaXRpbmcgZm9yIC1yYzEg
-dG8gYmUgVEktR1BNQyBkcml2ZXIgd2hpY2ggc3RpbGwgZ2V0cyBjb25maWd1cmVkDQo+IGZyb20g
-RFQgaW5kZXBlbmRlbnRseS4gSG93ZXZlciB0aGF04oCZcyBhIHNlcGFyYXRlIGRpc2N1c3Npb24g
-YWxyZWFkeQ0KPiBnb2luZyBpbiB5b3VyIGVhcmxpZXIgdGhyZWFkLg0KPiANCldlaXJkIHR5cG8g
-c29ycnkgKHJlLXdyaXRpbmcgYWdhaW4pIC4uDQpZZXMsIEkgd2FzIHdhaXRpbmcgZm9yIC1yYzEg
-dG8gYmUgdGFnZ2VkLg0KSG93ZXZlciBUSS1HUE1DIGRyaXZlciBzdGlsbCBuZWVkcyBwYXRjaCB0
-byByZS1jb25maWd1cmUgaXRzIHJlZ2lzdGVycywNCmFzIGl0IGdldHMgY29uZmlndXJlZCBmcm9t
-IERUIGluZGVwZW5kZW50bHkuIEhvd2V2ZXIgdGhhdOKAmXMgYSBzZXBhcmF0ZQ0KZGlzY3Vzc2lv
-biBhbHJlYWR5IGdvaW5nIGluIGRpZmZlcmVudCBtYWlsIHRocmVhZC4NCg0KDQp3aXRoIHJlZ2Fy
-ZHMsIHBla29uDQo=
+On Mon, Nov 25, 2013 at 01:26:11PM +0000, Gupta, Pekon wrote:
+> Hi Ezequiel,
+> 
+> 
+> > From: Ezequiel Garcia [mailto:ezequiel.garcia@free-electrons.com]
+> > Thanks for taking care of this! :-)
+> > 
+> Yes, I was waiting for -rc1 to be TI-GPMC driver which still gets configured
+> from DT independently. However that’s a separate discussion already
+> going in your earlier thread.
+> 
+> 
+> > > On Mon, Nov 25, 2013 at 06:02:08PM +0530, Pekon Gupta wrote:
+> [...]
+> > > +
+> > > +	/* re-configure driver is bus-width was incorrectly configured */
+> > > +	if (busw != (chip->options & NAND_BUSWIDTH_16)) {
+> > > +		pr_warn("reconfiguring NAND bus width to %d instead %d
+> > bit\n",
+> > > +			   busw ? 16 : 8,
+> > > +			   (chip->options & NAND_BUSWIDTH_16) ? 16 : 8);
+> > > +		chip->options = (chip->options & ~NAND_BUSWIDTH_16) |
+> > busw;
+> > 
+> > Looking at this makes me wonder why are we *re* configuring, instead of
+> > just configuring. I mean, why do we keep the NAND_BUSWIDTH_16 setting?
+> > 
+> > What use case might need the user to set it, before hand?
+> > 
+> Nothing.. I just said reconfiguring, bcoz some driver already configure
+> 'chip->options & NAND_BUSWIDTH_16' pre-hand before calling
+> nand_scan_ident(). So, I wanted to convey that this patch should not
+> affect any of their functionality. And no change is should be required.
+> 
+> Need this to get tested with -ve testing on different boards.. 
+> (like setting in-correct DT binding nand-bus-width and driver should still
+> be able to detect and probe ONFI params) Then only it proves that this
+> patch is actually auto-detecting bus-width under all cases for all controllers.
+> 
+
+You seem to keep insisting with the kernel auto-fixing after wrong DT
+configuration. I don't think that should matter.
+
+My point is: why don't we *remove* the devicetree property nand-bus-width and the
+NAND_BUSWIDTH_16 entirely, together with this patch?
+
+Sounds like the user shouldn't need to mess with any of these, since we
+are able to auto-configure things for him.
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
