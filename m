@@ -1,24 +1,22 @@
-Received: from relay-177.153.28.72.ig.com.br ([177.153.28.72]
- helo=saul0002-72.ig.correio.pw)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VlPOD-0006Zg-QA
- for linux-mtd@lists.infradead.org; Tue, 26 Nov 2013 20:37:47 +0000
-Received: from saul0002.ig.correio.pw (127.0.0.1) by ig.com.br id hik39i1oqj8n
- for <linux-mtd@lists.infradead.org>;
- Tue, 26 Nov 2013 18:20:42 -0200 (envelope-from <vibes@extravibes.com>)
-Message-ID: <18to933zi4ec75$22b277kn25$9455w7hw36@x_land>
-From: vibes@extravibes.com
-To: <linux-mtd@lists.infradead.org>, <info@rosan.ru>, <incom@russerv.ru>,
- <medvedev@fbm.msu.ru>
-Subject: =?koi8-r?Q?=C4=CF_=CE=C5=C4=C1=D7=CE=C5=C7=CF_=D7=D2=C5?=
- =?koi8-r?Q?=CD=C5=CE=C9_=DC=D4=CF_=D3=CF=C4=C5=D2=D6=C1?=
- =?koi8-r?Q?=CC=CF=D3=D8_=CE=C5=D3=C2=D9=D4=CF=DE=CE=CF=CA?=
- =?koi8-r?Q?_=CD=C5=DE=D4=CF=CA=2E?=
-Date: Tue, 26 Nov 2013 20:32:34 +0100
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VlPnp-0006xT-H6
+ for linux-mtd@lists.infradead.org; Tue, 26 Nov 2013 21:04:15 +0000
+Date: Tue, 26 Nov 2013 22:03:41 +0100
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH v2] mtd/nand: don't use {read,write}_buf for 8-bit
+ transfers
+Message-ID: <20131126210341.GO28642@pengutronix.de>
+References: <1362414924-27506-1-git-send-email-u.kleine-koenig@pengutronix.de>
+ <1362415655-13073-1-git-send-email-u.kleine-koenig@pengutronix.de>
+ <1363167184.9457.22.camel@sauron.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="koi8-r";
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1363167184.9457.22.camel@sauron.fi.intel.com>
+Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,5 +26,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-xM8gzsXEwdfOxcfPINDPINfSxc3Fzskg3NTPIM7ByM/EyczP09ggzsXJ09DPzM7Jzc/KIM3F3tTP
-yi4gaHR0cDovL2dvby5nbC9JT3Fack4NCg==
+On Wed, Mar 13, 2013 at 11:33:04AM +0200, Artem Bityutskiy wrote:
+> On Mon, 2013-03-04 at 17:47 +0100, Uwe Kleine-König wrote:
+> > diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> > index 7ccb3c5..8ee4ed1 100644
+> > --- a/include/linux/mtd/nand.h
+> > +++ b/include/linux/mtd/nand.h
+> > @@ -419,6 +419,8 @@ struct nand_buffers {
+> >   *                     flash device.
+> >   * @read_byte:         [REPLACEABLE] read one byte from the chip
+> >   * @read_word:         [REPLACEABLE] read one word from the chip
+> > + * @write_byte         [REPLACEABLE] write a single byte to the chip on the
+> > + *                     low 8 I/O lines
+> >   * @write_buf:         [REPLACEABLE] write data from the buffer to the chip
+> >   * @read_buf:          [REPLACEABLE] read data from the chip into the buffer
+> >   * @select_chip:       [REPLACEABLE] select chip nr
+> > @@ -503,6 +505,7 @@ struct nand_chip {
+> >  
+> >         uint8_t (*read_byte)(struct mtd_info *mtd);
+> >         u16 (*read_word)(struct mtd_info *mtd);
+> > +       void (*write_byte)(struct mtd_info *mtd, uint8_t byte);
+> >         void (*write_buf)(struct mtd_info *mtd, const uint8_t *buf, int len);
+> >         void (*read_buf)(struct mtd_info *mtd, uint8_t *buf, int len);
+> >         void (*select_chip)(struct mtd_info *mtd, int chip);
+> 
+> I would like to make the interface symmetric for read and write. I do
+> not have any 16 bit flashes, so need to somehow encouredge someone who
+> has one to do this. Namely, I'd like to kill 'read_word()', if possible.
+> What's your take on this?
+I don't have a 16 bit flash, so I have the same excuse as you do :-)
+
+Uwe
+
+-- 
+Pengutronix e.K.                           | Uwe Kleine-König            |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
