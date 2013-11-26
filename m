@@ -1,19 +1,19 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
+Received: from [2001:41c8:1:5384::2] (helo=cassiel.sirena.org.uk)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VlIL5-0003Fm-3g
- for linux-mtd@lists.infradead.org; Tue, 26 Nov 2013 13:06:03 +0000
-Message-ID: <52949C9F.10008@ti.com>
-Date: Tue, 26 Nov 2013 18:35:35 +0530
-From: Sourav Poddar <sourav.poddar@ti.com>
-MIME-Version: 1.0
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 09/17] spi/spi.h: Add "mem" variable in spi master.
+ id 1VlIPl-0003O0-Kg
+ for linux-mtd@lists.infradead.org; Tue, 26 Nov 2013 13:10:54 +0000
+Date: Tue, 26 Nov 2013 13:10:29 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Sourav Poddar <sourav.poddar@ti.com>
+Message-ID: <20131126131029.GI14725@sirena.org.uk>
 References: <1385451313-1875-1-git-send-email-sourav.poddar@ti.com>
- <1385451313-1875-10-git-send-email-sourav.poddar@ti.com>
- <20131126130119.GH14725@sirena.org.uk>
-In-Reply-To: <20131126130119.GH14725@sirena.org.uk>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+ <1385451313-1875-12-git-send-email-sourav.poddar@ti.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="Hv6+fPJLRRhGCb8a"
+Content-Disposition: inline
+In-Reply-To: <1385451313-1875-12-git-send-email-sourav.poddar@ti.com>
+Subject: Re: [PATCH 11/17] spi/qspi: set "mmap" flag to true.
 Cc: devicetree@vger.kernel.org, computersforpeace@gmail.com, balbi@ti.com,
  linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
  bcousson@baylibre.com, linux-omap@vger.kernel.org
@@ -26,16 +26,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 26 November 2013 06:31 PM, Mark Brown wrote:
-> On Tue, Nov 26, 2013 at 01:05:05PM +0530, Sourav Poddar wrote:
->> Add "mem" variable in spi_master, which can be used to hold on the
->> memory mapped address.
-> Is this really generic enough to put here rather than in the driver
-> data?
-The thought behind this was that if a master controller supports
-memory mapped operation and slave wants to use memcpy in his
-driver(bypassing spi ), then we should have a mean to communicate 
-between the
-master and the slave. So, 'spi_master' seems to be the place for me for 
-this data,
-which could be parsed in the slave side also.
+
+--Hv6+fPJLRRhGCb8a
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Nov 26, 2013 at 01:05:07PM +0530, Sourav Poddar wrote:
+> Set mmap flag to true to indicate that the qspi controller
+> supports memory mapped operations.
+
+Please combine some of these patches - adding the mmap support and then
+separately adding this flag isn't really helping bisection, just have
+one patch enabling support for mmap in the driver.  Similarly adding
+internal functions to the driver with no users and then separately
+adding the users isn't really adding much.
+
+--Hv6+fPJLRRhGCb8a
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSlJ3CAAoJELSic+t+oim9qTAP/3HF2Dvj+nrz1AAfzimO/Tpw
+enPY+0BiL+GEvILe2n4yZMGu+HTlHW5hHw8qCtYcYnAa0z4kuQ6K9d799KO+j6PN
+mqPet1yMdlo+XK5rl5bDFrMyDPrEn6GbagTDDzjckmky8smcJwUigX44gnD9vePT
+Skq9I8gN7giMRkSfZZZ1a7gqtGr+0sodsowRtfPgRakX6ypSEanX6iwpvfE/xvmx
+4uFeM3epJ6nzkPdQsEcTViIrN0Hnv8oN+/NA07rXOj7JugpEkXGtYkRxOfdDjkdv
+eW4zgYYvdyt8EMGk+UUuWFzDLrg3E9HIrTvJcijj5LDwWPk7e7/Bx90sazTy5hYZ
+8TmIiU3BR6uhA/PenjiUeBrhxHNx5MJTrPqAax8sc8JI29FePvClfGBdy6Gos6lU
+FplHwE0tMC4x2v2QGXHYC4nSxuO1iwjuCSR9p81AD2qVoCt6W3TclpJ7QLkSkleO
+v1TzpwuHl29VSv8qi80dvX5cszjkhvArrcOU7G9w1UOdfDK4rg6fYQV1BuoaRm0x
+iTYwtmgOwRdLYfqhboGY+wrMiNJ1C6uk2Ff0FY8e+Oh9XHJG6xmDm5+D29FVxiXZ
+PW5X383CaG6Ep02iM9dngrQa/8S+R3a/AwOkwGxtl8xfu7HyWDb4ggawQg+f0GCj
+gKa1wom/rMk4/gh/zgOi
+=OYKO
+-----END PGP SIGNATURE-----
+
+--Hv6+fPJLRRhGCb8a--
