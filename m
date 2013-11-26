@@ -1,22 +1,27 @@
-Received: from [2001:41c8:1:5384::2] (helo=cassiel.sirena.org.uk)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VlFvV-00082s-IP
- for linux-mtd@lists.infradead.org; Tue, 26 Nov 2013 10:31:29 +0000
-Date: Tue, 26 Nov 2013 10:31:04 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Sourav Poddar <sourav.poddar@ti.com>
-Message-ID: <20131126103104.GZ14725@sirena.org.uk>
-References: <1385451313-1875-1-git-send-email-sourav.poddar@ti.com>
- <1385451313-1875-5-git-send-email-sourav.poddar@ti.com>
+Message-ID: <52947832.3080309@ti.com>
+Date: Tue, 26 Nov 2013 12:30:10 +0200
+From: Grygorii Strashko <grygorii.strashko@ti.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="S/OOmhz5UkAXnkSU"
-Content-Disposition: inline
-In-Reply-To: <1385451313-1875-5-git-send-email-sourav.poddar@ti.com>
-Subject: Re: [PATCH 04/17] spi/qspi: parse control module register.
-Cc: devicetree@vger.kernel.org, computersforpeace@gmail.com, balbi@ti.com,
- linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
- bcousson@baylibre.com, linux-omap@vger.kernel.org
+To: Sekhar Nori <nsekhar@ti.com>, "Khoronzhuk, Ivan" <ivan.khoronzhuk@ti.com>,
+ "Shilimkar, Santosh" <santosh.shilimkar@ti.com>, Rob Landley
+ <rob@landley.net>, Russell King <linux@arm.linux.org.uk>
+Subject: Re: [PATCH 06/12] mtd: nand: davinci: adjust DT properties to MTD
+ generic
+References: <1384187188-5776-1-git-send-email-ivan.khoronzhuk@ti.com>,
+ <1384187188-5776-7-git-send-email-ivan.khoronzhuk@ti.com>
+ <4F5844B3A985794BA902E12C070812375F8D20@DNCE04.ent.ti.com>
+ <529447A7.1050605@ti.com>
+In-Reply-To: <529447A7.1050605@ti.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Stephen Warren <swarren@wwwdotorg.org>, Kumar Gala <galak@kernel.crashing.org>,
+ Rob Herring <rob.herring@calxeda.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,37 +31,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 11/26/2013 09:03 AM, Sekhar Nori wrote:
+> On Monday 11 November 2013 10:31 PM, Khoronzhuk, Ivan wrote:
+>> The properties davinci-ecc-mode, davinci-nand-use-bbt, davinci-nand-buswidth
+>> are MTD generic. Correct names for them are: nand-ecc-mode, nand-on-flash-bbt,
+>> nand-bus-width accordingly. So rename them in dts and documentation.
+>>
+>> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+>> ---
+>>   .../devicetree/bindings/mtd/davinci-nand.txt       |   25 ++++++++++++++++----
+>>   drivers/mtd/nand/davinci_nand.c                    |   11 ++++++---
+>>   2 files changed, 28 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/mtd/davinci-nand.txt b/Documentation/devicetree/bindings/mtd/davinci-nand.txt
+>> index d2a3fc0..befaa5b 100644
+>> --- a/Documentation/devicetree/bindings/mtd/davinci-nand.txt
+>> +++ b/Documentation/devicetree/bindings/mtd/davinci-nand.txt
+>> @@ -37,7 +37,7 @@ Recommended properties :
+>>   - ti,davinci-mask-chipsel:     mask for chipselect address. Needed to mask
+>>                                  addresses for given chipselect.
+>>
+>> -- ti,davinci-ecc-mode:         operation mode of the NAND ecc mode. ECC mode
+>> +- nand-ecc-mode:               operation mode of the NAND ecc mode. ECC mode
+>>                                  valid values for davinci driver:
+>>                                  - "none"
+>>                                  - "soft"
+>> @@ -45,10 +45,25 @@ Recommended properties :
+>>
+>>   - ti,davinci-ecc-bits:         used ECC bits, currently supported 1 or 4.
+>>
+>> -- ti,davinci-nand-buswidth:    buswidth 8 or 16.
+> 
+> Shouldn't we keep the documentation for existing bindings while just
+> marking them as deprecated?
 
---S/OOmhz5UkAXnkSU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I haven't found any requirements about this in doc. 
+It's done in both way in other drivers - some keep properties in bindings
+documentation and some are not.
 
-On Tue, Nov 26, 2013 at 01:05:00PM +0530, Sourav Poddar wrote:
-> In qspi controller, we need to switch to memory mapped operations.
-> These switching depends on
-
-This will need to be added to the DT binding.
-
---S/OOmhz5UkAXnkSU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSlHhlAAoJELSic+t+oim9VvQP/1z3ojMhLVfYarimp8Vsyd0Y
-+NJ3TH8gU5sCB5OlLfpbg4qnOlUO4N7PzZZNRfYK9WbbxMUg2Tr0IVcUKBvxyOlD
-Uz9fps08VTnvc7/dFjZczZEW+jGH/wkgn0rbH3SQu5lNo307JqcBopkf9VdwlbTA
-J0foTDDxGOICUuLBArjUyJJ9F+iPDm9u9mZkvbSpCSsmQlJCQz7wfDKf3CWu+CDJ
-TKaxyBd//4JT1D9q5Y4l6kTwCLiMJoQkWjoJyinWhhoELEoVAFldHhFfVQsOmkCU
-iCZINfkD5JY+aJysZpyPdAZcv2XVLsrzn6bh77QC/Gr5qydE40CM6Jwoo7Ghf8Uk
-1S20zjevyIBFwByHfUs7ULGmhZ8PYKaqcow7LrVeholoJBV4vVHNFILBks6GiwBD
-2FnBi45aIib1+rf5VQhSQ9S41UoW9QTbkHOUE4jEJ/uoMulW+wJscC2PqDiKQDNN
-SIpFRYL7gIbaHfZiUlHD9xtR99AyeTQSq2fIUCOm+hLX42Qh0wHIkkp9S94B3Mlu
-cbqPaZ5gyrXHYi8YahUMDG7N+oyWlwpjWO8E4sdtevxc0sCGXheYUz+itdOrdLG9
-n/eyNbhMEEPwhn4da36H3u8RkvYLmxxmyet0/H6O1Zjn4PvA/DsPz9oDJd4x1bca
-LzQoSd+LUqyE2/FvM+R/
-=j4PP
------END PGP SIGNATURE-----
-
---S/OOmhz5UkAXnkSU--
+Regards,
+-grygorii
