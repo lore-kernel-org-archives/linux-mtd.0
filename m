@@ -1,14 +1,13 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
+Received: from bear.ext.ti.com ([192.94.94.41])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VlDC8-0002jm-Ai
- for linux-mtd@lists.infradead.org; Tue, 26 Nov 2013 07:36:29 +0000
+ id 1VlDC8-0002il-JP
+ for linux-mtd@lists.infradead.org; Tue, 26 Nov 2013 07:36:30 +0000
 From: Sourav Poddar <sourav.poddar@ti.com>
 To: <computersforpeace@gmail.com>, <broonie@kernel.org>,
  <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>
-Subject: [PATCH 12/17] spi/qspi: convert driver to enable/disable memory
- mapped.
-Date: Tue, 26 Nov 2013 13:05:08 +0530
-Message-ID: <1385451313-1875-13-git-send-email-sourav.poddar@ti.com>
+Subject: [PATCH 11/17] spi/qspi: set "mmap" flag to true.
+Date: Tue, 26 Nov 2013 13:05:07 +0530
+Message-ID: <1385451313-1875-12-git-send-email-sourav.poddar@ti.com>
 In-Reply-To: <1385451313-1875-1-git-send-email-sourav.poddar@ti.com>
 References: <1385451313-1875-1-git-send-email-sourav.poddar@ti.com>
 MIME-Version: 1.0
@@ -24,46 +23,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Idea is to enable memory mapped by default at the end of the probe,
-if the control reaches the "transfer" api, then the operation is
-not a memory mapped one. Hence, we switch to Normal mode and at the
-end of the "transfer" function. switch back to memory mapped mode.
+Set mmap flag to true to indicate that the qspi controller
+supports memory mapped operations.
 
 Signed-off-by: Sourav Poddar <sourav.poddar@ti.com>
 ---
- drivers/spi/spi-ti-qspi.c |    6 ++++++
- 1 files changed, 6 insertions(+), 0 deletions(-)
+ drivers/spi/spi-ti-qspi.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
 diff --git a/drivers/spi/spi-ti-qspi.c b/drivers/spi/spi-ti-qspi.c
-index d21d40d..ba95d64 100644
+index 10bcb37..d21d40d 100644
 --- a/drivers/spi/spi-ti-qspi.c
 +++ b/drivers/spi/spi-ti-qspi.c
-@@ -415,6 +415,8 @@ static int ti_qspi_start_transfer_one(struct spi_master *master,
- 	int status = 0, ret;
- 	int frame_length;
+@@ -532,6 +532,7 @@ static int ti_qspi_probe(struct platform_device *pdev)
+ 	master->configure_from_slave = ti_qspi_configure_from_slave;
+ 	master->get_buf = ti_qspi_get_mem_buf;
+ 	master->put_buf = ti_qspi_put_mem_buf;
++	master->mmap = true;
  
-+	disable_qspi_memory_mapped(qspi);
-+
- 	/* setup device control reg */
- 	qspi->dc = 0;
- 
-@@ -460,6 +462,8 @@ static int ti_qspi_start_transfer_one(struct spi_master *master,
- 
- 	ti_qspi_write(qspi, qspi->cmd | QSPI_INVAL, QSPI_SPI_CMD_REG);
- 
-+	enable_qspi_memory_mapped(qspi);
-+
- 	return status;
- }
- 
-@@ -613,6 +617,8 @@ static int ti_qspi_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto free_master;
- 
-+	enable_qspi_memory_mapped(qspi);
-+
- 	return 0;
- 
- free_master:
+ 	if (!of_property_read_u32(np, "num-cs", &num_cs))
+ 		master->num_chipselect = num_cs;
 -- 
 1.7.1
