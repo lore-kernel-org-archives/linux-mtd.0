@@ -1,29 +1,13 @@
-Message-ID: <5293F19D.70901@ti.com>
-Date: Mon, 25 Nov 2013 19:55:57 -0500
-From: Santosh Shilimkar <santosh.shilimkar@ti.com>
+From: Huang Shijie <b32955@freescale.com>
+To: <dwmw2@infradead.org>
+Subject: [PATCH 0/4] mtd: spi-nor: add a new framework for SPI NOR
+Date: Tue, 26 Nov 2013 14:32:51 +0800
+Message-ID: <1385447575-23773-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-To: Sekhar Nori <nsekhar@ti.com>
-Subject: Re: [PATCH 10/12] mtd: nand: davinci: don't set timings if AEMIF
- is used
-References: <1384187188-5776-1-git-send-email-ivan.khoronzhuk@ti.com>,
- <1384187188-5776-11-git-send-email-ivan.khoronzhuk@ti.com>
- <4F5844B3A985794BA902E12C070812375F8D53@DNCE04.ent.ti.com>
- <528307F0.6000805@ti.com> <52838941.4060207@ti.com> <5284ABB9.70608@ti.com>
- <5284DFE7.70308@ti.com> <528E3DD4.7030607@ti.com> <528F968F.40306@ti.com>
- <5291CB01.1010506@ti.com>
-In-Reply-To: <5291CB01.1010506@ti.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Cc: Mark Rutland <mark.rutland@arm.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "Strashko,
- Grygorii" <grygorii.strashko@ti.com>, Russell King <linux@arm.linux.org.uk>,
- Pawel Moll <pawel.moll@arm.com>, Stephen Warren <swarren@wwwdotorg.org>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@kernel.crashing.org>, Rob Herring <rob.herring@calxeda.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Rob Landley <rob@landley.net>, "Khoronzhuk, Ivan" <ivan.khoronzhuk@ti.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain
+Cc: marex@denx.de, broonie@linaro.org, Huang Shijie <b32955@freescale.com>,
+ linux-mtd@lists.infradead.org, pekon@ti.com, sourav.poddar@ti.com,
+ computersforpeace@gmail.com, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,41 +17,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sunday 24 November 2013 04:46 AM, Sekhar Nori wrote:
-> On Friday 22 November 2013 11:08 PM, Santosh Shilimkar wrote:
->> On Thursday 21 November 2013 12:07 PM, Nori, Sekhar wrote:
->>> On 11/14/2013 8:06 PM, Santosh Shilimkar wrote:
+1.) Why add a new framework for SPI NOR?
+  The SPI-NOR controller such as Freescale's Quadspi controller is working
+  in a different way from the SPI bus. It should knows the NOR commands to
+  find the right LUT sequence. Unfortunately, the current code can not meet
+  this requirement.
 
-[..]
+2.) How does this patch set do?
+   This patch set adds a new spi-nor layer.
+   Before this patch, the layer is like:
 
->>> Yes, that would be the ideal way. But the reality is that there is close
->>> to zero chance of all the DaVinci platforms using AEMIF ever getting
->>> converted to DT. This means that we will never be able to get rid of
->>> this piece of code.
->>>
->> Well that means some of those platforms support will get deprecated
->> soon considering other basic frameworks like irq, timer wheel etc
->> is assuming the DT direction. But its your call because if you
->> want those platforms to live, you need to convert them to DT.
->>  
->>> I do agree platform data is not the direction you want to take on ARM
->>> but at the same time its not really a deprecated mechanism as far as the
->>> broader kernel is concerned.
->>>
->>> So, can we consider adding platform data mechanism to the AEMIF driver?
->>>
->> Sorry but answer is "NO". If the above hack is really bothering you,
->> we can actually rip out the above code in question and move it
->> to mach-davinci. Infact thats the best direction to make the
->> mtd nandn driver independent of any platform quirks(dt, pdata etc)
->>
->> Ivan already has a patch to do that and he is going to post
->> that patch. With that patch, we won't need $subject patch.
->>
-> 
-> Okay I will wait for the patch.
-> 
-Ivan has posted a patch already and you are copied on it.
+                   MTD
+         ------------------------
+                  m25p80
+         ------------------------
+	       spi bus driver
+         ------------------------
+	        SPI NOR chip
 
-Regards,
-Santosh
+   After this patch, the layer is like:
+                   MTD
+         ------------------------
+                  spi-nor
+         ------------------------
+                  m25p80
+         ------------------------
+	       spi bus driver
+         ------------------------
+	       SPI NOR chip
+
+  With the spi-nor controller driver(Freescale Quadspi), it looks like:
+                   MTD
+         ------------------------
+                  spi-nor
+         ------------------------
+                fsl-quadspi
+         ------------------------
+	       SPI NOR chip
+
+3.) more details
+   This patch set adds a new data structrue spi_nor{}, clones most the common
+  code to spi-nor.c. Make the m25p80.c use the new APIs.
+
+4.) TODO list:
+   3.1) add the new spi_nor_device{} for the spi-nor controller's device.
+   3.2) add the Freescale Quadspi driver.
+
+	       
+Huang Shijie (4):
+  mtd: spi-nor: move the SPI NOR commands to a new header file
+  mtd: spi-nor: add a new data structrue spi_nor{}
+  mtd: spi-nor: add the framework for SPI NOR
+  mtd: m25p80: use the new spi-nor APIs
+
+ drivers/mtd/Kconfig           |    2 +
+ drivers/mtd/Makefile          |    1 +
+ drivers/mtd/devices/Kconfig   |    2 +-
+ drivers/mtd/devices/m25p80.c  | 1249 +++--------------------------------------
+ drivers/mtd/spi-nor/Kconfig   |    6 +
+ drivers/mtd/spi-nor/Makefile  |    1 +
+ drivers/mtd/spi-nor/spi-nor.c | 1057 ++++++++++++++++++++++++++++++++++
+ include/linux/mtd/spi-nor.h   |  101 ++++
+ 8 files changed, 1239 insertions(+), 1180 deletions(-)
+ create mode 100644 drivers/mtd/spi-nor/Kconfig
+ create mode 100644 drivers/mtd/spi-nor/Makefile
+ create mode 100644 drivers/mtd/spi-nor/spi-nor.c
+ create mode 100644 include/linux/mtd/spi-nor.h
+
+-- 
+1.7.2.rc3
