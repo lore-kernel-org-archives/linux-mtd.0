@@ -1,21 +1,22 @@
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Huang Shijie <b32955@freescale.com>, "dwmw2@infradead.org"
- <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>
-Subject: RE: [PATCH 3/4] mtd: spi-nor: add the framework for SPI NOR
-Date: Tue, 26 Nov 2013 10:03:08 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA4EE42@DBDE04.ent.ti.com>
-References: <1385447575-23773-1-git-send-email-b32955@freescale.com>
- <1385447575-23773-4-git-send-email-b32955@freescale.com>
-In-Reply-To: <1385447575-23773-4-git-send-email-b32955@freescale.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from [2001:41c8:1:5384::2] (helo=cassiel.sirena.org.uk)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VlFuJ-000805-F2
+ for linux-mtd@lists.infradead.org; Tue, 26 Nov 2013 10:30:16 +0000
+Date: Tue, 26 Nov 2013 10:29:51 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Sourav Poddar <sourav.poddar@ti.com>
+Message-ID: <20131126102951.GX14725@sirena.org.uk>
+References: <1385451313-1875-1-git-send-email-sourav.poddar@ti.com>
+ <1385451313-1875-3-git-send-email-sourav.poddar@ti.com>
 MIME-Version: 1.0
-Cc: "marex@denx.de" <marex@denx.de>, "Poddar, Sourav" <sourav.poddar@ti.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- "broonie@linaro.org" <broonie@linaro.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="eMGrAD5L3cjpiKtl"
+Content-Disposition: inline
+In-Reply-To: <1385451313-1875-3-git-send-email-sourav.poddar@ti.com>
+Subject: Re: [PATCH 02/17] spi/spi.h: Add configure from slave support.
+Cc: devicetree@vger.kernel.org, computersforpeace@gmail.com, balbi@ti.com,
+ linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
+ bcousson@baylibre.com, linux-omap@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,14 +26,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> From: Huang Shijie [mailto:b32955@freescale.com]
-> This patch cloned most of the m25p80.c. In theory, it adds a new spi-nor
-> layer.
-[...]
-> Signed-off-by: Huang Shijie <b32955@freescale.com>
->
-Is there a way we can also original m25p80 contributors' sign-off also?
-David/Brian, can you suggest ?
 
+--eMGrAD5L3cjpiKtl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-With regards, pekon
+On Tue, Nov 26, 2013 at 01:04:58PM +0530, Sourav Poddar wrote:
+
+>  	void	(*get_buf)(struct spi_master *master);
+>  	void	(*put_buf)(struct spi_master *master);
+> +	void	(*configure_from_slave)(struct spi_device *spi, u8 *val);
+
+Clearly this is far too unstructured to be useful, this is only ever
+going to work with one specific combination of slave and master since
+there's absolutely no semantics defined.
+
+--eMGrAD5L3cjpiKtl
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSlHgcAAoJELSic+t+oim9MAEP/jksyOHV60pekSBgUvF0lDQa
+/20gnPmbYp9Z4uCZEiiWXOP7HUhfvngAgVS2d6RuFLf1Km0FJ2Z9d0rs0gAZsvSo
+LnzVuSdAMtDgKjjuKqJmpL2DiOtRk9veL8w+D30e5uqjY4R4PWlbnWRAZ2RNwvpn
+9pVJHfHdAvKvkgpjCZ7FMIGJbW2hHmgieNP5m5B8TvRS0nycQuoBXwRYsbpLDIKf
+Munb9Rg0nibRXUU1EDvx7nBGRETX961nP3Ix9aDvlBkvAihZ4L7+B76VdY0t9Ya6
+du92IbzDnDexkkxEgMcVZQmgBJOEz3xwBgv3qsPFzB2spPDzqcR8F9rnsegWUvlM
+E+znd+fCesDyE2s3jC2tk7C4vrX5amcZ910hHvvYYRT/Oir3ET37NKugAZ+Y8EHK
+RHyjH1BEzdm774fAz8TDena31kzGyMBBZoYDCIqEPeMPkC6PUiOVD9nqMLue/iQF
++pvYTqFKiVz9Q/4KDRhyl2ChCqCPL6wlIXKzVne//1oWWjIT/Sy7PUvbNvQhn8Ga
+40joh9duOjS7ND2gA2FLV07OdchctHiKnbcQGfXegWGagWLTx0X/IdX7RE/Jof0g
+hG9+NInn+XNMXNfbq+xw5PPEOqMI4BxLE/HcIh4WFNBYKtNFlPjvTKMlsdwYvt3N
+u1uSdPIIXWsXMN1DkJIa
+=gnfI
+-----END PGP SIGNATURE-----
+
+--eMGrAD5L3cjpiKtl--
