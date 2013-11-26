@@ -1,22 +1,18 @@
-Received: from co9ehsobe002.messaging.microsoft.com ([207.46.163.25]
- helo=co9outboundpool.messaging.microsoft.com)
+Received: from arroyo.ext.ti.com ([192.94.94.40])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VlD3t-0002LR-Fx
- for linux-mtd@lists.infradead.org; Tue, 26 Nov 2013 07:27:58 +0000
-Message-ID: <52944E45.6070803@freescale.com>
-Date: Tue, 26 Nov 2013 15:31:17 +0800
-From: Huang Shijie <b32955@freescale.com>
+ id 1VlDBX-0002fA-Rt
+ for linux-mtd@lists.infradead.org; Tue, 26 Nov 2013 07:35:53 +0000
+From: Sourav Poddar <sourav.poddar@ti.com>
+To: <computersforpeace@gmail.com>, <broonie@kernel.org>,
+ <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>
+Subject: [PATCH 00/17] Add memory mapped support for ti qspi,
+ m25p80 serial flash.
+Date: Tue, 26 Nov 2013 13:04:56 +0530
+Message-ID: <1385451313-1875-1-git-send-email-sourav.poddar@ti.com>
 MIME-Version: 1.0
-To: Pekon Gupta <pekon@ti.com>
-Subject: Re: [PATCH] mtd: nand: auto-detection of NAND bus-width from ONFI
- param or nand_id[]
-References: <1385382728-7913-1-git-send-email-pekon@ti.com>
-In-Reply-To: <1385382728-7913-1-git-send-email-pekon@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- balbi@ti.com, ezequiel.garcia@free-electrons.com,
- Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain
+Cc: devicetree@vger.kernel.org, Sourav Poddar <sourav.poddar@ti.com>,
+ linux-omap@vger.kernel.org, bcousson@baylibre.com, balbi@ti.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,110 +22,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B411=E6=9C=8825=E6=97=A5 20:32, Pekon Gupta =E5=86=99=
-=E9=81=93:
-> This patch is alternative implementation for following commit which int=
-roduced
-> NAND_BUSWIDTH_AUTO for detection of bus-width during device probe
->     commit 64b37b2a63eb2f80b65c7185f0013f8ffc637ae3
->     Author:     Matthieu CASTET<matthieu.castet@parrot.com>
->     AuthorDate: 2012-11-06
->
-> As NAND device is identified only during nand_scan_ident(), so this pat=
-ch
-> assumes that NAND driver may un-initialized or partially congigured whi=
-le
-> calling nand_scan_ident(). Hence, this patch does following:
->
-> (1) Temporarily configures 'bus-width=3Dx8' mode before reading ONFI pa=
-rameters,
->   (as required by ONFI spec Refer[*]), and then reverts to original bus=
--width.
->   This allows nand_flash_detect_onfi() to read ONFI paramers page even =
-if
->   bus-width was un-initialized or incorrectly configured.
->
-> (2) reconfigures driver with correct bus-width determined by:
->   - either by reading ONFI param OR
->   - as found in nand_flash_id[] table
->   So, any driver-specific callback overrides should be done post nand_s=
-can_ident.
->
-> This patch removes any dependency on either 'DT binding' or 'platform d=
-ata' to
-> for determining NAND device bus-width.
->
-> [*] Reference: ONFI spec version 3.1 (section 3.5.3. Target Initializat=
-ion)
->      "The Read ID and Read Parameter Page commands only use the lower 8=
--bits
->       of the data bus. The host shall not issue commands that use a wor=
-d
->       data width on x16 devices until the host determines the device su=
-pports
->       a 16-bit data bus width in the parameter page."
->
->
-> Signed-off-by: Pekon Gupta<pekon@ti.com>
-> ---
->   drivers/mtd/nand/nand_base.c | 43 ++++++++++++++++++-----------------=
---------
->   include/linux/mtd/nand.h     |  7 -------
->   2 files changed, 18 insertions(+), 32 deletions(-)
->
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.=
-c
-> index bd39f7b..3d581a4 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -2942,14 +2942,9 @@ static int nand_flash_detect_onfi(struct mtd_inf=
-o *mtd, struct nand_chip *chip,
->   		chip->read_byte(mtd) !=3D 'F' || chip->read_byte(mtd) !=3D 'I')
->   		return 0;
->
-> -	/*
-> -	 * ONFI must be probed in 8-bit mode or with NAND_BUSWIDTH_AUTO, not
-> -	 * with NAND_BUSWIDTH_16
-> -	 */
-> -	if (chip->options&  NAND_BUSWIDTH_16) {
-> -		pr_err("ONFI cannot be probed in 16-bit mode; aborting\n");
-> -		return 0;
-> -	}
-> +	/* ONFI must be probed in 8-bit mode only, so switch to x8 mode */
-> +	if (chip->options&  NAND_BUSWIDTH_16)
-> +		nand_set_defaults(chip, 0);
->
->   	chip->cmdfunc(mtd, NAND_CMD_PARAM, 0, -1);
->   	for (i =3D 0; i<  3; i++) {
-> @@ -2962,7 +2957,7 @@ static int nand_flash_detect_onfi(struct mtd_info=
- *mtd, struct nand_chip *chip,
->
->   	if (i =3D=3D 3) {
->   		pr_err("Could not find valid ONFI parameter page; aborting\n");
-> -		return 0;
-> +		goto return_error;
->   	}
->
->   	/* Check version */
-> @@ -2980,7 +2975,7 @@ static int nand_flash_detect_onfi(struct mtd_info=
- *mtd, struct nand_chip *chip,
->
->   	if (!chip->onfi_version) {
->   		pr_info("%s: unsupported ONFI version: %d\n", __func__, val);
-> -		return 0;
-> +		goto return_error;
->   	}
->
->   	sanitize_string(p->manufacturer, sizeof(p->manufacturer));
-> @@ -3033,6 +3028,12 @@ static int nand_flash_detect_onfi(struct mtd_inf=
-o *mtd, struct nand_chip *chip,
->   	}
-If it is 16bit bus, could we reconfigure the bus width in here?
-it's better to limit the influence only in the ONFI code.
 
-thanks
-Huang Shijie
+The patch series aims to add memory mapped support for TI qspi
+contoller and also add support for the same in serial flash driver(m25p80).
+
+These feature was added as a part of the series[1]:
+The series[1] add support for quad and memory mapped feature in spi and
+flash driver. Based on Brian Norris suggestion on splitting the quad and 
+memory mapped feature, I had sent a seperate series for quad support which 
+has beed accepted by Brian.
+
+The $subject patch series takes care of the memory mapped part.  
+
+Overview of memory mapped support in qspi:
+ TI qspi controller supports memory mapped read support, switching to which
+ requires  register modifications(qspi registers, control module register for
+ DRA, qspi register for am43x). Once switched, the flash data can be available
+ at a soc specific memory mapped address. For operations in normal mode, we need 
+ to keep memory mapped disable.
+
+ Flow of the patch is to keep the memory mapped enable by default in the driver.
+ Whenever Normal spi mode operations are desired, we switch to configuration mode
+ and at the end of it memory mapped is again enabled. There are few function pointers
+ added to fecilitate easy communication between the flash and spi controllers.
+
+Major changes in the $subject patch based on discussion in [1]:
+
+- Feature has been broken down into small meaningfl patches.
+- memcpy is done in flash driver and spi framework is bypassed.
+- configuration of memory mapped spi controller regsiters is done
+  through function calls from flash side.
+
+[1]: http://lists.infradead.org/pipermail/linux-mtd/2013-October/049058.html
 
 
->
->   	return 1;
+Tested on DRA7 board with spansion S25FL256S flash along with some
+internal irq crossbar patches.
+Tested on AM437x epos evm with macronix MX66l51235l flash.
+
+Testing done:
+-Erase the whole flash.
+-write to the flash
+-read back the flash
+- compare the data
+
+Sourav Poddar (17):
+  spi/spi.h: Add get_buf/put_buf support in spi master..
+  spi/spi.h: Add configure from slave support.
+  spi/qspi: parse register by name.
+  spi/qspi: parse control module register.
+  spi/qspi: parse memory map register.
+  spi/qspi: Add support to switc to memory mapped operation.
+  spi/qspi: configure set up register for memory map..
+  spi/qspi: Add api for get_buf/put_buf.
+  spi/spi.h: Add "mem" variable in spi master.
+  spi/spi.h: Add mmap flag in spi master.
+  spi/qspi: set "mmap" flag to true.
+  spi/qspi: convert driver to enable/disable memory mapped..
+  drivers: mtd: m25p80: Add api to configure master register .
+  drivers: mtd: m25p80: Adapt driver to support memory mapped read.
+  arm: dts: dra7: Add qspi device.
+  arm: dts: am43x-epos: Add qspi device.
+  Documentation: bindings: ti-qspi: update binding information.
+
+ Documentation/devicetree/bindings/spi/ti_qspi.txt |    2 +
+ arch/arm/boot/dts/am4372.dtsi                     |   12 ++
+ arch/arm/boot/dts/am43x-epos-evm.dts              |   28 +++++
+ arch/arm/boot/dts/dra7-evm.dts                    |   32 ++++++
+ arch/arm/boot/dts/dra7.dtsi                       |   13 +++
+ drivers/mtd/devices/m25p80.c                      |   30 ++++++
+ drivers/spi/spi-ti-qspi.c                         |  115 ++++++++++++++++++++-
+ include/linux/spi/spi.h                           |   16 +++
+ 8 files changed, 246 insertions(+), 2 deletions(-)
