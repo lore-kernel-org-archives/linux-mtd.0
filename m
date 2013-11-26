@@ -1,15 +1,15 @@
-Received: from mail-ie0-x229.google.com ([2607:f8b0:4001:c03::229])
+Received: from mail-ob0-x235.google.com ([2607:f8b0:4003:c01::235])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VlS2k-000120-JK
- for linux-mtd@lists.infradead.org; Tue, 26 Nov 2013 23:27:49 +0000
-Received: by mail-ie0-f169.google.com with SMTP id e14so10860268iej.0
- for <linux-mtd@lists.infradead.org>; Tue, 26 Nov 2013 15:27:25 -0800 (PST)
-Date: Tue, 26 Nov 2013 15:27:20 -0800
+ id 1VlSSY-0001o6-JK
+ for linux-mtd@lists.infradead.org; Tue, 26 Nov 2013 23:54:27 +0000
+Received: by mail-ob0-f181.google.com with SMTP id uy5so6534623obc.40
+ for <linux-mtd@lists.infradead.org>; Tue, 26 Nov 2013 15:54:05 -0800 (PST)
+Date: Tue, 26 Nov 2013 15:54:01 -0800
 From: Brian Norris <computersforpeace@gmail.com>
 To: Wei Yongjun <weiyj.lk@gmail.com>
 Subject: Re: [PATCH] mtd: mpc5121_nfc: drop devm_free_irq of devm_
  allocated irq
-Message-ID: <20131126232720.GM9468@ld-irv-0074.broadcom.com>
+Message-ID: <20131126235401.GO9468@ld-irv-0074.broadcom.com>
 References: <CAPgLHd8G-uaG3a7DfA-eAhcdKD3yXzpCuQJ2c8qFe0412pQX2Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -36,7 +36,43 @@ On Wed, Sep 25, 2013 at 03:40:38PM +0800, Wei Yongjun wrote:
 > call devm_free_irq in probe or remove functions.
 > 
 > Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+> ---
+>  drivers/mtd/nand/mpc5121_nfc.c | 4 ----
+>  1 file changed, 4 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/mpc5121_nfc.c b/drivers/mtd/nand/mpc5121_nfc.c
+> index 3c60a00..7df37f0 100644
+> --- a/drivers/mtd/nand/mpc5121_nfc.c
+> +++ b/drivers/mtd/nand/mpc5121_nfc.c
+> @@ -838,7 +835,6 @@ static int mpc5121_nfc_remove(struct platform_device *op)
+>  	struct mpc5121_nfc_prv *prv = chip->priv;
+>  
+>  	nand_release(mtd);
+> -	devm_free_irq(dev, prv->irq, mtd);
+>  	mpc5121_nfc_free(dev, mtd);
+>  
+>  	return 0;
+> 
 
-Pushed to l2-mtd.git. Thanks!
+Just noticed a new warning after this hunk:
 
+drivers/mtd/nand/mpc5121_nfc.c:837:26: warning: unused variable 'prv' [-Wunused-variable]
+
+I'm squashing in the following diff and re-pushing to l2-mtd.git (no
+action is required from you).
+
+Thanks,
 Brian
+
+diff --git a/drivers/mtd/nand/mpc5121_nfc.c b/drivers/mtd/nand/mpc5121_nfc.c
+index 5865995..435f684 100644
+--- a/drivers/mtd/nand/mpc5121_nfc.c
++++ b/drivers/mtd/nand/mpc5121_nfc.c
+@@ -834,7 +834,6 @@ static int mpc5121_nfc_remove(struct platform_device *op)
+ 	struct device *dev = &op->dev;
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 	struct nand_chip *chip = mtd->priv;
+-	struct mpc5121_nfc_prv *prv = chip->priv;
+ 
+ 	nand_release(mtd);
+ 	mpc5121_nfc_free(dev, mtd);
