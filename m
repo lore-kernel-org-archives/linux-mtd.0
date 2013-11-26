@@ -1,18 +1,18 @@
-Message-ID: <52947832.3080309@ti.com>
-Date: Tue, 26 Nov 2013 12:30:10 +0200
-From: Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <52947CCA.2010400@ti.com>
+Date: Tue, 26 Nov 2013 12:49:46 +0200
+From: "ivan.khoronzhuk" <ivan.khoronzhuk@ti.com>
 MIME-Version: 1.0
-To: Sekhar Nori <nsekhar@ti.com>, "Khoronzhuk, Ivan" <ivan.khoronzhuk@ti.com>,
- "Shilimkar, Santosh" <santosh.shilimkar@ti.com>, Rob Landley
- <rob@landley.net>, Russell King <linux@arm.linux.org.uk>
+To: Grygorii Strashko <grygorii.strashko@ti.com>, Sekhar Nori <nsekhar@ti.com>,
+ "Shilimkar, Santosh" <santosh.shilimkar@ti.com>, Rob
+ Landley <rob@landley.net>, Russell King <linux@arm.linux.org.uk>
 Subject: Re: [PATCH 06/12] mtd: nand: davinci: adjust DT properties to MTD
  generic
 References: <1384187188-5776-1-git-send-email-ivan.khoronzhuk@ti.com>,
  <1384187188-5776-7-git-send-email-ivan.khoronzhuk@ti.com>
  <4F5844B3A985794BA902E12C070812375F8D20@DNCE04.ent.ti.com>
- <529447A7.1050605@ti.com>
-In-Reply-To: <529447A7.1050605@ti.com>
-Content-Type: text/plain; charset="ISO-8859-1"
+ <529447A7.1050605@ti.com> <52947832.3080309@ti.com>
+In-Reply-To: <52947832.3080309@ti.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: Mark Rutland <mark.rutland@arm.com>,
  "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
@@ -31,43 +31,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/26/2013 09:03 AM, Sekhar Nori wrote:
-> On Monday 11 November 2013 10:31 PM, Khoronzhuk, Ivan wrote:
->> The properties davinci-ecc-mode, davinci-nand-use-bbt, davinci-nand-buswidth
->> are MTD generic. Correct names for them are: nand-ecc-mode, nand-on-flash-bbt,
->> nand-bus-width accordingly. So rename them in dts and documentation.
+On 11/26/2013 12:30 PM, Grygorii Strashko wrote:
+> On 11/26/2013 09:03 AM, Sekhar Nori wrote:
+>> On Monday 11 November 2013 10:31 PM, Khoronzhuk, Ivan wrote:
+>>> The properties davinci-ecc-mode, davinci-nand-use-bbt, davinci-nand-buswidth
+>>> are MTD generic. Correct names for them are: nand-ecc-mode, nand-on-flash-bbt,
+>>> nand-bus-width accordingly. So rename them in dts and documentation.
+>>>
+>>> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+>>> ---
+>>>    .../devicetree/bindings/mtd/davinci-nand.txt       |   25 ++++++++++++++++----
+>>>    drivers/mtd/nand/davinci_nand.c                    |   11 ++++++---
+>>>    2 files changed, 28 insertions(+), 8 deletions(-)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/mtd/davinci-nand.txt b/Documentation/devicetree/bindings/mtd/davinci-nand.txt
+>>> index d2a3fc0..befaa5b 100644
+>>> --- a/Documentation/devicetree/bindings/mtd/davinci-nand.txt
+>>> +++ b/Documentation/devicetree/bindings/mtd/davinci-nand.txt
+>>> @@ -37,7 +37,7 @@ Recommended properties :
+>>>    - ti,davinci-mask-chipsel:     mask for chipselect address. Needed to mask
+>>>                                   addresses for given chipselect.
+>>>
+>>> -- ti,davinci-ecc-mode:         operation mode of the NAND ecc mode. ECC mode
+>>> +- nand-ecc-mode:               operation mode of the NAND ecc mode. ECC mode
+>>>                                   valid values for davinci driver:
+>>>                                   - "none"
+>>>                                   - "soft"
+>>> @@ -45,10 +45,25 @@ Recommended properties :
+>>>
+>>>    - ti,davinci-ecc-bits:         used ECC bits, currently supported 1 or 4.
+>>>
+>>> -- ti,davinci-nand-buswidth:    buswidth 8 or 16.
 >>
->> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
->> ---
->>   .../devicetree/bindings/mtd/davinci-nand.txt       |   25 ++++++++++++++++----
->>   drivers/mtd/nand/davinci_nand.c                    |   11 ++++++---
->>   2 files changed, 28 insertions(+), 8 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/mtd/davinci-nand.txt b/Documentation/devicetree/bindings/mtd/davinci-nand.txt
->> index d2a3fc0..befaa5b 100644
->> --- a/Documentation/devicetree/bindings/mtd/davinci-nand.txt
->> +++ b/Documentation/devicetree/bindings/mtd/davinci-nand.txt
->> @@ -37,7 +37,7 @@ Recommended properties :
->>   - ti,davinci-mask-chipsel:     mask for chipselect address. Needed to mask
->>                                  addresses for given chipselect.
->>
->> -- ti,davinci-ecc-mode:         operation mode of the NAND ecc mode. ECC mode
->> +- nand-ecc-mode:               operation mode of the NAND ecc mode. ECC mode
->>                                  valid values for davinci driver:
->>                                  - "none"
->>                                  - "soft"
->> @@ -45,10 +45,25 @@ Recommended properties :
->>
->>   - ti,davinci-ecc-bits:         used ECC bits, currently supported 1 or 4.
->>
->> -- ti,davinci-nand-buswidth:    buswidth 8 or 16.
-> 
-> Shouldn't we keep the documentation for existing bindings while just
-> marking them as deprecated?
+>> Shouldn't we keep the documentation for existing bindings while just
+>> marking them as deprecated?
+>
+> I haven't found any requirements about this in doc.
+> It's done in both way in other drivers - some keep properties in bindings
+> documentation and some are not.
+>
+> Regards,
+> -grygorii
+>
 
-I haven't found any requirements about this in doc. 
-It's done in both way in other drivers - some keep properties in bindings
-documentation and some are not.
+For me this is not needed, but for example from mtd:
+Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+,it contains deprecated properties, like a lot of others.
 
+And this sad me I should remain deprecated properties.
+Anyway if we have these properties in driver we should describe them.
+
+-- 
 Regards,
--grygorii
+Ivan Khoronzhuk
