@@ -1,17 +1,17 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
+Received: from comal.ext.ti.com ([198.47.26.152])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VlGfv-0000ev-1e
- for linux-mtd@lists.infradead.org; Tue, 26 Nov 2013 11:19:27 +0000
-Message-ID: <529483A2.3080000@ti.com>
-Date: Tue, 26 Nov 2013 16:48:58 +0530
+ id 1VlGii-0000ki-Qq
+ for linux-mtd@lists.infradead.org; Tue, 26 Nov 2013 11:22:21 +0000
+Message-ID: <52948451.3060706@ti.com>
+Date: Tue, 26 Nov 2013 16:51:53 +0530
 From: Sourav Poddar <sourav.poddar@ti.com>
 MIME-Version: 1.0
 To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 04/17] spi/qspi: parse control module register.
+Subject: Re: [PATCH 02/17] spi/spi.h: Add configure from slave support.
 References: <1385451313-1875-1-git-send-email-sourav.poddar@ti.com>
- <1385451313-1875-5-git-send-email-sourav.poddar@ti.com>
- <20131126103104.GZ14725@sirena.org.uk>
-In-Reply-To: <20131126103104.GZ14725@sirena.org.uk>
+ <1385451313-1875-3-git-send-email-sourav.poddar@ti.com>
+ <20131126102951.GX14725@sirena.org.uk>
+In-Reply-To: <20131126102951.GX14725@sirena.org.uk>
 Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: devicetree@vger.kernel.org, computersforpeace@gmail.com, balbi@ti.com,
@@ -26,12 +26,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 26 November 2013 04:01 PM, Mark Brown wrote:
-> On Tue, Nov 26, 2013 at 01:05:00PM +0530, Sourav Poddar wrote:
->> In qspi controller, we need to switch to memory mapped operations.
->> These switching depends on
-> This will need to be added to the DT binding.
-
-
-I have added a "reg-name" property. Does we need to add individual 
-reg-names also?
+On Tuesday 26 November 2013 03:59 PM, Mark Brown wrote:
+> On Tue, Nov 26, 2013 at 01:04:58PM +0530, Sourav Poddar wrote:
+>
+>>   	void	(*get_buf)(struct spi_master *master);
+>>   	void	(*put_buf)(struct spi_master *master);
+>> +	void	(*configure_from_slave)(struct spi_device *spi, u8 *val);
+> Clearly this is far too unstructured to be useful, this is only ever
+> going to work with one specific combination of slave and master since
+> there's absolutely no semantics defined.
+I thought "val" might be good enuf, and this can be filled with whatever
+data that need to be used from slave into master(irrespective of slave 
+and master?).
