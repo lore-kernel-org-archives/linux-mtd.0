@@ -1,22 +1,28 @@
-Date: Tue, 26 Nov 2013 09:40:04 -0300
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VlHz6-0002QW-5u
+ for linux-mtd@lists.infradead.org; Tue, 26 Nov 2013 12:43:20 +0000
+Date: Tue, 26 Nov 2013 09:42:52 -0300
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Arnaud Ebalard <arno@natisbad.org>
-Subject: Re: [PATCH v5 00/14] Armada 370/XP NAND support
-Message-ID: <20131126124003.GA2344@localhost>
-References: <1384464339-6817-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <87d2lp28pd.fsf@natisbad.org> <20131125120335.GD2408@localhost>
- <87r4a4f5gr.fsf@natisbad.org>
+To: "Gupta, Pekon" <pekon@ti.com>
+Subject: Re: [PATCH] mtd: nand: auto-detection of NAND bus-width from ONFI
+ param or nand_id[]
+Message-ID: <20131126124251.GB2344@localhost>
+References: <1385382728-7913-1-git-send-email-pekon@ti.com>
+ <20131125125647.GF2408@localhost>
+ <20980858CB6D3A4BAE95CA194937D5E73EA4E675@DBDE04.ent.ti.com>
+ <20131125145217.GA14485@localhost>
+ <20980858CB6D3A4BAE95CA194937D5E73EA4ECB8@DBDE04.ent.ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <87r4a4f5gr.fsf@natisbad.org>
-Cc: Lior Amsalem <alior@marvell.com>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- linux-mtd@lists.infradead.org,
- Gregory Clement <gregory.clement@free-electrons.com>,
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA4ECB8@DBDE04.ent.ti.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- linux-arm-kernel@lists.infradead.org
+ "David Woodhouse \(dwmw2@infradead.org\)" <dwmw2@infradead.org>, "Balbi,
+ Felipe" <balbi@ti.com>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,92 +32,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Arnaud,
+Hi Pekon,
 
-On Tue, Nov 26, 2013 at 12:04:52AM +0100, Arnaud Ebalard wrote:
+On Tue, Nov 26, 2013 at 07:59:07AM +0000, Gupta, Pekon wrote:
 > 
-> And \o/ i.e. here is what I get:
-> 
-> root@mood:~# dmesg
-> ...
-> pxa3xx-nand d00d0000.nand: This platform can't do DMA on this device
-> NAND device: Manufacturer ID: 0xad, Chip ID: 0xf1 (Hynix H27U1G8F2BTR-BC)
-> NAND device: 128MiB, SLC, page size: 2048, OOB size: 64
-> Bad block table found at page 65472, version 0x01
-> Bad block table found at page 65408, version 0x01
-> 5 ofpart partitions found on MTD device pxa3xx_nand-0
-> Creating 5 MTD partitions on "pxa3xx_nand-0":
-> 0x000000000000-0x000000180000 : "u-boot"
-> 0x000000180000-0x0000001a0000 : "u-boot-env"
-> 0x000000200000-0x000000800000 : "uImage"
-> 0x000000800000-0x000001800000 : "minirootfs"
-> 0x000001800000-0x000008000000 : "jffs2"
-> ...
-> 
-> root@mood:~# ls /dev/mtd
-> mtd0       mtd1ro     mtd3       mtd4ro     mtdblock2  
-> mtd0ro     mtd2       mtd3ro     mtdblock0  mtdblock3  
-> mtd1       mtd2ro     mtd4       mtdblock1  mtdblock4  
-> 
-> root@mood:~# dd if=/dev/mtd2ro of=/tmp/foo
-> 12288+0 records in
-> 12288+0 records out
-> 6291456 bytes (6.3 MB) copied, 1.98731 s, 3.2 MB/s
-> 
-> root@mood:~# file /tmp/foo 
-> /tmp/foo: u-boot legacy uImage, Linux-3.12.0.rn102-00048-gbe408c, Linux/ARM, OS Kernel Image (Not compressed), 3740317 bytes, Tue Nov  5 22:24:01 2013, Load Address: 0x00008000, Entry Point: 0x00008000, Header CRC: 0xD84586E1, Data CRC: 0xC4357CED
+> > From: Ezequiel Garcia [mailto:ezequiel.garcia@free-electrons.com]
+> [...]
+> > My point is: why don't we *remove* the devicetree property nand-bus-
+> > width and 
+> > 
+> We cannot remove DT property like this, we can only deprecate its use,
+> while not breaking the functionality, which is what I'm trying here..
 
-Good!
+Of course, by "remove" the property I meant make it meaningless in the
+driver.
 
+> > the NAND_BUSWIDTH_16 entirely, together with this patch?
+> > 
+> We need this Macros, as may driver use this after nand_scan_ident()
+> to configure their custom callbacks like:
+> 	if (chip->options & NAND_BUSWIDTH_16)
+> 		chip->read_buf = omap_read_buf16;
+> 	else 
+> 		chip->read_buf = omap_read_buf8;
 > 
-> But then /o\ i.e. write does not seem to work out of the box ;-)
 > 
-> root@mood:~# flash_erase /dev/mtd2 0 0 
-> Erasing 128 Kibyte @ 5e0000 -- 100 % complete 
-> root@mood:~# nand
-> nanddump   nandtest   nandwrite  
-> root@mood:~# nandwrite -p /dev/mtd2 /tmp/uImage
-> Writing data to block 0 at offset 0x0
-> [ 1456.154142] pxa3xx-nand d00d0000.nand: Wait time out!!!
-> [ 1456.354143] pxa3xx-nand d00d0000.nand: Wait time out!!!
-> [ 1456.554144] pxa3xx-nand d00d0000.nand: Wait time out!!!
-> [ 1456.754141] pxa3xx-nand d00d0000.nand: Wait time out!!!
-> [ 1456.954140] pxa3xx-nand d00d0000.nand: Wait time out!!!
-> [ 1457.154140] pxa3xx-nand d00d0000.nand: Wait time out!!!
-> [ 1457.354140] pxa3xx-nand d00d0000.nand: Wait time out!!!
-> [ 1457.554140] pxa3xx-nand d00d0000.nand: Wait time out!!!
-> [ 1457.754140] pxa3xx-nand d00d0000.nand: Wait time out!!!
-> [ 1457.954197] pxa3xx-nand d00d0000.nand: Wait time out!!!
-> [ 1458.154140] pxa3xx-nand d00d0000.nand: Wait time out!!!
+> > Sounds like the user shouldn't need to mess with any of these, since we
+> > are able to auto-configure things for him.
+> > 
+> Yes, end-user is free.. But driver still needs to x16 and x8 information
+> to do some controller level optimizations..
 > 
 
-Yes, this behavior was expected, and it is the reason I wanted to try with
-the 'pxa3xx' compatible.
+Right. So, we should keep it but remove the effect on the initial
+configuration. AFAICS, the bus width should be *reported* by the NAND
+core and then each driver will have access to that information to set
+any additional configuration.
 
-> But I guess this gives you some hints on possible directions.
-> 
+On the other side, no driver should *advise* the bus width.
 
-Indeed! Thanks a lot for such detailed testings. Can you test this
-branch instead (you will have to add the DTS for your board)?
-
-  https://github.com/MISL-EBU-System-SW/mainline-public/tree/pxa3xx-armada-nand-new-ecc
-
-It's basically v3.13-rc1, plus latest NAND patches (cherry-picked
-from l2-mtd.git), plus a couple more patches to support 2048 pages.
-
-Using this branch you should be able to have detect the device
-and test read/write without any issues. You previous DT node should work:
-
-nand@d0000 {
-	status = "okay";
-	num-cs = <1>;
-	marvell,nand-keep-config;
-	marvell,nand-enable-arbiter;
-	nand-on-flash-bbt;
-};
-
-
-Thanks a lot!
+Right?
 -- 
 Ezequiel García, Free Electrons
 Embedded Linux, Kernel and Android Engineering
