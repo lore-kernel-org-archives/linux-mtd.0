@@ -1,22 +1,22 @@
-Received: from [2001:41c8:1:5384::2] (helo=cassiel.sirena.org.uk)
+Received: from comal.ext.ti.com ([198.47.26.152])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VlIYQ-0003bo-40
- for linux-mtd@lists.infradead.org; Tue, 26 Nov 2013 13:19:50 +0000
-Date: Tue, 26 Nov 2013 13:19:27 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Sourav Poddar <sourav.poddar@ti.com>
-Message-ID: <20131126131927.GN14725@sirena.org.uk>
+ id 1VlIZK-0003fy-Oe
+ for linux-mtd@lists.infradead.org; Tue, 26 Nov 2013 13:20:47 +0000
+Message-ID: <5294A012.7030509@ti.com>
+Date: Tue, 26 Nov 2013 18:50:18 +0530
+From: Sourav Poddar <sourav.poddar@ti.com>
+MIME-Version: 1.0
+To: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 04/17] spi/qspi: parse control module register.
 References: <1385451313-1875-1-git-send-email-sourav.poddar@ti.com>
  <1385451313-1875-5-git-send-email-sourav.poddar@ti.com>
  <20131126103104.GZ14725@sirena.org.uk> <529483A2.3080000@ti.com>
  <20131126122512.GD14725@sirena.org.uk> <5294964A.8020507@ti.com>
  <20131126125535.GF14725@sirena.org.uk> <52949B5F.7010304@ti.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="QIE8wBgbk5Wqyq1O"
-Content-Disposition: inline
-In-Reply-To: <52949B5F.7010304@ti.com>
-Subject: Re: [PATCH 04/17] spi/qspi: parse control module register.
+ <20131126131927.GN14725@sirena.org.uk>
+In-Reply-To: <20131126131927.GN14725@sirena.org.uk>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 Cc: devicetree@vger.kernel.org, computersforpeace@gmail.com, balbi@ti.com,
  linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
  bcousson@baylibre.com, linux-omap@vger.kernel.org
@@ -29,39 +29,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Tuesday 26 November 2013 06:49 PM, Mark Brown wrote:
+> On Tue, Nov 26, 2013 at 06:30:15PM +0530, Sourav Poddar wrote:
+>
+>> I mean to say, do I need to document "qspi_base", "qspi_ctrlmod"
+>> register names
+>> also which I have used in omy dts files.
+> Yes, you need to document what the valid names are and what they mean.
+Ok, will do that.
 
---QIE8wBgbk5Wqyq1O
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Tue, Nov 26, 2013 at 06:30:15PM +0530, Sourav Poddar wrote:
-
-> I mean to say, do I need to document "qspi_base", "qspi_ctrlmod"
-> register names
-> also which I have used in omy dts files.
-
-Yes, you need to document what the valid names are and what they mean.
-
---QIE8wBgbk5Wqyq1O
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSlJ/bAAoJELSic+t+oim9JuoP/iPliwCYKd+Xc0UcVNrJ7On2
-vnvw6x4nRs2UTECz+AgO68qtoCQaZu66RYd6TKIWf4o3FAjgZ3RnazlHWexBeBg5
-4RhjvCmJuk2emlE6iMYklweuvGxPTKV9p3NzSCzYzpZjZZWwXwu1Fty2XNKAJQ0C
-KcrNpkMpzIK5hT7P4t3mNeoyddXf70OOpOAB1fJMllw4wLavCtc9kEIvkyh36rRd
-YWEGUNo3BIFT6YfZqCV1Asf8bOpLc2HWkrz1+YAs9SqOyEmNXUmm6rAmFdtc0qOj
-bb5AfIjblKe/OLg5E2XomVcbfUhiwACpKXyQ04rQ8FAZdz0WcMNXEYYWyCRMSXGF
-WD9lhfO1MZbv4vW1LqeeF/VK0aiOkFiy7CfZObpzqK9xeiOaXzvzTRC/CO57KfQ6
-6QBTSkKm0l0QuEBD3SOZMx5bq8wkxFNvbq8C0QzqEaR2TRx1mqZqmucv+w44WtRw
-nv7vjKYCFU+7vtVqCSfU+QvVuxRQUqwFXKAUPSDlABtul3U3IrMg2hWKiOoOgBOX
-eYmzJjmC2/RcZTVFTZkui+0SfqUFB9Fmb6u6VIbZgmsckNfIKeKZRCa8FVYM4eQa
-KDKfJuxaycT42xeVEguefpISLkGfBbDv3limHTCO758h1QiZ2xcsccrcDh7nn+Iy
-QdwkRWranYjlznareZ3B
-=0USX
------END PGP SIGNATURE-----
-
---QIE8wBgbk5Wqyq1O--
+Thanks
