@@ -1,20 +1,20 @@
 Received: from [2001:41c8:1:5384::2] (helo=cassiel.sirena.org.uk)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VlHeq-0001ka-4K
- for linux-mtd@lists.infradead.org; Tue, 26 Nov 2013 12:22:24 +0000
-Date: Tue, 26 Nov 2013 12:21:59 +0000
+ id 1VlHhS-0001nk-2T
+ for linux-mtd@lists.infradead.org; Tue, 26 Nov 2013 12:25:06 +0000
+Date: Tue, 26 Nov 2013 12:24:42 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Sourav Poddar <sourav.poddar@ti.com>
-Message-ID: <20131126122159.GB14725@sirena.org.uk>
+Message-ID: <20131126122442.GC14725@sirena.org.uk>
 References: <1385451313-1875-1-git-send-email-sourav.poddar@ti.com>
- <1385451313-1875-3-git-send-email-sourav.poddar@ti.com>
- <20131126102951.GX14725@sirena.org.uk> <52948451.3060706@ti.com>
+ <1385451313-1875-4-git-send-email-sourav.poddar@ti.com>
+ <20131126103029.GY14725@sirena.org.uk> <5294835D.5090902@ti.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="ATpkSYPIqF1Y+gtT"
+ protocol="application/pgp-signature"; boundary="xYEba/cIt2nZJmCG"
 Content-Disposition: inline
-In-Reply-To: <52948451.3060706@ti.com>
-Subject: Re: [PATCH 02/17] spi/spi.h: Add configure from slave support.
+In-Reply-To: <5294835D.5090902@ti.com>
+Subject: Re: [PATCH 03/17] spi/qspi: parse register by name.
 Cc: devicetree@vger.kernel.org, computersforpeace@gmail.com, balbi@ti.com,
  linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
  bcousson@baylibre.com, linux-omap@vger.kernel.org
@@ -28,46 +28,41 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---ATpkSYPIqF1Y+gtT
+--xYEba/cIt2nZJmCG
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Nov 26, 2013 at 04:51:53PM +0530, Sourav Poddar wrote:
-> On Tuesday 26 November 2013 03:59 PM, Mark Brown wrote:
+On Tue, Nov 26, 2013 at 04:47:49PM +0530, Sourav Poddar wrote:
 
-> >>+	void	(*configure_from_slave)(struct spi_device *spi, u8 *val);
+> I have added "reg-names" property in dt bindings. (17/17) patch of
+> this series has that info.
 
-> >Clearly this is far too unstructured to be useful, this is only ever
-> >going to work with one specific combination of slave and master since
-> >there's absolutely no semantics defined.
+Do device tree binding changes early on in the series rather than at the
+end, one of the things that gets reviewed for is binding updates.
 
-> I thought "val" might be good enuf, and this can be filled with whatever
-> data that need to be used from slave into master(irrespective of
-> slave and master?).
+Your code should also cope with the existing bindings, falling back on
+the current behaviour if it can't get the names or the extra resources.
 
-The name isn't the issue, it's the fact that you're passing a completely
-unspecified blob of data.
-
---ATpkSYPIqF1Y+gtT
+--xYEba/cIt2nZJmCG
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSlJJkAAoJELSic+t+oim9VXcQAIhBXc/XHSYdXg2Y3nKvxfgQ
-HxzIioI22qfif8bxGUYVykYSUFL0RT2NSDYaCHq9U1xRarInqNm7q4DsOspcHF92
-oax813MDaUBdShbRrk4WP8Yv2clWHZdXoHzyw+9hvH6OH64Xw02UnUALC662QXsX
-jTq1ssAujINDtRQZQ8bbGFwwQRq/08nEyVDzb0uEgYwg8ogRUxhy+dvf3+7jZAEq
-wc7NfAjfzADZAI5oh8aLjK66RyKTN1+7tho1E6VV0D5QIorRsSpYAE2jdtaM397s
-d6HQV8h4Ele/cokKuUkrwmjx1goef6077z9tBFPChCZInn7f2/ZCRr/HCmlm/sqV
-xuwD1yQtxbEc9wuvx2Eu4Jl+G5ZlNRAqyaP62vZb5CRasQuHTXQi0Bj2ybA6n374
-LkzHToU/eee6fQkUM3+/W1xOfLwL3U0jJirM4yT62U+FkVy30dhZlmLLdKxG+Ag/
-pqnbfsdi98RaN7MPFF32+n5QfX+bxtqTiZttL1mDWCmqGkMVnawg+MQV9qaftcpv
-pqAP0pZTOSscmjfUWjKL7ieEClvwPB6ujF2CTTD7td6z8S/OnxcUUNFXEpqSzzEO
-ja44xcvTLLgOK6fOr9JwkqT+QKgwuQHlMuNTYvlLmhM7z2hj06E93RJJN2vZByaa
-b9NH1V/e7xt9XaXd5AY3
-=XzZy
+iQIcBAEBAgAGBQJSlJMHAAoJELSic+t+oim9Fz0P/ibhevhum+cYlpunkpWiHJHB
+aPEJuWG9k5nxupW4yOc2bm0GlsMk2303XRkBI7fgIMvdGxC2C7MS1M0HMv++11mT
++0BENkReILTgGbWILIifAZz/ooeqDPPHvsKBkZSy24WgYf2JZLONZSOrwTmHF4Nj
+5vcRh7z/gpnT3mDtvuhZptTBTENgYV3Rgo1QT88fGHz+ZydmbEG1s2BWL6T8widb
+7OO+A9wTt/rSvCU7jLq/mL80mzRv4SmnvyF/BgFQF0MFee6YlLfDnp3n+nYssrf8
+zRGwD6KFF0coOudbbphvTf2YgOSGPpHvFJkB0L0uUNAd2ThexdM3z/FHBrFtQORC
+d5g0p9rswi4ldWkKvwf/rb6QW7U4RvA9+F4n1ciQTvtRT5jFhdxu5S8EVk+AO4es
+ClxT0Tjwwb8ar20o2TmvlXG9oULUKsxWTPji2ALUexmf/zrlPzXtIXhcN1NexNQ1
+9qmlviJ48q1oW0lteR/AurEVlmjSAJ5tHSJOVRgBYe7lYyZESxwNB75xWRrxEoh1
+kObNCfzsqN8uVP6UO50Rb+V2ZLEtHbt6Ii8s2ZQtaV/5GqwpOEPCj8gfSJvKzE3C
+pMbq6odgU+cFUHp9Q5d5gqRc9CyhPjFDQU8qxkhdDMMk5ChRsByAm8kL6pa2cu/3
+jZA+uNBRrCvorMInpCSm
+=w3+Q
 -----END PGP SIGNATURE-----
 
---ATpkSYPIqF1Y+gtT--
+--xYEba/cIt2nZJmCG--
