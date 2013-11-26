@@ -1,23 +1,24 @@
-Received: from [2001:41c8:1:5384::2] (helo=cassiel.sirena.org.uk)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VlIZm-0003hk-T5
- for linux-mtd@lists.infradead.org; Tue, 26 Nov 2013 13:21:15 +0000
-Date: Tue, 26 Nov 2013 13:20:51 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Sourav Poddar <sourav.poddar@ti.com>
-Message-ID: <20131126132051.GO14725@sirena.org.uk>
-References: <1385451313-1875-1-git-send-email-sourav.poddar@ti.com>
- <1385451313-1875-10-git-send-email-sourav.poddar@ti.com>
- <20131126130119.GH14725@sirena.org.uk> <52949C9F.10008@ti.com>
+Message-ID: <5294B4C3.9080201@st.com>
+Date: Tue, 26 Nov 2013 14:48:35 +0000
+From: Angus Clark <angus.clark@st.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="qYpwwOSOoAAr8PNn"
-Content-Disposition: inline
-In-Reply-To: <52949C9F.10008@ti.com>
-Subject: Re: [PATCH 09/17] spi/spi.h: Add "mem" variable in spi master.
-Cc: devicetree@vger.kernel.org, computersforpeace@gmail.com, balbi@ti.com,
- linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
- bcousson@baylibre.com, linux-omap@vger.kernel.org
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH 1/4] mtd: spi-nor: move the SPI NOR commands to a new
+ header file
+References: <1385447575-23773-1-git-send-email-b32955@freescale.com>
+ <1385447575-23773-2-git-send-email-b32955@freescale.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EA4EC81@DBDE04.ent.ti.com>
+ <52946197.5050104@freescale.com>
+In-Reply-To: <52946197.5050104@freescale.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: "marex@denx.de" <marex@denx.de>, Angus CLARK <angus.clark@st.com>,
+ "broonie@linaro.org" <broonie@linaro.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
+ Pekon" <pekon@ti.com>, "Poddar, Sourav" <sourav.poddar@ti.com>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,48 +28,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 11/26/2013 08:53 AM, Huang Shijie wrote:
+> Hi Pekon:
+>> (1)
+>> It's better to take all Flash vendor specific opcodes from DT..
+> firstly, some arch may does not support the DT, such as x86.
 
---qYpwwOSOoAAr8PNn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Indeed, although the 'flash_platform_data' structure could be extended to
+provide similar functionality, if that were deemed the right way to go.  However...
 
-On Tue, Nov 26, 2013 at 06:35:35PM +0530, Sourav Poddar wrote:
-> On Tuesday 26 November 2013 06:31 PM, Mark Brown wrote:
+> 
+> second, it makes people crazy if we put the opcodes in the DT :)
 
-> >Is this really generic enough to put here rather than in the driver
-> >data?
+I would agree.  Where possible, I think it's preferable for the driver to probe
+device properties at runtime.  One benefit, often overlooked, is that it allows
+board manufacturers to second-source parts without having to rebuild, and
+possibly re-certify, binaries.
 
-> The thought behind this was that if a master controller supports
-> memory mapped operation and slave wants to use memcpy in his
-> driver(bypassing spi ), then we should have a mean to communicate
-> between the
-> master and the slave. So, 'spi_master' seems to be the place for me
-> for this data,
-> which could be parsed in the slave side also.
+>> With new framework we should do away with macros for each vendor,
+>> instead let each board file provide this information based on flash
+>> device
+>> which is mounted on it.
+>>
+>> (2)
+>> And also, I suggest not to touch m25p80 in anyway, bcoz it stable driver
+>> used by many. So unless spi-nor framework is accepted and is stable we
+>> m25p80 should continue working as it is.
+>> Thus your patches should be independent of any existing driver or other
+>> frameworks. This way it might get accepted fast. Then later you can
+>> provide
+>> a way to attach m25p80 to spi-nor framework.
+>> Thoughts ?
+> the merge window is closed not long ago, and we have rc1 now.
+> 
+> Isn't it the BEST time to change the m25p80?
+> 
 
-I would have expected that the address would be returned by the function
-that maps the buffer in rather than stored permanently in the master.
+The spi-nor framework has great potential, but I think you should allow some
+time for other driver developers to comment, and the framework to mature.
+Without greater support, it risks becoming another single-use framework.
 
---qYpwwOSOoAAr8PNn
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Cheers,
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+Angus
 
-iQIcBAEBAgAGBQJSlKAvAAoJELSic+t+oim9w4QP/16Y18APhav+poBt0dc+Q5IN
-WeVvrv16jzZ+tqNCox+MdLDQsl20CGiPlq/pBwVXYm8fZetkajh5a/h2oofIqqy3
-tqYfaFg5u3aYBd6iCdKCm3hJyY29LKCu7ecpo4iPic9riP0ErUUtag4qKhXRkZB0
-GkHdBv61oBK1nFLnu24Ke6JCS3BuYl9t5MtkyvTi8cGhGZbNjD4B7as9jo5MMXPq
-FITMgmRjMSQV0VfUvWLnjC1F97TCA6g/7tIYrGuh+3yBJrV4kX+qKRcuBXMCCp7J
-cEtChhpseTGEQ+r+zbFaDzngE3i+xy4IncoFlDKCfRnO4CXsWP7bbQHHOoKSdrM+
-lZaWnRVAVBGb6fiVgDQ5BPDyUDWj9jJWp6s+EurymGwNtiMCKnkZDj+1EA12vOnZ
-kk6NMhYGxBgJ0kYD89bebqrI+CF1fCEoo/20wdgfH7z1uTQf0i7pkHG5lz7EUwKo
-hYQUxA/8l1bwy+ojy2KgeidDp/VV/ENBvCp76cnOnziGqzXolg3d+kLTB3RoJcKm
-h6WCSBlvdDQkyKJ7CwBOdsec5J2la4CF1zSe8T+wIBMcRTA/rjgAWqEhsMOSCIKg
-AjwGJ52C+e4r2vdO1aZ4T1d0/zrW7HKGotualIC5P6tbujgGtZM9tdv/cROVOHzb
-MgC1oQMrSoEN3M+tCgsy
-=aoaK
------END PGP SIGNATURE-----
+> thanks
+> Huang Shijie
+> 
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
 
---qYpwwOSOoAAr8PNn--
+-- 
+-------------------------------------
+Angus Clark
+ST Microelectronics (R&D) Ltd.
+1000 Aztec West, Bristol, BS32 4SQ
+email: angus.clark@st.com
+tel: +44 (0) 1454 462389
+st-tina: 065 2389
+-------------------------------------
