@@ -1,26 +1,24 @@
-Message-ID: <5294E8DC.3070404@ti.com>
-Date: Tue, 26 Nov 2013 20:30:52 +0200
-From: "ivan.khoronzhuk" <ivan.khoronzhuk@ti.com>
+Received: from relay-177.153.28.72.ig.com.br ([177.153.28.72]
+ helo=saul0002-72.ig.correio.pw)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VlPOD-0006Zg-QA
+ for linux-mtd@lists.infradead.org; Tue, 26 Nov 2013 20:37:47 +0000
+Received: from saul0002.ig.correio.pw (127.0.0.1) by ig.com.br id hik39i1oqj8n
+ for <linux-mtd@lists.infradead.org>;
+ Tue, 26 Nov 2013 18:20:42 -0200 (envelope-from <vibes@extravibes.com>)
+Message-ID: <18to933zi4ec75$22b277kn25$9455w7hw36@x_land>
+From: vibes@extravibes.com
+To: <linux-mtd@lists.infradead.org>, <info@rosan.ru>, <incom@russerv.ru>,
+ <medvedev@fbm.msu.ru>
+Subject: =?koi8-r?Q?=C4=CF_=CE=C5=C4=C1=D7=CE=C5=C7=CF_=D7=D2=C5?=
+ =?koi8-r?Q?=CD=C5=CE=C9_=DC=D4=CF_=D3=CF=C4=C5=D2=D6=C1?=
+ =?koi8-r?Q?=CC=CF=D3=D8_=CE=C5=D3=C2=D9=D4=CF=DE=CE=CF=CA?=
+ =?koi8-r?Q?_=CD=C5=DE=D4=CF=CA=2E?=
+Date: Tue, 26 Nov 2013 20:32:34 +0100
 MIME-Version: 1.0
-To: Santosh Shilimkar <santosh.shilimkar@ti.com>
-Subject: Re: [PATCH 07/12] memory: davinci-aemif: introduce AEMIF driver
-References: <1384187188-5776-1-git-send-email-ivan.khoronzhuk@ti.com>,
- <1384187188-5776-8-git-send-email-ivan.khoronzhuk@ti.com>
- <4F5844B3A985794BA902E12C070812375F8D2E@DNCE04.ent.ti.com>
- <52944BD3.90105@ti.com> <5294DE17.9080900@ti.com> <5294E8B6.5000102@ti.com>
-In-Reply-To: <5294E8B6.5000102@ti.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Mark Rutland <mark.rutland@arm.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "Strashko,
- Grygorii" <grygorii.strashko@ti.com>, Russell King <linux@arm.linux.org.uk>,
- Pawel Moll <pawel.moll@arm.com>, Stephen Warren <swarren@wwwdotorg.org>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>, Sekhar Nori <nsekhar@ti.com>,
- Kumar Gala <galak@kernel.crashing.org>, Rob Herring <rob.herring@calxeda.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Rob Landley <rob@landley.net>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain;
+	charset="koi8-r";
+Content-Transfer-Encoding: base64
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,41 +28,5 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/26/2013 08:30 PM, Santosh Shilimkar wrote:
-> Ivan,
->
-> On Tuesday 26 November 2013 12:44 PM, ivan.khoronzhuk wrote:
->> On 11/26/2013 09:20 AM, Sekhar Nori wrote:
->>> On Monday 11 November 2013 10:36 PM, Khoronzhuk, Ivan wrote:
->
->>>> +static struct platform_driver davinci_aemif_driver = {
->>>> +       .probe = davinci_aemif_probe,
->>>> +       .remove = davinci_aemif_remove,
->>>> +       .driver = {
->>>> +               .name = DRV_NAME,
->>>> +               .owner = THIS_MODULE,
->>>> +               .of_match_table = of_match_ptr(davinci_aemif_of_match),
->>>> +       },
->>>> +};
->>>> +
->>>> +module_platform_driver(davinci_aemif_driver);
->>>> +
->>>> +MODULE_AUTHOR("Murali Karicheri <m-karicheri2@ti.com>");
->>>
->>> Is this correct? If yes, I would have expected him to sign-off on the
->>> patch too. If not, please drop this.
->>
->> I will add sign-off
->>
-> Please add you as a MODULE_AUTHOR as well since you re-wrote the
-> downstream driver. Ok to have both of you sign of on it.
->
-> Regards,
-> Santosh
->
-
-Ok
-
--- 
-Regards,
-Ivan Khoronzhuk
+xM8gzsXEwdfOxcfPINDPINfSxc3Fzskg3NTPIM7ByM/EyczP09ggzsXJ09DPzM7Jzc/KIM3F3tTP
+yi4gaHR0cDovL2dvby5nbC9JT3Fack4NCg==
