@@ -1,19 +1,19 @@
 Received: from [2001:41c8:1:5384::2] (helo=cassiel.sirena.org.uk)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VlFuu-000814-4Z
- for linux-mtd@lists.infradead.org; Tue, 26 Nov 2013 10:30:52 +0000
-Date: Tue, 26 Nov 2013 10:30:29 +0000
+ id 1VlFvV-00082s-IP
+ for linux-mtd@lists.infradead.org; Tue, 26 Nov 2013 10:31:29 +0000
+Date: Tue, 26 Nov 2013 10:31:04 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Sourav Poddar <sourav.poddar@ti.com>
-Message-ID: <20131126103029.GY14725@sirena.org.uk>
+Message-ID: <20131126103104.GZ14725@sirena.org.uk>
 References: <1385451313-1875-1-git-send-email-sourav.poddar@ti.com>
- <1385451313-1875-4-git-send-email-sourav.poddar@ti.com>
+ <1385451313-1875-5-git-send-email-sourav.poddar@ti.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="oIZeFZfK2rom9VmH"
+ protocol="application/pgp-signature"; boundary="S/OOmhz5UkAXnkSU"
 Content-Disposition: inline
-In-Reply-To: <1385451313-1875-4-git-send-email-sourav.poddar@ti.com>
-Subject: Re: [PATCH 03/17] spi/qspi: parse register by name.
+In-Reply-To: <1385451313-1875-5-git-send-email-sourav.poddar@ti.com>
+Subject: Re: [PATCH 04/17] spi/qspi: parse control module register.
 Cc: devicetree@vger.kernel.org, computersforpeace@gmail.com, balbi@ti.com,
  linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
  bcousson@baylibre.com, linux-omap@vger.kernel.org
@@ -27,36 +27,36 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---oIZeFZfK2rom9VmH
+--S/OOmhz5UkAXnkSU
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Nov 26, 2013 at 01:04:59PM +0530, Sourav Poddar wrote:
-> Modify the qspi driver to parse reg information by name.
+On Tue, Nov 26, 2013 at 01:05:00PM +0530, Sourav Poddar wrote:
+> In qspi controller, we need to switch to memory mapped operations.
+> These switching depends on
 
-This presumably needs an update to the device tree bindings so that
-there's a name defined?
+This will need to be added to the DT binding.
 
---oIZeFZfK2rom9VmH
+--S/OOmhz5UkAXnkSU
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSlHhBAAoJELSic+t+oim9Mz4P/3N0XCBKRpJme13yeLRDAonY
-fOZOfhM08o2NPC7soiA+Whx1WGeeICfRpxuhm6vxuxDImOCB1E64P3Mx+zwFdajM
-TILNQGcqIt4rulgoph/P6qG1SoU9wlUlHtff1GLBAnkB4UwIQe+oqI77onoPwtLq
-zjMYWRmyuQCAKb/tLqsimTmtohiW27UxUB4Et180tcWIJW+OtqaKoKf7TFH/Tbh3
-o3wOqnn+sDoTQT4sCmrTJvd8YeODeb/HeQl4EYNBqRSBh/Yu07vrxAp7yqqnBdlg
-hTYpaqXzL/iaYRXh6oXaWph+5Dlrf4MC89rU5lAJbMOnCZpRNbqtyFEZVbYuDPCW
-80DjLh7vjcEggklEuo3gqXBg2unC+dOfquniGVtxt0JAhb9bjddaR1nE9amVzg7B
-3TXuiASiyD3Nlbx5gYe64ngJg5Zo8/5N0HzUnve5WmXHWuR+BCEVSpjRAbzeV2jG
-7OSsLbXBJoQcDZ9YxGGzVx7UOnZtSub8nbO5pIs+zHOzEZx5pH8lC4J3X7pM861F
-yl1EwLGgN0NehPIgYQx7BDWzivElzOZ8O39L5ONDkgXbJV2/0i2OKXXKk0I16mdP
-dP2NaLq78sBo9zV1zv8O8omUoXkBymvpWiUu2SjG1OxlRfBvS+nSxnt0SY3rhvxB
-TeKTAbY6opyKDN4RCy8h
-=kpaE
+iQIcBAEBAgAGBQJSlHhlAAoJELSic+t+oim9VvQP/1z3ojMhLVfYarimp8Vsyd0Y
++NJ3TH8gU5sCB5OlLfpbg4qnOlUO4N7PzZZNRfYK9WbbxMUg2Tr0IVcUKBvxyOlD
+Uz9fps08VTnvc7/dFjZczZEW+jGH/wkgn0rbH3SQu5lNo307JqcBopkf9VdwlbTA
+J0foTDDxGOICUuLBArjUyJJ9F+iPDm9u9mZkvbSpCSsmQlJCQz7wfDKf3CWu+CDJ
+TKaxyBd//4JT1D9q5Y4l6kTwCLiMJoQkWjoJyinWhhoELEoVAFldHhFfVQsOmkCU
+iCZINfkD5JY+aJysZpyPdAZcv2XVLsrzn6bh77QC/Gr5qydE40CM6Jwoo7Ghf8Uk
+1S20zjevyIBFwByHfUs7ULGmhZ8PYKaqcow7LrVeholoJBV4vVHNFILBks6GiwBD
+2FnBi45aIib1+rf5VQhSQ9S41UoW9QTbkHOUE4jEJ/uoMulW+wJscC2PqDiKQDNN
+SIpFRYL7gIbaHfZiUlHD9xtR99AyeTQSq2fIUCOm+hLX42Qh0wHIkkp9S94B3Mlu
+cbqPaZ5gyrXHYi8YahUMDG7N+oyWlwpjWO8E4sdtevxc0sCGXheYUz+itdOrdLG9
+n/eyNbhMEEPwhn4da36H3u8RkvYLmxxmyet0/H6O1Zjn4PvA/DsPz9oDJd4x1bca
+LzQoSd+LUqyE2/FvM+R/
+=j4PP
 -----END PGP SIGNATURE-----
 
---oIZeFZfK2rom9VmH--
+--S/OOmhz5UkAXnkSU--
