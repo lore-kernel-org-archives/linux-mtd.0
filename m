@@ -1,27 +1,15 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VlI1t-0002WF-8W
- for linux-mtd@lists.infradead.org; Tue, 26 Nov 2013 12:46:13 +0000
-Date: Tue, 26 Nov 2013 09:45:45 -0300
+ id 1VlI8K-0002ed-FN
+ for linux-mtd@lists.infradead.org; Tue, 26 Nov 2013 12:52:52 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH] mtd: nand: auto-detection of NAND bus-width from ONFI
- param or nand_id[]
-Message-ID: <20131126124544.GC2344@localhost>
-References: <1385382728-7913-1-git-send-email-pekon@ti.com>
- <52944E45.6070803@freescale.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA4ECA1@DBDE04.ent.ti.com>
- <5294683B.6010704@freescale.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5294683B.6010704@freescale.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: nand: pxa3xx: Use info->use_dma to release DMA resources
+Date: Tue, 26 Nov 2013 09:52:24 -0300
+Message-Id: <1385470344-2542-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
- Pekon" <pekon@ti.com>, "Balbi, Felipe" <balbi@ti.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,18 +19,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Nov 26, 2013 at 05:22:03PM +0800, Huang Shijie wrote:
-> (I am not sure whether we should remove the NAND_BUSWIDTH_AUTO, let 
-> Brian judge it)
-> 
+After the driver allocates all DMA resources, it sets "info->use_dma".
+Therefore, we need to check that variable to decide which resources
+needs to be freed, instead of the global use_dma variable.
 
-Have you followed the past discussion around 16-bit ONFI detection
-(currently broken, IIRC)?
+Without this change, when the device probe fails, the driver will try
+to release unallocated DMA resources, with nasty results.
 
-We concluded that the auto-discovery (aka NAND_BUSWIDTH_AUTO) should be the default
-behavior, since there's no other way to handle ONFI devices. Hence,
-there's little point in keeping the macro.
+Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+---
+This is minor fix, but a fix anyway, so it should be queued for stable.
+
+ drivers/mtd/nand/pxa3xx_nand.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 97c3eb5..8f2104c 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -1288,7 +1288,7 @@ static int pxa3xx_nand_init_buff(struct pxa3xx_nand_info *info)
+ static void pxa3xx_nand_free_buff(struct pxa3xx_nand_info *info)
+ {
+ 	struct platform_device *pdev = info->pdev;
+-	if (use_dma) {
++	if (info->use_dma) {
+ 		pxa_free_dma(info->data_dma_ch);
+ 		dma_free_coherent(&pdev->dev, info->buf_size,
+ 				  info->data_buff, info->data_buff_phys);
 -- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+1.8.1.5
