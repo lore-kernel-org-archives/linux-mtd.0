@@ -1,14 +1,15 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
+Received: from comal.ext.ti.com ([198.47.26.152])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VlDBX-0002fA-Rt
- for linux-mtd@lists.infradead.org; Tue, 26 Nov 2013 07:35:53 +0000
+ id 1VlDBZ-0002fK-Ea
+ for linux-mtd@lists.infradead.org; Tue, 26 Nov 2013 07:35:54 +0000
 From: Sourav Poddar <sourav.poddar@ti.com>
 To: <computersforpeace@gmail.com>, <broonie@kernel.org>,
  <linux-mtd@lists.infradead.org>, <linux-spi@vger.kernel.org>
-Subject: [PATCH 00/17] Add memory mapped support for ti qspi,
- m25p80 serial flash.
-Date: Tue, 26 Nov 2013 13:04:56 +0530
-Message-ID: <1385451313-1875-1-git-send-email-sourav.poddar@ti.com>
+Subject: [PATCH 01/17] spi/spi.h: Add get_buf/put_buf support in spi master..
+Date: Tue, 26 Nov 2013 13:04:57 +0530
+Message-ID: <1385451313-1875-2-git-send-email-sourav.poddar@ti.com>
+In-Reply-To: <1385451313-1875-1-git-send-email-sourav.poddar@ti.com>
+References: <1385451313-1875-1-git-send-email-sourav.poddar@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: devicetree@vger.kernel.org, Sourav Poddar <sourav.poddar@ti.com>,
@@ -22,75 +23,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Add get_buf, put_buf api support in spi master.
+This can be used in a scenario where spi controller
+supports memory mapped operations(typically with flash devices).
+So, the memcpy needs top be done in slave devices which need the
+required memory mapped address. These api can be used to get that
+master address.
 
-The patch series aims to add memory mapped support for TI qspi
-contoller and also add support for the same in serial flash driver(m25p80).
+These can also be used to turm the master controller clock, as usually
+the clocks get turned in spi core. But, in memory mapped case, we will
+bypass the spi core and hence needa way out to turn on the controller clock.
 
-These feature was added as a part of the series[1]:
-The series[1] add support for quad and memory mapped feature in spi and
-flash driver. Based on Brian Norris suggestion on splitting the quad and 
-memory mapped feature, I had sent a seperate series for quad support which 
-has beed accepted by Brian.
+Signed-off-by: Sourav Poddar <sourav.poddar@ti.com>
+---
+ include/linux/spi/spi.h |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
 
-The $subject patch series takes care of the memory mapped part.  
-
-Overview of memory mapped support in qspi:
- TI qspi controller supports memory mapped read support, switching to which
- requires  register modifications(qspi registers, control module register for
- DRA, qspi register for am43x). Once switched, the flash data can be available
- at a soc specific memory mapped address. For operations in normal mode, we need 
- to keep memory mapped disable.
-
- Flow of the patch is to keep the memory mapped enable by default in the driver.
- Whenever Normal spi mode operations are desired, we switch to configuration mode
- and at the end of it memory mapped is again enabled. There are few function pointers
- added to fecilitate easy communication between the flash and spi controllers.
-
-Major changes in the $subject patch based on discussion in [1]:
-
-- Feature has been broken down into small meaningfl patches.
-- memcpy is done in flash driver and spi framework is bypassed.
-- configuration of memory mapped spi controller regsiters is done
-  through function calls from flash side.
-
-[1]: http://lists.infradead.org/pipermail/linux-mtd/2013-October/049058.html
-
-
-Tested on DRA7 board with spansion S25FL256S flash along with some
-internal irq crossbar patches.
-Tested on AM437x epos evm with macronix MX66l51235l flash.
-
-Testing done:
--Erase the whole flash.
--write to the flash
--read back the flash
-- compare the data
-
-Sourav Poddar (17):
-  spi/spi.h: Add get_buf/put_buf support in spi master..
-  spi/spi.h: Add configure from slave support.
-  spi/qspi: parse register by name.
-  spi/qspi: parse control module register.
-  spi/qspi: parse memory map register.
-  spi/qspi: Add support to switc to memory mapped operation.
-  spi/qspi: configure set up register for memory map..
-  spi/qspi: Add api for get_buf/put_buf.
-  spi/spi.h: Add "mem" variable in spi master.
-  spi/spi.h: Add mmap flag in spi master.
-  spi/qspi: set "mmap" flag to true.
-  spi/qspi: convert driver to enable/disable memory mapped..
-  drivers: mtd: m25p80: Add api to configure master register .
-  drivers: mtd: m25p80: Adapt driver to support memory mapped read.
-  arm: dts: dra7: Add qspi device.
-  arm: dts: am43x-epos: Add qspi device.
-  Documentation: bindings: ti-qspi: update binding information.
-
- Documentation/devicetree/bindings/spi/ti_qspi.txt |    2 +
- arch/arm/boot/dts/am4372.dtsi                     |   12 ++
- arch/arm/boot/dts/am43x-epos-evm.dts              |   28 +++++
- arch/arm/boot/dts/dra7-evm.dts                    |   32 ++++++
- arch/arm/boot/dts/dra7.dtsi                       |   13 +++
- drivers/mtd/devices/m25p80.c                      |   30 ++++++
- drivers/spi/spi-ti-qspi.c                         |  115 ++++++++++++++++++++-
- include/linux/spi/spi.h                           |   16 +++
- 8 files changed, 246 insertions(+), 2 deletions(-)
+diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+index 8c62ba7..3b3743d 100644
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -291,6 +291,10 @@ static inline void spi_unregister_driver(struct spi_driver *sdrv)
+  *	number. Any individual value may be -ENOENT for CS lines that
+  *	are not GPIOs (driven by the SPI controller itself).
+  *
++ * @get_buf: used for memory mapped cases, when the slave device wants to
++ *       know the address to be used for memcopy.
++ * @put_buf: Used for memory mapped cases after get_buf, after the memcpy
++ *       has finished.
+  * Each SPI master controller can communicate with one or more @spi_device
+  * children.  These make a small bus, sharing MOSI, MISO and SCK signals
+  * but not chip select signals.  Each device may be configured to use a
+@@ -421,6 +425,9 @@ struct spi_master {
+ 	int (*transfer_one)(struct spi_master *master, struct spi_device *spi,
+ 			    struct spi_transfer *transfer);
+ 
++	void	(*get_buf)(struct spi_master *master);
++	void	(*put_buf)(struct spi_master *master);
++
+ 	/* gpio chip select */
+ 	int			*cs_gpios;
+ };
+-- 
+1.7.1
