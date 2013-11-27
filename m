@@ -1,26 +1,21 @@
-Received: from mail-pd0-x232.google.com ([2607:f8b0:400e:c02::232])
+Received: from mail-pd0-x229.google.com ([2607:f8b0:400e:c02::229])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VlZet-0002eV-Rj
- for linux-mtd@lists.infradead.org; Wed, 27 Nov 2013 07:35:40 +0000
-Received: by mail-pd0-f178.google.com with SMTP id y10so9270168pdj.23
- for <linux-mtd@lists.infradead.org>; Tue, 26 Nov 2013 23:35:16 -0800 (PST)
-Date: Tue, 26 Nov 2013 23:35:12 -0800
+ id 1Vla1F-00036o-Rb
+ for linux-mtd@lists.infradead.org; Wed, 27 Nov 2013 07:58:46 +0000
+Received: by mail-pd0-f169.google.com with SMTP id v10so9447463pde.14
+ for <linux-mtd@lists.infradead.org>; Tue, 26 Nov 2013 23:58:24 -0800 (PST)
+Date: Tue, 26 Nov 2013 23:58:19 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH v3] mtd/nand: don't use {read,write}_buf for 8-bit
- transfers
-Message-ID: <20131127073512.GB13929@norris.computersforpeace.net>
-References: <1365164021.28127.109.camel@i7.infradead.org>
- <1385500515-5376-1-git-send-email-u.kleine-koenig@pengutronix.de>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH] mtd: nand: pxa3xx: Use info->use_dma to release DMA
+ resources
+Message-ID: <20131127075819.GC13929@norris.computersforpeace.net>
+References: <1385470344-2542-1-git-send-email-ezequiel.garcia@free-electrons.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1385500515-5376-1-git-send-email-u.kleine-koenig@pengutronix.de>
-Cc: Huang Shijie <b32955@freescale.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- linux-mtd@lists.infradead.org, Pekon Gupta <pekon@ti.com>,
- kernel@pengutronix.de
+In-Reply-To: <1385470344-2542-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,91 +25,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ Pekon, Ezequiel
-
-Can one of you see how this patch works with your BeagleBones w/ x16
-NAND?
-
-Also, do you think on of you could take a look at killing the
-nand_chip.read_word() callback, as Artem was originally requesting with
-this patch? It only has one user (for bad block checking in
-nand_block_bad(), which is currently only used when there is no BBT at
-all), and it looks like it could be replaced with a call to
-read_buf(mtd, buf, 2).
-
-Hi Uwe,
-
-On Tue, Nov 26, 2013 at 10:15:15PM +0100, Uwe Kleine-König wrote:
-> According to the Open NAND Flash Interface Specification (ONFI) Revision
-> 3.1 "Parameters are always transferred on the lower 8-bits of the data
-> bus." for the Get Features and Set Features commands.
+On Tue, Nov 26, 2013 at 09:52:24AM -0300, Ezequiel Garcia wrote:
+> After the driver allocates all DMA resources, it sets "info->use_dma".
+> Therefore, we need to check that variable to decide which resources
+> needs to be freed, instead of the global use_dma variable.
 > 
-> So using read_buf and write_buf is wrong for 16-bit wide nand chips as
-> they use I/O[15:0]. The Get Features command is easily fixed using 4
-> times the read_byte callback. For Set Features implement a new
-> overwritable callback "write_byte". Still I expect the default to work
-> just fine for all controllers and making it overwriteable was just done
-> for symmetry.
+> Without this change, when the device probe fails, the driver will try
+> to release unallocated DMA resources, with nasty results.
 > 
-> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 > ---
->  drivers/mtd/nand/nand_base.c | 61 +++++++++++++++++++++++++++++++++++++++++---
->  include/linux/mtd/nand.h     |  3 +++
->  2 files changed, 60 insertions(+), 4 deletions(-)
+> This is minor fix, but a fix anyway, so it should be queued for stable.
 > 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index bd39f7b..27d755b 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-...
-> @@ -2706,7 +2751,7 @@ static int nand_block_markbad(struct mtd_info *mtd, loff_t ofs)
->  }
->  
->  /**
-> - * nand_onfi_set_features- [REPLACEABLE] set features for ONFI nand
-> + * nand_onfi_set_features - [REPLACEABLE] set features for ONFI nand
+>  drivers/mtd/nand/pxa3xx_nand.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+> index 97c3eb5..8f2104c 100644
+> --- a/drivers/mtd/nand/pxa3xx_nand.c
+> +++ b/drivers/mtd/nand/pxa3xx_nand.c
+> @@ -1288,7 +1288,7 @@ static int pxa3xx_nand_init_buff(struct pxa3xx_nand_info *info)
+>  static void pxa3xx_nand_free_buff(struct pxa3xx_nand_info *info)
+>  {
+>  	struct platform_device *pdev = info->pdev;
+> -	if (use_dma) {
+> +	if (info->use_dma) {
 
-This change is unrelated. (Yes, the whitespace should be fixed, but
-probably not in this patch.)
+With this change, then the 'else' case will be executed and will kfree()
+the data buffer that we didn't allocate?
 
->   * @mtd: MTD device structure
->   * @chip: nand chip info structure
->   * @addr: feature address.
-...
-> @@ -2731,7 +2779,7 @@ static int nand_onfi_set_features(struct mtd_info *mtd, struct nand_chip *chip,
->  }
->  
->  /**
-> - * nand_onfi_get_features- [REPLACEABLE] get features for ONFI nand
-> + * nand_onfi_get_features - [REPLACEABLE] get features for ONFI nand
+  kfree(info->data_buff);
 
-Ditto.
+Fortunately kfree()'ing a NULL is a no-op.
 
->   * @mtd: MTD device structure
->   * @chip: nand chip info structure
->   * @addr: feature address.
-...
-> @@ -2812,6 +2863,8 @@ static void nand_set_defaults(struct nand_chip *chip, int busw)
->  		chip->block_markbad = nand_default_block_markbad;
->  	if (!chip->write_buf || chip->write_buf == nand_write_buf)
->  		chip->write_buf = busw ? nand_write_buf16 : nand_write_buf;
-> +	if (!chip->write_byte)
+But this highlights some of the strangeness of the error handling in
+this driver. It has an atypical style, in which the probe routine calls
+the remove routine if it fails. Normally, the probe routine has teardown
+carefully planned in stages, whereas the remove routine just does it all
+in one go (since it can assume the device was fully initialized). (And
+of course, the devm_* functions can help with simplifying some of
+this...)
 
-This check should be:
+But I suppose this patch is correct as-is, and this issue could be
+revisited later.
 
-	if (!chip->write_byte || chip->write_byte == nand_write_byte)
+For my reference, have you actually seen this bug in practice? I'm not
+sure how well this fits in the -stable rules, if it hasn't been observed
+and tested appropriately.
 
-in order to match the rest of the functions, so they can be reset if the
-buswidth is detected to be x16, and we re-call nand_set_defaults()
-(e.g., when using NAND_BUSWIDTH_AUTO). See the comment:
-
-  /* If called twice, pointers that depend on busw may need to be reset */
-
-I know it's kind of ugly, but that's what we have for now.
-
-> +		chip->write_byte = busw ? nand_write_byte16 : nand_write_byte;
->  	if (!chip->read_buf || chip->read_buf == nand_read_buf)
->  		chip->read_buf = busw ? nand_read_buf16 : nand_read_buf;
->  	if (!chip->scan_bbt)
+>  		pxa_free_dma(info->data_dma_ch);
+>  		dma_free_coherent(&pdev->dev, info->buf_size,
+>  				  info->data_buff, info->data_buff_phys);
 
 Brian
