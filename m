@@ -1,18 +1,21 @@
-From: Marek Vasut <marex@denx.de>
-To: Sourav Poddar <sourav.poddar@ti.com>
-Subject: Re: [PATCH 0/4] mtd: spi-nor: add a new framework for SPI NOR
-Date: Wed, 27 Nov 2013 11:06:09 +0100
-References: <1385447575-23773-1-git-send-email-b32955@freescale.com>
- <201311271027.06982.marex@denx.de> <5295BFB3.5020109@ti.com>
-In-Reply-To: <5295BFB3.5020109@ti.com>
+Received: from mo6-p00-ob.rzone.de ([2a01:238:20a:202:5300::1])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Vlc5e-000671-8l
+ for linux-mtd@lists.infradead.org; Wed, 27 Nov 2013 10:11:26 +0000
+Received: from [192.168.0.195]
+ (pD9E0E8BF.dip0.t-ipconnect.de [217.224.232.191])
+ by smtp.strato.de (RZmta 32.16 DYNA|AUTH)
+ with (TLSv1.0:DHE-RSA-AES256-SHA encrypted) ESMTPSA id c02a2fpARAB4Bum
+ for <linux-mtd@lists.infradead.org>;
+ Wed, 27 Nov 2013 11:11:04 +0100 (CET)
+Message-ID: <5295C538.6040207@elreha.de>
+Date: Wed, 27 Nov 2013 11:11:04 +0100
+From: "Albrecht, Harald" <harald.albrecht@elreha.de>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
+To: linux-mtd@lists.infradead.org
+Subject: JFFS2 Garbage collection issue
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <201311271106.09624.marex@denx.de>
-Cc: broonie@linaro.org, Huang Shijie <b32955@freescale.com>,
- linux-mtd@lists.infradead.org, pekon@ti.com, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,39 +25,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Sourav Poddar,
+Hi all,
 
-> Dear Marek Vasut, Huang,
-> 
-> On Wednesday 27 November 2013 02:57 PM, Marek Vasut wrote:
-> > Dear Huang Shijie,
-> > 
-> >> 1.) Why add a new framework for SPI NOR?
-> >> 
-> >>    The SPI-NOR controller such as Freescale's Quadspi controller is
-> >>    working in a different way from the SPI bus. It should knows the NOR
-> >>    commands to find the right LUT sequence. Unfortunately, the current
-> >>    code can not meet this requirement.
-> > 
-> > Is there any kind of documentation for this controller available? I
-> > cannot quite understand how this controller works and why can it not be
-> > used with our current infrastructure.
-> 
-> I do have a similar requirement where my controller need to be configured
-> from slave info. I have submiited a series in the mtd list adding that
-> portion
-> of handling such cases. Here, is the patch which specific to m25p80 part.
-> http://patchwork.ozlabs.org/patch/294285/
-> 
-> The whole series can be found here:
-> https://www.mail-archive.com/linux-omap@vger.kernel.org/msg98691.html
+we are currently facing a problem with the Garbage-collection on a JFFS2 
+file system.
 
-Is this TI QSPI the same thing as the Altera QSPI controller please ?
+We have an embedded linux system based on an ARM9 AT91RM9200 processor 
+with an Intel / Micron JS28F256 NOR-flash of 32MB in size.
+The Flash holds the U-Boot loader and its environment and in the main 
+part (30MB) of the chip a JFFS2-based root-file-system.
+Our Linux kernel version is 2.6.24.3
 
-Otherwise, I seriously believe you and Huang should work on a common 
-infrastructure. I would first like to understand how is the controller in DRA7xx 
-different from regular SPI controller though. Is there any kind of documentation 
-I could study please?
+Some minutes after startup of the system, the garbage collector (gc.c) 
+does a scan of the file system, gathering information for the garbage 
+collection procedures that may be initiated based upon that data.
+On some file systems, especially such with long runtime and therefore 
+many file operations, this scan consumes a lot of time. On some systems 
+it stays in that scan for more that 10 minutes. The problem with this 
+behaviour is the fact, that during the scan the file system is locked, 
+and therefore all file operations are suspended. This leads to a crash 
+of the system, when the application program hangs for a long time, 
+waiting for a file operation to return from a system call, and the 
+watchdog is not triggered.
 
-Best regards,
-Marek Vasut
+In a test system without watchdog, after the scan, the system runs normally.
+The flash chip itself shows no errors, so it seems to be a problem of 
+the file system.
+
+Any idea or suggestion to solve the problem would be very welcome!
+
+Harald Albrecht
