@@ -1,21 +1,17 @@
-Received: from mo6-p00-ob.rzone.de ([2a01:238:20a:202:5300::1])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vlc5e-000671-8l
- for linux-mtd@lists.infradead.org; Wed, 27 Nov 2013 10:11:26 +0000
-Received: from [192.168.0.195]
- (pD9E0E8BF.dip0.t-ipconnect.de [217.224.232.191])
- by smtp.strato.de (RZmta 32.16 DYNA|AUTH)
- with (TLSv1.0:DHE-RSA-AES256-SHA encrypted) ESMTPSA id c02a2fpARAB4Bum
- for <linux-mtd@lists.infradead.org>;
- Wed, 27 Nov 2013 11:11:04 +0100 (CET)
-Message-ID: <5295C538.6040207@elreha.de>
-Date: Wed, 27 Nov 2013 11:11:04 +0100
-From: "Albrecht, Harald" <harald.albrecht@elreha.de>
+Message-ID: <5295C74B.8040106@freescale.com>
+Date: Wed, 27 Nov 2013 18:19:55 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: JFFS2 Garbage collection issue
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+To: Marek Vasut <marex@denx.de>
+Subject: Re: [PATCH 0/4] mtd: spi-nor: add a new framework for SPI NOR
+References: <1385447575-23773-1-git-send-email-b32955@freescale.com>
+ <201311271027.06982.marex@denx.de>
+In-Reply-To: <201311271027.06982.marex@denx.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: broonie@linaro.org, linux-mtd@lists.infradead.org, pekon@ti.com,
+ sourav.poddar@ti.com, computersforpeace@gmail.com, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,33 +21,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+=E4=BA=8E 2013=E5=B9=B411=E6=9C=8827=E6=97=A5 17:27, Marek Vasut =E5=86=99=
+=E9=81=93:
+> Is there any kind of documentation for this controller available? I can=
+not quite
+> understand how this controller works and why can it not be used with ou=
+r current
+> infrastructure.
+http://cache.freescale.com/files/32bit/doc/ref_manual/VYBRIDRM.pdf
 
-we are currently facing a problem with the Garbage-collection on a JFFS2 
-file system.
-
-We have an embedded linux system based on an ARM9 AT91RM9200 processor 
-with an Intel / Micron JS28F256 NOR-flash of 32MB in size.
-The Flash holds the U-Boot loader and its environment and in the main 
-part (30MB) of the chip a JFFS2-based root-file-system.
-Our Linux kernel version is 2.6.24.3
-
-Some minutes after startup of the system, the garbage collector (gc.c) 
-does a scan of the file system, gathering information for the garbage 
-collection procedures that may be initiated based upon that data.
-On some file systems, especially such with long runtime and therefore 
-many file operations, this scan consumes a lot of time. On some systems 
-it stays in that scan for more that 10 minutes. The problem with this 
-behaviour is the fact, that during the scan the file system is locked, 
-and therefore all file operations are suspended. This leads to a crash 
-of the system, when the application program hangs for a long time, 
-waiting for a file operation to return from a system call, and the 
-watchdog is not triggered.
-
-In a test system without watchdog, after the scan, the system runs normally.
-The flash chip itself shows no errors, so it seems to be a problem of 
-the file system.
-
-Any idea or suggestion to solve the problem would be very welcome!
-
-Harald Albrecht
+thanks
+Huang Shijie
