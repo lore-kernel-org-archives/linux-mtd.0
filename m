@@ -1,25 +1,23 @@
-Received: from mail-yh0-f54.google.com ([209.85.213.54])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vldfx-0000RM-9D
- for linux-mtd@lists.infradead.org; Wed, 27 Nov 2013 11:53:02 +0000
-Received: by mail-yh0-f54.google.com with SMTP id z12so4963858yhz.27
- for <linux-mtd@lists.infradead.org>; Wed, 27 Nov 2013 03:52:36 -0800 (PST)
-Date: Wed, 27 Nov 2013 11:52:26 +0000
-From: Lee Jones <lee.jones@linaro.org>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 00/23] mtd: st_spi_fsm: Add new device
-Message-ID: <20131127115226.GC3296@lee--X1>
-References: <1385137380-28968-1-git-send-email-lee.jones@linaro.org>
- <20131127040723.GZ9468@ld-irv-0074.broadcom.com>
+Message-ID: <5295EE7B.6030504@ti.com>
+Date: Wed, 27 Nov 2013 18:37:07 +0530
+From: Sekhar Nori <nsekhar@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20131127040723.GZ9468@ld-irv-0074.broadcom.com>
-Cc: angus.clark@st.com, linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
- linux-spi@vger.kernel.org, Huang Shijie <b32955@freescale.com>,
- Mark Brown <broonie@kernel.org>, linux-mtd@lists.infradead.org,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+To: "ivan.khoronzhuk" <ivan.khoronzhuk@ti.com>
+Subject: Re: [PATCH] ARM: davinci: aemif: get rid of davinci-nand driver
+ dependency on aemif
+References: <5291CB01.1010506@ti.com>
+ <1385409654-19006-1-git-send-email-ivan.khoronzhuk@ti.com>
+ <5295AECB.7040503@ti.com> <5295D102.2010101@ti.com>
+In-Reply-To: <5295D102.2010101@ti.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, grygorii.strashko@ti.com,
+ linux@arm.linux.org.uk, pawel.moll@arm.com, swarren@wwwdotorg.org,
+ ijc+devicetree@hellion.org.uk, galak@kernel.crashing.org,
+ rob.herring@calxeda.com, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, rob@landley.net,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,70 +27,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> There seem to be multiple efforts going on that are vaguely related. I'd
-> like to see more of the same people appearing on the CC list, to keep
-> better coordinated.
+On Wednesday 27 November 2013 04:31 PM, ivan.khoronzhuk wrote:
+>>> @@ -192,9 +193,15 @@ static __init void davinci_ntosd2_init(void)
+>>>           davinci_cfg_reg(DM644X_ATAEN_DISABLE);
+>>>
+>>>           /* only one device will be jumpered and detected */
+>>> -        if (HAS_NAND)
+>>> +        if (HAS_NAND) {
+>>>               platform_device_register(
+>>>                       &davinci_ntosd2_nandflash_device);
+>>> +
+>>> +            if (davinci_aemif_setup(
+>>> +                &davinci_ntosd2_nandflash_device))
+>>> +                pr_warn("%s: Cannot configure AEMIF.\n",
+>>> +                    __func__);
+>>
+>> This is looking really ugly. Can you shorten
+>> davinci_ntosd2_nandflash_device to just "ntosd2_nandflash" or similar?
 > 
-> On that topic, is the SPI dev list relevant, or would anybody working on
-> the intersection of SPI and MTD be on the MTD list?
+> The rename is not related to the patch, so I won't do this.
 
-I think Mark is the prominent figure that this would interest.
+The reason I asked you to rename is not because I want to push some
+random clean-up into this patch. You had to introduce a line so broken
+that its almost unreadable. I offered the suggestion as a way to improve
+the readability of the code you are introducing in *this* patch.
 
-> On Fri, Nov 22, 2013 at 04:22:37PM +0000, Lee Jones wrote:
-> > The first bunch of these patches have been on the MLs before, but 
-> > didn't receive a great deal of attention for the most part. We are
-> > a little more featureful this time however. We can now successfully
-> > setup and configure the N25Q256. We still can't read/write/erase
-> > it though. I'll start work on that next week and will provide it in
-> > the next instalment.
-> 
-> What happened to integrating a SPI NOR framework? I see you copied some
-> of the m25p80 commands, but you don't share them with m25p80. I also
-> understand your argument (from the first version of this patch series)
-> that much of the actual controller operation is not shared with m25p80,
-> but you'd be surprised how this might evolve. There are several others
-> with QSPI hardware that are trying to get patches merged, some of whom
-> (Huang, at least) are actively submitting patches to help with this
-> abstraction.
-> 
-> Now, I haven't had a lot of time yet to look at both yours and Huang's
-> work and see what, if anything, can be shared (will do soon). But I
-> think you need to be aware.
-
-I've taken a look at Huang's framework and it doesn't provide us with
-anything extra to what the m25p80 would provide. We did have the idea
-of splitting our driver into two distinct areas; the MTD part, which
-we planned on using the m25p80 for and an SPI Controller portion.
-
-However, as we send entire 'message sequences' to the FSM Controller
-as opposed to merely OPCODEs we would have to extract the OPCODE from
-flash->command[0] and call our own functions to craft the correct
-'message sequence' for the task. For this reason we rejected the idea
-and went with a stand-alone driver.
-
-The framework which Huang is proposing suffers from the same issues.
-Only providing read(), write(), read_reg() and write_reg() doesn't
-work for our use-case, as we'd have to decode the flash->command[0] and
-invoke our own internal routines as before.
-
-The only framework with would work for us would consist almost all
-of the important functions such as; read(), write(), erase(),
-wait_busy(), read_jedec(), read_status_reg(), write_status_reg(),
-read_control_reg(), write_control_reg(), etc. However, this approach
-is mostly pointless. We'd be better of just using the MTD Framework's
-_read, _write and _erase call-backs as we do now.
-
-For these reasons and a bunch of others I think the best solution for
-our particular use-case would be to stick with our stand-alone driver
-implementation.
-
-> BTW, can you include version markers (i.e., [PATCH v2 X/Y]) in the
-> subject from now on?
-
-Yes of course, no problem.
-
--- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Thanks,
+Sekhar
