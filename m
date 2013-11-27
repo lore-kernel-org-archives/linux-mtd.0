@@ -1,18 +1,23 @@
-Message-ID: <5295CFE4.70404@ti.com>
-Date: Wed, 27 Nov 2013 16:26:36 +0530
-From: Sourav Poddar <sourav.poddar@ti.com>
+Message-ID: <5295D102.2010101@ti.com>
+Date: Wed, 27 Nov 2013 13:01:22 +0200
+From: "ivan.khoronzhuk" <ivan.khoronzhuk@ti.com>
 MIME-Version: 1.0
-To: Marek Vasut <marex@denx.de>
-Subject: Re: [PATCH 0/4] mtd: spi-nor: add a new framework for SPI NOR
-References: <1385447575-23773-1-git-send-email-b32955@freescale.com>
- <201311271027.06982.marex@denx.de> <5295BFB3.5020109@ti.com>
- <201311271106.09624.marex@denx.de>
-In-Reply-To: <201311271106.09624.marex@denx.de>
+To: Sekhar Nori <nsekhar@ti.com>
+Subject: Re: [PATCH] ARM: davinci: aemif: get rid of davinci-nand driver
+ dependency on aemif
+References: <5291CB01.1010506@ti.com>
+ <1385409654-19006-1-git-send-email-ivan.khoronzhuk@ti.com>
+ <5295AECB.7040503@ti.com>
+In-Reply-To: <5295AECB.7040503@ti.com>
 Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: broonie@linaro.org, Huang Shijie <b32955@freescale.com>,
- linux-mtd@lists.infradead.org, pekon@ti.com, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, grygorii.strashko@ti.com,
+ linux@arm.linux.org.uk, pawel.moll@arm.com, swarren@wwwdotorg.org,
+ ijc+devicetree@hellion.org.uk, galak@kernel.crashing.org,
+ rob.herring@calxeda.com, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, rob@landley.net,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,88 +27,158 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Marek Vasut,
-On Wednesday 27 November 2013 03:36 PM, Marek Vasut wrote:
-> Dear Sourav Poddar,
+On 11/27/2013 10:35 AM, Sekhar Nori wrote:
+> + MTD maintainers
 >
->> Dear Marek Vasut, Huang,
+> On Tuesday 26 November 2013 01:30 AM, Ivan Khoronzhuk wrote:
+>> The problem that the set timings code contains the call of Davinci
+>> platform function davinci_aemif_setup_timing() which is not
+>> accessible if kernel is built for another platform like Keystone.
 >>
->> On Wednesday 27 November 2013 02:57 PM, Marek Vasut wrote:
->>> Dear Huang Shijie,
->>>
->>>> 1.) Why add a new framework for SPI NOR?
->>>>
->>>>     The SPI-NOR controller such as Freescale's Quadspi controller is
->>>>     working in a different way from the SPI bus. It should knows the NOR
->>>>     commands to find the right LUT sequence. Unfortunately, the current
->>>>     code can not meet this requirement.
->>> Is there any kind of documentation for this controller available? I
->>> cannot quite understand how this controller works and why can it not be
->>> used with our current infrastructure.
->> I do have a similar requirement where my controller need to be configured
->> from slave info. I have submiited a series in the mtd list adding that
->> portion
->> of handling such cases. Here, is the patch which specific to m25p80 part.
->> http://patchwork.ozlabs.org/patch/294285/
+>> The Keysone platform is going to use TI AEMIF driver.
+>> If TI AEMIF is used we don't need to set timings and bus width.
+>> It is done by AEMIF driver.
 >>
->> The whole series can be found here:
->> https://www.mail-archive.com/linux-omap@vger.kernel.org/msg98691.html
-> Is this TI QSPI the same thing as the Altera QSPI controller please ?
+>> To get rid of davinci-nand driver dependency on aemif platform code
+>> we moved aemif code to davinci platform.
+>>
+>> The platform AEMIF code (aemif.c) has to be removed once Davinci
+>> will be converted to DT and use ti-aemif.c driver.
+>>
+>> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+>> ---
+>>   arch/arm/mach-davinci/aemif.c                   |   73 ++++++++++++++++++++++-
+>>   arch/arm/mach-davinci/board-da830-evm.c         |    3 +
+>>   arch/arm/mach-davinci/board-da850-evm.c         |    3 +
+>>   arch/arm/mach-davinci/board-dm355-evm.c         |    5 ++
+>>   arch/arm/mach-davinci/board-dm355-leopard.c     |    5 ++
+>>   arch/arm/mach-davinci/board-dm365-evm.c         |    4 ++
+>>   arch/arm/mach-davinci/board-dm644x-evm.c        |    5 ++
+>>   arch/arm/mach-davinci/board-dm646x-evm.c        |    3 +
+>>   arch/arm/mach-davinci/board-mityomapl138.c      |    3 +
+>>   arch/arm/mach-davinci/board-neuros-osd2.c       |    9 ++-
+>>   arch/arm/mach-davinci/devices-tnetv107x.c       |    3 +
+>>   drivers/mtd/nand/davinci_nand.c                 |   23 -------
+>>   include/linux/platform_data/mtd-davinci-aemif.h |    5 +-
+>>   13 files changed, 116 insertions(+), 28 deletions(-)
 >
-No, its differenet.
-> Otherwise, I seriously believe you and Huang should work on a common
-> infrastructure. I would first like to understand how is the controller in DRA7xx
-> different from regular SPI controller though. Is there any kind of documentation
-> I could study please?
+> [...]
 >
-Sorry, we dont have a public document yet.
+>> +
+>> +/**
+>> + * davinci_aemif_setup - setup AEMIF interface by davinci_nand_pdata
+>> + * @pdev - link to platform device to setup settings for
+>> + *
+>> + * This function does not use any locking while programming the AEMIF
+>> + * because it is expected that there is only one user of a given
+>> + * chip-select.
+>> + *
+>> + * Returns 0 on success, else negative errno.
+>> + */
+>> +int davinci_aemif_setup(struct platform_device *pdev)
+>> +{
+>> +	struct davinci_nand_pdata *pdata = dev_get_platdata(&pdev->dev);
+>> +	uint32_t val;
+>> +	struct resource	*res;
+>> +	void __iomem *base;
+>> +	int ret = 0;
+>> +
+>> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+>> +	if (!res) {
+>> +		dev_err(&pdev->dev, "cannot get IORESOURCE_MEM\n");
+>> +		return -ENOMEM;
+>> +	}
+>> +
+>> +	base = ioremap(res->start, resource_size(res));
+>> +	if (!base) {
+>> +		dev_err(&pdev->dev, "ioremap failed for resource %pR\n", res);
+>> +		ret = -ENOMEM;
+>> +		goto err;
+>> +	}
+>> +
+>> +	/*
+>> +	 * Setup Async configuration register in case we did not boot
+>> +	 * from NAND and so bootloader did not bother to set it up.
+>> +	 */
+>> +	val = davinci_aemif_readl(base, A1CR_OFFSET + pdev->id * 4);
+>
+> The AEMIF clock has to be enabled before this. The NAND driver might
+> load much later.
+>
 
-Though, this is what ti qspi contoller has
+Ok
 
-It supports two modes of operation, one is SPI mode(normal), other is
-the memory mapped read mode.
+>> +	/*
+>> +	 * Extended Wait is not valid and Select Strobe mode is not
+>> +	 * used
+>> +	 */
+>> +	val &= ~(ACR_ASIZE_MASK | ACR_EW_MASK | ACR_SS_MASK);
+>> +	if (pdata->options & NAND_BUSWIDTH_16)
+>> +		val |= 0x1;
+>> +
+>> +	davinci_aemif_writel(base, A1CR_OFFSET + pdev->id * 4, val);
+>> +
+>> +	if (pdata->timing)
+>> +		ret = davinci_aemif_setup_timing(pdata->timing, base, pdev->id);
+>> +
+>> +	if (ret < 0)
+>> +		dev_dbg(&pdev->dev, "NAND timing values setup fail\n");
+>> +
+>> +err:
+>> +	iounmap(base);
+>> +	return ret;
+>> +}
+>> +EXPORT_SYMBOL(davinci_aemif_setup);
+>
+> No need to export this symbol as nothing apart from platform code uses it.
+>
 
-For SPI mode, the state machine remains the same as it is with other spi 
-controller
-available.
+Ok
 
-For memory mapped, there is something more which we need to do around ..
+>>   static const short mityomap_mii_pins[] = {
+>> diff --git a/arch/arm/mach-davinci/board-neuros-osd2.c b/arch/arm/mach-davinci/board-neuros-osd2.c
+>> index bb680af..a7d6668 100644
+>> --- a/arch/arm/mach-davinci/board-neuros-osd2.c
+>> +++ b/arch/arm/mach-davinci/board-neuros-osd2.c
+>> @@ -31,6 +31,7 @@
+>>   #include <linux/platform_data/mmc-davinci.h>
+>>   #include <linux/platform_data/mtd-davinci.h>
+>>   #include <linux/platform_data/usb-davinci.h>
+>> +#include <linux/platform_data/mtd-davinci-aemif.h>
+>>
+>>   #include <asm/mach-types.h>
+>>   #include <asm/mach/arch.h>
+>> @@ -192,9 +193,15 @@ static __init void davinci_ntosd2_init(void)
+>>   		davinci_cfg_reg(DM644X_ATAEN_DISABLE);
+>>
+>>   		/* only one device will be jumpered and detected */
+>> -		if (HAS_NAND)
+>> +		if (HAS_NAND) {
+>>   			platform_device_register(
+>>   					&davinci_ntosd2_nandflash_device);
+>> +
+>> +			if (davinci_aemif_setup(
+>> +				&davinci_ntosd2_nandflash_device))
+>> +				pr_warn("%s: Cannot configure AEMIF.\n",
+>> +					__func__);
+>
+> This is looking really ugly. Can you shorten
+> davinci_ntosd2_nandflash_device to just "ntosd2_nandflash" or similar?
 
-1. There is a qspi "set up" register available, which needs to be filled 
-with
-      information like flash opcode, dummy bytes etc. In short, flash 
-specific
-      details.
-2   if the above register is configured with the required opcodes, then 
-whenever
-      we need to use memory mapped operations, we need to do is to 
-switch our
-      qspi controller to memory mapped mode.
-     Switching of this mode to memory mapped needs
-      a )  write to a particular qspi register
-      b)   write to control module(optional based on SOC).
+The rename is not related to the patch, so I won't do this.
 
-3. Once the above steps are configured, then the flash data will be 
-mapped to a
-     particular memory address(SOC specific) from where the flash data  
-can be read.
+>
+> I am yet to test this. Will test once the next version is posted.
+>
+> Overall, I cannot say I am fan of this approach (mostly because we are
+> ending up having two drivers for the same hardware in kernel). But given
+> that the other option of adding platform device support to AEMIF driver
+> is not acceptable to you, I guess I will live with this.
+>
+> Thanks,
+> Sekhar
+>
 
-The series 
-https://www.mail-archive.com/linux-omap@vger.kernel.org/msg98691.html
-tries to work on the above features, and tries to add a support for the 
-same in the
-spi framework and m25p80 code.
-
-As you see in my patches, once we take care of the above points and add 
-support
-for memory mapped in m25p80 and qspi, then while doing a read in m25p80 
-we can
-do memcpy at the beginning of m25p80_read and can bypass the entire SPI
-framework for memory mapped read operation. Throughput almost gets 
-doubles with this,
-as compared to normal SPI operations.
-
-Please get back, if you need more info on this concept.
-
-> Best regards,
-> Marek Vasut
+-- 
+Regards,
+Ivan Khoronzhuk
