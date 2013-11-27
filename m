@@ -1,22 +1,29 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VldOA-00005G-Pf
- for linux-mtd@lists.infradead.org; Wed, 27 Nov 2013 11:34:39 +0000
-Date: Wed, 27 Nov 2013 08:34:06 -0300
+ id 1VldSF-00009r-BO
+ for linux-mtd@lists.infradead.org; Wed, 27 Nov 2013 11:38:51 +0000
+Date: Wed, 27 Nov 2013 08:38:23 -0300
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] mtd: nand: pxa3xx: Use info->use_dma to release DMA
- resources
-Message-ID: <20131127113405.GA2326@localhost>
-References: <1385470344-2542-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <20131127075819.GC13929@norris.computersforpeace.net>
+Subject: Re: Setting NAND timings parameters (Re: [RFC/PATCH v2] mtd: nand:
+ pxa3xx: Remove redundant device probing)
+Message-ID: <20131127113822.GB2326@localhost>
+References: <1378811821-14766-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1378811821-14766-2-git-send-email-ezequiel.garcia@free-electrons.com>
+ <522F22C9.1050305@gmail.com> <20130910135729.GA32715@localhost>
+ <522F2941.4030406@gmail.com> <20130924214653.GA2376@localhost>
+ <20131126231709.GL9468@ld-irv-0074.broadcom.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20131127075819.GC13929@norris.computersforpeace.net>
-Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <20131126231709.GL9468@ld-irv-0074.broadcom.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Lior Amsalem <alior@marvell.com>, Tawfik Bayouk <tawfik@marvell.com>,
+ haojian.zhuang@gmail.com, Daniel Mack <zonque@gmail.com>, b32955@freescale.com,
+ linux-mtd@lists.infradead.org, matthieu.castet@parrot.com,
+ Gregory Clement <gregory.clement@free-electrons.com>, Willy Tarreau <w@1wt.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,83 +33,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Nov 26, 2013 at 11:58:19PM -0800, Brian Norris wrote:
-> On Tue, Nov 26, 2013 at 09:52:24AM -0300, Ezequiel Garcia wrote:
-> > After the driver allocates all DMA resources, it sets "info->use_dma".
-> > Therefore, we need to check that variable to decide which resources
-> > needs to be freed, instead of the global use_dma variable.
+On Tue, Nov 26, 2013 at 03:17:09PM -0800, Brian Norris wrote:
+> 
+> I see that the removal of your driver-specific device table stalled on
+> this issue. Are you planning on picking it up?
+> 
+
+Kind of. I'd love to fix this ugly code, but have lots of others items
+on this driver's TODO list.
+
+> On Tue, Sep 24, 2013 at 06:46:54PM -0300, Ezequiel Garcia wrote:
+> > On Tue, Sep 10, 2013 at 04:14:25PM +0200, Daniel Mack wrote:
+> > > > 
+> > > > Right. However, since we can easily add support to configure every controller
+> > > > parameter (right?) this shouldn't be a problem.
+> > > > 
+> > > > What do you think of this change, Daniel?
+> > > 
+> > > I always thought that this detail of the pxa nand driver is ugly :) But
+> > > I'd say before it can be merged, you need to provide code to set the
+> > > timing from parameters obtained from generic part. Are you working on
+> > > this? I'd happily test more patches.
+> > > 
 > > 
-> > Without this change, when the device probe fails, the driver will try
-> > to release unallocated DMA resources, with nasty results.
+> > Returning to this point: it seems we have two different cases: ONFI-compliant
+> > devices and non-ONFI.
 > > 
-> > Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> > ---
-> > This is minor fix, but a fix anyway, so it should be queued for stable.
-> > 
-> >  drivers/mtd/nand/pxa3xx_nand.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-> > index 97c3eb5..8f2104c 100644
-> > --- a/drivers/mtd/nand/pxa3xx_nand.c
-> > +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> > @@ -1288,7 +1288,7 @@ static int pxa3xx_nand_init_buff(struct pxa3xx_nand_info *info)
-> >  static void pxa3xx_nand_free_buff(struct pxa3xx_nand_info *info)
-> >  {
-> >  	struct platform_device *pdev = info->pdev;
-> > -	if (use_dma) {
-> > +	if (info->use_dma) {
+> > For the ONFI, we can have a timings parameter table with some index according
+> > to the ONFI timing mode available or user-selected. This table could be
+> > generic (as in Matthieu Castet patch [1]) or driver specific (as in
+> > denali driver).
 > 
-> With this change, then the 'else' case will be executed and will kfree()
-> the data buffer that we didn't allocate?
-> 
->   kfree(info->data_buff);
-> 
-> Fortunately kfree()'ing a NULL is a no-op.
+> It looks like denali just uses a module parameter so the user can select
+> an ONFI timing mode. This isn't flexible or generically useful and
+> shouldn't be encouraged on new code.
 > 
 
-No. The buffer is allocated at a very early stage in DMA and non-DMA modes.
-It's later reallocated, but in any case when pxa3xx_nand_free_buff()
-is called, the buffer can never be NULL.
+Agreed.
 
-The situation this commit fixes is that when the cleanup is called from
-the probe(), the DMA resources haven't been allocated yet and so the
-release must be kfree().
-
-Remember we've recently changed this driver to work in non-DMA mode
-until the page size is correctly detected. Until then, info->use_dma is
-false.
-
-> But this highlights some of the strangeness of the error handling in
-> this driver. It has an atypical style, in which the probe routine calls
-> the remove routine if it fails. Normally, the probe routine has teardown
-> carefully planned in stages, whereas the remove routine just does it all
-> in one go (since it can assume the device was fully initialized). (And
-> of course, the devm_* functions can help with simplifying some of
-> this...)
+> If more drivers need timing information like this, I would like to see a
+> generic implementation like Matthieu's (although his can be improved, I
+> think). It's also worth noting that his code only gets information for
+> the SDR timing modes, not DDR. I don't know if any hardware is utilizing
+> DDR modes (I haven't tested it on mine), but it's worth considering
+> if/how this would fit into the framework.
 > 
 
-Yes, I know. The driver is very very old, and some parts of it need some
-love. However, the error handling is not so bad. When
-pxa3xx_nand_remove() is called, all resources are guaranteed to be
-allocated so it works like a full-fledged release.
-
-I'm actually more annoyed by the fact there's two variables with the
-same name: use_dma, and info->use_dma.
-
-> But I suppose this patch is correct as-is, and this issue could be
-> revisited later.
-> 
-> For my reference, have you actually seen this bug in practice? I'm not
-> sure how well this fits in the -stable rules, if it hasn't been observed
-> and tested appropriately.
-> 
-
-Yes, I've seen this bug in practice, or otherwise wouldn't notice such small
-typo :-) The bug was triggered in PXA platforms, when the device cannot
-be identified (nand_scan fails).
-
-It's a very rare condition, but it's a real bug. Is that enough for -stable?
+OK, I'll see if I can push my previous work on this. I have a modified
+patch in some branch around here.
 -- 
 Ezequiel García, Free Electrons
 Embedded Linux, Kernel and Android Engineering
