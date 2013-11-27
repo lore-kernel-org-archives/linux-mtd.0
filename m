@@ -1,32 +1,21 @@
-Received: from f276.i.mail.ru ([217.69.138.65])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VlWdH-0000Jm-23
- for linux-mtd@lists.infradead.org; Wed, 27 Nov 2013 04:21:48 +0000
-From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
-To: =?UTF-8?B?QnJpYW4gTm9ycmlz?= <computersforpeace@gmail.com>
-Subject: =?UTF-8?B?UmU6IFtQQVRDSCB2NSAxLzNdIG10ZDogbmFuZDogZ3BpbzogQWRkIERUIHBy?=
- =?UTF-8?B?b3BlcnR5IHRvIGF1dG9tYXRpY2FsbHkgZGV0ZXJtaW5lIGJ1cyB3aWR0aA==?=
-Mime-Version: 1.0
-Date: Wed, 27 Nov 2013 08:21:18 +0400
-Message-ID: <1385526078.44550720@f276.i.mail.ru>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
-In-Reply-To: <20131127012158.GR9468@ld-irv-0074.broadcom.com>
-References: <1384343884-29622-1-git-send-email-shc_work@mail.ru>
- <20131127012158.GR9468@ld-irv-0074.broadcom.com>
-Cc: =?UTF-8?B?TWFyayBSdXRsYW5k?= <mark.rutland@arm.com>,
- devicetree@vger.kernel.org,
- =?UTF-8?B?UnVzc2VsbCBLaW5n?= <linux@arm.linux.org.uk>,
- =?UTF-8?B?UGF3ZWwgTW9sbA==?= <pawel.moll@arm.com>,
- =?UTF-8?B?SWFuIENhbXBiZWxs?= <ijc+devicetree@hellion.org.uk>,
- =?UTF-8?B?QXJ0ZW0gQml0eXV0c2tpeQ==?= <dedekind1@gmail.com>,
- =?UTF-8?B?Um9iIEhlcnJpbmc=?= <rob.herring@calxeda.com>,
- linux-mtd@lists.infradead.org,
- =?UTF-8?B?SGFvamlhbiBaaHVhbmc=?= <haojian.zhuang@gmail.com>,
- =?UTF-8?B?U3RlcGhlbiBXYXJyZW4=?= <swarren@wwwdotorg.org>,
- =?UTF-8?B?RXJpYyBNaWFv?= <eric.y.miao@gmail.com>,
- =?UTF-8?B?RGF2aWQgV29vZGhvdXNl?= <dwmw2@infradead.org>
-Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+Message-ID: <52957690.60102@freescale.com>
+Date: Wed, 27 Nov 2013 12:35:28 +0800
+From: Huang Shijie <b32955@freescale.com>
+MIME-Version: 1.0
+To: "Gupta, Pekon" <pekon@ti.com>
+Subject: Re: [PATCH 2/4] mtd: spi-nor: add a new data structrue spi_nor{}
+References: <1385447575-23773-1-git-send-email-b32955@freescale.com>
+ <1385447575-23773-3-git-send-email-b32955@freescale.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EA4EEF0@DBDE04.ent.ti.com>
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA4EEF0@DBDE04.ent.ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: "marex@denx.de" <marex@denx.de>, "broonie@linaro.org" <broonie@linaro.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Poddar,
+ Sourav" <sourav.poddar@ti.com>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,58 +25,153 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Li4uCj4gV2UncmUgZGVhbGluZyB3aXRoIGEgc2ltaWxhciBpc3N1ZSBpbiBvdGhlciBkcml2ZXJz
-IGN1cnJlbnRseSwgYW5kIEkKPiB0aGluayBpdCdzIHdvcnRoIHN0cmFpZ2h0ZW5pbmcgb3V0IHRo
-ZSBpc3N1ZSBmb3IgYWxsIHN5c3RlbXMuCj4gCj4gT24gV2VkLCBOb3YgMTMsIDIwMTMgYXQgMDM6
-NTg6MDJQTSArMDQwMCwgQWxleGFuZGVyIFNoaXlhbiB3cm90ZToKPiA+IFRoaXMgcGF0Y2ggYWRk
-cyBhIHByb3BlcnR5IHRvIGF1dG9tYXRpY2FsbHkgZGV0ZXJtaW5lIHRoZSBOQU5ECj4gPiBidXMg
-d2lkdGggYnkgQ0ZJL09ORkkgaW5mb3JtYXRpb24gZnJvbSBjaGlwLiBUaGlzIHByb3BlcnR5IHdv
-cmtzCj4gPiBpZiB0aGUgYnVzIHdpZHRoIGlzIG5vdCBzcGVjaWZpZWQgZXhwbGljaXRseS4KPiAK
-PiBUaGlzIGlzc3VlIGJyaW5ncyB1cCBhIGZldyBxdWVzdGlvbnMgaW4gbXkgbWluZCwgd2hpY2gg
-YXJlIHJlbGV2YW50IHRvCj4gZGV2aWNlIHRyZWUgaW4gZ2VuZXJhbC4KPiAKPiBGaXJzdCBvZiBh
-bGwsIGRvIHdlIG5lZWQgYSBkZXZpY2UgdHJlZSBwcm9wZXJ0eSBhdCBhbGwsIGZvciBzb21ldGhp
-bmcKPiB0aGF0IGlzIGF1dG8tZGV0ZWN0YWJsZT8KPiAKPiBSZWxhdGVkOiBpcyBhIGRldmljZSB0
-cmVlIGNvbnN1bWVyIChsaWtlIExpbnV4KSBzdXBwb3NlZCB0byBiZSBhCj4gdmFsaWRhdG9yLCBv
-ciBzaW1wbHkgYSBiZXN0LWVmZm9ydD8gSSdtIGNvbnNpZGVyaW5nIHRoZSBmb2xsb3dpbmcgY2Fz
-ZToKPiBpZiBMaW51eCBpcyBhbGxvd2VkIHRvIGF1dG8tZGV0ZWN0IHNvbWUgcHJvcGVydHkgd2hp
-Y2ggYWxzbyBoYXMgYSBkZXZpY2UKPiB0cmVlIGJpbmRpbmcgKGUuZy4sICJuYW5kLWJ1cy13aWR0
-aCIsIGluCj4gRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9uYW5kLnR4dCks
-IHdoYXQgc2hvdWxkIGhhcHBlbiBpZgo+IHRoZSBiaW5kaW5nIGhhcHBlbnMgdG8gYmUgaW5jb3Jy
-ZWN0PyBJT1csIHdoYXQgaWYgdGhlIGRldmljZSB0cmVlCj4gc3BlY2lmaWVzIGJ1c3dpZHRoIGlz
-IHgxNiwgYnV0IExpbnV4IGNvcnJlY3RseSBkZXRlY3RzIGl0IGFzIHg4Pwo+IFNob3VsZG4ndCB3
-ZSBtYWtlIHRoZSBiZXN0IGVmZm9ydCB0byBicmluZyB0aGUgaGFyZHdhcmUgdXAsIHJlZ2FyZGxl
-c3MKPiBvZiB3aGF0IHRoZSBkZXZpY2UgdHJlZSBzYXlzPwo+IAo+IFNvIGZvciBzb21ldGhpbmcg
-bGlrZSB0aGlzIEdQSU8gZHJpdmVyLCBJJ20gdGhpbmtpbmcgdGhhdCBMaW51eCBzaG91bGQKPiBq
-dXN0IHVzZSBOQU5EX0JVU1dJRFRIX0FVVE8gYWxsIHRoZSB0aW1lIFsqXS4gQnV0IChhcyBJJ20g
-aGludGluZyBhYm92ZSkKPiB0aGF0IHdvdWxkIGFsbG93IERUQiBmaXJtd2FyZSBpbXBsZW1lbnRv
-cnMgdG8gYmUgbGF6aWVyIGFuZCBoYXZlIGEKPiB0ZWNobmljYWxseS1pbmNvcnJlY3QgIm5hbmQt
-YnVzLXdpZHRoIiBvciAiYmFuay13aWR0aCIgYmluZGluZywgc2luY2UKPiB0aGV5IGtub3cgaXQg
-Y2FuIHJlbGlhYmx5IGJlIGRldGVjdGVkIGFuZCBvdmVycmlkZGVuIGJ5IExpbnV4Lgo+IAo+IFsq
-XSBFeGNlcHQgd2hlcmUgcmVzb3VyY2Vfc2l6ZShyZXMpIDwgMiwgYXMgQWxleGFuZGVyIGFscmVh
-ZHkgaGFzIGluCj4gdGhpcyBwYXRjaC4KPiAKPiA+IFNpZ25lZC1vZmYtYnk6IEFsZXhhbmRlciBT
-aGl5YW4gPHNoY193b3JrQG1haWwucnU+Cj4gPiAtLS0KPiA+ICAuLi4vZGV2aWNldHJlZS9iaW5k
-aW5ncy9tdGQvZ3Bpby1jb250cm9sLW5hbmQudHh0ICAgICAgICB8ICAzICsrKwo+ID4gIGRyaXZl
-cnMvbXRkL25hbmQvZ3Bpby5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgMTYg
-KysrKysrKysrKysrLS0tLQo+ID4gIDIgZmlsZXMgY2hhbmdlZCwgMTUgaW5zZXJ0aW9ucygrKSwg
-NCBkZWxldGlvbnMoLSkKPiA+IAo+ID4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNl
-dHJlZS9iaW5kaW5ncy9tdGQvZ3Bpby1jb250cm9sLW5hbmQudHh0IGIvRG9jdW1lbnRhdGlvbi9k
-ZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9ncGlvLWNvbnRyb2wtbmFuZC50eHQKPiA+IGluZGV4IDM2
-ZWYwN2QuLmZlNGU5NjAgMTAwNjQ0Cj4gPiAtLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUv
-YmluZGluZ3MvbXRkL2dwaW8tY29udHJvbC1uYW5kLnR4dAo+ID4gKysrIGIvRG9jdW1lbnRhdGlv
-bi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9ncGlvLWNvbnRyb2wtbmFuZC50eHQKPiA+IEBAIC0x
-OSw2ICsxOSw5IEBAIE9wdGlvbmFsIHByb3BlcnRpZXM6Cj4gPiAgICBkZWZhdWx0cyB0byAxIGJ5
-dGUuCj4gPiAgLSBjaGlwLWRlbGF5IDogY2hpcCBkZXBlbmRlbnQgZGVsYXkgZm9yIHRyYW5zZmVy
-cmluZyBkYXRhIGZyb20gYXJyYXkgdG8KPiA+ICAgIHJlYWQgcmVnaXN0ZXJzICh0UikuICBJZiBu
-b3QgcHJlc2VudCB0aGVuIGEgZGVmYXVsdCBvZiAyMHVzIGlzIHVzZWQuCj4gPiArLSBncGlvLWNv
-bnRyb2wtbmFuZCxiYW5rLXdpZHRoLWF1dG8gOiBEZXZpY2UgYnVzIHdpZHRoIGlzIGRldGVybWlu
-ZWQKPiA+ICsgIGF1dG9tYXRpY2FsbHkgYnkgQ0ZJL09ORkkgaW5mb3JtYXRpb24gZnJvbSBjaGlw
-IGlmICJiYW5rLXdpZHRoIgo+ID4gKyAgcGFyYW1ldGVyIGlzIG9taXR0ZWQgKEJvb2xlYW4pLgo+
-IAo+IElmIHdlIGRvIHJlc29ydCB0byBhIG5ldyBiaW5kaW5nIGZvciBhdXRvLWJ1c3dpZHRoLCBp
-dCBzaG91bGQgYmUgYQo+IGdlbmVyaWMgb25lIHRoYXQgYWxsIE5BTkQgZHJpdmVycyBjYW4gdXNl
-LiBNYXliZSBhIHNlcGFyYXRlIGJvb2xlYW4KPiAibmFuZC1idXMtd2lkdGgtYXV0byIgYW5kIGlm
-IGl0IGlzIHByZXNlbnQsIHRoZW4gaXQgb3ZlcnJ1bGVzIHRoZQo+IHByZXNlbmNlIChvciBsYWNr
-KSBvZiB0aGUgIm5hbmQtYnVzLXdpZHRoIiBib29sZWFuIHByb3BlcnR5Pwo+IE9yIGlzIGl0IHBv
-c3NpYmxlIHRvIGV4dGVuZCAibmFuZC1idXMtd2lkdGgiIHRvIGFsbG93IHRoZSB2YWx1ZSBvZiAw
-IHRvCj4gbWVhbiBhdXRvbWF0aWM/CgpUaGlzIHdhcyBiZSBteSBmaXJzdCBpbXBsZW1lbnRhdGlv
-biBvZiB0aGlzIGZlYXR1cmUsIGJ1dCByZWplY3RlZC4uLgpodHRwOi8vcGVybWFsaW5rLmdtYW5l
-Lm9yZy9nbWFuZS5saW51eC5kcml2ZXJzLm10ZC80NzMwMgoKLS0tCg==
+=E4=BA=8E 2013=E5=B9=B411=E6=9C=8826=E6=97=A5 19:42, Gupta, Pekon =E5=86=99=
+=E9=81=93:
+>> From: Huang Shijie [mailto:b32955@freescale.com]
+> [...]
+>> +#define	MAX_CMD_SIZE		6
+>> +
+>> +enum read_type {
+>> +	M25P80_NORMAL =3D 0,
+>> +	M25P80_FAST,
+>> +	M25P80_QUAD,
+>> +};
+> Sorry. no 'M25P80' suffix here this is spi-nor.h :-)
+>
+>
+ok. thanks. :)
+>> +
+>> +struct spi_nor {
+>> +	struct mutex		lock;
+>> +	struct mtd_info		mtd;
+>>
+> mtd_info should not be present here. Rather it should be other way roun=
+d
+> 'mtd_info->priv =3D (struct spi_nor *) spi_nor;
+>
+>
+put the mtd here can make code simple,
+
+do David/Brian have any comment about this?
+If all object to put the mtd here, i will change it.
+
+
+>> +	struct device		*dev;
+> Again, spi_nor would be a MTD device, not a new type of device on its o=
+wn.
+> Thus you should use, mtd_info->dev.
+>
+>
+this dev pointer is not from the mtd_info->dev, it from the spi_device=20
+or other spi nor device .
+>> +	u16			page_size;
+>> +	u16			addr_width;
+>> +	u8			erase_opcode;
+>> +	u8			read_opcode;
+> s/read_opcode/read_flash_opcode
+why not keep the legacy name?
+should we also rename the erase_opcode to erase_flash_opcode? :)
+> How about '+  u8  read_reg_opcode' ??
+>
+>
+>> +	u8			program_opcode;
+> + How about '+  u8  write_reg_opcode' ??
+>
+>
+>> +	u8			command[MAX_CMD_SIZE];
+>> +	enum read_type		flash_read;
+> s/read_type/read_mode
+> (agree .. there is nothing in the name, but it matches SPI generic fram=
+ework)
+>
+> Other missing fields I can think of are..
+> + u8 read_dummy_cycles;
+I was wondering if other SPI NOR driver needs this field.
+current dummy is 8 clock cycles for quad-read/fast-read, but for DDR=20
+QUAD read, the dummy is not 8 clock cycles.
+so i did not add this field to spi-nor{}.
+
+I do not know how the m25p80 handle the non-8 clock cycles cases...
+
+But it's okay to me to add this field to spi-nor{}.
+
+
+
+
+> + u8 write_dummy_cycles;
+>
+>
+do the write need a dummy?
+
+I check the s25fl128s's quad page program, it does not need a dummy.
+>> +	bool			sst_write_second;
+>> +
+>> +	/*
+>> +	 * Read the register:
+>> +	 *  Read `len` length data from the register specified by the `opcod=
+e`,
+>> +	 *  and store the data to the `buf`.
+>> +	 */
+>> +	int (*read_reg)(struct spi_nor *flash, u8 opcode, u8 *buf, int len);
+>>
+> Do you need 'opcode' passed in argument here ?
+> Can you add it as 'read_reg_opcode' field in struct spi_nor ?
+> 'read_reg_opcode' should be fixed for a device like a 'read_flash_opcod=
+e'.
+>
+>
+the @read_reg can be used to read id, read status and so on.
+so the opcode here is not a fixed value.
+
+but i do not object to add the read_reg_opcode/write_reg_opcode to=20
+spi_nor{}.
+
+
+
+>> +
+>> +	/*
+>> +	 * Write the register:
+>> +	 *  Write the `cmd_len` length data stored in the @command to the
+>> NOR,
+>> +	 *  the command[0] stores the write opcode. `offset` is only used fo=
+r
+>> +	 *  erase operation, it should set to zero for other NOR commands.
+>> +	 */
+>> +	int (*write_reg)(struct spi_nor *flash, int cmd_len, u32 offset);
+>>
+> Instead of having actual 'command[]' array in struct spi_nor, and pass =
+its
+> valid length here.. shouldn't you pass the command as u8[] here..
+> int (*write_reg)(struct spi_nor *flash, u8 *cmd, u32 cmd_len);
+> where
+> 	cmd[0] =3D=3D command_opcode
+> 	cmd[1] =3D=3D command argument 1 (like offset for erase)
+> 	cmd[2] =3D=3D command argument 2
+> 	...
+>
+is there any benefit of your code?
+you will use a local array in the stack.
+
+why not use the spi_nor->command which has used for a long time.
+
+
+>> +
+>> +	/* write data */
+>> +	void (*write)(struct spi_nor *flash, loff_t to, size_t len,
+>> +			size_t *retlen, const u_char *buf);
+>> +	/* read data */
+>> +	int (*read)(struct spi_nor *flash, loff_t from, size_t len,
+>> +			size_t *retlen, u_char *buf);
+>> +};
+>>   #endif
+>> --
+>> 1.7.2.rc3
+>>
+> Sorry for bit intrusive feedback. But I think it would help you to
+> refine it better. Also some reference below
+> http://lists.infradead.org/pipermail/linux-mtd/2013-October/049307.html
+>
+thanks. I referenced it when i wrote this patch.
+
+thanks
+Huang Shijie
