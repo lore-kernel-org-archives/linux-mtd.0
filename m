@@ -1,17 +1,13 @@
-Message-ID: <5295C74B.8040106@freescale.com>
-Date: Wed, 27 Nov 2013 18:19:55 +0800
-From: Huang Shijie <b32955@freescale.com>
-MIME-Version: 1.0
-To: Marek Vasut <marex@denx.de>
-Subject: Re: [PATCH 0/4] mtd: spi-nor: add a new framework for SPI NOR
-References: <1385447575-23773-1-git-send-email-b32955@freescale.com>
- <201311271027.06982.marex@denx.de>
-In-Reply-To: <201311271027.06982.marex@denx.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: broonie@linaro.org, linux-mtd@lists.infradead.org, pekon@ti.com,
- sourav.poddar@ti.com, computersforpeace@gmail.com, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
+Received: from perceval.ideasonboard.com ([95.142.166.194])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VlcBq-0006Lp-0I
+ for linux-mtd@lists.infradead.org; Wed, 27 Nov 2013 10:17:50 +0000
+From: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+To: linux-sh@vger.kernel.org
+Subject: [PATCH v2] mtd: sh_flctl: Fix warnings due to improper casts
+Date: Wed, 27 Nov 2013 11:17:28 +0100
+Message-Id: <1385547448-13747-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,14 +17,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B411=E6=9C=8827=E6=97=A5 17:27, Marek Vasut =E5=86=99=
-=E9=81=93:
-> Is there any kind of documentation for this controller available? I can=
-not quite
-> understand how this controller works and why can it not be used with ou=
-r current
-> infrastructure.
-http://cache.freescale.com/files/32bit/doc/ref_manual/VYBRIDRM.pdf
+Cast pointers to uintptr_t instead of unsigned int. This fixes warnings
+on platforms where pointers have a different size than int.
 
-thanks
-Huang Shijie
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+Signed-off-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+---
+ drivers/mtd/nand/sh_flctl.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+Changes compared to v1:
+
+- Cast to uintptr_t instead of unsigned long
+
+diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
+index a3c84eb..0f135cb 100644
+--- a/drivers/mtd/nand/sh_flctl.c
++++ b/drivers/mtd/nand/sh_flctl.c
+@@ -151,7 +151,7 @@ static void flctl_setup_dma(struct sh_flctl *flctl)
+ 	dma_cap_set(DMA_SLAVE, mask);
+ 
+ 	flctl->chan_fifo0_tx = dma_request_channel(mask, shdma_chan_filter,
+-					    (void *)pdata->slave_id_fifo0_tx);
++				(void *)(uintptr_t)pdata->slave_id_fifo0_tx);
+ 	dev_dbg(&pdev->dev, "%s: TX: got channel %p\n", __func__,
+ 		flctl->chan_fifo0_tx);
+ 
+@@ -168,7 +168,7 @@ static void flctl_setup_dma(struct sh_flctl *flctl)
+ 		goto err;
+ 
+ 	flctl->chan_fifo0_rx = dma_request_channel(mask, shdma_chan_filter,
+-					    (void *)pdata->slave_id_fifo0_rx);
++				(void *)(uintptr_t)pdata->slave_id_fifo0_rx);
+ 	dev_dbg(&pdev->dev, "%s: RX: got channel %p\n", __func__,
+ 		flctl->chan_fifo0_rx);
+ 
+-- 
+1.8.3.2
