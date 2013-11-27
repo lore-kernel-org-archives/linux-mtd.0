@@ -1,21 +1,22 @@
-Received: from mail-pd0-x229.google.com ([2607:f8b0:400e:c02::229])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vla1F-00036o-Rb
- for linux-mtd@lists.infradead.org; Wed, 27 Nov 2013 07:58:46 +0000
-Received: by mail-pd0-f169.google.com with SMTP id v10so9447463pde.14
- for <linux-mtd@lists.infradead.org>; Tue, 26 Nov 2013 23:58:24 -0800 (PST)
-Date: Tue, 26 Nov 2013 23:58:19 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH] mtd: nand: pxa3xx: Use info->use_dma to release DMA
- resources
-Message-ID: <20131127075819.GC13929@norris.computersforpeace.net>
-References: <1385470344-2542-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Message-ID: <5295AECB.7040503@ti.com>
+Date: Wed, 27 Nov 2013 14:05:23 +0530
+From: Sekhar Nori <nsekhar@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1385470344-2542-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: linux-mtd@lists.infradead.org
+To: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+Subject: Re: [PATCH] ARM: davinci: aemif: get rid of davinci-nand driver
+ dependency on aemif
+References: <5291CB01.1010506@ti.com>
+ <1385409654-19006-1-git-send-email-ivan.khoronzhuk@ti.com>
+In-Reply-To: <1385409654-19006-1-git-send-email-ivan.khoronzhuk@ti.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, grygorii.strashko@ti.com,
+ linux@arm.linux.org.uk, pawel.moll@arm.com, swarren@wwwdotorg.org,
+ ijc+devicetree@hellion.org.uk, galak@kernel.crashing.org,
+ rob.herring@calxeda.com, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, rob@landley.net,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,56 +26,143 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Nov 26, 2013 at 09:52:24AM -0300, Ezequiel Garcia wrote:
-> After the driver allocates all DMA resources, it sets "info->use_dma".
-> Therefore, we need to check that variable to decide which resources
-> needs to be freed, instead of the global use_dma variable.
++ MTD maintainers
+
+On Tuesday 26 November 2013 01:30 AM, Ivan Khoronzhuk wrote:
+> The problem that the set timings code contains the call of Davinci
+> platform function davinci_aemif_setup_timing() which is not
+> accessible if kernel is built for another platform like Keystone.
 > 
-> Without this change, when the device probe fails, the driver will try
-> to release unallocated DMA resources, with nasty results.
+> The Keysone platform is going to use TI AEMIF driver.
+> If TI AEMIF is used we don't need to set timings and bus width.
+> It is done by AEMIF driver.
 > 
-> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> To get rid of davinci-nand driver dependency on aemif platform code
+> we moved aemif code to davinci platform.
+> 
+> The platform AEMIF code (aemif.c) has to be removed once Davinci
+> will be converted to DT and use ti-aemif.c driver.
+> 
+> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
 > ---
-> This is minor fix, but a fix anyway, so it should be queued for stable.
-> 
->  drivers/mtd/nand/pxa3xx_nand.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-> index 97c3eb5..8f2104c 100644
-> --- a/drivers/mtd/nand/pxa3xx_nand.c
-> +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> @@ -1288,7 +1288,7 @@ static int pxa3xx_nand_init_buff(struct pxa3xx_nand_info *info)
->  static void pxa3xx_nand_free_buff(struct pxa3xx_nand_info *info)
->  {
->  	struct platform_device *pdev = info->pdev;
-> -	if (use_dma) {
-> +	if (info->use_dma) {
+>  arch/arm/mach-davinci/aemif.c                   |   73 ++++++++++++++++++++++-
+>  arch/arm/mach-davinci/board-da830-evm.c         |    3 +
+>  arch/arm/mach-davinci/board-da850-evm.c         |    3 +
+>  arch/arm/mach-davinci/board-dm355-evm.c         |    5 ++
+>  arch/arm/mach-davinci/board-dm355-leopard.c     |    5 ++
+>  arch/arm/mach-davinci/board-dm365-evm.c         |    4 ++
+>  arch/arm/mach-davinci/board-dm644x-evm.c        |    5 ++
+>  arch/arm/mach-davinci/board-dm646x-evm.c        |    3 +
+>  arch/arm/mach-davinci/board-mityomapl138.c      |    3 +
+>  arch/arm/mach-davinci/board-neuros-osd2.c       |    9 ++-
+>  arch/arm/mach-davinci/devices-tnetv107x.c       |    3 +
+>  drivers/mtd/nand/davinci_nand.c                 |   23 -------
+>  include/linux/platform_data/mtd-davinci-aemif.h |    5 +-
+>  13 files changed, 116 insertions(+), 28 deletions(-)
 
-With this change, then the 'else' case will be executed and will kfree()
-the data buffer that we didn't allocate?
+[...]
 
-  kfree(info->data_buff);
+> +
+> +/**
+> + * davinci_aemif_setup - setup AEMIF interface by davinci_nand_pdata
+> + * @pdev - link to platform device to setup settings for
+> + *
+> + * This function does not use any locking while programming the AEMIF
+> + * because it is expected that there is only one user of a given
+> + * chip-select.
+> + *
+> + * Returns 0 on success, else negative errno.
+> + */
+> +int davinci_aemif_setup(struct platform_device *pdev)
+> +{
+> +	struct davinci_nand_pdata *pdata = dev_get_platdata(&pdev->dev);
+> +	uint32_t val;
+> +	struct resource	*res;
+> +	void __iomem *base;
+> +	int ret = 0;
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+> +	if (!res) {
+> +		dev_err(&pdev->dev, "cannot get IORESOURCE_MEM\n");
+> +		return -ENOMEM;
+> +	}
+> +
+> +	base = ioremap(res->start, resource_size(res));
+> +	if (!base) {
+> +		dev_err(&pdev->dev, "ioremap failed for resource %pR\n", res);
+> +		ret = -ENOMEM;
+> +		goto err;
+> +	}
+> +
+> +	/*
+> +	 * Setup Async configuration register in case we did not boot
+> +	 * from NAND and so bootloader did not bother to set it up.
+> +	 */
+> +	val = davinci_aemif_readl(base, A1CR_OFFSET + pdev->id * 4);
 
-Fortunately kfree()'ing a NULL is a no-op.
+The AEMIF clock has to be enabled before this. The NAND driver might
+load much later.
 
-But this highlights some of the strangeness of the error handling in
-this driver. It has an atypical style, in which the probe routine calls
-the remove routine if it fails. Normally, the probe routine has teardown
-carefully planned in stages, whereas the remove routine just does it all
-in one go (since it can assume the device was fully initialized). (And
-of course, the devm_* functions can help with simplifying some of
-this...)
+> +	/*
+> +	 * Extended Wait is not valid and Select Strobe mode is not
+> +	 * used
+> +	 */
+> +	val &= ~(ACR_ASIZE_MASK | ACR_EW_MASK | ACR_SS_MASK);
+> +	if (pdata->options & NAND_BUSWIDTH_16)
+> +		val |= 0x1;
+> +
+> +	davinci_aemif_writel(base, A1CR_OFFSET + pdev->id * 4, val);
+> +
+> +	if (pdata->timing)
+> +		ret = davinci_aemif_setup_timing(pdata->timing, base, pdev->id);
+> +
+> +	if (ret < 0)
+> +		dev_dbg(&pdev->dev, "NAND timing values setup fail\n");
+> +
+> +err:
+> +	iounmap(base);
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL(davinci_aemif_setup);
 
-But I suppose this patch is correct as-is, and this issue could be
-revisited later.
+No need to export this symbol as nothing apart from platform code uses it.
 
-For my reference, have you actually seen this bug in practice? I'm not
-sure how well this fits in the -stable rules, if it hasn't been observed
-and tested appropriately.
+>  static const short mityomap_mii_pins[] = {
+> diff --git a/arch/arm/mach-davinci/board-neuros-osd2.c b/arch/arm/mach-davinci/board-neuros-osd2.c
+> index bb680af..a7d6668 100644
+> --- a/arch/arm/mach-davinci/board-neuros-osd2.c
+> +++ b/arch/arm/mach-davinci/board-neuros-osd2.c
+> @@ -31,6 +31,7 @@
+>  #include <linux/platform_data/mmc-davinci.h>
+>  #include <linux/platform_data/mtd-davinci.h>
+>  #include <linux/platform_data/usb-davinci.h>
+> +#include <linux/platform_data/mtd-davinci-aemif.h>
+>  
+>  #include <asm/mach-types.h>
+>  #include <asm/mach/arch.h>
+> @@ -192,9 +193,15 @@ static __init void davinci_ntosd2_init(void)
+>  		davinci_cfg_reg(DM644X_ATAEN_DISABLE);
+>  
+>  		/* only one device will be jumpered and detected */
+> -		if (HAS_NAND)
+> +		if (HAS_NAND) {
+>  			platform_device_register(
+>  					&davinci_ntosd2_nandflash_device);
+> +
+> +			if (davinci_aemif_setup(
+> +				&davinci_ntosd2_nandflash_device))
+> +				pr_warn("%s: Cannot configure AEMIF.\n",
+> +					__func__);
 
->  		pxa_free_dma(info->data_dma_ch);
->  		dma_free_coherent(&pdev->dev, info->buf_size,
->  				  info->data_buff, info->data_buff_phys);
+This is looking really ugly. Can you shorten
+davinci_ntosd2_nandflash_device to just "ntosd2_nandflash" or similar?
 
-Brian
+I am yet to test this. Will test once the next version is posted.
+
+Overall, I cannot say I am fan of this approach (mostly because we are
+ending up having two drivers for the same hardware in kernel). But given
+that the other option of adding platform device support to AEMIF driver
+is not acceptable to you, I guess I will live with this.
+
+Thanks,
+Sekhar
