@@ -1,14 +1,21 @@
-In-Reply-To: <5295C538.6040207@elreha.de>
-References: <5295C538.6040207@elreha.de>
-To: "Albrecht, Harald" <harald.albrecht@elreha.de>
+From: Marek Vasut <marex@denx.de>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH 2/4] mtd: spi-nor: add a new data structrue spi_nor{}
+Date: Wed, 27 Nov 2013 11:27:09 +0100
+References: <1385447575-23773-1-git-send-email-b32955@freescale.com>
+ <201311271032.13259.marex@denx.de> <5295C85F.2030700@freescale.com>
+In-Reply-To: <5295C85F.2030700@freescale.com>
 MIME-Version: 1.0
-Subject: Re: JFFS2 Garbage collection issue
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-Message-ID: <OFD4B20B8F.D587329D-ONC1257C30.0038B520-C1257C30.0039136C@transmode.se>
-Date: Wed, 27 Nov 2013 11:23:25 +0100
-Content-Type: text/plain; charset="US-ASCII"
-Cc: linux-mtd <linux-mtd-bounces@lists.infradead.org>,
- linux-mtd@lists.infradead.org
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <201311271127.09823.marex@denx.de>
+Cc: "broonie@linaro.org" <broonie@linaro.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
+ Pekon" <pekon@ti.com>, "Poddar, Sourav" <sourav.poddar@ti.com>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,43 +25,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-"linux-mtd" <linux-mtd-bounces@lists.infradead.org> wrote on 2013/11/27 
-11:11:04:
-> 
-> Hi all,
-> 
-> we are currently facing a problem with the Garbage-collection on a JFFS2 
+Dear Huang Shijie,
 
-> file system.
-> 
-> We have an embedded linux system based on an ARM9 AT91RM9200 processor 
-> with an Intel / Micron JS28F256 NOR-flash of 32MB in size.
-> The Flash holds the U-Boot loader and its environment and in the main 
-> part (30MB) of the chip a JFFS2-based root-file-system.
-> Our Linux kernel version is 2.6.24.3
-> 
-> Some minutes after startup of the system, the garbage collector (gc.c) 
-> does a scan of the file system, gathering information for the garbage 
-> collection procedures that may be initiated based upon that data.
-> On some file systems, especially such with long runtime and therefore 
-> many file operations, this scan consumes a lot of time. On some systems 
-> it stays in that scan for more that 10 minutes. The problem with this 
-> behaviour is the fact, that during the scan the file system is locked, 
-> and therefore all file operations are suspended. This leads to a crash 
-> of the system, when the application program hangs for a long time, 
-> waiting for a file operation to return from a system call, and the 
-> watchdog is not triggered.
-> 
-> In a test system without watchdog, after the scan, the system runs 
-normally.
-> The flash chip itself shows no errors, so it seems to be a problem of 
-> the file system.
-> 
-> Any idea or suggestion to solve the problem would be very welcome!
+> =E4=BA=8E 2013=E5=B9=B411=E6=9C=8827=E6=97=A5 17:32, Marek Vasut =E5=86=
+=99=E9=81=93:
+> > So this is your own device pointer or ... what kind of device pointer?
+>=20
+> the pointer from spi_device{}
 
-The simple fix is to send a signal(SIGCONT?) to the GC process regularly 
-to do GC
-over time. That way you don't get all GC at boot time.
+OK, I am 200% positive you need to add comments into the structure about wh=
+at=20
+exactly does each member of it mean AND it would be nice if you could renam=
+e=20
+them to have less generic names (like spi_dev instead of dev).
 
- Jocke
- 
+Thanks ! :)
+
+Best regards,
+Marek Vasut
