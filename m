@@ -1,17 +1,32 @@
-Date: Tue, 26 Nov 2013 20:07:23 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 00/23] mtd: st_spi_fsm: Add new device
-Message-ID: <20131127040723.GZ9468@ld-irv-0074.broadcom.com>
-References: <1385137380-28968-1-git-send-email-lee.jones@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1385137380-28968-1-git-send-email-lee.jones@linaro.org>
-Cc: angus.clark@st.com, linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
- linux-spi@vger.kernel.org, Huang Shijie <b32955@freescale.com>,
- Mark Brown <broonie@kernel.org>, linux-mtd@lists.infradead.org,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+Received: from f276.i.mail.ru ([217.69.138.65])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VlWdH-0000Jm-23
+ for linux-mtd@lists.infradead.org; Wed, 27 Nov 2013 04:21:48 +0000
+From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+To: =?UTF-8?B?QnJpYW4gTm9ycmlz?= <computersforpeace@gmail.com>
+Subject: =?UTF-8?B?UmU6IFtQQVRDSCB2NSAxLzNdIG10ZDogbmFuZDogZ3BpbzogQWRkIERUIHBy?=
+ =?UTF-8?B?b3BlcnR5IHRvIGF1dG9tYXRpY2FsbHkgZGV0ZXJtaW5lIGJ1cyB3aWR0aA==?=
+Mime-Version: 1.0
+Date: Wed, 27 Nov 2013 08:21:18 +0400
+Message-ID: <1385526078.44550720@f276.i.mail.ru>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
+In-Reply-To: <20131127012158.GR9468@ld-irv-0074.broadcom.com>
+References: <1384343884-29622-1-git-send-email-shc_work@mail.ru>
+ <20131127012158.GR9468@ld-irv-0074.broadcom.com>
+Cc: =?UTF-8?B?TWFyayBSdXRsYW5k?= <mark.rutland@arm.com>,
+ devicetree@vger.kernel.org,
+ =?UTF-8?B?UnVzc2VsbCBLaW5n?= <linux@arm.linux.org.uk>,
+ =?UTF-8?B?UGF3ZWwgTW9sbA==?= <pawel.moll@arm.com>,
+ =?UTF-8?B?SWFuIENhbXBiZWxs?= <ijc+devicetree@hellion.org.uk>,
+ =?UTF-8?B?QXJ0ZW0gQml0eXV0c2tpeQ==?= <dedekind1@gmail.com>,
+ =?UTF-8?B?Um9iIEhlcnJpbmc=?= <rob.herring@calxeda.com>,
+ linux-mtd@lists.infradead.org,
+ =?UTF-8?B?SGFvamlhbiBaaHVhbmc=?= <haojian.zhuang@gmail.com>,
+ =?UTF-8?B?U3RlcGhlbiBXYXJyZW4=?= <swarren@wwwdotorg.org>,
+ =?UTF-8?B?RXJpYyBNaWFv?= <eric.y.miao@gmail.com>,
+ =?UTF-8?B?RGF2aWQgV29vZGhvdXNl?= <dwmw2@infradead.org>
+Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,37 +36,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ Huang, Mark, SPI list
-
-There seem to be multiple efforts going on that are vaguely related. I'd
-like to see more of the same people appearing on the CC list, to keep
-better coordinated.
-
-On that topic, is the SPI dev list relevant, or would anybody working on
-the intersection of SPI and MTD be on the MTD list?
-
-On Fri, Nov 22, 2013 at 04:22:37PM +0000, Lee Jones wrote:
-> The first bunch of these patches have been on the MLs before, but 
-> didn't receive a great deal of attention for the most part. We are
-> a little more featureful this time however. We can now successfully
-> setup and configure the N25Q256. We still can't read/write/erase
-> it though. I'll start work on that next week and will provide it in
-> the next instalment.
-
-What happened to integrating a SPI NOR framework? I see you copied some
-of the m25p80 commands, but you don't share them with m25p80. I also
-understand your argument (from the first version of this patch series)
-that much of the actual controller operation is not shared with m25p80,
-but you'd be surprised how this might evolve. There are several others
-with QSPI hardware that are trying to get patches merged, some of whom
-(Huang, at least) are actively submitting patches to help with this
-abstraction.
-
-Now, I haven't had a lot of time yet to look at both yours and Huang's
-work and see what, if anything, can be shared (will do soon). But I
-think you need to be aware.
-
-BTW, can you include version markers (i.e., [PATCH v2 X/Y]) in the
-subject from now on?
-
-Brian
+Li4uCj4gV2UncmUgZGVhbGluZyB3aXRoIGEgc2ltaWxhciBpc3N1ZSBpbiBvdGhlciBkcml2ZXJz
+IGN1cnJlbnRseSwgYW5kIEkKPiB0aGluayBpdCdzIHdvcnRoIHN0cmFpZ2h0ZW5pbmcgb3V0IHRo
+ZSBpc3N1ZSBmb3IgYWxsIHN5c3RlbXMuCj4gCj4gT24gV2VkLCBOb3YgMTMsIDIwMTMgYXQgMDM6
+NTg6MDJQTSArMDQwMCwgQWxleGFuZGVyIFNoaXlhbiB3cm90ZToKPiA+IFRoaXMgcGF0Y2ggYWRk
+cyBhIHByb3BlcnR5IHRvIGF1dG9tYXRpY2FsbHkgZGV0ZXJtaW5lIHRoZSBOQU5ECj4gPiBidXMg
+d2lkdGggYnkgQ0ZJL09ORkkgaW5mb3JtYXRpb24gZnJvbSBjaGlwLiBUaGlzIHByb3BlcnR5IHdv
+cmtzCj4gPiBpZiB0aGUgYnVzIHdpZHRoIGlzIG5vdCBzcGVjaWZpZWQgZXhwbGljaXRseS4KPiAK
+PiBUaGlzIGlzc3VlIGJyaW5ncyB1cCBhIGZldyBxdWVzdGlvbnMgaW4gbXkgbWluZCwgd2hpY2gg
+YXJlIHJlbGV2YW50IHRvCj4gZGV2aWNlIHRyZWUgaW4gZ2VuZXJhbC4KPiAKPiBGaXJzdCBvZiBh
+bGwsIGRvIHdlIG5lZWQgYSBkZXZpY2UgdHJlZSBwcm9wZXJ0eSBhdCBhbGwsIGZvciBzb21ldGhp
+bmcKPiB0aGF0IGlzIGF1dG8tZGV0ZWN0YWJsZT8KPiAKPiBSZWxhdGVkOiBpcyBhIGRldmljZSB0
+cmVlIGNvbnN1bWVyIChsaWtlIExpbnV4KSBzdXBwb3NlZCB0byBiZSBhCj4gdmFsaWRhdG9yLCBv
+ciBzaW1wbHkgYSBiZXN0LWVmZm9ydD8gSSdtIGNvbnNpZGVyaW5nIHRoZSBmb2xsb3dpbmcgY2Fz
+ZToKPiBpZiBMaW51eCBpcyBhbGxvd2VkIHRvIGF1dG8tZGV0ZWN0IHNvbWUgcHJvcGVydHkgd2hp
+Y2ggYWxzbyBoYXMgYSBkZXZpY2UKPiB0cmVlIGJpbmRpbmcgKGUuZy4sICJuYW5kLWJ1cy13aWR0
+aCIsIGluCj4gRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9uYW5kLnR4dCks
+IHdoYXQgc2hvdWxkIGhhcHBlbiBpZgo+IHRoZSBiaW5kaW5nIGhhcHBlbnMgdG8gYmUgaW5jb3Jy
+ZWN0PyBJT1csIHdoYXQgaWYgdGhlIGRldmljZSB0cmVlCj4gc3BlY2lmaWVzIGJ1c3dpZHRoIGlz
+IHgxNiwgYnV0IExpbnV4IGNvcnJlY3RseSBkZXRlY3RzIGl0IGFzIHg4Pwo+IFNob3VsZG4ndCB3
+ZSBtYWtlIHRoZSBiZXN0IGVmZm9ydCB0byBicmluZyB0aGUgaGFyZHdhcmUgdXAsIHJlZ2FyZGxl
+c3MKPiBvZiB3aGF0IHRoZSBkZXZpY2UgdHJlZSBzYXlzPwo+IAo+IFNvIGZvciBzb21ldGhpbmcg
+bGlrZSB0aGlzIEdQSU8gZHJpdmVyLCBJJ20gdGhpbmtpbmcgdGhhdCBMaW51eCBzaG91bGQKPiBq
+dXN0IHVzZSBOQU5EX0JVU1dJRFRIX0FVVE8gYWxsIHRoZSB0aW1lIFsqXS4gQnV0IChhcyBJJ20g
+aGludGluZyBhYm92ZSkKPiB0aGF0IHdvdWxkIGFsbG93IERUQiBmaXJtd2FyZSBpbXBsZW1lbnRv
+cnMgdG8gYmUgbGF6aWVyIGFuZCBoYXZlIGEKPiB0ZWNobmljYWxseS1pbmNvcnJlY3QgIm5hbmQt
+YnVzLXdpZHRoIiBvciAiYmFuay13aWR0aCIgYmluZGluZywgc2luY2UKPiB0aGV5IGtub3cgaXQg
+Y2FuIHJlbGlhYmx5IGJlIGRldGVjdGVkIGFuZCBvdmVycmlkZGVuIGJ5IExpbnV4Lgo+IAo+IFsq
+XSBFeGNlcHQgd2hlcmUgcmVzb3VyY2Vfc2l6ZShyZXMpIDwgMiwgYXMgQWxleGFuZGVyIGFscmVh
+ZHkgaGFzIGluCj4gdGhpcyBwYXRjaC4KPiAKPiA+IFNpZ25lZC1vZmYtYnk6IEFsZXhhbmRlciBT
+aGl5YW4gPHNoY193b3JrQG1haWwucnU+Cj4gPiAtLS0KPiA+ICAuLi4vZGV2aWNldHJlZS9iaW5k
+aW5ncy9tdGQvZ3Bpby1jb250cm9sLW5hbmQudHh0ICAgICAgICB8ICAzICsrKwo+ID4gIGRyaXZl
+cnMvbXRkL25hbmQvZ3Bpby5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgMTYg
+KysrKysrKysrKysrLS0tLQo+ID4gIDIgZmlsZXMgY2hhbmdlZCwgMTUgaW5zZXJ0aW9ucygrKSwg
+NCBkZWxldGlvbnMoLSkKPiA+IAo+ID4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNl
+dHJlZS9iaW5kaW5ncy9tdGQvZ3Bpby1jb250cm9sLW5hbmQudHh0IGIvRG9jdW1lbnRhdGlvbi9k
+ZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9ncGlvLWNvbnRyb2wtbmFuZC50eHQKPiA+IGluZGV4IDM2
+ZWYwN2QuLmZlNGU5NjAgMTAwNjQ0Cj4gPiAtLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUv
+YmluZGluZ3MvbXRkL2dwaW8tY29udHJvbC1uYW5kLnR4dAo+ID4gKysrIGIvRG9jdW1lbnRhdGlv
+bi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9ncGlvLWNvbnRyb2wtbmFuZC50eHQKPiA+IEBAIC0x
+OSw2ICsxOSw5IEBAIE9wdGlvbmFsIHByb3BlcnRpZXM6Cj4gPiAgICBkZWZhdWx0cyB0byAxIGJ5
+dGUuCj4gPiAgLSBjaGlwLWRlbGF5IDogY2hpcCBkZXBlbmRlbnQgZGVsYXkgZm9yIHRyYW5zZmVy
+cmluZyBkYXRhIGZyb20gYXJyYXkgdG8KPiA+ICAgIHJlYWQgcmVnaXN0ZXJzICh0UikuICBJZiBu
+b3QgcHJlc2VudCB0aGVuIGEgZGVmYXVsdCBvZiAyMHVzIGlzIHVzZWQuCj4gPiArLSBncGlvLWNv
+bnRyb2wtbmFuZCxiYW5rLXdpZHRoLWF1dG8gOiBEZXZpY2UgYnVzIHdpZHRoIGlzIGRldGVybWlu
+ZWQKPiA+ICsgIGF1dG9tYXRpY2FsbHkgYnkgQ0ZJL09ORkkgaW5mb3JtYXRpb24gZnJvbSBjaGlw
+IGlmICJiYW5rLXdpZHRoIgo+ID4gKyAgcGFyYW1ldGVyIGlzIG9taXR0ZWQgKEJvb2xlYW4pLgo+
+IAo+IElmIHdlIGRvIHJlc29ydCB0byBhIG5ldyBiaW5kaW5nIGZvciBhdXRvLWJ1c3dpZHRoLCBp
+dCBzaG91bGQgYmUgYQo+IGdlbmVyaWMgb25lIHRoYXQgYWxsIE5BTkQgZHJpdmVycyBjYW4gdXNl
+LiBNYXliZSBhIHNlcGFyYXRlIGJvb2xlYW4KPiAibmFuZC1idXMtd2lkdGgtYXV0byIgYW5kIGlm
+IGl0IGlzIHByZXNlbnQsIHRoZW4gaXQgb3ZlcnJ1bGVzIHRoZQo+IHByZXNlbmNlIChvciBsYWNr
+KSBvZiB0aGUgIm5hbmQtYnVzLXdpZHRoIiBib29sZWFuIHByb3BlcnR5Pwo+IE9yIGlzIGl0IHBv
+c3NpYmxlIHRvIGV4dGVuZCAibmFuZC1idXMtd2lkdGgiIHRvIGFsbG93IHRoZSB2YWx1ZSBvZiAw
+IHRvCj4gbWVhbiBhdXRvbWF0aWM/CgpUaGlzIHdhcyBiZSBteSBmaXJzdCBpbXBsZW1lbnRhdGlv
+biBvZiB0aGlzIGZlYXR1cmUsIGJ1dCByZWplY3RlZC4uLgpodHRwOi8vcGVybWFsaW5rLmdtYW5l
+Lm9yZy9nbWFuZS5saW51eC5kcml2ZXJzLm10ZC80NzMwMgoKLS0tCg==
