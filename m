@@ -1,24 +1,18 @@
-Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vlcb1-00071u-Lm
- for linux-mtd@lists.infradead.org; Wed, 27 Nov 2013 10:43:53 +0000
-From: Marek Vasut <marex@denx.de>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 0/2] Regarding NAND core and drivers maintenance
-Date: Wed, 27 Nov 2013 11:43:28 +0100
-References: <1384950009-13767-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA4DCBC@DBDE04.ent.ti.com>
- <20131127030736.GW9468@ld-irv-0074.broadcom.com>
-In-Reply-To: <20131127030736.GW9468@ld-irv-0074.broadcom.com>
+Message-ID: <5295CFE4.70404@ti.com>
+Date: Wed, 27 Nov 2013 16:26:36 +0530
+From: Sourav Poddar <sourav.poddar@ti.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
+To: Marek Vasut <marex@denx.de>
+Subject: Re: [PATCH 0/4] mtd: spi-nor: add a new framework for SPI NOR
+References: <1385447575-23773-1-git-send-email-b32955@freescale.com>
+ <201311271027.06982.marex@denx.de> <5295BFB3.5020109@ti.com>
+ <201311271106.09624.marex@denx.de>
+In-Reply-To: <201311271106.09624.marex@denx.de>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <201311271143.28106.marex@denx.de>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>, "Gupta, Pekon" <pekon@ti.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Cc: broonie@linaro.org, Huang Shijie <b32955@freescale.com>,
+ linux-mtd@lists.infradead.org, pekon@ti.com, computersforpeace@gmail.com,
+ dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,43 +22,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+Dear Marek Vasut,
+On Wednesday 27 November 2013 03:36 PM, Marek Vasut wrote:
+> Dear Sourav Poddar,
+>
+>> Dear Marek Vasut, Huang,
+>>
+>> On Wednesday 27 November 2013 02:57 PM, Marek Vasut wrote:
+>>> Dear Huang Shijie,
+>>>
+>>>> 1.) Why add a new framework for SPI NOR?
+>>>>
+>>>>     The SPI-NOR controller such as Freescale's Quadspi controller is
+>>>>     working in a different way from the SPI bus. It should knows the NOR
+>>>>     commands to find the right LUT sequence. Unfortunately, the current
+>>>>     code can not meet this requirement.
+>>> Is there any kind of documentation for this controller available? I
+>>> cannot quite understand how this controller works and why can it not be
+>>> used with our current infrastructure.
+>> I do have a similar requirement where my controller need to be configured
+>> from slave info. I have submiited a series in the mtd list adding that
+>> portion
+>> of handling such cases. Here, is the patch which specific to m25p80 part.
+>> http://patchwork.ozlabs.org/patch/294285/
+>>
+>> The whole series can be found here:
+>> https://www.mail-archive.com/linux-omap@vger.kernel.org/msg98691.html
+> Is this TI QSPI the same thing as the Altera QSPI controller please ?
+>
+No, its differenet.
+> Otherwise, I seriously believe you and Huang should work on a common
+> infrastructure. I would first like to understand how is the controller in DRA7xx
+> different from regular SPI controller though. Is there any kind of documentation
+> I could study please?
+>
+Sorry, we dont have a public document yet.
 
-> On Fri, Nov 22, 2013 at 07:07:09AM +0000, Pekon Gupta wrote:
-> > > My proposal (copy-pasted from the media subsystem) is to define
-> > > sub-maintainers, one for each NAND driver, in addition to the top-level
-> > > NAND subsystem maintainer.
-> > > 
-> > > When a patch comes for a given driver, the _ideal_ situation would be
-> > > for the sub-maintainer to Ack-it first.
-> > 
-> > Specifically, we need someone to keep a watch on m25p80 (apart from
-> > David and Brian). This is because I see lot of patches coming in but not
-> > on generic framework approach. Serial Flash driver might be next big
-> > component of MTD sub-system in coming times.
-> 
-> Hmm, I don't know if we really need a separate SPI NOR maintainer, and I
-> don't know if we have anyone with enough experience with SPI NOR to
-> qualify anyway. I know Marek Vasut has been a good reviewer, but I'd be
-> surprised if he really wanted to take official responsibility. And
-> anyway, implementors and reviewers don't have to be official
-> maintainers, so this shouldn't stop any pending work on the subject.
+Though, this is what ti qspi contoller has
 
-I'm honestly pleased by you saying this ;-) I don't mind continue reviewing, but 
-if things were to blow out of proportion, I don't mind helping either.
+It supports two modes of operation, one is SPI mode(normal), other is
+the memory mapped read mode.
 
-> Also, I have some HW that can do quad-SPI, but only in limited
-> circumstances. Right now, my driver is just faking being a generic SPI
-> driver when it really scrapes the commands and performs accelerated
-> transactions on ones it recognizes... so it shares some similarities
-> with what Huang is trying to do. I hope to contribute more to the
-> generic framework of SPI NOR in the future (as time allows, of course).
-> 
-> So while I might be officially responsible for driver/mtd/nand/, I will
-> be involved in the rest of MTD and will likely continue to queue up
-> patches anyway.
+For SPI mode, the state machine remains the same as it is with other spi 
+controller
+available.
 
-Thanks for that !
+For memory mapped, there is something more which we need to do around ..
 
-Best regards,
-Marek Vasut
+1. There is a qspi "set up" register available, which needs to be filled 
+with
+      information like flash opcode, dummy bytes etc. In short, flash 
+specific
+      details.
+2   if the above register is configured with the required opcodes, then 
+whenever
+      we need to use memory mapped operations, we need to do is to 
+switch our
+      qspi controller to memory mapped mode.
+     Switching of this mode to memory mapped needs
+      a )  write to a particular qspi register
+      b)   write to control module(optional based on SOC).
+
+3. Once the above steps are configured, then the flash data will be 
+mapped to a
+     particular memory address(SOC specific) from where the flash data  
+can be read.
+
+The series 
+https://www.mail-archive.com/linux-omap@vger.kernel.org/msg98691.html
+tries to work on the above features, and tries to add a support for the 
+same in the
+spi framework and m25p80 code.
+
+As you see in my patches, once we take care of the above points and add 
+support
+for memory mapped in m25p80 and qspi, then while doing a read in m25p80 
+we can
+do memcpy at the beginning of m25p80_read and can bypass the entire SPI
+framework for memory mapped read operation. Throughput almost gets 
+doubles with this,
+as compared to normal SPI operations.
+
+Please get back, if you need more info on this concept.
+
+> Best regards,
+> Marek Vasut
