@@ -1,18 +1,24 @@
-Received: from gw1.transmode.se ([195.58.98.146])
+Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VlcOF-0006qQ-FG
- for linux-mtd@lists.infradead.org; Wed, 27 Nov 2013 10:30:40 +0000
-In-Reply-To: <OFD4B20B8F.D587329D-ONC1257C30.0038B520-C1257C30.0039136C@transmode.se>
-References: <5295C538.6040207@elreha.de>
- <OFD4B20B8F.D587329D-ONC1257C30.0038B520-C1257C30.0039136C@transmode.se>
+ id 1Vlcb1-00071u-Lm
+ for linux-mtd@lists.infradead.org; Wed, 27 Nov 2013 10:43:53 +0000
+From: Marek Vasut <marex@denx.de>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 0/2] Regarding NAND core and drivers maintenance
+Date: Wed, 27 Nov 2013 11:43:28 +0100
+References: <1384950009-13767-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EA4DCBC@DBDE04.ent.ti.com>
+ <20131127030736.GW9468@ld-irv-0074.broadcom.com>
+In-Reply-To: <20131127030736.GW9468@ld-irv-0074.broadcom.com>
 MIME-Version: 1.0
-Subject: Re: JFFS2 Garbage collection issue
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-Message-ID: <OFC2D68B7C.CF5FC776-ONC1257C30.00395D40-C1257C30.0039B49A@transmode.se>
-Date: Wed, 27 Nov 2013 11:30:18 +0100
-Content-Type: text/plain; charset="US-ASCII"
-Cc: linux-mtd@lists.infradead.org, "Albrecht,
- Harald" <harald.albrecht@elreha.de>
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201311271143.28106.marex@denx.de>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>, "Gupta, Pekon" <pekon@ti.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,56 +28,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-"linux-mtd" <linux-mtd-bounces@lists.infradead.org> wrote on 2013/11/27 
-11:23:25:
+Hi Brian,
+
+> On Fri, Nov 22, 2013 at 07:07:09AM +0000, Pekon Gupta wrote:
+> > > My proposal (copy-pasted from the media subsystem) is to define
+> > > sub-maintainers, one for each NAND driver, in addition to the top-level
+> > > NAND subsystem maintainer.
+> > > 
+> > > When a patch comes for a given driver, the _ideal_ situation would be
+> > > for the sub-maintainer to Ack-it first.
+> > 
+> > Specifically, we need someone to keep a watch on m25p80 (apart from
+> > David and Brian). This is because I see lot of patches coming in but not
+> > on generic framework approach. Serial Flash driver might be next big
+> > component of MTD sub-system in coming times.
 > 
-> "linux-mtd" <linux-mtd-bounces@lists.infradead.org> wrote on 2013/11/27 
-> 11:11:04:
-> > 
-> > Hi all,
-> > 
-> > we are currently facing a problem with the Garbage-collection on a 
-JFFS2 
+> Hmm, I don't know if we really need a separate SPI NOR maintainer, and I
+> don't know if we have anyone with enough experience with SPI NOR to
+> qualify anyway. I know Marek Vasut has been a good reviewer, but I'd be
+> surprised if he really wanted to take official responsibility. And
+> anyway, implementors and reviewers don't have to be official
+> maintainers, so this shouldn't stop any pending work on the subject.
+
+I'm honestly pleased by you saying this ;-) I don't mind continue reviewing, but 
+if things were to blow out of proportion, I don't mind helping either.
+
+> Also, I have some HW that can do quad-SPI, but only in limited
+> circumstances. Right now, my driver is just faking being a generic SPI
+> driver when it really scrapes the commands and performs accelerated
+> transactions on ones it recognizes... so it shares some similarities
+> with what Huang is trying to do. I hope to contribute more to the
+> generic framework of SPI NOR in the future (as time allows, of course).
 > 
-> > file system.
-> > 
-> > We have an embedded linux system based on an ARM9 AT91RM9200 processor 
+> So while I might be officially responsible for driver/mtd/nand/, I will
+> be involved in the rest of MTD and will likely continue to queue up
+> patches anyway.
 
-> > with an Intel / Micron JS28F256 NOR-flash of 32MB in size.
-> > The Flash holds the U-Boot loader and its environment and in the main 
-> > part (30MB) of the chip a JFFS2-based root-file-system.
-> > Our Linux kernel version is 2.6.24.3
-> > 
-> > Some minutes after startup of the system, the garbage collector (gc.c) 
+Thanks for that !
 
-> > does a scan of the file system, gathering information for the garbage 
-> > collection procedures that may be initiated based upon that data.
-> > On some file systems, especially such with long runtime and therefore 
-> > many file operations, this scan consumes a lot of time. On some 
-systems 
-> > it stays in that scan for more that 10 minutes. The problem with this 
-> > behaviour is the fact, that during the scan the file system is locked, 
-
-> > and therefore all file operations are suspended. This leads to a crash 
-
-> > of the system, when the application program hangs for a long time, 
-> > waiting for a file operation to return from a system call, and the 
-> > watchdog is not triggered.
-> > 
-> > In a test system without watchdog, after the scan, the system runs 
-> normally.
-> > The flash chip itself shows no errors, so it seems to be a problem of 
-> > the file system.
-> > 
-> > Any idea or suggestion to solve the problem would be very welcome!
-> 
-> The simple fix is to send a signal(SIGCONT?) to the GC process regularly 
-
-> to do GC
-> over time. That way you don't get all GC at boot time.
-> 
->  Jocke
-
-BTW, I guess you got logging to file such as syslog on your system?
-JFFS2 really don't do well with small incremental writes. I recommend
-you turn such logging off.
+Best regards,
+Marek Vasut
