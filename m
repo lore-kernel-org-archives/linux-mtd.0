@@ -1,21 +1,25 @@
-Received: from mail-ie0-x22b.google.com ([2607:f8b0:4001:c03::22b])
+Received: from mail-qe0-x232.google.com ([2607:f8b0:400d:c02::232])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VlUbl-0006TT-1h
- for linux-mtd@lists.infradead.org; Wed, 27 Nov 2013 02:12:05 +0000
-Received: by mail-ie0-f171.google.com with SMTP id ar20so11081434iec.30
- for <linux-mtd@lists.infradead.org>; Tue, 26 Nov 2013 18:11:44 -0800 (PST)
-Date: Tue, 26 Nov 2013 18:11:40 -0800
+ id 1VlVTu-0007fn-JX
+ for linux-mtd@lists.infradead.org; Wed, 27 Nov 2013 03:08:03 +0000
+Received: by mail-qe0-f50.google.com with SMTP id 1so4693565qec.37
+ for <linux-mtd@lists.infradead.org>; Tue, 26 Nov 2013 19:07:41 -0800 (PST)
+Date: Tue, 26 Nov 2013 19:07:36 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-Subject: Re: [PATCH] mtd: sh_flctl: Fix warnings due to improper casts
-Message-ID: <20131127021140.GV9468@ld-irv-0074.broadcom.com>
-References: <1385512511-10477-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
+To: "Gupta, Pekon" <pekon@ti.com>
+Subject: Re: [PATCH 0/2] Regarding NAND core and drivers maintenance
+Message-ID: <20131127030736.GW9468@ld-irv-0074.broadcom.com>
+References: <1384950009-13767-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EA4DCBC@DBDE04.ent.ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1385512511-10477-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- linux-sh@vger.kernel.org
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA4DCBC@DBDE04.ent.ti.com>
+Cc: Marek Vasut <marex@denx.de>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,46 +29,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Nov 27, 2013 at 01:35:11AM +0100, Laurent Pinchart wrote:
-> Cast pointers to unsigned long instead of unsigned int. This fixes
-> warnings on platforms where pointers have a different size than int.
-> 
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: linux-mtd@lists.infradead.org
-> Signed-off-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-> ---
->  drivers/mtd/nand/sh_flctl.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
-> index a3c84eb..b1e2b13 100644
-> --- a/drivers/mtd/nand/sh_flctl.c
-> +++ b/drivers/mtd/nand/sh_flctl.c
-> @@ -151,7 +151,7 @@ static void flctl_setup_dma(struct sh_flctl *flctl)
->  	dma_cap_set(DMA_SLAVE, mask);
->  
->  	flctl->chan_fifo0_tx = dma_request_channel(mask, shdma_chan_filter,
-> -					    (void *)pdata->slave_id_fifo0_tx);
-> +			(void *)(unsigned long)pdata->slave_id_fifo0_tx);
+On Fri, Nov 22, 2013 at 07:07:09AM +0000, Pekon Gupta wrote:
+> > My proposal (copy-pasted from the media subsystem) is to define
+> > sub-maintainers, one for each NAND driver, in addition to the top-level
+> > NAND subsystem maintainer.
+> > 
+> > When a patch comes for a given driver, the _ideal_ situation would be
+> > for the sub-maintainer to Ack-it first.
+> > 
+> Specifically, we need someone to keep a watch on m25p80 (apart from
+> David and Brian). This is because I see lot of patches coming in but not
+> on generic framework approach. Serial Flash driver might be next big
+> component of MTD sub-system in coming times.
 
-Perhaps the intermediate cast should be for uintptr_t instead of
-unsigned long, just to be more exact? (I see that uintptr_t is just
-typedef'd for unsigned long, but it still seems more precise.)
+Hmm, I don't know if we really need a separate SPI NOR maintainer, and I
+don't know if we have anyone with enough experience with SPI NOR to
+qualify anyway. I know Marek Vasut has been a good reviewer, but I'd be
+surprised if he really wanted to take official responsibility. And
+anyway, implementors and reviewers don't have to be official
+maintainers, so this shouldn't stop any pending work on the subject.
 
->  	dev_dbg(&pdev->dev, "%s: TX: got channel %p\n", __func__,
->  		flctl->chan_fifo0_tx);
->  
-> @@ -168,7 +168,7 @@ static void flctl_setup_dma(struct sh_flctl *flctl)
->  		goto err;
->  
->  	flctl->chan_fifo0_rx = dma_request_channel(mask, shdma_chan_filter,
-> -					    (void *)pdata->slave_id_fifo0_rx);
-> +			(void *)(unsigned long)pdata->slave_id_fifo0_rx);
+Also, I have some HW that can do quad-SPI, but only in limited
+circumstances. Right now, my driver is just faking being a generic SPI
+driver when it really scrapes the commands and performs accelerated
+transactions on ones it recognizes... so it shares some similarities
+with what Huang is trying to do. I hope to contribute more to the
+generic framework of SPI NOR in the future (as time allows, of course).
 
-Ditto.
-
->  	dev_dbg(&pdev->dev, "%s: RX: got channel %p\n", __func__,
->  		flctl->chan_fifo0_rx);
->  
+So while I might be officially responsible for driver/mtd/nand/, I will
+be involved in the rest of MTD and will likely continue to queue up
+patches anyway.
 
 Brian
