@@ -1,24 +1,23 @@
-Received: from mail-qe0-x232.google.com ([2607:f8b0:400d:c02::232])
+Received: from mail-ie0-x236.google.com ([2607:f8b0:4001:c03::236])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VlVTu-0007fn-JX
- for linux-mtd@lists.infradead.org; Wed, 27 Nov 2013 03:08:03 +0000
-Received: by mail-qe0-f50.google.com with SMTP id 1so4693565qec.37
- for <linux-mtd@lists.infradead.org>; Tue, 26 Nov 2013 19:07:41 -0800 (PST)
-Date: Tue, 26 Nov 2013 19:07:36 -0800
+ id 1VlVgG-0007sg-IF
+ for linux-mtd@lists.infradead.org; Wed, 27 Nov 2013 03:20:49 +0000
+Received: by mail-ie0-f182.google.com with SMTP id as1so11091161iec.13
+ for <linux-mtd@lists.infradead.org>; Tue, 26 Nov 2013 19:20:24 -0800 (PST)
+Date: Tue, 26 Nov 2013 19:20:19 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [PATCH 0/2] Regarding NAND core and drivers maintenance
-Message-ID: <20131127030736.GW9468@ld-irv-0074.broadcom.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH 1/2] mtd: Add NAND device drivers to MAINTAINERS
+Message-ID: <20131127032019.GX9468@ld-irv-0074.broadcom.com>
 References: <1384950009-13767-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA4DCBC@DBDE04.ent.ti.com>
+ <1384950009-13767-2-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20131121185314.GK9468@ld-irv-0074.broadcom.com>
+ <20131121191117.GB3241@localhost>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA4DCBC@DBDE04.ent.ti.com>
-Cc: Marek Vasut <marex@denx.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+In-Reply-To: <20131121191117.GB3241@localhost>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
  Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,35 +28,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Nov 22, 2013 at 07:07:09AM +0000, Pekon Gupta wrote:
-> > My proposal (copy-pasted from the media subsystem) is to define
-> > sub-maintainers, one for each NAND driver, in addition to the top-level
-> > NAND subsystem maintainer.
+On Thu, Nov 21, 2013 at 04:11:18PM -0300, Ezequiel Garcia wrote:
+> On Thu, Nov 21, 2013 at 10:53:14AM -0800, Brian Norris wrote:
+> > On Wed, Nov 20, 2013 at 09:20:08AM -0300, Ezequiel Garcia wrote:
+> > > Add drivers/mtd/nand/ to MAINTAINERS file with Brian Norris
+> > > as the subsystem maintainer.
+> > > 
+> > > Cc: Brian Norris <computersforpeace@gmail.com>
+> > > Cc: David Woodhouse <dwmw2@infradead.org>
+> > > Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> > > ---
+> > >  MAINTAINERS | 12 ++++++++++++
+> > >  1 file changed, 12 insertions(+)
+> > > 
+> > > diff --git a/MAINTAINERS b/MAINTAINERS
+> > > index 167e188..d4145f7 100644
+> > > --- a/MAINTAINERS
+> > > +++ b/MAINTAINERS
+> > > @@ -5554,6 +5554,18 @@ F:	drivers/mtd/
+...
+> > > +M:	Brian Norris <computersforpeace@gmail.com>
+> > > +L:	linux-mtd@lists.infradead.org
+> > > +W:	http://www.linux-mtd.infradead.org/
+> > > +Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
+> > > +T:	git http://git.infradead.org/l2-mtd.git
 > > 
-> > When a patch comes for a given driver, the _ideal_ situation would be
-> > for the sub-maintainer to Ack-it first.
+> > The git tree is an interesting case. l2-mtd.git was really only set up
+> > as a secondary tree, not as the official tree. It has moved to being the
+> > primary place for development, though, so your entry does reflect
+> > reality...
 > > 
-> Specifically, we need someone to keep a watch on m25p80 (apart from
-> David and Brian). This is because I see lot of patches coming in but not
-> on generic framework approach. Serial Flash driver might be next big
-> component of MTD sub-system in coming times.
+> 
+> Maybe create a new git repository, specially for this?
 
-Hmm, I don't know if we really need a separate SPI NOR maintainer, and I
-don't know if we have anyone with enough experience with SPI NOR to
-qualify anyway. I know Marek Vasut has been a good reviewer, but I'd be
-surprised if he really wanted to take official responsibility. And
-anyway, implementors and reviewers don't have to be official
-maintainers, so this shouldn't stop any pending work on the subject.
+I think we're due for more consolidation rather than adding new git
+trees, so I'd still list linux-mtd.git as the official NAND repo. Plus,
+David has previously mentioned that I could eventually just be
+committing straight to linux-mtd.git in the future. As it stands now, I
+have commit access to it, and for 3.13-rc1, I just pushed l2-mtd.git
+straight into linux-mtd.git and then to Linus. So the multi-repository
+make-up may eventually make less sense.
 
-Also, I have some HW that can do quad-SPI, but only in limited
-circumstances. Right now, my driver is just faking being a generic SPI
-driver when it really scrapes the commands and performs accelerated
-transactions on ones it recognizes... so it shares some similarities
-with what Huang is trying to do. I hope to contribute more to the
-generic framework of SPI NOR in the future (as time allows, of course).
-
-So while I might be officially responsible for driver/mtd/nand/, I will
-be involved in the rest of MTD and will likely continue to queue up
-patches anyway.
+> > > +S:	Maintained
+> > > +F:	drivers/mtd/nand/
+> > > +F:	include/linux/mtd/nand.h
+> > > +F:	include/linux/mtd/nand_ecc.h
+> > > +F:	include/linux/mtd/nand_bch.h
 
 Brian
