@@ -1,28 +1,14 @@
-Message-ID: <5295C7D3.8010803@ti.com>
-Date: Wed, 27 Nov 2013 12:22:11 +0200
-From: "ivan.khoronzhuk" <ivan.khoronzhuk@ti.com>
+In-Reply-To: <5295C538.6040207@elreha.de>
+References: <5295C538.6040207@elreha.de>
+To: "Albrecht, Harald" <harald.albrecht@elreha.de>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>, Santosh Shilimkar
- <santosh.shilimkar@ti.com>
-Subject: Re: [PATCH 07/12] memory: davinci-aemif: introduce AEMIF driver
-References: <1384187188-5776-1-git-send-email-ivan.khoronzhuk@ti.com>
- <1384187188-5776-8-git-send-email-ivan.khoronzhuk@ti.com>
- <4F5844B3A985794BA902E12C070812375F8D2E@DNCE04.ent.ti.com>
- <52944BD3.90105@ti.com> <5294B8C4.6040803@ti.com> <5294D8AD.5030106@ti.com>
- <5294E7E4.3060600@ti.com> <20131127003707.GQ9468@ld-irv-0074.broadcom.com>
-In-Reply-To: <20131127003707.GQ9468@ld-irv-0074.broadcom.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Mark Rutland <mark.rutland@arm.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "Strashko,
- Grygorii" <grygorii.strashko@ti.com>, Russell King <linux@arm.linux.org.uk>,
- Pawel Moll <pawel.moll@arm.com>, Stephen Warren <swarren@wwwdotorg.org>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>, Sekhar Nori <nsekhar@ti.com>,
- Kumar Gala <galak@kernel.crashing.org>, Rob Herring <rob.herring@calxeda.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Rob Landley <rob@landley.net>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Subject: Re: JFFS2 Garbage collection issue
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Message-ID: <OFD4B20B8F.D587329D-ONC1257C30.0038B520-C1257C30.0039136C@transmode.se>
+Date: Wed, 27 Nov 2013 11:23:25 +0100
+Content-Type: text/plain; charset="US-ASCII"
+Cc: linux-mtd <linux-mtd-bounces@lists.infradead.org>,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,61 +18,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/27/2013 02:37 AM, Brian Norris wrote:
-> On Tue, Nov 26, 2013 at 01:26:44PM -0500, Santosh Shilimkar wrote:
->> On Tuesday 26 November 2013 12:21 PM, Sekhar Nori wrote:
->>> On 11/26/2013 8:35 PM, Santosh Shilimkar wrote:
->>>> On Tuesday 26 November 2013 02:20 AM, Sekhar Nori wrote:
->>>>> On Monday 11 November 2013 10:36 PM, Khoronzhuk, Ivan wrote:
->>>>>> +static int davinci_aemif_probe(struct platform_device *pdev)
->>>>>> +{
->>>>>> +       int ret  = -ENODEV, i;
->>>>>> +       struct resource *res;
->>>>>> +       struct device *dev = &pdev->dev;
->>>>>> +       struct device_node *np = dev->of_node;
->>>>>> +
->>>>>> +       if (np == NULL)
->>>>>> +               return 0;
->>>>>> +
->>>>>> +       if (aemif) {
->>>>>> +               dev_err(dev, "davinci_aemif driver is in use currently\n");
->>>>>> +               return -EBUSY;
->>>>>> +       }
->>>>>
->>>>> Why expressly prevent multiple AEMIF devices? Its entirely conceivable
->>>>> to have two memories like NAND and NOR flash connect to two different
->>>>> AEMIF interfaces.
->>>>>
->>>> Ivan wanted me to clarify the Keystone hardware which supports
->>>> 1 instance of controller with 4 CS. That allows already four
->>>> devices to be connected. Currently NAND and NOR are connected on it
->>>> and two more slots are free.
->>>>
->>>> Since driver support what hardware is, lets not build a driver for
->>>> hardware which don't exist. And if at all such a support would be
->>>> needed in future, we can always add it.
->>>
->>> I understand the lack of hardware part, but its common to write the
->>> driver such that it can handle multiple instances. Is there any gain on
->>> current hardware because of this check? From what I am hearing, the code
->>> in question wont be exercised at all. So why go all the way and add it
->>> in first place?
->>>
->> Fair enough. The check can be dropped.
->
-> Hmm, while the sentiment expressed by Sekhar is noble (to avoid
-> unnecessarily constraining the driver), removing the check is not
-> enough. You're still using a global static variable 'aemif', and it is
-> important not to accidentally re-use this struct if a second device ever
-> becomes available. So for the current implementation, the check is
-> necessary IMO. If instead, you were to make 'aemif' a per-device struct
-> (like with platform_set_drvdata()), then you would not have this issue.
->
-> Brian
->
+"linux-mtd" <linux-mtd-bounces@lists.infradead.org> wrote on 2013/11/27 
+11:11:04:
+> 
+> Hi all,
+> 
+> we are currently facing a problem with the Garbage-collection on a JFFS2 
 
-Yes, that is the plan to make it a per-device.
+> file system.
+> 
+> We have an embedded linux system based on an ARM9 AT91RM9200 processor 
+> with an Intel / Micron JS28F256 NOR-flash of 32MB in size.
+> The Flash holds the U-Boot loader and its environment and in the main 
+> part (30MB) of the chip a JFFS2-based root-file-system.
+> Our Linux kernel version is 2.6.24.3
+> 
+> Some minutes after startup of the system, the garbage collector (gc.c) 
+> does a scan of the file system, gathering information for the garbage 
+> collection procedures that may be initiated based upon that data.
+> On some file systems, especially such with long runtime and therefore 
+> many file operations, this scan consumes a lot of time. On some systems 
+> it stays in that scan for more that 10 minutes. The problem with this 
+> behaviour is the fact, that during the scan the file system is locked, 
+> and therefore all file operations are suspended. This leads to a crash 
+> of the system, when the application program hangs for a long time, 
+> waiting for a file operation to return from a system call, and the 
+> watchdog is not triggered.
+> 
+> In a test system without watchdog, after the scan, the system runs 
+normally.
+> The flash chip itself shows no errors, so it seems to be a problem of 
+> the file system.
+> 
+> Any idea or suggestion to solve the problem would be very welcome!
 
--- 
-Regards,
-Ivan Khoronzhuk
+The simple fix is to send a signal(SIGCONT?) to the GC process regularly 
+to do GC
+over time. That way you don't get all GC at boot time.
+
+ Jocke
+ 
