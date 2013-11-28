@@ -1,22 +1,25 @@
-Received: from smtprelay05.ispgateway.de ([80.67.31.98])
+Received: from [2001:41c8:1:5384::2] (helo=cassiel.sirena.org.uk)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vm0Bg-0001jm-BC
- for linux-mtd@lists.infradead.org; Thu, 28 Nov 2013 11:55:17 +0000
-Received: from [217.170.184.113] (helo=XSRWWSEX01.xse.local)
- by smtprelay05.ispgateway.de with esmtpsa (TLSv1:AES128-SHA:128)
- (Exim 4.68) (envelope-from <Philipp.Rosenberger@xse.de>)
- id 1Vm0An-0006LY-LN
- for linux-mtd@lists.infradead.org; Thu, 28 Nov 2013 12:54:21 +0100
-From: "Rosenberger, Philipp" <Philipp.Rosenberger@xse.de>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: [PATCH] of_mtd: Fix header file include guard
-Date: Thu, 28 Nov 2013 11:53:39 +0000
-Message-ID: <52972EEE.8070704@xse.de>
-Content-Language: de-DE
-Content-Type: text/plain; charset="iso-8859-1"
-Content-ID: <B0376FD92223AD4EBC9A41BD4C404556@xse.local>
-Content-Transfer-Encoding: quoted-printable
+ id 1Vm0GF-0001ob-W0
+ for linux-mtd@lists.infradead.org; Thu, 28 Nov 2013 12:00:00 +0000
+Date: Thu, 28 Nov 2013 11:59:34 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Sourav Poddar <sourav.poddar@ti.com>
+Message-ID: <20131128115934.GE27568@sirena.org.uk>
+References: <1385451313-1875-1-git-send-email-sourav.poddar@ti.com>
+ <1385451313-1875-13-git-send-email-sourav.poddar@ti.com>
+ <20131126131138.GJ14725@sirena.org.uk> <5296D37C.2020003@ti.com>
+ <20131128104922.GK14725@sirena.org.uk> <5297242B.3040807@ti.com>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="Rgf3q3z9SdmXC6oT"
+Content-Disposition: inline
+In-Reply-To: <5297242B.3040807@ti.com>
+Subject: Re: [PATCH 12/17] spi/qspi: convert driver to enable/disable memory
+ mapped.
+Cc: devicetree@vger.kernel.org, computersforpeace@gmail.com, balbi@ti.com,
+ linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
+ bcousson@baylibre.com, linux-omap@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,49 +29,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It seems the include guard was copied from of_net.h.
----
- include/linux/of_mtd.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/of_mtd.h b/include/linux/of_mtd.h
-index 6f10e93..cb32d9c 100644
---- a/include/linux/of_mtd.h
-+++ b/include/linux/of_mtd.h
-@@ -7,7 +7,7 @@
-  */
+--Rgf3q3z9SdmXC6oT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
- #ifndef __LINUX_OF_MTD_H
--#define __LINUX_OF_NET_H
-+#define __LINUX_OF_MTD_H
+On Thu, Nov 28, 2013 at 04:38:27PM +0530, Sourav Poddar wrote:
+> On Thursday 28 November 2013 04:19 PM, Mark Brown wrote:
 
- #ifdef CONFIG_OF_MTD
+> >Removing the mapping isn't going to stop another context which has
+> >obtained a handle on the map trying to look at the mapping.
 
--- 1.7.9.5
+> hmm..so the  'memcpy' part should be made atomic.(if possible?).
 
-XS Embedded GmbH
-Peterzeller Strasse 8
-D-78048 Villingen - Schwenningen
+Or holding the memory region should prevent normal SPI use (so any users
+ought to drop the memory region when they don't need it).
 
-Telefon +49 (7721) 4060 - 428
-Fax     +49 (7721) 4060 - 499
+I'm still a bit surprised there's no DMA controllers for this...
 
-www.xse.de
-Philipp.Rosenberger@xse.de
+--Rgf3q3z9SdmXC6oT
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-:::::::::: based.on.visions ::::::::::
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
 
+iQIcBAEBAgAGBQJSlzAjAAoJELSic+t+oim9mWgP/1oKd71Ma/FCU/BgwqSdb15o
+jNR1cYzey+ee20vaJ57iWrH7Pdb/+wQPOYacGp/wt3TL/1ijP4/2YxyJS5fAGaD6
+nt1ExAB6G1wKI2sf1D9u5CdwSwbZqfb7BlS1S6TIT1YQ73GaT0tTLZz4iausJy0E
+yzYp6ygnxT/JFOitDYzlGo2pDb2QIzfIuHxwMQur5cGj7TrX+wyuLJF91QGqpL5O
+v3E0HPm9h6c0YYQ64j9ckC2Jsj6qmEJ6rhDUa2YfWW1sj3ooAykpG86VRI65NXvJ
+mtELJH9lKWOJQIWhQLhacCKG2wZQZq8zHgKg06YOnlLtghaZseJDnRorKJj1Jbgy
+P5LIQfUbMNgU0TAjP2UaElFi58sQmqrr/GskESE4PD8Ui2HIOfxeTRAkbZ9q+vAo
+Y5Dowi6+cTAVpK3cfiUC+MPVg+Avmoms7DhQCLaxq6k08yzp9lYK58/HHCvsuq0u
+96ZxJy7uzoTZwiDU2oKDIfHdEKptRoC9lvmQ3QOLXSmK65FGU323S4j4Jh/2xdUL
+3W/0g8O8qvaD1PwxrBHiQLGM4EhVbemEms32BUa3QUrbfFO7DKh4SBp2Wx2v1Nal
+L/AzkFiPOwMNAvBLQIHfASt8lUcj7+MCAiuRgV1rPifzv/mGWrgJx3KgRRzjeiw9
+XTea0S2RC6sT0gLpT5Xn
+=RrTP
+-----END PGP SIGNATURE-----
 
-XS Embedded GmbH
-Gesch=E4ftsf=FChrung: Michael Maier, Rainer Oder
-
-Handelsregister: Amtsgericht Freiburg i.Br., HRB 705237
-Sitz der Gesellschaft: Peterzeller Strasse 8, 78048 Villingen-Schwenningen
-USt-Id Nummer: DE268786819
-
-Confidentiality Notice: This e-mail message, including any attachments, is =
-for the sole use of the intended recipient(s) and may contain confidential =
-and privileged information. Any unauthorized review, use, disclosure or dis=
-tribution is prohibited. If you are not the intended recipient, please cont=
-act the sender by return e-mail and destroy all copies of the original mess=
-age.
+--Rgf3q3z9SdmXC6oT--
