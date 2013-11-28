@@ -1,20 +1,20 @@
-Received: from mailout3.samsung.com ([203.254.224.33])
+Received: from mailout1.samsung.com ([203.254.224.24])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VlrPm-00076B-J2
- for linux-mtd@lists.infradead.org; Thu, 28 Nov 2013 02:33:15 +0000
-Received: from epcpsbgr5.samsung.com
- (u145.gpu120.samsung.co.kr [203.254.230.145])
- by mailout3.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ id 1VlrQ6-00077D-8B
+ for linux-mtd@lists.infradead.org; Thu, 28 Nov 2013 02:33:34 +0000
+Received: from epcpsbgr3.samsung.com
+ (u143.gpu120.samsung.co.kr [203.254.230.143])
+ by mailout1.samsung.com (Oracle Communications Messaging Server 7u4-24.01
  (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0MWY00GAWCES0ZD0@mailout3.samsung.com> for
- linux-mtd@lists.infradead.org; Thu, 28 Nov 2013 11:32:52 +0900 (KST)
+ with ESMTP id <0MWY00C2XCFCGF80@mailout1.samsung.com> for
+ linux-mtd@lists.infradead.org; Thu, 28 Nov 2013 11:33:12 +0900 (KST)
 From: Jingoo Han <jg1.han@samsung.com>
 To: 'Brian Norris' <computersforpeace@gmail.com>
 References: <001e01ceebe1$f5adf370$e109da50$%han@samsung.com>
 In-reply-to: <001e01ceebe1$f5adf370$e109da50$%han@samsung.com>
-Subject: [PATCH 3/9] mtd: esb2rom: use DEFINE_PCI_DEVICE_TABLE macro
-Date: Thu, 28 Nov 2013 11:32:52 +0900
-Message-id: <002001ceebe2$232756c0$69760440$%han@samsung.com>
+Subject: [PATCH 4/9] mtd: ichxrom: use DEFINE_PCI_DEVICE_TABLE macro
+Date: Thu, 28 Nov 2013 11:33:12 +0900
+Message-id: <002101ceebe2$2ed880c0$8c898240$%han@samsung.com>
 MIME-version: 1.0
 Content-type: text/plain; charset=us-ascii
 Content-transfer-encoding: 7bit
@@ -35,30 +35,30 @@ This macro is used to create a struct pci_device_id array.
 
 Signed-off-by: Jingoo Han <jg1.han@samsung.com>
 ---
- drivers/mtd/maps/esb2rom.c |    4 ++--
+ drivers/mtd/maps/ichxrom.c |    4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/maps/esb2rom.c b/drivers/mtd/maps/esb2rom.c
-index f784cf0..d44b92f 100644
---- a/drivers/mtd/maps/esb2rom.c
-+++ b/drivers/mtd/maps/esb2rom.c
-@@ -384,7 +384,7 @@ static void esb2rom_remove_one(struct pci_dev *pdev)
- 	esb2rom_cleanup(window);
+diff --git a/drivers/mtd/maps/ichxrom.c b/drivers/mtd/maps/ichxrom.c
+index c7478e1..8d2da98 100644
+--- a/drivers/mtd/maps/ichxrom.c
++++ b/drivers/mtd/maps/ichxrom.c
+@@ -321,7 +321,7 @@ static void ichxrom_remove_one(struct pci_dev *pdev)
+ 	ichxrom_cleanup(window);
  }
  
--static struct pci_device_id esb2rom_pci_tbl[] = {
-+static DEFINE_PCI_DEVICE_TABLE(esb2rom_pci_tbl) = {
+-static struct pci_device_id ichxrom_pci_tbl[] = {
++static DEFINE_PCI_DEVICE_TABLE(ichxrom_pci_tbl) = {
  	{ PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_82801BA_0,
  	  PCI_ANY_ID, PCI_ANY_ID, },
  	{ PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_82801CA_0,
-@@ -414,7 +414,7 @@ static struct pci_driver esb2rom_driver = {
- static int __init init_esb2rom(void)
+@@ -349,7 +349,7 @@ static struct pci_driver ichxrom_driver = {
+ static int __init init_ichxrom(void)
  {
  	struct pci_dev *pdev;
 -	struct pci_device_id *id;
 +	const struct pci_device_id *id;
- 	int retVal;
  
  	pdev = NULL;
+ 	for (id = ichxrom_pci_tbl; id->vendor; id++) {
 -- 
 1.7.10.4
