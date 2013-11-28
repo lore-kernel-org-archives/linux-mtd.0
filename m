@@ -1,26 +1,24 @@
-Received: from mail-yh0-f52.google.com ([209.85.213.52])
+Received: from mo6-p00-ob.rzone.de ([2a01:238:20a:202:5300::1])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vlxue-0006rA-KU
- for linux-mtd@lists.infradead.org; Thu, 28 Nov 2013 09:29:33 +0000
-Received: by mail-yh0-f52.google.com with SMTP id i72so5721942yha.25
- for <linux-mtd@lists.infradead.org>; Thu, 28 Nov 2013 01:29:09 -0800 (PST)
-Date: Thu, 28 Nov 2013 09:29:04 +0000
-From: Lee Jones <lee.jones@linaro.org>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH 00/23] mtd: st_spi_fsm: Add new device
-Message-ID: <20131128092904.GZ3296@lee--X1>
-References: <1385137380-28968-1-git-send-email-lee.jones@linaro.org>
- <20131127040723.GZ9468@ld-irv-0074.broadcom.com>
- <20131127115226.GC3296@lee--X1> <5296B9C5.3060704@freescale.com>
+ id 1Vlxyy-00074S-5h
+ for linux-mtd@lists.infradead.org; Thu, 28 Nov 2013 09:34:01 +0000
+Received: from [192.168.0.195]
+ (pD9E0EEB4.dip0.t-ipconnect.de [217.224.238.180])
+ by smtp.strato.de (RZmta 32.17 DYNA|AUTH)
+ with (TLSv1.0:DHE-RSA-AES256-SHA encrypted) ESMTPSA id D011a5pAS9XY8nz
+ for <linux-mtd@lists.infradead.org>;
+ Thu, 28 Nov 2013 10:33:34 +0100 (CET)
+Message-ID: <52970DEE.3070302@elreha.de>
+Date: Thu, 28 Nov 2013 10:33:34 +0100
+From: "Albrecht, Harald" <harald.albrecht@elreha.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5296B9C5.3060704@freescale.com>
-Cc: angus.clark@st.com, linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
- linux-spi@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+To: linux-mtd@lists.infradead.org
+Subject: Re: JFFS2 Garbage collection issue
+References: <5295C538.6040207@elreha.de>
+ <OFD4B20B8F.D587329D-ONC1257C30.0038B520-C1257C30.0039136C@transmode.se>
+In-Reply-To: <OFD4B20B8F.D587329D-ONC1257C30.0038B520-C1257C30.0039136C@transmode.se>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,179 +28,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> >However, as we send entire 'message sequences' to the FSM Controller
-> >as opposed to merely OPCODEs we would have to extract the OPCODE from
-> >flash->command[0] and call our own functions to craft the correct
-> >'message sequence' for the task. For this reason we rejected the idea
-> >and went with a stand-alone driver.
-> >
-> could you send me the datasheet of your spi nor controller?
-> I can change my code if it really not good enough.
+Hi All,
 
-Unfortunately not, it's ST company confidential.
+thank you for the fast reply.
+What we figured out is that the jffs2_garbage_collect_pass loops for 
+several minutes in the first for(;;) loop. It always went into the if 
+statement after jffs2_get_ino_cache. In this situation it's not 
+interruptable by any signals.
 
-> we can store the opcode to a field, such as spi_nor_write_op.
+Regards
+   Harald
 
-The OPCODE isn't the issue here.
 
-> >The framework which Huang is proposing suffers from the same issues.
-> >Only providing read(), write(), read_reg() and write_reg() doesn't
-> >work for our use-case, as we'd have to decode the flash->command[0] and
-> >invoke our own internal routines as before.
-> >
-> >The only framework with would work for us would consist almost all
-> >of the important functions such as; read(), write(), erase(),
-> >wait_busy(), read_jedec(), read_status_reg(), write_status_reg(),
-> >read_control_reg(), write_control_reg(), etc. However, this approach
-> read_jedec() can be replaced by read_reg(0x9f);
-> 
-> read_status() can be replaced by read_reg(0x5);
-> 
-> ....
-> 
-> write_control_reg() can be replaced by write_reg(xx).
-> 
-> Please correct me if i am wrong.
+"linux-mtd" <linux-mtd-bounces@lists.infradead.org> wrote on 2013/11/27 
+11:11:04:
+>> Hi all,
+>>
+>> we are currently facing a problem with the Garbage-collection on a JFFS2
+>> file system.
+>>
+>> We have an embedded linux system based on an ARM9 AT91RM9200 processor
+>> with an Intel / Micron JS28F256 NOR-flash of 32MB in size.
+>> The Flash holds the U-Boot loader and its environment and in the main
+>> part (30MB) of the chip a JFFS2-based root-file-system.
+>> Our Linux kernel version is 2.6.24.3
+>>
+>> Some minutes after startup of the system, the garbage collector (gc.c)
+>> does a scan of the file system, gathering information for the garbage
+>> collection procedures that may be initiated based upon that data.
+>> On some file systems, especially such with long runtime and therefore
+>> many file operations, this scan consumes a lot of time. On some systems
+>> it stays in that scan for more that 10 minutes. The problem with this
+>> behaviour is the fact, that during the scan the file system is locked,
+>> and therefore all file operations are suspended. This leads to a crash
+>> of the system, when the application program hangs for a long time,
+>> waiting for a file operation to return from a system call, and the
+>> watchdog is not triggered.
+>>
+>> In a test system without watchdog, after the scan, the system runs
+> normally.
+>> The flash chip itself shows no errors, so it seems to be a problem of
+>> the file system.
+>>
+>> Any idea or suggestion to solve the problem would be very welcome!
+> The simple fix is to send a signal(SIGCONT?) to the GC process regularly
+> to do GC
+> over time. That way you don't get all GC at boot time.
 >
-> IMHO, the current four hooks for spi-nor{} can do all the things.
-> 
->      read/write/read_reg/write_reg.
-
-I _fully_ understand your implementation, but it just won't work for
-our controller. Or it would, but it would mean writing _more_ code to
-bend it into your framework, not less. Let me try to explain in
-another way by implementing what you're suggesting. For your JEDEC
-example above, we would have to implement [1] which to my mind
-completely defeats the purpose.
-
-Most controllers just take an OPCODE and pass it on to the controller
-and have done with it. The issue that you're attempting to rectify is
-that the m25p80 expects every controller to be an SPI controller
-registered to the SPI framework, but as we both know that's not always
-practical as the SPI framework doesn't allow all configuration
-information to be passed back to the controller driver. Our issue is
-not the same. We are required to send entire 'message sequences', to
-the controller rather than just opcodes. The JEDEC message sequence
-can be seen below. Bear in mind that this is also one of the more
-simple message sequences. Some of them even vary depending on which
-chip is present.
-
-[1]:
-
-static struct stfsm_seq stfsm_seq_read_jedec = {
-	.data_size = TRANSFER_SIZE(8),
-	.seq_opc[0] = (SEQ_OPC_PADS_1 |
-		       SEQ_OPC_CYCLES(8) |
-		       SEQ_OPC_OPCODE(FLASH_CMD_RDID)),
-	.seq = {
-		STFSM_INST_CMD1,
-		STFSM_INST_DATA_READ,
-		STFSM_INST_STOP,
-	},
-	.seq_cfg = (SEQ_CFG_PADS_1 |
-		    SEQ_CFG_READNOTWRITE |
-		    SEQ_CFG_CSDEASSERT |
-		    SEQ_CFG_STARTSEQ),
-};
-
-static inline int stfsm_is_idle(struct stfsm *fsm)
-{
-	return readl(fsm->base + SPI_FAST_SEQ_STA) & 0x10;
-}
-
-static inline uint32_t stfsm_fifo_available(struct stfsm *fsm)
-{
-	return (readl(fsm->base + SPI_FAST_SEQ_STA) >> 5) & 0x7f;
-}
-
-static inline void stfsm_load_seq(struct stfsm *fsm,
-				  const struct stfsm_seq *seq)
-{
-	void __iomem *dst = fsm->base + SPI_FAST_SEQ_TRANSFER_SIZE;
-	const uint32_t *src = (const uint32_t *)seq;
-	int words = STFSM_SEQ_SIZE / sizeof(uint32_t);
-
-	while (words--) {
-		writel(*src, dst);
-		src++;
-		dst += 4;
-	}
-}
-
-static void stfsm_wait_seq(struct stfsm *fsm)
-{
-	unsigned long timeo = jiffies + HZ;
-
-	while (time_before(jiffies, timeo)) {
-		if (stfsm_is_idle(fsm))
-			return;
-
-		cond_resched();
-	}
-}
-
-static void stfsm_read_fifo(struct stfsm *fsm, uint32_t *buf,
-			    const uint32_t size)
-{
-	uint32_t remaining = size >> 2;
-	uint32_t avail;
-	uint32_t words;
-
-	while (remaining) {
-		for (;;) {
-			avail = stfsm_fifo_available(fsm);
-			if (avail)
-				break;
-			udelay(1);
-		}
-		words = min(avail, remaining);
-		remaining -= words;
-
-		readsl(fsm->base + SPI_FAST_SEQ_DATA_REG, buf, words);
-		buf += words;
-	}
-}
-
-static void stfsm_read_jedec(struct stfsm *fsm, u8 *jedec)
-{
-	const struct stfsm_seq *seq = &stfsm_seq_read_jedec;
-	uint32_t tmp[2];
-
-	stfsm_load_seq(fsm, seq);
-
-	stfsm_read_fifo(fsm, tmp, 8);
-
-	memcpy(jedec, tmp, 5);
-
-	stfsm_wait_seq(fsm);
-}
-
-static int stfsm_read_reg(struct spi_nor *flash, u8 opcode, u8 *buf, int len)
-{
-	struct stfsm *fsm = dev_get_drvdata(flash->mtd->dev.parent);
-	
-	switch (opcode) {
-	case OPCODE_RDID :
-		stfsm_read_jedec(fsm, buf);
-		break;
-
-	case OPCODE_A :
-		stfsm_do_a();
-		break;
-
-	/******** SNIP ********/
-
-	case OPCODE_Z :
-		stfsm_do_z();
-		break;
-
-	case default :
-		return -EINVAL;
-	}
-}
-
--- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+>   Jocke
+>   
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
