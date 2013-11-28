@@ -1,23 +1,20 @@
-Date: Thu, 28 Nov 2013 08:48:47 +0100
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Arnaud Ebalard <arno@natisbad.org>
-Subject: Re: [PATCH v5 00/14] Armada 370/XP NAND support
-In-Reply-To: <87wqjtbm8r.fsf@natisbad.org>
-Message-ID: <alpine.DEB.2.00.1311280845470.3251@lnxricardw.se.axis.com>
-References: <1384464339-6817-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <87d2lp28pd.fsf@natisbad.org> <20131125120335.GD2408@localhost>
- <87r4a4f5gr.fsf@natisbad.org> <20131126124003.GA2344@localhost>
- <87zjopd240.fsf@natisbad.org> <87wqjtbm8r.fsf@natisbad.org>
+Message-ID: <529707C3.40208@st.com>
+Date: Thu, 28 Nov 2013 09:07:15 +0000
+From: Angus Clark <angus.clark@st.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-15"; format=flowed
-Content-Transfer-Encoding: 8BIT
-Cc: Lior Amsalem <alior@marvell.com>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH 00/23] mtd: st_spi_fsm: Add new device
+References: <1385137380-28968-1-git-send-email-lee.jones@linaro.org>
+ <20131127040723.GZ9468@ld-irv-0074.broadcom.com>
+ <20131127115226.GC3296@lee--X1> <5296B9C5.3060704@freescale.com>
+In-Reply-To: <5296B9C5.3060704@freescale.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Cc: Lee Jones <lee.jones@linaro.org>, linus.walleij@linaro.org,
+ linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>, linux-mtd@lists.infradead.org,
+ Brian Norris <computersforpeace@gmail.com>, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,58 +24,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 27 Nov 2013, Arnaud Ebalard wrote:
+Hi Huang Shijie,
 
->> Well, I guess the bad block the driver put in the bbt are not that bad
->> in practice, i.e. they were mistakenly marked that way. I also
->> guess^Whope there is a some low level command I could use to simply
->> clear the bbt (the NAND had no bad block prior to the test). Any help
->> would be appreciated on that point.
->
-> Replying to myself w/ the solution: just in case it happens to someone
-> else, it's as simple as using flash_erase w/ -N option on a kernel
-> modified (in drivers/mtd/nand/nand_base.c) to allow write to a bad
-> block w/ the following patch:
->
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index bd39f7b..e70ef60 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -2591,6 +2591,7 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
->        instr->state = MTD_ERASING;
->
->        while (len) {
-> +#if 0
->                /* Check if we have a bad block, we do not erase bad blocks! */
->                if (nand_block_checkbad(mtd, ((loff_t) page) <<
->                                        chip->page_shift, 0, allowbbt)) {
-> @@ -2599,6 +2600,7 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
->                        instr->state = MTD_ERASE_FAILED;
->                        goto erase_exit;
->                }
-> +#endif
->
->                /*
->                 * Invalidate the page cache, if we erase the block which
->
->
-> After a reboot on that modified kernel, a simple call to flash_erase
-> using -N option will erase the badblocks:
->
-> # flash_erase -N /dev/mtd4 0 0
-> ...
+On 11/28/2013 03:34 AM, Huang Shijie wrote:
+> 于 2013年11月27日 19:52, Lee Jones 写道:
+>> However, as we send entire 'message sequences' to the FSM Controller
+>> as opposed to merely OPCODEs we would have to extract the OPCODE from
+>> flash->command[0] and call our own functions to craft the correct
+>> 'message sequence' for the task. For this reason we rejected the idea
+>> and went with a stand-alone driver.
+>>
+> could you send me the datasheet of your spi nor controller?
+> I can change my code if it really not good enough.
 
-I agree, I usually do something along these lines too (especially the 
-kernel bit) when I run into a flash with mistakingly marked bad blocks.
+I will reply to the "mtd: spi-nor" thread regarding the proposed framework, but
+a couple of answers to your specific questions below.
 
-I've always argued against having it switchable in any way in the kernel, 
-I've figured it needs to be hard to do (i.e. require access to kernel code 
-and target build system) so that average users don't start erasing bad 
-blocks at the sign of bad block trouble by just flicking a switch in /sys 
-or whatever.
+> 
+> we can store the opcode to a field, such as spi_nor_write_op.
+>> The framework which Huang is proposing suffers from the same issues.
+>> Only providing read(), write(), read_reg() and write_reg() doesn't
+>> work for our use-case, as we'd have to decode the flash->command[0] and
+>> invoke our own internal routines as before.
+>>
+>> The only framework with would work for us would consist almost all
+>> of the important functions such as; read(), write(), erase(),
+>> wait_busy(), read_jedec(), read_status_reg(), write_status_reg(),
+>> read_control_reg(), write_control_reg(), etc. However, this approach
+>>   
+> read_jedec() can be replaced by read_reg(0x9f);
+> 
+> read_status() can be replaced by read_reg(0x5);
+> 
+> ....
+> 
+> write_control_reg() can be replaced by write_reg(xx).
 
-/Ricard
+Unfortunately the H/W Controller in question comes with a few restrictions.  One
+restriction is that data must be read in multiples of 4 bytes.  As such, it
+would not be able to honour a call of "flash->read_reg(flash, OPCODE_RDID, id, 5);"
+
+Of course, if the H/W driver knows that we are issuing a read_jedec() operation,
+then it can make the assumption that over-reading is benign, and we can instead
+read 8 bytes of data from the Flash device, and return 5 to the caller.
+However, without knowing what operation is being requested, no such assumption
+can be made.
+
+> Please correct me if i am wrong.
+> 
+> IMHO, the current four hooks for spi-nor{} can do all the things.
+> 
+>      read/write/read_reg/write_reg.
+
+As it stands, the spi-nor framework cannot support the requirements of the
+st_spi_fsm controller.  I will go into further details on the "mtd: spi-nor" thread.
+
+Cheers,
+
+Angus
+
+
 -- 
-Ricard Wolf Wanderl�f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+-------------------------------------
+Angus Clark
+ST Microelectronics (R&D) Ltd.
+1000 Aztec West, Bristol, BS32 4SQ
+email: angus.clark@st.com
+tel: +44 (0) 1454 462389
+st-tina: 065 2389
+-------------------------------------
