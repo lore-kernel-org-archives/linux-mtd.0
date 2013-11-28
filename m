@@ -1,22 +1,25 @@
-From: arno@natisbad.org (Arnaud Ebalard)
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH v5 00/14] Armada 370/XP NAND support
-References: <1384464339-6817-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <87d2lp28pd.fsf@natisbad.org> <20131125120335.GD2408@localhost>
- <87r4a4f5gr.fsf@natisbad.org> <20131126124003.GA2344@localhost>
- <87zjopd240.fsf@natisbad.org>
-Date: Wed, 27 Nov 2013 21:52:52 +0100
-In-Reply-To: <87zjopd240.fsf@natisbad.org> (Arnaud Ebalard's message of "Wed,
- 27 Nov 2013 21:24:47 +0100")
-Message-ID: <87wqjtbm8r.fsf@natisbad.org>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Lior Amsalem <alior@marvell.com>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- linux-mtd@lists.infradead.org,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- linux-arm-kernel@lists.infradead.org
+Received: from mailout3.samsung.com ([203.254.224.33])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VlrOc-00073z-RB
+ for linux-mtd@lists.infradead.org; Thu, 28 Nov 2013 02:32:04 +0000
+Received: from epcpsbgr2.samsung.com
+ (u142.gpu120.samsung.co.kr [203.254.230.142])
+ by mailout3.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ (7.0.4.24.0) 64bit (built Nov 17 2011))
+ with ESMTP id <0MWY00G5KCCO0ZD0@mailout3.samsung.com> for
+ linux-mtd@lists.infradead.org; Thu, 28 Nov 2013 11:31:36 +0900 (KST)
+From: Jingoo Han <jg1.han@samsung.com>
+To: 'Brian Norris' <computersforpeace@gmail.com>
+Subject: [PATCH 1/9] mtd: amd76xrom: use DEFINE_PCI_DEVICE_TABLE macro
+Date: Thu, 28 Nov 2013 11:31:36 +0900
+Message-id: <001e01ceebe1$f5adf370$e109da50$%han@samsung.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii
+Content-transfer-encoding: 7bit
+Content-language: ko
+Cc: 'Artem Bityutskiy' <artem.bityutskiy@linux.intel.com>,
+ 'Jingoo Han' <jg1.han@samsung.com>, 'David Woodhouse' <dwmw2@infradead.org>,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,63 +29,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+This macro is used to create a struct pci_device_id array.
 
-arno@natisbad.org (Arnaud Ebalard) writes:
+Signed-off-by: Jingoo Han <jg1.han@samsung.com>
+---
+ drivers/mtd/maps/amd76xrom.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> Well, I guess the bad block the driver put in the bbt are not that bad
-> in practice, i.e. they were mistakenly marked that way. I also
-> guess^Whope there is a some low level command I could use to simply
-> clear the bbt (the NAND had no bad block prior to the test). Any help
-> would be appreciated on that point.
-
-Replying to myself w/ the solution: just in case it happens to someone
-else, it's as simple as using flash_erase w/ -N option on a kernel
-modified (in drivers/mtd/nand/nand_base.c) to allow write to a bad
-block w/ the following patch:
-
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index bd39f7b..e70ef60 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2591,6 +2591,7 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
-        instr->state = MTD_ERASING;
+diff --git a/drivers/mtd/maps/amd76xrom.c b/drivers/mtd/maps/amd76xrom.c
+index f7207b0..6a0582e 100644
+--- a/drivers/mtd/maps/amd76xrom.c
++++ b/drivers/mtd/maps/amd76xrom.c
+@@ -296,7 +296,7 @@ static void amd76xrom_remove_one(struct pci_dev *pdev)
+ 	amd76xrom_cleanup(window);
+ }
  
-        while (len) {
-+#if 0
-                /* Check if we have a bad block, we do not erase bad blocks! */
-                if (nand_block_checkbad(mtd, ((loff_t) page) <<
-                                        chip->page_shift, 0, allowbbt)) {
-@@ -2599,6 +2600,7 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
-                        instr->state = MTD_ERASE_FAILED;
-                        goto erase_exit;
-                }
-+#endif
- 
-                /*
-                 * Invalidate the page cache, if we erase the block which
-
-
-After a reboot on that modified kernel, a simple call to flash_erase
-using -N option will erase the badblocks:
-
- # flash_erase -N /dev/mtd4 0 0 
-
-Then, at next reboot an empty bad block table is recreated.
-
-NAND:  (ID 0xf1ad)      128 MiB
-Bad block table not found for chip 0
-Bad block table not found for chip 0
-Bad block table written to 0x000007fe0000, version 0x01
-Bad block table written to 0x000007fc0000, version 0x01
-FPU not initialized
-USB 0: Host Mode
-USB 1: Host Mode
-
-Ezequiel, I am back in business to test a v2 ;-)
-
-Cheers,
-
-a+
-
-ps: primary source: http://lists.infradead.org/pipermail/linux-mtd/2012-June/041969.html
+-static struct pci_device_id amd76xrom_pci_tbl[] = {
++static DEFINE_PCI_DEVICE_TABLE(amd76xrom_pci_tbl) = {
+ 	{ PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_VIPER_7410,
+ 		PCI_ANY_ID, PCI_ANY_ID, },
+ 	{ PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_VIPER_7440,
+@@ -319,7 +319,7 @@ static struct pci_driver amd76xrom_driver = {
+ static int __init init_amd76xrom(void)
+ {
+ 	struct pci_dev *pdev;
+-	struct pci_device_id *id;
++	const struct pci_device_id *id;
+ 	pdev = NULL;
+ 	for(id = amd76xrom_pci_tbl; id->vendor; id++) {
+ 		pdev = pci_get_device(id->vendor, id->device, NULL);
+-- 
+1.7.10.4
