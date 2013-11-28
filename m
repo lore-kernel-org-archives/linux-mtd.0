@@ -1,27 +1,19 @@
-Received: from mailout2.samsung.com ([203.254.224.25])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VlrRk-0007I4-N2
- for linux-mtd@lists.infradead.org; Thu, 28 Nov 2013 02:35:17 +0000
-Received: from epcpsbgr5.samsung.com
- (u145.gpu120.samsung.co.kr [203.254.230.145])
- by mailout2.samsung.com (Oracle Communications Messaging Server 7u4-24.01
- (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0MWY004LJCI5QGE0@mailout2.samsung.com> for
- linux-mtd@lists.infradead.org; Thu, 28 Nov 2013 11:34:53 +0900 (KST)
-From: Jingoo Han <jg1.han@samsung.com>
-To: 'Brian Norris' <computersforpeace@gmail.com>
-References: <001e01ceebe1$f5adf370$e109da50$%han@samsung.com>
-In-reply-to: <001e01ceebe1$f5adf370$e109da50$%han@samsung.com>
-Subject: [PATCH 9/9] mtd: r852: use DEFINE_PCI_DEVICE_TABLE macro
-Date: Thu, 28 Nov 2013 11:34:52 +0900
-Message-id: <002601ceebe2$6a946750$3fbd35f0$%han@samsung.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=us-ascii
-Content-transfer-encoding: 7bit
-Content-language: ko
-Cc: 'Artem Bityutskiy' <artem.bityutskiy@linux.intel.com>,
- 'Jingoo Han' <jg1.han@samsung.com>, 'David Woodhouse' <dwmw2@infradead.org>,
- linux-mtd@lists.infradead.org
+Message-ID: <5296B9C5.3060704@freescale.com>
+Date: Thu, 28 Nov 2013 11:34:29 +0800
+From: Huang Shijie <b32955@freescale.com>
+MIME-Version: 1.0
+To: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 00/23] mtd: st_spi_fsm: Add new device
+References: <1385137380-28968-1-git-send-email-lee.jones@linaro.org>
+ <20131127040723.GZ9468@ld-irv-0074.broadcom.com>
+ <20131127115226.GC3296@lee--X1>
+In-Reply-To: <20131127115226.GC3296@lee--X1>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: angus.clark@st.com, linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
+ dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,25 +23,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This macro is used to create a struct pci_device_id array.
+=E4=BA=8E 2013=E5=B9=B411=E6=9C=8827=E6=97=A5 19:52, Lee Jones =E5=86=99=E9=
+=81=93:
+> However, as we send entire 'message sequences' to the FSM Controller
+> as opposed to merely OPCODEs we would have to extract the OPCODE from
+> flash->command[0] and call our own functions to craft the correct
+> 'message sequence' for the task. For this reason we rejected the idea
+> and went with a stand-alone driver.
+>
+could you send me the datasheet of your spi nor controller?
+I can change my code if it really not good enough.
 
-Signed-off-by: Jingoo Han <jg1.han@samsung.com>
----
- drivers/mtd/nand/r852.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+we can store the opcode to a field, such as spi_nor_write_op.
+> The framework which Huang is proposing suffers from the same issues.
+> Only providing read(), write(), read_reg() and write_reg() doesn't
+> work for our use-case, as we'd have to decode the flash->command[0] and
+> invoke our own internal routines as before.
+>
+> The only framework with would work for us would consist almost all
+> of the important functions such as; read(), write(), erase(),
+> wait_busy(), read_jedec(), read_status_reg(), write_status_reg(),
+> read_control_reg(), write_control_reg(), etc. However, this approach
+>  =20
+read_jedec() can be replaced by read_reg(0x9f);
 
-diff --git a/drivers/mtd/nand/r852.c b/drivers/mtd/nand/r852.c
-index 325930d..8a2d773 100644
---- a/drivers/mtd/nand/r852.c
-+++ b/drivers/mtd/nand/r852.c
-@@ -1057,7 +1057,7 @@ static int r852_resume(struct device *device)
- }
- #endif
- 
--static const struct pci_device_id r852_pci_id_tbl[] = {
-+static DEFINE_PCI_DEVICE_TABLE(r852_pci_id_tbl) = {
- 
- 	{ PCI_VDEVICE(RICOH, 0x0852), },
- 	{ },
--- 
-1.7.10.4
+read_status() can be replaced by read_reg(0x5);
+
+....
+
+write_control_reg() can be replaced by write_reg(xx).
+
+
+Please correct me if i am wrong.
+
+IMHO, the current four hooks for spi-nor{} can do all the things.
+
+      read/write/read_reg/write_reg.
+
+thanks
+Huang Shijie
