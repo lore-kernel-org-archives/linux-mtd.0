@@ -1,23 +1,21 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
+Received: from gw1.transmode.se ([195.58.98.146])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vlu5g-000251-LS
- for linux-mtd@lists.infradead.org; Thu, 28 Nov 2013 05:24:41 +0000
-Message-ID: <5296D37C.2020003@ti.com>
-Date: Thu, 28 Nov 2013 10:54:12 +0530
-From: Sourav Poddar <sourav.poddar@ti.com>
+ id 1VlvAY-0002nk-KZ
+ for linux-mtd@lists.infradead.org; Thu, 28 Nov 2013 06:33:47 +0000
+In-Reply-To: <1385580846.2836.1@deneb.(none)>
+References: <OFC2D68B7C.CF5FC776-ONC1257C30.00395D40-C1257C30.0039B49A@transmode.se>
+ (from joakim.tjernlund@transmode.se on Wed Nov 27 11:30:18 2013)
+ <1385580846.2836.1@deneb.(none)>
+To: =?ISO-8859-15?Q?Albrecht_Dre=DF?= <albrecht.dress@arcor.de>
 MIME-Version: 1.0
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 12/17] spi/qspi: convert driver to enable/disable memory
- mapped.
-References: <1385451313-1875-1-git-send-email-sourav.poddar@ti.com>
- <1385451313-1875-13-git-send-email-sourav.poddar@ti.com>
- <20131126131138.GJ14725@sirena.org.uk>
-In-Reply-To: <20131126131138.GJ14725@sirena.org.uk>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: devicetree@vger.kernel.org, computersforpeace@gmail.com, balbi@ti.com,
- linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
- bcousson@baylibre.com, linux-omap@vger.kernel.org
+Subject: Re: JFFS2 Garbage collection issue
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Message-ID: <OF5A973EE2.4F616953-ONC1257C31.00236541-C1257C31.0024025D@transmode.se>
+Date: Thu, 28 Nov 2013 07:33:19 +0100
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, "Albrecht,
+ Harald" <harald.albrecht@elreha.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,27 +25,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Mark,
-On Tuesday 26 November 2013 06:41 PM, Mark Brown wrote:
-> On Tue, Nov 26, 2013 at 01:05:08PM +0530, Sourav Poddar wrote:
->> Idea is to enable memory mapped by default at the end of the probe,
->> if the control reaches the "transfer" api, then the operation is
->> not a memory mapped one. Hence, we switch to Normal mode and at the
->> end of the "transfer" function. switch back to memory mapped mode.
-> This doesn't see safe, what happens if something tries to use the map
-> while a transfer is in progress?
-Transfer gets initiated with the following api "ti_qspi_start_transfer_one".
+Albrecht Dre=DF <albrecht.dress@arcor.de> wrote on 2013/11/27 20:34:06:
+>=20
+> Hi Jocke:
+>=20
+> Am 27.11.13 11:30 schrieb(en) Joakim Tjernlund:
+> > BTW, I guess you got logging to file such as syslog on your system?=20
+JFFS2 really don't do well with small incremental writes. I recommend you=20
+turn such logging off.
+>=20
+> Does the delay by the gc process happen only when the jffs2 fs is=20
+mounted, or also during the normal operation when many updates occur?
 
-At the beginning of this api, I am doing a "disable memory mapped", as 
-becuase of
-the code implemntation, if the control has reaches this api, memory 
-mapped is not
-the desired operation. Then, at the end of this api after
-"spi_finalize_current_message(master)", which indicated the current 
-transfer complete, I
-issue a end of transfer command. Only after which, I enable memory 
-mapped mode again.
+Only at mount AFAIK. During initial scanning lots of GC can be triggered=20
+but during normal
+operation not so much. The GC algo. is a bit naive and you have to help it =
 
-So, will the condition you mention above will hit.? Please help me 
-understand if i am
-missing something?
+if you got
+lots of small writes. By sending the correct signal to the GC thread you=20
+trigger one GC.
+
+
+>=20
+> Background: I had a similar issue as Harald with a NVRAM which is used=20
+to hold quickly changing event buffers and logs.  My solution was to wait=20
+for the gc process during the startup of the system, before the "main"=20
+application is launched.  However, if this could also happen *after* the=20
+initial scan has finished, this would be bad news for me, as I then=20
+probably would need the SIG(STOP|CONT) approach...
+>=20
+> Thanks,
+> Albrecht.[attachment "attq2f2p.dat" deleted by Joakim=20
+Tjernlund/Transmode]=20
