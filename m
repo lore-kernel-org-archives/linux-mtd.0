@@ -1,19 +1,27 @@
-Message-ID: <5296B9C5.3060704@freescale.com>
-Date: Thu, 28 Nov 2013 11:34:29 +0800
-From: Huang Shijie <b32955@freescale.com>
-MIME-Version: 1.0
-To: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 00/23] mtd: st_spi_fsm: Add new device
-References: <1385137380-28968-1-git-send-email-lee.jones@linaro.org>
- <20131127040723.GZ9468@ld-irv-0074.broadcom.com>
- <20131127115226.GC3296@lee--X1>
-In-Reply-To: <20131127115226.GC3296@lee--X1>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: angus.clark@st.com, linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
- linux-spi@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+Received: from mailout4.samsung.com ([203.254.224.34])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VltLt-0001Vs-Qk
+ for linux-mtd@lists.infradead.org; Thu, 28 Nov 2013 04:37:24 +0000
+Received: from epcpsbgr1.samsung.com
+ (u141.gpu120.samsung.co.kr [203.254.230.141])
+ by mailout4.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ (7.0.4.24.0) 64bit (built Nov 17 2011))
+ with ESMTP id <0MWY00L0KI5MEF70@mailout4.samsung.com> for
+ linux-mtd@lists.infradead.org; Thu, 28 Nov 2013 13:36:58 +0900 (KST)
+From: Jingoo Han <jg1.han@samsung.com>
+To: 'Brian Norris' <computersforpeace@gmail.com>
+References: <001e01ceebe1$f5adf370$e109da50$%han@samsung.com>
+In-reply-to: <001e01ceebe1$f5adf370$e109da50$%han@samsung.com>
+Subject: Re: [PATCH 1/9] mtd: amd76xrom: use DEFINE_PCI_DEVICE_TABLE macro
+Date: Thu, 28 Nov 2013 13:36:57 +0900
+Message-id: <005401ceebf3$7903b730$6b0b2590$%han@samsung.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii
+Content-transfer-encoding: 7bit
+Content-language: ko
+Cc: 'Artem Bityutskiy' <artem.bityutskiy@linux.intel.com>,
+ 'Jingoo Han' <jg1.han@samsung.com>, 'David Woodhouse' <dwmw2@infradead.org>,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,42 +31,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B411=E6=9C=8827=E6=97=A5 19:52, Lee Jones =E5=86=99=E9=
-=81=93:
-> However, as we send entire 'message sequences' to the FSM Controller
-> as opposed to merely OPCODEs we would have to extract the OPCODE from
-> flash->command[0] and call our own functions to craft the correct
-> 'message sequence' for the task. For this reason we rejected the idea
-> and went with a stand-alone driver.
->
-could you send me the datasheet of your spi nor controller?
-I can change my code if it really not good enough.
-
-we can store the opcode to a field, such as spi_nor_write_op.
-> The framework which Huang is proposing suffers from the same issues.
-> Only providing read(), write(), read_reg() and write_reg() doesn't
-> work for our use-case, as we'd have to decode the flash->command[0] and
-> invoke our own internal routines as before.
->
-> The only framework with would work for us would consist almost all
-> of the important functions such as; read(), write(), erase(),
-> wait_busy(), read_jedec(), read_status_reg(), write_status_reg(),
-> read_control_reg(), write_control_reg(), etc. However, this approach
->  =20
-read_jedec() can be replaced by read_reg(0x9f);
-
-read_status() can be replaced by read_reg(0x5);
-
-....
-
-write_control_reg() can be replaced by write_reg(xx).
 
 
-Please correct me if i am wrong.
+> -----Original Message-----
+> From: Jingoo Han [mailto:jg1.han@samsung.com]
+> Sent: Thursday, November 28, 2013 11:32 AM
+> To: 'Brian Norris'
+> Cc: 'Artem Bityutskiy'; 'David Woodhouse'; linux-mtd@lists.infradead.org; 'Jingoo Han'
+> Subject: [PATCH 1/9] mtd: amd76xrom: use DEFINE_PCI_DEVICE_TABLE macro
+> 
+> This macro is used to create a struct pci_device_id array.
+> 
+> Signed-off-by: Jingoo Han <jg1.han@samsung.com>
 
-IMHO, the current four hooks for spi-nor{} can do all the things.
+Please, ignore these patches.
+According to the Greg Kroah-Hartman, 
 
-      read/write/read_reg/write_reg.
+"Yeah, and it's a horrid macro that deserves to be removed, please don't
+use it in more places.
 
-thanks
-Huang Shijie
+Actually, if you could just remove it, that would be best, sorry, I'm
+not going to take these patches."
+
+So, I will send the patch to remove 'DEFINE_PCI_DEVICE_TABLE' instead.
+Sorry for annoying. :-)
+
+Best regards,
+Jingoo Han
+
+> ---
+>  drivers/mtd/maps/amd76xrom.c |    4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/maps/amd76xrom.c b/drivers/mtd/maps/amd76xrom.c
+> index f7207b0..6a0582e 100644
+> --- a/drivers/mtd/maps/amd76xrom.c
+> +++ b/drivers/mtd/maps/amd76xrom.c
+> @@ -296,7 +296,7 @@ static void amd76xrom_remove_one(struct pci_dev *pdev)
+>  	amd76xrom_cleanup(window);
+>  }
+> 
+> -static struct pci_device_id amd76xrom_pci_tbl[] = {
+> +static DEFINE_PCI_DEVICE_TABLE(amd76xrom_pci_tbl) = {
+>  	{ PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_VIPER_7410,
+>  		PCI_ANY_ID, PCI_ANY_ID, },
+>  	{ PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_VIPER_7440,
+> @@ -319,7 +319,7 @@ static struct pci_driver amd76xrom_driver = {
+>  static int __init init_amd76xrom(void)
+>  {
+>  	struct pci_dev *pdev;
+> -	struct pci_device_id *id;
+> +	const struct pci_device_id *id;
+>  	pdev = NULL;
+>  	for(id = amd76xrom_pci_tbl; id->vendor; id++) {
+>  		pdev = pci_get_device(id->vendor, id->device, NULL);
+> --
+> 1.7.10.4
