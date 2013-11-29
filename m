@@ -1,16 +1,16 @@
-Received: from mail-yh0-f45.google.com ([209.85.213.45])
+Received: from mail-yh0-f53.google.com ([209.85.213.53])
  by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VmN48-0000xG-H9
- for linux-mtd@lists.infradead.org; Fri, 29 Nov 2013 12:21:01 +0000
-Received: by mail-yh0-f45.google.com with SMTP id v1so5726179yhn.32
- for <linux-mtd@lists.infradead.org>; Fri, 29 Nov 2013 04:20:33 -0800 (PST)
+ id 1VmN3u-0000mJ-8v
+ for linux-mtd@lists.infradead.org; Fri, 29 Nov 2013 12:20:47 +0000
+Received: by mail-yh0-f53.google.com with SMTP id b20so6606510yha.40
+ for <linux-mtd@lists.infradead.org>; Fri, 29 Nov 2013 04:20:21 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  dwmw2@infradead.org
-Subject: [PATCH v3 30/36] mtd: st_spi_fsm: Erase partly or as a whole a Serial
- Flash device
-Date: Fri, 29 Nov 2013 12:19:19 +0000
-Message-Id: <1385727565-25794-31-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH v3 24/36] mtd: st_spi_fsm: Supply the N25Qxxx chip specific
+ configuration call-back
+Date: Fri, 29 Nov 2013 12:19:13 +0000
+Message-Id: <1385727565-25794-25-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1385727565-25794-1-git-send-email-lee.jones@linaro.org>
 References: <1385727565-25794-1-git-send-email-lee.jones@linaro.org>
 Cc: angus.clark@st.com, linus.walleij@linaro.org,
@@ -24,165 +24,146 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When an erase is requested by userspace the MFD framework calls back
-into the driver to conduct the actual command issue. Here we provide the
-routines which do exactly that. We can choose to either do an entire chip
-erase or by sector.
+In the FSM driver we handle chip differences by providing the possibility
+of calling back into a chip specific initialisation routine. In this patch
+we provide one for the N25Qxxx series, which endeavours to setup things
+like the read, write and erase sequences, as they differ from the
+default. We also configure 32bit support and the amount of dummy cycles to
+use.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/devices/st_spi_fsm.c | 118 ++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 117 insertions(+), 1 deletion(-)
+ drivers/mtd/devices/st_spi_fsm.c | 77 ++++++++++++++++++++++++++++++++++++++++
+ drivers/mtd/devices/st_spi_fsm.h |  7 ++--
+ 2 files changed, 82 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index 9b35e15..ecb001d 100644
+index 3a6b233..2369da1 100644
 --- a/drivers/mtd/devices/st_spi_fsm.c
 +++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -156,6 +156,27 @@ static struct stfsm_seq stfsm_seq_erase_sector = {
- 		    SEQ_CFG_STARTSEQ),
+@@ -98,6 +98,8 @@ static struct seq_rw_config n25q_read4_configs[] = {
+ 	{0x00,			0,			0, 0, 0, 0x00, 0, 0},
  };
  
-+static struct stfsm_seq stfsm_seq_erase_chip = {
-+	.seq_opc = {
-+		(SEQ_OPC_PADS_1 | SEQ_OPC_CYCLES(8) |
-+		 SEQ_OPC_OPCODE(FLASH_CMD_WREN) | SEQ_OPC_CSDEASSERT),
-+
-+		(SEQ_OPC_PADS_1 | SEQ_OPC_CYCLES(8) |
-+		 SEQ_OPC_OPCODE(FLASH_CMD_CHIPERASE) | SEQ_OPC_CSDEASSERT),
-+	},
-+	.seq = {
-+		STFSM_INST_CMD1,
-+		STFSM_INST_CMD2,
-+		STFSM_INST_WAIT,
-+		STFSM_INST_STOP,
-+	},
-+	.seq_cfg = (SEQ_CFG_PADS_1 |
-+		    SEQ_CFG_ERASE |
-+		    SEQ_CFG_READNOTWRITE |
-+		    SEQ_CFG_CSDEASSERT |
-+		    SEQ_CFG_STARTSEQ),
-+};
-+
- static struct stfsm_seq stfsm_seq_wrvcr = {
- 	.seq_opc[0] = (SEQ_OPC_PADS_1 | SEQ_OPC_CYCLES(8) |
- 		       SEQ_OPC_OPCODE(FLASH_CMD_WREN) | SEQ_OPC_CSDEASSERT),
-@@ -804,6 +825,47 @@ static int stfsm_mtd_read(struct mtd_info *mtd, loff_t from, size_t len,
++static struct stfsm_seq stfsm_seq_read; 	/* Dynamically populated */
++static struct stfsm_seq stfsm_seq_write;	/* Dynamically populated */
+ static struct stfsm_seq stfsm_seq_en_32bit_addr;/* Dynamically populated */
+ 
+ static struct stfsm_seq stfsm_seq_read_jedec = {
+@@ -439,6 +441,71 @@ static int stfsm_search_prepare_rw_seq(struct stfsm *fsm,
  	return 0;
  }
  
-+static int stfsm_erase_sector(struct stfsm *fsm, const uint32_t offset)
++static int stfsm_n25q_config(struct stfsm *fsm)
 +{
-+	struct stfsm_seq *seq = &stfsm_seq_erase_sector;
-+	int ret;
++	uint32_t flags = fsm->info->flags;
++	uint8_t vcr;
++	int ret = 0;
++	bool soc_reset;
 +
-+	dev_dbg(fsm->dev, "erasing sector at 0x%08x\n", offset);
++	/* Configure 'READ' sequence */
++	if (flags & FLASH_FLAG_32BIT_ADDR)
++		ret = stfsm_search_prepare_rw_seq(fsm, &stfsm_seq_read,
++						  n25q_read4_configs);
++	else
++		ret = stfsm_search_prepare_rw_seq(fsm, &stfsm_seq_read,
++						  n25q_read3_configs);
++	if (ret) {
++		dev_err(fsm->dev,
++			"failed to prepare READ sequence with flags [0x%08x]\n",
++			flags);
++		return ret;
++	}
 +
-+	/* Enter 32-bit address mode, if required */
-+	if (fsm->configuration & CFG_ERASESEC_TOGGLE_32BIT_ADDR)
-+		stfsm_enter_32bit_addr(fsm, 1);
++	/* Configure 'WRITE' sequence (default configs) */
++	ret = stfsm_search_prepare_rw_seq(fsm, &stfsm_seq_write,
++					  default_write_configs);
++	if (ret) {
++		dev_err(fsm->dev,
++			"preparing WRITE sequence using flags [0x%08x] failed\n",
++			flags);
++		return ret;
++	}
 +
-+	seq->addr1 = (offset >> 16) & 0xffff;
-+	seq->addr2 = offset & 0xffff;
++	/* * Configure 'ERASE_SECTOR' sequence */
++	stfsm_prepare_erasesec_seq(fsm, &stfsm_seq_erase_sector);
 +
-+	stfsm_load_seq(fsm, seq);
++	/* Configure 32-bit address support */
++	if (flags & FLASH_FLAG_32BIT_ADDR) {
++		stfsm_n25q_en_32bit_addr_seq(&stfsm_seq_en_32bit_addr);
 +
-+	stfsm_wait_seq(fsm);
-+
-+	/* Wait for completion */
-+	ret = stfsm_wait_busy(fsm);
-+
-+	/* Exit 32-bit address mode, if required */
-+	if (fsm->configuration & CFG_ERASESEC_TOGGLE_32BIT_ADDR)
-+		stfsm_enter_32bit_addr(fsm, 0);
-+
-+	return ret;
-+}
-+
-+static int stfsm_erase_chip(struct stfsm *fsm)
-+{
-+	const struct stfsm_seq *seq = &stfsm_seq_erase_chip;
-+
-+	dev_dbg(fsm->dev, "erasing chip\n");
-+
-+	stfsm_load_seq(fsm, seq);
-+
-+	stfsm_wait_seq(fsm);
-+
-+	return stfsm_wait_busy(fsm);
-+}
-+
- /*
-  * Write an address range to the flash chip.  Data must be written in
-  * FLASH_PAGESIZE chunks.  The address range may be any size provided
-@@ -861,6 +923,60 @@ out1:
- 	return ret;
- }
- 
-+/*
-+ * Erase an address range on the flash chip. The address range may extend
-+ * one or more erase sectors.  Return an error is there is a problem erasing.
-+ */
-+static int stfsm_mtd_erase(struct mtd_info *mtd, struct erase_info *instr)
-+{
-+	struct stfsm *fsm = dev_get_drvdata(mtd->dev.parent);
-+	u32 addr, len;
-+	int ret;
-+
-+	dev_dbg(fsm->dev, "%s at 0x%llx, len %lld\n", __func__,
-+		(long long)instr->addr, (long long)instr->len);
-+
-+	if (instr->addr + instr->len > mtd->size)
-+		return -EINVAL;
-+
-+	if (instr->len & (mtd->erasesize - 1))
-+		return -EINVAL;
-+
-+	addr = instr->addr;
-+	len = instr->len;
-+
-+	mutex_lock(&fsm->lock);
-+
-+	/* Whole-chip erase? */
-+	if (len == mtd->size) {
-+		ret = stfsm_erase_chip(fsm);
-+		if (ret)
-+			goto out1;
-+	} else {
-+		while (len) {
-+			ret = stfsm_erase_sector(fsm, addr);
-+			if (ret)
-+				goto out1;
-+
-+			addr += mtd->erasesize;
-+			len -= mtd->erasesize;
++		soc_reset = stfsm_can_handle_soc_reset(fsm);
++		if (soc_reset || !fsm->booted_from_spi) {
++			/*
++			 * If we can handle SoC resets, we enable 32-bit
++			 * address mode pervasively
++			 */
++			stfsm_enter_32bit_addr(fsm, 1);
++		} else {
++			/*
++			 * If not, enable/disable for WRITE and ERASE
++			 * operations (READ uses special commands)
++			 */
++			fsm->configuration = (CFG_WRITE_TOGGLE_32BIT_ADDR |
++					      CFG_ERASESEC_TOGGLE_32BIT_ADDR);
 +		}
 +	}
 +
-+	mutex_unlock(&fsm->lock);
-+
-+	instr->state = MTD_ERASE_DONE;
-+	mtd_erase_callback(instr);
++	/*
++	 * Configure device to use 8 dummy cycles
++	 */
++	vcr = (N25Q_VCR_DUMMY_CYCLES(8) | N25Q_VCR_XIP_DISABLED |
++	       N25Q_VCR_WRAP_CONT);
++	stfsm_wrvcr(fsm, vcr);
 +
 +	return 0;
-+
-+out1:
-+	instr->state = MTD_ERASE_FAILED;
-+	mutex_unlock(&fsm->lock);
-+
-+	return ret;
 +}
 +
  static void stfsm_read_jedec(struct stfsm *fsm, uint8_t *const jedec)
  {
  	const struct stfsm_seq *seq = &stfsm_seq_read_jedec;
-@@ -1131,7 +1247,7 @@ static int stfsm_probe(struct platform_device *pdev)
+@@ -681,6 +748,16 @@ static int stfsm_probe(struct platform_device *pdev)
  
- 	fsm->mtd._read  = stfsm_mtd_read;
- 	fsm->mtd._write = stfsm_mtd_write;
--
-+	fsm->mtd._erase = stfsm_mtd_erase;
- 	dev_err(&pdev->dev,
- 		"Found serial flash device: %s\n"
- 		" size = %llx (%lldMiB) erasesize = 0x%08x (%uKiB)\n",
+ 	fsm->info = info;
+ 
++	/*
++	 * Configure READ/WRITE/ERASE sequences according to platform and
++	 * device flags.
++	 */
++	if (info->config) {
++		ret = info->config(fsm);
++		if (ret)
++			return ret;
++	}
++
+ 	platform_set_drvdata(pdev, fsm);
+ 
+ 	stfsm_fetch_platform_configs(pdev);
+diff --git a/drivers/mtd/devices/st_spi_fsm.h b/drivers/mtd/devices/st_spi_fsm.h
+index 6699174..b5ce07d 100644
+--- a/drivers/mtd/devices/st_spi_fsm.h
++++ b/drivers/mtd/devices/st_spi_fsm.h
+@@ -304,6 +304,8 @@ struct flash_info {
+ 	int		(*config)(struct stfsm *);
+ };
+ 
++static int stfsm_n25q_config(struct stfsm *fsm);
++
+ static struct flash_info flash_types[] = {
+ 	/*
+ 	 * ST Microelectronics/Numonyx --
+@@ -347,9 +349,10 @@ static struct flash_info flash_types[] = {
+ 		   FLASH_FLAG_WRITE_1_2_2	| \
+ 		   FLASH_FLAG_WRITE_1_1_4	| \
+ 		   FLASH_FLAG_WRITE_1_4_4)
+-	{ "n25q128", 0x20ba18, 0, 64 * 1024,  256, N25Q_FLAG, 108, NULL },
++	{ "n25q128", 0x20ba18, 0, 64 * 1024,  256, N25Q_FLAG, 108,
++	  stfsm_n25q_config },
+ 	{ "n25q256", 0x20ba19, 0, 64 * 1024,  512,
+-	  N25Q_FLAG | FLASH_FLAG_32BIT_ADDR, 108, NULL },
++	  N25Q_FLAG | FLASH_FLAG_32BIT_ADDR, 108, stfsm_n25q_config },
+ 
+ 	/*
+ 	 * Spansion S25FLxxxP
 -- 
 1.8.3.2
