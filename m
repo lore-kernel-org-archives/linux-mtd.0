@@ -1,18 +1,19 @@
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: <linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
- <devicetree@vger.kernel.org>, <linux-omap@vger.kernel.org>
-Subject: [RFC/PATCH] mtd: nand: auto-detection of NAND bus-width from ONFI
- param or nand_id[]
-Date: Fri, 29 Nov 2013 10:40:56 -0300
-Message-Id: <1385732456-32696-2-git-send-email-ezequiel.garcia@free-electrons.com>
-In-Reply-To: <1385732456-32696-1-git-send-email-ezequiel.garcia@free-electrons.com>
-References: <1385732456-32696-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: mark.rutland@arm.com, shc_work@mail.ru, swarren@wwwdotorg.org,
- Tony Lindgren <tony@atomide.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- rob.herring@calxeda.com, Pekon Gupta <pekon@ti.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Message-ID: <5298AA23.7080404@st.com>
+Date: Fri, 29 Nov 2013 14:52:19 +0000
+From: Angus Clark <angus.clark@st.com>
+MIME-Version: 1.0
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 0/4] mtd: spi-nor: add a new framework for SPI NOR
+References: <1385447575-23773-1-git-send-email-b32955@freescale.com>
+ <20131127043253.GA9468@ld-irv-0074.broadcom.com>
+In-Reply-To: <20131127043253.GA9468@ld-irv-0074.broadcom.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: marex@denx.de, broonie@linaro.org, dwmw2@infradead.org,
+ Linus Walleij <linus.walleij@linaro.org>, linux-spi@vger.kernel.org,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ pekon@ti.com, sourav.poddar@ti.com, Lee Jones <lee.jones@linaro.org>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,145 +23,128 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Pekon Gupta <pekon@ti.com>
+Hi Huang Shijie,
 
-This patch is alternative implementation for following commit which introduced
-NAND_BUSWIDTH_AUTO for detection of bus-width during device probe
-   commit 64b37b2a63eb2f80b65c7185f0013f8ffc637ae3
-   Author:     Matthieu CASTET <matthieu.castet@parrot.com>
-   AuthorDate: 2012-11-06
+On 11/27/2013 04:32 AM, Brian Norris wrote:
+> + Lee Jones, others
+> 
+> I'd like to keep a similar CC list for the various conversations going
+> on about SPI NOR frameworks.
+> 
+> On Tue, Nov 26, 2013 at 02:32:51PM +0800, Huang Shijie wrote:
+>> 1.) Why add a new framework for SPI NOR?
+>>   The SPI-NOR controller such as Freescale's Quadspi controller is working
+>>   in a different way from the SPI bus. It should knows the NOR commands to
+>>   find the right LUT sequence. Unfortunately, the current code can not meet
+>>   this requirement.
 
-As NAND device is identified only during nand_scan_ident(), so this patch
-assumes that NAND driver may un-initialized or partially congigured while
-calling nand_scan_ident(). Hence, this patch does following:
+I fully support your argument for introducing a new framework to support Serial
+Flash controllers.  Reiterating my previous comment:
 
- 1. Temporarily configures 'bus-width=x8' mode before reading ONFI parameters,
-    as required by ONFI specification [1].
+"The kernel offers many examples of others who have struggled with the same
+problem.  Some have chosen to write self-contained drivers (e.g.
+drivers/mtd/devices/spear_smi.c and drivers/mtd/devices/sst251.c) duplicating
+much of m25p80.c, while others have attempted to squeeze into the SPI framework
+(e.g. drivers/spi/spi-tegra20-sflash.c and drivers/spi/spi-falcon.c), relying on
+fragile heuristics to recreate the semantics of m25p80 that is lost over the ,
+current circumstances SPI framework ."
 
- 2. Reconfigures the driver with correct bus-width determined by either reading
-    ONFI param, or the nand_flash_id[] table.
+However, having now been through your proposed framework, it would not seem to
+provide a generally applicable solution.  Indeed, other than making the Serial
+Flash commands and the device table available, it is not obvious how it improves
+the situation for your own specific controller either; the
+read/write/read_reg/write_reg callbacks do not offer a great deal more than
+spi_read_then_write().  (Perhaps all will become clear when you submit the
+fsl-quadspi driver.)
 
-This patch removes any dependency on either 'DT binding' or 'platform data' to
-specify the NAND device bus-width.
+As I see it, the main problem with the current support is that dedicated Serial
+Flash Controllers require a level of semantics that cannot be conveyed over the
+generic SPI framework.  With this in mind, I would start by defining something
+along the lines of a "Serial Flash transfer".  Some initial ramblings of my mind:
 
-[*] Reference: ONFI spec version 3.1 (section 3.5.3. Target Initialization)
-    "The Read ID and Read Parameter Page commands only use the lower 8-bits
-     of the data bus. The host shall not issue commands that use a word
-     data width on x16 devices until the host determines the device supports
-     a 16-bit data bus width in the parameter page."
+/**
+ * struct spi_nor_xfer_cfg - Structure for defining a Serial Flash transfer
+ * @wren:		command for "Write Enable", or 0x00 for not required
+ * @cmd:		command for operation
+ * @cmd_pins:		number of pins to send @cmd (1, 2, 4)
+ * @addr:		address for operation
+ * @addr_pins:		number of pins to send @addr (1, 2, 4)
+ * @addr_width: 	number of address bytes (3,4, or 0 for address not required)
+ * @mode:		mode data
+ * @mode_pins:		number of pins to send @mode (1, 2, 4)
+ * @mode_cycles:	number of mode cycles (0 for mode not required)
+ * @dummy_cycles:	number of dummy cycles (0 for dummy not required)
+ */
+struct spi_nor_xfer_cfg {
+	uint8_t		wren;
+	uint8_t		cmd;
+	int		cmd_pins;
+	uint32_t	addr;
+	int		addr_pins;
+	int		addr_width;
+	uint32_t	mode;
+	int		mode_pins;
+	int		mode_cycles;
+	int		dummy_cycles;
+};
 
-Signed-off-by: Pekon Gupta <pekon@ti.com>
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
----
- drivers/mtd/nand/nand_base.c | 43 +++++++++++++------------------------------
- include/linux/mtd/nand.h     |  7 -------
- 2 files changed, 13 insertions(+), 37 deletions(-)
+We could then build up layers of functionality, based on two fundamental primitives:
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index bd39f7b..2fff3d0 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2942,15 +2942,6 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
- 		chip->read_byte(mtd) != 'F' || chip->read_byte(mtd) != 'I')
- 		return 0;
- 
--	/*
--	 * ONFI must be probed in 8-bit mode or with NAND_BUSWIDTH_AUTO, not
--	 * with NAND_BUSWIDTH_16
--	 */
--	if (chip->options & NAND_BUSWIDTH_16) {
--		pr_err("ONFI cannot be probed in 16-bit mode; aborting\n");
--		return 0;
--	}
--
- 	chip->cmdfunc(mtd, NAND_CMD_PARAM, 0, -1);
- 	for (i = 0; i < 3; i++) {
- 		chip->read_buf(mtd, (uint8_t *)p, sizeof(*p));
-@@ -3335,13 +3326,20 @@ static bool find_full_id_nand(struct mtd_info *mtd, struct nand_chip *chip,
-  */
- static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
- 						  struct nand_chip *chip,
--						  int busw,
- 						  int *maf_id, int *dev_id,
- 						  struct nand_flash_dev *type)
- {
- 	int i, maf_idx;
-+	int busw = 0;
- 	u8 id_data[8];
- 
-+	/*
-+	 * The device detection is done in 8-bit mode. The real bus width
-+	 * will be autodetected (either ONFI or flash-based), the
-+	 * defaults re-configured and the chip->options updated.
-+	 */
-+	nand_set_defaults(chip, 0);
-+
- 	/* Select the device */
- 	chip->select_chip(mtd, 0);
- 
-@@ -3431,22 +3429,11 @@ ident_done:
- 			break;
- 	}
- 
--	if (chip->options & NAND_BUSWIDTH_AUTO) {
--		WARN_ON(chip->options & NAND_BUSWIDTH_16);
-+	/* re-configure driver using detected bus-width */
-+	if (busw) {
-+		pr_debug("reconfiguring bus width to %d bit\n", busw ? 16 : 8);
- 		chip->options |= busw;
- 		nand_set_defaults(chip, busw);
--	} else if (busw != (chip->options & NAND_BUSWIDTH_16)) {
--		/*
--		 * Check, if buswidth is correct. Hardware drivers should set
--		 * chip correct!
--		 */
--		pr_info("NAND device: Manufacturer ID:"
--			" 0x%02x, Chip ID: 0x%02x (%s %s)\n", *maf_id,
--			*dev_id, nand_manuf_ids[maf_idx].name, mtd->name);
--		pr_warn("NAND bus width %d instead %d bit\n",
--			   (chip->options & NAND_BUSWIDTH_16) ? 16 : 8,
--			   busw ? 16 : 8);
--		return ERR_PTR(-EINVAL);
- 	}
- 
- 	nand_decode_bbm_options(mtd, chip, id_data);
-@@ -3497,17 +3484,13 @@ ident_done:
- int nand_scan_ident(struct mtd_info *mtd, int maxchips,
- 		    struct nand_flash_dev *table)
- {
--	int i, busw, nand_maf_id, nand_dev_id;
-+	int i, nand_maf_id, nand_dev_id;
- 	struct nand_chip *chip = mtd->priv;
- 	struct nand_flash_dev *type;
- 
--	/* Get buswidth to select the correct functions */
--	busw = chip->options & NAND_BUSWIDTH_16;
--	/* Set the default functions */
--	nand_set_defaults(chip, busw);
- 
- 	/* Read the flash type */
--	type = nand_get_flash_type(mtd, chip, busw,
-+	type = nand_get_flash_type(mtd, chip,
- 				&nand_maf_id, &nand_dev_id, table);
- 
- 	if (IS_ERR(type)) {
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 9e6c8f9..d5cc642 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -183,13 +183,6 @@ typedef enum {
- #define NAND_OWN_BUFFERS	0x00020000
- /* Chip may not exist, so silence any errors in scan */
- #define NAND_SCAN_SILENT_NODEV	0x00040000
--/*
-- * Autodetect nand buswidth with readid/onfi.
-- * This suppose the driver will configure the hardware in 8 bits mode
-- * when calling nand_scan_ident, and update its configuration
-- * before calling nand_scan_tail.
-- */
--#define NAND_BUSWIDTH_AUTO      0x00080000
- 
- /* Options set by nand scan */
- /* Nand scan has allocated controller struct */
--- 
-1.8.1.5
+	int (*read_xfer)(struct spi_nor_info *info,
+			 struct spi_nor_xfer_cfg *cfg,
+			 uint8_t *buf, size_t len);
+	
+	int (*write_xfer)(struct spi_nor_info *info,
+			  struct spi_nor_xfer_cfg *cfg,
+			  uint8_t *buf, size_t len);
+	
+Default implementations for standard operations could follow:
+
+	int (*read_reg)(struct spi_nor_info *info,
+			uint8_t cmd, uint8_t *reg, int len);
+	int (*write_reg)(struct spi_nor_info *info,
+			 uint8_t cmd, uint8_t *reg, int len,
+			 int wren, int wtr);
+
+	int (*readid)(struct spi_nor_info *info, uint8_t *readid);
+	int (*wait_till_ready)(struct spi_nor_info *info);
+	
+	int (*read)(struct spi_nor_info *info, uint8_t buf, off_t offs, size_t len);
+	int (*write)(struct spi_nor_info *info, off_t offs, size_t len);
+	int (*erase_sector)(struct spi_nor_info *info, off_t offs);
+
+Each driver would be required to implement read_xfer() and write_xfer(), and
+then free to either use the default implementations, or override with
+driver-optimised implementations.
+
+In the case of a pure SPI Controller, read_xfer() and write_xfer() would simply
+flatten to spi_messages.  The key benefit is that dedicated Serial Flash
+Controllers would be able to take advantage of the richer semantics offered by
+the 'spi_nor_xfer_cfg' data.
+
+I would also expect the spi-nor framework to provide the following services,
+applicable to all Serial Flash drivers:
+
+	- determine devices properties at runtime, based on the READID data (and
+perhaps SFDP, if and when it matures!).  This should include supported opcodes
+(e.g. READ_1_1_4, READ_1_4_4, READ4B_1_1_4...), operating frequencies, mode and
+dummy requirements, means of setting Quad Enable, entering/exiting 4-byte
+addressing etc.
+
+	- provide optimal read, write and erase configurations, based on the combined
+capabilities of the Serial Flash device and the H/W Controller.
+
+	- device specific configuration (e.g. setting QE, unlock BPx bits, DYB unlocking).
+
+Getting back to reality, I realise undertaking such a task would be a huge
+commitment.  I would be keen to put forward my own proposal, but current
+circumstances mean that that is unlikely to happen any time soon.
+
+I guess in summary, while I am pleased that this area is being looked at, my own
+feeling is that proposed framework needs to be reworked for it to be generally
+applicable to other Serial Flash controllers.  Of course, another option would
+be to stick with what is currently offered, and make do.
+
+Cheers,
+
+Angus
