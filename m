@@ -1,16 +1,16 @@
-Received: from mail-yh0-f49.google.com ([209.85.213.49])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VmN3g-00037w-DI
- for linux-mtd@lists.infradead.org; Fri, 29 Nov 2013 12:20:32 +0000
-Received: by mail-yh0-f49.google.com with SMTP id z20so6533814yhz.22
- for <linux-mtd@lists.infradead.org>; Fri, 29 Nov 2013 04:20:10 -0800 (PST)
+Received: from mail-yh0-f44.google.com ([209.85.213.44])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VmN3i-0006oh-NX
+ for linux-mtd@lists.infradead.org; Fri, 29 Nov 2013 12:20:35 +0000
+Received: by mail-yh0-f44.google.com with SMTP id f64so6727955yha.17
+ for <linux-mtd@lists.infradead.org>; Fri, 29 Nov 2013 04:20:16 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  dwmw2@infradead.org
-Subject: [PATCH v3 18/36] mtd: st_spi_fsm: Prepare read/write sequences
- according to configuration
-Date: Fri, 29 Nov 2013 12:19:07 +0000
-Message-Id: <1385727565-25794-19-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH v3 21/36] mtd: st_spi_fsm: Update the flash Volatile
+ Configuration Register
+Date: Fri, 29 Nov 2013 12:19:10 +0000
+Message-Id: <1385727565-25794-22-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1385727565-25794-1-git-send-email-lee.jones@linaro.org>
 References: <1385727565-25794-1-git-send-email-lee.jones@linaro.org>
 Cc: angus.clark@st.com, linus.walleij@linaro.org,
@@ -24,42 +24,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Firstly we search for our preference read/write configuration based on a
-given chip's capabilities. Then we actually set up the message sequence
-accordingly.
+The FSM Serial Flash Controller is driven by issuing a standard set of
+register writes we call a message sequence. This patch supplies a method
+to prepare the message sequence responsible for updating a chip's VCR.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/devices/st_spi_fsm.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ drivers/mtd/devices/st_spi_fsm.c | 32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
 diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index 7d690c7..14891ea 100644
+index 325fd7a..9449005 100644
 --- a/drivers/mtd/devices/st_spi_fsm.c
 +++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -267,6 +267,23 @@ static void stfsm_prepare_rw_seq(struct stfsm *fsm,
- 	seq->seq[i++] = STFSM_INST_STOP;
+@@ -68,6 +68,23 @@ static struct stfsm_seq stfsm_seq_erase_sector = {
+ 		    SEQ_CFG_STARTSEQ),
+ };
+ 
++static struct stfsm_seq stfsm_seq_wrvcr = {
++	.seq_opc[0] = (SEQ_OPC_PADS_1 | SEQ_OPC_CYCLES(8) |
++		       SEQ_OPC_OPCODE(FLASH_CMD_WREN) | SEQ_OPC_CSDEASSERT),
++	.seq_opc[1] = (SEQ_OPC_PADS_1 | SEQ_OPC_CYCLES(8) |
++		       SEQ_OPC_OPCODE(FLASH_CMD_WRVCR)),
++	.seq = {
++		STFSM_INST_CMD1,
++		STFSM_INST_CMD2,
++		STFSM_INST_STA_WR1,
++		STFSM_INST_STOP,
++	},
++	.seq_cfg = (SEQ_CFG_PADS_1 |
++		    SEQ_CFG_READNOTWRITE |
++		    SEQ_CFG_CSDEASSERT |
++		    SEQ_CFG_STARTSEQ),
++};
++
+ static int stfsm_n25q_en_32bit_addr_seq(struct stfsm_seq *seq)
+ {
+ 	seq->seq_opc[0] = (SEQ_OPC_PADS_1 | SEQ_OPC_CYCLES(8) |
+@@ -189,6 +206,21 @@ static int stfsm_enter_32bit_addr(struct stfsm *fsm, int enter)
+ 	return 0;
  }
  
-+static int stfsm_search_prepare_rw_seq(struct stfsm *fsm,
-+				       struct stfsm_seq *seq,
-+				       struct seq_rw_config *cfgs)
++static int stfsm_wrvcr(struct stfsm *fsm, uint8_t data)
 +{
-+	struct seq_rw_config *config;
++	struct stfsm_seq *seq = &stfsm_seq_wrvcr;
 +
-+	config = stfsm_search_seq_rw_configs(fsm, cfgs);
-+	if (!config) {
-+		dev_err(fsm->dev, "failed to find suitable config\n");
-+		return -EINVAL;
-+	}
++	dev_dbg(fsm->dev, "writing VCR 0x%02x\n", data);
 +
-+	stfsm_prepare_rw_seq(fsm, seq, config);
++	seq->status = (STA_DATA_BYTE1(data) | STA_PADS_1 | STA_CSDEASSERT);
++
++	stfsm_load_seq(fsm, seq);
++
++	stfsm_wait_seq(fsm);
 +
 +	return 0;
 +}
 +
- static void stfsm_read_jedec(struct stfsm *fsm, uint8_t *const jedec)
- {
- 	const struct stfsm_seq *seq = &stfsm_seq_read_jedec;
+ /*
+  * SoC reset on 'boot-from-spi' systems
+  *
 -- 
 1.8.3.2
