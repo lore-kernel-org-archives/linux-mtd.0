@@ -1,21 +1,20 @@
 Received: from mail-yh0-f50.google.com ([209.85.213.50])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VmN4D-0003EH-Kd
- for linux-mtd@lists.infradead.org; Fri, 29 Nov 2013 12:21:06 +0000
-Received: by mail-yh0-f50.google.com with SMTP id b6so6578392yha.23
- for <linux-mtd@lists.infradead.org>; Fri, 29 Nov 2013 04:20:45 -0800 (PST)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VmN47-0006uM-8x
+ for linux-mtd@lists.infradead.org; Fri, 29 Nov 2013 12:21:07 +0000
+Received: by mail-yh0-f50.google.com with SMTP id b6so6704790yha.37
+ for <linux-mtd@lists.infradead.org>; Fri, 29 Nov 2013 04:20:39 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  dwmw2@infradead.org
-Subject: [PATCH v3 36/36] ARM: STi: Add support for the FSM Serial Flash
- Controller
-Date: Fri, 29 Nov 2013 12:19:25 +0000
-Message-Id: <1385727565-25794-37-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH v3 33/36] mtd: st_spi_fsm: Supply the MX25xxx chip specific
+ configuration call-back
+Date: Fri, 29 Nov 2013 12:19:22 +0000
+Message-Id: <1385727565-25794-34-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1385727565-25794-1-git-send-email-lee.jones@linaro.org>
 References: <1385727565-25794-1-git-send-email-lee.jones@linaro.org>
 Cc: angus.clark@st.com, linus.walleij@linaro.org,
- Lee Jones <lee.jones@linaro.org>, linux-mtd@lists.infradead.org,
- Srinivas Kandagatla <srinivas.kandagatla@st.com>
+ Lee Jones <lee.jones@linaro.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,63 +24,135 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Here we add the necessary device nodes required for successful device
-probing and Pinctrl setup for the FSM.
-
-Cc: Srinivas Kandagatla <srinivas.kandagatla@st.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- arch/arm/boot/dts/stih416-b2105.dts    | 14 ++++++++++++++
- arch/arm/boot/dts/stih416-pinctrl.dtsi | 12 ++++++++++++
- 2 files changed, 26 insertions(+)
+ drivers/mtd/devices/st_spi_fsm.c | 84 ++++++++++++++++++++++++++++++++++++++++
+ drivers/mtd/devices/st_spi_fsm.h |  4 +-
+ 2 files changed, 87 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/stih416-b2105.dts b/arch/arm/boot/dts/stih416-b2105.dts
-index e518eb0..7acdfdf 100644
---- a/arch/arm/boot/dts/stih416-b2105.dts
-+++ b/arch/arm/boot/dts/stih416-b2105.dts
-@@ -33,6 +33,20 @@
- 			status = "okay";
- 		};
+diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
+index f1276e5..be66a49 100644
+--- a/drivers/mtd/devices/st_spi_fsm.c
++++ b/drivers/mtd/devices/st_spi_fsm.c
+@@ -98,6 +98,31 @@ static struct seq_rw_config n25q_read4_configs[] = {
+ 	{0x00,			0,			0, 0, 0, 0x00, 0, 0},
+ };
  
-+		/* FSM */
-+		spifsm: spifsm@fe902000{
-+		        compatible         = "st,spi-fsm", "simple-bus";
-+		        reg                =  <0xfe902000 0x1000>;
-+		        reg-names          = "spi-fsm";
-+		        pinctrl-0          = <&pinctrl_fsm>;
++/*
++ * [MX25xxx] Configuration
++ */
++#define MX25_STATUS_QE			(0x1 << 6)
 +
-+			st,syscfg	   = <&syscfg_rear>;
-+		        st,boot-device-reg = <0x958>;
-+		        st,boot-device-spi = <0x1a>;
++static int stfsm_mx25_en_32bit_addr_seq(struct stfsm_seq *seq)
++{
++	seq->seq_opc[0] = (SEQ_OPC_PADS_1 |
++			   SEQ_OPC_CYCLES(8) |
++			   SEQ_OPC_OPCODE(FLASH_CMD_EN4B_ADDR) |
++			   SEQ_OPC_CSDEASSERT);
 +
-+		        status = "okay";
-+		};
++	seq->seq[0] = STFSM_INST_CMD1;
++	seq->seq[1] = STFSM_INST_WAIT;
++	seq->seq[2] = STFSM_INST_STOP;
 +
- 		leds {
- 			compatible	= "gpio-leds";
- 			fp_led {
-diff --git a/arch/arm/boot/dts/stih416-pinctrl.dtsi b/arch/arm/boot/dts/stih416-pinctrl.dtsi
-index 10bb4df..9a48710 100644
---- a/arch/arm/boot/dts/stih416-pinctrl.dtsi
-+++ b/arch/arm/boot/dts/stih416-pinctrl.dtsi
-@@ -235,6 +235,18 @@
- 				};
- 			};
++	seq->seq_cfg = (SEQ_CFG_PADS_1 |
++			SEQ_CFG_ERASE |
++			SEQ_CFG_READNOTWRITE |
++			SEQ_CFG_CSDEASSERT |
++			SEQ_CFG_STARTSEQ);
++
++	return 0;
++}
++
+ static struct stfsm_seq stfsm_seq_read; 	/* Dynamically populated */
+ static struct stfsm_seq stfsm_seq_write;	/* Dynamically populated */
+ static struct stfsm_seq stfsm_seq_en_32bit_addr;/* Dynamically populated */
+@@ -620,6 +645,65 @@ static int stfsm_prepare_rwe_seqs_default(struct stfsm *fsm)
+ 	return 0;
+ }
  
-+			fsm {
-+				pinctrl_fsm: fsm {
-+					st,pins {
-+						spi-fsm-clk     = <&PIO12 2     OUT     ALT1>;
-+						spi-fsm-cs      = <&PIO12 3     OUT     ALT1>;
-+						spi-fsm-mosi    = <&PIO12 4     OUT     ALT1>;
-+						spi-fsm-miso    = <&PIO12 5     IN      ALT1>;
-+						spi-fsm-hol     = <&PIO12 6     OUT     ALT1>;
-+						spi-fsm-wp      = <&PIO12 7     OUT     ALT1>;
-+					};
-+				};
-+			};
- 		};
++static int stfsm_mx25_config(struct stfsm *fsm)
++{
++	uint32_t flags = fsm->info->flags;
++	uint32_t data_pads;
++	uint8_t sta;
++	int ret;
++	bool soc_reset;
++
++	/* Disable support for 'WRITE_1_4_4' (limited to 20MHz which is of
++	 * marginal benefit on our hardware and doesn't justify implementing
++	 * different READ/WRITE frequencies).
++	 */
++	flags &= ~FLASH_FLAG_WRITE_1_4_4;
++
++	/*
++	 * Use default READ/WRITE sequences
++	 */
++	ret = stfsm_prepare_rwe_seqs_default(fsm);
++	if (ret)
++		return ret;
++
++	/*
++	 * Configure 32-bit Address Support
++	 */
++	if (flags & FLASH_FLAG_32BIT_ADDR) {
++		/* Configure 'enter_32bitaddr' FSM sequence */
++		stfsm_mx25_en_32bit_addr_seq(&stfsm_seq_en_32bit_addr);
++
++		soc_reset = stfsm_can_handle_soc_reset(fsm);
++		if (soc_reset || !fsm->booted_from_spi) {
++			/* If we can handle SoC resets, we enable 32-bit address
++			 * mode pervasively */
++			stfsm_enter_32bit_addr(fsm, 1);
++
++		} else {
++			/* Else, enable/disable 32-bit addressing before/after
++			 * each operation */
++			fsm->configuration = (CFG_READ_TOGGLE_32BIT_ADDR |
++					      CFG_WRITE_TOGGLE_32BIT_ADDR |
++					      CFG_ERASESEC_TOGGLE_32BIT_ADDR);
++			/* It seems a small delay is required after exiting
++			 * 32-bit mode following a write operation.  The issue
++			 * is under investigation.
++			 */
++			fsm->configuration |= CFG_WRITE_EX_32BIT_ADDR_DELAY;
++		}
++	}
++
++	/* For QUAD mode, set 'QE' STATUS bit */
++	data_pads = ((stfsm_seq_read.seq_cfg >> 16) & 0x3) + 1;
++	if (data_pads == 4) {
++		stfsm_read_status(fsm, FLASH_CMD_RDSR, &sta);
++		sta |= MX25_STATUS_QE;
++		stfsm_write_status(fsm, sta, 1);
++	}
++
++	return 0;
++}
++
+ static int stfsm_n25q_config(struct stfsm *fsm)
+ {
+ 	uint32_t flags = fsm->info->flags;
+diff --git a/drivers/mtd/devices/st_spi_fsm.h b/drivers/mtd/devices/st_spi_fsm.h
+index 5143843..10c12ba 100644
+--- a/drivers/mtd/devices/st_spi_fsm.h
++++ b/drivers/mtd/devices/st_spi_fsm.h
+@@ -318,6 +318,7 @@ struct flash_info {
+ };
  
- 		pin-controller-rear {
+ static int stfsm_n25q_config(struct stfsm *fsm);
++static int stfsm_mx25_config(struct stfsm *fsm);
+ 
+ static struct flash_info flash_types[] = {
+ 	/*
+@@ -350,7 +351,8 @@ static struct flash_info flash_types[] = {
+ 		   FLASH_FLAG_SE_4K		| \
+ 		   FLASH_FLAG_SE_32K)
+ 	{ "mx25l25635e", 0xc22019, 0, 64*1024, 512,
+-	  (MX25_FLAG | FLASH_FLAG_32BIT_ADDR | FLASH_FLAG_RESET), 70, NULL },
++	  (MX25_FLAG | FLASH_FLAG_32BIT_ADDR | FLASH_FLAG_RESET), 70,
++	  stfsm_mx25_config },
+ 
+ #define N25Q_FLAG (FLASH_FLAG_READ_WRITE	| \
+ 		   FLASH_FLAG_READ_FAST		| \
 -- 
 1.8.3.2
