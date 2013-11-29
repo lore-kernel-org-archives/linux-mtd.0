@@ -1,23 +1,27 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
+Received: from f403.i.mail.ru ([185.5.136.74])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VmNBW-0007jr-4U
- for linux-mtd@lists.infradead.org; Fri, 29 Nov 2013 12:28:39 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: RE: [PATCH] mtd: nand: auto-detection of NAND bus-width from ONFI
- param or nand_id[]
-Date: Fri, 29 Nov 2013 12:28:06 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA5023E@DBDE04.ent.ti.com>
-References: <1385382728-7913-1-git-send-email-pekon@ti.com>
- <20131129121806.GA2815@localhost>
-In-Reply-To: <20131129121806.GA2815@localhost>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
+ id 1VmNIA-0007yA-UJ
+ for linux-mtd@lists.infradead.org; Fri, 29 Nov 2013 12:35:32 +0000
+From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+To: =?UTF-8?B?RXplcXVpZWwgR2FyY2lh?= <ezequiel.garcia@free-electrons.com>
+Subject: =?UTF-8?B?UmU6IFtQQVRDSCB2NSAxLzNdIG10ZDogbmFuZDogZ3BpbzogQWRkIERUIHBy?=
+ =?UTF-8?B?b3BlcnR5IHRvIGF1dG9tYXRpY2FsbHkgZGV0ZXJtaW5lIGJ1cyB3aWR0aA==?=
+Mime-Version: 1.0
+Date: Fri, 29 Nov 2013 16:35:04 +0400
+Message-ID: <1385728504.788280308@f403.i.mail.ru>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-Cc: Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Balbi,
- Felipe" <balbi@ti.com>, Artem Bityutskiy <dedekind1@gmail.com>
+In-Reply-To: <20131129122551.GC2815@localhost>
+References: <1384343884-29622-1-git-send-email-shc_work@mail.ru>
+ <20131127012338.GS9468@ld-irv-0074.broadcom.com>
+ <20131129122551.GC2815@localhost>
+Cc: =?UTF-8?B?RXJpYyBNaWFv?= <eric.y.miao@gmail.com>,
+ =?UTF-8?B?QXJ0ZW0gQml0eXV0c2tpeQ==?= <dedekind1@gmail.com>,
+ =?UTF-8?B?SGFvamlhbiBaaHVhbmc=?= <haojian.zhuang@gmail.com>,
+ linux-mtd@lists.infradead.org, =?UTF-8?B?UGVrb24gR3VwdGE=?= <pekon@ti.com>,
+ =?UTF-8?B?QnJpYW4gTm9ycmlz?= <computersforpeace@gmail.com>,
+ =?UTF-8?B?RGF2aWQgV29vZGhvdXNl?= <dwmw2@infradead.org>
+Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,15 +31,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PkZyb206IEV6ZXF1aWVsIEdhcmNpYSBbbWFpbHRvOmV6ZXF1aWVsLmdhcmNpYUBmcmVlLWVsZWN0
-cm9ucy5jb21dDQo+DQo+SSdtIG5vdCByZWFsbHkgY29udmluY2VkIGFib3V0IHRoZSBwYXRoIHlv
-dSdyZSB0YWtpbmcgaGVyZSwgYXMgSSB0aGluayB0aGUNCj5zb2x1dGlvbiBzaG91bGQgYmUgYSBi
-aXQgc2ltcGxlci4NCj4NCj5JJ3ZlIHByZXBhcmVkIGFuIFJGQyB3aXRoIG15IHByb3Bvc2FsLCBi
-YXNlZCBvbiB0aGlzIHNhbWUgcGF0Y2guIExldCBtZQ0KPmZpbmlzaCBzb21lIHRlc3RpbmdzIGFu
-ZCBwb3N0IGl0IChJIHRvb2sgdGhlIGxpYmVydHkgb2YgYWRkaW5nIHlvdXIgU09CDQo+dG8gaXQp
-Lg0KPiANClN1cmUgLi4gcGx6IGtlZXAgbWUgaW4gQ0Mgd2hlbiB5b3Ugc2VuZCB5b3VyIHBhdGNo
-Li4NCkkgYmVsaWV2ZSB0aGF0IGhhdmluZyBnb29kIGFuZCBlZmZpY2llbnQgY29kZSBpcyBtb3Jl
-IGltcG9ydGFudCB0aGFuDQpoYXZpbmcgb3duZXJzaGlwL2F1dGhvcnNoaXAgb2YgcGF0Y2hlcy4g
-U28gcGx6IGZlZWwgZnJlZSB0byBleHRlbmQgb3INCm1vZGlmeSB0aGlzIGN1cnJlbnQgcGF0Y2gg
-KGFuZCBzdWJtaXQgd2l0aCB5b3VyIGF1dGhvcnNoaXApIGlmIHlvdSBmZWVsDQppdCdzIHBhcnRs
-eSB1c2VmdWwuDQoNCndpdGggcmVnYXJkcywgcGVrb24NCg==
+PiBIaSBCcmlhbiwKPiAKPiBPbiBUdWUsIE5vdiAyNiwgMjAxMyBhdCAwNToyMzozOFBNIC0wODAw
+LCBCcmlhbiBOb3JyaXMgd3JvdGU6Cj4gWy4uXQo+ID4gPiAKPiA+ID4gSWYgd2UgZG8gcmVzb3J0
+IHRvIGEgbmV3IGJpbmRpbmcgZm9yIGF1dG8tYnVzd2lkdGgsIGl0IHNob3VsZCBiZSBhCj4gPiA+
+IGdlbmVyaWMgb25lIHRoYXQgYWxsIE5BTkQgZHJpdmVycyBjYW4gdXNlLgo+IAo+IFdoeSBkbyB3
+ZSBuZWVkIHlldCBhbm90aGVyIGJpbmRpbmcgdG8gZGVzY3JpYmUgc29tZXRoaW5nIHRoYXQncwo+
+IGNvbXBsZXRlbHkgZGlzY292ZXJhYmxlPwo+IAo+IEknbSB3b3JraW5nIG9uICpyZW1vdmluZyog
+YW55IG5lZWQgdG8gc2V0IHRoZSBidXMgd2lkdGgsIGVpdGhlciBmcm9tIHRoZQo+IGRyaXZlciBv
+ciBmcm9tIHRoZSBEVCwgc28gSSBzZWUgdGhpcyBwYXRjaCBhcyBzdGVwIGJhY2t3YXJkcy4KPiAK
+PiBDYW4gYW55b25lIGhlbHAgbWUgdW5kZXJzdGFuZCBpZiB0aGVyZSdzICphbnkqIHZhbGlkIHVz
+ZSBjYXNlIHdoZXJlIHdlCj4gd2FudCB0byBzcGVjaWZ5IGEtcHJpb3JpIHRoZSBidXMgd2lkdGgs
+IGNvbnNpZGVyaW5nIGl0J3MgY29tcGxldGVseQo+IGRpc2NvdmVyYWJsZSBhdCBydW4tdGltZT8K
+Ckxvb2sgYXQgbXkgcHJldmlvdXMgYXR0ZW1wdDoKaHR0cDovL3Blcm1hbGluay5nbWFuZS5vcmcv
+Z21hbmUubGludXguZHJpdmVycy5tdGQvNDc0MTEKaHR0cDovL3Blcm1hbGluay5nbWFuZS5vcmcv
+Z21hbmUubGludXguZHJpdmVycy5tdGQvNDc0MTMKCi0tLQo=
