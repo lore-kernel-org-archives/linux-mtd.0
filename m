@@ -1,24 +1,22 @@
-Received: from smtprelay01.ispgateway.de ([80.67.31.28])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VmKIp-0002VD-JC
- for linux-mtd@lists.infradead.org; Fri, 29 Nov 2013 09:24:00 +0000
-From: "Rosenberger, Philipp" <Philipp.Rosenberger@xse.de>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] of_mtd: Fix header file include guard
-Date: Fri, 29 Nov 2013 09:22:44 +0000
-Message-ID: <52985D12.6060901@xse.de>
-References: <52972EEE.8070704@xse.de>
- <20131129081113.GA20013@norris.computersforpeace.net>
-In-Reply-To: <20131129081113.GA20013@norris.computersforpeace.net>
-Content-Language: de-DE
-Content-Type: text/plain; charset="iso-8859-1"
-Content-ID: <BBDCEA37ABFAE644B9ABD6ED275BD942@xse.local>
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <5298601F.4090200@ti.com>
+Date: Fri, 29 Nov 2013 11:36:31 +0200
+From: "ivan.khoronzhuk" <ivan.khoronzhuk@ti.com>
 MIME-Version: 1.0
-Cc: Grant Likely <grant.likely@linaro.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Rob Herring <rob.herring@calxeda.com>
+To: Sekhar Nori <nsekhar@ti.com>
+Subject: Re: [PATCH v2] ARM: davinci: aemif: get rid of davinci-nand driver
+ dependency on aemif
+References: <1385562694-24618-1-git-send-email-ivan.khoronzhuk@ti.com>
+ <52981A4B.70703@ti.com>
+In-Reply-To: <52981A4B.70703@ti.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, grygorii.strashko@ti.com,
+ linux@arm.linux.org.uk, pawel.moll@arm.com, swarren@wwwdotorg.org,
+ ijc+devicetree@hellion.org.uk, galak@kernel.crashing.org,
+ rob.herring@calxeda.com, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, rob@landley.net,
+ Santosh Shilimkar <santosh.shilimkar@ti.com>, computersforpeace@gmail.com,
+ dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,123 +26,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
-
-Thanks for your replay and all the hints about submitting the correct
-way. Is it ok to paste the full git format-patch output like this?
-
->From a2e84efe0d5335547ca3e6c0a8bf8a026b0f2353 Mon Sep 17 00:00:00 2001
-From: Philipp Rosenberger <philipp.rosenberger@xse.de>
-Date: Thu, 28 Nov 2013 12:36:52 +0100
-Subject: [PATCH] of_mtd: Fix header file include guard
-
-It seems the include guard was copied from of_net.h.
-
-Signed-off-by: Philipp Rosenberger <philipp.rosenberger@xse.de>
----
- include/linux/of_mtd.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/of_mtd.h b/include/linux/of_mtd.h
-index 6f10e93..cb32d9c 100644
---- a/include/linux/of_mtd.h
-+++ b/include/linux/of_mtd.h
-@@ -7,7 +7,7 @@
-  */
-
- #ifndef __LINUX_OF_MTD_H
--#define __LINUX_OF_NET_H
-+#define __LINUX_OF_MTD_H
-
- #ifdef CONFIG_OF_MTD
-
---
-1.7.9.5
-
-On 29.11.2013 09:11, Brian Norris wrote:
-> + device tree guys
->
-> Hi Grant/Rob,
->
-> It looks like this header is technically owned by you guys. Once we have
-> a proper submission, should I merge this sort of change through MTD, or
-> do one of you want to take care of it?
->
-> Hi Philpp,
->
-> Thanks for the patch! There are a few things to fix up though.
->
-> On Thu, Nov 28, 2013 at 11:53:39AM +0000, Rosenberger, Philipp wrote:
->> It seems the include guard was copied from of_net.h.
->
-> Good catch.
->
-> Note that all patches require a "Signed-off-by" line in the patch
-> description, to signify (among other things) that this is your work and
-> that you are submitting it under the GPLv2 license. See
-> Documentation/SubmittingPatches (esp. point 12).
->
+On 11/29/2013 06:38 AM, Sekhar Nori wrote:
+> On Wednesday 27 November 2013 08:01 PM, Ivan Khoronzhuk wrote:
+>> The problem that the set timings code contains the call of Davinci
+>> platform function davinci_aemif_setup_timing() which is not
+>> accessible if kernel is built for another platform like Keystone.
+>>
+>> The Keysone platform is going to use TI AEMIF driver.
+>> If TI AEMIF is used we don't need to set timings and bus width.
+>> It is done by AEMIF driver.
+>>
+>> To get rid of davinci-nand driver dependency on aemif platform code
+>> we moved aemif code to davinci platform.
+>>
+>> The platform AEMIF code (aemif.c) has to be removed once Davinci
+>> will be converted to DT and use ti-aemif.c driver.
+>>
+>> The long device name "davinci_ntosd2_nandflash_device" was renamed
+>> to "ntosd2_nandflash" as requested by Sekhar Nori, because after
+>> adding changes the line is so broken that its almost unreadable.
+>>
+>> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+> 
+> This patch can be simplified in some places.
+> 
 >> ---
->>  include/linux/of_mtd.h |    2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
+>> v2..v1:
+>> - enabled AEMIF clock
+>> - removed EXPORT_SYMBOL(davinci_aemif_setup)
+>> - renamed ugly name davinci_ntosd2_nandflash_device
 >>
->> diff --git a/include/linux/of_mtd.h b/include/linux/of_mtd.h
->> index 6f10e93..cb32d9c 100644
->> --- a/include/linux/of_mtd.h
->> +++ b/include/linux/of_mtd.h
->> @@ -7,7 +7,7 @@
->>   */
+>> CC:
+>> Sekhar Nori <nsekhar@ti.com>
 >>
->>  #ifndef __LINUX_OF_MTD_H
->> -#define __LINUX_OF_NET_H
->> +#define __LINUX_OF_MTD_H
->>
->>  #ifdef CONFIG_OF_MTD
->>
->> -- 1.7.9.5
->>
->> XS Embedded GmbH
->> Peterzeller Strasse 8
->> D-78048 Villingen - Schwenningen
->>
->> Telefon +49 (7721) 4060 - 428
->> Fax     +49 (7721) 4060 - 499
->>
->> www.xse.de
->> Philipp.Rosenberger@xse.de
->>
->> :::::::::: based.on.visions ::::::::::
->>
->>
->> XS Embedded GmbH
->> Gesch=E4ftsf=FChrung: Michael Maier, Rainer Oder
->>
->> Handelsregister: Amtsgericht Freiburg i.Br., HRB 705237
->> Sitz der Gesellschaft: Peterzeller Strasse 8, 78048 Villingen-Schwenning=
-en
->> USt-Id Nummer: DE268786819
->>
->> Confidentiality Notice: This e-mail message, including any attachments, =
-is for the sole use of the intended recipient(s) and may contain confidenti=
-al and privileged information. Any unauthorized review, use, disclosure or =
-distribution is prohibited. If you are not the intended recipient, please c=
-ontact the sender by return e-mail and destroy all copies of the original m=
-essage.
->
-> This confidentiality notice is incongruous with sending patches to a
-> public mailing list, for inclusion in an open source project. This
-> message (combined with a lack of a Signed-off-by) means we cannot take
-> your patch. Please remove this footer and resubmit, with a CC to
-> linux-mtd@infradead.org and devicetree@vger.kernel.org.
->
-> Thanks,
-> Brian
->
->
+>>   arch/arm/mach-davinci/aemif.c                   |   89 ++++++++++++++++++++++-
+>>   arch/arm/mach-davinci/board-da830-evm.c         |    3 +
+>>   arch/arm/mach-davinci/board-da850-evm.c         |    3 +
+>>   arch/arm/mach-davinci/board-dm355-evm.c         |    5 ++
+>>   arch/arm/mach-davinci/board-dm355-leopard.c     |    5 ++
+>>   arch/arm/mach-davinci/board-dm365-evm.c         |    4 +
+>>   arch/arm/mach-davinci/board-dm644x-evm.c        |    5 ++
+>>   arch/arm/mach-davinci/board-dm646x-evm.c        |    3 +
+>>   arch/arm/mach-davinci/board-mityomapl138.c      |    3 +
+>>   arch/arm/mach-davinci/board-neuros-osd2.c       |   13 +++-
+>>   arch/arm/mach-davinci/devices-tnetv107x.c       |    3 +
+>>   drivers/mtd/nand/davinci_nand.c                 |   23 ------
+>>   include/linux/platform_data/mtd-davinci-aemif.h |    5 +-
+> 
+> Most of these boards dont really have a timing structure defined.
+> Instead of blindly calling AEMIF setup on all boards, it can be
+> done only on boards that actually need it.
+> 
 
-Thank you for this hint. I forgot that the mailserver append this
-footer. I hope now there is no company footer anymore.
+Yes, but in such case we should add AEMIF setup to
+arch/arm/mach-davinci/board-mityomapl138.c also,
+because it has: .options = NAND_BUSWIDTH_16
 
-Best regards
-
-Philipp
+-- 
+Regards,
+Ivan Khoronzhuk
