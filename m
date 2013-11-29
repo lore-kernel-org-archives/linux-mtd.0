@@ -1,22 +1,25 @@
-Message-ID: <5298AA82.1090309@ti.com>
-Date: Fri, 29 Nov 2013 09:53:54 -0500
-From: Santosh Shilimkar <santosh.shilimkar@ti.com>
+Message-ID: <5298AB08.3090108@ti.com>
+Date: Fri, 29 Nov 2013 16:56:08 +0200
+From: Grygorii Strashko <grygorii.strashko@ti.com>
 MIME-Version: 1.0
-To: Sekhar Nori <nsekhar@ti.com>
-Subject: Re: [PATCH v2] ARM: davinci: aemif: get rid of davinci-nand driver
- dependency on aemif
-References: <1385562694-24618-1-git-send-email-ivan.khoronzhuk@ti.com>
- <52981A4B.70703@ti.com>
-In-Reply-To: <52981A4B.70703@ti.com>
+To: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>, "ivan.khoronzhuk"
+ <ivan.khoronzhuk@ti.com>, Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH 2/2] memory: ti-aemif: add bindings for AEMIF driver
+References: <1384962416-14862-1-git-send-email-ivan.khoronzhuk@ti.com>
+ <1384962416-14862-3-git-send-email-ivan.khoronzhuk@ti.com>
+ <20131120182102.GK14627@ns203013.ovh.net> <528D076A.8070806@ti.com>
+ <20131122184247.GO14627@ns203013.ovh.net>
+In-Reply-To: <20131122184247.GO14627@ns203013.ovh.net>
 Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, grygorii.strashko@ti.com,
- linux@arm.linux.org.uk, pawel.moll@arm.com, swarren@wwwdotorg.org,
- ijc+devicetree@hellion.org.uk, galak@kernel.crashing.org,
- rob.herring@calxeda.com, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, rob@landley.net,
- Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ Russell King <linux@arm.linux.org.uk>, Pawel Moll <pawel.moll@arm.com>,
+ Stephen Warren <swarren@wwwdotorg.org>, gregkh@linuxfoundation.org,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@kernel.crashing.org>, Rob Herring <rob.herring@calxeda.com>,
+ linux-kernel@vger.kernel.org, Santosh Shilimkar <santosh.shilimkar@ti.com>,
+ Rob Landley <rob@landley.net>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,118 +29,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 28 November 2013 11:38 PM, Sekhar Nori wrote:
-> On Wednesday 27 November 2013 08:01 PM, Ivan Khoronzhuk wrote:
->> The problem that the set timings code contains the call of Davinci
->> platform function davinci_aemif_setup_timing() which is not
->> accessible if kernel is built for another platform like Keystone.
->>
->> The Keysone platform is going to use TI AEMIF driver.
->> If TI AEMIF is used we don't need to set timings and bus width.
->> It is done by AEMIF driver.
->>
->> To get rid of davinci-nand driver dependency on aemif platform code
->> we moved aemif code to davinci platform.
->>
->> The platform AEMIF code (aemif.c) has to be removed once Davinci
->> will be converted to DT and use ti-aemif.c driver.
->>
->> The long device name "davinci_ntosd2_nandflash_device" was renamed
->> to "ntosd2_nandflash" as requested by Sekhar Nori, because after
->> adding changes the line is so broken that its almost unreadable.
->>
->> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
-> 
-> This patch can be simplified in some places.
-> 
->> ---
->> v2..v1:
->> - enabled AEMIF clock
->> - removed EXPORT_SYMBOL(davinci_aemif_setup)
->> - renamed ugly name davinci_ntosd2_nandflash_device
->>
->> CC:
->> Sekhar Nori <nsekhar@ti.com>
->>
->>  arch/arm/mach-davinci/aemif.c                   |   89 ++++++++++++++++++++++-
->>  arch/arm/mach-davinci/board-da830-evm.c         |    3 +
->>  arch/arm/mach-davinci/board-da850-evm.c         |    3 +
->>  arch/arm/mach-davinci/board-dm355-evm.c         |    5 ++
->>  arch/arm/mach-davinci/board-dm355-leopard.c     |    5 ++
->>  arch/arm/mach-davinci/board-dm365-evm.c         |    4 +
->>  arch/arm/mach-davinci/board-dm644x-evm.c        |    5 ++
->>  arch/arm/mach-davinci/board-dm646x-evm.c        |    3 +
->>  arch/arm/mach-davinci/board-mityomapl138.c      |    3 +
->>  arch/arm/mach-davinci/board-neuros-osd2.c       |   13 +++-
->>  arch/arm/mach-davinci/devices-tnetv107x.c       |    3 +
->>  drivers/mtd/nand/davinci_nand.c                 |   23 ------
->>  include/linux/platform_data/mtd-davinci-aemif.h |    5 +-
-> 
-> Most of these boards dont really have a timing structure defined.
-> Instead of blindly calling AEMIF setup on all boards, it can be
-> done only on boards that actually need it.
->
-Make sense to me.
+Hi Jean-Christophe,
 
- 
->>  /*
->>   * aemif_calc_rate - calculate timing data.
->>   * @wanted: The cycle time needed in nanoseconds.
->> @@ -86,7 +98,7 @@ static int aemif_calc_rate(int wanted, unsigned long clk, int max)
->>   *
->>   * Returns 0 on success, else negative errno.
->>   */
->> -int davinci_aemif_setup_timing(struct davinci_aemif_timing *t,
->> +static int davinci_aemif_setup_timing(struct davinci_aemif_timing *t,
+On 11/22/2013 08:42 PM, Jean-Christophe PLAGNIOL-VILLARD wrote:
+> On 21:03 Wed 20 Nov     , ivan.khoronzhuk wrote:
+>> On 11/20/2013 08:21 PM, Jean-Christophe PLAGNIOL-VILLARD wrote:
+>>>> +				the chip select signal.
+>>>> +				Minimum value is 1 (0 treated as 1).
+>>>> +
+>>>> +- ti,cs-wsetup:		write setup width, ns
+>>>> +				Time between the beginning of a memory cycle
+>>>> +				and the activation of write strobe.
+>>>> +				Minimum value is 1 (0 treated as 1).
+>>>> +
+>>>> +- ti,cs-wstrobe:	write strobe width, ns
+>>>> +				Time between the activation and deactivation of
+>>>> +				the write strobe.
+>>>> +				Minimum value is 1 (0 treated as 1).
+>>>> +
+>>>> +- ti,cs-whold:		write hold width, ns
+>>>> +				Time between the deactivation of the write
+>>>> +				strobe and the end of the cycle (which may be
+>>>> +				either an address change or the deactivation of
+>>>> +				the chip select signal.
+>>>> +				Minimum value is 1 (0 treated as 1).
+>>>> +
+>>>> +If any of the above parameters are absent, current parameter value will be taken
+>>>> +from the corresponding HW reg.
+>>>> +
+>>>> +The name for cs node must be in format csN, where N is the cs number.
+>>>
+>>> this is wired we should use reg instead to represent the cs as done for SPI
+>>> or a an other property
+>>>
+>>> Best Regards,
+>>> J.
+>>>
+>>
+>> Ok, I will add new property cs-chipselect like following :
+>>
+>> ti,cs-chipselect:	number of chipselect. Indicates on the
+>> 			aemif driver which chipselect is used
+>> 			for accessing the memory.
+>> 			For compatibles "ti,davinci-aemif" and
+>> 			"ti,keystone-aemif" it can be in range [0-3].
+>> 			For compatible "ti,omap-L138-aemif" range is [2-5].
+>>
+>> Is it OK?
 > 
-> passing the clkrate to this function helps avoid a repeated clk_get().
-> I made these changes locally and here is the updated patch:
->
-probably a good idea.
- 
-> ---8<---
-> From cdea7d6f753db09447fe2232959864ab999fe565 Mon Sep 17 00:00:00 2001
-> From: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
-> Date: Wed, 27 Nov 2013 16:31:34 +0200
-> Subject: [PATCH 1/1] ARM: davinci: aemif: get rid of davinci-nand driver
->  dependency on aemif
+> yes
 > 
-> The problem that the set timings code contains the call of Davinci
-> platform function davinci_aemif_setup_timing() which is not
-> accessible if kernel is built for another platform like Keystone.
+> I just have one issue the whole memory concept
 > 
-> The Keysone platform is going to use TI AEMIF driver.
-> If TI AEMIF is used we don't need to set timings and bus width.
-> It is done by AEMIF driver. The TI AEMIF driver cannot
-> be used on all current DaVinci platforms since it is DT-only.
+> for me we should do as done on pinctrl have a phandle on the device that
+> require it and handle it at device core level
 > 
-> To get rid of davinci-nand driver dependency on aemif platform code
-> we moved aemif code to davinci platform.
-> 
-> The platform AEMIF code (aemif.c) has to be removed once Davinci
-> will be converted to DT and use ti-aemif.c driver.
-> 
-> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
-> Signed-off-by: Sekhar Nori <nsekhar@ti.com>
-> ---
->  arch/arm/mach-davinci/aemif.c                   |  106 ++++++++++++++++++++---
->  arch/arm/mach-davinci/board-da830-evm.c         |    3 +
->  arch/arm/mach-davinci/board-da850-evm.c         |    3 +
->  arch/arm/mach-davinci/board-dm644x-evm.c        |    5 ++
->  arch/arm/mach-davinci/board-dm646x-evm.c        |    3 +
-Ivan commented same need for board-mityomapl138.c as well.
+> as the memory controller is not necessarely on the same bus as the memory
+> device them selves
 
-
->  drivers/mtd/nand/davinci_nand.c                 |   23 -----
->  include/linux/platform_data/mtd-davinci-aemif.h |    5 +-
->  7 files changed, 112 insertions(+), 36 deletions(-)
-> 
-Apart from that one board question, I think the patch is nicely
-breaking the hard dependency with nand driver and machine code
-making easier for re-use.
-
-FWIW,
-Acked-by: Santosh Shilimkar <santosh.shilimkar@ti.com>
+Could you clarify your point a bit, pls?
+Are you talking about external ASRAM, NOR and NAND chips wired to CS interface?
 
 Regards,
-Santosh
+- grygorii
