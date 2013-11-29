@@ -1,16 +1,19 @@
-Message-ID: <5298B49C.1050104@ti.com>
-Date: Fri, 29 Nov 2013 10:37:00 -0500
-From: Santosh Shilimkar <santosh.shilimkar@ti.com>
+Message-ID: <5298B440.1020905@ti.com>
+Date: Fri, 29 Nov 2013 17:35:28 +0200
+From: Grygorii Strashko <grygorii.strashko@ti.com>
 MIME-Version: 1.0
-To: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
-Subject: Re: [PATCH 0/7] Davinci nand driver fixes and updates
-References: <1384960945-14528-1-git-send-email-ivan.khoronzhuk@ti.com>
-In-Reply-To: <1384960945-14528-1-git-send-email-ivan.khoronzhuk@ti.com>
-Content-Type: text/plain; charset="ISO-8859-1"
+To: Santosh Shilimkar <santosh.shilimkar@ti.com>, Ivan Khoronzhuk
+ <ivan.khoronzhuk@ti.com>
+Subject: Re: [PATCH 1/2] memory: ti-aemif: introduce AEMIF driver
+References: <1384962416-14862-1-git-send-email-ivan.khoronzhuk@ti.com>
+ <1384962416-14862-2-git-send-email-ivan.khoronzhuk@ti.com>
+ <5298B370.3090405@ti.com>
+In-Reply-To: <5298B370.3090405@ti.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- grygorii.strashko@ti.com, Russell King <linux@arm.linux.org.uk>,
- Pawel Moll <pawel.moll@arm.com>, Stephen Warren <swarren@wwwdotorg.org>,
+ Russell King <linux@arm.linux.org.uk>, Pawel Moll <pawel.moll@arm.com>,
+ Stephen Warren <swarren@wwwdotorg.org>, gregkh@linuxfoundation.org,
  Ian Campbell <ijc+devicetree@hellion.org.uk>,
  Kumar Gala <galak@kernel.crashing.org>, Rob Herring <rob.herring@calxeda.com>,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
@@ -24,33 +27,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ivan,
+On 11/29/2013 05:32 PM, Santosh Shilimkar wrote:
+> On Wednesday 20 November 2013 10:46 AM, Ivan Khoronzhuk wrote:
+>> Add new AEMIF driver for EMIF16 Texas Instruments controller.
+>> The EMIF16 module is intended to provide a glue-less interface to
+>> a variety of asynchronous memory devices like ASRA M, NOR and NAND
+>> memory. A total of 256M bytes of any of these memories can be
+>> accessed at any given time via four chip selects with 64M byte access
 
-On Wednesday 20 November 2013 10:22 AM, Ivan Khoronzhuk wrote:
-> This series contains fixes and updates of Davinci nand driver, in
-> order to prepare it to be reused for Keystone platform.
-> 
-> V1:
-> https://lkml.org/lkml/2013/11/11/352
-> 
-> Ivan Khoronzhuk (7):
->   mtd: nand: davinci: fix driver registration
->   mtd: nand: davinci: return ENOMEM if memory allocation is failed
->   mtd: nand: davinci: check required ti,davinci-chipselect property
->   mtd: nand: davinci: simplify error handling
->   mtd: nand: davinci: move bindings under mtd
->   mtd: nand: davinci: extend description of bindings
->   mtd: nand: davinci: adjust DT properties to MTD generic
-> 
->  .../devicetree/bindings/arm/davinci/nand.txt       |   46 ----------
->  .../devicetree/bindings/mtd/davinci-nand.txt       |   92 ++++++++++++++++++++
->  drivers/mtd/nand/davinci_nand.c                    |   68 +++++++--------
->  3 files changed, 126 insertions(+), 80 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/arm/davinci/nand.txt
->  create mode 100644 Documentation/devicetree/bindings/mtd/davinci-nand.txt
-> 
-Can you please update the series with pending comments and
-send a refreshed version. 
+[...]
+
+>> +	return 0;
+>> +}
+>> +
+>> +static const struct of_device_id aemif_of_match[] = {
+>> +	{ .compatible = "ti,davinci-aemif", },
+>> +	{ .compatible = "ti,keystone-aemif", },
+>> +	{ .compatible = "ti,omap-L138-aemif", },
+>> +	{},
+>> +};
+>> +
+> Looks like you are yet to update the patches from
+> previous comments. Did I miss v2 or you haven't posted
+> that yet ?
+
+No. This is v2, actually :( (the mess was already noticed) it was posted 
+after v1 (https://lkml.org/lkml/2013/11/11/352), but people continue 
+commenting v1, for some reasons.
+
+Next version will be posted when bindings will be clarified finally.
 
 Regards,
-Santosh
+-grygorii
