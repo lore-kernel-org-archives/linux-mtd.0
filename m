@@ -1,32 +1,24 @@
-Received: from f82.i.mail.ru ([94.100.185.7])
+Received: from smtprelay01.ispgateway.de ([80.67.31.28])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VmJtD-00022k-Sp
- for linux-mtd@lists.infradead.org; Fri, 29 Nov 2013 08:57:33 +0000
-From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
-To: =?UTF-8?B?QnJpYW4gTm9ycmlz?= <computersforpeace@gmail.com>
-Subject: =?UTF-8?B?UmU6IFtQQVRDSCB2NSAxLzNdIG10ZDogbmFuZDogZ3BpbzogQWRkIERUIHBy?=
- =?UTF-8?B?b3BlcnR5IHRvIGF1dG9tYXRpY2FsbHkgZGV0ZXJtaW5lIGJ1cyB3aWR0aA==?=
-Mime-Version: 1.0
-Date: Fri, 29 Nov 2013 12:56:04 +0400
-Message-ID: <1385715364.73252787@f82.i.mail.ru>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
-In-Reply-To: <20131127012158.GR9468@ld-irv-0074.broadcom.com>
-References: <1384343884-29622-1-git-send-email-shc_work@mail.ru>
- <20131127012158.GR9468@ld-irv-0074.broadcom.com>
-Cc: =?UTF-8?B?TWFyayBSdXRsYW5k?= <mark.rutland@arm.com>,
- devicetree@vger.kernel.org,
- =?UTF-8?B?UnVzc2VsbCBLaW5n?= <linux@arm.linux.org.uk>,
- =?UTF-8?B?UGF3ZWwgTW9sbA==?= <pawel.moll@arm.com>,
- =?UTF-8?B?QXJ0ZW0gQml0eXV0c2tpeQ==?= <dedekind1@gmail.com>,
- =?UTF-8?B?SWFuIENhbXBiZWxs?= <ijc+devicetree@hellion.org.uk>,
- =?UTF-8?B?Um9iIEhlcnJpbmc=?= <rob.herring@calxeda.com>,
- linux-mtd@lists.infradead.org,
- =?UTF-8?B?SGFvamlhbiBaaHVhbmc=?= <haojian.zhuang@gmail.com>,
- =?UTF-8?B?U3RlcGhlbiBXYXJyZW4=?= <swarren@wwwdotorg.org>,
- =?UTF-8?B?RXJpYyBNaWFv?= <eric.y.miao@gmail.com>,
- =?UTF-8?B?RGF2aWQgV29vZGhvdXNl?= <dwmw2@infradead.org>
-Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+ id 1VmKIp-0002VD-JC
+ for linux-mtd@lists.infradead.org; Fri, 29 Nov 2013 09:24:00 +0000
+From: "Rosenberger, Philipp" <Philipp.Rosenberger@xse.de>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH] of_mtd: Fix header file include guard
+Date: Fri, 29 Nov 2013 09:22:44 +0000
+Message-ID: <52985D12.6060901@xse.de>
+References: <52972EEE.8070704@xse.de>
+ <20131129081113.GA20013@norris.computersforpeace.net>
+In-Reply-To: <20131129081113.GA20013@norris.computersforpeace.net>
+Content-Language: de-DE
+Content-Type: text/plain; charset="iso-8859-1"
+Content-ID: <BBDCEA37ABFAE644B9ABD6ED275BD942@xse.local>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: Grant Likely <grant.likely@linaro.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Rob Herring <rob.herring@calxeda.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,13 +28,123 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiBIaSBBbGV4YW5kZXIsCj4gCj4gV2UncmUgZGVhbGluZyB3aXRoIGEgc2ltaWxhciBpc3N1ZSBp
-biBvdGhlciBkcml2ZXJzIGN1cnJlbnRseSwgYW5kIEkKPiB0aGluayBpdCdzIHdvcnRoIHN0cmFp
-Z2h0ZW5pbmcgb3V0IHRoZSBpc3N1ZSBmb3IgYWxsIHN5c3RlbXMuCj4gCj4gT24gV2VkLCBOb3Yg
-MTMsIDIwMTMgYXQgMDM6NTg6MDJQTSArMDQwMCwgQWxleGFuZGVyIFNoaXlhbiB3cm90ZToKPiA+
-IFRoaXMgcGF0Y2ggYWRkcyBhIHByb3BlcnR5IHRvIGF1dG9tYXRpY2FsbHkgZGV0ZXJtaW5lIHRo
-ZSBOQU5ECj4gPiBidXMgd2lkdGggYnkgQ0ZJL09ORkkgaW5mb3JtYXRpb24gZnJvbSBjaGlwLiBU
-aGlzIHByb3BlcnR5IHdvcmtzCj4gPiBpZiB0aGUgYnVzIHdpZHRoIGlzIG5vdCBzcGVjaWZpZWQg
-ZXhwbGljaXRseS4KLi4uCgpIZWxsbyBCcmlhbi4KQ2FuIGF0IGxlYXN0IHBhcnQgWzIvM10gIm10
-ZDogbmFuZDogZ3BpbzogVXNlIGRldm1fZ3Bpb19yZXF1ZXN0X29uZSgpIHdoZXJlIHBvc3NpYmxl
-IgpiZSBhcHBsaWVkIGF0IHRoaXMgdGltZT8KVGhhbmtzLgoKLS0tCg==
+Hi Brian,
+
+Thanks for your replay and all the hints about submitting the correct
+way. Is it ok to paste the full git format-patch output like this?
+
+>From a2e84efe0d5335547ca3e6c0a8bf8a026b0f2353 Mon Sep 17 00:00:00 2001
+From: Philipp Rosenberger <philipp.rosenberger@xse.de>
+Date: Thu, 28 Nov 2013 12:36:52 +0100
+Subject: [PATCH] of_mtd: Fix header file include guard
+
+It seems the include guard was copied from of_net.h.
+
+Signed-off-by: Philipp Rosenberger <philipp.rosenberger@xse.de>
+---
+ include/linux/of_mtd.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/of_mtd.h b/include/linux/of_mtd.h
+index 6f10e93..cb32d9c 100644
+--- a/include/linux/of_mtd.h
++++ b/include/linux/of_mtd.h
+@@ -7,7 +7,7 @@
+  */
+
+ #ifndef __LINUX_OF_MTD_H
+-#define __LINUX_OF_NET_H
++#define __LINUX_OF_MTD_H
+
+ #ifdef CONFIG_OF_MTD
+
+--
+1.7.9.5
+
+On 29.11.2013 09:11, Brian Norris wrote:
+> + device tree guys
+>
+> Hi Grant/Rob,
+>
+> It looks like this header is technically owned by you guys. Once we have
+> a proper submission, should I merge this sort of change through MTD, or
+> do one of you want to take care of it?
+>
+> Hi Philpp,
+>
+> Thanks for the patch! There are a few things to fix up though.
+>
+> On Thu, Nov 28, 2013 at 11:53:39AM +0000, Rosenberger, Philipp wrote:
+>> It seems the include guard was copied from of_net.h.
+>
+> Good catch.
+>
+> Note that all patches require a "Signed-off-by" line in the patch
+> description, to signify (among other things) that this is your work and
+> that you are submitting it under the GPLv2 license. See
+> Documentation/SubmittingPatches (esp. point 12).
+>
+>> ---
+>>  include/linux/of_mtd.h |    2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/include/linux/of_mtd.h b/include/linux/of_mtd.h
+>> index 6f10e93..cb32d9c 100644
+>> --- a/include/linux/of_mtd.h
+>> +++ b/include/linux/of_mtd.h
+>> @@ -7,7 +7,7 @@
+>>   */
+>>
+>>  #ifndef __LINUX_OF_MTD_H
+>> -#define __LINUX_OF_NET_H
+>> +#define __LINUX_OF_MTD_H
+>>
+>>  #ifdef CONFIG_OF_MTD
+>>
+>> -- 1.7.9.5
+>>
+>> XS Embedded GmbH
+>> Peterzeller Strasse 8
+>> D-78048 Villingen - Schwenningen
+>>
+>> Telefon +49 (7721) 4060 - 428
+>> Fax     +49 (7721) 4060 - 499
+>>
+>> www.xse.de
+>> Philipp.Rosenberger@xse.de
+>>
+>> :::::::::: based.on.visions ::::::::::
+>>
+>>
+>> XS Embedded GmbH
+>> Gesch=E4ftsf=FChrung: Michael Maier, Rainer Oder
+>>
+>> Handelsregister: Amtsgericht Freiburg i.Br., HRB 705237
+>> Sitz der Gesellschaft: Peterzeller Strasse 8, 78048 Villingen-Schwenning=
+en
+>> USt-Id Nummer: DE268786819
+>>
+>> Confidentiality Notice: This e-mail message, including any attachments, =
+is for the sole use of the intended recipient(s) and may contain confidenti=
+al and privileged information. Any unauthorized review, use, disclosure or =
+distribution is prohibited. If you are not the intended recipient, please c=
+ontact the sender by return e-mail and destroy all copies of the original m=
+essage.
+>
+> This confidentiality notice is incongruous with sending patches to a
+> public mailing list, for inclusion in an open source project. This
+> message (combined with a lack of a Signed-off-by) means we cannot take
+> your patch. Please remove this footer and resubmit, with a CC to
+> linux-mtd@infradead.org and devicetree@vger.kernel.org.
+>
+> Thanks,
+> Brian
+>
+>
+
+Thank you for this hint. I forgot that the mailserver append this
+footer. I hope now there is no company footer anymore.
+
+Best regards
+
+Philipp
