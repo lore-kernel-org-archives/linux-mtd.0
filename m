@@ -1,21 +1,26 @@
-Message-ID: <5298C0B0.4030404@ti.com>
-Date: Fri, 29 Nov 2013 11:28:32 -0500
-From: Santosh Shilimkar <santosh.shilimkar@ti.com>
+Received: from mail-ob0-f169.google.com ([209.85.214.169])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VmTPc-0000Nj-QT
+ for linux-mtd@lists.infradead.org; Fri, 29 Nov 2013 19:07:37 +0000
+Received: by mail-ob0-f169.google.com with SMTP id wm4so10406549obc.14
+ for <linux-mtd@lists.infradead.org>; Fri, 29 Nov 2013 11:07:14 -0800 (PST)
 MIME-Version: 1.0
-To: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
-Subject: Re: [PATCH v2 00/10] Reuse davinci-nand driver for Keystone arch
-References: <1385033305-13179-1-git-send-email-ivan.khoronzhuk@ti.com>
-In-Reply-To: <1385033305-13179-1-git-send-email-ivan.khoronzhuk@ti.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- grygorii.strashko@ti.com, Russell King <linux@arm.linux.org.uk>,
- david.woodhouse@intel.com, Pawel Moll <pawel.moll@arm.com>,
- Stephen Warren <swarren@wwwdotorg.org>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@kernel.crashing.org>, Rob Herring <rob.herring@calxeda.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Rob Landley <rob@landley.net>, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <1385727565-25794-15-git-send-email-lee.jones@linaro.org>
+References: <1385727565-25794-1-git-send-email-lee.jones@linaro.org>
+ <1385727565-25794-15-git-send-email-lee.jones@linaro.org>
+Date: Fri, 29 Nov 2013 20:07:11 +0100
+Message-ID: <CACRpkdaWXBchz78Yby11VpveBDtn6FrmupS=cnNYhvHgFJsBUw@mail.gmail.com>
+Subject: Re: [PATCH v3 14/36] mtd: st_spi_fsm: Add device-tree binding
+ documentation
+From: Linus Walleij <linus.walleij@linaro.org>
+To: Lee Jones <lee.jones@linaro.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ angus.clark@st.com,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,40 +30,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ivan,
-On Thursday 21 November 2013 06:28 AM, Ivan Khoronzhuk wrote:
-> This series contains fixes and updates of Davinci nand driver in
-> order to reuse it for Keystone platform.
-> 
-> The series is combination of two following series:
-> - Davinci nand driver fixes and updates:
->   https://lkml.org/lkml/2013/11/20/271
-> - Reuse davinci-nand driver for Keystone arch
->   https://lkml.org/lkml/2013/11/20/315
-> 
-> Ivan Khoronzhuk (10):
->   mtd: nand: davinci: fix driver registration
->   mtd: nand: davinci: return ENOMEM if memory allocation is failed
->   mtd: nand: davinci: check required ti,davinci-chipselect property
->   mtd: nand: davinci: simplify error handling
->   mtd: nand: davinci: move bindings under mtd
->   mtd: nand: davinci: extend description of bindings
->   mtd: nand: davinci: adjust DT properties to MTD generic
->   mtd: nand: davinci: reuse driver for Keystone arch
->   mtd: nand: davinci: don't set timings if AEMIF is used
->   mtd: nand: davinci: don't request AEMIF address range
-> 
->  .../devicetree/bindings/arm/davinci/nand.txt       |   46 --------
->  .../devicetree/bindings/mtd/davinci-nand.txt       |   94 ++++++++++++++++
->  drivers/mtd/nand/Kconfig                           |    6 +-
->  drivers/mtd/nand/davinci_nand.c                    |  117 +++++++++++---------
->  4 files changed, 164 insertions(+), 99 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/arm/davinci/nand.txt
->  create mode 100644 Documentation/devicetree/bindings/mtd/davinci-nand.txt
-> 
-Please drop patch 9 from the series considering we are handling it
-differently and repost the entire series with David in cc. David
-has been lining up the patches.
+On Fri, Nov 29, 2013 at 1:19 PM, Lee Jones <lee.jones@linaro.org> wrote:
 
-Regards,
-Santosh
+Re this:
+
+> +Optional properties:
+> +  - st,syscfg          : Phandle to boot-device system configuration registers
+> +  - st,boot-device-reg : Address of the aforementioned boot-device register(s)
+> +  - st,boot-device-spi : Expected boot-device value if booted via this device
+> +
+> +Example:
+> +       spifsm: spifsm@fe902000{
+> +               compatible         = "st,spi-fsm";
+> +               reg                =  <0xfe902000 0x1000>;
+> +               reg-names          = "spi-fsm";
+> +               pinctrl-0          = <&pinctrl_fsm>;
+> +               st,syscfg          = <&syscfg_rear>;
+> +               st,boot-device-reg = <0x958>;
+> +               st,boot-device-spi = <0x1a>;
+
+I don't think we should encode any register offsets whatsoever in device
+tree but maybe that's just me. (Yes, Stephen will beat me up about
+pin control single, but I consider that a special case.)
+
+I would just put the last two things as #defines into the driver file(s)
+or - if it's related to other syscfg registers and varies with SoC incarnation,
+as a #define in a shared header for that syscfg thing.
+
+The syscfg phandle is elegant though, really like that.
+
+Yours,
+Linus Walleij
