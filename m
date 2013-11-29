@@ -1,20 +1,25 @@
-Received: from mail-yh0-x233.google.com ([2607:f8b0:4002:c01::233])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VmN3q-00038q-1o
- for linux-mtd@lists.infradead.org; Fri, 29 Nov 2013 12:20:42 +0000
-Received: by mail-yh0-f51.google.com with SMTP id c41so5137669yho.10
- for <linux-mtd@lists.infradead.org>; Fri, 29 Nov 2013 04:20:20 -0800 (PST)
-From: Lee Jones <lee.jones@linaro.org>
-To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- dwmw2@infradead.org
-Subject: [PATCH v3 23/36] mtd: st_spi_fsm: Supply the N25Qxxx specific read
- configurations
-Date: Fri, 29 Nov 2013 12:19:12 +0000
-Message-Id: <1385727565-25794-24-git-send-email-lee.jones@linaro.org>
-In-Reply-To: <1385727565-25794-1-git-send-email-lee.jones@linaro.org>
-References: <1385727565-25794-1-git-send-email-lee.jones@linaro.org>
-Cc: angus.clark@st.com, linus.walleij@linaro.org,
- Lee Jones <lee.jones@linaro.org>, linux-mtd@lists.infradead.org
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VmN3p-0006qQ-HM
+ for linux-mtd@lists.infradead.org; Fri, 29 Nov 2013 12:20:45 +0000
+Date: Fri, 29 Nov 2013 09:20:19 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v3] mtd/nand: don't use {read,write}_buf for 8-bit
+ transfers
+Message-ID: <20131129122018.GB2815@localhost>
+References: <1365164021.28127.109.camel@i7.infradead.org>
+ <1385500515-5376-1-git-send-email-u.kleine-koenig@pengutronix.de>
+ <20131127073512.GB13929@norris.computersforpeace.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20131127073512.GB13929@norris.computersforpeace.net>
+Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ Pekon Gupta <pekon@ti.com>, kernel@pengutronix.de,
+ Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,97 +29,108 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The N25Qxxx Serial Flash devices required different sequence
-configurations depending on whether they're running in 24bit (3Byte)
-or 32bit (4Byte) mode. We provide those here.
+Brian,
 
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/mtd/devices/st_spi_fsm.c | 43 ++++++++++++++++++++++++++++++++++++++++
- drivers/mtd/devices/st_spi_fsm.h | 10 ++++++++++
- 2 files changed, 53 insertions(+)
+On Tue, Nov 26, 2013 at 11:35:12PM -0800, Brian Norris wrote:
+> + Pekon, Ezequiel
+> 
+> Can one of you see how this patch works with your BeagleBones w/ x16
+> NAND?
+> 
+> Also, do you think on of you could take a look at killing the
+> nand_chip.read_word() callback, as Artem was originally requesting with
+> this patch? It only has one user (for bad block checking in
+> nand_block_bad(), which is currently only used when there is no BBT at
+> all), and it looks like it could be replaced with a call to
+> read_buf(mtd, buf, 2).
+> 
 
-diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index 0ecf248..3a6b233 100644
---- a/drivers/mtd/devices/st_spi_fsm.c
-+++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -55,6 +55,49 @@ static struct seq_rw_config default_write_configs[] = {
- 	{0x00,			 0,			 0, 0, 0, 0x00, 0, 0},
- };
- 
-+/*
-+ * [N25Qxxx] Configuration
-+ */
-+#define N25Q_VCR_DUMMY_CYCLES(x)	(((x) & 0xf) << 4)
-+#define N25Q_VCR_XIP_DISABLED		((uint8_t)0x1 << 3)
-+#define N25Q_VCR_WRAP_CONT		0x3
-+
-+/* N25Q 3-byte Address READ configurations
-+ *	- 'FAST' variants configured for 8 dummy cycles.
-+ *
-+ * Note, the number of dummy cycles used for 'FAST' READ operations is
-+ * configurable and would normally be tuned according to the READ command and
-+ * operating frequency.  However, this applies universally to all 'FAST' READ
-+ * commands, including those used by the SPIBoot controller, and remains in
-+ * force until the device is power-cycled.  Since the SPIBoot controller is
-+ * hard-wired to use 8 dummy cycles, we must configure the device to also use 8
-+ * cycles.
-+ */
-+static struct seq_rw_config n25q_read3_configs[] = {
-+	{FLASH_FLAG_READ_1_4_4, FLASH_CMD_READ_1_4_4,	0, 4, 4, 0x00, 0, 8},
-+	{FLASH_FLAG_READ_1_1_4, FLASH_CMD_READ_1_1_4,	0, 1, 4, 0x00, 0, 8},
-+	{FLASH_FLAG_READ_1_2_2, FLASH_CMD_READ_1_2_2,	0, 2, 2, 0x00, 0, 8},
-+	{FLASH_FLAG_READ_1_1_2, FLASH_CMD_READ_1_1_2,	0, 1, 2, 0x00, 0, 8},
-+	{FLASH_FLAG_READ_FAST,	FLASH_CMD_READ_FAST,	0, 1, 1, 0x00, 0, 8},
-+	{FLASH_FLAG_READ_WRITE, FLASH_CMD_READ,	        0, 1, 1, 0x00, 0, 0},
-+	{0x00,			0,			0, 0, 0, 0x00, 0, 0},
-+};
-+
-+/* N25Q 4-byte Address READ configurations
-+ *	- use special 4-byte address READ commands (reduces overheads, and
-+ *        reduces risk of hitting watchdog reset issues).
-+ *	- 'FAST' variants configured for 8 dummy cycles (see note above.)
-+ */
-+static struct seq_rw_config n25q_read4_configs[] = {
-+	{FLASH_FLAG_READ_1_4_4, FLASH_CMD_READ4_1_4_4,	0, 4, 4, 0x00, 0, 8},
-+	{FLASH_FLAG_READ_1_1_4, FLASH_CMD_READ4_1_1_4,	0, 1, 4, 0x00, 0, 8},
-+	{FLASH_FLAG_READ_1_2_2, FLASH_CMD_READ4_1_2_2,	0, 2, 2, 0x00, 0, 8},
-+	{FLASH_FLAG_READ_1_1_2, FLASH_CMD_READ4_1_1_2,	0, 1, 2, 0x00, 0, 8},
-+	{FLASH_FLAG_READ_FAST,	FLASH_CMD_READ4_FAST,	0, 1, 1, 0x00, 0, 8},
-+	{FLASH_FLAG_READ_WRITE, FLASH_CMD_READ4,	0, 1, 1, 0x00, 0, 0},
-+	{0x00,			0,			0, 0, 0, 0x00, 0, 0},
-+};
-+
- static struct stfsm_seq stfsm_seq_en_32bit_addr;/* Dynamically populated */
- 
- static struct stfsm_seq stfsm_seq_read_jedec = {
-diff --git a/drivers/mtd/devices/st_spi_fsm.h b/drivers/mtd/devices/st_spi_fsm.h
-index 0548511..6699174 100644
---- a/drivers/mtd/devices/st_spi_fsm.h
-+++ b/drivers/mtd/devices/st_spi_fsm.h
-@@ -229,6 +229,15 @@
- #define FLASH_CMD_READ4_1_1_4	0x6c
- #define FLASH_CMD_READ4_1_4_4	0xec
- 
-+/*
-+ * Flags to tweak operation of default read/write/erase routines
-+ */
-+#define CFG_READ_TOGGLE_32BIT_ADDR	0x00000001
-+#define CFG_WRITE_TOGGLE_32BIT_ADDR	0x00000002
-+#define CFG_WRITE_EX_32BIT_ADDR_DELAY	0x00000004
-+#define CFG_ERASESEC_TOGGLE_32BIT_ADDR	0x00000008
-+#define CFG_S25FL_CHECK_ERROR_FLAGS	0x00000010
-+
- struct stfsm {
- 	struct device		*dev;
- 	void __iomem		*base;
-@@ -237,6 +246,7 @@ struct stfsm {
- 	struct mutex		lock;
- 	struct flash_info 	*info;
- 
-+	uint32_t		configuration;
- 	uint32_t		fifo_dir_delay;
- 	bool			booted_from_spi;
- 	bool			reset_signal;
+Sure, sounds doable.
+
+> Hi Uwe,
+> 
+
+Uwe,
+
+If you're preparing a v4 to address Brian's feedback, then I'll see about testing
+it with 8/16-bit flashes on my AM335x.
+
+> On Tue, Nov 26, 2013 at 10:15:15PM +0100, Uwe Kleine-König wrote:
+> > According to the Open NAND Flash Interface Specification (ONFI) Revision
+> > 3.1 "Parameters are always transferred on the lower 8-bits of the data
+> > bus." for the Get Features and Set Features commands.
+> > 
+> > So using read_buf and write_buf is wrong for 16-bit wide nand chips as
+> > they use I/O[15:0]. The Get Features command is easily fixed using 4
+> > times the read_byte callback. For Set Features implement a new
+> > overwritable callback "write_byte". Still I expect the default to work
+> > just fine for all controllers and making it overwriteable was just done
+> > for symmetry.
+> > 
+> > Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> > ---
+> >  drivers/mtd/nand/nand_base.c | 61 +++++++++++++++++++++++++++++++++++++++++---
+> >  include/linux/mtd/nand.h     |  3 +++
+> >  2 files changed, 60 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> > index bd39f7b..27d755b 100644
+> > --- a/drivers/mtd/nand/nand_base.c
+> > +++ b/drivers/mtd/nand/nand_base.c
+> ...
+> > @@ -2706,7 +2751,7 @@ static int nand_block_markbad(struct mtd_info *mtd, loff_t ofs)
+> >  }
+> >  
+> >  /**
+> > - * nand_onfi_set_features- [REPLACEABLE] set features for ONFI nand
+> > + * nand_onfi_set_features - [REPLACEABLE] set features for ONFI nand
+> 
+> This change is unrelated. (Yes, the whitespace should be fixed, but
+> probably not in this patch.)
+> 
+> >   * @mtd: MTD device structure
+> >   * @chip: nand chip info structure
+> >   * @addr: feature address.
+> ...
+> > @@ -2731,7 +2779,7 @@ static int nand_onfi_set_features(struct mtd_info *mtd, struct nand_chip *chip,
+> >  }
+> >  
+> >  /**
+> > - * nand_onfi_get_features- [REPLACEABLE] get features for ONFI nand
+> > + * nand_onfi_get_features - [REPLACEABLE] get features for ONFI nand
+> 
+> Ditto.
+> 
+> >   * @mtd: MTD device structure
+> >   * @chip: nand chip info structure
+> >   * @addr: feature address.
+> ...
+> > @@ -2812,6 +2863,8 @@ static void nand_set_defaults(struct nand_chip *chip, int busw)
+> >  		chip->block_markbad = nand_default_block_markbad;
+> >  	if (!chip->write_buf || chip->write_buf == nand_write_buf)
+> >  		chip->write_buf = busw ? nand_write_buf16 : nand_write_buf;
+> > +	if (!chip->write_byte)
+> 
+> This check should be:
+> 
+> 	if (!chip->write_byte || chip->write_byte == nand_write_byte)
+> 
+> in order to match the rest of the functions, so they can be reset if the
+> buswidth is detected to be x16, and we re-call nand_set_defaults()
+> (e.g., when using NAND_BUSWIDTH_AUTO). See the comment:
+> 
+>   /* If called twice, pointers that depend on busw may need to be reset */
+> 
+> I know it's kind of ugly, but that's what we have for now.
+> 
+> > +		chip->write_byte = busw ? nand_write_byte16 : nand_write_byte;
+> >  	if (!chip->read_buf || chip->read_buf == nand_read_buf)
+> >  		chip->read_buf = busw ? nand_read_buf16 : nand_read_buf;
+> >  	if (!chip->scan_bbt)
+> 
+> Brian
+
 -- 
-1.8.3.2
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
