@@ -1,16 +1,16 @@
-Received: from mail-yh0-f53.google.com ([209.85.213.53])
+Received: from mail-yh0-f46.google.com ([209.85.213.46])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VmN3G-0006hy-Ri
+ id 1VmN3Q-0006j5-Iz
  for linux-mtd@lists.infradead.org; Fri, 29 Nov 2013 12:20:26 +0000
-Received: by mail-yh0-f53.google.com with SMTP id b20so6561535yha.26
- for <linux-mtd@lists.infradead.org>; Fri, 29 Nov 2013 04:19:47 -0800 (PST)
+Received: by mail-yh0-f46.google.com with SMTP id l109so6590065yhq.5
+ for <linux-mtd@lists.infradead.org>; Fri, 29 Nov 2013 04:19:59 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  dwmw2@infradead.org
-Subject: [PATCH v3 06/36] mtd: st_spi_fsm: Supply defines for the possible
- flash command opcodes
-Date: Fri, 29 Nov 2013 12:18:55 +0000
-Message-Id: <1385727565-25794-7-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH v3 12/36] mtd: st_spi_fsm: Fetch platform specific
+ configurations
+Date: Fri, 29 Nov 2013 12:19:01 +0000
+Message-Id: <1385727565-25794-13-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1385727565-25794-1-git-send-email-lee.jones@linaro.org>
 References: <1385727565-25794-1-git-send-email-lee.jones@linaro.org>
 Cc: angus.clark@st.com, linus.walleij@linaro.org,
@@ -24,64 +24,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Flash chip commands are issued using a set of predefined opcodes. These
-are mostly the same for all flash devices, but do differ on occasion.
-This patch supplies the majority of the key ones which will be used in
-this driver.
+All supported platforms are able to pass specific configurations via
+the Device Tree on boot. Here we add a function which is to be called
+during the probing process which will extract them, or make other
+assumptions based on capabilities provided.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/devices/st_spi_fsm.h | 38 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
+ drivers/mtd/devices/st_spi_fsm.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/drivers/mtd/devices/st_spi_fsm.h b/drivers/mtd/devices/st_spi_fsm.h
-index 6164142..97b4868 100644
---- a/drivers/mtd/devices/st_spi_fsm.h
-+++ b/drivers/mtd/devices/st_spi_fsm.h
-@@ -189,6 +189,44 @@
+diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
+index 5f21d14..1f54983 100644
+--- a/drivers/mtd/devices/st_spi_fsm.c
++++ b/drivers/mtd/devices/st_spi_fsm.c
+@@ -273,6 +273,15 @@ static int stfsm_init(struct stfsm *fsm)
+ 	return 0;
+ }
  
- #define STFSM_FLASH_SAFE_FREQ	10000000UL                         /* 10 MHz */
++static void stfsm_fetch_platform_configs(struct platform_device *pdev)
++{
++	struct stfsm *fsm = platform_get_drvdata(pdev);
++	struct flash_info *info = fsm->info;
++
++	if (info->sector_size * info->n_sectors > 0xFFFFFF)
++		info->flags |= FLASH_FLAG_32BIT_ADDR;
++}
++
+ static int stfsm_probe(struct platform_device *pdev)
+ {
+ 	struct device_node *np = pdev->dev.of_node;
+@@ -331,6 +340,8 @@ static int stfsm_probe(struct platform_device *pdev)
  
-+/* Flash Commands */
-+#define FLASH_CMD_WREN		0x06
-+#define FLASH_CMD_WRDI		0x04
-+#define FLASH_CMD_RDID		0x9f
-+#define FLASH_CMD_RDSR		0x05
-+#define FLASH_CMD_RDSR2		0x35
-+#define FLASH_CMD_WRSR		0x01
-+#define FLASH_CMD_SE_4K		0x20
-+#define FLASH_CMD_SE_32K	0x52
-+#define FLASH_CMD_SE		0xd8
-+#define FLASH_CMD_CHIPERASE	0xc7
-+#define FLASH_CMD_WRVCR		0x81
-+#define FLASH_CMD_RDVCR		0x85
+ 	platform_set_drvdata(pdev, fsm);
+ 
++	stfsm_fetch_platform_configs(pdev);
 +
-+#define FLASH_CMD_READ		0x03	/* READ */
-+#define FLASH_CMD_READ_FAST	0x0b	/* FAST READ */
-+#define FLASH_CMD_READ_1_1_2	0x3b	/* DUAL OUTPUT READ */
-+#define FLASH_CMD_READ_1_2_2	0xbb	/* DUAL I/O READ */
-+#define FLASH_CMD_READ_1_1_4	0x6b	/* QUAD OUTPUT READ */
-+#define FLASH_CMD_READ_1_4_4	0xeb	/* QUAD I/O READ */
-+
-+#define FLASH_CMD_WRITE		0x02	/* PAGE PROGRAM */
-+#define FLASH_CMD_WRITE_1_1_2	0xa2	/* DUAL INPUT PROGRAM */
-+#define FLASH_CMD_WRITE_1_2_2	0xd2	/* DUAL INPUT EXT PROGRAM */
-+#define FLASH_CMD_WRITE_1_1_4	0x32	/* QUAD INPUT PROGRAM */
-+#define FLASH_CMD_WRITE_1_4_4	0x12	/* QUAD INPUT EXT PROGRAM */
-+
-+#define FLASH_CMD_EN4B_ADDR	0xb7	/* Enter 4-byte address mode */
-+#define FLASH_CMD_EX4B_ADDR	0xe9	/* Exit 4-byte address mode */
-+
-+/* READ commands with 32-bit addressing (N25Q256 and S25FLxxxS) */
-+#define FLASH_CMD_READ4		0x13
-+#define FLASH_CMD_READ4_FAST	0x0c
-+#define FLASH_CMD_READ4_1_1_2	0x3c
-+#define FLASH_CMD_READ4_1_2_2	0xbc
-+#define FLASH_CMD_READ4_1_1_4	0x6c
-+#define FLASH_CMD_READ4_1_4_4	0xec
-+
- struct stfsm {
- 	struct device		*dev;
- 	void __iomem		*base;
+ 	fsm->mtd.dev.parent	= &pdev->dev;
+ 	fsm->mtd.type		= MTD_NORFLASH;
+ 	fsm->mtd.writesize	= 4;
 -- 
 1.8.3.2
