@@ -1,28 +1,15 @@
-Received: from atrey.karlin.mff.cuni.cz ([195.113.26.193])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VmO6G-0000ss-Gm
- for linux-mtd@lists.infradead.org; Fri, 29 Nov 2013 13:27:18 +0000
-Date: Fri, 29 Nov 2013 14:26:53 +0100
-From: Pavel Machek <pavel@ucw.cz>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] Make the mtdblock read/write skip the bad nand sector
-Message-ID: <20131129132653.GA14204@amd.pavel.ucw.cz>
-References: <20131122114509.GB2414@localhost> <5292A7E7.5060003@innofidei.com>
- <20131125101147.GA2408@localhost>
- <CACQ1gAi26WeiopptcZmBp6h0a5TacLo5mvVCOm6-H_1HtnwvXg@mail.gmail.com>
- <529334D9.2030204@innofidei.com> <20131125115238.GC2408@localhost>
- <1385381770.24518.18.camel@shinybook.infradead.org>
- <20131125123012.GE2408@localhost> <87fvqkldmh.fsf@dell.be.48ers.dk>
- <1385394419.24518.40.camel@shinybook.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1385394419.24518.40.camel@shinybook.infradead.org>
-Cc: Richard Genoud <richard.genoud@gmail.com>, zhouguangming@innofidei.com,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: <linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+ <devicetree@vger.kernel.org>, <linux-omap@vger.kernel.org>
+Subject: [RFC/PATCH] NAND bus-width detection extreme makeover
+Date: Fri, 29 Nov 2013 10:40:55 -0300
+Message-Id: <1385732456-32696-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: mark.rutland@arm.com, shc_work@mail.ru, swarren@wwwdotorg.org,
+ Tony Lindgren <tony@atomide.com>, Artem Bityutskiy <dedekind1@gmail.com>,
+ rob.herring@calxeda.com, Pekon Gupta <pekon@ti.com>,
  Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Hans Zhang <zhanghonghui@innofidei.com>
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,46 +19,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
+Here's my proposal, based in Pekon's latest work.
 
-> > Hi,
-> > 
-> >  > Thanks a lot for the insight. After reading this, I'm wondering what's
-> >  > preventing us from killing MTD block support altogether. Artem, already
-> >  > suggested it a while back...
-> > 
-> > People using squashfs/cramfs/readonly ext2/.. on a NOR flash?
-> 
-> And people who *still*, after all these years, don't realise that they
-> don't actually need it to mount JFFS2. Even as the root file system
-> (although they *do* need rootfstype=jffs2).
+This patch removes the flash device bus-width configuration, prior to
+the device detection. With this modification, a NAND driver is no longer
+able to "force" the device width, and instead can only obtain the detected
+bus-width after the call to nand_scan_ident().
 
-I must admit I'm such person...
+Flash devices bus-width are specified either by reading an ONFI feature,
+or through a flag in the in-kernel flash devices table. Therefore, it doesn't
+make any sense to somehow "advise" the NAND core about this parameter.
 
-I guess printk("...you don't really need mtdblock...") in jffs2's
-mount code would probably improve that realisation...
+In addition, the ONFI specification requires to issue the detection commands
+using only the lower 8-bits of the data bus. The ONFI specification says:
 
-This certainly does not help:
+  "" The Read ID and Read Parameter Page commands only use the lower 8-bits
+     of the data bus. The host shall not issue commands that use a word
+     data width on x16 devices until the host determines the device supports
+     a 16-bit data bus width in the parameter page. ""
 
-pavel@amd:/data/l/linux-n900$ grep -ri mtdblock  Documentation
-Documentation/frv/booting.txt:	   exec -c "console=ttySM0,115200
-ip=:::::dhcp root=/dev/mtdblock2 rw"
-Documentation/frv/booting.txt:	 /dev/mtdblock3	Fourth RedBoot
-partition on the System Flash
-Documentation/arm/SA1100/Assabet:which is the third one.  Within
-Linux, this correspond to /dev/mtdblock2.
-Documentation/arm/SA1100/Assabet:	exec -b 0x100000 -l 0xc0000 -c
-"root=/dev/mtdblock2"
+IIRC, the current way of setting the device width is to set NAND_BUSWIDTH_AUTO
+in chip->options and then let the driver set some width-specific callbacks after
+the NAND core has detected the width.
 
-(Should not mtdblock be at least in devices.txt file?)
+However, as noticed by Pekon Gupta, this means NAND_BUSWIDTH_AUTO should be
+always turned on (and hence the option be removed).
 
-BTW... is there documentation of mtdblock "translation layer"
-somewhere? I realize it is very simple, but it does need to keep some
-data?
+That's exactly what this patch is doing.
 
-I guess running jffs on regular block device (USB stick, SD card) is
-not feasible?
-								Pavel
+This patch has been tested on a AM335x board with 8-bit and 16-bit devices,
+which were successfully detected and nandtest'ed, using ONFI and flash-based
+detection.
+
+Note that some driver's might need fixes to work in both 8-bit and 16-bit
+modes, and such work should be done by respective maintainers.
+
+Of course, the memory controller (such as GPMC in the OMAP case) still needs
+proper width a-prior configuration, but that's completely unrelated to the
+flash device bus width. If some driver wants (and is able to) re-configure
+its memory controller after the device has been properly detected, it's free
+to do so.
+
+Needless to say, if this work is acceptable we'll be able to finally remove/deprecate
+any traces of the NAND bus width setting, include the devicetree nand-bus-width parameter.
+
+Alexander: Could you try this patch and see if it's suitable for your needs?
+I think you should be able to use it to set the bus-width, without any need for
+a new DT property. You will have to split your nand_scan() call in an initial
+call to nand_scan_ident() and a final call to nand_scan_tail().
+
+Typically, a driver would work like this:
+
+	/* scan NAND device connected to chip controller */
+	if (nand_scan_ident(mtd, 1, NULL))
+		return -ENODEV;
+
+	if (nand_chip->options & NAND_BUSWIDTH_16) {
+		nand_chip->read_buf   = xxx_read_buf16;
+		nand_chip->write_buf  = xxx_write_buf16;
+	}
+
+Pekon Gupta (1):
+  mtd: nand: auto-detection of NAND bus-width from ONFI param or
+    nand_id[]
+
+ drivers/mtd/nand/nand_base.c | 43 +++++++++++++------------------------------
+ include/linux/mtd/nand.h     |  7 -------
+ 2 files changed, 13 insertions(+), 37 deletions(-)
+
 -- 
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
+1.8.1.5
