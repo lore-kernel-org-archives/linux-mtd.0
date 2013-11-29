@@ -1,16 +1,16 @@
-Received: from mail-yh0-f42.google.com ([209.85.213.42])
+Received: from mail-yh0-f45.google.com ([209.85.213.45])
  by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VmN49-00010B-FV
- for linux-mtd@lists.infradead.org; Fri, 29 Nov 2013 12:21:02 +0000
-Received: by mail-yh0-f42.google.com with SMTP id z6so6763167yhz.15
- for <linux-mtd@lists.infradead.org>; Fri, 29 Nov 2013 04:20:37 -0800 (PST)
+ id 1VmN48-0000xG-H9
+ for linux-mtd@lists.infradead.org; Fri, 29 Nov 2013 12:21:01 +0000
+Received: by mail-yh0-f45.google.com with SMTP id v1so5726179yhn.32
+ for <linux-mtd@lists.infradead.org>; Fri, 29 Nov 2013 04:20:33 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  dwmw2@infradead.org
-Subject: [PATCH v3 32/36] mtd: st_spi_fsm: Add the ability to write to FSM's
- status register
-Date: Fri, 29 Nov 2013 12:19:21 +0000
-Message-Id: <1385727565-25794-33-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH v3 30/36] mtd: st_spi_fsm: Erase partly or as a whole a Serial
+ Flash device
+Date: Fri, 29 Nov 2013 12:19:19 +0000
+Message-Id: <1385727565-25794-31-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1385727565-25794-1-git-send-email-lee.jones@linaro.org>
 References: <1385727565-25794-1-git-send-email-lee.jones@linaro.org>
 Cc: angus.clark@st.com, linus.walleij@linaro.org,
@@ -24,31 +24,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+When an erase is requested by userspace the MFD framework calls back
+into the driver to conduct the actual command issue. Here we provide the
+routines which do exactly that. We can choose to either do an entire chip
+erase or by sector.
+
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/devices/st_spi_fsm.c | 36 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
+ drivers/mtd/devices/st_spi_fsm.c | 118 ++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 117 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index 1d6bd94..f1276e5 100644
+index 9b35e15..ecb001d 100644
 --- a/drivers/mtd/devices/st_spi_fsm.c
 +++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -177,6 +177,23 @@ static struct stfsm_seq stfsm_seq_erase_chip = {
+@@ -156,6 +156,27 @@ static struct stfsm_seq stfsm_seq_erase_sector = {
  		    SEQ_CFG_STARTSEQ),
  };
  
-+static struct stfsm_seq stfsm_seq_write_status = {
-+	.seq_opc[0] = (SEQ_OPC_PADS_1 | SEQ_OPC_CYCLES(8) |
-+		       SEQ_OPC_OPCODE(FLASH_CMD_WREN) | SEQ_OPC_CSDEASSERT),
-+	.seq_opc[1] = (SEQ_OPC_PADS_1 | SEQ_OPC_CYCLES(8) |
-+		       SEQ_OPC_OPCODE(FLASH_CMD_WRSR)),
++static struct stfsm_seq stfsm_seq_erase_chip = {
++	.seq_opc = {
++		(SEQ_OPC_PADS_1 | SEQ_OPC_CYCLES(8) |
++		 SEQ_OPC_OPCODE(FLASH_CMD_WREN) | SEQ_OPC_CSDEASSERT),
++
++		(SEQ_OPC_PADS_1 | SEQ_OPC_CYCLES(8) |
++		 SEQ_OPC_OPCODE(FLASH_CMD_CHIPERASE) | SEQ_OPC_CSDEASSERT),
++	},
 +	.seq = {
 +		STFSM_INST_CMD1,
 +		STFSM_INST_CMD2,
-+		STFSM_INST_STA_WR1,
++		STFSM_INST_WAIT,
 +		STFSM_INST_STOP,
 +	},
 +	.seq_cfg = (SEQ_CFG_PADS_1 |
++		    SEQ_CFG_ERASE |
 +		    SEQ_CFG_READNOTWRITE |
 +		    SEQ_CFG_CSDEASSERT |
 +		    SEQ_CFG_STARTSEQ),
@@ -57,31 +66,123 @@ index 1d6bd94..f1276e5 100644
  static struct stfsm_seq stfsm_seq_wrvcr = {
  	.seq_opc[0] = (SEQ_OPC_PADS_1 | SEQ_OPC_CYCLES(8) |
  		       SEQ_OPC_OPCODE(FLASH_CMD_WREN) | SEQ_OPC_CSDEASSERT),
-@@ -389,6 +406,25 @@ static int stfsm_read_status(struct stfsm *fsm, uint8_t cmd,
+@@ -804,6 +825,47 @@ static int stfsm_mtd_read(struct mtd_info *mtd, loff_t from, size_t len,
  	return 0;
  }
  
-+static int stfsm_write_status(struct stfsm *fsm, uint16_t status,
-+			       int sta_bytes)
++static int stfsm_erase_sector(struct stfsm *fsm, const uint32_t offset)
 +{
-+	struct stfsm_seq *seq = &stfsm_seq_write_status;
++	struct stfsm_seq *seq = &stfsm_seq_erase_sector;
++	int ret;
 +
-+	dev_dbg(fsm->dev, "writing STA[%s] 0x%04x\n",
-+		(sta_bytes == 1) ? "1" : "1+2", status);
++	dev_dbg(fsm->dev, "erasing sector at 0x%08x\n", offset);
 +
-+	seq->status = (uint32_t)status | STA_PADS_1 | STA_CSDEASSERT;
-+	seq->seq[2] = (sta_bytes == 1) ?
-+		STFSM_INST_STA_WR1 : STFSM_INST_STA_WR1_2;
++	/* Enter 32-bit address mode, if required */
++	if (fsm->configuration & CFG_ERASESEC_TOGGLE_32BIT_ADDR)
++		stfsm_enter_32bit_addr(fsm, 1);
++
++	seq->addr1 = (offset >> 16) & 0xffff;
++	seq->addr2 = offset & 0xffff;
 +
 +	stfsm_load_seq(fsm, seq);
 +
 +	stfsm_wait_seq(fsm);
 +
-+	return 0;
-+};
++	/* Wait for completion */
++	ret = stfsm_wait_busy(fsm);
 +
- static int stfsm_wrvcr(struct stfsm *fsm, uint8_t data)
++	/* Exit 32-bit address mode, if required */
++	if (fsm->configuration & CFG_ERASESEC_TOGGLE_32BIT_ADDR)
++		stfsm_enter_32bit_addr(fsm, 0);
++
++	return ret;
++}
++
++static int stfsm_erase_chip(struct stfsm *fsm)
++{
++	const struct stfsm_seq *seq = &stfsm_seq_erase_chip;
++
++	dev_dbg(fsm->dev, "erasing chip\n");
++
++	stfsm_load_seq(fsm, seq);
++
++	stfsm_wait_seq(fsm);
++
++	return stfsm_wait_busy(fsm);
++}
++
+ /*
+  * Write an address range to the flash chip.  Data must be written in
+  * FLASH_PAGESIZE chunks.  The address range may be any size provided
+@@ -861,6 +923,60 @@ out1:
+ 	return ret;
+ }
+ 
++/*
++ * Erase an address range on the flash chip. The address range may extend
++ * one or more erase sectors.  Return an error is there is a problem erasing.
++ */
++static int stfsm_mtd_erase(struct mtd_info *mtd, struct erase_info *instr)
++{
++	struct stfsm *fsm = dev_get_drvdata(mtd->dev.parent);
++	u32 addr, len;
++	int ret;
++
++	dev_dbg(fsm->dev, "%s at 0x%llx, len %lld\n", __func__,
++		(long long)instr->addr, (long long)instr->len);
++
++	if (instr->addr + instr->len > mtd->size)
++		return -EINVAL;
++
++	if (instr->len & (mtd->erasesize - 1))
++		return -EINVAL;
++
++	addr = instr->addr;
++	len = instr->len;
++
++	mutex_lock(&fsm->lock);
++
++	/* Whole-chip erase? */
++	if (len == mtd->size) {
++		ret = stfsm_erase_chip(fsm);
++		if (ret)
++			goto out1;
++	} else {
++		while (len) {
++			ret = stfsm_erase_sector(fsm, addr);
++			if (ret)
++				goto out1;
++
++			addr += mtd->erasesize;
++			len -= mtd->erasesize;
++		}
++	}
++
++	mutex_unlock(&fsm->lock);
++
++	instr->state = MTD_ERASE_DONE;
++	mtd_erase_callback(instr);
++
++	return 0;
++
++out1:
++	instr->state = MTD_ERASE_FAILED;
++	mutex_unlock(&fsm->lock);
++
++	return ret;
++}
++
+ static void stfsm_read_jedec(struct stfsm *fsm, uint8_t *const jedec)
  {
- 	struct stfsm_seq *seq = &stfsm_seq_wrvcr;
+ 	const struct stfsm_seq *seq = &stfsm_seq_read_jedec;
+@@ -1131,7 +1247,7 @@ static int stfsm_probe(struct platform_device *pdev)
+ 
+ 	fsm->mtd._read  = stfsm_mtd_read;
+ 	fsm->mtd._write = stfsm_mtd_write;
+-
++	fsm->mtd._erase = stfsm_mtd_erase;
+ 	dev_err(&pdev->dev,
+ 		"Found serial flash device: %s\n"
+ 		" size = %llx (%lldMiB) erasesize = 0x%08x (%uKiB)\n",
 -- 
 1.8.3.2
