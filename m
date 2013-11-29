@@ -1,21 +1,19 @@
-Message-ID: <5298601F.4090200@ti.com>
-Date: Fri, 29 Nov 2013 11:36:31 +0200
-From: "ivan.khoronzhuk" <ivan.khoronzhuk@ti.com>
+Message-ID: <529874EE.402@freescale.com>
+Date: Fri, 29 Nov 2013 19:05:18 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-To: Sekhar Nori <nsekhar@ti.com>
-Subject: Re: [PATCH v2] ARM: davinci: aemif: get rid of davinci-nand driver
- dependency on aemif
-References: <1385562694-24618-1-git-send-email-ivan.khoronzhuk@ti.com>
- <52981A4B.70703@ti.com>
-In-Reply-To: <52981A4B.70703@ti.com>
-Content-Type: text/plain; charset="ISO-8859-1"
+To: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 00/23] mtd: st_spi_fsm: Add new device
+References: <1385137380-28968-1-git-send-email-lee.jones@linaro.org>
+ <20131127040723.GZ9468@ld-irv-0074.broadcom.com>
+ <20131127115226.GC3296@lee--X1> <5296B9C5.3060704@freescale.com>
+ <20131128092904.GZ3296@lee--X1>
+In-Reply-To: <20131128092904.GZ3296@lee--X1>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, grygorii.strashko@ti.com,
- linux@arm.linux.org.uk, pawel.moll@arm.com, swarren@wwwdotorg.org,
- ijc+devicetree@hellion.org.uk, galak@kernel.crashing.org,
- rob.herring@calxeda.com, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, rob@landley.net,
- Santosh Shilimkar <santosh.shilimkar@ti.com>, computersforpeace@gmail.com,
+Cc: angus.clark@st.com, linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+ linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
  dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,62 +24,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/29/2013 06:38 AM, Sekhar Nori wrote:
-> On Wednesday 27 November 2013 08:01 PM, Ivan Khoronzhuk wrote:
->> The problem that the set timings code contains the call of Davinci
->> platform function davinci_aemif_setup_timing() which is not
->> accessible if kernel is built for another platform like Keystone.
->>
->> The Keysone platform is going to use TI AEMIF driver.
->> If TI AEMIF is used we don't need to set timings and bus width.
->> It is done by AEMIF driver.
->>
->> To get rid of davinci-nand driver dependency on aemif platform code
->> we moved aemif code to davinci platform.
->>
->> The platform AEMIF code (aemif.c) has to be removed once Davinci
->> will be converted to DT and use ti-aemif.c driver.
->>
->> The long device name "davinci_ntosd2_nandflash_device" was renamed
->> to "ntosd2_nandflash" as requested by Sekhar Nori, because after
->> adding changes the line is so broken that its almost unreadable.
->>
->> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
-> 
-> This patch can be simplified in some places.
-> 
->> ---
->> v2..v1:
->> - enabled AEMIF clock
->> - removed EXPORT_SYMBOL(davinci_aemif_setup)
->> - renamed ugly name davinci_ntosd2_nandflash_device
->>
->> CC:
->> Sekhar Nori <nsekhar@ti.com>
->>
->>   arch/arm/mach-davinci/aemif.c                   |   89 ++++++++++++++++++++++-
->>   arch/arm/mach-davinci/board-da830-evm.c         |    3 +
->>   arch/arm/mach-davinci/board-da850-evm.c         |    3 +
->>   arch/arm/mach-davinci/board-dm355-evm.c         |    5 ++
->>   arch/arm/mach-davinci/board-dm355-leopard.c     |    5 ++
->>   arch/arm/mach-davinci/board-dm365-evm.c         |    4 +
->>   arch/arm/mach-davinci/board-dm644x-evm.c        |    5 ++
->>   arch/arm/mach-davinci/board-dm646x-evm.c        |    3 +
->>   arch/arm/mach-davinci/board-mityomapl138.c      |    3 +
->>   arch/arm/mach-davinci/board-neuros-osd2.c       |   13 +++-
->>   arch/arm/mach-davinci/devices-tnetv107x.c       |    3 +
->>   drivers/mtd/nand/davinci_nand.c                 |   23 ------
->>   include/linux/platform_data/mtd-davinci-aemif.h |    5 +-
-> 
-> Most of these boards dont really have a timing structure defined.
-> Instead of blindly calling AEMIF setup on all boards, it can be
-> done only on boards that actually need it.
-> 
+Hi Jones & Augus:
 
-Yes, but in such case we should add AEMIF setup to
-arch/arm/mach-davinci/board-mityomapl138.c also,
-because it has: .options = NAND_BUSWIDTH_16
+thanks for your explanations.
+> Most controllers just take an OPCODE and pass it on to the controller
+> and have done with it. The issue that you're attempting to rectify is
+> that the m25p80 expects every controller to be an SPI controller
+> registered to the SPI framework, but as we both know that's not always
+> practical as the SPI framework doesn't allow all configuration
+> information to be passed back to the controller driver. Our issue is
+> not the same. We are required to send entire 'message sequences', to
+> the controller rather than just opcodes. The JEDEC message sequence
+> can be seen below. Bear in mind that this is also one of the more
+> simple message sequences. Some of them even vary depending on which
+> chip is present.
+Frankly speaking, my quadspi driver's code is just like Jones's code.
+Yes, a big "switch".
 
--- 
-Regards,
-Ivan Khoronzhuk
+The opcode is just like an index to trigger the proper operation.
+That's why i add this hook @->read_reg(). (the hook acts as the ioctl)
+
+If we do not use this hooks, we should add more hooks such as
+@->read_id, @->read_sr, @->read_cr...
+
+That's make the interface not graceful enough.
+
+
+I read the your patch implementing the read_id:
+
+http://lists.infradead.org/pipermail/linux-mtd/2013-November/050221.html
+
+
+it's more readable. But i think Jones's stfsm_read_reg() is workable too.
+
+
+If you do not like the read_reg() hook, do you have any better idea?
+
+
+
+thanks
+Huang Shijie
