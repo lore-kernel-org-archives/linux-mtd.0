@@ -1,26 +1,17 @@
-Received: from mail-ob0-f169.google.com ([209.85.214.169])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VmTPc-0000Nj-QT
- for linux-mtd@lists.infradead.org; Fri, 29 Nov 2013 19:07:37 +0000
-Received: by mail-ob0-f169.google.com with SMTP id wm4so10406549obc.14
- for <linux-mtd@lists.infradead.org>; Fri, 29 Nov 2013 11:07:14 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <1385727565-25794-15-git-send-email-lee.jones@linaro.org>
-References: <1385727565-25794-1-git-send-email-lee.jones@linaro.org>
- <1385727565-25794-15-git-send-email-lee.jones@linaro.org>
-Date: Fri, 29 Nov 2013 20:07:11 +0100
-Message-ID: <CACRpkdaWXBchz78Yby11VpveBDtn6FrmupS=cnNYhvHgFJsBUw@mail.gmail.com>
-Subject: Re: [PATCH v3 14/36] mtd: st_spi_fsm: Add device-tree binding
- documentation
-From: Linus Walleij <linus.walleij@linaro.org>
-To: Lee Jones <lee.jones@linaro.org>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- angus.clark@st.com,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Received: from mail.ispras.ru ([83.149.199.45])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VmVOa-0002VY-Mx
+ for linux-mtd@lists.infradead.org; Fri, 29 Nov 2013 21:14:42 +0000
+From: Alexey Khoroshilov <khoroshilov@ispras.ru>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] jffs2: make jffs2_do_read_inode_internal() consistent
+ regarding f->sem handling
+Date: Sat, 30 Nov 2013 01:13:49 +0400
+Message-Id: <1385759629-31176-1-git-send-email-khoroshilov@ispras.ru>
+Cc: ldv-project@linuxtesting.org,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Alexey Khoroshilov <khoroshilov@ispras.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,34 +21,125 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Nov 29, 2013 at 1:19 PM, Lee Jones <lee.jones@linaro.org> wrote:
+jffs2_do_read_inode_internal() does unlock of f->sem mutex
+on several failure paths, while its users expect
+f->sem is still held. As a result double unlock of the mutex
+can happen.
 
-Re this:
+The patch makes jffs2_do_read_inode_internal() consistent
+regarding f->sem handling.
 
-> +Optional properties:
-> +  - st,syscfg          : Phandle to boot-device system configuration registers
-> +  - st,boot-device-reg : Address of the aforementioned boot-device register(s)
-> +  - st,boot-device-spi : Expected boot-device value if booted via this device
-> +
-> +Example:
-> +       spifsm: spifsm@fe902000{
-> +               compatible         = "st,spi-fsm";
-> +               reg                =  <0xfe902000 0x1000>;
-> +               reg-names          = "spi-fsm";
-> +               pinctrl-0          = <&pinctrl_fsm>;
-> +               st,syscfg          = <&syscfg_rear>;
-> +               st,boot-device-reg = <0x958>;
-> +               st,boot-device-spi = <0x1a>;
+Found by Linux Driver Verification project (linuxtesting.org).
 
-I don't think we should encode any register offsets whatsoever in device
-tree but maybe that's just me. (Yes, Stephen will beat me up about
-pin control single, but I consider that a special case.)
+Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
+---
+ fs/jffs2/readinode.c | 46 ++++++++++++++++++++++------------------------
+ 1 file changed, 22 insertions(+), 24 deletions(-)
 
-I would just put the last two things as #defines into the driver file(s)
-or - if it's related to other syscfg registers and varies with SoC incarnation,
-as a #define in a shared header for that syscfg thing.
-
-The syscfg phandle is elegant though, really like that.
-
-Yours,
-Linus Walleij
+diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
+index ae81b01e6fd7..a1c9ed65b502 100644
+--- a/fs/jffs2/readinode.c
++++ b/fs/jffs2/readinode.c
+@@ -1223,18 +1223,17 @@ static int jffs2_do_read_inode_internal(struct jffs2_sb_info *c,
+ 		JFFS2_ERROR("failed to read from flash: error %d, %zd of %zd bytes read\n",
+ 			ret, retlen, sizeof(*latest_node));
+ 		/* FIXME: If this fails, there seems to be a memory leak. Find it. */
+-		mutex_unlock(&f->sem);
+-		jffs2_do_clear_inode(c, f);
+-		return ret?ret:-EIO;
++		if (!ret)
++			ret = -EIO;
++		goto clear_inode;
+ 	}
+ 
+ 	crc = crc32(0, latest_node, sizeof(*latest_node)-8);
+ 	if (crc != je32_to_cpu(latest_node->node_crc)) {
+ 		JFFS2_ERROR("CRC failed for read_inode of inode %u at physical location 0x%x\n",
+ 			f->inocache->ino, ref_offset(rii.latest_ref));
+-		mutex_unlock(&f->sem);
+-		jffs2_do_clear_inode(c, f);
+-		return -EIO;
++		ret = -EIO;
++		goto clear_inode;
+ 	}
+ 
+ 	switch(jemode_to_cpu(latest_node->mode) & S_IFMT) {
+@@ -1271,16 +1270,14 @@ static int jffs2_do_read_inode_internal(struct jffs2_sb_info *c,
+ 			 * operation. */
+ 			uint32_t csize = je32_to_cpu(latest_node->csize);
+ 			if (csize > JFFS2_MAX_NAME_LEN) {
+-				mutex_unlock(&f->sem);
+-				jffs2_do_clear_inode(c, f);
+-				return -ENAMETOOLONG;
++				ret = -ENAMETOOLONG;
++				goto clear_inode;
+ 			}
+ 			f->target = kmalloc(csize + 1, GFP_KERNEL);
+ 			if (!f->target) {
+ 				JFFS2_ERROR("can't allocate %u bytes of memory for the symlink target path cache\n", csize);
+-				mutex_unlock(&f->sem);
+-				jffs2_do_clear_inode(c, f);
+-				return -ENOMEM;
++				ret = -ENOMEM;
++				goto clear_inode;
+ 			}
+ 
+ 			ret = jffs2_flash_read(c, ref_offset(rii.latest_ref) + sizeof(*latest_node),
+@@ -1291,9 +1288,7 @@ static int jffs2_do_read_inode_internal(struct jffs2_sb_info *c,
+ 					ret = -EIO;
+ 				kfree(f->target);
+ 				f->target = NULL;
+-				mutex_unlock(&f->sem);
+-				jffs2_do_clear_inode(c, f);
+-				return ret;
++				goto clear_inode;
+ 			}
+ 
+ 			f->target[csize] = '\0';
+@@ -1309,25 +1304,22 @@ static int jffs2_do_read_inode_internal(struct jffs2_sb_info *c,
+ 		if (f->metadata) {
+ 			JFFS2_ERROR("Argh. Special inode #%u with mode 0%o had metadata node\n",
+ 			       f->inocache->ino, jemode_to_cpu(latest_node->mode));
+-			mutex_unlock(&f->sem);
+-			jffs2_do_clear_inode(c, f);
+-			return -EIO;
++			ret = -EIO;
++			goto clear_inode;
+ 		}
+ 		if (!frag_first(&f->fragtree)) {
+ 			JFFS2_ERROR("Argh. Special inode #%u with mode 0%o has no fragments\n",
+ 			       f->inocache->ino, jemode_to_cpu(latest_node->mode));
+-			mutex_unlock(&f->sem);
+-			jffs2_do_clear_inode(c, f);
+-			return -EIO;
++			ret = -EIO;
++			goto clear_inode;
+ 		}
+ 		/* ASSERT: f->fraglist != NULL */
+ 		if (frag_next(frag_first(&f->fragtree))) {
+ 			JFFS2_ERROR("Argh. Special inode #%u with mode 0x%x had more than one node\n",
+ 			       f->inocache->ino, jemode_to_cpu(latest_node->mode));
+ 			/* FIXME: Deal with it - check crc32, check for duplicate node, check times and discard the older one */
+-			mutex_unlock(&f->sem);
+-			jffs2_do_clear_inode(c, f);
+-			return -EIO;
++			ret = -EIO;
++			goto clear_inode;
+ 		}
+ 		/* OK. We're happy */
+ 		f->metadata = frag_first(&f->fragtree)->node;
+@@ -1339,6 +1331,12 @@ static int jffs2_do_read_inode_internal(struct jffs2_sb_info *c,
+ 		jffs2_set_inocache_state(c, f->inocache, INO_STATE_PRESENT);
+ 
+ 	return 0;
++
++clear_inode:
++	mutex_unlock(&f->sem);
++	jffs2_do_clear_inode(c, f);
++	mutex_lock(&f->sem);
++	return ret;
+ }
+ 
+ /* Scan the list of all nodes present for this ino, build map of versions, etc. */
+-- 
+1.8.3.2
