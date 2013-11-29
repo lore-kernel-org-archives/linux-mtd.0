@@ -1,16 +1,16 @@
-Received: from mail-yh0-f44.google.com ([209.85.213.44])
+Received: from mail-yh0-f52.google.com ([209.85.213.52])
  by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VmN3V-0000XB-Hh
- for linux-mtd@lists.infradead.org; Fri, 29 Nov 2013 12:20:22 +0000
-Received: by mail-yh0-f44.google.com with SMTP id f64so6700716yha.3
- for <linux-mtd@lists.infradead.org>; Fri, 29 Nov 2013 04:20:00 -0800 (PST)
+ id 1VmN3Q-0000X3-O1
+ for linux-mtd@lists.infradead.org; Fri, 29 Nov 2013 12:20:17 +0000
+Received: by mail-yh0-f52.google.com with SMTP id i72so6531155yha.25
+ for <linux-mtd@lists.infradead.org>; Fri, 29 Nov 2013 04:19:55 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  dwmw2@infradead.org
-Subject: [PATCH v3 13/36] mtd: st_spi_fsm: Prepare the read/write FSM message
- sequence(s)
-Date: Fri, 29 Nov 2013 12:19:02 +0000
-Message-Id: <1385727565-25794-14-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH v3 10/36] mtd: st_spi_fsm: Dynamically setup flash device
+ based on JEDEC ID
+Date: Fri, 29 Nov 2013 12:18:59 +0000
+Message-Id: <1385727565-25794-11-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1385727565-25794-1-git-send-email-lee.jones@linaro.org>
 References: <1385727565-25794-1-git-send-email-lee.jones@linaro.org>
 Cc: angus.clark@st.com, linus.walleij@linaro.org,
@@ -24,95 +24,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The FSM Serial Flash Controller is driven by issuing a standard set of
-register writes we call a message sequence. This patch supplies a method
-to prepare read/write FSM message sequence(s) based on chip capability
-and configuration.
+Using previously added infrastructure we can now extract a device's JEDEC
+ID, compare it to a list of known and supported devices and make assumptions
+based on known characteristics of a given chip.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/devices/st_spi_fsm.c | 69 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 69 insertions(+)
+ drivers/mtd/devices/st_spi_fsm.c | 26 +++++++++++++++++++++++++-
+ drivers/mtd/devices/st_spi_fsm.h |  1 +
+ 2 files changed, 26 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index 1f54983..e04de62 100644
+index 71b6188..ef177e5 100644
 --- a/drivers/mtd/devices/st_spi_fsm.c
 +++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -139,6 +139,75 @@ stfsm_search_seq_rw_configs(struct stfsm *fsm,
+@@ -140,6 +140,7 @@ static void stfsm_read_jedec(struct stfsm *fsm, uint8_t *const jedec)
+ 
+ static struct flash_info * stfsm_jedec_probe(struct stfsm *fsm)
+ {
++	struct flash_info	*info;
+ 	u16                     ext_jedec;
+ 	u32			jedec;
+ 	u8			id[5];
+@@ -157,6 +158,15 @@ static struct flash_info * stfsm_jedec_probe(struct stfsm *fsm)
+ 	dev_dbg(fsm->dev, "JEDEC =  0x%08x [%02x %02x %02x %02x %02x]\n",
+ 		jedec, id[0], id[1], id[2], id[3], id[4]);
+ 
++	for (info = flash_types; info->name; info++) {
++		if (info->jedec_id == jedec) {
++			if (info->ext_id && info->ext_id != ext_jedec)
++				continue;
++			return info;
++		}
++	}
++	dev_err(fsm->dev, "Unrecognized JEDEC id %06x\n", jedec);
++
  	return NULL;
  }
  
-+/* Prepare a READ/WRITE sequence according to configuration parameters */
-+static void stfsm_prepare_rw_seq(struct stfsm *fsm,
-+				 struct stfsm_seq *seq,
-+				 struct seq_rw_config *cfg)
-+{
-+	int addr1_cycles, addr2_cycles;
-+	int i = 0;
-+
-+	memset(seq, 0, STFSM_SEQ_SIZE);
-+
-+	/* Add READ/WRITE OPC  */
-+	seq->seq_opc[i++] = (SEQ_OPC_PADS_1 |
-+			     SEQ_OPC_CYCLES(8) |
-+			     SEQ_OPC_OPCODE(cfg->cmd));
-+
-+	/* Add WREN OPC for a WRITE sequence */
-+	if (cfg->write)
-+		seq->seq_opc[i++] = (SEQ_OPC_PADS_1 |
-+				     SEQ_OPC_CYCLES(8) |
-+				     SEQ_OPC_OPCODE(FLASH_CMD_WREN) |
-+				     SEQ_OPC_CSDEASSERT);
-+
-+	/* Address configuration (24 or 32-bit addresses) */
-+	addr1_cycles  = (fsm->info->flags & FLASH_FLAG_32BIT_ADDR) ? 16 : 8;
-+	addr1_cycles /= cfg->addr_pads;
-+	addr2_cycles  = 16 / cfg->addr_pads;
-+	seq->addr_cfg = ((addr1_cycles & 0x3f) << 0 |	/* ADD1 cycles */
-+			 (cfg->addr_pads - 1) << 6 |	/* ADD1 pads */
-+			 (addr2_cycles & 0x3f) << 16 |	/* ADD2 cycles */
-+			 ((cfg->addr_pads - 1) << 22));	/* ADD2 pads */
-+
-+	/* Data/Sequence configuration */
-+	seq->seq_cfg = ((cfg->data_pads - 1) << 16 |
-+			SEQ_CFG_STARTSEQ |
-+			SEQ_CFG_CSDEASSERT);
-+	if (!cfg->write)
-+		seq->seq_cfg |= SEQ_CFG_READNOTWRITE;
-+
-+	/* Mode configuration (no. of pads taken from addr cfg) */
-+	seq->mode = ((cfg->mode_data & 0xff) << 0 |	/* data */
-+		     (cfg->mode_cycles & 0x3f) << 16 |	/* cycles */
-+		     (cfg->addr_pads - 1) << 22);	/* pads */
-+
-+	/* Dummy configuration (no. of pads taken from addr cfg) */
-+	seq->dummy = ((cfg->dummy_cycles & 0x3f) << 16 |	/* cycles */
-+		      (cfg->addr_pads - 1) << 22);		/* pads */
-+
-+
-+	/* Instruction sequence */
-+	i = 0;
-+	if (cfg->write)
-+		seq->seq[i++] = STFSM_INST_CMD2;
-+
-+	seq->seq[i++] = STFSM_INST_CMD1;
-+
-+	seq->seq[i++] = STFSM_INST_ADD1;
-+	seq->seq[i++] = STFSM_INST_ADD2;
-+
-+	if (cfg->mode_cycles)
-+		seq->seq[i++] = STFSM_INST_MODE;
-+
-+	if (cfg->dummy_cycles)
-+		seq->seq[i++] = STFSM_INST_DUMMY;
-+
-+	seq->seq[i++] =
-+		cfg->write ? STFSM_INST_DATA_WRITE : STFSM_INST_DATA_READ;
-+	seq->seq[i++] = STFSM_INST_STOP;
-+}
-+
- static void stfsm_read_jedec(struct stfsm *fsm, uint8_t *const jedec)
+@@ -251,6 +261,7 @@ static int stfsm_init(struct stfsm *fsm)
+ static int stfsm_probe(struct platform_device *pdev)
  {
- 	const struct stfsm_seq *seq = &stfsm_seq_read_jedec;
+ 	struct device_node *np = pdev->dev.of_node;
++	struct flash_info *info;
+ 	struct resource *res;
+ 	struct stfsm *fsm;
+ 	int ret;
+@@ -297,7 +308,11 @@ static int stfsm_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	/* Detect SPI FLASH device */
+-	stfsm_jedec_probe(fsm);
++	info = stfsm_jedec_probe(fsm);
++	if (!info)
++		return -ENODEV;
++
++	fsm->info = info;
+ 
+ 	platform_set_drvdata(pdev, fsm);
+ 
+@@ -306,6 +321,15 @@ static int stfsm_probe(struct platform_device *pdev)
+ 	fsm->mtd.writesize	= 4;
+ 	fsm->mtd.writebufsize	= fsm->mtd.writesize;
+ 	fsm->mtd.flags		= MTD_CAP_NORFLASH;
++	fsm->mtd.size		= info->sector_size * info->n_sectors;
++	fsm->mtd.erasesize	= info->sector_size;
++
++	dev_err(&pdev->dev,
++		"Found serial flash device: %s\n"
++		" size = %llx (%lldMiB) erasesize = 0x%08x (%uKiB)\n",
++		info->name,
++		(long long)fsm->mtd.size, (long long)(fsm->mtd.size >> 20),
++		fsm->mtd.erasesize, (fsm->mtd.erasesize >> 10));
+ 
+ 	return mtd_device_parse_register(&fsm->mtd, NULL, NULL, NULL, 0);
+ }
+diff --git a/drivers/mtd/devices/st_spi_fsm.h b/drivers/mtd/devices/st_spi_fsm.h
+index fd1472e..0a6272c 100644
+--- a/drivers/mtd/devices/st_spi_fsm.h
++++ b/drivers/mtd/devices/st_spi_fsm.h
+@@ -235,6 +235,7 @@ struct stfsm {
+ 	struct resource		*region;
+ 	struct mtd_info		mtd;
+ 	struct mutex		lock;
++	struct flash_info 	*info;
+ 
+ 	uint32_t		fifo_dir_delay;
+ };
 -- 
 1.8.3.2
