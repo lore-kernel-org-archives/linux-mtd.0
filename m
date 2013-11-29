@@ -1,27 +1,22 @@
-Received: from mail-yh0-f53.google.com ([209.85.213.53])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VmMeK-00062b-BW
- for linux-mtd@lists.infradead.org; Fri, 29 Nov 2013 11:54:21 +0000
-Received: by mail-yh0-f53.google.com with SMTP id b20so6591380yha.40
- for <linux-mtd@lists.infradead.org>; Fri, 29 Nov 2013 03:53:56 -0800 (PST)
-Date: Fri, 29 Nov 2013 11:53:49 +0000
-From: Lee Jones <lee.jones@linaro.org>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH 00/23] mtd: st_spi_fsm: Add new device
-Message-ID: <20131129115349.GB26982@lee--X1>
-References: <1385137380-28968-1-git-send-email-lee.jones@linaro.org>
- <20131127040723.GZ9468@ld-irv-0074.broadcom.com>
- <20131127115226.GC3296@lee--X1> <5296B9C5.3060704@freescale.com>
- <20131128092904.GZ3296@lee--X1> <529874EE.402@freescale.com>
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VmN1h-0006fV-Ig
+ for linux-mtd@lists.infradead.org; Fri, 29 Nov 2013 12:18:30 +0000
+Date: Fri, 29 Nov 2013 09:18:07 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Pekon Gupta <pekon@ti.com>
+Subject: Re: [PATCH] mtd: nand: auto-detection of NAND bus-width from ONFI
+ param or nand_id[]
+Message-ID: <20131129121806.GA2815@localhost>
+References: <1385382728-7913-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <529874EE.402@freescale.com>
-Cc: angus.clark@st.com, linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
- linux-spi@vger.kernel.org, Mark Brown <broonie@kernel.org>,
- linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <1385382728-7913-1-git-send-email-pekon@ti.com>
+Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ balbi@ti.com, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,78 +26,157 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> thanks for your explanations.
-> >Most controllers just take an OPCODE and pass it on to the controller
-> >and have done with it. The issue that you're attempting to rectify is
-> >that the m25p80 expects every controller to be an SPI controller
-> >registered to the SPI framework, but as we both know that's not always
-> >practical as the SPI framework doesn't allow all configuration
-> >information to be passed back to the controller driver. Our issue is
-> >not the same. We are required to send entire 'message sequences', to
-> >the controller rather than just opcodes. The JEDEC message sequence
-> >can be seen below. Bear in mind that this is also one of the more
-> >simple message sequences. Some of them even vary depending on which
-> >chip is present.
-> Frankly speaking, my quadspi driver's code is just like Jones's code.
-> Yes, a big "switch".
+Hi Pekon,
 
-That sounds awful.
-
-It begs the question, what are you saving/improving by using this
-framework then?
-
-> The opcode is just like an index to trigger the proper operation.
-> That's why i add this hook @->read_reg(). (the hook acts as the ioctl)
-
-As I've said before, the framework you're suggesting is likely to aid
-a Controller which shares a great deal of functionality with the
-m25p80 where the back-end controller driver doesn't use the SPI
-Subsystem. That won't apply to some Serial Flash Controller drivers,
-ours included.
-
-The idea of providing a framework like this is to reduce unnecessary
-duplication of code by consolidating shared routines into a central
-point. mp25p80 is a good place for that, as a great many Controllers
-share the majority of its code. As the only commonality we have with
-the m25p80 is a small piece of the JEDEC extraction and a sub-section
-of the supported device table (which A. our Controller doesn't support
-all of the devices and C. we've extended the table to make it more
-useful for our use-case); what you're suggesting would not only
-create a larger code-base, but execution would also take more cycles,
-which to me sounds completely counter-intuitive. It's lose-lose!
-
-Using the m25p80 as a pass-through, then creating an OPCODE based
-switch statement to then go and do the _real_ work sound absurd.
-
-> If we do not use this hooks, we should add more hooks such as
-> @->read_id, @->read_sr, @->read_cr...
+On Mon, Nov 25, 2013 at 06:02:08PM +0530, Pekon Gupta wrote:
+> This patch is alternative implementation for following commit which introduced
+> NAND_BUSWIDTH_AUTO for detection of bus-width during device probe
+>    commit 64b37b2a63eb2f80b65c7185f0013f8ffc637ae3
+>    Author:     Matthieu CASTET <matthieu.castet@parrot.com>
+>    AuthorDate: 2012-11-06
 > 
-> That's make the interface not graceful enough.
-
-I agree.
-
-> I read the your patch implementing the read_id:
+> As NAND device is identified only during nand_scan_ident(), so this patch 
+> assumes that NAND driver may un-initialized or partially congigured while
+> calling nand_scan_ident(). Hence, this patch does following:
 > 
-> http://lists.infradead.org/pipermail/linux-mtd/2013-November/050221.html
+> (1) Temporarily configures 'bus-width=x8' mode before reading ONFI parameters,
+>  (as required by ONFI spec Refer[*]), and then reverts to original bus-width.
+>  This allows nand_flash_detect_onfi() to read ONFI paramers page even if
+>  bus-width was un-initialized or incorrectly configured.
 > 
-> it's more readable. But i think Jones's stfsm_read_reg() is workable too.
+> (2) reconfigures driver with correct bus-width determined by:
+>  - either by reading ONFI param OR
+>  - as found in nand_flash_id[] table
+>  So, any driver-specific callback overrides should be done post nand_scan_ident.
+> 
+> This patch removes any dependency on either 'DT binding' or 'platform data' to
+> for determining NAND device bus-width.
+> 
+> [*] Reference: ONFI spec version 3.1 (section 3.5.3. Target Initialization)
+>     "The Read ID and Read Parameter Page commands only use the lower 8-bits
+>      of the data bus. The host shall not issue commands that use a word
+>      data width on x16 devices until the host determines the device supports
+>      a 16-bit data bus width in the parameter page."
+> 
+> 
+> Signed-off-by: Pekon Gupta <pekon@ti.com>
+> ---
+>  drivers/mtd/nand/nand_base.c | 43 ++++++++++++++++++-------------------------
+>  include/linux/mtd/nand.h     |  7 -------
+>  2 files changed, 18 insertions(+), 32 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index bd39f7b..3d581a4 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -2942,14 +2942,9 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+>  		chip->read_byte(mtd) != 'F' || chip->read_byte(mtd) != 'I')
+>  		return 0;
+>  
+> -	/*
+> -	 * ONFI must be probed in 8-bit mode or with NAND_BUSWIDTH_AUTO, not
+> -	 * with NAND_BUSWIDTH_16
+> -	 */
+> -	if (chip->options & NAND_BUSWIDTH_16) {
+> -		pr_err("ONFI cannot be probed in 16-bit mode; aborting\n");
+> -		return 0;
+> -	}
+> +	/* ONFI must be probed in 8-bit mode only, so switch to x8 mode */
+> +	if (chip->options & NAND_BUSWIDTH_16)
+> +		nand_set_defaults(chip, 0);
+>  
+>  	chip->cmdfunc(mtd, NAND_CMD_PARAM, 0, -1);
+>  	for (i = 0; i < 3; i++) {
+> @@ -2962,7 +2957,7 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+>  
+>  	if (i == 3) {
+>  		pr_err("Could not find valid ONFI parameter page; aborting\n");
+> -		return 0;
+> +		goto return_error;
+>  	}
+>  
+>  	/* Check version */
+> @@ -2980,7 +2975,7 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+>  
+>  	if (!chip->onfi_version) {
+>  		pr_info("%s: unsupported ONFI version: %d\n", __func__, val);
+> -		return 0;
+> +		goto return_error;
+>  	}
+>  
+>  	sanitize_string(p->manufacturer, sizeof(p->manufacturer));
+> @@ -3033,6 +3028,12 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+>  	}
+>  
+>  	return 1;
+> +
+> +return_error:
+> +	/* revert to original bus-width */
+> +	nand_set_defaults(chip, chip->options & NAND_BUSWIDTH_16);
+> +	return 0;
+> +
+>  }
+>  
+>  /*
+> @@ -3431,22 +3432,14 @@ ident_done:
+>  			break;
+>  	}
+>  
+> -	if (chip->options & NAND_BUSWIDTH_AUTO) {
+> -		WARN_ON(chip->options & NAND_BUSWIDTH_16);
+> -		chip->options |= busw;
+> +
+> +	/* re-configure driver is bus-width was incorrectly configured */
+> +	if (busw != (chip->options & NAND_BUSWIDTH_16)) {
+> +		pr_warn("reconfiguring NAND bus width to %d instead %d bit\n",
+> +			   busw ? 16 : 8,
+> +			   (chip->options & NAND_BUSWIDTH_16) ? 16 : 8);
+> +		chip->options = (chip->options & ~NAND_BUSWIDTH_16) | busw;
+>  		nand_set_defaults(chip, busw);
+> -	} else if (busw != (chip->options & NAND_BUSWIDTH_16)) {
+> -		/*
+> -		 * Check, if buswidth is correct. Hardware drivers should set
+> -		 * chip correct!
+> -		 */
+> -		pr_info("NAND device: Manufacturer ID:"
+> -			" 0x%02x, Chip ID: 0x%02x (%s %s)\n", *maf_id,
+> -			*dev_id, nand_manuf_ids[maf_idx].name, mtd->name);
+> -		pr_warn("NAND bus width %d instead %d bit\n",
+> -			   (chip->options & NAND_BUSWIDTH_16) ? 16 : 8,
+> -			   busw ? 16 : 8);
+> -		return ERR_PTR(-EINVAL);
+>  	}
+>  
+>  	nand_decode_bbm_options(mtd, chip, id_data);
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> index 9e6c8f9..d5cc642 100644
+> --- a/include/linux/mtd/nand.h
+> +++ b/include/linux/mtd/nand.h
+> @@ -183,13 +183,6 @@ typedef enum {
+>  #define NAND_OWN_BUFFERS	0x00020000
+>  /* Chip may not exist, so silence any errors in scan */
+>  #define NAND_SCAN_SILENT_NODEV	0x00040000
+> -/*
+> - * Autodetect nand buswidth with readid/onfi.
+> - * This suppose the driver will configure the hardware in 8 bits mode
+> - * when calling nand_scan_ident, and update its configuration
+> - * before calling nand_scan_tail.
+> - */
+> -#define NAND_BUSWIDTH_AUTO      0x00080000
+>  
+>  /* Options set by nand scan */
+>  /* Nand scan has allocated controller struct */
+> -- 
+> 1.8.1
+> 
 
-It's 'workable', but not efficient. I wrote that example to show you
-how bad it would look and to show that is was not a good idea, not
-as a good example to be followed.
+I'm not really convinced about the path you're taking here, as I think the
+solution should be a bit simpler.
 
-> If you do not like the read_reg() hook, do you have any better idea?
-
-I don't have a better idea. I think your framework will work just fine
-for some controllers. I just don't think bending ours to use it (by
-basically adding _extra_ code, and subsequently extra cycles) is the
-best way to go.
-
-Kind regards,
-Lee
-
+I've prepared an RFC with my proposal, based on this same patch. Let me
+finish some testings and post it (I took the liberty of adding your SOB
+to it).
 -- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
