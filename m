@@ -1,27 +1,32 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VmiZz-0008Dj-Tq
- for linux-mtd@lists.infradead.org; Sat, 30 Nov 2013 11:19:20 +0000
-Date: Sat, 30 Nov 2013 08:19:00 -0300
+ id 1Vmigk-0008HG-Lh
+ for linux-mtd@lists.infradead.org; Sat, 30 Nov 2013 11:26:19 +0000
+Date: Sat, 30 Nov 2013 08:17:22 -0300
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v3] mtd/nand: don't use {read,write}_buf for 8-bit
- transfers
-Message-ID: <20131130111859.GB2330@localhost>
-References: <1365164021.28127.109.camel@i7.infradead.org>
- <1385500515-5376-1-git-send-email-u.kleine-koenig@pengutronix.de>
- <20131127073512.GB13929@norris.computersforpeace.net>
- <20131129122018.GB2815@localhost>
- <20131130060428.GA29397@norris.computersforpeace.net>
+Subject: Re: [PATCH v5 1/3] mtd: nand: gpio: Add DT property to automatically
+ determine bus width
+Message-ID: <20131130111721.GA2330@localhost>
+References: <1384343884-29622-1-git-send-email-shc_work@mail.ru>
+ <20131127012158.GR9468@ld-irv-0074.broadcom.com>
+ <20131127012338.GS9468@ld-irv-0074.broadcom.com>
+ <20131129122551.GC2815@localhost>
+ <20131130091556.GD29397@norris.computersforpeace.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20131130060428.GA29397@norris.computersforpeace.net>
-Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- Pekon Gupta <pekon@ti.com>, kernel@pengutronix.de,
- Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+In-Reply-To: <20131130091556.GD29397@norris.computersforpeace.net>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ Russell King <linux@arm.linux.org.uk>, Pawel Moll <pawel.moll@arm.com>,
+ Alexander Shiyan <shc_work@mail.ru>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Rob Herring <rob.herring@calxeda.com>,
+ linux-mtd@lists.infradead.org, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Stephen Warren <swarren@wwwdotorg.org>, Eric Miao <eric.y.miao@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Pekon Gupta <pekon@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,69 +36,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Nov 29, 2013 at 10:04:28PM -0800, Brian Norris wrote:
-> Hi Ezequiel,
+Brian,
+
+On Sat, Nov 30, 2013 at 01:15:56AM -0800, Brian Norris wrote:
 > 
-> On Fri, Nov 29, 2013 at 09:20:19AM -0300, Ezequiel Garcia wrote:
-> > On Tue, Nov 26, 2013 at 11:35:12PM -0800, Brian Norris wrote:
-> > > + Pekon, Ezequiel
-> > > 
-> > > Can one of you see how this patch works with your BeagleBones w/ x16
-> > > NAND?
+> > Can anyone help me understand if there's *any* valid use case where we
+> > want to specify a-priori the bus width, considering it's completely
+> > discoverable at run-time?
 > 
-> I see that you are pushing to straighten out the auto-buswidth part of
-> nand_base, and I think there may be good reasons to do so. But I think
-> that part of your problem can be resolved by a patch like Uwe's, where
-> rather than forcing the entire driver to be configured for x8 just to
-> use ONFI, we can fix the ONFI operations to use the lower 8 bits.
-> 
-> IOW, I expect that a patch like Uwe's can shed some better light on the
-> auto-buswidh situation. (This is why I CC'd you and Pekon.)
-> 
-> Unfortunately, I realized that Uwe's patch doesn't go far enough, I
-> don't think. It looks like it needs something like the following diff
-> (only compile-tested).
-> 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index bd39f7b67906..1ab264457d94 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -2933,7 +2933,7 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
->  					int *busw)
->  {
->  	struct nand_onfi_params *p = &chip->onfi_params;
-> -	int i;
-> +	int i, j;
->  	int val;
->  
->  	/* Try ONFI for unknown chip or LP */
-> @@ -2942,18 +2942,10 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
->  		chip->read_byte(mtd) != 'F' || chip->read_byte(mtd) != 'I')
->  		return 0;
->  
-> -	/*
-> -	 * ONFI must be probed in 8-bit mode or with NAND_BUSWIDTH_AUTO, not
-> -	 * with NAND_BUSWIDTH_16
-> -	 */
-> -	if (chip->options & NAND_BUSWIDTH_16) {
-> -		pr_err("ONFI cannot be probed in 16-bit mode; aborting\n");
-> -		return 0;
-> -	}
-> -
->  	chip->cmdfunc(mtd, NAND_CMD_PARAM, 0, -1);
->  	for (i = 0; i < 3; i++) {
-> -		chip->read_buf(mtd, (uint8_t *)p, sizeof(*p));
-> +		for (j = 0; j < sizeof(*p); j++)
-> +			*(uint8_t *)p = chip->read_byte(mtd);
->  		if (onfi_crc16(ONFI_CRC_BASE, (uint8_t *)p, 254) ==
->  				le16_to_cpu(p->crc)) {
->  			break;
-> 
-> What do you think? (And more importantly, how does this test out for
-> you?)
+> I think the primary use case should be to reflect a limitation in the
+> hardware (besides just the flash chip). It can mean that the controller
+> itself only supports one bus width, or that the board is only wired up
+> for x8, for instance.
 > 
 
-Let me try this out and let you know.
+What do you mean by "reflect a limitation" of the hardware?
+
+Maybe I'm not really following you, but it sounds as you're mixing up
+the NAND device buswidth and the memory controller buswidth. At least
+I consider them as two different parameters for two different pieces
+of hardware.
+
+Consider OMAP, just as an example. We currently have two DT properties:
+
+1. nand-bus-width: not related to OMAP but kernel wide. It's supposed
+   to specify the devices buswidth.
+
+2. gpmc,device-width: It specifies how the controller should be
+   configured (it doesn't really specify hardware, but configuration,
+   sadly).
+
+I now realise maybe this piece of DT binding is not a good example of DT.
+
+Anyway, once again: Why would we need to set "nand-bus-width" to specify
+the flash device width given we can discover that as soon as the NAND
+is detected?
+
+Notice, that this discussion is independent of the discussion about removing
+the NAND_BUSWIDTH_AUTO. It's just about removing a DT property for a
+parameter that's runtime configurable.
 -- 
 Ezequiel García, Free Electrons
 Embedded Linux, Kernel and Android Engineering
