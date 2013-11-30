@@ -1,27 +1,21 @@
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Brian Norris <computersforpeace@gmail.com>, Ezequiel Garcia
- <ezequiel.garcia@free-electrons.com>
-Subject: RE: [RFC/PATCH] NAND bus-width detection extreme makeover
-Date: Sat, 30 Nov 2013 14:19:40 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA50432@DBDE04.ent.ti.com>
-References: <1385732456-32696-1-git-send-email-ezequiel.garcia@free-electrons.com>,
+Date: Sat, 30 Nov 2013 13:28:25 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [RFC/PATCH] NAND bus-width detection extreme makeover
+Message-ID: <20131130162824.GA2402@localhost>
+References: <1385732456-32696-1-git-send-email-ezequiel.garcia@free-electrons.com>
  <20131130083537.GB29397@norris.computersforpeace.net>
-In-Reply-To: <20131130083537.GB29397@norris.computersforpeace.net>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "shc_work@mail.ru" <shc_work@mail.ru>, Artem
- Bityutskiy <dedekind1@gmail.com>, Tony Lindgren <tony@atomide.com>,
- "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>,
- "rob.herring@calxeda.com" <rob.herring@calxeda.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20131130083537.GB29397@norris.computersforpeace.net>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, shc_work@mail.ru,
+ Artem Bityutskiy <dedekind1@gmail.com>, Tony Lindgren <tony@atomide.com>,
+ swarren@wwwdotorg.org, rob.herring@calxeda.com, linux-mtd@lists.infradead.org,
+ Pekon Gupta <pekon@ti.com>, u.kleine-koenig@pengutronix.de,
+ linux-omap@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,102 +25,130 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian, Ezequiel,
+Hi Brian,
 
-Sorry Im bit confused on below, so few queries ..
+On Sat, Nov 30, 2013 at 12:35:37AM -0800, Brian Norris wrote:
+> Hi Ezequiel,
+> 
+> On Fri, Nov 29, 2013 at 10:40:55AM -0300, Ezequiel Garcia wrote:
+> > Here's my proposal, based in Pekon's latest work.
+> > 
+> > This patch removes the flash device bus-width configuration, prior to
+> > the device detection. With this modification, a NAND driver is no longer
+> > able to "force" the device width, and instead can only obtain the detected
+> > bus-width after the call to nand_scan_ident().
+> > 
+> > Flash devices bus-width are specified either by reading an ONFI feature,
+> > or through a flag in the in-kernel flash devices table. Therefore, it doesn't
+> > make any sense to somehow "advise" the NAND core about this parameter.
+> 
+> Hmm, I think there are a few factors at play here. First of all, the
+> hardware driver knows the best about the physical buswidth. It should
+> know if there are 8 or 16 data lines connected to the device, so it
+> could, for instance, know that it does not have enough data lines to
+> support x16 buswidth. (You could possibly devise hardware that can
+> support x16 but not x8, I suppose.) So this is one way in which the
+> driver must "advise" the NAND core about the buswidth.
+> 
+> On the other hand, the hardware/driver doesn't know what buswidth the
+> flash chip is. That's nand_base's job. So in that sense, we don't need
+> to "advise" the NAND core.
+> 
+> But there are certainly cases where the driver should advise, and if
+> there is a mismatch, bail.
+> 
 
->From: Brian Norris [computersforpeace@gmail.com]
->So I think the problem may need to be divided into 2 parts:
->
->1) How do we best handle ONFI transactions, so that they are always
->  performed on the lower 8 bits of the bus **regardless of actual
->   buswidth**? (I think Uwe's patch + my response in [1] might solve
->   this.)
->
-> 2) Can/should we relax the old restrictions where drivers have to
->    configure the buswidth correctly before running nand_scan_ident(),
->    in the spirit of NAND_BUSWIDTH_AUTO? And why do we need this
->    flexibility?
->
->I think problem (1) is solvable independently of (2). So we don't
->inherently *need* BUSWIDTH_AUTO just to support ONFI correctly; we can
->just enforce that we ignore the upper 8 bits.
->
->Now, what do we have NAND_BUSWIDTH_AUTO for, anyway? It seems like its
->best use case is for a driver that (a) knows it might encounter either
->x8 or x16 flash chips and (b) is equipped to handle this change at
->runtime (e.g., it only needs to re-assign some call-backs after
->nand_scan_ident()). This means, for one, that it should have at least
->all 16 data lines connected.
->
->However, not all hardware/drivers fit (a) and (b). For such systems, we
->probably want to just indicate the expected buswidth and error out
->automatically if we detect this is incorrect.
->
-Sorry I'm bit confused here.. Where do you want to error out ?
-(a) In nand_base.c (generic driver) OR
-(b) you want the controller driver (callee of nand_scan_ident) to handle
-the bus-width mismatch on its own.
+As Pekon just said, the driver can take this action, once the NAND core
+has detected the NAND device width and bail out.
 
-I prefer (b), which is the basis of my first proposal patch.
-In my opinion following sequence should be followed by each controller driv=
-er
-during probe.
-Step-1: assign basic callbacks and parameters which are required for
-     basic NAND device I/O (like chip->ctrl, chip->delay, etc)
-Step-2: call nand_scan_ident()
-      nand_scan_ident() would populate detect NAND device parameter by
-     - reading ONFI parameters in x8 bit mode (ignoring pre-configurations)
-     - look-up from nand_flash_id[]
-      And populate chip->options, mtd->writesize, etc...
-Step-3: On return from nand_scan_ident, each controller driver should
-     check whether (chip_options & NAND_BUSWIDTH_16) as set by=20
-     nand_scan_ident() matches its controller & board configurations or
-     not. Based on which it can take corrective action or error out.
+I really don't see why we need to *enforce* that in the NAND core.
 
-If we follow above sequence then=20
-(1) NAND_BUSWIDTH_AUTO becomes implicit. And controller driver
-   does not need to set any such flags before calling nand_scan_ident().
-(2) Currently, we are error-out inside nand_base.c when=20
-   (busw !=3D chip->options & BUS_WIDTH_16).
-   Now this would be handled by individual controller drivers, as they
-   know their hardware best.
-  (If you remember, this was the reason of omap2,c calling
-   nand_scan_ident() twice. If instead of failing the first call to=20
-   nand_scan_ident  would have just returned with *corrected* bus-width,
-   then omap2,c could have handled that situation by re-configuring
-   its controller).
+> > In addition, the ONFI specification requires to issue the detection commands
+> > using only the lower 8-bits of the data bus. The ONFI specification says:
+> > 
+> >   "" The Read ID and Read Parameter Page commands only use the lower 8-bits
+> >      of the data bus. The host shall not issue commands that use a word
+> >      data width on x16 devices until the host determines the device supports
+> >      a 16-bit data bus width in the parameter page. ""
+> 
+> This does not really say that *all* NAND transactions must be performed
+> on the lower 8 bits (a true x8 buswidth), but only that all ONFI
+> transactions must be.
+> 
 
+Well, I *think* I never said that, and this patch doesn't imply that
+either. All the patch is doing is using x8 buswidth until the width is
+detected. Then it switches to whatever the width was detected to.
 
+> > IIRC, the current way of setting the device width is to set NAND_BUSWIDTH_AUTO
+> > in chip->options and then let the driver set some width-specific callbacks after
+> > the NAND core has detected the width.
+> > 
+> > However, as noticed by Pekon Gupta, this means NAND_BUSWIDTH_AUTO should be
+> > always turned on (and hence the option be removed).
+> 
+> No, I think you can solve the x16 ONFI detection problem without
+> requiring NAND_BUSWIDTH_AUTO.
 
->So I think we still want to support the following three configurations:
->
->  !NAND_BUSWIDTH_16 && !NAND_BUSWIDTH_AUTO: device must use 8-bit
->  buswidth
->
->  NAND_BUSWIDTH_16 && !NAND_BUSWIDTH_AUTO: device must use 16-bit
->  buswidth
->
->  NAND_BUSWIDTH_AUTO: can support either buswidth (auto-detectable)
->
->But I think these selections should only be restricted by hardware
->limitations (lack of I/O pin connections, inflexible controller) and not
->enforced because of software limitations in handling ONFI. This brings
->be back to problem (1), where I think we need resolve it along the lines
->of Uwe's + my patch (see [1]), not by forcing NAND_BUSWIDTH_AUTO on all
->drivers.
->
-> That's exactly what this patch is doing.
+Uh? I'm not requiring NAND_BUSWIDTH_AUTO at all.
 
-Sorry, I'll re-review Uwe's + ur patch.
-But do you agree on following:
-(1) somehow we need to do away with NAND_BUSWIDTH_AUTO *macro*.
-And instead make its functionality, built-in the nand_base.c driver ?
+> And in fact, NAND_BUSWIDTH_AUTO only helps
+> you wil part of the problem: performing ONFI transactions during the
+> initial detection, where you pretend like you're an x8 device.
+> 
+> But what happens if a driver needs to use ONFI SET_FEATURES or
+> GET_FEATURES after initial probe?
+> 
+> So I think the problem may need to be divided into 2 parts:
+> 
+>  1) How do we best handle ONFI transactions, so that they are always
+>     performed on the lower 8 bits of the bus **regardless of actual
+>     buswidth**? (I think Uwe's patch + my response in [1] might solve
+>     this.)
+> 
+>  2) Can/should we relax the old restrictions where drivers have to
+>     configure the buswidth correctly before running nand_scan_ident(),
+>     in the spirit of NAND_BUSWIDTH_AUTO? And why do we need this
+>     flexibility?
+> 
 
-(2) And nand-bus-width DT binding will still be required for defining contr=
-oller
-and board level description ...=20
-Is my understanding correct ?
+Uh? Both (1) and (2) are already handled by this patch, regarding the
+initial device detection.
 
+[..]
+> > Of course, the memory controller (such as GPMC in the OMAP case) still needs
+> > proper width a-prior configuration, but that's completely unrelated to the
+> > flash device bus width.
+> 
+> I would disagree.
+> 
 
-with regards, pekon=
+On which arguments?
+
+To be honest with you, I'm a bit lost about your feedback :-)
+
+I guess you *did* read the patch, right? It's pretty straight-forward
+and it fixes a *current* bug: 16-bit devices *cannot* be ONFI
+detected.
+
+All the patch does is:
+
+1. Set defaults to x8
+
+2. Detect device. Either method works.
+
+3. Set defaults to detected width, x8 or x16.
+
+The NAND driver is free, after the detection, to error-out, print a
+message, or re-arrange the callbacks.
+
+Which part exactly of the above do you disagree with?
+
+Now, maybe I went to far talking about removing this or that, but as far
+as the ONFI detection, I think the change is pretty-straightforward.
+
+(I'll reply to your suggestion in the proper mail)
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
