@@ -1,31 +1,30 @@
-Received: from mail-pb0-x229.google.com ([2607:f8b0:400e:c01::229])
+Received: from mail-pb0-x234.google.com ([2607:f8b0:400e:c01::234])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vmgf1-0007MR-8I
- for linux-mtd@lists.infradead.org; Sat, 30 Nov 2013 09:16:24 +0000
-Received: by mail-pb0-f41.google.com with SMTP id jt11so15825956pbb.0
- for <linux-mtd@lists.infradead.org>; Sat, 30 Nov 2013 01:16:01 -0800 (PST)
-Date: Sat, 30 Nov 2013 01:15:56 -0800
+ id 1Vmgge-0007Oc-DJ
+ for linux-mtd@lists.infradead.org; Sat, 30 Nov 2013 09:18:05 +0000
+Received: by mail-pb0-f52.google.com with SMTP id uo5so15620938pbc.25
+ for <linux-mtd@lists.infradead.org>; Sat, 30 Nov 2013 01:17:43 -0800 (PST)
+Date: Sat, 30 Nov 2013 01:17:38 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Alexander Shiyan <shc_work@mail.ru>
 Subject: Re: [PATCH v5 1/3] mtd: nand: gpio: Add DT property to automatically
  determine bus width
-Message-ID: <20131130091556.GD29397@norris.computersforpeace.net>
+Message-ID: <20131130091738.GE29397@norris.computersforpeace.net>
 References: <1384343884-29622-1-git-send-email-shc_work@mail.ru>
  <20131127012158.GR9468@ld-irv-0074.broadcom.com>
- <20131127012338.GS9468@ld-irv-0074.broadcom.com>
- <20131129122551.GC2815@localhost>
+ <1385715364.73252787@f82.i.mail.ru>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20131129122551.GC2815@localhost>
+In-Reply-To: <1385715364.73252787@f82.i.mail.ru>
 Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
  Russell King <linux@arm.linux.org.uk>, Pawel Moll <pawel.moll@arm.com>,
- Alexander Shiyan <shc_work@mail.ru>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
  Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Artem Bityutskiy <dedekind1@gmail.com>, Rob Herring <rob.herring@calxeda.com>,
- linux-mtd@lists.infradead.org, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Rob Herring <rob.herring@calxeda.com>, linux-mtd@lists.infradead.org,
+ Haojian Zhuang <haojian.zhuang@gmail.com>,
  Stephen Warren <swarren@wwwdotorg.org>, Eric Miao <eric.y.miao@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Pekon Gupta <pekon@ti.com>
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,33 +34,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Nov 29, 2013 at 09:25:52AM -0300, Ezequiel Garcia wrote:
-> On Tue, Nov 26, 2013 at 05:23:38PM -0800, Brian Norris wrote:
-> [..]
-> > > 
-> > > If we do resort to a new binding for auto-buswidth, it should be a
-> > > generic one that all NAND drivers can use.
+On Fri, Nov 29, 2013 at 12:56:04PM +0400, Alexander Shiyan wrote:
+> > Hi Alexander,
+> > 
+> > We're dealing with a similar issue in other drivers currently, and I
+> > think it's worth straightening out the issue for all systems.
+> > 
+> > On Wed, Nov 13, 2013 at 03:58:02PM +0400, Alexander Shiyan wrote:
+> > > This patch adds a property to automatically determine the NAND
+> > > bus width by CFI/ONFI information from chip. This property works
+> > > if the bus width is not specified explicitly.
+> ...
 > 
-> Why do we need yet another binding to describe something that's
-> completely discoverable?
+> Hello Brian.
+> Can at least part [2/3] "mtd: nand: gpio: Use devm_gpio_request_one() where possible"
+> be applied at this time?
 
-The DT property is not specified only for the sake of the flash chip
-itself, but for the sake of the controller which supports it. I suppose
-we've kind of overloaded its usage, but it is not entirely
-auto-detectable.
-
-> I'm working on *removing* any need to set the bus width, either from the
-> driver or from the DT, so I see this patch as step backwards.
-
-Well, I disagree with the removal ;)
-
-> Can anyone help me understand if there's *any* valid use case where we
-> want to specify a-priori the bus width, considering it's completely
-> discoverable at run-time?
-
-I think the primary use case should be to reflect a limitation in the
-hardware (besides just the flash chip). It can mean that the controller
-itself only supports one bus width, or that the board is only wired up
-for x8, for instance.
+Probably. I was avoiding taking things out of order in the series for
+now, but I'll take another look. If it looks good and applies
+independently, then I'll take it.
 
 Brian
