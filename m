@@ -1,22 +1,25 @@
-From: arno@natisbad.org (Arnaud Ebalard)
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH v5 00/14] Armada 370/XP NAND support
-References: <1384464339-6817-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <87d2lp28pd.fsf@natisbad.org> <20131125120335.GD2408@localhost>
- <87r4a4f5gr.fsf@natisbad.org> <20131126124003.GA2344@localhost>
- <87zjopd240.fsf@natisbad.org> <87wqjtbm8r.fsf@natisbad.org>
- <20131128185040.GA13182@localhost> <87bo12kcyt.fsf@natisbad.org>
- <20131202103305.GB2466@localhost>
-Date: Mon, 02 Dec 2013 22:05:28 +0100
-Message-ID: <87siubneuf.fsf@natisbad.org>
+Received: from cantor2.suse.de ([195.135.220.15] helo=mx2.suse.de)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Vnakg-0001tg-9D
+ for linux-mtd@lists.infradead.org; Mon, 02 Dec 2013 21:10:00 +0000
+Date: Mon, 2 Dec 2013 22:09:36 +0100
+From: Jan Kara <jack@suse.cz>
+To: Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH 05/18] fs: make posix_acl_chmod more useful
+Message-ID: <20131202210936.GF12253@quack.suse.cz>
+References: <20131201115903.910559036@bombadil.infradead.org>
+ <20131201120654.453220050@bombadil.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Lior Amsalem <alior@marvell.com>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Jason Cooper <jason@lakedaemon.net>, linux-mtd@lists.infradead.org,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20131201120654.453220050@bombadil.infradead.org>
+Cc: xfs@oss.sgi.com, Mark Fasheh <mfasheh@suse.com>,
+ reiserfs-devel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ cluster-devel@redhat.com, linux-mtd@lists.infradead.org,
+ viro@zeniv.linux.org.uk, jfs-discussion@lists.sourceforge.net,
+ linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-nfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ Joel Becker <jlbec@evilplan.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,256 +29,330 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ezequiel,
+On Sun 01-12-13 03:59:08, Christoph Hellwig wrote:
+> Rename the current posix_acl_chmod to __posix_acl_chmod and add
+> a fully featured ACL chmod helper that uses the ->set_acl inode
+> operation.
+  Looks good. You can add:
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-Ezequiel Garcia <ezequiel.garcia@free-electrons.com> writes:
-
->> Here is the nandtest run:
->> 
->>   nandtest /dev/mtd4
->>   ECC corrections: 0
->>   ECC failures   : 0
->>   Bad blocks     : 8
->>   BBT blocks     : 0
->>   Bad block at 0x06700000
->>   Bad block at 0x06720000
->>   Bad block at 0x06740000
->>   Bad block at 0x06760000
->>   Bad block at 0x06780000
->>   Bad block at 0x067a0000
->>   Bad block at 0x067c0000
->>   Bad block at 0x067e0000
->>   
->>   Finished pass 1 successfully
->> 
->
-> Hm, so something *is* working properly. Notice that mtd4 has its 8 last blocks
-> marked 'bad' becuase it holds the bad block table.
-
-I think I am missing something here: u-boot reports that the BBT are
-located here:
-
-  >>  Bad block table found at page 65472, version 0x01
-  >>  Bad block table found at page 65408, version 0x01
-
-which seems to indicate that they are each 64 pages (i.e. 128KB)
-long. AFAICT, the log output seems to indicate that blocks are
-128KB in size:
-
-  >>   Bad block at 0x06700000
-  >>   Bad block at 0x06720000
-  >>   Bad block at 0x06740000
-  >>   Bad block at 0x06760000
-  >>   Bad block at 0x06780000
-  >>   Bad block at 0x067a0000
-  >>   Bad block at 0x067c0000
-  >>   Bad block at 0x067e0000
-
-which is also what mtdinfo reports:
-
-  root@mood:~# mtdinfo /dev/mtd4
-  mtd4
-  Name:                           jffs2
-  Type:                           nand
-  Eraseblock size:                131072 bytes, 128.0 KiB
-  Amount of eraseblocks:          832 (109051904 bytes, 104.0 MiB)
-  Minimum input/output unit size: 2048 bytes
-  Sub-page size:                  2048 bytes
-  OOB size:                       64 bytes
-  Character device major/minor:   90:8
-  Bad blocks are allowed:         true
-  Device is writable:             true
-  
-So unless I am missing something, *according* to u-boot there are 2 BBT
-and each BBT is 1 block long. 
-
-Additionally - and this is a point I would like to understand - the
-reported location of this BBT is not after the 128MB of the chip but
-before the end of those 128MB. This also means before the end of the
-last partition. So the definition of the partition itsef gives the
-impression that all the blocks in the partition are available when in
-fact, the last two blocks cannot be used at all (or 8 if you are
-right). Put in a different manner, if I nandwrite a 104.0 MiB image to
-the last partition (/dev/mtd4), I am guaranteed to try and overwrite the
-BBT. 
-
-Do not hesitate to tell me what I am missing here or if it is
-expected that the partition definition (start address and length)
-*includes* the bbt pages/blocks.
-
-> If you don't mind running a few more rounds, then it would be nice to do:
->
->   $ nandtest --passes {N}
->
-> So we run the test a few more times, just to be sure.
-
-root@mood:~# nandtest --passes 2 /dev/mtd4
-ECC corrections: 0
-ECC failures   : 0
-Bad blocks     : 8
-BBT blocks     : 0
-Bad block at 0x06700000
-Bad block at 0x06720000
-Bad block at 0x06740000
-Bad block at 0x06760000
-Bad block at 0x06780000
-Bad block at 0x067a0000
-Bad block at 0x067c0000
-Bad block at 0x067e0000
-
-Finished pass 1 successfully
-Bad block at 0x06700000
-Bad block at 0x06720000
-Bad block at 0x06740000
-Bad block at 0x06760000
-Bad block at 0x06780000
-Bad block at 0x067a0000
-Bad block at 0x067c0000
-Bad block at 0x067e0000
-
-Finished pass 2 successfully
-
->>   root@mood:~# nandwrite -p /dev/mtd4 /tmp/toto
->>   ...
->>   Writing data to block 795 at offset 0x6360000
->>   Writing data to block 796 at offset 0x6380000
->>   Writing data to block 797 at offset 0x63a0000
->>   Writing data to block 798 at offset 0x63c0000
->>   Writing data to block 799 at offset 0x63e0000
->>   Writing data to block 800 at offset 0x6400000
->>   [ 1509.210395] pxa3xx-nand d00d0000.nand: Ready time out!!!
->>   libmtd: error!: cannot write 2048 bytes to mtd4 (eraseblock 800, offset 0)
->>           error 5 (Input/output error)
-> [..]
->
->>   [ 1513.810387] pxa3xx-nand d00d0000.nand: Ready time out!!!
->>   libmtd: error!: cannot write 2048 bytes to mtd4 (eraseblock 823, offset 0)
->>           error 5 (Input/output error)
->>   Erasing failed write from 0x66e0000 to 0x66fffff
->
-> Hm.. so you get errors when writing to mtd4 blocks from 800 to 823.
->
-> Is that completely reproducible, IOW do you get always the error
-> on those blocks?
-
-Well, I did the same test again, and I think the answer is 'no':
-
-root@mood:~# dd if=/dev/mtd4 of=/tmp/toto
-212992+0 records in
-212992+0 records out
-109051904 bytes (109 MB) copied, 11.136 s, 9.8 MB/s
-
-root@mood:~# flash_erase /dev/mtd4 0 0
-Erasing 128 Kibyte @ 66e0000 -- 98 % complete flash_erase: Skipping bad block at 06700000
-flash_erase: Skipping bad block at 06720000
-flash_erase: Skipping bad block at 06740000
-flash_erase: Skipping bad block at 06760000
-flash_erase: Skipping bad block at 06780000
-flash_erase: Skipping bad block at 067a0000
-flash_erase: Skipping bad block at 067c0000
-flash_erase: Skipping bad block at 067e0000
-Erasing 128 Kibyte @ 67e0000 -- 100 % complete 
-
-root@mood:~# nandwrite -p /dev/mtd4 /tmp/toto
-Writing data to block 0 at offset 0x0
-Writing data to block 1 at offset 0x20000
-Writing data to block 2 at offset 0x40000
-Writing data to block 3 at offset 0x60000
-Writing data to block 4 at offset 0x80000
-Writing data to block 5 at offset 0xa0000
-Writing data to block 6 at offset 0xc0000
-Writing data to block 7 at offset 0xe0000
-...
-Writing data to block 818 at offset 0x6640000
-Writing data to block 819 at offset 0x6660000
-Writing data to block 820 at offset 0x6680000
-Writing data to block 821 at offset 0x66a0000
-Writing data to block 822 at offset 0x66c0000
-Writing data to block 823 at offset 0x66e0000
-Writing data to block 824 at offset 0x6700000
-Bad block at 6700000, 1 block(s) from 6700000 will be skipped
-Writing data to block 825 at offset 0x6720000
-Bad block at 6720000, 1 block(s) from 6720000 will be skipped
-Writing data to block 826 at offset 0x6740000
-Bad block at 6740000, 1 block(s) from 6740000 will be skipped
-Writing data to block 827 at offset 0x6760000
-Bad block at 6760000, 1 block(s) from 6760000 will be skipped
-Writing data to block 828 at offset 0x6780000
-Bad block at 6780000, 1 block(s) from 6780000 will be skipped
-Writing data to block 829 at offset 0x67a0000
-Bad block at 67a0000, 1 block(s) from 67a0000 will be skipped
-Writing data to block 830 at offset 0x67c0000
-Bad block at 67c0000, 1 block(s) from 67c0000 will be skipped
-Writing data to block 831 at offset 0x67e0000
-Bad block at 67e0000, 1 block(s) from 67e0000 will be skipped
-Writing data to block 832 at offset 0x6800000
-libmtd: error!: bad eraseblock number 832, mtd4 has 832 eraseblocks
-nandwrite: error!: /dev/mtd4: MTD get bad block failed
-           error 22 (Invalid argument)
-nandwrite: error!: Data was only partially written due to error
-           error 22 (Invalid argument)
-root@mood:~# 
-
-Well, this time I don't get the "ready timeout" error I had last
-time around block 800. I did the test a second time (flash_erase and
-then nandwrite) and got the same result, i.e. no error before 824.
-
-
->>   Writing data to block 824 at offset 0x6700000
->>   Bad block at 6700000, 1 block(s) from 6700000 will be skipped
->>   Writing data to block 825 at offset 0x6720000
->>   Bad block at 6720000, 1 block(s) from 6720000 will be skipped
->>   Writing data to block 826 at offset 0x6740000
->>   Bad block at 6740000, 1 block(s) from 6740000 will be skipped
->>   Writing data to block 827 at offset 0x6760000
->>   Bad block at 6760000, 1 block(s) from 6760000 will be skipped
->>   Writing data to block 828 at offset 0x6780000
->>   Bad block at 6780000, 1 block(s) from 6780000 will be skipped
->>   Writing data to block 829 at offset 0x67a0000
->>   Bad block at 67a0000, 1 block(s) from 67a0000 will be skipped
->>   Writing data to block 830 at offset 0x67c0000
->>   Bad block at 67c0000, 1 block(s) from 67c0000 will be skipped
->>   Writing data to block 831 at offset 0x67e0000
->>   Bad block at 67e0000, 1 block(s) from 67e0000 will be skipped
->>   Writing data to block 832 at offset 0x6800000
->>   libmtd: error!: bad eraseblock number 832, mtd4 has 832 eraseblocks
->>   nandwrite: error!: /dev/mtd4: MTD get bad block failed
->>              error 22 (Invalid argument)
->>   nandwrite: error!: Data was only partially written due to error
->>              error 22 (Invalid argument)
->>   
->
-> These 8 blocks (824-832) that has been skipped are the ones marked
-> as 'bad' because they hold the bad block table.
->
->> This is the kind of errors I got last time but I think am starting to
->> understand the root cause now. Tell me if I get it right: what is
->> understood as bad blocks above (and in nandtest) is in fact the two bad
->> block tables reported during boot:
->> 
->>  NAND device: Manufacturer ID: 0xad, Chip ID: 0xf1 (Hynix H27U1G8F2BTR-BC)
->>  NAND device: 128MiB, SLC, page size: 2048, OOB size: 64
->>  Bad block table found at page 65472, version 0x01
->>  Bad block table found at page 65408, version 0x01
->> 
->
-> Yes and no :-) The bad block table consists of 8 blocks at the end
-> of the flash device. These blocks are marked as 'reserved' and nandtest
-> or any other userspace writing/erasing tool will skip them.
->
-> Hence, the bad block table is what explains the skipping of the group
-> of blocks [824..832]. However, you're getting errors when writing
-> data to [800..823], and it's a "Ready timeout" condition. I'm not sure
-> exactly what's going on, but we can say that:
->
->   * Either the waiting time is not enough, or ...
->
->   * The commands (maybe some race) were badly issued so there's nothing
->     to wait at all.
-
-As I can not reproduce previous behavior (I am on the exact same
-kernel), I guess it's difficult to go any further yet.
-
-Cheers,
-
-a+
+							Honza
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  fs/9p/acl.c               |    2 +-
+>  fs/btrfs/acl.c            |    2 +-
+>  fs/ext2/acl.c             |    2 +-
+>  fs/ext3/acl.c             |    2 +-
+>  fs/ext4/acl.c             |    2 +-
+>  fs/f2fs/acl.c             |    2 +-
+>  fs/generic_acl.c          |    2 +-
+>  fs/gfs2/acl.c             |    2 +-
+>  fs/hfsplus/posix_acl.c    |    2 +-
+>  fs/jffs2/acl.c            |    2 +-
+>  fs/jfs/acl.c              |    2 +-
+>  fs/ocfs2/acl.c            |    2 +-
+>  fs/posix_acl.c            |   30 +++++++++++++++++++++++++++---
+>  fs/reiserfs/xattr_acl.c   |    2 +-
+>  fs/xfs/xfs_acl.c          |    2 +-
+>  include/linux/posix_acl.h |   17 +++++++++++++----
+>  16 files changed, 54 insertions(+), 21 deletions(-)
+> 
+> diff --git a/fs/9p/acl.c b/fs/9p/acl.c
+> index 7af425f..f5ce5c5 100644
+> --- a/fs/9p/acl.c
+> +++ b/fs/9p/acl.c
+> @@ -156,7 +156,7 @@ int v9fs_acl_chmod(struct inode *inode, struct p9_fid *fid)
+>  		return -EOPNOTSUPP;
+>  	acl = v9fs_get_cached_acl(inode, ACL_TYPE_ACCESS);
+>  	if (acl) {
+> -		retval = posix_acl_chmod(&acl, GFP_KERNEL, inode->i_mode);
+> +		retval = __posix_acl_chmod(&acl, GFP_KERNEL, inode->i_mode);
+>  		if (retval)
+>  			return retval;
+>  		set_cached_acl(inode, ACL_TYPE_ACCESS, acl);
+> diff --git a/fs/btrfs/acl.c b/fs/btrfs/acl.c
+> index 0890c83..1af04ff 100644
+> --- a/fs/btrfs/acl.c
+> +++ b/fs/btrfs/acl.c
+> @@ -256,7 +256,7 @@ int btrfs_acl_chmod(struct inode *inode)
+>  	if (IS_ERR_OR_NULL(acl))
+>  		return PTR_ERR(acl);
+>  
+> -	ret = posix_acl_chmod(&acl, GFP_KERNEL, inode->i_mode);
+> +	ret = __posix_acl_chmod(&acl, GFP_KERNEL, inode->i_mode);
+>  	if (ret)
+>  		return ret;
+>  	ret = btrfs_set_acl(NULL, inode, acl, ACL_TYPE_ACCESS);
+> diff --git a/fs/ext2/acl.c b/fs/ext2/acl.c
+> index 110b6b3..7006ced 100644
+> --- a/fs/ext2/acl.c
+> +++ b/fs/ext2/acl.c
+> @@ -308,7 +308,7 @@ ext2_acl_chmod(struct inode *inode)
+>  	acl = ext2_get_acl(inode, ACL_TYPE_ACCESS);
+>  	if (IS_ERR(acl) || !acl)
+>  		return PTR_ERR(acl);
+> -	error = posix_acl_chmod(&acl, GFP_KERNEL, inode->i_mode);
+> +	error = __posix_acl_chmod(&acl, GFP_KERNEL, inode->i_mode);
+>  	if (error)
+>  		return error;
+>  	error = ext2_set_acl(inode, ACL_TYPE_ACCESS, acl);
+> diff --git a/fs/ext3/acl.c b/fs/ext3/acl.c
+> index dbb5ad5..6691a6c 100644
+> --- a/fs/ext3/acl.c
+> +++ b/fs/ext3/acl.c
+> @@ -314,7 +314,7 @@ ext3_acl_chmod(struct inode *inode)
+>  	acl = ext3_get_acl(inode, ACL_TYPE_ACCESS);
+>  	if (IS_ERR(acl) || !acl)
+>  		return PTR_ERR(acl);
+> -	error = posix_acl_chmod(&acl, GFP_KERNEL, inode->i_mode);
+> +	error = __posix_acl_chmod(&acl, GFP_KERNEL, inode->i_mode);
+>  	if (error)
+>  		return error;
+>  retry:
+> diff --git a/fs/ext4/acl.c b/fs/ext4/acl.c
+> index 39a54a0..2eebe02 100644
+> --- a/fs/ext4/acl.c
+> +++ b/fs/ext4/acl.c
+> @@ -320,7 +320,7 @@ ext4_acl_chmod(struct inode *inode)
+>  	acl = ext4_get_acl(inode, ACL_TYPE_ACCESS);
+>  	if (IS_ERR(acl) || !acl)
+>  		return PTR_ERR(acl);
+> -	error = posix_acl_chmod(&acl, GFP_KERNEL, inode->i_mode);
+> +	error = __posix_acl_chmod(&acl, GFP_KERNEL, inode->i_mode);
+>  	if (error)
+>  		return error;
+>  retry:
+> diff --git a/fs/f2fs/acl.c b/fs/f2fs/acl.c
+> index d0fc287..14c4df0 100644
+> --- a/fs/f2fs/acl.c
+> +++ b/fs/f2fs/acl.c
+> @@ -311,7 +311,7 @@ int f2fs_acl_chmod(struct inode *inode)
+>  	if (IS_ERR(acl) || !acl)
+>  		return PTR_ERR(acl);
+>  
+> -	error = posix_acl_chmod(&acl, GFP_KERNEL, mode);
+> +	error = __posix_acl_chmod(&acl, GFP_KERNEL, mode);
+>  	if (error)
+>  		return error;
+>  
+> diff --git a/fs/generic_acl.c b/fs/generic_acl.c
+> index b3f3676..46a5076 100644
+> --- a/fs/generic_acl.c
+> +++ b/fs/generic_acl.c
+> @@ -158,7 +158,7 @@ generic_acl_chmod(struct inode *inode)
+>  		return -EOPNOTSUPP;
+>  	acl = get_cached_acl(inode, ACL_TYPE_ACCESS);
+>  	if (acl) {
+> -		error = posix_acl_chmod(&acl, GFP_KERNEL, inode->i_mode);
+> +		error = __posix_acl_chmod(&acl, GFP_KERNEL, inode->i_mode);
+>  		if (error)
+>  			return error;
+>  		set_cached_acl(inode, ACL_TYPE_ACCESS, acl);
+> diff --git a/fs/gfs2/acl.c b/fs/gfs2/acl.c
+> index f69ac0a..3e200c7 100644
+> --- a/fs/gfs2/acl.c
+> +++ b/fs/gfs2/acl.c
+> @@ -162,7 +162,7 @@ int gfs2_acl_chmod(struct gfs2_inode *ip, struct iattr *attr)
+>  	if (!acl)
+>  		return gfs2_setattr_simple(inode, attr);
+>  
+> -	error = posix_acl_chmod(&acl, GFP_NOFS, attr->ia_mode);
+> +	error = __posix_acl_chmod(&acl, GFP_NOFS, attr->ia_mode);
+>  	if (error)
+>  		return error;
+>  
+> diff --git a/fs/hfsplus/posix_acl.c b/fs/hfsplus/posix_acl.c
+> index b609cc1..cab5fd6 100644
+> --- a/fs/hfsplus/posix_acl.c
+> +++ b/fs/hfsplus/posix_acl.c
+> @@ -167,7 +167,7 @@ int hfsplus_posix_acl_chmod(struct inode *inode)
+>  	if (IS_ERR(acl) || !acl)
+>  		return PTR_ERR(acl);
+>  
+> -	err = posix_acl_chmod(&acl, GFP_KERNEL, inode->i_mode);
+> +	err = __posix_acl_chmod(&acl, GFP_KERNEL, inode->i_mode);
+>  	if (unlikely(err))
+>  		return err;
+>  
+> diff --git a/fs/jffs2/acl.c b/fs/jffs2/acl.c
+> index 223283c..5853969 100644
+> --- a/fs/jffs2/acl.c
+> +++ b/fs/jffs2/acl.c
+> @@ -335,7 +335,7 @@ int jffs2_acl_chmod(struct inode *inode)
+>  	acl = jffs2_get_acl(inode, ACL_TYPE_ACCESS);
+>  	if (IS_ERR(acl) || !acl)
+>  		return PTR_ERR(acl);
+> -	rc = posix_acl_chmod(&acl, GFP_KERNEL, inode->i_mode);
+> +	rc = __posix_acl_chmod(&acl, GFP_KERNEL, inode->i_mode);
+>  	if (rc)
+>  		return rc;
+>  	rc = jffs2_set_acl(inode, ACL_TYPE_ACCESS, acl);
+> diff --git a/fs/jfs/acl.c b/fs/jfs/acl.c
+> index d254d6d..9c0fca8 100644
+> --- a/fs/jfs/acl.c
+> +++ b/fs/jfs/acl.c
+> @@ -161,7 +161,7 @@ int jfs_acl_chmod(struct inode *inode)
+>  	if (IS_ERR(acl) || !acl)
+>  		return PTR_ERR(acl);
+>  
+> -	rc = posix_acl_chmod(&acl, GFP_KERNEL, inode->i_mode);
+> +	rc = __posix_acl_chmod(&acl, GFP_KERNEL, inode->i_mode);
+>  	if (rc)
+>  		return rc;
+>  
+> diff --git a/fs/ocfs2/acl.c b/fs/ocfs2/acl.c
+> index b4f788e..73ccf0e 100644
+> --- a/fs/ocfs2/acl.c
+> +++ b/fs/ocfs2/acl.c
+> @@ -350,7 +350,7 @@ int ocfs2_acl_chmod(struct inode *inode)
+>  	acl = ocfs2_get_acl(inode, ACL_TYPE_ACCESS);
+>  	if (IS_ERR(acl) || !acl)
+>  		return PTR_ERR(acl);
+> -	ret = posix_acl_chmod(&acl, GFP_KERNEL, inode->i_mode);
+> +	ret = __posix_acl_chmod(&acl, GFP_KERNEL, inode->i_mode);
+>  	if (ret)
+>  		return ret;
+>  	ret = ocfs2_set_acl(NULL, inode, NULL, ACL_TYPE_ACCESS,
+> diff --git a/fs/posix_acl.c b/fs/posix_acl.c
+> index 9dd03e0..9f76aaa 100644
+> --- a/fs/posix_acl.c
+> +++ b/fs/posix_acl.c
+> @@ -338,7 +338,7 @@ static int posix_acl_create_masq(struct posix_acl *acl, umode_t *mode_p)
+>  /*
+>   * Modify the ACL for the chmod syscall.
+>   */
+> -static int posix_acl_chmod_masq(struct posix_acl *acl, umode_t mode)
+> +static int __posix_acl_chmod_masq(struct posix_acl *acl, umode_t mode)
+>  {
+>  	struct posix_acl_entry *group_obj = NULL, *mask_obj = NULL;
+>  	struct posix_acl_entry *pa, *pe;
+> @@ -402,12 +402,12 @@ posix_acl_create(struct posix_acl **acl, gfp_t gfp, umode_t *mode_p)
+>  EXPORT_SYMBOL(posix_acl_create);
+>  
+>  int
+> -posix_acl_chmod(struct posix_acl **acl, gfp_t gfp, umode_t mode)
+> +__posix_acl_chmod(struct posix_acl **acl, gfp_t gfp, umode_t mode)
+>  {
+>  	struct posix_acl *clone = posix_acl_clone(*acl, gfp);
+>  	int err = -ENOMEM;
+>  	if (clone) {
+> -		err = posix_acl_chmod_masq(clone, mode);
+> +		err = __posix_acl_chmod_masq(clone, mode);
+>  		if (err) {
+>  			posix_acl_release(clone);
+>  			clone = NULL;
+> @@ -417,6 +417,30 @@ posix_acl_chmod(struct posix_acl **acl, gfp_t gfp, umode_t mode)
+>  	*acl = clone;
+>  	return err;
+>  }
+> +EXPORT_SYMBOL(__posix_acl_chmod);
+> +
+> +int
+> +posix_acl_chmod(struct inode *inode)
+> +{
+> +	struct posix_acl *acl;
+> +	int ret = 0;
+> +
+> +	if (S_ISLNK(inode->i_mode))
+> +		return -EOPNOTSUPP;
+> +	if (!IS_POSIXACL(inode))
+> +		return 0;
+> +
+> +	acl = get_acl(inode, ACL_TYPE_ACCESS);
+> +	if (IS_ERR_OR_NULL(acl))
+> +		return PTR_ERR(acl);
+> +
+> +	ret = __posix_acl_chmod(&acl, GFP_KERNEL, inode->i_mode);
+> +	if (ret)
+> +		return ret;
+> +	ret = inode->i_op->set_acl(inode, acl, ACL_TYPE_ACCESS);
+> +	posix_acl_release(acl);
+> +	return ret;
+> +}
+>  EXPORT_SYMBOL(posix_acl_chmod);
+>  
+>  struct posix_acl *get_acl(struct inode *inode, int type)
+> diff --git a/fs/reiserfs/xattr_acl.c b/fs/reiserfs/xattr_acl.c
+> index 6f721ea..ea4e443 100644
+> --- a/fs/reiserfs/xattr_acl.c
+> +++ b/fs/reiserfs/xattr_acl.c
+> @@ -463,7 +463,7 @@ int reiserfs_acl_chmod(struct inode *inode)
+>  		return 0;
+>  	if (IS_ERR(acl))
+>  		return PTR_ERR(acl);
+> -	error = posix_acl_chmod(&acl, GFP_NOFS, inode->i_mode);
+> +	error = __posix_acl_chmod(&acl, GFP_NOFS, inode->i_mode);
+>  	if (error)
+>  		return error;
+>  
+> diff --git a/fs/xfs/xfs_acl.c b/fs/xfs/xfs_acl.c
+> index 370eb3e..4eac105 100644
+> --- a/fs/xfs/xfs_acl.c
+> +++ b/fs/xfs/xfs_acl.c
+> @@ -334,7 +334,7 @@ xfs_acl_chmod(struct inode *inode)
+>  	if (IS_ERR(acl) || !acl)
+>  		return PTR_ERR(acl);
+>  
+> -	error = posix_acl_chmod(&acl, GFP_KERNEL, inode->i_mode);
+> +	error = __posix_acl_chmod(&acl, GFP_KERNEL, inode->i_mode);
+>  	if (error)
+>  		return error;
+>  
+> diff --git a/include/linux/posix_acl.h b/include/linux/posix_acl.h
+> index a8d9918..8b64e78 100644
+> --- a/include/linux/posix_acl.h
+> +++ b/include/linux/posix_acl.h
+> @@ -89,12 +89,14 @@ extern int posix_acl_permission(struct inode *, const struct posix_acl *, int);
+>  extern struct posix_acl *posix_acl_from_mode(umode_t, gfp_t);
+>  extern int posix_acl_equiv_mode(const struct posix_acl *, umode_t *);
+>  extern int posix_acl_create(struct posix_acl **, gfp_t, umode_t *);
+> -extern int posix_acl_chmod(struct posix_acl **, gfp_t, umode_t);
+> +extern int __posix_acl_chmod(struct posix_acl **, gfp_t, umode_t);
+>  
+>  extern struct posix_acl *get_posix_acl(struct inode *, int);
+>  extern int set_posix_acl(struct inode *, int, struct posix_acl *);
+>  
+>  #ifdef CONFIG_FS_POSIX_ACL
+> +extern int posix_acl_chmod(struct inode *);
+> +
+>  static inline struct posix_acl **acl_by_type(struct inode *inode, int type)
+>  {
+>  	switch (type) {
+> @@ -165,15 +167,22 @@ static inline void forget_all_cached_acls(struct inode *inode)
+>  	if (old_default != ACL_NOT_CACHED)
+>  		posix_acl_release(old_default);
+>  }
+> -#endif
+>  
+>  static inline void cache_no_acl(struct inode *inode)
+>  {
+> -#ifdef CONFIG_FS_POSIX_ACL
+>  	inode->i_acl = NULL;
+>  	inode->i_default_acl = NULL;
+> -#endif
+>  }
+> +#else
+> +static inline int posix_acl_chmod(struct inode *inode)
+> +{
+> +	return 0;
+> +}
+> +
+> +static inline void cache_no_acl(struct inode *inode)
+> +{
+> +}
+> +#endif /* CONFIG_FS_POSIX_ACL */
+>  
+>  struct posix_acl *get_acl(struct inode *inode, int type);
+>  
+> -- 
+> 1.7.10.4
+> 
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-fsdevel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-- 
+Jan Kara <jack@suse.cz>
+SUSE Labs, CR
