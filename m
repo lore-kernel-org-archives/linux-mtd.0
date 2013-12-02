@@ -1,28 +1,18 @@
-Received: from mail-ie0-f179.google.com ([209.85.223.179])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VnlHE-0003Vs-6m
- for linux-mtd@lists.infradead.org; Tue, 03 Dec 2013 08:24:16 +0000
-Received: by mail-ie0-f179.google.com with SMTP id x13so23651992ief.10
- for <linux-mtd@lists.infradead.org>; Tue, 03 Dec 2013 00:23:52 -0800 (PST)
-Date: Tue, 3 Dec 2013 08:23:43 +0000
-From: Lee Jones <lee.jones@linaro.org>
-To: Huang Shijie <b32955@freescale.com>
+From: Marek Vasut <marex@denx.de>
+To: Sourav Poddar <sourav.poddar@ti.com>
 Subject: Re: [PATCH 0/4] mtd: spi-nor: add a new framework for SPI NOR
-Message-ID: <20131203082343.GK31626@lee--X1>
+Date: Tue, 3 Dec 2013 00:59:25 +0100
 References: <1385447575-23773-1-git-send-email-b32955@freescale.com>
- <20131127043253.GA9468@ld-irv-0074.broadcom.com>
- <5298AA23.7080404@st.com> <529C5BBF.6000604@freescale.com>
- <529C6CBB.4000008@st.com> <529D7838.6030606@freescale.com>
+ <201311271106.09624.marex@denx.de> <5295CFE4.70404@ti.com>
+In-Reply-To: <5295CFE4.70404@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <529D7838.6030606@freescale.com>
-Cc: marex@denx.de, Angus Clark <angus.clark@st.com>, broonie@linaro.org,
- Linus Walleij <linus.walleij@linaro.org>, linux-spi@vger.kernel.org,
- linux-mtd@lists.infradead.org, pekon@ti.com, sourav.poddar@ti.com,
- Brian Norris <computersforpeace@gmail.com>, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201312030059.25628.marex@denx.de>
+Cc: broonie@linaro.org, Huang Shijie <b32955@freescale.com>,
+ linux-mtd@lists.infradead.org, pekon@ti.com, computersforpeace@gmail.com,
+ dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,39 +22,104 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> >To be honest, I am just glad that someone is taking a look at this area.
-> >However, whether or not is it possible to come up with something that solves all
-> >our problems remains to be seen.  It might turn out that the various H/W
-> >Controllers are just too different to fit into a single unified framework.
-> >
-> Hi Angus & Pekon:
-> thanks for the explanations.
+Dear Sourav Poddar,
+
+> Dear Marek Vasut,
 > 
-> I am not sure that after we add more hooks, if it will meet Jones's
-> new driver.
+> On Wednesday 27 November 2013 03:36 PM, Marek Vasut wrote:
+> > Dear Sourav Poddar,
+> > 
+> >> Dear Marek Vasut, Huang,
+> >> 
+> >> On Wednesday 27 November 2013 02:57 PM, Marek Vasut wrote:
+> >>> Dear Huang Shijie,
+> >>> 
+> >>>> 1.) Why add a new framework for SPI NOR?
+> >>>> 
+> >>>>     The SPI-NOR controller such as Freescale's Quadspi controller is
+> >>>>     working in a different way from the SPI bus. It should knows the
+> >>>>     NOR commands to find the right LUT sequence. Unfortunately, the
+> >>>>     current code can not meet this requirement.
+> >>> 
+> >>> Is there any kind of documentation for this controller available? I
+> >>> cannot quite understand how this controller works and why can it not be
+> >>> used with our current infrastructure.
+> >> 
+> >> I do have a similar requirement where my controller need to be
+> >> configured from slave info. I have submiited a series in the mtd list
+> >> adding that portion
+> >> of handling such cases. Here, is the patch which specific to m25p80
+> >> part. http://patchwork.ozlabs.org/patch/294285/
+> >> 
+> >> The whole series can be found here:
+> >> https://www.mail-archive.com/linux-omap@vger.kernel.org/msg98691.html
+> > 
+> > Is this TI QSPI the same thing as the Altera QSPI controller please ?
+> 
+> No, its differenet.
+> 
+> > Otherwise, I seriously believe you and Huang should work on a common
+> > infrastructure. I would first like to understand how is the controller in
+> > DRA7xx different from regular SPI controller though. Is there any kind
+> > of documentation I could study please?
+> 
+> Sorry, we dont have a public document yet.
 
-Angus is the author of "Lee's" driver and knows more about it that I
-ever will, so whatever he says goes in that regard.
+Sorry for the delayed reply. I am processing the input on the QSPI and I'm 
+finally starting to understand what's going on in here.
 
-I would like to make a suggestion to Brian though. Even if the new
-framework is written within the next couple of months and the
-semantics do suit the FSM Controller driver, I'd still like the
-implementation that's currently on the list to be applied. That way
-we'd have a known good version of the driver which is almost identical
-to how ST's internal driver does now. The one that is present out in
-the wild (i.e. _real_ products).
+> Though, this is what ti qspi contoller has
+> 
+> It supports two modes of operation, one is SPI mode(normal), other is
+> the memory mapped read mode.
+> 
+> For SPI mode, the state machine remains the same as it is with other spi
+> controller
+> available.
+> 
+> For memory mapped, there is something more which we need to do around ..
+> 
+> 1. There is a qspi "set up" register available, which needs to be filled
+> with
+>       information like flash opcode, dummy bytes etc. In short, flash
+> specific
+>       details.
+> 2   if the above register is configured with the required opcodes, then
+> whenever
+>       we need to use memory mapped operations, we need to do is to
+> switch our
+>       qspi controller to memory mapped mode.
+>      Switching of this mode to memory mapped needs
+>       a )  write to a particular qspi register
+>       b)   write to control module(optional based on SOC).
+> 
+> 3. Once the above steps are configured, then the flash data will be
+> mapped to a
+>      particular memory address(SOC specific) from where the flash data
+> can be read.
 
-I will subsequently volunteer to provide my utmost best efforts to
-port the driver over to the new framework as a new task once it has
-landed.
+OK, but is the memory mapped mode of any use (but for booting I suppose) ? How 
+does it handle large SPI NOR flashes (we have spansion devices as big as 
+128MiB), does it really hog a _large_ amount of address space from the CPU 
+address space ? Or is the operation somehow indexed ? Why is it better than 
+using DMA?
 
-> i will wait for Jones' comment for several days, and send out the
-> next version if he does not reply this thread.
+> The series
+> https://www.mail-archive.com/linux-omap@vger.kernel.org/msg98691.html
+> tries to work on the above features, and tries to add a support for the
+> same in the
+> spi framework and m25p80 code.
+> 
+> As you see in my patches, once we take care of the above points and add
+> support
+> for memory mapped in m25p80 and qspi, then while doing a read in m25p80
+> we can
+> do memcpy at the beginning of m25p80_read and can bypass the entire SPI
+> framework for memory mapped read operation. Throughput almost gets
+> doubles with this,
+> as compared to normal SPI operations.
+> 
+> Please get back, if you need more info on this concept.
 
-/me waves \o/
-
--- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+I am getting there, I'm just trying to wrap my head around these news here. 
+Thanks for explaining in so much detail, it's very helpful!
