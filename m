@@ -1,31 +1,21 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
+Received: from bear.ext.ti.com ([192.94.94.41])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VnZMq-000701-MP
- for linux-mtd@lists.infradead.org; Mon, 02 Dec 2013 19:41:17 +0000
+ id 1VnZXY-0007T6-4g
+ for linux-mtd@lists.infradead.org; Mon, 02 Dec 2013 19:52:21 +0000
 From: "Gupta, Pekon" <pekon@ti.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Brian Norris
- <computersforpeace@gmail.com>, =?utf-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?=
- <u.kleine-koenig@pengutronix.de>
-Subject: RE: [PATCH v3] mtd/nand: don't use {read,write}_buf for 8-bit
- transfers
-Date: Mon, 2 Dec 2013 19:40:40 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA510C3@DBDE04.ent.ti.com>
-References: <1365164021.28127.109.camel@i7.infradead.org>
- <1385500515-5376-1-git-send-email-u.kleine-koenig@pengutronix.de>
- <20131127073512.GB13929@norris.computersforpeace.net>
- <20131129122018.GB2815@localhost>
- <20131130060428.GA29397@norris.computersforpeace.net>
- <20131130163535.GB2402@localhost> <20131130165122.GC2402@localhost>
- <20131130190149.GH29397@norris.computersforpeace.net>
- <20131130210643.GB2334@localhost>
-In-Reply-To: <20131130210643.GB2334@localhost>
+To: Brain Norris <computersforpeace@gmail.com>, Artem Bityutskiy
+ <dedekind1@gmail.com>
+Subject: RE: [PATCH v4 0/4] optimize and clean-up of OMAP NAND and ELM driver
+Date: Mon, 2 Dec 2013 19:51:50 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA510F4@DBDE04.ent.ti.com>
+References: <1385374141-10934-1-git-send-email-pekon@ti.com>
+In-Reply-To: <1385374141-10934-1-git-send-email-pekon@ti.com>
 Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Cc: Huang Shijie <b32955@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "kernel@pengutronix.de" <kernel@pengutronix.de>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ "ezequiel.garcia@free-electrons.com" <ezequiel.garcia@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,52 +25,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PkZyb206IEV6ZXF1aWVsIEdhcmNpYSBbbWFpbHRvOmV6ZXF1aWVsLmdhcmNpYUBmcmVlLWVsZWN0
-cm9ucy5jb21dDQo+PiA+ID4gQEAgLTU0Miw4ICs1NDUsOCBAQCBzdGF0aWMgdm9pZCBuYW5kX2Nv
-bW1hbmQoc3RydWN0IG10ZF9pbmZvICptdGQsIHVuc2lnbmVkIGludCBjb21tYW5kLA0KPj4gPiA+
-ICAJLyogU2VyaWFsbHkgaW5wdXQgYWRkcmVzcyAqLw0KPj4gPiA+ICAJaWYgKGNvbHVtbiAhPSAt
-MSkgew0KPj4gPiA+ICAJCS8qIEFkanVzdCBjb2x1bW5zIGZvciAxNiBiaXQgYnVzd2lkdGggKi8N
-Cj4+ID4gPiAtCQlpZiAoY2hpcC0+b3B0aW9ucyAmIE5BTkRfQlVTV0lEVEhfMTYpDQo+PiA+ID4g
-LQkJCWNvbHVtbiA+Pj0gMTsNCj4+ID4gPiArLy8JCWlmIChjaGlwLT5vcHRpb25zICYgTkFORF9C
-VVNXSURUSF8xNikNCj4+ID4gPiArLy8JCQljb2x1bW4gPj49IDE7DQo+PiA+ID4gIAkJY2hpcC0+
-Y21kX2N0cmwobXRkLCBjb2x1bW4sIGN0cmwpOw0KPj4gPiA+ICAJCWN0cmwgJj0gfk5BTkRfQ1RS
-TF9DSEFOR0U7DQo+PiA+ID4gIAl9DQo+PiA+ID4NClRoaXMgaXMgYSB2ZXJ5IGdvb2QgZmluZGlu
-ZyAuLg0KVGhlIE9ORkkgc3BlYyBzYXlzIHRoYXQgZGF0YSB3b3VsZCBiZSBwcmVzZW50IG9ubHkg
-b24gbG93ZXIgOC1iaXRzIG9mDQpOQU5EIGRhdGEtYnVzLiBUaGlzIG1lYW4gd2UgbmVlZCB0byBh
-bHdheXMgaXNzdWUgMS1ieXRlIGFsaWduZWQgYWRkcmVzcy4NClRoZSBhYm92ZSBmaXggZW5mb3Jj
-ZXMgdGhhdCBydWxlLg0KDQpJbiBhYnNlbmNlIG9mIHRoaXMgZml4LCBpZiAoY2hpcC0+b3B0aW9u
-cyAmIE5BTkRfQlVTV0lEVEhfMTYpIGlzIHNldCwNCnRoZW4gbmFuZF9jb21tYW5kKCkgd291bGQg
-aXNzdWUgYSB3b3JkLWFsaWduZWQgYWRkcmVzcyBldmVuIHdoZW4NCndlIHVzZSBjaGlwLT5yZWFk
-X2J5dGUoKSB0byByZWFkIGEgc2luZ2xlIGRhdGEuDQoNClRvIHRha2UgZG8gdGhpcyBjbGVhbmx5
-ICwgd2UgbWlnaHQgbmVlZCBhIGxhcmdlciBmaXgsIHRoYXQgaXMgY2hhbmdlIGluDQppbnRlcmZh
-Y2UgZnVuY3Rpb24gY2hpcC0+Y21kZnVuYygpLi4NCmRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4
-L210ZC9uYW5kLmggYi9pbmNsdWRlL2xpbnV4L210ZC9uYW5kLmgNCi0gdm9pZCAoKmNtZGZ1bmMp
-KHN0cnVjdCBtdGRfaW5mbyAqbXRkLCB1bnNpZ25lZCBjb21tYW5kLCBpbnQgY29sdW1uLA0KLQkJ
-CWludCBwYWdlX2FkZHIpOw0KKyB2b2lkICgqY21kZnVuYykoc3RydWN0IG10ZF9pbmZvICptdGQs
-IHVuc2lnbmVkIGNvbW1hbmQsIGludCBjb2x1bW4sDQorCQkJaW50IHBhZ2VfYWRkciwgaW50IGJ1
-c3cpOw0KDQoNCkFuZCByZXBsYWNlIGFib3ZlIGhhY2sgd2l0aC4uIEBAbmFuZF9jb21tYW5kKCkN
-Ci0JaWYgKGNoaXAtPm9wdGlvbnMgJiBOQU5EX0JVU1dJRFRIXzE2KQ0KLQkJY29sdW1uID4+PSAx
-Ow0KKwlpZiAoYnVzdykNCisJCWNvbHVtbiA+Pj0gMTsNCg0KWy4uLl0NCg0KPj4gSSBiZWxpZXZl
-IHdlIHdpbGwgd2FudCB0byB1c2Ugc29tZSBPTkZJIHJvdXRpbmVzIChTRVQNCj4+IEZFQVRVUkVT
-LCBlc3BlY2lhbGx5KSBhZnRlciBpbml0aWFsaXphdGlvbi4gVGhpcyBpcyB3aGVyZSB0aGUgcmVz
-dCBvZg0KPj4gVXdlJ3MgcGF0Y2ggY29tZXMgaW50byBwbGF5LiBTbyBJIGRvbid0IHRoaW5rIHdl
-IGNhbiBhbHdheXMgc3dpdGNoDQo+PiBiZXR3ZWVuIGNhbGwtYmFja3MgYW5kIHBsYXkgZ2FtZXMg
-d2l0aCBOQU5EX0JVU1dJRFRIXzE2OyB3ZSBzaG91bGQgZ2V0DQo+PiB0aGUgYnVzIHdpZHRoIHJp
-Z2h0IGFzIHNvb24gYXMgcG9zc2libGUsIGFuZCB0aGVuIG1ha2Ugc3VyZSB0aGF0IHRoZQ0KPj4g
-Y2FsbGJhY2tzIGFsd2F5cyB3b3JrIGFzIGV4cGVjdGVkLg0KPj4NCj4NCj5TdXJlLCBJIGNvbXBs
-ZXRlbHkgdW5kZXJzdGFuZCB0aGUgYWJvdmUuIFRoZSBwYXRjaGVzIEkndmUgYmVlbiBwdXNoaW5n
-DQo+YXJlIG1lYW50ICpvbmx5KiB0byBzb2x2ZSB0aGUgaW5pdGlhbCBkZXZpY2UgZGV0ZWN0aW9u
-LCBhbmQgaW4NCj5wYXJ0aWN1bGFyIHRvIGZpeCB0aGUgY3VycmVudGx5IGJyb2tlbiBPTkZJIGRl
-dGVjdGlvbi4NCj4NClNvIGFzIHBlciBteSB1bmRlcnN0YW5kaW5nLi4NCipVd2UncyBwYXRjaCoN
-Ci0gaGFuZGxlcyBieXRlLXdpc2UgYWNjZXNzIGZvciBvbmZpX3NldF9mZWF0dXJlKCkvb25maV9n
-ZXRfZmVhdHVyZSgpDQoqQnJpYW4ncyBwYXRjaCoNCiAtIGhhbmRsZXMgYnl0ZS13aXNlIGFjY2Vz
-cyBmb3IgbmFuZF9mbGFzaF9kZXRlY3Rfb25maSgpDQoqRXplcXVpZWwncyBwYXRjaCoNCiAtIG1v
-ZGlmaWVzIG5hbmRfY29tbWFuZCgpIHRvIGlzc3VlIGJ5dGUtYWxpZ25lZCBhY2Nlc3Nlcy4gKGFz
-IGFib3ZlKQ0KIC0gcmUtY29uZmlndXJpbmcgb2YgY2hpcC0+b3B0aW9ucyBpbiBuYW5kX3NjYW5f
-aWRlbnQgYmVmb3JlIHJldHVybmluZw0KICAgIGJhY2sgdG8gY2FsbGVlIChjb250cm9sbGVyIGRy
-aXZlciBoZXJlKS4NCg0KSWYgY29ycmVjdCwgdGhlbiB3ZSBzaG91bGQgZ3JvdXAgdGhlc2UgcGll
-Y2VzIHRvZ2V0aGVyIGluIHBhdGNoLXNlcmllcw0KKHdpdGggYWxsIGNvbnRyaWJ1dG9ycyBzaWdu
-ZWQtb2ZmKS4gQW5kIHRoZW4gdGVzdCB0aGlzIG9uIG11bHRpcGxlIGRldmljZXMuDQoNCkkgY2Fu
-IGRvIHRoYXQsIGlmIGFsbCBhZ3JlZSB0aGF0IGFib3ZlIHBpZWNlcyBhcmUgY29ycmVjdCBhbmQg
-cmVxdWlyZWQgZm9yDQpjb21wbGV0aW9uIG9mIGZ1bmN0aW9uYWxpdHkgPz8NCg0KDQp3aXRoIHJl
-Z2FyZHMsIHBla29uDQo=
+Hi Brian,
+
+>Subject: [PATCH v4 0/4] optimize and clean-up of OMAP NAND and ELM driver
+>
+>
+>*changes from v3* (feedbacks from Brian Norris <computersforpeace@gmail.co=
+m>)
+>[PATCH 2/4] reverted back macros used for clearing & masking gpmc_ecc_conf=
+ig reg
+>[PATCH 4/4]
+>- updated: using 'pr_fmt(fmt)' to suffix DRIVER_NAME to error messages
+>- removed: local 'eccsteps' in ELM driver, instead using nand_chip->ecc.st=
+eps
+>- cleanup: consitent use of DRIVER_NAME and removed irrelavant white-space=
+ changes
+>
+
+[...]
+
+>This patch affects following data-paths:
+>[PATCH 1/4] nand_chip->ecc.correct(): Detects and corrects ECC errors on r=
+ead accesses.
+>[PATCH 2/4] nand_chip->ecc.calculate(): Calculates and fetches ECC syndrom=
+e from controller.
+>[PATCH 3/4] nand_chip->ecc.hwctl(): Configures H/W controller for Read/Wri=
+te data acccesses.
+>[PATCH 4/4] ELM driver: add checks and updates code for scalability.
+>
+>Pekon Gupta (4):
+>  mtd: nand: omap: optimized chip->ecc.correct() for H/W ECC schemes
+>  mtd: nand: omap: optimize chip->ecc.calculate() for H/W ECC schemes
+>  mtd: nand: omap: optimize chip->ecc.hwctl() for H/W ECC schemes
+>  mtd: devices: elm: add checks ELM H/W constrains, driver code cleanup
+>
+
+Just a ping..
+Do you have any further updates on this series ?
+If this is clean, I just want to rebase and send last pending series for=20
+omap2.c driver.
+
+
+with regards, pekon
