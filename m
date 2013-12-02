@@ -1,29 +1,20 @@
-Received: from mail-ie0-f176.google.com ([209.85.223.176])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VnRHs-0001OG-81
- for linux-mtd@lists.infradead.org; Mon, 02 Dec 2013 11:03:36 +0000
-Received: by mail-ie0-f176.google.com with SMTP id at1so20780562iec.35
- for <linux-mtd@lists.infradead.org>; Mon, 02 Dec 2013 03:03:14 -0800 (PST)
-Date: Mon, 2 Dec 2013 11:03:04 +0000
-From: Lee Jones <lee.jones@linaro.org>
-To: Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v3 14/36] mtd: st_spi_fsm: Add device-tree binding
- documentation
-Message-ID: <20131202110304.GB31626@lee--X1>
-References: <1385727565-25794-1-git-send-email-lee.jones@linaro.org>
- <1385727565-25794-15-git-send-email-lee.jones@linaro.org>
- <CACRpkdaWXBchz78Yby11VpveBDtn6FrmupS=cnNYhvHgFJsBUw@mail.gmail.com>
+Message-ID: <529C6CBB.4000008@st.com>
+Date: Mon, 2 Dec 2013 11:19:23 +0000
+From: Angus Clark <angus.clark@st.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACRpkdaWXBchz78Yby11VpveBDtn6FrmupS=cnNYhvHgFJsBUw@mail.gmail.com>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- angus.clark@st.com,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH 0/4] mtd: spi-nor: add a new framework for SPI NOR
+References: <1385447575-23773-1-git-send-email-b32955@freescale.com>
+ <20131127043253.GA9468@ld-irv-0074.broadcom.com> <5298AA23.7080404@st.com>
+ <529C5BBF.6000604@freescale.com>
+In-Reply-To: <529C5BBF.6000604@freescale.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: marex@denx.de, Angus CLARK <angus.clark@st.com>, broonie@linaro.org,
+ dwmw2@infradead.org, Linus Walleij <linus.walleij@linaro.org>,
+ linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org, pekon@ti.com,
+ sourav.poddar@ti.com, Brian Norris <computersforpeace@gmail.com>,
+ Lee Jones <lee.jones@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,37 +24,128 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> > +Optional properties:
-> > +  - st,syscfg          : Phandle to boot-device system configuration registers
-> > +  - st,boot-device-reg : Address of the aforementioned boot-device register(s)
-> > +  - st,boot-device-spi : Expected boot-device value if booted via this device
-> > +
-> > +Example:
-> > +       spifsm: spifsm@fe902000{
-> > +               compatible         = "st,spi-fsm";
-> > +               reg                =  <0xfe902000 0x1000>;
-> > +               reg-names          = "spi-fsm";
-> > +               pinctrl-0          = <&pinctrl_fsm>;
-> > +               st,syscfg          = <&syscfg_rear>;
-> > +               st,boot-device-reg = <0x958>;
-> > +               st,boot-device-spi = <0x1a>;
+Hi Huang Shijie
+
+On 12/02/2013 10:06 AM, Huang Shijie wrote:
+> Hi Angus:
+>   thanks for the long suggestion. it's very useful.
 > 
-> I don't think we should encode any register offsets whatsoever in device
-> tree but maybe that's just me. (Yes, Stephen will beat me up about
-> pin control single, but I consider that a special case.)
+> Let's push the spi nor framework.:)
+[...]
+>>
+>> /**
+>>   * struct spi_nor_xfer_cfg - Structure for defining a Serial Flash
+>> transfer
+>>   * @wren:        command for "Write Enable", or 0x00 for not required
+> why this wren is needed?
+
+Issuing WREN is needed for certain sequences of operations.  I guess your
+question relates to why have I included it as part of the 'spi_nor_xfer_cfg'
+structure, when it could be controlled from the spi_nor layer with a separate
+spi_nor_xfer.
+
+Well, firstly, I am aware of at least one H/W controller that can be optimised
+to issue the WREN command as part of a longer erase or write sequence, thereby
+avoiding the overheads of issuing a separate spi_nor_xfer.
+
+However, the main reason was to try and come up with a generic representation
+for a typical Serial Flash transfer, capturing, where possible, the semantics of
+the intended operation, just in case that information can be used by the
+underlying H/W in some way.  In this instance, the WREN cycles just represents
+another part of the transfer, in the same way as the command, address, mode, and
+dummy cycles.
+
+>>   * @cmd:        command for operation
+>>   * @cmd_pins:        number of pins to send @cmd (1, 2, 4)
+>>   * @addr:        address for operation
+>>   * @addr_pins:        number of pins to send @addr (1, 2, 4)
+>>   * @addr_width:     number of address bytes (3,4, or 0 for address
+>> not required)
+> this field has been in the spi_nor{} , it should be a fixed value.
+> so i think we do not need this argument.
+
+The aim of the 'spi_nor_xfer_cfg' is to provide an interface between the spi-nor
+layer and the underlying H/W driver.   In some cases, the H/W may need to know
+the address width (e.g. issuing a new command sequence, with an incremented
+address, following an arbitration stall).  You could argue that the H/W driver
+should be able query the spi_nor structure, or perhaps store the addr_width
+field during an initialisation process, but I feel having it as part of the
+'spi_nor_xfer_cfg' provides a cleaner interface between the two layers.
+
+>>   * @mode:        mode data
+>>   * @mode_pins:        number of pins to send @mode (1, 2, 4)
+>>   * @mode_cycles:    number of mode cycles (0 for mode not required)
+>>   * @dummy_cycles:    number of dummy cycles (0 for dummy not required)
+>>   */
+>> struct spi_nor_xfer_cfg {
+>>     uint8_t        wren;
+>>     uint8_t        cmd;
+>>     int        cmd_pins;
+>>     uint32_t    addr;
+>>     int        addr_pins;
+>>     int        addr_width;
+>>     uint32_t    mode;
+>>     int        mode_pins;
+>>     int        mode_cycles;
+>>     int        dummy_cycles;
+>> };
+>>
+>> We could then build up layers of functionality, based on two
+>> fundamental primitives:
+>>
+>>     int (*read_xfer)(struct spi_nor_info *info,
+>>              struct spi_nor_xfer_cfg *cfg,
+>>              uint8_t *buf, size_t len);
+>>     
+>>     int (*write_xfer)(struct spi_nor_info *info,
+>>               struct spi_nor_xfer_cfg *cfg,
+>>               uint8_t *buf, size_t len);
+>>     
+>> Default implementations for standard operations could follow:
+>>
+>>     int (*read_reg)(struct spi_nor_info *info,
+>>             uint8_t cmd, uint8_t *reg, int len);
+>>     int (*write_reg)(struct spi_nor_info *info,
+>>              uint8_t cmd, uint8_t *reg, int len,
+>>              int wren, int wtr);
+>>
+>>     int (*readid)(struct spi_nor_info *info, uint8_t *readid);
+>>     int (*wait_till_ready)(struct spi_nor_info *info);
 > 
-> I would just put the last two things as #defines into the driver file(s)
-> or - if it's related to other syscfg registers and varies with SoC incarnation,
-> as a #define in a shared header for that syscfg thing.
+> currently, we poll the status register.
+> why this hook is needed?
 
-No can do. This isn't _this_ device's register offset, this is a
-syscfg register offset which a) there is no driver to apply specific
-register offsets to and b) are liable to change oversubsequent SoCs.
+The default implementation would do just as you suggest, and I would expect most
+H/W drivers to use the default implementation.  However, some H/W Controllers
+can automate the polling of status registers, so having a hook allows the driver
+override the default behaviour.
 
-> The syscfg phandle is elegant though, really like that.
+>>     int (*read)(struct spi_nor_info *info, uint8_t buf, off_t offs,
+>> size_t len);
+>>     int (*write)(struct spi_nor_info *info, off_t offs, size_t len);
+>>     int (*erase_sector)(struct spi_nor_info *info, off_t offs);
+> I also confused at this hook.
+> 
+> if we need erase_sector, do we still need the erase_chip()?
 
--- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Serial Flash devices support various "Erase Sector" commands, and an "Erase
+Chip" command.  The erase_sector() and erase_chip() hooks would just form the
+appropriate command sequences (e.g. Erase Chip does not require address cycles).
+
+I have to admit, the circumstances that provoke an erase_chip() are rather
+limited.  As far as I can see, the MTD tool 'mtd_debug' is the only component
+that can lead to an Erase Chip operation, and even then, only when the device is
+not partitioned.  However, m25p80 supports Erase Chip, so I thought I would
+maintain that support here.
+
+As I said before, my proposal was just some initial ramblings of my mind, and I
+am definitely open to discussion and other suggestions.
+
+To be honest, I am just glad that someone is taking a look at this area.
+However, whether or not is it possible to come up with something that solves all
+our problems remains to be seen.  It might turn out that the various H/W
+Controllers are just too different to fit into a single unified framework.
+
+Cheers,
+
+Angus
