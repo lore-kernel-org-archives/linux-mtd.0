@@ -1,20 +1,23 @@
-Message-ID: <529C6CBB.4000008@st.com>
-Date: Mon, 2 Dec 2013 11:19:23 +0000
-From: Angus Clark <angus.clark@st.com>
-MIME-Version: 1.0
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH 0/4] mtd: spi-nor: add a new framework for SPI NOR
-References: <1385447575-23773-1-git-send-email-b32955@freescale.com>
- <20131127043253.GA9468@ld-irv-0074.broadcom.com> <5298AA23.7080404@st.com>
- <529C5BBF.6000604@freescale.com>
-In-Reply-To: <529C5BBF.6000604@freescale.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: marex@denx.de, Angus CLARK <angus.clark@st.com>, broonie@linaro.org,
- dwmw2@infradead.org, Linus Walleij <linus.walleij@linaro.org>,
- linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org, pekon@ti.com,
- sourav.poddar@ti.com, Brian Norris <computersforpeace@gmail.com>,
- Lee Jones <lee.jones@linaro.org>, linux-arm-kernel@lists.infradead.org
+From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+To: =?UTF-8?B?RXplcXVpZWwgR2FyY2lh?= <ezequiel.garcia@free-electrons.com>
+Subject: =?UTF-8?B?UmU6IFtSRkMvUEFUQ0hdIE5BTkQgYnVzLXdpZHRoIGRldGVjdGlvbiBleHRy?=
+ =?UTF-8?B?ZW1lIG1ha2VvdmVy?=
+Mime-Version: 1.0
+Date: Mon, 02 Dec 2013 15:33:45 +0400
+Message-ID: <1385984025.215304817@f198.i.mail.ru>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
+In-Reply-To: <1385732456-32696-1-git-send-email-ezequiel.garcia@free-electrons.com>
+References: <1385732456-32696-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org,
+ =?UTF-8?B?QnJpYW4gTm9ycmlz?= <computersforpeace@gmail.com>,
+ swarren@wwwdotorg.org, =?UTF-8?B?VG9ueSBMaW5kZ3Jlbg==?= <tony@atomide.com>,
+ =?UTF-8?B?QXJ0ZW0gQml0eXV0c2tpeQ==?= <dedekind1@gmail.com>,
+ rob.herring@calxeda.com, linux-mtd@lists.infradead.org,
+ =?UTF-8?B?UGVrb24gR3VwdGE=?= <pekon@ti.com>, linux-omap@vger.kernel.org,
+ =?UTF-8?B?RGF2aWQgV29vZGhvdXNl?= <dwmw2@infradead.org>,
+ linux-arm-kernel@lists.infradead.org
+Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,128 +27,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Huang Shijie
-
-On 12/02/2013 10:06 AM, Huang Shijie wrote:
-> Hi Angus:
->   thanks for the long suggestion. it's very useful.
-> 
-> Let's push the spi nor framework.:)
-[...]
->>
->> /**
->>   * struct spi_nor_xfer_cfg - Structure for defining a Serial Flash
->> transfer
->>   * @wren:        command for "Write Enable", or 0x00 for not required
-> why this wren is needed?
-
-Issuing WREN is needed for certain sequences of operations.  I guess your
-question relates to why have I included it as part of the 'spi_nor_xfer_cfg'
-structure, when it could be controlled from the spi_nor layer with a separate
-spi_nor_xfer.
-
-Well, firstly, I am aware of at least one H/W controller that can be optimised
-to issue the WREN command as part of a longer erase or write sequence, thereby
-avoiding the overheads of issuing a separate spi_nor_xfer.
-
-However, the main reason was to try and come up with a generic representation
-for a typical Serial Flash transfer, capturing, where possible, the semantics of
-the intended operation, just in case that information can be used by the
-underlying H/W in some way.  In this instance, the WREN cycles just represents
-another part of the transfer, in the same way as the command, address, mode, and
-dummy cycles.
-
->>   * @cmd:        command for operation
->>   * @cmd_pins:        number of pins to send @cmd (1, 2, 4)
->>   * @addr:        address for operation
->>   * @addr_pins:        number of pins to send @addr (1, 2, 4)
->>   * @addr_width:     number of address bytes (3,4, or 0 for address
->> not required)
-> this field has been in the spi_nor{} , it should be a fixed value.
-> so i think we do not need this argument.
-
-The aim of the 'spi_nor_xfer_cfg' is to provide an interface between the spi-nor
-layer and the underlying H/W driver.   In some cases, the H/W may need to know
-the address width (e.g. issuing a new command sequence, with an incremented
-address, following an arbitration stall).  You could argue that the H/W driver
-should be able query the spi_nor structure, or perhaps store the addr_width
-field during an initialisation process, but I feel having it as part of the
-'spi_nor_xfer_cfg' provides a cleaner interface between the two layers.
-
->>   * @mode:        mode data
->>   * @mode_pins:        number of pins to send @mode (1, 2, 4)
->>   * @mode_cycles:    number of mode cycles (0 for mode not required)
->>   * @dummy_cycles:    number of dummy cycles (0 for dummy not required)
->>   */
->> struct spi_nor_xfer_cfg {
->>     uint8_t        wren;
->>     uint8_t        cmd;
->>     int        cmd_pins;
->>     uint32_t    addr;
->>     int        addr_pins;
->>     int        addr_width;
->>     uint32_t    mode;
->>     int        mode_pins;
->>     int        mode_cycles;
->>     int        dummy_cycles;
->> };
->>
->> We could then build up layers of functionality, based on two
->> fundamental primitives:
->>
->>     int (*read_xfer)(struct spi_nor_info *info,
->>              struct spi_nor_xfer_cfg *cfg,
->>              uint8_t *buf, size_t len);
->>     
->>     int (*write_xfer)(struct spi_nor_info *info,
->>               struct spi_nor_xfer_cfg *cfg,
->>               uint8_t *buf, size_t len);
->>     
->> Default implementations for standard operations could follow:
->>
->>     int (*read_reg)(struct spi_nor_info *info,
->>             uint8_t cmd, uint8_t *reg, int len);
->>     int (*write_reg)(struct spi_nor_info *info,
->>              uint8_t cmd, uint8_t *reg, int len,
->>              int wren, int wtr);
->>
->>     int (*readid)(struct spi_nor_info *info, uint8_t *readid);
->>     int (*wait_till_ready)(struct spi_nor_info *info);
-> 
-> currently, we poll the status register.
-> why this hook is needed?
-
-The default implementation would do just as you suggest, and I would expect most
-H/W drivers to use the default implementation.  However, some H/W Controllers
-can automate the polling of status registers, so having a hook allows the driver
-override the default behaviour.
-
->>     int (*read)(struct spi_nor_info *info, uint8_t buf, off_t offs,
->> size_t len);
->>     int (*write)(struct spi_nor_info *info, off_t offs, size_t len);
->>     int (*erase_sector)(struct spi_nor_info *info, off_t offs);
-> I also confused at this hook.
-> 
-> if we need erase_sector, do we still need the erase_chip()?
-
-Serial Flash devices support various "Erase Sector" commands, and an "Erase
-Chip" command.  The erase_sector() and erase_chip() hooks would just form the
-appropriate command sequences (e.g. Erase Chip does not require address cycles).
-
-I have to admit, the circumstances that provoke an erase_chip() are rather
-limited.  As far as I can see, the MTD tool 'mtd_debug' is the only component
-that can lead to an Erase Chip operation, and even then, only when the device is
-not partitioned.  However, m25p80 supports Erase Chip, so I thought I would
-maintain that support here.
-
-As I said before, my proposal was just some initial ramblings of my mind, and I
-am definitely open to discussion and other suggestions.
-
-To be honest, I am just glad that someone is taking a look at this area.
-However, whether or not is it possible to come up with something that solves all
-our problems remains to be seen.  It might turn out that the various H/W
-Controllers are just too different to fit into a single unified framework.
-
-Cheers,
-
-Angus
+SGVsbG8uCgo+IEhlcmUncyBteSBwcm9wb3NhbCwgYmFzZWQgaW4gUGVrb24ncyBsYXRlc3Qgd29y
+ay4KPiAKPiBUaGlzIHBhdGNoIHJlbW92ZXMgdGhlIGZsYXNoIGRldmljZSBidXMtd2lkdGggY29u
+ZmlndXJhdGlvbiwgcHJpb3IgdG8KPiB0aGUgZGV2aWNlIGRldGVjdGlvbi4gV2l0aCB0aGlzIG1v
+ZGlmaWNhdGlvbiwgYSBOQU5EIGRyaXZlciBpcyBubyBsb25nZXIKPiBhYmxlIHRvICJmb3JjZSIg
+dGhlIGRldmljZSB3aWR0aCwgYW5kIGluc3RlYWQgY2FuIG9ubHkgb2J0YWluIHRoZSBkZXRlY3Rl
+ZAo+IGJ1cy13aWR0aCBhZnRlciB0aGUgY2FsbCB0byBuYW5kX3NjYW5faWRlbnQoKS4KLi4uCj4g
+QWxleGFuZGVyOiBDb3VsZCB5b3UgdHJ5IHRoaXMgcGF0Y2ggYW5kIHNlZSBpZiBpdCdzIHN1aXRh
+YmxlIGZvciB5b3VyIG5lZWRzPwo+IEkgdGhpbmsgeW91IHNob3VsZCBiZSBhYmxlIHRvIHVzZSBp
+dCB0byBzZXQgdGhlIGJ1cy13aWR0aCwgd2l0aG91dCBhbnkgbmVlZCBmb3IKPiBhIG5ldyBEVCBw
+cm9wZXJ0eS4gWW91IHdpbGwgaGF2ZSB0byBzcGxpdCB5b3VyIG5hbmRfc2NhbigpIGNhbGwgaW4g
+YW4gaW5pdGlhbAo+IGNhbGwgdG8gbmFuZF9zY2FuX2lkZW50KCkgYW5kIGEgZmluYWwgY2FsbCB0
+byBuYW5kX3NjYW5fdGFpbCgpLgoKMTYtYml0IE9ORkk6CgpPTkZJIHBhcmFtIHBhZ2UgMCB2YWxp
+ZApPTkZJIGZsYXNoIGRldGVjdGVkCk5BTkQgZGV2aWNlOiBNYW51ZmFjdHVyZXIgSUQ6IDB4MmMs
+IENoaXAgSUQ6IDB4Y2EgKE1pY3JvbiBNVDI5RjJHMTZBQkFFQVdQKSwgMjU2TWlCLCBwYWdlIHNp
+emU6IDIwNDgsIE9PQiBzaXplOiA2NApTY2FubmluZyBkZXZpY2UgZm9yIGJhZCBibG9ja3MKMSBv
+ZnBhcnQgcGFydGl0aW9ucyBmb3VuZCBvbiBNVEQgZGV2aWNlIE1UMjlGMkcxNkFCQUVBV1AKQ3Jl
+YXRpbmcgMSBNVEQgcGFydGl0aW9ucyBvbiAiTVQyOUYyRzE2QUJBRUFXUCI6CjB4MDAwMDAwMDAw
+MDAwLTB4MDAwMDEwMDAwMDAwIDogIm5hbmQtZ3BpbyIKCjgtYml0IG5vbi1PTkZJOgpOQU5EIGRl
+dmljZTogTWFudWZhY3R1cmVyIElEOiAweGVjLCBDaGlwIElEOiAweDc2IChTYW1zdW5nIE5BTkQg
+NjRNaUIgMywzViA4LWJpdCksIDY0TWlCLCBwYWdlIHNpemU6IDUxMiwgT09CIHNpemU6IDE2ClNj
+YW5uaW5nIGRldmljZSBmb3IgYmFkIGJsb2NrcwoxIG9mcGFydCBwYXJ0aXRpb25zIGZvdW5kIG9u
+IE1URCBkZXZpY2UgTkFORCA2NE1pQiAzLDNWIDgtYml0CkNyZWF0aW5nIDEgTVREIHBhcnRpdGlv
+bnMgb24gIk5BTkQgNjRNaUIgMywzViA4LWJpdCI6CjB4MDAwMDAwMDAwMDAwLTB4MDAwMDA0MDAw
+MDAwIDogIm5hbmQtZ3BpbyIKCkNhbm5vdCB0ZXN0IDgtYml0IE9ORkksIHNpbmNlIGhhdmUgbm90
+IHN1Y2ggY2hpcC4KCi0tLQo=
