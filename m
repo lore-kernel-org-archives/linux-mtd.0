@@ -1,18 +1,23 @@
-Message-ID: <529C5BBF.6000604@freescale.com>
-Date: Mon, 2 Dec 2013 18:06:55 +0800
-From: Huang Shijie <b32955@freescale.com>
+Date: Mon, 2 Dec 2013 07:33:06 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Arnaud Ebalard <arno@natisbad.org>
+Subject: Re: [PATCH v5 00/14] Armada 370/XP NAND support
+Message-ID: <20131202103305.GB2466@localhost>
+References: <1384464339-6817-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <87d2lp28pd.fsf@natisbad.org> <20131125120335.GD2408@localhost>
+ <87r4a4f5gr.fsf@natisbad.org> <20131126124003.GA2344@localhost>
+ <87zjopd240.fsf@natisbad.org> <87wqjtbm8r.fsf@natisbad.org>
+ <20131128185040.GA13182@localhost> <87bo12kcyt.fsf@natisbad.org>
 MIME-Version: 1.0
-To: Angus Clark <angus.clark@st.com>
-Subject: Re: [PATCH 0/4] mtd: spi-nor: add a new framework for SPI NOR
-References: <1385447575-23773-1-git-send-email-b32955@freescale.com>
- <20131127043253.GA9468@ld-irv-0074.broadcom.com> <5298AA23.7080404@st.com>
-In-Reply-To: <5298AA23.7080404@st.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: marex@denx.de, broonie@linaro.org, dwmw2@infradead.org,
- Linus Walleij <linus.walleij@linaro.org>, linux-spi@vger.kernel.org,
- linux-mtd@lists.infradead.org, pekon@ti.com, sourav.poddar@ti.com,
- Brian Norris <computersforpeace@gmail.com>, Lee Jones <lee.jones@linaro.org>,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87bo12kcyt.fsf@natisbad.org>
+Cc: Lior Amsalem <alior@marvell.com>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Jason Cooper <jason@lakedaemon.net>, linux-mtd@lists.infradead.org,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
  linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,133 +28,163 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Angus:
-   thanks for the long suggestion. it's very useful.
+Hi Arnaud,
 
-Let's push the spi nor framework.:)
-> Hi Huang Shijie,
->
-> On 11/27/2013 04:32 AM, Brian Norris wrote:
->> + Lee Jones, others
->>
->> I'd like to keep a similar CC list for the various conversations going
->> on about SPI NOR frameworks.
->>
->> On Tue, Nov 26, 2013 at 02:32:51PM +0800, Huang Shijie wrote:
->>> 1.) Why add a new framework for SPI NOR?
->>>    The SPI-NOR controller such as Freescale's Quadspi controller is working
->>>    in a different way from the SPI bus. It should knows the NOR commands to
->>>    find the right LUT sequence. Unfortunately, the current code can not meet
->>>    this requirement.
-> I fully support your argument for introducing a new framework to support Serial
-> Flash controllers.  Reiterating my previous comment:
->
-> "The kernel offers many examples of others who have struggled with the same
-> problem.  Some have chosen to write self-contained drivers (e.g.
-> drivers/mtd/devices/spear_smi.c and drivers/mtd/devices/sst251.c) duplicating
-> much of m25p80.c, while others have attempted to squeeze into the SPI framework
-> (e.g. drivers/spi/spi-tegra20-sflash.c and drivers/spi/spi-falcon.c), relying on
-> fragile heuristics to recreate the semantics of m25p80 that is lost over the ,
-> current circumstances SPI framework ."
->
-> However, having now been through your proposed framework, it would not seem to
-> provide a generally applicable solution.  Indeed, other than making the Serial
-> Flash commands and the device table available, it is not obvious how it improves
-> the situation for your own specific controller either; the
-> read/write/read_reg/write_reg callbacks do not offer a great deal more than
-> spi_read_then_write().  (Perhaps all will become clear when you submit the
-> fsl-quadspi driver.)
+First of all: thanks for such great testings!
 
-> As I see it, the main problem with the current support is that dedicated Serial
-> Flash Controllers require a level of semantics that cannot be conveyed over the
-> generic SPI framework.  With this in mind, I would start by defining something
-> along the lines of a "Serial Flash transfer".  Some initial ramblings of my mind:
->
-> /**
->   * struct spi_nor_xfer_cfg - Structure for defining a Serial Flash transfer
->   * @wren:		command for "Write Enable", or 0x00 for not required
-why this wren is needed?
->   * @cmd:		command for operation
->   * @cmd_pins:		number of pins to send @cmd (1, 2, 4)
->   * @addr:		address for operation
->   * @addr_pins:		number of pins to send @addr (1, 2, 4)
->   * @addr_width: 	number of address bytes (3,4, or 0 for address not required)
-this field has been in the spi_nor{} , it should be a fixed value.
-so i think we do not need this argument.
->   * @mode:		mode data
->   * @mode_pins:		number of pins to send @mode (1, 2, 4)
->   * @mode_cycles:	number of mode cycles (0 for mode not required)
->   * @dummy_cycles:	number of dummy cycles (0 for dummy not required)
->   */
-> struct spi_nor_xfer_cfg {
-> 	uint8_t		wren;
-> 	uint8_t		cmd;
-> 	int		cmd_pins;
-> 	uint32_t	addr;
-> 	int		addr_pins;
-> 	int		addr_width;
-> 	uint32_t	mode;
-> 	int		mode_pins;
-> 	int		mode_cycles;
-> 	int		dummy_cycles;
-> };
->
-> We could then build up layers of functionality, based on two fundamental primitives:
->
-> 	int (*read_xfer)(struct spi_nor_info *info,
-> 			 struct spi_nor_xfer_cfg *cfg,
-> 			 uint8_t *buf, size_t len);
-> 	
-> 	int (*write_xfer)(struct spi_nor_info *info,
-> 			  struct spi_nor_xfer_cfg *cfg,
-> 			  uint8_t *buf, size_t len);
-> 	
-> Default implementations for standard operations could follow:
->
-> 	int (*read_reg)(struct spi_nor_info *info,
-> 			uint8_t cmd, uint8_t *reg, int len);
-> 	int (*write_reg)(struct spi_nor_info *info,
-> 			 uint8_t cmd, uint8_t *reg, int len,
-> 			 int wren, int wtr);
->
-> 	int (*readid)(struct spi_nor_info *info, uint8_t *readid);
-> 	int (*wait_till_ready)(struct spi_nor_info *info);
+On Sat, Nov 30, 2013 at 12:25:14AM +0100, Arnaud Ebalard wrote:
+> Ezequiel Garcia <ezequiel.garcia@free-electrons.com> writes:
+> 
+> >> Ezequiel, I am back in business to test a v2 ;-)
+> >
+> > Well, I'm not sure yet what's going on. Do you have any spare NAND partition
+> > to run some destructive testings?
+> >
+> > In that case, please run:
+> >
+> > $ nandtest /dev/mtd{X}
+> 
+> Here is the nandtest run:
+> 
+>   nandtest /dev/mtd4
+>   ECC corrections: 0
+>   ECC failures   : 0
+>   Bad blocks     : 8
+>   BBT blocks     : 0
+>   Bad block at 0x06700000
+>   Bad block at 0x06720000
+>   Bad block at 0x06740000
+>   Bad block at 0x06760000
+>   Bad block at 0x06780000
+>   Bad block at 0x067a0000
+>   Bad block at 0x067c0000
+>   Bad block at 0x067e0000
+>   
+>   Finished pass 1 successfully
+> 
 
-currently, we poll the status register.
-why this hook is needed?
+Hm, so something *is* working properly. Notice that mtd4 has its 8 last blocks
+marked 'bad' becuase it holds the bad block table.
 
-> 	
-> 	int (*read)(struct spi_nor_info *info, uint8_t buf, off_t offs, size_t len);
-> 	int (*write)(struct spi_nor_info *info, off_t offs, size_t len);
-> 	int (*erase_sector)(struct spi_nor_info *info, off_t offs);
-I also confused at this hook.
+If you don't mind running a few more rounds, then it would be nice to do:
 
-if we need erase_sector, do we still need the erase_chip()?
+  $ nandtest --passes {N}
 
-> Each driver would be required to implement read_xfer() and write_xfer(), and
-> then free to either use the default implementations, or override with
-> driver-optimised implementations.
->
-> In the case of a pure SPI Controller, read_xfer() and write_xfer() would simply
-> flatten to spi_messages.  The key benefit is that dedicated Serial Flash
-> Controllers would be able to take advantage of the richer semantics offered by
-> the 'spi_nor_xfer_cfg' data.
->
-> I would also expect the spi-nor framework to provide the following services,
-> applicable to all Serial Flash drivers:
->
-> 	- determine devices properties at runtime, based on the READID data (and
-> perhaps SFDP, if and when it matures!).  This should include supported opcodes
-> (e.g. READ_1_1_4, READ_1_4_4, READ4B_1_1_4...), operating frequencies, mode and
-> dummy requirements, means of setting Quad Enable, entering/exiting 4-byte
-> addressing etc.
->
-> 	- provide optimal read, write and erase configurations, based on the combined
-> capabilities of the Serial Flash device and the H/W Controller.
->
-> 	- device specific configuration (e.g. setting QE, unlock BPx bits, DYB unlocking).
->
-Does Jones have any opinion about this?
+So we run the test a few more times, just to be sure.
 
-thanks
-Huang Shijie
+> 
+> Then, doing a simple read and copying back the data:
+> 
+>   root@mood:~# dd if=/dev/mtd4 of=/tmp/toto 
+>   212992+0 records in
+>   212992+0 records out
+>   109051904 bytes (109 MB) copied, 10.8671 s, 10.0 MB/s
+>   
+>   root@mood:~# flash_erase /dev/mtd4 0 0
+>   
+>   root@mood:~# nandwrite -p /dev/mtd4 /tmp/toto
+>   ...
+>   Writing data to block 795 at offset 0x6360000
+>   Writing data to block 796 at offset 0x6380000
+>   Writing data to block 797 at offset 0x63a0000
+>   Writing data to block 798 at offset 0x63c0000
+>   Writing data to block 799 at offset 0x63e0000
+>   Writing data to block 800 at offset 0x6400000
+>   [ 1509.210395] pxa3xx-nand d00d0000.nand: Ready time out!!!
+>   libmtd: error!: cannot write 2048 bytes to mtd4 (eraseblock 800, offset 0)
+>           error 5 (Input/output error)
+[..]
+
+>   [ 1513.810387] pxa3xx-nand d00d0000.nand: Ready time out!!!
+>   libmtd: error!: cannot write 2048 bytes to mtd4 (eraseblock 823, offset 0)
+>           error 5 (Input/output error)
+>   Erasing failed write from 0x66e0000 to 0x66fffff
+
+Hm.. so you get errors when writing to mtd4 blocks from 800 to 823.
+
+Is that completely reproducible, IOW do you get always the error
+on those blocks?
+
+And what happens if you write directly to those blocks only?
+(you can use nandwrite --offset)
+
+>   Writing data to block 824 at offset 0x6700000
+>   Bad block at 6700000, 1 block(s) from 6700000 will be skipped
+>   Writing data to block 825 at offset 0x6720000
+>   Bad block at 6720000, 1 block(s) from 6720000 will be skipped
+>   Writing data to block 826 at offset 0x6740000
+>   Bad block at 6740000, 1 block(s) from 6740000 will be skipped
+>   Writing data to block 827 at offset 0x6760000
+>   Bad block at 6760000, 1 block(s) from 6760000 will be skipped
+>   Writing data to block 828 at offset 0x6780000
+>   Bad block at 6780000, 1 block(s) from 6780000 will be skipped
+>   Writing data to block 829 at offset 0x67a0000
+>   Bad block at 67a0000, 1 block(s) from 67a0000 will be skipped
+>   Writing data to block 830 at offset 0x67c0000
+>   Bad block at 67c0000, 1 block(s) from 67c0000 will be skipped
+>   Writing data to block 831 at offset 0x67e0000
+>   Bad block at 67e0000, 1 block(s) from 67e0000 will be skipped
+>   Writing data to block 832 at offset 0x6800000
+>   libmtd: error!: bad eraseblock number 832, mtd4 has 832 eraseblocks
+>   nandwrite: error!: /dev/mtd4: MTD get bad block failed
+>              error 22 (Invalid argument)
+>   nandwrite: error!: Data was only partially written due to error
+>              error 22 (Invalid argument)
+>   
+
+These 8 blocks (824-832) that has been skipped are the ones marked
+as 'bad' because they hold the bad block table.
+
+> This is the kind of errors I got last time but I think am starting to
+> understand the root cause now. Tell me if I get it right: what is
+> understood as bad blocks above (and in nandtest) is in fact the two bad
+> block tables reported during boot:
+> 
+>  NAND device: Manufacturer ID: 0xad, Chip ID: 0xf1 (Hynix H27U1G8F2BTR-BC)
+>  NAND device: 128MiB, SLC, page size: 2048, OOB size: 64
+>  Bad block table found at page 65472, version 0x01
+>  Bad block table found at page 65408, version 0x01
+> 
+
+Yes and no :-) The bad block table consists of 8 blocks at the end
+of the flash device. These blocks are marked as 'reserved' and nandtest
+or any other userspace writing/erasing tool will skip them.
+
+Hence, the bad block table is what explains the skipping of the group
+of blocks [824..832]. However, you're getting errors when writing
+data to [800..823], and it's a "Ready timeout" condition. I'm not sure
+exactly what's going on, but we can say that:
+
+  * Either the waiting time is not enough, or ...
+
+  * The commands (maybe some race) were badly issued so there's nothing
+    to wait at all.
+
+To check the former, you only need to hack the driver like this, and
+then re-try the nandwrite:
+
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 3d143fe..9bb7d35 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -39,7 +39,7 @@
+ #include <linux/platform_data/mtd-nand-pxa3xx.h>
+ 
+ #define NAND_DEV_READY_TIMEOUT  50
+-#define	CHIP_DELAY_TIMEOUT	(2 * HZ/10)
++#define	CHIP_DELAY_TIMEOUT	(10 * HZ/10)
+ #define NAND_STOP_DELAY		(2 * HZ/50)
+ #define PAGE_CHUNK_SIZE		(2048)
+ 
+It's just a test.
+
+To check about the latter, I cannot think of anything but adding printk
+all over the place and inspect the command sequence.
+
+Brian: Do you have any better idea?
+
+Thanks again for these tests and for your patience!
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
