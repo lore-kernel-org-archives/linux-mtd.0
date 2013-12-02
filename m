@@ -1,25 +1,27 @@
-Received: from cantor2.suse.de ([195.135.220.15] helo=mx2.suse.de)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VncTg-0004Gy-5x
- for linux-mtd@lists.infradead.org; Mon, 02 Dec 2013 23:00:33 +0000
-Date: Tue, 3 Dec 2013 00:00:07 +0100
-From: Jan Kara <jack@suse.cz>
-To: Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH 12/18] ocfs2: use generic posix ACL infrastructure
-Message-ID: <20131202230007.GK12253@quack.suse.cz>
-References: <20131201115903.910559036@bombadil.infradead.org>
- <20131201120655.852590677@bombadil.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20131201120655.852590677@bombadil.infradead.org>
-Cc: xfs@oss.sgi.com, Mark Fasheh <mfasheh@suse.com>,
- reiserfs-devel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- cluster-devel@redhat.com, linux-mtd@lists.infradead.org,
- viro@zeniv.linux.org.uk, jfs-discussion@lists.sourceforge.net,
- linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-nfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
- Joel Becker <jlbec@evilplan.org>
+Received: from mailout3.samsung.com ([203.254.224.33])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VnclT-0004hw-B0
+ for linux-mtd@lists.infradead.org; Mon, 02 Dec 2013 23:18:57 +0000
+Received: from epcpsbgr2.samsung.com
+ (u142.gpu120.samsung.co.kr [203.254.230.142])
+ by mailout3.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ (7.0.4.24.0) 64bit (built Nov 17 2011))
+ with ESMTP id <0MX700F4JCQSH2C0@mailout3.samsung.com> for
+ linux-mtd@lists.infradead.org; Tue, 03 Dec 2013 08:18:28 +0900 (KST)
+From: Jingoo Han <jg1.han@samsung.com>
+To: 'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>
+References: <001501ceefb1$69c96820$3d5c3860$%han@samsung.com>
+In-reply-to: <001501ceefb1$69c96820$3d5c3860$%han@samsung.com>
+Subject: [PATCH 19/39] mtd: denali: remove DEFINE_PCI_DEVICE_TABLE macro
+Date: Tue, 03 Dec 2013 08:18:28 +0900
+Message-id: <002801ceefb4$cef24a20$6cd6de60$%han@samsung.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii
+Content-transfer-encoding: 7bit
+Content-language: ko
+Cc: 'Brian Norris' <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ 'Jingoo Han' <jg1.han@samsung.com>, 'David Woodhouse' <dwmw2@infradead.org>,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,63 +31,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun 01-12-13 03:59:15, Christoph Hellwig wrote:
-> This contains some major refactoring for the create path so that
-> inodes are created with the right mode to start with instead of
-> fixing it up later.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-...
-> -int ocfs2_acl_chmod(struct inode *inode)
-> -{
-> -	struct ocfs2_super *osb = OCFS2_SB(inode->i_sb);
-> -	struct posix_acl *acl;
-> -	int ret;
-> -
-> -	if (S_ISLNK(inode->i_mode))
-> -		return -EOPNOTSUPP;
-> -
-> -	if (!(osb->s_mount_opt & OCFS2_MOUNT_POSIX_ACL))
-> -		return 0;
-> -
-> -	acl = ocfs2_get_acl(inode, ACL_TYPE_ACCESS);
-> -	if (IS_ERR(acl) || !acl)
-> -		return PTR_ERR(acl);
-> -	ret = __posix_acl_chmod(&acl, GFP_KERNEL, inode->i_mode);
-> -	if (ret)
-> -		return ret;
-> -	ret = ocfs2_set_acl(NULL, inode, NULL, ACL_TYPE_ACCESS,
-> -			    acl, NULL, NULL);
-> -	posix_acl_release(acl);
-> -	return ret;
-> -}
-...
+Don't use DEFINE_PCI_DEVICE_TABLE macro, because this macro
+is not preferred.
 
-> diff --git a/fs/ocfs2/file.c b/fs/ocfs2/file.c
-> index 6fff128..ac371ad 100644
-> --- a/fs/ocfs2/file.c
-> +++ b/fs/ocfs2/file.c
-> @@ -1236,7 +1236,7 @@ bail:
->  		dqput(transfer_to[qtype]);
->  
->  	if (!status && attr->ia_valid & ATTR_MODE) {
-> -		status = ocfs2_acl_chmod(inode);
-> +		status = posix_acl_chmod(inode);
->  		if (status < 0)
->  			mlog_errno(status);
->  	}
-  Hum, this changes the cluster locking. Previously ocfs2_acl_get() used
-from ocfs2_acl_chmod() grabbed cluster wide inode lock. Now getting of ACL
-isn't protected by the inode lock. That being said the cluster locking
-around setattr looks fishy anyway - if two processes on different
-nodes are changing attributes of the same file, changing ACLs post fact
-after dropping inode lock could cause interesting effects. Also I'm
-wondering how inode_change_ok() can ever be safe without holding inode
-lock... Until we grab that other node is free to change e.g. owner of the
-inode thus leading even to security implications. But maybe I'm missing
-something. Mark, Joel?
+Signed-off-by: Jingoo Han <jg1.han@samsung.com>
+---
+ drivers/mtd/nand/denali_pci.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-								Honza
+diff --git a/drivers/mtd/nand/denali_pci.c b/drivers/mtd/nand/denali_pci.c
+index 033f177..622dfb7 100644
+--- a/drivers/mtd/nand/denali_pci.c
++++ b/drivers/mtd/nand/denali_pci.c
+@@ -21,7 +21,7 @@
+ #define DENALI_NAND_NAME    "denali-nand-pci"
+ 
+ /* List of platforms this NAND controller has be integrated into */
+-static DEFINE_PCI_DEVICE_TABLE(denali_pci_ids) = {
++static const struct pci_device_id denali_pci_ids[] = {
+ 	{ PCI_VDEVICE(INTEL, 0x0701), INTEL_CE4100 },
+ 	{ PCI_VDEVICE(INTEL, 0x0809), INTEL_MRST },
+ 	{ /* end: all zeroes */ }
 -- 
-Jan Kara <jack@suse.cz>
-SUSE Labs, CR
+1.7.10.4
