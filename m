@@ -1,20 +1,25 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VnZgQ-0007mV-Ui
- for linux-mtd@lists.infradead.org; Mon, 02 Dec 2013 20:01:31 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>
-Subject: RE: [PATCH] UBI: optimize erase-header IO read checks
-Date: Mon, 2 Dec 2013 20:01:05 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA51107@DBDE04.ent.ti.com>
-References: <1367212058-10429-1-git-send-email-pekon@ti.com>
- <1382542808.8882.0.camel@karhu.quadriga.com>
-In-Reply-To: <1382542808.8882.0.camel@karhu.quadriga.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from cantor2.suse.de ([195.135.220.15] helo=mx2.suse.de)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VnZtS-0008Io-VL
+ for linux-mtd@lists.infradead.org; Mon, 02 Dec 2013 20:14:59 +0000
+Date: Mon, 2 Dec 2013 21:14:34 +0100
+From: Jan Kara <jack@suse.cz>
+To: Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH 02/18] fs: add get_acl helper
+Message-ID: <20131202201434.GB12253@quack.suse.cz>
+References: <20131201115903.910559036@bombadil.infradead.org>
+ <20131201120653.841554822@bombadil.infradead.org>
 MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20131201120653.841554822@bombadil.infradead.org>
+Cc: xfs@oss.sgi.com, Mark Fasheh <mfasheh@suse.com>,
+ reiserfs-devel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ cluster-devel@redhat.com, linux-mtd@lists.infradead.org,
+ viro@zeniv.linux.org.uk, jfs-discussion@lists.sourceforge.net,
+ linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-nfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ Joel Becker <jlbec@evilplan.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,34 +29,107 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgQXJ0ZW0sDQoNCj5Gcm9tOiBBcnRlbSBCaXR5dXRza2l5IFttYWlsdG86ZGVkZWtpbmQxQGdt
-YWlsLmNvbV0NCj5TdWJqZWN0OiBSZTogW1BBVENIXSBVQkk6IG9wdGltaXplIGVyYXNlLWhlYWRl
-ciBJTyByZWFkIGNoZWNrcw0KPg0KPg0KPk9uIE1vbiwgMjAxMy0wNC0yOSBhdCAxMDozNyArMDUz
-MCwgR3VwdGEsIFBla29uIHdyb3RlOg0KPi4uLg0KPj4gU2lnbmVkLW9mZi1ieTogR3VwdGEsIFBl
-a29uIDxwZWtvbkB0aS5jb20+DQo+DQo+SSBkbyBnZW5lcmFsbHkgdW5kZXJzdGFuZCB3aGF0IHlv
-dSBhcmUgdHJ5aW5nIHRvIGRvIGluIHRoaXMgcGF0Y2gsIGJ1dCBJDQo+Y2Fubm90IGNhcmVmdWxs
-eSByZXZpZXcgaXQsIGJlY2F1c2UgaXQgaXMgdG9vIGJpZywganVzdCBsaWtlIHRoZSBzZWNvbmQN
-Cj5wYXRjaC4NCj4NCj5JdCByZWFsbHkgc2hvdWxkIGJlIHNwbGl0LiBJIHRoaW5rIHlvdSBzaG91
-bGQgc3RhcnQgd2l0aCBhIHByZXBhcmF0aW9uDQo+cGF0Y2ggd2hpY2ggZG9lcyBub3QgY2hhbmdl
-IHRoZSBjdXJyZW50IGxvZ2ljLCBidXQganVzdCB0cmFuc2Zvcm1zIHRoZQ0KPmNvZGUgdG8gdXNp
-bmcgYSBzd2l0Y2ggc3RhdGVtZW50Lg0KPg0KPlRoZW4geW91IHNob3VsZCBzdGFydCBtb2RpZnlp
-bmcgdGhlIGJpZyBzd2l0Y2ggc3RhdGVtZW50LCBwcmVmZXJhYmx5IG9uZQ0KPnN0ZXAgcGVyIHBh
-dGNoLCBleHBsYWluaW5nIGVhY2ggc3RlcC4gSSBndWVzcyB0aGUgZmlyc3Qgc3RlcCB3b3VsZCBi
-ZQ0KPnJlbW92aW5nIHRoZSBtYWdpYyBudW1iZXJzIGNoZWNrLiBBbm90aGVyIHN0ZXAgd291bGQg
-YmUgcmVtb3ZpbmcgdGhlDQo+MHhGRiBjb21wYXJpc29uLiBFdGMuDQo+DQo+VGhlbiB5b3VyIHdv
-cmsgY291bGQgYmUgcmV2aWV3ZWQsIGFuZCB3ZSBjb3VsZCBiZSBzb21ld2hhdCBjb25maWRlbnQN
-Cj50aGF0IGl0IGRvZXMgbm90IGJyZWFrIGFueXRoaW5nLg0KPg0KDQpTb3JyeSBmb3IgbGF0ZSBy
-ZXBseS4gSSdtIGJpdCBzdHVjayBpbiBvdGhlciBvbWFwMiBOQU5EIGRyaXZlcg0KdXBkYXRlcy4g
-SSdsbCB0YWtlIHRoaXMgdXBkYXRlIGluZGVwZW5kZW50bHkgZnJvbSBvdGhlciBhY3Rpdml0aWVz
-Lg0KQXMgdGhpcyBuZWVkcyByaWdvcm91cyB0ZXN0aW5nLg0KKGJ1dCB0aGlzIGlzIGFsd2F5cyBp
-biBteSB0b2RvIGxpc3QgbWFya2VkIGluIHJlZCA6LSkpDQoNCkFsc28sIEkgcHVycG9zZWx5IHR3
-ZWFrZWQgdGhlIGZ1bmN0aW9uYWxpdHkgYSBiaXQsIChsaWtlIHJlbW92YWwgb2YgMHhmZg0KY29t
-cGFyaXNvbikgdG8gc3BlZWQtdXAgcGFyc2luZyBvZiBlcmFzZS1oZWFkZXIgYW5kIHZvbHVtZS1o
-ZWFkZXJzLg0KVGhlc2UgY2hlY2tzIHdlcmUgbm90IGV4cGxpY2l0ZWx5IHJlcXVpcmVkLCBhcyBz
-b21lIG9mIHRoZXNlIGFyZQ0KY292ZXJlZCBpbXBsaWNpdGx5IGluIG90aGVyIGNoZWNrcyBsaWtl
-IENSQyBtYXRjaC4NCkknbGwgcmUtdmlzaXQgdGhlc2UgdHdlYWtzIHdpdGggcHJvcGVyIGNvbW1l
-bnRzIGluIGNvZGUgd2hlbiBJIHJlc2VuZC4NCkhvd2V2ZXIsIEkgbmVlZHMgc29tZSBoZWxwIGlu
-IHBlcmZvcm1hbmNlIHRlc3RpbmcgdGhpcyB0byBjaGVjaw0Kd2hldGhlciB0aGVzZSBwYXRjaGVz
-IGNvdWxkIGhlbHAgaW4gc3BlZWRpbmcgdXAgbW91bnQgdGltZSBhYml0Lg0KVGhvdWdoIEkgYWdy
-ZWUgdGhlc2UgbWF5IG5vdCBtYXRjaCAnZmFzdC1zY2FuJy4NCg0KDQp3aXRoIHJlZ2FyZHMsIHBl
-a29uDQo=
+On Sun 01-12-13 03:59:05, Christoph Hellwig wrote:
+> Factor out the code to get an ACL either from the inode or disk from
+> check_acl, so that it can be used elsewhere later on.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+  Looks good. You can add:
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> ---
+>  fs/namei.c                |   24 +++---------------------
+>  fs/posix_acl.c            |   23 +++++++++++++++++++++++
+>  include/linux/posix_acl.h |    2 ++
+>  3 files changed, 28 insertions(+), 21 deletions(-)
+> 
+> diff --git a/fs/namei.c b/fs/namei.c
+> index c53d3a9..8acd1e8 100644
+> --- a/fs/namei.c
+> +++ b/fs/namei.c
+> @@ -235,27 +235,9 @@ static int check_acl(struct inode *inode, int mask)
+>  	        return posix_acl_permission(inode, acl, mask & ~MAY_NOT_BLOCK);
+>  	}
+>  
+> -	acl = get_cached_acl(inode, ACL_TYPE_ACCESS);
+> -
+> -	/*
+> -	 * A filesystem can force a ACL callback by just never filling the
+> -	 * ACL cache. But normally you'd fill the cache either at inode
+> -	 * instantiation time, or on the first ->get_acl call.
+> -	 *
+> -	 * If the filesystem doesn't have a get_acl() function at all, we'll
+> -	 * just create the negative cache entry.
+> -	 */
+> -	if (acl == ACL_NOT_CACHED) {
+> -	        if (inode->i_op->get_acl) {
+> -			acl = inode->i_op->get_acl(inode, ACL_TYPE_ACCESS);
+> -			if (IS_ERR(acl))
+> -				return PTR_ERR(acl);
+> -		} else {
+> -		        set_cached_acl(inode, ACL_TYPE_ACCESS, NULL);
+> -		        return -EAGAIN;
+> -		}
+> -	}
+> -
+> +	acl = get_acl(inode, ACL_TYPE_ACCESS);
+> +	if (IS_ERR(acl))
+> +		return PTR_ERR(acl);
+>  	if (acl) {
+>  	        int error = posix_acl_permission(inode, acl, mask);
+>  	        posix_acl_release(acl);
+> diff --git a/fs/posix_acl.c b/fs/posix_acl.c
+> index 8bd2135..9dd03e0 100644
+> --- a/fs/posix_acl.c
+> +++ b/fs/posix_acl.c
+> @@ -418,3 +418,26 @@ posix_acl_chmod(struct posix_acl **acl, gfp_t gfp, umode_t mode)
+>  	return err;
+>  }
+>  EXPORT_SYMBOL(posix_acl_chmod);
+> +
+> +struct posix_acl *get_acl(struct inode *inode, int type)
+> +{
+> +	struct posix_acl *acl;
+> +
+> +	acl = get_cached_acl(inode, type);
+> +	if (acl != ACL_NOT_CACHED)
+> +		return acl;
+> +
+> +	/*
+> +	 * A filesystem can force a ACL callback by just never filling the
+> +	 * ACL cache. But normally you'd fill the cache either at inode
+> +	 * instantiation time, or on the first ->get_acl call.
+> +	 *
+> +	 * If the filesystem doesn't have a get_acl() function at all, we'll
+> +	 * just create the negative cache entry.
+> +	 */
+> +        if (!inode->i_op->get_acl) {
+> +	        set_cached_acl(inode, type, NULL);
+> +	        return ERR_PTR(-EAGAIN);
+> +	}
+> +	return inode->i_op->get_acl(inode, type);
+> +}
+> diff --git a/include/linux/posix_acl.h b/include/linux/posix_acl.h
+> index 7931efe..a8d9918 100644
+> --- a/include/linux/posix_acl.h
+> +++ b/include/linux/posix_acl.h
+> @@ -175,4 +175,6 @@ static inline void cache_no_acl(struct inode *inode)
+>  #endif
+>  }
+>  
+> +struct posix_acl *get_acl(struct inode *inode, int type);
+> +
+>  #endif  /* __LINUX_POSIX_ACL_H */
+> -- 
+> 1.7.10.4
+> 
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-ext4" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-- 
+Jan Kara <jack@suse.cz>
+SUSE Labs, CR
