@@ -1,20 +1,15 @@
-Message-ID: <529C91A8.3030401@st.com>
-Date: Mon, 2 Dec 2013 13:56:56 +0000
-From: srinivas kandagatla <srinivas.kandagatla@st.com>
-MIME-Version: 1.0
-To: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v3 36/36] ARM: STi: Add support for the FSM Serial Flash
- Controller
-References: <1385727565-25794-1-git-send-email-lee.jones@linaro.org>
- <1385727565-25794-37-git-send-email-lee.jones@linaro.org>
- <529C858B.1040601@st.com> <20131202132013.GF31626@lee--X1>
- <529C8A99.1020204@st.com> <20131202134348.GG31626@lee--X1>
-In-Reply-To: <20131202134348.GG31626@lee--X1>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Cc: angus.clark@st.com, linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
+Received: from mail-ie0-x22f.google.com ([2607:f8b0:4001:c03::22f])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VnYxP-0005dt-RQ
+ for linux-mtd@lists.infradead.org; Mon, 02 Dec 2013 19:15:00 +0000
+Received: by mail-ie0-f175.google.com with SMTP id x13so22094015ief.34
+ for <linux-mtd@lists.infradead.org>; Mon, 02 Dec 2013 11:14:36 -0800 (PST)
+From: Brian Norris <computersforpeace@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: nand: fix misspelling in ONFI parameter field name
+Date: Mon,  2 Dec 2013 11:14:12 -0800
+Message-Id: <1386011652-27411-1-git-send-email-computersforpeace@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,43 +19,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 02/12/13 13:43, Lee Jones wrote:
-> On Mon, 02 Dec 2013, srinivas kandagatla wrote:
-> 
->> On 02/12/13 13:20, Lee Jones wrote:
->>>>> +		/* FSM */
->>>>> +		spifsm: spifsm@fe902000{
->>>>> +		        compatible         = "st,spi-fsm", "simple-bus";
->>>> "simple-bus" is redundant here.
->>>
->>> Yes I agree, good spot.
->>>
->>> I removed it from the Documentation, but missed this one.
->>>
->>> If I remove it, can I add your Ack for the remainder of the patch?
->> Yes,
->>
->> Acked-by: Srinivas Kandagatla <srinivas.kandagatla@st.com>
->>
->> You should be aware that arch/arm/boot/dts/stih416-b2105.dts is not in
->> mainline yet.
-> 
-> Yes, I am aware of this. Are you queuing patches for it?
-Yes, I will post this soon.
+s/strenght/strength/
 
-thanks,
-srini
-> 
->>>>> +		        reg                =  <0xfe902000 0x1000>;
->>>>> +		        reg-names          = "spi-fsm";
->>>>> +		        pinctrl-0          = <&pinctrl_fsm>;
->>>>> +
->>>>> +			st,syscfg	   = <&syscfg_rear>;
->>>>> +		        st,boot-device-reg = <0x958>;
->>>>> +		        st,boot-device-spi = <0x1a>;
->>>>> +
->>>>> +		        status = "okay";
->>>>> +		};
->>>
->>
-> 
+This field isn't used anywhere, so this rename is safe.
+
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+ include/linux/mtd/nand.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 9e6c8f9f306e..f3ea8daf08ee 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -279,7 +279,7 @@ struct nand_onfi_params {
+ 	__le16 io_pin_capacitance_typ;
+ 	__le16 input_pin_capacitance_typ;
+ 	u8 input_pin_capacitance_max;
+-	u8 driver_strenght_support;
++	u8 driver_strength_support;
+ 	__le16 t_int_r;
+ 	__le16 t_ald;
+ 	u8 reserved4[7];
+-- 
+1.8.4.4
