@@ -1,19 +1,18 @@
-Received: from waters38.lnk.telstra.net ([120.151.227.109] helo=waterex.com.au)
- by merlin.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VnT0m-00044P-NO
- for linux-mtd@lists.infradead.org; Mon, 02 Dec 2013 12:54:05 +0000
-Date: Mon, 2 Dec 2013 09:23:55 +0100
-From: john@waterex.com.au
-Message-ID: <092843782.20131202100131@waterex.com.au>
-Subject: =?windows-1251?B?4fDu8fzy5SDr5erg8PHy4uAg6CAsIO7t6CDC?=
- =?windows-1251?B?4Owg4e7r/PjlIO3lIO/u8vDl4fP+8vH/?=
-To: <linux-mtd@lists.infradead.org>, <info@litecall.ru>,
- <baytusov.kuatbek@gmail>, <crocodile@aqua.ru>
+Message-ID: <529C858B.1040601@st.com>
+Date: Mon, 2 Dec 2013 13:05:15 +0000
+From: srinivas kandagatla <srinivas.kandagatla@st.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="windows-1251";
-Content-Transfer-Encoding: quoted-printable
-Reply-To: john@waterex.com.au
+To: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH v3 36/36] ARM: STi: Add support for the FSM Serial Flash
+ Controller
+References: <1385727565-25794-1-git-send-email-lee.jones@linaro.org>
+ <1385727565-25794-37-git-send-email-lee.jones@linaro.org>
+In-Reply-To: <1385727565-25794-37-git-send-email-lee.jones@linaro.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: angus.clark@st.com, linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,5 +22,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-http://goo.gl/i1J5cG =EF=F0=E8=EA=F3=EF=E8=F2=E5 =ED=E0=F8 =EA=F3=F0=F1 -=
- =EE=F2=F5=E2=E0=F2=E8=F2=E5 100% =E7=F0=E5=ED=E8=E5
+Hi Lee,
+On 29/11/13 12:19, Lee Jones wrote:
+> +		/* FSM */
+> +		spifsm: spifsm@fe902000{
+> +		        compatible         = "st,spi-fsm", "simple-bus";
+"simple-bus" is redundant here.
+
+> +		        reg                =  <0xfe902000 0x1000>;
+> +		        reg-names          = "spi-fsm";
+> +		        pinctrl-0          = <&pinctrl_fsm>;
+> +
+> +			st,syscfg	   = <&syscfg_rear>;
+> +		        st,boot-device-reg = <0x958>;
+> +		        st,boot-device-spi = <0x1a>;
+> +
+> +		        status = "okay";
+> +		};
+
+
+thanks,
+srini
