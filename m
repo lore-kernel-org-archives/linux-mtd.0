@@ -1,20 +1,19 @@
-Received: from co9ehsobe001.messaging.microsoft.com ([207.46.163.24]
- helo=co9outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VnQ5f-00089I-Ss
- for linux-mtd@lists.infradead.org; Mon, 02 Dec 2013 09:46:57 +0000
+Message-ID: <529C5BBF.6000604@freescale.com>
+Date: Mon, 2 Dec 2013 18:06:55 +0800
 From: Huang Shijie <b32955@freescale.com>
-To: <dwmw2@infradead.org>
-Subject: [PATCH] mtd: nand: parse out the datasheet's required minimum ECC for
- Hynix(>=26nm)
-Date: Mon, 2 Dec 2013 17:20:26 +0800
-Message-ID: <1385976026-31606-1-git-send-email-b32955@freescale.com>
-In-Reply-To: <1385974906-29891-1-git-send-email-b32955@freescale.com>
-References: <1385974906-29891-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, dedekind1@gmail.com
+To: Angus Clark <angus.clark@st.com>
+Subject: Re: [PATCH 0/4] mtd: spi-nor: add a new framework for SPI NOR
+References: <1385447575-23773-1-git-send-email-b32955@freescale.com>
+ <20131127043253.GA9468@ld-irv-0074.broadcom.com> <5298AA23.7080404@st.com>
+In-Reply-To: <5298AA23.7080404@st.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: marex@denx.de, broonie@linaro.org, dwmw2@infradead.org,
+ Linus Walleij <linus.walleij@linaro.org>, linux-spi@vger.kernel.org,
+ linux-mtd@lists.infradead.org, pekon@ti.com, sourav.poddar@ti.com,
+ Brian Norris <computersforpeace@gmail.com>, Lee Jones <lee.jones@linaro.org>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,46 +23,133 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Parse out the datasheet's required minimum ECC for Hynix nand chips which
-use the >=26 technology and the id length is 6.
+Hi Angus:
+   thanks for the long suggestion. it's very useful.
 
-Referencd to the H27UBG8T2B.
+Let's push the spi nor framework.:)
+> Hi Huang Shijie,
+>
+> On 11/27/2013 04:32 AM, Brian Norris wrote:
+>> + Lee Jones, others
+>>
+>> I'd like to keep a similar CC list for the various conversations going
+>> on about SPI NOR frameworks.
+>>
+>> On Tue, Nov 26, 2013 at 02:32:51PM +0800, Huang Shijie wrote:
+>>> 1.) Why add a new framework for SPI NOR?
+>>>    The SPI-NOR controller such as Freescale's Quadspi controller is working
+>>>    in a different way from the SPI bus. It should knows the NOR commands to
+>>>    find the right LUT sequence. Unfortunately, the current code can not meet
+>>>    this requirement.
+> I fully support your argument for introducing a new framework to support Serial
+> Flash controllers.  Reiterating my previous comment:
+>
+> "The kernel offers many examples of others who have struggled with the same
+> problem.  Some have chosen to write self-contained drivers (e.g.
+> drivers/mtd/devices/spear_smi.c and drivers/mtd/devices/sst251.c) duplicating
+> much of m25p80.c, while others have attempted to squeeze into the SPI framework
+> (e.g. drivers/spi/spi-tegra20-sflash.c and drivers/spi/spi-falcon.c), relying on
+> fragile heuristics to recreate the semantics of m25p80 that is lost over the ,
+> current circumstances SPI framework ."
+>
+> However, having now been through your proposed framework, it would not seem to
+> provide a generally applicable solution.  Indeed, other than making the Serial
+> Flash commands and the device table available, it is not obvious how it improves
+> the situation for your own specific controller either; the
+> read/write/read_reg/write_reg callbacks do not offer a great deal more than
+> spi_read_then_write().  (Perhaps all will become clear when you submit the
+> fsl-quadspi driver.)
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
----
- drivers/mtd/nand/nand_base.c |   20 ++++++++++++++++++++
- 1 files changed, 20 insertions(+), 0 deletions(-)
+> As I see it, the main problem with the current support is that dedicated Serial
+> Flash Controllers require a level of semantics that cannot be conveyed over the
+> generic SPI framework.  With this in mind, I would start by defining something
+> along the lines of a "Serial Flash transfer".  Some initial ramblings of my mind:
+>
+> /**
+>   * struct spi_nor_xfer_cfg - Structure for defining a Serial Flash transfer
+>   * @wren:		command for "Write Enable", or 0x00 for not required
+why this wren is needed?
+>   * @cmd:		command for operation
+>   * @cmd_pins:		number of pins to send @cmd (1, 2, 4)
+>   * @addr:		address for operation
+>   * @addr_pins:		number of pins to send @addr (1, 2, 4)
+>   * @addr_width: 	number of address bytes (3,4, or 0 for address not required)
+this field has been in the spi_nor{} , it should be a fixed value.
+so i think we do not need this argument.
+>   * @mode:		mode data
+>   * @mode_pins:		number of pins to send @mode (1, 2, 4)
+>   * @mode_cycles:	number of mode cycles (0 for mode not required)
+>   * @dummy_cycles:	number of dummy cycles (0 for dummy not required)
+>   */
+> struct spi_nor_xfer_cfg {
+> 	uint8_t		wren;
+> 	uint8_t		cmd;
+> 	int		cmd_pins;
+> 	uint32_t	addr;
+> 	int		addr_pins;
+> 	int		addr_width;
+> 	uint32_t	mode;
+> 	int		mode_pins;
+> 	int		mode_cycles;
+> 	int		dummy_cycles;
+> };
+>
+> We could then build up layers of functionality, based on two fundamental primitives:
+>
+> 	int (*read_xfer)(struct spi_nor_info *info,
+> 			 struct spi_nor_xfer_cfg *cfg,
+> 			 uint8_t *buf, size_t len);
+> 	
+> 	int (*write_xfer)(struct spi_nor_info *info,
+> 			  struct spi_nor_xfer_cfg *cfg,
+> 			  uint8_t *buf, size_t len);
+> 	
+> Default implementations for standard operations could follow:
+>
+> 	int (*read_reg)(struct spi_nor_info *info,
+> 			uint8_t cmd, uint8_t *reg, int len);
+> 	int (*write_reg)(struct spi_nor_info *info,
+> 			 uint8_t cmd, uint8_t *reg, int len,
+> 			 int wren, int wtr);
+>
+> 	int (*readid)(struct spi_nor_info *info, uint8_t *readid);
+> 	int (*wait_till_ready)(struct spi_nor_info *info);
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 4dab696..5c1ffd0 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -3201,6 +3201,26 @@ static void nand_decode_ext_id(struct mtd_info *mtd, struct nand_chip *chip,
- 			mtd->erasesize = 768 * 1024;
- 		else
- 			mtd->erasesize = (64 * 1024) << tmp;
-+
-+		/* ecc info */
-+		tmp = (id_data[4] >> 4) & 0x7;
-+
-+		if (tmp <= 4) {
-+			if (tmp == 0)
-+				chip->ecc_strength_ds = 0;
-+			else
-+				chip->ecc_strength_ds = 1 << (tmp - 1);
-+			chip->ecc_step_ds = 512;
-+		} else {
-+			chip->ecc_step_ds = 1024;
-+			if (tmp == 5)
-+				chip->ecc_strength_ds = 24;
-+			else if (tmp == 6)
-+				chip->ecc_strength_ds = 32;
-+			else /* (tmp == 7) */
-+				chip->ecc_strength_ds = 40;
-+		}
-+
- 		*busw = 0;
- 	} else if (id_len == 6 && id_data[0] == NAND_MFR_HYNIX &&
- 			!nand_is_slc(chip) && (id_data[5] & 0x7) > 3) {
--- 
-1.7.2.rc3
+currently, we poll the status register.
+why this hook is needed?
+
+> 	
+> 	int (*read)(struct spi_nor_info *info, uint8_t buf, off_t offs, size_t len);
+> 	int (*write)(struct spi_nor_info *info, off_t offs, size_t len);
+> 	int (*erase_sector)(struct spi_nor_info *info, off_t offs);
+I also confused at this hook.
+
+if we need erase_sector, do we still need the erase_chip()?
+
+> Each driver would be required to implement read_xfer() and write_xfer(), and
+> then free to either use the default implementations, or override with
+> driver-optimised implementations.
+>
+> In the case of a pure SPI Controller, read_xfer() and write_xfer() would simply
+> flatten to spi_messages.  The key benefit is that dedicated Serial Flash
+> Controllers would be able to take advantage of the richer semantics offered by
+> the 'spi_nor_xfer_cfg' data.
+>
+> I would also expect the spi-nor framework to provide the following services,
+> applicable to all Serial Flash drivers:
+>
+> 	- determine devices properties at runtime, based on the READID data (and
+> perhaps SFDP, if and when it matures!).  This should include supported opcodes
+> (e.g. READ_1_1_4, READ_1_4_4, READ4B_1_1_4...), operating frequencies, mode and
+> dummy requirements, means of setting Quad Enable, entering/exiting 4-byte
+> addressing etc.
+>
+> 	- provide optimal read, write and erase configurations, based on the combined
+> capabilities of the Serial Flash device and the H/W Controller.
+>
+> 	- device specific configuration (e.g. setting QE, unlock BPx bits, DYB unlocking).
+>
+Does Jones have any opinion about this?
+
+thanks
+Huang Shijie
