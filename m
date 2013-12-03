@@ -1,24 +1,23 @@
-Date: Mon, 2 Dec 2013 21:22:26 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Arnaud Ebalard <arno@natisbad.org>
-Subject: Re: [PATCH v5 00/14] Armada 370/XP NAND support
-Message-ID: <20131203002225.GA5333@localhost>
-References: <87d2lp28pd.fsf@natisbad.org> <20131125120335.GD2408@localhost>
- <87r4a4f5gr.fsf@natisbad.org> <20131126124003.GA2344@localhost>
- <87zjopd240.fsf@natisbad.org> <87wqjtbm8r.fsf@natisbad.org>
- <20131128185040.GA13182@localhost> <87bo12kcyt.fsf@natisbad.org>
- <20131202103305.GB2466@localhost> <87siubneuf.fsf@natisbad.org>
+Received: from mailout.micron.com ([137.201.242.129])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VngIl-00081k-QO
+ for linux-mtd@lists.infradead.org; Tue, 03 Dec 2013 03:05:32 +0000
+From: =?gb2312?B?UWkgV2FuZyDN9cbwIChxaXdhbmcp?= <qiwang@micron.com>
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: [PATCH 1/1]  MTD: UBI:  avoid program operation on  NOR flash after
+ erasure interrupted
+Date: Tue, 3 Dec 2013 03:05:04 +0000
+Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A770B68A8@NTXXIAMBX02.xacn.micron.com>
+References: <71CF8D7F32C5C24C9CD1D0E02D52498A770B54B1@NTXXIAMBX02.xacn.micron.com>
+In-Reply-To: <71CF8D7F32C5C24C9CD1D0E02D52498A770B54B1@NTXXIAMBX02.xacn.micron.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87siubneuf.fsf@natisbad.org>
-Cc: Lior Amsalem <alior@marvell.com>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Jason Cooper <jason@lakedaemon.net>, linux-mtd@lists.infradead.org,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- linux-arm-kernel@lists.infradead.org
+Cc: =?gb2312?B?UWkgV2FuZyDN9cbwIChxaXdhbmcp?= <qiwang@micron.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,154 +27,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Arnaud,
-
-I'll try to explain the numbers you're observing. If I say something stupid
-along the way, feel free to correct me.
-
-When I wrote this driver I got puzzled by the same questions you're asking
-so rest assured I completely understand your confusion ;-)
-
-Let me being by writing your NAND layout, just for reference.
-
-0x000000000000-0x000000180000 : "u-boot"
-0x000000180000-0x0000001a0000 : "u-boot-env"
-0x000000200000-0x000000800000 : "uImage"
-0x000000800000-0x000001800000 : "minirootfs"
-0x000001800000-0x000008000000 : "jffs2"
-
-Your NAND device has page size 2048 byte. Therefore, the following message:
-
-> 
->   >>  Bad block table found at page 65472, version 0x01
->   >>  Bad block table found at page 65408, version 0x01
-> 
-
-Is telling us that there are two bad block tables (the table and its so-called
-mirror): one at page 65472 and another at page 65408.
-These page numbers correspond to offset 0x7fe0000 and 0x7fc0000 respectively.
-
-Then, considering the mtd4 (aka "jffs2") partition starts at 0x1800000, we can
-say the bad block tables start at offsets 0x67e0000 and 0x67c0000, from the
-start of mtd4.
-
-And since you run 'nandtest' on a partition and not on the entire
-device you get the bad block locations at mtd4 offset:
-
->   >>   Bad block at 0x06700000
->   >>   Bad block at 0x06720000
->   >>   Bad block at 0x06740000
->   >>   Bad block at 0x06760000
->   >>   Bad block at 0x06780000
->   >>   Bad block at 0x067a0000
->   >>   Bad block at 0x067c0000 <-- Mirror bad block table
->   >>   Bad block at 0x067e0000 <-- Bad block table
-> 
-
-The reason the numbers appear as "upside-down" is because the pxa3xx-nand
-driver uses this BBT options:
-
-.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
-	 | NAND_BBT_2BIT | NAND_BBT_VERSION,
-
-So, the NAND core code writes the table to the last block (as per
-NAND_BBT_LASTBLOCK option). Of course, it must write the bad block
-table *inside* the flash (before the end of its last partition) and
-to prevent any user I/O operation from losing the BBT the NAND core
-marks as bad using a special 'reserved' mark.
-
-Now, why does NAND reserve eight blocks, if there are only two tables?
-Well, you'll be able to find this in the driver:
-
-static struct nand_bbt_descr bbt_main_descr = {
-	/* stuff */
-	.maxblocks = 8,         /* Last 8 blocks in each chip */
-};
-
-The snippet above asks the NAND core to scan the last 8 blocks when searching
-for the in-flash bad block table. The NAND core will also reserve these
-8 blocks as the maximum amount of blocks that can be used to store a bad
-block table (I guess that's in case one block gets 'really' bad).
-
-In conclusion, answering your question, yes, this is correct:
-
-> it's expected that the partition definition (start address and length)
-> *includes* the bbt pages/blocks.
-> 
-
-The flash stores 8 x 128 KiB = 1 MiB for the bad block table and so
-whenever you prepare your filesystem, you must now that the last
-partition is actually 1 MiB smaller.
-
-On the other issue, about the timeout...
-
-> root@mood:~# nandwrite -p /dev/mtd4 /tmp/toto
-> Writing data to block 0 at offset 0x0
-> Writing data to block 1 at offset 0x20000
-> Writing data to block 2 at offset 0x40000
-> Writing data to block 3 at offset 0x60000
-> Writing data to block 4 at offset 0x80000
-> Writing data to block 5 at offset 0xa0000
-> Writing data to block 6 at offset 0xc0000
-> Writing data to block 7 at offset 0xe0000
-> ...
-> Writing data to block 818 at offset 0x6640000
-> Writing data to block 819 at offset 0x6660000
-> Writing data to block 820 at offset 0x6680000
-> Writing data to block 821 at offset 0x66a0000
-> Writing data to block 822 at offset 0x66c0000
-> Writing data to block 823 at offset 0x66e0000
-> Writing data to block 824 at offset 0x6700000
-> Bad block at 6700000, 1 block(s) from 6700000 will be skipped
-> Writing data to block 825 at offset 0x6720000
-> Bad block at 6720000, 1 block(s) from 6720000 will be skipped
-> Writing data to block 826 at offset 0x6740000
-> Bad block at 6740000, 1 block(s) from 6740000 will be skipped
-> Writing data to block 827 at offset 0x6760000
-> Bad block at 6760000, 1 block(s) from 6760000 will be skipped
-> Writing data to block 828 at offset 0x6780000
-> Bad block at 6780000, 1 block(s) from 6780000 will be skipped
-> Writing data to block 829 at offset 0x67a0000
-> Bad block at 67a0000, 1 block(s) from 67a0000 will be skipped
-> Writing data to block 830 at offset 0x67c0000
-> Bad block at 67c0000, 1 block(s) from 67c0000 will be skipped
-> Writing data to block 831 at offset 0x67e0000
-> Bad block at 67e0000, 1 block(s) from 67e0000 will be skipped
-> Writing data to block 832 at offset 0x6800000
-> libmtd: error!: bad eraseblock number 832, mtd4 has 832 eraseblocks
-> nandwrite: error!: /dev/mtd4: MTD get bad block failed
->            error 22 (Invalid argument)
-> nandwrite: error!: Data was only partially written due to error
->            error 22 (Invalid argument)
-> root@mood:~# 
-> 
-
-OK... Then I guess the driver works fine but you're trying to write
-an image bigger than possible. Where did you get such filesystem?
-
-Maybe reserving 8 blocks is *a lot* (I personally think it is a lot,
-but maybe it's more robust that way).
-
-> > Hence, the bad block table is what explains the skipping of the group
-> > of blocks [824..832]. However, you're getting errors when writing
-> > data to [800..823], and it's a "Ready timeout" condition. I'm not sure
-> > exactly what's going on, but we can say that:
-> >
-> >   * Either the waiting time is not enough, or ...
-> >
-> >   * The commands (maybe some race) were badly issued so there's nothing
-> >     to wait at all.
-> 
-> As I can not reproduce previous behavior (I am on the exact same
-> kernel), I guess it's difficult to go any further yet.
-> 
-
-Hm.. that's not cool. The fact that you got those timeouts, but now
-you don't have them anymore only worries me even more.
-
-Feel free to ask any more questions about the NAND stuff, although I've
-shared with you pretty much all I could collect from my readings to the code.
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+SGkgQXJ0ZW06DQpBcyB3ZSB0YWxrZWQgaW4gbWFpbCBiZWZvcmUsIHBsZWFzZSBjaGVjayBteSBw
+YXRjaCBhcyBiZWxvdzoNCg0KRnJvbTogUWkgV2FuZyA8cWl3YW5nQG1pY3Jvbi5jb20+DQoNCm5v
+cl9lcmFzZV9wcmVwYXJlKCkgd2lsbCBiZSBjYWxsZWQgYmVmb3JlIGVyYXNlIGEgTk9SIGZsYXNo
+LCBpdCB3aWxsIHByb2dyYW0gJzAnDQppbnRvIGEgYmxvY2sgdG8gbWFyayB0aGlzIGJsb2NrLiBC
+dXQgcHJvZ3JhbSBkYXRhIGludG8gYSBlcmFzdXJlIGludGVycnVwdGVkIGJsb2NrDQpjYW4gY2F1
+c2UgcHJvZ3JhbSB0aW10b3V0KHNldmVyYWwgbWludXRlcyBhdCBtb3N0KSBlcnJvciwgY291bGQg
+aW1wYWN0IG90aGVyIA0Kb3BlcmF0aW9uIG9uIE5PUiBmbGFzaC4gU28gVUJJRlMgY2FuIHJlYWQg
+dGhpcyBibG9jayBmaXJzdCB0byBhdm9pZCB1bm5lZWRlZCANCnByb2dyYW0gb3BlcmF0aW9uLiAN
+Cg0KVGhpcyBwYXRjaCB0cnkgdG8gcHV0IHJlYWQgb3BlcmF0aW9uIGF0IGhlYWQgb2Ygd3JpdGUg
+b3BlcmF0aW9uIGluIA0Kbm9yX2VyYXNlX3ByZXBhcmUoKSwgcmVhZCBvdXQgdGhlIGRhdGEuIA0K
+SWYgdGhlIGRhdGEgaXMgYWxyZWFkeSBjb3JydXB0LCB0aGVuIG5vIG5lZWQgdG8gcHJvZ3JhbSBh
+bnkgZGF0YSBpbnRvIHRoaXMgYmxvY2ssIA0KanVzdCBnbyB0byBlcmFzZSB0aGlzIGJsb2NrLg0K
+DQpTaWduZWQtb2ZmLWJ5OiBRaSBXYW5nIDxxaXdhbmdAcWl3YW5nQG1pY3Jvbi5jb20+DQotLS0N
+CmRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC91YmkvaW8uYyBiL2RyaXZlcnMvbXRkL3ViaS9pby5j
+DQppbmRleCBiZjc5ZGVmLi4wYTYzNDNkIDEwMDY0NA0KLS0tIGEvZHJpdmVycy9tdGQvdWJpL2lv
+LmMNCisrKyBiL2RyaXZlcnMvbXRkL3ViaS9pby5jDQpAQCAtNDk5LDYgKzQ5OSw3IEBAIHN0YXRp
+YyBpbnQgbm9yX2VyYXNlX3ByZXBhcmUoc3RydWN0IHViaV9kZXZpY2UgKnViaSwgaW50IHBudW0p
+DQogCXNpemVfdCB3cml0dGVuOw0KIAlsb2ZmX3QgYWRkcjsNCiAJdWludDMyX3QgZGF0YSA9IDA7
+DQorCXN0cnVjdCB1YmlfZWNfaGRyIGVjX2hkcjsNCiAJLyoNCiAJICogTm90ZSwgd2UgY2Fubm90
+IGdlbmVyYWxseSBkZWZpbmUgVklEIGhlYWRlciBidWZmZXJzIG9uIHN0YWNrLA0KIAkgKiBiZWNh
+dXNlIG9mIHRoZSB3YXkgd2UgZGVhbCB3aXRoIHRoZXNlIGJ1ZmZlcnMgKHNlZSB0aGUgaGVhZGVy
+DQpAQCAtNTA5LDQ5ICs1MTAsMzggQEAgc3RhdGljIGludCBub3JfZXJhc2VfcHJlcGFyZShzdHJ1
+Y3QgdWJpX2RldmljZSAqdWJpLCBpbnQgcG51bSkNCiAJc3RydWN0IHViaV92aWRfaGRyIHZpZF9o
+ZHI7DQogDQogCS8qDQorCSAqIElmIFZJRCBvciBFQyBpcyB2YWxpZCwgbmVlZCB0byBjb3JydXB0
+IGl0IGJlZm9yZSBlcmFzZSBvcGVyYXRpb24uICANCiAJICogSXQgaXMgaW1wb3J0YW50IHRvIGZp
+cnN0IGludmFsaWRhdGUgdGhlIEVDIGhlYWRlciwgYW5kIHRoZW4gdGhlIFZJRA0KIAkgKiBoZWFk
+ZXIuIE90aGVyd2lzZSBhIHBvd2VyIGN1dCBtYXkgbGVhZCB0byB2YWxpZCBFQyBoZWFkZXIgYW5k
+DQogCSAqIGludmFsaWQgVklEIGhlYWRlciwgaW4gd2hpY2ggY2FzZSBVQkkgd2lsbCB0cmVhdCB0
+aGlzIFBFQiBhcw0KIAkgKiBjb3JydXB0ZWQgYW5kIHdpbGwgdHJ5IHRvIHByZXNlcnZlIGl0LCBh
+bmQgcHJpbnQgc2Nhcnkgd2FybmluZ3MuDQogCSAqLw0KIAlhZGRyID0gKGxvZmZfdClwbnVtICog
+dWJpLT5wZWJfc2l6ZTsNCi0JZXJyID0gbXRkX3dyaXRlKHViaS0+bXRkLCBhZGRyLCA0LCAmd3Jp
+dHRlbiwgKHZvaWQgKikmZGF0YSk7DQotCWlmICghZXJyKSB7DQotCQlhZGRyICs9IHViaS0+dmlk
+X2hkcl9hbG9mZnNldDsNCi0JCWVyciA9IG10ZF93cml0ZSh1YmktPm10ZCwgYWRkciwgNCwgJndy
+aXR0ZW4sICh2b2lkICopJmRhdGEpOw0KLQkJaWYgKCFlcnIpDQotCQkJcmV0dXJuIDA7DQorCWVy
+ciA9IHViaV9pb19yZWFkX2VjX2hkcih1YmksIHBudW0sICZlY19oZHIsIDApOw0KKwlpZiAoZXJy
+ICE9IFVCSV9JT19CQURfSERSX0VCQURNU0cgJiYgZXJyICE9IFVCSV9JT19CQURfSERSICYmDQor
+CSAgICBlcnIgIT0gVUJJX0lPX0ZGKXsNCisJCWVycjEgPSBtdGRfd3JpdGUodWJpLT5tdGQsIGFk
+ZHIsIDQsICZ3cml0dGVuLCAodm9pZCAqKSZkYXRhKTsNCisJCWlmKGVycjEpDQorCQkJZ290byBl
+cnJvcjsNCiAJfQ0KIA0KLQkvKg0KLQkgKiBXZSBmYWlsZWQgdG8gd3JpdGUgdG8gdGhlIG1lZGlh
+LiBUaGlzIHdhcyBvYnNlcnZlZCB3aXRoIFNwYW5zaW9uDQotCSAqIFMyOUdMNTEyTiBOT1IgZmxh
+c2guIE1vc3QgcHJvYmFibHkgdGhlIHByZXZpb3VzbHkgZXJhc2VibG9jayBlcmFzdXJlDQotCSAq
+IHdhcyBpbnRlcnJ1cHRlZCBhdCBhIHZlcnkgaW5hcHByb3ByaWF0ZSBtb21lbnQsIHNvIGl0IGJl
+Y2FtZQ0KLQkgKiB1bndyaXRhYmxlLiBJbiB0aGlzIGNhc2Ugd2UgcHJvYmFibHkgYW55d2F5IGhh
+dmUgZ2FyYmFnZSBpbiB0aGlzDQotCSAqIFBFQi4NCi0JICovDQotCWVycjEgPSB1YmlfaW9fcmVh
+ZF92aWRfaGRyKHViaSwgcG51bSwgJnZpZF9oZHIsIDApOw0KLQlpZiAoZXJyMSA9PSBVQklfSU9f
+QkFEX0hEUl9FQkFETVNHIHx8IGVycjEgPT0gVUJJX0lPX0JBRF9IRFIgfHwNCi0JICAgIGVycjEg
+PT0gVUJJX0lPX0ZGKSB7DQotCQlzdHJ1Y3QgdWJpX2VjX2hkciBlY19oZHI7DQotDQotCQllcnIx
+ID0gdWJpX2lvX3JlYWRfZWNfaGRyKHViaSwgcG51bSwgJmVjX2hkciwgMCk7DQotCQlpZiAoZXJy
+MSA9PSBVQklfSU9fQkFEX0hEUl9FQkFETVNHIHx8IGVycjEgPT0gVUJJX0lPX0JBRF9IRFIgfHwN
+Ci0JCSAgICBlcnIxID09IFVCSV9JT19GRikNCi0JCQkvKg0KLQkJCSAqIEJvdGggVklEIGFuZCBF
+QyBoZWFkZXJzIGFyZSBjb3JydXB0ZWQsIHNvIHdlIGNhbg0KLQkJCSAqIHNhZmVseSBlcmFzZSB0
+aGlzIFBFQiBhbmQgbm90IGFmcmFpZCB0aGF0IGl0IHdpbGwgYmUNCi0JCQkgKiB0cmVhdGVkIGFz
+IGEgdmFsaWQgUEVCIGluIGNhc2Ugb2YgYW4gdW5jbGVhbiByZWJvb3QuDQotCQkJICovDQotCQkJ
+cmV0dXJuIDA7DQorCWVyciA9IHViaV9pb19yZWFkX3ZpZF9oZHIodWJpLCBwbnVtLCAmdmlkX2hk
+ciwgMCk7DQorCWlmIChlcnIgIT0gVUJJX0lPX0JBRF9IRFJfRUJBRE1TRyAmJiBlcnIgIT0gVUJJ
+X0lPX0JBRF9IRFIgJiYNCisJICAgIGVyciAhPSBVQklfSU9fRkYpew0KKwkgICAgCWFkZHIgKz0g
+dWJpLT52aWRfaGRyX2Fsb2Zmc2V0Ow0KKwkJZXJyMSA9IG10ZF93cml0ZSh1YmktPm10ZCwgYWRk
+ciwgNCwgJndyaXR0ZW4sICh2b2lkICopJmRhdGEpOw0KKwkJaWYgKGVycjEpDQorCQkJZ290byBl
+cnJvcjsJDQogCX0NCisJcmV0dXJuIDA7DQogDQorZXJyb3I6DQogCS8qDQotCSAqIFRoZSBQRUIg
+Y29udGFpbnMgYSB2YWxpZCBWSUQgaGVhZGVyLCBidXQgd2UgY2Fubm90IGludmFsaWRhdGUgaXQu
+DQorCSAqIFRoZSBQRUIgY29udGFpbnMgYSB2YWxpZCBWSUQgb3IgRUMgaGVhZGVyLCBidXQgd2Ug
+Y2Fubm90IGludmFsaWRhdGUgaXQuDQogCSAqIFN1cHBvc2VkbHkgdGhlIGZsYXNoIG1lZGlhIG9y
+IHRoZSBkcml2ZXIgaXMgc2NyZXdlZCB1cCwgc28gcmV0dXJuIGFuDQogCSAqIGVycm9yLg0KIAkg
+Ki8NCi0JdWJpX2VycigiY2Fubm90IGludmFsaWRhdGUgUEVCICVkLCB3cml0ZSByZXR1cm5lZCAl
+ZCByZWFkIHJldHVybmVkICVkIiwNCisJdWJpX2VycigiY2Fubm90IGludmFsaWRhdGUgUEVCICVk
+LCByZWFkIHJldHVybmVkICVkIHdyaXRlIHJldHVybmVkICVkIiwNCiAJCXBudW0sIGVyciwgZXJy
+MSk7DQogCXViaV9kdW1wX2ZsYXNoKHViaSwgcG51bSwgMCwgdWJpLT5wZWJfc2l6ZSk7DQogCXJl
+dHVybiAtRUlPOw0KLS0tDQoNCkkgaGF2ZSB0ZXN0ZWQgdGhpcyBwYXRjaCBvbiBNaWNyb24gTk9S
+IGZsYXNoLCBwYXJ0IG51bWJlciBpc6O6SlMyOEY1MTJNMjlFV0hBLg0KSWYgaGF2ZSBhbnkgcXVl
+c3Rpb25zLCBwbGVhc2UgbGV0IG1lIGtub3cuIA0KVGhhbmsgeW91DQoNCkJlc3QgUmVnYXJkcywg
+DQpRaSBXYW5nIM31xvANCkVTRyBBUEFDIEFFIA0KVGVsOiA4Ni0wMjEtMzg5OTcxNTgNCk1vYmls
+ZTogODYtMTUyMDE5NTgyMDINCkVtYWlsOiBxaXdhbmdAbWljcm9uLmNvbQ0KQWRkcmVzczogTm8g
+NjAxIEZhc2FpIFJkLCBQdWRvbmcsIFNoYW5naGFpLCBDaGluYSwgMjAwMTMxDQo=
