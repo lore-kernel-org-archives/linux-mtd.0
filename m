@@ -1,28 +1,20 @@
-Received: from mail-oa0-f51.google.com ([209.85.219.51])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vnn95-0007X7-2v
- for linux-mtd@lists.infradead.org; Tue, 03 Dec 2013 10:24:00 +0000
-Received: by mail-oa0-f51.google.com with SMTP id i7so14772419oag.10
- for <linux-mtd@lists.infradead.org>; Tue, 03 Dec 2013 02:23:36 -0800 (PST)
+Message-ID: <529DB442.90206@freescale.com>
+Date: Tue, 3 Dec 2013 18:36:50 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <20131202110304.GB31626@lee--X1>
-References: <1385727565-25794-1-git-send-email-lee.jones@linaro.org>
- <1385727565-25794-15-git-send-email-lee.jones@linaro.org>
- <CACRpkdaWXBchz78Yby11VpveBDtn6FrmupS=cnNYhvHgFJsBUw@mail.gmail.com>
- <20131202110304.GB31626@lee--X1>
-Date: Tue, 3 Dec 2013 11:23:35 +0100
-Message-ID: <CACRpkdb8=RRsNRKe4Nbefu2BJ4xHakmNjxFC1gwLea=bAmOz-A@mail.gmail.com>
-Subject: Re: [PATCH v3 14/36] mtd: st_spi_fsm: Add device-tree binding
- documentation
-From: Linus Walleij <linus.walleij@linaro.org>
-To: Lee Jones <lee.jones@linaro.org>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- angus.clark@st.com,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Marek Vasut <marex@denx.de>
+Subject: Re: [PATCH 0/4] mtd: spi-nor: add a new framework for SPI NOR
+References: <1385447575-23773-1-git-send-email-b32955@freescale.com>
+ <20131127043253.GA9468@ld-irv-0074.broadcom.com> <5298AA23.7080404@st.com>
+ <201312030132.10410.marex@denx.de>
+In-Reply-To: <201312030132.10410.marex@denx.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: Angus Clark <angus.clark@st.com>, broonie@linaro.org, dwmw2@infradead.org,
+ Linus Walleij <linus.walleij@linaro.org>, linux-spi@vger.kernel.org,
+ linux-mtd@lists.infradead.org, pekon@ti.com, sourav.poddar@ti.com,
+ Brian Norris <computersforpeace@gmail.com>, Lee Jones <lee.jones@linaro.org>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,52 +24,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Dec 2, 2013 at 12:03 PM, Lee Jones <lee.jones@linaro.org> wrote:
->> > +Optional properties:
->> > +  - st,syscfg          : Phandle to boot-device system configuration registers
->> > +  - st,boot-device-reg : Address of the aforementioned boot-device register(s)
->> > +  - st,boot-device-spi : Expected boot-device value if booted via this device
->> > +
->> > +Example:
->> > +       spifsm: spifsm@fe902000{
->> > +               compatible         = "st,spi-fsm";
->> > +               reg                =  <0xfe902000 0x1000>;
->> > +               reg-names          = "spi-fsm";
->> > +               pinctrl-0          = <&pinctrl_fsm>;
->> > +               st,syscfg          = <&syscfg_rear>;
->> > +               st,boot-device-reg = <0x958>;
->> > +               st,boot-device-spi = <0x1a>;
->>
->> I don't think we should encode any register offsets whatsoever in device
->> tree but maybe that's just me. (Yes, Stephen will beat me up about
->> pin control single, but I consider that a special case.)
->>
->> I would just put the last two things as #defines into the driver file(s)
->> or - if it's related to other syscfg registers and varies with SoC incarnation,
->> as a #define in a shared header for that syscfg thing.
->
-> No can do. This isn't _this_ device's register offset, this is a
-> syscfg register offset which a) there is no driver to apply specific
-> register offsets to and b) are liable to change oversubsequent SoCs.
+=E4=BA=8E 2013=E5=B9=B412=E6=9C=8803=E6=97=A5 08:32, Marek Vasut =E5=86=99=
+=E9=81=93:
+> Finally, the erase_sector() call would probably need to be extended. I =
+would
+> rename it to simple erase(), since we can erase from sub-sectors (4K) t=
+o whole
+> chip.
+yes. this is what i am coding now. I rename it to erase().
 
-So it can be in <linux/mfd/my-sysconfig-regs.h> as
-a
-
-#define MY_SYSCON_V1_BOOT_DEV_REG 0x958
-#define MY_SYSCON_V1_BOOT_DEV_SPI 0x1a
-
-The kernel should know which SoC is in use and
-act apropriately right?
-
-But indeed, what you're doing has been done before
-in drivers/regulator/anatop-regulator.c where some
-register offset is read in from the attribute
-"anatop-delay-reg-offset". So it may be that the DT people
-need to overrule me on this one :-)
-
-I don't think we should hard-code knowledge of specific
-register locations into the device tree at all as that makes
-things very hard to debug.
-
-Yours,
-Linus Walleij
+thanks
+Huang Shijie
