@@ -1,18 +1,28 @@
-Message-ID: <529DABF9.2030704@ti.com>
-Date: Tue, 3 Dec 2013 15:31:29 +0530
-From: Sourav Poddar <sourav.poddar@ti.com>
+Received: from mail-oa0-f51.google.com ([209.85.219.51])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Vnn95-0007X7-2v
+ for linux-mtd@lists.infradead.org; Tue, 03 Dec 2013 10:24:00 +0000
+Received: by mail-oa0-f51.google.com with SMTP id i7so14772419oag.10
+ for <linux-mtd@lists.infradead.org>; Tue, 03 Dec 2013 02:23:36 -0800 (PST)
 MIME-Version: 1.0
-To: Marek Vasut <marex@denx.de>
-Subject: Re: [PATCH 0/4] mtd: spi-nor: add a new framework for SPI NOR
-References: <1385447575-23773-1-git-send-email-b32955@freescale.com>
- <201311271106.09624.marex@denx.de> <5295CFE4.70404@ti.com>
- <201312030059.25628.marex@denx.de>
-In-Reply-To: <201312030059.25628.marex@denx.de>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: broonie@linaro.org, Huang Shijie <b32955@freescale.com>,
- linux-mtd@lists.infradead.org, pekon@ti.com, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20131202110304.GB31626@lee--X1>
+References: <1385727565-25794-1-git-send-email-lee.jones@linaro.org>
+ <1385727565-25794-15-git-send-email-lee.jones@linaro.org>
+ <CACRpkdaWXBchz78Yby11VpveBDtn6FrmupS=cnNYhvHgFJsBUw@mail.gmail.com>
+ <20131202110304.GB31626@lee--X1>
+Date: Tue, 3 Dec 2013 11:23:35 +0100
+Message-ID: <CACRpkdb8=RRsNRKe4Nbefu2BJ4xHakmNjxFC1gwLea=bAmOz-A@mail.gmail.com>
+Subject: Re: [PATCH v3 14/36] mtd: st_spi_fsm: Add device-tree binding
+ documentation
+From: Linus Walleij <linus.walleij@linaro.org>
+To: Lee Jones <lee.jones@linaro.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ angus.clark@st.com,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,113 +32,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Marek Vasut,
-On Tuesday 03 December 2013 05:29 AM, Marek Vasut wrote:
-> Dear Sourav Poddar,
+On Mon, Dec 2, 2013 at 12:03 PM, Lee Jones <lee.jones@linaro.org> wrote:
+>> > +Optional properties:
+>> > +  - st,syscfg          : Phandle to boot-device system configuration registers
+>> > +  - st,boot-device-reg : Address of the aforementioned boot-device register(s)
+>> > +  - st,boot-device-spi : Expected boot-device value if booted via this device
+>> > +
+>> > +Example:
+>> > +       spifsm: spifsm@fe902000{
+>> > +               compatible         = "st,spi-fsm";
+>> > +               reg                =  <0xfe902000 0x1000>;
+>> > +               reg-names          = "spi-fsm";
+>> > +               pinctrl-0          = <&pinctrl_fsm>;
+>> > +               st,syscfg          = <&syscfg_rear>;
+>> > +               st,boot-device-reg = <0x958>;
+>> > +               st,boot-device-spi = <0x1a>;
+>>
+>> I don't think we should encode any register offsets whatsoever in device
+>> tree but maybe that's just me. (Yes, Stephen will beat me up about
+>> pin control single, but I consider that a special case.)
+>>
+>> I would just put the last two things as #defines into the driver file(s)
+>> or - if it's related to other syscfg registers and varies with SoC incarnation,
+>> as a #define in a shared header for that syscfg thing.
 >
->> Dear Marek Vasut,
->>
->> On Wednesday 27 November 2013 03:36 PM, Marek Vasut wrote:
->>> Dear Sourav Poddar,
->>>
->>>> Dear Marek Vasut, Huang,
->>>>
->>>> On Wednesday 27 November 2013 02:57 PM, Marek Vasut wrote:
->>>>> Dear Huang Shijie,
->>>>>
->>>>>> 1.) Why add a new framework for SPI NOR?
->>>>>>
->>>>>>      The SPI-NOR controller such as Freescale's Quadspi controller is
->>>>>>      working in a different way from the SPI bus. It should knows the
->>>>>>      NOR commands to find the right LUT sequence. Unfortunately, the
->>>>>>      current code can not meet this requirement.
->>>>> Is there any kind of documentation for this controller available? I
->>>>> cannot quite understand how this controller works and why can it not be
->>>>> used with our current infrastructure.
->>>> I do have a similar requirement where my controller need to be
->>>> configured from slave info. I have submiited a series in the mtd list
->>>> adding that portion
->>>> of handling such cases. Here, is the patch which specific to m25p80
->>>> part. http://patchwork.ozlabs.org/patch/294285/
->>>>
->>>> The whole series can be found here:
->>>> https://www.mail-archive.com/linux-omap@vger.kernel.org/msg98691.html
->>> Is this TI QSPI the same thing as the Altera QSPI controller please ?
->> No, its differenet.
->>
->>> Otherwise, I seriously believe you and Huang should work on a common
->>> infrastructure. I would first like to understand how is the controller in
->>> DRA7xx different from regular SPI controller though. Is there any kind
->>> of documentation I could study please?
->> Sorry, we dont have a public document yet.
-> Sorry for the delayed reply. I am processing the input on the QSPI and I'm
-> finally starting to understand what's going on in here.
->
-Thanks for the response.
->> Though, this is what ti qspi contoller has
->>
->> It supports two modes of operation, one is SPI mode(normal), other is
->> the memory mapped read mode.
->>
->> For SPI mode, the state machine remains the same as it is with other spi
->> controller
->> available.
->>
->> For memory mapped, there is something more which we need to do around ..
->>
->> 1. There is a qspi "set up" register available, which needs to be filled
->> with
->>        information like flash opcode, dummy bytes etc. In short, flash
->> specific
->>        details.
->> 2   if the above register is configured with the required opcodes, then
->> whenever
->>        we need to use memory mapped operations, we need to do is to
->> switch our
->>        qspi controller to memory mapped mode.
->>       Switching of this mode to memory mapped needs
->>        a )  write to a particular qspi register
->>        b)   write to control module(optional based on SOC).
->>
->> 3. Once the above steps are configured, then the flash data will be
->> mapped to a
->>       particular memory address(SOC specific) from where the flash data
->> can be read.
-> OK, but is the memory mapped mode of any use (but for booting I suppose) ? How
-> does it handle large SPI NOR flashes (we have spansion devices as big as
-> 128MiB), does it really hog a _large_ amount of address space from the CPU
-> address space ? Or is the operation somehow indexed ? Why is it better than
-> using DMA?
->
-Memory mapped will be of use whenever we try to read the flash content.
-Instead of going through the entire SPI framework, and raising 
-interrupts, we can
-memcpy the flash contents. I am using it for mounting a jffs2 filesystem.
+> No can do. This isn't _this_ device's register offset, this is a
+> syscfg register offset which a) there is no driver to apply specific
+> register offsets to and b) are liable to change oversubsequent SoCs.
 
-For me the memory mapped regions are like in the range 5c000000 - 
-5fffffff, so
-I can handle flash as large as 64MB.
+So it can be in <linux/mfd/my-sysconfig-regs.h> as
+a
 
-As far as its comparison with DMA is concerned, I cant comment much 
-about it.
-My Qspi controller does not support DMA :(:(. So, memory mapped becomes the
-best option option for me.
->> The series
->> https://www.mail-archive.com/linux-omap@vger.kernel.org/msg98691.html
->> tries to work on the above features, and tries to add a support for the
->> same in the
->> spi framework and m25p80 code.
->>
->> As you see in my patches, once we take care of the above points and add
->> support
->> for memory mapped in m25p80 and qspi, then while doing a read in m25p80
->> we can
->> do memcpy at the beginning of m25p80_read and can bypass the entire SPI
->> framework for memory mapped read operation. Throughput almost gets
->> doubles with this,
->> as compared to normal SPI operations.
->>
->> Please get back, if you need more info on this concept.
-> I am getting there, I'm just trying to wrap my head around these news here.
-> Thanks for explaining in so much detail, it's very helpful!
-Thanks!
+#define MY_SYSCON_V1_BOOT_DEV_REG 0x958
+#define MY_SYSCON_V1_BOOT_DEV_SPI 0x1a
+
+The kernel should know which SoC is in use and
+act apropriately right?
+
+But indeed, what you're doing has been done before
+in drivers/regulator/anatop-regulator.c where some
+register offset is read in from the attribute
+"anatop-delay-reg-offset". So it may be that the DT people
+need to overrule me on this one :-)
+
+I don't think we should hard-code knowledge of specific
+register locations into the device tree at all as that makes
+things very hard to debug.
+
+Yours,
+Linus Walleij
