@@ -1,18 +1,18 @@
 From: Marek Vasut <marex@denx.de>
-To: Sourav Poddar <sourav.poddar@ti.com>
+To: Huang Shijie <b32955@freescale.com>
 Subject: Re: [PATCH 0/4] mtd: spi-nor: add a new framework for SPI NOR
-Date: Tue, 3 Dec 2013 00:59:25 +0100
+Date: Tue, 3 Dec 2013 01:00:04 +0100
 References: <1385447575-23773-1-git-send-email-b32955@freescale.com>
- <201311271106.09624.marex@denx.de> <5295CFE4.70404@ti.com>
-In-Reply-To: <5295CFE4.70404@ti.com>
+ <201311271027.06982.marex@denx.de> <5295C74B.8040106@freescale.com>
+In-Reply-To: <5295C74B.8040106@freescale.com>
 MIME-Version: 1.0
 Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201312030059.25628.marex@denx.de>
-Cc: broonie@linaro.org, Huang Shijie <b32955@freescale.com>,
- linux-mtd@lists.infradead.org, pekon@ti.com, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <201312030100.04876.marex@denx.de>
+Cc: broonie@linaro.org, linux-mtd@lists.infradead.org, pekon@ti.com,
+ sourav.poddar@ti.com, computersforpeace@gmail.com, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,104 +22,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Sourav Poddar,
+Dear Huang Shijie,
 
-> Dear Marek Vasut,
-> 
-> On Wednesday 27 November 2013 03:36 PM, Marek Vasut wrote:
-> > Dear Sourav Poddar,
-> > 
-> >> Dear Marek Vasut, Huang,
-> >> 
-> >> On Wednesday 27 November 2013 02:57 PM, Marek Vasut wrote:
-> >>> Dear Huang Shijie,
-> >>> 
-> >>>> 1.) Why add a new framework for SPI NOR?
-> >>>> 
-> >>>>     The SPI-NOR controller such as Freescale's Quadspi controller is
-> >>>>     working in a different way from the SPI bus. It should knows the
-> >>>>     NOR commands to find the right LUT sequence. Unfortunately, the
-> >>>>     current code can not meet this requirement.
-> >>> 
-> >>> Is there any kind of documentation for this controller available? I
-> >>> cannot quite understand how this controller works and why can it not be
-> >>> used with our current infrastructure.
-> >> 
-> >> I do have a similar requirement where my controller need to be
-> >> configured from slave info. I have submiited a series in the mtd list
-> >> adding that portion
-> >> of handling such cases. Here, is the patch which specific to m25p80
-> >> part. http://patchwork.ozlabs.org/patch/294285/
-> >> 
-> >> The whole series can be found here:
-> >> https://www.mail-archive.com/linux-omap@vger.kernel.org/msg98691.html
-> > 
-> > Is this TI QSPI the same thing as the Altera QSPI controller please ?
-> 
-> No, its differenet.
-> 
-> > Otherwise, I seriously believe you and Huang should work on a common
-> > infrastructure. I would first like to understand how is the controller in
-> > DRA7xx different from regular SPI controller though. Is there any kind
-> > of documentation I could study please?
-> 
-> Sorry, we dont have a public document yet.
+> =E4=BA=8E 2013=E5=B9=B411=E6=9C=8827=E6=97=A5 17:27, Marek Vasut =E5=86=
+=99=E9=81=93:
+> > Is there any kind of documentation for this controller available? I
+> > cannot quite understand how this controller works and why can it not be
+> > used with our current infrastructure.
+>=20
+> http://cache.freescale.com/files/32bit/doc/ref_manual/VYBRIDRM.pdf
 
-Sorry for the delayed reply. I am processing the input on the QSPI and I'm 
-finally starting to understand what's going on in here.
+It's a nice bedside reading, I'm making my way through, thanks ;-)
 
-> Though, this is what ti qspi contoller has
-> 
-> It supports two modes of operation, one is SPI mode(normal), other is
-> the memory mapped read mode.
-> 
-> For SPI mode, the state machine remains the same as it is with other spi
-> controller
-> available.
-> 
-> For memory mapped, there is something more which we need to do around ..
-> 
-> 1. There is a qspi "set up" register available, which needs to be filled
-> with
->       information like flash opcode, dummy bytes etc. In short, flash
-> specific
->       details.
-> 2   if the above register is configured with the required opcodes, then
-> whenever
->       we need to use memory mapped operations, we need to do is to
-> switch our
->       qspi controller to memory mapped mode.
->      Switching of this mode to memory mapped needs
->       a )  write to a particular qspi register
->       b)   write to control module(optional based on SOC).
-> 
-> 3. Once the above steps are configured, then the flash data will be
-> mapped to a
->      particular memory address(SOC specific) from where the flash data
-> can be read.
-
-OK, but is the memory mapped mode of any use (but for booting I suppose) ? How 
-does it handle large SPI NOR flashes (we have spansion devices as big as 
-128MiB), does it really hog a _large_ amount of address space from the CPU 
-address space ? Or is the operation somehow indexed ? Why is it better than 
-using DMA?
-
-> The series
-> https://www.mail-archive.com/linux-omap@vger.kernel.org/msg98691.html
-> tries to work on the above features, and tries to add a support for the
-> same in the
-> spi framework and m25p80 code.
-> 
-> As you see in my patches, once we take care of the above points and add
-> support
-> for memory mapped in m25p80 and qspi, then while doing a read in m25p80
-> we can
-> do memcpy at the beginning of m25p80_read and can bypass the entire SPI
-> framework for memory mapped read operation. Throughput almost gets
-> doubles with this,
-> as compared to normal SPI operations.
-> 
-> Please get back, if you need more info on this concept.
-
-I am getting there, I'm just trying to wrap my head around these news here. 
-Thanks for explaining in so much detail, it's very helpful!
+Best regards,
+Marek Vasut
