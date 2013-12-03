@@ -1,20 +1,22 @@
-Message-ID: <529DB442.90206@freescale.com>
-Date: Tue, 3 Dec 2013 18:36:50 +0800
-From: Huang Shijie <b32955@freescale.com>
+Date: Tue, 3 Dec 2013 02:48:54 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH 12/18] ocfs2: use generic posix ACL infrastructure
+Message-ID: <20131203104854.GA3223@infradead.org>
+References: <20131201115903.910559036@bombadil.infradead.org>
+ <20131201120655.852590677@bombadil.infradead.org>
+ <20131202230007.GK12253@quack.suse.cz>
 MIME-Version: 1.0
-To: Marek Vasut <marex@denx.de>
-Subject: Re: [PATCH 0/4] mtd: spi-nor: add a new framework for SPI NOR
-References: <1385447575-23773-1-git-send-email-b32955@freescale.com>
- <20131127043253.GA9468@ld-irv-0074.broadcom.com> <5298AA23.7080404@st.com>
- <201312030132.10410.marex@denx.de>
-In-Reply-To: <201312030132.10410.marex@denx.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: Angus Clark <angus.clark@st.com>, broonie@linaro.org, dwmw2@infradead.org,
- Linus Walleij <linus.walleij@linaro.org>, linux-spi@vger.kernel.org,
- linux-mtd@lists.infradead.org, pekon@ti.com, sourav.poddar@ti.com,
- Brian Norris <computersforpeace@gmail.com>, Lee Jones <lee.jones@linaro.org>,
- linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20131202230007.GK12253@quack.suse.cz>
+Cc: cluster-devel@redhat.com, xfs@oss.sgi.com, Mark Fasheh <mfasheh@suse.com>,
+ reiserfs-devel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ Christoph Hellwig <hch@infradead.org>, linux-mtd@lists.infradead.org,
+ viro@zeniv.linux.org.uk, jfs-discussion@lists.sourceforge.net,
+ linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-nfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ Joel Becker <jlbec@evilplan.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,14 +26,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2013=E5=B9=B412=E6=9C=8803=E6=97=A5 08:32, Marek Vasut =E5=86=99=
-=E9=81=93:
-> Finally, the erase_sector() call would probably need to be extended. I =
-would
-> rename it to simple erase(), since we can erase from sub-sectors (4K) t=
-o whole
-> chip.
-yes. this is what i am coding now. I rename it to erase().
+On Tue, Dec 03, 2013 at 12:00:07AM +0100, Jan Kara wrote:
+>   Hum, this changes the cluster locking. Previously ocfs2_acl_get() used
+> from ocfs2_acl_chmod() grabbed cluster wide inode lock. Now getting of ACL
+> isn't protected by the inode lock. That being said the cluster locking
+> around setattr looks fishy anyway - if two processes on different
+> nodes are changing attributes of the same file, changing ACLs post fact
+> after dropping inode lock could cause interesting effects. Also I'm
+> wondering how inode_change_ok() can ever be safe without holding inode
+> lock... Until we grab that other node is free to change e.g. owner of the
+> inode thus leading even to security implications. But maybe I'm missing
+> something. Mark, Joel?
 
-thanks
-Huang Shijie
+Hmm, indeed.  How does ocfs2_iop_get_acl get away without that lock?
+
+Btw, ocfs2 changes will need careful testing as I couldn't find any easy
+way to run xfstests on ocfs2 out of the box.
