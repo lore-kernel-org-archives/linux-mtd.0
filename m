@@ -1,18 +1,20 @@
-Message-ID: <529DEB2B.5060009@ti.com>
-Date: Tue, 3 Dec 2013 20:01:07 +0530
-From: Sourav Poddar <sourav.poddar@ti.com>
-MIME-Version: 1.0
-To: Marek Vasut <marex@denx.de>
+Message-ID: <1386082273.18201.61.camel@shinybook.infradead.org>
 Subject: Re: [PATCH 0/4] mtd: spi-nor: add a new framework for SPI NOR
+From: David Woodhouse <dwmw2@infradead.org>
+To: Angus Clark <angus.clark@st.com>
+Date: Tue, 03 Dec 2013 14:51:13 +0000
+In-Reply-To: <5298AA23.7080404@st.com>
 References: <1385447575-23773-1-git-send-email-b32955@freescale.com>
- <201312031442.00141.marex@denx.de> <529DE1AD.8030101@ti.com>
- <201312031519.49171.marex@denx.de>
-In-Reply-To: <201312031519.49171.marex@denx.de>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: broonie@linaro.org, Huang Shijie <b32955@freescale.com>,
- linux-mtd@lists.infradead.org, pekon@ti.com, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+ <20131127043253.GA9468@ld-irv-0074.broadcom.com> <5298AA23.7080404@st.com>
+Content-Type: multipart/signed; micalg="sha-1";
+ protocol="application/x-pkcs7-signature";
+ boundary="=-+99WXSTgi/Nb77XgQfdH"
+Mime-Version: 1.0
+Cc: marex@denx.de, broonie@linaro.org, Linus Walleij <linus.walleij@linaro.org>,
+ linux-spi@vger.kernel.org, Huang Shijie <b32955@freescale.com>,
+ linux-mtd@lists.infradead.org, pekon@ti.com, sourav.poddar@ti.com,
+ Brian Norris <computersforpeace@gmail.com>, Lee Jones <lee.jones@linaro.org>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,168 +24,139 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Marek Vasut,
-On Tuesday 03 December 2013 07:49 PM, Marek Vasut wrote:
-> Dear Sourav Poddar,
->
->> Dear Marek Vasut,
->>
->> On Tuesday 03 December 2013 07:12 PM, Marek Vasut wrote:
->>> Dear Sourav Poddar,
->>>
->>>> Dear Marek Vasut,
->>>>
->>>> On Tuesday 03 December 2013 05:29 AM, Marek Vasut wrote:
->>>>> Dear Sourav Poddar,
->>>>>
->>>>>> Dear Marek Vasut,
->>>>>>
->>>>>> On Wednesday 27 November 2013 03:36 PM, Marek Vasut wrote:
->>>>>>> Dear Sourav Poddar,
->>>>>>>
->>>>>>>> Dear Marek Vasut, Huang,
->>>>>>>>
->>>>>>>> On Wednesday 27 November 2013 02:57 PM, Marek Vasut wrote:
->>>>>>>>> Dear Huang Shijie,
->>>>>>>>>
->>>>>>>>>> 1.) Why add a new framework for SPI NOR?
->>>>>>>>>>
->>>>>>>>>>        The SPI-NOR controller such as Freescale's Quadspi
->>>>>>>>>>        controller is working in a different way from the SPI bus.
->>>>>>>>>>        It should knows the NOR commands to find the right LUT
->>>>>>>>>>        sequence. Unfortunately, the current code can not meet this
->>>>>>>>>>        requirement.
->>>>>>>>> Is there any kind of documentation for this controller available? I
->>>>>>>>> cannot quite understand how this controller works and why can it
->>>>>>>>> not be used with our current infrastructure.
->>>>>>>> I do have a similar requirement where my controller need to be
->>>>>>>> configured from slave info. I have submiited a series in the mtd
->>>>>>>> list adding that portion
->>>>>>>> of handling such cases. Here, is the patch which specific to m25p80
->>>>>>>> part. http://patchwork.ozlabs.org/patch/294285/
->>>>>>>>
->>>>>>>> The whole series can be found here:
->>>>>>>> https://www.mail-archive.com/linux-omap@vger.kernel.org/msg98691.htm
->>>>>>>> l
->>>>>>> Is this TI QSPI the same thing as the Altera QSPI controller please ?
->>>>>> No, its differenet.
->>>>>>
->>>>>>> Otherwise, I seriously believe you and Huang should work on a common
->>>>>>> infrastructure. I would first like to understand how is the
->>>>>>> controller in DRA7xx different from regular SPI controller though.
->>>>>>> Is there any kind of documentation I could study please?
->>>>>> Sorry, we dont have a public document yet.
->>>>> Sorry for the delayed reply. I am processing the input on the QSPI and
->>>>> I'm finally starting to understand what's going on in here.
->>>> Thanks for the response.
->>>>
->>>>>> Though, this is what ti qspi contoller has
->>>>>>
->>>>>> It supports two modes of operation, one is SPI mode(normal), other is
->>>>>> the memory mapped read mode.
->>>>>>
->>>>>> For SPI mode, the state machine remains the same as it is with other
->>>>>> spi controller
->>>>>> available.
->>>>>>
->>>>>> For memory mapped, there is something more which we need to do around
->>>>>> ..
->>>>>>
->>>>>> 1. There is a qspi "set up" register available, which needs to be
->>>>>> filled with
->>>>>>
->>>>>>          information like flash opcode, dummy bytes etc. In short,
->>>>>>          flash
->>>>>>
->>>>>> specific
->>>>>>
->>>>>>          details.
->>>>>>
->>>>>> 2   if the above register is configured with the required opcodes,
->>>>>> then whenever
->>>>>>
->>>>>>          we need to use memory mapped operations, we need to do is to
->>>>>>
->>>>>> switch our
->>>>>>
->>>>>>          qspi controller to memory mapped mode.
->>>>>>
->>>>>>         Switching of this mode to memory mapped needs
->>>>>>
->>>>>>          a )  write to a particular qspi register
->>>>>>          b)   write to control module(optional based on SOC).
->>>>>>
->>>>>> 3. Once the above steps are configured, then the flash data will be
->>>>>> mapped to a
->>>>>>
->>>>>>         particular memory address(SOC specific) from where the flash
->>>>>>         data
->>>>>>
->>>>>> can be read.
->>>>> OK, but is the memory mapped mode of any use (but for booting I
->>>>> suppose) ? How does it handle large SPI NOR flashes (we have spansion
->>>>> devices as big as 128MiB), does it really hog a _large_ amount of
->>>>> address space from the CPU address space ? Or is the operation somehow
->>>>> indexed ? Why is it better than using DMA?
->>>> Memory mapped will be of use whenever we try to read the flash content.
->>>> Instead of going through the entire SPI framework, and raising
->>>> interrupts, we can
->>>> memcpy the flash contents. I am using it for mounting a jffs2
->>>> filesystem.
->>>>
->>>> For me the memory mapped regions are like in the range 5c000000 -
->>>> 5fffffff, so
->>>> I can handle flash as large as 64MB.
->>>>
->>>> As far as its comparison with DMA is concerned, I cant comment much
->>>> about it.
->>>> My Qspi controller does not support DMA :(:(. So, memory mapped becomes
->>>> the best option option for me.
->>> OK, understood. So to sling large chunks of memory from SPI NOR to your
->>> DRAM, you need to issue these two steps in a loop:
->>>
->>> 1) write into the controller register the starting address of the SPI
->>> flash which you want to have available via the mmap interface
->>> 2) memcpy() from this mmaped area to DRAM
->>>
->>> correct? Won't the second step be pretty CPU-intensive
->> No, we dont need to write the starting address in any register.
-> OK, but how does this handle for example Spansion S70FL01GS , which is 1 GBit
-> SPI NOR (128MB) if your memory map window is only 64MB?
-So, the code added in m25p80 does not care about the flash size. It 
-works for me
-for 64MB flash spansion (S25fl256s) and Macronix( mx66l51235l, 128 MB) 
-flash.
-That memory mapped region info will from device tree. You can see 
-patch16/17) of my
-series.
-so in m25p80_read,
-  memcpy(buf, base + from, len)
-where,
-base= memmaped base region
-          ex: ioremap(0x5c000000)
 
-len =  can be anything, (64mb, 128 mb etc..). Just we need to
-make sure that we have ioremapped the required region through dt.
+--=-+99WXSTgi/Nb77XgQfdH
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-For me, SOC takes care of the memory mapped region required.
+On Fri, 2013-11-29 at 14:52 +0000, Angus Clark wrote:
+>=20
+> As I see it, the main problem with the current support is that dedicated =
+Serial
+> Flash Controllers require a level of semantics that cannot be conveyed ov=
+er the
+> generic SPI framework.  With this in mind, I would start by defining some=
+thing
+> along the lines of a "Serial Flash transfer". =20
 
-DRA7xx board with 64mb spansion flash has mmap region (5c000000 - 5fffffff)
-AM43x board with 128mb macronix flash has mmap region (30000000 - 33fffffff)
->
->> 1. we need to write opcodes(flash specific) in a qspi set up register.
->> 2. Switch to mmap mode using qspi SWITCH register.
->>
->> Memory mapped address need to be avilable though to m25p80_read api to
->> do memcpy, which is currently done by get_buf api.
-> OK, got it.
->
->> We dont need to do the steps in a loop.
->> Point1 above is one time configurable.
->> point2 above need to be done whenever we want to use mmap operations.
-> OK, but copying the SPI NOR will be pretty CPU intensive, correct? You'd need to
-> do memcpy() on a full 64MB of stuff on the CPU. I mean, that's what we had DMA
-> for thus far, so the CPU can do more useful things.
-Yes, but there is no DMA available for my controller.
->> memcpy(buf, base_addr + from, len) , where   len<= min(FLASH_SIZE, MMAP
->> region)
+I think this is the best way to describe the issue, and approach the
+solution.
+
+We should be looking to extend the generic SPI framework to support what
+we need, rather than hacking around it purely on the MTD side.
+
+As such, I'd be very interested in Mark's thoughts on it...
+
+--=20
+dwmw2
+
+
+--=-+99WXSTgi/Nb77XgQfdH
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIISxDCCBjQw
+ggQcoAMCAQICAR4wDQYJKoZIhvcNAQEFBQAwfTELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0
+Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxKTAn
+BgNVBAMTIFN0YXJ0Q29tIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MB4XDTA3MTAyNDIxMDE1NVoX
+DTE3MTAyNDIxMDE1NVowgYwxCzAJBgNVBAYTAklMMRYwFAYDVQQKEw1TdGFydENvbSBMdGQuMSsw
+KQYDVQQLEyJTZWN1cmUgRGlnaXRhbCBDZXJ0aWZpY2F0ZSBTaWduaW5nMTgwNgYDVQQDEy9TdGFy
+dENvbSBDbGFzcyAxIFByaW1hcnkgSW50ZXJtZWRpYXRlIENsaWVudCBDQTCCASIwDQYJKoZIhvcN
+AQEBBQADggEPADCCAQoCggEBAMcJg8zOLdgasSmkLhOrlr6KMoOMpohBllVHrdRvEg/q6r8jR+EK
+75xCGhR8ToREoqe7zM9/UnC6TS2y9UKTpT1v7RSMzR0t6ndl0TWBuUr/UXBhPk+Kmy7bI4yW4urC
++y7P3/1/X7U8ocb8VpH/Clt+4iq7nirMcNh6qJR+xjOhV+VHzQMALuGYn5KZmc1NbJQYclsGkDxD
+z2UbFqE2+6vIZoL+jb9x4Pa5gNf1TwSDkOkikZB1xtB4ZqtXThaABSONdfmv/Z1pua3FYxnCFmdr
+/+N2JLKutIxMYqQOJebr/f/h5t95m4JgrM3Y/w7YX9d7YAL9jvN4SydHsU6n65cCAwEAAaOCAa0w
+ggGpMA8GA1UdEwEB/wQFMAMBAf8wDgYDVR0PAQH/BAQDAgEGMB0GA1UdDgQWBBRTcu2SnODaywFc
+fH6WNU7y1LhRgjAfBgNVHSMEGDAWgBROC+8apEBbpRdphzDKNGhD0EGu8jBmBggrBgEFBQcBAQRa
+MFgwJwYIKwYBBQUHMAGGG2h0dHA6Ly9vY3NwLnN0YXJ0c3NsLmNvbS9jYTAtBggrBgEFBQcwAoYh
+aHR0cDovL3d3dy5zdGFydHNzbC5jb20vc2ZzY2EuY3J0MFsGA1UdHwRUMFIwJ6AloCOGIWh0dHA6
+Ly93d3cuc3RhcnRzc2wuY29tL3Nmc2NhLmNybDAnoCWgI4YhaHR0cDovL2NybC5zdGFydHNzbC5j
+b20vc2ZzY2EuY3JsMIGABgNVHSAEeTB3MHUGCysGAQQBgbU3AQIBMGYwLgYIKwYBBQUHAgEWImh0
+dHA6Ly93d3cuc3RhcnRzc2wuY29tL3BvbGljeS5wZGYwNAYIKwYBBQUHAgEWKGh0dHA6Ly93d3cu
+c3RhcnRzc2wuY29tL2ludGVybWVkaWF0ZS5wZGYwDQYJKoZIhvcNAQEFBQADggIBAAqDCH14qywG
+XLhjjF6uHLkjd02hcdh9hrw+VUsv+q1eeQWB21jWj3kJ96AUlPCoEGZ/ynJNScWy6QMVQjbbMXlt
+UfO4n4bGGdKo3awPWp61tjAFgraLJgDk+DsSvUD6EowjMTNx25GQgyYJ5RPIzKKR9tQW8gGK+2+R
+HxkUCTbYFnL6kl8Ch507rUdPPipJ9CgJFws3kDS3gOS5WFMxcjO5DwKfKSETEPrHh7p5shuuNktv
+sv6hxHTLhiMKX893gxdT3XLS9OKmCv87vkINQcNEcIIoFWbP9HORz9v3vQwR4e3ksLc2JZOAFK+s
+sS5XMEoznzpihEP0PLc4dCBYjbvSD7kxgDwZ+Aj8Q9PkbvE9sIPP7ON0fz095HdThKjiVJe6vofq
++n6b1NBc8XdrQvBmunwxD5nvtTW4vtN6VY7mUCmxsCieuoBJ9OlqmsVWQvifIYf40dJPZkk9YgGT
+zWLpXDSfLSplbY2LL9C9U0ptvjcDjefLTvqSFc7tw1sEhF0n/qpA2r0GpvkLRDmcSwVyPvmjFBGq
+Up/pNy8ZuPGQmHwFi2/14+xeSUDG2bwnsYJQG2EdJCB6luQ57GEnTA/yKZSTKI8dDQa8Sd3zfXb1
+9mOgSF0bBdXbuKhEpuP9wirslFe6fQ1t5j5R0xi72MZ8ikMu1RQZKCyDbMwazlHiMIIGQjCCBSqg
+AwIBAgIDBoXOMA0GCSqGSIb3DQEBBQUAMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRD
+b20gTHRkLjErMCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYG
+A1UEAxMvU3RhcnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0EwHhcN
+MTMwNTAyMDYyMDQ2WhcNMTQwNTAzMTIxNDAyWjBdMRkwFwYDVQQNExBNd0k3ODIxNTRpV21lZVkw
+MRwwGgYDVQQDDBNkd213MkBpbmZyYWRlYWQub3JnMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZy
+YWRlYWQub3JnMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvWGuRDHiXVpOgaFkBaz8
+c3jQTfiEw7j0iKZnktCQi0xjY29QJ7GwL+fgQlbofXgYTm8E9fWERvw2tAy2BxHzAPguBzziS7JN
+hsGP9lf3L8hFJBvmdyyyj8b9A6Oi7s3JLtMRWIvyvE+DbuTkP+htuT4+XuTJr8Y5yIqd1WXr2gJk
+ANr77vTyjeNxceevP58Tqr0f+4v5g6+vNARO3bk3SaVQPDUTwGrpoPtLh3d+mQzZ4iiW3MwQS7Wr
+UVT3l2aTVHCpgtAaBs3zHWarvmIqhbWj8zdcnELNzwqTrOjaoWxuWY4k05GGfzmdjOBUiL7FDNvI
+ZwweJEPwJAQI72YhUwIDAQABo4IC2TCCAtUwCQYDVR0TBAIwADALBgNVHQ8EBAMCBLAwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMB0GA1UdDgQWBBSs0hZhUgQwqGVXzLuH6pJH0hMZwTAf
+BgNVHSMEGDAWgBRTcu2SnODaywFcfH6WNU7y1LhRgjAeBgNVHREEFzAVgRNkd213MkBpbmZyYWRl
+YWQub3JnMIIBTAYDVR0gBIIBQzCCAT8wggE7BgsrBgEEAYG1NwECAzCCASowLgYIKwYBBQUHAgEW
+Imh0dHA6Ly93d3cuc3RhcnRzc2wuY29tL3BvbGljeS5wZGYwgfcGCCsGAQUFBwICMIHqMCcWIFN0
+YXJ0Q29tIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MAMCAQEagb5UaGlzIGNlcnRpZmljYXRlIHdh
+cyBpc3N1ZWQgYWNjb3JkaW5nIHRvIHRoZSBDbGFzcyAxIFZhbGlkYXRpb24gcmVxdWlyZW1lbnRz
+IG9mIHRoZSBTdGFydENvbSBDQSBwb2xpY3ksIHJlbGlhbmNlIG9ubHkgZm9yIHRoZSBpbnRlbmRl
+ZCBwdXJwb3NlIGluIGNvbXBsaWFuY2Ugb2YgdGhlIHJlbHlpbmcgcGFydHkgb2JsaWdhdGlvbnMu
+MDYGA1UdHwQvMC0wK6ApoCeGJWh0dHA6Ly9jcmwuc3RhcnRzc2wuY29tL2NydHUxLWNybC5jcmww
+gY4GCCsGAQUFBwEBBIGBMH8wOQYIKwYBBQUHMAGGLWh0dHA6Ly9vY3NwLnN0YXJ0c3NsLmNvbS9z
+dWIvY2xhc3MxL2NsaWVudC9jYTBCBggrBgEFBQcwAoY2aHR0cDovL2FpYS5zdGFydHNzbC5jb20v
+Y2VydHMvc3ViLmNsYXNzMS5jbGllbnQuY2EuY3J0MCMGA1UdEgQcMBqGGGh0dHA6Ly93d3cuc3Rh
+cnRzc2wuY29tLzANBgkqhkiG9w0BAQUFAAOCAQEACFLDQnyO8+XA/TiTltjJ/ZAvM+qmBEKN43Vd
++Wio2lM/Wq/scJpkupXGHrl9CueobkDxMAogXbMxqLZYO13PvgjMh+PHxDPnQv8EGxOig+k/Hqvc
+qEdTlm9YEHcbXbWS6XB+zRO7VVIpGMYQ1f1qCOcukxmwIm6iMSHXbOr/7paQm4bO0ULptjBotfiO
+Zo6q8No6SroQlOSyc6v8FYSxTNIAXMaM2FYkjqrxgdnJmSIAfr11gROuF69WuOICxP0zTEjJle+7
+aO9lUWNaWMWPMyFSNCxF6kkRuvUCami7vlhLOTRC1kb+OMhx7keN9At3tdTI3rtuFeSB1Pa3VXVs
+0DCCBkIwggUqoAMCAQICAwaFzjANBgkqhkiG9w0BAQUFADCBjDELMAkGA1UEBhMCSUwxFjAUBgNV
+BAoTDVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNp
+Z25pbmcxODA2BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xp
+ZW50IENBMB4XDTEzMDUwMjA2MjA0NloXDTE0MDUwMzEyMTQwMlowXTEZMBcGA1UEDRMQTXdJNzgy
+MTU0aVdtZWVZMDEcMBoGA1UEAwwTZHdtdzJAaW5mcmFkZWFkLm9yZzEiMCAGCSqGSIb3DQEJARYT
+ZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL1hrkQx
+4l1aToGhZAWs/HN40E34hMO49IimZ5LQkItMY2NvUCexsC/n4EJW6H14GE5vBPX1hEb8NrQMtgcR
+8wD4Lgc84kuyTYbBj/ZX9y/IRSQb5ncsso/G/QOjou7NyS7TEViL8rxPg27k5D/obbk+Pl7kya/G
+OciKndVl69oCZADa++708o3jcXHnrz+fE6q9H/uL+YOvrzQETt25N0mlUDw1E8Bq6aD7S4d3fpkM
+2eIoltzMEEu1q1FU95dmk1RwqYLQGgbN8x1mq75iKoW1o/M3XJxCzc8Kk6zo2qFsblmOJNORhn85
+nYzgVIi+xQzbyGcMHiRD8CQECO9mIVMCAwEAAaOCAtkwggLVMAkGA1UdEwQCMAAwCwYDVR0PBAQD
+AgSwMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDBDAdBgNVHQ4EFgQUrNIWYVIEMKhlV8y7
+h+qSR9ITGcEwHwYDVR0jBBgwFoAUU3Ltkpzg2ssBXHx+ljVO8tS4UYIwHgYDVR0RBBcwFYETZHdt
+dzJAaW5mcmFkZWFkLm9yZzCCAUwGA1UdIASCAUMwggE/MIIBOwYLKwYBBAGBtTcBAgMwggEqMC4G
+CCsGAQUFBwIBFiJodHRwOi8vd3d3LnN0YXJ0c3NsLmNvbS9wb2xpY3kucGRmMIH3BggrBgEFBQcC
+AjCB6jAnFiBTdGFydENvbSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTADAgEBGoG+VGhpcyBjZXJ0
+aWZpY2F0ZSB3YXMgaXNzdWVkIGFjY29yZGluZyB0byB0aGUgQ2xhc3MgMSBWYWxpZGF0aW9uIHJl
+cXVpcmVtZW50cyBvZiB0aGUgU3RhcnRDb20gQ0EgcG9saWN5LCByZWxpYW5jZSBvbmx5IGZvciB0
+aGUgaW50ZW5kZWQgcHVycG9zZSBpbiBjb21wbGlhbmNlIG9mIHRoZSByZWx5aW5nIHBhcnR5IG9i
+bGlnYXRpb25zLjA2BgNVHR8ELzAtMCugKaAnhiVodHRwOi8vY3JsLnN0YXJ0c3NsLmNvbS9jcnR1
+MS1jcmwuY3JsMIGOBggrBgEFBQcBAQSBgTB/MDkGCCsGAQUFBzABhi1odHRwOi8vb2NzcC5zdGFy
+dHNzbC5jb20vc3ViL2NsYXNzMS9jbGllbnQvY2EwQgYIKwYBBQUHMAKGNmh0dHA6Ly9haWEuc3Rh
+cnRzc2wuY29tL2NlcnRzL3N1Yi5jbGFzczEuY2xpZW50LmNhLmNydDAjBgNVHRIEHDAahhhodHRw
+Oi8vd3d3LnN0YXJ0c3NsLmNvbS8wDQYJKoZIhvcNAQEFBQADggEBAAhSw0J8jvPlwP04k5bYyf2Q
+LzPqpgRCjeN1XfloqNpTP1qv7HCaZLqVxh65fQrnqG5A8TAKIF2zMai2WDtdz74IzIfjx8Qz50L/
+BBsTooPpPx6r3KhHU5ZvWBB3G121kulwfs0Tu1VSKRjGENX9agjnLpMZsCJuojEh12zq/+6WkJuG
+ztFC6bYwaLX4jmaOqvDaOkq6EJTksnOr/BWEsUzSAFzGjNhWJI6q8YHZyZkiAH69dYETrhevVrji
+AsT9M0xIyZXvu2jvZVFjWljFjzMhUjQsRepJEbr1Ampou75YSzk0QtZG/jjIce5HjfQLd7XUyN67
+bhXkgdT2t1V1bNAxggNvMIIDawIBATCBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0
+Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2
+BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgMG
+hc4wCQYFKw4DAhoFAKCCAa8wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUx
+DxcNMTMxMjAzMTQ1MTEzWjAjBgkqhkiG9w0BCQQxFgQUEIglqV5OipG0u9ESIXPLPs8ByOkwgaUG
+CSsGAQQBgjcQBDGBlzCBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0ZC4x
+KzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2BgNVBAMTL1N0
+YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgMGhc4wgacGCyqG
+SIb3DQEJEAILMYGXoIGUMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjEr
+MCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYGA1UEAxMvU3Rh
+cnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0ECAwaFzjANBgkqhkiG
+9w0BAQEFAASCAQA2kFfa+gdhvKmLMxR5RFiYAQEPDa6v+yn90HK6JVksEy7WNNeT/efzRcc4uvdD
+WWzwCL1pQp3u68NEPt0ee7sV71zIMV7+LQuwLFuoIzjuGgemhIkL+ZUHYH0XyaWsOcjt2im5nRbf
+ybZgAPjsvciCiUwUTHBjjfpjxp/gidc5J0Q3zufFcAlDk/a+EPwx0kOUHREWtRNkWclQWspAPTe2
+I/zZnnzUPQ4bI/Wu+BA6IZ/RwFF9zW2UfdsmwE6bvYMr+fmD7yqJontjYGCc0b+QwU3luzc5zmWO
+JSgT57jTdJS6ErQG8g4UdVKCklVSjqUmDaMm48Yne46j9Rh9UD6mAAAAAAAA
+
+
+--=-+99WXSTgi/Nb77XgQfdH--
