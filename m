@@ -1,33 +1,18 @@
-Received: from mail-ie0-f174.google.com ([209.85.223.174])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vnp8u-0002Fo-Fu
- for linux-mtd@lists.infradead.org; Tue, 03 Dec 2013 12:31:57 +0000
-Received: by mail-ie0-f174.google.com with SMTP id at1so23189532iec.5
- for <linux-mtd@lists.infradead.org>; Tue, 03 Dec 2013 04:31:35 -0800 (PST)
-Date: Tue, 3 Dec 2013 12:31:28 +0000
-From: Lee Jones <lee.jones@linaro.org>
-To: Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v3 14/36] mtd: st_spi_fsm: Add device-tree binding
- documentation
-Message-ID: <20131203123128.GE12031@lee--X1>
-References: <1385727565-25794-1-git-send-email-lee.jones@linaro.org>
- <1385727565-25794-15-git-send-email-lee.jones@linaro.org>
- <CACRpkdaWXBchz78Yby11VpveBDtn6FrmupS=cnNYhvHgFJsBUw@mail.gmail.com>
- <20131202110304.GB31626@lee--X1>
- <CACRpkdb8=RRsNRKe4Nbefu2BJ4xHakmNjxFC1gwLea=bAmOz-A@mail.gmail.com>
- <20131203113156.GB12031@lee--X1>
- <CACRpkdYdW+p4-sDNCr8L75YB+e6agiQfvfEX5V+wCs4iZUaKSQ@mail.gmail.com>
+From: Marek Vasut <marex@denx.de>
+To: Sourav Poddar <sourav.poddar@ti.com>
+Subject: Re: [PATCH 0/4] mtd: spi-nor: add a new framework for SPI NOR
+Date: Tue, 3 Dec 2013 14:42:00 +0100
+References: <1385447575-23773-1-git-send-email-b32955@freescale.com>
+ <201312030059.25628.marex@denx.de> <529DABF9.2030704@ti.com>
+In-Reply-To: <529DABF9.2030704@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACRpkdYdW+p4-sDNCr8L75YB+e6agiQfvfEX5V+wCs4iZUaKSQ@mail.gmail.com>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- angus.clark@st.com,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Message-Id: <201312031442.00141.marex@denx.de>
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Cc: broonie@linaro.org, Huang Shijie <b32955@freescale.com>,
+ linux-mtd@lists.infradead.org, pekon@ti.com, computersforpeace@gmail.com,
+ dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,38 +22,125 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 03 Dec 2013, Linus Walleij wrote:
+Dear Sourav Poddar,
 
-> On Tue, Dec 3, 2013 at 12:31 PM, Lee Jones <lee.jones@linaro.org> wrote:
-> > On Tue, 03 Dec 2013, Linus Walleij wrote:
+> Dear Marek Vasut,
 > 
-> >> So it can be in <linux/mfd/my-sysconfig-regs.h> as
-> >> a
-> >>
-> >> #define MY_SYSCON_V1_BOOT_DEV_REG 0x958
-> >> #define MY_SYSCON_V1_BOOT_DEV_SPI 0x1a
-> >>
-> >> The kernel should know which SoC is in use and
-> >> act apropriately right?
-> >
-> > And this have lots of machine_is() calls everywhere?
+> On Tuesday 03 December 2013 05:29 AM, Marek Vasut wrote:
+> > Dear Sourav Poddar,
+> > 
+> >> Dear Marek Vasut,
+> >> 
+> >> On Wednesday 27 November 2013 03:36 PM, Marek Vasut wrote:
+> >>> Dear Sourav Poddar,
+> >>> 
+> >>>> Dear Marek Vasut, Huang,
+> >>>> 
+> >>>> On Wednesday 27 November 2013 02:57 PM, Marek Vasut wrote:
+> >>>>> Dear Huang Shijie,
+> >>>>> 
+> >>>>>> 1.) Why add a new framework for SPI NOR?
+> >>>>>> 
+> >>>>>>      The SPI-NOR controller such as Freescale's Quadspi controller
+> >>>>>>      is working in a different way from the SPI bus. It should
+> >>>>>>      knows the NOR commands to find the right LUT sequence.
+> >>>>>>      Unfortunately, the current code can not meet this requirement.
+> >>>>> 
+> >>>>> Is there any kind of documentation for this controller available? I
+> >>>>> cannot quite understand how this controller works and why can it not
+> >>>>> be used with our current infrastructure.
+> >>>> 
+> >>>> I do have a similar requirement where my controller need to be
+> >>>> configured from slave info. I have submiited a series in the mtd list
+> >>>> adding that portion
+> >>>> of handling such cases. Here, is the patch which specific to m25p80
+> >>>> part. http://patchwork.ozlabs.org/patch/294285/
+> >>>> 
+> >>>> The whole series can be found here:
+> >>>> https://www.mail-archive.com/linux-omap@vger.kernel.org/msg98691.html
+> >>> 
+> >>> Is this TI QSPI the same thing as the Altera QSPI controller please ?
+> >> 
+> >> No, its differenet.
+> >> 
+> >>> Otherwise, I seriously believe you and Huang should work on a common
+> >>> infrastructure. I would first like to understand how is the controller
+> >>> in DRA7xx different from regular SPI controller though. Is there any
+> >>> kind of documentation I could study please?
+> >> 
+> >> Sorry, we dont have a public document yet.
+> > 
+> > Sorry for the delayed reply. I am processing the input on the QSPI and
+> > I'm finally starting to understand what's going on in here.
 > 
-> No need for Mr. Everywhere to know about the SoC.
+> Thanks for the response.
 > 
-> There are other ways to achieve this. arch/arm/mach-foo
-> always knows which ASIC it is running on, and it can do
-> various things:
+> >> Though, this is what ti qspi contoller has
+> >> 
+> >> It supports two modes of operation, one is SPI mode(normal), other is
+> >> the memory mapped read mode.
+> >> 
+> >> For SPI mode, the state machine remains the same as it is with other spi
+> >> controller
+> >> available.
+> >> 
+> >> For memory mapped, there is something more which we need to do around ..
+> >> 
+> >> 1. There is a qspi "set up" register available, which needs to be filled
+> >> with
+> >> 
+> >>        information like flash opcode, dummy bytes etc. In short, flash
+> >> 
+> >> specific
+> >> 
+> >>        details.
+> >> 
+> >> 2   if the above register is configured with the required opcodes, then
+> >> whenever
+> >> 
+> >>        we need to use memory mapped operations, we need to do is to
+> >> 
+> >> switch our
+> >> 
+> >>        qspi controller to memory mapped mode.
+> >>       
+> >>       Switching of this mode to memory mapped needs
+> >>       
+> >>        a )  write to a particular qspi register
+> >>        b)   write to control module(optional based on SOC).
+> >> 
+> >> 3. Once the above steps are configured, then the flash data will be
+> >> mapped to a
+> >> 
+> >>       particular memory address(SOC specific) from where the flash data
+> >> 
+> >> can be read.
+> > 
+> > OK, but is the memory mapped mode of any use (but for booting I suppose)
+> > ? How does it handle large SPI NOR flashes (we have spansion devices as
+> > big as 128MiB), does it really hog a _large_ amount of address space
+> > from the CPU address space ? Or is the operation somehow indexed ? Why
+> > is it better than using DMA?
 > 
-> - Add device tree fragments/overlays (OK high-tech, but
->   we're getting to this, inevitably)
+> Memory mapped will be of use whenever we try to read the flash content.
+> Instead of going through the entire SPI framework, and raising
+> interrupts, we can
+> memcpy the flash contents. I am using it for mounting a jffs2 filesystem.
 > 
-> - Selectively add AUXDATA, which is absolutely OK if
->   we can do autoprobing of hardware IMO.
+> For me the memory mapped regions are like in the range 5c000000 -
+> 5fffffff, so
+> I can handle flash as large as 64MB.
+> 
+> As far as its comparison with DMA is concerned, I cant comment much
+> about it.
+> My Qspi controller does not support DMA :(:(. So, memory mapped becomes the
+> best option option for me.
 
-I prefer our solution TBH.
+OK, understood. So to sling large chunks of memory from SPI NOR to your DRAM, 
+you need to issue these two steps in a loop:
 
--- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+1) write into the controller register the starting address of the SPI flash 
+which you want to have available via the mmap interface
+2) memcpy() from this mmaped area to DRAM
+
+correct? Won't the second step be pretty CPU-intensive?
