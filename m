@@ -1,22 +1,18 @@
-Message-ID: <529DA82C.5080606@ti.com>
-Date: Tue, 3 Dec 2013 11:45:16 +0200
-From: "ivan.khoronzhuk" <ivan.khoronzhuk@ti.com>
+Message-ID: <529DABF9.2030704@ti.com>
+Date: Tue, 3 Dec 2013 15:31:29 +0530
+From: Sourav Poddar <sourav.poddar@ti.com>
 MIME-Version: 1.0
-To: Santosh Shilimkar <santosh.shilimkar@ti.com>
-Subject: Re: [PATCH v2 00/10] Reuse davinci-nand driver for Keystone arch
-References: <1385033305-13179-1-git-send-email-ivan.khoronzhuk@ti.com>
- <5298C0B0.4030404@ti.com>
-In-Reply-To: <5298C0B0.4030404@ti.com>
-Content-Type: text/plain; charset="ISO-8859-1"
+To: Marek Vasut <marex@denx.de>
+Subject: Re: [PATCH 0/4] mtd: spi-nor: add a new framework for SPI NOR
+References: <1385447575-23773-1-git-send-email-b32955@freescale.com>
+ <201311271106.09624.marex@denx.de> <5295CFE4.70404@ti.com>
+ <201312030059.25628.marex@denx.de>
+In-Reply-To: <201312030059.25628.marex@denx.de>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- grygorii.strashko@ti.com, Russell King <linux@arm.linux.org.uk>,
- david.woodhouse@intel.com, Pawel Moll <pawel.moll@arm.com>,
- Stephen Warren <swarren@wwwdotorg.org>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@kernel.crashing.org>, Rob Herring <rob.herring@calxeda.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Rob Landley <rob@landley.net>, linux-arm-kernel@lists.infradead.org
+Cc: broonie@linaro.org, Huang Shijie <b32955@freescale.com>,
+ linux-mtd@lists.infradead.org, pekon@ti.com, computersforpeace@gmail.com,
+ dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,52 +22,113 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/29/2013 06:28 PM, Santosh Shilimkar wrote:
-> Ivan,
-> On Thursday 21 November 2013 06:28 AM, Ivan Khoronzhuk wrote:
->> This series contains fixes and updates of Davinci nand driver in
->> order to reuse it for Keystone platform.
+Dear Marek Vasut,
+On Tuesday 03 December 2013 05:29 AM, Marek Vasut wrote:
+> Dear Sourav Poddar,
+>
+>> Dear Marek Vasut,
 >>
->> The series is combination of two following series:
->> - Davinci nand driver fixes and updates:
->>    https://lkml.org/lkml/2013/11/20/271
->> - Reuse davinci-nand driver for Keystone arch
->>    https://lkml.org/lkml/2013/11/20/315
+>> On Wednesday 27 November 2013 03:36 PM, Marek Vasut wrote:
+>>> Dear Sourav Poddar,
+>>>
+>>>> Dear Marek Vasut, Huang,
+>>>>
+>>>> On Wednesday 27 November 2013 02:57 PM, Marek Vasut wrote:
+>>>>> Dear Huang Shijie,
+>>>>>
+>>>>>> 1.) Why add a new framework for SPI NOR?
+>>>>>>
+>>>>>>      The SPI-NOR controller such as Freescale's Quadspi controller is
+>>>>>>      working in a different way from the SPI bus. It should knows the
+>>>>>>      NOR commands to find the right LUT sequence. Unfortunately, the
+>>>>>>      current code can not meet this requirement.
+>>>>> Is there any kind of documentation for this controller available? I
+>>>>> cannot quite understand how this controller works and why can it not be
+>>>>> used with our current infrastructure.
+>>>> I do have a similar requirement where my controller need to be
+>>>> configured from slave info. I have submiited a series in the mtd list
+>>>> adding that portion
+>>>> of handling such cases. Here, is the patch which specific to m25p80
+>>>> part. http://patchwork.ozlabs.org/patch/294285/
+>>>>
+>>>> The whole series can be found here:
+>>>> https://www.mail-archive.com/linux-omap@vger.kernel.org/msg98691.html
+>>> Is this TI QSPI the same thing as the Altera QSPI controller please ?
+>> No, its differenet.
 >>
->> Ivan Khoronzhuk (10):
->>    mtd: nand: davinci: fix driver registration
->>    mtd: nand: davinci: return ENOMEM if memory allocation is failed
->>    mtd: nand: davinci: check required ti,davinci-chipselect property
->>    mtd: nand: davinci: simplify error handling
->>    mtd: nand: davinci: move bindings under mtd
->>    mtd: nand: davinci: extend description of bindings
->>    mtd: nand: davinci: adjust DT properties to MTD generic
->>    mtd: nand: davinci: reuse driver for Keystone arch
->>    mtd: nand: davinci: don't set timings if AEMIF is used
->>    mtd: nand: davinci: don't request AEMIF address range
+>>> Otherwise, I seriously believe you and Huang should work on a common
+>>> infrastructure. I would first like to understand how is the controller in
+>>> DRA7xx different from regular SPI controller though. Is there any kind
+>>> of documentation I could study please?
+>> Sorry, we dont have a public document yet.
+> Sorry for the delayed reply. I am processing the input on the QSPI and I'm
+> finally starting to understand what's going on in here.
+>
+Thanks for the response.
+>> Though, this is what ti qspi contoller has
 >>
->>   .../devicetree/bindings/arm/davinci/nand.txt       |   46 --------
->>   .../devicetree/bindings/mtd/davinci-nand.txt       |   94 ++++++++++++++++
->>   drivers/mtd/nand/Kconfig                           |    6 +-
->>   drivers/mtd/nand/davinci_nand.c                    |  117 +++++++++++---------
->>   4 files changed, 164 insertions(+), 99 deletions(-)
->>   delete mode 100644 Documentation/devicetree/bindings/arm/davinci/nand.txt
->>   create mode 100644 Documentation/devicetree/bindings/mtd/davinci-nand.txt
+>> It supports two modes of operation, one is SPI mode(normal), other is
+>> the memory mapped read mode.
 >>
-> Please drop patch 9 from the series considering we are handling it
-> differently and repost the entire series with David in cc. David
-> has been lining up the patches.
-> 
-> Regards,
-> Santosh
-> 
+>> For SPI mode, the state machine remains the same as it is with other spi
+>> controller
+>> available.
+>>
+>> For memory mapped, there is something more which we need to do around ..
+>>
+>> 1. There is a qspi "set up" register available, which needs to be filled
+>> with
+>>        information like flash opcode, dummy bytes etc. In short, flash
+>> specific
+>>        details.
+>> 2   if the above register is configured with the required opcodes, then
+>> whenever
+>>        we need to use memory mapped operations, we need to do is to
+>> switch our
+>>        qspi controller to memory mapped mode.
+>>       Switching of this mode to memory mapped needs
+>>        a )  write to a particular qspi register
+>>        b)   write to control module(optional based on SOC).
+>>
+>> 3. Once the above steps are configured, then the flash data will be
+>> mapped to a
+>>       particular memory address(SOC specific) from where the flash data
+>> can be read.
+> OK, but is the memory mapped mode of any use (but for booting I suppose) ? How
+> does it handle large SPI NOR flashes (we have spansion devices as big as
+> 128MiB), does it really hog a _large_ amount of address space from the CPU
+> address space ? Or is the operation somehow indexed ? Why is it better than
+> using DMA?
+>
+Memory mapped will be of use whenever we try to read the flash content.
+Instead of going through the entire SPI framework, and raising 
+interrupts, we can
+memcpy the flash contents. I am using it for mounting a jffs2 filesystem.
 
-Ok, I'll drop patch 9.
-Only question about patch
-ARM: davinci: aemif: get rid of davinci-nand driver dependency on aemif
-(http://www.spinics.net/lists/devicetree/msg13711.html).
-How would be better, the series would be based on it or vice-versa?
+For me the memory mapped regions are like in the range 5c000000 - 
+5fffffff, so
+I can handle flash as large as 64MB.
 
--- 
-Regards,
-Ivan Khoronzhuk
+As far as its comparison with DMA is concerned, I cant comment much 
+about it.
+My Qspi controller does not support DMA :(:(. So, memory mapped becomes the
+best option option for me.
+>> The series
+>> https://www.mail-archive.com/linux-omap@vger.kernel.org/msg98691.html
+>> tries to work on the above features, and tries to add a support for the
+>> same in the
+>> spi framework and m25p80 code.
+>>
+>> As you see in my patches, once we take care of the above points and add
+>> support
+>> for memory mapped in m25p80 and qspi, then while doing a read in m25p80
+>> we can
+>> do memcpy at the beginning of m25p80_read and can bypass the entire SPI
+>> framework for memory mapped read operation. Throughput almost gets
+>> doubles with this,
+>> as compared to normal SPI operations.
+>>
+>> Please get back, if you need more info on this concept.
+> I am getting there, I'm just trying to wrap my head around these news here.
+> Thanks for explaining in so much detail, it's very helpful!
+Thanks!
