@@ -1,20 +1,24 @@
-Received: from softlayer.compulab.co.il ([50.23.254.55] helo=compulab.co.il)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vo6dI-000465-O2
- for linux-mtd@lists.infradead.org; Wed, 04 Dec 2013 07:12:29 +0000
-Message-ID: <529ED59E.10605@compulab.co.il>
-Date: Wed, 04 Dec 2013 09:11:26 +0200
-From: Igor Grinberg <grinberg@compulab.co.il>
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Angus Clark <angus.clark@st.com>, Huang Shijie <b32955@freescale.com>
+Subject: RE: [PATCH 0/4] mtd: spi-nor: add a new framework for SPI NOR
+Date: Wed, 4 Dec 2013 07:19:59 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA51905@DBDE04.ent.ti.com>
+References: <1385447575-23773-1-git-send-email-b32955@freescale.com>
+ <20131127043253.GA9468@ld-irv-0074.broadcom.com> <5298AA23.7080404@st.com>
+ <529E976E.4050104@freescale.com> <529ED29C.1030208@st.com>
+In-Reply-To: <529ED29C.1030208@st.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-To: Igor Grinberg <grinberg@compulab.co.il>
-Subject: Re: [PATCH] mtd: m25p80: add support for m25px16
-References: <1384203329-24998-1-git-send-email-grinberg@compulab.co.il>
-In-Reply-To: <1384203329-24998-1-git-send-email-grinberg@compulab.co.il>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Cc: "marex@denx.de" <marex@denx.de>, "broonie@linaro.org" <broonie@linaro.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Poddar,
+ Sourav" <sourav.poddar@ti.com>, Brian Norris <computersforpeace@gmail.com>,
+ Lee Jones <lee.jones@linaro.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,30 +28,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ping...
-
-On 11/11/13 22:55, Igor Grinberg wrote:
-> Add support for Micron m25px16 spi flash chip.
-> 
-> Signed-off-by: Igor Grinberg <grinberg@compulab.co.il>
-> ---
->  drivers/mtd/devices/m25p80.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 6bc9618..1da91c8 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -855,6 +855,7 @@ static const struct spi_device_id m25p_ids[] = {
->  	{ "m25pe80", INFO(0x208014,  0, 64 * 1024, 16,       0) },
->  	{ "m25pe16", INFO(0x208015,  0, 64 * 1024, 32, SECT_4K) },
->  
-> +	{ "m25px16",    INFO(0x207115,  0, 64 * 1024, 32, SECT_4K) },
->  	{ "m25px32",    INFO(0x207116,  0, 64 * 1024, 64, SECT_4K) },
->  	{ "m25px32-s0", INFO(0x207316,  0, 64 * 1024, 64, SECT_4K) },
->  	{ "m25px32-s1", INFO(0x206316,  0, 64 * 1024, 64, SECT_4K) },
-> 
-
--- 
-Regards,
-Igor.
+PkZyb206IEFuZ3VzIENsYXJrIFttYWlsdG86YW5ndXMuY2xhcmtAc3QuY29tXQ0KPj5PbiAxMi8w
+NC8yMDEzIDAyOjQ2IEFNLCBIdWFuZyBTaGlqaWUgd3JvdGU6DQo+PiDkuo4gMjAxM+W5tDEx5pyI
+Mjnml6UgMjI6NTIsIEFuZ3VzIENsYXJrIOWGmemBkzoNCj4+PiAgICAgaW50ICgqd3JpdGVfcmVn
+KShzdHJ1Y3Qgc3BpX25vcl9pbmZvICppbmZvLA0KPj4+ICAgICAgICAgICAgICB1aW50OF90IGNt
+ZCwgdWludDhfdCAqcmVnLCBpbnQgbGVuLA0KPj4+ICAgICAgICAgICAgICBpbnQgd3JlbiwgaW50
+IHd0cik7DQo+PiBJIGd1ZXNzIHlvdSBhZGQgdGhlICd3cmVuJyBmb3IgdGhlIGlzc3Vpbmcgd3Jp
+dGUtZW5hYmxlIGJlZm9yZSBpc3N1aW5nDQo+PiB0aGUgJ2NtZCcuDQo+Pg0KPj4gYnV0IHdoYXQn
+cyAnd3RyJyBmb3I/IGkgZG8gbm90IGtub3cgd2hhdCdzIHRoZSBtZWFuaW5nIG9mIHRoZSAnd3Ry
+Jy4NCj4+DQo+DQo+J3d0cicgaXMgZm9yICJXYWl0ICd0aWwgUmVhZHkiLiAgU29tZSByZWdpc3Rl
+ciB3cml0ZXMgYXJlIGluc3RhbnQsIHdoaWxlIG90aGVycw0KPnJlcXVpcmUgcG9sbGluZyBvZiB0
+aGUgIldyaXRlIEluIFByb2dyZXNzIiBiaXQuDQo+DQpVbmxlc3MgYSByZWdpc3RlciBpcyBjb250
+cm9sbGluZyBhIHN0YXR1cyBvZiBpbnRlcm5hbCBzdGF0ZS1tYWNoaW5lLCBvciBzb21ldGhpbmcN
+Ckl0IHNob3VsZCBiZSBpbnN0YW50YW5lb3VzbHkgd3JpdGFibGUuDQoNCkFsc28gcG9sbGluZyBz
+aG91bGQgbm90IGJlIHBhcnQgb2YgdGhpcyBwYXJ0aWN1bGFyICood3JpdGVfcmVnKSwgaWYgYSBy
+ZWdpc3Rlcg0KbmVlZHMgdG8gYmUgcG9sbGVkIHRoZW4gaXQgc2hvdWxkIGJlIHBhcnQgb2YgKih3
+cml0ZSkgb3IgKihyZWFkKSAuLiBMaWtlIA0KV0lQOiBXcml0ZS1pbi1wcm9ncmVzcyBiaXQgb2Yg
+Zmxhc2gNCmdlbmVyaWNfZmxhc2hfd3JpdGUoLi4uKSB7DQoJd2hpbGUgKChyZWFkX3JlZyhTVEFU
+VVNfUkVHKSAmIFdJUCkgfHwgfnRpbWVvdXQpIHsNCgkJdGltZW91dC0tOw0KCX07DQoNCg0KV2l0
+aCB0aGlzIGl0IGp1c3QgY2FtZSB0byBteSBtaW5kLCB0aGF0IHlvdSBhbHNvIG5lZWQgYSAndGlt
+ZW91dCcgZmllbGQNCmluICdzdHJ1Y3Qgc3Bpbm9yLWNmZycuIFRoaXMgaXMgYmVjYXVzZSBkaWZm
+ZXJlbnQgY29udHJvbGxlcnMgd291bGQgYmUNCnJ1bm5pbmcgYXQgZGlmZmVyZW50IGNsb2NrIHNw
+ZWVkcyAoYW5kIGRpZmZlcmVudCBTUElfQ0xLIGZyZXF1ZW5jaWVzKS4NClNvIHRoZXkgbmVlZCB0
+byBzcGVjaWZ5IGEgJ3RpbWVvdXQnIHZhbHVlIGZvciBhbGwgcG9sbGluZyBhY2Nlc3Nlcy4NCg0K
+DQp3aXRoIHJlZ2FyZHMsIHBla29uDQo=
