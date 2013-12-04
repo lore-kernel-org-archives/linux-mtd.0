@@ -1,20 +1,24 @@
-Subject: Re: [Cluster-devel] [PATCH 16/18] gfs2: use generic posix ACL
- infrastructure
-From: Steven Whitehouse <swhiteho@redhat.com>
-To: Christoph Hellwig <hch@infradead.org>
-In-Reply-To: <20131201120656.539995924@bombadil.infradead.org>
-References: <20131201115903.910559036@bombadil.infradead.org>
- <20131201120656.539995924@bombadil.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 04 Dec 2013 12:12:37 +0000
-Message-ID: <1386159157.2711.11.camel@menhir>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: jfs-discussion@lists.sourceforge.net, linux-ext4@vger.kernel.org,
- reiserfs-devel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- cluster-devel@redhat.com, linux-mtd@lists.infradead.org,
- viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org, xfs@oss.sgi.com,
- linux-nfs@vger.kernel.org, linux-btrfs@vger.kernel.org
+Date: Wed, 4 Dec 2013 11:20:10 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Arnaud Ebalard <arno@natisbad.org>
+Subject: Re: [PATCH v5 00/14] Armada 370/XP NAND support
+Message-ID: <20131204142009.GB2486@localhost>
+References: <20131126124003.GA2344@localhost> <87zjopd240.fsf@natisbad.org>
+ <87wqjtbm8r.fsf@natisbad.org> <20131128185040.GA13182@localhost>
+ <87bo12kcyt.fsf@natisbad.org> <20131202103305.GB2466@localhost>
+ <87siubneuf.fsf@natisbad.org> <20131203002225.GA5333@localhost>
+ <87ob4xbs8l.fsf@natisbad.org> <87iov5aapx.fsf@natisbad.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87iov5aapx.fsf@natisbad.org>
+Cc: Lior Amsalem <alior@marvell.com>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Jason Cooper <jason@lakedaemon.net>, linux-mtd@lists.infradead.org,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,106 +28,114 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Arnaud,
 
-On Sun, 2013-12-01 at 03:59 -0800, Christoph Hellwig wrote:
-> plain text document attachment
-> (0016-gfs2-use-generic-posix-ACL-infrastructure.patch)
-> This contains some major refactoring for the create path so that
-> inodes are created with the right mode to start with instead of
-> fixing it up later.
+Thanks a lot for the patience!
+
+
+On Tue, Dec 03, 2013 at 10:25:14PM +0100, Arnaud Ebalard wrote:
+> Hi Ezequiel,
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  fs/gfs2/acl.c   |  229 +++++++------------------------------------------------
->  fs/gfs2/acl.h   |    4 +-
->  fs/gfs2/inode.c |   33 ++++++--
->  fs/gfs2/xattr.c |    4 +-
->  4 files changed, 61 insertions(+), 209 deletions(-)
+> arno@natisbad.org (Arnaud Ebalard) writes:
 > 
-Looks very good. I'd really like to be able to do something similar with
-the security xattrs, in terms of the refactoring that at inode creation
-to give the xattrs ahead of the inode allocation itself. That way it
-should be possible to allocate the xattr blocks at the same time as the
-inode, rather than as an after thought.
+> > So I guess, if you have any (non hardware destructive ;-) ) idea, I now
+> > have a platform on which the problem is reproducible. Meanwhile, I will
+> > try and do the same on my RN104 (should be the same as the RN102).
+> 
+> Well, on the RN104 (same chip, same kernel and same SoC as the RN102), I
+> have the following (I get the same with a patched driver to increase the
+> timeout):
+> 
+> root@humble:~# flash_erase /dev/mtd4 0 0 
+> Erasing 128 Kibyte @ 72e0000 -- 99 % complete flash_erase: Skipping bad block at 07300000
+> flash_erase: Skipping bad block at 07320000
+> flash_erase: Skipping bad block at 07340000
+> flash_erase: Skipping bad block at 07360000
+> flash_erase: Skipping bad block at 07380000
+> flash_erase: Skipping bad block at 073a0000
+> flash_erase: Skipping bad block at 073c0000
+> flash_erase: Skipping bad block at 073e0000
+> Erasing 128 Kibyte @ 73e0000 -- 100 % complete 
+> 
+> root@humble:~# nandwrite -p /dev/mtd4 mtd4ro 
+> Writing data to block 0 at offset 0x0
+> [  449.915173] pxa3xx-nand d00d0000.nand: Ready time out!!!
+> libmtd: error!: cannot write 2048 bytes to mtd4 (eraseblock 0, offset 2048)
+>         error 5 (Input/output error)
+> Erasing failed write from 00000000 to 0x01ffff
+> Writing data to block 1 at offset 0x20000
+> [  450.115172] pxa3xx-nand d00d0000.nand: Ready time out!!!
+> libmtd: error!: cannot write 2048 bytes to mtd4 (eraseblock 1, offset 2048)
+>         error 5 (Input/output error)
+> Erasing failed write from 0x020000 to 0x03ffff
+> Writing data to block 2 at offset 0x40000
+> [  450.315171] pxa3xx-nand d00d0000.nand: Ready time out!!!
+> libmtd: error!: cannot write 2048 bytes to mtd4 (eraseblock 2, offset 2048)
+>         error 5 (Input/output error)
+> Erasing failed write from 0x040000 to 0x05ffff
+> Writing data to block 3 at offset 0x60000
+> [  450.515171] pxa3xx-nand d00d0000.nand: Ready time out!!!
+> libmtd: error!: cannot write 2048 bytes to mtd4 (eraseblock 3, offset 2048)
+>         error 5 (Input/output error)
+> Erasing failed write from 0x060000 to 0x07ffff
+> Writing data to block 4 at offset 0x80000
+> [  450.715169] pxa3xx-nand d00d0000.nand: Ready time out!!!
+> libmtd: error!: cannot write 2048 bytes to mtd4 (eraseblock 4, offset 2048)
+>         error 5 (Input/output error)
+> Erasing failed write from 0x080000 to 0x09ffff
+> Writing data to block 5 at offset 0xa0000
+> [  450.915171] pxa3xx-nand d00d0000.nand: Ready time out!!!
+> libmtd: error!: cannot write 2048 bytes to mtd4 (eraseblock 5, offset 2048)
+>         error 5 (Input/output error)
+> Erasing failed write from 0x0a0000 to 0x0bffff
+> Writing data to block 6 at offset 0xc0000
+> [  451.115171] pxa3xx-nand d00d0000.nand: Ready time out!!!
+> libmtd: error!: cannot write 2048 bytes to mtd4 (eraseblock 6, offset 2048)
+>         error 5 (Input/output error)
+> Erasing failed write from 0x0c0000 to 0x0dffff
+> Writing data to block 7 at offset 0xe0000
+> 
+> 
 
-Some more comments below....
+So, let me confirm this: you have systematically obtained a "Ready
+timeout" when writing to the device, on every single write to a page,
+correct?
 
-> diff --git a/fs/gfs2/acl.c b/fs/gfs2/acl.c
-> index e82e4ac..e6c7a2c 100644
-> --- a/fs/gfs2/acl.c
-> +++ b/fs/gfs2/acl.c
-[snip]
-> -
-> -static int gfs2_xattr_system_set(struct dentry *dentry, const char *name,
-> -				 const void *value, size_t size, int flags,
-> -				 int xtype)
-> -{
-> -	struct inode *inode = dentry->d_inode;
-> -	struct gfs2_sbd *sdp = GFS2_SB(inode);
-> -	struct posix_acl *acl = NULL;
-> -	int error = 0, type;
-> -
-> -	if (!sdp->sd_args.ar_posix_acl)
-> -		return -EOPNOTSUPP;
-> -
-> -	type = gfs2_acl_type(name);
-> -	if (type < 0)
-> -		return type;
-> -	if (flags & XATTR_CREATE)
-> -		return -EINVAL;
-> -	if (type == ACL_TYPE_DEFAULT && !S_ISDIR(inode->i_mode))
-> -		return value ? -EACCES : 0;
-> -	if (!uid_eq(current_fsuid(), inode->i_uid) && !capable(CAP_FOWNER))
-> -		return -EPERM;
-> -	if (S_ISLNK(inode->i_mode))
-> -		return -EOPNOTSUPP;
-> -
-> -	if (!value)
-> -		goto set_acl;
->  
-> -	acl = posix_acl_from_xattr(&init_user_ns, value, size);
-> -	if (!acl) {
-> -		/*
-> -		 * acl_set_file(3) may request that we set default ACLs with
-> -		 * zero length -- defend (gracefully) against that here.
-> -		 */
-> -		goto out;
-> -	}
-> -	if (IS_ERR(acl)) {
-> -		error = PTR_ERR(acl);
-> -		goto out;
-> -	}
-> -
-> -	error = posix_acl_valid(acl);
-> -	if (error)
-> -		goto out_release;
-> -
-> -	error = -EINVAL;
->  	if (acl->a_count > GFS2_ACL_MAX_ENTRIES)
-> -		goto out_release;
-> +		return -EINVAL;
->  
->  	if (type == ACL_TYPE_ACCESS) {
->  		umode_t mode = inode->i_mode;
-> +
->  		error = posix_acl_equiv_mode(acl, &mode);
-> +		if (error < 0)
->  
-Andy Price has pointed out a missing "return error;" here
+I'll prepare a patch against the branch we're working that adds lots of
+pr_info(). It'll be very annoying for you, but it's the only way I can
+think of, to get the driver's dirty inner sequence and to see *where*
+is failing.
 
-> -		if (error <= 0) {
-> -			posix_acl_release(acl);
-> +		if (error == 0)
->  			acl = NULL;
->  
-> -			if (error < 0)
-> -				return error;
-> -		}
-> -
+However, before that patch, please do a quick test for me. It's just a
+shot in the dark. The below diff removes the NDCB0_AUTO_RS flag from
+the PAGE_PROG command when the page size is 2048 byte (or less).
 
-Also, there seems to be a white space error in the xfs patch around line
-170 in fs/xfs/xfs_iops.c where there is an added "if (default_acl)" with
-a space before the tab,
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index fd0ef93..038cf5d 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -831,7 +831,6 @@ static int prepare_set_command(struct pxa3xx_nand_info *info, int command,
+ 			}
+ 		} else {
+ 			info->ndcb0 |= NDCB0_CMD_TYPE(0x1)
+-					| NDCB0_AUTO_RS
+ 					| NDCB0_ST_ROW_EN
+ 					| NDCB0_DBC
+ 					| (NAND_CMD_PAGEPROG << 8)
 
-Steve.
+Please apply this diff, and then try to write at least one page. If at
+all possible you might try different approaches:
+
+  $ flash_erase /dev/mtd2 0 1
+  $ dd if=page.raw of=/dev/mtd2 bs=2048 count=1
+
+  $ flash_erase /dev/mtd2 0 1
+  $ nandwrite page.raw /dev/mtd2
+
+Where page.raw is some 2048B file, which you can create with random junk in it.
+
+Regards,
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
