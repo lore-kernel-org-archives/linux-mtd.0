@@ -1,19 +1,18 @@
-From: Marek Vasut <marex@denx.de>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 0/4] mtd: spi-nor: add a new framework for SPI NOR
-Date: Wed, 4 Dec 2013 00:41:15 +0100
-References: <1385447575-23773-1-git-send-email-b32955@freescale.com>
- <1386084180.18201.67.camel@shinybook.infradead.org>
- <20131203182808.GD9468@ld-irv-0074.broadcom.com>
-In-Reply-To: <20131203182808.GD9468@ld-irv-0074.broadcom.com>
+Message-ID: <529E976E.4050104@freescale.com>
+Date: Wed, 4 Dec 2013 10:46:06 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201312040041.15823.marex@denx.de>
-Cc: broonie@linaro.org, Huang Shijie <b32955@freescale.com>,
- linux-mtd@lists.infradead.org, pekon@ti.com,
- Sourav Poddar <sourav.poddar@ti.com>, David Woodhouse <dwmw2@infradead.org>,
+To: Angus Clark <angus.clark@st.com>
+Subject: Re: [PATCH 0/4] mtd: spi-nor: add a new framework for SPI NOR
+References: <1385447575-23773-1-git-send-email-b32955@freescale.com>
+ <20131127043253.GA9468@ld-irv-0074.broadcom.com> <5298AA23.7080404@st.com>
+In-Reply-To: <5298AA23.7080404@st.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: marex@denx.de, broonie@linaro.org, dwmw2@infradead.org,
+ Linus Walleij <linus.walleij@linaro.org>, linux-spi@vger.kernel.org,
+ linux-mtd@lists.infradead.org, pekon@ti.com, sourav.poddar@ti.com,
+ Brian Norris <computersforpeace@gmail.com>, Lee Jones <lee.jones@linaro.org>,
  linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,37 +23,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday, December 03, 2013 at 07:28:08 PM, Brian Norris wrote:
-> On Tue, Dec 03, 2013 at 03:23:00PM +0000, David Woodhouse wrote:
-> > Seriously, guys, can you please trim your citations? Include only what's
-> > absolutely needed for what you're saying right now!
-> 
-> +1
-> 
-> Additionally, when trimming replies, can you please leave a proper
+=E4=BA=8E 2013=E5=B9=B411=E6=9C=8829=E6=97=A5 22:52, Angus Clark =E5=86=99=
+=E9=81=93:
+> 	int (*write_reg)(struct spi_nor_info *info,
+> 			 uint8_t cmd, uint8_t *reg, int len,
+> 			 int wren, int wtr);
+I guess you add the 'wren' for the issuing write-enable before issuing=20
+the 'cmd'.
 
-Sorry, I was so into the discussion I was carried away. I humbly apologize for 
-my misstep.
+but what's 'wtr' for? i do not know what's the meaning of the 'wtr'.
 
->   On <date / time>, <sende> wrote:
-> 
-> line before the quote? It helps to identify who said what in a quote,
-> and it serves a much better purpose than leaving the 'Dear So-and-so'
-> intact.
-
-Yeah, I was thinking about changing this for a while now.
-
-> Seeing the following tells me who you were speaking to, not who was
-> 
-> actually speaking:
-> > > Dear Sourav Poddar,
-> > > 
-> > > > Dear Marek Vasut,
-> 
-> Particularly, it seems like Marek's and Huang's mailers tend to leave
-> the attribution line off.
-
-Fixed now I hope.
-
-Best regards,
-Marek Vasut
+thanks
+Huang Shijie
