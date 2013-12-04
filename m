@@ -1,20 +1,22 @@
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Angus Clark <angus.clark@st.com>, Huang Shijie <b32955@freescale.com>
-Subject: RE: [PATCH 0/4] mtd: spi-nor: add a new framework for SPI NOR
-Date: Wed, 4 Dec 2013 07:19:59 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA51905@DBDE04.ent.ti.com>
+Message-ID: <529EE5F1.9080806@st.com>
+Date: Wed, 4 Dec 2013 08:21:05 +0000
+From: Angus Clark <angus.clark@st.com>
+MIME-Version: 1.0
+To: "Gupta, Pekon" <pekon@ti.com>
+Subject: Re: [PATCH 0/4] mtd: spi-nor: add a new framework for SPI NOR
 References: <1385447575-23773-1-git-send-email-b32955@freescale.com>
  <20131127043253.GA9468@ld-irv-0074.broadcom.com> <5298AA23.7080404@st.com>
  <529E976E.4050104@freescale.com> <529ED29C.1030208@st.com>
-In-Reply-To: <529ED29C.1030208@st.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-Cc: "marex@denx.de" <marex@denx.de>, "broonie@linaro.org" <broonie@linaro.org>,
+ <20980858CB6D3A4BAE95CA194937D5E73EA51905@DBDE04.ent.ti.com>
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA51905@DBDE04.ent.ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Cc: "marex@denx.de" <marex@denx.de>, Angus CLARK <angus.clark@st.com>,
+ "broonie@linaro.org" <broonie@linaro.org>,
  "dwmw2@infradead.org" <dwmw2@infradead.org>,
  Linus Walleij <linus.walleij@linaro.org>,
  "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ Huang Shijie <b32955@freescale.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Poddar,
  Sourav" <sourav.poddar@ti.com>, Brian Norris <computersforpeace@gmail.com>,
  Lee Jones <lee.jones@linaro.org>,
@@ -28,27 +30,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PkZyb206IEFuZ3VzIENsYXJrIFttYWlsdG86YW5ndXMuY2xhcmtAc3QuY29tXQ0KPj5PbiAxMi8w
-NC8yMDEzIDAyOjQ2IEFNLCBIdWFuZyBTaGlqaWUgd3JvdGU6DQo+PiDkuo4gMjAxM+W5tDEx5pyI
-Mjnml6UgMjI6NTIsIEFuZ3VzIENsYXJrIOWGmemBkzoNCj4+PiAgICAgaW50ICgqd3JpdGVfcmVn
-KShzdHJ1Y3Qgc3BpX25vcl9pbmZvICppbmZvLA0KPj4+ICAgICAgICAgICAgICB1aW50OF90IGNt
-ZCwgdWludDhfdCAqcmVnLCBpbnQgbGVuLA0KPj4+ICAgICAgICAgICAgICBpbnQgd3JlbiwgaW50
-IHd0cik7DQo+PiBJIGd1ZXNzIHlvdSBhZGQgdGhlICd3cmVuJyBmb3IgdGhlIGlzc3Vpbmcgd3Jp
-dGUtZW5hYmxlIGJlZm9yZSBpc3N1aW5nDQo+PiB0aGUgJ2NtZCcuDQo+Pg0KPj4gYnV0IHdoYXQn
-cyAnd3RyJyBmb3I/IGkgZG8gbm90IGtub3cgd2hhdCdzIHRoZSBtZWFuaW5nIG9mIHRoZSAnd3Ry
-Jy4NCj4+DQo+DQo+J3d0cicgaXMgZm9yICJXYWl0ICd0aWwgUmVhZHkiLiAgU29tZSByZWdpc3Rl
-ciB3cml0ZXMgYXJlIGluc3RhbnQsIHdoaWxlIG90aGVycw0KPnJlcXVpcmUgcG9sbGluZyBvZiB0
-aGUgIldyaXRlIEluIFByb2dyZXNzIiBiaXQuDQo+DQpVbmxlc3MgYSByZWdpc3RlciBpcyBjb250
-cm9sbGluZyBhIHN0YXR1cyBvZiBpbnRlcm5hbCBzdGF0ZS1tYWNoaW5lLCBvciBzb21ldGhpbmcN
-Ckl0IHNob3VsZCBiZSBpbnN0YW50YW5lb3VzbHkgd3JpdGFibGUuDQoNCkFsc28gcG9sbGluZyBz
-aG91bGQgbm90IGJlIHBhcnQgb2YgdGhpcyBwYXJ0aWN1bGFyICood3JpdGVfcmVnKSwgaWYgYSBy
-ZWdpc3Rlcg0KbmVlZHMgdG8gYmUgcG9sbGVkIHRoZW4gaXQgc2hvdWxkIGJlIHBhcnQgb2YgKih3
-cml0ZSkgb3IgKihyZWFkKSAuLiBMaWtlIA0KV0lQOiBXcml0ZS1pbi1wcm9ncmVzcyBiaXQgb2Yg
-Zmxhc2gNCmdlbmVyaWNfZmxhc2hfd3JpdGUoLi4uKSB7DQoJd2hpbGUgKChyZWFkX3JlZyhTVEFU
-VVNfUkVHKSAmIFdJUCkgfHwgfnRpbWVvdXQpIHsNCgkJdGltZW91dC0tOw0KCX07DQoNCg0KV2l0
-aCB0aGlzIGl0IGp1c3QgY2FtZSB0byBteSBtaW5kLCB0aGF0IHlvdSBhbHNvIG5lZWQgYSAndGlt
-ZW91dCcgZmllbGQNCmluICdzdHJ1Y3Qgc3Bpbm9yLWNmZycuIFRoaXMgaXMgYmVjYXVzZSBkaWZm
-ZXJlbnQgY29udHJvbGxlcnMgd291bGQgYmUNCnJ1bm5pbmcgYXQgZGlmZmVyZW50IGNsb2NrIHNw
-ZWVkcyAoYW5kIGRpZmZlcmVudCBTUElfQ0xLIGZyZXF1ZW5jaWVzKS4NClNvIHRoZXkgbmVlZCB0
-byBzcGVjaWZ5IGEgJ3RpbWVvdXQnIHZhbHVlIGZvciBhbGwgcG9sbGluZyBhY2Nlc3Nlcy4NCg0K
-DQp3aXRoIHJlZ2FyZHMsIHBla29uDQo=
+Hi Pekon,
+
+On 12/04/2013 07:19 AM, Gupta, Pekon wrote:
+> Unless a register is controlling a status of internal state-machine, or something
+> It should be instantaneously writable.
+
+Yes, that is my point.  Some register writes are instant, other are not,
+particularly those that involve non-volatile status or configuration bits.
+
+> Also polling should not be part of this particular *(write_reg), if a register
+> needs to be polled then it should be part of *(write) or *(read) .. Like 
+> WIP: Write-in-progress bit of flash
+> generic_flash_write(...) {
+> 	while ((read_reg(STATUS_REG) & WIP) || ~timeout) {
+> 		timeout--;
+> 	};
+
+I am in two minds about where the WTR loop should live.  On the one hand, moving
+it to the "generic_flash_write()" call offers H/W controllers the opportunity to
+optimise the polling, if they support such a feature (I know of some that will
+in the future).
+
+However, requiring the H/W driver to perform the polling, including knowledge of
+the STATUS CMD, and the WIP bit-field, just seems like moving too much
+"intelligence" away from the spi-nor layer.  What concerns me is when we get on
+to reading/clearing error flags (as now mandated on some Serial Flash devices,
+e.g. n25p512 and n25q00a), this will also need to be part of the generic write.
+
+> With this it just came to my mind, that you also need a 'timeout' field
+> in 'struct spinor-cfg'. 
+
+Yes, that is a good point.
+
+I would propose that the spi-nor layer retains responsibility for determining
+whether or not 'WTR' is required for a particular operation, and a suitable
+timeout.  At some point, during initialisation, the H/W driver will need to
+inform the spi-nor layer about its capabilities (e.g. support for DUAL or QUAD
+mode, any warm-reset requirements, etc), and native support of WIP polling could
+be part of this set.  The spi-nor layer could then decide whether to add the WTR
+flag and timeout to the spinor-cfg transfer, or to take responsibility itself,
+and execute its own polling loop.  This gives greatest flexibility, which seems
+to be an important factor, while retaining the knowledge in the spi-nor layer.
+
+Cheers,
+
+Angus
