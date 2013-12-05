@@ -1,33 +1,27 @@
-Received: from f370.i.mail.ru ([217.69.141.12])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VoTdC-0002FK-Jc
- for linux-mtd@lists.infradead.org; Thu, 05 Dec 2013 07:45:56 +0000
-From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
-To: =?UTF-8?B?QnJpYW4gTm9ycmlz?= <computersforpeace@gmail.com>
-Subject: =?UTF-8?B?UmU6IFtQQVRDSCB2NSAxLzNdIG10ZDogbmFuZDogZ3BpbzogQWRkIERUIHBy?=
- =?UTF-8?B?b3BlcnR5IHRvIGF1dG9tYXRpY2FsbHkgZGV0ZXJtaW5lIGJ1cyB3aWR0aA==?=
-Mime-Version: 1.0
-Date: Thu, 05 Dec 2013 11:45:25 +0400
-Message-ID: <1386229525.801342898@f370.i.mail.ru>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
-In-Reply-To: <20131205021809.GK27149@ld-irv-0074.broadcom.com>
-References: <1384343884-29622-1-git-send-email-shc_work@mail.ru>
- <20131130091738.GE29397@norris.computersforpeace.net>
- <20131205021809.GK27149@ld-irv-0074.broadcom.com>
-Cc: =?UTF-8?B?TWFyayBSdXRsYW5k?= <mark.rutland@arm.com>,
- devicetree@vger.kernel.org,
- =?UTF-8?B?UnVzc2VsbCBLaW5n?= <linux@arm.linux.org.uk>,
- =?UTF-8?B?UGF3ZWwgTW9sbA==?= <pawel.moll@arm.com>,
- =?UTF-8?B?SWFuIENhbXBiZWxs?= <ijc+devicetree@hellion.org.uk>,
- =?UTF-8?B?QXJ0ZW0gQml0eXV0c2tpeQ==?= <dedekind1@gmail.com>,
- =?UTF-8?B?Um9iIEhlcnJpbmc=?= <rob.herring@calxeda.com>,
- linux-mtd@lists.infradead.org,
- =?UTF-8?B?SGFvamlhbiBaaHVhbmc=?= <haojian.zhuang@gmail.com>,
- =?UTF-8?B?U3RlcGhlbiBXYXJyZW4=?= <swarren@wwwdotorg.org>,
- =?UTF-8?B?RXJpYyBNaWFv?= <eric.y.miao@gmail.com>,
- =?UTF-8?B?RGF2aWQgV29vZGhvdXNl?= <dwmw2@infradead.org>
-Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+Date: Thu, 5 Dec 2013 15:33:49 +0800
+From: Huang Shijie <b32955@freescale.com>
+To: "Gupta, Pekon" <pekon@ti.com>
+Subject: Re: [PATCH 0/4] mtd: spi-nor: add a new framework for SPI NOR
+Message-ID: <20131205073348.GB8936@shlinux2.ap.freescale.net>
+References: <1385447575-23773-1-git-send-email-b32955@freescale.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EA51905@DBDE04.ent.ti.com>
+ <529EE5F1.9080806@st.com> <201312041636.20875.marex@denx.de>
+ <529FE81C.4000608@freescale.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EA51E1A@DBDE04.ent.ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA51E1A@DBDE04.ent.ti.com>
+Content-Transfer-Encoding: quoted-printable
+Cc: Marek Vasut <marex@denx.de>, Angus Clark <angus.clark@st.com>,
+ "broonie@linaro.org" <broonie@linaro.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Poddar,
+ Sourav" <sourav.poddar@ti.com>, Brian Norris <computersforpeace@gmail.com>,
+ Lee Jones <lee.jones@linaro.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,18 +31,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiBPbiBTYXQsIE5vdiAzMCwgMjAxMyBhdCAwMToxNzozOEFNIC0wODAwLCBCcmlhbiBOb3JyaXMg
-d3JvdGU6Cj4gPiBPbiBGcmksIE5vdiAyOSwgMjAxMyBhdCAxMjo1NjowNFBNICswNDAwLCBBbGV4
-YW5kZXIgU2hpeWFuIHdyb3RlOgo+ID4gPiBDYW4gYXQgbGVhc3QgcGFydCBbMi8zXSAibXRkOiBu
-YW5kOiBncGlvOiBVc2UgZGV2bV9ncGlvX3JlcXVlc3Rfb25lKCkgd2hlcmUgcG9zc2libGUiCj4g
-PiA+IGJlIGFwcGxpZWQgYXQgdGhpcyB0aW1lPwo+ID4gCj4gPiBQcm9iYWJseS4gSSB3YXMgYXZv
-aWRpbmcgdGFraW5nIHRoaW5ncyBvdXQgb2Ygb3JkZXIgaW4gdGhlIHNlcmllcyBmb3IKPiA+IG5v
-dywgYnV0IEknbGwgdGFrZSBhbm90aGVyIGxvb2suIElmIGl0IGxvb2tzIGdvb2QgYW5kIGFwcGxp
-ZXMKPiA+IGluZGVwZW5kZW50bHksIHRoZW4gSSdsbCB0YWtlIGl0Lgo+IAo+IFBhdGNoIDIgY2Fu
-J3QgYmUgYXBwbGllZCBpbmRlcGVuZGVudGx5LiBZb3UgY2FuIHJlYmFzZSBhbmQgcmVzZW5kIGlm
-IHlvdQo+IHdhbnQgaXQgYXBwbGllZC4KPiAKPiBXZSBzdGlsbCBoYXZlbid0IHJlc29sdmVkIHBh
-dGNoIDEuIEl0IGRvZXNuJ3Qgc2VlbSBsaWtlIHF1aXRlIHRoZSByaWdodAo+IGJpbmRpbmcuCgpJ
-IGFtIGFnYWluIGluY2xpbmVkIHRvIGJlbGlldmUgdGhhdCBpdCBpcyBuZWNlc3NhcnkgdG8gY29t
-cGxldGVseSByZW1vdmUKdGhlIHdpZHRoIHBhcmFtZXRlciBmb3IgdGhlIGRyaXZlciBhbmQgYWx3
-YXlzIGRldGVybWluZSB0aGUgYnVzIHdpZHRoCmF1dG9tYXRpY2FsbHkgd2hlbiB0aGUgd2luZG93
-IHNpemUgaXMgbW9yZSB0aGFuIDEgYnl0ZS4KCi0tLQo=
+On Thu, Dec 05, 2013 at 05:43:05AM +0000, Gupta, Pekon wrote:
+> >From: Huang Shijie [mailto:b32955@freescale.com]
+> >
+> >>=E4=BA=8E 2013=E5=B9=B412=E6=9C=8804=E6=97=A5 23:36, Marek Vasut =E5=86=
+=99=E9=81=93:
+> >> I disagree we should bloat the API with features, that will be used =
+by "possible
+> >> future controllers" or "possible single controller", right from the =
+start. The
+> >> real question here is, can the API be designed in such a way, that t=
+he SR
+> >> polling will happen in software NOW and only when a controller appea=
+rs that can
+> >> do polling in HW will the API be extended to support it ?
+> >ok. Let's add this feature in the future when a real case occurs.
+> >
+> Sorry got lost.. Can you please summarize following plans for your next=
+ patch:
+>=20
+> (1) Polling of status registers should be=20
+>   (a) done in S/W (generic driver)
+>   (b) done controller driver, which can be optimized for specific hardw=
+are
+>=20
+For (b), we can implement the @wait_till_ready hook for the controller dr=
+iver.
+
+For (a), we use the default hook for @wait_till_ready.
+
+
+
+> (2) How do you plan to have timeout value, (as serial flash can be pret=
+ty slow
+>    to access) ?
+>   (a) independent for each access
+>        - read timeouts per sector, which can be multiplied with read_le=
+n/sector_size
+>        - write timeout per sector, which can be multiplied with write_l=
+en/sector_size
+>        - erase timeout per block, which can be multiplied with erase_le=
+n/block_size
+>   (b) Any other method, or leave it to controller driver ?
+>=20
+
+Since i have no idea about this kind of spi-nor controller, so I prefer t=
+he (b).=20
+
+> In my view, before proceeding to writing down a patch, I think
+> we should come-up with a doc/Readme, which defines all API and interfac=
+e
+> structs (taking Angus' proposal as baseline). And then refine that spec=
+ first.
+> Otherwise there may be too many revisions spent on patch RFC's ..=20
+>=20
+> Any thoughts ?
+> And is there a space in kernel_docs for such specs ?
+
+maybe the best solution is I send out the new version as soon as possible=
+.
+
+thanks
+Huang Shijie
