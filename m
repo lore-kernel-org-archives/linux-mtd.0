@@ -1,21 +1,15 @@
-Message-ID: <52A08F43.6060307@st.com>
-Date: Thu, 5 Dec 2013 14:35:47 +0000
-From: Angus Clark <angus.clark@st.com>
+Date: Thu, 5 Dec 2013 17:53:50 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [patch v2] mtd: sm_ftl: heap corruption in
+ sm_create_sysfs_attributes()
+Message-ID: <20131205145349.GA13302@elgon.mountain>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 0/4] mtd: spi-nor: add a new framework for SPI NOR
-References: <1385447575-23773-1-git-send-email-b32955@freescale.com>
- <20131127043253.GA9468@ld-irv-0074.broadcom.com> <5298AA23.7080404@st.com>
- <1386082273.18201.61.camel@shinybook.infradead.org>
- <20131204184405.GE9468@ld-irv-0074.broadcom.com>
-In-Reply-To: <20131204184405.GE9468@ld-irv-0074.broadcom.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: marex@denx.de, broonie@linaro.org, David Woodhouse <dwmw2@infradead.org>,
- Linus Walleij <linus.walleij@linaro.org>, linux-spi@vger.kernel.org,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- pekon@ti.com, sourav.poddar@ti.com, Lee Jones <lee.jones@linaro.org>,
- linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <52A06B00.7070309@bfs.de>
+Cc: kernel-janitors@vger.kernel.org, linux-mtd@lists.infradead.org,
+ walter harms <wharms@bfs.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,78 +19,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+We always put a NUL terminator one space past the end of the "vendor"
+buffer.  Walter Harms also pointed out that this should just use
+kstrndup().
 
-On 12/04/2013 06:44 PM, Brian Norris wrote:
-> On this topic, I have one more stick to throw on this fire; I have some
-> Broadcom hardware that consists of two pieces:
-> 
->   (1) a true SPI controller, with single-line-I/O and
->   (2) a Serial Flash controller that can accelerate flash read, using
->       dual/quad I/O.
+Fixes: 7d17c02a01a1 ('mtd: Add new SmartMedia/xD FTL')
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+v2:  Use kstrndup().
+     Don't subtract 1 from the strnlen() limiter for the NUL.  I think
+     it's ok to go over?
 
-We support one platform with properties similar to the hardware you describe,
-and such a hybrid configuration was in mind when I was thinking about the
-spi-nor framework.  I am not sure how well this will come across over email, but
-I envisage something like this:
-
-                             spi-nor
-                                |
-                                v
-                          [spi-nor-xfer]
-                                |
-         ------------------------------------------------
-        |                       |                        |
-        v                       v                        v
-   spi-wrapper (<------)  hybrid-driver          serial-flash-driver
-        |                       |                        |
-      [SPI]                     |                        |
-        |                       |                        |
-        v                       |                        |
-generic-spi-driver              |                        |
-        |                       |                        |
-        v                       v                        v
-[generic-SPI-Cntrl]   [SPI-Flash-Read Cntrl]   [SPI-Flash-Controller]
-
-The 'spi-nor' layer is responsible for Serial Flash domain knowledge, and how to
-generate 'spi-nor-xfer' messages.  The 'spi-wrapper' would provide an interface
-to the generic SPI framework, flattening the 'spi-nor-xfer' message to standard
-SPI calls.  The combination of 'spi-nor' and 'spi-wrapper' should achieve what
-we have today for the m25p80 driver.  The 'serial-flash-driver' in the example
-provides an implementation for a dedicated Serial Flash Controller, making use
-of the spi-nor-xfer semantics where required.  The 'hybrid-driver' could use the
-'spi-wrapper' implementation for write and erase hooks, and optimised
-implementations for read hooks.
-
-[...]
-> I mostly bring this up, though, because it is an example of hardware
-> that
-> 
->    (a) can operate as a true SPI device (hardware (1) can handle generic
->        SPI transfers), but
->    (b) requires knowledge of the details of SPI flash in order to get
->        optimal usage out of the acceleration from (2).
-> 
-> In my book, point (a) and (b) hold some bearing over the question of
-> "where should this SPI NOR framework live", because it is reasonable
-> that a single driver for this hardware should be able to handle either
-> true SPI devices or accelerated SPI-NOR flash.
-> 
-
-Yes, I agree.  At present, within the m25p80 driver, the knowledge of how to
-drive Serial Flash devices is entwined with an implementation that assumes a
-pure SPI Controller.  Creating an additional layer of abstraction allows us to
-separate the two issues, and write drivers that can make us of generic SPI
-controllers, or take advantage of accelerated Serial Flash Controllers, or a
-combination of both.
-
-I realise it is going to take a significant effort to get this off the ground
-and the framework will require some tuning to make sure it can accommodate the
-eccentric range of hardware out there.  Unfortunately I am not in a position to
-commit much time myself, although I will help advise where I can.  Ironically,
-once the ST Bristol site closes next year, I will have lots of time available,
-but no access to equipment!
-
-Cheers,
-
-Angus
+diff --git a/drivers/mtd/sm_ftl.c b/drivers/mtd/sm_ftl.c
+index 4b8e89583f2a..cf49c22673b9 100644
+--- a/drivers/mtd/sm_ftl.c
++++ b/drivers/mtd/sm_ftl.c
+@@ -59,15 +59,12 @@ static struct attribute_group *sm_create_sysfs_attributes(struct sm_ftl *ftl)
+ 	struct attribute_group *attr_group;
+ 	struct attribute **attributes;
+ 	struct sm_sysfs_attribute *vendor_attribute;
++	char *vendor;
+ 
+-	int vendor_len = strnlen(ftl->cis_buffer + SM_CIS_VENDOR_OFFSET,
+-					SM_SMALL_PAGE - SM_CIS_VENDOR_OFFSET);
+-
+-	char *vendor = kmalloc(vendor_len, GFP_KERNEL);
++	vendor = kstrndup(ftl->cis_buffer + SM_CIS_VENDOR_OFFSET,
++			  SM_SMALL_PAGE - SM_CIS_VENDOR_OFFSET, GFP_KERNEL);
+ 	if (!vendor)
+ 		goto error1;
+-	memcpy(vendor, ftl->cis_buffer + SM_CIS_VENDOR_OFFSET, vendor_len);
+-	vendor[vendor_len] = 0;
+ 
+ 	/* Initialize sysfs attributes */
+ 	vendor_attribute =
+@@ -78,7 +75,7 @@ static struct attribute_group *sm_create_sysfs_attributes(struct sm_ftl *ftl)
+ 	sysfs_attr_init(&vendor_attribute->dev_attr.attr);
+ 
+ 	vendor_attribute->data = vendor;
+-	vendor_attribute->len = vendor_len;
++	vendor_attribute->len = strlen(vendor);
+ 	vendor_attribute->dev_attr.attr.name = "vendor";
+ 	vendor_attribute->dev_attr.attr.mode = S_IRUGO;
+ 	vendor_attribute->dev_attr.show = sm_attr_show;
