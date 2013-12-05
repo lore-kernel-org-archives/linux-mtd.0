@@ -1,21 +1,27 @@
-From: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
-To: Santosh Shilimkar <santosh.shilimkar@ti.com>, Rob Landley
- <rob@landley.net>, Russell King <linux@arm.linux.org.uk>
-Subject: [PATCH v3 8/9] mtd: nand: davinci: reuse driver for Keystone arch
-Date: Thu, 5 Dec 2013 19:25:56 +0200
-Message-ID: <1386264358-9738-9-git-send-email-ivan.khoronzhuk@ti.com>
-In-Reply-To: <1386264358-9738-1-git-send-email-ivan.khoronzhuk@ti.com>
-References: <1386264358-9738-1-git-send-email-ivan.khoronzhuk@ti.com>
+Received: from mail-we0-f170.google.com ([74.125.82.170])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Voctm-00081a-86
+ for linux-mtd@lists.infradead.org; Thu, 05 Dec 2013 17:39:39 +0000
+Received: by mail-we0-f170.google.com with SMTP id w61so17129972wes.29
+ for <linux-mtd@lists.infradead.org>; Thu, 05 Dec 2013 09:39:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- grygorii.strashko@ti.com, Pawel Moll <pawel.moll@arm.com>,
- Stephen Warren <swarren@wwwdotorg.org>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@kernel.crashing.org>, Rob Herring <rob.herring@calxeda.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20131205171326.GA26766@atomide.com>
+References: <alpine.DEB.2.01.1312051000270.17561@pmeerw.net>
+ <CAFqH_50vhgJ=ktqmYRo+ZO1bbRmiME+kXVt6sLJL91q9A2S7TA@mail.gmail.com>
+ <52A04E75.3010609@corscience.de>
+ <alpine.DEB.2.01.1312051711410.20976@pmeerw.net>
+ <20131205171326.GA26766@atomide.com>
+Date: Thu, 5 Dec 2013 18:39:10 +0100
+Message-ID: <CABxcv=mtqkpyup0y-zv53YRvdgKH0bNXeCWf9mxPFoUTRQ=Gew@mail.gmail.com>
+Subject: Re: OMAP3 NAND ECC selection
+From: Javier Martinez Canillas <javier@dowhile0.org>
+To: Tony Lindgren <tony@atomide.com>, "Gupta, Pekon" <pekon@ti.com>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: Enric Balletbo Serra <eballetbo@gmail.com>, linux-mtd@lists.infradead.org,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ =?UTF-8?Q?Andreas_Bie=C3=9Fmann?= <andreas.biessmann@corscience.de>,
+ Peter Meerwald <pmeerw@pmeerw.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,62 +31,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The Keystone arch has compatible nand device, so reuse it.
-In case with Keystone it depends on TI_AEMIF because AEMIF
-driver is responsible to set timings.
+[adding Pekon and Thomas as cc]
 
-See http://www.ti.com/lit/ug/sprugz3a/sprugz3a.pdf
+On Thu, Dec 5, 2013 at 6:13 PM, Tony Lindgren <tony@atomide.com> wrote:
+> * Peter Meerwald <pmeerw@pmeerw.net> [131205 08:13]:
+>> > >> I'd like to be able to update MLO and u-boot from within a booted Linux
+>> > >> system on the device (I have to resort to u-boot for that where I can
+>> > >> control the ECC scheme used)
+>>
+>> > > Meanwhile, to do this we use a small userspace program created by
+>> > > Javier Martinez in order to flash the MLO in our OMAP3 boards. See
+>> > > http://git.isee.biz/?p=pub/scm/writeloader.git;a=summary
+>>
+>> > we used another aproach here. See
+>> > http://article.gmane.org/gmane.linux.drivers.mtd/43804
+>>
+>> pretty much what I have been looking for, thanks!
+>
+> Hmm well both methods should work, but is there anything stopping us
+> merging the module param patch to the mainline tree?
+>
 
-Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
-Reviewed-by: Taras Kondratiuk <taras@ti.com>
-Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
----
- .../devicetree/bindings/mtd/davinci-nand.txt       |    8 +++++---
- drivers/mtd/nand/Kconfig                           |    6 +++---
- 2 files changed, 8 insertions(+), 6 deletions(-)
+Hi Tony,
 
-diff --git a/Documentation/devicetree/bindings/mtd/davinci-nand.txt b/Documentation/devicetree/bindings/mtd/davinci-nand.txt
-index befaa5b..cfb18ab 100644
---- a/Documentation/devicetree/bindings/mtd/davinci-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/davinci-nand.txt
-@@ -1,14 +1,16 @@
--Device tree bindings for Texas instruments Davinci NAND controller
-+Device tree bindings for Texas instruments Davinci/Keystone NAND controller
- 
--This file provides information, what the device node for the davinci NAND
--interface contains.
-+This file provides information, what the device node for the davinci/keystone
-+NAND interface contains.
- 
- Documentation:
- Davinci DM646x - http://www.ti.com/lit/ug/sprueq7c/sprueq7c.pdf
-+Kestone - http://www.ti.com/lit/ug/sprugz3a/sprugz3a.pdf
- 
- Required properties:
- 
- - compatible:			"ti,davinci-nand"
-+				"ti,keystone-nand"
- 
- - reg:				Contains 2 offset/length values:
- 				- offset and length for the access window.
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 93ae6a6..35f3ea3 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -464,11 +464,11 @@ config MTD_NAND_SH_FLCTL
- 	  for NAND Flash using FLCTL.
- 
- config MTD_NAND_DAVINCI
--        tristate "Support NAND on DaVinci SoC"
--        depends on ARCH_DAVINCI
-+        tristate "Support NAND on DaVinci/Keystone SoC"
-+        depends on ARCH_DAVINCI || (ARCH_KEYSTONE && TI_AEMIF)
-         help
- 	  Enable the driver for NAND flash chips on Texas Instruments
--	  DaVinci processors.
-+	  DaVinci/Keystone processors.
- 
- config MTD_NAND_TXX9NDFMC
- 	tristate "NAND Flash support for TXx9 SoC"
--- 
-1.7.9.5
+In the another thread [0] pointed out by Enric we were discussing the
+same issue. Thomas suggested [1] that ideally we should be able to set
+a per MTD partition ECC scheme. That way we can set 1 bit hamming for
+the first MTD partition that has the SPL that the boot ROM needs to
+read and the other partitions can use a more secure ECC scheme. I
+completely agree with him.
+
+In fact the data-sheet for the NAND device used on the IGEPv2 board says:
+
+"Minimum required ECC 4-bit ECC per 528 bytes || Minimum required ECC
+for block 0  1-bit ECC per 528 byte"
+
+so I don't think we should impose a software limitation by having a
+global ECC scheme and we should expand the GPMC NAND DT binding so
+partitions support the "ti,nand-ecc-opt". I'll see if I can get some
+free time to try to implement that.
+
+Pekon does not agree with this solution though [2]
+
+Thanks a lot and best regards,
+Javier
+
+[0]: http://www.mail-archive.com/linux-omap@vger.kernel.org/msg98969.html
+[1]: http://www.mail-archive.com/linux-omap@vger.kernel.org/msg99008.html
+[2]: http://permalink.gmane.org/gmane.linux.ports.arm.omap/108136
