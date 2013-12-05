@@ -1,31 +1,23 @@
-Received: from mail-ie0-x22d.google.com ([2607:f8b0:4001:c03::22d])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VoOWQ-0007KP-Qb
- for linux-mtd@lists.infradead.org; Thu, 05 Dec 2013 02:18:35 +0000
-Received: by mail-ie0-f173.google.com with SMTP id to1so28667428ieb.32
- for <linux-mtd@lists.infradead.org>; Wed, 04 Dec 2013 18:18:13 -0800 (PST)
-Date: Wed, 4 Dec 2013 18:18:09 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Alexander Shiyan <shc_work@mail.ru>
-Subject: Re: [PATCH v5 1/3] mtd: nand: gpio: Add DT property to
- automatically determine bus width
-Message-ID: <20131205021809.GK27149@ld-irv-0074.broadcom.com>
-References: <1384343884-29622-1-git-send-email-shc_work@mail.ru>
- <20131127012158.GR9468@ld-irv-0074.broadcom.com>
- <1385715364.73252787@f82.i.mail.ru>
- <20131130091738.GE29397@norris.computersforpeace.net>
+Message-ID: <529FE81C.4000608@freescale.com>
+Date: Thu, 5 Dec 2013 10:42:36 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20131130091738.GE29397@norris.computersforpeace.net>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Russell King <linux@arm.linux.org.uk>, Pawel Moll <pawel.moll@arm.com>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Rob Herring <rob.herring@calxeda.com>, linux-mtd@lists.infradead.org,
- Haojian Zhuang <haojian.zhuang@gmail.com>,
- Stephen Warren <swarren@wwwdotorg.org>, Eric Miao <eric.y.miao@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+To: Marek Vasut <marex@denx.de>
+Subject: Re: [PATCH 0/4] mtd: spi-nor: add a new framework for SPI NOR
+References: <1385447575-23773-1-git-send-email-b32955@freescale.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EA51905@DBDE04.ent.ti.com>
+ <529EE5F1.9080806@st.com> <201312041636.20875.marex@denx.de>
+In-Reply-To: <201312041636.20875.marex@denx.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: Angus Clark <angus.clark@st.com>, "broonie@linaro.org" <broonie@linaro.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
+ Pekon" <pekon@ti.com>, "Poddar, Sourav" <sourav.poddar@ti.com>,
+ Brian Norris <computersforpeace@gmail.com>, Lee Jones <lee.jones@linaro.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,19 +27,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Nov 30, 2013 at 01:17:38AM -0800, Brian Norris wrote:
-> On Fri, Nov 29, 2013 at 12:56:04PM +0400, Alexander Shiyan wrote:
-> > Can at least part [2/3] "mtd: nand: gpio: Use devm_gpio_request_one() where possible"
-> > be applied at this time?
-> 
-> Probably. I was avoiding taking things out of order in the series for
-> now, but I'll take another look. If it looks good and applies
-> independently, then I'll take it.
+=E4=BA=8E 2013=E5=B9=B412=E6=9C=8804=E6=97=A5 23:36, Marek Vasut =E5=86=99=
+=E9=81=93:
+> I disagree we should bloat the API with features, that will be used by =
+"possible
+> future controllers" or "possible single controller", right from the sta=
+rt. The
+> real question here is, can the API be designed in such a way, that the =
+SR
+> polling will happen in software NOW and only when a controller appears =
+that can
+> do polling in HW will the API be extended to support it ?
+ok. Let's add this feature in the future when a real case occurs.
 
-Patch 2 can't be applied independently. You can rebase and resend if you
-want it applied.
-
-We still haven't resolved patch 1. It doesn't seem like quite the right
-binding.
-
-Brian
+thanks
+Huang Shijie
