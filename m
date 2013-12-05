@@ -1,14 +1,16 @@
-Received: from mail-qe0-x231.google.com ([2607:f8b0:400d:c02::231])
+Received: from mail-qc0-x22c.google.com ([2607:f8b0:400d:c01::22c])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VofPS-0004WD-RN
+ id 1VofPT-0004WE-G4
  for linux-mtd@lists.infradead.org; Thu, 05 Dec 2013 20:20:31 +0000
-Received: by mail-qe0-f49.google.com with SMTP id w7so17436092qeb.8
- for <linux-mtd@lists.infradead.org>; Thu, 05 Dec 2013 12:20:09 -0800 (PST)
+Received: by mail-qc0-f172.google.com with SMTP id e16so5361119qcx.17
+ for <linux-mtd@lists.infradead.org>; Thu, 05 Dec 2013 12:20:10 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 1/4] mtd: nand: localize ECC failures per page
-Date: Thu,  5 Dec 2013 12:19:57 -0800
-Message-Id: <1386274800-22013-1-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 2/4] mtd: nand: add ONFI vendor block for Micron
+Date: Thu,  5 Dec 2013 12:19:58 -0800
+Message-Id: <1386274800-22013-2-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1386274800-22013-1-git-send-email-computersforpeace@gmail.com>
+References: <1386274800-22013-1-git-send-email-computersforpeace@gmail.com>
 Cc: Brian Norris <computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -19,72 +21,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ECC failures can be tracked at the page level, not the do_read_ops level
-(i.e., a potentially multi-page transaction).
-
-This helps prepare for READ RETRY support.
-
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/nand/nand_base.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ include/linux/mtd/nand.h | 23 ++++++++++++++++++++++-
+ 1 file changed, 22 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index bd39f7b67906..239f1dacee58 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -1420,7 +1420,6 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
- {
- 	int chipnr, page, realpage, col, bytes, aligned, oob_required;
- 	struct nand_chip *chip = mtd->priv;
--	struct mtd_ecc_stats stats;
- 	int ret = 0;
- 	uint32_t readlen = ops->len;
- 	uint32_t oobreadlen = ops->ooblen;
-@@ -1430,7 +1429,7 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
- 	uint8_t *bufpoi, *oob, *buf;
- 	unsigned int max_bitflips = 0;
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index f3ea8daf08ee..029fe5948dc4 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -285,7 +285,8 @@ struct nand_onfi_params {
+ 	u8 reserved4[7];
  
--	stats = mtd->ecc_stats;
-+	bool ecc_fail = false;
+ 	/* vendor */
+-	u8 reserved5[90];
++	__le16 vendor_revision;
++	u8 vendor[88];
  
- 	chipnr = (int)(from >> chip->chip_shift);
- 	chip->select_chip(mtd, chipnr);
-@@ -1445,6 +1444,7 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
- 	oob_required = oob ? 1 : 0;
+ 	__le16 crc;
+ } __attribute__((packed));
+@@ -326,6 +327,26 @@ struct onfi_ext_param_page {
+ 	 */
+ } __packed;
  
- 	while (1) {
-+		unsigned int ecc_failures = mtd->ecc_stats.failed;
- 		bytes = min(mtd->writesize - col, readlen);
- 		aligned = (bytes == mtd->writesize);
- 
-@@ -1481,7 +1481,7 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
- 			/* Transfer not aligned data */
- 			if (!aligned) {
- 				if (!NAND_HAS_SUBPAGE_READ(chip) && !oob &&
--				    !(mtd->ecc_stats.failed - stats.failed) &&
-+				    !(mtd->ecc_stats.failed - ecc_failures) &&
- 				    (ops->mode != MTD_OPS_RAW)) {
- 					chip->pagebuf = realpage;
- 					chip->pagebuf_bitflips = ret;
-@@ -1511,6 +1511,9 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
- 				else
- 					nand_wait_ready(mtd);
- 			}
++struct nand_onfi_vendor_micron {
++	u8 two_plane_read;
++	u8 read_cache;
++	u8 read_unique_id;
++	u8 dq_imped;
++	u8 dq_imped_num_settings;
++	u8 dq_imped_feat_addr;
++	u8 rb_pulldown_strength;
++	u8 rb_pulldown_strength_feat_addr;
++	u8 rb_pulldown_strength_num_settings;
++	u8 otp_mode;
++	u8 otp_page_start;
++	u8 otp_data_prot_addr;
++	u8 otp_num_pages;
++	u8 otp_feat_addr;
++	u8 read_retry_options;
++	u8 reserved[72];
++	u8 param_revision;
++} __packed;
 +
-+			if (mtd->ecc_stats.failed - ecc_failures)
-+				ecc_fail = true;
- 		} else {
- 			memcpy(buf, chip->buffers->databuf + col, bytes);
- 			buf += bytes;
-@@ -1545,7 +1548,7 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
- 	if (ret < 0)
- 		return ret;
- 
--	if (mtd->ecc_stats.failed - stats.failed)
-+	if (ecc_fail)
- 		return -EBADMSG;
- 
- 	return max_bitflips;
+ /**
+  * struct nand_hw_control - Control structure for hardware controller (e.g ECC generator) shared among independent devices
+  * @lock:               protection lock
 -- 
 1.8.5
