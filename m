@@ -1,27 +1,23 @@
-Date: Thu, 5 Dec 2013 15:33:49 +0800
-From: Huang Shijie <b32955@freescale.com>
-To: "Gupta, Pekon" <pekon@ti.com>
+Date: Thu, 5 Dec 2013 00:11:01 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
 Subject: Re: [PATCH 0/4] mtd: spi-nor: add a new framework for SPI NOR
-Message-ID: <20131205073348.GB8936@shlinux2.ap.freescale.net>
+Message-ID: <20131205081101.GA4636@norris.computersforpeace.net>
 References: <1385447575-23773-1-git-send-email-b32955@freescale.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA51905@DBDE04.ent.ti.com>
- <529EE5F1.9080806@st.com> <201312041636.20875.marex@denx.de>
- <529FE81C.4000608@freescale.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA51E1A@DBDE04.ent.ti.com>
+ <20131127043253.GA9468@ld-irv-0074.broadcom.com>
+ <5298AA23.7080404@st.com>
+ <1386082273.18201.61.camel@shinybook.infradead.org>
+ <20131204184405.GE9468@ld-irv-0074.broadcom.com>
+ <20131205071224.GA8936@shlinux2.ap.freescale.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA51E1A@DBDE04.ent.ti.com>
-Content-Transfer-Encoding: quoted-printable
-Cc: Marek Vasut <marex@denx.de>, Angus Clark <angus.clark@st.com>,
- "broonie@linaro.org" <broonie@linaro.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- Linus Walleij <linus.walleij@linaro.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Poddar,
- Sourav" <sourav.poddar@ti.com>, Brian Norris <computersforpeace@gmail.com>,
- Lee Jones <lee.jones@linaro.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+In-Reply-To: <20131205071224.GA8936@shlinux2.ap.freescale.net>
+Cc: marex@denx.de, Angus Clark <angus.clark@st.com>, broonie@linaro.org,
+ David Woodhouse <dwmw2@infradead.org>,
+ Linus Walleij <linus.walleij@linaro.org>, linux-spi@vger.kernel.org,
+ linux-mtd@lists.infradead.org, pekon@ti.com, sourav.poddar@ti.com,
+ Lee Jones <lee.jones@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,65 +27,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 05, 2013 at 05:43:05AM +0000, Gupta, Pekon wrote:
-> >From: Huang Shijie [mailto:b32955@freescale.com]
-> >
-> >>=E4=BA=8E 2013=E5=B9=B412=E6=9C=8804=E6=97=A5 23:36, Marek Vasut =E5=86=
-=99=E9=81=93:
-> >> I disagree we should bloat the API with features, that will be used =
-by "possible
-> >> future controllers" or "possible single controller", right from the =
-start. The
-> >> real question here is, can the API be designed in such a way, that t=
-he SR
-> >> polling will happen in software NOW and only when a controller appea=
-rs that can
-> >> do polling in HW will the API be extended to support it ?
-> >ok. Let's add this feature in the future when a real case occurs.
-> >
-> Sorry got lost.. Can you please summarize following plans for your next=
- patch:
->=20
-> (1) Polling of status registers should be=20
->   (a) done in S/W (generic driver)
->   (b) done controller driver, which can be optimized for specific hardw=
-are
->=20
-For (b), we can implement the @wait_till_ready hook for the controller dr=
-iver.
+On Thu, Dec 05, 2013 at 03:12:25PM +0800, Huang Shijie wrote:
+> On Wed, Dec 04, 2013 at 10:44:05AM -0800, Brian Norris wrote:
+> > 
+> > I mostly bring this up, though, because it is an example of hardware
+> > that
+> > 
+> >    (a) can operate as a true SPI device (hardware (1) can handle generic
+> >        SPI transfers), but
+> >    (b) requires knowledge of the details of SPI flash in order to get
+> >        optimal usage out of the acceleration from (2).
+> > 
+> > In my book, point (a) and (b) hold some bearing over the question of
+> > "where should this SPI NOR framework live", because it is reasonable
+> > that a single driver for this hardware should be able to handle either
+> > true SPI devices or accelerated SPI-NOR flash.
+> 
+> We have add a @read_id hook for the spi-nor layer, you can use it to read out
+> more info (such as the Device Geometry Definition) for your spi-nor controller driver.
+> 
+> Is it okay?
 
-For (a), we use the default hook for @wait_till_ready.
+I'm not sure which @read_id hook you're talking about, as I've only
+skimmed the most recent thread, and it's not in the last patch series I
+have from you, I don't think. But that is not a response at all to the
+points I brought up. My statements have nothing to do with device
+geometry detection.
 
+What I was actually addressing:
 
+Your framework aligns with Mark's original suggestion: that the "SPI
+NOR" framework should be a separate layer held entirely within the MTD
+subsystem, and that any given driver is *either* a "SPI NOR" driver *or*
+a "true SPI" driver, not both.
 
-> (2) How do you plan to have timeout value, (as serial flash can be pret=
-ty slow
->    to access) ?
->   (a) independent for each access
->        - read timeouts per sector, which can be multiplied with read_le=
-n/sector_size
->        - write timeout per sector, which can be multiplied with write_l=
-en/sector_size
->        - erase timeout per block, which can be multiplied with erase_le=
-n/block_size
->   (b) Any other method, or leave it to controller driver ?
->=20
+I'm simply describing how my hardware is both, and perhaps (as David
+seems to be doing) we should reconsider the premise that this framework
+will exist solely and entirely within MTD.
 
-Since i have no idea about this kind of spi-nor controller, so I prefer t=
-he (b).=20
-
-> In my view, before proceeding to writing down a patch, I think
-> we should come-up with a doc/Readme, which defines all API and interfac=
-e
-> structs (taking Angus' proposal as baseline). And then refine that spec=
- first.
-> Otherwise there may be too many revisions spent on patch RFC's ..=20
->=20
-> Any thoughts ?
-> And is there a space in kernel_docs for such specs ?
-
-maybe the best solution is I send out the new version as soon as possible=
-.
-
-thanks
-Huang Shijie
+Brian
