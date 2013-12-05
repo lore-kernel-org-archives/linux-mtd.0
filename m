@@ -1,14 +1,14 @@
 Received: from mailout.micron.com ([137.201.242.129])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VoPvx-0000Ab-OU
- for linux-mtd@lists.infradead.org; Thu, 05 Dec 2013 03:49:02 +0000
+ id 1VoPw5-0000Au-JA
+ for linux-mtd@lists.infradead.org; Thu, 05 Dec 2013 03:49:10 +0000
 From: =?gb2312?B?UWkgV2FuZyDN9cbwIChxaXdhbmcp?= <qiwang@micron.com>
 To: "dedekind1@gmail.com" <dedekind1@gmail.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Subject: [PATCH 1/1]  MTD: UBI:  avoid program operation on  NOR flash after
  erasure interrupted
-Date: Thu, 5 Dec 2013 03:48:31 +0000
-Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A770B6F67@NTXXIAMBX02.xacn.micron.com>
+Date: Thu, 5 Dec 2013 03:48:46 +0000
+Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A770B6F77@NTXXIAMBX02.xacn.micron.com>
 References: <71CF8D7F32C5C24C9CD1D0E02D52498A770B54B1@NTXXIAMBX02.xacn.micron.com>
  <71CF8D7F32C5C24C9CD1D0E02D52498A770B68A8@NTXXIAMBX02.xacn.micron.com>
 In-Reply-To: <71CF8D7F32C5C24C9CD1D0E02D52498A770B68A8@NTXXIAMBX02.xacn.micron.com>
