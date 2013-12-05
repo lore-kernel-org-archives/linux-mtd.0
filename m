@@ -1,19 +1,22 @@
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Brian Norris <computersforpeace@gmail.com>, Ezequiel Garcia
- <ezequiel.garcia@free-electrons.com>
-Subject: RE: [RFC/PATCH] mtd: nand: Refactor print messages
-Date: Thu, 5 Dec 2013 06:26:39 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA51E62@DBDE04.ent.ti.com>
-References: <1385379031-27766-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <20131205020137.GH27149@ld-irv-0074.broadcom.com>
-In-Reply-To: <20131205020137.GH27149@ld-irv-0074.broadcom.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Date: Thu, 5 Dec 2013 15:12:25 +0800
+From: Huang Shijie <b32955@freescale.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 0/4] mtd: spi-nor: add a new framework for SPI NOR
+Message-ID: <20131205071224.GA8936@shlinux2.ap.freescale.net>
+References: <1385447575-23773-1-git-send-email-b32955@freescale.com>
+ <20131127043253.GA9468@ld-irv-0074.broadcom.com>
+ <5298AA23.7080404@st.com>
+ <1386082273.18201.61.camel@shinybook.infradead.org>
+ <20131204184405.GE9468@ld-irv-0074.broadcom.com>
 MIME-Version: 1.0
-Cc: Huang Shijie <b32955@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20131204184405.GE9468@ld-irv-0074.broadcom.com>
+Cc: marex@denx.de, Angus Clark <angus.clark@st.com>, broonie@linaro.org,
+ David Woodhouse <dwmw2@infradead.org>,
+ Linus Walleij <linus.walleij@linaro.org>, linux-spi@vger.kernel.org,
+ linux-mtd@lists.infradead.org, pekon@ti.com, sourav.poddar@ti.com,
+ Lee Jones <lee.jones@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,40 +26,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From: Brian Norris [mailto:computersforpeace@gmail.com]
->>On Mon, Nov 25, 2013 at 08:30:31AM -0300, Ezequiel Garcia wrote:
-[...]
->> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
->> index bd39f7b..4bdc0df 100644
->> --- a/drivers/mtd/nand/nand_base.c
->> +++ b/drivers/mtd/nand/nand_base.c
->...
->> @@ -3372,8 +3374,8 @@ static struct nand_flash_dev *nand_get_flash_type(=
-struct mtd_info *mtd,
->>  		id_data[i] =3D chip->read_byte(mtd);
->>
->>  	if (id_data[0] !=3D *maf_id || id_data[1] !=3D *dev_id) {
->> -		pr_info("%s: second ID read did not match "
->> -			"%02x,%02x against %02x,%02x\n", __func__,
->> +		pr_info("second ID read did not match "
->> +			"%02x,%02x against %02x,%02x\n",
->
->scripts/checkpatch.pl and Documentation/CodingStyle don't like this long
->string (even though it would be over 80 chars). I think we should combine =
-them.
->
-Yes, breaking the string into multiple prints have a problem that you don't=
- know
-whether all parts of string get displayed continuously in console log.
-Or they are scattered and mixed with other device probes logs because
-device probe can sleep. Thus, we need to justify between:
-- constrain print log to be within 80 character, (even in world where most
-   modern have gone much beyond 80+ character of display).  OR=20
-- have logs scattered and mixed with other device probe logs, which makes
-   On-field tracing and debugging difficult.
+On Wed, Dec 04, 2013 at 10:44:05AM -0800, Brian Norris wrote:
+> 
+> I mostly bring this up, though, because it is an example of hardware
+> that
+> 
+>    (a) can operate as a true SPI device (hardware (1) can handle generic
+>        SPI transfers), but
+>    (b) requires knowledge of the details of SPI flash in order to get
+>        optimal usage out of the acceleration from (2).
+> 
+> In my book, point (a) and (b) hold some bearing over the question of
+> "where should this SPI NOR framework live", because it is reasonable
+> that a single driver for this hardware should be able to handle either
+> true SPI devices or accelerated SPI-NOR flash.
 
-(I like the other part of this patch, prefixing all messages with consisten=
-t string).
+We have add a @read_id hook for the spi-nor layer, you can use it to read out
+more info (such as the Device Geometry Definition) for your spi-nor controller driver.
 
+Is it okay?
 
-with regards, pekon
+thanks
+Huang Shijie
