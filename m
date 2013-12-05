@@ -1,24 +1,22 @@
-Received: from mail-ie0-x233.google.com ([2607:f8b0:4001:c03::233])
+Received: from mail-qe0-x22d.google.com ([2607:f8b0:400d:c02::22d])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VoMLK-0005Ep-6S
- for linux-mtd@lists.infradead.org; Wed, 04 Dec 2013 23:58:58 +0000
-Received: by mail-ie0-f179.google.com with SMTP id x13so27182588ief.24
- for <linux-mtd@lists.infradead.org>; Wed, 04 Dec 2013 15:58:35 -0800 (PST)
-Date: Wed, 4 Dec 2013 15:58:31 -0800
+ id 1VoNuV-0006iq-NH
+ for linux-mtd@lists.infradead.org; Thu, 05 Dec 2013 01:39:24 +0000
+Received: by mail-qe0-f45.google.com with SMTP id 6so16912345qea.32
+ for <linux-mtd@lists.infradead.org>; Wed, 04 Dec 2013 17:39:02 -0800 (PST)
+Date: Wed, 4 Dec 2013 17:38:57 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH] mtd: m25p80: add support for Spansion s25fl128s chip
-Message-ID: <20131204235831.GF27149@ld-irv-0074.broadcom.com>
-References: <1384937569-23893-1-git-send-email-b32955@freescale.com>
- <528C8C1B.7090902@st.com> <528DC1DB.2090007@freescale.com>
- <528DCFBD.9000905@st.com> <528DD70B.8010602@freescale.com>
- <528DE9A8.6060207@st.com> <528EBDAE.7070408@freescale.com>
+To: Christian Riesch <christian.riesch@omicron.at>
+Subject: Re: [RESEND PATCH 1/2] mtd: Add a retlen parameter to _get_{fact,
+ user}_prot_info
+Message-ID: <20131205013857.GG27149@ld-irv-0074.broadcom.com>
+References: <1380798876-3321-1-git-send-email-christian.riesch@omicron.at>
+ <9c3c8484-54a4-40e3-8a32-2b01c33280ac@mary.at.omicron.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <528EBDAE.7070408@freescale.com>
-Cc: Marek Vasut <marex@denx.de>, Angus Clark <angus.clark@st.com>,
+In-Reply-To: <9c3c8484-54a4-40e3-8a32-2b01c33280ac@mary.at.omicron.at>
+Cc: Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>,
  linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,32 +27,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-(Leaving Huang's email intact, since it was in HTML format and didn't
-make it through the list's filter; Huang, you really need to fix this.)
+Hi Christian,
 
-On Fri, Nov 22, 2013 at 10:13:02AM +0800, Huang Shijie wrote:
-> 于 2013年11月21日 19:08, Angus Clark 写道:
-> 
->     Assuming you a referring to the same M25P80_QUAD_READ flag as introduced by
->     "[PATCH] drivers: mtd: m25p80: Add quad read support.", then the flag invokes
->     OPCODE_QUAD_READ = 0x6b, which corresponds to the Spansion *SDR* "QOR" command.
->      The DDR QUAD Read command is 0xed, "DDRQIOR" (there is no DDR equivalent of
->     "QOR").  So, again, I believe the m25p80 driver is not sensitive to the
->     differences between s25fl129p1 and s25fl128s1; the M25P80_QUAD_READ flag, as is
->     stands, applies equally to both.
-> 
-> The current m25p80 is not sensitive, but i am changing the this driver now.
-> In the future, it should support the DDR QUAD READ. this patch is just making
-> preparation for
-> the DDR QUAD read.
-> 
-> And I will submit a patch to read out the 6th READID to distinguish the two
-> different NOR.
+Are you sure you compile-tested this? I get build failures. See below.
 
-So to be clear, this patch can't go in as-is.
+On Thu, Oct 03, 2013 at 01:14:35PM +0200, Christian Riesch wrote:
+> Signed-off-by: Christian Riesch <christian.riesch@omicron.at>
+> Cc: Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>
+> ---
+>  drivers/mtd/chips/cfi_cmdset_0001.c |   31 +++++++++++++------------------
+>  drivers/mtd/devices/mtd_dataflash.c |    7 ++++---
+>  drivers/mtd/mtdchar.c               |   11 ++++++-----
+>  drivers/mtd/mtdcore.c               |   12 ++++++------
+>  drivers/mtd/mtdpart.c               |   14 ++++++++------
+>  drivers/mtd/onenand/onenand_base.c  |   30 ++++++++++++------------------
+>  include/linux/mtd/mtd.h             |   16 ++++++++--------
+>  7 files changed, 57 insertions(+), 64 deletions(-)
+> 
+> diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+> index 7751443..2378e2f 100644
+> --- a/drivers/mtd/chips/cfi_cmdset_0001.c
+> +++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+> @@ -2399,24 +2399,19 @@ static int cfi_intelext_lock_user_prot_reg(struct mtd_info *mtd,
+>  				     NULL, do_otp_lock, 1);
+>  }
+>  
+> -static int cfi_intelext_get_fact_prot_info(struct mtd_info *mtd,
+> -					   struct otp_info *buf, size_t len)
+> -{
+> -	size_t retlen;
+> -	int ret;
+> +static int cfi_intelext_get_fact_prot_info(struct mtd_info *, size_t,
+> +					   size_t *, struct otp_info *);
 
-BTW, if we update m25p80 to use 6th-byte READID, we need to double-check
-the entries that currently use the 5-byte ID string, so they don't break
-if we extend them implicitly.
+You have a stray semicolon here, which causes the following compile
+errors/warnings:
+
+drivers/mtd/chips/cfi_cmdset_0001.c:2414:1: error: expected identifier or '(' before '{' token
+drivers/mtd/chips/cfi_cmdset_0001.c:2411:12: warning: 'cfi_intelext_get_fact_prot_info' declared 'static' but never defined [-Wunused-function]
+
+You seem to have replaced a function definition with just a declaration.
+
+>  
+
+You also have an extraneous blank line.
+
+> -	ret = cfi_intelext_otp_walk(mtd, 0, len, &retlen, (u_char *)buf, NULL, 0);
+> -	return ret ? : retlen;
+> +{
+> +	return cfi_intelext_otp_walk(mtd, 0, len, &retlen, (u_char *)buf,
+> +				     NULL, 0);
+>  }
+>  
+...
 
 Brian
