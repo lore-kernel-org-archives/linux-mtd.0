@@ -1,25 +1,21 @@
-Received: from mail-pb0-x229.google.com ([2607:f8b0:400e:c01::229])
+Received: from bear.ext.ti.com ([192.94.94.41])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VoUsX-0003Zg-R4
- for linux-mtd@lists.infradead.org; Thu, 05 Dec 2013 09:05:50 +0000
-Received: by mail-pb0-f41.google.com with SMTP id jt11so25571189pbb.28
- for <linux-mtd@lists.infradead.org>; Thu, 05 Dec 2013 01:05:28 -0800 (PST)
-Date: Thu, 5 Dec 2013 01:05:23 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [PATCH v4 0/4] optimize and clean-up of OMAP NAND and ELM driver
-Message-ID: <20131205090523.GD4636@norris.computersforpeace.net>
-References: <1385374141-10934-1-git-send-email-pekon@ti.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA510F4@DBDE04.ent.ti.com>
- <20131205083124.GB4636@norris.computersforpeace.net>
- <20980858CB6D3A4BAE95CA194937D5E73EA51F9E@DBDE04.ent.ti.com>
+ id 1VoUx5-0003eb-E8
+ for linux-mtd@lists.infradead.org; Thu, 05 Dec 2013 09:10:32 +0000
+Message-ID: <52A042E2.509@ti.com>
+Date: Thu, 5 Dec 2013 14:39:54 +0530
+From: Sourav Poddar <sourav.poddar@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA51F9E@DBDE04.ent.ti.com>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
- "ezequiel.garcia@free-electrons.com" <ezequiel.garcia@free-electrons.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+To: <computersforpeace@gmail.com>
+Subject: Re: [PATCH 00/17] Add memory mapped support for ti qspi, m25p80 serial
+ flash.
+References: <1385451313-1875-1-git-send-email-sourav.poddar@ti.com>
+In-Reply-To: <1385451313-1875-1-git-send-email-sourav.poddar@ti.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: devicetree@vger.kernel.org, balbi@ti.com, linux-spi@vger.kernel.org,
+ broonie@kernel.org, linux-mtd@lists.infradead.org, bcousson@baylibre.com,
+ Sourav Poddar <sourav.poddar@ti.com>, linux-omap@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,51 +25,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 05, 2013 at 08:54:34AM +0000, Pekon Gupta wrote:
-> >From: Brian Norris [mailto:computersforpeace@gmail.com]
-> >
-> >I'm sorry to delay this long, but this patch series is still rather
-> >impenetrable for a third-party reader, and so I really can't give my sign-off.
-> >
-> >For one, you don't give very good patch titles; 3 of the 4 have "optimize" in
-> >the title, when in fact that "optimize" does not mean anything about
-> >optimization, but rather, "unification", "consolidation", "cleanup", or
-> >something else entirely, depending on which part of the patch you're talking
-> >about... which brings me to the next point:
-> >
-> I think with all sorts of patches, I feel I have completely re-written the
-> omap nand driver. After this series and one more, I think there is hardly
-> any line in omap2.c which is not touched. So, I'm run-out of good titles :-)
-
-I understand there is a lot of rewriting. The problem here is just that
-you're doing too many things in a single patch.
-
-> >Patches 1 and 4 are doing much more than one thing. Your commit messages
-> >-- rather than describing succintly a single change being made -- are a
-> >description of a list of things that you did, some of which are quite
-> >independent.
-> >
-> Ok I'll first try to break each patch in smaller chunks..
-> But this would bloat the number of patches, so I would break this series
-> into multiple series, hope that's fine ?
->  - Patch series for chip->ecc.correct()
->  - Patch series for chip->ecc.calculate()
->  - Patch series for chip->ecc.hwctl()
->  - Patch series for ELM 
-
-Hmm, if there are as many dependencies between patches as I expect, then
-I think it's best to be a single series still. Too many patches is not
-really a problem in itself, as long as the patches are reviewable
-chunks.
-
-> >If you need clarification on how you can best rework/resubmit this work,
-> >please ask. I don't want this series to drag on to version 12+, so let's
-> >focus on how to get this right now.
-> >
-> Agreed, thanks for feedback.
-> I'll resubmit these patches breaking them into independent versions.
-> Hopefully then it would be easy to review.
-
-Ok, thanks for the effort.
-
-Brian
+Hi Brian,
+On Tuesday 26 November 2013 01:04 PM, Sourav Poddar wrote:
+> The patch series aims to add memory mapped support for TI qspi
+> contoller and also add support for the same in serial flash driver(m25p80).
+>
+> These feature was added as a part of the series[1]:
+> The series[1] add support for quad and memory mapped feature in spi and
+> flash driver. Based on Brian Norris suggestion on splitting the quad and
+> memory mapped feature, I had sent a seperate series for quad support which
+> has beed accepted by Brian.
+>
+> The $subject patch series takes care of the memory mapped part.
+>
+> Overview of memory mapped support in qspi:
+>   TI qspi controller supports memory mapped read support, switching to which
+>   requires  register modifications(qspi registers, control module register for
+>   DRA, qspi register for am43x). Once switched, the flash data can be available
+>   at a soc specific memory mapped address. For operations in normal mode, we need
+>   to keep memory mapped disable.
+>
+>   Flow of the patch is to keep the memory mapped enable by default in the driver.
+>   Whenever Normal spi mode operations are desired, we switch to configuration mode
+>   and at the end of it memory mapped is again enabled. There are few function pointers
+>   added to fecilitate easy communication between the flash and spi controllers.
+>
+> Major changes in the $subject patch based on discussion in [1]:
+>
+> - Feature has been broken down into small meaningfl patches.
+> - memcpy is done in flash driver and spi framework is bypassed.
+> - configuration of memory mapped spi controller regsiters is done
+>    through function calls from flash side.
+>
+> [1]: http://lists.infradead.org/pipermail/linux-mtd/2013-October/049058.html
+>
+>
+> Tested on DRA7 board with spansion S25FL256S flash along with some
+> internal irq crossbar patches.
+> Tested on AM437x epos evm with macronix MX66l51235l flash.
+>
+> Testing done:
+> -Erase the whole flash.
+> -write to the flash
+> -read back the flash
+> - compare the data
+>
+> Sourav Poddar (17):
+>    spi/spi.h: Add get_buf/put_buf support in spi master..
+>    spi/spi.h: Add configure from slave support.
+>    spi/qspi: parse register by name.
+>    spi/qspi: parse control module register.
+>    spi/qspi: parse memory map register.
+>    spi/qspi: Add support to switc to memory mapped operation.
+>    spi/qspi: configure set up register for memory map..
+>    spi/qspi: Add api for get_buf/put_buf.
+>    spi/spi.h: Add "mem" variable in spi master.
+>    spi/spi.h: Add mmap flag in spi master.
+>    spi/qspi: set "mmap" flag to true.
+>    spi/qspi: convert driver to enable/disable memory mapped..
+>    drivers: mtd: m25p80: Add api to configure master register .
+>    drivers: mtd: m25p80: Adapt driver to support memory mapped read.
+>    arm: dts: dra7: Add qspi device.
+>    arm: dts: am43x-epos: Add qspi device.
+>    Documentation: bindings: ti-qspi: update binding information.
+>
+>   Documentation/devicetree/bindings/spi/ti_qspi.txt |    2 +
+>   arch/arm/boot/dts/am4372.dtsi                     |   12 ++
+>   arch/arm/boot/dts/am43x-epos-evm.dts              |   28 +++++
+>   arch/arm/boot/dts/dra7-evm.dts                    |   32 ++++++
+>   arch/arm/boot/dts/dra7.dtsi                       |   13 +++
+>   drivers/mtd/devices/m25p80.c                      |   30 ++++++
+>   drivers/spi/spi-ti-qspi.c                         |  115 ++++++++++++++++++++-
+>   include/linux/spi/spi.h                           |   16 +++
+>   8 files changed, 246 insertions(+), 2 deletions(-)
+>
+Gentle ping on this series on mtd side...
