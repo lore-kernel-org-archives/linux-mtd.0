@@ -1,14 +1,11 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VoeGA-0002Zc-18
- for linux-mtd@lists.infradead.org; Thu, 05 Dec 2013 19:06:51 +0000
-Date: Thu, 5 Dec 2013 20:06:18 +0100
-From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: OMAP3 NAND ECC selection
-Message-ID: <20131205200618.19b33ee2@skate>
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA5222E@DBDE04.ent.ti.com>
+Received: from mail-vc0-x22d.google.com ([2607:f8b0:400c:c03::22d])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VoeNM-0002jQ-JK
+ for linux-mtd@lists.infradead.org; Thu, 05 Dec 2013 19:14:17 +0000
+Received: by mail-vc0-f173.google.com with SMTP id ia6so13270741vcb.4
+ for <linux-mtd@lists.infradead.org>; Thu, 05 Dec 2013 11:13:55 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <20131205182628.GF2345@localhost>
 References: <alpine.DEB.2.01.1312051000270.17561@pmeerw.net>
  <CAFqH_50vhgJ=ktqmYRo+ZO1bbRmiME+kXVt6sLJL91q9A2S7TA@mail.gmail.com>
  <52A04E75.3010609@corscience.de>
@@ -16,18 +13,19 @@ References: <alpine.DEB.2.01.1312051000270.17561@pmeerw.net>
  <20131205171326.GA26766@atomide.com>
  <CABxcv=mtqkpyup0y-zv53YRvdgKH0bNXeCWf9mxPFoUTRQ=Gew@mail.gmail.com>
  <20131205182628.GF2345@localhost>
- <20980858CB6D3A4BAE95CA194937D5E73EA5222E@DBDE04.ent.ti.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Peter Meerwald <pmeerw@pmeerw.net>, Tony Lindgren <tony@atomide.com>,
- Enric Balletbo Serra <eballetbo@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Javier Martinez
- Canillas <javier@dowhile0.org>,
+Date: Thu, 5 Dec 2013 11:13:54 -0800
+Message-ID: <CAN8TOE9qG2-RRPKgP2t_vCAnV4Lp4AjLdtGuc+ROMveaPny1UA@mail.gmail.com>
+Subject: Re: OMAP3 NAND ECC selection
+From: Brian Norris <computersforpeace@gmail.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Tony Lindgren <tony@atomide.com>, Enric Balletbo Serra <eballetbo@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
+ Pekon" <pekon@ti.com>, Peter Meerwald <pmeerw@pmeerw.net>,
+ Javier Martinez Canillas <javier@dowhile0.org>,
  "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- Andreas =?UTF-8?B?Qmllw59tYW5u?= <andreas.biessmann@corscience.de>
+ =?ISO-8859-1?Q?Andreas_Bie=DFmann?= <andreas.biessmann@corscience.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,37 +35,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Gupta, Pekon,
+On Thu, Dec 5, 2013 at 10:26 AM, Ezequiel Garcia
+<ezequiel.garcia@free-electrons.com> wrote:
+> (CCing Brian: What do you think about this?)
+>
+> On Thu, Dec 05, 2013 at 06:39:10PM +0100, Javier Martinez Canillas wrote:
+>> On Thu, Dec 5, 2013 at 6:13 PM, Tony Lindgren <tony@atomide.com> wrote:
+>>
+>> In the another thread [0] pointed out by Enric we were discussing the
+>> same issue. Thomas suggested [1] that ideally we should be able to set
+>> a per MTD partition ECC scheme. That way we can set 1 bit hamming for
+>> the first MTD partition that has the SPL that the boot ROM needs to
+>> read and the other partitions can use a more secure ECC scheme. I
+>> completely agree with him.
+>>
+> [..]
+>> global ECC scheme and we should expand the GPMC NAND DT binding so
+>> partitions support the "ti,nand-ecc-opt". I'll see if I can get some
+>> free time to try to implement that.
+>>
+>
+> AFAIK, there's no hardware limitation that would prevent us from setting
+> a per-partition ECC, keep in mind this effort is not reduced to make
+> devicetree accept ECC on the partitions.
+>
+> While there are some per MTD device (which model each partition), the
+> ECC mode is present in the, nand_chip structure. My understanding is that
+> the NAND core hasn't been designed for this use case, and thus some
+> major re-work is needed to accomplish it.
 
-On Thu, 5 Dec 2013 19:02:22 +0000, Gupta, Pekon wrote:
+Yes, it looks like a lot of work for little benefit. IMO, the *right*
+thing to do is have the bootloader use a sufficiently strong ECC for
+the flash part, so you don't have to configure different strengths for
+different partitions. But I'll concede that it may be *nice* to have
+flexibility in some cases.
 
-> >From: Ezequiel Garcia [mailto:ezequiel.garcia@free-electrons.com]
-> [...]
-> >AFAIK, there's no hardware limitation that would prevent us from setting
-> >a per-partition ECC, keep in mind this effort is not reduced to make
-> >devicetree accept ECC on the partitions.
-> >
-> I had some reservations in doing so.. (as mentioned in previous email also [2])
-> I would rather like to understand long term benefits of such implementation.
+Part of the difficulty is in making this generic for all types of NAND
+drivers. On some, you can simply change some high-level software
+parameters to use a different ECC mode, while others may require hooks
+for controlling hardware parameters. And switching this at runtime can
+end up being a lot of work, since a sequence of reads/writes
+alternating between two differently-configured partitions would rapid
+reconfiguration of the ECC controller, which previously only needed
+configured at module initialization time. It may be doable, but to
+commit to this approach, you must do a lot of work.
 
-The long term benefits is simply to properly handle the hardware
-constraints. We have hardware platforms were parts of the NAND *MUST*
-use 1-bit ECC to be compatible with the ROM code, and other parts of
-the NAND *MUST* use stronger 4-bits or 8-bits ECC to comply with the
-NAND requirements.
+Also, this requires major changes to the MTD framework. Right now, I
+believe MTD partitions are a very small shim layer, where the bulk of
+the MTD transactions are filtered through to the parent "master" MTD.
 
-Isn't handling hardware constraints properly not a sufficient
-motivation for doing something?
+> Therefore, it's a much short-term solution to implement the OMAP
+> module parameter to fix the issue.
 
-> Also, any constrain due to ROM code, or upgrading from remote can be
-> handled using various alternative approaches like [a] and [b].
+That's possible, but even there, I don't see what the real benefit is.
+If you only need special-case solutions (which it seems like this use
+case is) for updating bootloader data, can't a simple 1-bit ECC
+user-space tool (like the one you linked earlier) suffice? It seems
+like it's only a small convenience to place this flexibility in a
+module parameter, but it is much *less* generic; what if someone
+builds omap2 into the kernel (not as a module)? So the user-space tool
+seems superior in many cases.
 
-And you're not realizing that these solutions are ugly and impractical?
-
-Best regards,
-
-Thomas
--- 
-Thomas Petazzoni, CTO, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
+Brian
