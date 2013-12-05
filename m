@@ -1,25 +1,24 @@
-Received: from mail-ve0-x236.google.com ([2607:f8b0:400c:c01::236])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VoP2A-0007xP-6Q
- for linux-mtd@lists.infradead.org; Thu, 05 Dec 2013 02:51:22 +0000
-Received: by mail-ve0-f182.google.com with SMTP id jy13so12897283veb.41
- for <linux-mtd@lists.infradead.org>; Wed, 04 Dec 2013 18:51:01 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <20131205022025.GA24434@shlinux2.ap.freescale.net>
-References: <1384937569-23893-1-git-send-email-b32955@freescale.com>
- <528C8C1B.7090902@st.com> <528DC1DB.2090007@freescale.com>
- <528DCFBD.9000905@st.com> <528DD70B.8010602@freescale.com>
- <528DE9A8.6060207@st.com> <528EBDAE.7070408@freescale.com>
- <20131204235831.GF27149@ld-irv-0074.broadcom.com>
- <20131205022025.GA24434@shlinux2.ap.freescale.net>
-Date: Wed, 4 Dec 2013 18:51:01 -0800
-Message-ID: <CAN8TOE8oQ05zYXj+hbCykzteM2rJC=P3wNwGS8Ey8Lj0a2XWgQ@mail.gmail.com>
-Subject: Re: [PATCH] mtd: m25p80: add support for Spansion s25fl128s chip
-From: Brian Norris <computersforpeace@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Marek Vasut <marex@denx.de>, Angus Clark <angus.clark@st.com>,
+Received: from mailout.micron.com ([137.201.242.129])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VoPvx-0000Ab-OU
+ for linux-mtd@lists.infradead.org; Thu, 05 Dec 2013 03:49:02 +0000
+From: =?gb2312?B?UWkgV2FuZyDN9cbwIChxaXdhbmcp?= <qiwang@micron.com>
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: [PATCH 1/1]  MTD: UBI:  avoid program operation on  NOR flash after
+ erasure interrupted
+Date: Thu, 5 Dec 2013 03:48:31 +0000
+Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A770B6F67@NTXXIAMBX02.xacn.micron.com>
+References: <71CF8D7F32C5C24C9CD1D0E02D52498A770B54B1@NTXXIAMBX02.xacn.micron.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A770B68A8@NTXXIAMBX02.xacn.micron.com>
+In-Reply-To: <71CF8D7F32C5C24C9CD1D0E02D52498A770B68A8@NTXXIAMBX02.xacn.micron.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Cc: =?gb2312?B?UWkgV2FuZyDN9cbwIChxaXdhbmcp?= <qiwang@micron.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,19 +28,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Dec 4, 2013 at 6:20 PM, Huang Shijie <b32955@freescale.com> wrote:
-> On Wed, Dec 04, 2013 at 03:58:31PM -0800, Brian Norris wrote:
->>
->> BTW, if we update m25p80 to use 6th-byte READID, we need to double-check
->> the entries that currently use the 5-byte ID string, so they don't break
->> if we extend them implicitly.
-> yes, i think we should read out more bytes of the ID.
->
-> Is there any NOR that can only read out 5bytes, and can not be read out 6 bytes?
-
-I doubt it. But I wasn't talking about "can we read 6 bytes?", but
-rather "what happens when we compare 6 bytes of ID with the 5 byte IDs
-in the table?". We'll have a mixture of 3-byte, 5-byte and 6-byte IDs
-in our table, and we need to be careful to match properly.
-
-Brian
+DQpIaSBBcnRlbToNCkFzIHdlIHRhbGtlZCBpbiBtYWlsIGJlZm9yZSwgcGxlYXNlIGNoZWNrIG15
+IHBhdGNoIGFzIGJlbG93Og0KDQpGcm9tOiBRaSBXYW5nIDxxaXdhbmdAbWljcm9uLmNvbT4NCg0K
+bm9yX2VyYXNlX3ByZXBhcmUoKSB3aWxsIGJlIGNhbGxlZCBiZWZvcmUgZXJhc2UgYSBOT1IgZmxh
+c2gsIGl0IHdpbGwgcHJvZ3JhbSAnMCcNCmludG8gYSBibG9jayB0byBtYXJrIHRoaXMgYmxvY2su
+IEJ1dCBwcm9ncmFtIGRhdGEgaW50byBhIGVyYXN1cmUgaW50ZXJydXB0ZWQgYmxvY2sNCmNhbiBj
+YXVzZSBwcm9ncmFtIHRpbXRvdXQoc2V2ZXJhbCBtaW51dGVzIGF0IG1vc3QpIGVycm9yLCBjb3Vs
+ZCBpbXBhY3Qgb3RoZXIgDQpvcGVyYXRpb24gb24gTk9SIGZsYXNoLiBTbyBVQklGUyBjYW4gcmVh
+ZCB0aGlzIGJsb2NrIGZpcnN0IHRvIGF2b2lkIHVubmVlZGVkIA0KcHJvZ3JhbSBvcGVyYXRpb24u
+IA0KDQpUaGlzIHBhdGNoIHRyeSB0byBwdXQgcmVhZCBvcGVyYXRpb24gYXQgaGVhZCBvZiB3cml0
+ZSBvcGVyYXRpb24gaW4gDQpub3JfZXJhc2VfcHJlcGFyZSgpLCByZWFkIG91dCB0aGUgZGF0YS4g
+DQpJZiB0aGUgZGF0YSBpcyBhbHJlYWR5IGNvcnJ1cHQsIHRoZW4gbm8gbmVlZCB0byBwcm9ncmFt
+IGFueSBkYXRhIGludG8gdGhpcyBibG9jaywgDQpqdXN0IGdvIHRvIGVyYXNlIHRoaXMgYmxvY2su
+DQoNClNpZ25lZC1vZmYtYnk6IFFpIFdhbmcgPHFpd2FuZ0BxaXdhbmdAbWljcm9uLmNvbT4NCi0t
+LQ0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3ViaS9pby5jIGIvZHJpdmVycy9tdGQvdWJpL2lv
+LmMNCmluZGV4IGJmNzlkZWYuLjBhNjM0M2QgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL210ZC91Ymkv
+aW8uYw0KKysrIGIvZHJpdmVycy9tdGQvdWJpL2lvLmMNCkBAIC00OTksNiArNDk5LDcgQEAgc3Rh
+dGljIGludCBub3JfZXJhc2VfcHJlcGFyZShzdHJ1Y3QgdWJpX2RldmljZSAqdWJpLCBpbnQgcG51
+bSkNCiAJc2l6ZV90IHdyaXR0ZW47DQogCWxvZmZfdCBhZGRyOw0KIAl1aW50MzJfdCBkYXRhID0g
+MDsNCisJc3RydWN0IHViaV9lY19oZHIgZWNfaGRyOw0KIAkvKg0KIAkgKiBOb3RlLCB3ZSBjYW5u
+b3QgZ2VuZXJhbGx5IGRlZmluZSBWSUQgaGVhZGVyIGJ1ZmZlcnMgb24gc3RhY2ssDQogCSAqIGJl
+Y2F1c2Ugb2YgdGhlIHdheSB3ZSBkZWFsIHdpdGggdGhlc2UgYnVmZmVycyAoc2VlIHRoZSBoZWFk
+ZXINCkBAIC01MDksNDkgKzUxMCwzOCBAQCBzdGF0aWMgaW50IG5vcl9lcmFzZV9wcmVwYXJlKHN0
+cnVjdCB1YmlfZGV2aWNlICp1YmksIGludCBwbnVtKQ0KIAlzdHJ1Y3QgdWJpX3ZpZF9oZHIgdmlk
+X2hkcjsNCiANCiAJLyoNCisJICogSWYgVklEIG9yIEVDIGlzIHZhbGlkLCBuZWVkIHRvIGNvcnJ1
+cHQgaXQgYmVmb3JlIGVyYXNlIG9wZXJhdGlvbi4gIA0KIAkgKiBJdCBpcyBpbXBvcnRhbnQgdG8g
+Zmlyc3QgaW52YWxpZGF0ZSB0aGUgRUMgaGVhZGVyLCBhbmQgdGhlbiB0aGUgVklEDQogCSAqIGhl
+YWRlci4gT3RoZXJ3aXNlIGEgcG93ZXIgY3V0IG1heSBsZWFkIHRvIHZhbGlkIEVDIGhlYWRlciBh
+bmQNCiAJICogaW52YWxpZCBWSUQgaGVhZGVyLCBpbiB3aGljaCBjYXNlIFVCSSB3aWxsIHRyZWF0
+IHRoaXMgUEVCIGFzDQogCSAqIGNvcnJ1cHRlZCBhbmQgd2lsbCB0cnkgdG8gcHJlc2VydmUgaXQs
+IGFuZCBwcmludCBzY2FyeSB3YXJuaW5ncy4NCiAJICovDQogCWFkZHIgPSAobG9mZl90KXBudW0g
+KiB1YmktPnBlYl9zaXplOw0KLQllcnIgPSBtdGRfd3JpdGUodWJpLT5tdGQsIGFkZHIsIDQsICZ3
+cml0dGVuLCAodm9pZCAqKSZkYXRhKTsNCi0JaWYgKCFlcnIpIHsNCi0JCWFkZHIgKz0gdWJpLT52
+aWRfaGRyX2Fsb2Zmc2V0Ow0KLQkJZXJyID0gbXRkX3dyaXRlKHViaS0+bXRkLCBhZGRyLCA0LCAm
+d3JpdHRlbiwgKHZvaWQgKikmZGF0YSk7DQotCQlpZiAoIWVycikNCi0JCQlyZXR1cm4gMDsNCisJ
+ZXJyID0gdWJpX2lvX3JlYWRfZWNfaGRyKHViaSwgcG51bSwgJmVjX2hkciwgMCk7DQorCWlmIChl
+cnIgIT0gVUJJX0lPX0JBRF9IRFJfRUJBRE1TRyAmJiBlcnIgIT0gVUJJX0lPX0JBRF9IRFIgJiYN
+CisJICAgIGVyciAhPSBVQklfSU9fRkYpew0KKwkJZXJyMSA9IG10ZF93cml0ZSh1YmktPm10ZCwg
+YWRkciwgNCwgJndyaXR0ZW4sICh2b2lkICopJmRhdGEpOw0KKwkJaWYoZXJyMSkNCisJCQlnb3Rv
+IGVycm9yOw0KIAl9DQogDQotCS8qDQotCSAqIFdlIGZhaWxlZCB0byB3cml0ZSB0byB0aGUgbWVk
+aWEuIFRoaXMgd2FzIG9ic2VydmVkIHdpdGggU3BhbnNpb24NCi0JICogUzI5R0w1MTJOIE5PUiBm
+bGFzaC4gTW9zdCBwcm9iYWJseSB0aGUgcHJldmlvdXNseSBlcmFzZWJsb2NrIGVyYXN1cmUNCi0J
+ICogd2FzIGludGVycnVwdGVkIGF0IGEgdmVyeSBpbmFwcHJvcHJpYXRlIG1vbWVudCwgc28gaXQg
+YmVjYW1lDQotCSAqIHVud3JpdGFibGUuIEluIHRoaXMgY2FzZSB3ZSBwcm9iYWJseSBhbnl3YXkg
+aGF2ZSBnYXJiYWdlIGluIHRoaXMNCi0JICogUEVCLg0KLQkgKi8NCi0JZXJyMSA9IHViaV9pb19y
+ZWFkX3ZpZF9oZHIodWJpLCBwbnVtLCAmdmlkX2hkciwgMCk7DQotCWlmIChlcnIxID09IFVCSV9J
+T19CQURfSERSX0VCQURNU0cgfHwgZXJyMSA9PSBVQklfSU9fQkFEX0hEUiB8fA0KLQkgICAgZXJy
+MSA9PSBVQklfSU9fRkYpIHsNCi0JCXN0cnVjdCB1YmlfZWNfaGRyIGVjX2hkcjsNCi0NCi0JCWVy
+cjEgPSB1YmlfaW9fcmVhZF9lY19oZHIodWJpLCBwbnVtLCAmZWNfaGRyLCAwKTsNCi0JCWlmIChl
+cnIxID09IFVCSV9JT19CQURfSERSX0VCQURNU0cgfHwgZXJyMSA9PSBVQklfSU9fQkFEX0hEUiB8
+fA0KLQkJICAgIGVycjEgPT0gVUJJX0lPX0ZGKQ0KLQkJCS8qDQotCQkJICogQm90aCBWSUQgYW5k
+IEVDIGhlYWRlcnMgYXJlIGNvcnJ1cHRlZCwgc28gd2UgY2FuDQotCQkJICogc2FmZWx5IGVyYXNl
+IHRoaXMgUEVCIGFuZCBub3QgYWZyYWlkIHRoYXQgaXQgd2lsbCBiZQ0KLQkJCSAqIHRyZWF0ZWQg
+YXMgYSB2YWxpZCBQRUIgaW4gY2FzZSBvZiBhbiB1bmNsZWFuIHJlYm9vdC4NCi0JCQkgKi8NCi0J
+CQlyZXR1cm4gMDsNCisJZXJyID0gdWJpX2lvX3JlYWRfdmlkX2hkcih1YmksIHBudW0sICZ2aWRf
+aGRyLCAwKTsNCisJaWYgKGVyciAhPSBVQklfSU9fQkFEX0hEUl9FQkFETVNHICYmIGVyciAhPSBV
+QklfSU9fQkFEX0hEUiAmJg0KKwkgICAgZXJyICE9IFVCSV9JT19GRil7DQorCSAgICAJYWRkciAr
+PSB1YmktPnZpZF9oZHJfYWxvZmZzZXQ7DQorCQllcnIxID0gbXRkX3dyaXRlKHViaS0+bXRkLCBh
+ZGRyLCA0LCAmd3JpdHRlbiwgKHZvaWQgKikmZGF0YSk7DQorCQlpZiAoZXJyMSkNCisJCQlnb3Rv
+IGVycm9yOwkNCiAJfQ0KKwlyZXR1cm4gMDsNCiANCitlcnJvcjoNCiAJLyoNCi0JICogVGhlIFBF
+QiBjb250YWlucyBhIHZhbGlkIFZJRCBoZWFkZXIsIGJ1dCB3ZSBjYW5ub3QgaW52YWxpZGF0ZSBp
+dC4NCisJICogVGhlIFBFQiBjb250YWlucyBhIHZhbGlkIFZJRCBvciBFQyBoZWFkZXIsIGJ1dCB3
+ZSBjYW5ub3QgaW52YWxpZGF0ZSBpdC4NCiAJICogU3VwcG9zZWRseSB0aGUgZmxhc2ggbWVkaWEg
+b3IgdGhlIGRyaXZlciBpcyBzY3Jld2VkIHVwLCBzbyByZXR1cm4gYW4NCiAJICogZXJyb3IuDQog
+CSAqLw0KLQl1YmlfZXJyKCJjYW5ub3QgaW52YWxpZGF0ZSBQRUIgJWQsIHdyaXRlIHJldHVybmVk
+ICVkIHJlYWQgcmV0dXJuZWQgJWQiLA0KKwl1YmlfZXJyKCJjYW5ub3QgaW52YWxpZGF0ZSBQRUIg
+JWQsIHJlYWQgcmV0dXJuZWQgJWQgd3JpdGUgcmV0dXJuZWQgJWQiLA0KIAkJcG51bSwgZXJyLCBl
+cnIxKTsNCiAJdWJpX2R1bXBfZmxhc2godWJpLCBwbnVtLCAwLCB1YmktPnBlYl9zaXplKTsNCiAJ
+cmV0dXJuIC1FSU87DQotLS0NCg0KSSBoYXZlIHRlc3RlZCB0aGlzIHBhdGNoIG9uIE1pY3JvbiBO
+T1IgZmxhc2gsIHBhcnQgbnVtYmVyIGlzo7pKUzI4RjUxMk0yOUVXSEEuDQpJZiBoYXZlIGFueSBx
+dWVzdGlvbnMsIHBsZWFzZSBsZXQgbWUga25vdy4gDQpUaGFuayB5b3UNCg0KQmVzdCBSZWdhcmRz
+LCANClFpIFdhbmcgzfXG8A0KRVNHIEFQQUMgQUUgDQpUZWw6IDg2LTAyMS0zODk5NzE1OA0KTW9i
+aWxlOiA4Ni0xNTIwMTk1ODIwMg0KRW1haWw6IHFpd2FuZ0BtaWNyb24uY29tDQpBZGRyZXNzOiBO
+byA2MDEgRmFzYWkgUmQsIFB1ZG9uZywgU2hhbmdoYWksIENoaW5hLCAyMDAxMzENCg==
