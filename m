@@ -1,14 +1,25 @@
-Received: from ns.pmeerw.net ([87.118.82.44] helo=pmeerw.net)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VoV0k-0003hO-V0
- for linux-mtd@lists.infradead.org; Thu, 05 Dec 2013 09:14:19 +0000
-Date: Thu, 5 Dec 2013 10:13:52 +0100 (CET)
-From: Peter Meerwald <pmeerw@pmeerw.net>
-To: linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org
-Subject: OMAP3 NAND ECC selection
-Message-ID: <alpine.DEB.2.01.1312051000270.17561@pmeerw.net>
+Date: Thu, 5 Dec 2013 01:20:48 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH 0/4] mtd: spi-nor: add a new framework for SPI NOR
+Message-ID: <20131205092048.GE4636@norris.computersforpeace.net>
+References: <1385447575-23773-1-git-send-email-b32955@freescale.com>
+ <20131127043253.GA9468@ld-irv-0074.broadcom.com>
+ <5298AA23.7080404@st.com>
+ <1386082273.18201.61.camel@shinybook.infradead.org>
+ <20131204184405.GE9468@ld-irv-0074.broadcom.com>
+ <20131205071224.GA8936@shlinux2.ap.freescale.net>
+ <20131205081101.GA4636@norris.computersforpeace.net>
+ <20131205075901.GA20407@shlinux2.ap.freescale.net>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20131205075901.GA20407@shlinux2.ap.freescale.net>
+Cc: marex@denx.de, Angus Clark <angus.clark@st.com>, broonie@linaro.org,
+ David Woodhouse <dwmw2@infradead.org>,
+ Linus Walleij <linus.walleij@linaro.org>, linux-spi@vger.kernel.org,
+ linux-mtd@lists.infradead.org, pekon@ti.com, sourav.poddar@ti.com,
+ Lee Jones <lee.jones@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,21 +29,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+On Thu, Dec 05, 2013 at 03:59:02PM +0800, Huang Shijie wrote:
+> On Thu, Dec 05, 2013 at 12:11:01AM -0800, Brian Norris wrote:
+> > On Thu, Dec 05, 2013 at 03:12:25PM +0800, Huang Shijie wrote:
+> > > On Wed, Dec 04, 2013 at 10:44:05AM -0800, Brian Norris wrote:
+> > > > 
+> > > > I mostly bring this up, though, because it is an example of hardware
+> > > > that
+> > > > 
+> > > >    (a) can operate as a true SPI device (hardware (1) can handle generic
+> > > >        SPI transfers), but
+> > > >    (b) requires knowledge of the details of SPI flash in order to get
+> > > >        optimal usage out of the acceleration from (2).
+> > > > 
+> > > > In my book, point (a) and (b) hold some bearing over the question of
+> > > > "where should this SPI NOR framework live", because it is reasonable
+> > > > that a single driver for this hardware should be able to handle either
+> > > > true SPI devices or accelerated SPI-NOR flash.
+> > > 
+> > > We have add a @read_id hook for the spi-nor layer, you can use it to read out
+> > > more info (such as the Device Geometry Definition) for your spi-nor controller driver.
+> > > 
+> > > Is it okay?
+> > 
+> > I'm not sure which @read_id hook you're talking about, as I've only
+> > skimmed the most recent thread, and it's not in the last patch series I
+> > have from you, I don't think. But that is not a response at all to the
+> > points I brought up. My statements have nothing to do with device
+> > geometry detection.
+> 
+> My meaning is You can write a new driver for the (b) with the new spi-nor layer,
 
-on OMAP3, the NAND area holding MLO and u-boot need a different ECC scheme 
-(hw) than the rootfs (sw)
+Yes, I can do that.
 
-is there a way to tell the kernel which ECC scheme to use on a 
-per-partition basis?
+> In the new driver you can implement the @read_id yourself, and read out the
+> the necessary info, and implement other hooks for the so-called peculiarities.
 
-I'd like to be able to update MLO and u-boot from within a booted Linux 
-system on the device (I have to resort to u-boot for that where I can 
-control the ECC scheme used)
+Without giving a full judgment on the framework yet (I haven't followed
+as closely as I'd like), I expect that the SPI NOR API will cover the
+needs of my SPI NOR hardware.
 
-thanks, regards, p.
+> > 
+> > What I was actually addressing:
+> > 
+> > Your framework aligns with Mark's original suggestion: that the "SPI
+> > NOR" framework should be a separate layer held entirely within the MTD
+> > subsystem, and that any given driver is *either* a "SPI NOR" driver *or*
+> > a "true SPI" driver, not both.
+> You can only use a SPI-NOR driver, and you can abandon the "true SPI" driver.
+> 
+> Is there some limits that prevent we just code a SPI-NOR driver for your hardware?
 
--- 
+SPI is not used only for SPI NOR; it is useful for other things, like
+communicating with off-chip peripherals or microcontrollers, supporting
+touchscreens, LEDs, media controllers, etc. So with a SPI NOR framework
+living only in the MTD subsystem, I have to write two drivers: one
+(under drivers/spi/) to use only-(a) for controlling non-flash SPI
+devices, and one (under drivers/mtd/) to manage (a)+(b) on SPI NOR
+flash.
 
-Peter Meerwald
-+43-664-2444418 (mobile)
+If, however, we can define a spi_nor_transfer like Angus suggested, and
+if we take that a step further and make it a first-class (but optional)
+citizen of the SPI framework, then we could have drivers that support
+SPI-only, SPI-NOR-only, or both.
+
+Now, I'm not sure how exactly that sort of proposal would work yet, but
+I wanted to test the waters to see
+  - if this is a complete distortion of what Angus or David may have
+    suggested;
+  - if Mark thinks this is reasonable, or if he thinks I'm spouting
+    nonsense; and
+  - if there is some obvious alternate way to support what I describe
+    without moving the SPI-NOR layer into the SPI subsystem.
+
+Brian
