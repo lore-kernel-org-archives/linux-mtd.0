@@ -1,24 +1,19 @@
-Received: from mho-03-ewr.mailhop.org ([204.13.248.66]
- helo=mho-01-ewr.mailhop.org)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VocUq-0006iN-TQ
- for linux-mtd@lists.infradead.org; Thu, 05 Dec 2013 17:13:53 +0000
-Date: Thu, 5 Dec 2013 09:13:26 -0800
-From: Tony Lindgren <tony@atomide.com>
-To: Peter Meerwald <pmeerw@pmeerw.net>
-Subject: Re: OMAP3 NAND ECC selection
-Message-ID: <20131205171326.GA26766@atomide.com>
-References: <alpine.DEB.2.01.1312051000270.17561@pmeerw.net>
- <CAFqH_50vhgJ=ktqmYRo+ZO1bbRmiME+kXVt6sLJL91q9A2S7TA@mail.gmail.com>
- <52A04E75.3010609@corscience.de>
- <alpine.DEB.2.01.1312051711410.20976@pmeerw.net>
+From: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+To: Santosh Shilimkar <santosh.shilimkar@ti.com>, Rob Landley
+ <rob@landley.net>, Russell King <linux@arm.linux.org.uk>
+Subject: [PATCH v3 0/9] Reuse davinci-nand driver for Keystone arch
+Date: Thu, 5 Dec 2013 19:25:48 +0200
+Message-ID: <1386264358-9738-1-git-send-email-ivan.khoronzhuk@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.01.1312051711410.20976@pmeerw.net>
-Cc: Enric Balletbo Serra <eballetbo@gmail.com>, linux-mtd@lists.infradead.org,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- Andreas =?utf-8?B?Qmllw59tYW5u?= <andreas.biessmann@corscience.de>
+Content-Type: text/plain
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ grygorii.strashko@ti.com, Pawel Moll <pawel.moll@arm.com>,
+ Stephen Warren <swarren@wwwdotorg.org>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@kernel.crashing.org>, Rob Herring <rob.herring@calxeda.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,23 +23,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Peter Meerwald <pmeerw@pmeerw.net> [131205 08:13]:
-> > >> I'd like to be able to update MLO and u-boot from within a booted Linux
-> > >> system on the device (I have to resort to u-boot for that where I can
-> > >> control the ECC scheme used)
-> 
-> > > Meanwhile, to do this we use a small userspace program created by
-> > > Javier Martinez in order to flash the MLO in our OMAP3 boards. See
-> > > http://git.isee.biz/?p=pub/scm/writeloader.git;a=summary
-> 
-> > we used another aproach here. See
-> > http://article.gmane.org/gmane.linux.drivers.mtd/43804
-> 
-> pretty much what I have been looking for, thanks!
+This series contains fixes and updates of Davinci nand driver in
+order to reuse it for Keystone platform.
 
-Hmm well both methods should work, but is there anything stopping us
-merging the module param patch to the mainline tree?
+v2..v3:
+- mtd: nand: davinci: don't set timings if AEMIF is used
+	dropped, it would be replaced by alone patch
+	ARM: davinci: aemif: get rid of davinci-nand driver dependency on aemif
 
-Regards,
+v1..v2
+The series is combination of two following series:
+- Davinci nand driver fixes and updates:
+https://lkml.org/lkml/2013/11/20/271
+- Reuse davinci-nand driver for Keystone arch
+https://lkml.org/lkml/2013/11/20/315
 
-Tony
+- mtd: nand: davinci: extend description of bindings
+	clarified changeset description
+
+- mtd: nand: davinci: reuse driver for Keystone arch
+	removed "ti,keystone-nand" compatible from driver
+
+Ivan Khoronzhuk (9):
+  mtd: nand: davinci: fix driver registration
+  mtd: nand: davinci: return ENOMEM if memory allocation is failed
+  mtd: nand: davinci: check required ti,davinci-chipselect property
+  mtd: nand: davinci: simplify error handling
+  mtd: nand: davinci: move bindings under mtd
+  mtd: nand: davinci: extend description of bindings
+  mtd: nand: davinci: adjust DT properties to MTD generic
+  mtd: nand: davinci: reuse driver for Keystone arch
+  mtd: nand: davinci: don't request AEMIF address range
+
+ .../devicetree/bindings/arm/davinci/nand.txt       |   46 ----------
+ .../devicetree/bindings/mtd/davinci-nand.txt       |   94 ++++++++++++++++++++
+ drivers/mtd/nand/Kconfig                           |    6 +-
+ drivers/mtd/nand/davinci_nand.c                    |   70 ++++++++-------
+ 4 files changed, 133 insertions(+), 83 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/arm/davinci/nand.txt
+ create mode 100644 Documentation/devicetree/bindings/mtd/davinci-nand.txt
+
+-- 
+1.7.9.5
