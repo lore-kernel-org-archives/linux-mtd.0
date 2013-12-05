@@ -1,23 +1,21 @@
-Received: from mail-qe0-x22d.google.com ([2607:f8b0:400d:c02::22d])
+Received: from mail-oa0-f50.google.com ([209.85.219.50])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VoNuV-0006iq-NH
- for linux-mtd@lists.infradead.org; Thu, 05 Dec 2013 01:39:24 +0000
-Received: by mail-qe0-f45.google.com with SMTP id 6so16912345qea.32
- for <linux-mtd@lists.infradead.org>; Wed, 04 Dec 2013 17:39:02 -0800 (PST)
-Date: Wed, 4 Dec 2013 17:38:57 -0800
+ id 1VoOGX-00075z-71
+ for linux-mtd@lists.infradead.org; Thu, 05 Dec 2013 02:02:09 +0000
+Received: by mail-oa0-f50.google.com with SMTP id n16so17654863oag.37
+ for <linux-mtd@lists.infradead.org>; Wed, 04 Dec 2013 18:01:41 -0800 (PST)
+Date: Wed, 4 Dec 2013 18:01:37 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Christian Riesch <christian.riesch@omicron.at>
-Subject: Re: [RESEND PATCH 1/2] mtd: Add a retlen parameter to _get_{fact,
- user}_prot_info
-Message-ID: <20131205013857.GG27149@ld-irv-0074.broadcom.com>
-References: <1380798876-3321-1-git-send-email-christian.riesch@omicron.at>
- <9c3c8484-54a4-40e3-8a32-2b01c33280ac@mary.at.omicron.at>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [RFC/PATCH] mtd: nand: Refactor print messages
+Message-ID: <20131205020137.GH27149@ld-irv-0074.broadcom.com>
+References: <1385379031-27766-1-git-send-email-ezequiel.garcia@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9c3c8484-54a4-40e3-8a32-2b01c33280ac@mary.at.omicron.at>
-Cc: Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>,
- linux-mtd@lists.infradead.org
+In-Reply-To: <1385379031-27766-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: Huang Shijie <b32955@freescale.com>, David Woodhouse <dwmw2@infradead.org>,
+ linux-mtd@lists.infradead.org, Pekon Gupta <pekon@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,58 +25,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Christian,
+Hi Ezequiel,
 
-Are you sure you compile-tested this? I get build failures. See below.
+On Mon, Nov 25, 2013 at 08:30:31AM -0300, Ezequiel Garcia wrote:
+> Add a nice "nand:" prefix to all pr_xxx() messages. This allows
+> to get rid of the "NAND" words in messages, given the context
+> is already given by the prefix.
 
-On Thu, Oct 03, 2013 at 01:14:35PM +0200, Christian Riesch wrote:
-> Signed-off-by: Christian Riesch <christian.riesch@omicron.at>
-> Cc: Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>
-> ---
->  drivers/mtd/chips/cfi_cmdset_0001.c |   31 +++++++++++++------------------
->  drivers/mtd/devices/mtd_dataflash.c |    7 ++++---
->  drivers/mtd/mtdchar.c               |   11 ++++++-----
->  drivers/mtd/mtdcore.c               |   12 ++++++------
->  drivers/mtd/mtdpart.c               |   14 ++++++++------
->  drivers/mtd/onenand/onenand_base.c  |   30 ++++++++++++------------------
->  include/linux/mtd/mtd.h             |   16 ++++++++--------
->  7 files changed, 57 insertions(+), 64 deletions(-)
+This ptach looks mostly good to me. A few comments below. If no one
+objects soon, I'll push this.
+
+> Remove the __func__ report from messages where it's not needed and refactor
+> the device detection messages to show itself in several lines.
+
+There are a few more instances of __func__ that might not be needed, but
+I think we're OK for now.
+
 > 
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-> index 7751443..2378e2f 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0001.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-> @@ -2399,24 +2399,19 @@ static int cfi_intelext_lock_user_prot_reg(struct mtd_info *mtd,
->  				     NULL, do_otp_lock, 1);
->  }
->  
-> -static int cfi_intelext_get_fact_prot_info(struct mtd_info *mtd,
-> -					   struct otp_info *buf, size_t len)
-> -{
-> -	size_t retlen;
-> -	int ret;
-> +static int cfi_intelext_get_fact_prot_info(struct mtd_info *, size_t,
-> +					   size_t *, struct otp_info *);
+> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> ---
 
-You have a stray semicolon here, which causes the following compile
-errors/warnings:
-
-drivers/mtd/chips/cfi_cmdset_0001.c:2414:1: error: expected identifier or '(' before '{' token
-drivers/mtd/chips/cfi_cmdset_0001.c:2411:12: warning: 'cfi_intelext_get_fact_prot_info' declared 'static' but never defined [-Wunused-function]
-
-You seem to have replaced a function definition with just a declaration.
-
->  
-
-You also have an extraneous blank line.
-
-> -	ret = cfi_intelext_otp_walk(mtd, 0, len, &retlen, (u_char *)buf, NULL, 0);
-> -	return ret ? : retlen;
-> +{
-> +	return cfi_intelext_otp_walk(mtd, 0, len, &retlen, (u_char *)buf,
-> +				     NULL, 0);
->  }
->  
 ...
+
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index bd39f7b..4bdc0df 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+...
+> @@ -3372,8 +3374,8 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
+>  		id_data[i] = chip->read_byte(mtd);
+>  
+>  	if (id_data[0] != *maf_id || id_data[1] != *dev_id) {
+> -		pr_info("%s: second ID read did not match "
+> -			"%02x,%02x against %02x,%02x\n", __func__,
+> +		pr_info("second ID read did not match "
+> +			"%02x,%02x against %02x,%02x\n",
+
+scripts/checkpatch.pl and Documentation/CodingStyle don't like this long
+string (even though it would be over 80 chars). I think we should combine them.
+
+If no one objects to the patch, I'll just make the modification myself.
+
+>  			*maf_id, *dev_id, id_data[0], id_data[1]);
+>  		return ERR_PTR(-ENODEV);
+>  	}
 
 Brian
