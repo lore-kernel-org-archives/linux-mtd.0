@@ -1,24 +1,23 @@
-Date: Thu, 5 Dec 2013 15:59:02 +0800
-From: Huang Shijie <b32955@freescale.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 0/4] mtd: spi-nor: add a new framework for SPI NOR
-Message-ID: <20131205075901.GA20407@shlinux2.ap.freescale.net>
-References: <1385447575-23773-1-git-send-email-b32955@freescale.com>
- <20131127043253.GA9468@ld-irv-0074.broadcom.com>
- <5298AA23.7080404@st.com>
- <1386082273.18201.61.camel@shinybook.infradead.org>
- <20131204184405.GE9468@ld-irv-0074.broadcom.com>
- <20131205071224.GA8936@shlinux2.ap.freescale.net>
- <20131205081101.GA4636@norris.computersforpeace.net>
+Received: from mail-pb0-x233.google.com ([2607:f8b0:400e:c01::233])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VoULe-0002zO-MZ
+ for linux-mtd@lists.infradead.org; Thu, 05 Dec 2013 08:31:51 +0000
+Received: by mail-pb0-f51.google.com with SMTP id up15so25253914pbc.24
+ for <linux-mtd@lists.infradead.org>; Thu, 05 Dec 2013 00:31:28 -0800 (PST)
+Date: Thu, 5 Dec 2013 00:31:24 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: "Gupta, Pekon" <pekon@ti.com>
+Subject: Re: [PATCH v4 0/4] optimize and clean-up of OMAP NAND and ELM driver
+Message-ID: <20131205083124.GB4636@norris.computersforpeace.net>
+References: <1385374141-10934-1-git-send-email-pekon@ti.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EA510F4@DBDE04.ent.ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20131205081101.GA4636@norris.computersforpeace.net>
-Cc: marex@denx.de, Angus Clark <angus.clark@st.com>, broonie@linaro.org,
- David Woodhouse <dwmw2@infradead.org>,
- Linus Walleij <linus.walleij@linaro.org>, linux-spi@vger.kernel.org,
- linux-mtd@lists.infradead.org, pekon@ti.com, sourav.poddar@ti.com,
- Lee Jones <lee.jones@linaro.org>, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA510F4@DBDE04.ent.ti.com>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ "ezequiel.garcia@free-electrons.com" <ezequiel.garcia@free-electrons.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,49 +27,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 05, 2013 at 12:11:01AM -0800, Brian Norris wrote:
-> On Thu, Dec 05, 2013 at 03:12:25PM +0800, Huang Shijie wrote:
-> > On Wed, Dec 04, 2013 at 10:44:05AM -0800, Brian Norris wrote:
-> > > 
-> > > I mostly bring this up, though, because it is an example of hardware
-> > > that
-> > > 
-> > >    (a) can operate as a true SPI device (hardware (1) can handle generic
-> > >        SPI transfers), but
-> > >    (b) requires knowledge of the details of SPI flash in order to get
-> > >        optimal usage out of the acceleration from (2).
-> > > 
-> > > In my book, point (a) and (b) hold some bearing over the question of
-> > > "where should this SPI NOR framework live", because it is reasonable
-> > > that a single driver for this hardware should be able to handle either
-> > > true SPI devices or accelerated SPI-NOR flash.
-> > 
-> > We have add a @read_id hook for the spi-nor layer, you can use it to read out
-> > more info (such as the Device Geometry Definition) for your spi-nor controller driver.
-> > 
-> > Is it okay?
-> 
-> I'm not sure which @read_id hook you're talking about, as I've only
-> skimmed the most recent thread, and it's not in the last patch series I
-> have from you, I don't think. But that is not a response at all to the
-> points I brought up. My statements have nothing to do with device
-> geometry detection.
+Hi Pekon,
 
-My meaning is You can write a new driver for the (b) with the new spi-nor layer,
+On Mon, Dec 02, 2013 at 07:51:50PM +0000, Pekon Gupta wrote:
+> Just a ping..
+> Do you have any further updates on this series ?
+> If this is clean, I just want to rebase and send last pending series for 
+> omap2.c driver.
 
-In the new driver you can implement the @read_id yourself, and read out the
-the necessary info, and implement other hooks for the so-called peculiarities.
+I'm sorry to delay this long, but this patch series is still rather
+impenetrable for a third-party reader, and so I really can't give my sign-off.
 
-> 
-> What I was actually addressing:
-> 
-> Your framework aligns with Mark's original suggestion: that the "SPI
-> NOR" framework should be a separate layer held entirely within the MTD
-> subsystem, and that any given driver is *either* a "SPI NOR" driver *or*
-> a "true SPI" driver, not both.
-You can only use a SPI-NOR driver, and you can abandon the "true SPI" driver.
+For one, you don't give very good patch titles; 3 of the 4 have "optimize" in
+the title, when in fact that "optimize" does not mean anything about
+optimization, but rather, "unification", "consolidation", "cleanup", or
+something else entirely, depending on which part of the patch you're talking
+about... which brings me to the next point:
 
-Is there some limits that prevent we just code a SPI-NOR driver for your hardware?
+Patches 1 and 4 are doing much more than one thing. Your commit messages
+-- rather than describing succintly a single change being made -- are a
+description of a list of things that you did, some of which are quite
+independent.
 
-thanks
-Huang Shijie
+For instance, consider this list from patch 1:
+
+>         This patch optimizes omap_elm_correct_data() in following ways:
+>         (1) Removes dependency on specific reserved-byte (0x00) in OOB area,
+>             instead Erased-page is identified by matching calc_ecc with a
+>             pre-defined ECC syndrome of all(0xFF) data
+
+This sounds like a self-contained task that should be done in its own patch.
+
+>         (2) merges common code for BCH4_ECC and BCH8_ECC for scalability.
+
+This sounds like a second independent task, so it should be in its own patch.
+
+>         (3) handles incorrect elm_error_location beyond data+oob buffer.
+
+This sounds independent. And is this a bugfix? The description doesn't make
+this clear, and I certainly can't pinpoint this fix, amidst the other 3 tasks
+here.
+
+>         (4) removes check_erased_page(): Bit-flips in erased-page are handled
+>             in same way as for programmed-page
+
+This may be interrelated with (1), and so needs to be in the same patch.
+
+Anyway, it's up to you how to order these patches, due to dependencies
+between the task you list. But I really can't review patch 1 like this,
+and patch 4 suffers a few of the same sort of problems.
+
+If you need clarification on how you can best rework/resubmit this work,
+please ask. I don't want this series to drag on to version 12+, so let's
+focus on how to get this right now.
+
+Brian
