@@ -1,14 +1,14 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
+Received: from arroyo.ext.ti.com ([192.94.94.40])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VowLq-0007KY-NA
- for linux-mtd@lists.infradead.org; Fri, 06 Dec 2013 14:25:56 +0000
+ id 1VowLw-0007Ll-Hi
+ for linux-mtd@lists.infradead.org; Fri, 06 Dec 2013 14:26:01 +0000
 From: Sourav Poddar <sourav.poddar@ti.com>
 To: <broonie@kernel.org>, <linux-spi@vger.kernel.org>,
  <computersforpeace@gmail.com>, <marex@denx.de>
-Subject: [PATCHv2 06/10] drivers: mtd: m25p80: Add api to configure master
- register.
-Date: Fri, 6 Dec 2013 19:54:47 +0530
-Message-ID: <1386339891-32717-7-git-send-email-sourav.poddar@ti.com>
+Subject: [PATCHv2 07/10] drivers: mtd: m25p80: Adapt driver to support memory
+ mapped read.
+Date: Fri, 6 Dec 2013 19:54:48 +0530
+Message-ID: <1386339891-32717-8-git-send-email-sourav.poddar@ti.com>
 In-Reply-To: <1386339891-32717-1-git-send-email-sourav.poddar@ti.com>
 References: <1386339891-32717-1-git-send-email-sourav.poddar@ti.com>
 MIME-Version: 1.0
@@ -25,47 +25,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-These can be used to fill information needed to configure
-master controller registers.
+Adapt driver to do a memory mapped read.
 
 Signed-off-by: Sourav Poddar <sourav.poddar@ti.com>
 ---
 v1->v2:
- instead of a u8 *val, use a struct (slave_info)  already defined 
- in the first patch of the series. This will allow us to add more
- parameters into the struct.
-
- drivers/mtd/devices/m25p80.c |   18 ++++++++++++++++++
- 1 files changed, 18 insertions(+), 0 deletions(-)
+ - Add a check to Wait for the previous erase/write to
+   finish.
+ - Ensure proper locking
+ drivers/mtd/devices/m25p80.c |   20 ++++++++++++++++++++
+ 1 files changed, 20 insertions(+), 0 deletions(-)
 
 diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 7dc2c14..b90c7e5 100644
+index b90c7e5..eb75d84 100644
 --- a/drivers/mtd/devices/m25p80.c
 +++ b/drivers/mtd/devices/m25p80.c
-@@ -490,6 +490,24 @@ static inline int m25p80_dummy_cycles_read(struct m25p *flash)
- }
+@@ -109,6 +109,7 @@ struct m25p {
+ 	u8			program_opcode;
+ 	u8			*command;
+ 	enum read_type		flash_read;
++	void __iomem *mem_addr;
+ };
  
- /*
-+ * This API can be used to transfer flash information to
-+ * SPI controller which needs some of its registers to get
-+ * configured on flash information.
-+ */
-+static void m25p80_fill_flash_information(struct m25p *flash)
-+{
-+	struct spi_device *spi = flash->spi;
-+	struct spi_master *master = spi->master;
+ static inline struct m25p *mtd_to_m25p(struct mtd_info *mtd)
+@@ -515,6 +516,7 @@ static int m25p80_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	size_t *retlen, u_char *buf)
+ {
+ 	struct m25p *flash = mtd_to_m25p(mtd);
++	struct spi_master *master = flash->spi->master;
+ 	struct spi_transfer t[2];
+ 	struct spi_message m;
+ 	uint8_t opcode;
+@@ -523,6 +525,20 @@ static int m25p80_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	pr_debug("%s: %s from 0x%08x, len %zd\n", dev_name(&flash->spi->dev),
+ 			__func__, (u32)from, len);
+ 
++	if (master->mmap) {
++		mutex_lock(&flash->lock);
++		/* Wait till previous write/erase is done. */
++		if (wait_till_ready(flash)) {
++			mutex_unlock(&flash->lock);
++			return 1;
++		}
++		flash->mem_addr = master->get_buf(master);
++		memcpy(buf, flash->mem_addr + from, len);
++		master->put_buf(master);
++		*retlen = len;
++		goto out;
++	}
 +
-+	spi->info.read_opcode = flash->read_opcode;
-+	spi->info.program_opcode = flash->program_opcode;
-+	spi->info.addr_width = flash->addr_width;
-+	spi->info.dummy_cycles = m25p80_dummy_cycles_read(flash);
+ 	spi_message_init(&m);
+ 	memset(t, 0, (sizeof t));
+ 
+@@ -558,6 +574,7 @@ static int m25p80_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 
+ 	*retlen = m.actual_length - m25p_cmdsz(flash) - dummy;
+ 
++out:
+ 	mutex_unlock(&flash->lock);
+ 
+ 	return 0;
+@@ -1286,6 +1303,9 @@ static int m25p_probe(struct spi_device *spi)
+ 		flash->addr_width = 3;
+ 	}
+ 
++	if (spi->master->configure_from_slave)
++		m25p80_fill_flash_information(flash);
 +
-+	master->configure_from_slave(flash->spi);
-+}
-+
-+/*
-  * Read an address range from the flash chip.  The address range
-  * may be any size provided it is within the physical boundaries.
-  */
+ 	dev_info(&spi->dev, "%s (%lld Kbytes)\n", id->name,
+ 			(long long)flash->mtd.size >> 10);
+ 
 -- 
 1.7.1
