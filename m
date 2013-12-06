@@ -1,34 +1,26 @@
-Received: from ra.se.axis.com ([195.60.68.13])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VoreS-0008GV-5x
- for linux-mtd@lists.infradead.org; Fri, 06 Dec 2013 09:24:48 +0000
-Received: from localhost (localhost [127.0.0.1])
- by ra.se.axis.com (Postfix) with ESMTP id 46B0A3F20F8
- for <linux-mtd@lists.infradead.org>; Fri,  6 Dec 2013 10:24:23 +0100 (CET)
-Received: from ra.se.axis.com ([127.0.0.1])
- by localhost (ra.se.axis.com [127.0.0.1]) (amavisd-new, port 10024)
- with LMTP id 6nRZOjMqp9pE for <linux-mtd@lists.infradead.org>;
- Fri,  6 Dec 2013 10:24:22 +0100 (CET)
-Received: from boulder.se.axis.com (boulder.se.axis.com [10.0.2.104])
- by ra.se.axis.com (Postfix) with ESMTP id 1E3D63F2137
- for <linux-mtd@lists.infradead.org>; Fri,  6 Dec 2013 10:24:18 +0100 (CET)
-Received: from boulder.se.axis.com (localhost [127.0.0.1])
- by postfix.imss71 (Postfix) with ESMTP id 086C3A8B
- for <linux-mtd@lists.infradead.org>; Fri,  6 Dec 2013 10:24:18 +0100 (CET)
-Received: from seth.se.axis.com (seth.se.axis.com [10.0.2.172])
- by boulder.se.axis.com (Postfix) with ESMTP id F1ACFA76
- for <linux-mtd@lists.infradead.org>; Fri,  6 Dec 2013 10:24:17 +0100 (CET)
-Received: from xmail2.se.axis.com (xmail2.se.axis.com [10.0.5.74])
- by seth.se.axis.com (Postfix) with ESMTP id F03EB3E06F
- for <linux-mtd@lists.infradead.org>; Fri,  6 Dec 2013 10:24:17 +0100 (CET)
-Date: Fri, 6 Dec 2013 10:24:17 +0100
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Linux mtd <linux-mtd@lists.infradead.org>
-Subject: Coping with multibit ECC flashes in UBI
-Message-ID: <alpine.DEB.2.00.1312061015380.1898@lnxricardw.se.axis.com>
+Received: from co1ehsobe006.messaging.microsoft.com ([216.32.180.189]
+ helo=co1outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VosfH-0001HR-CC
+ for linux-mtd@lists.infradead.org; Fri, 06 Dec 2013 10:29:44 +0000
+Date: Fri, 6 Dec 2013 18:02:22 +0800
+From: Huang Shijie <b32955@freescale.com>
+To: Angus Clark <angus.clark@st.com>
+Subject: Re: [PATCH] mtd: m25p80: add support for Spansion s25fl128s chip
+Message-ID: <20131206100220.GA16069@shlinux2.ap.freescale.net>
+References: <528C8C1B.7090902@st.com> <528DC1DB.2090007@freescale.com>
+ <528DCFBD.9000905@st.com> <528DD70B.8010602@freescale.com>
+ <528DE9A8.6060207@st.com> <528EBDAE.7070408@freescale.com>
+ <20131204235831.GF27149@ld-irv-0074.broadcom.com>
+ <20131205022025.GA24434@shlinux2.ap.freescale.net>
+ <CAN8TOE8oQ05zYXj+hbCykzteM2rJC=P3wNwGS8Ey8Lj0a2XWgQ@mail.gmail.com>
+ <52A05BA6.9080800@st.com>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="ISO-8859-15"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <52A05BA6.9080800@st.com>
+Cc: Marek Vasut <marex@denx.de>, Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,27 +30,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, Dec 05, 2013 at 10:55:34AM +0000, Angus Clark wrote:
+> static struct flash_info *__devinit fsm_jedec_probe(struct stm_spi_fsm *fsm)
+> {
+> 	uint8_t	readid[MAX_READID_LEN];
 
-There have been SLC NAND flashes around for a while which according to 
-their data sheets require 4 or even 8 bit ECC (usually BCH). Traditionally 
-this was only the case for MLC NAND, with SLC only requiring single-bit 
-ECC (Hamming), and even then, bit flips were very rare.
+How long is the MAX_READID_LEN? 5 or 8?
 
-For flashes that require multibit ECC, it's common to have single bits 
-which flip fairly quickly after having been written. Thus, the current 
-scheme in UBI of rewriting a flash block when an 'ECC corrected' status 
-has been returned during a read would quickly wear out certain blocks.
+Brian doubt that some NOR can not be read out more then 5 bytes.
 
-I seem to recall there being a discussion like a year ago about 
-introducing a threshold for the number of corrected bits in a page before 
-the containing block was rewritten, but I don't know what became of that. 
-Anyone who was more involved remember more?
+> 	char readid_str[MAX_READID_LEN * 3 + 1];
+> 	struct flash_info *info;
+> 
+> 	if (fsm_read_jedec(fsm, readid) != 0) {
+> 		dev_info(fsm->dev, "error reading JEDEC ID\n");
+> 		return NULL;
+> 	}
+> 
+> 	hex_dump_to_buffer(readid, MAX_READID_LEN, 16, 1,
+> 			   readid_str, sizeof(readid_str), 0);
+> 
+> 	dev_dbg(fsm->dev, "READID = %s\n", readid_str);
+> 
+> 	/* The 'readid' may match multiple entries in the table.  To ensure we
+> 	 * retrieve the most specific match, the table is sorted in order of
+> 	 * 'readid_len'.
+> 	 */
+> 	sort(flash_types, ARRAY_SIZE(flash_types) - 1,
+> 	     sizeof(struct flash_info), cmp_flash_info_readid_len, NULL);
+> 
+If we keep the flash_types table be inserted by a specific order.
+We can remove this sort code.
 
-(I was going to search the list archives, but at least the page 
-http://lists.infradead.org/pipermail/linux-mtd/ has no search function).
+> 	for (info = flash_types; info->name; info++) {
+> 		if (memcmp(info->readid, readid, info->readid_len) == 0)
+> 			return info;
+> 	}
+> 
 
-/Ricard
--- 
-Ricard Wolf Wanderlöf                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+thanks
+Huang Shijie
