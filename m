@@ -1,22 +1,21 @@
-Date: Fri, 6 Dec 2013 11:47:20 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: Steven Whitehouse <swhiteho@redhat.com>
-Subject: Re: [Cluster-devel] [PATCH 16/18] gfs2: use generic posix ACL
- infrastructure
-Message-ID: <20131206194720.GB32122@infradead.org>
-References: <20131201115903.910559036@bombadil.infradead.org>
- <20131201120656.539995924@bombadil.infradead.org>
- <1386159157.2711.11.camel@menhir>
+Message-ID: <52A23BE0.2000207@ti.com>
+Date: Sat, 7 Dec 2013 02:34:32 +0530
+From: Sekhar Nori <nsekhar@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1386159157.2711.11.camel@menhir>
-Cc: cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net,
- linux-ext4@vger.kernel.org, reiserfs-devel@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, Christoph Hellwig <hch@infradead.org>,
- linux-mtd@lists.infradead.org, viro@zeniv.linux.org.uk,
- linux-fsdevel@vger.kernel.org, xfs@oss.sgi.com, linux-nfs@vger.kernel.org,
- linux-btrfs@vger.kernel.org
+To: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+Subject: Re: [PATCH v3] ARM: davinci: aemif: get rid of davinci-nand driver
+ dependency on aemif
+References: <1386267092-18615-1-git-send-email-ivan.khoronzhuk@ti.com>
+In-Reply-To: <1386267092-18615-1-git-send-email-ivan.khoronzhuk@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, grygorii.strashko@ti.com,
+ linux@arm.linux.org.uk, pawel.moll@arm.com, swarren@wwwdotorg.org,
+ ijc+devicetree@hellion.org.uk, galak@kernel.crashing.org,
+ rob.herring@calxeda.com, linux-kernel@vger.kernel.org,
+ Santosh Shilimkar <santosh.shilimkar@ti.com>, rob@landley.net,
+ linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,24 +25,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Dec 04, 2013 at 12:12:37PM +0000, Steven Whitehouse wrote:
-> >  		error = posix_acl_equiv_mode(acl, &mode);
-> > +		if (error < 0)
-> >  
-> Andy Price has pointed out a missing "return error;" here
-> 
-> > -		if (error <= 0) {
-> > -			posix_acl_release(acl);
-> > +		if (error == 0)
-> >  			acl = NULL;
-> >  
-> > -			if (error < 0)
-> > -				return error;
-> > -		}
-> > -
-> 
-> Also, there seems to be a white space error in the xfs patch around line
-> 170 in fs/xfs/xfs_iops.c where there is an added "if (default_acl)" with
-> a space before the tab,
+On 12/5/2013 11:41 PM, Ivan Khoronzhuk wrote:
 
-I'll take care of these for the next version.
+> diff --git a/arch/arm/mach-davinci/board-mityomapl138.c b/arch/arm/mach-davinci/board-mityomapl138.c
+> index 7aa105b..98a66ff 100644
+> --- a/arch/arm/mach-davinci/board-mityomapl138.c
+> +++ b/arch/arm/mach-davinci/board-mityomapl138.c
+> @@ -432,6 +432,9 @@ static void __init mityomapl138_setup_nand(void)
+>  {
+>  	platform_add_devices(mityomapl138_devices,
+>  				 ARRAY_SIZE(mityomapl138_devices));
+> +
+> +	if (davinci_aemif_setup(&mityomapl138_nandflash_device))
+> +		pr_warn("%s: Cannot configure AEMIF.\n", __func__);
+>  }
+
+I must be missing something, but exactly why is this required for
+board-mityomapl138.c?
+
+Thanks,
+Sekhar
