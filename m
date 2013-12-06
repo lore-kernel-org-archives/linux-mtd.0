@@ -1,21 +1,24 @@
-Message-ID: <52A23BE0.2000207@ti.com>
-Date: Sat, 7 Dec 2013 02:34:32 +0530
-From: Sekhar Nori <nsekhar@ti.com>
+From: arno@natisbad.org (Arnaud Ebalard)
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH v5 00/14] Armada 370/XP NAND support
+References: <20131128185040.GA13182@localhost> <87bo12kcyt.fsf@natisbad.org>
+ <20131202103305.GB2466@localhost> <87siubneuf.fsf@natisbad.org>
+ <20131203002225.GA5333@localhost> <87ob4xbs8l.fsf@natisbad.org>
+ <87iov5aapx.fsf@natisbad.org> <20131204142009.GB2486@localhost>
+ <87haaogx6j.fsf@natisbad.org> <87d2lbrpvy.fsf@natisbad.org>
+ <20131206125559.GA4208@localhost>
+Date: Fri, 06 Dec 2013 22:41:32 +0100
+In-Reply-To: <20131206125559.GA4208@localhost> (Ezequiel Garcia's message of
+ "Fri, 6 Dec 2013 09:56:00 -0300")
+Message-ID: <878uvx4pyr.fsf@natisbad.org>
 MIME-Version: 1.0
-To: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
-Subject: Re: [PATCH v3] ARM: davinci: aemif: get rid of davinci-nand driver
- dependency on aemif
-References: <1386267092-18615-1-git-send-email-ivan.khoronzhuk@ti.com>
-In-Reply-To: <1386267092-18615-1-git-send-email-ivan.khoronzhuk@ti.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, grygorii.strashko@ti.com,
- linux@arm.linux.org.uk, pawel.moll@arm.com, swarren@wwwdotorg.org,
- ijc+devicetree@hellion.org.uk, galak@kernel.crashing.org,
- rob.herring@calxeda.com, linux-kernel@vger.kernel.org,
- Santosh Shilimkar <santosh.shilimkar@ti.com>, rob@landley.net,
- linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain
+Cc: Lior Amsalem <alior@marvell.com>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Jason Cooper <jason@lakedaemon.net>, linux-mtd@lists.infradead.org,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,23 +28,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/5/2013 11:41 PM, Ivan Khoronzhuk wrote:
+Hi Ezequiel,
 
-> diff --git a/arch/arm/mach-davinci/board-mityomapl138.c b/arch/arm/mach-davinci/board-mityomapl138.c
-> index 7aa105b..98a66ff 100644
-> --- a/arch/arm/mach-davinci/board-mityomapl138.c
-> +++ b/arch/arm/mach-davinci/board-mityomapl138.c
-> @@ -432,6 +432,9 @@ static void __init mityomapl138_setup_nand(void)
->  {
->  	platform_add_devices(mityomapl138_devices,
->  				 ARRAY_SIZE(mityomapl138_devices));
-> +
-> +	if (davinci_aemif_setup(&mityomapl138_nandflash_device))
-> +		pr_warn("%s: Cannot configure AEMIF.\n", __func__);
->  }
+Ezequiel Garcia <ezequiel.garcia@free-electrons.com> writes:
 
-I must be missing something, but exactly why is this required for
-board-mityomapl138.c?
+> Hi Arnaud,
+>
+> On Thu, Dec 05, 2013 at 09:42:25PM +0100, Arnaud Ebalard wrote:
+> [..]
+>> [ 1488.150697] Waiting for device to be ready
+>> [ 1488.150702] Device is ready
+>> 
+>> If you had the time to test the offending block on another device, did
+>> you manage to reproduce what I get?
+>> 
+>
+> Yes, I managed to reproduced your timeout. You found a bug on my
+> dev_ready completion handler scheme, and now I officially hate this
+> evil completion handler ;-)
+>
+> I've pushed a new branch for you to try:
+>
+> https://github.com/MISL-EBU-System-SW/mainline-public/tree/pxa3xx-armada-nand-new-ecc-v2
+>
+> Please give it a try, and test as heavily and creatively as you can
+> think off.
 
-Thanks,
-Sekhar
+Sorry, but I was unable to find any more bug, i.e. AFAICT it does work
+as expected now :-) FWIW, thanks for your time, you can put my:
+
+Tested-by: Arnaud Ebalard <arno@natisbad.org>
+
+Cheers,
+
+a+
