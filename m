@@ -1,20 +1,22 @@
-Date: Fri, 6 Dec 2013 19:12:18 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Jason Cooper <jason@lakedaemon.net>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: Re: Merge order in Armada 370/XP (mvebu) NAND support
-Message-ID: <20131206221217.GC2458@localhost>
-References: <20131206184544.GA14986@localhost>
- <20131206192540.GU29282@titan.lakedaemon.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20131206192540.GU29282@titan.lakedaemon.net>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Andrew Lunn <andrew@lunn.ch>, Olof Johansson <olof@lixom.net>,
- Lior Amsalem <alior@marvell.com>, linux-mtd@lists.infradead.org,
+From: Arnaud Ebalard <arno@natisbad.org>
+To: Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
  Gregory Clement <gregory.clement@free-electrons.com>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: [PATCHv0 0/3] ARM: mvebu: Enable NAND controller in NETGEAR ReadyNAS
+ .dts files
+Message-Id: <cover.1386370808.git.arno@natisbad.org>
+Date: Sat, 07 Dec 2013 00:12:53 +0100
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ Russell King <linux@arm.linux.org.uk>, Pawel Moll <pawel.moll@arm.com>,
+ Stephen Warren <swarren@wwwdotorg.org>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Rob Herring <rob.herring@calxeda.com>, Lior Amsalem <alior@marvell.com>,
+ Andrew Lunn <andrew@lunn.ch>, Olof Johansson <olof@lixom.net>,
+ linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
  linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,21 +27,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Dec 06, 2013 at 02:25:40PM -0500, Jason Cooper wrote:
-> On Fri, Dec 06, 2013 at 03:45:45PM -0300, Ezequiel Garcia wrote:
-> > Jason/Brian: What do you think we can do?
-> 
-> Revert the change adding the compatible string in the first place?
-> 
 
-Yes, that probably is the best thing to do.
+Now that NAND controller support is available for Armada 370/XP
+(cb28e2537a6f: ARM: mvebu: Add support for NAND controller in
+Armada 370/XP), let's enable support for ReadyNAS boards.
 
-Brian: what do you think? I can send you a revert of the
-"armada370-nand" compatible addition to be pushed for v3.13-rc4?
+The three commits in this series all include the partitions
+definitions specific to each ReadyNAS variant as delivered
+by NETGEAR with standard images.
 
-The compatible can be added on top of l2-mtd.git, after all
-the needed support is in the driver.
+As described in similar commits 2be2bc39c6f0 (ARM: mvebu: Enable
+NAND controller in Armada XP GP board) and d8c552dddfbf (ARM: 
+mvebu: Enable NAND controller in Armada 370 Mirabox),
+"marvell,keep-config" parameter is used as current support does
+not allow for setting of timing parameters yet.
+
+Each patch has been tested on each specific device using Ezequiel's
+tree; last known bug having being fixed today.
+
+Jason, Ezequiel, this is a v0. I do not mind at all waiting for a
+heads up to repost it later when every bit of nand support is where
+it should be.
+
+Ezequiel, I have left a comment in the .dts file to indicate a lost
+reader that the last MB of last partition is in practice not
+writable.
+
+Cheers,
+
+a+
+
+Arnaud Ebalard (3):
+  ARM: mvebu: Enable NAND controller in NETGEAR ReadyNAS 102 .dts file
+  ARM: mvebu: Enable NAND controller in NETGEAR ReadyNAS 104 .dts file
+  ARM: mvebu: Enable NAND controller in NETGEAR ReadyNAS 2120 .dts file
+
+ arch/arm/boot/dts/armada-370-netgear-rn102.dts | 36 ++++++++++++++++++++++++++
+ arch/arm/boot/dts/armada-370-netgear-rn104.dts | 36 ++++++++++++++++++++++++++
+ arch/arm/boot/dts/armada-xp-netgear-rn2120.dts | 36 ++++++++++++++++++++++++++
+ 3 files changed, 108 insertions(+)
+
 -- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+1.8.4.4
