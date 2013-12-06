@@ -1,26 +1,23 @@
-Received: from co1ehsobe006.messaging.microsoft.com ([216.32.180.189]
- helo=co1outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VosfH-0001HR-CC
- for linux-mtd@lists.infradead.org; Fri, 06 Dec 2013 10:29:44 +0000
-Date: Fri, 6 Dec 2013 18:02:22 +0800
-From: Huang Shijie <b32955@freescale.com>
-To: Angus Clark <angus.clark@st.com>
-Subject: Re: [PATCH] mtd: m25p80: add support for Spansion s25fl128s chip
-Message-ID: <20131206100220.GA16069@shlinux2.ap.freescale.net>
-References: <528C8C1B.7090902@st.com> <528DC1DB.2090007@freescale.com>
- <528DCFBD.9000905@st.com> <528DD70B.8010602@freescale.com>
- <528DE9A8.6060207@st.com> <528EBDAE.7070408@freescale.com>
- <20131204235831.GF27149@ld-irv-0074.broadcom.com>
- <20131205022025.GA24434@shlinux2.ap.freescale.net>
- <CAN8TOE8oQ05zYXj+hbCykzteM2rJC=P3wNwGS8Ey8Lj0a2XWgQ@mail.gmail.com>
- <52A05BA6.9080800@st.com>
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Vot35-0001hb-V8
+ for linux-mtd@lists.infradead.org; Fri, 06 Dec 2013 10:54:20 +0000
+Date: Fri, 6 Dec 2013 07:53:55 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH] mtd: nand: pxa3xx: Use info->use_dma to release DMA
+ resources
+Message-ID: <20131206105354.GA2511@localhost>
+References: <1385470344-2542-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20131127075819.GC13929@norris.computersforpeace.net>
+ <20131127113405.GA2326@localhost>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <52A05BA6.9080800@st.com>
-Cc: Marek Vasut <marex@denx.de>, Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20131127113405.GA2326@localhost>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,43 +27,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 05, 2013 at 10:55:34AM +0000, Angus Clark wrote:
-> static struct flash_info *__devinit fsm_jedec_probe(struct stm_spi_fsm *fsm)
-> {
-> 	uint8_t	readid[MAX_READID_LEN];
+Brian,
 
-How long is the MAX_READID_LEN? 5 or 8?
+On Wed, Nov 27, 2013 at 08:34:05AM -0300, Ezequiel Garcia wrote:
+> On Tue, Nov 26, 2013 at 11:58:19PM -0800, Brian Norris wrote:
+> > On Tue, Nov 26, 2013 at 09:52:24AM -0300, Ezequiel Garcia wrote:
+> > > After the driver allocates all DMA resources, it sets "info->use_dma".
+> > > Therefore, we need to check that variable to decide which resources
+> > > needs to be freed, instead of the global use_dma variable.
+> > > 
+> > > Without this change, when the device probe fails, the driver will try
+> > > to release unallocated DMA resources, with nasty results.
+> > > 
+> > > Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> > > ---
+> > > This is minor fix, but a fix anyway, so it should be queued for stable.
+> > > 
+> > >  drivers/mtd/nand/pxa3xx_nand.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+> > > index 97c3eb5..8f2104c 100644
+> > > --- a/drivers/mtd/nand/pxa3xx_nand.c
+> > > +++ b/drivers/mtd/nand/pxa3xx_nand.c
+> > > @@ -1288,7 +1288,7 @@ static int pxa3xx_nand_init_buff(struct pxa3xx_nand_info *info)
+> > >  static void pxa3xx_nand_free_buff(struct pxa3xx_nand_info *info)
+> > >  {
+> > >  	struct platform_device *pdev = info->pdev;
+> > > -	if (use_dma) {
+> > > +	if (info->use_dma) {
+> > 
+> > With this change, then the 'else' case will be executed and will kfree()
+> > the data buffer that we didn't allocate?
+> > 
+> >   kfree(info->data_buff);
+> > 
+> > Fortunately kfree()'ing a NULL is a no-op.
+> > 
+> 
+> No. The buffer is allocated at a very early stage in DMA and non-DMA modes.
+> It's later reallocated, but in any case when pxa3xx_nand_free_buff()
+> is called, the buffer can never be NULL.
+> 
+> The situation this commit fixes is that when the cleanup is called from
+> the probe(), the DMA resources haven't been allocated yet and so the
+> release must be kfree().
+> 
+> Remember we've recently changed this driver to work in non-DMA mode
+> until the page size is correctly detected. Until then, info->use_dma is
+> false.
+> 
+> > But this highlights some of the strangeness of the error handling in
+> > this driver. It has an atypical style, in which the probe routine calls
+> > the remove routine if it fails. Normally, the probe routine has teardown
+> > carefully planned in stages, whereas the remove routine just does it all
+> > in one go (since it can assume the device was fully initialized). (And
+> > of course, the devm_* functions can help with simplifying some of
+> > this...)
+> > 
+> 
+> Yes, I know. The driver is very very old, and some parts of it need some
+> love. However, the error handling is not so bad. When
+> pxa3xx_nand_remove() is called, all resources are guaranteed to be
+> allocated so it works like a full-fledged release.
+> 
+> I'm actually more annoyed by the fact there's two variables with the
+> same name: use_dma, and info->use_dma.
+> 
+> > But I suppose this patch is correct as-is, and this issue could be
+> > revisited later.
+> > 
+> > For my reference, have you actually seen this bug in practice? I'm not
+> > sure how well this fits in the -stable rules, if it hasn't been observed
+> > and tested appropriately.
+> > 
+> 
+> Yes, I've seen this bug in practice, or otherwise wouldn't notice such small
+> typo :-) The bug was triggered in PXA platforms, when the device cannot
+> be identified (nand_scan fails).
+> 
+> It's a very rare condition, but it's a real bug. Is that enough for -stable?
 
-Brian doubt that some NOR can not be read out more then 5 bytes.
+Just a gentle ping, in case this one felt through the cracks.
 
-> 	char readid_str[MAX_READID_LEN * 3 + 1];
-> 	struct flash_info *info;
-> 
-> 	if (fsm_read_jedec(fsm, readid) != 0) {
-> 		dev_info(fsm->dev, "error reading JEDEC ID\n");
-> 		return NULL;
-> 	}
-> 
-> 	hex_dump_to_buffer(readid, MAX_READID_LEN, 16, 1,
-> 			   readid_str, sizeof(readid_str), 0);
-> 
-> 	dev_dbg(fsm->dev, "READID = %s\n", readid_str);
-> 
-> 	/* The 'readid' may match multiple entries in the table.  To ensure we
-> 	 * retrieve the most specific match, the table is sorted in order of
-> 	 * 'readid_len'.
-> 	 */
-> 	sort(flash_types, ARRAY_SIZE(flash_types) - 1,
-> 	     sizeof(struct flash_info), cmp_flash_info_readid_len, NULL);
-> 
-If we keep the flash_types table be inserted by a specific order.
-We can remove this sort code.
-
-> 	for (info = flash_types; info->name; info++) {
-> 		if (memcmp(info->readid, readid, info->readid_len) == 0)
-> 			return info;
-> 	}
-> 
-
-thanks
-Huang Shijie
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
