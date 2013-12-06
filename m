@@ -1,22 +1,14 @@
-Date: Fri, 6 Dec 2013 16:18:08 +0800
 From: Huang Shijie <b32955@freescale.com>
-To: Angus Clark <angus.clark@st.com>
-Subject: Re: [PATCH 0/4] mtd: spi-nor: add a new framework for SPI NOR
-Message-ID: <20131206081807.GB3710@shlinux2.ap.freescale.net>
-References: <1385447575-23773-1-git-send-email-b32955@freescale.com>
- <20131127043253.GA9468@ld-irv-0074.broadcom.com>
- <5298AA23.7080404@st.com>
- <1386082273.18201.61.camel@shinybook.infradead.org>
- <20131204184405.GE9468@ld-irv-0074.broadcom.com>
- <52A08F43.6060307@st.com>
+To: <dwmw2@infradead.org>
+Subject: [PATCH V2 0/4] mtd: spi-nor: add a new framework for SPI NOR
+Date: Fri, 6 Dec 2013 16:32:40 +0800
+Message-ID: <1386318764-15882-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <52A08F43.6060307@st.com>
-Cc: marex@denx.de, broonie@linaro.org, David Woodhouse <dwmw2@infradead.org>,
- Linus Walleij <linus.walleij@linaro.org>, linux-spi@vger.kernel.org,
+Content-Type: text/plain
+Cc: marex@denx.de, angus.clark@st.com, broonie@linaro.org,
+ linux-spi@vger.kernel.org, Huang Shijie <b32955@freescale.com>,
  linux-mtd@lists.infradead.org, pekon@ti.com, sourav.poddar@ti.com,
- Brian Norris <computersforpeace@gmail.com>, Lee Jones <lee.jones@linaro.org>,
+ computersforpeace@gmail.com, lee.jones@linaro.org,
  linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,52 +19,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 05, 2013 at 02:35:47PM +0000, Angus Clark wrote:
-> Hi Brian,
-> 
-> On 12/04/2013 06:44 PM, Brian Norris wrote:
-> > On this topic, I have one more stick to throw on this fire; I have some
-> > Broadcom hardware that consists of two pieces:
-> > 
-> >   (1) a true SPI controller, with single-line-I/O and
-> >   (2) a Serial Flash controller that can accelerate flash read, using
-> >       dual/quad I/O.
-> 
-> We support one platform with properties similar to the hardware you describe,
-> and such a hybrid configuration was in mind when I was thinking about the
-> spi-nor framework.  I am not sure how well this will come across over email, but
-> I envisage something like this:
-> 
->                              spi-nor
->                                 |
->                                 v
->                           [spi-nor-xfer]
->                                 |
->          ------------------------------------------------
->         |                       |                        |
->         v                       v                        v
->    spi-wrapper (<------)  hybrid-driver          serial-flash-driver
->         |                       |                        |
->       [SPI]                     |                        |
->         |                       |                        |
->         v                       |                        |
-> generic-spi-driver              |                        |
->         |                       |                        |
->         v                       v                        v
-> [generic-SPI-Cntrl]   [SPI-Flash-Read Cntrl]   [SPI-Flash-Controller]
-> 
-> The 'spi-nor' layer is responsible for Serial Flash domain knowledge, and how to
-> generate 'spi-nor-xfer' messages.  The 'spi-wrapper' would provide an interface
-> to the generic SPI framework, flattening the 'spi-nor-xfer' message to standard
-> SPI calls.  The combination of 'spi-nor' and 'spi-wrapper' should achieve what
-> we have today for the m25p80 driver.  The 'serial-flash-driver' in the example
-> provides an implementation for a dedicated Serial Flash Controller, making use
-> of the spi-nor-xfer semantics where required.  The 'hybrid-driver' could use the
-> 'spi-wrapper' implementation for write and erase hooks, and optimised
-> implementations for read hooks.
-> 
-For the diagram above, I think we can regard the hybrid driver as a kind of
-serial-flash-driver too.
+1.) Why add a new framework for SPI NOR?
+  The SPI-NOR controller such as Freescale's Quadspi controller is working
+  in a different way from the SPI bus. It should knows the NOR commands to
+  find the right LUT sequence. Unfortunately, the current code can not meet
+  this requirement.
 
-thanks
-Huang Shijie
+2.) How does this patch set do?
+   This patch set adds a new spi-nor layer.
+   Before this patch, the layer is like:
+
+                   MTD
+         ------------------------
+                  m25p80
+         ------------------------
+	       spi bus driver
+         ------------------------
+	        SPI NOR chip
+
+   After this patch, the layer is like:
+                   MTD
+         ------------------------
+                  spi-nor
+         ------------------------
+                  m25p80
+         ------------------------
+	       spi bus driver
+         ------------------------
+	       SPI NOR chip
+
+  With the spi-nor controller driver(Freescale Quadspi), it looks like:
+                   MTD
+         ------------------------
+                  spi-nor
+         ------------------------
+                fsl-quadspi
+         ------------------------
+	       SPI NOR chip
+
+3.) more details
+    This patch set adds a new data structrue spi_nor{}, clones most the common
+  code to spi-nor.c. Add spi_nor_xfer_cfg {} for the fundamental primitives:
+  read_xfer/write_xfer.
+
+    Make the m25p80.c use the new APIs.
+
+    Let's discuss the SPI nor framework in the new thread. :)
+    
+
+4.) TODO list:
+   3.1) add the new spi_nor_device{} for the spi-nor controller's device.
+   3.2) add the Freescale Quadspi driver.
+
+v1 --> v2:
+	[1] follow Angus's advice, add more hooks and data structrures.
+	[2] others.
+
+Huang Shijie (4):
+  mtd: spi-nor: copy the SPI NOR commands to a new header file
+  mtd: spi-nor: add the basic data structures
+  mtd: spi-nor: add the framework for SPI NOR
+  mtd: m25p80: use the SPI nor framework
+
+ drivers/mtd/Kconfig           |    2 +
+ drivers/mtd/Makefile          |    1 +
+ drivers/mtd/devices/Kconfig   |    2 +-
+ drivers/mtd/devices/m25p80.c  | 1261 +++--------------------------------------
+ drivers/mtd/spi-nor/Kconfig   |    6 +
+ drivers/mtd/spi-nor/Makefile  |    1 +
+ drivers/mtd/spi-nor/spi-nor.c | 1042 ++++++++++++++++++++++++++++++++++
+ include/linux/mtd/spi-nor.h   |  132 +++++
+ 8 files changed, 1277 insertions(+), 1170 deletions(-)
+ create mode 100644 drivers/mtd/spi-nor/Kconfig
+ create mode 100644 drivers/mtd/spi-nor/Makefile
+ create mode 100644 drivers/mtd/spi-nor/spi-nor.c
+ create mode 100644 include/linux/mtd/spi-nor.h
+
+-- 
+1.7.2.rc3
