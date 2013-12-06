@@ -1,13 +1,14 @@
 Received: from comal.ext.ti.com ([198.47.26.152])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VowLm-0007Jq-Ce
- for linux-mtd@lists.infradead.org; Fri, 06 Dec 2013 14:25:51 +0000
+ id 1VowLq-0007KY-NA
+ for linux-mtd@lists.infradead.org; Fri, 06 Dec 2013 14:25:56 +0000
 From: Sourav Poddar <sourav.poddar@ti.com>
 To: <broonie@kernel.org>, <linux-spi@vger.kernel.org>,
  <computersforpeace@gmail.com>, <marex@denx.de>
-Subject: [PATCHv2 05/10] spi/qspi: Add api for get_buf/put_buf.
-Date: Fri, 6 Dec 2013 19:54:46 +0530
-Message-ID: <1386339891-32717-6-git-send-email-sourav.poddar@ti.com>
+Subject: [PATCHv2 06/10] drivers: mtd: m25p80: Add api to configure master
+ register.
+Date: Fri, 6 Dec 2013 19:54:47 +0530
+Message-ID: <1386339891-32717-7-git-send-email-sourav.poddar@ti.com>
 In-Reply-To: <1386339891-32717-1-git-send-email-sourav.poddar@ti.com>
 References: <1386339891-32717-1-git-send-email-sourav.poddar@ti.com>
 MIME-Version: 1.0
@@ -24,56 +25,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Adapt qspi driver to use (get_buf/put_buf) pointers added
-earlier.
-These can be called just before the memcpy operations to get hold
-of the memory mapped address and to turn on the controller clocks.
+These can be used to fill information needed to configure
+master controller registers.
 
 Signed-off-by: Sourav Poddar <sourav.poddar@ti.com>
 ---
 v1->v2:
- enable/disable memory mapped only when get_buf/put_buf is
- called (basicaaly only when memory mapped read operation is
- desired).
- drivers/spi/spi-ti-qspi.c |   19 +++++++++++++++++++
- 1 files changed, 19 insertions(+), 0 deletions(-)
+ instead of a u8 *val, use a struct (slave_info)  already defined 
+ in the first patch of the series. This will allow us to add more
+ parameters into the struct.
 
-diff --git a/drivers/spi/spi-ti-qspi.c b/drivers/spi/spi-ti-qspi.c
-index e4a8afc..b83583c 100644
---- a/drivers/spi/spi-ti-qspi.c
-+++ b/drivers/spi/spi-ti-qspi.c
-@@ -248,6 +248,23 @@ static void ti_qspi_configure_from_slave(struct spi_device *spi)
- 	ti_qspi_write(qspi, memval, QSPI_SPI_SETUP0_REG);
+ drivers/mtd/devices/m25p80.c |   18 ++++++++++++++++++
+ 1 files changed, 18 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 7dc2c14..b90c7e5 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -490,6 +490,24 @@ static inline int m25p80_dummy_cycles_read(struct m25p *flash)
  }
  
-+static inline int  __iomem *ti_qspi_get_mem_buf(struct spi_master *master)
+ /*
++ * This API can be used to transfer flash information to
++ * SPI controller which needs some of its registers to get
++ * configured on flash information.
++ */
++static void m25p80_fill_flash_information(struct m25p *flash)
 +{
-+	struct ti_qspi *qspi = spi_master_get_devdata(master);
++	struct spi_device *spi = flash->spi;
++	struct spi_master *master = spi->master;
 +
-+	pm_runtime_get_sync(qspi->dev);
-+	enable_qspi_memory_mapped(qspi);
-+	return qspi->mmap_base;
++	spi->info.read_opcode = flash->read_opcode;
++	spi->info.program_opcode = flash->program_opcode;
++	spi->info.addr_width = flash->addr_width;
++	spi->info.dummy_cycles = m25p80_dummy_cycles_read(flash);
++
++	master->configure_from_slave(flash->spi);
 +}
 +
-+static void ti_qspi_put_mem_buf(struct spi_master *master)
-+{
-+	struct ti_qspi *qspi = spi_master_get_devdata(master);
-+
-+	disable_qspi_memory_mapped(qspi);
-+	pm_runtime_put(qspi->dev);
-+}
-+
- static void ti_qspi_restore_ctx(struct ti_qspi *qspi)
- {
- 	struct ti_qspi_regs *ctx_reg = &qspi->ctx_reg;
-@@ -517,6 +534,8 @@ static int ti_qspi_probe(struct platform_device *pdev)
- 	master->bits_per_word_mask = BIT(32 - 1) | BIT(16 - 1) | BIT(8 - 1);
- 	master->mmap = true;
- 	master->configure_from_slave = ti_qspi_configure_from_slave;
-+	master->get_buf = ti_qspi_get_mem_buf;
-+	master->put_buf = ti_qspi_put_mem_buf;
- 
- 	if (!of_property_read_u32(np, "num-cs", &num_cs))
- 		master->num_chipselect = num_cs;
++/*
+  * Read an address range from the flash chip.  The address range
+  * may be any size provided it is within the physical boundaries.
+  */
 -- 
 1.7.1
