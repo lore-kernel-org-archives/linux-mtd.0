@@ -1,23 +1,19 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VpK01-0008T2-BU
- for linux-mtd@lists.infradead.org; Sat, 07 Dec 2013 15:40:57 +0000
-Date: Sat, 7 Dec 2013 12:40:49 -0300
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Alexander Shiyan <shc_work@mail.ru>
-Subject: Re: [PATCH] mtd: nand: gpio: Remove unneeded CONFIG_OF
-Message-ID: <20131207154048.GA2960@localhost>
-References: <1386427686-30190-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1386428072.693656580@f164.i.mail.ru>
- <20131207153312.GA4273@localhost>
- <1386430549.474491767@f101.i.mail.ru>
+To: <linux-mtd@lists.infradead.org>,
+	<linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH] mtd: nand: pxa3xx: Disable "armada370-nand" compatible support
+Date: Sat,  7 Dec 2013 12:39:47 -0300
+Message-Id: <1386430787-2962-1-git-send-email-ezequiel.garcia@free-electrons.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1386430549.474491767@f101.i.mail.ru>
-Cc: linux-mtd@lists.infradead.org
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Lior Amsalem <alior@marvell.com>, Jason Cooper <jason@lakedaemon.net>,
+ Andrew Lunn <andrew@lunn.ch>,
+ =?UTF-8?q?Emilio=20L=C3=B3pez?= <emilio@elopez.com.ar>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,39 +23,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Dec 07, 2013 at 07:35:49PM +0400, Alexander Shiyan wrote:
-> > On Sat, Dec 07, 2013 at 06:54:32PM +0400, Alexander Shiyan wrote:
-> > > Hello.
-> > > 
-> > > > Since the of_mtd header provides dummy stubs for !CONFIG_OF, it's safe
-> > > > to remove the #ifdef CONFIG_OF. Build tested only.
-> > > > 
-> > > > Cc: Alexander Shiyan <shc_work@mail.ru>
-> > > > Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> > > ...
-> > > > -#ifdef CONFIG_OF
-> > > >  static const struct of_device_id gpio_nand_id_table[] = {
-> > > 
-> > > You should add "__maybe_unused" attribute here in this case.
-> > > This will avoid warning when you build driver without OF.
-> > > 
-> > > ---
-> > 
-> > I don't get such warning, maybe because the GCC is smart enough
-> > to remove the symbol?
-> > 
-> > Actually, I realise now we don't need to of_match_ptr, so let
-> > me push a v2.
-> 
-> And without of_match_ptr() we do not need to define "__maybe_unused" for this :)
-> 
+Currently the "armada370-nand" compatible support is not complete,
+and it was mistake to add it. Instead of completely removing the compatible,
+let's just disable it until all the needed infrastructure is in place.
 
-Yup :-)
+Cc: Emilio López <emilio@elopez.com.ar>
+Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+---
+The compatible was added in:
 
-Care to give the v2 a test? I've just submitted it.
+commit c0f3b8643a6fa2461d70760ec49d21d2b031d611
+Author: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Date:   Sat Aug 10 16:34:52 2013 -0300
 
-Thanks!
+    mtd: nand: pxa3xx: Introduce 'marvell,armada370-nand' compatible string
+
+Which means the fix should be applied in v3.12 and v3.13.
+
+On Emilio's suggestion, I've opted for the disabling, given all the required
+support is already queued for v3.14. I'll push a patch removing the #if 0
+on top of current l2-mtd.git.
+
+Brian: Do you think this is OK to be pushed now for v3.13?
+
+ drivers/mtd/nand/pxa3xx_nand.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 3d143fe..2c5066f 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -333,10 +333,16 @@ static struct of_device_id pxa3xx_nand_dt_ids[] = {
+ 		.compatible = "marvell,pxa3xx-nand",
+ 		.data       = (void *)PXA3XX_NAND_VARIANT_PXA,
+ 	},
++/*
++ * Currently, the armada370 support is incomplete and can cause the
++ * system to crash. Disable it until all the infrastructure is in place.
++ */
++#if 0
+ 	{
+ 		.compatible = "marvell,armada370-nand",
+ 		.data       = (void *)PXA3XX_NAND_VARIANT_ARMADA370,
+ 	},
++#endif
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, pxa3xx_nand_dt_ids);
 -- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+1.8.1.5
