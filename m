@@ -1,22 +1,14 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VpEbn-00053L-2N
- for linux-mtd@lists.infradead.org; Sat, 07 Dec 2013 09:55:36 +0000
-Date: Sat, 7 Dec 2013 10:55:07 +0100
-From: Anatolij Gustschin <agust@denx.de>
-To: Gerhard Sittig <gsi@denx.de>
-Subject: Re: [PATCH v6 12/17] mtd: mpc5121_nfc: adjust for OF based clock
- lookup
-Message-ID: <20131207105507.7bbf4283@crub>
-In-Reply-To: <1385851897-23475-13-git-send-email-gsi@denx.de>
-References: <1385851897-23475-1-git-send-email-gsi@denx.de>
- <1385851897-23475-13-git-send-email-gsi@denx.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linuxppc-dev@lists.ozlabs.org,
- linux-mtd@lists.infradead.org,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VpIug-0007sr-Mz
+ for linux-mtd@lists.infradead.org; Sat, 07 Dec 2013 14:31:23 +0000
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: nand: sh_flctl: Remove unneeded CONFIG_OF
+Date: Sat,  7 Dec 2013 11:31:01 -0300
+Message-Id: <1386426661-24549-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,21 +18,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 30 Nov 2013 23:51:32 +0100
-Gerhard Sittig <gsi@denx.de> wrote:
+Since the of_mtd header provides dummy stubs for !CONFIG_OF, it's safe
+to remove the #ifdef CONFIG_OF. Build tested only.
 
-> after device tree based clock lookup became available, the NAND
-> flash driver need no longer use the previous global "nfc_clk" name,
-> but should use the "ipg" clock name specific to the OF node
-> 
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> Cc: linux-mtd@lists.infradead.org
-> Signed-off-by: Gerhard Sittig <gsi@denx.de>
-> ---
->  drivers/mtd/nand/mpc5121_nfc.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+---
+ drivers/mtd/nand/sh_flctl.c | 7 -------
+ 1 file changed, 7 deletions(-)
 
-applied to next. Thanks!
-
-Anatolij
+diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
+index a3c84eb..8332a49 100644
+--- a/drivers/mtd/nand/sh_flctl.c
++++ b/drivers/mtd/nand/sh_flctl.c
+@@ -1021,7 +1021,6 @@ static irqreturn_t flctl_handle_flste(int irq, void *dev_id)
+ 	return IRQ_HANDLED;
+ }
+ 
+-#ifdef CONFIG_OF
+ struct flctl_soc_config {
+ 	unsigned long flcmncr_val;
+ 	unsigned has_hwecc:1;
+@@ -1080,12 +1079,6 @@ static struct sh_flctl_platform_data *flctl_parse_dt(struct device *dev)
+ 
+ 	return pdata;
+ }
+-#else /* CONFIG_OF */
+-static struct sh_flctl_platform_data *flctl_parse_dt(struct device *dev)
+-{
+-	return NULL;
+-}
+-#endif /* CONFIG_OF */
+ 
+ static int flctl_probe(struct platform_device *pdev)
+ {
+-- 
+1.8.1.5
