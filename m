@@ -1,19 +1,22 @@
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: <linux-mtd@lists.infradead.org>,
-	<linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH] mtd: nand: pxa3xx: Disable "armada370-nand" compatible support
-Date: Sat,  7 Dec 2013 12:39:47 -0300
-Message-Id: <1386430787-2962-1-git-send-email-ezequiel.garcia@free-electrons.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>, Jason Cooper <jason@lakedaemon.net>,
- Andrew Lunn <andrew@lunn.ch>,
- =?UTF-8?q?Emilio=20L=C3=B3pez?= <emilio@elopez.com.ar>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>
+Received: from f101.i.mail.ru ([94.100.178.73])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VpK3C-00006B-2l
+ for linux-mtd@lists.infradead.org; Sat, 07 Dec 2013 15:44:14 +0000
+From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+To: =?UTF-8?B?RXplcXVpZWwgR2FyY2lh?= <ezequiel.garcia@free-electrons.com>
+Subject: =?UTF-8?B?UmU6IFtQQVRDSF0gbXRkOiBuYW5kOiBncGlvOiBSZW1vdmUgdW5uZWVkZWQg?=
+ =?UTF-8?B?Q09ORklHX09G?=
+Mime-Version: 1.0
+Date: Sat, 07 Dec 2013 19:43:51 +0400
+Message-ID: <1386431031.355965769@f101.i.mail.ru>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
+In-Reply-To: <20131207154048.GA2960@localhost>
+References: <1386427686-30190-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1386430549.474491767@f101.i.mail.ru>
+ <20131207154048.GA2960@localhost>
+Cc: linux-mtd@lists.infradead.org
+Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,52 +26,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Currently the "armada370-nand" compatible support is not complete,
-and it was mistake to add it. Instead of completely removing the compatible,
-let's just disable it until all the needed infrastructure is in place.
-
-Cc: Emilio López <emilio@elopez.com.ar>
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
----
-The compatible was added in:
-
-commit c0f3b8643a6fa2461d70760ec49d21d2b031d611
-Author: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Date:   Sat Aug 10 16:34:52 2013 -0300
-
-    mtd: nand: pxa3xx: Introduce 'marvell,armada370-nand' compatible string
-
-Which means the fix should be applied in v3.12 and v3.13.
-
-On Emilio's suggestion, I've opted for the disabling, given all the required
-support is already queued for v3.14. I'll push a patch removing the #if 0
-on top of current l2-mtd.git.
-
-Brian: Do you think this is OK to be pushed now for v3.13?
-
- drivers/mtd/nand/pxa3xx_nand.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 3d143fe..2c5066f 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -333,10 +333,16 @@ static struct of_device_id pxa3xx_nand_dt_ids[] = {
- 		.compatible = "marvell,pxa3xx-nand",
- 		.data       = (void *)PXA3XX_NAND_VARIANT_PXA,
- 	},
-+/*
-+ * Currently, the armada370 support is incomplete and can cause the
-+ * system to crash. Disable it until all the infrastructure is in place.
-+ */
-+#if 0
- 	{
- 		.compatible = "marvell,armada370-nand",
- 		.data       = (void *)PXA3XX_NAND_VARIANT_ARMADA370,
- 	},
-+#endif
- 	{}
- };
- MODULE_DEVICE_TABLE(of, pxa3xx_nand_dt_ids);
--- 
-1.8.1.5
+PiA+ID4gPiA+IFNpbmNlIHRoZSBvZl9tdGQgaGVhZGVyIHByb3ZpZGVzIGR1bW15IHN0dWJzIGZv
+ciAhQ09ORklHX09GLCBpdCdzIHNhZmUKPiA+ID4gPiA+IHRvIHJlbW92ZSB0aGUgI2lmZGVmIENP
+TkZJR19PRi4gQnVpbGQgdGVzdGVkIG9ubHkuCi4uLgo+ID4gPiBBY3R1YWxseSwgSSByZWFsaXNl
+IG5vdyB3ZSBkb24ndCBuZWVkIHRvIG9mX21hdGNoX3B0ciwgc28gbGV0Cj4gPiA+IG1lIHB1c2gg
+YSB2Mi4KPiA+IAo+ID4gQW5kIHdpdGhvdXQgb2ZfbWF0Y2hfcHRyKCkgd2UgZG8gbm90IG5lZWQg
+dG8gZGVmaW5lICJfX21heWJlX3VudXNlZCIgZm9yIHRoaXMgOikKPiA+IAo+IFl1cCA6LSkKPiAK
+PiBDYXJlIHRvIGdpdmUgdGhlIHYyIGEgdGVzdD8gSSd2ZSBqdXN0IHN1Ym1pdHRlZCBpdC4KCkkg
+c2VlLiBMb29rcyBnb29kLCBjb21waWxlIHRlc3QgaXMgZW5vdWdoIGZvciBzdWNoIGNoYW5nZXMu
+CgotLS0K
