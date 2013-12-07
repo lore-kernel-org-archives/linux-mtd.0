@@ -1,20 +1,21 @@
-Received: from f164.i.mail.ru ([94.100.178.83])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VpJHX-00084d-G4
- for linux-mtd@lists.infradead.org; Sat, 07 Dec 2013 14:55:00 +0000
-From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
-To: =?UTF-8?B?RXplcXVpZWwgR2FyY2lh?= <ezequiel.garcia@free-electrons.com>
-Subject: =?UTF-8?B?UmU6IFtQQVRDSF0gbXRkOiBuYW5kOiBncGlvOiBSZW1vdmUgdW5uZWVkZWQg?=
- =?UTF-8?B?Q09ORklHX09G?=
-Mime-Version: 1.0
-Date: Sat, 07 Dec 2013 18:54:32 +0400
-Message-ID: <1386428072.693656580@f164.i.mail.ru>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
-In-Reply-To: <1386427686-30190-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VpJsj-0008NX-PG
+ for linux-mtd@lists.infradead.org; Sat, 07 Dec 2013 15:33:26 +0000
+Date: Sat, 7 Dec 2013 12:33:13 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Alexander Shiyan <shc_work@mail.ru>
+Subject: Re: [PATCH] mtd: nand: gpio: Remove unneeded CONFIG_OF
+Message-ID: <20131207153312.GA4273@localhost>
 References: <1386427686-30190-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1386428072.693656580@f164.i.mail.ru>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1386428072.693656580@f164.i.mail.ru>
 Cc: linux-mtd@lists.infradead.org
-Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,12 +25,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGVsbG8uCgo+IFNpbmNlIHRoZSBvZl9tdGQgaGVhZGVyIHByb3ZpZGVzIGR1bW15IHN0dWJzIGZv
-ciAhQ09ORklHX09GLCBpdCdzIHNhZmUKPiB0byByZW1vdmUgdGhlICNpZmRlZiBDT05GSUdfT0Yu
-IEJ1aWxkIHRlc3RlZCBvbmx5Lgo+IAo+IENjOiBBbGV4YW5kZXIgU2hpeWFuIDxzaGNfd29ya0Bt
-YWlsLnJ1Pgo+IFNpZ25lZC1vZmYtYnk6IEV6ZXF1aWVsIEdhcmNpYSA8ZXplcXVpZWwuZ2FyY2lh
-QGZyZWUtZWxlY3Ryb25zLmNvbT4KLi4uCj4gLSNpZmRlZiBDT05GSUdfT0YKPiAgc3RhdGljIGNv
-bnN0IHN0cnVjdCBvZl9kZXZpY2VfaWQgZ3Bpb19uYW5kX2lkX3RhYmxlW10gPSB7CgpZb3Ugc2hv
-dWxkIGFkZCAiX19tYXliZV91bnVzZWQiIGF0dHJpYnV0ZSBoZXJlIGluIHRoaXMgY2FzZS4KVGhp
-cyB3aWxsIGF2b2lkIHdhcm5pbmcgd2hlbiB5b3UgYnVpbGQgZHJpdmVyIHdpdGhvdXQgT0YuCgot
-LS0K
+On Sat, Dec 07, 2013 at 06:54:32PM +0400, Alexander Shiyan wrote:
+> Hello.
+> 
+> > Since the of_mtd header provides dummy stubs for !CONFIG_OF, it's safe
+> > to remove the #ifdef CONFIG_OF. Build tested only.
+> > 
+> > Cc: Alexander Shiyan <shc_work@mail.ru>
+> > Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> ...
+> > -#ifdef CONFIG_OF
+> >  static const struct of_device_id gpio_nand_id_table[] = {
+> 
+> You should add "__maybe_unused" attribute here in this case.
+> This will avoid warning when you build driver without OF.
+> 
+> ---
+
+I don't get such warning, maybe because the GCC is smart enough
+to remove the symbol?
+
+Actually, I realise now we don't need to of_match_ptr, so let
+me push a v2.
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
