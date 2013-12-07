@@ -1,15 +1,23 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VpJw7-0008Q0-QK
- for linux-mtd@lists.infradead.org; Sat, 07 Dec 2013 15:36:56 +0000
+ id 1VpK01-0008T2-BU
+ for linux-mtd@lists.infradead.org; Sat, 07 Dec 2013 15:40:57 +0000
+Date: Sat, 7 Dec 2013 12:40:49 -0300
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v2] mtd: nand: gpio: Remove unneeded CONFIG_OF
-Date: Sat,  7 Dec 2013 12:36:49 -0300
-Message-Id: <1386430609-2910-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: Alexander Shiyan <shc_work@mail.ru>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Alexander Shiyan <shc_work@mail.ru>
+Subject: Re: [PATCH] mtd: nand: gpio: Remove unneeded CONFIG_OF
+Message-ID: <20131207154048.GA2960@localhost>
+References: <1386427686-30190-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1386428072.693656580@f164.i.mail.ru>
+ <20131207153312.GA4273@localhost>
+ <1386430549.474491767@f101.i.mail.ru>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1386430549.474491767@f101.i.mail.ru>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,56 +27,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Since the of_mtd header provides dummy stubs for !CONFIG_OF, it's safe
-to remove the #ifdef CONFIG_OF. Also remove the of_match_ptr guard as
-it's no longer required. Build tested only.
+On Sat, Dec 07, 2013 at 07:35:49PM +0400, Alexander Shiyan wrote:
+> > On Sat, Dec 07, 2013 at 06:54:32PM +0400, Alexander Shiyan wrote:
+> > > Hello.
+> > > 
+> > > > Since the of_mtd header provides dummy stubs for !CONFIG_OF, it's safe
+> > > > to remove the #ifdef CONFIG_OF. Build tested only.
+> > > > 
+> > > > Cc: Alexander Shiyan <shc_work@mail.ru>
+> > > > Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> > > ...
+> > > > -#ifdef CONFIG_OF
+> > > >  static const struct of_device_id gpio_nand_id_table[] = {
+> > > 
+> > > You should add "__maybe_unused" attribute here in this case.
+> > > This will avoid warning when you build driver without OF.
+> > > 
+> > > ---
+> > 
+> > I don't get such warning, maybe because the GCC is smart enough
+> > to remove the symbol?
+> > 
+> > Actually, I realise now we don't need to of_match_ptr, so let
+> > me push a v2.
+> 
+> And without of_match_ptr() we do not need to define "__maybe_unused" for this :)
+> 
 
-Cc: Alexander Shiyan <shc_work@mail.ru>
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
----
- drivers/mtd/nand/gpio.c | 16 +---------------
- 1 file changed, 1 insertion(+), 15 deletions(-)
+Yup :-)
 
-diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
-index e826f89..c966f86 100644
---- a/drivers/mtd/nand/gpio.c
-+++ b/drivers/mtd/nand/gpio.c
-@@ -94,7 +94,6 @@ static int gpio_nand_devready(struct mtd_info *mtd)
- 	return gpio_get_value(gpiomtd->plat.gpio_rdy);
- }
- 
--#ifdef CONFIG_OF
- static const struct of_device_id gpio_nand_id_table[] = {
- 	{ .compatible = "gpio-control-nand" },
- 	{}
-@@ -145,19 +144,6 @@ static struct resource *gpio_nand_get_io_sync_of(struct platform_device *pdev)
- 
- 	return r;
- }
--#else /* CONFIG_OF */
--static inline int gpio_nand_get_config_of(const struct device *dev,
--					  struct gpio_nand_platdata *plat)
--{
--	return -ENOSYS;
--}
--
--static inline struct resource *
--gpio_nand_get_io_sync_of(struct platform_device *pdev)
--{
--	return NULL;
--}
--#endif /* CONFIG_OF */
- 
- static inline int gpio_nand_get_config(const struct device *dev,
- 				       struct gpio_nand_platdata *plat)
-@@ -308,7 +294,7 @@ static struct platform_driver gpio_nand_driver = {
- 	.driver		= {
- 		.name	= "gpio-nand",
- 		.owner	= THIS_MODULE,
--		.of_match_table = of_match_ptr(gpio_nand_id_table),
-+		.of_match_table = gpio_nand_id_table,
- 	},
- };
- 
+Care to give the v2 a test? I've just submitted it.
+
+Thanks!
 -- 
-1.8.1.5
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
