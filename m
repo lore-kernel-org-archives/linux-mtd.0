@@ -1,15 +1,20 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VpJB0-00080i-6Y
- for linux-mtd@lists.infradead.org; Sat, 07 Dec 2013 14:48:15 +0000
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd: nand: gpio: Remove unneeded CONFIG_OF
-Date: Sat,  7 Dec 2013 11:48:06 -0300
-Message-Id: <1386427686-30190-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: Alexander Shiyan <shc_work@mail.ru>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Received: from f164.i.mail.ru ([94.100.178.83])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VpJHX-00084d-G4
+ for linux-mtd@lists.infradead.org; Sat, 07 Dec 2013 14:55:00 +0000
+From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+To: =?UTF-8?B?RXplcXVpZWwgR2FyY2lh?= <ezequiel.garcia@free-electrons.com>
+Subject: =?UTF-8?B?UmU6IFtQQVRDSF0gbXRkOiBuYW5kOiBncGlvOiBSZW1vdmUgdW5uZWVkZWQg?=
+ =?UTF-8?B?Q09ORklHX09G?=
+Mime-Version: 1.0
+Date: Sat, 07 Dec 2013 18:54:32 +0400
+Message-ID: <1386428072.693656580@f164.i.mail.ru>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
+In-Reply-To: <1386427686-30190-1-git-send-email-ezequiel.garcia@free-electrons.com>
+References: <1386427686-30190-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: linux-mtd@lists.infradead.org
+Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,46 +24,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Since the of_mtd header provides dummy stubs for !CONFIG_OF, it's safe
-to remove the #ifdef CONFIG_OF. Build tested only.
-
-Cc: Alexander Shiyan <shc_work@mail.ru>
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
----
- drivers/mtd/nand/gpio.c | 14 --------------
- 1 file changed, 14 deletions(-)
-
-diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
-index e826f89..8010975 100644
---- a/drivers/mtd/nand/gpio.c
-+++ b/drivers/mtd/nand/gpio.c
-@@ -94,7 +94,6 @@ static int gpio_nand_devready(struct mtd_info *mtd)
- 	return gpio_get_value(gpiomtd->plat.gpio_rdy);
- }
- 
--#ifdef CONFIG_OF
- static const struct of_device_id gpio_nand_id_table[] = {
- 	{ .compatible = "gpio-control-nand" },
- 	{}
-@@ -145,19 +144,6 @@ static struct resource *gpio_nand_get_io_sync_of(struct platform_device *pdev)
- 
- 	return r;
- }
--#else /* CONFIG_OF */
--static inline int gpio_nand_get_config_of(const struct device *dev,
--					  struct gpio_nand_platdata *plat)
--{
--	return -ENOSYS;
--}
--
--static inline struct resource *
--gpio_nand_get_io_sync_of(struct platform_device *pdev)
--{
--	return NULL;
--}
--#endif /* CONFIG_OF */
- 
- static inline int gpio_nand_get_config(const struct device *dev,
- 				       struct gpio_nand_platdata *plat)
--- 
-1.8.1.5
+SGVsbG8uCgo+IFNpbmNlIHRoZSBvZl9tdGQgaGVhZGVyIHByb3ZpZGVzIGR1bW15IHN0dWJzIGZv
+ciAhQ09ORklHX09GLCBpdCdzIHNhZmUKPiB0byByZW1vdmUgdGhlICNpZmRlZiBDT05GSUdfT0Yu
+IEJ1aWxkIHRlc3RlZCBvbmx5Lgo+IAo+IENjOiBBbGV4YW5kZXIgU2hpeWFuIDxzaGNfd29ya0Bt
+YWlsLnJ1Pgo+IFNpZ25lZC1vZmYtYnk6IEV6ZXF1aWVsIEdhcmNpYSA8ZXplcXVpZWwuZ2FyY2lh
+QGZyZWUtZWxlY3Ryb25zLmNvbT4KLi4uCj4gLSNpZmRlZiBDT05GSUdfT0YKPiAgc3RhdGljIGNv
+bnN0IHN0cnVjdCBvZl9kZXZpY2VfaWQgZ3Bpb19uYW5kX2lkX3RhYmxlW10gPSB7CgpZb3Ugc2hv
+dWxkIGFkZCAiX19tYXliZV91bnVzZWQiIGF0dHJpYnV0ZSBoZXJlIGluIHRoaXMgY2FzZS4KVGhp
+cyB3aWxsIGF2b2lkIHdhcm5pbmcgd2hlbiB5b3UgYnVpbGQgZHJpdmVyIHdpdGhvdXQgT0YuCgot
+LS0K
