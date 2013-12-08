@@ -1,26 +1,23 @@
-Date: Sat, 7 Dec 2013 20:18:27 -0500
-From: Jason Cooper <jason@lakedaemon.net>
-To: Arnaud Ebalard <arno@natisbad.org>
-Subject: Re: [PATCHv0 0/3] ARM: mvebu: Enable NAND controller in NETGEAR
- ReadyNAS .dts files
-Message-ID: <20131208011827.GI11251@titan.lakedaemon.net>
-References: <cover.1386370808.git.arno@natisbad.org>
+Date: Sat, 7 Dec 2013 22:35:26 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Jason Cooper <jason@lakedaemon.net>,
+ Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH] mtd: nand: pxa3xx: Disable "armada370-nand" compatible
+ support
+Message-ID: <20131208013525.GA4487@localhost>
+References: <1386430787-2962-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20131207232315.GC11251@titan.lakedaemon.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <cover.1386370808.git.arno@natisbad.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, Andrew Lunn <andrew@lunn.ch>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Russell King <linux@arm.linux.org.uk>, Pawel Moll <pawel.moll@arm.com>,
- devicetree@vger.kernel.org, Stephen Warren <swarren@wwwdotorg.org>,
- Rob Herring <rob.herring@calxeda.com>, Olof Johansson <olof@lixom.net>,
- Lior Amsalem <alior@marvell.com>, linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20131207232315.GC11251@titan.lakedaemon.net>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Lior Amsalem <alior@marvell.com>, Andrew Lunn <andrew@lunn.ch>,
+ Emilio =?utf-8?B?TMOzcGV6?= <emilio@elopez.com.ar>,
+ linux-mtd@lists.infradead.org,
  Gregory Clement <gregory.clement@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- linux-arm-kernel@lists.infradead.org,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,52 +27,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Dec 07, 2013 at 12:12:53AM +0100, Arnaud Ebalard wrote:
+On Sat, Dec 07, 2013 at 06:23:15PM -0500, Jason Cooper wrote:
+> > +/*
+> > + * Currently, the armada370 support is incomplete and can cause the
+> > + * system to crash. Disable it until all the infrastructure is in place.
+> > + */
+> > +#if 0
+> >  	{
+> >  		.compatible = "marvell,armada370-nand",
+> >  		.data       = (void *)PXA3XX_NAND_VARIANT_ARMADA370,
+> >  	},
+> > +#endif
 > 
-> Now that NAND controller support is available for Armada 370/XP
-> (cb28e2537a6f: ARM: mvebu: Add support for NAND controller in
-> Armada 370/XP), let's enable support for ReadyNAS boards.
+> I prefer to just remove the lines.
 > 
-> The three commits in this series all include the partitions
-> definitions specific to each ReadyNAS variant as delivered
-> by NETGEAR with standard images.
-> 
-> As described in similar commits 2be2bc39c6f0 (ARM: mvebu: Enable
-> NAND controller in Armada XP GP board) and d8c552dddfbf (ARM: 
-> mvebu: Enable NAND controller in Armada 370 Mirabox),
-> "marvell,keep-config" parameter is used as current support does
-> not allow for setting of timing parameters yet.
-> 
-> Each patch has been tested on each specific device using Ezequiel's
-> tree; last known bug having being fixed today.
-> 
-> Jason, Ezequiel, this is a v0. I do not mind at all waiting for a
-> heads up to repost it later when every bit of nand support is where
-> it should be.
 
-This seems fine by me.  Once the binding are agreed upon, dts changes
-can occur independent of code changes.
+I'm actually fine either way. Did both (disable and remove) but since all
+the code is already sitting and waiting for v3.14 thought it might be cleaner
+to just "disable" it.
 
-> Ezequiel, I have left a comment in the .dts file to indicate a lost
-> reader that the last MB of last partition is in practice not
-> writable.
-> 
-> Cheers,
-> 
-> a+
-> 
-> Arnaud Ebalard (3):
->   ARM: mvebu: Enable NAND controller in NETGEAR ReadyNAS 102 .dts file
->   ARM: mvebu: Enable NAND controller in NETGEAR ReadyNAS 104 .dts file
->   ARM: mvebu: Enable NAND controller in NETGEAR ReadyNAS 2120 .dts file
-> 
->  arch/arm/boot/dts/armada-370-netgear-rn102.dts | 36 ++++++++++++++++++++++++++
->  arch/arm/boot/dts/armada-370-netgear-rn104.dts | 36 ++++++++++++++++++++++++++
->  arch/arm/boot/dts/armada-xp-netgear-rn2120.dts | 36 ++++++++++++++++++++++++++
->  3 files changed, 108 insertions(+)
+Brian (given you're going to take the patch): what do you think?
 
-Whole series applied to mvebu/dt
-
-thx,
-
-Jason.
+If we agree to remove the lines, shall we also revert the binding
+documentation, removing the compatible from there as well?
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
