@@ -1,22 +1,26 @@
-Date: Sat, 7 Dec 2013 18:23:15 -0500
+Date: Sat, 7 Dec 2013 20:18:27 -0500
 From: Jason Cooper <jason@lakedaemon.net>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH] mtd: nand: pxa3xx: Disable "armada370-nand" compatible
- support
-Message-ID: <20131207232315.GC11251@titan.lakedaemon.net>
-References: <1386430787-2962-1-git-send-email-ezequiel.garcia@free-electrons.com>
+To: Arnaud Ebalard <arno@natisbad.org>
+Subject: Re: [PATCHv0 0/3] ARM: mvebu: Enable NAND controller in NETGEAR
+ ReadyNAS .dts files
+Message-ID: <20131208011827.GI11251@titan.lakedaemon.net>
+References: <cover.1386370808.git.arno@natisbad.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1386430787-2962-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Content-Transfer-Encoding: quoted-printable
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Andrew Lunn <andrew@lunn.ch>,
- Emilio =?iso-8859-1?Q?L=F3pez?= <emilio@elopez.com.ar>,
+In-Reply-To: <cover.1386370808.git.arno@natisbad.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, Andrew Lunn <andrew@lunn.ch>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Russell King <linux@arm.linux.org.uk>, Pawel Moll <pawel.moll@arm.com>,
+ devicetree@vger.kernel.org, Stephen Warren <swarren@wwwdotorg.org>,
+ Rob Herring <rob.herring@calxeda.com>, Olof Johansson <olof@lixom.net>,
  Lior Amsalem <alior@marvell.com>, linux-mtd@lists.infradead.org,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
  Gregory Clement <gregory.clement@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>,
- linux-arm-kernel@lists.infradead.org
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ linux-arm-kernel@lists.infradead.org,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,69 +30,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ezequiel,
+On Sat, Dec 07, 2013 at 12:12:53AM +0100, Arnaud Ebalard wrote:
+> 
+> Now that NAND controller support is available for Armada 370/XP
+> (cb28e2537a6f: ARM: mvebu: Add support for NAND controller in
+> Armada 370/XP), let's enable support for ReadyNAS boards.
+> 
+> The three commits in this series all include the partitions
+> definitions specific to each ReadyNAS variant as delivered
+> by NETGEAR with standard images.
+> 
+> As described in similar commits 2be2bc39c6f0 (ARM: mvebu: Enable
+> NAND controller in Armada XP GP board) and d8c552dddfbf (ARM: 
+> mvebu: Enable NAND controller in Armada 370 Mirabox),
+> "marvell,keep-config" parameter is used as current support does
+> not allow for setting of timing parameters yet.
+> 
+> Each patch has been tested on each specific device using Ezequiel's
+> tree; last known bug having being fixed today.
+> 
+> Jason, Ezequiel, this is a v0. I do not mind at all waiting for a
+> heads up to repost it later when every bit of nand support is where
+> it should be.
 
-I would prefer to call this a 'partial revert of c0f3b8643a6f ...'
+This seems fine by me.  Once the binding are agreed upon, dts changes
+can occur independent of code changes.
 
-On Sat, Dec 07, 2013 at 12:39:47PM -0300, Ezequiel Garcia wrote:
-> Currently the "armada370-nand" compatible support is not complete,
-> and it was mistake to add it. Instead of completely removing the compat=
-ible,
-> let's just disable it until all the needed infrastructure is in place.
->=20
-> Cc: Emilio L=F3pez <emilio@elopez.com.ar>
-> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> ---
+> Ezequiel, I have left a comment in the .dts file to indicate a lost
+> reader that the last MB of last partition is in practice not
+> writable.
+> 
+> Cheers,
+> 
+> a+
+> 
+> Arnaud Ebalard (3):
+>   ARM: mvebu: Enable NAND controller in NETGEAR ReadyNAS 102 .dts file
+>   ARM: mvebu: Enable NAND controller in NETGEAR ReadyNAS 104 .dts file
+>   ARM: mvebu: Enable NAND controller in NETGEAR ReadyNAS 2120 .dts file
+> 
+>  arch/arm/boot/dts/armada-370-netgear-rn102.dts | 36 ++++++++++++++++++++++++++
+>  arch/arm/boot/dts/armada-370-netgear-rn104.dts | 36 ++++++++++++++++++++++++++
+>  arch/arm/boot/dts/armada-xp-netgear-rn2120.dts | 36 ++++++++++++++++++++++++++
+>  3 files changed, 108 insertions(+)
 
-
-> The compatible was added in:
->=20
-> commit c0f3b8643a6fa2461d70760ec49d21d2b031d611
-> Author: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> Date:   Sat Aug 10 16:34:52 2013 -0300
->=20
->     mtd: nand: pxa3xx: Introduce 'marvell,armada370-nand' compatible st=
-ring
-
-And add this as a oneline in the commit description.
-
->=20
-> Which means the fix should be applied in v3.12 and v3.13.
->=20
-> On Emilio's suggestion, I've opted for the disabling, given all the req=
-uired
-> support is already queued for v3.14. I'll push a patch removing the #if=
- 0
-> on top of current l2-mtd.git.
->=20
-> Brian: Do you think this is OK to be pushed now for v3.13?
->=20
->  drivers/mtd/nand/pxa3xx_nand.c | 6 ++++++
->  1 file changed, 6 insertions(+)
->=20
-> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_n=
-and.c
-> index 3d143fe..2c5066f 100644
-> --- a/drivers/mtd/nand/pxa3xx_nand.c
-> +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> @@ -333,10 +333,16 @@ static struct of_device_id pxa3xx_nand_dt_ids[] =3D=
- {
->  		.compatible =3D "marvell,pxa3xx-nand",
->  		.data       =3D (void *)PXA3XX_NAND_VARIANT_PXA,
->  	},
-> +/*
-> + * Currently, the armada370 support is incomplete and can cause the
-> + * system to crash. Disable it until all the infrastructure is in plac=
-e.
-> + */
-> +#if 0
->  	{
->  		.compatible =3D "marvell,armada370-nand",
->  		.data       =3D (void *)PXA3XX_NAND_VARIANT_ARMADA370,
->  	},
-> +#endif
-
-I prefer to just remove the lines.
+Whole series applied to mvebu/dt
 
 thx,
 
