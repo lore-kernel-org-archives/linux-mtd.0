@@ -1,22 +1,21 @@
-Received: from mail-ob0-x22f.google.com ([2607:f8b0:4003:c01::22f])
+Received: from mail-ob0-x233.google.com ([2607:f8b0:4003:c01::233])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vq6i1-0008AG-MB
- for linux-mtd@lists.infradead.org; Mon, 09 Dec 2013 19:41:38 +0000
-Received: by mail-ob0-f175.google.com with SMTP id uz6so4222767obc.6
- for <linux-mtd@lists.infradead.org>; Mon, 09 Dec 2013 11:41:15 -0800 (PST)
-Date: Mon, 9 Dec 2013 11:41:10 -0800
+ id 1Vq6rf-0008SG-72
+ for linux-mtd@lists.infradead.org; Mon, 09 Dec 2013 19:51:35 +0000
+Received: by mail-ob0-f179.google.com with SMTP id wm4so4295729obc.10
+ for <linux-mtd@lists.infradead.org>; Mon, 09 Dec 2013 11:51:12 -0800 (PST)
+Date: Mon, 9 Dec 2013 11:51:07 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [RFC/PATCH] mtd: nand: Refactor print messages
-Message-ID: <20131209194110.GR27149@ld-irv-0074.broadcom.com>
-References: <1385379031-27766-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <20131205020137.GH27149@ld-irv-0074.broadcom.com>
+To: Zhouyi Zhou <zhouzhouyi@gmail.com>
+Subject: Re: [PATCH] JFFS2: NULL return of kmem_cache_zalloc should be handled.
+Message-ID: <20131209195107.GS27149@ld-irv-0074.broadcom.com>
+References: <1385980625-26545-1-git-send-email-yizhouzhou@ict.ac.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20131205020137.GH27149@ld-irv-0074.broadcom.com>
-Cc: Huang Shijie <b32955@freescale.com>, David Woodhouse <dwmw2@infradead.org>,
- linux-mtd@lists.infradead.org, Pekon Gupta <pekon@ti.com>
+In-Reply-To: <1385980625-26545-1-git-send-email-yizhouzhou@ict.ac.cn>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+ linux-kernel@vger.kernel.org, Zhouyi Zhou <yizhouzhou@ict.ac.cn>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,34 +25,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Dec 04, 2013 at 06:01:37PM -0800, Brian Norris wrote:
-> Hi Ezequiel,
+On Mon, Dec 02, 2013 at 06:37:05PM +0800, Zhouyi Zhou wrote:
+> NULL return of kmem_cache_zalloc should be handled in jffs2_alloc_xattr_datum
+> and jff2_alloc_xattr_ref.
 > 
-> On Mon, Nov 25, 2013 at 08:30:31AM -0300, Ezequiel Garcia wrote:
-> > Add a nice "nand:" prefix to all pr_xxx() messages. This allows
-> > to get rid of the "NAND" words in messages, given the context
-> > is already given by the prefix.
+> Signed-off-by: Zhouyi Zhou <yizhouzhou@ict.ac.cn>
 
-[...]
-
-> > @@ -3372,8 +3374,8 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
-> >  		id_data[i] = chip->read_byte(mtd);
-> >  
-> >  	if (id_data[0] != *maf_id || id_data[1] != *dev_id) {
-> > -		pr_info("%s: second ID read did not match "
-> > -			"%02x,%02x against %02x,%02x\n", __func__,
-> > +		pr_info("second ID read did not match "
-> > +			"%02x,%02x against %02x,%02x\n",
-> 
-> scripts/checkpatch.pl and Documentation/CodingStyle don't like this long
-> string (even though it would be over 80 chars). I think we should combine them.
-> 
-> If no one objects to the patch, I'll just make the modification myself.
-> 
-> >  			*maf_id, *dev_id, id_data[0], id_data[1]);
-> >  		return ERR_PTR(-ENODEV);
-> >  	}
-
-Pushed to l2-mtd.git, with the above edit.
+Pushed to l2-mtd.git. Thanks!
 
 Brian
