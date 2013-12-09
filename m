@@ -1,13 +1,13 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VpxwR-0001er-1p
- for linux-mtd@lists.infradead.org; Mon, 09 Dec 2013 10:19:55 +0000
+ id 1VpxwV-0001es-VR
+ for linux-mtd@lists.infradead.org; Mon, 09 Dec 2013 10:20:01 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 1/2] mtd: nand: pxa3xx: Use extended cmdfunc() only if needed
-Date: Mon,  9 Dec 2013 07:19:43 -0300
-Message-Id: <1386584384-6379-2-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH 2/2] mtd: nand: pxa3xx: Consolidate ECC initialization
+Date: Mon,  9 Dec 2013 07:19:44 -0300
+Message-Id: <1386584384-6379-3-git-send-email-ezequiel.garcia@free-electrons.com>
 In-Reply-To: <1386584384-6379-1-git-send-email-ezequiel.garcia@free-electrons.com>
 References: <1386584384-6379-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
@@ -24,91 +24,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Currently, we have two different cmdfunc's implementations:
-one for PXA3xx SoC variant and one for Armada 370/XP SoC variant.
+In order to avoid code duplication, let's consolidate the ECC setting
+for all SoC variants. Such decision is based on page size and ECC
+strength requirements.
 
-The former is the legacy one, typically constrained to devices
-with page sizes smaller or equal to the controller's FIFO buffer.
-On the other side, the latter _only_ supports the so-called extended
-command semantics, which allow to handle devices with larger
-page sizes (4 KiB, 8 KiB, ...).
-
-This means we currently don't support devices with smaller pages on the
-A370/XP SoC. Fix it by first renaming the cmdfuncs variants, and then
-make the choice based on device page size (and SoC variant), rather than
-SoC variant alone.
-
-While at it, add a check for page size, to make sure we don't allow larger
-pages sizes on the PXA3xx variant.
+Also, provide a default value for the case where such ECC information
+is not provided (non-ONFI devices).
 
 Tested-by: Arnaud Ebalard <arno@natisbad.org>
 Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 ---
- drivers/mtd/nand/pxa3xx_nand.c | 31 +++++++++++++++++++++----------
- 1 file changed, 21 insertions(+), 10 deletions(-)
+ drivers/mtd/nand/pxa3xx_nand.c | 40 ++++++++++++++++------------------------
+ 1 file changed, 16 insertions(+), 24 deletions(-)
 
 diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 8b3f2f4..1840d33 100644
+index 1840d33..945eb62 100644
 --- a/drivers/mtd/nand/pxa3xx_nand.c
 +++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -907,8 +907,8 @@ static int prepare_set_command(struct pxa3xx_nand_info *info, int command,
- 	return exec_cmd;
- }
+@@ -1342,13 +1342,9 @@ static int pxa3xx_nand_sensing(struct pxa3xx_nand_info *info)
  
--static void pxa3xx_nand_cmdfunc(struct mtd_info *mtd, unsigned command,
--				int column, int page_addr)
-+static void nand_cmdfunc(struct mtd_info *mtd, unsigned command,
-+			 int column, int page_addr)
+ static int pxa_ecc_init(struct pxa3xx_nand_info *info,
+ 			struct nand_ecc_ctrl *ecc,
+-			int strength, int page_size)
++			int strength, int ecc_stepsize, int page_size)
  {
- 	struct pxa3xx_nand_host *host = mtd->priv;
- 	struct pxa3xx_nand_info *info = host->info_data;
-@@ -955,9 +955,9 @@ static void pxa3xx_nand_cmdfunc(struct mtd_info *mtd, unsigned command,
- 	info->state = STATE_IDLE;
- }
+-	/*
+-	 * We don't use strength here as the PXA variant
+-	 * is used with non-ONFI compliant devices.
+-	 */
+-	if (page_size == 2048) {
++	if (strength == 1 && ecc_stepsize == 512 && page_size == 2048) {
+ 		info->chunk_size = 2048;
+ 		info->spare_size = 40;
+ 		info->ecc_size = 24;
+@@ -1357,7 +1353,7 @@ static int pxa_ecc_init(struct pxa3xx_nand_info *info,
+ 		ecc->strength = 1;
+ 		return 1;
  
--static void armada370_nand_cmdfunc(struct mtd_info *mtd,
--				   const unsigned command,
--				   int column, int page_addr)
-+static void nand_cmdfunc_extended(struct mtd_info *mtd,
-+				  const unsigned command,
-+				  int column, int page_addr)
- {
- 	struct pxa3xx_nand_host *host = mtd->priv;
- 	struct pxa3xx_nand_info *info = host->info_data;
-@@ -1497,6 +1497,21 @@ KEEP_CONFIG:
- 		chip->bbt_md = &bbt_mirror_descr;
+-	} else if (page_size == 512) {
++	} else if (strength == 1 && ecc_stepsize == 512 && page_size == 512) {
+ 		info->chunk_size = 512;
+ 		info->spare_size = 8;
+ 		info->ecc_size = 8;
+@@ -1365,19 +1361,12 @@ static int pxa_ecc_init(struct pxa3xx_nand_info *info,
+ 		ecc->size = 512;
+ 		ecc->strength = 1;
+ 		return 1;
+-	}
+-	return 0;
+-}
+ 
+-static int armada370_ecc_init(struct pxa3xx_nand_info *info,
+-			      struct nand_ecc_ctrl *ecc,
+-			      int strength, int ecc_stepsize, int page_size)
+-{
+ 	/*
+ 	 * Required ECC: 4-bit correction per 512 bytes
+ 	 * Select: 16-bit correction per 2048 bytes
+ 	 */
+-	if (strength == 4 && ecc_stepsize == 512 && page_size == 4096) {
++	} else if (strength == 4 && ecc_stepsize == 512 && page_size == 4096) {
+ 		info->ecc_bch = 1;
+ 		info->chunk_size = 2048;
+ 		info->spare_size = 32;
+@@ -1418,6 +1407,7 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
+ 	uint32_t id = -1;
+ 	uint64_t chipsize;
+ 	int i, ret, num;
++	uint16_t ecc_strength, ecc_step;
+ 
+ 	if (pdata->keep_config && !pxa3xx_nand_detect_config(info))
+ 		goto KEEP_CONFIG;
+@@ -1512,15 +1502,17 @@ KEEP_CONFIG:
+ 		}
  	}
  
-+	/*
-+	 * If the page size is bigger than the FIFO size, let's check
-+	 * we are given the right variant and then switch to the extended
-+	 * (aka splitted) command handling,
-+	 */
-+	if (mtd->writesize > PAGE_CHUNK_SIZE) {
-+		if (info->variant == PXA3XX_NAND_VARIANT_ARMADA370) {
-+			chip->cmdfunc = nand_cmdfunc_extended;
-+		} else {
-+			dev_err(&info->pdev->dev,
-+				"unsupported page size on this variant\n");
-+			return -ENODEV;
-+		}
+-	if (info->variant == PXA3XX_NAND_VARIANT_ARMADA370)
+-		ret = armada370_ecc_init(info, &chip->ecc,
+-				   chip->ecc_strength_ds,
+-				   chip->ecc_step_ds,
+-				   mtd->writesize);
+-	else
+-		ret = pxa_ecc_init(info, &chip->ecc,
+-				   chip->ecc_strength_ds,
+-				   mtd->writesize);
++	ecc_strength = chip->ecc_strength_ds;
++	ecc_step = chip->ecc_step_ds;
++
++	/* Set default ECC strength requirements on non-ONFI devices */
++	if (ecc_strength < 1 && ecc_step < 1) {
++		ecc_strength = 1;
++		ecc_step = 512;
 +	}
 +
- 	if (info->variant == PXA3XX_NAND_VARIANT_ARMADA370)
- 		ret = armada370_ecc_init(info, &chip->ecc,
- 				   chip->ecc_strength_ds,
-@@ -1576,11 +1591,7 @@ static int alloc_nand_resource(struct platform_device *pdev)
- 		chip->read_buf		= pxa3xx_nand_read_buf;
- 		chip->write_buf		= pxa3xx_nand_write_buf;
- 		chip->options		|= NAND_NO_SUBPAGE_WRITE;
--
--		if (info->variant == PXA3XX_NAND_VARIANT_ARMADA370)
--			chip->cmdfunc = armada370_nand_cmdfunc;
--		else
--			chip->cmdfunc = pxa3xx_nand_cmdfunc;
-+		chip->cmdfunc		= nand_cmdfunc;
- 	}
- 
- 	spin_lock_init(&chip->controller->lock);
++	ret = pxa_ecc_init(info, &chip->ecc, ecc_strength,
++			   ecc_step, mtd->writesize);
+ 	if (!ret) {
+ 		dev_err(&info->pdev->dev,
+ 			"ECC strength %d at page size %d is not supported\n",
 -- 
 1.8.1.5
