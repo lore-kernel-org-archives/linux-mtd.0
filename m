@@ -1,12 +1,26 @@
-From: Sourav Poddar <sourav.poddar@ti.com>
-To: <dwmw2@infradead.org>
-Subject: [PATCH] fs: jffs2: Add setup code for spi nor flash.
-Date: Mon, 9 Dec 2013 10:44:35 +0530
-Message-ID: <1386566075-28107-1-git-send-email-sourav.poddar@ti.com>
+Received: from eu1sys200aog125.obsmtp.com ([207.126.144.159])
+ by merlin.infradead.org with smtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Vpwah-0007XY-C1
+ for linux-mtd@lists.infradead.org; Mon, 09 Dec 2013 08:53:24 +0000
+Message-ID: <52A584D7.9030200@st.com>
+Date: Mon, 9 Dec 2013 08:52:39 +0000
+From: Angus Clark <angus.clark@st.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Sourav Poddar <sourav.poddar@ti.com>, linux-mtd@lists.infradead.org,
- George Cherian <george.cherian@ti.com>, balbi@ti.com
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH] mtd: m25p80: add support for Spansion s25fl128s chip
+References: <528C8C1B.7090902@st.com> <528DC1DB.2090007@freescale.com>
+ <528DCFBD.9000905@st.com> <528DD70B.8010602@freescale.com>
+ <528DE9A8.6060207@st.com> <528EBDAE.7070408@freescale.com>
+ <20131204235831.GF27149@ld-irv-0074.broadcom.com>
+ <20131205022025.GA24434@shlinux2.ap.freescale.net>
+ <CAN8TOE8oQ05zYXj+hbCykzteM2rJC=P3wNwGS8Ey8Lj0a2XWgQ@mail.gmail.com>
+ <52A05BA6.9080800@st.com> <20131206100220.GA16069@shlinux2.ap.freescale.net>
+In-Reply-To: <20131206100220.GA16069@shlinux2.ap.freescale.net>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: Marek Vasut <marex@denx.de>, Angus CLARK <angus.clark@st.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,70 +30,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Flash need to be setup, while using it for Jffs2 filesystem.
-The setup code checks was not present for serial flash like
-m25p80. As a result of which, internal pointers/buffers are in unknown
-state. This leads to
-a. dumps like below[1] while mounting a jffs2 filesystem.
-b. Hang while doing a mount second time.
+Hi Huang,
 
-[1]:
-root@am437x-evm:~# sync
-[   84.112640] INFO: trying to register non-static key.
-[   84.117553] the code is fine but needs lockdep annotation.
-[   84.122985] turning off the locking correctness validator.
-[   84.128417] CPU: 0 PID: 1289 Comm: sync Not tainted 3.12.0-67367-g2d1978c-dirty #18
-[   84.136016] [<c001bcb8>] (unwind_backtrace+0x0/0xf0) from [<c0017dd0>] (show_stack+0x10/0x14)
-[   84.144439] [<c0017dd0>] (show_stack+0x10/0x14) from [<c05a69c8>] (dump_stack+0x78/0x94)
-[   84.152465] [<c05a69c8>] (dump_stack+0x78/0x94) from [<c009e2e0>] (__lock_acquire+0x1788/0x1b8c)
-[   84.161132] [<c009e2e0>] (__lock_acquire+0x1788/0x1b8c) from [<c009ec30>] (lock_acquire+0x9c/0x104)
-[   84.170104] [<c009ec30>] (lock_acquire+0x9c/0x104) from [<c005ede8>] (flush_work+0x38/0x78)
-[   84.178375] [<c005ede8>] (flush_work+0x38/0x78) from [<c005eef0>] (__cancel_work_timer+0x84/0x124)
-[   84.187225] [<c005eef0>] (__cancel_work_timer+0x84/0x124) from [<c024c1d4>] (jffs2_sync_fs+0x14/0x38)
-[   84.196380] [<c024c1d4>] (jffs2_sync_fs+0x14/0x38) from [<c013c138>] (sync_fs_one_sb+0x28/0x2c)
-[   84.204986] [<c013c138>] (sync_fs_one_sb+0x28/0x2c) from [<c0115360>] (iterate_supers+0xb0/0xd8)
-[   84.213684] [<c0115360>] (iterate_supers+0xb0/0xd8) from [<c013c228>] (sys_sync+0x3c/0x98)
-[   84.221862] [<c013c228>] (sys_sync+0x3c/0x98) from [<c0013dc0>] (ret_fast_syscall+0x0/0x48)
+On 12/06/2013 10:02 AM, Huang Shijie wrote:
+> On Thu, Dec 05, 2013 at 10:55:34AM +0000, Angus Clark wrote:
+>> static struct flash_info *__devinit fsm_jedec_probe(struct stm_spi_fsm *fsm)
+>> {
+>> 	uint8_t	readid[MAX_READID_LEN];
+> 
+> How long is the MAX_READID_LEN? 5 or 8?
 
-The patch fixes the above two issue.
+At the moment, I have it set to 6 (for the Spansion 'S' generation devices).  It
+just needs to be set to the maximum READID length given in the table.
 
-Signed-off-by: Sourav Poddar <sourav.poddar@ti.com>
-Signed-off-by: George Cherian <george.cherian@ti.com>
----
- fs/jffs2/fs.c       |    7 +++++++
- fs/jffs2/os-linux.h |    2 ++
- 2 files changed, 9 insertions(+), 0 deletions(-)
+> Brian doubt that some NOR can not be read out more then 5 bytes.
 
-diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
-index fe3c052..02003f0 100644
---- a/fs/jffs2/fs.c
-+++ b/fs/jffs2/fs.c
-@@ -725,6 +725,13 @@ static int jffs2_flash_setup(struct jffs2_sb_info *c) {
- 			return ret;
- 	}
- 
-+	/* m25p80 spi flash */
-+	if (jffs2_nor_spi_wbuf_flash(c)) {
-+		ret = jffs2_nor_wbuf_flash_setup(c);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	/* and an UBI volume */
- 	if (jffs2_ubivol(c)) {
- 		ret = jffs2_ubivol_setup(c);
-diff --git a/fs/jffs2/os-linux.h b/fs/jffs2/os-linux.h
-index d200a9b..09ba999 100644
---- a/fs/jffs2/os-linux.h
-+++ b/fs/jffs2/os-linux.h
-@@ -134,6 +134,8 @@ int jffs2_ubivol_setup(struct jffs2_sb_info *c);
- void jffs2_ubivol_cleanup(struct jffs2_sb_info *c);
- 
- #define jffs2_nor_wbuf_flash(c) (c->mtd->type == MTD_NORFLASH && ! (c->mtd->flags & MTD_BIT_WRITEABLE))
-+#define jffs2_nor_spi_wbuf_flash(c) \
-+	(c->mtd->type == MTD_NORFLASH && (c->mtd->flags & MTD_CAP_NORFLASH))
- int jffs2_nor_wbuf_flash_setup(struct jffs2_sb_info *c);
- void jffs2_nor_wbuf_flash_cleanup(struct jffs2_sb_info *c);
- void jffs2_dirty_trigger(struct jffs2_sb_info *c);
--- 
-1.7.1
+I believe it is always safe to over-read the READID data.  I have found that
+devices either repeat the READID, or start returning 0x00 bytes.
+
+>> 	sort(flash_types, ARRAY_SIZE(flash_types) - 1,
+>> 	     sizeof(struct flash_info), cmp_flash_info_readid_len, NULL);
+>>
+> If we keep the flash_types table be inserted by a specific order.
+> We can remove this sort code.
+> 
+
+We could do, but that relies on people adding entries in the correct order, and
+the correct order in terms of the search leads to a table that is not so easy to
+read -- my first version required an ordered table!  I'm easy either way though,
+there are clearly benefits to having an ordered table.
+
+Cheers,
+
+Angus
