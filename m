@@ -1,20 +1,38 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VpxwV-0001es-VR
- for linux-mtd@lists.infradead.org; Mon, 09 Dec 2013 10:20:01 +0000
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 2/2] mtd: nand: pxa3xx: Consolidate ECC initialization
-Date: Mon,  9 Dec 2013 07:19:44 -0300
-Message-Id: <1386584384-6379-3-git-send-email-ezequiel.garcia@free-electrons.com>
-In-Reply-To: <1386584384-6379-1-git-send-email-ezequiel.garcia@free-electrons.com>
-References: <1386584384-6379-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Received: from mail.aswsp.com ([193.34.35.150])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Vpyfj-0002lE-Dw
+ for linux-mtd@lists.infradead.org; Mon, 09 Dec 2013 11:06:44 +0000
+Date: Mon, 9 Dec 2013 12:06:09 +0100
+From: Matthieu CASTET <matthieu.castet@parrot.com>
+To: "Gupta, Pekon" <pekon@ti.com>
+Subject: Re: OMAP3 NAND ECC selection
+Message-ID: <20131209120609.08e62b40@parrot.com>
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA52ADF@DBDE04.ent.ti.com>
+References: <alpine.DEB.2.01.1312051000270.17561@pmeerw.net>
+ <CAFqH_50vhgJ=ktqmYRo+ZO1bbRmiME+kXVt6sLJL91q9A2S7TA@mail.gmail.com>
+ <52A04E75.3010609@corscience.de>
+ <alpine.DEB.2.01.1312051711410.20976@pmeerw.net>
+ <20131205171326.GA26766@atomide.com>
+ <CABxcv=mtqkpyup0y-zv53YRvdgKH0bNXeCWf9mxPFoUTRQ=Gew@mail.gmail.com>
+ <20131205182628.GF2345@localhost>
+ <20980858CB6D3A4BAE95CA194937D5E73EA5222E@DBDE04.ent.ti.com>
+ <20131205200618.19b33ee2@skate>
+ <CAN8TOE-cv5ppz0Q_asK=6WdRPaK9SAd1ccZF0Ax7QCdGOE7Fjw@mail.gmail.com>
+ <20131205203237.047cfbb9@skate>
+ <20980858CB6D3A4BAE95CA194937D5E73EA52ADF@DBDE04.ent.ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>, Arnaud Ebalard <arno@natisbad.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ Mike Dunn <mikedunn@newsguy.com>,
  Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>
+ Tony Lindgren <tony@atomide.com>, Enric
+ Balletbo Serra <eballetbo@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Peter
+ Meerwald <pmeerw@pmeerw.net>, Javier Martinez Canillas <javier@dowhile0.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Andreas =?ISO-8859-15?Q?Bie=DFmann?= <andreas.biessmann@corscience.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,103 +42,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In order to avoid code duplication, let's consolidate the ECC setting
-for all SoC variants. Such decision is based on page size and ECC
-strength requirements.
+Le Mon, 9 Dec 2013 04:33:51 +0000,
+"Gupta, Pekon" <pekon@ti.com> a =E9crit :
 
-Also, provide a default value for the case where such ECC information
-is not provided (non-ONFI devices).
+> Hi,
+>=20
+> >From: Thomas Petazzoni [mailto:thomas.petazzoni@free-electrons.com]
+> >>On Thu, 5 Dec 2013 11:24:18 -0800, Brian Norris wrote:
+> [...]
+>=20
+> >> Using 1-bit ECC on NAND is not a long-term solution. Given that
+> >> fact, I think your ROM code is what may need to change, not the
+> >> entire MTD subsystem.
+> >
+> >As someone (Tom Rini maybe?) pointed out, today the shift is 1-bit
+> >ECC supported by ROM code vs. 4 or 8 bits required by NAND. But we
+> >can very well imagine that tomorrow ROM code will support BCH4 (and
+> >the NAND will ensure block 0 is OK for use with BCH4) but the rest
+> >of the NAND will require BCH16 or something like that.
+> >
+> >I'm not designing ROM code, and the fact that they today have this
+> >limitation, should be an indication that Linux should be capable of
+> >handling different ECC schemes to handle those hardware constraints.
+> >
+> Just to highlight few more points:
+> (1) ROM code on newer OMAP platforms like AM33xx do have the ability
+> to select ECC scheme by reading a specific location from EEPROM
+> connected to I2C0.=20
+AFAIK on omap3, the rom code first try to read data with bch and if it
+doesn't work it fallback on haming 1 bit ecc.
 
-Tested-by: Arnaud Ebalard <arno@natisbad.org>
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
----
- drivers/mtd/nand/pxa3xx_nand.c | 40 ++++++++++++++++------------------------
- 1 file changed, 16 insertions(+), 24 deletions(-)
+>=20
+> (2) And going forward, ECC based NAND devices may be phased out,
+> and BE-NAND (Built-in) NAND devices are becoming popular. As both
+> cost and density wise they are same to SLC NANDs today.  Thus issue
+> of un-compatibility of ecc-scheme with ROM code, will not hold true.
+> We already have some BE-NAND support in our generic driver.
+> http://patchwork.ozlabs.org/patch/222186/
+>=20
+Yes but these flash are not always compatible with the ROM.
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 1840d33..945eb62 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -1342,13 +1342,9 @@ static int pxa3xx_nand_sensing(struct pxa3xx_nand_info *info)
- 
- static int pxa_ecc_init(struct pxa3xx_nand_info *info,
- 			struct nand_ecc_ctrl *ecc,
--			int strength, int page_size)
-+			int strength, int ecc_stepsize, int page_size)
- {
--	/*
--	 * We don't use strength here as the PXA variant
--	 * is used with non-ONFI compliant devices.
--	 */
--	if (page_size == 2048) {
-+	if (strength == 1 && ecc_stepsize == 512 && page_size == 2048) {
- 		info->chunk_size = 2048;
- 		info->spare_size = 40;
- 		info->ecc_size = 24;
-@@ -1357,7 +1353,7 @@ static int pxa_ecc_init(struct pxa3xx_nand_info *info,
- 		ecc->strength = 1;
- 		return 1;
- 
--	} else if (page_size == 512) {
-+	} else if (strength == 1 && ecc_stepsize == 512 && page_size == 512) {
- 		info->chunk_size = 512;
- 		info->spare_size = 8;
- 		info->ecc_size = 8;
-@@ -1365,19 +1361,12 @@ static int pxa_ecc_init(struct pxa3xx_nand_info *info,
- 		ecc->size = 512;
- 		ecc->strength = 1;
- 		return 1;
--	}
--	return 0;
--}
- 
--static int armada370_ecc_init(struct pxa3xx_nand_info *info,
--			      struct nand_ecc_ctrl *ecc,
--			      int strength, int ecc_stepsize, int page_size)
--{
- 	/*
- 	 * Required ECC: 4-bit correction per 512 bytes
- 	 * Select: 16-bit correction per 2048 bytes
- 	 */
--	if (strength == 4 && ecc_stepsize == 512 && page_size == 4096) {
-+	} else if (strength == 4 && ecc_stepsize == 512 && page_size == 4096) {
- 		info->ecc_bch = 1;
- 		info->chunk_size = 2048;
- 		info->spare_size = 32;
-@@ -1418,6 +1407,7 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
- 	uint32_t id = -1;
- 	uint64_t chipsize;
- 	int i, ret, num;
-+	uint16_t ecc_strength, ecc_step;
- 
- 	if (pdata->keep_config && !pxa3xx_nand_detect_config(info))
- 		goto KEEP_CONFIG;
-@@ -1512,15 +1502,17 @@ KEEP_CONFIG:
- 		}
- 	}
- 
--	if (info->variant == PXA3XX_NAND_VARIANT_ARMADA370)
--		ret = armada370_ecc_init(info, &chip->ecc,
--				   chip->ecc_strength_ds,
--				   chip->ecc_step_ds,
--				   mtd->writesize);
--	else
--		ret = pxa_ecc_init(info, &chip->ecc,
--				   chip->ecc_strength_ds,
--				   mtd->writesize);
-+	ecc_strength = chip->ecc_strength_ds;
-+	ecc_step = chip->ecc_step_ds;
-+
-+	/* Set default ECC strength requirements on non-ONFI devices */
-+	if (ecc_strength < 1 && ecc_step < 1) {
-+		ecc_strength = 1;
-+		ecc_step = 512;
-+	}
-+
-+	ret = pxa_ecc_init(info, &chip->ecc, ecc_strength,
-+			   ecc_step, mtd->writesize);
- 	if (!ret) {
- 		dev_err(&info->pdev->dev,
- 			"ECC strength %d at page size %d is not supported\n",
--- 
-1.8.1.5
+If the rom is expecting some ECC and the internal controller expect
+other ecc you are stuck.
+
+
+Matthieu
