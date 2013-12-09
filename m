@@ -1,16 +1,23 @@
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Vq8YG-0002wJ-Ss
+ for linux-mtd@lists.infradead.org; Mon, 09 Dec 2013 21:39:41 +0000
+Date: Mon, 9 Dec 2013 18:39:31 -0300
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: <linux-arm-kernel@lists.infradead.org>,
-	<linux-mtd@lists.infradead.org>
-Subject: [PATCH] Partially revert "mtd: nand: pxa3xx: Introduce 'marvell,
- armada370-nand' compatible string"
-Date: Mon,  9 Dec 2013 18:36:26 -0300
-Message-Id: <1386624986-404-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>, Jason Cooper <jason@lakedaemon.net>,
- Andrew Lunn <andrew@lunn.ch>, stable@vger.kernel.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v2] mtd: nand: gpio: Remove unneeded CONFIG_OF
+Message-ID: <20131209213930.GE31944@localhost>
+References: <1386430609-2910-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20131209203105.GU27149@ld-irv-0074.broadcom.com>
+ <20131209211750.GC31944@localhost>
+ <20131209212236.GW27149@ld-irv-0074.broadcom.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20131209212236.GW27149@ld-irv-0074.broadcom.com>
+Cc: linux-mtd@lists.infradead.org, Alexander Shiyan <shc_work@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,34 +27,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This reverts c0f3b8643a6fa2461d70760ec49d21d2b031d611.
+On Mon, Dec 09, 2013 at 01:22:36PM -0800, Brian Norris wrote:
+> On Mon, Dec 09, 2013 at 06:17:51PM -0300, Ezequiel Garcia wrote:
+> > By the way, has anyone actually *tried* this driver with !OF lately?
+> > I guess I'm missing something but it seems to me it won't probe:
+> > 
+> > static inline int gpio_nand_get_config_of(const struct device *dev,
+> >                                           struct gpio_nand_platdata *plat)
+> > {
+> > 	return -ENOSYS;
+> > }
+> > 
+> > static inline int gpio_nand_get_config(const struct device *dev,
+> >                                        struct gpio_nand_platdata *plat)
+> > {
+> > 	int ret = gpio_nand_get_config_of(dev, plat);
+> > 	if (!ret)
+> 
+> ^^^ if (! (-ENOSYS)) ====> if (0)
+> 
 
-The "armada370-nand" compatible support is not complete, and it was mistake
-to add it. Revert it and pospone the support until the infrastructure is
-in place.
+Ah.. yes...
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
----
-Note this won't apply to v3.12 as it is, although fixing it should be easy.
+> > 		return ret;
+> > 	[..]
+> > }
+> > 
+> > static int gpio_nand_probe(struct platform_device *pdev)
+> > {
+> > 	[..]
+> > 	ret = gpio_nand_get_config(&pdev->dev, &gpiomtd->plat);
+> > 	if (ret)
+> > 		return ret;
+> [..]
+> > }
+> 
+> Looks OK to me, but I haven't tested it. What do you see? Perhaps you
+> were incorrectly reading the line I pointed to?
+> 
 
- drivers/mtd/nand/pxa3xx_nand.c | 4 ----
- 1 file changed, 4 deletions(-)
-
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 3d143fe..ebcf693 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -333,10 +333,6 @@ static struct of_device_id pxa3xx_nand_dt_ids[] = {
- 		.compatible = "marvell,pxa3xx-nand",
- 		.data       = (void *)PXA3XX_NAND_VARIANT_PXA,
- 	},
--	{
--		.compatible = "marvell,armada370-nand",
--		.data       = (void *)PXA3XX_NAND_VARIANT_ARMADA370,
--	},
- 	{}
- };
- MODULE_DEVICE_TABLE(of, pxa3xx_nand_dt_ids);
+I knew I was missing something! Yes, that line confused me.
 -- 
-1.8.1.5
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
