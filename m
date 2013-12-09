@@ -1,21 +1,23 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vq8DI-0002Jt-S0
- for linux-mtd@lists.infradead.org; Mon, 09 Dec 2013 21:18:02 +0000
-Date: Mon, 9 Dec 2013 18:17:51 -0300
+ id 1Vq8G0-0002Sx-6i
+ for linux-mtd@lists.infradead.org; Mon, 09 Dec 2013 21:20:48 +0000
+Date: Mon, 9 Dec 2013 18:20:39 -0300
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v2] mtd: nand: gpio: Remove unneeded CONFIG_OF
-Message-ID: <20131209211750.GC31944@localhost>
-References: <1386430609-2910-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <20131209203105.GU27149@ld-irv-0074.broadcom.com>
+Subject: Re: [PATCH] mtd: nand: pxa3xx: Use info->use_dma to release DMA
+ resources
+Message-ID: <20131209212038.GD31944@localhost>
+References: <1385470344-2542-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20131127075819.GC13929@norris.computersforpeace.net>
+ <20131127113405.GA2326@localhost> <20131206105354.GA2511@localhost>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20131209203105.GU27149@ld-irv-0074.broadcom.com>
-Cc: linux-mtd@lists.infradead.org, Alexander Shiyan <shc_work@mail.ru>
+In-Reply-To: <20131206105354.GA2511@localhost>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,81 +27,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Brian,
 
-On Mon, Dec 09, 2013 at 12:31:05PM -0800, Brian Norris wrote:
-> On Sat, Dec 07, 2013 at 12:36:49PM -0300, Ezequiel Garcia wrote:
-> > Since the of_mtd header provides dummy stubs for !CONFIG_OF, it's safe
-> > to remove the #ifdef CONFIG_OF. Also remove the of_match_ptr guard as
-> > it's no longer required. Build tested only.
+> Brian,
+> 
+> On Wed, Nov 27, 2013 at 08:34:05AM -0300, Ezequiel Garcia wrote:
+> > On Tue, Nov 26, 2013 at 11:58:19PM -0800, Brian Norris wrote:
+> > > On Tue, Nov 26, 2013 at 09:52:24AM -0300, Ezequiel Garcia wrote:
+> > > > After the driver allocates all DMA resources, it sets "info->use_dma".
+> > > > Therefore, we need to check that variable to decide which resources
+> > > > needs to be freed, instead of the global use_dma variable.
+> > > > 
+> > > > Without this change, when the device probe fails, the driver will try
+> > > > to release unallocated DMA resources, with nasty results.
+> > > > 
+> > > > Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> > > > ---
+> > > > This is minor fix, but a fix anyway, so it should be queued for stable.
+> > > > 
+> > > >  drivers/mtd/nand/pxa3xx_nand.c | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+> > > > index 97c3eb5..8f2104c 100644
+> > > > --- a/drivers/mtd/nand/pxa3xx_nand.c
+> > > > +++ b/drivers/mtd/nand/pxa3xx_nand.c
+> > > > @@ -1288,7 +1288,7 @@ static int pxa3xx_nand_init_buff(struct pxa3xx_nand_info *info)
+> > > >  static void pxa3xx_nand_free_buff(struct pxa3xx_nand_info *info)
+> > > >  {
+> > > >  	struct platform_device *pdev = info->pdev;
+> > > > -	if (use_dma) {
+> > > > +	if (info->use_dma) {
+> > > 
+> > > With this change, then the 'else' case will be executed and will kfree()
+> > > the data buffer that we didn't allocate?
+> > > 
+> > >   kfree(info->data_buff);
+> > > 
+> > > Fortunately kfree()'ing a NULL is a no-op.
+> > > 
 > > 
-> > Cc: Alexander Shiyan <shc_work@mail.ru>
-> > Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> > No. The buffer is allocated at a very early stage in DMA and non-DMA modes.
+> > It's later reallocated, but in any case when pxa3xx_nand_free_buff()
+> > is called, the buffer can never be NULL.
+> > 
+> > The situation this commit fixes is that when the cleanup is called from
+> > the probe(), the DMA resources haven't been allocated yet and so the
+> > release must be kfree().
+> > 
+> > Remember we've recently changed this driver to work in non-DMA mode
+> > until the page size is correctly detected. Until then, info->use_dma is
+> > false.
+> > 
+> > > But this highlights some of the strangeness of the error handling in
+> > > this driver. It has an atypical style, in which the probe routine calls
+> > > the remove routine if it fails. Normally, the probe routine has teardown
+> > > carefully planned in stages, whereas the remove routine just does it all
+> > > in one go (since it can assume the device was fully initialized). (And
+> > > of course, the devm_* functions can help with simplifying some of
+> > > this...)
+> > > 
+> > 
+> > Yes, I know. The driver is very very old, and some parts of it need some
+> > love. However, the error handling is not so bad. When
+> > pxa3xx_nand_remove() is called, all resources are guaranteed to be
+> > allocated so it works like a full-fledged release.
+> > 
+> > I'm actually more annoyed by the fact there's two variables with the
+> > same name: use_dma, and info->use_dma.
+> > 
+> > > But I suppose this patch is correct as-is, and this issue could be
+> > > revisited later.
+> > > 
+> > > For my reference, have you actually seen this bug in practice? I'm not
+> > > sure how well this fits in the -stable rules, if it hasn't been observed
+> > > and tested appropriately.
+> > > 
+> > 
+> > Yes, I've seen this bug in practice, or otherwise wouldn't notice such small
+> > typo :-) The bug was triggered in PXA platforms, when the device cannot
+> > be identified (nand_scan fails).
+> > 
+> > It's a very rare condition, but it's a real bug. Is that enough for -stable?
 > 
-> Just because we can compile with and without CONFIG_OF doesn't mean the
-> behavior is equivalent now.
-> 
-> Take a look at gpio_nand_get_io_sync_of(): we allocate and throw away
-> memory (it's only cleaned up at device removal time):
-> 
-> static struct resource *gpio_nand_get_io_sync_of(struct platform_device *pdev)
-> {
-> 	struct resource *r = devm_kzalloc(&pdev->dev, sizeof(*r), GFP_KERNEL);
-> 	u64 addr;
-> 
-> 	if (!r || of_property_read_u64(pdev->dev.of_node,
-> 				       "gpio-control-nand,io-sync-reg", &addr))
-> 		return NULL;
-> ...
-> 
-> But I guess this should be fixed anyway, to do this:
-> 
-> static struct resource *gpio_nand_get_io_sync_of(struct platform_device *pdev)
-> {
-> 	struct resource *r = devm_kzalloc(&pdev->dev, sizeof(*r), GFP_KERNEL);
-> 	u64 addr;
-> 
-> 	if (of_property_read_u64(pdev->dev.of_node,
-> 				 "gpio-control-nand,io-sync-reg", &addr))
-> 		return NULL;
-> 
-> 	r = devm_kzalloc(&pdev->dev, sizeof(*r), GFP_KERNEL);
-> 	if (!r)
-> 		return NULL; /* Probably should be PTR_ERR(-ENOMEM), with callee-error-checking */
-> ...
-> 
-> I think we might as well fix this before forcing this quirk onto !OF
-> builds.
+> Just a gentle ping, in case this one felt through the cracks.
 > 
 
-Ah, I missed that spot! Yes, I think you're right, so let's hold this one
-until the above gets fixed.
-
-By the way, has anyone actually *tried* this driver with !OF lately?
-I guess I'm missing something but it seems to me it won't probe:
-
-static inline int gpio_nand_get_config_of(const struct device *dev,
-                                          struct gpio_nand_platdata *plat)
-{
-	return -ENOSYS;
-}
-
-static inline int gpio_nand_get_config(const struct device *dev,
-                                       struct gpio_nand_platdata *plat)
-{
-	int ret = gpio_nand_get_config_of(dev, plat);
-	if (!ret)
-		return ret;
-	[..]
-}
-
-static int gpio_nand_probe(struct platform_device *pdev)
-{
-	[..]
-	ret = gpio_nand_get_config(&pdev->dev, &gpiomtd->plat);
-	if (ret)
-		return ret;
-}
+I'm sorry to bother by pinging *again*, but I think this is a fix for v3.13.
 -- 
 Ezequiel García, Free Electrons
 Embedded Linux, Kernel and Android Engineering
