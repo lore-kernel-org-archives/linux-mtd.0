@@ -1,20 +1,22 @@
-Date: Mon, 9 Dec 2013 11:08:56 -0800
+Received: from mail-ob0-x22f.google.com ([2607:f8b0:4003:c01::22f])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Vq6i1-0008AG-MB
+ for linux-mtd@lists.infradead.org; Mon, 09 Dec 2013 19:41:38 +0000
+Received: by mail-ob0-f175.google.com with SMTP id uz6so4222767obc.6
+ for <linux-mtd@lists.infradead.org>; Mon, 09 Dec 2013 11:41:15 -0800 (PST)
+Date: Mon, 9 Dec 2013 11:41:10 -0800
 From: Brian Norris <computersforpeace@gmail.com>
 To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: Merge order in Armada 370/XP (mvebu) NAND support
-Message-ID: <20131209190856.GQ27149@ld-irv-0074.broadcom.com>
-References: <20131206184544.GA14986@localhost>
- <20131206192540.GU29282@titan.lakedaemon.net>
- <20131206221217.GC2458@localhost>
+Subject: Re: [RFC/PATCH] mtd: nand: Refactor print messages
+Message-ID: <20131209194110.GR27149@ld-irv-0074.broadcom.com>
+References: <1385379031-27766-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20131205020137.GH27149@ld-irv-0074.broadcom.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20131206221217.GC2458@localhost>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Andrew Lunn <andrew@lunn.ch>, Jason Cooper <jason@lakedaemon.net>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>, linux-mtd@lists.infradead.org,
- Olof Johansson <olof@lixom.net>, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20131205020137.GH27149@ld-irv-0074.broadcom.com>
+Cc: Huang Shijie <b32955@freescale.com>, David Woodhouse <dwmw2@infradead.org>,
+ linux-mtd@lists.infradead.org, Pekon Gupta <pekon@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,32 +26,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Dec 06, 2013 at 07:12:18PM -0300, Ezequiel Garcia wrote:
-> On Fri, Dec 06, 2013 at 02:25:40PM -0500, Jason Cooper wrote:
-> > On Fri, Dec 06, 2013 at 03:45:45PM -0300, Ezequiel Garcia wrote:
-> > > Jason/Brian: What do you think we can do?
-> > 
-> > Revert the change adding the compatible string in the first place?
+On Wed, Dec 04, 2013 at 06:01:37PM -0800, Brian Norris wrote:
+> Hi Ezequiel,
 > 
-> Yes, that probably is the best thing to do.
+> On Mon, Nov 25, 2013 at 08:30:31AM -0300, Ezequiel Garcia wrote:
+> > Add a nice "nand:" prefix to all pr_xxx() messages. This allows
+> > to get rid of the "NAND" words in messages, given the context
+> > is already given by the prefix.
+
+[...]
+
+> > @@ -3372,8 +3374,8 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
+> >  		id_data[i] = chip->read_byte(mtd);
+> >  
+> >  	if (id_data[0] != *maf_id || id_data[1] != *dev_id) {
+> > -		pr_info("%s: second ID read did not match "
+> > -			"%02x,%02x against %02x,%02x\n", __func__,
+> > +		pr_info("second ID read did not match "
+> > +			"%02x,%02x against %02x,%02x\n",
 > 
-> Brian: what do you think? I can send you a revert of the
-> "armada370-nand" compatible addition to be pushed for v3.13-rc4?
+> scripts/checkpatch.pl and Documentation/CodingStyle don't like this long
+> string (even though it would be over 80 chars). I think we should combine them.
+> 
+> If no one objects to the patch, I'll just make the modification myself.
+> 
+> >  			*maf_id, *dev_id, id_data[0], id_data[1]);
+> >  		return ERR_PTR(-ENODEV);
+> >  	}
 
-Yes, I think dropping the "armada370-nand" compatible string would be a
-good solution for 3.13. Are there any use cases where "armada370-nand"
-is needed and operational on 3.12? (e.g., is 2KB page support fine?)
-Because if there are *no* valid use cases for compatible =
-"armada370-nand" yet, then we might want this to go to 3.12.y stable as
-well, right?
+Pushed to l2-mtd.git, with the above edit.
 
-> The compatible can be added on top of l2-mtd.git, after all
-> the needed support is in the driver.
-
-Sure.
-
-I'll take a look at your "revert" patch and see if we can get it
-upstream for 3.13.
-
-Thanks,
 Brian
