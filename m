@@ -1,20 +1,23 @@
-Date: Mon, 9 Dec 2013 16:40:35 -0500
-From: Jason Cooper <jason@lakedaemon.net>
+Received: from mail-ie0-x22d.google.com ([2607:f8b0:4001:c03::22d])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Vq8oN-0003u2-0b
+ for linux-mtd@lists.infradead.org; Mon, 09 Dec 2013 21:56:19 +0000
+Received: by mail-ie0-f173.google.com with SMTP id to1so7210905ieb.4
+ for <linux-mtd@lists.infradead.org>; Mon, 09 Dec 2013 13:55:54 -0800 (PST)
+Date: Mon, 9 Dec 2013 13:55:47 -0800
+From: Brian Norris <computersforpeace@gmail.com>
 To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH] Partially revert "mtd: nand: pxa3xx: Introduce
- 'marvell,armada370-nand' compatible string"
-Message-ID: <20131209214035.GP10053@titan.lakedaemon.net>
-References: <1386624986-404-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH] mtd: nand: pxa3xx: Use info->use_dma to release DMA
+ resources
+Message-ID: <20131209215547.GX27149@ld-irv-0074.broadcom.com>
+References: <1385470344-2542-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20131127075819.GC13929@norris.computersforpeace.net>
+ <20131127113405.GA2326@localhost>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1386624986-404-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Andrew Lunn <andrew@lunn.ch>, stable@vger.kernel.org,
- Lior Amsalem <alior@marvell.com>, linux-mtd@lists.infradead.org,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20131127113405.GA2326@localhost>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,18 +27,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Dec 09, 2013 at 06:36:26PM -0300, Ezequiel Garcia wrote:
-> This reverts c0f3b8643a6fa2461d70760ec49d21d2b031d611.
+Sorry this one fell through a bit.
+
+On Wed, Nov 27, 2013 at 08:34:06AM -0300, Ezequiel Garcia wrote:
+> On Tue, Nov 26, 2013 at 11:58:19PM -0800, Brian Norris wrote:
+> > For my reference, have you actually seen this bug in practice? I'm not
+> > sure how well this fits in the -stable rules, if it hasn't been observed
+> > and tested appropriately.
 > 
-> The "armada370-nand" compatible support is not complete, and it was mistake
-> to add it. Revert it and pospone the support until the infrastructure is
-> in place.
+> Yes, I've seen this bug in practice, or otherwise wouldn't notice such small
+> typo :-) The bug was triggered in PXA platforms, when the device cannot
+> be identified (nand_scan fails).
 > 
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> It's a very rare condition, but it's a real bug. Is that enough for -stable?
 
-Acked-by: Jason Cooper <jason@lakedaemon.net>
+Yes, this qualifies just fine. I'm not quite sure how far back this can
+go on stable, though, as we have a lot of churn in pxa3xx_nand.c. It
+looks like the bug is long-standing, but we may need to port it for
+older releases. Let me know what you want to do here.
 
-thx,
+BTW, am I reading something wrong or is pxa3xx_nand.c broken for
+multi-CS systems? It seems like each chip's pxa3xx_nand_scan() will take
+turns overwriting info->buf_size and info->data_buff, leaking memory in
+the process. I guess the driver's designed to only use one chip at a
+time?
 
-Jason.
+Brian
