@@ -1,15 +1,15 @@
-Date: Tue, 10 Dec 2013 10:47:40 -0800
+Date: Tue, 10 Dec 2013 11:01:00 -0800
 From: Brian Norris <computersforpeace@gmail.com>
 To: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v3 01/36] mtd: st_spi_fsm: Allocate resources and
- register with MTD framework
-Message-ID: <20131210184740.GZ27149@ld-irv-0074.broadcom.com>
+Subject: Re: [PATCH v3 03/36] mtd: st_spi_fsm: Initialise and configure the
+ FSM for normal working conditions
+Message-ID: <20131210190100.GA27149@ld-irv-0074.broadcom.com>
 References: <1385727565-25794-1-git-send-email-lee.jones@linaro.org>
- <1385727565-25794-2-git-send-email-lee.jones@linaro.org>
+ <1385727565-25794-4-git-send-email-lee.jones@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1385727565-25794-2-git-send-email-lee.jones@linaro.org>
+In-Reply-To: <1385727565-25794-4-git-send-email-lee.jones@linaro.org>
 Cc: angus.clark@st.com, linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, dwmw2@infradead.org,
  linux-arm-kernel@lists.infradead.org
@@ -22,122 +22,106 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Nov 29, 2013 at 12:18:50PM +0000, Lee Jones wrote:
-> --- /dev/null
+Hi Lee,
+
+On Fri, Nov 29, 2013 at 12:18:52PM +0000, Lee Jones wrote:
+> --- a/drivers/mtd/devices/st_spi_fsm.c
 > +++ b/drivers/mtd/devices/st_spi_fsm.c
-> @@ -0,0 +1,111 @@
-> +/*
-> + * st_spi_fsm.c	Support for ST Serial Flash Controller
-> + *
-> + * Author: Angus Clark <angus.clark@st.com>
-> + *
-> + * Copyright (C) 2010-2013 STicroelectronics Limited
-
-Should be STMicrolectronics? :)
-
-> + *
-> + * JEDEC probe based on drivers/mtd/devices/m25p80.c
-> + *
-> + * This code is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
-> + *
-> + */
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/mtd/mtd.h>
-> +#include <linux/sched.h>
-> +#include <linux/delay.h>
-> +#include <linux/io.h>
-> +#include <linux/of.h>
-> +
-> +#include <asm/io.h>
-> +
-> +#include "st_spi_fsm.h"
-
-I agree with Srinivas. Unless you think this header can be used in
-another file, it should probably be part of this .c file. It also lends
-itself to some strange usage of 'static' functions declared (but not
-defined) in the header. But I'll comment when I get to those patches.
-
-> +
-> +static int stfsm_probe(struct platform_device *pdev)
+> @@ -25,11 +25,121 @@
+>  
+>  #include "st_spi_fsm.h"
+>  
+> +static inline uint32_t stfsm_fifo_available(struct stfsm *fsm)
 > +{
-> +	struct device_node *np = pdev->dev.of_node;
-> +	struct resource *res;
-> +	struct stfsm *fsm;
-> +
-> +	if (!np) {
-> +		dev_err(&pdev->dev, "No DT found\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	fsm = devm_kzalloc(&pdev->dev, sizeof(*fsm), GFP_KERNEL);
-> +	if (!fsm)
-> +		return -ENOMEM;
-> +
-> +	fsm->dev = &pdev->dev;
-> +
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	if (!res) {
-> +		dev_err(&pdev->dev, "Resource not found\n");
-> +		return -ENODEV;
-> +	}
-> +
-> +	fsm->region = devm_request_mem_region(&pdev->dev, res->start,
-> +					      resource_size(res), pdev->name);
-> +	if (!fsm->region) {
-> +		dev_err(&pdev->dev,
-> +			"Failed to reserve memory region [0x%08x-0x%08x]\n",
-
-Use the special %pr or %pR format specifier? See
-Documentation/printk-formats.txt
-
-> +			res->start, res->end);
-> +		return -EBUSY;
-> +	}
-> +
-> +	fsm->base = devm_ioremap_nocache(&pdev->dev,
-> +					 res->start, resource_size(res));
-> +	if (!fsm->base) {
-> +		dev_err(&pdev->dev, "Failed to ioremap [0x%08x]\n", res->start);
-
-Also %pr or %pR?
-
-> +		return -EINVAL;
-> +	}
-> +
-> +	mutex_init(&fsm->lock);
-> +
-> +	platform_set_drvdata(pdev, fsm);
-> +
-> +	fsm->mtd.dev.parent	= &pdev->dev;
-> +	fsm->mtd.type		= MTD_NORFLASH;
-> +	fsm->mtd.writesize	= 4;
-> +	fsm->mtd.writebufsize	= fsm->mtd.writesize;
-> +	fsm->mtd.flags		= MTD_CAP_NORFLASH;
-> +
-> +	return mtd_device_parse_register(&fsm->mtd, NULL, NULL, NULL, 0);
+> +	return (readl(fsm->base + SPI_FAST_SEQ_STA) >> 5) & 0x7f;
 > +}
 > +
-> +static int stfsm_remove(struct platform_device *pdev)
+> +static void stfsm_clear_fifo(struct stfsm *fsm)
 > +{
-> +	struct stfsm *fsm = platform_get_drvdata(pdev);
-> +	int err;
+> +	uint32_t avail;
 > +
-> +	err = mtd_device_unregister(&fsm->mtd);
-> +	if (err)
-> +		return err;
+> +	for (;;) {
+> +		avail = stfsm_fifo_available(fsm);
+> +		if (!avail)
+> +			break;
+> +
+> +		while (avail) {
+> +			readl(fsm->base + SPI_FAST_SEQ_DATA_REG);
+> +			avail--;
+> +		}
+> +	}
+> +}
+> +
+> +static int stfsm_set_mode(struct stfsm *fsm, uint32_t mode)
+> +{
+> +	int ret, timeout = 10;
+> +
+> +	/* Wait for controller to accept mode change */
+> +	while(--timeout) {
+
+s/while(/while (/
+
+You should run your series through scripts/checkpatch.pl. There are a
+number of small things to fixup in a few of your patches.
+
+> +		ret = readl(fsm->base + SPI_STA_MODE_CHANGE);
+> +		if (ret & 0x1)
+> +			break;
+> +		udelay(1);
+> +	}
+> +
+> +	if (!timeout)
+> +		return -EBUSY;
+> +
+> +	writel(mode, fsm->base + SPI_MODESELECT);
 > +
 > +	return 0;
-
-Simplify to the following?
-
-	return mtd_device_unregister(&fsm->mtd);
-
 > +}
+> +
+> +static void stfsm_set_freq(struct stfsm *fsm, uint32_t spi_freq)
+> +{
+> +	uint32_t emi_freq;
+> +	uint32_t clk_div;
+> +
+> +	/* TODO: Make this dynamic */
+> +	emi_freq = STFSM_DEFAULT_EMI_FREQ;
+> +
+> +	/*
+> +	 * Calculate clk_div - values between 2 and 128
+> +	 * Multiple of 2, rounded up
+> +	 */
+> +	clk_div = 2*((emi_freq + (2*spi_freq - 1))/(2*spi_freq));
 
-[...]
+I think this can use the <linux/kerne.h> round_up() macro. Also, you're
+missing some spacing. Possibly:
+
+	clk_div = 2 * round_up(emi_freq, 2 * spi_freq);
+
+> +	if (clk_div < 2)
+> +		clk_div = 2;
+> +	else if (clk_div > 128)
+> +		clk_div = 128;
+> +
+> +	/*
+> +	 * Determine a suitable delay for the IP to complete a change of
+> +	 * direction of the FIFO. The required delay is related to the clock
+> +	 * divider used. The following heuristics are based on empirical tests,
+> +	 * using a 100MHz EMI clock.
+> +	 */
+> +	if (clk_div <= 4)
+> +		fsm->fifo_dir_delay = 0;
+> +	else if (clk_div <= 10)
+> +		fsm->fifo_dir_delay = 1;
+> +	else
+> +		fsm->fifo_dir_delay = (clk_div + 9) / 10;
+
+round_down()?
+
+> +
+> +	dev_dbg(fsm->dev, "emi_clk = %uHZ, spi_freq = %uHZ, clk_div = %u\n",
+> +		emi_freq, spi_freq, clk_div);
+> +
+> +	writel(clk_div, fsm->base + SPI_CLOCKDIV);
+> +}
 
 Brian
