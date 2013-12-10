@@ -1,23 +1,19 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VqP0L-0002PJ-7x
- for linux-mtd@lists.infradead.org; Tue, 10 Dec 2013 15:13:49 +0000
 From: Marek Vasut <marex@denx.de>
-To: Sourav Poddar <sourav.poddar@ti.com>
-Subject: Re: [PATCHv2 03/10] spi/qspi: Add support to switc to memory mapped
- operation.
-Date: Tue, 10 Dec 2013 13:54:43 +0100
-References: <1386339891-32717-1-git-send-email-sourav.poddar@ti.com>
- <1386339891-32717-4-git-send-email-sourav.poddar@ti.com>
-In-Reply-To: <1386339891-32717-4-git-send-email-sourav.poddar@ti.com>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH V2 2/4] mtd: spi-nor: add the basic data structures
+Date: Tue, 10 Dec 2013 14:07:59 +0100
+References: <1386318764-15882-1-git-send-email-b32955@freescale.com>
+ <1386318764-15882-3-git-send-email-b32955@freescale.com>
+In-Reply-To: <1386318764-15882-3-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
 Content-Type: Text/Plain;
   charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Message-Id: <201312101354.43674.marex@denx.de>
-Cc: devicetree@vger.kernel.org, linux-omap@vger.kernel.org, balbi@ti.com,
- linux-spi@vger.kernel.org, broonie@kernel.org, linux-mtd@lists.infradead.org,
- bcousson@baylibre.com, computersforpeace@gmail.com, dwmw2@infradead.org
+Message-Id: <201312101407.59958.marex@denx.de>
+Cc: angus.clark@st.com, broonie@linaro.org, dwmw2@infradead.org,
+ linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org, pekon@ti.com,
+ sourav.poddar@ti.com, computersforpeace@gmail.com, lee.jones@linaro.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,85 +23,125 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday, December 06, 2013 at 03:24:44 PM, Sourav Poddar wrote:
-> These add apis that can be used to switch to memory mapped operatons
-> by configuring control module and qspi registers.
-> It also add "master->mmap" property to show that qspi
-> supports memory mapped operation.
-
-Please fix the 'switc' in the subject, should be 'switch' :)
-
-> Signed-off-by: Sourav Poddar <sourav.poddar@ti.com>
+On Friday, December 06, 2013 at 09:32:42 AM, Huang Shijie wrote:
+> The spi_nor{} is cloned from the m25p{}.
+> The spi_nor{} can be used by both the m25p80 and spi-nor controller.
+> 
+> We also add the spi_nor_xfer_cfg{} which can be used by the two
+> fundamental primitives: read_xfer/write_xfer.
+> 
+>  1) the hooks for spi_nor{}:
+>     @read_xfer/write_xfer: We can use these two hooks to code all
+>              the following hooks if the driver tries to implement them
+>              by itself.
+> 
+>     @read_reg: used to read the registers, such as read status register,
+>              read configure register.
+>     @write_reg: used to write the registers, such as write enable,
+>              erase sector.
+>     @read_id: read out the ID info.
+>     @wait_till_ready: wait till the NOR becomes ready.
+>     @read: read out the data from the NOR.
+>     @write: write data to the NOR.
+>     @erase: erase a sector of the NOR.
+> 
+>  2) Add a new field sst_write_second for the SST NOR write.
+> 
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
 > ---
-> v1->v2:
->  Squash a patch to add mater->mmap here itself.
->  drivers/spi/spi-ti-qspi.c |   29 +++++++++++++++++++++++++++++
->  1 files changed, 29 insertions(+), 0 deletions(-)
+>  include/linux/mtd/spi-nor.h |   74
+> +++++++++++++++++++++++++++++++++++++++++++ 1 files changed, 74
+> insertions(+), 0 deletions(-)
 > 
-> diff --git a/drivers/spi/spi-ti-qspi.c b/drivers/spi/spi-ti-qspi.c
-> index a0cee08..48294d1 100644
-> --- a/drivers/spi/spi-ti-qspi.c
-> +++ b/drivers/spi/spi-ti-qspi.c
-> @@ -113,6 +113,10 @@ struct ti_qspi {
->  #define QSPI_CSPOL(n)			(1 << (1 + n * 8))
->  #define QSPI_CKPOL(n)			(1 << (n * 8))
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> index ab2ea1e..b3e08c2 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -50,4 +50,78 @@
+>  /* Configuration Register bits. */
+>  #define CR_QUAD_EN_SPAN		0x2     /* Spansion Quad I/O */
 > 
-> +#define MM_SWITCH	(1 << 0)
-> +#define MEM_CS		(1 << 8)
-> +#define MEM_CS_DIS	(0 << 8)
-
-You might want to be consistent here, I'd use MEM_CS_EN and MEM_CS_DIS. But 
-please see below first as MEM_CS_DIS won't be needed, so MEM_CS can be preserved 
-as is and MEM_CS_DIS removed altogether.
-
 > +
->  #define	QSPI_FRAME			4096
-> 
->  #define QSPI_AUTOSUSPEND_TIMEOUT         2000
-> @@ -129,6 +133,30 @@ static inline void ti_qspi_write(struct ti_qspi *qspi,
->  	writel(val, qspi->base + reg);
->  }
-> 
-> +static void enable_qspi_memory_mapped(struct ti_qspi *qspi)
-> +{
-> +	u32 val;
+> +enum read_mode {
+> +	SPI_NOR_NORMAL = 0,
+> +	SPI_NOR_FAST,
+> +	SPI_NOR_QUAD,
+> +};
 > +
-> +	ti_qspi_write(qspi, MM_SWITCH, QSPI_SPI_SWITCH_REG);
-> +	if (qspi->ctrl_mod) {
-> +		val = readl(qspi->ctrl_base);
-> +		val |= MEM_CS;
-> +		writel(val, qspi->ctrl_base);
-> +	}
-> +}
+> +/*
+> + * struct spi_nor_xfer_cfg - Structure for defining a Serial Flash
+> transfer + * @wren:		command for "Write Enable", or 0x00 for not 
+required
+> + * @cmd:		command for operation
+> + * @cmd_pins:		number of pins to send @cmd (1, 2, 4)
+> + * @addr:		address for operation
+> + * @addr_pins:		number of pins to send @addr (1, 2, 4)
+> + * @addr_width: 	number of address bytes (3,4, or 0 for address not
+> required) + * @mode:		mode data
+> + * @mode_pins:		number of pins to send @mode (1, 2, 4)
+> + * @mode_cycles:	number of mode cycles (0 for mode not required)
+> + * @dummy_cycles:	number of dummy cycles (0 for dummy not required)
+> + */
+> +struct spi_nor_xfer_cfg {
+> +	u8		wren;
+> +	u8		cmd;
+> +	u8		cmd_pins;
+> +	u32		addr;
+> +	u8		addr_pins;
+> +	u8		addr_width;
+> +	u8		mode;
+> +	u8		mode_pins;
+> +	u8		mode_cycles;
+> +	u8		dummy_cycles;
+> +};
 > +
-> +static void disable_qspi_memory_mapped(struct ti_qspi *qspi)
-> +{
-> +	u32 val;
+> +#define	SPI_NOR_MAX_CMD_SIZE	8
+> +struct spi_nor {
+> +	struct mtd_info		*mtd;
+> +	struct mutex		lock;
 > +
-> +	ti_qspi_write(qspi, ~MM_SWITCH, QSPI_SPI_SWITCH_REG);
-> +	if (qspi->ctrl_mod) {
-> +		val = readl(qspi->ctrl_base);
-> +		val &= MEM_CS_DIS;
+> +	/* pointer to a spi device */
+> +	struct device		*dev;
+> +	u32			page_size;
+> +	u8			addr_width;
+> +	u8			erase_opcode;
+> +	u8			read_opcode;
+> +	u8			read_dummy;
+> +	u8			program_opcode;
+> +	enum read_mode		flash_read;
+> +	bool			sst_write_second;
+> +	struct spi_nor_xfer_cfg	cfg;
+> +
+> +	/* for write_reg */
+> +	u8			cmd_buf[SPI_NOR_MAX_CMD_SIZE];
+> +
+> +	/* the two fundamental primitives */
+> +	int (*read_xfer)(struct spi_nor *nor, struct spi_nor_xfer_cfg *cfg,
+> +			 u8 *buf, size_t len);
+> +	int (*write_xfer)(struct spi_nor *nor, struct spi_nor_xfer_cfg *cfg,
+> +			  u8 *buf, size_t len);
+> +
+> +	int (*read_reg)(struct spi_nor *nor, u8 opcode, u8 *buf, int len);
+> +	int (*write_reg)(struct spi_nor *nor, u8 opcode, u8 *buf, int len,
+> +			int write_enable);
 
-This will likely break once SWITCH_REG contains more than one bit, you can fix 
-this by using "val &= ~MEM_CS;" instead, which will also get rid of the 
-MEM_CS_DIS bit.
+Does the vybrid really support accelerated SPI NOR register IO or does it 
+emulate it with read/write or read_xfer/write_xfer accessors ? If the later, 
+just drop this stuff for now.
 
-> +		writel(val, qspi->ctrl_base);
-> +	}
-> +}
+> +	const struct spi_device_id *(*read_id)(struct spi_nor *nor);
+> +	int (*wait_till_ready)(struct spi_nor *nor);
 > +
->  static int ti_qspi_setup(struct spi_device *spi)
->  {
->  	struct ti_qspi	*qspi = spi_master_get_devdata(spi->master);
-> @@ -459,6 +487,7 @@ static int ti_qspi_probe(struct platform_device *pdev)
->  	master->transfer_one_message = ti_qspi_start_transfer_one;
->  	master->dev.of_node = pdev->dev.of_node;
->  	master->bits_per_word_mask = BIT(32 - 1) | BIT(16 - 1) | BIT(8 - 1);
-> +	master->mmap = true;
-> 
->  	if (!of_property_read_u32(np, "num-cs", &num_cs))
->  		master->num_chipselect = num_cs;
+> +	/* write */
+> +	void (*write)(struct spi_nor *nor, loff_t to,
+> +			size_t len, size_t *retlen, const u_char *buf);
+> +	/* read */
+> +	int (*read)(struct spi_nor *nor, loff_t from,
+> +			size_t len, size_t *retlen, u_char *buf);
+> +	/* erase */
+> +	int (*erase)(struct spi_nor *nor, loff_t offs);
 
-Best regards,
-Marek Vasut
+How do you specify what to erase (sub-sector, sector, whole chip) here ?
+
+> +};
+>  #endif
