@@ -1,30 +1,24 @@
-Received: from mail-yh0-f51.google.com ([209.85.213.51])
+Received: from [2001:41c8:1:5384::2] (helo=cassiel.sirena.org.uk)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VqK7U-0002lf-KF
- for linux-mtd@lists.infradead.org; Tue, 10 Dec 2013 10:00:49 +0000
-Received: by mail-yh0-f51.google.com with SMTP id c41so3666470yho.10
- for <linux-mtd@lists.infradead.org>; Tue, 10 Dec 2013 02:00:27 -0800 (PST)
-Date: Tue, 10 Dec 2013 10:00:22 +0000
-From: Lee Jones <lee.jones@linaro.org>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 0/4] mtd: spi-nor: add a new framework for SPI NOR
-Message-ID: <20131210100022.GA2390@lee--X1>
-References: <1385447575-23773-1-git-send-email-b32955@freescale.com>
- <20131127043253.GA9468@ld-irv-0074.broadcom.com>
- <5298AA23.7080404@st.com> <529C5BBF.6000604@freescale.com>
- <529C6CBB.4000008@st.com> <529D7838.6030606@freescale.com>
- <20131203082343.GK31626@lee--X1>
- <20131210082547.GC11489@norris.computersforpeace.net>
+ id 1VqKbg-0003iU-J4
+ for linux-mtd@lists.infradead.org; Tue, 10 Dec 2013 10:32:00 +0000
+Date: Tue, 10 Dec 2013 10:31:08 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Sourav Poddar <sourav.poddar@ti.com>
+Message-ID: <20131210103108.GA29268@sirena.org.uk>
+References: <1386339891-32717-1-git-send-email-sourav.poddar@ti.com>
+ <1386339891-32717-10-git-send-email-sourav.poddar@ti.com>
+ <20131209174203.GB12527@atomide.com> <52A697AB.1060404@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="iz7pcATjcRly4pHm"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20131210082547.GC11489@norris.computersforpeace.net>
-Cc: marex@denx.de, Angus Clark <angus.clark@st.com>, broonie@linaro.org,
- Linus Walleij <linus.walleij@linaro.org>, linux-spi@vger.kernel.org,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- pekon@ti.com, sourav.poddar@ti.com, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
+In-Reply-To: <52A697AB.1060404@ti.com>
+Subject: Re: [PATCHv2 09/10] arm: dts: dra7: Add qspi device.
+Cc: marex@denx.de, devicetree@vger.kernel.org, linux-omap@vger.kernel.org,
+ Tony Lindgren <tony@atomide.com>, balbi@ti.com, linux-spi@vger.kernel.org,
+ linux-mtd@lists.infradead.org, bcousson@baylibre.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,42 +28,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 10 Dec 2013, Brian Norris wrote:
 
-> On Tue, Dec 03, 2013 at 08:23:43AM +0000, Lee Jones wrote:
-> > I would like to make a suggestion to Brian though. Even if the new
-> > framework is written within the next couple of months and the
-> > semantics do suit the FSM Controller driver, I'd still like the
-> > implementation that's currently on the list to be applied. That way
-> > we'd have a known good version of the driver which is almost identical
-> > to how ST's internal driver does now. The one that is present out in
-> > the wild (i.e. _real_ products).
-> 
-> I think this suggestion is feasible: that we might merge this driver
-> even if it doesn't try to fit to some (still vague) idea of what a "SPI
-> NOR framework" should be. However, I don't know if the latter argument
-> is valid; just because it's in real products doesn't mean we really want
-> it as-is.
+--iz7pcATjcRly4pHm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-True, it just makes things easier for us internally when we are due
-for a kernel version up-lift.
+On Tue, Dec 10, 2013 at 09:55:15AM +0530, Sourav Poddar wrote:
 
-> But I think that in this case, the perfect may be the enemy of
-> the good -- the "good" driver now is better than the "perfect" driver
-> that never comes.
+> I posted this for review along with other code changes.
 
-+1
+> I will post them seperately to Benoit.
 
-> > I will subsequently volunteer to provide my utmost best efforts to
-> > port the driver over to the new framework as a new task once it has
-> > landed.
-> 
-> I'll hold you to that! Do we have any collateral for that guarantee? ;)
+Please wait until the driver updates have been reviewed.
 
-My word is my bond Brian. Failing that, beer? :)
+--iz7pcATjcRly4pHm
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
--- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSpu1pAAoJELSic+t+oim9vlcP/3IxIxqtuqJ3324l/ueFzfRh
+7JOnVOCII8exuMR+Cq8rqI975lleWUH7n9GRXOQWXrqh8Q3G4IKJQbMbzG6IWREN
+uRZuRzaEx2zFUU8H3SnYWEc5xzEyt6sLXa06aTAQIGWf/rIvdB8DK/wAYwQoF1V2
+5ynV7l5HICUcm/O1WRl5nSbsBl/22ay1tlmOVtPGBz1St5DZaoAoCAv5d2uOKkJr
+MLLiCtG+bj3Lio/lKw9bQqxDDPPYx99vTVWKtkSsWsuGQc8Cra1EoSrbBV2MWTUQ
++ZPXSHJ1SaJ/QUmIZod7Q1fF5O9Aj9yuzEulL59LFOl2eMUGSkQxkHAts9YzYKlF
+lrJ4JL80Q/aXghJZMhKcfQX77ndOw2IQvr8Nda3jobauPjlSCw26kLJabyNrnP8m
+mwQv5t9EazPQz8SzE5S9I2VIB+H3pqmPZEeDFEV0ULc6tLWV/K4M2R2rbsDvBR8t
+c5TmZavO6pWxDPhniQEKvlCqqJ2p8NCzAmKIEKsNr0QI08ZBRYhqMXvKeMNtiDOR
+1DrgIenrj0ZGuDVRPDRp6N38t3A1TW8PWfuGugFS5+3Hq7CnNyO/Sjl+wWtdlr2k
+adDwuVPAVuSDBKf+Ah/w7DMXJToss2ru+CIBVXuJULkPBaQ5dJEwjJbJvpMhzwnd
+HFlmTSJq4Kmz20jPV2vm
+=xjqI
+-----END PGP SIGNATURE-----
+
+--iz7pcATjcRly4pHm--
