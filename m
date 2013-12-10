@@ -1,23 +1,23 @@
-Received: from mailout.micron.com ([137.201.242.129])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VqDoF-0002K8-3Z
- for linux-mtd@lists.infradead.org; Tue, 10 Dec 2013 03:16:31 +0000
-From: =?gb2312?B?UWkgV2FuZyDN9cbwIChxaXdhbmcp?= <qiwang@micron.com>
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: RE: [PATCH 1/1]  MTD: UBI:  avoid program operation on  NOR flash
- after erasure interrupted
-Date: Tue, 10 Dec 2013 03:16:05 +0000
-Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A770B79D9@NTXXIAMBX02.xacn.micron.com>
-References: <71CF8D7F32C5C24C9CD1D0E02D52498A770B54B1@NTXXIAMBX02.xacn.micron.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A770B68A8@NTXXIAMBX02.xacn.micron.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A770B6F77@NTXXIAMBX02.xacn.micron.com>  
-Content-Language: en-US
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+Received: from devils.ext.ti.com ([198.47.26.153])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VqEtK-0003Ce-5o
+ for linux-mtd@lists.infradead.org; Tue, 10 Dec 2013 04:25:50 +0000
+Message-ID: <52A697AB.1060404@ti.com>
+Date: Tue, 10 Dec 2013 09:55:15 +0530
+From: Sourav Poddar <sourav.poddar@ti.com>
 MIME-Version: 1.0
-Cc: Adrian Hunter <adrian.hunter@intel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCHv2 09/10] arm: dts: dra7: Add qspi device.
+References: <1386339891-32717-1-git-send-email-sourav.poddar@ti.com>
+ <1386339891-32717-10-git-send-email-sourav.poddar@ti.com>
+ <20131209174203.GB12527@atomide.com>
+In-Reply-To: <20131209174203.GB12527@atomide.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: marex@denx.de, devicetree@vger.kernel.org, linux-omap@vger.kernel.org,
+ balbi@ti.com, linux-spi@vger.kernel.org, broonie@kernel.org,
+ linux-mtd@lists.infradead.org, bcousson@baylibre.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,76 +27,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgQXJ0ZW06DQpBcyB3ZSB0YWxrZWQgaW4gbWFpbCBiZWZvcmUsIHBsZWFzZSBjaGVjayBteSBw
-YXRjaCBhcyBiZWxvdzoNCg0KRnJvbTogUWkgV2FuZyA8cWl3YW5nQG1pY3Jvbi5jb20+DQoNCm5v
-cl9lcmFzZV9wcmVwYXJlKCkgd2lsbCBiZSBjYWxsZWQgYmVmb3JlIGVyYXNlIGEgTk9SIGZsYXNo
-LCBpdCB3aWxsIHByb2dyYW0gJzAnDQppbnRvIGEgYmxvY2sgdG8gbWFyayB0aGlzIGJsb2NrLiBC
-dXQgcHJvZ3JhbSBkYXRhIGludG8gYSBlcmFzdXJlIGludGVycnVwdGVkIGJsb2NrDQpjYW4gY2F1
-c2UgcHJvZ3JhbSB0aW10b3V0KHNldmVyYWwgbWludXRlcyBhdCBtb3N0KSBlcnJvciwgY291bGQg
-aW1wYWN0IG90aGVyIA0Kb3BlcmF0aW9uIG9uIE5PUiBmbGFzaC4gU28gVUJJRlMgY2FuIHJlYWQg
-dGhpcyBibG9jayBmaXJzdCB0byBhdm9pZCB1bm5lZWRlZCANCnByb2dyYW0gb3BlcmF0aW9uLiAN
-Cg0KVGhpcyBwYXRjaCB0cnkgdG8gcHV0IHJlYWQgb3BlcmF0aW9uIGF0IGhlYWQgb2Ygd3JpdGUg
-b3BlcmF0aW9uIGluIA0Kbm9yX2VyYXNlX3ByZXBhcmUoKSwgcmVhZCBvdXQgdGhlIGRhdGEuIA0K
-SWYgdGhlIGRhdGEgaXMgYWxyZWFkeSBjb3JydXB0LCB0aGVuIG5vIG5lZWQgdG8gcHJvZ3JhbSBh
-bnkgZGF0YSBpbnRvIHRoaXMgYmxvY2ssIA0KanVzdCBnbyB0byBlcmFzZSB0aGlzIGJsb2NrLg0K
-DQpTaWduZWQtb2ZmLWJ5OiBRaSBXYW5nIDxxaXdhbmdAcWl3YW5nQG1pY3Jvbi5jb20+DQotLS0N
-CmRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC91YmkvaW8uYyBiL2RyaXZlcnMvbXRkL3ViaS9pby5j
-DQppbmRleCBiZjc5ZGVmLi4wYTYzNDNkIDEwMDY0NA0KLS0tIGEvZHJpdmVycy9tdGQvdWJpL2lv
-LmMNCisrKyBiL2RyaXZlcnMvbXRkL3ViaS9pby5jDQpAQCAtNDk5LDYgKzQ5OSw3IEBAIHN0YXRp
-YyBpbnQgbm9yX2VyYXNlX3ByZXBhcmUoc3RydWN0IHViaV9kZXZpY2UgKnViaSwgaW50IHBudW0p
-DQogCXNpemVfdCB3cml0dGVuOw0KIAlsb2ZmX3QgYWRkcjsNCiAJdWludDMyX3QgZGF0YSA9IDA7
-DQorCXN0cnVjdCB1YmlfZWNfaGRyIGVjX2hkcjsNCiAJLyoNCiAJICogTm90ZSwgd2UgY2Fubm90
-IGdlbmVyYWxseSBkZWZpbmUgVklEIGhlYWRlciBidWZmZXJzIG9uIHN0YWNrLA0KIAkgKiBiZWNh
-dXNlIG9mIHRoZSB3YXkgd2UgZGVhbCB3aXRoIHRoZXNlIGJ1ZmZlcnMgKHNlZSB0aGUgaGVhZGVy
-DQpAQCAtNTA5LDQ5ICs1MTAsMzggQEAgc3RhdGljIGludCBub3JfZXJhc2VfcHJlcGFyZShzdHJ1
-Y3QgdWJpX2RldmljZSAqdWJpLCBpbnQgcG51bSkNCiAJc3RydWN0IHViaV92aWRfaGRyIHZpZF9o
-ZHI7DQogDQogCS8qDQorCSAqIElmIFZJRCBvciBFQyBpcyB2YWxpZCwgbmVlZCB0byBjb3JydXB0
-IGl0IGJlZm9yZSBlcmFzZSBvcGVyYXRpb24uICANCiAJICogSXQgaXMgaW1wb3J0YW50IHRvIGZp
-cnN0IGludmFsaWRhdGUgdGhlIEVDIGhlYWRlciwgYW5kIHRoZW4gdGhlIFZJRA0KIAkgKiBoZWFk
-ZXIuIE90aGVyd2lzZSBhIHBvd2VyIGN1dCBtYXkgbGVhZCB0byB2YWxpZCBFQyBoZWFkZXIgYW5k
-DQogCSAqIGludmFsaWQgVklEIGhlYWRlciwgaW4gd2hpY2ggY2FzZSBVQkkgd2lsbCB0cmVhdCB0
-aGlzIFBFQiBhcw0KIAkgKiBjb3JydXB0ZWQgYW5kIHdpbGwgdHJ5IHRvIHByZXNlcnZlIGl0LCBh
-bmQgcHJpbnQgc2Nhcnkgd2FybmluZ3MuDQogCSAqLw0KIAlhZGRyID0gKGxvZmZfdClwbnVtICog
-dWJpLT5wZWJfc2l6ZTsNCi0JZXJyID0gbXRkX3dyaXRlKHViaS0+bXRkLCBhZGRyLCA0LCAmd3Jp
-dHRlbiwgKHZvaWQgKikmZGF0YSk7DQotCWlmICghZXJyKSB7DQotCQlhZGRyICs9IHViaS0+dmlk
-X2hkcl9hbG9mZnNldDsNCi0JCWVyciA9IG10ZF93cml0ZSh1YmktPm10ZCwgYWRkciwgNCwgJndy
-aXR0ZW4sICh2b2lkICopJmRhdGEpOw0KLQkJaWYgKCFlcnIpDQotCQkJcmV0dXJuIDA7DQorCWVy
-ciA9IHViaV9pb19yZWFkX2VjX2hkcih1YmksIHBudW0sICZlY19oZHIsIDApOw0KKwlpZiAoZXJy
-ICE9IFVCSV9JT19CQURfSERSX0VCQURNU0cgJiYgZXJyICE9IFVCSV9JT19CQURfSERSICYmDQor
-CSAgICBlcnIgIT0gVUJJX0lPX0ZGKXsNCisJCWVycjEgPSBtdGRfd3JpdGUodWJpLT5tdGQsIGFk
-ZHIsIDQsICZ3cml0dGVuLCAodm9pZCAqKSZkYXRhKTsNCisJCWlmKGVycjEpDQorCQkJZ290byBl
-cnJvcjsNCiAJfQ0KIA0KLQkvKg0KLQkgKiBXZSBmYWlsZWQgdG8gd3JpdGUgdG8gdGhlIG1lZGlh
-LiBUaGlzIHdhcyBvYnNlcnZlZCB3aXRoIFNwYW5zaW9uDQotCSAqIFMyOUdMNTEyTiBOT1IgZmxh
-c2guIE1vc3QgcHJvYmFibHkgdGhlIHByZXZpb3VzbHkgZXJhc2VibG9jayBlcmFzdXJlDQotCSAq
-IHdhcyBpbnRlcnJ1cHRlZCBhdCBhIHZlcnkgaW5hcHByb3ByaWF0ZSBtb21lbnQsIHNvIGl0IGJl
-Y2FtZQ0KLQkgKiB1bndyaXRhYmxlLiBJbiB0aGlzIGNhc2Ugd2UgcHJvYmFibHkgYW55d2F5IGhh
-dmUgZ2FyYmFnZSBpbiB0aGlzDQotCSAqIFBFQi4NCi0JICovDQotCWVycjEgPSB1YmlfaW9fcmVh
-ZF92aWRfaGRyKHViaSwgcG51bSwgJnZpZF9oZHIsIDApOw0KLQlpZiAoZXJyMSA9PSBVQklfSU9f
-QkFEX0hEUl9FQkFETVNHIHx8IGVycjEgPT0gVUJJX0lPX0JBRF9IRFIgfHwNCi0JICAgIGVycjEg
-PT0gVUJJX0lPX0ZGKSB7DQotCQlzdHJ1Y3QgdWJpX2VjX2hkciBlY19oZHI7DQotDQotCQllcnIx
-ID0gdWJpX2lvX3JlYWRfZWNfaGRyKHViaSwgcG51bSwgJmVjX2hkciwgMCk7DQotCQlpZiAoZXJy
-MSA9PSBVQklfSU9fQkFEX0hEUl9FQkFETVNHIHx8IGVycjEgPT0gVUJJX0lPX0JBRF9IRFIgfHwN
-Ci0JCSAgICBlcnIxID09IFVCSV9JT19GRikNCi0JCQkvKg0KLQkJCSAqIEJvdGggVklEIGFuZCBF
-QyBoZWFkZXJzIGFyZSBjb3JydXB0ZWQsIHNvIHdlIGNhbg0KLQkJCSAqIHNhZmVseSBlcmFzZSB0
-aGlzIFBFQiBhbmQgbm90IGFmcmFpZCB0aGF0IGl0IHdpbGwgYmUNCi0JCQkgKiB0cmVhdGVkIGFz
-IGEgdmFsaWQgUEVCIGluIGNhc2Ugb2YgYW4gdW5jbGVhbiByZWJvb3QuDQotCQkJICovDQotCQkJ
-cmV0dXJuIDA7DQorCWVyciA9IHViaV9pb19yZWFkX3ZpZF9oZHIodWJpLCBwbnVtLCAmdmlkX2hk
-ciwgMCk7DQorCWlmIChlcnIgIT0gVUJJX0lPX0JBRF9IRFJfRUJBRE1TRyAmJiBlcnIgIT0gVUJJ
-X0lPX0JBRF9IRFIgJiYNCisJICAgIGVyciAhPSBVQklfSU9fRkYpew0KKwkgICAgCWFkZHIgKz0g
-dWJpLT52aWRfaGRyX2Fsb2Zmc2V0Ow0KKwkJZXJyMSA9IG10ZF93cml0ZSh1YmktPm10ZCwgYWRk
-ciwgNCwgJndyaXR0ZW4sICh2b2lkICopJmRhdGEpOw0KKwkJaWYgKGVycjEpDQorCQkJZ290byBl
-cnJvcjsJDQogCX0NCisJcmV0dXJuIDA7DQogDQorZXJyb3I6DQogCS8qDQotCSAqIFRoZSBQRUIg
-Y29udGFpbnMgYSB2YWxpZCBWSUQgaGVhZGVyLCBidXQgd2UgY2Fubm90IGludmFsaWRhdGUgaXQu
-DQorCSAqIFRoZSBQRUIgY29udGFpbnMgYSB2YWxpZCBWSUQgb3IgRUMgaGVhZGVyLCBidXQgd2Ug
-Y2Fubm90IGludmFsaWRhdGUgaXQuDQogCSAqIFN1cHBvc2VkbHkgdGhlIGZsYXNoIG1lZGlhIG9y
-IHRoZSBkcml2ZXIgaXMgc2NyZXdlZCB1cCwgc28gcmV0dXJuIGFuDQogCSAqIGVycm9yLg0KIAkg
-Ki8NCi0JdWJpX2VycigiY2Fubm90IGludmFsaWRhdGUgUEVCICVkLCB3cml0ZSByZXR1cm5lZCAl
-ZCByZWFkIHJldHVybmVkICVkIiwNCisJdWJpX2VycigiY2Fubm90IGludmFsaWRhdGUgUEVCICVk
-LCByZWFkIHJldHVybmVkICVkIHdyaXRlIHJldHVybmVkICVkIiwNCiAJCXBudW0sIGVyciwgZXJy
-MSk7DQogCXViaV9kdW1wX2ZsYXNoKHViaSwgcG51bSwgMCwgdWJpLT5wZWJfc2l6ZSk7DQogCXJl
-dHVybiAtRUlPOw0KLS0tDQoNCkkgaGF2ZSB0ZXN0ZWQgdGhpcyBwYXRjaCBvbiBNaWNyb24gTk9S
-IGZsYXNoLCBwYXJ0IG51bWJlciBpc6O6SlMyOEY1MTJNMjlFV0hBLg0KSWYgaGF2ZSBhbnkgcXVl
-c3Rpb25zLCBwbGVhc2UgbGV0IG1lIGtub3cuIA0KVGhhbmsgeW91DQoNCkJlc3QgUmVnYXJkcywg
-DQpRaSBXYW5nIM31xvANCkVTRyBBUEFDIEFFIA0KVGVsOiA4Ni0wMjEtMzg5OTcxNTgNCk1vYmls
-ZTogODYtMTUyMDE5NTgyMDINCkVtYWlsOiBxaXdhbmdAbWljcm9uLmNvbQ0KQWRkcmVzczogTm8g
-NjAxIEZhc2FpIFJkLCBQdWRvbmcsIFNoYW5naGFpLCBDaGluYSwgMjAwMTMxDQo=
+On Monday 09 December 2013 11:12 PM, Tony Lindgren wrote:
+> * Sourav Poddar<sourav.poddar@ti.com>  [131206 06:29]:
+>> These add device tree entry for qspi controller driver on dra7.
+> FYI these .dts changes need to be queued separately by Benoit and
+> should be posted as a seprate series in general to avoid confusion.
+>
+Ok, thanks!
+I posted this for review along with other code changes.
+
+I will post them seperately to Benoit.
+> Regards,
+>
+> Tony
+>
+>> Signed-off-by: Sourav Poddar<sourav.poddar@ti.com>
+>> ---
+>> v1->v2:
+>> use "MUX_MODE1" instead of numeric value
+>>   arch/arm/boot/dts/dra7-evm.dts |   32 ++++++++++++++++++++++++++++++++
+>>   arch/arm/boot/dts/dra7.dtsi    |   13 +++++++++++++
+>>   2 files changed, 45 insertions(+), 0 deletions(-)
+>>
+>> diff --git a/arch/arm/boot/dts/dra7-evm.dts b/arch/arm/boot/dts/dra7-evm.dts
+>> index 5babba0..4a57fdf 100644
+>> --- a/arch/arm/boot/dts/dra7-evm.dts
+>> +++ b/arch/arm/boot/dts/dra7-evm.dts
+>> @@ -93,6 +93,21 @@
+>>   			0x24c (PIN_INPUT_SLEW | MUX_MODE0) /* uart3_txd */
+>>   		>;
+>>   	};
+>> +
+>> +	qspi1_pins: pinmux_qspi1_pins {
+>> +		pinctrl-single,pins =<
+>> +			0x4c (PIN_INPUT | MUX_MODE1)  /* gpmc_a3.qspi1_cs2 */
+>> +			0x50 (PIN_INPUT | MUX_MODE1)  /* gpmc_a4.qspi1_cs3 */
+>> +			0x74 (PIN_INPUT | MUX_MODE1)  /* gpmc_a13.qspi1_rtclk */
+>> +			0x78 (PIN_INPUT | MUX_MODE1)  /* gpmc_a14.qspi1_d3 */
+>> +			0x7c (PIN_INPUT | MUX_MODE1)  /* gpmc_a15.qspi1_d2 */
+>> +			0x80 (PIN_INPUT | MUX_MODE1) /* gpmc_a16.qspi1_d1 */
+>> +			0x84 (PIN_INPUT | MUX_MODE1)  /* gpmc_a17.qspi1_d0 */
+>> +			0x88 (PIN_INPUT | MUX_MODE1)  /* qpmc_a18.qspi1_sclk */
+>> +			0xb8 (PIN_INPUT_PULLUP | MUX_MODE1)  /* gpmc_cs2.qspi1_cs0 */
+>> +			0xbc (PIN_INPUT_PULLUP | MUX_MODE1)  /* gpmc_cs3.qspi1_cs1 */
+>> +		>;
+>> +	};
+>>   };
+>>
+>>   &i2c1 {
+>> @@ -273,3 +288,20 @@
+>>   &cpu0 {
+>>   	cpu0-supply =<&smps123_reg>;
+>>   };
+>> +
+>> +&qspi {
+>> +	status = "okay";
+>> +	pinctrl-names = "default";
+>> +	pinctrl-0 =<&qspi1_pins>;
+>> +
+>> +	spi-max-frequency =<48000000>;
+>> +	m25p80@0 {
+>> +		compatible = "s25fl256s1";
+>> +		spi-max-frequency =<48000000>;
+>> +		reg =<0>;
+>> +		spi-tx-bus-width =<1>;
+>> +		spi-rx-bus-width =<4>;
+>> +		spi-cpol;
+>> +		spi-cpha;
+>> +	};
+>> +};
+>> diff --git a/arch/arm/boot/dts/dra7.dtsi b/arch/arm/boot/dts/dra7.dtsi
+>> index 67275c8..b06d899 100644
+>> --- a/arch/arm/boot/dts/dra7.dtsi
+>> +++ b/arch/arm/boot/dts/dra7.dtsi
+>> @@ -582,6 +582,19 @@
+>>   			dma-names = "tx0", "rx0";
+>>   			status = "disabled";
+>>   		};
+>> +
+>> +		qspi: qspi@4b300000 {
+>> +			compatible = "ti,dra7xxx-qspi";
+>> +			reg =<0x4b300000 0x100>,<0x4a002558 0x4>,
+>> +					<0x5c000000 0x3ffffff>;
+>> +			reg-names = "qspi_base", "qspi_ctrlmod", "qspi_mmap";
+>> +			#address-cells =<1>;
+>> +			#size-cells =<0>;
+>> +			ti,hwmods = "qspi";
+>> +			num-cs =<4>;
+>> +			interrupts =<0 124 0x4>;
+>> +			status = "disabled";
+>> +		};
+>>   	};
+>>
+>>   	clocks {
+>> -- 
+>> 1.7.1
+>>
+>> --
+>> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
+>> the body of a message to majordomo@vger.kernel.org
+>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
