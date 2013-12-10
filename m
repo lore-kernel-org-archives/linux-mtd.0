@@ -1,16 +1,15 @@
-Date: Tue, 10 Dec 2013 12:08:10 -0800
+Date: Tue, 10 Dec 2013 12:19:43 -0800
 From: Brian Norris <computersforpeace@gmail.com>
 To: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v3 03/36] mtd: st_spi_fsm: Initialise and configure the
- FSM for normal working conditions
-Message-ID: <20131210200810.GB27149@ld-irv-0074.broadcom.com>
+Subject: Re: [PATCH v3 04/36] mtd: st_spi_fsm: Supply framework for device
+ requests
+Message-ID: <20131210201943.GC27149@ld-irv-0074.broadcom.com>
 References: <1385727565-25794-1-git-send-email-lee.jones@linaro.org>
- <1385727565-25794-4-git-send-email-lee.jones@linaro.org>
- <20131210190100.GA27149@ld-irv-0074.broadcom.com>
+ <1385727565-25794-5-git-send-email-lee.jones@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20131210190100.GA27149@ld-irv-0074.broadcom.com>
+In-Reply-To: <1385727565-25794-5-git-send-email-lee.jones@linaro.org>
 Cc: angus.clark@st.com, linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, dwmw2@infradead.org,
  linux-arm-kernel@lists.infradead.org
@@ -23,30 +22,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Dec 10, 2013 at 11:01:00AM -0800, Brian Norris wrote:
-> On Fri, Nov 29, 2013 at 12:18:52PM +0000, Lee Jones wrote:
-> > +	/*
-> > +	 * Calculate clk_div - values between 2 and 128
-> > +	 * Multiple of 2, rounded up
-> > +	 */
-> > +	clk_div = 2*((emi_freq + (2*spi_freq - 1))/(2*spi_freq));
-> 
-> I think this can use the <linux/kerne.h> round_up() macro. Also, you're
-> missing some spacing. Possibly:
-> 
-> 	clk_div = 2 * round_up(emi_freq, 2 * spi_freq);
+On Fri, Nov 29, 2013 at 12:18:53PM +0000, Lee Jones wrote:
+> --- a/drivers/mtd/devices/st_spi_fsm.c
+> +++ b/drivers/mtd/devices/st_spi_fsm.c
+> @@ -46,6 +51,36 @@ static void stfsm_clear_fifo(struct stfsm *fsm)
+>  	}
+>  }
+>  
+> +static inline void stfsm_load_seq(struct stfsm *fsm,
+> +				  const struct stfsm_seq *seq)
+> +{
+> +	void __iomem *dst = fsm->base + SPI_FAST_SEQ_TRANSFER_SIZE;
+> +	const uint32_t *src = (const uint32_t *)seq;
+> +	int words = STFSM_SEQ_SIZE / sizeof(uint32_t);
 
-Sorry, I was reading one thing and writing another; this would be
-DIV_ROUND_UP():
+I think this is clearer as:
 
-	clk_div = 2 * DIV_ROUND_UP(emi_freq, 2 * spi_freq);
+	int words = sizeof(*seq) / sizeof(*src);
 
-> > +		fsm->fifo_dir_delay = (clk_div + 9) / 10;
-> 
-> round_down()?
+> +
+> +	BUG_ON(!stfsm_is_idle(fsm));
+> +
+> +	while (words--) {
+> +		writel(*src, dst);
+> +		src++;
+> +		dst += 4;
+> +	}
+> +}
+> +
+> +static void stfsm_wait_seq(struct stfsm *fsm)
+> +{
+> +	unsigned long timeo = jiffies + HZ;
+> +
+> +	while (time_before(jiffies, timeo)) {
+> +		if (stfsm_is_idle(fsm))
+> +			return;
+> +
+> +		cond_resched();
+> +	}
+> +
+> +	dev_err(fsm->dev, "timeout on sequence completion\n");
 
-Sorry, I again meant DIV_ROUND_UP:
+I believe the timeout logic is incorrect. What if we wait a "long time"
+to call stfsm_wait_seq() (due to scheduling, or otherwise)? Then the
+while loop might not even run once (time_before(x, y) is false). Or what
+if cond_resched() waits for a long time...
 
-		fsm->fifo_dir_delay = DIV_ROUND_UP(clk_div, 10);
+So you need an extra check of stfsm_is_idle() after the while loop,
+before you declare a timeout.
+
+> +}
+> +
+>  static int stfsm_set_mode(struct stfsm *fsm, uint32_t mode)
+>  {
+>  	int ret, timeout = 10;
+> diff --git a/drivers/mtd/devices/st_spi_fsm.h b/drivers/mtd/devices/st_spi_fsm.h
+> index 4e92e58..6164142 100644
+> --- a/drivers/mtd/devices/st_spi_fsm.h
+> +++ b/drivers/mtd/devices/st_spi_fsm.h
+> @@ -199,4 +199,18 @@ struct stfsm {
+>  	uint32_t		fifo_dir_delay;
+>  };
+>  
+> +struct stfsm_seq {
+> +	uint32_t data_size;
+> +	uint32_t addr1;
+> +	uint32_t addr2;
+> +	uint32_t addr_cfg;
+> +	uint32_t seq_opc[5];
+> +	uint32_t mode;
+> +	uint32_t dummy;
+> +	uint32_t status;
+> +	uint8_t  seq[16];
+> +	uint32_t seq_cfg;
+> +} __attribute__((__packed__, aligned(4)));
+
+I think checkpatch.pl prefers these attributes use the kernel macros:
+
+  struct stfsm_seq {
+  ...
+  } __packed __aligned(4);
+
+> +#define STFSM_SEQ_SIZE sizeof(struct stfsm_seq)
+
+If you agree with my earlier comment, you won't need this macro.
+
+> +
+>  #endif	/* ST_SPI_FSM_H */
 
 Brian
