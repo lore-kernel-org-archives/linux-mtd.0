@@ -1,14 +1,14 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VqMsV-0006rI-BL
+ id 1VqMsV-0006rH-FB
  for linux-mtd@lists.infradead.org; Tue, 10 Dec 2013 12:57:32 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH for v3.13 2/2] mtd: nand: pxa3xx: Clear need_wait flag when
- starting a command
-Date: Tue, 10 Dec 2013 09:57:16 -0300
-Message-Id: <1386680236-21698-3-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH for v3.13 1/2] mtd: nand: pxa3xx: Use info->use_dma to release
+ DMA resources
+Date: Tue, 10 Dec 2013 09:57:15 -0300
+Message-Id: <1386680236-21698-2-git-send-email-ezequiel.garcia@free-electrons.com>
 In-Reply-To: <1386680236-21698-1-git-send-email-ezequiel.garcia@free-electrons.com>
 References: <1386680236-21698-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
@@ -26,51 +26,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Currently the driver assumes all commands will eventually trigger a RnB
-transition, and thus a "device is ready" IRQ.
+In commit:
 
-This assumption means that on every issued command, the dev_ready completion
-handler is init'ed and the need_wait flag is set.
+  commit 62e8b851783138a11da63285be0fbf69530ff73d
+  Author: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+  Date:   Fri Oct 4 15:30:38 2013 -0300
 
-However this is incorrect: some commands (such as NAND_CMD_STATUS) don't
-make the device 'busy' and thus a RnB transition never occurs.
-Given, the NAND core never calls waitfunc() after such commands, this
-is not a problem.
+  mtd: nand: pxa3xx: Allocate data buffer on detected flash size
 
-Therefore, it's possible to only clear the need_wait flag on every command
-that is started.
+the way the buffer is allocated was changed: the first READ_ID is issued
+with a small kmalloc'ed buffer. Only once the flash page size is detected
+the DMA buffers are allocated, and info->use_dma is set.
 
-This fixes a current bug that can be reproduced on PXA boards by writing
-blank (all 0xff'ed) to a page:
+Currently, if the device detection fails, the driver checks the 'use_dma'
+module parameter and tries to release unallocated DMA resources.
 
-  1. The kernel issues NAND_CMD_STATUS and sets need_wait=1. The flag
-     won't be cleared for this command since no RnB transition is
-     involved.
+Fix this by checking the proper indicator of the DMA allocation, which
+is 'info->use_dma'.
 
-  2. NAND_CMD_PAGEPROG is issued but since the data is blank, the driver
-     decides not to execute the command (and no IRQ activity is
-     involved).
-
-  3. The NAND core calls waitfunc() and waits for the dev_ready
-     completion, which will never end since the device _is_ already ready.
-
-Tested-by: Arnaud Ebalard <arno@natisbad.org>
 Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 ---
- drivers/mtd/nand/pxa3xx_nand.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mtd/nand/pxa3xx_nand.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 4cdc134..53a1862 100644
+index 3d143fe..4cdc134 100644
 --- a/drivers/mtd/nand/pxa3xx_nand.c
 +++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -694,6 +694,7 @@ static void prepare_start_command(struct pxa3xx_nand_info *info, int command)
- 	info->retcode		= ERR_NONE;
- 	info->ecc_err_cnt	= 0;
- 	info->ndcb3		= 0;
-+	info->need_wait		= 0;
- 
- 	switch (command) {
- 	case NAND_CMD_READ0:
+@@ -1288,7 +1288,7 @@ static int pxa3xx_nand_init_buff(struct pxa3xx_nand_info *info)
+ static void pxa3xx_nand_free_buff(struct pxa3xx_nand_info *info)
+ {
+ 	struct platform_device *pdev = info->pdev;
+-	if (use_dma) {
++	if (info->use_dma) {
+ 		pxa_free_dma(info->data_dma_ch);
+ 		dma_free_coherent(&pdev->dev, info->buf_size,
+ 				  info->data_buff, info->data_buff_phys);
 -- 
 1.8.1.5
