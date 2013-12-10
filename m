@@ -1,24 +1,18 @@
-Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VqSGi-0001Az-Df
- for linux-mtd@lists.infradead.org; Tue, 10 Dec 2013 18:42:54 +0000
-From: Marek Vasut <marex@denx.de>
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCHv2 00/10] Add memory mapped support for ti qspi,
- m25p80 serial flash.
-Date: Tue, 10 Dec 2013 19:34:01 +0100
-References: <1386339891-32717-1-git-send-email-sourav.poddar@ti.com>
- <201312101922.10618.marex@denx.de> <20131210182904.GG11468@sirena.org.uk>
-In-Reply-To: <20131210182904.GG11468@sirena.org.uk>
+Date: Tue, 10 Dec 2013 10:47:40 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH v3 01/36] mtd: st_spi_fsm: Allocate resources and
+ register with MTD framework
+Message-ID: <20131210184740.GZ27149@ld-irv-0074.broadcom.com>
+References: <1385727565-25794-1-git-send-email-lee.jones@linaro.org>
+ <1385727565-25794-2-git-send-email-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201312101934.01300.marex@denx.de>
-Cc: devicetree@vger.kernel.org, linux-omap@vger.kernel.org, balbi@ti.com,
- linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
- bcousson@baylibre.com, Sourav Poddar <sourav.poddar@ti.com>,
- computersforpeace@gmail.com, dwmw2@infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1385727565-25794-2-git-send-email-lee.jones@linaro.org>
+Cc: angus.clark@st.com, linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,26 +22,122 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday, December 10, 2013 at 07:29:04 PM, Mark Brown wrote:
-> On Tue, Dec 10, 2013 at 07:22:10PM +0100, Marek Vasut wrote:
-> > On Tuesday, December 10, 2013 at 05:11:43 PM, Mark Brown wrote:
-> > > There is some stuff that pushes up into the controller in that while
-> > > the device is in memory mapped mode as far as I can tell it's not safe
-> > > to do other accesses so if someone's put more than one device on the
-> > > SPI bus we need to handle interactions there.
-> > 
-> > OK, so it's either-or . That seems OK, you might want to have two drivers
-> > for this ip block, one to handle it as a SPI block and one to handle it
-> > as a SPI-NOR block. ... that is of course, if these two modes can't work
-> > together.
-> 
-> Or the client disables the memory map when it's not actively being used
-> and the stops other transfers starting while the mapping is in place.
-> I'd expect we'll have to cope with shared use at some point, hardware
-> engineers will probably build such systems.
+On Fri, Nov 29, 2013 at 12:18:50PM +0000, Lee Jones wrote:
+> --- /dev/null
+> +++ b/drivers/mtd/devices/st_spi_fsm.c
+> @@ -0,0 +1,111 @@
+> +/*
+> + * st_spi_fsm.c	Support for ST Serial Flash Controller
+> + *
+> + * Author: Angus Clark <angus.clark@st.com>
+> + *
+> + * Copyright (C) 2010-2013 STicroelectronics Limited
 
-Aren't we fixing the problem at the wrong place ? Maybe it's about time to fix 
-the engineers ;-)
+Should be STMicrolectronics? :)
 
-Best regards,
-Marek Vasut
+> + *
+> + * JEDEC probe based on drivers/mtd/devices/m25p80.c
+> + *
+> + * This code is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License version 2 as
+> + * published by the Free Software Foundation.
+> + *
+> + */
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/mtd/mtd.h>
+> +#include <linux/sched.h>
+> +#include <linux/delay.h>
+> +#include <linux/io.h>
+> +#include <linux/of.h>
+> +
+> +#include <asm/io.h>
+> +
+> +#include "st_spi_fsm.h"
+
+I agree with Srinivas. Unless you think this header can be used in
+another file, it should probably be part of this .c file. It also lends
+itself to some strange usage of 'static' functions declared (but not
+defined) in the header. But I'll comment when I get to those patches.
+
+> +
+> +static int stfsm_probe(struct platform_device *pdev)
+> +{
+> +	struct device_node *np = pdev->dev.of_node;
+> +	struct resource *res;
+> +	struct stfsm *fsm;
+> +
+> +	if (!np) {
+> +		dev_err(&pdev->dev, "No DT found\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	fsm = devm_kzalloc(&pdev->dev, sizeof(*fsm), GFP_KERNEL);
+> +	if (!fsm)
+> +		return -ENOMEM;
+> +
+> +	fsm->dev = &pdev->dev;
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	if (!res) {
+> +		dev_err(&pdev->dev, "Resource not found\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	fsm->region = devm_request_mem_region(&pdev->dev, res->start,
+> +					      resource_size(res), pdev->name);
+> +	if (!fsm->region) {
+> +		dev_err(&pdev->dev,
+> +			"Failed to reserve memory region [0x%08x-0x%08x]\n",
+
+Use the special %pr or %pR format specifier? See
+Documentation/printk-formats.txt
+
+> +			res->start, res->end);
+> +		return -EBUSY;
+> +	}
+> +
+> +	fsm->base = devm_ioremap_nocache(&pdev->dev,
+> +					 res->start, resource_size(res));
+> +	if (!fsm->base) {
+> +		dev_err(&pdev->dev, "Failed to ioremap [0x%08x]\n", res->start);
+
+Also %pr or %pR?
+
+> +		return -EINVAL;
+> +	}
+> +
+> +	mutex_init(&fsm->lock);
+> +
+> +	platform_set_drvdata(pdev, fsm);
+> +
+> +	fsm->mtd.dev.parent	= &pdev->dev;
+> +	fsm->mtd.type		= MTD_NORFLASH;
+> +	fsm->mtd.writesize	= 4;
+> +	fsm->mtd.writebufsize	= fsm->mtd.writesize;
+> +	fsm->mtd.flags		= MTD_CAP_NORFLASH;
+> +
+> +	return mtd_device_parse_register(&fsm->mtd, NULL, NULL, NULL, 0);
+> +}
+> +
+> +static int stfsm_remove(struct platform_device *pdev)
+> +{
+> +	struct stfsm *fsm = platform_get_drvdata(pdev);
+> +	int err;
+> +
+> +	err = mtd_device_unregister(&fsm->mtd);
+> +	if (err)
+> +		return err;
+> +
+> +	return 0;
+
+Simplify to the following?
+
+	return mtd_device_unregister(&fsm->mtd);
+
+> +}
+
+[...]
+
+Brian
