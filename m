@@ -1,23 +1,22 @@
 Received: from mailout.micron.com ([137.201.242.129])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VqDnO-0002Hz-F1
- for linux-mtd@lists.infradead.org; Tue, 10 Dec 2013 03:15:39 +0000
+ id 1VqDoF-0002K8-3Z
+ for linux-mtd@lists.infradead.org; Tue, 10 Dec 2013 03:16:31 +0000
 From: =?gb2312?B?UWkgV2FuZyDN9cbwIChxaXdhbmcp?= <qiwang@micron.com>
 To: "dedekind1@gmail.com" <dedekind1@gmail.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: [PATCH 1/1]  MTD: UBI:  avoid program operation on  NOR flash after
- erasure interrupted
-Date: Tue, 10 Dec 2013 03:15:07 +0000
-Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A770B79C8@NTXXIAMBX02.xacn.micron.com>
+Subject: RE: [PATCH 1/1]  MTD: UBI:  avoid program operation on  NOR flash
+ after erasure interrupted
+Date: Tue, 10 Dec 2013 03:16:05 +0000
+Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A770B79D9@NTXXIAMBX02.xacn.micron.com>
 References: <71CF8D7F32C5C24C9CD1D0E02D52498A770B54B1@NTXXIAMBX02.xacn.micron.com>
  <71CF8D7F32C5C24C9CD1D0E02D52498A770B68A8@NTXXIAMBX02.xacn.micron.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A770B6F77@NTXXIAMBX02.xacn.micron.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A770B6F77@NTXXIAMBX02.xacn.micron.com>  
 Content-Language: en-US
 Content-Type: text/plain; charset="gb2312"
 Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Cc: =?gb2312?B?UWkgV2FuZyDN9cbwIChxaXdhbmcp?= <qiwang@micron.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
+Cc: Adrian Hunter <adrian.hunter@intel.com>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
