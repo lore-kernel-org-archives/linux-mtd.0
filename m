@@ -1,24 +1,19 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VqKpQ-0003zo-Jg
- for linux-mtd@lists.infradead.org; Tue, 10 Dec 2013 10:46:12 +0000
-Message-ID: <52A6F0CF.8020306@ti.com>
-Date: Tue, 10 Dec 2013 16:15:35 +0530
-From: Sourav Poddar <sourav.poddar@ti.com>
-MIME-Version: 1.0
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCHv2 09/10] arm: dts: dra7: Add qspi device.
-References: <1386339891-32717-1-git-send-email-sourav.poddar@ti.com>
- <1386339891-32717-10-git-send-email-sourav.poddar@ti.com>
- <20131209174203.GB12527@atomide.com> <52A697AB.1060404@ti.com>
- <20131210103108.GA29268@sirena.org.uk>
-In-Reply-To: <20131210103108.GA29268@sirena.org.uk>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: marex@denx.de, devicetree@vger.kernel.org, linux-omap@vger.kernel.org,
- Tony Lindgren <tony@atomide.com>, balbi@ti.com, linux-spi@vger.kernel.org,
- linux-mtd@lists.infradead.org, bcousson@baylibre.com,
- computersforpeace@gmail.com, dwmw2@infradead.org
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VqMsV-0006rF-C1
+ for linux-mtd@lists.infradead.org; Tue, 10 Dec 2013 12:57:31 +0000
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH for v3.13 0/2] pxa3xx-nand fixes for v3.13
+Date: Tue, 10 Dec 2013 09:57:14 -0300
+Message-Id: <1386680236-21698-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Lior Amsalem <alior@marvell.com>, Seif Mazareeb <seif@marvell.com>,
+ Tawfik Bayouk <tawfik@marvell.com>, Arnaud Ebalard <arno@natisbad.org>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,10 +23,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 10 December 2013 04:01 PM, Mark Brown wrote:
-> On Tue, Dec 10, 2013 at 09:55:15AM +0530, Sourav Poddar wrote:
->
->> I posted this for review along with other code changes.
->> I will post them seperately to Benoit.
-> Please wait until the driver updates have been reviewed.
-Ok.
+Two almost-oneline fixes intended for v3.13.
+
+The first commit fixes a current problem that can be reproduced
+on PXA boards, when use_dma = 1 and after a device fails to be detected.
+The driver currently tries to release DMA resources that are not allocated.
+
+The second commit fixes a problem that can be triggered on PXA boards
+by writing a blank page (0xff).
+The bug itself was found by Arnaud Ebalard while testing 2048B page size
+support on the Armada 370/XP variant, yet the bug can be reproduced on the
+driver's PXA variant.
+
+Ezequiel Garcia (2):
+  mtd: nand: pxa3xx: Use info->use_dma to release DMA resources
+  mtd: nand: pxa3xx: Clear need_wait flag when starting a command
+
+ drivers/mtd/nand/pxa3xx_nand.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+-- 
+1.8.1.5
