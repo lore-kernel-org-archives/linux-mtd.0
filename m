@@ -1,13 +1,16 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VqMsV-0006rF-C1
- for linux-mtd@lists.infradead.org; Tue, 10 Dec 2013 12:57:31 +0000
+ id 1VqMsV-0006rI-BL
+ for linux-mtd@lists.infradead.org; Tue, 10 Dec 2013 12:57:32 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH for v3.13 0/2] pxa3xx-nand fixes for v3.13
-Date: Tue, 10 Dec 2013 09:57:14 -0300
-Message-Id: <1386680236-21698-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH for v3.13 2/2] mtd: nand: pxa3xx: Clear need_wait flag when
+ starting a command
+Date: Tue, 10 Dec 2013 09:57:16 -0300
+Message-Id: <1386680236-21698-3-git-send-email-ezequiel.garcia@free-electrons.com>
+In-Reply-To: <1386680236-21698-1-git-send-email-ezequiel.garcia@free-electrons.com>
+References: <1386680236-21698-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
  Lior Amsalem <alior@marvell.com>, Seif Mazareeb <seif@marvell.com>,
  Tawfik Bayouk <tawfik@marvell.com>, Arnaud Ebalard <arno@natisbad.org>,
@@ -23,24 +26,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Two almost-oneline fixes intended for v3.13.
+Currently the driver assumes all commands will eventually trigger a RnB
+transition, and thus a "device is ready" IRQ.
 
-The first commit fixes a current problem that can be reproduced
-on PXA boards, when use_dma = 1 and after a device fails to be detected.
-The driver currently tries to release DMA resources that are not allocated.
+This assumption means that on every issued command, the dev_ready completion
+handler is init'ed and the need_wait flag is set.
 
-The second commit fixes a problem that can be triggered on PXA boards
-by writing a blank page (0xff).
-The bug itself was found by Arnaud Ebalard while testing 2048B page size
-support on the Armada 370/XP variant, yet the bug can be reproduced on the
-driver's PXA variant.
+However this is incorrect: some commands (such as NAND_CMD_STATUS) don't
+make the device 'busy' and thus a RnB transition never occurs.
+Given, the NAND core never calls waitfunc() after such commands, this
+is not a problem.
 
-Ezequiel Garcia (2):
-  mtd: nand: pxa3xx: Use info->use_dma to release DMA resources
-  mtd: nand: pxa3xx: Clear need_wait flag when starting a command
+Therefore, it's possible to only clear the need_wait flag on every command
+that is started.
 
- drivers/mtd/nand/pxa3xx_nand.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+This fixes a current bug that can be reproduced on PXA boards by writing
+blank (all 0xff'ed) to a page:
 
+  1. The kernel issues NAND_CMD_STATUS and sets need_wait=1. The flag
+     won't be cleared for this command since no RnB transition is
+     involved.
+
+  2. NAND_CMD_PAGEPROG is issued but since the data is blank, the driver
+     decides not to execute the command (and no IRQ activity is
+     involved).
+
+  3. The NAND core calls waitfunc() and waits for the dev_ready
+     completion, which will never end since the device _is_ already ready.
+
+Tested-by: Arnaud Ebalard <arno@natisbad.org>
+Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+---
+ drivers/mtd/nand/pxa3xx_nand.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 4cdc134..53a1862 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -694,6 +694,7 @@ static void prepare_start_command(struct pxa3xx_nand_info *info, int command)
+ 	info->retcode		= ERR_NONE;
+ 	info->ecc_err_cnt	= 0;
+ 	info->ndcb3		= 0;
++	info->need_wait		= 0;
+ 
+ 	switch (command) {
+ 	case NAND_CMD_READ0:
 -- 
 1.8.1.5
