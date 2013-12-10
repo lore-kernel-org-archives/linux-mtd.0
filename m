@@ -1,23 +1,30 @@
-Received: from mail-wg0-x233.google.com ([2a00:1450:400c:c00::233])
+Received: from mail-yh0-f51.google.com ([209.85.213.51])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VqJl0-0001oP-FR
- for linux-mtd@lists.infradead.org; Tue, 10 Dec 2013 09:37:35 +0000
-Received: by mail-wg0-f51.google.com with SMTP id b13so4677483wgh.30
- for <linux-mtd@lists.infradead.org>; Tue, 10 Dec 2013 01:37:11 -0800 (PST)
-Sender: Peter Korsgaard <jacmet@gmail.com>
-From: Peter Korsgaard <peter@korsgaard.com>
-To: Elie De Brauwer <eliedebrauwer@gmail.com>
-Subject: Re: [PATCH v1] mtd: gpmi: Deal with bitflips in erased regions regions
-References: <1386619091-23992-1-git-send-email-eliedebrauwer@gmail.com>
- <1386619091-23992-2-git-send-email-eliedebrauwer@gmail.com>
-Date: Tue, 10 Dec 2013 10:37:08 +0100
-In-Reply-To: <1386619091-23992-2-git-send-email-eliedebrauwer@gmail.com> (Elie
- De Brauwer's message of "Mon, 9 Dec 2013 20:58:11 +0100")
-Message-ID: <87y53t59ob.fsf@dell.be.48ers.dk>
+ id 1VqK7U-0002lf-KF
+ for linux-mtd@lists.infradead.org; Tue, 10 Dec 2013 10:00:49 +0000
+Received: by mail-yh0-f51.google.com with SMTP id c41so3666470yho.10
+ for <linux-mtd@lists.infradead.org>; Tue, 10 Dec 2013 02:00:27 -0800 (PST)
+Date: Tue, 10 Dec 2013 10:00:22 +0000
+From: Lee Jones <lee.jones@linaro.org>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 0/4] mtd: spi-nor: add a new framework for SPI NOR
+Message-ID: <20131210100022.GA2390@lee--X1>
+References: <1385447575-23773-1-git-send-email-b32955@freescale.com>
+ <20131127043253.GA9468@ld-irv-0074.broadcom.com>
+ <5298AA23.7080404@st.com> <529C5BBF.6000604@freescale.com>
+ <529C6CBB.4000008@st.com> <529D7838.6030606@freescale.com>
+ <20131203082343.GK31626@lee--X1>
+ <20131210082547.GC11489@norris.computersforpeace.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: b32955@freescale.com, dwmw2@infradead.org, linux-mtd@lists.infradead.org,
- dedekind1@gmail.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20131210082547.GC11489@norris.computersforpeace.net>
+Cc: marex@denx.de, Angus Clark <angus.clark@st.com>, broonie@linaro.org,
+ Linus Walleij <linus.walleij@linaro.org>, linux-spi@vger.kernel.org,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ pekon@ti.com, sourav.poddar@ti.com, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,146 +34,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->>>>> "Elie" == Elie De Brauwer <eliedebrauwer@gmail.com> writes:
+On Tue, 10 Dec 2013, Brian Norris wrote:
 
- > The BCH block typically used with a i.MX28 and GPMI block is only
- > able to correct bitflips on data actually streamed through the block.
- > When erasing a block the data does not stream through the BCH block
- > and therefore not ECC data is written to the NAND chip. This causes
+> On Tue, Dec 03, 2013 at 08:23:43AM +0000, Lee Jones wrote:
+> > I would like to make a suggestion to Brian though. Even if the new
+> > framework is written within the next couple of months and the
+> > semantics do suit the FSM Controller driver, I'd still like the
+> > implementation that's currently on the list to be applied. That way
+> > we'd have a known good version of the driver which is almost identical
+> > to how ST's internal driver does now. The one that is present out in
+> > the wild (i.e. _real_ products).
+> 
+> I think this suggestion is feasible: that we might merge this driver
+> even if it doesn't try to fit to some (still vague) idea of what a "SPI
+> NOR framework" should be. However, I don't know if the latter argument
+> is valid; just because it's in real products doesn't mean we really want
+> it as-is.
 
-s/not/no/
+True, it just makes things easier for us internally when we are due
+for a kernel version up-lift.
 
- > gpmi_ecc_read_page to return failure as soon as a single non-1-bit is
- > found in an erased page. Typically causing problems at higher levels
- > (ubifs corrupted empty space warnings).
+> But I think that in this case, the perfect may be the enemy of
+> the good -- the "good" driver now is better than the "perfect" driver
+> that never comes.
 
- > This patch configures the BCH block to mark a block as 'erased' if
- > no more than ecc_strength bitflips are found. The result is that
- > erased blocks are doublechecked by software for bitflips and that
- > bitflips are corrected and reported, allowing the upper layers to
- > take proper actions.
++1
 
- > Signed-off-by: Elie De Brauwer <eliedebrauwer@gmail.com>
+> > I will subsequently volunteer to provide my utmost best efforts to
+> > port the driver over to the new framework as a new task once it has
+> > landed.
+> 
+> I'll hold you to that! Do we have any collateral for that guarantee? ;)
 
-Looks good otherwise.
-
-Acked-by: Peter Korsgaard <peter@korsgaard.com>
-
- > ---
- >  drivers/mtd/nand/gpmi-nand/bch-regs.h  |    1 +
- >  drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |    7 ++++++
- >  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   40 +++++++++++++++++++++++++++++---
- >  3 files changed, 45 insertions(+), 3 deletions(-)
-
- > diff --git a/drivers/mtd/nand/gpmi-nand/bch-regs.h b/drivers/mtd/nand/gpmi-nand/bch-regs.h
- > index 588f537..b2104de 100644
- > --- a/drivers/mtd/nand/gpmi-nand/bch-regs.h
- > +++ b/drivers/mtd/nand/gpmi-nand/bch-regs.h
- > @@ -31,6 +31,7 @@
- 
- >  #define HW_BCH_STATUS0				0x00000010
- >  #define HW_BCH_MODE				0x00000020
- > +#define BM_BCH_MODE_ERASE_THRESHOLD_MASK	0xff
- >  #define HW_BCH_ENCODEPTR			0x00000030
- >  #define HW_BCH_DATAPTR				0x00000040
- >  #define HW_BCH_METAPTR				0x00000050
- > diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
- > index aaced29..4236739 100644
- > --- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
- > +++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
- > @@ -286,6 +286,13 @@ int bch_set_geometry(struct gpmi_nand_data *this)
- >  			| BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(block_size, this),
- r-> bch_regs + HW_BCH_FLASH0LAYOUT1);
- 
- > +	/*
- > +	 * Set the tolerance for bitflips when reading erased blocks
- > +	 * equal to the ecc_strength.
- > +	 */
- > +	writel(bch_geo->ecc_strength & BM_BCH_MODE_ERASE_THRESHOLD_MASK,
- > +		r->bch_regs + HW_BCH_MODE);
- > +
- >  	/* Set *all* chip selects to use layout 0. */
- >  	writel(0, r->bch_regs + HW_BCH_LAYOUTSELECT);
- 
- > diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
- > index dabbc14..766261f 100644
- > --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
- > +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
- > @@ -1012,6 +1012,30 @@ static void block_mark_swapping(struct gpmi_nand_data *this,
- >  	p[1] = (p[1] & mask) | (from_oob >> (8 - bit));
- >  }
- 
- > +/*
- > + * Count the number of 0 bits in a supposed to be
- > + * erased region and correct them. Return the number
- > + * of bitflips or zero when the region was correct.
- > + */
- > +static unsigned int erased_sector_bitflips(unsigned char *data,
- > +					unsigned int chunk,
- > +					struct bch_geometry *geo)
- > +{
- > +	unsigned int flip_bits = 0;
- > +	int i;
- > +	int base = geo->ecc_chunk_size * chunk;
- > +
- > +	/* Count bitflips */
- > +	for (i = 0; i < geo->ecc_chunk_size; i++)
- > +		flip_bits += hweight8(~data[base + i]);
- > +
- > +	/* Correct bitflips by 0xFF'ing this chunk. */
- > +	if (flip_bits)
- > +		memset(&data[base], 0xFF, geo->ecc_chunk_size);
- > +
- > +	return flip_bits;
- > +}
- > +
- >  static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- >  				uint8_t *buf, int oob_required, int page)
- >  {
- > @@ -1023,6 +1047,7 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- >  	dma_addr_t    auxiliary_phys;
- >  	unsigned int  i;
- >  	unsigned char *status;
- > +	unsigned int  flips;
- >  	unsigned int  max_bitflips = 0;
- >  	int           ret;
- 
- > @@ -1057,15 +1082,24 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- >  	status = auxiliary_virt + nfc_geo->auxiliary_status_offset;
- 
- >  	for (i = 0; i < nfc_geo->ecc_chunk_count; i++, status++) {
- > -		if ((*status == STATUS_GOOD) || (*status == STATUS_ERASED))
- > +		if (*status == STATUS_GOOD)
- >  			continue;
- 
- >  		if (*status == STATUS_UNCORRECTABLE) {
- mtd-> ecc_stats.failed++;
- >  			continue;
- >  		}
- > -		mtd->ecc_stats.corrected += *status;
- > -		max_bitflips = max_t(unsigned int, max_bitflips, *status);
- > +
- > +		if (*status == STATUS_ERASED)
- > +			/* Erased block, check/correct bitflips manually. */
- > +			flips = erased_sector_bitflips(payload_virt, i,
- > +							nfc_geo);
- > +		else
- > +			/* BCH block corrected some errors for us. */
- > +			flips = *status;
- > +
- > +		mtd->ecc_stats.corrected += flips;
- > +		max_bitflips = max_t(unsigned int, max_bitflips, flips);
- >  	}
- 
- >  	if (oob_required) {
- > -- 
- > 1.7.10.4
-
-
- > ______________________________________________________
- > Linux MTD discussion mailing list
- > http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
+My word is my bond Brian. Failing that, beer? :)
 
 -- 
-Bye, Peter Korsgaard
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
