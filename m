@@ -1,21 +1,21 @@
-Received: from mail-pb0-x22c.google.com ([2607:f8b0:400e:c01::22c])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VqkG4-0004k5-2m
- for linux-mtd@lists.infradead.org; Wed, 11 Dec 2013 13:55:24 +0000
-Received: by mail-pb0-f44.google.com with SMTP id rq2so9986515pbb.31
- for <linux-mtd@lists.infradead.org>; Wed, 11 Dec 2013 05:55:02 -0800 (PST)
-Date: Wed, 11 Dec 2013 21:54:54 +0800
+Date: Wed, 11 Dec 2013 22:33:58 +0800
 From: Huang Shijie <shijie8@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v2 3/4] mtd: nand: support Micron READ RETRY
-Message-ID: <20131211135451.GB1284@gmail.com>
-References: <1386619753-27613-1-git-send-email-computersforpeace@gmail.com>
- <1386619753-27613-3-git-send-email-computersforpeace@gmail.com>
+To: Marek Vasut <marex@denx.de>
+Subject: Re: [PATCH V2 2/4] mtd: spi-nor: add the basic data structures
+Message-ID: <20131211143356.GA1719@gmail.com>
+References: <1386318764-15882-1-git-send-email-b32955@freescale.com>
+ <201312101407.59958.marex@denx.de>
+ <20131211062428.GA25147@shlinux2.ap.freescale.net>
+ <201312111102.18554.marex@denx.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1386619753-27613-3-git-send-email-computersforpeace@gmail.com>
-Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org
+In-Reply-To: <201312111102.18554.marex@denx.de>
+Cc: angus.clark@st.com, broonie@linaro.org, lee.jones@linaro.org,
+ linux-spi@vger.kernel.org, Huang Shijie <b32955@freescale.com>,
+ linux-mtd@lists.infradead.org, pekon@ti.com, sourav.poddar@ti.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,40 +25,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Dec 09, 2013 at 12:09:12PM -0800, Brian Norris wrote:
-> + * nand_set_read_retry - [INTERN] Set the READ RETRY mode
-> + * @mtd: MTD device structure
-> + * @retry_mode: the retry mode to use
-> + *
-> + * Some vendors supply a special command to shift the Vt threshold, to be used
-> + * when there are too many bitflips in a page (i.e., ECC error). After setting
-> + * a new threshold, the host should retry reading the page.
-> + */
-> +static int nand_set_read_retry(struct mtd_info *mtd, int retry_mode)
-> +{
-> +	struct nand_chip *chip = mtd->priv;
-> +	uint8_t feature[ONFI_SUBFEATURE_PARAM_LEN] = {retry_mode};
-> +
-This can cause a DMA warning.
+On Wed, Dec 11, 2013 at 11:02:18AM +0100, Marek Vasut wrote:
+> > > > +
+> > > > +	/* the two fundamental primitives */
+> > > > +	int (*read_xfer)(struct spi_nor *nor, struct spi_nor_xfer_cfg *cfg,
+> > > > +			 u8 *buf, size_t len);
+> > > > +	int (*write_xfer)(struct spi_nor *nor, struct spi_nor_xfer_cfg *cfg,
+> > > > +			  u8 *buf, size_t len);
+> > > > +
+> > > > +	int (*read_reg)(struct spi_nor *nor, u8 opcode, u8 *buf, int len);
+> > > > +	int (*write_reg)(struct spi_nor *nor, u8 opcode, u8 *buf, int len,
+> > > > +			int write_enable);
+> This stuff -- I mean 'read SPI NOR register' and 'write SPI NOR register'. I 
+> would love to see an API which grows as needed, not an API which is bloated by 
+> unused function right from the start.
+I should send out my fsl-quadspi driver in the next version.
 
-> +	if (retry_mode >= chip->read_retries)
-> +		return -EINVAL;
-> +
-> +	if (chip->onfi_params.jedec_id == NAND_MFR_MICRON)
-> +		return chip->onfi_set_features(mtd, chip,
-> +				ONFI_FEATURE_ADDR_READ_RETRY, feature);
-I suggest to add a hook such as for nand_chip{}:
-	chip->read_retry(..)
+The read_reg/write_reg are implemented by the m25p80 and fsl-quadspi
+now.
 
-Different nand chips fill different hook.
+I think Lee's driver can implemente the read_xfer/write_xfer.
 
-For Micron, fill it with micron_read_retry();
-for Toshiba, fill it with a toshiab_read_retry();
-For Hynix, fill it with hynix_read_retry().
 
-I am wondar if we should add a file for the read-retry in the
-drivers/mtd/nand folder.
 
+> 
+> > > > +	const struct spi_device_id *(*read_id)(struct spi_nor *nor);
+> > > > +	int (*wait_till_ready)(struct spi_nor *nor);
+> > > > +
+> > > > +	/* write */
+> > > > +	void (*write)(struct spi_nor *nor, loff_t to,
+> > > > +			size_t len, size_t *retlen, const u_char *buf);
+> > > > +	/* read */
+> > > > +	int (*read)(struct spi_nor *nor, loff_t from,
+> > > > +			size_t len, size_t *retlen, u_char *buf);
+> > > > +	/* erase */
+> > > > +	int (*erase)(struct spi_nor *nor, loff_t offs);
+> > > 
+> > > How do you specify what to erase (sub-sector, sector, whole chip) here ?
+> > 
+> > I use a write_reg(OPCODE_ERASE_CHIP) to erase the whole chip.
+> > Please read the patch 3.
+> > 
+> > This hook is used to erase a sector.
+> 
+> I suspect we might need a much better documentation for this structure, it is 
+> hardly clear which function does what ;-)
+
+sorry, i will add more comment in the next version.
+
+> 
+> > Btw, what is the sub-sector mean? which opcodes for the sub-sector?
+> 
+> On large chips with for example 64K big sectors, you can erase a sub-sector 
+> area, usually a 4K one. This reduces the wear of the chip. See these defines in 
+> m25p80.c :
+> 
+>   46 #define OPCODE_BE_4K            0x20    /* Erase 4KiB block */
+>   48 #define OPCODE_BE_32K           0x52    /* Erase 32KiB block */
+>   49 #define OPCODE_CHIP_ERASE       0xc7    /* Erase whole flash chip */
+ok.
+
+the @erase hook can be used for sub-sector too.
 
 thanks
 Huang Shijie
