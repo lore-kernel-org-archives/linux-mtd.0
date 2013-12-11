@@ -1,24 +1,19 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VqbYO-0007UF-Su
- for linux-mtd@lists.infradead.org; Wed, 11 Dec 2013 04:37:45 +0000
-Message-ID: <52A7EBF7.4040601@ti.com>
-Date: Wed, 11 Dec 2013 10:07:11 +0530
-From: Sourav Poddar <sourav.poddar@ti.com>
+Date: Wed, 11 Dec 2013 14:24:31 +0800
+From: Huang Shijie <b32955@freescale.com>
+To: Marek Vasut <marex@denx.de>
+Subject: Re: [PATCH V2 2/4] mtd: spi-nor: add the basic data structures
+Message-ID: <20131211062428.GA25147@shlinux2.ap.freescale.net>
+References: <1386318764-15882-1-git-send-email-b32955@freescale.com>
+ <1386318764-15882-3-git-send-email-b32955@freescale.com>
+ <201312101407.59958.marex@denx.de>
 MIME-Version: 1.0
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCHv2 00/10] Add memory mapped support for ti qspi, m25p80
- serial flash.
-References: <1386339891-32717-1-git-send-email-sourav.poddar@ti.com>
- <201312101349.13564.marex@denx.de> <20131210161143.GK29268@sirena.org.uk>
- <201312101922.10618.marex@denx.de> <20131210182904.GG11468@sirena.org.uk>
-In-Reply-To: <20131210182904.GG11468@sirena.org.uk>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Marek Vasut <marex@denx.de>, devicetree@vger.kernel.org,
- computersforpeace@gmail.com, balbi@ti.com, linux-spi@vger.kernel.org,
- linux-mtd@lists.infradead.org, bcousson@baylibre.com,
- linux-omap@vger.kernel.org, dwmw2@infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <201312101407.59958.marex@denx.de>
+Cc: angus.clark@st.com, broonie@linaro.org, dwmw2@infradead.org,
+ linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org, pekon@ti.com,
+ sourav.poddar@ti.com, computersforpeace@gmail.com, lee.jones@linaro.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,47 +23,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Mark,
-On Tuesday 10 December 2013 11:59 PM, Mark Brown wrote:
-> On Tue, Dec 10, 2013 at 07:22:10PM +0100, Marek Vasut wrote:
->> On Tuesday, December 10, 2013 at 05:11:43 PM, Mark Brown wrote:
->>> There is some stuff that pushes up into the controller in that while the
->>> device is in memory mapped mode as far as I can tell it's not safe to do
->>> other accesses so if someone's put more than one device on the SPI bus
->>> we need to handle interactions there.
->> OK, so it's either-or . That seems OK, you might want to have two drivers for
->> this ip block, one to handle it as a SPI block and one to handle it as a SPI-NOR
->> block. ... that is of course, if these two modes can't work together.
-> Or the client disables the memory map when it's not actively being used
-> and the stops other transfers starting while the mapping is in place.
-> I'd expect we'll have to cope with shared use at some point, hardware
-> engineers will probably build such systems.
-So, what I am doing here in my code is that whenever I desired to use a
-mmap operations I do a
+On Tue, Dec 10, 2013 at 02:07:59PM +0100, Marek Vasut wrote:
+> On Friday, December 06, 2013 at 09:32:42 AM, Huang Shijie wrote:
+> > The spi_nor{} is cloned from the m25p{}.
+> > +	struct spi_nor_xfer_cfg	cfg;
+> > +
+> > +	/* for write_reg */
+> > +	u8			cmd_buf[SPI_NOR_MAX_CMD_SIZE];
+> > +
+> > +	/* the two fundamental primitives */
+> > +	int (*read_xfer)(struct spi_nor *nor, struct spi_nor_xfer_cfg *cfg,
+> > +			 u8 *buf, size_t len);
+> > +	int (*write_xfer)(struct spi_nor *nor, struct spi_nor_xfer_cfg *cfg,
+> > +			  u8 *buf, size_t len);
+> > +
+> > +	int (*read_reg)(struct spi_nor *nor, u8 opcode, u8 *buf, int len);
+> > +	int (*write_reg)(struct spi_nor *nor, u8 opcode, u8 *buf, int len,
+> > +			int write_enable);
+> 
+> Does the vybrid really support accelerated SPI NOR register IO or does it 
+The vybrid does not support the accelerated SPI NOR register IO.
+these hooks are for Lee's driver.
+> emulate it with read/write or read_xfer/write_xfer accessors ? If the later, 
+> just drop this stuff for now.
 
-a. flash_lock()
-b. wait till the previous erase/write is finished
-c. 'get_buf' which in turn does
-       - get_sync
-       - enable memory mapped
+What is the "stuff" mean? the "write_enable" ?
 
-d. memcpy
-e. 'put_buf' which in turn does
-            - disable memory mapped
-            - put_sync
+> 
+> > +	const struct spi_device_id *(*read_id)(struct spi_nor *nor);
+> > +	int (*wait_till_ready)(struct spi_nor *nor);
+> > +
+> > +	/* write */
+> > +	void (*write)(struct spi_nor *nor, loff_t to,
+> > +			size_t len, size_t *retlen, const u_char *buf);
+> > +	/* read */
+> > +	int (*read)(struct spi_nor *nor, loff_t from,
+> > +			size_t len, size_t *retlen, u_char *buf);
+> > +	/* erase */
+> > +	int (*erase)(struct spi_nor *nor, loff_t offs);
+> 
+> How do you specify what to erase (sub-sector, sector, whole chip) here ?
+I use a write_reg(OPCODE_ERASE_CHIP) to erase the whole chip.
+Please read the patch 3.
 
+This hook is used to erase a sector.
 
-f. flash_unlock
+Btw, what is the sub-sector mean? which opcodes for the sub-sector?
 
-Do you see any point missing here?
-
-On your comment about disabling transfers while doing a mmap..
-Are you suggesting on having a check in qspi transfer api something like 
-this..
-
-transfer_one_message {
-  if (mmap)
-      return -EINPROGRESS;
-}
-
-Where mmap can be set/unset in get_buf/put_buf respectively.
+thanks
+Huang Shijie
