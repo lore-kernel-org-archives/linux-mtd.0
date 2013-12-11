@@ -1,22 +1,20 @@
-From: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
-To: Santosh Shilimkar <santosh.shilimkar@ti.com>, Rob Landley
- <rob@landley.net>, Russell King <linux@arm.linux.org.uk>
-Subject: [PATCH v3 1/2] memory: ti-aemif: introduce AEMIF driver
-Date: Wed, 11 Dec 2013 12:59:29 +0200
-Message-ID: <1386759570-29671-2-git-send-email-ivan.khoronzhuk@ti.com>
-In-Reply-To: <1386759570-29671-1-git-send-email-ivan.khoronzhuk@ti.com>
-References: <1386759570-29671-1-git-send-email-ivan.khoronzhuk@ti.com>
+From: Marek Vasut <marex@denx.de>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH V2 2/4] mtd: spi-nor: add the basic data structures
+Date: Wed, 11 Dec 2013 11:02:18 +0100
+References: <1386318764-15882-1-git-send-email-b32955@freescale.com>
+ <201312101407.59958.marex@denx.de>
+ <20131211062428.GA25147@shlinux2.ap.freescale.net>
+In-Reply-To: <20131211062428.GA25147@shlinux2.ap.freescale.net>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- grygorii.strashko@ti.com, Pawel Moll <pawel.moll@arm.com>,
- Stephen Warren <swarren@wwwdotorg.org>, gregkh@linuxfoundation.org,
- Ian Campbell <ijc+devicetree@hellion.org.uk>, nsekhar@ti.com,
- Kumar Gala <galak@kernel.crashing.org>, Rob Herring <rob.herring@calxeda.com>,
- linux-kernel@vger.kernel.org,
- "\[initial author\] Murali Karicheri" <m-karicheri2@ti.com>,
- linux-mtd@lists.infradead.org, Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201312111102.18554.marex@denx.de>
+Cc: angus.clark@st.com, broonie@linaro.org, dwmw2@infradead.org,
+ linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org, pekon@ti.com,
+ sourav.poddar@ti.com, computersforpeace@gmail.com, lee.jones@linaro.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,495 +24,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add new AEMIF driver for EMIF16 Texas Instruments controller.
-The EMIF16 module is intended to provide a glue-less interface to
-a variety of asynchronous memory devices like ASRA M, NOR and NAND
-memory. A total of 256M bytes of any of these memories can be
-accessed at any given time via 4 chip selects with 64M byte access
-per chip select.
+On Wednesday, December 11, 2013 at 07:24:31 AM, Huang Shijie wrote:
+> On Tue, Dec 10, 2013 at 02:07:59PM +0100, Marek Vasut wrote:
+> > On Friday, December 06, 2013 at 09:32:42 AM, Huang Shijie wrote:
+> > > The spi_nor{} is cloned from the m25p{}.
+> > > +	struct spi_nor_xfer_cfg	cfg;
+> > > +
+> > > +	/* for write_reg */
+> > > +	u8			cmd_buf[SPI_NOR_MAX_CMD_SIZE];
+> > > +
+> > > +	/* the two fundamental primitives */
+> > > +	int (*read_xfer)(struct spi_nor *nor, struct spi_nor_xfer_cfg *cfg,
+> > > +			 u8 *buf, size_t len);
+> > > +	int (*write_xfer)(struct spi_nor *nor, struct spi_nor_xfer_cfg *cfg,
+> > > +			  u8 *buf, size_t len);
+> > > +
+> > > +	int (*read_reg)(struct spi_nor *nor, u8 opcode, u8 *buf, int len);
+> > > +	int (*write_reg)(struct spi_nor *nor, u8 opcode, u8 *buf, int len,
+> > > +			int write_enable);
+> > 
+> > Does the vybrid really support accelerated SPI NOR register IO or does it
+> 
+> The vybrid does not support the accelerated SPI NOR register IO.
+> these hooks are for Lee's driver.
 
-Synchronous memories such as DDR1 SD RAM, SDR SDRAM and Mobile SDR
-are not supported.
+Which one please?
 
-This controller is used on SoCs like Davinci, Keysone2
+> > emulate it with read/write or read_xfer/write_xfer accessors ? If the
+> > later, just drop this stuff for now.
+> 
+> What is the "stuff" mean? the "write_enable" ?
 
-Signed-off-by: [initial author] Murali Karicheri <m-karicheri2@ti.com>
-Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
----
- drivers/memory/Kconfig    |   11 ++
- drivers/memory/Makefile   |    1 +
- drivers/memory/ti-aemif.c |  429 +++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 441 insertions(+)
- create mode 100644 drivers/memory/ti-aemif.c
+This stuff -- I mean 'read SPI NOR register' and 'write SPI NOR register'. I 
+would love to see an API which grows as needed, not an API which is bloated by 
+unused function right from the start.
 
-diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
-index 29a11db..7bc3982 100644
---- a/drivers/memory/Kconfig
-+++ b/drivers/memory/Kconfig
-@@ -7,6 +7,17 @@ menuconfig MEMORY
- 
- if MEMORY
- 
-+config TI_AEMIF
-+	tristate "Texas Instruments AEMIF driver"
-+	depends on (ARCH_DAVINCI || ARCH_KEYSTONE) && OF
-+	help
-+	  This driver is for the AEMIF module available in Texas Instruments
-+	  SoCs. AEMIF stands for Asynchronous External Memory Interface and
-+	  is intended to provide a glue-less interface to a variety of
-+	  asynchronuous memory devices like ASRAM, NOR and NAND memory. A total
-+	  of 256M bytes of any of these memories can be accessed at a given
-+	  time via four chip selects with 64M byte access per chip select.
-+
- config TI_EMIF
- 	tristate "Texas Instruments EMIF driver"
- 	depends on ARCH_OMAP2PLUS
-diff --git a/drivers/memory/Makefile b/drivers/memory/Makefile
-index 969d923..d4e150c 100644
---- a/drivers/memory/Makefile
-+++ b/drivers/memory/Makefile
-@@ -5,6 +5,7 @@
- ifeq ($(CONFIG_DDR),y)
- obj-$(CONFIG_OF)		+= of_memory.o
- endif
-+obj-$(CONFIG_TI_AEMIF)		+= ti-aemif.o
- obj-$(CONFIG_TI_EMIF)		+= emif.o
- obj-$(CONFIG_MVEBU_DEVBUS)	+= mvebu-devbus.o
- obj-$(CONFIG_TEGRA20_MC)	+= tegra20-mc.o
-diff --git a/drivers/memory/ti-aemif.c b/drivers/memory/ti-aemif.c
-new file mode 100644
-index 0000000..8d15d87
---- /dev/null
-+++ b/drivers/memory/ti-aemif.c
-@@ -0,0 +1,429 @@
-+/*
-+ * TI AEMIF driver
-+ *
-+ * Copyright (C) 2010 - 2013 Texas Instruments Incorporated. http://www.ti.com/
-+ *
-+ * Authors:
-+ * Murali Karicheri <m-karicheri2@ti.com>
-+ * Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#include <linux/clk.h>
-+#include <linux/err.h>
-+#include <linux/io.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_platform.h>
-+#include <linux/platform_device.h>
-+
-+#define TA_SHIFT	2
-+#define RHOLD_SHIFT	4
-+#define RSTROBE_SHIFT	7
-+#define RSETUP_SHIFT	13
-+#define WHOLD_SHIFT	17
-+#define WSTROBE_SHIFT	20
-+#define WSETUP_SHIFT	26
-+#define EW_SHIFT	30
-+#define SS_SHIFT	31
-+
-+#define TA(x)		((x) << TA_SHIFT)
-+#define RHOLD(x)	((x) << RHOLD_SHIFT)
-+#define RSTROBE(x)	((x) << RSTROBE_SHIFT)
-+#define RSETUP(x)	((x) << RSETUP_SHIFT)
-+#define WHOLD(x)	((x) << WHOLD_SHIFT)
-+#define WSTROBE(x)	((x) << WSTROBE_SHIFT)
-+#define WSETUP(x)	((x) << WSETUP_SHIFT)
-+#define EW(x)		((x) << EW_SHIFT)
-+#define SS(x)		((x) << SS_SHIFT)
-+
-+#define ASIZE_MAX	0x1
-+#define TA_MAX		0x3
-+#define RHOLD_MAX	0x7
-+#define RSTROBE_MAX	0x3f
-+#define RSETUP_MAX	0xf
-+#define WHOLD_MAX	0x7
-+#define WSTROBE_MAX	0x3f
-+#define WSETUP_MAX	0xf
-+#define EW_MAX		0x1
-+#define SS_MAX		0x1
-+#define NUM_CS		4
-+
-+#define TA_VAL(x)	(((x) & TA(TA_MAX)) >> TA_SHIFT)
-+#define RHOLD_VAL(x)	(((x) & RHOLD(RHOLD_MAX)) >> RHOLD_SHIFT)
-+#define RSTROBE_VAL(x)	(((x) & RSTROBE(RSTROBE_MAX)) >> RSTROBE_SHIFT)
-+#define RSETUP_VAL(x)	(((x) & RSETUP(RSETUP_MAX)) >> RSETUP_SHIFT)
-+#define WHOLD_VAL(x)	(((x) & WHOLD(WHOLD_MAX)) >> WHOLD_SHIFT)
-+#define WSTROBE_VAL(x)	(((x) & WSTROBE(WSTROBE_MAX)) >> WSTROBE_SHIFT)
-+#define WSETUP_VAL(x)	(((x) & WSETUP(WSETUP_MAX)) >> WSETUP_SHIFT)
-+#define EW_VAL(x)	(((x) & EW(EW_MAX)) >> EW_SHIFT)
-+#define SS_VAL(x)	(((x) & SS(SS_MAX)) >> SS_SHIFT)
-+
-+#define NRCSR_OFFSET	0x00
-+#define AWCCR_OFFSET	0x04
-+#define A1CR_OFFSET	0x10
-+
-+#define ACR_ASIZE_MASK	0x3
-+#define ACR_EW_MASK	BIT(30)
-+#define ACR_SS_MASK	BIT(31)
-+#define ASIZE_16BIT	1
-+
-+#define CONFIG_MASK	(TA(TA_MAX) | \
-+				RHOLD(RHOLD_MAX) | \
-+				RSTROBE(RSTROBE_MAX) |	\
-+				RSETUP(RSETUP_MAX) | \
-+				WHOLD(WHOLD_MAX) | \
-+				WSTROBE(WSTROBE_MAX) | \
-+				WSETUP(WSETUP_MAX) | \
-+				EW(EW_MAX) | SS(SS_MAX) | \
-+				ASIZE_MAX)
-+
-+#define DRV_NAME	"ti-aemif"
-+
-+/**
-+ * struct aemif_cs_data: structure to hold cs parameters
-+ * @cs: chip-select number
-+ * @wstrobe: write strobe width, ns
-+ * @rstrobe: read strobe width, ns
-+ * @wsetup: write setup width, ns
-+ * @whold: write hold width, ns
-+ * @rsetup: read setup width, ns
-+ * @rhold: read hold width, ns
-+ * @ta: minimum turn around time, ns
-+ * @enable_ss: enable/disable select strobe mode
-+ * @enable_ew: enable/disable extended wait mode
-+ * @asize: width of the asynchronous device's data bus
-+ */
-+struct aemif_cs_data {
-+	u8	cs;
-+	u16	wstrobe;
-+	u16	rstrobe;
-+	u8	wsetup;
-+	u8	whold;
-+	u8	rsetup;
-+	u8	rhold;
-+	u8	ta;
-+	u8	enable_ss;
-+	u8	enable_ew;
-+	u8	asize;
-+};
-+
-+/**
-+ * struct aemif_device: structure to hold device data
-+ * @base: base address of AEMIF registers
-+ * @clk: source clock
-+ * @clk_rate: clock's rate in kHz
-+ * @num_cs: number of assigned chip-selects
-+ * @cs_offset: start number of cs nodes
-+ * @cs_data: array of chip-select settings
-+ */
-+struct aemif_device {
-+	void __iomem *base;
-+	struct clk *clk;
-+	unsigned long clk_rate;
-+	u8 num_cs;
-+	int cs_offset;
-+	struct aemif_cs_data cs_data[NUM_CS];
-+};
-+
-+/**
-+ * aemif_calc_rate - calculate timing data.
-+ * @pdev: platform device to calculate for
-+ * @wanted: The cycle time needed in nanoseconds.
-+ * @clk: The input clock rate in kHz.
-+ * @max: The maximum divider value that can be programmed.
-+ *
-+ * On success, returns the calculated timing value minus 1 for easy
-+ * programming into AEMIF timing registers, else negative errno.
-+ */
-+static int aemif_calc_rate(struct platform_device *pdev, int wanted,
-+			   unsigned long clk, int max)
-+{
-+	int result;
-+
-+	result = DIV_ROUND_UP((wanted * clk), NSEC_PER_MSEC) - 1;
-+
-+	dev_dbg(&pdev->dev, "%s: result %d from %ld, %d\n", __func__, result,
-+		clk, wanted);
-+
-+	/* It is generally OK to have a more relaxed timing than requested... */
-+	if (result < 0)
-+		result = 0;
-+
-+	/* ... But configuring tighter timings is not an option. */
-+	else if (result > max)
-+		result = -EINVAL;
-+
-+	return result;
-+}
-+
-+/**
-+ * aemif_config_abus - configure async bus parameters
-+ * @pdev: platform device to configure for
-+ * @csnum: aemif chip select number
-+ *
-+ * This function programs the given timing values (in real clock) into the
-+ * AEMIF registers taking the AEMIF clock into account.
-+ *
-+ * This function does not use any locking while programming the AEMIF
-+ * because it is expected that there is only one user of a given
-+ * chip-select.
-+ *
-+ * Returns 0 on success, else negative errno.
-+ */
-+static int aemif_config_abus(struct platform_device *pdev, int csnum)
-+{
-+	struct aemif_device *aemif = platform_get_drvdata(pdev);
-+	struct aemif_cs_data *data = &aemif->cs_data[csnum];
-+	int ta, rhold, rstrobe, rsetup, whold, wstrobe, wsetup;
-+	unsigned long clk_rate = aemif->clk_rate;
-+	unsigned offset;
-+	u32 set, val;
-+
-+	offset = A1CR_OFFSET + (data->cs - aemif->cs_offset) * 4;
-+
-+	ta	= aemif_calc_rate(pdev, data->ta, clk_rate, TA_MAX);
-+	rhold	= aemif_calc_rate(pdev, data->rhold, clk_rate, RHOLD_MAX);
-+	rstrobe	= aemif_calc_rate(pdev, data->rstrobe, clk_rate, RSTROBE_MAX);
-+	rsetup	= aemif_calc_rate(pdev, data->rsetup, clk_rate, RSETUP_MAX);
-+	whold	= aemif_calc_rate(pdev, data->whold, clk_rate, WHOLD_MAX);
-+	wstrobe	= aemif_calc_rate(pdev, data->wstrobe, clk_rate, WSTROBE_MAX);
-+	wsetup	= aemif_calc_rate(pdev, data->wsetup, clk_rate, WSETUP_MAX);
-+
-+	if (ta < 0 || rhold < 0 || rstrobe < 0 || rsetup < 0 ||
-+	    whold < 0 || wstrobe < 0 || wsetup < 0) {
-+		dev_err(&pdev->dev, "%s: cannot get suitable timings\n",
-+			__func__);
-+		return -EINVAL;
-+	}
-+
-+	set = TA(ta) | RHOLD(rhold) | RSTROBE(rstrobe) | RSETUP(rsetup) |
-+		WHOLD(whold) | WSTROBE(wstrobe) | WSETUP(wsetup);
-+
-+	set |= (data->asize & ACR_ASIZE_MASK);
-+	if (data->enable_ew)
-+		set |= ACR_EW_MASK;
-+	if (data->enable_ss)
-+		set |= ACR_SS_MASK;
-+
-+	val = readl(aemif->base + offset);
-+	val &= ~CONFIG_MASK;
-+	val |= set;
-+	writel(val, aemif->base + offset);
-+
-+	return 0;
-+}
-+
-+static inline int aemif_cycles_to_nsec(int val, unsigned long clk_rate)
-+{
-+	return ((val + 1) * NSEC_PER_MSEC) / clk_rate;
-+}
-+
-+/**
-+ * aemif_get_hw_params - function to read hw register values
-+ * @pdev: platform device to read for
-+ * @csnum: aemif chip select number
-+ *
-+ * This function reads the defaults from the registers and update
-+ * the timing values. Required for get/set commands and also for
-+ * the case when driver needs to use defaults in hardware.
-+ */
-+static void aemif_get_hw_params(struct platform_device *pdev, int csnum)
-+{
-+	struct aemif_device *aemif = platform_get_drvdata(pdev);
-+	struct aemif_cs_data *data = &aemif->cs_data[csnum];
-+	unsigned long clk_rate = aemif->clk_rate;
-+	u32 val, offset;
-+
-+	offset = A1CR_OFFSET + (data->cs - aemif->cs_offset) * 4;
-+	val = readl(aemif->base + offset);
-+
-+	data->ta = aemif_cycles_to_nsec(TA_VAL(val), clk_rate);
-+	data->rhold = aemif_cycles_to_nsec(RHOLD_VAL(val), clk_rate);
-+	data->rstrobe = aemif_cycles_to_nsec(RSTROBE_VAL(val), clk_rate);
-+	data->rsetup = aemif_cycles_to_nsec(RSETUP_VAL(val), clk_rate);
-+	data->whold = aemif_cycles_to_nsec(WHOLD_VAL(val), clk_rate);
-+	data->wstrobe = aemif_cycles_to_nsec(WSTROBE_VAL(val), clk_rate);
-+	data->wsetup = aemif_cycles_to_nsec(WSETUP_VAL(val), clk_rate);
-+	data->enable_ew = EW_VAL(val);
-+	data->enable_ss = SS_VAL(val);
-+	data->asize = val & ASIZE_MAX;
-+}
-+
-+/**
-+ * of_aemif_parse_abus_config - parse CS configuration from DT
-+ * @pdev: platform device to parse for
-+ * @np: device node ptr
-+ *
-+ * This function update the emif async bus configuration based on the values
-+ * configured in a cs device binding node.
-+ */
-+static int of_aemif_parse_abus_config(struct platform_device *pdev,
-+				      struct device_node *np)
-+{
-+	struct aemif_device *aemif = platform_get_drvdata(pdev);
-+	struct aemif_cs_data *data;
-+	u32 cs;
-+	u32 val;
-+
-+	if (of_property_read_u32(np, "ti,cs-chipselect", &cs)) {
-+		dev_dbg(&pdev->dev, "cs property is required");
-+		return -EINVAL;
-+	}
-+
-+	if (cs - aemif->cs_offset >= NUM_CS || cs < aemif->cs_offset) {
-+		dev_dbg(&pdev->dev, "cs number is incorrect %d", cs);
-+		return -EINVAL;
-+	}
-+
-+	if (aemif->num_cs >= NUM_CS) {
-+		dev_dbg(&pdev->dev, "cs count is more than %d", NUM_CS);
-+		return -EINVAL;
-+	}
-+
-+	data = &aemif->cs_data[aemif->num_cs];
-+	data->cs = cs;
-+
-+	/* read the current value in the hw register */
-+	aemif_get_hw_params(pdev, aemif->num_cs++);
-+
-+	/* override the values from device node */
-+	if (!of_property_read_u32(np, "ti,cs-ta", &val))
-+		data->ta = val;
-+
-+	if (!of_property_read_u32(np, "ti,cs-rhold", &val))
-+		data->rhold = val;
-+
-+	if (!of_property_read_u32(np, "ti,cs-rstrobe", &val))
-+		data->rstrobe = val;
-+
-+	if (!of_property_read_u32(np, "ti,cs-rsetup", &val))
-+		data->rsetup = val;
-+
-+	if (!of_property_read_u32(np, "ti,cs-whold", &val))
-+		data->whold = val;
-+
-+	if (!of_property_read_u32(np, "ti,cs-wstrobe", &val))
-+		data->wstrobe = val;
-+
-+	if (!of_property_read_u32(np, "ti,cs-wsetup", &val))
-+		data->wsetup = val;
-+
-+	if (!of_property_read_u32(np, "ti,bus-width", &val))
-+		if (val == 16)
-+			data->asize = 1;
-+	data->enable_ew = of_property_read_bool(np, "ti,cs-ew");
-+	data->enable_ss = of_property_read_bool(np, "ti,cs-ss");
-+	return 0;
-+}
-+
-+static const struct of_device_id aemif_of_match[] = {
-+	{ .compatible = "ti,davinci-aemif", },
-+	{ .compatible = "ti,da850-aemif", },
-+	{},
-+};
-+
-+static int aemif_probe(struct platform_device *pdev)
-+{
-+	int ret  = -ENODEV, i;
-+	struct resource *res;
-+	struct device *dev = &pdev->dev;
-+	struct device_node *np = dev->of_node;
-+	struct device_node *child_np;
-+	struct aemif_device *aemif;
-+
-+	if (np == NULL)
-+		return 0;
-+
-+	aemif = devm_kzalloc(dev, sizeof(*aemif), GFP_KERNEL);
-+	if (!aemif) {
-+		dev_err(dev, "cannot allocate memory for aemif\n");
-+		return -ENOMEM;
-+	}
-+
-+	platform_set_drvdata(pdev, aemif);
-+
-+	aemif->clk = devm_clk_get(dev, NULL);
-+	if (IS_ERR(aemif->clk)) {
-+		dev_err(dev, "cannot get clock 'aemif'\n");
-+		return PTR_ERR(aemif->clk);
-+	}
-+
-+	clk_prepare_enable(aemif->clk);
-+	aemif->clk_rate = clk_get_rate(aemif->clk) / MSEC_PER_SEC;
-+
-+	if (of_device_is_compatible(np, "ti,da850-aemif"))
-+		aemif->cs_offset = 2;
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	aemif->base = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(aemif->base)) {
-+		ret = PTR_ERR(aemif->base);
-+		goto error;
-+	}
-+
-+	/*
-+	 * For every controller device node, there is a cs device node that
-+	 * describe the bus configuration parameters. This functions iterate
-+	 * over these nodes and update the cs data array.
-+	 */
-+	for_each_available_child_of_node(np, child_np) {
-+		ret = of_aemif_parse_abus_config(pdev, child_np);
-+		if (ret < 0)
-+			goto error;
-+	}
-+
-+	for (i = 0; i < aemif->num_cs; i++) {
-+		ret = aemif_config_abus(pdev, i);
-+		if (ret < 0) {
-+			dev_err(dev, "Error configuring chip select %d\n",
-+				aemif->cs_data[i].cs);
-+			goto error;
-+		}
-+	}
-+
-+	/*
-+	 * Create a child devices explicitly from here to
-+	 * guarantee that the child will be probed after the AEMIF timing
-+	 * parameters are set.
-+	 */
-+	for_each_available_child_of_node(np, child_np) {
-+		ret = of_platform_populate(child_np, NULL, NULL, dev);
-+		if (ret < 0)
-+			goto error;
-+	}
-+
-+	return 0;
-+error:
-+	clk_disable_unprepare(aemif->clk);
-+	return ret;
-+}
-+
-+static int aemif_remove(struct platform_device *pdev)
-+{
-+	struct aemif_device *aemif = platform_get_drvdata(pdev);
-+	clk_disable_unprepare(aemif->clk);
-+	return 0;
-+}
-+
-+static struct platform_driver aemif_driver = {
-+	.probe = aemif_probe,
-+	.remove = aemif_remove,
-+	.driver = {
-+		.name = DRV_NAME,
-+		.owner = THIS_MODULE,
-+		.of_match_table = of_match_ptr(aemif_of_match),
-+	},
-+};
-+
-+module_platform_driver(aemif_driver);
-+
-+MODULE_AUTHOR("Murali Karicheri <m-karicheri2@ti.com>");
-+MODULE_AUTHOR("Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>");
-+MODULE_DESCRIPTION("Texas Instruments AEMIF driver");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:" DRV_NAME);
--- 
-1.7.9.5
+> > > +	const struct spi_device_id *(*read_id)(struct spi_nor *nor);
+> > > +	int (*wait_till_ready)(struct spi_nor *nor);
+> > > +
+> > > +	/* write */
+> > > +	void (*write)(struct spi_nor *nor, loff_t to,
+> > > +			size_t len, size_t *retlen, const u_char *buf);
+> > > +	/* read */
+> > > +	int (*read)(struct spi_nor *nor, loff_t from,
+> > > +			size_t len, size_t *retlen, u_char *buf);
+> > > +	/* erase */
+> > > +	int (*erase)(struct spi_nor *nor, loff_t offs);
+> > 
+> > How do you specify what to erase (sub-sector, sector, whole chip) here ?
+> 
+> I use a write_reg(OPCODE_ERASE_CHIP) to erase the whole chip.
+> Please read the patch 3.
+> 
+> This hook is used to erase a sector.
+
+I suspect we might need a much better documentation for this structure, it is 
+hardly clear which function does what ;-)
+
+> Btw, what is the sub-sector mean? which opcodes for the sub-sector?
+
+On large chips with for example 64K big sectors, you can erase a sub-sector 
+area, usually a 4K one. This reduces the wear of the chip. See these defines in 
+m25p80.c :
+
+  46 #define OPCODE_BE_4K            0x20    /* Erase 4KiB block */
+  48 #define OPCODE_BE_32K           0x52    /* Erase 32KiB block */
+  49 #define OPCODE_CHIP_ERASE       0xc7    /* Erase whole flash chip */
+
+Best regards,
+Marek Vasut
