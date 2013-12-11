@@ -1,22 +1,24 @@
-Date: Wed, 11 Dec 2013 17:22:22 -0300
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VqqRH-0007ww-Jh
+ for linux-mtd@lists.infradead.org; Wed, 11 Dec 2013 20:31:24 +0000
+Date: Wed, 11 Dec 2013 17:31:12 -0300
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Jason Cooper <jason@lakedaemon.net>
-Subject: Re: [PATCH] Partially revert "mtd: nand: pxa3xx: Introduce
- 'marvell,armada370-nand' compatible string"
-Message-ID: <20131211202221.GC5461@localhost>
-References: <1386624986-404-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <20131209214035.GP10053@titan.lakedaemon.net>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v2 3/4] mtd: nand: support Micron READ RETRY
+Message-ID: <20131211203111.GD5461@localhost>
+References: <1386619753-27613-1-git-send-email-computersforpeace@gmail.com>
+ <1386619753-27613-3-git-send-email-computersforpeace@gmail.com>
+ <20131211135451.GB1284@gmail.com>
+ <20131211190313.GS27149@ld-irv-0074.broadcom.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20131209214035.GP10053@titan.lakedaemon.net>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Andrew Lunn <andrew@lunn.ch>, stable@vger.kernel.org,
- Lior Amsalem <alior@marvell.com>, linux-mtd@lists.infradead.org,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20131211190313.GS27149@ld-irv-0074.broadcom.com>
+Cc: linux-mtd@lists.infradead.org, Huang Shijie <shijie8@gmail.com>,
+ Pekon Gupta <pekon@ti.com>, Huang Shijie <b32955@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,26 +28,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Dec 09, 2013 at 04:40:35PM -0500, Jason Cooper wrote:
-> On Mon, Dec 09, 2013 at 06:36:26PM -0300, Ezequiel Garcia wrote:
-> > This reverts c0f3b8643a6fa2461d70760ec49d21d2b031d611.
-> > 
-> > The "armada370-nand" compatible support is not complete, and it was mistake
-> > to add it. Revert it and pospone the support until the infrastructure is
-> > in place.
-> > 
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+On Wed, Dec 11, 2013 at 11:03:13AM -0800, Brian Norris wrote:
+> On Wed, Dec 11, 2013 at 09:54:54PM +0800, Huang Shijie wrote:
+> > On Mon, Dec 09, 2013 at 12:09:12PM -0800, Brian Norris wrote:
+> > > + * nand_set_read_retry - [INTERN] Set the READ RETRY mode
+> > > + * @mtd: MTD device structure
+> > > + * @retry_mode: the retry mode to use
+> > > + *
+> > > + * Some vendors supply a special command to shift the Vt threshold, to be used
+> > > + * when there are too many bitflips in a page (i.e., ECC error). After setting
+> > > + * a new threshold, the host should retry reading the page.
+> > > + */
+> > > +static int nand_set_read_retry(struct mtd_info *mtd, int retry_mode)
+> > > +{
+> > > +	struct nand_chip *chip = mtd->priv;
+> > > +	uint8_t feature[ONFI_SUBFEATURE_PARAM_LEN] = {retry_mode};
+> > > +
+> > This can cause a DMA warning.
 > 
-> Acked-by: Jason Cooper <jason@lakedaemon.net>
+> ...on GPMI NAND, but not on most (any?) other drivers. Why does GPMI try
+> to use DMA on *every* operation? That doesn't even make sense for a 4 or
+> 5 byte transfer. Plus, we don't give a guarantee that buffers will be
+> DMA-able in MTD (UBI uses vmalloc() buffers, for instance), so I'm sure
+> you'll hit problems other places. I can fix this one (use
+> chip->buffers->databuf instead?) but I think GPMI is a bad citizen in
+> this regard, given that you have no guarantee. You need to fix MTD
+> systematically if you expect this guarantee.
+> 
+> (For one, nand_default_block_markbad() uses stack-allocated buffers; but
+> I see that GPMI overrides this callback.)
 > 
 
-Brian:
+Isn't completely bloated to setup a DMA operation just to transfer a
+bunch of bytes? Wouldn't that seriously hurt performance?
 
-What are your plans regarding this? Where will you be merging it?
-
-As soon as you take this somewhere, I'll send another one adding the
-compatible back, for v3.14.
+Or maybe it doesn't matter because those commands are scarcely
+invoked...
 -- 
 Ezequiel García, Free Electrons
 Embedded Linux, Kernel and Android Engineering
