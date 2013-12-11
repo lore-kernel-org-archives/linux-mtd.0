@@ -1,18 +1,22 @@
-Date: Tue, 10 Dec 2013 18:33:23 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v3 24/36] mtd: st_spi_fsm: Supply the N25Qxxx chip
- specific configuration call-back
-Message-ID: <20131211023323.GP27149@ld-irv-0074.broadcom.com>
-References: <1385727565-25794-1-git-send-email-lee.jones@linaro.org>
- <1385727565-25794-25-git-send-email-lee.jones@linaro.org>
+Received: from comal.ext.ti.com ([198.47.26.152])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VqbGZ-0007HI-LU
+ for linux-mtd@lists.infradead.org; Wed, 11 Dec 2013 04:19:20 +0000
+Message-ID: <52A7E7A5.5000909@ti.com>
+Date: Wed, 11 Dec 2013 09:48:45 +0530
+From: Sourav Poddar <sourav.poddar@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1385727565-25794-25-git-send-email-lee.jones@linaro.org>
-Cc: angus.clark@st.com, linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
+To: Marek Vasut <marex@denx.de>
+Subject: Re: [PATCHv2 00/10] Add memory mapped support for ti qspi, m25p80
+ serial flash.
+References: <1386339891-32717-1-git-send-email-sourav.poddar@ti.com>
+ <201312101349.13564.marex@denx.de>
+In-Reply-To: <201312101349.13564.marex@denx.de>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: devicetree@vger.kernel.org, linux-omap@vger.kernel.org, balbi@ti.com,
+ linux-spi@vger.kernel.org, broonie@kernel.org, linux-mtd@lists.infradead.org,
+ bcousson@baylibre.com, computersforpeace@gmail.com, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,71 +26,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Nov 29, 2013 at 12:19:13PM +0000, Lee Jones wrote:
-> In the FSM driver we handle chip differences by providing the possibility
-> of calling back into a chip specific initialisation routine. In this patch
-> we provide one for the N25Qxxx series, which endeavours to setup things
-> like the read, write and erase sequences, as they differ from the
-> default. We also configure 32bit support and the amount of dummy cycles to
-> use.
-> 
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/mtd/devices/st_spi_fsm.c | 77 ++++++++++++++++++++++++++++++++++++++++
->  drivers/mtd/devices/st_spi_fsm.h |  7 ++--
->  2 files changed, 82 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-> index 3a6b233..2369da1 100644
-> --- a/drivers/mtd/devices/st_spi_fsm.c
-> +++ b/drivers/mtd/devices/st_spi_fsm.c
-> @@ -98,6 +98,8 @@ static struct seq_rw_config n25q_read4_configs[] = {
->  	{0x00,			0,			0, 0, 0, 0x00, 0, 0},
->  };
->  
-> +static struct stfsm_seq stfsm_seq_read; 	/* Dynamically populated */
-> +static struct stfsm_seq stfsm_seq_write;	/* Dynamically populated */
+Hi Marek,
+On Tuesday 10 December 2013 06:19 PM, Marek Vasut wrote:
+> On Friday, December 06, 2013 at 03:24:41 PM, Sourav Poddar wrote:
+>> The patch series aims to add memory mapped support for TI qspi
+>> contoller and also add support for the same in serial flash driver(m25p80).
+> My question is, shall we not wait for the new SPI NOR framework to be well
+> fleshed out and only then implement this controller driver on top of it ?
+I think it will still take lot of time for spi framework to come to 
+alignment
+and get merged in the mainline. Till then, m25p80 development should
+go on independently. Once, the spi framework is ready, I can myself port
+this into the new framework.
+> I have a feeling this patchset adds quite a lot of ad-hoc hacks into the m25p80
+> driver, which would become dead code once converted to the SPI NOR framework.
+>
+I dont think that spi framework till now provides capabilities which can 
+be used
+to handle memory mapped cases.
+I did a quad mode support for m25p80 which easily got cloned into the 
+new spi framework.
+Same can be done for the memory mapped support too
 
-These should be fields in struct stfsm, no?
 
->  static struct stfsm_seq stfsm_seq_en_32bit_addr;/* Dynamically populated */
->  
->  static struct stfsm_seq stfsm_seq_read_jedec = {
-> diff --git a/drivers/mtd/devices/st_spi_fsm.h b/drivers/mtd/devices/st_spi_fsm.h
-> index 6699174..b5ce07d 100644
-> --- a/drivers/mtd/devices/st_spi_fsm.h
-> +++ b/drivers/mtd/devices/st_spi_fsm.h
-> @@ -304,6 +304,8 @@ struct flash_info {
->  	int		(*config)(struct stfsm *);
->  };
->  
-> +static int stfsm_n25q_config(struct stfsm *fsm);
-> +
-
-I really dislike putting this static declaration in the header. (And for
-now, I don't think you need this header at all, since very little of
-your work is shareable yet.) Your table *looks* like it could be shared,
-but it won't even compile if this header is included in other files,
-since they don't have the definitions of your static functions.
-
-Anyway, I think your table should be reworked if it's going to be useful
-to others.
-
->  static struct flash_info flash_types[] = {
->  	/*
->  	 * ST Microelectronics/Numonyx --
-> @@ -347,9 +349,10 @@ static struct flash_info flash_types[] = {
->  		   FLASH_FLAG_WRITE_1_2_2	| \
->  		   FLASH_FLAG_WRITE_1_1_4	| \
->  		   FLASH_FLAG_WRITE_1_4_4)
-> -	{ "n25q128", 0x20ba18, 0, 64 * 1024,  256, N25Q_FLAG, 108, NULL },
-> +	{ "n25q128", 0x20ba18, 0, 64 * 1024,  256, N25Q_FLAG, 108,
-> +	  stfsm_n25q_config },
->  	{ "n25q256", 0x20ba19, 0, 64 * 1024,  512,
-> -	  N25Q_FLAG | FLASH_FLAG_32BIT_ADDR, 108, NULL },
-> +	  N25Q_FLAG | FLASH_FLAG_32BIT_ADDR, 108, stfsm_n25q_config },
->  
->  	/*
->  	 * Spansion S25FLxxxP
-
-Brian
+> Best regards,
+> Marek Vasut
