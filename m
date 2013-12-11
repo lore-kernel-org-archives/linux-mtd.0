@@ -1,18 +1,25 @@
-Date: Wed, 11 Dec 2013 14:24:31 +0800
-From: Huang Shijie <b32955@freescale.com>
-To: Marek Vasut <marex@denx.de>
-Subject: Re: [PATCH V2 2/4] mtd: spi-nor: add the basic data structures
-Message-ID: <20131211062428.GA25147@shlinux2.ap.freescale.net>
-References: <1386318764-15882-1-git-send-email-b32955@freescale.com>
- <1386318764-15882-3-git-send-email-b32955@freescale.com>
- <201312101407.59958.marex@denx.de>
+Received: from mail-yh0-f45.google.com ([209.85.213.45])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VqfTz-0003Nl-JV
+ for linux-mtd@lists.infradead.org; Wed, 11 Dec 2013 08:49:29 +0000
+Received: by mail-yh0-f45.google.com with SMTP id v1so4823328yhn.32
+ for <linux-mtd@lists.infradead.org>; Wed, 11 Dec 2013 00:49:03 -0800 (PST)
+Date: Wed, 11 Dec 2013 08:48:56 +0000
+From: Lee Jones <lee.jones@linaro.org>
+To: Brian Norris <computersforpeace@gmail.com>, angus.clark@st.com
+Subject: Re: [PATCH v3 01/36] mtd: st_spi_fsm: Allocate resources and
+ register with MTD framework
+Message-ID: <20131211084856.GF2390@lee--X1>
+References: <1385727565-25794-1-git-send-email-lee.jones@linaro.org>
+ <1385727565-25794-2-git-send-email-lee.jones@linaro.org>
+ <20131210204635.GD27149@ld-irv-0074.broadcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <201312101407.59958.marex@denx.de>
-Cc: angus.clark@st.com, broonie@linaro.org, dwmw2@infradead.org,
- linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org, pekon@ti.com,
- sourav.poddar@ti.com, computersforpeace@gmail.com, lee.jones@linaro.org,
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20131210204635.GD27149@ld-irv-0074.broadcom.com>
+Cc: linux-mtd@lists.infradead.org, linus.walleij@linaro.org,
+ dwmw2@infradead.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,52 +30,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Dec 10, 2013 at 02:07:59PM +0100, Marek Vasut wrote:
-> On Friday, December 06, 2013 at 09:32:42 AM, Huang Shijie wrote:
-> > The spi_nor{} is cloned from the m25p{}.
-> > +	struct spi_nor_xfer_cfg	cfg;
-> > +
-> > +	/* for write_reg */
-> > +	u8			cmd_buf[SPI_NOR_MAX_CMD_SIZE];
-> > +
-> > +	/* the two fundamental primitives */
-> > +	int (*read_xfer)(struct spi_nor *nor, struct spi_nor_xfer_cfg *cfg,
-> > +			 u8 *buf, size_t len);
-> > +	int (*write_xfer)(struct spi_nor *nor, struct spi_nor_xfer_cfg *cfg,
-> > +			  u8 *buf, size_t len);
-> > +
-> > +	int (*read_reg)(struct spi_nor *nor, u8 opcode, u8 *buf, int len);
-> > +	int (*write_reg)(struct spi_nor *nor, u8 opcode, u8 *buf, int len,
-> > +			int write_enable);
-> 
-> Does the vybrid really support accelerated SPI NOR register IO or does it 
-The vybrid does not support the accelerated SPI NOR register IO.
-these hooks are for Lee's driver.
-> emulate it with read/write or read_xfer/write_xfer accessors ? If the later, 
-> just drop this stuff for now.
+Hi Brian,
 
-What is the "stuff" mean? the "write_enable" ?
+Thank you for taking the time to review, it's very much appreciated.
+You bought out some interesting points that I'm happy to go away and
+rectify. Firstly however, as I inherited this code I'd like to give
+Angus a chance to comment before we go off on our own tangent and
+rework some of the good code which perhaps should remain unchanged.
 
-> 
-> > +	const struct spi_device_id *(*read_id)(struct spi_nor *nor);
-> > +	int (*wait_till_ready)(struct spi_nor *nor);
-> > +
-> > +	/* write */
-> > +	void (*write)(struct spi_nor *nor, loff_t to,
-> > +			size_t len, size_t *retlen, const u_char *buf);
-> > +	/* read */
-> > +	int (*read)(struct spi_nor *nor, loff_t from,
-> > +			size_t len, size_t *retlen, u_char *buf);
-> > +	/* erase */
-> > +	int (*erase)(struct spi_nor *nor, loff_t offs);
-> 
-> How do you specify what to erase (sub-sector, sector, whole chip) here ?
-I use a write_reg(OPCODE_ERASE_CHIP) to erase the whole chip.
-Please read the patch 3.
+Angus, do you have enough time to go through Brian's review comments
+and perhaps reply to the ones that you feel would benefit from your
+expert knowledge. To be frank, some of the questions that were asked I
+wouldn't be able to answer without your guidance in any case.
 
-This hook is used to erase a sector.
+Thanks both.
 
-Btw, what is the sub-sector mean? which opcodes for the sub-sector?
+Kind regards,
+Lee
 
-thanks
-Huang Shijie
+-- 
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
