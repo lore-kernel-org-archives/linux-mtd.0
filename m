@@ -1,15 +1,15 @@
-Date: Tue, 10 Dec 2013 17:37:47 -0800
+Date: Tue, 10 Dec 2013 17:49:21 -0800
 From: Brian Norris <computersforpeace@gmail.com>
 To: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v3 22/36] mtd: st_spi_fsm: Provide the default
- read/write configurations
-Message-ID: <20131211013747.GJ27149@ld-irv-0074.broadcom.com>
+Subject: Re: [PATCH v3 20/36] mtd: st_spi_fsm: Provide a method to put the
+ chip into 32bit addressing mode
+Message-ID: <20131211014921.GK27149@ld-irv-0074.broadcom.com>
 References: <1385727565-25794-1-git-send-email-lee.jones@linaro.org>
- <1385727565-25794-23-git-send-email-lee.jones@linaro.org>
+ <1385727565-25794-21-git-send-email-lee.jones@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1385727565-25794-23-git-send-email-lee.jones@linaro.org>
+In-Reply-To: <1385727565-25794-21-git-send-email-lee.jones@linaro.org>
 Cc: angus.clark@st.com, linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, dwmw2@infradead.org,
  linux-arm-kernel@lists.infradead.org
@@ -22,23 +22,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Nov 29, 2013 at 12:19:11PM +0000, Lee Jones wrote:
+On Fri, Nov 29, 2013 at 12:19:09PM +0000, Lee Jones wrote:
 > --- a/drivers/mtd/devices/st_spi_fsm.c
 > +++ b/drivers/mtd/devices/st_spi_fsm.c
-> @@ -28,6 +28,33 @@
-...
-> +/* Default WRITE configurations */
-> +static struct seq_rw_config default_write_configs[] = {
-> +	{FLASH_FLAG_WRITE_1_4_4, FLASH_CMD_WRITE_1_4_4, 1, 4, 4, 0x00, 0, 0},
-> +	{FLASH_FLAG_WRITE_1_1_4, FLASH_CMD_WRITE_1_1_4, 1, 1, 4, 0x00, 0, 0},
-> +	{FLASH_FLAG_WRITE_1_2_2, FLASH_CMD_WRITE_1_2_2, 1, 2, 2, 0x00, 0, 0},
-> +	{FLASH_FLAG_WRITE_1_1_2, FLASH_CMD_WRITE_1_1_2, 1, 1, 2, 0x00, 0, 0},
-> +	{FLASH_FLAG_READ_WRITE,  FLASH_CMD_WRITE,       1, 1, 1, 0x00, 0, 0},
-> +	{0x00,			 0,			 0, 0, 0, 0x00, 0, 0},
+> @@ -28,6 +28,8 @@
+>  #include "st_spi_fsm.h"
+>  #include "serial_flash_cmds.h"
+>  
+> +static struct stfsm_seq stfsm_seq_en_32bit_addr;/* Dynamically populated */
 
-^^^ This line has an extra space in it, that throws off the table
-alignment.
+You need a space between the semicolon and the comment.
 
-> +};
+But why isn't this struct just embedded in the struct stfsm? I don't
+like static instances like this, especially when they are dynamically
+configured (as your comment notes). In the crazy even that we ever have
+two of these FSMs on an SoC (can this happen?), you'll be introducing a
+race on needlessly-shared data.
+
+The same comment applies to your later structs stfsm_seq_read and
+stfsm_seq_write.
 
 Brian
