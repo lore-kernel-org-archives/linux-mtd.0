@@ -1,19 +1,16 @@
-From: Marek Vasut <marex@denx.de>
-To: Huang Shijie <shijie8@gmail.com>
-Subject: Re: [PATCH V2 2/4] mtd: spi-nor: add the basic data structures
-Date: Wed, 11 Dec 2013 15:36:31 +0100
-References: <1386318764-15882-1-git-send-email-b32955@freescale.com>
- <201312111102.18554.marex@denx.de> <20131211143356.GA1719@gmail.com>
-In-Reply-To: <20131211143356.GA1719@gmail.com>
+Message-ID: <52A881CF.4020001@ti.com>
+Date: Wed, 11 Dec 2013 20:46:31 +0530
+From: Sourav Poddar <sourav.poddar@ti.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH V2 0/4] mtd: spi-nor: add a new framework for SPI NOR
+References: <1386318764-15882-1-git-send-email-b32955@freescale.com>
+In-Reply-To: <1386318764-15882-1-git-send-email-b32955@freescale.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <201312111536.32091.marex@denx.de>
-Cc: angus.clark@st.com, broonie@linaro.org, lee.jones@linaro.org,
- linux-spi@vger.kernel.org, Huang Shijie <b32955@freescale.com>,
- linux-mtd@lists.infradead.org, pekon@ti.com, sourav.poddar@ti.com,
- computersforpeace@gmail.com, dwmw2@infradead.org,
+Cc: marex@denx.de, angus.clark@st.com, broonie@linaro.org, dwmw2@infradead.org,
+ linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org, pekon@ti.com,
+ computersforpeace@gmail.com, lee.jones@linaro.org,
  linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,77 +21,135 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday, December 11, 2013 at 03:33:58 PM, Huang Shijie wrote:
-> On Wed, Dec 11, 2013 at 11:02:18AM +0100, Marek Vasut wrote:
-> > > > > +
-> > > > > +	/* the two fundamental primitives */
-> > > > > +	int (*read_xfer)(struct spi_nor *nor, struct spi_nor_xfer_cfg
-> > > > > *cfg, +			 u8 *buf, size_t len);
-> > > > > +	int (*write_xfer)(struct spi_nor *nor, struct spi_nor_xfer_cfg
-> > > > > *cfg, +			  u8 *buf, size_t len);
-> > > > > +
-> > > > > +	int (*read_reg)(struct spi_nor *nor, u8 opcode, u8 *buf, int
-> > > > > len); +	int (*write_reg)(struct spi_nor *nor, u8 opcode, u8 
-*buf,
-> > > > > int len, +			int write_enable);
-> > 
-> > This stuff -- I mean 'read SPI NOR register' and 'write SPI NOR
-> > register'. I would love to see an API which grows as needed, not an API
-> > which is bloated by unused function right from the start.
-> 
-> I should send out my fsl-quadspi driver in the next version.
-> 
-> The read_reg/write_reg are implemented by the m25p80 and fsl-quadspi
-> now.
-> 
-> I think Lee's driver can implemente the read_xfer/write_xfer.
+Hi Huang,
+On Friday 06 December 2013 02:02 PM, Huang Shijie wrote:
+> 1.) Why add a new framework for SPI NOR?
+>    The SPI-NOR controller such as Freescale's Quadspi controller is working
+>    in a different way from the SPI bus. It should knows the NOR commands to
+>    find the right LUT sequence. Unfortunately, the current code can not meet
+>    this requirement.
+>
+> 2.) How does this patch set do?
+>     This patch set adds a new spi-nor layer.
+>     Before this patch, the layer is like:
+>
+>                     MTD
+>           ------------------------
+>                    m25p80
+>           ------------------------
+> 	       spi bus driver
+>           ------------------------
+> 	        SPI NOR chip
+>
+>     After this patch, the layer is like:
+>                     MTD
+>           ------------------------
+>                    spi-nor
+>           ------------------------
+>                    m25p80
+>           ------------------------
+> 	       spi bus driver
+>           ------------------------
+> 	       SPI NOR chip
+>
+>    With the spi-nor controller driver(Freescale Quadspi), it looks like:
+>                     MTD
+>           ------------------------
+>                    spi-nor
+>           ------------------------
+>                  fsl-quadspi
+>           ------------------------
+> 	       SPI NOR chip
+>
+> 3.) more details
+>      This patch set adds a new data structrue spi_nor{}, clones most the common
+>    code to spi-nor.c. Add spi_nor_xfer_cfg {} for the fundamental primitives:
+>    read_xfer/write_xfer.
+>
+>      Make the m25p80.c use the new APIs.
+>
+>      Let's discuss the SPI nor framework in the new thread. :)
+>
+>
+> 4.) TODO list:
+>     3.1) add the new spi_nor_device{} for the spi-nor controller's device.
+>     3.2) add the Freescale Quadspi driver.
+>
+> v1 -->  v2:
+> 	[1] follow Angus's advice, add more hooks and data structrures.
+> 	[2] others.
+>
+> Huang Shijie (4):
+>    mtd: spi-nor: copy the SPI NOR commands to a new header file
+>    mtd: spi-nor: add the basic data structures
+>    mtd: spi-nor: add the framework for SPI NOR
+>    mtd: m25p80: use the SPI nor framework
+>
+>   drivers/mtd/Kconfig           |    2 +
+>   drivers/mtd/Makefile          |    1 +
+>   drivers/mtd/devices/Kconfig   |    2 +-
+>   drivers/mtd/devices/m25p80.c  | 1261 +++--------------------------------------
+>   drivers/mtd/spi-nor/Kconfig   |    6 +
+>   drivers/mtd/spi-nor/Makefile  |    1 +
+>   drivers/mtd/spi-nor/spi-nor.c | 1042 ++++++++++++++++++++++++++++++++++
+>   include/linux/mtd/spi-nor.h   |  132 +++++
+>   8 files changed, 1277 insertions(+), 1170 deletions(-)
+>   create mode 100644 drivers/mtd/spi-nor/Kconfig
+>   create mode 100644 drivers/mtd/spi-nor/Makefile
+>   create mode 100644 drivers/mtd/spi-nor/spi-nor.c
+>   create mode 100644 include/linux/mtd/spi-nor.h
+>
+I have a requirement for a memory mapped operation for my spi flash driver.
 
-OK
- 
-> > > > > +	const struct spi_device_id *(*read_id)(struct spi_nor *nor);
-> > > > > +	int (*wait_till_ready)(struct spi_nor *nor);
-> > > > > +
-> > > > > +	/* write */
-> > > > > +	void (*write)(struct spi_nor *nor, loff_t to,
-> > > > > +			size_t len, size_t *retlen, const u_char *buf);
-> > > > > +	/* read */
-> > > > > +	int (*read)(struct spi_nor *nor, loff_t from,
-> > > > > +			size_t len, size_t *retlen, u_char *buf);
-> > > > > +	/* erase */
-> > > > > +	int (*erase)(struct spi_nor *nor, loff_t offs);
-> > > > 
-> > > > How do you specify what to erase (sub-sector, sector, whole chip)
-> > > > here ?
-> > > 
-> > > I use a write_reg(OPCODE_ERASE_CHIP) to erase the whole chip.
-> > > Please read the patch 3.
-> > > 
-> > > This hook is used to erase a sector.
-> > 
-> > I suspect we might need a much better documentation for this structure,
-> > it is hardly clear which function does what ;-)
-> 
-> sorry, i will add more comment in the next version.
+A brief explanation about the requirement is here..
 
-Thanks ;-)
+ti qspi supports two modes of operation, one is SPI mode(normal), other is
+the memory mapped read mode.
 
-> > > Btw, what is the sub-sector mean? which opcodes for the sub-sector?
-> > 
-> > On large chips with for example 64K big sectors, you can erase a
-> > sub-sector area, usually a 4K one. This reduces the wear of the chip.
-> > See these defines in
-> > 
-> > m25p80.c :
-> >   46 #define OPCODE_BE_4K            0x20    /* Erase 4KiB block */
-> >   48 #define OPCODE_BE_32K           0x52    /* Erase 32KiB block */
-> >   49 #define OPCODE_CHIP_ERASE       0xc7    /* Erase whole flash chip */
-> 
-> ok.
-> 
-> the @erase hook can be used for sub-sector too.
+For SPI mode, the state machine remains the same as it is with other spi 
+controller
+available.
 
-I don't quite get how, but maybe you can elaborate on that one more in the next 
-version of the patches :)
+For memory mapped, there is something more which we need to do around ..
 
-Best regards,
-Marek Vasut
+1. There is a qspi "set up" register available, which needs to be filled 
+with
+      information like flash opcode, dummy bytes etc. In short, flash 
+specific
+      details.
+2   if the above register is configured with the required opcodes, then 
+whenever
+      we need to use memory mapped operations, we need to do is to 
+switch our
+      qspi controller to memory mapped mode.
+     Switching of this mode to memory mapped needs
+      a )  write to a particular qspi register
+      b)   write to control module(optional based on SOC).
+
+3. Once the above steps are configured, then the flash data will be 
+mapped to a
+     particular memory address(SOC specific) from where the flash data  
+can be read.
+
+The series 
+https://www.mail-archive.com/linux-omap@vger.kernel.org/msg98691.html
+tries to work on the above features, and tries to add a support for the 
+same in the
+spi framework and m25p80 code.
+
+As you see in my patches, once we take care of the above points and add 
+support
+for memory mapped in m25p80 and qspi, then while doing a read in m25p80 
+we can
+do memcpy at the beginning of m25p80_read and can bypass the entire SPI
+framework for memory mapped read operation. Throughput almost gets 
+doubles with this,
+as compared to normal SPI operations.
+
+So, my intention of reviving this here is to add one more feature set, 
+which I suppose
+spi nor framework should handle and to see what needs to be added more 
+for this feature.
+
+
+Please get back, if you need more info on this concept.
