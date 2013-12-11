@@ -1,25 +1,17 @@
-Received: from [2001:41c8:1:5384::2] (helo=cassiel.sirena.org.uk)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VqiUm-0001Rm-UB
- for linux-mtd@lists.infradead.org; Wed, 11 Dec 2013 12:02:29 +0000
-Date: Wed, 11 Dec 2013 12:01:57 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Marek Vasut <marex@denx.de>
-Message-ID: <20131211120157.GS11468@sirena.org.uk>
-References: <1386339891-32717-1-git-send-email-sourav.poddar@ti.com>
- <201312101349.13564.marex@denx.de> <52A7E7A5.5000909@ti.com>
- <201312111144.23012.marex@denx.de>
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH 09/15] mtd: sh_flctl: Enable driver compilation with
+ COMPILE_TEST
+Date: Wed, 11 Dec 2013 13:48:50 +0100
+Message-ID: <3651259.U0RP9jvU5Q@avalon>
+In-Reply-To: <1385515117-23664-10-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
+References: <1385515117-23664-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
+ <1385515117-23664-10-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="4ZVTVymsHR1TEBjP"
-Content-Disposition: inline
-In-Reply-To: <201312111144.23012.marex@denx.de>
-Subject: Re: [PATCHv2 00/10] Add memory mapped support for ti qspi, m25p80
- serial flash.
-Cc: devicetree@vger.kernel.org, linux-omap@vger.kernel.org, balbi@ti.com,
- linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
- bcousson@baylibre.com, Sourav Poddar <sourav.poddar@ti.com>,
- computersforpeace@gmail.com, dwmw2@infradead.org
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-sh@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,46 +21,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi David,
 
---4ZVTVymsHR1TEBjP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Could you please pick this patch up for v3.14 ?
 
-On Wed, Dec 11, 2013 at 11:44:22AM +0100, Marek Vasut wrote:
-> On Wednesday, December 11, 2013 at 05:18:45 AM, Sourav Poddar wrote:
+On Wednesday 27 November 2013 02:18:31 Laurent Pinchart wrote:
+> This helps increasing build testing coverage.
+> 
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: linux-mtd@lists.infradead.org
+> Signed-off-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+> Acked-by: Simon Horman <horms@verge.net.au>
+> ---
+>  drivers/mtd/nand/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+> index 93ae6a6..cb1f2ec 100644
+> --- a/drivers/mtd/nand/Kconfig
+> +++ b/drivers/mtd/nand/Kconfig
+> @@ -458,7 +458,7 @@ config MTD_NAND_MXC
+> 
+>  config MTD_NAND_SH_FLCTL
+>  	tristate "Support for NAND on Renesas SuperH FLCTL"
+> -	depends on SUPERH || ARCH_SHMOBILE
+> +	depends on SUPERH || ARCH_SHMOBILE || COMPILE_TEST
+>  	help
+>  	  Several Renesas SuperH CPU has FLCTL. This option enables support
+>  	  for NAND Flash using FLCTL.
+-- 
+Regards,
 
-> > I did a quad mode support for m25p80 which easily got cloned into the
-> > new spi framework.
-> > Same can be done for the memory mapped support too
-
-> The quad mode didn't need any new hooks in the m25p80, did it ? That's th=
-e=20
-> difference here.
-
-It did, there's explicit code in the flash driver for it.  However it's
-rather more generic than this.
-
---4ZVTVymsHR1TEBjP
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJSqFQyAAoJELSic+t+oim9HKEQAJ0wkfL4oYPQ+BpyWVEIsX9V
-tN9obu/c2zl+UGQlVMsaX3bfBt9r6wiNNr8g63qE7Osouoq0QD012BMfB6bMXo6H
-KprLjBBgooiYfNZwPqESa7m20f5oPJ3Zf8gTQVkT1tmD2o/nuWDl5B1tNvxmYv06
-5EDrVSRXbRgwA7WnUwziVJoYgy68EAZOIzUBIqVrXrpWbsWU40QGBUROhNr/9lqI
-7cWxuZtXu5KAFrhPizQ9edP9m/ZT6eHQVHe1hQcJA1fSbbvSVlzQz9154qg25pUj
-0cSVHscm/QqQNZF037RNO5pIhdKYIpVzMQ5JkjsVPNaM0ALbhzv3kDi4d99peXBP
-YdvEAbcmjRKwxO0hTM95kUvHI0NibeGQMmjH9hvhcufPzIM8Dap06sNvxM91IfS2
-sC47Oq3MXuEM1Uocxv0Ys0Bj9shOVDesIwpma/IW80rq15AzC0yas53duBfK5GG/
-fZFe8ioTUzguFFRvZceZLuRt7fgRmU84sFjE99Q00+e1cohBv/hVSRLgt7mxMs33
-le5LGwHEQQYPNO3njN86DfYwJo4wn8G+oC8F99SuPphFzU6VQ2hQHyMjUNRaqzXM
-/iSYIN21TkZD//EMiDzvc6IwI5u1GKQATCRdghQu9zvOa5MyU6ZLOJw9Y12vPdVt
-Fnkp22832HBo+uK1OIak
-=SqgG
------END PGP SIGNATURE-----
-
---4ZVTVymsHR1TEBjP--
+Laurent Pinchart
