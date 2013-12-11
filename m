@@ -1,11 +1,11 @@
-Message-Id: <20131211104526.454638090@bombadil.infradead.org>
-Date: Wed, 11 Dec 2013 02:42:44 -0800
+Message-Id: <20131211104527.044064384@bombadil.infradead.org>
+Date: Wed, 11 Dec 2013 02:42:47 -0800
 From: Christoph Hellwig <hch@infradead.org>
 To: viro@zeniv.linux.org.uk
-Subject: [PATCH 01/18] reiserfs: prefix ACL symbols with reiserfs_
+Subject: [PATCH 04/18] fs: add generic xattr_acl handlers
 References: <20131211104243.148113893@bombadil.infradead.org>
 Content-Disposition: inline;
- filename=0001-reiserfs-prefix-ACL-symbols-with-reiserfs_.patch
+ filename=0004-fs-add-generic-xattr_acl-handlers.patch
 Cc: Andreas Gruenbacher <andreas.gruenbacher@linbit.com>, xfs@oss.sgi.com,
  Jan Kara <jack@suse.cz>, Mark Fasheh <mfasheh@suse.com>,
  reiserfs-devel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
@@ -22,90 +22,145 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+With the ->set_acl inode operation we can implement the Posix ACL
+xattr handlers in generic code instead of duplicating them all
+over the tree.
+
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Jan Kara <jack@suse.cz>
 ---
- fs/reiserfs/xattr_acl.c |   20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ fs/xattr_acl.c                  |  102 +++++++++++++++++++++++++++++++++++++++
+ include/linux/posix_acl_xattr.h |    3 ++
+ 2 files changed, 105 insertions(+)
 
-diff --git a/fs/reiserfs/xattr_acl.c b/fs/reiserfs/xattr_acl.c
-index 06c04f7..6f721ea 100644
---- a/fs/reiserfs/xattr_acl.c
-+++ b/fs/reiserfs/xattr_acl.c
-@@ -16,7 +16,7 @@ static int reiserfs_set_acl(struct reiserfs_transaction_handle *th,
- 			    struct posix_acl *acl);
+diff --git a/fs/xattr_acl.c b/fs/xattr_acl.c
+index 9fbea87..536015e 100644
+--- a/fs/xattr_acl.c
++++ b/fs/xattr_acl.c
+@@ -10,6 +10,7 @@
+ #include <linux/posix_acl_xattr.h>
+ #include <linux/gfp.h>
+ #include <linux/user_namespace.h>
++#include <linux/xattr.h>
  
- static int
--posix_acl_set(struct dentry *dentry, const char *name, const void *value,
-+reiserfs_posix_acl_set(struct dentry *dentry, const char *name, const void *value,
- 		size_t size, int flags, int type)
- {
- 	struct inode *inode = dentry->d_inode;
-@@ -65,7 +65,7 @@ posix_acl_set(struct dentry *dentry, const char *name, const void *value,
+ /*
+  * Fix up the uids and gids in posix acl extended attributes in place.
+@@ -178,3 +179,104 @@ posix_acl_to_xattr(struct user_namespace *user_ns, const struct posix_acl *acl,
+ 	return real_size;
  }
+ EXPORT_SYMBOL (posix_acl_to_xattr);
++
++static int
++posix_acl_xattr_get(struct dentry *dentry, const char *name,
++		void *value, size_t size, int type)
++{
++	struct posix_acl *acl;
++	int error;
++
++	if (!IS_POSIXACL(dentry->d_inode))
++		return -EOPNOTSUPP;
++	if (S_ISLNK(dentry->d_inode->i_mode))
++		return -EOPNOTSUPP;
++
++	acl = get_acl(dentry->d_inode, type);
++	if (IS_ERR(acl))
++		return PTR_ERR(acl);
++	if (acl == NULL)
++		return -ENODATA;
++
++	error = posix_acl_to_xattr(&init_user_ns, acl, value, size);
++	posix_acl_release(acl);
++
++	return error;
++}
++
++static int
++posix_acl_xattr_set(struct dentry *dentry, const char *name,
++		const void *value, size_t size, int flags, int type)
++{
++	struct inode *inode = dentry->d_inode;
++	struct posix_acl *acl = NULL;
++	int ret;
++
++	if (!IS_POSIXACL(inode))
++		return -EOPNOTSUPP;
++	if (S_ISLNK(inode->i_mode) || !inode->i_op->set_acl)
++		return -EOPNOTSUPP;
++
++	if (type == ACL_TYPE_DEFAULT && !S_ISDIR(inode->i_mode))
++		return value ? -EACCES : 0;
++	if (!inode_owner_or_capable(inode))
++		return -EPERM;
++
++	if (value) {
++		acl = posix_acl_from_xattr(&init_user_ns, value, size);
++		if (IS_ERR(acl))
++			return PTR_ERR(acl);
++
++		if (acl) {
++			ret = posix_acl_valid(acl);
++			if (ret)
++				goto out;
++		}
++	}
++
++	ret = inode->i_op->set_acl(inode, acl, type);
++out:
++	posix_acl_release(acl);
++	return ret;
++}
++
++static size_t
++posix_acl_xattr_list(struct dentry *dentry, char *list, size_t list_size,
++		const char *name, size_t name_len, int type)
++{
++	const char *xname;
++	size_t size;
++
++	if (!IS_POSIXACL(dentry->d_inode))
++		return -EOPNOTSUPP;
++	if (S_ISLNK(dentry->d_inode->i_mode))
++		return -EOPNOTSUPP;
++
++	if (type == ACL_TYPE_ACCESS)
++		xname = POSIX_ACL_XATTR_ACCESS;
++	else
++		xname = POSIX_ACL_XATTR_DEFAULT;
++
++	size = strlen(xname) + 1;
++	if (list && size <= list_size)
++		memcpy(list, xname, size);
++	return size;
++}
++
++const struct xattr_handler posix_acl_access_xattr_handler = {
++	.prefix = POSIX_ACL_XATTR_ACCESS,
++	.flags = ACL_TYPE_ACCESS,
++	.list = posix_acl_xattr_list,
++	.get = posix_acl_xattr_get,
++	.set = posix_acl_xattr_set,
++};
++EXPORT_SYMBOL_GPL(posix_acl_access_xattr_handler);
++
++const struct xattr_handler posix_acl_default_xattr_handler = {
++	.prefix = POSIX_ACL_XATTR_DEFAULT,
++	.flags = ACL_TYPE_DEFAULT,
++	.list = posix_acl_xattr_list,
++	.get = posix_acl_xattr_get,
++	.set = posix_acl_xattr_set,
++};
++EXPORT_SYMBOL_GPL(posix_acl_default_xattr_handler);
+diff --git a/include/linux/posix_acl_xattr.h b/include/linux/posix_acl_xattr.h
+index ad93ad0..6f14ee2 100644
+--- a/include/linux/posix_acl_xattr.h
++++ b/include/linux/posix_acl_xattr.h
+@@ -69,4 +69,7 @@ struct posix_acl *posix_acl_from_xattr(struct user_namespace *user_ns,
+ int posix_acl_to_xattr(struct user_namespace *user_ns,
+ 		       const struct posix_acl *acl, void *buffer, size_t size);
  
- static int
--posix_acl_get(struct dentry *dentry, const char *name, void *buffer,
-+reiserfs_posix_acl_get(struct dentry *dentry, const char *name, void *buffer,
- 		size_t size, int type)
- {
- 	struct posix_acl *acl;
-@@ -88,7 +88,7 @@ posix_acl_get(struct dentry *dentry, const char *name, void *buffer,
- /*
-  * Convert from filesystem to in-memory representation.
-  */
--static struct posix_acl *posix_acl_from_disk(const void *value, size_t size)
-+static struct posix_acl *reiserfs_posix_acl_from_disk(const void *value, size_t size)
- {
- 	const char *end = (char *)value + size;
- 	int n, count;
-@@ -158,7 +158,7 @@ static struct posix_acl *posix_acl_from_disk(const void *value, size_t size)
- /*
-  * Convert from in-memory to filesystem representation.
-  */
--static void *posix_acl_to_disk(const struct posix_acl *acl, size_t * size)
-+static void *reiserfs_posix_acl_to_disk(const struct posix_acl *acl, size_t * size)
- {
- 	reiserfs_acl_header *ext_acl;
- 	char *e;
-@@ -257,7 +257,7 @@ struct posix_acl *reiserfs_get_acl(struct inode *inode, int type)
- 	} else if (retval < 0) {
- 		acl = ERR_PTR(retval);
- 	} else {
--		acl = posix_acl_from_disk(value, retval);
-+		acl = reiserfs_posix_acl_from_disk(value, retval);
- 	}
- 	if (!IS_ERR(acl))
- 		set_cached_acl(inode, type, acl);
-@@ -307,7 +307,7 @@ reiserfs_set_acl(struct reiserfs_transaction_handle *th, struct inode *inode,
- 	}
- 
- 	if (acl) {
--		value = posix_acl_to_disk(acl, &size);
-+		value = reiserfs_posix_acl_to_disk(acl, &size);
- 		if (IS_ERR(value))
- 			return (int)PTR_ERR(value);
- 	}
-@@ -499,8 +499,8 @@ static size_t posix_acl_access_list(struct dentry *dentry, char *list,
- const struct xattr_handler reiserfs_posix_acl_access_handler = {
- 	.prefix = POSIX_ACL_XATTR_ACCESS,
- 	.flags = ACL_TYPE_ACCESS,
--	.get = posix_acl_get,
--	.set = posix_acl_set,
-+	.get = reiserfs_posix_acl_get,
-+	.set = reiserfs_posix_acl_set,
- 	.list = posix_acl_access_list,
- };
- 
-@@ -519,7 +519,7 @@ static size_t posix_acl_default_list(struct dentry *dentry, char *list,
- const struct xattr_handler reiserfs_posix_acl_default_handler = {
- 	.prefix = POSIX_ACL_XATTR_DEFAULT,
- 	.flags = ACL_TYPE_DEFAULT,
--	.get = posix_acl_get,
--	.set = posix_acl_set,
-+	.get = reiserfs_posix_acl_get,
-+	.set = reiserfs_posix_acl_set,
- 	.list = posix_acl_default_list,
- };
++extern const struct xattr_handler posix_acl_access_xattr_handler;
++extern const struct xattr_handler posix_acl_default_xattr_handler;
++
+ #endif	/* _POSIX_ACL_XATTR_H */
 -- 
 1.7.10.4
