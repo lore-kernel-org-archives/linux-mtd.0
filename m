@@ -1,21 +1,18 @@
-Message-ID: <52A83258.5070506@st.com>
-Date: Wed, 11 Dec 2013 09:37:28 +0000
-From: Angus Clark <angus.clark@st.com>
+Received: from am1ehsobe003.messaging.microsoft.com ([213.199.154.206]
+ helo=am1outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VqgJT-0004qr-Iq
+ for linux-mtd@lists.infradead.org; Wed, 11 Dec 2013 09:42:40 +0000
+From: Hou Zhiqiang <b48286@freescale.com>
+To: <linux-mtd@lists.infradead.org>, <linuxppc-dev@ozlabs.org>
+Subject: [PATCH] mtd: m25p80: Add Power Management support
+Date: Wed, 11 Dec 2013 16:19:30 +0800
+Message-ID: <1386749970-22021-1-git-send-email-b48286@freescale.com>
 MIME-Version: 1.0
-To: Lee Jones <lee.jones@linaro.org>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v3 01/36] mtd: st_spi_fsm: Allocate resources and register
- with MTD framework
-References: <1385727565-25794-1-git-send-email-lee.jones@linaro.org>
- <1385727565-25794-2-git-send-email-lee.jones@linaro.org>
- <20131210204635.GD27149@ld-irv-0074.broadcom.com>
- <20131211084856.GF2390@lee--X1>
-In-Reply-To: <20131211084856.GF2390@lee--X1>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linus.walleij@linaro.org,
- dwmw2@infradead.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain
+Cc: grant.likely@secretlab.ca, scottwood@freescale.com,
+ Mingkai.Hu@freescale.com, Hou Zhiqiang <b48286@freescale.com>,
+ dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,43 +22,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Lee and Brian,
+Add PM support using callback function suspend and resume in .driver of
+spi_driver.
 
-I would also like to thank Brian; as always, very sensible comments.
+Signed-off-by: Hou Zhiqiang <b48286@freescale.com>
+---
+ drivers/mtd/devices/m25p80.c | 37 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
 
-I am tied up most of today and off work tomorrow (Christmas shopping!), but I
-will set aside Friday to go through the comments in detail.  I should also have
-some time next week if necessary, subject to any panics that might arise!
-
-I also intend to respond to Huang's updated 'spi-nor' framework at the same
-time.  At some stage, I would expect some of the device probing code in
-st_spi_fsm, particularly the configuration of read/write/erase operations based
-on capabilities, to be pulled into the 'spi-nor' framework.  I do not see this
-an an obstacle to st_spi_fsm being integrated earlier though; it's presence in
-the kernel would provide another example of a H/W Controller that 'spi-nor'
-needs to accommodate.
-
-Cheers,
-
-Angus
-
-
-On 12/11/2013 08:48 AM, Lee Jones wrote:
-> Hi Brian,
-> 
-> Thank you for taking the time to review, it's very much appreciated.
-> You bought out some interesting points that I'm happy to go away and
-> rectify. Firstly however, as I inherited this code I'd like to give
-> Angus a chance to comment before we go off on our own tangent and
-> rework some of the good code which perhaps should remain unchanged.
-> 
-> Angus, do you have enough time to go through Brian's review comments
-> and perhaps reply to the ones that you feel would benefit from your
-> expert knowledge. To be frank, some of the questions that were asked I
-> wouldn't be able to answer without your guidance in any case.
-> 
-> Thanks both.
-> 
-> Kind regards,
-> Lee
-> 
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 7eda71d..b0c2b8c 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -66,6 +66,8 @@
+ 
+ /* Used for Spansion flashes only. */
+ #define	OPCODE_BRWR		0x17	/* Bank register write */
++#define	OPCODE_DP		0xb9	/* Enter deep power down mode */
++#define	OPCODE_RES		0xab	/* Exit deep power down mode */
+ 
+ /* Status Register bits. */
+ #define	SR_WIP			1	/* Write in progress */
+@@ -1128,11 +1130,46 @@ static int m25p_remove(struct spi_device *spi)
+ 	return mtd_device_unregister(&flash->mtd);
+ }
+ 
++#ifdef CONFIG_PM
++static int m25p_suspend(struct device *dev, pm_message_t mesg)
++{
++	struct m25p *flash = dev_get_drvdata(dev);
++	int ret;
++
++	flash->command[0] = OPCODE_DP;
++	mutex_lock(&flash->lock);
++	/* Wait until finished previous write/erase command. */
++	ret = wait_till_ready(flash);
++	if (ret) {
++		mutex_unlock(&flash->lock);
++		return ret;
++	}
++	ret = spi_write(flash->spi, flash->command, 1);
++	mutex_unlock(&flash->lock);
++
++	return ret;
++}
++
++static int m25p_resume(struct device *dev)
++{
++	struct m25p *flash = dev_get_drvdata(dev);
++	int ret;
++
++	flash->command[0] = OPCODE_RES;
++	ret = spi_write(flash->spi, flash->command, 1);
++
++	return ret;
++}
++#endif /* CONFIG_PM */
+ 
+ static struct spi_driver m25p80_driver = {
+ 	.driver = {
+ 		.name	= "m25p80",
+ 		.owner	= THIS_MODULE,
++#ifdef CONFIG_PM
++		.suspend = m25p_suspend,
++		.resume = m25p_resume,
++#endif
+ 	},
+ 	.id_table	= m25p_ids,
+ 	.probe	= m25p_probe,
+-- 
+1.8.4.1
