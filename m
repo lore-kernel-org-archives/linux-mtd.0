@@ -1,18 +1,25 @@
-Received: from mail-db8lp0187.outbound.messaging.microsoft.com
- ([213.199.154.187] helo=db8outboundpool.messaging.microsoft.com)
+Received: from mail-pb0-x230.google.com ([2607:f8b0:400e:c01::230])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vr0HX-0003Gf-GI
- for linux-mtd@lists.infradead.org; Thu, 12 Dec 2013 07:02:00 +0000
-From: Hou Zhiqiang <b48286@freescale.com>
-To: <linux-mtd@lists.infradead.org>, <linuxppc-dev@ozlabs.org>
-Subject: [PATCH v2] mtd: m25p80: Add Power Management support
-Date: Thu, 12 Dec 2013 13:38:36 +0800
-Message-ID: <1386826716-20476-1-git-send-email-b48286@freescale.com>
+ id 1Vr17w-0004Da-Cm
+ for linux-mtd@lists.infradead.org; Thu, 12 Dec 2013 07:56:09 +0000
+Received: by mail-pb0-f48.google.com with SMTP id md12so65045pbc.7
+ for <linux-mtd@lists.infradead.org>; Wed, 11 Dec 2013 23:55:46 -0800 (PST)
+Date: Thu, 12 Dec 2013 15:55:37 +0800
+From: Huang Shijie <shijie8@gmail.com>
+To: Sourav Poddar <sourav.poddar@ti.com>
+Subject: Re: [PATCHv2 07/10] drivers: mtd: m25p80: Adapt driver to support
+ memory mapped read.
+Message-ID: <20131212075536.GA1596@gmail.com>
+References: <1386339891-32717-1-git-send-email-sourav.poddar@ti.com>
+ <1386339891-32717-8-git-send-email-sourav.poddar@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: grant.likely@secretlab.ca, scottwood@freescale.com,
- Mingkai.Hu@freescale.com, Hou Zhiqiang <b48286@freescale.com>,
- dwmw2@infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1386339891-32717-8-git-send-email-sourav.poddar@ti.com>
+Cc: marex@denx.de, devicetree@vger.kernel.org, linux-omap@vger.kernel.org,
+ balbi@ti.com, linux-spi@vger.kernel.org, broonie@kernel.org,
+ linux-mtd@lists.infradead.org, bcousson@baylibre.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,77 +29,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add PM support using callback function suspend and resume in
-.driver.pm of spi_driver.
+On Fri, Dec 06, 2013 at 07:54:48PM +0530, Sourav Poddar wrote:
+> Adapt driver to do a memory mapped read.
+> @@ -109,6 +109,7 @@ struct m25p {
+>  	u8			program_opcode;
+>  	u8			*command;
+>  	enum read_type		flash_read;
+> +	void __iomem *mem_addr;
 
-Signed-off-by: Hou Zhiqiang <b48286@freescale.com>
----
-v2:
- - Replace .driver.suspend and .driver.resume with .driver.pm
- - Use CONFIG_PM_SLEEP instead of CONFIG_PM
+I think we can remove this field.
+You can use a local variable in the m25p80_read.
 
- drivers/mtd/devices/m25p80.c | 37 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
+>  };
+>  
+>  static inline struct m25p *mtd_to_m25p(struct mtd_info *mtd)
+> @@ -515,6 +516,7 @@ static int m25p80_read(struct mtd_info *mtd, loff_t from, size_t len,
+>  	size_t *retlen, u_char *buf)
+>  {
+>  	struct m25p *flash = mtd_to_m25p(mtd);
+> +	struct spi_master *master = flash->spi->master;
+>  	struct spi_transfer t[2];
+>  	struct spi_message m;
+>  	uint8_t opcode;
+> @@ -523,6 +525,20 @@ static int m25p80_read(struct mtd_info *mtd, loff_t from, size_t len,
+>  	pr_debug("%s: %s from 0x%08x, len %zd\n", dev_name(&flash->spi->dev),
+>  			__func__, (u32)from, len);
+>  
+> +	if (master->mmap) {
+> +		mutex_lock(&flash->lock);
+> +		/* Wait till previous write/erase is done. */
+> +		if (wait_till_ready(flash)) {
+> +			mutex_unlock(&flash->lock);
+> +			return 1;
+> +		}
+> +		flash->mem_addr = master->get_buf(master);
+> +		memcpy(buf, flash->mem_addr + from, len);
+> +		master->put_buf(master);
+> +		*retlen = len;
+> +		goto out;
+> +	}
+> +
+>  	spi_message_init(&m);
+>  	memset(t, 0, (sizeof t));
+>  
+> @@ -558,6 +574,7 @@ static int m25p80_read(struct mtd_info *mtd, loff_t from, size_t len,
+>  
+>  	*retlen = m.actual_length - m25p_cmdsz(flash) - dummy;
+>  
+> +out:
+>  	mutex_unlock(&flash->lock);
+>  
+>  	return 0;
+> @@ -1286,6 +1303,9 @@ static int m25p_probe(struct spi_device *spi)
+>  		flash->addr_width = 3;
+>  	}
+>  
+> +	if (spi->master->configure_from_slave)
+> +		m25p80_fill_flash_information(flash);
+> +
+You have add a configure_from_slave hook in the SPI, why you also need 
+a same hook in the SPI-NOR framework?
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 7eda71d..eb558e8 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -66,6 +66,8 @@
- 
- /* Used for Spansion flashes only. */
- #define	OPCODE_BRWR		0x17	/* Bank register write */
-+#define	OPCODE_DP		0xb9	/* Enter deep power down mode */
-+#define	OPCODE_RES		0xab	/* Exit deep power down mode */
- 
- /* Status Register bits. */
- #define	SR_WIP			1	/* Write in progress */
-@@ -1128,11 +1130,46 @@ static int m25p_remove(struct spi_device *spi)
- 	return mtd_device_unregister(&flash->mtd);
- }
- 
-+#ifdef CONFIG_PM_SLEEP
-+static int m25p_suspend(struct device *dev)
-+{
-+	struct m25p *flash = dev_get_drvdata(dev);
-+	int ret;
-+
-+	flash->command[0] = OPCODE_DP;
-+	mutex_lock(&flash->lock);
-+	/* Wait until finished previous write/erase command. */
-+	ret = wait_till_ready(flash);
-+	if (ret) {
-+		mutex_unlock(&flash->lock);
-+		return ret;
-+	}
-+	ret = spi_write(flash->spi, flash->command, 1);
-+	mutex_unlock(&flash->lock);
-+
-+	return ret;
-+}
-+
-+static int m25p_resume(struct device *dev)
-+{
-+	struct m25p *flash = dev_get_drvdata(dev);
-+	int ret;
-+
-+	flash->command[0] = OPCODE_RES;
-+
-+	return spi_write(flash->spi, flash->command, 1);
-+}
-+#endif /* CONFIG_PM_SLEEP */
-+
-+static const struct dev_pm_ops m25p_pm = {
-+	SET_SYSTEM_SLEEP_PM_OPS(m25p_suspend, m25p_resume)
-+};
- 
- static struct spi_driver m25p80_driver = {
- 	.driver = {
- 		.name	= "m25p80",
- 		.owner	= THIS_MODULE,
-+		.pm	= &m25p_pm,
- 	},
- 	.id_table	= m25p_ids,
- 	.probe	= m25p_probe,
--- 
-1.8.4.1
+And i think the enable_mmap/disable_mmap is not needed too.
+
+All the three hooks are used to set the SPI bus controller.
+
+And the SPI-NOR framework only handles the issues between the 
+SPI bus controller and the SPI-NOR, or the SPI-NOR controller and the
+SPI-NOR.
+
+thanks
+Huang Shijie
