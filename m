@@ -1,22 +1,27 @@
-Date: Thu, 12 Dec 2013 13:05:31 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: Andreas Gruenbacher <andreas.gruenbacher@linbit.com>
-Subject: Re: [PATCH 16/18] gfs2: use generic posix ACL infrastructure
-Message-ID: <20131212210531.GC27686@infradead.org>
-References: <20131211104243.148113893@bombadil.infradead.org>
- <20131211104529.142731540@bombadil.infradead.org>
- <966512490.69128.1386875318581.JavaMail.zimbra@linbit.com>
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VrEu4-0004M6-SO
+ for linux-mtd@lists.infradead.org; Thu, 12 Dec 2013 22:38:45 +0000
+Date: Thu, 12 Dec 2013 19:38:31 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH for v3.13 2/2] mtd: nand: pxa3xx: Clear need_wait flag
+ when starting a command
+Message-ID: <20131212223830.GA2467@localhost>
+References: <1386680236-21698-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1386680236-21698-3-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20131212203522.GU27149@ld-irv-0074.broadcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <966512490.69128.1386875318581.JavaMail.zimbra@linbit.com>
-Cc: cluster-devel@redhat.com, xfs@oss.sgi.com, Mark Fasheh <mfasheh@suse.com>,
- reiserfs-devel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- Christoph Hellwig <hch@infradead.org>, linux-mtd@lists.infradead.org,
- viro@zeniv.linux.org.uk, jfs-discussion@lists.sourceforge.net,
- linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-nfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
- Joel Becker <jlbec@evilplan.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20131212203522.GU27149@ld-irv-0074.broadcom.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Lior Amsalem <alior@marvell.com>, Seif Mazareeb <seif@marvell.com>,
+ Tawfik Bayouk <tawfik@marvell.com>, Arnaud Ebalard <arno@natisbad.org>,
+ linux-mtd@lists.infradead.org,
+ Gregory Clement <gregory.clement@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,11 +31,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 12, 2013 at 08:08:38PM +0100, Andreas Gruenbacher wrote:
-> Christoph,
+On Thu, Dec 12, 2013 at 12:35:22PM -0800, Brian Norris wrote:
+> On Tue, Dec 10, 2013 at 09:57:16AM -0300, Ezequiel Garcia wrote:
+> ...
+> > This fixes a current bug that can be reproduced on PXA boards by writing
+> > blank (all 0xff'ed) to a page:
+> ...
 > 
-> gfs2 has a left-over get_acl callback in gfs2_symlink_iops in
-> fs/gfs2/inode.c, from a long time ago, which should be removed
-> as well.
+> This patch doesn't apply to 3.13-rc1, so how am I supposed to send it
+> for the 3.13 cycle? It seems that you based this on l2-mtd.git, which
+> has code queued for 3.14.
+> 
 
-Ok, will fix.
+Ugh... crap!! This patch is *not* for v3.13, and I've no idea why I said so in
+the first place. The bug this patch fixes was introduced with the device ready
+completion mess in:
+
+  commit 8524028ee90d177580b496e2740efd673f8e7910
+  Author: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+  Date:   Thu Nov 14 18:25:26 2013 -0300
+
+  mtd: nand: pxa3xx: Use a completion to signal device ready
+
+So, this fix goes on top of l2-mtd.git (for v3.14), while the ones appropriate
+for v3.13 are:
+
+http://patchwork.ozlabs.org/patch/299645/
+
+and
+
+http://patchwork.ozlabs.org/patch/299202/
+
+Can you pick them, or do you prefer me to resend everything?
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
