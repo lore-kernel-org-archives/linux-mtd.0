@@ -1,24 +1,18 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vqxm2-00018D-II
- for linux-mtd@lists.infradead.org; Thu, 12 Dec 2013 04:21:18 +0000
-Message-ID: <52A9399C.80006@ti.com>
-Date: Thu, 12 Dec 2013 09:50:44 +0530
+Message-ID: <52A9480C.6020002@ti.com>
+Date: Thu, 12 Dec 2013 10:52:20 +0530
 From: Sourav Poddar <sourav.poddar@ti.com>
 MIME-Version: 1.0
-To: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCHv2 09/10] arm: dts: dra7: Add qspi device.
-References: <1386339891-32717-1-git-send-email-sourav.poddar@ti.com>
- <1386339891-32717-10-git-send-email-sourav.poddar@ti.com>
- <20131209174203.GB12527@atomide.com> <52A697AB.1060404@ti.com>
- <20131210103108.GA29268@sirena.org.uk>
-In-Reply-To: <20131210103108.GA29268@sirena.org.uk>
+To: Huang Shijie <shijie8@gmail.com>
+Subject: Re: [PATCH V2 0/4] mtd: spi-nor: add a new framework for SPI NOR
+References: <1386318764-15882-1-git-send-email-b32955@freescale.com>
+ <52A881CF.4020001@ti.com> <20131212041425.GA1460@gmail.com>
+In-Reply-To: <20131212041425.GA1460@gmail.com>
 Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: marex@denx.de, devicetree@vger.kernel.org, linux-omap@vger.kernel.org,
- Tony Lindgren <tony@atomide.com>, balbi@ti.com, linux-spi@vger.kernel.org,
- linux-mtd@lists.infradead.org, bcousson@baylibre.com,
- computersforpeace@gmail.com, dwmw2@infradead.org
+Cc: marex@denx.de, angus.clark@st.com, broonie@linaro.org, lee.jones@linaro.org,
+ linux-spi@vger.kernel.org, Huang Shijie <b32955@freescale.com>,
+ linux-mtd@lists.infradead.org, pekon@ti.com, computersforpeace@gmail.com,
+ dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,18 +22,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Mark,
-On Tuesday 10 December 2013 04:01 PM, Mark Brown wrote:
-> On Tue, Dec 10, 2013 at 09:55:15AM +0530, Sourav Poddar wrote:
+On Thursday 12 December 2013 09:44 AM, Huang Shijie wrote:
+> On Wed, Dec 11, 2013 at 08:46:31PM +0530, Sourav Poddar wrote:
+>> As you see in my patches, once we take care of the above points and
+>> add support
+>> for memory mapped in m25p80 and qspi, then while doing a read in
+>> m25p80 we can
+>> do memcpy at the beginning of m25p80_read and can bypass the entire SPI
+>> framework for memory mapped read operation. Throughput almost gets
+>> doubles with this,
+>> as compared to normal SPI operations.
+>>
+>> So, my intention of reviving this here is to add one more feature
+>> set, which I suppose
+>> spi nor framework should handle and to see what needs to be added
+>> more for this feature.
+> I already read your patch.
 >
->> I posted this for review along with other code changes.
->> I will post them seperately to Benoit.
-> Please wait until the driver updates have been reviewed.
-I was thinking of sending this dts patches seperately to benoit, so that we
-can enable atleast 1/4 bit mode for our controller. Anyways, there is no
-memory mapped specific binding used. Once, we get our driver updates
-reviewed and *if* there is anything memory mapped specific added, I can
-send them as a seperate patch. Anyways with spi nor  framework in sight the
-driver uodates can go anyewhere and might take some time.
-.
-Does this sound Ok to you?
+
+> My quadspi driver also uses the memory map mode.
+> The memory map mode is the default mode for the quadspi driver's read.
+>
+>
+> You can setup the registers for memory map in the probe() or some other
+> places.  And use the spi_nor->read() hook to do the memcpy in your driver.
+>
+So, setting these registers should be set in my qspi controller driver 
+in spi layer.
+There registers requires flash opcodes and other flash specific 
+parameters. I dont intend
+to get this from dt, so need this information to be send via the mtd 
+layer. So, dont think if
+the present hooks will help me out.
+
+Secondly, I had a dependency on few registers to switch between memory 
+mapped mode and
+spi mode. So, even though read is by default memory mapped, I need to 
+write to qspi register
+to switch to memory mapped mode and once the read is done, switch the 
+controller back to
+SPI mode.
+
+So all in all, some hooks like
+   - configure_master_from_slave
+   - enable_mmap/disable_mmap is desired.
+
+Do you think, we can handle/integrate this case in the above framework?
+> thanks
+> Huang Shijie
+>
