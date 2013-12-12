@@ -1,26 +1,25 @@
-Received: from mail-pb0-x236.google.com ([2607:f8b0:400e:c01::236])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vr1gt-0005LH-TK
- for linux-mtd@lists.infradead.org; Thu, 12 Dec 2013 08:32:16 +0000
-Received: by mail-pb0-f54.google.com with SMTP id un15so113927pbc.13
- for <linux-mtd@lists.infradead.org>; Thu, 12 Dec 2013 00:31:54 -0800 (PST)
-Date: Thu, 12 Dec 2013 16:31:46 +0800
-From: Huang Shijie <shijie8@gmail.com>
-To: Sourav Poddar <sourav.poddar@ti.com>
-Subject: Re: [PATCHv2 07/10] drivers: mtd: m25p80: Adapt driver to support
- memory mapped read.
-Message-ID: <20131212083143.GB1596@gmail.com>
-References: <1386339891-32717-1-git-send-email-sourav.poddar@ti.com>
- <1386339891-32717-8-git-send-email-sourav.poddar@ti.com>
- <20131212075536.GA1596@gmail.com> <52A9709C.4010606@ti.com>
+Received: from zimbra13.linbit.com ([212.69.166.240])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VrBag-0006Zs-Hl
+ for linux-mtd@lists.infradead.org; Thu, 12 Dec 2013 19:06:31 +0000
+Date: Thu, 12 Dec 2013 20:06:09 +0100 (CET)
+From: Andreas Gruenbacher <andreas.gruenbacher@linbit.com>
+To: Christoph Hellwig <hch@infradead.org>
+Message-ID: <1724169901.69108.1386875169382.JavaMail.zimbra@linbit.com>
+In-Reply-To: <20131211104526.648135334@bombadil.infradead.org>
+References: <20131211104243.148113893@bombadil.infradead.org>
+ <20131211104526.648135334@bombadil.infradead.org>
+Subject: Re: [PATCH 02/18] fs: add get_acl helper
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <52A9709C.4010606@ti.com>
-Cc: marex@denx.de, devicetree@vger.kernel.org, linux-omap@vger.kernel.org,
- balbi@ti.com, linux-spi@vger.kernel.org, broonie@kernel.org,
- linux-mtd@lists.infradead.org, bcousson@baylibre.com,
- computersforpeace@gmail.com, dwmw2@infradead.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Cc: xfs@oss.sgi.com, Jan Kara <jack@suse.cz>, Mark Fasheh <mfasheh@suse.com>,
+ reiserfs-devel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ cluster-devel@redhat.com, linux-mtd@lists.infradead.org,
+ viro@zeniv.linux.org.uk, jfs-discussion@lists.sourceforge.net,
+ linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-nfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ Joel Becker <jlbec@evilplan.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,42 +29,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 12, 2013 at 01:45:24PM +0530, Sourav Poddar wrote:
-> On Thursday 12 December 2013 01:25 PM, Huang Shijie wrote:
-> >>
-> >>+	if (spi->master->configure_from_slave)
-> >>+		m25p80_fill_flash_information(flash);
-> >>+
-> >You have add a configure_from_slave hook in the SPI, why you also need
-> >a same hook in the SPI-NOR framework?
-> >
-> We need a way to provoke this, currently it is placed in m25p80. If m25p80
-> is removed, for where should I handle these in nor framework?
+Christoph,
 
-The m25p80 is not removed. it is easy to move your code in the
-m25p_read.
+> +struct posix_acl *get_acl(struct inode *inode, int type)
+> +{
+> +	struct posix_acl *acl;
+> +
+> +	acl = get_cached_acl(inode, type);
+> +	if (acl != ACL_NOT_CACHED)
+> +		return acl;
+> +
+> +	if (!IS_POSIXACL(inode))
+> +		return NULL;
+> +
+> +	/*
+> +	 * A filesystem can force a ACL callback by just never filling the
+> +	 * ACL cache. But normally you'd fill the cache either at inode
+> +	 * instantiation time, or on the first ->get_acl call.
+> +	 *
+> +	 * If the filesystem doesn't have a get_acl() function at all, we'll
+> +	 * just create the negative cache entry.
+> +	 */
+> +	if (!inode->i_op->get_acl) {
+> +		set_cached_acl(inode, type, NULL);
+> +		return ERR_PTR(-EAGAIN);
 
-Please read the patch 4.
+The function should return NULL here.
 
-> >And i think the enable_mmap/disable_mmap is not needed too.
-> >
-> >All the three hooks are used to set the SPI bus controller.
-> 
-> >And the SPI-NOR framework only handles the issues between the
-> >SPI bus controller and the SPI-NOR, or the SPI-NOR controller and the
-> >SPI-NOR.
-> My controller can be used as spi flash controller as well as a spi
-> controller.
-> 
-If you really think we need to do something before the do the real work.
-we can add two hooks : prepare/unprepare.
-
-   for you, you can put the the enable_mmap/disable_mmap in the
-   prepare/unprepare separately.
-
-   for other driver, we can put the enable/disable clocks in the
-   prepare/unprepare hooks.
-
-thanks
-Huang Shijie 
-   
+Andreas
