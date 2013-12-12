@@ -1,18 +1,18 @@
-Message-ID: <52A9480C.6020002@ti.com>
-Date: Thu, 12 Dec 2013 10:52:20 +0530
-From: Sourav Poddar <sourav.poddar@ti.com>
+Received: from mail-db8lp0187.outbound.messaging.microsoft.com
+ ([213.199.154.187] helo=db8outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Vr0HX-0003Gf-GI
+ for linux-mtd@lists.infradead.org; Thu, 12 Dec 2013 07:02:00 +0000
+From: Hou Zhiqiang <b48286@freescale.com>
+To: <linux-mtd@lists.infradead.org>, <linuxppc-dev@ozlabs.org>
+Subject: [PATCH v2] mtd: m25p80: Add Power Management support
+Date: Thu, 12 Dec 2013 13:38:36 +0800
+Message-ID: <1386826716-20476-1-git-send-email-b48286@freescale.com>
 MIME-Version: 1.0
-To: Huang Shijie <shijie8@gmail.com>
-Subject: Re: [PATCH V2 0/4] mtd: spi-nor: add a new framework for SPI NOR
-References: <1386318764-15882-1-git-send-email-b32955@freescale.com>
- <52A881CF.4020001@ti.com> <20131212041425.GA1460@gmail.com>
-In-Reply-To: <20131212041425.GA1460@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: marex@denx.de, angus.clark@st.com, broonie@linaro.org, lee.jones@linaro.org,
- linux-spi@vger.kernel.org, Huang Shijie <b32955@freescale.com>,
- linux-mtd@lists.infradead.org, pekon@ti.com, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain
+Cc: grant.likely@secretlab.ca, scottwood@freescale.com,
+ Mingkai.Hu@freescale.com, Hou Zhiqiang <b48286@freescale.com>,
+ dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,52 +22,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 12 December 2013 09:44 AM, Huang Shijie wrote:
-> On Wed, Dec 11, 2013 at 08:46:31PM +0530, Sourav Poddar wrote:
->> As you see in my patches, once we take care of the above points and
->> add support
->> for memory mapped in m25p80 and qspi, then while doing a read in
->> m25p80 we can
->> do memcpy at the beginning of m25p80_read and can bypass the entire SPI
->> framework for memory mapped read operation. Throughput almost gets
->> doubles with this,
->> as compared to normal SPI operations.
->>
->> So, my intention of reviving this here is to add one more feature
->> set, which I suppose
->> spi nor framework should handle and to see what needs to be added
->> more for this feature.
-> I already read your patch.
->
+Add PM support using callback function suspend and resume in
+.driver.pm of spi_driver.
 
-> My quadspi driver also uses the memory map mode.
-> The memory map mode is the default mode for the quadspi driver's read.
->
->
-> You can setup the registers for memory map in the probe() or some other
-> places.  And use the spi_nor->read() hook to do the memcpy in your driver.
->
-So, setting these registers should be set in my qspi controller driver 
-in spi layer.
-There registers requires flash opcodes and other flash specific 
-parameters. I dont intend
-to get this from dt, so need this information to be send via the mtd 
-layer. So, dont think if
-the present hooks will help me out.
+Signed-off-by: Hou Zhiqiang <b48286@freescale.com>
+---
+v2:
+ - Replace .driver.suspend and .driver.resume with .driver.pm
+ - Use CONFIG_PM_SLEEP instead of CONFIG_PM
 
-Secondly, I had a dependency on few registers to switch between memory 
-mapped mode and
-spi mode. So, even though read is by default memory mapped, I need to 
-write to qspi register
-to switch to memory mapped mode and once the read is done, switch the 
-controller back to
-SPI mode.
+ drivers/mtd/devices/m25p80.c | 37 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
 
-So all in all, some hooks like
-   - configure_master_from_slave
-   - enable_mmap/disable_mmap is desired.
-
-Do you think, we can handle/integrate this case in the above framework?
-> thanks
-> Huang Shijie
->
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 7eda71d..eb558e8 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -66,6 +66,8 @@
+ 
+ /* Used for Spansion flashes only. */
+ #define	OPCODE_BRWR		0x17	/* Bank register write */
++#define	OPCODE_DP		0xb9	/* Enter deep power down mode */
++#define	OPCODE_RES		0xab	/* Exit deep power down mode */
+ 
+ /* Status Register bits. */
+ #define	SR_WIP			1	/* Write in progress */
+@@ -1128,11 +1130,46 @@ static int m25p_remove(struct spi_device *spi)
+ 	return mtd_device_unregister(&flash->mtd);
+ }
+ 
++#ifdef CONFIG_PM_SLEEP
++static int m25p_suspend(struct device *dev)
++{
++	struct m25p *flash = dev_get_drvdata(dev);
++	int ret;
++
++	flash->command[0] = OPCODE_DP;
++	mutex_lock(&flash->lock);
++	/* Wait until finished previous write/erase command. */
++	ret = wait_till_ready(flash);
++	if (ret) {
++		mutex_unlock(&flash->lock);
++		return ret;
++	}
++	ret = spi_write(flash->spi, flash->command, 1);
++	mutex_unlock(&flash->lock);
++
++	return ret;
++}
++
++static int m25p_resume(struct device *dev)
++{
++	struct m25p *flash = dev_get_drvdata(dev);
++	int ret;
++
++	flash->command[0] = OPCODE_RES;
++
++	return spi_write(flash->spi, flash->command, 1);
++}
++#endif /* CONFIG_PM_SLEEP */
++
++static const struct dev_pm_ops m25p_pm = {
++	SET_SYSTEM_SLEEP_PM_OPS(m25p_suspend, m25p_resume)
++};
+ 
+ static struct spi_driver m25p80_driver = {
+ 	.driver = {
+ 		.name	= "m25p80",
+ 		.owner	= THIS_MODULE,
++		.pm	= &m25p_pm,
+ 	},
+ 	.id_table	= m25p_ids,
+ 	.probe	= m25p_probe,
+-- 
+1.8.4.1
