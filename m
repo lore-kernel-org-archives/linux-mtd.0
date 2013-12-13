@@ -1,24 +1,26 @@
-Received: from tx2ehsobe001.messaging.microsoft.com ([65.55.88.11]
- helo=tx2outboundpool.messaging.microsoft.com)
+Received: from mail-pd0-x232.google.com ([2607:f8b0:400e:c02::232])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VrNbL-0007W2-LL
- for linux-mtd@lists.infradead.org; Fri, 13 Dec 2013 07:56:00 +0000
-Date: Fri, 13 Dec 2013 15:27:12 +0800
-From: Huang Shijie <b32955@freescale.com>
+ id 1VrNgu-0007eW-LQ
+ for linux-mtd@lists.infradead.org; Fri, 13 Dec 2013 08:01:45 +0000
+Received: by mail-pd0-f178.google.com with SMTP id y10so2036199pdj.37
+ for <linux-mtd@lists.infradead.org>; Fri, 13 Dec 2013 00:01:23 -0800 (PST)
+Date: Fri, 13 Dec 2013 00:01:18 -0800
+From: Brian Norris <computersforpeace@gmail.com>
 To: Caizhiyong <caizhiyong@hisilicon.com>
-Subject: Re: [PATCH] mtd: increase max page/OOB size to support 16K
- pagesize NAND
-Message-ID: <20131213072705.GA28525@shlinux2.ap.freescale.net>
+Subject: Re: [PATCH] mtd: increase max page/OOB size to support 16K pagesize
+ NAND
+Message-ID: <20131213080118.GC24650@norris-Latitude-E6410>
 References: <C3050A4DBA34F345975765E43127F10F25E47455@SZXEMA512-MBX.china.huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <C3050A4DBA34F345975765E43127F10F25E47455@SZXEMA512-MBX.china.huawei.com>
 Cc: David Woodhouse <David.Woodhouse@intel.com>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  Quyaxin <quyaxin@hisilicon.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Huang Shijie <b32955@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
  "Wanglin \(Albert\)" <albert.wanglin@hisilicon.com>,
  David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -37,7 +39,12 @@ On Fri, Dec 13, 2013 at 05:03:49AM +0000, Caizhiyong wrote:
 > 
 > The Toshiba's TC58TEG5DCJTA pagesize is 16K, oob size is 1280 bytes.
 > So increase the NAND_MAX_OOBSIZE and NAND_MAX_PAGESIZE.
-> 
+
+It would help if we had nand_base/nand_ids support for TC58TEG5DCJTA
+before we try to increase NAND_MAX_PAGESIZE and NAND_MAX_OOBSIZE yet
+again. AFAICT, nand_base will not detect new, large Toshiba flash
+properly anyway.
+
 > Signed-off-by: Cai Zhiyong <caizhiyong@huawei.com>
 > ---
 >  include/linux/mtd/nand.h | 4 ++--
@@ -55,7 +62,22 @@ On Fri, Dec 13, 2013 at 05:03:49AM +0000, Caizhiyong wrote:
 > -#define NAND_MAX_PAGESIZE	8192
 > +#define NAND_MAX_OOBSIZE	1280
 > +#define NAND_MAX_PAGESIZE	16384
-maybe it is time to remove these two macros.
 
-thanks
-Huang Shijie
+It might be time to draw a line in the sand: next person who needs to
+increase MAX_{PAGE,OOB}SIZE gets the job of killing the macro? We are
+long overdue for dynamic buffer allocation.
+
+There are two drivers that use the macros, plus nand_chip.buffers.*. The
+drivers can be weaned off by allocating a small, fixed-size temporary
+buffer for the few tasks that need it. With nand_base.c, I think we can
+get by with waiting to allocate nand_chip.buffers until after we detect
+the writesize/oobsize.
+
+So Cai, are you up for this?
+
+>  
+>  /*
+>   * Constants for hardware specific CLE/ALE/NCE function
+> 
+
+Brian
