@@ -1,13 +1,13 @@
 Received: from szxga03-in.huawei.com ([119.145.14.66])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VrKuI-0004b9-7U
- for linux-mtd@lists.infradead.org; Fri, 13 Dec 2013 05:03:23 +0000
+ id 1VrKxX-0004dh-OC
+ for linux-mtd@lists.infradead.org; Fri, 13 Dec 2013 05:06:44 +0000
 From: Caizhiyong <caizhiyong@hisilicon.com>
 To: David Woodhouse <dwmw2@infradead.org>, "linux-mtd@lists.infradead.org"
  <linux-mtd@lists.infradead.org>
 Subject: [PATCH] mtd: increase max page/OOB size to support 16K pagesize NAND
-Date: Fri, 13 Dec 2013 05:01:56 +0000
-Message-ID: <C3050A4DBA34F345975765E43127F10F25E47448@SZXEMA512-MBX.china.huawei.com>
+Date: Fri, 13 Dec 2013 05:03:49 +0000
+Message-ID: <C3050A4DBA34F345975765E43127F10F25E47455@SZXEMA512-MBX.china.huawei.com>
 Content-Language: zh-CN
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
@@ -34,10 +34,6 @@ ND.
 
 The Toshiba's TC58TEG5DCJTA pagesize is 16K, oob size is 1280 bytes.
 So increase the NAND_MAX_OOBSIZE and NAND_MAX_PAGESIZE.
-
-Signed-off-by: Huang Shijie <b32955@freescale.com>
-Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Signed-off-by: David Woodhouse <David.Woodhouse@intel.com>
 
 Signed-off-by: Cai Zhiyong <caizhiyong@huawei.com>
 ---
