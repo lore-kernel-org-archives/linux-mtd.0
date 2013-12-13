@@ -1,20 +1,30 @@
-Message-ID: <52AB228D.5030003@st.com>
-Date: Fri, 13 Dec 2013 15:06:53 +0000
-From: Angus Clark <angus.clark@st.com>
+Received: from mail-pa0-x233.google.com ([2607:f8b0:400e:c03::233])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VrUPW-0000Sa-MU
+ for linux-mtd@lists.infradead.org; Fri, 13 Dec 2013 15:12:15 +0000
+Received: by mail-pa0-f51.google.com with SMTP id fa1so140915pad.10
+ for <linux-mtd@lists.infradead.org>; Fri, 13 Dec 2013 07:11:51 -0800 (PST)
+Date: Fri, 13 Dec 2013 23:11:39 +0800
+From: Huang Shijie <shijie8@gmail.com>
+To: Caizhiyong <caizhiyong@hisilicon.com>
+Subject: Re: [PATCH] mtd: increase max page/OOB size to support 16K pagesize
+ NAND
+Message-ID: <20131213151138.GA1316@gmail.com>
+References: <C3050A4DBA34F345975765E43127F10F25E47455@SZXEMA512-MBX.china.huawei.com>
+ <20131213080118.GC24650@norris-Latitude-E6410>
+ <C3050A4DBA34F345975765E43127F10F25E47537@SZXEMA512-MBX.china.huawei.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v3 08/36] mtd: devices: Provide header for shared OPCODEs
- and SFDP commands
-References: <1385727565-25794-1-git-send-email-lee.jones@linaro.org>
- <1385727565-25794-9-git-send-email-lee.jones@linaro.org>
- <20131210214849.GE27149@ld-irv-0074.broadcom.com>
-In-Reply-To: <20131210214849.GE27149@ld-irv-0074.broadcom.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: Angus CLARK <angus.clark@st.com>, Lee Jones <lee.jones@linaro.org>,
- linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <C3050A4DBA34F345975765E43127F10F25E47537@SZXEMA512-MBX.china.huawei.com>
+Cc: "Wanglin \(Albert\)" <albert.wanglin@hisilicon.com>,
+ David Woodhouse <David.Woodhouse@intel.com>, Quyaxin <quyaxin@hisilicon.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Huang Shijie <b32955@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,59 +34,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/10/2013 09:48 PM, Brian Norris wrote:
-> On Fri, Nov 29, 2013 at 12:18:57PM +0000, Lee Jones wrote:
->> JEDEC have helped to standardise a great deal of the commands which
->> can be issued to a Serial Flash devices. Many of the OPCODEs and all
->> of the Serial Flash Discoverable Parameters (SFDP) commands are
->> generic across devices. This patch provides a shared point where
->> these commands can be defined.
-
-This comment isn't entirely correct.  The SFDP standard (JESD216A) does not go
-as far as standardising the OPCODES, but merely a way of determining at runtime
-which operations are supported (e.g. READ_1_1_4, READ_1_4_4), and the associated
-opcodes; vendors are still free to use a different opcode for a particular
-operation.
-
->> +/* JEDEC Standard - Serial Flash Discoverable Parmeters (SFDP) Commands */
->> +#define FLASH_CMD_READ		0x03	/* READ */
->> +#define FLASH_CMD_READ_FAST	0x0b	/* FAST READ */
->> +#define FLASH_CMD_READ_1_1_2	0x3b	/* DUAL OUTPUT READ */
->> +#define FLASH_CMD_READ_1_2_2	0xbb	/* DUAL I/O READ */
->> +#define FLASH_CMD_READ_1_1_4	0x6b	/* QUAD OUTPUT READ */
->> +#define FLASH_CMD_READ_1_4_4	0xeb	/* QUAD I/O READ */
+On Fri, Dec 13, 2013 at 11:10:10AM +0000, Caizhiyong wrote:
 > 
-> All of these {1,2,4}_{1,2,4}_{1,2,4} suffixes are a little cryptic; I
-> ended up referring to the SFDP spec to figure out what the first number
-> meant. Can you document them briefly at the top of this SFDP list?
+> There are a lot of 16K page size NAND, they are used in android system.
+> 
+> Many NAND need read retry and data randomization, kernel does not support this feature.
+Brian is adding the read-retry feature.
 
-I think the {x,y,z} descriptions offer the simplest way of representing the
-myriad of operations supported by various devices -- it was one thing SFDP did
-get right.  However, I agree, the nomenclature  does need explained.  We also
-need a way of representing 32-bit address commands, and SDR vs DDR commands --
-this has not yet been addresses by SFDP.
+I think the data randomization should be done by the hardware.
+If we do it by software, it costs lot of the cpu cycles.
 
-> Since you list these, does SFDP even describe the 32-bit addressing
-> commands? 
 
-Not yet, but I believe "JESD216B" will include a parameter table related to
-32-bit address instructions.
+> Kernel also does not support synchronous NAND.
 
-> It seems like it assumes the device is switched (statefully)
-> between 24-bit and 32-bit address modes (or kept permanently in one or
-> the other).
+The synchronous NAND should be supported by the nand controller driver,
+not the kernel.
 
-And the complexity increases!  The st_spi_fsm H/W also supports a memory-mapped
-mode for booting.  However, the boot controller is hard-coded to issue 24-bit
-address cycles.  If the Serial Flash device includes a dedicated REST pin, and
-this is appropriately routed to the system reset, then we have no issue -- the
-device will reset to its power-on state following a warm reset.  If a reset pin
-is not available, then certain precautions can be followed to minimise problems
-with warm resets.   If the Serial Flash device supports a 32-bit instruction
-set, then this should be used in preference, and we can avoid any statefull
-transitions.  Failing that, we can minimise the window in which a reset would
-fail by issuing EN4B/EX4B before/after each operation.  Of course, if we know
-the system is not subject to these constraints, then we just need to issue EN4B
-at the start, and stay in 4B mode.
 
-All this knowledge needs to be in the spi-nor layer...
+thanks
+Huang Shijie
