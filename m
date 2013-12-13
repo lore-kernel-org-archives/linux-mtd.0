@@ -1,28 +1,21 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
+Received: from mail-db8lp0185.outbound.messaging.microsoft.com
+ ([213.199.154.185] helo=db8outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VrOpF-0000fZ-7O
- for linux-mtd@lists.infradead.org; Fri, 13 Dec 2013 09:14:26 +0000
-From: Pekon Gupta <pekon@ti.com>
-To: Brian Norris <computersforpeace@gmail.com>, Artem Bityutskiy
- <dedekind1@gmail.com>, Scott Wood <scottwood@freescale.com>, Tom Rini
- <trini@ti.com>
-Subject: [PATCH v1 1/2] mtd: nand: omap: fix ecclayout->oobfree->offset
-Date: Fri, 13 Dec 2013 14:42:57 +0530
-Message-ID: <1386925978-23705-2-git-send-email-pekon@ti.com>
-In-Reply-To: <1386925978-23705-1-git-send-email-pekon@ti.com>
-References: <1386925978-23705-1-git-send-email-pekon@ti.com>
+ id 1VrOtE-0000p3-4E
+ for linux-mtd@lists.infradead.org; Fri, 13 Dec 2013 09:18:32 +0000
+Date: Fri, 13 Dec 2013 16:49:41 +0800
+From: Huang Shijie <b32955@freescale.com>
+To: Huang Shijie <shijie8@gmail.com>
+Subject: Re: [PATCH v1] mtd: gpmi: Bitflip support in erased regions
+Message-ID: <20131213084938.GA7695@shlinux2.ap.freescale.net>
+References: <1386619091-23992-1-git-send-email-eliedebrauwer@gmail.com>
+ <20131211132455.GA1284@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Stefan Roese <sr@denx.de>, Michael Trimarchi <michael@amarulasolutions.com>,
- r-woodruff2@ti.com, avinashphilipk@gmail.com, jp.francois@cynove.com,
- Pekon Gupta <pekon@ti.com>, r.meier@siemens.com, balbi@ti.com,
- u-boot@lists.denx.de, Enric Balletbo Serra <eballetbo@iseebcn.com>,
- linux-mtd@lists.infradead.org, Igor Grinberg <grinberg@compulab.co.il>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Javier Martinez Canillas <javier@dowhile0.org>,
- linux-omap <linux-omap@vger.kernel.org>, ivan.djelic@parrot.com,
- Nikita Kiryanov <nikita@compulab.co.il>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20131211132455.GA1284@gmail.com>
+Cc: dwmw2@infradead.org, Elie De Brauwer <eliedebrauwer@gmail.com>,
+ linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,83 +25,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch updates starting offset for free bytes in OOB which can be used by
-file-systems to store their metadata (like clean-marker in case of JFFS2).
+On Wed, Dec 11, 2013 at 09:24:58PM +0800, Huang Shijie wrote:
+> On Mon, Dec 09, 2013 at 08:58:10PM +0100, Elie De Brauwer wrote:
+> > 
+> > Quote datasheet:
+> > "As the BCH decoder reads the data and parity blocks, it records a special condition, i.e.,
+> > that all of the bits of a payload data block or metadata block are one, including any associated
+> > parity bytes. The all-ones case for both parity and data indicates an erased block in the
+> > NAND device."
+> > 
+> > Fortunately we can more or less tune this parameter by using the 
+> > ERASE_THRESHOLD in HW_BCH_MODE register:
+> > "This value indicates the maximum number of zero bits on a flash page for 
+> > it to be considered erased. For SLC NAND devices, this value should be 
+> 
+> I met the "correct empty space" with a Toshiba SLC nand.
+> The spec tells us it should be 0 for the SLC nand.	
+> 
+> I will double-check it tomorrow.
 
-Signed-off-by: Pekon Gupta <pekon@ti.com>
----
- drivers/mtd/nand/omap2.c | 17 ++++-------------
- 1 file changed, 4 insertions(+), 13 deletions(-)
+I confirm that a SLC nand can meet this issue too.
 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index f777250..bbdb5e8 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -1835,8 +1835,6 @@ static int omap_nand_probe(struct platform_device *pdev)
- 			ecclayout->eccpos[0]	= BADBLOCK_MARKER_LENGTH;
- 		else
- 			ecclayout->eccpos[0]	= 1;
--		ecclayout->oobfree->offset	= ecclayout->eccpos[0] +
--							ecclayout->eccbytes;
- 		break;
- 
- 	case OMAP_ECC_BCH4_CODE_HW_DETECTION_SW:
-@@ -1854,8 +1852,6 @@ static int omap_nand_probe(struct platform_device *pdev)
- 							(mtd->writesize /
- 							nand_chip->ecc.size);
- 		ecclayout->eccpos[0]		= BADBLOCK_MARKER_LENGTH;
--		ecclayout->oobfree->offset	= ecclayout->eccpos[0] +
--							ecclayout->eccbytes;
- 		/* software bch library is used for locating errors */
- 		nand_chip->ecc.priv		= nand_bch_init(mtd,
- 							nand_chip->ecc.size,
-@@ -1890,8 +1886,6 @@ static int omap_nand_probe(struct platform_device *pdev)
- 							(mtd->writesize /
- 							nand_chip->ecc.size);
- 		ecclayout->eccpos[0]		= BADBLOCK_MARKER_LENGTH;
--		ecclayout->oobfree->offset	= ecclayout->eccpos[0] +
--							ecclayout->eccbytes;
- 		/* This ECC scheme requires ELM H/W block */
- 		if (is_elm_present(info, pdata->elm_of_node, BCH4_ECC) < 0) {
- 			pr_err("nand: error: could not initialize ELM\n");
-@@ -1920,8 +1914,6 @@ static int omap_nand_probe(struct platform_device *pdev)
- 							(mtd->writesize /
- 							nand_chip->ecc.size);
- 		ecclayout->eccpos[0]		= BADBLOCK_MARKER_LENGTH;
--		ecclayout->oobfree->offset	= ecclayout->eccpos[0] +
--							ecclayout->eccbytes;
- 		/* software bch library is used for locating errors */
- 		nand_chip->ecc.priv		= nand_bch_init(mtd,
- 							nand_chip->ecc.size,
-@@ -1963,8 +1955,6 @@ static int omap_nand_probe(struct platform_device *pdev)
- 							(mtd->writesize /
- 							nand_chip->ecc.size);
- 		ecclayout->eccpos[0]		= BADBLOCK_MARKER_LENGTH;
--		ecclayout->oobfree->offset	= ecclayout->eccpos[0] +
--							ecclayout->eccbytes;
- 		break;
- #else
- 		pr_err("nand: error: CONFIG_MTD_NAND_OMAP_BCH not enabled\n");
-@@ -1978,9 +1968,6 @@ static int omap_nand_probe(struct platform_device *pdev)
- 		goto return_error;
- 	}
- 
--	/* populate remaining ECC layout data */
--	ecclayout->oobfree->length = mtd->oobsize - (BADBLOCK_MARKER_LENGTH +
--							ecclayout->eccbytes);
- 	for (i = 1; i < ecclayout->eccbytes; i++)
- 		ecclayout->eccpos[i] = ecclayout->eccpos[0] + i;
- 	/* check if NAND device's OOB is enough to store ECC signatures */
-@@ -1990,6 +1977,10 @@ static int omap_nand_probe(struct platform_device *pdev)
- 		err = -EINVAL;
- 		goto return_error;
- 	}
-+	/* populate remaining ECC layout data */
-+	ecclayout->oobfree->offset = ecclayout->eccpos[ecclayout->eccbytes] + 1;
-+	ecclayout->oobfree->length = mtd->oobsize - (BADBLOCK_MARKER_LENGTH +
-+							ecclayout->eccbytes);
- 
- 	/* second phase scan */
- 	if (nand_scan_tail(mtd)) {
--- 
-1.8.1
+> 	
+> > programmed to 0 (meaning that the entire page should consist of bytes of 
+> > 0xFF. For MLC NAND devices, bit errors may occur on reads (even on blank 
+> > pages), so this threshold can be used to tune the erased page checking 
+> > algorithm."
+> > 
+> > So as my solution I'm setting this erase threshold to the ecc_strength 
+> > derived from the geometry, meaning that I will tolerate the same number of 
+> > bitflips the BCH block would consider correctable.
+> > The side effect is that whever I'm reading a page (gpmi_ecc_read_page() ) 
+A solution is to check the HW_BCH_STATUS0:ALLONES.
+
+If it is all ones, we do not check it by software.
+
+
+> > which the BCH block marked as "erased" I need to take a software approach. 
+> > The software approach is inspired on what is currently
+> > done in the omap2 driver (but not free from discussion). At that point I 
+> > now that the page can contain up to ecc_strenght bitflips, so I need to 
+> 
+> The ecc_strength can be 40 sometimes.
+
+The only problem is what is the proper value for ERASE_THRESHOLD.
+
+still need more investigate.
+
+thanks
+Huang Shijie
