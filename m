@@ -1,23 +1,20 @@
-Received: from mail-pd0-x235.google.com ([2607:f8b0:400e:c02::235])
+Received: from mail-pb0-x229.google.com ([2607:f8b0:400e:c01::229])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VrMzD-0006vc-2T
- for linux-mtd@lists.infradead.org; Fri, 13 Dec 2013 07:16:35 +0000
-Received: by mail-pd0-f181.google.com with SMTP id p10so1957463pdj.26
- for <linux-mtd@lists.infradead.org>; Thu, 12 Dec 2013 23:16:13 -0800 (PST)
-Date: Fri, 13 Dec 2013 12:46:04 +0530
-From: Rashika Kheria <rashika.kheria@gmail.com>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] drivers: mtd: Mark function is_erased() as static in
- denali.c
-Message-ID: <9a7eb08500c9fae325e5422d64f10cae3d4cf81f.1386912859.git.rashika.kheria@gmail.com>
-References: <d0512c2bc35b27af33ad79d74d93ecc0f2b4e92c.1386912859.git.rashika.kheria@gmail.com>
+ id 1VrNQm-0007MY-8s
+ for linux-mtd@lists.infradead.org; Fri, 13 Dec 2013 07:45:05 +0000
+Received: by mail-pb0-f41.google.com with SMTP id jt11so2100478pbb.14
+ for <linux-mtd@lists.infradead.org>; Thu, 12 Dec 2013 23:44:39 -0800 (PST)
+Date: Thu, 12 Dec 2013 23:44:28 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [GIT PULL] MTD fixes for 3.13-rc
+Message-ID: <20131213074428.GA24650@norris-Latitude-E6410>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d0512c2bc35b27af33ad79d74d93ecc0f2b4e92c.1386912859.git.rashika.kheria@gmail.com>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- josh@joshtriplett.org
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Linux Kernel <linux-kernel@vger.kernel.org>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,30 +24,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch marks the function is_erased() as static in denali.c because
-it is not used outside this file.
+Hi Linus,
 
-This patch elimiates the following warning in nand/denali.c:
-drivers/mtd/nand/denali.c:900:6: warning: no previous prototype for ‘is_erased’ [-Wmissing-prototypes]
+Here are two MTD fixes for the pxa3xx-nand driver.
 
-Signed-off-by: Rashika Kheria <rashika.kheria@gmail.com>
-Reviewed-by: Josh Triplett <josh@joshtriplett.org>
----
- drivers/mtd/nand/denali.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Brian
 
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 370b9dd..3a3a47f 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -897,7 +897,7 @@ static void read_oob_data(struct mtd_info *mtd, uint8_t *buf, int page)
- /* this function examines buffers to see if they contain data that
-  * indicate that the buffer is part of an erased region of flash.
-  */
--bool is_erased(uint8_t *buf, int len)
-+static bool is_erased(uint8_t *buf, int len)
- {
- 	int i = 0;
- 	for (i = 0; i < len; i++)
--- 
-1.7.9.5
+The following changes since commit 6ce4eac1f600b34f2f7f58f9cd8f0503d79e42ae:
+
+  Linux 3.13-rc1 (2013-11-22 11:30:55 -0800)
+
+are available in the git repository at:
+
+  git://git.infradead.org/linux-mtd.git tags/for-linus-20131212
+
+for you to fetch changes up to 15b540c71cac840f0a3e8b1b4b7a773deb847ffb:
+
+  mtd: nand: pxa3xx: Use info->use_dma to release DMA resources (2013-12-12 15:02:04 -0800)
+
+----------------------------------------------------------------
+Two MTD fixes, for the pxa3xx-nand driver:
+
+ - This driver was not ready to fully support Armada 370 NAND, with
+   particularly notable problems seen on flash with 2KB page sizes. This
+   "compatible" entry really should have been held back until 3.14 or
+   later.
+
+ - Fix a bug seen in rare cases on the error path of a failed probe attempt,
+   where we free unallocated DMA resources
+
+----------------------------------------------------------------
+Ezequiel Garcia (2):
+      Partially revert "mtd: nand: pxa3xx: Introduce 'marvell,armada370-nand' compatible string"
+      mtd: nand: pxa3xx: Use info->use_dma to release DMA resources
+
+ drivers/mtd/nand/pxa3xx_nand.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
