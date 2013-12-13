@@ -1,18 +1,21 @@
-Date: Fri, 13 Dec 2013 10:19:53 -0800
+Received: from mail-ie0-x229.google.com ([2607:f8b0:4001:c03::229])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VrXNo-0005cm-VN
+ for linux-mtd@lists.infradead.org; Fri, 13 Dec 2013 18:22:41 +0000
+Received: by mail-ie0-f169.google.com with SMTP id e14so3381083iej.28
+ for <linux-mtd@lists.infradead.org>; Fri, 13 Dec 2013 10:22:19 -0800 (PST)
+Date: Fri, 13 Dec 2013 10:22:15 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH 09/15] mtd: sh_flctl: Enable driver compilation with
- COMPILE_TEST
-Message-ID: <20131213181953.GY27149@ld-irv-0074.broadcom.com>
-References: <1385515117-23664-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
- <1385515117-23664-10-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
- <3651259.U0RP9jvU5Q@avalon>
+To: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+Subject: Re: [PATCH v2] mtd: sh_flctl: Fix warnings due to improper casts
+Message-ID: <20131213182215.GZ27149@ld-irv-0074.broadcom.com>
+References: <1385547448-13747-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3651259.U0RP9jvU5Q@avalon>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- linux-arm-kernel@lists.infradead.org, linux-sh@vger.kernel.org
+In-Reply-To: <1385547448-13747-1-git-send-email-laurent.pinchart+renesas@ideasonboard.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ linux-sh@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,22 +25,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Dec 11, 2013 at 01:48:50PM +0100, Laurent Pinchart wrote:
-> Hi David,
+On Wed, Nov 27, 2013 at 11:17:28AM +0100, Laurent Pinchart wrote:
+> Cast pointers to uintptr_t instead of unsigned int. This fixes warnings
+> on platforms where pointers have a different size than int.
 > 
-> Could you please pick this patch up for v3.14 ?
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: linux-mtd@lists.infradead.org
+> Signed-off-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+> ---
+>  drivers/mtd/nand/sh_flctl.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> Changes compared to v1:
+> 
+> - Cast to uintptr_t instead of unsigned long
 
-I'm not David, but I pushed your patch over a week ago. I guess I forgot
-to warn you. Sorry!
-
-> On Wednesday 27 November 2013 02:18:31 Laurent Pinchart wrote:
-> > This helps increasing build testing coverage.
-> > 
-> > Cc: David Woodhouse <dwmw2@infradead.org>
-> > Cc: linux-mtd@lists.infradead.org
-> > Signed-off-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-> > Acked-by: Simon Horman <horms@verge.net.au>
-
-This patch is in l2-mtd.git. Thanks!
+This patch has been in l2-mtd.git, but I forgot to alert you. Thanks for
+the patch!
 
 Brian
