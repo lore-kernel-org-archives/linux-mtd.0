@@ -1,23 +1,25 @@
-Received: from mail-pb0-x229.google.com ([2607:f8b0:400e:c01::229])
+Received: from mail-vc0-f180.google.com ([209.85.220.180])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VriBe-0006wu-6L
- for linux-mtd@lists.infradead.org; Sat, 14 Dec 2013 05:54:51 +0000
-Received: by mail-pb0-f41.google.com with SMTP id jt11so3442621pbb.14
- for <linux-mtd@lists.infradead.org>; Fri, 13 Dec 2013 21:54:27 -0800 (PST)
-Date: Fri, 13 Dec 2013 21:54:23 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH 0/2] MTD maintenance updates
-Message-ID: <20131214055423.GB2454@norris-Latitude-E6410>
-References: <1386199726-28074-1-git-send-email-computersforpeace@gmail.com>
- <1386232488.23205.283.camel@sauron.fi.intel.com>
+ id 1VrntM-0001MP-8B
+ for linux-mtd@lists.infradead.org; Sat, 14 Dec 2013 12:00:20 +0000
+Received: by mail-vc0-f180.google.com with SMTP id if17so2019362vcb.39
+ for <linux-mtd@lists.infradead.org>; Sat, 14 Dec 2013 03:59:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1386232488.23205.283.camel@sauron.fi.intel.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+In-Reply-To: <20131214050315.GA2454@norris-Latitude-E6410>
+References: <20131213074428.GA24650@norris-Latitude-E6410>
+ <CA+55aFxM+fMw5trODzJouaqgewoLy06mxRcdvA5WPTw1=Gk4pw@mail.gmail.com>
+ <20131214050315.GA2454@norris-Latitude-E6410>
+Date: Sat, 14 Dec 2013 12:59:55 +0100
+Message-ID: <CAFLxGvy-NXLJ1Gc_A8YOURqNSxZ5pkRicPeTmhu8REpEgTWvUg@mail.gmail.com>
+Subject: Re: [GIT PULL] MTD fixes for 3.13-rc
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
  Linux Kernel <linux-kernel@vger.kernel.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+ linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,21 +29,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 05, 2013 at 10:34:48AM +0200, Artem Bityutskiy wrote:
-> On Wed, 2013-12-04 at 15:28 -0800, Brian Norris wrote:
-> > BTW, I'd like to get David's "ack" for these patches, and it'd be nice
-> > to hear
-> > from Artem too, since he has previously been an unofficial maintainer
-> > (and is
-> > understandably distracted by non-MTD work these days).
-> 
-> Acked-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> 
-> Thanks Brian for taking care of the MTD subsystem.
+On Sat, Dec 14, 2013 at 6:03 AM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> On Fri, Dec 13, 2013 at 11:37:36AM -0800, Linus Torvalds wrote:
+>> I do note that your pgp key still has very few signatures, and none of
+>> them in my normal key ring. Any possibility that you might expand on
+>> your signatures a bit?
+>
+> I'll see what I can do. dwmw2 offered to sign, but we're not exactly on
+> the same continent AFAIK. I'll try to get out to another conference
+> sometime soon.
 
-Happy to!
+Where are you located?
+Maybe one of us is near you:
+https://maps.google.com/maps/ms?ie=UTF&msa=0&msid=203700972965484840643.0004b223fd8be6d3e2d90
 
-Pushed both to l2-mtd.git. I'll give David a chance to yell before
-3.14-rc1.
+> Brian
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
-Brian
+
+
+-- 
+Thanks,
+//richard
