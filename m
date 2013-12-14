@@ -1,27 +1,23 @@
-Received: from mail-pd0-x22b.google.com ([2607:f8b0:400e:c02::22b])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VrucF-0005eP-Ei
- for linux-mtd@lists.infradead.org; Sat, 14 Dec 2013 19:11:08 +0000
-Received: by mail-pd0-f171.google.com with SMTP id z10so3766386pdj.2
- for <linux-mtd@lists.infradead.org>; Sat, 14 Dec 2013 11:10:45 -0800 (PST)
-Date: Sat, 14 Dec 2013 11:10:31 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Subject: Re: [GIT PULL] MTD fixes for 3.13-rc
-Message-ID: <20131214191031.GA2913@norris-Latitude-E6410>
-References: <20131213074428.GA24650@norris-Latitude-E6410>
- <CA+55aFxM+fMw5trODzJouaqgewoLy06mxRcdvA5WPTw1=Gk4pw@mail.gmail.com>
- <20131214050315.GA2454@norris-Latitude-E6410>
- <CAFLxGvy-NXLJ1Gc_A8YOURqNSxZ5pkRicPeTmhu8REpEgTWvUg@mail.gmail.com>
+Message-ID: <52ACADEB.30307@ti.com>
+Date: Sat, 14 Dec 2013 14:13:47 -0500
+From: Santosh Shilimkar <santosh.shilimkar@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFLxGvy-NXLJ1Gc_A8YOURqNSxZ5pkRicPeTmhu8REpEgTWvUg@mail.gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Linux Kernel <linux-kernel@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>
+To: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+Subject: Re: [PATCH v3 1/2] memory: ti-aemif: introduce AEMIF driver
+References: <1386759570-29671-1-git-send-email-ivan.khoronzhuk@ti.com>
+ <1386759570-29671-2-git-send-email-ivan.khoronzhuk@ti.com>
+In-Reply-To: <1386759570-29671-2-git-send-email-ivan.khoronzhuk@ti.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ grygorii.strashko@ti.com, Russell King <linux@arm.linux.org.uk>,
+ Pawel Moll <pawel.moll@arm.com>, Stephen Warren <swarren@wwwdotorg.org>,
+ gregkh@linuxfoundation.org, Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ nsekhar@ti.com, Kumar Gala <galak@kernel.crashing.org>,
+ Rob Herring <rob.herring@calxeda.com>, linux-kernel@vger.kernel.org,
+ "\[initial author\] Murali Karicheri" <m-karicheri2@ti.com>,
+ linux-mtd@lists.infradead.org, Rob Landley <rob@landley.net>,
+ dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,21 +27,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Dec 14, 2013 at 12:59:55PM +0100, Richard Weinberger wrote:
-> On Sat, Dec 14, 2013 at 6:03 AM, Brian Norris <computersforpeace@gmail.com> wrote:
-> > On Fri, Dec 13, 2013 at 11:37:36AM -0800, Linus Torvalds wrote:
-> >> I do note that your pgp key still has very few signatures, and none of
-> >> them in my normal key ring. Any possibility that you might expand on
-> >> your signatures a bit?
-> >
-> > I'll see what I can do. dwmw2 offered to sign, but we're not exactly on
-> > the same continent AFAIK. I'll try to get out to another conference
-> > sometime soon.
+On Wednesday 11 December 2013 05:59 AM, Ivan Khoronzhuk wrote:
+> Add new AEMIF driver for EMIF16 Texas Instruments controller.
+> The EMIF16 module is intended to provide a glue-less interface to
+> a variety of asynchronous memory devices like ASRA M, NOR and NAND
+> memory. A total of 256M bytes of any of these memories can be
+> accessed at any given time via 4 chip selects with 64M byte access
+> per chip select.
 > 
-> Where are you located?
-> Maybe one of us is near you:
-> https://maps.google.com/maps/ms?ie=UTF&msa=0&msid=203700972965484840643.0004b223fd8be6d3e2d90
-
-Irvine, CA (50 miles outside Los Angeles)
-
-Brian
+> Synchronous memories such as DDR1 SD RAM, SDR SDRAM and Mobile SDR
+> are not supported.
+> 
+> This controller is used on SoCs like Davinci, Keysone2
+> 
+> Signed-off-by: [initial author] Murali Karicheri <m-karicheri2@ti.com>
+> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+> ---
+Acked-by: Santosh Shilimkar <santosh.shilimkar@ti.com>
