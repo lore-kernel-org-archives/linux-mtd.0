@@ -1,22 +1,16 @@
-Message-ID: <52ACAF0C.6060205@ti.com>
-Date: Sat, 14 Dec 2013 14:18:36 -0500
-From: Santosh Shilimkar <santosh.shilimkar@ti.com>
-MIME-Version: 1.0
-To: <dwmw2@infradead.org>
-Subject: Re: [PATCH v3 0/9] Reuse davinci-nand driver for Keystone arch
-References: <1386264358-9738-1-git-send-email-ivan.khoronzhuk@ti.com>
- <52A5F355.9020704@ti.com>
-In-Reply-To: <52A5F355.9020704@ti.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- grygorii.strashko@ti.com, Russell King <linux@arm.linux.org.uk>,
- Pawel Moll <pawel.moll@arm.com>, Stephen Warren <swarren@wwwdotorg.org>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@kernel.crashing.org>, Rob Herring <rob.herring@calxeda.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Rob Landley <rob@landley.net>, Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>,
- linux-arm-kernel@lists.infradead.org
+Received: from mail-ea0-x22a.google.com ([2a00:1450:4013:c01::22a])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VsGgU-0000yx-LU
+ for linux-mtd@lists.infradead.org; Sun, 15 Dec 2013 18:44:59 +0000
+Received: by mail-ea0-f170.google.com with SMTP id k10so1824602eaj.29
+ for <linux-mtd@lists.infradead.org>; Sun, 15 Dec 2013 10:44:33 -0800 (PST)
+From: Elie De Brauwer <eliedebrauwer@gmail.com>
+To: b32955@freescale.com, dwmw2@infradead.org, dedekind1@gmail.com,
+ computersforpeace@gmail.com
+Subject: [PATCH v2] mtd: gpmi: Bitflip support in erased regions
+Date: Sun, 15 Dec 2013 19:44:20 +0100
+Message-Id: <1387133061-6573-1-git-send-email-eliedebrauwer@gmail.com>
+Cc: Elie De Brauwer <eliedebrauwer@gmail.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,47 +20,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 09 December 2013 11:44 AM, Santosh Shilimkar wrote:
-> David,
-> 
-> On Thursday 05 December 2013 12:25 PM, Ivan Khoronzhuk wrote:
->> This series contains fixes and updates of Davinci nand driver in
->> order to reuse it for Keystone platform.
->>
->> v2..v3:
->> - mtd: nand: davinci: don't set timings if AEMIF is used
->> 	dropped, it would be replaced by alone patch
->> 	ARM: davinci: aemif: get rid of davinci-nand driver dependency on aemif
->>
->> v1..v2
->> The series is combination of two following series:
->> - Davinci nand driver fixes and updates:
->> https://lkml.org/lkml/2013/11/20/271
->> - Reuse davinci-nand driver for Keystone arch
->> https://lkml.org/lkml/2013/11/20/315
->>
->> - mtd: nand: davinci: extend description of bindings
->> 	clarified changeset description
->>
->> - mtd: nand: davinci: reuse driver for Keystone arch
->> 	removed "ti,keystone-nand" compatible from driver
->>
->> Ivan Khoronzhuk (9):
->>   mtd: nand: davinci: fix driver registration
->>   mtd: nand: davinci: return ENOMEM if memory allocation is failed
->>   mtd: nand: davinci: check required ti,davinci-chipselect property
->>   mtd: nand: davinci: simplify error handling
->>   mtd: nand: davinci: move bindings under mtd
->>   mtd: nand: davinci: extend description of bindings
->>   mtd: nand: davinci: adjust DT properties to MTD generic
->>   mtd: nand: davinci: reuse driver for Keystone arch
->>   mtd: nand: davinci: don't request AEMIF address range
->>
-> Can you please pick up the $subject series if you are happy
-> with it ?
-> It lets us re-use Davinci nand driver on Keystone SOCs.
-> 
-Ping..
+Hello All,
 
-regards,
-Santosh
+This is version 2 of my patch for gpmi-nand which corrects bitflips in 
+erased regions by correcting them in software.  Thanks to Huagn Shijie's
+feedback I added a 'fast'-path and a 'slow'-path for erased blocks. 
+Apparently the BCH's block's HW_BCH_STATUS0:ALLONES contains a bit which
+indicates if the last block consisted out of all ones or not. This allows
+us to easily discriminate between a read transaction of an erase block which 
+requires fixing and a read transaction which does not require fixing. 
+
+I did some benchmark testing (dd if=/dev/mtd1 of=/dev/null bs=1M) and 
+on my i.MX28 platform the performance of this patch is close to the 
+original version of the gpmi-nand driver (as currently present in 
+3.9 vanilla). While my original version of the patch where all erased 
+blocks where soft-corrected showed a 20% performance penalty. (One could
+argue the performance penalty is a non-issue since the upper layer should 
+be intelligent enough not to start reading empty pages, or at least not
+at a very high frequency).
+
+I'm currently still awaiting feedback of Huang Shijie regarding the setting
+for BM_BCH_MODE_ERASE_THRESHOLD. Which I currently set to bch strength, 
+since I think that from a regular block with bitflips the BCH block should 
+be able to correct up to this level.
+
+Feedback/comments welcome.
+
+
+Elie De Brauwer (1):
+  mtd: gpmi: Deal with bitflips in erased regions regions
+
+ drivers/mtd/nand/gpmi-nand/bch-regs.h  |    2 ++
+ drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |   17 +++++++++++++
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   43 +++++++++++++++++++++++++++++---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.h |    1 +
+ 4 files changed, 60 insertions(+), 3 deletions(-)
+
+-- 
+1.7.10.4
