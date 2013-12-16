@@ -1,21 +1,19 @@
-Received: from va3ehsobe004.messaging.microsoft.com ([216.32.180.14]
- helo=va3outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VsQHk-0000Na-IQ
- for linux-mtd@lists.infradead.org; Mon, 16 Dec 2013 05:00:05 +0000
-Date: Mon, 16 Dec 2013 12:30:41 +0800
 From: Huang Shijie <b32955@freescale.com>
-To: Elie De Brauwer <eliedebrauwer@gmail.com>
-Subject: Re: [PATCH v2] mtd: gpmi: Deal with bitflips in erased regions regions
-Message-ID: <20131216043040.GB27109@shlinux2.ap.freescale.net>
-References: <1387133061-6573-1-git-send-email-eliedebrauwer@gmail.com>
- <1387133061-6573-2-git-send-email-eliedebrauwer@gmail.com>
+To: <dwmw2@infradead.org>
+Subject: [PATCH v3 1/7] mtd: spi-nor: copy the SPI NOR commands to a new
+ header file
+Date: Mon, 16 Dec 2013 16:58:44 +0800
+Message-ID: <1387184330-14448-2-git-send-email-b32955@freescale.com>
+In-Reply-To: <1387184330-14448-1-git-send-email-b32955@freescale.com>
+References: <1387184330-14448-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1387133061-6573-2-git-send-email-eliedebrauwer@gmail.com>
-Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, dedekind1@gmail.com
+Content-Type: text/plain
+Cc: marex@denx.de, angus.clark@st.com, shawn.guo@linaro.org,
+ b44548@freescale.com, broonie@linaro.org, linux-doc@vger.kernel.org,
+ b18965@freescale.com, linux-spi@vger.kernel.org,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ pekon@ti.com, sourav.poddar@ti.com, computersforpeace@gmail.com,
+ lee.jones@linaro.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,180 +23,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Dec 15, 2013 at 07:44:21PM +0100, Elie De Brauwer wrote:
-> The BCH block typically used with a i.MX28 and GPMI block is only
-> able to correct bitflips on data actually streamed through the block.
-> When erasing a block the data does not stream through the BCH block
-> and therefore no ECC data is written to the NAND chip. This causes
-> gpmi_ecc_read_page to return failure as soon as a single non-1-bit is
-> found in an erased page. Typically causing problems at higher levels
-> (ubifs corrupted empty space warnings).
-> 
-> This patch configures the BCH block to mark a block as 'erased' if
-> no more than ecc_strength bitflips are found. Next HW_BCH_STATUS0:ALLONES
-> is used to check if the data read were all ones. If this was not
-> the case a slow path is entered where bitflips are counted and
-> corrected in software, allowing the upper layers to take proper actions.
-> 
-> Signed-off-by: Elie De Brauwer <eliedebrauwer@gmail.com>
-> Acked-by: Peter Korsgaard <peter@korsgaard.com>
-> ---
->  drivers/mtd/nand/gpmi-nand/bch-regs.h  |    2 ++
->  drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |   17 +++++++++++++
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   43 +++++++++++++++++++++++++++++---
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.h |    1 +
->  4 files changed, 60 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/gpmi-nand/bch-regs.h b/drivers/mtd/nand/gpmi-nand/bch-regs.h
-> index 588f537..a30502f 100644
-> --- a/drivers/mtd/nand/gpmi-nand/bch-regs.h
-> +++ b/drivers/mtd/nand/gpmi-nand/bch-regs.h
-> @@ -30,7 +30,9 @@
->  #define BM_BCH_CTRL_COMPLETE_IRQ		(1 << 0)
->  
->  #define HW_BCH_STATUS0				0x00000010
-> +#define BM_BCH_STATUS0_ALLONES_MASK		(1 << 4)
->  #define HW_BCH_MODE				0x00000020
-> +#define BM_BCH_MODE_ERASE_THRESHOLD_MASK	0xff
->  #define HW_BCH_ENCODEPTR			0x00000030
->  #define HW_BCH_DATAPTR				0x00000040
->  #define HW_BCH_METAPTR				0x00000050
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> index aaced29..4551a38 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> @@ -286,6 +286,13 @@ int bch_set_geometry(struct gpmi_nand_data *this)
->  			| BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(block_size, this),
->  			r->bch_regs + HW_BCH_FLASH0LAYOUT1);
->  
-> +	/*
-> +	 * Set the tolerance for bitflips when reading erased blocks
-> +	 * equal to the ecc_strength.
-> +	 */
-Please also add the following comment :
-   "We even detect the bitflips for SLC nand."
+This patch adds a new header :spi-nor.h,
+and copies all the SPI NOR commands and relative macros into this new header.
 
-> +	writel(bch_geo->ecc_strength & BM_BCH_MODE_ERASE_THRESHOLD_MASK,
-> +		r->bch_regs + HW_BCH_MODE);
-> +
+This hearder can be used by the m25p80.c and other spi-nor controller,
+such as Freescale's Quadspi.
 
-After discuss with the IC owner, we could set the bch_geo->gf_len here.
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+---
+ include/linux/mtd/spi-nor.h |   53 +++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 53 insertions(+), 0 deletions(-)
+ create mode 100644 include/linux/mtd/spi-nor.h
 
-The bch_geo->gf_len is 13 or 14 now.
-
-For the sake of safe, I suggest to set (bch_geo->gf_len / 2) for the ERASE_THRESHOLD.
-
-I think this value is enough for us.
-
-
->  	/* Set *all* chip selects to use layout 0. */
->  	writel(0, r->bch_regs + HW_BCH_LAYOUTSELECT);
->  
-> @@ -1094,6 +1101,16 @@ int gpmi_is_ready(struct gpmi_nand_data *this, unsigned chip)
->  	return reg & mask;
->  }
->  
-> +/* Returns 1 if the last transaction consisted only out of ones. */
-> +int gpmi_allones(struct gpmi_nand_data *this)
-> +{
-> +	struct resources *r = &this->resources;
-> +	uint32_t reg = readl(r->gpmi_regs + HW_BCH_STATUS0);
-please add a empty line here.
-> +	if (reg & BM_BCH_STATUS0_ALLONES_MASK)
-> +		return 1;
-> +	return 0;
-We can simplify the code to:
-	return reg & BM_BCH_STATUS0_ALLONES_MASK;
-
-> +}
-> +
->  static inline void set_dma_type(struct gpmi_nand_data *this,
->  					enum dma_ops_type type)
->  {
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> index dabbc14..82eac9b 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> @@ -1012,6 +1012,30 @@ static void block_mark_swapping(struct gpmi_nand_data *this,
->  	p[1] = (p[1] & mask) | (from_oob >> (8 - bit));
->  }
->  
-> +/*
-> + * Count the number of 0 bits in a supposed to be
-> + * erased region and correct them. Return the number
-> + * of bitflips or zero when the region was correct.
-> + */
-> +static unsigned int erased_sector_bitflips(unsigned char *data,
-> +					unsigned int chunk,
-> +					struct bch_geometry *geo)
-> +{
-> +	unsigned int flip_bits = 0;
-> +	int i;
-> +	int base = geo->ecc_chunk_size * chunk;
-> +
-> +	/* Count bitflips */
-> +	for (i = 0; i < geo->ecc_chunk_size; i++)
-> +		flip_bits += hweight8(~data[base + i]);
-> +
-> +	/* Correct bitflips by 0xFF'ing this chunk. */
-> +	if (flip_bits)
-> +		memset(&data[base], 0xFF, geo->ecc_chunk_size);
-> +
-> +	return flip_bits;
-> +}
-> +
->  static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
->  				uint8_t *buf, int oob_required, int page)
->  {
-> @@ -1023,6 +1047,7 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
->  	dma_addr_t    auxiliary_phys;
->  	unsigned int  i;
->  	unsigned char *status;
-> +	unsigned int  flips;
->  	unsigned int  max_bitflips = 0;
->  	int           ret;
->  
-> @@ -1057,15 +1082,27 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
->  	status = auxiliary_virt + nfc_geo->auxiliary_status_offset;
->  
->  	for (i = 0; i < nfc_geo->ecc_chunk_count; i++, status++) {
-> -		if ((*status == STATUS_GOOD) || (*status == STATUS_ERASED))
-> +		if (*status == STATUS_GOOD)
->  			continue;
->  
->  		if (*status == STATUS_UNCORRECTABLE) {
->  			mtd->ecc_stats.failed++;
->  			continue;
->  		}
-> -		mtd->ecc_stats.corrected += *status;
-> -		max_bitflips = max_t(unsigned int, max_bitflips, *status);
-> +
-> +		if (*status == STATUS_ERASED)
-> +			if (gpmi_allones(this))
-> +				continue;
-> +			else
-> +				/* Erased block with bitflips. */
-> +				flips = erased_sector_bitflips(payload_virt, i,
-> +							       nfc_geo);
-> +		else
-> +			/* BCH block corrected some errors for us. */
-> +			flips = *status;
-
-Please read the Documentation/CodeingStyle.
-The code should like this:
-  ........................................................
-		if (*status == STATUS_ERASED) {
-			if (gpmi_allones(this))
-				continue;
-			else
-				/* Erased block with bitflips. */
-				flips = erased_sector_bitflips(payload_virt, i,
-							       nfc_geo);
-		} else {
-			/* BCH block corrected some errors for us. */
-			flips = *status;
-		}
-  ........................................................
-		
-thanks
-Huang Shijie	
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+new file mode 100644
+index 0000000..ab2ea1e
+--- /dev/null
++++ b/include/linux/mtd/spi-nor.h
+@@ -0,0 +1,53 @@
++#ifndef __LINUX_MTD_SPI_NOR_H
++#define __LINUX_MTD_SPI_NOR_H
++
++/* Flash opcodes. */
++#define	OPCODE_WREN		0x06	/* Write enable */
++#define	OPCODE_RDSR		0x05	/* Read status register */
++#define	OPCODE_WRSR		0x01	/* Write status register 1 byte */
++#define	OPCODE_NORM_READ	0x03	/* Read data bytes (low frequency) */
++#define	OPCODE_FAST_READ	0x0b	/* Read data bytes (high frequency) */
++#define	OPCODE_QUAD_READ        0x6b    /* Read data bytes */
++#define	OPCODE_PP		0x02	/* Page program (up to 256 bytes) */
++#define	OPCODE_BE_4K		0x20	/* Erase 4KiB block */
++#define	OPCODE_BE_4K_PMC	0xd7	/* Erase 4KiB block on PMC chips */
++#define	OPCODE_BE_32K		0x52	/* Erase 32KiB block */
++#define	OPCODE_CHIP_ERASE	0xc7	/* Erase whole flash chip */
++#define	OPCODE_SE		0xd8	/* Sector erase (usually 64KiB) */
++#define	OPCODE_RDID		0x9f	/* Read JEDEC ID */
++#define	OPCODE_RDCR             0x35    /* Read configuration register */
++
++/* 4-byte address opcodes - used on Spansion and some Macronix flashes. */
++#define	OPCODE_NORM_READ_4B	0x13	/* Read data bytes (low frequency) */
++#define	OPCODE_FAST_READ_4B	0x0c	/* Read data bytes (high frequency) */
++#define	OPCODE_QUAD_READ_4B	0x6c    /* Read data bytes */
++#define	OPCODE_PP_4B		0x12	/* Page program (up to 256 bytes) */
++#define	OPCODE_SE_4B		0xdc	/* Sector erase (usually 64KiB) */
++
++/* Used for SST flashes only. */
++#define	OPCODE_BP		0x02	/* Byte program */
++#define	OPCODE_WRDI		0x04	/* Write disable */
++#define	OPCODE_AAI_WP		0xad	/* Auto address increment word program */
++
++/* Used for Macronix and Winbond flashes. */
++#define	OPCODE_EN4B		0xb7	/* Enter 4-byte mode */
++#define	OPCODE_EX4B		0xe9	/* Exit 4-byte mode */
++
++/* Used for Spansion flashes only. */
++#define	OPCODE_BRWR		0x17	/* Bank register write */
++
++/* Status Register bits. */
++#define	SR_WIP			1	/* Write in progress */
++#define	SR_WEL			2	/* Write enable latch */
++/* meaning of other SR_* bits may differ between vendors */
++#define	SR_BP0			4	/* Block protect 0 */
++#define	SR_BP1			8	/* Block protect 1 */
++#define	SR_BP2			0x10	/* Block protect 2 */
++#define	SR_SRWD			0x80	/* SR write protect */
++
++#define SR_QUAD_EN_MX           0x40    /* Macronix Quad I/O */
++
++/* Configuration Register bits. */
++#define CR_QUAD_EN_SPAN		0x2     /* Spansion Quad I/O */
++
++#endif
+-- 
+1.7.2.rc3
