@@ -1,31 +1,26 @@
-Received: from szxga02-in.huawei.com ([119.145.14.65])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VsPVA-0007Uf-Cb
- for linux-mtd@lists.infradead.org; Mon, 16 Dec 2013 04:10:34 +0000
-From: Caizhiyong <caizhiyong@hisilicon.com>
-To: Huang Shijie <b32955@freescale.com>
-Subject: RE: [PATCH] mtd: increase max page/OOB size to support 16K pagesize
- NAND
-Date: Mon, 16 Dec 2013 04:08:43 +0000
-Message-ID: <C3050A4DBA34F345975765E43127F10F25E47680@SZXEMA512-MBX.china.huawei.com>
-References: <C3050A4DBA34F345975765E43127F10F25E47455@SZXEMA512-MBX.china.huawei.com>
- <20131213080118.GC24650@norris-Latitude-E6410>
- <C3050A4DBA34F345975765E43127F10F25E47537@SZXEMA512-MBX.china.huawei.com>
- <20131213151138.GA1316@gmail.com>
- <C3050A4DBA34F345975765E43127F10F25E47627@SZXEMA512-MBX.china.huawei.com>
- <20131216030649.GA27109@shlinux2.ap.freescale.net>
-In-Reply-To: <20131216030649.GA27109@shlinux2.ap.freescale.net>
-Content-Language: zh-CN
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from mailout.micron.com ([137.201.242.129])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VsPsW-0008NL-HH
+ for linux-mtd@lists.infradead.org; Mon, 16 Dec 2013 04:34:01 +0000
+From: =?gb2312?B?UWkgV2FuZyDN9cbwIChxaXdhbmcp?= <qiwang@micron.com>
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: [PATCH 1/1]  MTD: UBI:  avoid program operation on  NOR flash after
+ erasure interrupted
+Date: Mon, 16 Dec 2013 04:33:31 +0000
+Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A770B8611@NTXXIAMBX02.xacn.micron.com>
+References: <71CF8D7F32C5C24C9CD1D0E02D52498A770B54B1@NTXXIAMBX02.xacn.micron.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A770B68A8@NTXXIAMBX02.xacn.micron.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A770B6F77@NTXXIAMBX02.xacn.micron.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A770B79C8@NTXXIAMBX02.xacn.micron.com>
+In-Reply-To: <71CF8D7F32C5C24C9CD1D0E02D52498A770B79C8@NTXXIAMBX02.xacn.micron.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Cc: "Wanglin \(Albert\)" <albert.wanglin@hisilicon.com>,
- David Woodhouse <David.Woodhouse@intel.com>, Artem
- Bityutskiy <artem.bityutskiy@linux.intel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Huang Shijie <shijie8@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: =?gb2312?B?UWkgV2FuZyDN9cbwIChxaXdhbmcp?= <qiwang@micron.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,50 +30,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> -----Original Message-----
-> From: Huang Shijie [mailto:b32955@freescale.com]
-> Sent: Monday, December 16, 2013 11:07 AM
-> To: Caizhiyong
-> Cc: Huang Shijie; Brian Norris; David Woodhouse; Quyaxin;
-> linux-kernel@vger.kernel.org; linux-mtd@lists.infradead.org; Artem Bityut=
-skiy;
-> Wanglin (Albert); David Woodhouse
-> Subject: Re: [PATCH] mtd: increase max page/OOB size to support 16K pages=
-ize NAND
->=20
-> On Mon, Dec 16, 2013 at 02:03:54AM +0000, Caizhiyong wrote:
-> > > >
-> > > > There are a lot of 16K page size NAND, they are used in android sys=
-tem.
-> > > >
-> > > > Many NAND need read retry and data randomization, kernel does not s=
-upport
-> this
-> > > feature.
-> > > Brian is adding the read-retry feature.
-> > >
-> > > I think the data randomization should be done by the hardware.
-> > > If we do it by software, it costs lot of the cpu cycles.
-> > >
-> > >
-> > > > Kernel also does not support synchronous NAND.
-> > >
-> > > The synchronous NAND should be supported by the nand controller drive=
-r,
-> > > not the kernel.
-> >
-> > Yes. Those feature should be support by NAND controller hardware and dr=
-iver.
-> > But the driver does not know what NAND should use those feature.
-> > Perhaps, the NAND id table, should add something.
-> We can get the synchronous info from the ONFI nand.
->=20
-> In actually, if you do not add this patch, i will change it too.
-> I have several 16K nand chips on my hands now. :)
-
-I have not found a good way to solve these problems. I expect your patch.
-
->=20
-> thanks
-> Huang Shijie
->=20
+DQpIaSBBcnRlbToNCkFzIHdlIHRhbGtlZCBpbiBtYWlsIGJlZm9yZSwgcGxlYXNlIGNoZWNrIG15
+IHBhdGNoIGFzIGJlbG93Og0KDQpGcm9tOiBRaSBXYW5nIDxxaXdhbmdAbWljcm9uLmNvbT4NCg0K
+bm9yX2VyYXNlX3ByZXBhcmUoKSB3aWxsIGJlIGNhbGxlZCBiZWZvcmUgZXJhc2UgYSBOT1IgZmxh
+c2gsIGl0IHdpbGwgcHJvZ3JhbSAnMCcNCmludG8gYSBibG9jayB0byBtYXJrIHRoaXMgYmxvY2su
+IEJ1dCBwcm9ncmFtIGRhdGEgaW50byBhIGVyYXN1cmUgaW50ZXJydXB0ZWQgYmxvY2sNCmNhbiBj
+YXVzZSBwcm9ncmFtIHRpbXRvdXQoc2V2ZXJhbCBtaW51dGVzIGF0IG1vc3QpIGVycm9yLCBjb3Vs
+ZCBpbXBhY3Qgb3RoZXIgDQpvcGVyYXRpb24gb24gTk9SIGZsYXNoLiBTbyBVQklGUyBjYW4gcmVh
+ZCB0aGlzIGJsb2NrIGZpcnN0IHRvIGF2b2lkIHVubmVlZGVkIA0KcHJvZ3JhbSBvcGVyYXRpb24u
+IA0KDQpUaGlzIHBhdGNoIHRyeSB0byBwdXQgcmVhZCBvcGVyYXRpb24gYXQgaGVhZCBvZiB3cml0
+ZSBvcGVyYXRpb24gaW4gDQpub3JfZXJhc2VfcHJlcGFyZSgpLCByZWFkIG91dCB0aGUgZGF0YS4g
+DQpJZiB0aGUgZGF0YSBpcyBhbHJlYWR5IGNvcnJ1cHQsIHRoZW4gbm8gbmVlZCB0byBwcm9ncmFt
+IGFueSBkYXRhIGludG8gdGhpcyBibG9jaywgDQpqdXN0IGdvIHRvIGVyYXNlIHRoaXMgYmxvY2su
+DQoNClNpZ25lZC1vZmYtYnk6IFFpIFdhbmcgPHFpd2FuZ0BxaXdhbmdAbWljcm9uLmNvbT4NCi0t
+LQ0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3ViaS9pby5jIGIvZHJpdmVycy9tdGQvdWJpL2lv
+LmMNCmluZGV4IGJmNzlkZWYuLjBhNjM0M2QgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL210ZC91Ymkv
+aW8uYw0KKysrIGIvZHJpdmVycy9tdGQvdWJpL2lvLmMNCkBAIC00OTksNiArNDk5LDcgQEAgc3Rh
+dGljIGludCBub3JfZXJhc2VfcHJlcGFyZShzdHJ1Y3QgdWJpX2RldmljZSAqdWJpLCBpbnQgcG51
+bSkNCiAJc2l6ZV90IHdyaXR0ZW47DQogCWxvZmZfdCBhZGRyOw0KIAl1aW50MzJfdCBkYXRhID0g
+MDsNCisJc3RydWN0IHViaV9lY19oZHIgZWNfaGRyOw0KIAkvKg0KIAkgKiBOb3RlLCB3ZSBjYW5u
+b3QgZ2VuZXJhbGx5IGRlZmluZSBWSUQgaGVhZGVyIGJ1ZmZlcnMgb24gc3RhY2ssDQogCSAqIGJl
+Y2F1c2Ugb2YgdGhlIHdheSB3ZSBkZWFsIHdpdGggdGhlc2UgYnVmZmVycyAoc2VlIHRoZSBoZWFk
+ZXINCkBAIC01MDksNDkgKzUxMCwzOCBAQCBzdGF0aWMgaW50IG5vcl9lcmFzZV9wcmVwYXJlKHN0
+cnVjdCB1YmlfZGV2aWNlICp1YmksIGludCBwbnVtKQ0KIAlzdHJ1Y3QgdWJpX3ZpZF9oZHIgdmlk
+X2hkcjsNCiANCiAJLyoNCisJICogSWYgVklEIG9yIEVDIGlzIHZhbGlkLCBuZWVkIHRvIGNvcnJ1
+cHQgaXQgYmVmb3JlIGVyYXNlIG9wZXJhdGlvbi4gIA0KIAkgKiBJdCBpcyBpbXBvcnRhbnQgdG8g
+Zmlyc3QgaW52YWxpZGF0ZSB0aGUgRUMgaGVhZGVyLCBhbmQgdGhlbiB0aGUgVklEDQogCSAqIGhl
+YWRlci4gT3RoZXJ3aXNlIGEgcG93ZXIgY3V0IG1heSBsZWFkIHRvIHZhbGlkIEVDIGhlYWRlciBh
+bmQNCiAJICogaW52YWxpZCBWSUQgaGVhZGVyLCBpbiB3aGljaCBjYXNlIFVCSSB3aWxsIHRyZWF0
+IHRoaXMgUEVCIGFzDQogCSAqIGNvcnJ1cHRlZCBhbmQgd2lsbCB0cnkgdG8gcHJlc2VydmUgaXQs
+IGFuZCBwcmludCBzY2FyeSB3YXJuaW5ncy4NCiAJICovDQogCWFkZHIgPSAobG9mZl90KXBudW0g
+KiB1YmktPnBlYl9zaXplOw0KLQllcnIgPSBtdGRfd3JpdGUodWJpLT5tdGQsIGFkZHIsIDQsICZ3
+cml0dGVuLCAodm9pZCAqKSZkYXRhKTsNCi0JaWYgKCFlcnIpIHsNCi0JCWFkZHIgKz0gdWJpLT52
+aWRfaGRyX2Fsb2Zmc2V0Ow0KLQkJZXJyID0gbXRkX3dyaXRlKHViaS0+bXRkLCBhZGRyLCA0LCAm
+d3JpdHRlbiwgKHZvaWQgKikmZGF0YSk7DQotCQlpZiAoIWVycikNCi0JCQlyZXR1cm4gMDsNCisJ
+ZXJyID0gdWJpX2lvX3JlYWRfZWNfaGRyKHViaSwgcG51bSwgJmVjX2hkciwgMCk7DQorCWlmIChl
+cnIgIT0gVUJJX0lPX0JBRF9IRFJfRUJBRE1TRyAmJiBlcnIgIT0gVUJJX0lPX0JBRF9IRFIgJiYN
+CisJICAgIGVyciAhPSBVQklfSU9fRkYpew0KKwkJZXJyMSA9IG10ZF93cml0ZSh1YmktPm10ZCwg
+YWRkciwgNCwgJndyaXR0ZW4sICh2b2lkICopJmRhdGEpOw0KKwkJaWYoZXJyMSkNCisJCQlnb3Rv
+IGVycm9yOw0KIAl9DQogDQotCS8qDQotCSAqIFdlIGZhaWxlZCB0byB3cml0ZSB0byB0aGUgbWVk
+aWEuIFRoaXMgd2FzIG9ic2VydmVkIHdpdGggU3BhbnNpb24NCi0JICogUzI5R0w1MTJOIE5PUiBm
+bGFzaC4gTW9zdCBwcm9iYWJseSB0aGUgcHJldmlvdXNseSBlcmFzZWJsb2NrIGVyYXN1cmUNCi0J
+ICogd2FzIGludGVycnVwdGVkIGF0IGEgdmVyeSBpbmFwcHJvcHJpYXRlIG1vbWVudCwgc28gaXQg
+YmVjYW1lDQotCSAqIHVud3JpdGFibGUuIEluIHRoaXMgY2FzZSB3ZSBwcm9iYWJseSBhbnl3YXkg
+aGF2ZSBnYXJiYWdlIGluIHRoaXMNCi0JICogUEVCLg0KLQkgKi8NCi0JZXJyMSA9IHViaV9pb19y
+ZWFkX3ZpZF9oZHIodWJpLCBwbnVtLCAmdmlkX2hkciwgMCk7DQotCWlmIChlcnIxID09IFVCSV9J
+T19CQURfSERSX0VCQURNU0cgfHwgZXJyMSA9PSBVQklfSU9fQkFEX0hEUiB8fA0KLQkgICAgZXJy
+MSA9PSBVQklfSU9fRkYpIHsNCi0JCXN0cnVjdCB1YmlfZWNfaGRyIGVjX2hkcjsNCi0NCi0JCWVy
+cjEgPSB1YmlfaW9fcmVhZF9lY19oZHIodWJpLCBwbnVtLCAmZWNfaGRyLCAwKTsNCi0JCWlmIChl
+cnIxID09IFVCSV9JT19CQURfSERSX0VCQURNU0cgfHwgZXJyMSA9PSBVQklfSU9fQkFEX0hEUiB8
+fA0KLQkJICAgIGVycjEgPT0gVUJJX0lPX0ZGKQ0KLQkJCS8qDQotCQkJICogQm90aCBWSUQgYW5k
+IEVDIGhlYWRlcnMgYXJlIGNvcnJ1cHRlZCwgc28gd2UgY2FuDQotCQkJICogc2FmZWx5IGVyYXNl
+IHRoaXMgUEVCIGFuZCBub3QgYWZyYWlkIHRoYXQgaXQgd2lsbCBiZQ0KLQkJCSAqIHRyZWF0ZWQg
+YXMgYSB2YWxpZCBQRUIgaW4gY2FzZSBvZiBhbiB1bmNsZWFuIHJlYm9vdC4NCi0JCQkgKi8NCi0J
+CQlyZXR1cm4gMDsNCisJZXJyID0gdWJpX2lvX3JlYWRfdmlkX2hkcih1YmksIHBudW0sICZ2aWRf
+aGRyLCAwKTsNCisJaWYgKGVyciAhPSBVQklfSU9fQkFEX0hEUl9FQkFETVNHICYmIGVyciAhPSBV
+QklfSU9fQkFEX0hEUiAmJg0KKwkgICAgZXJyICE9IFVCSV9JT19GRil7DQorCSAgICAJYWRkciAr
+PSB1YmktPnZpZF9oZHJfYWxvZmZzZXQ7DQorCQllcnIxID0gbXRkX3dyaXRlKHViaS0+bXRkLCBh
+ZGRyLCA0LCAmd3JpdHRlbiwgKHZvaWQgKikmZGF0YSk7DQorCQlpZiAoZXJyMSkNCisJCQlnb3Rv
+IGVycm9yOwkNCiAJfQ0KKwlyZXR1cm4gMDsNCiANCitlcnJvcjoNCiAJLyoNCi0JICogVGhlIFBF
+QiBjb250YWlucyBhIHZhbGlkIFZJRCBoZWFkZXIsIGJ1dCB3ZSBjYW5ub3QgaW52YWxpZGF0ZSBp
+dC4NCisJICogVGhlIFBFQiBjb250YWlucyBhIHZhbGlkIFZJRCBvciBFQyBoZWFkZXIsIGJ1dCB3
+ZSBjYW5ub3QgaW52YWxpZGF0ZSBpdC4NCiAJICogU3VwcG9zZWRseSB0aGUgZmxhc2ggbWVkaWEg
+b3IgdGhlIGRyaXZlciBpcyBzY3Jld2VkIHVwLCBzbyByZXR1cm4gYW4NCiAJICogZXJyb3IuDQog
+CSAqLw0KLQl1YmlfZXJyKCJjYW5ub3QgaW52YWxpZGF0ZSBQRUIgJWQsIHdyaXRlIHJldHVybmVk
+ICVkIHJlYWQgcmV0dXJuZWQgJWQiLA0KKwl1YmlfZXJyKCJjYW5ub3QgaW52YWxpZGF0ZSBQRUIg
+JWQsIHJlYWQgcmV0dXJuZWQgJWQgd3JpdGUgcmV0dXJuZWQgJWQiLA0KIAkJcG51bSwgZXJyLCBl
+cnIxKTsNCiAJdWJpX2R1bXBfZmxhc2godWJpLCBwbnVtLCAwLCB1YmktPnBlYl9zaXplKTsNCiAJ
+cmV0dXJuIC1FSU87DQotLS0NCg0KSSBoYXZlIHRlc3RlZCB0aGlzIHBhdGNoIG9uIE1pY3JvbiBO
+T1IgZmxhc2gsIHBhcnQgbnVtYmVyIGlzo7pKUzI4RjUxMk0yOUVXSEEuDQpJZiBoYXZlIGFueSBx
+dWVzdGlvbnMsIHBsZWFzZSBsZXQgbWUga25vdy4gDQpUaGFuayB5b3UNCg0KQmVzdCBSZWdhcmRz
+LCANClFpIFdhbmcgzfXG8A0KRVNHIEFQQUMgQUUgDQpUZWw6IDg2LTAyMS0zODk5NzE1OA0KTW9i
+aWxlOiA4Ni0xNTIwMTk1ODIwMg0KRW1haWw6IHFpd2FuZ0BtaWNyb24uY29tDQpBZGRyZXNzOiBO
+byA2MDEgRmFzYWkgUmQsIFB1ZG9uZywgU2hhbmdoYWksIENoaW5hLCAyMDAxMzENCg==
