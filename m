@@ -1,26 +1,21 @@
-Received: from mailout.micron.com ([137.201.242.129])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VsPsW-0008NL-HH
- for linux-mtd@lists.infradead.org; Mon, 16 Dec 2013 04:34:01 +0000
-From: =?gb2312?B?UWkgV2FuZyDN9cbwIChxaXdhbmcp?= <qiwang@micron.com>
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: [PATCH 1/1]  MTD: UBI:  avoid program operation on  NOR flash after
- erasure interrupted
-Date: Mon, 16 Dec 2013 04:33:31 +0000
-Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A770B8611@NTXXIAMBX02.xacn.micron.com>
-References: <71CF8D7F32C5C24C9CD1D0E02D52498A770B54B1@NTXXIAMBX02.xacn.micron.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A770B68A8@NTXXIAMBX02.xacn.micron.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A770B6F77@NTXXIAMBX02.xacn.micron.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A770B79C8@NTXXIAMBX02.xacn.micron.com>
-In-Reply-To: <71CF8D7F32C5C24C9CD1D0E02D52498A770B79C8@NTXXIAMBX02.xacn.micron.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+Received: from va3ehsobe004.messaging.microsoft.com ([216.32.180.14]
+ helo=va3outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VsQHk-0000Na-IQ
+ for linux-mtd@lists.infradead.org; Mon, 16 Dec 2013 05:00:05 +0000
+Date: Mon, 16 Dec 2013 12:30:41 +0800
+From: Huang Shijie <b32955@freescale.com>
+To: Elie De Brauwer <eliedebrauwer@gmail.com>
+Subject: Re: [PATCH v2] mtd: gpmi: Deal with bitflips in erased regions regions
+Message-ID: <20131216043040.GB27109@shlinux2.ap.freescale.net>
+References: <1387133061-6573-1-git-send-email-eliedebrauwer@gmail.com>
+ <1387133061-6573-2-git-send-email-eliedebrauwer@gmail.com>
 MIME-Version: 1.0
-Cc: =?gb2312?B?UWkgV2FuZyDN9cbwIChxaXdhbmcp?= <qiwang@micron.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1387133061-6573-2-git-send-email-eliedebrauwer@gmail.com>
+Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,76 +25,180 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQpIaSBBcnRlbToNCkFzIHdlIHRhbGtlZCBpbiBtYWlsIGJlZm9yZSwgcGxlYXNlIGNoZWNrIG15
-IHBhdGNoIGFzIGJlbG93Og0KDQpGcm9tOiBRaSBXYW5nIDxxaXdhbmdAbWljcm9uLmNvbT4NCg0K
-bm9yX2VyYXNlX3ByZXBhcmUoKSB3aWxsIGJlIGNhbGxlZCBiZWZvcmUgZXJhc2UgYSBOT1IgZmxh
-c2gsIGl0IHdpbGwgcHJvZ3JhbSAnMCcNCmludG8gYSBibG9jayB0byBtYXJrIHRoaXMgYmxvY2su
-IEJ1dCBwcm9ncmFtIGRhdGEgaW50byBhIGVyYXN1cmUgaW50ZXJydXB0ZWQgYmxvY2sNCmNhbiBj
-YXVzZSBwcm9ncmFtIHRpbXRvdXQoc2V2ZXJhbCBtaW51dGVzIGF0IG1vc3QpIGVycm9yLCBjb3Vs
-ZCBpbXBhY3Qgb3RoZXIgDQpvcGVyYXRpb24gb24gTk9SIGZsYXNoLiBTbyBVQklGUyBjYW4gcmVh
-ZCB0aGlzIGJsb2NrIGZpcnN0IHRvIGF2b2lkIHVubmVlZGVkIA0KcHJvZ3JhbSBvcGVyYXRpb24u
-IA0KDQpUaGlzIHBhdGNoIHRyeSB0byBwdXQgcmVhZCBvcGVyYXRpb24gYXQgaGVhZCBvZiB3cml0
-ZSBvcGVyYXRpb24gaW4gDQpub3JfZXJhc2VfcHJlcGFyZSgpLCByZWFkIG91dCB0aGUgZGF0YS4g
-DQpJZiB0aGUgZGF0YSBpcyBhbHJlYWR5IGNvcnJ1cHQsIHRoZW4gbm8gbmVlZCB0byBwcm9ncmFt
-IGFueSBkYXRhIGludG8gdGhpcyBibG9jaywgDQpqdXN0IGdvIHRvIGVyYXNlIHRoaXMgYmxvY2su
-DQoNClNpZ25lZC1vZmYtYnk6IFFpIFdhbmcgPHFpd2FuZ0BxaXdhbmdAbWljcm9uLmNvbT4NCi0t
-LQ0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3ViaS9pby5jIGIvZHJpdmVycy9tdGQvdWJpL2lv
-LmMNCmluZGV4IGJmNzlkZWYuLjBhNjM0M2QgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL210ZC91Ymkv
-aW8uYw0KKysrIGIvZHJpdmVycy9tdGQvdWJpL2lvLmMNCkBAIC00OTksNiArNDk5LDcgQEAgc3Rh
-dGljIGludCBub3JfZXJhc2VfcHJlcGFyZShzdHJ1Y3QgdWJpX2RldmljZSAqdWJpLCBpbnQgcG51
-bSkNCiAJc2l6ZV90IHdyaXR0ZW47DQogCWxvZmZfdCBhZGRyOw0KIAl1aW50MzJfdCBkYXRhID0g
-MDsNCisJc3RydWN0IHViaV9lY19oZHIgZWNfaGRyOw0KIAkvKg0KIAkgKiBOb3RlLCB3ZSBjYW5u
-b3QgZ2VuZXJhbGx5IGRlZmluZSBWSUQgaGVhZGVyIGJ1ZmZlcnMgb24gc3RhY2ssDQogCSAqIGJl
-Y2F1c2Ugb2YgdGhlIHdheSB3ZSBkZWFsIHdpdGggdGhlc2UgYnVmZmVycyAoc2VlIHRoZSBoZWFk
-ZXINCkBAIC01MDksNDkgKzUxMCwzOCBAQCBzdGF0aWMgaW50IG5vcl9lcmFzZV9wcmVwYXJlKHN0
-cnVjdCB1YmlfZGV2aWNlICp1YmksIGludCBwbnVtKQ0KIAlzdHJ1Y3QgdWJpX3ZpZF9oZHIgdmlk
-X2hkcjsNCiANCiAJLyoNCisJICogSWYgVklEIG9yIEVDIGlzIHZhbGlkLCBuZWVkIHRvIGNvcnJ1
-cHQgaXQgYmVmb3JlIGVyYXNlIG9wZXJhdGlvbi4gIA0KIAkgKiBJdCBpcyBpbXBvcnRhbnQgdG8g
-Zmlyc3QgaW52YWxpZGF0ZSB0aGUgRUMgaGVhZGVyLCBhbmQgdGhlbiB0aGUgVklEDQogCSAqIGhl
-YWRlci4gT3RoZXJ3aXNlIGEgcG93ZXIgY3V0IG1heSBsZWFkIHRvIHZhbGlkIEVDIGhlYWRlciBh
-bmQNCiAJICogaW52YWxpZCBWSUQgaGVhZGVyLCBpbiB3aGljaCBjYXNlIFVCSSB3aWxsIHRyZWF0
-IHRoaXMgUEVCIGFzDQogCSAqIGNvcnJ1cHRlZCBhbmQgd2lsbCB0cnkgdG8gcHJlc2VydmUgaXQs
-IGFuZCBwcmludCBzY2FyeSB3YXJuaW5ncy4NCiAJICovDQogCWFkZHIgPSAobG9mZl90KXBudW0g
-KiB1YmktPnBlYl9zaXplOw0KLQllcnIgPSBtdGRfd3JpdGUodWJpLT5tdGQsIGFkZHIsIDQsICZ3
-cml0dGVuLCAodm9pZCAqKSZkYXRhKTsNCi0JaWYgKCFlcnIpIHsNCi0JCWFkZHIgKz0gdWJpLT52
-aWRfaGRyX2Fsb2Zmc2V0Ow0KLQkJZXJyID0gbXRkX3dyaXRlKHViaS0+bXRkLCBhZGRyLCA0LCAm
-d3JpdHRlbiwgKHZvaWQgKikmZGF0YSk7DQotCQlpZiAoIWVycikNCi0JCQlyZXR1cm4gMDsNCisJ
-ZXJyID0gdWJpX2lvX3JlYWRfZWNfaGRyKHViaSwgcG51bSwgJmVjX2hkciwgMCk7DQorCWlmIChl
-cnIgIT0gVUJJX0lPX0JBRF9IRFJfRUJBRE1TRyAmJiBlcnIgIT0gVUJJX0lPX0JBRF9IRFIgJiYN
-CisJICAgIGVyciAhPSBVQklfSU9fRkYpew0KKwkJZXJyMSA9IG10ZF93cml0ZSh1YmktPm10ZCwg
-YWRkciwgNCwgJndyaXR0ZW4sICh2b2lkICopJmRhdGEpOw0KKwkJaWYoZXJyMSkNCisJCQlnb3Rv
-IGVycm9yOw0KIAl9DQogDQotCS8qDQotCSAqIFdlIGZhaWxlZCB0byB3cml0ZSB0byB0aGUgbWVk
-aWEuIFRoaXMgd2FzIG9ic2VydmVkIHdpdGggU3BhbnNpb24NCi0JICogUzI5R0w1MTJOIE5PUiBm
-bGFzaC4gTW9zdCBwcm9iYWJseSB0aGUgcHJldmlvdXNseSBlcmFzZWJsb2NrIGVyYXN1cmUNCi0J
-ICogd2FzIGludGVycnVwdGVkIGF0IGEgdmVyeSBpbmFwcHJvcHJpYXRlIG1vbWVudCwgc28gaXQg
-YmVjYW1lDQotCSAqIHVud3JpdGFibGUuIEluIHRoaXMgY2FzZSB3ZSBwcm9iYWJseSBhbnl3YXkg
-aGF2ZSBnYXJiYWdlIGluIHRoaXMNCi0JICogUEVCLg0KLQkgKi8NCi0JZXJyMSA9IHViaV9pb19y
-ZWFkX3ZpZF9oZHIodWJpLCBwbnVtLCAmdmlkX2hkciwgMCk7DQotCWlmIChlcnIxID09IFVCSV9J
-T19CQURfSERSX0VCQURNU0cgfHwgZXJyMSA9PSBVQklfSU9fQkFEX0hEUiB8fA0KLQkgICAgZXJy
-MSA9PSBVQklfSU9fRkYpIHsNCi0JCXN0cnVjdCB1YmlfZWNfaGRyIGVjX2hkcjsNCi0NCi0JCWVy
-cjEgPSB1YmlfaW9fcmVhZF9lY19oZHIodWJpLCBwbnVtLCAmZWNfaGRyLCAwKTsNCi0JCWlmIChl
-cnIxID09IFVCSV9JT19CQURfSERSX0VCQURNU0cgfHwgZXJyMSA9PSBVQklfSU9fQkFEX0hEUiB8
-fA0KLQkJICAgIGVycjEgPT0gVUJJX0lPX0ZGKQ0KLQkJCS8qDQotCQkJICogQm90aCBWSUQgYW5k
-IEVDIGhlYWRlcnMgYXJlIGNvcnJ1cHRlZCwgc28gd2UgY2FuDQotCQkJICogc2FmZWx5IGVyYXNl
-IHRoaXMgUEVCIGFuZCBub3QgYWZyYWlkIHRoYXQgaXQgd2lsbCBiZQ0KLQkJCSAqIHRyZWF0ZWQg
-YXMgYSB2YWxpZCBQRUIgaW4gY2FzZSBvZiBhbiB1bmNsZWFuIHJlYm9vdC4NCi0JCQkgKi8NCi0J
-CQlyZXR1cm4gMDsNCisJZXJyID0gdWJpX2lvX3JlYWRfdmlkX2hkcih1YmksIHBudW0sICZ2aWRf
-aGRyLCAwKTsNCisJaWYgKGVyciAhPSBVQklfSU9fQkFEX0hEUl9FQkFETVNHICYmIGVyciAhPSBV
-QklfSU9fQkFEX0hEUiAmJg0KKwkgICAgZXJyICE9IFVCSV9JT19GRil7DQorCSAgICAJYWRkciAr
-PSB1YmktPnZpZF9oZHJfYWxvZmZzZXQ7DQorCQllcnIxID0gbXRkX3dyaXRlKHViaS0+bXRkLCBh
-ZGRyLCA0LCAmd3JpdHRlbiwgKHZvaWQgKikmZGF0YSk7DQorCQlpZiAoZXJyMSkNCisJCQlnb3Rv
-IGVycm9yOwkNCiAJfQ0KKwlyZXR1cm4gMDsNCiANCitlcnJvcjoNCiAJLyoNCi0JICogVGhlIFBF
-QiBjb250YWlucyBhIHZhbGlkIFZJRCBoZWFkZXIsIGJ1dCB3ZSBjYW5ub3QgaW52YWxpZGF0ZSBp
-dC4NCisJICogVGhlIFBFQiBjb250YWlucyBhIHZhbGlkIFZJRCBvciBFQyBoZWFkZXIsIGJ1dCB3
-ZSBjYW5ub3QgaW52YWxpZGF0ZSBpdC4NCiAJICogU3VwcG9zZWRseSB0aGUgZmxhc2ggbWVkaWEg
-b3IgdGhlIGRyaXZlciBpcyBzY3Jld2VkIHVwLCBzbyByZXR1cm4gYW4NCiAJICogZXJyb3IuDQog
-CSAqLw0KLQl1YmlfZXJyKCJjYW5ub3QgaW52YWxpZGF0ZSBQRUIgJWQsIHdyaXRlIHJldHVybmVk
-ICVkIHJlYWQgcmV0dXJuZWQgJWQiLA0KKwl1YmlfZXJyKCJjYW5ub3QgaW52YWxpZGF0ZSBQRUIg
-JWQsIHJlYWQgcmV0dXJuZWQgJWQgd3JpdGUgcmV0dXJuZWQgJWQiLA0KIAkJcG51bSwgZXJyLCBl
-cnIxKTsNCiAJdWJpX2R1bXBfZmxhc2godWJpLCBwbnVtLCAwLCB1YmktPnBlYl9zaXplKTsNCiAJ
-cmV0dXJuIC1FSU87DQotLS0NCg0KSSBoYXZlIHRlc3RlZCB0aGlzIHBhdGNoIG9uIE1pY3JvbiBO
-T1IgZmxhc2gsIHBhcnQgbnVtYmVyIGlzo7pKUzI4RjUxMk0yOUVXSEEuDQpJZiBoYXZlIGFueSBx
-dWVzdGlvbnMsIHBsZWFzZSBsZXQgbWUga25vdy4gDQpUaGFuayB5b3UNCg0KQmVzdCBSZWdhcmRz
-LCANClFpIFdhbmcgzfXG8A0KRVNHIEFQQUMgQUUgDQpUZWw6IDg2LTAyMS0zODk5NzE1OA0KTW9i
-aWxlOiA4Ni0xNTIwMTk1ODIwMg0KRW1haWw6IHFpd2FuZ0BtaWNyb24uY29tDQpBZGRyZXNzOiBO
-byA2MDEgRmFzYWkgUmQsIFB1ZG9uZywgU2hhbmdoYWksIENoaW5hLCAyMDAxMzENCg==
+On Sun, Dec 15, 2013 at 07:44:21PM +0100, Elie De Brauwer wrote:
+> The BCH block typically used with a i.MX28 and GPMI block is only
+> able to correct bitflips on data actually streamed through the block.
+> When erasing a block the data does not stream through the BCH block
+> and therefore no ECC data is written to the NAND chip. This causes
+> gpmi_ecc_read_page to return failure as soon as a single non-1-bit is
+> found in an erased page. Typically causing problems at higher levels
+> (ubifs corrupted empty space warnings).
+> 
+> This patch configures the BCH block to mark a block as 'erased' if
+> no more than ecc_strength bitflips are found. Next HW_BCH_STATUS0:ALLONES
+> is used to check if the data read were all ones. If this was not
+> the case a slow path is entered where bitflips are counted and
+> corrected in software, allowing the upper layers to take proper actions.
+> 
+> Signed-off-by: Elie De Brauwer <eliedebrauwer@gmail.com>
+> Acked-by: Peter Korsgaard <peter@korsgaard.com>
+> ---
+>  drivers/mtd/nand/gpmi-nand/bch-regs.h  |    2 ++
+>  drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |   17 +++++++++++++
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   43 +++++++++++++++++++++++++++++---
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.h |    1 +
+>  4 files changed, 60 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/gpmi-nand/bch-regs.h b/drivers/mtd/nand/gpmi-nand/bch-regs.h
+> index 588f537..a30502f 100644
+> --- a/drivers/mtd/nand/gpmi-nand/bch-regs.h
+> +++ b/drivers/mtd/nand/gpmi-nand/bch-regs.h
+> @@ -30,7 +30,9 @@
+>  #define BM_BCH_CTRL_COMPLETE_IRQ		(1 << 0)
+>  
+>  #define HW_BCH_STATUS0				0x00000010
+> +#define BM_BCH_STATUS0_ALLONES_MASK		(1 << 4)
+>  #define HW_BCH_MODE				0x00000020
+> +#define BM_BCH_MODE_ERASE_THRESHOLD_MASK	0xff
+>  #define HW_BCH_ENCODEPTR			0x00000030
+>  #define HW_BCH_DATAPTR				0x00000040
+>  #define HW_BCH_METAPTR				0x00000050
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+> index aaced29..4551a38 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+> @@ -286,6 +286,13 @@ int bch_set_geometry(struct gpmi_nand_data *this)
+>  			| BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(block_size, this),
+>  			r->bch_regs + HW_BCH_FLASH0LAYOUT1);
+>  
+> +	/*
+> +	 * Set the tolerance for bitflips when reading erased blocks
+> +	 * equal to the ecc_strength.
+> +	 */
+Please also add the following comment :
+   "We even detect the bitflips for SLC nand."
+
+> +	writel(bch_geo->ecc_strength & BM_BCH_MODE_ERASE_THRESHOLD_MASK,
+> +		r->bch_regs + HW_BCH_MODE);
+> +
+
+After discuss with the IC owner, we could set the bch_geo->gf_len here.
+
+The bch_geo->gf_len is 13 or 14 now.
+
+For the sake of safe, I suggest to set (bch_geo->gf_len / 2) for the ERASE_THRESHOLD.
+
+I think this value is enough for us.
+
+
+>  	/* Set *all* chip selects to use layout 0. */
+>  	writel(0, r->bch_regs + HW_BCH_LAYOUTSELECT);
+>  
+> @@ -1094,6 +1101,16 @@ int gpmi_is_ready(struct gpmi_nand_data *this, unsigned chip)
+>  	return reg & mask;
+>  }
+>  
+> +/* Returns 1 if the last transaction consisted only out of ones. */
+> +int gpmi_allones(struct gpmi_nand_data *this)
+> +{
+> +	struct resources *r = &this->resources;
+> +	uint32_t reg = readl(r->gpmi_regs + HW_BCH_STATUS0);
+please add a empty line here.
+> +	if (reg & BM_BCH_STATUS0_ALLONES_MASK)
+> +		return 1;
+> +	return 0;
+We can simplify the code to:
+	return reg & BM_BCH_STATUS0_ALLONES_MASK;
+
+> +}
+> +
+>  static inline void set_dma_type(struct gpmi_nand_data *this,
+>  					enum dma_ops_type type)
+>  {
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> index dabbc14..82eac9b 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> @@ -1012,6 +1012,30 @@ static void block_mark_swapping(struct gpmi_nand_data *this,
+>  	p[1] = (p[1] & mask) | (from_oob >> (8 - bit));
+>  }
+>  
+> +/*
+> + * Count the number of 0 bits in a supposed to be
+> + * erased region and correct them. Return the number
+> + * of bitflips or zero when the region was correct.
+> + */
+> +static unsigned int erased_sector_bitflips(unsigned char *data,
+> +					unsigned int chunk,
+> +					struct bch_geometry *geo)
+> +{
+> +	unsigned int flip_bits = 0;
+> +	int i;
+> +	int base = geo->ecc_chunk_size * chunk;
+> +
+> +	/* Count bitflips */
+> +	for (i = 0; i < geo->ecc_chunk_size; i++)
+> +		flip_bits += hweight8(~data[base + i]);
+> +
+> +	/* Correct bitflips by 0xFF'ing this chunk. */
+> +	if (flip_bits)
+> +		memset(&data[base], 0xFF, geo->ecc_chunk_size);
+> +
+> +	return flip_bits;
+> +}
+> +
+>  static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+>  				uint8_t *buf, int oob_required, int page)
+>  {
+> @@ -1023,6 +1047,7 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+>  	dma_addr_t    auxiliary_phys;
+>  	unsigned int  i;
+>  	unsigned char *status;
+> +	unsigned int  flips;
+>  	unsigned int  max_bitflips = 0;
+>  	int           ret;
+>  
+> @@ -1057,15 +1082,27 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+>  	status = auxiliary_virt + nfc_geo->auxiliary_status_offset;
+>  
+>  	for (i = 0; i < nfc_geo->ecc_chunk_count; i++, status++) {
+> -		if ((*status == STATUS_GOOD) || (*status == STATUS_ERASED))
+> +		if (*status == STATUS_GOOD)
+>  			continue;
+>  
+>  		if (*status == STATUS_UNCORRECTABLE) {
+>  			mtd->ecc_stats.failed++;
+>  			continue;
+>  		}
+> -		mtd->ecc_stats.corrected += *status;
+> -		max_bitflips = max_t(unsigned int, max_bitflips, *status);
+> +
+> +		if (*status == STATUS_ERASED)
+> +			if (gpmi_allones(this))
+> +				continue;
+> +			else
+> +				/* Erased block with bitflips. */
+> +				flips = erased_sector_bitflips(payload_virt, i,
+> +							       nfc_geo);
+> +		else
+> +			/* BCH block corrected some errors for us. */
+> +			flips = *status;
+
+Please read the Documentation/CodeingStyle.
+The code should like this:
+  ........................................................
+		if (*status == STATUS_ERASED) {
+			if (gpmi_allones(this))
+				continue;
+			else
+				/* Erased block with bitflips. */
+				flips = erased_sector_bitflips(payload_virt, i,
+							       nfc_geo);
+		} else {
+			/* BCH block corrected some errors for us. */
+			flips = *status;
+		}
+  ........................................................
+		
+thanks
+Huang Shijie	
