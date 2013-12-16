@@ -1,16 +1,26 @@
-Received: from mail-bk0-x244.google.com ([2a00:1450:4008:c01::244])
+Received: from mail-pd0-x22c.google.com ([2607:f8b0:400e:c02::22c])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VsXpb-0002fM-6i
- for linux-mtd@lists.infradead.org; Mon, 16 Dec 2013 13:03:31 +0000
-Received: by mail-bk0-f68.google.com with SMTP id mx13so1072693bkb.11
- for <linux-mtd@lists.infradead.org>; Mon, 16 Dec 2013 05:03:08 -0800 (PST)
+ id 1VsY09-0002mP-42
+ for linux-mtd@lists.infradead.org; Mon, 16 Dec 2013 13:14:26 +0000
+Received: by mail-pd0-f172.google.com with SMTP id g10so5335958pdj.3
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Dec 2013 05:14:03 -0800 (PST)
 MIME-Version: 1.0
-Date: Mon, 16 Dec 2013 15:03:08 +0200
-Message-ID: <CAN5vGDBrxgwHKt55YCPpM62TmQ7HRxrM+qi+n8jZAcVXCtqzMg@mail.gmail.com>
-Subject: [Indiegogo project] - iVoizer: phone call recorder
-From: LEDs iVoizer <ivoizerteam@gmail.com>
-To: linux-mtd@lists.infradead.org
+In-Reply-To: <20131216130048.GA1155@gmail.com>
+References: <1387133061-6573-1-git-send-email-eliedebrauwer@gmail.com>
+ <1387133061-6573-2-git-send-email-eliedebrauwer@gmail.com>
+ <20131216043040.GB27109@shlinux2.ap.freescale.net>
+ <CAGWqfij_FQrXoBkhsL-noMxHyJV1yOyj8BO+ABCZFMP8Hv5upA@mail.gmail.com>
+ <20131216130048.GA1155@gmail.com>
+Date: Mon, 16 Dec 2013 14:14:03 +0100
+Message-ID: <CAGWqfii2XjauNFMRu=OMTRTsgDeH9-dLhOsr0MeVhX2f-iAmkw@mail.gmail.com>
+Subject: Re: [PATCH v2] mtd: gpmi: Deal with bitflips in erased regions regions
+From: Elie De Brauwer <eliedebrauwer@gmail.com>
+To: Huang Shijie <shijie8@gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
+Cc: Huang Shijie <b32955@freescale.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,17 +30,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello.
+On Mon, Dec 16, 2013 at 2:00 PM, Huang Shijie <shijie8@gmail.com> wrote:
+> On Mon, Dec 16, 2013 at 10:43:34AM +0100, Elie De Brauwer wrote:
+>> On Mon, Dec 16, 2013 at 5:30 AM, Huang Shijie <b32955@freescale.com> wrote:
+>  >> +/* Returns 1 if the last transaction consisted only out of ones. */
+>> >> +int gpmi_allones(struct gpmi_nand_data *this)
+>> >> +{
+>> >> +     struct resources *r = &this->resources;
+>> >> +     uint32_t reg = readl(r->gpmi_regs + HW_BCH_STATUS0);
+>> > please add a empty line here.
+>> >> +     if (reg & BM_BCH_STATUS0_ALLONES_MASK)
+>> >> +             return 1;
+>> >> +     return 0;
+>> > We can simplify the code to:
+>> >         return reg & BM_BCH_STATUS0_ALLONES_MASK;
+>> >
+>>
+>> I was doing some stress testing on this piece of code today, but I'm
+>> afraid the ALLONES solution apparently does not work. If I look at the
+>> BCH_STATUS0 register while doing some heavy flash access, the
+>> (entire) register remains zero at all times, while I would at least expect the
+> how do you do the stress test, and how do you know the register is zero?
+>
+> I can test it on my side too.
 
-We are a group of developers from Ukraine.
+Well the stress test is simply dd if=/dev/mtdX of=/dev/null bs=1M (or nanddump).
+And checking the state of the register.
+To check whether or not the register is zero is simply (accumulative
+to version 2
+of my patch:
 
-We've launched our Indiegogo project: iVoizer: smart and easy phone
-call recorder http://www.indiegogo.com/projects/ivoizer-smart-and-easy-phone-call-recorder/x/5080872
+int gpmi_allones(struct gpmi_nand_data *this)
+{
+   struct resources *r = &this->resources;
+   uint32_t reg = readl(r->gpmi_regs + HW_BCH_STATUS0);
 
-Fell free to post this news and contact us with any questions.
+   if (reg != 0)
+      printk("%x\n", reg);
+   return reg & BM_BCH_STATUS0_ALLONES_MASK;
+}
 
-Sincerely yours,
-iVoizer Team
-Ruslan Pavlenko
-+380955076979
-ivoizerteam@gmail.com
+And in gpmi_ecc_read_page() I added a call to it in the beginning of the loop:
+
+   for (i = 0; i < nfc_geo->ecc_chunk_count; i++, status++) {
+      gpmi_allones(this);
+      if (*status == STATUS_GOOD)
+         continue;
+
+The printk() is never triggering, while I should at least expect it to
+trigger when I'm
+reading an erased block. (The boards I'm using for testing are 'cured'
+from bitflips for now).
+My tests are done on an i.mx283.
+
+
+-- 
+Elie De Brauwer
