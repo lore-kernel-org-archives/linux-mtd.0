@@ -1,26 +1,20 @@
-Received: from co9ehsobe002.messaging.microsoft.com ([207.46.163.25]
- helo=co9outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vsl06-0006h7-GW
- for linux-mtd@lists.infradead.org; Tue, 17 Dec 2013 03:07:15 +0000
-Date: Tue, 17 Dec 2013 10:37:32 +0800
+Date: Tue, 17 Dec 2013 10:56:47 +0800
 From: Huang Shijie <b32955@freescale.com>
-To: Elie De Brauwer <eliedebrauwer@gmail.com>
-Subject: Re: [PATCH v2] mtd: gpmi: Deal with bitflips in erased regions regions
-Message-ID: <20131217023731.GC12575@shlinux2.ap.freescale.net>
-References: <1387133061-6573-1-git-send-email-eliedebrauwer@gmail.com>
- <1387133061-6573-2-git-send-email-eliedebrauwer@gmail.com>
- <20131216043040.GB27109@shlinux2.ap.freescale.net>
- <CAGWqfij_FQrXoBkhsL-noMxHyJV1yOyj8BO+ABCZFMP8Hv5upA@mail.gmail.com>
- <20131216130048.GA1155@gmail.com>
- <CAGWqfii2XjauNFMRu=OMTRTsgDeH9-dLhOsr0MeVhX2f-iAmkw@mail.gmail.com>
+To: Sourav Poddar <sourav.poddar@ti.com>
+Subject: Re: [PATCH v3 3/7] mtd: spi-nor: add the framework for SPI NOR
+Message-ID: <20131217025646.GD12575@shlinux2.ap.freescale.net>
+References: <1387184330-14448-1-git-send-email-b32955@freescale.com>
+ <1387184330-14448-4-git-send-email-b32955@freescale.com>
+ <52AF4976.7090305@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <CAGWqfii2XjauNFMRu=OMTRTsgDeH9-dLhOsr0MeVhX2f-iAmkw@mail.gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Huang Shijie <shijie8@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
+In-Reply-To: <52AF4976.7090305@ti.com>
+Cc: marex@denx.de, angus.clark@st.com, shawn.guo@linaro.org,
+ b44548@freescale.com, broonie@linaro.org, dwmw2@infradead.org,
+ linux-doc@vger.kernel.org, b18965@freescale.com, linux-spi@vger.kernel.org,
+ linux-mtd@lists.infradead.org, pekon@ti.com, computersforpeace@gmail.com,
+ lee.jones@linaro.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,15 +24,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Dec 16, 2013 at 02:14:03PM +0100, Elie De Brauwer wrote:
+On Tue, Dec 17, 2013 at 12:11:58AM +0530, Sourav Poddar wrote:
+> >+static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
+> >+			size_t *retlen, u_char *buf)
+> >+{
+> >+	struct spi_nor *nor = mtd_to_spi_nor(mtd);
+> >+	int ret;
+> >+
+> >+	dev_dbg(nor->dev, "from 0x%08x, len %zd\n", (u32)from, len);
+> >+
+> >+	ret = spi_nor_lock_and_prep(nor, SPI_NOR_OPS_READ);
+> >+	if (ret)
+> >+		return ret;
+> >+
+> >+	/* Wait till previous write/erase is done. */
+> >+	ret = wait_till_ready(nor);
+> >+	if (ret)
+> >+		goto read_err;
+> >+
 > 
-> int gpmi_allones(struct gpmi_nand_data *this)
-> {
->    struct resources *r = &this->resources;
->    uint32_t reg = readl(r->gpmi_regs + HW_BCH_STATUS0);
-I suddenly realise that you read a wrong register. :)
+> Can you shift "wait_till_ready" above spi_nor_lock_and_prep?
+> One usecase for asking for above change is that I am planning to
+> use this _prep api for switching to memory mapped mode for read and once
+> I am switched to mmap mode, read_sr calls in wait_till_ready will not
+> work for me.
+> 
+you can implement your own wait_till_ready here.
 
-It should be r->bch_regs, not r->gpmi_regs.
+Only we have grabbed the lock, then we can do the transactions with the NOR.
+
+We can not call the wait_till_ready before we grab the lock, it is wrong.
+
+
+If you really can not implement your own wait_till_ready, the final solution
+is removing the wait_till_ready in this function, and add the wait_till_ready
+in the nor->read() hook.
+
 
 thanks
 Huang Shijie
+     
