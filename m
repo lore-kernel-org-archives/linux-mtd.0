@@ -1,18 +1,30 @@
-Received: from mail-ea0-x22f.google.com ([2a00:1450:4013:c01::22f])
+Received: from mail-pd0-x236.google.com ([2607:f8b0:400e:c02::236])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vsodd-0002pc-Sn
- for linux-mtd@lists.infradead.org; Tue, 17 Dec 2013 07:00:19 +0000
-Received: by mail-ea0-f175.google.com with SMTP id z10so2652631ead.34
- for <linux-mtd@lists.infradead.org>; Mon, 16 Dec 2013 22:59:55 -0800 (PST)
-From: Elie De Brauwer <eliedebrauwer@gmail.com>
-To: b32955@freescale.com, dwmw2@infradead.org, dedekind1@gmail.com,
- computersforpeace@gmail.com, shijie8@gmail.com
-Subject: [PATCH v3] mtd: gpmi: Deal with bitflips in erased regions regions
-Date: Tue, 17 Dec 2013 07:59:41 +0100
-Message-Id: <1387263581-7863-2-git-send-email-eliedebrauwer@gmail.com>
-In-Reply-To: <1387263581-7863-1-git-send-email-eliedebrauwer@gmail.com>
-References: <1387263581-7863-1-git-send-email-eliedebrauwer@gmail.com>
-Cc: Elie De Brauwer <eliedebrauwer@gmail.com>, linux-mtd@lists.infradead.org
+ id 1Vsoem-0002tH-5T
+ for linux-mtd@lists.infradead.org; Tue, 17 Dec 2013 07:01:29 +0000
+Received: by mail-pd0-f182.google.com with SMTP id v10so6461221pde.27
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Dec 2013 23:01:06 -0800 (PST)
+Date: Mon, 16 Dec 2013 23:01:03 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH v2 3/4] mtd: nand: support Micron READ RETRY
+Message-ID: <20131217070103.GF12034@norris-Latitude-E6410>
+References: <1386619753-27613-1-git-send-email-computersforpeace@gmail.com>
+ <1386619753-27613-3-git-send-email-computersforpeace@gmail.com>
+ <20131211135451.GB1284@gmail.com>
+ <20131211190313.GS27149@ld-irv-0074.broadcom.com>
+ <20131212034749.GA1345@gmail.com>
+ <20131217044342.GB12034@norris-Latitude-E6410>
+ <20131217042307.GA15469@shlinux2.ap.freescale.net>
+ <20131217050613.GC12034@norris-Latitude-E6410>
+ <20131217051031.GB15761@shlinux2.ap.freescale.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20131217051031.GB15761@shlinux2.ap.freescale.net>
+Cc: linux-mtd@lists.infradead.org, Huang Shijie <shijie8@gmail.com>,
+ Pekon Gupta <pekon@ti.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,165 +34,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The BCH block typically used with a GPMI block on an i.MX28/i.MX6 is only
-able to correct bitflips on data actually streamed through the block.
-When erasing a block the data does not stream through the BCH block
-and therefore no ECC data is written to the NAND chip. This causes
-gpmi_ecc_read_page to return failure as soon as a single non-1-bit is
-found in an erased page. Typically causing problems at higher levels
-(ubifs corrupted empty space warnings). This problem was also observed
-when using SLC NAND devices.
+On Tue, Dec 17, 2013 at 01:11:25PM +0800, Huang Shijie wrote:
+> On Mon, Dec 16, 2013 at 09:06:13PM -0800, Brian Norris wrote:
+> > On Tue, Dec 17, 2013 at 12:23:08PM +0800, Huang Shijie wrote:
+> > > On Mon, Dec 16, 2013 at 08:43:42PM -0800, Brian Norris wrote:
+> > > > > 
+> > > > > The DMA warning only occurs when we enable the CONFIG_DMA_API_DEBUG.
+> > Particularly, I think it is quite reasonable to restrict DMA to
+> > mtd_read()/mtd_write()-like operations -- so this trickles down to
+> > read_page/write_page, but not to device configuration operations like
+> > ONFI set_features/get_features/read parameter tables, etc.
+> > 
+> > Do you disagree? Do you see some need to perform DMA on all operations?
+> 
+> The gpmi is much coupled with the MXS-DMA engine. the gpmi can uses the
+> mxs-dma to set the gpmi registers.
+> 
+> Use the DMA makes the GPMI code very simple, it really makes the code very
+> _ugly_ if we do not use the DMA for read_buf/write_buf.
 
-This patch configures the BCH block to mark a block as 'erased' if
-no more than gf_len/2 bitflips are found. Next HW_BCH_STATUS0:ALLONES
-is used to check if the data read were all ones, indicating a read of a
-properly erased chunk was performed. If this was not the case a slow path
-is entered where bitflips are counted and corrected in software,
-allowing the upper layers to take proper actions.
+It's not just about ugliness, it's about maintainability. I can clean up
+a few cases here and there that don't conform to your driver's needs now
+(notice I pointed out another instance of this in Uwe's patch), but
+unless we establish better guidelines for NAND, this is fragile.
 
-Signed-off-by: Elie De Brauwer <eliedebrauwer@gmail.com>
-Acked-by: Peter Korsgaard <peter@korsgaard.com>
----
- drivers/mtd/nand/gpmi-nand/bch-regs.h  |    2 ++
- drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |   16 ++++++++++++
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   44 +++++++++++++++++++++++++++++---
- drivers/mtd/nand/gpmi-nand/gpmi-nand.h |    1 +
- 4 files changed, 60 insertions(+), 3 deletions(-)
+As a diversion, let's look at atmel_nand for an example. It uses DMA as
+well, but it dodges some of your problems using a heuristic, so that it
+only uses DMA for larger-than-OOB-size transactions (see
+atmel_read_buf). Additionally, it has a hack-y check for highmem, to try
+to confirm that the region it's trying to map is, in fact, DMA-able.
 
-diff --git a/drivers/mtd/nand/gpmi-nand/bch-regs.h b/drivers/mtd/nand/gpmi-nand/bch-regs.h
-index 588f537..a30502f 100644
---- a/drivers/mtd/nand/gpmi-nand/bch-regs.h
-+++ b/drivers/mtd/nand/gpmi-nand/bch-regs.h
-@@ -30,7 +30,9 @@
- #define BM_BCH_CTRL_COMPLETE_IRQ		(1 << 0)
- 
- #define HW_BCH_STATUS0				0x00000010
-+#define BM_BCH_STATUS0_ALLONES_MASK		(1 << 4)
- #define HW_BCH_MODE				0x00000020
-+#define BM_BCH_MODE_ERASE_THRESHOLD_MASK	0xff
- #define HW_BCH_ENCODEPTR			0x00000030
- #define HW_BCH_DATAPTR				0x00000040
- #define HW_BCH_METAPTR				0x00000050
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-index aaced29..86b9126 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-@@ -286,6 +286,13 @@ int bch_set_geometry(struct gpmi_nand_data *this)
- 			| BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(block_size, this),
- 			r->bch_regs + HW_BCH_FLASH0LAYOUT1);
- 
-+	/*
-+	 * Set the tolerance for bitflips when reading erased blocks
-+	 * equal to half the gf_len.
-+	 */
-+	writel((gf_len/2) & BM_BCH_MODE_ERASE_THRESHOLD_MASK,
-+		r->bch_regs + HW_BCH_MODE);
-+
- 	/* Set *all* chip selects to use layout 0. */
- 	writel(0, r->bch_regs + HW_BCH_LAYOUTSELECT);
- 
-@@ -1094,6 +1101,15 @@ int gpmi_is_ready(struct gpmi_nand_data *this, unsigned chip)
- 	return reg & mask;
- }
- 
-+/* Returns 1 if the last transaction consisted only out of ones. */
-+int gpmi_allones(struct gpmi_nand_data *this)
-+{
-+	struct resources *r = &this->resources;
-+	uint32_t reg = readl(r->bch_regs + HW_BCH_STATUS0);
-+
-+	return reg & BM_BCH_STATUS0_ALLONES_MASK;
-+}
-+
- static inline void set_dma_type(struct gpmi_nand_data *this,
- 					enum dma_ops_type type)
- {
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index dabbc14..cb49003 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -1012,6 +1012,30 @@ static void block_mark_swapping(struct gpmi_nand_data *this,
- 	p[1] = (p[1] & mask) | (from_oob >> (8 - bit));
- }
- 
-+/*
-+ * Count the number of 0 bits in a supposed to be
-+ * erased region and correct them. Return the number
-+ * of bitflips or zero when the region was correct.
-+ */
-+static unsigned int erased_sector_bitflips(unsigned char *data,
-+					unsigned int chunk,
-+					struct bch_geometry *geo)
-+{
-+	unsigned int flip_bits = 0;
-+	int i;
-+	int base = geo->ecc_chunk_size * chunk;
-+
-+	/* Count bitflips */
-+	for (i = 0; i < geo->ecc_chunk_size; i++)
-+		flip_bits += hweight8(~data[base + i]);
-+
-+	/* Correct bitflips by 0xFF'ing this chunk. */
-+	if (flip_bits)
-+		memset(&data[base], 0xFF, geo->ecc_chunk_size);
-+
-+	return flip_bits;
-+}
-+
- static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 				uint8_t *buf, int oob_required, int page)
- {
-@@ -1023,6 +1047,7 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	dma_addr_t    auxiliary_phys;
- 	unsigned int  i;
- 	unsigned char *status;
-+	unsigned int  flips;
- 	unsigned int  max_bitflips = 0;
- 	int           ret;
- 
-@@ -1057,15 +1082,28 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	status = auxiliary_virt + nfc_geo->auxiliary_status_offset;
- 
- 	for (i = 0; i < nfc_geo->ecc_chunk_count; i++, status++) {
--		if ((*status == STATUS_GOOD) || (*status == STATUS_ERASED))
-+		if (*status == STATUS_GOOD)
- 			continue;
- 
- 		if (*status == STATUS_UNCORRECTABLE) {
- 			mtd->ecc_stats.failed++;
- 			continue;
- 		}
--		mtd->ecc_stats.corrected += *status;
--		max_bitflips = max_t(unsigned int, max_bitflips, *status);
-+
-+		if (*status == STATUS_ERASED) {
-+			if (gpmi_allones(this))
-+				break;
-+			else
-+				/* Erased block with bitflips. */
-+				flips = erased_sector_bitflips(payload_virt, i,
-+							       nfc_geo);
-+		} else {
-+			/* BCH block corrected some errors for us. */
-+			flips = *status;
-+		}
-+
-+		mtd->ecc_stats.corrected += flips;
-+		max_bitflips = max_t(unsigned int, max_bitflips, flips);
- 	}
- 
- 	if (oob_required) {
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-index a7685e3..4ddd6af 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-@@ -268,6 +268,7 @@ extern void gpmi_clear_bch(struct gpmi_nand_data *);
- extern void gpmi_dump_info(struct gpmi_nand_data *);
- extern int bch_set_geometry(struct gpmi_nand_data *);
- extern int gpmi_is_ready(struct gpmi_nand_data *, unsigned chip);
-+extern int gpmi_allones(struct gpmi_nand_data *);
- extern int gpmi_send_command(struct gpmi_nand_data *);
- extern void gpmi_begin(struct gpmi_nand_data *);
- extern void gpmi_end(struct gpmi_nand_data *);
--- 
-1.7.10.4
+So, atmel_nand does not have an ideal solution, but it at least attempts
+to solve parts of this problem. GPMI, on the other hand, ignores it
+entirely.
+
+> If you insist that it is okay to use the local array in the nand_base.c,
+> I can use kmalloc/memcpy in the gpmi's read_buf/write_buf hooks. In such a 
+> way, we can make the gpmi looks more normal.
+
+I think a bounce buffer is necessary, if you really want to use DMA all
+the time; some transactions are just not worth initializing DMA-able
+buffers in the high-level code. But even better, can GPMI easily utilize
+some sort of PIO mode for small/slow-path transactions like this, or is
+it inextricably tied to the MXS-DMA engine?
+
+Brian
