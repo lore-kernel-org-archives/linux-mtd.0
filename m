@@ -1,19 +1,20 @@
-From: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
-To: Santosh Shilimkar <santosh.shilimkar@ti.com>, Rob Landley
- <rob@landley.net>, Russell King <linux@arm.linux.org.uk>
-Subject: [PATCH v4 0/9] Reuse davinci-nand driver for Keystone arch
-Date: Tue, 17 Dec 2013 14:59:06 +0200
-Message-ID: <1387285155-19182-1-git-send-email-ivan.khoronzhuk@ti.com>
+From: Marek Vasut <marex@denx.de>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH v3 3/7] mtd: spi-nor: add the framework for SPI NOR
+Date: Tue, 17 Dec 2013 14:07:32 +0100
+References: <1387184330-14448-1-git-send-email-b32955@freescale.com>
+ <1387184330-14448-4-git-send-email-b32955@freescale.com>
+In-Reply-To: <1387184330-14448-4-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- grygorii.strashko@ti.com, Pawel Moll <pawel.moll@arm.com>,
- Stephen Warren <swarren@wwwdotorg.org>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@kernel.crashing.org>, Rob Herring <rob.herring@calxeda.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201312171407.32714.marex@denx.de>
+Cc: angus.clark@st.com, shawn.guo@linaro.org, b44548@freescale.com,
+ broonie@linaro.org, dwmw2@infradead.org, linux-doc@vger.kernel.org,
+ b18965@freescale.com, linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
+ pekon@ti.com, sourav.poddar@ti.com, computersforpeace@gmail.com,
+ lee.jones@linaro.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,53 +24,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This series contains fixes and updates of Davinci nand driver in
-order to reuse it for Keystone platform.
+On Monday, December 16, 2013 at 09:58:46 AM, Huang Shijie wrote:
+> This patch cloned most of the m25p80.c. In theory, it adds a new spi-nor
+> layer.
+> 
+> Before this patch, the layer is like:
+> 
+>                    MTD
+>          ------------------------
+>                   m25p80
+>          ------------------------
+> 	       spi bus driver
+>          ------------------------
+> 	        SPI NOR chip
+> 
+> After this patch, the layer is like:
+>                    MTD
+>          ------------------------
+>                   spi-nor
+>          ------------------------
+>                   m25p80
+>          ------------------------
+> 	       spi bus driver
+>          ------------------------
+> 	       SPI NOR chip
+> 
+> With the spi-nor controller driver(Freescale Quadspi), it looks like:
+>                    MTD
+>          ------------------------
+>                   spi-nor
+>          ------------------------
+>                 fsl-quadspi
+>          ------------------------
+> 	       SPI NOR chip
+> 
+> New APIs:
+>    spi_nor_scan: used to scan a spi-nor flash.
 
-v3..v4:
-- mtd: nand: davinci: fix driver registration
-	dropped __init/__exit/__exit_p as module_platform_driver() is used
-- mtd: nand: davinci: adjust DT properties to MTD generic
-	used of_get_nand_bus_width() helper
-- mtd: nand: davinci: don't request AEMIF address range
-	added comment at code change
+Document every single one function with a proper kernel-doc style annotations 
+please.
 
-v2..v3:
-- mtd: nand: davinci: don't set timings if AEMIF is used
-	dropped, it would be replaced by alone patch
-	ARM: davinci: aemif: get rid of davinci-nand driver dependency on aemif
-
-v1..v2
-The series is combination of two following series:
-- Davinci nand driver fixes and updates:
-https://lkml.org/lkml/2013/11/20/271
-- Reuse davinci-nand driver for Keystone arch
-https://lkml.org/lkml/2013/11/20/315
-
-- mtd: nand: davinci: extend description of bindings
-	clarified changeset description
-
-- mtd: nand: davinci: reuse driver for Keystone arch
-	removed "ti,keystone-nand" compatible from driver
-
-Ivan Khoronzhuk (9):
-  mtd: nand: davinci: fix driver registration
-  mtd: nand: davinci: return ENOMEM if memory allocation is failed
-  mtd: nand: davinci: check required ti,davinci-chipselect property
-  mtd: nand: davinci: simplify error handling
-  mtd: nand: davinci: move bindings under mtd
-  mtd: nand: davinci: extend description of bindings
-  mtd: nand: davinci: adjust DT properties to MTD generic
-  mtd: nand: davinci: reuse driver for Keystone arch
-  mtd: nand: davinci: don't request AEMIF address range
-
- .../devicetree/bindings/arm/davinci/nand.txt       |   46 ----------
- .../devicetree/bindings/mtd/davinci-nand.txt       |   94 ++++++++++++++++++++
- drivers/mtd/nand/Kconfig                           |    6 +-
- drivers/mtd/nand/davinci_nand.c                    |   89 +++++++++---------
- 4 files changed, 146 insertions(+), 89 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/arm/davinci/nand.txt
- create mode 100644 Documentation/devicetree/bindings/mtd/davinci-nand.txt
-
--- 
-1.7.9.5
+Best regards,
+Marek Vasut
