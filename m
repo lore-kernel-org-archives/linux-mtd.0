@@ -1,28 +1,20 @@
-Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vsmrr-0000U2-GC
- for linux-mtd@lists.infradead.org; Tue, 17 Dec 2013 05:06:52 +0000
-Received: by mail-pa0-f41.google.com with SMTP id lf10so3958927pab.14
- for <linux-mtd@lists.infradead.org>; Mon, 16 Dec 2013 21:06:28 -0800 (PST)
-Date: Mon, 16 Dec 2013 21:06:13 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH v2 3/4] mtd: nand: support Micron READ RETRY
-Message-ID: <20131217050613.GC12034@norris-Latitude-E6410>
-References: <1386619753-27613-1-git-send-email-computersforpeace@gmail.com>
- <1386619753-27613-3-git-send-email-computersforpeace@gmail.com>
- <20131211135451.GB1284@gmail.com>
- <20131211190313.GS27149@ld-irv-0074.broadcom.com>
- <20131212034749.GA1345@gmail.com>
- <20131217044342.GB12034@norris-Latitude-E6410>
- <20131217042307.GA15469@shlinux2.ap.freescale.net>
+Message-ID: <52AFDEF7.2080604@ti.com>
+Date: Tue, 17 Dec 2013 10:49:51 +0530
+From: Sourav Poddar <sourav.poddar@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20131217042307.GA15469@shlinux2.ap.freescale.net>
-Cc: linux-mtd@lists.infradead.org, Huang Shijie <shijie8@gmail.com>,
- Pekon Gupta <pekon@ti.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH v3 3/7] mtd: spi-nor: add the framework for SPI NOR
+References: <1387184330-14448-1-git-send-email-b32955@freescale.com>
+ <1387184330-14448-4-git-send-email-b32955@freescale.com>
+ <52AF4976.7090305@ti.com> <20131217025646.GD12575@shlinux2.ap.freescale.net>
+In-Reply-To: <20131217025646.GD12575@shlinux2.ap.freescale.net>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: marex@denx.de, angus.clark@st.com, shawn.guo@linaro.org,
+ b44548@freescale.com, broonie@linaro.org, dwmw2@infradead.org,
+ linux-doc@vger.kernel.org, b18965@freescale.com, linux-spi@vger.kernel.org,
+ linux-mtd@lists.infradead.org, pekon@ti.com, computersforpeace@gmail.com,
+ lee.jones@linaro.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,52 +24,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Dec 17, 2013 at 12:23:08PM +0800, Huang Shijie wrote:
-> On Mon, Dec 16, 2013 at 08:43:42PM -0800, Brian Norris wrote:
-> > > 
-> > > The DMA warning only occurs when we enable the CONFIG_DMA_API_DEBUG.
-> > 
-> > But the warning has a significant purpose: it is *not* legal to perform
-> > DMA on stack memory, and no driver should do this. Either nand_base or
-> > gpmi-nand need to be fixed here.
-> > 
-> > But I think it's the GPMI driver is the one that needs fixing, not this
-> > patch. Are there any scenarios where it makes sense for gpmi-nand to use
-> > DMA for its read_buf/write_buf? Shouldn't the only DMA-necessary
-> > operations come through the ecc.write_page and ecc.read_page callbacks?
-> > If I'm correct, then gpmi-nand should not be using DMA at all in
-> > read_buf/write_buf.
-> Currently, all the operations, including the read_buf/write_buf, use
-> the DMA.
-> 
-> Is there any ABI tells us we should not use the DMA for read_buf/write_buf? :)
+On Tuesday 17 December 2013 08:26 AM, Huang Shijie wrote:
+> On Tue, Dec 17, 2013 at 12:11:58AM +0530, Sourav Poddar wrote:
+>>> +static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
+>>> +			size_t *retlen, u_char *buf)
+>>> +{
+>>> +	struct spi_nor *nor = mtd_to_spi_nor(mtd);
+>>> +	int ret;
+>>> +
+>>> +	dev_dbg(nor->dev, "from 0x%08x, len %zd\n", (u32)from, len);
+>>> +
+>>> +	ret = spi_nor_lock_and_prep(nor, SPI_NOR_OPS_READ);
+>>> +	if (ret)
+>>> +		return ret;
+>>> +
+>>> +	/* Wait till previous write/erase is done. */
+>>> +	ret = wait_till_ready(nor);
+>>> +	if (ret)
+>>> +		goto read_err;
+>>> +
+>> Can you shift "wait_till_ready" above spi_nor_lock_and_prep?
+>> One usecase for asking for above change is that I am planning to
+>> use this _prep api for switching to memory mapped mode for read and once
+>> I am switched to mmap mode, read_sr calls in wait_till_ready will not
+>> work for me.
+>>
+> you can implement your own wait_till_ready here.
+I think no point doing this, since it does the same function for me.
+> Only we have grabbed the lock, then we can do the transactions with the NOR.
+>
+> We can not call the wait_till_ready before we grab the lock, it is wrong.
+>
+>
+> If you really can not implement your own wait_till_ready, the final solution
+> is removing the wait_till_ready in this function, and add the wait_till_ready
+> in the nor->read() hook.
+>
 
-No... but this is not about ABI, it's about designing a reasonable API
-and abstraction between users (NAND drivers) and the helper code
-(nand_base). MTD never had a good design for DMA-able operations; but I
-think that it's at least an approachable problem if we provide
-limitations on when and where we might expect to use DMA.
+Yes, this can be done. So, that if you want to do memcpy do it before this
+condition is hit.
 
-Particularly, I think it is quite reasonable to restrict DMA to
-mtd_read()/mtd_write()-like operations -- so this trickles down to
-read_page/write_page, but not to device configuration operations like
-ONFI set_features/get_features/read parameter tables, etc.
-
-Do you disagree? Do you see some need to perform DMA on all operations?
-
-> > > Different nand chips use different read-retry methods. A headache to us.
-> > 
-> > Any chance we can push these vendors to implement things through a
-> > standard, like JEDEC? I believe there's a JEDEC parameter page standard
-> we do not have such influence to push these vendors.
-> they will not listen to us. :(
-
-We can try! Strength in numbers! BTW, last time I brought up ONFI w/ a
-Toshiba representative, I think I offended them :) But at least I had
-their ear for a moment.
-
-Anyway, it may be more reasonable to suggest a JEDEC standard, as I
-think they felt JEDEC was more vendor-independent, and they were at
-least open to entertaining the idea.
-
-Brian
+> thanks
+> Huang Shijie
+>
+>
