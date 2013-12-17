@@ -1,23 +1,34 @@
-Received: from mail-pb0-x22e.google.com ([2607:f8b0:400e:c01::22e])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VsooK-00039h-V3
- for linux-mtd@lists.infradead.org; Tue, 17 Dec 2013 07:11:21 +0000
-Received: by mail-pb0-f46.google.com with SMTP id md12so6566743pbc.19
- for <linux-mtd@lists.infradead.org>; Mon, 16 Dec 2013 23:10:59 -0800 (PST)
-Date: Mon, 16 Dec 2013 23:10:52 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH v2] mtd: gpmi: Deal with bitflips in erased regions regions
-Message-ID: <20131217071052.GG12034@norris-Latitude-E6410>
-References: <1387133061-6573-1-git-send-email-eliedebrauwer@gmail.com>
- <1387133061-6573-2-git-send-email-eliedebrauwer@gmail.com>
- <20131216043040.GB27109@shlinux2.ap.freescale.net>
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Shawn Guo <shawn.guo@linaro.org>
+Subject: RE: [PATCH v3 0/7] mtd: spi-nor: add a new framework for SPI NOR
+Date: Tue, 17 Dec 2013 07:17:01 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA56C5B@DBDE04.ent.ti.com>
+References: <1387184330-14448-1-git-send-email-b32955@freescale.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EA56ADC@DBDE04.ent.ti.com>
+ <20131217040209.GA27091@shlinux2.ap.freescale.net>
+ <20980858CB6D3A4BAE95CA194937D5E73EA56B3A@DBDE04.ent.ti.com>
+ <20131217060731.GJ6691@S2101-09.ap.freescale.net>
+In-Reply-To: <20131217060731.GJ6691@S2101-09.ap.freescale.net>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20131216043040.GB27109@shlinux2.ap.freescale.net>
-Cc: dwmw2@infradead.org, Elie De Brauwer <eliedebrauwer@gmail.com>,
- linux-mtd@lists.infradead.org, dedekind1@gmail.com
+Cc: "marex@denx.de" <marex@denx.de>, "angus.clark@st.com" <angus.clark@st.com>,
+ "b44548@freescale.com" <b44548@freescale.com>,
+ "broonie@linaro.org" <broonie@linaro.org>,
+ "lee.jones@linaro.org" <lee.jones@linaro.org>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "b18965@freescale.com" <b18965@freescale.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ Huang Shijie <b32955@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "mike@steroidmicros.com" <mike@steroidmicros.com>,
+ "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "Poddar,
+ Sourav" <sourav.poddar@ti.com>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,36 +38,144 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Dec 16, 2013 at 12:30:41PM +0800, Huang Shijie wrote:
-> On Sun, Dec 15, 2013 at 07:44:21PM +0100, Elie De Brauwer wrote:
-> > --- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> > +++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> > @@ -286,6 +286,13 @@ int bch_set_geometry(struct gpmi_nand_data *this)
-> >  			| BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(block_size, this),
-> >  			r->bch_regs + HW_BCH_FLASH0LAYOUT1);
-> >  
-> > +	/*
-> > +	 * Set the tolerance for bitflips when reading erased blocks
-> > +	 * equal to the ecc_strength.
-> > +	 */
-> Please also add the following comment :
->    "We even detect the bitflips for SLC nand."
+Hi Shawn,
 
-I don't think we need a comment specifically about SLC here in the code.
-Unless otherwise stated, I think any comments should apply to both SLC
-and MLC, right? But it could be worth mentioning in the _commit message_
-that this problem occurs on both MLC and SLC, just for history's sake.
+>From: Shawn Guo [mailto:shawn.guo@linaro.org]
+>>On Tue, Dec 17, 2013 at 05:00:53AM +0000, Gupta, Pekon wrote:
+>> >From: Huang Shijie [mailto:b32955@freescale.com]
+>>> >On Tue, Dec 17, 2013 at 04:08:33AM +0000, Gupta, Pekon wrote:
+[...]
 
-> > @@ -1094,6 +1101,16 @@ int gpmi_is_ready(struct gpmi_nand_data *this, unsigned chip)
-> >  	return reg & mask;
-> >  }
-> >  
-> > +/* Returns 1 if the last transaction consisted only out of ones. */
-> > +int gpmi_allones(struct gpmi_nand_data *this)
+>> >> As much base code is copied from m25p90.c,
+>> >> Do you mind keeping the sign-offs of the original contributors of m25=
+p80.c
+>> >> at-least in patches where much code is ported ?
+>> >I have added the lines in the spi-nor.c:
+>> >
+>> > " Cloned most of the code from the m25p80.c"
+>> >
+>> >> This would at-least give some credit to original authors and contribu=
+tors.
+>> >I do not change any authors information of m25p80.c.
+>> >
+>> >If it is not enough?  Could you remind me what to do ?
+>
+>In case you clone most of the code from m25p80.c, you need to keep the
+>copyright of that file as well, and add yours on top of it.
+>
+Agree...
 
-Sorry to nitpick, but 'allones' is a bit confusing. It took me a few
-seconds to parse that, since it almost looks like it could be a real
-English word. Perhaps gpmi_all_ones()?
 
-Thanks,
-Brian
+>> >
+>> (1) Add sign-offs of main authors of m25p80, so that original contributo=
+rs
+>>  still remains in path of submission [1].
+>
+>The sign-off shouldn't be added by anyone than the person himself.  The
+>sign-off tag is generally used in the following cases as far as I know.
+>
+>1. When the patch is authored, the author A should surely add his
+>   sign-off in the first place.
+>
+>2. If person B submits A's patch with some or without any change on the
+>   patch, B should add his sign-off.
+>
+>3. Maintainer C should add his sign-off when he applies the patch.
+>
+>In any case, one's sign-off shouldn't be added anyone but himself.
+>I do not see the need to add sign-off of m25p80 authors at the current
+>situation.
+>
+Agree..
+So I meant sign-off with permission from the original authors themselves.
+And Sign-offs can be multiple (but with permission of-course).
+OR, you can ask the original author to sign-off for you..
+
+
+>>
+>> (2) Also, please remove following from spi-nor.c
+>>   However, you can keep this in fsl-quadspi.c.
+>>   +MODULE_AUTHOR("Freescale Semiconductor Inc.");
+>>   I'm sure this was _not_ present in original m25p80.c
+>>  (m25p80.c was started as ST's driver as per MODULE_DESCRIPTION)
+>
+>Are you talking about drivers/mtd/devices/m25p80.c?  If so, I'm seeing
+>the following lines in the file.
+>
+>MODULE_LICENSE("GPL");
+>MODULE_AUTHOR("Mike Lavender");
+>MODULE_DESCRIPTION("MTD SPI driver for ST M25Pxx flash chips");
+>
+>I think we should keep the original MODULE_LICENSE and MODULE_AUTHOR,
+>add a new MODULE_AUTHOR("Huang Shijie <b32955@freescale.com>") line,
+>and update MODULE_DESCRIPTION line properly.
+>
+As indicated in previous thread also,
+if the engineer's association with the company is broken then the email-id
+in MODULE_AUTHOR becomes invalid. Hence to keep long term tractability
+of the developer I suggested to use 'personal mail-id' here.
+MODULE_AUTHOR should have a email-id which is valid for long term, because
+you might need to at-least loop-in Author in longer time when there are som=
+e
+bug-fix or considerable code change.
+(This problem was also pointed out earlier in one of the emails by greg-kh,
+ But I'm unable to trace that now).
+
+
+>>
+>> (3)     +MODULE_LICENSE("GPL");
+>> Also, I assume the license version should be "GPLv2" ?
+>
+>If this is from original m25p80.c, we shouldn't change it, IMO.
+>
+As I can understand from general threads on google.
+GPLv2 gives some additional protection to free-software companies from
+patent litigations of proprietary software companies. As this code is not
+exact replica of m25p80.c, so it should be made GPLv2 or better ..=20
+But sincerely, I do not have too much knowledge into this,=20
+So I'll let maintainers decide if they see benefit in moving to GPLv2 ?
+
+
+>>
+>> Request you please _not_ to tag generic driver frameworks with any
+>> specific company names, and let open-source be independent of any
+>> commercial company tags.
+>
+>Are you sure about that?  Run git grep "redhat" on folder kernel\ and
+>see what you get.
+>
+Something which may have been done repeatedly in past, may not mean
+it is correct OR the only way to do it. :-)
+
+
+>> Otherwise eventually everything generic driver
+>> will have some or other company name associated with it.
+>
+>What's the problem of that?  People are paid to do generic work, and why
+>shouldn't their employer's name be mentioned to give the credit.  As
+>long as the copyright is GPL, the code can be used, modified and
+>distributed freely, and I do not see any problem with having company
+>name in there.
+>
+It's not about who is taking credit. It's about how will you track the deve=
+loper
+if after few years you want some significant changes in the code he wrote.
+You would agree, it's difficult to track developers just by their company n=
+ames
+or company IDs.=20
+It's perfectly okay, if you want to give credits of your work to anyone
+(whether any company or individual). But that you can mention in commit log=
+s.
+
+All I said was using company names in Headers or MODULE_AUTHOR of
+*generic frameworks*. A generic framework is maintained and updated
+by community at large. And over course of time other people contribute
+more than the author. So tagging a company name there would sound like
+_repeatedly_ giving credit to company or yourself, even if most of the
+original  code is changed now. Does that make sense ?
+
+So, I just suggested to keep generic framework code free from all these.
+However, You are free to do anything in your controller specific code.
+
+
+with regards, pekon
