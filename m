@@ -1,20 +1,18 @@
-Message-ID: <52B01FF2.8010801@st.com>
-Date: Tue, 17 Dec 2013 09:57:06 +0000
-From: Angus Clark <angus.clark@st.com>
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Elie De Brauwer <eliedebrauwer@gmail.com>, "b32955@freescale.com"
+ <b32955@freescale.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "shijie8@gmail.com" <shijie8@gmail.com>
+Subject: RE: [PATCH] mtd: gpmi: Deal with bitflips in erased regions regions
+Date: Tue, 17 Dec 2013 10:17:38 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA56E78@DBDE04.ent.ti.com>
+References: <1387267289-10026-1-git-send-email-eliedebrauwer@gmail.com>
+In-Reply-To: <1387267289-10026-1-git-send-email-eliedebrauwer@gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v3 11/36] mtd: st_spi_fsm: Search for preferred FSM message
- sequence configurations
-References: <1385727565-25794-1-git-send-email-lee.jones@linaro.org>
- <1385727565-25794-12-git-send-email-lee.jones@linaro.org>
- <20131211010636.GH27149@ld-irv-0074.broadcom.com>
-In-Reply-To: <20131211010636.GH27149@ld-irv-0074.broadcom.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: Angus CLARK <angus.clark@st.com>, Lee Jones <lee.jones@linaro.org>,
- linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,75 +22,135 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/11/2013 01:06 AM, Brian Norris wrote:
-> This process sounds very much like something that is needed for other
-> controllers: a way to match controller capabilties with the opcodes
-> supported by the flash. 
+>From: Elie De Brauwer
+>
+>The BCH block typically used with a GPMI block on an i.MX28/i.MX6 is only
+>able to correct bitflips on data actually streamed through the block.
+>When erasing a block the data does not stream through the BCH block
+>and therefore no ECC data is written to the NAND chip. This causes
+>gpmi_ecc_read_page to return failure as soon as a single non-1-bit is
+>found in an erased page. Typically causing problems at higher levels
+>(ubifs corrupted empty space warnings). This problem was also observed
+>when using SLC NAND devices.
+>
+>This patch configures the BCH block to mark a block as 'erased' if
+>no more than gf_len/2 bitflips are found. Next HW_BCH_STATUS0:ALLONES
+>is used to check if the data read were all ones, indicating a read of a
+>properly erased chunk was performed. If this was not the case a slow path
+>is entered where bitflips are counted and corrected in software,
+>allowing the upper layers to take proper actions.
+>
+>Signed-off-by: Elie De Brauwer <eliedebrauwer@gmail.com>
+>Acked-by: Peter Korsgaard <peter@korsgaard.com>
+[...]
 
-Yes, I think this should be a primary aim of any 'spi-nor' framework".
+>--- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+>+++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+>@@ -286,6 +286,13 @@ int bch_set_geometry(struct gpmi_nand_data *this)
+> 			| BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(block_size, this),
+> 			r->bch_regs + HW_BCH_FLASH0LAYOUT1);
+>
+>+	/*
+>+	 * Set the tolerance for bitflips when reading erased blocks
+>+	 * equal to half the gf_len.
+>+	 */
+>+	writel((gf_len / 2) & BM_BCH_MODE_ERASE_THRESHOLD_MASK,
+>+		r->bch_regs + HW_BCH_MODE);
+>+
+> 	/* Set *all* chip selects to use layout 0. */
+> 	writel(0, r->bch_regs + HW_BCH_LAYOUTSELECT);
+>
+>@@ -1094,6 +1101,15 @@ int gpmi_is_ready(struct gpmi_nand_data *this, unsi=
+gned chip)
+> 	return reg & mask;
+> }
+>
+>+/* Returns 1 if the last transaction consisted only out of ones. */
+>+int gpmi_all_ones(struct gpmi_nand_data *this)
+>+{
+>+	struct resources *r =3D &this->resources;
+>+	uint32_t reg =3D readl(r->bch_regs + HW_BCH_STATUS0);
+>+
+>+	return reg & BM_BCH_STATUS0_ALLONES_MASK;
+>+}
+>+
+>
+Just query..=20
+Is GPMI controller is able to detect number of 0s or 1s while reading
+the raw data from NAND ?
+I'm asking because a similar implementation was used in omap2.c
+driver reference: drivers/mtd/nand/omap2.c: erased_sector_bitflips()
+But, we ended up degrading the driver performance, so even I was
+looking for alternative implementations..
 
-> But it still isn't quite flexible enough for
-> others, because it doesn't try to abstract the selection criteria -- it
-> just uses lists that you presorted
+ [...]
 
-Sure, the implementation here is very specific to the st_spi_fsm controller.
-However, until there is something better or more generic available, I am not
-sure what else to suggest.  Selecting a configuration based on a presorted list
-is probably a reasonable strategy though; READ_1_4_4 is more efficient that
-READ_1_1_4, and READ_1_1_4 is more efficient than READ_1_1_2 etc.
+>
+>+/*
+>+ * Count the number of 0 bits in a supposed to be
+>+ * erased region and correct them. Return the number
+>+ * of bitflips or zero when the region was correct.
+>+ */
+>+static unsigned int erased_sector_bitflips(unsigned char *data,
+>+					unsigned int chunk,
+>+					struct bch_geometry *geo)
+>+{
+>+	unsigned int flip_bits =3D 0;
+>+	int i;
+>+	int base =3D geo->ecc_chunk_size * chunk;
+>+
+>+	/* Count bitflips */
+>+	for (i =3D 0; i < geo->ecc_chunk_size; i++)
+>+		flip_bits +=3D hweight8(~data[base + i]);
+>+
+>+	/* Correct bitflips by 0xFF'ing this chunk. */
+>+	if (flip_bits)
+>+		memset(&data[base], 0xFF, geo->ecc_chunk_size);
 
->> +/* Search for preferred configuration based on available flags */
->> +static struct seq_rw_config *
->> +stfsm_search_seq_rw_configs(struct stfsm *fsm,
->> +			    struct seq_rw_config cfgs[])
->> +{
->> +	struct seq_rw_config *config;
->> +	int flags = fsm->info->flags;
->> +
->> +	for (config = cfgs; cfgs->cmd != 0; config++)
-> 
-> This becomes an infinite loop if you can't find a matching config. You
-> probably meant 'config->cmd != 0':
-> 
+But I don't quite understand here is..=20
+Why do you want to mask off the bit-flips in NAND, and give corrected
+data to upper layers ? Won't this lead to accumulation of bit-flips ?
 
-I will leave Lee to defend himself on this one ;-)
+Actually UBIFS checks for clean erased-pages before writing anything
+on it [1]. And if UBIFS finds an unclean page, it re-erases it without
+harming the system to avoid accumulation of bit-flips [2].
+(Artem, please correct me if I'm wrong here)..
 
->> +/* Parameters to configure a READ or WRITE FSM sequence */
->> +struct seq_rw_config {
->> +	uint8_t		mode_data;	/* MODE data */
-> 
-> What does this represent? As far as I can see, all the configurations
-> you provide so far have this entry as 0x00.
-> 
->> +	uint8_t		mode_cycles;	/* No. of MODE cycles */
-> 
-> What are MODE cycles? (Sorry if these are dumb questions.)
+But with your above patch you will actually fool UBIFS to write on
+unclean pages, which will increase the probability of bit-flips failures.
+Example:  your erased page had 4-bit flips, but you still reported
+data as clean. Now when UBIFS will write on this erased page, it
+has the margin of tolerating only 4 more bit-flips.
 
-Mode data cyles are similar to dummy cycles, except they also transmit some
-extended information on how the device should perform the transfer.  For
-example, Spansion devices use mode data to enter/exit a "continuous read mode"
-where subsequent read operations do not need to issue the read command, just
-supply an address (and further mode/dummy cycles).  In practice, we have only
-used this particular mode during testing; our boot-controller dislikes any form
-of statefull mode!
+Now, if you want to get rid of the debug messages and stack_dump
+coming into your boot log because of this, then better suppress
+debug message in following file
+----------------------
+diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
+index bf79def..e589ff3 100644
+--- a/drivers/mtd/ubi/io.c
++++ b/drivers/mtd/ubi/io.c
+@@ -1430,7 +1430,9 @@ fail:
+        print_hex_dump(KERN_DEBUG, "", DUMP_PREFIX_OFFSET, 32, 1, buf, len,=
+ 1);
+        err =3D -EINVAL;
+ error:
++#ifdef DEBUG
+        dump_stack();
++#endif
+        vfree(buf);
+        return err;
+ }
+----------------------
 
-> 
->> +	uint8_t		dummy_cycles;	/* No. of DUMMY cycles */
->> +};
-> 
-> Several pieces of this sequence struct seems suspiciously similar to
-> what would be needed by several other controllers, while the remaining
-> pieces don't seem to be so special that they cannot be configured
-> beneath a SPI NOR framework. I'm becoming less convinced that your
-> controller/driver is as unique as you say it is.
 
-Other controllers/drivers would certainly benefit from something similar.
-However, I thought the point was that no such framework exists at present and
-any spi-nor proposal is going to take time to mature.  In the meantime,
-integrating the st_spi_fsm driver would provide another example of H/W that
-needs to be supported by a spi-nor framework, and maybe give a few ideas along
-the way.
+[1] drivers/mtd/ubi/io.c
+@@ ubi_io_write(...)
+	err =3D ubi_self_check_all_ff( ... )
 
-Cheers,
+[2] drivers/mtd/ubi/wl.c
+@@ wear_leveling_worker( ... )
+       /UBI_IO_FF_BITFLIPS
 
-Angus
+
+with regards, pekon
