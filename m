@@ -1,13 +1,13 @@
-Received: from tx2ehsobe004.messaging.microsoft.com ([65.55.88.14]
- helo=tx2outboundpool.messaging.microsoft.com)
+Received: from co9ehsobe002.messaging.microsoft.com ([207.46.163.25]
+ helo=co9outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VsksD-0006Py-Vu
- for linux-mtd@lists.infradead.org; Tue, 17 Dec 2013 02:59:06 +0000
-Date: Tue, 17 Dec 2013 10:29:33 +0800
+ id 1Vsl06-0006h7-GW
+ for linux-mtd@lists.infradead.org; Tue, 17 Dec 2013 03:07:15 +0000
+Date: Tue, 17 Dec 2013 10:37:32 +0800
 From: Huang Shijie <b32955@freescale.com>
 To: Elie De Brauwer <eliedebrauwer@gmail.com>
 Subject: Re: [PATCH v2] mtd: gpmi: Deal with bitflips in erased regions regions
-Message-ID: <20131217022932.GB12575@shlinux2.ap.freescale.net>
+Message-ID: <20131217023731.GC12575@shlinux2.ap.freescale.net>
 References: <1387133061-6573-1-git-send-email-eliedebrauwer@gmail.com>
  <1387133061-6573-2-git-send-email-eliedebrauwer@gmail.com>
  <20131216043040.GB27109@shlinux2.ap.freescale.net>
@@ -32,22 +32,13 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 On Mon, Dec 16, 2013 at 02:14:03PM +0100, Elie De Brauwer wrote:
 > 
-> Well the stress test is simply dd if=/dev/mtdX of=/dev/null bs=1M (or nanddump).
-For a new erased partition, my patch shows log like:
-----------------------------------------------------------
-[  200.635358] [ gpmi_ecc_read_page ] stat : ff10
-[  200.636522] [ gpmi_ecc_read_page ] stat : ff10
-[  200.637675] [ gpmi_ecc_read_page ] stat : ff10
-[  200.638827] [ gpmi_ecc_read_page ] stat : ff10
-[  200.639980] [ gpmi_ecc_read_page ] stat : ff10
-[  200.641130] [ gpmi_ecc_read_page ] stat : ff10
-[  200.642285] [ gpmi_ecc_read_page ] stat : ff10
-[  200.734553] [ gpmi_ecc_read_page ] stat : ff10
-[  200.735726] [ gpmi_ecc_read_page ] stat : ff10
-[  200.736882] [ gpmi_ecc_read_page ] stat : ff10
-[  200.738037] [ gpmi_ecc_read_page ] stat : ff10
-      ................................................
-----------------------------------------------------------
+> int gpmi_allones(struct gpmi_nand_data *this)
+> {
+>    struct resources *r = &this->resources;
+>    uint32_t reg = readl(r->gpmi_regs + HW_BCH_STATUS0);
+I suddenly realise that you read a wrong register. :)
+
+It should be r->bch_regs, not r->gpmi_regs.
 
 thanks
 Huang Shijie
