@@ -1,15 +1,15 @@
-Date: Tue, 17 Dec 2013 00:42:38 -0800
+Date: Tue, 17 Dec 2013 00:50:27 -0800
 From: Brian Norris <computersforpeace@gmail.com>
 To: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
-Subject: Re: [PATCH v3 9/9] mtd: nand: davinci: don't request AEMIF address
- range
-Message-ID: <20131217084238.GJ12034@norris-Latitude-E6410>
+Subject: Re: [PATCH v3 7/9] mtd: nand: davinci: adjust DT properties to MTD
+ generic
+Message-ID: <20131217085027.GK12034@norris-Latitude-E6410>
 References: <1386264358-9738-1-git-send-email-ivan.khoronzhuk@ti.com>
- <1386264358-9738-10-git-send-email-ivan.khoronzhuk@ti.com>
+ <1386264358-9738-8-git-send-email-ivan.khoronzhuk@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1386264358-9738-10-git-send-email-ivan.khoronzhuk@ti.com>
+In-Reply-To: <1386264358-9738-8-git-send-email-ivan.khoronzhuk@ti.com>
 Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
  grygorii.strashko@ti.com, Russell King <linux@arm.linux.org.uk>,
  Pawel Moll <pawel.moll@arm.com>, Stephen Warren <swarren@wwwdotorg.org>,
@@ -27,45 +27,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 05, 2013 at 07:25:57PM +0200, Ivan Khoronzhuk wrote:
-> The TI AEMIF driver registers are used to setup timings for each chip
-> select. The same registers range is used to setup NAND settings.
-> The AEMIF and NAND drivers not use the same registers in this range.
-> 
-> In case with TI AEMIF driver, the memory address range is requested
-> already by AEMIF, so we cannot request it twice, just ioremap.
-> 
-> Acked-by: Santosh Shilimkar <santosh.shilimkar@ti.com>
-> Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
-> Reviewed-by: Taras Kondratiuk <taras@ti.com>
-> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
-> ---
->  drivers/mtd/nand/davinci_nand.c |    8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-> index f7b21b8..0cd4dbc 100644
+On Thu, Dec 05, 2013 at 07:25:55PM +0200, Ivan Khoronzhuk wrote:
 > --- a/drivers/mtd/nand/davinci_nand.c
 > +++ b/drivers/mtd/nand/davinci_nand.c
-> @@ -636,9 +636,11 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
->  	if (IS_ERR(vaddr))
->  		return PTR_ERR(vaddr);
+> @@ -558,6 +557,8 @@ static struct davinci_nand_pdata
+>  			"ti,davinci-mask-chipsel", &prop))
+>  			pdata->mask_chipsel = prop;
+>  		if (!of_property_read_string(pdev->dev.of_node,
+> +			"nand-ecc-mode", &mode) ||
+
+Is it possible to use the of_get_nand_ecc_mode() helper? It's
+unfortunate that davinci_nand had to use custom bindings in the first
+place, making this more difficult... So I can take this patch as-is.
+
+> +		    !of_property_read_string(pdev->dev.of_node,
+>  			"ti,davinci-ecc-mode", &mode)) {
+>  			if (!strncmp("none", mode, 4))
+>  				pdata->ecc_mode = NAND_ECC_NONE;
+> @@ -570,11 +571,15 @@ static struct davinci_nand_pdata
+>  			"ti,davinci-ecc-bits", &prop))
+>  			pdata->ecc_bits = prop;
+>  		if (!of_property_read_u32(pdev->dev.of_node,
+> +			"nand-bus-width", &prop) ||
+
+Similar story here, with of_get_nand_bus_width().
+
+> +		    !of_property_read_u32(pdev->dev.of_node,
+>  			"ti,davinci-nand-buswidth", &prop))
+>  			if (prop == 16)
+>  				pdata->options |= NAND_BUSWIDTH_16;
+> -		if (of_find_property(pdev->dev.of_node,
+> -			"ti,davinci-nand-use-bbt", &len))
+> +		if (of_property_read_bool(pdev->dev.of_node,
+> +			"nand-on-flash-bbt") ||
+> +		    of_property_read_bool(pdev->dev.of_node,
+> +			"ti,davinci-nand-use-bbt"))
+>  			pdata->bbt_options = NAND_BBT_USE_FLASH;
+>  	}
 >  
-> -	base = devm_ioremap_resource(&pdev->dev, res2);
-> -	if (IS_ERR(base))
-> -		return PTR_ERR(base);
-> +	base = devm_ioremap(&pdev->dev, res2->start, resource_size(res2));
 
-Since it's important that we don't re-introduce the "request resource"
-boilerplate later, can you add a comment describing the situation?
-
-> +	if (!base) {
-> +		dev_err(&pdev->dev, "ioremap failed for resource %pR\n", res2);
-> +		return -EADDRNOTAVAIL;
-> +	}
->  
->  	info->dev		= &pdev->dev;
->  	info->base		= base;
-
-Thanks,
 Brian
