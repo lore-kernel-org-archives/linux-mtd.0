@@ -1,21 +1,34 @@
-Received: from demumfd001.nsn-inter.net ([93.183.12.32])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VspTA-0003pu-9P
- for linux-mtd@lists.infradead.org; Tue, 17 Dec 2013 07:53:32 +0000
-Message-ID: <52B002D1.7060001@nsn.com>
-Date: Tue, 17 Dec 2013 08:52:49 +0100
-From: Alexander Sverdlin <alexander.sverdlin@nsn.com>
+Date: Tue, 17 Dec 2013 15:56:51 +0800
+From: Shawn Guo <shawn.guo@linaro.org>
+To: "Gupta, Pekon" <pekon@ti.com>
+Subject: Re: [PATCH v3 0/7] mtd: spi-nor: add a new framework for SPI NOR
+Message-ID: <20131217075649.GL6691@S2101-09.ap.freescale.net>
+References: <1387184330-14448-1-git-send-email-b32955@freescale.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EA56ADC@DBDE04.ent.ti.com>
+ <20131217040209.GA27091@shlinux2.ap.freescale.net>
+ <20980858CB6D3A4BAE95CA194937D5E73EA56B3A@DBDE04.ent.ti.com>
+ <20131217060731.GJ6691@S2101-09.ap.freescale.net>
+ <20980858CB6D3A4BAE95CA194937D5E73EA56C5B@DBDE04.ent.ti.com>
 MIME-Version: 1.0
-To: ext Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v2] mtd: phram: Repair multiple instances support
-References: <525C2147.9060605@nsn.com>
- <20131107073139.GC3805@norris.computersforpeace.net>
-In-Reply-To: <20131107073139.GC3805@norris.computersforpeace.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Joern Engel <joern@lazybastard.org>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>,
- =?UTF-8?B?SGVydsOpIEZhY2hl?= <h-fache@ti.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA56C5B@DBDE04.ent.ti.com>
+Cc: "marex@denx.de" <marex@denx.de>, "angus.clark@st.com" <angus.clark@st.com>,
+ "b44548@freescale.com" <b44548@freescale.com>,
+ "broonie@linaro.org" <broonie@linaro.org>,
+ "lee.jones@linaro.org" <lee.jones@linaro.org>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "b18965@freescale.com" <b18965@freescale.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ Huang Shijie <b32955@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "mike@steroidmicros.com" <mike@steroidmicros.com>,
+ "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "Poddar,
+ Sourav" <sourav.poddar@ti.com>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,122 +38,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Brian,
+On Tue, Dec 17, 2013 at 07:17:01AM +0000, Gupta, Pekon wrote:
+> All I said was using company names in Headers or MODULE_AUTHOR of
+> *generic frameworks*. A generic framework is maintained and updated
+> by community at large. And over course of time other people contribute
+> more than the author. So tagging a company name there would sound like
+> _repeatedly_ giving credit to company or yourself, even if most of the
+> original  code is changed now. Does that make sense ?
 
-On 07/11/13 08:31, ext Brian Norris wrote:
-> On Mon, Oct 14, 2013 at 06:52:23PM +0200, Alexander Sverdlin wrote:
->> mtd: phram: Repair multiple instances support
->>
->> Commit b2a2a84d35e0f42ad26e326ec4258f6a8b8eecbe (mtd: phram: dot not crash when
->> built-in and passing boot param) claims to be "based on Ville Herva's similar
->> patch to block2mtd" (c4e7fb313771ac03dfdca26d30e8b721731c562b), but it has
->> missed the crucial point of the original path: all these "if(n)def MODULE".
->> It has broken the possibility to create several phram instances when phram is
->> compiled as module. The possibility to add instances via /sys writes to
->> /sys/module/phram/parameters/phram was also broken with mentioned patch.
->> Proposed patch takes the idea of original block2mtd patch to its full extent.
->> Assumtion "This function is always called before 'init_phram()'" was also
->> incorrect, so removed the comment. This patch effectively reverts also
->> b11ec57fc6e6d4882ef01a0c09a1dde58f50492e (mtd: phram: fix section mismatch for
->> phram_setup).
->>
->> v2 changes: Fixed error handling in init_phram(). 
->>
->> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nsn.com>
-> 
-> Can we get any testers? Perhaps Hervé can confirm this?
+I could somehow buy in the argument of using person email over company
+one in MODULE_AUTHOR(), but still not the one that do not use company
+name in Headers.
 
-Have addressed Ville Herva, Ryosuke Saito, Hervé Fache on 07.11.2013, no answer
-until now. Seems nobody interested in it any more. Any chances we still get this in?
- 
->> ---
->> --- linux.orig/drivers/mtd/devices/phram.c
->> +++ linux/drivers/mtd/devices/phram.c
->> @@ -205,6 +205,8 @@ static inline void kill_final_newline(ch
->>  	return 1;		\
->>  } while (0)
->>  
->> +#ifndef MODULE
->> +static int phram_init_called = 0;
->>  /*
->>   * This shall contain the module parameter if any. It is of the form:
->>   * - phram=<device>,<address>,<size> for module case
->> @@ -213,9 +215,10 @@ static inline void kill_final_newline(ch
->>   * size.
->>   * Example: phram.phram=rootfs,0xa0000000,512Mi
->>   */
->> -static __initdata char phram_paramline[64 + 20 + 20];
->> +static char phram_paramline[64 + 20 + 20];
->> +#endif
->>  
->> -static int __init phram_setup(const char *val)
->> +static int phram_setup(const char *val)
->>  {
->>  	char buf[64 + 20 + 20], *str = buf;
->>  	char *token[3];
->> @@ -264,17 +267,36 @@ static int __init phram_setup(const char
->>  	return ret;
->>  }
->>  
->> -static int __init phram_param_call(const char *val, struct kernel_param *kp)
->> +static int phram_param_call(const char *val, struct kernel_param *kp)
->>  {
->> +#ifdef MODULE
->> +	return phram_setup(val);
->> +#else
->>  	/*
->> -	 * This function is always called before 'init_phram()', whether
->> -	 * built-in or module.
->> +	 * If more parameters are later passed in via
->> +	 * /sys/module/phram/parameters/phram
->> +	 * and init_phram() has already been called,
->> +	 * we can parse the argument now.
->>  	 */
->> +
->> +	if (phram_init_called)
->> +		return phram_setup(val);
->> +
->> +	/*
->> +	 * During early boot stage, we only save the parameters
->> +	 * here. We must parse them later: if the param passed
->> +	 * from kernel boot command line, phram_param_call() is
->> +	 * called so early that it is not possible to resolve
->> +	 * the device (even kmalloc() fails). Defer that work to
->> +	 * phram_setup().
->> +	 */
->> +
->>  	if (strlen(val) >= sizeof(phram_paramline))
->>  		return -ENOSPC;
->>  	strcpy(phram_paramline, val);
->>  
->>  	return 0;
->> +#endif
->>  }
->>  
->>  module_param_call(phram, phram_param_call, NULL, NULL, 000);
->> @@ -283,10 +305,15 @@ MODULE_PARM_DESC(phram, "Memory region t
->>  
->>  static int __init init_phram(void)
->>  {
->> +	int ret = 0;
->> +
->> +#ifndef MODULE
->>  	if (phram_paramline[0])
->> -		return phram_setup(phram_paramline);
->> +		ret = phram_setup(phram_paramline);
->> +	phram_init_called = 1;
->> +#endif
->>  
->> -	return 0;
->> +	return ret;
->>  }
->>  
->>  static void __exit cleanup_phram(void)
-> 
-> Brian
-> 
-> 
+In this case, Huang works for Freescale and Freescale pays him to do the
+work, so Huang shares the authorship and Freescale shares the copyright.
+There is nothing wrong adding Freescale copyright into the file header,
+based on my understanding.  When other people make significant changes
+and contributions to the file, they are welcomed to add more copyright
+info on top of the existing ones.
 
--- 
-Best regards,
-Alexander Sverdlin.
+I'm not a lawyer, and more than happy to be corrected if I'm wrong.
+
+Shawn
