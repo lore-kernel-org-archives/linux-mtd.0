@@ -1,28 +1,32 @@
-Received: from co1ehsobe005.messaging.microsoft.com ([216.32.180.188]
- helo=co1outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VsnOx-0001TK-Eh
- for linux-mtd@lists.infradead.org; Tue, 17 Dec 2013 05:41:03 +0000
-Date: Tue, 17 Dec 2013 13:11:25 +0800
-From: Huang Shijie <b32955@freescale.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v2 3/4] mtd: nand: support Micron READ RETRY
-Message-ID: <20131217051031.GB15761@shlinux2.ap.freescale.net>
-References: <1386619753-27613-1-git-send-email-computersforpeace@gmail.com>
- <1386619753-27613-3-git-send-email-computersforpeace@gmail.com>
- <20131211135451.GB1284@gmail.com>
- <20131211190313.GS27149@ld-irv-0074.broadcom.com>
- <20131212034749.GA1345@gmail.com>
- <20131217044342.GB12034@norris-Latitude-E6410>
- <20131217042307.GA15469@shlinux2.ap.freescale.net>
- <20131217050613.GC12034@norris-Latitude-E6410>
-MIME-Version: 1.0
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Huang Shijie <b32955@freescale.com>
+Subject: RE: [PATCH v3 0/7] mtd: spi-nor: add a new framework for SPI NOR
+Date: Tue, 17 Dec 2013 05:45:38 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA56B8A@DBDE04.ent.ti.com>
+References: <1387184330-14448-1-git-send-email-b32955@freescale.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EA56ADC@DBDE04.ent.ti.com>
+ <20131217040209.GA27091@shlinux2.ap.freescale.net>
+ <20980858CB6D3A4BAE95CA194937D5E73EA56B3A@DBDE04.ent.ti.com>
+ <20131217045752.GA15761@shlinux2.ap.freescale.net>
+In-Reply-To: <20131217045752.GA15761@shlinux2.ap.freescale.net>
+Content-Language: en-US
 Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20131217050613.GC12034@norris-Latitude-E6410>
-Cc: linux-mtd@lists.infradead.org, Huang Shijie <shijie8@gmail.com>,
- Pekon Gupta <pekon@ti.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: "marex@denx.de" <marex@denx.de>, "angus.clark@st.com" <angus.clark@st.com>,
+ "shawn.guo@linaro.org" <shawn.guo@linaro.org>,
+ "b44548@freescale.com" <b44548@freescale.com>,
+ "broonie@linaro.org" <broonie@linaro.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "b18965@freescale.com" <b18965@freescale.com>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "mike@steroidmicros.com" <mike@steroidmicros.com>, "Poddar,
+ Sourav" <sourav.poddar@ti.com>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "lee.jones@linaro.org" <lee.jones@linaro.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,46 +36,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Dec 16, 2013 at 09:06:13PM -0800, Brian Norris wrote:
-> On Tue, Dec 17, 2013 at 12:23:08PM +0800, Huang Shijie wrote:
-> > On Mon, Dec 16, 2013 at 08:43:42PM -0800, Brian Norris wrote:
-> > > > 
-> > > > The DMA warning only occurs when we enable the CONFIG_DMA_API_DEBUG.
-> Particularly, I think it is quite reasonable to restrict DMA to
-> mtd_read()/mtd_write()-like operations -- so this trickles down to
-> read_page/write_page, but not to device configuration operations like
-> ONFI set_features/get_features/read parameter tables, etc.
-> 
-> Do you disagree? Do you see some need to perform DMA on all operations?
+>From: Huang Shijie [mailto:b32955@freescale.com]
+>>From: Pekon Gupta [mailto:pekon@ti.com]
+[...]
+>> (1) Add sign-offs of main authors of m25p80, so that original contributo=
+rs
+>>  still remains in path of submission [1].
+>Do you mean add the sign-offs in end of the patch 3's commit message?:
+>	Signed-off-by: Mike Lavender <mike@steroidmicros.com>
+>
+I think Mike's  email ID is no-more valid. So you can either find out his
+current email-Id from other sources. OR
+add David's or someone else's ID which has equivalent number of
+contributions in m25p80.c (that you can figure out from either commit
+logs or git blame).
 
-The gpmi is much coupled with the MXS-DMA engine. the gpmi can uses the
-mxs-dma to set the gpmi registers.
 
-Use the DMA makes the GPMI code very simple, it really makes the code very
-_ugly_ if we do not use the DMA for read_buf/write_buf.
+>>
+>> (2) Also, please remove following from spi-nor.c
+>>   However, you can keep this in fsl-quadspi.c.
+>>   +MODULE_AUTHOR("Freescale Semiconductor Inc.");
+>>   I'm sure this was _not_ present in original m25p80.c
+>>  (m25p80.c was started as ST's driver as per MODULE_DESCRIPTION)
+>okay.
+>
+Thanks much.
+You can put your name instead, I don't mind that bcoz you have worked
+to get this framework assembled by joining different pieces.
 
-If you insist that it is okay to use the local array in the nand_base.c,
-I can use kmalloc/memcpy in the gpmi's read_buf/write_buf hooks. In such a 
-way, we can make the gpmi looks more normal.
+However, please use a email-id which is valid for long-term (preferably
+your personal ID), so that even if your association with your company ends,
+still there is some way to track you and keep you in loop of future patches
+for this framework.
 
-sorry, I really think it is no need to force the gpmi do not use the DMA
-for read_buf/write_buf.
+>>
+>> (3)     +MODULE_LICENSE("GPL");
+>> Also, I assume the license version should be "GPLv2" ?
+>
+>yes. it should be v2.
+>
 
-> 
-> > > > Different nand chips use different read-retry methods. A headache to us.
-> > > 
-> > > Any chance we can push these vendors to implement things through a
-> > > standard, like JEDEC? I believe there's a JEDEC parameter page standard
-> > we do not have such influence to push these vendors.
-> > they will not listen to us. :(
-> 
-> We can try! Strength in numbers! BTW, last time I brought up ONFI w/ a
-> Toshiba representative, I think I offended them :) But at least I had
-> their ear for a moment.
-> 
-look good to me. :)
-
-I will suggest their FAE/AE when i meet them next time.
-
-thanks
-Huang Shijie
+with regards, pekon
