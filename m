@@ -1,20 +1,21 @@
-Received: from mail-pa0-x22f.google.com ([2607:f8b0:400e:c03::22f])
+Received: from mail-db9lp0251.outbound.messaging.microsoft.com
+ ([213.199.154.251] helo=db9outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vsm7Q-0007xY-Fe
- for linux-mtd@lists.infradead.org; Tue, 17 Dec 2013 04:18:53 +0000
-Received: by mail-pa0-f47.google.com with SMTP id kq14so3890402pab.34
- for <linux-mtd@lists.infradead.org>; Mon, 16 Dec 2013 20:18:29 -0800 (PST)
-Date: Mon, 16 Dec 2013 20:17:56 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH] mtd: nand: sh_flctl: Remove unneeded CONFIG_OF
-Message-ID: <20131217041756.GA12034@norris-Latitude-E6410>
-References: <1386426661-24549-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ id 1Vsm8o-000843-44
+ for linux-mtd@lists.infradead.org; Tue, 17 Dec 2013 04:20:19 +0000
+Date: Tue, 17 Dec 2013 11:50:33 +0800
+From: Huang Shijie <b32955@freescale.com>
+To: Elie De Brauwer <eliedebrauwer@gmail.com>
+Subject: Re: [PATCH v2] mtd: gpmi: Deal with bitflips in erased regions regions
+Message-ID: <20131217035031.GE12575@shlinux2.ap.freescale.net>
+References: <1387133061-6573-1-git-send-email-eliedebrauwer@gmail.com>
+ <1387133061-6573-2-git-send-email-eliedebrauwer@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <1386426661-24549-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <1387133061-6573-2-git-send-email-eliedebrauwer@gmail.com>
+Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,13 +25,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Dec 07, 2013 at 11:31:01AM -0300, Ezequiel Garcia wrote:
-> Since the of_mtd header provides dummy stubs for !CONFIG_OF, it's safe
-> to remove the #ifdef CONFIG_OF. Build tested only.
-> 
-> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+On Sun, Dec 15, 2013 at 07:44:21PM +0100, Elie De Brauwer wrote:
+> @@ -1057,15 +1082,27 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+>  	status = auxiliary_virt + nfc_geo->auxiliary_status_offset;
+>  
+>  	for (i = 0; i < nfc_geo->ecc_chunk_count; i++, status++) {
+> -		if ((*status == STATUS_GOOD) || (*status == STATUS_ERASED))
+> +		if (*status == STATUS_GOOD)
+>  			continue;
+>  
+>  		if (*status == STATUS_UNCORRECTABLE) {
+>  			mtd->ecc_stats.failed++;
+>  			continue;
+>  		}
+> -		mtd->ecc_stats.corrected += *status;
+> -		max_bitflips = max_t(unsigned int, max_bitflips, *status);
+> +
+> +		if (*status == STATUS_ERASED)
+> +			if (gpmi_allones(this))
+> +				continue;
+I think it is better to use "break" here, not "continue".
 
-Looks good. Also build tested with !CONFIG_OF (the relevant case).
-Pushed to l2-mtd.git. Thanks!
+Since if the gpmi_allones() return true, it means all the ECC chunks are
+0xff.
 
-Brian
+thanks
+Huang Shijie.
