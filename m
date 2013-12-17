@@ -1,22 +1,27 @@
-Received: from mail-bk0-x231.google.com ([2a00:1450:4008:c01::231])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VslRu-0007Di-4N
- for linux-mtd@lists.infradead.org; Tue, 17 Dec 2013 03:35:58 +0000
-Received: by mail-bk0-f49.google.com with SMTP id my13so2622567bkb.36
- for <linux-mtd@lists.infradead.org>; Mon, 16 Dec 2013 19:35:36 -0800 (PST)
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Huang Shijie <b32955@freescale.com>, "dwmw2@infradead.org"
+ <dwmw2@infradead.org>
+Subject: RE: [PATCH v3 0/7] mtd: spi-nor: add a new framework for SPI NOR
+Date: Tue, 17 Dec 2013 04:08:33 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA56ADC@DBDE04.ent.ti.com>
+References: <1387184330-14448-1-git-send-email-b32955@freescale.com>
+In-Reply-To: <1387184330-14448-1-git-send-email-b32955@freescale.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Date: Tue, 17 Dec 2013 11:35:35 +0800
-Message-ID: <CAPgLHd9khk_3eTMTVjgGA5f3=6=PTcUiuhf8Pxb0E_H75-4GCw@mail.gmail.com>
-Subject: [PATCH] mtd: mxc_nand: add missing clk_disable_unprepare() in
- mxcnd_remove()
-From: Wei Yongjun <weiyj.lk@gmail.com>
-To: dwmw2@infradead.org, computersforpeace@gmail.com, grant.likely@linaro.org,
- robh+dt@kernel.org, m.grzeschik@pengutronix.de,
- thierry.reding@avionic-design.de, schneider@at.festo.com,
- michael.opdenacker@free-electrons.com, jg1.han@samsung.com,
- artem.bityutskiy@linux.intel.com, fabio.estevam@freescale.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: yongjun_wei@trendmicro.com.cn, linux-mtd@lists.infradead.org
+Cc: "marex@denx.de" <marex@denx.de>, "angus.clark@st.com" <angus.clark@st.com>,
+ "shawn.guo@linaro.org" <shawn.guo@linaro.org>,
+ "b44548@freescale.com" <b44548@freescale.com>,
+ "broonie@linaro.org" <broonie@linaro.org>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "b18965@freescale.com" <b18965@freescale.com>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Poddar,
+ Sourav" <sourav.poddar@ti.com>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "lee.jones@linaro.org" <lee.jones@linaro.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,26 +31,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+Hi Shijie,
 
-clock source is prepared and enabled by clk_prepare_enable() in
-mxcnd_probe() function, but no disable/unprepare in mxcnd_remove().
+>From: Huang Shijie [mailto:b32955@freescale.com]
+[...]
+>Huang Shijie (7):
+>  mtd: spi-nor: copy the SPI NOR commands to a new header file
+>  mtd: spi-nor: add the basic data structures
+>  mtd: spi-nor: add the framework for SPI NOR
+>  mtd: m25p80: use the SPI nor framework
+>  mtd: spi-nor: add a helper to find the spi_device_id
+>  Documentation: add the binding file for Quadspi driver
+>  mtd: spi-nor: Add Freescale QuadSpi driver
+>
+> .../devicetree/bindings/mtd/fsl-quadspi.txt        |   31 +
+> drivers/mtd/Kconfig                                |    2 +
+> drivers/mtd/Makefile                               |    1 +
+> drivers/mtd/devices/Kconfig                        |    2 +-
+> drivers/mtd/devices/m25p80.c                       | 1271 ++-------------=
+-----
 
-Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
----
- drivers/mtd/nand/mxc_nand.c | 2 ++
- 1 file changed, 2 insertions(+)
+As much base code is copied from m25p90.c,
+Do you mind keeping the sign-offs of the original contributors of m25p80.c
+at-least in patches where much code is ported ?
+This would at-least give some credit to original authors and contributors.
 
-diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index 7a4e032..567a5e5 100644
---- a/drivers/mtd/nand/mxc_nand.c
-+++ b/drivers/mtd/nand/mxc_nand.c
-@@ -1577,6 +1577,8 @@ static int mxcnd_remove(struct platform_device *pdev)
- 	struct mxc_nand_host *host = platform_get_drvdata(pdev);
- 
- 	nand_release(&host->mtd);
-+	if (host->clk_act)
-+		clk_disable_unprepare(host->clk);
- 
- 	return 0;
- }
+with regards, pekon
