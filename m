@@ -1,30 +1,21 @@
-Received: from mail-db8lp0189.outbound.messaging.microsoft.com
- ([213.199.154.189] helo=db8outboundpool.messaging.microsoft.com)
+Received: from demumfd001.nsn-inter.net ([93.183.12.32])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VspIN-0003fn-Bg
- for linux-mtd@lists.infradead.org; Tue, 17 Dec 2013 07:42:24 +0000
-Date: Tue, 17 Dec 2013 15:12:27 +0800
-From: Huang Shijie <b32955@freescale.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v2 3/4] mtd: nand: support Micron READ RETRY
-Message-ID: <20131217071226.GB6052@shlinux2.ap.freescale.net>
-References: <1386619753-27613-1-git-send-email-computersforpeace@gmail.com>
- <1386619753-27613-3-git-send-email-computersforpeace@gmail.com>
- <20131211135451.GB1284@gmail.com>
- <20131211190313.GS27149@ld-irv-0074.broadcom.com>
- <20131212034749.GA1345@gmail.com>
- <20131217044342.GB12034@norris-Latitude-E6410>
- <20131217042307.GA15469@shlinux2.ap.freescale.net>
- <20131217050613.GC12034@norris-Latitude-E6410>
- <20131217051031.GB15761@shlinux2.ap.freescale.net>
- <20131217070103.GF12034@norris-Latitude-E6410>
+ id 1VspTA-0003pu-9P
+ for linux-mtd@lists.infradead.org; Tue, 17 Dec 2013 07:53:32 +0000
+Message-ID: <52B002D1.7060001@nsn.com>
+Date: Tue, 17 Dec 2013 08:52:49 +0100
+From: Alexander Sverdlin <alexander.sverdlin@nsn.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20131217070103.GF12034@norris-Latitude-E6410>
-Cc: linux-mtd@lists.infradead.org, Huang Shijie <shijie8@gmail.com>,
- Pekon Gupta <pekon@ti.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: ext Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v2] mtd: phram: Repair multiple instances support
+References: <525C2147.9060605@nsn.com>
+ <20131107073139.GC3805@norris.computersforpeace.net>
+In-Reply-To: <20131107073139.GC3805@norris.computersforpeace.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Joern Engel <joern@lazybastard.org>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>,
+ =?UTF-8?B?SGVydsOpIEZhY2hl?= <h-fache@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,62 +25,122 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Dec 16, 2013 at 11:01:03PM -0800, Brian Norris wrote:
-> On Tue, Dec 17, 2013 at 01:11:25PM +0800, Huang Shijie wrote:
-> > On Mon, Dec 16, 2013 at 09:06:13PM -0800, Brian Norris wrote:
-> > > On Tue, Dec 17, 2013 at 12:23:08PM +0800, Huang Shijie wrote:
-> > > > On Mon, Dec 16, 2013 at 08:43:42PM -0800, Brian Norris wrote:
-> > > > > > 
-> > > > > > The DMA warning only occurs when we enable the CONFIG_DMA_API_DEBUG.
-> > > Particularly, I think it is quite reasonable to restrict DMA to
-> > > mtd_read()/mtd_write()-like operations -- so this trickles down to
-> > > read_page/write_page, but not to device configuration operations like
-> > > ONFI set_features/get_features/read parameter tables, etc.
-> > > 
-> > > Do you disagree? Do you see some need to perform DMA on all operations?
-> > 
-> > The gpmi is much coupled with the MXS-DMA engine. the gpmi can uses the
-> > mxs-dma to set the gpmi registers.
-> > 
-> > Use the DMA makes the GPMI code very simple, it really makes the code very
-> > _ugly_ if we do not use the DMA for read_buf/write_buf.
+Hello Brian,
+
+On 07/11/13 08:31, ext Brian Norris wrote:
+> On Mon, Oct 14, 2013 at 06:52:23PM +0200, Alexander Sverdlin wrote:
+>> mtd: phram: Repair multiple instances support
+>>
+>> Commit b2a2a84d35e0f42ad26e326ec4258f6a8b8eecbe (mtd: phram: dot not crash when
+>> built-in and passing boot param) claims to be "based on Ville Herva's similar
+>> patch to block2mtd" (c4e7fb313771ac03dfdca26d30e8b721731c562b), but it has
+>> missed the crucial point of the original path: all these "if(n)def MODULE".
+>> It has broken the possibility to create several phram instances when phram is
+>> compiled as module. The possibility to add instances via /sys writes to
+>> /sys/module/phram/parameters/phram was also broken with mentioned patch.
+>> Proposed patch takes the idea of original block2mtd patch to its full extent.
+>> Assumtion "This function is always called before 'init_phram()'" was also
+>> incorrect, so removed the comment. This patch effectively reverts also
+>> b11ec57fc6e6d4882ef01a0c09a1dde58f50492e (mtd: phram: fix section mismatch for
+>> phram_setup).
+>>
+>> v2 changes: Fixed error handling in init_phram(). 
+>>
+>> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nsn.com>
 > 
-> It's not just about ugliness, it's about maintainability. I can clean up
-> a few cases here and there that don't conform to your driver's needs now
-> (notice I pointed out another instance of this in Uwe's patch), but
-> unless we establish better guidelines for NAND, this is fragile.
+> Can we get any testers? Perhaps Hervé can confirm this?
+
+Have addressed Ville Herva, Ryosuke Saito, Hervé Fache on 07.11.2013, no answer
+until now. Seems nobody interested in it any more. Any chances we still get this in?
+ 
+>> ---
+>> --- linux.orig/drivers/mtd/devices/phram.c
+>> +++ linux/drivers/mtd/devices/phram.c
+>> @@ -205,6 +205,8 @@ static inline void kill_final_newline(ch
+>>  	return 1;		\
+>>  } while (0)
+>>  
+>> +#ifndef MODULE
+>> +static int phram_init_called = 0;
+>>  /*
+>>   * This shall contain the module parameter if any. It is of the form:
+>>   * - phram=<device>,<address>,<size> for module case
+>> @@ -213,9 +215,10 @@ static inline void kill_final_newline(ch
+>>   * size.
+>>   * Example: phram.phram=rootfs,0xa0000000,512Mi
+>>   */
+>> -static __initdata char phram_paramline[64 + 20 + 20];
+>> +static char phram_paramline[64 + 20 + 20];
+>> +#endif
+>>  
+>> -static int __init phram_setup(const char *val)
+>> +static int phram_setup(const char *val)
+>>  {
+>>  	char buf[64 + 20 + 20], *str = buf;
+>>  	char *token[3];
+>> @@ -264,17 +267,36 @@ static int __init phram_setup(const char
+>>  	return ret;
+>>  }
+>>  
+>> -static int __init phram_param_call(const char *val, struct kernel_param *kp)
+>> +static int phram_param_call(const char *val, struct kernel_param *kp)
+>>  {
+>> +#ifdef MODULE
+>> +	return phram_setup(val);
+>> +#else
+>>  	/*
+>> -	 * This function is always called before 'init_phram()', whether
+>> -	 * built-in or module.
+>> +	 * If more parameters are later passed in via
+>> +	 * /sys/module/phram/parameters/phram
+>> +	 * and init_phram() has already been called,
+>> +	 * we can parse the argument now.
+>>  	 */
+>> +
+>> +	if (phram_init_called)
+>> +		return phram_setup(val);
+>> +
+>> +	/*
+>> +	 * During early boot stage, we only save the parameters
+>> +	 * here. We must parse them later: if the param passed
+>> +	 * from kernel boot command line, phram_param_call() is
+>> +	 * called so early that it is not possible to resolve
+>> +	 * the device (even kmalloc() fails). Defer that work to
+>> +	 * phram_setup().
+>> +	 */
+>> +
+>>  	if (strlen(val) >= sizeof(phram_paramline))
+>>  		return -ENOSPC;
+>>  	strcpy(phram_paramline, val);
+>>  
+>>  	return 0;
+>> +#endif
+>>  }
+>>  
+>>  module_param_call(phram, phram_param_call, NULL, NULL, 000);
+>> @@ -283,10 +305,15 @@ MODULE_PARM_DESC(phram, "Memory region t
+>>  
+>>  static int __init init_phram(void)
+>>  {
+>> +	int ret = 0;
+>> +
+>> +#ifndef MODULE
+>>  	if (phram_paramline[0])
+>> -		return phram_setup(phram_paramline);
+>> +		ret = phram_setup(phram_paramline);
+>> +	phram_init_called = 1;
+>> +#endif
+>>  
+>> -	return 0;
+>> +	return ret;
+>>  }
+>>  
+>>  static void __exit cleanup_phram(void)
 > 
-> As a diversion, let's look at atmel_nand for an example. It uses DMA as
-> well, but it dodges some of your problems using a heuristic, so that it
-> only uses DMA for larger-than-OOB-size transactions (see
-> atmel_read_buf). Additionally, it has a hack-y check for highmem, to try
-> to confirm that the region it's trying to map is, in fact, DMA-able.
+> Brian
 > 
-> So, atmel_nand does not have an ideal solution, but it at least attempts
-> to solve parts of this problem. GPMI, on the other hand, ignores it
-> entirely.
-
-ok.
-
-i will fix it by a new patch to add more checks for the read_buf/write_buf.
-
-
 > 
-> > If you insist that it is okay to use the local array in the nand_base.c,
-> > I can use kmalloc/memcpy in the gpmi's read_buf/write_buf hooks. In such a 
-> > way, we can make the gpmi looks more normal.
-> 
-> I think a bounce buffer is necessary, if you really want to use DMA all
-> the time; some transactions are just not worth initializing DMA-able
-> buffers in the high-level code. But even better, can GPMI easily utilize
-> some sort of PIO mode for small/slow-path transactions like this, or is
-yes, the gpmi can utilize the PIO mode for the transactions.
 
-
-> it inextricably tied to the MXS-DMA engine?
-
-You can think the mxs-dma is designed for GPMI.
-
-
-thanks
-Huang Shijie
+-- 
+Best regards,
+Alexander Sverdlin.
