@@ -1,15 +1,16 @@
-From: Marek Vasut <marex@denx.de>
-To: Huang Shijie <shijie8@gmail.com>
+Date: Wed, 18 Dec 2013 00:00:52 +0800
+From: Huang Shijie <shijie8@gmail.com>
+To: Marek Vasut <marex@denx.de>
 Subject: Re: [PATCH v3 2/7] mtd: spi-nor: add the basic data structures
-Date: Tue, 17 Dec 2013 16:16:56 +0100
+Message-ID: <20131217160050.GA1279@gmail.com>
 References: <1387184330-14448-1-git-send-email-b32955@freescale.com>
- <201312171405.55964.marex@denx.de> <20131217134923.GA1220@gmail.com>
-In-Reply-To: <20131217134923.GA1220@gmail.com>
+ <201312171405.55964.marex@denx.de>
+ <20131217134923.GA1220@gmail.com>
+ <201312171616.57029.marex@denx.de>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201312171616.57029.marex@denx.de>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <201312171616.57029.marex@denx.de>
 Cc: angus.clark@st.com, computersforpeace@gmail.com, b44548@freescale.com,
  broonie@linaro.org, lee.jones@linaro.org, linux-doc@vger.kernel.org,
  b18965@freescale.com, linux-spi@vger.kernel.org,
@@ -25,44 +26,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday, December 17, 2013 at 02:49:25 PM, Huang Shijie wrote:
-> On Tue, Dec 17, 2013 at 02:05:55PM +0100, Marek Vasut wrote:
-> > On Monday, December 16, 2013 at 09:58:45 AM, Huang Shijie wrote:
-> > > +struct spi_nor { > > +	struct mtd_info		*mtd;
-> > > +	struct mutex		lock;
-> > > +
-> > > +	/* pointer to a spi device */
-> > > +	struct device		*dev;
-> > > +	u32			page_size;
-> > > +	u8			addr_width;
-> > > +	u8			erase_opcode;
-> > > +	u8			read_opcode;
-> > > +	u8			read_dummy;
-> > > +	u8			program_opcode;
-> > > +	enum read_mode		flash_read;
-> > > +	bool			sst_write_second;
-> > > +	struct spi_nor_xfer_cfg	cfg;
+On Tue, Dec 17, 2013 at 04:16:56PM +0100, Marek Vasut wrote:
+> On Tuesday, December 17, 2013 at 02:49:25 PM, Huang Shijie wrote:
+> > On Tue, Dec 17, 2013 at 02:05:55PM +0100, Marek Vasut wrote:
+> > > On Monday, December 16, 2013 at 09:58:45 AM, Huang Shijie wrote:
+> > > > +struct spi_nor { > > +	struct mtd_info		*mtd;
+> > > > +	struct mutex		lock;
+> > > > +
+> > > > +	/* pointer to a spi device */
+> > > > +	struct device		*dev;
+> > > > +	u32			page_size;
+> > > > +	u8			addr_width;
+> > > > +	u8			erase_opcode;
+> > > > +	u8			read_opcode;
+> > > > +	u8			read_dummy;
+> > > > +	u8			program_opcode;
+> > > > +	enum read_mode		flash_read;
+> > > > +	bool			sst_write_second;
+> > > > +	struct spi_nor_xfer_cfg	cfg;
+> > > 
+> > > You do want to split the function pointers below and the device
+> > > configuration above into separate structures.
 > > 
-> > You do want to split the function pointers below and the device
-> > configuration above into separate structures.
+> > sorry, i prefer to keep them in one data structrue, just like the
+> > nand_chip{} does.
 > 
-> sorry, i prefer to keep them in one data structrue, just like the
-> nand_chip{} does.
 
-Can you explain why?
+Take @read_reg for example, currently, we call it with nor->read_reg();
+If we add a new data structrue for these hooks, we wil call it with
+nor->ops->read_reg().
 
-> > > +	/* for write_reg */
-> > > +	u8			cmd_buf[SPI_NOR_MAX_CMD_SIZE];
-> > > +
-> > > +	/*
-> > > +	 * Do some work before or after we run these operations:
-> > > +	 *   read/write/erese/lock/unlock
-> > 
-> > Proper kernel-doc style comments for this structure would be nice.
-> 
-> Do you mean the style used by nand_chip{}?
+So just like the nand_chip{}, make the code more simple.
 
-Yes. See Documentation/kernel-doc-nano-HOWTO.txt
 
-Best regards,
-Marek Vasut
+thanks
+Huang Shijie
