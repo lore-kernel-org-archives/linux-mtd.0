@@ -1,26 +1,30 @@
-Received: from mail-pd0-x236.google.com ([2607:f8b0:400e:c02::236])
+Received: from mail-db8lp0189.outbound.messaging.microsoft.com
+ ([213.199.154.189] helo=db8outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vsp3f-0003Tp-TD
- for linux-mtd@lists.infradead.org; Tue, 17 Dec 2013 07:27:15 +0000
-Received: by mail-pd0-f182.google.com with SMTP id v10so6400861pde.41
- for <linux-mtd@lists.infradead.org>; Mon, 16 Dec 2013 23:26:50 -0800 (PST)
-Date: Mon, 16 Dec 2013 23:26:46 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Wei Yongjun <weiyj.lk@gmail.com>
-Subject: Re: [PATCH] mtd: mxc_nand: add missing clk_disable_unprepare() in
- mxcnd_remove()
-Message-ID: <20131217072646.GH12034@norris-Latitude-E6410>
-References: <CAPgLHd9khk_3eTMTVjgGA5f3=6=PTcUiuhf8Pxb0E_H75-4GCw@mail.gmail.com>
+ id 1VspIN-0003fn-Bg
+ for linux-mtd@lists.infradead.org; Tue, 17 Dec 2013 07:42:24 +0000
+Date: Tue, 17 Dec 2013 15:12:27 +0800
+From: Huang Shijie <b32955@freescale.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v2 3/4] mtd: nand: support Micron READ RETRY
+Message-ID: <20131217071226.GB6052@shlinux2.ap.freescale.net>
+References: <1386619753-27613-1-git-send-email-computersforpeace@gmail.com>
+ <1386619753-27613-3-git-send-email-computersforpeace@gmail.com>
+ <20131211135451.GB1284@gmail.com>
+ <20131211190313.GS27149@ld-irv-0074.broadcom.com>
+ <20131212034749.GA1345@gmail.com>
+ <20131217044342.GB12034@norris-Latitude-E6410>
+ <20131217042307.GA15469@shlinux2.ap.freescale.net>
+ <20131217050613.GC12034@norris-Latitude-E6410>
+ <20131217051031.GB15761@shlinux2.ap.freescale.net>
+ <20131217070103.GF12034@norris-Latitude-E6410>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <CAPgLHd9khk_3eTMTVjgGA5f3=6=PTcUiuhf8Pxb0E_H75-4GCw@mail.gmail.com>
-Cc: fabio.estevam@freescale.com, jg1.han@samsung.com,
- m.grzeschik@pengutronix.de, michael.opdenacker@free-electrons.com,
- Sascha Hauer <s.hauer@pengutronix.de>, thierry.reding@avionic-design.de,
- schneider@at.festo.com, yongjun_wei@trendmicro.com.cn, robh+dt@kernel.org,
- linux-mtd@lists.infradead.org, artem.bityutskiy@linux.intel.com,
- grant.likely@linaro.org, dwmw2@infradead.org
+In-Reply-To: <20131217070103.GF12034@norris-Latitude-E6410>
+Cc: linux-mtd@lists.infradead.org, Huang Shijie <shijie8@gmail.com>,
+ Pekon Gupta <pekon@ti.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,35 +34,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ Sascha
-
-On Tue, Dec 17, 2013 at 11:35:35AM +0800, Wei Yongjun wrote:
-> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+On Mon, Dec 16, 2013 at 11:01:03PM -0800, Brian Norris wrote:
+> On Tue, Dec 17, 2013 at 01:11:25PM +0800, Huang Shijie wrote:
+> > On Mon, Dec 16, 2013 at 09:06:13PM -0800, Brian Norris wrote:
+> > > On Tue, Dec 17, 2013 at 12:23:08PM +0800, Huang Shijie wrote:
+> > > > On Mon, Dec 16, 2013 at 08:43:42PM -0800, Brian Norris wrote:
+> > > > > > 
+> > > > > > The DMA warning only occurs when we enable the CONFIG_DMA_API_DEBUG.
+> > > Particularly, I think it is quite reasonable to restrict DMA to
+> > > mtd_read()/mtd_write()-like operations -- so this trickles down to
+> > > read_page/write_page, but not to device configuration operations like
+> > > ONFI set_features/get_features/read parameter tables, etc.
+> > > 
+> > > Do you disagree? Do you see some need to perform DMA on all operations?
+> > 
+> > The gpmi is much coupled with the MXS-DMA engine. the gpmi can uses the
+> > mxs-dma to set the gpmi registers.
+> > 
+> > Use the DMA makes the GPMI code very simple, it really makes the code very
+> > _ugly_ if we do not use the DMA for read_buf/write_buf.
 > 
-> clock source is prepared and enabled by clk_prepare_enable() in
-> mxcnd_probe() function, but no disable/unprepare in mxcnd_remove().
+> It's not just about ugliness, it's about maintainability. I can clean up
+> a few cases here and there that don't conform to your driver's needs now
+> (notice I pointed out another instance of this in Uwe's patch), but
+> unless we establish better guidelines for NAND, this is fragile.
 > 
-> Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
-
-Looks good, thanks. Applied to l2-mtd.git.
-
-> ---
->  drivers/mtd/nand/mxc_nand.c | 2 ++
->  1 file changed, 2 insertions(+)
+> As a diversion, let's look at atmel_nand for an example. It uses DMA as
+> well, but it dodges some of your problems using a heuristic, so that it
+> only uses DMA for larger-than-OOB-size transactions (see
+> atmel_read_buf). Additionally, it has a hack-y check for highmem, to try
+> to confirm that the region it's trying to map is, in fact, DMA-able.
 > 
-> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-> index 7a4e032..567a5e5 100644
-> --- a/drivers/mtd/nand/mxc_nand.c
-> +++ b/drivers/mtd/nand/mxc_nand.c
-> @@ -1577,6 +1577,8 @@ static int mxcnd_remove(struct platform_device *pdev)
->  	struct mxc_nand_host *host = platform_get_drvdata(pdev);
->  
->  	nand_release(&host->mtd);
-> +	if (host->clk_act)
-> +		clk_disable_unprepare(host->clk);
->  
->  	return 0;
->  }
-> 
+> So, atmel_nand does not have an ideal solution, but it at least attempts
+> to solve parts of this problem. GPMI, on the other hand, ignores it
+> entirely.
 
-Brian
+ok.
+
+i will fix it by a new patch to add more checks for the read_buf/write_buf.
+
+
+> 
+> > If you insist that it is okay to use the local array in the nand_base.c,
+> > I can use kmalloc/memcpy in the gpmi's read_buf/write_buf hooks. In such a 
+> > way, we can make the gpmi looks more normal.
+> 
+> I think a bounce buffer is necessary, if you really want to use DMA all
+> the time; some transactions are just not worth initializing DMA-able
+> buffers in the high-level code. But even better, can GPMI easily utilize
+> some sort of PIO mode for small/slow-path transactions like this, or is
+yes, the gpmi can utilize the PIO mode for the transactions.
+
+
+> it inextricably tied to the MXS-DMA engine?
+
+You can think the mxs-dma is designed for GPMI.
+
+
+thanks
+Huang Shijie
