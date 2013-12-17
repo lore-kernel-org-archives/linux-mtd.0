@@ -1,22 +1,21 @@
-From: <thomas.langer@lantiq.com>
-To: <marex@denx.de>, <b32955@freescale.com>
-Subject: RE: [PATCH v3 6/7] Documentation: add the binding file for Quadspi
- driver
-Date: Tue, 17 Dec 2013 13:36:33 +0000
-Message-ID: <593AEF6C47F46446852B067021A273D6D9AFB83B@MUCSE039.lantiq.com>
-References: <1387184330-14448-1-git-send-email-b32955@freescale.com>
- <1387184330-14448-7-git-send-email-b32955@freescale.com>
- <201312171410.05423.marex@denx.de>
-In-Reply-To: <201312171410.05423.marex@denx.de>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+From: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+To: Santosh Shilimkar <santosh.shilimkar@ti.com>, Rob Landley
+ <rob@landley.net>, Russell King <linux@arm.linux.org.uk>
+Subject: [PATCH v4 2/9] mtd: nand: davinci: return ENOMEM if memory allocation
+ is failed
+Date: Tue, 17 Dec 2013 15:36:05 +0200
+Message-ID: <1387287365-19731-1-git-send-email-ivan.khoronzhuk@ti.com>
+In-Reply-To: <1387285155-19182-1-git-send-email-ivan.khoronzhuk@ti.com>
+References: <1387285155-19182-1-git-send-email-ivan.khoronzhuk@ti.com>
 MIME-Version: 1.0
-Cc: angus.clark@st.com, shawn.guo@linaro.org, b44548@freescale.com,
- broonie@linaro.org, dwmw2@infradead.org, linux-doc@vger.kernel.org,
- b18965@freescale.com, linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
- pekon@ti.com, sourav.poddar@ti.com, computersforpeace@gmail.com,
- lee.jones@linaro.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ grygorii.strashko@ti.com, Pawel Moll <pawel.moll@arm.com>,
+ Stephen Warren <swarren@wwwdotorg.org>, ijc+devicetree@hellion.org.uk,
+ Kumar Gala <galak@kernel.crashing.org>, Rob Herring <rob.herring@calxeda.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>, computersforpeace@gmail.com,
+ dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,29 +25,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Marek,
+In case when memory allocation is failed the driver should return
+ENOMEM instead of ENODEV.
 
-Marek Vasut wrote on=A02013-12-17:
-> On Monday, December 16, 2013 at 09:58:49 AM, Huang Shijie wrote:
->> This patch adds the binding file for Freescale Quadspi driver.
->>=20
->> Signed-off-by: Huang Shijie <b32955@freescale.com>
->=20
-> I might be blind and/or tired, but I don't see devicetree-discuss in the =
-CC.
-> Next time please CC this ML ( devicetree-discuss AT lists.ozlabs.org ) so=
- the
-> bindings are reviewed by experts .
-
-I am sure you talking about the new list at devicetree@vger.kernel.org?
-
->=20
-> Best regards,
-> Marek Vasut
-
-Best Regards,
-Thomas
+Reviewed-by: Grygorii Strashko <grygorii.strashko@ti.com>
+Reviewed-by: Taras Kondratiuk <taras@ti.com>
+Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
 ---
-There are two hard things in computer science: cache invalidation, naming t=
-hings, and off-by-one errors.
----
+ drivers/mtd/nand/davinci_nand.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
+index 584c1f4..4577fb4 100644
+--- a/drivers/mtd/nand/davinci_nand.c
++++ b/drivers/mtd/nand/davinci_nand.c
+@@ -541,7 +541,7 @@ static struct davinci_nand_pdata
+ 				GFP_KERNEL);
+ 		pdev->dev.platform_data = pdata;
+ 		if (!pdata)
+-			return NULL;
++			return ERR_PTR(-ENOMEM);
+ 		if (!of_property_read_u32(pdev->dev.of_node,
+ 			"ti,davinci-chipselect", &prop))
+ 			pdev->id = prop;
+@@ -598,6 +598,9 @@ static int nand_davinci_probe(struct platform_device *pdev)
+ 	nand_ecc_modes_t		ecc_mode;
+ 
+ 	pdata = nand_davinci_get_pdata(pdev);
++	if (IS_ERR(pdata))
++		return PTR_ERR(pdata);
++
+ 	/* insist on board-specific configuration */
+ 	if (!pdata)
+ 		return -ENODEV;
+-- 
+1.7.9.5
