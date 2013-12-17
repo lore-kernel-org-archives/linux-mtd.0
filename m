@@ -1,30 +1,27 @@
-Date: Tue, 17 Dec 2013 14:07:34 +0800
-From: Shawn Guo <shawn.guo@linaro.org>
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [PATCH v3 0/7] mtd: spi-nor: add a new framework for SPI NOR
-Message-ID: <20131217060731.GJ6691@S2101-09.ap.freescale.net>
-References: <1387184330-14448-1-git-send-email-b32955@freescale.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA56ADC@DBDE04.ent.ti.com>
- <20131217040209.GA27091@shlinux2.ap.freescale.net>
- <20980858CB6D3A4BAE95CA194937D5E73EA56B3A@DBDE04.ent.ti.com>
+Received: from mail-pd0-x22f.google.com ([2607:f8b0:400e:c02::22f])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VsoFz-0002V1-Dg
+ for linux-mtd@lists.infradead.org; Tue, 17 Dec 2013 06:35:52 +0000
+Received: by mail-pd0-f175.google.com with SMTP id w10so6358465pde.6
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Dec 2013 22:35:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA56B3A@DBDE04.ent.ti.com>
-Cc: "marex@denx.de" <marex@denx.de>, "angus.clark@st.com" <angus.clark@st.com>,
- "b44548@freescale.com" <b44548@freescale.com>,
- "broonie@linaro.org" <broonie@linaro.org>,
- "lee.jones@linaro.org" <lee.jones@linaro.org>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- "b18965@freescale.com" <b18965@freescale.com>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- Huang Shijie <b32955@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "mike@steroidmicros.com" <mike@steroidmicros.com>, "Poddar,
- Sourav" <sourav.poddar@ti.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+In-Reply-To: <20131217023731.GC12575@shlinux2.ap.freescale.net>
+References: <1387133061-6573-1-git-send-email-eliedebrauwer@gmail.com>
+ <1387133061-6573-2-git-send-email-eliedebrauwer@gmail.com>
+ <20131216043040.GB27109@shlinux2.ap.freescale.net>
+ <CAGWqfij_FQrXoBkhsL-noMxHyJV1yOyj8BO+ABCZFMP8Hv5upA@mail.gmail.com>
+ <20131216130048.GA1155@gmail.com>
+ <CAGWqfii2XjauNFMRu=OMTRTsgDeH9-dLhOsr0MeVhX2f-iAmkw@mail.gmail.com>
+ <20131217023731.GC12575@shlinux2.ap.freescale.net>
+Date: Tue, 17 Dec 2013 07:35:28 +0100
+Message-ID: <CAGWqfihdDmgOwqmi+wf9S19P_XVPpsd5szj5j8_j6NMv_g0-mA@mail.gmail.com>
+Subject: Re: [PATCH v2] mtd: gpmi: Deal with bitflips in erased regions regions
+From: Elie De Brauwer <eliedebrauwer@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Huang Shijie <shijie8@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,94 +31,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Dec 17, 2013 at 05:00:53AM +0000, Gupta, Pekon wrote:
-> >From: Huang Shijie [mailto:b32955@freescale.com]
-> >On Tue, Dec 17, 2013 at 04:08:33AM +0000, Gupta, Pekon wrote:
-> >>
-> >> As much base code is copied from m25p90.c,
-> >> Do you mind keeping the sign-offs of the original contributors of m25p80.c
-> >> at-least in patches where much code is ported ?
-> >I have added the lines in the spi-nor.c:
-> >
-> > " Cloned most of the code from the m25p80.c"
-> >
-> >> This would at-least give some credit to original authors and contributors.
-> >I do not change any authors information of m25p80.c.
-> >
-> >If it is not enough?  Could you remind me what to do ?
+On Tue, Dec 17, 2013 at 3:37 AM, Huang Shijie <b32955@freescale.com> wrote:
+> On Mon, Dec 16, 2013 at 02:14:03PM +0100, Elie De Brauwer wrote:
+>>
+>> int gpmi_allones(struct gpmi_nand_data *this)
+>> {
+>>    struct resources *r = &this->resources;
+>>    uint32_t reg = readl(r->gpmi_regs + HW_BCH_STATUS0);
+> I suddenly realise that you read a wrong register. :)
+>
+> It should be r->bch_regs, not r->gpmi_regs.
+>
 
-In case you clone most of the code from m25p80.c, you need to keep the
-copyright of that file as well, and add yours on top of it.
 
-> >
-> (1) Add sign-offs of main authors of m25p80, so that original contributors
->  still remains in path of submission [1].
+Argh, good catch, I swear I was staring at the offsets yesterday but
+didn't check the base addresses. I tested this on my board and now I
+also get a functioning situation back at "full" speed. I'll come up
+with a v3 shortly.
 
-The sign-off shouldn't be added by anyone than the person himself.  The
-sign-off tag is generally used in the following cases as far as I know.
+Thanks a lot
+E.
 
-1. When the patch is authored, the author A should surely add his
-   sign-off in the first place.
 
-2. If person B submits A's patch with some or without any change on the
-   patch, B should add his sign-off.
-
-3. Maintainer C should add his sign-off when he applies the patch.
-
-In any case, one's sign-off shouldn't be added anyone but himself.
-I do not see the need to add sign-off of m25p80 authors at the current
-situation.
-
-> 
-> (2) Also, please remove following from spi-nor.c
->   However, you can keep this in fsl-quadspi.c.
->   +MODULE_AUTHOR("Freescale Semiconductor Inc.");
->   I'm sure this was _not_ present in original m25p80.c
->  (m25p80.c was started as ST's driver as per MODULE_DESCRIPTION)
-
-Are you talking about drivers/mtd/devices/m25p80.c?  If so, I'm seeing
-the following lines in the file.
-
-MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Mike Lavender");
-MODULE_DESCRIPTION("MTD SPI driver for ST M25Pxx flash chips");
-
-I think we should keep the original MODULE_LICENSE and MODULE_AUTHOR,
-add a new MODULE_AUTHOR("Huang Shijie <b32955@freescale.com>") line,
-and update MODULE_DESCRIPTION line properly.
-
-> 
-> (3)     +MODULE_LICENSE("GPL");
-> Also, I assume the license version should be "GPLv2" ?
-
-If this is from original m25p80.c, we shouldn't change it, IMO.
-
-> 
-> Request you please _not_ to tag generic driver frameworks with any
-> specific company names, and let open-source be independent of any
-> commercial company tags.
-
-Are you sure about that?  Run git grep "redhat" on folder kernel\ and
-see what you get.
-
-> Otherwise eventually everything generic driver
-> will have some or other company name associated with it.
-
-What's the problem of that?  People are paid to do generic work, and why
-shouldn't their employer's name be mentioned to give the credit.  As
-long as the copyright is GPL, the code can be used, modified and
-distributed freely, and I do not see any problem with having company
-name in there.
-
-Shawn
-
-> And this should be followed by everyone (include myself).
-> 
-> I'm not sure why maintainers are not objecting to this. David, Brian ??
-> 
-> 
-> [1] https://www.kernel.org/doc/Documentation/SubmittingPatches
-> "12) Sign your work"
-> 
-> 
-> with regards, pekon
+-- 
+Elie De Brauwer
