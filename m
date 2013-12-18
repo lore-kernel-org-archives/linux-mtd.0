@@ -1,24 +1,16 @@
-Date: Wed, 18 Dec 2013 19:21:12 +0100
-From: Gerhard Sittig <gsi@denx.de>
-To: Huang Shijie <shijie8@gmail.com>
-Subject: Re: [PATCH v3 6/7] Documentation: add the binding file for Quadspi
- driver
-Message-ID: <20131218182112.GK8064@book.gsilab.sittig.org>
-References: <1387184330-14448-1-git-send-email-b32955@freescale.com>
- <1387184330-14448-7-git-send-email-b32955@freescale.com>
- <20131218153029.GF8064@book.gsilab.sittig.org>
- <20131218160355.GA1145@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20131218160355.GA1145@gmail.com>
-Cc: marex@denx.de, angus.clark@st.com, shawn.guo@linaro.org,
- b44548@freescale.com, broonie@linaro.org, dwmw2@infradead.org,
- linux-doc@vger.kernel.org, b18965@freescale.com, linux-spi@vger.kernel.org,
- Huang Shijie <b32955@freescale.com>, devicetree@vger.kernel.org,
- linux-mtd@lists.infradead.org, pekon@ti.com, sourav.poddar@ti.com,
- computersforpeace@gmail.com, lee.jones@linaro.org,
- linux-arm-kernel@lists.infradead.org
+Received: from mail-ee0-x229.google.com ([2a00:1450:4013:c00::229])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VtMTC-0008MJ-Cm
+ for linux-mtd@lists.infradead.org; Wed, 18 Dec 2013 19:07:47 +0000
+Received: by mail-ee0-f41.google.com with SMTP id t10so28706eei.28
+ for <linux-mtd@lists.infradead.org>; Wed, 18 Dec 2013 11:07:24 -0800 (PST)
+From: Elie De Brauwer <eliedebrauwer@gmail.com>
+To: b32955@freescale.com, dwmw2@infradead.org, dedekind1@gmail.com,
+ computersforpeace@gmail.com, shijie8@gmail.com
+Subject: [PATCH v6] gpmi-nand bitflips in erased regions.
+Date: Wed, 18 Dec 2013 20:07:11 +0100
+Message-Id: <1387393632-5338-1-git-send-email-eliedebrauwer@gmail.com>
+Cc: Elie De Brauwer <eliedebrauwer@gmail.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,35 +20,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 19, 2013 at 00:03 +0800, Huang Shijie wrote:
-> 
-> On Wed, Dec 18, 2013 at 04:30:29PM +0100, Gerhard Sittig wrote:
-> > > +++ b/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
-> > > [ ... ]
-> > > +Example:
-> > > +
-> > > +qspi0: quadspi@40044000 {
-> > > +	compatible = "fsl,vf610-qspi";
-> > > +	reg = <0x40044000 0x1000>;
-> > > +	interrupts = <0 24 0x04>;
-> > > [ ... ]
-> > > +};
-> > 
-> > [ ... ]
-> > I'd suggest to use symbolic names for the flags in the last
-> > interrupt specifier cell, as you do for clock items.
-> I will use the symbolic name if it has.
-> But if it not have a symbolic name, i have to keep it as it is now.
+Changes in v6: Correction in obtaining the ecc_strength. 
 
-To avoid potential confusion:  I meant symbolic names for the
-_flags_ of the interrupt specifier (i.e. trigger type and
-polarity).  The <dt-bindings/interrupt-controller/irq.h> file has
-IRQ_TYPE_LEVEL_HIGH with value 4 for you.
+Elie De Brauwer (1):
+  mtd: gpmi: Deal with bitflips in erased regions regions
 
+ drivers/mtd/nand/gpmi-nand/bch-regs.h  |  2 ++
+ drivers/mtd/nand/gpmi-nand/gpmi-lib.c  | 18 ++++++++++++++
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 44 +++++++++++++++++++++++++++++++---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.h |  1 +
+ 4 files changed, 62 insertions(+), 3 deletions(-)
 
-virtually yours
-Gerhard Sittig
 -- 
-DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
-HRB 165235 Munich, Office: Kirchenstr. 5, D-82194 Groebenzell, Germany
-Phone: +49-8142-66989-0 Fax: +49-8142-66989-80  Email: office@denx.de
+1.8.5.1
