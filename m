@@ -1,14 +1,14 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VtOuj-0004dR-6M
+ id 1VtOuj-0004dj-6P
  for linux-mtd@lists.infradead.org; Wed, 18 Dec 2013 21:44:22 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH RESEND 1/3] mtd: nand: pxa3xx: Clear need_wait flag when
- starting a command
-Date: Wed, 18 Dec 2013 18:44:08 -0300
-Message-Id: <1387403050-23965-2-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH RESEND 2/3] mtd: nand: pxa3xx: Use extended cmdfunc() only if
+ needed
+Date: Wed, 18 Dec 2013 18:44:09 -0300
+Message-Id: <1387403050-23965-3-git-send-email-ezequiel.garcia@free-electrons.com>
 In-Reply-To: <1387403050-23965-1-git-send-email-ezequiel.garcia@free-electrons.com>
 References: <1387403050-23965-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
@@ -26,51 +26,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Currently the driver assumes all commands will eventually trigger a RnB
-transition, and thus a "device is ready" IRQ.
+Currently, we have two different cmdfunc's implementations:
+one for PXA3xx SoC variant and one for Armada 370/XP SoC variant.
 
-This assumption means that on every issued command, the dev_ready completion
-handler is init'ed and the need_wait flag is set.
+The former is the legacy one, typically constrained to devices
+with page sizes smaller or equal to the controller's FIFO buffer.
+On the other side, the latter _only_ supports the so-called extended
+command semantics, which allow to handle devices with larger
+page sizes (4 KiB, 8 KiB, ...).
 
-However this is incorrect: some commands (such as NAND_CMD_STATUS) don't
-make the device 'busy' and thus a RnB transition never occurs.
-Given, the NAND core never calls waitfunc() after such commands, this
-is not a problem.
+This means we currently don't support devices with smaller pages on the
+A370/XP SoC. Fix it by first renaming the cmdfuncs variants, and then
+make the choice based on device page size (and SoC variant), rather than
+SoC variant alone.
 
-Therefore, it's possible to only clear the need_wait flag on every command
-that is started.
-
-This fixes a current bug that can be reproduced on PXA boards by writing
-blank (all 0xff'ed) to a page:
-
-  1. The kernel issues NAND_CMD_STATUS and sets need_wait=1. The flag
-     won't be cleared for this command since no RnB transition is
-     involved.
-
-  2. NAND_CMD_PAGEPROG is issued but since the data is blank, the driver
-     decides not to execute the command (and no IRQ activity is
-     involved).
-
-  3. The NAND core calls waitfunc() and waits for the dev_ready
-     completion, which will never end since the device _is_ already ready.
+While at it, add a check for page size, to make sure we don't allow larger
+pages sizes on the PXA3xx variant.
 
 Tested-by: Arnaud Ebalard <arno@natisbad.org>
 Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 ---
- drivers/mtd/nand/pxa3xx_nand.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mtd/nand/pxa3xx_nand.c | 31 +++++++++++++++++++++----------
+ 1 file changed, 21 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 8f38abd..9828033 100644
+index 9828033..f722ba7 100644
 --- a/drivers/mtd/nand/pxa3xx_nand.c
 +++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -690,6 +690,7 @@ static void prepare_start_command(struct pxa3xx_nand_info *info, int command)
- 	info->retcode		= ERR_NONE;
- 	info->ecc_err_cnt	= 0;
- 	info->ndcb3		= 0;
-+	info->need_wait		= 0;
+@@ -897,8 +897,8 @@ static int prepare_set_command(struct pxa3xx_nand_info *info, int command,
+ 	return exec_cmd;
+ }
  
- 	switch (command) {
- 	case NAND_CMD_READ0:
+-static void pxa3xx_nand_cmdfunc(struct mtd_info *mtd, unsigned command,
+-				int column, int page_addr)
++static void nand_cmdfunc(struct mtd_info *mtd, unsigned command,
++			 int column, int page_addr)
+ {
+ 	struct pxa3xx_nand_host *host = mtd->priv;
+ 	struct pxa3xx_nand_info *info = host->info_data;
+@@ -945,9 +945,9 @@ static void pxa3xx_nand_cmdfunc(struct mtd_info *mtd, unsigned command,
+ 	info->state = STATE_IDLE;
+ }
+ 
+-static void armada370_nand_cmdfunc(struct mtd_info *mtd,
+-				   const unsigned command,
+-				   int column, int page_addr)
++static void nand_cmdfunc_extended(struct mtd_info *mtd,
++				  const unsigned command,
++				  int column, int page_addr)
+ {
+ 	struct pxa3xx_nand_host *host = mtd->priv;
+ 	struct pxa3xx_nand_info *info = host->info_data;
+@@ -1487,6 +1487,21 @@ KEEP_CONFIG:
+ 		chip->bbt_md = &bbt_mirror_descr;
+ 	}
+ 
++	/*
++	 * If the page size is bigger than the FIFO size, let's check
++	 * we are given the right variant and then switch to the extended
++	 * (aka splitted) command handling,
++	 */
++	if (mtd->writesize > PAGE_CHUNK_SIZE) {
++		if (info->variant == PXA3XX_NAND_VARIANT_ARMADA370) {
++			chip->cmdfunc = nand_cmdfunc_extended;
++		} else {
++			dev_err(&info->pdev->dev,
++				"unsupported page size on this variant\n");
++			return -ENODEV;
++		}
++	}
++
+ 	if (info->variant == PXA3XX_NAND_VARIANT_ARMADA370)
+ 		ret = armada370_ecc_init(info, &chip->ecc,
+ 				   chip->ecc_strength_ds,
+@@ -1566,11 +1581,7 @@ static int alloc_nand_resource(struct platform_device *pdev)
+ 		chip->read_buf		= pxa3xx_nand_read_buf;
+ 		chip->write_buf		= pxa3xx_nand_write_buf;
+ 		chip->options		|= NAND_NO_SUBPAGE_WRITE;
+-
+-		if (info->variant == PXA3XX_NAND_VARIANT_ARMADA370)
+-			chip->cmdfunc = armada370_nand_cmdfunc;
+-		else
+-			chip->cmdfunc = pxa3xx_nand_cmdfunc;
++		chip->cmdfunc		= nand_cmdfunc;
+ 	}
+ 
+ 	spin_lock_init(&chip->controller->lock);
 -- 
 1.8.1.5
