@@ -1,23 +1,22 @@
-Received: from mail-pb0-x22c.google.com ([2607:f8b0:400e:c01::22c])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VtC0q-00068B-4q
- for linux-mtd@lists.infradead.org; Wed, 18 Dec 2013 07:57:49 +0000
-Received: by mail-pb0-f44.google.com with SMTP id rq2so8072314pbb.17
- for <linux-mtd@lists.infradead.org>; Tue, 17 Dec 2013 23:57:26 -0800 (PST)
-Date: Tue, 17 Dec 2013 23:57:22 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Rashika Kheria <rashika.kheria@gmail.com>
-Subject: Re: [PATCH 1/2] drivers: mtd: Mark functions as static and remove
- unused function in lpddr_cmds.c
-Message-ID: <20131218075722.GD5551@norris-Latitude-E6410>
-References: <d0512c2bc35b27af33ad79d74d93ecc0f2b4e92c.1386912859.git.rashika.kheria@gmail.com>
+Message-ID: <52B18265.5090404@ti.com>
+Date: Wed, 18 Dec 2013 13:09:25 +0200
+From: "ivan.khoronzhuk" <ivan.khoronzhuk@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d0512c2bc35b27af33ad79d74d93ecc0f2b4e92c.1386912859.git.rashika.kheria@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, josh@joshtriplett.org
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v4 0/9] Reuse davinci-nand driver for Keystone arch
+References: <1387285155-19182-1-git-send-email-ivan.khoronzhuk@ti.com>
+ <20131218071457.GB5551@norris-Latitude-E6410>
+In-Reply-To: <20131218071457.GB5551@norris-Latitude-E6410>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ grygorii.strashko@ti.com, Russell King <linux@arm.linux.org.uk>,
+ Pawel Moll <pawel.moll@arm.com>, Stephen Warren <swarren@wwwdotorg.org>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@kernel.crashing.org>, Rob Herring <rob.herring@calxeda.com>,
+ linux-kernel@vger.kernel.org, Santosh Shilimkar <santosh.shilimkar@ti.com>,
+ Rob Landley <rob@landley.net>, linux-mtd@lists.infradead.org,
+ dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,19 +26,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Dec 13, 2013 at 12:44:07PM +0530, Rashika Kheria wrote:
-> This patch marks the functions do_write_buffer() and do_erase_oneblock()
-> as static because because they are not used outside this file. It also
-> removes the unused function word_program() in lpddr/lpddr_cmds.c.
-> 
-> Thus, it also removes the following warnings in lpddr/lpddr_cmds.c:
-> drivers/mtd/lpddr/lpddr_cmds.c:391:5: warning: no previous prototype for ‘do_write_buffer’ [-Wmissing-prototypes]
-> drivers/mtd/lpddr/lpddr_cmds.c:472:5: warning: no previous prototype for ‘do_erase_oneblock’ [-Wmissing-prototypes]
-> drivers/mtd/lpddr/lpddr_cmds.c:751:5: warning: no previous prototype for ‘word_program’ [-Wmissing-prototypes]
-> 
-> Signed-off-by: Rashika Kheria <rashika.kheria@gmail.com>
-> Reviewed-by: Josh Triplett <josh@joshtriplett.org>
+On 12/18/2013 09:14 AM, Brian Norris wrote:
+> On Tue, Dec 17, 2013 at 02:59:06PM +0200, Ivan Khoronzhuk wrote:
+>> This series contains fixes and updates of Davinci nand driver in
+>> order to reuse it for Keystone platform.
+>>
+>> v3..v4:
+>> - mtd: nand: davinci: fix driver registration
+>> 	dropped __init/__exit/__exit_p as module_platform_driver() is used
+>> - mtd: nand: davinci: adjust DT properties to MTD generic
+>> 	used of_get_nand_bus_width() helper
+>> - mtd: nand: davinci: don't request AEMIF address range
+>> 	added comment at code change
+>
+> Pushed the series to l2-mtd.git. Thanks!
+>
+> Brian
+>
 
-Edited the $subjects and pushed both to l2-mtd.git. Thanks!
+Thanks
 
-Brian
+-- 
+Regards,
+Ivan Khoronzhuk
