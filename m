@@ -1,21 +1,21 @@
-Date: Tue, 17 Dec 2013 23:14:57 -0800
+Received: from mail-pd0-x234.google.com ([2607:f8b0:400e:c02::234])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VtBeU-0005Rc-3R
+ for linux-mtd@lists.infradead.org; Wed, 18 Dec 2013 07:34:42 +0000
+Received: by mail-pd0-f180.google.com with SMTP id q10so7896108pdj.11
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Dec 2013 23:34:20 -0800 (PST)
+Date: Tue, 17 Dec 2013 23:34:16 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
-Subject: Re: [PATCH v4 0/9] Reuse davinci-nand driver for Keystone arch
-Message-ID: <20131218071457.GB5551@norris-Latitude-E6410>
-References: <1387285155-19182-1-git-send-email-ivan.khoronzhuk@ti.com>
+To: Roland Stigge <stigge@antcom.de>
+Subject: Re: [PATCH] mtd: nand: lpc32xx_mlc: drop custom write_page callback
+Message-ID: <20131218073416.GC5551@norris-Latitude-E6410>
+References: <1387257011-4208-1-git-send-email-computersforpeace@gmail.com>
+ <52B043FB.7060204@antcom.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1387285155-19182-1-git-send-email-ivan.khoronzhuk@ti.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- grygorii.strashko@ti.com, Russell King <linux@arm.linux.org.uk>,
- Pawel Moll <pawel.moll@arm.com>, Stephen Warren <swarren@wwwdotorg.org>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@kernel.crashing.org>, Rob Herring <rob.herring@calxeda.com>,
- linux-kernel@vger.kernel.org, Santosh Shilimkar <santosh.shilimkar@ti.com>,
- Rob Landley <rob@landley.net>, linux-mtd@lists.infradead.org,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <52B043FB.7060204@antcom.de>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,18 +25,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Dec 17, 2013 at 02:59:06PM +0200, Ivan Khoronzhuk wrote:
-> This series contains fixes and updates of Davinci nand driver in
-> order to reuse it for Keystone platform.
-> 
-> v3..v4:
-> - mtd: nand: davinci: fix driver registration
-> 	dropped __init/__exit/__exit_p as module_platform_driver() is used
-> - mtd: nand: davinci: adjust DT properties to MTD generic
-> 	used of_get_nand_bus_width() helper
-> - mtd: nand: davinci: don't request AEMIF address range
-> 	added comment at code change
+On Tue, Dec 17, 2013 at 01:30:51PM +0100, Roland Stigge wrote:
+> Acked-by: Roland Stigge <stigge@antcom.de>
+> Tested-by: Roland Stigge <stigge@antcom.de>
 
-Pushed the series to l2-mtd.git. Thanks!
+Great, pushed to l2-mtd.git.
 
 Brian
