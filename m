@@ -1,14 +1,17 @@
-Received: from mail-pa0-x231.google.com ([2607:f8b0:400e:c03::231])
+Received: from mail-pd0-x236.google.com ([2607:f8b0:400e:c02::236])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VtJFt-0001Jm-Sq
- for linux-mtd@lists.infradead.org; Wed, 18 Dec 2013 15:41:50 +0000
-Received: by mail-pa0-f49.google.com with SMTP id kx10so6086158pab.22
- for <linux-mtd@lists.infradead.org>; Wed, 18 Dec 2013 07:41:27 -0800 (PST)
+ id 1VtJFw-0001KE-NQ
+ for linux-mtd@lists.infradead.org; Wed, 18 Dec 2013 15:41:53 +0000
+Received: by mail-pd0-f182.google.com with SMTP id v10so8425713pde.27
+ for <linux-mtd@lists.infradead.org>; Wed, 18 Dec 2013 07:41:31 -0800 (PST)
 From: Huang Shijie <shijie8@gmail.com>
 To: dwmw2@infradead.org
-Subject: [PATCH 1/2] mtd: gpmi: allocate a proper buffer for non ECC read/write
-Date: Wed, 18 Dec 2013 23:40:59 +0800
-Message-Id: <1387381260-11923-1-git-send-email-shijie8@gmail.com>
+Subject: [PATCH 2/2] mtd: gpmi: add sanity check when mapping DMA for
+ read_buf/write_buf
+Date: Wed, 18 Dec 2013 23:41:00 +0800
+Message-Id: <1387381260-11923-2-git-send-email-shijie8@gmail.com>
+In-Reply-To: <1387381260-11923-1-git-send-email-shijie8@gmail.com>
+References: <1387381260-11923-1-git-send-email-shijie8@gmail.com>
 Cc: Huang Shijie <shijie8@gmail.com>, computersforpeace@gmail.com,
  linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,55 +23,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The @data_buffer_dma buffer is used for non ECC read/write.
+The buffer pointer passed from the upper layer may points to
+a buffer in the stack or a buffer allocated by vmalloc, and etc..
 
-Currently, the length of the buffer is PAGE_SIZE, but the NAND chip may
-has 8K page or 16K page. So we have to extend it for the large page NAND
-chips.
-
-The gpmi_alloc_dma_buffer will be called twice. The first time is to
-allocate a temporary buffer for scanning the NAND chip; The second time
-is to allocate a buffer to store the real page content.
-
-This patch allocates a buffer of PAGE_SIZE size for scanning the NAND
-chip when gpmi_alloc_dma_buffer is called the first time, and allocates a
-buffer of the real NAND page size for the second time gpmi_alloc_dma_buffer
-is called.
+This patch adds more sanity check to this buffer.
+After this patch, if we meet a buffer which is allocated by vmalloc or
+a buffer in the stack, we will use our own DMA buffer @data_buffer_dma
+to do the DMA operations. If the buffer is not the cases above, we will
+map it for DMA operations directly.
 
 Signed-off-by: Huang Shijie <shijie8@gmail.com>
 ---
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 31 +++++++++++++++++--------------
+ 1 file changed, 17 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index f3efde9..cee5f81 100644
+index cee5f81..1908709 100644
 --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
 +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -783,14 +783,23 @@ static int gpmi_alloc_dma_buffer(struct gpmi_nand_data *this)
- {
- 	struct bch_geometry *geo = &this->bch_geometry;
- 	struct device *dev = this->dev;
-+	struct mtd_info *mtd = &this->mtd;
+@@ -367,25 +367,28 @@ void prepare_data_dma(struct gpmi_nand_data *this, enum dma_data_direction dr)
+ 	struct scatterlist *sgl = &this->data_sgl;
+ 	int ret;
  
- 	/* [1] Allocate a command buffer. PAGE_SIZE is enough. */
- 	this->cmd_buffer = kzalloc(PAGE_SIZE, GFP_DMA | GFP_KERNEL);
- 	if (this->cmd_buffer == NULL)
- 		goto error_alloc;
+-	this->direct_dma_map_ok = true;
+-
+ 	/* first try to map the upper buffer directly */
+-	sg_init_one(sgl, this->upper_buf, this->upper_len);
+-	ret = dma_map_sg(this->dev, sgl, 1, dr);
+-	if (ret == 0) {
+-		/* We have to use our own DMA buffer. */
+-		sg_init_one(sgl, this->data_buffer_dma, PAGE_SIZE);
+-
+-		if (dr == DMA_TO_DEVICE)
+-			memcpy(this->data_buffer_dma, this->upper_buf,
+-				this->upper_len);
+-
++	if (virt_addr_valid(this->upper_buf) &&
++		!object_is_on_stack(this->upper_buf)) {
++		sg_init_one(sgl, this->upper_buf, this->upper_len);
+ 		ret = dma_map_sg(this->dev, sgl, 1, dr);
+ 		if (ret == 0)
+-			dev_err(this->dev, "DMA mapping failed.\n");
++			goto map_fail;
  
--	/* [2] Allocate a read/write data buffer. PAGE_SIZE is enough. */
--	this->data_buffer_dma = kzalloc(PAGE_SIZE, GFP_DMA | GFP_KERNEL);
-+	/*
-+	 * [2] Allocate a read/write data buffer.
-+	 *     The gpmi_alloc_dma_buffer can be called twice.
-+	 *     We allocate a PAGE_SIZE length buffer if gpmi_alloc_dma_buffer
-+	 *     is called before the nand_scan_ident; and we allocate a buffer
-+	 *     of the real NAND page size when the gpmi_alloc_dma_buffer is
-+	 *     called after the nand_scan_ident.
-+	 */
-+	this->data_buffer_dma = kzalloc(mtd->writesize ?: PAGE_SIZE,
-+					GFP_DMA | GFP_KERNEL);
- 	if (this->data_buffer_dma == NULL)
- 		goto error_alloc;
+-		this->direct_dma_map_ok = false;
++		this->direct_dma_map_ok = true;
++		return;
+ 	}
++
++map_fail:
++	/* We have to use our own DMA buffer. */
++	sg_init_one(sgl, this->data_buffer_dma, this->upper_len);
++
++	if (dr == DMA_TO_DEVICE)
++		memcpy(this->data_buffer_dma, this->upper_buf, this->upper_len);
++
++	dma_map_sg(this->dev, sgl, 1, dr);
++
++	this->direct_dma_map_ok = false;
+ }
  
+ /* This will be called after the DMA operation is finished. */
 -- 
 1.8.3.1
