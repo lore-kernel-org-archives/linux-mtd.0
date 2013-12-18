@@ -1,17 +1,15 @@
-Received: from szxga01-in.huawei.com ([119.145.14.64])
+Received: from szxga03-in.huawei.com ([119.145.14.66])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vt7Tv-0001mO-8n
- for linux-mtd@lists.infradead.org; Wed, 18 Dec 2013 03:07:32 +0000
-From: Wang Nan <wangnan0@huawei.com>
+ id 1Vt8D2-0002YG-5W
+ for linux-mtd@lists.infradead.org; Wed, 18 Dec 2013 03:54:09 +0000
+From: <wangnan0@huawei.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH] jffs2: unlock f->sem on error in jffs2_new_inode()
-Date: Wed, 18 Dec 2013 11:05:45 +0800
-Message-ID: <1387335945-58945-1-git-send-email-wangnan0@huawei.com>
+Subject: [PATCH resend] fs/jffs2: unlock f->sem on error in jffs2_new_inode()
+Date: Wed, 18 Dec 2013 11:52:37 +0800
+Message-ID: <1387338757-781-1-git-send-email-wangnan0@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Cc: Wang Nan <wangnan0@huawei.com>, kernel.openeuler@huawei.com,
- linux-mtd@lists.infradead.org, Wang Guoli <andy.wangguoli@huawei.com>,
- hui.geng@huawei.com
+Cc: linux-mtd@lists.infradead.org, hui.geng@huawei.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,8 +29,13 @@ the lock, which will lead to deadlock.
 Fix it by releasing the lock in jffs2_new_inode() on error.
 
 Cc: linux-mtd@lists.infradead.org
+Cc: <stable@vger.kernel.org> # 2.6.34+
+Cc: Wang Guoli <andy.wangguoli@huawei.com>
 Signed-off-by: Wang Guoli <andy.wangguoli@huawei.com>
 Signed-off-by: Wang Nan <wangnan0@huawei.com>
+---
+
+Resend with stable tag added.
 
 ---
  fs/jffs2/fs.c | 9 ++++++---
