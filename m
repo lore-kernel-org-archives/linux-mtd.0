@@ -1,19 +1,23 @@
-Received: from mail-pd0-x236.google.com ([2607:f8b0:400e:c02::236])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VtJFw-0001KE-NQ
- for linux-mtd@lists.infradead.org; Wed, 18 Dec 2013 15:41:53 +0000
-Received: by mail-pd0-f182.google.com with SMTP id v10so8425713pde.27
- for <linux-mtd@lists.infradead.org>; Wed, 18 Dec 2013 07:41:31 -0800 (PST)
+Date: Thu, 19 Dec 2013 00:03:59 +0800
 From: Huang Shijie <shijie8@gmail.com>
-To: dwmw2@infradead.org
-Subject: [PATCH 2/2] mtd: gpmi: add sanity check when mapping DMA for
- read_buf/write_buf
-Date: Wed, 18 Dec 2013 23:41:00 +0800
-Message-Id: <1387381260-11923-2-git-send-email-shijie8@gmail.com>
-In-Reply-To: <1387381260-11923-1-git-send-email-shijie8@gmail.com>
-References: <1387381260-11923-1-git-send-email-shijie8@gmail.com>
-Cc: Huang Shijie <shijie8@gmail.com>, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org
+To: Huang Shijie <b32955@freescale.com>, dwmw2@infradead.org,
+ computersforpeace@gmail.com, angus.clark@st.com,
+ lee.jones@linaro.org, marex@denx.de, pekon@ti.com,
+ sourav.poddar@ti.com, broonie@linaro.org,
+ linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+ b44548@freescale.com, b18965@freescale.com, shawn.guo@linaro.org,
+ devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 6/7] Documentation: add the binding file for Quadspi
+ driver
+Message-ID: <20131218160355.GA1145@gmail.com>
+References: <1387184330-14448-1-git-send-email-b32955@freescale.com>
+ <1387184330-14448-7-git-send-email-b32955@freescale.com>
+ <20131218153029.GF8064@book.gsilab.sittig.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20131218153029.GF8064@book.gsilab.sittig.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,66 +27,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The buffer pointer passed from the upper layer may points to
-a buffer in the stack or a buffer allocated by vmalloc, and etc..
+On Wed, Dec 18, 2013 at 04:30:29PM +0100, Gerhard Sittig wrote:
+> > +++ b/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
+> > @@ -0,0 +1,31 @@
+> > +* Freescale Quad Serial Peripheral Interface(QuadSPI)
+> > +
+> > +Required properties:
+> > +- compatible : Should be "fsl,vf610-qspi"
+> > +- reg : Offset and length of the register set for the device
+> > +- interrupts : Should contain the interrupt for the device
+> > +- clocks : The clocks needed by the QuadSPI controller
+> > +- clock-names : the name of the clocks
+> > +- fsl,nor-num : Contains the number of SPI NOR chips connected to
+> > +                the controller.
+> > +- fsl,nor-size : the size of each SPI NOR.
+> > +- fsl,max-frequency : the frequency at which the SPI NOR works.
+> 
+> Those "fsl,*" properties somehow feel strange.  I comment on
+> details below the example since this should even better show why
+> I feel so.
+> 
+> > +
+> > +Example:
+> > +
+> > +qspi0: quadspi@40044000 {
+> > +	compatible = "fsl,vf610-qspi";
+> > +	reg = <0x40044000 0x1000>;
+> > +	interrupts = <0 24 0x04>;
+> > +	clocks = <&clks VF610_CLK_QSPI0_EN>,
+> > +		<&clks VF610_CLK_QSPI0>;
+> > +	clock-names = "qspi_en", "qspi";
+> > +	fsl,nor-num = <1>;
+> > +	fsl,nor-size = <0x1000000>;
+> > +	fsl,max-frequency = <66000000>;
+> > +	status = "okay";
+> > +
+> > +	flash0: s25fl128s@0 {
+> > +		....
+> > +	};
+> > +};
+> 
+> 
+> The number of chips connected to the controller should reflect in
+> the child nodes of the SPI NOR controller, and need not get
+> specified in redundant ways and with potential for errors when
+> they can get determined at runtime.
+thanks. I have already removed this property in the next version.
 
-This patch adds more sanity check to this buffer.
-After this patch, if we meet a buffer which is allocated by vmalloc or
-a buffer in the stack, we will use our own DMA buffer @data_buffer_dma
-to do the DMA operations. If the buffer is not the cases above, we will
-map it for DMA operations directly.
 
-Signed-off-by: Huang Shijie <shijie8@gmail.com>
----
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 31 +++++++++++++++++--------------
- 1 file changed, 17 insertions(+), 14 deletions(-)
+> 
+> The capacity of the flash chip as well as the maximum frequency
+> which the flash chip operates at should be features of the flash
+> chip (in combination with the board), i.e. of the child node and
+agree.
+thanks.
 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index cee5f81..1908709 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -367,25 +367,28 @@ void prepare_data_dma(struct gpmi_nand_data *this, enum dma_data_direction dr)
- 	struct scatterlist *sgl = &this->data_sgl;
- 	int ret;
- 
--	this->direct_dma_map_ok = true;
--
- 	/* first try to map the upper buffer directly */
--	sg_init_one(sgl, this->upper_buf, this->upper_len);
--	ret = dma_map_sg(this->dev, sgl, 1, dr);
--	if (ret == 0) {
--		/* We have to use our own DMA buffer. */
--		sg_init_one(sgl, this->data_buffer_dma, PAGE_SIZE);
--
--		if (dr == DMA_TO_DEVICE)
--			memcpy(this->data_buffer_dma, this->upper_buf,
--				this->upper_len);
--
-+	if (virt_addr_valid(this->upper_buf) &&
-+		!object_is_on_stack(this->upper_buf)) {
-+		sg_init_one(sgl, this->upper_buf, this->upper_len);
- 		ret = dma_map_sg(this->dev, sgl, 1, dr);
- 		if (ret == 0)
--			dev_err(this->dev, "DMA mapping failed.\n");
-+			goto map_fail;
- 
--		this->direct_dma_map_ok = false;
-+		this->direct_dma_map_ok = true;
-+		return;
- 	}
-+
-+map_fail:
-+	/* We have to use our own DMA buffer. */
-+	sg_init_one(sgl, this->data_buffer_dma, this->upper_len);
-+
-+	if (dr == DMA_TO_DEVICE)
-+		memcpy(this->data_buffer_dma, this->upper_buf, this->upper_len);
-+
-+	dma_map_sg(this->dev, sgl, 1, dr);
-+
-+	this->direct_dma_map_ok = false;
- }
- 
- /* This will be called after the DMA operation is finished. */
--- 
-1.8.3.1
+> not the controller.  SPI slaves already have a documented
+> property for the purpose of limiting transfer rates when they are
+> lower than the controller's i.e. busses capabilities.  Can't tell
+> from the top of my head whether there is a property for the
+> maximum frequency which a controller should use across the whole
+> bus.  In any case, either the property needs to get moved, or the
+> description should get updated to say "the max frequency at which
+> the controller will send data" or something.
+> 
+> The capacity of the flash chip should be a consequence of either
+> having gathered CFI information (if available) or having
+> identified the chip by its JEDEC ID and looked up its features in
+> an internal database.  Users should not need to specify the
+> capacity of the flash chip in the device tree.
+
+I will remove it in the next version.
+
+> 
+> 
+> If the 'fsl,nor-size' property remains (which I doubt at the
+> moment), you cannot describe "the size of each" chip in one
+> single-cell spec.  So the documentation should get extended to
+> reflect multi-chip setups.  But I'd rather assume that the
+> property is not needed at all.
+> 
+> You can omit the 'status = "okay"' line since that is the default
+> already in the absence of the keyword.  This property is most
+> useful to declare yet not enable by default components in .dtsi
+> files and to do enable them in individual board files if
+> applicable.  This aspect need not be shown in the binding example
+> of a QSPI controller.
+> 
+> I'd suggest to use symbolic names for the flags in the last
+> interrupt specifier cell, as you do for clock items.
+I will use the symbolic name if it has.
+But if it not have a symbolic name, i have to keep it as it is now.
+
+Thanks
+Huang Shijie
