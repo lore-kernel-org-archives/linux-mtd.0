@@ -1,25 +1,21 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vt2Tq-0003mg-Va
- for linux-mtd@lists.infradead.org; Tue, 17 Dec 2013 21:47:07 +0000
-Date: Tue, 17 Dec 2013 18:46:49 -0300
+Date: Tue, 17 Dec 2013 21:42:45 -0300
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v4] mtd/nand: don't use {read,write}_buf for 8-bit
- transfers
-Message-ID: <20131217214648.GB8319@localhost>
-References: <20131127073512.GB13929@norris.computersforpeace.net>
- <1386278524-25669-1-git-send-email-u.kleine-koenig@pengutronix.de>
- <20131217054825.GE12034@norris-Latitude-E6410>
+Subject: Re: [PATCH] Partially revert "mtd: nand: pxa3xx: Introduce
+ 'marvell,armada370-nand' compatible string"
+Message-ID: <20131218004245.GB10369@localhost>
+References: <1386624986-404-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20131212230715.GX27149@ld-irv-0074.broadcom.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20131217054825.GE12034@norris-Latitude-E6410>
-Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- Pekon Gupta <pekon@ti.com>, kernel@pengutronix.de,
- Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+In-Reply-To: <20131212230715.GX27149@ld-irv-0074.broadcom.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Andrew Lunn <andrew@lunn.ch>, Jason Cooper <jason@lakedaemon.net>,
+ Lior Amsalem <alior@marvell.com>, linux-mtd@lists.infradead.org,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,21 +25,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Dec 16, 2013 at 09:48:25PM -0800, Brian Norris wrote:
-[..]
+Hi Brian,
+
+On Thu, Dec 12, 2013 at 03:07:15PM -0800, Brian Norris wrote:
+> On Mon, Dec 09, 2013 at 06:36:26PM -0300, Ezequiel Garcia wrote:
+> > This reverts c0f3b8643a6fa2461d70760ec49d21d2b031d611.
 > 
-> I don't have a good x16 setup yet, but I believe Ezequiel did some
-> testing on v3 (is this a "Tested-by"?). I'll probably try this out on my
-> x8 setups when I get a chance sometime this week.
+> Modified to say "partially reverts".
+> 
+> > 
+> > The "armada370-nand" compatible support is not complete, and it was mistake
+> > to add it. Revert it and pospone the support until the infrastructure is
+> > in place.
+> > 
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> > ---
+> > Note this won't apply to v3.12 as it is, although fixing it should be easy.
+> 
+> Pushed this patch to linux-mtd.git, noting -stable for 3.12+.
 > 
 
-No, I couldn't do a proper test of this one, although I remembered a
-tested a branch based on this patch.
+Just to have some context, this compatible was removed because it was
+wrongly added and it doesn't belong at v3.12 and v3.13.
 
-The problem was I couldn't find time to figure out how to test the GetFeatures
-and SetFeatures command. Hints?
+Now the revert is in place in v3.13-rc4 and it should be queued for
+v3.12.x, so we are good. Thanks for taking care of it!
 
-I can try to give it a test this weekend.
+On the other side, all the work needed for the driver to work OK on
+Armada 370/XP SoC is already in l2-mtd.git master, and I have some fixes
+ready to support 2048B pages.
+
+In conclusion, I think it's safe to add the compatible on top of such work,
+and queue it for v3.14.
+
+How should I send a patch to re-add this compatible? Do you plan to rebase
+l2-mtd.git master on top of v3.13-rc4 or so?
 -- 
 Ezequiel García, Free Electrons
 Embedded Linux, Kernel and Android Engineering
