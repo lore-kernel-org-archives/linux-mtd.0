@@ -1,24 +1,23 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
+Received: from [2001:41c8:1:5384::2] (helo=cassiel.sirena.org.uk)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vtbey-0003xk-GR
- for linux-mtd@lists.infradead.org; Thu, 19 Dec 2013 11:20:57 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Mike
- Frysinger (vapier@gentoo.org)" <vapier@gentoo.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>
-Subject: RE: [PATCH] mtd: tests: oobtest: fix test failures for oobsize
- which are not multiples of 4
-Date: Thu, 19 Dec 2013 11:20:20 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA57EE5@DBDE04.ent.ti.com>
-References: <1382947607-27077-1-git-send-email-george.cherian@ti.com>
-In-Reply-To: <1382947607-27077-1-git-send-email-george.cherian@ti.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1Vtdhh-0000hh-2b
+ for linux-mtd@lists.infradead.org; Thu, 19 Dec 2013 13:31:53 +0000
+Date: Thu, 19 Dec 2013 13:31:05 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Sourav Poddar <sourav.poddar@ti.com>
+Message-ID: <20131219133105.GC31886@sirena.org.uk>
+References: <1386339891-32717-1-git-send-email-sourav.poddar@ti.com>
+ <1386339891-32717-2-git-send-email-sourav.poddar@ti.com>
 MIME-Version: 1.0
-Cc: "Cherian, George" <george.cherian@ti.com>,
- "Stefan Roese <sr@denx.de> \(sr@denx.de\)" <sr@denx.de>, "Balbi,
- Felipe" <balbi@ti.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="aHyShe78FfJzbeER"
+Content-Disposition: inline
+In-Reply-To: <1386339891-32717-2-git-send-email-sourav.poddar@ti.com>
+Subject: Re: [PATCHv2 01/10] spi/spi.h: Add get_buf/put_buf support in spi
+ master.
+Cc: marex@denx.de, devicetree@vger.kernel.org, computersforpeace@gmail.com,
+ balbi@ti.com, linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
+ bcousson@baylibre.com, linux-omap@vger.kernel.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,116 +27,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From: 'George Cherian <george.cherian@ti.com>'
->Date: Monday, October 28, 2013 1:37 PM
->Subject: [PATCH] mtd: tests: oobtest: fix test failures for oobsize which =
-are not multiples of 4
->
->If oobsize is not multiple of 4 then the generated data to write to flash
->and data generated to verify are not same. This imapcts test cases 2,3 and=
- 5.
->If mtd->ecclayout->oobavail is not a multiple of 4 then while generating p=
-suedo
->random numbers to write to flash prandom_bytes_state () generates the extr=
-a
->random bytes which wont be done if we do for the whole length. So check
->for mtd->ecclayout->oobavail if its multiple of 4 then generate for full l=
-en
->(mtd->ecclayout->oobavail * pgcnt)
->else generate prandom of mtd->ecclayout->oobavail bytes pgcnt times.
->
->Signed-off-by: George Cherian <george.cherian@ti.com>
->---
-> drivers/mtd/tests/oobtest.c | 45 +++++++++++++++++++++++++++++++++++++++-=
------
-> 1 file changed, 39 insertions(+), 6 deletions(-)
->
->diff --git a/drivers/mtd/tests/oobtest.c b/drivers/mtd/tests/oobtest.c
->index ff35c46..060ea32 100644
->--- a/drivers/mtd/tests/oobtest.c
->+++ b/drivers/mtd/tests/oobtest.c
->@@ -210,11 +210,29 @@ static int verify_eraseblock(int ebnum)
-> static int verify_eraseblock_in_one_go(int ebnum)
-> {
-> 	struct mtd_oob_ops ops;
->-	int err =3D 0;
->+	int i, err =3D 0;
-> 	loff_t addr =3D ebnum * mtd->erasesize;
-> 	size_t len =3D mtd->ecclayout->oobavail * pgcnt;
->
->-	prandom_bytes_state(&rnd_state, writebuf, len);
->+	/*
->+	 * if mtd->ecclayout->oobavail is not a multiple of 4 then
->+	 * while generating psuedo random numbers to write to flash
->+	 * prandom_bytes_state () generates the extra random bytes
->+	 * which wont be done if we do for the whole length. So check
->+	 * for mtd->ecclayout->oobavail if its multiple of 4 then
->+	 * generate for full len (mtd->ecclayout->oobavail * pgcnt)
->+	 * else generate prandom of mtd->ecclayout->oobavail bytes
->+	 * pgcnt times.
->+	 */
->+
->+	if (mtd->ecclayout->oobavail % sizeof(u32)) {
->+		for (i =3D 0; i < len; i +=3D mtd->ecclayout->oobavail)
->+			prandom_bytes_state(&rnd_state, writebuf + i,
->+						mtd->ecclayout->oobavail);
->+	} else {
->+		prandom_bytes_state(&rnd_state, writebuf, len);
->+	}
->+
-> 	ops.mode      =3D MTD_OPS_AUTO_OOB;
-> 	ops.len       =3D 0;
-> 	ops.retlen    =3D 0;
->@@ -266,7 +284,7 @@ static int verify_all_eraseblocks(void)
-> static int __init mtd_oobtest_init(void)
-> {
-> 	int err =3D 0;
->-	unsigned int i;
->+	unsigned int i, j;
-> 	uint64_t tmp;
-> 	struct mtd_oob_ops ops;
-> 	loff_t addr =3D 0, addr0;
->@@ -341,7 +359,6 @@ static int __init mtd_oobtest_init(void)
-> 	err =3D verify_all_eraseblocks();
-> 	if (err)
-> 		goto out;
->-
-> 	/*
-> 	 * Second test: write all OOB, a block at a time, read it back and
-> 	 * verify.
->@@ -591,10 +608,26 @@ static int __init mtd_oobtest_init(void)
-> 	prandom_seed_state(&rnd_state, 11);
-> 	pr_info("verifying all eraseblocks\n");
-> 	for (i =3D 0; i < ebcnt - 1; ++i) {
->+		size_t sz =3D mtd->ecclayout->oobavail;
-> 		if (bbt[i] || bbt[i + 1])
-> 			continue;
->-		prandom_bytes_state(&rnd_state, writebuf,
->-					mtd->ecclayout->oobavail * 2);
->+	/*
->+	 * if mtd->ecclayout->oobavail is not a multiple of 4 then
->+	 * while generating psuedo random numbers to write to flash
->+	 * prandom_bytes_state () generates the extra random bytes
->+	 * which wont be done if we do for the whole length. So check
->+	 * for mtd->ecclayout->oobavail if its multiple of 4 then
->+	 * generate for full len (mtd->ecclayout->oobavail * pgcnt)
->+	 * else generate prandom of mtd->ecclayout->oobavail bytes
->+	 * pgcnt times.
->+	 */
->+		if (sz % sizeof(u32)) {
->+			for (j =3D 0; j < sz * 2; j +=3D sz)
->+				prandom_bytes_state(&rnd_state,
->+							writebuf + j , sz);
->+		} else {
->+			prandom_bytes_state(&rnd_state, writebuf, sz * 2);
->+		}
-> 		addr =3D (i + 1) * mtd->erasesize - mtd->writesize;
-> 		ops.mode      =3D MTD_OPS_AUTO_OOB;
-> 		ops.len       =3D 0;
->--
->1.8.1
 
+--aHyShe78FfJzbeER
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I think this patch never saw the linux-mtd list. so just fwding ..
+On Fri, Dec 06, 2013 at 07:54:42PM +0530, Sourav Poddar wrote:
+> Add get_buf, put_buf api support in spi master.
 
-with regards, pekon
+Please add this stuff along with the code implementing it.
+
+> +	void	(*configure_from_slave)(struct spi_device *spi);
+> +
+
+I don't understand this API at all - it takes no parameters and doesn't
+have a possibility of returning any error codes?
+
+--aHyShe78FfJzbeER
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJSsvUVAAoJELSic+t+oim9CuwP/1XVVgzLmTUrm8IIC25COg2Y
+/9TZrDHMotVIOK33eL0Xx7hp2C5Ks1qmJKIoUj6qPzjfzKryS0niM/SGAmTf/zNO
+FhgCvwMY/GVUxKwI8sxBgpDTkQSn+gxtHPIvoKcjJMJTpJiodE1QXO5rJtSPX0QF
+BHZS24nQaJmxTzcgh8d3dZnvVAAYi5dEqRR8BgilOd0sjHALyRFdngVePY4cWKqG
+XxeNMNlr5U8s9WyACa1Dd4SvMpX4Ytb70lSaO6g2+0FqML7zvmEbyoE6ZyVLm8f0
+6TiQFCqGDxfRNxoSkJUFmTmh9rd04w5jXZii2aR9aAbUC0sZiaw8UuBolnxg3769
+FWD9wb0vxnExrBvGjGqwOR8F21aODIjYCjW3RFi5wmJAFuYD77TTQkx5NgkZseG+
+GO0DcO78Jh3nxuMiz2Qqzw8e2hOwCFgtXz3uQLAnyDPDEeJPO0ylvrQWTD47BMrW
+7XquP0R2JBlgwXhsSQsP6MUy00KPtaNp66UW9SiI8iNl4fE4No1ZmP9PStmRqUTU
+7XPFn7rTWsbfs21AwacGjb/e0k3MDcGKCja/lsnMNLnUSTNmaObMPCrEXThbQyL3
+T40sRJqyAjohgJNmpncVLT3nAx8Rt7w0Tff2GK56636J0CVnT/8fHIbwPwZx9gbl
+xS+mGxAk4H0y5zkcztEy
+=3NTq
+-----END PGP SIGNATURE-----
+
+--aHyShe78FfJzbeER--
