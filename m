@@ -1,21 +1,20 @@
-Received: from va3ehsobe003.messaging.microsoft.com ([216.32.180.13]
- helo=va3outboundpool.messaging.microsoft.com)
+Received: from mail-vc0-f172.google.com ([209.85.220.172])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VtZ4W-0007PE-LG
- for linux-mtd@lists.infradead.org; Thu, 19 Dec 2013 08:35:12 +0000
-Message-ID: <52B2B0A2.1020709@freescale.com>
-Date: Thu, 19 Dec 2013 16:38:58 +0800
-From: Huang Shijie <b32955@freescale.com>
+ id 1VtZvE-0001DL-IZ
+ for linux-mtd@lists.infradead.org; Thu, 19 Dec 2013 09:29:37 +0000
+Received: by mail-vc0-f172.google.com with SMTP id ij19so494754vcb.17
+ for <linux-mtd@lists.infradead.org>; Thu, 19 Dec 2013 01:29:10 -0800 (PST)
 MIME-Version: 1.0
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH] mtd: nand: parse the Hynix nand which uses <26nm
- technology
-References: <1385974906-29891-1-git-send-email-b32955@freescale.com>
-In-Reply-To: <1385974906-29891-1-git-send-email-b32955@freescale.com>
-Content-Type: text/plain; charset="GB2312"
+In-Reply-To: <EACD232272DA4849B060F0828564D13B0A777136FD@ntcex01.corp.netcomm.com.au>
+References: <EACD232272DA4849B060F0828564D13B0A777136FD@ntcex01.corp.netcomm.com.au>
+Date: Thu, 19 Dec 2013 10:29:10 +0100
+Message-ID: <CAFLxGvz=4PJ=Po2XZuXhqZt50hLu+2anQjOnOb9_-Yy5CUg=7w@mail.gmail.com>
+Subject: Re: UBI VID header corruption, offset data
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, dedekind1@gmail.com
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,112 +24,149 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=D3=DA 2013=C4=EA12=D4=C202=C8=D5 17:01, Huang Shijie =D0=B4=B5=C0:
-> The Hynix uses different ID parsing rules for <26nm technology.
-> We should check the id_data[5] for Hynix nand now.
+On Thu, Dec 19, 2013 at 5:39 AM, Iwo Mergler
+<Iwo.Mergler@netcommwireless.com> wrote:
 >
-> This patch adds the parsing code for the Hynix nand which use <26nm tec=
-hnology,
-> and it also parses out the datasheet's minimum required ECC.
+> Hi all,
 >
-> Tested with H27UBG8T2CTR(8192 + 640).
 >
-> Signed-off-by: Huang Shijie <b32955@freescale.com>
-> ---
->  drivers/mtd/nand/nand_base.c |   65 ++++++++++++++++++++++++++++++++++=
-+++++++-
->  1 files changed, 64 insertions(+), 1 deletions(-)
->
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.=
-c
-> index bd39f7b..4dab696 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -3162,7 +3162,7 @@ static void nand_decode_ext_id(struct mtd_info *m=
-td, struct nand_chip *chip,
->  			(((extid >> 1) & 0x04) | (extid & 0x03));
->  		*busw =3D 0;
->  	} else if (id_len =3D=3D 6 && id_data[0] =3D=3D NAND_MFR_HYNIX &&
-> -			!nand_is_slc(chip)) {
-> +			!nand_is_slc(chip) && (id_data[5] & 0x7) < 3) {
->  		unsigned int tmp;
-> =20
->  		/* Calc pagesize */
-> @@ -3202,6 +3202,69 @@ static void nand_decode_ext_id(struct mtd_info *=
-mtd, struct nand_chip *chip,
->  		else
->  			mtd->erasesize =3D (64 * 1024) << tmp;
->  		*busw =3D 0;
-> +	} else if (id_len =3D=3D 6 && id_data[0] =3D=3D NAND_MFR_HYNIX &&
-> +			!nand_is_slc(chip) && (id_data[5] & 0x7) > 3) {
-> +		unsigned int tmp;
-> +
-> +		/* Calc pagesize */
-> +		mtd->writesize =3D 4096 << (extid & 0x03);
-> +		extid >>=3D 2;
-> +		/* Calc oobsize */
-> +		switch (((extid >> 2) & 0x04) | (extid & 0x03)) {
-> +		case 0:
-> +			mtd->oobsize =3D 640;
-> +			break;
-> +		case 1:
-> +			mtd->oobsize =3D 448;
-> +			break;
-> +		case 2:
-> +			mtd->oobsize =3D 224;
-> +			break;
-> +		case 3:
-> +			mtd->oobsize =3D 128;
-> +			break;
-> +		case 4:
-> +			mtd->oobsize =3D 64;
-> +			break;
-> +		case 5:
-> +			mtd->oobsize =3D 32;
-> +			break;
-> +		case 6:
-> +			mtd->oobsize =3D 16;
-> +			break;
-> +		default:
-> +			mtd->oobsize =3D 640;
-> +			break;
-> +		}
-> +		extid >>=3D 2;
-> +		/* Calc blocksize */
-> +		tmp =3D ((extid >> 1) & 0x04) | (extid & 0x03);
-> +		if (tmp < 0x03)
-> +			mtd->erasesize =3D (128 * 1024) << tmp;
-> +		else if (tmp =3D=3D 0x03)
-> +			mtd->erasesize =3D 768 * 1024;
-> +		else
-> +			mtd->erasesize =3D (64 * 1024) << tmp;
-> +
-> +		/* ecc info */
-> +		tmp =3D (id_data[4] >> 4) & 0x7;
-> +
-> +		if (tmp < 4) {
-> +			chip->ecc_strength_ds =3D 1 << tmp;
-> +			chip->ecc_step_ds =3D 512;
-> +		} else {
-> +			chip->ecc_step_ds =3D 1024;
-> +			if (tmp =3D=3D 4)
-> +				chip->ecc_strength_ds =3D 24;
-> +			else if (tmp =3D=3D 5)
-> +				chip->ecc_strength_ds =3D 32;
-> +			else if (tmp =3D=3D 6)
-> +				chip->ecc_strength_ds =3D 40;
-> +			else /* (tmp =3D=3D 7) */
-> +				chip->ecc_strength_ds =3D 100;
-> +		}
-> +
-> +		*busw =3D 0;
->  	} else {
->  		/* Calc pagesize */
->  		mtd->writesize =3D 1024 << (extid & 0x03);
-just a ping.
+> I'm encountering a rather surprising VID header corruption. Kernel
+> version is derived from 3.5.0-preempt, with a bunch of probably
+> unrelated vendor patches.
 
-any comment about these two patches?
+Let's start simple. Is your MTD driver sane?
+UBI/UBIFS issues are often related to subtle NOR/NAND driver bugs.
+
+> After the system has operated normally for a while (=3Ddays), the initial
+> UBI block scan at boot time reports this:
+>
+> [    2.390000] UBI error: check_corruption: PEB 402 contains corrupted VI=
+D header, and the data does not contain all 0xFF, this may be a non-UBI PEB=
+ or a severe VID header corruption which requires manual inspection
+> [    3.860000] UBI error: check_corruption: PEB 1176 contains corrupted V=
+ID header, and the data does not contain all 0xFF, this may be a non-UBI PE=
+B or a severe VID header corruption which requires manual inspection
+> [    4.040000] UBI error: check_corruption: PEB 1177 contains corrupted V=
+ID header, and the data does not contain all 0xFF, this may be a non-UBI PE=
+B or a severe VID header corruption which requires manual inspection
+> [    5.430000] UBI error: late_analysis: 3 PEBs are corrupted and preserv=
+ed
+>
+> All three header pages (2K) are corrupted the same way (see below).
+>
+> The page starts with 29 0-bytes, followed by 11 0xff-bytes. An
+> otherwise normal looking header starts at an offset of 40 bytes
+> from its normal position. Finally, there is an unexpected 0xFF
+> byte at the end of the page.
+>
+> Has anyone encountered such a thing before?
+>
+>
+> Best regards,
+>
+> Iwo
+>
+> =3D=3D=3D=3D
+>
+> Here is a good VID page example for reference:
+>
+> PEB257
+> 00000000  55 42 49 21 01 01 01 00  00 00 00 00 00 00 02 45  |UBI!........=
+...E|
+> 00000010  00 00 00 00 00 01 80 00  00 00 00 00 00 00 00 00  |............=
+....|
+> 00000020  00 83 72 fa 00 00 00 00  00 00 00 00 00 00 03 cb  |..r=FA......=
+.....=CB|
+> 00000030  00 00 00 00 00 00 00 00  00 00 00 00 d4 08 5a bd  |............=
+=D4.Z=BD|
+> 00000040  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |............=
+....|
+> *
+> 00000800
+>
+> These are the bad header pages:
+>
+> PEB402
+> 00000000  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |............=
+....|
+> 00000010  00 00 00 00 00 00 00 00  00 00 00 00 00 ff ff ff  |............=
+.=FF=FF=FF|
+> 00000020  ff ff ff ff ff ff ff ff  55 42 49 21 01 01 01 00  |=FF=FF=FF=FF=
+=FF=FF=FF=FFUBI!....|
+> 00000030  00 00 00 01 00 00 02 20  00 00 00 00 00 01 70 00  |....... ....=
+..p.|
+> 00000040  00 00 00 00 00 00 00 00  de 85 51 17 00 00 00 00  |........=DE.=
+Q.....|
+> 00000050  00 00 00 00 00 00 13 4a  00 00 00 00 00 00 00 00  |.......J....=
+....|
+> 00000060  00 00 00 00 36 d4 f2 89  00 00 00 00 00 00 00 00  |....6=D4=F2.=
+........|
+> 00000070  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |............=
+....|
+> *
+> 000007f0  00 00 00 00 00 00 00 ff  00 00 00 00 00 00 00 00  |.......=FF..=
+......|
+> 00000800
+>
+> PEB1176
+> 00000000  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |............=
+....|
+> 00000010  00 00 00 00 00 00 00 00  00 00 00 00 00 ff ff ff  |............=
+.=FF=FF=FF|
+> 00000020  ff ff ff ff ff ff ff ff  55 42 49 21 01 01 01 00  |=FF=FF=FF=FF=
+=FF=FF=FF=FFUBI!....|
+> 00000030  00 00 00 01 00 00 01 bc  00 00 00 00 00 00 d0 00  |.......=BC..=
+....=D0.|
+> 00000040  00 00 00 00 00 00 00 00  ff ec 1f a6 00 00 00 00  |........=FF=
+=EC.=A6....|
+> 00000050  00 00 00 00 00 00 13 4b  00 00 00 00 00 00 00 00  |.......K....=
+....|
+> 00000060  00 00 00 00 20 4b 90 e7  00 00 00 00 00 00 00 00  |.... K.=E7..=
+......|
+> 00000070  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |............=
+....|
+> *
+> 000007f0  00 00 00 00 00 00 00 ff  00 00 00 00 00 00 00 00  |.......=FF..=
+......|
+> 00000800
+>
+> PEB1177
+> 00000000  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |............=
+....|
+> 00000010  00 00 00 00 00 00 00 00  00 00 00 00 00 ff ff ff  |............=
+.=FF=FF=FF|
+> 00000020  ff ff ff ff ff ff ff ff  55 42 49 21 01 01 00 00  |=FF=FF=FF=FF=
+=FF=FF=FF=FFUBI!....|
+> 00000030  00 00 00 01 00 00 00 07  00 00 00 00 00 00 00 00  |............=
+....|
+> 00000040  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |............=
+....|
+> 00000050  00 00 00 00 00 00 13 4c  00 00 00 00 00 00 00 00  |.......L....=
+....|
+> 00000060  00 00 00 00 1d 0d 60 c5  00 00 00 00 00 00 00 00  |......`=C5..=
+......|
+> 00000070  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |............=
+....|
+> *
+> 000007f0  00 00 00 00 00 00 00 ff  00 00 00 00 00 00 00 00  |.......=FF..=
+......|
+> 00000800
+>
+> ______________________________________________________________________
+> This communication contains information which may be confidential or priv=
+ileged. The information is intended solely for the use of the individual or=
+ entity named above.  If you are not the intended recipient, be aware that =
+any disclosure, copying, distribution or use of the contents of this inform=
+ation is prohibited.  If you have received this communication in error, ple=
+ase notify me by telephone immediately.
+> ______________________________________________________________________
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
 
-thanks
-Huang Shijie
+
+--=20
+Thanks,
+//richard
