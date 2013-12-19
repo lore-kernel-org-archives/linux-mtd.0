@@ -1,21 +1,24 @@
-Received: from am1ehsobe002.messaging.microsoft.com ([213.199.154.205]
- helo=am1outboundpool.messaging.microsoft.com)
+Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VtWLx-0003es-Kn
- for linux-mtd@lists.infradead.org; Thu, 19 Dec 2013 05:40:58 +0000
-Date: Thu, 19 Dec 2013 13:10:53 +0800
-From: Huang Shijie <b32955@freescale.com>
-To: Elie De Brauwer <eliedebrauwer@gmail.com>
-Subject: Re: [PATCH v6] mtd: gpmi: Deal with bitflips in erased regions regions
-Message-ID: <20131219051050.GA12530@shlinux2.ap.freescale.net>
-References: <1387393632-5338-1-git-send-email-eliedebrauwer@gmail.com>
- <1387393632-5338-2-git-send-email-eliedebrauwer@gmail.com>
+ id 1VtXye-0005bc-6g
+ for linux-mtd@lists.infradead.org; Thu, 19 Dec 2013 07:25:00 +0000
+Received: by mail-pa0-f50.google.com with SMTP id kl14so783265pab.37
+ for <linux-mtd@lists.infradead.org>; Wed, 18 Dec 2013 23:24:36 -0800 (PST)
+Date: Wed, 18 Dec 2013 23:24:27 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH RESEND 0/3] pxa3xx-nand: Support 2 KiB page size devices
+Message-ID: <20131219072427.GA10846@norris-Latitude-E6410>
+References: <1387403050-23965-1-git-send-email-ezequiel.garcia@free-electrons.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1387393632-5338-2-git-send-email-eliedebrauwer@gmail.com>
-Cc: shijie8@gmail.com, computersforpeace@gmail.com, dwmw2@infradead.org,
- linux-mtd@lists.infradead.org, dedekind1@gmail.com
+In-Reply-To: <1387403050-23965-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Lior Amsalem <alior@marvell.com>, Arnaud Ebalard <arno@natisbad.org>,
+ Seif Mazareeb <seif@marvell.com>, Simon Guinot <sguinot@lacie.com>,
+ linux-mtd@lists.infradead.org,
+ Gregory Clement <gregory.clement@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,26 +28,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Dec 18, 2013 at 08:07:12PM +0100, Elie De Brauwer wrote:
-> The BCH block typically used with a GPMI block on an i.MX28/i.MX6 is only
-> able to correct bitflips on data actually streamed through the block.
-> When erasing a block the data does not stream through the BCH block
-> and therefore no ECC data is written to the NAND chip. This causes
-> gpmi_ecc_read_page to return failure as soon as a single non-1-bit is
-> found in an erased page. Typically causing problems at higher levels
-> (ubifs corrupted empty space warnings). This problem was also observed
-> when using SLC NAND devices.
+On Wed, Dec 18, 2013 at 06:44:07PM -0300, Ezequiel Garcia wrote:
+> PATCH 1 fixes a problem that can be triggered by writing a blank
+> page (0xff). The bug itself was found by Arnaud Ebalard while testing 2048B
+> page size support on the Armada 370/XP variant, yet the bug can be reproduced
+> on the driver's PXA variant.
 > 
-> This patch configures the BCH block to mark a block as 'erased' if
-> not too much bitflips are found. Next HW_BCH_STATUS0:ALLONES
-> is used to check if the data read were all ones, indicating a read of a
-> properly erased chunk was performed. If this was not the case a slow path
-> is entered where bitflips are counted and corrected in software,
-> allowing the upper layers to take proper actions.
+> The other two patches enable the support for 2048B pages on the Armada 370/XP
+> variant.
 > 
-> Signed-off-by: Elie De Brauwer <eliedebrauwer@gmail.com>
-> Acked-by: Peter Korsgaard <peter@korsgaard.com>
+> PATCH 2 reduces the I/O overhead on flash devices that won't need the extended
+> command semantics, by changing the way the cmdfunc() variants are used. The
+> decision of which cmdfunc() should be used is now made based on the page size
+> and not on thec ontroller variant.
+> 
+> PATCH 3, consolidates the ECC initialization -mostly to avoid code duplication-
+> since the A370/XP variant can also support smaller pages, with no-BCH
+> requirements.
+> 
+> I think the driver looks slightly cleaner after this work, but feel free to
+> provide any feedback or advise differently.
 
-thanks a lot!
+These patches look good to me. Pushed to l2-mtd.git. Thanks!
 
-Acked-by: Huang Shijie <b32955@freescale.com>
+Brian
