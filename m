@@ -1,20 +1,19 @@
 Received: from [2001:41c8:1:5384::2] (helo=cassiel.sirena.org.uk)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vtdhh-0000hh-2b
- for linux-mtd@lists.infradead.org; Thu, 19 Dec 2013 13:31:53 +0000
-Date: Thu, 19 Dec 2013 13:31:05 +0000
+ id 1Vtdkl-0000oA-2t
+ for linux-mtd@lists.infradead.org; Thu, 19 Dec 2013 13:35:03 +0000
+Date: Thu, 19 Dec 2013 13:34:19 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Sourav Poddar <sourav.poddar@ti.com>
-Message-ID: <20131219133105.GC31886@sirena.org.uk>
+Message-ID: <20131219133419.GD31886@sirena.org.uk>
 References: <1386339891-32717-1-git-send-email-sourav.poddar@ti.com>
- <1386339891-32717-2-git-send-email-sourav.poddar@ti.com>
+ <1386339891-32717-3-git-send-email-sourav.poddar@ti.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="aHyShe78FfJzbeER"
+ protocol="application/pgp-signature"; boundary="7QsOHKuLbhbLTwLB"
 Content-Disposition: inline
-In-Reply-To: <1386339891-32717-2-git-send-email-sourav.poddar@ti.com>
-Subject: Re: [PATCHv2 01/10] spi/spi.h: Add get_buf/put_buf support in spi
- master.
+In-Reply-To: <1386339891-32717-3-git-send-email-sourav.poddar@ti.com>
+Subject: Re: [PATCHv2 02/10] spi/qspi: parse register by name.
 Cc: marex@denx.de, devicetree@vger.kernel.org, computersforpeace@gmail.com,
  balbi@ti.com, linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
  bcousson@baylibre.com, linux-omap@vger.kernel.org, dwmw2@infradead.org
@@ -28,41 +27,37 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---aHyShe78FfJzbeER
+--7QsOHKuLbhbLTwLB
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Dec 06, 2013 at 07:54:42PM +0530, Sourav Poddar wrote:
-> Add get_buf, put_buf api support in spi master.
+On Fri, Dec 06, 2013 at 07:54:43PM +0530, Sourav Poddar wrote:
+> Modify the qspi driver to parse reg information by name.
+> If "reg names" is not found, then revert back to normal
+> get resource.
 
-Please add this stuff along with the code implementing it.
+Applied, thanks.
 
-> +	void	(*configure_from_slave)(struct spi_device *spi);
-> +
-
-I don't understand this API at all - it takes no parameters and doesn't
-have a possibility of returning any error codes?
-
---aHyShe78FfJzbeER
+--7QsOHKuLbhbLTwLB
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2.0.22 (GNU/Linux)
 
-iQIcBAEBAgAGBQJSsvUVAAoJELSic+t+oim9CuwP/1XVVgzLmTUrm8IIC25COg2Y
-/9TZrDHMotVIOK33eL0Xx7hp2C5Ks1qmJKIoUj6qPzjfzKryS0niM/SGAmTf/zNO
-FhgCvwMY/GVUxKwI8sxBgpDTkQSn+gxtHPIvoKcjJMJTpJiodE1QXO5rJtSPX0QF
-BHZS24nQaJmxTzcgh8d3dZnvVAAYi5dEqRR8BgilOd0sjHALyRFdngVePY4cWKqG
-XxeNMNlr5U8s9WyACa1Dd4SvMpX4Ytb70lSaO6g2+0FqML7zvmEbyoE6ZyVLm8f0
-6TiQFCqGDxfRNxoSkJUFmTmh9rd04w5jXZii2aR9aAbUC0sZiaw8UuBolnxg3769
-FWD9wb0vxnExrBvGjGqwOR8F21aODIjYCjW3RFi5wmJAFuYD77TTQkx5NgkZseG+
-GO0DcO78Jh3nxuMiz2Qqzw8e2hOwCFgtXz3uQLAnyDPDEeJPO0ylvrQWTD47BMrW
-7XquP0R2JBlgwXhsSQsP6MUy00KPtaNp66UW9SiI8iNl4fE4No1ZmP9PStmRqUTU
-7XPFn7rTWsbfs21AwacGjb/e0k3MDcGKCja/lsnMNLnUSTNmaObMPCrEXThbQyL3
-T40sRJqyAjohgJNmpncVLT3nAx8Rt7w0Tff2GK56636J0CVnT/8fHIbwPwZx9gbl
-xS+mGxAk4H0y5zkcztEy
-=3NTq
+iQIcBAEBAgAGBQJSsvXYAAoJELSic+t+oim9Y0AP/A4oZIcLJk9EM3v2X4FUe8vQ
+edA+C67Djn9Ie/8MnwtwAZsmYeZiVDWokFVaMjlWERNhWmCpoo1u5ZDd8XEWYT91
+0mzVCRAEV6tul21bbdRN2tGEm0kTFwvZhyUoqUOhsh1VHwdfhsFLzgmQk0nMB6xk
+cRAje3lcqPfM6T6At4yypJafBFhoiHnZ0ATjezdPU2gu9mKyR61DtQB/RjrD4pVt
+JvoGEJUuPOnSN9FAiIaPsdMQRuAqfWzfd1lFrswNQ8oPysYISe71UCcoYsiA9y9g
+IJeSI2wTHQVQ7yy/Ar6/7itM734wzHx56bPjDCdxKnMOPEmCXh80isubDOMwJgfK
+ynhP5YPBI/WlqV/xeSEGgy/hINoC24JcYIun2gxfkh9weaO7g0E7/UaH31Jt+AcH
+dR6MBDRx1qLmczkBkGvSuYR52Xe6xTZ4wGAnxkPcHCRcyEUXDFypT7wgcEWVK1gZ
+Lmw+oWKEflcCJR0tPNgH44cdIayg/2oUVqMYo9zmfxGNtK5B/u/Cm+F33hTVlczw
+urBr4x1Wvxi6bfaajx6fZuQljiS3ByYoCXjqVUp0qs/dnKE+zc9/jSXNbaDbCOoK
+kRIcimNuXuyq0UVTWo/Qp+E9W4iPneVOOrIo1q4ALU3x8hzUie0Jl/kAIgIZnSlI
+OgwiZoIZfFdqWAWlzku2
+=y5ob
 -----END PGP SIGNATURE-----
 
---aHyShe78FfJzbeER--
+--7QsOHKuLbhbLTwLB--
