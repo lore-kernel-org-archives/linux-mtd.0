@@ -1,11 +1,10 @@
-Message-Id: <20131220132521.164507154@bombadil.infradead.org>
-Date: Fri, 20 Dec 2013 05:16:36 -0800
+Message-Id: <20131220132521.505028482@bombadil.infradead.org>
+Date: Fri, 20 Dec 2013 05:16:38 -0800
 From: Christoph Hellwig <hch@infradead.org>
 To: viro@zeniv.linux.org.uk
-Subject: [PATCH 01/21] reiserfs: prefix ACL symbols with reiserfs_
+Subject: [PATCH 03/21] fs: add get_acl helper
 References: <20131220131635.650823732@bombadil.infradead.org>
-Content-Disposition: inline;
- filename=0001-reiserfs-prefix-ACL-symbols-with-reiserfs_.patch
+Content-Disposition: inline; filename=0003-fs-add-get_acl-helper.patch
 Cc: Andreas Gruenbacher <andreas.gruenbacher@linbit.com>, xfs@oss.sgi.com,
  Jan Kara <jack@suse.cz>, Mark Fasheh <mfasheh@suse.com>,
  reiserfs-devel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
@@ -22,90 +21,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Factor out the code to get an ACL either from the inode or disk from
+check_acl, so that it can be used elsewhere later on.
+
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Reviewed-by: Jan Kara <jack@suse.cz>
 ---
- fs/reiserfs/xattr_acl.c |   20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ fs/namei.c                |   24 +++---------------------
+ fs/posix_acl.c            |   26 ++++++++++++++++++++++++++
+ include/linux/posix_acl.h |    2 ++
+ 3 files changed, 31 insertions(+), 21 deletions(-)
 
-diff --git a/fs/reiserfs/xattr_acl.c b/fs/reiserfs/xattr_acl.c
-index 06c04f7..6f721ea 100644
---- a/fs/reiserfs/xattr_acl.c
-+++ b/fs/reiserfs/xattr_acl.c
-@@ -16,7 +16,7 @@ static int reiserfs_set_acl(struct reiserfs_transaction_handle *th,
- 			    struct posix_acl *acl);
+diff --git a/fs/namei.c b/fs/namei.c
+index 3531dee..bcb838e 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -235,27 +235,9 @@ static int check_acl(struct inode *inode, int mask)
+ 	        return posix_acl_permission(inode, acl, mask & ~MAY_NOT_BLOCK);
+ 	}
  
- static int
--posix_acl_set(struct dentry *dentry, const char *name, const void *value,
-+reiserfs_posix_acl_set(struct dentry *dentry, const char *name, const void *value,
- 		size_t size, int flags, int type)
- {
- 	struct inode *inode = dentry->d_inode;
-@@ -65,7 +65,7 @@ posix_acl_set(struct dentry *dentry, const char *name, const void *value,
+-	acl = get_cached_acl(inode, ACL_TYPE_ACCESS);
+-
+-	/*
+-	 * A filesystem can force a ACL callback by just never filling the
+-	 * ACL cache. But normally you'd fill the cache either at inode
+-	 * instantiation time, or on the first ->get_acl call.
+-	 *
+-	 * If the filesystem doesn't have a get_acl() function at all, we'll
+-	 * just create the negative cache entry.
+-	 */
+-	if (acl == ACL_NOT_CACHED) {
+-	        if (inode->i_op->get_acl) {
+-			acl = inode->i_op->get_acl(inode, ACL_TYPE_ACCESS);
+-			if (IS_ERR(acl))
+-				return PTR_ERR(acl);
+-		} else {
+-		        set_cached_acl(inode, ACL_TYPE_ACCESS, NULL);
+-		        return -EAGAIN;
+-		}
+-	}
+-
++	acl = get_acl(inode, ACL_TYPE_ACCESS);
++	if (IS_ERR(acl))
++		return PTR_ERR(acl);
+ 	if (acl) {
+ 	        int error = posix_acl_permission(inode, acl, mask);
+ 	        posix_acl_release(acl);
+diff --git a/fs/posix_acl.c b/fs/posix_acl.c
+index 359d70b..e329c21 100644
+--- a/fs/posix_acl.c
++++ b/fs/posix_acl.c
+@@ -26,6 +26,32 @@ EXPORT_SYMBOL(posix_acl_valid);
+ EXPORT_SYMBOL(posix_acl_equiv_mode);
+ EXPORT_SYMBOL(posix_acl_from_mode);
+ 
++struct posix_acl *get_acl(struct inode *inode, int type)
++{
++	struct posix_acl *acl;
++
++	acl = get_cached_acl(inode, type);
++	if (acl != ACL_NOT_CACHED)
++		return acl;
++
++	if (!IS_POSIXACL(inode))
++		return NULL;
++
++	/*
++	 * A filesystem can force a ACL callback by just never filling the
++	 * ACL cache. But normally you'd fill the cache either at inode
++	 * instantiation time, or on the first ->get_acl call.
++	 *
++	 * If the filesystem doesn't have a get_acl() function at all, we'll
++	 * just create the negative cache entry.
++	 */
++	if (!inode->i_op->get_acl) {
++		set_cached_acl(inode, type, NULL);
++		return NULL;
++	}
++	return inode->i_op->get_acl(inode, type);
++}
++
+ /*
+  * Init a fresh posix_acl
+  */
+diff --git a/include/linux/posix_acl.h b/include/linux/posix_acl.h
+index 7931efe..a8d9918 100644
+--- a/include/linux/posix_acl.h
++++ b/include/linux/posix_acl.h
+@@ -175,4 +175,6 @@ static inline void cache_no_acl(struct inode *inode)
+ #endif
  }
  
- static int
--posix_acl_get(struct dentry *dentry, const char *name, void *buffer,
-+reiserfs_posix_acl_get(struct dentry *dentry, const char *name, void *buffer,
- 		size_t size, int type)
- {
- 	struct posix_acl *acl;
-@@ -88,7 +88,7 @@ posix_acl_get(struct dentry *dentry, const char *name, void *buffer,
- /*
-  * Convert from filesystem to in-memory representation.
-  */
--static struct posix_acl *posix_acl_from_disk(const void *value, size_t size)
-+static struct posix_acl *reiserfs_posix_acl_from_disk(const void *value, size_t size)
- {
- 	const char *end = (char *)value + size;
- 	int n, count;
-@@ -158,7 +158,7 @@ static struct posix_acl *posix_acl_from_disk(const void *value, size_t size)
- /*
-  * Convert from in-memory to filesystem representation.
-  */
--static void *posix_acl_to_disk(const struct posix_acl *acl, size_t * size)
-+static void *reiserfs_posix_acl_to_disk(const struct posix_acl *acl, size_t * size)
- {
- 	reiserfs_acl_header *ext_acl;
- 	char *e;
-@@ -257,7 +257,7 @@ struct posix_acl *reiserfs_get_acl(struct inode *inode, int type)
- 	} else if (retval < 0) {
- 		acl = ERR_PTR(retval);
- 	} else {
--		acl = posix_acl_from_disk(value, retval);
-+		acl = reiserfs_posix_acl_from_disk(value, retval);
- 	}
- 	if (!IS_ERR(acl))
- 		set_cached_acl(inode, type, acl);
-@@ -307,7 +307,7 @@ reiserfs_set_acl(struct reiserfs_transaction_handle *th, struct inode *inode,
- 	}
- 
- 	if (acl) {
--		value = posix_acl_to_disk(acl, &size);
-+		value = reiserfs_posix_acl_to_disk(acl, &size);
- 		if (IS_ERR(value))
- 			return (int)PTR_ERR(value);
- 	}
-@@ -499,8 +499,8 @@ static size_t posix_acl_access_list(struct dentry *dentry, char *list,
- const struct xattr_handler reiserfs_posix_acl_access_handler = {
- 	.prefix = POSIX_ACL_XATTR_ACCESS,
- 	.flags = ACL_TYPE_ACCESS,
--	.get = posix_acl_get,
--	.set = posix_acl_set,
-+	.get = reiserfs_posix_acl_get,
-+	.set = reiserfs_posix_acl_set,
- 	.list = posix_acl_access_list,
- };
- 
-@@ -519,7 +519,7 @@ static size_t posix_acl_default_list(struct dentry *dentry, char *list,
- const struct xattr_handler reiserfs_posix_acl_default_handler = {
- 	.prefix = POSIX_ACL_XATTR_DEFAULT,
- 	.flags = ACL_TYPE_DEFAULT,
--	.get = posix_acl_get,
--	.set = posix_acl_set,
-+	.get = reiserfs_posix_acl_get,
-+	.set = reiserfs_posix_acl_set,
- 	.list = posix_acl_default_list,
- };
++struct posix_acl *get_acl(struct inode *inode, int type);
++
+ #endif  /* __LINUX_POSIX_ACL_H */
 -- 
 1.7.10.4
