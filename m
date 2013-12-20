@@ -1,21 +1,24 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
+Received: from mailout2.samsung.com ([203.254.224.25])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vturb-0001UI-9v
- for linux-mtd@lists.infradead.org; Fri, 20 Dec 2013 07:51:16 +0000
-From: Pekon Gupta <pekon@ti.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v5 5/5] mtd: nand: omap: ecc.correct: omap_elm_correct_data:
- fix bit-flip correction logic
-Date: Fri, 20 Dec 2013 13:20:20 +0530
-Message-ID: <1387525820-25709-6-git-send-email-pekon@ti.com>
-In-Reply-To: <1387525820-25709-1-git-send-email-pekon@ti.com>
-References: <1387525820-25709-1-git-send-email-pekon@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: avinashphilipk@gmail.com, Felipe Balbi <balbi@ti.com>,
- linux-mtd <linux-mtd@lists.infradead.org>, Pekon Gupta <pekon@ti.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Stefan Roese <sr@denx.de>
+ id 1VtvGz-00025H-B3
+ for linux-mtd@lists.infradead.org; Fri, 20 Dec 2013 08:17:31 +0000
+Received: from epcpsbgr3.samsung.com
+ (u143.gpu120.samsung.co.kr [203.254.230.143])
+ by mailout2.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ (7.0.4.24.0) 64bit (built Nov 17 2011))
+ with ESMTP id <0MY300NGUJ0H3370@mailout2.samsung.com> for
+ linux-mtd@lists.infradead.org; Fri, 20 Dec 2013 17:17:05 +0900 (KST)
+From: Jingoo Han <jg1.han@samsung.com>
+To: 'Brian Norris' <computersforpeace@gmail.com>
+Subject: [PATCH 1/4] mtd: atmel_nand: use dev_err() instead of printk()
+Date: Fri, 20 Dec 2013 17:17:04 +0900
+Message-id: <001701cefd5b$de189f90$9a49deb0$%han@samsung.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii
+Content-transfer-encoding: 7bit
+Content-language: ko
+Cc: linux-mtd@lists.infradead.org, 'Jingoo Han' <jg1.han@samsung.com>,
+ 'David Woodhouse' <dwmw2@infradead.org>, 'Josh Wu' <josh.wu@atmel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,87 +28,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch updates following checks when bit-flips are detected by ELM:
+Use dev_err() instead of printk() to provide a better message
+to userspace.
 
- - Do not evaluate bit-flips when un-correctable bit-flips is reported by ELM,
-   because as per [1] when ELM reports an un-correctable bit-flips,
-   'number of error' field in its ELM_LOCATION_STATUS register is also invalid.
-
- - Return with error-code '-EBADMSG' on detection of un-correctable bit-flip.
-
- - Return with error-code '-EBADMSG' when bit-flips position is outside current
-   Sector and OOB area.
-
-[1] ELM IP spec Table-25 ELM_LOCATION_STATUS Register.
-    ELM_LOCATION_STATUS[8] = ECC_CORRECTABLE: Error location process exit status
-        0x0: ECC error location process failed.
-             Number of errors and error locations are invalid.
-        0x1: all errors were successfully located.
-             Number of errors and error locations are valid.
-
-Signed-off-by: Pekon Gupta <pekon@ti.com>
+Signed-off-by: Jingoo Han <jg1.han@samsung.com>
 ---
- drivers/mtd/nand/omap2.c | 21 ++++++++++++---------
- 1 file changed, 12 insertions(+), 9 deletions(-)
+ drivers/mtd/nand/atmel_nand.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 8d9c947..7ac9a7c 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -1307,7 +1307,7 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
- 	int eccstrength	= info->nand.ecc.strength;
- 	int eccsteps	= info->nand.ecc.steps;
- 	bool page_is_erased;
--	int i , j, stat = 0;
-+	int i , j, stat = 0, err = 0;
- 	int eccflag;
- 	struct elm_errorvec err_vec[ERROR_VECTOR_MAX];
- 	u_char *ecc_vec = calc_ecc;
-@@ -1401,7 +1401,10 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
- 	elm_decode_bch_error_page(info->elm_dev, ecc_vec, err_vec);
- 
- 	for (i = 0; i < eccsteps; i++) {
--		if (err_vec[i].error_reported) {
-+		if (err_vec[i].error_uncorrectable) {
-+			pr_err("nand: uncorrectable bit-flips found\n");
-+			err = -EBADMSG;
-+		} else if (err_vec[i].error_reported) {
- 			for (j = 0; j < err_vec[i].error_count; j++) {
- 				switch (ecc_opt) {
- 				case OMAP_ECC_BCH4_CODE_HW:
-@@ -1428,13 +1431,18 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
- 				byte_pos = (error_max - pos - 1) / 8;
- 
- 				if (pos < error_max) {
-+					pr_debug("fixed bit-flip @ [%d][%d]\n",
-+							 byte_pos, bit_pos);
- 					if (byte_pos < 512)
- 						data[byte_pos] ^= 1 << bit_pos;
- 					else
- 						spare_ecc[byte_pos - 512] ^=
- 							1 << bit_pos;
-+				} else {
-+					pr_err("invalid bit-flip @ [%d][%d]\n",
-+							 byte_pos, bit_pos);
-+					err = -EBADMSG;
- 				}
--				/* else, not interested to correct ecc */
- 			}
- 		}
- 
-@@ -1446,12 +1454,7 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
- 		spare_ecc += eccbytes;
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index 59f08c4..354ca6d 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -1962,7 +1962,7 @@ static int atmel_nand_probe(struct platform_device *pdev)
+ 	/* Allocate memory for the device structure (and zero it) */
+ 	host = devm_kzalloc(&pdev->dev, sizeof(*host), GFP_KERNEL);
+ 	if (!host) {
+-		printk(KERN_ERR "atmel_nand: failed to allocate device structure.\n");
++		dev_err(&pdev->dev, "atmel_nand: failed to allocate device structure.\n");
+ 		return -ENOMEM;
  	}
  
--	for (i = 0; i < eccsteps; i++)
--		/* Return error if uncorrectable error present */
--		if (err_vec[i].error_uncorrectable)
--			return -EINVAL;
--
--	return stat;
-+	return (err) ? err : stat;
- }
+@@ -2062,14 +2062,14 @@ static int atmel_nand_probe(struct platform_device *pdev)
+ 		}
  
- /**
+ 		if (gpio_get_value(host->board.det_pin)) {
+-			printk(KERN_INFO "No SmartMedia card inserted.\n");
++			dev_info(&pdev->dev, "No SmartMedia card inserted.\n");
+ 			res = -ENXIO;
+ 			goto err_no_card;
+ 		}
+ 	}
+ 
+ 	if (host->board.on_flash_bbt || on_flash_bbt) {
+-		printk(KERN_INFO "atmel_nand: Use On Flash BBT\n");
++		dev_info(&pdev->dev, "atmel_nand: Use On Flash BBT\n");
+ 		nand_chip->bbt_options |= NAND_BBT_USE_FLASH;
+ 	}
+ 
 -- 
-1.8.1
+1.7.10.4
