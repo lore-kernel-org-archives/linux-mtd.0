@@ -1,27 +1,19 @@
-Received: from mailout2.samsung.com ([203.254.224.25])
+Received: from smtprelay01.ispgateway.de ([80.67.31.35])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vtubu-00017A-NF
- for linux-mtd@lists.infradead.org; Fri, 20 Dec 2013 07:35:03 +0000
-Received: from epcpsbgr4.samsung.com
- (u144.gpu120.samsung.co.kr [203.254.230.144])
- by mailout2.samsung.com (Oracle Communications Messaging Server 7u4-24.01
- (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0MY300NR8H2C3320@mailout2.samsung.com> for
- linux-mtd@lists.infradead.org; Fri, 20 Dec 2013 16:35:00 +0900 (KST)
-From: Jingoo Han <jg1.han@samsung.com>
-To: 'Brian Norris' <computersforpeace@gmail.com>
-References: <000d01cefd55$7e48a2a0$7ad9e7e0$%han@samsung.com>
-In-reply-to: <000d01cefd55$7e48a2a0$7ad9e7e0$%han@samsung.com>
-Subject: [PATCH V2 8/8] mtd: tmio_nand: Use devm_*() functions
-Date: Fri, 20 Dec 2013 16:35:00 +0900
-Message-id: <001501cefd55$fd5a8ae0$f80fa0a0$%han@samsung.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=us-ascii
-Content-transfer-encoding: 7bit
-Content-language: ko
-Cc: linux-mtd@lists.infradead.org, 'Jingoo Han' <jg1.han@samsung.com>,
- 'David Woodhouse' <dwmw2@infradead.org>,
- 'Ian Molton' <ian.molton@codethink.co.uk>
+ id 1VtueC-0001EM-Mu
+ for linux-mtd@lists.infradead.org; Fri, 20 Dec 2013 07:37:27 +0000
+From: Christian Riesch <christian.riesch@omicron.at>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH v2 2/2] mtd: Fix the behavior of otp write if there is not
+ enough room for data
+Date: Fri, 20 Dec 2013 08:36:33 +0100
+Message-Id: <1387524993-3353-3-git-send-email-christian.riesch@omicron.at>
+In-Reply-To: <1387524993-3353-1-git-send-email-christian.riesch@omicron.at>
+References: <1387524993-3353-1-git-send-email-christian.riesch@omicron.at>
+Cc: Amul Kumar Saha <amul.saha@samsung.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Kyungmin Park <kyungmin.park@samsung.com>,
+ Christian Riesch <christian.riesch@omicron.at>, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,114 +23,108 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use devm_*() functions to make cleanup paths simpler.
+An OTP write shall write as much data as possible to the OTP memory
+and return the number of bytes that have actually been written.
+If no data could be written at all due to lack of OTP memory,
+return -ENOSPC.
 
-Signed-off-by: Jingoo Han <jg1.han@samsung.com>
+Signed-off-by: Christian Riesch <christian.riesch@omicron.at>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Cc: Kyungmin Park <kyungmin.park@samsung.com>
+Cc: Amul Kumar Saha <amul.saha@samsung.com>
 ---
-No change since v1.
+ drivers/mtd/chips/cfi_cmdset_0001.c |   13 +++++++++++--
+ drivers/mtd/devices/mtd_dataflash.c |   13 +++++--------
+ drivers/mtd/mtdchar.c               |    7 +++++++
+ drivers/mtd/onenand/onenand_base.c  |   10 +++++++++-
+ 4 files changed, 32 insertions(+), 11 deletions(-)
 
- drivers/mtd/nand/tmio_nand.c |   46 ++++++++++++------------------------------
- 1 file changed, 13 insertions(+), 33 deletions(-)
-
-diff --git a/drivers/mtd/nand/tmio_nand.c b/drivers/mtd/nand/tmio_nand.c
-index a3747c9..fb8fd35 100644
---- a/drivers/mtd/nand/tmio_nand.c
-+++ b/drivers/mtd/nand/tmio_nand.c
-@@ -371,11 +371,9 @@ static int tmio_probe(struct platform_device *dev)
- 	if (data == NULL)
- 		dev_warn(&dev->dev, "NULL platform data!\n");
- 
--	tmio = kzalloc(sizeof *tmio, GFP_KERNEL);
--	if (!tmio) {
--		retval = -ENOMEM;
--		goto err_kzalloc;
--	}
-+	tmio = devm_kzalloc(&dev->dev, sizeof(*tmio), GFP_KERNEL);
-+	if (!tmio)
-+		return -ENOMEM;
- 
- 	tmio->dev = dev;
- 
-@@ -385,22 +383,18 @@ static int tmio_probe(struct platform_device *dev)
- 	mtd->priv = nand_chip;
- 	mtd->name = "tmio-nand";
- 
--	tmio->ccr = ioremap(ccr->start, resource_size(ccr));
--	if (!tmio->ccr) {
--		retval = -EIO;
--		goto err_iomap_ccr;
--	}
-+	tmio->ccr = devm_ioremap(&dev->dev, ccr->start, resource_size(ccr));
-+	if (!tmio->ccr)
-+		return -EIO;
- 
- 	tmio->fcr_base = fcr->start & 0xfffff;
--	tmio->fcr = ioremap(fcr->start, resource_size(fcr));
--	if (!tmio->fcr) {
--		retval = -EIO;
--		goto err_iomap_fcr;
--	}
-+	tmio->fcr = devm_ioremap(&dev->dev, fcr->start, resource_size(fcr));
-+	if (!tmio->fcr)
-+		return -EIO;
- 
- 	retval = tmio_hw_init(dev, tmio);
- 	if (retval)
--		goto err_hwinit;
-+		return retval;
- 
- 	/* Set address of NAND IO lines */
- 	nand_chip->IO_ADDR_R = tmio->fcr;
-@@ -428,7 +422,8 @@ static int tmio_probe(struct platform_device *dev)
- 	/* 15 us command delay time */
- 	nand_chip->chip_delay = 15;
- 
--	retval = request_irq(irq, &tmio_irq, 0, dev_name(&dev->dev), tmio);
-+	retval = devm_request_irq(&dev->dev, irq, &tmio_irq, 0,
-+				  dev_name(&dev->dev), tmio);
- 	if (retval) {
- 		dev_err(&dev->dev, "request_irq error %d\n", retval);
- 		goto err_irq;
-@@ -440,7 +435,7 @@ static int tmio_probe(struct platform_device *dev)
- 	/* Scan to find existence of the device */
- 	if (nand_scan(mtd, 1)) {
- 		retval = -ENODEV;
--		goto err_scan;
-+		goto err_irq;
- 	}
- 	/* Register the partitions */
- 	retval = mtd_device_parse_register(mtd, NULL, NULL,
-@@ -451,18 +446,8 @@ static int tmio_probe(struct platform_device *dev)
- 
- 	nand_release(mtd);
- 
--err_scan:
--	if (tmio->irq)
--		free_irq(tmio->irq, tmio);
- err_irq:
- 	tmio_hw_stop(dev, tmio);
--err_hwinit:
--	iounmap(tmio->fcr);
--err_iomap_fcr:
--	iounmap(tmio->ccr);
--err_iomap_ccr:
--	kfree(tmio);
--err_kzalloc:
- 	return retval;
+diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+index 7aa581f..cf423a6 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+@@ -2387,8 +2387,17 @@ static int cfi_intelext_write_user_prot_reg(struct mtd_info *mtd, loff_t from,
+ 					    size_t len, size_t *retlen,
+ 					     u_char *buf)
+ {
+-	return cfi_intelext_otp_walk(mtd, from, len, retlen,
+-				     buf, do_otp_write, 1);
++	int ret;
++
++	ret = cfi_intelext_otp_walk(mtd, from, len, retlen,
++				    buf, do_otp_write, 1);
++
++	/* if no data could be written due to lack of OTP memory,
++	   return ENOSPC */
++	if (!ret && len && !(*retlen))
++		return -ENOSPC;
++
++	return ret;
  }
  
-@@ -471,12 +456,7 @@ static int tmio_remove(struct platform_device *dev)
- 	struct tmio_nand *tmio = platform_get_drvdata(dev);
+ static int cfi_intelext_lock_user_prot_reg(struct mtd_info *mtd,
+diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
+index 09c69ce..5236d85 100644
+--- a/drivers/mtd/devices/mtd_dataflash.c
++++ b/drivers/mtd/devices/mtd_dataflash.c
+@@ -545,14 +545,11 @@ static int dataflash_write_user_otp(struct mtd_info *mtd,
+ 	struct dataflash	*priv = mtd->priv;
+ 	int			status;
  
- 	nand_release(&tmio->mtd);
--	if (tmio->irq)
--		free_irq(tmio->irq, tmio);
- 	tmio_hw_stop(dev, tmio);
--	iounmap(tmio->fcr);
--	iounmap(tmio->ccr);
--	kfree(tmio);
- 	return 0;
+-	if (len > 64)
+-		return -EINVAL;
+-
+-	/* Strictly speaking, we *could* truncate the write ... but
+-	 * let's not do that for the only write that's ever possible.
+-	 */
+-	if ((from + len) > 64)
+-		return -EINVAL;
++	if ((from + len) > 64) {
++		len = 64 - from;
++		if (len <= 0)
++			return -ENOSPC;
++	}
+ 
+ 	/* OUT: OP_WRITE_SECURITY, 3 zeroes, 64 data-or-zero bytes
+ 	 * IN:  ignore all
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index 0edb0ca..db99031 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -323,6 +323,13 @@ static ssize_t mtdchar_write(struct file *file, const char __user *buf, size_t c
+ 		default:
+ 			ret = mtd_write(mtd, *ppos, len, &retlen, kbuf);
+ 		}
++		/* return -ENOSPC only if no data was written */
++		if ((ret == -ENOSPC) && (total_retlen)) {
++			ret = 0;
++			retlen = 0;
++			/* drop the remaining data */
++			count = 0;
++		}
+ 		if (!ret) {
+ 			*ppos += retlen;
+ 			total_retlen += retlen;
+diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
+index 419c538..6c49a6f 100644
+--- a/drivers/mtd/onenand/onenand_base.c
++++ b/drivers/mtd/onenand/onenand_base.c
+@@ -3316,7 +3316,15 @@ static int onenand_read_user_prot_reg(struct mtd_info *mtd, loff_t from,
+ static int onenand_write_user_prot_reg(struct mtd_info *mtd, loff_t from,
+ 			size_t len, size_t *retlen, u_char *buf)
+ {
+-	return onenand_otp_walk(mtd, from, len, retlen, buf, do_otp_write, MTD_OTP_USER);
++	int ret;
++	ret = onenand_otp_walk(mtd, from, len, retlen, buf, do_otp_write, MTD_OTP_USER);
++
++	/* if no data could be written due to lack of OTP memory,
++	   return ENOSPC */
++	if (!ret && len && !(*retlen))
++		return -ENOSPC;
++
++	return ret;
  }
  
+ /**
 -- 
-1.7.10.4
+1.7.9.5
