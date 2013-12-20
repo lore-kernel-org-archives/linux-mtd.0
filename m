@@ -1,21 +1,26 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VtoFT-00026N-P7
- for linux-mtd@lists.infradead.org; Fri, 20 Dec 2013 00:47:28 +0000
-Date: Thu, 19 Dec 2013 21:47:13 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [RFC/PATCH] mtd: Hide CONFIG_MTD_BLKDEVS from the menu
-Message-ID: <20131220004712.GA12803@localhost>
-References: <1386943124-8005-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Received: from mail-yh0-x229.google.com ([2607:f8b0:4002:c01::229])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VtpGL-0003Kh-4H
+ for linux-mtd@lists.infradead.org; Fri, 20 Dec 2013 01:52:25 +0000
+Received: by mail-yh0-f41.google.com with SMTP id f11so508397yha.0
+ for <linux-mtd@lists.infradead.org>; Thu, 19 Dec 2013 17:52:02 -0800 (PST)
+Date: Thu, 19 Dec 2013 17:50:31 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: "Gupta, Pekon" <pekon@ti.com>
+Subject: Re: [PATCH] mtd: tests: oobtest: fix test failures for oobsize which
+ are not multiples of 4
+Message-ID: <20131220015031.GA18175@norris-Latitude-E6410>
+References: <1382947607-27077-1-git-send-email-george.cherian@ti.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EA57EE5@DBDE04.ent.ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1386943124-8005-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA57EE5@DBDE04.ent.ti.com>
+Cc: "Cherian, George" <george.cherian@ti.com>,
+ "Mike Frysinger \(vapier@gentoo.org\)" <vapier@gentoo.org>,
+ Akinobu Mita <akinobu.mita@gmail.com>, "Balbi, Felipe" <balbi@ti.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "Stefan Roese <sr@denx.de> \(sr@denx.de\)" <sr@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,38 +30,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Dec 13, 2013 at 10:58:44AM -0300, Ezequiel Garcia wrote:
-> Make this option a hidden one and get a cleaner configuration.
-> This option just selects a common infrastructure for MTD-based devices
-> to expose a block interface. There is no point in allowing a separate
-> enable/disable.
-> 
-> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> ---
->  drivers/mtd/Kconfig | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-> index 5fab4e6e..2a0ca2a 100644
-> --- a/drivers/mtd/Kconfig
-> +++ b/drivers/mtd/Kconfig
-> @@ -158,9 +158,7 @@ config MTD_BCM47XX_PARTS
->  comment "User Modules And Translation Layers"
->  
->  config MTD_BLKDEVS
-> -	tristate "Common interface to block layer for MTD 'translation layers'"
-> -	depends on BLOCK
-> -	default n
-> +	bool
->  
->  config MTD_BLOCK
->  	tristate "Caching block device access to MTD devices"
-> -- 
-> 1.8.1.5
-> 
++ Akinobu
 
-Any comments on this one?
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+On Thu, Dec 19, 2013 at 11:20:20AM +0000, Pekon Gupta wrote:
+> >From: 'George Cherian <george.cherian@ti.com>'
+> >Date: Monday, October 28, 2013 1:37 PM
+> >Subject: [PATCH] mtd: tests: oobtest: fix test failures for oobsize which are not multiples of 4
+> >
+> >If oobsize is not multiple of 4 then the generated data to write to flash
+> >and data generated to verify are not same. This imapcts test cases 2,3 and 5.
+> >If mtd->ecclayout->oobavail is not a multiple of 4 then while generating psuedo
+> >random numbers to write to flash prandom_bytes_state () generates the extra
+> >random bytes which wont be done if we do for the whole length. So check
+> >for mtd->ecclayout->oobavail if its multiple of 4 then generate for full len
+> >(mtd->ecclayout->oobavail * pgcnt)
+> >else generate prandom of mtd->ecclayout->oobavail bytes pgcnt times.
+> >
+> >Signed-off-by: George Cherian <george.cherian@ti.com>
+...
+> 
+> I think this patch never saw the linux-mtd list. so just fwding ..
+
+I cannot apply or review this patch as-is. Please resend it as a
+standard inline patch.
+
+That being said, from a first glance, I doubt this patch is correct.
+I'll take a look if I get a proper patch.
+
+Brian
