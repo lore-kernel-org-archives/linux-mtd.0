@@ -1,22 +1,18 @@
-Received: from mail-ob0-f173.google.com ([209.85.214.173])
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vtvvl-0003QT-MB
- for linux-mtd@lists.infradead.org; Fri, 20 Dec 2013 08:59:38 +0000
-Received: by mail-ob0-f173.google.com with SMTP id gq1so2391011obb.4
- for <linux-mtd@lists.infradead.org>; Fri, 20 Dec 2013 00:59:14 -0800 (PST)
+ id 1VtxF8-0006Gb-7N
+ for linux-mtd@lists.infradead.org; Fri, 20 Dec 2013 10:23:43 +0000
+From: Richard Weinberger <richard@nod.at>
+To: Iwo Mergler <Iwo.Mergler@netcommwireless.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: UBI VID header corruption, offset data
+Date: Fri, 20 Dec 2013 11:23:13 +0100
+Message-ID: <3341132.5Nv0YlqARB@sandpuppy>
+In-Reply-To: <EACD232272DA4849B060F0828564D13B0A7771372C@ntcex01.corp.netcomm.com.au>
+References: <EACD232272DA4849B060F0828564D13B0A7771372C@ntcex01.corp.netcomm.com.au>
 MIME-Version: 1.0
-In-Reply-To: <001801cefd5c$09d42640$1d7c72c0$%han@samsung.com>
-References: <001701cefd5b$de189f90$9a49deb0$%han@samsung.com>
- <001801cefd5c$09d42640$1d7c72c0$%han@samsung.com>
-Date: Fri, 20 Dec 2013 09:59:13 +0100
-Message-ID: <CACRpkdZ-HNvrs4KDzDA3x9s+4_-MN-8NvmiXbdc5jrEPTVgKbw@mail.gmail.com>
-Subject: Re: [PATCH 2/4] mtd: fsmc_nand: use dev_warn() instead of printk()
-From: Linus Walleij <linus.walleij@linaro.org>
-To: Jingoo Han <jg1.han@samsung.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,14 +22,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Dec 20, 2013 at 9:18 AM, Jingoo Han <jg1.han@samsung.com> wrote:
+Am Freitag, 20. Dezember 2013, 10:08:04 schrieb Iwo Mergler:
+> > Let's start simple. Is your MTD driver sane?
+> > UBI/UBIFS issues are often related to subtle NOR/NAND driver bugs.
+> 
+> Good point, thanks. The evidence suggests that it may not be.
+> 
+> So maybe I should extend the question - does anyone recall
+> seeing arbitrary data offsets during NAND page writes?
 
-> Use dev_warn() instead of printk() to provide a better message
-> to userspace.
->
-> Signed-off-by: Jingoo Han <jg1.han@samsung.com>
+If the driver is broken millions of things can get wrong.
+Did you run MTD and UBI tests?
 
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+These tests often uncover issues within a MTD driver.
 
-Yours,
-Linus Walleij
+BTW: Is this a mainline driver?
+Not that mainline drivers are better by definition, but still. ;-)
+
+Thanks,
+//richard
