@@ -1,13 +1,15 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
+Received: from devils.ext.ti.com ([198.47.26.153])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VturO-0001Tp-Td
- for linux-mtd@lists.infradead.org; Fri, 20 Dec 2013 07:51:03 +0000
+ id 1VturQ-0001Tq-Qr
+ for linux-mtd@lists.infradead.org; Fri, 20 Dec 2013 07:51:05 +0000
 From: Pekon Gupta <pekon@ti.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v5 0/5] mtd: nand: omap: optimized chip->ecc.correct() for H/W
- ECC schemes
-Date: Fri, 20 Dec 2013 13:20:15 +0530
-Message-ID: <1387525820-25709-1-git-send-email-pekon@ti.com>
+Subject: [PATCH v5 1/5] mtd: nand: omap: add field to indicate current
+ ecc-scheme in 'struct omap_nand_info'
+Date: Fri, 20 Dec 2013 13:20:16 +0530
+Message-ID: <1387525820-25709-2-git-send-email-pekon@ti.com>
+In-Reply-To: <1387525820-25709-1-git-send-email-pekon@ti.com>
+References: <1387525820-25709-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: avinashphilipk@gmail.com, Felipe Balbi <balbi@ti.com>,
@@ -23,53 +25,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch series is split version of earlier patch:
-http://lists.infradead.org/pipermail/linux-mtd/2013-November/050241.html
+Information of currently selected ECC scheme 'enum omap_ecc ecc_opt' should
+available outside platform-data, so that single nand_chip->ecc callback can
+support multiple ecc-scheme configurations.
 
-chip->ecc.correct() is used for detecting and correcting bit-flips during read
-operations. In OMAP NAND driver different ecc-schemes have different callbacks:
- - omap_correct_data()		for HAM1_HW ecc-schemes (Untouched)
- - nand_bch_correct_data()	for BCHx_HW_DETECTION_SW ecc-schemes (Untouched)
- - omap_elm_correct_data()	for BCHx_HW ecc-schemes
+Signed-off-by: Pekon Gupta <pekon@ti.com>
+---
+ drivers/mtd/nand/omap2.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-This patch-series fixes following issues in omap_elm_correct_data():
-(1) Dependency on a specific reserved byte-position in OOB area
-    to differentiates between erased-pages v/s programmed-pages.
-    Problem: reserved byte-position cannot be accomodated in all ecc-schemes
-    Problem: reserved byte-position can itself be subjected upto 8 bit-flips
-             causing the 0xff to become 0x00, causing page to be
-             mis-recognized as erased-page.
-
-(2) Bit-flips in erased-pages are detected by comparing each byte of Data & OOB
-    with 0xff in check_erased_page().
-    Problem: This is causes performance penalty when erased-pages are checked.
-
-(3) Current code is not scalable for future ECC schemes due to presence of 
-    tweaks for BCH4_ECC and BCH8_ECC at multiple places.
-
-(4) Currently, bit-flips are evaluated and fixed even when ELM reports them as
-    un-correctable bit-flips, this should not happen as 'number-of-error' field
-    in ELM_LOCATION_STATUS becomes invalid when un-correctable flag is set.
-
-(5) Driver should return with error-code = '-EBADMSG' when
-     uncorrectable bit-flip is detected
-     bit-flip outside valid Data and OOB region is detected
-
-
-Pekon Gupta (5):
-  mtd: nand: omap: add field to indicate current ecc-scheme in 'struct
-    omap_nand_info'
-  mtd: nand: omap: ecc.correct: omap_elm_correct_data: rename eccsize
-    and ecc_vector_size to avoid confusion
-  mtd: nand: omap: ecc.correct: omap_elm_correct_data: fix erased-pages
-    and bit-flips detection for H/W ECC schemes
-  mtd: nand: omap: ecc.correct: omap_elm_correct_data: cleanup to make
-    it scalable for future ecc-schemes
-  mtd: nand: omap: ecc.correct: omap_elm_correct_data: fix bit-flip
-    correction logic
-
- drivers/mtd/nand/omap2.c | 248 +++++++++++++++++++----------------------------
- 1 file changed, 100 insertions(+), 148 deletions(-)
-
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index e7836bf..42a290b 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -160,6 +160,7 @@ struct omap_nand_info {
+ 	int				gpmc_cs;
+ 	unsigned long			phys_base;
+ 	unsigned long			mem_size;
++	enum omap_ecc			ecc_opt;
+ 	struct completion		comp;
+ 	struct dma_chan			*dma;
+ 	int				gpmc_irq_fifo;
+@@ -1657,6 +1658,7 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 	info->gpmc_cs		= pdata->cs;
+ 	info->reg		= pdata->reg;
+ 	info->of_node		= pdata->of_node;
++	info->ecc_opt		= pdata->ecc_opt;
+ 	mtd			= &info->mtd;
+ 	mtd->priv		= &info->nand;
+ 	mtd->name		= dev_name(&pdev->dev);
+@@ -1818,7 +1820,7 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 	/* populate MTD interface based on ECC scheme */
+ 	nand_chip->ecc.layout	= &omap_oobinfo;
+ 	ecclayout		= &omap_oobinfo;
+-	switch (pdata->ecc_opt) {
++	switch (info->ecc_opt) {
+ 	case OMAP_ECC_HAM1_CODE_HW:
+ 		pr_info("nand: using OMAP_ECC_HAM1_CODE_HW\n");
+ 		nand_chip->ecc.mode             = NAND_ECC_HW;
 -- 
 1.8.1
