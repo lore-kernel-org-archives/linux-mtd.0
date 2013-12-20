@@ -1,16 +1,23 @@
-Date: Fri, 20 Dec 2013 09:13:40 -0800
-From: Josh Triplett <josh@joshtriplett.org>
-To: Huang Shijie <shijie8@gmail.com>
-Subject: Re: [PATCH 0/4] mtd: kill the NAND_MAX_PAGESIZE/NAND_MAX_OOBSIZE
-Message-ID: <20131220171340.GB26163@leaf>
-References: <1387555350-989-1-git-send-email-shijie8@gmail.com>
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Vu4eP-0003kG-I3
+ for linux-mtd@lists.infradead.org; Fri, 20 Dec 2013 18:18:18 +0000
+Date: Fri, 20 Dec 2013 15:17:58 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [RFC/PATCH] mtd: Hide CONFIG_MTD_BLKDEVS from the menu
+Message-ID: <20131220181757.GA17786@localhost>
+References: <1386943124-8005-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20131220004712.GA12803@localhost>
+ <20131220020518.GB18175@norris-Latitude-E6410>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1387555350-989-1-git-send-email-shijie8@gmail.com>
-Cc: s.hauer@pengutronix.de, akinobu.mita@gmail.com,
- linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20131220020518.GB18175@norris-Latitude-E6410>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,33 +27,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Dec 21, 2013 at 12:02:26AM +0800, Huang Shijie wrote:
-> [1] Why kill them?
->     As time goes on, the NAND's page size and oob size become larger and larger.
->     So we have changes these two macros frequently in order to support the new
->     NAND.
+On Thu, Dec 19, 2013 at 06:05:18PM -0800, Brian Norris wrote:
+> On Thu, Dec 19, 2013 at 09:47:13PM -0300, Ezequiel Garcia wrote:
+> > On Fri, Dec 13, 2013 at 10:58:44AM -0300, Ezequiel Garcia wrote:
+> > > Make this option a hidden one and get a cleaner configuration.
+> > > This option just selects a common infrastructure for MTD-based devices
+> > > to expose a block interface. There is no point in allowing a separate
+> > > enable/disable.
+> > > 
+> > > Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> > > ---
+> > >  drivers/mtd/Kconfig | 4 +---
+> > >  1 file changed, 1 insertion(+), 3 deletions(-)
+> > > 
+> > > diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
+> > > index 5fab4e6e..2a0ca2a 100644
+> > > --- a/drivers/mtd/Kconfig
+> > > +++ b/drivers/mtd/Kconfig
+> > > @@ -158,9 +158,7 @@ config MTD_BCM47XX_PARTS
+> > >  comment "User Modules And Translation Layers"
+> > >  
+> > >  config MTD_BLKDEVS
+> > > -	tristate "Common interface to block layer for MTD 'translation layers'"
+> > > -	depends on BLOCK
+> > > -	default n
+> > > +	bool
+> > >  
+> > >  config MTD_BLOCK
+> > >  	tristate "Caching block device access to MTD devices"
+> > 
+> > Any comments on this one?
 > 
-> [2] How does this patch set do?
->     There are three drivers which uses these two macros, the mxc-nand, denali,
->     and the cafe-nand.
+> It looks OK to me. I might add a comment above MTD_BLKDEVS like I see in
+> some other similar Kconfig not-user-selectable options:
 > 
->     This patch will allocate a temporary buffer for the nand_scan_ident, and 
->     after it have getten the right page size and oob size, it will re-allocate
->     the buffer again.
+> #
+> # MTD block device support is select'ed if needed
+> #
 > 
-> [3] I do not have the boards which have the relative NAND controller.
-> 
->     I hope someone can test this patch set.
-> 
->     thanks.
-> 
-> 
-> Huang Shijie (4):
->   mtd: mxc-nand: kill the NAND_MAX_PAGESIZE/NAND_MAX_OOBSIZE
->   mtd: denali: kill the NAND_MAX_PAGESIZE/NAND_MAX_OOBSIZE
->   mtd: nand: kill the the NAND_MAX_PAGESIZE/NAND_MAX_OOBSIZE for
->     nand_buffers{}
->   mtd: nand: remove the NAND_MAX_PAGESIZE/NAND_MAX_OOBSIZE
 
-For all four patches:
-Reviewed-by: Josh Triplett <josh@joshtriplett.org>
+Fully agreed.
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
