@@ -1,26 +1,26 @@
-Received: from mailout1.samsung.com ([203.254.224.24])
+Received: from mailout3.samsung.com ([203.254.224.33])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VtuaS-00010D-CR
- for linux-mtd@lists.infradead.org; Fri, 20 Dec 2013 07:33:33 +0000
-Received: from epcpsbgr2.samsung.com
- (u142.gpu120.samsung.co.kr [203.254.230.142])
- by mailout1.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ id 1Vtuas-00011z-Bi
+ for linux-mtd@lists.infradead.org; Fri, 20 Dec 2013 07:33:59 +0000
+Received: from epcpsbgr5.samsung.com
+ (u145.gpu120.samsung.co.kr [203.254.230.145])
+ by mailout3.samsung.com (Oracle Communications Messaging Server 7u4-24.01
  (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0MY300I1LGZ89910@mailout1.samsung.com> for
- linux-mtd@lists.infradead.org; Fri, 20 Dec 2013 16:33:08 +0900 (KST)
+ with ESMTP id <0MY3003U6GZXNJD0@mailout3.samsung.com> for
+ linux-mtd@lists.infradead.org; Fri, 20 Dec 2013 16:33:34 +0900 (KST)
 From: Jingoo Han <jg1.han@samsung.com>
 To: 'Brian Norris' <computersforpeace@gmail.com>
 References: <000d01cefd55$7e48a2a0$7ad9e7e0$%han@samsung.com>
 In-reply-to: <000d01cefd55$7e48a2a0$7ad9e7e0$%han@samsung.com>
-Subject: [PATCH V2 4/8] mtd: denali_dt: Use devm_clk_get()
-Date: Fri, 20 Dec 2013 16:33:08 +0900
-Message-id: <001101cefd55$ba9e3120$2fda9360$%han@samsung.com>
+Subject: [PATCH V2 5/8] mtd: lpc32xx_slc: Use devm_*() functions
+Date: Fri, 20 Dec 2013 16:33:33 +0900
+Message-id: <001201cefd55$c9a82310$5cf86930$%han@samsung.com>
 MIME-version: 1.0
 Content-type: text/plain; charset=us-ascii
 Content-transfer-encoding: 7bit
 Content-language: ko
-Cc: linux-mtd@lists.infradead.org, 'Jingoo Han' <jg1.han@samsung.com>,
- 'David Woodhouse' <dwmw2@infradead.org>, 'Dinh Nguyen' <dinguyen@altera.com>
+Cc: 'Roland Stigge' <stigge@antcom.de>, linux-mtd@lists.infradead.org,
+ 'Jingoo Han' <jg1.han@samsung.com>, 'David Woodhouse' <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,41 +30,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use devm_clk_get() to make cleanup paths simpler.
+Use devm_*() functions to make cleanup paths simpler.
 
 Signed-off-by: Jingoo Han <jg1.han@samsung.com>
 ---
 No change since v1.
 
- drivers/mtd/nand/denali_dt.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/mtd/nand/lpc32xx_slc.c |   10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
-index 9253024..babb02c 100644
---- a/drivers/mtd/nand/denali_dt.c
-+++ b/drivers/mtd/nand/denali_dt.c
-@@ -108,7 +108,7 @@ static int denali_dt_probe(struct platform_device *ofdev)
- 		denali->dev->dma_mask = NULL;
+diff --git a/drivers/mtd/nand/lpc32xx_slc.c b/drivers/mtd/nand/lpc32xx_slc.c
+index 23e6974..5f20394 100644
+--- a/drivers/mtd/nand/lpc32xx_slc.c
++++ b/drivers/mtd/nand/lpc32xx_slc.c
+@@ -791,8 +791,8 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
  	}
+ 	if (host->ncfg->wp_gpio == -EPROBE_DEFER)
+ 		return -EPROBE_DEFER;
+-	if (gpio_is_valid(host->ncfg->wp_gpio) &&
+-			gpio_request(host->ncfg->wp_gpio, "NAND WP")) {
++	if (gpio_is_valid(host->ncfg->wp_gpio) && devm_gpio_request(&pdev->dev,
++			host->ncfg->wp_gpio, "NAND WP")) {
+ 		dev_err(&pdev->dev, "GPIO not available\n");
+ 		return -EBUSY;
+ 	}
+@@ -808,7 +808,7 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
+ 	mtd->dev.parent = &pdev->dev;
  
--	dt->clk = clk_get(&ofdev->dev, NULL);
-+	dt->clk = devm_clk_get(&ofdev->dev, NULL);
- 	if (IS_ERR(dt->clk)) {
- 		dev_err(&ofdev->dev, "no clk available\n");
- 		return PTR_ERR(dt->clk);
-@@ -124,7 +124,6 @@ static int denali_dt_probe(struct platform_device *ofdev)
+ 	/* Get NAND clock */
+-	host->clk = clk_get(&pdev->dev, NULL);
++	host->clk = devm_clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(host->clk)) {
+ 		dev_err(&pdev->dev, "Clock failure\n");
+ 		res = -ENOENT;
+@@ -927,10 +927,8 @@ err_exit3:
+ 	dma_release_channel(host->dma_chan);
+ err_exit2:
+ 	clk_disable(host->clk);
+-	clk_put(host->clk);
+ err_exit1:
+ 	lpc32xx_wp_enable(host);
+-	gpio_free(host->ncfg->wp_gpio);
  
- out_disable_clk:
- 	clk_disable_unprepare(dt->clk);
--	clk_put(dt->clk);
- 
- 	return ret;
+ 	return res;
  }
-@@ -135,7 +134,6 @@ static int denali_dt_remove(struct platform_device *ofdev)
+@@ -953,9 +951,7 @@ static int lpc32xx_nand_remove(struct platform_device *pdev)
+ 	writel(tmp, SLC_CTRL(host->io_base));
  
- 	denali_remove(&dt->denali);
- 	clk_disable(dt->clk);
--	clk_put(dt->clk);
+ 	clk_disable(host->clk);
+-	clk_put(host->clk);
+ 	lpc32xx_wp_enable(host);
+-	gpio_free(host->ncfg->wp_gpio);
  
  	return 0;
  }
