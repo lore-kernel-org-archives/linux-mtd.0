@@ -1,18 +1,19 @@
-Received: from smtprelay01.ispgateway.de ([80.67.31.28])
+Received: from arroyo.ext.ti.com ([192.94.94.40])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VtueC-0001EL-Mv
- for linux-mtd@lists.infradead.org; Fri, 20 Dec 2013 07:37:28 +0000
-From: Christian Riesch <christian.riesch@omicron.at>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH v2 1/2] mtd: Add a retlen parameter to _get_{fact,
- user}_prot_info
-Date: Fri, 20 Dec 2013 08:36:32 +0100
-Message-Id: <1387524993-3353-2-git-send-email-christian.riesch@omicron.at>
-In-Reply-To: <1387524993-3353-1-git-send-email-christian.riesch@omicron.at>
-References: <1387524993-3353-1-git-send-email-christian.riesch@omicron.at>
-Cc: Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Christian Riesch <christian.riesch@omicron.at>, linux-kernel@vger.kernel.org
+ id 1VturO-0001Tp-Td
+ for linux-mtd@lists.infradead.org; Fri, 20 Dec 2013 07:51:03 +0000
+From: Pekon Gupta <pekon@ti.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCH v5 0/5] mtd: nand: omap: optimized chip->ecc.correct() for H/W
+ ECC schemes
+Date: Fri, 20 Dec 2013 13:20:15 +0530
+Message-ID: <1387525820-25709-1-git-send-email-pekon@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: avinashphilipk@gmail.com, Felipe Balbi <balbi@ti.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>, Pekon Gupta <pekon@ti.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Stefan Roese <sr@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,304 +23,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Christian Riesch <christian.riesch@omicron.at>
-Cc: Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>
-Cc: Brian Norris <computersforpeace@gmail.com>
----
- drivers/mtd/chips/cfi_cmdset_0001.c |   31 +++++++++++++------------------
- drivers/mtd/devices/mtd_dataflash.c |    7 ++++---
- drivers/mtd/mtdchar.c               |   11 ++++++-----
- drivers/mtd/mtdcore.c               |   12 ++++++------
- drivers/mtd/mtdpart.c               |   14 ++++++++------
- drivers/mtd/onenand/onenand_base.c  |   30 ++++++++++++------------------
- include/linux/mtd/mtd.h             |   16 ++++++++--------
- 7 files changed, 57 insertions(+), 64 deletions(-)
+This patch series is split version of earlier patch:
+http://lists.infradead.org/pipermail/linux-mtd/2013-November/050241.html
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-index 7751443..7aa581f 100644
---- a/drivers/mtd/chips/cfi_cmdset_0001.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-@@ -69,10 +69,10 @@ static int cfi_intelext_read_fact_prot_reg (struct mtd_info *, loff_t, size_t, s
- static int cfi_intelext_read_user_prot_reg (struct mtd_info *, loff_t, size_t, size_t *, u_char *);
- static int cfi_intelext_write_user_prot_reg (struct mtd_info *, loff_t, size_t, size_t *, u_char *);
- static int cfi_intelext_lock_user_prot_reg (struct mtd_info *, loff_t, size_t);
--static int cfi_intelext_get_fact_prot_info (struct mtd_info *,
--					    struct otp_info *, size_t);
--static int cfi_intelext_get_user_prot_info (struct mtd_info *,
--					    struct otp_info *, size_t);
-+static int cfi_intelext_get_fact_prot_info(struct mtd_info *, size_t,
-+					   size_t *, struct otp_info *);
-+static int cfi_intelext_get_user_prot_info(struct mtd_info *, size_t,
-+					   size_t *, struct otp_info *);
- #endif
- static int cfi_intelext_suspend (struct mtd_info *);
- static void cfi_intelext_resume (struct mtd_info *);
-@@ -2399,24 +2399,19 @@ static int cfi_intelext_lock_user_prot_reg(struct mtd_info *mtd,
- 				     NULL, do_otp_lock, 1);
- }
- 
--static int cfi_intelext_get_fact_prot_info(struct mtd_info *mtd,
--					   struct otp_info *buf, size_t len)
--{
--	size_t retlen;
--	int ret;
-+static int cfi_intelext_get_fact_prot_info(struct mtd_info *mtd, size_t len,
-+					   size_t *retlen, struct otp_info *buf)
- 
--	ret = cfi_intelext_otp_walk(mtd, 0, len, &retlen, (u_char *)buf, NULL, 0);
--	return ret ? : retlen;
-+{
-+	return cfi_intelext_otp_walk(mtd, 0, len, retlen, (u_char *)buf,
-+				     NULL, 0);
- }
- 
--static int cfi_intelext_get_user_prot_info(struct mtd_info *mtd,
--					   struct otp_info *buf, size_t len)
-+static int cfi_intelext_get_user_prot_info(struct mtd_info *mtd, size_t len,
-+					   size_t *retlen, struct otp_info *buf)
- {
--	size_t retlen;
--	int ret;
--
--	ret = cfi_intelext_otp_walk(mtd, 0, len, &retlen, (u_char *)buf, NULL, 1);
--	return ret ? : retlen;
-+	return cfi_intelext_otp_walk(mtd, 0, len, retlen, (u_char *)buf,
-+				     NULL, 1);
- }
- 
- #endif
-diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
-index 28779b6..09c69ce 100644
---- a/drivers/mtd/devices/mtd_dataflash.c
-+++ b/drivers/mtd/devices/mtd_dataflash.c
-@@ -442,8 +442,8 @@ static int dataflash_write(struct mtd_info *mtd, loff_t to, size_t len,
- 
- #ifdef CONFIG_MTD_DATAFLASH_OTP
- 
--static int dataflash_get_otp_info(struct mtd_info *mtd,
--		struct otp_info *info, size_t len)
-+static int dataflash_get_otp_info(struct mtd_info *mtd, size_t len,
-+				  size_t *retlen, struct otp_info *info)
- {
- 	/* Report both blocks as identical:  bytes 0..64, locked.
- 	 * Unless the user block changed from all-ones, we can't
-@@ -452,7 +452,8 @@ static int dataflash_get_otp_info(struct mtd_info *mtd,
- 	info->start = 0;
- 	info->length = 64;
- 	info->locked = 1;
--	return sizeof(*info);
-+	*retlen = sizeof(*info);
-+	return 0;
- }
- 
- static ssize_t otp_read(struct spi_device *spi, unsigned base,
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 684bfa3..0edb0ca 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -888,25 +888,26 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
- 	case OTPGETREGIONINFO:
- 	{
- 		struct otp_info *buf = kmalloc(4096, GFP_KERNEL);
-+		size_t retlen;
- 		if (!buf)
- 			return -ENOMEM;
- 		switch (mfi->mode) {
- 		case MTD_FILE_MODE_OTP_FACTORY:
--			ret = mtd_get_fact_prot_info(mtd, buf, 4096);
-+			ret = mtd_get_fact_prot_info(mtd, 4096, &retlen, buf);
- 			break;
- 		case MTD_FILE_MODE_OTP_USER:
--			ret = mtd_get_user_prot_info(mtd, buf, 4096);
-+			ret = mtd_get_user_prot_info(mtd, 4096, &retlen, buf);
- 			break;
- 		default:
- 			ret = -EINVAL;
- 			break;
- 		}
--		if (ret >= 0) {
-+		if (!ret) {
- 			if (cmd == OTPGETREGIONCOUNT) {
--				int nbr = ret / sizeof(struct otp_info);
-+				int nbr = retlen / sizeof(struct otp_info);
- 				ret = copy_to_user(argp, &nbr, sizeof(int));
- 			} else
--				ret = copy_to_user(argp, buf, ret);
-+				ret = copy_to_user(argp, buf, retlen);
- 			if (ret)
- 				ret = -EFAULT;
- 		}
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 048c823..d0c3d41 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -877,14 +877,14 @@ EXPORT_SYMBOL_GPL(mtd_read_oob);
-  * devices. The user data is one time programmable but the factory data is read
-  * only.
-  */
--int mtd_get_fact_prot_info(struct mtd_info *mtd, struct otp_info *buf,
--			   size_t len)
-+int mtd_get_fact_prot_info(struct mtd_info *mtd, size_t len, size_t *retlen,
-+			   struct otp_info *buf)
- {
- 	if (!mtd->_get_fact_prot_info)
- 		return -EOPNOTSUPP;
- 	if (!len)
- 		return 0;
--	return mtd->_get_fact_prot_info(mtd, buf, len);
-+	return mtd->_get_fact_prot_info(mtd, len, retlen, buf);
- }
- EXPORT_SYMBOL_GPL(mtd_get_fact_prot_info);
- 
-@@ -900,14 +900,14 @@ int mtd_read_fact_prot_reg(struct mtd_info *mtd, loff_t from, size_t len,
- }
- EXPORT_SYMBOL_GPL(mtd_read_fact_prot_reg);
- 
--int mtd_get_user_prot_info(struct mtd_info *mtd, struct otp_info *buf,
--			   size_t len)
-+int mtd_get_user_prot_info(struct mtd_info *mtd, size_t len, size_t *retlen,
-+			   struct otp_info *buf)
- {
- 	if (!mtd->_get_user_prot_info)
- 		return -EOPNOTSUPP;
- 	if (!len)
- 		return 0;
--	return mtd->_get_user_prot_info(mtd, buf, len);
-+	return mtd->_get_user_prot_info(mtd, len, retlen, buf);
- }
- EXPORT_SYMBOL_GPL(mtd_get_user_prot_info);
- 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 3014933..57d8cf7 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -150,11 +150,12 @@ static int part_read_user_prot_reg(struct mtd_info *mtd, loff_t from,
- 						 retlen, buf);
- }
- 
--static int part_get_user_prot_info(struct mtd_info *mtd,
--		struct otp_info *buf, size_t len)
-+static int part_get_user_prot_info(struct mtd_info *mtd, size_t len,
-+				   size_t *retlen, struct otp_info *buf)
- {
- 	struct mtd_part *part = PART(mtd);
--	return part->master->_get_user_prot_info(part->master, buf, len);
-+	return part->master->_get_user_prot_info(part->master, len, retlen,
-+						 buf);
- }
- 
- static int part_read_fact_prot_reg(struct mtd_info *mtd, loff_t from,
-@@ -165,11 +166,12 @@ static int part_read_fact_prot_reg(struct mtd_info *mtd, loff_t from,
- 						 retlen, buf);
- }
- 
--static int part_get_fact_prot_info(struct mtd_info *mtd, struct otp_info *buf,
--		size_t len)
-+static int part_get_fact_prot_info(struct mtd_info *mtd, size_t len,
-+				   size_t *retlen, struct otp_info *buf)
- {
- 	struct mtd_part *part = PART(mtd);
--	return part->master->_get_fact_prot_info(part->master, buf, len);
-+	return part->master->_get_fact_prot_info(part->master, len, retlen,
-+						 buf);
- }
- 
- static int part_write(struct mtd_info *mtd, loff_t to, size_t len,
-diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
-index b3f41f2..419c538 100644
---- a/drivers/mtd/onenand/onenand_base.c
-+++ b/drivers/mtd/onenand/onenand_base.c
-@@ -3242,20 +3242,17 @@ static int onenand_otp_walk(struct mtd_info *mtd, loff_t from, size_t len,
- /**
-  * onenand_get_fact_prot_info - [MTD Interface] Read factory OTP info
-  * @param mtd		MTD device structure
-- * @param buf		the databuffer to put/get data
-  * @param len		number of bytes to read
-+ * @param retlen	pointer to variable to store the number of read bytes
-+ * @param buf		the databuffer to put/get data
-  *
-  * Read factory OTP info.
-  */
--static int onenand_get_fact_prot_info(struct mtd_info *mtd,
--			struct otp_info *buf, size_t len)
-+static int onenand_get_fact_prot_info(struct mtd_info *mtd, size_t len,
-+				      size_t *retlen, struct otp_info *buf)
- {
--	size_t retlen;
--	int ret;
--
--	ret = onenand_otp_walk(mtd, 0, len, &retlen, (u_char *) buf, NULL, MTD_OTP_FACTORY);
--
--	return ret ? : retlen;
-+	return onenand_otp_walk(mtd, 0, len, retlen, (u_char *) buf, NULL,
-+				MTD_OTP_FACTORY);
- }
- 
- /**
-@@ -3277,20 +3274,17 @@ static int onenand_read_fact_prot_reg(struct mtd_info *mtd, loff_t from,
- /**
-  * onenand_get_user_prot_info - [MTD Interface] Read user OTP info
-  * @param mtd		MTD device structure
-- * @param buf		the databuffer to put/get data
-+ * @param retlen	pointer to variable to store the number of read bytes
-  * @param len		number of bytes to read
-+ * @param buf		the databuffer to put/get data
-  *
-  * Read user OTP info.
-  */
--static int onenand_get_user_prot_info(struct mtd_info *mtd,
--			struct otp_info *buf, size_t len)
-+static int onenand_get_user_prot_info(struct mtd_info *mtd, size_t len,
-+				      size_t *retlen, struct otp_info *buf)
- {
--	size_t retlen;
--	int ret;
--
--	ret = onenand_otp_walk(mtd, 0, len, &retlen, (u_char *) buf, NULL, MTD_OTP_USER);
--
--	return ret ? : retlen;
-+	return onenand_otp_walk(mtd, 0, len, retlen, (u_char *) buf, NULL,
-+				MTD_OTP_USER);
- }
- 
- /**
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index a5cf4e8..af35068 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -204,12 +204,12 @@ struct mtd_info {
- 			  struct mtd_oob_ops *ops);
- 	int (*_write_oob) (struct mtd_info *mtd, loff_t to,
- 			   struct mtd_oob_ops *ops);
--	int (*_get_fact_prot_info) (struct mtd_info *mtd, struct otp_info *buf,
--				    size_t len);
-+	int (*_get_fact_prot_info) (struct mtd_info *mtd, size_t len,
-+				    size_t *retlen, struct otp_info *buf);
- 	int (*_read_fact_prot_reg) (struct mtd_info *mtd, loff_t from,
- 				    size_t len, size_t *retlen, u_char *buf);
--	int (*_get_user_prot_info) (struct mtd_info *mtd, struct otp_info *buf,
--				    size_t len);
-+	int (*_get_user_prot_info) (struct mtd_info *mtd, size_t len,
-+				    size_t *retlen, struct otp_info *buf);
- 	int (*_read_user_prot_reg) (struct mtd_info *mtd, loff_t from,
- 				    size_t len, size_t *retlen, u_char *buf);
- 	int (*_write_user_prot_reg) (struct mtd_info *mtd, loff_t to,
-@@ -278,12 +278,12 @@ static inline int mtd_write_oob(struct mtd_info *mtd, loff_t to,
- 	return mtd->_write_oob(mtd, to, ops);
- }
- 
--int mtd_get_fact_prot_info(struct mtd_info *mtd, struct otp_info *buf,
--			   size_t len);
-+int mtd_get_fact_prot_info(struct mtd_info *mtd, size_t len, size_t *retlen,
-+			   struct otp_info *buf);
- int mtd_read_fact_prot_reg(struct mtd_info *mtd, loff_t from, size_t len,
- 			   size_t *retlen, u_char *buf);
--int mtd_get_user_prot_info(struct mtd_info *mtd, struct otp_info *buf,
--			   size_t len);
-+int mtd_get_user_prot_info(struct mtd_info *mtd, size_t len, size_t *retlen,
-+			   struct otp_info *buf);
- int mtd_read_user_prot_reg(struct mtd_info *mtd, loff_t from, size_t len,
- 			   size_t *retlen, u_char *buf);
- int mtd_write_user_prot_reg(struct mtd_info *mtd, loff_t to, size_t len,
+chip->ecc.correct() is used for detecting and correcting bit-flips during read
+operations. In OMAP NAND driver different ecc-schemes have different callbacks:
+ - omap_correct_data()		for HAM1_HW ecc-schemes (Untouched)
+ - nand_bch_correct_data()	for BCHx_HW_DETECTION_SW ecc-schemes (Untouched)
+ - omap_elm_correct_data()	for BCHx_HW ecc-schemes
+
+This patch-series fixes following issues in omap_elm_correct_data():
+(1) Dependency on a specific reserved byte-position in OOB area
+    to differentiates between erased-pages v/s programmed-pages.
+    Problem: reserved byte-position cannot be accomodated in all ecc-schemes
+    Problem: reserved byte-position can itself be subjected upto 8 bit-flips
+             causing the 0xff to become 0x00, causing page to be
+             mis-recognized as erased-page.
+
+(2) Bit-flips in erased-pages are detected by comparing each byte of Data & OOB
+    with 0xff in check_erased_page().
+    Problem: This is causes performance penalty when erased-pages are checked.
+
+(3) Current code is not scalable for future ECC schemes due to presence of 
+    tweaks for BCH4_ECC and BCH8_ECC at multiple places.
+
+(4) Currently, bit-flips are evaluated and fixed even when ELM reports them as
+    un-correctable bit-flips, this should not happen as 'number-of-error' field
+    in ELM_LOCATION_STATUS becomes invalid when un-correctable flag is set.
+
+(5) Driver should return with error-code = '-EBADMSG' when
+     uncorrectable bit-flip is detected
+     bit-flip outside valid Data and OOB region is detected
+
+
+Pekon Gupta (5):
+  mtd: nand: omap: add field to indicate current ecc-scheme in 'struct
+    omap_nand_info'
+  mtd: nand: omap: ecc.correct: omap_elm_correct_data: rename eccsize
+    and ecc_vector_size to avoid confusion
+  mtd: nand: omap: ecc.correct: omap_elm_correct_data: fix erased-pages
+    and bit-flips detection for H/W ECC schemes
+  mtd: nand: omap: ecc.correct: omap_elm_correct_data: cleanup to make
+    it scalable for future ecc-schemes
+  mtd: nand: omap: ecc.correct: omap_elm_correct_data: fix bit-flip
+    correction logic
+
+ drivers/mtd/nand/omap2.c | 248 +++++++++++++++++++----------------------------
+ 1 file changed, 100 insertions(+), 148 deletions(-)
+
 -- 
-1.7.9.5
+1.8.1
