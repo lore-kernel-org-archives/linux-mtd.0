@@ -1,11 +1,11 @@
-Message-Id: <20131220132522.409394274@bombadil.infradead.org>
-Date: Fri, 20 Dec 2013 05:16:43 -0800
+Message-Id: <20131220132521.330228004@bombadil.infradead.org>
+Date: Fri, 20 Dec 2013 05:16:37 -0800
 From: Christoph Hellwig <hch@infradead.org>
 To: viro@zeniv.linux.org.uk
-Subject: [PATCH 08/21] btrfs: use generic posix ACL infrastructure
+Subject: [PATCH 02/21] fs: merge xattr_acl.c into posix_acl.c
 References: <20131220131635.650823732@bombadil.infradead.org>
 Content-Disposition: inline;
- filename=0008-btrfs-use-generic-posix-ACL-infrastructure.patch
+ filename=0002-fs-merge-xattr_acl.c-into-posix_acl.c.patch
 Cc: Andreas Gruenbacher <andreas.gruenbacher@linbit.com>, xfs@oss.sgi.com,
  Mark Fasheh <mfasheh@suse.com>, reiserfs-devel@vger.kernel.org,
  linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
@@ -22,320 +22,414 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Also don't bother to set up a .get_acl method for symlinks as we do not
-support access control (ACLs or even mode bits) for symlinks in Linux.
-
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- fs/btrfs/acl.c   |  142 +++++++-----------------------------------------------
- fs/btrfs/ctree.h |    7 +--
- fs/btrfs/inode.c |    7 ++-
- fs/btrfs/xattr.c |    5 +-
- fs/btrfs/xattr.h |    2 -
- 5 files changed, 28 insertions(+), 135 deletions(-)
+ fs/Makefile    |    2 +-
+ fs/posix_acl.c |  180 +++++++++++++++++++++++++++++++++++++++++++++++++++++---
+ fs/xattr_acl.c |  180 --------------------------------------------------------
+ 3 files changed, 174 insertions(+), 188 deletions(-)
+ delete mode 100644 fs/xattr_acl.c
 
-diff --git a/fs/btrfs/acl.c b/fs/btrfs/acl.c
-index b56519d..ff9b399 100644
---- a/fs/btrfs/acl.c
-+++ b/fs/btrfs/acl.c
-@@ -35,13 +35,6 @@ struct posix_acl *btrfs_get_acl(struct inode *inode, int type)
- 	char *value = NULL;
- 	struct posix_acl *acl;
+diff --git a/fs/Makefile b/fs/Makefile
+index 4fe6df3..f2c1843 100644
+--- a/fs/Makefile
++++ b/fs/Makefile
+@@ -42,7 +42,7 @@ obj-$(CONFIG_BINFMT_SOM)	+= binfmt_som.o
+ obj-$(CONFIG_BINFMT_FLAT)	+= binfmt_flat.o
  
--	if (!IS_POSIXACL(inode))
--		return NULL;
--
--	acl = get_cached_acl(inode, type);
--	if (acl != ACL_NOT_CACHED)
--		return acl;
--
- 	switch (type) {
- 	case ACL_TYPE_ACCESS:
- 		name = POSIX_ACL_XATTR_ACCESS;
-@@ -76,31 +69,10 @@ struct posix_acl *btrfs_get_acl(struct inode *inode, int type)
- 	return acl;
- }
- 
--static int btrfs_xattr_acl_get(struct dentry *dentry, const char *name,
--		void *value, size_t size, int type)
--{
--	struct posix_acl *acl;
--	int ret = 0;
--
--	if (!IS_POSIXACL(dentry->d_inode))
--		return -EOPNOTSUPP;
--
--	acl = btrfs_get_acl(dentry->d_inode, type);
--
--	if (IS_ERR(acl))
--		return PTR_ERR(acl);
--	if (acl == NULL)
--		return -ENODATA;
--	ret = posix_acl_to_xattr(&init_user_ns, acl, value, size);
--	posix_acl_release(acl);
--
--	return ret;
--}
--
+ obj-$(CONFIG_FS_MBCACHE)	+= mbcache.o
+-obj-$(CONFIG_FS_POSIX_ACL)	+= posix_acl.o xattr_acl.o
++obj-$(CONFIG_FS_POSIX_ACL)	+= posix_acl.o
+ obj-$(CONFIG_NFS_COMMON)	+= nfs_common/
+ obj-$(CONFIG_GENERIC_ACL)	+= generic_acl.o
+ obj-$(CONFIG_COREDUMP)		+= coredump.o
+diff --git a/fs/posix_acl.c b/fs/posix_acl.c
+index 8bd2135..359d70b 100644
+--- a/fs/posix_acl.c
++++ b/fs/posix_acl.c
+@@ -1,10 +1,8 @@
  /*
-  * Needs to be called with fs_mutex held
+- * linux/fs/posix_acl.c
++ * Copyright (C) 2002,2003 by Andreas Gruenbacher <a.gruenbacher@computer.org>
+  *
+- *  Copyright (C) 2002 by Andreas Gruenbacher <a.gruenbacher@computer.org>
+- *
+- *  Fixes from William Schumacher incorporated on 15 March 2001.
+- *     (Reported by Charles Bertsch, <CBertsch@microtest.com>).
++ * Fixes from William Schumacher incorporated on 15 March 2001.
++ *    (Reported by Charles Bertsch, <CBertsch@microtest.com>).
   */
--static int btrfs_set_acl(struct btrfs_trans_handle *trans,
-+static int __btrfs_set_acl(struct btrfs_trans_handle *trans,
- 			 struct inode *inode, struct posix_acl *acl, int type)
- {
- 	int ret, size = 0;
-@@ -158,35 +130,9 @@ out:
- 	return ret;
- }
  
--static int btrfs_xattr_acl_set(struct dentry *dentry, const char *name,
--		const void *value, size_t size, int flags, int type)
-+int btrfs_set_acl(struct inode *inode, struct posix_acl *acl, int type)
- {
--	int ret;
--	struct posix_acl *acl = NULL;
+ /*
+@@ -18,9 +16,9 @@
+ #include <linux/fs.h>
+ #include <linux/sched.h>
+ #include <linux/posix_acl.h>
++#include <linux/posix_acl_xattr.h>
+ #include <linux/export.h>
 -
--	if (!inode_owner_or_capable(dentry->d_inode))
--		return -EPERM;
+-#include <linux/errno.h>
++#include <linux/user_namespace.h>
+ 
+ EXPORT_SYMBOL(posix_acl_init);
+ EXPORT_SYMBOL(posix_acl_alloc);
+@@ -418,3 +416,171 @@ posix_acl_chmod(struct posix_acl **acl, gfp_t gfp, umode_t mode)
+ 	return err;
+ }
+ EXPORT_SYMBOL(posix_acl_chmod);
++
++/*
++ * Fix up the uids and gids in posix acl extended attributes in place.
++ */
++static void posix_acl_fix_xattr_userns(
++	struct user_namespace *to, struct user_namespace *from,
++	void *value, size_t size)
++{
++	posix_acl_xattr_header *header = (posix_acl_xattr_header *)value;
++	posix_acl_xattr_entry *entry = (posix_acl_xattr_entry *)(header+1), *end;
++	int count;
++	kuid_t uid;
++	kgid_t gid;
++
++	if (!value)
++		return;
++	if (size < sizeof(posix_acl_xattr_header))
++		return;
++	if (header->a_version != cpu_to_le32(POSIX_ACL_XATTR_VERSION))
++		return;
++
++	count = posix_acl_xattr_count(size);
++	if (count < 0)
++		return;
++	if (count == 0)
++		return;
++
++	for (end = entry + count; entry != end; entry++) {
++		switch(le16_to_cpu(entry->e_tag)) {
++		case ACL_USER:
++			uid = make_kuid(from, le32_to_cpu(entry->e_id));
++			entry->e_id = cpu_to_le32(from_kuid(to, uid));
++			break;
++		case ACL_GROUP:
++			gid = make_kgid(from, le32_to_cpu(entry->e_id));
++			entry->e_id = cpu_to_le32(from_kgid(to, gid));
++			break;
++		default:
++			break;
++		}
++	}
++}
++
++void posix_acl_fix_xattr_from_user(void *value, size_t size)
++{
++	struct user_namespace *user_ns = current_user_ns();
++	if (user_ns == &init_user_ns)
++		return;
++	posix_acl_fix_xattr_userns(&init_user_ns, user_ns, value, size);
++}
++
++void posix_acl_fix_xattr_to_user(void *value, size_t size)
++{
++	struct user_namespace *user_ns = current_user_ns();
++	if (user_ns == &init_user_ns)
++		return;
++	posix_acl_fix_xattr_userns(user_ns, &init_user_ns, value, size);
++}
++
++/*
++ * Convert from extended attribute to in-memory representation.
++ */
++struct posix_acl *
++posix_acl_from_xattr(struct user_namespace *user_ns,
++		     const void *value, size_t size)
++{
++	posix_acl_xattr_header *header = (posix_acl_xattr_header *)value;
++	posix_acl_xattr_entry *entry = (posix_acl_xattr_entry *)(header+1), *end;
++	int count;
++	struct posix_acl *acl;
++	struct posix_acl_entry *acl_e;
++
++	if (!value)
++		return NULL;
++	if (size < sizeof(posix_acl_xattr_header))
++		 return ERR_PTR(-EINVAL);
++	if (header->a_version != cpu_to_le32(POSIX_ACL_XATTR_VERSION))
++		return ERR_PTR(-EOPNOTSUPP);
++
++	count = posix_acl_xattr_count(size);
++	if (count < 0)
++		return ERR_PTR(-EINVAL);
++	if (count == 0)
++		return NULL;
++	
++	acl = posix_acl_alloc(count, GFP_NOFS);
++	if (!acl)
++		return ERR_PTR(-ENOMEM);
++	acl_e = acl->a_entries;
++	
++	for (end = entry + count; entry != end; acl_e++, entry++) {
++		acl_e->e_tag  = le16_to_cpu(entry->e_tag);
++		acl_e->e_perm = le16_to_cpu(entry->e_perm);
++
++		switch(acl_e->e_tag) {
++			case ACL_USER_OBJ:
++			case ACL_GROUP_OBJ:
++			case ACL_MASK:
++			case ACL_OTHER:
++				break;
++
++			case ACL_USER:
++				acl_e->e_uid =
++					make_kuid(user_ns,
++						  le32_to_cpu(entry->e_id));
++				if (!uid_valid(acl_e->e_uid))
++					goto fail;
++				break;
++			case ACL_GROUP:
++				acl_e->e_gid =
++					make_kgid(user_ns,
++						  le32_to_cpu(entry->e_id));
++				if (!gid_valid(acl_e->e_gid))
++					goto fail;
++				break;
++
++			default:
++				goto fail;
++		}
++	}
++	return acl;
++
++fail:
++	posix_acl_release(acl);
++	return ERR_PTR(-EINVAL);
++}
++EXPORT_SYMBOL (posix_acl_from_xattr);
++
++/*
++ * Convert from in-memory to extended attribute representation.
++ */
++int
++posix_acl_to_xattr(struct user_namespace *user_ns, const struct posix_acl *acl,
++		   void *buffer, size_t size)
++{
++	posix_acl_xattr_header *ext_acl = (posix_acl_xattr_header *)buffer;
++	posix_acl_xattr_entry *ext_entry = ext_acl->a_entries;
++	int real_size, n;
++
++	real_size = posix_acl_xattr_size(acl->a_count);
++	if (!buffer)
++		return real_size;
++	if (real_size > size)
++		return -ERANGE;
++	
++	ext_acl->a_version = cpu_to_le32(POSIX_ACL_XATTR_VERSION);
++
++	for (n=0; n < acl->a_count; n++, ext_entry++) {
++		const struct posix_acl_entry *acl_e = &acl->a_entries[n];
++		ext_entry->e_tag  = cpu_to_le16(acl_e->e_tag);
++		ext_entry->e_perm = cpu_to_le16(acl_e->e_perm);
++		switch(acl_e->e_tag) {
++		case ACL_USER:
++			ext_entry->e_id =
++				cpu_to_le32(from_kuid(user_ns, acl_e->e_uid));
++			break;
++		case ACL_GROUP:
++			ext_entry->e_id =
++				cpu_to_le32(from_kgid(user_ns, acl_e->e_gid));
++			break;
++		default:
++			ext_entry->e_id = cpu_to_le32(ACL_UNDEFINED_ID);
++			break;
++		}
++	}
++	return real_size;
++}
++EXPORT_SYMBOL (posix_acl_to_xattr);
+diff --git a/fs/xattr_acl.c b/fs/xattr_acl.c
+deleted file mode 100644
+index 9fbea87..0000000
+--- a/fs/xattr_acl.c
++++ /dev/null
+@@ -1,180 +0,0 @@
+-/*
+- * linux/fs/xattr_acl.c
+- *
+- * Almost all from linux/fs/ext2/acl.c:
+- * Copyright (C) 2001 by Andreas Gruenbacher, <a.gruenbacher@computer.org>
+- */
 -
--	if (!IS_POSIXACL(dentry->d_inode))
--		return -EOPNOTSUPP;
+-#include <linux/export.h>
+-#include <linux/fs.h>
+-#include <linux/posix_acl_xattr.h>
+-#include <linux/gfp.h>
+-#include <linux/user_namespace.h>
 -
--	if (value) {
--		acl = posix_acl_from_xattr(&init_user_ns, value, size);
--		if (IS_ERR(acl))
--			return PTR_ERR(acl);
+-/*
+- * Fix up the uids and gids in posix acl extended attributes in place.
+- */
+-static void posix_acl_fix_xattr_userns(
+-	struct user_namespace *to, struct user_namespace *from,
+-	void *value, size_t size)
+-{
+-	posix_acl_xattr_header *header = (posix_acl_xattr_header *)value;
+-	posix_acl_xattr_entry *entry = (posix_acl_xattr_entry *)(header+1), *end;
+-	int count;
+-	kuid_t uid;
+-	kgid_t gid;
 -
--		if (acl) {
--			ret = posix_acl_valid(acl);
--			if (ret)
--				goto out;
+-	if (!value)
+-		return;
+-	if (size < sizeof(posix_acl_xattr_header))
+-		return;
+-	if (header->a_version != cpu_to_le32(POSIX_ACL_XATTR_VERSION))
+-		return;
+-
+-	count = posix_acl_xattr_count(size);
+-	if (count < 0)
+-		return;
+-	if (count == 0)
+-		return;
+-
+-	for (end = entry + count; entry != end; entry++) {
+-		switch(le16_to_cpu(entry->e_tag)) {
+-		case ACL_USER:
+-			uid = make_kuid(from, le32_to_cpu(entry->e_id));
+-			entry->e_id = cpu_to_le32(from_kuid(to, uid));
+-			break;
+-		case ACL_GROUP:
+-			gid = make_kgid(from, le32_to_cpu(entry->e_id));
+-			entry->e_id = cpu_to_le32(from_kgid(to, gid));
+-			break;
+-		default:
+-			break;
 -		}
 -	}
--
--	ret = btrfs_set_acl(NULL, dentry->d_inode, acl, type);
--out:
--	posix_acl_release(acl);
--
--	return ret;
-+	return __btrfs_set_acl(NULL, inode, acl, type);
- }
- 
- /*
-@@ -197,83 +143,31 @@ out:
- int btrfs_init_acl(struct btrfs_trans_handle *trans,
- 		   struct inode *inode, struct inode *dir)
- {
--	struct posix_acl *acl = NULL;
-+	struct posix_acl *default_acl, *acl;
- 	int ret = 0;
- 
- 	/* this happens with subvols */
- 	if (!dir)
- 		return 0;
- 
--	if (!S_ISLNK(inode->i_mode)) {
--		if (IS_POSIXACL(dir)) {
--			acl = btrfs_get_acl(dir, ACL_TYPE_DEFAULT);
--			if (IS_ERR(acl))
--				return PTR_ERR(acl);
--		}
-+	ret = posix_acl_create(dir, &inode->i_mode, &default_acl, &acl);
-+	if (ret)
-+		return ret;
- 
--		if (!acl)
--			inode->i_mode &= ~current_umask();
-+	if (default_acl) {
-+		ret = __btrfs_set_acl(trans, inode, default_acl,
-+				      ACL_TYPE_DEFAULT);
-+		posix_acl_release(default_acl);
- 	}
- 
--	if (IS_POSIXACL(dir) && acl) {
--		if (S_ISDIR(inode->i_mode)) {
--			ret = btrfs_set_acl(trans, inode, acl,
--					    ACL_TYPE_DEFAULT);
--			if (ret)
--				goto failed;
--		}
--		ret = __posix_acl_create(&acl, GFP_NOFS, &inode->i_mode);
--		if (ret < 0)
--			return ret;
--
--		if (ret > 0) {
--			/* we need an acl */
--			ret = btrfs_set_acl(trans, inode, acl, ACL_TYPE_ACCESS);
--		} else if (ret < 0) {
--			cache_no_acl(inode);
--		}
--	} else {
--		cache_no_acl(inode);
-+	if (acl) {
-+		if (!ret)
-+			ret = __btrfs_set_acl(trans, inode, acl,
-+					      ACL_TYPE_ACCESS);
-+		posix_acl_release(acl);
- 	}
--failed:
--	posix_acl_release(acl);
--
--	return ret;
 -}
- 
--int btrfs_acl_chmod(struct inode *inode)
+-
+-void posix_acl_fix_xattr_from_user(void *value, size_t size)
 -{
+-	struct user_namespace *user_ns = current_user_ns();
+-	if (user_ns == &init_user_ns)
+-		return;
+-	posix_acl_fix_xattr_userns(&init_user_ns, user_ns, value, size);
+-}
+-
+-void posix_acl_fix_xattr_to_user(void *value, size_t size)
+-{
+-	struct user_namespace *user_ns = current_user_ns();
+-	if (user_ns == &init_user_ns)
+-		return;
+-	posix_acl_fix_xattr_userns(user_ns, &init_user_ns, value, size);
+-}
+-
+-/*
+- * Convert from extended attribute to in-memory representation.
+- */
+-struct posix_acl *
+-posix_acl_from_xattr(struct user_namespace *user_ns,
+-		     const void *value, size_t size)
+-{
+-	posix_acl_xattr_header *header = (posix_acl_xattr_header *)value;
+-	posix_acl_xattr_entry *entry = (posix_acl_xattr_entry *)(header+1), *end;
+-	int count;
 -	struct posix_acl *acl;
--	int ret = 0;
+-	struct posix_acl_entry *acl_e;
 -
--	if (S_ISLNK(inode->i_mode))
--		return -EOPNOTSUPP;
+-	if (!value)
+-		return NULL;
+-	if (size < sizeof(posix_acl_xattr_header))
+-		 return ERR_PTR(-EINVAL);
+-	if (header->a_version != cpu_to_le32(POSIX_ACL_XATTR_VERSION))
+-		return ERR_PTR(-EOPNOTSUPP);
 -
--	if (!IS_POSIXACL(inode))
--		return 0;
+-	count = posix_acl_xattr_count(size);
+-	if (count < 0)
+-		return ERR_PTR(-EINVAL);
+-	if (count == 0)
+-		return NULL;
+-	
+-	acl = posix_acl_alloc(count, GFP_NOFS);
+-	if (!acl)
+-		return ERR_PTR(-ENOMEM);
+-	acl_e = acl->a_entries;
+-	
+-	for (end = entry + count; entry != end; acl_e++, entry++) {
+-		acl_e->e_tag  = le16_to_cpu(entry->e_tag);
+-		acl_e->e_perm = le16_to_cpu(entry->e_perm);
 -
--	acl = btrfs_get_acl(inode, ACL_TYPE_ACCESS);
--	if (IS_ERR_OR_NULL(acl))
--		return PTR_ERR(acl);
+-		switch(acl_e->e_tag) {
+-			case ACL_USER_OBJ:
+-			case ACL_GROUP_OBJ:
+-			case ACL_MASK:
+-			case ACL_OTHER:
+-				break;
 -
--	ret = __posix_acl_chmod(&acl, GFP_KERNEL, inode->i_mode);
--	if (ret)
--		return ret;
--	ret = btrfs_set_acl(NULL, inode, acl, ACL_TYPE_ACCESS);
+-			case ACL_USER:
+-				acl_e->e_uid =
+-					make_kuid(user_ns,
+-						  le32_to_cpu(entry->e_id));
+-				if (!uid_valid(acl_e->e_uid))
+-					goto fail;
+-				break;
+-			case ACL_GROUP:
+-				acl_e->e_gid =
+-					make_kgid(user_ns,
+-						  le32_to_cpu(entry->e_id));
+-				if (!gid_valid(acl_e->e_gid))
+-					goto fail;
+-				break;
+-
+-			default:
+-				goto fail;
+-		}
+-	}
+-	return acl;
+-
+-fail:
 -	posix_acl_release(acl);
-+	if (!default_acl && !acl)
-+		cache_no_acl(inode);
- 	return ret;
- }
--
--const struct xattr_handler btrfs_xattr_acl_default_handler = {
--	.prefix = POSIX_ACL_XATTR_DEFAULT,
--	.flags	= ACL_TYPE_DEFAULT,
--	.get	= btrfs_xattr_acl_get,
--	.set	= btrfs_xattr_acl_set,
--};
--
--const struct xattr_handler btrfs_xattr_acl_access_handler = {
--	.prefix = POSIX_ACL_XATTR_ACCESS,
--	.flags	= ACL_TYPE_ACCESS,
--	.get	= btrfs_xattr_acl_get,
--	.set	= btrfs_xattr_acl_set,
--};
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 54ab861..7506825 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -3899,20 +3899,17 @@ do {									\
- /* acl.c */
- #ifdef CONFIG_BTRFS_FS_POSIX_ACL
- struct posix_acl *btrfs_get_acl(struct inode *inode, int type);
-+int btrfs_set_acl(struct inode *inode, struct posix_acl *acl, int type);
- int btrfs_init_acl(struct btrfs_trans_handle *trans,
- 		   struct inode *inode, struct inode *dir);
--int btrfs_acl_chmod(struct inode *inode);
- #else
- #define btrfs_get_acl NULL
-+#define btrfs_set_acl NULL
- static inline int btrfs_init_acl(struct btrfs_trans_handle *trans,
- 				 struct inode *inode, struct inode *dir)
- {
- 	return 0;
- }
--static inline int btrfs_acl_chmod(struct inode *inode)
--{
--	return 0;
+-	return ERR_PTR(-EINVAL);
 -}
- #endif
- 
- /* relocation.c */
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index f1a7744..b131430 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -4464,7 +4464,7 @@ static int btrfs_setattr(struct dentry *dentry, struct iattr *attr)
- 		err = btrfs_dirty_inode(inode);
- 
- 		if (!err && attr->ia_valid & ATTR_MODE)
--			err = btrfs_acl_chmod(inode);
-+			err = posix_acl_chmod(inode, inode->i_mode);
- 	}
- 
- 	return err;
-@@ -8649,12 +8649,14 @@ static const struct inode_operations btrfs_dir_inode_operations = {
- 	.removexattr	= btrfs_removexattr,
- 	.permission	= btrfs_permission,
- 	.get_acl	= btrfs_get_acl,
-+	.set_acl	= btrfs_set_acl,
- 	.update_time	= btrfs_update_time,
- };
- static const struct inode_operations btrfs_dir_ro_inode_operations = {
- 	.lookup		= btrfs_lookup,
- 	.permission	= btrfs_permission,
- 	.get_acl	= btrfs_get_acl,
-+	.set_acl	= btrfs_set_acl,
- 	.update_time	= btrfs_update_time,
- };
- 
-@@ -8724,6 +8726,7 @@ static const struct inode_operations btrfs_file_inode_operations = {
- 	.permission	= btrfs_permission,
- 	.fiemap		= btrfs_fiemap,
- 	.get_acl	= btrfs_get_acl,
-+	.set_acl	= btrfs_set_acl,
- 	.update_time	= btrfs_update_time,
- };
- static const struct inode_operations btrfs_special_inode_operations = {
-@@ -8735,6 +8738,7 @@ static const struct inode_operations btrfs_special_inode_operations = {
- 	.listxattr	= btrfs_listxattr,
- 	.removexattr	= btrfs_removexattr,
- 	.get_acl	= btrfs_get_acl,
-+	.set_acl	= btrfs_set_acl,
- 	.update_time	= btrfs_update_time,
- };
- static const struct inode_operations btrfs_symlink_inode_operations = {
-@@ -8748,7 +8752,6 @@ static const struct inode_operations btrfs_symlink_inode_operations = {
- 	.getxattr	= btrfs_getxattr,
- 	.listxattr	= btrfs_listxattr,
- 	.removexattr	= btrfs_removexattr,
--	.get_acl	= btrfs_get_acl,
- 	.update_time	= btrfs_update_time,
- };
- 
-diff --git a/fs/btrfs/xattr.c b/fs/btrfs/xattr.c
-index 05740b9..3d1c301 100644
---- a/fs/btrfs/xattr.c
-+++ b/fs/btrfs/xattr.c
-@@ -22,6 +22,7 @@
- #include <linux/rwsem.h>
- #include <linux/xattr.h>
- #include <linux/security.h>
-+#include <linux/posix_acl_xattr.h>
- #include "ctree.h"
- #include "btrfs_inode.h"
- #include "transaction.h"
-@@ -313,8 +314,8 @@ err:
-  */
- const struct xattr_handler *btrfs_xattr_handlers[] = {
- #ifdef CONFIG_BTRFS_FS_POSIX_ACL
--	&btrfs_xattr_acl_access_handler,
--	&btrfs_xattr_acl_default_handler,
-+	&posix_acl_access_xattr_handler,
-+	&posix_acl_default_xattr_handler,
- #endif
- 	NULL,
- };
-diff --git a/fs/btrfs/xattr.h b/fs/btrfs/xattr.h
-index b3cc803..5049608 100644
---- a/fs/btrfs/xattr.h
-+++ b/fs/btrfs/xattr.h
-@@ -21,8 +21,6 @@
- 
- #include <linux/xattr.h>
- 
--extern const struct xattr_handler btrfs_xattr_acl_access_handler;
--extern const struct xattr_handler btrfs_xattr_acl_default_handler;
- extern const struct xattr_handler *btrfs_xattr_handlers[];
- 
- extern ssize_t __btrfs_getxattr(struct inode *inode, const char *name,
+-EXPORT_SYMBOL (posix_acl_from_xattr);
+-
+-/*
+- * Convert from in-memory to extended attribute representation.
+- */
+-int
+-posix_acl_to_xattr(struct user_namespace *user_ns, const struct posix_acl *acl,
+-		   void *buffer, size_t size)
+-{
+-	posix_acl_xattr_header *ext_acl = (posix_acl_xattr_header *)buffer;
+-	posix_acl_xattr_entry *ext_entry = ext_acl->a_entries;
+-	int real_size, n;
+-
+-	real_size = posix_acl_xattr_size(acl->a_count);
+-	if (!buffer)
+-		return real_size;
+-	if (real_size > size)
+-		return -ERANGE;
+-	
+-	ext_acl->a_version = cpu_to_le32(POSIX_ACL_XATTR_VERSION);
+-
+-	for (n=0; n < acl->a_count; n++, ext_entry++) {
+-		const struct posix_acl_entry *acl_e = &acl->a_entries[n];
+-		ext_entry->e_tag  = cpu_to_le16(acl_e->e_tag);
+-		ext_entry->e_perm = cpu_to_le16(acl_e->e_perm);
+-		switch(acl_e->e_tag) {
+-		case ACL_USER:
+-			ext_entry->e_id =
+-				cpu_to_le32(from_kuid(user_ns, acl_e->e_uid));
+-			break;
+-		case ACL_GROUP:
+-			ext_entry->e_id =
+-				cpu_to_le32(from_kgid(user_ns, acl_e->e_gid));
+-			break;
+-		default:
+-			ext_entry->e_id = cpu_to_le32(ACL_UNDEFINED_ID);
+-			break;
+-		}
+-	}
+-	return real_size;
+-}
+-EXPORT_SYMBOL (posix_acl_to_xattr);
 -- 
 1.7.10.4
