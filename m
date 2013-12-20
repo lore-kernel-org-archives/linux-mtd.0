@@ -1,18 +1,16 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VtxF8-0006Gb-7N
- for linux-mtd@lists.infradead.org; Fri, 20 Dec 2013 10:23:43 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Iwo Mergler <Iwo.Mergler@netcommwireless.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: UBI VID header corruption, offset data
-Date: Fri, 20 Dec 2013 11:23:13 +0100
-Message-ID: <3341132.5Nv0YlqARB@sandpuppy>
-In-Reply-To: <EACD232272DA4849B060F0828564D13B0A7771372C@ntcex01.corp.netcomm.com.au>
-References: <EACD232272DA4849B060F0828564D13B0A7771372C@ntcex01.corp.netcomm.com.au>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Message-Id: <20131220131112.955655330@bombadil.infradead.org>
+Date: Fri, 20 Dec 2013 05:11:12 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: viro@zeniv.linux.org.uk
+Subject: [PATCH 0/0] Consolidate Posix ACL implementation V3
+Subject: [PATCH 0/0] 
+Cc: Andreas Gruenbacher <andreas.gruenbacher@linbit.com>, xfs@oss.sgi.com,
+ Mark Fasheh <mfasheh@suse.com>, reiserfs-devel@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+ linux-mtd@lists.infradead.org, Joel Becker <jlbec@evilplan.org>,
+ jfs-discussion@lists.sourceforge.net, linux-fsdevel@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-nfs@vger.kernel.org,
+ linux-btrfs@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,22 +20,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Freitag, 20. Dezember 2013, 10:08:04 schrieb Iwo Mergler:
-> > Let's start simple. Is your MTD driver sane?
-> > UBI/UBIFS issues are often related to subtle NOR/NAND driver bugs.
-> 
-> Good point, thanks. The evidence suggests that it may not be.
-> 
-> So maybe I should extend the question - does anyone recall
-> seeing arbitrary data offsets during NAND page writes?
+This series consolidates the various cut'n'pasted Posix ACL implementations
+into a single common one based on the ->get_acl method Linus added a while
+ago and a new ->set_acl counterpart.
 
-If the driver is broken millions of things can get wrong.
-Did you run MTD and UBI tests?
+This remove ~1800 lines of code and provides a single place to implement
+various nasty little gems of the semantics.
 
-These tests often uncover issues within a MTD driver.
+Unfortunately the 9p code is still left out - it implements the ACLs
+in two very weird ways, one using the common code but on the client only,
+and one pasing things straight through to the server.  We could easily
+convert it to the new code on the write side if ->set_acl took a dentry,
+but there's no cance to do that on the ->get_acl side.  Ideas how to
+handle it welcome.
 
-BTW: Is this a mainline driver?
-Not that mainline drivers are better by definition, but still. ;-)
+After that we'd be ready to never go into the fs for the ACL attributes
+and branch straight to the ACL code below the syscall, repairing the
+old API braindamage of overloading ACLs onto the xattrs.
 
-Thanks,
-//richard
+
+Changes from V2:
+ - remove redundant S_ISLNK checks
+ - fix the get_acl return value
+ - remove spurious symlink get_acl instance in gfs2
+ - fix default ACL inheritance on NFS
+ - use get_acl and set_acl from the NFS server
+ - remove some incorrectly copy&pasted code in hfsplus
+
+Changes from V1:
+ - check for symlinks in the ACL code and remove checks in the lower
+   level functions.
+ - remove get_acl instances for symlinks in a few filesystems
+ - pass a umode_t mode argument to posix_acl_chmod to accomodate f2fs
+ - various cosemtic bits from the reviews.
+
+Note that I still haven't heard from ocfs2 folks, so the patch is left
+unchanged.
