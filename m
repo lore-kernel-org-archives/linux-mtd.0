@@ -1,19 +1,18 @@
 Received: from smtprelay01.ispgateway.de ([80.67.31.35])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VtueC-0001EM-Mu
+ id 1VtueC-0001EK-My
  for linux-mtd@lists.infradead.org; Fri, 20 Dec 2013 07:37:27 +0000
 From: Christian Riesch <christian.riesch@omicron.at>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH v2 2/2] mtd: Fix the behavior of otp write if there is not
- enough room for data
-Date: Fri, 20 Dec 2013 08:36:33 +0100
-Message-Id: <1387524993-3353-3-git-send-email-christian.riesch@omicron.at>
-In-Reply-To: <1387524993-3353-1-git-send-email-christian.riesch@omicron.at>
-References: <1387524993-3353-1-git-send-email-christian.riesch@omicron.at>
-Cc: Amul Kumar Saha <amul.saha@samsung.com>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+Subject: [PATCH v2 0/2] mtd: Harmonize implementations of OTP write and
+ _get_{fact, user}_prot_info
+Date: Fri, 20 Dec 2013 08:36:31 +0100
+Message-Id: <1387524993-3353-1-git-send-email-christian.riesch@omicron.at>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-kernel@vger.kernel.org, Amul Kumar Saha <amul.saha@samsung.com>,
  Kyungmin Park <kyungmin.park@samsung.com>,
- Christian Riesch <christian.riesch@omicron.at>, linux-kernel@vger.kernel.org
+ Brian Norris <computersforpeace@gmail.com>,
+ Christian Riesch <christian.riesch@omicron.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,108 +22,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-An OTP write shall write as much data as possible to the OTP memory
-and return the number of bytes that have actually been written.
-If no data could be written at all due to lack of OTP memory,
+Hi all,
+
+In the discussion on my patchset for the OTP support for
+drivers/mtd/chips/cfi_cmdset_0002.c [1-5], Artem requested two changes in the
+current code of the OTP write functions and the _get_{fact,user}_prot_info
+code.
+
+These two patches are an attempt to make the requested changes.
+
+The first patch adds a retlen parameter to the _get_fact_prot_info and
+_get_user_prot_info functions and thus harmonizes the implementation
+with those of the write and read functions.
+
+The second patch fixes a problem that I earlier addressed in [1]. After
+the discussion about this patch on the mtd mailing list, I think that the
+correct behavior of the write function should be the one specified in [6]:
+Try to write as many bytes as possible and return the number of bytes
+that were written. If no data could be written due to lack of OTP memory,
 return -ENOSPC.
 
-Signed-off-by: Christian Riesch <christian.riesch@omicron.at>
+Artem, would you please have a look at these patches? I would like to know
+if I understood you correctly, or if I missed something here. Please note
+that I cannot test these patches since I do not have the hardware. The
+patches are compile tested only. If these patches are ok, I will also
+respin the OTP support patches for cfi_cmdset_0002.
+
+Changes for v2:
+- Fixed buggy cfi_intelext_get_fact_prot_info
+
+Thank you!
+
+Best regards,
+Christian
+
+[1] http://patchwork.ozlabs.org/patch/239897/
+[2] http://patchwork.ozlabs.org/patch/240010/
+[3] http://patchwork.ozlabs.org/patch/240007/
+[4] http://patchwork.ozlabs.org/patch/240008/
+[5] http://patchwork.ozlabs.org/patch/240009/
+[6] http://pubs.opengroup.org/onlinepubs/9699919799/functions/write.html
+
 Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 Cc: Kyungmin Park <kyungmin.park@samsung.com>
 Cc: Amul Kumar Saha <amul.saha@samsung.com>
----
- drivers/mtd/chips/cfi_cmdset_0001.c |   13 +++++++++++--
- drivers/mtd/devices/mtd_dataflash.c |   13 +++++--------
- drivers/mtd/mtdchar.c               |    7 +++++++
- drivers/mtd/onenand/onenand_base.c  |   10 +++++++++-
- 4 files changed, 32 insertions(+), 11 deletions(-)
+Cc: Brian Norris <computersforpeace@gmail.com>
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-index 7aa581f..cf423a6 100644
---- a/drivers/mtd/chips/cfi_cmdset_0001.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-@@ -2387,8 +2387,17 @@ static int cfi_intelext_write_user_prot_reg(struct mtd_info *mtd, loff_t from,
- 					    size_t len, size_t *retlen,
- 					     u_char *buf)
- {
--	return cfi_intelext_otp_walk(mtd, from, len, retlen,
--				     buf, do_otp_write, 1);
-+	int ret;
-+
-+	ret = cfi_intelext_otp_walk(mtd, from, len, retlen,
-+				    buf, do_otp_write, 1);
-+
-+	/* if no data could be written due to lack of OTP memory,
-+	   return ENOSPC */
-+	if (!ret && len && !(*retlen))
-+		return -ENOSPC;
-+
-+	return ret;
- }
- 
- static int cfi_intelext_lock_user_prot_reg(struct mtd_info *mtd,
-diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
-index 09c69ce..5236d85 100644
---- a/drivers/mtd/devices/mtd_dataflash.c
-+++ b/drivers/mtd/devices/mtd_dataflash.c
-@@ -545,14 +545,11 @@ static int dataflash_write_user_otp(struct mtd_info *mtd,
- 	struct dataflash	*priv = mtd->priv;
- 	int			status;
- 
--	if (len > 64)
--		return -EINVAL;
--
--	/* Strictly speaking, we *could* truncate the write ... but
--	 * let's not do that for the only write that's ever possible.
--	 */
--	if ((from + len) > 64)
--		return -EINVAL;
-+	if ((from + len) > 64) {
-+		len = 64 - from;
-+		if (len <= 0)
-+			return -ENOSPC;
-+	}
- 
- 	/* OUT: OP_WRITE_SECURITY, 3 zeroes, 64 data-or-zero bytes
- 	 * IN:  ignore all
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 0edb0ca..db99031 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -323,6 +323,13 @@ static ssize_t mtdchar_write(struct file *file, const char __user *buf, size_t c
- 		default:
- 			ret = mtd_write(mtd, *ppos, len, &retlen, kbuf);
- 		}
-+		/* return -ENOSPC only if no data was written */
-+		if ((ret == -ENOSPC) && (total_retlen)) {
-+			ret = 0;
-+			retlen = 0;
-+			/* drop the remaining data */
-+			count = 0;
-+		}
- 		if (!ret) {
- 			*ppos += retlen;
- 			total_retlen += retlen;
-diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
-index 419c538..6c49a6f 100644
---- a/drivers/mtd/onenand/onenand_base.c
-+++ b/drivers/mtd/onenand/onenand_base.c
-@@ -3316,7 +3316,15 @@ static int onenand_read_user_prot_reg(struct mtd_info *mtd, loff_t from,
- static int onenand_write_user_prot_reg(struct mtd_info *mtd, loff_t from,
- 			size_t len, size_t *retlen, u_char *buf)
- {
--	return onenand_otp_walk(mtd, from, len, retlen, buf, do_otp_write, MTD_OTP_USER);
-+	int ret;
-+	ret = onenand_otp_walk(mtd, from, len, retlen, buf, do_otp_write, MTD_OTP_USER);
-+
-+	/* if no data could be written due to lack of OTP memory,
-+	   return ENOSPC */
-+	if (!ret && len && !(*retlen))
-+		return -ENOSPC;
-+
-+	return ret;
- }
- 
- /**
+Christian Riesch (2):
+  mtd: Add a retlen parameter to _get_{fact,user}_prot_info
+  mtd: Fix the behavior of otp write if there is not enough room for
+    data
+
+ drivers/mtd/chips/cfi_cmdset_0001.c |   44 +++++++++++++++++++----------------
+ drivers/mtd/devices/mtd_dataflash.c |   20 +++++++---------
+ drivers/mtd/mtdchar.c               |   18 ++++++++++----
+ drivers/mtd/mtdcore.c               |   12 +++++-----
+ drivers/mtd/mtdpart.c               |   14 ++++++-----
+ drivers/mtd/onenand/onenand_base.c  |   40 ++++++++++++++++---------------
+ include/linux/mtd/mtd.h             |   16 ++++++-------
+ 7 files changed, 89 insertions(+), 75 deletions(-)
+
 -- 
 1.7.9.5
