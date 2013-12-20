@@ -1,24 +1,15 @@
-Received: from mail-ea0-f169.google.com ([209.85.215.169])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vu7yF-0000sW-BC
- for linux-mtd@lists.infradead.org; Fri, 20 Dec 2013 21:51:01 +0000
-Received: by mail-ea0-f169.google.com with SMTP id l9so1119619eaj.28
- for <linux-mtd@lists.infradead.org>; Fri, 20 Dec 2013 13:50:02 -0800 (PST)
-Sender: Leon Pollak <leon.pollak@gmail.com>
-From: Leon Pollak <leonp@plris.com>
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: U-Boot <-> Kernel; NAND operation proposal
-Date: Fri, 20 Dec 2013 23:49:59 +0200
-Message-ID: <1633642.Djqyt1X79r@leonp.plris.com>
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA588CF@DBDE04.ent.ti.com>
-References: <15767373.ASaqbyTd0J@leonp.plris.com>
- <44755689.5hBTTXJrYo@leonp.plris.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA588CF@DBDE04.ent.ti.com>
+Received: from snt0-omc1-s6.snt0.hotmail.com ([65.55.90.17])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Vu9wO-0003LN-8A
+ for linux-mtd@lists.infradead.org; Fri, 20 Dec 2013 23:57:13 +0000
+Message-ID: <SNT149-W87D22A89185B79CBEDFA3A84C40@phx.gbl>
+From: C J <ccs_dba@hotmail.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Learning
+Date: Fri, 20 Dec 2013 16:56:50 -0700
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ricard Wanderlof <ricard.wanderlof@axis.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,152 +19,348 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello, Pekon and others.
-
-As for the example of the NANDs with different block policy, please, see 
-the "Features" first page of, for example, 
-http://download.micron.com/pdf/datasheets/flash/nand/2gb_nand_m29b.pdf
-
-And yes, I already reworked all components to have one ECC type and 
-layout, thank you. Although it is VERY difficult now to upgrade the 
-systems in the field, I think I will find the way to do this...
-
-But the main idea of my turn to the list was not to solve my personal 
-problem, but to raise the question of finding some technique to 
-synchronize all components to one way of flash treatment.
-
-This will allow to avoid such problems as mine in the future and will 
-also simplify embedded systems configuration. IMHO.
-
-My case was because of the fact that components were collected by some 
-vendor who did not take care of this synchronization.
-As the result the system looked like working perfect, while...
-And as these kinds of problems are almost impossible to predict and 
-test, my unification approach may be useful, I think.
-
-
-
-
-On Thursday 19 December 2013 19:59:03 Gupta, Pekon wrote:
-> Hi Leon,
-> 
-> >From: Leon Pollak
-> >
-> >>On Wednesday 18 December 2013 12:54:45 Ricard Wanderlof wrote:
-> >>> On Wed, 18 Dec 2013, Leon Pollak wrote:
-> >> It would seem to me that if parameters such as ECC strength and BBT
-> >> were configured differently between the boot loader and kernel, you
-> >> would get a system which wouldn't boot even the first time, not
-> >> work
-> >> for a while and then fail.
-> >
-> >It worked...:-(
-> >And confused everybody.
-> >Fro example - ROM boot loader used HW 4bit ECC to burn and bring up
-> >U- Boot, but U-Boot itself used 1-Bit SW ECC to burn YAFFS.
-> >Everything worked till there was a second error in YAFFS partition.
-> >
-> >OOB layout was also different.
-> >
-> >BBT was not used at all.
-> >
-> >There were more issues...:(
-> 
-> So the problem is that you had used 1-bit Hamming for kernel and
-> file-system, and it failed due to wear-n-tear in NAND.
-> Therefore, it's always advisable to use highest possible ecc-scheme
-> available to increase the life-time of your product on field.
-> 
-> In-case you can still up-grade your kernel and u-boot to mainline
-> versions, then you have the opportunity to use BCH8_SW ecc-scheme as
-> of today.
-> >> > The major issue here is that such inconsistencies are not
-> >> > manifested
-> >> > in some way, until the unit suddenly refuse to boot up after 2
-> >> > weeks or 2 years.
-> >> > 
-> >> > All this lead me to the following thought (very draftly):
-> >> > 
-> >> > Each NAND has the "spare free" area in the first (zero) block,
-> >> > which
-> >> > is used for storing CIS information. This information does not
-> >> > occupy all the block, which usually is several hundreds of
-> >> > kilobytes.
-> >> > So, this "spare" place may be used for storing some descriptive
-> >> > information of ALL possible NAND flash and its service
-> >> > parameters.
-> >> > I am speaking about ECC bits, Sw/HW, OOB layout, BBT layout,
-> >> > patter
-> >> > places, bad block marks, and everything else you can imagine.
-> >> > 
-> >> > Further, this information must be used both by u-boot and kernel.
-> >> > Or
-> >> > even by other components, for example, RBL/UBL in DM36x from TI.
-> 
-> There are other alternatives to do dynamic switching of ecc-scheme:
-> 
-> *for u-boot*
-> In earlier versions of u-boot, there was a 'nandecc' command which
-> could be used to switch ecc-schemes on the fly in u-boot.
-> So, if you could flash the above information on _any_ NAND block
-> as raw data. You could use 'nand read.raw' command to read the
-> information back without depending on ecc-scheme. And then
-> dynamically change your ecc-scheme based on it.
-> 
-> *for kernel*
-> You can keep multiple DTB flashed into NAND, each selecting a
-> different ecc-scheme. And based on 'raw' data read from NAND
-> in u-boot, you can pre-load the DTB of your choice of ecc-scheme.
-> 
-> >> I'm not sure I follow you. First of all, what is CIS ?
-> >
-> >CIS stands for Card Information Structure.
-> >
-> >> Secondly, the
-> >> first block in a NAND flash is no different from the other blocks
-> >> when it comes to the data it can hold.
-> >
-> >Well, I am not a big guru in this.
-> >But I saw that all of the vendors I worked with declare the first
-> >block to be more robust and require only 1-bit ECC.
-> >For example, our Micron chip promises block 0 to work with 1-bit ECC,
-> >while all the rest require 4-bit.
-> 
-> Is it possible for you to share the datasheet of such NAND device.
-> (along with section where this detail is mentioned, I'll like to
-> understand the background of this approach).
-> In most of the device I have encountered, all the NAND blocks are
-> same. However, it may happen that vendors may have a separate memory
-> array (as OTP Memory Array, along normal NAND Memory Array) which can
-> be programmed just once, and hence has more endurance.
-> However you can do this for any other block as well.
-> Refer to "Block Lock" and "Block Unlock" commands in Micron datasheet.
-> >> True, in systems where NAND
-> >> flash is the boot media, the boot loader out of necessity resides
-> >> in
-> >> the first block, but a boot loader could fill out the whole block
-> >> leaving no free space there.
-> >
-> >Hmmm... You probably have much more experience then me.
-> >But in my case (DM36x CPU from TI) the CPU ROM boot loader reads
-> >block #1(!!! - not 0) to look for User Boot Loader (UBL) which
-> >normally has 14-16 KiB size.
-> >
-> >But I am speaking about the block zero, which contains the CIS and
-> >some left space.
-> >
-> >Again, the whole idea is to have some standard description which
-> >unify all components.
-> >May be the place to store it in the block zero is not ideal - I have
-> >too small experience to judge here...
-> 
-> There are many alternative to do what you want.
-> But is it possible for you to upgrade to kernel and u-boot ?
-> because these may at-least require DT based kernel and
-> u-boot supporting 'nandecc' command.
-> 
-> 
-> with regards, pekon
-
--- 
-Leon
+Hi=2C newbie here (sorry).. trying to read and learn but haven't found =0A=
+everything I'm looking for yet.=A0 I have a small 'ARMv7 Processor rev 2 =
+=0A=
+(v7l)' powered box running Ubuntu 10.04 LTS with kernel 2.6.37=A0=A0 The =
+=0A=
+environment is a squashfs rootfs with a small RW config area:=0A=
+=0A=
+# df=0A=
+Filesystem=A0 =A0=A0 =A0 1K-blocks=A0=A0=A0=A0=A0 Used Available Use% Mount=
+ed on=0A=
+/dev/mtdblock11=A0=A0=A0=A0 246664=A0=A0=A0 246664=A0=A0=A0=A0=A0=A0=A0=A0 =
+0 100% /=0A=
+ubi1_0=A0=A0=A0=A0=A0=A0 =A0 =A0=A0=A0=A0=A0=A0 6648=A0=A0=A0=A0=A0=A0 100=
+=A0=A0=A0=A0=A0 6548=A0=A0 2% /.profile=0A=
+=0A=
+There=0A=
+ are other /dev/mtd devices but I don't know how to mount/view them to =0A=
+see what is there.=A0 I've been reading the mtd and ubi/ubifs info on the =
+=0A=
+web site=2C and feel like I am dangerous enough to do damage :)=A0 but don'=
+t=0A=
+ want to.. (initially just want to backup what is there and be able to =0A=
+modify the roots=2C and understand how it all works in the process (boot =
+=0A=
+process=2C possibly replacing kernel=2C etc))=0A=
+=0A=
+I've tried to use the =0A=
+ubiattach command to attach to the other mtd devices but only mtd0 so =0A=
+far will attach but I don't see a volume there so don't know what to =0A=
+do..=A0 Looking for a little help to know how to see what is on these =0A=
+other volumes/devices.=A0 Here is some info about my system:=0A=
+=0A=
+# /usr/sbin/mtdinfo -a=0A=
+Count of MTD devices:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 12=0A=
+Present MTD devices:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 mtd0=2C mtd1=2C mtd2=
+=2C mtd3=2C mtd4=2C mtd5=2C mtd6=2C mtd7=2C mtd8=2C mtd9=2C mtd10=2C mtd11=
+=0A=
+Sysfs interface supported:=A0=A0=A0=A0=A0 yes=0A=
+=0A=
+mtd0=0A=
+Name:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 mlo=0A=
+Type:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 nand=0A=
+Eraseblock size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 131072 bytes=
+=2C 128.0 KiB=0A=
+Amount of eraseblocks:=A0=A0=A0=A0=A0=A0=A0=A0=A0 4 (524288 bytes=2C 512.0 =
+KiB)=0A=
+Minimum input/output unit size: 2048 bytes=0A=
+Sub-page size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 512 bytes=
+=0A=
+OOB size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+ 64 bytes=0A=
+Character device major/minor:=A0=A0 90:0=0A=
+Bad blocks are allowed:=A0=A0=A0=A0=A0=A0=A0=A0 true=0A=
+Device is writable:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 true=0A=
+=0A=
+mtd1=0A=
+Name:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 uboot-1=0A=
+Type:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 nand=0A=
+Eraseblock size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 131072 bytes=
+=2C 128.0 KiB=0A=
+Amount of eraseblocks:=A0=A0=A0=A0=A0=A0=A0=A0=A0 8 (1048576 bytes=2C 1024.=
+0 KiB)=0A=
+Minimum input/output unit size: 2048 bytes=0A=
+Sub-page size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 512 bytes=
+=0A=
+OOB size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+ 64 bytes=0A=
+Character device major/minor:=A0=A0 90:2=0A=
+Bad blocks are allowed:=A0=A0=A0=A0=A0=A0=A0=A0 true=0A=
+Device is writable:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 true=0A=
+=0A=
+mtd2=0A=
+Name:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 uboot-2=0A=
+Type:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 nand=0A=
+Eraseblock size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 131072 bytes=
+=2C 128.0 KiB=0A=
+Amount of eraseblocks:=A0=A0=A0=A0=A0=A0=A0=A0=A0 8 (1048576 bytes=2C 1024.=
+0 KiB)=0A=
+Minimum input/output unit size: 2048 bytes=0A=
+Sub-page size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 512 bytes=
+=0A=
+OOB size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+ 64 bytes=0A=
+Character device major/minor:=A0=A0 90:4=0A=
+Bad blocks are allowed:=A0=A0=A0=A0=A0=A0=A0=A0 true=0A=
+Device is writable:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 true=0A=
+=0A=
+mtd3=0A=
+Name:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 u-boot-env=0A=
+Type:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 nand=0A=
+Eraseblock size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 131072 bytes=
+=2C 128.0 KiB=0A=
+Amount of eraseblocks:=A0=A0=A0=A0=A0=A0=A0=A0=A0 16 (2097152 bytes=2C 2.0 =
+MiB)=0A=
+Minimum input/output unit size: 2048 bytes=0A=
+Sub-page size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 512 bytes=
+=0A=
+OOB size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+ 64 bytes=0A=
+Character device major/minor:=A0=A0 90:6=0A=
+Bad blocks are allowed:=A0=A0=A0=A0=A0=A0=A0=A0 true=0A=
+Device is writable:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 true=0A=
+=0A=
+mtd4=0A=
+Name:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 kernel=0A=
+Type:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 nand=0A=
+Eraseblock size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 131072 bytes=
+=2C 128.0 KiB=0A=
+Amount of eraseblocks:=A0=A0=A0=A0=A0=A0=A0=A0=A0 96 (12582912 bytes=2C 12.=
+0 MiB)=0A=
+Minimum input/output unit size: 2048 bytes=0A=
+Sub-page size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 512 bytes=
+=0A=
+OOB size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+ 64 bytes=0A=
+Character device major/minor:=A0=A0 90:8=0A=
+Bad blocks are allowed:=A0=A0=A0=A0=A0=A0=A0=A0 true=0A=
+Device is writable:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 true=0A=
+=0A=
+mtd5=0A=
+Name:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 initrd=0A=
+Type:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 nand=0A=
+Eraseblock size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 131072 bytes=
+=2C 128.0 KiB=0A=
+Amount of eraseblocks:=A0=A0=A0=A0=A0=A0=A0=A0=A0 96 (12582912 bytes=2C 12.=
+0 MiB)=0A=
+Minimum input/output unit size: 2048 bytes=0A=
+Sub-page size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 512 bytes=
+=0A=
+OOB size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+ 64 bytes=0A=
+Character device major/minor:=A0=A0 90:10=0A=
+Bad blocks are allowed:=A0=A0=A0=A0=A0=A0=A0=A0 true=0A=
+Device is writable:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 true=0A=
+=0A=
+mtd6=0A=
+Name:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 miniinitrd=0A=
+Type:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 nand=0A=
+Eraseblock size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 131072 bytes=
+=2C 128.0 KiB=0A=
+Amount of eraseblocks:=A0=A0=A0=A0=A0=A0=A0=A0=A0 80 (10485760 bytes=2C 10.=
+0 MiB)=0A=
+Minimum input/output unit size: 2048 bytes=0A=
+Sub-page size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 512 bytes=
+=0A=
+OOB size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+ 64 bytes=0A=
+Character device major/minor:=A0=A0 90:12=0A=
+Bad blocks are allowed:=A0=A0=A0=A0=A0=A0=A0=A0 true=0A=
+Device is writable:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 true=0A=
+=0A=
+mtd7=0A=
+Name:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 atb-1=0A=
+Type:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 nand=0A=
+Eraseblock size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 131072 bytes=
+=2C 128.0 KiB=0A=
+Amount of eraseblocks:=A0=A0=A0=A0=A0=A0=A0=A0=A0 160 (20971520 bytes=2C 20=
+.0 MiB)=0A=
+Minimum input/output unit size: 2048 bytes=0A=
+Sub-page size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 512 bytes=
+=0A=
+OOB size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+ 64 bytes=0A=
+Character device major/minor:=A0=A0 90:14=0A=
+Bad blocks are allowed:=A0=A0=A0=A0=A0=A0=A0=A0 true=0A=
+Device is writable:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 true=0A=
+=0A=
+mtd8=0A=
+Name:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 atb-2=0A=
+Type:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 nand=0A=
+Eraseblock size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 131072 bytes=
+=2C 128.0 KiB=0A=
+Amount of eraseblocks:=A0=A0=A0=A0=A0=A0=A0=A0=A0 160 (20971520 bytes=2C 20=
+.0 MiB)=0A=
+Minimum input/output unit size: 2048 bytes=0A=
+Sub-page size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 512 bytes=
+=0A=
+OOB size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+ 64 bytes=0A=
+Character device major/minor:=A0=A0 90:16=0A=
+Bad blocks are allowed:=A0=A0=A0=A0=A0=A0=A0=A0 true=0A=
+Device is writable:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 true=0A=
+=0A=
+mtd9=0A=
+Name:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 profile=0A=
+Type:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 nand=0A=
+Eraseblock size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 131072 bytes=
+=2C 128.0 KiB=0A=
+Amount of eraseblocks:=A0=A0=A0=A0=A0=A0=A0=A0=A0 80 (10485760 bytes=2C 10.=
+0 MiB)=0A=
+Minimum input/output unit size: 2048 bytes=0A=
+Sub-page size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 512 bytes=
+=0A=
+OOB size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+ 64 bytes=0A=
+Character device major/minor:=A0=A0 90:18=0A=
+Bad blocks are allowed:=A0=A0=A0=A0=A0=A0=A0=A0 true=0A=
+Device is writable:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 true=0A=
+=0A=
+mtd10=0A=
+Name:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 backup=0A=
+Type:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 nand=0A=
+Eraseblock size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 131072 bytes=
+=2C 128.0 KiB=0A=
+Amount of eraseblocks:=A0=A0=A0=A0=A0=A0=A0=A0=A0 320 (41943040 bytes=2C 40=
+.0 MiB)=0A=
+Minimum input/output unit size: 2048 bytes=0A=
+Sub-page size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 512 bytes=
+=0A=
+OOB size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+ 64 bytes=0A=
+Character device major/minor:=A0=A0 90:20=0A=
+Bad blocks are allowed:=A0=A0=A0=A0=A0=A0=A0=A0 true=0A=
+Device is writable:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 true=0A=
+=0A=
+mtd11=0A=
+Name:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 root-fs=0A=
+Type:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 nand=0A=
+Eraseblock size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 131072 bytes=
+=2C 128.0 KiB=0A=
+Amount of eraseblocks:=A0=A0=A0=A0=A0=A0=A0=A0=A0 3068 (402128896 bytes=2C =
+383.5 MiB)=0A=
+Minimum input/output unit size: 2048 bytes=0A=
+Sub-page size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 512 bytes=
+=0A=
+OOB size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+ 64 bytes=0A=
+Character device major/minor:=A0=A0 90:22=0A=
+Bad blocks are allowed:=A0=A0=A0=A0=A0=A0=A0=A0 true=0A=
+Device is writable:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 true=0A=
+=0A=
+=0A=
+# /usr/sbin/ubinfo -a=0A=
+UBI version:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 1=0A=
+Count of UBI devices:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 1=0A=
+UBI control device major/minor: 10:63=0A=
+Present UBI devices:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ubi1=0A=
+=0A=
+ubi1=0A=
+Volumes count:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0 1=0A=
+Logical eraseblock size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 12=
+6976 bytes=2C 124.0 KiB=0A=
+Total amount of logical eraseblocks:=A0=A0=A0=A0 80 (10158080 bytes=2C 9.7 =
+MiB)=0A=
+Amount of available logical eraseblocks: 0 (0 bytes)=0A=
+Maximum count of volumes=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 12=
+8=0A=
+Count of bad physical eraseblocks:=A0=A0=A0=A0=A0=A0 0=0A=
+Count of reserved physical eraseblocks:=A0 2=0A=
+Current maximum erase counter value:=A0=A0=A0=A0 14=0A=
+Minimum input/output unit size:=A0=A0=A0=A0=A0=A0=A0=A0=A0 2048 bytes=0A=
+Character device major/minor:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 251:0=0A=
+Present volumes:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0 0=0A=
+=0A=
+Volume ID:=A0=A0 0 (on ubi1)=0A=
+Type:=A0=A0=A0=A0=A0=A0=A0 dynamic=0A=
+Alignment:=A0=A0 1=0A=
+Size:=A0=A0=A0=A0=A0=A0=A0 74 LEBs (9396224 bytes=2C 9.0 MiB)=0A=
+State:=A0=A0=A0=A0=A0=A0 OK=0A=
+Name:=A0=A0=A0=A0=A0=A0=A0 profile=0A=
+Character device major/minor: 251:1=0A=
+=0A=
+=0A=
+# ls -l /dev | egrep "mtd|ubi"=0A=
+crw-rw---- 1 root root=A0=A0=A0=A0 90=2C=A0=A0 0 Jan=A0 1=A0 2000 mtd0=0A=
+crw-rw---- 1 root root=A0=A0=A0=A0 90=2C=A0=A0 1 Jan=A0 1=A0 2000 mtd0ro=0A=
+crw-rw---- 1 root root=A0=A0=A0=A0 90=2C=A0=A0 2 Jan=A0 1=A0 2000 mtd1=0A=
+crw-rw---- 1 root root=A0=A0=A0=A0 90=2C=A0 20 Jan=A0 1=A0 2000 mtd10=0A=
+crw-rw---- 1 root root=A0=A0=A0=A0 90=2C=A0 21 Jan=A0 1=A0 2000 mtd10ro=0A=
+crw-rw---- 1 root root=A0=A0=A0=A0 90=2C=A0 22 Jan=A0 1=A0 2000 mtd11=0A=
+crw-rw---- 1 root root=A0=A0=A0=A0 90=2C=A0 23 Jan=A0 1=A0 2000 mtd11ro=0A=
+crw-rw---- 1 root root=A0=A0=A0=A0 90=2C=A0=A0 3 Jan=A0 1=A0 2000 mtd1ro=0A=
+crw-rw---- 1 root root=A0=A0=A0=A0 90=2C=A0=A0 4 Jan=A0 1=A0 2000 mtd2=0A=
+crw-rw---- 1 root root=A0=A0=A0=A0 90=2C=A0=A0 5 Jan=A0 1=A0 2000 mtd2ro=0A=
+crw-rw---- 1 root root=A0=A0=A0=A0 90=2C=A0=A0 6 Jan=A0 1=A0 2000 mtd3=0A=
+crw-rw---- 1 root root=A0=A0=A0=A0 90=2C=A0=A0 7 Jan=A0 1=A0 2000 mtd3ro=0A=
+crw-rw---- 1 root root=A0=A0=A0=A0 90=2C=A0=A0 8 Jan=A0 1=A0 2000 mtd4=0A=
+crw-rw---- 1 root root=A0=A0=A0=A0 90=2C=A0=A0 9 Jan=A0 1=A0 2000 mtd4ro=0A=
+crw-rw---- 1 root root=A0=A0=A0=A0 90=2C=A0 10 Jan=A0 1=A0 2000 mtd5=0A=
+crw-rw---- 1 root root=A0=A0=A0=A0 90=2C=A0 11 Jan=A0 1=A0 2000 mtd5ro=0A=
+crw-rw---- 1 root root=A0=A0=A0=A0 90=2C=A0 12 Jan=A0 1=A0 2000 mtd6=0A=
+crw-rw---- 1 root root=A0=A0=A0=A0 90=2C=A0 13 Jan=A0 1=A0 2000 mtd6ro=0A=
+crw-rw---- 1 root root=A0=A0=A0=A0 90=2C=A0 14 Jan=A0 1=A0 2000 mtd7=0A=
+crw-rw---- 1 root root=A0=A0=A0=A0 90=2C=A0 15 Jan=A0 1=A0 2000 mtd7ro=0A=
+crw-rw---- 1 root root=A0=A0=A0=A0 90=2C=A0 16 Jan=A0 1=A0 2000 mtd8=0A=
+crw-rw---- 1 root root=A0=A0=A0=A0 90=2C=A0 17 Jan=A0 1=A0 2000 mtd8ro=0A=
+crw-rw---- 1 root root=A0=A0=A0=A0 90=2C=A0 18 Jan=A0 1=A0 2000 mtd9=0A=
+crw-rw---- 1 root root=A0=A0=A0=A0 90=2C=A0 19 Jan=A0 1=A0 2000 mtd9ro=0A=
+brw-rw---- 1 root disk=A0=A0=A0=A0 31=2C=A0=A0 0 Jan=A0 1=A0 2000 mtdblock0=
+=0A=
+brw-rw---- 1 root disk=A0=A0=A0=A0 31=2C=A0=A0 1 Jan=A0 1=A0 2000 mtdblock1=
+=0A=
+brw-rw---- 1 root disk=A0=A0=A0=A0 31=2C=A0 10 Jan=A0 1=A0 2000 mtdblock10=
+=0A=
+brw-rw---- 1 root disk=A0=A0=A0=A0 31=2C=A0 11 Jan=A0 1=A0 2000 mtdblock11=
+=0A=
+brw-rw---- 1 root disk=A0=A0=A0=A0 31=2C=A0=A0 2 Jan=A0 1=A0 2000 mtdblock2=
+=0A=
+brw-rw---- 1 root disk=A0=A0=A0=A0 31=2C=A0=A0 3 Jan=A0 1=A0 2000 mtdblock3=
+=0A=
+brw-rw---- 1 root disk=A0=A0=A0=A0 31=2C=A0=A0 4 Jan=A0 1=A0 2000 mtdblock4=
+=0A=
+brw-rw---- 1 root disk=A0=A0=A0=A0 31=2C=A0=A0 5 Jan=A0 1=A0 2000 mtdblock5=
+=0A=
+brw-rw---- 1 root disk=A0=A0=A0=A0 31=2C=A0=A0 6 Jan=A0 1=A0 2000 mtdblock6=
+=0A=
+brw-rw---- 1 root disk=A0=A0=A0=A0 31=2C=A0=A0 7 Jan=A0 1=A0 2000 mtdblock7=
+=0A=
+brw-rw---- 1 root disk=A0=A0=A0=A0 31=2C=A0=A0 8 Jan=A0 1=A0 2000 mtdblock8=
+=0A=
+brw-rw---- 1 root disk=A0=A0=A0=A0 31=2C=A0=A0 9 Jan=A0 1=A0 2000 mtdblock9=
+=0A=
+lrwxrwxrwx 1 root root=A0=A0=A0=A0=A0=A0=A0=A0=A0 10 Jan=A0 1=A0 2000 root =
+-> mtdblock11=0A=
+crw-rw---- 1 root root=A0=A0=A0 251=2C=A0=A0 0 Jan=A0 1=A0 2000 ubi1=0A=
+crw-rw---- 1 root root=A0=A0=A0 251=2C=A0=A0 1 Jan=A0 1=A0 2000 ubi1_0=0A=
+crw-rw---- 1 root root=A0=A0=A0=A0 10=2C=A0 63 Jan=A0 1=A0 2000 ubi_ctrl=0A=
+=0A=
+any help is greatly appreciated.. 		 	   		  =
