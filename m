@@ -1,24 +1,23 @@
-Received: from mail-ea0-x234.google.com ([2a00:1450:4013:c01::234])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VuRSl-0006By-09
- for linux-mtd@lists.infradead.org; Sat, 21 Dec 2013 18:39:48 +0000
-Received: by mail-ea0-f180.google.com with SMTP id f15so1611464eak.25
- for <linux-mtd@lists.infradead.org>; Sat, 21 Dec 2013 10:39:24 -0800 (PST)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: linux-mtd@lists.infradead.org, David Woodhouse <David.Woodhouse@intel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH 2/2] mtd: bcm47xxpart: alternative MAGIC for board_data
- partition
-Date: Sat, 21 Dec 2013 19:39:12 +0100
-Message-Id: <1387651152-3884-2-git-send-email-zajec5@gmail.com>
-In-Reply-To: <1387651152-3884-1-git-send-email-zajec5@gmail.com>
-References: <1387651152-3884-1-git-send-email-zajec5@gmail.com>
+Date: Sun, 22 Dec 2013 11:28:18 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: Vyacheslav Dubeyko <slava@dubeyko.com>
+Subject: Re: [PATCH 21/21] hfsplus: remove can_set_xattr
+Message-ID: <20131222192818.GA32565@infradead.org>
+References: <20131220131635.650823732@bombadil.infradead.org>
+ <20131220132524.900291394@bombadil.infradead.org>
+ <636E01BC-12FD-452B-8B1C-320B6EADAEFD@dubeyko.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Hauke Mehrtens <hauke@hauke-m.de>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <636E01BC-12FD-452B-8B1C-320B6EADAEFD@dubeyko.com>
+Cc: cluster-devel@redhat.com, xfs@oss.sgi.com,
+ Andreas Gruenbacher <andreas.gruenbacher@linbit.com>,
+ Mark Fasheh <mfasheh@suse.com>, reiserfs-devel@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, Christoph Hellwig <hch@infradead.org>,
+ linux-mtd@lists.infradead.org, viro@zeniv.linux.org.uk,
+ jfs-discussion@lists.sourceforge.net, linux-fsdevel@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-nfs@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, Joel Becker <jlbec@evilplan.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,50 +27,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some devices (like WNDR3700v3) have board_data without MPFR magic, some
-extra header or extra NVRAM around 0x100. In such case we have to look
-for another magic which is BD 0B 0D BD (BD probably stands for Board
-Data). It's located "far far away", so instead extending buffer add
-another mtd_read.
+On Sat, Dec 21, 2013 at 08:07:51PM +0300, Vyacheslav Dubeyko wrote:
+> > -static int can_set_xattr(struct inode *inode, const char *name,
+> > -				const void *value, size_t value_len)
+> 
+> This function works for all handlers. So, I don't think that it makes sense
+> to delete it.
 
-Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
----
- drivers/mtd/bcm47xxpart.c |   16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+It "works" in a minimal sense that it won't crash or actively cause
+harm.  But it also is useless except for the check that we can abuse
+the osx namespace to set an attribute in another namespace, which we
+still do in the proper way after my patch.
 
-diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
-index b72a3ac..91f32f2 100644
---- a/drivers/mtd/bcm47xxpart.c
-+++ b/drivers/mtd/bcm47xxpart.c
-@@ -27,6 +27,7 @@
- 
- /* Magics */
- #define BOARD_DATA_MAGIC		0x5246504D	/* MPFR */
-+#define BOARD_DATA_MAGIC2		0xBD0D0BBD
- #define CFE_MAGIC			0x43464531	/* 1EFC */
- #define FACTORY_MAGIC			0x59544346	/* FCTY */
- #define POT_MAGIC1			0x54544f50	/* POTT */
-@@ -192,6 +193,21 @@ static int bcm47xxpart_parse(struct mtd_info *master,
- 					     offset, 0);
- 			continue;
- 		}
-+
-+		/* Read middle of the block */
-+		if (mtd_read(master, offset + 0x8000, 0x4,
-+			     &bytes_read, (uint8_t *)buf) < 0) {
-+			pr_err("mtd_read error while parsing (offset: 0x%X)!\n",
-+			       offset);
-+			continue;
-+		}
-+
-+		/* Some devices (ex. WNDR3700v3) don't have a standard 'MPFR' */
-+		if (buf[0x000 / 4] == BOARD_DATA_MAGIC2) {
-+			bcm47xxpart_add_part(&parts[curr_part++], "board_data",
-+					     offset, MTD_WRITEABLE);
-+			continue;
-+		}
- 	}
- 
- 	/* Look for NVRAM at the end of the last block. */
--- 
-1.7.10.4
+> > -	if (!strncmp(name, XATTR_MAC_OSX_PREFIX, XATTR_MAC_OSX_PREFIX_LEN)) {
+> > -		/*
+> > -		 * This makes sure that we aren't trying to set an
+> > -		 * attribute in a different namespace by prefixing it
+> > -		 * with "osx."
+> > -		 */
+> > -		if (is_known_namespace(name + XATTR_MAC_OSX_PREFIX_LEN))
+> > -			return -EOPNOTSUPP;
+> 
+> I think that this check is important. It forbids such combinations as "osx.system.*" or
+> "osx.trusted.*", for example. Because "osx.*" is virtual namespace for xattrs that
+> it can be under Mac OS X. If you want to set xattr from "system.*" namespace, for example,
+> then you need to use another handler. And such namespace should be without
+> addition of "osx." prefix.
+
+Right, and we keep exactly the check, just in a different place.
+
+> The __hfsplus_setxattr() is common method for all handlers. So, removing
+> this call means that we don't check validity of namespace. I don't think
+> that such modification is a right way.
+
+The generic code already checks for the validity of the namespace for
+you. xattr_resolve_name in fs/xattr.c makes sure only attributes for a
+namespace that the filesystem registered can be set or modified.
+
+> > @@ -841,10 +761,6 @@ int hfsplus_removexattr(struct dentry *dentry, const char *name)
+> > 	if (!HFSPLUS_SB(inode->i_sb)->attr_tree)
+> > 		return -EOPNOTSUPP;
+> > 
+> > -	err = can_set_xattr(inode, name, NULL, 0);
+> 
+> Ditto. Moreover, it is used namely hfsplus_removexattr() and not
+> __hfsplus_setxattr() for removing xattrs in hfsplus driver. So, removing
+> this check is not good way.
+
+Oh, I just noticed that hfsplus does not use the xattr handlers for
+removing, while it does for getting and setting xattrs.  That's a really
+bad a confusing design, and we'll indeed need to fix that as well.
+
+> > 	if (len > HFSPLUS_ATTR_MAX_STRLEN)
+> > 		return -EOPNOTSUPP;
+> > 
+> > +	if (is_known_namespace(name))
+> > +		return -EOPNOTSUPP;
+> 
+> If common check in __hfsplus_setxattr() will be on the same place then
+> this addition doesn't make sense.
+
+Having both does indeed not make sense, but this is the better place to
+have it.
