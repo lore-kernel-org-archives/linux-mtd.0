@@ -1,26 +1,21 @@
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vv8qU-0003d8-Ji
- for linux-mtd@lists.infradead.org; Mon, 23 Dec 2013 16:59:10 +0000
-From: Chris Mason <clm@fb.com>
-To: "hch@infradead.org" <hch@infradead.org>
+Date: Mon, 23 Dec 2013 09:01:03 -0800
+From: "hch@infradead.org" <hch@infradead.org>
+To: Chris Mason <clm@fb.com>
 Subject: Re: [PATCH 00/21] Consolidate Posix ACL implementation V3
-Date: Mon, 23 Dec 2013 16:57:58 +0000
-Message-ID: <1387817904.8080.4.camel@ret.masoncoding.com>
+Message-ID: <20131223170103.GA14856@infradead.org>
 References: <20131220131635.650823732@bombadil.infradead.org>
-In-Reply-To: <20131220131635.650823732@bombadil.infradead.org>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-7"
-Content-ID: <55F48838A946C644AC50A45C770BFE71@fb.com>
-Content-Transfer-Encoding: quoted-printable
+ <1387817904.8080.4.camel@ret.masoncoding.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1387817904.8080.4.camel@ret.masoncoding.com>
 Cc: "andreas.gruenbacher@linbit.com" <andreas.gruenbacher@linbit.com>,
  "jfs-discussion@lists.sourceforge.net"
  <jfs-discussion@lists.sourceforge.net>,
  "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
  "mfasheh@suse.com" <mfasheh@suse.com>,
  "reiserfs-devel@vger.kernel.org" <reiserfs-devel@vger.kernel.org>,
- "xfs@oss.sgi.com" <xfs@oss.sgi.com>,
+ "xfs@oss.sgi.com" <xfs@oss.sgi.com>, "hch@infradead.org" <hch@infradead.org>,
  "cluster-devel@redhat.com" <cluster-devel@redhat.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "jlbec@evilplan.org" <jlbec@evilplan.org>,
@@ -39,17 +34,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2013-12-20 at 05:16 -0800, Christoph Hellwig wrote:
-+AD4- This series consolidates the various cut'n'pasted Posix ACL implement=
-ations
-+AD4- into a single common one based on the -+AD4-get+AF8-acl method Linus =
-added a while
-+AD4- ago and a new -+AD4-set+AF8-acl counterpart.
-+AD4-=20
-+AD4- This remove +AH4-1800 lines of code and provides a single place to im=
-plement
-+AD4- various nasty little gems of the semantics.
+On Mon, Dec 23, 2013 at 04:57:58PM +0000, Chris Mason wrote:
+> On Fri, 2013-12-20 at 05:16 -0800, Christoph Hellwig wrote:
+> > This series consolidates the various cut'n'pasted Posix ACL implementations
+> > into a single common one based on the ->get_acl method Linus added a while
+> > ago and a new ->set_acl counterpart.
+> > 
+> > This remove ~1800 lines of code and provides a single place to implement
+> > various nasty little gems of the semantics.
+> 
+> Is this in a git tree somewhere?
 
-Is this in a git tree somewhere?  I'll pull in and test the btrfs bits.
-
--chris
+Only on my box.  Given how shitty kernel.org is to use these days I
+don't bother with it anymore.
