@@ -1,23 +1,31 @@
-Date: Sun, 22 Dec 2013 11:28:18 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: Vyacheslav Dubeyko <slava@dubeyko.com>
-Subject: Re: [PATCH 21/21] hfsplus: remove can_set_xattr
-Message-ID: <20131222192818.GA32565@infradead.org>
-References: <20131220131635.650823732@bombadil.infradead.org>
- <20131220132524.900291394@bombadil.infradead.org>
- <636E01BC-12FD-452B-8B1C-320B6EADAEFD@dubeyko.com>
+Received: from mailout.micron.com ([137.201.242.129])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Vuurv-0006cN-RF
+ for linux-mtd@lists.infradead.org; Mon, 23 Dec 2013 02:03:44 +0000
+From: =?utf-8?B?UWkgV2FuZyDnjovotbcgKHFpd2FuZyk=?= <qiwang@micron.com>
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>
+Subject: RE: [PATCH 1/1]  MTD: UBI:  try to avoid program data to NOR flash
+ after erasure interrupted
+Date: Mon, 23 Dec 2013 02:03:16 +0000
+Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A770B943C@NTXXIAMBX02.xacn.micron.com>
+References: <71CF8D7F32C5C24C9CD1D0E02D52498A77082AC5@NTXXIAMBX02.xacn.micron.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A77082DDB@NTXXIAMBX02.xacn.micron.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A770AED11@NTXXIAMBX02.xacn.micron.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A770AED44@NTXXIAMBX02.xacn.micron.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A770AED67@NTXXIAMBX02.xacn.micron.com>
+ <1382779164.5901.1.camel@karhu.quadriga.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A770B1B97@NTXXIAMBX02.xacn.micron.com>
+ <1383059901.29619.52.camel@sauron.fi.intel.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A770B220C@NTXXIAMBX02.xacn.micron.com>
+ <1383296284.2722.73.camel@sauron.fi.intel.com>
+In-Reply-To: <1383296284.2722.73.camel@sauron.fi.intel.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <636E01BC-12FD-452B-8B1C-320B6EADAEFD@dubeyko.com>
-Cc: cluster-devel@redhat.com, xfs@oss.sgi.com,
- Andreas Gruenbacher <andreas.gruenbacher@linbit.com>,
- Mark Fasheh <mfasheh@suse.com>, reiserfs-devel@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, Christoph Hellwig <hch@infradead.org>,
- linux-mtd@lists.infradead.org, viro@zeniv.linux.org.uk,
- jfs-discussion@lists.sourceforge.net, linux-fsdevel@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-nfs@vger.kernel.org,
- linux-btrfs@vger.kernel.org, Joel Becker <jlbec@evilplan.org>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Adrian
+ Hunter <adrian.hunter@intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,65 +35,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Dec 21, 2013 at 08:07:51PM +0300, Vyacheslav Dubeyko wrote:
-> > -static int can_set_xattr(struct inode *inode, const char *name,
-> > -				const void *value, size_t value_len)
-> 
-> This function works for all handlers. So, I don't think that it makes sense
-> to delete it.
-
-It "works" in a minimal sense that it won't crash or actively cause
-harm.  But it also is useless except for the check that we can abuse
-the osx namespace to set an attribute in another namespace, which we
-still do in the proper way after my patch.
-
-> > -	if (!strncmp(name, XATTR_MAC_OSX_PREFIX, XATTR_MAC_OSX_PREFIX_LEN)) {
-> > -		/*
-> > -		 * This makes sure that we aren't trying to set an
-> > -		 * attribute in a different namespace by prefixing it
-> > -		 * with "osx."
-> > -		 */
-> > -		if (is_known_namespace(name + XATTR_MAC_OSX_PREFIX_LEN))
-> > -			return -EOPNOTSUPP;
-> 
-> I think that this check is important. It forbids such combinations as "osx.system.*" or
-> "osx.trusted.*", for example. Because "osx.*" is virtual namespace for xattrs that
-> it can be under Mac OS X. If you want to set xattr from "system.*" namespace, for example,
-> then you need to use another handler. And such namespace should be without
-> addition of "osx." prefix.
-
-Right, and we keep exactly the check, just in a different place.
-
-> The __hfsplus_setxattr() is common method for all handlers. So, removing
-> this call means that we don't check validity of namespace. I don't think
-> that such modification is a right way.
-
-The generic code already checks for the validity of the namespace for
-you. xattr_resolve_name in fs/xattr.c makes sure only attributes for a
-namespace that the filesystem registered can be set or modified.
-
-> > @@ -841,10 +761,6 @@ int hfsplus_removexattr(struct dentry *dentry, const char *name)
-> > 	if (!HFSPLUS_SB(inode->i_sb)->attr_tree)
-> > 		return -EOPNOTSUPP;
-> > 
-> > -	err = can_set_xattr(inode, name, NULL, 0);
-> 
-> Ditto. Moreover, it is used namely hfsplus_removexattr() and not
-> __hfsplus_setxattr() for removing xattrs in hfsplus driver. So, removing
-> this check is not good way.
-
-Oh, I just noticed that hfsplus does not use the xattr handlers for
-removing, while it does for getting and setting xattrs.  That's a really
-bad a confusing design, and we'll indeed need to fix that as well.
-
-> > 	if (len > HFSPLUS_ATTR_MAX_STRLEN)
-> > 		return -EOPNOTSUPP;
-> > 
-> > +	if (is_known_namespace(name))
-> > +		return -EOPNOTSUPP;
-> 
-> If common check in __hfsplus_setxattr() will be on the same place then
-> this addition doesn't make sense.
-
-Having both does indeed not make sense, but this is the better place to
-have it.
+SGkgQXJ0ZW06DQpTb3JyeSB0byBpbnRlcnJ1cHQgeW91ciBidXN5IGxpZmUuIA0KQXMgeW91IHNh
+aWQgaW4gcHJldmlvdXMgbWFpbCwgSSBzZW5kIG15IHBhdGNoIHNlcGFyYXRlbHkgd2l0aG91dCBx
+dW90aW5nIHRoaXMgZS1tYWlsLiBBbmQgSSBoYXZlIHNlbmQgdG8geW91LCBidXQgSSBuZXZlciBn
+ZXQgIHlvdXIgcmVwbHkuIEkgYW0gdmVyeSBjb25mdXNlLCBubyBzdXJlIGlmIGlzIHRoZXJlIGFu
+eXRoaW5nIHdyb25nIGF0IHRoZSBwYXRjaCBJIHNlbmQgdG8geW91Lg0KQ2FuIHlvdSBoZWxwIGV4
+cGxhaW4gdG8gbWU/DQpUaGFua3MNCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206
+IEFydGVtIEJpdHl1dHNraXkgW21haWx0bzpkZWRla2luZDFAZ21haWwuY29tXSANClNlbnQ6IEZy
+aWRheSwgTm92ZW1iZXIgMDEsIDIwMTMgNDo1OCBQTQ0KVG86IFFpIFdhbmcg546L6LW3IChxaXdh
+bmcpDQpDYzogbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7IEFkcmlhbiBIdW50ZXI7IGxp
+bnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNClN1YmplY3Q6IFJlOiBbUEFUQ0ggMS8xXSBNVEQ6
+IFVCSTogdHJ5IHRvIGF2b2lkIHByb2dyYW0gZGF0YSB0byBOT1IgZmxhc2ggYWZ0ZXIgZXJhc3Vy
+ZSBpbnRlcnJ1cHRlZA0KDQpIaSwNCg0KY291bGQgeW91IHBsZWFzZSByZS1zZW5kIHlvdXIgcGF0
+Y2ggc2VwYXJhdGVseSwgd2l0aG91dCBxdW90aW5nIGFueQ0KcGFydHMgb2YgdGhpcyBjb252ZXJz
+YXRpb24sIHNvIHRoYXQgSSBjb3VsZCB1c2UgJ2dpdCBhbScuDQoNCllvdXIgcGF0Y2ggYWxzbyBj
+b250YWlucyB0cmFpbGluZyB3aGl0ZS1zcGFjZXMsIHBsZWFzZSwgZ2V0IHJpZCBvZiB0aGVtDQpp
+biB0aGUgbmV4dCBzdWJtaXNzaW9uLg0KDQpBbHNvLCBjb3VsZCB5b3UgcGxlYXNlIGNsZWFybHkg
+c3RhdGUgd2hldGhlciB5b3UgaGF2ZSB0ZXN0ZWQgdGhpcyBwYXRjaA0Kb24gYSByZWFsIE5PUiBm
+bGFzaCBvciBub3QuIElmIHllcywgdGhlbiBjb3VsZCB5b3Ugc2hhcmUgdGhlIGNoaXANCnZlbmRv
+ci90eXBlIGluZm9ybWF0aW9uPw0KDQpPbiBUaHUsIDIwMTMtMTAtMzEgYXQgMDQ6MDcgKzAwMDAs
+IFFpIFdhbmcg546L6LW3IChxaXdhbmcpIHdyb3RlOg0KDQo+IC0tLSBhL2RyaXZlcnMvbXRkL3Vi
+aS9pby5jDQo+ICsrKyBiL2RyaXZlcnMvbXRkL3ViaS9pby5jDQo+IEBAIC00OTksNTkgKzQ5OSw0
+NCBAQCBzdGF0aWMgaW50IG5vcl9lcmFzZV9wcmVwYXJlKHN0cnVjdCB1YmlfZGV2aWNlICp1Ymks
+IGludCBwbnVtKQ0KPiAgCXNpemVfdCB3cml0dGVuOw0KPiAgCWxvZmZfdCBhZGRyOw0KPiAgCXVp
+bnQzMl90IGRhdGEgPSAwOw0KPiAtCS8qDQo+IC0JICogTm90ZSwgd2UgY2Fubm90IGdlbmVyYWxs
+eSBkZWZpbmUgVklEIGhlYWRlciBidWZmZXJzIG9uIHN0YWNrLA0KPiAtCSAqIGJlY2F1c2Ugb2Yg
+dGhlIHdheSB3ZSBkZWFsIHdpdGggdGhlc2UgYnVmZmVycyAoc2VlIHRoZSBoZWFkZXINCj4gLQkg
+KiBjb21tZW50IGluIHRoaXMgZmlsZSkuIEJ1dCB3ZSBrbm93IHRoaXMgaXMgYSBOT1Itc3BlY2lm
+aWMgcGllY2Ugb2YNCj4gLQkgKiBjb2RlLCBzbyB3ZSBjYW4gZG8gdGhpcy4gQnV0IHllcywgdGhp
+cyBpcyBlcnJvci1wcm9uZSBhbmQgd2Ugc2hvdWxkDQo+IC0JICogKHByZS0pYWxsb2NhdGUgVklE
+IGhlYWRlciBidWZmZXIgaW5zdGVhZC4NCj4gLQkgKi8NCg0KUGxlYXNlLCBkbyBub3QgcmVtb3Zl
+IHRoaXMgY29tbWVudC4NCg0KPiAgCXN0cnVjdCB1YmlfdmlkX2hkciB2aWRfaGRyOw0KPiArCXN0
+cnVjdCB1YmlfZWNfaGRyIGVjX2hkcjsNCg0KVG8gbWFrZSBpdCBvYnZpb3VzIHdoYXQgdGhlIGFi
+b3ZlIGJpZyBjb21tZW50IHRhbGtzIGFib3V0LCBjb3VsZCB5b3UNCnBsZWFzZSBkZWZpbmUgJ3N0
+cnVjdCB1YmlfZWNfaGRyIGVjX2hkcicgYWJvdmUgdGhhdCBiaWcgY29tbWVudC4NCg0KT3RoZXJ3
+aXNlIGxvb2tzIGdvb2QgdG8gbWUsIHRoYW5rIHlvdSENCg0KDQo+IE15IENvbW1lbnRzIGZvciBh
+Ym92ZSBjaGFuZ2luZzoNCj4gMS4gDQo+IAktCS8qDQo+IAktCSAqIE5vdGUsIHdlIGNhbm5vdCBn
+ZW5lcmFsbHkgZGVmaW5lIFZJRCBoZWFkZXIgYnVmZmVycyBvbiBzdGFjaywNCj4gCS0JICogYmVj
+YXVzZSBvZiB0aGUgd2F5IHdlIGRlYWwgd2l0aCB0aGVzZSBidWZmZXJzIChzZWUgdGhlIGhlYWRl
+cg0KPiAJLQkgKiBjb21tZW50IGluIHRoaXMgZmlsZSkuIEJ1dCB3ZSBrbm93IHRoaXMgaXMgYSBO
+T1Itc3BlY2lmaWMgcGllY2Ugb2YNCj4gCS0JICogY29kZSwgc28gd2UgY2FuIGRvIHRoaXMuIEJ1
+dCB5ZXMsIHRoaXMgaXMgZXJyb3ItcHJvbmUgYW5kIHdlIHNob3VsZA0KPiAJLQkgKiAocHJlLSlh
+bGxvY2F0ZSBWSUQgaGVhZGVyIGJ1ZmZlciBpbnN0ZWFkLg0KPiAJLQkgKi8NCj4gCUkgcmVtb3Zl
+IGFib3ZlIGNvbW1lbnQsIGJlY2F1c2UgSSBwcmUtYWxsb2NhdGUgVklEIGhlYWRlciBhbmQgRUMg
+aGVhZGVyIHRvZ2V0aGVyLiANCj4gCVNvIEkgdGhpbmsgbm8gbmVlZCB0byBlbXBoYXNpemUgVklE
+IGhlYWRlciBidWZmZXJzIGNhbm5vdCBiZSBvbiBzdGFjay4NCj4gCShNYXliZSBteSB1bmRlcnN0
+YW5kaW5nIGFib3V0IHRoaXMgY29tbWVudCBpcyBlcnJvciwgaWYgc28sIHBsZWFzZSBjb3JyZWN0
+IG1lKQ0KDQpUaGUgcHJvYmxlbSBpcyB0aGF0IHNvbWUgZnVuY3Rpb25zIGluIGlvLmMgY2FuIHJl
+YWQgb3Igd3JpdGUgX2JleW9uZF8NCnNpemVvZihzdHJ1Y3QgdWJpX3ZpZF9oZHIpLCBidXQgdGhp
+cyBpcyBvbmx5IHJlbGV2YW50IHRvIE5BTkQsIG5vdCBmb3INCk5PUiwgYW5kIHRoZSBjb2RlIHlv
+dSBjaGFuZ2UgaXMgTk9SLW9ubHkuIFRoaXMgaXMgd2h5IHRoYXQgY29tbWVudCBpcw0KdGhlcmUs
+IGFuZCBJJ2QgbGlrZSB0byBrZWVwIGl0Lg0KDQo+IDIuDQo+IAl3aHkgdXNlDQo+IAkiaWYgKGVy
+ciAhPSBVQklfSU9fQkFEX0hEUl9FQkFETVNHICYmIGVyciAhPSBVQklfSU9fQkFEX0hEUiAmJiBl
+cnIgIT0gVUJJX0lPX0ZGKSINCj4gCWJ1dCBub3QgDQo+IAkiaWYgKCFlcnIpIiANCj4gCXRvIGp1
+ZGdlIGlmIG5lZWQgdG8gcHJvZ3JhbSAnMCcgdG8gaW52YWxpZCB0aGlzIGJsb2NrLg0KPiANCj4g
+CUluIGNhc2UgZXJyID09IFVCSV9JT19GRl9CSVRGTElQUywgZXJyID09IFVCSV9JT19CSVRGTElQ
+UyBvciB1bmV4cGVjdGVkIHZhbHVlIHJldHVybg0KPiAJZnJvbSByZWFkIGZ1bmN0aW9uLCBJIHRo
+aW5rIFVCSSBzdGlsbCBuZWVkIHRvIGludmFsaWQgdGhpcyBibG9jayBmb3IgYWJvdmUgbWVudGlv
+bmVkIA0KPiAJY29uZGl0aW9uLiBTbyBJIHVzZQ0KPiAJImlmIChlcnIgIT0gVUJJX0lPX0JBRF9I
+RFJfRUJBRE1TRyAmJiBlcnIgIT0gVUJJX0lPX0JBRF9IRFIgJiYgZXJyICE9IFVCSV9JT19GRiki
+DQo+IAl0byBqdWRnZS4gDQoNCkluIGNhc2Ugb2YgVUJJX0lPX0ZGIChhbGwgRkZzKSBVQkkgd2ls
+bCBlcmFzZSB0aGUgZXJhc2VibG9jayBiZWZvcmUNCnVzaW5nIGl0IGFueXdheSwgc28gaW52YWxp
+ZGF0aW9uIGlzIG5vdCBuZWNlc3NhcnkuDQoNClRoYW5rcyENCg0KLS0gDQpCZXN0IFJlZ2FyZHMs
+DQpBcnRlbSBCaXR5dXRza2l5DQoNCg==
