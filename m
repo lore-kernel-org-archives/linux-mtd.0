@@ -1,15 +1,16 @@
-Received: from va3ehsobe006.messaging.microsoft.com ([216.32.180.16]
- helo=va3outboundpool.messaging.microsoft.com)
+Received: from mail-db9lp0253.outbound.messaging.microsoft.com
+ ([213.199.154.253] helo=db9outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VvjWQ-0002yJ-FL
- for linux-mtd@lists.infradead.org; Wed, 25 Dec 2013 08:08:55 +0000
+ id 1VvjxA-0003Cp-7f
+ for linux-mtd@lists.infradead.org; Wed, 25 Dec 2013 08:36:33 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH V2 1/2] mtd: nand: add a helper to parse the Hynix nand
-Date: Wed, 25 Dec 2013 15:37:18 +0800
-Message-ID: <1387957039-12575-2-git-send-email-b32955@freescale.com>
-In-Reply-To: <1387957039-12575-1-git-send-email-b32955@freescale.com>
-References: <1387957039-12575-1-git-send-email-b32955@freescale.com>
+Subject: [PATCH v2 2/2 fix] mtd: nand: parse the Hynix nand which uses <26nm
+ technology
+Date: Wed, 25 Dec 2013 16:05:00 +0800
+Message-ID: <1387958700-18174-1-git-send-email-b32955@freescale.com>
+In-Reply-To: <1387957039-12575-3-git-send-email-b32955@freescale.com>
+References: <1387957039-12575-3-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
@@ -23,122 +24,122 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds a nand_parse_hynix() to parse the Hynix MLC nand
-whose ID length is 6 bytes.
+The Hynix uses different ID parsing rules for <26nm technology.
+We should check the id_data[5] for Hynix nand now.
 
-This patch makes preparations for parsing other Hynix nand.
+This patch adds the parsing code for the Hynix nand which use <26nm technology.
+
+Tested with H27UBG8T2CTR(8192 + 640).
 
 Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
- drivers/mtd/nand/nand_base.c |   89 +++++++++++++++++++++++------------------
- 1 files changed, 50 insertions(+), 39 deletions(-)
+mask the technology field 
+---
+ drivers/mtd/nand/nand_base.c |   87 +++++++++++++++++++++++++++++++-----------
+ 1 files changed, 64 insertions(+), 23 deletions(-)
 
 diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index bd39f7b..79f0050 100644
+index 79f0050..ce4dec7 100644
 --- a/drivers/mtd/nand/nand_base.c
 +++ b/drivers/mtd/nand/nand_base.c
-@@ -3104,6 +3104,55 @@ static int nand_get_bits_per_cell(u8 cellinfo)
- 	return bits + 1;
- }
+@@ -3110,34 +3110,75 @@ static void nand_parse_hynix(struct mtd_info *mtd, struct nand_chip *chip,
+ {
+ 	int extid = id_data[3];
+ 	unsigned int tmp;
++	int tech;
  
-+/* Parse for the Hynix MLC nand which has 6-bytes ID */
-+static void nand_parse_hynix(struct mtd_info *mtd, struct nand_chip *chip,
-+			u8 id_data[8], int *busw)
-+{
-+	int extid = id_data[3];
-+	unsigned int tmp;
++	/*
++	 * The ((id_data[5] & 0x7) <= 3) means the nand uses >=26nm technology;
++	 * The ((id_data[5] & 0x7) > 3) means the nand uses <26nm technology;
++	 *
++	 * Please reference to the H27UBG8T2B (p.23) and H27UBG8T2C (p.23).
++	 */
++	tech = id_data[5] & 0x7;
 +
-+	/* Calc pagesize */
-+	mtd->writesize = 2048 << (extid & 0x03);
-+	extid >>= 2;
++	tmp = (tech <= 3) ? SZ_2K : SZ_4K;
+ 	/* Calc pagesize */
+-	mtd->writesize = 2048 << (extid & 0x03);
++	mtd->writesize = tmp << (extid & 0x03);
+ 	extid >>= 2;
+ 
+ 	/* Calc oobsize */
+-	switch (((extid >> 2) & 0x04) | (extid & 0x03)) {
+-	case 0:
+-		mtd->oobsize = 128;
+-		break;
+-	case 1:
+-		mtd->oobsize = 224;
+-		break;
+-	case 2:
+-		mtd->oobsize = 448;
+-		break;
+-	case 3:
+-		mtd->oobsize = 64;
+-		break;
+-	case 4:
+-		mtd->oobsize = 32;
+-		break;
+-	case 5:
+-		mtd->oobsize = 16;
+-		break;
+-	default:
+-		mtd->oobsize = 640;
+-		break;
++	tmp = ((extid >> 2) & 0x04) | (extid & 0x03);
 +
-+	/* Calc oobsize */
-+	switch (((extid >> 2) & 0x04) | (extid & 0x03)) {
-+	case 0:
-+		mtd->oobsize = 128;
-+		break;
-+	case 1:
-+		mtd->oobsize = 224;
-+		break;
-+	case 2:
-+		mtd->oobsize = 448;
-+		break;
-+	case 3:
-+		mtd->oobsize = 64;
-+		break;
-+	case 4:
-+		mtd->oobsize = 32;
-+		break;
-+	case 5:
-+		mtd->oobsize = 16;
-+		break;
-+	default:
-+		mtd->oobsize = 640;
-+		break;
-+	}
-+	extid >>= 2;
-+
-+	/* Calc blocksize */
-+	tmp = ((extid >> 1) & 0x04) | (extid & 0x03);
-+	if (tmp < 0x03)
-+		mtd->erasesize = (128 * 1024) << tmp;
-+	else if (tmp == 0x03)
-+		mtd->erasesize = 768 * 1024;
-+	else
-+		mtd->erasesize = (64 * 1024) << tmp;
-+
-+	*busw = 0;
-+}
-+
- /*
-  * Many new NAND share similar device ID codes, which represent the size of the
-  * chip. The rest of the parameters must be decoded according to generic or
-@@ -3163,45 +3212,7 @@ static void nand_decode_ext_id(struct mtd_info *mtd, struct nand_chip *chip,
- 		*busw = 0;
- 	} else if (id_len == 6 && id_data[0] == NAND_MFR_HYNIX &&
- 			!nand_is_slc(chip)) {
--		unsigned int tmp;
--
--		/* Calc pagesize */
--		mtd->writesize = 2048 << (extid & 0x03);
--		extid >>= 2;
--		/* Calc oobsize */
--		switch (((extid >> 2) & 0x04) | (extid & 0x03)) {
--		case 0:
--			mtd->oobsize = 128;
--			break;
--		case 1:
--			mtd->oobsize = 224;
--			break;
--		case 2:
--			mtd->oobsize = 448;
--			break;
--		case 3:
--			mtd->oobsize = 64;
--			break;
--		case 4:
--			mtd->oobsize = 32;
--			break;
--		case 5:
--			mtd->oobsize = 16;
--			break;
--		default:
--			mtd->oobsize = 640;
--			break;
--		}
--		extid >>= 2;
--		/* Calc blocksize */
--		tmp = ((extid >> 1) & 0x04) | (extid & 0x03);
--		if (tmp < 0x03)
--			mtd->erasesize = (128 * 1024) << tmp;
--		else if (tmp == 0x03)
--			mtd->erasesize = 768 * 1024;
--		else
--			mtd->erasesize = (64 * 1024) << tmp;
--		*busw = 0;
-+		nand_parse_hynix(mtd, chip, id_data, busw);
- 	} else {
- 		/* Calc pagesize */
- 		mtd->writesize = 1024 << (extid & 0x03);
++	if (tech <= 3) {
++		switch (tmp) {
++		case 0:
++			mtd->oobsize = 128;
++			break;
++		case 1:
++			mtd->oobsize = 224;
++			break;
++		case 2:
++			mtd->oobsize = 448;
++			break;
++		case 3:
++			mtd->oobsize = 64;
++			break;
++		case 4:
++			mtd->oobsize = 32;
++			break;
++		case 5:
++			mtd->oobsize = 16;
++			break;
++		default:
++			mtd->oobsize = 640;
++			break;
++		}
++	} else {
++		switch (tmp) {
++		case 0:
++			mtd->oobsize = 640;
++			break;
++		case 1:
++			mtd->oobsize = 448;
++			break;
++		case 2:
++			mtd->oobsize = 224;
++			break;
++		case 3:
++			mtd->oobsize = 128;
++			break;
++		case 4:
++			mtd->oobsize = 64;
++			break;
++		case 5:
++			mtd->oobsize = 32;
++			break;
++		case 6:
++			mtd->oobsize = 16;
++			break;
++		default:
++			mtd->oobsize = 640;
++			break;
++		}
+ 	}
+ 	extid >>= 2;
+ 
 -- 
 1.7.2.rc3
