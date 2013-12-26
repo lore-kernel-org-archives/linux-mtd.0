@@ -1,28 +1,20 @@
-Received: from mailout1.samsung.com ([203.254.224.24])
+Received: from antcom.de ([2a03:4000:1::bc28:b2d8:1] helo=chuck.antcom.de)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vw6Fs-0006DE-8o
- for linux-mtd@lists.infradead.org; Thu, 26 Dec 2013 08:25:21 +0000
-Received: from epcpsbgr5.samsung.com
- (u145.gpu120.samsung.co.kr [203.254.230.145])
- by mailout1.samsung.com (Oracle Communications Messaging Server 7u4-24.01
- (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0MYE002YTNDIPD10@mailout1.samsung.com> for
- linux-mtd@lists.infradead.org; Thu, 26 Dec 2013 17:24:54 +0900 (KST)
-From: Jingoo Han <jg1.han@samsung.com>
-To: 'Josh Triplett' <josh@joshtriplett.org>
-References: <cover.1387833347.git.josh@joshtriplett.org>
- <21175198efaf34a67e5108c1dae384656012b7a0.1387833347.git.josh@joshtriplett.org>
-In-reply-to: <21175198efaf34a67e5108c1dae384656012b7a0.1387833347.git.josh@joshtriplett.org>
-Subject: Re: [PATCH 1/7] mtd: denali: Drop print of build date/time
-Date: Thu, 26 Dec 2013 17:24:53 +0900
-Message-id: <000801cf0213$f40bec50$dc23c4f0$%han@samsung.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=us-ascii
-Content-transfer-encoding: 7bit
-Content-language: ko
-Cc: 'Jingoo Han' <jg1.han@samsung.com>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, 'Brian Norris' <computersforpeace@gmail.com>,
- 'David Woodhouse' <dwmw2@infradead.org>, 'Dinh Nguyen' <dinguyen@altera.com>
+ id 1Vw8D7-0007Vw-Ed
+ for linux-mtd@lists.infradead.org; Thu, 26 Dec 2013 10:30:38 +0000
+Message-ID: <52BC052F.2020201@antcom.de>
+Date: Thu, 26 Dec 2013 11:30:07 +0100
+From: Roland Stigge <stigge@antcom.de>
+MIME-Version: 1.0
+To: Jingoo Han <jg1.han@samsung.com>
+Subject: Re: [PATCH V3 5/8] mtd: lpc32xx_slc: Use devm_*() functions
+References: <007901cf01db$8362f580$8a28e080$%han@samsung.com>
+ <007d01cf01dc$052cd1d0$0f867570$%han@samsung.com>
+In-Reply-To: <007d01cf01dc$052cd1d0$0f867570$%han@samsung.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, 'Brian Norris' <computersforpeace@gmail.com>,
+ 'David Woodhouse' <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,37 +24,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday, December 24, 2013 6:55 AM, Josh Triplett wrote:
+On 26/12/13 02:44, Jingoo Han wrote:
+> Use devm_*() functions to make cleanup paths simpler.
 > 
-> The kernel already has this information, and individual drivers
-> shouldn't duplicate that.  This also eliminates the use of __DATE__ and
-> __TIME__, which make the build non-deterministic.
-> 
-> Signed-off-by: Josh Triplett <josh@joshtriplett.org>
+> Signed-off-by: Jingoo Han <jg1.han@samsung.com>
 
-(+cc Dinh Nguyen)
-
-It looks good. :-)
-Reviewed-by: Jingoo Han <jg1.han@samsung.com>
-
-Best regards,
-Jingoo Han
+Acked-by: Roland Stigge <stigge@antcom.de>
 
 > ---
->  drivers/mtd/nand/denali_pci.c | 1 -
->  1 file changed, 1 deletion(-)
+> No change since v2.
 > 
-> diff --git a/drivers/mtd/nand/denali_pci.c b/drivers/mtd/nand/denali_pci.c
-> index 033f177..ab64416 100644
-> --- a/drivers/mtd/nand/denali_pci.c
-> +++ b/drivers/mtd/nand/denali_pci.c
-> @@ -131,7 +131,6 @@ static struct pci_driver denali_pci_driver = {
+>  drivers/mtd/nand/lpc32xx_slc.c |   10 +++-------
+>  1 file changed, 3 insertions(+), 7 deletions(-)
 > 
->  static int denali_init_pci(void)
->  {
-> -	pr_info("Spectra MTD driver built on %s @ %s\n", __DATE__, __TIME__);
->  	return pci_register_driver(&denali_pci_driver);
+> diff --git a/drivers/mtd/nand/lpc32xx_slc.c b/drivers/mtd/nand/lpc32xx_slc.c
+> index 23e6974..5f20394 100644
+> --- a/drivers/mtd/nand/lpc32xx_slc.c
+> +++ b/drivers/mtd/nand/lpc32xx_slc.c
+> @@ -791,8 +791,8 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
+>  	}
+>  	if (host->ncfg->wp_gpio == -EPROBE_DEFER)
+>  		return -EPROBE_DEFER;
+> -	if (gpio_is_valid(host->ncfg->wp_gpio) &&
+> -			gpio_request(host->ncfg->wp_gpio, "NAND WP")) {
+> +	if (gpio_is_valid(host->ncfg->wp_gpio) && devm_gpio_request(&pdev->dev,
+> +			host->ncfg->wp_gpio, "NAND WP")) {
+>  		dev_err(&pdev->dev, "GPIO not available\n");
+>  		return -EBUSY;
+>  	}
+> @@ -808,7 +808,7 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
+>  	mtd->dev.parent = &pdev->dev;
+>  
+>  	/* Get NAND clock */
+> -	host->clk = clk_get(&pdev->dev, NULL);
+> +	host->clk = devm_clk_get(&pdev->dev, NULL);
+>  	if (IS_ERR(host->clk)) {
+>  		dev_err(&pdev->dev, "Clock failure\n");
+>  		res = -ENOENT;
+> @@ -927,10 +927,8 @@ err_exit3:
+>  	dma_release_channel(host->dma_chan);
+>  err_exit2:
+>  	clk_disable(host->clk);
+> -	clk_put(host->clk);
+>  err_exit1:
+>  	lpc32xx_wp_enable(host);
+> -	gpio_free(host->ncfg->wp_gpio);
+>  
+>  	return res;
 >  }
->  module_init(denali_init_pci);
-> --
-> 1.8.5.2
+> @@ -953,9 +951,7 @@ static int lpc32xx_nand_remove(struct platform_device *pdev)
+>  	writel(tmp, SLC_CTRL(host->io_base));
+>  
+>  	clk_disable(host->clk);
+> -	clk_put(host->clk);
+>  	lpc32xx_wp_enable(host);
+> -	gpio_free(host->ncfg->wp_gpio);
+>  
+>  	return 0;
+>  }
+> 
