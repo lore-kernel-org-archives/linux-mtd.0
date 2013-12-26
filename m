@@ -1,22 +1,17 @@
-Received: from woodpecker.gentoo.org ([2001:470:ea4a:1:214:c2ff:fe64:b2d3]
- helo=smtp.gentoo.org)
+Received: from co9ehsobe005.messaging.microsoft.com ([207.46.163.28]
+ helo=co9outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vw5lE-0005mp-I3
- for linux-mtd@lists.infradead.org; Thu, 26 Dec 2013 07:53:41 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-To: Jingoo Han <jg1.han@samsung.com>
-Subject: Re: [PATCH 05/23] mtd: bf5xx_nand: Remove unnecessary OOM messages
-Date: Thu, 26 Dec 2013 02:53:20 -0500
-References: <008201cf01e6$6b894da0$429be8e0$%han@samsung.com>
- <008701cf01e7$2acdfe90$8069fbb0$%han@samsung.com>
-In-Reply-To: <008701cf01e7$2acdfe90$8069fbb0$%han@samsung.com>
+ id 1Vw60O-00062B-6C
+ for linux-mtd@lists.infradead.org; Thu, 26 Dec 2013 08:09:20 +0000
+From: Huang Shijie <b32955@freescale.com>
+To: <dwmw2@infradead.org>
+Subject: [PATCH] mtd: nand: add SanDisk manufacturer ID
+Date: Thu, 26 Dec 2013 15:37:45 +0800
+Message-ID: <1388043465-17441-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart2598787.seWSOJu4a0";
- protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-Message-Id: <201312260253.21933.vapier@gentoo.org>
-Cc: linux-mtd@lists.infradead.org, 'Brian Norris' <computersforpeace@gmail.com>,
- 'David Woodhouse' <dwmw2@infradead.org>
+Content-Type: text/plain
+Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,34 +21,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---nextPart2598787.seWSOJu4a0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Add the manufactor ID for SanDisk.
+Make preparation for SanDisk SDTNRGAMA-008G.
 
-Acked-by: Mike Frysinger <vapier@gentoo.org>
--mike
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+---
+ drivers/mtd/nand/nand_ids.c |    1 +
+ include/linux/mtd/nand.h    |    1 +
+ 2 files changed, 2 insertions(+), 0 deletions(-)
 
---nextPart2598787.seWSOJu4a0
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
-
-iQIcBAABAgAGBQJSu+BxAAoJEEFjO5/oN/WBkuoP/i/yJKw0re+U36/tqeJB2Yb7
-Vsp0XF97gGPCtwU2lGqWkjQLATgfFI/yoxsgFvoj1dnNilJ6jm9JGk1zchPA4XuR
-RyM2A9EndqieuKu+MZxfz44CnI+GULE05aNnNhFJdMD2PDzscLBi0qRK1ZkixXeU
-/bYP/z60n7K85SIQhsrsz8PMZdwO61RWFMXS9wSTSiKOcHBQPgRFuzdrU23TZVWS
-n7B13GmjoHNuZ40LowkyaUWiM3fw20emZ5xb8se7+xKwP9Ng2vrrkQ/moy8ADukJ
-uRlmnbcxbJrcsZGk612QhXhjJqiI+9AE6Il7I6m53a8n+Q1HAneyYURvyukKLmxG
-DEifmkNzEZxuzzv3RrbfOzJvv/n4xKQ9BPjkN7i2+hUGYb9+izTCpkAAQ0/8fSBW
-tCb0lPAvs95TParffWLbhArvBGTw+JFX4tEBedUGm8eOUPs6311LMswsKbpkXS9y
-WxqPeMTlaX2cktdHx696I9c6fDaytaBHx4Yc91XrzmwlEMvgKOxJNI1FOcEpVeAg
-539nVFMd4yrvIvs2ZBnyeXAMPKjObV3PTIs6NvCmSnMrLy5iOQaujf+CShqZ7y6e
-D13ncKWLIB2HBd9NzqYXKSxarrCF/8qvzW1Y6MIYnC+WuXLPUX4alufzj00cZ7B0
-4QmbznGT6+cEaK7IXMpa
-=OOt9
------END PGP SIGNATURE-----
-
---nextPart2598787.seWSOJu4a0--
+diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
+index a87b0a3..136a463 100644
+--- a/drivers/mtd/nand/nand_ids.c
++++ b/drivers/mtd/nand/nand_ids.c
+@@ -169,6 +169,7 @@ struct nand_manufacturers nand_manuf_ids[] = {
+ 	{NAND_MFR_AMD, "AMD/Spansion"},
+ 	{NAND_MFR_MACRONIX, "Macronix"},
+ 	{NAND_MFR_EON, "Eon"},
++	{NAND_MFR_SANDISK, "SanDisk"},
+ 	{0x0, "Unknown"}
+ };
+ 
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index f3ea8da..c13fbf3 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -600,6 +600,7 @@ struct nand_chip {
+ #define NAND_MFR_AMD		0x01
+ #define NAND_MFR_MACRONIX	0xc2
+ #define NAND_MFR_EON		0x92
++#define NAND_MFR_SANDISK	0x45
+ 
+ /* The maximum expected count of bytes in the NAND ID sequence */
+ #define NAND_MAX_ID_LEN 8
+-- 
+1.7.2.rc3
