@@ -1,19 +1,19 @@
-Received: from cpsmtpb-ews02.kpnxchange.com ([213.75.39.5])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VwTSX-0005NE-J2
- for linux-mtd@lists.infradead.org; Fri, 27 Dec 2013 09:11:59 +0000
-Message-ID: <1388135456.5072.3.camel@x220>
-Subject: Re: [PATCH] mtd: nand: remove pasemi_nand driver
-From: Paul Bolle <pebolle@tiscali.nl>
-To: Olof Johansson <olof@lixom.net>
-Date: Fri, 27 Dec 2013 10:10:56 +0100
-In-Reply-To: <1388123524-9000-1-git-send-email-olof@lixom.net>
-References: <1388123524-9000-1-git-send-email-olof@lixom.net>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
- David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
+Received: from mail-db9lp0248.outbound.messaging.microsoft.com
+ ([213.199.154.248] helo=db9outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VwUZL-00068X-6M
+ for linux-mtd@lists.infradead.org; Fri, 27 Dec 2013 10:23:04 +0000
+From: Huang Shijie <b32955@freescale.com>
+To: <dwmw2@infradead.org>
+Subject: [PATCH 4/5 fix] mtd: nand: parse out the JEDEC compliant nand
+Date: Fri, 27 Dec 2013 17:51:10 +0800
+Message-ID: <1388137870-11421-1-git-send-email-b32955@freescale.com>
+In-Reply-To: <1388121286-32620-5-git-send-email-b32955@freescale.com>
+References: <1388121286-32620-5-git-send-email-b32955@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,25 +23,126 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2013-12-26 at 21:52 -0800, Olof Johansson wrote:
-> The PA Semi platform is sparsely used these days (with just a handful
-> of known users out there). I'm 100% sure none of them use the MTD NAND
-> driver -- most standard use cases include PCI-e SATA controllers for
-> storage instead, and boot is done from LPC NOR flash.
-> 
-> So, there's little reason to keep carrying a driver that's not used by
-> anybody and that just gets hit by some tree-wide or tools-based changes
-> every now and then.
-> 
-> Signed-off-by: Olof Johansson <olof@lixom.net>
-> ---
->  drivers/mtd/nand/pasemi_nand.c |  238 ----------------------------------------
->  1 file changed, 238 deletions(-)
->  delete mode 100644 drivers/mtd/nand/pasemi_nand.c
+This patch adds the parsing code for the JEDEC compliant nand.
 
-If this gets accepted we should remove the related entry in
-drivers/mtd/nand/Kconfig and the related line in
-drivers/mtd/nand/Makefile too, shouldn't we?
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+---
+Add version check.
 
+---
+ drivers/mtd/nand/nand_base.c |   93 ++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 93 insertions(+), 0 deletions(-)
 
-Paul Bolle
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index db45ab3..077eae1 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3038,6 +3038,95 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+ }
+ 
+ /*
++ * Check if the NAND chip is JEDEC compliant, returns 1 if it is, 0 otherwise.
++ */
++static int nand_flash_detect_jedec(struct mtd_info *mtd, struct nand_chip *chip,
++					int *busw)
++{
++	struct nand_jedec_params *p = &chip->jedec_params;
++	struct jedec_ecc_info *ecc;
++	int val;
++	int i;
++
++	/* Try JEDEC for unknown chip or LP */
++	chip->cmdfunc(mtd, NAND_CMD_READID, 0x40, -1);
++	if (chip->read_byte(mtd) != 'J' || chip->read_byte(mtd) != 'E' ||
++		chip->read_byte(mtd) != 'D' || chip->read_byte(mtd) != 'E' ||
++		chip->read_byte(mtd) != 'C')
++		return 0;
++
++	/*
++	 * JEDEC must be probed in 8-bit mode or with NAND_BUSWIDTH_AUTO, not
++	 * with NAND_BUSWIDTH_16
++	 */
++	if (chip->options & NAND_BUSWIDTH_16) {
++		pr_err("JEDEC cannot be probed in 16-bit mode; aborting\n");
++		return 0;
++	}
++
++	chip->cmdfunc(mtd, NAND_CMD_PARAM, 0x40, -1);
++	for (i = 0; i < 3; i++) {
++		chip->read_buf(mtd, (uint8_t *)p, sizeof(*p));
++		if (onfi_crc16(ONFI_CRC_BASE, (uint8_t *)p, 510) ==
++				le16_to_cpu(p->crc))
++			break;
++	}
++
++	if (i == 3) {
++		pr_err("Could not find valid JEDEC parameter page; aborting\n");
++		return 0;
++	}
++
++	/* Check version */
++	val = le16_to_cpu(p->revision);
++	if (val & (1 << 2))
++		chip->jedec_version = 10;
++	else if (val & (1 << 1))
++		chip->jedec_version = 1; /* vendor specific version */
++
++	if (!chip->jedec_version) {
++		pr_info("unsupported JEDEC version: %d\n", val);
++		return 0;
++	}
++
++	sanitize_string(p->manufacturer, sizeof(p->manufacturer));
++	sanitize_string(p->model, sizeof(p->model));
++	if (!mtd->name)
++		mtd->name = p->model;
++
++	mtd->writesize = le32_to_cpu(p->byte_per_page);
++
++	/* Please reference to the comment for nand_flash_detect_onfi. */
++	mtd->erasesize = 1 << (fls(le32_to_cpu(p->pages_per_block)) - 1);
++	mtd->erasesize *= mtd->writesize;
++
++	mtd->oobsize = le16_to_cpu(p->spare_bytes_per_page);
++
++	/* Please reference to the comment for nand_flash_detect_onfi. */
++	chip->chipsize = 1 << (fls(le32_to_cpu(p->blocks_per_lun)) - 1);
++	chip->chipsize *= (uint64_t)mtd->erasesize * p->lun_count;
++	chip->bits_per_cell = p->bits_per_cell;
++
++	if (jedec_feature(chip) & JEDEC_FEATURE_16_BIT_BUS)
++		*busw = NAND_BUSWIDTH_16;
++	else
++		*busw = 0;
++
++	/* ECC info */
++	ecc = p->ecc_info;
++
++	if (ecc->codeword_size) {
++		chip->ecc_strength_ds = ecc->ecc_bits;
++		chip->ecc_step_ds = 1 << ecc->codeword_size;
++	} else {
++		pr_debug("Invalid codeword size\n");
++		return 0;
++	}
++
++	return 1;
++}
++
++/*
+  * nand_id_has_period - Check if an ID string has a given wraparound period
+  * @id_data: the ID string
+  * @arrlen: the length of the @id_data array
+@@ -3450,6 +3539,10 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
+ 		/* Check is chip is ONFI compliant */
+ 		if (nand_flash_detect_onfi(mtd, chip, &busw))
+ 			goto ident_done;
++
++		/* Check if the chip is JEDEC compliant */
++		if (nand_flash_detect_jedec(mtd, chip, &busw))
++			goto ident_done;
+ 	}
+ 
+ 	if (!type->name)
+-- 
+1.7.2.rc3
