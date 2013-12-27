@@ -1,20 +1,19 @@
-Received: from eusmtp01.atmel.com ([212.144.249.242])
+Received: from tx2ehsobe001.messaging.microsoft.com ([65.55.88.11]
+ helo=tx2outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VwRMF-0004Lk-Cj
- for linux-mtd@lists.infradead.org; Fri, 27 Dec 2013 06:57:20 +0000
-Message-ID: <52BD24A7.4010200@atmel.com>
-Date: Fri, 27 Dec 2013 14:56:39 +0800
-From: Josh Wu <josh.wu@atmel.com>
+ id 1VwRXr-0004Ry-TR
+ for linux-mtd@lists.infradead.org; Fri, 27 Dec 2013 07:09:20 +0000
+Date: Fri, 27 Dec 2013 14:37:26 +0800
+From: Huang Shijie <b32955@freescale.com>
+To: <dwmw2@infradead.org>
+Subject: Re: [PATCH 0/5] mtd: nand: support the JEDEC compliant nand.
+Message-ID: <20131227063724.GA27153@shlinux2.ap.freescale.net>
+References: <1388121286-32620-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-To: Jingoo Han <jg1.han@samsung.com>, 'Brian Norris'
- <computersforpeace@gmail.com>
-Subject: Re: [PATCH V2 1/4] mtd: atmel_nand: use dev_err() instead of printk()
-References: <009b01cf01ea$bac213d0$30463b70$%han@samsung.com>
- <009c01cf01ea$e48f10f0$adad32d0$%han@samsung.com>
-In-Reply-To: <009c01cf01ea$e48f10f0$adad32d0$%han@samsung.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, 'David Woodhouse' <dwmw2@infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1388121286-32620-1-git-send-email-b32955@freescale.com>
+Cc: computersforpeace@gmail.com, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,40 +23,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/26/2013 11:30 AM, Jingoo Han wrote:
-> Use dev_err() instead of printk() to provide a better message
-> to userspace.
->
-> Signed-off-by: Jingoo Han <jg1.han@samsung.com>
-Acked-by: Josh Wu <josh.wu@atmel.com>
+On Fri, Dec 27, 2013 at 01:14:41PM +0800, Huang Shijie wrote:
+> Some vendors support the JEDEC standard only, such as Toshiba.
+> We can get all the information for the JEDEC parameter page, just like
+> we did with the ONFI parameter page.
+> 
+> This patch set adds the support for the JEDEC compliant nand chips.
+> 
+> You can download the JEDEC standard about the NAND in the:
+>     www.jedec.org
+> 
+> My code references to the JESD230A, August 2013, revision 1.
+> 
+> Tested with Toshiba TH58TEG7DDKTA20(16K + 1280).
+> (Unfortuately, this ECC info of its JEDEC parameter page is zero,
+>  i hope toshiba can fix it in future.)
+this Toshiba chip is just a sample for us. so i think Toshiba will fix it
+when the chip is on sale.
 
-Best Regards,
-Josh Wu
-> ---
-> Change since v1
-> - Remove the site-specific OOM messages.
->
->   drivers/mtd/nand/atmel_nand.c |    4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-> index e633c44..c36e9b8 100644
-> --- a/drivers/mtd/nand/atmel_nand.c
-> +++ b/drivers/mtd/nand/atmel_nand.c
-> @@ -2060,14 +2060,14 @@ static int atmel_nand_probe(struct platform_device *pdev)
->   		}
->   
->   		if (gpio_get_value(host->board.det_pin)) {
-> -			printk(KERN_INFO "No SmartMedia card inserted.\n");
-> +			dev_info(&pdev->dev, "No SmartMedia card inserted.\n");
->   			res = -ENXIO;
->   			goto err_no_card;
->   		}
->   	}
->   
->   	if (host->board.on_flash_bbt || on_flash_bbt) {
-> -		printk(KERN_INFO "atmel_nand: Use On Flash BBT\n");
-> +		dev_info(&pdev->dev, "Use On Flash BBT\n");
->   		nand_chip->bbt_options |= NAND_BBT_USE_FLASH;
->   	}
->   
+I also tested this patch set with Micron MT29F64G08CBABAWP which supports
+both the ONFI and JEDEC. It is okay.
+
+thanks
+Huang Shijie
