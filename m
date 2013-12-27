@@ -1,20 +1,28 @@
-Received: from mail-db8lp0185.outbound.messaging.microsoft.com
- ([213.199.154.185] helo=db8outboundpool.messaging.microsoft.com)
+Received: from mailout1.samsung.com ([203.254.224.24])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VwQG2-0003NZ-Np
- for linux-mtd@lists.infradead.org; Fri, 27 Dec 2013 05:46:54 +0000
-From: Huang Shijie <b32955@freescale.com>
-To: <dwmw2@infradead.org>
-Subject: [PATCH 5/5] mtd: nand: print out the right information for JEDEC
- compliant nand
-Date: Fri, 27 Dec 2013 13:14:46 +0800
-Message-ID: <1388121286-32620-6-git-send-email-b32955@freescale.com>
-In-Reply-To: <1388121286-32620-1-git-send-email-b32955@freescale.com>
-References: <1388121286-32620-1-git-send-email-b32955@freescale.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org
+ id 1VwQJU-0003aG-L4
+ for linux-mtd@lists.infradead.org; Fri, 27 Dec 2013 05:50:27 +0000
+Received: from epcpsbgr1.samsung.com
+ (u141.gpu120.samsung.co.kr [203.254.230.141])
+ by mailout1.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ (7.0.4.24.0) 64bit (built Nov 17 2011))
+ with ESMTP id <0MYG000W5AV6BZ50@mailout1.samsung.com> for
+ linux-mtd@lists.infradead.org; Fri, 27 Dec 2013 14:49:54 +0900 (KST)
+From: Jingoo Han <jg1.han@samsung.com>
+To: 'Brian Norris' <computersforpeace@gmail.com>
+References: <008201cf01e6$6b894da0$429be8e0$%han@samsung.com>
+ <008f01cf01e8$21a7a8b0$64f6fa10$%han@samsung.com>
+ <CAOesGMhV5QFfJ4OY3TGfLJ0AwOyqRid2iW9Gh6EhYQ3KL-0mkQ@mail.gmail.com>
+In-reply-to: <CAOesGMhV5QFfJ4OY3TGfLJ0AwOyqRid2iW9Gh6EhYQ3KL-0mkQ@mail.gmail.com>
+Subject: Re: [PATCH 13/23] mtd: pasemi_nand: Remove unnecessary OOM messages
+Date: Fri, 27 Dec 2013 14:49:54 +0900
+Message-id: <000201cf02c7$777a87a0$666f96e0$%han@samsung.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii
+Content-transfer-encoding: 7bit
+Content-language: ko
+Cc: 'Olof Johansson' <olof@lixom.net>, linux-mtd@lists.infradead.org,
+ 'Jingoo Han' <jg1.han@samsung.com>, 'David Woodhouse' <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,37 +32,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Check the chip->jedec_version, and print out the right information
-for JEDEC compliant nand.
+On Friday, December 27, 2013 2:43 PM, Olof Johansson wrote:
+> On Wed, Dec 25, 2013 at 7:11 PM, Jingoo Han <jg1.han@samsung.com> wrote:
+> > The site-specific OOM messages are unnecessary, because they
+> > duplicate the MM subsystem generic OOM message.
+> >
+> > Signed-off-by: Jingoo Han <jg1.han@samsung.com>
+> 
+> Actually -- the pasemi platform is barely used these days, and the
+> users I am aware of do not use the nand driver. I think we'd just fine
+> with removing it. I'll submit a patch to do so instead.
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
----
- drivers/mtd/nand/nand_base.c |   13 +++++++++++--
- 1 files changed, 11 insertions(+), 2 deletions(-)
+Brian Norris,
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 957aecb..5f92b1e 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -3612,8 +3612,17 @@ ident_done:
- 
- 	pr_info("device found, Manufacturer ID: 0x%02x, Chip ID: 0x%02x\n",
- 		*maf_id, *dev_id);
--	pr_info("%s %s\n", nand_manuf_ids[maf_idx].name,
--		chip->onfi_version ? chip->onfi_params.model : type->name);
-+
-+	if (chip->onfi_version)
-+		pr_info("%s %s\n", nand_manuf_ids[maf_idx].name,
-+				chip->onfi_params.model);
-+	else if (chip->jedec_version)
-+		pr_info("%s %s\n", nand_manuf_ids[maf_idx].name,
-+				chip->jedec_params.model);
-+	else
-+		pr_info("%s %s\n", nand_manuf_ids[maf_idx].name,
-+				type->name);
-+
- 	pr_info("%dMiB, %s, page size: %d, OOB size: %d\n",
- 		(int)(chip->chipsize >> 20), nand_is_slc(chip) ? "SLC" : "MLC",
- 		mtd->writesize, mtd->oobsize);
--- 
-1.7.2.rc3
+Please ignore this patch, because the pasemi nand driver will
+be removed by Olof Johansson. Thank you.
+
+Best regards,
+Jingoo Han
