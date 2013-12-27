@@ -1,13 +1,14 @@
-Received: from mail-db9lp0253.outbound.messaging.microsoft.com
- ([213.199.154.253] helo=db9outboundpool.messaging.microsoft.com)
+Received: from mail-db8lp0184.outbound.messaging.microsoft.com
+ ([213.199.154.184] helo=db8outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VwQFw-0003NS-F4
- for linux-mtd@lists.infradead.org; Fri, 27 Dec 2013 05:46:45 +0000
+ id 1VwQFx-0003NU-QE
+ for linux-mtd@lists.infradead.org; Fri, 27 Dec 2013 05:46:47 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH 2/5] mtd: nand: add fields for JEDEC in nand_chip
-Date: Fri, 27 Dec 2013 13:14:43 +0800
-Message-ID: <1388121286-32620-3-git-send-email-b32955@freescale.com>
+Subject: [PATCH 1/5] mtd: nand: add the data structures for JEDEC parameter
+ page
+Date: Fri, 27 Dec 2013 13:14:42 +0800
+Message-ID: <1388121286-32620-2-git-send-email-b32955@freescale.com>
 In-Reply-To: <1388121286-32620-1-git-send-email-b32955@freescale.com>
 References: <1388121286-32620-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
@@ -23,30 +24,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add the jedec_version field, and add a anonymous union which
-contains the nand_onfi_params and nand_jedec_params.
+Create the nand_jedec_params{} and jedec_ecc_info{} according to
+the JESD230A(Revision of JESD230, October 2012).
 
 Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
- include/linux/mtd/nand.h |    6 +++++-
- 1 files changed, 5 insertions(+), 1 deletions(-)
+ include/linux/mtd/nand.h |   75 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 75 insertions(+), 0 deletions(-)
 
 diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 3dd27e8..13ae489 100644
+index c13fbf3..3dd27e8 100644
 --- a/include/linux/mtd/nand.h
 +++ b/include/linux/mtd/nand.h
-@@ -641,7 +641,11 @@ struct nand_chip {
- 	int badblockbits;
+@@ -326,6 +326,81 @@ struct onfi_ext_param_page {
+ 	 */
+ } __packed;
  
- 	int onfi_version;
--	struct nand_onfi_params	onfi_params;
-+	int jedec_version;
-+	union {
-+		struct nand_onfi_params	onfi_params;
-+		struct nand_jedec_params jedec_params;
-+	};
- 
- 	flstate_t state;
- 
++struct jedec_ecc_info {
++	u8 ecc_bits;
++	u8 codeword_size;
++	__le16 bb_per_lun;
++	__le16 block_endurance;
++	u8 reserved[2];
++} __packed;
++
++struct nand_jedec_params {
++	/* rev info and features block */
++	/* 'J' 'E' 'S' 'D'  */
++	u8 sig[4];
++	__le16 revision;
++	__le16 features;
++	u8 opt_cmd[3];
++	__le16 sec_cmd;
++	u8 num_of_param_pages;
++	u8 reserved0[18];
++
++	/* manufacturer information block */
++	char manufacturer[12];
++	char model[20];
++	u8 jedec_id[6];
++	u8 reserved1[10];
++
++	/* memory organization block */
++	__le32 byte_per_page;
++	__le16 spare_bytes_per_page;
++	u8 reserved2[6];
++	__le32 pages_per_block;
++	__le32 blocks_per_lun;
++	u8 lun_count;
++	u8 addr_cycles;
++	u8 bits_per_cell;
++	u8 programs_per_page;
++	u8 multi_plane_addr;
++	u8 multi_plane_op_attr;
++	u8 reserved3[38];
++
++	/* electrical parameter block */
++	__le16 async_sdr_speed_grade;
++	__le16 toggle_ddr_speed_grade;
++	__le16 sync_ddr_speed_grade;
++	u8 async_sdr_features;
++	u8 toggle_ddr_features;
++	u8 sync_ddr_features;
++	__le16 t_prog;
++	__le16 t_bers;
++	__le16 t_r;
++	__le16 t_r_multi_plane;
++	__le16 t_ccs;
++	__le16 io_pin_capacitance_typ;
++	__le16 input_pin_capacitance_typ;
++	__le16 clk_pin_capacitance_typ;
++	u8 driver_strength_support;
++	__le16 t_ald;
++	u8 reserved4[36];
++
++	/* ECC and endurance block */
++	u8 guaranteed_good_blocks;
++	__le16 guaranteed_block_endurance;
++	struct jedec_ecc_info ecc_info[4];
++	u8 reserved5[29];
++
++	/* reserved */
++	u8 reserved6[148];
++
++	/* vendor */
++	__le16 vendor_rev_num;
++	u8 reserved7[88];
++
++	/* CRC for Parameter Page */
++	__le16 crc;
++} __packed;
++
+ /**
+  * struct nand_hw_control - Control structure for hardware controller (e.g ECC generator) shared among independent devices
+  * @lock:               protection lock
 -- 
 1.7.2.rc3
