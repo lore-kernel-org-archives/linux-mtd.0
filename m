@@ -1,22 +1,17 @@
-Received: from mail-qa0-f51.google.com ([209.85.216.51])
+Received: from co1ehsobe002.messaging.microsoft.com ([216.32.180.185]
+ helo=co1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VwQD2-0003L5-4F
- for linux-mtd@lists.infradead.org; Fri, 27 Dec 2013 05:43:44 +0000
-Received: by mail-qa0-f51.google.com with SMTP id o15so8298047qap.10
- for <linux-mtd@lists.infradead.org>; Thu, 26 Dec 2013 21:43:21 -0800 (PST)
+ id 1VwQFr-0003NE-Ml
+ for linux-mtd@lists.infradead.org; Fri, 27 Dec 2013 05:46:40 +0000
+From: Huang Shijie <b32955@freescale.com>
+To: <dwmw2@infradead.org>
+Subject: [PATCH 0/5] mtd: nand: support the JEDEC compliant nand.
+Date: Fri, 27 Dec 2013 13:14:41 +0800
+Message-ID: <1388121286-32620-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <008f01cf01e8$21a7a8b0$64f6fa10$%han@samsung.com>
-References: <008201cf01e6$6b894da0$429be8e0$%han@samsung.com>
- <008f01cf01e8$21a7a8b0$64f6fa10$%han@samsung.com>
-Date: Thu, 26 Dec 2013 21:43:21 -0800
-Message-ID: <CAOesGMhV5QFfJ4OY3TGfLJ0AwOyqRid2iW9Gh6EhYQ3KL-0mkQ@mail.gmail.com>
-Subject: Re: [PATCH 13/23] mtd: pasemi_nand: Remove unnecessary OOM messages
-From: Olof Johansson <olof@lixom.net>
-To: Jingoo Han <jg1.han@samsung.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain
+Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,16 +21,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Dec 25, 2013 at 7:11 PM, Jingoo Han <jg1.han@samsung.com> wrote:
-> The site-specific OOM messages are unnecessary, because they
-> duplicate the MM subsystem generic OOM message.
->
-> Signed-off-by: Jingoo Han <jg1.han@samsung.com>
+Some vendors support the JEDEC standard only, such as Toshiba.
+We can get all the information for the JEDEC parameter page, just like
+we did with the ONFI parameter page.
 
-Actually -- the pasemi platform is barely used these days, and the
-users I am aware of do not use the nand driver. I think we'd just fine
-with removing it. I'll submit a patch to do so instead.
+This patch set adds the support for the JEDEC compliant nand chips.
 
+You can download the JEDEC standard about the NAND in the:
+    www.jedec.org
 
+My code references to the JESD230A, August 2013, revision 1.
 
--Olof
+Tested with Toshiba TH58TEG7DDKTA20(16K + 1280).
+(Unfortuately, this ECC info of its JEDEC parameter page is zero,
+ i hope toshiba can fix it in future.)
+
+This patch set depends on another patch set :
+  http://lists.infradead.org/pipermail/linux-mtd/2013-December/051174.html
+
+Huang Shijie (5):
+  mtd: nand: add the data structures for JEDEC parameter page
+  mtd: nand: add fields for JEDEC in nand_chip
+  mtd: nand: add a helper to get the supported features for JEDEC
+  mtd: nand: parse out the JEDEC compliant nand
+  mtd: nand: print out the right information for JEDEC compliant nand
+
+ drivers/mtd/nand/nand_base.c |   96 +++++++++++++++++++++++++++++++++++++++++-
+ include/linux/mtd/nand.h     |   90 ++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 183 insertions(+), 3 deletions(-)
+
+-- 
+1.7.2.rc3
