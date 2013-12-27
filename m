@@ -1,12 +1,12 @@
 Received: from szxga01-in.huawei.com ([119.145.14.64])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VwX4b-0007he-J3
- for linux-mtd@lists.infradead.org; Fri, 27 Dec 2013 13:03:33 +0000
+ id 1VwX5W-0007k2-9S
+ for linux-mtd@lists.infradead.org; Fri, 27 Dec 2013 13:04:29 +0000
 From: Caizhiyong <caizhiyong@hisilicon.com>
 To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: mtd: nand: remove NAND_MAX_OOBSIZE and NAND_MAX_PAGESIZE
-Date: Fri, 27 Dec 2013 13:02:27 +0000
-Message-ID: <C3050A4DBA34F345975765E43127F10F25E480B4@SZXEMA512-MBX.china.huawei.com>
+Subject: [PATCH] mtd: nand: remove NAND_MAX_OOBSIZE and NAND_MAX_PAGESIZE
+Date: Fri, 27 Dec 2013 13:03:32 +0000
+Message-ID: <C3050A4DBA34F345975765E43127F10F25E480C3@SZXEMA512-MBX.china.huawei.com>
 Content-Language: zh-CN
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
