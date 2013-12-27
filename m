@@ -1,19 +1,16 @@
-Received: from mail-db9lp0248.outbound.messaging.microsoft.com
- ([213.199.154.248] helo=db9outboundpool.messaging.microsoft.com)
+Received: from szxga02-in.huawei.com ([119.145.14.65])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VwUZL-00068X-6M
- for linux-mtd@lists.infradead.org; Fri, 27 Dec 2013 10:23:04 +0000
-From: Huang Shijie <b32955@freescale.com>
-To: <dwmw2@infradead.org>
-Subject: [PATCH 4/5 fix] mtd: nand: parse out the JEDEC compliant nand
-Date: Fri, 27 Dec 2013 17:51:10 +0800
-Message-ID: <1388137870-11421-1-git-send-email-b32955@freescale.com>
-In-Reply-To: <1388121286-32620-5-git-send-email-b32955@freescale.com>
-References: <1388121286-32620-5-git-send-email-b32955@freescale.com>
+ id 1VwWWj-0007HF-4V
+ for linux-mtd@lists.infradead.org; Fri, 27 Dec 2013 12:28:31 +0000
+Date: Fri, 27 Dec 2013 20:26:23 +0800
+From: Wang Nan <wangnan0@huawei.com>
+To: <akpm@linux-foundation.org>
+Subject: [PATCH resend] jffs2: unlock f->sem on error in jffs2_new_inode()
+Message-ID: <20131227122623.GA44535@kernel-host>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,126 +20,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds the parsing code for the JEDEC compliant nand.
+Hi Andrew,
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
+Could you please have a look at the following patch?
+
+This patch fixes an obvious bug in jffs2. I have already sent it to mtd
+list, but Woodhouse hasn't been responsive.
+
+Thanks.
+
+
+===================
+
+
+>From 1e5e695840fbb5b4a0583e20789fae76c6119d48 Mon Sep 17 00:00:00 2001
+From: Wang Guoli <andy.wangguoli@huawei.com>
+Date: Wed, 18 Dec 2013 10:14:54 +0800
+Subject: [PATCH] jffs2: unlock f->sem on error in jffs2_new_inode()
+
+If jffs2_new_inode() succeeds, it returns with f->sem held, and
+the caller is responsible for releasing the lock. If it fails,
+it still returns with the lock held, but the caller won't release
+the lock, which will lead to deadlock.
+
+Fix it by releasing the lock in jffs2_new_inode() on error.
+
+Cc: <stable@vger.kernel.org> # 2.6.34+
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Wang Guoli <andy.wangguoli@huawei.com>
+Signed-off-by: Wang Guoli <andy.wangguoli@huawei.com>
+Signed-off-by: Wang Nan <wangnan0@huawei.com>
+
 ---
-Add version check.
+ fs/jffs2/fs.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
----
- drivers/mtd/nand/nand_base.c |   93 ++++++++++++++++++++++++++++++++++++++++++
- 1 files changed, 93 insertions(+), 0 deletions(-)
-
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index db45ab3..077eae1 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -3038,6 +3038,95 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
- }
- 
- /*
-+ * Check if the NAND chip is JEDEC compliant, returns 1 if it is, 0 otherwise.
-+ */
-+static int nand_flash_detect_jedec(struct mtd_info *mtd, struct nand_chip *chip,
-+					int *busw)
-+{
-+	struct nand_jedec_params *p = &chip->jedec_params;
-+	struct jedec_ecc_info *ecc;
-+	int val;
-+	int i;
-+
-+	/* Try JEDEC for unknown chip or LP */
-+	chip->cmdfunc(mtd, NAND_CMD_READID, 0x40, -1);
-+	if (chip->read_byte(mtd) != 'J' || chip->read_byte(mtd) != 'E' ||
-+		chip->read_byte(mtd) != 'D' || chip->read_byte(mtd) != 'E' ||
-+		chip->read_byte(mtd) != 'C')
-+		return 0;
-+
-+	/*
-+	 * JEDEC must be probed in 8-bit mode or with NAND_BUSWIDTH_AUTO, not
-+	 * with NAND_BUSWIDTH_16
-+	 */
-+	if (chip->options & NAND_BUSWIDTH_16) {
-+		pr_err("JEDEC cannot be probed in 16-bit mode; aborting\n");
-+		return 0;
-+	}
-+
-+	chip->cmdfunc(mtd, NAND_CMD_PARAM, 0x40, -1);
-+	for (i = 0; i < 3; i++) {
-+		chip->read_buf(mtd, (uint8_t *)p, sizeof(*p));
-+		if (onfi_crc16(ONFI_CRC_BASE, (uint8_t *)p, 510) ==
-+				le16_to_cpu(p->crc))
-+			break;
-+	}
-+
-+	if (i == 3) {
-+		pr_err("Could not find valid JEDEC parameter page; aborting\n");
-+		return 0;
-+	}
-+
-+	/* Check version */
-+	val = le16_to_cpu(p->revision);
-+	if (val & (1 << 2))
-+		chip->jedec_version = 10;
-+	else if (val & (1 << 1))
-+		chip->jedec_version = 1; /* vendor specific version */
-+
-+	if (!chip->jedec_version) {
-+		pr_info("unsupported JEDEC version: %d\n", val);
-+		return 0;
-+	}
-+
-+	sanitize_string(p->manufacturer, sizeof(p->manufacturer));
-+	sanitize_string(p->model, sizeof(p->model));
-+	if (!mtd->name)
-+		mtd->name = p->model;
-+
-+	mtd->writesize = le32_to_cpu(p->byte_per_page);
-+
-+	/* Please reference to the comment for nand_flash_detect_onfi. */
-+	mtd->erasesize = 1 << (fls(le32_to_cpu(p->pages_per_block)) - 1);
-+	mtd->erasesize *= mtd->writesize;
-+
-+	mtd->oobsize = le16_to_cpu(p->spare_bytes_per_page);
-+
-+	/* Please reference to the comment for nand_flash_detect_onfi. */
-+	chip->chipsize = 1 << (fls(le32_to_cpu(p->blocks_per_lun)) - 1);
-+	chip->chipsize *= (uint64_t)mtd->erasesize * p->lun_count;
-+	chip->bits_per_cell = p->bits_per_cell;
-+
-+	if (jedec_feature(chip) & JEDEC_FEATURE_16_BIT_BUS)
-+		*busw = NAND_BUSWIDTH_16;
-+	else
-+		*busw = 0;
-+
-+	/* ECC info */
-+	ecc = p->ecc_info;
-+
-+	if (ecc->codeword_size) {
-+		chip->ecc_strength_ds = ecc->ecc_bits;
-+		chip->ecc_step_ds = 1 << ecc->codeword_size;
-+	} else {
-+		pr_debug("Invalid codeword size\n");
-+		return 0;
-+	}
-+
-+	return 1;
-+}
-+
-+/*
-  * nand_id_has_period - Check if an ID string has a given wraparound period
-  * @id_data: the ID string
-  * @arrlen: the length of the @id_data array
-@@ -3450,6 +3539,10 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
- 		/* Check is chip is ONFI compliant */
- 		if (nand_flash_detect_onfi(mtd, chip, &busw))
- 			goto ident_done;
-+
-+		/* Check if the chip is JEDEC compliant */
-+		if (nand_flash_detect_jedec(mtd, chip, &busw))
-+			goto ident_done;
+diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
+index fe3c052..2f30fae 100644
+--- a/fs/jffs2/fs.c
++++ b/fs/jffs2/fs.c
+@@ -456,12 +456,14 @@ struct inode *jffs2_new_inode (struct inode *dir_i, umode_t mode, struct jffs2_r
+ 	   The umask is only applied if there's no default ACL */
+ 	ret = jffs2_init_acl_pre(dir_i, inode, &mode);
+ 	if (ret) {
+-	    make_bad_inode(inode);
+-	    iput(inode);
+-	    return ERR_PTR(ret);
++		mutex_unlock(&f->sem);
++		make_bad_inode(inode);
++		iput(inode);
++		return ERR_PTR(ret);
  	}
+ 	ret = jffs2_do_new_inode (c, f, mode, ri);
+ 	if (ret) {
++		mutex_unlock(&f->sem);
+ 		make_bad_inode(inode);
+ 		iput(inode);
+ 		return ERR_PTR(ret);
+@@ -478,6 +480,7 @@ struct inode *jffs2_new_inode (struct inode *dir_i, umode_t mode, struct jffs2_r
+ 	inode->i_size = 0;
  
- 	if (!type->name)
+ 	if (insert_inode_locked(inode) < 0) {
++		mutex_unlock(&f->sem);
+ 		make_bad_inode(inode);
+ 		iput(inode);
+ 		return ERR_PTR(-EINVAL);
 -- 
-1.7.2.rc3
+1.8.4
