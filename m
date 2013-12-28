@@ -1,23 +1,17 @@
-Received: from mail-qe0-f47.google.com ([209.85.128.47])
+Received: from tx2ehsobe002.messaging.microsoft.com ([65.55.88.12]
+ helo=tx2outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vwf3U-0005gD-DU
- for linux-mtd@lists.infradead.org; Fri, 27 Dec 2013 21:34:52 +0000
-Received: by mail-qe0-f47.google.com with SMTP id t7so9589338qeb.34
- for <linux-mtd@lists.infradead.org>; Fri, 27 Dec 2013 13:34:31 -0800 (PST)
+ id 1Vwngh-00024x-Tc
+ for linux-mtd@lists.infradead.org; Sat, 28 Dec 2013 06:47:56 +0000
+From: Prabhakar Kushwaha <prabhakar@freescale.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd/nand:Update mtd.name assignment type to u64 for IFC, eLBC
+Date: Sat, 28 Dec 2013 12:17:35 +0530
+Message-ID: <1388213255-30342-1-git-send-email-prabhakar@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <1388135456.5072.3.camel@x220>
-References: <1388123524-9000-1-git-send-email-olof@lixom.net>
- <1388135456.5072.3.camel@x220>
-Date: Fri, 27 Dec 2013 13:34:29 -0800
-Message-ID: <CAOesGMg9ha3MBXpo3_GM5oKxp-Pm_3LvKz1oJh=FbzgcMh3S5g@mail.gmail.com>
-Subject: Re: [PATCH] mtd: nand: remove pasemi_nand driver
-From: Olof Johansson <olof@lixom.net>
-To: Paul Bolle <pebolle@tiscali.nl>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain
+Cc: scottwood@freescale.com, Prabhakar Kushwaha <prabhakar@freescale.com>,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,28 +21,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Dec 27, 2013 at 1:10 AM, Paul Bolle <pebolle@tiscali.nl> wrote:
-> On Thu, 2013-12-26 at 21:52 -0800, Olof Johansson wrote:
->> The PA Semi platform is sparsely used these days (with just a handful
->> of known users out there). I'm 100% sure none of them use the MTD NAND
->> driver -- most standard use cases include PCI-e SATA controllers for
->> storage instead, and boot is done from LPC NOR flash.
->>
->> So, there's little reason to keep carrying a driver that's not used by
->> anybody and that just gets hit by some tree-wide or tools-based changes
->> every now and then.
->>
->> Signed-off-by: Olof Johansson <olof@lixom.net>
->> ---
->>  drivers/mtd/nand/pasemi_nand.c |  238 ----------------------------------------
->>  1 file changed, 238 deletions(-)
->>  delete mode 100644 drivers/mtd/nand/pasemi_nand.c
->
-> If this gets accepted we should remove the related entry in
-> drivers/mtd/nand/Kconfig and the related line in
-> drivers/mtd/nand/Makefile too, shouldn't we?
+mtd.name is assigned to IFC NAND physical address. Assignment type is u32.
+It is not providing correct physical address of IFC NAND.
 
-D'oh. Yes, of course. v2 coming.
+Update assignment type to u64.
 
+Signed-off-by: Prabhakar Kushwaha <prabhakar@freescale.com>
+---
+ drivers/mtd/nand/fsl_elbc_nand.c |    2 +-
+ drivers/mtd/nand/fsl_ifc_nand.c  |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
--Olof
+diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
+index c966fc7..defd72e 100644
+--- a/drivers/mtd/nand/fsl_elbc_nand.c
++++ b/drivers/mtd/nand/fsl_elbc_nand.c
+@@ -875,7 +875,7 @@ static int fsl_elbc_nand_probe(struct platform_device *pdev)
+ 		goto err;
+ 	}
+ 
+-	priv->mtd.name = kasprintf(GFP_KERNEL, "%x.flash", (unsigned)res.start);
++	priv->mtd.name = kasprintf(GFP_KERNEL, "%llx.flash", (u64)res.start);
+ 	if (!priv->mtd.name) {
+ 		ret = -ENOMEM;
+ 		goto err;
+diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
+index 4335577..f56e574 100644
+--- a/drivers/mtd/nand/fsl_ifc_nand.c
++++ b/drivers/mtd/nand/fsl_ifc_nand.c
+@@ -1101,7 +1101,7 @@ static int fsl_ifc_nand_probe(struct platform_device *dev)
+ 		    IFC_NAND_EVTER_INTR_FTOERIR_EN |
+ 		    IFC_NAND_EVTER_INTR_WPERIR_EN,
+ 		    &ifc->ifc_nand.nand_evter_intr_en);
+-	priv->mtd.name = kasprintf(GFP_KERNEL, "%x.flash", (unsigned)res.start);
++	priv->mtd.name = kasprintf(GFP_KERNEL, "%llx.flash", (u64)res.start);
+ 	if (!priv->mtd.name) {
+ 		ret = -ENOMEM;
+ 		goto err;
+-- 
+1.7.9.5
