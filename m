@@ -1,16 +1,17 @@
 Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VxOXG-0005Oc-0L
- for linux-mtd@lists.infradead.org; Sun, 29 Dec 2013 22:08:38 +0000
+ id 1VxOcG-0005TD-QG
+ for linux-mtd@lists.infradead.org; Sun, 29 Dec 2013 22:13:49 +0000
 From: Julia Lawall <Julia.Lawall@lip6.fr>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 18/25] mtd: nand: fix error return code
-Date: Sun, 29 Dec 2013 23:47:33 +0100
-Message-Id: <1388357260-4843-19-git-send-email-Julia.Lawall@lip6.fr>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH 4/25] UBI: fix error return code
+Date: Sun, 29 Dec 2013 23:47:19 +0100
+Message-Id: <1388357260-4843-5-git-send-email-Julia.Lawall@lip6.fr>
 In-Reply-To: <1388357260-4843-1-git-send-email-Julia.Lawall@lip6.fr>
 References: <1388357260-4843-1-git-send-email-Julia.Lawall@lip6.fr>
-Cc: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
- kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, kernel-janitors@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -50,65 +51,39 @@ Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
 ---
 Not tested.
 
- drivers/mtd/nand/fsmc_nand.c    |    3 +++
- drivers/mtd/tests/oobtest.c     |    1 +
- drivers/mtd/tests/pagetest.c    |    1 +
- drivers/mtd/tests/subpagetest.c |    1 +
- 4 files changed, 6 insertions(+)
+ drivers/mtd/ubi/attach.c |    4 +++-
+ drivers/mtd/ubi/build.c  |    4 +++-
+ 2 files changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
-index 8b27522..6f8c4f5 100644
---- a/drivers/mtd/nand/fsmc_nand.c
-+++ b/drivers/mtd/nand/fsmc_nand.c
-@@ -1040,12 +1040,15 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
- 				pdata->read_dma_priv);
- 		if (!host->read_dma_chan) {
- 			dev_err(&pdev->dev, "Unable to get read dma channel\n");
-+			ret = -EBUSY;
- 			goto err_req_read_chnl;
- 		}
- 		host->write_dma_chan = dma_request_channel(mask, filter,
- 				pdata->write_dma_priv);
- 		if (!host->write_dma_chan) {
- 			dev_err(&pdev->dev, "Unable to get write dma channel\n");
-+
-+			ret = -EBUSY;
- 			goto err_req_write_chnl;
- 		}
- 		nand->read_buf = fsmc_read_buf_dma;
-diff --git a/drivers/mtd/tests/oobtest.c b/drivers/mtd/tests/oobtest.c
-index 2e9e2d1..26688e9 100644
---- a/drivers/mtd/tests/oobtest.c
-+++ b/drivers/mtd/tests/oobtest.c
-@@ -291,6 +291,7 @@ static int __init mtd_oobtest_init(void)
+diff --git a/drivers/mtd/ubi/attach.c b/drivers/mtd/ubi/attach.c
+index 33bb1f2..6f27d9a 100644
+--- a/drivers/mtd/ubi/attach.c
++++ b/drivers/mtd/ubi/attach.c
+@@ -1453,8 +1453,10 @@ int ubi_attach(struct ubi_device *ubi, int force_scan)
+ 		struct ubi_attach_info *scan_ai;
  
- 	if (!mtd_type_is_nand(mtd)) {
- 		pr_info("this test requires NAND flash\n");
-+		err = -ENODEV;
- 		goto out;
- 	}
+ 		scan_ai = alloc_ai("ubi_ckh_aeb_slab_cache");
+-		if (!scan_ai)
++		if (!scan_ai) {
++			err = -ENOMEM;
+ 			goto out_wl;
++		}
  
-diff --git a/drivers/mtd/tests/pagetest.c b/drivers/mtd/tests/pagetest.c
-index ed2d3f6..9a84460 100644
---- a/drivers/mtd/tests/pagetest.c
-+++ b/drivers/mtd/tests/pagetest.c
-@@ -355,6 +355,7 @@ static int __init mtd_pagetest_init(void)
+ 		err = scan_all(ubi, scan_ai, 0);
+ 		if (err) {
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index e05dc62..57deae9 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -1245,8 +1245,10 @@ static int __init ubi_init(void)
+ 	ubi_wl_entry_slab = kmem_cache_create("ubi_wl_entry_slab",
+ 					      sizeof(struct ubi_wl_entry),
+ 					      0, 0, NULL);
+-	if (!ubi_wl_entry_slab)
++	if (!ubi_wl_entry_slab) {
++		err = -ENOMEM;
+ 		goto out_dev_unreg;
++	}
  
- 	if (!mtd_type_is_nand(mtd)) {
- 		pr_info("this test requires NAND flash\n");
-+		err = -ENODEV;
- 		goto out;
- 	}
- 
-diff --git a/drivers/mtd/tests/subpagetest.c b/drivers/mtd/tests/subpagetest.c
-index a876371..2baa93d 100644
---- a/drivers/mtd/tests/subpagetest.c
-+++ b/drivers/mtd/tests/subpagetest.c
-@@ -301,6 +301,7 @@ static int __init mtd_subpagetest_init(void)
- 
- 	if (!mtd_type_is_nand(mtd)) {
- 		pr_info("this test requires NAND flash\n");
-+		err = -ENODEV;
- 		goto out;
- 	}
- 
+ 	err = ubi_debugfs_init();
+ 	if (err)
