@@ -1,17 +1,18 @@
-Received: from tx2ehsobe002.messaging.microsoft.com ([65.55.88.12]
- helo=tx2outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vwngh-00024x-Tc
- for linux-mtd@lists.infradead.org; Sat, 28 Dec 2013 06:47:56 +0000
-From: Prabhakar Kushwaha <prabhakar@freescale.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd/nand:Update mtd.name assignment type to u64 for IFC, eLBC
-Date: Sat, 28 Dec 2013 12:17:35 +0530
-Message-ID: <1388213255-30342-1-git-send-email-prabhakar@freescale.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: scottwood@freescale.com, Prabhakar Kushwaha <prabhakar@freescale.com>,
- dedekind1@gmail.com
+From: Julia Lawall <Julia.Lawall@lip6.fr>
+To: linux-input@vger.kernel.org
+Subject: [PATCH 0/25] fix error return code
+Date: Sun, 29 Dec 2013 23:47:15 +0100
+Message-Id: <1388357260-4843-1-git-send-email-Julia.Lawall@lip6.fr>
+Cc: cbe-oss-dev@lists.ozlabs.org,
+ davinci-linux-open-source@linux.davincidsp.com,
+ linux-pcmcia@lists.infradead.org, rtc-linux@googlegroups.com,
+ linux-scsi@vger.kernel.org, linux-pm@vger.kernel.org,
+ linux-rdma@vger.kernel.org, netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+ platform-driver-x86@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+ linux-mtd@lists.infradead.org, dmaengine@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
+ linux-media@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,42 +22,5 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-mtd.name is assigned to IFC NAND physical address. Assignment type is u32.
-It is not providing correct physical address of IFC NAND.
-
-Update assignment type to u64.
-
-Signed-off-by: Prabhakar Kushwaha <prabhakar@freescale.com>
----
- drivers/mtd/nand/fsl_elbc_nand.c |    2 +-
- drivers/mtd/nand/fsl_ifc_nand.c  |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
-index c966fc7..defd72e 100644
---- a/drivers/mtd/nand/fsl_elbc_nand.c
-+++ b/drivers/mtd/nand/fsl_elbc_nand.c
-@@ -875,7 +875,7 @@ static int fsl_elbc_nand_probe(struct platform_device *pdev)
- 		goto err;
- 	}
- 
--	priv->mtd.name = kasprintf(GFP_KERNEL, "%x.flash", (unsigned)res.start);
-+	priv->mtd.name = kasprintf(GFP_KERNEL, "%llx.flash", (u64)res.start);
- 	if (!priv->mtd.name) {
- 		ret = -ENOMEM;
- 		goto err;
-diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
-index 4335577..f56e574 100644
---- a/drivers/mtd/nand/fsl_ifc_nand.c
-+++ b/drivers/mtd/nand/fsl_ifc_nand.c
-@@ -1101,7 +1101,7 @@ static int fsl_ifc_nand_probe(struct platform_device *dev)
- 		    IFC_NAND_EVTER_INTR_FTOERIR_EN |
- 		    IFC_NAND_EVTER_INTR_WPERIR_EN,
- 		    &ifc->ifc_nand.nand_evter_intr_en);
--	priv->mtd.name = kasprintf(GFP_KERNEL, "%x.flash", (unsigned)res.start);
-+	priv->mtd.name = kasprintf(GFP_KERNEL, "%llx.flash", (u64)res.start);
- 	if (!priv->mtd.name) {
- 		ret = -ENOMEM;
- 		goto err;
--- 
-1.7.9.5
+These patches fix cases where the return variable is not set to an error
+code in an error case.
