@@ -1,14 +1,16 @@
-Received: from mo6-p05-ob.smtp.rzone.de ([2a01:238:20a:202:5305::8])
+Received: from mail-pd0-f173.google.com ([209.85.192.173])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VxcA2-0006Jp-3S
- for linux-mtd@lists.infradead.org; Mon, 30 Dec 2013 12:41:36 +0000
-From: Stefan Roese <sr@denx.de>
+ id 1Vxrfv-0004XB-OR
+ for linux-mtd@lists.infradead.org; Tue, 31 Dec 2013 05:15:32 +0000
+Received: by mail-pd0-f173.google.com with SMTP id p10so11974916pdj.18
+ for <linux-mtd@lists.infradead.org>; Mon, 30 Dec 2013 21:15:09 -0800 (PST)
+From: Sachin Kamat <sachin.kamat@linaro.org>
 To: linux-mtd@lists.infradead.org
-Subject: [RFC/PATCH] mtd: mtd_read: Fix bitflips_threshold comparison to allow
- max bitflips
-Date: Mon, 30 Dec 2013 13:40:57 +0100
-Message-Id: <1388407257-6557-1-git-send-email-sr@denx.de>
-Cc: Brian Norris <computersforpeace@gmail.com>, Pekon Gupta <pekon@ti.com>
+Subject: [PATCH 1/1] mtd: s3c2410: Move plat/regs-nand.h to drivers/mtd
+Date: Tue, 31 Dec 2013 10:41:30 +0530
+Message-Id: <1388466690-16435-1-git-send-email-sachin.kamat@linaro.org>
+Cc: computersforpeace@gmail.com, kgene.kim@samsung.com,
+ linux-samsung-soc@vger.kernel.org, patches@linaro.org, sachin.kamat@linaro.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,48 +20,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On a custom AM335x based platform with a Toshiba NAND device
-(TC58NVG1S3H) we are currently seeing quite a few of these UBI messages:
+plat/regs-nand.h is used only by s3c2410 nand driver.
+Move this file to the drivers folder to remove platform
+dependency.
 
-[   18.044967] UBI: fixable bit-flip detected at PEB 50
-[   18.050252] UBI: schedule PEB 50 for scrubbing
-...
-
-After a bit debugging I found that those messages are only printed when
-the OMAP NAND driver has detected 8 (corrected) bitflips / 512 bytes on
-a read. We're using HW BCH8 and the Toshiba chip supports 8 bit ECC for
-each 512Byte. I was wondering why 8 bitflips resulted in these UBI
-messages and e.g. 7 bitflips didn't. Hence I discovered the comparison
-"ret_code >= mtd->bitflip_threshold" in mtd_read().
-
-With this patch applied all tests (UBIFS) I've done so far didn't produce
-any of these "UBI: fixable bit-flip" messages any more.
-
-Note that I'm sending this patch as RFC for now. To get some feedback
-from other MTD / NAND developers on this issue. The main question is:
-Should mtd_read() return -EUCLEAN if the corrected bitflips are equal to
-the bitflip-threshold value? Or should it return 0 since the bitflips
-have been corrected?
-
-Signed-off-by: Stefan Roese <sr@denx.de>
-Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: Pekon Gupta <pekon@ti.com>
+Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
 ---
- drivers/mtd/mtdcore.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/s3c2410.c                         |    2 +-
+ .../plat/regs-nand.h => drivers/mtd/nand/s3c2410.h |   11 ++++-------
+ 2 files changed, 5 insertions(+), 8 deletions(-)
+ rename arch/arm/plat-samsung/include/plat/regs-nand.h => drivers/mtd/nand/s3c2410.h (96%)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 92311a5..28500a1 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -824,7 +824,7 @@ int mtd_read(struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen,
- 		return ret_code;
- 	if (mtd->ecc_strength == 0)
- 		return 0;	/* device lacks ecc */
--	return ret_code >= mtd->bitflip_threshold ? -EUCLEAN : 0;
-+	return ret_code > mtd->bitflip_threshold ? -EUCLEAN : 0;
- }
- EXPORT_SYMBOL_GPL(mtd_read);
+diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
+index d65cbe903d40..83fb4feb7556 100644
+--- a/drivers/mtd/nand/s3c2410.c
++++ b/drivers/mtd/nand/s3c2410.c
+@@ -46,8 +46,8 @@
+ #include <linux/mtd/nand_ecc.h>
+ #include <linux/mtd/partitions.h>
+ 
+-#include <plat/regs-nand.h>
+ #include <linux/platform_data/mtd-nand-s3c2410.h>
++#include "s3c2410.h"
+ 
+ /* new oob placement block for use with hardware ecc generation
+  */
+diff --git a/arch/arm/plat-samsung/include/plat/regs-nand.h b/drivers/mtd/nand/s3c2410.h
+similarity index 96%
+rename from arch/arm/plat-samsung/include/plat/regs-nand.h
+rename to drivers/mtd/nand/s3c2410.h
+index 238efea7b9e4..f3b82d7053a0 100644
+--- a/arch/arm/plat-samsung/include/plat/regs-nand.h
++++ b/drivers/mtd/nand/s3c2410.h
+@@ -1,5 +1,4 @@
+-/* arch/arm/mach-s3c2410/include/mach/regs-nand.h
+- *
++/*
+  * Copyright (c) 2004-2005 Simtec Electronics <linux@simtec.co.uk>
+  *	http://www.simtec.co.uk/products/SWLINUX/
+  *
+@@ -10,8 +9,8 @@
+  * S3C2410 NAND register definitions
+ */
+ 
+-#ifndef __ASM_ARM_REGS_NAND
+-#define __ASM_ARM_REGS_NAND
++#ifndef __S3C2410_NAND_H
++#define __S3C2410_NAND_H
+ 
+ 
+ #define S3C2410_NFREG(x) (x)
+@@ -117,7 +116,5 @@
+ #define S3C2412_NFECCERR_MULTIBIT	(2)
+ #define S3C2412_NFECCERR_ECCAREA	(3)
+ 
+-
+-
+-#endif /* __ASM_ARM_REGS_NAND */
++#endif /* __S3C2410_NAND_H */
  
 -- 
-1.8.5.2
+1.7.9.5
