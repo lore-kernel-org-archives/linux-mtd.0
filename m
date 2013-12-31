@@ -1,17 +1,24 @@
-Received: from mail-pb0-x22b.google.com ([2607:f8b0:400e:c01::22b])
+Received: from mail-vb0-x234.google.com ([2607:f8b0:400c:c02::234])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VxxkJ-00080d-1E
- for linux-mtd@lists.infradead.org; Tue, 31 Dec 2013 11:44:28 +0000
-Received: by mail-pb0-f43.google.com with SMTP id rq2so12562759pbb.2
- for <linux-mtd@lists.infradead.org>; Tue, 31 Dec 2013 03:44:03 -0800 (PST)
-From: Saumya Ranjan Kuanr <saumyakuanr@gmail.com>
-To: dwmw2@infradead.org
-Subject: [PATCH] mtd: fixed few coding style and indentation issues
-Date: Tue, 31 Dec 2013 03:43:19 -0800
-Message-Id: <1388490199-26517-1-git-send-email-saumyakuanr@gmail.com>
-Cc: Saumya Ranjan Kuanr <skuanr@asu.edu>,
- Saumya Ranjan Kuanr <saumyakuanr@gmail.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+ id 1VxyDy-0008K1-CP
+ for linux-mtd@lists.infradead.org; Tue, 31 Dec 2013 12:15:07 +0000
+Received: by mail-vb0-f52.google.com with SMTP id p5so6127917vbn.25
+ for <linux-mtd@lists.infradead.org>; Tue, 31 Dec 2013 04:14:41 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <71CF8D7F32C5C24C9CD1D0E02D52498A770B3733@NTXXIAMBX02.xacn.micron.com>
+References: <71CF8D7F32C5C24C9CD1D0E02D52498A770B3733@NTXXIAMBX02.xacn.micron.com>
+Date: Tue, 31 Dec 2013 13:14:41 +0100
+Message-ID: <CAFLxGvx8v2qQ83o9sdDxYYstKu+KAKa7BeXx2bjfWVn3SaSQLw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] MTD: UBI: try to avoid program data to NOR flash
+ after erasure interrupted
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: =?UTF-8?B?UWkgV2FuZyDnjovotbcgKHFpd2FuZyk=?= <qiwang@micron.com>
+Content-Type: text/plain; charset=Big5
+Content-Transfer-Encoding: quoted-printable
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,165 +28,161 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Saumya Ranjan Kuanr <skuanr@asu.edu>
+On Thu, Nov 7, 2013 at 9:18 AM, Qi Wang =A4=FD=B0_ (qiwang) <qiwang@micron.=
+com> wrote:
+> Hi:
+> As we talked in mail before, please check my patch as below:
+>
+> From: Qi Wang <qiwang@micron.com>
+>
+> nor_erase_prepare() will be called before erase a NOR flash, it will prog=
+ram '0'
+> into a block to mark this block. But program data into a erasure interrup=
+ted block
+> can cause program timtout(several minutes at most) error, could impact ot=
+her
+> operation on NOR flash. So UBIFS can read this block first to avoid unnee=
+ded
+> program operation.
+>
+> This patch try to put read operation at head of write operation in
+> nor_erase_prepare(), read out the data.
+> If the data is already corrupt, then no need to program any data into thi=
+s block,
+> just go to erase this block.
+>
+> Signed-off-by: Qi Wang <qiwang@qiwang@micron.com>
 
-fixed few coding style and indentatiuon issues
+This email address is malformed.
 
-signed-off-by: Saumya Ranjan Kuanr <saumyakuanr@gmail.com>
----
- drivers/mtd/mtdchar.c |   42 ++++++++++++++++++++----------------------
- 1 file changed, 20 insertions(+), 22 deletions(-)
+> ---
+> diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
+> index bf79def..0a6343d 100644
+> --- a/drivers/mtd/ubi/io.c
+> +++ b/drivers/mtd/ubi/io.c
+> @@ -499,6 +499,7 @@ static int nor_erase_prepare(struct ubi_device *ubi, =
+int pnum)
+>         size_t written;
+>         loff_t addr;
+>         uint32_t data =3D 0;
+> +       struct ubi_ec_hdr ec_hdr;
+>         /*
+>          * Note, we cannot generally define VID header buffers on stack,
+>          * because of the way we deal with these buffers (see the header
+> @@ -509,49 +510,38 @@ static int nor_erase_prepare(struct ubi_device *ubi=
+, int pnum)
+>         struct ubi_vid_hdr vid_hdr;
+>
+>         /*
+> +        * If VID or EC is valid, need to corrupt it before erase operati=
+on.
+>          * It is important to first invalidate the EC header, and then th=
+e VID
+>          * header. Otherwise a power cut may lead to valid EC header and
+>          * invalid VID header, in which case UBI will treat this PEB as
+>          * corrupted and will try to preserve it, and print scary warning=
+s.
+>          */
+>         addr =3D (loff_t)pnum * ubi->peb_size;
+> -       err =3D mtd_write(ubi->mtd, addr, 4, &written, (void *)&data);
+> -       if (!err) {
+> -               addr +=3D ubi->vid_hdr_aloffset;
+> -               err =3D mtd_write(ubi->mtd, addr, 4, &written, (void *)&d=
+ata);
+> -               if (!err)
+> -                       return 0;
+> +       err =3D ubi_io_read_ec_hdr(ubi, pnum, &ec_hdr, 0);
+> +       if (err !=3D UBI_IO_BAD_HDR_EBADMSG && err !=3D UBI_IO_BAD_HDR &&
+> +           err !=3D UBI_IO_FF){
+> +               err1 =3D mtd_write(ubi->mtd, addr, 4, &written, (void *)&=
+data);
+> +               if(err1)
+> +                       goto error;
+>         }
+>
+> -       /*
+> -        * We failed to write to the media. This was observed with Spansi=
+on
+> -        * S29GL512N NOR flash. Most probably the previously eraseblock e=
+rasure
+> -        * was interrupted at a very inappropriate moment, so it became
+> -        * unwritable. In this case we probably anyway have garbage in th=
+is
+> -        * PEB.
+> -        */
+> -       err1 =3D ubi_io_read_vid_hdr(ubi, pnum, &vid_hdr, 0);
+> -       if (err1 =3D=3D UBI_IO_BAD_HDR_EBADMSG || err1 =3D=3D UBI_IO_BAD_=
+HDR ||
+> -           err1 =3D=3D UBI_IO_FF) {
+> -               struct ubi_ec_hdr ec_hdr;
+> -
+> -               err1 =3D ubi_io_read_ec_hdr(ubi, pnum, &ec_hdr, 0);
+> -               if (err1 =3D=3D UBI_IO_BAD_HDR_EBADMSG || err1 =3D=3D UBI=
+_IO_BAD_HDR ||
+> -                   err1 =3D=3D UBI_IO_FF)
+> -                       /*
+> -                        * Both VID and EC headers are corrupted, so we c=
+an
+> -                        * safely erase this PEB and not afraid that it w=
+ill be
+> -                        * treated as a valid PEB in case of an unclean r=
+eboot.
+> -                        */
+> -                       return 0;
+> +       err =3D ubi_io_read_vid_hdr(ubi, pnum, &vid_hdr, 0);
+> +       if (err !=3D UBI_IO_BAD_HDR_EBADMSG && err !=3D UBI_IO_BAD_HDR &&
+> +           err !=3D UBI_IO_FF){
+> +               addr +=3D ubi->vid_hdr_aloffset;
+> +               err1 =3D mtd_write(ubi->mtd, addr, 4, &written, (void *)&=
+data);
+> +               if (err1)
+> +                       goto error;
+>         }
+> +       return 0;
+>
+> +error:
+>         /*
+> -        * The PEB contains a valid VID header, but we cannot invalidate =
+it.
+> +        * The PEB contains a valid VID or EC header, but we cannot inval=
+idate it.
+>          * Supposedly the flash media or the driver is screwed up, so ret=
+urn an
+>          * error.
+>          */
+> -       ubi_err("cannot invalidate PEB %d, write returned %d read returne=
+d %d",
+> +       ubi_err("cannot invalidate PEB %d, read returned %d write returne=
+d %d",
+>                 pnum, err, err1);
+>         ubi_dump_flash(ubi, pnum, 0, ubi->peb_size);
+>         return -EIO;
+> ---
+>
+> I have tested this patch on Micron NOR flash, part number is=A1GJS28F512M=
+29EWHA.
 
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 684bfa3..b008744 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -32,6 +32,7 @@
- #include <linux/mount.h>
- #include <linux/blkpg.h>
- #include <linux/magic.h>
-+#include <linux/major.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/map.h>
-@@ -181,8 +182,8 @@ static ssize_t mtdchar_read(struct file *file, char __user *buf, size_t count,
- 	struct mtd_file_info *mfi = file->private_data;
- 	struct mtd_info *mtd = mfi->mtd;
- 	size_t retlen;
--	size_t total_retlen=0;
--	int ret=0;
-+	size_t total_retlen = 0;
-+	int ret = 0;
- 	int len;
- 	size_t size = count;
- 	char *kbuf;
-@@ -241,16 +242,14 @@ static ssize_t mtdchar_read(struct file *file, char __user *buf, size_t count,
- 			if (copy_to_user(buf, kbuf, retlen)) {
- 				kfree(kbuf);
- 				return -EFAULT;
--			}
--			else
-+			} else
- 				total_retlen += retlen;
- 
- 			count -= retlen;
- 			buf += retlen;
- 			if (retlen == 0)
- 				count = 0;
--		}
--		else {
-+		} else {
- 			kfree(kbuf);
- 			return ret;
- 		}
-@@ -269,8 +268,8 @@ static ssize_t mtdchar_write(struct file *file, const char __user *buf, size_t c
- 	size_t size = count;
- 	char *kbuf;
- 	size_t retlen;
--	size_t total_retlen=0;
--	int ret=0;
-+	size_t total_retlen = 0;
-+	int ret = 0;
- 	int len;
- 
- 	pr_debug("MTD_write\n");
-@@ -328,8 +327,7 @@ static ssize_t mtdchar_write(struct file *file, const char __user *buf, size_t c
- 			total_retlen += retlen;
- 			count -= retlen;
- 			buf += retlen;
--		}
--		else {
-+		} else {
- 			kfree(kbuf);
- 			return ret;
- 		}
-@@ -344,7 +342,7 @@ static ssize_t mtdchar_write(struct file *file, const char __user *buf, size_t c
-     IOCTL calls for getting device parameters.
- 
- ======================================================================*/
--static void mtdchar_erase_callback (struct erase_info *instr)
-+static void mtdchar_erase_callback(struct erase_info *instr)
- {
- 	wake_up((wait_queue_head_t *)instr->priv);
- }
-@@ -670,10 +668,10 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
- 	{
- 		struct erase_info *erase;
- 
--		if(!(file->f_mode & FMODE_WRITE))
-+		if (!(file->f_mode & FMODE_WRITE))
- 			return -EPERM;
- 
--		erase=kzalloc(sizeof(struct erase_info),GFP_KERNEL);
-+		erase = kzalloc(sizeof(struct erase_info), GFP_KERNEL);
- 		if (!erase)
- 			ret = -ENOMEM;
- 		else {
-@@ -726,7 +724,7 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
- 				remove_wait_queue(&waitq, &wait);
- 				set_current_state(TASK_RUNNING);
- 
--				ret = (erase->state == MTD_ERASE_FAILED)?-EIO:0;
-+				ret = (erase->state == MTD_ERASE_FAILED) ? -EIO : 0;
- 			}
- 			kfree(erase);
- 		}
-@@ -958,7 +956,7 @@ static int mtdchar_ioctl(struct file *file, u_int cmd, u_long arg)
- 	{
- 		mfi->mode = 0;
- 
--		switch(arg) {
-+		switch (arg) {
- 		case MTD_FILE_MODE_OTP_FACTORY:
- 		case MTD_FILE_MODE_OTP_USER:
- 			ret = otp_select_filemode(mfi, arg);
-@@ -1099,7 +1097,7 @@ static unsigned long mtdchar_get_unmapped_area(struct file *file,
- 		return (unsigned long) -EINVAL;
- 
- 	ret = mtd_get_unmapped_area(mtd, len, offset, flags);
--	return ret == -EOPNOTSUPP ? -ENOSYS : ret;
-+	return ret == -EOPNOTSUPP ? -ENODEV : ret;
- }
- #endif
- 
-@@ -1113,7 +1111,7 @@ static int mtdchar_mmap(struct file *file, struct vm_area_struct *vma)
- 	struct mtd_info *mtd = mfi->mtd;
- 	struct map_info *map = mtd->priv;
- 
--        /* This is broken because it assumes the MTD device is map-based
-+	/* This is broken because it assumes the MTD device is map-based
- 	   and that mtd->priv is a valid struct map_info.  It should be
- 	   replaced with something that uses the mtd_get_unmapped_area()
- 	   operation properly. */
-@@ -1124,9 +1122,9 @@ static int mtdchar_mmap(struct file *file, struct vm_area_struct *vma)
- #endif
- 		return vm_iomap_memory(vma, map->phys, map->size);
- 	}
--	return -ENOSYS;
-+	return -ENODEV;
- #else
--	return vma->vm_flags & VM_SHARED ? 0 : -ENOSYS;
-+	return vma->vm_flags & VM_SHARED ? 0 : -EACCES;
- #endif
- }
- 
-@@ -1159,9 +1157,9 @@ static struct dentry *mtd_inodefs_mount(struct file_system_type *fs_type,
- }
- 
- static struct file_system_type mtd_inodefs_type = {
--       .name = "mtd_inodefs",
--       .mount = mtd_inodefs_mount,
--       .kill_sb = kill_anon_super,
-+	.name = "mtd_inodefs",
-+	.mount = mtd_inodefs_mount,
-+	.kill_sb = kill_anon_super,
- };
- MODULE_ALIAS_FS("mtd_inodefs");
- 
--- 
-1.7.9.5
+Please add this information to the commit message.
+
+> If have any questions, please let me know.
+
+>From UBIs point of view the patch seems OK to me, but it is malformed,
+I was unable to apply it using git-am.
+Did you use MS Outlook? :)
+Please send it using git send-mail or any other sane mailer.
+
+> Thank you
+>
+> Best Regards,
+> Qi Wang =A4=FD=B0_
+> ESG APAC AE
+> Tel: 86-021-38997158
+> Mobile: 86-15201958202
+> Email: qiwang@micron.com
+> Address: No 601 Fasai Rd, Pudong, Shanghai, China, 200131
 
 
----
-This email is free from viruses and malware because avast! Antivirus protection is active.
-http://www.avast.com
+
+--=20
+Thanks,
+//richard
