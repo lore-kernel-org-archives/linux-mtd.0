@@ -1,16 +1,23 @@
-Received: from smtp39.i.mail.ru ([94.100.177.99])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VyGvo-000429-0A
- for linux-mtd@lists.infradead.org; Wed, 01 Jan 2014 08:13:37 +0000
-From: Alexander Shiyan <shc_work@mail.ru>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: nand: gpio: Determine bus width automatically
-Date: Wed,  1 Jan 2014 12:13:03 +0400
-Message-Id: <1388563983-23479-1-git-send-email-shc_work@mail.ru>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Alexander Shiyan <shc_work@mail.ru>,
- devicetree@vger.kernel.org
+Received: from mailout.micron.com ([137.201.242.129])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VyLVM-0004oM-K0
+ for linux-mtd@lists.infradead.org; Wed, 01 Jan 2014 13:06:38 +0000
+From: =?gb2312?B?UWkgV2FuZyDN9cbwIChxaXdhbmcp?= <qiwang@micron.com>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Subject: RE: [PATCH 1/1] MTD: UBI: try to avoid program data to NOR flash
+ after erasure interrupted
+Date: Wed, 1 Jan 2014 13:06:06 +0000
+Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A770BA382@NTXXIAMBX02.xacn.micron.com>
+References: <71CF8D7F32C5C24C9CD1D0E02D52498A770B3733@NTXXIAMBX02.xacn.micron.com>
+ <CAFLxGvx8v2qQ83o9sdDxYYstKu+KAKa7BeXx2bjfWVn3SaSQLw@mail.gmail.com>
+In-Reply-To: <CAFLxGvx8v2qQ83o9sdDxYYstKu+KAKa7BeXx2bjfWVn3SaSQLw@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Adrian
+ Hunter <adrian.hunter@intel.com>, "dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,76 +27,107 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch replaces the indication of bus width for NAND IC with
-automatic bus width from the NAND core driver.
-if the bus width is not specified explicitly.
-
-Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
----
- .../devicetree/bindings/mtd/gpio-control-nand.txt  |  2 --
- drivers/mtd/nand/gpio.c                            | 23 ++++++++++------------
- 2 files changed, 10 insertions(+), 15 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt b/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
-index 36ef07d..3c35617 100644
---- a/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
-@@ -15,8 +15,6 @@ Required properties:
-   optional gpio and may be set to 0 if not present.
- 
- Optional properties:
--- bank-width : Width (in bytes) of the device.  If not present, the width
--  defaults to 1 byte.
- - chip-delay : chip dependent delay for transferring data from array to
-   read registers (tR).  If not present then a default of 20us is used.
- - gpio-control-nand,io-sync-reg : A 64-bit physical address for a read
-diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
-index e826f89..bc2219a 100644
---- a/drivers/mtd/nand/gpio.c
-+++ b/drivers/mtd/nand/gpio.c
-@@ -109,15 +109,6 @@ static int gpio_nand_get_config_of(const struct device *dev,
- 	if (!dev->of_node)
- 		return -ENODEV;
- 
--	if (!of_property_read_u32(dev->of_node, "bank-width", &val)) {
--		if (val == 2) {
--			plat->options |= NAND_BUSWIDTH_16;
--		} else if (val != 1) {
--			dev_err(dev, "invalid bank-width %u\n", val);
--			return -EINVAL;
--		}
--	}
--
- 	plat->gpio_rdy = of_get_gpio(dev->of_node, 0);
- 	plat->gpio_nce = of_get_gpio(dev->of_node, 1);
- 	plat->gpio_ale = of_get_gpio(dev->of_node, 2);
-@@ -223,6 +214,16 @@ static int gpio_nand_probe(struct platform_device *pdev)
- 	if (IS_ERR(chip->IO_ADDR_R))
- 		return PTR_ERR(chip->IO_ADDR_R);
- 
-+	ret = gpio_nand_get_config(&pdev->dev, &gpiomtd->plat);
-+	if (ret)
-+		return ret;
-+
-+	/* Strip bus width options */
-+	gpiomtd->plat.options &= ~(NAND_BUSWIDTH_16 | NAND_BUSWIDTH_AUTO);
-+	/* Use auto bus width for more than 8-bit memory window */
-+	if (resource_size(res) > 1)
-+		gpiomtd->plat.options |= NAND_BUSWIDTH_AUTO;
-+
- 	res = gpio_nand_get_io_sync(pdev);
- 	if (res) {
- 		gpiomtd->io_sync = devm_ioremap_resource(&pdev->dev, res);
-@@ -230,10 +231,6 @@ static int gpio_nand_probe(struct platform_device *pdev)
- 			return PTR_ERR(gpiomtd->io_sync);
- 	}
- 
--	ret = gpio_nand_get_config(&pdev->dev, &gpiomtd->plat);
--	if (ret)
--		return ret;
--
- 	ret = devm_gpio_request(&pdev->dev, gpiomtd->plat.gpio_nce, "NAND NCE");
- 	if (ret)
- 		return ret;
--- 
-1.8.3.2
+SGkgUmljaGFyZDoNCm9rLCBJIGNhbiBjb3JyZWN0IG15IGVtYWlsIGFkZHJlc3MgYW5kIHJlLXNl
+bmQgeW91IGFnYWluLiBQbGVhc2UgY2hlY2sgaXQuIA0KVGhhbmtzIGZvciB5b3VyIGdyZWF0IGhl
+bHAuDQoNCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IFJpY2hhcmQgV2VpbmJl
+cmdlciBbbWFpbHRvOnJpY2hhcmQud2VpbmJlcmdlckBnbWFpbC5jb21dIA0KU2VudDogVHVlc2Rh
+eSwgRGVjZW1iZXIgMzEsIDIwMTMgODoxNSBQTQ0KVG86IFFpIFdhbmcgzfXG8CAocWl3YW5nKQ0K
+Q2M6IGRlZGVraW5kMUBnbWFpbC5jb207IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnOyBB
+ZHJpYW4gSHVudGVyOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnDQpTdWJqZWN0OiBSZTog
+W1BBVENIIDEvMV0gTVREOiBVQkk6IHRyeSB0byBhdm9pZCBwcm9ncmFtIGRhdGEgdG8gTk9SIGZs
+YXNoIGFmdGVyIGVyYXN1cmUgaW50ZXJydXB0ZWQNCg0KT24gVGh1LCBOb3YgNywgMjAxMyBhdCA5
+OjE4IEFNLCBRaSBXYW5nIM31xvAgKHFpd2FuZykgPHFpd2FuZ0BtaWNyb24uY29tPiB3cm90ZToN
+Cj4gSGk6DQo+IEFzIHdlIHRhbGtlZCBpbiBtYWlsIGJlZm9yZSwgcGxlYXNlIGNoZWNrIG15IHBh
+dGNoIGFzIGJlbG93Og0KPg0KPiBGcm9tOiBRaSBXYW5nIDxxaXdhbmdAbWljcm9uLmNvbT4NCj4N
+Cj4gbm9yX2VyYXNlX3ByZXBhcmUoKSB3aWxsIGJlIGNhbGxlZCBiZWZvcmUgZXJhc2UgYSBOT1Ig
+Zmxhc2gsIGl0IHdpbGwgcHJvZ3JhbSAnMCcNCj4gaW50byBhIGJsb2NrIHRvIG1hcmsgdGhpcyBi
+bG9jay4gQnV0IHByb2dyYW0gZGF0YSBpbnRvIGEgZXJhc3VyZSBpbnRlcnJ1cHRlZCBibG9jaw0K
+PiBjYW4gY2F1c2UgcHJvZ3JhbSB0aW10b3V0KHNldmVyYWwgbWludXRlcyBhdCBtb3N0KSBlcnJv
+ciwgY291bGQgaW1wYWN0IG90aGVyDQo+IG9wZXJhdGlvbiBvbiBOT1IgZmxhc2guIFNvIFVCSUZT
+IGNhbiByZWFkIHRoaXMgYmxvY2sgZmlyc3QgdG8gYXZvaWQgdW5uZWVkZWQNCj4gcHJvZ3JhbSBv
+cGVyYXRpb24uDQo+DQo+IFRoaXMgcGF0Y2ggdHJ5IHRvIHB1dCByZWFkIG9wZXJhdGlvbiBhdCBo
+ZWFkIG9mIHdyaXRlIG9wZXJhdGlvbiBpbg0KPiBub3JfZXJhc2VfcHJlcGFyZSgpLCByZWFkIG91
+dCB0aGUgZGF0YS4NCj4gSWYgdGhlIGRhdGEgaXMgYWxyZWFkeSBjb3JydXB0LCB0aGVuIG5vIG5l
+ZWQgdG8gcHJvZ3JhbSBhbnkgZGF0YSBpbnRvIHRoaXMgYmxvY2ssDQo+IGp1c3QgZ28gdG8gZXJh
+c2UgdGhpcyBibG9jay4NCj4NCj4gU2lnbmVkLW9mZi1ieTogUWkgV2FuZyA8cWl3YW5nQHFpd2Fu
+Z0BtaWNyb24uY29tPg0KDQpUaGlzIGVtYWlsIGFkZHJlc3MgaXMgbWFsZm9ybWVkLg0KDQo+IC0t
+LQ0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvdWJpL2lvLmMgYi9kcml2ZXJzL210ZC91Ymkv
+aW8uYw0KPiBpbmRleCBiZjc5ZGVmLi4wYTYzNDNkIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL210
+ZC91YmkvaW8uYw0KPiArKysgYi9kcml2ZXJzL210ZC91YmkvaW8uYw0KPiBAQCAtNDk5LDYgKzQ5
+OSw3IEBAIHN0YXRpYyBpbnQgbm9yX2VyYXNlX3ByZXBhcmUoc3RydWN0IHViaV9kZXZpY2UgKnVi
+aSwgaW50IHBudW0pDQo+ICAgICAgICAgc2l6ZV90IHdyaXR0ZW47DQo+ICAgICAgICAgbG9mZl90
+IGFkZHI7DQo+ICAgICAgICAgdWludDMyX3QgZGF0YSA9IDA7DQo+ICsgICAgICAgc3RydWN0IHVi
+aV9lY19oZHIgZWNfaGRyOw0KPiAgICAgICAgIC8qDQo+ICAgICAgICAgICogTm90ZSwgd2UgY2Fu
+bm90IGdlbmVyYWxseSBkZWZpbmUgVklEIGhlYWRlciBidWZmZXJzIG9uIHN0YWNrLA0KPiAgICAg
+ICAgICAqIGJlY2F1c2Ugb2YgdGhlIHdheSB3ZSBkZWFsIHdpdGggdGhlc2UgYnVmZmVycyAoc2Vl
+IHRoZSBoZWFkZXINCj4gQEAgLTUwOSw0OSArNTEwLDM4IEBAIHN0YXRpYyBpbnQgbm9yX2VyYXNl
+X3ByZXBhcmUoc3RydWN0IHViaV9kZXZpY2UgKnViaSwgaW50IHBudW0pDQo+ICAgICAgICAgc3Ry
+dWN0IHViaV92aWRfaGRyIHZpZF9oZHI7DQo+DQo+ICAgICAgICAgLyoNCj4gKyAgICAgICAgKiBJ
+ZiBWSUQgb3IgRUMgaXMgdmFsaWQsIG5lZWQgdG8gY29ycnVwdCBpdCBiZWZvcmUgZXJhc2Ugb3Bl
+cmF0aW9uLg0KPiAgICAgICAgICAqIEl0IGlzIGltcG9ydGFudCB0byBmaXJzdCBpbnZhbGlkYXRl
+IHRoZSBFQyBoZWFkZXIsIGFuZCB0aGVuIHRoZSBWSUQNCj4gICAgICAgICAgKiBoZWFkZXIuIE90
+aGVyd2lzZSBhIHBvd2VyIGN1dCBtYXkgbGVhZCB0byB2YWxpZCBFQyBoZWFkZXIgYW5kDQo+ICAg
+ICAgICAgICogaW52YWxpZCBWSUQgaGVhZGVyLCBpbiB3aGljaCBjYXNlIFVCSSB3aWxsIHRyZWF0
+IHRoaXMgUEVCIGFzDQo+ICAgICAgICAgICogY29ycnVwdGVkIGFuZCB3aWxsIHRyeSB0byBwcmVz
+ZXJ2ZSBpdCwgYW5kIHByaW50IHNjYXJ5IHdhcm5pbmdzLg0KPiAgICAgICAgICAqLw0KPiAgICAg
+ICAgIGFkZHIgPSAobG9mZl90KXBudW0gKiB1YmktPnBlYl9zaXplOw0KPiAtICAgICAgIGVyciA9
+IG10ZF93cml0ZSh1YmktPm10ZCwgYWRkciwgNCwgJndyaXR0ZW4sICh2b2lkICopJmRhdGEpOw0K
+PiAtICAgICAgIGlmICghZXJyKSB7DQo+IC0gICAgICAgICAgICAgICBhZGRyICs9IHViaS0+dmlk
+X2hkcl9hbG9mZnNldDsNCj4gLSAgICAgICAgICAgICAgIGVyciA9IG10ZF93cml0ZSh1YmktPm10
+ZCwgYWRkciwgNCwgJndyaXR0ZW4sICh2b2lkICopJmRhdGEpOw0KPiAtICAgICAgICAgICAgICAg
+aWYgKCFlcnIpDQo+IC0gICAgICAgICAgICAgICAgICAgICAgIHJldHVybiAwOw0KPiArICAgICAg
+IGVyciA9IHViaV9pb19yZWFkX2VjX2hkcih1YmksIHBudW0sICZlY19oZHIsIDApOw0KPiArICAg
+ICAgIGlmIChlcnIgIT0gVUJJX0lPX0JBRF9IRFJfRUJBRE1TRyAmJiBlcnIgIT0gVUJJX0lPX0JB
+RF9IRFIgJiYNCj4gKyAgICAgICAgICAgZXJyICE9IFVCSV9JT19GRil7DQo+ICsgICAgICAgICAg
+ICAgICBlcnIxID0gbXRkX3dyaXRlKHViaS0+bXRkLCBhZGRyLCA0LCAmd3JpdHRlbiwgKHZvaWQg
+KikmZGF0YSk7DQo+ICsgICAgICAgICAgICAgICBpZihlcnIxKQ0KPiArICAgICAgICAgICAgICAg
+ICAgICAgICBnb3RvIGVycm9yOw0KPiAgICAgICAgIH0NCj4NCj4gLSAgICAgICAvKg0KPiAtICAg
+ICAgICAqIFdlIGZhaWxlZCB0byB3cml0ZSB0byB0aGUgbWVkaWEuIFRoaXMgd2FzIG9ic2VydmVk
+IHdpdGggU3BhbnNpb24NCj4gLSAgICAgICAgKiBTMjlHTDUxMk4gTk9SIGZsYXNoLiBNb3N0IHBy
+b2JhYmx5IHRoZSBwcmV2aW91c2x5IGVyYXNlYmxvY2sgZXJhc3VyZQ0KPiAtICAgICAgICAqIHdh
+cyBpbnRlcnJ1cHRlZCBhdCBhIHZlcnkgaW5hcHByb3ByaWF0ZSBtb21lbnQsIHNvIGl0IGJlY2Ft
+ZQ0KPiAtICAgICAgICAqIHVud3JpdGFibGUuIEluIHRoaXMgY2FzZSB3ZSBwcm9iYWJseSBhbnl3
+YXkgaGF2ZSBnYXJiYWdlIGluIHRoaXMNCj4gLSAgICAgICAgKiBQRUIuDQo+IC0gICAgICAgICov
+DQo+IC0gICAgICAgZXJyMSA9IHViaV9pb19yZWFkX3ZpZF9oZHIodWJpLCBwbnVtLCAmdmlkX2hk
+ciwgMCk7DQo+IC0gICAgICAgaWYgKGVycjEgPT0gVUJJX0lPX0JBRF9IRFJfRUJBRE1TRyB8fCBl
+cnIxID09IFVCSV9JT19CQURfSERSIHx8DQo+IC0gICAgICAgICAgIGVycjEgPT0gVUJJX0lPX0ZG
+KSB7DQo+IC0gICAgICAgICAgICAgICBzdHJ1Y3QgdWJpX2VjX2hkciBlY19oZHI7DQo+IC0NCj4g
+LSAgICAgICAgICAgICAgIGVycjEgPSB1YmlfaW9fcmVhZF9lY19oZHIodWJpLCBwbnVtLCAmZWNf
+aGRyLCAwKTsNCj4gLSAgICAgICAgICAgICAgIGlmIChlcnIxID09IFVCSV9JT19CQURfSERSX0VC
+QURNU0cgfHwgZXJyMSA9PSBVQklfSU9fQkFEX0hEUiB8fA0KPiAtICAgICAgICAgICAgICAgICAg
+IGVycjEgPT0gVUJJX0lPX0ZGKQ0KPiAtICAgICAgICAgICAgICAgICAgICAgICAvKg0KPiAtICAg
+ICAgICAgICAgICAgICAgICAgICAgKiBCb3RoIFZJRCBhbmQgRUMgaGVhZGVycyBhcmUgY29ycnVw
+dGVkLCBzbyB3ZSBjYW4NCj4gLSAgICAgICAgICAgICAgICAgICAgICAgICogc2FmZWx5IGVyYXNl
+IHRoaXMgUEVCIGFuZCBub3QgYWZyYWlkIHRoYXQgaXQgd2lsbCBiZQ0KPiAtICAgICAgICAgICAg
+ICAgICAgICAgICAgKiB0cmVhdGVkIGFzIGEgdmFsaWQgUEVCIGluIGNhc2Ugb2YgYW4gdW5jbGVh
+biByZWJvb3QuDQo+IC0gICAgICAgICAgICAgICAgICAgICAgICAqLw0KPiAtICAgICAgICAgICAg
+ICAgICAgICAgICByZXR1cm4gMDsNCj4gKyAgICAgICBlcnIgPSB1YmlfaW9fcmVhZF92aWRfaGRy
+KHViaSwgcG51bSwgJnZpZF9oZHIsIDApOw0KPiArICAgICAgIGlmIChlcnIgIT0gVUJJX0lPX0JB
+RF9IRFJfRUJBRE1TRyAmJiBlcnIgIT0gVUJJX0lPX0JBRF9IRFIgJiYNCj4gKyAgICAgICAgICAg
+ZXJyICE9IFVCSV9JT19GRil7DQo+ICsgICAgICAgICAgICAgICBhZGRyICs9IHViaS0+dmlkX2hk
+cl9hbG9mZnNldDsNCj4gKyAgICAgICAgICAgICAgIGVycjEgPSBtdGRfd3JpdGUodWJpLT5tdGQs
+IGFkZHIsIDQsICZ3cml0dGVuLCAodm9pZCAqKSZkYXRhKTsNCj4gKyAgICAgICAgICAgICAgIGlm
+IChlcnIxKQ0KPiArICAgICAgICAgICAgICAgICAgICAgICBnb3RvIGVycm9yOw0KPiAgICAgICAg
+IH0NCj4gKyAgICAgICByZXR1cm4gMDsNCj4NCj4gK2Vycm9yOg0KPiAgICAgICAgIC8qDQo+IC0g
+ICAgICAgICogVGhlIFBFQiBjb250YWlucyBhIHZhbGlkIFZJRCBoZWFkZXIsIGJ1dCB3ZSBjYW5u
+b3QgaW52YWxpZGF0ZSBpdC4NCj4gKyAgICAgICAgKiBUaGUgUEVCIGNvbnRhaW5zIGEgdmFsaWQg
+VklEIG9yIEVDIGhlYWRlciwgYnV0IHdlIGNhbm5vdCBpbnZhbGlkYXRlIGl0Lg0KPiAgICAgICAg
+ICAqIFN1cHBvc2VkbHkgdGhlIGZsYXNoIG1lZGlhIG9yIHRoZSBkcml2ZXIgaXMgc2NyZXdlZCB1
+cCwgc28gcmV0dXJuIGFuDQo+ICAgICAgICAgICogZXJyb3IuDQo+ICAgICAgICAgICovDQo+IC0g
+ICAgICAgdWJpX2VycigiY2Fubm90IGludmFsaWRhdGUgUEVCICVkLCB3cml0ZSByZXR1cm5lZCAl
+ZCByZWFkIHJldHVybmVkICVkIiwNCj4gKyAgICAgICB1YmlfZXJyKCJjYW5ub3QgaW52YWxpZGF0
+ZSBQRUIgJWQsIHJlYWQgcmV0dXJuZWQgJWQgd3JpdGUgcmV0dXJuZWQgJWQiLA0KPiAgICAgICAg
+ICAgICAgICAgcG51bSwgZXJyLCBlcnIxKTsNCj4gICAgICAgICB1YmlfZHVtcF9mbGFzaCh1Ymks
+IHBudW0sIDAsIHViaS0+cGViX3NpemUpOw0KPiAgICAgICAgIHJldHVybiAtRUlPOw0KPiAtLS0N
+Cj4NCj4gSSBoYXZlIHRlc3RlZCB0aGlzIHBhdGNoIG9uIE1pY3JvbiBOT1IgZmxhc2gsIHBhcnQg
+bnVtYmVyIGlzo7pKUzI4RjUxMk0yOUVXSEEuDQoNClBsZWFzZSBhZGQgdGhpcyBpbmZvcm1hdGlv
+biB0byB0aGUgY29tbWl0IG1lc3NhZ2UuDQoNCj4gSWYgaGF2ZSBhbnkgcXVlc3Rpb25zLCBwbGVh
+c2UgbGV0IG1lIGtub3cuDQoNCkZyb20gVUJJcyBwb2ludCBvZiB2aWV3IHRoZSBwYXRjaCBzZWVt
+cyBPSyB0byBtZSwgYnV0IGl0IGlzIG1hbGZvcm1lZCwNCkkgd2FzIHVuYWJsZSB0byBhcHBseSBp
+dCB1c2luZyBnaXQtYW0uDQpEaWQgeW91IHVzZSBNUyBPdXRsb29rPyA6KQ0KUGxlYXNlIHNlbmQg
+aXQgdXNpbmcgZ2l0IHNlbmQtbWFpbCBvciBhbnkgb3RoZXIgc2FuZSBtYWlsZXIuDQoNCj4gVGhh
+bmsgeW91DQo+DQo+IEJlc3QgUmVnYXJkcywNCj4gUWkgV2FuZyDN9cbwDQo+IEVTRyBBUEFDIEFF
+DQo+IFRlbDogODYtMDIxLTM4OTk3MTU4DQo+IE1vYmlsZTogODYtMTUyMDE5NTgyMDINCj4gRW1h
+aWw6IHFpd2FuZ0BtaWNyb24uY29tDQo+IEFkZHJlc3M6IE5vIDYwMSBGYXNhaSBSZCwgUHVkb25n
+LCBTaGFuZ2hhaSwgQ2hpbmEsIDIwMDEzMQ0KDQoNCg0KLS0gDQpUaGFua3MsDQovL3JpY2hhcmQN
+Cg==
