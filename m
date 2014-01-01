@@ -1,29 +1,17 @@
-Received: from mailout.micron.com ([137.201.242.129])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VyLaP-0004up-On
- for linux-mtd@lists.infradead.org; Wed, 01 Jan 2014 13:11:50 +0000
-From: =?gb2312?B?UWkgV2FuZyDN9cbwIChxaXdhbmcp?= <qiwang@micron.com>
-To: Richard Weinberger <richard.weinberger@gmail.com>, "dedekind1@gmail.com"
- <dedekind1@gmail.com>
-Subject: RE: [PATCH 1/1]  MTD: UBI:  avoid program operation on  NOR flash
- after erasure interrupted
-Date: Wed, 1 Jan 2014 13:11:21 +0000
-Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A770BA3A9@NTXXIAMBX02.xacn.micron.com>
-References: <71CF8D7F32C5C24C9CD1D0E02D52498A770B54B1@NTXXIAMBX02.xacn.micron.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A770B68A8@NTXXIAMBX02.xacn.micron.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A770B6F77@NTXXIAMBX02.xacn.micron.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A770B79C8@NTXXIAMBX02.xacn.micron.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A770B8611@NTXXIAMBX02.xacn.micron.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A770BA389@NTXXIAMBX02.xacn.micron.com>
-In-Reply-To: <71CF8D7F32C5C24C9CD1D0E02D52498A770BA389@NTXXIAMBX02.xacn.micron.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-Cc: =?gb2312?B?UWkgV2FuZyDN9cbwIChxaXdhbmcp?= <qiwang@micron.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Adrian Hunter <adrian.hunter@intel.com>
+Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VyOYN-0006UG-U9
+ for linux-mtd@lists.infradead.org; Wed, 01 Jan 2014 16:21:56 +0000
+Received: by mail-pa0-f43.google.com with SMTP id bj1so13686207pad.16
+ for <linux-mtd@lists.infradead.org>; Wed, 01 Jan 2014 08:21:32 -0800 (PST)
+From: Roman Pen <r.peniaev@gmail.com>
+To: 
+Subject: [PATCH 1/1] mtd: mtd_blkdevs: handle REQ_FLUSH request and do
+ explicit flush of writeback buffer
+Date: Thu,  2 Jan 2014 01:21:21 +0900
+Message-Id: <1388593281-22613-1-git-send-email-r.peniaev@gmail.com>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-kernel@vger.kernel.org, Roman Peniaev <r.peniaev@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,77 +21,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgUmljaGFyZDoNCg0KSSBtb2RpZmllZCB0aGUgcGxhY2UgeW91IG1lbnRpb25lZCBpbiBwcmV2
-aW91cyBtYWlsLCBwbGVhc2UgY2hlY2sgaXQgYXMgYmVsb3c6DQoNCkZyb206IFFpIFdhbmcgPHFp
-d2FuZ0BtaWNyb24uY29tPg0KDQpub3JfZXJhc2VfcHJlcGFyZSgpIHdpbGwgYmUgY2FsbGVkIGJl
-Zm9yZSBlcmFzZSBhIE5PUiBmbGFzaCwgaXQgd2lsbCBwcm9ncmFtICcwJw0KaW50byBhIGJsb2Nr
-IHRvIG1hcmsgdGhpcyBibG9jay4gQnV0IHByb2dyYW0gZGF0YSBpbnRvIGEgZXJhc3VyZSBpbnRl
-cnJ1cHRlZCBibG9jaw0KY2FuIGNhdXNlIHByb2dyYW0gdGltdG91dChzZXZlcmFsIG1pbnV0ZXMg
-YXQgbW9zdCkgZXJyb3IsIGNvdWxkIGltcGFjdCBvdGhlciANCm9wZXJhdGlvbiBvbiBOT1IgZmxh
-c2guIFNvIFVCSUZTIGNhbiByZWFkIHRoaXMgYmxvY2sgZmlyc3QgdG8gYXZvaWQgdW5uZWVkZWQg
-DQpwcm9ncmFtIG9wZXJhdGlvbi4gDQoNClRoaXMgcGF0Y2ggdHJ5IHRvIHB1dCByZWFkIG9wZXJh
-dGlvbiBhdCBoZWFkIG9mIHdyaXRlIG9wZXJhdGlvbiBpbiANCm5vcl9lcmFzZV9wcmVwYXJlKCks
-IHJlYWQgb3V0IHRoZSBkYXRhLiANCklmIHRoZSBkYXRhIGlzIGFscmVhZHkgY29ycnVwdCwgdGhl
-biBubyBuZWVkIHRvIHByb2dyYW0gYW55IGRhdGEgaW50byB0aGlzIGJsb2NrLCANCmp1c3QgZ28g
-dG8gZXJhc2UgdGhpcyBibG9jay4NCg0KVGhpcyBwYXRjaCBpcyB2YWxpZGF0ZWQgb24gTWljcm9u
-IE5PUiBmbGFzaCwgcGFydCBudW1iZXIgaXOjukpTMjhGNTEyTTI5RVdIQQ0KDQpTaWduZWQtb2Zm
-LWJ5OiBRaSBXYW5nIDxxaXdhbmdAbWljcm9uLmNvbT4NCi0tLQ0KZGlmZiAtLWdpdCBhL2RyaXZl
-cnMvbXRkL3ViaS9pby5jIGIvZHJpdmVycy9tdGQvdWJpL2lvLmMNCmluZGV4IGJmNzlkZWYuLjBh
-NjM0M2QgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL210ZC91YmkvaW8uYw0KKysrIGIvZHJpdmVycy9t
-dGQvdWJpL2lvLmMNCkBAIC00OTksNiArNDk5LDcgQEAgc3RhdGljIGludCBub3JfZXJhc2VfcHJl
-cGFyZShzdHJ1Y3QgdWJpX2RldmljZSAqdWJpLCBpbnQgcG51bSkNCiAJc2l6ZV90IHdyaXR0ZW47
-DQogCWxvZmZfdCBhZGRyOw0KIAl1aW50MzJfdCBkYXRhID0gMDsNCisJc3RydWN0IHViaV9lY19o
-ZHIgZWNfaGRyOw0KIAkvKg0KIAkgKiBOb3RlLCB3ZSBjYW5ub3QgZ2VuZXJhbGx5IGRlZmluZSBW
-SUQgaGVhZGVyIGJ1ZmZlcnMgb24gc3RhY2ssDQogCSAqIGJlY2F1c2Ugb2YgdGhlIHdheSB3ZSBk
-ZWFsIHdpdGggdGhlc2UgYnVmZmVycyAoc2VlIHRoZSBoZWFkZXINCkBAIC01MDksNDkgKzUxMCwz
-OCBAQCBzdGF0aWMgaW50IG5vcl9lcmFzZV9wcmVwYXJlKHN0cnVjdCB1YmlfZGV2aWNlICp1Ymks
-IGludCBwbnVtKQ0KIAlzdHJ1Y3QgdWJpX3ZpZF9oZHIgdmlkX2hkcjsNCiANCiAJLyoNCisJICog
-SWYgVklEIG9yIEVDIGlzIHZhbGlkLCBuZWVkIHRvIGNvcnJ1cHQgaXQgYmVmb3JlIGVyYXNlIG9w
-ZXJhdGlvbi4gIA0KIAkgKiBJdCBpcyBpbXBvcnRhbnQgdG8gZmlyc3QgaW52YWxpZGF0ZSB0aGUg
-RUMgaGVhZGVyLCBhbmQgdGhlbiB0aGUgVklEDQogCSAqIGhlYWRlci4gT3RoZXJ3aXNlIGEgcG93
-ZXIgY3V0IG1heSBsZWFkIHRvIHZhbGlkIEVDIGhlYWRlciBhbmQNCiAJICogaW52YWxpZCBWSUQg
-aGVhZGVyLCBpbiB3aGljaCBjYXNlIFVCSSB3aWxsIHRyZWF0IHRoaXMgUEVCIGFzDQogCSAqIGNv
-cnJ1cHRlZCBhbmQgd2lsbCB0cnkgdG8gcHJlc2VydmUgaXQsIGFuZCBwcmludCBzY2FyeSB3YXJu
-aW5ncy4NCiAJICovDQogCWFkZHIgPSAobG9mZl90KXBudW0gKiB1YmktPnBlYl9zaXplOw0KLQll
-cnIgPSBtdGRfd3JpdGUodWJpLT5tdGQsIGFkZHIsIDQsICZ3cml0dGVuLCAodm9pZCAqKSZkYXRh
-KTsNCi0JaWYgKCFlcnIpIHsNCi0JCWFkZHIgKz0gdWJpLT52aWRfaGRyX2Fsb2Zmc2V0Ow0KLQkJ
-ZXJyID0gbXRkX3dyaXRlKHViaS0+bXRkLCBhZGRyLCA0LCAmd3JpdHRlbiwgKHZvaWQgKikmZGF0
-YSk7DQotCQlpZiAoIWVycikNCi0JCQlyZXR1cm4gMDsNCisJZXJyID0gdWJpX2lvX3JlYWRfZWNf
-aGRyKHViaSwgcG51bSwgJmVjX2hkciwgMCk7DQorCWlmIChlcnIgIT0gVUJJX0lPX0JBRF9IRFJf
-RUJBRE1TRyAmJiBlcnIgIT0gVUJJX0lPX0JBRF9IRFIgJiYNCisJICAgIGVyciAhPSBVQklfSU9f
-RkYpew0KKwkJZXJyMSA9IG10ZF93cml0ZSh1YmktPm10ZCwgYWRkciwgNCwgJndyaXR0ZW4sICh2
-b2lkICopJmRhdGEpOw0KKwkJaWYoZXJyMSkNCisJCQlnb3RvIGVycm9yOw0KIAl9DQogDQotCS8q
-DQotCSAqIFdlIGZhaWxlZCB0byB3cml0ZSB0byB0aGUgbWVkaWEuIFRoaXMgd2FzIG9ic2VydmVk
-IHdpdGggU3BhbnNpb24NCi0JICogUzI5R0w1MTJOIE5PUiBmbGFzaC4gTW9zdCBwcm9iYWJseSB0
-aGUgcHJldmlvdXNseSBlcmFzZWJsb2NrIGVyYXN1cmUNCi0JICogd2FzIGludGVycnVwdGVkIGF0
-IGEgdmVyeSBpbmFwcHJvcHJpYXRlIG1vbWVudCwgc28gaXQgYmVjYW1lDQotCSAqIHVud3JpdGFi
-bGUuIEluIHRoaXMgY2FzZSB3ZSBwcm9iYWJseSBhbnl3YXkgaGF2ZSBnYXJiYWdlIGluIHRoaXMN
-Ci0JICogUEVCLg0KLQkgKi8NCi0JZXJyMSA9IHViaV9pb19yZWFkX3ZpZF9oZHIodWJpLCBwbnVt
-LCAmdmlkX2hkciwgMCk7DQotCWlmIChlcnIxID09IFVCSV9JT19CQURfSERSX0VCQURNU0cgfHwg
-ZXJyMSA9PSBVQklfSU9fQkFEX0hEUiB8fA0KLQkgICAgZXJyMSA9PSBVQklfSU9fRkYpIHsNCi0J
-CXN0cnVjdCB1YmlfZWNfaGRyIGVjX2hkcjsNCi0NCi0JCWVycjEgPSB1YmlfaW9fcmVhZF9lY19o
-ZHIodWJpLCBwbnVtLCAmZWNfaGRyLCAwKTsNCi0JCWlmIChlcnIxID09IFVCSV9JT19CQURfSERS
-X0VCQURNU0cgfHwgZXJyMSA9PSBVQklfSU9fQkFEX0hEUiB8fA0KLQkJICAgIGVycjEgPT0gVUJJ
-X0lPX0ZGKQ0KLQkJCS8qDQotCQkJICogQm90aCBWSUQgYW5kIEVDIGhlYWRlcnMgYXJlIGNvcnJ1
-cHRlZCwgc28gd2UgY2FuDQotCQkJICogc2FmZWx5IGVyYXNlIHRoaXMgUEVCIGFuZCBub3QgYWZy
-YWlkIHRoYXQgaXQgd2lsbCBiZQ0KLQkJCSAqIHRyZWF0ZWQgYXMgYSB2YWxpZCBQRUIgaW4gY2Fz
-ZSBvZiBhbiB1bmNsZWFuIHJlYm9vdC4NCi0JCQkgKi8NCi0JCQlyZXR1cm4gMDsNCisJZXJyID0g
-dWJpX2lvX3JlYWRfdmlkX2hkcih1YmksIHBudW0sICZ2aWRfaGRyLCAwKTsNCisJaWYgKGVyciAh
-PSBVQklfSU9fQkFEX0hEUl9FQkFETVNHICYmIGVyciAhPSBVQklfSU9fQkFEX0hEUiAmJg0KKwkg
-ICAgZXJyICE9IFVCSV9JT19GRil7DQorCSAgICAJYWRkciArPSB1YmktPnZpZF9oZHJfYWxvZmZz
-ZXQ7DQorCQllcnIxID0gbXRkX3dyaXRlKHViaS0+bXRkLCBhZGRyLCA0LCAmd3JpdHRlbiwgKHZv
-aWQgKikmZGF0YSk7DQorCQlpZiAoZXJyMSkNCisJCQlnb3RvIGVycm9yOwkNCiAJfQ0KKwlyZXR1
-cm4gMDsNCiANCitlcnJvcjoNCiAJLyoNCi0JICogVGhlIFBFQiBjb250YWlucyBhIHZhbGlkIFZJ
-RCBoZWFkZXIsIGJ1dCB3ZSBjYW5ub3QgaW52YWxpZGF0ZSBpdC4NCisJICogVGhlIFBFQiBjb250
-YWlucyBhIHZhbGlkIFZJRCBvciBFQyBoZWFkZXIsIGJ1dCB3ZSBjYW5ub3QgaW52YWxpZGF0ZSBp
-dC4NCiAJICogU3VwcG9zZWRseSB0aGUgZmxhc2ggbWVkaWEgb3IgdGhlIGRyaXZlciBpcyBzY3Jl
-d2VkIHVwLCBzbyByZXR1cm4gYW4NCiAJICogZXJyb3IuDQogCSAqLw0KLQl1YmlfZXJyKCJjYW5u
-b3QgaW52YWxpZGF0ZSBQRUIgJWQsIHdyaXRlIHJldHVybmVkICVkIHJlYWQgcmV0dXJuZWQgJWQi
-LA0KKwl1YmlfZXJyKCJjYW5ub3QgaW52YWxpZGF0ZSBQRUIgJWQsIHJlYWQgcmV0dXJuZWQgJWQg
-d3JpdGUgcmV0dXJuZWQgJWQiLA0KIAkJcG51bSwgZXJyLCBlcnIxKTsNCiAJdWJpX2R1bXBfZmxh
-c2godWJpLCBwbnVtLCAwLCB1YmktPnBlYl9zaXplKTsNCiAJcmV0dXJuIC1FSU87DQotLS0NCg0K
-SWYgaGF2ZSBhbnkgcXVlc3Rpb25zLCBwbGVhc2UgbGV0IG1lIGtub3cuIA0KVGhhbmsgeW91DQoN
-CkJlc3QgUmVnYXJkcywgDQpRaSBXYW5nIM31xvANCkVTRyBBUEFDIEFFIA0KVGVsOiA4Ni0wMjEt
-Mzg5OTcxNTgNCk1vYmlsZTogODYtMTUyMDE5NTgyMDINCkVtYWlsOiBxaXdhbmdAbWljcm9uLmNv
-bQ0KQWRkcmVzczogTm8gNjAxIEZhc2FpIFJkLCBQdWRvbmcsIFNoYW5naGFpLCBDaGluYSwgMjAw
-MTMxDQo=
+From: Roman Peniaev <r.peniaev@gmail.com>
+
+mtd_blkdevs is device with volatile cache (writeback buffer), so it should support
+REQ_FLUSH to do explicit flush.
+
+Without this patch 'sync' does not guarantee that writeback buffer will be flushed
+on disk in case of power off, e.g.:
+
+  $ cp some_file /mnt
+  $ sync
+
+  ### POWER OFF
+
+In case of this sequence writeback buffer will not be flushed on disk.
+
+This patch fixes this behaviour and explicitly reports to block layer that flush
+requests are being supported.
+
+Signed-off-by: Roman Peniaev <r.peniaev@gmail.com>
+CC: David Woodhouse <dwmw2@infradead.org>
+CC: linux-mtd@lists.infradead.org
+CC: linux-kernel@vger.kernel.org
+---
+ drivers/mtd/mtd_blkdevs.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+index 5073cbc..feafe5c 100644
+--- a/drivers/mtd/mtd_blkdevs.c
++++ b/drivers/mtd/mtd_blkdevs.c
+@@ -89,6 +89,12 @@ static int do_blktrans_request(struct mtd_blktrans_ops *tr,
+ 	if (req->cmd_type != REQ_TYPE_FS)
+ 		return -EIO;
+ 
++	if (req->cmd_flags & REQ_FLUSH) {
++		if (tr->flush)
++			return tr->flush(dev);
++		return 0;
++	}
++
+ 	if (blk_rq_pos(req) + blk_rq_cur_sectors(req) >
+ 	    get_capacity(req->rq_disk))
+ 		return -EIO;
+@@ -409,6 +415,8 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
+ 	if (!new->rq)
+ 		goto error3;
+ 
++	blk_queue_flush(new->rq, REQ_FLUSH);
++
+ 	new->rq->queuedata = new;
+ 	blk_queue_logical_block_size(new->rq, tr->blksize);
+ 
+-- 
+1.8.5.2
