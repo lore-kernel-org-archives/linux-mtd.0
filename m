@@ -1,17 +1,30 @@
-Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
+Received: from mailout3.samsung.com ([203.254.224.33])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VyOYN-0006UG-U9
- for linux-mtd@lists.infradead.org; Wed, 01 Jan 2014 16:21:56 +0000
-Received: by mail-pa0-f43.google.com with SMTP id bj1so13686207pad.16
- for <linux-mtd@lists.infradead.org>; Wed, 01 Jan 2014 08:21:32 -0800 (PST)
-From: Roman Pen <r.peniaev@gmail.com>
-To: 
-Subject: [PATCH 1/1] mtd: mtd_blkdevs: handle REQ_FLUSH request and do
- explicit flush of writeback buffer
-Date: Thu,  2 Jan 2014 01:21:21 +0900
-Message-Id: <1388593281-22613-1-git-send-email-r.peniaev@gmail.com>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- linux-kernel@vger.kernel.org, Roman Peniaev <r.peniaev@gmail.com>
+ id 1VyWUR-0002cH-2L
+ for linux-mtd@lists.infradead.org; Thu, 02 Jan 2014 00:50:24 +0000
+Received: from epcpsbgr5.samsung.com
+ (u145.gpu120.samsung.co.kr [203.254.230.145])
+ by mailout3.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ (7.0.4.24.0) 64bit (built Nov 17 2011))
+ with ESMTP id <0MYR006IG0YZ6G50@mailout3.samsung.com> for
+ linux-mtd@lists.infradead.org; Thu, 02 Jan 2014 09:49:47 +0900 (KST)
+From: Jingoo Han <jg1.han@samsung.com>
+To: 'Sachin Kamat' <sachin.kamat@linaro.org>
+References: <1388467753-24431-1-git-send-email-sachin.kamat@linaro.org>
+ <20131231113428.GA3985@htj.dyndns.org>
+In-reply-to: <20131231113428.GA3985@htj.dyndns.org>
+Subject: Re: [PATCH 1/1] ata: pata_samsung_cf: Move plat/regs-ata.h to
+ drivers/ata
+Date: Thu, 02 Jan 2014 09:49:46 +0900
+Message-id: <001b01cf0754$88b7fc00$9a27f400$%han@samsung.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: 7bit
+Content-language: ko
+Cc: linux-samsung-soc@vger.kernel.org, patches@linaro.org,
+ 'Jingoo Han' <jg1.han@samsung.com>, linux-ide@vger.kernel.org,
+ kgene.kim@samsung.com, linux-mtd@lists.infradead.org,
+ 'Tejun Heo' <tj@kernel.org>, 'Brian Norris' <computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,57 +34,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Roman Peniaev <r.peniaev@gmail.com>
+On Tuesday, December 31, 2013 8:34 PM, Tejun Heo wrote:
+> On Tue, Dec 31, 2013 at 10:59:13AM +0530, Sachin Kamat wrote:
+> > plat/regs-ata.h is used only by Samsung PATA driver.
+> > Move this file to the drivers folder to remove platform
+> > dependency required for multiplatform support.
+> >
+> > Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+> 
+> Applied to libata/for-3.14.
+> 
+> As this is only used by pata_samsung_cf.c, can you please follow up
+> with a patch to roll pata_samsung_cf.h into .c?  There's no point in
+> creating separate header files for stuff which isn't shared among
+> multiple files.
 
-mtd_blkdevs is device with volatile cache (writeback buffer), so it should support
-REQ_FLUSH to do explicit flush.
+(+cc Brian Norris, linux-mtd mailing list)
 
-Without this patch 'sync' does not guarantee that writeback buffer will be flushed
-on disk in case of power off, e.g.:
+Right, I also agree with Tejun's opinion.
+Would you also send the patch to roll .h into .c for your another
+patch "mtd: s3c2410: Move plat/regs-nand.h to drivers/mtd"?
+(http://www.spinics.net/lists/linux-samsung-soc/msg25498.html)
 
-  $ cp some_file /mnt
-  $ sync
-
-  ### POWER OFF
-
-In case of this sequence writeback buffer will not be flushed on disk.
-
-This patch fixes this behaviour and explicitly reports to block layer that flush
-requests are being supported.
-
-Signed-off-by: Roman Peniaev <r.peniaev@gmail.com>
-CC: David Woodhouse <dwmw2@infradead.org>
-CC: linux-mtd@lists.infradead.org
-CC: linux-kernel@vger.kernel.org
----
- drivers/mtd/mtd_blkdevs.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-index 5073cbc..feafe5c 100644
---- a/drivers/mtd/mtd_blkdevs.c
-+++ b/drivers/mtd/mtd_blkdevs.c
-@@ -89,6 +89,12 @@ static int do_blktrans_request(struct mtd_blktrans_ops *tr,
- 	if (req->cmd_type != REQ_TYPE_FS)
- 		return -EIO;
- 
-+	if (req->cmd_flags & REQ_FLUSH) {
-+		if (tr->flush)
-+			return tr->flush(dev);
-+		return 0;
-+	}
-+
- 	if (blk_rq_pos(req) + blk_rq_cur_sectors(req) >
- 	    get_capacity(req->rq_disk))
- 		return -EIO;
-@@ -409,6 +415,8 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
- 	if (!new->rq)
- 		goto error3;
- 
-+	blk_queue_flush(new->rq, REQ_FLUSH);
-+
- 	new->rq->queuedata = new;
- 	blk_queue_logical_block_size(new->rq, tr->blksize);
- 
--- 
-1.8.5.2
+Best regards,
+Jingoo Han
