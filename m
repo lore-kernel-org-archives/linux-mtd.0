@@ -1,12 +1,25 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vyja2-0004AZ-4X
- for linux-mtd@lists.infradead.org; Thu, 02 Jan 2014 14:49:03 +0000
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: MTD Maling List <linux-mtd@lists.infradead.org>
-Subject: [PATCH] MAINTAINERS: keep UBI and UBIFS stuff in the same tree
-Date: Thu,  2 Jan 2014 16:48:13 +0200
-Message-Id: <1388674093-11094-1-git-send-email-dedekind1@gmail.com>
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VyjjL-0004Ln-3H
+ for linux-mtd@lists.infradead.org; Thu, 02 Jan 2014 14:58:40 +0000
+From: Richard Weinberger <richard@nod.at>
+To: Qi Wang =?utf-8?B?546L6LW3IChxaXdhbmcp?= <qiwang@micron.com>
+Subject: Re: [PATCH 1/1] MTD: UBI: avoid program operation on NOR flash after
+ erasure interrupted
+Date: Thu, 02 Jan 2014 15:58:09 +0100
+Message-ID: <3253694.tov52PJeEo@sandpuppy>
+In-Reply-To: <71CF8D7F32C5C24C9CD1D0E02D52498A770BA3A9@NTXXIAMBX02.xacn.micron.com>
+References: <71CF8D7F32C5C24C9CD1D0E02D52498A770B54B1@NTXXIAMBX02.xacn.micron.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A770BA389@NTXXIAMBX02.xacn.micron.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A770BA3A9@NTXXIAMBX02.xacn.micron.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Cc: Richard Weinberger <richard.weinberger@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,28 +29,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Am Mittwoch, 1. Januar 2014, 13:11:21 schrieb Qi Wang =E7=8E=8B=E8=B5=B7=
+:
+> If have any questions, please let me know.=20
 
-These 2 subsystems are so much related, and the traffic there became rather
-small, so that maintaining 2 separate git trees adds no value, just burden.
+Did you send the patch again using Outlook?
+Or are you behind a MS Exchange server?
 
-Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The patch is still malformed. :-(
+e.g. it is base64 encoded.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d5e4ff3..16e24ce 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8888,7 +8888,7 @@ UNSORTED BLOCK IMAGES (UBI)
- M:	Artem Bityutskiy <dedekind1@gmail.com>
- W:	http://www.linux-mtd.infradead.org/
- L:	linux-mtd@lists.infradead.org
--T:	git git://git.infradead.org/ubi-2.6.git
-+T:	git git://git.infradead.org/ubifs-2.6.git
- S:	Maintained
- F:	drivers/mtd/ubi/
- F:	include/linux/mtd/ubi.h
--- 
-1.8.5.2
+Can you please try using git send-email?
+
+Thanks,
+//richard
