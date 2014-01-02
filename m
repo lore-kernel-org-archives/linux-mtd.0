@@ -1,21 +1,27 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vyk1g-0005E1-Fs
- for linux-mtd@lists.infradead.org; Thu, 02 Jan 2014 15:17:36 +0000
-Message-ID: <1388675815.25123.91.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 4/25] UBI: fix error return code
+ id 1Vyk79-0005LO-TU
+ for linux-mtd@lists.infradead.org; Thu, 02 Jan 2014 15:23:16 +0000
+Message-ID: <1388676172.25123.93.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 1/1]  MTD: UBI:  avoid program operation on  NOR flash
+ after erasure interrupted
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Julia Lawall <Julia.Lawall@lip6.fr>
-Date: Thu, 02 Jan 2014 17:16:55 +0200
-In-Reply-To: <1388357260-4843-5-git-send-email-Julia.Lawall@lip6.fr>
-References: <1388357260-4843-1-git-send-email-Julia.Lawall@lip6.fr>
- <1388357260-4843-5-git-send-email-Julia.Lawall@lip6.fr>
+To: Qi Wang =?UTF-8?Q?=E7=8E=8B=E8=B5=B7?= "(qiwang)" <qiwang@micron.com>
+Date: Thu, 02 Jan 2014 17:22:52 +0200
+In-Reply-To: <1388675460.25123.90.camel@sauron.fi.intel.com>
+References: <71CF8D7F32C5C24C9CD1D0E02D52498A770B54B1@NTXXIAMBX02.xacn.micron.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A770B68A8@NTXXIAMBX02.xacn.micron.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A770B6F77@NTXXIAMBX02.xacn.micron.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A770B79C8@NTXXIAMBX02.xacn.micron.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A770B8611@NTXXIAMBX02.xacn.micron.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A770BA389@NTXXIAMBX02.xacn.micron.com>
+ <1388675460.25123.90.camel@sauron.fi.intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, kernel-janitors@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,15 +32,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2013-12-29 at 23:47 +0100, Julia Lawall wrote:
-> From: Julia Lawall <Julia.Lawall@lip6.fr>
-> 
-> Set the return variable to an error code as done elsewhere in the function.
-> 
-> A simplified version of the semantic match that finds this problem is as
-> follows: (http://coccinelle.lip6.fr/)
+On Thu, 2014-01-02 at 17:11 +0200, Artem Bityutskiy wrote:
+> Anyway, I did not respond for long time, so I decided to do all these
+> modifications myself. Could you please review and test the below patch,
+> which is also attached. I did not compile it even. If there are issues,
+> just fix-it up and send the the fix or the fixed version. If it is OK,
+> give me your "Tested-by:" please. Thanks!
 
-Pushed to linux-ubifs.git, thanks!
+Actually, for convenience, I've pushed this patch to the 'qi' branch of
+the 'linux-ubifs' git tree:
+
+git://git.infradead.org/ubifs-2.6.git
 
 -- 
 Best Regards,
