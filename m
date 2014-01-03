@@ -1,29 +1,24 @@
-Received: from mail-pd0-x229.google.com ([2607:f8b0:400e:c02::229])
+Received: from mail-ie0-x235.google.com ([2607:f8b0:4001:c03::235])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vz6Uz-0000Ua-Tf
- for linux-mtd@lists.infradead.org; Fri, 03 Jan 2014 15:17:22 +0000
-Received: by mail-pd0-f169.google.com with SMTP id v10so15438389pde.14
- for <linux-mtd@lists.infradead.org>; Fri, 03 Jan 2014 07:16:59 -0800 (PST)
-Date: Fri, 3 Jan 2014 23:16:49 +0800
-From: Huang Shijie <shijie8@gmail.com>
-To: Elie De Brauwer <eliedebrauwer@gmail.com>
-Subject: Re: [PATCH v6] mtd: gpmi: Deal with bitflips in erased regions regions
-Message-ID: <20140103151647.GA1766@gmail.com>
-References: <1387393632-5338-1-git-send-email-eliedebrauwer@gmail.com>
- <1387393632-5338-2-git-send-email-eliedebrauwer@gmail.com>
- <20131219051050.GA12530@shlinux2.ap.freescale.net>
- <CAGWqfii6=8bS8Au0m=u6zhdhmaFgAtCOCATodb_9nBtUu1geXA@mail.gmail.com>
- <20140103094412.GA16089@shlinux2.ap.freescale.net>
- <CAGWqfiiQ0V0FGGV0UiTqw9wpqUtb2hFh2mj+WhMx8_zmct1OyA@mail.gmail.com>
+ id 1Vz9Ia-0004ix-8s
+ for linux-mtd@lists.infradead.org; Fri, 03 Jan 2014 18:16:44 +0000
+Received: by mail-ie0-f181.google.com with SMTP id e14so16305312iej.40
+ for <linux-mtd@lists.infradead.org>; Fri, 03 Jan 2014 10:16:22 -0800 (PST)
+Date: Fri, 3 Jan 2014 10:16:15 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Jingoo Han <jg1.han@samsung.com>
+Subject: Re: [PATCH 7/8] mtd: plat_nand: Use devm_*() functions
+Message-ID: <20140103181615.GE5631@ld-irv-0074>
+References: <000f01cefd3f$60ef8540$22ce8fc0$%han@samsung.com>
+ <001601cefd40$f6b3dd00$e41b9700$%han@samsung.com>
+ <20140103010445.GA5631@ld-irv-0074>
+ <000501cf0823$0658bc70$130a3550$%han@samsung.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAGWqfiiQ0V0FGGV0UiTqw9wpqUtb2hFh2mj+WhMx8_zmct1OyA@mail.gmail.com>
-Cc: Huang Shijie <b32955@freescale.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+In-Reply-To: <000501cf0823$0658bc70$130a3550$%han@samsung.com>
+Cc: linux-mtd@lists.infradead.org, 'David Woodhouse' <dwmw2@infradead.org>,
+ 'Vitaly Wool' <vitalywool@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,33 +28,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jan 03, 2014 at 11:34:54AM +0100, Elie De Brauwer wrote:
-> >
-> > I confirmed with the hardware guy just now.
-> > the hardware guy ate his word!
-> >
-> > If we do not apply this patch, does it mean the UBIFS can not work?
-> >
-> >
-> 
-> Thanks for doublechecking ! I'll provide a new version of this patch
-> in the weekend.
-> 
-> If this patch does not get applied you will get bugreports related to
-> "corrupt empty space"
-> issues when using UBIFS, for the simple reason that ubifs only claims
-> to be tolerant to
-> corruption due to powercuts, and ubifs relies on the mtd layer that
-> bitflips are detected
-> and corrected.  In my situation I have already seen two distinct units
-> (on a 20 unit population
-> over a timespan of about two months) refuse to boot because of this
-> issue, which were
-> both solved by this patch. So ubifs might seem to work, but people
-> using it will likely bump
-> into nasty field issues.
-I will discuss with our manager next week, and i hope the hardware guy
-can fix it in the future.
+On Fri, Jan 03, 2014 at 10:27:53AM +0900, Jingoo Han wrote:
+> On Friday, January 03, 2014 10:18 AM, Jingoo Han wrote:
 
-thanks
-Huang Shijie
+^^^ Huh? It looks like you quoted me, but your mailer says you're
+quoting yourself! You might want to fix that :)
+
+> > This gives me a few errors:
+> > 
+> > drivers/mtd/nand/plat_nand.c: In function 'plat_nand_probe':
+> > drivers/mtd/nand/plat_nand.c:61:2: error: implicit declaration of function 'IS_ERR' [-Werror=implicit-
+> > function-declaration]
+> > drivers/mtd/nand/plat_nand.c:62:3: error: implicit declaration of function 'PTR_ERR' [-
+> > Werror=implicit-function-declaration]
+> > make[4]: *** [drivers/mtd/nand/plat_nand.o] Error 1
+> > 
+> > You probably need to #include <linux/err.h>. I guess you don't
+> > compile-test your changes? It would help if you can catch these mistakes
+> > before they get to the maintainer.
+> 
+> Hi Norris,
+> 
+> I did compile all patches. However, I cannot understand why the build
+> error happens.
+
+I guess you were relying on an implicit #include via some other
+explicitly-included header, and maybe this implicit inclusion is
+different for different ARCHes, so that this only fails to compile under
+certain configurations.
+
+> Anyway, I will check it and add '#include <linux/err.h'
+> if needed.
+
+Yes, that is the right thing. Standard practice is to explicitly include
+any required headers, so that changes in unrelated headers don't break
+things.
+
+> Thank you for your comment. :-)
+> Happy new year!
+
+Yes, happy 2014!
+
+Brian
