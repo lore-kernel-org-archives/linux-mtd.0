@@ -1,28 +1,22 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vyk79-0005LO-TU
- for linux-mtd@lists.infradead.org; Thu, 02 Jan 2014 15:23:16 +0000
-Message-ID: <1388676172.25123.93.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/1]  MTD: UBI:  avoid program operation on  NOR flash
- after erasure interrupted
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Qi Wang =?UTF-8?Q?=E7=8E=8B=E8=B5=B7?= "(qiwang)" <qiwang@micron.com>
-Date: Thu, 02 Jan 2014 17:22:52 +0200
-In-Reply-To: <1388675460.25123.90.camel@sauron.fi.intel.com>
-References: <71CF8D7F32C5C24C9CD1D0E02D52498A770B54B1@NTXXIAMBX02.xacn.micron.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A770B68A8@NTXXIAMBX02.xacn.micron.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A770B6F77@NTXXIAMBX02.xacn.micron.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A770B79C8@NTXXIAMBX02.xacn.micron.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A770B8611@NTXXIAMBX02.xacn.micron.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A770BA389@NTXXIAMBX02.xacn.micron.com>
- <1388675460.25123.90.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Adrian Hunter <adrian.hunter@intel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Reply-To: dedekind1@gmail.com
+Received: from mail-ie0-x22a.google.com ([2607:f8b0:4001:c03::22a])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VytOu-0004EP-DI
+ for linux-mtd@lists.infradead.org; Fri, 03 Jan 2014 01:18:12 +0000
+Received: by mail-ie0-f170.google.com with SMTP id qd12so15476253ieb.15
+ for <linux-mtd@lists.infradead.org>; Thu, 02 Jan 2014 17:17:49 -0800 (PST)
+Date: Thu, 2 Jan 2014 17:17:36 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Jingoo Han <jg1.han@samsung.com>
+Subject: Re: [PATCH 7/8] mtd: plat_nand: Use devm_*() functions
+Message-ID: <20140103010445.GA5631@ld-irv-0074>
+References: <000f01cefd3f$60ef8540$22ce8fc0$%han@samsung.com>
+ <001601cefd40$f6b3dd00$e41b9700$%han@samsung.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <001601cefd40$f6b3dd00$e41b9700$%han@samsung.com>
+Cc: linux-mtd@lists.infradead.org, 'David Woodhouse' <dwmw2@infradead.org>,
+ 'Vitaly Wool' <vitalywool@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,18 +26,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2014-01-02 at 17:11 +0200, Artem Bityutskiy wrote:
-> Anyway, I did not respond for long time, so I decided to do all these
-> modifications myself. Could you please review and test the below patch,
-> which is also attached. I did not compile it even. If there are issues,
-> just fix-it up and send the the fix or the fixed version. If it is OK,
-> give me your "Tested-by:" please. Thanks!
+On Fri, Dec 20, 2013 at 02:04:29PM +0900, Jingoo Han wrote:
+> --- a/drivers/mtd/nand/plat_nand.c
+> +++ b/drivers/mtd/nand/plat_nand.c
+> @@ -52,25 +52,16 @@ static int plat_nand_probe(struct platform_device *pdev)
+>  		return -ENXIO;
+>  
+>  	/* Allocate memory for the device structure (and zero it) */
+> -	data = kzalloc(sizeof(struct plat_nand_data), GFP_KERNEL);
+> +	data = devm_kzalloc(&pdev->dev, sizeof(struct plat_nand_data),
+> +			    GFP_KERNEL);
+>  	if (!data) {
+>  		dev_err(&pdev->dev, "failed to allocate device structure.\n");
+>  		return -ENOMEM;
+>  	}
+>  
+> -	if (!request_mem_region(res->start, resource_size(res),
+> -				dev_name(&pdev->dev))) {
+> -		dev_err(&pdev->dev, "request_mem_region failed\n");
+> -		err = -EBUSY;
+> -		goto out_free;
+> -	}
+> -
+> -	data->io_base = ioremap(res->start, resource_size(res));
+> -	if (data->io_base == NULL) {
+> -		dev_err(&pdev->dev, "ioremap failed\n");
+> -		err = -EIO;
+> -		goto out_release_io;
+> -	}
+> +	data->io_base = devm_ioremap_resource(&pdev->dev, res);
+> +	if (IS_ERR(data->io_base))
+> +		return PTR_ERR(data->io_base);
 
-Actually, for convenience, I've pushed this patch to the 'qi' branch of
-the 'linux-ubifs' git tree:
+This gives me a few errors:
 
-git://git.infradead.org/ubifs-2.6.git
+drivers/mtd/nand/plat_nand.c: In function 'plat_nand_probe':
+drivers/mtd/nand/plat_nand.c:61:2: error: implicit declaration of function 'IS_ERR' [-Werror=implicit-function-declaration]
+drivers/mtd/nand/plat_nand.c:62:3: error: implicit declaration of function 'PTR_ERR' [-Werror=implicit-function-declaration]
+make[4]: *** [drivers/mtd/nand/plat_nand.o] Error 1
 
--- 
-Best Regards,
-Artem Bityutskiy
+You probably need to #include <linux/err.h>. I guess you don't
+compile-test your changes? It would help if you can catch these mistakes
+before they get to the maintainer.
+
+>  
+>  	data->chip.priv = &data;
+>  	data->mtd.priv = &data->chip;
+
+Brian
