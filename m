@@ -1,20 +1,18 @@
-Received: from mailout1.samsung.com ([203.254.224.24])
+Received: from mailout4.samsung.com ([203.254.224.34])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VyuJm-0005Fa-Nx
- for linux-mtd@lists.infradead.org; Fri, 03 Jan 2014 02:17:00 +0000
-Received: from epcpsbgr4.samsung.com
- (u144.gpu120.samsung.co.kr [203.254.230.144])
- by mailout1.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ id 1VyuKj-0005Ij-2f
+ for linux-mtd@lists.infradead.org; Fri, 03 Jan 2014 02:17:57 +0000
+Received: from epcpsbgr5.samsung.com
+ (u145.gpu120.samsung.co.kr [203.254.230.145])
+ by mailout4.samsung.com (Oracle Communications Messaging Server 7u4-24.01
  (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0MYS00MVIZNGG2D0@mailout1.samsung.com> for
- linux-mtd@lists.infradead.org; Fri, 03 Jan 2014 11:16:28 +0900 (KST)
+ with ESMTP id <0MYS00DCJZP6BSB0@mailout4.samsung.com> for
+ linux-mtd@lists.infradead.org; Fri, 03 Jan 2014 11:17:30 +0900 (KST)
 From: Jingoo Han <jg1.han@samsung.com>
 To: 'Brian Norris' <computersforpeace@gmail.com>
-References: <000601cf0829$9d53a620$d7faf260$%han@samsung.com>
-In-reply-to: <000601cf0829$9d53a620$d7faf260$%han@samsung.com>
-Subject: [PATCH V4 2/2] mtd: plat_nand: Use devm_*() functions
-Date: Fri, 03 Jan 2014 11:16:28 +0900
-Message-id: <000701cf0829$cf919660$6eb4c320$%han@samsung.com>
+Subject: [PATCH v2] mtd: plat_nand: Remove unnecessary OOM messages
+Date: Fri, 03 Jan 2014 11:17:29 +0900
+Message-id: <000801cf0829$f3a48300$daed8900$%han@samsung.com>
 MIME-version: 1.0
 Content-type: text/plain; charset=us-ascii
 Content-transfer-encoding: 7bit
@@ -30,87 +28,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use devm_*() functions to make cleanup paths simpler.
+The site-specific OOM messages are unnecessary, because they
+duplicate the MM subsystem generic OOM message.
 
 Signed-off-by: Jingoo Han <jg1.han@samsung.com>
 ---
-Change since v3
-- Include err.h in order to prevent possible build errors.
+Change since v1
+- Re-based on the newer version of the patch "mtd: plat_nand:
+  Use devm_*() functions".
 
- drivers/mtd/nand/plat_nand.c |   31 ++++++-------------------------
- 1 file changed, 6 insertions(+), 25 deletions(-)
+ drivers/mtd/nand/plat_nand.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/drivers/mtd/nand/plat_nand.c b/drivers/mtd/nand/plat_nand.c
-index cad4cdc..d00e3a7 100644
+index d00e3a7..4ebed72 100644
 --- a/drivers/mtd/nand/plat_nand.c
 +++ b/drivers/mtd/nand/plat_nand.c
-@@ -9,6 +9,7 @@
-  *
-  */
- 
-+#include <linux/err.h>
- #include <linux/io.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
-@@ -52,25 +53,16 @@ static int plat_nand_probe(struct platform_device *pdev)
- 		return -ENXIO;
- 
+@@ -55,10 +55,8 @@ static int plat_nand_probe(struct platform_device *pdev)
  	/* Allocate memory for the device structure (and zero it) */
--	data = kzalloc(sizeof(struct plat_nand_data), GFP_KERNEL);
-+	data = devm_kzalloc(&pdev->dev, sizeof(struct plat_nand_data),
-+			    GFP_KERNEL);
- 	if (!data) {
- 		dev_err(&pdev->dev, "failed to allocate device structure.\n");
+ 	data = devm_kzalloc(&pdev->dev, sizeof(struct plat_nand_data),
+ 			    GFP_KERNEL);
+-	if (!data) {
+-		dev_err(&pdev->dev, "failed to allocate device structure.\n");
++	if (!data)
  		return -ENOMEM;
- 	}
- 
--	if (!request_mem_region(res->start, resource_size(res),
--				dev_name(&pdev->dev))) {
--		dev_err(&pdev->dev, "request_mem_region failed\n");
--		err = -EBUSY;
--		goto out_free;
 -	}
--
--	data->io_base = ioremap(res->start, resource_size(res));
--	if (data->io_base == NULL) {
--		dev_err(&pdev->dev, "ioremap failed\n");
--		err = -EIO;
--		goto out_release_io;
--	}
-+	data->io_base = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR(data->io_base))
-+		return PTR_ERR(data->io_base);
  
- 	data->chip.priv = &data;
- 	data->mtd.priv = &data->chip;
-@@ -122,11 +114,6 @@ static int plat_nand_probe(struct platform_device *pdev)
- out:
- 	if (pdata->ctrl.remove)
- 		pdata->ctrl.remove(pdev);
--	iounmap(data->io_base);
--out_release_io:
--	release_mem_region(res->start, resource_size(res));
--out_free:
--	kfree(data);
- 	return err;
- }
- 
-@@ -137,16 +124,10 @@ static int plat_nand_remove(struct platform_device *pdev)
- {
- 	struct plat_nand_data *data = platform_get_drvdata(pdev);
- 	struct platform_nand_data *pdata = dev_get_platdata(&pdev->dev);
--	struct resource *res;
--
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 
- 	nand_release(&data->mtd);
- 	if (pdata->ctrl.remove)
- 		pdata->ctrl.remove(pdev);
--	iounmap(data->io_base);
--	release_mem_region(res->start, resource_size(res));
--	kfree(data);
- 
- 	return 0;
- }
+ 	data->io_base = devm_ioremap_resource(&pdev->dev, res);
+ 	if (IS_ERR(data->io_base))
 -- 
 1.7.10.4
