@@ -1,19 +1,21 @@
-Received: from mail-db9lp0248.outbound.messaging.microsoft.com
- ([213.199.154.248] helo=db9outboundpool.messaging.microsoft.com)
+Received: from bear.ext.ti.com ([192.94.94.41])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vyxxg-0008PI-4Y
- for linux-mtd@lists.infradead.org; Fri, 03 Jan 2014 06:10:24 +0000
-From: Huang Shijie <b32955@freescale.com>
-To: <dwmw2@infradead.org>
-Subject: [PATCH] mtd: nand: add support for SanDisk SDTNRGAMA-008G
-Date: Fri, 3 Jan 2014 13:37:03 +0800
-Message-ID: <1388727423-8997-1-git-send-email-b32955@freescale.com>
-In-Reply-To: <1388043465-17441-1-git-send-email-b32955@freescale.com>
-References: <1388043465-17441-1-git-send-email-b32955@freescale.com>
+ id 1VyyWs-0000LF-1v
+ for linux-mtd@lists.infradead.org; Fri, 03 Jan 2014 06:46:46 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Sachin Kamat <sachin.kamat@linaro.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: RE: [PATCH 1/2] mtd: omap2: Cleanup header files
+Date: Fri, 3 Jan 2014 06:46:15 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA5D9ED@DBDE04.ent.ti.com>
+References: <1388385021-1881-1-git-send-email-sachin.kamat@linaro.org>
+In-Reply-To: <1388385021-1881-1-git-send-email-sachin.kamat@linaro.org>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org
+Cc: "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "patches@linaro.org" <patches@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,27 +25,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The datasheet does not tell us how to parse out the ID data,
-so handle it as a full ID nand.
+>From: linux-mtd On Behalf Of Sachin Kamat
+>
+>Commit 2203747c9771 ("ARM: omap: move platform_data definitions")
+>moved the files to the current location but forgot to remove the pointer
+>to its previous location. Clean it up.
+>
+>Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+>---
+> include/linux/platform_data/mtd-nand-omap2.h    |    2 --
+> include/linux/platform_data/mtd-onenand-omap2.h |    2 --
+> 2 files changed, 4 deletions(-)
+>
+>diff --git a/include/linux/platform_data/mtd-nand-omap2.h b/include/linux/=
+platform_data/mtd-nand-omap2.h
+>index 4da5bfa2147f..3e9dd6676b97 100644
+>--- a/include/linux/platform_data/mtd-nand-omap2.h
+>+++ b/include/linux/platform_data/mtd-nand-omap2.h
+>@@ -1,6 +1,4 @@
+> /*
+>- * arch/arm/plat-omap/include/mach/nand.h
+>- *
+>  * Copyright (C) 2006 Micron Technology Inc.
+>  *
+>  * This program is free software; you can redistribute it and/or modify
+>diff --git a/include/linux/platform_data/mtd-onenand-omap2.h b/include/lin=
+ux/platform_data/mtd-onenand-omap2.h
+>index e9a9fb188f97..56ff0e6f5ad1 100644
+>--- a/include/linux/platform_data/mtd-onenand-omap2.h
+>+++ b/include/linux/platform_data/mtd-onenand-omap2.h
+>@@ -1,6 +1,4 @@
+> /*
+>- * arch/arm/plat-omap/include/mach/onenand.h
+>- *
+>  * Copyright (C) 2006 Nokia Corporation
+>  * Author: Juha Yrjola
+>  *
+>--
+>1.7.9.5
+>
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
----
- drivers/mtd/nand/nand_ids.c |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
+Acked-by: Pekon Gupta <pekon@ti.com>
 
-diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
-index 136a463..d3dbf59 100644
---- a/drivers/mtd/nand/nand_ids.c
-+++ b/drivers/mtd/nand/nand_ids.c
-@@ -43,6 +43,9 @@ struct nand_flash_dev nand_flash_ids[] = {
- 	{"TC58NVG6D2 64G 3.3V 8-bit",
- 		{ .id = {0x98, 0xde, 0x94, 0x82, 0x76, 0x56, 0x04, 0x20} },
- 		  SZ_8K, SZ_8K, SZ_2M, 0, 8, 640, NAND_ECC_INFO(40, SZ_1K) },
-+	{"SDTNRGAMA 64G 3.3V 8-bit",
-+		{ .id = {0x45, 0xde, 0x94, 0x93, 0x76, 0x50} },
-+		  SZ_16K, SZ_8K, SZ_4M, 0, 6, 1280, NAND_ECC_INFO(40, SZ_1K) },
- 
- 	LEGACY_ID_NAND("NAND 4MiB 5V 8-bit",   0x6B, 4, SZ_8K, SP_OPTIONS),
- 	LEGACY_ID_NAND("NAND 4MiB 3,3V 8-bit", 0xE3, 4, SZ_8K, SP_OPTIONS),
--- 
-1.7.2.rc3
+
+with regards, pekon
