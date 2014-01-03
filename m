@@ -1,27 +1,18 @@
-Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
+Received: from arroyo.ext.ti.com ([192.94.94.40])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vz260-0003vu-SW
- for linux-mtd@lists.infradead.org; Fri, 03 Jan 2014 10:35:17 +0000
-Received: by mail-pa0-f50.google.com with SMTP id kp14so13791157pab.37
- for <linux-mtd@lists.infradead.org>; Fri, 03 Jan 2014 02:34:55 -0800 (PST)
+ id 1Vz3CW-000511-Eo
+ for linux-mtd@lists.infradead.org; Fri, 03 Jan 2014 11:46:05 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>
+Subject: UBIFS seeing corrupt blank pages when image flashed via u-boot
+Date: Fri, 3 Jan 2014 11:45:28 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA5DBFA@DBDE04.ent.ti.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <20140103094412.GA16089@shlinux2.ap.freescale.net>
-References: <1387393632-5338-1-git-send-email-eliedebrauwer@gmail.com>
- <1387393632-5338-2-git-send-email-eliedebrauwer@gmail.com>
- <20131219051050.GA12530@shlinux2.ap.freescale.net>
- <CAGWqfii6=8bS8Au0m=u6zhdhmaFgAtCOCATodb_9nBtUu1geXA@mail.gmail.com>
- <20140103094412.GA16089@shlinux2.ap.freescale.net>
-Date: Fri, 3 Jan 2014 11:34:54 +0100
-Message-ID: <CAGWqfiiQ0V0FGGV0UiTqw9wpqUtb2hFh2mj+WhMx8_zmct1OyA@mail.gmail.com>
-Subject: Re: [PATCH v6] mtd: gpmi: Deal with bitflips in erased regions regions
-From: Elie De Brauwer <eliedebrauwer@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Huang Shijie <shijie8@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Cc: "u-boot@lists.denx.de" <u-boot@lists.denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,93 +22,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jan 3, 2014 at 10:44 AM, Huang Shijie <b32955@freescale.com> wrote:
-> On Fri, Jan 03, 2014 at 10:43:41AM +0100, Elie De Brauwer wrote:
->> On Thu, Dec 19, 2013 at 6:10 AM, Huang Shijie <b32955@freescale.com> wrote:
->> > On Wed, Dec 18, 2013 at 08:07:12PM +0100, Elie De Brauwer wrote:
->> >> The BCH block typically used with a GPMI block on an i.MX28/i.MX6 is only
->> >> able to correct bitflips on data actually streamed through the block.
->> >> When erasing a block the data does not stream through the BCH block
->> >> and therefore no ECC data is written to the NAND chip. This causes
->> >> gpmi_ecc_read_page to return failure as soon as a single non-1-bit is
->> >> found in an erased page. Typically causing problems at higher levels
->> >> (ubifs corrupted empty space warnings). This problem was also observed
->> >> when using SLC NAND devices.
->> >>
->> >> This patch configures the BCH block to mark a block as 'erased' if
->> >> not too much bitflips are found. Next HW_BCH_STATUS0:ALLONES
->> >> is used to check if the data read were all ones, indicating a read of a
->> >> properly erased chunk was performed. If this was not the case a slow path
->> >> is entered where bitflips are counted and corrected in software,
->> >> allowing the upper layers to take proper actions.
->> >>
->> >> Signed-off-by: Elie De Brauwer <eliedebrauwer@gmail.com>
->> >> Acked-by: Peter Korsgaard <peter@korsgaard.com>
->> >
->> > thanks a lot!
->> >
->> > Acked-by: Huang Shijie <b32955@freescale.com>
->> >
->>
->> Hello Huang, all,
->>
->> Huang, you suggested earlier after checking with your hw guys to make
->> use of the ALLONES bit
->> in the HW_BCH0_STATUS0 register, this looked like a nice solution
->> since this could introduce a fast
->> path. However the documentation did not mention how the ALLONES bit is
->> implemented, including whether
->> or not it takes the erase threshold into account. Obviously V6 of my
->> patch will only function if ALLONES function if _all bits are
->> physically one_ and fail to function if allones something like the AND
->> of all statusses of the chunk.
->>
->> I've been given a board with another bitflip (jay). It propgates as
->> the following error:
->> "UBIFS error (pid 36): ubifs_recover_master_node: failed to recover master node"
->>
->> And if I look at the data I see the LEB consists out of 55 valid
->> master nodes, but two pages after the last valid master node there is
->> a bitflip which causes in ubifs/recovery.c get_master_node() to
->> trigger:
->>                 if (!is_empty(buf, len))
->>                         goto out_err;
->>
->> When dumping the data read I get to see a bitflip:
->> [    4.094719] c8a32e30: ff ff ff fd ff ff ff ff ff ff ff ff ff ff ff
->> ff  ................
->>
->> This leads me to believe that the ALLONES bit is actually not behaving
->> the way I think it was. Implying that it actually is taking the
->> ERASE_THRESHOLD into account. (I verified this by dumping the status
->> register which was 0xff10 and counting the bitflips which actually
->> showed allones to be set while a bitflip was found) Making the allones
->
-> I confirmed with the hardware guy just now.
-> the hardware guy ate his word!
->
-> If we do not apply this patch, does it mean the UBIFS can not work?
->
->
+Hi All,
 
-Thanks for doublechecking ! I'll provide a new version of this patch
-in the weekend.
+I have been facing a weird problem, may be someone has a solution.
 
-If this patch does not get applied you will get bugreports related to
-"corrupt empty space"
-issues when using UBIFS, for the simple reason that ubifs only claims
-to be tolerant to
-corruption due to powercuts, and ubifs relies on the mtd layer that
-bitflips are detected
-and corrected.  In my situation I have already seen two distinct units
-(on a 20 unit population
-over a timespan of about two months) refuse to boot because of this
-issue, which were
-both solved by this patch. So ubifs might seem to work, but people
-using it will likely bump
-into nasty field issues.
+*_Case-1_ Flashing UBIFS image from u-boot using 'nand write' utility*
 
-my 2 cents
-E.
--- 
-Elie De Brauwer
+For a partially written erased-block..
+(a) 1st page is written with 'erase-header'
+(b) 2nd page is written with 'volume-header'
+(c) '3rd page' is written with 'some data'
+(d) '4th to last-page of block' should be left blank, but they are written =
+with 0xFF.
+As a effect of (d), the ECC calculated for (all 0xff data) is written to
+OOB area of all pages from 4th-page till last-page of the PEB.
+
+As per my understanding, after mounting UBIFS as root, kernel tries to
+append some data to some files in rootfs, due to which leftover pages (d)
+get written by appended data, _without_ PEB getting erased.
+This causes ECC bytes to get corrupted, because OOB of 'unused-pages'
+was already written with ECC of (all 0xff data) by u-boot in step(d).
+And on next reboot, kernel sees 'un-corrected ECC' errors while booting.
+
+
+*_Case-2_ Flashing UBIFS image from kernel using 'ubiformat' utility*
+
+Whereas when same image is flashed using 'ubiformat' utility, after booting
+Kernel from other root source. 'ubiformat' automatically skips empty pages
+(4th to last-page) in erased-block. Thus OOB area of pages from 4th-page
+till last-page are un-touched.
+Hence, when kernel 'appends' the rootfs files there is no ECC corruption
+as the OOB area of 4th to last-page of PEB were blank. So everything works =
+fine.
+
+
+Now my queries:
+(1) while _appending_ a file
+  (a) does UBIFS writes appended data to same existing PEB, if there is
+  enough space in PEB to accommodate new data ?
+ OR
+  (b) does UBIFS copies the existing data to newer PEB  along with the
+   appended data ?
+
+(2) In-case (b), then can someone point me to what can possibly be the issu=
+e ?
+ (Any references to UBIFS docs on infradead.org may also help).
+
+
+with regards, pekon
