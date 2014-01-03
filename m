@@ -1,22 +1,21 @@
-Received: from mail-oa0-x22d.google.com ([2607:f8b0:4003:c02::22d])
+Received: from mail-ig0-x229.google.com ([2607:f8b0:4001:c05::229])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VzA5z-0005ns-3S
- for linux-mtd@lists.infradead.org; Fri, 03 Jan 2014 19:07:47 +0000
-Received: by mail-oa0-f45.google.com with SMTP id g12so995102oah.18
- for <linux-mtd@lists.infradead.org>; Fri, 03 Jan 2014 11:07:25 -0800 (PST)
-Date: Fri, 3 Jan 2014 11:07:20 -0800
+ id 1VzAA4-0005tD-El
+ for linux-mtd@lists.infradead.org; Fri, 03 Jan 2014 19:12:00 +0000
+Received: by mail-ig0-f169.google.com with SMTP id hk11so1869973igb.0
+ for <linux-mtd@lists.infradead.org>; Fri, 03 Jan 2014 11:11:28 -0800 (PST)
+Date: Fri, 3 Jan 2014 11:11:25 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Hou Zhiqiang <b48286@freescale.com>
-Subject: Re: [PATCH v2] mtd: m25p80: Add Power Management support
-Message-ID: <20140103190720.GH5631@ld-irv-0074>
-References: <1386826716-20476-1-git-send-email-b48286@freescale.com>
+To: Jingoo Han <jg1.han@samsung.com>
+Subject: Re: [PATCH V4 1/2] mtd: ixp4xx: Use devm_*() functions
+Message-ID: <20140103191125.GI5631@ld-irv-0074>
+References: <000601cf0829$9d53a620$d7faf260$%han@samsung.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1386826716-20476-1-git-send-email-b48286@freescale.com>
-Cc: Marek Vasut <marex@denx.de>, grant.likely@secretlab.ca,
- linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
- scottwood@freescale.com, Mingkai.Hu@freescale.com, dwmw2@infradead.org
+In-Reply-To: <000601cf0829$9d53a620$d7faf260$%han@samsung.com>
+Cc: linux-mtd@lists.infradead.org, 'David Woodhouse' <dwmw2@infradead.org>,
+ 'Marc Kleine-Budde' <mkl@blackshift.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,38 +25,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 12, 2013 at 01:38:36PM +0800, Hou Zhiqiang wrote:
-> Add PM support using callback function suspend and resume in
-> .driver.pm of spi_driver.
+On Fri, Jan 03, 2014 at 11:15:04AM +0900, Jingoo Han wrote:
+> Use devm_*() functions to make cleanup paths simpler.
 > 
-> Signed-off-by: Hou Zhiqiang <b48286@freescale.com>
+> Signed-off-by: Jingoo Han <jg1.han@samsung.com>
 > ---
-> v2:
->  - Replace .driver.suspend and .driver.resume with .driver.pm
->  - Use CONFIG_PM_SLEEP instead of CONFIG_PM
+> Change since v3
+> - Include err.h in order to prevent possible build errors.
 
-Just noticed v2... My v1 comments still apply.
-
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -1128,11 +1130,46 @@ static int m25p_remove(struct spi_device *spi)
-...
-> +static const struct dev_pm_ops m25p_pm = {
-> +	SET_SYSTEM_SLEEP_PM_OPS(m25p_suspend, m25p_resume)
-> +};
-
-This could just be:
-
-static SIMPLE_DEV_PM_OPS(m25p_pm_ops, m25p_suspend, m25p_resume);
-
->  
->  static struct spi_driver m25p80_driver = {
->  	.driver = {
->  		.name	= "m25p80",
->  		.owner	= THIS_MODULE,
-> +		.pm	= &m25p_pm,
->  	},
->  	.id_table	= m25p_ids,
->  	.probe	= m25p_probe,
+Both compile-tested fine for me now. Pushed to l2-mtd.git. Thanks!
 
 Brian
