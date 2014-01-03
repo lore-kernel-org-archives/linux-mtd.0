@@ -1,24 +1,16 @@
-Received: from mail-oa0-f43.google.com ([209.85.219.43])
+Received: from mail-ee0-x230.google.com ([2a00:1450:4013:c00::230])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VzAjN-0006nX-UN
- for linux-mtd@lists.infradead.org; Fri, 03 Jan 2014 19:48:30 +0000
-Received: by mail-oa0-f43.google.com with SMTP id i7so16549838oag.16
- for <linux-mtd@lists.infradead.org>; Fri, 03 Jan 2014 11:48:05 -0800 (PST)
-Date: Fri, 3 Jan 2014 11:48:01 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [RFC/PATCH] mtd: Hide CONFIG_MTD_BLKDEVS from the menu
-Message-ID: <20140103194801.GN5631@ld-irv-0074>
-References: <1386943124-8005-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <20131220004712.GA12803@localhost>
- <20131220020518.GB18175@norris-Latitude-E6410>
- <20131220181757.GA17786@localhost>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20131220181757.GA17786@localhost>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+ id 1VzCHd-0008Lf-EU
+ for linux-mtd@lists.infradead.org; Fri, 03 Jan 2014 21:27:57 +0000
+Received: by mail-ee0-f48.google.com with SMTP id e49so6834847eek.35
+ for <linux-mtd@lists.infradead.org>; Fri, 03 Jan 2014 13:27:35 -0800 (PST)
+From: Elie De Brauwer <eliedebrauwer@gmail.com>
+To: b32955@freescale.com, dwmw2@infradead.org, dedekind1@gmail.com,
+ computersforpeace@gmail.com, shijie8@gmail.com
+Subject: [PATCH v7] mtd: gpmi: Deal with bitflips in erased regions
+Date: Fri,  3 Jan 2014 22:27:18 +0100
+Message-Id: <1388784439-23004-1-git-send-email-eliedebrauwer@gmail.com>
+Cc: Elie De Brauwer <eliedebrauwer@gmail.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,43 +20,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Dec 20, 2013 at 03:17:58PM -0300, Ezequiel Garcia wrote:
-> On Thu, Dec 19, 2013 at 06:05:18PM -0800, Brian Norris wrote:
-> > On Thu, Dec 19, 2013 at 09:47:13PM -0300, Ezequiel Garcia wrote:
-> > > Any comments on this one?
-> > 
-> > It looks OK to me. I might add a comment above MTD_BLKDEVS like I see in
-> > some other similar Kconfig not-user-selectable options:
-> > 
-> > #
-> > # MTD block device support is select'ed if needed
-> > #
-> > 
-> 
-> Fully agreed.
+Hello all,
 
-Since I didn't receive a follow-up, I just added the comment and pushed
-to l2-mtd.git. Diff pasted below.
+This is v7 of my patch which attempts to correct bitflips in erased regions.
+Tests on hardware have shown that the ALLONES bit used in earlier versions
+to distinguish between fast/slow path is not behaving as expected when 
+also using the erase threshold. This patch takes a step back and always 
+performs the correction when an erased region is detected.
 
-Thanks,
-Brian
+Feedback is welcomed.
 
-diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-index 5fab4e6e8301..cdaa4e512c97 100644
---- a/drivers/mtd/Kconfig
-+++ b/drivers/mtd/Kconfig
-@@ -157,10 +157,11 @@ config MTD_BCM47XX_PARTS
- 
- comment "User Modules And Translation Layers"
- 
-+#
-+# MTD block device support is select'ed if needed
-+#
- config MTD_BLKDEVS
--	tristate "Common interface to block layer for MTD 'translation layers'"
--	depends on BLOCK
--	default n
-+	bool
- 
- config MTD_BLOCK
- 	tristate "Caching block device access to MTD devices"
+Elie De Brauwer (1):
+  mtd: gpmi: Deal with bitflips in erased regions
+
+ drivers/mtd/nand/gpmi-nand/bch-regs.h  |  1 +
+ drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |  9 +++++++
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 43 +++++++++++++++++++++++++++++++---
+ 3 files changed, 50 insertions(+), 3 deletions(-)
+
+-- 
+1.8.5.2
