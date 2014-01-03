@@ -1,24 +1,23 @@
-Received: from mail-ie0-x235.google.com ([2607:f8b0:4001:c03::235])
+Received: from mail-ob0-x236.google.com ([2607:f8b0:4003:c01::236])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vz9Ia-0004ix-8s
- for linux-mtd@lists.infradead.org; Fri, 03 Jan 2014 18:16:44 +0000
-Received: by mail-ie0-f181.google.com with SMTP id e14so16305312iej.40
- for <linux-mtd@lists.infradead.org>; Fri, 03 Jan 2014 10:16:22 -0800 (PST)
-Date: Fri, 3 Jan 2014 10:16:15 -0800
+ id 1Vz9S8-0004vi-Js
+ for linux-mtd@lists.infradead.org; Fri, 03 Jan 2014 18:26:36 +0000
+Received: by mail-ob0-f182.google.com with SMTP id wp4so15913340obc.41
+ for <linux-mtd@lists.infradead.org>; Fri, 03 Jan 2014 10:26:11 -0800 (PST)
+Date: Fri, 3 Jan 2014 10:26:07 -0800
 From: Brian Norris <computersforpeace@gmail.com>
 To: Jingoo Han <jg1.han@samsung.com>
-Subject: Re: [PATCH 7/8] mtd: plat_nand: Use devm_*() functions
-Message-ID: <20140103181615.GE5631@ld-irv-0074>
-References: <000f01cefd3f$60ef8540$22ce8fc0$%han@samsung.com>
- <001601cefd40$f6b3dd00$e41b9700$%han@samsung.com>
- <20140103010445.GA5631@ld-irv-0074>
- <000501cf0823$0658bc70$130a3550$%han@samsung.com>
+Subject: Re: [PATCH 0/4] mtd: nan: use dev_err() instead of printk()
+Message-ID: <20140103182607.GF5631@ld-irv-0074>
+References: <009b01cf01ea$bac213d0$30463b70$%han@samsung.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <000501cf0823$0658bc70$130a3550$%han@samsung.com>
-Cc: linux-mtd@lists.infradead.org, 'David Woodhouse' <dwmw2@infradead.org>,
- 'Vitaly Wool' <vitalywool@gmail.com>
+In-Reply-To: <009b01cf01ea$bac213d0$30463b70$%han@samsung.com>
+Cc: 'Andrew Lunn' <andrew@lunn.ch>, 'Linus Walleij' <linus.walleij@linaro.org>,
+ 'Josh Wu' <josh.wu@atmel.com>, linux-mtd@lists.infradead.org,
+ 'Ezequiel Garcia' <ezequiel.garcia@free-electrons.com>,
+ 'David Woodhouse' <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,45 +27,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jan 03, 2014 at 10:27:53AM +0900, Jingoo Han wrote:
-> On Friday, January 03, 2014 10:18 AM, Jingoo Han wrote:
-
-^^^ Huh? It looks like you quoted me, but your mailer says you're
-quoting yourself! You might want to fix that :)
-
-> > This gives me a few errors:
-> > 
-> > drivers/mtd/nand/plat_nand.c: In function 'plat_nand_probe':
-> > drivers/mtd/nand/plat_nand.c:61:2: error: implicit declaration of function 'IS_ERR' [-Werror=implicit-
-> > function-declaration]
-> > drivers/mtd/nand/plat_nand.c:62:3: error: implicit declaration of function 'PTR_ERR' [-
-> > Werror=implicit-function-declaration]
-> > make[4]: *** [drivers/mtd/nand/plat_nand.o] Error 1
-> > 
-> > You probably need to #include <linux/err.h>. I guess you don't
-> > compile-test your changes? It would help if you can catch these mistakes
-> > before they get to the maintainer.
+On Thu, Dec 26, 2013 at 12:29:48PM +0900, Jingoo Han wrote:
+> Use dev_err()/dev_warn() instead of printk() to provide a better
+> message to userspace.
 > 
-> Hi Norris,
+> Change since v1
+> - Remove the site-specific OOM messages, per Ezequiel Garcia.
 > 
-> I did compile all patches. However, I cannot understand why the build
-> error happens.
+> Jingoo Han (4)
+>     mtd: atmel_nand: use dev_err() instead of printk()
+>     mtd: fsmc_nand: use dev_warn() instead of printk()
+>     mtd: orion_nand: use dev_err() instead of printk()
+>     mtd: sharpsl: use dev_err() instead of printk()
 
-I guess you were relying on an implicit #include via some other
-explicitly-included header, and maybe this implicit inclusion is
-different for different ARCHes, so that this only fails to compile under
-certain configurations.
-
-> Anyway, I will check it and add '#include <linux/err.h'
-> if needed.
-
-Yes, that is the right thing. Standard practice is to explicitly include
-any required headers, so that changes in unrelated headers don't break
-things.
-
-> Thank you for your comment. :-)
-> Happy new year!
-
-Yes, happy 2014!
+Pushed all 4 to l2-mtd.git. Thanks.
 
 Brian
