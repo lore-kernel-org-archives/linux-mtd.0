@@ -1,27 +1,18 @@
-Received: from mailout3.samsung.com ([203.254.224.33])
+Received: from devils.ext.ti.com ([198.47.26.153])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VzGK4-0003X2-Ph
- for linux-mtd@lists.infradead.org; Sat, 04 Jan 2014 01:46:47 +0000
-Received: from epcpsbgr2.samsung.com
- (u142.gpu120.samsung.co.kr [203.254.230.142])
- by mailout3.samsung.com (Oracle Communications Messaging Server 7u4-24.01
- (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0MYU00J9SSX5UW10@mailout3.samsung.com> for
- linux-mtd@lists.infradead.org; Sat, 04 Jan 2014 10:46:17 +0900 (KST)
-From: kgene@kernel.org
-Sender: Kukjin Kim <kgene.kim@samsung.com>
-To: 'Sachin Kamat' <sachin.kamat@linaro.org>, linux-mtd@lists.infradead.org
-References: <1388638630-1353-1-git-send-email-sachin.kamat@linaro.org>
-In-reply-to: <1388638630-1353-1-git-send-email-sachin.kamat@linaro.org>
-Subject: RE: [PATCH 1/1] mtd: s3c2410: Merge plat/regs-nand.h into s3c2410.c
-Date: Sat, 04 Jan 2014 10:46:18 +0900
-Message-id: <22ed01cf08ee$c2ea08f0$48be1ad0$@kernel.org>
-MIME-version: 1.0
-Content-type: text/plain; charset=us-ascii
-Content-transfer-encoding: 7bit
-Content-language: ko
-Cc: computersforpeace@gmail.com, linux-samsung-soc@vger.kernel.org,
- patches@linaro.org
+ id 1VzHIL-0004Mw-Ro
+ for linux-mtd@lists.infradead.org; Sat, 04 Jan 2014 02:49:02 +0000
+From: Pekon Gupta <pekon@ti.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCH v6 0/6] mtd: nand: omap: optimized chip->ecc.correct() for H/W
+ ECC schemes
+Date: Sat, 4 Jan 2014 08:18:12 +0530
+Message-ID: <1388803698-26252-1-git-send-email-pekon@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: Stefan Roese <sr@denx.de>, linux-mtd <linux-mtd@lists.infradead.org>,
+ Pekon Gupta <pekon@ti.com>, balbi@ti.com,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,28 +22,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Sachin Kamat wrote:
-> 
-> plat/regs-nand.h is used only by S3C2410 nand driver. Since there
-> are no other users, merge this file into the driver code to remove
-> platform dependency.
-> 
-> Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
-> ---
-> The earlier version of this patch was titled
-> "mtd: s3c2410: Move plat/regs-nand.h to drivers/mtd".
-> Please ignore that.
-> ---
-> 
->  arch/arm/plat-samsung/include/plat/regs-nand.h |  123 -------------------
-> -----
->  drivers/mtd/nand/s3c2410.c                     |  104
-+++++++++++++++++++-
->  2 files changed, 103 insertions(+), 124 deletions(-)
->  delete mode 100644 arch/arm/plat-samsung/include/plat/regs-nand.h
-> 
-Moving looks good, but if some of them are not used, we don't need to keep
-them while moving.
+*changes v5 -> v6*
+[PATCH 1/6] <no change>
+[PATCH 2/6] introduced variable 'actual_eccbytes' to omit reserved byte-position
+[PATCH 3/6] split from [PATCH v5 3/5] fix erased-page bit-flip correction
+[PATCH 4/6] split from [PATCH v5 3/5] fix erased-page detection
+[PATCH 5/6] <minor cleanup>
+[PATCH 6/6] <no change>
 
-Thanks,
-Kukjin
+
+*changes v4 -> v5*
+This patch series was split version of earlier patch:
+http://lists.infradead.org/pipermail/linux-mtd/2013-November/050241.html
+
+chip->ecc.correct() is used for detecting and correcting bit-flips during read
+operations. In OMAP NAND driver different ecc-schemes have different callbacks:
+ - omap_correct_data()		for HAM1_HW ecc-schemes (Untouched)
+ - nand_bch_correct_data()	for BCHx_HW_DETECTION_SW ecc-schemes (Untouched)
+ - omap_elm_correct_data()	for BCHx_HW ecc-schemes
+
+This patch-series fixes following issues in omap_elm_correct_data():
+(1) Dependency on a specific reserved byte-position in OOB area
+    to differentiates between erased-pages v/s programmed-pages.
+    Problem: reserved byte-position cannot be accomodated in all ecc-schemes
+    Problem: reserved byte-position can itself be subjected upto 8 bit-flips
+             causing the 0xff to become 0x00, causing page to be
+             mis-recognized as erased-page.
+
+(2) Bit-flips in erased-pages are detected by comparing each byte of Data & OOB
+    with 0xff in check_erased_page().
+    Problem: This is causes performance penalty when erased-pages are checked.
+
+(3) Current code is not scalable for future ECC schemes due to presence of 
+    tweaks for BCH4_ECC and BCH8_ECC at multiple places.
+
+(4) Currently, bit-flips are evaluated and fixed even when ELM reports them as
+    un-correctable bit-flips, this should not happen as 'number-of-error' field
+    in ELM_LOCATION_STATUS becomes invalid when un-correctable flag is set.
+
+(5) Driver should return with error-code = '-EBADMSG' when
+     uncorrectable bit-flip is detected
+     bit-flip outside valid Data and OOB region is detected
+
+
+Pekon Gupta (6):
+  mtd: nand: omap: add field to indicate current ecc-scheme in 'struct
+    omap_nand_info'
+  mtd: nand: omap: ecc.correct: omap_elm_correct_data: rename ambiguous
+    variable 'eccsize' and 'ecc_vector_size'
+  mtd: nand: omap: ecc.correct: omap_elm_correct_data: fix erased-page
+    bit-flip correction for H/W ECC schemes
+  mtd: nand: omap: ecc.correct: omap_elm_correct_data: fix erased-page
+    detection for BCHx_HW ECC schemes
+  mtd: nand: omap: ecc.correct: omap_elm_correct_data: cleanup for
+    future enhancements
+  mtd: nand: omap: ecc.correct: omap_elm_correct_data: fix
+    programmed-page bit-flip correction logic
+
+ drivers/mtd/nand/omap2.c | 251 +++++++++++++++++++++--------------------------
+ 1 file changed, 114 insertions(+), 137 deletions(-)
+
+-- 
+1.8.1
