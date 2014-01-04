@@ -1,13 +1,13 @@
 Received: from arroyo.ext.ti.com ([192.94.94.40])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VzHIQ-0004N1-26
- for linux-mtd@lists.infradead.org; Sat, 04 Jan 2014 02:49:11 +0000
+ id 1VzHIU-0004NL-Nb
+ for linux-mtd@lists.infradead.org; Sat, 04 Jan 2014 02:49:12 +0000
 From: Pekon Gupta <pekon@ti.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v6 3/6] mtd: nand: omap: ecc.correct: omap_elm_correct_data:
- fix erased-page bit-flip correction for H/W ECC schemes
-Date: Sat, 4 Jan 2014 08:18:15 +0530
-Message-ID: <1388803698-26252-4-git-send-email-pekon@ti.com>
+Subject: [PATCH v6 5/6] mtd: nand: omap: ecc.correct: omap_elm_correct_data:
+ cleanup for future enhancements
+Date: Sat, 4 Jan 2014 08:18:17 +0530
+Message-ID: <1388803698-26252-6-git-send-email-pekon@ti.com>
 In-Reply-To: <1388803698-26252-1-git-send-email-pekon@ti.com>
 References: <1388803698-26252-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
@@ -24,175 +24,104 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-chip->ecc.correct() is used for detecting and correcting bit-flips during read
-operations. In OMAP NAND driver different ecc-schemes have different callbacks:
- - omap_correct_data()		for HAM1_HW ecc-schemes (Untouched)
- - nand_bch_correct_data()	for BCHx_HW_DETECTION_SW ecc-schemes (Untouched)
- - omap_elm_correct_data()	for BCHx_HW ecc-schemes (updated)
+Current omap_elm_correct_data() code is not scalable for future ecc-schemes
+due to presence of tweaks and hard-coded macros for BCH4_ECC and BCH8_ECC
+ecc-schemes at multiple places.
 
-This patch solves following problems in ECC correction for BCHx_HW ecc-schemes.
-Problem: In current implementation, number of bit-flips in erased-pages is
-         calculated comparing each byte of Data & OOB with 0xff in
-         function check_erased_page().
-         But, with growing density of NAND devices (especially for MLC NAND)
-         where pagesize is of 4k or more bytes, occurence of bit-flips is
-         very common. Thus comparing each byte of both main-area and OOB
-         with 0xff decreases NAND performance due to CPU overhead.
-
-Known attributes of an erased-page
- - Bit-flips in erased-page can't be corrected because there is no ECC
-   present in OOB.
- - Irrespective of number of bit-flips an erased-page will only contain
-   all(0xff), So its safe to return error-code -EUCLEAN with data_buf=0xff,
-   instead of -EBADMSG.
- - And incrementing ecc_stat->corrected makes chip->read_page() return -EUCLEAN.
-
-Solution: In NAND based file-systems like UBIFS, each page is checked for
-         bit-flips before writing to it. If correctable bit-flips are found
-         in erased-page then -EUCLEAN error-code is returned which causes
-         UBIFS to re-erase the complete block. So, its unnecessary to get
-         exact count of bit-flips in an erased-page.
-         Hence this patch just compares calc_ecc[] with known
-         ECC-syndromp-of-all(0xff), to confirm if erased-page has bit-flips.
-         - if bit-flips are found, then
-             read buffer is set to all(0xff) and
-             correctable bit-flips = max(ecc-strength) is reported back to
-             upper layer to take preventive action (like re-erasing block).
-         - else
-              read-data is returned normally.
+This patch:
+ - replaces 'ecc_opt' with '(info->nand.ecc.strength == BCH8_MAX_ERROR)
+   used to differentiate between BCH8_HW and BCH4_SW
+ - replaces macros (defining magic number for specific ecc-scheme) with
+   generic variables
+ - removes dependency on macros defined in elm.h (like BCHx_ECC_OOB_BYTES)
 
 Signed-off-by: Pekon Gupta <pekon@ti.com>
 ---
- drivers/mtd/nand/omap2.c | 87 ++++++++++++++++++------------------------------
- 1 file changed, 32 insertions(+), 55 deletions(-)
+ drivers/mtd/nand/omap2.c | 38 +++++++++++++-------------------------
+ 1 file changed, 13 insertions(+), 25 deletions(-)
 
 diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 2c73389..5a6ee6b 100644
+index 589db4c..4cb08f4 100644
 --- a/drivers/mtd/nand/omap2.c
 +++ b/drivers/mtd/nand/omap2.c
-@@ -1292,45 +1292,6 @@ static int omap3_calculate_ecc_bch(struct mtd_info *mtd, const u_char *dat,
- }
+@@ -118,14 +118,9 @@
  
- /**
-- * erased_sector_bitflips - count bit flips
-- * @data:	data sector buffer
-- * @oob:	oob buffer
-- * @info:	omap_nand_info
-- *
-- * Check the bit flips in erased page falls below correctable level.
-- * If falls below, report the page as erased with correctable bit
-- * flip, else report as uncorrectable page.
-- */
--static int erased_sector_bitflips(u_char *data, u_char *oob,
--		struct omap_nand_info *info)
--{
--	int flip_bits = 0, i;
+ #define OMAP24XX_DMA_GPMC		4
+ 
+-#define BCH8_MAX_ERROR		8	/* upto 8 bit correctable */
+-#define BCH4_MAX_ERROR		4	/* upto 4 bit correctable */
 -
--	for (i = 0; i < info->nand.ecc.size; i++) {
--		flip_bits += hweight8(~data[i]);
--		if (flip_bits > info->nand.ecc.strength)
--			return 0;
--	}
--
--	for (i = 0; i < info->nand.ecc.bytes - 1; i++) {
--		flip_bits += hweight8(~oob[i]);
--		if (flip_bits > info->nand.ecc.strength)
--			return 0;
--	}
--
--	/*
--	 * Bit flips falls in correctable level.
--	 * Fill data area with 0xFF
--	 */
--	if (flip_bits) {
--		memset(data, 0xFF, info->nand.ecc.size);
--		memset(oob, 0xFF, info->nand.ecc.bytes);
--	}
--
--	return flip_bits;
--}
--
--/**
-  * omap_elm_correct_data - corrects page data area in case error reported
-  * @mtd:	MTD device structure
-  * @data:	page data
-@@ -1359,14 +1320,16 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
- {
- 	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
- 			mtd);
-+	enum omap_ecc ecc_opt	= info->ecc_opt;
- 	int eccbytes	= info->nand.ecc.bytes;
--	int eccsteps = info->nand.ecc.steps;
-+	int eccsize	= info->nand.ecc.size;
-+	int eccstrength	= info->nand.ecc.strength;
-+	int eccsteps	= info->nand.ecc.steps;
- 	int i , j, stat = 0;
- 	int eccflag, actual_eccbytes;
+ #define SECTOR_BYTES		512
+ /* 4 bit padding to make byte aligned, 56 = 52 + 4 */
+ #define BCH4_BIT_PAD		4
+-#define BCH8_ECC_MAX		((SECTOR_BYTES + BCH8_ECC_OOB_BYTES) * 8)
+-#define BCH4_ECC_MAX		((SECTOR_BYTES + BCH4_ECC_OOB_BYTES) * 8)
+ 
+ /* GPMC ecc engine settings for read */
+ #define BCH_WRAPMODE_1		1	/* BCH wrap mode 1 */
+@@ -1318,8 +1313,8 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
  	struct elm_errorvec err_vec[ERROR_VECTOR_MAX];
  	u_char *ecc_vec = calc_ecc;
  	u_char *spare_ecc = read_ecc;
--	u_char *erased_ecc_vec;
- 	enum bch_ecc type;
+-	enum bch_ecc type;
  	bool is_error_reported = false;
++	u32 bit_pos, byte_pos, error_max, pos;
  
-@@ -1389,10 +1352,8 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
+ 	switch (info->ecc_opt) {
+ 	case OMAP_ECC_BCH4_CODE_HW:
+@@ -1338,12 +1333,6 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
+ 	/* Initialize elm error vector to zero */
+ 	memset(err_vec, 0, sizeof(err_vec));
  
- 	if (info->nand.ecc.strength == BCH8_MAX_ERROR) {
- 		type = BCH8_ECC;
--		erased_ecc_vec = bch8_vector;
- 	} else {
- 		type = BCH4_ECC;
--		erased_ecc_vec = bch4_vector;
- 	}
- 
+-	if (info->nand.ecc.strength == BCH8_MAX_ERROR) {
+-		type = BCH8_ECC;
+-	} else {
+-		type = BCH4_ECC;
+-	}
+-
  	for (i = 0; i < eccsteps ; i++) {
-@@ -1436,19 +1397,35 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
- 				is_error_reported = true;
- 			} else {
- 				/* Error reported in erased page */
--				int bitflip_count;
--				u_char *buf = &data[info->nand.ecc.size * i];
+ 		eccflag = 0;	/* initialize eccflag */
+ 
+@@ -1443,20 +1432,19 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
+ 	for (i = 0; i < eccsteps; i++) {
+ 		if (err_vec[i].error_reported) {
+ 			for (j = 0; j < err_vec[i].error_count; j++) {
+-				u32 bit_pos, byte_pos, error_max, pos;
 -
--				if (memcmp(calc_ecc, erased_ecc_vec,
--							 actual_eccbytes)) {
--					bitflip_count = erased_sector_bitflips(
--							buf, read_ecc, info);
+-				if (type == BCH8_ECC)
+-					error_max = BCH8_ECC_MAX;
+-				else
+-					error_max = BCH4_ECC_MAX;
 -
--					if (bitflip_count)
--						stat += bitflip_count;
--					else
--						return -EINVAL;
-+				/* check bit-flips in erased-pages
-+				 * - Instead of comparing each byte of main-area
-+				 *   with 0xff, comparing just calc_ecc[] with
-+				 *   known ECC-syndrome-of-all(0xff). This
-+				 *   confirms that main-area + OOB are all(0xff)
-+				 *   This will save CPU cycles.
-+				 * - Bit-flips in erased-page can't be corrected
-+				 *   because there is no ECC present in OOB
-+				 * - Irrespective of number of bit-flips an
-+				 *   erased-page will only contain all(0xff),
-+				 *   So its safe to return error-code -EUCLEAN
-+				 *   with data_buf=0xff, instead of -EBADMSG
-+				 * - And incrementing ecc_stat->corrected makes
-+				 *   chip->read_page() return -EUCLEAN */
+-				if (info->nand.ecc.strength == BCH8_MAX_ERROR)
+-					pos = err_vec[i].error_loc[j];
+-				else
+-					/* Add 4 to take care 4 bit padding */
 +				switch (ecc_opt) {
 +				case OMAP_ECC_BCH4_CODE_HW:
-+					if (memcmp(calc_ecc, bch4_vector,
-+							 actual_eccbytes))
-+						stat += eccstrength;
++					/* Add 4 bits to take care of padding */
+ 					pos = err_vec[i].error_loc[j] +
+ 						BCH4_BIT_PAD;
+-
 +					break;
 +				case OMAP_ECC_BCH8_CODE_HW:
-+					if (memcmp(calc_ecc, bch8_vector,
-+							 actual_eccbytes))
-+						stat += eccstrength;
++					pos = err_vec[i].error_loc[j];
 +					break;
 +				default:
 +					return -EINVAL;
- 				}
-+				memset(&data[i * eccsize], 0xff, eccsize);
- 			}
- 		}
++				}
++				error_max = (eccsize + actual_eccbytes) * 8;
+ 				/* Calculate bit position of error */
+ 				bit_pos = pos % 8;
+ 
+@@ -1478,7 +1466,7 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
+ 		stat += err_vec[i].error_count;
+ 
+ 		/* Update page data with sector size */
+-		data += info->nand.ecc.size;
++		data += eccsize;
+ 		spare_ecc += eccbytes;
+ 	}
  
 -- 
 1.8.1
