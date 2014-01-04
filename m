@@ -1,14 +1,14 @@
-Received: from mail-ig0-x230.google.com ([2607:f8b0:4001:c05::230])
+Received: from mail-ig0-x22f.google.com ([2607:f8b0:4001:c05::22f])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VzFFW-0002iC-9L
- for linux-mtd@lists.infradead.org; Sat, 04 Jan 2014 00:38:00 +0000
-Received: by mail-ig0-f176.google.com with SMTP id k19so2421711igc.3
- for <linux-mtd@lists.infradead.org>; Fri, 03 Jan 2014 16:37:32 -0800 (PST)
+ id 1VzFLL-0002qz-ST
+ for linux-mtd@lists.infradead.org; Sat, 04 Jan 2014 00:44:00 +0000
+Received: by mail-ig0-f175.google.com with SMTP id j1so2431375iga.2
+ for <linux-mtd@lists.infradead.org>; Fri, 03 Jan 2014 16:43:38 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v3 4/5] mtd: nand: support Micron READ RETRY
-Date: Fri,  3 Jan 2014 16:37:07 -0800
-Message-Id: <1388795828-24808-4-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v3 3/5] mtd: nand: add generic READ RETRY support
+Date: Fri,  3 Jan 2014 16:37:06 -0800
+Message-Id: <1388795828-24808-3-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1388795828-24808-1-git-send-email-computersforpeace@gmail.com>
 References: <1388795828-24808-1-git-send-email-computersforpeace@gmail.com>
 Cc: Huang Shijie <b32955@freescale.com>,
@@ -22,111 +22,174 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Micron provides READ RETRY support via the ONFI vendor-specific
-parameter block (to indicate how many read-retry modes are available)
-and the ONFI {GET,SET}_FEATURES commands with a vendor-specific feature
-address (to support reading/switching the current read-retry mode).
+Modern MLC (and even SLC?) NAND can experience a large number of
+bitflips (beyond the recommended correctability capacity) due to drifts
+in the voltage threshold (Vt). These bitflips can cause ECC errors to
+occur well within the expected lifetime of the flash. To account for
+this, some manufacturers provide a mechanism for shifting the Vt
+threshold after a corrupted read.
 
-The recommended sequence is as follows:
+The generic pattern seems to be that a particular flash has N read retry
+modes (where N = 0, traditionally), and after an ECC failure, the host
+should reconfigure the flash to use the next available mode, then retry
+the read operation. This process repeats until all bitfips can be
+corrected or until the host has tried all available retry modes.
 
-  1. Perform PAGE_READ operation
-  2. If no ECC error, we are done
-  3. Run SET_FEATURES with feature address 89h, mode 1
-  4. Retry PAGE_READ operation
-  5. If ECC error and there are remaining supported modes, increment the
-     mode and return to step 3. Otherwise, this is a true ECC error.
-  6. Run SET_FEATURES with feature address 89h, mode 0, to return to the
-     default state.
+This patch adds the infrastructure support for a
+vendor-specific/flash-specific callback, used for setting the read-retry
+mode (i.e., voltage threshold).
 
-This patch implements the chip->set_read_retry() callback for
-Micron and fills in the chip->read_retries.
-
-Tested on Micron MT29F32G08CBADA, which supports 8 read-retry modes.
-
-The Micron vendor-specific table was checked against the datasheets for
-the following Micron NAND:
-
-Needs retry   Cell-type    Part number          Vendor revision    Byte 180
------------   ---------    ----------------     ---------------    ------------
-No            SLC          MT29F16G08ABABA      1                  Reserved (0)
-No            MLC          MT29F32G08CBABA      1                  Reserved (0)
-No            SLC          MT29F1G08AACWP       1                  0
-Yes           MLC          MT29F32G08CBADA      1                  08h
-Yes           MLC          MT29F64G08CBABA      2                  08h
+For now, this patch always returns the flash to mode 0 (the default
+mode) after a successful read-retry, according to the flowchart found in
+Micron's datasheets. This may need to change in the future if it is
+determined that eventually, mode 0 is insufficient for the majority of
+the flash cells (and so for performance reasons, we should leave the
+flash in mode 1, 2, etc.).
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
-v2 -> v3: - split out from the previous patch
-	  - support Micron via replaceable vendor-specific/flash-specific
-	    callback
-	  - add vendor-revision check (I've only seen Micron with vendor
-	    revision >= 1)
+v1 -> v2: fix a logic error when incrementing retry_mode, which caused -EINVAL
+          failures on flash that didn't need READ RETRY
 
-Note that I intentionally *haven't* accomodated a DMA-able buffer for the ONFI
-set-features command, so GPMI NAND may have problems with this.
+v2 -> v3: split out the generic callback support as a separate patch; adjust #
+          of retry modes bounds check
 
- drivers/mtd/nand/nand_base.c | 27 +++++++++++++++++++++++++++
- include/linux/mtd/nand.h     |  3 +++
- 2 files changed, 30 insertions(+)
+ drivers/mtd/nand/nand_base.c | 56 ++++++++++++++++++++++++++++++++++++++++----
+ include/linux/mtd/nand.h     |  6 +++++
+ 2 files changed, 58 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index d47c5bbca2b3..df20c43f186a 100644
+index e85b07f4293d..d47c5bbca2b3 100644
 --- a/drivers/mtd/nand/nand_base.c
 +++ b/drivers/mtd/nand/nand_base.c
-@@ -2979,6 +2979,30 @@ ext_out:
- 	return ret;
+@@ -1410,6 +1410,28 @@ static uint8_t *nand_transfer_oob(struct nand_chip *chip, uint8_t *oob,
  }
  
-+static int nand_set_read_retry_micron(struct mtd_info *mtd, int retry_mode)
+ /**
++ * nand_set_read_retry - [INTERN] Set the READ RETRY mode
++ * @mtd: MTD device structure
++ * @retry_mode: the retry mode to use
++ *
++ * Some vendors supply a special command to shift the Vt threshold, to be used
++ * when there are too many bitflips in a page (i.e., ECC error). After setting
++ * a new threshold, the host should retry reading the page.
++ */
++static int nand_set_read_retry(struct mtd_info *mtd, int retry_mode)
 +{
 +	struct nand_chip *chip = mtd->priv;
-+	uint8_t feature[ONFI_SUBFEATURE_PARAM_LEN] = {retry_mode};
 +
-+	return chip->onfi_set_features(mtd, chip, ONFI_FEATURE_ADDR_READ_RETRY,
-+			feature);
++	if (retry_mode >= chip->read_retries)
++		return -EINVAL;
++
++	if (!chip->set_read_retry)
++		return -EOPNOTSUPP;
++
++	return chip->set_read_retry(mtd, retry_mode);
 +}
 +
-+/*
-+ * Configure chip properties from Micron vendor-specific ONFI table
-+ */
-+static void nand_onfi_detect_micron(struct nand_chip *chip,
-+		struct nand_onfi_params *p)
-+{
-+	struct nand_onfi_vendor_micron *micron = (void *)p->vendor;
-+
-+	if (le16_to_cpu(p->vendor_revision) < 1)
-+		return;
-+
-+	chip->read_retries = micron->read_retry_options;
-+	chip->set_read_retry = nand_set_read_retry_micron;
-+}
-+
- /*
-  * Check if the NAND chip is ONFI compliant, returns 1 if it is, 0 otherwise.
-  */
-@@ -3085,6 +3109,9 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
- 		pr_warn("Could not retrieve ONFI ECC requirements\n");
- 	}
++/**
+  * nand_do_read_ops - [INTERN] Read data with ECC
+  * @mtd: MTD device structure
+  * @from: offset to read from
+@@ -1431,6 +1453,7 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 	uint8_t *bufpoi, *oob, *buf;
+ 	unsigned int max_bitflips = 0;
  
-+	if (p->jedec_id == NAND_MFR_MICRON)
-+		nand_onfi_detect_micron(chip, p);
++	int retry_mode = 0;
+ 	bool ecc_fail = false;
+ 
+ 	chipnr = (int)(from >> chip->chip_shift);
+@@ -1494,8 +1517,6 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 				memcpy(buf, chip->buffers->databuf + col, bytes);
+ 			}
+ 
+-			buf += bytes;
+-
+ 			if (unlikely(oob)) {
+ 				int toread = min(oobreadlen, max_oobsize);
+ 
+@@ -1514,8 +1535,27 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 					nand_wait_ready(mtd);
+ 			}
+ 
+-			if (mtd->ecc_stats.failed - ecc_failures)
+-				ecc_fail = true;
++			if (mtd->ecc_stats.failed - ecc_failures) {
++				if (retry_mode + 1 <= chip->read_retries) {
++					retry_mode++;
++					pr_debug("ECC error; performing READ RETRY %d\n",
++							retry_mode);
 +
- 	return 1;
- }
++					ret = nand_set_read_retry(mtd,
++							retry_mode);
++					if (ret < 0)
++						break;
++
++					/* Reset failures */
++					mtd->ecc_stats.failed = ecc_failures;
++					continue;
++				} else {
++					/* No more retry modes; real failure */
++					ecc_fail = true;
++				}
++			}
++
++			buf += bytes;
+ 		} else {
+ 			memcpy(buf, chip->buffers->databuf + col, bytes);
+ 			buf += bytes;
+@@ -1525,6 +1565,14 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 
+ 		readlen -= bytes;
+ 
++		/* Reset to retry mode 0 */
++		if (retry_mode) {
++			ret = nand_set_read_retry(mtd, 0);
++			if (ret < 0)
++				break;
++			retry_mode = 0;
++		}
++
+ 		if (!readlen)
+ 			break;
  
 diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index ef70505dade1..e3621aba1417 100644
+index 029fe5948dc4..ef70505dade1 100644
 --- a/include/linux/mtd/nand.h
 +++ b/include/linux/mtd/nand.h
-@@ -219,6 +219,9 @@ struct nand_chip;
- /* ONFI feature address */
- #define ONFI_FEATURE_ADDR_TIMING_MODE	0x1
+@@ -472,6 +472,8 @@ struct nand_buffers {
+  *			commands to the chip.
+  * @waitfunc:		[REPLACEABLE] hardwarespecific function for wait on
+  *			ready.
++ * @set_read_retry:	[FLASHSPECIFIC] flash (vendor) specific function for
++ *			setting the read-retry mode. Mostly needed for MLC NAND.
+  * @ecc:		[BOARDSPECIFIC] ECC control structure
+  * @buffers:		buffer structure for read/write
+  * @hwcontrol:		platform-specific hardware control structure
+@@ -518,6 +520,7 @@ struct nand_buffers {
+  *			non 0 if ONFI supported.
+  * @onfi_params:	[INTERN] holds the ONFI page parameter when ONFI is
+  *			supported, 0 otherwise.
++ * @read_retries:	[INTERN] the number of read retry modes supported
+  * @onfi_set_features:	[REPLACEABLE] set the features for ONFI nand
+  * @onfi_get_features:	[REPLACEABLE] get the features for ONFI nand
+  * @bbt:		[INTERN] bad block table pointer
+@@ -565,6 +568,7 @@ struct nand_chip {
+ 			int feature_addr, uint8_t *subfeature_para);
+ 	int (*onfi_get_features)(struct mtd_info *mtd, struct nand_chip *chip,
+ 			int feature_addr, uint8_t *subfeature_para);
++	int (*set_read_retry)(struct mtd_info *mtd, int retry_mode);
  
-+/* Vendor-specific feature address (Micron) */
-+#define ONFI_FEATURE_ADDR_READ_RETRY	0x89
+ 	int chip_delay;
+ 	unsigned int options;
+@@ -589,6 +593,8 @@ struct nand_chip {
+ 	int onfi_version;
+ 	struct nand_onfi_params	onfi_params;
+ 
++	int read_retries;
 +
- /* ONFI subfeature parameters length */
- #define ONFI_SUBFEATURE_PARAM_LEN	4
+ 	flstate_t state;
  
+ 	uint8_t *oob_poi;
 -- 
 1.8.3.2
