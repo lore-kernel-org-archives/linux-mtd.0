@@ -1,22 +1,22 @@
-Received: from mail-pd0-f175.google.com ([209.85.192.175])
+Received: from mail-pd0-x232.google.com ([2607:f8b0:400e:c02::232])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VzQg7-0000kh-I4
- for linux-mtd@lists.infradead.org; Sat, 04 Jan 2014 12:50:12 +0000
-Received: by mail-pd0-f175.google.com with SMTP id w10so16353907pde.20
- for <linux-mtd@lists.infradead.org>; Sat, 04 Jan 2014 04:49:45 -0800 (PST)
-Date: Sat, 4 Jan 2014 20:49:37 +0800
+ id 1VzQhE-0000lv-86
+ for linux-mtd@lists.infradead.org; Sat, 04 Jan 2014 12:51:21 +0000
+Received: by mail-pd0-f178.google.com with SMTP id y10so16441977pdj.9
+ for <linux-mtd@lists.infradead.org>; Sat, 04 Jan 2014 04:50:58 -0800 (PST)
+Date: Sat, 4 Jan 2014 20:50:51 +0800
 From: Huang Shijie <shijie8@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v3 4/5] mtd: nand: support Micron READ RETRY
-Message-ID: <20140104124936.GA4996@gmail.com>
-References: <1388795828-24808-1-git-send-email-computersforpeace@gmail.com>
- <1388795828-24808-4-git-send-email-computersforpeace@gmail.com>
+To: Elie De Brauwer <eliedebrauwer@gmail.com>
+Subject: Re: [PATCH v7] mtd: gpmi: Deal with bitflips in erased regions
+Message-ID: <20140104125050.GB4996@gmail.com>
+References: <1388784439-23004-1-git-send-email-eliedebrauwer@gmail.com>
+ <1388784439-23004-2-git-send-email-eliedebrauwer@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1388795828-24808-4-git-send-email-computersforpeace@gmail.com>
-Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- Pekon Gupta <pekon@ti.com>
+In-Reply-To: <1388784439-23004-2-git-send-email-eliedebrauwer@gmail.com>
+Cc: b32955@freescale.com, computersforpeace@gmail.com, dwmw2@infradead.org,
+ linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,15 +26,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jan 03, 2014 at 04:37:07PM -0800, Brian Norris wrote:
+On Fri, Jan 03, 2014 at 10:27:19PM +0100, Elie De Brauwer wrote:
+> The BCH block typically used with a GPMI block on an i.MX28/i.MX6 is only
+> able to correct bitflips on data actually streamed through the block.
+> When erasing a block the data does not stream through the BCH block
+> and therefore no ECC data is written to the NAND chip. This causes
+> gpmi_ecc_read_page to return failure as soon as a single non-1-bit is
+> found in an erased page. Typically causing problems at higher levels
+> (ubifs corrupted empty space warnings). This problem was also observed
+> when using SLC NAND devices.
 > 
-> Note that I intentionally *haven't* accomodated a DMA-able buffer for the ONFI
-> set-features command, so GPMI NAND may have problems with this.
+> This patch configures the BCH block to mark a block as 'erased' if
+> not too much bitflips are found (by setting the erase threshold). A
+> consequence of this is that whenever an erased page is read, the
+> number of bitflips will be counted and corrected in software,
+> allowing the upper layers to take proper actions.
+> 
+> Signed-off-by: Elie De Brauwer <eliedebrauwer@gmail.com>
+> Acked-by: Peter Korsgaard <peter@korsgaard.com>
+> Acked-by: Huang Shijie <b32955@freescale.com>
 
-I have fixed it in another patch set:
-http://lists.infradead.org/pipermail/linux-mtd/2013-December/051085.html
-
-http://lists.infradead.org/pipermail/linux-mtd/2013-December/051086.html
+I am okay with this patch.
 
 thanks
 Huang Shijie
