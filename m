@@ -1,18 +1,16 @@
-Received: from mail-ea0-x233.google.com ([2a00:1450:4013:c01::233])
+Received: from mail-ie0-x233.google.com ([2607:f8b0:4001:c03::233])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VzCHm-0008Lk-2l
- for linux-mtd@lists.infradead.org; Fri, 03 Jan 2014 21:28:06 +0000
-Received: by mail-ea0-f179.google.com with SMTP id r15so7002295ead.10
- for <linux-mtd@lists.infradead.org>; Fri, 03 Jan 2014 13:27:42 -0800 (PST)
-From: Elie De Brauwer <eliedebrauwer@gmail.com>
-To: b32955@freescale.com, dwmw2@infradead.org, dedekind1@gmail.com,
- computersforpeace@gmail.com, shijie8@gmail.com
-Subject: [PATCH v7] mtd: gpmi: Deal with bitflips in erased regions
-Date: Fri,  3 Jan 2014 22:27:19 +0100
-Message-Id: <1388784439-23004-2-git-send-email-eliedebrauwer@gmail.com>
-In-Reply-To: <1388784439-23004-1-git-send-email-eliedebrauwer@gmail.com>
-References: <1388784439-23004-1-git-send-email-eliedebrauwer@gmail.com>
-Cc: Elie De Brauwer <eliedebrauwer@gmail.com>, linux-mtd@lists.infradead.org
+ id 1VzFFR-0002iA-Lg
+ for linux-mtd@lists.infradead.org; Sat, 04 Jan 2014 00:37:54 +0000
+Received: by mail-ie0-f179.google.com with SMTP id x13so16679518ief.10
+ for <linux-mtd@lists.infradead.org>; Fri, 03 Jan 2014 16:37:31 -0800 (PST)
+From: Brian Norris <computersforpeace@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH v3 1/5] mtd: nand: localize ECC failures per page
+Date: Fri,  3 Jan 2014 16:37:04 -0800
+Message-Id: <1388795828-24808-1-git-send-email-computersforpeace@gmail.com>
+Cc: Huang Shijie <b32955@freescale.com>,
+ Brian Norris <computersforpeace@gmail.com>, Pekon Gupta <pekon@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,142 +20,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The BCH block typically used with a GPMI block on an i.MX28/i.MX6 is only
-able to correct bitflips on data actually streamed through the block.
-When erasing a block the data does not stream through the BCH block
-and therefore no ECC data is written to the NAND chip. This causes
-gpmi_ecc_read_page to return failure as soon as a single non-1-bit is
-found in an erased page. Typically causing problems at higher levels
-(ubifs corrupted empty space warnings). This problem was also observed
-when using SLC NAND devices.
+ECC failures can be tracked at the page level, not the do_read_ops level
+(i.e., a potentially multi-page transaction).
 
-This patch configures the BCH block to mark a block as 'erased' if
-not too much bitflips are found (by setting the erase threshold). A
-consequence of this is that whenever an erased page is read, the
-number of bitflips will be counted and corrected in software,
-allowing the upper layers to take proper actions.
+This helps prepare for READ RETRY support.
 
-Signed-off-by: Elie De Brauwer <eliedebrauwer@gmail.com>
-Acked-by: Peter Korsgaard <peter@korsgaard.com>
-Acked-by: Huang Shijie <b32955@freescale.com>
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/nand/gpmi-nand/bch-regs.h  |  1 +
- drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |  9 +++++++
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 43 +++++++++++++++++++++++++++++++---
- 3 files changed, 50 insertions(+), 3 deletions(-)
+No changes since v1
 
-diff --git a/drivers/mtd/nand/gpmi-nand/bch-regs.h b/drivers/mtd/nand/gpmi-nand/bch-regs.h
-index 588f537..b2104de 100644
---- a/drivers/mtd/nand/gpmi-nand/bch-regs.h
-+++ b/drivers/mtd/nand/gpmi-nand/bch-regs.h
-@@ -31,6 +31,7 @@
- 
- #define HW_BCH_STATUS0				0x00000010
- #define HW_BCH_MODE				0x00000020
-+#define BM_BCH_MODE_ERASE_THRESHOLD_MASK	0xff
- #define HW_BCH_ENCODEPTR			0x00000030
- #define HW_BCH_DATAPTR				0x00000040
- #define HW_BCH_METAPTR				0x00000050
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-index dd1df60..b6a7aa8 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-@@ -256,6 +256,7 @@ int bch_set_geometry(struct gpmi_nand_data *this)
- 	unsigned int ecc_strength;
- 	unsigned int page_size;
- 	unsigned int gf_len;
-+	unsigned int erase_threshold;
- 	int ret;
- 
- 	if (common_nfc_set_geometry(this))
-@@ -298,6 +299,14 @@ int bch_set_geometry(struct gpmi_nand_data *this)
- 			| BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(block_size, this),
- 			r->bch_regs + HW_BCH_FLASH0LAYOUT1);
- 
-+	/* Set the tolerance for bitflips when reading erased blocks. */
-+	erase_threshold = gf_len / 2;
-+	if (erase_threshold > bch_geo->ecc_strength)
-+		erase_threshold = bch_geo->ecc_strength;
-+
-+	writel(erase_threshold & BM_BCH_MODE_ERASE_THRESHOLD_MASK,
-+		r->bch_regs + HW_BCH_MODE);
-+
- 	/* Set *all* chip selects to use layout 0. */
- 	writel(0, r->bch_regs + HW_BCH_LAYOUTSELECT);
- 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index e2f5820..eac6714 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -958,6 +958,30 @@ static void block_mark_swapping(struct gpmi_nand_data *this,
- 	p[1] = (p[1] & mask) | (from_oob >> (8 - bit));
- }
- 
-+/*
-+ * Count the number of 0 bits in a supposed to be
-+ * erased region and correct them. Return the number
-+ * of bitflips or zero when the region was correct.
-+ */
-+static unsigned int erased_sector_bitflips(unsigned char *data,
-+					unsigned int chunk,
-+					struct bch_geometry *geo)
-+{
-+	unsigned int flip_bits = 0;
-+	int i;
-+	int base = geo->ecc_chunk_size * chunk;
-+
-+	/* Count bitflips */
-+	for (i = 0; i < geo->ecc_chunk_size; i++)
-+		flip_bits += hweight8(~data[base + i]);
-+
-+	/* Correct bitflips by 0xFF'ing this chunk. */
-+	if (flip_bits)
-+		memset(&data[base], 0xFF, geo->ecc_chunk_size);
-+
-+	return flip_bits;
-+}
-+
- static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 				uint8_t *buf, int oob_required, int page)
+ drivers/mtd/nand/nand_base.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 9b3bb3c519e9..e85b07f4293d 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -1422,7 +1422,6 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
  {
-@@ -969,6 +993,7 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	dma_addr_t    auxiliary_phys;
- 	unsigned int  i;
- 	unsigned char *status;
-+	unsigned int  flips;
- 	unsigned int  max_bitflips = 0;
- 	int           ret;
+ 	int chipnr, page, realpage, col, bytes, aligned, oob_required;
+ 	struct nand_chip *chip = mtd->priv;
+-	struct mtd_ecc_stats stats;
+ 	int ret = 0;
+ 	uint32_t readlen = ops->len;
+ 	uint32_t oobreadlen = ops->ooblen;
+@@ -1432,7 +1431,7 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 	uint8_t *bufpoi, *oob, *buf;
+ 	unsigned int max_bitflips = 0;
  
-@@ -1003,15 +1028,27 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	status = auxiliary_virt + nfc_geo->auxiliary_status_offset;
+-	stats = mtd->ecc_stats;
++	bool ecc_fail = false;
  
- 	for (i = 0; i < nfc_geo->ecc_chunk_count; i++, status++) {
--		if ((*status == STATUS_GOOD) || (*status == STATUS_ERASED))
-+		if (*status == STATUS_GOOD)
- 			continue;
+ 	chipnr = (int)(from >> chip->chip_shift);
+ 	chip->select_chip(mtd, chipnr);
+@@ -1447,6 +1446,7 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 	oob_required = oob ? 1 : 0;
  
- 		if (*status == STATUS_UNCORRECTABLE) {
- 			mtd->ecc_stats.failed++;
- 			continue;
- 		}
--		mtd->ecc_stats.corrected += *status;
--		max_bitflips = max_t(unsigned int, max_bitflips, *status);
+ 	while (1) {
++		unsigned int ecc_failures = mtd->ecc_stats.failed;
+ 		bytes = min(mtd->writesize - col, readlen);
+ 		aligned = (bytes == mtd->writesize);
+ 
+@@ -1483,7 +1483,7 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 			/* Transfer not aligned data */
+ 			if (!aligned) {
+ 				if (!NAND_HAS_SUBPAGE_READ(chip) && !oob &&
+-				    !(mtd->ecc_stats.failed - stats.failed) &&
++				    !(mtd->ecc_stats.failed - ecc_failures) &&
+ 				    (ops->mode != MTD_OPS_RAW)) {
+ 					chip->pagebuf = realpage;
+ 					chip->pagebuf_bitflips = ret;
+@@ -1513,6 +1513,9 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 				else
+ 					nand_wait_ready(mtd);
+ 			}
 +
-+		/* 
-+		 * The number of bitflips are either counted in software
-+		 * in case of an erased chunk or otherwise reported by
-+		 * the BCH block.
-+		 */
-+		if (*status == STATUS_ERASED)
-+			flips = erased_sector_bitflips(payload_virt, i,
-+							       nfc_geo);
-+		else
-+			flips = *status;
-+
-+		mtd->ecc_stats.corrected += flips;
-+		max_bitflips = max_t(unsigned int, max_bitflips, flips);
- 	}
++			if (mtd->ecc_stats.failed - ecc_failures)
++				ecc_fail = true;
+ 		} else {
+ 			memcpy(buf, chip->buffers->databuf + col, bytes);
+ 			buf += bytes;
+@@ -1547,7 +1550,7 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 	if (ret < 0)
+ 		return ret;
  
- 	if (oob_required) {
+-	if (mtd->ecc_stats.failed - stats.failed)
++	if (ecc_fail)
+ 		return -EBADMSG;
+ 
+ 	return max_bitflips;
 -- 
-1.8.5.2
+1.8.3.2
