@@ -1,14 +1,14 @@
-Received: from mail-ie0-x229.google.com ([2607:f8b0:4001:c03::229])
+Received: from mail-ig0-x230.google.com ([2607:f8b0:4001:c05::230])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VzFFW-0002iD-MF
+ id 1VzFFW-0002iC-9L
  for linux-mtd@lists.infradead.org; Sat, 04 Jan 2014 00:38:00 +0000
-Received: by mail-ie0-f169.google.com with SMTP id e14so16728610iej.14
- for <linux-mtd@lists.infradead.org>; Fri, 03 Jan 2014 16:37:36 -0800 (PST)
+Received: by mail-ig0-f176.google.com with SMTP id k19so2421711igc.3
+ for <linux-mtd@lists.infradead.org>; Fri, 03 Jan 2014 16:37:32 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v3 5/5] mtd: nand: use __packed shorthand
-Date: Fri,  3 Jan 2014 16:37:08 -0800
-Message-Id: <1388795828-24808-5-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v3 4/5] mtd: nand: support Micron READ RETRY
+Date: Fri,  3 Jan 2014 16:37:07 -0800
+Message-Id: <1388795828-24808-4-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1388795828-24808-1-git-send-email-computersforpeace@gmail.com>
 References: <1388795828-24808-1-git-send-email-computersforpeace@gmail.com>
 Cc: Huang Shijie <b32955@freescale.com>,
@@ -22,28 +22,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-To be consistent with the rest of include/linux/mtd/nand.h, we should
-use the __packed shorthand instead of __attribute__((packed)).
+Micron provides READ RETRY support via the ONFI vendor-specific
+parameter block (to indicate how many read-retry modes are available)
+and the ONFI {GET,SET}_FEATURES commands with a vendor-specific feature
+address (to support reading/switching the current read-retry mode).
+
+The recommended sequence is as follows:
+
+  1. Perform PAGE_READ operation
+  2. If no ECC error, we are done
+  3. Run SET_FEATURES with feature address 89h, mode 1
+  4. Retry PAGE_READ operation
+  5. If ECC error and there are remaining supported modes, increment the
+     mode and return to step 3. Otherwise, this is a true ECC error.
+  6. Run SET_FEATURES with feature address 89h, mode 0, to return to the
+     default state.
+
+This patch implements the chip->set_read_retry() callback for
+Micron and fills in the chip->read_retries.
+
+Tested on Micron MT29F32G08CBADA, which supports 8 read-retry modes.
+
+The Micron vendor-specific table was checked against the datasheets for
+the following Micron NAND:
+
+Needs retry   Cell-type    Part number          Vendor revision    Byte 180
+-----------   ---------    ----------------     ---------------    ------------
+No            SLC          MT29F16G08ABABA      1                  Reserved (0)
+No            MLC          MT29F32G08CBABA      1                  Reserved (0)
+No            SLC          MT29F1G08AACWP       1                  0
+Yes           MLC          MT29F32G08CBADA      1                  08h
+Yes           MLC          MT29F64G08CBABA      2                  08h
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
-No change since v1
+v2 -> v3: - split out from the previous patch
+	  - support Micron via replaceable vendor-specific/flash-specific
+	    callback
+	  - add vendor-revision check (I've only seen Micron with vendor
+	    revision >= 1)
 
- include/linux/mtd/nand.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Note that I intentionally *haven't* accomodated a DMA-able buffer for the ONFI
+set-features command, so GPMI NAND may have problems with this.
 
+ drivers/mtd/nand/nand_base.c | 27 +++++++++++++++++++++++++++
+ include/linux/mtd/nand.h     |  3 +++
+ 2 files changed, 30 insertions(+)
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index d47c5bbca2b3..df20c43f186a 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2979,6 +2979,30 @@ ext_out:
+ 	return ret;
+ }
+ 
++static int nand_set_read_retry_micron(struct mtd_info *mtd, int retry_mode)
++{
++	struct nand_chip *chip = mtd->priv;
++	uint8_t feature[ONFI_SUBFEATURE_PARAM_LEN] = {retry_mode};
++
++	return chip->onfi_set_features(mtd, chip, ONFI_FEATURE_ADDR_READ_RETRY,
++			feature);
++}
++
++/*
++ * Configure chip properties from Micron vendor-specific ONFI table
++ */
++static void nand_onfi_detect_micron(struct nand_chip *chip,
++		struct nand_onfi_params *p)
++{
++	struct nand_onfi_vendor_micron *micron = (void *)p->vendor;
++
++	if (le16_to_cpu(p->vendor_revision) < 1)
++		return;
++
++	chip->read_retries = micron->read_retry_options;
++	chip->set_read_retry = nand_set_read_retry_micron;
++}
++
+ /*
+  * Check if the NAND chip is ONFI compliant, returns 1 if it is, 0 otherwise.
+  */
+@@ -3085,6 +3109,9 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+ 		pr_warn("Could not retrieve ONFI ECC requirements\n");
+ 	}
+ 
++	if (p->jedec_id == NAND_MFR_MICRON)
++		nand_onfi_detect_micron(chip, p);
++
+ 	return 1;
+ }
+ 
 diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index e3621aba1417..2413bac095ae 100644
+index ef70505dade1..e3621aba1417 100644
 --- a/include/linux/mtd/nand.h
 +++ b/include/linux/mtd/nand.h
-@@ -292,7 +292,7 @@ struct nand_onfi_params {
- 	u8 vendor[88];
+@@ -219,6 +219,9 @@ struct nand_chip;
+ /* ONFI feature address */
+ #define ONFI_FEATURE_ADDR_TIMING_MODE	0x1
  
- 	__le16 crc;
--} __attribute__((packed));
-+} __packed;
- 
- #define ONFI_CRC_BASE	0x4F4E
++/* Vendor-specific feature address (Micron) */
++#define ONFI_FEATURE_ADDR_READ_RETRY	0x89
++
+ /* ONFI subfeature parameters length */
+ #define ONFI_SUBFEATURE_PARAM_LEN	4
  
 -- 
 1.8.3.2
