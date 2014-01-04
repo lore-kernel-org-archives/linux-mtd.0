@@ -1,14 +1,14 @@
-Received: from mail-ie0-x231.google.com ([2607:f8b0:4001:c03::231])
+Received: from mail-ie0-x229.google.com ([2607:f8b0:4001:c03::229])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VzFFU-0002iB-5o
- for linux-mtd@lists.infradead.org; Sat, 04 Jan 2014 00:37:57 +0000
-Received: by mail-ie0-f177.google.com with SMTP id tp5so16680665ieb.36
- for <linux-mtd@lists.infradead.org>; Fri, 03 Jan 2014 16:37:31 -0800 (PST)
+ id 1VzFFW-0002iD-MF
+ for linux-mtd@lists.infradead.org; Sat, 04 Jan 2014 00:38:00 +0000
+Received: by mail-ie0-f169.google.com with SMTP id e14so16728610iej.14
+ for <linux-mtd@lists.infradead.org>; Fri, 03 Jan 2014 16:37:36 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v3 2/5] mtd: nand: add ONFI vendor block for Micron
-Date: Fri,  3 Jan 2014 16:37:05 -0800
-Message-Id: <1388795828-24808-2-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v3 5/5] mtd: nand: use __packed shorthand
+Date: Fri,  3 Jan 2014 16:37:08 -0800
+Message-Id: <1388795828-24808-5-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1388795828-24808-1-git-send-email-computersforpeace@gmail.com>
 References: <1388795828-24808-1-git-send-email-computersforpeace@gmail.com>
 Cc: Huang Shijie <b32955@freescale.com>,
@@ -22,53 +22,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+To be consistent with the rest of include/linux/mtd/nand.h, we should
+use the __packed shorthand instead of __attribute__((packed)).
+
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
-No changes since v1
+No change since v1
 
- include/linux/mtd/nand.h | 23 ++++++++++++++++++++++-
- 1 file changed, 22 insertions(+), 1 deletion(-)
+ include/linux/mtd/nand.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index f3ea8daf08ee..029fe5948dc4 100644
+index e3621aba1417..2413bac095ae 100644
 --- a/include/linux/mtd/nand.h
 +++ b/include/linux/mtd/nand.h
-@@ -285,7 +285,8 @@ struct nand_onfi_params {
- 	u8 reserved4[7];
- 
- 	/* vendor */
--	u8 reserved5[90];
-+	__le16 vendor_revision;
-+	u8 vendor[88];
+@@ -292,7 +292,7 @@ struct nand_onfi_params {
+ 	u8 vendor[88];
  
  	__le16 crc;
- } __attribute__((packed));
-@@ -326,6 +327,26 @@ struct onfi_ext_param_page {
- 	 */
- } __packed;
- 
-+struct nand_onfi_vendor_micron {
-+	u8 two_plane_read;
-+	u8 read_cache;
-+	u8 read_unique_id;
-+	u8 dq_imped;
-+	u8 dq_imped_num_settings;
-+	u8 dq_imped_feat_addr;
-+	u8 rb_pulldown_strength;
-+	u8 rb_pulldown_strength_feat_addr;
-+	u8 rb_pulldown_strength_num_settings;
-+	u8 otp_mode;
-+	u8 otp_page_start;
-+	u8 otp_data_prot_addr;
-+	u8 otp_num_pages;
-+	u8 otp_feat_addr;
-+	u8 read_retry_options;
-+	u8 reserved[72];
-+	u8 param_revision;
+-} __attribute__((packed));
 +} __packed;
-+
- /**
-  * struct nand_hw_control - Control structure for hardware controller (e.g ECC generator) shared among independent devices
-  * @lock:               protection lock
+ 
+ #define ONFI_CRC_BASE	0x4F4E
+ 
 -- 
 1.8.3.2
