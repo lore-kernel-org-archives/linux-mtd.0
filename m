@@ -1,21 +1,17 @@
-Received: from mo6-p05-ob.smtp.rzone.de ([2a01:238:20a:202:5305::9])
+Received: from co1ehsobe002.messaging.microsoft.com ([216.32.180.185]
+ helo=co1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W04qK-0002SW-GY
- for linux-mtd@lists.infradead.org; Mon, 06 Jan 2014 07:43:25 +0000
-Message-ID: <52CA5E79.4090503@denx.de>
-Date: Mon, 06 Jan 2014 08:42:49 +0100
-From: Stefan Roese <sr@denx.de>
+ id 1W058s-0002pw-ED
+ for linux-mtd@lists.infradead.org; Mon, 06 Jan 2014 08:02:35 +0000
+From: Hou Zhiqiang <b48286@freescale.com>
+To: <linux-mtd@lists.infradead.org>, <linuxppc-dev@ozlabs.org>
+Subject: [PATCH] mtd: m25p80: Make the name of mtd_info fixed
+Date: Mon, 6 Jan 2014 14:34:29 +0800
+Message-ID: <1388990069-27066-1-git-send-email-b48286@freescale.com>
 MIME-Version: 1.0
-To: Pekon Gupta <pekon@ti.com>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v6 0/6] mtd: nand: omap: optimized chip->ecc.correct()
- for H/W ECC schemes
-References: <1388803698-26252-1-git-send-email-pekon@ti.com>
-In-Reply-To: <1388803698-26252-1-git-send-email-pekon@ti.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>, balbi@ti.com,
- Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain
+Cc: scottwood@freescale.com, Hou Zhiqiang <b48286@freescale.com>,
+ mingkai.hu@freescale.com, computersforpeace@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,19 +21,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04.01.2014 03:48, Pekon Gupta wrote:
-> *changes v5 -> v6*
-> [PATCH 1/6] <no change>
-> [PATCH 2/6] introduced variable 'actual_eccbytes' to omit reserved byte-position
-> [PATCH 3/6] split from [PATCH v5 3/5] fix erased-page bit-flip correction
-> [PATCH 4/6] split from [PATCH v5 3/5] fix erased-page detection
-> [PATCH 5/6] <minor cleanup>
-> [PATCH 6/6] <no change>
+To give spi flash layout using "mtdparts=..." in cmdline, we must
+give mtd_info a fixed name,because the cmdlinepart's parser will
+match the name given in cmdline with the mtd_info.
 
-Thanks, Pekon. This fixes some problems we have seen on an AM335x board
-with ECC errors on UBI/UBIFS mounting. So for the whole patch series:
+Now, if use OF node, mtd_info's name will be spi->dev->name. It
+consists of spi_master->bus_num, and the spi_master->bus_num maybe
+dynamically fetched.
+So, give the mtd_info a new fiexd name "name.cs", "name" is name of
+spi_device_id and "cs" is chip-select in spi_dev.
 
-Tested-by: Stefan Roese <sr@denx.de>
+Signed-off-by: Hou Zhiqiang <b48286@freescale.com>
+---
+ drivers/mtd/devices/m25p80.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Thanks,
-Stefan
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index eb558e8..d1ed480 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -1012,7 +1012,8 @@ static int m25p_probe(struct spi_device *spi)
+ 	if (data && data->name)
+ 		flash->mtd.name = data->name;
+ 	else
+-		flash->mtd.name = dev_name(&spi->dev);
++		flash->mtd.name = kasprintf(GFP_KERNEL, "%s.%d",
++				id->name, spi->chip_select);
+ 
+ 	flash->mtd.type = MTD_NORFLASH;
+ 	flash->mtd.writesize = 1;
+-- 
+1.8.4.1
