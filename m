@@ -1,28 +1,22 @@
-Received: from mailout.micron.com ([137.201.242.129])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W02Zy-000873-2L
- for linux-mtd@lists.infradead.org; Mon, 06 Jan 2014 05:18:22 +0000
-From: =?utf-8?B?UWkgV2FuZyDnjovotbcgKHFpd2FuZyk=?= <qiwang@micron.com>
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>
-Subject: RE: [PATCH 1/1]  MTD: UBI:  avoid program operation on  NOR flash
- after erasure interrupted
-Date: Mon, 6 Jan 2014 05:17:56 +0000
-Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A770C4C4F@NTXXIAMBX02.xacn.micron.com>
-References: <71CF8D7F32C5C24C9CD1D0E02D52498A770B54B1@NTXXIAMBX02.xacn.micron.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A770B68A8@NTXXIAMBX02.xacn.micron.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A770B6F77@NTXXIAMBX02.xacn.micron.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A770B79C8@NTXXIAMBX02.xacn.micron.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A770B8611@NTXXIAMBX02.xacn.micron.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A770BA389@NTXXIAMBX02.xacn.micron.com>
- <1388675460.25123.90.camel@sauron.fi.intel.com>
-In-Reply-To: <1388675460.25123.90.camel@sauron.fi.intel.com>
+Received: from mail-bn1bln0179.outbound.protection.outlook.com
+ ([2a01:111:f400:7c10::1:179]
+ helo=na01-bn1-obe.outbound.protection.outlook.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W02dC-0008CF-M2
+ for linux-mtd@lists.infradead.org; Mon, 06 Jan 2014 05:21:47 +0000
+From: Insop Song <Insop.Song@gainspeed.com>
+To: "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: [PATCH] Check flag status register for Micron n25q512a
+Date: Mon, 6 Jan 2014 05:21:17 +0000
+Message-ID: <6bf927e513554e628fe15d309aac698e@BLUPR07MB002.namprd07.prod.outlook.com>
 Content-Language: en-US
-Content-Type: multipart/mixed;
- boundary="_002_71CF8D7F32C5C24C9CD1D0E02D52498A770C4C4FNTXXIAMBX02xacn_"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Adrian Hunter <adrian.hunter@intel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: "Priyanka.Jain@freescale.com" <Priyanka.Jain@freescale.com>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,216 +26,211 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---_002_71CF8D7F32C5C24C9CD1D0E02D52498A770C4C4FNTXXIAMBX02xacn_
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-
-QXR0YWNoZWQgaXMgbXkgcGF0Y2ggbW9kaWZpZWQsIGFuZCBJIHVzZSBnaXQgZm9ybWF0LXBhdGNo
-IHRvIGdlbmVyYXRlIHRoaXMgZmlsZS4gUGxlYXNlIGNoZWNrIGl0LiANClRoYW5rcw0KDQotLS0t
-LU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogQXJ0ZW0gQml0eXV0c2tpeSBbbWFpbHRvOmRl
-ZGVraW5kMUBnbWFpbC5jb21dIA0KU2VudDogVGh1cnNkYXksIEphbnVhcnkgMDIsIDIwMTQgMTE6
-MTEgUE0NClRvOiBRaSBXYW5nIOeOi+i1tyAocWl3YW5nKQ0KQ2M6IEFkcmlhbiBIdW50ZXI7IGxp
-bnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3Jn
-DQpTdWJqZWN0OiBSZTogW1BBVENIIDEvMV0gTVREOiBVQkk6IGF2b2lkIHByb2dyYW0gb3BlcmF0
-aW9uIG9uIE5PUiBmbGFzaCBhZnRlciBlcmFzdXJlIGludGVycnVwdGVkDQoNCk9uIFdlZCwgMjAx
-NC0wMS0wMSBhdCAxMzowNiArMDAwMCwgUWkgV2FuZyDnjovotbcgKHFpd2FuZykgd3JvdGU6DQo+
-IEhpIEFydGVtOg0KPiBBcyB3ZSB0YWxrZWQgaW4gbWFpbCBiZWZvcmUsIHBsZWFzZSBjaGVjayBt
-eSBwYXRjaCBhcyBiZWxvdzoNCg0KTm90ZSwgYmVjYXVzZSB5b3Ugd3JvdGUgdGhlIGFib3ZlDQoN
-Cj4gRnJvbTogUWkgV2FuZyA8cWl3YW5nQG1pY3Jvbi5jb20+DQoNCiJnaXQgYW0iIHdpbGwgcHV0
-IGFsbCB0aGUgYWJvdmUgdG8gdGhlIGNvbW1pdCBtZXNzYWdlLiBJZiB5b3Ugd2FudCB0byBjaGFu
-Z2UgeW91ciAiRnJvbToiLCBpdCBzaG91bGQgYmUgaW4gdGhlIGZpcnN0IGxpbmUuDQoNCkZldyBv
-dGhlciB0aGluZ3MuDQoNCjEuIElmIEkgc2F2ZSB5b3VyIGUtbWFpbCBhcyAicWkubWJveCIgYW5k
-IHRoZW4gdXNlICJnaXQgYW0iLCBJIGdldCB0aGlzOg0KDQokIGdpdCBhbSB+L3RtcC9xaS5tYm94
-DQpBcHBseWluZzogTVREOiBVQkk6IGF2b2lkIHByb2dyYW0gb3BlcmF0aW9uIG9uIE5PUiBmbGFz
-aCBhZnRlciBlcmFzdXJlIGludGVycnVwdGVkDQovaG9tZS9kZWRla2luZC9naXQvbGludXgtdWJp
-ZnMvLmdpdC9yZWJhc2UtYXBwbHkvcGF0Y2g6MTg6IHRyYWlsaW5nIHdoaXRlc3BhY2UuDQogICAg
-ICAgICAqIElmIFZJRCBvciBFQyBpcyB2YWxpZCwgbmVlZCB0byBjb3JydXB0IGl0IGJlZm9yZSBl
-cmFzZSBvcGVyYXRpb24uICANCi9ob21lL2RlZGVraW5kL2dpdC9saW51eC11Ymlmcy8uZ2l0L3Jl
-YmFzZS1hcHBseS9wYXRjaDo2Mzogc3BhY2UgYmVmb3JlIHRhYiBpbiBpbmRlbnQuDQogICAgICAg
-ICAgICAgICAgYWRkciArPSB1YmktPnZpZF9oZHJfYWxvZmZzZXQ7DQovaG9tZS9kZWRla2luZC9n
-aXQvbGludXgtdWJpZnMvLmdpdC9yZWJhc2UtYXBwbHkvcGF0Y2g6NjY6IHRyYWlsaW5nIHdoaXRl
-c3BhY2UuDQogICAgICAgICAgICAgICAgICAgICAgICBnb3RvIGVycm9yOw0Kd2FybmluZzogMyBs
-aW5lcyBhZGQgd2hpdGVzcGFjZSBlcnJvcnMuDQoNCk5vdGUsIEkgaGF2ZSB0aGlzIGluIG15IH4v
-LmdpdGNvbmZpZyB0byBub3RpY2UgdGhpbmdzIGxpa2UgdGhhdDoNCg0KW2NvcmVdDQogICAgICAg
-IHdoaXRlc3BhY2UgPSB0cmFpbGluZy1zcGFjZSxzcGFjZS1iZWZvcmUtdGFiDQoNCg0KPiBkaWZm
-IC0tZ2l0IGEvZHJpdmVycy9tdGQvdWJpL2lvLmMgYi9kcml2ZXJzL210ZC91YmkvaW8uYw0KDQou
-Li4NCg0KPiAtCSAqIFRoZSBQRUIgY29udGFpbnMgYSB2YWxpZCBWSUQgaGVhZGVyLCBidXQgd2Ug
-Y2Fubm90IGludmFsaWRhdGUgaXQuDQo+ICsJICogVGhlIFBFQiBjb250YWlucyBhIHZhbGlkIFZJ
-RCBvciBFQyBoZWFkZXIsIGJ1dCB3ZSBjYW5ub3QgaW52YWxpZGF0ZSBpdC4NCg0KODIgY2hhcmFj
-dGVycyA6LSkNCg0KPiAtCXViaV9lcnIoImNhbm5vdCBpbnZhbGlkYXRlIFBFQiAlZCwgd3JpdGUg
-cmV0dXJuZWQgJWQgcmVhZCByZXR1cm5lZCAlZCIsDQo+ICsJdWJpX2VycigiY2Fubm90IGludmFs
-aWRhdGUgUEVCICVkLCByZWFkIHJldHVybmVkICVkIHdyaXRlIHJldHVybmVkIA0KPiArJWQiLA0K
-DQpXaHk/IFRoZSBlcnJvciBhY3R1YWxseSBoYXBwZW5lZCBpbiBtdGRfd3JpdGUuIE5vIHJlYWQg
-ZXJyb3JzIGxlYWQgdG8gdGhpcyBwYXRoLg0KDQo+ICAJCXBudW0sIGVyciwgZXJyMSk7DQoNCkkg
-Z3Vlc3MgaXQgaXMgYmV0dGVyIHRvIGtpbGwgdGhlIGVycjEgdmFyaWFibGUgYW5kIHVzZSBqdXN0
-ICdlcnInDQpldmVyeXdoZXJlLg0KDQpBbnl3YXksIEkgZGlkIG5vdCByZXNwb25kIGZvciBsb25n
-IHRpbWUsIHNvIEkgZGVjaWRlZCB0byBkbyBhbGwgdGhlc2UgbW9kaWZpY2F0aW9ucyBteXNlbGYu
-IENvdWxkIHlvdSBwbGVhc2UgcmV2aWV3IGFuZCB0ZXN0IHRoZSBiZWxvdyBwYXRjaCwgd2hpY2gg
-aXMgYWxzbyBhdHRhY2hlZC4gSSBkaWQgbm90IGNvbXBpbGUgaXQgZXZlbi4gSWYgdGhlcmUgYXJl
-IGlzc3VlcywganVzdCBmaXgtaXQgdXAgYW5kIHNlbmQgdGhlIHRoZSBmaXggb3IgdGhlIGZpeGVk
-IHZlcnNpb24uIElmIGl0IGlzIE9LLCBnaXZlIG1lIHlvdXIgIlRlc3RlZC1ieToiIHBsZWFzZS4g
-VGhhbmtzIQ0KDQoNCkZyb206ID0/VVRGLTg/cT9RaT0yMFdhbmc9MjA9RTc9OEU9OEI9RTg9QjU9
-Qjc9MjA9MjhxaXdhbmc9Mjk/PQ0KIDxxaXdhbmdAbWljcm9uLmNvbT4NCkRhdGU6IFdlZCwgMSBK
-YW4gMjAxNCAxMzowNjoxMSArMDAwMA0KU3ViamVjdDogW1BBVENIXSBNVEQ6IFVCSTogYXZvaWQg
-cHJvZ3JhbSBvcGVyYXRpb24gb24gTk9SIGZsYXNoIGFmdGVyIGVyYXN1cmUgIGludGVycnVwdGVk
-DQpNSU1FLVZlcnNpb246IDEuMA0KQ29udGVudC1UeXBlOiB0ZXh0L3BsYWluOyBjaGFyc2V0PVVU
-Ri04DQpDb250ZW50LVRyYW5zZmVyLUVuY29kaW5nOiA4Yml0DQoNCm5vcl9lcmFzZV9wcmVwYXJl
-KCkgd2lsbCBiZSBjYWxsZWQgYmVmb3JlIGVyYXNlIGEgTk9SIGZsYXNoLCBpdCB3aWxsIHByb2dy
-YW0gJzAnDQppbnRvIGEgYmxvY2sgdG8gbWFyayB0aGlzIGJsb2NrLiBCdXQgcHJvZ3JhbSBkYXRh
-IGludG8gYSBlcmFzdXJlIGludGVycnVwdGVkIGJsb2NrIGNhbiBjYXVzZSBwcm9ncmFtIHRpbXRv
-dXQoc2V2ZXJhbCBtaW51dGVzIGF0IG1vc3QpIGVycm9yLCBjb3VsZCBpbXBhY3Qgb3RoZXIgb3Bl
-cmF0aW9uIG9uIE5PUiBmbGFzaC4gU28gVUJJRlMgY2FuIHJlYWQgdGhpcyBibG9jayBmaXJzdCB0
-byBhdm9pZCB1bm5lZWRlZCBwcm9ncmFtIG9wZXJhdGlvbi4NCg0KVGhpcyBwYXRjaCB0cnkgdG8g
-cHV0IHJlYWQgb3BlcmF0aW9uIGF0IGhlYWQgb2Ygd3JpdGUgb3BlcmF0aW9uIGluIG5vcl9lcmFz
-ZV9wcmVwYXJlKCksIHJlYWQgb3V0IHRoZSBkYXRhLg0KSWYgdGhlIGRhdGEgaXMgYWxyZWFkeSBj
-b3JydXB0LCB0aGVuIG5vIG5lZWQgdG8gcHJvZ3JhbSBhbnkgZGF0YSBpbnRvIHRoaXMgYmxvY2ss
-IGp1c3QgZ28gdG8gZXJhc2UgdGhpcyBibG9jay4NCg0KVGhpcyBwYXRjaCBpcyB2YWxpZGF0ZWQg
-b24gTWljcm9uIE5PUiBmbGFzaCwgcGFydCBudW1iZXIgaXPvvJpKUzI4RjUxMk0yOUVXSEENCg0K
-U2lnbmVkLW9mZi1ieTogUWkgV2FuZyA8cWl3YW5nQG1pY3Jvbi5jb20+DQotLS0NCiBkcml2ZXJz
-L210ZC91YmkvaW8uYyB8IDU1ICsrKysrKysrKysrKysrKysrKysrKystLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0NCiAxIGZpbGUgY2hhbmdlZCwgMjMgaW5zZXJ0aW9ucygrKSwgMzIgZGVs
-ZXRpb25zKC0pDQoNCmRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC91YmkvaW8uYyBiL2RyaXZlcnMv
-bXRkL3ViaS9pby5jIGluZGV4IGJmNzlkZWYuLmFlOWU1Y2EgMTAwNjQ0DQotLS0gYS9kcml2ZXJz
-L210ZC91YmkvaW8uYw0KKysrIGIvZHJpdmVycy9tdGQvdWJpL2lvLmMNCkBAIC00OTUsMTAgKzQ5
-NSwxMiBAQCBvdXQ6DQogICovDQogc3RhdGljIGludCBub3JfZXJhc2VfcHJlcGFyZShzdHJ1Y3Qg
-dWJpX2RldmljZSAqdWJpLCBpbnQgcG51bSkgIHsNCi0JaW50IGVyciwgZXJyMTsNCisJaW50IGVy
-cjsNCiAJc2l6ZV90IHdyaXR0ZW47DQogCWxvZmZfdCBhZGRyOw0KIAl1aW50MzJfdCBkYXRhID0g
-MDsNCisJc3RydWN0IHViaV9lY19oZHIgZWNfaGRyOw0KKw0KIAkvKg0KIAkgKiBOb3RlLCB3ZSBj
-YW5ub3QgZ2VuZXJhbGx5IGRlZmluZSBWSUQgaGVhZGVyIGJ1ZmZlcnMgb24gc3RhY2ssDQogCSAq
-IGJlY2F1c2Ugb2YgdGhlIHdheSB3ZSBkZWFsIHdpdGggdGhlc2UgYnVmZmVycyAoc2VlIHRoZSBo
-ZWFkZXIgQEAgLTUwOSw1MCArNTExLDM5IEBAIHN0YXRpYyBpbnQgbm9yX2VyYXNlX3ByZXBhcmUo
-c3RydWN0IHViaV9kZXZpY2UgKnViaSwgaW50IHBudW0pDQogCXN0cnVjdCB1YmlfdmlkX2hkciB2
-aWRfaGRyOw0KIA0KIAkvKg0KKwkgKiBJZiBWSUQgb3IgRUMgaXMgdmFsaWQsIHdlIGhhdmUgdG8g
-Y29ycnVwdCB0aGVtIGJlZm9yZSBlcmFzaW5nLg0KIAkgKiBJdCBpcyBpbXBvcnRhbnQgdG8gZmly
-c3QgaW52YWxpZGF0ZSB0aGUgRUMgaGVhZGVyLCBhbmQgdGhlbiB0aGUgVklEDQogCSAqIGhlYWRl
-ci4gT3RoZXJ3aXNlIGEgcG93ZXIgY3V0IG1heSBsZWFkIHRvIHZhbGlkIEVDIGhlYWRlciBhbmQN
-CiAJICogaW52YWxpZCBWSUQgaGVhZGVyLCBpbiB3aGljaCBjYXNlIFVCSSB3aWxsIHRyZWF0IHRo
-aXMgUEVCIGFzDQogCSAqIGNvcnJ1cHRlZCBhbmQgd2lsbCB0cnkgdG8gcHJlc2VydmUgaXQsIGFu
-ZCBwcmludCBzY2FyeSB3YXJuaW5ncy4NCiAJICovDQogCWFkZHIgPSAobG9mZl90KXBudW0gKiB1
-YmktPnBlYl9zaXplOw0KLQllcnIgPSBtdGRfd3JpdGUodWJpLT5tdGQsIGFkZHIsIDQsICZ3cml0
-dGVuLCAodm9pZCAqKSZkYXRhKTsNCi0JaWYgKCFlcnIpIHsNCi0JCWFkZHIgKz0gdWJpLT52aWRf
-aGRyX2Fsb2Zmc2V0Ow0KKwllcnIgPSB1YmlfaW9fcmVhZF9lY19oZHIodWJpLCBwbnVtLCAmZWNf
-aGRyLCAwKTsNCisJaWYgKGVyciAhPSBVQklfSU9fQkFEX0hEUl9FQkFETVNHICYmIGVyciAhPSBV
-QklfSU9fQkFEX0hEUiAmJg0KKwkgICAgZXJyICE9IFVCSV9JT19GRil7DQogCQllcnIgPSBtdGRf
-d3JpdGUodWJpLT5tdGQsIGFkZHIsIDQsICZ3cml0dGVuLCAodm9pZCAqKSZkYXRhKTsNCi0JCWlm
-ICghZXJyKQ0KLQkJCXJldHVybiAwOw0KKwkJaWYoZXJyKQ0KKwkJCWdvdG8gZXJyb3I7DQogCX0N
-CiANCi0JLyoNCi0JICogV2UgZmFpbGVkIHRvIHdyaXRlIHRvIHRoZSBtZWRpYS4gVGhpcyB3YXMg
-b2JzZXJ2ZWQgd2l0aCBTcGFuc2lvbg0KLQkgKiBTMjlHTDUxMk4gTk9SIGZsYXNoLiBNb3N0IHBy
-b2JhYmx5IHRoZSBwcmV2aW91c2x5IGVyYXNlYmxvY2sgZXJhc3VyZQ0KLQkgKiB3YXMgaW50ZXJy
-dXB0ZWQgYXQgYSB2ZXJ5IGluYXBwcm9wcmlhdGUgbW9tZW50LCBzbyBpdCBiZWNhbWUNCi0JICog
-dW53cml0YWJsZS4gSW4gdGhpcyBjYXNlIHdlIHByb2JhYmx5IGFueXdheSBoYXZlIGdhcmJhZ2Ug
-aW4gdGhpcw0KLQkgKiBQRUIuDQotCSAqLw0KLQllcnIxID0gdWJpX2lvX3JlYWRfdmlkX2hkcih1
-YmksIHBudW0sICZ2aWRfaGRyLCAwKTsNCi0JaWYgKGVycjEgPT0gVUJJX0lPX0JBRF9IRFJfRUJB
-RE1TRyB8fCBlcnIxID09IFVCSV9JT19CQURfSERSIHx8DQotCSAgICBlcnIxID09IFVCSV9JT19G
-Rikgew0KLQkJc3RydWN0IHViaV9lY19oZHIgZWNfaGRyOw0KLQ0KLQkJZXJyMSA9IHViaV9pb19y
-ZWFkX2VjX2hkcih1YmksIHBudW0sICZlY19oZHIsIDApOw0KLQkJaWYgKGVycjEgPT0gVUJJX0lP
-X0JBRF9IRFJfRUJBRE1TRyB8fCBlcnIxID09IFVCSV9JT19CQURfSERSIHx8DQotCQkgICAgZXJy
-MSA9PSBVQklfSU9fRkYpDQotCQkJLyoNCi0JCQkgKiBCb3RoIFZJRCBhbmQgRUMgaGVhZGVycyBh
-cmUgY29ycnVwdGVkLCBzbyB3ZSBjYW4NCi0JCQkgKiBzYWZlbHkgZXJhc2UgdGhpcyBQRUIgYW5k
-IG5vdCBhZnJhaWQgdGhhdCBpdCB3aWxsIGJlDQotCQkJICogdHJlYXRlZCBhcyBhIHZhbGlkIFBF
-QiBpbiBjYXNlIG9mIGFuIHVuY2xlYW4gcmVib290Lg0KLQkJCSAqLw0KLQkJCXJldHVybiAwOw0K
-KwllcnIgPSB1YmlfaW9fcmVhZF92aWRfaGRyKHViaSwgcG51bSwgJnZpZF9oZHIsIDApOw0KKwlp
-ZiAoZXJyICE9IFVCSV9JT19CQURfSERSX0VCQURNU0cgJiYgZXJyICE9IFVCSV9JT19CQURfSERS
-ICYmDQorCSAgICBlcnIgIT0gVUJJX0lPX0ZGKXsNCisJCWFkZHIgKz0gdWJpLT52aWRfaGRyX2Fs
-b2Zmc2V0Ow0KKwkJZXJyID0gbXRkX3dyaXRlKHViaS0+bXRkLCBhZGRyLCA0LCAmd3JpdHRlbiwg
-KHZvaWQgKikmZGF0YSk7DQorCQlpZiAoZXJyKQ0KKwkJCWdvdG8gZXJyb3I7DQogCX0NCisJcmV0
-dXJuIDA7DQogDQorZXJyb3I6DQogCS8qDQotCSAqIFRoZSBQRUIgY29udGFpbnMgYSB2YWxpZCBW
-SUQgaGVhZGVyLCBidXQgd2UgY2Fubm90IGludmFsaWRhdGUgaXQuDQotCSAqIFN1cHBvc2VkbHkg
-dGhlIGZsYXNoIG1lZGlhIG9yIHRoZSBkcml2ZXIgaXMgc2NyZXdlZCB1cCwgc28gcmV0dXJuIGFu
-DQotCSAqIGVycm9yLg0KKwkgKiBUaGUgUEVCIGNvbnRhaW5zIGEgdmFsaWQgVklEIG9yIEVDIGhl
-YWRlciwgYnV0IHdlIGNhbm5vdCBpbnZhbGlkYXRlDQorCSAqIGl0LiBTdXBwb3NlZGx5IHRoZSBm
-bGFzaCBtZWRpYSBvciB0aGUgZHJpdmVyIGlzIHNjcmV3ZWQgdXAsIHNvDQorCSAqIHJldHVybiBh
-biBlcnJvci4NCiAJICovDQotCXViaV9lcnIoImNhbm5vdCBpbnZhbGlkYXRlIFBFQiAlZCwgd3Jp
-dGUgcmV0dXJuZWQgJWQgcmVhZCByZXR1cm5lZCAlZCIsDQotCQlwbnVtLCBlcnIsIGVycjEpOw0K
-Kwl1YmlfZXJyKCJjYW5ub3QgaW52YWxpZGF0ZSBQRUIgJWQsIHdyaXRlIHJldHVybmVkICVkIHdy
-aXRlIHJldHVybmVkICVkIiwNCisJCXBudW0sIGVyciwgZXJyKTsNCiAJdWJpX2R1bXBfZmxhc2go
-dWJpLCBwbnVtLCAwLCB1YmktPnBlYl9zaXplKTsNCiAJcmV0dXJuIC1FSU87DQogfQ0KLS0NCjEu
-OC41LjINCg0KLS0NCkJlc3QgUmVnYXJkcywNCkFydGVtIEJpdHl1dHNraXkNCg==
-
---_002_71CF8D7F32C5C24C9CD1D0E02D52498A770C4C4FNTXXIAMBX02xacn_
-Content-Type: application/octet-stream;
-	name="0001-MTD-UBI-avoid-program-operation-on-NOR-flash-after-e.patch"
-Content-Description: 0001-MTD-UBI-avoid-program-operation-on-NOR-flash-after-e.patch
-Content-Disposition: attachment;
-	filename="0001-MTD-UBI-avoid-program-operation-on-NOR-flash-after-e.patch";
-	size=4262; creation-date="Mon, 06 Jan 2014 05:02:07 GMT";
-	modification-date="Mon, 06 Jan 2014 05:02:07 GMT"
-Content-Transfer-Encoding: base64
-
-RnJvbSAxNzQyMzlmY2FjNzlmODY3ZDBmNzk3N2ExZTViN2I3NGQ2NzEwZTMxIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiA9P1VURi04P3E/IlFpPTIwV2FuZz0yMD1FNz04RT04Qj1FOD1C
-NT1CNz0yMChxaXdhbmcpIj89CiA8cWl3YW5nQG1pY3Jvbi5jb20+CkRhdGU6IFdlZCwgMSBKYW4g
-MjAxNCAxMzowNjoxMSArMDAwMApTdWJqZWN0OiBbUEFUQ0hdIE1URDogVUJJOiBhdm9pZCBwcm9n
-cmFtIG9wZXJhdGlvbiBvbiBOT1IgZmxhc2ggYWZ0ZXIgZXJhc3VyZQogaW50ZXJydXB0ZWQKTUlN
-RS1WZXJzaW9uOiAxLjAKQ29udGVudC1UeXBlOiB0ZXh0L3BsYWluOyBjaGFyc2V0PVVURi04CkNv
-bnRlbnQtVHJhbnNmZXItRW5jb2Rpbmc6IDhiaXQKCm5vcl9lcmFzZV9wcmVwYXJlKCkgd2lsbCBi
-ZSBjYWxsZWQgYmVmb3JlIGVyYXNlIGEgTk9SIGZsYXNoLCBpdCB3aWxsIHByb2dyYW0gJzAnCmlu
-dG8gYSBibG9jayB0byBtYXJrIHRoaXMgYmxvY2suIEJ1dCBwcm9ncmFtIGRhdGEgaW50byBhIGVy
-YXN1cmUgaW50ZXJydXB0ZWQgYmxvY2sKY2FuIGNhdXNlIHByb2dyYW0gdGltdG91dChzZXZlcmFs
-IG1pbnV0ZXMgYXQgbW9zdCkgZXJyb3IsIGNvdWxkIGltcGFjdCBvdGhlcgpvcGVyYXRpb24gb24g
-Tk9SIGZsYXNoLiBTbyBVQklGUyBjYW4gcmVhZCB0aGlzIGJsb2NrIGZpcnN0IHRvIGF2b2lkIHVu
-bmVlZGVkCnByb2dyYW0gb3BlcmF0aW9uLgoKVGhpcyBwYXRjaCB0cnkgdG8gcHV0IHJlYWQgb3Bl
-cmF0aW9uIGF0IGhlYWQgb2Ygd3JpdGUgb3BlcmF0aW9uIGluCm5vcl9lcmFzZV9wcmVwYXJlKCks
-IHJlYWQgb3V0IHRoZSBkYXRhLgpJZiB0aGUgZGF0YSBpcyBhbHJlYWR5IGNvcnJ1cHQsIHRoZW4g
-bm8gbmVlZCB0byBwcm9ncmFtIGFueSBkYXRhIGludG8gdGhpcyBibG9jaywKanVzdCBnbyB0byBl
-cmFzZSB0aGlzIGJsb2NrLgoKVGhpcyBwYXRjaCBpcyB2YWxpZGF0ZWQgb24gTWljcm9uIE5PUiBm
-bGFzaCwgcGFydCBudW1iZXIgaXPvvJpKUzI4RjUxMk0yOUVXSEEKClNpZ25lZC1vZmYtYnk6IFFp
-IFdhbmcgPHFpd2FuZ0BtaWNyb24uY29tPgotLS0KIGRyaXZlcnMvbXRkL3ViaS9pby5jIHwgICA1
-NCArKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogMSBm
-aWxlIGNoYW5nZWQsIDIyIGluc2VydGlvbnMoKyksIDMyIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdp
-dCBhL2RyaXZlcnMvbXRkL3ViaS9pby5jIGIvZHJpdmVycy9tdGQvdWJpL2lvLmMKaW5kZXggYmY3
-OWRlZi4uZDM2MTM0OSAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvdWJpL2lvLmMKKysrIGIvZHJp
-dmVycy9tdGQvdWJpL2lvLmMKQEAgLTQ5NSwxMCArNDk1LDEyIEBAIG91dDoKICAqLwogc3RhdGlj
-IGludCBub3JfZXJhc2VfcHJlcGFyZShzdHJ1Y3QgdWJpX2RldmljZSAqdWJpLCBpbnQgcG51bSkK
-IHsKLQlpbnQgZXJyLCBlcnIxOworCWludCBlcnI7CiAJc2l6ZV90IHdyaXR0ZW47CiAJbG9mZl90
-IGFkZHI7CiAJdWludDMyX3QgZGF0YSA9IDA7CisJc3RydWN0IHViaV9lY19oZHIgZWNfaGRyOwor
-CiAJLyoKIAkgKiBOb3RlLCB3ZSBjYW5ub3QgZ2VuZXJhbGx5IGRlZmluZSBWSUQgaGVhZGVyIGJ1
-ZmZlcnMgb24gc3RhY2ssCiAJICogYmVjYXVzZSBvZiB0aGUgd2F5IHdlIGRlYWwgd2l0aCB0aGVz
-ZSBidWZmZXJzIChzZWUgdGhlIGhlYWRlcgpAQCAtNTA5LDUwICs1MTEsMzggQEAgc3RhdGljIGlu
-dCBub3JfZXJhc2VfcHJlcGFyZShzdHJ1Y3QgdWJpX2RldmljZSAqdWJpLCBpbnQgcG51bSkKIAlz
-dHJ1Y3QgdWJpX3ZpZF9oZHIgdmlkX2hkcjsKIAogCS8qCisJICogSWYgVklEIG9yIEVDIGlzIHZh
-bGlkLCB3ZSBoYXZlIHRvIGNvcnJ1cHQgdGhlbSBiZWZvcmUgZXJhc2luZy4KIAkgKiBJdCBpcyBp
-bXBvcnRhbnQgdG8gZmlyc3QgaW52YWxpZGF0ZSB0aGUgRUMgaGVhZGVyLCBhbmQgdGhlbiB0aGUg
-VklECiAJICogaGVhZGVyLiBPdGhlcndpc2UgYSBwb3dlciBjdXQgbWF5IGxlYWQgdG8gdmFsaWQg
-RUMgaGVhZGVyIGFuZAogCSAqIGludmFsaWQgVklEIGhlYWRlciwgaW4gd2hpY2ggY2FzZSBVQkkg
-d2lsbCB0cmVhdCB0aGlzIFBFQiBhcwogCSAqIGNvcnJ1cHRlZCBhbmQgd2lsbCB0cnkgdG8gcHJl
-c2VydmUgaXQsIGFuZCBwcmludCBzY2FyeSB3YXJuaW5ncy4KIAkgKi8KIAlhZGRyID0gKGxvZmZf
-dClwbnVtICogdWJpLT5wZWJfc2l6ZTsKLQllcnIgPSBtdGRfd3JpdGUodWJpLT5tdGQsIGFkZHIs
-IDQsICZ3cml0dGVuLCAodm9pZCAqKSZkYXRhKTsKLQlpZiAoIWVycikgewotCQlhZGRyICs9IHVi
-aS0+dmlkX2hkcl9hbG9mZnNldDsKKwllcnIgPSB1YmlfaW9fcmVhZF9lY19oZHIodWJpLCBwbnVt
-LCAmZWNfaGRyLCAwKTsKKwlpZiAoZXJyICE9IFVCSV9JT19CQURfSERSX0VCQURNU0cgJiYgZXJy
-ICE9IFVCSV9JT19CQURfSERSICYmCisJICAgIGVyciAhPSBVQklfSU9fRkYpewogCQllcnIgPSBt
-dGRfd3JpdGUodWJpLT5tdGQsIGFkZHIsIDQsICZ3cml0dGVuLCAodm9pZCAqKSZkYXRhKTsKLQkJ
-aWYgKCFlcnIpCi0JCQlyZXR1cm4gMDsKKwkJaWYoZXJyKQorCQkJZ290byBlcnJvcjsKIAl9CiAK
-LQkvKgotCSAqIFdlIGZhaWxlZCB0byB3cml0ZSB0byB0aGUgbWVkaWEuIFRoaXMgd2FzIG9ic2Vy
-dmVkIHdpdGggU3BhbnNpb24KLQkgKiBTMjlHTDUxMk4gTk9SIGZsYXNoLiBNb3N0IHByb2JhYmx5
-IHRoZSBwcmV2aW91c2x5IGVyYXNlYmxvY2sgZXJhc3VyZQotCSAqIHdhcyBpbnRlcnJ1cHRlZCBh
-dCBhIHZlcnkgaW5hcHByb3ByaWF0ZSBtb21lbnQsIHNvIGl0IGJlY2FtZQotCSAqIHVud3JpdGFi
-bGUuIEluIHRoaXMgY2FzZSB3ZSBwcm9iYWJseSBhbnl3YXkgaGF2ZSBnYXJiYWdlIGluIHRoaXMK
-LQkgKiBQRUIuCi0JICovCi0JZXJyMSA9IHViaV9pb19yZWFkX3ZpZF9oZHIodWJpLCBwbnVtLCAm
-dmlkX2hkciwgMCk7Ci0JaWYgKGVycjEgPT0gVUJJX0lPX0JBRF9IRFJfRUJBRE1TRyB8fCBlcnIx
-ID09IFVCSV9JT19CQURfSERSIHx8Ci0JICAgIGVycjEgPT0gVUJJX0lPX0ZGKSB7Ci0JCXN0cnVj
-dCB1YmlfZWNfaGRyIGVjX2hkcjsKLQotCQllcnIxID0gdWJpX2lvX3JlYWRfZWNfaGRyKHViaSwg
-cG51bSwgJmVjX2hkciwgMCk7Ci0JCWlmIChlcnIxID09IFVCSV9JT19CQURfSERSX0VCQURNU0cg
-fHwgZXJyMSA9PSBVQklfSU9fQkFEX0hEUiB8fAotCQkgICAgZXJyMSA9PSBVQklfSU9fRkYpCi0J
-CQkvKgotCQkJICogQm90aCBWSUQgYW5kIEVDIGhlYWRlcnMgYXJlIGNvcnJ1cHRlZCwgc28gd2Ug
-Y2FuCi0JCQkgKiBzYWZlbHkgZXJhc2UgdGhpcyBQRUIgYW5kIG5vdCBhZnJhaWQgdGhhdCBpdCB3
-aWxsIGJlCi0JCQkgKiB0cmVhdGVkIGFzIGEgdmFsaWQgUEVCIGluIGNhc2Ugb2YgYW4gdW5jbGVh
-biByZWJvb3QuCi0JCQkgKi8KLQkJCXJldHVybiAwOworCWVyciA9IHViaV9pb19yZWFkX3ZpZF9o
-ZHIodWJpLCBwbnVtLCAmdmlkX2hkciwgMCk7CisJaWYgKGVyciAhPSBVQklfSU9fQkFEX0hEUl9F
-QkFETVNHICYmIGVyciAhPSBVQklfSU9fQkFEX0hEUiAmJgorCSAgICBlcnIgIT0gVUJJX0lPX0ZG
-KXsKKwkJYWRkciArPSB1YmktPnZpZF9oZHJfYWxvZmZzZXQ7CisJCWVyciA9IG10ZF93cml0ZSh1
-YmktPm10ZCwgYWRkciwgNCwgJndyaXR0ZW4sICh2b2lkICopJmRhdGEpOworCQlpZiAoZXJyKQor
-CQkJZ290byBlcnJvcjsKIAl9CisJcmV0dXJuIDA7CiAKK2Vycm9yOgogCS8qCi0JICogVGhlIFBF
-QiBjb250YWlucyBhIHZhbGlkIFZJRCBoZWFkZXIsIGJ1dCB3ZSBjYW5ub3QgaW52YWxpZGF0ZSBp
-dC4KLQkgKiBTdXBwb3NlZGx5IHRoZSBmbGFzaCBtZWRpYSBvciB0aGUgZHJpdmVyIGlzIHNjcmV3
-ZWQgdXAsIHNvIHJldHVybiBhbgotCSAqIGVycm9yLgorCSAqIFRoZSBQRUIgY29udGFpbnMgYSB2
-YWxpZCBWSUQgb3IgRUMgaGVhZGVyLCBidXQgd2UgY2Fubm90IGludmFsaWRhdGUKKwkgKiBpdC4g
-U3VwcG9zZWRseSB0aGUgZmxhc2ggbWVkaWEgb3IgdGhlIGRyaXZlciBpcyBzY3Jld2VkIHVwLCBz
-bworCSAqIHJldHVybiBhbiBlcnJvci4KIAkgKi8KLQl1YmlfZXJyKCJjYW5ub3QgaW52YWxpZGF0
-ZSBQRUIgJWQsIHdyaXRlIHJldHVybmVkICVkIHJlYWQgcmV0dXJuZWQgJWQiLAotCQlwbnVtLCBl
-cnIsIGVycjEpOworCXViaV9lcnIoImNhbm5vdCBpbnZhbGlkYXRlIFBFQiAlZCwgd3JpdGUgcmV0
-dXJuZWQgJWQiLCBwbnVtLCBlcnIpOwogCXViaV9kdW1wX2ZsYXNoKHViaSwgcG51bSwgMCwgdWJp
-LT5wZWJfc2l6ZSk7CiAJcmV0dXJuIC1FSU87CiB9Ci0tIAoxLjcuOS41Cgo=
-
---_002_71CF8D7F32C5C24C9CD1D0E02D52498A770C4C4FNTXXIAMBX02xacn_--
+All,=0A=
+=0A=
+In order to use Micron n25q512a, MTD, two changes are required as follows:=
+=0A=
+- jedec code should be fixed=0A=
+- flag status should be read for writing.=0A=
+=0A=
+Check flag status register for Micron n25q512a=0A=
+    - Programing Micron n25q512a requires to check flag status register=0A=
+    - According to datasheet=0A=
+    	"=0A=
+    	The flag status register must be read any time a PROGRAM, ERASE,=0A=
+    	SUSPEND/RESUME command is issued, or after a RESET command while devic=
+e=0A=
+    	is busy. The cycle is not complete until bit 7 of the flag status=0A=
+    	register output 1.=0A=
+    	"=0A=
+    - Ref: https://www.micron.com/~/media/Documents/Products/Data%20Sheet/N=
+OR%20Flash/Serial%20NOR/N25Q/n25q_512mb_1ce_3v_65nm.pdf=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+Signed-off-by: Insop Song <insop.song@gainspeed.com>=0A=
+---=0A=
+ drivers/mtd/devices/m25p80.c |   91 ++++++++++++++++++++++++++++++++++++++=
++++-=0A=
+ 1 file changed, 90 insertions(+), 1 deletion(-)=0A=
+=0A=
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c=0A=
+index 7eda71d..e53e522 100644=0A=
+--- a/drivers/mtd/devices/m25p80.c=0A=
++++ b/drivers/mtd/devices/m25p80.c=0A=
+@@ -38,6 +38,7 @@=0A=
+ /* Flash opcodes. */=0A=
+ #define	OPCODE_WREN		0x06	/* Write enable */=0A=
+ #define	OPCODE_RDSR		0x05	/* Read status register */=0A=
++#define	OPCODE_RDFSR		0x70	/* Read flag status register */=0A=
+ #define	OPCODE_WRSR		0x01	/* Write status register 1 byte */=0A=
+ #define	OPCODE_NORM_READ	0x03	/* Read data bytes (low frequency) */=0A=
+ #define	OPCODE_FAST_READ	0x0b	/* Read data bytes (high frequency) */=0A=
+@@ -70,6 +71,8 @@=0A=
+ /* Status Register bits. */=0A=
+ #define	SR_WIP			1	/* Write in progress */=0A=
+ #define	SR_WEL			2	/* Write enable latch */=0A=
++/* Flag Status Register bits. */=0A=
++#define	FSR_RDY			0x80	/* FSR ready */=0A=
+ /* meaning of other SR_* bits may differ between vendors */=0A=
+ #define	SR_BP0			4	/* Block protect 0 */=0A=
+ #define	SR_BP1			8	/* Block protect 1 */=0A=
+@@ -95,6 +98,7 @@ struct m25p {=0A=
+ 	u8			program_opcode;=0A=
+ 	u8			*command;=0A=
+ 	bool			fast_read;=0A=
++	bool			flag_status;=0A=
+ };=0A=
+ =0A=
+ static inline struct m25p *mtd_to_m25p(struct mtd_info *mtd)=0A=
+@@ -131,6 +135,28 @@ static int read_sr(struct m25p *flash)=0A=
+ }=0A=
+ =0A=
+ /*=0A=
++ * Read the flag status register, returning its value in the location=0A=
++ * Return the status register value.=0A=
++ * Returns negative if error occurred.=0A=
++ */=0A=
++static int read_fsr(struct m25p *flash)=0A=
++{=0A=
++	ssize_t retval;=0A=
++	u8 code =3D OPCODE_RDFSR;=0A=
++	u8 val;=0A=
++=0A=
++	retval =3D spi_write_then_read(flash->spi, &code, 1, &val, 1);=0A=
++=0A=
++	if (retval < 0) {=0A=
++		printk(&flash->spi->dev, "error %d reading FSR\n",=0A=
++				(int) retval);=0A=
++		return retval;=0A=
++	}=0A=
++=0A=
++	return val;=0A=
++}=0A=
++=0A=
++/*=0A=
+  * Write status register 1 byte=0A=
+  * Returns negative if error occurred.=0A=
+  */=0A=
+@@ -220,6 +246,30 @@ static int wait_till_ready(struct m25p *flash)=0A=
+ }=0A=
+ =0A=
+ /*=0A=
++ * Service routine to read flag status register until ready, or timeout oc=
+curs.=0A=
++ * Returns non-zero if error.=0A=
++ */=0A=
++static int wait_till_fsr_ready(struct m25p *flash)=0A=
++{=0A=
++	unsigned long deadline;=0A=
++	int sr;=0A=
++=0A=
++	deadline =3D jiffies + MAX_READY_WAIT_JIFFIES;=0A=
++=0A=
++	do {=0A=
++		if ((sr =3D read_fsr(flash)) < 0)=0A=
++			break;=0A=
++		else if ((sr & FSR_RDY))=0A=
++			return 0;=0A=
++=0A=
++		cond_resched();=0A=
++=0A=
++	} while (!time_after_eq(jiffies, deadline));=0A=
++=0A=
++	return 1;=0A=
++}=0A=
++=0A=
++/*=0A=
+  * Erase the whole flash memory=0A=
+  *=0A=
+  * Returns 0 if successful, non-zero otherwise.=0A=
+@@ -273,6 +323,14 @@ static int erase_sector(struct m25p *flash, u32 offset=
+)=0A=
+ 	if (wait_till_ready(flash))=0A=
+ 		return 1;=0A=
+ =0A=
++	/* Flag status, Wait until finished previous write command. */=0A=
++	if (flash->flag_status =3D=3D true) {=0A=
++		if (wait_till_fsr_ready(flash)) {=0A=
++			mutex_unlock(&flash->lock);=0A=
++			return 1;=0A=
++		}=0A=
++	}=0A=
++=0A=
+ 	/* Send write enable, then erase commands. */=0A=
+ 	write_enable(flash);=0A=
+ =0A=
+@@ -427,6 +485,14 @@ static int m25p80_write(struct mtd_info *mtd, loff_t t=
+o, size_t len,=0A=
+ =0A=
+ 	mutex_lock(&flash->lock);=0A=
+ =0A=
++	/* Flag status, Wait until finished previous write command. */=0A=
++	if (flash->flag_status =3D=3D true) {=0A=
++		if (wait_till_fsr_ready(flash)) {=0A=
++			mutex_unlock(&flash->lock);=0A=
++			return 1;=0A=
++		}=0A=
++	}=0A=
++=0A=
+ 	/* Wait until finished previous write command. */=0A=
+ 	if (wait_till_ready(flash)) {=0A=
+ 		mutex_unlock(&flash->lock);=0A=
+@@ -457,6 +523,14 @@ static int m25p80_write(struct mtd_info *mtd, loff_t t=
+o, size_t len,=0A=
+ 		t[1].len =3D page_size;=0A=
+ 		spi_sync(flash->spi, &m);=0A=
+ =0A=
++		/* Flag status, Wait until finished previous write command. */=0A=
++		if (flash->flag_status =3D=3D true) {=0A=
++			if (wait_till_fsr_ready(flash)) {=0A=
++				mutex_unlock(&flash->lock);=0A=
++				return 1;=0A=
++			}=0A=
++		}=0A=
++=0A=
+ 		*retlen =3D m.actual_length - m25p_cmdsz(flash);=0A=
+ =0A=
+ 		/* write everything in flash->page_size chunks */=0A=
+@@ -477,6 +551,14 @@ static int m25p80_write(struct mtd_info *mtd, loff_t t=
+o, size_t len,=0A=
+ =0A=
+ 			spi_sync(flash->spi, &m);=0A=
+ =0A=
++			/* Flag status, Wait until finished previous write command. */=0A=
++			if (flash->flag_status =3D=3D true) {=0A=
++				if (wait_till_fsr_ready(flash)) {=0A=
++					mutex_unlock(&flash->lock);=0A=
++					return 1;=0A=
++				}=0A=
++			}=0A=
++=0A=
+ 			*retlen +=3D m.actual_length - m25p_cmdsz(flash);=0A=
+ 		}=0A=
+ 	}=0A=
+@@ -782,7 +864,7 @@ static const struct spi_device_id m25p_ids[] =3D {=0A=
+ 	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, 0) },=0A=
+ 	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, 0) },=0A=
+ 	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K) },=0A=
+-	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K) },=0A=
++	{ "n25q512a",    INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K) },=0A=
+ =0A=
+ 	/* PMC */=0A=
+ 	{ "pm25lv512",   INFO(0,        0, 32 * 1024,    2, SECT_4K_PMC) },=0A=
+@@ -996,6 +1078,13 @@ static int m25p_probe(struct spi_device *spi)=0A=
+ 	spi_set_drvdata(spi, flash);=0A=
+ =0A=
+ 	/*=0A=
++	 * Micron n25q512a requires to check flag status register=0A=
++	 */=0A=
++	flash->flag_status =3D false;=0A=
++	if (strcmp(id->name, "n25q512a") =3D=3D 0)=0A=
++		flash->flag_status =3D true;;=0A=
++=0A=
++	/*=0A=
+ 	 * Atmel, SST and Intel/Numonyx serial flash tend to power=0A=
+ 	 * up with the software protection bits set=0A=
+ 	 */=0A=
+-- =0A=
+1.7.9.5=0A=
