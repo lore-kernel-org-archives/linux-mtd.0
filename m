@@ -1,26 +1,33 @@
-Received: from mail-bn1bln0129.outbound.protection.outlook.com
- ([2a01:111:f400:7c10::1:129]
- helo=na01-bn1-obe.outbound.protection.outlook.com)
+Received: from arroyo.ext.ti.com ([192.94.94.40])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W04gQ-0002Iv-Hy
- for linux-mtd@lists.infradead.org; Mon, 06 Jan 2014 07:33:13 +0000
-From: "B48286@freescale.com" <B48286@freescale.com>
-To: 'Brian Norris' <computersforpeace@gmail.com>
-Subject: RE: [PATCH] mtd: m25p80: Add Power Management support
-Date: Mon, 6 Jan 2014 07:32:46 +0000
-Message-ID: <d1263353f32444328abe7566a48881d7@DM2PR03MB301.namprd03.prod.outlook.com>
-References: <1386749970-22021-1-git-send-email-b48286@freescale.com>
- <20140103190049.GG5631@ld-irv-0074>
-In-Reply-To: <20140103190049.GG5631@ld-irv-0074>
+ id 1W04od-0002Pw-Jz
+ for linux-mtd@lists.infradead.org; Mon, 06 Jan 2014 07:41:41 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Enric Balletbo Serra <eballetbo@iseebcn.com>, Stefan Roese <sr@denx.de>,
+ Javier Martinez Canillas <javier@dowhile0.org>, Thomas Petazzoni
+ <thomas.petazzoni@free-electrons.com>, Igor Grinberg
+ <grinberg@compulab.co.il>,
+ Michael Trimarchi <michael@amarulasolutions.com>,
+ Nikita Kiryanov <nikita@compulab.co.il>, "jp.francois@cynove.com"
+ <jp.francois@cynove.com>, "ivan.djelic@parrot.com" <ivan.djelic@parrot.com>
+Subject: RE: [PATCH v1 0/2] mtd: nand: omap: booting from NAND using u-boot
+Date: Mon, 6 Jan 2014 07:40:42 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA5E07C@DBDE04.ent.ti.com>
+References: <1386925978-23705-1-git-send-email-pekon@ti.com>
+In-Reply-To: <1386925978-23705-1-git-send-email-pekon@ti.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Cc: Scott Wood <scottwood@freescale.com>,
- "linuxppc-dev@ozlabs.org" <linuxppc-dev@ozlabs.org>,
- "Mingkai.Hu@freescale.com" <Mingkai.Hu@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+Cc: "Woodruff, Richard" <r-woodruff2@ti.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>, "Rini, Tom" <trini@ti.com>,
+ "avinashphilipk@gmail.com" <avinashphilipk@gmail.com>,
+ "r.meier@siemens.com" <r.meier@siemens.com>,
+ "u-boot@lists.denx.de" <u-boot@lists.denx.de>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Balbi,
+ Felipe" <balbi@ti.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Scott Wood <scottwood@freescale.com>, linux-omap <linux-omap@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,114 +37,161 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->On Wed, Dec 11, 2013 at 04:19:30PM +0800, Hou Zhiqiang wrote:
->> Add PM support using callback function suspend and resume in .driver=20
->> of spi_driver.
->>=20
->> Signed-off-by: Hou Zhiqiang <b48286@freescale.com>
->> ---
->>  drivers/mtd/devices/m25p80.c | 37=20
->> +++++++++++++++++++++++++++++++++++++
->>  1 file changed, 37 insertions(+)
->>=20
->> diff --git a/drivers/mtd/devices/m25p80.c=20
->> b/drivers/mtd/devices/m25p80.c index 7eda71d..b0c2b8c 100644
->> --- a/drivers/mtd/devices/m25p80.c
->> +++ b/drivers/mtd/devices/m25p80.c
->> @@ -66,6 +66,8 @@
->> =20
->>  /* Used for Spansion flashes only. */
->>  #define	OPCODE_BRWR		0x17	/* Bank register write */
->> +#define	OPCODE_DP		0xb9	/* Enter deep power down mode */
->> +#define	OPCODE_RES		0xab	/* Exit deep power down mode */
->
->Where did you get these opcodes from? They are not in the Spansion datashe=
-ets I'm reading. And in fact, they are overloaded as RES (Read Electronic S=
-ignature, 0xab) and Bank Register Access (0xb9) in the datasheet I'm lookin=
-g at. So this patch is wrong.
->
+Hello Enric, Nikita, and other OMAP3 users,
 
-In datasheet S25FL128P, Deep Power Down command is b9h and Release from Dee=
-p Power Down command is abh. In S25FL-A to S25FL-P Migration Guide those co=
-mmands are the same.
-
->Also, can you describe the purpose of these "deep power down" modes?
->I've never seen PM states where the *flash* needs to be put into a lower p=
-ower mode. Typically the flash is pretty low-power when idle, and it may ev=
-en be powered off completely when the system enters a lower-power state. An=
-yway, please describe why this patch is needed.
 >
-
-In standby mode, the MAX currunt consumption is 200mA, and in Deep Power Do=
-wn mode, the MAX is 20mA. In actually the typically value of currunt consum=
-ption is 3mA, so it save power consumption significantly I think.
-
->> =20
->>  /* Status Register bits. */
->>  #define	SR_WIP			1	/* Write in progress */
->> @@ -1128,11 +1130,46 @@ static int m25p_remove(struct spi_device *spi)
->>  	return mtd_device_unregister(&flash->mtd);
->>  }
->> =20
->> +#ifdef CONFIG_PM
->> +static int m25p_suspend(struct device *dev, pm_message_t mesg) {
->> +	struct m25p *flash =3D dev_get_drvdata(dev);
->> +	int ret;
->> +
->> +	flash->command[0] =3D OPCODE_DP;
+>As there were parallel set of patches running between u-boot and kernel.
+>hence, some patch-sets caused regression for OMAP3x platforms when booting
+>using u-boot specifically for ecc-schemes (like BCH4_SW).
 >
->As mentioned above, this opcode is not recognized by many flash supported =
-in this driver. So we might want one or more of the following:
+>Hence this patch series fixes those regressions, and tests complete
+>NAND boot sequence for multiple ecc-schemes on AM335x-EVM board.
+>(following configurations are required for building u-boot driver which is
+> compatible to kernel ecclayout for selected ecc-scheme)
 >
-> (1) to assign different suspend/resume opcodes for use in
->     m25p_suspend/resume
-> (2) to provide over-loadable callbacks so that different flash could
->     use different suspend/resume routines
 >
->And of course, we need to avoid sending these commands at all to unsupport=
-ed flash.
+>    (BCH8_HW)      (HAM1_HW)         (HAM1_HW)         (HAM1_HW)  (UBIFS)
+>ROM ---------> SPL ---------> U-Boot ---------> Kernel ---------> File-Sys=
+tem
 >
+>    (BCH8_HW)      (BCH8_SW)         (BCH8_SW)         (BCH8_SW)  (UBIFS)
+>ROM ---------> SPL ---------> U-Boot ---------> Kernel ---------> File-Sys=
+tem
+>
+>    (BCH8_HW)      (BCH8_HW)         (BCH8_HW)         (BCH8_HW)  (UBIFS)
+>ROM ---------> SPL ---------> U-Boot ---------> Kernel ---------> File-Sys=
+tem
+>
+>*Configurations used to build u-boot and kernel for end-to-end NAND boot*
+>+------------+--------------------------------------------+---------------=
+---+
+>| ecc-scheme |  u-boot/SPL configs                        | kernel DTS    =
+   |
+>+------------+--------------------------------------------+---------------=
+---+
+>|            |                                            |               =
+   |
+>| HAM1_HW    | #define CONFIG_NAND_OMAP_ECCSCHEME     \   |ti,nand-ecc-opt=
+s=3D |
+>|            |         OMAP_ECC_HAM1_CODE_HW              |    "ham1"     =
+   |
+>| (1-bit     | #define CONFIG_SYS_NAND_ECCBYTES       3   |               =
+   |
+>| Hamming    | #define CONFIG_SYS_NAND_ECCPOS \           |               =
+   |
+>| using h/w) |      { 1, 2, 3, 4, 5, 6, 7, 8, 9, \        |               =
+   |
+>|            |        10, 11, 12 }                        |               =
+   |
+>|            | (for NAND page-size=3D2048)                  |             =
+     |
+>|            |                                            |               =
+   |
+>+------------+--------------------------------------------+---------------=
+---+
+>|            |                                            |               =
+   |
+>| BCH8_SW    | #define CONFIG_NAND_OMAP_ECCSCHEME    \    |ti,nand-ecc-opt=
+s=3D |
+>|            |         OMAP_ECC_BCH8_CODE_HW_DETECTION_SW |    "bch8"     =
+   |
+>|(8-bit BCH  | #define CONFIG_SYS_NAND_ECCBYTES       13  |(without ELM no=
+de)|
+>| using s/w  | #define CONFIG_BCH                         |               =
+   |
+>|library for | #undef CONFIG_SPL_NAND_AM33XX_BCH          |               =
+   |
+>|for ECC     | #define CONFIG_SPL_NAND_SIMPLE             |               =
+   |
+>| error      | #define CONFIG_SYS_NAND_ECCPOS \           |               =
+   |
+>|correction) |     {2,  3,  4,  5,  6,  7,  8,  9, 10, \  |               =
+   |
+>|            |     11, 12, 13, 14, \                      |               =
+   |
+>|            |     16, 17, 18, 19, 20, 21, 22, 23, 24, \  |               =
+   |
+>|            |     25, 26, 27, 28, \                      |               =
+   |
+>|            |     30, 31, 32, 33, 34, 35, 36, 37, 38, \  |               =
+   |
+>|            |     39, 40, 41, 42, \                      |               =
+   |
+>|            |     44, 45, 46, 47, 48, 49, 50, 51, 52, \  |               =
+   |
+>|            |     53, 54, 55, 56, }                      |               =
+   |
+>|            | (for NAND page-size=3D2048)                  |             =
+     |
+>|            | #define CONFIG_SYS_NAND_ECCSIZE       512  |               =
+   |
+>|            |                                            |               =
+   |
+>+------------+--------------------------------------------+---------------=
+---+
+>|            |                                            |               =
+   |
+>| BCH8_HW    | #define CONFIG_NAND_OMAP_ECCSCHEME    \    |ti,nand-ecc-opt=
+s=3D |
+>|            |         OMAP_ECC_BCH8_CODE_HW              |    "bch8"     =
+   |
+>|(8-bit BCH  | #define CONFIG_SYS_NAND_ECCBYTES       14  |               =
+   |
+>| using ELM  | #define CONFIG_SPL_NAND_AM33XX_BCH         |(with ELM node)=
+   |
+>| h/w engine | #define CONFIG_SYS_NAND_ECCPOS  \          |ti,elm-id=3D<&e=
+lm>  |
+>|for ECC     |       {2,  3,  4,  5,  6,  7,  8,  9, \    |               =
+   |
+>| error      |       10, 11, 12, 13, 14, 15, 16, 17, \    |               =
+   |
+>|correction) |       18, 19, 20, 21, 22, 23, 24, 25, \    |               =
+   |
+>|            |       26, 27, 28, 29, 30, 31, 32, 33, \    |               =
+   |
+>|            |       34, 35, 36, 37, 38, 39, 40, 41, \    |               =
+   |
+>|            |       42, 43, 44, 45, 46, 47, 48, 49, \    |               =
+   |
+>|            |       50, 51, 52, 53, 54, 55, 56, 57, }    |               =
+   |
+>|            | (for NAND page-size=3D2048)                  |             =
+     |
+>|            | #define CONFIG_SYS_NAND_ECCSIZE       512  |               =
+   |
+>|            |                                            |               =
+   |
+>+------------+--------------------------------------------+---------------=
+---+
+>
+>#* In addition following patches need to be pulled for u-boot:
+>   http://lists.denx.de/pipermail/u-boot/2013-December/168506.html
+>   http://lists.denx.de/pipermail/u-boot/2013-December/169021.html
+>
+>
+>Test1: flash ubi image from u-boot and boot the kernel
+>   U-boot> mw 0x82000000 0xff <u-boot.img size aligned to NAND block bound=
+ary>
+>   U-boot> fatload mmc 0 0x82000000 u-boot.img
+>   U-boot> nand erase <u-boot_offset> <u-boot.img size>
+>   U-boot> nand write 0x82000000  <u-boot_offset> <u-boot.img size>
+>   U-boot> setenv bootargs 'console=3DttyO0,115200n8 noinitrd mem=3D256M \
+>                root=3Dubi0 rw rootfstype=3Dubifs ubi.mtd=3D<mtdpart-of-ro=
+otfs>,\
+>                <page-size> ip=3Doff init=3D/init'
+>   U-boot> bootm <kernel_offset>
+>
+>Test2: update u-boot.img from kernel and re-boot
+>   Kernel> flash_erase /dev/<mtdpart-of-u-boot>  0 0
+>   Kernel> nandwrite -s 0  /dev/<mtdpart-of-u-boot>   u-boot.img
+>   Kernel> reboot
+>
+>Signed-off-by: Pekon Gupta <pekon@ti.com>
+>---
 
-Yeah, in m25p_probe we can get spi flash specified PM commands from somewhe=
-re, but where can we set the PM commands, in struct spi_device_id?
-Do you have some good suggestion?
+Though I have done initial level of testing on AM335x as mentioned above,
+But will it be possible for you to test and confirm if these set of patches
+solve regressions on your OMAP3 boards ?
 
->> +	mutex_lock(&flash->lock);
->> +	/* Wait until finished previous write/erase command. */
->> +	ret =3D wait_till_ready(flash);
->> +	if (ret) {
->> +		mutex_unlock(&flash->lock);
->> +		return ret;
->> +	}
->> +	ret =3D spi_write(flash->spi, flash->command, 1);
->> +	mutex_unlock(&flash->lock);
->> +
->> +	return ret;
->> +}
->> +
->> +static int m25p_resume(struct device *dev) {
->> +	struct m25p *flash =3D dev_get_drvdata(dev);
->> +	int ret;
->> +
->> +	flash->command[0] =3D OPCODE_RES;
->> +	ret =3D spi_write(flash->spi, flash->command, 1);
->> +
->> +	return ret;
->> +}
->> +#endif /* CONFIG_PM */
->> =20
->>  static struct spi_driver m25p80_driver =3D {
->>  	.driver =3D {
->>  		.name	=3D "m25p80",
->>  		.owner	=3D THIS_MODULE,
->> +#ifdef CONFIG_PM
->> +		.suspend =3D m25p_suspend,
->> +		.resume =3D m25p_resume,
->> +#endif
->>  	},
->>  	.id_table	=3D m25p_ids,
->>  	.probe	=3D m25p_probe,
->
->Brian
 
-Zhiqiang Hou
+with regards, pekon
