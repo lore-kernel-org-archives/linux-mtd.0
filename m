@@ -1,35 +1,18 @@
-Received: from mo6-p05-ob.smtp.rzone.de ([2a01:238:20a:202:5305::7])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W08fn-00083m-KP
- for linux-mtd@lists.infradead.org; Mon, 06 Jan 2014 11:48:49 +0000
-Message-ID: <52CA97FC.4020300@denx.de>
-Date: Mon, 06 Jan 2014 12:48:12 +0100
-From: Stefan Roese <sr@denx.de>
+Received: from mail-gw2-out.broadcom.com ([216.31.210.63])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W09zD-0001n9-M3
+ for linux-mtd@lists.infradead.org; Mon, 06 Jan 2014 13:12:57 +0000
+From: Kamlakant Patel <kamlakant.patel@broadcom.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH 2/2] jffs2: Fix crash due to truncation of csize
+Date: Mon, 6 Jan 2014 19:06:55 +0530
+Message-ID: <1389015415-25196-2-git-send-email-kamlakant.patel@broadcom.com>
+In-Reply-To: <1389015415-25196-1-git-send-email-kamlakant.patel@broadcom.com>
+References: <1389015415-25196-1-git-send-email-kamlakant.patel@broadcom.com>
 MIME-Version: 1.0
-To: "Gupta, Pekon" <pekon@ti.com>,
- Enric Balletbo Serra <eballetbo@iseebcn.com>,
- Javier Martinez Canillas <javier@dowhile0.org>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Igor Grinberg <grinberg@compulab.co.il>,
- Michael Trimarchi <michael@amarulasolutions.com>,
- Nikita Kiryanov <nikita@compulab.co.il>,
- "jp.francois@cynove.com" <jp.francois@cynove.com>,
- "ivan.djelic@parrot.com" <ivan.djelic@parrot.com>
-Subject: Re: [PATCH v1 0/2] mtd: nand: omap: booting from NAND using u-boot
-References: <1386925978-23705-1-git-send-email-pekon@ti.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA5E07C@DBDE04.ent.ti.com>
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA5E07C@DBDE04.ent.ti.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: "Woodruff, Richard" <r-woodruff2@ti.com>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>, "Rini, Tom" <trini@ti.com>,
- "avinashphilipk@gmail.com" <avinashphilipk@gmail.com>,
- "r.meier@siemens.com" <r.meier@siemens.com>,
- "u-boot@lists.denx.de" <u-boot@lists.denx.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Balbi,
- Felipe" <balbi@ti.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Scott Wood <scottwood@freescale.com>, linux-omap <linux-omap@vger.kernel.org>
+Content-Type: text/plain
+Cc: Ajesh Kunhipurayil Vijayan <ajesh@broadcom.com>, dwmw2@infradead.org,
+ linux-kernel@vger.kernel.org, Kamlakant Patel <kamlakant.patel@broadcom.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,113 +22,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Pekon,
+From: Ajesh Kunhipurayil Vijayan <ajesh@broadcom.com>
 
-On 06.01.2014 08:40, Gupta, Pekon wrote:
-> Hello Enric, Nikita, and other OMAP3 users,
-> 
->>
->> As there were parallel set of patches running between u-boot and kernel.
->> hence, some patch-sets caused regression for OMAP3x platforms when booting
->> using u-boot specifically for ecc-schemes (like BCH4_SW).
->>
->> Hence this patch series fixes those regressions, and tests complete
->> NAND boot sequence for multiple ecc-schemes on AM335x-EVM board.
->> (following configurations are required for building u-boot driver which is
->> compatible to kernel ecclayout for selected ecc-scheme)
->>
->>
->>    (BCH8_HW)      (HAM1_HW)         (HAM1_HW)         (HAM1_HW)  (UBIFS)
->> ROM ---------> SPL ---------> U-Boot ---------> Kernel ---------> File-System
->>
->>    (BCH8_HW)      (BCH8_SW)         (BCH8_SW)         (BCH8_SW)  (UBIFS)
->> ROM ---------> SPL ---------> U-Boot ---------> Kernel ---------> File-System
->>
->>    (BCH8_HW)      (BCH8_HW)         (BCH8_HW)         (BCH8_HW)  (UBIFS)
->> ROM ---------> SPL ---------> U-Boot ---------> Kernel ---------> File-System
->>
->> *Configurations used to build u-boot and kernel for end-to-end NAND boot*
->> +------------+--------------------------------------------+------------------+
->> | ecc-scheme |  u-boot/SPL configs                        | kernel DTS       |
->> +------------+--------------------------------------------+------------------+
->> |            |                                            |                  |
->> | HAM1_HW    | #define CONFIG_NAND_OMAP_ECCSCHEME     \   |ti,nand-ecc-opts= |
->> |            |         OMAP_ECC_HAM1_CODE_HW              |    "ham1"        |
->> | (1-bit     | #define CONFIG_SYS_NAND_ECCBYTES       3   |                  |
->> | Hamming    | #define CONFIG_SYS_NAND_ECCPOS \           |                  |
->> | using h/w) |      { 1, 2, 3, 4, 5, 6, 7, 8, 9, \        |                  |
->> |            |        10, 11, 12 }                        |                  |
->> |            | (for NAND page-size=2048)                  |                  |
->> |            |                                            |                  |
->> +------------+--------------------------------------------+------------------+
->> |            |                                            |                  |
->> | BCH8_SW    | #define CONFIG_NAND_OMAP_ECCSCHEME    \    |ti,nand-ecc-opts= |
->> |            |         OMAP_ECC_BCH8_CODE_HW_DETECTION_SW |    "bch8"        |
->> |(8-bit BCH  | #define CONFIG_SYS_NAND_ECCBYTES       13  |(without ELM node)|
->> | using s/w  | #define CONFIG_BCH                         |                  |
->> |library for | #undef CONFIG_SPL_NAND_AM33XX_BCH          |                  |
->> |for ECC     | #define CONFIG_SPL_NAND_SIMPLE             |                  |
->> | error      | #define CONFIG_SYS_NAND_ECCPOS \           |                  |
->> |correction) |     {2,  3,  4,  5,  6,  7,  8,  9, 10, \  |                  |
->> |            |     11, 12, 13, 14, \                      |                  |
->> |            |     16, 17, 18, 19, 20, 21, 22, 23, 24, \  |                  |
->> |            |     25, 26, 27, 28, \                      |                  |
->> |            |     30, 31, 32, 33, 34, 35, 36, 37, 38, \  |                  |
->> |            |     39, 40, 41, 42, \                      |                  |
->> |            |     44, 45, 46, 47, 48, 49, 50, 51, 52, \  |                  |
->> |            |     53, 54, 55, 56, }                      |                  |
->> |            | (for NAND page-size=2048)                  |                  |
->> |            | #define CONFIG_SYS_NAND_ECCSIZE       512  |                  |
->> |            |                                            |                  |
->> +------------+--------------------------------------------+------------------+
->> |            |                                            |                  |
->> | BCH8_HW    | #define CONFIG_NAND_OMAP_ECCSCHEME    \    |ti,nand-ecc-opts= |
->> |            |         OMAP_ECC_BCH8_CODE_HW              |    "bch8"        |
->> |(8-bit BCH  | #define CONFIG_SYS_NAND_ECCBYTES       14  |                  |
->> | using ELM  | #define CONFIG_SPL_NAND_AM33XX_BCH         |(with ELM node)   |
->> | h/w engine | #define CONFIG_SYS_NAND_ECCPOS  \          |ti,elm-id=<&elm>  |
->> |for ECC     |       {2,  3,  4,  5,  6,  7,  8,  9, \    |                  |
->> | error      |       10, 11, 12, 13, 14, 15, 16, 17, \    |                  |
->> |correction) |       18, 19, 20, 21, 22, 23, 24, 25, \    |                  |
->> |            |       26, 27, 28, 29, 30, 31, 32, 33, \    |                  |
->> |            |       34, 35, 36, 37, 38, 39, 40, 41, \    |                  |
->> |            |       42, 43, 44, 45, 46, 47, 48, 49, \    |                  |
->> |            |       50, 51, 52, 53, 54, 55, 56, 57, }    |                  |
->> |            | (for NAND page-size=2048)                  |                  |
->> |            | #define CONFIG_SYS_NAND_ECCSIZE       512  |                  |
->> |            |                                            |                  |
->> +------------+--------------------------------------------+------------------+
->>
->> #* In addition following patches need to be pulled for u-boot:
->>   http://lists.denx.de/pipermail/u-boot/2013-December/168506.html
->>   http://lists.denx.de/pipermail/u-boot/2013-December/169021.html
->>
->>
->> Test1: flash ubi image from u-boot and boot the kernel
->>   U-boot> mw 0x82000000 0xff <u-boot.img size aligned to NAND block boundary>
->>   U-boot> fatload mmc 0 0x82000000 u-boot.img
->>   U-boot> nand erase <u-boot_offset> <u-boot.img size>
->>   U-boot> nand write 0x82000000  <u-boot_offset> <u-boot.img size>
->>   U-boot> setenv bootargs 'console=ttyO0,115200n8 noinitrd mem=256M \
->>                root=ubi0 rw rootfstype=ubifs ubi.mtd=<mtdpart-of-rootfs>,\
->>                <page-size> ip=off init=/init'
->>   U-boot> bootm <kernel_offset>
->>
->> Test2: update u-boot.img from kernel and re-boot
->>   Kernel> flash_erase /dev/<mtdpart-of-u-boot>  0 0
->>   Kernel> nandwrite -s 0  /dev/<mtdpart-of-u-boot>   u-boot.img
->>   Kernel> reboot
->>
->> Signed-off-by: Pekon Gupta <pekon@ti.com>
->> ---
-> 
-> Though I have done initial level of testing on AM335x as mentioned above,
-> But will it be possible for you to test and confirm if these set of patches
-> solve regressions on your OMAP3 boards ?
+mounting JFFS2 partition sometimes crashes with this call trace:
 
-Those patches work fine on our custom AM335x board. So:
+[ 1322.240000] Kernel bug detected[#1]:
+[ 1322.244000] Cpu 2
+[ 1322.244000] $ 0   : 0000000000000000 0000000000000018 000000003ff00070 0000000000000001
+[ 1322.252000] $ 4   : 0000000000000000 c0000000f3980150 0000000000000000 0000000000010000
+[ 1322.260000] $ 8   : ffffffffc09cd5f8 0000000000000001 0000000000000088 c0000000ed300de8
+[ 1322.268000] $12   : e5e19d9c5f613a45 ffffffffc046d464 0000000000000000 66227ba5ea67b74e
+[ 1322.276000] $16   : c0000000f1769c00 c0000000ed1e0200 c0000000f3980150 0000000000000000
+[ 1322.284000] $20   : c0000000f3a80000 00000000fffffffc c0000000ed2cfbd8 c0000000f39818f0
+[ 1322.292000] $24   : 0000000000000004 0000000000000000
+[ 1322.300000] $28   : c0000000ed2c0000 c0000000ed2cfab8 0000000000010000 ffffffffc039c0b0
+[ 1322.308000] Hi    : 000000000000023c
+[ 1322.312000] Lo    : 000000000003f802
+[ 1322.316000] epc   : ffffffffc039a9f8 check_tn_node+0x88/0x3b0
+[ 1322.320000]     Not tainted
+[ 1322.324000] ra    : ffffffffc039c0b0 jffs2_do_read_inode_internal+0x1250/0x1e48
+[ 1322.332000] Status: 5400f8e3    KX SX UX KERNEL EXL IE
+[ 1322.336000] Cause : 00800034
+[ 1322.340000] PrId  : 000c1004 (Netlogic XLP)
+[ 1322.344000] Modules linked in:
+[ 1322.348000] Process jffs2_gcd_mtd7 (pid: 264, threadinfo=c0000000ed2c0000, task=c0000000f0e68dd8, tls=0000000000000000)
+[ 1322.356000] Stack : c0000000f1769e30 c0000000ed010780 c0000000ed010780 c0000000ed300000
+        c0000000f1769c00 c0000000f3980150 c0000000f3a80000 00000000fffffffc
+        c0000000ed2cfbd8 ffffffffc039c0b0 ffffffffc09c6340 0000000000001000
+        0000000000000dec ffffffffc016c9d8 c0000000f39805a0 c0000000f3980180
+        0000008600000000 0000000000000000 0000000000000000 0000000000000000
+        0001000000000dec c0000000f1769d98 c0000000ed2cfb18 0000000000010000
+        0000000000010000 0000000000000044 c0000000f3a80000 c0000000f1769c00
+        c0000000f3d207a8 c0000000f1769d98 c0000000f1769de0 ffffffffc076f9c0
+        0000000000000009 0000000000000000 0000000000000000 ffffffffc039cf90
+        0000000000000017 ffffffffc013fbdc 0000000000000001 000000010003e61c
+        ...
+[ 1322.424000] Call Trace:
+[ 1322.428000] [<ffffffffc039a9f8>] check_tn_node+0x88/0x3b0
+[ 1322.432000] [<ffffffffc039c0b0>] jffs2_do_read_inode_internal+0x1250/0x1e48
+[ 1322.440000] [<ffffffffc039cf90>] jffs2_do_crccheck_inode+0x70/0xd0
+[ 1322.448000] [<ffffffffc03a1b80>] jffs2_garbage_collect_pass+0x160/0x870
+[ 1322.452000] [<ffffffffc03a392c>] jffs2_garbage_collect_thread+0xdc/0x1f0
+[ 1322.460000] [<ffffffffc01541c8>] kthread+0xb8/0xc0
+[ 1322.464000] [<ffffffffc0106d18>] kernel_thread_helper+0x10/0x18
+[ 1322.472000]
+[ 1322.472000]
+Code: 67bd0050  94a4002c  2c830001 <00038036> de050218  2403fffc  0080a82d  00431824  24630044
+[ 1322.480000] ---[ end trace b052bb90e97dfbf5 ]---
 
-Tested-by: Stefan Roese <sr@denx.de>
+The variable csize in structure jffs2_tmp_dnode_info is of type uint16_t, but it
+is used to hold the compressed data length(csize) which is declared as uint32_t.
+So, when the value of csize exceeds 16bits, it gets truncated when assigned to
+tn->csize. This is causing a kernel BUG.
+Changing the definition of csize in jffs2_tmp_dnode_info to uint32_t fixes the issue.
 
-Thanks,
-Stefan
+Signed-off-by: Ajesh Kunhipurayil Vijayan <ajesh@broadcom.com>
+Signed-off-by: Kamlakant Patel <kamlakant.patel@broadcom.com>
+---
+ fs/jffs2/nodelist.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/jffs2/nodelist.h b/fs/jffs2/nodelist.h
+index e4619b0..fa35ff7 100644
+--- a/fs/jffs2/nodelist.h
++++ b/fs/jffs2/nodelist.h
+@@ -231,7 +231,7 @@ struct jffs2_tmp_dnode_info
+ 	uint32_t version;
+ 	uint32_t data_crc;
+ 	uint32_t partial_crc;
+-	uint16_t csize;
++	uint32_t csize;
+ 	uint16_t overlapped;
+ };
+ 
+-- 
+1.8.1.3
