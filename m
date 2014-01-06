@@ -1,23 +1,31 @@
-Received: from mail-oa0-x22a.google.com ([2607:f8b0:4003:c02::22a])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vzwgq-0003py-Og
- for linux-mtd@lists.infradead.org; Sun, 05 Jan 2014 23:01:05 +0000
-Received: by mail-oa0-f42.google.com with SMTP id i4so18274755oah.1
- for <linux-mtd@lists.infradead.org>; Sun, 05 Jan 2014 15:00:42 -0800 (PST)
+Received: from mailout.micron.com ([137.201.242.129])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W02TL-00080d-8U
+ for linux-mtd@lists.infradead.org; Mon, 06 Jan 2014 05:11:32 +0000
+From: =?utf-8?B?UWkgV2FuZyDnjovotbcgKHFpd2FuZyk=?= <qiwang@micron.com>
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>
+Subject: RE: [PATCH 1/1]  MTD: UBI:  avoid program operation on  NOR flash
+ after erasure interrupted
+Date: Mon, 6 Jan 2014 05:11:01 +0000
+Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A770C4C33@NTXXIAMBX02.xacn.micron.com>
+References: <71CF8D7F32C5C24C9CD1D0E02D52498A770B54B1@NTXXIAMBX02.xacn.micron.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A770B68A8@NTXXIAMBX02.xacn.micron.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A770B6F77@NTXXIAMBX02.xacn.micron.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A770B79C8@NTXXIAMBX02.xacn.micron.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A770B8611@NTXXIAMBX02.xacn.micron.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A770BA389@NTXXIAMBX02.xacn.micron.com>
+ <1388675460.25123.90.camel@sauron.fi.intel.com>
+ <1388676172.25123.93.camel@sauron.fi.intel.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A770BA889@NTXXIAMBX02.xacn.micron.com>
+ <1388728253.25123.98.camel@sauron.fi.intel.com>
+In-Reply-To: <1388728253.25123.98.camel@sauron.fi.intel.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <20140105224944.GC25372@norris-Latitude-E6410>
-References: <1387651152-3884-1-git-send-email-zajec5@gmail.com>
- <20140105224944.GC25372@norris-Latitude-E6410>
-Date: Mon, 6 Jan 2014 00:00:40 +0100
-Message-ID: <CACna6rw_0g6mssZTq85gVTQJ6PNVw5w755qmOVg=xv1bRDdeDA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mtd: bcm47xxpart: find boot partition by CFE magic
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Hauke Mehrtens <hauke@hauke-m.de>, linux-mtd@lists.infradead.org,
- David Woodhouse <David.Woodhouse@intel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,13 +35,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2014/1/5 Brian Norris <computersforpeace@gmail.com>:
->> Both patches were verified with
->> ./verify ../linux/l2-mtd/ mips-bcm47xx_defconfig < patch
->
-> Nice to know I'm not the only one running these tools :)
-
-Artem taught me to! ;)
-
---=20
-Rafa=C5=82
+PlBsZWFzZSwgcmVtZW1iZXIgdGhhdCBJIHB1c2hlZCB5b3VyIHBhdGNoIHRvIGEgdGVtcG9yYXJ5
+IGJyYW5jaCwgb25seQ0KPmZvciB5b3UgdG8gYmUgYWJsZSB0byBlYXNpbHkgcGljayBpdC4gSSBk
+byBub3Qgc2VuZCBpdCB1cHN0cmVhbS4NCg0KPkFzIEkgc2FpZCwgSSBuZWVkIHRvIHlvdSBsb29r
+IGF0IGl0IGFuZCBjb25maXJtIHRoYXQgaXQgaXMgYWxsLXJpZ2h0Lg0KPkFuZCBpZiBpdCBpcyBu
+b3QgYWxsLXJpZ2h0LCBjb3JyZWN0IGl0Lg0KDQo+VGhpcyBpcyBiZWNhdXNlIEkgbW9kaWZpZWQg
+aXQgbXlzZWxmLg0KDQo+U28gd2FpdGluZyBmb3IgeW91ciByZXNwb25zZSBvbiB0aGlzLg0KSSBj
+aGVja2VkIHRoZSBjb2RlIHlvdSBtb2RpZmllZCwgY29tcGlsZSwgYW5kIHJ1biBvbiBvdXIgcGxh
+dGZvcm0sIGl0IGlzIG9rLg0KDQorCXViaV9lcnIoImNhbm5vdCBpbnZhbGlkYXRlIFBFQiAlZCwg
+d3JpdGUgcmV0dXJuZWQgJWQgd3JpdGUgcmV0dXJuZWQgJWQiLA0KKwkJcG51bSwgZXJyLCBlcnIp
+OyANCg0KQnV0IEkgdGhpbmsgYWJvdmUgY29kZSBwcmludCAid3JpdGUgZXJyIiB0d2ljZS4gc28g
+SSBzdWdnZXN0IHRvIGNoYW5nZSB0byBiZWxvdzoNCg0KKwl1YmlfZXJyKCJjYW5ub3QgaW52YWxp
+ZGF0ZSBQRUIgJWQsIHdyaXRlIHJldHVybmVkICVkIiwgcG51bSwgZXJyKTsNCiANCkkgd2lsbCBz
+ZW5kIHlvdSB0aGUgcGF0Y2ggaW4gYW5vdGhlciBlbWFpbCBjb252ZW5pZW50IGZvciB5b3UgdG8g
+YXBwbHkgcGF0Y2guDQpUaGFua3MNCi0tDQpxaXdhbmcgDQo=
