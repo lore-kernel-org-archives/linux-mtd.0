@@ -1,14 +1,19 @@
-Received: from mo6-p05-ob.smtp.rzone.de ([2a01:238:20a:202:5305::11])
+Received: from mail-bk0-x22e.google.com ([2a00:1450:4008:c01::22e])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W0TXB-0002Ho-Gx
- for linux-mtd@lists.infradead.org; Tue, 07 Jan 2014 10:05:18 +0000
-From: Stefan Roese <sr@denx.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: nand_ids: Add device parameters for Toshiba's
- TC58NVG1S3ETAI0 NAND EEPROM
-Date: Tue,  7 Jan 2014 11:04:43 +0100
-Message-Id: <1389089083-29694-1-git-send-email-sr@denx.de>
-Cc: Brian Norris <computersforpeace@gmail.com>, Pekon Gupta <pekon@ti.com>
+ id 1W0Wrd-0007IO-J2
+ for linux-mtd@lists.infradead.org; Tue, 07 Jan 2014 13:38:38 +0000
+Received: by mail-bk0-f46.google.com with SMTP id u15so234411bkz.19
+ for <linux-mtd@lists.infradead.org>; Tue, 07 Jan 2014 05:38:13 -0800 (PST)
+MIME-Version: 1.0
+Date: Tue, 7 Jan 2014 21:38:12 +0800
+Message-ID: <CAPgLHd-2rHs_v0=tsnG08oJqaf1YmF2peeB_6KJQRnwK6r2N+w@mail.gmail.com>
+Subject: [PATCH -next] mtd: plat_nand: remove redundant return value check of
+ platform_get_resource()
+From: Wei Yongjun <weiyj.lk@gmail.com>
+To: dwmw2@infradead.org, computersforpeace@gmail.com, grant.likely@linaro.org,
+ robh+dt@kernel.org, jg1.han@samsung.com, artem.bityutskiy@linux.intel.com
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: yongjun_wei@trendmicro.com.cn, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,30 +23,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Toshiba's TC58NVG1S3ETAI0 is a single 3.3V 2 Gbit (2,214,592,512 bits) NAND
-Electrically Erasable and Programmable Read-Only Memory (NAND E2PROM)
-organized as (2048 + 64) bytes x 64 pages x 2048 blocks.
+From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 
-Signed-off-by: Stefan Roese <sr@denx.de>
-Cc: Pekon Gupta <pekon@ti.com>
-Cc: Brian Norris <computersforpeace@gmail.com>
+Remove unneeded error handling on the result of a call
+to platform_get_resource() when the value is passed to
+devm_ioremap_resource(). And move those two call together
+to make the connection between them more clear.
+
+Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 ---
- drivers/mtd/nand/nand_ids.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/mtd/nand/plat_nand.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
-index a87b0a3..cb4ece3 100644
---- a/drivers/mtd/nand/nand_ids.c
-+++ b/drivers/mtd/nand/nand_ids.c
-@@ -31,6 +31,9 @@ struct nand_flash_dev nand_flash_ids[] = {
- 	 * listed by full ID. We list them first so that we can easily identify
- 	 * the most specific match.
- 	 */
-+	{"TC58NVG1S3ETAI0 2G 3.3V 8-bit",
-+		{ .id = {0x98, 0xda, 0x90, 0x15, 0x76, 0x00, 0x00, 0x00} },
-+		  SZ_2K, SZ_256, SZ_128K, 0, 5, 64, NAND_ECC_INFO(1, SZ_512) },
- 	{"TC58NVG2S0F 4G 3.3V 8-bit",
- 		{ .id = {0x98, 0xdc, 0x90, 0x26, 0x76, 0x15, 0x01, 0x08} },
- 		  SZ_4K, SZ_512, SZ_256K, 0, 8, 224, NAND_ECC_INFO(4, SZ_512) },
--- 
-1.8.5.2
+diff --git a/drivers/mtd/nand/plat_nand.c b/drivers/mtd/nand/plat_nand.c
+index 4ebed72..0b068a5 100644
+--- a/drivers/mtd/nand/plat_nand.c
++++ b/drivers/mtd/nand/plat_nand.c
+@@ -48,16 +48,13 @@ static int plat_nand_probe(struct platform_device *pdev)
+ 		return -EINVAL;
+ 	}
+ 
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	if (!res)
+-		return -ENXIO;
+-
+ 	/* Allocate memory for the device structure (and zero it) */
+ 	data = devm_kzalloc(&pdev->dev, sizeof(struct plat_nand_data),
+ 			    GFP_KERNEL);
+ 	if (!data)
+ 		return -ENOMEM;
+ 
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	data->io_base = devm_ioremap_resource(&pdev->dev, res);
+ 	if (IS_ERR(data->io_base))
+ 		return PTR_ERR(data->io_base);
