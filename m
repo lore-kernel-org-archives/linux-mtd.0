@@ -1,22 +1,17 @@
-Date: Wed, 8 Jan 2014 12:13:39 -0700
-From: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
-To: boris brezillon <b.brezillon@overkiz.com>
-Subject: Re: [RFC PATCH 3/9] of: mtd: add NAND timings retrieval support
-Message-ID: <20140108191339.GB12358@obsidianresearch.com>
-References: <1389190924-26226-1-git-send-email-b.brezillon@overkiz.com>
- <1389190924-26226-4-git-send-email-b.brezillon@overkiz.com>
- <20140108183418.GA12358@obsidianresearch.com>
- <52CDA032.3010804@overkiz.com>
+Date: Wed, 8 Jan 2014 11:18:37 -0800
+From: Tony Lindgren <tony@atomide.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH 0/3] omap2: Assorted GPMC cleanups
+Message-ID: <20140108191836.GD31323@atomide.com>
+References: <1382921508-5104-1-git-send-email-ezequiel.garcia@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <52CDA032.3010804@overkiz.com>
-Cc: devicetree@vger.kernel.org, Russell King <linux@arm.linux.org.uk>,
- linux-doc@vger.kernel.org, dev@linux-sunxi.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Rob Landley <rob@landley.net>,
- Grant Likely <grant.likely@linaro.org>,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <1382921508-5104-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: Javier Martinez Canillas <martinez.javier@gmail.com>,
+ Enric Balletbo Serra <eballetbo@gmail.com>, Jon Hunter <jgchunter@gmail.com>,
+ linux-mtd@lists.infradead.org, Pekon Gupta <pekon@ti.com>,
+ linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,45 +21,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jan 08, 2014 at 08:00:02PM +0100, boris brezillon wrote:
-> Hello Jason,
+* Ezequiel Garcia <ezequiel.garcia@free-electrons.com> [131027 17:52]:
+> (I'm CCing the MTD list, because GPMC is the memory controller
+> used for NOR, NAND and OneNAND devices).
 > 
-> Le 08/01/2014 19:34, Jason Gunthorpe a ?crit :
-> >On Wed, Jan 08, 2014 at 03:21:58PM +0100, Boris BREZILLON wrote:
-> >
-> >>+int of_get_nand_timings(struct device_node *np, struct nand_timings *timings)
-> >>+{
-> >>+	memset(timings, 0, sizeof(*timings));
-> >>+	of_property_read_u32(np, "tCLS-min", &timings->tCLS_min);
-> >>+	of_property_read_u32(np, "tCLH-min", &timings->tCLH_min);
-> >>+	of_property_read_u32(np, "tCS-min", &timings->tCS_min);
-> >[..]
-> >
-> >A while ago when discussing another controller it was pointed out
-> >these values are all auto-probable directly from the NAND via a ONFI
-> >defined GET FEATURE @0x01 query, and adding these timings to the DT
-> >was NAK'd..
-> >
-> >Basically you set the interface to the slowest ONFI timing mode, do
-> >the GET FEATURE to the NAND chip and then increase the interface speed
-> >to the highest mutually supported ONFI mode.
+> Hi all,
 > 
-> >Is there some reason you need to encode this in the DT?
+> Just a small patchset containing two small cleanups and a minor fix
+> for the GPMC memory controller. The first two are cleanups and can
+> be considered as preparation work for the fix.
 > 
-> What if the NAND does not support the ONFI interface (and this is
-> exactly the case for the NAND available on the cubietruck board:
-> H27UCG8T2ATR).
+> The fix is patch 3/3: "Move legacy GPMC width setting". It makes
+> explicit use of the DT property "gpmc,device-width" and removes the
+> subsequent (and redundant) setting of the GPMC width, based in the
+> NAND bus widht.
 
-Sounds like a good reason to me! 
+Thanks and sorry for the delay. Applying these all into branch
+omap-for-v3.14/fixes-not-urgent.
 
-You might want to check if you can boil down the DT timings from the
-huge list to just an ONFI mode number..
+Regards,
 
-I'd echo Rob's comments, the property needs to include the units
-in the name, and I strongly recommend picoseconds for these
-values.
-
-Also, you might want to check that the ONFI names for these parameters
-are used, not a vendor specific name to try and avoid confusion.
-
-Jason
+Tony
+ 
+> Tested in AM335x (using DT) so I'd appreciate if someone can test using
+> a board-file, on a device with NAND flash.
+> 
+> Jon: If you happen to read this, I'd like if you could take a look at
+> patch 1/3, since you were the last to touch that part of the code.
+> 
+> Thanks!
+> 
+> Ezequiel Garcia (3):
+>   omap2: gpmc: Move initialization outside the gpmc_t condition
+>   omap2: gpmc: Introduce gpmc_set_legacy()
+>   omap2: gpmc: Move legacy GPMC width setting
+> 
+>  arch/arm/mach-omap2/gpmc-nand.c | 50 +++++++++++++++++++++++------------------
+>  1 file changed, 28 insertions(+), 22 deletions(-)
+> 
+> -- 
+> 1.8.1.5
+> 
