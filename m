@@ -1,24 +1,22 @@
-Received: from 20.mo3.mail-out.ovh.net ([178.33.47.94]
- helo=mo3.mail-out.ovh.net)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W0u74-0006xa-Kq
- for linux-mtd@lists.infradead.org; Wed, 08 Jan 2014 14:28:07 +0000
-Received: from mail408.ha.ovh.net (b6.ovh.net [213.186.33.56])
- by mo3.mail-out.ovh.net (Postfix) with SMTP id 0026D100C077
- for <linux-mtd@lists.infradead.org>; Wed,  8 Jan 2014 15:27:42 +0100 (CET)
-From: Boris BREZILLON <b.brezillon@overkiz.com>
-To: Maxime Ripard <maxime.ripard@free-electrons.com>,
- Rob Landley <rob@landley.net>, Russell King <linux@arm.linux.org.uk>,
- David Woodhouse <dwmw2@infradead.org>,
- Grant Likely <grant.likely@linaro.org>
-Subject: [RFC PATCH 8/9] ARM: dt/sunxi: add NFC pinctrl pin definitions
-Date: Wed,  8 Jan 2014 15:22:03 +0100
-Message-Id: <1389190924-26226-9-git-send-email-b.brezillon@overkiz.com>
-In-Reply-To: <1389190924-26226-1-git-send-email-b.brezillon@overkiz.com>
-References: <1389190924-26226-1-git-send-email-b.brezillon@overkiz.com>
-Cc: devicetree@vger.kernel.org, linux-doc@vger.kernel.org, dev@linux-sunxi.org,
- linux-kernel@vger.kernel.org, Boris BREZILLON <b.brezillon@overkiz.com>,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Received: from mail-wi0-f175.google.com ([209.85.212.175])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W0uCW-0007Ep-6p
+ for linux-mtd@lists.infradead.org; Wed, 08 Jan 2014 14:33:44 +0000
+Received: by mail-wi0-f175.google.com with SMTP id hi5so5590262wib.2
+ for <linux-mtd@lists.infradead.org>; Wed, 08 Jan 2014 06:33:20 -0800 (PST)
+Date: Wed, 8 Jan 2014 14:33:16 +0000
+From: Lee Jones <lee.jones@linaro.org>
+To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 00/36] mtd: st_spi_fsm: Add new driver
+Message-ID: <20140108143316.GA14575@lee--X1>
+References: <1389188840-14306-1-git-send-email-lee.jones@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1389188840-14306-1-git-send-email-lee.jones@linaro.org>
+Cc: angus.clark@st.com, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,47 +26,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Define the NAND pinctrl configs.
+CC'ing the MTD ML. Sorry guys.
 
-Signed-off-by: Boris BREZILLON <b.brezillon@overkiz.com>
----
- arch/arm/boot/dts/sun7i-a20.dtsi |   24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+If you're interested in the set, it went to LKML and LAKML.
 
-diff --git a/arch/arm/boot/dts/sun7i-a20.dtsi b/arch/arm/boot/dts/sun7i-a20.dtsi
-index c00a577..34b1948 100644
---- a/arch/arm/boot/dts/sun7i-a20.dtsi
-+++ b/arch/arm/boot/dts/sun7i-a20.dtsi
-@@ -389,6 +389,30 @@
- 				allwinner,drive = <0>;
- 				allwinner,pull = <0>;
- 			};
-+
-+			nand_pins_a: nand_base0@0 {
-+				allwinner,pins = "PC0", "PC1", "PC2",
-+						"PC5", "PC8", "PC9", "PC10",
-+						"PC11", "PC12", "PC13", "PC14",
-+						"PC15", "PC16";
-+				allwinner,function = "nand0";
-+				allwinner,drive = <0>;
-+				allwinner,pull = <0>;
-+			};
-+
-+			nand_cs0_pins_a: nand_cs@0 {
-+				allwinner,pins = "PC4";
-+				allwinner,function = "nand0";
-+				allwinner,drive = <0>;
-+				allwinner,pull = <0>;
-+			};
-+
-+			nand_rb0_pins_a: nand_rb@0 {
-+				allwinner,pins = "PC6";
-+				allwinner,function = "nand0";
-+				allwinner,drive = <0>;
-+				allwinner,pull = <0>;
-+			};
- 		};
- 
- 		timer@01c20c00 {
+Let me know if you want to send the full set again with the MTD ML
+CC'ed.
+
+Hopefully you can do without though, as I'm cautious of not crating
+lots of churn. 
+
+> Version 4:
+>   Tended to Brian's previous review comments
+>     - Checkpatch acceptance
+>     - MODULE_DEVICE_TABLE() name slip correction
+>     - Timeout issue(s) resolved
+>     - Potential infinite loop mitigated
+>     - Code clarity suggests heeded
+>     - Duplication with MTD core code removed
+>     - Upgraded to using ROUND_UP() helper
+>     - Moved non-shared header code into main driver
+>     - Relocated dynamic msg sequence stores into main struct
+>     - Averted adaption of static (table) data
+>     - Basic whitespace/spelling/data type/dev_err suggestions accepted
+> 
+> Version 3:
+>   Okay, this thing should be fully functional now. Identify a chip
+>   based on it's JEDEC ID, Read, Write, Erase (all or by sector).
+>   Support for various chip quirks added too.
+>  
+> Version 2:
+>   The first bunch of these patches have been on the MLs before, but
+>   didn't receive a great deal of attention for the most part. We are
+>   a little more featureful this time however. We can now successfully
+>   setup and configure the N25Q256. We still can't read/write/erase
+>   it though. I'll start work on that next week and will provide it in
+>   the next instalment.
+>  
+> Version 1:
+>   First stab at getting this thing Mainlined. It doesn't do a great deal
+>   yet, but we are able to initialise the device and dynamically set it up
+>   correctly based on an extracted JEDEC ID.
+> 
+>  Documentation/devicetree/bindings/mtd/st-fsm.txt |   26 ++
+>  arch/arm/boot/dts/stih416-b2105.dts              |   14 +
+>  arch/arm/boot/dts/stih416-pinctrl.dtsi           |   12 +
+>  drivers/mtd/devices/Kconfig                      |    8 +
+>  drivers/mtd/devices/Makefile                     |    1 +
+>  drivers/mtd/devices/serial_flash_cmds.h          |   81 ++++
+>  drivers/mtd/devices/st_spi_fsm.c                 | 2124 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>  7 files changed, 2266 insertions(+)
+
+
 -- 
-1.7.9.5
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
