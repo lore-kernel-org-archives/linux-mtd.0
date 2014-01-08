@@ -1,30 +1,20 @@
-Received: from mo3.mail-out.ovh.net ([178.32.228.3])
+Received: from 71-19-161-253.dedicated.allstream.net ([71.19.161.253]
+ helo=nsa.nbspaymentsolutions.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W0wG1-0002hf-AE
- for linux-mtd@lists.infradead.org; Wed, 08 Jan 2014 16:45:29 +0000
-Received: from mail408.ha.ovh.net (b6.ovh.net [213.186.33.56])
- by mo3.mail-out.ovh.net (Postfix) with SMTP id 3EEAE1014025
- for <linux-mtd@lists.infradead.org>; Wed,  8 Jan 2014 17:37:08 +0100 (CET)
-Message-ID: <52CD7E92.3070903@overkiz.com>
-Date: Wed, 08 Jan 2014 17:36:34 +0100
-From: boris brezillon <b.brezillon@overkiz.com>
+ id 1W0wko-0003di-Oa
+ for linux-mtd@lists.infradead.org; Wed, 08 Jan 2014 17:17:19 +0000
+From: Bill Pringlemeir <bpringlemeir@nbsps.com>
+To: eliedebrauwer@gmail.com (Elie De Brauwer)
+Subject: Re: [PATCH v0] mtd: gpmi: Use cached syndromes to speedup erased
+ region bitflip detection.
+References: <1389123873-30663-1-git-send-email-eliedebrauwer@gmail.com>
+ <20140108053816.GA28424@shlinux2.ap.freescale.net>
+ <CAGWqfigWXs+0nJzxQMh6umhrm1bA5YUWbZmXmj7=aut3HsaAcA@mail.gmail.com>
+Date: Wed, 08 Jan 2014 12:10:22 -0500
+Message-ID: <871u0i9z7l.fsf@nbsps.com>
 MIME-Version: 1.0
-To: Rob Herring <robherring2@gmail.com>
-Subject: Re: [RFC PATCH 3/9] of: mtd: add NAND timings retrieval support
-References: <1389190924-26226-1-git-send-email-b.brezillon@overkiz.com>	<1389190924-26226-4-git-send-email-b.brezillon@overkiz.com>
- <CAL_Jsq+PT9MzEpHwuiSU2oeqzzqajGdBKgdxCZ8S+9W2mPN+tA@mail.gmail.com>
-In-Reply-To: <CAL_Jsq+PT9MzEpHwuiSU2oeqzzqajGdBKgdxCZ8S+9W2mPN+tA@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Russell King <linux@arm.linux.org.uk>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, dev@linux-sunxi.org,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- linux-mtd@lists.infradead.org, Rob Landley <rob@landley.net>,
- Grant Likely <grant.likely@linaro.org>,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,84 +24,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/01/2014 17:30, Rob Herring wrote:
-> On Wed, Jan 8, 2014 at 8:21 AM, Boris BREZILLON <b.brezillon@overkiz.com> wrote:
->> Add a function to retrieve NAND timings from a given DT node.
+eliedebrauwer at gmail.com wrote:
+
+> (Some background info, I expect these chips to be less than half used,
+> hence plenty of erased blocks, also the NAND timings are already
+> optimized for these chips).
+
+That may not be true if the higher layer file system does wear
+levelling.  Especially dynamic wear levelling where seldom read inodes are
+moved in order to spread the wear.
+
+> On Wed, Jan 8, 2014 at 6:38 AM, Huang Shijie <b32955 at freescale.com> wrote:
+>> thanks for the new patch.
 >>
->> Signed-off-by: Boris BREZILLON <b.brezillon@overkiz.com>
->> ---
->>   drivers/of/of_mtd.c    |   47 +++++++++++++++++++++++++++++++++++++++++++++++
->>   include/linux/of_mtd.h |    9 +++++++++
->>   2 files changed, 56 insertions(+)
+>> I suddenly think out a new solution about this issue:
+>> [1] when the bitflip occurs, the BCH will tells up the uncorrectable,
+>> [2] if we catch a uncorrectable error, we could check the whole buffer, and
+>> count the number of the bitflips. Assume we get the bitflips is N.
 >>
->> diff --git a/drivers/of/of_mtd.c b/drivers/of/of_mtd.c
->> index a27ec94..52e07fd 100644
->> --- a/drivers/of/of_mtd.c
->> +++ b/drivers/of/of_mtd.c
->> @@ -83,3 +83,50 @@ bool of_get_nand_on_flash_bbt(struct device_node *np)
->>          return of_property_read_bool(np, "nand-on-flash-bbt");
->>   }
->>   EXPORT_SYMBOL_GPL(of_get_nand_on_flash_bbt);
->> +
->> +/**
->> + * of_get_nand_timings - Get nand timings for the given device_node
->> + * @np:        Pointer to the given device_node
->> + *
->> + * return 0 on success errno other wise
->> + */
->> +int of_get_nand_timings(struct device_node *np, struct nand_timings *timings)
->> +{
->> +       memset(timings, 0, sizeof(*timings));
->> +
->> +       of_property_read_u32(np, "tCLS-min", &timings->tCLS_min);
->> +       of_property_read_u32(np, "tCLH-min", &timings->tCLH_min);
->> +       of_property_read_u32(np, "tCS-min", &timings->tCS_min);
->> +       of_property_read_u32(np, "tCH-min", &timings->tCH_min);
->> +       of_property_read_u32(np, "tWP-min", &timings->tWP_min);
->> +       of_property_read_u32(np, "tALS-min", &timings->tALS_min);
->> +       of_property_read_u32(np, "tALH-min", &timings->tALH_min);
->> +       of_property_read_u32(np, "tDS-min", &timings->tDS_min);
->> +       of_property_read_u32(np, "tDH-min", &timings->tDH_min);
->> +       of_property_read_u32(np, "tWC-min", &timings->tWC_min);
->> +       of_property_read_u32(np, "tWH-min", &timings->tWH_min);
->> +       of_property_read_u32(np, "tR-max", &timings->tR_max);
->> +       of_property_read_u32(np, "tAR-min", &timings->tAR_min);
->> +       of_property_read_u32(np, "tCLR-min", &timings->tCLR_min);
->> +       of_property_read_u32(np, "tRR-min", &timings->tRR_min);
->> +       of_property_read_u32(np, "tRP-min", &timings->tRP_min);
->> +       of_property_read_u32(np, "tWB-max", &timings->tWB_max);
->> +       of_property_read_u32(np, "tRC-min", &timings->tRC_min);
->> +       of_property_read_u32(np, "tREA-max", &timings->tREA_max);
->> +       of_property_read_u32(np, "tRHZ-max", &timings->tRHZ_max);
->> +       of_property_read_u32(np, "tCHZ-max", &timings->tCHZ_max);
->> +       of_property_read_u32(np, "tRHOH-min", &timings->tRHOH_min);
->> +       of_property_read_u32(np, "tRLOH-min", &timings->tRLOH_min);
->> +       of_property_read_u32(np, "tCOH-min", &timings->tCOH_min);
->> +       of_property_read_u32(np, "tREH-min", &timings->tREH_min);
->> +       of_property_read_u32(np, "tWHR-min", &timings->tWHR_min);
->> +       of_property_read_u32(np, "tRHW-min", &timings->tRHW_min);
->> +       of_property_read_u32(np, "tIR-min", &timings->tIR_min);
->> +       of_property_read_u32(np, "tCR-min", &timings->tCR_min);
->> +       of_property_read_u32(np, "tADL-min", &timings->tADL_min);
->> +       of_property_read_u32(np, "tRST-max", &timings->tRST_max);
->> +       of_property_read_u32(np, "tWW-min", &timings->tWW_min);
-> These all need to be documented.
-They're document in PATCH 4/9 (but the description might be a bit
-light).
-> These apply to which compatible
-> strings?
-Actually this could apply to any nand chips.
-The NAND Flash Controller driver is then responsible for converting
-these values to use it.
-> They should also be suffixed with the unit the property is in
-> (i.e. -ms, -us, -ns).
+>> [3] if N is < (gf_len ), we could think this is a erased page, and call the
+>> memset to the whole buffer, and tell the upper layer that this is a good
+>> empty page.
+>>
+>> [4] since the [1] is very rare, i think this method is much faster then the
+>> current solution.
 
-Sure, I'll add the unit (which is -ns BTW).
+>> Elie De Brauwer wrote:
 
-Thanks.
+> What you suggest will obviously be able to reach the maximum speed,
+> I've been playing with a similar idea too but always bumped into the issue
+> that you cannot know whether or not a page is actually an erased page or
+> not. In your solution for example you cannot distinguish between:
+> - an erased page which suffers from bitflips
+> - a genuine uncorrectable page whose original contents may be close to
+> all 0xff's, but only has a handful of bits set to 0.
 
-Best Regards,
+> The risk of this approach is that if you bump into an erased page, which the
+> system should mark as uncorrectable, (and deal with accordingly)  is returned
+> as a valid all 0xff's page which the system will consider as valid data.
 
-Boris
->
-> Rob
+> I agree this may sound a bit theoretical, and the risk (uncorrectable
+> on a page with very few 0 bits) is small, but I'm not able to judge
+> whether or not it can/should be neglected.
+
+> What do you think ?
+
+I think you have a good rational.  However, there will always be errors
+which can by-pass the bit-flips checking of any ECC (just like any hash
+has some theoretical collision/conflict).  The higher layer file system
+should still have some integrity checks and the '-EUCLEAN' should have
+been a clue that these pages/sectors were wearing previously.  Ie, the
+NAND device should gradually fail.  I don't think it is fair to expect
+the MTD drivers to perform on a flash that it excessively used to the
+point where they are so broke it has bit flips way beyond the maximum
+specified by the vendors.
+
+Probably there is no completely right answer, just as you analyze.  How
+do you tell between a mostly xff page with bit flips versus a bad
+hardware-ECC of an erased page?  It maybe possible to 're-read' the page
+with the hardware ECC turned off to validate that the whole page is xff
+(I have guessed you are comparing data with ECC applied?). But this would
+again affect performance.
+
+I think that we should have some reliability at the upper layers.  How
+do you combat against power fail, etc?  The ECC should be able to
+correct errors.  This foists error detection to another layer, with it
+highly likely to be caught at this layer.  Running file systems on
+mtdblock, etc might like this but those have other issues, don't they?
+
+My 2cents,
+Bill Pringlemeir.
