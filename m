@@ -1,22 +1,24 @@
-Received: from mail-wi0-f175.google.com ([209.85.212.175])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W0uCW-0007Ep-6p
- for linux-mtd@lists.infradead.org; Wed, 08 Jan 2014 14:33:44 +0000
-Received: by mail-wi0-f175.google.com with SMTP id hi5so5590262wib.2
- for <linux-mtd@lists.infradead.org>; Wed, 08 Jan 2014 06:33:20 -0800 (PST)
-Date: Wed, 8 Jan 2014 14:33:16 +0000
-From: Lee Jones <lee.jones@linaro.org>
-To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 00/36] mtd: st_spi_fsm: Add new driver
-Message-ID: <20140108143316.GA14575@lee--X1>
-References: <1389188840-14306-1-git-send-email-lee.jones@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1389188840-14306-1-git-send-email-lee.jones@linaro.org>
-Cc: angus.clark@st.com, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org
+Received: from 3.mo3.mail-out.ovh.net ([46.105.44.175]
+ helo=mo3.mail-out.ovh.net)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W0uSg-0007o1-9A
+ for linux-mtd@lists.infradead.org; Wed, 08 Jan 2014 14:50:27 +0000
+Received: from mail408.ha.ovh.net (b6.ovh.net [213.186.33.56])
+ by mo3.mail-out.ovh.net (Postfix) with SMTP id EA693FFB281
+ for <linux-mtd@lists.infradead.org>; Wed,  8 Jan 2014 15:26:23 +0100 (CET)
+From: Boris BREZILLON <b.brezillon@overkiz.com>
+To: Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Rob Landley <rob@landley.net>, Russell King <linux@arm.linux.org.uk>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Grant Likely <grant.likely@linaro.org>
+Subject: [RFC PATCH 6/9] mtd: nand: add sunxi NFC dt bindings doc
+Date: Wed,  8 Jan 2014 15:22:01 +0100
+Message-Id: <1389190924-26226-7-git-send-email-b.brezillon@overkiz.com>
+In-Reply-To: <1389190924-26226-1-git-send-email-b.brezillon@overkiz.com>
+References: <1389190924-26226-1-git-send-email-b.brezillon@overkiz.com>
+Cc: devicetree@vger.kernel.org, linux-doc@vger.kernel.org, dev@linux-sunxi.org,
+ linux-kernel@vger.kernel.org, Boris BREZILLON <b.brezillon@overkiz.com>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,60 +28,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-CC'ing the MTD ML. Sorry guys.
+Add the sunxi NAND Flash Controller dt bindings documentation.
 
-If you're interested in the set, it went to LKML and LAKML.
+Signed-off-by: Boris BREZILLON <b.brezillon@overkiz.com>
+---
+ .../devicetree/bindings/mtd/sunxi-nand.txt         |   71 ++++++++++++++++++++
+ 1 file changed, 71 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/sunxi-nand.txt
 
-Let me know if you want to send the full set again with the MTD ML
-CC'ed.
-
-Hopefully you can do without though, as I'm cautious of not crating
-lots of churn. 
-
-> Version 4:
->   Tended to Brian's previous review comments
->     - Checkpatch acceptance
->     - MODULE_DEVICE_TABLE() name slip correction
->     - Timeout issue(s) resolved
->     - Potential infinite loop mitigated
->     - Code clarity suggests heeded
->     - Duplication with MTD core code removed
->     - Upgraded to using ROUND_UP() helper
->     - Moved non-shared header code into main driver
->     - Relocated dynamic msg sequence stores into main struct
->     - Averted adaption of static (table) data
->     - Basic whitespace/spelling/data type/dev_err suggestions accepted
-> 
-> Version 3:
->   Okay, this thing should be fully functional now. Identify a chip
->   based on it's JEDEC ID, Read, Write, Erase (all or by sector).
->   Support for various chip quirks added too.
->  
-> Version 2:
->   The first bunch of these patches have been on the MLs before, but
->   didn't receive a great deal of attention for the most part. We are
->   a little more featureful this time however. We can now successfully
->   setup and configure the N25Q256. We still can't read/write/erase
->   it though. I'll start work on that next week and will provide it in
->   the next instalment.
->  
-> Version 1:
->   First stab at getting this thing Mainlined. It doesn't do a great deal
->   yet, but we are able to initialise the device and dynamically set it up
->   correctly based on an extracted JEDEC ID.
-> 
->  Documentation/devicetree/bindings/mtd/st-fsm.txt |   26 ++
->  arch/arm/boot/dts/stih416-b2105.dts              |   14 +
->  arch/arm/boot/dts/stih416-pinctrl.dtsi           |   12 +
->  drivers/mtd/devices/Kconfig                      |    8 +
->  drivers/mtd/devices/Makefile                     |    1 +
->  drivers/mtd/devices/serial_flash_cmds.h          |   81 ++++
->  drivers/mtd/devices/st_spi_fsm.c                 | 2124 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
->  7 files changed, 2266 insertions(+)
-
-
+diff --git a/Documentation/devicetree/bindings/mtd/sunxi-nand.txt b/Documentation/devicetree/bindings/mtd/sunxi-nand.txt
+new file mode 100644
+index 0000000..c3206fc
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/sunxi-nand.txt
+@@ -0,0 +1,71 @@
++Allwinner NAND Flash Controller (NFC)
++
++Required properties:
++- compatible : "allwinner,sun4i-nfc".
++- reg : shall contain registers location and length for data and reg.
++- interrupts : shall define the NFC interrupt.
++- #address-cells: shall be set to 1. Encode the nand CS.
++- #size-cells : shall be set to 0.
++- clocks : shall reference NFC clocks.
++- clock-names : NFC internal clock names. Shall contain :
++    * "ahb_clk" : AHB gating clock
++    * "sclk" : NFC clock
++
++Optional children nodes:
++Children nodes represent the available nand chips.
++
++Required properties:
++- reg : shall contain the CS ids (a given chip might use several CS)
++- tCLS-min : see Documentation/devicetree/mtd/nand.txt
++- tCLH-min : Documentation/devicetree/mtd/nand.txt
++- tCS-min : see Documentation/devicetree/mtd/nand.txt
++- tCH-min : see Documentation/devicetree/mtd/nand.txt
++- tWP-min : see Documentation/devicetree/mtd/nand.txt
++- tWH-min : see Documentation/devicetree/mtd/nand.txt
++- tALS-min : see Documentation/devicetree/mtd/nand.txt
++- tDS-min : see Documentation/devicetree/mtd/nand.txt
++- tDH-min : see Documentation/devicetree/mtd/nand.txt
++- tRR-min : see Documentation/devicetree/mtd/nand.txt
++- tALH-min : see Documentation/devicetree/mtd/nand.txt
++- tRP-min : see Documentation/devicetree/mtd/nand.txt
++- tREH-min : see Documentation/devicetree/mtd/nand.txt
++- tRC-min : see Documentation/devicetree/mtd/nand.txt
++- tWC-min : see Documentation/devicetree/mtd/nand.txt
++
++Optional properties:
++- allwinner,rb : shall contain the native Ready/Busy ids.
++ or
++- rb-gpios : shall contain the gpios used as R/B pins.
++
++see Documentation/devicetree/mtd/nand.txt for generic bindings.
++
++
++Examples:
++nfc: nand@01c03000 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&nand_pins_a &nand_cs0_pins_a &nand_rb0_pins_a>;
++	status = "okay";
++
++	nand@0 {
++		reg = <0>;
++		allwinner,rb = <0>;
++		nand-ecc-mode = "soft_bch";
++
++		/* nand timings */
++		tCLS-min = <6>;
++		tCLH-min = <3>;
++		tCS-min = <20>;
++		tCH-min = <5>;
++		tWP-min = <8>;
++		tWH-min = <6>;
++		tALS-min = <6>;
++		tDS-min = <6>;
++		tDH-min = <2>;
++		tRR-min = <20>;
++		tALH-min = <3>;
++		tRP-min = <8>;
++		tREH-min = <6>;
++		tRC-min = <16>;
++		tWC-min = <16>;
++	};
++};
 -- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+1.7.9.5
