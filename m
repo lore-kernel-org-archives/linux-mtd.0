@@ -1,28 +1,22 @@
-Received: from 16.mo3.mail-out.ovh.net ([188.165.56.217]
- helo=mo3.mail-out.ovh.net)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W0v5u-0000j7-2w
- for linux-mtd@lists.infradead.org; Wed, 08 Jan 2014 15:30:58 +0000
-Received: from mail408.ha.ovh.net (b6.ovh.net [213.186.33.56])
- by mo3.mail-out.ovh.net (Postfix) with SMTP id 9D04BFF9FE0
- for <linux-mtd@lists.infradead.org>; Wed,  8 Jan 2014 16:30:37 +0100 (CET)
-Message-ID: <52CD6EFC.9050303@overkiz.com>
-Date: Wed, 08 Jan 2014 16:30:04 +0100
-From: boris brezillon <b.brezillon@overkiz.com>
 MIME-Version: 1.0
-To: Maxime Ripard <maxime.ripard@free-electrons.com>,
- Rob Landley <rob@landley.net>, Russell King <linux@arm.linux.org.uk>,
- David Woodhouse <dwmw2@infradead.org>,
- Grant Likely <grant.likely@linaro.org>
-Subject: Re: [RFC PATCH 9/9] ARM: sunxi/dt: enable NAND on cubietruck board
+In-Reply-To: <1389190924-26226-4-git-send-email-b.brezillon@overkiz.com>
 References: <1389190924-26226-1-git-send-email-b.brezillon@overkiz.com>
- <1389194891-26771-1-git-send-email-b.brezillon@overkiz.com>
-In-Reply-To: <1389194891-26771-1-git-send-email-b.brezillon@overkiz.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: devicetree@vger.kernel.org, linux-doc@vger.kernel.org, dev@linux-sunxi.org,
- linux-kernel@vger.kernel.org, Boris BREZILLON <b.brezillon@overkiz.com>,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+ <1389190924-26226-4-git-send-email-b.brezillon@overkiz.com>
+Date: Wed, 8 Jan 2014 10:30:39 -0600
+Message-ID: <CAL_Jsq+PT9MzEpHwuiSU2oeqzzqajGdBKgdxCZ8S+9W2mPN+tA@mail.gmail.com>
+Subject: Re: [RFC PATCH 3/9] of: mtd: add NAND timings retrieval support
+From: Rob Herring <robherring2@gmail.com>
+To: Boris BREZILLON <b.brezillon@overkiz.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Russell King <linux@arm.linux.org.uk>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, dev@linux-sunxi.org,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ linux-mtd@lists.infradead.org, Rob Landley <rob@landley.net>,
+ Grant Likely <grant.likely@linaro.org>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,60 +26,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/01/2014 16:28, Boris BREZILLON wrote:
-> Enable the NFC and describe the NAND flash connected to this controller.
+On Wed, Jan 8, 2014 at 8:21 AM, Boris BREZILLON <b.brezillon@overkiz.com> wrote:
+> Add a function to retrieve NAND timings from a given DT node.
 >
 > Signed-off-by: Boris BREZILLON <b.brezillon@overkiz.com>
 > ---
->   arch/arm/boot/dts/sun7i-a20-cubietruck.dts |   33 ++++++++++++++++++++++++++++
->   1 file changed, 33 insertions(+)
+>  drivers/of/of_mtd.c    |   47 +++++++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/of_mtd.h |    9 +++++++++
+>  2 files changed, 56 insertions(+)
 >
-> diff --git a/arch/arm/boot/dts/sun7i-a20-cubietruck.dts b/arch/arm/boot/dts/sun7i-a20-cubietruck.dts
-> index 8a1009d..08ee7d3 100644
-> --- a/arch/arm/boot/dts/sun7i-a20-cubietruck.dts
-> +++ b/arch/arm/boot/dts/sun7i-a20-cubietruck.dts
-> @@ -18,7 +18,40 @@
->   	model = "Cubietech Cubietruck";
->   	compatible = "cubietech,cubietruck", "allwinner,sun7i-a20";
->   
-> +	chosen {
-> +		bootargs = "console=ttyS0,115200 earlyprintk root=/dev/ram0 rootfstype=ext2 rw";
-> +	};
+> diff --git a/drivers/of/of_mtd.c b/drivers/of/of_mtd.c
+> index a27ec94..52e07fd 100644
+> --- a/drivers/of/of_mtd.c
+> +++ b/drivers/of/of_mtd.c
+> @@ -83,3 +83,50 @@ bool of_get_nand_on_flash_bbt(struct device_node *np)
+>         return of_property_read_bool(np, "nand-on-flash-bbt");
+>  }
+>  EXPORT_SYMBOL_GPL(of_get_nand_on_flash_bbt);
 > +
+> +/**
+> + * of_get_nand_timings - Get nand timings for the given device_node
+> + * @np:        Pointer to the given device_node
+> + *
+> + * return 0 on success errno other wise
+> + */
+> +int of_get_nand_timings(struct device_node *np, struct nand_timings *timings)
+> +{
+> +       memset(timings, 0, sizeof(*timings));
+> +
+> +       of_property_read_u32(np, "tCLS-min", &timings->tCLS_min);
+> +       of_property_read_u32(np, "tCLH-min", &timings->tCLH_min);
+> +       of_property_read_u32(np, "tCS-min", &timings->tCS_min);
+> +       of_property_read_u32(np, "tCH-min", &timings->tCH_min);
+> +       of_property_read_u32(np, "tWP-min", &timings->tWP_min);
+> +       of_property_read_u32(np, "tALS-min", &timings->tALS_min);
+> +       of_property_read_u32(np, "tALH-min", &timings->tALH_min);
+> +       of_property_read_u32(np, "tDS-min", &timings->tDS_min);
+> +       of_property_read_u32(np, "tDH-min", &timings->tDH_min);
+> +       of_property_read_u32(np, "tWC-min", &timings->tWC_min);
+> +       of_property_read_u32(np, "tWH-min", &timings->tWH_min);
+> +       of_property_read_u32(np, "tR-max", &timings->tR_max);
+> +       of_property_read_u32(np, "tAR-min", &timings->tAR_min);
+> +       of_property_read_u32(np, "tCLR-min", &timings->tCLR_min);
+> +       of_property_read_u32(np, "tRR-min", &timings->tRR_min);
+> +       of_property_read_u32(np, "tRP-min", &timings->tRP_min);
+> +       of_property_read_u32(np, "tWB-max", &timings->tWB_max);
+> +       of_property_read_u32(np, "tRC-min", &timings->tRC_min);
+> +       of_property_read_u32(np, "tREA-max", &timings->tREA_max);
+> +       of_property_read_u32(np, "tRHZ-max", &timings->tRHZ_max);
+> +       of_property_read_u32(np, "tCHZ-max", &timings->tCHZ_max);
+> +       of_property_read_u32(np, "tRHOH-min", &timings->tRHOH_min);
+> +       of_property_read_u32(np, "tRLOH-min", &timings->tRLOH_min);
+> +       of_property_read_u32(np, "tCOH-min", &timings->tCOH_min);
+> +       of_property_read_u32(np, "tREH-min", &timings->tREH_min);
+> +       of_property_read_u32(np, "tWHR-min", &timings->tWHR_min);
+> +       of_property_read_u32(np, "tRHW-min", &timings->tRHW_min);
+> +       of_property_read_u32(np, "tIR-min", &timings->tIR_min);
+> +       of_property_read_u32(np, "tCR-min", &timings->tCR_min);
+> +       of_property_read_u32(np, "tADL-min", &timings->tADL_min);
+> +       of_property_read_u32(np, "tRST-max", &timings->tRST_max);
+> +       of_property_read_u32(np, "tWW-min", &timings->tWW_min);
 
-Sorry, I messed up with the bootargs.
-I'll remove it in the next version.
+These all need to be documented. These apply to which compatible
+strings? They should also be suffixed with the unit the property is in
+(i.e. -ms, -us, -ns).
 
->   	soc@01c00000 {
-> +		nfc: nand@01c03000 {
-> +			pinctrl-names = "default";
-> +			pinctrl-0 = <&nand_pins_a &nand_cs0_pins_a &nand_rb0_pins_a>;
-> +			status = "okay";
-> +
-> +			nand@0 {
-> +				reg = <0>;
-> +				allwinner,rb = <0>;
-> +				nand-ecc-mode = "soft_bch";
-> +
-> +				/* nand timings */
-> +				tCLS-min = <6>;
-> +				tCLH-min = <3>;
-> +				tCS-min = <20>;
-> +				tCH-min = <5>;
-> +				tWP-min = <8>;
-> +				tWH-min = <6>;
-> +				tALS-min = <6>;
-> +				tDS-min = <6>;
-> +				tDH-min = <2>;
-> +				tRR-min = <20>;
-> +				tALH-min = <3>;
-> +				tRP-min = <8>;
-> +				tREH-min = <6>;
-> +				tRC-min = <16>;
-> +				tWC-min = <16>;
-> +			};
-> +		};
-> +
->   		pinctrl@01c20800 {
->   			led_pins_cubietruck: led_pins@0 {
->   				allwinner,pins = "PH7", "PH11", "PH20", "PH21";
+Rob
