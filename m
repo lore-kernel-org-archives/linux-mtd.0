@@ -1,23 +1,20 @@
-Date: Thu, 9 Jan 2014 08:33:05 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Sekhar Nori <nsekhar@ti.com>
-Subject: Re: [PATCH v3] ARM: davinci: aemif: get rid of davinci-nand driver
- dependency on aemif
-Message-ID: <20140109163305.GC28655@norris-Latitude-E6410>
-References: <1386267092-18615-1-git-send-email-ivan.khoronzhuk@ti.com>
- <52B18C44.2000305@ti.com> <52B1915A.7060309@ti.com>
- <52BC1BB8.2070007@ti.com> <52CE7C44.1000803@ti.com>
+Received: from mga02.intel.com ([134.134.136.20])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W1IYI-0002Kv-H0
+ for linux-mtd@lists.infradead.org; Thu, 09 Jan 2014 16:33:51 +0000
+From: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: please, remove UBI tree from linux-next
+Date: Thu, 9 Jan 2014 16:33:21 +0000
+Message-ID: <1389285200.2259.147.camel@sauron.fi.intel.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <6467E125B81E6444A79156692EC53191@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <52CE7C44.1000803@ti.com>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, grygorii.strashko@ti.com,
- linux@arm.linux.org.uk, Rob Landley <rob@landley.net>, pawel.moll@arm.com,
- swarren@wwwdotorg.org, ijc+devicetree@hellion.org.uk,
- galak@kernel.crashing.org, rob.herring@calxeda.com,
- linux-kernel@vger.kernel.org, Santosh Shilimkar <santosh.shilimkar@ti.com>,
- linux-mtd@lists.infradead.org, "ivan.khoronzhuk" <ivan.khoronzhuk@ti.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Content-Transfer-Encoding: base64
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Reply-To: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,46 +24,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jan 09, 2014 at 04:09:00PM +0530, Sekhar Nori wrote:
-> On Thursday 26 December 2013 05:36 PM, ivan.khoronzhuk wrote:
-> > On 12/18/2013 02:13 PM, Sekhar Nori wrote:
-> >> On Wednesday 18 December 2013 05:21 PM, ivan.khoronzhuk wrote:
-> >>> Hi, Sekhar
-> >>>
-> >>> This patch is based on "Reuse davinci-nand driver for Keystone arch"
-> >>> series.
-> >>> The series has passed review at https://lkml.org/lkml/2013/12/17/241
-> >>> and can be found at http://git.infradead.org/l2-mtd.git
-> >>>
-> >>> This patch can be still applied on top of the series without conflicts.
-> >>>
-> >>> Can you please pick up the $subject patch if you are OK with it?
-> >>
-> >> I have no problems with the patch and can pick it too, but need ack from
-> >> MTD maintainer (David) as it touches drivers/mtd/ too.
-> >>
-> >> David,
-> >>
-> >> If you do not have the patch, we can resend it.
-> >>
-> >> Thanks,
-> >> Sekhar
-> >>
-> > 
-> > Hi Brian,
-> > 
-> > Do you agree if this patch will go through Davinci tree?
-> > 
-> > This is the last one we need to reuse Davinci Nand driver for Keystone.
-> 
-> Since we never got an ack from MTD folks, I am going and go ahead and
-> try pushing this through ARM-SoC regardless. I will CC the MTD
-> maintainers on the pull request so any objections could even be posted
-> there.
-
-Sorry, I've been a little busy / out for vacation. The MTD parts look OK
-to me. Feel free to take it in your tree.
-
-Acked-by: Brian Norris <computersforpeace@gmail.com>
-
-Brian
+SGkgU3RlcGhlbiwNCg0KY291bGQgeW91IHBsZWFzZSByZW1vdmUgdGhlIFVCSSBnaXQgdHJlZSBm
+cm9tIGxpbnV4LW5leHQ/DQoNCmdpdDovL2dpdC5pbmZyYWRlYWQub3JnL2xpbnV4LXViaQ0KDQpJ
+IHdpbGwgdXNlIHRoZSBVQklGUyBnaXQgdHJlZSBmb3IgYm90aCBVQkkgYW5kIFVCSUZTIHBhdGNo
+ZXMgZnJvbSBub3cNCm9uLiBUaGUgdHJhZmZpYyBiZWNhbWUgc28gbG93IHRoYXQgaXQgZG9lcyBu
+b3QgbWFrZSBzZW5zZSB0byBrZWVwIDINCnNlcGFyYXRlIHRyZWVzIGZvciB0aGVzZSB2ZXJ5IHJl
+bGF0ZWQgc3Vic3lzdGVtcy4NCg0KVGhlIFVCSUZTIGdpdCB0cmVlIGlzIGFsc28gaW4gbGludXgt
+bmV4dCwgc28gYm90aCBVQkkgYW5kIFVCSUZTIHdpbGwgYmUNCmNvdmVyZWQgdGhyb3VnaCB0aGUg
+VUJJRlMgZ2l0IHRyZWUuDQoNClRoYW5rcyENCg0KLS0gDQpCZXN0IFJlZ2FyZHMsDQpBcnRlbSBC
+aXR5dXRza2l5DQotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KSW50ZWwgRmlubGFuZCBPeQpSZWdpc3RlcmVkIEFkZHJl
+c3M6IFBMIDI4MSwgMDAxODEgSGVsc2lua2kgCkJ1c2luZXNzIElkZW50aXR5IENvZGU6IDAzNTc2
+MDYgLSA0IApEb21pY2lsZWQgaW4gSGVsc2lua2kgCgpUaGlzIGUtbWFpbCBhbmQgYW55IGF0dGFj
+aG1lbnRzIG1heSBjb250YWluIGNvbmZpZGVudGlhbCBtYXRlcmlhbCBmb3IKdGhlIHNvbGUgdXNl
+IG9mIHRoZSBpbnRlbmRlZCByZWNpcGllbnQocykuIEFueSByZXZpZXcgb3IgZGlzdHJpYnV0aW9u
+CmJ5IG90aGVycyBpcyBzdHJpY3RseSBwcm9oaWJpdGVkLiBJZiB5b3UgYXJlIG5vdCB0aGUgaW50
+ZW5kZWQKcmVjaXBpZW50LCBwbGVhc2UgY29udGFjdCB0aGUgc2VuZGVyIGFuZCBkZWxldGUgYWxs
+IGNvcGllcy4K
