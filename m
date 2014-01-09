@@ -1,19 +1,31 @@
-Date: Wed, 8 Jan 2014 15:40:48 -0800
-From: Tony Lindgren <tony@atomide.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH 0/3] omap2: Assorted GPMC cleanups
-Message-ID: <20140108234048.GH31323@atomide.com>
-References: <1382921508-5104-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <20140108191836.GD31323@atomide.com>
- <20140108233815.GC2595@localhost>
+Received: from mailout.micron.com ([137.201.242.129])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W14XL-0007YW-8h
+ for linux-mtd@lists.infradead.org; Thu, 09 Jan 2014 01:35:56 +0000
+From: =?utf-8?B?UWkgV2FuZyDnjovotbcgKHFpd2FuZyk=?= <qiwang@micron.com>
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>
+Subject: RE: [PATCH 1/1]  MTD: UBI:  avoid program operation on  NOR flash
+ after erasure interrupted
+Date: Thu, 9 Jan 2014 01:35:24 +0000
+Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A770C7770@NTXXIAMBX02.xacn.micron.com>
+References: <71CF8D7F32C5C24C9CD1D0E02D52498A770B54B1@NTXXIAMBX02.xacn.micron.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A770B68A8@NTXXIAMBX02.xacn.micron.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A770B6F77@NTXXIAMBX02.xacn.micron.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A770B79C8@NTXXIAMBX02.xacn.micron.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A770B8611@NTXXIAMBX02.xacn.micron.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A770BA389@NTXXIAMBX02.xacn.micron.com>
+ <1388675460.25123.90.camel@sauron.fi.intel.com>
+ <1388676172.25123.93.camel@sauron.fi.intel.com>
+ <71CF8D7F32C5C24C9CD1D0E02D52498A770BA889@NTXXIAMBX02.xacn.micron.com>
+ <1388728253.25123.98.camel@sauron.fi.intel.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20140108233815.GC2595@localhost>
-Cc: Javier Martinez Canillas <martinez.javier@gmail.com>,
- Enric Balletbo Serra <eballetbo@gmail.com>, Jon Hunter <jgchunter@gmail.com>,
- linux-mtd@lists.infradead.org, Pekon Gupta <pekon@ti.com>,
- linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc: =?utf-8?B?UWkgV2FuZyDnjovotbcgKHFpd2FuZyk=?= <qiwang@micron.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,35 +35,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Ezequiel Garcia <ezequiel.garcia@free-electrons.com> [140108 15:39]:
-> On Wed, Jan 08, 2014 at 11:18:37AM -0800, Tony Lindgren wrote:
-> > * Ezequiel Garcia <ezequiel.garcia@free-electrons.com> [131027 17:52]:
-> > > (I'm CCing the MTD list, because GPMC is the memory controller
-> > > used for NOR, NAND and OneNAND devices).
-> > > 
-> > > Hi all,
-> > > 
-> > > Just a small patchset containing two small cleanups and a minor fix
-> > > for the GPMC memory controller. The first two are cleanups and can
-> > > be considered as preparation work for the fix.
-> > > 
-> > > The fix is patch 3/3: "Move legacy GPMC width setting". It makes
-> > > explicit use of the DT property "gpmc,device-width" and removes the
-> > > subsequent (and redundant) setting of the GPMC width, based in the
-> > > NAND bus widht.
-> > 
-> > Thanks and sorry for the delay. Applying these all into branch
-> > omap-for-v3.14/fixes-not-urgent.
-> > 
-> 
-> No problem. I'll give this a test/review next week.
-> 
-> Do we still need the board-file (legacy) workaround in this patchset?
-> I was actually waiting for you to clean-up completely that, before
-> re-sending the series, without the board-file workaround.
-
-Yes we still need it for a little bit longer.
-
-Regards,
-
-Tony
+SGkgQXJ0ZW06DQpEbyB5b3UgaGF2ZSBhbnkgc3VnZ2VzdGlvbiBmb3IgbXkgbW9kaWZpY2F0aW9u
+Pw0KT3RoZXIgY29kZSBJIHRoaW5rIGl0IGlzIG9rLg0KVGhhbmtzDQoNCg0KLS0tLS1PcmlnaW5h
+bCBNZXNzYWdlLS0tLS0NCkZyb206IFFpIFdhbmcg546L6LW3IChxaXdhbmcpIA0KU2VudDogTW9u
+ZGF5LCBKYW51YXJ5IDA2LCAyMDE0IDE6MTEgUE0NClRvOiAnZGVkZWtpbmQxQGdtYWlsLmNvbScN
+CkNjOiBBZHJpYW4gSHVudGVyOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBsaW51eC1t
+dGRAbGlzdHMuaW5mcmFkZWFkLm9yZw0KU3ViamVjdDogUkU6IFtQQVRDSCAxLzFdIE1URDogVUJJ
+OiBhdm9pZCBwcm9ncmFtIG9wZXJhdGlvbiBvbiBOT1IgZmxhc2ggYWZ0ZXIgZXJhc3VyZSBpbnRl
+cnJ1cHRlZA0KDQo+UGxlYXNlLCByZW1lbWJlciB0aGF0IEkgcHVzaGVkIHlvdXIgcGF0Y2ggdG8g
+YSB0ZW1wb3JhcnkgYnJhbmNoLCBvbmx5DQo+Zm9yIHlvdSB0byBiZSBhYmxlIHRvIGVhc2lseSBw
+aWNrIGl0LiBJIGRvIG5vdCBzZW5kIGl0IHVwc3RyZWFtLg0KDQo+QXMgSSBzYWlkLCBJIG5lZWQg
+dG8geW91IGxvb2sgYXQgaXQgYW5kIGNvbmZpcm0gdGhhdCBpdCBpcyBhbGwtcmlnaHQuDQo+QW5k
+IGlmIGl0IGlzIG5vdCBhbGwtcmlnaHQsIGNvcnJlY3QgaXQuDQoNCj5UaGlzIGlzIGJlY2F1c2Ug
+SSBtb2RpZmllZCBpdCBteXNlbGYuDQoNCj5TbyB3YWl0aW5nIGZvciB5b3VyIHJlc3BvbnNlIG9u
+IHRoaXMuDQpJIGNoZWNrZWQgdGhlIGNvZGUgeW91IG1vZGlmaWVkLCBjb21waWxlLCBhbmQgcnVu
+IG9uIG91ciBwbGF0Zm9ybSwgaXQgaXMgb2suDQoNCisJdWJpX2VycigiY2Fubm90IGludmFsaWRh
+dGUgUEVCICVkLCB3cml0ZSByZXR1cm5lZCAlZCB3cml0ZSByZXR1cm5lZCAlZCIsDQorCQlwbnVt
+LCBlcnIsIGVycik7IA0KDQpCdXQgSSB0aGluayBhYm92ZSBjb2RlIHByaW50ICJ3cml0ZSBlcnIi
+IHR3aWNlLiBzbyBJIHN1Z2dlc3QgdG8gY2hhbmdlIHRvIGJlbG93Og0KDQorCXViaV9lcnIoImNh
+bm5vdCBpbnZhbGlkYXRlIFBFQiAlZCwgd3JpdGUgcmV0dXJuZWQgJWQiLCBwbnVtLCBlcnIpOw0K
+IA0KSSB3aWxsIHNlbmQgeW91IHRoZSBwYXRjaCBpbiBhbm90aGVyIGVtYWlsIGNvbnZlbmllbnQg
+Zm9yIHlvdSB0byBhcHBseSBwYXRjaC4NClRoYW5rcw0KLS0NCnFpd2FuZyANCg==
