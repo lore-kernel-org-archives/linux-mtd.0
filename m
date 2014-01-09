@@ -1,24 +1,24 @@
-Date: Thu, 9 Jan 2014 17:33:26 +0100
-From: Rodolfo Giometti <giometti@enneenne.com>
-Sender: giometti@enneenne.com
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Message-ID: <20140109163326.GD17831@enneenne.com>
-References: <20140102124407.GF10251@enneenne.com>
- <20140102144236.270c4a6a@skate>
- <20140103112926.GP10251@enneenne.com>
- <20140103145336.GA9618@localhost>
- <20140106153438.GX10251@enneenne.com>
- <20140108233603.GB2595@localhost>
+Received: from mail-we0-x22e.google.com ([2a00:1450:400c:c03::22e])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W1Itv-0003Ec-W4
+ for linux-mtd@lists.infradead.org; Thu, 09 Jan 2014 16:56:13 +0000
+Received: by mail-we0-f174.google.com with SMTP id q58so3001072wes.19
+ for <linux-mtd@lists.infradead.org>; Thu, 09 Jan 2014 08:55:49 -0800 (PST)
+Date: Thu, 9 Jan 2014 08:55:41 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Jingoo Han <jg1.han@samsung.com>
+Subject: Re: [PATCH 1/7] mtd: denali: Drop print of build date/time
+Message-ID: <20140109165541.GD28655@norris-Latitude-E6410>
+References: <cover.1387833347.git.josh@joshtriplett.org>
+ <21175198efaf34a67e5108c1dae384656012b7a0.1387833347.git.josh@joshtriplett.org>
+ <000801cf0213$f40bec50$dc23c4f0$%han@samsung.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="zYM0uCDKw75PZbzx"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20140108233603.GB2595@localhost>
-Subject: Re: NAND support for Armada 370
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Michele Dionisio <michele@cynny.com>, linux-mtd@lists.infradead.org,
- Gregory =?iso-8859-15?Q?Cl=E9ment?= <gregory.clement@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- linux-arm-kernel@lists.infradead.org
+In-Reply-To: <000801cf0213$f40bec50$dc23c4f0$%han@samsung.com>
+Cc: linux-mtd@lists.infradead.org, 'David Woodhouse' <dwmw2@infradead.org>,
+ 'Josh Triplett' <josh@joshtriplett.org>, 'Dinh Nguyen' <dinguyen@altera.com>,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,84 +28,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, Dec 26, 2013 at 05:24:53PM +0900, Jingoo Han wrote:
+> On Tuesday, December 24, 2013 6:55 AM, Josh Triplett wrote:
+> > 
+> > The kernel already has this information, and individual drivers
+> > shouldn't duplicate that.
 
---zYM0uCDKw75PZbzx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+BTW, it is possible for modules to be built at a different time than the
+kernel, and this code could show that. But it's not very useful anyway,
+so I agree.
 
-On Wed, Jan 08, 2014 at 08:36:03PM -0300, Ezequiel Garcia wrote:
-> Hi Rodolfo,
+> > This also eliminates the use of __DATE__ and
+> > __TIME__, which make the build non-deterministic.
+> > 
+> > Signed-off-by: Josh Triplett <josh@joshtriplett.org>
 > 
-> Sorry for being so unresponsive these days, I've been on vacation.
-> I'll review your patch on Monday.
-
-Ok.
-
-> In fact, already took a quick look and it looks good. I have a few
-> doubts:
+> (+cc Dinh Nguyen)
 > 
-> 1. Do we need the ECC layout? (MTD already provides defaults)
+> It looks good. :-)
+> Reviewed-by: Jingoo Han <jg1.han@samsung.com>
 
-Ok, I did some testes and we can safely remove it! :)
+Thanks. Pushed to l2-mtd.git.
 
-> 2. Is this compatible with Marvell's U-Boot? (can you write from U-Boot,
-> and read from Linux, and viceversa?)
-
-Till now all our tests are ok! :)
-
-Attached is the new patch release.
-
-Ciao,
-
-Rodolfo
-
--- 
-
-GNU/Linux Solutions                  e-mail: giometti@enneenne.com
-Linux Device Driver                          giometti@linux.it
-Embedded Systems                     phone:  +39 349 2432127
-UNIX programming                     skype:  rodolfo.giometti
-Freelance ICT Italia - Consulente ICT Italia - www.consulenti-ict.it
-
---zYM0uCDKw75PZbzx
-Content-Type: text/x-diff; charset=us-ascii
-Content-Disposition: attachment; filename="0001-mtd-pxa3xx_nand.c-add-support-for-2048-bytes-page-si.patch"
-
->From 4463f70a77f6aaea216b53e620171c37fb1d4eb3 Mon Sep 17 00:00:00 2001
-From: Rodolfo Giometti <giometti@linux.it>
-Date: Mon, 6 Jan 2014 16:18:49 +0100
-Subject: [PATCH] mtd pxa3xx_nand.c: add support for 2048 bytes page size
- layout
-
-Tested-by: Michele Dionisio <michele@cynny.com>
-Signed-off-by: Rodolfo Giometti <giometti@linux.it>
----
- drivers/mtd/nand/pxa3xx_nand.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 31aae53..fdc179c 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -1360,6 +1360,16 @@ static int pxa_ecc_init(struct pxa3xx_nand_info *info,
- 	 * Required ECC: 4-bit correction per 512 bytes
- 	 * Select: 16-bit correction per 2048 bytes
- 	 */
-+	} else if (strength == 4 && ecc_stepsize == 512 && page_size == 2048) {
-+		info->ecc_bch = 1;
-+		info->chunk_size = 2048;
-+		info->spare_size = 32;
-+		info->ecc_size = 32;
-+		ecc->mode = NAND_ECC_HW;
-+		ecc->size = info->chunk_size;
-+		ecc->strength = 16;
-+		return 1;
-+
- 	} else if (strength == 4 && ecc_stepsize == 512 && page_size == 4096) {
- 		info->ecc_bch = 1;
- 		info->chunk_size = 2048;
--- 
-1.8.1.2
-
-
---zYM0uCDKw75PZbzx--
+Brian
