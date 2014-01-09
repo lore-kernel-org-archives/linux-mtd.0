@@ -1,21 +1,22 @@
-From: Arnd Bergmann <arnd@arndb.de>
-To: boris brezillon <b.brezillon@overkiz.com>
-Subject: Re: [RFC PATCH 6/9] mtd: nand: add sunxi NFC dt bindings doc
-Date: Thu, 9 Jan 2014 11:00:57 +0100
-References: <1389190924-26226-1-git-send-email-b.brezillon@overkiz.com>
- <201401082228.55807.arnd@arndb.de> <52CE5E5A.6050209@overkiz.com>
-In-Reply-To: <52CE5E5A.6050209@overkiz.com>
+Message-ID: <52CE7C44.1000803@ti.com>
+Date: Thu, 9 Jan 2014 16:09:00 +0530
+From: Sekhar Nori <nsekhar@ti.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
+To: "ivan.khoronzhuk" <ivan.khoronzhuk@ti.com>, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH v3] ARM: davinci: aemif: get rid of davinci-nand driver
+ dependency on aemif
+References: <1386267092-18615-1-git-send-email-ivan.khoronzhuk@ti.com>
+ <52B18C44.2000305@ti.com> <52B1915A.7060309@ti.com> <52BC1BB8.2070007@ti.com>
+In-Reply-To: <52BC1BB8.2070007@ti.com>
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Message-Id: <201401091100.58174.arnd@arndb.de>
-Cc: devicetree@vger.kernel.org, Russell King <linux@arm.linux.org.uk>,
- linux-doc@vger.kernel.org, dev@linux-sunxi.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Rob Landley <rob@landley.net>,
- Grant Likely <grant.likely@linaro.org>,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, grygorii.strashko@ti.com,
+ linux@arm.linux.org.uk, pawel.moll@arm.com, swarren@wwwdotorg.org,
+ ijc+devicetree@hellion.org.uk, galak@kernel.crashing.org,
+ rob.herring@calxeda.com, linux-kernel@vger.kernel.org,
+ Santosh Shilimkar <santosh.shilimkar@ti.com>, Rob Landley <rob@landley.net>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,18 +26,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 09 January 2014, boris brezillon wrote:
-> Sure, I'll remove references to the NFC acronym:
->   - change compatible string to "allwinner,sun4i-nand"
->   - avoid NFC references in the doc
->   - rename the driver into sunxi-nand.c (formerly sunxi_nfc.c)
+On Thursday 26 December 2013 05:36 PM, ivan.khoronzhuk wrote:
+> On 12/18/2013 02:13 PM, Sekhar Nori wrote:
+>> On Wednesday 18 December 2013 05:21 PM, ivan.khoronzhuk wrote:
+>>> Hi, Sekhar
+>>>
+>>> This patch is based on "Reuse davinci-nand driver for Keystone arch"
+>>> series.
+>>> The series has passed review at https://lkml.org/lkml/2013/12/17/241
+>>> and can be found at http://git.infradead.org/l2-mtd.git
+>>>
+>>> This patch can be still applied on top of the series without conflicts.
+>>>
+>>> Can you please pick up the $subject patch if you are OK with it?
+>>
+>> I have no problems with the patch and can pick it too, but need ack from
+>> MTD maintainer (David) as it touches drivers/mtd/ too.
+>>
+>> David,
+>>
+>> If you do not have the patch, we can resend it.
+>>
+>> Thanks,
+>> Sekhar
+>>
 > 
-> Do you see any other references to this acronym ?
+> Hi Brian,
 > 
+> Do you agree if this patch will go through Davinci tree?
+> 
+> This is the last one we need to reuse Davinci Nand driver for Keystone.
 
-Those are the important ones, thanks!
+Since we never got an ack from MTD folks, I am going and go ahead and
+try pushing this through ARM-SoC regardless. I will CC the MTD
+maintainers on the pull request so any objections could even be posted
+there.
 
-Regarding the binding, I would mention nfc once there to help people
-that happen to look for that.
-
-	Arnd
+Thanks,
+Sekhar
