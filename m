@@ -1,19 +1,29 @@
-Received: from ch1ehsobe005.messaging.microsoft.com ([216.32.181.185]
- helo=ch1outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W1AK3-00044q-IX
- for linux-mtd@lists.infradead.org; Thu, 09 Jan 2014 07:46:36 +0000
-From: Huang Shijie <b32955@freescale.com>
-To: <dwmw2@infradead.org>
-Subject: [PATCH] mtd: gpmi: fix the bitflips for erased page
-Date: Thu, 9 Jan 2014 15:11:54 +0800
-Message-ID: <1389251514-30153-1-git-send-email-b32955@freescale.com>
-In-Reply-To: <1388784439-23004-1-git-send-email-eliedebrauwer@gmail.com>
-References: <1388784439-23004-1-git-send-email-eliedebrauwer@gmail.com>
+Received: from 5.mo3.mail-out.ovh.net ([87.98.178.36]
+ helo=mo3.mail-out.ovh.net)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W1B2J-0004yc-0M
+ for linux-mtd@lists.infradead.org; Thu, 09 Jan 2014 08:32:22 +0000
+Received: from mail408.ha.ovh.net (b6.ovh.net [213.186.33.56])
+ by mo3.mail-out.ovh.net (Postfix) with SMTP id A0F3AFFB054
+ for <linux-mtd@lists.infradead.org>; Thu,  9 Jan 2014 09:31:54 +0100 (CET)
+Message-ID: <52CE5E5A.6050209@overkiz.com>
+Date: Thu, 09 Jan 2014 09:31:22 +0100
+From: boris brezillon <b.brezillon@overkiz.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- eliedebrauwer@gmail.com, Huang Shijie <b32955@freescale.com>
+To: Arnd Bergmann <arnd@arndb.de>, linux-arm-kernel@lists.infradead.org
+Subject: Re: [RFC PATCH 6/9] mtd: nand: add sunxi NFC dt bindings doc
+References: <1389190924-26226-1-git-send-email-b.brezillon@overkiz.com>
+ <1389190924-26226-7-git-send-email-b.brezillon@overkiz.com>
+ <201401082228.55807.arnd@arndb.de>
+In-Reply-To: <201401082228.55807.arnd@arndb.de>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: devicetree@vger.kernel.org, Russell King <linux@arm.linux.org.uk>,
+ linux-doc@vger.kernel.org, dev@linux-sunxi.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Rob Landley <rob@landley.net>,
+ Grant Likely <grant.likely@linaro.org>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,113 +33,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We may meet the bitflips in reading an erased page(contains all 0xFF),
-this may causes the UBIFS corrupt, please see the log from Elie:
+On 08/01/2014 22:28, Arnd Bergmann wrote:
+> On Wednesday 08 January 2014, Boris BREZILLON wrote:
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/mtd/sunxi-nand.txt
+>> @@ -0,0 +1,71 @@
+>> +Allwinner NAND Flash Controller (NFC)
+>> +
+>> +Required properties:
+>> +- compatible : "allwinner,sun4i-nfc".
+>> +- reg : shall contain registers location and length for data and reg.
+>> +- interrupts : shall define the NFC interrupt.
+>> +- #address-cells: shall be set to 1. Encode the nand CS.
+>> +- #size-cells : shall be set to 0.
+>> +- clocks : shall reference NFC clocks.
+>> +- clock-names : NFC internal clock names. Shall contain :
+>> +    * "ahb_clk" : AHB gating clock
+>> +    * "sclk" : NFC clock
+>> +
+> One small request: Can we try to avoid the "NFC" name here? I think it's
+> too overloaded and people may confuse it with near-field communication,
+> which I'm sure will be supported in sunxi based devices at some point.
+>
+> It doesn't hurt to also mention that the function block is called
+> nfc, but I think references to it are better named "nand", which is
+> less confusing.
 
------------------------------------------------------------------
-[    3.831323] UBI warning: ubi_io_read: error -74 (ECC error) while reading 16384 bytes from PEB 443:245760, read only 16384 bytes, retry
-[    3.845026] UBI warning: ubi_io_read: error -74 (ECC error) while reading 16384 bytes from PEB 443:245760, read only 16384 bytes, retry
-[    3.858710] UBI warning: ubi_io_read: error -74 (ECC error) while reading 16384 bytes from PEB 443:245760, read only 16384 bytes, retry
-[    3.872408] UBI error: ubi_io_read: error -74 (ECC error) while reading 16384 bytes from PEB 443:245760, read 16384 bytes
-...
-[    4.011529] UBIFS error (pid 36): ubifs_recover_leb: corrupt empty space LEB 27:237568, corruption starts at 9815
-[    4.021897] UBIFS error (pid 36): ubifs_scanned_corruption: corruption at LEB 27:247383
-[    4.030000] UBIFS error (pid 36): ubifs_scanned_corruption: first 6569 bytes from LEB 27:247383
------------------------------------------------------------------
+Sure, I'll remove references to the NFC acronym:
+  - change compatible string to "allwinner,sun4i-nand"
+  - avoid NFC references in the doc
+  - rename the driver into sunxi-nand.c (formerly sunxi_nfc.c)
 
-This patch does a check for the uncorrectable failure in the following steps:
+Do you see any other references to this acronym ?
 
-   [0] set the threshold.
-       The threshold is set based on the truth:
-         "A single 0 bit will lead to gf_len(13 or 14) bits 0 after the BCH
-          do the ECC."
 
-       For the sake of safe, we will set the threshold with half the gf_len, and
-       do not make it bigger the ECC strength.
+Best Regards,
 
-   [1] count the bitflips of the current ECC chunk, assume it is N.
-
-   [2] if the (N < threshold) is true, we continue to read out the page with
-       ECC disabled. and we count the bitflips again, assume it is N2.
-
-   [3] if the (N2 < threshold) is true again, we can regard this is a erased
-       page.
-
-   [4] if the [3] fails, we can regard this is a page filled with the '0xFF'
-       data.
-
-Reported-by: Elie De Brauwer <eliedebrauwer@gmail.com>
-Signed-off-by: Huang Shijie <b32955@freescale.com>
----
-Hi Elie:
-   could you please test this patch.
-
-   thx.
----
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   44 ++++++++++++++++++++++++++++++++
- 1 files changed, 44 insertions(+), 0 deletions(-)
-
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index e2f5820..e39443e 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -958,6 +958,45 @@ static void block_mark_swapping(struct gpmi_nand_data *this,
- 	p[1] = (p[1] & mask) | (from_oob >> (8 - bit));
- }
- 
-+static bool gpmi_erased_check(struct gpmi_nand_data *this,
-+			unsigned char *data, unsigned int chunk, int page)
-+{
-+	struct nand_chip *chip = &this->nand;
-+	struct mtd_info	*mtd = &this->mtd;
-+	struct bch_geometry *geo = &this->bch_geometry;
-+	int base = geo->ecc_chunk_size * chunk;
-+	unsigned int flip_bits = 0;
-+	uint8_t *buf = this->data_buffer_dma;
-+	unsigned int threshold;
-+	int i;
-+
-+	threshold = geo->gf_len / 2;
-+	if (threshold > geo->ecc_strength)
-+		threshold = geo->ecc_strength;
-+
-+	/* Count bitflips */
-+	for (i = 0; i < geo->ecc_chunk_size; i++)
-+		flip_bits += hweight8(~data[base + i]);
-+
-+	if (flip_bits < threshold) {
-+		dev_dbg(this->dev, "check for the erased page:%d, chunk:%d\n",
-+				page, chunk);
-+		flip_bits = 0;
-+		memset(buf, 0, geo->payload_size);
-+
-+		/* read out the page without ECC enabled, and check it again. */
-+		chip->cmdfunc(mtd, NAND_CMD_READ0, 0, page);
-+		chip->read_buf(mtd, buf, geo->payload_size);
-+
-+		for (i = 0; i < geo->payload_size; i++)
-+			flip_bits += hweight8(~buf[i]);
-+
-+		if (flip_bits < threshold)
-+			return true;
-+	}
-+	return false;
-+}
-+
- static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 				uint8_t *buf, int oob_required, int page)
- {
-@@ -1007,6 +1046,11 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 			continue;
- 
- 		if (*status == STATUS_UNCORRECTABLE) {
-+			if (gpmi_erased_check(this, payload_virt, i, page)) {
-+				memset(payload_virt, 0xff,
-+						nfc_geo->payload_size);
-+				break;
-+			}
- 			mtd->ecc_stats.failed++;
- 			continue;
- 		}
--- 
-1.7.2.rc3
+Boris
+> 	Arnd
