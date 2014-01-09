@@ -1,20 +1,17 @@
-Received: from 71-19-161-253.dedicated.allstream.net ([71.19.161.253]
- helo=nsa.nbspaymentsolutions.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W1M0S-0008HX-Oy
- for linux-mtd@lists.infradead.org; Thu, 09 Jan 2014 20:15:09 +0000
-From: Bill Pringlemeir <bpringlemeir@nbsps.com>
-To: b32955@freescale.com (Huang Shijie)
-Subject: Re: [PATCH] mtd: gpmi: fix the bitflips for erased page
-References: <1388784439-23004-1-git-send-email-eliedebrauwer@gmail.com>
- <1389251514-30153-1-git-send-email-b32955@freescale.com>
-Date: Thu, 09 Jan 2014 15:08:08 -0500
-In-Reply-To: <1389251514-30153-1-git-send-email-b32955@freescale.com> (Huang
- Shijie's message of "Thu, 9 Jan 2014 15:11:54 +0800")
-Message-ID: <87ppo09avr.fsf@nbsps.com>
+Received: from mail-lb0-f179.google.com ([209.85.217.179])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W1NR5-0001if-LE
+ for linux-mtd@lists.infradead.org; Thu, 09 Jan 2014 21:46:44 +0000
+Received: by mail-lb0-f179.google.com with SMTP id w7so2722728lbi.24
+ for <linux-mtd@lists.infradead.org>; Thu, 09 Jan 2014 13:46:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-mtd@lists.infradead.org
+Sender: chris@chrisdavid.com
+Date: Thu, 9 Jan 2014 13:40:22 -0800
+Message-ID: <CAFVsH1KmNrvect1B8BdR6vYRU8_pXwYha7cdNBkmGyZ4JHp40g@mail.gmail.com>
+Subject: 6 second sleep required for file sync?
+From: Chris David <cd@chrisdavid.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,37 +21,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On  9 Jan 2014, b32955 at freescale.com wrote:
+Hello,
 
-> ---
-> drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 44 ++++++++++++++++++++++++++++++++
-> 1 files changed, 44 insertions(+), 0 deletions(-)
+I am noticing some odd behavior that seems inconsistent with at least
+some of the UBIFS documentation.
 
-[snip]
+When unpacking an UBI image, it seems that an operation like "sync ;
+sleep 6 ; sync" is required in order to synchronize all the files to
+flash.  After simply changing the 6 to a 5, and then after cutting
+power after the second sleep, truncated files are observed, including
+both 0 length files, and some that are just missing contents toward
+the end.
 
-> +	if (flip_bits < threshold) {
+It seems this could be an artifact of the UBI write back buffer.  The
+timing seems sensitive around 5 seconds, and this happens to be the
+maximum time on the UBI write back buffer flush.
 
-Isn't it "if (flip_bits <= threshold)"?
+None the less, it is surprising more than a single sync is required to
+flush all the files, based on my interpretation of the documentation
+and FAQ.
 
-> +		dev_dbg(this->dev, "check for the erased page:%d, chunk:%d\n",
-> +				page, chunk);
-> +		flip_bits = 0;
-> +		memset(buf, 0, geo->payload_size);
-> +
-> +		/* read out the page without ECC enabled, and check it again. */
-> +		chip->cmdfunc(mtd, NAND_CMD_READ0, 0, page);
-> +		chip->read_buf(mtd, buf, geo->payload_size);
-> +
-> +		for (i = 0; i < geo->payload_size; i++)
-> +			flip_bits += hweight8(~buf[i]);
-> +
-> +		if (flip_bits < threshold)
+Is this a known or expected behavior?  Or could it possibly be a bug?
 
-Perhaps the same?  At least 'strength' means the number of correctable
-bit flips; or maybe you have multiple buffers?  It is just the boundary
-of when an erase page is about to go bad, which might be hard to see
-through testing?  I have the same issue with the Vybrid NFC and ECC, so
-I maybe copying your code.
+And what I really want to know is, could the 6 second sleep and
+additional sleep be required during the data synchronization step when
+doing a POSIX atomic file operation?  Or is this odd behavior specific
+to unpacking a UBIFS image?  I can say I have only observed this
+behavior while unpacking a UBIFS image so far.
+
+I'm not subscribed to the email list, please reply to me directly.
 
 Thanks,
-Bill Pringlemeir.
+
+Chris David
