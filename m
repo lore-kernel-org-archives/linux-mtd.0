@@ -1,15 +1,16 @@
-Received: from snt0-omc1-s23.snt0.hotmail.com ([65.55.90.34])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W1Jp9-0004oi-KB
- for linux-mtd@lists.infradead.org; Thu, 09 Jan 2014 17:55:20 +0000
-Message-ID: <SNT149-W18FE0A877110C186A4B70184B00@phx.gbl>
-From: C J <ccs_dba@hotmail.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: ubiattach error
-Date: Thu, 9 Jan 2014 10:54:57 -0700
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <52CEF107.3090507@ti.com>
+Date: Fri, 10 Jan 2014 00:27:11 +0530
+From: sourav <sourav.poddar@ti.com>
 MIME-Version: 1.0
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH] fs: jffs2: Add setup code for spi nor flash.
+References: <1386566075-28107-1-git-send-email-sourav.poddar@ti.com>
+ <20140109161630.GB28655@norris-Latitude-E6410>
+In-Reply-To: <20140109161630.GB28655@norris-Latitude-E6410>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, George Cherian <george.cherian@ti.com>,
+ dwmw2@infradead.org, balbi@ti.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,93 +20,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I have a small 'ARMv7 Processor rev 2 (v7l)' powered box running Ubuntu 10.=
-04 LTS with kernel 2.6.37=A0 The environment is a squashfs rootfs with a sm=
-all RW config area:=0A=
-=0A=
-# df=0A=
-Filesystem=A0=A0=A0=A0=A0=A0 1K-blocks=A0=A0=A0=A0=A0 Used Available Use% M=
-ounted on=0A=
-/dev/mtdblock11=A0=A0=A0=A0 246664=A0=A0=A0 246664=A0=A0=A0=A0=A0=A0=A0=A0 =
-0 100% /=0A=
-ubi1_0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 6648=A0=A0=A0=A0=A0=A0 =
-100=A0=A0=A0=A0=A0 6548=A0=A0 2% /.profile=0A=
-=0A=
-The box boots and operates without problems=2C however I am trying to acces=
-s some of the /dev/mtd devices but receive errors when trying to attach:=0A=
-=0A=
-# /usr/sbin/ubiattach /dev/ubi_ctrl -m 3=0A=
-=0A=
-[2335587.812500] UBI: attaching mtd3 to ubi2=0A=
-[2335587.812500] UBI: physical eraseblock size:=A0=A0 131072 bytes (128 KiB=
-)=0A=
-[2335587.812500] UBI: logical eraseblock size:=A0=A0=A0 129024 bytes=0A=
-[2335587.812500] UBI: smallest flash I/O unit:=A0=A0=A0 2048=0A=
-[2335587.812500] UBI: sub-page size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
- 512=0A=
-[2335587.812500] UBI: VID header offset:=A0=A0=A0=A0=A0=A0=A0=A0=A0 512 (al=
-igned 512)=0A=
-[2335587.812500] UBI: data offset:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0 2048=0A=
-[2335587.820312] UBI: max. sequence number:=A0=A0=A0=A0=A0=A0 0=0A=
-[2335587.820312] UBI error: ubi_read_volume_table: the layout volume was no=
-t found=0A=
-=0A=
-Some devices I can access=2C but most I cannot.=A0 Example: /dev/mtd10 I ca=
-n attach to but not /dev/mtd5=0A=
-=0A=
-# /usr/sbin/mtdinfo /dev/mtd10 -u=0A=
-mtd10=0A=
-Name:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0 backup=0A=
-Type:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0 nand=0A=
-Eraseblock size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 131072 bytes=
-=2C 128.0 KiB=0A=
-Amount of eraseblocks:=A0=A0=A0=A0=A0=A0=A0=A0=A0 320 (41943040 bytes=2C 40=
-.0 MiB)=0A=
-Minimum input/output unit size: 2048 bytes=0A=
-Sub-page size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 512 bytes=
-=0A=
-OOB size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
- 64 bytes=0A=
-Character device major/minor:=A0=A0 90:20=0A=
-Bad blocks are allowed:=A0=A0=A0=A0=A0=A0=A0=A0 true=0A=
-Device is writable:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 true=0A=
-Default UBI VID header offset:=A0 512=0A=
-Default UBI data offset:=A0=A0=A0=A0=A0=A0=A0 2048=0A=
-Default UBI LEB size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 129024 bytes=2C 126.0 K=
-iB=0A=
-Maximum UBI volumes count:=A0=A0=A0=A0=A0 128=0A=
-=0A=
-# /usr/sbin/mtdinfo /dev/mtd5 -u=0A=
-mtd5=0A=
-Name:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0 initrd=0A=
-Type:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0 nand=0A=
-Eraseblock size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 131072 bytes=
-=2C 128.0 KiB=0A=
-Amount of eraseblocks:=A0=A0=A0=A0=A0=A0=A0=A0=A0 96 (12582912 bytes=2C 12.=
-0 MiB)=0A=
-Minimum input/output unit size: 2048 bytes=0A=
-Sub-page size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 512 bytes=
-=0A=
-OOB size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
- 64 bytes=0A=
-Character device major/minor:=A0=A0 90:10=0A=
-Bad blocks are allowed:=A0=A0=A0=A0=A0=A0=A0=A0 true=0A=
-Device is writable:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 true=0A=
-Default UBI VID header offset:=A0 512=0A=
-Default UBI data offset:=A0=A0=A0=A0=A0=A0=A0 2048=0A=
-Default UBI LEB size:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 129024 bytes=2C 126.0 K=
-iB=0A=
-Maximum UBI volumes count:=A0=A0=A0=A0=A0 128=0A=
-=0A=
-Installed utilities are version 1.4.5=0A=
-=0A=
-Looking for help to find out why I can't attach..=0A=
-=0A=
-Thanks=2C=0A=
-=0A=
--Craig 		 	   		  =
+On Thursday 09 January 2014 09:46 PM, Brian Norris wrote:
+> On Mon, Dec 09, 2013 at 10:44:35AM +0530, Sourav Poddar wrote:
+>> Flash need to be setup, while using it for Jffs2 filesystem.
+>> The setup code checks was not present for serial flash like
+>> m25p80. As a result of which, internal pointers/buffers are in unknown
+>> state. This leads to
+>> a. dumps like below[1] while mounting a jffs2 filesystem.
+>> b. Hang while doing a mount second time.
+>>
+>> [1]:
+>> root@am437x-evm:~# sync
+>> [   84.112640] INFO: trying to register non-static key.
+>> [   84.117553] the code is fine but needs lockdep annotation.
+>> [   84.122985] turning off the locking correctness validator.
+>> [   84.128417] CPU: 0 PID: 1289 Comm: sync Not tainted 3.12.0-67367-g2d1978c-dirty #18
+>> [   84.136016] [<c001bcb8>] (unwind_backtrace+0x0/0xf0) from [<c0017dd0>] (show_stack+0x10/0x14)
+>> [   84.144439] [<c0017dd0>] (show_stack+0x10/0x14) from [<c05a69c8>] (dump_stack+0x78/0x94)
+>> [   84.152465] [<c05a69c8>] (dump_stack+0x78/0x94) from [<c009e2e0>] (__lock_acquire+0x1788/0x1b8c)
+>> [   84.161132] [<c009e2e0>] (__lock_acquire+0x1788/0x1b8c) from [<c009ec30>] (lock_acquire+0x9c/0x104)
+>> [   84.170104] [<c009ec30>] (lock_acquire+0x9c/0x104) from [<c005ede8>] (flush_work+0x38/0x78)
+>> [   84.178375] [<c005ede8>] (flush_work+0x38/0x78) from [<c005eef0>] (__cancel_work_timer+0x84/0x124)
+>> [   84.187225] [<c005eef0>] (__cancel_work_timer+0x84/0x124) from [<c024c1d4>] (jffs2_sync_fs+0x14/0x38)
+>> [   84.196380] [<c024c1d4>] (jffs2_sync_fs+0x14/0x38) from [<c013c138>] (sync_fs_one_sb+0x28/0x2c)
+>> [   84.204986] [<c013c138>] (sync_fs_one_sb+0x28/0x2c) from [<c0115360>] (iterate_supers+0xb0/0xd8)
+>> [   84.213684] [<c0115360>] (iterate_supers+0xb0/0xd8) from [<c013c228>] (sys_sync+0x3c/0x98)
+>> [   84.221862] [<c013c228>] (sys_sync+0x3c/0x98) from [<c0013dc0>] (ret_fast_syscall+0x0/0x48)
+>>
+>> The patch fixes the above two issue.
+> Are you sure this symptom is caused by the cause you note? It doesn't
+> quite seem obvious to me, but I suppose uninitialized buffers/pointers
+> can cause a wide range of issues.
+Yes, i tried this few times with and w/o this patch and see this. Code
+tracing points to this particular area where buffer remain uninitiatised.
+>
+>> Signed-off-by: Sourav Poddar<sourav.poddar@ti.com>
+>> Signed-off-by: George Cherian<george.cherian@ti.com>
+>> ---
+>>   fs/jffs2/fs.c       |    7 +++++++
+>>   fs/jffs2/os-linux.h |    2 ++
+>>   2 files changed, 9 insertions(+), 0 deletions(-)
+>>
+>> diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
+>> index fe3c052..02003f0 100644
+>> --- a/fs/jffs2/fs.c
+>> +++ b/fs/jffs2/fs.c
+>> @@ -725,6 +725,13 @@ static int jffs2_flash_setup(struct jffs2_sb_info *c) {
+>>   			return ret;
+>>   	}
+>>
+>> +	/* m25p80 spi flash */
+>> +	if (jffs2_nor_spi_wbuf_flash(c)) {
+>> +		ret = jffs2_nor_wbuf_flash_setup(c);
+> If you add this, you need to add the corresponding cleanup
+> (jffs2_nor_wbuf_flash_cleanup()) in jffs2_flash_cleanup().
+Ok. will do.
+>
+>> +		if (ret)
+>> +			return ret;
+>> +	}
+>> +
+>>   	/* and an UBI volume */
+>>   	if (jffs2_ubivol(c)) {
+>>   		ret = jffs2_ubivol_setup(c);
+>> diff --git a/fs/jffs2/os-linux.h b/fs/jffs2/os-linux.h
+>> index d200a9b..09ba999 100644
+>> --- a/fs/jffs2/os-linux.h
+>> +++ b/fs/jffs2/os-linux.h
+>> @@ -134,6 +134,8 @@ int jffs2_ubivol_setup(struct jffs2_sb_info *c);
+>>   void jffs2_ubivol_cleanup(struct jffs2_sb_info *c);
+>>
+>>   #define jffs2_nor_wbuf_flash(c) (c->mtd->type == MTD_NORFLASH&&  ! (c->mtd->flags&  MTD_BIT_WRITEABLE))
+>> +#define jffs2_nor_spi_wbuf_flash(c) \
+>> +	(c->mtd->type == MTD_NORFLASH&&  (c->mtd->flags&  MTD_CAP_NORFLASH))
+> How is this check distinct from the existing jffs2_nor_wbuf_flash()
+> check? Is m25p80 bit-writeable? IOW, are you sure that the following
+> code doesn't alread cover m25p80?
+Yes, m25p80 supports CAP_NORFLASH which is WRITEABLE | BIT_WRITEABLE,
+while the below Intel code will make the condition false by ! and we spi 
+flash
+setup will not take place. Hence, we need a new #define for spi flash.
+
+> 	/* and Intel "Sibley" flash */
+> 		if (jffs2_nor_wbuf_flash(c)) {
+> 		...
+>
+>>   int jffs2_nor_wbuf_flash_setup(struct jffs2_sb_info *c);
+>>   void jffs2_nor_wbuf_flash_cleanup(struct jffs2_sb_info *c);
+>>   void jffs2_dirty_trigger(struct jffs2_sb_info *c);
+> Brian
