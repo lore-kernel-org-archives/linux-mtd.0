@@ -1,31 +1,26 @@
-Received: from mailout.micron.com ([137.201.242.129])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W14XL-0007YW-8h
- for linux-mtd@lists.infradead.org; Thu, 09 Jan 2014 01:35:56 +0000
-From: =?utf-8?B?UWkgV2FuZyDnjovotbcgKHFpd2FuZyk=?= <qiwang@micron.com>
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>
-Subject: RE: [PATCH 1/1]  MTD: UBI:  avoid program operation on  NOR flash
- after erasure interrupted
-Date: Thu, 9 Jan 2014 01:35:24 +0000
-Message-ID: <71CF8D7F32C5C24C9CD1D0E02D52498A770C7770@NTXXIAMBX02.xacn.micron.com>
-References: <71CF8D7F32C5C24C9CD1D0E02D52498A770B54B1@NTXXIAMBX02.xacn.micron.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A770B68A8@NTXXIAMBX02.xacn.micron.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A770B6F77@NTXXIAMBX02.xacn.micron.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A770B79C8@NTXXIAMBX02.xacn.micron.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A770B8611@NTXXIAMBX02.xacn.micron.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A770BA389@NTXXIAMBX02.xacn.micron.com>
- <1388675460.25123.90.camel@sauron.fi.intel.com>
- <1388676172.25123.93.camel@sauron.fi.intel.com>
- <71CF8D7F32C5C24C9CD1D0E02D52498A770BA889@NTXXIAMBX02.xacn.micron.com>
- <1388728253.25123.98.camel@sauron.fi.intel.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from va3ehsobe010.messaging.microsoft.com ([216.32.180.30]
+ helo=va3outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W15SQ-00006Y-Fs
+ for linux-mtd@lists.infradead.org; Thu, 09 Jan 2014 02:34:55 +0000
+Date: Thu, 9 Jan 2014 10:00:19 +0800
+From: Huang Shijie <b32955@freescale.com>
+To: Elie De Brauwer <eliedebrauwer@gmail.com>
+Subject: Re: [PATCH v0] mtd: gpmi: Use cached syndromes to speedup erased
+ region bitflip detection.
+Message-ID: <20140109020017.GA26102@shlinux2.ap.freescale.net>
+References: <1389123873-30663-1-git-send-email-eliedebrauwer@gmail.com>
+ <20140108053816.GA28424@shlinux2.ap.freescale.net>
+ <CAGWqfigWXs+0nJzxQMh6umhrm1bA5YUWbZmXmj7=aut3HsaAcA@mail.gmail.com>
 MIME-Version: 1.0
-Cc: =?utf-8?B?UWkgV2FuZyDnjovotbcgKHFpd2FuZyk=?= <qiwang@micron.com>,
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CAGWqfigWXs+0nJzxQMh6umhrm1bA5YUWbZmXmj7=aut3HsaAcA@mail.gmail.com>
+Cc: Huang Shijie <shijie8@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Adrian Hunter <adrian.hunter@intel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,24 +30,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgQXJ0ZW06DQpEbyB5b3UgaGF2ZSBhbnkgc3VnZ2VzdGlvbiBmb3IgbXkgbW9kaWZpY2F0aW9u
-Pw0KT3RoZXIgY29kZSBJIHRoaW5rIGl0IGlzIG9rLg0KVGhhbmtzDQoNCg0KLS0tLS1PcmlnaW5h
-bCBNZXNzYWdlLS0tLS0NCkZyb206IFFpIFdhbmcg546L6LW3IChxaXdhbmcpIA0KU2VudDogTW9u
-ZGF5LCBKYW51YXJ5IDA2LCAyMDE0IDE6MTEgUE0NClRvOiAnZGVkZWtpbmQxQGdtYWlsLmNvbScN
-CkNjOiBBZHJpYW4gSHVudGVyOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBsaW51eC1t
-dGRAbGlzdHMuaW5mcmFkZWFkLm9yZw0KU3ViamVjdDogUkU6IFtQQVRDSCAxLzFdIE1URDogVUJJ
-OiBhdm9pZCBwcm9ncmFtIG9wZXJhdGlvbiBvbiBOT1IgZmxhc2ggYWZ0ZXIgZXJhc3VyZSBpbnRl
-cnJ1cHRlZA0KDQo+UGxlYXNlLCByZW1lbWJlciB0aGF0IEkgcHVzaGVkIHlvdXIgcGF0Y2ggdG8g
-YSB0ZW1wb3JhcnkgYnJhbmNoLCBvbmx5DQo+Zm9yIHlvdSB0byBiZSBhYmxlIHRvIGVhc2lseSBw
-aWNrIGl0LiBJIGRvIG5vdCBzZW5kIGl0IHVwc3RyZWFtLg0KDQo+QXMgSSBzYWlkLCBJIG5lZWQg
-dG8geW91IGxvb2sgYXQgaXQgYW5kIGNvbmZpcm0gdGhhdCBpdCBpcyBhbGwtcmlnaHQuDQo+QW5k
-IGlmIGl0IGlzIG5vdCBhbGwtcmlnaHQsIGNvcnJlY3QgaXQuDQoNCj5UaGlzIGlzIGJlY2F1c2Ug
-SSBtb2RpZmllZCBpdCBteXNlbGYuDQoNCj5TbyB3YWl0aW5nIGZvciB5b3VyIHJlc3BvbnNlIG9u
-IHRoaXMuDQpJIGNoZWNrZWQgdGhlIGNvZGUgeW91IG1vZGlmaWVkLCBjb21waWxlLCBhbmQgcnVu
-IG9uIG91ciBwbGF0Zm9ybSwgaXQgaXMgb2suDQoNCisJdWJpX2VycigiY2Fubm90IGludmFsaWRh
-dGUgUEVCICVkLCB3cml0ZSByZXR1cm5lZCAlZCB3cml0ZSByZXR1cm5lZCAlZCIsDQorCQlwbnVt
-LCBlcnIsIGVycik7IA0KDQpCdXQgSSB0aGluayBhYm92ZSBjb2RlIHByaW50ICJ3cml0ZSBlcnIi
-IHR3aWNlLiBzbyBJIHN1Z2dlc3QgdG8gY2hhbmdlIHRvIGJlbG93Og0KDQorCXViaV9lcnIoImNh
-bm5vdCBpbnZhbGlkYXRlIFBFQiAlZCwgd3JpdGUgcmV0dXJuZWQgJWQiLCBwbnVtLCBlcnIpOw0K
-IA0KSSB3aWxsIHNlbmQgeW91IHRoZSBwYXRjaCBpbiBhbm90aGVyIGVtYWlsIGNvbnZlbmllbnQg
-Zm9yIHlvdSB0byBhcHBseSBwYXRjaC4NClRoYW5rcw0KLS0NCnFpd2FuZyANCg==
+On Wed, Jan 08, 2014 at 08:52:35AM +0100, Elie De Brauwer wrote:
+> >> I did some benchmarking on the following 2k and 4k nand chips:
+> >> NAND device: Manufacturer ID: 0x2c, Chip ID: 0xdc (Micron MT29F4G08ABAEAH4), 512MiB, page size: 4096, OOB size: 224
+> >> NAND device: Manufacturer ID: 0x2c, Chip ID: 0xda (Micron MT29F2G08ABAEAH4), 256MiB, page size: 2048, OOB size: 64
+> >>
+> >> By simply doing time dd if=/dev/mtd8 of=/dev/null bs=1M and calculating
+> >> the throughput (in megabyte/s). This gave the following results:
+> >>
+> >> 2k  |4k
+> >> ========
+> >> 7.0 |11.3 <- v6 of the bitflips correction path (broken fast path)
+> >> 4.7 |5.9  <- v7 of the bitflip correction patch (no fast path)
+> >> 5.9 |8.4  <- with this patch applied.
+> >>
+> > thanks for the new patch.
+> >
+> > I suddenly think out a new solution about this issue:
+> >   [1] when the bitflip occurs, the BCH will tells up the uncorrectable,
+> >   [2] if we catch a uncorrectable error, we could check the whole buffer, and
+> >       count the number of the bitflips. Assume we get the bitflips is N.
+> >
+> >   [3] if N is < (gf_len ), we could think this is a erased page, and call the
+> >       memset to the whole buffer, and tell the upper layer that this is a good
+> >       empty page.
+> >
+> >   [4] since the [1] is very rare, i think this method is much faster then the
+> >       current solution.
+> >
+> > the patch is something like this:
+> 
+> What you suggest will obviously be able to reach the maximum speed,
+> I've been playing with a similar idea too but always bumped into the issue
+> that you cannot know whether or not a page is actually an erased page or
+> not. In your solution for example you cannot distinguish between:
+> - an erased page which suffers from bitflips
+> - a genuine uncorrectable page whose original contents may be close to
+> all 0xff's, but only has a handful of bits set to 0.
+
+In actually, we do have a method to distinguish the two cases:
+
+  If [3] is met, we could read the page out without ECC enabled, and check
+  the bitflips again. such as:
+  
+  <1> if [3] is met, read out the page again without the ECC enabled.
+      and check the bitflips with this new page, assume we get N2.
+  <2> if it is a erased page, the N2 will less then gf_len.
+
+  <3> if it is a page full of 0xff(only servel bits set to 0), the N2 will
+      greater then gf_len.
+
+
+I will give a patch later, and you can test it.
+
+thanks
+Huang Shijie
+    
