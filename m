@@ -1,24 +1,24 @@
-Received: from mail-we0-x22e.google.com ([2a00:1450:400c:c03::22e])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W1Itv-0003Ec-W4
- for linux-mtd@lists.infradead.org; Thu, 09 Jan 2014 16:56:13 +0000
-Received: by mail-we0-f174.google.com with SMTP id q58so3001072wes.19
- for <linux-mtd@lists.infradead.org>; Thu, 09 Jan 2014 08:55:49 -0800 (PST)
-Date: Thu, 9 Jan 2014 08:55:41 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Jingoo Han <jg1.han@samsung.com>
-Subject: Re: [PATCH 1/7] mtd: denali: Drop print of build date/time
-Message-ID: <20140109165541.GD28655@norris-Latitude-E6410>
-References: <cover.1387833347.git.josh@joshtriplett.org>
- <21175198efaf34a67e5108c1dae384656012b7a0.1387833347.git.josh@joshtriplett.org>
- <000801cf0213$f40bec50$dc23c4f0$%han@samsung.com>
+Date: Thu, 9 Jan 2014 10:35:05 -0700
+From: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
+To: boris brezillon <b.brezillon@overkiz.com>
+Subject: Re: [RFC PATCH 3/9] of: mtd: add NAND timings retrieval support
+Message-ID: <20140109173505.GB8899@obsidianresearch.com>
+References: <1389190924-26226-1-git-send-email-b.brezillon@overkiz.com>
+ <1389190924-26226-4-git-send-email-b.brezillon@overkiz.com>
+ <20140108183418.GA12358@obsidianresearch.com>
+ <52CDA032.3010804@overkiz.com>
+ <20140108191339.GB12358@obsidianresearch.com>
+ <52CE5F82.6070802@overkiz.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <000801cf0213$f40bec50$dc23c4f0$%han@samsung.com>
-Cc: linux-mtd@lists.infradead.org, 'David Woodhouse' <dwmw2@infradead.org>,
- 'Josh Triplett' <josh@joshtriplett.org>, 'Dinh Nguyen' <dinguyen@altera.com>,
- linux-kernel@vger.kernel.org
+In-Reply-To: <52CE5F82.6070802@overkiz.com>
+Cc: devicetree@vger.kernel.org, Russell King <linux@arm.linux.org.uk>,
+ linux-doc@vger.kernel.org, dev@linux-sunxi.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Rob Landley <rob@landley.net>,
+ Grant Likely <grant.likely@linaro.org>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,26 +28,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 26, 2013 at 05:24:53PM +0900, Jingoo Han wrote:
-> On Tuesday, December 24, 2013 6:55 AM, Josh Triplett wrote:
-> > 
-> > The kernel already has this information, and individual drivers
-> > shouldn't duplicate that.
+On Thu, Jan 09, 2014 at 09:36:18AM +0100, boris brezillon wrote:
 
-BTW, it is possible for modules to be built at a different time than the
-kernel, and this code could show that. But it's not very useful anyway,
-so I agree.
-
-> > This also eliminates the use of __DATE__ and
-> > __TIME__, which make the build non-deterministic.
-> > 
-> > Signed-off-by: Josh Triplett <josh@joshtriplett.org>
+> >You might want to check if you can boil down the DT timings from the
+> >huge list to just an ONFI mode number..
 > 
-> (+cc Dinh Nguyen)
-> 
-> It looks good. :-)
-> Reviewed-by: Jingoo Han <jg1.han@samsung.com>
+> Sure, but the sunxi driver needs at least 19 of them...
 
-Thanks. Pushed to l2-mtd.git.
+So does mvebu's NAND driver..
 
-Brian
+What I ment was you could have a
+
+  onfi,nand-timing-mode = 0
+
+in the DT. Each of the modes defines all ~19 parameters, higher modes
+are faster.
+
+Pick a mode value that fits all the parameters of the connected
+non-ONFI flash.
+
+This would be instead of defining each parameter
+individually.. Provide some helpers to convert from a onfi mode number
+to all the onfi defined timing parameters so that drivers can
+configure the HW..
+
+Jason
