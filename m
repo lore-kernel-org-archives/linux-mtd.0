@@ -1,23 +1,17 @@
-Message-ID: <52CF9DF4.8000607@ti.com>
-Date: Fri, 10 Jan 2014 12:45:00 +0530
-From: Sekhar Nori <nsekhar@ti.com>
+Received: from mail-ob0-x236.google.com ([2607:f8b0:4003:c01::236])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W1XiH-0003HF-EV
+ for linux-mtd@lists.infradead.org; Fri, 10 Jan 2014 08:45:10 +0000
+Received: by mail-ob0-f182.google.com with SMTP id wn1so2500820obc.13
+ for <linux-mtd@lists.infradead.org>; Fri, 10 Jan 2014 00:44:48 -0800 (PST)
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v3] ARM: davinci: aemif: get rid of davinci-nand driver
- dependency on aemif
-References: <1386267092-18615-1-git-send-email-ivan.khoronzhuk@ti.com>
- <52B18C44.2000305@ti.com> <52B1915A.7060309@ti.com> <52BC1BB8.2070007@ti.com>
- <52CE7C44.1000803@ti.com> <20140109163305.GC28655@norris-Latitude-E6410>
-In-Reply-To: <20140109163305.GC28655@norris-Latitude-E6410>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, grygorii.strashko@ti.com,
- linux@arm.linux.org.uk, Rob Landley <rob@landley.net>, pawel.moll@arm.com,
- swarren@wwwdotorg.org, ijc+devicetree@hellion.org.uk,
- galak@kernel.crashing.org, rob.herring@calxeda.com,
- linux-kernel@vger.kernel.org, Santosh Shilimkar <santosh.shilimkar@ti.com>,
- linux-mtd@lists.infradead.org, "ivan.khoronzhuk" <ivan.khoronzhuk@ti.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Sender: murpme@gmail.com
+Date: Fri, 10 Jan 2014 09:44:47 +0100
+Message-ID: <CAGw2PGGZ6eLWPjZgv-Qf0=3fjjitNz0XNzS-8dbDGUbKXPN2bQ@mail.gmail.com>
+Subject: Emergency synch/umount/shutdown of UBIFS on NAND
+From: Michel Benoit <michel@nube.nu>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,57 +21,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 09 January 2014 10:03 PM, Brian Norris wrote:
-> On Thu, Jan 09, 2014 at 04:09:00PM +0530, Sekhar Nori wrote:
->> On Thursday 26 December 2013 05:36 PM, ivan.khoronzhuk wrote:
->>> On 12/18/2013 02:13 PM, Sekhar Nori wrote:
->>>> On Wednesday 18 December 2013 05:21 PM, ivan.khoronzhuk wrote:
->>>>> Hi, Sekhar
->>>>>
->>>>> This patch is based on "Reuse davinci-nand driver for Keystone arch"
->>>>> series.
->>>>> The series has passed review at https://lkml.org/lkml/2013/12/17/241
->>>>> and can be found at http://git.infradead.org/l2-mtd.git
->>>>>
->>>>> This patch can be still applied on top of the series without conflicts.
->>>>>
->>>>> Can you please pick up the $subject patch if you are OK with it?
->>>>
->>>> I have no problems with the patch and can pick it too, but need ack from
->>>> MTD maintainer (David) as it touches drivers/mtd/ too.
->>>>
->>>> David,
->>>>
->>>> If you do not have the patch, we can resend it.
->>>>
->>>> Thanks,
->>>> Sekhar
->>>>
->>>
->>> Hi Brian,
->>>
->>> Do you agree if this patch will go through Davinci tree?
->>>
->>> This is the last one we need to reuse Davinci Nand driver for Keystone.
->>
->> Since we never got an ack from MTD folks, I am going and go ahead and
->> try pushing this through ARM-SoC regardless. I will CC the MTD
->> maintainers on the pull request so any objections could even be posted
->> there.
-> 
-> Sorry, I've been a little busy / out for vacation. The MTD parts look OK
-> to me. Feel free to take it in your tree.
-> 
-> Acked-by: Brian Norris <computersforpeace@gmail.com>
+Hello mtd-list,
 
-Actually the NAND portion conflicts with some of the changes from Ivan
-you took recently. I think it will be better if you take this patch too
-with my ack. For me to take it through ARM-SoC, I need an immutable
-branch from you - with commits same as what you will eventually be
-sending to Linus, based on which I can send a pull request.
+We've got linux 3.10.x running on a custom board with Atmel
+AT91SAM9X25 SoC and a 4Gb NAND from Micron (MT29F4G08ABADA).
 
-In any case, there is a v4 needed to fix a build and checkpatch error I
-just noticed. I will send it out soon.
+The NAND is formatted with UBIFS partitions for rootfs and a user
+disk. The rootfs disk is RO and the user disk partition is R/W.
 
-Thanks,
-Sekhar
+The board is designed so that if the power supply suddenly drops the
+CPU, RAM and NAND have ~50ms to perform an emergency shutdown.
+
+What can the kernel do in 50ms that minimizes the risk for problems
+with UBI, UBIFS and the NAND?
+
+An interrupt input signal is activated when the voltage drops below
+the critical level. Some options I have been considering are:
+
+- kernelspace notifies userspace which umounts the ubifs partitions
+- call sync() from kernelspace
+- call emergency_sync() from kernelspace
+
+The risk with these options is that there is no way to know if they
+will complete i 50ms and they initiate activity on the NAND disk which
+increases the risk that the NAND will be performing a program or erase
+operation at the moment the power to CPU and NAND drop off after 50
+ms.
+
+What I really want to do is tell the system to complete any ongoing
+program or erase operations that affect the NAND and then block all
+other operations.
+
+Is there support for this kind of emergency shutdown in UBIFS? Or does
+that kind of shutdown belong at the MTD or NAND driver levels?
+
+Any other tips for how to handle emergency shutdown are appreciated.
+
+/Michel
