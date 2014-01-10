@@ -1,23 +1,17 @@
-Message-ID: <52CF74ED.2030503@ti.com>
-Date: Fri, 10 Jan 2014 09:49:57 +0530
-From: Sekhar Nori <nsekhar@ti.com>
-MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v3] ARM: davinci: aemif: get rid of davinci-nand driver
- dependency on aemif
-References: <1386267092-18615-1-git-send-email-ivan.khoronzhuk@ti.com>
- <52B18C44.2000305@ti.com> <52B1915A.7060309@ti.com> <52BC1BB8.2070007@ti.com>
- <52CE7C44.1000803@ti.com> <20140109163305.GC28655@norris-Latitude-E6410>
-In-Reply-To: <20140109163305.GC28655@norris-Latitude-E6410>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, grygorii.strashko@ti.com,
- linux@arm.linux.org.uk, Rob Landley <rob@landley.net>, pawel.moll@arm.com,
- swarren@wwwdotorg.org, ijc+devicetree@hellion.org.uk,
- galak@kernel.crashing.org, rob.herring@calxeda.com,
- linux-kernel@vger.kernel.org, Santosh Shilimkar <santosh.shilimkar@ti.com>,
- linux-mtd@lists.infradead.org, "ivan.khoronzhuk" <ivan.khoronzhuk@ti.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Received: from mail-pa0-f48.google.com ([209.85.220.48])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W1V7C-0000Wh-4U
+ for linux-mtd@lists.infradead.org; Fri, 10 Jan 2014 05:58:42 +0000
+Received: by mail-pa0-f48.google.com with SMTP id lf10so1999234pab.35
+ for <linux-mtd@lists.infradead.org>; Thu, 09 Jan 2014 21:58:16 -0800 (PST)
+From: Sachin Kamat <sachin.kamat@linaro.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH Resend 2/3] mtd: orion: Cleanup mtd-orion_nand.h header
+Date: Fri, 10 Jan 2014 11:24:12 +0530
+Message-Id: <1389333253-3802-2-git-send-email-sachin.kamat@linaro.org>
+In-Reply-To: <1389333253-3802-1-git-send-email-sachin.kamat@linaro.org>
+References: <1389333253-3802-1-git-send-email-sachin.kamat@linaro.org>
+Cc: sachin.kamat@linaro.org, computersforpeace@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,50 +21,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 09 January 2014 10:03 PM, Brian Norris wrote:
-> On Thu, Jan 09, 2014 at 04:09:00PM +0530, Sekhar Nori wrote:
->> On Thursday 26 December 2013 05:36 PM, ivan.khoronzhuk wrote:
->>> On 12/18/2013 02:13 PM, Sekhar Nori wrote:
->>>> On Wednesday 18 December 2013 05:21 PM, ivan.khoronzhuk wrote:
->>>>> Hi, Sekhar
->>>>>
->>>>> This patch is based on "Reuse davinci-nand driver for Keystone arch"
->>>>> series.
->>>>> The series has passed review at https://lkml.org/lkml/2013/12/17/241
->>>>> and can be found at http://git.infradead.org/l2-mtd.git
->>>>>
->>>>> This patch can be still applied on top of the series without conflicts.
->>>>>
->>>>> Can you please pick up the $subject patch if you are OK with it?
->>>>
->>>> I have no problems with the patch and can pick it too, but need ack from
->>>> MTD maintainer (David) as it touches drivers/mtd/ too.
->>>>
->>>> David,
->>>>
->>>> If you do not have the patch, we can resend it.
->>>>
->>>> Thanks,
->>>> Sekhar
->>>>
->>>
->>> Hi Brian,
->>>
->>> Do you agree if this patch will go through Davinci tree?
->>>
->>> This is the last one we need to reuse Davinci Nand driver for Keystone.
->>
->> Since we never got an ack from MTD folks, I am going and go ahead and
->> try pushing this through ARM-SoC regardless. I will CC the MTD
->> maintainers on the pull request so any objections could even be posted
->> there.
-> 
-> Sorry, I've been a little busy / out for vacation. The MTD parts look OK
-> to me. Feel free to take it in your tree.
-> 
-> Acked-by: Brian Norris <computersforpeace@gmail.com>
+Commit c02cecb92ed4 ("ARM: orion: move platform_data definitions")
+moved the file to the current location but forgot to remove the pointer
+to its previous location. Clean it up. While at it also change the header
+file protection macros appropriately.
 
-Thanks Brian!
+Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+---
+ include/linux/platform_data/mtd-orion_nand.h |    6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-Regards,
-Sekhar
+diff --git a/include/linux/platform_data/mtd-orion_nand.h b/include/linux/platform_data/mtd-orion_nand.h
+index 9f3c180834d1..a7ce77c7c1a8 100644
+--- a/include/linux/platform_data/mtd-orion_nand.h
++++ b/include/linux/platform_data/mtd-orion_nand.h
+@@ -1,13 +1,11 @@
+ /*
+- * arch/arm/plat-orion/include/plat/orion_nand.h
+- *
+  * This file is licensed under the terms of the GNU General Public
+  * License version 2.  This program is licensed "as is" without any
+  * warranty of any kind, whether express or implied.
+  */
+ 
+-#ifndef __PLAT_ORION_NAND_H
+-#define __PLAT_ORION_NAND_H
++#ifndef __MTD_ORION_NAND_H
++#define __MTD_ORION_NAND_H
+ 
+ /*
+  * Device bus NAND private data
+-- 
+1.7.9.5
