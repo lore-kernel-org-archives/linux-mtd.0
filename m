@@ -1,13 +1,15 @@
-Received: from mail-db8lp0189.outbound.messaging.microsoft.com
- ([213.199.154.189] helo=db8outboundpool.messaging.microsoft.com)
+Received: from co1ehsobe002.messaging.microsoft.com ([216.32.180.185]
+ helo=co1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W1Y8g-0003qM-5w
- for linux-mtd@lists.infradead.org; Fri, 10 Jan 2014 09:12:27 +0000
+ id 1W1YCg-0003xe-Ls
+ for linux-mtd@lists.infradead.org; Fri, 10 Jan 2014 09:16:35 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH V2] mtd: gpmi: fix the bitflips for erased page
-Date: Fri, 10 Jan 2014 16:37:24 +0800
-Message-ID: <1389343044-22351-1-git-send-email-b32955@freescale.com>
+Subject: [PATCH V2 fix] mtd: gpmi: fix the bitflips for erased page
+Date: Fri, 10 Jan 2014 16:41:38 +0800
+Message-ID: <1389343298-22473-1-git-send-email-b32955@freescale.com>
+In-Reply-To: <1389343044-22351-1-git-send-email-b32955@freescale.com>
+References: <1389343044-22351-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: eliedebrauwer@gmail.com, bpringlemeir@nbsps.com,
@@ -48,10 +50,10 @@ This patch does a check for the uncorrectable failure in the following steps:
 
    [1] count the bitflips of the current ECC chunk, assume it is N.
 
-   [2] if the (N < threshold) is true, we continue to read out the page with
+   [2] if the (N <= threshold) is true, we continue to read out the page with
        ECC disabled. and we count the bitflips again, assume it is N2.
 
-   [3] if the (N2 < threshold) is true again, we can regard this is a erased
+   [3] if the (N2 <= threshold) is true again, we can regard this is a erased
        page. This is because a real erased page is full of 0xFF(maybe also has
        several bitflips), while a page contains the 0xFF data will definitely
        has many bitflips in the ECC parity area.
@@ -63,10 +65,7 @@ Tested-by: Elie De Brauwer <eliedebrauwer@gmail.com>
 Reported-by: Elie De Brauwer <eliedebrauwer@gmail.com>
 Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
-v1 --> v2:
-	[1] change (<threshold) to (<= threshold).
-	[2] report to the upper layer the bits we corrected for the erased
-	    page.
+  fix the comment.
 ---
  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   51 ++++++++++++++++++++++++++++++++
  1 files changed, 51 insertions(+), 0 deletions(-)
