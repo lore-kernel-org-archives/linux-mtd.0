@@ -1,20 +1,26 @@
-Received: from co1ehsobe002.messaging.microsoft.com ([216.32.180.185]
- helo=co1outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W1YCg-0003xe-Ls
- for linux-mtd@lists.infradead.org; Fri, 10 Jan 2014 09:16:35 +0000
-From: Huang Shijie <b32955@freescale.com>
-To: <dwmw2@infradead.org>
-Subject: [PATCH V2 fix] mtd: gpmi: fix the bitflips for erased page
-Date: Fri, 10 Jan 2014 16:41:38 +0800
-Message-ID: <1389343298-22473-1-git-send-email-b32955@freescale.com>
-In-Reply-To: <1389343044-22351-1-git-send-email-b32955@freescale.com>
-References: <1389343044-22351-1-git-send-email-b32955@freescale.com>
+Received: from mx.vmgattei.com ([77.223.18.35])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W1ZFY-0005b5-2N
+ for linux-mtd@lists.infradead.org; Fri, 10 Jan 2014 10:23:37 +0000
+Received: from localhost (mx.vmgattei.com [127.0.0.1])
+ by mx.vmgattei.com (Postfix) with ESMTP id 50F6E22717
+ for <linux-mtd@lists.infradead.org>; Fri, 10 Jan 2014 11:15:15 +0100 (CET)
+Received: from mx.vmgattei.com ([127.0.0.1])
+ by localhost (mx.vmgattei.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id KFrIDIR9Ouiq for <linux-mtd@lists.infradead.org>;
+ Fri, 10 Jan 2014 11:15:14 +0100 (CET)
+Received: from [192.168.1.11] (108.pool85-49-202.dynamic.orange.es
+ [85.49.202.108])
+ by mx.vmgattei.com (Postfix) with ESMTPSA id 550E11FD55
+ for <linux-mtd@lists.infradead.org>; Fri, 10 Jan 2014 11:15:14 +0100 (CET)
+Message-ID: <52CFC831.9050102@sirius-es.it>
+Date: Fri, 10 Jan 2014 11:15:13 +0100
+From: Matteo Facchinetti <matteo.facchinetti@sirius-es.it>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: eliedebrauwer@gmail.com, bpringlemeir@nbsps.com,
- Huang Shijie <b32955@freescale.com>, Vikram.Narayanan@in.bosch.com,
- linux-mtd@lists.infradead.org, computersforpeace@gmail.com
+To: linux-mtd@lists.infradead.org
+Subject: bad-block skipping
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,120 +30,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We may meet the bitflips in reading an erased page(contains all 0xFF),
-this may causes the UBIFS corrupt, please see the log from Elie:
+Hello,
 
------------------------------------------------------------------
-[    3.831323] UBI warning: ubi_io_read: error -74 (ECC error) while reading 16384 bytes from PEB 443:245760, read only 16384 bytes, retry
-[    3.845026] UBI warning: ubi_io_read: error -74 (ECC error) while reading 16384 bytes from PEB 443:245760, read only 16384 bytes, retry
-[    3.858710] UBI warning: ubi_io_read: error -74 (ECC error) while reading 16384 bytes from PEB 443:245760, read only 16384 bytes, retry
-[    3.872408] UBI error: ubi_io_read: error -74 (ECC error) while reading 16384 bytes from PEB 443:245760, read 16384 bytes
+I'm porting a MTD nand controller driver from kernel 3.9.4 to 3.13.0-rc2.
+I need help because when I try to erase my nand flash partition in 
+version 3.13, I have errors that never seen before (in version 3.9.4).
+
+In detail, with flash_erase command:
+# flash_erase /dev/mtd1 0 0
+I'm expecting this output when it encounters a bad block:
 ...
-[    4.011529] UBIFS error (pid 36): ubifs_recover_leb: corrupt empty space LEB 27:237568, corruption starts at 9815
-[    4.021897] UBIFS error (pid 36): ubifs_scanned_corruption: corruption at LEB 27:247383
-[    4.030000] UBIFS error (pid 36): ubifs_scanned_corruption: first 6569 bytes from LEB 27:247383
------------------------------------------------------------------
+     Skipping bad block at <block number>
+...
 
-This patch does a check for the uncorrectable failure in the following steps:
+But, in my porting, I have the following output: [see at the end]
 
-   [0] set the threshold.
-       The threshold is set based on the truth:
-         "A single 0 bit will lead to gf_len(13 or 14) bits 0 after the BCH
-          do the ECC."
+Where the first is a bad block and the last 4 blocks are reserved for BBT.
 
-       For the sake of safe, we will set the threshold with half the gf_len, and
-       do not make it bigger the ECC strength.
+Why it occurs?
 
-   [1] count the bitflips of the current ECC chunk, assume it is N.
+Best regards,
+Matteo
 
-   [2] if the (N <= threshold) is true, we continue to read out the page with
-       ECC disabled. and we count the bitflips again, assume it is N2.
 
-   [3] if the (N2 <= threshold) is true again, we can regard this is a erased
-       page. This is because a real erased page is full of 0xFF(maybe also has
-       several bitflips), while a page contains the 0xFF data will definitely
-       has many bitflips in the ECC parity area.
-
-   [4] if the [3] fails, we can regard this is a page filled with the '0xFF'
-       data.
-
-Tested-by: Elie De Brauwer <eliedebrauwer@gmail.com>
-Reported-by: Elie De Brauwer <eliedebrauwer@gmail.com>
-Signed-off-by: Huang Shijie <b32955@freescale.com>
----
-  fix the comment.
----
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   51 ++++++++++++++++++++++++++++++++
- 1 files changed, 51 insertions(+), 0 deletions(-)
-
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index e2f5820..533f25f 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -958,6 +958,53 @@ static void block_mark_swapping(struct gpmi_nand_data *this,
- 	p[1] = (p[1] & mask) | (from_oob >> (8 - bit));
- }
- 
-+static bool gpmi_erased_check(struct gpmi_nand_data *this,
-+			unsigned char *data, unsigned int chunk, int page,
-+			unsigned int *max_bitflips)
-+{
-+	struct nand_chip *chip = &this->nand;
-+	struct mtd_info	*mtd = &this->mtd;
-+	struct bch_geometry *geo = &this->bch_geometry;
-+	int base = geo->ecc_chunk_size * chunk;
-+	unsigned int flip_bits = 0, flip_bits_noecc = 0;
-+	uint8_t *buf = this->data_buffer_dma;
-+	unsigned int threshold;
-+	int i;
-+
-+	threshold = geo->gf_len / 2;
-+	if (threshold > geo->ecc_strength)
-+		threshold = geo->ecc_strength;
-+
-+	/* Count bitflips */
-+	for (i = 0; i < geo->ecc_chunk_size; i++)
-+		flip_bits += hweight8(~data[base + i]);
-+
-+	if (flip_bits <= threshold) {
-+		dev_dbg(this->dev, "check for the erased page:%d, chunk:%d\n",
-+				page, chunk);
-+
-+		/* Read out the page without ECC enabled, and check it again */
-+		chip->cmdfunc(mtd, NAND_CMD_READ0, 0, page);
-+		chip->read_buf(mtd, buf, geo->payload_size);
-+
-+		/* Count the bitflips for the no ECC buffer */
-+		for (i = 0; i < geo->payload_size; i++)
-+			flip_bits_noecc += hweight8(~buf[i]);
-+
-+		if (flip_bits_noecc <= threshold) {
-+			dev_dbg(this->dev, "find an erased page %d(%d:%d)\n",
-+					page, flip_bits, flip_bits_noecc);
-+
-+			/* Tell the upper layer the bitflips we corrected. */
-+			*max_bitflips = max_t(unsigned int, *max_bitflips,
-+						flip_bits);
-+			memset(data, 0xff, geo->payload_size);
-+			return true;
-+		}
-+	}
-+	return false;
-+}
-+
- static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 				uint8_t *buf, int oob_required, int page)
- {
-@@ -1007,6 +1054,10 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 			continue;
- 
- 		if (*status == STATUS_UNCORRECTABLE) {
-+			if (gpmi_erased_check(this, payload_virt, i,
-+						page, &max_bitflips))
-+				break;
-+
- 			mtd->ecc_stats.failed++;
- 			continue;
- 		}
--- 
-1.7.2.rc3
+# flash_erase /dev/mtd1 0 0
+Erasing 10[  150.438406] 00000 -- 78 % complete
+[  150.438406]  nand_isbad_bbt(): bbt info for offs 0xd9900000: (block 
+3481) 0x03
+24 Kibyte @ 97300[  150.448181] nand_erase_nand: attempt to erase a bad 
+block at page 0x000d9900
+Erasing 1024 Kibyte @ 99900000 -- 79 % complete libmtd: error!: 
+MEMERASE64 ioctl failed for eraseblock 2457 (mtd1)
+         error 5 (Input/output error)
+flash_erase: error!: /dev/mtd1: MTD Erase failure
+              error 5 (Input/output error)
+Erasing 1024 Kibyte @ bce00000 -- 98 % comple[  153.088655]
+[  153.088655]  nand_isbad_bbt(): bbt info for offs 0xffc00000: (block 
+4092) 0x02
+Erasing 1024
+[  153.098015] nand_erase_nand: attempt to erase a bad block at page 
+0x000ffc00
+  Kibyte @ bcf0000[  153.107567]
+[  153.107567]  nand_isbad_bbt(): bbt info for offs 0xffd00000: (block 
+4093) 0x02
+0 -- 98 % comple
+[  153.117023] nand_erase_nand: attempt to erase a bad block at page 
+0x000ffd00
+Erasing 1024 Kibyte @ bd000[  153.126848]
+[  153.126848]  nand_isbad_bbt(): bbt info for offs 0xffe00000: (block 
+4094) 0x02
+000 -- 98 % comp
+[  153.137194] nand_erase_nand: attempt to erase a bad block at page 
+0x000ffe00
+Erasing 10[  153.146438]
+[  153.146438]  nand_isbad_bbt(): bbt info for offs 0xfff00000: (block 
+4095) 0x02
+24 Kibyte @ bd10
+[  153.156029] nand_erase_nand: attempt to erase a bad block at page 
+0x000fff00
+Erasing 1024 Kibyte @ bfc00000 -- 99 % complete libmtd: error!: 
+MEMERASE64 ioctl failed for eraseblock 3068 (mtd1)
+         error 5 (Input/output error)
+flash_erase: error!: /dev/mtd1: MTD Erase failure
+              error 5 (Input/output error)
+Erasing 1024 Kibyte @ bfd00000 -- 99 % complete libmtd: error!: 
+MEMERASE64 ioctl failed for eraseblock 3069 (mtd1)
+         error 5 (Input/output error)
+flash_erase: error!: /dev/mtd1: MTD Erase failure
+              error 5 (Input/output error)
+Erasing 1024 Kibyte @ bfe00000 -- 99 % complete libmtd: error!: 
+MEMERASE64 ioctl failed for eraseblock 3070 (mtd1)
+         error 5 (Input/output error)
+flash_erase: error!: /dev/mtd1: MTD Erase failure
+              error 5 (Input/output error)
+Erasing 1024 Kibyte @ bff00000 -- 99 % complete libmtd: error!: 
+MEMERASE64 ioctl failed for eraseblock 3071 (mtd1)
+         error 5 (Input/output error)
+flash_erase: error!: /dev/mtd1: MTD Erase failure
+              error 5 (Input/output error)
+Erasing 1024 Kibyte @ bff00000 -- 100 % complete
