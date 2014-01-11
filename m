@@ -1,25 +1,21 @@
-Received: from mail-pa0-x22f.google.com ([2607:f8b0:400e:c03::22f])
+Received: from mail-pb0-x22e.google.com ([2607:f8b0:400e:c01::22e])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W24tJ-000161-II
- for linux-mtd@lists.infradead.org; Sat, 11 Jan 2014 20:10:47 +0000
-Received: by mail-pa0-f47.google.com with SMTP id kq14so6088023pab.34
- for <linux-mtd@lists.infradead.org>; Sat, 11 Jan 2014 12:10:23 -0800 (PST)
-Date: Sat, 11 Jan 2014 12:10:19 -0800
+ id 1W27qQ-00037K-NT
+ for linux-mtd@lists.infradead.org; Sat, 11 Jan 2014 23:19:59 +0000
+Received: by mail-pb0-f46.google.com with SMTP id ma3so375755pbc.33
+ for <linux-mtd@lists.infradead.org>; Sat, 11 Jan 2014 15:19:35 -0800 (PST)
+Date: Sat, 11 Jan 2014 15:19:32 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Huang Shijie <b32955@freescale.com>, Caizhiyong <caizhiyong@hisilicon.com>
-Subject: Re: [PATCH] mtd: nand:  assign mtd->name in find_full_id_nand
-Message-ID: <20140111201019.GD1992@norris-Latitude-E6410>
-References: <C3050A4DBA34F345975765E43127F10F25E47E20@SZXEMA512-MBX.china.huawei.com>
- <20131226021937.GA6752@shlinux2.ap.freescale.net>
+To: Prabhakar Kushwaha <prabhakar@freescale.com>
+Subject: Re: [PATCH] mtd/nand:Update mtd.name assignment type to u64 for IFC,
+ eLBC
+Message-ID: <20140111231932.GE1992@norris-Latitude-E6410>
+References: <1388213255-30342-1-git-send-email-prabhakar@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20131226021937.GA6752@shlinux2.ap.freescale.net>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- "Wanglin \(Albert\)" <albert.wanglin@hisilicon.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <David.Woodhouse@intel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+In-Reply-To: <1388213255-30342-1-git-send-email-prabhakar@freescale.com>
+Cc: scottwood@freescale.com, linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,24 +25,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Sat, Dec 28, 2013 at 12:17:35PM +0530, Prabhakar Kushwaha wrote:
+> mtd.name is assigned to IFC NAND physical address. Assignment type is u32.
+> It is not providing correct physical address of IFC NAND.
+> 
+> Update assignment type to u64.
+> 
+> Signed-off-by: Prabhakar Kushwaha <prabhakar@freescale.com>
 
-On Thu, Dec 26, 2013 at 10:19:39AM +0800, Huang Shijie wrote:
-> On Thu, Dec 26, 2013 at 01:51:58AM +0000, Caizhiyong wrote:
-> > From: Cai Zhiyong <caizhiyong@huawei.com>
-> > Date: Wed, 25 Dec 2013 21:19:21 +0800
-> > Subject: [PATCH] mtd: nand: assign mtd->name in find_full_id_nand
-> > 
-> > This patch assigned the type->name to mtd->name when mtd->name is
-> > NULL in function "find_full_id_nand".
-> > mtd->name is NULL may cause some problem.
-> > 
-> > Signed-off-by: Cai Zhiyong <caizhiyong@huawei.com>
-> Acked-by: Huang Shijie <b32955@freescale.com>
-
-Thanks, the patch looks good. Pushed to l2-mtd.git.
-
-Wouldn't this trigger an exception when reading
-/sys/class/mtd/mtdX/name? If so, should this be marked for stable?
+Pushed to l2-mtd.git. Thanks!
 
 Brian
