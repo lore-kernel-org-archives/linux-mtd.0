@@ -1,16 +1,16 @@
-Date: Sat, 11 Jan 2014 15:47:31 -0800
+Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W28R2-0003Zp-S5
+ for linux-mtd@lists.infradead.org; Sat, 11 Jan 2014 23:57:51 +0000
+Received: by mail-pa0-f53.google.com with SMTP id hz1so6211070pad.40
+ for <linux-mtd@lists.infradead.org>; Sat, 11 Jan 2014 15:57:27 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
-To: Huang Shijie <shijie8@gmail.com>
-Subject: Re: [PATCH 0/4] mtd: kill the NAND_MAX_PAGESIZE/NAND_MAX_OOBSIZE
-Message-ID: <20140111234731.GG1992@norris-Latitude-E6410>
-References: <1387555350-989-1-git-send-email-shijie8@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1387555350-989-1-git-send-email-shijie8@gmail.com>
-Cc: s.hauer@pengutronix.de, akinobu.mita@gmail.com, josh@joshtriplett.org,
- linux-mtd@lists.infradead.org, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: mtdram: add missing 'const'
+Date: Sat, 11 Jan 2014 15:57:07 -0800
+Message-Id: <1389484627-7628-1-git-send-email-computersforpeace@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,35 +20,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Dec 21, 2013 at 12:02:26AM +0800, Huang Shijie wrote:
-> [1] Why kill them?
->     As time goes on, the NAND's page size and oob size become larger and larger.
->     So we have changes these two macros frequently in order to support the new
->     NAND.
-> 
-> [2] How does this patch set do?
->     There are three drivers which uses these two macros, the mxc-nand, denali,
->     and the cafe-nand.
-> 
->     This patch will allocate a temporary buffer for the nand_scan_ident, and 
->     after it have getten the right page size and oob size, it will re-allocate
->     the buffer again.
-> 
-> [3] I do not have the boards which have the relative NAND controller.
-> 
->     I hope someone can test this patch set.
-> 
->     thanks.
-> 
-> 
-> Huang Shijie (4):
->   mtd: mxc-nand: kill the NAND_MAX_PAGESIZE/NAND_MAX_OOBSIZE
->   mtd: denali: kill the NAND_MAX_PAGESIZE/NAND_MAX_OOBSIZE
->   mtd: nand: kill the the NAND_MAX_PAGESIZE/NAND_MAX_OOBSIZE for
->     nand_buffers{}
->   mtd: nand: remove the NAND_MAX_PAGESIZE/NAND_MAX_OOBSIZE
+mtdram_init_device() wasn't updated along with mtd_partition.name.
 
-Pushed only the first 2 patches. Patch 3 still has some issues.
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ drivers/mtd/devices/mtdram.c | 2 +-
+ include/linux/mtd/mtdram.h   | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Thanks,
-Brian
+diff --git a/drivers/mtd/devices/mtdram.c b/drivers/mtd/devices/mtdram.c
+index ec59d65897fb..8e285089229c 100644
+--- a/drivers/mtd/devices/mtdram.c
++++ b/drivers/mtd/devices/mtdram.c
+@@ -92,7 +92,7 @@ static void __exit cleanup_mtdram(void)
+ }
+ 
+ int mtdram_init_device(struct mtd_info *mtd, void *mapped_address,
+-		unsigned long size, char *name)
++		unsigned long size, const char *name)
+ {
+ 	memset(mtd, 0, sizeof(*mtd));
+ 
+diff --git a/include/linux/mtd/mtdram.h b/include/linux/mtd/mtdram.h
+index 68891313875d..628a6a21ddf0 100644
+--- a/include/linux/mtd/mtdram.h
++++ b/include/linux/mtd/mtdram.h
+@@ -3,6 +3,6 @@
+ 
+ #include <linux/mtd/mtd.h>
+ int mtdram_init_device(struct mtd_info *mtd, void *mapped_address,
+-			unsigned long size, char *name);
++			unsigned long size, const char *name);
+ 
+ #endif /* __MTD_MTDRAM_H__ */
+-- 
+1.8.3.2
