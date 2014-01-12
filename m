@@ -1,16 +1,20 @@
-Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W28R2-0003Zp-S5
- for linux-mtd@lists.infradead.org; Sat, 11 Jan 2014 23:57:51 +0000
-Received: by mail-pa0-f53.google.com with SMTP id hz1so6211070pad.40
- for <linux-mtd@lists.infradead.org>; Sat, 11 Jan 2014 15:57:27 -0800 (PST)
+Date: Sat, 11 Jan 2014 16:04:14 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd: mtdram: add missing 'const'
-Date: Sat, 11 Jan 2014 15:57:07 -0800
-Message-Id: <1389484627-7628-1-git-send-email-computersforpeace@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Geert Uytterhoeven <geert@linux-m68k.org>
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH 3/4] mtd: nand: kill the the
+ NAND_MAX_PAGESIZE/NAND_MAX_OOBSIZE for nand_buffers{}
+Message-ID: <20140112000414.GH1992@norris-Latitude-E6410>
+References: <1387555350-989-1-git-send-email-shijie8@gmail.com>
+ <1387555350-989-4-git-send-email-shijie8@gmail.com>
+ <20140111233937.GF1992@norris-Latitude-E6410>
+ <20140111234353.GO15937@n2100.arm.linux.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20140111234353.GO15937@n2100.arm.linux.org.uk>
+Cc: Huang Shijie <shijie8@gmail.com>, s.hauer@pengutronix.de,
+ akinobu.mita@gmail.com, josh@joshtriplett.org, linux-mtd@lists.infradead.org,
+ dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,39 +24,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-mtdram_init_device() wasn't updated along with mtd_partition.name.
+On Sat, Jan 11, 2014 at 11:43:53PM +0000, Russell King - ARM Linux wrote:
+> On Sat, Jan 11, 2014 at 03:39:37PM -0800, Brian Norris wrote:
+> > When you move this after nand_scan_ident(), you forgot to move all the code
+> > that uses dmabuf and dmabuf:
+> > 
+> >         /* Set up DMA address */
+> >         cafe_writel(cafe, cafe->dmaaddr & 0xffffffff, NAND_DMA_ADDR0);
+> >         if (sizeof(cafe->dmaaddr) > 4)
+> >                 /* Shift in two parts to shut the compiler up */
+> >                 cafe_writel(cafe, (cafe->dmaaddr >> 16) >> 16, NAND_DMA_ADDR1);
+> >         else
+> >                 cafe_writel(cafe, 0, NAND_DMA_ADDR1);
+> > 
+> >         cafe_dev_dbg(&cafe->pdev->dev, "Set DMA address to %x (virt %p)\n",
+> >                 cafe_readl(cafe, NAND_DMA_ADDR0), cafe->dmabuf);
+> > 
+> > This code needs to stay after the point where you actually allocate the buffer.
+> 
+> You may wish to evaluate generated code differences between the above and
+> implementing it like this:
+> 
+> 	u64 dmaaddr = cafe->dmaaddr;
+> 
+> 	cafe_writel(cafe, dmaaddr, NAND_DMA_ADDR0);
+> 	cafe_writel(cafe, dmaaddr >> 32, NAMD_DMA_ADDR1);
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
----
- drivers/mtd/devices/mtdram.c | 2 +-
- include/linux/mtd/mtdram.h   | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Well, that's not the primary concern of this patch, but that looks good.
+Thanks for the idea. I'll take a look sometime.
 
-diff --git a/drivers/mtd/devices/mtdram.c b/drivers/mtd/devices/mtdram.c
-index ec59d65897fb..8e285089229c 100644
---- a/drivers/mtd/devices/mtdram.c
-+++ b/drivers/mtd/devices/mtdram.c
-@@ -92,7 +92,7 @@ static void __exit cleanup_mtdram(void)
- }
- 
- int mtdram_init_device(struct mtd_info *mtd, void *mapped_address,
--		unsigned long size, char *name)
-+		unsigned long size, const char *name)
- {
- 	memset(mtd, 0, sizeof(*mtd));
- 
-diff --git a/include/linux/mtd/mtdram.h b/include/linux/mtd/mtdram.h
-index 68891313875d..628a6a21ddf0 100644
---- a/include/linux/mtd/mtdram.h
-+++ b/include/linux/mtd/mtdram.h
-@@ -3,6 +3,6 @@
- 
- #include <linux/mtd/mtd.h>
- int mtdram_init_device(struct mtd_info *mtd, void *mapped_address,
--			unsigned long size, char *name);
-+			unsigned long size, const char *name);
- 
- #endif /* __MTD_MTDRAM_H__ */
--- 
-1.8.3.2
+Brian
