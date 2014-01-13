@@ -1,25 +1,18 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
+Received: from devils.ext.ti.com ([198.47.26.153])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W2hO2-0006rE-71
- for linux-mtd@lists.infradead.org; Mon, 13 Jan 2014 13:17:02 +0000
+ id 1W2iYt-0000eI-7k
+ for linux-mtd@lists.infradead.org; Mon, 13 Jan 2014 14:32:19 +0000
 From: "Gupta, Pekon" <pekon@ti.com>
-To: "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
- Calvin Johnson <linux.cj@gmail.com>
-Subject: RE: UBIFS seeing corrupt blank pages when image flashed via u-boot
-Date: Mon, 13 Jan 2014 13:16:20 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA61199@DBDE04.ent.ti.com>
-References: <20980858CB6D3A4BAE95CA194937D5E73EA5DBFA@DBDE04.ent.ti.com>
- <1388753970.25123.124.camel@sauron.fi.intel.com>
- <CAEhpT-W-aBkackmUb860vex2LxGzkBQ6hu1KGvUzjmTWTeQgxg@mail.gmail.com>
- <1389617894.2259.270.camel@sauron.fi.intel.com>
-In-Reply-To: <1389617894.2259.270.camel@sauron.fi.intel.com>
+To: "richard.genoud@gmail.com" <richard.genoud@gmail.com>
+Subject: UBI: calculation for max number of bad-blocks
+Date: Mon, 13 Jan 2014 14:31:52 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA6120D@DBDE04.ent.ti.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Cc: "u-boot@lists.denx.de" <u-boot@lists.denx.de>, "Stefan
- Roese <sr@denx.de> \(sr@denx.de\)" <sr@denx.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,67 +22,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Calvin,
+Hi Richard,
 
->From: Artem Bityutskiy [mailto:artem.bityutskiy@linux.intel.com]
->>On Mon, 2014-01-13 at 17:49 +0530, Calvin Johnson wrote:
->> If the 4th to last-page are left blank and not covered with ECC, what
->> will happen in case of bit flips on the blank pages? There was an
->> issue reported some time back.
->> http://lists.infradead.org/pipermail/linux-mtd/2012-January/039256.html
->>
->> Does UBI/UBIFS take care of this now?
->
->No. UBIFS still assumes that blank pages are ECC-protected by the
->driver. No one stepped in and took care of changing this yet.
->
-Yes, it's true that in newer technologies (specially < 28nm flash), we are =
-seeing
-lot of erased-pages having bit-flips. And due to which UBIFS is cribbing.
-But as there is no ECC stored in an erased-page, bit-flips in erased-page
-cannot be corrected, unless you compare each byte of read_data.
-However, there are other way of handling bit-flips in erased-page.
-Following are few ways in which OMAP NAND driver handles bit-flips
-in erased-page:
+With reference to commit message:
+	commit ba4087e956d336488c6df9dfca65d1e70cf480f1
+	Author:     Richard Genoud <richard.genoud@gmail.com>
+	UBI: use the whole MTD device size to get bad_peb_limit
+-----------------
+" NAND flash manufacturers give a
+    minimum number of valid block (NVB) during the endurance life of the
+    device, e.g.:
 
-*Case-1*: If bit-flips are found in data-region of an erased-page.
-(1) An erased-page implicitly means that its data-region should *only* cont=
-ain 0xff,
-   so its safe to fill read_buf() with 0xff.
-  But the controller driver should report the correctable/un-correctable bi=
-t-flips
-  to upper-layer, so that upper-layers like UBI take corrective action by r=
-e-erase
-  this block before using it.
-(Refer) http://lists.infradead.org/pipermail/linux-mtd/2014-January/051368.=
-html
+    Parameter             Symbol    Min    Max    Unit      Notes
+    --------------------------------------------------------------
+    Valid block number     NVB     1004    1024   Blocks     1
 
+    From this number we can deduce the maximum number of bad PEB that a dev=
+ice will
+    contain during its endurance life: a 128MiB NAND flash (1024 PEB) will =
+not have
+    less than 20 bad blocks during the flash endurance life.
 
-*Case-2*: If bit-flips are found in oob-region of an erased-page.
-This is bit trivial, because if there are bit-flips in ecc-layout (OOB regi=
-on) of
-erased-page, it would be difficult to differentiate between an
-erased-page v/s programmed-page.
-Though you can keep a 'marker' in ecc-layout reserved for detecting
-Programmed-pages, but that marker byte itself can be subjected to
-bit-flips (assuming on MLC and newer technology NAND bit-flips are common).
-So, OMAP NAND driver takes probabilistic approach.
-(Refer) http://lists.infradead.org/pipermail/linux-mtd/2014-January/051367.=
-html
------------------------
-This patch 'assumes' any page to be 'erased':
-		(a) if        all(read_ecc)  =3D=3D 0xff
-		(b) else if   all(read_data) =3D=3D 0xff
------------------------
+    But the manufacturer doesn't tell where those bad block will appear. He=
+ doesn't
+    say either if they will be equally disposed on the whole device (and I'=
+m pretty
+    sure they won't). So, according to the datasheets, we should reserve th=
+e
+    maximum number of bad PEB for each UBI device (worst case scenario: 20 =
+bad
+    blocks appears on the smallest MTD partition).
 
+    So this patch make UBI use the whole MTD device size to calculate the m=
+aximum
+    bad expected eraseblocks.
 
-Currently both UBI and UBIFS layer checks for erased-page to be all(0xff),
-But I think its over-kill to put this burden on UBI or UBIFS layer, because
-low-level controller drivers can handle this easily.
-So, if Artem and Brian agree to above approaches, then I can a submit patch
-for removal of:
- - "ubi_self_check_all_ff()" from UBI layer.
- - checking of 'buf =3D=3D 0xff' from ubifs_scan_leb() in UBIFS layer.
+    The Kconfig option is in per1024 blocks, thus it can have a default val=
+ue of 20
+    which is *very* common for NAND devices."
+-----------------
 
+I was not able to understand the need to do the convert=20
+Min.NVB (Minimum number of valid blocks) into a ratio of  'max_beb_per1024'=
+.
+Can't we just use " Max(bad-blocks) =3D Max(NVB) - Min(NVB)" ?
+And make reserve_PEB > Max(bad-blocks) in UBI partitions, as all bad-blocks
+can appear together in same partition itself.
 
 with regards, pekon
