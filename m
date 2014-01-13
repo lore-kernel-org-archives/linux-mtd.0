@@ -1,22 +1,24 @@
-Received: from ch1ehsobe003.messaging.microsoft.com ([216.32.181.183]
- helo=ch1outboundpool.messaging.microsoft.com)
+Received: from va3ehsobe004.messaging.microsoft.com ([216.32.180.14]
+ helo=va3outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W2cco-0007VS-Im
- for linux-mtd@lists.infradead.org; Mon, 13 Jan 2014 08:11:58 +0000
-Date: Mon, 13 Jan 2014 15:36:32 +0800
+ id 1W2chK-0007bO-F8
+ for linux-mtd@lists.infradead.org; Mon, 13 Jan 2014 08:16:38 +0000
+Date: Mon, 13 Jan 2014 15:41:02 +0800
 From: Huang Shijie <b32955@freescale.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v3 3/5] mtd: nand: add generic READ RETRY support
-Message-ID: <20140113073630.GC26113@shlinux2.ap.freescale.net>
-References: <1388795828-24808-1-git-send-email-computersforpeace@gmail.com>
- <1388795828-24808-3-git-send-email-computersforpeace@gmail.com>
- <20140107061733.GD8109@shlinux2.ap.freescale.net>
- <20140113080400.GK1992@norris-Latitude-E6410>
+To: Elie De Brauwer <eliedebrauwer@gmail.com>
+Subject: Re: [PATCH v3] mtd: gpmi: fix the bitflips for erased page
+Message-ID: <20140113074100.GA10266@shlinux2.ap.freescale.net>
+References: <1389581697-28309-1-git-send-email-b32955@freescale.com>
+ <CAGWqfiiRtRoT_qE4SjrkMDspxEWePRbX9krZxXM-TtVSxuhSLg@mail.gmail.com>
+ <20140113065914.GA26113@shlinux2.ap.freescale.net>
+ <CAGWqfiiZMaH1i9aTLQpqjMFnnXqi0xHoFquOLjZ_FNNYkg_AhA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20140113080400.GK1992@norris-Latitude-E6410>
-Cc: linux-mtd@lists.infradead.org, Pekon Gupta <pekon@ti.com>
+In-Reply-To: <CAGWqfiiZMaH1i9aTLQpqjMFnnXqi0xHoFquOLjZ_FNNYkg_AhA@mail.gmail.com>
+Cc: Vikram.Narayanan@in.bosch.com, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, bpringlemeir@nbsps.com,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,13 +28,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jan 13, 2014 at 12:04:00AM -0800, Brian Norris wrote:
-> 
-> It's not actually performing any "read" or a "retry"; the function is
-> just configuring the device for a retry. So I don't think read_retry is
-> correct. For my name, I was abbreviating "set read retry mode". How do
-> you like "setup_read_retry" or "set_read_retry_mode"?
-I prefer to the setup_read_retry :)
+On Mon, Jan 13, 2014 at 08:52:48AM +0100, Elie De Brauwer wrote:
+> through the status. (Well to be honest the entire switching between chunks and
+> pages confused me a lot on this monday morning, it could be me but when
+> iterating over chunks, switching to pages and breaking out of the for
+The more important reason is that read a page and check if it is an erased page
+is more _strict_ then just read a chunk.
 
 thanks
 Huang Shijie
