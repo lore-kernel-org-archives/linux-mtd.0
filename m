@@ -1,25 +1,23 @@
-Received: from vps1.hno.se ([2a02:750:5::f0])
+Received: from mail.karo-electronics.de ([81.173.242.67])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W2e8j-0000zf-1c
- for linux-mtd@lists.infradead.org; Mon, 13 Jan 2014 09:49:01 +0000
-Message-ID: <1389606496.29053.16.camel@localhost>
-Subject: Re: [linux-sunxi] Re: [RFC PATCH 0/9] mtd: nand: add sunxi NAND
- Flash Controller support
-From: Henrik =?ISO-8859-1?Q?Nordstr=F6m?= <henrik@henriknordstrom.net>
-To: linux-sunxi@googlegroups.com
-Date: Mon, 13 Jan 2014 10:48:16 +0100
-In-Reply-To: <52D3ABB6.9030204@overkiz.com>
-References: <1389190924-26226-1-git-send-email-b.brezillon@overkiz.com>
- <52D1494E.9090303@overkiz.com> <1389449230.19197.2.camel@localhost>
- <52D1541F.4040400@overkiz.com> <1389456075.20989.11.camel@localhost>
- <1389474709.22660.4.camel@localhost> <52D3ABB6.9030204@overkiz.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
+ id 1W2etQ-0002JR-Oh
+ for linux-mtd@lists.infradead.org; Mon, 13 Jan 2014 10:37:17 +0000
+From: =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>
+To: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Akinobu Mita <akinobu.mita@gmail.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>,
+ Huang Shijie <b32955@freescale.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: mtd_oobtest: fix verify errors due to incorrect use of
+ prandom_bytes_state()
+Date: Mon, 13 Jan 2014 11:25:39 +0100
+Message-Id: <1389608739-10945-1-git-send-email-LW@KARO-electronics.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: dev@linux-sunxi.org, linux-mtd@lists.infradead.org,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,84 +27,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-mån 2014-01-13 klockan 10:02 +0100 skrev boris brezillon:
+When using prandom_bytes_state() it is critical to use the same block
+size in all invocations that are to produce the same random sequence.
+Otherwise the state of the PRNG will be out of sync if the blocksize
+is not divisible by 4.
+This leads to bogus verification errors in several tests which use
+different block sizes to initialize the buffer for writing and
+comparison.
 
-> The most complicated part is the boot0 partition.
+Signed-off-by: Lothar Waßmann <LW@KARO-electronics.de>
+---
+ drivers/mtd/tests/oobtest.c |   14 ++++++++++++--
+ 1 files changed, 12 insertions(+), 2 deletions(-)
 
-Not really. It's only a little different (sequential ECC, static
-randomizer seed on every page).
-
-> Tell me if I'm wrong, but here's what I understood from your work (and 
-> yuq's work too):
-> 
-> boot 0 part properties:
-> - uses sequential ECC
-
-Yes
-
-> - uses 1024 bytes ECC blocks
-
-Seems to support a couple modes.
-
-> - boot0 code is stored only on the first ECC block of each page (1024 
-> bytes + ecc bytes)
-
-No, it reads a whole page at a time in sequental mode
-(data,ecc,data,ecc,data,ecc,data,ecc...).
-
-> - boot0 code is stored on the first 64 pages of the first block
-
-boot0 is restricted in size by available memory size (24KB max). 
-
-iirc multiple blocks is tried until a valid one is found.
-
-also I am pretty sure boot1 is stored using the same flash format, but
-have not looked in detail at how boot0 reads boot1 as it's a detail of
-boot0 software implementation and not needed when using u-boot.
-
-> - boot0 uses HW randomizer with a specific rnd seed (0x4a80)
-
-Yes.
-
-> It's not that complicated to read/write from/to boot0, but it's a bit 
-> more to mainline this
-> implementation:
-
-Ah, yes. It's different.
-
-But isn't there other SoCs having similar issue with NAND boot blocks?
-Maybe some guidance can be found there?
-
-Qiang Yu (yuq) selected to implement the sunxi boot area driver using a
-custom character device in his attempt in writing a sunxi mtd driver.
-That approach works, but can't comment on if it's the right approach or
-not.
-
-   https://github.com/yuq/sunxi-nfc-mtd
-
->   - the nand chip must use the same ECC algorithm and ECC layout on the 
-> whole flash
->     (no partition specific config available)
-
-iirc there is an interface for dynamically selecting ECC mode and other
-parameers. Or maybe that's only u-boot mtd?
-
-> - you cannot mark some part of pages as unused => the nand driver will 
-> write the
->    whole page, not just the first ECC block (1024 bytes)
-
-Not sure what you mean. Why would something be marked as unused? The
-boot area is not a filesystem, it is a single linear blob (or two if
-boot1 is in the same format, but mostly irrelevant).
-
-> I thought about manually creating an mtd device that fullfils these 
-> needs (in case we
-> encounter the "allwinner,nandn-boot" property on a nand@X node), but I'm 
-> not sure
-> this is the right approach.
-
-Would work, if you also can make sure the two do not stomp on each
-others. Should be divided by NAND block range.
-
-Regards
-Henrik
+diff --git a/drivers/mtd/tests/oobtest.c b/drivers/mtd/tests/oobtest.c
+index 2e9e2d1..72c7359 100644
+--- a/drivers/mtd/tests/oobtest.c
++++ b/drivers/mtd/tests/oobtest.c
+@@ -213,8 +213,15 @@ static int verify_eraseblock_in_one_go(int ebnum)
+ 	int err = 0;
+ 	loff_t addr = ebnum * mtd->erasesize;
+ 	size_t len = mtd->ecclayout->oobavail * pgcnt;
++	int i;
++
++	for (i = 0; i < pgcnt; i++)
++		prandom_bytes_state(&rnd_state, &writebuf[i * use_len],
++				use_len);
++	if (len % use_len)
++		prandom_bytes_state(&rnd_state, &writebuf[i * use_len],
++				len % use_len);
+ 
+-	prandom_bytes_state(&rnd_state, writebuf, len);
+ 	ops.mode      = MTD_OPS_AUTO_OOB;
+ 	ops.len       = 0;
+ 	ops.retlen    = 0;
+@@ -594,7 +601,10 @@ static int __init mtd_oobtest_init(void)
+ 		if (bbt[i] || bbt[i + 1])
+ 			continue;
+ 		prandom_bytes_state(&rnd_state, writebuf,
+-					mtd->ecclayout->oobavail * 2);
++					mtd->ecclayout->oobavail);
++		prandom_bytes_state(&rnd_state,
++					writebuf + mtd->ecclayout->oobavail,
++					mtd->ecclayout->oobavail);
+ 		addr = (i + 1) * mtd->erasesize - mtd->writesize;
+ 		ops.mode      = MTD_OPS_AUTO_OOB;
+ 		ops.len       = 0;
+-- 
+1.7.2.5
