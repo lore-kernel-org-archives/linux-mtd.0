@@ -1,24 +1,22 @@
-Received: from co1ehsobe002.messaging.microsoft.com ([216.32.180.185]
- helo=co1outboundpool.messaging.microsoft.com)
+Received: from ch1ehsobe003.messaging.microsoft.com ([216.32.181.183]
+ helo=ch1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W2caw-0007Su-KY
- for linux-mtd@lists.infradead.org; Mon, 13 Jan 2014 08:10:03 +0000
-Date: Mon, 13 Jan 2014 15:34:34 +0800
+ id 1W2cco-0007VS-Im
+ for linux-mtd@lists.infradead.org; Mon, 13 Jan 2014 08:11:58 +0000
+Date: Mon, 13 Jan 2014 15:36:32 +0800
 From: Huang Shijie <b32955@freescale.com>
-To: Elie De Brauwer <eliedebrauwer@gmail.com>
-Subject: Re: [PATCH v3] mtd: gpmi: fix the bitflips for erased page
-Message-ID: <20140113073433.GB26113@shlinux2.ap.freescale.net>
-References: <1389581697-28309-1-git-send-email-b32955@freescale.com>
- <CAGWqfiiRtRoT_qE4SjrkMDspxEWePRbX9krZxXM-TtVSxuhSLg@mail.gmail.com>
- <20140113065914.GA26113@shlinux2.ap.freescale.net>
- <CAGWqfiiZMaH1i9aTLQpqjMFnnXqi0xHoFquOLjZ_FNNYkg_AhA@mail.gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v3 3/5] mtd: nand: add generic READ RETRY support
+Message-ID: <20140113073630.GC26113@shlinux2.ap.freescale.net>
+References: <1388795828-24808-1-git-send-email-computersforpeace@gmail.com>
+ <1388795828-24808-3-git-send-email-computersforpeace@gmail.com>
+ <20140107061733.GD8109@shlinux2.ap.freescale.net>
+ <20140113080400.GK1992@norris-Latitude-E6410>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <CAGWqfiiZMaH1i9aTLQpqjMFnnXqi0xHoFquOLjZ_FNNYkg_AhA@mail.gmail.com>
-Cc: Vikram.Narayanan@in.bosch.com, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, bpringlemeir@nbsps.com,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+In-Reply-To: <20140113080400.GK1992@norris-Latitude-E6410>
+Cc: linux-mtd@lists.infradead.org, Pekon Gupta <pekon@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,34 +26,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jan 13, 2014 at 08:52:48AM +0100, Elie De Brauwer wrote:
-> >> A second note, you patch v2 is a lie, there in the v1->v2 you mention
-> >> you return the number of bitflips to the upper layer, however your
-> >> code was not modified accordingly, gpmi_erase_check still does not
-> >> return the number of bitflips. Unless I'm missing something there too.
-> > I added a new argument @max_bitflips for gpmi_erased_check which will
-> > return the number of bitflips.
+On Mon, Jan 13, 2014 at 12:04:00AM -0800, Brian Norris wrote:
 > 
-> True, but if you look just  below your patch you see that
-> mtd->ecc_stats.correct will not
-> get properly updated. It normally gets updated with the number of
-> bitflips reported
-My bad now :(
-
-I really missed the mtd->ecc_stats.corrected.
-thanks a lot for pointing this.
-
-
-> through the status. (Well to be honest the entire switching between chunks and
-> pages confused me a lot on this monday morning, it could be me but when
-> iterating over chunks, switching to pages and breaking out of the for
-> loop isn't
-> something I would consider very clean, I think some more elaborate comment
-If we do not read the whole page, we have to issue the change column comand 0x5
-and calculate the offset of the chunk.
-
-> on the erased check might help.).
-ok. i will add more comment in the next version.
+> It's not actually performing any "read" or a "retry"; the function is
+> just configuring the device for a retry. So I don't think read_retry is
+> correct. For my name, I was abbreviating "set read retry mode". How do
+> you like "setup_read_retry" or "set_read_retry_mode"?
+I prefer to the setup_read_retry :)
 
 thanks
 Huang Shijie
