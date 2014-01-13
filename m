@@ -1,23 +1,22 @@
-Received: from mail.karo-electronics.de ([81.173.242.67])
+Received: from mail-la0-x229.google.com ([2a00:1450:4010:c03::229])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W2etQ-0002JR-Oh
- for linux-mtd@lists.infradead.org; Mon, 13 Jan 2014 10:37:17 +0000
-From: =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>
-To: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Akinobu Mita <akinobu.mita@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>,
- Huang Shijie <b32955@freescale.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: mtd_oobtest: fix verify errors due to incorrect use of
- prandom_bytes_state()
-Date: Mon, 13 Jan 2014 11:25:39 +0100
-Message-Id: <1389608739-10945-1-git-send-email-LW@KARO-electronics.de>
+ id 1W2gV1-0005Th-C9
+ for linux-mtd@lists.infradead.org; Mon, 13 Jan 2014 12:20:12 +0000
+Received: by mail-la0-f41.google.com with SMTP id mc6so1310663lab.0
+ for <linux-mtd@lists.infradead.org>; Mon, 13 Jan 2014 04:19:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>
+In-Reply-To: <1388753970.25123.124.camel@sauron.fi.intel.com>
+References: <20980858CB6D3A4BAE95CA194937D5E73EA5DBFA@DBDE04.ent.ti.com>
+ <1388753970.25123.124.camel@sauron.fi.intel.com>
+Date: Mon, 13 Jan 2014 17:49:42 +0530
+Message-ID: <CAEhpT-W-aBkackmUb860vex2LxGzkBQ6hu1KGvUzjmTWTeQgxg@mail.gmail.com>
+Subject: Re: UBIFS seeing corrupt blank pages when image flashed via u-boot
+From: Calvin Johnson <linux.cj@gmail.com>
+To: artem.bityutskiy@linux.intel.com
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: "u-boot@lists.denx.de" <u-boot@lists.denx.de>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
+ Pekon" <pekon@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,51 +26,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When using prandom_bytes_state() it is critical to use the same block
-size in all invocations that are to produce the same random sequence.
-Otherwise the state of the PRNG will be out of sync if the blocksize
-is not divisible by 4.
-This leads to bogus verification errors in several tests which use
-different block sizes to initialize the buffer for writing and
-comparison.
+Hi,
 
-Signed-off-by: Lothar Waßmann <LW@KARO-electronics.de>
----
- drivers/mtd/tests/oobtest.c |   14 ++++++++++++--
- 1 files changed, 12 insertions(+), 2 deletions(-)
+On Fri, Jan 3, 2014 at 6:29 PM, Artem Bityutskiy
+<artem.bityutskiy@linux.intel.com> wrote:
+>
+> Hi Pekon,
+>
+> On Fri, 2014-01-03 at 11:45 +0000, Gupta, Pekon wrote:
+> > *_Case-1_ Flashing UBIFS image from u-boot using 'nand write' utility*
+> >
+> > For a partially written erased-block..
+> > (a) 1st page is written with 'erase-header'
+> > (b) 2nd page is written with 'volume-header'
+> > (c) '3rd page' is written with 'some data'
+> > (d) '4th to last-page of block' should be left blank, but they are written with 0xFF.
+> > As a effect of (d), the ECC calculated for (all 0xff data) is written to
+> > OOB area of all pages from 4th-page till last-page of the PEB.
+>
+> Yup.
+>
 
-diff --git a/drivers/mtd/tests/oobtest.c b/drivers/mtd/tests/oobtest.c
-index 2e9e2d1..72c7359 100644
---- a/drivers/mtd/tests/oobtest.c
-+++ b/drivers/mtd/tests/oobtest.c
-@@ -213,8 +213,15 @@ static int verify_eraseblock_in_one_go(int ebnum)
- 	int err = 0;
- 	loff_t addr = ebnum * mtd->erasesize;
- 	size_t len = mtd->ecclayout->oobavail * pgcnt;
-+	int i;
-+
-+	for (i = 0; i < pgcnt; i++)
-+		prandom_bytes_state(&rnd_state, &writebuf[i * use_len],
-+				use_len);
-+	if (len % use_len)
-+		prandom_bytes_state(&rnd_state, &writebuf[i * use_len],
-+				len % use_len);
- 
--	prandom_bytes_state(&rnd_state, writebuf, len);
- 	ops.mode      = MTD_OPS_AUTO_OOB;
- 	ops.len       = 0;
- 	ops.retlen    = 0;
-@@ -594,7 +601,10 @@ static int __init mtd_oobtest_init(void)
- 		if (bbt[i] || bbt[i + 1])
- 			continue;
- 		prandom_bytes_state(&rnd_state, writebuf,
--					mtd->ecclayout->oobavail * 2);
-+					mtd->ecclayout->oobavail);
-+		prandom_bytes_state(&rnd_state,
-+					writebuf + mtd->ecclayout->oobavail,
-+					mtd->ecclayout->oobavail);
- 		addr = (i + 1) * mtd->erasesize - mtd->writesize;
- 		ops.mode      = MTD_OPS_AUTO_OOB;
- 		ops.len       = 0;
--- 
-1.7.2.5
+If the 4th to last-page are left blank and not covered with ECC, what
+will happen in case of bit flips on the blank pages? There was an
+issue reported some time back.
+http://lists.infradead.org/pipermail/linux-mtd/2012-January/039256.html
+
+Does UBI/UBIFS take care of this now?
+
+Thanks,
+Calvin
