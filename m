@@ -1,22 +1,24 @@
-Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
+Received: from co1ehsobe002.messaging.microsoft.com ([216.32.180.185]
+ helo=co1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W2cVV-0007It-GF
- for linux-mtd@lists.infradead.org; Mon, 13 Jan 2014 08:04:26 +0000
-Received: by mail-pa0-f46.google.com with SMTP id rd3so1543256pab.19
- for <linux-mtd@lists.infradead.org>; Mon, 13 Jan 2014 00:04:04 -0800 (PST)
-Date: Mon, 13 Jan 2014 00:04:00 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH v3 3/5] mtd: nand: add generic READ RETRY support
-Message-ID: <20140113080400.GK1992@norris-Latitude-E6410>
-References: <1388795828-24808-1-git-send-email-computersforpeace@gmail.com>
- <1388795828-24808-3-git-send-email-computersforpeace@gmail.com>
- <20140107061733.GD8109@shlinux2.ap.freescale.net>
+ id 1W2caw-0007Su-KY
+ for linux-mtd@lists.infradead.org; Mon, 13 Jan 2014 08:10:03 +0000
+Date: Mon, 13 Jan 2014 15:34:34 +0800
+From: Huang Shijie <b32955@freescale.com>
+To: Elie De Brauwer <eliedebrauwer@gmail.com>
+Subject: Re: [PATCH v3] mtd: gpmi: fix the bitflips for erased page
+Message-ID: <20140113073433.GB26113@shlinux2.ap.freescale.net>
+References: <1389581697-28309-1-git-send-email-b32955@freescale.com>
+ <CAGWqfiiRtRoT_qE4SjrkMDspxEWePRbX9krZxXM-TtVSxuhSLg@mail.gmail.com>
+ <20140113065914.GA26113@shlinux2.ap.freescale.net>
+ <CAGWqfiiZMaH1i9aTLQpqjMFnnXqi0xHoFquOLjZ_FNNYkg_AhA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20140107061733.GD8109@shlinux2.ap.freescale.net>
-Cc: linux-mtd@lists.infradead.org, Pekon Gupta <pekon@ti.com>
+In-Reply-To: <CAGWqfiiZMaH1i9aTLQpqjMFnnXqi0xHoFquOLjZ_FNNYkg_AhA@mail.gmail.com>
+Cc: Vikram.Narayanan@in.bosch.com, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, bpringlemeir@nbsps.com,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,46 +28,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jan 07, 2014 at 02:17:34PM +0800, Huang Shijie wrote:
-> On Fri, Jan 03, 2014 at 04:37:06PM -0800, Brian Norris wrote:
-> > @@ -1514,8 +1535,27 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
-> >  					nand_wait_ready(mtd);
-> >  			}
-> >  
-> > -			if (mtd->ecc_stats.failed - ecc_failures)
-> > -				ecc_fail = true;
-> > +			if (mtd->ecc_stats.failed - ecc_failures) {
-> > +				if (retry_mode + 1 <= chip->read_retries) {
-> > +					retry_mode++;
-> > +					pr_debug("ECC error; performing READ RETRY %d\n",
-> > +							retry_mode);
+On Mon, Jan 13, 2014 at 08:52:48AM +0100, Elie De Brauwer wrote:
+> >> A second note, you patch v2 is a lie, there in the v1->v2 you mention
+> >> you return the number of bitflips to the upper layer, however your
+> >> code was not modified accordingly, gpmi_erase_check still does not
+> >> return the number of bitflips. Unless I'm missing something there too.
+> > I added a new argument @max_bitflips for gpmi_erased_check which will
+> > return the number of bitflips.
 > 
-> you can move this pr_debug into the nand_set_read_retry().
+> True, but if you look just  below your patch you see that
+> mtd->ecc_stats.correct will not
+> get properly updated. It normally gets updated with the number of
+> bitflips reported
+My bad now :(
 
-OK.
+I really missed the mtd->ecc_stats.corrected.
+thanks a lot for pointing this.
 
-> > +
-> > +					ret = nand_set_read_retry(mtd,
-> > +							retry_mode);
-> > +					if (ret < 0)
-> > +						break;
-> > diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> > index 029fe5948dc4..ef70505dade1 100644
-> > --- a/include/linux/mtd/nand.h
-> > +++ b/include/linux/mtd/nand.h
-> > @@ -472,6 +472,8 @@ struct nand_buffers {
-> >   *			commands to the chip.
-> >   * @waitfunc:		[REPLACEABLE] hardwarespecific function for wait on
-> >   *			ready.
-> > + * @set_read_retry:	[FLASHSPECIFIC] flash (vendor) specific function for
-> > + *			setting the read-retry mode. Mostly needed for MLC NAND.
-> 
-> why not use the name "read_retry"?
-> i think it is more clear.
 
-It's not actually performing any "read" or a "retry"; the function is
-just configuring the device for a retry. So I don't think read_retry is
-correct. For my name, I was abbreviating "set read retry mode". How do
-you like "setup_read_retry" or "set_read_retry_mode"?
+> through the status. (Well to be honest the entire switching between chunks and
+> pages confused me a lot on this monday morning, it could be me but when
+> iterating over chunks, switching to pages and breaking out of the for
+> loop isn't
+> something I would consider very clean, I think some more elaborate comment
+If we do not read the whole page, we have to issue the change column comand 0x5
+and calculate the offset of the chunk.
 
-Brian
+> on the erased check might help.).
+ok. i will add more comment in the next version.
+
+thanks
+Huang Shijie
