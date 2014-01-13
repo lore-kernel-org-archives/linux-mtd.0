@@ -1,22 +1,29 @@
-Received: from mail-db9lp0252.outbound.messaging.microsoft.com
- ([213.199.154.252] helo=db9outboundpool.messaging.microsoft.com)
+Received: from mail-pd0-x231.google.com ([2607:f8b0:400e:c02::231])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W2c2q-0006Qw-MO
- for linux-mtd@lists.infradead.org; Mon, 13 Jan 2014 07:34:49 +0000
-Date: Mon, 13 Jan 2014 14:59:16 +0800
-From: Huang Shijie <b32955@freescale.com>
-To: Elie De Brauwer <eliedebrauwer@gmail.com>
-Subject: Re: [PATCH v3] mtd: gpmi: fix the bitflips for erased page
-Message-ID: <20140113065914.GA26113@shlinux2.ap.freescale.net>
-References: <1389581697-28309-1-git-send-email-b32955@freescale.com>
- <CAGWqfiiRtRoT_qE4SjrkMDspxEWePRbX9krZxXM-TtVSxuhSLg@mail.gmail.com>
+ id 1W2cEJ-0006h3-UM
+ for linux-mtd@lists.infradead.org; Mon, 13 Jan 2014 07:46:40 +0000
+Received: by mail-pd0-f177.google.com with SMTP id q10so7059278pdj.36
+ for <linux-mtd@lists.infradead.org>; Sun, 12 Jan 2014 23:46:17 -0800 (PST)
+Date: Sun, 12 Jan 2014 23:46:13 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Caizhiyong <caizhiyong@hisilicon.com>
+Subject: Re: [PATCH] mtd: nand:  assign mtd->name in find_full_id_nand
+Message-ID: <20140113074613.GI1992@norris-Latitude-E6410>
+References: <C3050A4DBA34F345975765E43127F10F25E47E20@SZXEMA512-MBX.china.huawei.com>
+ <20131226021937.GA6752@shlinux2.ap.freescale.net>
+ <20140111201019.GD1992@norris-Latitude-E6410>
+ <C3050A4DBA34F345975765E43127F10F25E48C13@SZXEMA512-MBX.china.huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAGWqfiiRtRoT_qE4SjrkMDspxEWePRbX9krZxXM-TtVSxuhSLg@mail.gmail.com>
-Cc: Vikram.Narayanan@in.bosch.com, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, bpringlemeir@nbsps.com,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+In-Reply-To: <C3050A4DBA34F345975765E43127F10F25E48C13@SZXEMA512-MBX.china.huawei.com>
+Cc: David Woodhouse <David.Woodhouse@intel.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Huang Shijie <b32955@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Quyaxin <quyaxin@hisilicon.com>,
+ "Wanglin \(Albert\)" <albert.wanglin@hisilicon.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,78 +33,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jan 13, 2014 at 08:20:24AM +0100, Elie De Brauwer wrote:
-> On Mon, Jan 13, 2014 at 3:54 AM, Huang Shijie <b32955@freescale.com> wrote:
-> > +       /* Read out the page without ECC enabled, and check it again */
-> > +       chip->cmdfunc(mtd, NAND_CMD_READ0, 0, page);
-> > +       chip->read_buf(mtd, (uint8_t *)buf, mtd->writesize);
-> > +
-> > +       /* Count the bitflips for the no ECC buffer */
-> > +       for (i = 0; i < mtd->writesize / 8; i++)
-> > +               flip_bits_noecc += hweight64(~buf[i]);
+On Mon, Jan 13, 2014 at 04:12:45AM +0000, Caizhiyong wrote:
+> > -----Original Message-----
+> > From: Brian Norris [mailto:computersforpeace@gmail.com]
+> > Sent: Sunday, January 12, 2014 4:10 AM
+> > 
+> > On Thu, Dec 26, 2013 at 10:19:39AM +0800, Huang Shijie wrote:
+> > > On Thu, Dec 26, 2013 at 01:51:58AM +0000, Caizhiyong wrote:
+> > > > From: Cai Zhiyong <caizhiyong@huawei.com>
+> > > > Date: Wed, 25 Dec 2013 21:19:21 +0800
+> > > > Subject: [PATCH] mtd: nand: assign mtd->name in find_full_id_nand
+> > > >
+> > > > This patch assigned the type->name to mtd->name when mtd->name is
+> > > > NULL in function "find_full_id_nand".
+> > > > mtd->name is NULL may cause some problem.
+> > > >
+> > > > Signed-off-by: Cai Zhiyong <caizhiyong@huawei.com>
+> > > Acked-by: Huang Shijie <b32955@freescale.com>
+> > 
+> > Thanks, the patch looks good. Pushed to l2-mtd.git.
+> > 
+> > Wouldn't this trigger an exception when reading
+> > /sys/class/mtd/mtdX/name? If so, should this be marked for stable?
 > 
-> Is it safe to assume that all these chunks will be 8-byte-aligned ? I
-> also thought about this optimization but didn't find any indication
-> that this might be safe.
-
-Firstly the page size is 8-tyte-aligned. do you meet a nand which is not
-8-byte-aligned?
-
-Secondely, even the page size is not 8-byte-aligned, it is okay too.
-why? the gpmi will split the nand layout as:
-    +---+----------+-+----------+-+----------+-+----------+-+-----+
-    | M |   data   |E|   data   |E|   data   |E|   data   |E|     |
-    +---+----------+-+----------+-+----------+-+----------+-+-----+
-
-    E stands for the ECC parity area.
-
-For the page contains the all 0xff data, the "E" is not 0xff, and 
-we can get the enough bitflips from only one "E" area.
-
-
+> View the source code, if mtd->name is NULL, cat "/sys/class/mtd/mtdX/name" will get string "(null)".
 > 
-> > +
-> > +       if (flip_bits_noecc <= threshold) {
-> > +               /* Tell the upper layer the bitflips we corrected. */
-> > +               *max_bitflips = max_t(unsigned int, *max_bitflips, flip_bits);
-> > +
-> > +               /*
-> > +                * The geo->payload_size maybe not equal to the page size
-> > +                * when the Subpage-Read is enabled.
-> > +                */
-> > +               memset(data, 0xff, geo->payload_size);
-> > +               ret = true;
-> > +       }
-> > +       dev_dbg(this->dev, "The page(%d) %s an erased page(%d,%d,%d,%d).\n",
-> > +                       page, ret ? "is" : "isn't", chunk, threshold,
-> > +                       flip_bits, flip_bits_noecc);
-> > +       return ret;
-> > +}
-> > +
-> >  static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
-> >                                 uint8_t *buf, int oob_required, int page)
-> >  {
-> > @@ -1007,6 +1057,10 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
-> >                         continue;
-> >
-> >                 if (*status == STATUS_UNCORRECTABLE) {
-> > +                       if (gpmi_erased_check(this, payload_virt, i,
-> > +                                               page, &max_bitflips))
-> > +                               break;
-> > +
-> >                         mtd->ecc_stats.failed++;
-> >                         continue;
-> >                 }
-> > --
-> > 1.7.2.rc3
-> >
+> static ssize_t mtd_name_show(struct device *dev, struct device_attribute *attr, char *buf)
+> {
+> 	struct mtd_info *mtd = dev_get_drvdata(dev);
 > 
-> A second note, you patch v2 is a lie, there in the v1->v2 you mention
-> you return the number of bitflips to the upper layer, however your
-> code was not modified accordingly, gpmi_erase_check still does not
-> return the number of bitflips. Unless I'm missing something there too.
-I added a new argument @max_bitflips for gpmi_erased_check which will
-return the number of bitflips.
+> 	return snprintf(buf, PAGE_SIZE, "%s\n", mtd->name);
+> }
 
-thanks
-Huang Shijie
+Thanks, I forgot that the kernel's printf-like functions handle NULL
+pointers gracefully. In that case, this probably doesn't need to be in
+-stable.
+
+Brian
