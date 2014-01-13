@@ -1,15 +1,21 @@
-From: Huang Shijie <b32955@freescale.com>
-To: <dwmw2@infradead.org>
-Subject: [PATCH fix] mtd: nand: kill the the
- NAND_MAX_PAGESIZE/NAND_MAX_OOBSIZE for nand_buffers{}
-Date: Mon, 13 Jan 2014 14:27:12 +0800
-Message-ID: <1389594432-23482-1-git-send-email-b32955@freescale.com>
-In-Reply-To: <20140111233937.GF1992@norris-Latitude-E6410>
-References: <20140111233937.GF1992@norris-Latitude-E6410>
+Received: from mail-pb0-x234.google.com ([2607:f8b0:400e:c01::234])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W2bpK-0006HN-J9
+ for linux-mtd@lists.infradead.org; Mon, 13 Jan 2014 07:20:51 +0000
+Received: by mail-pb0-f52.google.com with SMTP id uo5so6939080pbc.25
+ for <linux-mtd@lists.infradead.org>; Sun, 12 Jan 2014 23:20:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <1389581697-28309-1-git-send-email-b32955@freescale.com>
+References: <1389581697-28309-1-git-send-email-b32955@freescale.com>
+Date: Mon, 13 Jan 2014 08:20:24 +0100
+Message-ID: <CAGWqfiiRtRoT_qE4SjrkMDspxEWePRbX9krZxXM-TtVSxuhSLg@mail.gmail.com>
+Subject: Re: [PATCH v3] mtd: gpmi: fix the bitflips for erased page
+From: Elie De Brauwer <eliedebrauwer@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Vikram.Narayanan@in.bosch.com, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, bpringlemeir@nbsps.com,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,232 +25,145 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The patch converts the arrays to buffer pointers for nand_buffers{}.
+On Mon, Jan 13, 2014 at 3:54 AM, Huang Shijie <b32955@freescale.com> wrote:
+> We may meet the bitflips in reading an erased page(contains all 0xFF),
+> this may causes the UBIFS corrupt, please see the log from Elie:
+>
+> -----------------------------------------------------------------
+> [    3.831323] UBI warning: ubi_io_read: error -74 (ECC error) while reading 16384 bytes from PEB 443:245760, read only 16384 bytes, retry
+> [    3.845026] UBI warning: ubi_io_read: error -74 (ECC error) while reading 16384 bytes from PEB 443:245760, read only 16384 bytes, retry
+> [    3.858710] UBI warning: ubi_io_read: error -74 (ECC error) while reading 16384 bytes from PEB 443:245760, read only 16384 bytes, retry
+> [    3.872408] UBI error: ubi_io_read: error -74 (ECC error) while reading 16384 bytes from PEB 443:245760, read 16384 bytes
+> ...
+> [    4.011529] UBIFS error (pid 36): ubifs_recover_leb: corrupt empty space LEB 27:237568, corruption starts at 9815
+> [    4.021897] UBIFS error (pid 36): ubifs_scanned_corruption: corruption at LEB 27:247383
+> [    4.030000] UBIFS error (pid 36): ubifs_scanned_corruption: first 6569 bytes from LEB 27:247383
+> -----------------------------------------------------------------
+>
+> This patch does a check for the uncorrectable failure in the following steps:
+>
+>    [0] set the threshold.
+>        The threshold is set based on the truth:
+>          "A single 0 bit will lead to gf_len(13 or 14) bits 0 after the BCH
+>           do the ECC."
+>
+>        For the sake of safe, we will set the threshold with half the gf_len, and
+>        do not make it bigger the ECC strength.
+>
+>    [1] count the bitflips of the current ECC chunk, assume it is N.
+>
+>    [2] if the (N <= threshold) is true, we continue to read out the page with
+>        ECC disabled. and we count the bitflips again, assume it is N2.
+>
+>    [3] if the (N2 <= threshold) is true again, we can regard this is a erased
+>        page. This is because a real erased page is full of 0xFF(maybe also has
+>        several bitflips), while a page contains the 0xFF data will definitely
+>        has many bitflips in the ECC parity areas.
+>
+>    [4] if the [3] fails, we can regard this is a page filled with the '0xFF'
+>        data.
+>
+> Tested-by: Elie De Brauwer <eliedebrauwer@gmail.com>
+> Reported-by: Elie De Brauwer <eliedebrauwer@gmail.com>
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
+> ---
+> v2 -- > v3:
+>         [1] add the shortcut for the step [2].
+>         [2] use the hweight64 to optimize the bitflips count.
+> ---
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   54 ++++++++++++++++++++++++++++++++
+>  1 files changed, 54 insertions(+), 0 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> index e2f5820..9b600e1 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> @@ -958,6 +958,56 @@ static void block_mark_swapping(struct gpmi_nand_data *this,
+>         p[1] = (p[1] & mask) | (from_oob >> (8 - bit));
+>  }
+>
+> +static bool gpmi_erased_check(struct gpmi_nand_data *this,
+> +                       unsigned char *data, unsigned int chunk, int page,
+> +                       unsigned int *max_bitflips)
+> +{
+> +       struct nand_chip *chip = &this->nand;
+> +       struct mtd_info *mtd = &this->mtd;
+> +       struct bch_geometry *geo = &this->bch_geometry;
+> +       int base = geo->ecc_chunk_size * chunk;
+> +       unsigned int flip_bits = 0, flip_bits_noecc = 0;
+> +       uint64_t *buf = (uint64_t *)this->data_buffer_dma;
+> +       unsigned int threshold;
+> +       bool ret = false;
+> +       int i;
+> +
+> +       threshold = geo->gf_len / 2;
+> +       if (threshold > geo->ecc_strength)
+> +               threshold = geo->ecc_strength;
+> +
+> +       /* Count bitflips */
+> +       for (i = 0; i < geo->ecc_chunk_size; i++) {
+> +               flip_bits += hweight8(~data[base + i]);
+> +               if (flip_bits > threshold)
+> +                       return false;
+> +       }
+> +
+> +       /* Read out the page without ECC enabled, and check it again */
+> +       chip->cmdfunc(mtd, NAND_CMD_READ0, 0, page);
+> +       chip->read_buf(mtd, (uint8_t *)buf, mtd->writesize);
+> +
+> +       /* Count the bitflips for the no ECC buffer */
+> +       for (i = 0; i < mtd->writesize / 8; i++)
+> +               flip_bits_noecc += hweight64(~buf[i]);
 
-The cafe_nand.c is the only NAND_OWN_BUFFERS user which allocates
-a nand_buffers{} itself.
+Is it safe to assume that all these chunks will be 8-byte-aligned ? I
+also thought about this optimization but didn't find any indication
+that this might be safe.
 
-This patch disables the DMA for nand_scan_ident, and restore the DMA
-status after we finish the nand_scan_ident. By this way, we can get the
-mtd->writesize and mtd->oobsize, and then allocates the cafe->dmabuf
-with them.
+> +
+> +       if (flip_bits_noecc <= threshold) {
+> +               /* Tell the upper layer the bitflips we corrected. */
+> +               *max_bitflips = max_t(unsigned int, *max_bitflips, flip_bits);
+> +
+> +               /*
+> +                * The geo->payload_size maybe not equal to the page size
+> +                * when the Subpage-Read is enabled.
+> +                */
+> +               memset(data, 0xff, geo->payload_size);
+> +               ret = true;
+> +       }
+> +       dev_dbg(this->dev, "The page(%d) %s an erased page(%d,%d,%d,%d).\n",
+> +                       page, ret ? "is" : "isn't", chunk, threshold,
+> +                       flip_bits, flip_bits_noecc);
+> +       return ret;
+> +}
+> +
+>  static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+>                                 uint8_t *buf, int oob_required, int page)
+>  {
+> @@ -1007,6 +1057,10 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+>                         continue;
+>
+>                 if (*status == STATUS_UNCORRECTABLE) {
+> +                       if (gpmi_erased_check(this, payload_virt, i,
+> +                                               page, &max_bitflips))
+> +                               break;
+> +
+>                         mtd->ecc_stats.failed++;
+>                         continue;
+>                 }
+> --
+> 1.7.2.rc3
+>
 
-Since the cafe_nand.c uses the NAND_ECC_HW_SYNDROME ECC mode, we do not
-allocate the buffers for @ecccalc and @ecccode.
+A second note, you patch v2 is a lie, there in the v1->v2 you mention
+you return the number of bitflips to the upper layer, however your
+code was not modified accordingly, gpmi_erase_check still does not
+return the number of bitflips. Unless I'm missing something there too.
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
----
+my 2 cents
+E.
 
-fix: Setup the DMA address after we have allocated the DMA buffer.
 
----
- drivers/mtd/nand/cafe_nand.c |   68 ++++++++++++++++++++++++++++-------------
- drivers/mtd/nand/nand_base.c |   19 +++++++++--
- include/linux/mtd/nand.h     |   12 ++++----
- 3 files changed, 67 insertions(+), 32 deletions(-)
 
-diff --git a/drivers/mtd/nand/cafe_nand.c b/drivers/mtd/nand/cafe_nand.c
-index f2f64ad..4e66726 100644
---- a/drivers/mtd/nand/cafe_nand.c
-+++ b/drivers/mtd/nand/cafe_nand.c
-@@ -627,6 +627,8 @@ static int cafe_nand_probe(struct pci_dev *pdev,
- 	struct cafe_priv *cafe;
- 	uint32_t ctrl;
- 	int err = 0;
-+	int old_dma;
-+	struct nand_buffers *nbuf;
- 
- 	/* Very old versions shared the same PCI ident for all three
- 	   functions on the chip. Verify the class too... */
-@@ -655,13 +657,6 @@ static int cafe_nand_probe(struct pci_dev *pdev,
- 		err = -ENOMEM;
- 		goto out_free_mtd;
- 	}
--	cafe->dmabuf = dma_alloc_coherent(&cafe->pdev->dev, 2112 + sizeof(struct nand_buffers),
--					  &cafe->dmaaddr, GFP_KERNEL);
--	if (!cafe->dmabuf) {
--		err = -ENOMEM;
--		goto out_ior;
--	}
--	cafe->nand.buffers = (void *)cafe->dmabuf + 2112;
- 
- 	cafe->rs = init_rs_non_canonical(12, &cafe_mul, 0, 1, 8);
- 	if (!cafe->rs) {
-@@ -721,7 +716,7 @@ static int cafe_nand_probe(struct pci_dev *pdev,
- 			  "CAFE NAND", mtd);
- 	if (err) {
- 		dev_warn(&pdev->dev, "Could not register IRQ %d\n", pdev->irq);
--		goto out_free_dma;
-+		goto out_ior;
- 	}
- 
- 	/* Disable master reset, enable NAND clock */
-@@ -735,6 +730,32 @@ static int cafe_nand_probe(struct pci_dev *pdev,
- 	cafe_writel(cafe, 0x7006, GLOBAL_CTRL);
- 	cafe_writel(cafe, 0x700a, GLOBAL_CTRL);
- 
-+	/* Enable NAND IRQ in global IRQ mask register */
-+	cafe_writel(cafe, 0x80000007, GLOBAL_IRQ_MASK);
-+	cafe_dev_dbg(&cafe->pdev->dev, "Control %x, IRQ mask %x\n",
-+		cafe_readl(cafe, GLOBAL_CTRL),
-+		cafe_readl(cafe, GLOBAL_IRQ_MASK));
-+
-+	/* Do not use the DMA for the nand_scan_ident() */
-+	old_dma = usedma;
-+	usedma = 0;
-+
-+	/* Scan to find existence of the device */
-+	if (nand_scan_ident(mtd, 2, NULL)) {
-+		err = -ENXIO;
-+		goto out_irq;
-+	}
-+
-+	cafe->dmabuf = dma_alloc_coherent(&cafe->pdev->dev,
-+				2112 + sizeof(struct nand_buffers) +
-+				mtd->writesize + mtd->oobsize,
-+				&cafe->dmaaddr, GFP_KERNEL);
-+	if (!cafe->dmabuf) {
-+		err = -ENOMEM;
-+		goto out_irq;
-+	}
-+	cafe->nand.buffers = nbuf = (void *)cafe->dmabuf + 2112;
-+
- 	/* Set up DMA address */
- 	cafe_writel(cafe, cafe->dmaaddr & 0xffffffff, NAND_DMA_ADDR0);
- 	if (sizeof(cafe->dmaaddr) > 4)
-@@ -746,16 +767,13 @@ static int cafe_nand_probe(struct pci_dev *pdev,
- 	cafe_dev_dbg(&cafe->pdev->dev, "Set DMA address to %x (virt %p)\n",
- 		cafe_readl(cafe, NAND_DMA_ADDR0), cafe->dmabuf);
- 
--	/* Enable NAND IRQ in global IRQ mask register */
--	cafe_writel(cafe, 0x80000007, GLOBAL_IRQ_MASK);
--	cafe_dev_dbg(&cafe->pdev->dev, "Control %x, IRQ mask %x\n",
--		cafe_readl(cafe, GLOBAL_CTRL), cafe_readl(cafe, GLOBAL_IRQ_MASK));
-+	/* this driver does not need the @ecccalc and @ecccode */
-+	nbuf->ecccalc = NULL;
-+	nbuf->ecccode = NULL;
-+	nbuf->databuf = (uint8_t *)(nbuf + 1);
- 
--	/* Scan to find existence of the device */
--	if (nand_scan_ident(mtd, 2, NULL)) {
--		err = -ENXIO;
--		goto out_irq;
--	}
-+	/* Restore the DMA flag */
-+	usedma = old_dma;
- 
- 	cafe->ctl2 = 1<<27; /* Reed-Solomon ECC */
- 	if (mtd->writesize == 2048)
-@@ -773,7 +791,7 @@ static int cafe_nand_probe(struct pci_dev *pdev,
- 	} else {
- 		printk(KERN_WARNING "Unexpected NAND flash writesize %d. Aborting\n",
- 		       mtd->writesize);
--		goto out_irq;
-+		goto out_free_dma;
- 	}
- 	cafe->nand.ecc.mode = NAND_ECC_HW_SYNDROME;
- 	cafe->nand.ecc.size = mtd->writesize;
-@@ -790,7 +808,7 @@ static int cafe_nand_probe(struct pci_dev *pdev,
- 
- 	err = nand_scan_tail(mtd);
- 	if (err)
--		goto out_irq;
-+		goto out_free_dma;
- 
- 	pci_set_drvdata(pdev, mtd);
- 
-@@ -799,12 +817,15 @@ static int cafe_nand_probe(struct pci_dev *pdev,
- 
- 	goto out;
- 
-+ out_free_dma:
-+	dma_free_coherent(&cafe->pdev->dev,
-+			2112 + sizeof(struct nand_buffers) +
-+			mtd->writesize + mtd->oobsize,
-+			cafe->dmabuf, cafe->dmaaddr);
-  out_irq:
- 	/* Disable NAND IRQ in global IRQ mask register */
- 	cafe_writel(cafe, ~1 & cafe_readl(cafe, GLOBAL_IRQ_MASK), GLOBAL_IRQ_MASK);
- 	free_irq(pdev->irq, mtd);
-- out_free_dma:
--	dma_free_coherent(&cafe->pdev->dev, 2112, cafe->dmabuf, cafe->dmaaddr);
-  out_ior:
- 	pci_iounmap(pdev, cafe->mmio);
-  out_free_mtd:
-@@ -824,7 +845,10 @@ static void cafe_nand_remove(struct pci_dev *pdev)
- 	nand_release(mtd);
- 	free_rs(cafe->rs);
- 	pci_iounmap(pdev, cafe->mmio);
--	dma_free_coherent(&cafe->pdev->dev, 2112, cafe->dmabuf, cafe->dmaaddr);
-+	dma_free_coherent(&cafe->pdev->dev,
-+			2112 + sizeof(struct nand_buffers) +
-+			mtd->writesize + mtd->oobsize,
-+			cafe->dmabuf, cafe->dmaaddr);
- 	kfree(mtd);
- }
- 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index dd22cc4..21e1746 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -3733,15 +3733,26 @@ int nand_scan_tail(struct mtd_info *mtd)
- 	int i;
- 	struct nand_chip *chip = mtd->priv;
- 	struct nand_ecc_ctrl *ecc = &chip->ecc;
-+	struct nand_buffers *nbuf;
- 
- 	/* New bad blocks should be marked in OOB, flash-based BBT, or both */
- 	BUG_ON((chip->bbt_options & NAND_BBT_NO_OOB_BBM) &&
- 			!(chip->bbt_options & NAND_BBT_USE_FLASH));
- 
--	if (!(chip->options & NAND_OWN_BUFFERS))
--		chip->buffers = kmalloc(sizeof(*chip->buffers), GFP_KERNEL);
--	if (!chip->buffers)
--		return -ENOMEM;
-+	if (!(chip->options & NAND_OWN_BUFFERS)) {
-+		nbuf = kzalloc(sizeof(*nbuf) + mtd->writesize
-+				+ mtd->oobsize * 3, GFP_KERNEL);
-+		if (!nbuf)
-+			return -ENOMEM;
-+		nbuf->ecccalc = (uint8_t *)(nbuf + 1);
-+		nbuf->ecccode = nbuf->ecccalc + mtd->oobsize;
-+		nbuf->databuf = nbuf->ecccode + mtd->oobsize;
-+
-+		chip->buffers = nbuf;
-+	} else {
-+		if (!chip->buffers)
-+			return -ENOMEM;
-+	}
- 
- 	/* Set the internal oob buffer location, just after the page data */
- 	chip->oob_poi = chip->buffers->databuf + mtd->writesize;
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index d06a56a..773bd93 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -481,17 +481,17 @@ struct nand_ecc_ctrl {
- 
- /**
-  * struct nand_buffers - buffer structure for read/write
-- * @ecccalc:	buffer for calculated ECC
-- * @ecccode:	buffer for ECC read from flash
-- * @databuf:	buffer for data - dynamically sized
-+ * @ecccalc:	buffer pointer for calculated ECC, size is oobsize.
-+ * @ecccode:	buffer pointer for ECC read from flash, size is oobsize.
-+ * @databuf:	buffer pointer for data, size is (page size + oobsize).
-  *
-  * Do not change the order of buffers. databuf and oobrbuf must be in
-  * consecutive order.
-  */
- struct nand_buffers {
--	uint8_t	ecccalc[NAND_MAX_OOBSIZE];
--	uint8_t	ecccode[NAND_MAX_OOBSIZE];
--	uint8_t databuf[NAND_MAX_PAGESIZE + NAND_MAX_OOBSIZE];
-+	uint8_t	*ecccalc;
-+	uint8_t	*ecccode;
-+	uint8_t *databuf;
- };
- 
- /**
 -- 
-1.7.2.rc3
+Elie De Brauwer
