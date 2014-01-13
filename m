@@ -1,21 +1,18 @@
-Received: from mail-la0-x22f.google.com ([2a00:1450:4010:c03::22f])
+Received: from mail-ig0-x22d.google.com ([2607:f8b0:4001:c05::22d])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W2kLd-0004nY-0v
- for linux-mtd@lists.infradead.org; Mon, 13 Jan 2014 16:26:45 +0000
-Received: by mail-la0-f47.google.com with SMTP id eh20so3130622lab.20
- for <linux-mtd@lists.infradead.org>; Mon, 13 Jan 2014 08:26:22 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <CACQ1gAjpEfY7Rqfk6ysg2ddLy_9n2yf1F8o6C381S53rKJd+rQ@mail.gmail.com>
-References: <20980858CB6D3A4BAE95CA194937D5E73EA6120D@DBDE04.ent.ti.com>
- <CACQ1gAjpEfY7Rqfk6ysg2ddLy_9n2yf1F8o6C381S53rKJd+rQ@mail.gmail.com>
-From: Richard Genoud <richard.genoud@gmail.com>
-Date: Mon, 13 Jan 2014 17:26:02 +0100
-Message-ID: <CACQ1gAgrmUgcTN9qMJiYQVX5O5OHr0zPypZJf4VDRm7W6eKzqQ@mail.gmail.com>
-Subject: Re: UBI: calculation for max number of bad-blocks
-To: "Gupta, Pekon" <pekon@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>
+ id 1W2nRw-00038a-IF
+ for linux-mtd@lists.infradead.org; Mon, 13 Jan 2014 19:45:29 +0000
+Received: by mail-ig0-f173.google.com with SMTP id c10so2881838igq.0
+ for <linux-mtd@lists.infradead.org>; Mon, 13 Jan 2014 11:45:03 -0800 (PST)
+From: Brian Norris <computersforpeace@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH v4 2/5] mtd: nand: add ONFI vendor block for Micron
+Date: Mon, 13 Jan 2014 11:44:37 -0800
+Message-Id: <1389642280-11714-2-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1389642280-11714-1-git-send-email-computersforpeace@gmail.com>
+References: <1389642280-11714-1-git-send-email-computersforpeace@gmail.com>
+Cc: Huang Shijie <b32955@freescale.com>,
+ Brian Norris <computersforpeace@gmail.com>, Pekon Gupta <pekon@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,54 +22,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2014/1/13 Richard Genoud <richard.genoud@gmail.com>:
-> 2014/1/13 Gupta, Pekon <pekon@ti.com>:
->> Hi Richard,
-> Hi !
->>
->> With reference to commit message:
->>         commit ba4087e956d336488c6df9dfca65d1e70cf480f1
->>         Author:     Richard Genoud <richard.genoud@gmail.com>
->>         UBI: use the whole MTD device size to get bad_peb_limit
->> -----------------
->> " NAND flash manufacturers give a
->>     minimum number of valid block (NVB) during the endurance life of the
->>     device, e.g.:
->>
->>     Parameter             Symbol    Min    Max    Unit      Notes
->>     --------------------------------------------------------------
->>     Valid block number     NVB     1004    1024   Blocks     1
->>
->>     From this number we can deduce the maximum number of bad PEB that a device will
->>     contain during its endurance life: a 128MiB NAND flash (1024 PEB) will not have
->>     less than 20 bad blocks during the flash endurance life.
->>
->>     But the manufacturer doesn't tell where those bad block will appear. He doesn't
->>     say either if they will be equally disposed on the whole device (and I'm pretty
->>     sure they won't). So, according to the datasheets, we should reserve the
->>     maximum number of bad PEB for each UBI device (worst case scenario: 20 bad
->>     blocks appears on the smallest MTD partition).
->>
->>     So this patch make UBI use the whole MTD device size to calculate the maximum
->>     bad expected eraseblocks.
->>
->>     The Kconfig option is in per1024 blocks, thus it can have a default value of 20
->>     which is *very* common for NAND devices."
->> -----------------
->>
->> I was not able to understand the need to do the convert
->> Min.NVB (Minimum number of valid blocks) into a ratio of  'max_beb_per1024'.
->> Can't we just use " Max(bad-blocks) = Max(NVB) - Min(NVB)" ?
->> And make reserve_PEB > Max(bad-blocks) in UBI partitions, as all bad-blocks
->> can appear together in same partition itself.
->>
->> with regards, pekon
->
-> Well, It's just to have a number independent from the flash size.
-> On the flash I'm currently working with, I've got:
-> Min(NVB) = 1008 and Max(NVB)=2048
-> Still, the kernel default config value of 20max_beb_per1024 is still correct.
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Acked-by: Huang Shijie <b32955@freescale.com>
+---
+No changes since v1
 
-As I was re-reading the datasheet, I realized that the ONFI parameters
-bb_per_lun and blocks_per_lun could be used instead of the kernel
-default value of 20 max_beb_per1024.
+ include/linux/mtd/nand.h | 23 ++++++++++++++++++++++-
+ 1 file changed, 22 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index f3ea8daf08ee..029fe5948dc4 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -285,7 +285,8 @@ struct nand_onfi_params {
+ 	u8 reserved4[7];
+ 
+ 	/* vendor */
+-	u8 reserved5[90];
++	__le16 vendor_revision;
++	u8 vendor[88];
+ 
+ 	__le16 crc;
+ } __attribute__((packed));
+@@ -326,6 +327,26 @@ struct onfi_ext_param_page {
+ 	 */
+ } __packed;
+ 
++struct nand_onfi_vendor_micron {
++	u8 two_plane_read;
++	u8 read_cache;
++	u8 read_unique_id;
++	u8 dq_imped;
++	u8 dq_imped_num_settings;
++	u8 dq_imped_feat_addr;
++	u8 rb_pulldown_strength;
++	u8 rb_pulldown_strength_feat_addr;
++	u8 rb_pulldown_strength_num_settings;
++	u8 otp_mode;
++	u8 otp_page_start;
++	u8 otp_data_prot_addr;
++	u8 otp_num_pages;
++	u8 otp_feat_addr;
++	u8 read_retry_options;
++	u8 reserved[72];
++	u8 param_revision;
++} __packed;
++
+ /**
+  * struct nand_hw_control - Control structure for hardware controller (e.g ECC generator) shared among independent devices
+  * @lock:               protection lock
+-- 
+1.8.3.2
