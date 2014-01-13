@@ -1,22 +1,22 @@
-Received: from anubis.se.axis.com ([195.60.68.12])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W2cVM-0007Hy-IL
- for linux-mtd@lists.infradead.org; Mon, 13 Jan 2014 08:04:18 +0000
-Date: Mon, 13 Jan 2014 09:03:25 +0100
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [RFC/PATCH] mtd: mtd_read: Fix bitflips_threshold comparison to
- allow max bitflips
-In-Reply-To: <20140111190639.GA1992@norris-Latitude-E6410>
-Message-ID: <alpine.DEB.2.00.1401130857030.24884@lnxricardw.se.axis.com>
-References: <1388407257-6557-1-git-send-email-sr@denx.de>
- <52CCFE5C.8060205@denx.de> <20140111190639.GA1992@norris-Latitude-E6410>
+Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W2cVV-0007It-GF
+ for linux-mtd@lists.infradead.org; Mon, 13 Jan 2014 08:04:26 +0000
+Received: by mail-pa0-f46.google.com with SMTP id rd3so1543256pab.19
+ for <linux-mtd@lists.infradead.org>; Mon, 13 Jan 2014 00:04:04 -0800 (PST)
+Date: Mon, 13 Jan 2014 00:04:00 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH v3 3/5] mtd: nand: add generic READ RETRY support
+Message-ID: <20140113080400.GK1992@norris-Latitude-E6410>
+References: <1388795828-24808-1-git-send-email-computersforpeace@gmail.com>
+ <1388795828-24808-3-git-send-email-computersforpeace@gmail.com>
+ <20140107061733.GD8109@shlinux2.ap.freescale.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-15"; format=flowed
-Content-Transfer-Encoding: 8BIT
-Cc: Stefan Roese <sr@denx.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Pekon Gupta <pekon@ti.com>, Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20140107061733.GD8109@shlinux2.ap.freescale.net>
+Cc: linux-mtd@lists.infradead.org, Pekon Gupta <pekon@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,58 +26,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Tue, Jan 07, 2014 at 02:17:34PM +0800, Huang Shijie wrote:
+> On Fri, Jan 03, 2014 at 04:37:06PM -0800, Brian Norris wrote:
+> > @@ -1514,8 +1535,27 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+> >  					nand_wait_ready(mtd);
+> >  			}
+> >  
+> > -			if (mtd->ecc_stats.failed - ecc_failures)
+> > -				ecc_fail = true;
+> > +			if (mtd->ecc_stats.failed - ecc_failures) {
+> > +				if (retry_mode + 1 <= chip->read_retries) {
+> > +					retry_mode++;
+> > +					pr_debug("ECC error; performing READ RETRY %d\n",
+> > +							retry_mode);
+> 
+> you can move this pr_debug into the nand_set_read_retry().
 
-On Sat, 11 Jan 2014, Brian Norris wrote:
+OK.
 
->>> After a bit debugging I found that those messages are only printed when
->>> the OMAP NAND driver has detected 8 (corrected) bitflips / 512 bytes on
->>> a read. We're using HW BCH8 and the Toshiba chip supports 8 bit ECC for
->>> each 512Byte. I was wondering why 8 bitflips resulted in these UBI
->>> messages and e.g. 7 bitflips didn't. Hence I discovered the comparison
->>> "ret_code >= mtd->bitflip_threshold" in mtd_read().
->>>
->>> With this patch applied all tests (UBIFS) I've done so far didn't produce
->>> any of these "UBI: fixable bit-flip" messages any more.
->>>
->>> Note that I'm sending this patch as RFC for now. To get some feedback
->>> from other MTD / NAND developers on this issue. The main question is:
->>> Should mtd_read() return -EUCLEAN if the corrected bitflips are equal to
->>> the bitflip-threshold value? Or should it return 0 since the bitflips
->>> have been corrected?
->
-> -EUCLEAN is a purposeful part of the MTD API. It means that mtd_read()
-> encountered some high level of (correctable) bitflips, and MTD is
-> intentionally informing the upper layer(s) that they may want to take
-> corrective action on scrubbing the affected area, so that it doesn't
-> accumulate more bitflips and corrupt your data. MTD is acting correctly.
->
-> At a higher layer, I think UBI should be scrubbing the block (erasing
-> and moving or rewriting data) at least once, to refresh the data. After
-> that, wear leveling *should* prevent the block from being reused in the
-> near future. If that isn't the case, then we may need to fix UBI.
->
->> Brian, do you have any comments? Is this patch good as is? Should I
->> resend it as non-RFC?
->
-> No, this patch is not acceptable. It effectively ignores all bitflips
-> until it's too late (i.e., there are more bitflips than we can correct).
-> Also, if you really did want this effect, you could simply increase your
-> threshold to 9 via sysfs. But I don't recommend that.
+> > +
+> > +					ret = nand_set_read_retry(mtd,
+> > +							retry_mode);
+> > +					if (ret < 0)
+> > +						break;
+> > diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> > index 029fe5948dc4..ef70505dade1 100644
+> > --- a/include/linux/mtd/nand.h
+> > +++ b/include/linux/mtd/nand.h
+> > @@ -472,6 +472,8 @@ struct nand_buffers {
+> >   *			commands to the chip.
+> >   * @waitfunc:		[REPLACEABLE] hardwarespecific function for wait on
+> >   *			ready.
+> > + * @set_read_retry:	[FLASHSPECIFIC] flash (vendor) specific function for
+> > + *			setting the read-retry mode. Mostly needed for MLC NAND.
+> 
+> why not use the name "read_retry"?
+> i think it is more clear.
 
-Besides, assuming you are using BCH-8, then you can never get more than 8 
-fixable bitflips, after that you'll get an 'uncorrectable' error. So 
-essentially either applying the patch or setting the bitflip_threshold to 
-9 results in no potential corrective action being taken (e.g. UBI 
-scrubbing the block when it sees -EUCLEAN) until it's too late.
+It's not actually performing any "read" or a "retry"; the function is
+just configuring the device for a retry. So I don't think read_retry is
+correct. For my name, I was abbreviating "set read retry mode". How do
+you like "setup_read_retry" or "set_read_retry_mode"?
 
-If anything I'd suggest lowering the bitflip_threshold a few steps under 
-what the ECC algorithm can correct, e.g. 6 in the case of BCH-8, the 
-rationale being that one could imagine getting 6 bitflips one day and 8 
-bitflips another, i.e. the number of bitflips may not necessarily increase 
-in steps of one.
-
-/Ricard
--- 
-Ricard Wolf Wanderlöf                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+Brian
