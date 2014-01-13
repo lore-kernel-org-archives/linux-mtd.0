@@ -1,26 +1,20 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W2j6g-0001pa-Mx
- for linux-mtd@lists.infradead.org; Mon, 13 Jan 2014 15:07:15 +0000
-Message-ID: <1389625608.2259.357.camel@sauron.fi.intel.com>
-Subject: Re: UBIFS seeing corrupt blank pages when image flashed via u-boot
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Received: from mail-lb0-x230.google.com ([2a00:1450:4010:c04::230])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W2k5A-00045M-Ld
+ for linux-mtd@lists.infradead.org; Mon, 13 Jan 2014 16:09:45 +0000
+Received: by mail-lb0-f176.google.com with SMTP id l4so5393273lbv.21
+ for <linux-mtd@lists.infradead.org>; Mon, 13 Jan 2014 08:09:20 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA6120D@DBDE04.ent.ti.com>
+References: <20980858CB6D3A4BAE95CA194937D5E73EA6120D@DBDE04.ent.ti.com>
+From: Richard Genoud <richard.genoud@gmail.com>
+Date: Mon, 13 Jan 2014 17:08:59 +0100
+Message-ID: <CACQ1gAjpEfY7Rqfk6ysg2ddLy_9n2yf1F8o6C381S53rKJd+rQ@mail.gmail.com>
+Subject: Re: UBI: calculation for max number of bad-blocks
 To: "Gupta, Pekon" <pekon@ti.com>
-Date: Mon, 13 Jan 2014 17:06:48 +0200
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA61199@DBDE04.ent.ti.com>
-References: <20980858CB6D3A4BAE95CA194937D5E73EA5DBFA@DBDE04.ent.ti.com>
- <1388753970.25123.124.camel@sauron.fi.intel.com>
- <CAEhpT-W-aBkackmUb860vex2LxGzkBQ6hu1KGvUzjmTWTeQgxg@mail.gmail.com>
- <1389617894.2259.270.camel@sauron.fi.intel.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA61199@DBDE04.ent.ti.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: "u-boot@lists.denx.de" <u-boot@lists.denx.de>,
- "Stefan Roese <sr@denx.de> \(sr@denx.de\)" <sr@denx.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Calvin Johnson <linux.cj@gmail.com>
-Reply-To: artem.bityutskiy@linux.intel.com
+Content-Type: text/plain; charset=UTF-8
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,87 +24,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2014-01-13 at 13:16 +0000, Gupta, Pekon wrote:
-> Currently both UBI and UBIFS layer checks for erased-page to be
-> all(0xff),
-> But I think its over-kill to put this burden on UBI or UBIFS layer,
-> because
-> low-level controller drivers can handle this easily.
-> So, if Artem and Brian agree to above approaches, then I can a submit
-> patch
-> for removal of:
->  - "ubi_self_check_all_ff()" from UBI layer.
+2014/1/13 Gupta, Pekon <pekon@ti.com>:
+> Hi Richard,
+Hi !
+>
+> With reference to commit message:
+>         commit ba4087e956d336488c6df9dfca65d1e70cf480f1
+>         Author:     Richard Genoud <richard.genoud@gmail.com>
+>         UBI: use the whole MTD device size to get bad_peb_limit
+> -----------------
+> " NAND flash manufacturers give a
+>     minimum number of valid block (NVB) during the endurance life of the
+>     device, e.g.:
+>
+>     Parameter             Symbol    Min    Max    Unit      Notes
+>     --------------------------------------------------------------
+>     Valid block number     NVB     1004    1024   Blocks     1
+>
+>     From this number we can deduce the maximum number of bad PEB that a device will
+>     contain during its endurance life: a 128MiB NAND flash (1024 PEB) will not have
+>     less than 20 bad blocks during the flash endurance life.
+>
+>     But the manufacturer doesn't tell where those bad block will appear. He doesn't
+>     say either if they will be equally disposed on the whole device (and I'm pretty
+>     sure they won't). So, according to the datasheets, we should reserve the
+>     maximum number of bad PEB for each UBI device (worst case scenario: 20 bad
+>     blocks appears on the smallest MTD partition).
+>
+>     So this patch make UBI use the whole MTD device size to calculate the maximum
+>     bad expected eraseblocks.
+>
+>     The Kconfig option is in per1024 blocks, thus it can have a default value of 20
+>     which is *very* common for NAND devices."
+> -----------------
+>
+> I was not able to understand the need to do the convert
+> Min.NVB (Minimum number of valid blocks) into a ratio of  'max_beb_per1024'.
+> Can't we just use " Max(bad-blocks) = Max(NVB) - Min(NVB)" ?
+> And make reserve_PEB > Max(bad-blocks) in UBI partitions, as all bad-blocks
+> can appear together in same partition itself.
+>
+> with regards, pekon
 
-Well, this is just debugging and sanity check stuff.
+Well, It's just to have a number independent from the flash size.
+On the flash I'm currently working with, I've got:
+Min(NVB) = 1008 and Max(NVB)=2048
+Still, the kernel default config value of 20max_beb_per1024 is still correct.
 
->  - checking of 'buf == 0xff' from ubifs_scan_leb() in UBIFS layer.
-
-I do not think this is a good idea. Let me do some quick braindump,
-thankfully I still remember the reasons behind this.
-> 
-This is about the recovery, and this is the code path where we actually
-do these checks.
-
-Just like in defensive programming you try to assume the worst, we tried
-to assume the worst too. And the worst is - you cannot make any
-assumption about what is on the media.
-
-Now, we wanted to make UBIFS robust in a sense that you can cut the
-power off at any point, and you can be sure the UBIFS driver is still
-able to mount your flash. You can lose some data because it did not make
-it to the media yet by the time of power cut. But you never lose the
-data which made it to the media before the power cut.
-
-And the file-system should mount the media without any user-space tools
-like 'ckfs.ubifs'. The system should recover itself (detect half-written
-garbage and get rid of it, preparing "clean" blank flash area for
-writing new data).
-
-When you mount a file-system, UBIFS scans the journal. Suppose it hits a
-corrupted data node. At this point UBIFS need to make a decision whether
-this is a node which was corrupted because of a power cut, or this is a
-piece of data which has to be correct, but got corrupted because of,
-say, under-voltage problems, or NAND wear, or radiation, etc.
-
-In the first case - you recover silently, and you do not bother the user
-with warnings.
-
-In the second case - you report loudly. You do not do anything because
-you risk of losing important user data (an expensive bitcoin!)
-
-Right? So you gotta be very careful, because this is user data.
-
-To put it differently, we specifically targeted a special type of
-corruptions - power-cut related corruptions. We made related
-assumptions. And we were very careful about validating these
-assumptions.
-
-So UBIFS always starts with fully erased LEBs. Then it writes there
-sequentially, NAND page-by-page, from beginning to the end.
-
-(Well, it is a bit more complex than that, but this is not important in
-this discussion. The complexity is that there are several journal heads,
-so UBIFS writes to more than one LEBs, but it is sequetial anyway. Also,
-we write in so-called "max. write units", which are usually the same as
-NAND page in case of NAND anyway).
-
-When UBIFS mounts a file-system, it scans the journal. When it meets a
-corrupted node in NAND page X, it looks at NAND page X+1 and checks if
-it is blank or not. If it is blank, this looks normal, and X was just
-the NAND page UBIFS presumably was writing to just before the power cut.
-
-If NAND page X+1 contains something, then page X cannot be corrupted due
-to power cut, and this is something else. And we, the FS authors, do not
-know how to deal with this, we did not think about this type of
-corruptions. So just we complain and exit. This is better then trying to
-erase something and make you lose your data, right?
-
-That's the logic. And of course people are welcome to extend it and
-improve it.
-
-Conclusion: all UBIFS needs is a way to ask the driver - is this NAND
-page blank or not? UBIFS does not really has to compare to all 0xFFs.
-
--- 
-Best Regards,
-Artem Bityutskiy
+regards,
+Richard.
