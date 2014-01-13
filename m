@@ -1,29 +1,18 @@
-Received: from 10.mo3.mail-out.ovh.net ([87.98.165.232]
- helo=mo3.mail-out.ovh.net)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W2dQU-00005o-VM
- for linux-mtd@lists.infradead.org; Mon, 13 Jan 2014 09:03:20 +0000
-Received: from mail408.ha.ovh.net (b6.ovh.net [213.186.33.56])
- by mo3.mail-out.ovh.net (Postfix) with SMTP id 5B4ACFFBEDD
- for <linux-mtd@lists.infradead.org>; Mon, 13 Jan 2014 10:02:52 +0100 (CET)
-Message-ID: <52D3ABB6.9030204@overkiz.com>
-Date: Mon, 13 Jan 2014 10:02:46 +0100
-From: boris brezillon <b.brezillon@overkiz.com>
+Received: from va3ehsobe005.messaging.microsoft.com ([216.32.180.31]
+ helo=va3outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W2djQ-0000Wh-Rg
+ for linux-mtd@lists.infradead.org; Mon, 13 Jan 2014 09:22:54 +0000
+From: Huang Shijie <b32955@freescale.com>
+To: <dwmw2@infradead.org>
+Subject: [PATCH V4] mtd: gpmi: fix the bitflips for erased page
+Date: Mon, 13 Jan 2014 16:47:18 +0800
+Message-ID: <1389602838-25212-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-To: =?UTF-8?B?SGVucmlrIE5vcmRzdHLDtm0=?= <henrik@henriknordstrom.net>
-Subject: Re: [linux-sunxi] Re: [RFC PATCH 0/9] mtd: nand: add sunxi NAND Flash
- Controller support
-References: <1389190924-26226-1-git-send-email-b.brezillon@overkiz.com>	
- <52D1494E.9090303@overkiz.com> <1389449230.19197.2.camel@localhost>	
- <52D1541F.4040400@overkiz.com> <1389456075.20989.11.camel@localhost>
- <1389474709.22660.4.camel@localhost>
-In-Reply-To: <1389474709.22660.4.camel@localhost>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: dev@linux-sunxi.org, linux-mtd@lists.infradead.org,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain
+Cc: eliedebrauwer@gmail.com, bpringlemeir@nbsps.com,
+ Huang Shijie <b32955@freescale.com>, Vikram.Narayanan@in.bosch.com,
+ linux-mtd@lists.infradead.org, computersforpeace@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,85 +22,133 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Henrik,
+We may meet the bitflips in reading an erased page(contains all 0xFF),
+this may causes the UBIFS corrupt, please see the log from Elie:
 
-On 11/01/2014 22:11, Henrik Nordström wrote:
-> <bbrezillon> thanks for pointing out your documents
-> <bbrezillon> I'm trying to get the NAND driver with HW ECC (and HW RND)
-> without using DMA at all
->
-> I tried many things but did not quite get the ECC reading command to
-> return meaningful resuts. But should work somehow.
->
-> <bbrezillon> do you have any other information I could use to do this ?
->
-> Not really. There is no known code to look at using the nand controller
-> without DMA. All allwinner code uses DMA even the boot ROM (BROM).
->
-> <bbrezillon> For example, I wonder why there are 2 RAM sectors (the
-> driver I found only make use of RAM0)
->
-> I think it's used during DMA to fetch next sector while the previous one
-> is transferred by DMA. But not sure.
+-----------------------------------------------------------------
+[    3.831323] UBI warning: ubi_io_read: error -74 (ECC error) while reading 16384 bytes from PEB 443:245760, read only 16384 bytes, retry
+[    3.845026] UBI warning: ubi_io_read: error -74 (ECC error) while reading 16384 bytes from PEB 443:245760, read only 16384 bytes, retry
+[    3.858710] UBI warning: ubi_io_read: error -74 (ECC error) while reading 16384 bytes from PEB 443:245760, read only 16384 bytes, retry
+[    3.872408] UBI error: ubi_io_read: error -74 (ECC error) while reading 16384 bytes from PEB 443:245760, read 16384 bytes
+...
+[    4.011529] UBIFS error (pid 36): ubifs_recover_leb: corrupt empty space LEB 27:237568, corruption starts at 9815
+[    4.021897] UBIFS error (pid 36): ubifs_scanned_corruption: corruption at LEB 27:247383
+[    4.030000] UBIFS error (pid 36): ubifs_scanned_corruption: first 6569 bytes from LEB 27:247383
+-----------------------------------------------------------------
 
-Some feedback on my tests:
+This patch does a check for the uncorrectable failure in the following steps:
 
-- I managed to get HW ECC working without any DMA transfer (using CMD = 01):
-   * I only tested the sequential ECC => ECC are stored between 2 data 
-blocks (1024 byte)
-   * Non sequential ECC should work if I store ECC bytes in the OOB area 
-too (I'll just have
-      to send RANDOM_OUT commands to move to the OOB area before sending 
-the ECC
-      cmd and another RANDOM_OUT to go back to the DATA area)
+   [0] set the threshold.
+       The threshold is set based on the truth:
+         "A single 0 bit will lead to gf_len(13 or 14) bits 0 after the BCH
+          do the ECC."
 
-- The HW RND (randomizer) works too, I'll just have to figure out how 
-this could be
-   mainlined:
-    * using a simple dt property to tell the controller it should enable 
-the randomizer
-    * provide an interface (like the nand_ecc_ctrl struct ) for other to 
-add their own
-       randomizer implementation (this was requested: 
-https://lkml.org/lkml/2013/12/13/154)
+       For the sake of safe, we will set the threshold with half the gf_len, and
+       do not make it bigger the ECC strength.
 
+   [1] count the bitflips of the current ECC chunk, assume it is N.
 
-The most complicated part is the boot0 partition.
+   [2] if the (N <= threshold) is true, we continue to read out the page with
+       ECC disabled. and we count the bitflips again, assume it is N2.
+       (We read out the whole page, not just a chunk, this makes the check
+        more strictly, and make the code more simple.)
 
-Tell me if I'm wrong, but here's what I understood from your work (and 
-yuq's work too):
+   [3] if the (N2 <= threshold) is true again, we can regard this is a erased
+       page. This is because a real erased page is full of 0xFF(maybe also has
+       several bitflips), while a page contains the 0xFF data will definitely
+       has many bitflips in the ECC parity areas.
 
-boot 0 part properties:
-- uses sequential ECC
-- uses 1024 bytes ECC blocks
-- boot0 code is stored only on the first ECC block of each page (1024 
-bytes + ecc bytes)
-- boot0 code is stored on the first 64 pages of the first block
-- boot0 uses HW randomizer with a specific rnd seed (0x4a80)
+   [4] if the [3] fails, we can regard this is a page filled with the '0xFF'
+       data.
 
-It's not that complicated to read/write from/to boot0, but it's a bit 
-more to mainline this
-implementation:
-  - the nand chip must use the same ECC algorithm and ECC layout on the 
-whole flash
-    (no partition specific config available)
-- you cannot mark some part of pages as unused => the nand driver will 
-write the
-   whole page, not just the first ECC block (1024 bytes)
+Tested-by: Elie De Brauwer <eliedebrauwer@gmail.com>
+Reported-by: Elie De Brauwer <eliedebrauwer@gmail.com>
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+---
+v3 --> v4:
+	[1] update the mtd->ecc_stats.corrected when we detect an erased page.
+	[2] add the shortcut when counting bitflips for non-ECC buffer.
+	[3] add more comments about why read a whole page, but not a chunk.
 
-I thought about manually creating an mtd device that fullfils these 
-needs (in case we
-encounter the "allwinner,nandn-boot" property on a nand@X node), but I'm 
-not sure
-this is the right approach.
+---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   58 ++++++++++++++++++++++++++++++++
+ 1 files changed, 58 insertions(+), 0 deletions(-)
 
-Any ideas ?
-
-
-Best Regards,
-
-Boris
->
-> Regards
-> Henrik
->
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index e2f5820..6b6e707 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -958,6 +958,60 @@ static void block_mark_swapping(struct gpmi_nand_data *this,
+ 	p[1] = (p[1] & mask) | (from_oob >> (8 - bit));
+ }
+ 
++static bool gpmi_erased_check(struct gpmi_nand_data *this,
++			unsigned char *data, unsigned int chunk, int page,
++			unsigned int *max_bitflips)
++{
++	struct nand_chip *chip = &this->nand;
++	struct mtd_info	*mtd = &this->mtd;
++	struct bch_geometry *geo = &this->bch_geometry;
++	int base = geo->ecc_chunk_size * chunk;
++	unsigned int flip_bits = 0, flip_bits_noecc = 0;
++	uint64_t *buf = (uint64_t *)this->data_buffer_dma;
++	unsigned int threshold;
++	int i;
++
++	threshold = geo->gf_len / 2;
++	if (threshold > geo->ecc_strength)
++		threshold = geo->ecc_strength;
++
++	/* Count bitflips */
++	for (i = 0; i < geo->ecc_chunk_size; i++) {
++		flip_bits += hweight8(~data[base + i]);
++		if (flip_bits > threshold)
++			return false;
++	}
++
++	/*
++	 * Read out the whole page with ECC disabled, and check it again,
++	 * This is more strict then just read out a chunk, and it makes
++	 * the code more simple.
++	 */
++	chip->cmdfunc(mtd, NAND_CMD_READ0, 0, page);
++	chip->read_buf(mtd, (uint8_t *)buf, mtd->writesize);
++
++	/* Count the bitflips for the no ECC buffer */
++	for (i = 0; i < mtd->writesize / 8; i++) {
++		flip_bits_noecc += hweight64(~buf[i]);
++		if (flip_bits_noecc > threshold)
++			return false;
++	}
++
++	/* Tell the upper layer the bitflips we corrected. */
++	mtd->ecc_stats.corrected += flip_bits;
++	*max_bitflips = max_t(unsigned int, *max_bitflips, flip_bits);
++
++	/*
++	 * The geo->payload_size maybe not equal to the page size
++	 * when the Subpage-Read is enabled.
++	 */
++	memset(data, 0xff, geo->payload_size);
++
++	dev_dbg(this->dev, "The page(%d) is an erased page(%d,%d,%d,%d).\n",
++			page, chunk, threshold, flip_bits, flip_bits_noecc);
++	return true;
++}
++
+ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 				uint8_t *buf, int oob_required, int page)
+ {
+@@ -1007,6 +1061,10 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 			continue;
+ 
+ 		if (*status == STATUS_UNCORRECTABLE) {
++			if (gpmi_erased_check(this, payload_virt, i,
++						page, &max_bitflips))
++				break;
++
+ 			mtd->ecc_stats.failed++;
+ 			continue;
+ 		}
+-- 
+1.7.2.rc3
