@@ -1,25 +1,23 @@
-Received: from mail-pb0-x229.google.com ([2607:f8b0:400e:c01::229])
+Received: from mail-pd0-x22f.google.com ([2607:f8b0:400e:c02::22f])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W2cJu-0006t5-9T
- for linux-mtd@lists.infradead.org; Mon, 13 Jan 2014 07:52:27 +0000
-Received: by mail-pb0-f41.google.com with SMTP id jt11so6963318pbb.14
- for <linux-mtd@lists.infradead.org>; Sun, 12 Jan 2014 23:52:04 -0800 (PST)
-Date: Sun, 12 Jan 2014 23:52:01 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH] mtd: nand: pxa3xx: Add "armada370-nand" compatible
-Message-ID: <20140113075201.GJ1992@norris-Latitude-E6410>
-References: <1387899607-2656-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <20131224194744.GF19878@titan.lakedaemon.net>
- <20140112141907.GA6099@localhost> <20140112142110.GB6099@localhost>
+ id 1W2cKb-0006uj-OD
+ for linux-mtd@lists.infradead.org; Mon, 13 Jan 2014 07:53:10 +0000
+Received: by mail-pd0-f175.google.com with SMTP id r10so3080186pdi.6
+ for <linux-mtd@lists.infradead.org>; Sun, 12 Jan 2014 23:52:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20140112142110.GB6099@localhost>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>, linux-mtd@lists.infradead.org,
- Jason Cooper <jason@lakedaemon.net>
+In-Reply-To: <20140113065914.GA26113@shlinux2.ap.freescale.net>
+References: <1389581697-28309-1-git-send-email-b32955@freescale.com>
+ <CAGWqfiiRtRoT_qE4SjrkMDspxEWePRbX9krZxXM-TtVSxuhSLg@mail.gmail.com>
+ <20140113065914.GA26113@shlinux2.ap.freescale.net>
+Date: Mon, 13 Jan 2014 08:52:48 +0100
+Message-ID: <CAGWqfiiZMaH1i9aTLQpqjMFnnXqi0xHoFquOLjZ_FNNYkg_AhA@mail.gmail.com>
+Subject: Re: [PATCH v3] mtd: gpmi: fix the bitflips for erased page
+From: Elie De Brauwer <eliedebrauwer@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Vikram.Narayanan@in.bosch.com, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, bpringlemeir@nbsps.com,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,41 +27,104 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Jan 12, 2014 at 11:21:11AM -0300, Ezequiel Garcia wrote:
-> On Sun, Jan 12, 2014 at 11:19:07AM -0300, Ezequiel Garcia wrote:
-> > On Tue, Dec 24, 2013 at 02:47:44PM -0500, Jason Cooper wrote:
-> > > On Tue, Dec 24, 2013 at 12:40:07PM -0300, Ezequiel Garcia wrote:
-> > > > Now that the driver can support the Armada 370/XP SoC NAND controller,
-> > > > add the devicetree compatible string, enabling its use.
-> > > > 
-> > > > Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> > > > ---
-> > > > Applies on top of l2-mtd.git master branch, rebased on top of v3.13-rc4
-> > > > in order to include:
-> > > > 
-> > > > commit 9c59ac616137fb62f6cb3f1219201b09cbcf30be
-> > > > Author: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> > > > Date:   Mon Dec 9 18:36:26 2013 -0300
-> > > > 
-> > > >     Partially revert "mtd: nand: pxa3xx: Introduce 'marvell,armada370-nand' compatible string"
-> > > > 
-> > > > and it is v3.14 material.
-> > > > 
-> > > >  drivers/mtd/nand/pxa3xx_nand.c | 4 ++++
-> > > >  1 file changed, 4 insertions(+)
-> > > 
-> > > Acked-by: Jason Cooper <jason@lakedaemon.net>
-> 
-> Brian:
-> 
-> Just checking, what's your plan on this? I guess you're waiting
-> for v3.13 to be released, right?
+On Mon, Jan 13, 2014 at 7:59 AM, Huang Shijie <b32955@freescale.com> wrote:
+> On Mon, Jan 13, 2014 at 08:20:24AM +0100, Elie De Brauwer wrote:
+>> On Mon, Jan 13, 2014 at 3:54 AM, Huang Shijie <b32955@freescale.com> wrote:
+>> > +       /* Read out the page without ECC enabled, and check it again */
+>> > +       chip->cmdfunc(mtd, NAND_CMD_READ0, 0, page);
+>> > +       chip->read_buf(mtd, (uint8_t *)buf, mtd->writesize);
+>> > +
+>> > +       /* Count the bitflips for the no ECC buffer */
+>> > +       for (i = 0; i < mtd->writesize / 8; i++)
+>> > +               flip_bits_noecc += hweight64(~buf[i]);
+>>
+>> Is it safe to assume that all these chunks will be 8-byte-aligned ? I
+>> also thought about this optimization but didn't find any indication
+>> that this might be safe.
+>
+> Firstly the page size is 8-tyte-aligned. do you meet a nand which is not
+> 8-byte-aligned?
 
-No, I was waiting partly to see if there were any more Armada fixes
-needed for this driver (wouldn't want to have to revert this again!),
-but mostly I've just been pretty busy and only cherry-picking a few
-patches at a time.
+My bad, I missed the point that you're dealing with entire pages/chunks now
+while I'm still used to thinking into the data chunks.
 
-The patch looks good. Pushed to l2-mtd.git.
+>
+> Secondely, even the page size is not 8-byte-aligned, it is okay too.
+> why? the gpmi will split the nand layout as:
+>     +---+----------+-+----------+-+----------+-+----------+-+-----+
+>     | M |   data   |E|   data   |E|   data   |E|   data   |E|     |
+>     +---+----------+-+----------+-+----------+-+----------+-+-----+
+>
+>     E stands for the ECC parity area.
+>
+> For the page contains the all 0xff data, the "E" is not 0xff, and
+> we can get the enough bitflips from only one "E" area.
+>
+>
+>>
+>> > +
+>> > +       if (flip_bits_noecc <= threshold) {
+>> > +               /* Tell the upper layer the bitflips we corrected. */
+>> > +               *max_bitflips = max_t(unsigned int, *max_bitflips, flip_bits);
+>> > +
+>> > +               /*
+>> > +                * The geo->payload_size maybe not equal to the page size
+>> > +                * when the Subpage-Read is enabled.
+>> > +                */
+>> > +               memset(data, 0xff, geo->payload_size);
+>> > +               ret = true;
+>> > +       }
+>> > +       dev_dbg(this->dev, "The page(%d) %s an erased page(%d,%d,%d,%d).\n",
+>> > +                       page, ret ? "is" : "isn't", chunk, threshold,
+>> > +                       flip_bits, flip_bits_noecc);
+>> > +       return ret;
+>> > +}
+>> > +
+>> >  static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+>> >                                 uint8_t *buf, int oob_required, int page)
+>> >  {
+>> > @@ -1007,6 +1057,10 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+>> >                         continue;
+>> >
+>> >                 if (*status == STATUS_UNCORRECTABLE) {
+>> > +                       if (gpmi_erased_check(this, payload_virt, i,
+>> > +                                               page, &max_bitflips))
+>> > +                               break;
+>> > +
+>> >                         mtd->ecc_stats.failed++;
+>> >                         continue;
+>> >                 }
+>> > --
+>> > 1.7.2.rc3
+>> >
+>>
+>> A second note, you patch v2 is a lie, there in the v1->v2 you mention
+>> you return the number of bitflips to the upper layer, however your
+>> code was not modified accordingly, gpmi_erase_check still does not
+>> return the number of bitflips. Unless I'm missing something there too.
+> I added a new argument @max_bitflips for gpmi_erased_check which will
+> return the number of bitflips.
 
-Brian
+True, but if you look just  below your patch you see that
+mtd->ecc_stats.correct will not
+get properly updated. It normally gets updated with the number of
+bitflips reported
+through the status. (Well to be honest the entire switching between chunks and
+pages confused me a lot on this monday morning, it could be me but when
+iterating over chunks, switching to pages and breaking out of the for
+loop isn't
+something I would consider very clean, I think some more elaborate comment
+on the erased check might help.).
+
+                      mtd->ecc_stats.failed++;
+                      continue;
+               }
+               mtd->ecc_stats.corrected += *status;             //
+<<<---- ecc stats get upgrade here.
+               max_bitflips = max_t(unsigned int, max_bitflips, *status);
+       }
+
+
+
+-- 
+Elie De Brauwer
