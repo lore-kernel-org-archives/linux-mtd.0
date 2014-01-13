@@ -1,23 +1,22 @@
-Received: from mail-pd0-x22f.google.com ([2607:f8b0:400e:c02::22f])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W2cKb-0006uj-OD
- for linux-mtd@lists.infradead.org; Mon, 13 Jan 2014 07:53:10 +0000
-Received: by mail-pd0-f175.google.com with SMTP id r10so3080186pdi.6
- for <linux-mtd@lists.infradead.org>; Sun, 12 Jan 2014 23:52:48 -0800 (PST)
+Received: from anubis.se.axis.com ([195.60.68.12])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W2cVM-0007Hy-IL
+ for linux-mtd@lists.infradead.org; Mon, 13 Jan 2014 08:04:18 +0000
+Date: Mon, 13 Jan 2014 09:03:25 +0100
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [RFC/PATCH] mtd: mtd_read: Fix bitflips_threshold comparison to
+ allow max bitflips
+In-Reply-To: <20140111190639.GA1992@norris-Latitude-E6410>
+Message-ID: <alpine.DEB.2.00.1401130857030.24884@lnxricardw.se.axis.com>
+References: <1388407257-6557-1-git-send-email-sr@denx.de>
+ <52CCFE5C.8060205@denx.de> <20140111190639.GA1992@norris-Latitude-E6410>
 MIME-Version: 1.0
-In-Reply-To: <20140113065914.GA26113@shlinux2.ap.freescale.net>
-References: <1389581697-28309-1-git-send-email-b32955@freescale.com>
- <CAGWqfiiRtRoT_qE4SjrkMDspxEWePRbX9krZxXM-TtVSxuhSLg@mail.gmail.com>
- <20140113065914.GA26113@shlinux2.ap.freescale.net>
-Date: Mon, 13 Jan 2014 08:52:48 +0100
-Message-ID: <CAGWqfiiZMaH1i9aTLQpqjMFnnXqi0xHoFquOLjZ_FNNYkg_AhA@mail.gmail.com>
-Subject: Re: [PATCH v3] mtd: gpmi: fix the bitflips for erased page
-From: Elie De Brauwer <eliedebrauwer@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Vikram.Narayanan@in.bosch.com, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, bpringlemeir@nbsps.com,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="ISO-8859-15"; format=flowed
+Content-Transfer-Encoding: 8BIT
+Cc: Stefan Roese <sr@denx.de>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Pekon Gupta <pekon@ti.com>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,104 +26,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jan 13, 2014 at 7:59 AM, Huang Shijie <b32955@freescale.com> wrote:
-> On Mon, Jan 13, 2014 at 08:20:24AM +0100, Elie De Brauwer wrote:
->> On Mon, Jan 13, 2014 at 3:54 AM, Huang Shijie <b32955@freescale.com> wrote:
->> > +       /* Read out the page without ECC enabled, and check it again */
->> > +       chip->cmdfunc(mtd, NAND_CMD_READ0, 0, page);
->> > +       chip->read_buf(mtd, (uint8_t *)buf, mtd->writesize);
->> > +
->> > +       /* Count the bitflips for the no ECC buffer */
->> > +       for (i = 0; i < mtd->writesize / 8; i++)
->> > +               flip_bits_noecc += hweight64(~buf[i]);
->>
->> Is it safe to assume that all these chunks will be 8-byte-aligned ? I
->> also thought about this optimization but didn't find any indication
->> that this might be safe.
+
+On Sat, 11 Jan 2014, Brian Norris wrote:
+
+>>> After a bit debugging I found that those messages are only printed when
+>>> the OMAP NAND driver has detected 8 (corrected) bitflips / 512 bytes on
+>>> a read. We're using HW BCH8 and the Toshiba chip supports 8 bit ECC for
+>>> each 512Byte. I was wondering why 8 bitflips resulted in these UBI
+>>> messages and e.g. 7 bitflips didn't. Hence I discovered the comparison
+>>> "ret_code >= mtd->bitflip_threshold" in mtd_read().
+>>>
+>>> With this patch applied all tests (UBIFS) I've done so far didn't produce
+>>> any of these "UBI: fixable bit-flip" messages any more.
+>>>
+>>> Note that I'm sending this patch as RFC for now. To get some feedback
+>>> from other MTD / NAND developers on this issue. The main question is:
+>>> Should mtd_read() return -EUCLEAN if the corrected bitflips are equal to
+>>> the bitflip-threshold value? Or should it return 0 since the bitflips
+>>> have been corrected?
 >
-> Firstly the page size is 8-tyte-aligned. do you meet a nand which is not
-> 8-byte-aligned?
-
-My bad, I missed the point that you're dealing with entire pages/chunks now
-while I'm still used to thinking into the data chunks.
-
+> -EUCLEAN is a purposeful part of the MTD API. It means that mtd_read()
+> encountered some high level of (correctable) bitflips, and MTD is
+> intentionally informing the upper layer(s) that they may want to take
+> corrective action on scrubbing the affected area, so that it doesn't
+> accumulate more bitflips and corrupt your data. MTD is acting correctly.
 >
-> Secondely, even the page size is not 8-byte-aligned, it is okay too.
-> why? the gpmi will split the nand layout as:
->     +---+----------+-+----------+-+----------+-+----------+-+-----+
->     | M |   data   |E|   data   |E|   data   |E|   data   |E|     |
->     +---+----------+-+----------+-+----------+-+----------+-+-----+
+> At a higher layer, I think UBI should be scrubbing the block (erasing
+> and moving or rewriting data) at least once, to refresh the data. After
+> that, wear leveling *should* prevent the block from being reused in the
+> near future. If that isn't the case, then we may need to fix UBI.
 >
->     E stands for the ECC parity area.
+>> Brian, do you have any comments? Is this patch good as is? Should I
+>> resend it as non-RFC?
 >
-> For the page contains the all 0xff data, the "E" is not 0xff, and
-> we can get the enough bitflips from only one "E" area.
->
->
->>
->> > +
->> > +       if (flip_bits_noecc <= threshold) {
->> > +               /* Tell the upper layer the bitflips we corrected. */
->> > +               *max_bitflips = max_t(unsigned int, *max_bitflips, flip_bits);
->> > +
->> > +               /*
->> > +                * The geo->payload_size maybe not equal to the page size
->> > +                * when the Subpage-Read is enabled.
->> > +                */
->> > +               memset(data, 0xff, geo->payload_size);
->> > +               ret = true;
->> > +       }
->> > +       dev_dbg(this->dev, "The page(%d) %s an erased page(%d,%d,%d,%d).\n",
->> > +                       page, ret ? "is" : "isn't", chunk, threshold,
->> > +                       flip_bits, flip_bits_noecc);
->> > +       return ret;
->> > +}
->> > +
->> >  static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
->> >                                 uint8_t *buf, int oob_required, int page)
->> >  {
->> > @@ -1007,6 +1057,10 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
->> >                         continue;
->> >
->> >                 if (*status == STATUS_UNCORRECTABLE) {
->> > +                       if (gpmi_erased_check(this, payload_virt, i,
->> > +                                               page, &max_bitflips))
->> > +                               break;
->> > +
->> >                         mtd->ecc_stats.failed++;
->> >                         continue;
->> >                 }
->> > --
->> > 1.7.2.rc3
->> >
->>
->> A second note, you patch v2 is a lie, there in the v1->v2 you mention
->> you return the number of bitflips to the upper layer, however your
->> code was not modified accordingly, gpmi_erase_check still does not
->> return the number of bitflips. Unless I'm missing something there too.
-> I added a new argument @max_bitflips for gpmi_erased_check which will
-> return the number of bitflips.
+> No, this patch is not acceptable. It effectively ignores all bitflips
+> until it's too late (i.e., there are more bitflips than we can correct).
+> Also, if you really did want this effect, you could simply increase your
+> threshold to 9 via sysfs. But I don't recommend that.
 
-True, but if you look just  below your patch you see that
-mtd->ecc_stats.correct will not
-get properly updated. It normally gets updated with the number of
-bitflips reported
-through the status. (Well to be honest the entire switching between chunks and
-pages confused me a lot on this monday morning, it could be me but when
-iterating over chunks, switching to pages and breaking out of the for
-loop isn't
-something I would consider very clean, I think some more elaborate comment
-on the erased check might help.).
+Besides, assuming you are using BCH-8, then you can never get more than 8 
+fixable bitflips, after that you'll get an 'uncorrectable' error. So 
+essentially either applying the patch or setting the bitflip_threshold to 
+9 results in no potential corrective action being taken (e.g. UBI 
+scrubbing the block when it sees -EUCLEAN) until it's too late.
 
-                      mtd->ecc_stats.failed++;
-                      continue;
-               }
-               mtd->ecc_stats.corrected += *status;             //
-<<<---- ecc stats get upgrade here.
-               max_bitflips = max_t(unsigned int, max_bitflips, *status);
-       }
+If anything I'd suggest lowering the bitflip_threshold a few steps under 
+what the ECC algorithm can correct, e.g. 6 in the case of BCH-8, the 
+rationale being that one could imagine getting 6 bitflips one day and 8 
+bitflips another, i.e. the number of bitflips may not necessarily increase 
+in steps of one.
 
-
-
+/Ricard
 -- 
-Elie De Brauwer
+Ricard Wolf Wanderlöf                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
