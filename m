@@ -1,18 +1,16 @@
-Received: from mail-ig0-x22f.google.com ([2607:f8b0:4001:c05::22f])
+Received: from mail-ee0-x244.google.com ([2a00:1450:4013:c00::244])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W2nRz-00038f-LZ
- for linux-mtd@lists.infradead.org; Mon, 13 Jan 2014 19:45:32 +0000
-Received: by mail-ig0-f175.google.com with SMTP id uq10so3683935igb.2
- for <linux-mtd@lists.infradead.org>; Mon, 13 Jan 2014 11:45:10 -0800 (PST)
-From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v4 5/5] mtd: nand: use __packed shorthand
-Date: Mon, 13 Jan 2014 11:44:40 -0800
-Message-Id: <1389642280-11714-5-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1389642280-11714-1-git-send-email-computersforpeace@gmail.com>
-References: <1389642280-11714-1-git-send-email-computersforpeace@gmail.com>
-Cc: Huang Shijie <b32955@freescale.com>,
- Brian Norris <computersforpeace@gmail.com>, Pekon Gupta <pekon@ti.com>
+ id 1W2u6v-00063h-N3
+ for linux-mtd@lists.infradead.org; Tue, 14 Jan 2014 02:52:14 +0000
+Received: by mail-ee0-f68.google.com with SMTP id c41so546274eek.7
+ for <linux-mtd@lists.infradead.org>; Mon, 13 Jan 2014 18:51:50 -0800 (PST)
+MIME-Version: 1.0
+Date: Tue, 14 Jan 2014 03:51:50 +0100
+Message-ID: <CAEwL26xsAe+x0NS5XQmp3wL_tyG_0fbXC6PfaPCtjFFFB+pOCA@mail.gmail.com>
+Subject: UBIFS data integrity
+From: rcrb rcrb <rcrbsw@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,29 +20,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-To be consistent with the rest of include/linux/mtd/nand.h, we should
-use the __packed shorthand instead of __attribute__((packed)).
+Hello,
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Acked-by: Huang Shijie <b32955@freescale.com>
----
-No change since v1
+I have a question concerning data integrity of UBIFS.
+I am considering using a database over UBIFS on my embedded device.
+The database file is approximately 1 MiB. I wonder if I can rely on
+the filesystem to be sure than this file will never have a corruption,
+even in case of power cut during update. Will the filesystem guarantee
+that, after reboot, the file will be either in the pre-update state or
+be correctly updated ?
 
- include/linux/mtd/nand.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I am asking this because I read that UBIFS can have partially updated
+files in case of power-cut during creation of a new file, and I am
+wondering if it is the same for already existing files.
 
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 3080a8c8b62e..05fcdfea640b 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -292,7 +292,7 @@ struct nand_onfi_params {
- 	u8 vendor[88];
- 
- 	__le16 crc;
--} __attribute__((packed));
-+} __packed;
- 
- #define ONFI_CRC_BASE	0x4F4E
- 
--- 
-1.8.3.2
+Best regards,
