@@ -1,19 +1,22 @@
-Received: from va3ehsobe010.messaging.microsoft.com ([216.32.180.30]
- helo=va3outboundpool.messaging.microsoft.com)
+Received: from mail-ob0-f172.google.com ([209.85.214.172])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W2uOU-0006W1-Nq
- for linux-mtd@lists.infradead.org; Tue, 14 Jan 2014 03:10:24 +0000
-Date: Tue, 14 Jan 2014 10:34:40 +0800
-From: Huang Shijie <b32955@freescale.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v4 1/5] mtd: nand: localize ECC failures per page
-Message-ID: <20140114023439.GA22730@shlinux2.ap.freescale.net>
-References: <1389642280-11714-1-git-send-email-computersforpeace@gmail.com>
+ id 1W2ug8-0006oN-4D
+ for linux-mtd@lists.infradead.org; Tue, 14 Jan 2014 03:28:36 +0000
+Received: by mail-ob0-f172.google.com with SMTP id gq1so8649086obb.17
+ for <linux-mtd@lists.infradead.org>; Mon, 13 Jan 2014 19:28:10 -0800 (PST)
+Date: Mon, 13 Jan 2014 19:27:59 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Pekon Gupta <pekon@ti.com>
+Subject: Re: [PATCH v6 0/6] mtd: nand: omap: optimized chip->ecc.correct()
+ for H/W ECC schemes
+Message-ID: <20140114032759.GA8919@ld-irv-0074>
+References: <1388803698-26252-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1389642280-11714-1-git-send-email-computersforpeace@gmail.com>
-Cc: linux-mtd@lists.infradead.org, Pekon Gupta <pekon@ti.com>
+In-Reply-To: <1388803698-26252-1-git-send-email-pekon@ti.com>
+Cc: Stefan Roese <sr@denx.de>, linux-mtd <linux-mtd@lists.infradead.org>,
+ balbi@ti.com, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,86 +26,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jan 13, 2014 at 11:44:36AM -0800, Brian Norris wrote:
-> ECC failures can be tracked at the page level, not the do_read_ops level
-> (i.e., a potentially multi-page transaction).
-> 
-> This helps prepare for READ RETRY support.
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> ---
-> v3 -> v4: adjust whitespace
-> 
-> (Earlier versions: no changes)
-> 
->  drivers/mtd/nand/nand_base.c | 13 ++++++++-----
->  1 file changed, 8 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 404e83d7e3da..b5c3768b32ae 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -1422,7 +1422,6 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
->  {
->  	int chipnr, page, realpage, col, bytes, aligned, oob_required;
->  	struct nand_chip *chip = mtd->priv;
-> -	struct mtd_ecc_stats stats;
->  	int ret = 0;
->  	uint32_t readlen = ops->len;
->  	uint32_t oobreadlen = ops->ooblen;
-> @@ -1431,8 +1430,7 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
->  
->  	uint8_t *bufpoi, *oob, *buf;
->  	unsigned int max_bitflips = 0;
-> -
-> -	stats = mtd->ecc_stats;
-> +	bool ecc_fail = false;
->  
->  	chipnr = (int)(from >> chip->chip_shift);
->  	chip->select_chip(mtd, chipnr);
-> @@ -1447,6 +1445,8 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
->  	oob_required = oob ? 1 : 0;
->  
->  	while (1) {
-> +		unsigned int ecc_failures = mtd->ecc_stats.failed;
-> +
->  		bytes = min(mtd->writesize - col, readlen);
->  		aligned = (bytes == mtd->writesize);
->  
-> @@ -1483,7 +1483,7 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
->  			/* Transfer not aligned data */
->  			if (!aligned) {
->  				if (!NAND_HAS_SUBPAGE_READ(chip) && !oob &&
-> -				    !(mtd->ecc_stats.failed - stats.failed) &&
-> +				    !(mtd->ecc_stats.failed - ecc_failures) &&
->  				    (ops->mode != MTD_OPS_RAW)) {
->  					chip->pagebuf = realpage;
->  					chip->pagebuf_bitflips = ret;
-> @@ -1513,6 +1513,9 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
->  				else
->  					nand_wait_ready(mtd);
->  			}
-> +
-> +			if (mtd->ecc_stats.failed - ecc_failures)
-> +				ecc_fail = true;
->  		} else {
->  			memcpy(buf, chip->buffers->databuf + col, bytes);
->  			buf += bytes;
-> @@ -1547,7 +1550,7 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
->  	if (ret < 0)
->  		return ret;
->  
-> -	if (mtd->ecc_stats.failed - stats.failed)
-> +	if (ecc_fail)
->  		return -EBADMSG;
->  
->  	return max_bitflips;
-> -- 
-> 1.8.3.2
-> 
-> 
-> 
-thanks
+Hi Pekon,
 
-Please add my acks to all the patch set:
-Acked-by: Huang Shijie <b32955@freescale.com>
+First of all, thanks a lot for the extra efforts to make your commits
+easier to digest. I do have a few comments, now that I can understand
+the pieces a little better.
+
+On Sat, Jan 04, 2014 at 08:18:12AM +0530, Pekon Gupta wrote:
+> This patch-series fixes following issues in omap_elm_correct_data():
+> (1) Dependency on a specific reserved byte-position in OOB area
+>     to differentiates between erased-pages v/s programmed-pages.
+>     Problem: reserved byte-position cannot be accomodated in all ecc-schemes
+>     Problem: reserved byte-position can itself be subjected upto 8 bit-flips
+>              causing the 0xff to become 0x00, causing page to be
+>              mis-recognized as erased-page.
+> 
+> (2) Bit-flips in erased-pages are detected by comparing each byte of Data & OOB
+>     with 0xff in check_erased_page().
+>     Problem: This is causes performance penalty when erased-pages are checked.
+
+Is this performance penalty significant, though? Shouldn't we be
+checking for an erased page only on uncorrectable errors? And aren't
+those uncorrectable occasions rare? I ask because it seems like you're
+trading some precision for performance, but I think the case you're
+optimizing is an uncommon path anyway. But perhaps I'm wrong.
+
+I'll comment with some specifics on the patch itslef.
+
+> (3) Current code is not scalable for future ECC schemes due to presence of 
+>     tweaks for BCH4_ECC and BCH8_ECC at multiple places.
+> 
+> (4) Currently, bit-flips are evaluated and fixed even when ELM reports them as
+>     un-correctable bit-flips, this should not happen as 'number-of-error' field
+>     in ELM_LOCATION_STATUS becomes invalid when un-correctable flag is set.
+> 
+> (5) Driver should return with error-code = '-EBADMSG' when
+>      uncorrectable bit-flip is detected
+>      bit-flip outside valid Data and OOB region is detected
+
+Your other points look good.
+
+Thanks,
+Brian
