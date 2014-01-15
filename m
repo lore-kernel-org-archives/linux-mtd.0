@@ -1,24 +1,22 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
+Received: from mail-oa0-f48.google.com ([209.85.219.48])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W3HoC-0001nK-Uj
- for linux-mtd@lists.infradead.org; Wed, 15 Jan 2014 04:10:29 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Brian Norris <computersforpeace@gmail.com>, Huang Shijie
- <b32955@freescale.com>
-Subject: RE: [PATCH v4 1/5] mtd: nand: localize ECC failures per page
-Date: Wed, 15 Jan 2014 04:10:00 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA61A32@DBDE04.ent.ti.com>
-References: <1389642280-11714-1-git-send-email-computersforpeace@gmail.com>
- <20140114023439.GA22730@shlinux2.ap.freescale.net>
- <20140114073652.GL1992@norris-Latitude-E6410>
-In-Reply-To: <20140114073652.GL1992@norris-Latitude-E6410>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1W3JeF-0003XL-D2
+ for linux-mtd@lists.infradead.org; Wed, 15 Jan 2014 06:08:20 +0000
+Received: by mail-oa0-f48.google.com with SMTP id i11so716977oag.7
+ for <linux-mtd@lists.infradead.org>; Tue, 14 Jan 2014 22:07:56 -0800 (PST)
 MIME-Version: 1.0
-Cc: "Chen, Rich" <richchen@ti.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Hsu,
- Hacker \(Hacker.Hsu@avnet.com\)" <Hacker.Hsu@avnet.com>
+In-Reply-To: <1389333253-3802-3-git-send-email-sachin.kamat@linaro.org>
+References: <1389333253-3802-1-git-send-email-sachin.kamat@linaro.org>
+ <1389333253-3802-3-git-send-email-sachin.kamat@linaro.org>
+Date: Wed, 15 Jan 2014 11:37:56 +0530
+Message-ID: <CAK9yfHwuWbcAe3KRNyYM7=aTr6srQbZWLbmouVsCEfxhUXSBbQ@mail.gmail.com>
+Subject: Re: [PATCH Resend 3/3] mtd: s3c2410: Merge plat/regs-nand.h into
+ s3c2410.c
+From: Sachin Kamat <sachin.kamat@linaro.org>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Sachin Kamat <sachin.kamat@linaro.org>, Kukjin Kim <kgene.kim@samsung.com>,
+ Brian Norris <computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,31 +26,203 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From: Brian Norris [mailto:computersforpeace@gmail.com]
->>On Tue, Jan 14, 2014 at 10:34:40AM +0800, Huang Shijie wrote:
->> On Mon, Jan 13, 2014 at 11:44:36AM -0800, Brian Norris wrote:
->> > ECC failures can be tracked at the page level, not the do_read_ops lev=
-el
->> > (i.e., a potentially multi-page transaction).
->> >
->> > This helps prepare for READ RETRY support.
->> >
->> > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
->> > ---
+On 10 January 2014 11:24, Sachin Kamat <sachin.kamat@linaro.org> wrote:
+> plat/regs-nand.h is used only by S3C2410 nand driver. Since there
+> are no other users, merge this file into the driver code to remove
+> platform dependency. While at it also remove unused macros.
 >
->[...]
+> Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+> Cc: Kukjin Kim <kgene.kim@samsung.com>
+> ---
+>  arch/arm/plat-samsung/include/plat/regs-nand.h |  123 ------------------------
+>  drivers/mtd/nand/s3c2410.c                     |   36 ++++++-
+>  2 files changed, 35 insertions(+), 124 deletions(-)
+>  delete mode 100644 arch/arm/plat-samsung/include/plat/regs-nand.h
 >
->> Please add my acks to all the patch set:
->> Acked-by: Huang Shijie <b32955@freescale.com>
+> diff --git a/arch/arm/plat-samsung/include/plat/regs-nand.h b/arch/arm/plat-samsung/include/plat/regs-nand.h
+> deleted file mode 100644
+> index 238efea7b9e4..000000000000
+> --- a/arch/arm/plat-samsung/include/plat/regs-nand.h
+> +++ /dev/null
+> @@ -1,123 +0,0 @@
+> -/* arch/arm/mach-s3c2410/include/mach/regs-nand.h
+> - *
+> - * Copyright (c) 2004-2005 Simtec Electronics <linux@simtec.co.uk>
+> - *     http://www.simtec.co.uk/products/SWLINUX/
+> - *
+> - * This program is free software; you can redistribute it and/or modify
+> - * it under the terms of the GNU General Public License version 2 as
+> - * published by the Free Software Foundation.
+> - *
+> - * S3C2410 NAND register definitions
+> -*/
+> -
+> -#ifndef __ASM_ARM_REGS_NAND
+> -#define __ASM_ARM_REGS_NAND
+> -
+> -
+> -#define S3C2410_NFREG(x) (x)
+> -
+> -#define S3C2410_NFCONF  S3C2410_NFREG(0x00)
+> -#define S3C2410_NFCMD   S3C2410_NFREG(0x04)
+> -#define S3C2410_NFADDR  S3C2410_NFREG(0x08)
+> -#define S3C2410_NFDATA  S3C2410_NFREG(0x0C)
+> -#define S3C2410_NFSTAT  S3C2410_NFREG(0x10)
+> -#define S3C2410_NFECC   S3C2410_NFREG(0x14)
+> -
+> -#define S3C2440_NFCONT   S3C2410_NFREG(0x04)
+> -#define S3C2440_NFCMD    S3C2410_NFREG(0x08)
+> -#define S3C2440_NFADDR   S3C2410_NFREG(0x0C)
+> -#define S3C2440_NFDATA   S3C2410_NFREG(0x10)
+> -#define S3C2440_NFECCD0  S3C2410_NFREG(0x14)
+> -#define S3C2440_NFECCD1  S3C2410_NFREG(0x18)
+> -#define S3C2440_NFECCD   S3C2410_NFREG(0x1C)
+> -#define S3C2440_NFSTAT   S3C2410_NFREG(0x20)
+> -#define S3C2440_NFESTAT0 S3C2410_NFREG(0x24)
+> -#define S3C2440_NFESTAT1 S3C2410_NFREG(0x28)
+> -#define S3C2440_NFMECC0  S3C2410_NFREG(0x2C)
+> -#define S3C2440_NFMECC1  S3C2410_NFREG(0x30)
+> -#define S3C2440_NFSECC   S3C2410_NFREG(0x34)
+> -#define S3C2440_NFSBLK   S3C2410_NFREG(0x38)
+> -#define S3C2440_NFEBLK   S3C2410_NFREG(0x3C)
+> -
+> -#define S3C2412_NFSBLK         S3C2410_NFREG(0x20)
+> -#define S3C2412_NFEBLK         S3C2410_NFREG(0x24)
+> -#define S3C2412_NFSTAT         S3C2410_NFREG(0x28)
+> -#define S3C2412_NFMECC_ERR0    S3C2410_NFREG(0x2C)
+> -#define S3C2412_NFMECC_ERR1    S3C2410_NFREG(0x30)
+> -#define S3C2412_NFMECC0                S3C2410_NFREG(0x34)
+> -#define S3C2412_NFMECC1                S3C2410_NFREG(0x38)
+> -#define S3C2412_NFSECC         S3C2410_NFREG(0x3C)
+> -
+> -#define S3C2410_NFCONF_EN          (1<<15)
+> -#define S3C2410_NFCONF_512BYTE     (1<<14)
+> -#define S3C2410_NFCONF_4STEP       (1<<13)
+> -#define S3C2410_NFCONF_INITECC     (1<<12)
+> -#define S3C2410_NFCONF_nFCE        (1<<11)
+> -#define S3C2410_NFCONF_TACLS(x)    ((x)<<8)
+> -#define S3C2410_NFCONF_TWRPH0(x)   ((x)<<4)
+> -#define S3C2410_NFCONF_TWRPH1(x)   ((x)<<0)
+> -
+> -#define S3C2410_NFSTAT_BUSY        (1<<0)
+> -
+> -#define S3C2440_NFCONF_BUSWIDTH_8      (0<<0)
+> -#define S3C2440_NFCONF_BUSWIDTH_16     (1<<0)
+> -#define S3C2440_NFCONF_ADVFLASH                (1<<3)
+> -#define S3C2440_NFCONF_TACLS(x)                ((x)<<12)
+> -#define S3C2440_NFCONF_TWRPH0(x)       ((x)<<8)
+> -#define S3C2440_NFCONF_TWRPH1(x)       ((x)<<4)
+> -
+> -#define S3C2440_NFCONT_LOCKTIGHT       (1<<13)
+> -#define S3C2440_NFCONT_SOFTLOCK                (1<<12)
+> -#define S3C2440_NFCONT_ILLEGALACC_EN   (1<<10)
+> -#define S3C2440_NFCONT_RNBINT_EN       (1<<9)
+> -#define S3C2440_NFCONT_RN_FALLING      (1<<8)
+> -#define S3C2440_NFCONT_SPARE_ECCLOCK   (1<<6)
+> -#define S3C2440_NFCONT_MAIN_ECCLOCK    (1<<5)
+> -#define S3C2440_NFCONT_INITECC         (1<<4)
+> -#define S3C2440_NFCONT_nFCE            (1<<1)
+> -#define S3C2440_NFCONT_ENABLE          (1<<0)
+> -
+> -#define S3C2440_NFSTAT_READY           (1<<0)
+> -#define S3C2440_NFSTAT_nCE             (1<<1)
+> -#define S3C2440_NFSTAT_RnB_CHANGE      (1<<2)
+> -#define S3C2440_NFSTAT_ILLEGAL_ACCESS  (1<<3)
+> -
+> -#define S3C2412_NFCONF_NANDBOOT                (1<<31)
+> -#define S3C2412_NFCONF_ECCCLKCON       (1<<30)
+> -#define S3C2412_NFCONF_ECC_MLC         (1<<24)
+> -#define S3C2412_NFCONF_TACLS_MASK      (7<<12) /* 1 extra bit of Tacls */
+> -
+> -#define S3C2412_NFCONT_ECC4_DIRWR      (1<<18)
+> -#define S3C2412_NFCONT_LOCKTIGHT       (1<<17)
+> -#define S3C2412_NFCONT_SOFTLOCK                (1<<16)
+> -#define S3C2412_NFCONT_ECC4_ENCINT     (1<<13)
+> -#define S3C2412_NFCONT_ECC4_DECINT     (1<<12)
+> -#define S3C2412_NFCONT_MAIN_ECC_LOCK   (1<<7)
+> -#define S3C2412_NFCONT_INIT_MAIN_ECC   (1<<5)
+> -#define S3C2412_NFCONT_nFCE1           (1<<2)
+> -#define S3C2412_NFCONT_nFCE0           (1<<1)
+> -
+> -#define S3C2412_NFSTAT_ECC_ENCDONE     (1<<7)
+> -#define S3C2412_NFSTAT_ECC_DECDONE     (1<<6)
+> -#define S3C2412_NFSTAT_ILLEGAL_ACCESS  (1<<5)
+> -#define S3C2412_NFSTAT_RnB_CHANGE      (1<<4)
+> -#define S3C2412_NFSTAT_nFCE1           (1<<3)
+> -#define S3C2412_NFSTAT_nFCE0           (1<<2)
+> -#define S3C2412_NFSTAT_Res1            (1<<1)
+> -#define S3C2412_NFSTAT_READY           (1<<0)
+> -
+> -#define S3C2412_NFECCERR_SERRDATA(x)   (((x) >> 21) & 0xf)
+> -#define S3C2412_NFECCERR_SERRBIT(x)    (((x) >> 18) & 0x7)
+> -#define S3C2412_NFECCERR_MERRDATA(x)   (((x) >> 7) & 0x3ff)
+> -#define S3C2412_NFECCERR_MERRBIT(x)    (((x) >> 4) & 0x7)
+> -#define S3C2412_NFECCERR_SPARE_ERR(x)  (((x) >> 2) & 0x3)
+> -#define S3C2412_NFECCERR_MAIN_ERR(x)   (((x) >> 2) & 0x3)
+> -#define S3C2412_NFECCERR_NONE          (0)
+> -#define S3C2412_NFECCERR_1BIT          (1)
+> -#define S3C2412_NFECCERR_MULTIBIT      (2)
+> -#define S3C2412_NFECCERR_ECCAREA       (3)
+> -
+> -
+> -
+> -#endif /* __ASM_ARM_REGS_NAND */
+> -
+> diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
+> index 47fbd9a2cacf..f0918e7411d9 100644
+> --- a/drivers/mtd/nand/s3c2410.c
+> +++ b/drivers/mtd/nand/s3c2410.c
+> @@ -46,9 +46,43 @@
+>  #include <linux/mtd/nand_ecc.h>
+>  #include <linux/mtd/partitions.h>
 >
->Thanks! Done, and pushed to l2-mtd.git.
+> -#include <plat/regs-nand.h>
+>  #include <linux/platform_data/mtd-nand-s3c2410.h>
 >
-Thanks Brian and Shijie for getting this READ_RETRY feature in kernel.
+> +#define S3C2410_NFREG(x) (x)
+> +
+> +#define S3C2410_NFCONF         S3C2410_NFREG(0x00)
+> +#define S3C2410_NFCMD          S3C2410_NFREG(0x04)
+> +#define S3C2410_NFADDR         S3C2410_NFREG(0x08)
+> +#define S3C2410_NFDATA         S3C2410_NFREG(0x0C)
+> +#define S3C2410_NFSTAT         S3C2410_NFREG(0x10)
+> +#define S3C2410_NFECC          S3C2410_NFREG(0x14)
+> +#define S3C2440_NFCONT         S3C2410_NFREG(0x04)
+> +#define S3C2440_NFCMD          S3C2410_NFREG(0x08)
+> +#define S3C2440_NFADDR         S3C2410_NFREG(0x0C)
+> +#define S3C2440_NFDATA         S3C2410_NFREG(0x10)
+> +#define S3C2440_NFSTAT         S3C2410_NFREG(0x20)
+> +#define S3C2440_NFMECC0                S3C2410_NFREG(0x2C)
+> +#define S3C2412_NFSTAT         S3C2410_NFREG(0x28)
+> +#define S3C2412_NFMECC0                S3C2410_NFREG(0x34)
+> +#define S3C2410_NFCONF_EN              (1<<15)
+> +#define S3C2410_NFCONF_INITECC         (1<<12)
+> +#define S3C2410_NFCONF_nFCE            (1<<11)
+> +#define S3C2410_NFCONF_TACLS(x)                ((x)<<8)
+> +#define S3C2410_NFCONF_TWRPH0(x)       ((x)<<4)
+> +#define S3C2410_NFCONF_TWRPH1(x)       ((x)<<0)
+> +#define S3C2410_NFSTAT_BUSY            (1<<0)
+> +#define S3C2440_NFCONF_TACLS(x)                ((x)<<12)
+> +#define S3C2440_NFCONF_TWRPH0(x)       ((x)<<8)
+> +#define S3C2440_NFCONF_TWRPH1(x)       ((x)<<4)
+> +#define S3C2440_NFCONT_INITECC         (1<<4)
+> +#define S3C2440_NFCONT_nFCE            (1<<1)
+> +#define S3C2440_NFCONT_ENABLE          (1<<0)
+> +#define S3C2440_NFSTAT_READY           (1<<0)
+> +#define S3C2412_NFCONF_NANDBOOT                (1<<31)
+> +#define S3C2412_NFCONT_INIT_MAIN_ECC   (1<<5)
+> +#define S3C2412_NFCONT_nFCE0           (1<<1)
+> +#define S3C2412_NFSTAT_READY           (1<<0)
+> +
+>  /* new oob placement block for use with hardware ecc generation
+>   */
+>
+> --
+> 1.7.9.5
+>
 
-Sorry, I din't had any MLC NAND locally at my place, so couldn't help in
-Testing these patches, but I know these would be helpful later. As
-we observed quite frequent failures due to read-disturb bit-flips on MLC
-NANDs, and I hope these patches would reduce such failures.
+Gentle ping.
 
-
-with regards, pekon
+-- 
+With warm regards,
+Sachin
