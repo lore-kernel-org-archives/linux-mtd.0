@@ -1,16 +1,21 @@
-Received: from mail-pd0-x22c.google.com ([2607:f8b0:400e:c02::22c])
+Received: from mail-lb0-x22e.google.com ([2a00:1450:4010:c04::22e])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W3LX1-0006Kp-SM
- for linux-mtd@lists.infradead.org; Wed, 15 Jan 2014 08:09:00 +0000
-Received: by mail-pd0-f172.google.com with SMTP id z10so802159pdj.3
- for <linux-mtd@lists.infradead.org>; Wed, 15 Jan 2014 00:08:35 -0800 (PST)
-From: Prabhakar Lad <prabhakar.csengg@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>,
-	linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: davinci_nand: Remove unnecessary labels from error path
-Date: Wed, 15 Jan 2014 13:38:26 +0530
-Message-Id: <1389773306-7055-1-git-send-email-prabhakar.csengg@gmail.com>
-Cc: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>, linux-kernel@vger.kernel.org
+ id 1W3Mu0-0000an-Mn
+ for linux-mtd@lists.infradead.org; Wed, 15 Jan 2014 09:36:49 +0000
+Received: by mail-lb0-f174.google.com with SMTP id p9so573045lbv.19
+ for <linux-mtd@lists.infradead.org>; Wed, 15 Jan 2014 01:36:25 -0800 (PST)
+MIME-Version: 1.0
+Date: Wed, 15 Jan 2014 15:06:25 +0530
+Message-ID: <CAD6G_RScYO2vLuFP=erKF-+cLcri2WTXm=jFu809VmiGxXAbhg@mail.gmail.com>
+Subject: [U-Boot] sf: Discussion on quad changes
+From: Jagan Teki <jagannadh.teki@gmail.com>
+To: Gerhard Sittig <gsi@denx.de>, Sourav Poddar <sourav.poddar@ti.com>,
+ Tom Rini <trini@ti.com>,
+ Michal Simek <monstr@monstr.eu>, Rajeshwari Shinde <rajeshwari.s@samsung.com>,
+ Simon Glass <sjg@chromium.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: "u-boot@lists.denx.de" <u-boot@lists.denx.de>,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,97 +25,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Hi All,
 
-This patch removes the unnecessary labels from
-the error path in probe function which did nothing
-than just returning error values, Thus simplifying code
-path and improved readability.
+This particular discussion is a next level add-on for thread [1]
 
-Signed-off-by: Lad, Prabhakar <prabhakar.csengg@gmail.com>
----
- drivers/mtd/nand/davinci_nand.c |   31 ++++++++++---------------------
- 1 file changed, 10 insertions(+), 21 deletions(-)
+State of u-boot now:
+- Added quad changes on u-boot and will be available in coming release.
+- Added commands are
+  1) 1-line # Array slow read, Array fast read(available before)
+  2) 2-line # Dual fast read, Dual IO read
+  3) 3-line # Quad fast read, quad IO read, Quad page program
+- The implementation "will determine the fastest command by taking the supported
+  commands from the flash and the controller, controller is always
+been a priority."
+- Suppose we have a flash that supports all types of commands then from driver
+  side we have an option to set the particular command and the same option will
+  goes to sf and will determine the fastest one.
+  ex: if flash supports all, but the driver supports dual fast then
+the outcome read
+  could be dual fast.
 
-diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-index b77a01e..3e4d457 100644
---- a/drivers/mtd/nand/davinci_nand.c
-+++ b/drivers/mtd/nand/davinci_nand.c
-@@ -609,8 +609,7 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
- 	info = devm_kzalloc(&pdev->dev, sizeof(*info), GFP_KERNEL);
- 	if (!info) {
- 		dev_err(&pdev->dev, "unable to allocate memory\n");
--		ret = -ENOMEM;
--		goto err_nomem;
-+		return -ENOMEM;
- 	}
- 
- 	platform_set_drvdata(pdev, info);
-@@ -619,20 +618,16 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
- 	res2 = platform_get_resource(pdev, IORESOURCE_MEM, 1);
- 	if (!res1 || !res2) {
- 		dev_err(&pdev->dev, "resource missing\n");
--		ret = -EINVAL;
--		goto err_nomem;
-+		return -EINVAL;
- 	}
- 
- 	vaddr = devm_ioremap_resource(&pdev->dev, res1);
--	if (IS_ERR(vaddr)) {
--		ret = PTR_ERR(vaddr);
--		goto err_ioremap;
--	}
-+	if (IS_ERR(vaddr))
-+		return PTR_ERR(vaddr);
-+
- 	base = devm_ioremap_resource(&pdev->dev, res2);
--	if (IS_ERR(base)) {
--		ret = PTR_ERR(base);
--		goto err_ioremap;
--	}
-+	if (IS_ERR(base))
-+		return PTR_ERR(base);
- 
- 	info->dev		= &pdev->dev;
- 	info->base		= base;
-@@ -699,7 +694,7 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
- 			spin_unlock_irq(&davinci_nand_lock);
- 
- 			if (ret == -EBUSY)
--				goto err_ecc;
-+				return ret;
- 
- 			info->chip.ecc.calculate = nand_davinci_calculate_4bit;
- 			info->chip.ecc.correct = nand_davinci_correct_4bit;
-@@ -715,16 +710,14 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
- 		info->chip.ecc.strength = pdata->ecc_bits;
- 		break;
- 	default:
--		ret = -EINVAL;
--		goto err_ecc;
-+		return -EINVAL;
- 	}
- 	info->chip.ecc.mode = ecc_mode;
- 
- 	info->clk = devm_clk_get(&pdev->dev, "aemif");
- 	if (IS_ERR(info->clk)) {
--		ret = PTR_ERR(info->clk);
- 		dev_dbg(&pdev->dev, "unable to get AEMIF clock, err %d\n", ret);
--		goto err_clk;
-+		return PTR_ERR(info->clk);
- 	}
- 
- 	ret = clk_prepare_enable(info->clk);
-@@ -853,10 +846,6 @@ err_clk_enable:
- 		ecc4_busy = false;
- 	spin_unlock_irq(&davinci_nand_lock);
- 
--err_ecc:
--err_clk:
--err_ioremap:
--err_nomem:
- 	return ret;
- }
- 
--- 
-1.7.9.5
+And even Linux will also does the similar implementation, i guess.
+The main reason for going maximum or based on controller setting transfer is to
+improve sf performance.
+
+But from previous thread of discussion - Gerhard Sittig, identified a
+side-effect on this
+implementation as per as board to connected flash perceptive.
+
+The question as per my understanding was "If a controller support 1,
+2, and 4 lines then
+the BoardA is designed to connect a flash with 4-lines, BoardB is
+designed to connect
+a flash with 2-lines and BoardC is designed to connect a flash with 1-line."
+
+In above scenario - as we have a common controller driver that may set
+an option to support
+quad then BoardB and BoardC will fail to transfer.
+
+Gerhard Sittig, please add if i miss any points here!
+
+I do agree this scenario and I have few possible inputs.
+1) dynamic - auto-detection:
+    Get the max_nof_lines based on the board to connected flash.
+    So-that we can configure the transfer mode based on the lines.
+    no idea yet, how to get the max_nof_lines dynamically - any inputs.
+2) static: from user level we may give the max_nof_lines
+    ex: sf probe probe [[[bus:]cs]:max_nof_line] [hz] [mode]
+    If user can't input max_nof_line so-that driver will go with single and
+    the rest case transfer modes assigned based on the given input.
+    for Linux it can be pdata or dts.
+
+Request for comments!
+
+[1] http://u-boot.10912.n7.nabble.com/PATCH-v7-01-17-sf-Add-extended-read-commands-support-td171225.html#a171290
+
+--
+Thanks,
+Jagan.
