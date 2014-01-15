@@ -1,21 +1,21 @@
-Received: from mail-lb0-x22e.google.com ([2a00:1450:4010:c04::22e])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W3Mu0-0000an-Mn
- for linux-mtd@lists.infradead.org; Wed, 15 Jan 2014 09:36:49 +0000
-Received: by mail-lb0-f174.google.com with SMTP id p9so573045lbv.19
- for <linux-mtd@lists.infradead.org>; Wed, 15 Jan 2014 01:36:25 -0800 (PST)
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by casper.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W3QVZ-0005PW-RV
+ for linux-mtd@lists.infradead.org; Wed, 15 Jan 2014 13:27:50 +0000
+Date: Wed, 15 Jan 2014 10:27:25 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Rodolfo Giometti <giometti@linux.it>
+Subject: Re: [PATCH] mtd pxa3xx_nand.c: add support for 2048 bytes page size
+ layout
+Message-ID: <20140115132724.GB2534@localhost>
+References: <1389623738-19585-1-git-send-email-giometti@linux.it>
 MIME-Version: 1.0
-Date: Wed, 15 Jan 2014 15:06:25 +0530
-Message-ID: <CAD6G_RScYO2vLuFP=erKF-+cLcri2WTXm=jFu809VmiGxXAbhg@mail.gmail.com>
-Subject: [U-Boot] sf: Discussion on quad changes
-From: Jagan Teki <jagannadh.teki@gmail.com>
-To: Gerhard Sittig <gsi@denx.de>, Sourav Poddar <sourav.poddar@ti.com>,
- Tom Rini <trini@ti.com>,
- Michal Simek <monstr@monstr.eu>, Rajeshwari Shinde <rajeshwari.s@samsung.com>,
- Simon Glass <sjg@chromium.org>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "u-boot@lists.denx.de" <u-boot@lists.denx.de>,
- linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1389623738-19585-1-git-send-email-giometti@linux.it>
+Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,61 +25,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
+Hi Rodolfo,
 
-This particular discussion is a next level add-on for thread [1]
+On Mon, Jan 13, 2014 at 03:35:38PM +0100, Rodolfo Giometti wrote:
+> Signed-off-by: Rodolfo Giometti <giometti@linux.it>
+> ---
+>  drivers/mtd/nand/pxa3xx_nand.c | 21 +++++++++++++++++++++
+>  1 file changed, 21 insertions(+)
+> 
 
-State of u-boot now:
-- Added quad changes on u-boot and will be available in coming release.
-- Added commands are
-  1) 1-line # Array slow read, Array fast read(available before)
-  2) 2-line # Dual fast read, Dual IO read
-  3) 3-line # Quad fast read, quad IO read, Quad page program
-- The implementation "will determine the fastest command by taking the supported
-  commands from the flash and the controller, controller is always
-been a priority."
-- Suppose we have a flash that supports all types of commands then from driver
-  side we have an option to set the particular command and the same option will
-  goes to sf and will determine the fastest one.
-  ex: if flash supports all, but the driver supports dual fast then
-the outcome read
-  could be dual fast.
+I know this is just a small nitpick, but can you re-submit this
+with a subject similar to the other commits:
 
-And even Linux will also does the similar implementation, i guess.
-The main reason for going maximum or based on controller setting transfer is to
-improve sf performance.
+""mtd: nand: pxa3xx: Add support for 2048 bytes page size devices""
 
-But from previous thread of discussion - Gerhard Sittig, identified a
-side-effect on this
-implementation as per as board to connected flash perceptive.
+Also, I think you can add some details about the patch in the change
+log. Something along these lines might be fine:
 
-The question as per my understanding was "If a controller support 1,
-2, and 4 lines then
-the BoardA is designed to connect a flash with 4-lines, BoardB is
-designed to connect
-a flash with 2-lines and BoardC is designed to connect a flash with 1-line."
+""
+This commit adds support for devices with 2048B page sizes and
+4-bit ECC strength requirements. This is achieved by enabling the BCH
+ECC engine, which provides a higher strength: 16-bit over 2048 bytes.
 
-In above scenario - as we have a common controller driver that may set
-an option to support
-quad then BoardB and BoardC will fail to transfer.
+Additionally, add a proper ECC layout to model the controller's view
+of the device (where 'U' means unused and 'B' is the bad block marker):
 
-Gerhard Sittig, please add if i miss any points here!
+ ----------------------------------------------------
+ | 2048B data | B | B | 30B spare | 30B ECC | U | U |
+ ----------------------------------------------------
+""
 
-I do agree this scenario and I have few possible inputs.
-1) dynamic - auto-detection:
-    Get the max_nof_lines based on the board to connected flash.
-    So-that we can configure the transfer mode based on the lines.
-    no idea yet, how to get the max_nof_lines dynamically - any inputs.
-2) static: from user level we may give the max_nof_lines
-    ex: sf probe probe [[[bus:]cs]:max_nof_line] [hz] [mode]
-    If user can't input max_nof_line so-that driver will go with single and
-    the rest case transfer modes assigned based on the given input.
-    for Linux it can be pdata or dts.
+With these modifications you can also add:
 
-Request for comments!
+Acked-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 
-[1] http://u-boot.10912.n7.nabble.com/PATCH-v7-01-17-sf-Add-extended-read-commands-support-td171225.html#a171290
-
---
-Thanks,
-Jagan.
+Thanks a lot for the contribution!
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
