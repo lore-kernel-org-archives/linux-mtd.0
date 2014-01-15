@@ -1,22 +1,16 @@
-Received: from mail-oa0-f48.google.com ([209.85.219.48])
+Received: from mail-pd0-x22c.google.com ([2607:f8b0:400e:c02::22c])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W3JeF-0003XL-D2
- for linux-mtd@lists.infradead.org; Wed, 15 Jan 2014 06:08:20 +0000
-Received: by mail-oa0-f48.google.com with SMTP id i11so716977oag.7
- for <linux-mtd@lists.infradead.org>; Tue, 14 Jan 2014 22:07:56 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <1389333253-3802-3-git-send-email-sachin.kamat@linaro.org>
-References: <1389333253-3802-1-git-send-email-sachin.kamat@linaro.org>
- <1389333253-3802-3-git-send-email-sachin.kamat@linaro.org>
-Date: Wed, 15 Jan 2014 11:37:56 +0530
-Message-ID: <CAK9yfHwuWbcAe3KRNyYM7=aTr6srQbZWLbmouVsCEfxhUXSBbQ@mail.gmail.com>
-Subject: Re: [PATCH Resend 3/3] mtd: s3c2410: Merge plat/regs-nand.h into
- s3c2410.c
-From: Sachin Kamat <sachin.kamat@linaro.org>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Sachin Kamat <sachin.kamat@linaro.org>, Kukjin Kim <kgene.kim@samsung.com>,
- Brian Norris <computersforpeace@gmail.com>
+ id 1W3LX1-0006Kp-SM
+ for linux-mtd@lists.infradead.org; Wed, 15 Jan 2014 08:09:00 +0000
+Received: by mail-pd0-f172.google.com with SMTP id z10so802159pdj.3
+ for <linux-mtd@lists.infradead.org>; Wed, 15 Jan 2014 00:08:35 -0800 (PST)
+From: Prabhakar Lad <prabhakar.csengg@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+	linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: davinci_nand: Remove unnecessary labels from error path
+Date: Wed, 15 Jan 2014 13:38:26 +0530
+Message-Id: <1389773306-7055-1-git-send-email-prabhakar.csengg@gmail.com>
+Cc: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,203 +20,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10 January 2014 11:24, Sachin Kamat <sachin.kamat@linaro.org> wrote:
-> plat/regs-nand.h is used only by S3C2410 nand driver. Since there
-> are no other users, merge this file into the driver code to remove
-> platform dependency. While at it also remove unused macros.
->
-> Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
-> Cc: Kukjin Kim <kgene.kim@samsung.com>
-> ---
->  arch/arm/plat-samsung/include/plat/regs-nand.h |  123 ------------------------
->  drivers/mtd/nand/s3c2410.c                     |   36 ++++++-
->  2 files changed, 35 insertions(+), 124 deletions(-)
->  delete mode 100644 arch/arm/plat-samsung/include/plat/regs-nand.h
->
-> diff --git a/arch/arm/plat-samsung/include/plat/regs-nand.h b/arch/arm/plat-samsung/include/plat/regs-nand.h
-> deleted file mode 100644
-> index 238efea7b9e4..000000000000
-> --- a/arch/arm/plat-samsung/include/plat/regs-nand.h
-> +++ /dev/null
-> @@ -1,123 +0,0 @@
-> -/* arch/arm/mach-s3c2410/include/mach/regs-nand.h
-> - *
-> - * Copyright (c) 2004-2005 Simtec Electronics <linux@simtec.co.uk>
-> - *     http://www.simtec.co.uk/products/SWLINUX/
-> - *
-> - * This program is free software; you can redistribute it and/or modify
-> - * it under the terms of the GNU General Public License version 2 as
-> - * published by the Free Software Foundation.
-> - *
-> - * S3C2410 NAND register definitions
-> -*/
-> -
-> -#ifndef __ASM_ARM_REGS_NAND
-> -#define __ASM_ARM_REGS_NAND
-> -
-> -
-> -#define S3C2410_NFREG(x) (x)
-> -
-> -#define S3C2410_NFCONF  S3C2410_NFREG(0x00)
-> -#define S3C2410_NFCMD   S3C2410_NFREG(0x04)
-> -#define S3C2410_NFADDR  S3C2410_NFREG(0x08)
-> -#define S3C2410_NFDATA  S3C2410_NFREG(0x0C)
-> -#define S3C2410_NFSTAT  S3C2410_NFREG(0x10)
-> -#define S3C2410_NFECC   S3C2410_NFREG(0x14)
-> -
-> -#define S3C2440_NFCONT   S3C2410_NFREG(0x04)
-> -#define S3C2440_NFCMD    S3C2410_NFREG(0x08)
-> -#define S3C2440_NFADDR   S3C2410_NFREG(0x0C)
-> -#define S3C2440_NFDATA   S3C2410_NFREG(0x10)
-> -#define S3C2440_NFECCD0  S3C2410_NFREG(0x14)
-> -#define S3C2440_NFECCD1  S3C2410_NFREG(0x18)
-> -#define S3C2440_NFECCD   S3C2410_NFREG(0x1C)
-> -#define S3C2440_NFSTAT   S3C2410_NFREG(0x20)
-> -#define S3C2440_NFESTAT0 S3C2410_NFREG(0x24)
-> -#define S3C2440_NFESTAT1 S3C2410_NFREG(0x28)
-> -#define S3C2440_NFMECC0  S3C2410_NFREG(0x2C)
-> -#define S3C2440_NFMECC1  S3C2410_NFREG(0x30)
-> -#define S3C2440_NFSECC   S3C2410_NFREG(0x34)
-> -#define S3C2440_NFSBLK   S3C2410_NFREG(0x38)
-> -#define S3C2440_NFEBLK   S3C2410_NFREG(0x3C)
-> -
-> -#define S3C2412_NFSBLK         S3C2410_NFREG(0x20)
-> -#define S3C2412_NFEBLK         S3C2410_NFREG(0x24)
-> -#define S3C2412_NFSTAT         S3C2410_NFREG(0x28)
-> -#define S3C2412_NFMECC_ERR0    S3C2410_NFREG(0x2C)
-> -#define S3C2412_NFMECC_ERR1    S3C2410_NFREG(0x30)
-> -#define S3C2412_NFMECC0                S3C2410_NFREG(0x34)
-> -#define S3C2412_NFMECC1                S3C2410_NFREG(0x38)
-> -#define S3C2412_NFSECC         S3C2410_NFREG(0x3C)
-> -
-> -#define S3C2410_NFCONF_EN          (1<<15)
-> -#define S3C2410_NFCONF_512BYTE     (1<<14)
-> -#define S3C2410_NFCONF_4STEP       (1<<13)
-> -#define S3C2410_NFCONF_INITECC     (1<<12)
-> -#define S3C2410_NFCONF_nFCE        (1<<11)
-> -#define S3C2410_NFCONF_TACLS(x)    ((x)<<8)
-> -#define S3C2410_NFCONF_TWRPH0(x)   ((x)<<4)
-> -#define S3C2410_NFCONF_TWRPH1(x)   ((x)<<0)
-> -
-> -#define S3C2410_NFSTAT_BUSY        (1<<0)
-> -
-> -#define S3C2440_NFCONF_BUSWIDTH_8      (0<<0)
-> -#define S3C2440_NFCONF_BUSWIDTH_16     (1<<0)
-> -#define S3C2440_NFCONF_ADVFLASH                (1<<3)
-> -#define S3C2440_NFCONF_TACLS(x)                ((x)<<12)
-> -#define S3C2440_NFCONF_TWRPH0(x)       ((x)<<8)
-> -#define S3C2440_NFCONF_TWRPH1(x)       ((x)<<4)
-> -
-> -#define S3C2440_NFCONT_LOCKTIGHT       (1<<13)
-> -#define S3C2440_NFCONT_SOFTLOCK                (1<<12)
-> -#define S3C2440_NFCONT_ILLEGALACC_EN   (1<<10)
-> -#define S3C2440_NFCONT_RNBINT_EN       (1<<9)
-> -#define S3C2440_NFCONT_RN_FALLING      (1<<8)
-> -#define S3C2440_NFCONT_SPARE_ECCLOCK   (1<<6)
-> -#define S3C2440_NFCONT_MAIN_ECCLOCK    (1<<5)
-> -#define S3C2440_NFCONT_INITECC         (1<<4)
-> -#define S3C2440_NFCONT_nFCE            (1<<1)
-> -#define S3C2440_NFCONT_ENABLE          (1<<0)
-> -
-> -#define S3C2440_NFSTAT_READY           (1<<0)
-> -#define S3C2440_NFSTAT_nCE             (1<<1)
-> -#define S3C2440_NFSTAT_RnB_CHANGE      (1<<2)
-> -#define S3C2440_NFSTAT_ILLEGAL_ACCESS  (1<<3)
-> -
-> -#define S3C2412_NFCONF_NANDBOOT                (1<<31)
-> -#define S3C2412_NFCONF_ECCCLKCON       (1<<30)
-> -#define S3C2412_NFCONF_ECC_MLC         (1<<24)
-> -#define S3C2412_NFCONF_TACLS_MASK      (7<<12) /* 1 extra bit of Tacls */
-> -
-> -#define S3C2412_NFCONT_ECC4_DIRWR      (1<<18)
-> -#define S3C2412_NFCONT_LOCKTIGHT       (1<<17)
-> -#define S3C2412_NFCONT_SOFTLOCK                (1<<16)
-> -#define S3C2412_NFCONT_ECC4_ENCINT     (1<<13)
-> -#define S3C2412_NFCONT_ECC4_DECINT     (1<<12)
-> -#define S3C2412_NFCONT_MAIN_ECC_LOCK   (1<<7)
-> -#define S3C2412_NFCONT_INIT_MAIN_ECC   (1<<5)
-> -#define S3C2412_NFCONT_nFCE1           (1<<2)
-> -#define S3C2412_NFCONT_nFCE0           (1<<1)
-> -
-> -#define S3C2412_NFSTAT_ECC_ENCDONE     (1<<7)
-> -#define S3C2412_NFSTAT_ECC_DECDONE     (1<<6)
-> -#define S3C2412_NFSTAT_ILLEGAL_ACCESS  (1<<5)
-> -#define S3C2412_NFSTAT_RnB_CHANGE      (1<<4)
-> -#define S3C2412_NFSTAT_nFCE1           (1<<3)
-> -#define S3C2412_NFSTAT_nFCE0           (1<<2)
-> -#define S3C2412_NFSTAT_Res1            (1<<1)
-> -#define S3C2412_NFSTAT_READY           (1<<0)
-> -
-> -#define S3C2412_NFECCERR_SERRDATA(x)   (((x) >> 21) & 0xf)
-> -#define S3C2412_NFECCERR_SERRBIT(x)    (((x) >> 18) & 0x7)
-> -#define S3C2412_NFECCERR_MERRDATA(x)   (((x) >> 7) & 0x3ff)
-> -#define S3C2412_NFECCERR_MERRBIT(x)    (((x) >> 4) & 0x7)
-> -#define S3C2412_NFECCERR_SPARE_ERR(x)  (((x) >> 2) & 0x3)
-> -#define S3C2412_NFECCERR_MAIN_ERR(x)   (((x) >> 2) & 0x3)
-> -#define S3C2412_NFECCERR_NONE          (0)
-> -#define S3C2412_NFECCERR_1BIT          (1)
-> -#define S3C2412_NFECCERR_MULTIBIT      (2)
-> -#define S3C2412_NFECCERR_ECCAREA       (3)
-> -
-> -
-> -
-> -#endif /* __ASM_ARM_REGS_NAND */
-> -
-> diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
-> index 47fbd9a2cacf..f0918e7411d9 100644
-> --- a/drivers/mtd/nand/s3c2410.c
-> +++ b/drivers/mtd/nand/s3c2410.c
-> @@ -46,9 +46,43 @@
->  #include <linux/mtd/nand_ecc.h>
->  #include <linux/mtd/partitions.h>
->
-> -#include <plat/regs-nand.h>
->  #include <linux/platform_data/mtd-nand-s3c2410.h>
->
-> +#define S3C2410_NFREG(x) (x)
-> +
-> +#define S3C2410_NFCONF         S3C2410_NFREG(0x00)
-> +#define S3C2410_NFCMD          S3C2410_NFREG(0x04)
-> +#define S3C2410_NFADDR         S3C2410_NFREG(0x08)
-> +#define S3C2410_NFDATA         S3C2410_NFREG(0x0C)
-> +#define S3C2410_NFSTAT         S3C2410_NFREG(0x10)
-> +#define S3C2410_NFECC          S3C2410_NFREG(0x14)
-> +#define S3C2440_NFCONT         S3C2410_NFREG(0x04)
-> +#define S3C2440_NFCMD          S3C2410_NFREG(0x08)
-> +#define S3C2440_NFADDR         S3C2410_NFREG(0x0C)
-> +#define S3C2440_NFDATA         S3C2410_NFREG(0x10)
-> +#define S3C2440_NFSTAT         S3C2410_NFREG(0x20)
-> +#define S3C2440_NFMECC0                S3C2410_NFREG(0x2C)
-> +#define S3C2412_NFSTAT         S3C2410_NFREG(0x28)
-> +#define S3C2412_NFMECC0                S3C2410_NFREG(0x34)
-> +#define S3C2410_NFCONF_EN              (1<<15)
-> +#define S3C2410_NFCONF_INITECC         (1<<12)
-> +#define S3C2410_NFCONF_nFCE            (1<<11)
-> +#define S3C2410_NFCONF_TACLS(x)                ((x)<<8)
-> +#define S3C2410_NFCONF_TWRPH0(x)       ((x)<<4)
-> +#define S3C2410_NFCONF_TWRPH1(x)       ((x)<<0)
-> +#define S3C2410_NFSTAT_BUSY            (1<<0)
-> +#define S3C2440_NFCONF_TACLS(x)                ((x)<<12)
-> +#define S3C2440_NFCONF_TWRPH0(x)       ((x)<<8)
-> +#define S3C2440_NFCONF_TWRPH1(x)       ((x)<<4)
-> +#define S3C2440_NFCONT_INITECC         (1<<4)
-> +#define S3C2440_NFCONT_nFCE            (1<<1)
-> +#define S3C2440_NFCONT_ENABLE          (1<<0)
-> +#define S3C2440_NFSTAT_READY           (1<<0)
-> +#define S3C2412_NFCONF_NANDBOOT                (1<<31)
-> +#define S3C2412_NFCONT_INIT_MAIN_ECC   (1<<5)
-> +#define S3C2412_NFCONT_nFCE0           (1<<1)
-> +#define S3C2412_NFSTAT_READY           (1<<0)
-> +
->  /* new oob placement block for use with hardware ecc generation
->   */
->
-> --
-> 1.7.9.5
->
+From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
 
-Gentle ping.
+This patch removes the unnecessary labels from
+the error path in probe function which did nothing
+than just returning error values, Thus simplifying code
+path and improved readability.
 
+Signed-off-by: Lad, Prabhakar <prabhakar.csengg@gmail.com>
+---
+ drivers/mtd/nand/davinci_nand.c |   31 ++++++++++---------------------
+ 1 file changed, 10 insertions(+), 21 deletions(-)
+
+diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
+index b77a01e..3e4d457 100644
+--- a/drivers/mtd/nand/davinci_nand.c
++++ b/drivers/mtd/nand/davinci_nand.c
+@@ -609,8 +609,7 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
+ 	info = devm_kzalloc(&pdev->dev, sizeof(*info), GFP_KERNEL);
+ 	if (!info) {
+ 		dev_err(&pdev->dev, "unable to allocate memory\n");
+-		ret = -ENOMEM;
+-		goto err_nomem;
++		return -ENOMEM;
+ 	}
+ 
+ 	platform_set_drvdata(pdev, info);
+@@ -619,20 +618,16 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
+ 	res2 = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+ 	if (!res1 || !res2) {
+ 		dev_err(&pdev->dev, "resource missing\n");
+-		ret = -EINVAL;
+-		goto err_nomem;
++		return -EINVAL;
+ 	}
+ 
+ 	vaddr = devm_ioremap_resource(&pdev->dev, res1);
+-	if (IS_ERR(vaddr)) {
+-		ret = PTR_ERR(vaddr);
+-		goto err_ioremap;
+-	}
++	if (IS_ERR(vaddr))
++		return PTR_ERR(vaddr);
++
+ 	base = devm_ioremap_resource(&pdev->dev, res2);
+-	if (IS_ERR(base)) {
+-		ret = PTR_ERR(base);
+-		goto err_ioremap;
+-	}
++	if (IS_ERR(base))
++		return PTR_ERR(base);
+ 
+ 	info->dev		= &pdev->dev;
+ 	info->base		= base;
+@@ -699,7 +694,7 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
+ 			spin_unlock_irq(&davinci_nand_lock);
+ 
+ 			if (ret == -EBUSY)
+-				goto err_ecc;
++				return ret;
+ 
+ 			info->chip.ecc.calculate = nand_davinci_calculate_4bit;
+ 			info->chip.ecc.correct = nand_davinci_correct_4bit;
+@@ -715,16 +710,14 @@ static int __init nand_davinci_probe(struct platform_device *pdev)
+ 		info->chip.ecc.strength = pdata->ecc_bits;
+ 		break;
+ 	default:
+-		ret = -EINVAL;
+-		goto err_ecc;
++		return -EINVAL;
+ 	}
+ 	info->chip.ecc.mode = ecc_mode;
+ 
+ 	info->clk = devm_clk_get(&pdev->dev, "aemif");
+ 	if (IS_ERR(info->clk)) {
+-		ret = PTR_ERR(info->clk);
+ 		dev_dbg(&pdev->dev, "unable to get AEMIF clock, err %d\n", ret);
+-		goto err_clk;
++		return PTR_ERR(info->clk);
+ 	}
+ 
+ 	ret = clk_prepare_enable(info->clk);
+@@ -853,10 +846,6 @@ err_clk_enable:
+ 		ecc4_busy = false;
+ 	spin_unlock_irq(&davinci_nand_lock);
+ 
+-err_ecc:
+-err_clk:
+-err_ioremap:
+-err_nomem:
+ 	return ret;
+ }
+ 
 -- 
-With warm regards,
-Sachin
+1.7.9.5
