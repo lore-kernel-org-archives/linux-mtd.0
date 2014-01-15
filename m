@@ -1,19 +1,27 @@
+Received: from bear.ext.ti.com ([192.94.94.41])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W3Y20-0003nm-N5
+ for linux-mtd@lists.infradead.org; Wed, 15 Jan 2014 21:29:49 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>
+Subject: RE: UBIFS seeing corrupt blank pages when image flashed via u-boot
+Date: Wed, 15 Jan 2014 21:29:07 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA620BD@DBDE04.ent.ti.com>
+References: <20980858CB6D3A4BAE95CA194937D5E73EA5DBFA@DBDE04.ent.ti.com>
+ <1388753970.25123.124.camel@sauron.fi.intel.com>
+ <CAEhpT-W-aBkackmUb860vex2LxGzkBQ6hu1KGvUzjmTWTeQgxg@mail.gmail.com>
+ <1389617894.2259.270.camel@sauron.fi.intel.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EA61199@DBDE04.ent.ti.com>
+ <1389625608.2259.357.camel@sauron.fi.intel.com>
+In-Reply-To: <1389625608.2259.357.camel@sauron.fi.intel.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <1387950629-27448-1-git-send-email-b32955@freescale.com>
-References: <1387950629-27448-1-git-send-email-b32955@freescale.com>
-Date: Thu, 16 Jan 2014 00:45:21 +0530
-Message-ID: <CAD6G_RTnNQgeJM8Tc16Sc1_n29d=V9sJN1ePrOAn5YzM+GujMQ@mail.gmail.com>
-Subject: Re: [PATCH v4 0/7] mtd: spi-nor: add a new framework for SPI NOR
-From: Jagan Teki <jagannadh.teki@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: angus.clark@st.com, Brian Norris <computersforpeace@gmail.com>,
- b44548@freescale.com, linux-doc@vger.kernel.org, lee.jones@linaro.org,
- broonie@linaro.org, b18965@freescale.com, linux-spi@vger.kernel.org,
- devicetree@vger.kernel.org, linux-mtd@lists.infradead.org, "Gupta,
- Pekon" <pekon@ti.com>, Sourav Poddar <sourav.poddar@ti.com>,
- shawn.guo@linaro.org, David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Cc: "u-boot@lists.denx.de" <u-boot@lists.denx.de>,
+ "Stefan Roese <sr@denx.de> \(sr@denx.de\)" <sr@denx.de>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Calvin Johnson <linux.cj@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,113 +31,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-On Wed, Dec 25, 2013 at 11:20 AM, Huang Shijie <b32955@freescale.com> wrote:
-> 1.) Why add a new framework for SPI NOR?
->   The SPI-NOR controller such as Freescale's Quadspi controller is working
->   in a different way from the SPI bus. It should knows the NOR commands to
->   find the right LUT sequence. Unfortunately, the current code can not meet
->   this requirement.
->
-> 2.) How does this patch set do?
->    This patch set adds a new spi-nor layer.
->    Before this patch, the layer is like:
->
->                    MTD
->          ------------------------
->                   m25p80
->          ------------------------
->                spi bus driver
->          ------------------------
->                 SPI NOR chip
->
->    After this patch, the layer is like:
->                    MTD
->          ------------------------
->                   spi-nor
->          ------------------------
->                   m25p80
->          ------------------------
->                spi bus driver
->          ------------------------
->                SPI NOR chip
->
->   With the spi-nor controller driver(Freescale Quadspi), it looks like:
->                    MTD
->          ------------------------
->                   spi-nor
->          ------------------------
->                 fsl-quadspi
->          ------------------------
->                SPI NOR chip
-
-I'm new to this thread, may be I'll ask basic questions.
-1) what does m25p80 contains with your new framework - will excludes
-quad stuff if they add
-2) I didn't understand why the controller driver fsl-quadspi will be
-in mtd becuase as it's (q)spi driver
-may does flash or non-flash functionalities if ie, the case should be
-part of drivers/spi/*
-3) Can you explain your framework precisely take an example of like
-spi_controller_A with spi_flash_A
-and qspi_controller_B and qspi_flash_B - how will this new framework operates.
-
->
-> 3.) more details
->     This patch set adds a new data structrue spi_nor{}, clones most the common
->   code to spi-nor.c. Add spi_nor_xfer_cfg {} for the fundamental primitives:
->   read_xfer/write_xfer.
->
->     Make the m25p80.c/fsl_quaspi.c use the new APIs.
->
-> 4.) Change log:
-> v3 --> v4:
->         [1] move the wait_till_ready to the @read hook.
->         [2] convert to linux-doc style comment.
->         [3] remove the some DT property for QuadSPI driver, such as
->             "fsl,nor-size".
->         [4] others
->
-> v2 --> v3:
->         [1] add prepare/unprepare hooks for spi_nor{}.
->         [2] add a new "priv" field for spi_nor{}.
->         [3] add the Freescale Quadspi driver which supports the Quad read by
->              default.
->
-> v1 --> v2:
->         [1] follow Angus's advice, add more hooks and data structrures.
->         [2] others.
->
->
-> Huang Shijie (7):
->   mtd: spi-nor: copy the SPI NOR commands to a new header file
->   mtd: spi-nor: add the basic data structures
->   mtd: spi-nor: add the framework for SPI NOR
->   mtd: m25p80: use the SPI nor framework
->   mtd: spi-nor: add a helper to find the spi_device_id
->   Documentation: add the binding file for Freescale QuadSPI driver
->   mtd: spi-nor: Add Freescale QuadSPI driver
->
->  .../devicetree/bindings/mtd/fsl-quadspi.txt        |   26 +
->  drivers/mtd/Kconfig                                |    2 +
->  drivers/mtd/Makefile                               |    1 +
->  drivers/mtd/devices/Kconfig                        |    2 +-
->  drivers/mtd/devices/m25p80.c                       | 1275 ++------------------
->  drivers/mtd/spi-nor/Kconfig                        |   12 +
->  drivers/mtd/spi-nor/Makefile                       |    2 +
->  drivers/mtd/spi-nor/fsl-quadspi.c                  |  957 +++++++++++++++
->  drivers/mtd/spi-nor/spi-nor.c                      | 1093 +++++++++++++++++
->  include/linux/mtd/spi-nor.h                        |  194 +++
->  10 files changed, 2387 insertions(+), 1177 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
->  create mode 100644 drivers/mtd/spi-nor/Kconfig
->  create mode 100644 drivers/mtd/spi-nor/Makefile
->  create mode 100644 drivers/mtd/spi-nor/fsl-quadspi.c
->  create mode 100644 drivers/mtd/spi-nor/spi-nor.c
->  create mode 100644 include/linux/mtd/spi-nor.h
->
-
--- 
-Thanks,
-Jagan.
+SGkgQXJ0ZW0sDQoNCj5Gcm9tOiBBcnRlbSBCaXR5dXRza2l5IFttYWlsdG86YXJ0ZW0uYml0eXV0
+c2tpeUBsaW51eC5pbnRlbC5jb21dDQo8c25pcD4NCj5Db25jbHVzaW9uOiBhbGwgVUJJRlMgbmVl
+ZHMgaXMgYSB3YXkgdG8gYXNrIHRoZSBkcml2ZXIgLSBpcyB0aGlzIE5BTkQNCj5wYWdlIGJsYW5r
+IG9yIG5vdD8gVUJJRlMgZG9lcyBub3QgcmVhbGx5IGhhcyB0byBjb21wYXJlIHRvIGFsbCAweEZG
+cy4NCj4NClRoYW5rcyBmb3IgZGV0YWlscy4gWWVzLCBJIHVuZGVyc3RhbmQgdGhlIGNvbmNlcHQg
+aW4gZ2VuZXJhbCB0aGF0IHlvdQ0Kd2FudCB0byByZWNvdmVyIGxhc3QgYml0IG9mIHVzZXItZGF0
+YSB3cml0dGVuIG9uIE5BTkQgKHdpdGhvdXQgY29ycnVwdGlvbikuDQoNCk5vdywgYXMgTkFORCBk
+cml2ZXIgaXRzZWxmIGRvZXMgZGlmZmVyZW50aWF0aW9uIGJldHdlZW4gYW5kIGVyYXNlZC1wYWdl
+DQp2L3MgcHJvZ3JhbW1lZC1wYWdlLiBDYW4gd2UgdXNlIGRpZmZlcmVudCBlcnJvciBjb2RlcyB0
+byBwYXNzIHRoaXMNCmluZm9ybWF0aW9uIHRvIHVwcGVyIGxheWVycyBsaWtlOw0KDQoqRm9yIE1U
+RCBsYXllcioNCjA6IGRhdGEgdmFsaWQsIGxlbmd0aCBvZiBkYXRhIGlzIGRldGVybWluZWQgYnkg
+J3JlYWRfbGVuJyAgKGN1cnJlbnRseSkNCi1FVUNMRUFOOiBjb3JyZWN0YWJsZSBiaXQtZmxpcHMg
+Zm91bmQsIGRhdGEgaXMgdmFsaWQNCi1FQkFETVNHOiB1bi1jb3JyZWN0YWJsZSBiaXQtZmxpcHMs
+IGRhdGEgKm1heS1iZSogaW52YWxpZC4NCi1FTk9EQVRBOiBkZXRlY3RlZCBlcmFzZWQtcGFnZS4g
+KkFjdHVhbCogZGF0YSBkZXRlcm1pbmVkIGJ5IHJlYWRfbGVuLg0KLUVOT01TRzogIGRldGVjdGVk
+IGVyYXNlZC1wYWdlIHdpdGggYml0LWZsaXBzLiAqQWN0dWFsKiBkYXRhIGRldGVybWluZWQgYnkg
+cmVhZF9sZW4uDQoNCipGb3IgVUJJIGxheWVyKg0KV2UgY2FuIGNvbnZlcnQgdGhlIE1URCBlcnJv
+ci1jb2RlcyBpbnRvIFVCSSBzcGVjaWZpYyBlcnJvci1jb2RlcyBhdA0KdWJpX2lvX3JlYWQoKSBp
+bnRlcmZhY2UuIFRoaXMgd2F5IG1hbnkgY2hlY2tzIGluIG90aGVyIHBhcnRzIG9mIFVCSQ0KbGF5
+ZXIgY2FuIGJlIHNpbXBsaWZpZWQsIGFuZCBldmVuIHNsaWdodGx5IHNwZWVkLXVwIHNjYW5fcGVi
+KCkuDQoNCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9t
+dGQvdWJpL2lvLmMgYi9kcml2ZXJzL210ZC91YmkvaW8uYw0KaW5kZXggYmY3OWRlZi4uOWIwMTFi
+OSAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvbXRkL3ViaS9pby5jDQorKysgYi9kcml2ZXJzL210ZC91
+YmkvaW8uYw0KQEAgLTE2OCwxOCArMTY4LDI0IEBAIHJldHJ5Og0KICAgICAgICBpZiAoZXJyKSB7
+DQogICAgICAgICAgICAgICAgY29uc3QgY2hhciAqZXJyc3RyID0gbXRkX2lzX2VjY2VycihlcnIp
+ID8gIiAoRUNDIGVycm9yKSIgOiAiIjsNCg0KLSAgICAgICAgICAgICAgIGlmIChtdGRfaXNfYml0
+ZmxpcChlcnIpKSB7DQotICAgICAgICAgICAgICAgICAgICAgICAvKg0KLSAgICAgICAgICAgICAg
+ICAgICAgICAgICogLUVVQ0xFQU4gaXMgcmVwb3J0ZWQgaWYgdGhlcmUgd2FzIGEgYml0LWZsaXAg
+d2hpY2gNCi0gICAgICAgICAgICAgICAgICAgICAgICAqIHdhcyBjb3JyZWN0ZWQsIHNvIHRoaXMg
+aXMgaGFybWxlc3MuDQotICAgICAgICAgICAgICAgICAgICAgICAgKg0KLSAgICAgICAgICAgICAg
+ICAgICAgICAgICogV2UgZG8gbm90IHJlcG9ydCBhYm91dCBpdCBoZXJlIHVubGVzcyBkZWJ1Z2dp
+bmcgaXMNCi0gICAgICAgICAgICAgICAgICAgICAgICAqIGVuYWJsZWQuIEEgY29ycmVzcG9uZGlu
+ZyBtZXNzYWdlIHdpbGwgYmUgcHJpbnRlZA0KLSAgICAgICAgICAgICAgICAgICAgICAgICogbGF0
+ZXIsIHdoZW4gaXQgaXMgaGFzIGJlZW4gc2NydWJiZWQuDQotICAgICAgICAgICAgICAgICAgICAg
+ICAgKi8NCisgICAgICAgICAgICAgICBzd2l0Y2ggKGVycikgew0KKyAgICAgICAgICAgICAgIGNh
+c2UgLUVVQ0xFQU46DQogICAgICAgICAgICAgICAgICAgICAgICB1YmlfbXNnKCJmaXhhYmxlIGJp
+dC1mbGlwIGRldGVjdGVkIGF0IFBFQiAlZCIsIHBudW0pOw0KICAgICAgICAgICAgICAgICAgICAg
+ICAgdWJpX2Fzc2VydChsZW4gPT0gcmVhZCk7DQogICAgICAgICAgICAgICAgICAgICAgICByZXR1
+cm4gVUJJX0lPX0JJVEZMSVBTOw0KKyAgICAgICAgICAgICAgIGNhc2UgLUVOT0RBVEE6DQorICAg
+ICAgICAgICAgICAgICAgICAgICBpZiAocmVhZCA9PSAwKQ0KKyAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICByZXR1cm4gVUJJX0lPX0ZGOw0KKyAgICAgICAgICAgICAgICAgICAgICAgZWxz
+ZQ0KKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4gMDsNCisgICAgICAgICAg
+ICAgICBjYXNlIC1FTk9NU0c6DQorICAgICAgICAgICAgICAgICAgICAgICBpZiAocmVhZCA9PSAw
+KQ0KKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4gVUJJX0lPX0ZGX0JJVEZM
+SVBTOw0KKyAgICAgICAgICAgICAgICAgICAgICAgZWxzZQ0KKyAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICByZXR1cm4gVUJJX0lPX0JJVEZMSVBTOw0KKyAgICAgICAgICAgICAgIGNhc2Ug
+LUVCQURNU0c6DQorICAgICAgICAgICAgICAgZGVmYXVsdDoNCisgICAgICAgICAgICAgICAgICAg
+ICAgIGNvbnRpbnVlOw0KICAgICAgICAgICAgICAgIH0NCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tDQoNCkFsc28sIHBsZWFzZSBjb25zaWRlciwgaWYgdGhpcyBhcHByb2FjaCBpcyBldmVuIGZl
+YXNpYmxlIGZvciBvdGhlciB0eXBlcw0Kb2YgTVREIGRldmljZXMgKE5PUiBhbmQgT25lTkFORCkg
+Pw0KDQoNCndpdGggcmVnYXJkcywgcGVrb24NCg==
