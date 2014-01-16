@@ -1,30 +1,21 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W3iEV-0007iF-NG
- for linux-mtd@lists.infradead.org; Thu, 16 Jan 2014 08:23:24 +0000
-Message-ID: <1389860578.26808.90.camel@sauron.fi.intel.com>
-Subject: Re: UBIFS seeing corrupt blank pages when image flashed via u-boot
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-To: "Gupta, Pekon" <pekon@ti.com>
-Date: Thu, 16 Jan 2014 10:22:58 +0200
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA62464@DBDE04.ent.ti.com>
-References: <20980858CB6D3A4BAE95CA194937D5E73EA5DBFA@DBDE04.ent.ti.com>
- <1388753970.25123.124.camel@sauron.fi.intel.com>
- <CAEhpT-W-aBkackmUb860vex2LxGzkBQ6hu1KGvUzjmTWTeQgxg@mail.gmail.com>
- <1389617894.2259.270.camel@sauron.fi.intel.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA61199@DBDE04.ent.ti.com>
- <1389625608.2259.357.camel@sauron.fi.intel.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA620BD@DBDE04.ent.ti.com>
- <1389856759.26808.52.camel@sauron.fi.intel.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA62464@DBDE04.ent.ti.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: "u-boot@lists.denx.de" <u-boot@lists.denx.de>, "Stefan Roese
- <sr@denx.de> \(sr@denx.de\)" <sr@denx.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Calvin Johnson <linux.cj@gmail.com>
-Reply-To: artem.bityutskiy@linux.intel.com
+Message-ID: <52D7A237.8@freescale.com>
+Date: Thu, 16 Jan 2014 17:11:19 +0800
+From: Huang Shijie <b32955@freescale.com>
+MIME-Version: 1.0
+To: Jagan Teki <jagannadh.teki@gmail.com>
+Subject: Re: [PATCH v4 0/7] mtd: spi-nor: add a new framework for SPI NOR
+References: <1387950629-27448-1-git-send-email-b32955@freescale.com>
+ <CAD6G_RTnNQgeJM8Tc16Sc1_n29d=V9sJN1ePrOAn5YzM+GujMQ@mail.gmail.com>
+In-Reply-To: <CAD6G_RTnNQgeJM8Tc16Sc1_n29d=V9sJN1ePrOAn5YzM+GujMQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: angus.clark@st.com, Brian Norris <computersforpeace@gmail.com>,
+ b44548@freescale.com, linux-doc@vger.kernel.org, lee.jones@linaro.org,
+ broonie@linaro.org, b18965@freescale.com, linux-spi@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-mtd@lists.infradead.org, "Gupta,
+ Pekon" <pekon@ti.com>, Sourav Poddar <sourav.poddar@ti.com>,
+ shawn.guo@linaro.org, David Woodhouse <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,25 +25,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2014-01-16 at 07:44 +0000, Gupta, Pekon wrote:
-> However, *assuming NAND driver can identify erased-page correctly*,
-> I don't want  UBI/UBIFS to re-check the read_buf for 0xff again, because
->  underlying NAND driver has already identified as erased-page, and
-> fixed the data before passing it to above MTD layer.
+=E4=BA=8E 2014=E5=B9=B401=E6=9C=8816=E6=97=A5 03:15, Jagan Teki =E5=86=99=
+=E9=81=93:
+> Hi,
+>
+> On Wed, Dec 25, 2013 at 11:20 AM, Huang Shijie<b32955@freescale.com>  w=
+rote:
+>> 1.) Why add a new framework for SPI NOR?
+>>    The SPI-NOR controller such as Freescale's Quadspi controller is wo=
+rking
+>>    in a different way from the SPI bus. It should knows the NOR comman=
+ds to
+>>    find the right LUT sequence. Unfortunately, the current code can no=
+t meet
+>>    this requirement.
+>>
+>> 2.) How does this patch set do?
+>>     This patch set adds a new spi-nor layer.
+>>     Before this patch, the layer is like:
+>>
+>>                     MTD
+>>           ------------------------
+>>                    m25p80
+>>           ------------------------
+>>                 spi bus driver
+>>           ------------------------
+>>                  SPI NOR chip
+>>
+>>     After this patch, the layer is like:
+>>                     MTD
+>>           ------------------------
+>>                    spi-nor
+>>           ------------------------
+>>                    m25p80
+>>           ------------------------
+>>                 spi bus driver
+>>           ------------------------
+>>                 SPI NOR chip
+>>
+>>    With the spi-nor controller driver(Freescale Quadspi), it looks lik=
+e:
+>>                     MTD
+>>           ------------------------
+>>                    spi-nor
+>>           ------------------------
+>>                  fsl-quadspi
+>>           ------------------------
+>>                 SPI NOR chip
+> I'm new to this thread, may be I'll ask basic questions.
+> 1) what does m25p80 contains with your new framework - will excludes
+> quad stuff if they add
+sorry, i do not understand your meaning.
 
-I would agree only if this identification costs nothing, or very little.
-If for _some_ setups this would be about comparing buffers against 0xFF
-for every single read - then I am so sure.
+do you think the m25p80 can not support the quad read after this patch se=
+t?
 
-Indeed, UBIFS only needs to check for blank areas at the recovery time.
-Normal reads do not need this. So _if_ there are measurable costs, I'd
-argue that there is no need for people to pay it for nothing during
-normal file I/O.
 
-Hmm?
+> 2) I didn't understand why the controller driver fsl-quadspi will be
+> in mtd becuase as it's (q)spi driver
+> may does flash or non-flash functionalities if ie, the case should be
+> part of drivers/spi/*
+Please read this thread, Mark though it should be spi nor driver:
 
-Thanks!
+http://marc.info/?l=3Dlinux-arm-kernel&m=3D137782885415953&w=3D2
+> 3) Can you explain your framework precisely take an example of like
+> spi_controller_A with spi_flash_A
+> and qspi_controller_B and qspi_flash_B - how will this new framework op=
+erates.
+>
+The framework is just cloned from the m25p80.c, and extract the common=20
+code, and provides more
+hooks such as
 
--- 
-Best Regards,
-Artem Bityutskiy
+@prepare/unpreare: used to do some work before or after the
+              read/write/erase/lock/unlock.
+     @read_xfer/write_xfer: We can use these two hooks to code all
+              the following hooks if the driver tries to implement them
+              by itself.
+     @read_reg: used to read the registers, such as read status register,
+              read configure register.
+     @write_reg: used to write the registers, such as write enable,
+              erase sector.
+     @read_id: read out the ID info.
+     @wait_till_ready: wait till the NOR becomes ready.
+     @read: read out the data from the NOR.
+     @write: write data to the NOR.
+     @erase: erase a sector of the NOR.
+
+
+
+The drivers can implement these hooks.
+
+thanks
+Huang Shijie
