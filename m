@@ -1,25 +1,23 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W3jDq-0000N8-PJ
- for linux-mtd@lists.infradead.org; Thu, 16 Jan 2014 09:26:47 +0000
-Message-ID: <1389864382.26808.97.camel@sauron.fi.intel.com>
-Subject: Re: UBIFS data integrity
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mats =?ISO-8859-1?Q?K=E4rrman?= <Mats.Karrman@tritech.se>
-Date: Thu, 16 Jan 2014 11:26:22 +0200
-In-Reply-To: <ED3E0BCACD909541BA94A34C4A164D4C4FDD5418@post.tritech.se>
-References: <CAEwL26xsAe+x0NS5XQmp3wL_tyG_0fbXC6PfaPCtjFFFB+pOCA@mail.gmail.com>
- <ED3E0BCACD909541BA94A34C4A164D4C4FDD43AD@post.tritech.se>
- <CAEwL26y2Sdz4Lu=0ru3J-GF5pa-AXcWeuFNHDmWZ9PyKx7if-A@mail.gmail.com>
- <1389859251.26808.76.camel@sauron.fi.intel.com>
- ,<1389860167.26808.84.camel@sauron.fi.intel.com>
- <ED3E0BCACD909541BA94A34C4A164D4C4FDD5418@post.tritech.se>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- rcrb rcrb <rcrbsw@gmail.com>
-Reply-To: dedekind1@gmail.com
+MIME-Version: 1.0
+In-Reply-To: <52D7A237.8@freescale.com>
+References: <1387950629-27448-1-git-send-email-b32955@freescale.com>
+ <CAD6G_RTnNQgeJM8Tc16Sc1_n29d=V9sJN1ePrOAn5YzM+GujMQ@mail.gmail.com>
+ <52D7A237.8@freescale.com>
+Date: Thu, 16 Jan 2014 15:09:13 +0530
+Message-ID: <CAD6G_RRNg-uRtKnnVgJYpUGPsKecAUm9mwETVJsCsaGSuL2eCw@mail.gmail.com>
+Subject: Re: [PATCH v4 0/7] mtd: spi-nor: add a new framework for SPI NOR
+From: Jagan Teki <jagannadh.teki@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Content-Type: text/plain; charset=GB2312
+Content-Transfer-Encoding: quoted-printable
+Cc: angus.clark@st.com, Brian Norris <computersforpeace@gmail.com>,
+ b44548@freescale.com, linux-doc@vger.kernel.org,
+ Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@linaro.org>,
+ b18965@freescale.com, linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-mtd@lists.infradead.org, "Gupta, Pekon" <pekon@ti.com>,
+ Sourav Poddar <sourav.poddar@ti.com>, Shawn Guo <shawn.guo@linaro.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,45 +27,127 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2014-01-16 at 09:12 +0000, Mats Kärrman wrote:
-> On Thursday, January 16, 2014 9:16 AM, Artem Bityutskiy wrote:
-> > > UBIFS writes in 4KiB units.
-> > 
-> > I guess this is a bit confusing. The low-level flash write operations
-> > can be bigger or smaller. However, the file data "buffers" that UBIFS
-> > writes contain 4KiB of file data (aligned, e.g., regions of the file
-> > would be 0-4K, 4K-8K, etc). Every such "buffer" is protected with CRC32,
-> > and if a power cut results in the buffer not being fully written, the
-> > CRC32 mismatches and UBIFS discards the entire buffer. And the old
-> > contents of this file region is stays on the flash. The old contents
-> > does not go away before the new contents reaches the flash media. So the
-> > read operation for any aligned 4KiB region always returns the old
-> > contents, or the new contents, nothing else.
-> > 
-> > >  So any aligned 4KiB piece of your file is
-> > > guaranteed to either be fully written, then the read will return new
-> > > data, or not be written at all, then the read will return old data.
-> 
-> Sorry if I mislead you, I guess the final statement of my original mail is
-> still valid then:
-> "In general this requires that your database also is implemented
-> in a fault tolerant way."
-> I.e. it must itself make sure it's entire write is completed before
-> switching to a new "state". Unless the DB implements some kind of
-> journaling this may be a problem.
+Hi Huang Shijie,
 
-Sure. The ordering or the 4K writes is not guaranteed, but I think the
-memory management subsystem uses LRU lists so older writes go first. Any
-write that crosses the 4096 byte-aligned boundary is not atomic. So the
-only thing UBIFS guarantees is something like:
+Thanks for your response, please see below.
 
-fsync
-write(4k-5k)
-fsync
+On Thu, Jan 16, 2014 at 2:41 PM, Huang Shijie <b32955@freescale.com> wrote:
+> =D3=DA 2014=C4=EA01=D4=C216=C8=D5 03:15, Jagan Teki =D0=B4=B5=C0:
+>
+>> Hi,
+>>
+>> On Wed, Dec 25, 2013 at 11:20 AM, Huang Shijie<b32955@freescale.com>
+>> wrote:
+>>>
+>>> 1.) Why add a new framework for SPI NOR?
+>>>    The SPI-NOR controller such as Freescale's Quadspi controller is
+>>> working
+>>>    in a different way from the SPI bus. It should knows the NOR command=
+s
+>>> to
+>>>    find the right LUT sequence. Unfortunately, the current code can not
+>>> meet
+>>>    this requirement.
+>>>
+>>> 2.) How does this patch set do?
+>>>     This patch set adds a new spi-nor layer.
+>>>     Before this patch, the layer is like:
+>>>
+>>>                     MTD
+>>>           ------------------------
+>>>                    m25p80
+>>>           ------------------------
+>>>                 spi bus driver
+>>>           ------------------------
+>>>                  SPI NOR chip
+>>>
+>>>     After this patch, the layer is like:
+>>>                     MTD
+>>>           ------------------------
+>>>                    spi-nor
+>>>           ------------------------
+>>>                    m25p80
+>>>           ------------------------
+>>>                 spi bus driver
+>>>           ------------------------
+>>>                 SPI NOR chip
 
-will guarantee that the 1K piece of data either gets fully written or
-not at all.
+Just for looking on your new framework, is that above link correct.
+I guess it should be MTD -- m25p80 -- spi-nor -- spi bus driver -- SPI NOR =
+chip
 
--- 
-Best Regards,
-Artem Bityutskiy
+Because m25p80 will register to mtd core on top and will call spi core
+data transfer.
+
+Correct me if am wrong.
+
+>>>
+>>>    With the spi-nor controller driver(Freescale Quadspi), it looks like=
+:
+>>>                     MTD
+>>>           ------------------------
+>>>                    spi-nor
+>>>           ------------------------
+>>>                  fsl-quadspi
+>>>           ------------------------
+>>>                 SPI NOR chip
+>>
+>> I'm new to this thread, may be I'll ask basic questions.
+>> 1) what does m25p80 contains with your new framework - will excludes
+>> quad stuff if they add
+>
+> sorry, i do not understand your meaning.
+>
+> do you think the m25p80 can not support the quad read after this patch se=
+t?
+>
+>
+>
+>> 2) I didn't understand why the controller driver fsl-quadspi will be
+>> in mtd becuase as it's (q)spi driver
+>> may does flash or non-flash functionalities if ie, the case should be
+>> part of drivers/spi/*
+>
+> Please read this thread, Mark though it should be spi nor driver:
+>
+> http://marc.info/?l=3Dlinux-arm-kernel&m=3D137782885415953&w=3D2
+>
+>> 3) Can you explain your framework precisely take an example of like
+>> spi_controller_A with spi_flash_A
+>> and qspi_controller_B and qspi_flash_B - how will this new framework
+>> operates.
+>>
+> The framework is just cloned from the m25p80.c, and extract the common co=
+de,
+> and provides more
+> hooks such as
+>
+> @prepare/unpreare: used to do some work before or after the
+>              read/write/erase/lock/unlock.
+>     @read_xfer/write_xfer: We can use these two hooks to code all
+>              the following hooks if the driver tries to implement them
+>              by itself.
+>     @read_reg: used to read the registers, such as read status register,
+>              read configure register.
+>     @write_reg: used to write the registers, such as write enable,
+>              erase sector.
+>     @read_id: read out the ID info.
+>     @wait_till_ready: wait till the NOR becomes ready.
+>     @read: read out the data from the NOR.
+>     @write: write data to the NOR.
+>     @erase: erase a sector of the NOR.
+>
+
+My basic question is like I have a qspi spi controller in my SOC and I
+designed two boards B1 and B2
+B1 with quad spi controller connected with non-flash as a slave and B2
+with quad spi controller connected
+with quad flash as a slave.
+
+Now please tell me how your framework works in this case? how many
+drivers do I need to right
+and call traces.
+
+--=20
+Thanks,
+Jagan.
