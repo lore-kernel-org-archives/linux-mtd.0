@@ -1,16 +1,22 @@
-Received: from mail-ob0-x235.google.com ([2607:f8b0:4003:c01::235])
+Received: from mail-oa0-x234.google.com ([2607:f8b0:4003:c02::234])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W3uCK-0000Hd-Vk
- for linux-mtd@lists.infradead.org; Thu, 16 Jan 2014 21:09:58 +0000
-Received: by mail-ob0-f181.google.com with SMTP id uy5so3306552obc.26
- for <linux-mtd@lists.infradead.org>; Thu, 16 Jan 2014 13:09:35 -0800 (PST)
+ id 1W3uYE-0000gD-NH
+ for linux-mtd@lists.infradead.org; Thu, 16 Jan 2014 21:32:35 +0000
+Received: by mail-oa0-f52.google.com with SMTP id o6so3541060oag.25
+ for <linux-mtd@lists.infradead.org>; Thu, 16 Jan 2014 13:32:11 -0800 (PST)
+Date: Thu, 16 Jan 2014 13:32:06 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd: m25p80: assign default read command
-Date: Thu, 16 Jan 2014 13:09:07 -0800
-Message-Id: <1389906547-31959-1-git-send-email-computersforpeace@gmail.com>
-Cc: Marek Vasut <marex@denx.de>, Sourav Poddar <sourav.poddar@ti.com>,
- Brian Norris <computersforpeace@gmail.com>
+To: Prabhakar Lad <prabhakar.csengg@gmail.com>
+Subject: Re: [PATCH] mtd: davinci_nand: Remove unnecessary labels from error
+ path
+Message-ID: <20140116213206.GG8919@ld-irv-0074>
+References: <1389773306-7055-1-git-send-email-prabhakar.csengg@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1389773306-7055-1-git-send-email-prabhakar.csengg@gmail.com>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,37 +26,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In the following commit (in -next):
+On Wed, Jan 15, 2014 at 01:38:26PM +0530, Prabhakar Lad wrote:
+> From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+> 
+> This patch removes the unnecessary labels from
+> the error path in probe function which did nothing
+> than just returning error values, Thus simplifying code
+> path and improved readability.
+> 
+> Signed-off-by: Lad, Prabhakar <prabhakar.csengg@gmail.com>
 
-    commit 8552b439aba7f32063755d23f79ca27b4d0a3115
-    drivers: mtd: m25p80: convert "bool" read check into an enum
+This does not apply to my branch, since some OOM messages have been
+dropped. Can you rebase on l2-mtd.git (or linux-next)?
 
-We converted the boolean 'fast_read' property to become an enum
-'flash_read', but at the same time, we changed the conditional path so
-that it doesn't choose a default value in some cases (technically, we
-choose the correct default simply by virtue of devm_kzalloc(), which
-zeroes this out to be a NORMAL read operation, but still...).
-
-Fix this by setting a default for the 'else' clause.
-
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Cc: Sourav Poddar <sourav.poddar@ti.com>
----
- drivers/mtd/devices/m25p80.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 19632e330d36..d0f6475504f5 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -1204,6 +1204,8 @@ static int m25p_probe(struct spi_device *spi)
- 		/* If we were instantiated by DT, use it */
- 		if (of_property_read_bool(np, "m25p,fast-read"))
- 			flash->flash_read = M25P80_FAST;
-+		else
-+			flash->flash_read = M25P80_NORMAL;
- 	} else {
- 		/* If we weren't instantiated by DT, default to fast-read */
- 		flash->flash_read = M25P80_FAST;
--- 
-1.8.3.2
+Thanks,
+Brian
