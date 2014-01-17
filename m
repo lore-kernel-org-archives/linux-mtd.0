@@ -1,18 +1,21 @@
-Received: from forward3m.mail.yandex.net ([2a02:6b8:0:2519::3:12])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W45uS-00046X-Kg
- for linux-mtd@lists.infradead.org; Fri, 17 Jan 2014 09:40:18 +0000
-Received: from web25m.yandex.ru (web25m.yandex.ru [37.140.138.116])
- by forward3m.mail.yandex.net (Yandex) with ESMTP id F10C26B60774
- for <linux-mtd@lists.infradead.org>; Fri, 17 Jan 2014 13:39:45 +0400 (MSK)
-From: Konstantin Tokarev <annulen@yandex.ru>
-To: linux-mtd@lists.infradead.org
-Subject: Find & remove orphan LEBs from UBIFS partition
-MIME-Version: 1.0
-Message-Id: <123921389951584@web25m.yandex.ru>
-Date: Fri, 17 Jan 2014 13:39:44 +0400
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W48J2-0006pV-Jj
+ for linux-mtd@lists.infradead.org; Fri, 17 Jan 2014 12:13:49 +0000
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: <devicetree@vger.kernel.org>,
+	<linux-mtd@lists.infradead.org>
+Subject: [RFC/PATCH 0/1] mtd: Add NAND ECC devicetree binding
+Date: Fri, 17 Jan 2014 09:13:39 -0300
+Message-Id: <1389960820-18696-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Lior Amsalem <alior@marvell.com>, Seif Mazareeb <seif@marvell.com>,
+ Pekon Gupta <pekon@ti.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,15 +25,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+This patch is our first proposal to address the need for a suitable ECC
+devicetree binding.
 
-How can I find and remove LEBs which don't correspond to known files
-using internal API of UBIFS?
+NAND controllers have special ECC modes, raising per-driver ECC mode devicetree
+binding. See for instance the binding for OMAP:
 
-AFAIU, somethinng like this is done on recovery during mount, but in
-my case superblock is not dirty, so I'd like to force cleanup with
-custom mount option.
+ - ti,nand-ecc-opt: A string setting the ECC layout to use. One of:
+	"sw"		<deprecated> use "ham1" instead
+	"hw"		<deprecated> use "ham1" instead
+	"hw-romcode"	<deprecated> use "ham1" instead
+	"ham1"		1-bit Hamming ecc code
+	"bch4"		4-bit BCH ecc code
+	"bch8"		8-bit BCH ecc code
+
+Other drivers (such as pxa3xx-nand) have similar requirements, with special
+(controller-specific) ECC modes. Instead of adding a possibly different binding
+per compatible-string, let's add generic ECC strength and ECC step size.
+
+This properties should describe completely the ECC mode and let drivers choose
+the appropriate ECC mode.
+
+Ezequiel Garcia (1):
+  mtd: nand: Add a devicetree binding for ECC strength and ECC step size
+
+ Documentation/devicetree/bindings/mtd/nand.txt | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 -- 
-Regards,
-Konstantin
+1.8.1.5
