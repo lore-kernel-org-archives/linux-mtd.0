@@ -1,24 +1,18 @@
+Received: from comal.ext.ti.com ([198.47.26.152])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W43ch-0000l5-RD
+ for linux-mtd@lists.infradead.org; Fri, 17 Jan 2014 07:13:48 +0000
+From: Pekon Gupta <pekon@ti.com>
+To: Brian Norris <computersforpeace@gmail.com>, Artem Bityutskiy
+ <dedekind1@gmail.com>
+Subject: [PATCH v7 0/6] mtd: nand: omap: optimized chip->ecc.correct() for H/W
+ ECC schemes
+Date: Fri, 17 Jan 2014 12:43:11 +0530
+Message-ID: <1389942797-4632-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20140117020226.GB27652@shlinux2.ap.freescale.net>
-References: <1387950629-27448-1-git-send-email-b32955@freescale.com>
- <CAD6G_RTnNQgeJM8Tc16Sc1_n29d=V9sJN1ePrOAn5YzM+GujMQ@mail.gmail.com>
- <52D7A237.8@freescale.com>
- <CAD6G_RRNg-uRtKnnVgJYpUGPsKecAUm9mwETVJsCsaGSuL2eCw@mail.gmail.com>
- <20140117020226.GB27652@shlinux2.ap.freescale.net>
-Date: Fri, 17 Jan 2014 12:36:08 +0530
-Message-ID: <CAD6G_RR7vgmHGFj4GqwCYLQQO6tbsZAeCzVBivbcxnCGSwgiWQ@mail.gmail.com>
-Subject: Re: [PATCH v4 0/7] mtd: spi-nor: add a new framework for SPI NOR
-From: Jagan Teki <jagannadh.teki@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: angus.clark@st.com, Brian Norris <computersforpeace@gmail.com>,
- b44548@freescale.com, linux-doc@vger.kernel.org,
- Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@linaro.org>,
- b18965@freescale.com, linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
- linux-mtd@lists.infradead.org, "Gupta, Pekon" <pekon@ti.com>,
- Sourav Poddar <sourav.poddar@ti.com>, Shawn Guo <shawn.guo@linaro.org>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain
+Cc: Stefan Roese <sr@denx.de>, linux-mtd <linux-mtd@lists.infradead.org>,
+ Pekon Gupta <pekon@ti.com>, Felipe Balbi <balbi@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,87 +22,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jan 17, 2014 at 7:32 AM, Huang Shijie <b32955@freescale.com> wrote:
-> On Thu, Jan 16, 2014 at 03:09:13PM +0530, Jagan Teki wrote:
->> >>>     After this patch, the layer is like:
->> >>>                     MTD
->> >>>           ------------------------
->> >>>                    spi-nor
->> >>>           ------------------------
->> >>>                    m25p80
->> >>>           ------------------------
->> >>>                 spi bus driver
->> >>>           ------------------------
->> >>>                 SPI NOR chip
->>
->> Just for looking on your new framework, is that above link correct.
->> I guess it should be MTD -- m25p80 -- spi-nor -- spi bus driver -- SPI NOR chip
->
-> I do not think so.
-> The spi-nor layer does not contact with the spi bus driver directly.
 
-Yes - now I understand the flow from seeing the code.
-With your new framework
-1. not an exact spi-nor
-    have one controller driver at drivers/spi/* will register to spi core.
-    have m25p80.c will scan the flash details from
-drivers/mtd/spi-nor/spi-nor.c and
-    m25p80 will register the MTD core and for transfer calls m25p80
-will calls spi core.
-2. spi-nor style
-    have  one controller driver at drivers/mtd/spi-nor/fsl-quadspi.c
-will register MTD core
-    and scan the flash details from drivers/mtd/spi-nor/spi-nor.c and
-for transfer will calls
-    through direct writel and readl with cmd+data fashion.
+*changes v6 -> v7*
+[PATCH 1/6] <no change>
+[PATCH 2/6] <no change>
+[PATCH 3/6] <dropped older version, refer commit message>
+ - erased-page detection done based on count of zero-bits in OOB & DATA
+ - incorporated some feedbacks from Brian Norris <computersforpeace@gmail.com>
+	http://lists.infradead.org/pipermail/linux-mtd/2014-January/051533.html
+	http://lists.infradead.org/pipermail/linux-mtd/2014-January/051534.html
+[PATCH 4/6] <new> remove redundant bit-flip counting for erased-page
+[PATCH 5/6] <minor cleanup>
+[PATCH 6/6] <minor cleanup>
+(As there are functional changes in this version, so not attaching
+ Tested-by: Stefan Roese <sr@denx.de>)
 
-Correct me If my understanding was wrong.
->
->> >> 3) Can you explain your framework precisely take an example of like
->> >> spi_controller_A with spi_flash_A
->> >> and qspi_controller_B and qspi_flash_B - how will this new framework
->> >> operates.
->> >>
->> > The framework is just cloned from the m25p80.c, and extract the common code,
->> > and provides more
->> > hooks such as
->> >
->> > @prepare/unpreare: used to do some work before or after the
->> >              read/write/erase/lock/unlock.
->> >     @read_xfer/write_xfer: We can use these two hooks to code all
->> >              the following hooks if the driver tries to implement them
->> >              by itself.
->> >     @read_reg: used to read the registers, such as read status register,
->> >              read configure register.
->> >     @write_reg: used to write the registers, such as write enable,
->> >              erase sector.
->> >     @read_id: read out the ID info.
->> >     @wait_till_ready: wait till the NOR becomes ready.
->> >     @read: read out the data from the NOR.
->> >     @write: write data to the NOR.
->> >     @erase: erase a sector of the NOR.
->> >
->>
->> My basic question is like I have a qspi spi controller in my SOC and I
->> designed two boards B1 and B2
->
-> okay.
->
->> B1 with quad spi controller connected with non-flash as a slave and B2
->> with quad spi controller connected
->> with quad flash as a slave.
-> You can use the framework for B2. But for B1, you should not use the framework,
-> since this framework is just for the SPI-NOR. If you do not connected with
-> a NOR, i think it's better to code another driver for your controller.
 
-Means we have two separate controller drivers for same controller one
-with spi-nor and
-another with spi is it?
+*changes v5 -> v6*
+[PATCH 1/6] <no change>
+[PATCH 2/6] introduced variable 'actual_eccbytes' to omit reserved byte-position
+[PATCH 3/6] split from [PATCH v5 3/5] fix erased-page bit-flip correction
+[PATCH 4/6] split from [PATCH v5 3/5] fix erased-page detection
+[PATCH 5/6] <minor cleanup>
+[PATCH 6/6] <no change>
 
-Do you think this is a good idea, I understand you have a complete and
-well guided new
-spi-nor framework.
+
+*changes v4 -> v5*
+This patch series was split version of earlier patch:
+http://lists.infradead.org/pipermail/linux-mtd/2013-November/050241.html
+
+chip->ecc.correct() is used for detecting and correcting bit-flips during read
+operations. In OMAP NAND driver different ecc-schemes have different callbacks:
+ - omap_correct_data()		for HAM1_HW ecc-schemes (Untouched)
+ - nand_bch_correct_data()	for BCHx_HW_DETECTION_SW ecc-schemes (Untouched)
+ - omap_elm_correct_data()	for BCHx_HW ecc-schemes
+
+This patch-series fixes following issues in omap_elm_correct_data():
+(1) Dependency on a specific reserved byte-position in OOB area
+    to differentiates between erased-pages v/s programmed-pages.
+    Problem: reserved byte-position cannot be accomodated in all ecc-schemes
+    Problem: reserved byte-position can itself be subjected upto 8 bit-flips
+             causing the 0xff to become 0x00, causing page to be
+             mis-recognized as erased-page.
+
+(2) Bit-flips in erased-pages are detected by comparing each byte of Data & OOB
+    with 0xff in check_erased_page().
+    Problem: This is causes performance penalty when erased-pages are checked.
+
+(3) Current code is not scalable for future ECC schemes due to presence of 
+    tweaks for BCH4_ECC and BCH8_ECC at multiple places.
+
+(4) Currently, bit-flips are evaluated and fixed even when ELM reports them as
+    un-correctable bit-flips, this should not happen as 'number-of-error' field
+    in ELM_LOCATION_STATUS becomes invalid when un-correctable flag is set.
+
+(5) Driver should return with error-code = '-EBADMSG' when
+     uncorrectable bit-flip is detected
+     bit-flip outside valid Data and OOB region is detected
+
+
+Pekon Gupta (6):
+  mtd: nand: omap: add field to indicate current ecc-scheme in 'struct
+    omap_nand_info'
+  mtd: nand: omap: ecc.correct: omap_elm_correct_data: rename ambiguous
+    variable 'eccsize' and 'ecc_vector_size'
+  mtd: nand: omap: ecc.correct: omap_elm_correct_data: fix erased-page
+    detection for BCHx_HW ECC schemes
+  mtd: nand: omap: ecc.correct: omap_elm_correct_data: remove redundant
+    bit-flip counting for erased-page
+  mtd: nand: omap: ecc.correct: omap_elm_correct_data: cleanup for
+    future enhancements
+  mtd: nand: omap: ecc.correct: omap_elm_correct_data: fix
+    programmed-page bit-flip correction logic
+
+ drivers/mtd/nand/omap2.c | 265 +++++++++++++++++++++++------------------------
+ 1 file changed, 127 insertions(+), 138 deletions(-)
 
 -- 
-Thanks,
-Jagan.
+1.8.1
