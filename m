@@ -1,24 +1,24 @@
-Date: Fri, 17 Jan 2014 10:02:28 +0800
+Received: from mail-db8lp0187.outbound.messaging.microsoft.com
+ ([213.199.154.187] helo=db8outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W3zMv-0005W0-Na
+ for linux-mtd@lists.infradead.org; Fri, 17 Jan 2014 02:41:16 +0000
+Date: Fri, 17 Jan 2014 10:04:54 +0800
 From: Huang Shijie <b32955@freescale.com>
-To: Jagan Teki <jagannadh.teki@gmail.com>
-Subject: Re: [PATCH v4 0/7] mtd: spi-nor: add a new framework for SPI NOR
-Message-ID: <20140117020226.GB27652@shlinux2.ap.freescale.net>
-References: <1387950629-27448-1-git-send-email-b32955@freescale.com>
- <CAD6G_RTnNQgeJM8Tc16Sc1_n29d=V9sJN1ePrOAn5YzM+GujMQ@mail.gmail.com>
- <52D7A237.8@freescale.com>
- <CAD6G_RRNg-uRtKnnVgJYpUGPsKecAUm9mwETVJsCsaGSuL2eCw@mail.gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH] mtd: m25p80: Use OPCODE_QUAD_READ_4B for 4-byte addressing
+Message-ID: <20140117020453.GC27652@shlinux2.ap.freescale.net>
+References: <1389800935-6468-1-git-send-email-geert@linux-m68k.org>
+ <201401160109.34499.marex@denx.de>
+ <20140116210529.GF8919@ld-irv-0074>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <CAD6G_RRNg-uRtKnnVgJYpUGPsKecAUm9mwETVJsCsaGSuL2eCw@mail.gmail.com>
-Cc: angus.clark@st.com, Brian Norris <computersforpeace@gmail.com>,
- b44548@freescale.com, linux-doc@vger.kernel.org,
- Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@linaro.org>,
- b18965@freescale.com, linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
- linux-mtd@lists.infradead.org, "Gupta, Pekon" <pekon@ti.com>,
- Sourav Poddar <sourav.poddar@ti.com>, Shawn Guo <shawn.guo@linaro.org>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+In-Reply-To: <20140116210529.GF8919@ld-irv-0074>
+Cc: Marek Vasut <marex@denx.de>,
+ Geert Uytterhoeven <geert+renesas@linux-m68k.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>, linux-mtd@lists.infradead.org,
+ Sourav Poddar <sourav.poddar@ti.com>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,60 +28,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jan 16, 2014 at 03:09:13PM +0530, Jagan Teki wrote:
-> >>>     After this patch, the layer is like:
-> >>>                     MTD
-> >>>           ------------------------
-> >>>                    spi-nor
-> >>>           ------------------------
-> >>>                    m25p80
-> >>>           ------------------------
-> >>>                 spi bus driver
-> >>>           ------------------------
-> >>>                 SPI NOR chip
+On Thu, Jan 16, 2014 at 01:05:29PM -0800, Brian Norris wrote:
+> On Thu, Jan 16, 2014 at 01:09:34AM +0100, Marek Vasut wrote:
+> > On Wednesday, January 15, 2014 at 04:48:55 PM, Geert Uytterhoeven wrote:
+> > > From: Geert Uytterhoeven <geert+renesas@linux-m68k.org>
+> > > 
+> > > commit 3487a63955c34ea508bcf4ca5131ddd953876e2d ("drivers: mtd: m25p80: add
+> > > quad read support") in -next added both the 3-byte OPCODE_QUAD_READ and the
+> > > 4-byte OPCODE_QUAD_READ_4B, but incorrectly uses OPCODE_QUAD_READ for both
+> > > 3-byte and 4-byte addressing.
+> > > 
+> > > Use OPCODE_QUAD_READ_4B in the 4-byte case to fix this.
 > 
-> Just for looking on your new framework, is that above link correct.
-> I guess it should be MTD -- m25p80 -- spi-nor -- spi bus driver -- SPI NOR chip
-
-I do not think so.
-The spi-nor layer does not contact with the spi bus driver directly.
-
-> >> 3) Can you explain your framework precisely take an example of like
-> >> spi_controller_A with spi_flash_A
-> >> and qspi_controller_B and qspi_flash_B - how will this new framework
-> >> operates.
-> >>
-> > The framework is just cloned from the m25p80.c, and extract the common code,
-> > and provides more
-> > hooks such as
-> >
-> > @prepare/unpreare: used to do some work before or after the
-> >              read/write/erase/lock/unlock.
-> >     @read_xfer/write_xfer: We can use these two hooks to code all
-> >              the following hooks if the driver tries to implement them
-> >              by itself.
-> >     @read_reg: used to read the registers, such as read status register,
-> >              read configure register.
-> >     @write_reg: used to write the registers, such as write enable,
-> >              erase sector.
-> >     @read_id: read out the ID info.
-> >     @wait_till_ready: wait till the NOR becomes ready.
-> >     @read: read out the data from the NOR.
-> >     @write: write data to the NOR.
-> >     @erase: erase a sector of the NOR.
-> >
+> Wow, I noticed this and had a patch privately queued over a month ago
+> for this, but I forgot to send it out... Thanks for noticing!
 > 
-> My basic question is like I have a qspi spi controller in my SOC and I
-> designed two boards B1 and B2
+> > > Signed-off-by: Geert Uytterhoeven <geert+renesas@linux-m68k.org>
+> > 
+> > Looks all right.
+> > 
+> > Acked-by: Marek Vasut <marex@denx.de>
+> 
+> Pushed to l2-mtd.git.
+this is a bad news to me. I have to send out a new version for the SPI NOR framework.
 
-okay.
-
-> B1 with quad spi controller connected with non-flash as a slave and B2
-> with quad spi controller connected
-> with quad flash as a slave.
-You can use the framework for B2. But for B1, you should not use the framework,
-since this framework is just for the SPI-NOR. If you do not connected with
-a NOR, i think it's better to code another driver for your controller.
+could this patch be merged after my spi-nor patch set? or create a new patch based
+on the spi-nor framework.
 
 thanks
 Huang Shijie
