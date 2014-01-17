@@ -1,21 +1,27 @@
-Received: from mga14.intel.com ([143.182.124.37])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W4B0F-0003e1-AO
- for linux-mtd@lists.infradead.org; Fri, 17 Jan 2014 15:06:36 +0000
-Message-ID: <1389971161.31307.112.camel@sauron.fi.intel.com>
-Subject: Re: Find & remove orphan LEBs from UBIFS partition
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Konstantin Tokarev <annulen@yandex.ru>
-Date: Fri, 17 Jan 2014 17:06:01 +0200
-In-Reply-To: <104461389971034@web1j.yandex.ru>
-References: <123921389951584@web25m.yandex.ru>
- <1389970781.31307.110.camel@sauron.fi.intel.com>
- <104461389971034@web1j.yandex.ru>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+MIME-Version: 1.0
+In-Reply-To: <CAD6G_RSF_TPk8g9CNmSc+xs+9psLmJoakZw3Eqf-a8KD5P4AVg@mail.gmail.com>
+References: <1387950629-27448-1-git-send-email-b32955@freescale.com>
+ <CAD6G_RTnNQgeJM8Tc16Sc1_n29d=V9sJN1ePrOAn5YzM+GujMQ@mail.gmail.com>
+ <52D7A237.8@freescale.com>
+ <CAD6G_RRNg-uRtKnnVgJYpUGPsKecAUm9mwETVJsCsaGSuL2eCw@mail.gmail.com>
+ <20140117020226.GB27652@shlinux2.ap.freescale.net>
+ <CAD6G_RR7vgmHGFj4GqwCYLQQO6tbsZAeCzVBivbcxnCGSwgiWQ@mail.gmail.com>
+ <20140117065401.GA6140@shlinux2.ap.freescale.net>
+ <CAD6G_RSF_TPk8g9CNmSc+xs+9psLmJoakZw3Eqf-a8KD5P4AVg@mail.gmail.com>
+Date: Fri, 17 Jan 2014 22:36:49 +0530
+Message-ID: <CAD6G_RT1m+7BWZyYqU7Pb2+bhki-Wqs6f96=GhMyF1nHyy2wuw@mail.gmail.com>
+Subject: Re: [PATCH v4 0/7] mtd: spi-nor: add a new framework for SPI NOR
+From: Jagan Teki <jagannadh.teki@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: angus.clark@st.com, Brian Norris <computersforpeace@gmail.com>,
+ b44548@freescale.com, linux-doc@vger.kernel.org,
+ Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@linaro.org>,
+ b18965@freescale.com, linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-mtd@lists.infradead.org, "Gupta, Pekon" <pekon@ti.com>,
+ Sourav Poddar <sourav.poddar@ti.com>, Shawn Guo <shawn.guo@linaro.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,31 +31,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2014-01-17 at 19:03 +0400, Konstantin Tokarev wrote:
-> 
-> 17.01.2014, 18:59, "Artem Bityutskiy" <dedekind1@gmail.com>:
-> > On Fri, 2014-01-17 at 13:39 +0400, Konstantin Tokarev wrote:
-> >
-> >>  Hi all,
-> >>
-> >>  How can I find and remove LEBs which don't correspond to known files
-> >>  using internal API of UBIFS?
-> >>  AFAIU, somethinng like this is done on recovery during mount, but in
-> >>  my case superblock is not dirty, so I'd like to force cleanup with
-> >>  custom mount option.
-> >
-> > Are you trying to do something like 'secure deletion' ? Disclosing your
-> > intentions would help understanding what you need. I do not quite
-> > understand.
-> >
-> > Do you want to fine all LEBs which do not contain anything useful like
-> > data or meta-data, and unmap them?
-> 
-> Yes, exactly.
+On Fri, Jan 17, 2014 at 2:09 PM, Jagan Teki <jagannadh.teki@gmail.com> wrote:
+> On Fri, Jan 17, 2014 at 12:24 PM, Huang Shijie <b32955@freescale.com> wrote:
+>> On Fri, Jan 17, 2014 at 12:36:08PM +0530, Jagan Teki wrote:
+>>> >> My basic question is like I have a qspi spi controller in my SOC and I
+>>> >> designed two boards B1 and B2
+>>> >
+>>> > okay.
+>>> >
+>>> >> B1 with quad spi controller connected with non-flash as a slave and B2
+>>> >> with quad spi controller connected
+>>> >> with quad flash as a slave.
+>>> > You can use the framework for B2. But for B1, you should not use the framework,
+>>> > since this framework is just for the SPI-NOR. If you do not connected with
+>>> > a NOR, i think it's better to code another driver for your controller.
+>>>
+>>> Means we have two separate controller drivers for same controller one
+>>> with spi-nor and
+>>> another with spi is it?
+>> Take drivers/spi/spi-imx.c for example, if you connect a NOR to it, you only
+>> need to add a NOR device node in the device tree. In the probe, it will call
+>> the m25p80.c to probe the NOR device.
+>>
+>> But if we connect other device to it. you should set another device node for it.
+>>
+>> I am not sure if your controller driver can works as the spi-imx.c
+>
+> My question here was - this new framework suggest to write a two
+> different controller
+> drivers one is for non spi-nor and spi-nor models? do you agree that?
+>
+> And also one important note from your design was spi-nor mode is
+> completely bypassing
+> Linux spi core is that the good idea?
 
-Check 'fixup_free_space', it iterates over all useful ones, the rest can
-be unmapped.
+I feel these are good points to discuss all.
+1. With new framework seems like we need two separate controller drivers
+    one for non spi-nor and one for spi-nor with single controller hw
+2. With spi-nor implementation though the hw is spi complaint but the sw is
+   completely ignoring the Linux SPI core interaction.
+
+I feel above two points are technically wrong - Please correct me if am wrong
+but need all developers will join..thanks!
 
 -- 
-Best Regards,
-Artem Bityutskiy
+Jagan.
