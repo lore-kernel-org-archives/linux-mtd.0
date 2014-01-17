@@ -1,28 +1,18 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
+Received: from mailrelay009.isp.belgacom.be ([195.238.6.176])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W4G78-00051R-B8
- for linux-mtd@lists.infradead.org; Fri, 17 Jan 2014 20:34:02 +0000
-Date: Fri, 17 Jan 2014 17:33:48 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [RFC/PATCH 0/1] mtd: Add NAND ECC devicetree binding
-Message-ID: <20140117203347.GC3843@localhost>
-References: <1389960820-18696-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA66555@DBDE04.ent.ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA66555@DBDE04.ent.ti.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Seif Mazareeb <seif@marvell.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+ id 1W4JgY-0001r8-NK
+ for linux-mtd@lists.infradead.org; Sat, 18 Jan 2014 00:22:53 +0000
+Date: Sat, 18 Jan 2014 00:23:33 +0800
+From: Fabian Frederick <fabf@skynet.be>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 1/1] mtd: block2mtd: char mtd major and erasesize parameter
+ check + mutex_destroy
+Message-Id: <20140118002333.beb8784619b214beb540601a@skynet.be>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: akpm@linux-foundation.org, rdunlap@infradead.org,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,50 +22,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jan 17, 2014 at 05:58:13PM +0000, Gupta, Pekon wrote:
-> Hi Ezequiel,
-> 
-> >From: Ezequiel Garcia [mailto:ezequiel.garcia@free-electrons.com]
-> >
-> >This patch is our first proposal to address the need for a suitable ECC
-> >devicetree binding.
-> >
-> >NAND controllers have special ECC modes, raising per-driver ECC mode devicetree
-> >binding. See for instance the binding for OMAP:
-> >
-> > - ti,nand-ecc-opt: A string setting the ECC layout to use. One of:
-> >	"sw"		<deprecated> use "ham1" instead
-> >	"hw"		<deprecated> use "ham1" instead
-> >	"hw-romcode"	<deprecated> use "ham1" instead
-> >	"ham1"		1-bit Hamming ecc code
-> >	"bch4"		4-bit BCH ecc code
-> >	"bch8"		8-bit BCH ecc code
-> >
-> >Other drivers (such as pxa3xx-nand) have similar requirements, with special
-> >(controller-specific) ECC modes. Instead of adding a possibly different binding
-> >per compatible-string, let's add generic ECC strength and ECC step size.
-> >
-> >This properties should describe completely the ECC mode and let drivers choose
-> >the appropriate ECC mode.
-> >
-> Yes, this is good approach.
-> It was found earlier that generic NAND DT bindings are not much use to other
-> controllers as well, as different h/w engines have different interpretations.
-> Brian Norris had similar comments giving example of his hardware.
-> (hope following reference helps).
-> 
-> [1] http://lists.infradead.org/pipermail/linux-mtd/2013-September/048869.html
-> 
+-Deny use of a char mtd device to map as block device.
+-mutex_init when mtd structure is available.
+-fixme applied : check device size is a multiple of erasesize.
+-mutex_destroy on each device in block2mtd_exit and add_device failure.
 
-Yes, Brian suggested this ecc-strength/ecc-size approach on IRC.
+Signed-off-by: Fabian Frederick <fabf@skynet.be>
+---
+ drivers/mtd/devices/block2mtd.c | 18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
 
-Pekon, do you think this binding proposal is good enough to describe OMAP NAND
-ECC mode?
-
-I'm not implying we should deprecate the recently added "ti-nand-ecc-opt",
-but just want to know it's eventually possible.
-
+diff --git a/drivers/mtd/devices/block2mtd.c b/drivers/mtd/devices/block2mtd.c
+index d9fd87a..be67731 100644
+--- a/drivers/mtd/devices/block2mtd.c
++++ b/drivers/mtd/devices/block2mtd.c
+@@ -209,7 +209,6 @@ static void block2mtd_free_device(struct block2mtd_dev *dev)
+ }
+ 
+ 
+-/* FIXME: ensure that mtd->size % erase_size == 0 */
+ static struct block2mtd_dev *add_device(char *devname, int erase_size)
+ {
+ 	const fmode_t mode = FMODE_READ | FMODE_WRITE | FMODE_EXCL;
+@@ -244,21 +243,27 @@ static struct block2mtd_dev *add_device(char *devname, int erase_size)
+ 	}
+ 	dev->blkdev = bdev;
+ 
+-	if (MAJOR(bdev->bd_dev) == MTD_BLOCK_MAJOR) {
++	if ((MAJOR(bdev->bd_dev) == MTD_BLOCK_MAJOR) ||
++	    (MAJOR(bdev->bd_dev) == MTD_CHAR_MAJOR)) {
+ 		pr_err("attempting to use an MTD device as a block device\n");
+ 		goto devinit_err;
+ 	}
+ 
+-	mutex_init(&dev->write_mutex);
+ 
+ 	/* Setup the MTD structure */
+ 	/* make the name contain the block device in */
+ 	name = kasprintf(GFP_KERNEL, "block2mtd: %s", devname);
++
+ 	if (!name)
+ 		goto devinit_err;
++
++	if ((long)dev->blkdev->bd_inode->i_size % erase_size) {
++		pr_err("erasesize must be a divisor of device size\n");
++		goto devinit_err;
++	}
+ 
++	mutex_init(&dev->write_mutex);
+ 	dev->mtd.name = name;
+-
+ 	dev->mtd.size = dev->blkdev->bd_inode->i_size & PAGE_MASK;
+ 	dev->mtd.erasesize = erase_size;
+ 	dev->mtd.writesize = 1;
+@@ -274,7 +279,7 @@ static struct block2mtd_dev *add_device(char *devname, int erase_size)
+ 
+ 	if (mtd_device_register(&dev->mtd, NULL, 0)) {
+ 		/* Device didn't get added, so free the entry */
+-		goto devinit_err;
++		goto register_err;
+ 	}
+ 	list_add(&dev->list, &blkmtd_device_list);
+ 	pr_info("mtd%d: [%s] erase_size = %dKiB [%d]\n",
+@@ -283,6 +288,8 @@ static struct block2mtd_dev *add_device(char *devname, int erase_size)
+ 		dev->mtd.erasesize >> 10, dev->mtd.erasesize);
+ 	return dev;
+ 
++register_err:
++	mutex_destroy(&dev->write_mutex);
+ devinit_err:
+ 	block2mtd_free_device(dev);
+ 	return NULL;
+@@ -448,6 +455,7 @@ static void block2mtd_exit(void)
+ 		struct block2mtd_dev *dev = list_entry(pos, typeof(*dev), list);
+ 		block2mtd_sync(&dev->mtd);
+ 		mtd_device_unregister(&dev->mtd);
++		mutex_destroy(&dev->write_mutex);
+ 		pr_info("mtd%d: [%s] removed\n",
+ 			dev->mtd.index,
+ 			dev->mtd.name + strlen("block2mtd: "));
 -- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+1.8.1.4
