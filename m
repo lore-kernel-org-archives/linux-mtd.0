@@ -1,14 +1,14 @@
 Received: from bear.ext.ti.com ([192.94.94.41])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W43co-0000l9-TK
+ id 1W43co-0000lB-TL
  for linux-mtd@lists.infradead.org; Fri, 17 Jan 2014 07:13:59 +0000
 From: Pekon Gupta <pekon@ti.com>
 To: Brian Norris <computersforpeace@gmail.com>, Artem Bityutskiy
  <dedekind1@gmail.com>
-Subject: [PATCH v7 3/6] mtd: nand: omap: ecc.correct: omap_elm_correct_data:
- fix erased-page detection for BCHx_HW ECC schemes
-Date: Fri, 17 Jan 2014 12:43:14 +0530
-Message-ID: <1389942797-4632-4-git-send-email-pekon@ti.com>
+Subject: [PATCH v7 4/6] mtd: nand: omap: ecc.correct: omap_elm_correct_data:
+ remove redundant bit-flip counting for erased-page
+Date: Fri, 17 Jan 2014 12:43:15 +0530
+Message-ID: <1389942797-4632-5-git-send-email-pekon@ti.com>
 In-Reply-To: <1389942797-4632-1-git-send-email-pekon@ti.com>
 References: <1389942797-4632-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
@@ -24,154 +24,158 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-As erased-pages do not have ECC stored in their OOB area, so they need to be
-seperated out from programmed-pages, before doing BCH ECC correction.
+This patch:
+ - Removes erased_sector_bitflips() as counting of bit-flips is handled by
+   count_zero_bits() in more optimized way.
+   And count of bit-flips in both OOB and DATA region is anyways required for
+   correct identification of erased-pages.
 
-In current implementation of omap_elm_correct_data() which does ECC correction
-for BCHx ECC schemes, this erased-pages are detected based on specific marker
-byte (reserved as 0x00) in ecc-layout.
-However, this approach has some limitation like;
- 1) All ecc-scheme layouts do not have such Reserved byte marker to
-    differentiate between erased-page v/s programmed-page. Thus this is a
-    customized solution.
- 2) Reserved marker byte can itself be subjected to bit-flips causing
-    erased-page to be misunderstood as programmed-page.
+ - read-buffer is pre-filled with 0xff when an erased-page is detected, as
+   erased-page can only contain 0xff bytes.
 
-This patch removes dependency on any marker byte in ecc-layout, to differentiate
-between erased-page v/s programeed-page. Instead a page is considered erased if
- (a) all(OOB)  == 0xff, .i.e., number of zero-bits in read_ecc[] == 0
- (b) number of zero-bits in (Data + OOB) is less than ecc-strength
-
-This patch also adds a generic function count_zero_bits(), to find number of
-bits which are '0' in given buffer. This function is optimized for comparing
-read-data with 0xff.
+ - Removes static arrays bch8_vector[] and bch4_vector, which stores
+   ECC signature with all(0xff) bytes.
 
 Signed-off-by: Pekon Gupta <pekon@ti.com>
 ---
- drivers/mtd/nand/omap2.c | 88 ++++++++++++++++++++++++++++++++++++++----------
- 1 file changed, 71 insertions(+), 17 deletions(-)
+ drivers/mtd/nand/omap2.c | 88 +++++-------------------------------------------
+ 1 file changed, 9 insertions(+), 79 deletions(-)
 
 diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 2c73389..f833fbb 100644
+index f833fbb..78b7106 100644
 --- a/drivers/mtd/nand/omap2.c
 +++ b/drivers/mtd/nand/omap2.c
-@@ -1331,6 +1331,30 @@ static int erased_sector_bitflips(u_char *data, u_char *oob,
+@@ -141,11 +141,6 @@
+ 
+ #define BADBLOCK_MARKER_LENGTH		2
+ 
+-#ifdef CONFIG_MTD_NAND_OMAP_BCH
+-static u_char bch8_vector[] = {0xf3, 0xdb, 0x14, 0x16, 0x8b, 0xd2, 0xbe, 0xcc,
+-	0xac, 0x6b, 0xff, 0x99, 0x7b};
+-static u_char bch4_vector[] = {0x00, 0x6b, 0x31, 0xdd, 0x41, 0xbc, 0x10};
+-#endif
+ 
+ /* oob info generated runtime depending on ecc algorithm and layout selected */
+ static struct nand_ecclayout omap_oobinfo;
+@@ -1292,45 +1287,6 @@ static int omap3_calculate_ecc_bch(struct mtd_info *mtd, const u_char *dat,
  }
  
  /**
-+ * count_zero_bits - count number of bit-flips in given buffer
-+ * @buf:	pointer to buffer
-+ * @length:	buffer length
-+ * @max_bitflips: maximum number of correctable bit-flips (ecc.strength)
-+ * $bitflip_count: pointer to store bit-flip count
-+ *
-+ * Counts number of bit-flips in given buffer, returns with error
-+ * as soon as count exceeds max_bitflips limit.
-+ */
-+static int count_zero_bits(u_char *buf, int length,
-+					 int max_bitflips, int *bitflip_count)
-+{	int i;
-+
-+	for (i = 0; i < length; i++) {
-+		if (unlikely(buf[i] != 0xff)) {
-+			*bitflip_count += hweight8(~buf[i]);
-+			if (unlikely(*bitflip_count > max_bitflips))
-+				return -EBADMSG;
-+		}
-+	}
-+	return 0;
-+}
-+
-+/**
-  * omap_elm_correct_data - corrects page data area in case error reported
+- * erased_sector_bitflips - count bit flips
+- * @data:	data sector buffer
+- * @oob:	oob buffer
+- * @info:	omap_nand_info
+- *
+- * Check the bit flips in erased page falls below correctable level.
+- * If falls below, report the page as erased with correctable bit
+- * flip, else report as uncorrectable page.
+- */
+-static int erased_sector_bitflips(u_char *data, u_char *oob,
+-		struct omap_nand_info *info)
+-{
+-	int flip_bits = 0, i;
+-
+-	for (i = 0; i < info->nand.ecc.size; i++) {
+-		flip_bits += hweight8(~data[i]);
+-		if (flip_bits > info->nand.ecc.strength)
+-			return 0;
+-	}
+-
+-	for (i = 0; i < info->nand.ecc.bytes - 1; i++) {
+-		flip_bits += hweight8(~oob[i]);
+-		if (flip_bits > info->nand.ecc.strength)
+-			return 0;
+-	}
+-
+-	/*
+-	 * Bit flips falls in correctable level.
+-	 * Fill data area with 0xFF
+-	 */
+-	if (flip_bits) {
+-		memset(data, 0xFF, info->nand.ecc.size);
+-		memset(oob, 0xFF, info->nand.ecc.bytes);
+-	}
+-
+-	return flip_bits;
+-}
+-
+-/**
+  * count_zero_bits - count number of bit-flips in given buffer
+  * @buf:	pointer to buffer
+  * @length:	buffer length
+@@ -1359,24 +1315,10 @@ static int count_zero_bits(u_char *buf, int length,
   * @mtd:	MTD device structure
   * @data:	page data
-@@ -1359,14 +1383,21 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
- {
- 	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
- 			mtd);
--	int eccbytes	= info->nand.ecc.bytes;
--	int eccsteps = info->nand.ecc.steps;
-+	struct nand_ecc_ctrl *ecc = &info->nand.ecc;
-+	int eccstrength		= ecc->strength;
-+	int eccsize		= ecc->size;
-+	int eccbytes		= ecc->bytes;
-+	int eccsteps		= ecc->steps;
- 	int i , j, stat = 0;
- 	int eccflag, actual_eccbytes;
+  * @read_ecc:	ecc read from nand flash
+- * @calc_ecc:	ecc read from HW ECC registers
+- *
+- * Calculated ecc vector reported as zero in case of non-error pages.
+- * In case of error/erased pages non-zero error vector is reported.
+- * In case of non-zero ecc vector, check read_ecc at fixed offset
+- * (x = 13/7 in case of BCH8/4 == 0) to find page programmed or not.
+- * To handle bit flips in this data, count the number of 0's in
+- * read_ecc[x] and check if it greater than 4. If it is less, it is
+- * programmed page, else erased page.
+- *
+- * 1. If page is erased, check with standard ecc vector (ecc vector
+- * for erased page to find any bit flip). If check fails, bit flip
+- * is present in erased page. Count the bit flips in erased page and
+- * if it falls under correctable level, report page with 0xFF and
+- * update the correctable bit information.
+- * 2. If error is reported on programmed page, update elm error
+- * vector and correct the page with ELM error correction routine.
+- *
++ * @calc_ecc:	ecc calculated after reading Data and OOB regions from flash
++ *		calc_ecc would be non-zero only in following cases:
++ *		- its a programmed-page with bit-flips
++ *		- its an erased-page (may or may not have bit-flips)
+  */
+ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
+ 				u_char *read_ecc, u_char *calc_ecc)
+@@ -1393,7 +1335,6 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
  	struct elm_errorvec err_vec[ERROR_VECTOR_MAX];
  	u_char *ecc_vec = calc_ecc;
  	u_char *spare_ecc = read_ecc;
- 	u_char *erased_ecc_vec;
-+	u_char *buf;
-+	int bitflip_count;
-+	int err;
-+	bool page_is_erased;
- 	enum bch_ecc type;
- 	bool is_error_reported = false;
+-	u_char *erased_ecc_vec;
+ 	u_char *buf;
+ 	int bitflip_count;
+ 	int err;
+@@ -1420,10 +1361,8 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
  
-@@ -1410,24 +1441,47 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
+ 	if (info->nand.ecc.strength == BCH8_MAX_ERROR) {
+ 		type = BCH8_ECC;
+-		erased_ecc_vec = bch8_vector;
+ 	} else {
+ 		type = BCH4_ECC;
+-		erased_ecc_vec = bch4_vector;
+ 	}
+ 
+ 	for (i = 0; i < eccsteps ; i++) {
+@@ -1489,20 +1428,11 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
+ 				err_vec[i].error_reported = true;
+ 				is_error_reported = true;
+ 			} else {
+-				/* Error reported in erased page */
+-				int bitflip_count;
+-				u_char *buf = &data[info->nand.ecc.size * i];
+-
+-				if (memcmp(calc_ecc, erased_ecc_vec,
+-							 actual_eccbytes)) {
+-					bitflip_count = erased_sector_bitflips(
+-							buf, read_ecc, info);
+-
+-					if (bitflip_count)
+-						stat += bitflip_count;
+-					else
+-						return -EINVAL;
+-				}
++				/* report bit-flips found in erased-page */
++				stat += bitflip_count;
++				/* return clean read-buffer */
++				buf = &data[eccsize * i];
++				memset(buf, 0xff, eccsize);
+ 			}
  		}
  
- 		if (eccflag == 1) {
--			/*
--			 * Set threshold to minimum of 4, half of ecc.strength/2
--			 * to allow max bit flip in byte to 4
--			 */
--			unsigned int threshold = min_t(unsigned int, 4,
--					info->nand.ecc.strength / 2);
-+			bitflip_count = 0;
-+			/* count zero-bits in OOB region */
-+			err = count_zero_bits(read_ecc, eccbytes,
-+						 eccstrength, &bitflip_count);
-+			if (err) {
-+				/*
-+				 * number of zero-bits in OOB > ecc-strength
-+				 * either un-correctable or programmed-page
-+				 */
-+				page_is_erased = false;
-+			} else if (bitflip_count == 0) {
-+				/* OOB == all(0xff) */
-+				page_is_erased = true;
-+			} else {
-+				/*
-+				 * OOB has some bits as '0' but
-+				 * number of zero-bits in OOB < ecc-strength.
-+				 * It may be erased-page with bit-flips so,
-+				 * further checks are needed for confirmation
-+				 */
-+				/* count zero-bits in DATA region */
-+				buf = &data[eccsize * i];
-+				err = count_zero_bits(buf, eccsize,
-+						 eccstrength, &bitflip_count);
-+				if (err) {
-+					/*
-+					 * total number of zero-bits in OOB
-+					 * and DATA exceeds ecc-strength
-+					 */
-+					page_is_erased = false;
-+				} else {
-+					/* number of zero-bits < ecc-strength */
-+					page_is_erased = true;
-+				}
-+			}
- 
- 			/*
--			 * Check data area is programmed by counting
--			 * number of 0's at fixed offset in spare area.
--			 * Checking count of 0's against threshold.
--			 * In case programmed page expects at least threshold
--			 * zeros in byte.
--			 * If zeros are less than threshold for programmed page/
--			 * zeros are more than threshold erased page, either
--			 * case page reported as uncorrectable.
-+			 * erased-pages do not have ECC stored in OOB area,
-+			 * so they need to be handled separately.
- 			 */
--			if (hweight8(~read_ecc[actual_eccbytes]) >= threshold) {
-+			if (!page_is_erased) {
- 				/*
- 				 * Update elm error vector as
- 				 * data area is programmed
 -- 
 1.8.1
