@@ -1,24 +1,22 @@
-Received: from mail-db8lp0187.outbound.messaging.microsoft.com
- ([213.199.154.187] helo=db8outboundpool.messaging.microsoft.com)
+Received: from mail-wi0-x22e.google.com ([2a00:1450:400c:c05::22e])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W3zMv-0005W0-Na
- for linux-mtd@lists.infradead.org; Fri, 17 Jan 2014 02:41:16 +0000
-Date: Fri, 17 Jan 2014 10:04:54 +0800
-From: Huang Shijie <b32955@freescale.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] mtd: m25p80: Use OPCODE_QUAD_READ_4B for 4-byte addressing
-Message-ID: <20140117020453.GC27652@shlinux2.ap.freescale.net>
-References: <1389800935-6468-1-git-send-email-geert@linux-m68k.org>
- <201401160109.34499.marex@denx.de>
- <20140116210529.GF8919@ld-irv-0074>
+ id 1W41o2-0007Nr-BC
+ for linux-mtd@lists.infradead.org; Fri, 17 Jan 2014 05:17:23 +0000
+Received: by mail-wi0-f174.google.com with SMTP id g10so226142wiw.7
+ for <linux-mtd@lists.infradead.org>; Thu, 16 Jan 2014 21:16:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20140116210529.GF8919@ld-irv-0074>
-Cc: Marek Vasut <marex@denx.de>,
- Geert Uytterhoeven <geert+renesas@linux-m68k.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>, linux-mtd@lists.infradead.org,
- Sourav Poddar <sourav.poddar@ti.com>, David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <20140116213206.GG8919@ld-irv-0074>
+References: <1389773306-7055-1-git-send-email-prabhakar.csengg@gmail.com>
+ <20140116213206.GG8919@ld-irv-0074>
+From: Prabhakar Lad <prabhakar.csengg@gmail.com>
+Date: Fri, 17 Jan 2014 10:46:38 +0530
+Message-ID: <CA+V-a8u42eNcDoSr42Bq-3JJEdFMXjru-PDpmXqjZEzkoQ=efQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd: davinci_nand: Remove unnecessary labels from error
+ path
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,32 +26,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jan 16, 2014 at 01:05:29PM -0800, Brian Norris wrote:
-> On Thu, Jan 16, 2014 at 01:09:34AM +0100, Marek Vasut wrote:
-> > On Wednesday, January 15, 2014 at 04:48:55 PM, Geert Uytterhoeven wrote:
-> > > From: Geert Uytterhoeven <geert+renesas@linux-m68k.org>
-> > > 
-> > > commit 3487a63955c34ea508bcf4ca5131ddd953876e2d ("drivers: mtd: m25p80: add
-> > > quad read support") in -next added both the 3-byte OPCODE_QUAD_READ and the
-> > > 4-byte OPCODE_QUAD_READ_4B, but incorrectly uses OPCODE_QUAD_READ for both
-> > > 3-byte and 4-byte addressing.
-> > > 
-> > > Use OPCODE_QUAD_READ_4B in the 4-byte case to fix this.
-> 
-> Wow, I noticed this and had a patch privately queued over a month ago
-> for this, but I forgot to send it out... Thanks for noticing!
-> 
-> > > Signed-off-by: Geert Uytterhoeven <geert+renesas@linux-m68k.org>
-> > 
-> > Looks all right.
-> > 
-> > Acked-by: Marek Vasut <marex@denx.de>
-> 
-> Pushed to l2-mtd.git.
-this is a bad news to me. I have to send out a new version for the SPI NOR framework.
+Hi Brian,
 
-could this patch be merged after my spi-nor patch set? or create a new patch based
-on the spi-nor framework.
+On Fri, Jan 17, 2014 at 3:02 AM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> On Wed, Jan 15, 2014 at 01:38:26PM +0530, Prabhakar Lad wrote:
+>> From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+>>
+>> This patch removes the unnecessary labels from
+>> the error path in probe function which did nothing
+>> than just returning error values, Thus simplifying code
+>> path and improved readability.
+>>
+>> Signed-off-by: Lad, Prabhakar <prabhakar.csengg@gmail.com>
+>
+> This does not apply to my branch, since some OOM messages have been
+> dropped. Can you rebase on l2-mtd.git (or linux-next)?
+>
+OK I'll rebase it against linux-next and post a v2.
 
-thanks
-Huang Shijie
+Thanks,
+--Prabhakar Lad
