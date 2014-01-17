@@ -1,26 +1,23 @@
-Date: Fri, 17 Jan 2014 14:54:03 +0800
-From: Huang Shijie <b32955@freescale.com>
-To: Jagan Teki <jagannadh.teki@gmail.com>
-Subject: Re: [PATCH v4 0/7] mtd: spi-nor: add a new framework for SPI NOR
-Message-ID: <20140117065401.GA6140@shlinux2.ap.freescale.net>
-References: <1387950629-27448-1-git-send-email-b32955@freescale.com>
- <CAD6G_RTnNQgeJM8Tc16Sc1_n29d=V9sJN1ePrOAn5YzM+GujMQ@mail.gmail.com>
- <52D7A237.8@freescale.com>
- <CAD6G_RRNg-uRtKnnVgJYpUGPsKecAUm9mwETVJsCsaGSuL2eCw@mail.gmail.com>
- <20140117020226.GB27652@shlinux2.ap.freescale.net>
- <CAD6G_RR7vgmHGFj4GqwCYLQQO6tbsZAeCzVBivbcxnCGSwgiWQ@mail.gmail.com>
+Received: from mail-we0-x22a.google.com ([2a00:1450:400c:c03::22a])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W44D0-0001W4-Gg
+ for linux-mtd@lists.infradead.org; Fri, 17 Jan 2014 07:51:19 +0000
+Received: by mail-we0-f170.google.com with SMTP id u57so4237305wes.1
+ for <linux-mtd@lists.infradead.org>; Thu, 16 Jan 2014 23:50:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CAD6G_RR7vgmHGFj4GqwCYLQQO6tbsZAeCzVBivbcxnCGSwgiWQ@mail.gmail.com>
-Cc: angus.clark@st.com, Brian Norris <computersforpeace@gmail.com>,
- b44548@freescale.com, linux-doc@vger.kernel.org,
- Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@linaro.org>,
- b18965@freescale.com, linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
- linux-mtd@lists.infradead.org, "Gupta, Pekon" <pekon@ti.com>,
- Sourav Poddar <sourav.poddar@ti.com>, Shawn Guo <shawn.guo@linaro.org>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+In-Reply-To: <CA+V-a8u42eNcDoSr42Bq-3JJEdFMXjru-PDpmXqjZEzkoQ=efQ@mail.gmail.com>
+References: <1389773306-7055-1-git-send-email-prabhakar.csengg@gmail.com>
+ <20140116213206.GG8919@ld-irv-0074>
+ <CA+V-a8u42eNcDoSr42Bq-3JJEdFMXjru-PDpmXqjZEzkoQ=efQ@mail.gmail.com>
+From: Prabhakar Lad <prabhakar.csengg@gmail.com>
+Date: Fri, 17 Jan 2014 13:20:36 +0530
+Message-ID: <CA+V-a8sNSKX_W43G7A0zFKq1GX7k25XR2ZxVtxiQyAmLD5Rs4w@mail.gmail.com>
+Subject: Re: [PATCH] mtd: davinci_nand: Remove unnecessary labels from error
+ path
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,33 +27,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jan 17, 2014 at 12:36:08PM +0530, Jagan Teki wrote:
-> >> My basic question is like I have a qspi spi controller in my SOC and I
-> >> designed two boards B1 and B2
-> >
-> > okay.
-> >
-> >> B1 with quad spi controller connected with non-flash as a slave and B2
-> >> with quad spi controller connected
-> >> with quad flash as a slave.
-> > You can use the framework for B2. But for B1, you should not use the framework,
-> > since this framework is just for the SPI-NOR. If you do not connected with
-> > a NOR, i think it's better to code another driver for your controller.
-> 
-> Means we have two separate controller drivers for same controller one
-> with spi-nor and
-> another with spi is it?
-Take drivers/spi/spi-imx.c for example, if you connect a NOR to it, you only
-need to add a NOR device node in the device tree. In the probe, it will call
-the m25p80.c to probe the NOR device.
+Hi Brain,
 
-But if we connect other device to it. you should set another device node for it.
+On Fri, Jan 17, 2014 at 10:46 AM, Prabhakar Lad
+<prabhakar.csengg@gmail.com> wrote:
+> Hi Brian,
+>
+> On Fri, Jan 17, 2014 at 3:02 AM, Brian Norris
+> <computersforpeace@gmail.com> wrote:
+>> On Wed, Jan 15, 2014 at 01:38:26PM +0530, Prabhakar Lad wrote:
+>>> From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+>>>
+>>> This patch removes the unnecessary labels from
+>>> the error path in probe function which did nothing
+>>> than just returning error values, Thus simplifying code
+>>> path and improved readability.
+>>>
+>>> Signed-off-by: Lad, Prabhakar <prabhakar.csengg@gmail.com>
+>>
+>> This does not apply to my branch, since some OOM messages have been
+>> dropped. Can you rebase on l2-mtd.git (or linux-next)?
+>>
+> OK I'll rebase it against linux-next and post a v2.
+>
+My Bad was too late, there is already a patch fixing the above issue
+in linux-next
+please ignore this patch.
 
-I am not sure if your controller driver can works as the spi-imx.c
-
-thanks
-Huang Shijie
-
-
-
- 
+Thanks,
+--Prabhakar Lad
