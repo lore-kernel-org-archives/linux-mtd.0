@@ -1,19 +1,27 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
+Received: from mail-lb0-x22a.google.com ([2a00:1450:4010:c04::22a])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W4cZQ-00021Z-Le
- for linux-mtd@lists.infradead.org; Sat, 18 Jan 2014 20:32:46 +0000
-From: Marek Vasut <marex@denx.de>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] mtd: m25p80: assign default read command
-Date: Sat, 18 Jan 2014 19:54:40 +0100
-References: <1389906547-31959-1-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1389906547-31959-1-git-send-email-computersforpeace@gmail.com>
+ id 1W4dJv-0002N7-8p
+ for linux-mtd@lists.infradead.org; Sat, 18 Jan 2014 21:20:48 +0000
+Received: by mail-lb0-f170.google.com with SMTP id u14so4016225lbd.29
+ for <linux-mtd@lists.infradead.org>; Sat, 18 Jan 2014 13:20:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201401181954.40539.marex@denx.de>
-Cc: Sourav Poddar <sourav.poddar@ti.com>, linux-mtd@lists.infradead.org
+In-Reply-To: <20140117070131.GN1992@norris-Latitude-E6410>
+References: <1389800935-6468-1-git-send-email-geert@linux-m68k.org>
+ <201401160109.34499.marex@denx.de>
+ <20140116210529.GF8919@ld-irv-0074>
+ <20140117020453.GC27652@shlinux2.ap.freescale.net>
+ <20140117070131.GN1992@norris-Latitude-E6410>
+Date: Sun, 19 Jan 2014 02:50:23 +0530
+Message-ID: <CAD6G_RRtrzkBaz4mu1TDZnE6qVtNmYAhUkkLmCu=CopDBscfgg@mail.gmail.com>
+Subject: Re: [PATCH] mtd: m25p80: Use OPCODE_QUAD_READ_4B for 4-byte addressing
+From: Jagan Teki <jagannadh.teki@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Marek Vasut <marex@denx.de>,
+ Geert Uytterhoeven <geert+renesas@linux-m68k.org>,
+ Huang Shijie <b32955@freescale.com>, Geert Uytterhoeven <geert@linux-m68k.org>,
+ linux-mtd@lists.infradead.org, Sourav Poddar <sourav.poddar@ti.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,28 +31,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday, January 16, 2014 at 10:09:07 PM, Brian Norris wrote:
-> In the following commit (in -next):
-> 
->     commit 8552b439aba7f32063755d23f79ca27b4d0a3115
->     drivers: mtd: m25p80: convert "bool" read check into an enum
-> 
-> We converted the boolean 'fast_read' property to become an enum
-> 'flash_read', but at the same time, we changed the conditional path so
-> that it doesn't choose a default value in some cases (technically, we
-> choose the correct default simply by virtue of devm_kzalloc(), which
-> zeroes this out to be a NORMAL read operation, but still...).
+On Fri, Jan 17, 2014 at 12:31 PM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> On Fri, Jan 17, 2014 at 10:04:54AM +0800, Huang Shijie wrote:
+>> On Thu, Jan 16, 2014 at 01:05:29PM -0800, Brian Norris wrote:
+>> > On Thu, Jan 16, 2014 at 01:09:34AM +0100, Marek Vasut wrote:
+>> > > On Wednesday, January 15, 2014 at 04:48:55 PM, Geert Uytterhoeven wrote:
+>> > > > From: Geert Uytterhoeven <geert+renesas@linux-m68k.org>
+>> > > >
+>> > > > commit 3487a63955c34ea508bcf4ca5131ddd953876e2d ("drivers: mtd: m25p80: add
+>> > > > quad read support") in -next added both the 3-byte OPCODE_QUAD_READ and the
+>> > > > 4-byte OPCODE_QUAD_READ_4B, but incorrectly uses OPCODE_QUAD_READ for both
+>> > > > 3-byte and 4-byte addressing.
+>> > > >
+>> > > > Use OPCODE_QUAD_READ_4B in the 4-byte case to fix this.
+>> >
+>> > Wow, I noticed this and had a patch privately queued over a month ago
+>> > for this, but I forgot to send it out... Thanks for noticing!
+>> >
+>> > > > Signed-off-by: Geert Uytterhoeven <geert+renesas@linux-m68k.org>
+>> > >
+>> > > Looks all right.
+>> > >
+>> > > Acked-by: Marek Vasut <marex@denx.de>
+>> >
+>> > Pushed to l2-mtd.git.
+>> this is a bad news to me. I have to send out a new version for the SPI NOR framework.
+>>
+>> could this patch be merged after my spi-nor patch set? or create a new patch based
+>> on the spi-nor framework.
+>
+> This patch is a priority, since it's a bugfix to one that's already
+> queued up, so it must go first. I haven't taken a look at your latest
+> series, and I haven't seen comments lately. Was everyone happy with it?
+> If this conflict is the only problem, I'm sure that can be fixed
+> trivially. But I'm not sure if it's ready yet anyway. I won't be able to
+> get to it until next week (at the earliest).
 
-Yep, that's true. It did default to the correct _NORMAL.
+I request all need to post the comments on this new framework, I have few points
+which stops me to believe this is well written [1]
 
-> Fix this by setting a default for the 'else' clause.
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Cc: Sourav Poddar <sourav.poddar@ti.com>
+[1] http://www.spinics.net/lists/arm-kernel/msg301517.html
 
-Let's be explicit indeed.
-
-Acked-by: Marek Vasut <marex@denx.de>
-
-Best regards,
-Marek Vasut
+-- 
+Thanks,
+Jagan.
