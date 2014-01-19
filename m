@@ -1,27 +1,27 @@
-Received: from mail-lb0-x22a.google.com ([2a00:1450:4010:c04::22a])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W4dJv-0002N7-8p
- for linux-mtd@lists.infradead.org; Sat, 18 Jan 2014 21:20:48 +0000
-Received: by mail-lb0-f170.google.com with SMTP id u14so4016225lbd.29
- for <linux-mtd@lists.infradead.org>; Sat, 18 Jan 2014 13:20:23 -0800 (PST)
+Message-ID: <52DB3864.2040606@gmail.com>
+Date: Sun, 19 Jan 2014 10:28:52 +0800
+From: Huang Shijie <shijie8@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20140117070131.GN1992@norris-Latitude-E6410>
-References: <1389800935-6468-1-git-send-email-geert@linux-m68k.org>
- <201401160109.34499.marex@denx.de>
- <20140116210529.GF8919@ld-irv-0074>
- <20140117020453.GC27652@shlinux2.ap.freescale.net>
- <20140117070131.GN1992@norris-Latitude-E6410>
-Date: Sun, 19 Jan 2014 02:50:23 +0530
-Message-ID: <CAD6G_RRtrzkBaz4mu1TDZnE6qVtNmYAhUkkLmCu=CopDBscfgg@mail.gmail.com>
-Subject: Re: [PATCH] mtd: m25p80: Use OPCODE_QUAD_READ_4B for 4-byte addressing
-From: Jagan Teki <jagannadh.teki@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Marek Vasut <marex@denx.de>,
- Geert Uytterhoeven <geert+renesas@linux-m68k.org>,
- Huang Shijie <b32955@freescale.com>, Geert Uytterhoeven <geert@linux-m68k.org>,
- linux-mtd@lists.infradead.org, Sourav Poddar <sourav.poddar@ti.com>,
- David Woodhouse <dwmw2@infradead.org>
+To: Jagan Teki <jagannadh.teki@gmail.com>, Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH v4 0/7] mtd: spi-nor: add a new framework for SPI NOR
+References: <1387950629-27448-1-git-send-email-b32955@freescale.com>
+ <CAD6G_RTnNQgeJM8Tc16Sc1_n29d=V9sJN1ePrOAn5YzM+GujMQ@mail.gmail.com>
+ <52D7A237.8@freescale.com>
+ <CAD6G_RRNg-uRtKnnVgJYpUGPsKecAUm9mwETVJsCsaGSuL2eCw@mail.gmail.com>
+ <20140117020226.GB27652@shlinux2.ap.freescale.net>
+ <CAD6G_RR7vgmHGFj4GqwCYLQQO6tbsZAeCzVBivbcxnCGSwgiWQ@mail.gmail.com>
+ <20140117065401.GA6140@shlinux2.ap.freescale.net>
+ <CAD6G_RSF_TPk8g9CNmSc+xs+9psLmJoakZw3Eqf-a8KD5P4AVg@mail.gmail.com>
+In-Reply-To: <CAD6G_RSF_TPk8g9CNmSc+xs+9psLmJoakZw3Eqf-a8KD5P4AVg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: angus.clark@st.com, Shawn Guo <shawn.guo@linaro.org>, b44548@freescale.com,
+ Mark Brown <broonie@linaro.org>, David Woodhouse <dwmw2@infradead.org>,
+ linux-doc@vger.kernel.org, b18965@freescale.com, linux-spi@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-mtd@lists.infradead.org, "Gupta,
+ Pekon" <pekon@ti.com>, Sourav Poddar <sourav.poddar@ti.com>,
+ Brian Norris <computersforpeace@gmail.com>, Lee Jones <lee.jones@linaro.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,48 +31,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jan 17, 2014 at 12:31 PM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> On Fri, Jan 17, 2014 at 10:04:54AM +0800, Huang Shijie wrote:
->> On Thu, Jan 16, 2014 at 01:05:29PM -0800, Brian Norris wrote:
->> > On Thu, Jan 16, 2014 at 01:09:34AM +0100, Marek Vasut wrote:
->> > > On Wednesday, January 15, 2014 at 04:48:55 PM, Geert Uytterhoeven wrote:
->> > > > From: Geert Uytterhoeven <geert+renesas@linux-m68k.org>
->> > > >
->> > > > commit 3487a63955c34ea508bcf4ca5131ddd953876e2d ("drivers: mtd: m25p80: add
->> > > > quad read support") in -next added both the 3-byte OPCODE_QUAD_READ and the
->> > > > 4-byte OPCODE_QUAD_READ_4B, but incorrectly uses OPCODE_QUAD_READ for both
->> > > > 3-byte and 4-byte addressing.
->> > > >
->> > > > Use OPCODE_QUAD_READ_4B in the 4-byte case to fix this.
->> >
->> > Wow, I noticed this and had a patch privately queued over a month ago
->> > for this, but I forgot to send it out... Thanks for noticing!
->> >
->> > > > Signed-off-by: Geert Uytterhoeven <geert+renesas@linux-m68k.org>
->> > >
->> > > Looks all right.
->> > >
->> > > Acked-by: Marek Vasut <marex@denx.de>
->> >
->> > Pushed to l2-mtd.git.
->> this is a bad news to me. I have to send out a new version for the SPI NOR framework.
+
+于 2014年01月17日 16:39, Jagan Teki 写道:
+> On Fri, Jan 17, 2014 at 12:24 PM, Huang Shijie <b32955@freescale.com> wrote:
+>> On Fri, Jan 17, 2014 at 12:36:08PM +0530, Jagan Teki wrote:
+>>>>> My basic question is like I have a qspi spi controller in my SOC and I
+>>>>> designed two boards B1 and B2
+>>>> okay.
+>>>>
+>>>>> B1 with quad spi controller connected with non-flash as a slave and B2
+>>>>> with quad spi controller connected
+>>>>> with quad flash as a slave.
+>>>> You can use the framework for B2. But for B1, you should not use the framework,
+>>>> since this framework is just for the SPI-NOR. If you do not connected with
+>>>> a NOR, i think it's better to code another driver for your controller.
+>>> Means we have two separate controller drivers for same controller one
+>>> with spi-nor and
+>>> another with spi is it?
+>> Take drivers/spi/spi-imx.c for example, if you connect a NOR to it, you only
+>> need to add a NOR device node in the device tree. In the probe, it will call
+>> the m25p80.c to probe the NOR device.
 >>
->> could this patch be merged after my spi-nor patch set? or create a new patch based
->> on the spi-nor framework.
+>> But if we connect other device to it. you should set another device node for it.
+>>
+>> I am not sure if your controller driver can works as the spi-imx.c
+> My question here was - this new framework suggest to write a two
+> different controller
+> drivers one is for non spi-nor and spi-nor models? do you agree that?
+
+
+If your controller can either connects to a NOR, or can connects to 
+other devices, it means your controller is a _BUS_.
+You just need to write the bus driver for your controller, such as the 
+spi-imx.c and drivers/bus/imx-weim.c do.
+
+Since you have connect a device to your controller. you also need to 
+write a driver for your device, such as the m25p80.c is
+for your spi nor device.
+
+Just think about that how do you code your driver for SPI NOR _without_ 
+this framework:
+do your driver need to call the m25p80.c? if you do call the m25p80.c, 
+you actually write your so-called "two drivers" :)
+
+
+This framework does not change any logic for the current kernel, except 
+adding a layer. With the new layer, we can code the
+driver for the controllers which is a SPI-NOR controller, not a SPI bus 
+controller.
+
+
 >
-> This patch is a priority, since it's a bugfix to one that's already
-> queued up, so it must go first. I haven't taken a look at your latest
-> series, and I haven't seen comments lately. Was everyone happy with it?
-> If this conflict is the only problem, I'm sure that can be fixed
-> trivially. But I'm not sure if it's ready yet anyway. I won't be able to
-> get to it until next week (at the earliest).
+> And also one important note from your design was spi-nor mode is
+> completely bypassing
+> Linux spi core is that the good idea?
+>
+yes. I think it's a good idea.
 
-I request all need to post the comments on this new framework, I have few points
-which stops me to believe this is well written [1]
+As Mark even pointed, the freescale's Quadspi controller is not a SPI 
+controller, it is a SPI-NOR controller, it does _not_ need the
+LINUX SPI core.
 
-[1] http://www.spinics.net/lists/arm-kernel/msg301517.html
 
--- 
-Thanks,
-Jagan.
+thanks
+Huang Shijie
