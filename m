@@ -1,21 +1,25 @@
-Received: from mail-ie0-f171.google.com ([209.85.223.171])
+Received: from mail-oa0-x233.google.com ([2607:f8b0:4003:c02::233])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W5Ksl-0002R8-Qn
- for linux-mtd@lists.infradead.org; Mon, 20 Jan 2014 19:51:40 +0000
-Received: by mail-ie0-f171.google.com with SMTP id as1so1713733iec.30
- for <linux-mtd@lists.infradead.org>; Mon, 20 Jan 2014 11:51:15 -0800 (PST)
-Date: Mon, 20 Jan 2014 11:51:12 -0800
+ id 1W5Kvg-0002ZY-Kz
+ for linux-mtd@lists.infradead.org; Mon, 20 Jan 2014 19:54:41 +0000
+Received: by mail-oa0-f51.google.com with SMTP id h16so7656075oag.10
+ for <linux-mtd@lists.infradead.org>; Mon, 20 Jan 2014 11:54:19 -0800 (PST)
+Date: Mon, 20 Jan 2014 11:54:16 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Marek Vasut <marex@denx.de>
-Subject: Re: [PATCH] mtd: m25p80: assign default read command
-Message-ID: <20140120195112.GT8919@ld-irv-0074>
-References: <1389906547-31959-1-git-send-email-computersforpeace@gmail.com>
- <201401181954.40539.marex@denx.de>
+To: Prabhakar Lad <prabhakar.csengg@gmail.com>
+Subject: Re: [PATCH] mtd: davinci_nand: Remove unnecessary labels from error
+ path
+Message-ID: <20140120195416.GU8919@ld-irv-0074>
+References: <1389773306-7055-1-git-send-email-prabhakar.csengg@gmail.com>
+ <20140116213206.GG8919@ld-irv-0074>
+ <CA+V-a8u42eNcDoSr42Bq-3JJEdFMXjru-PDpmXqjZEzkoQ=efQ@mail.gmail.com>
+ <CA+V-a8sNSKX_W43G7A0zFKq1GX7k25XR2ZxVtxiQyAmLD5Rs4w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <201401181954.40539.marex@denx.de>
-Cc: Sourav Poddar <sourav.poddar@ti.com>, linux-mtd@lists.infradead.org
+In-Reply-To: <CA+V-a8sNSKX_W43G7A0zFKq1GX7k25XR2ZxVtxiQyAmLD5Rs4w@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,30 +29,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Jan 18, 2014 at 07:54:40PM +0100, Marek Vasut wrote:
-> On Thursday, January 16, 2014 at 10:09:07 PM, Brian Norris wrote:
-> > In the following commit (in -next):
-> > 
-> >     commit 8552b439aba7f32063755d23f79ca27b4d0a3115
-> >     drivers: mtd: m25p80: convert "bool" read check into an enum
-> > 
-> > We converted the boolean 'fast_read' property to become an enum
-> > 'flash_read', but at the same time, we changed the conditional path so
-> > that it doesn't choose a default value in some cases (technically, we
-> > choose the correct default simply by virtue of devm_kzalloc(), which
-> > zeroes this out to be a NORMAL read operation, but still...).
-> 
-> Yep, that's true. It did default to the correct _NORMAL.
-> 
-> > Fix this by setting a default for the 'else' clause.
-> > 
-> > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> > Cc: Sourav Poddar <sourav.poddar@ti.com>
-> 
-> Let's be explicit indeed.
-> 
-> Acked-by: Marek Vasut <marex@denx.de>
+On Fri, Jan 17, 2014 at 01:20:36PM +0530, Prabhakar Lad wrote:
+> On Fri, Jan 17, 2014 at 10:46 AM, Prabhakar Lad
+> <prabhakar.csengg@gmail.com> wrote:
+> > On Fri, Jan 17, 2014 at 3:02 AM, Brian Norris
+> > <computersforpeace@gmail.com> wrote:
+> >> On Wed, Jan 15, 2014 at 01:38:26PM +0530, Prabhakar Lad wrote:
+> >>> From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+> >>>
+> >>> This patch removes the unnecessary labels from
+> >>> the error path in probe function which did nothing
+> >>> than just returning error values, Thus simplifying code
+> >>> path and improved readability.
+> >>>
+> >>> Signed-off-by: Lad, Prabhakar <prabhakar.csengg@gmail.com>
+> >>
+> >> This does not apply to my branch, since some OOM messages have been
+> >> dropped. Can you rebase on l2-mtd.git (or linux-next)?
+> >>
+> > OK I'll rebase it against linux-next and post a v2.
+> >
+> My Bad was too late, there is already a patch fixing the above issue
+> in linux-next
 
-Thanks. Pushed to l2-mtd.git.
+Ah, and my bad on remembering; I thought this looked familiar! :)
 
+> please ignore this patch.
+
+Sure.
+
+Thanks,
 Brian
