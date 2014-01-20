@@ -1,28 +1,21 @@
-Received: from mail-ie0-x22b.google.com ([2607:f8b0:4001:c03::22b])
+Received: from mail-ie0-f171.google.com ([209.85.223.171])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W5Kpn-0002Ml-EZ
- for linux-mtd@lists.infradead.org; Mon, 20 Jan 2014 19:48:36 +0000
-Received: by mail-ie0-f171.google.com with SMTP id as1so1691976iec.16
- for <linux-mtd@lists.infradead.org>; Mon, 20 Jan 2014 11:48:14 -0800 (PST)
-Date: Mon, 20 Jan 2014 11:48:09 -0800
+ id 1W5Ksl-0002R8-Qn
+ for linux-mtd@lists.infradead.org; Mon, 20 Jan 2014 19:51:40 +0000
+Received: by mail-ie0-f171.google.com with SMTP id as1so1713733iec.30
+ for <linux-mtd@lists.infradead.org>; Mon, 20 Jan 2014 11:51:15 -0800 (PST)
+Date: Mon, 20 Jan 2014 11:51:12 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [RFC/PATCH 0/1] mtd: Add NAND ECC devicetree binding
-Message-ID: <20140120194809.GS8919@ld-irv-0074>
-References: <1389960820-18696-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA66555@DBDE04.ent.ti.com>
- <20140117203347.GC3843@localhost>
+To: Marek Vasut <marex@denx.de>
+Subject: Re: [PATCH] mtd: m25p80: assign default read command
+Message-ID: <20140120195112.GT8919@ld-irv-0074>
+References: <1389906547-31959-1-git-send-email-computersforpeace@gmail.com>
+ <201401181954.40539.marex@denx.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20140117203347.GC3843@localhost>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Seif Mazareeb <seif@marvell.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
- Pekon" <pekon@ti.com>, Gregory Clement <gregory.clement@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <201401181954.40539.marex@denx.de>
+Cc: Sourav Poddar <sourav.poddar@ti.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,53 +25,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jan 17, 2014 at 05:33:48PM -0300, Ezequiel Garcia wrote:
-> On Fri, Jan 17, 2014 at 05:58:13PM +0000, Gupta, Pekon wrote:
-> > Hi Ezequiel,
+On Sat, Jan 18, 2014 at 07:54:40PM +0100, Marek Vasut wrote:
+> On Thursday, January 16, 2014 at 10:09:07 PM, Brian Norris wrote:
+> > In the following commit (in -next):
 > > 
-> > >From: Ezequiel Garcia [mailto:ezequiel.garcia@free-electrons.com]
-> > >
-> > >This patch is our first proposal to address the need for a suitable ECC
-> > >devicetree binding.
-> > >
-> > >NAND controllers have special ECC modes, raising per-driver ECC mode devicetree
-> > >binding. See for instance the binding for OMAP:
-> > >
-> > > - ti,nand-ecc-opt: A string setting the ECC layout to use. One of:
-> > >	"sw"		<deprecated> use "ham1" instead
-> > >	"hw"		<deprecated> use "ham1" instead
-> > >	"hw-romcode"	<deprecated> use "ham1" instead
-> > >	"ham1"		1-bit Hamming ecc code
-> > >	"bch4"		4-bit BCH ecc code
-> > >	"bch8"		8-bit BCH ecc code
-> > >
-> > >Other drivers (such as pxa3xx-nand) have similar requirements, with special
-> > >(controller-specific) ECC modes. Instead of adding a possibly different binding
-> > >per compatible-string, let's add generic ECC strength and ECC step size.
-> > >
-> > >This properties should describe completely the ECC mode and let drivers choose
-> > >the appropriate ECC mode.
-> > >
-> > Yes, this is good approach.
-> > It was found earlier that generic NAND DT bindings are not much use to other
-> > controllers as well, as different h/w engines have different interpretations.
-> > Brian Norris had similar comments giving example of his hardware.
-> > (hope following reference helps).
+> >     commit 8552b439aba7f32063755d23f79ca27b4d0a3115
+> >     drivers: mtd: m25p80: convert "bool" read check into an enum
 > > 
-> > [1] http://lists.infradead.org/pipermail/linux-mtd/2013-September/048869.html
-> > 
+> > We converted the boolean 'fast_read' property to become an enum
+> > 'flash_read', but at the same time, we changed the conditional path so
+> > that it doesn't choose a default value in some cases (technically, we
+> > choose the correct default simply by virtue of devm_kzalloc(), which
+> > zeroes this out to be a NORMAL read operation, but still...).
 > 
-> Yes, Brian suggested this ecc-strength/ecc-size approach on IRC.
+> Yep, that's true. It did default to the correct _NORMAL.
+> 
+> > Fix this by setting a default for the 'else' clause.
+> > 
+> > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> > Cc: Sourav Poddar <sourav.poddar@ti.com>
+> 
+> Let's be explicit indeed.
+> 
+> Acked-by: Marek Vasut <marex@denx.de>
 
-And for the record, I also alluded to it in the last paragraph of the
-email Pekon linked to:
-
-  So I'm not convinced that extending this nand-ecc-mode property is
-  correct at all. But if we do want to, perhaps we'd need to introduce
-  additional orthogonal properties to specify strength and step size,
-  rather than listing all combinations as separate values for
-  nand-ecc-mode.
-
-[IOW, nand-ecc-strength and nand-ecc-step-size]
+Thanks. Pushed to l2-mtd.git.
 
 Brian
