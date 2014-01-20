@@ -1,33 +1,20 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W5IG5-0006JH-C4
- for linux-mtd@lists.infradead.org; Mon, 20 Jan 2014 17:03:33 +0000
-Date: Mon, 20 Jan 2014 14:03:24 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: "Gupta, Pekon" <pekon@ti.com>, Rob Herring <rob.herring@calxeda.com>,
- Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>
-Subject: Re: [RFC/PATCH 0/1] mtd: Add NAND ECC devicetree binding
-Message-ID: <20140120170324.GA25652@localhost>
-References: <1389960820-18696-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA66555@DBDE04.ent.ti.com>
- <20140117203347.GC3843@localhost>
- <20980858CB6D3A4BAE95CA194937D5E73EA67E79@DBDE04.ent.ti.com>
+Date: Mon, 20 Jan 2014 10:44:18 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Sekhar Nori <nsekhar@ti.com>
+Subject: Re: [PATCH v4 1/1] ARM: davinci: aemif: get rid of davinci-nand
+ driver dependency on aemif
+Message-ID: <20140120184418.GI8919@ld-irv-0074>
+References: <1389346564-24243-1-git-send-email-nsekhar@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA67E79@DBDE04.ent.ti.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Seif Mazareeb <seif@marvell.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1389346564-24243-1-git-send-email-nsekhar@ti.com>
+Cc: Linux MTD Mailing List <linux-mtd@lists.infradead.org>,
+ Linux DaVinci Mailing List
+ <davinci-linux-open-source@linux.davincidsp.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
+ Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,33 +24,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Sekhar,
 
-On Mon, Jan 20, 2014 at 06:21:35AM +0000, Gupta, Pekon wrote:
-[..]
-> >
-> >Pekon, do you think this binding proposal is good enough to describe OMAP NAND
-> >ECC mode?
-> >
-> >I'm not implying we should deprecate the recently added "ti-nand-ecc-opt",
-> >but just want to know it's eventually possible.
-> >
-> Yes, this is good approach for long-term, and it can replace "ti-nand-ecc-opt"
-> "ti-nand-ecc-opt" is not new DT binding, it just got some new values added
-> However, you have to convince DT Maintainers to get this in, and then deprecate
-> other vendor specific bindings. It would be difficult to maintain backward
-> compatibility to these bindings, if we move to 'nand-ecc-strength'.
-> 
+Sorry, I do have one complaint about this patch.
 
-Putting the DT maintainers on the To: field to get some feedback.
+On Fri, Jan 10, 2014 at 03:06:04PM +0530, Sekhar Nori wrote:
+> --- a/arch/arm/mach-davinci/aemif.c
+> +++ b/arch/arm/mach-davinci/aemif.c
+> @@ -130,4 +136,82 @@ int davinci_aemif_setup_timing(struct davinci_aemif_timing *t,
+>  
+>  	return 0;
+>  }
+> -EXPORT_SYMBOL(davinci_aemif_setup_timing);
+> +
+> +/**
+> + * davinci_aemif_setup - setup AEMIF interface by davinci_nand_pdata
+> + * @pdev - link to platform device to setup settings for
+> + *
+> + * This function does not use any locking while programming the AEMIF
+> + * because it is expected that there is only one user of a given
+> + * chip-select.
+> + *
+> + * Returns 0 on success, else negative errno.
+> + */
+> +int davinci_aemif_setup(struct platform_device *pdev)
+> +{
+> +	struct davinci_nand_pdata *pdata = dev_get_platdata(&pdev->dev);
+> +	uint32_t val;
+> +	unsigned long clkrate;
+> +	struct resource	*res;
+> +	void __iomem *base;
+> +	struct clk *clk;
+> +	int ret = 0;
+> +
+> +	clk = clk_get(&pdev->dev, "aemif");
+> +	if (IS_ERR(clk)) {
+> +		ret = PTR_ERR(clk);
+> +		dev_dbg(&pdev->dev, "unable to get AEMIF clock, err %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	ret = clk_prepare_enable(clk);
+> +	if (ret < 0) {
+> +		dev_dbg(&pdev->dev, "unable to enable AEMIF clock, err %d\n",
+> +			ret);
+> +		return ret;
 
-> At some-point we need to get some concrete guidelines from DT Maintainers on
-> how long we should support deprecated bindings in our code, And what is the
-> age of DT binding. I think David Woodhouse should throw more light, as he had
-> some discussions & ideas on about DT binding life, during a linux conference.
-> 
+coccinelle gives a warning for this:
 
-That's a good question :-)
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+  arch/arm/mach-davinci/aemif.c:171:2-8: ERROR: missing clk_put; clk_get on line 160 and execution via conditional on line 168 [coccinelle]
+
+You need a clk_put() on the error path for clk_prepare_enable. For
+instance, you can add a label below and replace this 'return ret' with
+'goto err_put'.
+
+> +	}
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+> +	if (!res) {
+> +		dev_err(&pdev->dev, "cannot get IORESOURCE_MEM\n");
+> +		ret = -ENOMEM;
+> +		goto err;
+> +	}
+> +
+> +	base = ioremap(res->start, resource_size(res));
+> +	if (!base) {
+> +		dev_err(&pdev->dev, "ioremap failed for resource %pR\n", res);
+> +		ret = -ENOMEM;
+> +		goto err;
+> +	}
+> +
+> +	/*
+> +	 * Setup Async configuration register in case we did not boot
+> +	 * from NAND and so bootloader did not bother to set it up.
+> +	 */
+> +	val = davinci_aemif_readl(base, A1CR_OFFSET + pdev->id * 4);
+> +	/*
+> +	 * Extended Wait is not valid and Select Strobe mode is not
+> +	 * used
+> +	 */
+> +	val &= ~(ACR_ASIZE_MASK | ACR_EW_MASK | ACR_SS_MASK);
+> +	if (pdata->options & NAND_BUSWIDTH_16)
+> +		val |= 0x1;
+> +
+> +	davinci_aemif_writel(base, A1CR_OFFSET + pdev->id * 4, val);
+> +
+> +	clkrate = clk_get_rate(clk);
+> +
+> +	if (pdata->timing)
+> +		ret = davinci_aemif_setup_timing(pdata->timing, base, pdev->id,
+> +						 clkrate);
+> +
+> +	if (ret < 0)
+> +		dev_dbg(&pdev->dev, "NAND timing values setup fail\n");
+> +
+> +	iounmap(base);
+> +err:
+> +	clk_disable_unprepare(clk);
+
+Then the label could be here:
+
+err_put:
+
+> +	clk_put(clk);
+> +	return ret;
+> +}
+
+Brian
