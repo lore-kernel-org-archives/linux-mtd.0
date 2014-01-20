@@ -1,22 +1,22 @@
-Received: from mail-qe0-x22e.google.com ([2607:f8b0:400d:c02::22e])
+Received: from mail-oa0-f44.google.com ([209.85.219.44])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W5KNh-0001QJ-Bu
- for linux-mtd@lists.infradead.org; Mon, 20 Jan 2014 19:19:33 +0000
-Received: by mail-qe0-f46.google.com with SMTP id 8so6611427qea.5
- for <linux-mtd@lists.infradead.org>; Mon, 20 Jan 2014 11:19:12 -0800 (PST)
-Date: Mon, 20 Jan 2014 11:19:08 -0800
+ id 1W5KT5-0001fi-KW
+ for linux-mtd@lists.infradead.org; Mon, 20 Jan 2014 19:25:08 +0000
+Received: by mail-oa0-f44.google.com with SMTP id g12so8136395oah.31
+ for <linux-mtd@lists.infradead.org>; Mon, 20 Jan 2014 11:24:39 -0800 (PST)
+Date: Mon, 20 Jan 2014 11:24:35 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Eunbong Song <eunb.song@samsung.com>
-Subject: Re: [PATCH] mtd: nand: make more readable panic_nand_wait_ready()
- and nand_wait_ready()
-Message-ID: <20140120191908.GK8919@ld-irv-0074>
-References: <19226555.341201389136795005.JavaMail.weblogic@epml09>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH] mtd pxa3xx_nand.c: add support for 2048 bytes page size
+ layout
+Message-ID: <20140120192435.GL8919@ld-irv-0074>
+References: <1389623738-19585-1-git-send-email-giometti@linux.it>
+ <20140115132724.GB2534@localhost>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <19226555.341201389136795005.JavaMail.weblogic@epml09>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
- linux-kernel@vger.kernel.org
+In-Reply-To: <20140115132724.GB2534@localhost>
+Cc: linux-mtd@lists.infradead.org, Rodolfo Giometti <giometti@linux.it>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,27 +26,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jan 07, 2014 at 11:19:56PM +0000, Eunbong Song wrote:
+On Wed, Jan 15, 2014 at 10:27:25AM -0300, Ezequiel Garcia wrote:
+> Hi Rodolfo,
 > 
-> panic_nand_wait_ready() and nand_wait_ready() calls dev_ready() without checking if it exists.
+> On Mon, Jan 13, 2014 at 03:35:38PM +0100, Rodolfo Giometti wrote:
+> > Signed-off-by: Rodolfo Giometti <giometti@linux.it>
+> > ---
+> >  drivers/mtd/nand/pxa3xx_nand.c | 21 +++++++++++++++++++++
+> >  1 file changed, 21 insertions(+)
+> > 
+> 
+> I know this is just a small nitpick, but can you re-submit this
+> with a subject similar to the other commits:
+> 
+> ""mtd: nand: pxa3xx: Add support for 2048 bytes page size devices""
+> 
+> Also, I think you can add some details about the patch in the change
+> log. Something along these lines might be fine:
+> 
+> ""
+> This commit adds support for devices with 2048B page sizes and
+> 4-bit ECC strength requirements. This is achieved by enabling the BCH
+> ECC engine, which provides a higher strength: 16-bit over 2048 bytes.
+> 
+> Additionally, add a proper ECC layout to model the controller's view
+> of the device (where 'U' means unused and 'B' is the bad block marker):
+> 
+>  ----------------------------------------------------
+>  | 2048B data | B | B | 30B spare | 30B ECC | U | U |
+>  ----------------------------------------------------
+> ""
+> 
+> With these modifications you can also add:
+> 
+> Acked-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 
-There are many occasions where we call a function pointer without
-(locally) checking that it is non-NULL. That is by design.
+I updated the patch with Ezequiel's descriptions and pushed to
+l2-mtd.git. Thanks!
 
-If you see a problem with this behavior, please fix this properly rather
-than covering it up. This patch will just make faulty drivers spin for
-20ms rather than hitting a bug. Instead, you should aim to fix buggy
-drivers that call dev_ready() without assigning it; or even better,
-defensively improve nand_base to detect those drivers which are
-utilizing nand_command_lp() or nand_command() without assigning
-dev_ready().
-
-> This patch add check routine dev_ready() before run dev_ready()
-> and this makes the code more readable
-
-This patch does not make the code more readable, nor does it improve the
-state of the original code much. Please solve and document a real
-problem.
-
-Thanks,
 Brian
