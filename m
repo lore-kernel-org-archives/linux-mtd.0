@@ -1,21 +1,26 @@
-Received: from mail-ig0-x22d.google.com ([2607:f8b0:4001:c05::22d])
+Received: from mail-ie0-x22c.google.com ([2607:f8b0:4001:c03::22c])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W5KeD-0001vX-IJ
- for linux-mtd@lists.infradead.org; Mon, 20 Jan 2014 19:36:38 +0000
-Received: by mail-ig0-f173.google.com with SMTP id c10so8801666igq.0
- for <linux-mtd@lists.infradead.org>; Mon, 20 Jan 2014 11:36:16 -0800 (PST)
-Date: Mon, 20 Jan 2014 11:36:13 -0800
+ id 1W5Kgq-00021J-Dh
+ for linux-mtd@lists.infradead.org; Mon, 20 Jan 2014 19:39:23 +0000
+Received: by mail-ie0-f172.google.com with SMTP id e14so8799469iej.3
+ for <linux-mtd@lists.infradead.org>; Mon, 20 Jan 2014 11:38:59 -0800 (PST)
+Date: Mon, 20 Jan 2014 11:38:55 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH] mtd: nand: add support for SanDisk SDTNRGAMA-008G
-Message-ID: <20140120193613.GP8919@ld-irv-0074>
-References: <1388043465-17441-1-git-send-email-b32955@freescale.com>
- <1388727423-8997-1-git-send-email-b32955@freescale.com>
+To: Jingoo Han <jg1.han@samsung.com>
+Subject: Re: [PATCH -next] mtd: plat_nand: remove redundant return value
+ check of platform_get_resource()
+Message-ID: <20140120193855.GQ8919@ld-irv-0074>
+References: <CAPgLHd-2rHs_v0=tsnG08oJqaf1YmF2peeB_6KJQRnwK6r2N+w@mail.gmail.com>
+ <001501cf0c05$0ca196c0$25e4c440$%han@samsung.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1388727423-8997-1-git-send-email-b32955@freescale.com>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
+In-Reply-To: <001501cf0c05$0ca196c0$25e4c440$%han@samsung.com>
+Cc: 'Wei Yongjun' <weiyj.lk@gmail.com>,
+ 'Artem Bityutskiy' <artem.bityutskiy@linux.intel.com>,
+ yongjun_wei@trendmicro.com.cn, 'Rob Herring' <robh+dt@kernel.org>,
+ linux-mtd@lists.infradead.org, 'Grant Likely' <grant.likely@linaro.org>,
+ 'David Woodhouse' <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,34 +30,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jan 03, 2014 at 01:37:03PM +0800, Huang Shijie wrote:
-> The datasheet does not tell us how to parse out the ID data,
-> so handle it as a full ID nand.
+On Wed, Jan 08, 2014 at 09:03:24AM +0900, Jingoo Han wrote:
+> On Tuesday, January 07, 2014 10:38 PM, Wei Yongjun wrote:
+> > 
+> > From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+> > 
+> > Remove unneeded error handling on the result of a call
+> > to platform_get_resource() when the value is passed to
+> > devm_ioremap_resource(). And move those two call together
+> > to make the connection between them more clear.
+> > 
+> > Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 > 
-> Signed-off-by: Huang Shijie <b32955@freescale.com>
-> ---
->  drivers/mtd/nand/nand_ids.c |    3 +++
->  1 files changed, 3 insertions(+), 0 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
-> index 136a463..d3dbf59 100644
-> --- a/drivers/mtd/nand/nand_ids.c
-> +++ b/drivers/mtd/nand/nand_ids.c
-> @@ -43,6 +43,9 @@ struct nand_flash_dev nand_flash_ids[] = {
->  	{"TC58NVG6D2 64G 3.3V 8-bit",
->  		{ .id = {0x98, 0xde, 0x94, 0x82, 0x76, 0x56, 0x04, 0x20} },
->  		  SZ_8K, SZ_8K, SZ_2M, 0, 8, 640, NAND_ECC_INFO(40, SZ_1K) },
-> +	{"SDTNRGAMA 64G 3.3V 8-bit",
-> +		{ .id = {0x45, 0xde, 0x94, 0x93, 0x76, 0x50} },
-> +		  SZ_16K, SZ_8K, SZ_4M, 0, 6, 1280, NAND_ECC_INFO(40, SZ_1K) },
+> Reviewed-by: Jingoo Han <jg1.han@samsung.com>
 
-Looks OK, but I haven't pushed your 16KB page support (killing
-NAND_MAX_PAGESIZE) yet, so this will have to wait until that has
-settled. I'll probably either bump NAND_MAX_PAGESIZE to 16K temporarily,
-or I'll squeeze your patch into the 3.14 pull request.
-
->  
->  	LEGACY_ID_NAND("NAND 4MiB 5V 8-bit",   0x6B, 4, SZ_8K, SP_OPTIONS),
->  	LEGACY_ID_NAND("NAND 4MiB 3,3V 8-bit", 0xE3, 4, SZ_8K, SP_OPTIONS),
+Pushed to l2-mtd.git. Thanks!
 
 Brian
