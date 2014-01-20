@@ -1,20 +1,21 @@
-Date: Mon, 20 Jan 2014 10:44:18 -0800
+Received: from mail-ie0-x236.google.com ([2607:f8b0:4001:c03::236])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W5K9l-00011C-Lg
+ for linux-mtd@lists.infradead.org; Mon, 20 Jan 2014 19:05:11 +0000
+Received: by mail-ie0-f182.google.com with SMTP id lx4so1659084iec.41
+ for <linux-mtd@lists.infradead.org>; Mon, 20 Jan 2014 11:04:47 -0800 (PST)
+Date: Mon, 20 Jan 2014 11:04:41 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Sekhar Nori <nsekhar@ti.com>
-Subject: Re: [PATCH v4 1/1] ARM: davinci: aemif: get rid of davinci-nand
- driver dependency on aemif
-Message-ID: <20140120184418.GI8919@ld-irv-0074>
-References: <1389346564-24243-1-git-send-email-nsekhar@ti.com>
+To: Stefan Roese <sr@denx.de>
+Subject: Re: [PATCH] mtd: nand_ids: Add device parameters for Toshiba's
+ TC58NVG1S3ETAI0 NAND EEPROM
+Message-ID: <20140120190441.GJ8919@ld-irv-0074>
+References: <1389089083-29694-1-git-send-email-sr@denx.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1389346564-24243-1-git-send-email-nsekhar@ti.com>
-Cc: Linux MTD Mailing List <linux-mtd@lists.infradead.org>,
- Linux DaVinci Mailing List
- <davinci-linux-open-source@linux.davincidsp.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
- Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+In-Reply-To: <1389089083-29694-1-git-send-email-sr@denx.de>
+Cc: linux-mtd@lists.infradead.org, Pekon Gupta <pekon@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,110 +25,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Sekhar,
+On Tue, Jan 07, 2014 at 11:04:43AM +0100, Stefan Roese wrote:
+> Toshiba's TC58NVG1S3ETAI0 is a single 3.3V 2 Gbit (2,214,592,512 bits) NAND
+> Electrically Erasable and Programmable Read-Only Memory (NAND E2PROM)
+> organized as (2048 + 64) bytes x 64 pages x 2048 blocks.
+> 
+> Signed-off-by: Stefan Roese <sr@denx.de>
+> Cc: Pekon Gupta <pekon@ti.com>
+> Cc: Brian Norris <computersforpeace@gmail.com>
+> ---
+>  drivers/mtd/nand/nand_ids.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
+> index a87b0a3..cb4ece3 100644
+> --- a/drivers/mtd/nand/nand_ids.c
+> +++ b/drivers/mtd/nand/nand_ids.c
+> @@ -31,6 +31,9 @@ struct nand_flash_dev nand_flash_ids[] = {
+>  	 * listed by full ID. We list them first so that we can easily identify
+>  	 * the most specific match.
+>  	 */
+> +	{"TC58NVG1S3ETAI0 2G 3.3V 8-bit",
+> +		{ .id = {0x98, 0xda, 0x90, 0x15, 0x76, 0x00, 0x00, 0x00} },
+> +		  SZ_2K, SZ_256, SZ_128K, 0, 5, 64, NAND_ECC_INFO(1, SZ_512) },
 
-Sorry, I do have one complaint about this patch.
+I have to NAK this in its current form, for two reasons:
 
-On Fri, Jan 10, 2014 at 03:06:04PM +0530, Sekhar Nori wrote:
-> --- a/arch/arm/mach-davinci/aemif.c
-> +++ b/arch/arm/mach-davinci/aemif.c
-> @@ -130,4 +136,82 @@ int davinci_aemif_setup_timing(struct davinci_aemif_timing *t,
->  
->  	return 0;
->  }
-> -EXPORT_SYMBOL(davinci_aemif_setup_timing);
-> +
-> +/**
-> + * davinci_aemif_setup - setup AEMIF interface by davinci_nand_pdata
-> + * @pdev - link to platform device to setup settings for
-> + *
-> + * This function does not use any locking while programming the AEMIF
-> + * because it is expected that there is only one user of a given
-> + * chip-select.
-> + *
-> + * Returns 0 on success, else negative errno.
-> + */
-> +int davinci_aemif_setup(struct platform_device *pdev)
-> +{
-> +	struct davinci_nand_pdata *pdata = dev_get_platdata(&pdev->dev);
-> +	uint32_t val;
-> +	unsigned long clkrate;
-> +	struct resource	*res;
-> +	void __iomem *base;
-> +	struct clk *clk;
-> +	int ret = 0;
-> +
-> +	clk = clk_get(&pdev->dev, "aemif");
-> +	if (IS_ERR(clk)) {
-> +		ret = PTR_ERR(clk);
-> +		dev_dbg(&pdev->dev, "unable to get AEMIF clock, err %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = clk_prepare_enable(clk);
-> +	if (ret < 0) {
-> +		dev_dbg(&pdev->dev, "unable to enable AEMIF clock, err %d\n",
-> +			ret);
-> +		return ret;
+1) This is not a specific enough ID string. It conflicts with another
+NAND which was recently supported.
 
-coccinelle gives a warning for this:
+2) This patch may not really be needed at all. The "full ID" listing is
+only for NAND which can't be detected via other means (e.g., ONFI, or
+traditional extended ID parsing). Is this NAND mis-detected in Linus'
+current tree? As I read the code, it should correctly identify this
+NAND's device size, page size, OOB size, etc.
 
-  arch/arm/mach-davinci/aemif.c:171:2-8: ERROR: missing clk_put; clk_get on line 160 and execution via conditional on line 168 [coccinelle]
+See this commit for reference:
 
-You need a clk_put() on the error path for clk_prepare_enable. For
-instance, you can add a label below and replace this 'return ret' with
-'goto err_put'.
+commit 60c6738245612df9499b340c15edf48b8f3e7981
+Author: Brian Norris <computersforpeace@gmail.com>
+Date:   Tue Jun 25 13:17:59 2013 -0700
 
-> +	}
-> +
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
-> +	if (!res) {
-> +		dev_err(&pdev->dev, "cannot get IORESOURCE_MEM\n");
-> +		ret = -ENOMEM;
-> +		goto err;
-> +	}
-> +
-> +	base = ioremap(res->start, resource_size(res));
-> +	if (!base) {
-> +		dev_err(&pdev->dev, "ioremap failed for resource %pR\n", res);
-> +		ret = -ENOMEM;
-> +		goto err;
-> +	}
-> +
-> +	/*
-> +	 * Setup Async configuration register in case we did not boot
-> +	 * from NAND and so bootloader did not bother to set it up.
-> +	 */
-> +	val = davinci_aemif_readl(base, A1CR_OFFSET + pdev->id * 4);
-> +	/*
-> +	 * Extended Wait is not valid and Select Strobe mode is not
-> +	 * used
-> +	 */
-> +	val &= ~(ACR_ASIZE_MASK | ACR_EW_MASK | ACR_SS_MASK);
-> +	if (pdata->options & NAND_BUSWIDTH_16)
-> +		val |= 0x1;
-> +
-> +	davinci_aemif_writel(base, A1CR_OFFSET + pdev->id * 4, val);
-> +
-> +	clkrate = clk_get_rate(clk);
-> +
-> +	if (pdata->timing)
-> +		ret = davinci_aemif_setup_timing(pdata->timing, base, pdev->id,
-> +						 clkrate);
-> +
-> +	if (ret < 0)
-> +		dev_dbg(&pdev->dev, "NAND timing values setup fail\n");
-> +
-> +	iounmap(base);
-> +err:
-> +	clk_disable_unprepare(clk);
+    mtd: nand: detect OOB size for Toshiba 24nm raw SLC
 
-Then the label could be here:
+   https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=60c6738245612df9499b340c15edf48b8f3e7981
 
-err_put:
+It adds support for a class of Toshiba 24nm NAND, including this one:
 
-> +	clk_put(clk);
-> +	return ret;
-> +}
+    24nm SLC 2Gbit TC58NVG1S3HTA00
+    ID: 0x98 0xda 0x90 0x15 0x76 0x16 0x08 0x00
 
+Please reconcile your patch with the comments found there.
+
+>  	{"TC58NVG2S0F 4G 3.3V 8-bit",
+>  		{ .id = {0x98, 0xdc, 0x90, 0x26, 0x76, 0x15, 0x01, 0x08} },
+>  		  SZ_4K, SZ_512, SZ_256K, 0, 8, 224, NAND_ECC_INFO(4, SZ_512) },
+
+Thanks,
 Brian
