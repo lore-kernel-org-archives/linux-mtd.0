@@ -1,19 +1,18 @@
-Received: from mail-pd0-f176.google.com ([209.85.192.176])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W5WCv-0004dA-Gg
- for linux-mtd@lists.infradead.org; Tue, 21 Jan 2014 07:57:13 +0000
-Received: by mail-pd0-f176.google.com with SMTP id w10so2586339pde.21
- for <linux-mtd@lists.infradead.org>; Mon, 20 Jan 2014 23:56:42 -0800 (PST)
-Message-ID: <1390290994.21488.1.camel@phoenix>
-Subject: [PATCH] mtd: m25p80.c: Use positive logic to check JEDEC id
-From: Axel Lin <axel.lin@ingics.com>
-To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>
-Date: Tue, 21 Jan 2014 15:56:34 +0800
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Received: from andre.telenet-ops.be ([195.130.132.53])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W5avw-0004j1-9g
+ for linux-mtd@lists.infradead.org; Tue, 21 Jan 2014 13:00:01 +0000
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCH 2/4] mtd: m25p80: Set rx_nbits for Quad SPI transfers
+Date: Tue, 21 Jan 2014 13:59:17 +0100
+Message-Id: <1390309159-19643-3-git-send-email-geert@linux-m68k.org>
+In-Reply-To: <1390309159-19643-1-git-send-email-geert@linux-m68k.org>
+References: <1390309159-19643-1-git-send-email-geert@linux-m68k.org>
+Cc: Marek Vasut <marex@denx.de>, Sourav Poddar <sourav.poddar@ti.com>,
+ linux-mtd@lists.infradead.org,
+ Geert Uytterhoeven <geert+renesas@linux-m68k.org>, linux-spi@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,28 +22,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-For slightly better readability.
+From: Geert Uytterhoeven <geert+renesas@linux-m68k.org>
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
+When using the Quad Read opcode, SPI masters still use Single SPI
+transfers, as spi_transfer.rx_nbits defaults to SPI_NBITS_SINGLE.
+Use SPI_NBITS_QUAD to fix this.
+
+While an earlier version of commit 3487a63955c34ea508bcf4ca5131ddd953876e2d
+("drivers: mtd: m25p80: add quad read support") did this correctly, it was
+forgotten in the version that got merged.
+
+Signed-off-by: Geert Uytterhoeven <geert+renesas@linux-m68k.org>
 ---
- drivers/mtd/devices/m25p80.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/mtd/devices/m25p80.c |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
 diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index d0f6475..3f7955f 100644
+index 320c6a308630..ad1913909702 100644
 --- a/drivers/mtd/devices/m25p80.c
 +++ b/drivers/mtd/devices/m25p80.c
-@@ -1061,9 +1061,8 @@ static const struct spi_device_id *jedec_probe(struct spi_device *spi)
- 	for (tmp = 0; tmp < ARRAY_SIZE(m25p_ids) - 1; tmp++) {
- 		info = (void *)m25p_ids[tmp].driver_data;
- 		if (info->jedec_id == jedec) {
--			if (info->ext_id != 0 && info->ext_id != ext_jedec)
--				continue;
--			return &m25p_ids[tmp];
-+			if (info->ext_id == 0 || info->ext_id == ext_jedec)
-+				return &m25p_ids[tmp];
- 		}
+@@ -489,6 +489,16 @@ static inline int m25p80_dummy_cycles_read(struct m25p *flash)
  	}
- 	dev_err(&spi->dev, "unrecognized JEDEC id %06x\n", jedec);
+ }
+ 
++static inline unsigned int m25p80_rx_nbits(const struct m25p *flash)
++{
++	switch (flash->flash_read) {
++	case M25P80_QUAD:
++		return 4;
++	default:
++		return 0;
++	}
++}
++
+ /*
+  * Read an address range from the flash chip.  The address range
+  * may be any size provided it is within the physical boundaries.
+@@ -519,6 +529,7 @@ static int m25p80_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	spi_message_add_tail(&t[0], &m);
+ 
+ 	t[1].rx_buf = buf;
++	t[1].rx_nbits = m25p80_rx_nbits(flash);
+ 	t[1].len = len;
+ 	spi_message_add_tail(&t[1], &m);
+ 
 -- 
-1.8.1.2
+1.7.9.5
