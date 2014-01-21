@@ -1,22 +1,21 @@
-Received: from mail-ob0-f175.google.com ([209.85.214.175])
+Received: from arroyo.ext.ti.com ([192.94.94.40])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W5T4s-0002Ii-8d
- for linux-mtd@lists.infradead.org; Tue, 21 Jan 2014 04:36:43 +0000
-Received: by mail-ob0-f175.google.com with SMTP id wn1so2615854obc.34
- for <linux-mtd@lists.infradead.org>; Mon, 20 Jan 2014 20:36:13 -0800 (PST)
+ id 1W5Vq2-0004JP-PE
+ for linux-mtd@lists.infradead.org; Tue, 21 Jan 2014 07:33:35 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Brian Norris <computersforpeace@gmail.com>, Stefan Roese <sr@denx.de>
+Subject: RE: [PATCH] mtd: nand_ids: Add device parameters for Toshiba's
+ TC58NVG1S3ETAI0 NAND EEPROM
+Date: Tue, 21 Jan 2014 07:33:04 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA685A2@DBDE04.ent.ti.com>
+References: <1389089083-29694-1-git-send-email-sr@denx.de>
+ <20140120190441.GJ8919@ld-irv-0074>
+In-Reply-To: <20140120190441.GJ8919@ld-irv-0074>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <1389333253-3802-3-git-send-email-sachin.kamat@linaro.org>
-References: <1389333253-3802-1-git-send-email-sachin.kamat@linaro.org>
- <1389333253-3802-3-git-send-email-sachin.kamat@linaro.org>
-Date: Tue, 21 Jan 2014 09:59:15 +0530
-Message-ID: <CAK9yfHzMOhBco0JyNdXMCMiO20B+TFvVTXxa=P1DksHUr67wJQ@mail.gmail.com>
-Subject: Re: [PATCH Resend 3/3] mtd: s3c2410: Merge plat/regs-nand.h into
- s3c2410.c
-From: Sachin Kamat <sachin.kamat@linaro.org>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Sachin Kamat <sachin.kamat@linaro.org>, Kukjin Kim <kgene.kim@samsung.com>,
- Brian Norris <computersforpeace@gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,206 +25,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10 January 2014 11:24, Sachin Kamat <sachin.kamat@linaro.org> wrote:
-> plat/regs-nand.h is used only by S3C2410 nand driver. Since there
-> are no other users, merge this file into the driver code to remove
-> platform dependency. While at it also remove unused macros.
->
-> Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
-> Cc: Kukjin Kim <kgene.kim@samsung.com>
-> ---
->  arch/arm/plat-samsung/include/plat/regs-nand.h |  123 ------------------------
->  drivers/mtd/nand/s3c2410.c                     |   36 ++++++-
->  2 files changed, 35 insertions(+), 124 deletions(-)
->  delete mode 100644 arch/arm/plat-samsung/include/plat/regs-nand.h
->
-> diff --git a/arch/arm/plat-samsung/include/plat/regs-nand.h b/arch/arm/plat-samsung/include/plat/regs-nand.h
-> deleted file mode 100644
-> index 238efea7b9e4..000000000000
-> --- a/arch/arm/plat-samsung/include/plat/regs-nand.h
-> +++ /dev/null
-> @@ -1,123 +0,0 @@
-> -/* arch/arm/mach-s3c2410/include/mach/regs-nand.h
-> - *
-> - * Copyright (c) 2004-2005 Simtec Electronics <linux@simtec.co.uk>
-> - *     http://www.simtec.co.uk/products/SWLINUX/
-> - *
-> - * This program is free software; you can redistribute it and/or modify
-> - * it under the terms of the GNU General Public License version 2 as
-> - * published by the Free Software Foundation.
-> - *
-> - * S3C2410 NAND register definitions
-> -*/
-> -
-> -#ifndef __ASM_ARM_REGS_NAND
-> -#define __ASM_ARM_REGS_NAND
-> -
-> -
-> -#define S3C2410_NFREG(x) (x)
-> -
-> -#define S3C2410_NFCONF  S3C2410_NFREG(0x00)
-> -#define S3C2410_NFCMD   S3C2410_NFREG(0x04)
-> -#define S3C2410_NFADDR  S3C2410_NFREG(0x08)
-> -#define S3C2410_NFDATA  S3C2410_NFREG(0x0C)
-> -#define S3C2410_NFSTAT  S3C2410_NFREG(0x10)
-> -#define S3C2410_NFECC   S3C2410_NFREG(0x14)
-> -
-> -#define S3C2440_NFCONT   S3C2410_NFREG(0x04)
-> -#define S3C2440_NFCMD    S3C2410_NFREG(0x08)
-> -#define S3C2440_NFADDR   S3C2410_NFREG(0x0C)
-> -#define S3C2440_NFDATA   S3C2410_NFREG(0x10)
-> -#define S3C2440_NFECCD0  S3C2410_NFREG(0x14)
-> -#define S3C2440_NFECCD1  S3C2410_NFREG(0x18)
-> -#define S3C2440_NFECCD   S3C2410_NFREG(0x1C)
-> -#define S3C2440_NFSTAT   S3C2410_NFREG(0x20)
-> -#define S3C2440_NFESTAT0 S3C2410_NFREG(0x24)
-> -#define S3C2440_NFESTAT1 S3C2410_NFREG(0x28)
-> -#define S3C2440_NFMECC0  S3C2410_NFREG(0x2C)
-> -#define S3C2440_NFMECC1  S3C2410_NFREG(0x30)
-> -#define S3C2440_NFSECC   S3C2410_NFREG(0x34)
-> -#define S3C2440_NFSBLK   S3C2410_NFREG(0x38)
-> -#define S3C2440_NFEBLK   S3C2410_NFREG(0x3C)
-> -
-> -#define S3C2412_NFSBLK         S3C2410_NFREG(0x20)
-> -#define S3C2412_NFEBLK         S3C2410_NFREG(0x24)
-> -#define S3C2412_NFSTAT         S3C2410_NFREG(0x28)
-> -#define S3C2412_NFMECC_ERR0    S3C2410_NFREG(0x2C)
-> -#define S3C2412_NFMECC_ERR1    S3C2410_NFREG(0x30)
-> -#define S3C2412_NFMECC0                S3C2410_NFREG(0x34)
-> -#define S3C2412_NFMECC1                S3C2410_NFREG(0x38)
-> -#define S3C2412_NFSECC         S3C2410_NFREG(0x3C)
-> -
-> -#define S3C2410_NFCONF_EN          (1<<15)
-> -#define S3C2410_NFCONF_512BYTE     (1<<14)
-> -#define S3C2410_NFCONF_4STEP       (1<<13)
-> -#define S3C2410_NFCONF_INITECC     (1<<12)
-> -#define S3C2410_NFCONF_nFCE        (1<<11)
-> -#define S3C2410_NFCONF_TACLS(x)    ((x)<<8)
-> -#define S3C2410_NFCONF_TWRPH0(x)   ((x)<<4)
-> -#define S3C2410_NFCONF_TWRPH1(x)   ((x)<<0)
-> -
-> -#define S3C2410_NFSTAT_BUSY        (1<<0)
-> -
-> -#define S3C2440_NFCONF_BUSWIDTH_8      (0<<0)
-> -#define S3C2440_NFCONF_BUSWIDTH_16     (1<<0)
-> -#define S3C2440_NFCONF_ADVFLASH                (1<<3)
-> -#define S3C2440_NFCONF_TACLS(x)                ((x)<<12)
-> -#define S3C2440_NFCONF_TWRPH0(x)       ((x)<<8)
-> -#define S3C2440_NFCONF_TWRPH1(x)       ((x)<<4)
-> -
-> -#define S3C2440_NFCONT_LOCKTIGHT       (1<<13)
-> -#define S3C2440_NFCONT_SOFTLOCK                (1<<12)
-> -#define S3C2440_NFCONT_ILLEGALACC_EN   (1<<10)
-> -#define S3C2440_NFCONT_RNBINT_EN       (1<<9)
-> -#define S3C2440_NFCONT_RN_FALLING      (1<<8)
-> -#define S3C2440_NFCONT_SPARE_ECCLOCK   (1<<6)
-> -#define S3C2440_NFCONT_MAIN_ECCLOCK    (1<<5)
-> -#define S3C2440_NFCONT_INITECC         (1<<4)
-> -#define S3C2440_NFCONT_nFCE            (1<<1)
-> -#define S3C2440_NFCONT_ENABLE          (1<<0)
-> -
-> -#define S3C2440_NFSTAT_READY           (1<<0)
-> -#define S3C2440_NFSTAT_nCE             (1<<1)
-> -#define S3C2440_NFSTAT_RnB_CHANGE      (1<<2)
-> -#define S3C2440_NFSTAT_ILLEGAL_ACCESS  (1<<3)
-> -
-> -#define S3C2412_NFCONF_NANDBOOT                (1<<31)
-> -#define S3C2412_NFCONF_ECCCLKCON       (1<<30)
-> -#define S3C2412_NFCONF_ECC_MLC         (1<<24)
-> -#define S3C2412_NFCONF_TACLS_MASK      (7<<12) /* 1 extra bit of Tacls */
-> -
-> -#define S3C2412_NFCONT_ECC4_DIRWR      (1<<18)
-> -#define S3C2412_NFCONT_LOCKTIGHT       (1<<17)
-> -#define S3C2412_NFCONT_SOFTLOCK                (1<<16)
-> -#define S3C2412_NFCONT_ECC4_ENCINT     (1<<13)
-> -#define S3C2412_NFCONT_ECC4_DECINT     (1<<12)
-> -#define S3C2412_NFCONT_MAIN_ECC_LOCK   (1<<7)
-> -#define S3C2412_NFCONT_INIT_MAIN_ECC   (1<<5)
-> -#define S3C2412_NFCONT_nFCE1           (1<<2)
-> -#define S3C2412_NFCONT_nFCE0           (1<<1)
-> -
-> -#define S3C2412_NFSTAT_ECC_ENCDONE     (1<<7)
-> -#define S3C2412_NFSTAT_ECC_DECDONE     (1<<6)
-> -#define S3C2412_NFSTAT_ILLEGAL_ACCESS  (1<<5)
-> -#define S3C2412_NFSTAT_RnB_CHANGE      (1<<4)
-> -#define S3C2412_NFSTAT_nFCE1           (1<<3)
-> -#define S3C2412_NFSTAT_nFCE0           (1<<2)
-> -#define S3C2412_NFSTAT_Res1            (1<<1)
-> -#define S3C2412_NFSTAT_READY           (1<<0)
-> -
-> -#define S3C2412_NFECCERR_SERRDATA(x)   (((x) >> 21) & 0xf)
-> -#define S3C2412_NFECCERR_SERRBIT(x)    (((x) >> 18) & 0x7)
-> -#define S3C2412_NFECCERR_MERRDATA(x)   (((x) >> 7) & 0x3ff)
-> -#define S3C2412_NFECCERR_MERRBIT(x)    (((x) >> 4) & 0x7)
-> -#define S3C2412_NFECCERR_SPARE_ERR(x)  (((x) >> 2) & 0x3)
-> -#define S3C2412_NFECCERR_MAIN_ERR(x)   (((x) >> 2) & 0x3)
-> -#define S3C2412_NFECCERR_NONE          (0)
-> -#define S3C2412_NFECCERR_1BIT          (1)
-> -#define S3C2412_NFECCERR_MULTIBIT      (2)
-> -#define S3C2412_NFECCERR_ECCAREA       (3)
-> -
-> -
-> -
-> -#endif /* __ASM_ARM_REGS_NAND */
-> -
-> diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
-> index 47fbd9a2cacf..f0918e7411d9 100644
-> --- a/drivers/mtd/nand/s3c2410.c
-> +++ b/drivers/mtd/nand/s3c2410.c
-> @@ -46,9 +46,43 @@
->  #include <linux/mtd/nand_ecc.h>
->  #include <linux/mtd/partitions.h>
->
-> -#include <plat/regs-nand.h>
->  #include <linux/platform_data/mtd-nand-s3c2410.h>
->
-> +#define S3C2410_NFREG(x) (x)
-> +
-> +#define S3C2410_NFCONF         S3C2410_NFREG(0x00)
-> +#define S3C2410_NFCMD          S3C2410_NFREG(0x04)
-> +#define S3C2410_NFADDR         S3C2410_NFREG(0x08)
-> +#define S3C2410_NFDATA         S3C2410_NFREG(0x0C)
-> +#define S3C2410_NFSTAT         S3C2410_NFREG(0x10)
-> +#define S3C2410_NFECC          S3C2410_NFREG(0x14)
-> +#define S3C2440_NFCONT         S3C2410_NFREG(0x04)
-> +#define S3C2440_NFCMD          S3C2410_NFREG(0x08)
-> +#define S3C2440_NFADDR         S3C2410_NFREG(0x0C)
-> +#define S3C2440_NFDATA         S3C2410_NFREG(0x10)
-> +#define S3C2440_NFSTAT         S3C2410_NFREG(0x20)
-> +#define S3C2440_NFMECC0                S3C2410_NFREG(0x2C)
-> +#define S3C2412_NFSTAT         S3C2410_NFREG(0x28)
-> +#define S3C2412_NFMECC0                S3C2410_NFREG(0x34)
-> +#define S3C2410_NFCONF_EN              (1<<15)
-> +#define S3C2410_NFCONF_INITECC         (1<<12)
-> +#define S3C2410_NFCONF_nFCE            (1<<11)
-> +#define S3C2410_NFCONF_TACLS(x)                ((x)<<8)
-> +#define S3C2410_NFCONF_TWRPH0(x)       ((x)<<4)
-> +#define S3C2410_NFCONF_TWRPH1(x)       ((x)<<0)
-> +#define S3C2410_NFSTAT_BUSY            (1<<0)
-> +#define S3C2440_NFCONF_TACLS(x)                ((x)<<12)
-> +#define S3C2440_NFCONF_TWRPH0(x)       ((x)<<8)
-> +#define S3C2440_NFCONF_TWRPH1(x)       ((x)<<4)
-> +#define S3C2440_NFCONT_INITECC         (1<<4)
-> +#define S3C2440_NFCONT_nFCE            (1<<1)
-> +#define S3C2440_NFCONT_ENABLE          (1<<0)
-> +#define S3C2440_NFSTAT_READY           (1<<0)
-> +#define S3C2412_NFCONF_NANDBOOT                (1<<31)
-> +#define S3C2412_NFCONT_INIT_MAIN_ECC   (1<<5)
-> +#define S3C2412_NFCONT_nFCE0           (1<<1)
-> +#define S3C2412_NFSTAT_READY           (1<<0)
-> +
->  /* new oob placement block for use with hardware ecc generation
->   */
->
-> --
-> 1.7.9.5
->
-
 Hi Brian,
 
-Any comments on this patch?
+>From: Brian Norris [mailto:computersforpeace@gmail.com]
+>>On Tue, Jan 07, 2014 at 11:04:43AM +0100, Stefan Roese wrote:
+>> Toshiba's TC58NVG1S3ETAI0 is a single 3.3V 2 Gbit (2,214,592,512 bits) N=
+AND
+>> Electrically Erasable and Programmable Read-Only Memory (NAND E2PROM)
+>> organized as (2048 + 64) bytes x 64 pages x 2048 blocks.
+>>
+>> Signed-off-by: Stefan Roese <sr@denx.de>
+[...]
+>> @@ -31,6 +31,9 @@ struct nand_flash_dev nand_flash_ids[] =3D {
+>>  	 * listed by full ID. We list them first so that we can easily identif=
+y
+>>  	 * the most specific match.
+>>  	 */
+>> +	{"TC58NVG1S3ETAI0 2G 3.3V 8-bit",
+>> +		{ .id =3D {0x98, 0xda, 0x90, 0x15, 0x76, 0x00, 0x00, 0x00} },
+>> +		  SZ_2K, SZ_256, SZ_128K, 0, 5, 64, NAND_ECC_INFO(1, SZ_512) },
+>
+>I have to NAK this in its current form, for two reasons:
+>
+>1) This is not a specific enough ID string. It conflicts with another
+>NAND which was recently supported.
+>
+>2) This patch may not really be needed at all. The "full ID" listing is
+>only for NAND which can't be detected via other means (e.g., ONFI, or
+>traditional extended ID parsing). Is this NAND mis-detected in Linus'
+>current tree? As I read the code, it should correctly identify this
+>NAND's device size, page size, OOB size, etc.
+>
+>See this commit for reference:
+>
+>commit 60c6738245612df9499b340c15edf48b8f3e7981
+>Author: Brian Norris <computersforpeace@gmail.com>
+>Date:   Tue Jun 25 13:17:59 2013 -0700
+>
+>    mtd: nand: detect OOB size for Toshiba 24nm raw SLC
+>
+>   https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/=
+?id=3D60c6738245612df9499b340c15edf48b8f3e7981
+>
+>It adds support for a class of Toshiba 24nm NAND, including this one:
+>
+>    24nm SLC 2Gbit TC58NVG1S3HTA00
+>    ID: 0x98 0xda 0x90 0x15 0x76 0x16 0x08 0x00
+>
+>Please reconcile your patch with the comments found there.
+>
+
+Yes, I think this is a different technology part..
+because though the page-size =3D 2048B is same, but OOB-size =3D 64B.
+However, with your OOB-size is detected as 128B.
+
+Best part is the datasheet of this part does not mention anything about the=
+ 6th byte :-).
+So, I think we can first  read 6th-byte (using READID command), and figure =
+out difference
+between your part and this one, then based on it append the OOB-calculation=
+ to you patch. Ok ?
+
+ID byte 5, bit[7]:=20
+	1 -> BENAND=20
+	0 -> raw SLC   <<----- SLC NAND
+
+ID byte 6, bits[2:0]:   <<----- 6th byte has no mention in datasheet
+	100b -> 43nm=20
+	 101b -> 32nm
+	 110b -> 24nm
+	 111b -> Reserved
+
+But sincerely, why is Toshiba doing all this ?
+It would hit them only, as their devices will lack support on mainline kern=
+els and u-boots.
+(Or their customers would have to carry custom patches all along).
+I tried convincing Toshiba to get their parts ONFI compliant, but they were=
+ too reluctant.
 
 
--- 
-With warm regards,
-Sachin
+with regards, pekon
