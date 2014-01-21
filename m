@@ -1,20 +1,27 @@
-Received: from mail-qa0-f73.google.com ([209.85.216.73])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W5k1b-00065R-Bd
- for linux-mtd@lists.infradead.org; Tue, 21 Jan 2014 22:42:27 +0000
-Received: by mail-qa0-f73.google.com with SMTP id w5so772458qac.4
- for <linux-mtd@lists.infradead.org>; Tue, 21 Jan 2014 14:42:05 -0800 (PST)
-Subject: [patch 1/1] jffs2: unlock f->sem on error in jffs2_new_inode()
-To: dwmw2@infradead.org
-From: akpm@linux-foundation.org
-Date: Tue, 21 Jan 2014 14:36:56 -0800
+Date: Tue, 21 Jan 2014 15:57:40 -0700
+From: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
+To: boris brezillon <b.brezillon@overkiz.com>
+Subject: Re: [RFC PATCH 3/9] of: mtd: add NAND timings retrieval support
+Message-ID: <20140121225740.GP18269@obsidianresearch.com>
+References: <1389190924-26226-1-git-send-email-b.brezillon@overkiz.com>
+ <1389190924-26226-4-git-send-email-b.brezillon@overkiz.com>
+ <20140108183418.GA12358@obsidianresearch.com>
+ <52CDA032.3010804@overkiz.com>
+ <20140108191339.GB12358@obsidianresearch.com>
+ <52CE5F82.6070802@overkiz.com>
+ <20140109173505.GB8899@obsidianresearch.com>
+ <52D6A48D.4080302@overkiz.com> <52D6BF45.80407@overkiz.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ASCII
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Message-Id: <20140121223656.5AE6C31C18E@corp2gmr1-1.hot.corp.google.com>
-Cc: wangnan0@huawei.com, artem.bityutskiy@linux.intel.com,
- stable@vger.kernel.org, linux-mtd@lists.infradead.org,
- andy.wangguoli@huawei.com, akpm@linux-foundation.org
+In-Reply-To: <52D6BF45.80407@overkiz.com>
+Cc: devicetree@vger.kernel.org, Russell King <linux@arm.linux.org.uk>,
+ linux-doc@vger.kernel.org, dev@linux-sunxi.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Rob Landley <rob@landley.net>,
+ Grant Likely <grant.likely@linaro.org>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,55 +31,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Wang Guoli <andy.wangguoli@huawei.com>
-Subject: jffs2: unlock f->sem on error in jffs2_new_inode()
+On Wed, Jan 15, 2014 at 06:03:01PM +0100, boris brezillon wrote:
 
-If jffs2_new_inode() succeeds, it returns with f->sem held, and the caller
-is responsible for releasing the lock.  If it fails, it still returns with
-the lock held, but the caller won't release the lock, which will lead to
-deadlock.
+> >>Pick a mode value that fits all the parameters of the connected
+> >>non-ONFI flash.
+> >>
+> >>This would be instead of defining each parameter
+> >>individually.. Provide some helpers to convert from a onfi mode number
+> >>to all the onfi defined timing parameters so that drivers can
+> >>configure the HW..
+> >
+> >Are you suggesting we should provide a function that converts these
+> >modes into a nand_timings struct, or just use the timing modes and
+> >let the NAND controller drivers configure its IP accordingly ?
 
-Fix it by releasing the lock in jffs2_new_inode() on error.
+Either seems reasonable to me, but passing the ONFI mode directly from
+the NAND core to the driver seems a little safer..
 
-Signed-off-by: Wang Guoli <andy.wangguoli@huawei.com>
-Signed-off-by: Wang Nan <wangnan0@huawei.com>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Wang Guoli <andy.wangguoli@huawei.com>
-Cc: <stable@vger.kernel.org> # 2.6.34+
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
----
+The NAND core can provide a helper function to xlate the mode number
+to the timing struct to help drivers that need broken out timing.
 
- fs/jffs2/fs.c |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+> >I found the ONFI timing tables in this document:
+> >
+> >www.*onfi*.org/~/media/*ONFI*/specs/*onfi*_3_1_spec.pdf‎ (chapter 4.16).
+> >
+> >I suppose my nand_timings struct should use the names described
+> >page 110-111 (at least if we decide to use nand_timings and not
+> >nand_timing_modes), right ?
 
-diff -puN fs/jffs2/fs.c~jffs2-unlock-f-sem-on-error-in-jffs2_new_inode fs/jffs2/fs.c
---- a/fs/jffs2/fs.c~jffs2-unlock-f-sem-on-error-in-jffs2_new_inode
-+++ a/fs/jffs2/fs.c
-@@ -456,12 +456,14 @@ struct inode *jffs2_new_inode (struct in
- 	   The umask is only applied if there's no default ACL */
- 	ret = jffs2_init_acl_pre(dir_i, inode, &mode);
- 	if (ret) {
--	    make_bad_inode(inode);
--	    iput(inode);
--	    return ERR_PTR(ret);
-+		mutex_unlock(&f->sem);
-+		make_bad_inode(inode);
-+		iput(inode);
-+		return ERR_PTR(ret);
- 	}
- 	ret = jffs2_do_new_inode (c, f, mode, ri);
- 	if (ret) {
-+		mutex_unlock(&f->sem);
- 		make_bad_inode(inode);
- 		iput(inode);
- 		return ERR_PTR(ret);
-@@ -478,6 +480,7 @@ struct inode *jffs2_new_inode (struct in
- 	inode->i_size = 0;
- 
- 	if (insert_inode_locked(inode) < 0) {
-+		mutex_unlock(&f->sem);
- 		make_bad_inode(inode);
- 		iput(inode);
- 		return ERR_PTR(-EINVAL);
-_
+Yah, I think follow the standard. The standard has timing diagrams
+that show what all these parameters actually are.
+
+> After taking a closer look at this document, the only parameter
+> available in my nand_timings struct that is not defined in the
+> standard is tR_max (data transfer from cell to register).
+
+Maybe it can be derived from the other parameters? The ONFI values
+seemed pretty comprehensive to me.
+
+I think the mvebu driver was similar, not all of the ONFI values were
+used and some translation was needed.
+
+Jason
