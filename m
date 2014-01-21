@@ -1,24 +1,27 @@
-Received: from mail-pd0-f175.google.com ([209.85.192.175])
+Received: from mail-pd0-x22c.google.com ([2607:f8b0:400e:c02::22c])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W5dfa-0001nr-4a
- for linux-mtd@lists.infradead.org; Tue, 21 Jan 2014 15:55:18 +0000
-Received: by mail-pd0-f175.google.com with SMTP id w10so3080816pde.20
- for <linux-mtd@lists.infradead.org>; Tue, 21 Jan 2014 07:54:48 -0800 (PST)
-Date: Tue, 21 Jan 2014 23:54:34 +0800
-From: Huang Shijie <shijie8@gmail.com>
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [PATCH] mtd: nand_ids: Add device parameters for Toshiba's
- TC58NVG1S3ETAI0 NAND EEPROM
-Message-ID: <20140121155432.GA1416@gmail.com>
-References: <1389089083-29694-1-git-send-email-sr@denx.de>
- <20140120190441.GJ8919@ld-irv-0074>
- <20980858CB6D3A4BAE95CA194937D5E73EA685A2@DBDE04.ent.ti.com>
+ id 1W5djW-0001wW-BT
+ for linux-mtd@lists.infradead.org; Tue, 21 Jan 2014 15:59:23 +0000
+Received: by mail-pd0-f172.google.com with SMTP id p10so4086406pdj.31
+ for <linux-mtd@lists.infradead.org>; Tue, 21 Jan 2014 07:58:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA685A2@DBDE04.ent.ti.com>
-Cc: Stefan Roese <sr@denx.de>, Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <201401211642.55461.marex@denx.de>
+References: <1390309159-19643-1-git-send-email-geert@linux-m68k.org>
+ <1390309159-19643-5-git-send-email-geert@linux-m68k.org>
+ <201401211642.55461.marex@denx.de>
+Date: Tue, 21 Jan 2014 16:58:59 +0100
+Message-ID: <CAMuHMdVMDO9nKQPgNwz47H2mK6kKreNYiyn-AFOB2KryRpSgoA@mail.gmail.com>
+Subject: Re: [PATCH 4/4] mtd: m25p80: Enable Dual SPI read transfers for
+ s25fl256s1 and s25fl512s
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Marek Vasut <marex@denx.de>
+Content-Type: text/plain; charset=UTF-8
+Cc: Geert Uytterhoeven <geert+renesas@linux-m68k.org>,
+ linux-spi@vger.kernel.org, MTD Maling List <linux-mtd@lists.infradead.org>,
+ Sourav Poddar <sourav.poddar@ti.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,16 +31,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jan 21, 2014 at 07:33:04AM +0000, Gupta, Pekon wrote:
-> Hi Brian,
-> 
-> But sincerely, why is Toshiba doing all this ?
-> It would hit them only, as their devices will lack support on mainline kernels and u-boots.
-> (Or their customers would have to carry custom patches all along).
-> I tried convincing Toshiba to get their parts ONFI compliant, but they were too reluctant.
-In actullay, Toshiba has began to support the JEDEC standard now.
+On Tue, Jan 21, 2014 at 4:42 PM, Marek Vasut <marex@denx.de> wrote:
+>> Spansion s25fl256s1 and s25fl512s support Dual SPI transfers, hence set the
+>> M25P80_DUAL_READ flag.
 
-see my patch set.
+> Why don't you lump this together with 1/4 ? :)
 
-thanks
-Huang Shijie
+Because I don't want to delay Quad support for s25fl512s by bike-shedding
+about the need for Dual support.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
