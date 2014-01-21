@@ -1,18 +1,15 @@
-Received: from andre.telenet-ops.be ([195.130.132.53])
+Received: from albert.telenet-ops.be ([195.130.137.90])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W5avw-0004j1-9g
- for linux-mtd@lists.infradead.org; Tue, 21 Jan 2014 13:00:01 +0000
+ id 1W5avw-0004it-AC
+ for linux-mtd@lists.infradead.org; Tue, 21 Jan 2014 13:00:06 +0000
 From: Geert Uytterhoeven <geert@linux-m68k.org>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH 2/4] mtd: m25p80: Set rx_nbits for Quad SPI transfers
-Date: Tue, 21 Jan 2014 13:59:17 +0100
-Message-Id: <1390309159-19643-3-git-send-email-geert@linux-m68k.org>
-In-Reply-To: <1390309159-19643-1-git-send-email-geert@linux-m68k.org>
-References: <1390309159-19643-1-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH 0/4] m25p80 Quad/Dual updates
+Date: Tue, 21 Jan 2014 13:59:15 +0100
+Message-Id: <1390309159-19643-1-git-send-email-geert@linux-m68k.org>
 Cc: Marek Vasut <marex@denx.de>, Sourav Poddar <sourav.poddar@ti.com>,
- linux-mtd@lists.infradead.org,
- Geert Uytterhoeven <geert+renesas@linux-m68k.org>, linux-spi@vger.kernel.org
+ linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,49 +19,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Geert Uytterhoeven <geert+renesas@linux-m68k.org>
+	Hi,
 
-When using the Quad Read opcode, SPI masters still use Single SPI
-transfers, as spi_transfer.rx_nbits defaults to SPI_NBITS_SINGLE.
-Use SPI_NBITS_QUAD to fix this.
+This patch series allows to really use Quad and Dual SPI Read Tranfers
+with the m25p80 driver:
+    [1/4] mtd: m25p80: Enable Quad SPI read transfers for s25fl512s
+    [2/4] mtd: m25p80: Set rx_nbits for Quad SPI transfers
+    [3/4] mtd: m25p80: Add dual read support
+    [4/4] mtd: m25p80: Enable Dual SPI read transfers for s25fl256s1 and
+	  s25fl512s
 
-While an earlier version of commit 3487a63955c34ea508bcf4ca5131ddd953876e2d
-("drivers: mtd: m25p80: add quad read support") did this correctly, it was
-forgotten in the version that got merged.
+Patch [2/4] is a bug fix.
+Patches [3/4] and [4/4] may be considered of limited use (why use Dual
+transfers if you have Quad transfers?), but
+  1. not all Quad-capable devices may be connected using 6 wires,
+  2. it allows to test Dual SPI transfers in SPI master drivers.
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@linux-m68k.org>
----
- drivers/mtd/devices/m25p80.c |   11 +++++++++++
- 1 file changed, 11 insertions(+)
+This was tested with a preliminary version of the Renesas QSPI driver and a
+Spansion s25fl512s SPI FLASH.
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 320c6a308630..ad1913909702 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -489,6 +489,16 @@ static inline int m25p80_dummy_cycles_read(struct m25p *flash)
- 	}
- }
- 
-+static inline unsigned int m25p80_rx_nbits(const struct m25p *flash)
-+{
-+	switch (flash->flash_read) {
-+	case M25P80_QUAD:
-+		return 4;
-+	default:
-+		return 0;
-+	}
-+}
-+
- /*
-  * Read an address range from the flash chip.  The address range
-  * may be any size provided it is within the physical boundaries.
-@@ -519,6 +529,7 @@ static int m25p80_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	spi_message_add_tail(&t[0], &m);
- 
- 	t[1].rx_buf = buf;
-+	t[1].rx_nbits = m25p80_rx_nbits(flash);
- 	t[1].len = len;
- 	spi_message_add_tail(&t[1], &m);
- 
--- 
-1.7.9.5
+Thanks for your comments!
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
