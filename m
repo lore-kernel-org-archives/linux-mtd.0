@@ -1,31 +1,22 @@
-Date: Tue, 21 Jan 2014 10:29:26 +0800
-From: Huang Shijie <b32955@freescale.com>
-To: Jagan Teki <jagannadh.teki@gmail.com>
-Subject: Re: [PATCH v4 0/7] mtd: spi-nor: add a new framework for SPI NOR
-Message-ID: <20140121022925.GA18529@shlinux2.ap.freescale.net>
-References: <1387950629-27448-1-git-send-email-b32955@freescale.com>
- <CAD6G_RTnNQgeJM8Tc16Sc1_n29d=V9sJN1ePrOAn5YzM+GujMQ@mail.gmail.com>
- <52D7A237.8@freescale.com>
- <CAD6G_RRNg-uRtKnnVgJYpUGPsKecAUm9mwETVJsCsaGSuL2eCw@mail.gmail.com>
- <20140117020226.GB27652@shlinux2.ap.freescale.net>
- <CAD6G_RR7vgmHGFj4GqwCYLQQO6tbsZAeCzVBivbcxnCGSwgiWQ@mail.gmail.com>
- <20140117065401.GA6140@shlinux2.ap.freescale.net>
- <CAD6G_RSF_TPk8g9CNmSc+xs+9psLmJoakZw3Eqf-a8KD5P4AVg@mail.gmail.com>
- <52DB3864.2040606@gmail.com>
- <CAD6G_RTwMJ5DgkCB7wcYw+2p---DqU4KCVJ3CUnHFfCJ0ui_Jw@mail.gmail.com>
+Received: from mail-ob0-f175.google.com ([209.85.214.175])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W5T4s-0002Ii-8d
+ for linux-mtd@lists.infradead.org; Tue, 21 Jan 2014 04:36:43 +0000
+Received: by mail-ob0-f175.google.com with SMTP id wn1so2615854obc.34
+ for <linux-mtd@lists.infradead.org>; Mon, 20 Jan 2014 20:36:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CAD6G_RTwMJ5DgkCB7wcYw+2p---DqU4KCVJ3CUnHFfCJ0ui_Jw@mail.gmail.com>
-Cc: angus.clark@st.com, Shawn Guo <shawn.guo@linaro.org>, b44548@freescale.com,
- linux-doc@vger.kernel.org, Huang Shijie <shijie8@gmail.com>,
- Mark Brown <broonie@linaro.org>, b18965@freescale.com,
- linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
- linux-mtd@lists.infradead.org, "Gupta, Pekon" <pekon@ti.com>,
- Sourav Poddar <sourav.poddar@ti.com>,
- Brian Norris <computersforpeace@gmail.com>, Lee Jones <lee.jones@linaro.org>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+In-Reply-To: <1389333253-3802-3-git-send-email-sachin.kamat@linaro.org>
+References: <1389333253-3802-1-git-send-email-sachin.kamat@linaro.org>
+ <1389333253-3802-3-git-send-email-sachin.kamat@linaro.org>
+Date: Tue, 21 Jan 2014 09:59:15 +0530
+Message-ID: <CAK9yfHzMOhBco0JyNdXMCMiO20B+TFvVTXxa=P1DksHUr67wJQ@mail.gmail.com>
+Subject: Re: [PATCH Resend 3/3] mtd: s3c2410: Merge plat/regs-nand.h into
+ s3c2410.c
+From: Sachin Kamat <sachin.kamat@linaro.org>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Sachin Kamat <sachin.kamat@linaro.org>, Kukjin Kim <kgene.kim@samsung.com>,
+ Brian Norris <computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,97 +26,206 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Jan 19, 2014 at 03:39:34PM +0530, Jagan Teki wrote:
-> > Just think about that how do you code your driver for SPI NOR _without_ this
-> > framework:
-> > do your driver need to call the m25p80.c? if you do call the m25p80.c, you
-> > actually write your so-called "two drivers" :)
-> 
-> I'm still not convinced here, sorry!
-> Let me explain more with example, Just take your (q)spi controller as an example
-> B_FSL1 designed with - serial flash
-> B_FSL2 designed with - touch screen
-> 
-> With this design If we follow current we just need one controller
-> driver (drivers/spi/spi-fsl.c)
-> to serve touch screen and serial flash from upper layers.
-> 
-> MTD core                Input core
-> -------------           -------------------------------
-> m25p80.c             spi  touchscreen driver  (drivers/input/touchscreen)
-> ----------------------------------------------------
->                           SPI core
-> ----------------------------------------------------
->       controller driver (drivers/spi/spi-fsl.)
-> ----------------------------------------------------
-> 
-> But with your new SPI-NOR
-> 
-> MTD core
-> ------------
-> SPI-NOR              Input core
-> -----------           ------------------
-> fsl-quadspi.c     spi  touchscreen driver  (drivers/input/touchscreen)
-> ----------------      ------------------------------
->                          SPI Core
->                          -----------------------------
->                          controller driver (drivers/spi/spi-fsl.c)
->                          -----------------------------------------
-> 
-There is no relationship with the fsl-quadspi.c. 
+On 10 January 2014 11:24, Sachin Kamat <sachin.kamat@linaro.org> wrote:
+> plat/regs-nand.h is used only by S3C2410 nand driver. Since there
+> are no other users, merge this file into the driver code to remove
+> platform dependency. While at it also remove unused macros.
+>
+> Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+> Cc: Kukjin Kim <kgene.kim@samsung.com>
+> ---
+>  arch/arm/plat-samsung/include/plat/regs-nand.h |  123 ------------------------
+>  drivers/mtd/nand/s3c2410.c                     |   36 ++++++-
+>  2 files changed, 35 insertions(+), 124 deletions(-)
+>  delete mode 100644 arch/arm/plat-samsung/include/plat/regs-nand.h
+>
+> diff --git a/arch/arm/plat-samsung/include/plat/regs-nand.h b/arch/arm/plat-samsung/include/plat/regs-nand.h
+> deleted file mode 100644
+> index 238efea7b9e4..000000000000
+> --- a/arch/arm/plat-samsung/include/plat/regs-nand.h
+> +++ /dev/null
+> @@ -1,123 +0,0 @@
+> -/* arch/arm/mach-s3c2410/include/mach/regs-nand.h
+> - *
+> - * Copyright (c) 2004-2005 Simtec Electronics <linux@simtec.co.uk>
+> - *     http://www.simtec.co.uk/products/SWLINUX/
+> - *
+> - * This program is free software; you can redistribute it and/or modify
+> - * it under the terms of the GNU General Public License version 2 as
+> - * published by the Free Software Foundation.
+> - *
+> - * S3C2410 NAND register definitions
+> -*/
+> -
+> -#ifndef __ASM_ARM_REGS_NAND
+> -#define __ASM_ARM_REGS_NAND
+> -
+> -
+> -#define S3C2410_NFREG(x) (x)
+> -
+> -#define S3C2410_NFCONF  S3C2410_NFREG(0x00)
+> -#define S3C2410_NFCMD   S3C2410_NFREG(0x04)
+> -#define S3C2410_NFADDR  S3C2410_NFREG(0x08)
+> -#define S3C2410_NFDATA  S3C2410_NFREG(0x0C)
+> -#define S3C2410_NFSTAT  S3C2410_NFREG(0x10)
+> -#define S3C2410_NFECC   S3C2410_NFREG(0x14)
+> -
+> -#define S3C2440_NFCONT   S3C2410_NFREG(0x04)
+> -#define S3C2440_NFCMD    S3C2410_NFREG(0x08)
+> -#define S3C2440_NFADDR   S3C2410_NFREG(0x0C)
+> -#define S3C2440_NFDATA   S3C2410_NFREG(0x10)
+> -#define S3C2440_NFECCD0  S3C2410_NFREG(0x14)
+> -#define S3C2440_NFECCD1  S3C2410_NFREG(0x18)
+> -#define S3C2440_NFECCD   S3C2410_NFREG(0x1C)
+> -#define S3C2440_NFSTAT   S3C2410_NFREG(0x20)
+> -#define S3C2440_NFESTAT0 S3C2410_NFREG(0x24)
+> -#define S3C2440_NFESTAT1 S3C2410_NFREG(0x28)
+> -#define S3C2440_NFMECC0  S3C2410_NFREG(0x2C)
+> -#define S3C2440_NFMECC1  S3C2410_NFREG(0x30)
+> -#define S3C2440_NFSECC   S3C2410_NFREG(0x34)
+> -#define S3C2440_NFSBLK   S3C2410_NFREG(0x38)
+> -#define S3C2440_NFEBLK   S3C2410_NFREG(0x3C)
+> -
+> -#define S3C2412_NFSBLK         S3C2410_NFREG(0x20)
+> -#define S3C2412_NFEBLK         S3C2410_NFREG(0x24)
+> -#define S3C2412_NFSTAT         S3C2410_NFREG(0x28)
+> -#define S3C2412_NFMECC_ERR0    S3C2410_NFREG(0x2C)
+> -#define S3C2412_NFMECC_ERR1    S3C2410_NFREG(0x30)
+> -#define S3C2412_NFMECC0                S3C2410_NFREG(0x34)
+> -#define S3C2412_NFMECC1                S3C2410_NFREG(0x38)
+> -#define S3C2412_NFSECC         S3C2410_NFREG(0x3C)
+> -
+> -#define S3C2410_NFCONF_EN          (1<<15)
+> -#define S3C2410_NFCONF_512BYTE     (1<<14)
+> -#define S3C2410_NFCONF_4STEP       (1<<13)
+> -#define S3C2410_NFCONF_INITECC     (1<<12)
+> -#define S3C2410_NFCONF_nFCE        (1<<11)
+> -#define S3C2410_NFCONF_TACLS(x)    ((x)<<8)
+> -#define S3C2410_NFCONF_TWRPH0(x)   ((x)<<4)
+> -#define S3C2410_NFCONF_TWRPH1(x)   ((x)<<0)
+> -
+> -#define S3C2410_NFSTAT_BUSY        (1<<0)
+> -
+> -#define S3C2440_NFCONF_BUSWIDTH_8      (0<<0)
+> -#define S3C2440_NFCONF_BUSWIDTH_16     (1<<0)
+> -#define S3C2440_NFCONF_ADVFLASH                (1<<3)
+> -#define S3C2440_NFCONF_TACLS(x)                ((x)<<12)
+> -#define S3C2440_NFCONF_TWRPH0(x)       ((x)<<8)
+> -#define S3C2440_NFCONF_TWRPH1(x)       ((x)<<4)
+> -
+> -#define S3C2440_NFCONT_LOCKTIGHT       (1<<13)
+> -#define S3C2440_NFCONT_SOFTLOCK                (1<<12)
+> -#define S3C2440_NFCONT_ILLEGALACC_EN   (1<<10)
+> -#define S3C2440_NFCONT_RNBINT_EN       (1<<9)
+> -#define S3C2440_NFCONT_RN_FALLING      (1<<8)
+> -#define S3C2440_NFCONT_SPARE_ECCLOCK   (1<<6)
+> -#define S3C2440_NFCONT_MAIN_ECCLOCK    (1<<5)
+> -#define S3C2440_NFCONT_INITECC         (1<<4)
+> -#define S3C2440_NFCONT_nFCE            (1<<1)
+> -#define S3C2440_NFCONT_ENABLE          (1<<0)
+> -
+> -#define S3C2440_NFSTAT_READY           (1<<0)
+> -#define S3C2440_NFSTAT_nCE             (1<<1)
+> -#define S3C2440_NFSTAT_RnB_CHANGE      (1<<2)
+> -#define S3C2440_NFSTAT_ILLEGAL_ACCESS  (1<<3)
+> -
+> -#define S3C2412_NFCONF_NANDBOOT                (1<<31)
+> -#define S3C2412_NFCONF_ECCCLKCON       (1<<30)
+> -#define S3C2412_NFCONF_ECC_MLC         (1<<24)
+> -#define S3C2412_NFCONF_TACLS_MASK      (7<<12) /* 1 extra bit of Tacls */
+> -
+> -#define S3C2412_NFCONT_ECC4_DIRWR      (1<<18)
+> -#define S3C2412_NFCONT_LOCKTIGHT       (1<<17)
+> -#define S3C2412_NFCONT_SOFTLOCK                (1<<16)
+> -#define S3C2412_NFCONT_ECC4_ENCINT     (1<<13)
+> -#define S3C2412_NFCONT_ECC4_DECINT     (1<<12)
+> -#define S3C2412_NFCONT_MAIN_ECC_LOCK   (1<<7)
+> -#define S3C2412_NFCONT_INIT_MAIN_ECC   (1<<5)
+> -#define S3C2412_NFCONT_nFCE1           (1<<2)
+> -#define S3C2412_NFCONT_nFCE0           (1<<1)
+> -
+> -#define S3C2412_NFSTAT_ECC_ENCDONE     (1<<7)
+> -#define S3C2412_NFSTAT_ECC_DECDONE     (1<<6)
+> -#define S3C2412_NFSTAT_ILLEGAL_ACCESS  (1<<5)
+> -#define S3C2412_NFSTAT_RnB_CHANGE      (1<<4)
+> -#define S3C2412_NFSTAT_nFCE1           (1<<3)
+> -#define S3C2412_NFSTAT_nFCE0           (1<<2)
+> -#define S3C2412_NFSTAT_Res1            (1<<1)
+> -#define S3C2412_NFSTAT_READY           (1<<0)
+> -
+> -#define S3C2412_NFECCERR_SERRDATA(x)   (((x) >> 21) & 0xf)
+> -#define S3C2412_NFECCERR_SERRBIT(x)    (((x) >> 18) & 0x7)
+> -#define S3C2412_NFECCERR_MERRDATA(x)   (((x) >> 7) & 0x3ff)
+> -#define S3C2412_NFECCERR_MERRBIT(x)    (((x) >> 4) & 0x7)
+> -#define S3C2412_NFECCERR_SPARE_ERR(x)  (((x) >> 2) & 0x3)
+> -#define S3C2412_NFECCERR_MAIN_ERR(x)   (((x) >> 2) & 0x3)
+> -#define S3C2412_NFECCERR_NONE          (0)
+> -#define S3C2412_NFECCERR_1BIT          (1)
+> -#define S3C2412_NFECCERR_MULTIBIT      (2)
+> -#define S3C2412_NFECCERR_ECCAREA       (3)
+> -
+> -
+> -
+> -#endif /* __ASM_ARM_REGS_NAND */
+> -
+> diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
+> index 47fbd9a2cacf..f0918e7411d9 100644
+> --- a/drivers/mtd/nand/s3c2410.c
+> +++ b/drivers/mtd/nand/s3c2410.c
+> @@ -46,9 +46,43 @@
+>  #include <linux/mtd/nand_ecc.h>
+>  #include <linux/mtd/partitions.h>
+>
+> -#include <plat/regs-nand.h>
+>  #include <linux/platform_data/mtd-nand-s3c2410.h>
+>
+> +#define S3C2410_NFREG(x) (x)
+> +
+> +#define S3C2410_NFCONF         S3C2410_NFREG(0x00)
+> +#define S3C2410_NFCMD          S3C2410_NFREG(0x04)
+> +#define S3C2410_NFADDR         S3C2410_NFREG(0x08)
+> +#define S3C2410_NFDATA         S3C2410_NFREG(0x0C)
+> +#define S3C2410_NFSTAT         S3C2410_NFREG(0x10)
+> +#define S3C2410_NFECC          S3C2410_NFREG(0x14)
+> +#define S3C2440_NFCONT         S3C2410_NFREG(0x04)
+> +#define S3C2440_NFCMD          S3C2410_NFREG(0x08)
+> +#define S3C2440_NFADDR         S3C2410_NFREG(0x0C)
+> +#define S3C2440_NFDATA         S3C2410_NFREG(0x10)
+> +#define S3C2440_NFSTAT         S3C2410_NFREG(0x20)
+> +#define S3C2440_NFMECC0                S3C2410_NFREG(0x2C)
+> +#define S3C2412_NFSTAT         S3C2410_NFREG(0x28)
+> +#define S3C2412_NFMECC0                S3C2410_NFREG(0x34)
+> +#define S3C2410_NFCONF_EN              (1<<15)
+> +#define S3C2410_NFCONF_INITECC         (1<<12)
+> +#define S3C2410_NFCONF_nFCE            (1<<11)
+> +#define S3C2410_NFCONF_TACLS(x)                ((x)<<8)
+> +#define S3C2410_NFCONF_TWRPH0(x)       ((x)<<4)
+> +#define S3C2410_NFCONF_TWRPH1(x)       ((x)<<0)
+> +#define S3C2410_NFSTAT_BUSY            (1<<0)
+> +#define S3C2440_NFCONF_TACLS(x)                ((x)<<12)
+> +#define S3C2440_NFCONF_TWRPH0(x)       ((x)<<8)
+> +#define S3C2440_NFCONF_TWRPH1(x)       ((x)<<4)
+> +#define S3C2440_NFCONT_INITECC         (1<<4)
+> +#define S3C2440_NFCONT_nFCE            (1<<1)
+> +#define S3C2440_NFCONT_ENABLE          (1<<0)
+> +#define S3C2440_NFSTAT_READY           (1<<0)
+> +#define S3C2412_NFCONF_NANDBOOT                (1<<31)
+> +#define S3C2412_NFCONT_INIT_MAIN_ECC   (1<<5)
+> +#define S3C2412_NFCONT_nFCE0           (1<<1)
+> +#define S3C2412_NFSTAT_READY           (1<<0)
+> +
+>  /* new oob placement block for use with hardware ecc generation
+>   */
+>
+> --
+> 1.7.9.5
+>
 
-It should be like this:
- MTD core
- ------------
- SPI-NOR  framework                       Input core
- -----------                              ------------------
- m25p80.c                                 spi  touchscreen driver  (drivers/input/touchscreen)
- ----------------                         ------------------------------
- SPI Core                                 SPI Core
- -----------------------                  -----------------------------
- drivers/spi/spi-fsl.c                    controller driver (drivers/spi/spi-fsl.c)
- --------------------------               -----------------------------------------
- 
+Hi Brian,
 
-> Here see we have two separate drivers for the same controller as it offers two
-> functionalities. and also it never talk to Linux SPI subsystem which is not a
-> good for me as intern hw is SPI-based it must talk to subsystem to make use of
-> Linux SPI API's.
-> 
-> And also you mentioned SPI-NOR controller is not a SPI controller what does that
-> means because it's a NOR flash which is of SPI protocol based.
+Any comments on this patch?
 
-The SPI controller (or spi bus controller) only handles the _byte_ streams;
-while the spi-nor controller, such as fsl-quadspi.c, can has to __known__
-the exact SPI NOR command to find the proper LUT.
 
-Please read the thread i ever posted in the previous email.
-
-> 
-> I understand that your framework doing good things in matured manner, but
-> seems like it's confuse to me to follow common standards - Just my
-> opinion, may be I'm incorrect.
-> 
-> One more thing question - I have 1-wire spi controller which I was
-> used for flash in
-> one board and keyboard in another board, so if I follow your framework
-> I need to write
-> a driver in drivers/mtd/spi-nor/foo-spi.c and one more in
-> drivers/spi/spi-foo.c - correct?
-
-Please read the device tree node of your controller, find the code like
-
-...................................................
-	flash: m25p80@0 {
-		#address-cells = <1>;
-		#size-cells = <1>;
-		compatible = "st,m25p32";
-		spi-max-frequency = <20000000>;
-		reg = <0>;
-	};
-...................................................
-
-if you call the m25p80,  you do not need to change anything. 
-
-thanks
-Huang Shijie
+-- 
+With warm regards,
+Sachin
