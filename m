@@ -1,19 +1,20 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W5dU1-0001Ko-Qy
- for linux-mtd@lists.infradead.org; Tue, 21 Jan 2014 15:43:23 +0000
+ id 1W5dU2-0001Kq-FY
+ for linux-mtd@lists.infradead.org; Tue, 21 Jan 2014 15:43:25 +0000
 From: Marek Vasut <marex@denx.de>
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 2/4] mtd: m25p80: Set rx_nbits for Quad SPI transfers
-Date: Tue, 21 Jan 2014 16:18:44 +0100
+Subject: Re: [PATCH 4/4] mtd: m25p80: Enable Dual SPI read transfers for
+ s25fl256s1 and s25fl512s
+Date: Tue, 21 Jan 2014 16:42:55 +0100
 References: <1390309159-19643-1-git-send-email-geert@linux-m68k.org>
- <1390309159-19643-3-git-send-email-geert@linux-m68k.org>
-In-Reply-To: <1390309159-19643-3-git-send-email-geert@linux-m68k.org>
+ <1390309159-19643-5-git-send-email-geert@linux-m68k.org>
+In-Reply-To: <1390309159-19643-5-git-send-email-geert@linux-m68k.org>
 MIME-Version: 1.0
 Content-Type: Text/Plain;
   charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Message-Id: <201401211618.44103.marex@denx.de>
+Message-Id: <201401211642.55461.marex@denx.de>
 Cc: Geert Uytterhoeven <geert+renesas@linux-m68k.org>,
  linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
  Sourav Poddar <sourav.poddar@ti.com>,
@@ -28,54 +29,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday, January 21, 2014 at 01:59:17 PM, Geert Uytterhoeven wrote:
+On Tuesday, January 21, 2014 at 01:59:19 PM, Geert Uytterhoeven wrote:
 > From: Geert Uytterhoeven <geert+renesas@linux-m68k.org>
 > 
-> When using the Quad Read opcode, SPI masters still use Single SPI
-> transfers, as spi_transfer.rx_nbits defaults to SPI_NBITS_SINGLE.
-> Use SPI_NBITS_QUAD to fix this.
-> 
-> While an earlier version of commit 3487a63955c34ea508bcf4ca5131ddd953876e2d
-> ("drivers: mtd: m25p80: add quad read support") did this correctly, it was
-> forgotten in the version that got merged.
+> Spansion s25fl256s1 and s25fl512s support Dual SPI transfers, hence set the
+> M25P80_DUAL_READ flag.
 > 
 > Signed-off-by: Geert Uytterhoeven <geert+renesas@linux-m68k.org>
 > ---
->  drivers/mtd/devices/m25p80.c |   11 +++++++++++
->  1 file changed, 11 insertions(+)
+>  drivers/mtd/devices/m25p80.c |    4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
 > diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 320c6a308630..ad1913909702 100644
+> index 73bf661100f7..f0871a2e449d 100644
 > --- a/drivers/mtd/devices/m25p80.c
 > +++ b/drivers/mtd/devices/m25p80.c
-> @@ -489,6 +489,16 @@ static inline int m25p80_dummy_cycles_read(struct m25p
-> *flash) }
->  }
-> 
-> +static inline unsigned int m25p80_rx_nbits(const struct m25p *flash)
-> +{
-> +	switch (flash->flash_read) {
-> +	case M25P80_QUAD:
-> +		return 4;
-> +	default:
-> +		return 0;
-> +	}
-> +}
-> +
->  /*
->   * Read an address range from the flash chip.  The address range
->   * may be any size provided it is within the physical boundaries.
-> @@ -519,6 +529,7 @@ static int m25p80_read(struct mtd_info *mtd, loff_t
-> from, size_t len, spi_message_add_tail(&t[0], &m);
-> 
->  	t[1].rx_buf = buf;
-> +	t[1].rx_nbits = m25p80_rx_nbits(flash);
->  	t[1].len = len;
->  	spi_message_add_tail(&t[1], &m);
+> @@ -960,8 +960,8 @@ static const struct spi_device_id m25p_ids[] = {
+>  	{ "s25sl032p",  INFO(0x010215, 0x4d00,  64 * 1024,  64, 0) },
+>  	{ "s25sl064p",  INFO(0x010216, 0x4d00,  64 * 1024, 128, 0) },
+>  	{ "s25fl256s0", INFO(0x010219, 0x4d00, 256 * 1024, 128, 0) },
+> -	{ "s25fl256s1", INFO(0x010219, 0x4d01,  64 * 1024, 512, 
+M25P80_QUAD_READ)
+> }, -	{ "s25fl512s",  INFO(0x010220, 0x4d00, 256 * 1024, 256,
+> M25P80_QUAD_READ) }, +	{ "s25fl256s1", INFO(0x010219, 0x4d01,  64 * 1024,
+> 512, M25P80_DUAL_READ | M25P80_QUAD_READ) }, +	{ "s25fl512s", 
+> INFO(0x010220, 0x4d00, 256 * 1024, 256, M25P80_DUAL_READ |
+> M25P80_QUAD_READ) }, { "s70fl01gs",  INFO(0x010221, 0x4d00, 256 * 1024,
+> 256, 0) },
+>  	{ "s25sl12800", INFO(0x012018, 0x0300, 256 * 1024,  64, 0) },
+>  	{ "s25sl12801", INFO(0x012018, 0x0301,  64 * 1024, 256, 0) },
 
-Indeed.
-
-Acked-by: Marek Vasut <marex@denx.de>
+Why don't you lump this together with 1/4 ? :)
 
 Best regards,
 Marek Vasut
