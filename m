@@ -1,20 +1,31 @@
-Received: from mail-qe0-x231.google.com ([2607:f8b0:400d:c02::231])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W5Kx9-0002dr-8Q
- for linux-mtd@lists.infradead.org; Mon, 20 Jan 2014 19:56:11 +0000
-Received: by mail-qe0-f49.google.com with SMTP id w4so6692188qeb.8
- for <linux-mtd@lists.infradead.org>; Mon, 20 Jan 2014 11:55:50 -0800 (PST)
-Date: Mon, 20 Jan 2014 11:55:46 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: mtdram: add missing 'const'
-Message-ID: <20140120195546.GV8919@ld-irv-0074>
-References: <1389484627-7628-1-git-send-email-computersforpeace@gmail.com>
+Date: Tue, 21 Jan 2014 10:29:26 +0800
+From: Huang Shijie <b32955@freescale.com>
+To: Jagan Teki <jagannadh.teki@gmail.com>
+Subject: Re: [PATCH v4 0/7] mtd: spi-nor: add a new framework for SPI NOR
+Message-ID: <20140121022925.GA18529@shlinux2.ap.freescale.net>
+References: <1387950629-27448-1-git-send-email-b32955@freescale.com>
+ <CAD6G_RTnNQgeJM8Tc16Sc1_n29d=V9sJN1ePrOAn5YzM+GujMQ@mail.gmail.com>
+ <52D7A237.8@freescale.com>
+ <CAD6G_RRNg-uRtKnnVgJYpUGPsKecAUm9mwETVJsCsaGSuL2eCw@mail.gmail.com>
+ <20140117020226.GB27652@shlinux2.ap.freescale.net>
+ <CAD6G_RR7vgmHGFj4GqwCYLQQO6tbsZAeCzVBivbcxnCGSwgiWQ@mail.gmail.com>
+ <20140117065401.GA6140@shlinux2.ap.freescale.net>
+ <CAD6G_RSF_TPk8g9CNmSc+xs+9psLmJoakZw3Eqf-a8KD5P4AVg@mail.gmail.com>
+ <52DB3864.2040606@gmail.com>
+ <CAD6G_RTwMJ5DgkCB7wcYw+2p---DqU4KCVJ3CUnHFfCJ0ui_Jw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <1389484627-7628-1-git-send-email-computersforpeace@gmail.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+In-Reply-To: <CAD6G_RTwMJ5DgkCB7wcYw+2p---DqU4KCVJ3CUnHFfCJ0ui_Jw@mail.gmail.com>
+Cc: angus.clark@st.com, Shawn Guo <shawn.guo@linaro.org>, b44548@freescale.com,
+ linux-doc@vger.kernel.org, Huang Shijie <shijie8@gmail.com>,
+ Mark Brown <broonie@linaro.org>, b18965@freescale.com,
+ linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-mtd@lists.infradead.org, "Gupta, Pekon" <pekon@ti.com>,
+ Sourav Poddar <sourav.poddar@ti.com>,
+ Brian Norris <computersforpeace@gmail.com>, Lee Jones <lee.jones@linaro.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,12 +35,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Jan 11, 2014 at 03:57:07PM -0800, Brian Norris wrote:
-> mtdram_init_device() wasn't updated along with mtd_partition.name.
+On Sun, Jan 19, 2014 at 03:39:34PM +0530, Jagan Teki wrote:
+> > Just think about that how do you code your driver for SPI NOR _without_ this
+> > framework:
+> > do your driver need to call the m25p80.c? if you do call the m25p80.c, you
+> > actually write your so-called "two drivers" :)
 > 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> I'm still not convinced here, sorry!
+> Let me explain more with example, Just take your (q)spi controller as an example
+> B_FSL1 designed with - serial flash
+> B_FSL2 designed with - touch screen
+> 
+> With this design If we follow current we just need one controller
+> driver (drivers/spi/spi-fsl.c)
+> to serve touch screen and serial flash from upper layers.
+> 
+> MTD core                Input core
+> -------------           -------------------------------
+> m25p80.c             spi  touchscreen driver  (drivers/input/touchscreen)
+> ----------------------------------------------------
+>                           SPI core
+> ----------------------------------------------------
+>       controller driver (drivers/spi/spi-fsl.)
+> ----------------------------------------------------
+> 
+> But with your new SPI-NOR
+> 
+> MTD core
+> ------------
+> SPI-NOR              Input core
+> -----------           ------------------
+> fsl-quadspi.c     spi  touchscreen driver  (drivers/input/touchscreen)
+> ----------------      ------------------------------
+>                          SPI Core
+>                          -----------------------------
+>                          controller driver (drivers/spi/spi-fsl.c)
+>                          -----------------------------------------
+> 
+There is no relationship with the fsl-quadspi.c. 
 
-Pushed to l2-mtd.git.
+It should be like this:
+ MTD core
+ ------------
+ SPI-NOR  framework                       Input core
+ -----------                              ------------------
+ m25p80.c                                 spi  touchscreen driver  (drivers/input/touchscreen)
+ ----------------                         ------------------------------
+ SPI Core                                 SPI Core
+ -----------------------                  -----------------------------
+ drivers/spi/spi-fsl.c                    controller driver (drivers/spi/spi-fsl.c)
+ --------------------------               -----------------------------------------
+ 
 
-Brian
+> Here see we have two separate drivers for the same controller as it offers two
+> functionalities. and also it never talk to Linux SPI subsystem which is not a
+> good for me as intern hw is SPI-based it must talk to subsystem to make use of
+> Linux SPI API's.
+> 
+> And also you mentioned SPI-NOR controller is not a SPI controller what does that
+> means because it's a NOR flash which is of SPI protocol based.
+
+The SPI controller (or spi bus controller) only handles the _byte_ streams;
+while the spi-nor controller, such as fsl-quadspi.c, can has to __known__
+the exact SPI NOR command to find the proper LUT.
+
+Please read the thread i ever posted in the previous email.
+
+> 
+> I understand that your framework doing good things in matured manner, but
+> seems like it's confuse to me to follow common standards - Just my
+> opinion, may be I'm incorrect.
+> 
+> One more thing question - I have 1-wire spi controller which I was
+> used for flash in
+> one board and keyboard in another board, so if I follow your framework
+> I need to write
+> a driver in drivers/mtd/spi-nor/foo-spi.c and one more in
+> drivers/spi/spi-foo.c - correct?
+
+Please read the device tree node of your controller, find the code like
+
+...................................................
+	flash: m25p80@0 {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "st,m25p32";
+		spi-max-frequency = <20000000>;
+		reg = <0>;
+	};
+...................................................
+
+if you call the m25p80,  you do not need to change anything. 
+
+thanks
+Huang Shijie
