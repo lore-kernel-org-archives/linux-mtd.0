@@ -1,18 +1,29 @@
-Received: from mailrelay007.isp.belgacom.be ([195.238.6.173])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W60el-0003ws-Sz
- for linux-mtd@lists.infradead.org; Wed, 22 Jan 2014 16:28:01 +0000
-Date: Wed, 22 Jan 2014 16:28:43 +0800
-From: Fabian Frederick <fabf@skynet.be>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 1/1 RESEND] mtd: block2mtd: char mtd major and erasesize
- parameter check + mutex_destroy
-Message-Id: <20140122162843.15c3fb1e1318346339fcbff4@skynet.be>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: akpm@linux-foundation.org, rdunlap@infradead.org, joern@lazybastard.org,
- linux-kernel@vger.kernel.org
+Received: from mail-oa0-x22a.google.com ([2607:f8b0:4003:c02::22a])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W67At-0008Kd-60
+ for linux-mtd@lists.infradead.org; Wed, 22 Jan 2014 23:25:35 +0000
+Received: by mail-oa0-f42.google.com with SMTP id i7so1287522oag.15
+ for <linux-mtd@lists.infradead.org>; Wed, 22 Jan 2014 15:25:14 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <20140122164115.211a819d@ipc1.ka-ro>
+References: <1389608739-10945-1-git-send-email-LW@KARO-electronics.de>
+ <20140122150959.78cf2827@ipc1.ka-ro>
+ <CAC5umyhC+9zwwX7Mswo2uAc0pFqp7Np1D+nFwr7Y3TS3OLT6-A@mail.gmail.com>
+ <20140122164115.211a819d@ipc1.ka-ro>
+Date: Thu, 23 Jan 2014 08:25:11 +0900
+Message-ID: <CAC5umyjU5xoFJ1piLoWGciT=Y+H3-nqr38FGVMR-vdKhkOO-Qw@mail.gmail.com>
+Subject: Re: [PATCH] mtd: mtd_oobtest: fix verify errors due to incorrect use
+ of prandom_bytes_state()
+From: Akinobu Mita <akinobu.mita@gmail.com>
+To: =?ISO-8859-1?Q?Lothar_Wa=DFmann?= <LW@karo-electronics.de>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ LKML <linux-kernel@vger.kernel.org>, Huang Shijie <b32955@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,84 +33,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
--Deny use of a char mtd device to map as block device.
--mutex_init when mtd structure is available.
--fixme applied : check device size is a multiple of erasesize.
--mutex_destroy on each device in block2mtd_exit and add_device failure.
+2014/1/23 Lothar Wa=DFmann <LW@karo-electronics.de>:
+> Hi,
+>
+> Akinobu Mita wrote:
+>> 2014/1/22 Lothar Wa=DFmann <LW@karo-electronics.de>:
+>> > Hi,
+>> >
+>> > Is anyone taking care of this?
+>> >
+>> > Lothar Wa=DFmann wrote:
+>> >> When using prandom_bytes_state() it is critical to use the same block
+>> >> size in all invocations that are to produce the same random sequence.
+>> >> Otherwise the state of the PRNG will be out of sync if the blocksize
+>> >> is not divisible by 4.
+>> >> This leads to bogus verification errors in several tests which use
+>> >> different block sizes to initialize the buffer for writing and
+>> >> comparison.
+>> >>
+>> >> Signed-off-by: Lothar Wa=DFmann <LW@KARO-electronics.de>
+>> >> ---
+>> >>  drivers/mtd/tests/oobtest.c |   14 ++++++++++++--
+>> >>  1 files changed, 12 insertions(+), 2 deletions(-)
+>> >>
+>> >> diff --git a/drivers/mtd/tests/oobtest.c b/drivers/mtd/tests/oobtest.=
+c
+>> >> index 2e9e2d1..72c7359 100644
+>> >> --- a/drivers/mtd/tests/oobtest.c
+>> >> +++ b/drivers/mtd/tests/oobtest.c
+>> >> @@ -213,8 +213,15 @@ static int verify_eraseblock_in_one_go(int ebnum=
+)
+>> >>       int err =3D 0;
+>> >>       loff_t addr =3D ebnum * mtd->erasesize;
+>> >>       size_t len =3D mtd->ecclayout->oobavail * pgcnt;
+>> >> +     int i;
+>> >> +
+>> >> +     for (i =3D 0; i < pgcnt; i++)
+>> >> +             prandom_bytes_state(&rnd_state, &writebuf[i * use_len],
+>> >> +                             use_len);
+>> >> +     if (len % use_len)
+>> >> +             prandom_bytes_state(&rnd_state, &writebuf[i * use_len],
+>> >> +                             len % use_len);
+>> >>
+>> >> -     prandom_bytes_state(&rnd_state, writebuf, len);
+>> >>       ops.mode      =3D MTD_OPS_AUTO_OOB;
+>> >>       ops.len       =3D 0;
+>> >>       ops.retlen    =3D 0;
+>>
+>> I would rather fix the use of prandom_bytes_state() in write_eraseblock(=
+)
+>> than fix in verify_eraseblock_in_one_go().
+>>
+> Why and how?
 
-Signed-off-by: Fabian Frederick <fabf@skynet.be>
----
- drivers/mtd/devices/block2mtd.c | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
+I thought that it could reduce calls of prandom_bytes_state() and
+it makes code simpler than increasing calls.
 
-diff --git a/drivers/mtd/devices/block2mtd.c b/drivers/mtd/devices/block2mtd.c
-index d9fd87a..be67731 100644
---- a/drivers/mtd/devices/block2mtd.c
-+++ b/drivers/mtd/devices/block2mtd.c
-@@ -209,7 +209,6 @@ static void block2mtd_free_device(struct block2mtd_dev *dev)
- }
- 
- 
--/* FIXME: ensure that mtd->size % erase_size == 0 */
- static struct block2mtd_dev *add_device(char *devname, int erase_size)
- {
- 	const fmode_t mode = FMODE_READ | FMODE_WRITE | FMODE_EXCL;
-@@ -244,21 +243,27 @@ static struct block2mtd_dev *add_device(char *devname, int erase_size)
- 	}
- 	dev->blkdev = bdev;
- 
--	if (MAJOR(bdev->bd_dev) == MTD_BLOCK_MAJOR) {
-+	if ((MAJOR(bdev->bd_dev) == MTD_BLOCK_MAJOR) ||
-+	    (MAJOR(bdev->bd_dev) == MTD_CHAR_MAJOR)) {
- 		pr_err("attempting to use an MTD device as a block device\n");
- 		goto devinit_err;
- 	}
- 
--	mutex_init(&dev->write_mutex);
- 
- 	/* Setup the MTD structure */
- 	/* make the name contain the block device in */
- 	name = kasprintf(GFP_KERNEL, "block2mtd: %s", devname);
-+
- 	if (!name)
- 		goto devinit_err;
-+
-+	if ((long)dev->blkdev->bd_inode->i_size % erase_size) {
-+		pr_err("erasesize must be a divisor of device size\n");
-+		goto devinit_err;
-+	}
- 
-+	mutex_init(&dev->write_mutex);
- 	dev->mtd.name = name;
--
- 	dev->mtd.size = dev->blkdev->bd_inode->i_size & PAGE_MASK;
- 	dev->mtd.erasesize = erase_size;
- 	dev->mtd.writesize = 1;
-@@ -274,7 +279,7 @@ static struct block2mtd_dev *add_device(char *devname, int erase_size)
- 
- 	if (mtd_device_register(&dev->mtd, NULL, 0)) {
- 		/* Device didn't get added, so free the entry */
--		goto devinit_err;
-+		goto register_err;
- 	}
- 	list_add(&dev->list, &blkmtd_device_list);
- 	pr_info("mtd%d: [%s] erase_size = %dKiB [%d]\n",
-@@ -283,6 +288,8 @@ static struct block2mtd_dev *add_device(char *devname, int erase_size)
- 		dev->mtd.erasesize >> 10, dev->mtd.erasesize);
- 	return dev;
- 
-+register_err:
-+	mutex_destroy(&dev->write_mutex);
- devinit_err:
- 	block2mtd_free_device(dev);
- 	return NULL;
-@@ -448,6 +455,7 @@ static void block2mtd_exit(void)
- 		struct block2mtd_dev *dev = list_entry(pos, typeof(*dev), list);
- 		block2mtd_sync(&dev->mtd);
- 		mtd_device_unregister(&dev->mtd);
-+		mutex_destroy(&dev->write_mutex);
- 		pr_info("mtd%d: [%s] removed\n",
- 			dev->mtd.index,
- 			dev->mtd.name + strlen("block2mtd: "));
--- 
-1.8.1.4
+> write_whole_device() (which calls write_eraseblock()) is used multiple
+> times with different verification methods (all blocks in one go or each
+> block individually).
+> If prandom_state_bytes() in write_eraseblock() would be changed, that
+> function would have to know, how the block are going to be checked
+> lateron to know how to set up the writebuffer.
+
+Instead of calling prandom_bytes_state() in the for loop in
+write_eraseblock(), call prandom_bytes_state() at once before going
+into the loop and use correct offset in writebuf in the loop.
+Although, we also need to fix verify_eraseblock() in the same way.
+
+Doesn't that fix this problem?
