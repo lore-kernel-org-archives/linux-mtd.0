@@ -1,25 +1,28 @@
-Received: from mail-bn1ln0109.outbound.protection.outlook.com
- ([2a01:111:f400:7c10::109] helo=na01-bn1-obe.outbound.protection.outlook.com)
+Received: from mail.karo-electronics.de ([81.173.242.67])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W6AzU-0004XN-Rm
- for linux-mtd@lists.infradead.org; Thu, 23 Jan 2014 03:30:08 +0000
-From: "B48286@freescale.com" <B48286@freescale.com>
-To: 'Brian Norris' <computersforpeace@gmail.com>
-Subject: RE: [PATCH] mtd: m25p80: Make the name of mtd_info fixed
-Date: Thu, 23 Jan 2014 03:29:41 +0000
-Message-ID: <66941b677b7e4b8d9ce4cc44304b0955@DM2PR03MB301.namprd03.prod.outlook.com>
-References: <1388990069-27066-1-git-send-email-b48286@freescale.com>
- <20140123021213.GZ8919@ld-irv-0074>
-In-Reply-To: <20140123021213.GZ8919@ld-irv-0074>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
+ id 1W6DCT-0006ER-Ta
+ for linux-mtd@lists.infradead.org; Thu, 23 Jan 2014 05:51:39 +0000
+Date: Thu, 23 Jan 2014 06:51:07 +0100
+From: Lothar =?UTF-8?B?V2HDn21hbm4=?= <LW@KARO-electronics.de>
+To: Akinobu Mita <akinobu.mita@gmail.com>
+Subject: Re: [PATCH] mtd: mtd_oobtest: fix verify errors due to incorrect
+ use of prandom_bytes_state()
+Message-ID: <20140123065107.099f9f86@ipc1.ka-ro>
+In-Reply-To: <CAC5umyjU5xoFJ1piLoWGciT=Y+H3-nqr38FGVMR-vdKhkOO-Qw@mail.gmail.com>
+References: <1389608739-10945-1-git-send-email-LW@KARO-electronics.de>
+ <20140122150959.78cf2827@ipc1.ka-ro>
+ <CAC5umyhC+9zwwX7Mswo2uAc0pFqp7Np1D+nFwr7Y3TS3OLT6-A@mail.gmail.com>
+ <20140122164115.211a819d@ipc1.ka-ro>
+ <CAC5umyjU5xoFJ1piLoWGciT=Y+H3-nqr38FGVMR-vdKhkOO-Qw@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: Scott Wood <scottwood@freescale.com>,
- "linuxppc-dev@ozlabs.org" <linuxppc-dev@ozlabs.org>,
- "Mingkai.Hu@freescale.com" <Mingkai.Hu@freescale.com>,
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ LKML <linux-kernel@vger.kernel.org>, Huang Shijie <b32955@freescale.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+ Andrew Morton <akpm@linux-foundation.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,70 +32,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
-Thanks for your comments!
+Hi,
 
-> -----Original Message-----
-> From: Brian Norris [mailto:computersforpeace@gmail.com]
-> Sent: Thursday, January 23, 2014 10:12 AM
-> To: Hou Zhiqiang-B48286
-> Cc: linux-mtd@lists.infradead.org; linuxppc-dev@ozlabs.org; Wood Scott-
-> B07421; Hu Mingkai-B21284; Ezequiel Garcia
-> Subject: Re: [PATCH] mtd: m25p80: Make the name of mtd_info fixed
->=20
-> Hi Hou,
->=20
-> On Mon, Jan 06, 2014 at 02:34:29PM +0800, Hou Zhiqiang wrote:
-> > To give spi flash layout using "mtdparts=3D..." in cmdline, we must giv=
-e
-> > mtd_info a fixed name,because the cmdlinepart's parser will match the
-> > name given in cmdline with the mtd_info.
+Akinobu Mita wrote:
+> 2014/1/23 Lothar Wa=C3=9Fmann <LW@karo-electronics.de>:
+> > Hi,
 > >
-> > Now, if use OF node, mtd_info's name will be spi->dev->name. It
-> > consists of spi_master->bus_num, and the spi_master->bus_num maybe
-> > dynamically fetched.
-> > So, give the mtd_info a new fiexd name "name.cs", "name" is name of
-> > spi_device_id and "cs" is chip-select in spi_dev.
-> >
-> > Signed-off-by: Hou Zhiqiang <b48286@freescale.com>
-> > ---
-> >  drivers/mtd/devices/m25p80.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/mtd/devices/m25p80.c
-> > b/drivers/mtd/devices/m25p80.c index eb558e8..d1ed480 100644
-> > --- a/drivers/mtd/devices/m25p80.c
-> > +++ b/drivers/mtd/devices/m25p80.c
-> > @@ -1012,7 +1012,8 @@ static int m25p_probe(struct spi_device *spi)
-> >  	if (data && data->name)
-> >  		flash->mtd.name =3D data->name;
-> >  	else
-> > -		flash->mtd.name =3D dev_name(&spi->dev);
-> > +		flash->mtd.name =3D kasprintf(GFP_KERNEL, "%s.%d",
-> > +				id->name, spi->chip_select);
+> > Akinobu Mita wrote:
+> >> 2014/1/22 Lothar Wa=C3=9Fmann <LW@karo-electronics.de>:
+> >> > Hi,
+> >> >
+> >> > Is anyone taking care of this?
+> >> >
+> >> > Lothar Wa=C3=9Fmann wrote:
+> >> >> When using prandom_bytes_state() it is critical to use the same blo=
+ck
+> >> >> size in all invocations that are to produce the same random sequenc=
+e.
+> >> >> Otherwise the state of the PRNG will be out of sync if the blocksize
+> >> >> is not divisible by 4.
+> >> >> This leads to bogus verification errors in several tests which use
+> >> >> different block sizes to initialize the buffer for writing and
+> >> >> comparison.
+> >> >>
+> >> >> Signed-off-by: Lothar Wa=C3=9Fmann <LW@KARO-electronics.de>
+> >> >> ---
+> >> >>  drivers/mtd/tests/oobtest.c |   14 ++++++++++++--
+> >> >>  1 files changed, 12 insertions(+), 2 deletions(-)
+> >> >>
+> >> >> diff --git a/drivers/mtd/tests/oobtest.c b/drivers/mtd/tests/oobtes=
+t.c
+> >> >> index 2e9e2d1..72c7359 100644
+> >> >> --- a/drivers/mtd/tests/oobtest.c
+> >> >> +++ b/drivers/mtd/tests/oobtest.c
+> >> >> @@ -213,8 +213,15 @@ static int verify_eraseblock_in_one_go(int ebn=
+um)
+> >> >>       int err =3D 0;
+> >> >>       loff_t addr =3D ebnum * mtd->erasesize;
+> >> >>       size_t len =3D mtd->ecclayout->oobavail * pgcnt;
+> >> >> +     int i;
+> >> >> +
+> >> >> +     for (i =3D 0; i < pgcnt; i++)
+> >> >> +             prandom_bytes_state(&rnd_state, &writebuf[i * use_len=
+],
+> >> >> +                             use_len);
+> >> >> +     if (len % use_len)
+> >> >> +             prandom_bytes_state(&rnd_state, &writebuf[i * use_len=
+],
+> >> >> +                             len % use_len);
+> >> >>
+> >> >> -     prandom_bytes_state(&rnd_state, writebuf, len);
+> >> >>       ops.mode      =3D MTD_OPS_AUTO_OOB;
+> >> >>       ops.len       =3D 0;
+> >> >>       ops.retlen    =3D 0;
+> >>
+> >> I would rather fix the use of prandom_bytes_state() in write_erasebloc=
+k()
+> >> than fix in verify_eraseblock_in_one_go().
+> >>
+> > Why and how?
 >=20
-> Changing the mtd.name may have far-reaching consequences for users who
-> already have mtdparts=3D command lines. But your concern is probably vali=
-d
-> for dynamically-determined bus numbers. Perhaps you can edit this patch
-> to only change the name when the busnum is dynamically-allocated?
+> I thought that it could reduce calls of prandom_bytes_state() and
+> it makes code simpler than increasing calls.
+>=20
+> > write_whole_device() (which calls write_eraseblock()) is used multiple
+> > times with different verification methods (all blocks in one go or each
+> > block individually).
+> > If prandom_state_bytes() in write_eraseblock() would be changed, that
+> > function would have to know, how the block are going to be checked
+> > lateron to know how to set up the writebuffer.
+>=20
+> Instead of calling prandom_bytes_state() in the for loop in
+> write_eraseblock(), call prandom_bytes_state() at once before going
+> into the loop and use correct offset in writebuf in the loop.
+> Although, we also need to fix verify_eraseblock() in the same way.
+>=20
+> Doesn't that fix this problem?
 >
-It's a good idea, but in the case of mtd_info's name dynamically-allocated
-using "mtdparts=3D..." in command lines is illegal obviously. Would you tel=
-l
-me what side-effect will be brought by the change of mtd_info's name.
-Thanks=20
-=20
-> This also needs a NULL check (for OOM), and you leak memory on device
-> removal.
->=20
-Yes, it's necessary to check the return value of function kasprintf.
+Of course one could fix it that way, but that would be a much more
+invasive change that also needs more testing.
 
-> >
-> >  	flash->mtd.type =3D MTD_NORFLASH;
-> >  	flash->mtd.writesize =3D 1;
->=20
-> Brian
->=20
-Thanks,
-Hou Zhiqiang
+
+Lothar Wa=C3=9Fmann
+--=20
+___________________________________________________________
+
+Ka-Ro electronics GmbH | Pascalstra=C3=9Fe 22 | D - 52076 Aachen
+Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
+Gesch=C3=A4ftsf=C3=BChrer: Matthias Kaussen
+Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
+
+www.karo-electronics.de | info@karo-electronics.de
+___________________________________________________________
