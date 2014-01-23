@@ -1,19 +1,19 @@
-Received: from mail-wi0-f175.google.com ([209.85.212.175])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W6Haf-00033s-8K
- for linux-mtd@lists.infradead.org; Thu, 23 Jan 2014 10:32:56 +0000
-Received: by mail-wi0-f175.google.com with SMTP id hr1so6630128wib.8
- for <linux-mtd@lists.infradead.org>; Thu, 23 Jan 2014 02:32:36 -0800 (PST)
+Received: from mail-wi0-f182.google.com ([209.85.212.182])
+ by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W6HaP-0004vI-3q
+ for linux-mtd@lists.infradead.org; Thu, 23 Jan 2014 10:32:43 +0000
+Received: by mail-wi0-f182.google.com with SMTP id ex4so1583835wid.9
+ for <linux-mtd@lists.infradead.org>; Thu, 23 Jan 2014 02:32:16 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND v4 22/37] mtd: st_spi_fsm: Provide the default
- read/write configurations
-Date: Thu, 23 Jan 2014 10:31:10 +0000
-Message-Id: <1390473085-24626-23-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH RESEND v4 14/37] mtd: st_spi_fsm: Add device-tree binding
+ documentation
+Date: Thu, 23 Jan 2014 10:31:02 +0000
+Message-Id: <1390473085-24626-15-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1390473085-24626-1-git-send-email-lee.jones@linaro.org>
 References: <1390473085-24626-1-git-send-email-lee.jones@linaro.org>
-Cc: olivier.clergeaud@st.com, Angus.Clark@st.com,
+Cc: olivier.clergeaud@st.com, Angus.Clark@st.com, devicetree@vger.kernel.org,
  Lee Jones <lee.jones@linaro.org>, linus.walleij@linaro.org,
  linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
  dwmw2@infradead.org, DCG_UPD_stlinux_kernel@list.st.com
@@ -26,56 +26,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Message sequences can vary depending on how many pads (lines) are
-required to address the chip (mode & dummy), how many data pads (lines)
-are required to write out to the chip which will determine speed
-amongst other things which are detailed by the SFDP specification. We
-are able to use multiple configurations for each chip, but they need
-to me matched to a device's capabilities. These configurations are
-listed in preference order - most preferred first.
-
+Cc: devicetree@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/devices/st_spi_fsm.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+ Documentation/devicetree/bindings/mtd/st-fsm.txt | 26 ++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/st-fsm.txt
 
-diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index d009e1b..5582df0 100644
---- a/drivers/mtd/devices/st_spi_fsm.c
-+++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -411,6 +411,33 @@ static struct flash_info flash_types[] = {
- 	{ NULL, 0x000000, 0, 0, 0, 0, 0, NULL },
- };
- 
-+/*
-+ * FSM message sequence configurations:
-+ *
-+ * All configs are presented in order of preference
-+ */
+diff --git a/Documentation/devicetree/bindings/mtd/st-fsm.txt b/Documentation/devicetree/bindings/mtd/st-fsm.txt
+new file mode 100644
+index 0000000..c248939
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/st-fsm.txt
+@@ -0,0 +1,26 @@
++* ST-Microelectronics SPI FSM Serial (NOR) Flash Controller
 +
-+/* Default READ configurations, in order of preference */
-+static struct seq_rw_config default_read_configs[] = {
-+	{FLASH_FLAG_READ_1_4_4, FLASH_CMD_READ_1_4_4,	0, 4, 4, 0x00, 2, 4},
-+	{FLASH_FLAG_READ_1_1_4, FLASH_CMD_READ_1_1_4,	0, 1, 4, 0x00, 4, 0},
-+	{FLASH_FLAG_READ_1_2_2, FLASH_CMD_READ_1_2_2,	0, 2, 2, 0x00, 4, 0},
-+	{FLASH_FLAG_READ_1_1_2, FLASH_CMD_READ_1_1_2,	0, 1, 2, 0x00, 0, 8},
-+	{FLASH_FLAG_READ_FAST,	FLASH_CMD_READ_FAST,	0, 1, 1, 0x00, 0, 8},
-+	{FLASH_FLAG_READ_WRITE, FLASH_CMD_READ,		0, 1, 1, 0x00, 0, 0},
-+	{0x00,			0,			0, 0, 0, 0x00, 0, 0},
-+};
++Required properties:
++  - compatible : Should be "st,spi-fsm"
++  - reg        : Contains register's location and length.
++  - reg-names  : Should contain the reg names "spi-fsm"
++  - interrupts : The interrupt number
++  - pinctrl-0  : Standard Pinctrl phandle (see: pinctrl/pinctrl-bindings.txt)
 +
-+/* Default WRITE configurations */
-+static struct seq_rw_config default_write_configs[] = {
-+	{FLASH_FLAG_WRITE_1_4_4, FLASH_CMD_WRITE_1_4_4, 1, 4, 4, 0x00, 0, 0},
-+	{FLASH_FLAG_WRITE_1_1_4, FLASH_CMD_WRITE_1_1_4, 1, 1, 4, 0x00, 0, 0},
-+	{FLASH_FLAG_WRITE_1_2_2, FLASH_CMD_WRITE_1_2_2, 1, 2, 2, 0x00, 0, 0},
-+	{FLASH_FLAG_WRITE_1_1_2, FLASH_CMD_WRITE_1_1_2, 1, 1, 2, 0x00, 0, 0},
-+	{FLASH_FLAG_READ_WRITE,  FLASH_CMD_WRITE,       1, 1, 1, 0x00, 0, 0},
-+	{0x00,			 0,			0, 0, 0, 0x00, 0, 0},
-+};
++Optional properties:
++  - st,syscfg          : Phandle to boot-device system configuration registers
++  - st,boot-device-reg : Address of the aforementioned boot-device register(s)
++  - st,boot-device-spi : Expected boot-device value if booted via this device
 +
- static struct stfsm_seq stfsm_seq_en_32bit_addr;/* Dynamically populated */
- 
- static struct stfsm_seq stfsm_seq_read_jedec = {
++Example:
++	spifsm: spifsm@fe902000{
++	        compatible         = "st,spi-fsm";
++	        reg                =  <0xfe902000 0x1000>;
++	        reg-names          = "spi-fsm";
++	        pinctrl-0          = <&pinctrl_fsm>;
++		st,syscfg	   = <&syscfg_rear>;
++	        st,boot-device-reg = <0x958>;
++	        st,boot-device-spi = <0x1a>;
++		status = "okay";
++	};
++
 -- 
 1.8.3.2
