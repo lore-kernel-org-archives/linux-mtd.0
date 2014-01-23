@@ -1,24 +1,16 @@
-Received: from mail-oa0-x232.google.com ([2607:f8b0:4003:c02::232])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W69Dq-0002bA-Bj
- for linux-mtd@lists.infradead.org; Thu, 23 Jan 2014 01:36:47 +0000
-Received: by mail-oa0-f50.google.com with SMTP id n16so1412212oag.37
- for <linux-mtd@lists.infradead.org>; Wed, 22 Jan 2014 17:36:19 -0800 (PST)
-Date: Wed, 22 Jan 2014 17:36:13 -0800
+Date: Wed, 22 Jan 2014 17:46:13 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: kgene@kernel.org
-Subject: Re: [PATCH Resend 3/3] mtd: s3c2410: Merge plat/regs-nand.h into
- s3c2410.c
-Message-ID: <20140123013613.GW8919@ld-irv-0074>
-References: <1389333253-3802-1-git-send-email-sachin.kamat@linaro.org>
- <1389333253-3802-3-git-send-email-sachin.kamat@linaro.org>
- <CAK9yfHzMOhBco0JyNdXMCMiO20B+TFvVTXxa=P1DksHUr67wJQ@mail.gmail.com>
- <023501cf17d9$4133f560$c39be020$@kernel.org>
+To: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH v4 00/36] mtd: st_spi_fsm: Add new driver
+Message-ID: <20140123014613.GX8919@ld-irv-0074>
+References: <1389188840-14306-1-git-send-email-lee.jones@linaro.org>
+ <20140108143316.GA14575@lee--X1> <20140122125049.GA8586@lee--X1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <023501cf17d9$4133f560$c39be020$@kernel.org>
-Cc: 'Sachin Kamat' <sachin.kamat@linaro.org>, linux-mtd@lists.infradead.org
+In-Reply-To: <20140122125049.GA8586@lee--X1>
+Cc: angus.clark@st.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,22 +20,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jan 23, 2014 at 10:20:05AM +0900, kgene@kernel.org wrote:
-> Sachin Kamat wrote:
+Hi Lee,
+
+On Wed, Jan 22, 2014 at 12:50:49PM +0000, Lee Jones wrote:
+> > Version 4:
+> >   Tended to Brian's previous review comments
+> >     - Checkpatch acceptance
+> >     - MODULE_DEVICE_TABLE() name slip correction
+> >     - Timeout issue(s) resolved
+> >     - Potential infinite loop mitigated
+> >     - Code clarity suggests heeded
+> >     - Duplication with MTD core code removed
+> >     - Upgraded to using ROUND_UP() helper
+> >     - Moved non-shared header code into main driver
+> >     - Relocated dynamic msg sequence stores into main struct
+> >     - Averted adaption of static (table) data
+> >     - Basic whitespace/spelling/data type/dev_err suggestions accepted
 > > 
-> > On 10 January 2014 11:24, Sachin Kamat <sachin.kamat@linaro.org> wrote:
-> > > plat/regs-nand.h is used only by S3C2410 nand driver. Since there
-> > > are no other users, merge this file into the driver code to remove
-> > > platform dependency. While at it also remove unused macros.
-> > >
-> > > Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
-> > > Cc: Kukjin Kim <kgene.kim@samsung.com>
+> > Version 3:
+> >   Okay, this thing should be fully functional now. Identify a chip
+> >   based on it's JEDEC ID, Read, Write, Erase (all or by sector).
+> >   Support for various chip quirks added too.
+> >  
+> > Version 2:
+> >   The first bunch of these patches have been on the MLs before, but
+> >   didn't receive a great deal of attention for the most part. We are
+> >   a little more featureful this time however. We can now successfully
+> >   setup and configure the N25Q256. We still can't read/write/erase
+> >   it though. I'll start work on that next week and will provide it in
+> >   the next instalment.
+> >  
+> > Version 1:
+> >   First stab at getting this thing Mainlined. It doesn't do a great deal
+> >   yet, but we are able to initialise the device and dynamically set it up
+> >   correctly based on an extracted JEDEC ID.
+> > 
+> >  Documentation/devicetree/bindings/mtd/st-fsm.txt |   26 ++
+> >  arch/arm/boot/dts/stih416-b2105.dts              |   14 +
+> >  arch/arm/boot/dts/stih416-pinctrl.dtsi           |   12 +
+> >  drivers/mtd/devices/Kconfig                      |    8 +
+> >  drivers/mtd/devices/Makefile                     |    1 +
+> >  drivers/mtd/devices/serial_flash_cmds.h          |   81 ++++
+> >  drivers/mtd/devices/st_spi_fsm.c                 | 2124 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+> >  7 files changed, 2266 insertions(+)
+> 
+> Can you confirm receipt of this set, or would you like me to resend?
 
-Sorry, I sent this through compile-testing a few days ago but didn't get
-back to it.
+Well, I personally have the patch set but haven't had a chance to review
+it. Can you resend with MTD in the CC, since we haven't had any comments
+anyway? I believe MTD people are much less likely to look at it if you
+forget the CC :)
 
-> Acked-by: Kukjin Kim <kgene.kim@samsung.com>
-
-Cool. Pushed to l2-mtd.git. Thanks!
+You can just title it [PATCH RESEND v4 X/Y], possibly with a LKML
+link back to the original v4, if you want to help avoid confusion.
 
 Brian
