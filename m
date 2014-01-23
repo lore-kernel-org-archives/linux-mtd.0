@@ -1,19 +1,19 @@
-Received: from mail-wi0-f182.google.com ([209.85.212.182])
- by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W6HaP-0004vI-3q
- for linux-mtd@lists.infradead.org; Thu, 23 Jan 2014 10:32:43 +0000
-Received: by mail-wi0-f182.google.com with SMTP id ex4so1583835wid.9
- for <linux-mtd@lists.infradead.org>; Thu, 23 Jan 2014 02:32:16 -0800 (PST)
+Received: from mail-we0-f172.google.com ([74.125.82.172])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W6Haf-00033Q-S5
+ for linux-mtd@lists.infradead.org; Thu, 23 Jan 2014 10:33:02 +0000
+Received: by mail-we0-f172.google.com with SMTP id q58so956517wes.31
+ for <linux-mtd@lists.infradead.org>; Thu, 23 Jan 2014 02:32:31 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND v4 14/37] mtd: st_spi_fsm: Add device-tree binding
- documentation
-Date: Thu, 23 Jan 2014 10:31:02 +0000
-Message-Id: <1390473085-24626-15-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH RESEND v4 20/37] mtd: st_spi_fsm: Provide a method to put the
+ chip into 32bit addressing mode
+Date: Thu, 23 Jan 2014 10:31:08 +0000
+Message-Id: <1390473085-24626-21-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1390473085-24626-1-git-send-email-lee.jones@linaro.org>
 References: <1390473085-24626-1-git-send-email-lee.jones@linaro.org>
-Cc: olivier.clergeaud@st.com, Angus.Clark@st.com, devicetree@vger.kernel.org,
+Cc: olivier.clergeaud@st.com, Angus.Clark@st.com,
  Lee Jones <lee.jones@linaro.org>, linus.walleij@linaro.org,
  linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
  dwmw2@infradead.org, DCG_UPD_stlinux_kernel@list.st.com
@@ -26,44 +26,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Cc: devicetree@vger.kernel.org
+Most Serial Flash chips support 24bit addressing as a default but more
+recent incarnations can support 32bit. Based on information provided
+though platform specific data and capabilities we can determine whether
+or not our current chip can. This patch provides a means to setup the
+FSM message sequence to put the chip into 32bit mode.
+
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- Documentation/devicetree/bindings/mtd/st-fsm.txt | 26 ++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/st-fsm.txt
+ drivers/mtd/devices/st_spi_fsm.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mtd/st-fsm.txt b/Documentation/devicetree/bindings/mtd/st-fsm.txt
-new file mode 100644
-index 0000000..c248939
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/st-fsm.txt
-@@ -0,0 +1,26 @@
-+* ST-Microelectronics SPI FSM Serial (NOR) Flash Controller
+diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
+index b21929b..e74513d 100644
+--- a/drivers/mtd/devices/st_spi_fsm.c
++++ b/drivers/mtd/devices/st_spi_fsm.c
+@@ -411,6 +411,8 @@ static struct flash_info flash_types[] = {
+ 	{ NULL, 0x000000, 0, 0, 0, 0, 0, NULL },
+ };
+ 
++static struct stfsm_seq stfsm_seq_en_32bit_addr;/* Dynamically populated */
 +
-+Required properties:
-+  - compatible : Should be "st,spi-fsm"
-+  - reg        : Contains register's location and length.
-+  - reg-names  : Should contain the reg names "spi-fsm"
-+  - interrupts : The interrupt number
-+  - pinctrl-0  : Standard Pinctrl phandle (see: pinctrl/pinctrl-bindings.txt)
+ static struct stfsm_seq stfsm_seq_read_jedec = {
+ 	.data_size = TRANSFER_SIZE(8),
+ 	.seq_opc[0] = (SEQ_OPC_PADS_1 |
+@@ -554,6 +556,23 @@ static void stfsm_read_fifo(struct stfsm *fsm, uint32_t *buf,
+ 	}
+ }
+ 
++static int stfsm_enter_32bit_addr(struct stfsm *fsm, int enter)
++{
++	struct stfsm_seq *seq = &stfsm_seq_en_32bit_addr;
++	uint32_t cmd = enter ? FLASH_CMD_EN4B_ADDR : FLASH_CMD_EX4B_ADDR;
 +
-+Optional properties:
-+  - st,syscfg          : Phandle to boot-device system configuration registers
-+  - st,boot-device-reg : Address of the aforementioned boot-device register(s)
-+  - st,boot-device-spi : Expected boot-device value if booted via this device
++	seq->seq_opc[0] = (SEQ_OPC_PADS_1 |
++			   SEQ_OPC_CYCLES(8) |
++			   SEQ_OPC_OPCODE(cmd) |
++			   SEQ_OPC_CSDEASSERT);
 +
-+Example:
-+	spifsm: spifsm@fe902000{
-+	        compatible         = "st,spi-fsm";
-+	        reg                =  <0xfe902000 0x1000>;
-+	        reg-names          = "spi-fsm";
-+	        pinctrl-0          = <&pinctrl_fsm>;
-+		st,syscfg	   = <&syscfg_rear>;
-+	        st,boot-device-reg = <0x958>;
-+	        st,boot-device-spi = <0x1a>;
-+		status = "okay";
-+	};
++	stfsm_load_seq(fsm, seq);
 +
++	stfsm_wait_seq(fsm);
++
++	return 0;
++}
++
+ /*
+  * SoC reset on 'boot-from-spi' systems
+  *
 -- 
 1.8.3.2
