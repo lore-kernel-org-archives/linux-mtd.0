@@ -1,16 +1,16 @@
-Received: from mail-wi0-f173.google.com ([209.85.212.173])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W6HaG-0007tv-3c
- for linux-mtd@lists.infradead.org; Thu, 23 Jan 2014 10:32:28 +0000
-Received: by mail-wi0-f173.google.com with SMTP id d13so6624449wiw.6
- for <linux-mtd@lists.infradead.org>; Thu, 23 Jan 2014 02:32:05 -0800 (PST)
+Received: from mail-we0-f179.google.com ([74.125.82.179])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W6Ha4-0002uT-0q
+ for linux-mtd@lists.infradead.org; Thu, 23 Jan 2014 10:32:30 +0000
+Received: by mail-we0-f179.google.com with SMTP id w62so922613wes.24
+ for <linux-mtd@lists.infradead.org>; Thu, 23 Jan 2014 02:31:54 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND v4 10/37] mtd: st_spi_fsm: Dynamically setup flash
- device based on JEDEC ID
-Date: Thu, 23 Jan 2014 10:30:58 +0000
-Message-Id: <1390473085-24626-11-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH RESEND v4 06/37] mtd: st_spi_fsm: Supply defines for the
+ possible flash command opcodes
+Date: Thu, 23 Jan 2014 10:30:54 +0000
+Message-Id: <1390473085-24626-7-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1390473085-24626-1-git-send-email-lee.jones@linaro.org>
 References: <1390473085-24626-1-git-send-email-lee.jones@linaro.org>
 Cc: olivier.clergeaud@st.com, Angus.Clark@st.com,
@@ -26,87 +26,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Using previously added infrastructure we can now extract a device's JEDEC
-ID, compare it to a list of known and supported devices and make assumptions
-based on known characteristics of a given chip.
+Flash chip commands are issued using a set of predefined opcodes. These
+are mostly the same for all flash devices, but do differ on occasion.
+This patch supplies the majority of the key ones which will be used in
+this driver.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/devices/st_spi_fsm.c | 27 ++++++++++++++++++++++++++-
- 1 file changed, 26 insertions(+), 1 deletion(-)
+ drivers/mtd/devices/st_spi_fsm.c | 38 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
 
 diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index 455deef..a70e916 100644
+index 0eba759..bb0f20a 100644
 --- a/drivers/mtd/devices/st_spi_fsm.c
 +++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -240,6 +240,7 @@ struct stfsm {
- 	struct resource		*region;
- 	struct mtd_info		mtd;
- 	struct mutex		lock;
-+	struct flash_info       *info;
+@@ -194,6 +194,44 @@
  
- 	uint32_t                fifo_dir_delay;
- };
-@@ -508,6 +509,7 @@ static void stfsm_read_jedec(struct stfsm *fsm, uint8_t *const jedec)
+ #define STFSM_FLASH_SAFE_FREQ  10000000UL                         /* 10 MHz */
  
- static struct flash_info *stfsm_jedec_probe(struct stfsm *fsm)
- {
-+	struct flash_info	*info;
- 	u16                     ext_jedec;
- 	u32			jedec;
- 	u8			id[5];
-@@ -525,6 +527,15 @@ static struct flash_info *stfsm_jedec_probe(struct stfsm *fsm)
- 	dev_dbg(fsm->dev, "JEDEC =  0x%08x [%02x %02x %02x %02x %02x]\n",
- 		jedec, id[0], id[1], id[2], id[3], id[4]);
- 
-+	for (info = flash_types; info->name; info++) {
-+		if (info->jedec_id == jedec) {
-+			if (info->ext_id && info->ext_id != ext_jedec)
-+				continue;
-+			return info;
-+		}
-+	}
-+	dev_err(fsm->dev, "Unrecognized JEDEC id %06x\n", jedec);
++/* Flash Commands */
++#define FLASH_CMD_WREN         0x06
++#define FLASH_CMD_WRDI         0x04
++#define FLASH_CMD_RDID         0x9f
++#define FLASH_CMD_RDSR         0x05
++#define FLASH_CMD_RDSR2                0x35
++#define FLASH_CMD_WRSR         0x01
++#define FLASH_CMD_SE_4K                0x20
++#define FLASH_CMD_SE_32K       0x52
++#define FLASH_CMD_SE           0xd8
++#define FLASH_CMD_CHIPERASE    0xc7
++#define FLASH_CMD_WRVCR                0x81
++#define FLASH_CMD_RDVCR                0x85
 +
- 	return NULL;
- }
- 
-@@ -619,6 +630,7 @@ static int stfsm_init(struct stfsm *fsm)
- static int stfsm_probe(struct platform_device *pdev)
- {
- 	struct device_node *np = pdev->dev.of_node;
-+	struct flash_info *info;
- 	struct resource *res;
- 	struct stfsm *fsm;
- 	int ret;
-@@ -665,7 +677,11 @@ static int stfsm_probe(struct platform_device *pdev)
- 	}
- 
- 	/* Detect SPI FLASH device */
--	stfsm_jedec_probe(fsm);
-+	info = stfsm_jedec_probe(fsm);
-+	if (!info)
-+		return -ENODEV;
++#define FLASH_CMD_READ         0x03    /* READ */
++#define FLASH_CMD_READ_FAST    0x0b    /* FAST READ */
++#define FLASH_CMD_READ_1_1_2   0x3b    /* DUAL OUTPUT READ */
++#define FLASH_CMD_READ_1_2_2   0xbb    /* DUAL I/O READ */
++#define FLASH_CMD_READ_1_1_4   0x6b    /* QUAD OUTPUT READ */
++#define FLASH_CMD_READ_1_4_4   0xeb    /* QUAD I/O READ */
 +
-+	fsm->info = info;
- 
- 	platform_set_drvdata(pdev, fsm);
- 
-@@ -674,6 +690,15 @@ static int stfsm_probe(struct platform_device *pdev)
- 	fsm->mtd.writesize	= 4;
- 	fsm->mtd.writebufsize	= fsm->mtd.writesize;
- 	fsm->mtd.flags		= MTD_CAP_NORFLASH;
-+	fsm->mtd.size		= info->sector_size * info->n_sectors;
-+	fsm->mtd.erasesize	= info->sector_size;
++#define FLASH_CMD_WRITE                0x02    /* PAGE PROGRAM */
++#define FLASH_CMD_WRITE_1_1_2  0xa2    /* DUAL INPUT PROGRAM */
++#define FLASH_CMD_WRITE_1_2_2  0xd2    /* DUAL INPUT EXT PROGRAM */
++#define FLASH_CMD_WRITE_1_1_4  0x32    /* QUAD INPUT PROGRAM */
++#define FLASH_CMD_WRITE_1_4_4  0x12    /* QUAD INPUT EXT PROGRAM */
 +
-+	dev_err(&pdev->dev,
-+		"Found serial flash device: %s\n"
-+		" size = %llx (%lldMiB) erasesize = 0x%08x (%uKiB)\n",
-+		info->name,
-+		(long long)fsm->mtd.size, (long long)(fsm->mtd.size >> 20),
-+		fsm->mtd.erasesize, (fsm->mtd.erasesize >> 10));
- 
- 	return mtd_device_parse_register(&fsm->mtd, NULL, NULL, NULL, 0);
- }
++#define FLASH_CMD_EN4B_ADDR    0xb7    /* Enter 4-byte address mode */
++#define FLASH_CMD_EX4B_ADDR    0xe9    /* Exit 4-byte address mode */
++
++/* READ commands with 32-bit addressing (N25Q256 and S25FLxxxS) */
++#define FLASH_CMD_READ4                0x13
++#define FLASH_CMD_READ4_FAST   0x0c
++#define FLASH_CMD_READ4_1_1_2  0x3c
++#define FLASH_CMD_READ4_1_2_2  0xbc
++#define FLASH_CMD_READ4_1_1_4  0x6c
++#define FLASH_CMD_READ4_1_4_4  0xec
++
+ struct stfsm {
+ 	struct device		*dev;
+ 	void __iomem		*base;
 -- 
 1.8.3.2
