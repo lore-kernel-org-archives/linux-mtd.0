@@ -1,16 +1,16 @@
-Received: from mail-wg0-f48.google.com ([74.125.82.48])
+Received: from mail-we0-f178.google.com ([74.125.82.178])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W6Hhg-0003nT-OI
- for linux-mtd@lists.infradead.org; Thu, 23 Jan 2014 10:40:10 +0000
-Received: by mail-wg0-f48.google.com with SMTP id x13so1252370wgg.3
- for <linux-mtd@lists.infradead.org>; Thu, 23 Jan 2014 02:39:47 -0800 (PST)
+ id 1W6Hhj-0003nc-B3
+ for linux-mtd@lists.infradead.org; Thu, 23 Jan 2014 10:40:12 +0000
+Received: by mail-we0-f178.google.com with SMTP id t60so931215wes.23
+ for <linux-mtd@lists.infradead.org>; Thu, 23 Jan 2014 02:39:49 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND v4 12/37] mtd: st_spi_fsm: Fetch platform specific
- configurations
-Date: Thu, 23 Jan 2014 10:31:00 +0000
-Message-Id: <1390473085-24626-13-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH RESEND v4 04/37] mtd: st_spi_fsm: Supply framework for device
+ requests
+Date: Thu, 23 Jan 2014 10:30:52 +0000
+Message-Id: <1390473085-24626-5-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1390473085-24626-1-git-send-email-lee.jones@linaro.org>
 References: <1390473085-24626-1-git-send-email-lee.jones@linaro.org>
 Cc: olivier.clergeaud@st.com, Angus.Clark@st.com,
@@ -26,45 +26,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-All supported platforms are able to pass specific configurations via
-the Device Tree on boot. Here we add a function which is to be called
-during the probing process which will extract them, or make other
-assumptions based on capabilities provided.
+The FSM hardware works by setting a predetermined sequence of register
+writes. Rather than open coding them inside each functional block we're
+going to define them in a series of formatted 'sequence structures'.
+This patch provides the framework which shall be used for every action.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/devices/st_spi_fsm.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/mtd/devices/st_spi_fsm.c | 49 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
 
 diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index efd8fdb..1803f94 100644
+index 5badbe4..c7daeca 100644
 --- a/drivers/mtd/devices/st_spi_fsm.c
 +++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -654,6 +654,16 @@ static int stfsm_init(struct stfsm *fsm)
- 	return 0;
- }
+@@ -204,6 +204,24 @@ struct stfsm {
+ 	uint32_t                fifo_dir_delay;
+ };
  
-+static void stfsm_fetch_platform_configs(struct platform_device *pdev)
-+{
-+	struct stfsm *fsm = platform_get_drvdata(pdev);
-+	struct flash_info *info = fsm->info;
++struct stfsm_seq {
++	uint32_t data_size;
++	uint32_t addr1;
++	uint32_t addr2;
++	uint32_t addr_cfg;
++	uint32_t seq_opc[5];
++	uint32_t mode;
++	uint32_t dummy;
++	uint32_t status;
++	uint8_t  seq[16];
++	uint32_t seq_cfg;
++} __packed __aligned(4);
 +
-+	/* Use device size to determine address width */
-+	if (info->sector_size * info->n_sectors > 0xFFFFFF)
-+		info->flags |= FLASH_FLAG_32BIT_ADDR;
++static inline int stfsm_is_idle(struct stfsm *fsm)
++{
++	return readl(fsm->base + SPI_FAST_SEQ_STA) & 0x10;
 +}
 +
- static int stfsm_probe(struct platform_device *pdev)
+ static inline uint32_t stfsm_fifo_available(struct stfsm *fsm)
  {
- 	struct device_node *np = pdev->dev.of_node;
-@@ -712,6 +722,8 @@ static int stfsm_probe(struct platform_device *pdev)
+ 	return (readl(fsm->base + SPI_FAST_SEQ_STA) >> 5) & 0x7f;
+@@ -225,6 +243,37 @@ static void stfsm_clear_fifo(struct stfsm *fsm)
+ 	}
+ }
  
- 	platform_set_drvdata(pdev, fsm);
- 
-+	stfsm_fetch_platform_configs(pdev);
++static inline void stfsm_load_seq(struct stfsm *fsm,
++				  const struct stfsm_seq *seq)
++{
++	void __iomem *dst = fsm->base + SPI_FAST_SEQ_TRANSFER_SIZE;
++	const uint32_t *src = (const uint32_t *)seq;
++	int words = sizeof(*seq) / sizeof(*src);
 +
- 	fsm->mtd.dev.parent	= &pdev->dev;
- 	fsm->mtd.type		= MTD_NORFLASH;
- 	fsm->mtd.writesize	= 4;
++	BUG_ON(!stfsm_is_idle(fsm));
++
++	while (words--) {
++		writel(*src, dst);
++		src++;
++		dst += 4;
++	}
++}
++
++static void stfsm_wait_seq(struct stfsm *fsm)
++{
++	unsigned long timeo = jiffies + HZ;
++
++	while (time_before(jiffies, timeo)) {
++		if (stfsm_is_idle(fsm))
++			return;
++
++		cond_resched();
++	}
++
++	if (!stfsm_is_idle(fsm))
++		dev_err(fsm->dev, "timeout on sequence completion\n");
++}
++
+ static int stfsm_set_mode(struct stfsm *fsm, uint32_t mode)
+ {
+ 	int ret, timeout = 10;
 -- 
 1.8.3.2
