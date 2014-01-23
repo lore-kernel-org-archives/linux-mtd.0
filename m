@@ -1,22 +1,22 @@
-Received: from mail-we0-f179.google.com ([74.125.82.179])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W6HaM-0007uj-04
- for linux-mtd@lists.infradead.org; Thu, 23 Jan 2014 10:32:34 +0000
-Received: by mail-we0-f179.google.com with SMTP id w62so953493wes.10
- for <linux-mtd@lists.infradead.org>; Thu, 23 Jan 2014 02:32:08 -0800 (PST)
-From: Lee Jones <lee.jones@linaro.org>
-To: linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND v4 11/37] mtd: st_spi_fsm: Search for preferred FSM
- message sequence configurations
-Date: Thu, 23 Jan 2014 10:30:59 +0000
-Message-Id: <1390473085-24626-12-git-send-email-lee.jones@linaro.org>
-In-Reply-To: <1390473085-24626-1-git-send-email-lee.jones@linaro.org>
-References: <1390473085-24626-1-git-send-email-lee.jones@linaro.org>
-Cc: olivier.clergeaud@st.com, Angus.Clark@st.com,
- Lee Jones <lee.jones@linaro.org>, linus.walleij@linaro.org,
- linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, DCG_UPD_stlinux_kernel@list.st.com
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W6Jd5-000835-RI
+ for linux-mtd@lists.infradead.org; Thu, 23 Jan 2014 12:43:32 +0000
+Date: Thu, 23 Jan 2014 09:43:24 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Fabian Frederick <fabf@skynet.be>
+Subject: Re: [PATCH 1/1 RESEND] mtd: block2mtd: char mtd major and erasesize
+ parameter check + mutex_destroy
+Message-ID: <20140123124323.GA20713@localhost>
+References: <20140122162843.15c3fb1e1318346339fcbff4@skynet.be>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20140122162843.15c3fb1e1318346339fcbff4@skynet.be>
+Cc: joern@lazybastard.org, akpm@linux-foundation.org, rdunlap@infradead.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,60 +26,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Here we provide a means to traverse though all supplied FSM message
-sequence configurations and pick one based on our chip's capabilities.
-The first one we match will be the preferred one, as they are
-presented in order of preference.
+Hi Fabian,
 
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/mtd/devices/st_spi_fsm.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+On Wed, Jan 22, 2014 at 04:28:43PM +0800, Fabian Frederick wrote:
+> -Deny use of a char mtd device to map as block device.
+> -mutex_init when mtd structure is available.
+> -fixme applied : check device size is a multiple of erasesize.
+> -mutex_destroy on each device in block2mtd_exit and add_device failure.
+> 
 
-diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index a70e916..efd8fdb 100644
---- a/drivers/mtd/devices/st_spi_fsm.c
-+++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -258,6 +258,18 @@ struct stfsm_seq {
- 	uint32_t seq_cfg;
- } __packed __aligned(4);
- 
-+/* Parameters to configure a READ or WRITE FSM sequence */
-+struct seq_rw_config {
-+	uint32_t        flags;          /* flags to support config */
-+	uint8_t         cmd;            /* FLASH command */
-+	int             write;          /* Write Sequence */
-+	uint8_t         addr_pads;      /* No. of addr pads (MODE & DUMMY) */
-+	uint8_t         data_pads;      /* No. of data pads */
-+	uint8_t         mode_data;      /* MODE data */
-+	uint8_t         mode_cycles;    /* No. of MODE cycles */
-+	uint8_t         dummy_cycles;   /* No. of DUMMY cycles */
-+};
-+
- /* SPI Flash Device Table */
- struct flash_info {
- 	char            *name;
-@@ -493,6 +505,21 @@ static void stfsm_read_fifo(struct stfsm *fsm, uint32_t *buf,
- 	}
- }
- 
-+/* Search for preferred configuration based on available flags */
-+static struct seq_rw_config *
-+stfsm_search_seq_rw_configs(struct stfsm *fsm,
-+			    struct seq_rw_config cfgs[])
-+{
-+	struct seq_rw_config *config;
-+	int flags = fsm->info->flags;
-+
-+	for (config = cfgs; config->cmd != 0; config++)
-+		if ((config->flags & flags) == config->flags)
-+			return config;
-+
-+	return NULL;
-+}
-+
- static void stfsm_read_jedec(struct stfsm *fsm, uint8_t *const jedec)
- {
- 	const struct stfsm_seq *seq = &stfsm_seq_read_jedec;
+Hm... that sound like a lot of work for a single patch :-)
+
+Care to chop it and submit a one-thing-per-patch series?
+
+Thanks!
 -- 
-1.8.3.2
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
