@@ -1,16 +1,16 @@
-Received: from mail-wi0-f180.google.com ([209.85.212.180])
+Received: from mail-we0-f176.google.com ([74.125.82.176])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W6Has-0007yD-PT
- for linux-mtd@lists.infradead.org; Thu, 23 Jan 2014 10:33:07 +0000
-Received: by mail-wi0-f180.google.com with SMTP id d13so1590580wiw.1
- for <linux-mtd@lists.infradead.org>; Thu, 23 Jan 2014 02:32:44 -0800 (PST)
+ id 1W6Hai-0007w7-MK
+ for linux-mtd@lists.infradead.org; Thu, 23 Jan 2014 10:32:57 +0000
+Received: by mail-we0-f176.google.com with SMTP id t61so922696wes.21
+ for <linux-mtd@lists.infradead.org>; Thu, 23 Jan 2014 02:32:34 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND v4 25/37] mtd: st_spi_fsm: Prepare default sequences
- for read/write/erase
-Date: Thu, 23 Jan 2014 10:31:13 +0000
-Message-Id: <1390473085-24626-26-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH RESEND v4 21/37] mtd: st_spi_fsm: Update the flash Volatile
+ Configuration Register
+Date: Thu, 23 Jan 2014 10:31:09 +0000
+Message-Id: <1390473085-24626-22-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1390473085-24626-1-git-send-email-lee.jones@linaro.org>
 References: <1390473085-24626-1-git-send-email-lee.jones@linaro.org>
 Cc: olivier.clergeaud@st.com, Angus.Clark@st.com,
@@ -26,69 +26,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Most chips require a predefined set of FSM message sequences for read,
-write and erase operations. This patch provides a way to set them up,
-which it will do so if a chip specific initialisation routine isn't
-been provided.
+The FSM Serial Flash Controller is driven by issuing a standard set of
+register writes we call a message sequence. This patch supplies a method
+to prepare the message sequence responsible for updating a chip's VCR.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/devices/st_spi_fsm.c | 36 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
+ drivers/mtd/devices/st_spi_fsm.c | 32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
 diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index 28d8ac0..a5b9d67 100644
+index e74513d..d009e1b 100644
 --- a/drivers/mtd/devices/st_spi_fsm.c
 +++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -838,6 +838,38 @@ static int stfsm_search_prepare_rw_seq(struct stfsm *fsm,
+@@ -451,6 +451,23 @@ static struct stfsm_seq stfsm_seq_erase_sector = {
+ 		    SEQ_CFG_STARTSEQ),
+ };
+ 
++static struct stfsm_seq stfsm_seq_wrvcr = {
++	.seq_opc[0] = (SEQ_OPC_PADS_1 | SEQ_OPC_CYCLES(8) |
++		       SEQ_OPC_OPCODE(FLASH_CMD_WREN) | SEQ_OPC_CSDEASSERT),
++	.seq_opc[1] = (SEQ_OPC_PADS_1 | SEQ_OPC_CYCLES(8) |
++		       SEQ_OPC_OPCODE(FLASH_CMD_WRVCR)),
++	.seq = {
++		STFSM_INST_CMD1,
++		STFSM_INST_CMD2,
++		STFSM_INST_STA_WR1,
++		STFSM_INST_STOP,
++	},
++	.seq_cfg = (SEQ_CFG_PADS_1 |
++		    SEQ_CFG_READNOTWRITE |
++		    SEQ_CFG_CSDEASSERT |
++		    SEQ_CFG_STARTSEQ),
++};
++
+ static int stfsm_n25q_en_32bit_addr_seq(struct stfsm_seq *seq)
+ {
+ 	seq->seq_opc[0] = (SEQ_OPC_PADS_1 | SEQ_OPC_CYCLES(8) |
+@@ -573,6 +590,21 @@ static int stfsm_enter_32bit_addr(struct stfsm *fsm, int enter)
  	return 0;
  }
  
-+/* Prepare a READ/WRITE/ERASE 'default' sequences */
-+static int stfsm_prepare_rwe_seqs_default(struct stfsm *fsm)
++static int stfsm_wrvcr(struct stfsm *fsm, uint8_t data)
 +{
-+	uint32_t flags = fsm->info->flags;
-+	int ret;
++	struct stfsm_seq *seq = &stfsm_seq_wrvcr;
 +
-+	/* Configure 'READ' sequence */
-+	ret = stfsm_search_prepare_rw_seq(fsm, &stfsm_seq_read,
-+					  default_read_configs);
-+	if (ret) {
-+		dev_err(fsm->dev,
-+			"failed to prep READ sequence with flags [0x%08x]\n",
-+			flags);
-+		return ret;
-+	}
++	dev_dbg(fsm->dev, "writing VCR 0x%02x\n", data);
 +
-+	/* Configure 'WRITE' sequence */
-+	ret = stfsm_search_prepare_rw_seq(fsm, &stfsm_seq_write,
-+					  default_write_configs);
-+	if (ret) {
-+		dev_err(fsm->dev,
-+			"failed to prep WRITE sequence with flags [0x%08x]\n",
-+			flags);
-+		return ret;
-+	}
++	seq->status = (STA_DATA_BYTE1(data) | STA_PADS_1 | STA_CSDEASSERT);
 +
-+	/* Configure 'ERASE_SECTOR' sequence */
-+	stfsm_prepare_erasesec_seq(fsm, &stfsm_seq_erase_sector);
++	stfsm_load_seq(fsm, seq);
++
++	stfsm_wait_seq(fsm);
 +
 +	return 0;
 +}
 +
- static int stfsm_n25q_config(struct stfsm *fsm)
- {
- 	uint32_t flags = fsm->info->flags;
-@@ -1153,6 +1185,10 @@ static int stfsm_probe(struct platform_device *pdev)
- 		ret = info->config(fsm);
- 		if (ret)
- 			return ret;
-+	} else {
-+		ret = stfsm_prepare_rwe_seqs_default(fsm);
-+		if (ret)
-+			return ret;
- 	}
- 
- 	platform_set_drvdata(pdev, fsm);
+ /*
+  * SoC reset on 'boot-from-spi' systems
+  *
 -- 
 1.8.3.2
