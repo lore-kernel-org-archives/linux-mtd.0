@@ -1,16 +1,16 @@
-Received: from mail-we0-f174.google.com ([74.125.82.174])
- by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W6Hb3-0005Uf-AD
- for linux-mtd@lists.infradead.org; Thu, 23 Jan 2014 10:33:22 +0000
-Received: by mail-we0-f174.google.com with SMTP id x55so930360wes.19
- for <linux-mtd@lists.infradead.org>; Thu, 23 Jan 2014 02:32:53 -0800 (PST)
+Received: from mail-wg0-f41.google.com ([74.125.82.41])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W6HbK-0003Cv-33
+ for linux-mtd@lists.infradead.org; Thu, 23 Jan 2014 10:33:44 +0000
+Received: by mail-wg0-f41.google.com with SMTP id n12so414290wgh.4
+ for <linux-mtd@lists.infradead.org>; Thu, 23 Jan 2014 02:33:12 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND v4 28/37] mtd: st_spi_fsm: Supply a busy wait for
- post-write status
-Date: Thu, 23 Jan 2014 10:31:16 +0000
-Message-Id: <1390473085-24626-29-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH RESEND v4 35/37] mtd: st_spi_fsm: Supply the W25Qxxx chip
+ specific configuration call-back
+Date: Thu, 23 Jan 2014 10:31:23 +0000
+Message-Id: <1390473085-24626-36-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1390473085-24626-1-git-send-email-lee.jones@linaro.org>
 References: <1390473085-24626-1-git-send-email-lee.jones@linaro.org>
 Cc: olivier.clergeaud@st.com, Angus.Clark@st.com,
@@ -26,106 +26,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When we write data to the Serial Flash chip we'll wait a predetermined
-period of time before giving up. During that period of time we poll the
-status register until completion.
-
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/devices/st_spi_fsm.c | 65 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 65 insertions(+)
+ drivers/mtd/devices/st_spi_fsm.c | 47 ++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 43 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index c64f741..c2ee7e3 100644
+index 88017d8..ddfff35 100644
 --- a/drivers/mtd/devices/st_spi_fsm.c
 +++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -236,8 +236,18 @@
- #define FLASH_CMD_READ4_1_1_4  0x6c
- #define FLASH_CMD_READ4_1_4_4  0xec
+@@ -339,6 +339,7 @@ struct flash_info {
+ static int stfsm_n25q_config(struct stfsm *fsm);
+ static int stfsm_mx25_config(struct stfsm *fsm);
+ static int stfsm_s25fl_config(struct stfsm *fsm);
++static int stfsm_w25q_config(struct stfsm *fsm);
  
-+/* Status register */
-+#define FLASH_STATUS_BUSY      0x01
-+#define FLASH_STATUS_WEL       0x02
-+#define FLASH_STATUS_BP0       0x04
-+#define FLASH_STATUS_BP1       0x08
-+#define FLASH_STATUS_BP2       0x10
-+#define FLASH_STATUS_SRWP0     0x80
-+#define FLASH_STATUS_TIMEOUT   0xff
-+
- #define FLASH_PAGESIZE         256			/* In Bytes    */
- #define FLASH_PAGESIZE_32      (FLASH_PAGESIZE / 4)	/* In uint32_t */
-+#define FLASH_MAX_BUSY_WAIT    (300 * HZ)	/* Maximum 'CHIPERASE' time */
+ static struct flash_info flash_types[] = {
+ 	/*
+@@ -444,10 +445,14 @@ static struct flash_info flash_types[] = {
+ 		   FLASH_FLAG_READ_1_1_4        |	\
+ 		   FLASH_FLAG_READ_1_4_4        |	\
+ 		   FLASH_FLAG_WRITE_1_1_4)
+-	{ "w25q80",  0xef4014, 0,  64 * 1024,  16, W25Q_FLAG, 80, NULL },
+-	{ "w25q16",  0xef4015, 0,  64 * 1024,  32, W25Q_FLAG, 80, NULL },
+-	{ "w25q32",  0xef4016, 0,  64 * 1024,  64, W25Q_FLAG, 80, NULL },
+-	{ "w25q64",  0xef4017, 0,  64 * 1024, 128, W25Q_FLAG, 80, NULL },
++	{ "w25q80",  0xef4014, 0,  64 * 1024,  16, W25Q_FLAG, 80,
++	  stfsm_w25q_config },
++	{ "w25q16",  0xef4015, 0,  64 * 1024,  32, W25Q_FLAG, 80,
++	  stfsm_w25q_config },
++	{ "w25q32",  0xef4016, 0,  64 * 1024,  64, W25Q_FLAG, 80,
++	  stfsm_w25q_config },
++	{ "w25q64",  0xef4017, 0,  64 * 1024, 128, W25Q_FLAG, 80,
++	  stfsm_w25q_config },
  
- /*
-  * Flags to tweak operation of default read/write/erase routines
-@@ -517,6 +527,22 @@ static struct stfsm_seq stfsm_seq_read_jedec = {
- 		    SEQ_CFG_STARTSEQ),
+ 	/* Sentinel */
+ 	{ NULL, 0x000000, 0, 0, 0, 0, 0, NULL },
+@@ -575,6 +580,11 @@ static struct seq_rw_config stfsm_s25fl_write4_configs[] = {
+ 	{0x00,                   0,                      0, 0, 0, 0x00, 0, 0},
  };
  
-+static struct stfsm_seq stfsm_seq_read_status_fifo = {
-+	.data_size = TRANSFER_SIZE(4),
-+	.seq_opc[0] = (SEQ_OPC_PADS_1 |
-+		       SEQ_OPC_CYCLES(8) |
-+		       SEQ_OPC_OPCODE(FLASH_CMD_RDSR)),
-+	.seq = {
-+		STFSM_INST_CMD1,
-+		STFSM_INST_DATA_READ,
-+		STFSM_INST_STOP,
-+	},
-+	.seq_cfg = (SEQ_CFG_PADS_1 |
-+		    SEQ_CFG_READNOTWRITE |
-+		    SEQ_CFG_CSDEASSERT |
-+		    SEQ_CFG_STARTSEQ),
-+};
++/*
++ * [W25Qxxx] Configuration
++ */
++#define W25Q_STATUS_QE			(0x1 << 9)
 +
- static struct stfsm_seq stfsm_seq_erase_sector = {
- 	/* 'addr_cfg' configured during initialisation */
- 	.seq_opc = {
-@@ -692,6 +718,45 @@ static int stfsm_enter_32bit_addr(struct stfsm *fsm, int enter)
+ static struct stfsm_seq stfsm_seq_read;		/* Dynamically populated */
+ static struct stfsm_seq stfsm_seq_write;	/* Dynamically populated */
+ static struct stfsm_seq stfsm_seq_en_32bit_addr;/* Dynamically populated */
+@@ -1433,6 +1443,35 @@ static int stfsm_s25fl_config(struct stfsm *fsm)
  	return 0;
  }
  
-+static uint8_t stfsm_wait_busy(struct stfsm *fsm)
++static int stfsm_w25q_config(struct stfsm *fsm)
 +{
-+	struct stfsm_seq *seq = &stfsm_seq_read_status_fifo;
-+	unsigned long deadline;
-+	uint32_t status;
++	uint32_t data_pads;
++	uint16_t sta_wr;
++	uint8_t sta1, sta2;
++	int ret;
 +
-+	/* Use RDRS1 */
-+	seq->seq_opc[0] = (SEQ_OPC_PADS_1 |
-+			   SEQ_OPC_CYCLES(8) |
-+			   SEQ_OPC_OPCODE(FLASH_CMD_RDSR));
++	ret = stfsm_prepare_rwe_seqs_default(fsm);
++	if (ret)
++		return ret;
 +
-+	/* Load read_status sequence */
-+	stfsm_load_seq(fsm, seq);
++	/* If using QUAD mode, set QE STATUS bit */
++	data_pads = ((stfsm_seq_read.seq_cfg >> 16) & 0x3) + 1;
++	if (data_pads == 4) {
++		stfsm_read_status(fsm, FLASH_CMD_RDSR, &sta1);
++		stfsm_read_status(fsm, FLASH_CMD_RDSR2, &sta2);
 +
-+	/* Repeat until busy bit is deasserted, or timeout */
-+	deadline = jiffies + FLASH_MAX_BUSY_WAIT;
-+	do {
-+		cond_resched();
++		sta_wr = ((uint16_t)sta2 << 8) | sta1;
 +
-+		stfsm_wait_seq(fsm);
++		sta_wr |= W25Q_STATUS_QE;
 +
-+		stfsm_read_fifo(fsm, &status, 4);
-+		if ((status & FLASH_STATUS_BUSY) == 0)
-+			return 0;
++		stfsm_write_status(fsm, sta_wr, 2);
 +
-+		/* Restart */
-+		writel(seq->seq_cfg, fsm->base + SPI_FAST_SEQ_CFG);
++		stfsm_wait_busy(fsm);
++	}
 +
-+	} while (!time_after_eq(jiffies, deadline));
-+
-+	stfsm_read_fifo(fsm, &status, 4);
-+	if ((status & FLASH_STATUS_BUSY) == 0)
-+		return 0;
-+
-+	dev_err(fsm->dev, "timeout on wait_busy\n");
-+
-+	return -EIO;
++	return 0;
 +}
 +
- static int stfsm_wrvcr(struct stfsm *fsm, uint8_t data)
+ static int stfsm_read(struct stfsm *fsm, uint8_t *buf, uint32_t size,
+ 		      uint32_t offset)
  {
- 	struct stfsm_seq *seq = &stfsm_seq_wrvcr;
 -- 
 1.8.3.2
