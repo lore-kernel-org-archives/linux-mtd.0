@@ -1,19 +1,19 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W6oxJ-0001Hv-L3
- for linux-mtd@lists.infradead.org; Fri, 24 Jan 2014 22:10:30 +0000
-Date: Fri, 24 Jan 2014 19:10:11 -0300
+ id 1W6vlP-0005z9-Vl
+ for linux-mtd@lists.infradead.org; Sat, 25 Jan 2014 05:26:40 +0000
+Date: Sat, 25 Jan 2014 02:26:12 -0300
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: Fabian Frederick <fabf@skynet.be>
-Subject: Re: [PATCH 1/4] mtd: block2mtd: char mtd major check
-Message-ID: <20140124214836.GA14088@localhost>
-References: <20140123204947.fc1c03dc0a1624d3347b3837@skynet.be>
+Subject: Re: [PATCH 4/4] mtd: block2mtd: mutex_init moved
+Message-ID: <20140125052611.GA24609@localhost>
+References: <20140123205456.10e45ea0baff94cf3f785a21@skynet.be>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20140123204947.fc1c03dc0a1624d3347b3837@skynet.be>
+In-Reply-To: <20140123205456.10e45ea0baff94cf3f785a21@skynet.be>
 Cc: joern@lazybastard.org, akpm@linux-foundation.org, rdunlap@infradead.org,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,41 +25,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jan 23, 2014 at 08:49:47PM +0100, Fabian Frederick wrote:
-> Deny use of a char mtd device to map as a block device.
+On Thu, Jan 23, 2014 at 08:54:56PM +0100, Fabian Frederick wrote:
+> mutex_init declared when mtd structure is available
 > 
 > Signed-off-by: Fabian Frederick <fabf@skynet.be>
 > ---
->  drivers/mtd/devices/block2mtd.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  drivers/mtd/devices/block2mtd.c | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
 > 
 > diff --git a/drivers/mtd/devices/block2mtd.c b/drivers/mtd/devices/block2mtd.c
-> index d9fd87a..0efee5b 100644
+> index f0fd4fc..5b9b145 100644
 > --- a/drivers/mtd/devices/block2mtd.c
 > +++ b/drivers/mtd/devices/block2mtd.c
-> @@ -244,7 +244,8 @@ static struct block2mtd_dev *add_device(char *devname, int erase_size)
+> @@ -254,16 +254,15 @@ static struct block2mtd_dev *add_device(char *devname, int erase_size)
+>  		goto devinit_err1;
 >  	}
->  	dev->blkdev = bdev;
 >  
-> -	if (MAJOR(bdev->bd_dev) == MTD_BLOCK_MAJOR) {
-> +	if ((MAJOR(bdev->bd_dev) == MTD_BLOCK_MAJOR) ||
-> +	    (MAJOR(bdev->bd_dev) == MTD_CHAR_MAJOR)) {
->  		pr_err("attempting to use an MTD device as a block device\n");
->  		goto devinit_err;
->  	}
+> +	name = kasprintf(GFP_KERNEL, "block2mtd: %s", devname);
+> +	if (!name)
+> +		goto devinit_err1;
+> +
+>  	mutex_init(&dev->write_mutex);
+>  
+>  	/* Setup the MTD structure */
+>  	/* make the name contain the block device in */
+> -	name = kasprintf(GFP_KERNEL, "block2mtd: %s", devname);
+> -	if (!name)
+> -		goto devinit_err2;
+> -
+>  	dev->mtd.name = name;
+> -
+>  	dev->mtd.size = dev->blkdev->bd_inode->i_size & PAGE_MASK;
+>  	dev->mtd.erasesize = erase_size;
+>  	dev->mtd.writesize = 1;
 > -- 
 > 1.8.1.4
 
-Now that the changes are separated on a per-patch basis they're much
-much easier to review. Thanks!
-
-Regarding this changes, it seems to me it's not needed. Are you sure
-you can attach "block2mtd" to a char MTD device?
-
-That would be odd, given this function calls blkdev_get_by_{path/dev};
-which will check the device is of block type in the first place.
-
-What's your motivation for this change?
+Hm.. this change doesn't seem to make sense. You just moved the name
+format to happen before the mutex_init. I wonder if I'm missing something.
 -- 
 Ezequiel García, Free Electrons
 Embedded Linux, Kernel and Android Engineering
