@@ -1,21 +1,31 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W6vwo-0006C6-Nq
- for linux-mtd@lists.infradead.org; Sat, 25 Jan 2014 05:38:27 +0000
-Date: Sat, 25 Jan 2014 02:38:17 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Fabian Frederick <fabf@skynet.be>
-Subject: Re: [PATCH 2/4] mtd: block2mtd: Add mutex_destroy
-Message-ID: <20140125053816.GB24609@localhost>
-References: <20140123205147.943d63fecf3140aa6cc76994@skynet.be>
+Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W6z2A-0007Py-RS
+ for linux-mtd@lists.infradead.org; Sat, 25 Jan 2014 08:56:11 +0000
+Received: by mail-pa0-f43.google.com with SMTP id rd3so4165529pab.2
+ for <linux-mtd@lists.infradead.org>; Sat, 25 Jan 2014 00:55:48 -0800 (PST)
+Date: Sat, 25 Jan 2014 00:55:37 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Pekon Gupta <pekon@ti.com>
+Subject: Re: [PATCH v1 0/2] mtd: nand: omap: booting from NAND using u-boot
+Message-ID: <20140125085537.GA3162@norris-Latitude-E6410>
+References: <1386925978-23705-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20140123205147.943d63fecf3140aa6cc76994@skynet.be>
-Cc: joern@lazybastard.org, akpm@linux-foundation.org, rdunlap@infradead.org,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+In-Reply-To: <1386925978-23705-1-git-send-email-pekon@ti.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Stefan Roese <sr@denx.de>, Michael Trimarchi <michael@amarulasolutions.com>,
+ r-woodruff2@ti.com, u-boot@lists.denx.de, avinashphilipk@gmail.com,
+ Artem Bityutskiy <dedekind1@gmail.com>, jp.francois@cynove.com,
+ r.meier@siemens.com, balbi@ti.com, Tom Rini <trini@ti.com>,
+ Enric Balletbo Serra <eballetbo@iseebcn.com>, linux-mtd@lists.infradead.org,
+ Igor Grinberg <grinberg@compulab.co.il>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Scott Wood <scottwood@freescale.com>,
+ Javier Martinez Canillas <javier@dowhile0.org>,
+ linux-omap <linux-omap@vger.kernel.org>, ivan.djelic@parrot.com,
+ Nikita Kiryanov <nikita@compulab.co.il>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,33 +35,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jan 23, 2014 at 08:51:47PM +0100, Fabian Frederick wrote:
-> mutex_destroy added on each device in block2mtd_exit and add_device failure
-> 
-> Signed-off-by: Fabian Frederick <fabf@skynet.be>
-> ---
->  drivers/mtd/devices/block2mtd.c | 13 ++++++++-----
->  1 file changed, 8 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/mtd/devices/block2mtd.c b/drivers/mtd/devices/block2mtd.c
-> index 0efee5b..8071596 100644
-> --- a/drivers/mtd/devices/block2mtd.c
-> +++ b/drivers/mtd/devices/block2mtd.c
-> @@ -240,14 +240,14 @@ static struct block2mtd_dev *add_device(char *devname, int erase_size)
->  
->  	if (IS_ERR(bdev)) {
->  		pr_err("error: cannot open device %s\n", devname);
-> -		goto devinit_err;
-> +		goto devinit_err1;
+Hi Pekon,
 
-Ah, this one commit looks good, but the naming of the labels doesn't.
+Sorry, I'm revisiting your patch series a bit late. There are a few
+factors that contributed to this, though.
 
-Instead, you should use a name describing what the error path does,
-such as "err_free_block2mtd" and "err_destroy_mutex" or something like that.
+1. This patch series talks extensively about U-Boot. U-Boot is not my
+   interest, nor should it be the focus of kernel (driver) development.
+   Any work done here should be framed in the kernel driver context. [1]
 
-We have a language full of words with meaning, so it's shame to use
-dumb numbers :-)
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+2. You have previously CC'd me on U-Boot patches. Or at least, I think
+   so. More about this in the next point...
+
+3. The U-Boot source code structure is rather similar to pieces of Linux
+   subsystems. So without additional effort, it is hard to discern
+   whether a patch is intended for Linux MTD or U-Boot MTD.
+
+4. You cross-posted to both the U-Boot and Linux-MTD mailing lists.
+
+So the sum of all this is that I ignored these patches at first, as they
+weren't clearly intended for me.
+
+On Fri, Dec 13, 2013 at 02:42:56PM +0530, Pekon Gupta wrote:
+> As there were parallel set of patches running between u-boot and kernel.
+
+I don't know what patches you're talking about.
+
+> hence, some patch-sets caused regression for OMAP3x platforms when booting
+
+"Hence" is not the right word. The previous sentence doesn't imply that
+there were regressions.
+
+> using u-boot specifically for ecc-schemes (like BCH4_SW).
+
+Huh? What does "specifically for ecc-schemes" mean? You mean that only
+some schemes had regressions? Can you be more specific? What are these
+regressions?
+
+The rest of this cover letter (and most of the patch descriptions)
+describes the configurations and testing (which is all very good, don't
+get me wrong), with a lot of focus on things I don't follow (namely,
+U-Boot), but you omit many of the important details, like
+
+ * What is the regression? I honestly don't see a description of the
+   actual regression. (I can read the code to intuit that, but what's
+   the point of your pages of description if it doesn't mention this?)
+   Please give some logical description of the problem
+ * What are the effects of the regression? ECC bytes in the wrong place,
+   so you see correction failures/corruption? JFFS2 failures? (The
+   "oobfree" changes, for instance, should only affect something like
+   JFFS2.)
+ * What Linux commit caused the regression?
+ * Should this patch set be marked for -stable? And for what kernel
+   release? (the previous question would help answer this)
+
+> Hence this patch series fixes those regressions, and tests complete
+[...] snip
+
+I'm preparing a 3.14 pull request soon, and since you seem committed to
+fixing and properly testing a known regression here, I'd like to see
+this go in. But given the late timing and the unanswered questions, I
+think it's unlikely to go in -rc1. Perhaps I can send a later pull
+request if we can get it together properly.
+
+So I'd like to first of all get a few answers to my questions, and then
+I think we might want to refresh this patch series with a little better
+commit messages and perhaps a separate documentation file (not
+necessarily in the same patch series, as the fix is more urgent).
+
+Brian
+
+   [1] For instance, rather than saying "the ECC layout doesn't match
+   U-Boot", you should probably describe what the intended ECC layout
+   should look like and show that Linux does not match it. Perhaps it's
+   time for some better documentation, like Ezequiel stashed under
+   Documentation/mtd/nand/ for pxa3xx. You could also take some cues
+   from Huang's comments on ECC layouts, etc., in gpmi-nand.c.
