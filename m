@@ -1,24 +1,22 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
+Received: from mail-pa0-f42.google.com ([209.85.220.42])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W83Jo-00060z-Ny
- for linux-mtd@lists.infradead.org; Tue, 28 Jan 2014 07:42:50 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: RE: [PATCH v1 0/2] mtd: nand: omap: booting from NAND using u-boot
-Date: Tue, 28 Jan 2014 07:42:09 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA6B567@DBDE04.ent.ti.com>
-References: <1386925978-23705-1-git-send-email-pekon@ti.com>
- <20140125085537.GA3162@norris-Latitude-E6410>
-In-Reply-To: <20140125085537.GA3162@norris-Latitude-E6410>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1W83NY-00064e-8r
+ for linux-mtd@lists.infradead.org; Tue, 28 Jan 2014 07:46:41 +0000
+Received: by mail-pa0-f42.google.com with SMTP id kl14so31255pab.29
+ for <linux-mtd@lists.infradead.org>; Mon, 27 Jan 2014 23:46:15 -0800 (PST)
+Date: Mon, 27 Jan 2014 23:46:11 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [GIT PULL] MTD changes for 3.14
+Message-ID: <20140128074611.GH3162@norris-Latitude-E6410>
 MIME-Version: 1.0
-Cc: Artem Bityutskiy <dedekind1@gmail.com>, "Balbi, Felipe" <balbi@ti.com>,
- "u-boot@lists.denx.de" <u-boot@lists.denx.de>,
- Enric Balletbo Serra <eballetbo@iseebcn.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- linux-omap <linux-omap@vger.kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Linux Kernel <linux-kernel@vger.kernel.org>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,170 +26,325 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+Hi Linus,
 
->From: Brian Norris
->
->Hi Pekon,
->
->Sorry, I'm revisiting your patch series a bit late. There are a few
->factors that contributed to this, though.
->
->1. This patch series talks extensively about U-Boot. U-Boot is not my
->   interest, nor should it be the focus of kernel (driver) development.
->   Any work done here should be framed in the kernel driver context. [1]
->
->2. You have previously CC'd me on U-Boot patches. Or at least, I think
->   so. More about this in the next point...
->
->3. The U-Boot source code structure is rather similar to pieces of Linux
->   subsystems. So without additional effort, it is hard to discern
->   whether a patch is intended for Linux MTD or U-Boot MTD.
->
->4. You cross-posted to both the U-Boot and Linux-MTD mailing lists.
->
->So the sum of all this is that I ignored these patches at first, as they
->weren't clearly intended for me.
->
->On Fri, Dec 13, 2013 at 02:42:56PM +0530, Pekon Gupta wrote:
->> As there were parallel set of patches running between u-boot and kernel.
->
->I don't know what patches you're talking about.
->
-Following patch-sets touched ecc.layout while cleaning up OMAP NAND driver.
-u-boot: http://lists.denx.de/pipermail/u-boot/2013-November/167551.html
-kernel: http://lists.infradead.org/pipermail/linux-mtd/2013-October/049414.=
-html
+Here are the MTD updates for 3.14. Sorry, I still haven't gotten many
+useful signatures on my key yet. I don't know too many local developers
+in your web of trust. I'll try to get to a conference soon enough.
 
+Notably, I'm adding myself to MAINTAINERS. I've gotten an ack from Artem
+(an unofficial maintainer), but David's ack would be nice.
 
->> hence, some patch-sets caused regression for OMAP3x platforms when booti=
-ng
->
->"Hence" is not the right word. The previous sentence doesn't imply that
->there were regressions.
->
->> using u-boot specifically for ecc-schemes (like BCH4_SW).
->
->Huh? What does "specifically for ecc-schemes" mean? You mean that only
->some schemes had regressions? Can you be more specific? What are these
->regressions?
->
-It was reported by Enric Balletbo Serra <eballetbo@iseebcn.com> [2] that
-when using 'OMAP_ECC_BCH8_CODE_HW_DETECTION_SW' ecc-scheme
-there was a mismatch in ECC layout between mainline u-boot and kernel.
-This caused boot failure when kernel tried to mount UBIFS with image
-flashed from u-boot.
+Regards,
+Brian
 
-This was missed while testing earlier patch-sets because only OMAP3 boards
-use above ecc-scheme as OMAP3 SoC do not have ELM hardware engine.
-All the later platforms use 'OMAP_ECC_BCH8_CODE_HW' ecc-scheme.
-Both ecc-scheme are based on same algorithm of BCH8 ECC code except that:
-(1) 'OMAP_ECC_BCH8_CODE_HW_DETECTION_SW' uses /lib/bch.c software
-library for ecc-correction.
-(2) 'OMAP_ECC_BCH8_CODE_HW' uses ELM hardware engine for ecc-correction.
+The following changes since commit 802eee95bde72fd0cd0f3a5b2098375a487d1eda:
 
-This regression affects following ecc-schemes, as ecc.layout logic is just
-copy-paste of each-other.
-- 'OMAP_ECC_BCH4_CODE_HW_DETECTION_SW' and
-- 'OMAP_ECC_BCH8_CODE_HW_DETECTION_SW'
+  Linux 3.13-rc6 (2013-12-29 16:01:33 -0800)
 
+are available in the git repository at:
 
->The rest of this cover letter (and most of the patch descriptions)
->describes the configurations and testing (which is all very good, don't
->get me wrong), with a lot of focus on things I don't follow (namely,
->U-Boot), but you omit many of the important details, like
->
-> * What is the regression? I honestly don't see a description of the
->   actual regression. (I can read the code to intuit that, but what's
->   the point of your pages of description if it doesn't mention this?)
->   Please give some logical description of the problem
->
-[Patch 1/2] of this series actually simplification of 'ecclayout->oobfree->=
-offset'
-It does not fix the regression, but it's important to clean it, before any =
-new
-feature additions.
-[Patch 2/2] Actually fixes the regression for affected ecc-schemes. But
-"this patch also touches other ecc-schemes as the fix required
- refactoring common code, into ecc-scheme specific code."
+  git://git.infradead.org/linux-mtd.git tags/for-linus-20140127
 
+for you to fetch changes up to 0ff76a920e3558307567b45aa0a91fb914924bfc:
 
-> * What are the effects of the regression? ECC bytes in the wrong place,
->   so you see correction failures/corruption? JFFS2 failures? (The
->   "oobfree" changes, for instance, should only affect something like
->   JFFS2.)
->
-As mentioned above [PATCH 1/2] which touches 'ecclayout->oobfree->offset'
-is a clean-up not affecting regression, but it should be taken in before
-any further feature or ecc-scheme changes.
-Now, what is your preference?
-(a)  Take [PATCH 1/2] ecc.layout clean-up separately.
-(b) Take ecc.layout as part of this series, but may be with different patch=
- title.
+  mtd: gpmi: add sanity check when mapping DMA for read_buf/write_buf (2014-01-27 21:55:03 -0800)
 
+----------------------------------------------------------------
+MTD updates for 3.14:
+ - Add me (Brian Norris) as an additional MTD maintainer (it'd be nice to get
+   David's "ack" for this; I'm sure he approves, but he's been pretty silent
+   lately)
+ - Add Ezequiel Garcia as maintainer for the pxa3xx NAND driver
+ - Last (?) round of pxa3xx improvements for supporting Armada 370/XP
+ - Typical churn in driver boilerplate (OOM messages, printk()'s, devm_*, etc.)
+ - Quad read mode support for SPI NOR driver (m25p80)
+ - Update Davinci NAND driver to prepare for use on new platforms
+ - Begin to kill off NAND_MAX_{PAGE,OOB}SIZE macros; more work is pending
+ - Miscellaneous NAND device support (new IDs)
+ - Add READ RETRY support for Micron MLC NAND
+ - Support new GPMI NAND ECC layout device-tree binding
+ - Avoid mapping stack/vmalloc() memory for GPMI NAND DMA
 
-> * What Linux commit caused the regression?
-> * Should this patch set be marked for -stable? And for what kernel
->   release? (the previous question would help answer this)
->
-This regression was caused in=20
-	commit b491da7233d5dc1a24d46ca1ad0209900329c5d0
-	 mtd: nand: omap: clean-up ecc layout for BCH ecc schemes
-So, this should be applicable from 3.13.x+
+----------------------------------------------------------------
+Alexander Shiyan (1):
+      mtd: nand: diskonchip: Request memory region prior ioremap()
 
+Axel Lin (3):
+      mtd: convert to use ATTRIBUTE_GROUPS
+      mtd: make deregister_mtd_parser return void
+      mtd: make register_mtd_parser return void
 
->> Hence this patch series fixes those regressions, and tests complete
->[...] snip
->
->I'm preparing a 3.14 pull request soon, and since you seem committed to
->fixing and properly testing a known regression here, I'd like to see
->this go in. But given the late timing and the unanswered questions, I
->think it's unlikely to go in -rc1. Perhaps I can send a later pull
->request if we can get it together properly.
->
-Yes, if the above details are sufficient, then I'll:
-(1) re-word [PATCH 1/2] commit log & title to mention that it's a clean-up
-(2) Add above description and details of regression into commit log of [PAT=
-CH 2/2]
-(3) Include your other comments on individual patches.
+Brian Norris (14):
+      mtd: nand: pxa3xx: make ECC configuration checks more explicit
+      mtd: nand: fix misspelling in ONFI parameter field name
+      MAINTAINERS: mtd: add Brian Norris for MTD maintenance
+      mtd: nand: lpc32xx_mlc: drop custom write_page callback
+      mtd: nand-gpio: don't waste memory for OF failure
+      mtd: omap2: use nand_base defaults for polled I/O
+      mtd: onenand: fix warning (integer used as pointer)
+      mtd: nand: localize ECC failures per page
+      mtd: nand: add ONFI vendor block for Micron
+      mtd: nand: add generic READ RETRY support
+      mtd: nand: support Micron READ RETRY
+      mtd: nand: use __packed shorthand
+      mtd: m25p80: assign default read command
+      mtd: mtdram: add missing 'const'
 
+Cai Zhiyong (1):
+      mtd: nand: assign mtd->name in find_full_id_nand
 
->So I'd like to first of all get a few answers to my questions, and then
->I think we might want to refresh this patch series with a little better
->commit messages and perhaps a separate documentation file (not
->necessarily in the same patch series, as the fix is more urgent).
->
-Yes, I plan to get some documentation in kernel docs. But for now
-I do have a 'un-polished' page for OMAP NAND driver on TI wiki [3].
-Please let me know if you would like something similar for kernel docs.
+Ezequiel Garcia (33):
+      mtd: nand: omap2: Fix OMAP_BCH option dependency
+      mtd: nand: pxa3xx: devicetree binding update
+      mtd: nand: pxa3xx: Add documentation about the controller
+      mtd: nand: pxa3xx: Make config menu show supported platforms
+      mtd: nand: pxa3xx: Prevent sub-page writes
+      mtd: nand: pxa3xx: read_page() returns max_bitflips
+      mtd: nand: pxa3xx: Early variant detection
+      mtd: nand: pxa3xx: Use chip->cmdfunc instead of the internal
+      mtd: nand: pxa3xx: Split FIFO size from to-be-read FIFO count
+      mtd: nand: pxa3xx: Replace host->page_size by mtd->writesize
+      mtd: nand: pxa3xx: Add a nice comment to pxa3xx_set_datasize()
+      mtd: nand: pxa3xx: Use a completion to signal device ready
+      mtd: nand: pxa3xx: Use waitfunc() to wait for the device to be ready
+      mtd: nand: pxa3xx: Add bad block handling
+      mtd: nand: pxa3xx: Add driver-specific ECC BCH support
+      mtd: nand: pxa3xx: Clear cmd buffer #3 (NDCB3) on command start
+      mtd: nand: pxa3xx: Add helper function to set page address
+      mtd: nand: pxa3xx: Remove READ0 switch/case falltrough
+      mtd: nand: pxa3xx: Split prepare_command_pool() in two stages
+      mtd: nand: pxa3xx: Move the data buffer clean to prepare_start_command()
+      mtd: nand: pxa3xx: Fix SEQIN column address set
+      mtd: nand: pxa3xx: Add a read/write buffers markers
+      mtd: nand: pxa3xx: Introduce multiple page I/O support
+      mtd: nand: pxa3xx: Add multiple chunk write support
+      mtd: nand: pxa3xx: Add ECC BCH correctable errors detection
+      mtd: nand: refactor print messages
+      MAINTAINERS: mtd: add PXA3xx NAND driver to MAINTAINERS
+      mtd: nand: sh_flctl: Remove unneeded CONFIG_OF
+      mtd: nand: pxa3xx: Clear need_wait flag when starting a command
+      mtd: nand: pxa3xx: Use extended cmdfunc() only if needed
+      mtd: nand: pxa3xx: Consolidate ECC initialization
+      mtd: Hide CONFIG_MTD_BLKDEVS from the menu
+      mtd: nand: pxa3xx: Add "armada370-nand" compatible
 
-I'm happy that you are scrutinizing each patch and their commit logs wisely=
-.
-Thanks much for that. This helps me and probably everyone else to tighten-u=
-p
-so that only good quality patch-sets go in. This eventually will make the
-sub-system and the drivers more stable for long-term.
+Fabio Estevam (4):
+      mtd: gpmi: Use devm_clk_get()
+      mtd: gpmi-lib: Make checkpatch happy
+      mtd: nand: mxc_nand: Check the return value from clk_prepare_enable()
+      mtd: tests: mtd_nandecctest: Use IS_ENABLED() macro
 
-Also, if you don't mind, I'll still continue to cross-post this particular
-Patch-series on both u-boot and kernel mailing lists just to maintain
-continuity, as I know there are lot of OMAP3 users which are following
-only one of the two lists.. (but I'm cutting down on the CC list).
-I'll avoid cross posting in future.
+Geert Uytterhoeven (7):
+      mtd: remove superfluous name casts
+      mtd: pasemi_nand.c: remove superfluous name cast
+      mtd: ms02-nv: remove superfluous name cast
+      mtd: make mtd_partition.name const
+      mtd: m25p80: Use OPCODE_QUAD_READ_4B for 4-byte addressing
+      mtd: m25p80: Enable Quad SPI read transfers for s25fl512s
+      mtd: m25p80: Set rx_nbits for Quad SPI transfers
 
+Huang Shijie (17):
+      mtd: gpmi: add a new DT property to use the datasheet's minimum required ECC
+      mtd: gpmi: do not use the local array to do the DMA transfer
+      mtd: gpmi: delete the gpmi_pre_bbt_scan
+      mtd: gpmi: remove the unused line
+      mtd: gpmi: rename the functions from gpmi_nfc_* to gpmi_nand_*
+      mtd: gpmi: use devm_ioremap_resource
+      mtd: gpmi: use devm_request_irq
+      mtd: gpmi: remove the unnecessary pr_err()
+      mtd: gpmi: change pr_err to dev_err
+      mtd: gpmi: change pr_debug to dev_dbg
+      mtd: mxc-nand: kill the NAND_MAX_PAGESIZE/NAND_MAX_OOBSIZE
+      mtd: denali: kill the NAND_MAX_PAGESIZE/NAND_MAX_OOBSIZE
+      mtd: nand: add support for Samsung K9LCG08U0B
+      mtd: nand: add SanDisk manufacturer ID
+      mtd: nand: add Intel manufacturer ID
+      mtd: gpmi: allocate a proper buffer for non ECC read/write
+      mtd: gpmi: add sanity check when mapping DMA for read_buf/write_buf
 
->Brian
->
->   [1] For instance, rather than saying "the ECC layout doesn't match
->   U-Boot", you should probably describe what the intended ECC layout
->   should look like and show that Linux does not match it. Perhaps it's
->   time for some better documentation, like Ezequiel stashed under
->   Documentation/mtd/nand/ for pxa3xx. You could also take some cues
->   from Huang's comments on ECC layouts, etc., in gpmi-nand.c.
+Igor Grinberg (1):
+      mtd: m25p80: add support for m25px16
 
+Ivan Khoronzhuk (9):
+      mtd: nand: davinci: fix driver registration
+      mtd: nand: davinci: return ENOMEM if memory allocation is failed
+      mtd: nand: davinci: check required ti,davinci-chipselect property
+      mtd: nand: davinci: simplify error handling
+      mtd: nand: davinci: move bindings under mtd
+      mtd: nand: davinci: extend description of bindings
+      mtd: nand: davinci: adjust DT properties to MTD generic
+      mtd: nand: davinci: reuse driver for Keystone arch
+      mtd: nand: davinci: don't request AEMIF address range
 
-[2] http://lists.denx.de/pipermail/u-boot/2013-December/168440.html
-[3] https://processors.wiki.ti.com/index.php/Linux_Core_NAND_User%27s_Guide=
- (under construction)
+Jingoo Han (36):
+      mtd: dataflash: remove unnecessary spi_set_drvdata()
+      mtd: denali: remove DEFINE_PCI_DEVICE_TABLE macro
+      mtd: docg3: Use devm_*() functions
+      mtd: lantiq-flash: Use devm_kzalloc()
+      mtd: denali_dt: Use devm_clk_get()
+      mtd: lpc32xx_slc: Use devm_*() functions
+      mtd: nuc900_nand: Use devm_*() functions
+      mtd: tmio_nand: Use devm_*() functions
+      mtd: atmel_nand: Remove unnecessary OOM messages
+      mtd: orion_nand: Remove unnecessary OOM messages
+      mtd: sharpsl: Remove unnecessary OOM messages
+      mtd: au1550nd: Remove unnecessary OOM messages
+      mtd: bf5xx_nand: Remove unnecessary OOM messages
+      mtd: cafe_nand: Remove unnecessary OOM messages
+      mtd: cmx270_nand: Remove unnecessary OOM messages
+      mtd: cs553x_nand: Remove unnecessary OOM messages
+      mtd: diskonchip: Remove unnecessary OOM messages
+      mtd: fsl_elbc_nand: Remove unnecessary OOM messages
+      mtd: fsl_ifc_nand: Remove unnecessary OOM messages
+      mtd: jz4740_nand: Remove unnecessary OOM messages
+      mtd: txx9ndfmc: Remove unnecessary OOM messages
+      mtd: davinci_nand: Remove unnecessary OOM messages
+      mtd: fsmc_nand: Remove unnecessary OOM messages
+      mtd: nand-gpio: Remove unnecessary OOM messages
+      mtd: lpc32xx_mlc: Remove unnecessary OOM messages
+      mtd: lpc32xx_slc: Remove unnecessary OOM messages
+      mtd: mpc5121_nfc: Remove unnecessary OOM messages
+      mtd: s3c2410: Remove unnecessary OOM messages
+      mtd: sh_flctl: Remove unnecessary OOM messages
+      mtd: atmel_nand: use dev_err() instead of printk()
+      mtd: fsmc_nand: use dev_warn() instead of printk()
+      mtd: orion_nand: use dev_err() instead of printk()
+      mtd: sharpsl: use dev_err() instead of printk()
+      mtd: ixp4xx: Use devm_*() functions
+      mtd: plat_nand: Use devm_*() functions
+      mtd: plat_nand: Remove unnecessary OOM messages
 
+Josh Triplett (1):
+      mtd: denali: Drop print of build date/time
 
-with regards, pekon
+Laurent Pinchart (3):
+      mtd: sh_flctl: enable driver compilation with COMPILE_TEST
+      mtd: sh_flctl: fix warnings due to improper casts
+      mtd: sh_flctl: use devm_* managed allocators
+
+Michael Grzeschik (1):
+      mtd: mxc_nand: remove duplicated ecc_stats counting
+
+Philipp Rosenberger (1):
+      of_mtd: fix header file include guard
+
+Prabhakar Kushwaha (1):
+      mtd: nand: Update mtd.name assignment type to u64 for IFC, eLBC
+
+Rafał Miłecki (2):
+      mtd: bcm47xxpart: find boot partition by CFE magic
+      mtd: bcm47xxpart: alternative MAGIC for board_data partition
+
+Rashika Kheria (2):
+      mtd: lpddr: Mark functions as static and remove unused function
+      mtd: denali: Mark function is_erased() as static
+
+Rodolfo Giometti (1):
+      mtd: nand: pxa3xx: Add support for 2048 bytes page size devices
+
+Sachin Kamat (4):
+      mtd: omap2: Cleanup header files
+      mtd: orion: Cleanup mtd-orion_nand.h header
+      mtd: onenand: Trivial cleanup in samsung.h
+      mtd: s3c2410: Merge plat/regs-nand.h into s3c2410.c
+
+Sourav Poddar (2):
+      drivers: mtd: m25p80: convert "bool" read check into an enum
+      drivers: mtd: m25p80: add quad read support
+
+Uwe Kleine-König (1):
+      mtd: nand: don't use {read,write}_buf for 8-bit transfers
+
+Wei Yongjun (5):
+      mtd: mpc5121_nfc: drop devm_free_irq of devm_ allocated irq
+      mtd: mxc_nand: add missing clk_disable_unprepare() in mxcnd_remove()
+      mtd: au1550nd: add missing platform_set_drvdata()
+      mtd: plat_nand: remove redundant return value check of platform_get_resource()
+      mtd: nuc900_nand: remove redundant return value check of platform_get_resource()
+
+Zhouyi Zhou (1):
+      jffs2: NULL return of kmem_cache_zalloc should be handled
+
+ .../devicetree/bindings/arm/davinci/nand.txt       |  46 --
+ .../devicetree/bindings/mtd/davinci-nand.txt       |  94 +++
+ .../devicetree/bindings/mtd/gpmi-nand.txt          |   8 +
+ .../devicetree/bindings/mtd/pxa3xx-nand.txt        |   6 +-
+ Documentation/mtd/nand/pxa3xx-nand.txt             | 113 ++++
+ MAINTAINERS                                        |   9 +-
+ arch/arm/plat-samsung/include/plat/regs-nand.h     | 123 ----
+ drivers/mtd/Kconfig                                |   7 +-
+ drivers/mtd/afs.c                                  |   3 +-
+ drivers/mtd/ar7part.c                              |   3 +-
+ drivers/mtd/bcm47xxpart.c                          |  27 +-
+ drivers/mtd/bcm63xxpart.c                          |   3 +-
+ drivers/mtd/cmdlinepart.c                          |   3 +-
+ drivers/mtd/devices/docg3.c                        |  20 +-
+ drivers/mtd/devices/m25p80.c                       | 226 ++++++-
+ drivers/mtd/devices/ms02-nv.c                      |   2 +-
+ drivers/mtd/devices/mtd_dataflash.c                |   5 +-
+ drivers/mtd/devices/mtdram.c                       |   2 +-
+ drivers/mtd/lpddr/lpddr_cmds.c                     |  32 +-
+ drivers/mtd/maps/ixp4xx.c                          |  28 +-
+ drivers/mtd/maps/lantiq-flash.c                    |  37 +-
+ drivers/mtd/maps/pxa2xx-flash.c                    |   2 +-
+ drivers/mtd/maps/sun_uflash.c                      |   2 +-
+ drivers/mtd/mtdcore.c                              |  10 +-
+ drivers/mtd/mtdpart.c                              |   9 +-
+ drivers/mtd/nand/Kconfig                           |  14 +-
+ drivers/mtd/nand/atmel_nand.c                      |   8 +-
+ drivers/mtd/nand/au1550nd.c                        |   6 +-
+ drivers/mtd/nand/bf5xx_nand.c                      |   1 -
+ drivers/mtd/nand/cafe_nand.c                       |   4 +-
+ drivers/mtd/nand/cmx270_nand.c                     |   1 -
+ drivers/mtd/nand/cs553x_nand.c                     |   1 -
+ drivers/mtd/nand/davinci_nand.c                    |  93 +--
+ drivers/mtd/nand/denali.c                          |  53 +-
+ drivers/mtd/nand/denali.h                          |   4 +-
+ drivers/mtd/nand/denali_dt.c                       |   4 +-
+ drivers/mtd/nand/denali_pci.c                      |   3 +-
+ drivers/mtd/nand/diskonchip.c                      |  13 +-
+ drivers/mtd/nand/fsl_elbc_nand.c                   |   3 +-
+ drivers/mtd/nand/fsl_ifc_nand.c                    |   3 +-
+ drivers/mtd/nand/fsmc_nand.c                       |  16 +-
+ drivers/mtd/nand/gpio.c                            |  12 +-
+ drivers/mtd/nand/gpmi-nand/gpmi-lib.c              | 127 ++--
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c             | 207 +++---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.h             |   2 -
+ drivers/mtd/nand/jz4740_nand.c                     |   4 +-
+ drivers/mtd/nand/lpc32xx_mlc.c                     |  26 +-
+ drivers/mtd/nand/lpc32xx_slc.c                     |  19 +-
+ drivers/mtd/nand/mpc5121_nfc.c                     |  10 +-
+ drivers/mtd/nand/mxc_nand.c                        |  25 +-
+ drivers/mtd/nand/nand_base.c                       | 183 +++++-
+ drivers/mtd/nand/nand_ids.c                        |   2 +
+ drivers/mtd/nand/nuc900_nand.c                     |  54 +-
+ drivers/mtd/nand/omap2.c                           |   8 +-
+ drivers/mtd/nand/orion_nand.c                      |   4 +-
+ drivers/mtd/nand/pasemi_nand.c                     |   2 +-
+ drivers/mtd/nand/plat_nand.c                       |  40 +-
+ drivers/mtd/nand/pxa3xx_nand.c                     | 713 +++++++++++++++++----
+ drivers/mtd/nand/s3c2410.c                         |  38 +-
+ drivers/mtd/nand/sh_flctl.c                        |  55 +-
+ drivers/mtd/nand/sharpsl.c                         |   6 +-
+ drivers/mtd/nand/tmio_nand.c                       |  46 +-
+ drivers/mtd/nand/txx9ndfmc.c                       |   5 +-
+ drivers/mtd/ofpart.c                               |  19 +-
+ drivers/mtd/onenand/generic.c                      |   2 +-
+ drivers/mtd/onenand/samsung.h                      |   2 -
+ drivers/mtd/redboot.c                              |   3 +-
+ drivers/mtd/tests/mtd_nandecctest.c                |   2 +-
+ fs/jffs2/malloc.c                                  |   4 +
+ include/linux/mtd/mtdram.h                         |   2 +-
+ include/linux/mtd/nand.h                           |  41 +-
+ include/linux/mtd/partitions.h                     |   8 +-
+ include/linux/of_mtd.h                             |   2 +-
+ include/linux/platform_data/mtd-nand-omap2.h       |   2 -
+ include/linux/platform_data/mtd-nand-pxa3xx.h      |   3 +
+ include/linux/platform_data/mtd-onenand-omap2.h    |   2 -
+ include/linux/platform_data/mtd-orion_nand.h       |   6 +-
+ 77 files changed, 1688 insertions(+), 1045 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/arm/davinci/nand.txt
+ create mode 100644 Documentation/devicetree/bindings/mtd/davinci-nand.txt
+ create mode 100644 Documentation/mtd/nand/pxa3xx-nand.txt
+ delete mode 100644 arch/arm/plat-samsung/include/plat/regs-nand.h
