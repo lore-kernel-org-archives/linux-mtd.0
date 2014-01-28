@@ -1,22 +1,22 @@
-Received: from mail-pd0-f178.google.com ([209.85.192.178])
+Received: from mail-pb0-x234.google.com ([2607:f8b0:400e:c01::234])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W81C7-0001wb-OB
- for linux-mtd@lists.infradead.org; Tue, 28 Jan 2014 05:26:45 +0000
-Received: by mail-pd0-f178.google.com with SMTP id y13so6588116pdi.23
- for <linux-mtd@lists.infradead.org>; Mon, 27 Jan 2014 21:26:18 -0800 (PST)
-Date: Mon, 27 Jan 2014 21:26:12 -0800
+ id 1W81PN-0002M4-Rx
+ for linux-mtd@lists.infradead.org; Tue, 28 Jan 2014 05:40:26 +0000
+Received: by mail-pb0-f52.google.com with SMTP id jt11so6830298pbb.25
+ for <linux-mtd@lists.infradead.org>; Mon, 27 Jan 2014 21:40:03 -0800 (PST)
+Date: Mon, 27 Jan 2014 21:32:46 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 0/4] m25p80 Quad/Dual updates
-Message-ID: <20140128052612.GE3162@norris-Latitude-E6410>
-References: <1390309159-19643-1-git-send-email-geert@linux-m68k.org>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [patch v2] mtd: sm_ftl: heap corruption in
+ sm_create_sysfs_attributes()
+Message-ID: <20140128053246.GF3162@norris-Latitude-E6410>
+References: <52A06B00.7070309@bfs.de> <20131205145349.GA13302@elgon.mountain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1390309159-19643-1-git-send-email-geert@linux-m68k.org>
-Cc: Marek Vasut <marex@denx.de>, linux-mtd@lists.infradead.org,
- Sourav Poddar <sourav.poddar@ti.com>, David Woodhouse <dwmw2@infradead.org>,
- linux-spi@vger.kernel.org
+In-Reply-To: <20131205145349.GA13302@elgon.mountain>
+Cc: kernel-janitors@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-mtd@lists.infradead.org, walter harms <wharms@bfs.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,28 +26,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jan 21, 2014 at 01:59:15PM +0100, Geert Uytterhoeven wrote:
-> This patch series allows to really use Quad and Dual SPI Read Tranfers
-> with the m25p80 driver:
->     [1/4] mtd: m25p80: Enable Quad SPI read transfers for s25fl512s
->     [2/4] mtd: m25p80: Set rx_nbits for Quad SPI transfers
+On Thu, Dec 05, 2013 at 05:53:50PM +0300, Dan Carpenter wrote:
+> We always put a NUL terminator one space past the end of the "vendor"
+> buffer.  Walter Harms also pointed out that this should just use
+> kstrndup().
+> 
+> Fixes: 7d17c02a01a1 ('mtd: Add new SmartMedia/xD FTL')
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Pushed 1 and 2 to l2-mtd.git/master and will submit for 3.14-rc1, as
-they are trivial extensions/bugfixes for stuff we have queued now.
+Patch looks good.
 
->     [3/4] mtd: m25p80: Add dual read support
->     [4/4] mtd: m25p80: Enable Dual SPI read transfers for s25fl256s1 and
-> 	  s25fl512s
+> ---
+> v2:  Use kstrndup().
+>      Don't subtract 1 from the strnlen() limiter for the NUL.  I think
+>      it's ok to go over?
 
-Patches 3 and 4 are queued in l2-mtd.git/next and should go in next
-merge window.
+I don't think you're "going over" anything. You're just (correctly)
+allocating the buffer as (at most) one byte larger than (SM_SMALL_PAGE -
+SM_CIS_VENDOR_OFFSET), which is perfect if you're copying up to
+(SM_SMALL_PAGE - SM_CIS_VENDOR_OFFSET) bytes of character data.
 
-> Patch [2/4] is a bug fix.
-> Patches [3/4] and [4/4] may be considered of limited use (why use Dual
-> transfers if you have Quad transfers?), but
->   1. not all Quad-capable devices may be connected using 6 wires,
->   2. it allows to test Dual SPI transfers in SPI master drivers.
-
-Reason 1 is especially good. Thanks for the patches.
+Pushed to l2-mtd.git/next, queued for 3.15. Thanks.
 
 Brian
