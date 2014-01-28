@@ -1,20 +1,25 @@
-Received: from ns.omicron.at ([212.183.10.25])
+Received: from mail-ig0-x233.google.com ([2607:f8b0:4001:c05::233])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W844J-0006go-7y
- for linux-mtd@lists.infradead.org; Tue, 28 Jan 2014 08:30:53 +0000
-From: Christian Riesch <christian.riesch@omicron.at>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v2 RESEND 0/2] mtd: Harmonize implementations of OTP write and
- _get_{fact, user}_prot_info
-Date: Tue, 28 Jan 2014 09:29:43 +0100
+ id 1W8ILk-0002yj-TO
+ for linux-mtd@lists.infradead.org; Tue, 28 Jan 2014 23:45:49 +0000
+Received: by mail-ig0-f179.google.com with SMTP id c10so3095510igq.0
+ for <linux-mtd@lists.infradead.org>; Tue, 28 Jan 2014 15:45:26 -0800 (PST)
+Date: Tue, 28 Jan 2014 15:45:23 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Alexander Sverdlin <alexander.sverdlin@nsn.com>
+Subject: Re: [PATCH v2] mtd: phram: Repair multiple instances support
+Message-ID: <20140128234523.GA8919@ld-irv-0074>
+References: <525C2147.9060605@nsn.com>
+ <20131107073139.GC3805@norris.computersforpeace.net>
+ <52B002D1.7060001@nsn.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Message-ID: <acc2341a-fbbe-4508-a8e0-00e94a28d01c@mary.at.omicron.at>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- linux-kernel@vger.kernel.org, Amul Kumar Saha <amul.saha@samsung.com>,
- Kyungmin Park <kyungmin.park@samsung.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Christian Riesch <christian.riesch@omicron.at>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <52B002D1.7060001@nsn.com>
+Cc: Joern Engel <joern@lazybastard.org>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>,
+ =?iso-8859-1?Q?Herv=E9?= Fache <h-fache@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,65 +29,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+On Tue, Dec 17, 2013 at 08:52:49AM +0100, Alexander Sverdlin wrote:
+> On 07/11/13 08:31, ext Brian Norris wrote:
+> > On Mon, Oct 14, 2013 at 06:52:23PM +0200, Alexander Sverdlin wrote:
+> >> mtd: phram: Repair multiple instances support
+> >>
+> >> Commit b2a2a84d35e0f42ad26e326ec4258f6a8b8eecbe (mtd: phram: dot not crash when
+> >> built-in and passing boot param) claims to be "based on Ville Herva's similar
+> >> patch to block2mtd" (c4e7fb313771ac03dfdca26d30e8b721731c562b), but it has
+> >> missed the crucial point of the original path: all these "if(n)def MODULE".
+> >> It has broken the possibility to create several phram instances when phram is
+> >> compiled as module. The possibility to add instances via /sys writes to
+> >> /sys/module/phram/parameters/phram was also broken with mentioned patch.
+> >> Proposed patch takes the idea of original block2mtd patch to its full extent.
+> >> Assumtion "This function is always called before 'init_phram()'" was also
+> >> incorrect, so removed the comment. This patch effectively reverts also
+> >> b11ec57fc6e6d4882ef01a0c09a1dde58f50492e (mtd: phram: fix section mismatch for
+> >> phram_setup).
+> >>
+> >> v2 changes: Fixed error handling in init_phram(). 
+> >>
+> >> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nsn.com>
+> > 
+> > Can we get any testers? Perhaps Hervé can confirm this?
+> 
+> Have addressed Ville Herva, Ryosuke Saito, Hervé Fache on 07.11.2013, no answer
+> until now. Seems nobody interested in it any more. Any chances we still get this in?
 
-In the discussion on my patchset for the OTP support for
-drivers/mtd/chips/cfi_cmdset_0002.c [1-5], Artem requested two changes in the
-current code of the OTP write functions and the _get_{fact,user}_prot_info
-code.
+Yeah, looks ok. Pushed to l2-mtd.git/next, for 3.15.
 
-These two patches are an attempt to make the requested changes.
-
-The first patch adds a retlen parameter to the _get_fact_prot_info and
-_get_user_prot_info functions and thus harmonizes the implementation
-with those of the write and read functions.
-
-The second patch fixes a problem that I earlier addressed in [1]. After
-the discussion about this patch on the mtd mailing list, I think that the
-correct behavior of the write function should be the one specified in [6]:
-Try to write as many bytes as possible and return the number of bytes
-that were written. If no data could be written due to lack of OTP memory,
-return -ENOSPC.
-
-Artem, would you please have a look at these patches? I would like to know
-if I understood you correctly, or if I missed something here. Please note
-that I cannot test these patches since I do not have the hardware. The
-patches are compile tested only. If these patches are ok, I will also
-respin the OTP support patches for cfi_cmdset_0002.
-
-Changes for v2:
-- Fixed buggy cfi_intelext_get_fact_prot_info
-
-Thank you!
-
-Best regards,
-Christian
-
-[1] http://patchwork.ozlabs.org/patch/239897/
-[2] http://patchwork.ozlabs.org/patch/240010/
-[3] http://patchwork.ozlabs.org/patch/240007/
-[4] http://patchwork.ozlabs.org/patch/240008/
-[5] http://patchwork.ozlabs.org/patch/240009/
-[6] http://pubs.opengroup.org/onlinepubs/9699919799/functions/write.html
-
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Cc: Kyungmin Park <kyungmin.park@samsung.com>
-Cc: Amul Kumar Saha <amul.saha@samsung.com>
-Cc: Brian Norris <computersforpeace@gmail.com>
-
-Christian Riesch (2):
-  mtd: Add a retlen parameter to _get_{fact,user}_prot_info
-  mtd: Fix the behavior of otp write if there is not enough room for
-    data
-
- drivers/mtd/chips/cfi_cmdset_0001.c |   44 +++++++++++++++++++----------------
- drivers/mtd/devices/mtd_dataflash.c |   20 +++++++---------
- drivers/mtd/mtdchar.c               |   18 ++++++++++----
- drivers/mtd/mtdcore.c               |   12 +++++-----
- drivers/mtd/mtdpart.c               |   14 ++++++-----
- drivers/mtd/onenand/onenand_base.c  |   40 ++++++++++++++++---------------
- include/linux/mtd/mtd.h             |   16 ++++++-------
- 7 files changed, 89 insertions(+), 75 deletions(-)
-
--- 
-1.7.9.5
+Brian
