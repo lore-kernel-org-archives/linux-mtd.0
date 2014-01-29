@@ -1,22 +1,25 @@
-Date: Wed, 29 Jan 2014 10:56:42 -0700
-From: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
-To: Boris BREZILLON <b.brezillon.dev@gmail.com>
-Subject: Re: [RFC PATCH v2 08/14] mtd: nand: add sunxi NAND flash controller
- support
-Message-ID: <20140129175641.GF1427@obsidianresearch.com>
-References: <1391006064-28890-1-git-send-email-b.brezillon.dev@gmail.com>
- <1391006064-28890-9-git-send-email-b.brezillon.dev@gmail.com>
+Message-ID: <52E94204.1050207@gmail.com>
+Date: Wed, 29 Jan 2014 19:01:40 +0100
+From: Boris BREZILLON <b.brezillon.dev@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1391006064-28890-9-git-send-email-b.brezillon.dev@gmail.com>
-Cc: devicetree@vger.kernel.org, Russell King <linux@arm.linux.org.uk>,
- Arnd Bergmann <arnd@arndb.de>, linux-doc@vger.kernel.org, dev@linux-sunxi.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Rob Landley <rob@landley.net>, Grant Likely <grant.likely@linaro.org>,
+To: Rob Herring <robherring2@gmail.com>
+Subject: Re: [RFC PATCH v2 09/14] mtd: nand: add sunxi NFC dt bindings doc
+References: <1391006064-28890-1-git-send-email-b.brezillon.dev@gmail.com>	<1391006064-28890-10-git-send-email-b.brezillon.dev@gmail.com>
+ <CAL_JsqLVr1gSLArqtfOiHce+u6ZK8FiKMX0o9bvMrMoGGhATvg@mail.gmail.com>
+In-Reply-To: <CAL_JsqLVr1gSLArqtfOiHce+u6ZK8FiKMX0o9bvMrMoGGhATvg@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Russell King <linux@arm.linux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, dev@linux-sunxi.org,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ linux-mtd@lists.infradead.org, Rob Landley <rob@landley.net>,
+ Grant Likely <grant.likely@linaro.org>,
  Maxime Ripard <maxime.ripard@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,44 +29,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jan 29, 2014 at 03:34:18PM +0100, Boris BREZILLON wrote:
+Hello Rob,
 
-> +static int sunxi_nand_chip_init_timings(struct sunxi_nand_chip *chip,
-> +					struct device_node *np)
-> +{
-> +	const struct nand_sdr_timings *timings;
-> +	u32 min_clk_period = 0;
-> +	int ret;
-> +
-> +	ret = onfi_get_async_timing_mode(&chip->nand);
-> +	if (ret == ONFI_TIMING_MODE_UNKNOWN) {
-> +		ret = of_get_nand_onfi_timing_mode(np);
-> +		if (ret < 0)
-> +			return ret;
-> +	}
+Le 29/01/2014 18:11, Rob Herring a écrit :
+> On Wed, Jan 29, 2014 at 8:34 AM, Boris BREZILLON
+> <b.brezillon.dev@gmail.com> wrote:
+>> Add the sunxi NAND Flash Controller dt bindings documentation.
+>>
+>> Signed-off-by: Boris BREZILLON <b.brezillon.dev@gmail.com>
+>> ---
+>>   .../devicetree/bindings/mtd/sunxi-nand.txt         |   46 ++++++++++++++++++++
+>>   1 file changed, 46 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/mtd/sunxi-nand.txt
+>>
+>> diff --git a/Documentation/devicetree/bindings/mtd/sunxi-nand.txt b/Documentation/devicetree/bindings/mtd/sunxi-nand.txt
+>> new file mode 100644
+>> index 0000000..b0e55a3
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/mtd/sunxi-nand.txt
+>> @@ -0,0 +1,46 @@
+>> +Allwinner NAND Flash Controller (NFC)
+>> +
+>> +Required properties:
+>> +- compatible : "allwinner,sun4i-nand".
+>> +- reg : shall contain registers location and length for data and reg.
+>> +- interrupts : shall define the nand controller interrupt.
+>> +- #address-cells: shall be set to 1. Encode the nand CS.
+>> +- #size-cells : shall be set to 0.
+>> +- clocks : shall reference nand controller clocks.
+>> +- clock-names : nand controller internal clock names. Shall contain :
+>> +    * "ahb_clk" : AHB gating clock
+>> +    * "sclk" : nand controller clock
+>> +
+>> +Optional children nodes:
+>> +Children nodes represent the available nand chips.
+>> +
+>> +Optional properties:
+> For the controller or per nand chip?
+>
+>> +- onfi,nand-timing-mode : mandatory if the chip does not support the ONFI
+>> +  standard.
+> Add to generic nand binding.
+>
+>> +- allwinner,rb : shall contain the native Ready/Busy ids.
+>> + or
+>> +- rb-gpios : shall contain the gpios used as R/B pins.
+> Isn't allwinner,rb implied by a lack of rb-gpios property. Or no R/B
+> pin is an option?
+Both are optional. In case none of the properties are defined the dev_ready
+callback is set to NULL and the nand_base waiting loop is used.
 
-[..]
+> If so, don't you need some fixed time delay
+> properties like max erase time?
 
-> +static int sunxi_nand_chip_init(struct device *dev, struct sunxi_nfc *nfc,
-[..]
-> +       ret = sunxi_nand_chip_init_timings(chip, np);
-> +       if (ret)
-> +               return ret;
-[..]
-> +       ret = nand_scan_ident(mtd, nsels, NULL);
+This is handled in nand_base (using the chip_delay field), but I guess 
+we could
+use the information retrieved from nand timings and the operation in 
+progress...
 
-This ordering looks a bit problematic, will onfi_get_async_timing_mode
-ever return anything other than ONFI_TIMING_MODE_UNKNOWN if it is
-called before nand_scan_ident ? What sets clk_rate to non-zero if there
-is no DT property?
-
-For a flow that uses onfi_get_async_timing_mode rather than DT the
-driver should set the interface to timing mode 0 (slowest) and then
-call nand_scan_ident, and then reset the interface to the detected
-timing mode.
-
-Maybe this should be implemented in the core code through a new
-callback (nand->set_timing_mode ?)
-
-Regards,
-Jason
+> rb-gpios could be added to the generic nand binding as well.
+Sure.
+>
+> Rob
