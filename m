@@ -1,31 +1,25 @@
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Rob Herring <robherring2@gmail.com>, Boris BREZILLON
- <b.brezillon.dev@gmail.com>, "Ezequiel Garcia
- (ezequiel.garcia@free-electrons.com)" <ezequiel.garcia@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: RE: [RFC PATCH v2 09/14] mtd: nand: add sunxi NFC dt bindings doc
-Date: Wed, 29 Jan 2014 18:36:25 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA6C05D@DBDE04.ent.ti.com>
-References: <1391006064-28890-1-git-send-email-b.brezillon.dev@gmail.com>
- <1391006064-28890-10-git-send-email-b.brezillon.dev@gmail.com>
- <CAL_JsqLVr1gSLArqtfOiHce+u6ZK8FiKMX0o9bvMrMoGGhATvg@mail.gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA6C01D@DBDE04.ent.ti.com>
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA6C01D@DBDE04.ent.ti.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <52E94AE6.3020107@gmail.com>
+Date: Wed, 29 Jan 2014 19:39:34 +0100
+From: Boris BREZILLON <b.brezillon.dev@gmail.com>
 MIME-Version: 1.0
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Russell King <linux@arm.linux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- "dev@linux-sunxi.org" <dev@linux-sunxi.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Balbi,
- Felipe" <balbi@ti.com>, Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [RFC PATCH v2 03/14] of: mtd: add documentation for nand-ecc-level
+ property
+References: <1391006064-28890-1-git-send-email-b.brezillon.dev@gmail.com>
+ <1391006064-28890-4-git-send-email-b.brezillon.dev@gmail.com>
+ <20140129175331.GA27143@localhost>
+In-Reply-To: <20140129175331.GA27143@localhost>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: devicetree@vger.kernel.org, Russell King <linux@arm.linux.org.uk>,
+ Arnd Bergmann <arnd@arndb.de>, linux-doc@vger.kernel.org, dev@linux-sunxi.org,
+ linux-kernel@vger.kernel.org,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ linux-mtd@lists.infradead.org, Pekon Gupta <pekon@ti.com>,
  Rob Landley <rob@landley.net>, Grant Likely <grant.likely@linaro.org>,
  Maxime Ripard <maxime.ripard@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,37 +29,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Rob, and other DT maintainers,
-(apologies, fixed typos in earlier mail)
+Hello Ezequiel
 
->>From: Rob Herring
->[...]
->>> +- onfi,nand-timing-mode : mandatory if the chip does not support the O=
-NFI
->>> +  standard.
+Le 29/01/2014 18:53, Ezequiel Garcia a écrit :
+> On Wed, Jan 29, 2014 at 03:34:13PM +0100, Boris BREZILLON wrote:
+>> nand-ecc-level property statically defines NAND chip's ECC requirements.
 >>
->>Add to generic nand binding.
+>> Signed-off-by: Boris BREZILLON <b.brezillon.dev@gmail.com>
+>> ---
+>>   Documentation/devicetree/bindings/mtd/nand.txt |    3 +++
+>>   1 file changed, 3 insertions(+)
 >>
->>> +- allwinner,rb : shall contain the native Ready/Busy ids.
->>> + or
->>> +- rb-gpios : shall contain the gpios used as R/B pins.
->>
->>Isn't allwinner,rb implied by a lack of rb-gpios property. Or no R/B
->>pin is an option? If so, don't you need some fixed time delay
->>properties like max erase time?
->>
->>rb-gpios could be added to the generic nand binding as well.
->>
-I do _not_ think this should go into generic nand binding, as this is contr=
-oller specific.
-Some controllers have dedicated R/B pin (Ready/Busy) while others may use
-GPIO instead. It's the way a hardware controller is designed.
+>> diff --git a/Documentation/devicetree/bindings/mtd/nand.txt b/Documentation/devicetree/bindings/mtd/nand.txt
+>> index 03855c8..0c962296 100644
+>> --- a/Documentation/devicetree/bindings/mtd/nand.txt
+>> +++ b/Documentation/devicetree/bindings/mtd/nand.txt
+>> @@ -3,5 +3,8 @@
+>>   - nand-ecc-mode : String, operation mode of the NAND ecc mode.
+>>     Supported values are: "none", "soft", "hw", "hw_syndrome", "hw_oob_first",
+>>     "soft_bch".
+>> +- nand-ecc-level : Two cells property defining the ECC level requirements.
+>> +  The first cell represent the strength and the second cell the ECC block size.
+>> +  E.g. : nand-ecc-level = <4 512>; /* 4 bits / 512 bytes */
+>>   - nand-bus-width : 8 or 16 bus width if not present 8
+>>   - nand-on-flash-bbt: boolean to enable on flash bbt option if not present false
+> Hm.. when was this proposal agreed?
+Never, this is a proposal based on my needs, and this was not present in the
+1st version of this series :-).
+> It seems I've missed the
+> discussion...
+>
+> FWIW, we've already proposed an equivalent one, but it received no
+> feedback from the devicetree maintainers:
+>
+> http://comments.gmane.org/gmane.linux.drivers.devicetree/58764
+>
+> Maybe we can discuss about it now?
+>
+>    nand-ecc-strength : integer ECC required strength.
+>    nand-ecc-size : integer step size associated to the ECC strength.
+>
+>    vs.
+>
+>    nand-ecc-level : Two cells property defining the ECC level requirements.
+>    The first cell represent the strength and the second cell the ECC block size.
+>    E.g. : nand-ecc-level = <4 512>; /* 4 bits / 512 bytes */
+>
+> It's really the same proposal but with a different format, right?
 
-Request you to please consider Ack from MTD Maintainers 'at-least' for
-generic NAND DT bindings. There is already a discussion going in
-a separate thread for which there are still no replies [1].
+Yes it is.
 
-[1] http://lists.infradead.org/pipermail/linux-mtd/2014-January/051625.html
+> IMHO, the former is more human-readable, but other than that I see no
+> difference.
 
+As I already said to Pekon, I won't complain if my proposal is not chosen,
+as long as there is a proper way to define these ECC requirements ;-).
 
-with regards, pekon
+Best Regards,
+
+Boris
+
+>
+> Brian? DT-guys?
