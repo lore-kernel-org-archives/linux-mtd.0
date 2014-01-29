@@ -1,15 +1,22 @@
-Received: from mail-ie0-x229.google.com ([2607:f8b0:4001:c03::229])
+Received: from mail-ie0-x22f.google.com ([2607:f8b0:4001:c03::22f])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W8d2k-0002DB-VH
- for linux-mtd@lists.infradead.org; Wed, 29 Jan 2014 21:51:36 +0000
-Received: by mail-ie0-f169.google.com with SMTP id to1so2730633ieb.14
- for <linux-mtd@lists.infradead.org>; Wed, 29 Jan 2014 13:51:13 -0800 (PST)
+ id 1W8dTL-0003BU-FB
+ for linux-mtd@lists.infradead.org; Wed, 29 Jan 2014 22:19:03 +0000
+Received: by mail-ie0-f175.google.com with SMTP id ar20so2630639iec.6
+ for <linux-mtd@lists.infradead.org>; Wed, 29 Jan 2014 14:18:42 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd: m25p80: add Macronix mx66l1g55g 1Gbit SPI flash
-Date: Wed, 29 Jan 2014 13:43:46 -0800
-Message-Id: <1391031826-28794-1-git-send-email-computersforpeace@gmail.com>
-Cc: Marek Vasut <marex@denx.de>, Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCH 2/2] mtd: nand: don't use read_buf for 8-bit ONFI transfers
+Date: Wed, 29 Jan 2014 14:18:29 -0800
+Message-Id: <1391033909-6563-2-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1391033909-6563-1-git-send-email-computersforpeace@gmail.com>
+References: <1391033909-6563-1-git-send-email-computersforpeace@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Brian Norris <computersforpeace@gmail.com>, Pekon Gupta <pekon@ti.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ u.kleine-koenig@pengutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,22 +26,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Use a repeated read_byte() instead of read_buf(), since for x16 buswidth
+devices, we need to avoid the upper I/O[16:9] bits. See the following
+commit for reference:
+
+commit 05f7835975dad6b3b517f9e23415985e648fb875
+Author: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Date:   Thu Dec 5 22:22:04 2013 +0100
+
+    mtd: nand: don't use {read,write}_buf for 8-bit transfers
+
+Now, I think that all barriers to probing ONFI on x16 devices are
+removed, so remove the check from nand_flash_detect_onfi().
+
+Tested on 8-bit ONFI NAND (Micron MT29F32G08CBADAWP).
+
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/devices/m25p80.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mtd/nand/nand_base.c | 14 +++-----------
+ 1 file changed, 3 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 1e147a849c35..5124b649d68c 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -940,6 +940,7 @@ static const struct spi_device_id m25p_ids[] = {
- 	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, 0) },
- 	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
- 	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, M25P80_QUAD_READ) },
-+	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, M25P80_QUAD_READ) },
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index c69a1f7ce0a2..47fdf1704ff1 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3065,7 +3065,7 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+ 					int *busw)
+ {
+ 	struct nand_onfi_params *p = &chip->onfi_params;
+-	int i;
++	int i, j;
+ 	int val;
  
- 	/* Micron */
- 	{ "n25q064",     INFO(0x20ba17, 0, 64 * 1024,  128, 0) },
+ 	/* Try ONFI for unknown chip or LP */
+@@ -3074,18 +3074,10 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+ 		chip->read_byte(mtd) != 'F' || chip->read_byte(mtd) != 'I')
+ 		return 0;
+ 
+-	/*
+-	 * ONFI must be probed in 8-bit mode or with NAND_BUSWIDTH_AUTO, not
+-	 * with NAND_BUSWIDTH_16
+-	 */
+-	if (chip->options & NAND_BUSWIDTH_16) {
+-		pr_err("ONFI cannot be probed in 16-bit mode; aborting\n");
+-		return 0;
+-	}
+-
+ 	chip->cmdfunc(mtd, NAND_CMD_PARAM, 0, -1);
+ 	for (i = 0; i < 3; i++) {
+-		chip->read_buf(mtd, (uint8_t *)p, sizeof(*p));
++		for (j = 0; j < sizeof(*p); j++)
++			((uint8_t *)p)[j] = chip->read_byte(mtd);
+ 		if (onfi_crc16(ONFI_CRC_BASE, (uint8_t *)p, 254) ==
+ 				le16_to_cpu(p->crc)) {
+ 			break;
 -- 
 1.8.3.2
