@@ -6,14 +6,11 @@ To: Maxime Ripard <maxime.ripard@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
  Arnd Bergmann <arnd@arndb.de>
-Subject: =?UTF-8?q?=5BRFC=20PATCH=20v2=2004/14=5D=20mtd=3A=20nand=3A=20define=20struct=20nand=5Ftimings?=
-Date: Wed, 29 Jan 2014 15:34:14 +0100
-Message-Id: <1391006064-28890-5-git-send-email-b.brezillon.dev@gmail.com>
+Subject: [RFC PATCH v2 12/14] ARM: sunxi/dt: enable NAND on cubietruck board
+Date: Wed, 29 Jan 2014 15:34:22 +0100
+Message-Id: <1391006064-28890-13-git-send-email-b.brezillon.dev@gmail.com>
 In-Reply-To: <1391006064-28890-1-git-send-email-b.brezillon.dev@gmail.com>
 References: <1391006064-28890-1-git-send-email-b.brezillon.dev@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 Cc: devicetree@vger.kernel.org, Boris BREZILLON <b.brezillon.dev@gmail.com>,
  linux-doc@vger.kernel.org, dev@linux-sunxi.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
@@ -26,71 +23,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Define a struct containing the standard NAND timings as described in NAND
-datasheets.
+Enable the NFC and describe the NAND flash connected to this controller.
 
 Signed-off-by: Boris BREZILLON <b.brezillon.dev@gmail.com>
 ---
- include/linux/mtd/nand.h |   49 ++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 49 insertions(+)
+ arch/arm/boot/dts/sun7i-a20-cubietruck.dts |   31 ++++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
 
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 9e6c8f9..67f0829 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -805,4 +805,53 @@ static inline bool nand_is_slc(struct nand_chip *chip)
- {
- 	return chip->bits_per_cell == 1;
- }
+diff --git a/arch/arm/boot/dts/sun7i-a20-cubietruck.dts b/arch/arm/boot/dts/sun7i-a20-cubietruck.dts
+index 8a1009d..031de97 100644
+--- a/arch/arm/boot/dts/sun7i-a20-cubietruck.dts
++++ b/arch/arm/boot/dts/sun7i-a20-cubietruck.dts
+@@ -19,6 +19,37 @@
+ 	compatible = "cubietech,cubietruck", "allwinner,sun7i-a20";
+ 
+ 	soc@01c00000 {
++		nfc: nand@01c03000 {
++			pinctrl-names = "default";
++			pinctrl-0 = <&nand_pins_a &nand_cs0_pins_a &nand_rb0_pins_a>;
++			status = "okay";
 +
-+/**
-+ * struct nand_sdr_timings - SDR NAND chip timings
-+ *
-+ * This struct defines the timing requirements of a SDR NAND chip.
-+ * These informations can be found in every NAND datasheets and the timings
-+ * meaning are described in the ONFI specifications:
-+ * www.onfi.org/~/media/ONFI/specs/onfi_3_1_spec.pdf‎ (chapter 4.15 Timing
-+ * Parameters)
-+ *
-+ */
++			nand@0 {
++				#address-cells = <1>;
++				#size-cells = <1>;
++				reg = <0>;
++				allwinner,rb = <0>;
++				nand-ecc-mode = "soft_bch";
 +
-+struct nand_sdr_timings {
-+	u32 tALH_min;
-+	u32 tADL_min;
-+	u32 tALS_min;
-+	u32 tAR_min;
-+	u32 tCEA_max;
-+	u32 tCEH_min;
-+	u32 tCH_min;
-+	u32 tCHZ_max;
-+	u32 tCLH_min;
-+	u32 tCLR_min;
-+	u32 tCLS_min;
-+	u32 tCOH_min;
-+	u32 tCS_min;
-+	u32 tDH_min;
-+	u32 tDS_min;
-+	u32 tFEAT_max;
-+	u32 tIR_min;
-+	u32 tITC_max;
-+	u32 tRC_min;
-+	u32 tREA_max;
-+	u32 tREH_min;
-+	u32 tRHOH_min;
-+	u32 tRHW_min;
-+	u32 tRHZ_max;
-+	u32 tRLOH_min;
-+	u32 tRP_min;
-+	u32 tRR_min;
-+	u64 tRST_max;
-+	u32 tWB_max;
-+	u32 tWC_min;
-+	u32 tWH_min;
-+	u32 tWHR_min;
-+	u32 tWP_min;
-+	u32 tWW_min;
-+};
++				/* nand timings */
++				tCLS-min = <6>;
++				tCLH-min = <3>;
++				tCS-min = <20>;
++				tCH-min = <5>;
++				tWP-min = <8>;
++				tWH-min = <6>;
++				tALS-min = <6>;
++				tDS-min = <6>;
++				tDH-min = <2>;
++				tRR-min = <20>;
++				tALH-min = <3>;
++				tRP-min = <8>;
++				tREH-min = <6>;
++				tRC-min = <16>;
++				tWC-min = <16>;
++			};
++		};
 +
- #endif /* __LINUX_MTD_NAND_H */
+ 		pinctrl@01c20800 {
+ 			led_pins_cubietruck: led_pins@0 {
+ 				allwinner,pins = "PH7", "PH11", "PH20", "PH21";
 -- 
 1.7.9.5
