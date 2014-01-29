@@ -1,32 +1,24 @@
-Received: from mail-wg0-x229.google.com ([2a00:1450:400c:c00::229])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W8YR1-0001nR-IC
- for linux-mtd@lists.infradead.org; Wed, 29 Jan 2014 16:56:21 +0000
-Received: by mail-wg0-f41.google.com with SMTP id n12so8583681wgh.2
- for <linux-mtd@lists.infradead.org>; Wed, 29 Jan 2014 08:55:54 -0800 (PST)
-Message-ID: <52E93298.5080502@gmail.com>
-Date: Wed, 29 Jan 2014 17:55:52 +0100
-From: boris brezillon dev <b.brezillon.dev@gmail.com>
 MIME-Version: 1.0
-To: Michal Suchanek <hramrach@gmail.com>
-Subject: Re: [linux-sunxi] Re: [RFC PATCH 0/9] mtd: nand: add sunxi NAND Flash
- Controller support
-References: <1389190924-26226-1-git-send-email-b.brezillon@overkiz.com>
- <52D1494E.9090303@overkiz.com> <1389449230.19197.2.camel@localhost>
- <52D1541F.4040400@overkiz.com> <1389456075.20989.11.camel@localhost>
- <1389474709.22660.4.camel@localhost> <52D3ABB6.9030204@overkiz.com>
- <CAOMqctSrXow1Wjppzp0Y4+p26KFFggtEphxX2xcs0ZoLvDUx1g@mail.gmail.com>
- <52E92193.2060200@gmail.com>
- <CAOMqctSH9UCo6m45QFKFboZPcE2sgAogntoXcw9J1PUv+eUtkw@mail.gmail.com>
-In-Reply-To: <CAOMqctSH9UCo6m45QFKFboZPcE2sgAogntoXcw9J1PUv+eUtkw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: dev@linux-sunxi.org,
+In-Reply-To: <1391006064-28890-10-git-send-email-b.brezillon.dev@gmail.com>
+References: <1391006064-28890-1-git-send-email-b.brezillon.dev@gmail.com>
+ <1391006064-28890-10-git-send-email-b.brezillon.dev@gmail.com>
+Date: Wed, 29 Jan 2014 11:11:34 -0600
+Message-ID: <CAL_JsqLVr1gSLArqtfOiHce+u6ZK8FiKMX0o9bvMrMoGGhATvg@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 09/14] mtd: nand: add sunxi NFC dt bindings doc
+From: Rob Herring <robherring2@gmail.com>
+To: Boris BREZILLON <b.brezillon.dev@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ Russell King <linux@arm.linux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, dev@linux-sunxi.org,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- =?UTF-8?B?SGVucmlrIE5vcmRz?= =?UTF-8?B?dHLDtm0=?= <henrik@henriknordstrom.net>,
- linux-sunxi <linux-sunxi@googlegroups.com>, linux-mtd@lists.infradead.org,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ linux-mtd@lists.infradead.org, Rob Landley <rob@landley.net>,
+ Grant Likely <grant.likely@linaro.org>,
  Maxime Ripard <maxime.ripard@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,134 +28,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 29/01/2014 17:08, Michal Suchanek wrote:
-> On 29 January 2014 16:43, boris brezillon dev <b.brezillon.dev@gmail.com> wrote:
->> Hello Michal,
->>
->>
->> On 29/01/2014 16:11, Michal Suchanek wrote:
->>> On 13 January 2014 10:02, boris brezillon <b.brezillon@overkiz.com> wrote:
->>>>
->>>> boot 0 part properties:
->>>> - uses sequential ECC
->>>> - uses 1024 bytes ECC blocks
->>>> - boot0 code is stored only on the first ECC block of each page (1024
->>>> bytes
->>>> + ecc bytes)
->>>> - boot0 code is stored on the first 64 pages of the first block
->>>> - boot0 uses HW randomizer with a specific rnd seed (0x4a80)
->>>>
->>>> It's not that complicated to read/write from/to boot0, but it's a bit
->>>> more
->>>> to mainline this
->>>> implementation:
->>>>    - the nand chip must use the same ECC algorithm and ECC layout on the
->>>> whole
->>>> flash
->>>>      (no partition specific config available)
->>>> - you cannot mark some part of pages as unused => the nand driver will
->>>> write
->>>> the
->>>>     whole page, not just the first ECC block (1024 bytes)
->>>>
->>>> I thought about manually creating an mtd device that fullfils these needs
->>>> (in case we
->>>> encounter the "allwinner,nandn-boot" property on a nand@X node), but I'm
->>>> not
->>>> sure
->>>> this is the right approach.
->>>>
->>>> Any ideas ?
->>> Maybe if varying parameters on one MTD device is not acceptable you
->>> could export parts of the flash as different MTD devices each with its
->>> own parameters. Since the boot0 part is fixed size this should not
->>> really be an issue. Existing MTD drivers that share hardware with
->>> other devices exist - eg. the MTD driver which exports part of RAM as
->>> MDT device.
->>
->> I considered this option (exposing 2 mtd devices which use the
->> same nand chip: one for the boot partition and the other one
->> for the remaining space).
->> I might give it a try.
->>
->> For the moment I'm trying to use standard partitions and then
->> attach one of these partitions as a sunxi-nand-boot-interface.
->> Something similar to what UBI is doing when attaching to an MTD
->> device.
->>
->> This way we can use the NAND as a standard MTD dev and when one
->> partition is attached as a sunxi-nand-boot-interface you can access
->> the boot0 partition using a char dev (/dev/snbi0 ?).
->> The sunxi-nand-boot-interface will provide the appropriate abstraction
->> to hide the specific boot0 layout...
->>
->> What do you think ?
-> If it works with MTD, sure.
+On Wed, Jan 29, 2014 at 8:34 AM, Boris BREZILLON
+<b.brezillon.dev@gmail.com> wrote:
+> Add the sunxi NAND Flash Controller dt bindings documentation.
 >
-> The problem the two devices avoid is that with uniform parameters
-> across MTD device the boot0 partition is invalid.
-
-Using partitions we would still have X char devices (X = number of MTD
-partitions). But indeed, we need to provide a way to configure ECC and
-randomizer specifically on each partition.
-
+> Signed-off-by: Boris BREZILLON <b.brezillon.dev@gmail.com>
+> ---
+>  .../devicetree/bindings/mtd/sunxi-nand.txt         |   46 ++++++++++++++++++++
+>  1 file changed, 46 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/sunxi-nand.txt
 >
->>
->>> I wonder if it would be good idea to make it possible to use the NAND
->>> only for storage without a boot0 area. If this is selected by a DT
->>> parameter as suggested changing the parameter will probably make the
->>> NAND unreadable.
->> Actually the NAND controller supports up to 8 chips. I guess only the
->> first one can be used as a boot device.
->> Reserving space for the boot partition on all of these chips is kind of
->> useless.
-> This actually depends on the BROM.
->
-> I did not read the BROM code so I don't know what it does.
->
->> Moreover, we can't tell if the user wants to boot from the NAND or
->> from another storage (MMC for example), in this case we don't need
->> to expose the boot0 partition.
-> It's possible to use the NAND only for storage, sure.
->
-> However, a NAND on which the boo0 area is reserved would be unreadable
-> without reserving boot0 area in the driver, right?
+> diff --git a/Documentation/devicetree/bindings/mtd/sunxi-nand.txt b/Documentation/devicetree/bindings/mtd/sunxi-nand.txt
+> new file mode 100644
+> index 0000000..b0e55a3
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/sunxi-nand.txt
+> @@ -0,0 +1,46 @@
+> +Allwinner NAND Flash Controller (NFC)
+> +
+> +Required properties:
+> +- compatible : "allwinner,sun4i-nand".
+> +- reg : shall contain registers location and length for data and reg.
+> +- interrupts : shall define the nand controller interrupt.
+> +- #address-cells: shall be set to 1. Encode the nand CS.
+> +- #size-cells : shall be set to 0.
+> +- clocks : shall reference nand controller clocks.
+> +- clock-names : nand controller internal clock names. Shall contain :
+> +    * "ahb_clk" : AHB gating clock
+> +    * "sclk" : nand controller clock
+> +
+> +Optional children nodes:
+> +Children nodes represent the available nand chips.
+> +
+> +Optional properties:
 
-Not exactly: the NAND would still be readable but the blocks reserved for
-boot0 (boot0 partition) won't be read correctly (ECC layout differs).
-If you define a partition boot0 with the appropriate size and never access
-it, the other partitions defined on the same NAND chip will work perfectly.
+For the controller or per nand chip?
 
-To solve this ECC config issue we might need to provide a way to configure
-the ECC engine per partition and not on the whole NAND chip.
+> +- onfi,nand-timing-mode : mandatory if the chip does not support the ONFI
+> +  standard.
 
-Moreover, IRC, BROM only uses 1K on each page of a given block to store
-boot0 code and data.
+Add to generic nand binding.
 
-And eventually the randomizer config (random seed) is specific for this
-partition too.
-Note that the current driver does not support randomization at all.
-I'm still working on providing a generic framework to support HW and SW
-randomization (in the same way HW and SW ECC are supported).
+> +- allwinner,rb : shall contain the native Ready/Busy ids.
+> + or
+> +- rb-gpios : shall contain the gpios used as R/B pins.
 
-For all the reasons exposed above we need a specific handling for the boot0
-partition. But I'd like to keep the NAND Flash controller driver as 
-simple and
-as generic as possible.
-I'd prefer adding a new driver for the sunxi boot0 partition handling than
-adding this code in the sunxi_nand driver.
-Atfer all, this boot partition has nothing to do with NAND, this is just 
-a specific
-format for the sunxi BROM to load code from NAND to RAM, right ?
+Isn't allwinner,rb implied by a lack of rb-gpios property. Or no R/B
+pin is an option? If so, don't you need some fixed time delay
+properties like max erase time?
 
->
-> The best we can tell is if user specified to reserve the area in the
-> DT. It might be possible to verify the boot0 area the same way BROM
-> does when booting from it. This might be nice option when you don't
-> know what you have on the chip and want to read it but most of the
-> time you will want to enforce bootable or non-bootable format when
-> writing the NAND.
->
-> Thanks
->
-> Michal
+rb-gpios could be added to the generic nand binding as well.
+
+Rob
