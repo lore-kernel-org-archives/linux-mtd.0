@@ -1,31 +1,29 @@
-Received: from 7.mo3.mail-out.ovh.net ([46.105.57.200]
- helo=mo3.mail-out.ovh.net)
+Received: from mo3.mail-out.ovh.net ([178.32.228.3])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W8SHA-0005Qz-S7
- for linux-mtd@lists.infradead.org; Wed, 29 Jan 2014 10:21:46 +0000
+ id 1W8SQD-0005sb-3V
+ for linux-mtd@lists.infradead.org; Wed, 29 Jan 2014 10:31:05 +0000
 Received: from mail643.ha.ovh.net (b9.ovh.net [213.186.33.59])
- by mo3.mail-out.ovh.net (Postfix) with SMTP id D5BA5FFB823
- for <linux-mtd@lists.infradead.org>; Wed, 29 Jan 2014 11:21:16 +0100 (CET)
-Message-ID: <52E8D5FA.9070400@overkiz.com>
-Date: Wed, 29 Jan 2014 11:20:42 +0100
+ by mo3.mail-out.ovh.net (Postfix) with SMTP id E72B0FFB5E0
+ for <linux-mtd@lists.infradead.org>; Wed, 29 Jan 2014 11:30:41 +0100 (CET)
+Message-ID: <52E8D827.8010609@overkiz.com>
+Date: Wed, 29 Jan 2014 11:29:59 +0100
 From: boris brezillon <b.brezillon@overkiz.com>
 MIME-Version: 1.0
-To: Rob Herring <robherring2@gmail.com>
-Subject: Re: [RFC PATCH 0/9] mtd: nand: add sunxi NAND Flash Controller support
-References: <1389190924-26226-1-git-send-email-b.brezillon@overkiz.com>	<52D1494E.9090303@overkiz.com>
- <CAL_JsqJNd_gtn-cCLbZxT=s5NkkXp0DZkJkZrBhWiaL6Js=woQ@mail.gmail.com>
-In-Reply-To: <CAL_JsqJNd_gtn-cCLbZxT=s5NkkXp0DZkJkZrBhWiaL6Js=woQ@mail.gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [RFC PATCH 1/9] mtd: nand: retrieve ECC requirements from Hynix
+ READ ID byte 4
+References: <1389190924-26226-1-git-send-email-b.brezillon@overkiz.com>
+ <1389190924-26226-2-git-send-email-b.brezillon@overkiz.com>
+ <20140123014906.GY8919@ld-irv-0074>
+In-Reply-To: <20140123014906.GY8919@ld-irv-0074>
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Russell King <linux@arm.linux.org.uk>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, dev@linux-sunxi.org,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- linux-mtd@lists.infradead.org, Rob Landley <rob@landley.net>,
- Grant Likely <grant.likely@linaro.org>,
+Cc: devicetree@vger.kernel.org, Russell King <linux@arm.linux.org.uk>,
+ linux-doc@vger.kernel.org, dev@linux-sunxi.org, linux-kernel@vger.kernel.org,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ Rob Landley <rob@landley.net>, Grant Likely <grant.likely@linaro.org>,
  Maxime Ripard <maxime.ripard@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,48 +33,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Rob,
+Hello Brian,
 
-On 23/01/2014 16:22, Rob Herring wrote:
-> On Sat, Jan 11, 2014 at 7:38 AM, boris brezillon
-> <b.brezillon@overkiz.com> wrote:
->> On 08/01/2014 15:21, Boris BREZILLON wrote:
->>> Hello,
->>>
->>> This series add the sunxi NFC support with up to 8 NAND chip connected.
->>> I'm still in the early stages drivers development and some key features
->>> are
->>> missing, but it's usable (I tested it on the cubietruck board).
->>>
->>> Here's what's missing:
->>>    - HW ECC support
->>>    - DMA support
->>>    - HW randomization support
->>>    - many more improvements
->>>
->>> This series depends on Emilio's patch series implementing mod0 clks
->>>
->>> (http://lists.infradead.org/pipermail/linux-arm-kernel/2013-July/185478.html)
->>> + an other patch not yet posted
->>>
->>> (http://git.elopez.com.ar/linux/commits/5b4eb3ac406b9c98965714d40e8dd6da943d1ab0)
+On 23/01/2014 02:49, Brian Norris wrote:
+> + Huang
+>
+> Hi Boris,
+>
+> On Wed, Jan 08, 2014 at 03:21:56PM +0100, Boris BREZILLON wrote:
+>> The Hynix nand flashes store their ECC requirements in byte 4 of its id
+>> (returned on READ ID command).
 >>
->> During my reasearch regarding the HW ECC and HW randomizer of the Allwinner
->> NAND flash controller I found this document describing the Altera NAND flash
->> controller
->> (which is in turn based on a cadence IP):
-> Which may be similar to drivers/mtd/nand/denali.c as Cadence bought Denali?
-Actually I was wrong, the sunxi and the cadence IP have nothing in common.
-This was pointed out by Henrik (see this thread :
-https://groups.google.com/forum/#!searchin/linux-sunxi/nand/linux-sunxi/x69tFBi95Zk/bNyJlWWOV8oJ 
-<https://groups.google.com/forum/#%21searchin/linux-sunxi/nand/linux-sunxi/x69tFBi95Zk/bNyJlWWOV8oJ>).
+>> Signed-off-by: Boris BREZILLON <b.brezillon@overkiz.com>
+> I haven't verified yet (perhaps Huang can confirm?), but this may be
+> similar to a patch Huang submitted recently. In his case, we found that
+> this table is actually quite unreliable and is likely hard to maintain.
 
-
-Sorry for the false hopes.
-
-Best Regards,
-
-Boris
+You mean these bytes are not reliable within the whole Hynix LP (Large Page)
+NAND product line ?
 
 >
-> Rob
+> Why do you need this ECC information, for my reference?
+
+Because the NAND flash available on the cubietruck board does not 
+support the
+ONFI standard, and I thought this could be a option to retrieve the ECC 
+strength
+requirements.
+
+Anyway, I added a new helper function to retrieve ecc informations from 
+device
+tree (I'll post it in the 2nd version of this series). We'll see if this 
+approach is
+accepted...
+
+>
+> Brian
