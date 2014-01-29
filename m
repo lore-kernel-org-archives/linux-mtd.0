@@ -1,12 +1,13 @@
 Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W8PPQ-000109-1o
- for linux-mtd@lists.infradead.org; Wed, 29 Jan 2014 07:18:05 +0000
-Message-ID: <52E8AB0F.2090905@nod.at>
-Date: Wed, 29 Jan 2014 08:17:35 +0100
+ id 1W8Pc4-0001Du-2y
+ for linux-mtd@lists.infradead.org; Wed, 29 Jan 2014 07:31:08 +0000
+Message-ID: <52E8AE25.8080502@nod.at>
+Date: Wed, 29 Jan 2014 08:30:45 +0100
 From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+To: Richard Weinberger <richard.weinberger@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Subject: Re: [BUG] reproducable ubifs reboot assert and corruption
 References: <20140122051510.GB17284@gmail.com>
@@ -49,14 +50,11 @@ Am 29.01.2014 06:32, schrieb Andrew Ruder:
 > it into the writeback worker queue while we are busy syncing the
 > filesystem only to trigger later when ubifs has decided it is
 > read-only...
+> 
+> Note: I only barely know what I am talking about - filesystems still not
+> my forte :)
 
-So you can trigger this by running fsstress on /mnt and then call
-mount -o remount,ro /mnt?
-
-Can you also trigger it on nandsim or mtdram?
-
-I did a quick test on my testbed using mtdram and was unable to trigger it.
-But I fear my box is too fast.
+BTW: Can you please share your .config?
 
 Thanks,
 //richard
