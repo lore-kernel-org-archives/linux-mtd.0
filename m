@@ -1,22 +1,17 @@
-Received: from mail-ie0-x235.google.com ([2607:f8b0:4001:c03::235])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W8Ict-0003ct-JQ
- for linux-mtd@lists.infradead.org; Wed, 29 Jan 2014 00:03:32 +0000
-Received: by mail-ie0-f181.google.com with SMTP id to1so1374875ieb.12
- for <linux-mtd@lists.infradead.org>; Tue, 28 Jan 2014 16:03:10 -0800 (PST)
-Date: Tue, 28 Jan 2014 16:03:07 -0800
+Date: Tue, 28 Jan 2014 16:23:07 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Fabian Frederick <fabf@skynet.be>
-Subject: Re: [PATCH v2] mtd: block2mtd: Add mutex_destroy
-Message-ID: <20140129000307.GC8919@ld-irv-0074>
-References: <20140125104508.c562066b2276aad0cb3934ee@skynet.be>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH fix] mtd: nand: kill the the
+ NAND_MAX_PAGESIZE/NAND_MAX_OOBSIZE for nand_buffers{}
+Message-ID: <20140129002307.GD8919@ld-irv-0074>
+References: <20140111233937.GF1992@norris-Latitude-E6410>
+ <1389594432-23482-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20140125104508.c562066b2276aad0cb3934ee@skynet.be>
-Cc: rdunlap@infradead.org, joern@lazybastard.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, ezequiel.garcia@free-electrons.com,
- akpm@linux-foundation.org
+In-Reply-To: <1389594432-23482-1-git-send-email-b32955@freescale.com>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,11 +21,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Jan 25, 2014 at 10:45:08AM +0800, Fabian Frederick wrote:
-> mutex_destroy added on each device in block2mtd_exit and add_device failure
+On Mon, Jan 13, 2014 at 02:27:12PM +0800, Huang Shijie wrote:
+> The patch converts the arrays to buffer pointers for nand_buffers{}.
 > 
-> Signed-off-by: Fabian Frederick <fabf@skynet.be>
+> The cafe_nand.c is the only NAND_OWN_BUFFERS user which allocates
+> a nand_buffers{} itself.
+> 
+> This patch disables the DMA for nand_scan_ident, and restore the DMA
+> status after we finish the nand_scan_ident. By this way, we can get the
+> mtd->writesize and mtd->oobsize, and then allocates the cafe->dmabuf
+> with them.
+> 
+> Since the cafe_nand.c uses the NAND_ECC_HW_SYNDROME ECC mode, we do not
+> allocate the buffers for @ecccalc and @ecccode.
+> 
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
+> ---
+> 
+> fix: Setup the DMA address after we have allocated the DMA buffer.
 
-Pushed to l2-mtd.git/next. Thanks!
+Thanks, looks OK. Pushed to l2-mtd.git/next.
 
 Brian
