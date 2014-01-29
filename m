@@ -1,29 +1,20 @@
-Received: from mail-wg0-x235.google.com ([2a00:1450:400c:c00::235])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W8Wop-0006nQ-5l
- for linux-mtd@lists.infradead.org; Wed, 29 Jan 2014 15:12:49 +0000
-Received: by mail-wg0-f53.google.com with SMTP id y10so3826538wgg.20
- for <linux-mtd@lists.infradead.org>; Wed, 29 Jan 2014 07:12:22 -0800 (PST)
+Message-ID: <52E91C54.9090302@ti.com>
+Date: Wed, 29 Jan 2014 17:20:52 +0200
+From: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <52D3ABB6.9030204@overkiz.com>
-References: <1389190924-26226-1-git-send-email-b.brezillon@overkiz.com>
- <52D1494E.9090303@overkiz.com> <1389449230.19197.2.camel@localhost>
- <52D1541F.4040400@overkiz.com> <1389456075.20989.11.camel@localhost>
- <1389474709.22660.4.camel@localhost> <52D3ABB6.9030204@overkiz.com>
-From: Michal Suchanek <hramrach@gmail.com>
-Date: Wed, 29 Jan 2014 16:11:41 +0100
-Message-ID: <CAOMqctSrXow1Wjppzp0Y4+p26KFFggtEphxX2xcs0ZoLvDUx1g@mail.gmail.com>
-Subject: Re: [linux-sunxi] Re: [RFC PATCH 0/9] mtd: nand: add sunxi NAND Flash
- Controller support
-To: linux-sunxi <linux-sunxi@googlegroups.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: dev@linux-sunxi.org,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- =?UTF-8?Q?Henrik_Nordstr=C3=B6m?= <henrik@henriknordstrom.net>,
- linux-mtd@lists.infradead.org,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>
+To: Brian Norris <computersforpeace@gmail.com>, Sekhar Nori <nsekhar@ti.com>
+Subject: Re: [PATCH v4 1/1] ARM: davinci: aemif: get rid of davinci-nand driver
+ dependency on aemif
+References: <1389346564-24243-1-git-send-email-nsekhar@ti.com>
+ <20140120184418.GI8919@ld-irv-0074>
+In-Reply-To: <20140120184418.GI8919@ld-irv-0074>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Linux MTD Mailing List <linux-mtd@lists.infradead.org>,
+ Linux DaVinci Mailing List
+ <davinci-linux-open-source@linux.davincidsp.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,127 +24,112 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 13 January 2014 10:02, boris brezillon <b.brezillon@overkiz.com> wrote:
-> Hi Henrik,
->
->
-> On 11/01/2014 22:11, Henrik Nordstr=C3=B6m wrote:
->>
->> <bbrezillon> thanks for pointing out your documents
->> <bbrezillon> I'm trying to get the NAND driver with HW ECC (and HW RND)
->> without using DMA at all
->>
->> I tried many things but did not quite get the ECC reading command to
->> return meaningful resuts. But should work somehow.
->>
->> <bbrezillon> do you have any other information I could use to do this ?
->>
->> Not really. There is no known code to look at using the nand controller
->> without DMA. All allwinner code uses DMA even the boot ROM (BROM).
->>
->> <bbrezillon> For example, I wonder why there are 2 RAM sectors (the
->> driver I found only make use of RAM0)
->>
->> I think it's used during DMA to fetch next sector while the previous one
->> is transferred by DMA. But not sure.
->
->
-> Some feedback on my tests:
->
-> - I managed to get HW ECC working without any DMA transfer (using CMD =3D=
- 01):
->   * I only tested the sequential ECC =3D> ECC are stored between 2 data b=
-locks
-> (1024 byte)
->   * Non sequential ECC should work if I store ECC bytes in the OOB area t=
-oo
-> (I'll just have
->      to send RANDOM_OUT commands to move to the OOB area before sending t=
-he
-> ECC
->      cmd and another RANDOM_OUT to go back to the DATA area)
->
-> - The HW RND (randomizer) works too, I'll just have to figure out how thi=
-s
-> could be
->   mainlined:
->    * using a simple dt property to tell the controller it should enable t=
-he
-> randomizer
->    * provide an interface (like the nand_ecc_ctrl struct ) for other to a=
-dd
-> their own
->       randomizer implementation (this was requested:
-> https://lkml.org/lkml/2013/12/13/154)
->
->
-> The most complicated part is the boot0 partition.
->
-> Tell me if I'm wrong, but here's what I understood from your work (and yu=
-q's
-> work too):
->
-> boot 0 part properties:
-> - uses sequential ECC
-> - uses 1024 bytes ECC blocks
-> - boot0 code is stored only on the first ECC block of each page (1024 byt=
-es
-> + ecc bytes)
-> - boot0 code is stored on the first 64 pages of the first block
-> - boot0 uses HW randomizer with a specific rnd seed (0x4a80)
->
-> It's not that complicated to read/write from/to boot0, but it's a bit mor=
-e
-> to mainline this
-> implementation:
->  - the nand chip must use the same ECC algorithm and ECC layout on the wh=
-ole
-> flash
->    (no partition specific config available)
-> - you cannot mark some part of pages as unused =3D> the nand driver will =
-write
-> the
->   whole page, not just the first ECC block (1024 bytes)
->
-> I thought about manually creating an mtd device that fullfils these needs
-> (in case we
-> encounter the "allwinner,nandn-boot" property on a nand@X node), but I'm =
-not
-> sure
-> this is the right approach.
->
-> Any ideas ?
+Hi Sekhar,
 
-Maybe if varying parameters on one MTD device is not acceptable you
-could export parts of the flash as different MTD devices each with its
-own parameters. Since the boot0 part is fixed size this should not
-really be an issue. Existing MTD drivers that share hardware with
-other devices exist - eg. the MTD driver which exports part of RAM as
-MDT device.
+Do you want me to correct it?
 
-I wonder if it would be good idea to make it possible to use the NAND
-only for storage without a boot0 area. If this is selected by a DT
-parameter as suggested changing the parameter will probably make the
-NAND unreadable.
-
-Thanks
-
-Michal
-
+On 01/20/2014 08:44 PM, Brian Norris wrote:
+> Hi Sekhar,
 >
+> Sorry, I do have one complaint about this patch.
 >
-> Best Regards,
+> On Fri, Jan 10, 2014 at 03:06:04PM +0530, Sekhar Nori wrote:
+>> --- a/arch/arm/mach-davinci/aemif.c
+>> +++ b/arch/arm/mach-davinci/aemif.c
+>> @@ -130,4 +136,82 @@ int davinci_aemif_setup_timing(struct davinci_aemif_timing *t,
+>>   
+>>   	return 0;
+>>   }
+>> -EXPORT_SYMBOL(davinci_aemif_setup_timing);
+>> +
+>> +/**
+>> + * davinci_aemif_setup - setup AEMIF interface by davinci_nand_pdata
+>> + * @pdev - link to platform device to setup settings for
+>> + *
+>> + * This function does not use any locking while programming the AEMIF
+>> + * because it is expected that there is only one user of a given
+>> + * chip-select.
+>> + *
+>> + * Returns 0 on success, else negative errno.
+>> + */
+>> +int davinci_aemif_setup(struct platform_device *pdev)
+>> +{
+>> +	struct davinci_nand_pdata *pdata = dev_get_platdata(&pdev->dev);
+>> +	uint32_t val;
+>> +	unsigned long clkrate;
+>> +	struct resource	*res;
+>> +	void __iomem *base;
+>> +	struct clk *clk;
+>> +	int ret = 0;
+>> +
+>> +	clk = clk_get(&pdev->dev, "aemif");
+>> +	if (IS_ERR(clk)) {
+>> +		ret = PTR_ERR(clk);
+>> +		dev_dbg(&pdev->dev, "unable to get AEMIF clock, err %d\n", ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	ret = clk_prepare_enable(clk);
+>> +	if (ret < 0) {
+>> +		dev_dbg(&pdev->dev, "unable to enable AEMIF clock, err %d\n",
+>> +			ret);
+>> +		return ret;
+> coccinelle gives a warning for this:
 >
-> Boris
+>    arch/arm/mach-davinci/aemif.c:171:2-8: ERROR: missing clk_put; clk_get on line 160 and execution via conditional on line 168 [coccinelle]
 >
->>
->> Regards
->> Henrik
->>
+> You need a clk_put() on the error path for clk_prepare_enable. For
+> instance, you can add a label below and replace this 'return ret' with
+> 'goto err_put'.
 >
-> --
-> You received this message because you are subscribed to the Google Groups
-> "linux-sunxi" group.
-> To unsubscribe from this group and stop receiving emails from it, send an
-> email to linux-sunxi+unsubscribe@googlegroups.com.
-> For more options, visit https://groups.google.com/groups/opt_out.
+>> +	}
+>> +
+>> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+>> +	if (!res) {
+>> +		dev_err(&pdev->dev, "cannot get IORESOURCE_MEM\n");
+>> +		ret = -ENOMEM;
+>> +		goto err;
+>> +	}
+>> +
+>> +	base = ioremap(res->start, resource_size(res));
+>> +	if (!base) {
+>> +		dev_err(&pdev->dev, "ioremap failed for resource %pR\n", res);
+>> +		ret = -ENOMEM;
+>> +		goto err;
+>> +	}
+>> +
+>> +	/*
+>> +	 * Setup Async configuration register in case we did not boot
+>> +	 * from NAND and so bootloader did not bother to set it up.
+>> +	 */
+>> +	val = davinci_aemif_readl(base, A1CR_OFFSET + pdev->id * 4);
+>> +	/*
+>> +	 * Extended Wait is not valid and Select Strobe mode is not
+>> +	 * used
+>> +	 */
+>> +	val &= ~(ACR_ASIZE_MASK | ACR_EW_MASK | ACR_SS_MASK);
+>> +	if (pdata->options & NAND_BUSWIDTH_16)
+>> +		val |= 0x1;
+>> +
+>> +	davinci_aemif_writel(base, A1CR_OFFSET + pdev->id * 4, val);
+>> +
+>> +	clkrate = clk_get_rate(clk);
+>> +
+>> +	if (pdata->timing)
+>> +		ret = davinci_aemif_setup_timing(pdata->timing, base, pdev->id,
+>> +						 clkrate);
+>> +
+>> +	if (ret < 0)
+>> +		dev_dbg(&pdev->dev, "NAND timing values setup fail\n");
+>> +
+>> +	iounmap(base);
+>> +err:
+>> +	clk_disable_unprepare(clk);
+> Then the label could be here:
+>
+> err_put:
+>
+>> +	clk_put(clk);
+>> +	return ret;
+>> +}
+> Brian
