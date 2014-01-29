@@ -6,9 +6,9 @@ To: Maxime Ripard <maxime.ripard@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
  Arnd Bergmann <arnd@arndb.de>
-Subject: [RFC PATCH v2 11/14] ARM: dt/sunxi: add NFC pinctrl pin definitions
-Date: Wed, 29 Jan 2014 15:34:21 +0100
-Message-Id: <1391006064-28890-12-git-send-email-b.brezillon.dev@gmail.com>
+Subject: [RFC PATCH v2 09/14] mtd: nand: add sunxi NFC dt bindings doc
+Date: Wed, 29 Jan 2014 15:34:19 +0100
+Message-Id: <1391006064-28890-10-git-send-email-b.brezillon.dev@gmail.com>
 In-Reply-To: <1391006064-28890-1-git-send-email-b.brezillon.dev@gmail.com>
 References: <1391006064-28890-1-git-send-email-b.brezillon.dev@gmail.com>
 Cc: devicetree@vger.kernel.org, Boris BREZILLON <b.brezillon.dev@gmail.com>,
@@ -23,47 +23,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Define the NAND pinctrl configs.
+Add the sunxi NAND Flash Controller dt bindings documentation.
 
 Signed-off-by: Boris BREZILLON <b.brezillon.dev@gmail.com>
 ---
- arch/arm/boot/dts/sun7i-a20.dtsi |   24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+ .../devicetree/bindings/mtd/sunxi-nand.txt         |   46 ++++++++++++++++++++
+ 1 file changed, 46 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/sunxi-nand.txt
 
-diff --git a/arch/arm/boot/dts/sun7i-a20.dtsi b/arch/arm/boot/dts/sun7i-a20.dtsi
-index 3b47253..0f6e002 100644
---- a/arch/arm/boot/dts/sun7i-a20.dtsi
-+++ b/arch/arm/boot/dts/sun7i-a20.dtsi
-@@ -389,6 +389,30 @@
- 				allwinner,drive = <0>;
- 				allwinner,pull = <0>;
- 			};
+diff --git a/Documentation/devicetree/bindings/mtd/sunxi-nand.txt b/Documentation/devicetree/bindings/mtd/sunxi-nand.txt
+new file mode 100644
+index 0000000..b0e55a3
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/sunxi-nand.txt
+@@ -0,0 +1,46 @@
++Allwinner NAND Flash Controller (NFC)
 +
-+			nand_pins_a: nand_base0@0 {
-+				allwinner,pins = "PC0", "PC1", "PC2",
-+						"PC5", "PC8", "PC9", "PC10",
-+						"PC11", "PC12", "PC13", "PC14",
-+						"PC15", "PC16";
-+				allwinner,function = "nand0";
-+				allwinner,drive = <0>;
-+				allwinner,pull = <0>;
-+			};
++Required properties:
++- compatible : "allwinner,sun4i-nand".
++- reg : shall contain registers location and length for data and reg.
++- interrupts : shall define the nand controller interrupt.
++- #address-cells: shall be set to 1. Encode the nand CS.
++- #size-cells : shall be set to 0.
++- clocks : shall reference nand controller clocks.
++- clock-names : nand controller internal clock names. Shall contain :
++    * "ahb_clk" : AHB gating clock
++    * "sclk" : nand controller clock
 +
-+			nand_cs0_pins_a: nand_cs@0 {
-+				allwinner,pins = "PC4";
-+				allwinner,function = "nand0";
-+				allwinner,drive = <0>;
-+				allwinner,pull = <0>;
-+			};
++Optional children nodes:
++Children nodes represent the available nand chips.
 +
-+			nand_rb0_pins_a: nand_rb@0 {
-+				allwinner,pins = "PC6";
-+				allwinner,function = "nand0";
-+				allwinner,drive = <0>;
-+				allwinner,pull = <0>;
-+			};
- 		};
- 
- 		timer@01c20c00 {
++Optional properties:
++- onfi,nand-timing-mode : mandatory if the chip does not support the ONFI
++  standard.
++- allwinner,rb : shall contain the native Ready/Busy ids.
++ or
++- rb-gpios : shall contain the gpios used as R/B pins.
++
++see Documentation/devicetree/mtd/nand.txt for generic bindings.
++
++
++Examples:
++nfc: nand@01c03000 {
++	compatible = "allwinner,sun4i-nand";
++	reg = <0x01c03000 0x1000>;
++	interrupts = <0 37 1>;
++	clocks = <&ahb_gates 13>, <&nand_clk>;
++	clock-names = "ahb_clk", "sclk";
++	#address-cells = <1>;
++	#size-cells = <0>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&nand_pins_a &nand_cs0_pins_a &nand_rb0_pins_a>;
++	status = "okay";
++
++	nand@0 {
++		reg = <0>;
++		allwinner,rb = <0>;
++		nand-ecc-mode = "soft_bch";
++		onfi,nand-timing-mode = <4>;
++	};
++};
 -- 
 1.7.9.5
