@@ -1,20 +1,18 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W8VDD-0002cB-Qe
- for linux-mtd@lists.infradead.org; Wed, 29 Jan 2014 13:29:53 +0000
-Message-ID: <52E90237.1050005@nod.at>
-Date: Wed, 29 Jan 2014 14:29:27 +0100
-From: Richard Weinberger <richard@nod.at>
+Message-ID: <52E91180.9080807@windriver.com>
+Date: Wed, 29 Jan 2014 09:34:40 -0500
+From: Paul Gortmaker <paul.gortmaker@windriver.com>
 MIME-Version: 1.0
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [patch] UBI: fix some use after free bugs
-References: <20140129131756.GC10678@elgon.mountain>
-In-Reply-To: <20140129131756.GC10678@elgon.mountain>
-Content-Type: text/plain; charset=ISO-8859-1
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 49/73] drivers/mtd: delete non-required instances of
+ include <linux/init.h>
+References: <1390339396-3479-1-git-send-email-paul.gortmaker@windriver.com>
+ <1390339396-3479-50-git-send-email-paul.gortmaker@windriver.com>
+ <20140129000216.GB8919@ld-irv-0074>
+In-Reply-To: <20140129000216.GB8919@ld-irv-0074>
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
+Cc: linux-arch@vger.kernel.org, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,47 +22,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 29.01.2014 14:17, schrieb Dan Carpenter:
-> Move the kmem_cache_free() calls down a couple lines.
+On 14-01-28 07:02 PM, Brian Norris wrote:
+> On Tue, Jan 21, 2014 at 04:22:52PM -0500, Paul Gortmaker wrote:
+>> None of these files are actually using any __init type directives
+>> and hence don't need to include <linux/init.h>.  Most are just a
+>> left over from __devinit and __cpuinit removal, or simply due to
+>> code getting copied from one driver to the next.
+>>
+>> Cc: David Woodhouse <dwmw2@infradead.org>
+>> Cc: Brian Norris <computersforpeace@gmail.com>
+>> Cc: linux-mtd@lists.infradead.org
+>> Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
 > 
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+>> diff --git a/drivers/mtd/maps/sa1100-flash.c b/drivers/mtd/maps/sa1100-flash.c
+>> index 8fc06bf..3428034e 100644
+>> --- a/drivers/mtd/maps/sa1100-flash.c
+>> +++ b/drivers/mtd/maps/sa1100-flash.c
+>> @@ -7,7 +7,6 @@
+>>  #include <linux/types.h>
+>>  #include <linux/ioport.h>
+>>  #include <linux/kernel.h>
+>> -#include <linux/init.h>
+>>  #include <linux/errno.h>
+>>  #include <linux/slab.h>
+>>  #include <linux/platform_device.h>
+> 
+> This file uses __exit_p(), from <linux/init.h>. So I dropped this hunk
+> and pushed the rest to l2-mtd.git/next.
 
-Thanks for fixing this Dan!
+Thanks!  Not sure why that got caught up in the review, since I had __exit
+in my regex filter. It had module.h so I never caught the false positive in
+my build testing either.
 
-Acked-by: Richard Weinberger <richard@nod.at>
-
-> diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-> index ead861307b3c..c5dad652614d 100644
-> --- a/drivers/mtd/ubi/fastmap.c
-> +++ b/drivers/mtd/ubi/fastmap.c
-> @@ -463,8 +463,8 @@ static int scan_pool(struct ubi_device *ubi, struct ubi_attach_info *ai,
->  				}
->  			}
->  			if (found_orphan) {
-> -				kmem_cache_free(ai->aeb_slab_cache, tmp_aeb);
->  				list_del(&tmp_aeb->u.list);
-> +				kmem_cache_free(ai->aeb_slab_cache, tmp_aeb);
->  			}
->  
->  			new_aeb = kmem_cache_alloc(ai->aeb_slab_cache,
-> @@ -846,16 +846,16 @@ fail_bad:
->  	ret = UBI_BAD_FASTMAP;
->  fail:
->  	list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &used, u.list) {
-> -		kmem_cache_free(ai->aeb_slab_cache, tmp_aeb);
->  		list_del(&tmp_aeb->u.list);
-> +		kmem_cache_free(ai->aeb_slab_cache, tmp_aeb);
->  	}
->  	list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &eba_orphans, u.list) {
-> -		kmem_cache_free(ai->aeb_slab_cache, tmp_aeb);
->  		list_del(&tmp_aeb->u.list);
-> +		kmem_cache_free(ai->aeb_slab_cache, tmp_aeb);
->  	}
->  	list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &free, u.list) {
-> -		kmem_cache_free(ai->aeb_slab_cache, tmp_aeb);
->  		list_del(&tmp_aeb->u.list);
-> +		kmem_cache_free(ai->aeb_slab_cache, tmp_aeb);
->  	}
->  
->  	return ret;
+Paul.
+--
+> 
+> Thanks,
+> Brian
 > 
