@@ -1,18 +1,18 @@
-Message-ID: <52E91180.9080807@windriver.com>
-Date: Wed, 29 Jan 2014 09:34:40 -0500
-From: Paul Gortmaker <paul.gortmaker@windriver.com>
-MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 49/73] drivers/mtd: delete non-required instances of
- include <linux/init.h>
-References: <1390339396-3479-1-git-send-email-paul.gortmaker@windriver.com>
- <1390339396-3479-50-git-send-email-paul.gortmaker@windriver.com>
- <20140129000216.GB8919@ld-irv-0074>
-In-Reply-To: <20140129000216.GB8919@ld-irv-0074>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: linux-arch@vger.kernel.org, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
+From: Boris BREZILLON <b.brezillon.dev@gmail.com>
+To: Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Rob Landley <rob@landley.net>, Russell King <linux@arm.linux.org.uk>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Grant Likely <grant.likely@linaro.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ Arnd Bergmann <arnd@arndb.de>
+Subject: [RFC PATCH v2 00/14] mtd: nand: add sunxi NAND Flash Controller
+ support
+Date: Wed, 29 Jan 2014 15:34:10 +0100
+Message-Id: <1391006064-28890-1-git-send-email-b.brezillon.dev@gmail.com>
+Cc: devicetree@vger.kernel.org, Boris BREZILLON <b.brezillon.dev@gmail.com>,
+ linux-doc@vger.kernel.org, dev@linux-sunxi.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,41 +22,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 14-01-28 07:02 PM, Brian Norris wrote:
-> On Tue, Jan 21, 2014 at 04:22:52PM -0500, Paul Gortmaker wrote:
->> None of these files are actually using any __init type directives
->> and hence don't need to include <linux/init.h>.  Most are just a
->> left over from __devinit and __cpuinit removal, or simply due to
->> code getting copied from one driver to the next.
->>
->> Cc: David Woodhouse <dwmw2@infradead.org>
->> Cc: Brian Norris <computersforpeace@gmail.com>
->> Cc: linux-mtd@lists.infradead.org
->> Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
-> 
->> diff --git a/drivers/mtd/maps/sa1100-flash.c b/drivers/mtd/maps/sa1100-flash.c
->> index 8fc06bf..3428034e 100644
->> --- a/drivers/mtd/maps/sa1100-flash.c
->> +++ b/drivers/mtd/maps/sa1100-flash.c
->> @@ -7,7 +7,6 @@
->>  #include <linux/types.h>
->>  #include <linux/ioport.h>
->>  #include <linux/kernel.h>
->> -#include <linux/init.h>
->>  #include <linux/errno.h>
->>  #include <linux/slab.h>
->>  #include <linux/platform_device.h>
-> 
-> This file uses __exit_p(), from <linux/init.h>. So I dropped this hunk
-> and pushed the rest to l2-mtd.git/next.
+Hello,
 
-Thanks!  Not sure why that got caught up in the review, since I had __exit
-in my regex filter. It had module.h so I never caught the false positive in
-my build testing either.
+This series adds support for the sunxi NAND Flash Controller (NFC).
+This controller supports up to 8 NAND chip connected.
 
-Paul.
---
-> 
-> Thanks,
-> Brian
-> 
+I'm still in the early stages drivers development and some key features are
+missing, but it's usable (I tested it on the cubietruck board).
+
+Here's what's missing:
+ - DMA support
+ - HW randomization support
+ - other improvements ?
+
+This series depends on Emilio's patch series implementing mod0 clks
+(http://lists.infradead.org/pipermail/linux-arm-kernel/2013-July/185478.html)
++ an other patch not yet posted
+(http://git.elopez.com.ar/linux/commits/5b4eb3ac406b9c98965714d40e8dd6da943d1ab0)
+
+
+Best Regards,
+
+Boris
+
+Changes since v1:
+ - add HW ECC support
+ - rework NAND timings retrieval (use ONFI timing mode instead of raw timings)
+ - add nand-ecc-level property to specify NAND ECC requirements from DT
+
+Boris BREZILLON (14):
+  mtd: nand: retrieve ECC requirements from Hynix READ ID byte 4
+  of: mtd: add NAND ECC level requirements retrieval
+  of: mtd: add documentation for nand-ecc-level property
+  mtd: nand: define struct nand_timings
+  mtd: nand: add ONFI timing mode to nand_timings converter
+  of: mtd: add NAND timing mode retrieval support
+  of: mtd: add documentation for the ONFI NAND timing mode property
+  mtd: nand: add sunxi NAND flash controller support
+  mtd: nand: add sunxi NFC dt bindings doc
+  ARM: dt/sunxi: add NFC node to Allwinner A20 SoC
+  ARM: dt/sunxi: add NFC pinctrl pin definitions
+  ARM: sunxi/dt: enable NAND on cubietruck board
+  mtd: nand: add sunxi HW ECC support
+  ARM: sunxi/dt: enable HW ECC on cubietruck board
+
+ Documentation/devicetree/bindings/mtd/nand.txt     |    8 +
+ .../devicetree/bindings/mtd/sunxi-nand.txt         |   46 +
+ arch/arm/boot/dts/sun7i-a20-cubietruck.dts         |   31 +
+ arch/arm/boot/dts/sun7i-a20.dtsi                   |   35 +
+ drivers/mtd/nand/Kconfig                           |    6 +
+ drivers/mtd/nand/Makefile                          |    3 +-
+ drivers/mtd/nand/nand_base.c                       |   37 +
+ drivers/mtd/nand/nand_timings.c                    |  248 +++++
+ drivers/mtd/nand/sunxi_nand.c                      |  997 ++++++++++++++++++++
+ drivers/of/of_mtd.c                                |   44 +
+ include/linux/mtd/nand.h                           |   53 ++
+ include/linux/of_mtd.h                             |   15 +
+ 12 files changed, 1522 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/sunxi-nand.txt
+ create mode 100644 drivers/mtd/nand/nand_timings.c
+ create mode 100644 drivers/mtd/nand/sunxi_nand.c
+
+-- 
+1.7.9.5
