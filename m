@@ -6,11 +6,14 @@ To: Maxime Ripard <maxime.ripard@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
  Arnd Bergmann <arnd@arndb.de>
-Subject: [RFC PATCH v2 06/14] of: mtd: add NAND timing mode retrieval support
-Date: Wed, 29 Jan 2014 15:34:16 +0100
-Message-Id: <1391006064-28890-7-git-send-email-b.brezillon.dev@gmail.com>
+Subject: =?UTF-8?q?=5BRFC=20PATCH=20v2=2007/14=5D=20of=3A=20mtd=3A=20add=20documentation=20for=20the=20ONFI=20NAND=20timing=20mode=20property?=
+Date: Wed, 29 Jan 2014 15:34:17 +0100
+Message-Id: <1391006064-28890-8-git-send-email-b.brezillon.dev@gmail.com>
 In-Reply-To: <1391006064-28890-1-git-send-email-b.brezillon.dev@gmail.com>
 References: <1391006064-28890-1-git-send-email-b.brezillon.dev@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Cc: devicetree@vger.kernel.org, Boris BREZILLON <b.brezillon.dev@gmail.com>,
  linux-doc@vger.kernel.org, dev@linux-sunxi.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
@@ -23,74 +26,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add a function to retrieve NAND timing mode (ONFI timing mode) from a given
-DT node.
+Add documentation for the ONFI NAND timing mode property.
 
 Signed-off-by: Boris BREZILLON <b.brezillon.dev@gmail.com>
 ---
- drivers/of/of_mtd.c    |   19 +++++++++++++++++++
- include/linux/of_mtd.h |    8 ++++++++
- 2 files changed, 27 insertions(+)
+ Documentation/devicetree/bindings/mtd/nand.txt |    5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/of/of_mtd.c b/drivers/of/of_mtd.c
-index e8ced61..63155d4 100644
---- a/drivers/of/of_mtd.c
-+++ b/drivers/of/of_mtd.c
-@@ -108,3 +108,22 @@ bool of_get_nand_on_flash_bbt(struct device_node *np)
- 	return of_property_read_bool(np, "nand-on-flash-bbt");
- }
- EXPORT_SYMBOL_GPL(of_get_nand_on_flash_bbt);
-+
-+/**
-+ * of_get_nand_timings - Get nand timings for the given device_node
-+ * @np:	Pointer to the given device_node
-+ *
-+ * return 0 on success errno other wise
-+ */
-+int of_get_nand_onfi_timing_mode(struct device_node *np)
-+{
-+	int err;
-+	u32 mode;
-+
-+	err = of_property_read_u32(np, "onfi,nand-timing-mode", &mode);
-+	if (err)
-+		return err;
-+
-+	return mode;
-+}
-+EXPORT_SYMBOL_GPL(of_get_nand_onfi_timing_mode);
-diff --git a/include/linux/of_mtd.h b/include/linux/of_mtd.h
-index 3bd8c3b..eb9fda6 100644
---- a/include/linux/of_mtd.h
-+++ b/include/linux/of_mtd.h
-@@ -9,6 +9,8 @@
- #ifndef __LINUX_OF_MTD_H
- #define __LINUX_OF_NET_H
- 
-+#include <linux/mtd/nand.h>
-+
- #ifdef CONFIG_OF_MTD
- 
- #include <linux/of.h>
-@@ -16,6 +18,7 @@ int of_get_nand_ecc_mode(struct device_node *np);
- int of_get_nand_ecc_level(struct device_node *np, u32 *strengh, u32 *blk_size);
- int of_get_nand_bus_width(struct device_node *np);
- bool of_get_nand_on_flash_bbt(struct device_node *np);
-+int of_get_nand_onfi_timing_mode(struct device_node *np);
- 
- #else /* CONFIG_OF_MTD */
- 
-@@ -40,6 +43,11 @@ static inline bool of_get_nand_on_flash_bbt(struct device_node *np)
- 	return false;
- }
- 
-+static inline int of_get_nand_onfi_timing_mode(struct device_node *np)
-+{
-+	return -ENOSYS;
-+}
-+
- #endif /* CONFIG_OF_MTD */
- 
- #endif /* __LINUX_OF_MTD_H */
+diff --git a/Documentation/devicetree/bindings/mtd/nand.txt b/Documentation/devicetree/bindings/mtd/nand.txt
+index 0c962296..75e46f3 100644
+--- a/Documentation/devicetree/bindings/mtd/nand.txt
++++ b/Documentation/devicetree/bindings/mtd/nand.txt
+@@ -8,3 +8,8 @@
+   E.g. : nand-ecc-level = <4 512>; /* 4 bits / 512 bytes */
+ - nand-bus-width : 8 or 16 bus width if not present 8
+ - nand-on-flash-bbt: boolean to enable on flash bbt option if not present false
++- onfi,nand-timing-mode: an integer encoding the ONFI timing mode of the NAND
++  chip. This is only used when the chip does not support the ONFI standard.
++  Choose the closest mode fulfilling the NAND chip timings.
++  For a full description of the different timing modes see this document:
++  www.onfi.org/~/media/ONFI/specs/onfi_3_1_spec.pdf‎
 -- 
 1.7.9.5
