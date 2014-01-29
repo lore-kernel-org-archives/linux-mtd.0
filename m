@@ -1,20 +1,14 @@
-Received: from mo6-p05-ob.smtp.rzone.de ([2a01:238:20a:202:5305::2])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W8V2E-0002HF-Bm
- for linux-mtd@lists.infradead.org; Wed, 29 Jan 2014 13:18:31 +0000
-Message-ID: <52E8FF94.7000101@denx.de>
-Date: Wed, 29 Jan 2014 14:18:12 +0100
-From: Stefan Roese <sr@denx.de>
+Date: Wed, 29 Jan 2014 16:17:57 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: Richard Weinberger <richard@nod.at>
+Subject: [patch] UBI: fix some use after free bugs
+Message-ID: <20140129131756.GC10678@elgon.mountain>
 MIME-Version: 1.0
-To: Pekon Gupta <pekon@ti.com>, Brian Norris <computersforpeace@gmail.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH v7 0/6] mtd: nand: omap: optimized chip->ecc.correct()
- for H/W ECC schemes
-References: <1389942797-4632-1-git-send-email-pekon@ti.com>
-In-Reply-To: <1389942797-4632-1-git-send-email-pekon@ti.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>, Felipe Balbi <balbi@ti.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,25 +18,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 17.01.2014 08:13, Pekon Gupta wrote:
-> *changes v6 -> v7*
-> [PATCH 1/6] <no change>
-> [PATCH 2/6] <no change>
-> [PATCH 3/6] <dropped older version, refer commit message>
->   - erased-page detection done based on count of zero-bits in OOB & DATA
->   - incorporated some feedbacks from Brian Norris <computersforpeace@gmail.com>
-> 	http://lists.infradead.org/pipermail/linux-mtd/2014-January/051533.html
-> 	http://lists.infradead.org/pipermail/linux-mtd/2014-January/051534.html
-> [PATCH 4/6] <new> remove redundant bit-flip counting for erased-page
-> [PATCH 5/6] <minor cleanup>
-> [PATCH 6/6] <minor cleanup>
-> (As there are functional changes in this version, so not attaching
->   Tested-by: Stefan Roese <sr@denx.de>)
+Move the kmem_cache_free() calls down a couple lines.
 
-Thanks, Pekon. This still fixes some problems we have seen on an AM335x 
-board with ECC errors on UBI/UBIFS mounting. So for the whole patch series:
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Tested-by: Stefan Roese <sr@denx.de>
-
-Thanks,
-Stefan
+diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+index ead861307b3c..c5dad652614d 100644
+--- a/drivers/mtd/ubi/fastmap.c
++++ b/drivers/mtd/ubi/fastmap.c
+@@ -463,8 +463,8 @@ static int scan_pool(struct ubi_device *ubi, struct ubi_attach_info *ai,
+ 				}
+ 			}
+ 			if (found_orphan) {
+-				kmem_cache_free(ai->aeb_slab_cache, tmp_aeb);
+ 				list_del(&tmp_aeb->u.list);
++				kmem_cache_free(ai->aeb_slab_cache, tmp_aeb);
+ 			}
+ 
+ 			new_aeb = kmem_cache_alloc(ai->aeb_slab_cache,
+@@ -846,16 +846,16 @@ fail_bad:
+ 	ret = UBI_BAD_FASTMAP;
+ fail:
+ 	list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &used, u.list) {
+-		kmem_cache_free(ai->aeb_slab_cache, tmp_aeb);
+ 		list_del(&tmp_aeb->u.list);
++		kmem_cache_free(ai->aeb_slab_cache, tmp_aeb);
+ 	}
+ 	list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &eba_orphans, u.list) {
+-		kmem_cache_free(ai->aeb_slab_cache, tmp_aeb);
+ 		list_del(&tmp_aeb->u.list);
++		kmem_cache_free(ai->aeb_slab_cache, tmp_aeb);
+ 	}
+ 	list_for_each_entry_safe(tmp_aeb, _tmp_aeb, &free, u.list) {
+-		kmem_cache_free(ai->aeb_slab_cache, tmp_aeb);
+ 		list_del(&tmp_aeb->u.list);
++		kmem_cache_free(ai->aeb_slab_cache, tmp_aeb);
+ 	}
+ 
+ 	return ret;
