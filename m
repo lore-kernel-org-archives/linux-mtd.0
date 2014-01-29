@@ -1,29 +1,20 @@
-Received: from mo3.mail-out.ovh.net ([178.32.228.3])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W8SQD-0005sb-3V
- for linux-mtd@lists.infradead.org; Wed, 29 Jan 2014 10:31:05 +0000
-Received: from mail643.ha.ovh.net (b9.ovh.net [213.186.33.59])
- by mo3.mail-out.ovh.net (Postfix) with SMTP id E72B0FFB5E0
- for <linux-mtd@lists.infradead.org>; Wed, 29 Jan 2014 11:30:41 +0100 (CET)
-Message-ID: <52E8D827.8010609@overkiz.com>
-Date: Wed, 29 Jan 2014 11:29:59 +0100
-From: boris brezillon <b.brezillon@overkiz.com>
+Received: from mo6-p05-ob.smtp.rzone.de ([2a01:238:20a:202:5305::2])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W8V2E-0002HF-Bm
+ for linux-mtd@lists.infradead.org; Wed, 29 Jan 2014 13:18:31 +0000
+Message-ID: <52E8FF94.7000101@denx.de>
+Date: Wed, 29 Jan 2014 14:18:12 +0100
+From: Stefan Roese <sr@denx.de>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [RFC PATCH 1/9] mtd: nand: retrieve ECC requirements from Hynix
- READ ID byte 4
-References: <1389190924-26226-1-git-send-email-b.brezillon@overkiz.com>
- <1389190924-26226-2-git-send-email-b.brezillon@overkiz.com>
- <20140123014906.GY8919@ld-irv-0074>
-In-Reply-To: <20140123014906.GY8919@ld-irv-0074>
+To: Pekon Gupta <pekon@ti.com>, Brian Norris <computersforpeace@gmail.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH v7 0/6] mtd: nand: omap: optimized chip->ecc.correct()
+ for H/W ECC schemes
+References: <1389942797-4632-1-git-send-email-pekon@ti.com>
+In-Reply-To: <1389942797-4632-1-git-send-email-pekon@ti.com>
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: devicetree@vger.kernel.org, Russell King <linux@arm.linux.org.uk>,
- linux-doc@vger.kernel.org, dev@linux-sunxi.org, linux-kernel@vger.kernel.org,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- Rob Landley <rob@landley.net>, Grant Likely <grant.likely@linaro.org>,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Cc: linux-mtd <linux-mtd@lists.infradead.org>, Felipe Balbi <balbi@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,39 +24,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Brian,
+On 17.01.2014 08:13, Pekon Gupta wrote:
+> *changes v6 -> v7*
+> [PATCH 1/6] <no change>
+> [PATCH 2/6] <no change>
+> [PATCH 3/6] <dropped older version, refer commit message>
+>   - erased-page detection done based on count of zero-bits in OOB & DATA
+>   - incorporated some feedbacks from Brian Norris <computersforpeace@gmail.com>
+> 	http://lists.infradead.org/pipermail/linux-mtd/2014-January/051533.html
+> 	http://lists.infradead.org/pipermail/linux-mtd/2014-January/051534.html
+> [PATCH 4/6] <new> remove redundant bit-flip counting for erased-page
+> [PATCH 5/6] <minor cleanup>
+> [PATCH 6/6] <minor cleanup>
+> (As there are functional changes in this version, so not attaching
+>   Tested-by: Stefan Roese <sr@denx.de>)
 
-On 23/01/2014 02:49, Brian Norris wrote:
-> + Huang
->
-> Hi Boris,
->
-> On Wed, Jan 08, 2014 at 03:21:56PM +0100, Boris BREZILLON wrote:
->> The Hynix nand flashes store their ECC requirements in byte 4 of its id
->> (returned on READ ID command).
->>
->> Signed-off-by: Boris BREZILLON <b.brezillon@overkiz.com>
-> I haven't verified yet (perhaps Huang can confirm?), but this may be
-> similar to a patch Huang submitted recently. In his case, we found that
-> this table is actually quite unreliable and is likely hard to maintain.
+Thanks, Pekon. This still fixes some problems we have seen on an AM335x 
+board with ECC errors on UBI/UBIFS mounting. So for the whole patch series:
 
-You mean these bytes are not reliable within the whole Hynix LP (Large Page)
-NAND product line ?
+Tested-by: Stefan Roese <sr@denx.de>
 
->
-> Why do you need this ECC information, for my reference?
-
-Because the NAND flash available on the cubietruck board does not 
-support the
-ONFI standard, and I thought this could be a option to retrieve the ECC 
-strength
-requirements.
-
-Anyway, I added a new helper function to retrieve ecc informations from 
-device
-tree (I'll post it in the 2nd version of this series). We'll see if this 
-approach is
-accepted...
-
->
-> Brian
+Thanks,
+Stefan
