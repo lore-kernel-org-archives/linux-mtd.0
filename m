@@ -1,20 +1,22 @@
-Received: from mail-ig0-f175.google.com ([209.85.213.175])
+Received: from mail-ob0-x231.google.com ([2607:f8b0:4003:c01::231])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W8tbh-0002T6-Lg
- for linux-mtd@lists.infradead.org; Thu, 30 Jan 2014 15:32:46 +0000
-Received: by mail-ig0-f175.google.com with SMTP id uq10so17920060igb.2
- for <linux-mtd@lists.infradead.org>; Thu, 30 Jan 2014 07:32:21 -0800 (PST)
-Sender: Andrew Ruder <andy@aeruder.net>
-From: Andrew Ruder <andrew.ruder@elecsyscorp.com>
-To: linux-fsdevel@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Subject: [HACK] fs/super.c: sync ro remount after blocking writers
-Date: Thu, 30 Jan 2014 09:26:54 -0600
-Message-Id: <1391095614-21554-1-git-send-email-andrew.ruder@elecsyscorp.com>
-Cc: Christoph Hellwig <hch@infradead.org>, Richard Weinberger <richard@nod.at>,
- Andrew Ruder <andrew.ruder@elecsyscorp.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Artem Bityutskiy <dedekind1@gmail.com>
+ id 1W8vup-0007mB-56
+ for linux-mtd@lists.infradead.org; Thu, 30 Jan 2014 18:00:40 +0000
+Received: by mail-ob0-f177.google.com with SMTP id wp18so3822745obc.22
+ for <linux-mtd@lists.infradead.org>; Thu, 30 Jan 2014 10:00:18 -0800 (PST)
+Date: Thu, 30 Jan 2014 10:00:13 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH 1/2] mtd: nand: force NAND_CMD_READID onto 8-bit bus
+Message-ID: <20140130180013.GG8919@ld-irv-0074>
+References: <1391033909-6563-1-git-send-email-computersforpeace@gmail.com>
+ <20140130121704.GA11285@localhost>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20140130121704.GA11285@localhost>
+Cc: linux-mtd@lists.infradead.org, Pekon Gupta <pekon@ti.com>,
+ u.kleine-koenig@pengutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,94 +26,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Move sync_filesystem() after sb_prepare_remount_readonly().  If writers
-sneak in anywhere from sync_filesystem() to sb_prepare_remount_readonly()
-it can cause inodes to be dirtied and writeback to occur well after
-sys_mount() has completely successfully.
+On Thu, Jan 30, 2014 at 09:17:04AM -0300, Ezequiel Garcia wrote:
+> On Wed, Jan 29, 2014 at 02:18:28PM -0800, Brian Norris wrote:
+> > The NAND command helpers tend to automatically shift the column address
+> > for x16 bus devices, since most commands expect a word address, not a
+> > byte address. The Read ID command, however, expects an 8-bit address
+> > (i.e., 0x00, 0x20, or 0x40 should not be translated to 0x00, 0x10, or
+> > 0x20).
+> > 
+> > This fixes the column address for a few drivers which imitate the
+> > nand_base defaults. Note that I don't touch sh_flctl.c, since it already
+> > handles this problem slightly differently (note its comment "READID is
+> > always performed using an 8-bit bus").
+> > 
+> > I have not tested this patch, as I only have x8 parts up for testing at
+> > this point. Hopefully that can change soon...
+> > 
+> > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> 
+> I applied both patches and tested on my AM335x board (omap2-nand driver).
+> Both 8-bit and 16-bit devices get ONFI-probed and pass a nandtest round.
+> 
+> Tested-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 
-This was spotted by corrupted ubifs filesystems on reboot, but appears
-that it can cause issues with any filesystem using writeback.
+Thanks for the quick testing!
 
-Cc: Artem Bityutskiy <dedekind1@gmail.com>
-Cc: Christoph Hellwig <hch@infradead.org>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-CC: Richard Weinberger <richard@nod.at>
-Co-authored-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Andrew Ruder <andrew.ruder@elecsyscorp.com>
----
+> [..]
+> > +
+> > +/**
+> > + * Check if the opcode's address should be sent only on the lower 8 bits
+> > + * @command: opcode to check
+> > + */
+> > +static inline int nand_opcode_8bits(unsigned int command)
+> > +{
+> > +	return command == NAND_CMD_READID;
+> > +}
+> > +
+> >  #endif /* __LINUX_MTD_NAND_H */
+> 
+> With the introduction of this function, I think all the problems we've
+> discussed.
 
-I marked this as hack as because there is still a race condition concerning
-the force == 1 situation.  mark_files_ro() never actually blocks new
-writers even through the filesystem-specific remount code because nothing
-ever sets sb->s_readonly_remount.
+I think so too.
 
- fs/super.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+But I forgot to pose this question: are there any other commands which
+should be treated similarly? NAND_CMD_PARAM only takes column address 0,
+and I think Change Read Column (or NAND_CMD_RNDOUT, used for extended
+parameter pages) takes a full buswidth address, according to the spec; I
+suppose ONFI presumes the host has read the full parameter page and
+determined the bus width by the time it wants to skip to the extended
+parameter pages; or else it just continues to read out bytes
+sequentially).
 
-diff --git a/fs/super.c b/fs/super.c
-index 0225c20..1912090d 100644
---- a/fs/super.c
-+++ b/fs/super.c
-@@ -735,59 +735,59 @@ rescan:
- int do_remount_sb(struct super_block *sb, int flags, void *data, int force)
- {
- 	int retval;
- 	int remount_ro;
- 
- 	if (sb->s_writers.frozen != SB_UNFROZEN)
- 		return -EBUSY;
- 
- #ifdef CONFIG_BLOCK
- 	if (!(flags & MS_RDONLY) && bdev_read_only(sb->s_bdev))
- 		return -EACCES;
- #endif
- 
- 	if (flags & MS_RDONLY)
- 		acct_auto_close(sb);
- 	shrink_dcache_sb(sb);
--	sync_filesystem(sb);
- 
- 	remount_ro = (flags & MS_RDONLY) && !(sb->s_flags & MS_RDONLY);
- 
- 	/* If we are remounting RDONLY and current sb is read/write,
- 	   make sure there are no rw files opened */
- 	if (remount_ro) {
- 		if (force) {
- 			mark_files_ro(sb);
- 		} else {
- 			retval = sb_prepare_remount_readonly(sb);
- 			if (retval)
- 				return retval;
- 		}
- 	}
-+	sync_filesystem(sb);
- 
- 	if (sb->s_op->remount_fs) {
- 		retval = sb->s_op->remount_fs(sb, &flags, data);
- 		if (retval) {
- 			if (!force)
- 				goto cancel_readonly;
- 			/* If forced remount, go ahead despite any errors */
- 			WARN(1, "forced remount of a %s fs returned %i\n",
- 			     sb->s_type->name, retval);
- 		}
- 	}
- 	sb->s_flags = (sb->s_flags & ~MS_RMT_MASK) | (flags & MS_RMT_MASK);
- 	/* Needs to be ordered wrt mnt_is_readonly() */
- 	smp_wmb();
- 	sb->s_readonly_remount = 0;
- 
- 	/*
- 	 * Some filesystems modify their metadata via some other path than the
- 	 * bdev buffer cache (eg. use a private mapping, or directories in
- 	 * pagecache, etc). Also file data modifications go via their own
- 	 * mappings. So If we try to mount readonly then copy the filesystem
- 	 * from bdev, we could get stale data, so invalidate it to give a best
- 	 * effort at coherency.
- 	 */
- 	if (remount_ro && sb->s_bdev)
- 		invalidate_bdev(sb->s_bdev);
- 	return 0;
- 
--- 
-1.8.5.2
+> The solution looks good to me so. Nice job!
+
+Thanks. Glad to get it out of the way.
+
+Brian
