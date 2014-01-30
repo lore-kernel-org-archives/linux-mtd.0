@@ -1,22 +1,21 @@
-Received: from mail-ob0-x231.google.com ([2607:f8b0:4003:c01::231])
+Received: from bear.ext.ti.com ([192.94.94.41])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W8vup-0007mB-56
- for linux-mtd@lists.infradead.org; Thu, 30 Jan 2014 18:00:40 +0000
-Received: by mail-ob0-f177.google.com with SMTP id wp18so3822745obc.22
- for <linux-mtd@lists.infradead.org>; Thu, 30 Jan 2014 10:00:18 -0800 (PST)
-Date: Thu, 30 Jan 2014 10:00:13 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH 1/2] mtd: nand: force NAND_CMD_READID onto 8-bit bus
-Message-ID: <20140130180013.GG8919@ld-irv-0074>
+ id 1W8x7m-0002bW-0O
+ for linux-mtd@lists.infradead.org; Thu, 30 Jan 2014 19:18:06 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: RE: [PATCH 1/2] mtd: nand: force NAND_CMD_READID onto 8-bit bus
+Date: Thu, 30 Jan 2014 19:17:29 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA6C83A@DBDE04.ent.ti.com>
 References: <1391033909-6563-1-git-send-email-computersforpeace@gmail.com>
- <20140130121704.GA11285@localhost>
+In-Reply-To: <1391033909-6563-1-git-send-email-computersforpeace@gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20140130121704.GA11285@localhost>
-Cc: linux-mtd@lists.infradead.org, Pekon Gupta <pekon@ti.com>,
- u.kleine-koenig@pengutronix.de
+Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,60 +25,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jan 30, 2014 at 09:17:04AM -0300, Ezequiel Garcia wrote:
-> On Wed, Jan 29, 2014 at 02:18:28PM -0800, Brian Norris wrote:
-> > The NAND command helpers tend to automatically shift the column address
-> > for x16 bus devices, since most commands expect a word address, not a
-> > byte address. The Read ID command, however, expects an 8-bit address
-> > (i.e., 0x00, 0x20, or 0x40 should not be translated to 0x00, 0x10, or
-> > 0x20).
-> > 
-> > This fixes the column address for a few drivers which imitate the
-> > nand_base defaults. Note that I don't touch sh_flctl.c, since it already
-> > handles this problem slightly differently (note its comment "READID is
-> > always performed using an 8-bit bus").
-> > 
-> > I have not tested this patch, as I only have x8 parts up for testing at
-> > this point. Hopefully that can change soon...
-> > 
-> > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> 
-> I applied both patches and tested on my AM335x board (omap2-nand driver).
-> Both 8-bit and 16-bit devices get ONFI-probed and pass a nandtest round.
-> 
-> Tested-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Hi Brian,
 
-Thanks for the quick testing!
+>From: Brian Norris [mailto:computersforpeace@gmail.com]
+>diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+>index a719686c9cce..c034dc4224cb 100644
+>--- a/include/linux/mtd/nand.h
+>+++ b/include/linux/mtd/nand.h
+>@@ -832,4 +832,14 @@ static inline bool nand_is_slc(struct nand_chip *chip=
+)
+> {
+> 	return chip->bits_per_cell =3D=3D 1;
+> }
+>+
+>+/**
+>+ * Check if the opcode's address should be sent only on the lower 8 bits
+>+ * @command: opcode to check
+>+ */
+>+static inline int nand_opcode_8bits(unsigned int command)
+>+{
+>+	return command =3D=3D NAND_CMD_READID;
+>+}
+>+
+>
+Can 'nand_opcode_8bits, made a macro instead of inline function ?
+#define IS_8BIT_CMD(cmd)  (unlikely(cmd =3D=3D NAND_CMD_READID))
 
-> [..]
-> > +
-> > +/**
-> > + * Check if the opcode's address should be sent only on the lower 8 bits
-> > + * @command: opcode to check
-> > + */
-> > +static inline int nand_opcode_8bits(unsigned int command)
-> > +{
-> > +	return command == NAND_CMD_READID;
-> > +}
-> > +
-> >  #endif /* __LINUX_MTD_NAND_H */
-> 
-> With the introduction of this function, I think all the problems we've
-> discussed.
+Because 'nand_opcode_8bits' is used in nand_command() and nand_command_lp()
+which is performance critical code (chip->cmd is called multiple times for =
+fetching
+page data and OOB). Though we should expect compiler to treat this inline f=
+unction
+same as macro here, But just to be doubly sure for future changes also.
 
-I think so too.
+[1] http://stackoverflow.com/questions/1571392/pros-and-cons-of-different-m=
+acro-function-inline-methods-in-c
+[2] http://stackoverflow.com/questions/5226803/inline-function-v-macro-in-c=
+-whats-the-overhead-memory-speed
 
-But I forgot to pose this question: are there any other commands which
-should be treated similarly? NAND_CMD_PARAM only takes column address 0,
-and I think Change Read Column (or NAND_CMD_RNDOUT, used for extended
-parameter pages) takes a full buswidth address, according to the spec; I
-suppose ONFI presumes the host has read the full parameter page and
-determined the bus width by the time it wants to skip to the extended
-parameter pages; or else it just continues to read out bytes
-sequentially).
-
-> The solution looks good to me so. Nice job!
-
-Thanks. Glad to get it out of the way.
-
-Brian
+with regards, pekon
