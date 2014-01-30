@@ -1,29 +1,26 @@
-Message-ID: <52EA116E.3030100@gmail.com>
-Date: Thu, 30 Jan 2014 09:46:38 +0100
-From: boris brezillon dev <b.brezillon.dev@gmail.com>
+Message-ID: <52EA1405.8060801@gmail.com>
+Date: Thu, 30 Jan 2014 09:57:41 +0100
+From: Boris BREZILLON <b.brezillon.dev@gmail.com>
 MIME-Version: 1.0
-To: =?UTF-8?B?SGVucmlrIE5vcmRzdHLDtm0=?= <henrik@henriknordstrom.net>,
- linux-sunxi@googlegroups.com
-Subject: Re: [linux-sunxi] Re: [RFC PATCH v2 09/14] mtd: nand: add sunxi NFC
- dt bindings doc
-References: <1391006064-28890-1-git-send-email-b.brezillon.dev@gmail.com>	
- <1391006064-28890-10-git-send-email-b.brezillon.dev@gmail.com>	
- <CAL_JsqLVr1gSLArqtfOiHce+u6ZK8FiKMX0o9bvMrMoGGhATvg@mail.gmail.com>
- <1391035079.14902.3.camel@localhost>
-In-Reply-To: <1391035079.14902.3.camel@localhost>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Russell King <linux@arm.linux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, dev@linux-sunxi.org,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
- linux-mtd@lists.infradead.org, Rob Landley <rob@landley.net>,
- Grant Likely <grant.likely@linaro.org>, Rob Herring <robherring2@gmail.com>,
+To: linux-sunxi@googlegroups.com,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [linux-sunxi] Re: [RFC PATCH v2 08/14] mtd: nand: add sunxi NAND
+ flash controller support
+References: <1391006064-28890-1-git-send-email-b.brezillon.dev@gmail.com>
+ <1391006064-28890-9-git-send-email-b.brezillon.dev@gmail.com>
+ <20140129175641.GF1427@obsidianresearch.com>
+ <20140129184619.GC27143@localhost>
+ <20140129191005.GG1427@obsidianresearch.com>
+In-Reply-To: <20140129191005.GG1427@obsidianresearch.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: devicetree@vger.kernel.org, Russell King <linux@arm.linux.org.uk>,
+ Arnd Bergmann <arnd@arndb.de>, linux-doc@vger.kernel.org, dev@linux-sunxi.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Rob Landley <rob@landley.net>, Grant Likely <grant.likely@linaro.org>,
  Maxime Ripard <maxime.ripard@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,53 +30,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Henrik,
-
-Sorry for the noise, I sent the mail to Rob's old address.
-
-On 29/01/2014 23:37, Henrik Nordström wrote:
-> ons 2014-01-29 klockan 11:11 -0600 skrev Rob Herring:
+On 29/01/2014 20:10, Jason Gunthorpe wrote:
+> On Wed, Jan 29, 2014 at 03:46:20PM -0300, Ezequiel Garcia wrote:
 >
->> Isn't allwinner,rb implied by a lack of rb-gpios property. Or no R/B
->> pin is an option? If so, don't you need some fixed time delay
->> properties like max erase time?
->>
->> rb-gpios could be added to the generic nand binding as well.
-> The Allwinner NAND controller have dedicated RB pins when NAND is
-> enabled, only MUXed with other functions when NAND is not enabled.
+>> After CE# has been pulled high and then transitioned low again, the host
+>> should issue a Set Features to select the appropriate asynchronous timing mode.
+>> """
+> Oh, I had forgot you should do a set feature too
 >
-> Leaving RB unconnected is not a valid hardware configuration. The
-> controller internal timing engine depends on being able to sense RB to
-> sequence NAND commands properly.
+> Boris, I think the core core should handle this dance and the driver
+> should just implement a call back to change the timing mode on the
+> interface..
+>
+> If I ever get a moment I can work on support for timing setting in the
+> mvebu driver, I have boards here with ONFI NAND..
 
-This is not true (at least in this driver). It was in yuq's driver because
-he was using the NFC_WAIT_FLAG ,and in this case the controller wait
-for the native R/B pin to be high before considering the CMD is complete.
+Okay, I'll wait :).
 
-This driver choose the appropriate way to test the R/B state of the
-NAND chip according to what was specified in the DT:
-- allwinner,rb: native R/B id. These pins will be used by the NAND
-   controller to test the R/B state. Only 0 and 1 are valid because the
-   NAND controller only support 2 R/B pins.
-- rb-gpios: gpio used for R/B tests. This is a simple GPIO and will
-   use the GPIO subsystem to test the R/B pin state.
-- none: the NAND base code will wait some time before and send
-   STATUS cmd to the NAND to check its status.
-
-BTW, the controller supports 8 CS (8 NAND chips), but only have 2 native
-R/B pins, this means you'll have to use the GPIO or standard GET_STATUS
-method if you connect 3 or more NAND chips.
-
-And for the record, I still think the rb-gpios property (or whatever
-common name you choose: nand-rb-gpios ?) should be part of
-the generic NAND binding, because other controllers (at least the
-atmel one :)) use GPIOs to test R/B state.
-
-Best Regards,
-
-Boris
+Thanks.
 
 >
-> Regards
-> Henrik
+> Regards,
+> Jason
 >
