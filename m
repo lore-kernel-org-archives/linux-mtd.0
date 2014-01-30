@@ -1,22 +1,18 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
+Received: from mga14.intel.com ([143.182.124.37])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W8qbi-0003ls-EQ
- for linux-mtd@lists.infradead.org; Thu, 30 Jan 2014 12:20:34 +0000
-Date: Thu, 30 Jan 2014 09:20:25 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 2/2] mtd: nand: don't use read_buf for 8-bit ONFI transfers
-Message-ID: <20140130122024.GB11285@localhost>
-References: <1391033909-6563-1-git-send-email-computersforpeace@gmail.com>
- <1391033909-6563-2-git-send-email-computersforpeace@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+ id 1W8r13-0004Uw-8C
+ for linux-mtd@lists.infradead.org; Thu, 30 Jan 2014 12:46:46 +0000
+Message-ID: <1391085977.28238.32.camel@sauron.fi.intel.com>
+Subject: [GIT PULL] UBIFS changes for 3.14-rc1
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Thu, 30 Jan 2014 14:46:17 +0200
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1391033909-6563-2-git-send-email-computersforpeace@gmail.com>
-Cc: linux-mtd@lists.infradead.org, Pekon Gupta <pekon@ti.com>,
- u.kleine-koenig@pengutronix.de
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,44 +22,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jan 29, 2014 at 02:18:29PM -0800, Brian Norris wrote:
-> Use a repeated read_byte() instead of read_buf(), since for x16 buswidth
-> devices, we need to avoid the upper I/O[16:9] bits. See the following
-> commit for reference:
-> 
-> commit 05f7835975dad6b3b517f9e23415985e648fb875
-> Author: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> Date:   Thu Dec 5 22:22:04 2013 +0100
-> 
->     mtd: nand: don't use {read,write}_buf for 8-bit transfers
-> 
-> Now, I think that all barriers to probing ONFI on x16 devices are
-> removed, so remove the check from nand_flash_detect_onfi().
-> 
-> Tested on 8-bit ONFI NAND (Micron MT29F32G08CBADAWP).
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Hi Linus,
 
-Tested-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+The following changes since commit 802eee95bde72fd0cd0f3a5b2098375a487d1eda:
 
-FWIW:
+  Linux 3.13-rc6 (2013-12-29 16:01:33 -0800)
 
-* 8-bit device, ONFI-probed
-nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xf1
-nand: Micron MT29F1G08ABADAH4
-nand: 128MiB, SLC, page size: 2048, OOB size: 64
+are available in the git repository at:
 
-* 16-bit device, ID-probed
-nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xcc
-nand: Micron NAND 512MiB 3,3V 16-bit
-nand: 512MiB, SLC, page size: 2048, OOB size: 64
+  git://git.infradead.org/linux-ubifs.git tags/upstream-3.14-rc1
 
-* 16-bit (same) device, ONFI-probed
-nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xcc
-nand: Micron MT29F4G16ABADAH4
-nand: 512MiB, SLC, page size: 2048, OOB size: 64
+for you to fetch changes up to 2c7ca5cc3624e05a5235f70039adce30725972d6:
+
+  UBI: avoid program operation on NOR flash after erasure interrupted (2014-01-09 18:25:38 +0200)
+
+----------------------------------------------------------------
+* Improve the NOR erasure quirk - now it tries to do as little writes as
+  possible, because the eraseblock may be in an "unstable" state and write
+  operation sometimes causes NOR chip lock-ups.
+* Both UBI and UBIFS changes are now maintainer in one single tree, because the
+  amount of changes dropped significantly.
+
+----------------------------------------------------------------
+Artem Bityutskiy (1):
+      MAINTAINERS: keep UBI and UBIFS stuff in the same tree
+
+Julia Lawall (1):
+      UBI: fix error return code
+
+Qi Wang 王起 (qiwang) (1):
+      UBI: avoid program operation on NOR flash after erasure interrupted
+
+ MAINTAINERS              |  2 +-
+ drivers/mtd/ubi/attach.c |  4 +++-
+ drivers/mtd/ubi/build.c  |  4 +++-
+ drivers/mtd/ubi/io.c     | 54 ++++++++++++++++++++++--------------------------------
+ 4 files changed, 29 insertions(+), 35 deletions(-)
 
 -- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+Best Regards,
+Artem Bityutskiy
