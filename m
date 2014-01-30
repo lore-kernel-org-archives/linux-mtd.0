@@ -1,5 +1,5 @@
-Message-ID: <52EA0F76.6000300@gmail.com>
-Date: Thu, 30 Jan 2014 09:38:14 +0100
+Message-ID: <52EA116E.3030100@gmail.com>
+Date: Thu, 30 Jan 2014 09:46:38 +0100
 From: boris brezillon dev <b.brezillon.dev@gmail.com>
 MIME-Version: 1.0
 To: =?UTF-8?B?SGVucmlrIE5vcmRzdHLDtm0=?= <henrik@henriknordstrom.net>,
@@ -17,10 +17,9 @@ Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
  Russell King <linux@arm.linux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
  "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, dev@linux-sunxi.org,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Rob Herring <rob.herring@calxeda.com>,
  Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
  linux-mtd@lists.infradead.org, Rob Landley <rob@landley.net>,
- Grant Likely <grant.likely@linaro.org>,
+ Grant Likely <grant.likely@linaro.org>, Rob Herring <robherring2@gmail.com>,
  Maxime Ripard <maxime.ripard@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>,
@@ -35,6 +34,8 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Hello Henrik,
+
+Sorry for the noise, I sent the mail to Rob's old address.
 
 On 29/01/2014 23:37, Henrik Nordström wrote:
 > ons 2014-01-29 klockan 11:11 -0600 skrev Rob Herring:
