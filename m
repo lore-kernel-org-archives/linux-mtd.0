@@ -1,21 +1,16 @@
-Message-ID: <52EF690A.5090307@ti.com>
-Date: Mon, 3 Feb 2014 12:01:46 +0200
-From: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+Date: Mon, 3 Feb 2014 02:23:03 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: Andrew Ruder <andrew.ruder@elecsyscorp.com>
+Subject: Re: [HACK] fs/super.c: sync ro remount after blocking writers
+Message-ID: <20140203102303.GB11829@infradead.org>
+References: <1391095614-21554-1-git-send-email-andrew.ruder@elecsyscorp.com>
 MIME-Version: 1.0
-To: Sekhar Nori <nsekhar@ti.com>, Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v4 1/1] ARM: davinci: aemif: get rid of davinci-nand driver
- dependency on aemif
-References: <1389346564-24243-1-git-send-email-nsekhar@ti.com>
- <20140120184418.GI8919@ld-irv-0074> <52E91C54.9090302@ti.com>
- <52E9D23D.2080506@ti.com>
-In-Reply-To: <52E9D23D.2080506@ti.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Linux MTD Mailing List <linux-mtd@lists.infradead.org>,
- Linux DaVinci Mailing List
- <davinci-linux-open-source@linux.davincidsp.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1391095614-21554-1-git-send-email-andrew.ruder@elecsyscorp.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Christoph Hellwig <hch@infradead.org>, linux-mtd@lists.infradead.org,
+ Alexander Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,16 +20,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I've sent v5.
-Please, look at it http://www.spinics.net/lists/arm-kernel/msg303953.html
+On Thu, Jan 30, 2014 at 09:26:54AM -0600, Andrew Ruder wrote:
+> Move sync_filesystem() after sb_prepare_remount_readonly().  If writers
+> sneak in anywhere from sync_filesystem() to sb_prepare_remount_readonly()
+> it can cause inodes to be dirtied and writeback to occur well after
+> sys_mount() has completely successfully.
+> 
+> This was spotted by corrupted ubifs filesystems on reboot, but appears
+> that it can cause issues with any filesystem using writeback.
 
-On 01/30/2014 06:17 AM, Sekhar Nori wrote:
-> On Wednesday 29 January 2014 08:50 PM, Ivan Khoronzhuk wrote:
->> Hi Sekhar,
->>
->> Do you want me to correct it?
-> Yes, please!
->
-> Thanks,
-> Sekhar
->
+>From the link that Richard posted it seems like you have a testcase.
+Can you please integrate it into xfstests so that we can properly
+regression test for this issue from now on?
