@@ -1,22 +1,19 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WAK0s-0001Cn-CW
- for linux-mtd@lists.infradead.org; Mon, 03 Feb 2014 13:56:38 +0000
-Message-ID: <52EF9FFE.4020405@nod.at>
-Date: Mon, 03 Feb 2014 14:56:14 +0100
-From: Richard Weinberger <richard@nod.at>
+Received: from 213083164162.static.sonofon.dk ([213.83.164.162]
+ helo=HORWDSPRD01.spectralink.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WAKv0-0002uO-HB
+ for linux-mtd@lists.infradead.org; Mon, 03 Feb 2014 14:54:40 +0000
+From: =?UTF-8?q?Stefan=20S=C3=B8rensen?= <stefan.sorensen@spectralink.com>
+To: dwmw2@infradead.org, computersforpeace@gmail.com, avinashphilip@ti.com,
+ linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd:elm: Use correct check on return value of
+ pm_runtime_get_sync
+Date: Mon,  3 Feb 2014 15:54:09 +0100
+Message-Id: <1391439249-23078-1-git-send-email-stefan.sorensen@spectralink.com>
 MIME-Version: 1.0
-To: "Wiedemer, Thorsten (Lawo AG)" <Thorsten.Wiedemer@lawo.com>
-Subject: Re: UBI leb_write_unlock NULL pointer Oops (continuation)
-References: <D7B1B5F4F3F27A4CB073BF422331203F2A18997F1F@Exchange1.lawo.de>
- <CAFLxGvya5WXoKcYmOgeM_SmVVEht1jEzeLG9vHhwFudFU+Ny8A@mail.gmail.com>
- <D7B1B5F4F3F27A4CB073BF422331203F2A18997F8B@Exchange1.lawo.de>
- <52EF772D.8080207@nod.at>
- <D7B1B5F4F3F27A4CB073BF422331203F2A18DD7989@Exchange1.lawo.de>
-In-Reply-To: <D7B1B5F4F3F27A4CB073BF422331203F2A18DD7989@Exchange1.lawo.de>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: =?UTF-8?q?Stefan=20S=C3=B8rensen?= <stefan.sorensen@spectralink.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,31 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 03.02.2014 13:51, schrieb Wiedemer, Thorsten (Lawo AG):
-> Hi,
-> 
-> I can reproduce it fairly regularly, but not really "quickly". At the moment, I can use a setup of about identical 70 devices.
-> A test over the last weekend resultet In 6 devices showing the bug.
-> What we have are multiple processes which write in different intervals some data on the device and sync it, because this data should be available after a power cut.
-> Perhaps I can force the error more often in writing test processes with shorter write/sync intervals.
-> 
-> If I have further access to the "big" setup for some days, I will try to make a test without preemption.
+The ELM driver incorrectly reagard any non-zero return value from
+pm_runtime_get_sync as an error, but it may return 1 if the device
+was already active. Fix to only error when return value is negative.
 
-Hmm, ok.
-Please also apply this patch, just in case...
+Signed-off-by: Stefan Sørensen <stefan.sorensen@spectralink.com>
+---
+ drivers/mtd/devices/elm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
-index 0e11671d..48fd2aa 100644
---- a/drivers/mtd/ubi/eba.c
-+++ b/drivers/mtd/ubi/eba.c
-@@ -301,6 +301,7 @@ static void leb_write_unlock(struct ubi_device *ubi, int vol_id, int lnum)
-
- 	spin_lock(&ubi->ltree_lock);
- 	le = ltree_lookup(ubi, vol_id, lnum);
-+	ubi_assert(le);
- 	le->users -= 1;
- 	ubi_assert(le->users >= 0);
- 	up_write(&le->mutex);
-
-Thanks,
-//richard
+diff --git a/drivers/mtd/devices/elm.c b/drivers/mtd/devices/elm.c
+index d1dd6a3..e2c073c 100644
+--- a/drivers/mtd/devices/elm.c
++++ b/drivers/mtd/devices/elm.c
+@@ -380,7 +380,7 @@ static int elm_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	pm_runtime_enable(&pdev->dev);
+-	if (pm_runtime_get_sync(&pdev->dev)) {
++	if (pm_runtime_get_sync(&pdev->dev) < 0) {
+ 		ret = -EINVAL;
+ 		pm_runtime_disable(&pdev->dev);
+ 		dev_err(&pdev->dev, "can't enable clock\n");
+-- 
+1.8.5.3
