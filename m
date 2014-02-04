@@ -1,28 +1,25 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WAdqZ-0003uP-H7
- for linux-mtd@lists.infradead.org; Tue, 04 Feb 2014 11:07:20 +0000
-Date: Tue, 4 Feb 2014 08:06:44 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Willy Tarreau <w@1wt.eu>, Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH 1/1] ubi: Introduce block devices for UBI volumes
-Message-ID: <20140204110643.GA2414@localhost>
-References: <1391027881-8354-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1391027881-8354-2-git-send-email-ezequiel.garcia@free-electrons.com>
- <20140131170636.GJ31190@1wt.eu>
+Received: from comal.ext.ti.com ([198.47.26.152])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WAeDx-0004aH-71
+ for linux-mtd@lists.infradead.org; Tue, 04 Feb 2014 11:31:30 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: "'Brian Norris'" <computersforpeace@gmail.com>
+Subject: RE: [PATCH v1 0/2] mtd: nand: omap: booting from NAND using u-boot
+Date: Tue, 4 Feb 2014 11:30:48 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA6DA8B@DBDE04.ent.ti.com>
+References: <1386925978-23705-1-git-send-email-pekon@ti.com>
+ <20140125085537.GA3162@norris-Latitude-E6410>
+ <20980858CB6D3A4BAE95CA194937D5E73EA6B567@DBDE04.ent.ti.com>
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA6B567@DBDE04.ent.ti.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20140131170636.GJ31190@1wt.eu>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Mike Frysinger <vapier@gentoo.org>,
- Michael Opdenacker <michael.opdenacker@free-electrons.com>,
- linux-mtd@lists.infradead.org, Tim Bird <tim.bird@am.sony.com>,
- Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, "Balbi, Felipe" <balbi@ti.com>,
+ "u-boot@lists.denx.de" <u-boot@lists.denx.de>,
+ Enric Balletbo Serra <eballetbo@iseebcn.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ linux-omap <linux-omap@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,77 +29,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jan 31, 2014 at 06:06:37PM +0100, Willy Tarreau wrote:
-> On Wed, Jan 29, 2014 at 05:38:01PM -0300, Ezequiel Garcia wrote:
-> > Block device emulation on top of ubi volumes with cached read/write support.
-> > Both the cached access and the write support are selectable at compile time.
-> > 
-> > Given UBI takes care of wear leveling and bad block management it's possible
-> > to add a thin layer to enable block device access to UBI volumes.
-> > This allows to use a block-oriented filesystem on a flash device.
-> > 
-> > In a similar fashion to mtdblock, a 1-LEB size cache has been
-> > implemented. However, very memory-constrained systems can choose to
-> > disable the cache and save the 1-LEB byte allocation.
-> > 
-> > If write support is enabled, the flash device will be written when the cache
-> > is flushed. The following events trigger this:
-> > * block device release (detach)
-> > * different than cached leb is accessed
-> > * io-barrier is received through a REQ_FLUSH request
-> > 
-> > Despite this efforts, it's very important to remember that regular
-> > block-oriented filesystems have no care at all about wear leveling;
-> > they will access the block device randomly, only caring for performance.
-> > Therefore, write support should be selected only for development and
-> > with extreme caution.
-> > 
-> > The cache is 1-LEB bytes, vmalloced at open() and freed at release();
-> > in addition, each block device has a workqueue associated.
-> > 
-> > Block devices are created upon user request through new ioctls:
-> > UBI_IOCVOLATTBLK to attach and UBI_IOCVOLDETBLK to detach.
-> > Also, a new UBI module parameter is added 'ubi.block'. This parameter is
-> > needed in order to attach a block device on boot-up time, allowing to
-> > mount the rootfs on a ubiblock device.
-> > For instance, you could have these kernel parameters:
-> > 
-> >   ubi.mtd=5 ubi.block=0,0 root=/dev/ubiblock0_0
-> > 
-> > Or, if you compile ubi as a module:
-> > 
-> >   $ modprobe ubi mtd=/dev/mtd5 block=/dev/ubi0_0
-> > 
-> > Cc: Artem Bityutskiy <dedekind1@gmail.com>
-> > Cc: David Woodhouse <dwmw2@infradead.org>
-> > Cc: Brian Norris <computersforpeace@gmail.com>
-> > Cc: Michael Opdenacker <michael.opdenacker@free-electrons.com>
-> > Cc: Tim Bird <tim.bird@am.sony.com>
-> > Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-> > Cc: Mike Frysinger <vapier@gentoo.org>
-> > Cc: Piergiorgio Beruto <piergiorgio.beruto@gmail.com>
-> > Cc: Willy Tarreau <w@1wt.eu>
-> > Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> 
-> Works pretty well here on 3.14-git. I've also tested write support
-> with success. I'm booting from a squashfs installed on top of it.
-> I find that the combination of squashfs + ubiblock is really good
-> for a rootfs. It's fast, space-efficient in terms of RAM and NAND,
-> and made reliable by the ubi layer.
-> 
-> Concerning the question about the usage of write support, I find it
-> useful to perform rootfs upgrades from Linux.
-> 
-> Feel free to add :
-> 
->    Tested-By: Willy Tarreau <w@1wt.eu>
-> 
+Hi Brian,
 
-Thanks Willy!
+>From: Gupta, Pekon
+>>I'm preparing a 3.14 pull request soon, and since you seem committed to
+>>fixing and properly testing a known regression here, I'd like to see
+>>this go in. But given the late timing and the unanswered questions, I
+>>think it's unlikely to go in -rc1. Perhaps I can send a later pull
+>>request if we can get it together properly.
+>>
+>Yes, if the above details are sufficient, then I'll:
+>(1) re-word [PATCH 1/2] commit log & title to mention that it's a clean-up
+>(2) Add above description and details of regression into commit log of [PA=
+TCH 2/2]
+>(3) Include your other comments on individual patches.
+>
+>
+>>So I'd like to first of all get a few answers to my questions, and then
+>>I think we might want to refresh this patch series with a little better
+>>commit messages and perhaps a separate documentation file (not
+>>necessarily in the same patch series, as the fix is more urgent).
+>>
+Do my previous responses look complete to you for re-submission ?
 
-Artem: If at all possible, I'd like to avoid stalling, so feel free to comment
-on anything...
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+with regards, pekon
