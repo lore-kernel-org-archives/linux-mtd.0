@@ -1,28 +1,25 @@
-Received: from mail-we0-f182.google.com ([74.125.82.182])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WAjPT-0000K7-Nb
- for linux-mtd@lists.infradead.org; Tue, 04 Feb 2014 17:03:44 +0000
-Received: by mail-we0-f182.google.com with SMTP id u57so4518246wes.27
- for <linux-mtd@lists.infradead.org>; Tue, 04 Feb 2014 09:03:21 -0800 (PST)
-Sender: Grant Likely <glikely@secretlab.ca>
-From: Grant Likely <grant.likely@linaro.org>
-Subject: Re: [RFC PATCH 3/9] of: mtd: add NAND timings retrieval support
-To: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
- boris brezillon <b.brezillon@overkiz.com>
-In-Reply-To: <20140121225740.GP18269@obsidianresearch.com>
-References: <1389190924-26226-1-git-send-email-b.brezillon@overkiz.com> <
- 1389190924-26226-4-git-send-email-b.brezillon@overkiz.com> <20140108183418.
- GA12358@obsidianresearch.com> <52CDA032.3010804@overkiz.com> <
- 20140108191339.GB12358@obsidianresearch.com> <52CE5F82.6070802@overkiz.com>
- <20140109173505.GB8899@obsidianresearch.com> <52D6A48D.4080302@overkiz.com>
- <52D6BF45.80407@overkiz.com> <20140121225740.GP18269@obsidianresearch.com>
-Date: Tue, 04 Feb 2014 17:02:58 +0000
-Message-Id: <20140204170258.3D4FCC4045E@trevor.secretlab.ca>
-Cc: devicetree@vger.kernel.org, Russell King <linux@arm.linux.org.uk>,
- linux-doc@vger.kernel.org, dev@linux-sunxi.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Rob Landley <rob@landley.net>,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+From: Bill Pringlemeir <bpringlemeir@nbsps.com>
+To: dedekind1@gmail.com (Artem Bityutskiy),
+ richard@nod.at (Richard Weinberger),
+ Thorsten.Wiedemer@lawo.com (Wiedemer, Thorsten (Lawo AG))
+Subject: Re: UBI leb_write_unlock NULL pointer Oops (continuation) on ARM926
+References: <D7B1B5F4F3F27A4CB073BF422331203F2A18997F1F@Exchange1.lawo.de>
+ <CAFLxGvya5WXoKcYmOgeM_SmVVEht1jEzeLG9vHhwFudFU+Ny8A@mail.gmail.com>
+ <D7B1B5F4F3F27A4CB073BF422331203F2A18997F8B@Exchange1.lawo.de>
+ <52EF772D.8080207@nod.at>
+ <D7B1B5F4F3F27A4CB073BF422331203F2A18DD7989@Exchange1.lawo.de>
+ <52EF9FFE.4020405@nod.at>
+ <1391498545.1795.29.camel@sauron.fi.intel.com>
+ <52F09AC9.6090604@nod.at>
+ <1391500492.1795.36.camel@sauron.fi.intel.com>
+ <878utq51b4.fsf@nbsps.com>
+Date: Tue, 04 Feb 2014 12:05:06 -0500
+In-Reply-To: <878utq51b4.fsf@nbsps.com> (Bill Pringlemeir's message of "Tue,
+ 04 Feb 2014 10:45:35 -0500")
+Message-ID: <874n4e4xml.fsf@nbsps.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,26 +29,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 21 Jan 2014 15:57:40 -0700, Jason Gunthorpe <jgunthorpe@obsidianresearch.com> wrote:
-> On Wed, Jan 15, 2014 at 06:03:01PM +0100, boris brezillon wrote:
-> 
-> > >>Pick a mode value that fits all the parameters of the connected
-> > >>non-ONFI flash.
-> > >>
-> > >>This would be instead of defining each parameter
-> > >>individually.. Provide some helpers to convert from a onfi mode number
-> > >>to all the onfi defined timing parameters so that drivers can
-> > >>configure the HW..
-> > >
-> > >Are you suggesting we should provide a function that converts these
-> > >modes into a nand_timings struct, or just use the timing modes and
-> > >let the NAND controller drivers configure its IP accordingly ?
-> 
-> Either seems reasonable to me, but passing the ONFI mode directly from
-> the NAND core to the driver seems a little safer..
+On  4 Feb 2014, bpringlemeir@nbsps.com wrote:
 
-I agree here. There are a lot of parameters being defined. If it can be
-boiled down to an ONFI mode that will make for a much more robust
-binding. Far fewer things to get wrong.
+> The ARM926 systems do not have proper 'lock free' idioms like
+> 'ldrex/strex' and they try to do atomic operations by locking
+> interrupts.  I think that UbiFs/UBI maybe called on a 'data fault' or
+> 'program fault' (in user space) when memory pressure is present.  I have
+> seen this occur in some sound drivers where the data source is coming
+> from disk (or maybe the driver uses vmalloc() or something).  So I think
+> on occasion, the ltree_lookup() may not work or there is something weird
+> with the atomic primatives and data/page faults.
 
-g.
+
+ https://www.google.ca/#q=site:infradead.org+leb_write_unlock+oops
+
+ http://lists.infradead.org/pipermail/linux-mtd/2013-May/046907.html
+
+ at91sam9g20 - arm926, different MTD driver. Linux 3.6.9
+
+ Code: e5903004 e58d2004 e1560003 0a00002a (e593200c)
+
+   0:   e5903004        ldr     r3, [r0, #4]
+   4:   e58d2004        str     r2, [sp, #4]
+   8:   e1560003        cmp     r6, r3
+   c:   0a00002a        beq     0xbc
+  10:   e593200c        ldr     r2, [r3, #12]
+
+The code sequence looks identical and the Oops trace, etc is the same.
+People from Pengutronix also indicated seeing the same type of Opps; I
+think they deal with the IMX, but maybe this was on another board.
+
+Regards,
+Bill Pringlemeir.
