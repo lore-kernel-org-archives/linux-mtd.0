@@ -1,26 +1,27 @@
-Date: Wed, 5 Feb 2014 11:19:18 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Boris BREZILLON <b.brezillon.dev@gmail.com>,
- Grant Likely <grant.likely@secretlab.ca>
-Subject: Re: [RFC PATCH v2 03/14] of: mtd: add documentation for
- nand-ecc-level property
-Message-ID: <20140205141917.GA25091@localhost>
-References: <1391006064-28890-1-git-send-email-b.brezillon.dev@gmail.com>
- <1391006064-28890-4-git-send-email-b.brezillon.dev@gmail.com>
- <20140129175331.GA27143@localhost>
- <20140205111500.B19FDC40A89@trevor.secretlab.ca>
- <52F23DF4.7010901@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <52F23DF4.7010901@gmail.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
- Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
- Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
- Pekon Gupta <pekon@ti.com>, Maxime Ripard <maxime.ripard@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Received: from plane.gmane.org ([80.91.229.3])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WB58L-00004t-Lx
+ for linux-mtd@lists.infradead.org; Wed, 05 Feb 2014 16:15:30 +0000
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1WB57v-0003iz-U4
+ for linux-mtd@lists.infradead.org; Wed, 05 Feb 2014 17:15:04 +0100
+Received: from 216.52.207.103 ([216.52.207.103])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <linux-mtd@lists.infradead.org>; Wed, 05 Feb 2014 17:15:03 +0100
+Received: from coltontpeltier by 216.52.207.103 with local (Gmexim 0.1
+ (Debian)) id 1AlnuQ-0007hv-00
+ for <linux-mtd@lists.infradead.org>; Wed, 05 Feb 2014 17:15:03 +0100
+To: linux-mtd@lists.infradead.org
+From: Colton <coltontpeltier@gmail.com>
+Subject: Re: nandsim LEB size mismatch
+Date: Wed, 5 Feb 2014 16:10:24 +0000 (UTC)
+Message-ID: <loom.20140205T165327-419@post.gmane.org>
+References: <CALuNSF7ESa0CBE0+kNO_HDeWKVgzN8ZZo7TnNGadTC0AuZjEXQ@mail.gmail.com>
+ <CALuNSF7A=PBpyP4=nEEKvuhAMAQJvucGddhHPuxSuqZuCTnmEg@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,41 +31,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Grant, Boris:
-
-(BTW, dropped Russell, Rob Landley and some unrelated mailing lists from Cc,
-and added Thomas, Gregory and Rob Herring).
-
-On Wed, Feb 05, 2014 at 02:34:44PM +0100, Boris BREZILLON wrote:
-> On 05/02/2014 12:15, Grant Likely wrote:
-> > On Wed, 29 Jan 2014 14:53:32 -0300, Ezequiel Garcia <ezequiel.garcia@free-electrons.com> wrote:
-[..]
-> >>
-> >> Maybe we can discuss about it now?
-> >>
-> >>    nand-ecc-strength : integer ECC required strength.
-> >>    nand-ecc-size : integer step size associated to the ECC strength.
-> > I'm okay with either, but the above binding is indeed more readable.
-> 
-> That's fine by me, if everybody agrees, let's go for the
-> nand-ecc-strength/nand-ecc-size couple then.
-> 
-
-Great. So, if some DT dictator^C^Cmaintainers can Ack this binding,
-I can send a new patchset, with pxa3xx-nand using it...
-
-> I'll rebase next version of my series on Ezequiel's patch providing
-> these OF helpers.
-> 
-
-... and then you can base on it?
-
-This is the original patchset:
-
-http://permalink.gmane.org/gmane.linux.drivers.devicetree/58764
-http://permalink.gmane.org/gmane.linux.drivers.devicetree/58763
-
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+Thanks a lot Simon, this really helped me out. To anyone else who's doing 
+this, make sure that when you do the "ubimkvol" command you change 0xA00000 
+to a big enough filesize for your ubifs volume. I just looked at my filesize 
+and converted it to hex and used that.
