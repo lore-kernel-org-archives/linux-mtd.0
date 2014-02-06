@@ -1,24 +1,27 @@
-Received: from mailout2.samsung.com ([203.254.224.25])
+Received: from mailout1.samsung.com ([203.254.224.24])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WBI7l-0003Kj-MQ
- for linux-mtd@lists.infradead.org; Thu, 06 Feb 2014 06:07:47 +0000
+ id 1WBI9F-0003N5-3o
+ for linux-mtd@lists.infradead.org; Thu, 06 Feb 2014 06:09:18 +0000
 Received: from epcpsbgr5.samsung.com
  (u145.gpu120.samsung.co.kr [203.254.230.145])
- by mailout2.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ by mailout1.samsung.com (Oracle Communications Messaging Server 7u4-24.01
  (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0N0K00LO6908UT20@mailout2.samsung.com> for
- linux-mtd@lists.infradead.org; Thu, 06 Feb 2014 15:07:20 +0900 (KST)
+ with ESMTP id <0N0K00F3692U65D0@mailout1.samsung.com> for
+ linux-mtd@lists.infradead.org; Thu, 06 Feb 2014 15:08:54 +0900 (KST)
 From: Jingoo Han <jg1.han@samsung.com>
 To: 'Brian Norris' <computersforpeace@gmail.com>
-Subject: [PATCH 0/8] mtd: Remove unnecessary OOM messages
-Date: Thu, 06 Feb 2014 15:07:19 +0900
-Message-id: <000201cf2301$b168d250$143a76f0$%han@samsung.com>
+References: <000201cf2301$b168d250$143a76f0$%han@samsung.com>
+In-reply-to: <000201cf2301$b168d250$143a76f0$%han@samsung.com>
+Subject: [PATCH 1/8] mtd: devices: elm: Remove unnecessary OOM messages
+Date: Thu, 06 Feb 2014 15:08:53 +0900
+Message-id: <000301cf2301$e987e310$bc97a930$%han@samsung.com>
 MIME-version: 1.0
 Content-type: text/plain; charset=us-ascii
 Content-transfer-encoding: 7bit
 Content-language: ko
 Cc: linux-mtd@lists.infradead.org, 'Jingoo Han' <jg1.han@samsung.com>,
- 'David Woodhouse' <dwmw2@infradead.org>
+ 'David Woodhouse' <dwmw2@infradead.org>, "'Gupta, Pekon'" <pekon@ti.com>,
+ 'Philip Avinash' <avinashphilip@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,32 +32,28 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 The site-specific OOM messages are unnecessary, because they
-duplicate the MM subsystem generic OOM message. For example,
-k.alloc and v.alloc failures use dump_stack().
+duplicate the MM subsystem generic OOM message.
 
-Jingoo Han (8):
-      mtd: devices: elm: Remove unnecessary OOM messages
-      mtd: spear_smi: Remove unnecessary OOM messages
-      mtd: pmc551: Remove unnecessary OOM messages
-      mtd: plat-ram: Remove unnecessary OOM messages
-      mtd: lpddr: Remove unnecessary OOM messages
-      mtd: onenand: Remove unnecessary OOM messages
-      mtd: cfi: Remove unnecessary OOM messages
-      mtd: gen_probe: Remove unnecessary OOM messages
-
+Signed-off-by: Jingoo Han <jg1.han@samsung.com>
 ---
- drivers/mtd/chips/cfi_cmdset_0001.c |    8 ++------
- drivers/mtd/chips/cfi_cmdset_0002.c |    8 ++------
- drivers/mtd/chips/cfi_cmdset_0020.c |    2 --
- drivers/mtd/chips/cfi_probe.c       |    4 +---
- drivers/mtd/chips/cfi_util.c        |    4 +---
- drivers/mtd/chips/gen_probe.c       |    2 --
- drivers/mtd/devices/elm.c           |    4 +---
- drivers/mtd/devices/pmc551.c        |    7 +------
- drivers/mtd/devices/spear_smi.c     |    2 --
- drivers/mtd/lpddr/lpddr_cmds.c      |    4 +---
- drivers/mtd/lpddr/qinfo_probe.c     |    5 +----
- drivers/mtd/maps/plat-ram.c         |    1 -
- drivers/mtd/onenand/onenand_base.c  |    7 +------
- drivers/mtd/onenand/samsung.c       |    4 +---
- 14 files changed, 12 insertions(+), 50 deletions(-)
+ drivers/mtd/devices/elm.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/devices/elm.c b/drivers/mtd/devices/elm.c
+index d1dd6a3..437ed3a 100644
+--- a/drivers/mtd/devices/elm.c
++++ b/drivers/mtd/devices/elm.c
+@@ -354,10 +354,8 @@ static int elm_probe(struct platform_device *pdev)
+ 	struct elm_info *info;
+ 
+ 	info = devm_kzalloc(&pdev->dev, sizeof(*info), GFP_KERNEL);
+-	if (!info) {
+-		dev_err(&pdev->dev, "failed to allocate memory\n");
++	if (!info)
+ 		return -ENOMEM;
+-	}
+ 
+ 	info->dev = &pdev->dev;
+ 
+-- 
+1.7.10.4
