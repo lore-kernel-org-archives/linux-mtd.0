@@ -1,15 +1,13 @@
-Received: from ch1ehsobe001.messaging.microsoft.com ([216.32.181.181]
- helo=ch1outboundpool.messaging.microsoft.com)
+Received: from co1ehsobe003.messaging.microsoft.com ([216.32.180.186]
+ helo=co1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WC1f6-0008Ev-Ey
- for linux-mtd@lists.infradead.org; Sat, 08 Feb 2014 06:45:13 +0000
+ id 1WC1f8-0008Ew-7X
+ for linux-mtd@lists.infradead.org; Sat, 08 Feb 2014 06:45:15 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH v2 2/5] mtd: nand: add fields for JEDEC in nand_chip
-Date: Sat, 8 Feb 2014 14:03:58 +0800
-Message-ID: <1391839441-21006-3-git-send-email-b32955@freescale.com>
-In-Reply-To: <1391839441-21006-1-git-send-email-b32955@freescale.com>
-References: <1391839441-21006-1-git-send-email-b32955@freescale.com>
+Subject: [PATCH v2 0/5]  mtd: nand: support the JEDEC compliant nand.
+Date: Sat, 8 Feb 2014 14:03:56 +0800
+Message-ID: <1391839441-21006-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
@@ -23,30 +21,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add the jedec_version field, and add an anonymous union which
-contains the nand_onfi_params and nand_jedec_params.
+Some vendors support the JEDEC standard only, such as Toshiba.
+We can get all the information for the JEDEC parameter page, just like
+we did with the ONFI parameter page.
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
----
- include/linux/mtd/nand.h |    6 +++++-
- 1 files changed, 5 insertions(+), 1 deletions(-)
+This patch set adds the support for the JEDEC compliant nand chips.
 
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 588f8a4..9686390 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -664,7 +664,11 @@ struct nand_chip {
- 	int badblockbits;
- 
- 	int onfi_version;
--	struct nand_onfi_params	onfi_params;
-+	int jedec_version;
-+	union {
-+		struct nand_onfi_params	onfi_params;
-+		struct nand_jedec_params jedec_params;
-+	};
- 
- 	int read_retries;
- 
+You can download the JEDEC standard about the NAND in the:
+    www.jedec.org
+
+My code references to the JESD230A, August 2013, revision 1.
+
+Tested with Toshiba TH58TEG7DDKTA20(16K + 1280).
+(Unfortuately, this ECC info of its JEDEC parameter page is zero,
+ TOSHIBA FAE confirmed that they will fix it in future.)
+
+v1 --> v2:
+	[1] use the read_byte to replace the read_buf.
+
+Huang Shijie (5):
+  mtd: nand: add the data structures for JEDEC parameter page
+  mtd: nand: add fields for JEDEC in nand_chip
+  mtd: nand: add a helper to get the supported features for JEDEC
+  mtd: nand: parse out the JEDEC compliant nand
+  mtd: nand: print out the right information for JEDEC compliant nand
+
+ drivers/mtd/nand/nand_base.c |   99 +++++++++++++++++++++++++++++++++++++++++-
+ include/linux/mtd/nand.h     |   90 +++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 186 insertions(+), 3 deletions(-)
+
 -- 
 1.7.2.rc3
