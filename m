@@ -1,22 +1,27 @@
-Received: from cpsmtpb-ews07.kpnxchange.com ([213.75.39.10])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WCbOT-0001fJ-5A
- for linux-mtd@lists.infradead.org; Sun, 09 Feb 2014 20:54:26 +0000
-Message-ID: <1391979242.25855.37.camel@x220>
-Subject: Re: [PATCH 15/28] Remove TI_AEMIF
-From: Paul Bolle <pebolle@tiscali.nl>
-To: Richard Weinberger <richard@nod.at>
-Date: Sun, 09 Feb 2014 21:54:02 +0100
-In-Reply-To: <1391971686-9517-16-git-send-email-richard@nod.at>
-References: <1391971686-9517-1-git-send-email-richard@nod.at>
- <1391971686-9517-16-git-send-email-richard@nod.at>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
+Received: from mail-ve0-x234.google.com ([2607:f8b0:400c:c01::234])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WCdIs-0003CA-Uq
+ for linux-mtd@lists.infradead.org; Sun, 09 Feb 2014 22:56:49 +0000
+Received: by mail-ve0-f180.google.com with SMTP id db12so4474068veb.11
+ for <linux-mtd@lists.infradead.org>; Sun, 09 Feb 2014 14:56:24 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <1391027881-8354-2-git-send-email-ezequiel.garcia@free-electrons.com>
+References: <1391027881-8354-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1391027881-8354-2-git-send-email-ezequiel.garcia@free-electrons.com>
+Date: Sun, 9 Feb 2014 23:56:24 +0100
+Message-ID: <CAFLxGvyzWhMHjxM=0kgsEOx82qAGBWE1WbyLJt2-6P7Cd9i+nQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] ubi: Introduce block devices for UBI volumes
+From: Richard Weinberger <richard.weinberger@gmail.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Mike Frysinger <vapier@gentoo.org>, Artem Bityutskiy <dedekind1@gmail.com>,
+ Michael Opdenacker <michael.opdenacker@free-electrons.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Tim Bird <tim.bird@am.sony.com>,
+ Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- open list <linux-kernel@vger.kernel.org>
+ David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,31 +31,1157 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2014-02-09 at 19:47 +0100, Richard Weinberger wrote:
-> The symbol is an orphan, get rid of it.
-> 
-> Signed-off-by: Richard Weinberger <richard@nod.at>
+On Wed, Jan 29, 2014 at 9:38 PM, Ezequiel Garcia
+<ezequiel.garcia@free-electrons.com> wrote:
+> Block device emulation on top of ubi volumes with cached read/write support.
+> Both the cached access and the write support are selectable at compile time.
+>
+> Given UBI takes care of wear leveling and bad block management it's possible
+> to add a thin layer to enable block device access to UBI volumes.
+> This allows to use a block-oriented filesystem on a flash device.
+>
+> In a similar fashion to mtdblock, a 1-LEB size cache has been
+> implemented. However, very memory-constrained systems can choose to
+> disable the cache and save the 1-LEB byte allocation.
+>
+> If write support is enabled, the flash device will be written when the cache
+> is flushed. The following events trigger this:
+> * block device release (detach)
+> * different than cached leb is accessed
+> * io-barrier is received through a REQ_FLUSH request
+>
+> Despite this efforts, it's very important to remember that regular
+> block-oriented filesystems have no care at all about wear leveling;
+> they will access the block device randomly, only caring for performance.
+> Therefore, write support should be selected only for development and
+> with extreme caution.
+>
+> The cache is 1-LEB bytes, vmalloced at open() and freed at release();
+> in addition, each block device has a workqueue associated.
+>
+> Block devices are created upon user request through new ioctls:
+> UBI_IOCVOLATTBLK to attach and UBI_IOCVOLDETBLK to detach.
+> Also, a new UBI module parameter is added 'ubi.block'. This parameter is
+> needed in order to attach a block device on boot-up time, allowing to
+> mount the rootfs on a ubiblock device.
+> For instance, you could have these kernel parameters:
+>
+>   ubi.mtd=5 ubi.block=0,0 root=/dev/ubiblock0_0
+>
+> Or, if you compile ubi as a module:
+>
+>   $ modprobe ubi mtd=/dev/mtd5 block=/dev/ubi0_0
+>
+> Cc: Artem Bityutskiy <dedekind1@gmail.com>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Brian Norris <computersforpeace@gmail.com>
+> Cc: Michael Opdenacker <michael.opdenacker@free-electrons.com>
+> Cc: Tim Bird <tim.bird@am.sony.com>
+> Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+> Cc: Mike Frysinger <vapier@gentoo.org>
+> Cc: Piergiorgio Beruto <piergiorgio.beruto@gmail.com>
+> Cc: Willy Tarreau <w@1wt.eu>
+> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 > ---
->  drivers/mtd/nand/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-> index 90ff447..a195d57 100644
-> --- a/drivers/mtd/nand/Kconfig
-> +++ b/drivers/mtd/nand/Kconfig
-> @@ -465,7 +465,7 @@ config MTD_NAND_SH_FLCTL
->  
->  config MTD_NAND_DAVINCI
->          tristate "Support NAND on DaVinci/Keystone SoC"
-> -        depends on ARCH_DAVINCI || (ARCH_KEYSTONE && TI_AEMIF)
-> +        depends on ARCH_DAVINCI || ARCH_KEYSTONE
->          help
->  	  Enable the driver for NAND flash chips on Texas Instruments
->  	  DaVinci/Keystone processors.
+>  drivers/mtd/ubi/Kconfig     |  42 +++
+>  drivers/mtd/ubi/Makefile    |   1 +
+>  drivers/mtd/ubi/block.c     | 899 ++++++++++++++++++++++++++++++++++++++++++++
+>  drivers/mtd/ubi/build.c     |   5 +
+>  drivers/mtd/ubi/cdev.c      |  20 +
+>  drivers/mtd/ubi/ubi.h       |  14 +
+>  include/uapi/mtd/ubi-user.h |  11 +
+>  7 files changed, 992 insertions(+)
+>  create mode 100644 drivers/mtd/ubi/block.c
+>
+> diff --git a/drivers/mtd/ubi/Kconfig b/drivers/mtd/ubi/Kconfig
+> index 36663af..2893775 100644
+> --- a/drivers/mtd/ubi/Kconfig
+> +++ b/drivers/mtd/ubi/Kconfig
+> @@ -87,4 +87,46 @@ config MTD_UBI_GLUEBI
+>            work on top of UBI. Do not enable this unless you use legacy
+>            software.
+>
+> +config MTD_UBI_BLOCK
+> +       bool "Block device access to UBI volumes"
+> +       default n
+> +       help
+> +          Since UBI already takes care of eraseblock wear leveling
+> +          and bad block handling, it's possible to implement a block
+> +          device on top of it and therefore mount regular filesystems
+> +          (i.e. not flash-oriented, as ext4).
+> +          In other words, this is a software flash translation layer.
+> +
+> +          This can be particularly interesting to allow mounting a read-only
+> +          filesystem, such as squashfs, on a NAND device.
+> +
+> +          When selected, this feature will be built-in the ubi module
+> +          and block devices will be able to be created and removed using
+> +          the userspace 'ubiblkvol' tool (provided mtd-utils).
+> +
+> +          If in doubt, say "N".
+> +
+> +config MTD_UBI_BLOCK_CACHED
+> +       bool "Enable cached UBI block access"
+> +       default y
+> +       depends on MTD_UBI_BLOCK
+> +       help
+> +          In order to reduce flash device access, this option enables a 1-LEB
+> +          sized cache. For read-only access this can be an overkill, given
+> +          filesystems most likely implement their own caching policies.
+> +          Moreover, since a LEB can be as large as ~1 MiB, memory-constrained
+> +          platforms can choose to disable this.
+> +
+> +config MTD_UBI_BLOCK_WRITE_SUPPORT
+> +       bool "Enable write support (DANGEROUS)"
+> +       default n
+> +       depends on MTD_UBI_BLOCK
+> +       select MTD_UBI_BLOCK_CACHED
+> +       help
+> +          This is a *very* dangerous feature. Using a regular block-oriented
+> +          filesystem might impact heavily on a flash device wear.
+> +          Use with extreme caution.
+> +
+> +          If in doubt, say "N".
+> +
+>  endif # MTD_UBI
+> diff --git a/drivers/mtd/ubi/Makefile b/drivers/mtd/ubi/Makefile
+> index b46b0c97..4e3c3d7 100644
+> --- a/drivers/mtd/ubi/Makefile
+> +++ b/drivers/mtd/ubi/Makefile
+> @@ -3,5 +3,6 @@ obj-$(CONFIG_MTD_UBI) += ubi.o
+>  ubi-y += vtbl.o vmt.o upd.o build.o cdev.o kapi.o eba.o io.o wl.o attach.o
+>  ubi-y += misc.o debug.o
+>  ubi-$(CONFIG_MTD_UBI_FASTMAP) += fastmap.o
+> +ubi-$(CONFIG_MTD_UBI_BLOCK) += block.o
+>
+>  obj-$(CONFIG_MTD_UBI_GLUEBI) += gluebi.o
+> diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
+> new file mode 100644
+> index 0000000..6a7dc00
+> --- /dev/null
+> +++ b/drivers/mtd/ubi/block.c
+> @@ -0,0 +1,899 @@
+> +/*
+> + * Copyright (c) 2014 Ezequiel Garcia
+> + * Copyright (c) 2011 Free Electrons
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation, version 2.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
+> + * the GNU General Public License for more details.
+> + *
+> + * A block implementation on UBI volume
+> + * ------------------------------------
+> + *
+> + * How to use this? A bunch of examples worth a thousand words:
+> + *
+> + * If you want to attach a block device on bootup time, e.g. in order
+> + * to mount the rootfs on such a block device:
+> + *
+> + * Using the UBI volume path:
+> + *  ubi.block=/dev/ubi0_0
+> + *
+> + * Using the UBI device, and the volume name:
+> + *  ubi.block=0,rootfs
+> + *
+> + * Using both UBI device number and UBI volume number:
+> + *  ubi.block=0,0
+> + *
+> + * In this case you would have such kernel parameters:
+> + *  ubi.mtd=5 ubi.block=0,0 root=/dev/ubiblock0_0
+> + *
+> + * Of course, if you compile ubi as a module you can use this
+> + * parameter on module insertion time:
+> + *  modprobe ubi mtd=/dev/mtd5 block=/dev/ubi0_0
+> + *
+> + * For runtime block attaching/detaching, see mtd-utils' ubiblkvol tool.
+> + */
+> +
+> +#include <linux/module.h>
+> +#include <linux/init.h>
+> +#include <linux/err.h>
+> +#include <linux/kernel.h>
+> +#include <linux/list.h>
+> +#include <linux/mutex.h>
+> +#include <linux/slab.h>
+> +#include <linux/vmalloc.h>
+> +#include <linux/mtd/ubi.h>
+> +#include <linux/workqueue.h>
+> +#include <linux/blkdev.h>
+> +#include <linux/hdreg.h>
+> +
+> +#include "ubi-media.h"
+> +#include "ubi.h"
+> +
+> +/* Maximum number of supported devices */
+> +#define UBIBLOCK_MAX_DEVICES 32
+> +
+> +/* Maximum length of the 'block=' parameter */
+> +#define UBIBLOCK_PARAM_LEN 63
+> +
+> +/* Maximum number of comma-separated items in the 'block=' parameter */
+> +#define UBIBLOCK_PARAM_COUNT 2
+> +
+> +struct ubiblock_param {
+> +       int ubi_num;
+> +       int vol_id;
+> +       char name[UBIBLOCK_PARAM_LEN+1];
+> +};
+> +
+> +/* Numbers of elements set in the @ubiblock_param array */
+> +static int ubiblock_devs __initdata;
+> +
+> +/* MTD devices specification parameters */
+> +static struct ubiblock_param ubiblock_param[UBIBLOCK_MAX_DEVICES] __initdata;
+> +
+> +struct ubiblock_cache {
+> +       char *buffer;
+> +       enum { STATE_EMPTY, STATE_CLEAN, STATE_DIRTY } state;
+> +       int leb_num;
+> +};
+> +
+> +struct ubiblock {
+> +       struct ubi_volume_desc *desc;
+> +       struct ubi_volume_info *vi;
+> +       int ubi_num;
+> +       int vol_id;
+> +       int refcnt;
+> +
+> +       struct gendisk *gd;
+> +       struct request_queue *rq;
+> +
+> +       struct workqueue_struct *wq;
+> +       struct work_struct work;
+> +
+> +       struct mutex vol_mutex;
+> +       spinlock_t queue_lock;
+> +       struct list_head list;
+> +
+> +       int leb_size;
+> +#ifdef CONFIG_MTD_UBI_BLOCK_CACHED
+> +       struct ubiblock_cache cache;
+> +#endif
+> +};
+> +
+> +/* Linked list of all ubiblock instances */
+> +static LIST_HEAD(ubiblock_devices);
+> +static DEFINE_MUTEX(devices_mutex);
+> +static int ubiblock_major;
+> +
+> +/* Ugh! this parameter parsing code is awful */
+> +static int __init ubiblock_set_param(const char *val,
+> +                                    const struct kernel_param *kp)
+> +{
+> +       int i, ret;
+> +       size_t len;
+> +       struct ubiblock_param *param;
+> +       char buf[UBIBLOCK_PARAM_LEN];
+> +       char *pbuf = &buf[0];
+> +       char *tokens[UBIBLOCK_PARAM_COUNT];
+> +
+> +       if (!val)
+> +               return -EINVAL;
+> +
+> +       len = strnlen(val, UBIBLOCK_PARAM_LEN);
+> +       if (len == 0) {
+> +               ubi_warn("block: empty 'block=' parameter - ignored\n");
+> +               return 0;
+> +       }
+> +
+> +       if (len == UBIBLOCK_PARAM_LEN) {
+> +               ubi_err("block: parameter \"%s\" is too long, max. is %d\n",
+> +                       val, UBIBLOCK_PARAM_LEN);
+> +               return -EINVAL;
+> +       }
+> +
+> +       strcpy(buf, val);
+> +
+> +       /* Get rid of the final newline */
+> +       if (buf[len - 1] == '\n')
+> +               buf[len - 1] = '\0';
+> +
+> +       for (i = 0; i < UBIBLOCK_PARAM_COUNT; i++)
+> +               tokens[i] = strsep(&pbuf, ",");
+> +
+> +       param = &ubiblock_param[ubiblock_devs];
+> +       if (tokens[1]) {
+> +               /* Two parameters: can be 'ubi, vol_id' or 'ubi, vol_name' */
+> +               ret = kstrtoint(tokens[0], 10, &param->ubi_num);
+> +               if (ret < 0)
+> +                       return -EINVAL;
+> +
+> +               /* Second param can be a number or a name */
+> +               ret = kstrtoint(tokens[1], 10, &param->vol_id);
+> +               if (ret < 0) {
+> +                       param->vol_id = -1;
+> +                       strcpy(param->name, tokens[1]);
+> +               }
+> +
+> +       } else {
+> +               /* One parameter: must be device path */
+> +               strcpy(param->name, tokens[0]);
+> +               param->ubi_num = -1;
+> +               param->vol_id = -1;
+> +       }
+> +
+> +       ubiblock_devs++;
+> +
+> +       return 0;
+> +}
+> +
+> +static const struct kernel_param_ops ubiblock_param_ops = {
+> +       .set    = ubiblock_set_param,
+> +};
+> +module_param_cb(block, &ubiblock_param_ops, NULL, 0);
+> +MODULE_PARM_DESC(block, "Attach block devices to UBI volumes. Parameter format: block=<path|dev,num|dev,name>.\n"
+> +                       "Multiple \"block\" parameters may be specified.\n"
+> +                       "UBI volumes may be specified by their number, name, or path to the device node.\n"
+> +                       "Examples\n"
+> +                       "Using the UBI volume path:\n"
+> +                       "ubi.block=/dev/ubi0_0\n"
+> +                       "Using the UBI device, and the volume name:\n"
+> +                       "ubi.block=0,rootfs\n"
+> +                       "Using both UBI device number and UBI volume number:\n"
+> +                       "ubi.block=0,0\n");
+> +
+> +static struct ubiblock *find_dev_nolock(int ubi_num, int vol_id)
+> +{
+> +       struct ubiblock *dev;
+> +
+> +       list_for_each_entry(dev, &ubiblock_devices, list)
+> +               if (dev->ubi_num == ubi_num && dev->vol_id == vol_id)
+> +                       return dev;
+> +       return NULL;
+> +}
+> +
+> +#ifdef CONFIG_MTD_UBI_BLOCK_CACHED
+> +static void ubiblock_clean_cache(struct ubiblock *dev)
+> +{
+> +       dev->cache.leb_num = -1;
+> +       dev->cache.state = STATE_EMPTY;
+> +}
+> +
+> +static void ubiblock_free_cache(struct ubiblock *dev)
+> +{
+> +       dev->cache.leb_num = -1;
+> +       dev->cache.state = STATE_EMPTY;
+> +       vfree(dev->cache.buffer);
+> +       dev->cache.buffer = NULL;
+> +}
+> +
+> +static int ubiblock_alloc_cache(struct ubiblock *dev)
+> +{
+> +       dev->cache.state = STATE_EMPTY;
+> +       dev->cache.leb_num = -1;
+> +       dev->cache.buffer = vmalloc(dev->leb_size);
+> +       if (!dev->cache.buffer)
+> +               return -ENOMEM;
+> +       return 0;
+> +}
+> +
+> +static bool leb_in_cache(struct ubiblock_cache *cache, int leb_num)
+> +{
+> +       return cache->leb_num == leb_num;
+> +}
+> +
+> +static int ubiblock_fill_cache(struct ubiblock *dev, int leb_num,
+> +                              struct ubiblock_cache *cache)
+> +{
+> +       int ret;
+> +
+> +       /* Warn if we fill cache while being dirty */
+> +       WARN_ON(cache->state == STATE_DIRTY);
+> +
+> +       cache->leb_num = leb_num;
+> +       cache->state = STATE_CLEAN;
+> +
+> +       ret = ubi_read(dev->desc, leb_num, cache->buffer, 0,
+> +                      dev->leb_size);
+> +       if (ret) {
+> +               ubi_err("%s ubi_read error %d", dev->gd->disk_name, ret);
+> +               return ret;
+> +       }
+> +       return 0;
+> +}
+> +
+> +static int ubiblock_read_to_buf(struct ubiblock *dev, char *buffer,
+> +                               int leb, int offset, int len)
+> +{
+> +       int ret;
+> +       char *cache_buffer;
+> +       /*
+> +        * First try in cache, if it's not there load this leb.
+> +        * Note that reading never flushes to disk!
+> +        */
+> +       if (leb_in_cache(&dev->cache, leb)) {
+> +               cache_buffer = dev->cache.buffer;
+> +       } else {
 
-What's strange about the current dependency is that the only aemif code
-I could find lives at arch/arm/mach-davinci/aemif.c. Is that reachable
-for code in arch/arm/mach-keystone?
+I think you have to flush the cache here too.
+With RW support enabled you can end up with a dirty cache here.
+
+> +               /* Leb is not in cache: fill it! */
+> +               ret = ubiblock_fill_cache(dev, leb, &dev->cache);
+> +               if (ret)
+> +                       return ret;
+> +               cache_buffer = dev->cache.buffer;
+> +       }
+> +       memcpy(buffer, cache_buffer + offset, len);
+> +       return 0;
+> +}
+> +#else
+> +static inline void ubiblock_clean_cache(struct ubiblock *dev) {}
+> +
+> +static inline void ubiblock_free_cache(struct ubiblock *dev) {}
+> +
+> +static inline int ubiblock_alloc_cache(struct ubiblock *dev)
+> +{
+> +       return 0;
+> +}
+> +
+> +static int ubiblock_read_to_buf(struct ubiblock *dev, char *buffer,
+> +                               int leb, int offset, int len)
+> +{
+> +       int ret;
+> +
+> +       ret = ubi_read(dev->desc, leb, buffer, offset, len);
+> +       if (ret) {
+> +               ubi_err("%s ubi_read error %d",
+> +                       dev->gd->disk_name, ret);
+> +               return ret;
+> +       }
+> +       return 0;
+> +}
+> +#endif /* CONFIG_MTD_UBI_BLOCK_CACHED */
+> +
+> +#ifdef CONFIG_MTD_UBI_BLOCK_WRITE_SUPPORT
+> +static int ubiblock_flush(struct ubiblock *dev, bool sync)
+> +{
+> +       struct ubiblock_cache *cache = &dev->cache;
+> +       int ret = 0;
+> +
+> +       if (cache->state != STATE_DIRTY)
+> +               return 0;
+> +
+> +       /*
+> +        * mtdblock sets STATE_EMPTY, arguing that it prevents the
+> +        * underlying media to get changed without notice.
+> +        * I'm not fully convinced, so I just put STATE_CLEAN.
+> +        */
+> +       cache->state = STATE_CLEAN;
+> +
+> +       /* Atomically change leb with buffer contents */
+> +       ret = ubi_leb_change(dev->desc, cache->leb_num,
+> +                            cache->buffer, dev->leb_size);
+> +       if (ret) {
+> +               ubi_err("%s ubi_leb_change error %d",
+> +                       dev->gd->disk_name, ret);
+> +               return ret;
+> +       }
+> +
+> +       /* Sync ubi device when device is released and on block flush ioctl */
+> +       if (sync)
+> +               ret = ubi_sync(dev->ubi_num);
+> +
+> +       return ret;
+> +}
+> +
+> +static int ubiblock_write(struct ubiblock *dev, const char *buffer,
+> +                         int pos, int len)
+> +{
+> +       int leb, offset, ret;
+> +       int bytes_left = len;
+> +       int to_write = len;
+> +       struct ubiblock_cache *cache = &dev->cache;
+> +
+> +       /* Get (leb:offset) address to write */
+> +       leb = pos / dev->leb_size;
+> +       offset = pos % dev->leb_size;
+> +
+> +       while (bytes_left) {
+> +               /*
+> +                * We can only write one leb at a time.
+> +                * Therefore if the write length is larger than
+> +                * one leb size, we split the operation.
+> +                */
+> +               if (offset + to_write > dev->leb_size)
+> +                       to_write = dev->leb_size - offset;
+> +
+> +               /*
+> +                * If leb is not in cache, we flush current cached
+> +                * leb to disk. Cache contents will be filled by reading device.
+> +                */
+> +               if (!leb_in_cache(cache, leb)) {
+> +
+> +                       ret = ubiblock_flush(dev, false);
+> +                       if (ret)
+> +                               return ret;
+> +
+> +                       ret = ubiblock_fill_cache(dev, leb, cache);
+> +                       if (ret)
+> +                               return ret;
+> +               }
+> +
+> +               memcpy(cache->buffer + offset, buffer, to_write);
+> +
+> +               /* This is the only place where we dirt the cache */
+> +               cache->state = STATE_DIRTY;
+> +
+> +               buffer += to_write;
+> +               bytes_left -= to_write;
+> +               to_write = bytes_left;
+> +               offset = 0;
+> +               leb++;
+> +       }
+> +       return 0;
+> +}
+> +#else
+> +static int ubiblock_flush(struct ubiblock *dev, bool sync)
+> +{
+> +       return -EPERM;
+> +}
+> +
+> +static int ubiblock_write(struct ubiblock *dev, const char *buffer,
+> +                         int pos, int len)
+> +{
+> +       return -EPERM;
+> +}
+> +#endif /* CONFIG_MTD_UBI_BLOCK_WRITE_SUPPORT */
+> +
+> +static int ubiblock_read(struct ubiblock *dev, char *buffer, int pos, int len)
+> +{
+> +       int leb, offset, ret;
+> +       int bytes_left = len;
+> +       int to_read = len;
+> +
+> +       /* Get leb:offset address to read from */
+> +       leb = pos / dev->leb_size;
+> +       offset = pos % dev->leb_size;
+> +
+> +       while (bytes_left) {
+> +
+> +               /*
+> +                * We can only read one leb at a time.
+> +                * Therefore if the read length is larger than
+> +                * one leb size, we split the operation.
+> +                */
+> +               if (offset + to_read > dev->leb_size)
+> +                       to_read = dev->leb_size - offset;
+> +
+> +               ret = ubiblock_read_to_buf(dev, buffer, leb, offset, to_read);
+> +               if (ret)
+> +                       return ret;
+> +
+> +               buffer += to_read;
+> +               bytes_left -= to_read;
+> +               to_read = bytes_left;
+> +               leb++;
+> +               offset = 0;
+> +       }
+> +       return 0;
+> +}
+> +
+> +static int do_ubiblock_request(struct ubiblock *dev, struct request *req)
+> +{
+> +       int pos, len;
+> +
+> +       if (req->cmd_flags & REQ_FLUSH)
+> +               return ubiblock_flush(dev, true);
+> +
+> +       if (req->cmd_type != REQ_TYPE_FS)
+> +               return -EIO;
+> +
+> +       if (blk_rq_pos(req) + blk_rq_cur_sectors(req) >
+> +           get_capacity(req->rq_disk))
+> +               return -EIO;
+> +
+> +       pos = blk_rq_pos(req) << 9;
+> +       len = blk_rq_cur_bytes(req);
+> +
+> +       switch (rq_data_dir(req)) {
+> +       case READ:
+> +               return ubiblock_read(dev, req->buffer, pos, len);
+> +       case WRITE:
+> +               return ubiblock_write(dev, req->buffer, pos, len);
+> +       default:
+> +               return -EIO;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static void ubiblock_do_work(struct work_struct *work)
+> +{
+> +       struct ubiblock *dev =
+> +               container_of(work, struct ubiblock, work);
+> +       struct request_queue *rq = dev->rq;
+> +       struct request *req;
+> +       int res;
+> +
+> +       spin_lock_irq(rq->queue_lock);
+> +
+> +       req = blk_fetch_request(rq);
+> +       while (req) {
+> +
+> +               spin_unlock_irq(rq->queue_lock);
+> +
+> +               mutex_lock(&dev->vol_mutex);
+> +               res = do_ubiblock_request(dev, req);
+> +               mutex_unlock(&dev->vol_mutex);
+> +
+> +               spin_lock_irq(rq->queue_lock);
+> +
+> +               /*
+> +                * If we're done with this request,
+> +                * we need to fetch a new one
+> +                */
+> +               if (!__blk_end_request_cur(req, res))
+> +                       req = blk_fetch_request(rq);
+> +       }
+> +
+> +       spin_unlock_irq(rq->queue_lock);
+> +}
+> +
+> +static void ubiblock_request(struct request_queue *rq)
+> +{
+> +       struct ubiblock *dev;
+> +       struct request *req;
+> +
+> +       dev = rq->queuedata;
+> +
+> +       if (!dev)
+> +               while ((req = blk_fetch_request(rq)) != NULL)
+> +                       __blk_end_request_all(req, -ENODEV);
+> +       else
+> +               queue_work(dev->wq, &dev->work);
+> +}
+> +
+> +static int ubiblock_open(struct block_device *bdev, fmode_t mode)
+> +{
+> +       struct ubiblock *dev = bdev->bd_disk->private_data;
+> +       int ubi_mode = UBI_READONLY;
+> +       int ret;
+> +#ifdef CONFIG_MTD_UBI_BLOCK_WRITE_SUPPORT
+> +       const bool allow_write = true;
+> +#else
+> +       const bool allow_write = false;
+> +#endif
+> +
+> +       mutex_lock(&dev->vol_mutex);
+> +       if (dev->refcnt > 0) {
+> +               /*
+> +                * The volume is already opened,
+> +                * just increase the reference counter
+> +                *
+> +                * If the first user has oppened this as read-only,
+> +                * we don't allow to open as read-write.
+> +                * This is the simplest solution. A better one would
+> +                * be to re-open the volume as writable.
+> +                */
+> +               if ((mode & FMODE_WRITE) &&
+> +                   (dev->desc->mode != UBI_READWRITE)) {
+> +                       ret = -EBUSY;
+> +                       goto out_unlock;
+> +               }
+> +               goto out_done;
+> +       }
+> +
+> +       if (allow_write) {
+> +               if (mode & FMODE_WRITE)
+> +                       ubi_mode = UBI_READWRITE;
+> +       } else {
+> +               if (mode & FMODE_WRITE) {
+> +                       ret = -EPERM;
+> +                       goto out_unlock;
+> +               }
+> +       }
+> +
+> +       dev->desc = ubi_open_volume(dev->ubi_num, dev->vol_id, ubi_mode);
+> +       if (IS_ERR(dev->desc)) {
+> +               ubi_err("%s failed to open ubi volume %d_%d",
+> +                       dev->gd->disk_name, dev->ubi_num, dev->vol_id);
+> +
+> +               ret = PTR_ERR(dev->desc);
+> +               dev->desc = NULL;
+> +               goto out_unlock;
+> +       }
+> +
+> +       dev->vi = kzalloc(sizeof(struct ubi_volume_info), GFP_KERNEL);
+> +       if (!dev->vi) {
+> +               ret = -ENOMEM;
+> +               goto out_close;
+> +       }
+> +       ubi_get_volume_info(dev->desc, dev->vi);
+> +       dev->leb_size = dev->vi->usable_leb_size;
+> +
+> +       ret = ubiblock_alloc_cache(dev);
+> +       if (ret)
+> +               goto out_free;
+> +out_done:
+> +       dev->refcnt++;
+> +       mutex_unlock(&dev->vol_mutex);
+> +       return 0;
+> +
+> +out_free:
+> +       kfree(dev->vi);
+> +out_close:
+> +       ubi_close_volume(dev->desc);
+> +       dev->desc = NULL;
+> +out_unlock:
+> +       mutex_unlock(&dev->vol_mutex);
+> +       return ret;
+> +}
+> +
+> +static void ubiblock_release(struct gendisk *gd, fmode_t mode)
+> +{
+> +       struct ubiblock *dev = gd->private_data;
+> +
+> +       mutex_lock(&dev->vol_mutex);
+> +
+> +       dev->refcnt--;
+> +       if (dev->refcnt == 0) {
+> +               ubiblock_flush(dev, true);
+> +               ubiblock_free_cache(dev);
+> +
+> +               kfree(dev->vi);
+> +               ubi_close_volume(dev->desc);
+> +
+> +               dev->vi = NULL;
+> +               dev->desc = NULL;
+> +       }
+> +
+> +       mutex_unlock(&dev->vol_mutex);
+> +}
+> +
+> +static int ubiblock_ioctl(struct block_device *bdev, fmode_t mode,
+> +                             unsigned int cmd, unsigned long arg)
+> +{
+> +       struct ubiblock *dev = bdev->bd_disk->private_data;
+> +       int ret = -ENXIO;
+> +
+> +       if (!dev)
+> +               return ret;
+> +
+> +       mutex_lock(&dev->vol_mutex);
+> +
+> +       /* I can't get this to get called. What's going on? */
+> +       switch (cmd) {
+> +       case BLKFLSBUF:
+> +               ret = ubiblock_flush(dev, true);
+> +               break;
+> +       default:
+> +               ret = -ENOTTY;
+> +       }
+> +
+> +       mutex_unlock(&dev->vol_mutex);
+> +       return ret;
+> +}
+> +
+> +static int ubiblock_getgeo(struct block_device *bdev, struct hd_geometry *geo)
+> +{
+> +       /* Some tools might require this information */
+> +       geo->heads = 1;
+> +       geo->cylinders = 1;
+> +       geo->sectors = get_capacity(bdev->bd_disk);
+> +       geo->start = 0;
+> +       return 0;
+> +}
+> +
+> +static const struct block_device_operations ubiblock_ops = {
+> +       .owner = THIS_MODULE,
+> +       .open = ubiblock_open,
+> +       .release = ubiblock_release,
+> +       .ioctl = ubiblock_ioctl,
+> +       .getgeo = ubiblock_getgeo,
+> +};
+> +
+> +int ubiblock_add(struct ubi_volume_info *vi)
+> +{
+> +       struct ubiblock *dev;
+> +       struct gendisk *gd;
+> +       int disk_capacity;
+> +       int ret;
+> +
+> +       /* Check that the volume isn't already handled */
+> +       mutex_lock(&devices_mutex);
+> +       if (find_dev_nolock(vi->ubi_num, vi->vol_id)) {
+> +               mutex_unlock(&devices_mutex);
+> +               return -EEXIST;
+> +       }
+> +       mutex_unlock(&devices_mutex);
+> +
+> +       dev = kzalloc(sizeof(struct ubiblock), GFP_KERNEL);
+> +       if (!dev)
+> +               return -ENOMEM;
+> +
+> +       mutex_init(&dev->vol_mutex);
+> +
+> +       dev->ubi_num = vi->ubi_num;
+> +       dev->vol_id = vi->vol_id;
+> +
+> +       ubiblock_clean_cache(dev);
+> +
+> +       /* Initialize the gendisk of this ubiblock device */
+> +       gd = alloc_disk(1);
+> +       if (!gd) {
+> +               ubi_err("block: alloc_disk failed");
+> +               ret = -ENODEV;
+> +               goto out_free_dev;
+> +       }
+> +
+> +       gd->fops = &ubiblock_ops;
+> +       gd->major = ubiblock_major;
+> +       gd->first_minor = dev->ubi_num * UBI_MAX_VOLUMES + dev->vol_id;
+> +       gd->private_data = dev;
+> +       sprintf(gd->disk_name, "ubiblock%d_%d", dev->ubi_num, dev->vol_id);
+> +       disk_capacity = (vi->size * vi->usable_leb_size) >> 9;
+> +       set_capacity(gd, disk_capacity);
+> +       dev->gd = gd;
+> +
+> +       spin_lock_init(&dev->queue_lock);
+> +       dev->rq = blk_init_queue(ubiblock_request, &dev->queue_lock);
+> +       if (!dev->rq) {
+> +               ubi_err("block: blk_init_queue failed");
+> +               ret = -ENODEV;
+> +               goto out_put_disk;
+> +       }
+> +
+> +       dev->rq->queuedata = dev;
+> +       dev->gd->queue = dev->rq;
+> +
+> +       blk_queue_flush(dev->rq, REQ_FLUSH);
+> +
+> +       /*
+> +        * Create one workqueue per volume (per registered block device).
+> +        * Rembember workqueues are cheap, they're not threads.
+> +        */
+> +       dev->wq = alloc_workqueue(gd->disk_name, 0, 0);
+> +       if (!dev->wq)
+> +               goto out_free_queue;
+> +       INIT_WORK(&dev->work, ubiblock_do_work);
+> +
+> +       mutex_lock(&devices_mutex);
+> +       list_add_tail(&dev->list, &ubiblock_devices);
+> +       mutex_unlock(&devices_mutex);
+> +
+> +       /* Must be the last step: anyone can call file ops from now on */
+> +       add_disk(dev->gd);
+> +
+> +       ubi_msg("%s created from ubi%d:%d(%s)",
+> +               dev->gd->disk_name, dev->ubi_num, dev->vol_id, vi->name);
+> +
+> +       return 0;
+> +
+> +out_free_queue:
+> +       blk_cleanup_queue(dev->rq);
+> +out_put_disk:
+> +       put_disk(dev->gd);
+> +out_free_dev:
+> +       kfree(dev);
+> +
+> +       return ret;
+> +}
+> +
+> +static void ubiblock_cleanup(struct ubiblock *dev)
+> +{
+> +       del_gendisk(dev->gd);
+> +       blk_cleanup_queue(dev->rq);
+> +       ubi_msg("%s released", dev->gd->disk_name);
+> +       put_disk(dev->gd);
+> +}
+> +
+> +int ubiblock_del(struct ubi_volume_info *vi)
+> +{
+> +       struct ubiblock *dev;
+> +
+> +       mutex_lock(&devices_mutex);
+> +       dev = find_dev_nolock(vi->ubi_num, vi->vol_id);
+> +       if (!dev) {
+> +               mutex_unlock(&devices_mutex);
+> +               return -ENODEV;
+> +       }
+> +
+> +       /* Found a device, let's lock it so we can check if it's busy */
+> +       mutex_lock(&dev->vol_mutex);
+> +
+> +       if (dev->refcnt > 0) {
+> +               mutex_unlock(&dev->vol_mutex);
+> +               mutex_unlock(&devices_mutex);
+> +               return -EBUSY;
+> +       }
+> +
+> +       /* Remove from device list */
+> +       list_del(&dev->list);
+> +       mutex_unlock(&devices_mutex);
+> +
+> +       /* Flush pending work and stop this workqueue */
+> +       destroy_workqueue(dev->wq);
+> +
+> +       ubiblock_cleanup(dev);
+> +       mutex_unlock(&dev->vol_mutex);
+> +       kfree(dev);
+> +       return 0;
+> +}
+> +
+> +static void ubiblock_resize(struct ubi_volume_info *vi)
+> +{
+> +       struct ubiblock *dev;
+> +       int disk_capacity;
+> +
+> +       /*
+> +        * Need to lock the device list until we stop using the device,
+> +        * otherwise the device struct might get released in ubiblock_del().
+> +        */
+> +       mutex_lock(&devices_mutex);
+> +       dev = find_dev_nolock(vi->ubi_num, vi->vol_id);
+> +       if (!dev) {
+> +               mutex_unlock(&devices_mutex);
+> +               return;
+> +       }
+> +
+> +       mutex_lock(&dev->vol_mutex);
+> +       disk_capacity = (vi->size * vi->usable_leb_size) >> 9;
+> +       set_capacity(dev->gd, disk_capacity);
+> +       ubi_msg("%s resized to %d LEBs", dev->gd->disk_name, vi->size);
+> +       mutex_unlock(&dev->vol_mutex);
+> +       mutex_unlock(&devices_mutex);
+> +}
+> +
+> +static int ubiblock_notify(struct notifier_block *nb,
+> +                        unsigned long notification_type, void *ns_ptr)
+> +{
+> +       struct ubi_notification *nt = ns_ptr;
+> +
+> +       switch (notification_type) {
+> +       case UBI_VOLUME_ADDED:
+> +               /*
+> +                * We want to enforce explicit block device attaching for
+> +                * volumes; so when a volume is added we do nothing.
+> +                */
+> +               break;
+> +       case UBI_VOLUME_REMOVED:
+> +               ubiblock_del(&nt->vi);
+> +               break;
+> +       case UBI_VOLUME_RESIZED:
+> +               ubiblock_resize(&nt->vi);
+> +               break;
+> +       default:
+> +               break;
+> +       }
+> +       return NOTIFY_OK;
+> +}
+> +
+> +static struct notifier_block ubiblock_notifier = {
+> +       .notifier_call = ubiblock_notify,
+> +};
+> +
+> +static struct ubi_volume_desc * __init
+> +open_volume_desc(const char *name, int ubi_num, int vol_id)
+> +{
+> +       if (ubi_num == -1)
+> +               /* No ubi num, name must be a vol device path */
+> +               return ubi_open_volume_path(name, UBI_READONLY);
+> +       else if (vol_id == -1)
+> +               /* No vol_id, must be vol_name */
+> +               return ubi_open_volume_nm(ubi_num, name, UBI_READONLY);
+> +       else
+> +               return ubi_open_volume(ubi_num, vol_id, UBI_READONLY);
+> +}
+> +
+> +static void __init ubiblock_add_from_param(void)
+> +{
+> +       int i, ret;
+> +       struct ubiblock_param *p;
+> +       struct ubi_volume_desc *desc;
+> +       struct ubi_volume_info vi;
+> +
+> +       for (i = 0; i < ubiblock_devs; i++) {
+> +               p = &ubiblock_param[i];
+> +
+> +               desc = open_volume_desc(p->name, p->ubi_num, p->vol_id);
+> +               if (IS_ERR(desc)) {
+> +                       ubi_warn("block: can't open volume, err=%ld\n",
+> +                                PTR_ERR(desc));
+> +                       continue;
+> +               }
+> +
+> +               ubi_get_volume_info(desc, &vi);
+> +               ret = ubiblock_add(&vi);
+> +               if (ret)
+> +                       ubi_warn("block: can't add '%s' volume, err=%d\n",
+> +                                vi.name, ret);
+> +               ubi_close_volume(desc);
+> +       }
+> +}
+> +
+> +int __init ubiblock_init(void)
+> +{
+> +       int ret;
+> +
+> +       ubiblock_major = register_blkdev(0, "ubiblock");
+> +       if (ubiblock_major < 0)
+> +               return ubiblock_major;
+> +
+> +       /* Attach block devices from 'block=' module param */
+> +       ubiblock_add_from_param();
+> +
+> +       /*
+> +        * Block devices needs to be attached to volumes explicitly
+> +        * upon user request. So we ignore existing volumes.
+> +        */
+> +       ret = ubi_register_volume_notifier(&ubiblock_notifier, 1);
+> +       if (ret < 0)
+> +               unregister_blkdev(ubiblock_major, "ubiblock");
+> +       return ret;
+> +}
+> +
+> +void __exit ubiblock_exit(void)
+> +{
+> +       struct ubiblock *next;
+> +       struct ubiblock *dev;
+> +
+> +       ubi_unregister_volume_notifier(&ubiblock_notifier);
+> +
+> +       list_for_each_entry_safe(dev, next, &ubiblock_devices, list) {
+> +
+> +               /* Flush pending work and stop workqueue */
+> +               destroy_workqueue(dev->wq);
+> +
+> +               /* The module is being forcefully removed */
+> +               WARN_ON(dev->desc);
+> +
+> +               /* Remove from device list */
+> +               list_del(&dev->list);
+> +
+> +               ubiblock_cleanup(dev);
+> +
+> +               kfree(dev);
+> +       }
+> +
+> +       unregister_blkdev(ubiblock_major, "ubiblock");
+> +}
+> diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+> index e05dc62..2705bad 100644
+> --- a/drivers/mtd/ubi/build.c
+> +++ b/drivers/mtd/ubi/build.c
+> @@ -1296,6 +1296,9 @@ static int __init ubi_init(void)
+>                 }
+>         }
+>
+> +       if (ubiblock_init() < 0)
+> +               ubi_warn("cannot init block device access");
+> +
+>         return 0;
+>
+>  out_detach:
+> @@ -1324,6 +1327,8 @@ static void __exit ubi_exit(void)
+>  {
+>         int i;
+>
+> +       ubiblock_exit();
+> +
+>         for (i = 0; i < UBI_MAX_DEVICES; i++)
+>                 if (ubi_devices[i]) {
+>                         mutex_lock(&ubi_devices_mutex);
+> diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
+> index 8ca49f2..39d3774 100644
+> --- a/drivers/mtd/ubi/cdev.c
+> +++ b/drivers/mtd/ubi/cdev.c
+> @@ -561,6 +561,26 @@ static long vol_cdev_ioctl(struct file *file, unsigned int cmd,
+>                 break;
+>         }
+>
+> +       /* Attach a block device to an UBI volume */
+> +       case UBI_IOCVOLATTBLK:
+> +       {
+> +               struct ubi_volume_info vi;
+> +
+> +               ubi_get_volume_info(desc, &vi);
+> +               err = ubiblock_add(&vi);
+> +               break;
+> +       }
+> +
+> +       /* Dettach a block device from an UBI volume */
+> +       case UBI_IOCVOLDETBLK:
+> +       {
+> +               struct ubi_volume_info vi;
+> +
+> +               ubi_get_volume_info(desc, &vi);
+> +               err = ubiblock_del(&vi);
+> +               break;
+> +       }
+> +
+>         default:
+>                 err = -ENOTTY;
+>                 break;
+> diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+> index 8ea6297..e76ff98 100644
+> --- a/drivers/mtd/ubi/ubi.h
+> +++ b/drivers/mtd/ubi/ubi.h
+> @@ -864,6 +864,20 @@ int ubi_update_fastmap(struct ubi_device *ubi);
+>  int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai,
+>                      int fm_anchor);
+>
+> +/* block.c */
+> +#ifdef CONFIG_MTD_UBI_BLOCK
+> +int ubiblock_init(void);
+> +void ubiblock_exit(void);
+> +int ubiblock_add(struct ubi_volume_info *vi);
+> +int ubiblock_del(struct ubi_volume_info *vi);
+> +#else
+> +static inline int ubiblock_init(void) { return 0; }
+> +static inline void ubiblock_exit(void) {}
+> +static inline int ubiblock_add(struct ubi_volume_info *vi) { return -ENOTTY; }
+> +static inline int ubiblock_del(struct ubi_volume_info *vi) { return -ENOTTY; }
+> +#endif
+> +
+> +
+>  /*
+>   * ubi_rb_for_each_entry - walk an RB-tree.
+>   * @rb: a pointer to type 'struct rb_node' to use as a loop counter
+> diff --git a/include/uapi/mtd/ubi-user.h b/include/uapi/mtd/ubi-user.h
+> index 723c324..1080762 100644
+> --- a/include/uapi/mtd/ubi-user.h
+> +++ b/include/uapi/mtd/ubi-user.h
+> @@ -134,6 +134,13 @@
+>   * used. A pointer to a &struct ubi_set_vol_prop_req object is expected to be
+>   * passed. The object describes which property should be set, and to which value
+>   * it should be set.
+> + *
+> + * Block device access to UBI volumes
+> + * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> + *
+> + * To attach or detach a block device from an UBI volume the %UBI_IOCVOLATTBLK
+> + * and %UBI_IOCVOLDETBLK ioctl commands should be used, respectively.
+> + * These commands take no arguments.
+>   */
+>
+>  /*
+> @@ -191,6 +198,10 @@
+>  /* Set an UBI volume property */
+>  #define UBI_IOCSETVOLPROP _IOW(UBI_VOL_IOC_MAGIC, 6, \
+>                                struct ubi_set_vol_prop_req)
+> +/* Attach a block device to an UBI volume */
+> +#define UBI_IOCVOLATTBLK _IO(UBI_VOL_IOC_MAGIC, 7)
+> +/* Detach a block device from an UBI volume */
+> +#define UBI_IOCVOLDETBLK _IO(UBI_VOL_IOC_MAGIC, 8)
+>
+>  /* Maximum MTD device name length supported by UBI */
+>  #define MAX_UBI_MTD_NAME_LEN 127
+> --
+> 1.8.1.5
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
 
-Paul Bolle
+
+-- 
+Thanks,
+//richard
