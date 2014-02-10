@@ -1,31 +1,25 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WCmaB-0003bD-LT
- for linux-mtd@lists.infradead.org; Mon, 10 Feb 2014 08:51:16 +0000
-Message-ID: <1392022233.32363.13.camel@sauron.fi.intel.com>
+Date: Mon, 10 Feb 2014 09:51:02 +0100
+From: Willy Tarreau <w@1wt.eu>
+To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
 Subject: Re: [PATCH 1/1] ubi: Introduce block devices for UBI volumes
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Date: Mon, 10 Feb 2014 10:50:33 +0200
-In-Reply-To: <20140210082714.GB10872@localhost>
-References: <52F6B602.3030905@nod.at> <20140208230159.GC22376@1wt.eu>
- <52F6BA07.60707@nod.at> <20140208231501.GG22376@1wt.eu>
- <52F6BCCD.5070302@nod.at> <20140208233758.GH22376@1wt.eu>
- <52F6C916.2030506@nod.at> <20140209075157.GJ22376@1wt.eu>
- <20140210024827.GB9643@localhost>
- <1392017750.31031.8.camel@sauron.fi.intel.com>
- <20140210082714.GB10872@localhost>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <20140210085102.GQ22376@1wt.eu>
+References: <1391027881-8354-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1391027881-8354-2-git-send-email-ezequiel.garcia@free-electrons.com>
+ <CAFLxGvyPUTg+4SLAyN8UYGr8DmjdyjUmQOP++t_JVRM5Usd1yQ@mail.gmail.com>
+ <20140208225149.GA22376@1wt.eu> <20140210094246.659e876a@skate>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Mike Frysinger <vapier@gentoo.org>, Richard Weinberger <richard@nod.at>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20140210094246.659e876a@skate>
+Cc: Mike Frysinger <vapier@gentoo.org>, Artem Bityutskiy <dedekind1@gmail.com>,
+ Richard Weinberger <richard.weinberger@gmail.com>,
  Michael Opdenacker <michael.opdenacker@free-electrons.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Tim Bird <tim.bird@am.sony.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
  Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>
-Reply-To: dedekind1@gmail.com
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,25 +29,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2014-02-10 at 05:27 -0300, Ezequiel Garcia wrote:
-> > WRT to DANGEROUS sign, people do not read Kconfig help. Some distro
-> will
-> > just enable this, people will start using this, and then start
-> sending
-> > unappy e-mails. We have this with MTD block. No matter how many
-> times I
-> > wrote to people that this is just a debugging module, they still
-> kept
-> > using it.
-> > 
+Hi Thomas,
+
+On Mon, Feb 10, 2014 at 09:42:46AM +0100, Thomas Petazzoni wrote:
+> Dear Willy Tarreau,
 > 
-> If you really think distros will enable it and users will "just it",
-> without
-> thinking about the consequences, then I'd say let's just remove it.
+> On Sat, 8 Feb 2014 23:51:49 +0100, Willy Tarreau wrote:
+> 
+> > > I really vote for dropping write support at all.
+> > 
+> > Why ? When you put a read-only filesystem there such as squashfs, the
+> > only writes you'll have will be updates, and write support will be the
+> > only way to update the filesystem. So removing write support seriously
+> > impacts the usefulness of the feature itself.
+> 
+> Why can't you use ubi_updatevol to do the update of the squashfs image?
+> I.e instead of updating through the block layer, you update at the UBI
+> layer level. No?
 
-I do not think everyone would do this, of course not. But if there were
-many users, some would, I think, yes.
+It only solves one part of the problem with needless extra complexity.
+I really fail to see why we would punish MTD users asking them to use
+significantly different block device management interfaces than what
+they can have on top of eMMC, SD, etc..., allowing to unify the FS
+management methods.
 
--- 
-Best Regards,
-Artem Bityutskiy
+Also, ubiupdatevol will offers no possibility to have a small R/W FS
+to save a configuration from time to time.
+
+Thanks,
+Willy
