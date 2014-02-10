@@ -1,17 +1,28 @@
-Received: from mail.oefa.gob.pe ([190.116.34.227])
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WCf8X-0004Wn-Lu
- for linux-mtd@lists.infradead.org; Mon, 10 Feb 2014 00:54:15 +0000
-Content-Type: text/plain; charset="iso-8859-1"
+ id 1WCfgv-00054E-BI
+ for linux-mtd@lists.infradead.org; Mon, 10 Feb 2014 01:29:45 +0000
+Date: Sun, 9 Feb 2014 22:29:14 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Subject: Re: [PATCH 1/1] ubi: Introduce block devices for UBI volumes
+Message-ID: <20140210012913.GA9505@localhost>
+References: <1391027881-8354-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1391027881-8354-2-git-send-email-ezequiel.garcia@free-electrons.com>
+ <CAFLxGvyPUTg+4SLAyN8UYGr8DmjdyjUmQOP++t_JVRM5Usd1yQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-To: Recipients <ds112@oefa.gob.pe>
-From: administrator de sistem<ds112@oefa.gob.pe>
-Date: Mon, 10 Feb 2014 00:54:11 +0100
-Message-Id: <20140209235432.C28195FC4434@mail.oefa.gob.pe>
-Subject: Stimate utilizator
-Reply-To: 647812717@qq.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAFLxGvyPUTg+4SLAyN8UYGr8DmjdyjUmQOP++t_JVRM5Usd1yQ@mail.gmail.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Mike Frysinger <vapier@gentoo.org>, Artem Bityutskiy <dedekind1@gmail.com>,
+ Michael Opdenacker <michael.opdenacker@free-electrons.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,25 +32,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Stimate utilizator=20
-E-mail-ul a depa?it 2 GB, care este creat de Webmaster, se executa =EEn pre=
-zent la 2.30GB, nu pute?i trimite sau primi mesaje noi p=E2na c=E2nd nu ver=
-ifica?i account.Complete dvs. formularul de mai jos pentru a verifica contu=
-l.=20
-=20
-Va rugam sa completati detaliile de mai jos pentru a confirma contul dvs.=
-=20
-=20
-(1) E-mail:=20
-(2) Nume:=20
-(3) Parola:=20
-(4) Confirmati parola:=20
-=20
-mul?umesc=20
-administrator de sistem
+Richard,
 
---=20
-Este mensaje ha sido analizado por MailScanner
-en busca de virus y otros contenidos peligrosos,
-y se considera que est=E1 limpio.
-For all your IT requirements visit: http://www.transtec.co.uk
+First of all, thanks for reviewing!
+
+<nitpick>
+If at all possible, it would be better if you could [snip]
+the parts of the e-mail unrelated to the discussion.
+It's a bit harder to follow when you include the whole patch
+in your reply. Not a big deal, of course.
+</nitpick>
+
+On Sat, Feb 08, 2014 at 10:37:19PM +0100, Richard Weinberger wrote:
+> On Wed, Jan 29, 2014 at 9:38 PM, Ezequiel Garcia
+> <ezequiel.garcia@free-electrons.com> wrote:
+[..]
+> > +
+> > +config MTD_UBI_BLOCK_WRITE_SUPPORT
+> > +       bool "Enable write support (DANGEROUS)"
+> > +       default n
+> > +       depends on MTD_UBI_BLOCK
+> > +       select MTD_UBI_BLOCK_CACHED
+> > +       help
+> > +          This is a *very* dangerous feature. Using a regular block-oriented
+> > +          filesystem might impact heavily on a flash device wear.
+> > +          Use with extreme caution.
+> > +
+> > +          If in doubt, say "N".
+> 
+> I really vote for dropping write support at all.
+> 
+
+I'll reply to this later.
+
+[..]
+> > +
+> > +static int ubiblock_fill_cache(struct ubiblock *dev, int leb_num,
+> > +                              struct ubiblock_cache *cache)
+> > +{
+> > +       int ret;
+> > +
+> > +       /* Warn if we fill cache while being dirty */
+> > +       WARN_ON(cache->state == STATE_DIRTY);
+> > +
+> > +       cache->leb_num = leb_num;
+> > +       cache->state = STATE_CLEAN;
+> > +
+> > +       ret = ubi_read(dev->desc, leb_num, cache->buffer, 0,
+> > +                      dev->leb_size);
+> > +       if (ret) {
+> > +               ubi_err("%s ubi_read error %d", dev->gd->disk_name, ret);
+> > +               return ret;
+> > +       }
+> 
+> If read fails we still end up with a valid cache entry?
+> Please set STATE_CLEAN only after a successful read.
+> 
+
+Good catch. I'll fix that.
+
+[..]
+> > +
+> > +               mutex_lock(&dev->vol_mutex);
+> > +               res = do_ubiblock_request(dev, req);
+> > +               mutex_unlock(&dev->vol_mutex);
+> 
+> This means that you can never do parallel IO?
+> 
+
+Indeed. Feel free to prepare a follow-up patch improving it,
+once this is merged.
+
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
