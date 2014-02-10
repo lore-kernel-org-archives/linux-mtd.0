@@ -1,23 +1,27 @@
-Date: Mon, 10 Feb 2014 09:37:28 +0100
-From: Willy Tarreau <w@1wt.eu>
-To: Artem Bityutskiy <dedekind1@gmail.com>
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WCmSV-0003Nl-OL
+ for linux-mtd@lists.infradead.org; Mon, 10 Feb 2014 08:43:20 +0000
+Date: Mon, 10 Feb 2014 09:42:46 +0100
+From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+To: Willy Tarreau <w@1wt.eu>
 Subject: Re: [PATCH 1/1] ubi: Introduce block devices for UBI volumes
-Message-ID: <20140210083728.GO22376@1wt.eu>
+Message-ID: <20140210094246.659e876a@skate>
+In-Reply-To: <20140208225149.GA22376@1wt.eu>
 References: <1391027881-8354-1-git-send-email-ezequiel.garcia@free-electrons.com>
  <1391027881-8354-2-git-send-email-ezequiel.garcia@free-electrons.com>
  <CAFLxGvyPUTg+4SLAyN8UYGr8DmjdyjUmQOP++t_JVRM5Usd1yQ@mail.gmail.com>
- <20140210012913.GA9505@localhost> <52F8856A.6050208@nod.at>
- <20140210081159.GA10872@localhost>
- <1392020652.32363.6.camel@sauron.fi.intel.com>
+ <20140208225149.GA22376@1wt.eu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1392020652.32363.6.camel@sauron.fi.intel.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Mike Frysinger <vapier@gentoo.org>, Richard Weinberger <richard@nod.at>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: Mike Frysinger <vapier@gentoo.org>, Artem Bityutskiy <dedekind1@gmail.com>,
+ Richard Weinberger <richard.weinberger@gmail.com>,
  Michael Opdenacker <michael.opdenacker@free-electrons.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Tim Bird <tim.bird@am.sony.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
  Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
  Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>
@@ -30,39 +34,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Feb 10, 2014 at 10:24:12AM +0200, Artem Bityutskiy wrote:
-> On Mon, 2014-02-10 at 05:12 -0300, Ezequiel Garcia wrote:
-> > On Mon, Feb 10, 2014 at 08:53:14AM +0100, Richard Weinberger wrote:
-> > > Am 10.02.2014 02:29, schrieb Ezequiel Garcia:
-> > > >>> +
-> > > >>> +               mutex_lock(&dev->vol_mutex);
-> > > >>> +               res = do_ubiblock_request(dev, req);
-> > > >>> +               mutex_unlock(&dev->vol_mutex);
-> > > >>
-> > > >> This means that you can never do parallel IO?
-> > > >>
-> > > > 
-> > > > Indeed. Feel free to prepare a follow-up patch improving it,
-> > > > once this is merged.
-> > > 
-> > > Sorry, this is a very lame argument.
-> > > 
-> > > You need to describe why your application design has this flaw.
-> > 
-> > Not at all. It's perfectly fine to merge a feature with a simple
-> > implementation and improve it progressively. In fact, I've explicitly
-> > chosen the simplest implementation whenever possible. We can always
-> > get back here and improve the performance.
+Dear Willy Tarreau,
+
+On Sat, 8 Feb 2014 23:51:49 +0100, Willy Tarreau wrote:
+
+> > I really vote for dropping write support at all.
 > 
-> The NAND part of the MTD layer serializes all the I/O, so probably it is
-> OK. May be needs to be documented, though. May be a comment in the code
-> would be nice to have too.
+> Why ? When you put a read-only filesystem there such as squashfs, the
+> only writes you'll have will be updates, and write support will be the
+> only way to update the filesystem. So removing write support seriously
+> impacts the usefulness of the feature itself.
 
-I think so as well. Seeing how slow my NAND is on the mirabox (about
-14 MB/s), I think that whatever level of parallelism we could have
-would not make anything better since we're always waiting for the
-device anyway. Also, such systems are generally designed to limit
-access as much as possible.
+Why can't you use ubi_updatevol to do the update of the squashfs image?
+I.e instead of updating through the block layer, you update at the UBI
+layer level. No?
 
-Regards,
-Willy
+Thomas
+-- 
+Thomas Petazzoni, CTO, Free Electrons
+Embedded Linux, Kernel and Android engineering
+http://free-electrons.com
