@@ -1,14 +1,14 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WCzcN-0000rS-Q3
- for linux-mtd@lists.infradead.org; Mon, 10 Feb 2014 22:46:24 +0000
-Date: Mon, 10 Feb 2014 23:46:00 +0100
+ id 1WCzr3-0001Aw-2W
+ for linux-mtd@lists.infradead.org; Mon, 10 Feb 2014 23:01:35 +0000
+Date: Tue, 11 Feb 2014 00:01:09 +0100
 From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
 To: Piergiorgio Beruto <piergiorgio.beruto@gmail.com>
 Subject: Re: [PATCH 1/1] ubi: Introduce block devices for UBI volumes
-Message-ID: <20140210234600.3a03b346@skate>
-In-Reply-To: <de976336-3144-4f21-859b-d1a37fc3d811@email.android.com>
+Message-ID: <20140211000109.36724c26@skate>
+In-Reply-To: <a3fc06a8-c809-4687-9da4-015bd8dd29e8@email.android.com>
 References: <52F6BCCD.5070302@nod.at> <20140208233758.GH22376@1wt.eu>
  <52F6C916.2030506@nod.at> <20140209075157.GJ22376@1wt.eu>
  <20140210024827.GB9643@localhost>
@@ -18,6 +18,8 @@ References: <52F6BCCD.5070302@nod.at> <20140208233758.GH22376@1wt.eu>
  <1392043814.32363.49.camel@sauron.fi.intel.com>
  <20140210184858.GA6484@localhost> <20140210233754.71e3e199@skate>
  <de976336-3144-4f21-859b-d1a37fc3d811@email.android.com>
+ <20140210234600.3a03b346@skate>
+ <a3fc06a8-c809-4687-9da4-015bd8dd29e8@email.android.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -39,14 +41,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Dear Piergiorgio Beruto,
 
-On Mon, 10 Feb 2014 23:41:54 +0100, Piergiorgio Beruto wrote:
+(Please wrap your e-mail at ~72 characters per line, as is coming
+practice in the open-source community)
 
-> sorry for interrupting, but what's the benefit in using a runtime var?
-> It is great to being able to reduce code size for embedded systems. And ubiblk is likely to be used for embedded.
+On Mon, 10 Feb 2014 23:49:38 +0100, Piergiorgio Beruto wrote:
 
-The point about the caching feature was not really the increased code
-size, but rather the memory consumption caused by the cache itself.
-This can be solved using a runtime configurable module parameter.
+> Sorry, i understand, just i dont see the point in using a runtime var when the compile time option is already implemented and in my personal opinion is preferable.
+
+That's probably because you don't understand the additional maintenance
+burden caused by compile time option. When there are gazillions of
+compile time options, there are gazillions of build possibilities that
+a maintainer must test when applying patches, and pushing changes
+upstream. This is annoying and can be avoided by limiting the number of
+compile time parameters.
+
+Of course, it's completely a matter of trade-off: we still do want to
+have compile-time options for complete drivers, but we generally try to
+avoid them to tune the driver behavior itself.
+
+That being said, I can't speak for the UBI maintainer :-)
 
 Best regards,
 
