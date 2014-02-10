@@ -1,21 +1,28 @@
-Received: from mail-qa0-x235.google.com ([2607:f8b0:400d:c00::235])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WCwiE-00037o-OR
- for linux-mtd@lists.infradead.org; Mon, 10 Feb 2014 19:40:15 +0000
-Received: by mail-qa0-f53.google.com with SMTP id cm18so10106080qab.26
- for <linux-mtd@lists.infradead.org>; Mon, 10 Feb 2014 11:39:52 -0800 (PST)
-Date: Mon, 10 Feb 2014 11:39:48 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Hou Zhiqiang <b48286@freescale.com>
-Subject: Re: [PATCH v2] mtd: m25p80: Make the name of mtd_info fixed
-Message-ID: <20140210193948.GD18440@ld-irv-0074>
-References: <1390717003-28699-1-git-send-email-b48286@freescale.com>
-MIME-Version: 1.0
+Date: Mon, 10 Feb 2014 22:43:33 +0100
+From: Willy Tarreau <w@1wt.eu>
+To: Piergiorgio Beruto <piergiorgio.beruto@gmail.com>
+Subject: Re: [PATCH 1/1] ubi: Introduce block devices for UBI volumes
+Message-ID: <20140210214333.GH28464@1wt.eu>
+References: <52F6C916.2030506@nod.at> <20140209075157.GJ22376@1wt.eu>
+ <20140210024827.GB9643@localhost>
+ <1392017750.31031.8.camel@sauron.fi.intel.com>
+ <20140210082714.GB10872@localhost> <20140210084616.GP22376@1wt.eu>
+ <20140210142026.GB15607@localhost>
+ <1392043814.32363.49.camel@sauron.fi.intel.com>
+ <20140210184858.GA6484@localhost>
+ <a86d653a-9e3b-46dc-9ec8-94a9c1099bec@email.android.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1390717003-28699-1-git-send-email-b48286@freescale.com>
-Cc: scottwood@freescale.com, linuxppc-dev@ozlabs.org, mingkai.hu@freescale.com,
- linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org
+In-Reply-To: <a86d653a-9e3b-46dc-9ec8-94a9c1099bec@email.android.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Mike Frysinger <vapier@gentoo.org>, Artem Bityutskiy <dedekind1@gmail.com>,
+ Richard Weinberger <richard@nod.at>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Michael Opdenacker <michael.opdenacker@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,56 +32,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Jan 26, 2014 at 02:16:43PM +0800, Hou Zhiqiang wrote:
-> To give spi flash layout using "mtdparts=..." in cmdline, we must
-> give mtd_info a fixed name,because the cmdlinepart's parser will
-> match the name given in cmdline with the mtd_info.
+On Mon, Feb 10, 2014 at 10:39:18PM +0100, Piergiorgio Beruto wrote:
+> Hi all,
+> Please, the possibility to disable at compile time unneeded code to save
+> memory and/or cpu speed would make the life of embedded developers much more
+> easier.
 > 
-> Now, if use OF node, mtd_info's name will be spi->dev->name. It
-> consists of spi_master->bus_num, and the spi_master->bus_num maybe
-> dynamically fetched.
-> So, give the mtd_info a new fiexd name "name.cs", "name" is name of
-> spi_device_id and "cs" is chip-select in spi_dev.
-> 
-> Signed-off-by: Hou Zhiqiang <b48286@freescale.com>
-> ---
-> v2:
->  - add check for return value of function kasprintf.
->  - whether the spi_master->bus_num is dynamical is determined by spi
->    controller driver, and it can't be check in this driver. So, we can
->    not initial the mtd_info's name by distinguishing the spi_master
->    bus_num dynamically-allocated or not.
+> Ubiblk was exactly what we were looking for, in my personal opinion the
+> possibility to disable caching and rw feature is of very high value.
 
-How about spi->master->bus_num < 0 ?
+Reminds me the happy days of CONFIG_TINY :-)
+So in practice it's probably just a matter of turning the options to :
 
->  drivers/mtd/devices/m25p80.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index eb558e8..1f494d2 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -1011,8 +1011,12 @@ static int m25p_probe(struct spi_device *spi)
->  
->  	if (data && data->name)
->  		flash->mtd.name = data->name;
-> -	else
-> -		flash->mtd.name = dev_name(&spi->dev);
-> +	else {
-> +		flash->mtd.name = kasprintf(GFP_KERNEL, "%s.%d",
-> +				id->name, spi->chip_select);
+    Disable Caching (default N, say Y to save memory)
+    Disable Write support (default N, say Y to reduce code size)
 
-I don't think this name is specific enough. What if there are more than
-one SPI controller? Then there could be one chip with the same
-chip-select. You probably still need to incorporate the SPI master
-somehow, even if it's not by using the bus number directly (because it's
-dynamic).
-
-> +		if (!flash->mtd.name)
-> +			return -ENOMEM;
-> +	}
->  
->  	flash->mtd.type = MTD_NORFLASH;
->  	flash->mtd.writesize = 1;
-
-Brian
+Thanks,
+Willy
