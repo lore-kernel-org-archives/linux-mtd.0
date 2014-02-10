@@ -1,30 +1,27 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WClPo-0001HT-HN
- for linux-mtd@lists.infradead.org; Mon, 10 Feb 2014 07:36:29 +0000
-Message-ID: <1392017750.31031.8.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/1] ubi: Introduce block devices for UBI volumes
-From: Artem Bityutskiy <dedekind1@gmail.com>
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WClgU-00022x-OD
+ for linux-mtd@lists.infradead.org; Mon, 10 Feb 2014 07:53:44 +0000
+Message-ID: <52F8856A.6050208@nod.at>
+Date: Mon, 10 Feb 2014 08:53:14 +0100
+From: Richard Weinberger <richard@nod.at>
+MIME-Version: 1.0
 To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Date: Mon, 10 Feb 2014 09:35:50 +0200
-In-Reply-To: <20140210024827.GB9643@localhost>
-References: <CAFLxGvyPUTg+4SLAyN8UYGr8DmjdyjUmQOP++t_JVRM5Usd1yQ@mail.gmail.com>
- <20140208225149.GA22376@1wt.eu> <52F6B602.3030905@nod.at>
- <20140208230159.GC22376@1wt.eu> <52F6BA07.60707@nod.at>
- <20140208231501.GG22376@1wt.eu> <52F6BCCD.5070302@nod.at>
- <20140208233758.GH22376@1wt.eu> <52F6C916.2030506@nod.at>
- <20140209075157.GJ22376@1wt.eu> <20140210024827.GB9643@localhost>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
+Subject: Re: [PATCH 1/1] ubi: Introduce block devices for UBI volumes
+References: <1391027881-8354-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1391027881-8354-2-git-send-email-ezequiel.garcia@free-electrons.com>
+ <CAFLxGvyPUTg+4SLAyN8UYGr8DmjdyjUmQOP++t_JVRM5Usd1yQ@mail.gmail.com>
+ <20140210012913.GA9505@localhost>
+In-Reply-To: <20140210012913.GA9505@localhost>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Mike Frysinger <vapier@gentoo.org>, Richard Weinberger <richard@nod.at>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Mike Frysinger <vapier@gentoo.org>, Artem Bityutskiy <dedekind1@gmail.com>,
  Michael Opdenacker <michael.opdenacker@free-electrons.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
  Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>
-Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,56 +31,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ezequiel,
-
-first of all, thanks for the driver.
-
-On Sun, 2014-02-09 at 23:48 -0300, Ezequiel Garcia wrote:
-> On Sun, Feb 09, 2014 at 08:51:57AM +0100, Willy Tarreau wrote:
-> [..]
-> > 
-> > > > This I think it's a bad idea to artificially remove some features
-> > > > if they're not broken.
-> > > 
-> > > Your arguments have convinced me, let's keep it and hope the best.
-> > 
+Am 10.02.2014 02:29, schrieb Ezequiel Garcia:
+>>> +
+>>> +               mutex_lock(&dev->vol_mutex);
+>>> +               res = do_ubiblock_request(dev, req);
+>>> +               mutex_unlock(&dev->vol_mutex);
+>>
+>> This means that you can never do parallel IO?
+>>
 > 
-> Let me add that keeping the write support follows the whole "mechanism,
-> not policy" kernel motto, doesn't it?
-> 
-> Regarding users, well the option looks like this:
-> 
->   [ ]     Enable write support (DANGEROUS)
-> 
-> I think any user would think twice before enabling it.
+> Indeed. Feel free to prepare a follow-up patch improving it,
+> once this is merged.
 
-Linus and Andrew usually ask reasonable questions like these for new
-features. I'd like to ask them for the write feature.
+Sorry, this is a very lame argument.
 
-Who are the customers for these?
-How are the user of the write feature? How many?
-Have it been tested? If yes, how?
+You need to describe why your application design has this flaw.
+Modern SoC have very often more than one CPU and many filesystems can to parallel IO.
+I'm sure currently the read performance of squashfs suffers because of that.
 
-These are really the things which define whether the feature should be
-in or not, I think.
-
-If write support has 0 or 1.5 customers and it was not tested
-extensively, and never used in any kind of production, I am not sure it
-is needed to be there. But let's first hear your answers.
-
-It is simple is not good argument. It will be as simple to add it too.
-
-WRT to DANGEROUS sign, people do not read Kconfig help. Some distro will
-just enable this, people will start using this, and then start sending
-unappy e-mails. We have this with MTD block. No matter how many times I
-wrote to people that this is just a debugging module, they still kept
-using it.
-
-If this is about really few lines of code, the alternative would be to
-leave them there, but just disable, and remove the Kconfig part. If
-someone needs write support and starts looking inside the driver, he/she
-will notice the code and start playing with that.
-
--- 
-Best Regards,
-Artem Bityutskiy
+Thanks,
+//richard
