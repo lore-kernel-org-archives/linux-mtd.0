@@ -1,24 +1,20 @@
-Received: from co1ehsobe002.messaging.microsoft.com ([216.32.180.185]
- helo=co1outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WCsQd-0006qp-Lw
- for linux-mtd@lists.infradead.org; Mon, 10 Feb 2014 15:05:49 +0000
-From: Naveen Mamindlapalli <naveen.mamindlapalli@xilinx.com>
-To: Scott Wood <scottwood@freescale.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-Subject: RE: [U-Boot] NAND bad block table
-Date: Mon, 10 Feb 2014 15:05:15 +0000
-References: <52e923ea-96b0-4e9b-9c3f-b733cf46b144@CO9EHSMHS020.ehs.local>
- <1391546816.6733.172.camel@snotra.buserror.net>
- <52F247DA.2010209@monstr.eu> <1391627762.6733.202.camel@snotra.buserror.net>
-In-Reply-To: <1391627762.6733.202.camel@snotra.buserror.net>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Message-ID: <52F8FAF1.9030505@ti.com>
+Date: Mon, 10 Feb 2014 11:14:41 -0500
+From: Santosh Shilimkar <santosh.shilimkar@ti.com>
 MIME-Version: 1.0
-Message-ID: <155aac48-cedd-4daa-80b0-577f85080950@CO1EHSMHS005.ehs.local>
-Cc: "u-boot@lists.denx.de" <u-boot@lists.denx.de>,
- "monstr@monstr.eu" <monstr@monstr.eu>, Michal Simek <michals@xilinx.com>
+To: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>, <galak@kernel.crashing.org>
+Subject: Re: [PATCH v4 2/2] memory: ti-aemif: add bindings for AEMIF driver
+References: <1391629574-18955-1-git-send-email-ivan.khoronzhuk@ti.com>
+ <1391629574-18955-3-git-send-email-ivan.khoronzhuk@ti.com>
+In-Reply-To: <1391629574-18955-3-git-send-email-ivan.khoronzhuk@ti.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, grygorii.strashko@ti.com,
+ linux@arm.linux.org.uk, pawel.moll@arm.com, swarren@wwwdotorg.org,
+ gregkh@linuxfoundation.org, ijc+devicetree@hellion.org.uk, nsekhar@ti.com,
+ linux-kernel@vger.kernel.org, rob.herring@calxeda.com,
+ linux-mtd@lists.infradead.org, rob@landley.net, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,60 +24,248 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Q2M6IGxpbnV4LW10ZC1saXN0DQoNCkhpIFNjb3R0LA0KDQpZZXMsIHRoZSBzZWFyY2hpbmcgb2Yg
-QkJUIGhhcHBlbnMgZnJvbSB0aGUgZW5kIG9mIGZsYXNoIHdoZW4gTkFORF9CQlRfVVNFX0ZMQVNI
-IG9wdGlvbiBpcyB1c2VkICYgTkFORF9CQlRfQUJTUEFHRSBvcHRpb24gaXMgbm90IHVzZWQuIFRo
-ZSBzZWFyY2hpbmcgb2YgQkJUIGhhcHBlbnMgYnkgc2Nhbm5pbmcgdGhlIGxhc3QgNCBibG9ja3Mg
-Zm9yIEJCVCBzaWduYXR1cmUgc3RhcnRpbmcgZnJvbSBlbmQgYmxvY2suIFRoZSBudW1iZXIgb2Yg
-YmxvY2tzIHRvIHNjYW4gZnJvbSB0aGUgZW5kIGZvciBCQlQgc2lnbmF0dXJlIGlzIGRlZmluZWQg
-YnkgbWFjcm8gTkFORF9CQlRfU0NBTl9NQVhCTE9DS1MgaW4gImluY2x1ZGUvbGludXgvbXRkL2Ji
-bS5oIiB3aGljaCBpcyBjdXJyZW50bHkgc2V0IHRvIHZhbHVlIDQuDQoNCklmIHRoZSBsYXN0IDQg
-YmxvY2tzIGFyZSBmYWN0b3J5IG1hcmtlZCBiYWQgYnkgdGhlIHZlbmRvciwgdGhlbiB0aGUgZmxh
-c2ggaXMgbm90IHVzYWJsZSBieSB1LWJvb3Qgb3IgTGludXguIFdlIGNhbiBmaXggdGhpcyBpc3N1
-ZSBieSBjaGFuZ2luZyB0aGUgbWFjcm8gdmFsdWUgTkFORF9CQlRfU0NBTl9NQVhCTE9DS1MgdG8g
-YSB2YWx1ZSBncmVhdGVyIHRoYW4gNCAoZGVwZW5kaW5nIG9uIHRoZSBmbGFzaCBwYXJ0KSB3aGlj
-aCBkb2Vzbid0IHNlZW0gdG8gYmUgYSBnb29kIHNvbHV0aW9uIHNpbmNlIHRoZSBjaGFuZ2UgaGFz
-IHRvIGJlIGRvbmUgdG8gdGhlIE1URCBsYXllciBkZWZhdWx0IHZhbHVlcy4NCg0KSXQgd291bGQg
-YmUgZ29vZCBpZiB0aGVyZSBpcyBhIGRldmljZSB0cmVlIGJpbmRpbmcgdG8gc3BlY2lmeSB0aGUg
-bnVtYmVyIG9mIGJsb2NrcyB0byBzY2FuIHRvIGNoZWNrIGlmIEJCVCBpcyBwcmVzZW50IGluIHRo
-ZSBmbGFzaC4gQ3VycmVudGx5IHRoZXJlIGlzIG5vIHN1Y2ggZGV2aWNlIHRyZWUgb3B0aW9uIGlz
-IGF2YWlsYWJsZS4NCg0KVGhhbmtzIGFuZCBSZWdhcmRzLA0KTmF2ZWVuDQoNCi0tLS0tT3JpZ2lu
-YWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBTY290dCBXb29kIFttYWlsdG86c2NvdHR3b29kQGZyZWVz
-Y2FsZS5jb21dDQpTZW50OiBUaHVyc2RheSwgRmVicnVhcnkgMDYsIDIwMTQgMTI6NDYgQU0NClRv
-OiBtb25zdHJAbW9uc3RyLmV1DQpDYzogdS1ib290QGxpc3RzLmRlbnguZGU7IE1pY2hhbCBTaW1l
-azsgTmF2ZWVuIE1hbWluZGxhcGFsbGkNClN1YmplY3Q6IFJlOiBbVS1Cb290XSBOQU5EIGJhZCBi
-bG9jayB0YWJsZQ0KDQpPbiBXZWQsIDIwMTQtMDItMDUgYXQgMTU6MTYgKzAxMDAsIE1pY2hhbCBT
-aW1layB3cm90ZToNCj4gT24gMDIvMDQvMjAxNCAwOTo0NiBQTSwgU2NvdHQgV29vZCB3cm90ZToN
-Cj4gPiBPbiBUdWUsIDIwMTQtMDItMDQgYXQgMTM6NDMgKzAxMDAsIE1pY2hhbCBTaW1layB3cm90
-ZToNCj4gPj4gSGkgU2NvdHQgYW5kIG90aGVycywNCj4gPj4NCj4gPj4gSSBoYXZlIGEgcXVlc3Rp
-b24gcmVnYXJkaW5nIEJCVCBwb3NpdGlvbiBhbmQgbnVtYmVyIG9mIGJsb2Nrcw0KPiA+PiBhbGxv
-Y2F0ZWQgZm9yIEJCVC4NCj4gPj4NCj4gPj4gRGlkIHlvdSBmYWNlIHRoZSBpc3N1ZSB3aXRoIGxh
-c3QgNCBibG9ja3MgYnJva2VuIGluIGFueSBOQU5EIGZsYXNoDQo+ID4+IGRldmljZSBzaW5jZSB0
-aGUgZGVmYXVsdCBvcHRpb24gaW4gTGludXgvdS1ib290IEJCTSBpcyBsYXN0IDQgYmxvY2tzPw0K
-PiA+Pg0KPiA+PiBJdCBkb2Vzbid0IG1lYW4gdGhhdCBpZiB0aGUgbGFzdCA0IGJsb2NrcyBhcmUg
-YnJva2VuIHRoYW4gdGhlIE5BTkQNCj4gPj4gZmxhc2ggZGV2aWNlIGlzIGJyb2tlbiB0b28uDQo+
-ID4+IEFsc28gSSBoYXZlbid0IHNlZW4gYW55IGNvbW1vbiBiaW5kaW5nIGZvciBMaW51eCBrZXJu
-ZWwgdG8gY2hhbmdlIGl0Lg0KPiA+Pg0KPiA+PiBIYXMgc29tZW9uZSB0cmllZCB0byBpbXByb3Zl
-IHRoaXMgYWxnb3JpdGhtIG9yIHByb2Nlc3Mgb2Ygc3RvcmluZyBCQlQgaW4gYSBiZXR0ZXIgd2F5
-Lg0KPiA+PiBGb3IgZXhhbXBsZSBqdXN0IGxvb2sgZm9yIEJCVCBmcm9tIHRoZSBlbmQgdGlsbCBh
-bnkgbGltaXQ/DQo+ID4NCj4gPiBJIGRvbid0IHJlY2FsbCBpZiBJJ3ZlIGV2ZXIgdGVzdGVkIGl0
-IHBlcnNvbmFsbHksIGJ1dCB0aGF0IHNvcnQgb2YNCj4gPiBzY2FubmluZyBpcyBhbHJlYWR5IHRo
-ZXJlLiAgSGF2ZSB5b3Ugc2VlbiBhIHByb2JsZW0gd2l0aCBpdD8NCj4NCj4gV2UgaGF2ZSBtZXQg
-d2l0aCBuYW5kIGRldmljZSB3aGljaCBoYXMgYnJva2VuIGxhc3QgNCBibG9ja3MgYW5kIHUtYm9v
-dA0KPiBhbmQgbGludXgganVzdCBzY2FuIGxhc3QgNCBibG9ja3MgYnkgZGVmYXVsdC4NCj4NCj4g
-SW4gY29ubmVjdGlvbiB0byBMaW51eC4gSW50ZXJlc3RpbmcgaXMgdGhhdCB0aGVyZSBpcyBubyBi
-aW5kaW5nIGZvcg0KPiBleHRlbmRpbmcgc2NhbiBibG9ja3MgYW5kIHRoaXMgaGFzIHRvIGJlIGRv
-bmUgdGhyb3VnaCBkcml2ZXINCj4gcHJvcGVydGllcy4NCg0KQ291bGQgeW91IGJlIG1vcmUgc3Bl
-Y2lmaWMgYWJvdXQgd2hhdCBzb3J0IG9mICJkcml2ZXIgcHJvcGVydHkiIHlvdSdyZSB0YWxraW5n
-IGFib3V0PyAgQUZBSUNUIGZyb20gZ2xhbmNpbmcgYXQgdGhlIGNvZGUsIHNlYXJjaGluZyBpcyB0
-aGUgZGVmYXVsdCB1bmxlc3MgdGhlIGNvbnRyb2xsZXIgZHJpdmVyIHNwZWNpZmllcyBOQU5EX0JC
-VF9BQlNQQUdFLg0KDQpJbiBhbnkgY2FzZSwgdGhpcyBjb2RlIGNvbWVzIHN0cmFpZ2h0IGZyb20g
-TGludXgsIHNvIHlvdSdsbCBwcm9iYWJseSBmaW5kIHBlb3BsZSBtb3JlIGZhbWlsaWFyIHdpdGgg
-dGhpcyBjb2RlIG9uIGxpbnV4LW10ZC4NCg0KLVNjb3R0DQoNCg0KDQoNCg0KVGhpcyBlbWFpbCBh
-bmQgYW55IGF0dGFjaG1lbnRzIGFyZSBpbnRlbmRlZCBmb3IgdGhlIHNvbGUgdXNlIG9mIHRoZSBu
-YW1lZCByZWNpcGllbnQocykgYW5kIGNvbnRhaW4ocykgY29uZmlkZW50aWFsIGluZm9ybWF0aW9u
-IHRoYXQgbWF5IGJlIHByb3ByaWV0YXJ5LCBwcml2aWxlZ2VkIG9yIGNvcHlyaWdodGVkIHVuZGVy
-IGFwcGxpY2FibGUgbGF3LiBJZiB5b3UgYXJlIG5vdCB0aGUgaW50ZW5kZWQgcmVjaXBpZW50LCBk
-byBub3QgcmVhZCwgY29weSwgb3IgZm9yd2FyZCB0aGlzIGVtYWlsIG1lc3NhZ2Ugb3IgYW55IGF0
-dGFjaG1lbnRzLiBEZWxldGUgdGhpcyBlbWFpbCBtZXNzYWdlIGFuZCBhbnkgYXR0YWNobWVudHMg
-aW1tZWRpYXRlbHkuDQoNCgoK
+Kumar,
+
+On Wednesday 05 February 2014 02:46 PM, Ivan Khoronzhuk wrote:
+> Add bindings for TI Async External Memory Interface (AEMIF) controller.
+> 
+> The Async External Memory Interface (EMIF16/AEMIF) controller is intended to
+> provide a glue-less interface to a variety of asynchronous memory devices like
+> ASRA M, NOR and NAND memory. A total of 256M bytes of any of these memories
+> can be accessed via 4 chip selects with 64M byte access per chip select.
+> 
+> We are not encoding CS number in reg property, it's memory partition number.
+> The CS number is encoded for Davinci NAND node using standalone property
+> "ti,davinci-chipselect" and we need to provide two memory ranges to it,
+> as result we can't encode CS number in "reg" for AEMIF child devices
+> (NAND/NOR/etc), as it will break bindings compatibility.
+> 
+> In this patch, NAND node is used just as an example of child node.
+> 
+> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+> ---
+Can you please have a look at the binding which we discussed in previous
+versions ? I want to queue these for 3.15 via Greg's tree but need
+your ack on DT part at least.
+
+>  .../bindings/memory-controllers/ti-aemif.txt       | 210 +++++++++++++++++++++
+>  1 file changed, 210 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/memory-controllers/ti-aemif.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/memory-controllers/ti-aemif.txt b/Documentation/devicetree/bindings/memory-controllers/ti-aemif.txt
+> new file mode 100644
+> index 0000000..d1466dc
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/memory-controllers/ti-aemif.txt
+> @@ -0,0 +1,210 @@
+> +* Device tree bindings for Texas instruments AEMIF controller
+> +
+> +The Async External Memory Interface (EMIF16/AEMIF) controller is intended to
+> +provide a glue-less interface to a variety of asynchronous memory devices like
+> +ASRA M, NOR and NAND memory. A total of 256M bytes of any of these memories
+> +can be accessed at any given time via four chip selects with 64M byte access
+> +per chip select. Synchronous memories such as DDR1 SD RAM, SDR SDRAM
+> +and Mobile SDR are not supported.
+> +
+> +Documentation:
+> +Davinci DM646x - http://www.ti.com/lit/ug/sprueq7c/sprueq7c.pdf
+> +OMAP-L138 (DA850) - http://www.ti.com/lit/ug/spruh77a/spruh77a.pdf
+> +Kestone - http://www.ti.com/lit/ug/sprugz3a/sprugz3a.pdf
+> +
+> +Required properties:
+> +
+> +- compatible:		"ti,davinci-aemif"
+> +			"ti,keystone-aemif"
+> +			"ti,da850-aemif"
+> +
+> +- reg:			contains offset/length value for AEMIF control registers
+> +			space.
+> +
+> +- #address-cells:	Must be 2. The partition number has to be encoded in the
+> +			first address cell and it may accept values 0..N-1
+> +			(N - total number of partitions). It's recommended to
+> +			assign N-1 number for the control partition. The second
+> +			cell is the offset into the partition.
+> +
+> +- #size-cells:		Must be set to 1.
+> +
+> +- ranges:		Contains memory regions. There are two types of
+> +			ranges/partitions:
+> +			- CS-specific partition/range. If continuous, must be
+> +			set up to reflect the memory layout for 4 chipselects,
+> +			if not then additional range/partition can be added and
+> +			child device can select the proper one.
+> +			- control partition which is common for all CS
+> +			interfaces.
+> +
+> +- clocks:		the clock feeding the controller clock. Required only
+> +			if clock tree data present in device tree.
+> +			See clock-bindings.txt
+> +
+> +- clock-names:		clock name. It has to be "aemif". Required only if clock
+> +			tree data present in device tree, in another case don't
+> +			use it.
+> +			See clock-bindings.txt
+> +
+> +- clock-ranges:		Empty property indicating that child nodes can inherit
+> +			named clocks. Required only if clock tree data present
+> +			in device tree.
+> +			See clock-bindings.txt
+> +
+> +
+> +Child chip-select (cs) nodes contain the memory devices nodes connected to
+> +such as NOR (e.g. cfi-flash) and NAND (ti,davinci-nand, see davinci-nand.txt).
+> +There might be board specific devices like FPGAs.
+> +
+> +Required child cs node properties:
+> +
+> +- #address-cells:	Must be 2.
+> +
+> +- #size-cells:		Must be 1.
+> +
+> +- ranges:		Empty property indicating that child nodes can inherit
+> +			memory layout.
+> +
+> +- clock-ranges:		Empty property indicating that child nodes can inherit
+> +			named clocks. Required only if clock tree data present
+> +			in device tree.
+> +
+> +- ti,cs-chipselect:	number of chipselect. Indicates on the aemif driver
+> +			which chipselect is used for accessing the memory. For
+> +			compatibles "ti,davinci-aemif" and "ti,keystone-aemif"
+> +			it can be in range [0-3]. For compatible
+> +			"ti,da850-aemif" range is [2-5].
+> +
+> +Optional child cs node properties:
+> +
+> +- ti,bus-width:			width of the asynchronous device's data bus
+> +				8 or 16 if not preset 8
+> +
+> +- ti,cs-ss:		enable/disable select strobe mode
+> +				In select strobe mode chip select behaves as
+> +				the strobe and is active only during the strobe
+> +				period. If present then enable.
+> +
+> +- ti,cs-ew:		enable/disable extended wait mode
+> +				if set, the controller monitors the EMIFWAIT pin
+> +				mapped to that chip select to determine if the
+> +				device wants to extend the strobe period. If
+> +				present then enable.
+> +
+> +- ti,cs-ta:		minimum turn around time, ns
+> +				Time between the end of one asynchronous memory
+> +				access and the start of another asynchronous
+> +				memory access. This delay is not incurred
+> +				between a read followed by read or a write
+> +				followed by a write to same chip select.
+> +
+> +- ti,cs-rsetup:		read setup width, ns
+> +				Time between the beginning of a memory cycle
+> +				and the activation of read strobe.
+> +				Minimum value is 1 (0 treated as 1).
+> +
+> +- ti,cs-rstobe:		read strobe width, ns
+> +				Time between the activation and deactivation of
+> +				the read strobe.
+> +				Minimum value is 1 (0 treated as 1).
+> +
+> +- ti,cs-rhold:		read hold width, ns
+> +				Time between the deactivation of the read
+> +				strobe and the end of the cycle (which may be
+> +				either an address change or the deactivation of
+> +				the chip select signal.
+> +				Minimum value is 1 (0 treated as 1).
+> +
+> +- ti,cs-wsetup:		write setup width, ns
+> +				Time between the beginning of a memory cycle
+> +				and the activation of write strobe.
+> +				Minimum value is 1 (0 treated as 1).
+> +
+> +- ti,cs-wstrobe:	write strobe width, ns
+> +				Time between the activation and deactivation of
+> +				the write strobe.
+> +				Minimum value is 1 (0 treated as 1).
+> +
+> +- ti,cs-whold:		write hold width, ns
+> +				Time between the deactivation of the write
+> +				strobe and the end of the cycle (which may be
+> +				either an address change or the deactivation of
+> +				the chip select signal.
+> +				Minimum value is 1 (0 treated as 1).
+> +
+> +If any of the above parameters are absent, current parameter value will be taken
+> +from the corresponding HW reg.
+> +
+> +Example for aemif, davinci nand and nor flash chip select shown below.
+> +
+> +memory-controller@21000A00 {
+> +	compatible = "ti,davinci-aemif";
+> +	#address-cells = <2>;
+> +	#size-cells = <1>;
+> +	clocks = <&clkaemif 0>;
+> +	clock-names = "aemif";
+> +	clock-ranges;
+> +	reg = <0x2100A00 0x00000100>;
+> +	ranges = <0 0 0x70000000 0x10000000
+> +		  1 0 0x21000A00 0x0000100>;
+> +		  /*
+> +		   * Partition0: CS-specific memory range which is
+> +		   * implemented as continuous physical memory region
+> +		   * Partition1: control memory range
+> +		   */
+> +
+> +	nand:cs2 {
+> +		#address-cells = <2>;
+> +		#size-cells = <1>;
+> +		clock-ranges;
+> +		ranges;
+> +
+> +		ti,cs-chipselect = <2>;
+> +		/* all timings in nanoseconds */
+> +		ti,cs-ta = <0>;
+> +		ti,cs-rhold = <7>;
+> +		ti,cs-rstrobe = <42>;
+> +		ti,cs-rsetup = <14>;
+> +		ti,cs-whold = <7>;
+> +		ti,cs-wstrobe = <42>;
+> +		ti,cs-wsetup = <14>;
+> +
+> +		nand@0,0x8000000 {
+> +			compatible = "ti,davinci-nand";
+> +			reg = <0 0x8000000 0x4000000
+> +			       1 0x0000000 0x0000100>;
+> +			/*
+> +			 * Partition0, offset 0x8000000, size 0x4000000
+> +			 * Partition1, offset 0x0000000, size 0x0000100
+> +			 */
+> +
+> +			.. see davinci-nand.txt
+> +		};
+> +	};
+> +
+> +	nor:cs0 {
+> +		#address-cells = <2>;
+> +		#size-cells = <1>;
+> +		clock-ranges;
+> +		ranges;
+> +
+> +		ti,cs-chipselect = <0>;
+> +		/* all timings in nanoseconds */
+> +		ti,cs-ta = <0>;
+> +		ti,cs-rhold = <8>;
+> +		ti,cs-rstrobe = <40>;
+> +		ti,cs-rsetup = <14>;
+> +		ti,cs-whold = <7>;
+> +		ti,cs-wstrobe = <40>;
+> +		ti,cs-wsetup = <14>;
+> +		ti,cs-asize = <1>;
+> +
+> +		flash@0,0x0000000 {
+> +			compatible = "cfi-flash";
+> +			reg = <0 0x0000000 0x4000000>;
+> +
+> +			...
+> +		};
+> +	};
+> +};
+> 
