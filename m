@@ -1,20 +1,33 @@
-Message-ID: <52F8FAF1.9030505@ti.com>
-Date: Mon, 10 Feb 2014 11:14:41 -0500
-From: Santosh Shilimkar <santosh.shilimkar@ti.com>
-MIME-Version: 1.0
-To: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>, <galak@kernel.crashing.org>
-Subject: Re: [PATCH v4 2/2] memory: ti-aemif: add bindings for AEMIF driver
-References: <1391629574-18955-1-git-send-email-ivan.khoronzhuk@ti.com>
- <1391629574-18955-3-git-send-email-ivan.khoronzhuk@ti.com>
-In-Reply-To: <1391629574-18955-3-git-send-email-ivan.khoronzhuk@ti.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, grygorii.strashko@ti.com,
- linux@arm.linux.org.uk, pawel.moll@arm.com, swarren@wwwdotorg.org,
- gregkh@linuxfoundation.org, ijc+devicetree@hellion.org.uk, nsekhar@ti.com,
- linux-kernel@vger.kernel.org, rob.herring@calxeda.com,
- linux-mtd@lists.infradead.org, rob@landley.net, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
+Received: from 1wt.eu ([62.212.114.60])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WCtWu-0001ff-Kf
+ for linux-mtd@lists.infradead.org; Mon, 10 Feb 2014 16:16:21 +0000
+Date: Mon, 10 Feb 2014 17:15:45 +0100
+From: Willy Tarreau <w@1wt.eu>
+To: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
+Subject: Re: [PATCH 1/1] ubi: Introduce block devices for UBI volumes
+Message-ID: <20140210161545.GE28464@1wt.eu>
+References: <20140208233758.GH22376@1wt.eu> <52F6C916.2030506@nod.at>
+ <20140209075157.GJ22376@1wt.eu> <20140210024827.GB9643@localhost>
+ <1392017750.31031.8.camel@sauron.fi.intel.com>
+ <20140210082714.GB10872@localhost> <20140210084616.GP22376@1wt.eu>
+ <20140210142026.GB15607@localhost>
+ <1392043814.32363.49.camel@sauron.fi.intel.com>
+ <1392043932.32363.50.camel@sauron.fi.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1392043932.32363.50.camel@sauron.fi.intel.com>
+Cc: "thomas.petazzoni@free-electrons.com"
+ <thomas.petazzoni@free-electrons.com>, "vapier@gentoo.org" <vapier@gentoo.org>,
+ "michael.opdenacker@free-electrons.com"
+ <michael.opdenacker@free-electrons.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "ezequiel.garcia@free-electrons.com" <ezequiel.garcia@free-electrons.com>,
+ "richard@nod.at" <richard@nod.at>,
+ "piergiorgio.beruto@gmail.com" <piergiorgio.beruto@gmail.com>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,248 +37,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Kumar,
+On Mon, Feb 10, 2014 at 02:52:12PM +0000, Bityutskiy, Artem wrote:
+> On Mon, 2014-02-10 at 16:50 +0200, Artem Bityutskiy wrote:
+> > Or mark R/W as experimental and make your module to be R/O by default.
+> > Force people to use 'blockdev --setro' if they want R/W. Run-time.
+> 
+> Err, here I did not mean the Kconfig experimental. I am asking for no
+> Kconfig options for this. I more meant like tell people where the docs
+> are, and tell there that write support is experimental.
 
-On Wednesday 05 February 2014 02:46 PM, Ivan Khoronzhuk wrote:
-> Add bindings for TI Async External Memory Interface (AEMIF) controller.
-> 
-> The Async External Memory Interface (EMIF16/AEMIF) controller is intended to
-> provide a glue-less interface to a variety of asynchronous memory devices like
-> ASRA M, NOR and NAND memory. A total of 256M bytes of any of these memories
-> can be accessed via 4 chip selects with 64M byte access per chip select.
-> 
-> We are not encoding CS number in reg property, it's memory partition number.
-> The CS number is encoded for Davinci NAND node using standalone property
-> "ti,davinci-chipselect" and we need to provide two memory ranges to it,
-> as result we can't encode CS number in "reg" for AEMIF child devices
-> (NAND/NOR/etc), as it will break bindings compatibility.
-> 
-> In this patch, NAND node is used just as an example of child node.
-> 
-> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
-> ---
-Can you please have a look at the binding which we discussed in previous
-versions ? I want to queue these for 3.15 via Greg's tree but need
-your ack on DT part at least.
+I'd rather have no option either and have it naturally support the
+features. Build-time options are always annoying, you disable them
+at the beginning believing they're useless, then you regret this
+when you try to use them...
 
->  .../bindings/memory-controllers/ti-aemif.txt       | 210 +++++++++++++++++++++
->  1 file changed, 210 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/memory-controllers/ti-aemif.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/memory-controllers/ti-aemif.txt b/Documentation/devicetree/bindings/memory-controllers/ti-aemif.txt
-> new file mode 100644
-> index 0000000..d1466dc
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/memory-controllers/ti-aemif.txt
-> @@ -0,0 +1,210 @@
-> +* Device tree bindings for Texas instruments AEMIF controller
-> +
-> +The Async External Memory Interface (EMIF16/AEMIF) controller is intended to
-> +provide a glue-less interface to a variety of asynchronous memory devices like
-> +ASRA M, NOR and NAND memory. A total of 256M bytes of any of these memories
-> +can be accessed at any given time via four chip selects with 64M byte access
-> +per chip select. Synchronous memories such as DDR1 SD RAM, SDR SDRAM
-> +and Mobile SDR are not supported.
-> +
-> +Documentation:
-> +Davinci DM646x - http://www.ti.com/lit/ug/sprueq7c/sprueq7c.pdf
-> +OMAP-L138 (DA850) - http://www.ti.com/lit/ug/spruh77a/spruh77a.pdf
-> +Kestone - http://www.ti.com/lit/ug/sprugz3a/sprugz3a.pdf
-> +
-> +Required properties:
-> +
-> +- compatible:		"ti,davinci-aemif"
-> +			"ti,keystone-aemif"
-> +			"ti,da850-aemif"
-> +
-> +- reg:			contains offset/length value for AEMIF control registers
-> +			space.
-> +
-> +- #address-cells:	Must be 2. The partition number has to be encoded in the
-> +			first address cell and it may accept values 0..N-1
-> +			(N - total number of partitions). It's recommended to
-> +			assign N-1 number for the control partition. The second
-> +			cell is the offset into the partition.
-> +
-> +- #size-cells:		Must be set to 1.
-> +
-> +- ranges:		Contains memory regions. There are two types of
-> +			ranges/partitions:
-> +			- CS-specific partition/range. If continuous, must be
-> +			set up to reflect the memory layout for 4 chipselects,
-> +			if not then additional range/partition can be added and
-> +			child device can select the proper one.
-> +			- control partition which is common for all CS
-> +			interfaces.
-> +
-> +- clocks:		the clock feeding the controller clock. Required only
-> +			if clock tree data present in device tree.
-> +			See clock-bindings.txt
-> +
-> +- clock-names:		clock name. It has to be "aemif". Required only if clock
-> +			tree data present in device tree, in another case don't
-> +			use it.
-> +			See clock-bindings.txt
-> +
-> +- clock-ranges:		Empty property indicating that child nodes can inherit
-> +			named clocks. Required only if clock tree data present
-> +			in device tree.
-> +			See clock-bindings.txt
-> +
-> +
-> +Child chip-select (cs) nodes contain the memory devices nodes connected to
-> +such as NOR (e.g. cfi-flash) and NAND (ti,davinci-nand, see davinci-nand.txt).
-> +There might be board specific devices like FPGAs.
-> +
-> +Required child cs node properties:
-> +
-> +- #address-cells:	Must be 2.
-> +
-> +- #size-cells:		Must be 1.
-> +
-> +- ranges:		Empty property indicating that child nodes can inherit
-> +			memory layout.
-> +
-> +- clock-ranges:		Empty property indicating that child nodes can inherit
-> +			named clocks. Required only if clock tree data present
-> +			in device tree.
-> +
-> +- ti,cs-chipselect:	number of chipselect. Indicates on the aemif driver
-> +			which chipselect is used for accessing the memory. For
-> +			compatibles "ti,davinci-aemif" and "ti,keystone-aemif"
-> +			it can be in range [0-3]. For compatible
-> +			"ti,da850-aemif" range is [2-5].
-> +
-> +Optional child cs node properties:
-> +
-> +- ti,bus-width:			width of the asynchronous device's data bus
-> +				8 or 16 if not preset 8
-> +
-> +- ti,cs-ss:		enable/disable select strobe mode
-> +				In select strobe mode chip select behaves as
-> +				the strobe and is active only during the strobe
-> +				period. If present then enable.
-> +
-> +- ti,cs-ew:		enable/disable extended wait mode
-> +				if set, the controller monitors the EMIFWAIT pin
-> +				mapped to that chip select to determine if the
-> +				device wants to extend the strobe period. If
-> +				present then enable.
-> +
-> +- ti,cs-ta:		minimum turn around time, ns
-> +				Time between the end of one asynchronous memory
-> +				access and the start of another asynchronous
-> +				memory access. This delay is not incurred
-> +				between a read followed by read or a write
-> +				followed by a write to same chip select.
-> +
-> +- ti,cs-rsetup:		read setup width, ns
-> +				Time between the beginning of a memory cycle
-> +				and the activation of read strobe.
-> +				Minimum value is 1 (0 treated as 1).
-> +
-> +- ti,cs-rstobe:		read strobe width, ns
-> +				Time between the activation and deactivation of
-> +				the read strobe.
-> +				Minimum value is 1 (0 treated as 1).
-> +
-> +- ti,cs-rhold:		read hold width, ns
-> +				Time between the deactivation of the read
-> +				strobe and the end of the cycle (which may be
-> +				either an address change or the deactivation of
-> +				the chip select signal.
-> +				Minimum value is 1 (0 treated as 1).
-> +
-> +- ti,cs-wsetup:		write setup width, ns
-> +				Time between the beginning of a memory cycle
-> +				and the activation of write strobe.
-> +				Minimum value is 1 (0 treated as 1).
-> +
-> +- ti,cs-wstrobe:	write strobe width, ns
-> +				Time between the activation and deactivation of
-> +				the write strobe.
-> +				Minimum value is 1 (0 treated as 1).
-> +
-> +- ti,cs-whold:		write hold width, ns
-> +				Time between the deactivation of the write
-> +				strobe and the end of the cycle (which may be
-> +				either an address change or the deactivation of
-> +				the chip select signal.
-> +				Minimum value is 1 (0 treated as 1).
-> +
-> +If any of the above parameters are absent, current parameter value will be taken
-> +from the corresponding HW reg.
-> +
-> +Example for aemif, davinci nand and nor flash chip select shown below.
-> +
-> +memory-controller@21000A00 {
-> +	compatible = "ti,davinci-aemif";
-> +	#address-cells = <2>;
-> +	#size-cells = <1>;
-> +	clocks = <&clkaemif 0>;
-> +	clock-names = "aemif";
-> +	clock-ranges;
-> +	reg = <0x2100A00 0x00000100>;
-> +	ranges = <0 0 0x70000000 0x10000000
-> +		  1 0 0x21000A00 0x0000100>;
-> +		  /*
-> +		   * Partition0: CS-specific memory range which is
-> +		   * implemented as continuous physical memory region
-> +		   * Partition1: control memory range
-> +		   */
-> +
-> +	nand:cs2 {
-> +		#address-cells = <2>;
-> +		#size-cells = <1>;
-> +		clock-ranges;
-> +		ranges;
-> +
-> +		ti,cs-chipselect = <2>;
-> +		/* all timings in nanoseconds */
-> +		ti,cs-ta = <0>;
-> +		ti,cs-rhold = <7>;
-> +		ti,cs-rstrobe = <42>;
-> +		ti,cs-rsetup = <14>;
-> +		ti,cs-whold = <7>;
-> +		ti,cs-wstrobe = <42>;
-> +		ti,cs-wsetup = <14>;
-> +
-> +		nand@0,0x8000000 {
-> +			compatible = "ti,davinci-nand";
-> +			reg = <0 0x8000000 0x4000000
-> +			       1 0x0000000 0x0000100>;
-> +			/*
-> +			 * Partition0, offset 0x8000000, size 0x4000000
-> +			 * Partition1, offset 0x0000000, size 0x0000100
-> +			 */
-> +
-> +			.. see davinci-nand.txt
-> +		};
-> +	};
-> +
-> +	nor:cs0 {
-> +		#address-cells = <2>;
-> +		#size-cells = <1>;
-> +		clock-ranges;
-> +		ranges;
-> +
-> +		ti,cs-chipselect = <0>;
-> +		/* all timings in nanoseconds */
-> +		ti,cs-ta = <0>;
-> +		ti,cs-rhold = <8>;
-> +		ti,cs-rstrobe = <40>;
-> +		ti,cs-rsetup = <14>;
-> +		ti,cs-whold = <7>;
-> +		ti,cs-wstrobe = <40>;
-> +		ti,cs-wsetup = <14>;
-> +		ti,cs-asize = <1>;
-> +
-> +		flash@0,0x0000000 {
-> +			compatible = "cfi-flash";
-> +			reg = <0 0x0000000 0x4000000>;
-> +
-> +			...
-> +		};
-> +	};
-> +};
-> 
+Willy
