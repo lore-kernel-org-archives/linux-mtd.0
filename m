@@ -1,17 +1,29 @@
-Message-ID: <52FA3B1A.2070304@st.com>
-Date: Tue, 11 Feb 2014 15:00:42 +0000
-From: Angus Clark <Angus.Clark@st.com>
+Received: from 71-19-161-253.dedicated.allstream.net ([71.19.161.253]
+ helo=nsa.nbspaymentsolutions.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WDFL3-0006j7-16
+ for linux-mtd@lists.infradead.org; Tue, 11 Feb 2014 15:33:33 +0000
+From: Bill Pringlemeir <bpringlemeir@nbsps.com>
+To: "Wiedemer, Thorsten (Lawo AG)" <Thorsten.Wiedemer@lawo.com>
+Subject: Re: AW: UBI leb_write_unlock NULL pointer Oops (continuation)
+References: <D7B1B5F4F3F27A4CB073BF422331203F2A18997F1F@Exchange1.lawo.de>
+ <CAFLxGvya5WXoKcYmOgeM_SmVVEht1jEzeLG9vHhwFudFU+Ny8A@mail.gmail.com>
+ <D7B1B5F4F3F27A4CB073BF422331203F2A18997F8B@Exchange1.lawo.de>
+ <52EF772D.8080207@nod.at>
+ <D7B1B5F4F3F27A4CB073BF422331203F2A18DD7989@Exchange1.lawo.de>
+ <52EF9FFE.4020405@nod.at>
+ <D7B1B5F4F3F27A4CB073BF422331203F2A18A7474A@Exchange1.lawo.de>
+ <52F1F658.9080701@nod.at>
+ <D7B1B5F4F3F27A4CB073BF422331203F2A1ECCF6AE@Exchange1.lawo.de>
+Date: Tue, 11 Feb 2014 10:25:44 -0500
+In-Reply-To: <D7B1B5F4F3F27A4CB073BF422331203F2A1ECCF6AE@Exchange1.lawo.de>
+ (Thorsten Wiedemer's message of "Tue, 11 Feb 2014 09:01:50 +0100")
+Message-ID: <87zjlxy8lj.fsf@nbsps.com>
 MIME-Version: 1.0
-To: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH RESEND v4 00/37] mtd: st_spi_fsm: Add new driver
-References: <1390473085-24626-1-git-send-email-lee.jones@linaro.org>
-In-Reply-To: <1390473085-24626-1-git-send-email-lee.jones@linaro.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: olivier.clergeaud@st.com, linus.walleij@linaro.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- computersforpeace@gmail.com, dwmw2@infradead.org,
- DCG_UPD_stlinux_kernel@list.st.com, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Richard Weinberger <richard@nod.at>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,149 +33,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Lee,
 
-Sorry for the delay.  I have now had a quick look through the patches.  Just a
-couple of points :-)
+>> Am 04.02.2014 18:01, schrieb Wiedemer, Thorsten (Lawo AG):
 
-* stfsm_probe(): stfsm_fetch_platform_configs() needs to be called *before*
-config() -- config() is based on platform capabilities.  Conceptually,
-stfsm_fetch_platform_configs() should be called before stfsm_jedec_probe(), and
-FLASH_FLAG_32BIT_ADDR should be moved out of stfsm_fetch_platform_configs(),
-placed just after stfsm_jedec_probe() but before config().
+>>> I made a "hardcore test" with:
+>>>> while [ 1 ]; do cp <file_of_8kByte_size>=20
+>>> tmp/<file_of_8kByte_size.1>; sync; done & $ while [ 1 ]; do cp=20
+>>> <file_of_8kByte_size> tmp/<file_of_8kByte_size.2>; sync; done & $=20
+>>> while [ 1 ]; do cp <file_of_8kByte_size> tmp/<file_of_8kByte_size.3>;
+>>> sync; done &
 
-* fsm_wait_busy(): logic not quite correct if we get a P_ERR or E_ERR error
-after a timeout.  I am also not sure about returning (uint8_t)-EIO.  For what
-its worth, this is what I did in response to Brian's comment about the race
-condition:
+>>> It took about 2-3 hours until I had an error (two times):
 
-static uint8_t fsm_wait_busy(struct stm_spi_fsm *fsm, unsigned int max_time_ms)
-{
-	struct fsm_seq *seq = &fsm_seq_read_status_fifo;
-	unsigned long deadline;
-	uint32_t status;
-	int timeout = 0;
+>> -----Urspr=C3=BCngliche Nachricht-----
+>> Von: Richard Weinberger [mailto:richard@nod.at]=20
 
-	/* Use RDRS1 */
-	seq->seq_opc[0] = (SEQ_OPC_PADS_1 |
-			   SEQ_OPC_CYCLES(8) |
-			   SEQ_OPC_OPCODE(FLASH_CMD_RDSR));
+>> This test ran the over night without any error on my imx51 board. :-\
 
-	/* Load read_status sequence */
-	fsm_load_seq(fsm, seq);
+>> Thorsten, can you please enable CONFIG_DEBUG_LIST?
+>> Also try whether you can trigger the issue with lock debugging
+>> enabled.
 
-	/*
-	 * Repeat until busy bit is deasserted, or timeout, or error (S25FLxxxS)
-	 */
-	deadline = jiffies + msecs_to_jiffies(max_time_ms);
-	while (!timeout) {
-		cond_resched();
+On 11 Feb 2014, Thorsten.Wiedemer@lawo.com wrote:
 
-		if (time_after_eq(jiffies, deadline))
-			timeout = 1;
+> short update (I was out of office the rest of last week).  I compiled
+> the kernel with the debug flags for debug list and lock alloc.  The
+> kernel compiled with gcc-4.8.2 didn't start (no output on serial
+> console and reboot of the system).  I didn't try (yet) to find out
+> what happens at startup.
 
-		fsm_wait_seq(fsm);
+You don't need to enable the 'lock alloc' debugging; Just the 'debug
+list' as Richard suggested.  One at a time would work and give clues if
+you can reproduce it.
 
-		fsm_read_fifo(fsm, &status, 4);
+> I compiled the same kernel (and same config) with gcc-4.4.4. The write
+> test runs now for over 16 hours without error.  Next step is to find
+> out wether this is due to a changed timing because of the debug flags
+> or if it's the compiler.
 
-		if ((status & FLASH_STATUS_BUSY) == 0)
-			return 0;
+I ran a test as per the above on an IMX25 and mxc_nand has 448179139
+interrupts, with about 6 bit flips and one torture test.  It was been
+running for about four days.  I am using gcc 4.7.3 (crosstool-ng) and
+backports to 2.6.36.=20=20
 
-		if ((fsm->configuration & CFG_S25FL_CHECK_ERROR_FLAGS) &&
-		    ((status & S25FL_STATUS_P_ERR) ||
-		     (status & S25FL_STATUS_E_ERR)))
-			return (uint8_t)(status & 0xff);
+I think that the issue is not related to an MTD driver and/or UBI/UbiFS
+directly.  It is more likely an architecture issue and maybe some API
+inconsistency.  It could be compiler related, however, it seems many
+people have seen the issue on various ARM926 systems (different Linux
+versions, different compilers, and different MTD drivers).
 
-		if (!timeout)
-			/* Restart */
-			writel(seq->seq_cfg, fsm->base + SPI_FAST_SEQ_CFG);
-	}
+User space tasks running in parallel with the test may play a role.  Did
+you turn CONFIG_PREEMPT off?  I think memory pressure and other effect
+(not related to UBI/UbiFS) maybe needed to trigger the issue.  We don't
+normally see this on our systems.  The one time it happened, an
+application developer ran some 'ls -R' or 'find .' in parallel with a
+file intensive feature in our application.  I haven't found a test to
+reproduce it reliably.
 
-	dev_err(fsm->dev, "timeout on wait_busy\n");
-
-	return FLASH_STATUS_TIMEOUT;
-}
-
-and:
-
-static int fsm_wait_seq(struct stm_spi_fsm *fsm)
-{
-	unsigned long deadline = jiffies +
-		msecs_to_jiffies(FSM_MAX_WAIT_SEQ_MS);
-	int timeout = 0;
-
-	while (!timeout) {
-		if (time_after_eq(jiffies, deadline))
-			timeout = 1;
-
-		if (fsm_is_idle(fsm))
-			return 0;
-
-		cond_resched();
-	}
-
-	dev_err(fsm->dev, "timeout on sequence completion\n");
-
-	return 1;
-}
-
-
-* "MFD" creeps into a few commit logs ;-)
-
-Cheers,
-
-Angus
-
-On 01/23/2014 10:30 AM, Lee Jones wrote:
-> Version 4:
->   Tended to Brian's review comments
->     - Checkpatch acceptance
->     - MODULE_DEVICE_TABLE() name slip correction
->     - Timeout issue(s) resolved
->     - Potential infinite loop mitigated
->     - Code clarity suggests heeded
->     - Duplication with MTD core code removed
->     - Upgraded to using ROUND_UP() helper
->     - Moved non-shared header code into main driver
->     - Relocated dynamic msg sequence stores into main struct
->     - Averted adaption of static (table) data
->     - Basic whitespace/spelling/data type/dev_err suggestions applied
->   
-> Version 3:
->   Okay, this thing should be fully functional now. Identify a chip
->   based on it's JEDEC ID, Read, Write, Erase (all or by sector).
->   Support for various chip quirks added too.
-> 
-> Version 2:
->   The first bunch of these patches have been on the MLs before, but
->   didn't receive a great deal of attention for the most part. We are
->   a little more featureful this time however. We can now successfully
->   setup and configure the N25Q256. We still can't read/write/erase
->   it though. I'll start work on that next week and will provide it in
->   the next instalment.
-> 
-> Version 1:
->   First stab at getting this thing Mainlined. It doesn't do a great deal
->   yet, but we are able to initialise the device and dynamically set it up
->   correctly based on an extracted JEDEC ID.
-> 
->  Documentation/devicetree/bindings/mtd/st-fsm.txt |   26 ++
->  arch/arm/boot/dts/stih416-b2105.dts              |   14 +
->  arch/arm/boot/dts/stih416-pinctrl.dtsi           |   12 +
->  drivers/mtd/devices/Kconfig                      |    8 +
->  drivers/mtd/devices/Makefile                     |    1 +
->  drivers/mtd/devices/serial_flash_cmds.h          |   81 ++++
->  drivers/mtd/devices/st_spi_fsm.c                 | 2124 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-> 7 files changed, 2266 insertions(+)
-> 
-> 
-
--- 
--------------------------------------
-Angus Clark
-ST Microelectronics (R&D) Ltd.
-1000 Aztec West, Bristol, BS32 4SQ
-email: angus.clark@st.com
-tel: +44 (0) 1454 462389
-st-tina: 065 2389
--------------------------------------
+Fwiw,
+Bill Pringlemeir.
