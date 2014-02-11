@@ -1,24 +1,14 @@
-Received: from mail-ie0-x235.google.com ([2607:f8b0:4001:c03::235])
+Received: from userp1040.oracle.com ([156.151.31.81])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WDG7P-0008R2-IV
- for linux-mtd@lists.infradead.org; Tue, 11 Feb 2014 16:23:32 +0000
-Received: by mail-ie0-f181.google.com with SMTP id to1so4358048ieb.26
- for <linux-mtd@lists.infradead.org>; Tue, 11 Feb 2014 08:23:10 -0800 (PST)
-Message-ID: <52FA4E64.8020200@gmail.com>
-Date: Tue, 11 Feb 2014 11:23:00 -0500
-From: Peter Barada <peter.barada@gmail.com>
-MIME-Version: 1.0
-To: star@gmx.li, =?UTF-8?B?QW5kcmVhcyBCaWXDn21hbm4=?=
- <andreas.biessmann@corscience.de>
-Subject: Re: Aw: Re: Linux MTD: Per Partition ECC
-References: <trinity-5aec7168-325d-4995-9e70-e4d2ce4b4816-1392119925322@3capp-gmx-bs63>,
- <52FA1B39.2070904@corscience.de>
- <trinity-39536070-43ab-4f9e-9b92-9852f5fd000b-1392133387225@3capp-gmx-bs63>
-In-Reply-To: <trinity-39536070-43ab-4f9e-9b92-9852f5fd000b-1392133387225@3capp-gmx-bs63>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, Peter Barada <peter.barada@logicpd.com>,
- biessmann@corscience.de
+ id 1WDGGf-0000VN-5r
+ for linux-mtd@lists.infradead.org; Tue, 11 Feb 2014 16:33:06 +0000
+From: Sasha Levin <sasha.levin@oracle.com>
+To: dwmw2@infradead.org, akpm@linux-foundation.org
+Subject: [PATCH] mm: remove read_cache_page_async
+Date: Tue, 11 Feb 2014 11:32:09 -0500
+Message-Id: <1392136329-21946-1-git-send-email-sasha.levin@oracle.com>
+Cc: linux-mm@kvack.org, linux-mtd@lists.infradead.org, viro@zeniv.linux.org.uk,
+ Sasha Levin <sasha.levin@oracle.com>, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,143 +18,217 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 02/11/2014 10:43 AM, star@gmx.li wrote:
-> Dear Andreas,
-> thanks for quick answer.
->
-> It is clear to me, that I can't mix ECC at same time.
-> I would like to switch at a certain point of time.
->
-> In uboot there is a command (nandecc) which does this for me.
-> But howto do this in linux?
+This patch removes read_cache_page_async() which wasn't really needed anywhere
+and simplifies the code around it a bit.
 
-Currently there is no method to switch ECCs at runtime within Linux w/o
-unloading/reloading the NAND driver module and specify a different ECC. 
-This works great if your rootfs is not NAND-based (where unloading the
-NAND driver can cause it to hang/crash), but in my case I need it to
-work with a NAND-based rootfs.
+read_cache_page_async() is useful when we want to read a page into the cache
+without waiting for it to complete. This happens when the appropriate callback
+'filler' doesn't complete it's read operation and releases the page lock
+immediately, and instead queues a different completion routine to do that.
+This never actually happened anywhere in the code.
 
-It may be possible to burn the bootloader into NAND using MTD_RAW_MODE
-which _should_ disable all ECC for the operation, but in my case the ECC
-generator is internal to the NAND chip itself and this won't work.
+read_cache_page_async() had 3 different callers:
 
-I'm working on a possible solution in my linux-3.0 kernel, to modify
-nand_get_device to take an extra pramater "no_ecc" which keys off
-whether the NAND ops mode (if known) is MTD_OOB_RAW, and if so shut off
-all ECC (including the in-chip ECC my NAND requires).    Then every NAND
-operation will enable/disable ECC while getting the controller lock.
+ - read_cache_page() which is the sync version, it would just wait for
+the requested read to complete using wait_on_page_read().
+ - JFFS2 would call it from jffs2_gc_fetch_page(), but the filler function
+it supplied doesn't do any async reads, and would complete before the
+filler function returns - making it actually a sync read.
+ - CRAMFS would call it using the read_mapping_page_async() wrapper, with
+a similar story to JFFS2 - the filler function doesn't do anything that
+reminds async reads and would always complete before the filler function
+returns.
 
-In the process of using flashtool to burn NAND, it uses write() to burn
-the data portion, and ioctl(MEMWRITEOOB) to burn the OOB area, but this
-causes two writes to the same page, which violates Np for my NAND (i.e.
-only one write per page).  I'm looking at creating a new ioctl entry
-(MEMWRITEDATAOOB?) that takes both the data and oob buffers from
-userspace and then burns them in one operation.
+To sum it up, the code in mm/filemap.c never took advantage of having
+read_cache_page_async(). While there are filler callbacks that do async
+reads (such as the block one), we always called it with the read_cache_page().
 
->
-> The idea is to boot in a normal way (1 bit SW ECC).
-> I need to copy all needed tools from flash to RAM (flash_eraseall, nandwrite, busybox)
-> After that all partitions (uboot, kernel, root)  will be erased, written with new ECC scheme and rebooted.
->
-> Thinking about this - once I read that it is possible to boot a new kernel out of linux.
-> Not remember the preconditions, but this is probably the more complex way.
->  
-> mhh.
->
-> Did I get it right: You managed it to boot your system (using flash content ?) and than unload the mtd module,
-> reload it with a differen parameter and you are able to flash xloader?
-> Of course you cannot access all other partitions of flash during that.
->
-> In general that seems simular to my challenge - with the difference that I have to flash complete chain ...
-> (at least uboot, environment, kernel, root).
->
-> You mentioned it is not possible to stick a /dev/mtdx to a certain ECC scheme. 
-> My kernel is also rather old, (2.6.33) - so no hope that there is included this already.
-> In kernel source it seems that each partition uses the copy of a so called master. Is more than one master possible?
-> I didn't understand the precedure until now-
->
-> If your are right, it is useless to double my partition scheme. Idea was to boot uboot from /dev/mtd1 but rewrite it with other ECC scheme at /dev/mtd6 as every partition is available with 2 names.
->
->
-> Best regards
-> Steffen
->
->
->
->
->> Gesendet: Dienstag, 11. Februar 2014 um 13:44 Uhr
->> Von: "Andreas Bießmann" <andreas.biessmann@corscience.de>
->> An: star@gmx.li, biessmann@corscience.de, peter.barada@gmail.com, linux-mtd@lists.infradead.org
->> Betreff: Re: Linux MTD: Per Partition ECC
->>
->> Dear star@gmx.li,
->>
->> cc linux-mtd, one may have more information on that topic there.
->>
->> On 02/11/2014 12:58 PM, star@gmx.li wrote:
->>> Dear Peter, dear Andreas,
->>>
->>> I just found this during my research:
->>>
->>> http://lists.infradead.org/pipermail/linux-mtd/2012-September/044120.html 
->>>
->>> I  have simular Problem, to update a device which runs on 1 bit SW-ECC out of linux to 'on-die-ECC'
->>>
->>> I duplicated the board partition table (Linux 2.6.33) in a first step. Now each partition can be access  with 2 names
->>> /dev/mtd4 or /dev/mtd8 as example.
->> D'oh why the hell should one do that? I dunno if this is sane with
->> synchronisation between different access layers (e.g. two different
->> instances of filesystem).
->>
->>> But how can I addict a ECC scheme to a certain partition? Do you think this is a possible way?
->>> So access /dev/mtd4 with software ECC and /dev/mtd8 with on-die-ecc?
->> AFAIK there is no way to do per partition ecc currently. So there is no
->> way to support this without changing the whole mtd framework.
->> But maybe there was some movement since my last check. Maybe one of the
->> mtd developers could comment on that.
->>
->> Nevertheless the ECC scheme of Linux 1Bit hamming SW ECC is likely to be
->> different than the Micron (or whatever manufacturer you use)
->> 'on-die-ECC', therefore there is no chance to support 'partition A' and
->> 'partition B' working on the very same hardware with these different ECC
->> schemes. You can only support scheme A _or_ scheme B at a time. I mean
->> for the whole process of storing the data and reading it out of the
->> device. Is the data physically written with scheme A it would fail to
->> read with scheme B and vice versa.
->>
->>> Andreas can you provide the complete patch for you version? 
->> You just found the complete patch [2] if you red the link mentioned above.
->>
->>> Problem for me is, I am always running on a mtd partition.
->> Well, my patch provides a solution for a very special case. Doing system
->> update of embedded devices in the field and switching the ECC scheme of
->> one partition (the first one, which boot ROM is reading) to OMAP3 1 bit
->> hamming HW ECC scheme while the rest of the device is 8 bit BCH SW ECC
->> scheme (it is 'HW-assisted', cause of missing ELM in OMAP3; I know there
->> were some patches cleaning this up, dunno the current state).
->> I can do that cause we kexec the update firmware which brings the
->> omap-nand mtd driver as a module. That module then can be configured to
->> switch the ECC scheme when probing. The trick is to load it twice,
->> sequential with different setup.
->> As discussed in [1] this solution is only useful when doing such very
->> special update strategies. So sorry, I think it won't help you.
->>
->>> As a workaround I do have 2 root partitions which can be boot alternatively.
->> Sorry, I fail to understand how that would help here. The point is you
->> need to patch your SPL, bootlaoder and kernel to support the newer ECC
->> scheme and update all of them at once. If the procedure fail then your
->> device is likely to be bricked ...
->>
->> Best regards
->>
->> Andreas Bießmann
->>
->> [1] http://thread.gmane.org/gmane.linux.drivers.mtd/50364
->> [2] http://article.gmane.org/gmane.linux.drivers.mtd/43804
->>
->>
+This patch adds a mandatory wait for read to complete when adding a new
+page to the cache, and removes read_cache_page_async() and it's wrappers.
 
+Signed-off-by: Sasha Levin <sasha.levin@oracle.com>
+---
+ fs/cramfs/inode.c       |    3 +-
+ fs/jffs2/fs.c           |    2 +-
+ include/linux/pagemap.h |   10 -------
+ mm/filemap.c            |   64 +++++++++++++++++------------------------------
+ 4 files changed, 25 insertions(+), 54 deletions(-)
 
+diff --git a/fs/cramfs/inode.c b/fs/cramfs/inode.c
+index 06610cf..a1f801c 100644
+--- a/fs/cramfs/inode.c
++++ b/fs/cramfs/inode.c
+@@ -195,8 +195,7 @@ static void *cramfs_read(struct super_block *sb, unsigned int offset, unsigned i
+ 		struct page *page = NULL;
+ 
+ 		if (blocknr + i < devsize) {
+-			page = read_mapping_page_async(mapping, blocknr + i,
+-									NULL);
++			page = read_mapping_page(mapping, blocknr + i, NULL);
+ 			/* synchronous error? */
+ 			if (IS_ERR(page))
+ 				page = NULL;
+diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
+index 5e36504..601afd1 100644
+--- a/fs/jffs2/fs.c
++++ b/fs/jffs2/fs.c
+@@ -690,7 +690,7 @@ unsigned char *jffs2_gc_fetch_page(struct jffs2_sb_info *c,
+ 	struct inode *inode = OFNI_EDONI_2SFFJ(f);
+ 	struct page *pg;
+ 
+-	pg = read_cache_page_async(inode->i_mapping, offset >> PAGE_CACHE_SHIFT,
++	pg = read_cache_page(inode->i_mapping, offset >> PAGE_CACHE_SHIFT,
+ 			     (void *)jffs2_do_readpage_unlock, inode);
+ 	if (IS_ERR(pg))
+ 		return (void *)pg;
+diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+index e772973..4f591df 100644
+--- a/include/linux/pagemap.h
++++ b/include/linux/pagemap.h
+@@ -289,8 +289,6 @@ static inline struct page *grab_cache_page(struct address_space *mapping,
+ 
+ extern struct page * grab_cache_page_nowait(struct address_space *mapping,
+ 				pgoff_t index);
+-extern struct page * read_cache_page_async(struct address_space *mapping,
+-				pgoff_t index, filler_t *filler, void *data);
+ extern struct page * read_cache_page(struct address_space *mapping,
+ 				pgoff_t index, filler_t *filler, void *data);
+ extern struct page * read_cache_page_gfp(struct address_space *mapping,
+@@ -298,14 +296,6 @@ extern struct page * read_cache_page_gfp(struct address_space *mapping,
+ extern int read_cache_pages(struct address_space *mapping,
+ 		struct list_head *pages, filler_t *filler, void *data);
+ 
+-static inline struct page *read_mapping_page_async(
+-				struct address_space *mapping,
+-				pgoff_t index, void *data)
+-{
+-	filler_t *filler = (filler_t *)mapping->a_ops->readpage;
+-	return read_cache_page_async(mapping, index, filler, data);
+-}
+-
+ static inline struct page *read_mapping_page(struct address_space *mapping,
+ 				pgoff_t index, void *data)
+ {
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 8d44788..0ad619d 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -2130,6 +2130,18 @@ int generic_file_readonly_mmap(struct file * file, struct vm_area_struct * vma)
+ EXPORT_SYMBOL(generic_file_mmap);
+ EXPORT_SYMBOL(generic_file_readonly_mmap);
+ 
++static struct page *wait_on_page_read(struct page *page)
++{
++	if (!IS_ERR(page)) {
++		wait_on_page_locked(page);
++		if (!PageUptodate(page)) {
++			page_cache_release(page);
++			page = ERR_PTR(-EIO);
++		}
++	}
++	return page;
++}
++
+ static struct page *__read_cache_page(struct address_space *mapping,
+ 				pgoff_t index,
+ 				int (*filler)(void *, struct page *),
+@@ -2156,6 +2168,8 @@ repeat:
+ 		if (err < 0) {
+ 			page_cache_release(page);
+ 			page = ERR_PTR(err);
++		} else {
++			page = wait_on_page_read(page);
+ 		}
+ 	}
+ 	return page;
+@@ -2192,6 +2206,10 @@ retry:
+ 	if (err < 0) {
+ 		page_cache_release(page);
+ 		return ERR_PTR(err);
++	} else {
++		page = wait_on_page_read(page);
++		if (IS_ERR(page))
++			return page;
+ 	}
+ out:
+ 	mark_page_accessed(page);
+@@ -2199,40 +2217,25 @@ out:
+ }
+ 
+ /**
+- * read_cache_page_async - read into page cache, fill it if needed
++ * read_cache_page - read into page cache, fill it if needed
+  * @mapping:	the page's address_space
+  * @index:	the page index
+  * @filler:	function to perform the read
+  * @data:	first arg to filler(data, page) function, often left as NULL
+  *
+- * Same as read_cache_page, but don't wait for page to become unlocked
+- * after submitting it to the filler.
+- *
+  * Read into the page cache. If a page already exists, and PageUptodate() is
+- * not set, try to fill the page but don't wait for it to become unlocked.
++ * not set, try to fill the page and wait for it to become unlocked.
+  *
+  * If the page does not get brought uptodate, return -EIO.
+  */
+-struct page *read_cache_page_async(struct address_space *mapping,
++struct page *read_cache_page(struct address_space *mapping,
+ 				pgoff_t index,
+ 				int (*filler)(void *, struct page *),
+ 				void *data)
+ {
+ 	return do_read_cache_page(mapping, index, filler, data, mapping_gfp_mask(mapping));
+ }
+-EXPORT_SYMBOL(read_cache_page_async);
+-
+-static struct page *wait_on_page_read(struct page *page)
+-{
+-	if (!IS_ERR(page)) {
+-		wait_on_page_locked(page);
+-		if (!PageUptodate(page)) {
+-			page_cache_release(page);
+-			page = ERR_PTR(-EIO);
+-		}
+-	}
+-	return page;
+-}
++EXPORT_SYMBOL(read_cache_page);
+ 
+ /**
+  * read_cache_page_gfp - read into page cache, using specified page allocation flags.
+@@ -2251,31 +2254,10 @@ struct page *read_cache_page_gfp(struct address_space *mapping,
+ {
+ 	filler_t *filler = (filler_t *)mapping->a_ops->readpage;
+ 
+-	return wait_on_page_read(do_read_cache_page(mapping, index, filler, NULL, gfp));
++	return do_read_cache_page(mapping, index, filler, NULL, gfp);
+ }
+ EXPORT_SYMBOL(read_cache_page_gfp);
+ 
+-/**
+- * read_cache_page - read into page cache, fill it if needed
+- * @mapping:	the page's address_space
+- * @index:	the page index
+- * @filler:	function to perform the read
+- * @data:	first arg to filler(data, page) function, often left as NULL
+- *
+- * Read into the page cache. If a page already exists, and PageUptodate() is
+- * not set, try to fill the page then wait for it to become unlocked.
+- *
+- * If the page does not get brought uptodate, return -EIO.
+- */
+-struct page *read_cache_page(struct address_space *mapping,
+-				pgoff_t index,
+-				int (*filler)(void *, struct page *),
+-				void *data)
+-{
+-	return wait_on_page_read(read_cache_page_async(mapping, index, filler, data));
+-}
+-EXPORT_SYMBOL(read_cache_page);
+-
+ static size_t __iovec_copy_from_user_inatomic(char *vaddr,
+ 			const struct iovec *iov, size_t base, size_t bytes)
+ {
 -- 
-Peter Barada
-peter.barada@gmail.com
+1.7.2.5
