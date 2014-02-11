@@ -1,27 +1,36 @@
-Received: from mail2.lawo.de ([80.149.95.33] helo=ExchangeEdge1.lawo.de)
+Received: from mail-pd0-x233.google.com ([2607:f8b0:400e:c02::233])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WD8IV-0001p2-GK
- for linux-mtd@lists.infradead.org; Tue, 11 Feb 2014 08:02:28 +0000
-From: "Wiedemer, Thorsten (Lawo AG)" <Thorsten.Wiedemer@lawo.com>
-To: Richard Weinberger <richard@nod.at>
-Date: Tue, 11 Feb 2014 09:01:50 +0100
-Subject: AW: UBI leb_write_unlock NULL pointer Oops (continuation)
-Message-ID: <D7B1B5F4F3F27A4CB073BF422331203F2A1ECCF6AE@Exchange1.lawo.de>
-References: <D7B1B5F4F3F27A4CB073BF422331203F2A18997F1F@Exchange1.lawo.de>
- <CAFLxGvya5WXoKcYmOgeM_SmVVEht1jEzeLG9vHhwFudFU+Ny8A@mail.gmail.com>
- <D7B1B5F4F3F27A4CB073BF422331203F2A18997F8B@Exchange1.lawo.de>
- <52EF772D.8080207@nod.at>
- <D7B1B5F4F3F27A4CB073BF422331203F2A18DD7989@Exchange1.lawo.de>,
- <52EF9FFE.4020405@nod.at>
- <D7B1B5F4F3F27A4CB073BF422331203F2A18A7474A@Exchange1.lawo.de>
- <52F1F658.9080701@nod.at>
-In-Reply-To: <52F1F658.9080701@nod.at>
-Content-Language: de-DE
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+ id 1WD8qn-0002i7-Aq
+ for linux-mtd@lists.infradead.org; Tue, 11 Feb 2014 08:37:55 +0000
+Received: by mail-pd0-f179.google.com with SMTP id fp1so6852622pdb.38
+ for <linux-mtd@lists.infradead.org>; Tue, 11 Feb 2014 00:37:28 -0800 (PST)
 MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Bill
- Pringlemeir <bpringlemeir@nbsps.com>
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <20140210214333.GH28464@1wt.eu>
+References: <52F6C916.2030506@nod.at> <20140209075157.GJ22376@1wt.eu>
+ <20140210024827.GB9643@localhost>
+ <1392017750.31031.8.camel@sauron.fi.intel.com>
+ <20140210082714.GB10872@localhost> <20140210084616.GP22376@1wt.eu>
+ <20140210142026.GB15607@localhost>
+ <1392043814.32363.49.camel@sauron.fi.intel.com>
+ <20140210184858.GA6484@localhost>
+ <a86d653a-9e3b-46dc-9ec8-94a9c1099bec@email.android.com>
+ <20140210214333.GH28464@1wt.eu>
+Date: Tue, 11 Feb 2014 09:37:25 +0100
+Message-ID: <CAMuHMdW0LHpWmyHUaAviSBDk87=wu8dkzATS9qOB5mDcR=SkSA@mail.gmail.com>
+Subject: Re: [PATCH 1/1] ubi: Introduce block devices for UBI volumes
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Willy Tarreau <w@1wt.eu>
+Content-Type: text/plain; charset=UTF-8
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Mike Frysinger <vapier@gentoo.org>, Artem Bityutskiy <dedekind1@gmail.com>,
+ Richard Weinberger <richard@nod.at>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Michael Opdenacker <michael.opdenacker@free-electrons.com>,
+ Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,47 +40,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-> -----Urspr=FCngliche Nachricht-----
-> Von: Richard Weinberger [mailto:richard@nod.at]=20
-> Gesendet: Mittwoch, 5. Februar 2014 09:29
-> An: Wiedemer, Thorsten (Lawo AG)
-> Cc: linux-mtd@lists.infradead.org; Bill Pringlemeir
-> Betreff: Re: UBI leb_write_unlock NULL pointer Oops (continuation)=20
+On Mon, Feb 10, 2014 at 10:43 PM, Willy Tarreau <w@1wt.eu> wrote:
+> On Mon, Feb 10, 2014 at 10:39:18PM +0100, Piergiorgio Beruto wrote:
+>> Hi all,
+>> Please, the possibility to disable at compile time unneeded code to save
+>> memory and/or cpu speed would make the life of embedded developers much more
+>> easier.
+>>
+>> Ubiblk was exactly what we were looking for, in my personal opinion the
+>> possibility to disable caching and rw feature is of very high value.
 >
-> Am 04.02.2014 18:01, schrieb Wiedemer, Thorsten (Lawo AG):
->>  Hi,
->> =20
->>  I made a "hardcore test" with:
->>  $ while [ 1 ]; do cp <file_of_8kByte_size>=20
->>  tmp/<file_of_8kByte_size.1>; sync; done & $ while [ 1 ]; do cp=20
->>  <file_of_8kByte_size> tmp/<file_of_8kByte_size.2>; sync; done & $=20
->>  while [ 1 ]; do cp <file_of_8kByte_size> tmp/<file_of_8kByte_size.3>;=20
->>  sync; done &
->> =20
->>  It took about 2-3 hours until I had an error (two times):
+> Reminds me the happy days of CONFIG_TINY :-)
+> So in practice it's probably just a matter of turning the options to :
 >
-> This test ran the over night without any error on my imx51 board. :-\
->
-> Bill's great analysis showed that it may be a linked list corruption in r=
-w_semaphore.
-> Thorsten, can you please enable CONFIG_DEBUG_LIST?
-> Also try whether you can trigger the issue with lock debugging enabled.
->
-> Thanks,
-> //richard
+>     Disable Caching (default N, say Y to save memory)
+>     Disable Write support (default N, say Y to reduce code size)
 
-short update (I was out of office the rest of last week).
-I compiled the kernel with the debug flags for debug list and lock alloc.
-The kernel compiled with gcc-4.8.2 didn't start (no output on serial consol=
-e and reboot of the system).
-I didn't try (yet) to find out what happens at startup.
+But then allmodconfig builds will not exercise those code paths.
 
-I compiled the same kernel (and same config) with gcc-4.4.4. The write test=
- runs now for over 16 hours without error.
-Next step is to find out wether this is due to a changed timing because of =
-the debug flags or if it's the compiler.
+Don't you want:
 
-Best regards,
-Thorsten
+    bool "Enable Caching" if !EXPERT
+    default y
+
+    bool "Enable Write support" if !EXPERT
+    default y
+
+?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
