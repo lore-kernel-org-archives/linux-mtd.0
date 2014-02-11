@@ -1,22 +1,23 @@
-Received: from mail-ie0-x235.google.com ([2607:f8b0:4001:c03::235])
+Received: from mail-qc0-x235.google.com ([2607:f8b0:400d:c01::235])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WDIKB-0006cl-TJ
- for linux-mtd@lists.infradead.org; Tue, 11 Feb 2014 18:44:52 +0000
-Received: by mail-ie0-f181.google.com with SMTP id to1so4832548ieb.40
- for <linux-mtd@lists.infradead.org>; Tue, 11 Feb 2014 10:44:30 -0800 (PST)
-Date: Tue, 11 Feb 2014 10:44:26 -0800
+ id 1WDILN-0006gH-T0
+ for linux-mtd@lists.infradead.org; Tue, 11 Feb 2014 18:46:06 +0000
+Received: by mail-qc0-f181.google.com with SMTP id e9so13526891qcy.40
+ for <linux-mtd@lists.infradead.org>; Tue, 11 Feb 2014 10:45:44 -0800 (PST)
+Date: Tue, 11 Feb 2014 10:45:41 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Boris BREZILLON <b.brezillon.dev@gmail.com>
-Subject: Re: [PATCH] mtd: nand: fix erronous read_buf call in
- nand_write_page_raw_syndrome
-Message-ID: <20140211184426.GF18440@ld-irv-0074>
-References: <1391278228-12701-1-git-send-email-b.brezillon.dev@gmail.com>
+To: Stefan =?iso-8859-1?Q?S=F8rensen?= <stefan.sorensen@spectralink.com>
+Subject: Re: [PATCH] mtd:elm: Use correct check on return value of
+ pm_runtime_get_sync
+Message-ID: <20140211184541.GG18440@ld-irv-0074>
+References: <1391439249-23078-1-git-send-email-stefan.sorensen@spectralink.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <1391278228-12701-1-git-send-email-b.brezillon.dev@gmail.com>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1391439249-23078-1-git-send-email-stefan.sorensen@spectralink.com>
+Cc: avinashphilip@ti.com, dwmw2@infradead.org, Pekon Gupta <pekon@ti.com>,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,17 +27,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Feb 01, 2014 at 07:10:28PM +0100, Boris BREZILLON wrote:
-> read_buf is called in place of write_buf in the
-> nand_write_page_raw_syndrome function.
+On Mon, Feb 03, 2014 at 03:54:09PM +0100, Stefan Sørensen wrote:
+> The ELM driver incorrectly reagard any non-zero return value from
+> pm_runtime_get_sync as an error, but it may return 1 if the device
+> was already active. Fix to only error when return value is negative.
 > 
-> Signed-off-by: Boris BREZILLON <b.brezillon.dev@gmail.com>
+> Signed-off-by: Stefan Sørensen <stefan.sorensen@spectralink.com>
 
-Good catch! I guess no one really tests this function. I can understand
-that, since it's in the "raw" version (i.e., without ECC), which should
-really only be used for special debugging purposes. And many drivers
-don't use the defaults for page writes.
-
-Pushed to l2-mtd.git.
+Pushed to l2-mtd.git. Thanks!
 
 Brian
