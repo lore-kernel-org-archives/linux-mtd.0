@@ -1,21 +1,27 @@
-Received: from mail-ig0-x22a.google.com ([2607:f8b0:4001:c05::22a])
+Received: from mail-ig0-x22e.google.com ([2607:f8b0:4001:c05::22e])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WDIPl-0006ph-6E
- for linux-mtd@lists.infradead.org; Tue, 11 Feb 2014 18:50:37 +0000
-Received: by mail-ig0-f170.google.com with SMTP id m12so9272iga.1
- for <linux-mtd@lists.infradead.org>; Tue, 11 Feb 2014 10:50:16 -0800 (PST)
-Date: Tue, 11 Feb 2014 10:50:13 -0800
+ id 1WDIdA-0007Gt-Rd
+ for linux-mtd@lists.infradead.org; Tue, 11 Feb 2014 19:04:29 +0000
+Received: by mail-ig0-f174.google.com with SMTP id hl1so9458093igb.1
+ for <linux-mtd@lists.infradead.org>; Tue, 11 Feb 2014 11:04:08 -0800 (PST)
+Date: Tue, 11 Feb 2014 11:04:04 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Jingoo Han <jg1.han@samsung.com>
-Subject: Re: [PATCH 0/8] mtd: Remove unnecessary OOM messages
-Message-ID: <20140211185013.GH18440@ld-irv-0074>
-References: <000201cf2301$b168d250$143a76f0$%han@samsung.com>
+To: Paul Bolle <pebolle@tiscali.nl>
+Subject: Re: [PATCH 15/28] Remove TI_AEMIF
+Message-ID: <20140211190404.GI18440@ld-irv-0074>
+References: <1391971686-9517-1-git-send-email-richard@nod.at>
+ <1391971686-9517-16-git-send-email-richard@nod.at>
+ <1391979242.25855.37.camel@x220>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <000201cf2301$b168d250$143a76f0$%han@samsung.com>
-Cc: linux-mtd@lists.infradead.org, 'David Woodhouse' <dwmw2@infradead.org>,
- Linux Kernel <linux-kernel@vger.kernel.org>
+In-Reply-To: <1391979242.25855.37.camel@x220>
+Cc: Richard Weinberger <richard@nod.at>,
+ open list <linux-kernel@vger.kernel.org>,
+ Santosh Shilimkar <santosh.shilimkar@ti.com>,
+ Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>,
+ "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +31,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Feb 06, 2014 at 03:07:19PM +0900, Jingoo Han wrote:
-> The site-specific OOM messages are unnecessary, because they
-> duplicate the MM subsystem generic OOM message. For example,
-> k.alloc and v.alloc failures use dump_stack().
++ Ivan, others
+
+On Sun, Feb 09, 2014 at 09:54:02PM +0100, Paul Bolle wrote:
+> On Sun, 2014-02-09 at 19:47 +0100, Richard Weinberger wrote:
+> > The symbol is an orphan, get rid of it.
+> > 
+> > Signed-off-by: Richard Weinberger <richard@nod.at>
+> > ---
+> >  drivers/mtd/nand/Kconfig | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+> > index 90ff447..a195d57 100644
+> > --- a/drivers/mtd/nand/Kconfig
+> > +++ b/drivers/mtd/nand/Kconfig
+> > @@ -465,7 +465,7 @@ config MTD_NAND_SH_FLCTL
+> >  
+> >  config MTD_NAND_DAVINCI
+> >          tristate "Support NAND on DaVinci/Keystone SoC"
+> > -        depends on ARCH_DAVINCI || (ARCH_KEYSTONE && TI_AEMIF)
+> > +        depends on ARCH_DAVINCI || ARCH_KEYSTONE
+> >          help
+> >  	  Enable the driver for NAND flash chips on Texas Instruments
+> >  	  DaVinci/Keystone processors.
 > 
-> Jingoo Han (8):
->       mtd: devices: elm: Remove unnecessary OOM messages
->       mtd: spear_smi: Remove unnecessary OOM messages
->       mtd: pmc551: Remove unnecessary OOM messages
->       mtd: plat-ram: Remove unnecessary OOM messages
->       mtd: lpddr: Remove unnecessary OOM messages
->       mtd: onenand: Remove unnecessary OOM messages
->       mtd: cfi: Remove unnecessary OOM messages
->       mtd: gen_probe: Remove unnecessary OOM messages
+> What's strange about the current dependency is that the only aemif code
+> I could find lives at arch/arm/mach-davinci/aemif.c. Is that reachable
+> for code in arch/arm/mach-keystone?
 
-Pushed all 8 to l2-mtd.git. Thanks.
+It looks like I merged this code before the supporting aemif driver [1] was
+merged. I think this is harmless, and so I plan to leave it as-is for
+now. Or if Ivan prefers, I can drop the Keystone dependency entirely
+until it is ready.
 
-Have you ever considered using a tool like coccinelle to do this sort of
-work? You send so many of these boilerplate patch series, I would think
-it would help everyone to just get them out of the way with scripted
-assistance. And you could then more easily catch new introductions if
-they slip through the review process.
+https://lkml.org/lkml/2013/11/20/283
 
 Brian
