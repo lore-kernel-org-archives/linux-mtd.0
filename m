@@ -1,34 +1,27 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WD08r-0001wx-C3
- for linux-mtd@lists.infradead.org; Mon, 10 Feb 2014 23:19:58 +0000
-Date: Mon, 10 Feb 2014 20:19:32 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH 1/1] ubi: Introduce block devices for UBI volumes
-Message-ID: <20140210231931.GA29523@localhost>
-References: <20140210024827.GB9643@localhost>
- <1392017750.31031.8.camel@sauron.fi.intel.com>
- <20140210082714.GB10872@localhost> <20140210084616.GP22376@1wt.eu>
- <20140210142026.GB15607@localhost>
- <1392043814.32363.49.camel@sauron.fi.intel.com>
- <20140210184858.GA6484@localhost> <20140210233754.71e3e199@skate>
- <de976336-3144-4f21-859b-d1a37fc3d811@email.android.com>
- <20140210234600.3a03b346@skate>
+Received: from mail2.lawo.de ([80.149.95.33] helo=ExchangeEdge1.lawo.de)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WD8IV-0001p2-GK
+ for linux-mtd@lists.infradead.org; Tue, 11 Feb 2014 08:02:28 +0000
+From: "Wiedemer, Thorsten (Lawo AG)" <Thorsten.Wiedemer@lawo.com>
+To: Richard Weinberger <richard@nod.at>
+Date: Tue, 11 Feb 2014 09:01:50 +0100
+Subject: AW: UBI leb_write_unlock NULL pointer Oops (continuation)
+Message-ID: <D7B1B5F4F3F27A4CB073BF422331203F2A1ECCF6AE@Exchange1.lawo.de>
+References: <D7B1B5F4F3F27A4CB073BF422331203F2A18997F1F@Exchange1.lawo.de>
+ <CAFLxGvya5WXoKcYmOgeM_SmVVEht1jEzeLG9vHhwFudFU+Ny8A@mail.gmail.com>
+ <D7B1B5F4F3F27A4CB073BF422331203F2A18997F8B@Exchange1.lawo.de>
+ <52EF772D.8080207@nod.at>
+ <D7B1B5F4F3F27A4CB073BF422331203F2A18DD7989@Exchange1.lawo.de>,
+ <52EF9FFE.4020405@nod.at>
+ <D7B1B5F4F3F27A4CB073BF422331203F2A18A7474A@Exchange1.lawo.de>
+ <52F1F658.9080701@nod.at>
+In-Reply-To: <52F1F658.9080701@nod.at>
+Content-Language: de-DE
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20140210234600.3a03b346@skate>
-Cc: Mike Frysinger <vapier@gentoo.org>, Artem Bityutskiy <dedekind1@gmail.com>,
- Richard Weinberger <richard@nod.at>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Michael Opdenacker <michael.opdenacker@free-electrons.com>,
- Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Bill
+ Pringlemeir <bpringlemeir@nbsps.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,59 +31,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Feb 10, 2014 at 11:46:00PM +0100, Thomas Petazzoni wrote:
-> On Mon, 10 Feb 2014 23:41:54 +0100, Piergiorgio Beruto wrote:
-> 
-> > sorry for interrupting
+Hi,
 
-Please, don't apoplogize. As a user of this you have all the right
--maybe the obligation- to interrupt :-)
+> -----Urspr=FCngliche Nachricht-----
+> Von: Richard Weinberger [mailto:richard@nod.at]=20
+> Gesendet: Mittwoch, 5. Februar 2014 09:29
+> An: Wiedemer, Thorsten (Lawo AG)
+> Cc: linux-mtd@lists.infradead.org; Bill Pringlemeir
+> Betreff: Re: UBI leb_write_unlock NULL pointer Oops (continuation)=20
+>
+> Am 04.02.2014 18:01, schrieb Wiedemer, Thorsten (Lawo AG):
+>>  Hi,
+>> =20
+>>  I made a "hardcore test" with:
+>>  $ while [ 1 ]; do cp <file_of_8kByte_size>=20
+>>  tmp/<file_of_8kByte_size.1>; sync; done & $ while [ 1 ]; do cp=20
+>>  <file_of_8kByte_size> tmp/<file_of_8kByte_size.2>; sync; done & $=20
+>>  while [ 1 ]; do cp <file_of_8kByte_size> tmp/<file_of_8kByte_size.3>;=20
+>>  sync; done &
+>> =20
+>>  It took about 2-3 hours until I had an error (two times):
+>
+> This test ran the over night without any error on my imx51 board. :-\
+>
+> Bill's great analysis showed that it may be a linked list corruption in r=
+w_semaphore.
+> Thorsten, can you please enable CONFIG_DEBUG_LIST?
+> Also try whether you can trigger the issue with lock debugging enabled.
+>
+> Thanks,
+> //richard
 
-> The point about the caching feature was not really the increased code
-> size, but rather the memory consumption caused by the cache itself.
-> This can be solved using a runtime configurable module parameter.
-> 
+short update (I was out of office the rest of last week).
+I compiled the kernel with the debug flags for debug list and lock alloc.
+The kernel compiled with gcc-4.8.2 didn't start (no output on serial consol=
+e and reboot of the system).
+I didn't try (yet) to find out what happens at startup.
 
-Yes, Artem is suggestion that direction too. The write support can be
-added with an already existent block device ioctl (blockdev --setrw).
+I compiled the same kernel (and same config) with gcc-4.4.4. The write test=
+ runs now for over 16 hours without error.
+Next step is to find out wether this is due to a changed timing because of =
+the debug flags or if it's the compiler.
 
-As for the cache, well... we could have a module parameter. The problem
-I see in that, is that the block interface is *not* a module (as I recently
-pointed out). Instead, it's integrated into the UBI core.
-
-Therefore, it would be an UBI module parameter, such as "ubi.block_cache
-= yes/no". I really don't like this.
-
-Oh, and *please* don't ask about the non-module choice. Having the block
-interface as an extension of the UBI core, the userspace interface
-results very intuitive.
-
-We have a new UBI module parameter:
-
-  $ modprobe ubi mtd=/dev/mtd5 block=/dev/ubi0_0
-
-And a simple tool, which re-uses the already existent UBI ioctl:
-
-  $ ubiblkvol --attach /dev/ubi0_0
-  $ ubiblkvol --detach /dev/ubi0_0
-
-The modularized approach meant a very complex userspace interface. It
-seemed to require *another* control char device:
-
-  https://lkml.org/lkml/2011/8/15/145
-
-*** ***
-
-On the other side, I don't really agree with all this fuzz around the
-two compile options. The code is *really* dead simple, as I went to
-great extents to keep it simple.
-
-Sadly, we are not reaching any agreement. So unless anybody has a better
-idea, I'd go for a solution that suits the squashfs user: no cache,
-no write support.
-
-Artem? What do you say?
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+Best regards,
+Thorsten
