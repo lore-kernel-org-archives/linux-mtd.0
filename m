@@ -1,20 +1,23 @@
-Received: from moutng.kundenserver.de ([212.227.17.8])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WDCi8-0001LU-Nb
- for linux-mtd@lists.infradead.org; Tue, 11 Feb 2014 12:45:14 +0000
-Message-ID: <52FA1B39.2070904@corscience.de>
-Date: Tue, 11 Feb 2014 13:44:41 +0100
-From: =?UTF-8?B?QW5kcmVhcyBCaWXDn21hbm4=?=
- <andreas.biessmann@corscience.de>
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WDDtv-0003p0-DZ
+ for linux-mtd@lists.infradead.org; Tue, 11 Feb 2014 14:01:28 +0000
+Date: Tue, 11 Feb 2014 11:01:03 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Boris BREZILLON <b.brezillon.dev@gmail.com>
+Subject: Re: [RFC PATCH] mtd: add per NAND partition ECC config
+Message-ID: <20140211140102.GB23150@localhost>
+References: <1391855206-5974-1-git-send-email-b.brezillon.dev@gmail.com>
 MIME-Version: 1.0
-To: star@gmx.li, biessmann@corscience.de, peter.barada@gmail.com,
- linux-mtd@lists.infradead.org
-Subject: Re: Linux MTD: Per Partition ECC
-References: <trinity-5aec7168-325d-4995-9e70-e4d2ce4b4816-1392119925322@3capp-gmx-bs63>
-In-Reply-To: <trinity-5aec7168-325d-4995-9e70-e4d2ce4b4816-1392119925322@3capp-gmx-bs63>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="ONqn8FE3kbsrmJ20TD6xxs0bODOBLPr3r"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1391855206-5974-1-git-send-email-b.brezillon.dev@gmail.com>
+Cc: linux-mtd@lists.infradead.org,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,110 +27,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---ONqn8FE3kbsrmJ20TD6xxs0bODOBLPr3r
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hi Boris,
 
-Dear star@gmx.li,
+On Sat, Feb 08, 2014 at 11:26:46AM +0100, Boris BREZILLON wrote:
+> This patch aims to add per partition ECC config for NAND devices.
+> It defines a new field in the mtd struct to store the mtd ECC config and
+> thus each mtd partition device can store its config instead of using the
+> default NAND chip config.
+> 
+> This feature is needed to support the sunxi boot0 paritition case:
+> Allwinner boot code (BROM) requires a specific HW ECC for its boot code
+> that may not fit the HW NAND requirements for the entire NAND chip.
+> 
+> Signed-off-by: Boris BREZILLON <b.brezillon.dev@gmail.com>
+> ---
+> Hello,
+> 
+> This patch is just a draft that implement per partition ECC config.
+> It's currently not properly splitted (it should be separated in several
+> patches) and not documented either.
+> 
 
-cc linux-mtd, one may have more information on that topic there.
+Ah, ah...
 
-On 02/11/2014 12:58 PM, star@gmx.li wrote:
-> Dear Peter, dear Andreas,
->=20
-> I just found this during my research:
->=20
-> http://lists.infradead.org/pipermail/linux-mtd/2012-September/044120.ht=
-ml=20
->
-> I  have simular Problem, to update a device which runs on 1 bit SW-ECC =
-out of linux to 'on-die-ECC'
->=20
-> I duplicated the board partition table (Linux 2.6.33) in a first step. =
-Now each partition can be access  with 2 names
-> /dev/mtd4 or /dev/mtd8 as example.
+> There's at least one point that bother me in the current implementation:
+> I introduced DT notions in the nand core code by the mean of the get_ecc_ctrl
+> callback, and so far this was kept out of mtd/nand core code (I guess it was
+> on purpose).
+> 
+> Please let me know if you see other drawbacks.
+> 
+> If you think per partition ECC should not be implemented, could you help me
+> find a way to handle sunxi specific case decribed above ?
+> 
+>  drivers/mtd/mtdpart.c          |   23 ++-
+>  drivers/mtd/nand/nand_base.c   |  428 ++++++++++++++++++++++++----------------
 
-D'oh why the hell should one do that? I dunno if this is sane with
-synchronisation between different access layers (e.g. two different
-instances of filesystem).
+I really appreciate your effort, but 428 changed lines is a too big and
+intrusive change. I must admit I'm not smart enough to review such patches.
 
-> But how can I addict a ECC scheme to a certain partition? Do you think =
-this is a possible way?
-> So access /dev/mtd4 with software ECC and /dev/mtd8 with on-die-ecc?
+I honestly think you'll have better luck getting feedback if you take the time
+to properly split and document this.
 
-AFAIK there is no way to do per partition ecc currently. So there is no
-way to support this without changing the whole mtd framework.
-But maybe there was some movement since my last check. Maybe one of the
-mtd developers could comment on that.
+Yeah, it's annoying and time-consuming, but it's globally cheaper for you to
+invest time on making it easier for reviewers and maintainers, than for each
+of us to invest the time deciphering this :-)
 
-Nevertheless the ECC scheme of Linux 1Bit hamming SW ECC is likely to be
-different than the Micron (or whatever manufacturer you use)
-'on-die-ECC', therefore there is no chance to support 'partition A' and
-'partition B' working on the very same hardware with these different ECC
-schemes. You can only support scheme A _or_ scheme B at a time. I mean
-for the whole process of storing the data and reading it out of the
-device. Is the data physically written with scheme A it would fail to
-read with scheme B and vice versa.
-
-> Andreas can you provide the complete patch for you version?=20
-
-You just found the complete patch [2] if you red the link mentioned above=
-=2E
-
-> Problem for me is, I am always running on a mtd partition.
-
-Well, my patch provides a solution for a very special case. Doing system
-update of embedded devices in the field and switching the ECC scheme of
-one partition (the first one, which boot ROM is reading) to OMAP3 1 bit
-hamming HW ECC scheme while the rest of the device is 8 bit BCH SW ECC
-scheme (it is 'HW-assisted', cause of missing ELM in OMAP3; I know there
-were some patches cleaning this up, dunno the current state).
-I can do that cause we kexec the update firmware which brings the
-omap-nand mtd driver as a module. That module then can be configured to
-switch the ECC scheme when probing. The trick is to load it twice,
-sequential with different setup.
-As discussed in [1] this solution is only useful when doing such very
-special update strategies. So sorry, I think it won't help you.
-
-> As a workaround I do have 2 root partitions which can be boot alternati=
-vely.
-
-Sorry, I fail to understand how that would help here. The point is you
-need to patch your SPL, bootlaoder and kernel to support the newer ECC
-scheme and update all of them at once. If the procedure fail then your
-device is likely to be bricked ...
-
-Best regards
-
-Andreas Bie=C3=9Fmann
-
-[1] http://thread.gmane.org/gmane.linux.drivers.mtd/50364
-[2] http://article.gmane.org/gmane.linux.drivers.mtd/43804
-
-
---ONqn8FE3kbsrmJ20TD6xxs0bODOBLPr3r
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.19 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
-
-iQIcBAEBCAAGBQJS+hs5AAoJEHPlkEBPIQBjrV0QAJtYc31JObDQrsIQEIUUQ5rL
-rT36z/FX+ltTlY11VInmVnrPHgVdfxPD1eBJVms9tjHPR56GDK9i/suTBNao4RR8
-daJzwKZUb1hcaEN/FOQy2remdD5GD4t0zwlMBGpdFTwBTHlF5QQz2ZXnG4t3oNlb
-hNo2Fs8dmx0qgQ78TdT+xtbFuZja07ikfmUKBlVDWPFtsw1dnIxpGEEYrMEjghX7
-P6q1hsDEMS5CIEaCXiatjGIYgyNRXvzO6bVecm2VCDtIaoqxOsQXXVnPwbbZEPP8
-foQ/da8E+YwTzOyaHzqbS6inCZ0MXMwUIasdvG+MN/ilVEHsNxtUD1nitYMcy9JS
-VpeLjvxT2qnLz0AhcAsUD4Ff3ukDKpOihF/+tYZWKcg857xrtlnYXZ903/M8GIvc
-X48bfiEeAgglkxCuzFev6Wfjx1P1zaD7+Tng6HvJE27TpG5IvB2sq+3nWNHIHgMY
-GcFlQTn4f5+lTLjuPak6vneYPU62zbOVktKU33MrsVsrBQpovZZ+k/kRLAHSTNEF
-vw4s1BXjGebJrTJG4j0EXSvu0O116xOcRA3Sy0k1za2X8tu6jgTovfujkXsENc8S
-XsXmtfMi8rVPD3EvFDvYXTHtJemXQLDLVTZyzAZUXLuY8tw7KYoyaXAbOqCkKhHY
-Qjocv5QJfa5ZgJ0r/55Q
-=PM44
------END PGP SIGNATURE-----
-
---ONqn8FE3kbsrmJ20TD6xxs0bODOBLPr3r--
+Just my point of view, of course.
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
