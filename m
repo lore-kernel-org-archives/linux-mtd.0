@@ -1,24 +1,17 @@
-Received: from mail-we0-x231.google.com ([2a00:1450:400c:c03::231])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WDEEh-0004Uv-PI
- for linux-mtd@lists.infradead.org; Tue, 11 Feb 2014 14:22:57 +0000
-Received: by mail-we0-f177.google.com with SMTP id t61so5683088wes.36
- for <linux-mtd@lists.infradead.org>; Tue, 11 Feb 2014 06:22:32 -0800 (PST)
-Message-ID: <52FA3225.5010203@gmail.com>
-Date: Tue, 11 Feb 2014 15:22:29 +0100
-From: Boris BREZILLON <b.brezillon.dev@gmail.com>
+Message-ID: <52FA3B1A.2070304@st.com>
+Date: Tue, 11 Feb 2014 15:00:42 +0000
+From: Angus Clark <Angus.Clark@st.com>
 MIME-Version: 1.0
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [RFC PATCH] mtd: add per NAND partition ECC config
-References: <1391855206-5974-1-git-send-email-b.brezillon.dev@gmail.com>
- <20140211140102.GB23150@localhost>
-In-Reply-To: <20140211140102.GB23150@localhost>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH RESEND v4 00/37] mtd: st_spi_fsm: Add new driver
+References: <1390473085-24626-1-git-send-email-lee.jones@linaro.org>
+In-Reply-To: <1390473085-24626-1-git-send-email-lee.jones@linaro.org>
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
+Cc: olivier.clergeaud@st.com, linus.walleij@linaro.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ computersforpeace@gmail.com, dwmw2@infradead.org,
+ DCG_UPD_stlinux_kernel@list.st.com, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,64 +21,149 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ezequiel,
+Hi Lee,
 
-On 11/02/2014 15:01, Ezequiel Garcia wrote:
-> Hi Boris,
->
-> On Sat, Feb 08, 2014 at 11:26:46AM +0100, Boris BREZILLON wrote:
->> This patch aims to add per partition ECC config for NAND devices.
->> It defines a new field in the mtd struct to store the mtd ECC config and
->> thus each mtd partition device can store its config instead of using the
->> default NAND chip config.
->>
->> This feature is needed to support the sunxi boot0 paritition case:
->> Allwinner boot code (BROM) requires a specific HW ECC for its boot code
->> that may not fit the HW NAND requirements for the entire NAND chip.
->>
->> Signed-off-by: Boris BREZILLON <b.brezillon.dev@gmail.com>
->> ---
->> Hello,
->>
->> This patch is just a draft that implement per partition ECC config.
->> It's currently not properly splitted (it should be separated in several
->> patches) and not documented either.
->>
-> Ah, ah...
->
->> There's at least one point that bother me in the current implementation:
->> I introduced DT notions in the nand core code by the mean of the get_ecc_ctrl
->> callback, and so far this was kept out of mtd/nand core code (I guess it was
->> on purpose).
->>
->> Please let me know if you see other drawbacks.
->>
->> If you think per partition ECC should not be implemented, could you help me
->> find a way to handle sunxi specific case decribed above ?
->>
->>   drivers/mtd/mtdpart.c          |   23 ++-
->>   drivers/mtd/nand/nand_base.c   |  428 ++++++++++++++++++++++++----------------
-> I really appreciate your effort, but 428 changed lines is a too big and
-> intrusive change. I must admit I'm not smart enough to review such patches.
->
-> I honestly think you'll have better luck getting feedback if you take the time
-> to properly split and document this.
->
-> Yeah, it's annoying and time-consuming, but it's globally cheaper for you to
-> invest time on making it easier for reviewers and maintainers, than for each
-> of us to invest the time deciphering this :-)
+Sorry for the delay.  I have now had a quick look through the patches.  Just a
+couple of points :-)
 
-Fair enough.
+* stfsm_probe(): stfsm_fetch_platform_configs() needs to be called *before*
+config() -- config() is based on platform capabilities.  Conceptually,
+stfsm_fetch_platform_configs() should be called before stfsm_jedec_probe(), and
+FLASH_FLAG_32BIT_ADDR should be moved out of stfsm_fetch_platform_configs(),
+placed just after stfsm_jedec_probe() but before config().
 
-Anyway, this proposal does not work.
+* fsm_wait_busy(): logic not quite correct if we get a P_ERR or E_ERR error
+after a timeout.  I am also not sure about returning (uint8_t)-EIO.  For what
+its worth, this is what I did in response to Brian's comment about the race
+condition:
 
-If nobody objects to this ECC per partition concept, I'll propose 
-something else soon.
-And this time I'll make a proper documentation and patch separation ;-).
+static uint8_t fsm_wait_busy(struct stm_spi_fsm *fsm, unsigned int max_time_ms)
+{
+	struct fsm_seq *seq = &fsm_seq_read_status_fifo;
+	unsigned long deadline;
+	uint32_t status;
+	int timeout = 0;
 
-Best Regards,
+	/* Use RDRS1 */
+	seq->seq_opc[0] = (SEQ_OPC_PADS_1 |
+			   SEQ_OPC_CYCLES(8) |
+			   SEQ_OPC_OPCODE(FLASH_CMD_RDSR));
 
-Boris
+	/* Load read_status sequence */
+	fsm_load_seq(fsm, seq);
 
->
-> Just my point of view, of course.
+	/*
+	 * Repeat until busy bit is deasserted, or timeout, or error (S25FLxxxS)
+	 */
+	deadline = jiffies + msecs_to_jiffies(max_time_ms);
+	while (!timeout) {
+		cond_resched();
+
+		if (time_after_eq(jiffies, deadline))
+			timeout = 1;
+
+		fsm_wait_seq(fsm);
+
+		fsm_read_fifo(fsm, &status, 4);
+
+		if ((status & FLASH_STATUS_BUSY) == 0)
+			return 0;
+
+		if ((fsm->configuration & CFG_S25FL_CHECK_ERROR_FLAGS) &&
+		    ((status & S25FL_STATUS_P_ERR) ||
+		     (status & S25FL_STATUS_E_ERR)))
+			return (uint8_t)(status & 0xff);
+
+		if (!timeout)
+			/* Restart */
+			writel(seq->seq_cfg, fsm->base + SPI_FAST_SEQ_CFG);
+	}
+
+	dev_err(fsm->dev, "timeout on wait_busy\n");
+
+	return FLASH_STATUS_TIMEOUT;
+}
+
+and:
+
+static int fsm_wait_seq(struct stm_spi_fsm *fsm)
+{
+	unsigned long deadline = jiffies +
+		msecs_to_jiffies(FSM_MAX_WAIT_SEQ_MS);
+	int timeout = 0;
+
+	while (!timeout) {
+		if (time_after_eq(jiffies, deadline))
+			timeout = 1;
+
+		if (fsm_is_idle(fsm))
+			return 0;
+
+		cond_resched();
+	}
+
+	dev_err(fsm->dev, "timeout on sequence completion\n");
+
+	return 1;
+}
+
+
+* "MFD" creeps into a few commit logs ;-)
+
+Cheers,
+
+Angus
+
+On 01/23/2014 10:30 AM, Lee Jones wrote:
+> Version 4:
+>   Tended to Brian's review comments
+>     - Checkpatch acceptance
+>     - MODULE_DEVICE_TABLE() name slip correction
+>     - Timeout issue(s) resolved
+>     - Potential infinite loop mitigated
+>     - Code clarity suggests heeded
+>     - Duplication with MTD core code removed
+>     - Upgraded to using ROUND_UP() helper
+>     - Moved non-shared header code into main driver
+>     - Relocated dynamic msg sequence stores into main struct
+>     - Averted adaption of static (table) data
+>     - Basic whitespace/spelling/data type/dev_err suggestions applied
+>   
+> Version 3:
+>   Okay, this thing should be fully functional now. Identify a chip
+>   based on it's JEDEC ID, Read, Write, Erase (all or by sector).
+>   Support for various chip quirks added too.
+> 
+> Version 2:
+>   The first bunch of these patches have been on the MLs before, but
+>   didn't receive a great deal of attention for the most part. We are
+>   a little more featureful this time however. We can now successfully
+>   setup and configure the N25Q256. We still can't read/write/erase
+>   it though. I'll start work on that next week and will provide it in
+>   the next instalment.
+> 
+> Version 1:
+>   First stab at getting this thing Mainlined. It doesn't do a great deal
+>   yet, but we are able to initialise the device and dynamically set it up
+>   correctly based on an extracted JEDEC ID.
+> 
+>  Documentation/devicetree/bindings/mtd/st-fsm.txt |   26 ++
+>  arch/arm/boot/dts/stih416-b2105.dts              |   14 +
+>  arch/arm/boot/dts/stih416-pinctrl.dtsi           |   12 +
+>  drivers/mtd/devices/Kconfig                      |    8 +
+>  drivers/mtd/devices/Makefile                     |    1 +
+>  drivers/mtd/devices/serial_flash_cmds.h          |   81 ++++
+>  drivers/mtd/devices/st_spi_fsm.c                 | 2124 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+> 7 files changed, 2266 insertions(+)
+> 
+> 
+
+-- 
+-------------------------------------
+Angus Clark
+ST Microelectronics (R&D) Ltd.
+1000 Aztec West, Bristol, BS32 4SQ
+email: angus.clark@st.com
+tel: +44 (0) 1454 462389
+st-tina: 065 2389
+-------------------------------------
