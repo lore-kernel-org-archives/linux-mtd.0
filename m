@@ -1,18 +1,20 @@
-Received: from mail-ea0-x236.google.com ([2a00:1450:4013:c01::236])
+Received: from mail-ee0-x234.google.com ([2a00:1450:4013:c00::234])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WDLB1-00064m-UP
- for linux-mtd@lists.infradead.org; Tue, 11 Feb 2014 21:47:36 +0000
-Received: by mail-ea0-f182.google.com with SMTP id r15so4015675ead.13
- for <linux-mtd@lists.infradead.org>; Tue, 11 Feb 2014 13:47:14 -0800 (PST)
+ id 1WDLBG-00065U-Mm
+ for linux-mtd@lists.infradead.org; Tue, 11 Feb 2014 21:47:52 +0000
+Received: by mail-ee0-f52.google.com with SMTP id e53so3917742eek.11
+ for <linux-mtd@lists.infradead.org>; Tue, 11 Feb 2014 13:47:28 -0800 (PST)
 From: Boris BREZILLON <b.brezillon.dev@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>
-Subject: [RFC PATCH v2 1/4] mtd: nand: take nand_ecc_ctrl initialization out
- of nand_scan_tail
-Date: Tue, 11 Feb 2014 22:46:46 +0100
-Message-Id: <1392155209-14495-2-git-send-email-b.brezillon.dev@gmail.com>
+Subject: =?UTF-8?q?=5BRFC=20PATCH=20v2=203/4=5D=20mtd=3A=20nand=3A=20add=20DT=20NAND=20partition=20parser?=
+Date: Tue, 11 Feb 2014 22:46:48 +0100
+Message-Id: <1392155209-14495-4-git-send-email-b.brezillon.dev@gmail.com>
 In-Reply-To: <1392155209-14495-1-git-send-email-b.brezillon.dev@gmail.com>
 References: <1392155209-14495-1-git-send-email-b.brezillon.dev@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Cc: Boris BREZILLON <b.brezillon.dev@gmail.com>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org,
  Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
@@ -26,113 +28,156 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Take ECC initialization code portion out of nand_scan_tail so that we can
-re-use this implementation.
+Add ofnandpart_parse function to help parsing NAND partitions from DT.
+This function should be called from NAND controller drivers just after the
+nand_scan_tail in place of mtd_device_parse_register.
+The caller can specify a parser function to retrieve HW specific
+informations from  the DT.
 
 Signed-off-by: Boris BREZILLON <b.brezillon.dev@gmail.com>
 ---
- drivers/mtd/nand/nand_base.c |   72 +++++++++++++++++++++++++++---------------
- 1 file changed, 46 insertions(+), 26 deletions(-)
+ drivers/mtd/nand/ofnandpart.c |  104 +++++++++++++++++++++++++++++++++++++++++
+ include/linux/mtd/nand.h      |   17 +++++++
+ 2 files changed, 121 insertions(+)
+ create mode 100644 drivers/mtd/nand/ofnandpart.c
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index f59a465..f2e9312 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -3582,32 +3582,14 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
- }
- EXPORT_SYMBOL(nand_scan_ident);
- 
--
--/**
-- * nand_scan_tail - [NAND Interface] Scan for the NAND device
-- * @mtd: MTD device structure
-- *
-- * This is the second phase of the normal nand_scan() function. It fills out
-- * all the uninitialized function pointers with the defaults and scans for a
-- * bad block table if appropriate.
+diff --git a/drivers/mtd/nand/ofnandpart.c b/drivers/mtd/nand/ofnandpart.c
+new file mode 100644
+index 0000000..293daee
+--- /dev/null
++++ b/drivers/mtd/nand/ofnandpart.c
+@@ -0,0 +1,104 @@
 +/*
-+ * Initialize ECC struct:
-+ *  - fill ECC struct with default function/values when these ones are undefined
-+ *  - fill ECC infos based on MTD device
-  */
--int nand_scan_tail(struct mtd_info *mtd)
-+static int nand_ecc_ctrl_init(struct mtd_info *mtd, struct nand_ecc_ctrl *ecc)
- {
- 	int i;
--	struct nand_chip *chip = mtd->priv;
--	struct nand_ecc_ctrl *ecc = &chip->ecc;
--
--	/* New bad blocks should be marked in OOB, flash-based BBT, or both */
--	BUG_ON((chip->bbt_options & NAND_BBT_NO_OOB_BBM) &&
--			!(chip->bbt_options & NAND_BBT_USE_FLASH));
--
--	if (!(chip->options & NAND_OWN_BUFFERS))
--		chip->buffers = kmalloc(sizeof(*chip->buffers), GFP_KERNEL);
--	if (!chip->buffers)
--		return -ENOMEM;
--
--	/* Set the internal oob buffer location, just after the page data */
--	chip->oob_poi = chip->buffers->databuf + mtd->writesize;
- 
- 	/*
- 	 * If no default placement scheme is given, select an appropriate one.
-@@ -3633,9 +3615,6 @@ int nand_scan_tail(struct mtd_info *mtd)
- 		}
- 	}
- 
--	if (!chip->write_page)
--		chip->write_page = nand_write_page;
--
- 	/*
- 	 * Check ECC mode, default to software if 3byte/512byte hardware ECC is
- 	 * selected and we have 256 byte pagesize fallback to software ECC
-@@ -3802,6 +3781,47 @@ int nand_scan_tail(struct mtd_info *mtd)
- 	}
- 	ecc->total = ecc->steps * ecc->bytes;
- 
-+	return 0;
++ * NAND Flash partitions described by the OF (or flattened) device tree
++ *
++ * Copyright © 2014 Boris BREZILLON <b.brezillon.dev@gmail.com>
++ *
++ * This program is free software; you can redistribute  it and/or modify it
++ * under  the terms of  the GNU General  Public License as published by the
++ * Free Software Foundation;  either version 2 of the  License, or (at your
++ * option) any later version.
++ */
++
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/of.h>
++#include <linux/mtd/mtd.h>
++#include <linux/slab.h>
++#include <linux/mtd/nand.h>
++
++static inline bool node_has_compatible(struct device_node *pp)
++{
++	return of_get_property(pp, "compatible", NULL);
 +}
 +
-+/**
-+ * nand_scan_tail - [NAND Interface] Scan for the NAND device
-+ * @mtd: MTD device structure
-+ *
-+ * This is the second phase of the normal nand_scan() function. It fills out
-+ * all the uninitialized function pointers with the defaults and scans for a
-+ * bad block table if appropriate.
-+ */
-+int nand_scan_tail(struct mtd_info *mtd)
++int ofnandpart_parse(struct mtd_info *master,
++		     const struct ofnandpart_data *data)
 +{
-+	int ret;
-+	struct nand_chip *chip = mtd->priv;
-+	struct nand_ecc_ctrl *ecc = &chip->ecc;
++	struct device_node *node;
++	const char *partname;
++	struct device_node *pp;
++	int i;
 +
-+	/* New bad blocks should be marked in OOB, flash-based BBT, or both */
-+	BUG_ON((chip->bbt_options & NAND_BBT_NO_OOB_BBM) &&
-+			!(chip->bbt_options & NAND_BBT_USE_FLASH));
++	if (!data)
++		return 0;
 +
-+	if (!(chip->options & NAND_OWN_BUFFERS))
-+		chip->buffers = kmalloc(sizeof(*chip->buffers), GFP_KERNEL);
-+	if (!chip->buffers)
-+		return -ENOMEM;
++	node = data->node;
++	if (!node)
++		return 0;
 +
-+	/* Set the internal oob buffer location, just after the page data */
-+	chip->oob_poi = chip->buffers->databuf + mtd->writesize;
++	i = 0;
++	for_each_child_of_node(node,  pp) {
++		const __be32 *reg;
++		int len;
++		int a_cells, s_cells;
++		uint64_t offset, size;
++		uint32_t mask_flags = 0;
++		struct nand_part *part;
 +
-+	if (!chip->write_page)
-+		chip->write_page = nand_write_page;
++		if (node_has_compatible(pp))
++			continue;
 +
-+	/* Initialize ECC struct */
-+	ret = nand_ecc_ctrl_init(mtd, ecc);
-+	if (ret) {
-+		if (!(chip->options & NAND_OWN_BUFFERS))
-+			kfree(chip->buffers);
++		reg = of_get_property(pp, "reg", &len);
++		if (!reg)
++			continue;
 +
-+		return ret;
++		a_cells = of_n_addr_cells(pp);
++		s_cells = of_n_size_cells(pp);
++		offset = of_read_number(reg, a_cells);
++		size = of_read_number(reg + a_cells, s_cells);
++
++		partname = of_get_property(pp, "label", &len);
++		if (!partname)
++			partname = of_get_property(pp, "name", &len);
++
++		if (of_get_property(pp, "read-only", &len))
++			mask_flags |= MTD_WRITEABLE;
++
++		if (of_get_property(pp, "lock", &len))
++			mask_flags |= MTD_POWERUP_LOCK;
++
++		if (data->parse)
++			part = data->parse(data->priv, master, pp);
++		else
++			part = nandpart_alloc();
++
++		if (IS_ERR(part))
++			continue;
++
++		part->offset = offset;
++		part->master = master;
++		part->mtd.name = partname;
++		part->mtd.size = size;
++		part->mtd.flags = mask_flags;
++
++		if (nand_add_partition(master, part)) {
++			if (part->release)
++				part->release(part);
++			continue;
++		}
++
++		i++;
 +	}
 +
- 	/* Allow subpage writes up to ecc.steps. Not possible for MLC flash */
- 	if (!(chip->options & NAND_NO_SUBPAGE_WRITE) && nand_is_slc(chip)) {
- 		switch (ecc->steps) {
++	if (!i) {
++		of_node_put(pp);
++		pr_err("No valid partition found on %s\n", node->full_name);
++	}
++
++	return i;
++}
++EXPORT_SYMBOL(ofnandpart_parse);
++
++MODULE_LICENSE("GPL");
++MODULE_DESCRIPTION("Parser for NAND flash partitioning information in device tree");
++MODULE_AUTHOR("Boris BREZILLON");
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index c4d271a..0c5890b 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -845,6 +845,23 @@ void nand_del_partition(struct nand_part *part);
+ struct nand_part *nandpart_alloc(void);
+ 
+ /**
++ * struct ofnandpart_data - struct used to retrieve NAND partitions from a DT
++ *			    node
++ * @parse:		driver specific parser function
++ * @priv:		driver private data
++ * @node:		OF node containing NAND partitions
++ */
++struct ofnandpart_data {
++	struct nand_part *(*parse)(void *priv, struct mtd_info *master,
++				   struct device_node *pp);
++	void *priv;
++	struct device_node *node;
++};
++
++int ofnandpart_parse(struct mtd_info *master,
++		     const struct ofnandpart_data *data);
++
++/**
+  * struct nand_sdr_timings - SDR NAND chip timings
+  *
+  * This struct defines the timing requirements of a SDR NAND chip.
 -- 
 1.7.9.5
