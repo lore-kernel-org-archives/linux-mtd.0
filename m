@@ -1,26 +1,20 @@
-Received: from mail-ie0-x22d.google.com ([2607:f8b0:4001:c03::22d])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WDN2t-00009O-Ny
- for linux-mtd@lists.infradead.org; Tue, 11 Feb 2014 23:47:21 +0000
-Received: by mail-ie0-f173.google.com with SMTP id y20so2384309ier.18
- for <linux-mtd@lists.infradead.org>; Tue, 11 Feb 2014 15:46:58 -0800 (PST)
-Date: Tue, 11 Feb 2014 15:40:40 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [PATCH v1 0/2] mtd: nand: omap: booting from NAND using u-boot
-Message-ID: <20140211234040.GN18440@ld-irv-0074>
-References: <1386925978-23705-1-git-send-email-pekon@ti.com>
- <20140125085537.GA3162@norris-Latitude-E6410>
- <20980858CB6D3A4BAE95CA194937D5E73EA6B567@DBDE04.ent.ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA6B567@DBDE04.ent.ti.com>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>, "Balbi, Felipe" <balbi@ti.com>,
- "u-boot@lists.denx.de" <u-boot@lists.denx.de>,
- Enric Balletbo Serra <eballetbo@iseebcn.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- linux-omap <linux-omap@vger.kernel.org>
+Received: from mail.linuxfoundation.org ([140.211.169.12])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WDNAM-0000K0-VC
+ for linux-mtd@lists.infradead.org; Tue, 11 Feb 2014 23:55:03 +0000
+Date: Tue, 11 Feb 2014 15:54:40 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Li Zefan <lizefan@huawei.com>
+Subject: Re: [PATCH 2/3] jffs2: avoid soft-lockup in jffs2_reserve_space_gc()
+Message-Id: <20140211155440.62c5e90eb498ec2964258969@linux-foundation.org>
+In-Reply-To: <52F5934B.4000101@huawei.com>
+References: <52F592F2.6010008@huawei.com>
+	<52F5934B.4000101@huawei.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+ LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,174 +24,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Pekon,
+On Sat, 8 Feb 2014 10:15:39 +0800 Li Zefan <lizefan@huawei.com> wrote:
 
-On Tue, Jan 28, 2014 at 07:42:09AM +0000, Pekon Gupta wrote:
-> >From: Brian Norris
-> >
-> >On Fri, Dec 13, 2013 at 02:42:56PM +0530, Pekon Gupta wrote:
-> >> As there were parallel set of patches running between u-boot and kernel.
-> >
-> >I don't know what patches you're talking about.
-> >
-> Following patch-sets touched ecc.layout while cleaning up OMAP NAND driver.
-> u-boot: http://lists.denx.de/pipermail/u-boot/2013-November/167551.html
-> kernel: http://lists.infradead.org/pipermail/linux-mtd/2013-October/049414.html
+> We triggered soft-lockup under stress test on 2.6.34 kernel.
 > 
-> >> hence, some patch-sets caused regression for OMAP3x platforms when booting
-> >
-> >"Hence" is not the right word. The previous sentence doesn't imply that
-> >there were regressions.
-> >
-> >> using u-boot specifically for ecc-schemes (like BCH4_SW).
-> >
-> >Huh? What does "specifically for ecc-schemes" mean? You mean that only
-> >some schemes had regressions? Can you be more specific? What are these
-> >regressions?
-> >
-> It was reported by Enric Balletbo Serra <eballetbo@iseebcn.com> [2] that
-> when using 'OMAP_ECC_BCH8_CODE_HW_DETECTION_SW' ecc-scheme
-> there was a mismatch in ECC layout between mainline u-boot and kernel.
-> This caused boot failure when kernel tried to mount UBIFS with image
-> flashed from u-boot.
+> BUG: soft lockup - CPU#1 stuck for 60009ms! [lockf2.test:14488]
+> ...
+> [<bf09a4d4>] (jffs2_do_reserve_space+0x420/0x440 [jffs2])
+> [<bf09a528>] (jffs2_reserve_space_gc+0x34/0x78 [jffs2])
+> [<bf0a1350>] (jffs2_garbage_collect_dnode.isra.3+0x264/0x478 [jffs2])
+> [<bf0a2078>] (jffs2_garbage_collect_pass+0x9c0/0xe4c [jffs2])
+> [<bf09a670>] (jffs2_reserve_space+0x104/0x2a8 [jffs2])
+> [<bf09dc48>] (jffs2_write_inode_range+0x5c/0x4d4 [jffs2])
+> [<bf097d8c>] (jffs2_write_end+0x198/0x2c0 [jffs2])
+> [<c00e00a4>] (generic_file_buffered_write+0x158/0x200)
+> [<c00e14f4>] (__generic_file_aio_write+0x3a4/0x414)
+> [<c00e15c0>] (generic_file_aio_write+0x5c/0xbc)
+> [<c012334c>] (do_sync_write+0x98/0xd4)
+> [<c0123a84>] (vfs_write+0xa8/0x150)
+> [<c0123d74>] (sys_write+0x3c/0xc0)]
 > 
-> This was missed while testing earlier patch-sets because only OMAP3 boards
-> use above ecc-scheme as OMAP3 SoC do not have ELM hardware engine.
-> All the later platforms use 'OMAP_ECC_BCH8_CODE_HW' ecc-scheme.
-> Both ecc-scheme are based on same algorithm of BCH8 ECC code except that:
-> (1) 'OMAP_ECC_BCH8_CODE_HW_DETECTION_SW' uses /lib/bch.c software
-> library for ecc-correction.
-> (2) 'OMAP_ECC_BCH8_CODE_HW' uses ELM hardware engine for ecc-correction.
+> Fix this by adding a cond_resched() in the while loop.
 > 
-> This regression affects following ecc-schemes, as ecc.layout logic is just
-> copy-paste of each-other.
-> - 'OMAP_ECC_BCH4_CODE_HW_DETECTION_SW' and
-> - 'OMAP_ECC_BCH8_CODE_HW_DETECTION_SW'
+> ...
+>
+> --- a/fs/jffs2/nodemgmt.c
+> +++ b/fs/jffs2/nodemgmt.c
+> @@ -216,15 +216,20 @@ int jffs2_reserve_space_gc(struct jffs2_sb_info *c, uint32_t minsize,
+>  
+>  	jffs2_dbg(1, "%s(): Requested 0x%x bytes\n", __func__, minsize);
+>  
+> -	spin_lock(&c->erase_completion_lock);
+> -	while(ret == -EAGAIN) {
+> +	while (true) {
+> +		spin_lock(&c->erase_completion_lock);
+>  		ret = jffs2_do_reserve_space(c, minsize, len, sumsize);
+>  		if (ret) {
+>  			jffs2_dbg(1, "%s(): looping, ret is %d\n",
+>  				  __func__, ret);
+>  		}
+> +		spin_unlock(&c->erase_completion_lock);
+> +
+> +		if (ret == -EAGAIN)
+> +			cond_resched();
+> +		else
+> +			break;
+>  	}
+> -	spin_unlock(&c->erase_completion_lock);
+>  	if (!ret)
+>  		ret = jffs2_prealloc_raw_node_refs(c, c->nextblock, 1);
 
-OK
+Looks OK.  We can do this:
 
-> >The rest of this cover letter (and most of the patch descriptions)
-> >describes the configurations and testing (which is all very good, don't
-> >get me wrong), with a lot of focus on things I don't follow (namely,
-> >U-Boot), but you omit many of the important details, like
-> >
-> > * What is the regression? I honestly don't see a description of the
-> >   actual regression. (I can read the code to intuit that, but what's
-> >   the point of your pages of description if it doesn't mention this?)
-> >   Please give some logical description of the problem
-> >
-> [Patch 1/2] of this series actually simplification of 'ecclayout->oobfree->offset'
-> It does not fix the regression, but it's important to clean it, before any new
-> feature additions.
+--- a/fs/jffs2/nodemgmt.c~jffs2-avoid-soft-lockup-in-jffs2_reserve_space_gc-fix
++++ a/fs/jffs2/nodemgmt.c
+@@ -211,7 +211,7 @@ out:
+ int jffs2_reserve_space_gc(struct jffs2_sb_info *c, uint32_t minsize,
+ 			   uint32_t *len, uint32_t sumsize)
+ {
+-	int ret = -EAGAIN;
++	int ret;
+ 	minsize = PAD(minsize);
+ 
+ 	jffs2_dbg(1, "%s(): Requested 0x%x bytes\n", __func__, minsize);
+_
 
-By my reading, it is actually wrong, and therefore not just a clean up.
-Can you address my comment there about your indexing into the eccpos[]
-array?
 
-Did you actually check (e.g., print out) the resulting ecclayout before
-and after your cleanup to make sure it's exactly the same? I'm looking
-at the oobfree[] values, which looked wrong to me.
-
-> [Patch 2/2] Actually fixes the regression for affected ecc-schemes. But
-> "this patch also touches other ecc-schemes as the fix required
->  refactoring common code, into ecc-scheme specific code."
-> 
-> 
-> > * What are the effects of the regression? ECC bytes in the wrong place,
-> >   so you see correction failures/corruption? JFFS2 failures? (The
-> >   "oobfree" changes, for instance, should only affect something like
-> >   JFFS2.)
-> >
-> As mentioned above [PATCH 1/2] which touches 'ecclayout->oobfree->offset'
-> is a clean-up not affecting regression, but it should be taken in before
-> any further feature or ecc-scheme changes.
-
-That's fine; a fixup patch can come just before a bugfix, if that helps
-simplify the bufix.
-
-> Now, what is your preference?
-> (a)  Take [PATCH 1/2] ecc.layout clean-up separately.
-> (b) Take ecc.layout as part of this series, but may be with different patch title.
-
-I think we'll keep these patches together, but they both need to have
-better descriptions to tell what's actually going on.
-
-> > * What Linux commit caused the regression?
-> > * Should this patch set be marked for -stable? And for what kernel
-> >   release? (the previous question would help answer this)
-> >
-> This regression was caused in 
-> 	commit b491da7233d5dc1a24d46ca1ad0209900329c5d0
-> 	 mtd: nand: omap: clean-up ecc layout for BCH ecc schemes
-> So, this should be applicable from 3.13.x+
-> 
-> 
-> >> Hence this patch series fixes those regressions, and tests complete
-> >[...] snip
-> >
-> >I'm preparing a 3.14 pull request soon, and since you seem committed to
-> >fixing and properly testing a known regression here, I'd like to see
-> >this go in. But given the late timing and the unanswered questions, I
-> >think it's unlikely to go in -rc1. Perhaps I can send a later pull
-> >request if we can get it together properly.
-> >
-> Yes, if the above details are sufficient, then I'll:
-> (1) re-word [PATCH 1/2] commit log & title to mention that it's a clean-up
-> (2) Add above description and details of regression into commit log of [PATCH 2/2]
-> (3) Include your other comments on individual patches.
-
-That's a good plan. But please, before sending another version, can you
-at least address my comment on patch 1 about the eccpos[] indexing you
-are using? It doesn't look right to me.
-
-Also, can you please print out your full layout (eccpos, eccbytes,
-oobavail, and oobfree) and check it?
-
-> >So I'd like to first of all get a few answers to my questions, and then
-> >I think we might want to refresh this patch series with a little better
-> >commit messages and perhaps a separate documentation file (not
-> >necessarily in the same patch series, as the fix is more urgent).
-> >
-> Yes, I plan to get some documentation in kernel docs. But for now
-> I do have a 'un-polished' page for OMAP NAND driver on TI wiki [3].
-> Please let me know if you would like something similar for kernel docs.
-
-Thanks for the link. Some portion of that doc is probably useful to
-include in Linux eventually.
-
-> I'm happy that you are scrutinizing each patch and their commit logs wisely.
-> Thanks much for that. This helps me and probably everyone else to tighten-up
-> so that only good quality patch-sets go in. This eventually will make the
-> sub-system and the drivers more stable for long-term.
-> 
-> Also, if you don't mind, I'll still continue to cross-post this particular
-> Patch-series on both u-boot and kernel mailing lists just to maintain
-> continuity, as I know there are lot of OMAP3 users which are following
-> only one of the two lists.. (but I'm cutting down on the CC list).
-> I'll avoid cross posting in future.
-
-Cross-posting is OK with me if it's made a little more clear who is
-targeted. The restrictive U-Boot mailing list policy (which rejects
-non-member / too-large-CC-list email) diminishes the usefulness of
-cross-posting too.
-
-But most of all, using "u-boot" in the subject of the cover letter email
-does not clearly convey that this is a Linux patch!
-
-> >Brian
-> >
-> >   [1] For instance, rather than saying "the ECC layout doesn't match
-> >   U-Boot", you should probably describe what the intended ECC layout
-> >   should look like and show that Linux does not match it. Perhaps it's
-> >   time for some better documentation, like Ezequiel stashed under
-> >   Documentation/mtd/nand/ for pxa3xx. You could also take some cues
-> >   from Huang's comments on ECC layouts, etc., in gpmi-nand.c.
-> 
-> 
-> [2] http://lists.denx.de/pipermail/u-boot/2013-December/168440.html
-> [3] https://processors.wiki.ti.com/index.php/Linux_Core_NAND_User%27s_Guide (under construction)
-
-I look forward to you addressing my last concerns and sending a good v2.
-Thanks!
-
-Brian
+I now have four jffs2 bugfixes but cannot unload them on anyone. 
+Waddup?
