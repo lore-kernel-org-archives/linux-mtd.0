@@ -1,31 +1,24 @@
-Received: from 71-19-161-253.dedicated.allstream.net ([71.19.161.253]
- helo=nsa.nbspaymentsolutions.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WDeYX-0004zf-Up
- for linux-mtd@lists.infradead.org; Wed, 12 Feb 2014 18:29:10 +0000
-From: Bill Pringlemeir <bpringlemeir@nbsps.com>
-To: "Wiedemer, Thorsten (Lawo AG)" <Thorsten.Wiedemer@lawo.com>
-Subject: Re: AW: AW: UBI leb_write_unlock NULL pointer Oops (continuation)
-References: <D7B1B5F4F3F27A4CB073BF422331203F2A18997F1F@Exchange1.lawo.de>
- <CAFLxGvya5WXoKcYmOgeM_SmVVEht1jEzeLG9vHhwFudFU+Ny8A@mail.gmail.com>
- <D7B1B5F4F3F27A4CB073BF422331203F2A18997F8B@Exchange1.lawo.de>
- <52EF772D.8080207@nod.at>
- <D7B1B5F4F3F27A4CB073BF422331203F2A18DD7989@Exchange1.lawo.de>
- <52EF9FFE.4020405@nod.at>
- <D7B1B5F4F3F27A4CB073BF422331203F2A18A7474A@Exchange1.lawo.de>
- <52F1F658.9080701@nod.at>
- <D7B1B5F4F3F27A4CB073BF422331203F2A1ECCF6AE@Exchange1.lawo.de>
- <87zjlxy8lj.fsf@nbsps.com>
- <D7B1B5F4F3F27A4CB073BF422331203F2A1ECCFB51@Exchange1.lawo.de>
- <87txc4w698.fsf@nbsps.com>
-Date: Wed, 12 Feb 2014 13:21:19 -0500
-In-Reply-To: <87txc4w698.fsf@nbsps.com> (Bill Pringlemeir's message of "Wed,
- 12 Feb 2014 13:11:31 -0500")
-Message-ID: <87ppmsw5sw.fsf@nbsps.com>
+Received: from mail-pb0-x22c.google.com ([2607:f8b0:400e:c01::22c])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WDfph-0007c6-Qh
+ for linux-mtd@lists.infradead.org; Wed, 12 Feb 2014 19:50:58 +0000
+Received: by mail-pb0-f44.google.com with SMTP id rq2so9747218pbb.3
+ for <linux-mtd@lists.infradead.org>; Wed, 12 Feb 2014 11:50:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Richard Weinberger <richard@nod.at>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+In-Reply-To: <1392155209-14495-1-git-send-email-b.brezillon.dev@gmail.com>
+References: <1392155209-14495-1-git-send-email-b.brezillon.dev@gmail.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
+Date: Wed, 12 Feb 2014 11:49:55 -0800
+Message-ID: <CAGVrzcZei92K9Jeue-Yvcev7n08YEEqfRbN2xgqLpW7epMzFVA@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 0/4] mtd: nand: add per partition ECC config
+To: Boris BREZILLON <b.brezillon.dev@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Gupta Pekon <pekon@ti.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,28 +28,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Boris,
 
-On 12 Feb 2014, bpringlemeir@nbsps.com wrote:
+2014-02-11 13:46 GMT-08:00 Boris BREZILLON <b.brezillon.dev@gmail.com>:
+> Hello,
+>
+> This patch series is a proposal to add per partition ECC config.
+>
+> It defines a new partition type called nand_part which stores a pointer to
+> a nand_ecc_ctrl struct.
+> This specific nand_ecc_ctrl struct is used in place of the base NAND chip
+> nand_ecc_ctrl struct when accessing NAND chip from nand_part MTD device.
+>
+> If the partition does not define any ECC config, the NAND chip ECC config
+> is used instead.
 
-> We have 'IRQs off', which makes sense for __up_write.  Trying
-> 'ftrace_dump_on_oops' as Richard suggests would be helpful to find out
-> what went on before.  It might also make sense to dump some
-> 'rwsem_waiter' nodes on the error?  It looks like '__up_write' might
-> normally have an empty list?  Certainly an non-empty 'rwsem_waiter' is
-> going to trigger the condition more often?  I guess I can look to see
-> what might cause this, even if I can not reproduce it.  The
-> 'preemp_count' has been two every time you have this; is that true?
+Although the idea does look nice on the paper, I wonder if it is
+really useful to have that much complexity in the kernel. Most likely
+what is happening is that your bootloader partition has a specific ECC
+scheme due to the CPU bootrom or whatever early bootagent is running
+on the system. When that is the case, this can be solved in user-space
+by preparing full pages (main+spare) along with their specific ECC
+requirements and use the MTD_FILE_MODE_RAW option on your specific MTD
+partition.
 
-Wouldn't a smaller MTD trigger the condition more often?  It looks like
-the locking is done per erase block and several files in the same erase
-block with simultaneous reading/writing will trigger this kind of
-effect?
+You do not describe what is the end goal of this patchset, which might
+help figuring out the potential other platforms requirements etc...
 
-Does that sound right Richard?  Will it matter if I use a fixed or
-dynamic volume size?  Can I make a small UBI/UbiFS MTD partition and use
-that for testing?  My dynamic partition is about 200MB big.  Usually we
-never come near filling it, so there is lots of opportunity to use other
-erase blocks.
+>
+> This patch series also provides an helper function to parse DT defined NAND
+> partitions (ofnandpart_parse).
+>
+> If you want to test it you'll have to replace calls to
+> mtd_device_parse_register with ofnandpart_parse within your NAND controller
+> driver and implement a driver specific parser function that will provide
+> the ECC config (see ofnandpart_data struct).
+>
+> The 4th patch of this series is here as an example on how to move from MTD
+> partitions to NAND partitions.
+>
+> Best Regards,
+>
+> Boris
+>
+> Changes since v1:
+> - almost everything :-)
+>
+> Boris BREZILLON (4):
+>   mtd: nand: take nand_ecc_ctrl initialization out of nand_scan_tail
+>   mtd: nand: add support for NAND partitions
+>   mtd: nand: add DT NAND partition parser
+>   mtd: nand: add NAND partition support to the sunxi driver
+>
+>  drivers/mtd/nand/Kconfig      |    4 +
+>  drivers/mtd/nand/Makefile     |    2 +
+>  drivers/mtd/nand/nand_base.c  |  763 ++++++++++++++++++++++++++++++++---------
+>  drivers/mtd/nand/ofnandpart.c |  104 ++++++
+>  drivers/mtd/nand/sunxi_nand.c |   69 +++-
+>  include/linux/mtd/nand.h      |   54 +++
+>  6 files changed, 835 insertions(+), 161 deletions(-)
+>  create mode 100644 drivers/mtd/nand/ofnandpart.c
+>
+> --
+> 1.7.9.5
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
-Fwiw,
-Bill Pringlemeir.
+
+
+-- 
+Florian
