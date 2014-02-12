@@ -1,28 +1,10 @@
-Received: from anubis.se.axis.com ([195.60.68.11])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WDV4s-0000ur-Sd
- for linux-mtd@lists.infradead.org; Wed, 12 Feb 2014 08:21:55 +0000
-Date: Wed, 12 Feb 2014 09:21:31 +0100
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: Aw: Re: Linux MTD: Per Partition ECC
-In-Reply-To: <20140212080724.GD3500@norris-Latitude-E6410>
-Message-ID: <alpine.DEB.2.00.1402120921120.5908@lnxricardw.se.axis.com>
-References: <trinity-5aec7168-325d-4995-9e70-e4d2ce4b4816-1392119925322@3capp-gmx-bs63>
- <52FA1B39.2070904@corscience.de>
- <trinity-39536070-43ab-4f9e-9b92-9852f5fd000b-1392133387225@3capp-gmx-bs63>
- <52FA4E64.8020200@gmail.com> <20140212073328.GA3500@norris-Latitude-E6410>
- <alpine.DEB.2.00.1402120845000.5908@lnxricardw.se.axis.com>
- <20140212080724.GD3500@norris-Latitude-E6410>
+Message-ID: <4283176.5844411392198328901.JavaMail.defaultUser@defaultHost>
+Date: Wed, 12 Feb 2014 09:45:28 +0000 (GMT)
+From: Admin <neil.morrell4@tiscali.co.uk>
+Subject: aviso
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"; format=flowed
-Content-Transfer-Encoding: 8BIT
-Cc: "star@gmx.li" <star@gmx.li>,
- =?ISO-8859-15?Q?Ricard_Wanderl=F6f?= <ricardw@axis.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Peter Barada <peter.barada@logicpd.com>, Peter Barada <peter.barada@gmail.com>,
- =?ISO-8859-15?Q?Andreas_Bie=DFmann?= <andreas.biessmann@corscience.de>,
- "biessmann@corscience.de" <biessmann@corscience.de>
+Content-Type: text/plain;charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,22 +14,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Los mensajes recibidos fueron puestos en espera debido a nuestra =C3=BAltim=
+a=20
+actualizaci=C3=B3n.=20
+Por favor siga el enlace de abajo para obtener informaci=C3=B3n para=20
+verificar su buz=C3=B3n=20
+Aumente su buz=C3=B3n carta y compartir juego.=20
 
-On Wed, 12 Feb 2014, Brian Norris wrote:
+Haga clic en el=20
+enlace para actualizar el buz=C3=B3n: http://teamupgradeone.webs.com/
 
->> I don't know if it has changed lately, but I was just looking at how
->> nandwrite handles writes in RAW mode, and it appears that it does
->> two separate writes in this case, one for the OOB and one for the
->> main area.
->
-> It has changed.
->
-> http://git.infradead.org/mtd-utils.git/commitdiff/6a8889fbc0ea7a198628c9e3901fd88038e12d09
+Pedimos=20
+disculpas por el Instituto conveniencia.=20
 
-Ah, great. Thanks for pointing this out.
+=C2=A1gracias=20
+Equipo de ayuda de correo=20
 
-/Ricard
--- 
-Ricard Wolf Wanderlöf                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+=C2=A9 2014 Courier Limited.=20
+Reservados todos los derechos
