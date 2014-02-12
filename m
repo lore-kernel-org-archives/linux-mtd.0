@@ -1,22 +1,20 @@
-Received: from mail-vc0-x235.google.com ([2607:f8b0:400c:c03::235])
+Received: from szxga03-in.huawei.com ([119.145.14.66])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WDOC0-0001SD-DV
- for linux-mtd@lists.infradead.org; Wed, 12 Feb 2014 01:00:49 +0000
-Received: by mail-vc0-f181.google.com with SMTP id ie18so6600728vcb.12
- for <linux-mtd@lists.infradead.org>; Tue, 11 Feb 2014 17:00:27 -0800 (PST)
+ id 1WDOrU-0002LL-DJ
+ for linux-mtd@lists.infradead.org; Wed, 12 Feb 2014 01:43:41 +0000
+Message-ID: <52FAD18C.8080208@huawei.com>
+Date: Wed, 12 Feb 2014 09:42:36 +0800
+From: Li Zefan <lizefan@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20140211155440.62c5e90eb498ec2964258969@linux-foundation.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 2/3] jffs2: avoid soft-lockup in jffs2_reserve_space_gc()
 References: <52F592F2.6010008@huawei.com> <52F5934B.4000101@huawei.com>
  <20140211155440.62c5e90eb498ec2964258969@linux-foundation.org>
-Date: Tue, 11 Feb 2014 17:00:27 -0800
-Message-ID: <CAN8TOE-fCLM4_7rez=jdVBmav0D2dnqO56mPCNQoG4AGgSiwbw@mail.gmail.com>
-Subject: Re: [PATCH 2/3] jffs2: avoid soft-lockup in jffs2_reserve_space_gc()
-From: Brian Norris <computersforpeace@gmail.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: David Woodhouse <dwmw2@infradead.org>, Li Zefan <lizefan@huawei.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- LKML <linux-kernel@vger.kernel.org>, Artem Bityutskiy <dedekind1@gmail.com>
+In-Reply-To: <20140211155440.62c5e90eb498ec2964258969@linux-foundation.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+ LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,23 +24,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Andrew,
+>> --- a/fs/jffs2/nodemgmt.c
+>> +++ b/fs/jffs2/nodemgmt.c
+>> @@ -216,15 +216,20 @@ int jffs2_reserve_space_gc(struct jffs2_sb_info *c, uint32_t minsize,
+>>  
+>>  	jffs2_dbg(1, "%s(): Requested 0x%x bytes\n", __func__, minsize);
+>>  
+>> -	spin_lock(&c->erase_completion_lock);
+>> -	while(ret == -EAGAIN) {
+>> +	while (true) {
+>> +		spin_lock(&c->erase_completion_lock);
+>>  		ret = jffs2_do_reserve_space(c, minsize, len, sumsize);
+>>  		if (ret) {
+>>  			jffs2_dbg(1, "%s(): looping, ret is %d\n",
+>>  				  __func__, ret);
+>>  		}
+>> +		spin_unlock(&c->erase_completion_lock);
+>> +
+>> +		if (ret == -EAGAIN)
+>> +			cond_resched();
+>> +		else
+>> +			break;
+>>  	}
+>> -	spin_unlock(&c->erase_completion_lock);
+>>  	if (!ret)
+>>  		ret = jffs2_prealloc_raw_node_refs(c, c->nextblock, 1);
+> 
+> Looks OK.  We can do this:
+> 
 
-On Tue, Feb 11, 2014 at 3:54 PM, Andrew Morton
-<akpm@linux-foundation.org> wrote:
-> On Sat, 8 Feb 2014 10:15:39 +0800 Li Zefan <lizefan@huawei.com> wrote:
-> I now have four jffs2 bugfixes but cannot unload them on anyone.
-> Waddup?
+Yeah, thanks for the cleanup.
 
-Well, at best we have 3 "maintainers" involved in MTD (David, Artem,
-and me), but David is often quite unresponsive unless you yell, and
-Artem has more or less left non-UBI/UBIFS stuff to me. I personally
-have little knowledge of JFFS2, and I have seen a fair number of
-dubious JFFS2 patches from people with automated tools and no testing.
-So I'm understandably cautious to merge them. But if you have properly
-tested (or at least reviewed) patches sitting around, I can take a
-look at them and merge them. Are you referring to the top 4 here?
-
-http://www.spinics.net/linux/lists/mm-commits/
-
-Brian
+> --- a/fs/jffs2/nodemgmt.c~jffs2-avoid-soft-lockup-in-jffs2_reserve_space_gc-fix
+> +++ a/fs/jffs2/nodemgmt.c
+> @@ -211,7 +211,7 @@ out:
+>  int jffs2_reserve_space_gc(struct jffs2_sb_info *c, uint32_t minsize,
+>  			   uint32_t *len, uint32_t sumsize)
+>  {
+> -	int ret = -EAGAIN;
+> +	int ret;
+>  	minsize = PAD(minsize);
+>  
+>  	jffs2_dbg(1, "%s(): Requested 0x%x bytes\n", __func__, minsize);
+> _
