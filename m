@@ -1,20 +1,25 @@
-Received: from mail.linuxfoundation.org ([140.211.169.12])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WDNAM-0000K0-VC
- for linux-mtd@lists.infradead.org; Tue, 11 Feb 2014 23:55:03 +0000
-Date: Tue, 11 Feb 2014 15:54:40 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Li Zefan <lizefan@huawei.com>
-Subject: Re: [PATCH 2/3] jffs2: avoid soft-lockup in jffs2_reserve_space_gc()
-Message-Id: <20140211155440.62c5e90eb498ec2964258969@linux-foundation.org>
-In-Reply-To: <52F5934B.4000101@huawei.com>
-References: <52F592F2.6010008@huawei.com>
-	<52F5934B.4000101@huawei.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from mail-by2ln0179.outbound.protection.outlook.com
+ ([2a01:111:f400:7c0c::179] helo=na01-by2-obe.outbound.protection.outlook.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WDNLk-0000XH-Ad
+ for linux-mtd@lists.infradead.org; Wed, 12 Feb 2014 00:06:51 +0000
+Message-ID: <1392163570.6733.409.camel@snotra.buserror.net>
+Subject: Re: [U-Boot] NAND bad block table
+From: Scott Wood <scottwood@freescale.com>
+To: Naveen Mamindlapalli <naveen.mamindlapalli@xilinx.com>
+Date: Tue, 11 Feb 2014 18:06:10 -0600
+In-Reply-To: <155aac48-cedd-4daa-80b0-577f85080950@CO1EHSMHS005.ehs.local>
+References: <52e923ea-96b0-4e9b-9c3f-b733cf46b144@CO9EHSMHS020.ehs.local>
+ <1391546816.6733.172.camel@snotra.buserror.net>
+ <52F247DA.2010209@monstr.eu>
+ <1391627762.6733.202.camel@snotra.buserror.net>
+ <155aac48-cedd-4daa-80b0-577f85080950@CO1EHSMHS005.ehs.local>
+Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
- LKML <linux-kernel@vger.kernel.org>
+Cc: "u-boot@lists.denx.de" <u-boot@lists.denx.de>,
+ "monstr@monstr.eu" <monstr@monstr.eu>, Michal Simek <michals@xilinx.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,71 +29,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 8 Feb 2014 10:15:39 +0800 Li Zefan <lizefan@huawei.com> wrote:
-
-> We triggered soft-lockup under stress test on 2.6.34 kernel.
+On Mon, 2014-02-10 at 15:05 +0000, Naveen Mamindlapalli wrote:
+> Cc: linux-mtd-list
 > 
-> BUG: soft lockup - CPU#1 stuck for 60009ms! [lockf2.test:14488]
-> ...
-> [<bf09a4d4>] (jffs2_do_reserve_space+0x420/0x440 [jffs2])
-> [<bf09a528>] (jffs2_reserve_space_gc+0x34/0x78 [jffs2])
-> [<bf0a1350>] (jffs2_garbage_collect_dnode.isra.3+0x264/0x478 [jffs2])
-> [<bf0a2078>] (jffs2_garbage_collect_pass+0x9c0/0xe4c [jffs2])
-> [<bf09a670>] (jffs2_reserve_space+0x104/0x2a8 [jffs2])
-> [<bf09dc48>] (jffs2_write_inode_range+0x5c/0x4d4 [jffs2])
-> [<bf097d8c>] (jffs2_write_end+0x198/0x2c0 [jffs2])
-> [<c00e00a4>] (generic_file_buffered_write+0x158/0x200)
-> [<c00e14f4>] (__generic_file_aio_write+0x3a4/0x414)
-> [<c00e15c0>] (generic_file_aio_write+0x5c/0xbc)
-> [<c012334c>] (do_sync_write+0x98/0xd4)
-> [<c0123a84>] (vfs_write+0xa8/0x150)
-> [<c0123d74>] (sys_write+0x3c/0xc0)]
+> Hi Scott,
 > 
-> Fix this by adding a cond_resched() in the while loop.
+> Yes, the searching of BBT happens from the end of flash when
+> NAND_BBT_USE_FLASH option is used & NAND_BBT_ABSPAGE option is not
+> used. The searching of BBT happens by scanning the last 4 blocks for
+> BBT signature starting from end block. The number of blocks to scan
+> from the end for BBT signature is defined by macro
+> NAND_BBT_SCAN_MAXBLOCKS in "include/linux/mtd/bbm.h" which is currently
+> set to value 4.
 > 
-> ...
->
-> --- a/fs/jffs2/nodemgmt.c
-> +++ b/fs/jffs2/nodemgmt.c
-> @@ -216,15 +216,20 @@ int jffs2_reserve_space_gc(struct jffs2_sb_info *c, uint32_t minsize,
->  
->  	jffs2_dbg(1, "%s(): Requested 0x%x bytes\n", __func__, minsize);
->  
-> -	spin_lock(&c->erase_completion_lock);
-> -	while(ret == -EAGAIN) {
-> +	while (true) {
-> +		spin_lock(&c->erase_completion_lock);
->  		ret = jffs2_do_reserve_space(c, minsize, len, sumsize);
->  		if (ret) {
->  			jffs2_dbg(1, "%s(): looping, ret is %d\n",
->  				  __func__, ret);
->  		}
-> +		spin_unlock(&c->erase_completion_lock);
-> +
-> +		if (ret == -EAGAIN)
-> +			cond_resched();
-> +		else
-> +			break;
->  	}
-> -	spin_unlock(&c->erase_completion_lock);
->  	if (!ret)
->  		ret = jffs2_prealloc_raw_node_refs(c, c->nextblock, 1);
+> If the last 4 blocks are factory marked bad by the vendor, then the
+> flash is not usable by u-boot or Linux. We can fix this issue by
+> changing the macro value NAND_BBT_SCAN_MAXBLOCKS to a value greater
+> than 4 (depending on the flash part) which doesn't seem to be a good
+> solution since the change has to be done to the MTD layer default
+> values.
+> 
+> It would be good if there is a device tree binding to specify the
+> number of blocks to scan to check if BBT is present in the flash.
+> Currently there is no such device tree option is available.
+> 
+> Thanks and Regards,
+> Naveen
 
-Looks OK.  We can do this:
+I see.  I wonder where the value of 4 came from -- it seems a bit small.
+The only downside of increasing NAND_BBT_SCAN_MAXBLOCKS would be a
+little extra startup latency when no BBT is present, right?
 
---- a/fs/jffs2/nodemgmt.c~jffs2-avoid-soft-lockup-in-jffs2_reserve_space_gc-fix
-+++ a/fs/jffs2/nodemgmt.c
-@@ -211,7 +211,7 @@ out:
- int jffs2_reserve_space_gc(struct jffs2_sb_info *c, uint32_t minsize,
- 			   uint32_t *len, uint32_t sumsize)
- {
--	int ret = -EAGAIN;
-+	int ret;
- 	minsize = PAD(minsize);
- 
- 	jffs2_dbg(1, "%s(): Requested 0x%x bytes\n", __func__, minsize);
-_
-
-
-I now have four jffs2 bugfixes but cannot unload them on anyone. 
-Waddup?
+-Scott
