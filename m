@@ -1,29 +1,21 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WDdg1-0002zD-ID
- for linux-mtd@lists.infradead.org; Wed, 12 Feb 2014 17:32:50 +0000
-Date: Wed, 12 Feb 2014 14:32:22 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [RFC/PATCH 1/1] mtd: nand: =?utf-8?Q?A?=
- =?utf-8?Q?dd_a_devicetree_binding_for_ECC_strength_and_ECC_step_size?=
- =?utf-8?B?w6c=?=
-Message-ID: <20140212173221.GA2964@localhost>
-References: <1389960820-18696-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1389960820-18696-2-git-send-email-ezequiel.garcia@free-electrons.com>
- <20140212080014.GC3500@norris-Latitude-E6410>
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WDdtD-0003KQ-Nx
+ for linux-mtd@lists.infradead.org; Wed, 12 Feb 2014 17:46:28 +0000
+Message-ID: <52FBB358.1060103@nod.at>
+Date: Wed, 12 Feb 2014 18:46:00 +0100
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20140212080014.GC3500@norris-Latitude-E6410>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- devicetree@vger.kernel.org, Seif Mazareeb <seif@marvell.com>,
- Lior Amsalem <alior@marvell.com>, linux-mtd@lists.infradead.org,
- Pekon Gupta <pekon@ti.com>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>
+To: "Wiedemer, Thorsten (Lawo AG)" <Thorsten.Wiedemer@lawo.com>,
+ Bill Pringlemeir <bpringlemeir@nbsps.com>
+Subject: Re: UBI leb_write_unlock NULL pointer Oops (continuation)
+References: <D7B1B5F4F3F27A4CB073BF422331203F2A18997F1F@Exchange1.lawo.de>	<CAFLxGvya5WXoKcYmOgeM_SmVVEht1jEzeLG9vHhwFudFU+Ny8A@mail.gmail.com>	<D7B1B5F4F3F27A4CB073BF422331203F2A18997F8B@Exchange1.lawo.de>	<52EF772D.8080207@nod.at>	<D7B1B5F4F3F27A4CB073BF422331203F2A18DD7989@Exchange1.lawo.de>	<52EF9FFE.4020405@nod.at>	<D7B1B5F4F3F27A4CB073BF422331203F2A18A7474A@Exchange1.lawo.de>	<52F1F658.9080701@nod.at>	<D7B1B5F4F3F27A4CB073BF422331203F2A1ECCF6AE@Exchange1.lawo.de>
+ <87zjlxy8lj.fsf@nbsps.com>
+ <D7B1B5F4F3F27A4CB073BF422331203F2A1ECCFB51@Exchange1.lawo.de>
+In-Reply-To: <D7B1B5F4F3F27A4CB073BF422331203F2A1ECCFB51@Exchange1.lawo.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,66 +25,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Feb 12, 2014 at 12:00:14AM -0800, Brian Norris wrote:
-> Hi Ezequiel,
+Am 12.02.2014 16:18, schrieb Wiedemer, Thorsten (Lawo AG):
+>> On 11 Feb 2014, Thorsten.Wiedemer@lawo.com wrote:
+>>
+>>> short update (I was out of office the rest of last week).  I compiled 
+>>>  the kernel with the debug flags for debug list and lock alloc.  The 
+>>> kernel compiled with gcc-4.8.2 didn't start (no output on serial 
+>>>  console and reboot of the system).  I didn't try (yet) to find out 
+>>>  what happens at startup.
+>>
+>> You don't need to enable the 'lock alloc' debugging; Just the 'debug list' as Richard suggested.  One at a time would work and give clues if you 
+>> can reproduce it.
 > 
-> On Fri, Jan 17, 2014 at 09:13:40AM -0300, Ezequiel Garcia wrote:
-> > Some flashes can only be properly accessed when the ECC mode is
-> > specified, and a way to describe such mode is required.
-> > 
-> > Such ECC mode is completely driver-specific so instead of having one binding
-> > per compatible-string, let's add generic ECC strength and ECC step size.
-> > Driver's can choose the appropriate ECC mode, based on this specification.
-> > 
-> > Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> > ---
-> >  Documentation/devicetree/bindings/mtd/nand.txt | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/mtd/nand.txt b/Documentation/devicetree/bindings/mtd/nand.txt
-> > index 03855c8..683a310 100644
-> > --- a/Documentation/devicetree/bindings/mtd/nand.txt
-> > +++ b/Documentation/devicetree/bindings/mtd/nand.txt
-> > @@ -3,5 +3,9 @@
-> >  - nand-ecc-mode : String, operation mode of the NAND ecc mode.
-> >    Supported values are: "none", "soft", "hw", "hw_syndrome", "hw_oob_first",
-> >    "soft_bch".
-> > +- nand-ecc-strength : integer ECC required strength.
-> > +- nand-ecc-size : integer step size associated to the ECC strength.
 > 
-> Probably should be nand-ecc-step-size, to be clearer.
-> 
+> I tested this, compiled with gcc.4-4-4. I had an error one time, but there was no bug report for list handling, only kernel oops:
 
-No problem.
+Are you able to trigger the bug with function tracing enabled?
+If so, please add the ftrace_dump_on_oops kernel parameter. Such that we see what happened before oops.
 
-> > +  The exact meaning of the ECC strength and ECC size parameters is completely
-> > +  driver-specific.
-> 
-> I think we can be much more specific than this. We need to at least
-> describe how the strength and size are related, and we need to mention
-> how this represents the ECC scheme to use, rather than the minimum
-> requirement of the flash.
-> 
-> I'd say something like this. Feel free to improve it, but it covers the
-> gist of what I think we can say in a generic document:
-> 
->  - nand-ecc-strength: integer representing the number of bits to correct
->    per ECC step
->  - nand-ecc-step-size: integer representing the number of data bytes
->    that are covered by a single ECC step
-> 
->    Together, the ECC strength and step size define the correction
->    capability, so that we say we will correct "X bit errors per Y
->    bytes". The interpretation of these parameters is
->    implementation-defined, but they often have ramifications on the
->    formation, interpretation, and placement of correction metadata on
->    the flash. Not all implementations must support all possible
->    combinations. Implementations are encouraged to further define the
->    value(s) they support.
-> 
-
-Much better, thanks!
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+Thanks,
+//richard
