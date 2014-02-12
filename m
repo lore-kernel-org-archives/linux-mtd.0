@@ -1,27 +1,29 @@
-Received: from mail-pb0-x22c.google.com ([2607:f8b0:400e:c01::22c])
+Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WDUkN-0000Pp-3I
- for linux-mtd@lists.infradead.org; Wed, 12 Feb 2014 08:00:43 +0000
-Received: by mail-pb0-f44.google.com with SMTP id rq2so8895982pbb.17
- for <linux-mtd@lists.infradead.org>; Wed, 12 Feb 2014 00:00:21 -0800 (PST)
-Date: Wed, 12 Feb 2014 00:00:14 -0800
+ id 1WDUrF-0000V7-N6
+ for linux-mtd@lists.infradead.org; Wed, 12 Feb 2014 08:07:50 +0000
+Received: by mail-pa0-f43.google.com with SMTP id rd3so8848720pab.16
+ for <linux-mtd@lists.infradead.org>; Wed, 12 Feb 2014 00:07:28 -0800 (PST)
+Date: Wed, 12 Feb 2014 00:07:24 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [RFC/PATCH 1/1] mtd: nand: Add a devicetree binding for ECC
- strength and ECC step size
-Message-ID: <20140212080014.GC3500@norris-Latitude-E6410>
-References: <1389960820-18696-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1389960820-18696-2-git-send-email-ezequiel.garcia@free-electrons.com>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: Aw: Re: Linux MTD: Per Partition ECC
+Message-ID: <20140212080724.GD3500@norris-Latitude-E6410>
+References: <trinity-5aec7168-325d-4995-9e70-e4d2ce4b4816-1392119925322@3capp-gmx-bs63>
+ <52FA1B39.2070904@corscience.de>
+ <trinity-39536070-43ab-4f9e-9b92-9852f5fd000b-1392133387225@3capp-gmx-bs63>
+ <52FA4E64.8020200@gmail.com>
+ <20140212073328.GA3500@norris-Latitude-E6410>
+ <alpine.DEB.2.00.1402120845000.5908@lnxricardw.se.axis.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1389960820-18696-2-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- devicetree@vger.kernel.org, Seif Mazareeb <seif@marvell.com>,
- Lior Amsalem <alior@marvell.com>, linux-mtd@lists.infradead.org,
- Pekon Gupta <pekon@ti.com>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <alpine.DEB.2.00.1402120845000.5908@lnxricardw.se.axis.com>
+Cc: "star@gmx.li" <star@gmx.li>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Peter Barada <peter.barada@logicpd.com>, Peter Barada <peter.barada@gmail.com>,
+ Andreas =?iso-8859-1?Q?Bie=DFmann?= <andreas.biessmann@corscience.de>,
+ "biessmann@corscience.de" <biessmann@corscience.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,60 +33,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ezequiel,
-
-On Fri, Jan 17, 2014 at 09:13:40AM -0300, Ezequiel Garcia wrote:
-> Some flashes can only be properly accessed when the ECC mode is
-> specified, and a way to describe such mode is required.
+On Wed, Feb 12, 2014 at 08:48:18AM +0100, Ricard Wanderlof wrote:
+> On Wed, 12 Feb 2014, Brian Norris wrote:
+> >>In the process of using flashtool to burn NAND, it uses write() to burn
+> >>the data portion, and ioctl(MEMWRITEOOB) to burn the OOB area, but this
+> >>causes two writes to the same page, which violates Np for my NAND (i.e.
+> >>only one write per page).  I'm looking at creating a new ioctl entry
+> >>(MEMWRITEDATAOOB?) that takes both the data and oob buffers from
+> >>userspace and then burns them in one operation.
+> >
+> >Please do not create a new one. ioctl(MEMWRITE) already exists for this
+> >purpose. It can do page-at-a-time programming of data+OOB, and it even
+> >has a 'mode' field for choosing ECC vs. raw (no-ECC) programming. This
+> >is useful for any flash that doesn't support partial page programming.
+> >The nandwrite utility from mtd-utils supports this in Linux.
 > 
-> Such ECC mode is completely driver-specific so instead of having one binding
-> per compatible-string, let's add generic ECC strength and ECC step size.
-> Driver's can choose the appropriate ECC mode, based on this specification.
-> 
-> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> ---
->  Documentation/devicetree/bindings/mtd/nand.txt | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/nand.txt b/Documentation/devicetree/bindings/mtd/nand.txt
-> index 03855c8..683a310 100644
-> --- a/Documentation/devicetree/bindings/mtd/nand.txt
-> +++ b/Documentation/devicetree/bindings/mtd/nand.txt
-> @@ -3,5 +3,9 @@
->  - nand-ecc-mode : String, operation mode of the NAND ecc mode.
->    Supported values are: "none", "soft", "hw", "hw_syndrome", "hw_oob_first",
->    "soft_bch".
-> +- nand-ecc-strength : integer ECC required strength.
-> +- nand-ecc-size : integer step size associated to the ECC strength.
+> I don't know if it has changed lately, but I was just looking at how
+> nandwrite handles writes in RAW mode, and it appears that it does
+> two separate writes in this case, one for the OOB and one for the
+> main area.
 
-Probably should be nand-ecc-step-size, to be clearer.
+It has changed.
 
-> +  The exact meaning of the ECC strength and ECC size parameters is completely
-> +  driver-specific.
-
-I think we can be much more specific than this. We need to at least
-describe how the strength and size are related, and we need to mention
-how this represents the ECC scheme to use, rather than the minimum
-requirement of the flash.
-
-I'd say something like this. Feel free to improve it, but it covers the
-gist of what I think we can say in a generic document:
-
- - nand-ecc-strength: integer representing the number of bits to correct
-   per ECC step
- - nand-ecc-step-size: integer representing the number of data bytes
-   that are covered by a single ECC step
-
-   Together, the ECC strength and step size define the correction
-   capability, so that we say we will correct "X bit errors per Y
-   bytes". The interpretation of these parameters is
-   implementation-defined, but they often have ramifications on the
-   formation, interpretation, and placement of correction metadata on
-   the flash. Not all implementations must support all possible
-   combinations. Implementations are encouraged to further define the
-   value(s) they support.
-
->  - nand-bus-width : 8 or 16 bus width if not present 8
->  - nand-on-flash-bbt: boolean to enable on flash bbt option if not present false
+http://git.infradead.org/mtd-utils.git/commitdiff/6a8889fbc0ea7a198628c9e3901fd88038e12d09
 
 Brian
