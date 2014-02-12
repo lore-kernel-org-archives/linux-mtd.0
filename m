@@ -1,30 +1,25 @@
-Received: from mail-pd0-x22e.google.com ([2607:f8b0:400e:c02::22e])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WDUVJ-0008Tj-Ns
- for linux-mtd@lists.infradead.org; Wed, 12 Feb 2014 07:45:10 +0000
-Received: by mail-pd0-f174.google.com with SMTP id z10so8580640pdj.5
- for <linux-mtd@lists.infradead.org>; Tue, 11 Feb 2014 23:44:46 -0800 (PST)
-Date: Tue, 11 Feb 2014 23:44:42 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [RFC/PATCH 0/1] mtd: Add NAND ECC devicetree binding
-Message-ID: <20140212074442.GB3500@norris-Latitude-E6410>
-References: <1389960820-18696-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA66555@DBDE04.ent.ti.com>
- <20140117203347.GC3843@localhost>
- <20980858CB6D3A4BAE95CA194937D5E73EA67E79@DBDE04.ent.ti.com>
+Received: from anubis.se.axis.com ([195.60.68.11])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WDUVL-0008Tk-Ra
+ for linux-mtd@lists.infradead.org; Wed, 12 Feb 2014 07:45:13 +0000
+Date: Wed, 12 Feb 2014 08:44:45 +0100
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Peter Barada <peter.barada@gmail.com>
+Subject: Re: Aw: Re: Linux MTD: Per Partition ECC
+In-Reply-To: <52FA4E64.8020200@gmail.com>
+Message-ID: <alpine.DEB.2.00.1402120840481.5908@lnxricardw.se.axis.com>
+References: <trinity-5aec7168-325d-4995-9e70-e4d2ce4b4816-1392119925322@3capp-gmx-bs63>,
+ <52FA1B39.2070904@corscience.de>
+ <trinity-39536070-43ab-4f9e-9b92-9852f5fd000b-1392133387225@3capp-gmx-bs63>
+ <52FA4E64.8020200@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA67E79@DBDE04.ent.ti.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Seif Mazareeb <seif@marvell.com>,
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8BIT
+Cc: "star@gmx.li" <star@gmx.li>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>
+ =?ISO-8859-15?Q?Andreas_Bie=DFmann?= <andreas.biessmann@corscience.de>,
+ "biessmann@corscience.de" <biessmann@corscience.de>,
+ Peter Barada <peter.barada@logicpd.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,30 +29,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jan 20, 2014 at 06:21:35AM +0000, Pekon Gupta wrote:
-> >From: Ezequiel Garcia 
-> >I'm not implying we should deprecate the recently added "ti-nand-ecc-opt",
-> >but just want to know it's eventually possible.
-> >
-> Yes, this is good approach for long-term, and it can replace "ti-nand-ecc-opt"
-> "ti-nand-ecc-opt" is not new DT binding, it just got some new values added
-> However, you have to convince DT Maintainers to get this in, and then deprecate
-> other vendor specific bindings. It would be difficult to maintain backward
-> compatibility to these bindings, if we move to 'nand-ecc-strength'.
 
-I don't see why it would be difficult to support both the more generic
-nand-ecc-strength and the OMAP-specific ti-nand-ecc-opt in the same
-driver. OMAP NAND would just have to define a helper that translates
-properties like "bch8" into a strength and sector size (8 and 512,
-respectively). From then on, you can treat them identically.
+On Tue, 11 Feb 2014, Peter Barada wrote:
 
-> At some-point we need to get some concrete guidelines from DT Maintainers on
-> how long we should support deprecated bindings in our code, And what is the
-> age of DT binding. I think David Woodhouse should throw more light, as he had
-> some discussions & ideas on about DT binding life, during a linux conference.
+> It may be possible to burn the bootloader into NAND using MTD_RAW_MODE
+> which _should_ disable all ECC for the operation, but in my case the ECC
+> generator is internal to the NAND chip itself and this won't work.
+>
+> I'm working on a possible solution in my linux-3.0 kernel, to modify
+> nand_get_device to take an extra pramater "no_ecc" which keys off
+> whether the NAND ops mode (if known) is MTD_OOB_RAW, and if so shut off
+> all ECC (including the in-chip ECC my NAND requires).    Then every NAND
+> operation will enable/disable ECC while getting the controller lock.
 
-Barring some new direction from the DT folks, I believe DT is an eternal
-ABI. We can and should maintain compatibility forever. And in this case,
-I don't think it's that hard.
+I'm sure I don't understand this properly, but in the first paragraph you 
+state that the ECC generator is internal to the NAND chip so that you 
+can't disable ECC on a per-write basis using MTD_RAW_MODE, then in the 
+second paragraph above you say that you want to add a parameter which 
+disables ECC. But that is what MTD_OOB_RAW is supposed to do isn't it?
 
-Brian
+Or is the real problem here that in the default routines in nand_base.c 
+there is no way of notifying the _nand_chip_ which mode we're in? It 
+should be possible though if you replace the appropriate default callbacks 
+with chip-specific ones.
+
+/Ricard
+-- 
+Ricard Wolf Wanderlöf                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
