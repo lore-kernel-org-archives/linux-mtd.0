@@ -1,25 +1,26 @@
-Received: from anubis.se.axis.com ([195.60.68.11])
+Received: from ra.se.axis.com ([195.60.68.10])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WDUVL-0008Tk-Ra
- for linux-mtd@lists.infradead.org; Wed, 12 Feb 2014 07:45:13 +0000
-Date: Wed, 12 Feb 2014 08:44:45 +0100
+ id 1WDUYi-00009S-Sp
+ for linux-mtd@lists.infradead.org; Wed, 12 Feb 2014 07:48:41 +0000
+Date: Wed, 12 Feb 2014 08:48:18 +0100
 From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Peter Barada <peter.barada@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
 Subject: Re: Aw: Re: Linux MTD: Per Partition ECC
-In-Reply-To: <52FA4E64.8020200@gmail.com>
-Message-ID: <alpine.DEB.2.00.1402120840481.5908@lnxricardw.se.axis.com>
-References: <trinity-5aec7168-325d-4995-9e70-e4d2ce4b4816-1392119925322@3capp-gmx-bs63>,
+In-Reply-To: <20140212073328.GA3500@norris-Latitude-E6410>
+Message-ID: <alpine.DEB.2.00.1402120845000.5908@lnxricardw.se.axis.com>
+References: <trinity-5aec7168-325d-4995-9e70-e4d2ce4b4816-1392119925322@3capp-gmx-bs63>
  <52FA1B39.2070904@corscience.de>
  <trinity-39536070-43ab-4f9e-9b92-9852f5fd000b-1392133387225@3capp-gmx-bs63>
  <52FA4E64.8020200@gmail.com>
+ <20140212073328.GA3500@norris-Latitude-E6410>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"; format=flowed
 Content-Transfer-Encoding: 8BIT
 Cc: "star@gmx.li" <star@gmx.li>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Peter Barada <peter.barada@logicpd.com>, Peter Barada <peter.barada@gmail.com>,
  =?ISO-8859-15?Q?Andreas_Bie=DFmann?= <andreas.biessmann@corscience.de>,
- "biessmann@corscience.de" <biessmann@corscience.de>,
- Peter Barada <peter.barada@logicpd.com>
+ "biessmann@corscience.de" <biessmann@corscience.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,31 +31,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-On Tue, 11 Feb 2014, Peter Barada wrote:
+On Wed, 12 Feb 2014, Brian Norris wrote:
 
-> It may be possible to burn the bootloader into NAND using MTD_RAW_MODE
-> which _should_ disable all ECC for the operation, but in my case the ECC
-> generator is internal to the NAND chip itself and this won't work.
+>> In the process of using flashtool to burn NAND, it uses write() to burn
+>> the data portion, and ioctl(MEMWRITEOOB) to burn the OOB area, but this
+>> causes two writes to the same page, which violates Np for my NAND (i.e.
+>> only one write per page).  I'm looking at creating a new ioctl entry
+>> (MEMWRITEDATAOOB?) that takes both the data and oob buffers from
+>> userspace and then burns them in one operation.
 >
-> I'm working on a possible solution in my linux-3.0 kernel, to modify
-> nand_get_device to take an extra pramater "no_ecc" which keys off
-> whether the NAND ops mode (if known) is MTD_OOB_RAW, and if so shut off
-> all ECC (including the in-chip ECC my NAND requires).    Then every NAND
-> operation will enable/disable ECC while getting the controller lock.
+> Please do not create a new one. ioctl(MEMWRITE) already exists for this
+> purpose. It can do page-at-a-time programming of data+OOB, and it even
+> has a 'mode' field for choosing ECC vs. raw (no-ECC) programming. This
+> is useful for any flash that doesn't support partial page programming.
+> The nandwrite utility from mtd-utils supports this in Linux.
 
-I'm sure I don't understand this properly, but in the first paragraph you 
-state that the ECC generator is internal to the NAND chip so that you 
-can't disable ECC on a per-write basis using MTD_RAW_MODE, then in the 
-second paragraph above you say that you want to add a parameter which 
-disables ECC. But that is what MTD_OOB_RAW is supposed to do isn't it?
+I don't know if it has changed lately, but I was just looking at how 
+nandwrite handles writes in RAW mode, and it appears that it does two 
+separate writes in this case, one for the OOB and one for the main area.
 
-Or is the real problem here that in the default routines in nand_base.c 
-there is no way of notifying the _nand_chip_ which mode we're in? It 
-should be possible though if you replace the appropriate default callbacks 
-with chip-specific ones.
+It seems to be done that way just because it was the easiest thing to do: 
+at some point the nandwrite checks for raw mode write, and writes the oob 
+then and there, followed by the ordinary write to the main area for all 
+modes. Having a combined write to both areas at once would increase 
+complexity, and I suppose it was just not needed at the time.
 
 /Ricard
 -- 
-Ricard Wolf WanderlÃ¶f                           ricardw(at)axis.com
+Ricard Wolf Wanderlöf                           ricardw(at)axis.com
 Axis Communications AB, Lund, Sweden            www.axis.com
 Phone +46 46 272 2016                           Fax +46 46 13 61 30
