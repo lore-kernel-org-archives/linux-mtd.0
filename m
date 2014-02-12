@@ -1,22 +1,23 @@
-Received: from moutng.kundenserver.de ([212.227.126.187])
+Received: from devils.ext.ti.com ([198.47.26.153])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WDX1C-00054s-Gd
- for linux-mtd@lists.infradead.org; Wed, 12 Feb 2014 10:26:15 +0000
-Message-ID: <52FB4C28.8020300@corscience.de>
-Date: Wed, 12 Feb 2014 11:25:44 +0100
-From: =?UTF-8?B?QW5kcmVhcyBCaWXDn21hbm4=?=
- <andreas.biessmann@corscience.de>
+ id 1WDX6P-0005K2-KL
+ for linux-mtd@lists.infradead.org; Wed, 12 Feb 2014 10:31:39 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: RE: [PATCH v7 3/6] mtd: nand: omap: ecc.correct:
+ omap_elm_correct_data: fix erased-page detection for BCHx_HW ECC schemes
+Date: Wed, 12 Feb 2014 10:31:02 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA6FB16@DBDE04.ent.ti.com>
+References: <1389942797-4632-1-git-send-email-pekon@ti.com>
+ <1389942797-4632-4-git-send-email-pekon@ti.com>
+ <20140211213457.GM18440@ld-irv-0074>
+In-Reply-To: <20140211213457.GM18440@ld-irv-0074>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-To: star@gmx.li
-Subject: Re: Aw: Re: Linux MTD: Per Partition ECC
-References: <trinity-5aec7168-325d-4995-9e70-e4d2ce4b4816-1392119925322@3capp-gmx-bs63>,
- <52FA1B39.2070904@corscience.de>
- <trinity-39536070-43ab-4f9e-9b92-9852f5fd000b-1392133387225@3capp-gmx-bs63>
-In-Reply-To: <trinity-39536070-43ab-4f9e-9b92-9852f5fd000b-1392133387225@3capp-gmx-bs63>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="57qDF2evvC8gw3uqtDG1poUcx7tp1XM1p"
-Cc: peter.barada@gmail.com, linux-mtd@lists.infradead.org
+Cc: Stefan Roese <sr@denx.de>, linux-mtd <linux-mtd@lists.infradead.org>,
+ "Balbi, Felipe" <balbi@ti.com>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,127 +27,219 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---57qDF2evvC8gw3uqtDG1poUcx7tp1XM1p
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hi Brian,
 
-Hi Steffen,
+>From: Brian Norris [mailto:computersforpeace@gmail.com]
+>>On Fri, Jan 17, 2014 at 12:43:14PM +0530, Pekon Gupta wrote:
+>> As erased-pages do not have ECC stored in their OOB area, so they need t=
+o be
+>> seperated out from programmed-pages, before doing BCH ECC correction.
+>>
+>> In current implementation of omap_elm_correct_data() which does ECC corr=
+ection
+>> for BCHx ECC schemes, this erased-pages are detected based on specific m=
+arker
+>> byte (reserved as 0x00) in ecc-layout.
+>> However, this approach has some limitation like;
+>>  1) All ecc-scheme layouts do not have such Reserved byte marker to
+>>     differentiate between erased-page v/s programmed-page. Thus this is =
+a
+>>     customized solution.
+>>  2) Reserved marker byte can itself be subjected to bit-flips causing
+>>     erased-page to be misunderstood as programmed-page.
+>>
+>> This patch removes dependency on any marker byte in ecc-layout, to diffe=
+rentiate
+>> between erased-page v/s programeed-page. Instead a page is considered er=
+ased if
+>>  (a) all(OOB)  =3D=3D 0xff, .i.e., number of zero-bits in read_ecc[] =3D=
+=3D 0
+>>  (b) number of zero-bits in (Data + OOB) is less than ecc-strength
+>>
+>> This patch also adds a generic function count_zero_bits(), to find numbe=
+r of
+>> bits which are '0' in given buffer. This function is optimized for compa=
+ring
+>> read-data with 0xff.
+>>
+>> Signed-off-by: Pekon Gupta <pekon@ti.com>
+>> ---
 
-On 02/11/2014 04:43 PM, star@gmx.li wrote:
-> It is clear to me, that I can't mix ECC at same time.
-> I would like to switch at a certain point of time.
->=20
-> In uboot there is a command (nandecc) which does this for me.
+[...]
 
-Ok, understand. This command however is only available in omap3 devices
-and exactly for that purpose. It was refused to implement a generic way
-to switch ECC scheme for other SoC. The way to go seems to use the very
-same ECC scheme as the ROM code uses (that is the case for at least Ti
-devices like AM3xx family). Unfortunately this won't scale with changes
-in NAND technology. So, yes, there might be the need for more
-flexibility in NAND partitioning and ECC schemes.
-
-> But howto do this in linux?
-
-There is no builtin mechanism, you need to build one for your needs.
-
-> The idea is to boot in a normal way (1 bit SW ECC).
-> I need to copy all needed tools from flash to RAM (flash_eraseall, nand=
-write, busybox)
-> After that all partitions (uboot, kernel, root)  will be erased, writte=
-n with new ECC scheme and rebooted.
-
-That is the right way out.
-
-> Thinking about this - once I read that it is possible to boot a new ker=
-nel out of linux.
-> Not remember the preconditions, but this is probably the more complex w=
-ay.
-
-In my opinion this is the clean way. The 'copying required files to
-ramfs' approach described above is widespread (at least in my feelings,
-we used this approach in former devices too). The problem with this
-approach is that you can't adopt the tools you need. The kexec approach
-is more flexible here. Just my 2=C2=A2 and of course it is off topic here=
-=2E
-
-> Did I get it right: You managed it to boot your system (using flash con=
-tent ?) and than unload the mtd module,
-> reload it with a differen parameter and you are able to flash xloader?
-
-Right, with a freshly booted linux out of the running linux. We switched
-our update procedure to the kexec approach exactly for that reason. We
-have a clean, controllable environment and can do just everything from
-that running update system, including change of ecc scheme or even
-change of mtd partitioning.
-
-> Of course you cannot access all other partitions of flash during that.
->=20
-> In general that seems simular to my challenge - with the difference tha=
-t I have to flash complete chain ...
-> (at least uboot, environment, kernel, root).
-
-We do exactly that, we do it sequentially and switch ecc scheme where
-needed.
-
-> You mentioned it is not possible to stick a /dev/mtdx to a certain ECC =
-scheme.=20
-
-Well, it seems there is some work done regarding 'Per Partition ECC',
-Boris Brezillon sent an RFC [1].
-
-> My kernel is also rather old, (2.6.33) - so no hope that there is inclu=
-ded this already.
-
-That would be your job to get it working then. I can't say anything
-about architectural changes in mtd framework since then.
-
-> In kernel source it seems that each partition uses the copy of a so cal=
-led master. Is more than one master possible?
-> I didn't understand the precedure until now-
+>> +/**
+>>   * omap_elm_correct_data - corrects page data area in case error report=
+ed
+>>   * @mtd:	MTD device structure
+>>   * @data:	page data
+>> @@ -1359,14 +1383,21 @@ static int omap_elm_correct_data(struct mtd_info=
+ *mtd, u_char *data,
+>>  {
+>>  	struct omap_nand_info *info =3D container_of(mtd, struct omap_nand_inf=
+o,
+>>  			mtd);
+>> -	int eccbytes	=3D info->nand.ecc.bytes;
+>> -	int eccsteps =3D info->nand.ecc.steps;
+>> +	struct nand_ecc_ctrl *ecc =3D &info->nand.ecc;
+>> +	int eccstrength		=3D ecc->strength;
+>> +	int eccsize		=3D ecc->size;
+>> +	int eccbytes		=3D ecc->bytes;
+>> +	int eccsteps		=3D ecc->steps;
 >
-> If your are right, it is useless to double my partition scheme. Idea wa=
-s to boot uboot from /dev/mtd1 but rewrite it with other ECC scheme at /d=
-ev/mtd6 as every partition is available with 2 names.
-
-Regardless the meaningfulness of your approach, you need to flash a
-kernel which is capable to do so and boot it again. So this would be a
-two step approach to update your device. Why not just boot another linux
-out of the running one which is capable to access your NAND with
-different ECC schemes (however it is implemented) and do your update
-procedure.
-
-Best regards
-
-Andreas Bie=C3=9Fmann
-
-[1] http://article.gmane.org/gmane.linux.drivers.mtd/51605
+>When I recommended adding the 'ecc' variable (as you did), I was
+>suggesting you drop the next 4 variables. You don't need them when you
+>can (with just as few characters) refer to ecc->field directly and
+>easily. Stick with one or ther other -- the 4 local variables or the 1
+>ecc pointer -- but you don't need both.
+>
+Oh sorry.. I misunderstood that. I'll fix this in next version.
 
 
+>> @@ -1410,24 +1441,47 @@ static int omap_elm_correct_data(struct mtd_info=
+ *mtd, u_char *data,
+>>  		}
+>>
+>>  		if (eccflag =3D=3D 1) {
+>> -			/*
+>> -			 * Set threshold to minimum of 4, half of ecc.strength/2
+>> -			 * to allow max bit flip in byte to 4
+>> -			 */
+>> -			unsigned int threshold =3D min_t(unsigned int, 4,
+>> -					info->nand.ecc.strength / 2);
+>> +			bitflip_count =3D 0;
+>> +			/* count zero-bits in OOB region */
+>> +			err =3D count_zero_bits(read_ecc, eccbytes,
+>> +						 eccstrength, &bitflip_count);
+>> +			if (err) {
+>> +				/*
+>> +				 * number of zero-bits in OOB > ecc-strength
+>> +				 * either un-correctable or programmed-page
+>> +				 */
+>> +				page_is_erased =3D false;
+>> +			} else if (bitflip_count =3D=3D 0) {
+>> +				/* OOB =3D=3D all(0xff) */
+>> +				page_is_erased =3D true;
+>
+>This else-if is still incorrect. You cannot assume that just because the
+>OOB is all 0xff that the page is erased.
+>
+Now this part is most important, where I would like to get more clarity
+and feedback before I proceed.
+----------------------------
+if OOB of an page is =3D=3D all(0xff)
+(a) As per general NAND spec, chip->write_buf() _only_ fills the internal b=
+uffers of
+ NAND device's with information to be written. Actual write to NAND array c=
+ells
+ happen only after 'NAND_CMD_PAGEPROG' or 'NAND_CMD_CACHEDPROG' is issued.
+ Thus both Main-area and OOB-area are programmed simultaneously inside NAND=
+ device.
+ if there is any disruption (like power-cut) in on-going  NAND_CMD_PAGEPROG
+ cycle, then the data should be assumed to be garbage, and it may have un-s=
+table bits.
 
---57qDF2evvC8gw3uqtDG1poUcx7tp1XM1p
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+(b) if OOB=3D=3Dall(0xff) then there is _no_ ECC stored in OOB to check the=
+ read_data
+  Hence driver cannot distinguish between genuine data and bit-flips.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.19 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
+Now based on (a) & (b), it's safe to assume that:
+if (OOB =3D=3D all 0xff)
+	/* page has no-data | garbage-data*/
+Agree ?
+(This is where I call it page_is_erased=3D=3Dtrue, Though I could have used=
+ better
+variable name as page_has_no_valid_data =3D true).
+----------------------------
 
-iQIcBAEBCAAGBQJS+0woAAoJEHPlkEBPIQBjpVYP/i4ouAkQOMD4MQo5yR/eMHNl
-9B2m+96gkk763LinJzRa6Dwtw9IjSGoprzxDZPSVc/6GK/lB0p9tVqwOlcvTeMLg
-5TNmNaj/8H9a/RgzVKYhkDqowSFvMfDAPUf80jHYH/1IUpUb1R7z6JV4kBNq0lMB
-7jm8YPas+H+UIct87LuACGdAeOZp2vM9RaftbRMHcUeCtbS8ViB015z5qha+IMF9
-j6hxlZU3ug47gqL6uFhgmxO2AKD4uka+7l1Z8E+Kjg39S0k0/N33mEUuXMc10RH7
-UkF8ywFkvOulZ0qgsubDWWWPsBjwMHNR21OqF3ibqrufZaJJxbunldf/2ywu/8a2
-2BWwXPRNhFnxO970YDoxzb7SHyqGDY29KHR8MHOkoCUihJ9HGT6gnm/VTiBrtvc0
-yOv5QoFimDYUlHt4RxMWyR/zDMwdV6esQidNuojQw/JYls4pl5YRY5/3PLESsixr
-FhPu68hlJOB3Y6ZvPb4TEF4dsWVexd/tCN0Dev/WzkTgdIrWXTZfrkb/H5oW2ze2
-fBnreIRBCHfgPTHJHIen+sOPX8dbdjdufXiE35MOKcJLhZFhEQMlKJwXYlJD359w
-rfPTEwNFvxBrCqjeGNUDqYJIVS6w/zOagiVnfaLDMA7w1YupA2/ErnnPhuoRMrl2
-WSPSw4n+bVKba7g4FwtT
-=dvex
------END PGP SIGNATURE-----
+And also, driver should return 'total number zero-bits in both Main-area + =
+OOB'
+if (0 < 'total number of zero-bits in both OOB + DATA region' < mtd->bitfli=
+p_threshold)
+	return -EUCLEAN;=20
+else
+	return -EBADMSG;
 
---57qDF2evvC8gw3uqtDG1poUcx7tp1XM1p--
+** However there is a bug in current patch version which I just figured out=
+.
+I don't include the number of zero-bits of Main-area, if OOB=3D=3Dall(0xff)=
+.
+ +			} else if (bitflip_count =3D=3D 0) {
+ +				/* OOB =3D=3D all(0xff) */
+ +				page_is_erased =3D true;
+ +  /* missing */		bitflip_count +=3D count_zero_bits(buf, eccsize,
+ +					  		eccstrength, &bitflip_count);
+------------------------
+
+>> +			} else {
+>> +				/*
+>> +				 * OOB has some bits as '0' but
+>> +				 * number of zero-bits in OOB < ecc-strength.
+>> +				 * It may be erased-page with bit-flips so,
+>> +				 * further checks are needed for confirmation
+>> +				 */
+>> +				/* count zero-bits in DATA region */
+>> +				buf =3D &data[eccsize * i];
+>> +				err =3D count_zero_bits(buf, eccsize,
+>> +						 eccstrength, &bitflip_count);
+>> +				if (err) {
+>> +					/*
+>> +					 * total number of zero-bits in OOB
+>> +					 * and DATA exceeds ecc-strength
+>> +					 */
+>> +					page_is_erased =3D false;
+>> +				} else {
+>> +					/* number of zero-bits < ecc-strength */
+>> +					page_is_erased =3D true;
+>> +				}
+>> +			}
+>
+>This whole block (where you call count_zero_bits() twice) is a
+>convoluted and buggy way of just doing the following, AFAIU:
+>
+>	page_is_erased =3D !count_zero_bits(read_ecc, ecc->bytes,
+>				ecc->strength, &bitflip_count) &&
+>			 !count_zero_bits(&data[ecc->size * i], ecc->size,
+>			 	ecc->strength, &bitflip_count);
+>
+>You could modify that to your liking and add a comment, but it's much
+>more concise than your version, and from what I can tell, it's actually
+>correct.
+>
+Firstly, In you above statement    's/&&/||'
+because as per above statement, if count_zero_bits(oob) =3D=3D 0, then
+my patch assumes 'page_has_no_valid_data =3D true'.
+
+page_is_erased =3D !count_zero_bits(read_ecc, ecc->bytes,
+				ecc->strength, &bitflip_count) ||
+			 !count_zero_bits(&data[ecc->size * i], ecc->size,
+			 	ecc->strength, &bitflip_count);
+
+
+Secondly, You are missing the that here NAND driver is relaxing the limit o=
+f
+number-of-acceptable bit-flips in an erased-page, because some MLC and=20
+Toshiba SLC NANDs show bit-flips almost on every second already erased-page=
+.
+>> +				if (err) {
+>> +					/*
+>> +					 * total number of zero-bits in OOB
+>> +					 * and DATA exceeds ecc-strength
+>> +					 */
+>> +					page_is_erased =3D false;
+>> +				} else {
+>> +					/* number of zero-bits < ecc-strength */
+>> +					page_is_erased =3D true;
+>> +				}
+
+In above patch I can replace ecc->strength with mtd->bitflip_threshold
+to make it more user controllable. As bitflip_threshold is configurable via
+/sys/class/mtd/mtdX/bitflip_threshold
+What is your opinion ?
+
+
+This was also the basis of my question to Artem [1]
+
+ [1] http://lists.infradead.org/pipermail/linux-mtd/2014-January/051556.htm=
+l
+
+With regards, pekon
