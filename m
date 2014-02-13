@@ -1,17 +1,16 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WE2Ph-000359-TG
- for linux-mtd@lists.infradead.org; Thu, 13 Feb 2014 19:57:39 +0000
+ id 1WE2QD-00038J-MX
+ for linux-mtd@lists.infradead.org; Thu, 13 Feb 2014 19:58:10 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>,
 	Artem Bityutskiy <dedekind1@gmail.com>
 Subject: [PATCH v5 0/1] ubi: Introduce block devices for UBI volumes
-Date: Thu, 13 Feb 2014 16:57:05 -0300
-Message-Id: <1392321426-18256-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Date: Thu, 13 Feb 2014 16:57:42 -0300
+Message-Id: <1392321463-18294-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Mike Frysinger <vapier@gentoo.org>,
- Richard Weinberger <richard.weinberger@gmail.com>,
+ Mike Frysinger <vapier@gentoo.org>, richard.weinberger@gmail.com,
  Michael Opdenacker <michael.opdenacker@free-electrons.com>,
  Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
  Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
