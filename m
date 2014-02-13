@@ -1,25 +1,20 @@
-Received: from mail-bl2ln0192.outbound.protection.outlook.com
- ([2a01:111:f400:7c09::192] helo=na01-bl2-obe.outbound.protection.outlook.com)
+Received: from szxga02-in.huawei.com ([119.145.14.65])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WDrMO-0005hz-3f
- for linux-mtd@lists.infradead.org; Thu, 13 Feb 2014 08:09:31 +0000
-From: "B48286@freescale.com" <B48286@freescale.com>
-To: 'Brian Norris' <computersforpeace@gmail.com>
-Subject: RE: [PATCH v2] mtd: m25p80: Make the name of mtd_info fixed
-Date: Thu, 13 Feb 2014 08:08:33 +0000
-Message-ID: <f5fa7d36121e4939b99115dc4a3154f5@DM2PR03MB301.namprd03.prod.outlook.com>
-References: <1390717003-28699-1-git-send-email-b48286@freescale.com>
- <20140210193948.GD18440@ld-irv-0074>
-In-Reply-To: <20140210193948.GD18440@ld-irv-0074>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1WDrh7-0006SP-GC
+ for linux-mtd@lists.infradead.org; Thu, 13 Feb 2014 08:30:55 +0000
+Message-ID: <52FC81E4.2020301@huawei.com>
+Date: Thu, 13 Feb 2014 16:27:16 +0800
+From: Li Zefan <lizefan@huawei.com>
 MIME-Version: 1.0
-Cc: Scott Wood <scottwood@freescale.com>,
- "linuxppc-dev@ozlabs.org" <linuxppc-dev@ozlabs.org>,
- "Mingkai.Hu@freescale.com" <Mingkai.Hu@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [patch 2/4] jffs2: fix unbalanced locking
+References: <20140212204455.B3FD75A40F6@corp2gmr1-2.hot.corp.google.com>
+ <20140213064847.GF3500@norris-Latitude-E6410>
+In-Reply-To: <20140213064847.GF3500@norris-Latitude-E6410>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, artem.bityutskiy@linux.intel.com,
+ akpm@linux-foundation.org, dwmw2@infradead.org, stable@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,82 +24,198 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+On 2014/2/13 14:48, Brian Norris wrote:
+> Hi Li / Andrew,
+> 
+> On Wed, Feb 12, 2014 at 12:44:55PM -0800, Andrew Morton wrote:
+>> From: Li Zefan <lizefan@huawei.com>
+>> Subject: jffs2: fix unbalanced locking
+>>
+>> This was found by our internal debugging feature on runtime, but this bug
+>> won't lead to deadlock, as the structure that this lock is embedded in is
+>> freed on error.
+> 
+> Well, one of its callers frees it without unlocking it, but you're
+> forgetting about one of its other callers, and in doing so, you are
+> introducing a potential double-unlock instead!
+> 
 
-> -----Original Message-----
-> From: Brian Norris [mailto:computersforpeace@gmail.com]
-> Sent: Tuesday, February 11, 2014 3:40 AM
-> To: Hou Zhiqiang-B48286
-> Cc: linux-mtd@lists.infradead.org; linuxppc-dev@ozlabs.org; Wood Scott-
-> B07421; Hu Mingkai-B21284; linux-spi@vger.kernel.org
-> Subject: Re: [PATCH v2] mtd: m25p80: Make the name of mtd_info fixed
->=20
-> On Sun, Jan 26, 2014 at 02:16:43PM +0800, Hou Zhiqiang wrote:
-> > To give spi flash layout using "mtdparts=3D..." in cmdline, we must giv=
-e
-> > mtd_info a fixed name,because the cmdlinepart's parser will match the
-> > name given in cmdline with the mtd_info.
-> >
-> > Now, if use OF node, mtd_info's name will be spi->dev->name. It
-> > consists of spi_master->bus_num, and the spi_master->bus_num maybe
-> > dynamically fetched.
-> > So, give the mtd_info a new fiexd name "name.cs", "name" is name of
-> > spi_device_id and "cs" is chip-select in spi_dev.
-> >
-> > Signed-off-by: Hou Zhiqiang <b48286@freescale.com>
-> > ---
-> > v2:
-> >  - add check for return value of function kasprintf.
-> >  - whether the spi_master->bus_num is dynamical is determined by spi
-> >    controller driver, and it can't be check in this driver. So, we can
-> >    not initial the mtd_info's name by distinguishing the spi_master
-> >    bus_num dynamically-allocated or not.
->=20
-> How about spi->master->bus_num < 0 ?
->=20
-In spi slave driver, we can not see this case. The spi->master->bus_num=20
-must be greater than 0, because before loading spi slave driver, the spi
-controller driver will check spi->master->bus_num, if it is less than 0,
-the spi controller driver will allocate a new bus_num dynamically. So it
-is always greater than 0 in m25p80.c.
+But I don't think I should be blamed here.
 
-> >  drivers/mtd/devices/m25p80.c | 8 ++++++--
-> >  1 file changed, 6 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/mtd/devices/m25p80.c
-> > b/drivers/mtd/devices/m25p80.c index eb558e8..1f494d2 100644
-> > --- a/drivers/mtd/devices/m25p80.c
-> > +++ b/drivers/mtd/devices/m25p80.c
-> > @@ -1011,8 +1011,12 @@ static int m25p_probe(struct spi_device *spi)
-> >
-> >  	if (data && data->name)
-> >  		flash->mtd.name =3D data->name;
-> > -	else
-> > -		flash->mtd.name =3D dev_name(&spi->dev);
-> > +	else {
-> > +		flash->mtd.name =3D kasprintf(GFP_KERNEL, "%s.%d",
-> > +				id->name, spi->chip_select);
->=20
-> I don't think this name is specific enough. What if there are more than
-> one SPI controller? Then there could be one chip with the same chip-
-> select. You probably still need to incorporate the SPI master somehow,
-> even if it's not by using the bus number directly (because it's dynamic).
->
-Yeah, you're right. Actually the bus_num is used to distinguish different
-spi controller. If the controller driver give a dynamically-allocated
-bus_num, yourself should take the risk to use mtdparts in command line.
-I think, it is spi controller driver's responsibility to assign a
-reasonable bus_num to make sure using command line mtdparts riskless, then
-it is unnecessary to change mtdinfo's name.
-=20
-> > +		if (!flash->mtd.name)
-> > +			return -ENOMEM;
-> > +	}
-> >
-> >  	flash->mtd.type =3D MTD_NORFLASH;
-> >  	flash->mtd.writesize =3D 1;
->=20
-> Brian
->=20
+Without my patch, some of the error paths release f->sem but some don't,
+so the potential double-unlock is already there.
 
-Zhiqiang Hou
+> Look at
+>   jffs2_iget()
+>   |_ mutex_lock(&f->sem)
+>   |_ jffs2_do_read_inode()
+>   |  |_ jffs2_do_read_inode_internal()
+>   |_ mutex_unlock(&f->sem)
+> 
+> jffs2_iget() already has the proper locking for f->sem, but with your
+> patch, you're turning this into a double-unlock in the error case.
+> 
+> So unless I'm mistaken, I'll give a NAK to this patch. It's one of those
+> patches generated by automated testing that has no practical value, but
+> rather has the potential to cause more bugs.
+> 
+> BTW, the right way to handle lock balancing is to handle the unlocking
+> at the same level where you do the locking. So I guess you're looking
+> for the following patch instead, which is really not very useful because
+> (as Li noted) the lock is freed immediately afterward anyway:
+> 
+
+Yeah, I do believe it's better to do locking/unlocking in the same level.
+How about this:
+
+[PATCH v2] jffs2: fix unbalanced locking
+
+On runtime our internal debugging feature warned f->sem isn't unlocked
+when returning to userspace. It's because f->sem isn't unlocked in
+jffs2_do_crccheck_inode() on error, but this bug won't lead to deadlock,
+as the structure that this lock is embedded in is freed immediately.
+
+After looking into the code, I found in jffs2_do_read_inode_internal()
+some error paths release f->sem but some won't, so this may lead to
+double-unlock:
+
+  jffs2_iget()
+  |_ mutex_lock(&f->sem)
+  |_ jffs2_do_read_inode()
+  |  |_ jffs2_do_read_inode_internal()
+  |     |_ mutex_unlock(&f->sem)
+  |     |_ jffs2_do_clear_inode(c, f)
+  |     |_ return ret
+  |_ mutex_unlock(&f->sem)
+
+This patch makes sure jffs2_do_read_inode_internal() never returns
+with f->sem unlocked, so locking and unlocking are in the same level.
+
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Li Zefan <lizefan@huawei.com>
+---
+ fs/jffs2/readinode.c | 53 ++++++++++++++++++++++++----------------------------
+ 1 file changed, 24 insertions(+), 29 deletions(-)
+
+diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
+index 386303d..6f22234 100644
+--- a/fs/jffs2/readinode.c
++++ b/fs/jffs2/readinode.c
+@@ -1203,18 +1203,16 @@ static int jffs2_do_read_inode_internal(struct jffs2_sb_info *c,
+ 		JFFS2_ERROR("failed to read from flash: error %d, %zd of %zd bytes read\n",
+ 			ret, retlen, sizeof(*latest_node));
+ 		/* FIXME: If this fails, there seems to be a memory leak. Find it. */
+-		mutex_unlock(&f->sem);
+-		jffs2_do_clear_inode(c, f);
+-		return ret?ret:-EIO;
++		ret = ret ? ret : -EIO;
++		goto out;
+ 	}
+ 
+ 	crc = crc32(0, latest_node, sizeof(*latest_node)-8);
+ 	if (crc != je32_to_cpu(latest_node->node_crc)) {
+ 		JFFS2_ERROR("CRC failed for read_inode of inode %u at physical location 0x%x\n",
+ 			f->inocache->ino, ref_offset(rii.latest_ref));
+-		mutex_unlock(&f->sem);
+-		jffs2_do_clear_inode(c, f);
+-		return -EIO;
++		ret = -EIO;
++		goto out;
+ 	}
+ 
+ 	switch(jemode_to_cpu(latest_node->mode) & S_IFMT) {
+@@ -1251,16 +1249,14 @@ static int jffs2_do_read_inode_internal(struct jffs2_sb_info *c,
+ 			 * operation. */
+ 			uint32_t csize = je32_to_cpu(latest_node->csize);
+ 			if (csize > JFFS2_MAX_NAME_LEN) {
+-				mutex_unlock(&f->sem);
+-				jffs2_do_clear_inode(c, f);
+-				return -ENAMETOOLONG;
++				ret = -ENAMETOOLONG;
++				goto out;
+ 			}
+ 			f->target = kmalloc(csize + 1, GFP_KERNEL);
+ 			if (!f->target) {
+ 				JFFS2_ERROR("can't allocate %u bytes of memory for the symlink target path cache\n", csize);
+-				mutex_unlock(&f->sem);
+-				jffs2_do_clear_inode(c, f);
+-				return -ENOMEM;
++				ret = -ENOMEM;
++				goto out;
+ 			}
+ 
+ 			ret = jffs2_flash_read(c, ref_offset(rii.latest_ref) + sizeof(*latest_node),
+@@ -1271,9 +1267,7 @@ static int jffs2_do_read_inode_internal(struct jffs2_sb_info *c,
+ 					ret = -EIO;
+ 				kfree(f->target);
+ 				f->target = NULL;
+-				mutex_unlock(&f->sem);
+-				jffs2_do_clear_inode(c, f);
+-				return ret;
++				goto out;
+ 			}
+ 
+ 			f->target[csize] = '\0';
+@@ -1289,25 +1283,22 @@ static int jffs2_do_read_inode_internal(struct jffs2_sb_info *c,
+ 		if (f->metadata) {
+ 			JFFS2_ERROR("Argh. Special inode #%u with mode 0%o had metadata node\n",
+ 			       f->inocache->ino, jemode_to_cpu(latest_node->mode));
+-			mutex_unlock(&f->sem);
+-			jffs2_do_clear_inode(c, f);
+-			return -EIO;
++			ret = -EIO;
++			goto out;
+ 		}
+ 		if (!frag_first(&f->fragtree)) {
+ 			JFFS2_ERROR("Argh. Special inode #%u with mode 0%o has no fragments\n",
+ 			       f->inocache->ino, jemode_to_cpu(latest_node->mode));
+-			mutex_unlock(&f->sem);
+-			jffs2_do_clear_inode(c, f);
+-			return -EIO;
++			ret = -EIO;
++			goto out;
+ 		}
+ 		/* ASSERT: f->fraglist != NULL */
+ 		if (frag_next(frag_first(&f->fragtree))) {
+ 			JFFS2_ERROR("Argh. Special inode #%u with mode 0x%x had more than one node\n",
+ 			       f->inocache->ino, jemode_to_cpu(latest_node->mode));
+ 			/* FIXME: Deal with it - check crc32, check for duplicate node, check times and discard the older one */
+-			mutex_unlock(&f->sem);
+-			jffs2_do_clear_inode(c, f);
+-			return -EIO;
++			ret = -EIO;
++			goto out;
+ 		}
+ 		/* OK. We're happy */
+ 		f->metadata = frag_first(&f->fragtree)->node;
+@@ -1317,8 +1308,13 @@ static int jffs2_do_read_inode_internal(struct jffs2_sb_info *c,
+ 	}
+ 	if (f->inocache->state == INO_STATE_READING)
+ 		jffs2_set_inocache_state(c, f->inocache, INO_STATE_PRESENT);
+-
+-	return 0;
++out:
++	if (ret) {
++		mutex_unlock(&f->sem);
++		jffs2_do_clear_inode(c, f);
++		mutex_lock(&f->sem);
++	}
++	return ret;
+ }
+ 
+ /* Scan the list of all nodes present for this ino, build map of versions, etc. */
+@@ -1400,10 +1396,9 @@ int jffs2_do_crccheck_inode(struct jffs2_sb_info *c, struct jffs2_inode_cache *i
+ 	f->inocache = ic;
+ 
+ 	ret = jffs2_do_read_inode_internal(c, f, &n);
+-	if (!ret) {
+-		mutex_unlock(&f->sem);
++	mutex_unlock(&f->sem);
++	if (!ret)
+ 		jffs2_do_clear_inode(c, f);
+-	}
+ 	jffs2_xattr_do_crccheck_inode(c, ic);
+ 	kfree (f);
+ 	return ret;
+-- 
+1.8.0.2
