@@ -1,20 +1,19 @@
 Received: from mga09.intel.com ([134.134.136.24])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WEDsb-0000vz-27
- for linux-mtd@lists.infradead.org; Fri, 14 Feb 2014 08:12:14 +0000
-Message-ID: <1392365505.12215.38.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v5 0/1] ubi: Introduce block devices for UBI volumes
+ id 1WEE7f-0001Bo-0C
+ for linux-mtd@lists.infradead.org; Fri, 14 Feb 2014 08:27:47 +0000
+Message-ID: <1392366441.12215.52.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v5] ubi: Introduce block devices for UBI volumes
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Date: Fri, 14 Feb 2014 10:11:45 +0200
-In-Reply-To: <1392321426-18256-1-git-send-email-ezequiel.garcia@free-electrons.com>
-References: <1392321426-18256-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Date: Fri, 14 Feb 2014 10:27:21 +0200
+In-Reply-To: <1392321486-18332-1-git-send-email-ezequiel.garcia@free-electrons.com>
+References: <1392321486-18332-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Mike Frysinger <vapier@gentoo.org>,
- Richard Weinberger <richard.weinberger@gmail.com>,
+ Mike Frysinger <vapier@gentoo.org>, richard.weinberger@gmail.com,
  Michael Opdenacker <michael.opdenacker@free-electrons.com>,
  linux-mtd@lists.infradead.org,
  Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
@@ -30,46 +29,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thanks Ezequiel,
+Thanks for the driver Ezequiel!
 
-On Thu, 2014-02-13 at 16:57 -0300, Ezequiel Garcia wrote:
-> As soon as this gets merged into UBI kernel core, I'll submit the mtd-utils
-> userspace tools, as well as start preparing some documentation for the mtd
-> website, and the docbook.
+A couple of nit-pick below, though.
 
-Ideally the docs should come along with the driver.
+On Thu, 2014-02-13 at 16:58 -0300, Ezequiel Garcia wrote:
+> +++ b/drivers/mtd/ubi/block.c
+> @@ -0,0 +1,656 @@
+> +/*
+> + * Copyright (c) 2014 Ezequiel Garcia
+> + * Copyright (c) 2011 Free Electrons
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation, version 2.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
+> + * the GNU General Public License for more details.
+> + *
+> + * A block implementation on UBI volume
+> + * ------------------------------------
+> + *
+> + * How to use this? A bunch of examples worth a thousand words:
+> + *
+> + * If you want to attach a block device on bootup time, e.g. in order
+> + * to mount the rootfs on such a block device:
+> + *
+> + * Using the UBI volume path:
+> + *  ubi.block=/dev/ubi0_0
+> + *
+> + * Using the UBI device, and the volume name:
+> + *  ubi.block=0,rootfs
+> + *
+> + * Using both UBI device number and UBI volume number:
+> + *  ubi.block=0,0
+> + *
+> + * In this case you would have such kernel parameters:
+> + *  ubi.mtd=5 ubi.block=0,0 root=/dev/ubiblock0_0
+> + *
+> + * Of course, if you compile ubi as a module you can use this
+> + * parameter on module insertion time:
+> + *  modprobe ubi mtd=/dev/mtd5 block=/dev/ubi0_0
+> + *
+> + * For runtime block attaching/detaching, see mtd-utils' ubiblkvol tool.
+> + */
 
-> I'd be willing to drop read-support is that makes this feature acceptable;
-> but I guess that would make it pretty useless :-)
+Good comments is a great thing, very appreciated. However, you already
+put a similar piece of documentation to "MODULE_PARM_DESC()", which is a
+good place, because it is visible to the end-user via 'modinfo'.
 
-Well, it was your decision.
+Do you think it will make users of this driver understand the the usage
+model better if you duplicate the documentation here? May be, not sure.
 
-I only asked to remove the compile-time option. And if there are
-limitations, document them.
+I'd say the risk is that people modifying this driver may change this
+comment, but forget to change the modinfo output, or vice-versa.
 
-I pointed that there is a standard 'blkdev' tool which has '--setro' and
-'--setrw' options, and you could try to use that for _run-time_ RO/RW
-toggling.
+I'd refactor this comment to make it look more like a piese of doc for
+the developer, explaining how this module is related to the ubi module.
+Rather than being a duplicate piece of doc for the end user explaining
+how to use this module...
 
->   * Dropped write-support
+> +/* Linked list of all ubiblock instances */
+> +static LIST_HEAD(ubiblock_devices);
+> +static DEFINE_MUTEX(devices_mutex);
+> +static int ubiblock_major;
+> +
+> +/* Ugh! this parameter parsing code is awful */
 
-Fine with me too, thanks, but please, do not allude you was pushed to do
-this.
+If it is awful, would you also expand the comment and explain why it is
+awful, and what should be done to make it nice. Or better just do it! I
+mean, generally, when criticizing something it is better to explain why
+and point to the alternatives, no?
 
->   * Dropped cached access
-
-Thanks. This little tiny compile options make more harm than benefit.
-They break from time, because people usually use one of the
-configurations, and rarely test the changed.
-
-If you want to save people 128KiB of ram or something, do it a better
-way. For example, we have memory shrinker in the kernel. Register your
-your shrinker and free that buffer in case of memory pressure. Allocate
-it back if needed later using "gentle" allocation techniques (NORETRY,
-NOFS, etc).
-
-Anyway, thanks for this too.
-
+Thanks!
 
 -- 
 Best Regards,
