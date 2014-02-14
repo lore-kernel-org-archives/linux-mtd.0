@@ -1,19 +1,20 @@
-Received: from ch1ehsobe006.messaging.microsoft.com ([216.32.181.186]
- helo=ch1outboundpool.messaging.microsoft.com)
+Received: from tx2ehsobe001.messaging.microsoft.com ([65.55.88.11]
+ helo=tx2outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WEDE3-00083Q-Ao
- for linux-mtd@lists.infradead.org; Fri, 14 Feb 2014 07:30:21 +0000
-Date: Fri, 14 Feb 2014 14:47:53 +0800
+ id 1WEDYM-0008N1-VJ
+ for linux-mtd@lists.infradead.org; Fri, 14 Feb 2014 07:51:20 +0000
+Date: Fri, 14 Feb 2014 15:08:54 +0800
 From: Huang Shijie <b32955@freescale.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v2 0/5]  mtd: nand: support the JEDEC compliant nand.
-Message-ID: <20140214064751.GA22570@shlinux2.ap.freescale.net>
+Subject: Re: [PATCH v2 4/5] mtd: nand: parse out the JEDEC compliant nand
+Message-ID: <20140214070853.GB22570@shlinux2.ap.freescale.net>
 References: <1391839441-21006-1-git-send-email-b32955@freescale.com>
- <20140211204325.GL18440@ld-irv-0074>
+ <1391839441-21006-5-git-send-email-b32955@freescale.com>
+ <20140211203224.GJ18440@ld-irv-0074>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20140211204325.GL18440@ld-irv-0074>
+In-Reply-To: <20140211203224.GJ18440@ld-irv-0074>
 Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,13 +25,189 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Feb 11, 2014 at 12:43:25PM -0800, Brian Norris wrote:
-> BTW, it looks like a few Micron parts I have actually support both ONFI
-> and JEDEC parameter pages. I'll see if I can test this out on them.
-yes. 
+On Tue, Feb 11, 2014 at 12:32:24PM -0800, Brian Norris wrote:
+> Hi Huang,
+> 
+> Looks good, but I have a few comments, now that I've given the spec a
+> closer read.
+> 
+> On Sat, Feb 08, 2014 at 02:04:00PM +0800, Huang Shijie wrote:
+> > This patch adds the parsing code for the JEDEC compliant nand.
+> > 
+> > Signed-off-by: Huang Shijie <b32955@freescale.com>
+> > ---
+> >  drivers/mtd/nand/nand_base.c |   86 ++++++++++++++++++++++++++++++++++++++++++
+> >  1 files changed, 86 insertions(+), 0 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> > index 47fdf17..eb9fb49 100644
+> > --- a/drivers/mtd/nand/nand_base.c
+> > +++ b/drivers/mtd/nand/nand_base.c
+> > @@ -3163,6 +3163,88 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+> >  }
+> >  
+> >  /*
+> > + * Check if the NAND chip is JEDEC compliant, returns 1 if it is, 0 otherwise.
+> > + */
+> > +static int nand_flash_detect_jedec(struct mtd_info *mtd, struct nand_chip *chip,
+> > +					int *busw)
+> > +{
+> > +	struct nand_jedec_params *p = &chip->jedec_params;
+> > +	struct jedec_ecc_info *ecc;
+> > +	int val;
+> > +	int i, j;
+> > +
+> > +	/* Try JEDEC for unknown chip or LP */
+> > +	chip->cmdfunc(mtd, NAND_CMD_READID, 0x40, -1);
+> 
+> Where did you get this READID column address? I may be misreading
 
-some Micron chips also supported the JEDEC.
-I had already tested the Micron chips.
+I get the column from the Toshiba and Micron datasheet.
+the JEDEC really does not mention it.
+
+> something, but I don't even find this in the JESD230A spec.
+> 
+> > +	if (chip->read_byte(mtd) != 'J' || chip->read_byte(mtd) != 'E' ||
+> > +		chip->read_byte(mtd) != 'D' || chip->read_byte(mtd) != 'E' ||
+> > +		chip->read_byte(mtd) != 'C')
+> > +		return 0;
+> > +
+> > +	chip->cmdfunc(mtd, NAND_CMD_PARAM, 0x40, -1);
+> 
+> Same here. I don't actually find this column address in the spec. I
+ditto.
+
+> really hope this is specified somewhere.
+> 
+> Also, now that we may have non-zero address to NAND_CMD_PARAM, do we
+> need to make this adjustment so it can be used on x16 buswidth? Perhaps this diff?
+
+sorry, I really do not know the x16 issue :(
+
+the gpmi is 8bit.
+
+> 
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> index 84cca611c2fd..1b1ad3d25336 100644
+> --- a/include/linux/mtd/nand.h
+> +++ b/include/linux/mtd/nand.h
+> @@ -921,7 +921,7 @@ static inline bool nand_is_slc(struct nand_chip *chip)
+>   */
+>  static inline int nand_opcode_8bits(unsigned int command)
+>  {
+> -	return command == NAND_CMD_READID;
+> +	return command == NAND_CMD_READID || command == NAND_CMD_PARAM;
+>  }
+>  
+>  /* return the supported JEDEC features. */
+> 
+> > +	for (i = 0; i < 3; i++) {
+> > +		for (j = 0; j < sizeof(*p); j++)
+> > +			((uint8_t *)p)[j] = chip->read_byte(mtd);
+> > +
+> > +		if (onfi_crc16(ONFI_CRC_BASE, (uint8_t *)p, 510) ==
+> > +				le16_to_cpu(p->crc))
+> > +			break;
+> > +	}
+> > +
+> > +	if (i == 3) {
+> > +		pr_err("Could not find valid JEDEC parameter page; aborting\n");
+> > +		return 0;
+> > +	}
+> > +
+> > +	/* Check version */
+> > +	val = le16_to_cpu(p->revision);
+> > +	if (val & (1 << 2))
+> > +		chip->jedec_version = 10;
+> > +	else if (val & (1 << 1))
+> > +		chip->jedec_version = 1; /* vendor specific version */
+> 
+> How did you determine that bit[1] means version 1 (or v0.1)? It's
+
+The bit[1] is the vendor specific version. 
+Some Micron chips uses the bit[1], such as MT29F64G08CBAB.
+
+If we do not use the 1 for the it, do you have any suggestion
+for the vendor specific version?
+
+
+> unclear to me how to interpret the revision bitfield here, but it
+> appears that bit[1] is not really useful to us yet, unless we're using
+> vendor specific parameter page.
+
+> 
+> What do we do if we see bit[1] (vendor specific parameter page) but not
+> bit[2] (parameter page revision 1.0 / standard revision 1.0)? I'm
+> thinking that we should just ignore bit[1] entirely for now, and if the
+> flash is missing bit[2], then we can't support it.
+
+some Micron chips do use the bit[1]. i think that's why the JEDEC say:
+"supports vendor specific parameter page" for the bit[1].
+
+We'd better keep the support for the bit[1].
+> 
+> > +
+> > +	if (!chip->jedec_version) {
+> > +		pr_info("unsupported JEDEC version: %d\n", val);
+> > +		return 0;
+> > +	}
+> > +
+> > +	sanitize_string(p->manufacturer, sizeof(p->manufacturer));
+> > +	sanitize_string(p->model, sizeof(p->model));
+> > +	if (!mtd->name)
+> > +		mtd->name = p->model;
+> > +
+> > +	mtd->writesize = le32_to_cpu(p->byte_per_page);
+> > +
+> > +	/* Please reference to the comment for nand_flash_detect_onfi. */
+> > +	mtd->erasesize = 1 << (fls(le32_to_cpu(p->pages_per_block)) - 1);
+> > +	mtd->erasesize *= mtd->writesize;
+> > +
+> > +	mtd->oobsize = le16_to_cpu(p->spare_bytes_per_page);
+> > +
+> > +	/* Please reference to the comment for nand_flash_detect_onfi. */
+> > +	chip->chipsize = 1 << (fls(le32_to_cpu(p->blocks_per_lun)) - 1);
+> > +	chip->chipsize *= (uint64_t)mtd->erasesize * p->lun_count;
+> > +	chip->bits_per_cell = p->bits_per_cell;
+> > +
+> > +	if (jedec_feature(chip) & JEDEC_FEATURE_16_BIT_BUS)
+> > +		*busw = NAND_BUSWIDTH_16;
+> > +	else
+> > +		*busw = 0;
+> > +
+> > +	/* ECC info */
+> > +	ecc = p->ecc_info;
+> 
+> ecc_info is an array, and we're only looking at the first entry. This
+> might be more clear:
+> 
+> 	ecc = &p->ecc_info[0];
+okay.
+
+> 
+> > +
+> > +	if (ecc->codeword_size) {
+> 
+> "The minimum value that shall be reported is 512 bytes (a value of 9)."
+> 
+> So how about this?
+> 
+> 	if (ecc->codeword_size >= 9)
+okay.
+> 
+> > +		chip->ecc_strength_ds = ecc->ecc_bits;
+> > +		chip->ecc_step_ds = 1 << ecc->codeword_size;
+> > +	} else {
+> > +		pr_debug("Invalid codeword size\n");
+> > +		return 0;
+> 
+> Do we really want to fail detection if we can't get the ECC parameters?
+> That's not what we do for ONFI, and we certainly don't do that for
+> extended ID decoding. Right now, ECC specifications are an optional
+> feature for autodetection, so I think this should be at most a
+> pr_warn(), but return successfully still. See the ONFI detection routine
+> for reference.
+okay.
 
 thanks
 Huang Shijie
