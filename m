@@ -1,26 +1,24 @@
-Received: from mail-we0-f182.google.com ([74.125.82.182])
+Received: from f167.i.mail.ru ([94.100.178.86])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WEGIl-0005LA-7O
- for linux-mtd@lists.infradead.org; Fri, 14 Feb 2014 10:47:24 +0000
-Received: by mail-we0-f182.google.com with SMTP id u57so8718762wes.13
- for <linux-mtd@lists.infradead.org>; Fri, 14 Feb 2014 02:47:01 -0800 (PST)
-Date: Fri, 14 Feb 2014 10:46:55 +0000
-From: Lee Jones <lee.jones@linaro.org>
-To: Angus Clark <Angus.Clark@st.com>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH RESEND v4 00/37] mtd: st_spi_fsm: Add new driver
-Message-ID: <20140214104655.GE9462@lee--X1>
-References: <1390473085-24626-1-git-send-email-lee.jones@linaro.org>
- <52FA3B1A.2070304@st.com>
-MIME-Version: 1.0
+ id 1WEGS7-0005ZC-VT
+ for linux-mtd@lists.infradead.org; Fri, 14 Feb 2014 10:57:05 +0000
+From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+To: =?UTF-8?B?SmVhbiBEZWx2YXJl?= <jdelvare@suse.de>
+Subject: =?UTF-8?B?UmU6IFtQQVRDSCAxLzJdIG10ZC90czU1MDA6IEFkZCBkZXBlbmRlbmN5?=
+Mime-Version: 1.0
+Date: Fri, 14 Feb 2014 14:56:37 +0400
+Message-ID: <1392375397.275208007@f167.i.mail.ru>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <52FA3B1A.2070304@st.com>
-Cc: olivier.clergeaud@st.com, linus.walleij@linaro.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- computersforpeace@gmail.com, dwmw2@infradead.org,
- DCG_UPD_stlinux_kernel@list.st.com, linux-arm-kernel@lists.infradead.org
+Content-Transfer-Encoding: base64
+In-Reply-To: <20140214114453.4e8aa74c@endymion.delvare>
+References: <20140214112824.27b98f1d@endymion.delvare>
+ <1392373926.783869053@f323.i.mail.ru>
+ <20140214114453.4e8aa74c@endymion.delvare>
+Cc: =?UTF-8?B?RGF2aWQgV29vZGhvdXNl?= <dwmw2@infradead.org>,
+ =?UTF-8?B?QnJpYW4gTm9ycmlz?= <computersforpeace@gmail.com>,
+ linux-mtd@lists.infradead.org,
+ =?UTF-8?B?Vml2aWVuIERpZGVsb3Q=?= <vivien.didelot@savoirfairelinux.com>
+Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,75 +28,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> Sorry for the delay.  I have now had a quick look through the patches.  Just a
-> couple of points :-)
-> 
-> * stfsm_probe(): stfsm_fetch_platform_configs() needs to be called *before*
-> config() -- config() is based on platform capabilities.  Conceptually,
-> stfsm_fetch_platform_configs() should be called before stfsm_jedec_probe(), and
-> FLASH_FLAG_32BIT_ADDR should be moved out of stfsm_fetch_platform_configs(),
-> placed just after stfsm_jedec_probe() but before config().
-> 
-> * fsm_wait_busy(): logic not quite correct if we get a P_ERR or E_ERR error
-> after a timeout.  I am also not sure about returning (uint8_t)-EIO.  For what
-> its worth, this is what I did in response to Brian's comment about the race
-> condition:
-
-Thanks Angus.
-
-Brain,
-
-If I fix up the review comments from  Angus', Ludovic and Christophe
-are you happy to finally accept the driver? Or do you have any final
-review comments that you wish me to apply for v5?
-
-> On 01/23/2014 10:30 AM, Lee Jones wrote:
-> > Version 4:
-> >   Tended to Brian's review comments
-> >     - Checkpatch acceptance
-> >     - MODULE_DEVICE_TABLE() name slip correction
-> >     - Timeout issue(s) resolved
-> >     - Potential infinite loop mitigated
-> >     - Code clarity suggests heeded
-> >     - Duplication with MTD core code removed
-> >     - Upgraded to using ROUND_UP() helper
-> >     - Moved non-shared header code into main driver
-> >     - Relocated dynamic msg sequence stores into main struct
-> >     - Averted adaption of static (table) data
-> >     - Basic whitespace/spelling/data type/dev_err suggestions applied
-> >   
-> > Version 3:
-> >   Okay, this thing should be fully functional now. Identify a chip
-> >   based on it's JEDEC ID, Read, Write, Erase (all or by sector).
-> >   Support for various chip quirks added too.
-> > 
-> > Version 2:
-> >   The first bunch of these patches have been on the MLs before, but
-> >   didn't receive a great deal of attention for the most part. We are
-> >   a little more featureful this time however. We can now successfully
-> >   setup and configure the N25Q256. We still can't read/write/erase
-> >   it though. I'll start work on that next week and will provide it in
-> >   the next instalment.
-> > 
-> > Version 1:
-> >   First stab at getting this thing Mainlined. It doesn't do a great deal
-> >   yet, but we are able to initialise the device and dynamically set it up
-> >   correctly based on an extracted JEDEC ID.
-> > 
-> >  Documentation/devicetree/bindings/mtd/st-fsm.txt |   26 ++
-> >  arch/arm/boot/dts/stih416-b2105.dts              |   14 +
-> >  arch/arm/boot/dts/stih416-pinctrl.dtsi           |   12 +
-> >  drivers/mtd/devices/Kconfig                      |    8 +
-> >  drivers/mtd/devices/Makefile                     |    1 +
-> >  drivers/mtd/devices/serial_flash_cmds.h          |   81 ++++
-> >  drivers/mtd/devices/st_spi_fsm.c                 | 2124 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-> > 7 files changed, 2266 insertions(+)
-> > 
-> > 
-> 
-
--- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+0J/Rj9GC0L3QuNGG0LAsIDE0INGE0LXQstGA0LDQu9GPIDIwMTQsIDExOjQ0ICswMTowMCDQvtGC
+IEplYW4gRGVsdmFyZSA8amRlbHZhcmVAc3VzZS5kZT46Cj4gSGkgQWxleGFuZGVyLAo+IAo+IE9u
+IEZyaSwgMTQgRmViIDIwMTQgMTQ6MzI6MDYgKzA0MDAsIEFsZXhhbmRlciBTaGl5YW4gd3JvdGU6
+Cj4gPiDQn9GP0YLQvdC40YbQsCwgMTQg0YTQtdCy0YDQsNC70Y8gMjAxNCwgMTE6MjggKzAxOjAw
+INC+0YIgSmVhbiBEZWx2YXJlIDxqZGVsdmFyZUBzdXNlLmRlPjoKPiA+ID4gVGhlcmUgaXMgbm8g
+cG9pbnQgaW4gZGlzcGxheWluZyB0aGUgVFM1NTAwLXNwZWNpZmljIGRyaXZlciBlbnRyaWVzIGlm
+Cj4gPiA+IFRTNTUwMCBib2FyZCBzdXBwb3J0IGl0c2VsZiBpc24ndCBlbmFibGVkLgo+ID4gPiAK
+PiA+ID4gU2lnbmVkLW9mZi1ieTogSmVhbiBEZWx2YXJlIDxqZGVsdmFyZUBzdXNlLmRlPgo+ID4g
+PiBDYzogRGF2aWQgV29vZGhvdXNlIDxkd213MkBpbmZyYWRlYWQub3JnPgo+ID4gPiBDYzogQnJp
+YW4gTm9ycmlzIDxjb21wdXRlcnNmb3JwZWFjZUBnbWFpbC5jb20+Cj4gPiA+IENjOiBWaXZpZW4g
+RGlkZWxvdCA8dml2aWVuLmRpZGVsb3RAc2F2b2lyZmFpcmVsaW51eC5jb20+Cj4gPiA+IC0tLQo+
+ID4gPiBkcml2ZXJzL210ZC9tYXBzL0tjb25maWcgfCAgICAyICstCj4gPiA+IDEgZmlsZSBjaGFu
+Z2VkLCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQo+ID4gPiAKPiA+ID4gLS0tIGxpbnV4
+LTMuMTQtcmMyLm9yaWcvZHJpdmVycy9tdGQvbWFwcy9LY29uZmlnCTIwMTQtMDItMTQKPiAxMToy
+MToxNS4xMTYzNjM3MDAKPiA+ID4gKzAxMDAKPiA+ID4gKysrIGxpbnV4LTMuMTQtcmMyL2RyaXZl
+cnMvbXRkL21hcHMvS2NvbmZpZwkyMDE0LTAyLTE0IDExOjIzOjUzLjI4Njg2MzM3NAo+ID4gPiAr
+MDEwMAo+ID4gPiBAQCAtMTI0LDcgKzEyNCw3IEBAIGNvbmZpZyBNVERfTkVUU0M1MjAKPiA+ID4g
+Cj4gPiA+IGNvbmZpZyBNVERfVFM1NTAwCj4gPiA+IHRyaXN0YXRlICJKRURFQyBGbGFzaCBkZXZp
+Y2UgbWFwcGVkIG9uIFRlY2hub2xvZ2ljIFN5c3RlbXMgVFMtNTUwMCIKPiA+ID4gLQlkZXBlbmRz
+IG9uIFg4Ngo+ID4gPiArCWRlcGVuZHMgb24gVFM1NTAwIHx8IChYODYgJiYgQ09NUElMRV9URVNU
+KQo+ID4gCj4gPiBUUzU1MDAgJiYgKFg4NiB8fCBDT01QSUxFX1RFU1QpID8KPiAKPiBIbW0sIG5v
+LiBUaGUgd2F5IEkgd3JvdGUgaXQgaXMgY29ycmVjdCBJIGJlbGlldmUuIFRTNTUwMCBpdHNlbGYg
+ZGVwZW5kcwo+IG9uIFg4Ni4gVGhlIGRyaXZlciBpcyBvbmx5IG5lZWRlZCBvbiBUUzU1MDAsIGJ1
+dCBjYW4gYmUgdGVzdC1idWlsdCBpbgo+IGFueSBYODYga2VybmVsIGlmIG5lZWRlZC4KCklmIHNv
+LCB5b3UgYXJlIHJpZ2h0LiBTb3JyeSBmb3Igbm9pc2UuCgotLS0K
