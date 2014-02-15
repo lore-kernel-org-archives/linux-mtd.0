@@ -1,21 +1,23 @@
-Received: from mail-oa0-x229.google.com ([2607:f8b0:4003:c02::229])
+Received: from mail-oa0-x22a.google.com ([2607:f8b0:4003:c02::22a])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WEPBO-0003l4-Uy
- for linux-mtd@lists.infradead.org; Fri, 14 Feb 2014 20:16:24 +0000
-Received: by mail-oa0-f41.google.com with SMTP id j17so15290136oag.0
- for <linux-mtd@lists.infradead.org>; Fri, 14 Feb 2014 12:16:01 -0800 (PST)
-Date: Fri, 14 Feb 2014 12:15:57 -0800
+ id 1WEUe5-0002Lv-LG
+ for linux-mtd@lists.infradead.org; Sat, 15 Feb 2014 02:06:22 +0000
+Received: by mail-oa0-f42.google.com with SMTP id i7so15524441oag.1
+ for <linux-mtd@lists.infradead.org>; Fri, 14 Feb 2014 18:05:57 -0800 (PST)
+Received: from ld-irv-0074 (5520-maca-inet1-outside.broadcom.com.
+ [216.31.211.11])
+ by mx.google.com with ESMTPSA id ii8sm21939401obb.11.2014.02.14.18.05.54
+ for <linux-mtd@lists.infradead.org>
+ (version=TLSv1.2 cipher=RC4-SHA bits=128/128);
+ Fri, 14 Feb 2014 18:05:55 -0800 (PST)
+Date: Fri, 14 Feb 2014 18:05:52 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH v2] mtd: nand: fix off-by-one read retry mode counting
-Message-ID: <20140214201557.GQ18440@ld-irv-0074>
-References: <1392254531-1796-1-git-send-email-computersforpeace@gmail.com>
- <20140214075820.GC22570@shlinux2.ap.freescale.net>
+To: linux-mtd@lists.infradead.org
+Subject: MTD/NAND user-space ABI: interesting observation
+Message-ID: <20140215020552.GR18440@ld-irv-0074>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20140214075820.GC22570@shlinux2.ap.freescale.net>
-Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,54 +27,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Feb 14, 2014 at 03:58:21PM +0800, Huang Shijie wrote:
-> On Wed, Feb 12, 2014 at 05:22:11PM -0800, Brian Norris wrote:
-> > A flash may support N read retry voltage threshold modes, numbered 1
-> > through N-1 (where mode 0 represents the initial state). However,
-> > nand_do_read_ops() tries to use mode 0 through N.
-> > 
-> > This off-by-one error shows up, for instance, when using nanddump, and
-> > we have cycled through available modes:
-> > 
-> >     nand: setting READ RETRY mode 0
-> >     nand: setting READ RETRY mode 1
-> >     nand: setting READ RETRY mode 2
-> >     nand: setting READ RETRY mode 3
-> >     nand: setting READ RETRY mode 4
-> >     nand: setting READ RETRY mode 5
-> >     nand: setting READ RETRY mode 6
-> >     nand: setting READ RETRY mode 7
-> >     nand: setting READ RETRY mode 8
-> >     libmtd: error!: cannot read 8192 bytes from mtd0 (eraseblock 20, offset 0)
-> >             error 22 (Invalid argument)
-> >     nanddump: error!: mtd_read
-> > 
-> > Tested on Micron MT29F64G08CBCBBH1, with 8 retry modes.
-> > 
-> > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> > ---
-> > v1 -> v2: N modes means we should use modes 0 to N-1, not 0 to N
-> > 
-> >  drivers/mtd/nand/nand_base.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> > index 9be7842f300e..3cb1cefcd926 100644
-> > --- a/drivers/mtd/nand/nand_base.c
-> > +++ b/drivers/mtd/nand/nand_base.c
-> > @@ -1586,7 +1586,7 @@ read_retry:
-> >  			}
-> >  
-> >  			if (mtd->ecc_stats.failed - ecc_failures) {
-> > -				if (retry_mode + 1 <= chip->read_retries) {
-> > +				if (retry_mode + 1 < chip->read_retries) {
-> >  					retry_mode++;
-> >  					ret = nand_setup_read_retry(mtd,
-> >  							retry_mode);
-> 
-> Acked-by: Huang Shijie <b32955@freescale.com>
+Hi all,
 
-Pushed to linux-mtd.git. Will queue up a few other things to send to
-Linus in 3.14-rcX.
+Perhaps it's a non-issue, but I was realizing during some testing today
+that there is no sound way to determine (in user-space) if a particular
+raw read (i.e., from a /dev/mtdX) resulted in either a correctable bit
+error or an uncorrectable ECC error. The current method used by
+mtd-utils' nanddump is more or less a sequence of:
+
+  ioctl(fd, ECCGETSTATS, &stat1);
+  read(fd, buf, len);
+  ioctl(fd, ECCGETSTATS, &stat2);
+  if (stat2.corrected > stat1.corrected)
+  	correctable bitflip;
+  if (stat2.failed > stat1.failed)
+  	uncorrectable error;
+
+This is completely unsound if you are performing concurrent reads on the
+same MTD device node (e.g., running two concurrent 'nanddump'
+processes). The issue is pretty obvious once you study it, but I was
+left scratching my head this afternoon when I had two separate nanddump
+processes reporting bitflips at exactly the same times, at different
+addresses!
+
+I think this issue is probably not that important, since user-space raw
+MTD accesses are really only good for testing/debugging, and any sane
+solution would utilize a translation layer or special-purpose filesystem
+(UBI, UBIFS, JFFS2, etc.) to handle -EUCLEAN and -EBADMSG (which is
+presented properly in the MTD in-kernel API).
+
+Just food for thought. Have a nice weekend!
 
 Brian
