@@ -1,22 +1,21 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WFM7f-00024N-87
- for linux-mtd@lists.infradead.org; Mon, 17 Feb 2014 11:12:28 +0000
-Date: Mon, 17 Feb 2014 08:11:14 -0300
+ id 1WFMMv-0002ZI-Jp
+ for linux-mtd@lists.infradead.org; Mon, 17 Feb 2014 11:28:15 +0000
+Date: Mon, 17 Feb 2014 08:27:29 -0300
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH v6 0/3] ubi: Add block interface
-Message-ID: <20140217111113.GA21782@localhost>
+Subject: Re: [PATCH v6 1/3] ubi: Introduce block devices for UBI volumes
+Message-ID: <20140217112728.GB21782@localhost>
 References: <1392581041-8099-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1392632392.12215.125.camel@sauron.fi.intel.com>
- <20140217104830.GA21761@localhost>
- <1392634420.12215.154.camel@sauron.fi.intel.com>
+ <1392581041-8099-2-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1392633946.12215.150.camel@sauron.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1392634420.12215.154.camel@sauron.fi.intel.com>
+In-Reply-To: <1392633946.12215.150.camel@sauron.fi.intel.com>
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
  Mike Frysinger <vapier@gentoo.org>,
  Richard Weinberger <richard.weinberger@gmail.com>,
@@ -34,63 +33,177 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Feb 17, 2014 at 12:53:40PM +0200, Artem Bityutskiy wrote:
-> On Mon, 2014-02-17 at 07:48 -0300, Ezequiel Garcia wrote:
-> > On Mon, Feb 17, 2014 at 12:19:52PM +0200, Artem Bityutskiy wrote:
-> > > Thanks!
-> > > 
-> > > On Sun, 2014-02-16 at 17:03 -0300, Ezequiel Garcia wrote:
-> > > > The main target of this patch is supporting lighter, read-only
-> > > > filesystem,
-> > > > by putting a squashfs on top of ubiblock. And since squashfs already
-> > > > provides
-> > > > a file cache (which is even configurable), a first uncached
-> > > > implementation
-> > > > it's good enough for now.
-> > > 
-> > > Doesn't Linux provide a fake inode for _every_ block device, and uses
-> > > page-cache to cache pages?
-> > > 
-> > > There is even entire special-purpose file-system for managing these fake
-> > > block device inodes, see fs/block_dev.c
-> > > 
-> > > static struct file_system_type bd_type = {
-> > >         .name           = "bdev",
-> > >         .mount          = bd_mount,
-> > >         .kill_sb        = kill_anon_super,
-> > > };
-> > > 
-> > > I am really not sure which other cache do we need. The only thing coming
-> > > to my mind is about emulating a HW disk cache in software. But I would
-> > > not go that far without a really good reason.
-> > > 
+On Mon, Feb 17, 2014 at 12:45:46PM +0200, Artem Bityutskiy wrote:
+> On Sun, 2014-02-16 at 17:03 -0300, Ezequiel Garcia wrote:
+> > This commit introduces block device emulation on top of ubi volumes,
+> > in the most featureless and skinniest way: read-only, uncached access.
 > > 
-> > If we ever re-add the write support, it would be natural to implement it
-> > using a 1-LEB cache. Block sectors are much much smaller than LEB's
-> > (around three orders of magnitude), so we would want to read an entire
-> > LEB into a 1-LEB buffer, update the buffer, and then write it back.
+> > Given UBI takes care of wear leveling and bad block management it's possible
+> > to add a thin layer to enable block device access to UBI volumes.
+> > This allows to use a block-oriented filesystem on a flash device.
 > > 
-> > In this scheme, it's almost straightforward to keep this buffer around
-> > as a cache, and only write-back to disk when the new read/write requests
-> > asks for a different LEB.
-> > 
-> > IIRC, this is the main reason why we had the 1-LEB cache.
+> > As opposed to mtdblock, which uses a 1-LEB cache, we've chosen not to
+> > implement any caching policy. The UBI block interface is meant to be
+> > used in conjunction with regular block-oriented filesystems (primarily,
+> > squashfs). These filesystems are better prepared to do their own caching,
+> > rendering a block-level cache useless.
 > 
-> May be. But you are submitting R/O driver. And yet talk about caches and
-> write support in several places. Caches are only relevant to write
-> support. Write support is absent. Let's focus on what is present.
+> As I explain, I do not think any additional caching is needed for the
+> R/O FS. Mtdblock supports writing in the most straight-forward way
+> (read-modify-write entire LEB), and this is why it needs the 1LEB
+> "cache" - it allows avoiding the read part _sometimes_ - for sequential
+> writes. And only for sequential writes.
 > 
-> Feel free to put all the thoughts about a possible write support
-> implementation to a single big comment in the code. That's fine. I do
-> not object. I just want to focus on what is present.
+> Just forget that cache.
 > 
 
-Totally agreed. Those comments were just a product of my own inertia.
+Agreed.
 
-If at all possible, take a look at the website doc and I'll push a new
-round soon.
+> > +config MTD_UBI_BLOCK
+> > +	bool "Block device access to UBI volumes"
+> 
+> bool "Read-only block devices on top of UBI volumes"
+> 
 
-Thanks for the review,
+OK.
+
+> > +	default n
+> > +	help
+> > +	   Since UBI already takes care of eraseblock wear leveling
+> > +	   and bad block handling, it's possible to implement a block
+> > +	   device on top of it and therefore mount regular filesystems
+> > +	   (i.e. not flash-oriented, as ext4).
+> > +	   In other words, this is a software flash translation layer.
+> 
+> I'd re-write it differently. "Since .. it is possible to implement"
+> looks weird. It is already implemented bu this driver.
+> 
+> The customer for this text is the end user, who does not know much about
+> UBI and what is possible. Just give him/her facts :-) Something more
+> like this.
+> 
+> This option enables read-only UBI block devices support. UBI block
+> devices will be layered on top of UBI volumes, which means that the UBI
+> driver will transparently handle things like bad eraseblocks and
+> bit-flips. You can put any file-system in on top of UBI volumes in
+> read-only mode (e.g., ext4), but it is probably most practical for
+> read-only file systems like squashfs.
+> 
+
+Looks much better.
+
+> > +
+> > +	   This can be particularly interesting to allow mounting a read-only
+> > +	   filesystem, such as squashfs, on a NAND device.
+> 
+> "This can be particularly interesting" - may be just simpler phrase
+> which just tells that the user can use UBI block devices with squashfs?
+> 
+
+OK.
+
+> > +	   When selected, this feature will be built-in the ubi module
+> 
+> Well, I'd use "UBI driver" instead of "ubi module", since we do not know
+> whether the users selected the module or compiled UBI into the kernel.
+> 
+
+OK.
+
+> > +	   and block devices will be able to be created and removed using
+> > +	   the userspace 'ubiblkvol' tool (provided mtd-utils).
+> 
+> > @@ -0,0 +1,660 @@
+> > +/*
+> > + * Copyright (c) 2014 Ezequiel Garcia
+> > + * Copyright (c) 2011 Free Electrons
+> 
+> If you copy-pasted _any_ code from UBI, do not forget to add original
+> copyrights here too. Otherwise, this is fine.
+> 
+
+Hm... I think I took something from UBI and mtdblock. Not sure if I
+"copy-pasted as-is", but I guess we can safely say it was "based on".
+Let's re-check the code and put a comment there.
+
+> > +/*
+> > + * Block interface for UBI volumes
+> > + *
+> > + * A simple implementation to allow a block device interface on top
+> > + * of a UBI volume. The implementation is provided by creating a static
+> > + * 1-to-1 mapping between the block device and the UBI volume.
+> 
+> .. and the LEBs of the UBI volume, may be?
+> 
+
+Could be.. but I don't want people to get confused by that. There's no 1-1
+mapping between *a* block sector and *a* LEB. Maybe the "1-1 mapping"
+wording is what's confusing?
+
+> > + * The addressed byte is obtained from the addressed block sector,
+> > + * which is mapped linearly into the corresponding LEB:
+> > + *
+> > + *   leb number = addressed byte / leb size
+> > + *
+> > + * The current implementation support only read operation. Write-support
+> > + * addition shouldn't be too hard and could be implemented in the future.
+> > + * It was suggested to implement this using the already existent BLKROSET
+> > + * block ioctl to turn it on and off, thus avoiding undesirable writes.
+> 
+> I do not think it is not hard. Decent write operation may be hard. By
+> decent I mean something which would give you sane random write
+> performance. Your implementation would basically read-erase-write entire
+> LEB, with CRC calculation for the entire LEB data, right?
+> 
+> So I'd say just "possible", rather "shouldn't be too hard" :-)
+> 
+
+The proposed write support used ubi_leb_change() to write. It was
+based on your proposal, many years ago:
+
+http://lists.infradead.org/pipermail/linux-mtd/2008-January/020381.html
+
+I think it's better to drop any mention to the write support.
+
+> > + * Contrary to the MTD block interface implementation, there's no cache
+> > + * involved. The reasons behind this choice is that the filesystems
+> > + * that would be mounted on top of UBI blocks already provide caching and
+> > + * are able to do it more efficiently.
+> 
+> I'd not mention MTD block here at all. And it's cache. It confuses more
+> than gives a clue. Just tell that you do not implement any caching for
+> the date in your driver.
+> 
+
+OK.
+
+> > + * We may add a cache here, but it would be desirable to register a memory
+> > + * shrinker to match the requirements of memory-constrained platforms.
+> 
+> You could provide your vision about a possible write implementation at
+> the end of this comment, and there you could put your thoughts about the
+> cache. Because the cache is only relevant for the write support, I
+> believe.
+> 
+
+I think I'll just drop the cache and write notice.
+
+> > + * This feature is compiled in the UBI core, and adds a new 'block'
+> > + * parameter to allow early block interface creation. Runtime
+> > + * block attach/detach for UBI volumes is provided through two
+> > + * UBI ioctls: UBI_IOCVOLATTBLK and UBI_IOCVOLDETBLK.
+> > + */
+> 
+> I hope more people would help reviewing the code :-)
+> 
+
+Ah, I just noticed I forgot to add:
+
+  Tested-by: Willy Tarreau <w@1wt.eu>
+  Reviewed-by: Richard Weinberger <richard.weinberger@gmail.com>
+
+who tested and reviewed previous versions of the UBI patch, and
+I'm sure are reading this and will test and review this one ;-)
 -- 
 Ezequiel García, Free Electrons
 Embedded Linux, Kernel and Android Engineering
