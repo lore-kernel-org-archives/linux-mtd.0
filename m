@@ -1,29 +1,14 @@
-Date: Mon, 17 Feb 2014 15:19:34 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Grant Likely <grant.likely@secretlab.ca>
-Subject: Re: [RFC PATCH v2 03/14] of: mtd: add documentation for
- nand-ecc-level property
-Message-ID: <20140217181933.GH2765@localhost>
-References: <1391006064-28890-1-git-send-email-b.brezillon.dev@gmail.com>
- <1391006064-28890-4-git-send-email-b.brezillon.dev@gmail.com>
- <20140129175331.GA27143@localhost>
- <20140205111500.B19FDC40A89@trevor.secretlab.ca>
- <52F23DF4.7010901@gmail.com> <20140205141917.GA25091@localhost>
- <CACxGe6vW3m8DA3rGSane6GNmjXHt=pjAPVr25WZyopV9jA-XUw@mail.gmail.com>
+Date: Mon, 17 Feb 2014 23:03:08 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: Wan ZongShun <mcuos.com@gmail.com>
+Subject: [patch] mtd: nuc900_nand: NULL dereference in nuc900_nand_enable()
+Message-ID: <20140217200308.GA9845@elgon.mountain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACxGe6vW3m8DA3rGSane6GNmjXHt=pjAPVr25WZyopV9jA-XUw@mail.gmail.com>
-Cc: Boris BREZILLON <b.brezillon.dev@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
- Rob Herring <robh+dt@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Pekon Gupta <pekon@ti.com>, Maxime Ripard <maxime.ripard@free-electrons.com>,
+Cc: linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,51 +18,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Feb 17, 2014 at 04:43:51PM +0000, Grant Likely wrote:
-> On Wed, Feb 5, 2014 at 2:19 PM, Ezequiel Garcia
-> <ezequiel.garcia@free-electrons.com> wrote:
-> > Hi Grant, Boris:
-> >
-> > (BTW, dropped Russell, Rob Landley and some unrelated mailing lists from Cc,
-> > and added Thomas, Gregory and Rob Herring).
-> >
-> > On Wed, Feb 05, 2014 at 02:34:44PM +0100, Boris BREZILLON wrote:
-> >> On 05/02/2014 12:15, Grant Likely wrote:
-> >> > On Wed, 29 Jan 2014 14:53:32 -0300, Ezequiel Garcia <ezequiel.garcia@free-electrons.com> wrote:
-> > [..]
-> >> >>
-> >> >> Maybe we can discuss about it now?
-> >> >>
-> >> >>    nand-ecc-strength : integer ECC required strength.
-> >> >>    nand-ecc-size : integer step size associated to the ECC strength.
-> >> > I'm okay with either, but the above binding is indeed more readable.
-> >>
-> >> That's fine by me, if everybody agrees, let's go for the
-> >> nand-ecc-strength/nand-ecc-size couple then.
-> >>
-> >
-> > Great. So, if some DT dictator^C^Cmaintainers can Ack this binding,
-> > I can send a new patchset, with pxa3xx-nand using it...
-> >
-> >> I'll rebase next version of my series on Ezequiel's patch providing
-> >> these OF helpers.
-> >>
-> >
-> > ... and then you can base on it?
-> >
-> > This is the original patchset:
-> >
-> > http://permalink.gmane.org/gmane.linux.drivers.devicetree/58764
-> > http://permalink.gmane.org/gmane.linux.drivers.devicetree/58763
-> 
-> I've looked at both. Go ahead and add my a-b line:
-> 
-> Acked-by: Grant Likely <grant.likely@linaro.org>
+Instead of writing to "nand->reg + REG_FMICSR" we write to "REG_FMICSR"
+which is NULL and not a valid register.
 
-Cool. Thanks!
+Fixes: 8bff82cbc308 ('mtd: add nand support for w90p910 (v2)')
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+Static checker stuff.
 
-I'll push a patchset now.
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+diff --git a/drivers/mtd/nand/nuc900_nand.c b/drivers/mtd/nand/nuc900_nand.c
+index 331fccbdde61..e8a5fffd6ab2 100644
+--- a/drivers/mtd/nand/nuc900_nand.c
++++ b/drivers/mtd/nand/nuc900_nand.c
+@@ -225,7 +225,7 @@ static void nuc900_nand_enable(struct nuc900_nand *nand)
+ 	val = __raw_readl(nand->reg + REG_FMICSR);
+ 
+ 	if (!(val & NAND_EN))
+-		__raw_writel(val | NAND_EN, REG_FMICSR);
++		__raw_writel(val | NAND_EN, nand->reg + REG_FMICSR);
+ 
+ 	val = __raw_readl(nand->reg + REG_SMCSR);
+ 
