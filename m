@@ -1,15 +1,16 @@
-Received: from mail-we0-f176.google.com ([74.125.82.176])
+Received: from mail-wg0-f47.google.com ([74.125.82.47])
  by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WFm6d-0005m1-6F
- for linux-mtd@lists.infradead.org; Tue, 18 Feb 2014 14:57:09 +0000
-Received: by mail-we0-f176.google.com with SMTP id q58so11460119wes.7
- for <linux-mtd@lists.infradead.org>; Tue, 18 Feb 2014 06:56:43 -0800 (PST)
+ id 1WFm7M-000679-Cr
+ for linux-mtd@lists.infradead.org; Tue, 18 Feb 2014 14:57:53 +0000
+Received: by mail-wg0-f47.google.com with SMTP id k14so3311748wgh.2
+ for <linux-mtd@lists.infradead.org>; Tue, 18 Feb 2014 06:57:25 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 06/35] mtd: st_spi_fsm: Add support for JEDEC ID extraction
-Date: Tue, 18 Feb 2014 14:55:33 +0000
-Message-Id: <1392735362-1245-7-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 22/35] mtd: st_spi_fsm: Supply the N25Qxxx specific read
+ configurations
+Date: Tue, 18 Feb 2014 14:55:49 +0000
+Message-Id: <1392735362-1245-23-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1392735362-1245-1-git-send-email-lee.jones@linaro.org>
 References: <1392735362-1245-1-git-send-email-lee.jones@linaro.org>
 Cc: Angus.Clark@st.com, lee.jones@linaro.org,
@@ -24,96 +25,131 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Once we start supporting devices it will be handy go detect them
-dynamically. This will be done using the chip's unique JEDEC ID. This
-patch allows us to extract a device's JEDEC ID using the a predefined
-FSM register write sequence.
+The N25Qxxx Serial Flash devices required different sequence
+configurations depending on whether they're running in 24bit (3Byte)
+or 32bit (4Byte) mode. We provide those here.
 
 Acked-by Angus Clark <angus.clark@st.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/devices/st_spi_fsm.c | 55 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 55 insertions(+)
+ drivers/mtd/devices/st_spi_fsm.c | 91 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 91 insertions(+)
 
 diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index dba5f10..250162a 100644
+index 576712c..73db64e 100644
 --- a/drivers/mtd/devices/st_spi_fsm.c
 +++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -219,6 +219,22 @@ struct stfsm_seq {
- 	uint32_t seq_cfg;
- } __packed __aligned(4);
+@@ -200,6 +200,53 @@
  
-+static struct stfsm_seq stfsm_seq_read_jedec = {
-+	.data_size = TRANSFER_SIZE(8),
-+	.seq_opc[0] = (SEQ_OPC_PADS_1 |
-+		       SEQ_OPC_CYCLES(8) |
-+		       SEQ_OPC_OPCODE(FLASH_CMD_RDID)),
-+	.seq = {
-+		STFSM_INST_CMD1,
-+		STFSM_INST_DATA_READ,
-+		STFSM_INST_STOP,
-+	},
-+	.seq_cfg = (SEQ_CFG_PADS_1 |
-+		    SEQ_CFG_READNOTWRITE |
-+		    SEQ_CFG_CSDEASSERT |
-+		    SEQ_CFG_STARTSEQ),
+ #define STFSM_MAX_WAIT_SEQ_MS  1000     /* FSM execution time */
+ 
++/* Flash Commands */
++#define FLASH_CMD_WREN         0x06
++#define FLASH_CMD_WRDI         0x04
++#define FLASH_CMD_RDID         0x9f
++#define FLASH_CMD_RDSR         0x05
++#define FLASH_CMD_RDSR2                0x35
++#define FLASH_CMD_WRSR         0x01
++#define FLASH_CMD_SE_4K                0x20
++#define FLASH_CMD_SE_32K       0x52
++#define FLASH_CMD_SE           0xd8
++#define FLASH_CMD_CHIPERASE    0xc7
++#define FLASH_CMD_WRVCR                0x81
++#define FLASH_CMD_RDVCR                0x85
++
++#define FLASH_CMD_READ         0x03    /* READ */
++#define FLASH_CMD_READ_FAST    0x0b    /* FAST READ */
++#define FLASH_CMD_READ_1_1_2   0x3b    /* DUAL OUTPUT READ */
++#define FLASH_CMD_READ_1_2_2   0xbb    /* DUAL I/O READ */
++#define FLASH_CMD_READ_1_1_4   0x6b    /* QUAD OUTPUT READ */
++#define FLASH_CMD_READ_1_4_4   0xeb    /* QUAD I/O READ */
++
++#define FLASH_CMD_WRITE                0x02    /* PAGE PROGRAM */
++#define FLASH_CMD_WRITE_1_1_2  0xa2    /* DUAL INPUT PROGRAM */
++#define FLASH_CMD_WRITE_1_2_2  0xd2    /* DUAL INPUT EXT PROGRAM */
++#define FLASH_CMD_WRITE_1_1_4  0x32    /* QUAD INPUT PROGRAM */
++#define FLASH_CMD_WRITE_1_4_4  0x12    /* QUAD INPUT EXT PROGRAM */
++
++#define FLASH_CMD_EN4B_ADDR    0xb7    /* Enter 4-byte address mode */
++#define FLASH_CMD_EX4B_ADDR    0xe9    /* Exit 4-byte address mode */
++
++/* READ commands with 32-bit addressing (N25Q256 and S25FLxxxS) */
++#define FLASH_CMD_READ4                0x13
++#define FLASH_CMD_READ4_FAST   0x0c
++#define FLASH_CMD_READ4_1_1_2  0x3c
++#define FLASH_CMD_READ4_1_2_2  0xbc
++#define FLASH_CMD_READ4_1_1_4  0x6c
++#define FLASH_CMD_READ4_1_4_4  0xec
++
++/*
++ * Flags to tweak operation of default read/write/erase routines
++ */
++#define CFG_READ_TOGGLE_32BIT_ADDR     0x00000001
++#define CFG_WRITE_TOGGLE_32BIT_ADDR    0x00000002
++#define CFG_WRITE_EX_32BIT_ADDR_DELAY  0x00000004
++#define CFG_ERASESEC_TOGGLE_32BIT_ADDR 0x00000008
++#define CFG_S25FL_CHECK_ERROR_FLAGS    0x00000010
++
+ struct stfsm {
+ 	struct device		*dev;
+ 	void __iomem		*base;
+@@ -208,6 +255,7 @@ struct stfsm {
+ 	struct mutex		lock;
+ 	struct flash_info       *info;
+ 
++	uint32_t                configuration;
+ 	uint32_t                fifo_dir_delay;
+ 	bool                    booted_from_spi;
+ 	bool                    reset_signal;
+@@ -402,6 +450,49 @@ static struct seq_rw_config default_write_configs[] = {
+ 	{0x00,			 0,			0, 0, 0, 0x00, 0, 0},
+ };
+ 
++/*
++ * [N25Qxxx] Configuration
++ */
++#define N25Q_VCR_DUMMY_CYCLES(x)	(((x) & 0xf) << 4)
++#define N25Q_VCR_XIP_DISABLED		((uint8_t)0x1 << 3)
++#define N25Q_VCR_WRAP_CONT		0x3
++
++/* N25Q 3-byte Address READ configurations
++ *	- 'FAST' variants configured for 8 dummy cycles.
++ *
++ * Note, the number of dummy cycles used for 'FAST' READ operations is
++ * configurable and would normally be tuned according to the READ command and
++ * operating frequency.  However, this applies universally to all 'FAST' READ
++ * commands, including those used by the SPIBoot controller, and remains in
++ * force until the device is power-cycled.  Since the SPIBoot controller is
++ * hard-wired to use 8 dummy cycles, we must configure the device to also use 8
++ * cycles.
++ */
++static struct seq_rw_config n25q_read3_configs[] = {
++	{FLASH_FLAG_READ_1_4_4, FLASH_CMD_READ_1_4_4,	0, 4, 4, 0x00, 0, 8},
++	{FLASH_FLAG_READ_1_1_4, FLASH_CMD_READ_1_1_4,	0, 1, 4, 0x00, 0, 8},
++	{FLASH_FLAG_READ_1_2_2, FLASH_CMD_READ_1_2_2,	0, 2, 2, 0x00, 0, 8},
++	{FLASH_FLAG_READ_1_1_2, FLASH_CMD_READ_1_1_2,	0, 1, 2, 0x00, 0, 8},
++	{FLASH_FLAG_READ_FAST,	FLASH_CMD_READ_FAST,	0, 1, 1, 0x00, 0, 8},
++	{FLASH_FLAG_READ_WRITE, FLASH_CMD_READ,	        0, 1, 1, 0x00, 0, 0},
++	{0x00,			0,			0, 0, 0, 0x00, 0, 0},
 +};
 +
- static inline int stfsm_is_idle(struct stfsm *fsm)
- {
- 	return readl(fsm->base + SPI_FAST_SEQ_STA) & 0x10;
-@@ -307,6 +323,42 @@ static void stfsm_read_fifo(struct stfsm *fsm, uint32_t *buf,
- 	}
- }
++/* N25Q 4-byte Address READ configurations
++ *	- use special 4-byte address READ commands (reduces overheads, and
++ *        reduces risk of hitting watchdog reset issues).
++ *	- 'FAST' variants configured for 8 dummy cycles (see note above.)
++ */
++static struct seq_rw_config n25q_read4_configs[] = {
++	{FLASH_FLAG_READ_1_4_4, FLASH_CMD_READ4_1_4_4,	0, 4, 4, 0x00, 0, 8},
++	{FLASH_FLAG_READ_1_1_4, FLASH_CMD_READ4_1_1_4,	0, 1, 4, 0x00, 0, 8},
++	{FLASH_FLAG_READ_1_2_2, FLASH_CMD_READ4_1_2_2,	0, 2, 2, 0x00, 0, 8},
++	{FLASH_FLAG_READ_1_1_2, FLASH_CMD_READ4_1_1_2,	0, 1, 2, 0x00, 0, 8},
++	{FLASH_FLAG_READ_FAST,	FLASH_CMD_READ4_FAST,	0, 1, 1, 0x00, 0, 8},
++	{FLASH_FLAG_READ_WRITE, FLASH_CMD_READ4,	0, 1, 1, 0x00, 0, 0},
++	{0x00,			0,			0, 0, 0, 0x00, 0, 0},
++};
++
+ static struct stfsm_seq stfsm_seq_en_32bit_addr;/* Dynamically populated */
  
-+static void stfsm_read_jedec(struct stfsm *fsm, uint8_t *const jedec)
-+{
-+	const struct stfsm_seq *seq = &stfsm_seq_read_jedec;
-+	uint32_t tmp[2];
-+
-+	stfsm_load_seq(fsm, seq);
-+
-+	stfsm_read_fifo(fsm, tmp, 8);
-+
-+	memcpy(jedec, tmp, 5);
-+
-+	stfsm_wait_seq(fsm);
-+}
-+
-+static struct flash_info *stfsm_jedec_probe(struct stfsm *fsm)
-+{
-+	u16                     ext_jedec;
-+	u32			jedec;
-+	u8			id[5];
-+
-+	stfsm_read_jedec(fsm, id);
-+
-+	jedec     = id[0] << 16 | id[1] << 8 | id[2];
-+	/*
-+	 * JEDEC also defines an optional "extended device information"
-+	 * string for after vendor-specific data, after the three bytes
-+	 * we use here. Supporting some chips might require using it.
-+	 */
-+	ext_jedec = id[3] << 8  | id[4];
-+
-+	dev_dbg(fsm->dev, "JEDEC =  0x%08x [%02x %02x %02x %02x %02x]\n",
-+		jedec, id[0], id[1], id[2], id[3], id[4]);
-+
-+	return NULL;
-+}
-+
- static int stfsm_set_mode(struct stfsm *fsm, uint32_t mode)
- {
- 	int ret, timeout = 10;
-@@ -435,6 +487,9 @@ static int stfsm_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
-+	/* Detect SPI FLASH device */
-+	stfsm_jedec_probe(fsm);
-+
- 	platform_set_drvdata(pdev, fsm);
- 
- 	fsm->mtd.dev.parent	= &pdev->dev;
+ static struct stfsm_seq stfsm_seq_read_jedec = {
 -- 
 1.8.3.2
