@@ -1,20 +1,20 @@
-Received: from mail-wg0-x232.google.com ([2a00:1450:400c:c00::232])
+Received: from mail-wg0-x229.google.com ([2a00:1450:400c:c00::229])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WFqrK-0004z5-VG
- for linux-mtd@lists.infradead.org; Tue, 18 Feb 2014 20:01:40 +0000
-Received: by mail-wg0-f50.google.com with SMTP id z12so3706270wgg.5
- for <linux-mtd@lists.infradead.org>; Tue, 18 Feb 2014 12:01:17 -0800 (PST)
-Message-ID: <5303BC07.2090300@gmail.com>
-Date: Tue, 18 Feb 2014 21:01:11 +0100
+ id 1WFqsA-00051q-83
+ for linux-mtd@lists.infradead.org; Tue, 18 Feb 2014 20:02:30 +0000
+Received: by mail-wg0-f41.google.com with SMTP id l18so3410428wgh.2
+ for <linux-mtd@lists.infradead.org>; Tue, 18 Feb 2014 12:02:08 -0800 (PST)
+Message-ID: <5303BC3E.2090701@gmail.com>
+Date: Tue, 18 Feb 2014 21:02:06 +0100
 From: Boris BREZILLON <b.brezillon.dev@gmail.com>
 MIME-Version: 1.0
 To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
  linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2 1/2] of_mtd: Add helpers to get ECC strength and ECC
- step size
+Subject: Re: [PATCH v2 2/2] mtd: nand: Add a devicetree binding for ECC
+ strength and ECC step size
 References: <1392749474-12936-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1392749474-12936-2-git-send-email-ezequiel.garcia@free-electrons.com>
-In-Reply-To: <1392749474-12936-2-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1392749474-12936-3-git-send-email-ezequiel.garcia@free-electrons.com>
+In-Reply-To: <1392749474-12936-3-git-send-email-ezequiel.garcia@free-electrons.com>
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 8bit
 Cc: Grant Likely <grant.likely@secretlab.ca>,
@@ -28,104 +28,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ezequiel,
-
 Le 18/02/2014 19:51, Ezequiel Garcia a écrit :
-> This commit adds simple helpers to obtain the devicetree properties
-> that specify the ECC strength and ECC step size to use on a given
-> NAND controller.
-
-As already discussed with you, IMHO these 2 properties should both
-be available to be meaningful, hence, we should provide an helper
-function that gets both properties or return an error if one of them
-is missing.
-
-Do you plan to provide a default value (within controller drivers) if one
-of these properties is missing ? In this case seperating the helper
-functions make sense.
-
-Best Regards,
-
-Boris
-
-> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> ---
->   drivers/of/of_mtd.c    | 34 ++++++++++++++++++++++++++++++++++
->   include/linux/of_mtd.h | 12 ++++++++++++
->   2 files changed, 46 insertions(+)
+> Some flashes can only be properly accessed when the ECC mode is
+> specified, so a way to describe such mode is required.
 >
-> diff --git a/drivers/of/of_mtd.c b/drivers/of/of_mtd.c
-> index a27ec94..b7361ed 100644
-> --- a/drivers/of/of_mtd.c
-> +++ b/drivers/of/of_mtd.c
-> @@ -50,6 +50,40 @@ int of_get_nand_ecc_mode(struct device_node *np)
->   EXPORT_SYMBOL_GPL(of_get_nand_ecc_mode);
->   
->   /**
-> + * of_get_nand_ecc_step_size - Get ECC step size associated to
-> + * the required ECC strength (see below).
-> + * @np:	Pointer to the given device_node
-> + *
-> + * return the ECC step size, or errno in error case.
-> + */
-> +int of_get_nand_ecc_step_size(struct device_node *np)
-> +{
-> +	int ret;
-> +	u32 val;
+> Together, the ECC strength and step size define the correction capability,
+> so that we say we will correct "{strength} bit errors per {size} bytes".
+>
+> The interpretation of these parameters is implementation-defined, but they
+> often have ramifications on the formation, interpretation, and placement of
+> correction metadata on the flash. Not all implementations must support all
+> possible combinations. Implementations are encouraged to further define the
+> value(s) they support.
+>
+> Acked-by: Grant Likely <grant.likely@secretlab.ca>
+> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Acked-by: Boris BREZILLON <b.brezillon.dev@gmail.com>
+> ---
+> Brian,
+>
+> Feel free to rephrase or improve the explanation below as you whish.
+>
+>   Documentation/devicetree/bindings/mtd/nand.txt | 14 ++++++++++++++
+>   1 file changed, 14 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/mtd/nand.txt b/Documentation/devicetree/bindings/mtd/nand.txt
+> index 03855c8..b53f92e 100644
+> --- a/Documentation/devicetree/bindings/mtd/nand.txt
+> +++ b/Documentation/devicetree/bindings/mtd/nand.txt
+> @@ -5,3 +5,17 @@
+>     "soft_bch".
+>   - nand-bus-width : 8 or 16 bus width if not present 8
+>   - nand-on-flash-bbt: boolean to enable on flash bbt option if not present false
 > +
-> +	ret = of_property_read_u32(np, "nand-ecc-step-size", &val);
-> +	return ret ? ret : val;
-> +}
-> +EXPORT_SYMBOL_GPL(of_get_nand_ecc_step_size);
+> +- nand-ecc-strength: integer representing the number of bits to correct
+> +		     per ECC step.
 > +
-> +/**
-> + * of_get_nand_ecc_strength - Get required ECC strength over the
-> + * correspnding step size as defined by 'nand-ecc-size'
-> + * @np:	Pointer to the given device_node
-> + *
-> + * return the ECC strength, or errno in error case.
-> + */
-> +int of_get_nand_ecc_strength(struct device_node *np)
-> +{
-> +	int ret;
-> +	u32 val;
+> +- nand-ecc-step-size: integer representing the number of data bytes
+> +		      that are covered by a single ECC step.
 > +
-> +	ret = of_property_read_u32(np, "nand-ecc-strength", &val);
-> +	return ret ? ret : val;
-> +}
-> +EXPORT_SYMBOL_GPL(of_get_nand_ecc_strength);
+> +The ECC strength and ECC step size properties define the correction capability
+> +of a controller. Together, they say a controller can correct "{strength} bit
+> +errors per {size} bytes".
 > +
-> +/**
->    * of_get_nand_bus_width - Get nand bus witdh for given device_node
->    * @np:	Pointer to the given device_node
->    *
-> diff --git a/include/linux/of_mtd.h b/include/linux/of_mtd.h
-> index cb32d9c..c078f99 100644
-> --- a/include/linux/of_mtd.h
-> +++ b/include/linux/of_mtd.h
-> @@ -13,6 +13,8 @@
->   
->   #include <linux/of.h>
->   int of_get_nand_ecc_mode(struct device_node *np);
-> +int of_get_nand_ecc_step_size(struct device_node *np)
-> +int of_get_nand_ecc_strength(struct device_node *np)
->   int of_get_nand_bus_width(struct device_node *np);
->   bool of_get_nand_on_flash_bbt(struct device_node *np);
->   
-> @@ -23,6 +25,16 @@ static inline int of_get_nand_ecc_mode(struct device_node *np)
->   	return -ENOSYS;
->   }
->   
-> +static inline int of_get_nand_ecc_step_size(struct device_node *np)
-> +{
-> +	return -ENOSYS;
-> +}
-> +
-> +static inline int of_get_nand_ecc_strength(struct device_node *np)
-> +{
-> +	return -ENOSYS;
-> +}
-> +
->   static inline int of_get_nand_bus_width(struct device_node *np)
->   {
->   	return -ENOSYS;
+> +The interpretation of these parameters is implementation-defined, so not all
+> +implementations must support all possible combinations. However, implementations
+> +are encouraged to further specify the value(s) they support.
