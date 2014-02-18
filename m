@@ -1,21 +1,18 @@
-Received: from mail-pd0-x22f.google.com ([2607:f8b0:400e:c02::22f])
+Received: from arroyo.ext.ti.com ([192.94.94.40])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WFhSg-0003gA-2e
- for linux-mtd@lists.infradead.org; Tue, 18 Feb 2014 09:59:36 +0000
-Received: by mail-pd0-f175.google.com with SMTP id w10so16013116pde.34
- for <linux-mtd@lists.infradead.org>; Tue, 18 Feb 2014 01:59:12 -0800 (PST)
+ id 1WFjzd-0001M8-58
+ for linux-mtd@lists.infradead.org; Tue, 18 Feb 2014 12:41:46 +0000
+From: Pekon Gupta <pekon@ti.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCH v8 0/6] mtd: nand: omap: optimized chip->ecc.correct() for H/W
+ ECC schemes
+Date: Tue, 18 Feb 2014 18:10:35 +0530
+Message-ID: <1392727242-3556-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <CAMuHMdUY+XEqKYh7mMOYUV18PpR+7SFw+BEUFh-9yL=H6reQkA@mail.gmail.com>
-References: <CAMuHMdUY+XEqKYh7mMOYUV18PpR+7SFw+BEUFh-9yL=H6reQkA@mail.gmail.com>
-Date: Tue, 18 Feb 2014 10:59:09 +0100
-Message-ID: <CAMuHMdWkPxp2U=Xz=wWu70RPxj+4GGCyifdPv=xL=47cz_upBw@mail.gmail.com>
-Subject: Re: spi: Provide core support for full duplex devices
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Mark Brown <broonie@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
- linux-spi <linux-spi@vger.kernel.org>
+Content-Type: text/plain
+Cc: Stefan Roese <sr@denx.de>, linux-mtd <linux-mtd@lists.infradead.org>,
+ Pekon Gupta <pekon@ti.com>, Felipe Balbi <balbi@ti.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,56 +22,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Mark,
+*changes v7 -> v8*
+[PATCH 1/6] <no change>
+[PATCH 2/6] <minor cleanup>
+[PATCH 3/6] 
+ - use reference instead of local variables as suggested by Brian Norris <computersforpeace@gmail.com>
+ - fix: report bit-flips in DATA region for 'confirmed' erased-page
+[PATCH 4/6] <minor cleanup>
+[PATCH 5/6] <no change>
+[PATCH 6/6] <no change>
 
-On Thu, Feb 6, 2014 at 1:56 PM, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> I found this in your for-next branch:
->
-> commit 3a2eba9bd0a6447dfbc01635e4cd0689f5f2bdad
-> Author: Mark Brown <broonie@linaro.org>
-> Date:   Tue Jan 28 20:17:03 2014 +0000
->
->     spi: Provide core support for full duplex devices
->
-> If I'm not mistaken, you forgot to email this out to linux-spi?
->
-> I'll see whether I can make use of this in the RSPI driver.
+*changes v6 -> v7*
+[PATCH 1/6] <no change>
+[PATCH 2/6] <no change>
+[PATCH 3/6] <dropped older version, refer commit message>
+ - erased-page detection done based on count of zero-bits in OOB & DATA
+ - incorporated some feedbacks from Brian Norris <computersforpeace@gmail.com>
+	http://lists.infradead.org/pipermail/linux-mtd/2014-January/051533.html
+	http://lists.infradead.org/pipermail/linux-mtd/2014-January/051534.html
+[PATCH 4/6] <new> remove redundant bit-flip counting for erased-page
+[PATCH 5/6] <minor cleanup>
+[PATCH 6/6] <minor cleanup>
+(As there are functional changes in this version, so not attaching
+ Tested-by: Stefan Roese <sr@denx.de>)
 
-I gave it a quick try, with RSPI single transfers.
 
-For Dual/Quad transfers, which are half-duplex, the buffer pointer for the
-unused direction must be NULL, so the driver knows in which direction to
-transfer. Hence SPI_MASTER_MUST_TX cannot be set for Dual/Quad
-capable SPI master.
+*changes v5 -> v6*
+[PATCH 1/6] <no change>
+[PATCH 2/6] introduced variable 'actual_eccbytes' to omit reserved byte-position
+[PATCH 3/6] split from [PATCH v5 3/5] fix erased-page bit-flip correction
+[PATCH 4/6] split from [PATCH v5 3/5] fix erased-page detection
+[PATCH 5/6] <minor cleanup>
+[PATCH 6/6] <no change>
 
-I'm also worried about the buffer allocation. With m25p80 and mtchar, the
-transfer buffer can be quite large (up to 4 MiB in my case), and this can be
-triggered from userspace.
 
-While mtdchar uses mtd_kmalloc_up_to(), and reduces the temporary
-buffer size under memory pressure, the SPI core must always allocate a
-buffer of the matching size. This may fail.
+*changes v4 -> v5*
+This patch series was split version of earlier patch:
+http://lists.infradead.org/pipermail/linux-mtd/2013-November/050241.html
 
-It's also a little bit slower (O(20 ms) for 1 MiB read), due to the overhead of
-calling krealloc(), and zeroing the dummy buffer.
+chip->ecc.correct() is used for detecting and correcting bit-flips during read
+operations. In OMAP NAND driver different ecc-schemes have different callbacks:
+ - omap_correct_data()		for HAM1_HW ecc-schemes (Untouched)
+ - nand_bch_correct_data()	for BCHx_HW_DETECTION_SW ecc-schemes (Untouched)
+ - omap_elm_correct_data()	for BCHx_HW ecc-schemes
 
-Alternatively, to avoid the memory allocation, you could zero rx_buf,
-and use rx_buf for both tx and rx? That may break some DMA setups,
-though.
+This patch-series fixes following issues in omap_elm_correct_data():
+(1) Dependency on a specific reserved byte-position in OOB area
+    to differentiates between erased-pages v/s programmed-pages.
+    Problem: reserved byte-position cannot be accomodated in all ecc-schemes
+    Problem: reserved byte-position can itself be subjected upto 8 bit-flips
+             causing the 0xff to become 0x00, causing page to be
+             mis-recognized as erased-page.
 
-Concluding, for PIO mode, I'm still in favor of using
+(2) Bit-flips in erased-pages are detected by comparing each byte of Data & OOB
+    with 0xff in check_erased_page().
+    Problem: This is causes performance penalty when erased-pages are checked.
 
-    data = tx_buf ? *tx_buf++ : DUMMY_DATA;
+(3) Current code is not scalable for future ECC schemes due to presence of 
+    tweaks for BCH4_ECC and BCH8_ECC at multiple places.
 
-in the SPI master driver itself.
+(4) Currently, bit-flips are evaluated and fixed even when ELM reports them as
+    un-correctable bit-flips, this should not happen as 'number-of-error' field
+    in ELM_LOCATION_STATUS becomes invalid when un-correctable flag is set.
 
-Gr{oetje,eeting}s,
+(5) Driver should return with error-code = '-EBADMSG' when
+     uncorrectable bit-flip is detected
+     bit-flip outside valid Data and OOB region is detected
 
-                        Geert
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Pekon Gupta (6):
+  mtd: nand: omap: add field to indicate current ecc-scheme in 'struct
+    omap_nand_info'
+  mtd: nand: omap: ecc.correct: omap_elm_correct_data: rename ambiguous
+    variable 'eccsize' and 'ecc_vector_size'
+  mtd: nand: omap: ecc.correct: omap_elm_correct_data: fix erased-page
+    detection for BCHx_HW ECC schemes
+  mtd: nand: omap: ecc.correct: omap_elm_correct_data: remove redundant
+    bit-flip counting for erased-page
+  mtd: nand: omap: ecc.correct: omap_elm_correct_data: cleanup for
+    future enhancements
+  mtd: nand: omap: ecc.correct: omap_elm_correct_data: fix
+    programmed-page bit-flip correction logic
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+ drivers/mtd/nand/omap2.c | 267 +++++++++++++++++++++++------------------------
+ 1 file changed, 130 insertions(+), 137 deletions(-)
+
+-- 
+1.8.5.1.163.gd7aced9
