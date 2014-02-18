@@ -1,16 +1,16 @@
-Received: from mail-wg0-f48.google.com ([74.125.82.48])
+Received: from mail-wi0-f181.google.com ([209.85.212.181])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WFm7J-0008Vn-WB
- for linux-mtd@lists.infradead.org; Tue, 18 Feb 2014 14:57:50 +0000
-Received: by mail-wg0-f48.google.com with SMTP id a1so3316706wgh.15
- for <linux-mtd@lists.infradead.org>; Tue, 18 Feb 2014 06:57:27 -0800 (PST)
+ id 1WFm74-0008Tw-UR
+ for linux-mtd@lists.infradead.org; Tue, 18 Feb 2014 14:57:35 +0000
+Received: by mail-wi0-f181.google.com with SMTP id hi5so3575133wib.14
+ for <linux-mtd@lists.infradead.org>; Tue, 18 Feb 2014 06:57:12 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 23/35] mtd: st_spi_fsm: Supply the N25Qxxx chip specific
- configuration call-back
-Date: Tue, 18 Feb 2014 14:55:50 +0000
-Message-Id: <1392735362-1245-24-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 17/35] mtd: st_spi_fsm: Prepare read/write sequences according
+ to configuration
+Date: Tue, 18 Feb 2014 14:55:44 +0000
+Message-Id: <1392735362-1245-18-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1392735362-1245-1-git-send-email-lee.jones@linaro.org>
 References: <1392735362-1245-1-git-send-email-lee.jones@linaro.org>
 Cc: Angus.Clark@st.com, lee.jones@linaro.org,
@@ -25,119 +25,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In the FSM driver we handle chip differences by providing the possibility
-of calling back into a chip specific initialisation routine. In this patch
-we provide one for the N25Qxxx series, which endeavours to setup things
-like the read, write and erase sequences, as they differ from the
-default. We also configure 32bit support and the amount of dummy cycles to
-use.
+Firstly we search for our preference read/write configuration based on a
+given chip's capabilities. Then we actually set up the message sequence
+accordingly.
 
 Acked-by Angus Clark <angus.clark@st.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/devices/st_spi_fsm.c | 84 +++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 82 insertions(+), 2 deletions(-)
+ drivers/mtd/devices/st_spi_fsm.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
 diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index 73db64e..b8570e8 100644
+index 94b0cb4..3f5603c 100644
 --- a/drivers/mtd/devices/st_spi_fsm.c
 +++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -312,6 +312,8 @@ struct flash_info {
- 	int             (*config)(struct stfsm *);
- };
- 
-+static int stfsm_n25q_config(struct stfsm *fsm);
-+
- static struct flash_info flash_types[] = {
- 	/*
- 	 * ST Microelectronics/Numonyx --
-@@ -354,9 +356,10 @@ static struct flash_info flash_types[] = {
- 		   FLASH_FLAG_WRITE_1_2_2       |	\
- 		   FLASH_FLAG_WRITE_1_1_4       |	\
- 		   FLASH_FLAG_WRITE_1_4_4)
--	{ "n25q128", 0x20ba18, 0, 64 * 1024,  256, N25Q_FLAG, 108, NULL },
-+	{ "n25q128", 0x20ba18, 0, 64 * 1024,  256, N25Q_FLAG, 108,
-+	  stfsm_n25q_config },
- 	{ "n25q256", 0x20ba19, 0, 64 * 1024,  512,
--	  N25Q_FLAG | FLASH_FLAG_32BIT_ADDR, 108, NULL },
-+	  N25Q_FLAG | FLASH_FLAG_32BIT_ADDR, 108, stfsm_n25q_config },
- 
- 	/*
- 	 * Spansion S25FLxxxP
-@@ -493,6 +496,8 @@ static struct seq_rw_config n25q_read4_configs[] = {
- 	{0x00,			0,			0, 0, 0, 0x00, 0, 0},
- };
- 
-+static struct stfsm_seq stfsm_seq_read;		/* Dynamically populated */
-+static struct stfsm_seq stfsm_seq_write;	/* Dynamically populated */
- static struct stfsm_seq stfsm_seq_en_32bit_addr;/* Dynamically populated */
- 
- static struct stfsm_seq stfsm_seq_read_jedec = {
-@@ -840,6 +845,71 @@ static int stfsm_search_prepare_rw_seq(struct stfsm *fsm,
- 	return 0;
+@@ -618,6 +618,23 @@ static void stfsm_prepare_rw_seq(struct stfsm *fsm,
+ 	seq->seq[i++] = STFSM_INST_STOP;
  }
  
-+static int stfsm_n25q_config(struct stfsm *fsm)
++static int stfsm_search_prepare_rw_seq(struct stfsm *fsm,
++				       struct stfsm_seq *seq,
++				       struct seq_rw_config *cfgs)
 +{
-+	uint32_t flags = fsm->info->flags;
-+	uint8_t vcr;
-+	int ret = 0;
-+	bool soc_reset;
++	struct seq_rw_config *config;
 +
-+	/* Configure 'READ' sequence */
-+	if (flags & FLASH_FLAG_32BIT_ADDR)
-+		ret = stfsm_search_prepare_rw_seq(fsm, &stfsm_seq_read,
-+						  n25q_read4_configs);
-+	else
-+		ret = stfsm_search_prepare_rw_seq(fsm, &stfsm_seq_read,
-+						  n25q_read3_configs);
-+	if (ret) {
-+		dev_err(fsm->dev,
-+			"failed to prepare READ sequence with flags [0x%08x]\n",
-+			flags);
-+		return ret;
++	config = stfsm_search_seq_rw_configs(fsm, cfgs);
++	if (!config) {
++		dev_err(fsm->dev, "failed to find suitable config\n");
++		return -EINVAL;
 +	}
 +
-+	/* Configure 'WRITE' sequence (default configs) */
-+	ret = stfsm_search_prepare_rw_seq(fsm, &stfsm_seq_write,
-+					  default_write_configs);
-+	if (ret) {
-+		dev_err(fsm->dev,
-+			"preparing WRITE sequence using flags [0x%08x] failed\n",
-+			flags);
-+		return ret;
-+	}
-+
-+	/* * Configure 'ERASE_SECTOR' sequence */
-+	stfsm_prepare_erasesec_seq(fsm, &stfsm_seq_erase_sector);
-+
-+	/* Configure 32-bit address support */
-+	if (flags & FLASH_FLAG_32BIT_ADDR) {
-+		stfsm_n25q_en_32bit_addr_seq(&stfsm_seq_en_32bit_addr);
-+
-+		soc_reset = stfsm_can_handle_soc_reset(fsm);
-+		if (soc_reset || !fsm->booted_from_spi) {
-+			/*
-+			 * If we can handle SoC resets, we enable 32-bit
-+			 * address mode pervasively
-+			 */
-+			stfsm_enter_32bit_addr(fsm, 1);
-+		} else {
-+			/*
-+			 * If not, enable/disable for WRITE and ERASE
-+			 * operations (READ uses special commands)
-+			 */
-+			fsm->configuration = (CFG_WRITE_TOGGLE_32BIT_ADDR |
-+					      CFG_ERASESEC_TOGGLE_32BIT_ADDR);
-+		}
-+	}
-+
-+	/*
-+	 * Configure device to use 8 dummy cycles
-+	 */
-+	vcr = (N25Q_VCR_DUMMY_CYCLES(8) | N25Q_VCR_XIP_DISABLED |
-+	       N25Q_VCR_WRAP_CONT);
-+	stfsm_wrvcr(fsm, vcr);
++	stfsm_prepare_rw_seq(fsm, seq, config);
 +
 +	return 0;
 +}
@@ -145,22 +63,5 @@ index 73db64e..b8570e8 100644
  static void stfsm_read_jedec(struct stfsm *fsm, uint8_t *const jedec)
  {
  	const struct stfsm_seq *seq = &stfsm_seq_read_jedec;
-@@ -1072,6 +1142,16 @@ static int stfsm_probe(struct platform_device *pdev)
- 	if (info->sector_size * info->n_sectors > 0xFFFFFF)
- 		info->flags |= FLASH_FLAG_32BIT_ADDR;
- 
-+	/*
-+	 * Configure READ/WRITE/ERASE sequences according to platform and
-+	 * device flags.
-+	 */
-+	if (info->config) {
-+		ret = info->config(fsm);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	platform_set_drvdata(pdev, fsm);
- 
- 	fsm->mtd.dev.parent	= &pdev->dev;
 -- 
 1.8.3.2
