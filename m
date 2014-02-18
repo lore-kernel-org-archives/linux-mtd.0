@@ -1,16 +1,16 @@
-Received: from mail-wg0-f52.google.com ([74.125.82.52])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WFm6U-0007C2-4u
- for linux-mtd@lists.infradead.org; Tue, 18 Feb 2014 14:57:10 +0000
-Received: by mail-wg0-f52.google.com with SMTP id b13so3393311wgh.19
- for <linux-mtd@lists.infradead.org>; Tue, 18 Feb 2014 06:56:30 -0800 (PST)
+Received: from mail-wg0-f47.google.com ([74.125.82.47])
+ by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WFm6d-0005m3-Ka
+ for linux-mtd@lists.infradead.org; Tue, 18 Feb 2014 14:57:09 +0000
+Received: by mail-wg0-f47.google.com with SMTP id k14so3405350wgh.14
+ for <linux-mtd@lists.infradead.org>; Tue, 18 Feb 2014 06:56:46 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 01/35] mtd: st_spi_fsm: Allocate resources and register with
- MTD framework
-Date: Tue, 18 Feb 2014 14:55:28 +0000
-Message-Id: <1392735362-1245-2-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 07/35] mtd: devices: Provide header for shared OPCODEs and
+ SFDP commands
+Date: Tue, 18 Feb 2014 14:55:34 +0000
+Message-Id: <1392735362-1245-8-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1392735362-1245-1-git-send-email-lee.jones@linaro.org>
 References: <1392735362-1245-1-git-send-email-lee.jones@linaro.org>
 Cc: Angus.Clark@st.com, lee.jones@linaro.org,
@@ -25,191 +25,120 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a new driver. It's used to communicate with a special type of
-optimised Serial Flash Controller called the FSM. The FSM uses a subset
-of the SPI protocol to communicate with supported NOR-Flash devices.
+JEDEC have helped to standardise a great deal of the commands which
+can be issued to a Serial Flash devices. Many of the Serial Flash
+Discoverable Parameters (SFDP) commands are generic across devices.
+This patch provides a shared point where these commands can be
+defined.
 
+Suggested-by: Mark Brown <broonie@kernel.org>
 Acked-by Angus Clark <angus.clark@st.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/devices/Kconfig      |   8 ++++
- drivers/mtd/devices/Makefile     |   1 +
- drivers/mtd/devices/st_spi_fsm.c | 101 +++++++++++++++++++++++++++++++++++++++
- drivers/mtd/devices/st_spi_fsm.h |  27 +++++++++++
- 4 files changed, 137 insertions(+)
- create mode 100644 drivers/mtd/devices/st_spi_fsm.c
- create mode 100644 drivers/mtd/devices/st_spi_fsm.h
+ drivers/mtd/devices/serial_flash_cmds.h | 81 +++++++++++++++++++++++++++++++++
+ drivers/mtd/devices/st_spi_fsm.c        |  2 +
+ 2 files changed, 83 insertions(+)
+ create mode 100644 drivers/mtd/devices/serial_flash_cmds.h
 
-diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
-index 74ab4b7..0cf48ac 100644
---- a/drivers/mtd/devices/Kconfig
-+++ b/drivers/mtd/devices/Kconfig
-@@ -217,6 +217,14 @@ config MTD_DOCG3
- 	  M-Systems and now Sandisk. The support is very experimental,
- 	  and doesn't give access to any write operations.
- 
-+config MTD_ST_SPI_FSM
-+	tristate "ST Microelectronics SPI FSM Serial Flash Controller"
-+	depends on ARM || SH
-+	help
-+	  This provides an MTD device driver for the ST Microelectronics
-+	  SPI FSM Serial Flash Controller and support for a subset of
-+	  connected Serial Flash devices.
+diff --git a/drivers/mtd/devices/serial_flash_cmds.h b/drivers/mtd/devices/serial_flash_cmds.h
+new file mode 100644
+index 0000000..4f0c2c7
+--- /dev/null
++++ b/drivers/mtd/devices/serial_flash_cmds.h
+@@ -0,0 +1,81 @@
++/*
++ * Generic/SFDP Flash Commands and Device Capabilities
++ *
++ * Copyright (C) 2013 Lee Jones <lee.jones@lianro.org>
++ *
++ * This code is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ */
 +
- if MTD_DOCG3
- config BCH_CONST_M
- 	default 14
-diff --git a/drivers/mtd/devices/Makefile b/drivers/mtd/devices/Makefile
-index d83bd73..c68868f 100644
---- a/drivers/mtd/devices/Makefile
-+++ b/drivers/mtd/devices/Makefile
-@@ -16,6 +16,7 @@ obj-$(CONFIG_MTD_NAND_OMAP_BCH)	+= elm.o
- obj-$(CONFIG_MTD_SPEAR_SMI)	+= spear_smi.o
- obj-$(CONFIG_MTD_SST25L)	+= sst25l.o
- obj-$(CONFIG_MTD_BCM47XXSFLASH)	+= bcm47xxsflash.o
-+obj-$(CONFIG_MTD_ST_SPI_FSM)    += st_spi_fsm.o
- 
- 
- CFLAGS_docg3.o			+= -I$(src)
++#ifndef _MTD_SERIAL_FLASH_CMDS_H
++#define _MTD_SERIAL_FLASH_CMDS_H
++
++/* Generic Flash Commands/OPCODEs */
++#define FLASH_CMD_WREN		0x06
++#define FLASH_CMD_WRDI		0x04
++#define FLASH_CMD_RDID		0x9f
++#define FLASH_CMD_RDSR		0x05
++#define FLASH_CMD_RDSR2		0x35
++#define FLASH_CMD_WRSR		0x01
++#define FLASH_CMD_SE_4K		0x20
++#define FLASH_CMD_SE_32K	0x52
++#define FLASH_CMD_SE		0xd8
++#define FLASH_CMD_CHIPERASE	0xc7
++#define FLASH_CMD_WRVCR		0x81
++#define FLASH_CMD_RDVCR		0x85
++
++/* JEDEC Standard - Serial Flash Discoverable Parmeters (SFDP) Commands */
++#define FLASH_CMD_READ		0x03	/* READ */
++#define FLASH_CMD_READ_FAST	0x0b	/* FAST READ */
++#define FLASH_CMD_READ_1_1_2	0x3b	/* DUAL OUTPUT READ */
++#define FLASH_CMD_READ_1_2_2	0xbb	/* DUAL I/O READ */
++#define FLASH_CMD_READ_1_1_4	0x6b	/* QUAD OUTPUT READ */
++#define FLASH_CMD_READ_1_4_4	0xeb	/* QUAD I/O READ */
++
++#define FLASH_CMD_WRITE		0x02	/* PAGE PROGRAM */
++#define FLASH_CMD_WRITE_1_1_2	0xa2	/* DUAL INPUT PROGRAM */
++#define FLASH_CMD_WRITE_1_2_2	0xd2	/* DUAL INPUT EXT PROGRAM */
++#define FLASH_CMD_WRITE_1_1_4	0x32	/* QUAD INPUT PROGRAM */
++#define FLASH_CMD_WRITE_1_4_4	0x12	/* QUAD INPUT EXT PROGRAM */
++
++#define FLASH_CMD_EN4B_ADDR	0xb7	/* Enter 4-byte address mode */
++#define FLASH_CMD_EX4B_ADDR	0xe9	/* Exit 4-byte address mode */
++
++/* READ commands with 32-bit addressing */
++#define FLASH_CMD_READ4		0x13
++#define FLASH_CMD_READ4_FAST	0x0c
++#define FLASH_CMD_READ4_1_1_2	0x3c
++#define FLASH_CMD_READ4_1_2_2	0xbc
++#define FLASH_CMD_READ4_1_1_4	0x6c
++#define FLASH_CMD_READ4_1_4_4	0xec
++
++/* Configuration flags */
++#define FLASH_FLAG_SINGLE	0x000000ff
++#define FLASH_FLAG_READ_WRITE	0x00000001
++#define FLASH_FLAG_READ_FAST	0x00000002
++#define FLASH_FLAG_SE_4K	0x00000004
++#define FLASH_FLAG_SE_32K	0x00000008
++#define FLASH_FLAG_CE		0x00000010
++#define FLASH_FLAG_32BIT_ADDR	0x00000020
++#define FLASH_FLAG_RESET	0x00000040
++#define FLASH_FLAG_DYB_LOCKING	0x00000080
++
++#define FLASH_FLAG_DUAL		0x0000ff00
++#define FLASH_FLAG_READ_1_1_2	0x00000100
++#define FLASH_FLAG_READ_1_2_2	0x00000200
++#define FLASH_FLAG_READ_2_2_2	0x00000400
++#define FLASH_FLAG_WRITE_1_1_2	0x00001000
++#define FLASH_FLAG_WRITE_1_2_2	0x00002000
++#define FLASH_FLAG_WRITE_2_2_2	0x00004000
++
++#define FLASH_FLAG_QUAD		0x00ff0000
++#define FLASH_FLAG_READ_1_1_4	0x00010000
++#define FLASH_FLAG_READ_1_4_4	0x00020000
++#define FLASH_FLAG_READ_4_4_4	0x00040000
++#define FLASH_FLAG_WRITE_1_1_4	0x00100000
++#define FLASH_FLAG_WRITE_1_4_4	0x00200000
++#define FLASH_FLAG_WRITE_4_4_4	0x00400000
++
++#endif /* _MTD_SERIAL_FLASH_CMDS_H */
 diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-new file mode 100644
-index 0000000..2f4ebb4
---- /dev/null
+index 250162a..2bfea2d 100644
+--- a/drivers/mtd/devices/st_spi_fsm.c
 +++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -0,0 +1,101 @@
-+/*
-+ * st_spi_fsm.c	Support for ST Serial Flash Controller
-+ *
-+ * Author: Angus Clark <angus.clark@st.com>
-+ *
-+ * Copyright (C) 2010-2013 STicroelectronics Limited
-+ *
-+ * JEDEC probe based on drivers/mtd/devices/m25p80.c
-+ *
-+ * This code is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ */
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/sched.h>
-+#include <linux/delay.h>
-+#include <linux/io.h>
-+#include <linux/of.h>
+@@ -21,6 +21,8 @@
+ #include <linux/io.h>
+ #include <linux/of.h>
+ 
++#include "serial_flash_cmds.h"
 +
-+#include "st_spi_fsm.h"
-+
-+static int stfsm_probe(struct platform_device *pdev)
-+{
-+	struct device_node *np = pdev->dev.of_node;
-+	struct resource *res;
-+	struct stfsm *fsm;
-+
-+	if (!np) {
-+		dev_err(&pdev->dev, "No DT found\n");
-+		return -EINVAL;
-+	}
-+
-+	fsm = devm_kzalloc(&pdev->dev, sizeof(*fsm), GFP_KERNEL);
-+	if (!fsm)
-+		return -ENOMEM;
-+
-+	fsm->dev = &pdev->dev;
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!res) {
-+		dev_err(&pdev->dev, "Resource not found\n");
-+		return -ENODEV;
-+	}
-+
-+	fsm->base = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR(fsm->base)) {
-+		dev_err(&pdev->dev,
-+			"Failed to reserve memory region [0x%08x-0x%08x]\n",
-+			res->start, res->end);
-+		return PTR_ERR(fsm->base);
-+	}
-+
-+	mutex_init(&fsm->lock);
-+
-+	platform_set_drvdata(pdev, fsm);
-+
-+	fsm->mtd.dev.parent	= &pdev->dev;
-+	fsm->mtd.type		= MTD_NORFLASH;
-+	fsm->mtd.writesize	= 4;
-+	fsm->mtd.writebufsize	= fsm->mtd.writesize;
-+	fsm->mtd.flags		= MTD_CAP_NORFLASH;
-+
-+	return mtd_device_parse_register(&fsm->mtd, NULL, NULL, NULL, 0);
-+}
-+
-+static int stfsm_remove(struct platform_device *pdev)
-+{
-+	struct stfsm *fsm = platform_get_drvdata(pdev);
-+	int err;
-+
-+	err = mtd_device_unregister(&fsm->mtd);
-+	if (err)
-+		return err;
-+
-+	return 0;
-+}
-+
-+static struct of_device_id stfsm_match[] = {
-+	{ .compatible = "st,spi-fsm", },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, stfsm_match);
-+
-+static struct platform_driver stfsm_driver = {
-+	.probe		= stfsm_probe,
-+	.remove		= stfsm_remove,
-+	.driver		= {
-+		.name	= "st-spi-fsm",
-+		.owner	= THIS_MODULE,
-+		.of_match_table = stfsm_match,
-+	},
-+};
-+module_platform_driver(stfsm_driver);
-+
-+MODULE_AUTHOR("Angus Clark <angus.clark@st.com>");
-+MODULE_DESCRIPTION("ST SPI FSM driver");
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/mtd/devices/st_spi_fsm.h b/drivers/mtd/devices/st_spi_fsm.h
-new file mode 100644
-index 0000000..df45e1a
---- /dev/null
-+++ b/drivers/mtd/devices/st_spi_fsm.h
-@@ -0,0 +1,27 @@
-+/*
-+ * st_spi_fsm.c	Support for ST Serial Flash Controller
-+ *
-+ * Author: Angus Clark <angus.clark@st.com>
-+ *
-+ * Copyright (C) 2010-2013 STicroelectronics Limited
-+ *
-+ * JEDEC probe based on drivers/mtd/devices/m25p80.c
-+ *
-+ * This code is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ */
-+
-+#ifndef ST_SPI_FSM_H
-+#define ST_SPI_FSM_H
-+
-+struct stfsm {
-+	struct device		*dev;
-+	void __iomem		*base;
-+	struct resource		*region;
-+	struct mtd_info		mtd;
-+	struct mutex		lock;
-+};
-+
-+#endif	/* ST_SPI_FSM_H */
+ /*
+  * FSM SPI Controller Registers
+  */
 -- 
 1.8.3.2
