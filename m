@@ -1,16 +1,16 @@
-Received: from mail-wg0-f44.google.com ([74.125.82.44])
- by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WFm7r-0006S1-3P
- for linux-mtd@lists.infradead.org; Tue, 18 Feb 2014 14:58:24 +0000
-Received: by mail-wg0-f44.google.com with SMTP id k14so3396740wgh.35
- for <linux-mtd@lists.infradead.org>; Tue, 18 Feb 2014 06:57:49 -0800 (PST)
+Received: from mail-wi0-f173.google.com ([209.85.212.173])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WFmBy-0007ul-RZ
+ for linux-mtd@lists.infradead.org; Tue, 18 Feb 2014 15:02:40 +0000
+Received: by mail-wi0-f173.google.com with SMTP id hn9so3587867wib.0
+ for <linux-mtd@lists.infradead.org>; Tue, 18 Feb 2014 07:02:16 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 31/35] mtd: st_spi_fsm: Supply the MX25xxx chip specific
- configuration call-back
-Date: Tue, 18 Feb 2014 14:55:58 +0000
-Message-Id: <1392735362-1245-32-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 05/35] mtd: st_spi_fsm: Supply a method to read from the FSM's
+ FIFO
+Date: Tue, 18 Feb 2014 14:55:32 +0000
+Message-Id: <1392735362-1245-6-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1392735362-1245-1-git-send-email-lee.jones@linaro.org>
 References: <1392735362-1245-1-git-send-email-lee.jones@linaro.org>
 Cc: Angus.Clark@st.com, lee.jones@linaro.org,
@@ -25,125 +25,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+When invoked the driver will attempt to read any available data from
+the FSM's data register. Any data collected from this FIFO would have
+originated from the flash chip.
+
 Acked-by Angus Clark <angus.clark@st.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/devices/st_spi_fsm.c | 82 +++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 81 insertions(+), 1 deletion(-)
+ drivers/mtd/devices/st_spi_fsm.c | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
 diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index b32df09..8ffbd95a 100644
+index ac6b782..dba5f10 100644
 --- a/drivers/mtd/devices/st_spi_fsm.c
 +++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -326,6 +326,7 @@ struct flash_info {
- };
- 
- static int stfsm_n25q_config(struct stfsm *fsm);
-+static int stfsm_mx25_config(struct stfsm *fsm);
- 
- static struct flash_info flash_types[] = {
- 	/*
-@@ -357,7 +358,8 @@ static struct flash_info flash_types[] = {
- 		   FLASH_FLAG_SE_4K             |	\
- 		   FLASH_FLAG_SE_32K)
- 	{ "mx25l25635e", 0xc22019, 0, 64*1024, 512,
--	  (MX25_FLAG | FLASH_FLAG_32BIT_ADDR | FLASH_FLAG_RESET), 70, NULL }
-+	  (MX25_FLAG | FLASH_FLAG_32BIT_ADDR | FLASH_FLAG_RESET), 70,
-+	  stfsm_mx25_config },
- 
- #define N25Q_FLAG (FLASH_FLAG_READ_WRITE       |	\
- 		   FLASH_FLAG_READ_FAST         |	\
-@@ -509,6 +511,31 @@ static struct seq_rw_config n25q_read4_configs[] = {
- 	{0x00,			0,			0, 0, 0, 0x00, 0, 0},
- };
- 
-+/*
-+ * [MX25xxx] Configuration
-+ */
-+#define MX25_STATUS_QE			(0x1 << 6)
-+
-+static int stfsm_mx25_en_32bit_addr_seq(struct stfsm_seq *seq)
-+{
-+	seq->seq_opc[0] = (SEQ_OPC_PADS_1 |
-+			   SEQ_OPC_CYCLES(8) |
-+			   SEQ_OPC_OPCODE(FLASH_CMD_EN4B_ADDR) |
-+			   SEQ_OPC_CSDEASSERT);
-+
-+	seq->seq[0] = STFSM_INST_CMD1;
-+	seq->seq[1] = STFSM_INST_WAIT;
-+	seq->seq[2] = STFSM_INST_STOP;
-+
-+	seq->seq_cfg = (SEQ_CFG_PADS_1 |
-+			SEQ_CFG_ERASE |
-+			SEQ_CFG_READNOTWRITE |
-+			SEQ_CFG_CSDEASSERT |
-+			SEQ_CFG_STARTSEQ);
-+
-+	return 0;
-+}
-+
- static struct stfsm_seq stfsm_seq_read;		/* Dynamically populated */
- static struct stfsm_seq stfsm_seq_write;	/* Dynamically populated */
- static struct stfsm_seq stfsm_seq_en_32bit_addr;/* Dynamically populated */
-@@ -1048,6 +1075,59 @@ static int stfsm_prepare_rwe_seqs_default(struct stfsm *fsm)
- 	return 0;
+@@ -281,6 +281,32 @@ static void stfsm_wait_seq(struct stfsm *fsm)
+ 	dev_err(fsm->dev, "timeout on sequence completion\n");
  }
  
-+static int stfsm_mx25_config(struct stfsm *fsm)
++static void stfsm_read_fifo(struct stfsm *fsm, uint32_t *buf,
++			    const uint32_t size)
 +{
-+	uint32_t flags = fsm->info->flags;
-+	uint32_t data_pads;
-+	uint8_t sta;
-+	int ret;
-+	bool soc_reset;
++	uint32_t remaining = size >> 2;
++	uint32_t avail;
++	uint32_t words;
 +
-+	/*
-+	 * Use default READ/WRITE sequences
-+	 */
-+	ret = stfsm_prepare_rwe_seqs_default(fsm);
-+	if (ret)
-+		return ret;
++	dev_dbg(fsm->dev, "Reading %d bytes from FIFO\n", size);
 +
-+	/*
-+	 * Configure 32-bit Address Support
-+	 */
-+	if (flags & FLASH_FLAG_32BIT_ADDR) {
-+		/* Configure 'enter_32bitaddr' FSM sequence */
-+		stfsm_mx25_en_32bit_addr_seq(&stfsm_seq_en_32bit_addr);
++	BUG_ON((((uint32_t)buf) & 0x3) || (size & 0x3));
 +
-+		soc_reset = stfsm_can_handle_soc_reset(fsm);
-+		if (soc_reset || !fsm->booted_from_spi) {
-+			/* If we can handle SoC resets, we enable 32-bit address
-+			 * mode pervasively */
-+			stfsm_enter_32bit_addr(fsm, 1);
-+
-+		} else {
-+			/* Else, enable/disable 32-bit addressing before/after
-+			 * each operation */
-+			fsm->configuration = (CFG_READ_TOGGLE_32BIT_ADDR |
-+					      CFG_WRITE_TOGGLE_32BIT_ADDR |
-+					      CFG_ERASESEC_TOGGLE_32BIT_ADDR);
-+			/* It seems a small delay is required after exiting
-+			 * 32-bit mode following a write operation.  The issue
-+			 * is under investigation.
-+			 */
-+			fsm->configuration |= CFG_WRITE_EX_32BIT_ADDR_DELAY;
++	while (remaining) {
++		for (;;) {
++			avail = stfsm_fifo_available(fsm);
++			if (avail)
++				break;
++			udelay(1);
 +		}
-+	}
++		words = min(avail, remaining);
++		remaining -= words;
 +
-+	/* For QUAD mode, set 'QE' STATUS bit */
-+	data_pads = ((stfsm_seq_read.seq_cfg >> 16) & 0x3) + 1;
-+	if (data_pads == 4) {
-+		stfsm_read_status(fsm, FLASH_CMD_RDSR, &sta);
-+		sta |= MX25_STATUS_QE;
-+		stfsm_write_status(fsm, sta, 1);
++		readsl(fsm->base + SPI_FAST_SEQ_DATA_REG, buf, words);
++		buf += words;
 +	}
-+
-+	return 0;
 +}
 +
- static int stfsm_n25q_config(struct stfsm *fsm)
+ static int stfsm_set_mode(struct stfsm *fsm, uint32_t mode)
  {
- 	uint32_t flags = fsm->info->flags;
+ 	int ret, timeout = 10;
 -- 
 1.8.3.2
