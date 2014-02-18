@@ -1,16 +1,16 @@
-Received: from mail-wg0-f47.google.com ([74.125.82.47])
+Received: from mail-wi0-f179.google.com ([209.85.212.179])
  by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WFm7M-000679-Cr
- for linux-mtd@lists.infradead.org; Tue, 18 Feb 2014 14:57:53 +0000
-Received: by mail-wg0-f47.google.com with SMTP id k14so3311748wgh.2
- for <linux-mtd@lists.infradead.org>; Tue, 18 Feb 2014 06:57:25 -0800 (PST)
+ id 1WFm7Q-0006Aq-FY
+ for linux-mtd@lists.infradead.org; Tue, 18 Feb 2014 14:57:57 +0000
+Received: by mail-wi0-f179.google.com with SMTP id hn9so3573980wib.0
+ for <linux-mtd@lists.infradead.org>; Tue, 18 Feb 2014 06:57:30 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 22/35] mtd: st_spi_fsm: Supply the N25Qxxx specific read
- configurations
-Date: Tue, 18 Feb 2014 14:55:49 +0000
-Message-Id: <1392735362-1245-23-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 24/35] mtd: st_spi_fsm: Prepare default sequences for
+ read/write/erase
+Date: Tue, 18 Feb 2014 14:55:51 +0000
+Message-Id: <1392735362-1245-25-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1392735362-1245-1-git-send-email-lee.jones@linaro.org>
 References: <1392735362-1245-1-git-send-email-lee.jones@linaro.org>
 Cc: Angus.Clark@st.com, lee.jones@linaro.org,
@@ -25,131 +25,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The N25Qxxx Serial Flash devices required different sequence
-configurations depending on whether they're running in 24bit (3Byte)
-or 32bit (4Byte) mode. We provide those here.
+Most chips require a predefined set of FSM message sequences for read,
+write and erase operations. This patch provides a way to set them up,
+which it will do so if a chip specific initialisation routine isn't
+been provided.
 
 Acked-by Angus Clark <angus.clark@st.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/devices/st_spi_fsm.c | 91 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 91 insertions(+)
+ drivers/mtd/devices/st_spi_fsm.c | 36 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
 
 diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index 576712c..73db64e 100644
+index b8570e8..fe538bb 100644
 --- a/drivers/mtd/devices/st_spi_fsm.c
 +++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -200,6 +200,53 @@
+@@ -845,6 +845,38 @@ static int stfsm_search_prepare_rw_seq(struct stfsm *fsm,
+ 	return 0;
+ }
  
- #define STFSM_MAX_WAIT_SEQ_MS  1000     /* FSM execution time */
++/* Prepare a READ/WRITE/ERASE 'default' sequences */
++static int stfsm_prepare_rwe_seqs_default(struct stfsm *fsm)
++{
++	uint32_t flags = fsm->info->flags;
++	int ret;
++
++	/* Configure 'READ' sequence */
++	ret = stfsm_search_prepare_rw_seq(fsm, &stfsm_seq_read,
++					  default_read_configs);
++	if (ret) {
++		dev_err(fsm->dev,
++			"failed to prep READ sequence with flags [0x%08x]\n",
++			flags);
++		return ret;
++	}
++
++	/* Configure 'WRITE' sequence */
++	ret = stfsm_search_prepare_rw_seq(fsm, &stfsm_seq_write,
++					  default_write_configs);
++	if (ret) {
++		dev_err(fsm->dev,
++			"failed to prep WRITE sequence with flags [0x%08x]\n",
++			flags);
++		return ret;
++	}
++
++	/* Configure 'ERASE_SECTOR' sequence */
++	stfsm_prepare_erasesec_seq(fsm, &stfsm_seq_erase_sector);
++
++	return 0;
++}
++
+ static int stfsm_n25q_config(struct stfsm *fsm)
+ {
+ 	uint32_t flags = fsm->info->flags;
+@@ -1150,6 +1182,10 @@ static int stfsm_probe(struct platform_device *pdev)
+ 		ret = info->config(fsm);
+ 		if (ret)
+ 			return ret;
++	} else {
++		ret = stfsm_prepare_rwe_seqs_default(fsm);
++		if (ret)
++			return ret;
+ 	}
  
-+/* Flash Commands */
-+#define FLASH_CMD_WREN         0x06
-+#define FLASH_CMD_WRDI         0x04
-+#define FLASH_CMD_RDID         0x9f
-+#define FLASH_CMD_RDSR         0x05
-+#define FLASH_CMD_RDSR2                0x35
-+#define FLASH_CMD_WRSR         0x01
-+#define FLASH_CMD_SE_4K                0x20
-+#define FLASH_CMD_SE_32K       0x52
-+#define FLASH_CMD_SE           0xd8
-+#define FLASH_CMD_CHIPERASE    0xc7
-+#define FLASH_CMD_WRVCR                0x81
-+#define FLASH_CMD_RDVCR                0x85
-+
-+#define FLASH_CMD_READ         0x03    /* READ */
-+#define FLASH_CMD_READ_FAST    0x0b    /* FAST READ */
-+#define FLASH_CMD_READ_1_1_2   0x3b    /* DUAL OUTPUT READ */
-+#define FLASH_CMD_READ_1_2_2   0xbb    /* DUAL I/O READ */
-+#define FLASH_CMD_READ_1_1_4   0x6b    /* QUAD OUTPUT READ */
-+#define FLASH_CMD_READ_1_4_4   0xeb    /* QUAD I/O READ */
-+
-+#define FLASH_CMD_WRITE                0x02    /* PAGE PROGRAM */
-+#define FLASH_CMD_WRITE_1_1_2  0xa2    /* DUAL INPUT PROGRAM */
-+#define FLASH_CMD_WRITE_1_2_2  0xd2    /* DUAL INPUT EXT PROGRAM */
-+#define FLASH_CMD_WRITE_1_1_4  0x32    /* QUAD INPUT PROGRAM */
-+#define FLASH_CMD_WRITE_1_4_4  0x12    /* QUAD INPUT EXT PROGRAM */
-+
-+#define FLASH_CMD_EN4B_ADDR    0xb7    /* Enter 4-byte address mode */
-+#define FLASH_CMD_EX4B_ADDR    0xe9    /* Exit 4-byte address mode */
-+
-+/* READ commands with 32-bit addressing (N25Q256 and S25FLxxxS) */
-+#define FLASH_CMD_READ4                0x13
-+#define FLASH_CMD_READ4_FAST   0x0c
-+#define FLASH_CMD_READ4_1_1_2  0x3c
-+#define FLASH_CMD_READ4_1_2_2  0xbc
-+#define FLASH_CMD_READ4_1_1_4  0x6c
-+#define FLASH_CMD_READ4_1_4_4  0xec
-+
-+/*
-+ * Flags to tweak operation of default read/write/erase routines
-+ */
-+#define CFG_READ_TOGGLE_32BIT_ADDR     0x00000001
-+#define CFG_WRITE_TOGGLE_32BIT_ADDR    0x00000002
-+#define CFG_WRITE_EX_32BIT_ADDR_DELAY  0x00000004
-+#define CFG_ERASESEC_TOGGLE_32BIT_ADDR 0x00000008
-+#define CFG_S25FL_CHECK_ERROR_FLAGS    0x00000010
-+
- struct stfsm {
- 	struct device		*dev;
- 	void __iomem		*base;
-@@ -208,6 +255,7 @@ struct stfsm {
- 	struct mutex		lock;
- 	struct flash_info       *info;
- 
-+	uint32_t                configuration;
- 	uint32_t                fifo_dir_delay;
- 	bool                    booted_from_spi;
- 	bool                    reset_signal;
-@@ -402,6 +450,49 @@ static struct seq_rw_config default_write_configs[] = {
- 	{0x00,			 0,			0, 0, 0, 0x00, 0, 0},
- };
- 
-+/*
-+ * [N25Qxxx] Configuration
-+ */
-+#define N25Q_VCR_DUMMY_CYCLES(x)	(((x) & 0xf) << 4)
-+#define N25Q_VCR_XIP_DISABLED		((uint8_t)0x1 << 3)
-+#define N25Q_VCR_WRAP_CONT		0x3
-+
-+/* N25Q 3-byte Address READ configurations
-+ *	- 'FAST' variants configured for 8 dummy cycles.
-+ *
-+ * Note, the number of dummy cycles used for 'FAST' READ operations is
-+ * configurable and would normally be tuned according to the READ command and
-+ * operating frequency.  However, this applies universally to all 'FAST' READ
-+ * commands, including those used by the SPIBoot controller, and remains in
-+ * force until the device is power-cycled.  Since the SPIBoot controller is
-+ * hard-wired to use 8 dummy cycles, we must configure the device to also use 8
-+ * cycles.
-+ */
-+static struct seq_rw_config n25q_read3_configs[] = {
-+	{FLASH_FLAG_READ_1_4_4, FLASH_CMD_READ_1_4_4,	0, 4, 4, 0x00, 0, 8},
-+	{FLASH_FLAG_READ_1_1_4, FLASH_CMD_READ_1_1_4,	0, 1, 4, 0x00, 0, 8},
-+	{FLASH_FLAG_READ_1_2_2, FLASH_CMD_READ_1_2_2,	0, 2, 2, 0x00, 0, 8},
-+	{FLASH_FLAG_READ_1_1_2, FLASH_CMD_READ_1_1_2,	0, 1, 2, 0x00, 0, 8},
-+	{FLASH_FLAG_READ_FAST,	FLASH_CMD_READ_FAST,	0, 1, 1, 0x00, 0, 8},
-+	{FLASH_FLAG_READ_WRITE, FLASH_CMD_READ,	        0, 1, 1, 0x00, 0, 0},
-+	{0x00,			0,			0, 0, 0, 0x00, 0, 0},
-+};
-+
-+/* N25Q 4-byte Address READ configurations
-+ *	- use special 4-byte address READ commands (reduces overheads, and
-+ *        reduces risk of hitting watchdog reset issues).
-+ *	- 'FAST' variants configured for 8 dummy cycles (see note above.)
-+ */
-+static struct seq_rw_config n25q_read4_configs[] = {
-+	{FLASH_FLAG_READ_1_4_4, FLASH_CMD_READ4_1_4_4,	0, 4, 4, 0x00, 0, 8},
-+	{FLASH_FLAG_READ_1_1_4, FLASH_CMD_READ4_1_1_4,	0, 1, 4, 0x00, 0, 8},
-+	{FLASH_FLAG_READ_1_2_2, FLASH_CMD_READ4_1_2_2,	0, 2, 2, 0x00, 0, 8},
-+	{FLASH_FLAG_READ_1_1_2, FLASH_CMD_READ4_1_1_2,	0, 1, 2, 0x00, 0, 8},
-+	{FLASH_FLAG_READ_FAST,	FLASH_CMD_READ4_FAST,	0, 1, 1, 0x00, 0, 8},
-+	{FLASH_FLAG_READ_WRITE, FLASH_CMD_READ4,	0, 1, 1, 0x00, 0, 0},
-+	{0x00,			0,			0, 0, 0, 0x00, 0, 0},
-+};
-+
- static struct stfsm_seq stfsm_seq_en_32bit_addr;/* Dynamically populated */
- 
- static struct stfsm_seq stfsm_seq_read_jedec = {
+ 	platform_set_drvdata(pdev, fsm);
 -- 
 1.8.3.2
