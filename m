@@ -1,15 +1,16 @@
-Received: from mail-wg0-f54.google.com ([74.125.82.54])
- by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WFm6g-0005m5-0q
- for linux-mtd@lists.infradead.org; Tue, 18 Feb 2014 14:57:12 +0000
-Received: by mail-wg0-f54.google.com with SMTP id l18so3309052wgh.21
- for <linux-mtd@lists.infradead.org>; Tue, 18 Feb 2014 06:56:49 -0800 (PST)
+Received: from mail-wg0-f53.google.com ([74.125.82.53])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WFm77-0007KJ-Tm
+ for linux-mtd@lists.infradead.org; Tue, 18 Feb 2014 14:57:40 +0000
+Received: by mail-wg0-f53.google.com with SMTP id x12so3320553wgg.8
+ for <linux-mtd@lists.infradead.org>; Tue, 18 Feb 2014 06:57:14 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 08/35] mtd: st_spi_fsm: Provide device look-up table
-Date: Tue, 18 Feb 2014 14:55:35 +0000
-Message-Id: <1392735362-1245-9-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 18/35] mtd: st_spi_fsm: Add a check to if the chip can handle
+ an SoC reset
+Date: Tue, 18 Feb 2014 14:55:45 +0000
+Message-Id: <1392735362-1245-19-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1392735362-1245-1-git-send-email-lee.jones@linaro.org>
 References: <1392735362-1245-1-git-send-email-lee.jones@linaro.org>
 Cc: Angus.Clark@st.com, lee.jones@linaro.org,
@@ -24,164 +25,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Supply a lookup table of all the devices we intend to support. This table
-is used to store device information such as; a human readable device name,
-their JEDEC ID (plus the extended version), sector size and amount, a bit
-store of a device's capabilities, its maximum running frequency and
-possible use of a per-device configuration call-back.
+Based on information we can obtain though platform specific data and/or
+chip capabilities we are able to determine whether or not we can handle
+a SoC reset or not. To find out why this is important please read the
+comment provided in the patch.
 
 Acked-by Angus Clark <angus.clark@st.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/devices/st_spi_fsm.c | 136 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 136 insertions(+)
+ drivers/mtd/devices/st_spi_fsm.c | 40 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
 
 diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index 2bfea2d..bc5ed352 100644
+index 3f5603c..b9e7061 100644
 --- a/drivers/mtd/devices/st_spi_fsm.c
 +++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -221,6 +221,142 @@ struct stfsm_seq {
- 	uint32_t seq_cfg;
- } __packed __aligned(4);
+@@ -210,6 +210,8 @@ struct stfsm {
  
-+/* SPI Flash Device Table */
-+struct flash_info {
-+	char            *name;
-+	/*
-+	 * JEDEC id zero means "no ID" (most older chips); otherwise it has
-+	 * a high byte of zero plus three data bytes: the manufacturer id,
-+	 * then a two byte device id.
-+	 */
-+	u32             jedec_id;
-+	u16             ext_id;
-+	/*
-+	 * The size listed here is what works with FLASH_CMD_SE, which isn't
-+	 * necessarily called a "sector" by the vendor.
-+	 */
-+	unsigned        sector_size;
-+	u16             n_sectors;
-+	u32             flags;
-+	/*
-+	 * Note, where FAST_READ is supported, freq_max specifies the
-+	 * FAST_READ frequency, not the READ frequency.
-+	 */
-+	u32             max_freq;
-+	int             (*config)(struct stfsm *);
-+};
+ 	uint32_t                fifo_dir_delay;
+ 	bool                    booted_from_spi;
++	bool                    reset_signal;
++	bool                    reset_por;
+ };
+ 
+ struct stfsm_seq {
+@@ -521,6 +523,40 @@ static void stfsm_read_fifo(struct stfsm *fsm, uint32_t *buf,
+ 	}
+ }
+ 
++/*
++ * SoC reset on 'boot-from-spi' systems
++ *
++ * Certain modes of operation cause the Flash device to enter a particular state
++ * for a period of time (e.g. 'Erase Sector', 'Quad Enable', and 'Enter 32-bit
++ * Addr' commands).  On boot-from-spi systems, it is important to consider what
++ * happens if a warm reset occurs during this period.  The SPIBoot controller
++ * assumes that Flash device is in its default reset state, 24-bit address mode,
++ * and ready to accept commands.  This can be achieved using some form of
++ * on-board logic/controller to force a device POR in response to a SoC-level
++ * reset or by making use of the device reset signal if available (limited
++ * number of devices only).
++ *
++ * Failure to take such precautions can cause problems following a warm reset.
++ * For some operations (e.g. ERASE), there is little that can be done.  For
++ * other modes of operation (e.g. 32-bit addressing), options are often
++ * available that can help minimise the window in which a reset could cause a
++ * problem.
++ *
++ */
++static bool stfsm_can_handle_soc_reset(struct stfsm *fsm)
++{
++	/* Reset signal is available on the board and supported by the device */
++	if (fsm->reset_signal && fsm->info->flags & FLASH_FLAG_RESET)
++		return true;
 +
-+static struct flash_info flash_types[] = {
-+	/*
-+	 * ST Microelectronics/Numonyx --
-+	 * (newer production versions may have feature updates
-+	 * (eg faster operating frequency)
-+	 */
-+#define M25P_FLAG (FLASH_FLAG_READ_WRITE | FLASH_FLAG_READ_FAST)
-+	{ "m25p40",  0x202013, 0,  64 * 1024,   8, M25P_FLAG, 25, NULL },
-+	{ "m25p80",  0x202014, 0,  64 * 1024,  16, M25P_FLAG, 25, NULL },
-+	{ "m25p16",  0x202015, 0,  64 * 1024,  32, M25P_FLAG, 25, NULL },
-+	{ "m25p32",  0x202016, 0,  64 * 1024,  64, M25P_FLAG, 50, NULL },
-+	{ "m25p64",  0x202017, 0,  64 * 1024, 128, M25P_FLAG, 50, NULL },
-+	{ "m25p128", 0x202018, 0, 256 * 1024,  64, M25P_FLAG, 50, NULL },
++	/* Board-level logic forces a power-on-reset */
++	if (fsm->reset_por)
++		return true;
 +
-+#define M25PX_FLAG (FLASH_FLAG_READ_WRITE      |	\
-+		    FLASH_FLAG_READ_FAST        |	\
-+		    FLASH_FLAG_READ_1_1_2       |	\
-+		    FLASH_FLAG_WRITE_1_1_2)
-+	{ "m25px32", 0x207116, 0,  64 * 1024,  64, M25PX_FLAG, 75, NULL },
-+	{ "m25px64", 0x207117, 0,  64 * 1024, 128, M25PX_FLAG, 75, NULL },
++	/* Reset is not properly handled and may result in failure to reboot */
++	return false;
++}
 +
-+#define MX25_FLAG (FLASH_FLAG_READ_WRITE       |	\
-+		   FLASH_FLAG_READ_FAST         |	\
-+		   FLASH_FLAG_READ_1_1_2        |	\
-+		   FLASH_FLAG_READ_1_2_2        |	\
-+		   FLASH_FLAG_READ_1_1_4        |	\
-+		   FLASH_FLAG_READ_1_4_4        |	\
-+		   FLASH_FLAG_SE_4K             |	\
-+		   FLASH_FLAG_SE_32K)
-+	{ "mx25l25635e", 0xc22019, 0, 64*1024, 512,
-+	  (MX25_FLAG | FLASH_FLAG_32BIT_ADDR | FLASH_FLAG_RESET), 70, NULL }
+ /* Configure 'addr_cfg' according to addressing mode */
+ static void stfsm_prepare_erasesec_seq(struct stfsm *fsm,
+ 				       struct stfsm_seq *seq)
+@@ -786,6 +822,10 @@ static void stfsm_fetch_platform_configs(struct platform_device *pdev)
+ 	if (IS_ERR(regmap))
+ 		goto boot_device_fail;
+ 
++	fsm->reset_signal = of_property_read_bool(np, "st,reset-signal");
 +
-+#define N25Q_FLAG (FLASH_FLAG_READ_WRITE       |	\
-+		   FLASH_FLAG_READ_FAST         |	\
-+		   FLASH_FLAG_READ_1_1_2        |	\
-+		   FLASH_FLAG_READ_1_2_2        |	\
-+		   FLASH_FLAG_READ_1_1_4        |	\
-+		   FLASH_FLAG_READ_1_4_4        |	\
-+		   FLASH_FLAG_WRITE_1_1_2       |	\
-+		   FLASH_FLAG_WRITE_1_2_2       |	\
-+		   FLASH_FLAG_WRITE_1_1_4       |	\
-+		   FLASH_FLAG_WRITE_1_4_4)
-+	{ "n25q128", 0x20ba18, 0, 64 * 1024,  256, N25Q_FLAG, 108, NULL },
-+	{ "n25q256", 0x20ba19, 0, 64 * 1024,  512,
-+	  N25Q_FLAG | FLASH_FLAG_32BIT_ADDR, 108, NULL },
++	fsm->reset_por = of_property_read_bool(np, "st,reset-por");
 +
-+	/*
-+	 * Spansion S25FLxxxP
-+	 *     - 256KiB and 64KiB sector variants (identified by ext. JEDEC)
-+	 */
-+#define S25FLXXXP_FLAG (FLASH_FLAG_READ_WRITE  |	\
-+			FLASH_FLAG_READ_1_1_2   |	\
-+			FLASH_FLAG_READ_1_2_2   |	\
-+			FLASH_FLAG_READ_1_1_4   |	\
-+			FLASH_FLAG_READ_1_4_4   |	\
-+			FLASH_FLAG_WRITE_1_1_4  |	\
-+			FLASH_FLAG_READ_FAST)
-+	{ "s25fl129p0", 0x012018, 0x4d00, 256 * 1024,  64, S25FLXXXP_FLAG, 80,
-+	  NULL },
-+	{ "s25fl129p1", 0x012018, 0x4d01,  64 * 1024, 256, S25FLXXXP_FLAG, 80,
-+	  NULL },
-+
-+	/*
-+	 * Spansion S25FLxxxS
-+	 *     - 256KiB and 64KiB sector variants (identified by ext. JEDEC)
-+	 *     - RESET# signal supported by die but not bristled out on all
-+	 *       package types.  The package type is a function of board design,
-+	 *       so this information is captured in the board's flags.
-+	 *     - Supports 'DYB' sector protection. Depending on variant, sectors
-+	 *       may default to locked state on power-on.
-+	 */
-+#define S25FLXXXS_FLAG (S25FLXXXP_FLAG         |	\
-+			FLASH_FLAG_RESET        |	\
-+			FLASH_FLAG_DYB_LOCKING)
-+	{ "s25fl128s0", 0x012018, 0x0300,  256 * 1024, 64, S25FLXXXS_FLAG, 80,
-+	  NULL },
-+	{ "s25fl128s1", 0x012018, 0x0301,  64 * 1024, 256, S25FLXXXS_FLAG, 80,
-+	  NULL },
-+	{ "s25fl256s0", 0x010219, 0x4d00, 256 * 1024, 128,
-+	  S25FLXXXS_FLAG | FLASH_FLAG_32BIT_ADDR, 80, NULL },
-+	{ "s25fl256s1", 0x010219, 0x4d01,  64 * 1024, 512,
-+	  S25FLXXXS_FLAG | FLASH_FLAG_32BIT_ADDR, 80, NULL },
-+
-+	/* Winbond -- w25x "blocks" are 64K, "sectors" are 4KiB */
-+#define W25X_FLAG (FLASH_FLAG_READ_WRITE       |	\
-+		   FLASH_FLAG_READ_FAST         |	\
-+		   FLASH_FLAG_READ_1_1_2        |	\
-+		   FLASH_FLAG_WRITE_1_1_2)
-+	{ "w25x40",  0xef3013, 0,  64 * 1024,   8, W25X_FLAG, 75, NULL },
-+	{ "w25x80",  0xef3014, 0,  64 * 1024,  16, W25X_FLAG, 75, NULL },
-+	{ "w25x16",  0xef3015, 0,  64 * 1024,  32, W25X_FLAG, 75, NULL },
-+	{ "w25x32",  0xef3016, 0,  64 * 1024,  64, W25X_FLAG, 75, NULL },
-+	{ "w25x64",  0xef3017, 0,  64 * 1024, 128, W25X_FLAG, 75, NULL },
-+
-+	/* Winbond -- w25q "blocks" are 64K, "sectors" are 4KiB */
-+#define W25Q_FLAG (FLASH_FLAG_READ_WRITE       |	\
-+		   FLASH_FLAG_READ_FAST         |	\
-+		   FLASH_FLAG_READ_1_1_2        |	\
-+		   FLASH_FLAG_READ_1_2_2        |	\
-+		   FLASH_FLAG_READ_1_1_4        |	\
-+		   FLASH_FLAG_READ_1_4_4        |	\
-+		   FLASH_FLAG_WRITE_1_1_4)
-+	{ "w25q80",  0xef4014, 0,  64 * 1024,  16, W25Q_FLAG, 80, NULL },
-+	{ "w25q16",  0xef4015, 0,  64 * 1024,  32, W25Q_FLAG, 80, NULL },
-+	{ "w25q32",  0xef4016, 0,  64 * 1024,  64, W25Q_FLAG, 80, NULL },
-+	{ "w25q64",  0xef4017, 0,  64 * 1024, 128, W25Q_FLAG, 80, NULL },
-+
-+	/* Sentinel */
-+	{ NULL, 0x000000, 0, 0, 0, 0, 0, NULL },
-+};
-+
- static struct stfsm_seq stfsm_seq_read_jedec = {
- 	.data_size = TRANSFER_SIZE(8),
- 	.seq_opc[0] = (SEQ_OPC_PADS_1 |
+ 	/* Where in the syscon the boot device information lives */
+ 	ret = of_property_read_u32(np, "st,boot-device-reg", &boot_device_reg);
+ 	if (ret)
 -- 
 1.8.3.2
