@@ -1,15 +1,16 @@
-Received: from mail-wi0-f182.google.com ([209.85.212.182])
+Received: from mail-we0-f175.google.com ([74.125.82.175])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WFm7U-00005K-5b
- for linux-mtd@lists.infradead.org; Tue, 18 Feb 2014 14:58:00 +0000
-Received: by mail-wi0-f182.google.com with SMTP id f8so3571702wiw.3
- for <linux-mtd@lists.infradead.org>; Tue, 18 Feb 2014 06:57:35 -0800 (PST)
+ id 1WFm7Q-0008WN-I8
+ for linux-mtd@lists.infradead.org; Tue, 18 Feb 2014 14:57:57 +0000
+Received: by mail-we0-f175.google.com with SMTP id q59so11625901wes.20
+ for <linux-mtd@lists.infradead.org>; Tue, 18 Feb 2014 06:57:32 -0800 (PST)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 26/35] mtd: st_spi_fsm: Write to Flash via the FSM FIFO
-Date: Tue, 18 Feb 2014 14:55:53 +0000
-Message-Id: <1392735362-1245-27-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 25/35] mtd: st_spi_fsm: Add the ability to read from a Serial
+ Flash device
+Date: Tue, 18 Feb 2014 14:55:52 +0000
+Message-Id: <1392735362-1245-26-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1392735362-1245-1-git-send-email-lee.jones@linaro.org>
 References: <1392735362-1245-1-git-send-email-lee.jones@linaro.org>
 Cc: Angus.Clark@st.com, lee.jones@linaro.org,
@@ -24,39 +25,139 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When we write data to the FIFO the FSM Controller subsequently writes
-that data out to the Serial Flash chip.
+When a read is issued by userspace the MTD framework calls back into
+the driver to conduct the actual command issue and data extraction.
+Here we provide the routines which do exactly that.
 
 Acked-by Angus Clark <angus.clark@st.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/devices/st_spi_fsm.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ drivers/mtd/devices/st_spi_fsm.c | 99 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 99 insertions(+)
 
 diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index e4815fe..ea55548 100644
+index fe538bb..e4815fe 100644
 --- a/drivers/mtd/devices/st_spi_fsm.c
 +++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -668,6 +668,20 @@ static void stfsm_read_fifo(struct stfsm *fsm, uint32_t *buf,
- 	}
+@@ -238,6 +238,9 @@
+ #define FLASH_CMD_READ4_1_1_4  0x6c
+ #define FLASH_CMD_READ4_1_4_4  0xec
+ 
++#define FLASH_PAGESIZE         256			/* In Bytes    */
++#define FLASH_PAGESIZE_32      (FLASH_PAGESIZE / 4)	/* In uint32_t */
++
+ /*
+  * Flags to tweak operation of default read/write/erase routines
+  */
+@@ -942,6 +945,100 @@ static int stfsm_n25q_config(struct stfsm *fsm)
+ 	return 0;
  }
  
-+static int stfsm_write_fifo(struct stfsm *fsm,
-+			    const uint32_t *buf, const uint32_t size)
++static int stfsm_read(struct stfsm *fsm, uint8_t *buf, uint32_t size,
++		      uint32_t offset)
 +{
-+	uint32_t words = size >> 2;
++	struct stfsm_seq *seq = &stfsm_seq_read;
++	uint32_t data_pads;
++	uint32_t read_mask;
++	uint32_t size_ub;
++	uint32_t size_lb;
++	uint32_t size_mop;
++	uint32_t tmp[4];
++	uint32_t page_buf[FLASH_PAGESIZE_32];
++	uint8_t *p;
 +
-+	dev_dbg(fsm->dev, "writing %d bytes to FIFO\n", size);
++	dev_dbg(fsm->dev, "reading %d bytes from 0x%08x\n", size, offset);
 +
-+	BUG_ON((((uint32_t)buf) & 0x3) || (size & 0x3));
++	/* Enter 32-bit address mode, if required */
++	if (fsm->configuration & CFG_READ_TOGGLE_32BIT_ADDR)
++		stfsm_enter_32bit_addr(fsm, 1);
 +
-+	writesl(fsm->base + SPI_FAST_SEQ_DATA_REG, buf, words);
++	/* Must read in multiples of 32 cycles (or 32*pads/8 Bytes) */
++	data_pads = ((seq->seq_cfg >> 16) & 0x3) + 1;
++	read_mask = (data_pads << 2) - 1;
 +
-+	return size;
++	/* Handle non-aligned buf */
++	p = ((uint32_t)buf & 0x3) ? (uint8_t *)page_buf : buf;
++
++	/* Handle non-aligned size */
++	size_ub = (size + read_mask) & ~read_mask;
++	size_lb = size & ~read_mask;
++	size_mop = size & read_mask;
++
++	seq->data_size = TRANSFER_SIZE(size_ub);
++	seq->addr1 = (offset >> 16) & 0xffff;
++	seq->addr2 = offset & 0xffff;
++
++	stfsm_load_seq(fsm, seq);
++
++	if (size_lb)
++		stfsm_read_fifo(fsm, (uint32_t *)p, size_lb);
++
++	if (size_mop) {
++		stfsm_read_fifo(fsm, tmp, read_mask + 1);
++		memcpy(p + size_lb, &tmp, size_mop);
++	}
++
++	/* Handle non-aligned buf */
++	if ((uint32_t)buf & 0x3)
++		memcpy(buf, page_buf, size);
++
++	/* Wait for sequence to finish */
++	stfsm_wait_seq(fsm);
++
++	stfsm_clear_fifo(fsm);
++
++	/* Exit 32-bit address mode, if required */
++	if (fsm->configuration & CFG_READ_TOGGLE_32BIT_ADDR)
++		stfsm_enter_32bit_addr(fsm, 0);
++
++	return 0;
 +}
 +
- static int stfsm_enter_32bit_addr(struct stfsm *fsm, int enter)
++/*
++ * Read an address range from the flash chip. The address range
++ * may be any size provided it is within the physical boundaries.
++ */
++static int stfsm_mtd_read(struct mtd_info *mtd, loff_t from, size_t len,
++			  size_t *retlen, u_char *buf)
++{
++	struct stfsm *fsm = dev_get_drvdata(mtd->dev.parent);
++	uint32_t bytes;
++
++	dev_dbg(fsm->dev, "%s from 0x%08x, len %zd\n",
++		__func__, (u32)from, len);
++
++	mutex_lock(&fsm->lock);
++
++	while (len > 0) {
++		bytes = min_t(size_t, len, FLASH_PAGESIZE);
++
++		stfsm_read(fsm, buf, bytes, from);
++
++		buf += bytes;
++		from += bytes;
++		len -= bytes;
++
++		if (retlen)
++			*retlen += bytes;
++	}
++
++	mutex_unlock(&fsm->lock);
++
++	return 0;
++}
++
+ static void stfsm_read_jedec(struct stfsm *fsm, uint8_t *const jedec)
  {
- 	struct stfsm_seq *seq = &stfsm_seq_en_32bit_addr;
+ 	const struct stfsm_seq *seq = &stfsm_seq_read_jedec;
+@@ -1198,6 +1295,8 @@ static int stfsm_probe(struct platform_device *pdev)
+ 	fsm->mtd.size		= info->sector_size * info->n_sectors;
+ 	fsm->mtd.erasesize	= info->sector_size;
+ 
++	fsm->mtd._read  = stfsm_mtd_read;
++
+ 	dev_err(&pdev->dev,
+ 		"Found serial flash device: %s\n"
+ 		" size = %llx (%lldMiB) erasesize = 0x%08x (%uKiB)\n",
 -- 
 1.8.3.2
