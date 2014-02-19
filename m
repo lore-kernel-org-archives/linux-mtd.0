@@ -1,23 +1,24 @@
-Received: from mail-qg0-f45.google.com ([209.85.192.45])
+Received: from mail.windriver.com ([147.11.1.11])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WGC7s-00048h-3m
- for linux-mtd@lists.infradead.org; Wed, 19 Feb 2014 18:44:09 +0000
-Received: by mail-qg0-f45.google.com with SMTP id j5so1465561qga.4
- for <linux-mtd@lists.infradead.org>; Wed, 19 Feb 2014 10:43:42 -0800 (PST)
+ id 1WGFwI-0002uB-NT
+ for linux-mtd@lists.infradead.org; Wed, 19 Feb 2014 22:48:31 +0000
+From: Paul Gortmaker <paul.gortmaker@windriver.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH v2] powerpc: select MEMORY for FSL_IFC to not break existing
+ .config files
+Date: Wed, 19 Feb 2014 17:46:40 -0500
+Message-ID: <1392850000-4601-1-git-send-email-paul.gortmaker@windriver.com>
+In-Reply-To: <1392848350.6733.809.camel@snotra.buserror.net>
+References: <1392848350.6733.809.camel@snotra.buserror.net>
 MIME-Version: 1.0
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EA83D17@DBDE04.ent.ti.com>
-References: <CAAEAJfD4ddT0Av3ia-+hEf0aXKcyUK4j69YF-t=qTCLkum4a8A@mail.gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73EA83D17@DBDE04.ent.ti.com>
-Date: Wed, 19 Feb 2014 15:43:42 -0300
-Message-ID: <CAAEAJfD1Wh2qvf2mwikeBu=4h_TaHwrWGzpZNchXWV=1CDP3EA@mail.gmail.com>
-Subject: Re: Question about AM335x SoC supported NAND flash
-From: =?ISO-8859-1?Q?Ezequiel_Garc=EDa?= <ezequiel@vanguardiasur.com.ar>
-To: "Gupta, Pekon" <pekon@ti.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: Stefan Roese <sr@denx.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Daniel Mack <zonque@gmail.com>
+Content-Type: text/plain
+Cc: Arnd Bergmann <arnd@arndb.de>,
+ Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+ Paul Gortmaker <paul.gortmaker@windriver.com>, linux-next@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Scott Wood <scottwood@freescale.com>,
+ Paul Mackerras <paulus@samba.org>, linuxppc-dev@lists.ozlabs.org,
+ David Woodhouse <dwmw2@infradead.org>,
+ Prabhakar Kushwaha <prabhakar@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,38 +28,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Pekon,
+commit d2ae2e20fbdde5a65f3a5a153044ab1e5c53f7cc ("driver/memory:Move
+Freescale IFC driver to a common driver") introduces this build
+regression into the mpc85xx_defconfig:
 
-On 19 February 2014 14:55, Gupta, Pekon <pekon@ti.com> wrote:
-[..]
->>
->>Accessing it from U-Boot and Linux works just fine, apparently in ECC BCH=
-8 mode.
->>
->>However, we cannot get the SoC to boot from NAND. We've double-checked
->>the hardware
->>and the SYSBOOT, but still no luck with it.
->>
-> It's a 4K pagesize device with OOBsize=3D128, so ROM code expects BCH16 E=
-CC scheme
-> to boot SPL. Though I have locally tested BCH16 support for both u-boot a=
-nd kernel,
-> And even booted end-to-end using BCH16 on beaglebone with 4K page NAND ca=
-pe,
-> But that's all locally..
-> Many prior dependent patches are still awaiting acceptance in mainline li=
-st.
->
+ drivers/built-in.o: In function `fsl_ifc_nand_remove':
+ drivers/mtd/nand/fsl_ifc_nand.c:1147: undefined reference to `fsl_ifc_ctrl_dev'
+ drivers/mtd/nand/fsl_ifc_nand.c:1147: undefined reference to `fsl_ifc_ctrl_dev'
+ drivers/built-in.o: In function `fsl_ifc_nand_probe':
+ drivers/mtd/nand/fsl_ifc_nand.c:1031: undefined reference to `fsl_ifc_ctrl_dev'
+ drivers/mtd/nand/fsl_ifc_nand.c:1031: undefined reference to `fsl_ifc_ctrl_dev'
+ drivers/built-in.o: In function `match_bank':
+ drivers/mtd/nand/fsl_ifc_nand.c:1013: undefined reference to `convert_ifc_address'
+ drivers/built-in.o: In function `fsl_ifc_nand_probe':
+ drivers/mtd/nand/fsl_ifc_nand.c:1059: undefined reference to `fsl_ifc_ctrl_dev'
+ drivers/mtd/nand/fsl_ifc_nand.c:1080: undefined reference to `fsl_ifc_ctrl_dev'
+ drivers/mtd/nand/fsl_ifc_nand.c:1069: undefined reference to `fsl_ifc_ctrl_dev'
+ drivers/mtd/nand/fsl_ifc_nand.c:1069: undefined reference to `fsl_ifc_ctrl_dev'
+ make: *** [vmlinux] Error 1
 
-Ah... so that would explain our complete failure.
+This happens because there is nothing to descend us into the
+drivers/memory directory in the mpc85xx_defconfig.  It wasn't
+selecting CONFIG_MEMORY.  So we never built drivers/memory/fsl_ifc.o
+and so we have nothing to link the above symbols against.
 
-Could you send me some draft patches or event just the entire driver
-or at least point me to some git repo?
+Since the goal of the original commit was to relocate the driver to
+an arch independent location, it only makes sense to relocate the
+Kconfig setting there as well.  But that alone won't fix the build
+failure; for that we ensure whoever selects FSL_IFC also selects MEMORY.
 
-This issue is currently blocking us from shipping the board to my office
-so we can continue with the rest of the broad bring-up.
+Cc: Prabhakar Kushwaha <prabhakar@freescale.com>
+Cc: Scott Wood <scottwood@freescale.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+---
 
-Huge thanks for your answer! I almost went crazy with this :-)
---=20
-Ezequiel Garc=EDa, VanguardiaSur
-www.vanguardiasur.com.ar
+[v2: fix the mislocated FSL_IFC as per Scott's comment.  It still
+ probably makes sense to go in via Greg's char-misc/char-misc-next
+ (vs. powerpc-next) since that is where the regression was introduced.]
+
+ arch/powerpc/Kconfig     | 4 ----
+ drivers/memory/Kconfig   | 4 ++++
+ drivers/mtd/nand/Kconfig | 1 +
+ 3 files changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index 957bf344c0f5..b9fcecc706ab 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -736,10 +736,6 @@ config FSL_LBC
+ 	  controller.  Also contains some common code used by
+ 	  drivers for specific local bus peripherals.
+ 
+-config FSL_IFC
+-	bool
+-        depends on FSL_SOC
+-
+ config FSL_GTM
+ 	bool
+ 	depends on PPC_83xx || QUICC_ENGINE || CPM2
+diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
+index 29a11db365bc..a3640fe9852f 100644
+--- a/drivers/memory/Kconfig
++++ b/drivers/memory/Kconfig
+@@ -50,4 +50,8 @@ config TEGRA30_MC
+ 	  analysis, especially for IOMMU/SMMU(System Memory Management
+ 	  Unit) module.
+ 
++config FSL_IFC
++	bool
++	depends on FSL_SOC
++
+ endif
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 90ff447bf043..a4bee41ad5cb 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -428,6 +428,7 @@ config MTD_NAND_FSL_IFC
+ 	tristate "NAND support for Freescale IFC controller"
+ 	depends on MTD_NAND && FSL_SOC
+ 	select FSL_IFC
++	select MEMORY
+ 	help
+ 	  Various Freescale chips e.g P1010, include a NAND Flash machine
+ 	  with built-in hardware ECC capabilities.
+-- 
+1.8.5.2
