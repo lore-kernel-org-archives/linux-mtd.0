@@ -1,20 +1,31 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WGBNA-0002T7-Cq
- for linux-mtd@lists.infradead.org; Wed, 19 Feb 2014 17:55:53 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: =?iso-8859-1?Q?Ezequiel_Garc=EDa?= <ezequiel@vanguardiasur.com.ar>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Stefan Roese <sr@denx.de>, Daniel Mack <zonque@gmail.com>
-Subject: RE: Question about AM335x SoC supported NAND flash
-Date: Wed, 19 Feb 2014 17:55:21 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EA83D17@DBDE04.ent.ti.com>
-References: <CAAEAJfD4ddT0Av3ia-+hEf0aXKcyUK4j69YF-t=qTCLkum4a8A@mail.gmail.com>
-In-Reply-To: <CAAEAJfD4ddT0Av3ia-+hEf0aXKcyUK4j69YF-t=qTCLkum4a8A@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Date: Wed, 19 Feb 2014 18:11:52 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+Subject: Re: [PATCH v5 2/2] memory: ti-aemif: add bindings for AEMIF driver
+Message-ID: <20140219181152.GG25079@e106331-lin.cambridge.arm.com>
+References: <1392817210-14312-1-git-send-email-ivan.khoronzhuk@ti.com>
+ <1392817210-14312-3-git-send-email-ivan.khoronzhuk@ti.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1392817210-14312-3-git-send-email-ivan.khoronzhuk@ti.com>
+Content-Language: en-US
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "grygorii.strashko@ti.com" <grygorii.strashko@ti.com>,
+ "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>,
+ Pawel Moll <Pawel.Moll@arm.com>,
+ "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>,
+ "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+ "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>,
+ "nsekhar@ti.com" <nsekhar@ti.com>,
+ "galak@kernel.crashing.org" <galak@kernel.crashing.org>,
+ "rob.herring@calxeda.com" <rob.herring@calxeda.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "santosh.shilimkar@ti.com" <santosh.shilimkar@ti.com>,
+ "rob@landley.net" <rob@landley.net>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,40 +35,108 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ezequiel,
+On Wed, Feb 19, 2014 at 01:40:10PM +0000, Ivan Khoronzhuk wrote:
+> Add bindings for TI Async External Memory Interface (AEMIF) controller.
+> 
+> The Async External Memory Interface (EMIF16/AEMIF) controller is intended to
+> provide a glue-less interface to a variety of asynchronous memory devices like
+> ASRA M, NOR and NAND memory. A total of 256M bytes of any of these memories
+> can be accessed via 4 chip selects with 64M byte access per chip select.
+> 
+> We are not encoding CS number in reg property, it's memory partition number.
+> The CS number is encoded for Davinci NAND node using standalone property
+> "ti,davinci-chipselect" and we need to provide two memory ranges to it,
+> as result we can't encode CS number in "reg" for AEMIF child devices
+> (NAND/NOR/etc), as it will break bindings compatibility.
+> 
+> In this patch, NAND node is used just as an example of child node.
+> 
+> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+> ---
+>  .../bindings/memory-controllers/ti-aemif.txt       | 210 +++++++++++++++++++++
+>  1 file changed, 210 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/memory-controllers/ti-aemif.txt
 
->From: Ezequiel Garc=EDa [mailto:ezequiel@vanguardiasur.com.ar]
->
->Hi guys,
->
->We're developing a custom AM335x-based board, which is meant to boot from =
-NAND.
->
->The flash device is a Micron MT29F8G08ABABA NAND. This device is ONFI-comp=
-liant
->and has 4 KiB page size, 512 KiB block size.
->
->Accessing it from U-Boot and Linux works just fine, apparently in ECC BCH8=
- mode.
->
->However, we cannot get the SoC to boot from NAND. We've double-checked
->the hardware
->and the SYSBOOT, but still no luck with it.
->
-It's a 4K pagesize device with OOBsize=3D128, so ROM code expects BCH16 ECC=
- scheme
-to boot SPL. Though I have locally tested BCH16 support for both u-boot and=
- kernel,
-And even booted end-to-end using BCH16 on beaglebone with 4K page NAND cape=
-,
-But that's all locally..=20
-Many prior dependent patches are still awaiting acceptance in mainline list=
-.
+[...]
 
-For BCH16 u-boot configs (but driver support is still lacking in mainline u=
--boot):
-[1] https://processors.wiki.ti.com/index.php/Linux_Core_NAND_User%27s_Guide=
-#ECC_schemes_support
+> +- ranges:		Contains memory regions. There are two types of
+> +			ranges/partitions:
+> +			- CS-specific partition/range. If continuous, must be
+> +			set up to reflect the memory layout for 4 chipselects,
+> +			if not then additional range/partition can be added and
+> +			child device can select the proper one.
+> +			- control partition which is common for all CS
+> +			interfaces.
 
+This really doesn't sound anything like the typical meaning of ranges on
+a bus.
 
-with regards, pekon
+Why isn't this information encoded in reg properties on the child nodes?
+
+[...]
+
+> +- ti,cs-ss:		enable/disable select strobe mode
+> +				In select strobe mode chip select behaves as
+> +				the strobe and is active only during the strobe
+> +				period. If present then enable.
+> +
+> +- ti,cs-ew:		enable/disable extended wait mode
+> +				if set, the controller monitors the EMIFWAIT pin
+> +				mapped to that chip select to determine if the
+> +				device wants to extend the strobe period. If
+> +				present then enable.
+
+When would you have these two in the DT and when wouldn't you? Why can't
+the driver decide?
+
+These names are also opaque. We can clearly do better.
+
+> +
+> +- ti,cs-ta:		minimum turn around time, ns
+> +				Time between the end of one asynchronous memory
+> +				access and the start of another asynchronous
+> +				memory access. This delay is not incurred
+> +				between a read followed by read or a write
+> +				followed by a write to same chip select.
+
+The name is opaque. How about ti,min-turnaround-time-ns ?
+
+> +
+> +- ti,cs-rsetup:		read setup width, ns
+> +				Time between the beginning of a memory cycle
+> +				and the activation of read strobe.
+> +				Minimum value is 1 (0 treated as 1).
+> +
+> +- ti,cs-rstobe:		read strobe width, ns
+> +				Time between the activation and deactivation of
+> +				the read strobe.
+> +				Minimum value is 1 (0 treated as 1).
+> +
+> +- ti,cs-rhold:		read hold width, ns
+> +				Time between the deactivation of the read
+> +				strobe and the end of the cycle (which may be
+> +				either an address change or the deactivation of
+> +				the chip select signal.
+> +				Minimum value is 1 (0 treated as 1).
+> +
+> +- ti,cs-wsetup:		write setup width, ns
+> +				Time between the beginning of a memory cycle
+> +				and the activation of write strobe.
+> +				Minimum value is 1 (0 treated as 1).
+> +
+> +- ti,cs-wstrobe:	write strobe width, ns
+> +				Time between the activation and deactivation of
+> +				the write strobe.
+> +				Minimum value is 1 (0 treated as 1).
+> +
+> +- ti,cs-whold:		write hold width, ns
+> +				Time between the deactivation of the write
+> +				strobe and the end of the cycle (which may be
+> +				either an address change or the deactivation of
+> +				the chip select signal.
+> +				Minimum value is 1 (0 treated as 1).
+
+Likewise I think these can be given more descriptive names.
+
+Thanks,
+Mark.
