@@ -1,23 +1,18 @@
-Received: from [2001:41c8:1:5384::2] (helo=cassiel.sirena.org.uk)
+Received: from mail-qa0-f46.google.com ([209.85.216.46])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WG8DS-0002fb-Lq
- for linux-mtd@lists.infradead.org; Wed, 19 Feb 2014 14:33:39 +0000
-Date: Wed, 19 Feb 2014 23:13:10 +0900
-From: Mark Brown <broonie@kernel.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Message-ID: <20140219141310.GB2669@sirena.org.uk>
-References: <CAMuHMdUY+XEqKYh7mMOYUV18PpR+7SFw+BEUFh-9yL=H6reQkA@mail.gmail.com>
- <CAMuHMdWkPxp2U=Xz=wWu70RPxj+4GGCyifdPv=xL=47cz_upBw@mail.gmail.com>
- <20140219130407.GR2669@sirena.org.uk>
- <CAMuHMdWRd075tEDfvtWfkQ-7dECT0y14qxQpbyKMs5v3GDYRAA@mail.gmail.com>
+ id 1WG9dP-0006Rh-MC
+ for linux-mtd@lists.infradead.org; Wed, 19 Feb 2014 16:04:32 +0000
+Received: by mail-qa0-f46.google.com with SMTP id k15so727917qaq.5
+ for <linux-mtd@lists.infradead.org>; Wed, 19 Feb 2014 08:04:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="zmgb5/Qq281vq2QH"
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdWRd075tEDfvtWfkQ-7dECT0y14qxQpbyKMs5v3GDYRAA@mail.gmail.com>
-Subject: Re: spi: Provide core support for full duplex devices
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
- linux-spi <linux-spi@vger.kernel.org>
+Date: Wed, 19 Feb 2014 13:04:03 -0300
+Message-ID: <CAAEAJfD4ddT0Av3ia-+hEf0aXKcyUK4j69YF-t=qTCLkum4a8A@mail.gmail.com>
+Subject: Question about AM335x SoC supported NAND flash
+From: =?ISO-8859-1?Q?Ezequiel_Garc=EDa?= <ezequiel@vanguardiasur.com.ar>
+To: linux-mtd@lists.infradead.org, Stefan Roese <sr@denx.de>,
+ Daniel Mack <zonque@gmail.com>, Pekon Gupta <pekon@ti.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,52 +22,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi guys,
 
---zmgb5/Qq281vq2QH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+We're developing a custom AM335x-based board, which is meant to boot from N=
+AND.
 
-On Wed, Feb 19, 2014 at 02:32:28PM +0100, Geert Uytterhoeven wrote:
-> On Wed, Feb 19, 2014 at 2:04 PM, Mark Brown <broonie@kernel.org> wrote:
+The flash device is a Micron MT29F8G08ABABA NAND. This device is ONFI-compl=
+iant
+and has 4 KiB page size, 512 KiB block size.
 
-> > This is a particularly thoughtless hardware design it has to be said.
+Accessing it from U-Boot and Linux works just fine, apparently in ECC BCH8 =
+mode.
 
-> Do you mean the fact that you need to transmit dummy data on this particular
-> hardware, or that you need to know the direction for Dual/Quad transfers,
-> and don't need dummy data for the latter?
+However, we cannot get the SoC to boot from NAND. We've double-checked
+the hardware
+and the SYSBOOT, but still no luck with it.
 
-The combination of the two, clearly the hardware can actually cope with
-an empty transmit FIFO.
+So, I thought about asking here, in case this device is (for some
+reason) not supported by the
+ROM code booting. Maybe someone already struggled with this and has
+some idea to suggest?
 
-> > That's readily fixable for DMA capable drivers, we can just repeatedly
-> > transfer the same page (or whatever).  PIO drivers have big problems
+Thanks!
 
-> So let's hope all DMA-capable hardware has scatter/gather support, or an
-> IOMMU ;-)
-
-You can emulate scatter/gather well enough for most SPI controllers
-anyway.
-
---zmgb5/Qq281vq2QH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTBLvyAAoJELSic+t+oim9cGQP/jz9L16P7jw9IbQrzfutJh2P
-y55rMKn0sOl+qWg7Q02J1E4havaxOdEgQcfsLj1F5MWM+OfQ7ni2xJnq+fubW6/t
-rwxfSjar55Pw00eRGO67nz+42wsE2/C5ZdtuZlH7t+jxOAYrr2MEGx2SqYclfKD/
-HaNPuVcPYL3r/HdHZM/D3k2dqc/inIUwdDxkHYBfMkFTM2qHAbFRf4VyGiXbuyDw
-bOk3M9PMetNIWOQRcgXmxYIt8ubqBCVnyvrTRH9ahvIjDkyZnpOYbHzYetBITAgS
-/NdZfVF5F8jr5X4lk6PwZB2vmYJn1CBR+FmQlbaUsjZiscq1FDyqdUkKauWpVAXF
-hFHNiXxvLaHJUy5TDOQfhI2gBvuc7nVu/msNUmBNfv/ES5jJS+8eOI2p44++s8yo
-8RVmLzP6SrcgbmUgCJutNy55ORYq7woJ4+HqiHPdcZobJHW9NsVgYeShPZKm6oMS
-HHoMRpUpf3V8Co6rHHrRD5wXwE2CXJwe90OZiM2q9umgqfHLn5ANk6BA8a0Wfl9J
-ed2j+zrONUTsUTk5LEH4q85FXUQBUjkI/ZcrskDUP26CkZbVBaG+yGuyIELZyzYl
-7OURBZoUfZsR2tNvCaTrlwD5y7yuTNS1D/n0a+0UMZQlcXPxpU4ZLIAW8Nf2u2Je
-7GpqYYJyQW2zRQdkzSw3
-=lL0Y
------END PGP SIGNATURE-----
-
---zmgb5/Qq281vq2QH--
+PS: I'm sending this a to few developers I remember to have worked on this =
+SoC.
+Hope you don't mind!
+--=20
+Ezequiel Garc=EDa, VanguardiaSur
+www.vanguardiasur.com.ar
