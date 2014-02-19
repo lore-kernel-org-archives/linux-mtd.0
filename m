@@ -1,23 +1,23 @@
-Received: from ch1ehsobe006.messaging.microsoft.com ([216.32.181.186]
- helo=ch1outboundpool.messaging.microsoft.com)
+Received: from mail-pb0-x22c.google.com ([2607:f8b0:400e:c01::22c])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WG6CH-0006O8-0o
- for linux-mtd@lists.infradead.org; Wed, 19 Feb 2014 12:24:18 +0000
-Date: Wed, 19 Feb 2014 19:40:41 +0800
-From: Huang Shijie <b32955@freescale.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH resend] ubi: attach: do not return -EINVAL if the
- mtd->numeraseregions is 1
-Message-ID: <20140219114039.GA1798@shlinux2.ap.freescale.net>
-References: <1392365295-19299-1-git-send-email-b32955@freescale.com>
- <1392369532.12215.61.camel@sauron.fi.intel.com>
- <20140214091148.GA30044@shlinux2.ap.freescale.net>
- <1392376974.12215.78.camel@sauron.fi.intel.com>
+ id 1WG7Gd-0000Ir-Pz
+ for linux-mtd@lists.infradead.org; Wed, 19 Feb 2014 13:32:53 +0000
+Received: by mail-pb0-f44.google.com with SMTP id rq2so386952pbb.17
+ for <linux-mtd@lists.infradead.org>; Wed, 19 Feb 2014 05:32:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1392376974.12215.78.camel@sauron.fi.intel.com>
-Cc: linux-mtd@lists.infradead.org
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <20140219130407.GR2669@sirena.org.uk>
+References: <CAMuHMdUY+XEqKYh7mMOYUV18PpR+7SFw+BEUFh-9yL=H6reQkA@mail.gmail.com>
+ <CAMuHMdWkPxp2U=Xz=wWu70RPxj+4GGCyifdPv=xL=47cz_upBw@mail.gmail.com>
+ <20140219130407.GR2669@sirena.org.uk>
+Date: Wed, 19 Feb 2014 14:32:28 +0100
+Message-ID: <CAMuHMdWRd075tEDfvtWfkQ-7dECT0y14qxQpbyKMs5v3GDYRAA@mail.gmail.com>
+Subject: Re: spi: Provide core support for full duplex devices
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
+ linux-spi <linux-spi@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,45 +27,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Feb 14, 2014 at 01:22:54PM +0200, Artem Bityutskiy wrote:
-> On Fri, 2014-02-14 at 17:11 +0800, Huang Shijie wrote:
-> > But if we do not have any _slave_ partitions, we will only have one
-> > master partition.
-> > and the numeraseregions is kept. this is the case i meet.
-> 
-> Why you prefer to change UBI instead of changing MTD so that master
-> partitions with no slave partitions would have numeraseregions=0.
+On Wed, Feb 19, 2014 at 2:04 PM, Mark Brown <broonie@kernel.org> wrote:
+> On Tue, Feb 18, 2014 at 10:59:09AM +0100, Geert Uytterhoeven wrote:
+>
+>> For Dual/Quad transfers, which are half-duplex, the buffer pointer for the
+>> unused direction must be NULL, so the driver knows in which direction to
+>> transfer. Hence SPI_MASTER_MUST_TX cannot be set for Dual/Quad
+>> capable SPI master.
+>
+> This is a particularly thoughtless hardware design it has to be said.
 
-the master partition's numeraseregions is get from the code, such as
-cfi_amdstd_setup. In other word, the numeraseregions is get from the
-probe.
+Do you mean the fact that you need to transmit dummy data on this particular
+hardware, or that you need to know the direction for Dual/Quad transfers,
+and don't need dummy data for the latter?
 
-i do not think change the MTD is a good idea.
+It actually makes sense from a hardware point of view:
+  - Single SPI transfers are full-duplex. For every bit of output, there's a bit
+    of input. As this is SPI master, not slave, the master controls everything
+    based on the availability of data in the output FIFO.
+  - Dual/Quad SPI transfers are half duplex:
+      Transmission is controlled by the master, based on the availability of
+      data in the output FIFO.
+      Reception is also controlled by the master, but as there's no data to
+      output, this is handled based on the amount of space in the RX FIFO.
 
-> 
-> And frankly, I did not clearly understand your answer.
-sorry.
+>> I'm also worried about the buffer allocation. With m25p80 and mtchar, the
+>> transfer buffer can be quite large (up to 4 MiB in my case), and this can be
+>> triggered from userspace.
+>
+> That's readily fixable for DMA capable drivers, we can just repeatedly
+> transfer the same page (or whatever).  PIO drivers have big problems
 
-> 
-> And what erase regions have to do with master/slave?
-> 
-> Correct me if I am wrong below.
-> 
-> The erase region concept belongs to the flash chip. Some chips have
-> special regions, for some special purposes, and these, typically small,
-> regions have a bit different geometry.
-agree.
+So let's hope all DMA-capable hardware has scatter/gather support, or an
+IOMMU ;-)
 
-> 
-> Master/slave is a purely software concept. I never clearly understood
-> the model, but this is something related to partitions. We have a master
-> MTD device representing the entire chip, and slave MTD devices
-> representing partitions.
-The slave is purely software concept.
+>> Concluding, for PIO mode, I'm still in favor of using
+>
+>>     data = tx_buf ? *tx_buf++ : DUMMY_DATA;
+>
+>> in the SPI master driver itself.
+>
+> With the ternery operator for legibility of course.
 
-But the master has some information from the chip, as you said, such as
-the numeraseregions, the size of the flash.
+You forgot the smiley ;-)
 
+While in general I care a lot about readability (code is read more than it's
+written), using a ternary operator for chosing between valid data and a
+dummy zero is fine, IMHO.
 
-thanks
-Huang Shijie
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
