@@ -1,21 +1,22 @@
-Received: from szxga01-in.huawei.com ([119.145.14.64])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WG2Bt-00077l-Sa
- for linux-mtd@lists.infradead.org; Wed, 19 Feb 2014 08:07:39 +0000
-Message-ID: <53046578.9080905@huawei.com>
-Date: Wed, 19 Feb 2014 16:04:08 +0800
-From: Li Zefan <lizefan@huawei.com>
+Message-ID: <53048822.2080307@ti.com>
+Date: Wed, 19 Feb 2014 12:32:02 +0200
+From: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [patch 2/4] jffs2: fix unbalanced locking
-References: <20140212204455.B3FD75A40F6@corp2gmr1-2.hot.corp.google.com>
- <20140213064847.GF3500@norris-Latitude-E6410> <52FC81E4.2020301@huawei.com>
- <20140214070122.GG3500@norris-Latitude-E6410>
-In-Reply-To: <20140214070122.GG3500@norris-Latitude-E6410>
-Content-Type: text/plain; charset="ISO-8859-1"
+To: Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v4 1/2] memory: ti-aemif: introduce AEMIF driver
+References: <1391629574-18955-1-git-send-email-ivan.khoronzhuk@ti.com>
+ <1391629574-18955-2-git-send-email-ivan.khoronzhuk@ti.com>
+ <20140218203049.GA18647@kroah.com>
+In-Reply-To: <20140218203049.GA18647@kroah.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, artem.bityutskiy@linux.intel.com,
- akpm@linux-foundation.org, dwmw2@infradead.org, stable@vger.kernel.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, grygorii.strashko@ti.com,
+ linux@arm.linux.org.uk, pawel.moll@arm.com, swarren@wwwdotorg.org,
+ ijc+devicetree@hellion.org.uk, nsekhar@ti.com, galak@kernel.crashing.org,
+ rob.herring@calxeda.com, linux-kernel@vger.kernel.org,
+ "\[initial author\] Murali Karicheri" <m-karicheri2@ti.com>,
+ santosh.shilimkar@ti.com, rob@landley.net, linux-mtd@lists.infradead.org,
+ dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,63 +26,273 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->>> BTW, the right way to handle lock balancing is to handle the unlocking
->>> at the same level where you do the locking. So I guess you're looking
->>> for the following patch instead, which is really not very useful because
->>> (as Li noted) the lock is freed immediately afterward anyway:
->>>
+On 02/18/2014 10:30 PM, Greg KH wrote:
+> On Wed, Feb 05, 2014 at 09:46:13PM +0200, Ivan Khoronzhuk wrote:
+>> Add new AEMIF driver for EMIF16 Texas Instruments controller.
+>> The EMIF16 module is intended to provide a glue-less interface to
+>> a variety of asynchronous memory devices like ASRA M, NOR and NAND
+>> memory. A total of 256M bytes of any of these memories can be
+>> accessed at any given time via 4 chip selects with 64M byte access
+>> per chip select.
 >>
->> Yeah, I do believe it's better to do locking/unlocking in the same level.
->> How about this:
+>> Synchronous memories such as DDR1 SD RAM, SDR SDRAM and Mobile SDR
+>> are not supported.
 >>
->> [PATCH v2] jffs2: fix unbalanced locking
-> [...]
->> diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
->> index 386303d..6f22234 100644
->> --- a/fs/jffs2/readinode.c
->> +++ b/fs/jffs2/readinode.c
-> [...]
->> @@ -1317,8 +1308,13 @@ static int jffs2_do_read_inode_internal(struct jffs2_sb_info *c,
->>  	}
->>  	if (f->inocache->state == INO_STATE_READING)
->>  		jffs2_set_inocache_state(c, f->inocache, INO_STATE_PRESENT);
->> -
->> -	return 0;
->> +out:
->> +	if (ret) {
->> +		mutex_unlock(&f->sem);
->> +		jffs2_do_clear_inode(c, f);
->> +		mutex_lock(&f->sem);
-> 
-> This still is not consistent, and this access pattern (unlock / call
-> function which uses lock / lock) seems like a hack. How about we just
-> make the callers all do the same cleanup instead? Notice the 'error'
-> label in jffs2_iget(), which performs the jffs2_do_clear_inode() itself
-> already -- seemingly redundant. At least your patch doesn't add double
-> unlocks this time...
-> 
+>> This controller is used on SoCs like Davinci, Keysone2
+>>
+>> Acked-by: Santosh Shilimkar <santosh.shilimkar@ti.com
+>> Signed-off-by: [initial author] Murali Karicheri <m-karicheri2@ti.com>
+> What's this [] stuff?
+>
+> If Murali wrote this, that name needs to be in a "From:" line in the
+> patch to properly attribute it, and drop the [] here.
+
+Ok, I'll delete [] stuff.
+
+>> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+>> ---
+>>   drivers/memory/Kconfig    |  11 ++
+>>   drivers/memory/Makefile   |   1 +
+>>   drivers/memory/ti-aemif.c | 429 ++++++++++++++++++++++++++++++++++++++++++++++
+>>   3 files changed, 441 insertions(+)
+>>   create mode 100644 drivers/memory/ti-aemif.c
+>>
+>> diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
+>> index 29a11db..7bc3982 100644
+>> --- a/drivers/memory/Kconfig
+>> +++ b/drivers/memory/Kconfig
+>> @@ -7,6 +7,17 @@ menuconfig MEMORY
+>>   
+>>   if MEMORY
+>>   
+>> +config TI_AEMIF
+>> +	tristate "Texas Instruments AEMIF driver"
+>> +	depends on (ARCH_DAVINCI || ARCH_KEYSTONE) && OF
+>> +	help
+>> +	  This driver is for the AEMIF module available in Texas Instruments
+>> +	  SoCs. AEMIF stands for Asynchronous External Memory Interface and
+>> +	  is intended to provide a glue-less interface to a variety of
+>> +	  asynchronuous memory devices like ASRAM, NOR and NAND memory. A total
+>> +	  of 256M bytes of any of these memories can be accessed at a given
+>> +	  time via four chip selects with 64M byte access per chip select.
+>> +
+>>   config TI_EMIF
+>>   	tristate "Texas Instruments EMIF driver"
+>>   	depends on ARCH_OMAP2PLUS
+>> diff --git a/drivers/memory/Makefile b/drivers/memory/Makefile
+>> index 969d923..d4e150c 100644
+>> --- a/drivers/memory/Makefile
+>> +++ b/drivers/memory/Makefile
+>> @@ -5,6 +5,7 @@
+>>   ifeq ($(CONFIG_DDR),y)
+>>   obj-$(CONFIG_OF)		+= of_memory.o
+>>   endif
+>> +obj-$(CONFIG_TI_AEMIF)		+= ti-aemif.o
+>>   obj-$(CONFIG_TI_EMIF)		+= emif.o
+>>   obj-$(CONFIG_MVEBU_DEVBUS)	+= mvebu-devbus.o
+>>   obj-$(CONFIG_TEGRA20_MC)	+= tegra20-mc.o
+>> diff --git a/drivers/memory/ti-aemif.c b/drivers/memory/ti-aemif.c
+>> new file mode 100644
+>> index 0000000..8d15d87
+>> --- /dev/null
+>> +++ b/drivers/memory/ti-aemif.c
+>> @@ -0,0 +1,429 @@
+>> +/*
+>> + * TI AEMIF driver
+>> + *
+>> + * Copyright (C) 2010 - 2013 Texas Instruments Incorporated. http://www.ti.com/
+>> + *
+>> + * Authors:
+>> + * Murali Karicheri <m-karicheri2@ti.com>
+>> + * Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+>> + *
+>> + * This program is free software; you can redistribute it and/or modify
+>> + * it under the terms of the GNU General Public License version 2 as
+>> + * published by the Free Software Foundation.
+>> + */
+>> +
+>> +#include <linux/clk.h>
+>> +#include <linux/err.h>
+>> +#include <linux/io.h>
+>> +#include <linux/kernel.h>
+>> +#include <linux/module.h>
+>> +#include <linux/of.h>
+>> +#include <linux/of_platform.h>
+>> +#include <linux/platform_device.h>
+>> +
+>> +#define TA_SHIFT	2
+>> +#define RHOLD_SHIFT	4
+>> +#define RSTROBE_SHIFT	7
+>> +#define RSETUP_SHIFT	13
+>> +#define WHOLD_SHIFT	17
+>> +#define WSTROBE_SHIFT	20
+>> +#define WSETUP_SHIFT	26
+>> +#define EW_SHIFT	30
+>> +#define SS_SHIFT	31
+>> +
+>> +#define TA(x)		((x) << TA_SHIFT)
+>> +#define RHOLD(x)	((x) << RHOLD_SHIFT)
+>> +#define RSTROBE(x)	((x) << RSTROBE_SHIFT)
+>> +#define RSETUP(x)	((x) << RSETUP_SHIFT)
+>> +#define WHOLD(x)	((x) << WHOLD_SHIFT)
+>> +#define WSTROBE(x)	((x) << WSTROBE_SHIFT)
+>> +#define WSETUP(x)	((x) << WSETUP_SHIFT)
+>> +#define EW(x)		((x) << EW_SHIFT)
+>> +#define SS(x)		((x) << SS_SHIFT)
+>> +
+>> +#define ASIZE_MAX	0x1
+>> +#define TA_MAX		0x3
+>> +#define RHOLD_MAX	0x7
+>> +#define RSTROBE_MAX	0x3f
+>> +#define RSETUP_MAX	0xf
+>> +#define WHOLD_MAX	0x7
+>> +#define WSTROBE_MAX	0x3f
+>> +#define WSETUP_MAX	0xf
+>> +#define EW_MAX		0x1
+>> +#define SS_MAX		0x1
+>> +#define NUM_CS		4
+>> +
+>> +#define TA_VAL(x)	(((x) & TA(TA_MAX)) >> TA_SHIFT)
+>> +#define RHOLD_VAL(x)	(((x) & RHOLD(RHOLD_MAX)) >> RHOLD_SHIFT)
+>> +#define RSTROBE_VAL(x)	(((x) & RSTROBE(RSTROBE_MAX)) >> RSTROBE_SHIFT)
+>> +#define RSETUP_VAL(x)	(((x) & RSETUP(RSETUP_MAX)) >> RSETUP_SHIFT)
+>> +#define WHOLD_VAL(x)	(((x) & WHOLD(WHOLD_MAX)) >> WHOLD_SHIFT)
+>> +#define WSTROBE_VAL(x)	(((x) & WSTROBE(WSTROBE_MAX)) >> WSTROBE_SHIFT)
+>> +#define WSETUP_VAL(x)	(((x) & WSETUP(WSETUP_MAX)) >> WSETUP_SHIFT)
+>> +#define EW_VAL(x)	(((x) & EW(EW_MAX)) >> EW_SHIFT)
+>> +#define SS_VAL(x)	(((x) & SS(SS_MAX)) >> SS_SHIFT)
+>> +
+>> +#define NRCSR_OFFSET	0x00
+>> +#define AWCCR_OFFSET	0x04
+>> +#define A1CR_OFFSET	0x10
+>> +
+>> +#define ACR_ASIZE_MASK	0x3
+>> +#define ACR_EW_MASK	BIT(30)
+>> +#define ACR_SS_MASK	BIT(31)
+>> +#define ASIZE_16BIT	1
+>> +
+>> +#define CONFIG_MASK	(TA(TA_MAX) | \
+>> +				RHOLD(RHOLD_MAX) | \
+>> +				RSTROBE(RSTROBE_MAX) |	\
+>> +				RSETUP(RSETUP_MAX) | \
+>> +				WHOLD(WHOLD_MAX) | \
+>> +				WSTROBE(WSTROBE_MAX) | \
+>> +				WSETUP(WSETUP_MAX) | \
+>> +				EW(EW_MAX) | SS(SS_MAX) | \
+>> +				ASIZE_MAX)
+>> +
+>> +#define DRV_NAME	"ti-aemif"
+> What's wrong with KBUILD_MODNAME?
+
+Yes, I'll drop DRV_NAME in favour of KBUILD_MODNAME
+
+>> +static int aemif_probe(struct platform_device *pdev)
+>> +{
+>> +	int ret  = -ENODEV, i;
+> Extra spaces?
+>
+> Split this into two lines?
+
+Ok.
+
+>> +	struct resource *res;
+>> +	struct device *dev = &pdev->dev;
+>> +	struct device_node *np = dev->of_node;
+>> +	struct device_node *child_np;
+>> +	struct aemif_device *aemif;
+>> +
+>> +	if (np == NULL)
+>> +		return 0;
+>> +
+>> +	aemif = devm_kzalloc(dev, sizeof(*aemif), GFP_KERNEL);
+>> +	if (!aemif) {
+>> +		dev_err(dev, "cannot allocate memory for aemif\n");
+> Not needed, you'll get a message from kzalloc about this.\
+
+Ok.
+
+>
+>> +		return -ENOMEM;
 >> +	}
+>> +
+>> +	platform_set_drvdata(pdev, aemif);
+>> +
+>> +	aemif->clk = devm_clk_get(dev, NULL);
+>> +	if (IS_ERR(aemif->clk)) {
+>> +		dev_err(dev, "cannot get clock 'aemif'\n");
+>> +		return PTR_ERR(aemif->clk);
+> No freeing memory?
+
+There is no need to free memory explicitly.
+devm_kzalloc is used instead of kzalloc.
+
+>> +	}
+>> +
+>> +	clk_prepare_enable(aemif->clk);
+>> +	aemif->clk_rate = clk_get_rate(aemif->clk) / MSEC_PER_SEC;
+>> +
+>> +	if (of_device_is_compatible(np, "ti,da850-aemif"))
+>> +		aemif->cs_offset = 2;
+>> +
+>> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>> +	aemif->base = devm_ioremap_resource(dev, res);
+>> +	if (IS_ERR(aemif->base)) {
+>> +		ret = PTR_ERR(aemif->base);
+>> +		goto error;
+>> +	}
+>> +
+>> +	/*
+>> +	 * For every controller device node, there is a cs device node that
+>> +	 * describe the bus configuration parameters. This functions iterate
+>> +	 * over these nodes and update the cs data array.
+>> +	 */
+>> +	for_each_available_child_of_node(np, child_np) {
+>> +		ret = of_aemif_parse_abus_config(pdev, child_np);
+>> +		if (ret < 0)
+>> +			goto error;
+>> +	}
+>> +
+>> +	for (i = 0; i < aemif->num_cs; i++) {
+>> +		ret = aemif_config_abus(pdev, i);
+>> +		if (ret < 0) {
+>> +			dev_err(dev, "Error configuring chip select %d\n",
+>> +				aemif->cs_data[i].cs);
+>> +			goto error;
+>> +		}
+>> +	}
+>> +
+>> +	/*
+>> +	 * Create a child devices explicitly from here to
+>> +	 * guarantee that the child will be probed after the AEMIF timing
+>> +	 * parameters are set.
+>> +	 */
+>> +	for_each_available_child_of_node(np, child_np) {
+>> +		ret = of_platform_populate(child_np, NULL, NULL, dev);
+>> +		if (ret < 0)
+>> +			goto error;
+>> +	}
+>> +
+>> +	return 0;
+>> +error:
+>> +	clk_disable_unprepare(aemif->clk);
 >> +	return ret;
->>  }
->>  
->>  /* Scan the list of all nodes present for this ino, build map of versions, etc. */
-> [...]
-> 
-> How about we just push all the mutex_unlock(&f->sem) and
-> jffs2_do_clear_inode() to the callers which hold the mutex? The
-> following patch is totally untested:
-> 
+> No freeing memory?
 
-Yeah, this is better.
+devm_* allocations were used, so no need.
 
-> (BTW Li, have you actually tested any of your patches? I'm going to need
-> some Tested-by's before I merge any of this.)
-> 
+>
+>> +}
+>> +
+>> +static int aemif_remove(struct platform_device *pdev)
+>> +{
+>> +	struct aemif_device *aemif = platform_get_drvdata(pdev);
+>> +	clk_disable_unprepare(aemif->clk);
+> Extra line needed.
 
-"jffs2: avoid soft-lockup in jffs2_reserve_space_gc()" and an older version of
-"jffs2: unlock f->sem on error in jffs2_new_inode()" were tested on 2.6.34
-kernel.
+Ok
 
-We're moving to 3.10, and those jffs2 patches will be tested on 3.10, but
-currently we don't have test environment, and it might take month for
-the test environment to be available...
+Thanks!
+
+-- 
+Regards,
+Ivan Khoronzhuk
