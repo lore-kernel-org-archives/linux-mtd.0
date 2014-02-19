@@ -1,19 +1,21 @@
-Message-ID: <5304BBFF.3070502@ti.com>
-Date: Wed, 19 Feb 2014 09:13:19 -0500
-From: Santosh Shilimkar <santosh.shilimkar@ti.com>
-MIME-Version: 1.0
+Date: Wed, 19 Feb 2014 06:34:03 -0800
+From: Greg KH <gregkh@linuxfoundation.org>
 To: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
-Subject: Re: [PATCH v5 2/2] memory: ti-aemif: add bindings for AEMIF driver
-References: <1392817210-14312-1-git-send-email-ivan.khoronzhuk@ti.com>
- <1392817210-14312-3-git-send-email-ivan.khoronzhuk@ti.com>
-In-Reply-To: <1392817210-14312-3-git-send-email-ivan.khoronzhuk@ti.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH v4 1/2] memory: ti-aemif: introduce AEMIF driver
+Message-ID: <20140219143403.GA31063@kroah.com>
+References: <1391629574-18955-1-git-send-email-ivan.khoronzhuk@ti.com>
+ <1391629574-18955-2-git-send-email-ivan.khoronzhuk@ti.com>
+ <20140218203049.GA18647@kroah.com> <53048822.2080307@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <53048822.2080307@ti.com>
 Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, grygorii.strashko@ti.com,
  linux@arm.linux.org.uk, pawel.moll@arm.com, swarren@wwwdotorg.org,
- gregkh@linuxfoundation.org, ijc+devicetree@hellion.org.uk, nsekhar@ti.com,
- galak@kernel.crashing.org, rob.herring@calxeda.com,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, rob@landley.net,
+ ijc+devicetree@hellion.org.uk, nsekhar@ti.com, galak@kernel.crashing.org,
+ rob.herring@calxeda.com, linux-kernel@vger.kernel.org,
+ "\[initial author\] Murali Karicheri" <m-karicheri2@ti.com>,
+ santosh.shilimkar@ti.com, rob@landley.net, linux-mtd@lists.infradead.org,
  dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,23 +26,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 19 February 2014 08:40 AM, Ivan Khoronzhuk wrote:
-> Add bindings for TI Async External Memory Interface (AEMIF) controller.
+On Wed, Feb 19, 2014 at 12:32:02PM +0200, Ivan Khoronzhuk wrote:
+> >> +	aemif->clk = devm_clk_get(dev, NULL);
+> >> +	if (IS_ERR(aemif->clk)) {
+> >> +		dev_err(dev, "cannot get clock 'aemif'\n");
+> >> +		return PTR_ERR(aemif->clk);
+> > No freeing memory?
 > 
-> The Async External Memory Interface (EMIF16/AEMIF) controller is intended to
-> provide a glue-less interface to a variety of asynchronous memory devices like
-> ASRA M, NOR and NAND memory. A total of 256M bytes of any of these memories
-> can be accessed via 4 chip selects with 64M byte access per chip select.
-> 
-> We are not encoding CS number in reg property, it's memory partition number.
-> The CS number is encoded for Davinci NAND node using standalone property
-> "ti,davinci-chipselect" and we need to provide two memory ranges to it,
-> as result we can't encode CS number in "reg" for AEMIF child devices
-> (NAND/NOR/etc), as it will break bindings compatibility.
-> 
-> In this patch, NAND node is used just as an example of child node.
-> 
-> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
-> ---
+> There is no need to free memory explicitly.
+> devm_kzalloc is used instead of kzalloc.
 
-Acked-by: Santosh Shilimkar <santosh.shilimkar@ti.com>
+Yes, but where does the device on the error path get removed?
