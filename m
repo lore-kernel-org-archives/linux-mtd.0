@@ -1,22 +1,34 @@
-Message-ID: <53048822.2080307@ti.com>
-Date: Wed, 19 Feb 2014 12:32:02 +0200
-From: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+Received: from mail2.lawo.de ([80.149.95.33] helo=ExchangeEdge1.lawo.de)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WG52T-0004Ck-Nv
+ for linux-mtd@lists.infradead.org; Wed, 19 Feb 2014 11:10:07 +0000
+From: "Ziegler, Emanuel (Lawo AG)" <Emanuel.Ziegler@lawo.com>
+To: Richard Weinberger <richard@nod.at>, Bill Pringlemeir
+ <bpringlemeir@nbsps.com>, "Wiedemer, Thorsten (Lawo AG)"
+ <Thorsten.Wiedemer@lawo.com>
+Date: Wed, 19 Feb 2014 12:09:35 +0100
+Subject: RE: UBI leb_write_unlock NULL pointer Oops (continuation)
+Message-ID: <D7B1B5F4F3F27A4CB073BF422331203F2A1EDFA433@Exchange1.lawo.de>
+References: <D7B1B5F4F3F27A4CB073BF422331203F2A18997F1F@Exchange1.lawo.de>
+ <CAFLxGvya5WXoKcYmOgeM_SmVVEht1jEzeLG9vHhwFudFU+Ny8A@mail.gmail.com>
+ <D7B1B5F4F3F27A4CB073BF422331203F2A18997F8B@Exchange1.lawo.de>
+ <52EF772D.8080207@nod.at>
+ <D7B1B5F4F3F27A4CB073BF422331203F2A18DD7989@Exchange1.lawo.de>
+ <52EF9FFE.4020405@nod.at>
+ <D7B1B5F4F3F27A4CB073BF422331203F2A18A7474A@Exchange1.lawo.de>
+ <52F1F658.9080701@nod.at>
+ <D7B1B5F4F3F27A4CB073BF422331203F2A1ECCF6AE@Exchange1.lawo.de>
+ <87zjlxy8lj.fsf@nbsps.com>
+ <D7B1B5F4F3F27A4CB073BF422331203F2A1ECCFB51@Exchange1.lawo.de>
+ <87txc4w698.fsf@nbsps.com>
+ <87ppmsw5sw.fsf@nbsps.com>, <52FBDE01.9030207@nod.at>,
+ <D7B1B5F4F3F27A4CB073BF422331203F2A1EDFA41B@Exchange1.lawo.de>
+In-Reply-To: <D7B1B5F4F3F27A4CB073BF422331203F2A1EDFA41B@Exchange1.lawo.de>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-To: Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v4 1/2] memory: ti-aemif: introduce AEMIF driver
-References: <1391629574-18955-1-git-send-email-ivan.khoronzhuk@ti.com>
- <1391629574-18955-2-git-send-email-ivan.khoronzhuk@ti.com>
- <20140218203049.GA18647@kroah.com>
-In-Reply-To: <20140218203049.GA18647@kroah.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, grygorii.strashko@ti.com,
- linux@arm.linux.org.uk, pawel.moll@arm.com, swarren@wwwdotorg.org,
- ijc+devicetree@hellion.org.uk, nsekhar@ti.com, galak@kernel.crashing.org,
- rob.herring@calxeda.com, linux-kernel@vger.kernel.org,
- "\[initial author\] Murali Karicheri" <m-karicheri2@ti.com>,
- santosh.shilimkar@ti.com, rob@landley.net, linux-mtd@lists.infradead.org,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,273 +38,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 02/18/2014 10:30 PM, Greg KH wrote:
-> On Wed, Feb 05, 2014 at 09:46:13PM +0200, Ivan Khoronzhuk wrote:
->> Add new AEMIF driver for EMIF16 Texas Instruments controller.
->> The EMIF16 module is intended to provide a glue-less interface to
->> a variety of asynchronous memory devices like ASRA M, NOR and NAND
->> memory. A total of 256M bytes of any of these memories can be
->> accessed at any given time via 4 chip selects with 64M byte access
->> per chip select.
->>
->> Synchronous memories such as DDR1 SD RAM, SDR SDRAM and Mobile SDR
->> are not supported.
->>
->> This controller is used on SoCs like Davinci, Keysone2
->>
->> Acked-by: Santosh Shilimkar <santosh.shilimkar@ti.com
->> Signed-off-by: [initial author] Murali Karicheri <m-karicheri2@ti.com>
-> What's this [] stuff?
+Hello
+
+We were able to reproduce the error with function trace enabled, and got th=
+e following output.
+If was too big for pastebin, so i split it into different pastes.
+
+Function Trace Part 1
+http://pastebin.com/ugBsJH83
+Function Trace Part 2
+http://pastebin.com/tBCjLXLj
+Function Trace Part 3
+http://pastebin.com/FgUZcN4e
+Function Trace Part 4
+http://pastebin.com/nebyz4XU
+
+
+>We also were able to reproduce the error with the activated DEBUG_LOCK_ALL=
+OC flag, with the following results.
 >
-> If Murali wrote this, that name needs to be in a "From:" line in the
-> patch to properly attribute it, and drop the [] here.
+>UBIFS error (pid 7625): ubifs_readdir: cannot find next direntry, error -2=
+2
+>UBIFS assert failed in ubifs_tnc_next_ent at 2776 (pid 7625)
+>[<c001795c>] (unwind_backtrace+0x0/0xf0) from [<c01e0318>] (ubifs_tnc_next=
+_ent+0x18c/0x19c)
+>[<c01e0318>] (ubifs_tnc_next_ent+0x18c/0x19c) from [<c01d22d4>] (ubifs_rea=
+ddir+0x308/0x508)
+>[<c01d22d4>] (ubifs_readdir+0x308/0x508) from [<c00d5914>] (vfs_readdir+0x=
+80/0xa4)
+>[<c00d5914>] (vfs_readdir+0x80/0xa4) from [<c00d5ad0>] (sys_getdents64+0x6=
+4/0xc8)
+>[<c00d5ad0>] (sys_getdents64+0x64/0xc8) from [<c0012a20>] (ret_fast_syscal=
+l+0x0/0x2c)
+>UBIFS error (pid 7625): ubifs_validate_entry: bad extended attribute entry=
+ node
+>[<c001795c>] (unwind_backtrace+0x0/0xf0) from [<c01dce80>] (lnc_add_direct=
+ly+0x78/0xc4)
+>[<c01dce80>] (lnc_add_directly+0x78/0xc4) from [<c01dcf80>] (matches_name+=
+0xb4/0xcc)
+>[<c01dcf80>] (matches_name+0xb4/0xcc) from [<c01dcfd4>] (resolve_collision=
++0x3c/0x2ec)
+>[<c01dcfd4>] (resolve_collision+0x3c/0x2ec) from [<c01e02cc>] (ubifs_tnc_n=
+ext_ent+0x140/0x19c)
+>[<c01e02cc>] (ubifs_tnc_next_ent+0x140/0x19c) from [<c01d22d4>] (ubifs_rea=
+ddir+0x308/0x508)
+>[<c01d22d4>] (ubifs_readdir+0x308/0x508) from [<c00d5914>] (vfs_readdir+0x=
+80/0xa4)
+>[<c00d5914>] (vfs_readdir+0x80/0xa4) from [<c00d5ad0>] (sys_getdents64+0x6=
+4/0xc8)
+>[<c00d5ad0>] (sys_getdents64+0x64/0xc8) from [<c0012a20>] (ret_fast_syscal=
+l+0x0/0x2c)
+>        magic          0x6101831
+>        crc            0x8ae44db2
+>        node_type      0 (inode node)
+>        group_type     0 (no node group)
+>        sqnum          20716
+>        len            160
+>        key            (954, inode)
+>        creat_sqnum    20501
+>        size           288
+I think the error we seen in the case is related to the following patch and=
+ is not related
+http://lists.infradead.org/pipermail/linux-mtd/2013-June/047359.html
 
-Ok, I'll delete [] stuff.
+We port the patches to our Kernel and will try to reproduce it again.
 
->> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
->> ---
->>   drivers/memory/Kconfig    |  11 ++
->>   drivers/memory/Makefile   |   1 +
->>   drivers/memory/ti-aemif.c | 429 ++++++++++++++++++++++++++++++++++++++++++++++
->>   3 files changed, 441 insertions(+)
->>   create mode 100644 drivers/memory/ti-aemif.c
->>
->> diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
->> index 29a11db..7bc3982 100644
->> --- a/drivers/memory/Kconfig
->> +++ b/drivers/memory/Kconfig
->> @@ -7,6 +7,17 @@ menuconfig MEMORY
->>   
->>   if MEMORY
->>   
->> +config TI_AEMIF
->> +	tristate "Texas Instruments AEMIF driver"
->> +	depends on (ARCH_DAVINCI || ARCH_KEYSTONE) && OF
->> +	help
->> +	  This driver is for the AEMIF module available in Texas Instruments
->> +	  SoCs. AEMIF stands for Asynchronous External Memory Interface and
->> +	  is intended to provide a glue-less interface to a variety of
->> +	  asynchronuous memory devices like ASRAM, NOR and NAND memory. A total
->> +	  of 256M bytes of any of these memories can be accessed at a given
->> +	  time via four chip selects with 64M byte access per chip select.
->> +
->>   config TI_EMIF
->>   	tristate "Texas Instruments EMIF driver"
->>   	depends on ARCH_OMAP2PLUS
->> diff --git a/drivers/memory/Makefile b/drivers/memory/Makefile
->> index 969d923..d4e150c 100644
->> --- a/drivers/memory/Makefile
->> +++ b/drivers/memory/Makefile
->> @@ -5,6 +5,7 @@
->>   ifeq ($(CONFIG_DDR),y)
->>   obj-$(CONFIG_OF)		+= of_memory.o
->>   endif
->> +obj-$(CONFIG_TI_AEMIF)		+= ti-aemif.o
->>   obj-$(CONFIG_TI_EMIF)		+= emif.o
->>   obj-$(CONFIG_MVEBU_DEVBUS)	+= mvebu-devbus.o
->>   obj-$(CONFIG_TEGRA20_MC)	+= tegra20-mc.o
->> diff --git a/drivers/memory/ti-aemif.c b/drivers/memory/ti-aemif.c
->> new file mode 100644
->> index 0000000..8d15d87
->> --- /dev/null
->> +++ b/drivers/memory/ti-aemif.c
->> @@ -0,0 +1,429 @@
->> +/*
->> + * TI AEMIF driver
->> + *
->> + * Copyright (C) 2010 - 2013 Texas Instruments Incorporated. http://www.ti.com/
->> + *
->> + * Authors:
->> + * Murali Karicheri <m-karicheri2@ti.com>
->> + * Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
->> + *
->> + * This program is free software; you can redistribute it and/or modify
->> + * it under the terms of the GNU General Public License version 2 as
->> + * published by the Free Software Foundation.
->> + */
->> +
->> +#include <linux/clk.h>
->> +#include <linux/err.h>
->> +#include <linux/io.h>
->> +#include <linux/kernel.h>
->> +#include <linux/module.h>
->> +#include <linux/of.h>
->> +#include <linux/of_platform.h>
->> +#include <linux/platform_device.h>
->> +
->> +#define TA_SHIFT	2
->> +#define RHOLD_SHIFT	4
->> +#define RSTROBE_SHIFT	7
->> +#define RSETUP_SHIFT	13
->> +#define WHOLD_SHIFT	17
->> +#define WSTROBE_SHIFT	20
->> +#define WSETUP_SHIFT	26
->> +#define EW_SHIFT	30
->> +#define SS_SHIFT	31
->> +
->> +#define TA(x)		((x) << TA_SHIFT)
->> +#define RHOLD(x)	((x) << RHOLD_SHIFT)
->> +#define RSTROBE(x)	((x) << RSTROBE_SHIFT)
->> +#define RSETUP(x)	((x) << RSETUP_SHIFT)
->> +#define WHOLD(x)	((x) << WHOLD_SHIFT)
->> +#define WSTROBE(x)	((x) << WSTROBE_SHIFT)
->> +#define WSETUP(x)	((x) << WSETUP_SHIFT)
->> +#define EW(x)		((x) << EW_SHIFT)
->> +#define SS(x)		((x) << SS_SHIFT)
->> +
->> +#define ASIZE_MAX	0x1
->> +#define TA_MAX		0x3
->> +#define RHOLD_MAX	0x7
->> +#define RSTROBE_MAX	0x3f
->> +#define RSETUP_MAX	0xf
->> +#define WHOLD_MAX	0x7
->> +#define WSTROBE_MAX	0x3f
->> +#define WSETUP_MAX	0xf
->> +#define EW_MAX		0x1
->> +#define SS_MAX		0x1
->> +#define NUM_CS		4
->> +
->> +#define TA_VAL(x)	(((x) & TA(TA_MAX)) >> TA_SHIFT)
->> +#define RHOLD_VAL(x)	(((x) & RHOLD(RHOLD_MAX)) >> RHOLD_SHIFT)
->> +#define RSTROBE_VAL(x)	(((x) & RSTROBE(RSTROBE_MAX)) >> RSTROBE_SHIFT)
->> +#define RSETUP_VAL(x)	(((x) & RSETUP(RSETUP_MAX)) >> RSETUP_SHIFT)
->> +#define WHOLD_VAL(x)	(((x) & WHOLD(WHOLD_MAX)) >> WHOLD_SHIFT)
->> +#define WSTROBE_VAL(x)	(((x) & WSTROBE(WSTROBE_MAX)) >> WSTROBE_SHIFT)
->> +#define WSETUP_VAL(x)	(((x) & WSETUP(WSETUP_MAX)) >> WSETUP_SHIFT)
->> +#define EW_VAL(x)	(((x) & EW(EW_MAX)) >> EW_SHIFT)
->> +#define SS_VAL(x)	(((x) & SS(SS_MAX)) >> SS_SHIFT)
->> +
->> +#define NRCSR_OFFSET	0x00
->> +#define AWCCR_OFFSET	0x04
->> +#define A1CR_OFFSET	0x10
->> +
->> +#define ACR_ASIZE_MASK	0x3
->> +#define ACR_EW_MASK	BIT(30)
->> +#define ACR_SS_MASK	BIT(31)
->> +#define ASIZE_16BIT	1
->> +
->> +#define CONFIG_MASK	(TA(TA_MAX) | \
->> +				RHOLD(RHOLD_MAX) | \
->> +				RSTROBE(RSTROBE_MAX) |	\
->> +				RSETUP(RSETUP_MAX) | \
->> +				WHOLD(WHOLD_MAX) | \
->> +				WSTROBE(WSTROBE_MAX) | \
->> +				WSETUP(WSETUP_MAX) | \
->> +				EW(EW_MAX) | SS(SS_MAX) | \
->> +				ASIZE_MAX)
->> +
->> +#define DRV_NAME	"ti-aemif"
-> What's wrong with KBUILD_MODNAME?
 
-Yes, I'll drop DRV_NAME in favour of KBUILD_MODNAME
-
->> +static int aemif_probe(struct platform_device *pdev)
->> +{
->> +	int ret  = -ENODEV, i;
-> Extra spaces?
->
-> Split this into two lines?
-
-Ok.
-
->> +	struct resource *res;
->> +	struct device *dev = &pdev->dev;
->> +	struct device_node *np = dev->of_node;
->> +	struct device_node *child_np;
->> +	struct aemif_device *aemif;
->> +
->> +	if (np == NULL)
->> +		return 0;
->> +
->> +	aemif = devm_kzalloc(dev, sizeof(*aemif), GFP_KERNEL);
->> +	if (!aemif) {
->> +		dev_err(dev, "cannot allocate memory for aemif\n");
-> Not needed, you'll get a message from kzalloc about this.\
-
-Ok.
-
->
->> +		return -ENOMEM;
->> +	}
->> +
->> +	platform_set_drvdata(pdev, aemif);
->> +
->> +	aemif->clk = devm_clk_get(dev, NULL);
->> +	if (IS_ERR(aemif->clk)) {
->> +		dev_err(dev, "cannot get clock 'aemif'\n");
->> +		return PTR_ERR(aemif->clk);
-> No freeing memory?
-
-There is no need to free memory explicitly.
-devm_kzalloc is used instead of kzalloc.
-
->> +	}
->> +
->> +	clk_prepare_enable(aemif->clk);
->> +	aemif->clk_rate = clk_get_rate(aemif->clk) / MSEC_PER_SEC;
->> +
->> +	if (of_device_is_compatible(np, "ti,da850-aemif"))
->> +		aemif->cs_offset = 2;
->> +
->> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->> +	aemif->base = devm_ioremap_resource(dev, res);
->> +	if (IS_ERR(aemif->base)) {
->> +		ret = PTR_ERR(aemif->base);
->> +		goto error;
->> +	}
->> +
->> +	/*
->> +	 * For every controller device node, there is a cs device node that
->> +	 * describe the bus configuration parameters. This functions iterate
->> +	 * over these nodes and update the cs data array.
->> +	 */
->> +	for_each_available_child_of_node(np, child_np) {
->> +		ret = of_aemif_parse_abus_config(pdev, child_np);
->> +		if (ret < 0)
->> +			goto error;
->> +	}
->> +
->> +	for (i = 0; i < aemif->num_cs; i++) {
->> +		ret = aemif_config_abus(pdev, i);
->> +		if (ret < 0) {
->> +			dev_err(dev, "Error configuring chip select %d\n",
->> +				aemif->cs_data[i].cs);
->> +			goto error;
->> +		}
->> +	}
->> +
->> +	/*
->> +	 * Create a child devices explicitly from here to
->> +	 * guarantee that the child will be probed after the AEMIF timing
->> +	 * parameters are set.
->> +	 */
->> +	for_each_available_child_of_node(np, child_np) {
->> +		ret = of_platform_populate(child_np, NULL, NULL, dev);
->> +		if (ret < 0)
->> +			goto error;
->> +	}
->> +
->> +	return 0;
->> +error:
->> +	clk_disable_unprepare(aemif->clk);
->> +	return ret;
-> No freeing memory?
-
-devm_* allocations were used, so no need.
-
->
->> +}
->> +
->> +static int aemif_remove(struct platform_device *pdev)
->> +{
->> +	struct aemif_device *aemif = platform_get_drvdata(pdev);
->> +	clk_disable_unprepare(aemif->clk);
-> Extra line needed.
-
-Ok
-
-Thanks!
-
--- 
-Regards,
-Ivan Khoronzhuk
+Best Regards
+Emanuel
