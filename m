@@ -1,19 +1,23 @@
-Received: from svenfoo.org ([82.94.215.22] helo=mail.zonque.de)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WG9ox-00078b-B9
- for linux-mtd@lists.infradead.org; Wed, 19 Feb 2014 16:16:28 +0000
-Message-ID: <5304D8B8.4010303@zonque.org>
-Date: Wed, 19 Feb 2014 17:15:52 +0100
-From: Daniel Mack <daniel@zonque.org>
+Message-ID: <5304E41F.4080205@ti.com>
+Date: Wed, 19 Feb 2014 19:04:31 +0200
+From: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
 MIME-Version: 1.0
-To: =?UTF-8?B?RXplcXVpZWwgR2FyY8OtYQ==?= <ezequiel@vanguardiasur.com.ar>,
- linux-mtd@lists.infradead.org, Stefan Roese <sr@denx.de>,
- Pekon Gupta <pekon@ti.com>
-Subject: Re: Question about AM335x SoC supported NAND flash
-References: <CAAEAJfD4ddT0Av3ia-+hEf0aXKcyUK4j69YF-t=qTCLkum4a8A@mail.gmail.com>
-In-Reply-To: <CAAEAJfD4ddT0Av3ia-+hEf0aXKcyUK4j69YF-t=qTCLkum4a8A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+To: Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v4 1/2] memory: ti-aemif: introduce AEMIF driver
+References: <1391629574-18955-1-git-send-email-ivan.khoronzhuk@ti.com>
+ <1391629574-18955-2-git-send-email-ivan.khoronzhuk@ti.com>
+ <20140218203049.GA18647@kroah.com> <53048822.2080307@ti.com>
+ <20140219143403.GA31063@kroah.com>
+In-Reply-To: <20140219143403.GA31063@kroah.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, grygorii.strashko@ti.com,
+ linux@arm.linux.org.uk, pawel.moll@arm.com, swarren@wwwdotorg.org,
+ ijc+devicetree@hellion.org.uk, nsekhar@ti.com, galak@kernel.crashing.org,
+ rob.herring@calxeda.com, linux-kernel@vger.kernel.org,
+ "\[initial author\] Murali Karicheri" <m-karicheri2@ti.com>,
+ santosh.shilimkar@ti.com, rob@landley.net, linux-mtd@lists.infradead.org,
+ dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,32 +27,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 02/19/2014 05:04 PM, Ezequiel García wrote:
-> However, we cannot get the SoC to boot from NAND. We've double-checked
-> the hardware
-> and the SYSBOOT, but still no luck with it.
-> 
-> So, I thought about asking here, in case this device is (for some
-> reason) not supported by the
-> ROM code booting. Maybe someone already struggled with this and has
-> some idea to suggest?
 
-We're booting that SoC from an 8-bit NAND, connected to GPMC_CSN0.
-SYSBOOT[11:10] is 00b.
+On 02/19/2014 04:34 PM, Greg KH wrote:
+> On Wed, Feb 19, 2014 at 12:32:02PM +0200, Ivan Khoronzhuk wrote:
+>>>> +	aemif->clk = devm_clk_get(dev, NULL);
+>>>> +	if (IS_ERR(aemif->clk)) {
+>>>> +		dev_err(dev, "cannot get clock 'aemif'\n");
+>>>> +		return PTR_ERR(aemif->clk);
+>>> No freeing memory?
+>> There is no need to free memory explicitly.
+>> devm_kzalloc is used instead of kzalloc.
+> Yes, but where does the device on the error path get removed?
 
-The kernel output reads like this:
+Why these functions are needed in that case...
 
-[    1.320533] nand: device found, Manufacturer ID: 0x98, Chip ID: 0xda
-[    1.327280] nand: Toshiba NAND 256MiB 3,3V 8-bit
-[    1.332112] nand: 256MiB, SLC, page size: 2048, OOB size: 64
-[    1.338077] nand: using OMAP_ECC_BCH8_CODE_HW ECC scheme
-[    1.344122] 9 ofpart partitions found on MTD device omap2-nand.0
+As I see, memory allocated with these functions
+are automatically freed on driver detach.
 
-I wasn't around for early boot-strapping of the platform, so I'm not
-aware of any typical pitfalls.
+Additionally I've checked if resources are released after
+AEMIF driver probe error.
+And they're released completely in case of probe error.
 
-If you want to compare other details between our platforms, let me know.
+:-\
 
-
-HTH,
-Daniel
+-- 
+Regards,
+Ivan Khoronzhuk
