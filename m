@@ -1,21 +1,16 @@
-Message-ID: <5303C3DD.5050209@ti.com>
-Date: Tue, 18 Feb 2014 15:34:37 -0500
-From: Santosh Shilimkar <santosh.shilimkar@ti.com>
+Received: from mail-qc0-x243.google.com ([2607:f8b0:400d:c01::243])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WFxJa-00016y-3Q
+ for linux-mtd@lists.infradead.org; Wed, 19 Feb 2014 02:55:14 +0000
+Received: by mail-qc0-f195.google.com with SMTP id x13so10110576qcv.2
+ for <linux-mtd@lists.infradead.org>; Tue, 18 Feb 2014 18:54:51 -0800 (PST)
 MIME-Version: 1.0
-To: Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v4 0/2] Introduce AEMIF driver for Davinci/Keystone archs
-References: <1391629574-18955-1-git-send-email-ivan.khoronzhuk@ti.com>
- <53037113.3090105@ti.com> <20140218202702.GA18642@kroah.com>
-In-Reply-To: <20140218202702.GA18642@kroah.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, grygorii.strashko@ti.com,
- linux@arm.linux.org.uk, pawel.moll@arm.com, swarren@wwwdotorg.org,
- ijc+devicetree@hellion.org.uk, nsekhar@ti.com, galak@kernel.crashing.org,
- rob.herring@calxeda.com, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, rob@landley.net,
- Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
+Date: Wed, 19 Feb 2014 10:54:50 +0800
+Message-ID: <CAJy-8bv_Fwzuc1zfHp8osaSat5jDnoLOCZ0K+fJ8OvdE-y6wmg@mail.gmail.com>
+Subject: why erase block size can not be less than 8KiB
+From: Michael Zhu <boot2linux@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,35 +20,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 18 February 2014 03:27 PM, Greg KH wrote:
-> On Tue, Feb 18, 2014 at 09:41:23AM -0500, Santosh Shilimkar wrote:
->> Greg,
->>
->> On Wednesday 05 February 2014 02:46 PM, Ivan Khoronzhuk wrote:
->>> These patches introduce Async External Memory Interface (EMIF16/AEMIF)
->>> controller driver for Davinci/Keystone archs.
->>>
->>> For more informations see documentation:
->>> Davinci DM646x - http://www.ti.com/lit/ug/sprueq7c/sprueq7c.pdf
->>> OMAP-L138 - http://www.ti.com/lit/ug/spruh77a/spruh77a.pdf
->>> Kestone - http://www.ti.com/lit/ug/sprugz3a/sprugz3a.pdf
->>>
->> Can you please have a look at the series ? It has been on the list for
->> sometime and all the outstanding comments are addressed so far. If
->> you are ok with it, I would like to get these queued up for 3.15
->> via your tree.
-> 
-> Why my tree?  Am I the drivers/memory/ maintainer?
-> 
-> /me digs in git...
-> 
-> Ah, it looks like I might be...
-> 
-yes :-)
+Dear all,
 
-> Ok, let me go review this.
-> 
-Thanks a lot.
+I want to make a jffs2 filesystem using 4KiB, but mkfs.jffs2 tell min
+erase block size is 8KiB. Why have this limitation ?
 
-Regards,
-Santosh
+I dug the source code, and find code snippet below:
+
+/* If it's less than 8KiB, they're not allowed */
+if (erase_block_size < 0x2000) {
+  fprintf(stderr, "Erase size 0x%x too small. Increasing to 8KiB minimum\n",
+ erase_block_size);
+  erase_block_size = 0x2000;
+}
+
+If skipping  this check, is there any other side effect ?
+
+
+B.R.
+
+Michael
