@@ -1,26 +1,31 @@
-Received: from mail1.windriver.com ([147.11.146.13])
+Received: from mail2.lawo.de ([80.149.95.33] helo=ExchangeEdge1.lawo.de)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WGUna-0000G8-V8
- for linux-mtd@lists.infradead.org; Thu, 20 Feb 2014 14:40:28 +0000
-Message-ID: <530613CD.2080309@windriver.com>
-Date: Thu, 20 Feb 2014 09:40:13 -0500
-From: Paul Gortmaker <paul.gortmaker@windriver.com>
+ id 1WGVRy-0001tM-UH
+ for linux-mtd@lists.infradead.org; Thu, 20 Feb 2014 15:22:12 +0000
+From: "Wiedemer, Thorsten (Lawo AG)" <Thorsten.Wiedemer@lawo.com>
+To: Bill Pringlemeir <bpringlemeir@nbsps.com>
+Date: Thu, 20 Feb 2014 16:21:39 +0100
+Subject: AW: AW: AW: UBI leb_write_unlock NULL pointer Oops (continuation)
+Message-ID: <D7B1B5F4F3F27A4CB073BF422331203F2A250B53F4@Exchange1.lawo.de>
+References: <D7B1B5F4F3F27A4CB073BF422331203F2A18997F1F@Exchange1.lawo.de>
+ <CAFLxGvya5WXoKcYmOgeM_SmVVEht1jEzeLG9vHhwFudFU+Ny8A@mail.gmail.com>
+ <D7B1B5F4F3F27A4CB073BF422331203F2A18997F8B@Exchange1.lawo.de>
+ <52EF772D.8080207@nod.at>
+ <D7B1B5F4F3F27A4CB073BF422331203F2A18DD7989@Exchange1.lawo.de>
+ <52EF9FFE.4020405@nod.at>
+ <D7B1B5F4F3F27A4CB073BF422331203F2A18A7474A@Exchange1.lawo.de>
+ <52F1F658.9080701@nod.at>
+ <D7B1B5F4F3F27A4CB073BF422331203F2A1ECCF6AE@Exchange1.lawo.de>
+ <87zjlxy8lj.fsf@nbsps.com>
+ <D7B1B5F4F3F27A4CB073BF422331203F2A1ECCFB51@Exchange1.lawo.de>
+ <87txc4w698.fsf@nbsps.com>
+In-Reply-To: <87txc4w698.fsf@nbsps.com>
+Content-Language: de-DE
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-To: Prabhakar Kushwaha <prabhakar@freescale.com>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v2] powerpc: select MEMORY for FSL_IFC to not break
- existing .config files
-References: <1392848350.6733.809.camel@snotra.buserror.net>
- <1392850000-4601-1-git-send-email-paul.gortmaker@windriver.com>
- <53059B47.8000103@freescale.com>
-In-Reply-To: <53059B47.8000103@freescale.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: Arnd Bergmann <arnd@arndb.de>,
- Benjamin Herrenschmidt <benh@kernel.crashing.org>, linux-next@vger.kernel.org,
- linux-mtd@lists.infradead.org, Scott Wood <scottwood@freescale.com>,
- Paul Mackerras <paulus@samba.org>, linuxppc-dev@lists.ozlabs.org,
- David Woodhouse <dwmw2@infradead.org>
+Cc: Richard Weinberger <richard@nod.at>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,135 +35,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 14-02-20 01:05 AM, Prabhakar Kushwaha wrote:
-> 
-> On 2/20/2014 4:16 AM, Paul Gortmaker wrote:
->> commit d2ae2e20fbdde5a65f3a5a153044ab1e5c53f7cc ("driver/memory:Move
->> Freescale IFC driver to a common driver") introduces this build
->> regression into the mpc85xx_defconfig:
->>
->>   drivers/built-in.o: In function `fsl_ifc_nand_remove':
->>   drivers/mtd/nand/fsl_ifc_nand.c:1147: undefined reference to `fsl_ifc_ctrl_dev'
->>   drivers/mtd/nand/fsl_ifc_nand.c:1147: undefined reference to `fsl_ifc_ctrl_dev'
->>   drivers/built-in.o: In function `fsl_ifc_nand_probe':
->>   drivers/mtd/nand/fsl_ifc_nand.c:1031: undefined reference to `fsl_ifc_ctrl_dev'
->>   drivers/mtd/nand/fsl_ifc_nand.c:1031: undefined reference to `fsl_ifc_ctrl_dev'
->>   drivers/built-in.o: In function `match_bank':
->>   drivers/mtd/nand/fsl_ifc_nand.c:1013: undefined reference to `convert_ifc_address'
->>   drivers/built-in.o: In function `fsl_ifc_nand_probe':
->>   drivers/mtd/nand/fsl_ifc_nand.c:1059: undefined reference to `fsl_ifc_ctrl_dev'
->>   drivers/mtd/nand/fsl_ifc_nand.c:1080: undefined reference to `fsl_ifc_ctrl_dev'
->>   drivers/mtd/nand/fsl_ifc_nand.c:1069: undefined reference to `fsl_ifc_ctrl_dev'
->>   drivers/mtd/nand/fsl_ifc_nand.c:1069: undefined reference to `fsl_ifc_ctrl_dev'
->>   make: *** [vmlinux] Error 1
->>
->> This happens because there is nothing to descend us into the
->> drivers/memory directory in the mpc85xx_defconfig.  It wasn't
->> selecting CONFIG_MEMORY.  So we never built drivers/memory/fsl_ifc.o
->> and so we have nothing to link the above symbols against.
->>
->> Since the goal of the original commit was to relocate the driver to
->> an arch independent location, it only makes sense to relocate the
->> Kconfig setting there as well.  But that alone won't fix the build
->> failure; for that we ensure whoever selects FSL_IFC also selects MEMORY.
->>
->> Cc: Prabhakar Kushwaha <prabhakar@freescale.com>
->> Cc: Scott Wood <scottwood@freescale.com>
->> Cc: Arnd Bergmann <arnd@arndb.de>
->> Cc: David Woodhouse <dwmw2@infradead.org>
->> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
->> ---
->>
->> [v2: fix the mislocated FSL_IFC as per Scott's comment.  It still
->>   probably makes sense to go in via Greg's char-misc/char-misc-next
->>   (vs. powerpc-next) since that is where the regression was introduced.]
->>
->>   arch/powerpc/Kconfig     | 4 ----
->>   drivers/memory/Kconfig   | 4 ++++
->>   drivers/mtd/nand/Kconfig | 1 +
->>   3 files changed, 5 insertions(+), 4 deletions(-)
->>
->> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
->> index 957bf344c0f5..b9fcecc706ab 100644
->> --- a/arch/powerpc/Kconfig
->> +++ b/arch/powerpc/Kconfig
->> @@ -736,10 +736,6 @@ config FSL_LBC
->>   	  controller.  Also contains some common code used by
->>   	  drivers for specific local bus peripherals.
->>   
->> -config FSL_IFC
->> -	bool
->> -        depends on FSL_SOC
->> -
->>   config FSL_GTM
->>   	bool
->>   	depends on PPC_83xx || QUICC_ENGINE || CPM2
->> diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
->> index 29a11db365bc..a3640fe9852f 100644
->> --- a/drivers/memory/Kconfig
->> +++ b/drivers/memory/Kconfig
->> @@ -50,4 +50,8 @@ config TEGRA30_MC
->>   	  analysis, especially for IOMMU/SMMU(System Memory Management
->>   	  Unit) module.
->>   
->> +config FSL_IFC
->> +	bool
->> +	depends on FSL_SOC
->> +
->>   endif
->> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
->> index 90ff447bf043..a4bee41ad5cb 100644
->> --- a/drivers/mtd/nand/Kconfig
->> +++ b/drivers/mtd/nand/Kconfig
->> @@ -428,6 +428,7 @@ config MTD_NAND_FSL_IFC
->>   	tristate "NAND support for Freescale IFC controller"
->>   	depends on MTD_NAND && FSL_SOC
->>   	select FSL_IFC
->> +	select MEMORY
->>   	help
->>   	  Various Freescale chips e.g P1010, include a NAND Flash machine
->>   	  with built-in hardware ECC capabilities.
-> 
-> Hi All,
-> 
-> I am not sure which version of patch is being picked here.
-> 
-> Latest version is v8 and it is a "patch set" and it do enable 
-> CONFIG_MEMORY in powerpc/configs
+Hi,
 
-It really doesn't matter what the latest version is, if the
-maintainer has already taken an earlier version and merged it.
-In that case one needs to work with the maintainer to determine
-whether they want a new version, or a delta/fixup commit on the
-old one.
+I'm back again now.
 
-> 
-> 1.  driver/memory:Move Freescale IFC driver to a common driver
-> http://patchwork.ozlabs.org/patch/315531/
+> Bill Pringlemeir wrote:
+>
+> $ printf "\x04\x70\x8a\xe4\x04\x50\x98\xe5\x05\x00\x5a\xe1\x29\x00\x00\x0=
+a\x0c\x30\x95\xe5" > crash.dump $ objdump --disassemble-all -m arm -b binar=
+y crash.dump=20
+>
+> crash.dump:     file format binary
+>
+>
+> Disassembly of section .data:
+>
+> 00000000 <.data>:
+>  0:   e48a7004        str     r7, [sl], #4
+>    4:   e5985004        ldr     r5, [r8, #4]
+>    8:   e15a0005        cmp     sl, r5
+>    c:   0a000029        beq     0xb8
+>   10:   e595300c        ldr     r3, [r5, #12]
+>
+> 'r5' is NULL.  It seems to be the same symptom.  If you run your ARM objd=
+ump with -S on either vmlinux or '__up_write', it will help confirm that it=
+ is the list corrupted again.  The assembler above should match.
 
-So, this has the Kconfig move part, but the one currently in 
-char-misc does not.  And it still needs the "select".
+I don't have running a objdump on my ARM system at the moment, but rwsem-sp=
+inlock.c compiled with debug info,  objdump -S -D gives for __up_write():
 
-> 
-> 2. powerpc/config: Enable memory driver
-> http://patchwork.ozlabs.org/patch/315532/
+...
+	sem->activity =3D 0;
+ 29c:	e3a07000 	mov	r7, #0
+ 2a0:	e1a0a008 	mov	sl, r8
 
-Updating the defconfigs is fine, but incomplete in itself.  You
-still need the IFC users to select MEMORY, otherwise you still
-introduce build failures for anyone else who chooses IFC but
-does not choose MEMORY.
+ 2a4:	e48a7004 	str	r7, [sl], #4
+ 2a8:	e5985004 	ldr	r5, [r8, #4]
+	if (!list_empty(&sem->wait_list))
+ 2ac:	e15a0005 	cmp	sl, r5
+ 2b0:	0a000029 	beq	35c <__up_write+0xe0>
+	/* if we are allowed to wake writers try to grant a single write lock
+	 * if there's a writer at the front of the queue
+	 * - we leave the 'waiting count' incremented to signify potential
+	 *   contention
+	 */
+	if (waiter->flags & RWSEM_WAITING_FOR_WRITE) {
+ 2b4:	e595300c 	ldr	r3, [r5, #12]
+{
+...
 
-In short, the char-misc tree still needs the v2 patch above.
+Seems to match ...
 
-Paul.
---
+> What is 'RAVENNA_streame'?  Is this your standard test and not the '8k bi=
+nary' copy test or are you doing the copy test with this process also runni=
+ng?
 
-> 
-> Regards,
-> Prabhakar
-> 
-> 
-> 
-> 
-> 
+This is an application which runs parallel to our copy test. The last days,=
+ Emanuel set up another test environment which seems to reproduce the error=
+ more reliably (at least on some hardwares, not on all).
+At the moment, there are running proprietary applications in parallel, but =
+I'll try to strip it down to a sequence which I can provide you, if you lik=
+e.
+
+> We have 'IRQs off', which makes sense for __up_write.  Trying 'ftrace_dum=
+p_on_oops' as Richard suggests would be helpful to find out what went on be=
+fore.  It might also make sense to dump some 'rwsem_waiter' nodes on the er=
+ror?  It looks like '__up_write' might normally have an empty list?  > Cert=
+ainly an non-empty 'rwsem_waiter' is going to trigger the condition more of=
+ten?  I guess I can look to see what might cause this, even if I can not re=
+produce it.  The 'preemp_count' has been two every time you have this; is t=
+hat true?
+
+We could reproduce the error now with function tracing enabled, so we have =
+two hopefully valuable traces. But they are rather big (around 4MB each). S=
+hall I use pastebin and cut them in several peaces to provide them? Or off-=
+list as email attachment?
+The trace Emanuel posted Wednesday may be not valuable. Perhaps there is a =
+(different) error triggered due to memory pressure caused by the function t=
+racing.
+
+
+Best regards,
+Thorsten
