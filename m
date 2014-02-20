@@ -1,23 +1,18 @@
-Received: from mail-pa0-x22c.google.com ([2607:f8b0:400e:c03::22c])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WGOdy-0004jg-Bq
- for linux-mtd@lists.infradead.org; Thu, 20 Feb 2014 08:06:07 +0000
-Received: by mail-pa0-f44.google.com with SMTP id kq14so1574642pab.31
- for <linux-mtd@lists.infradead.org>; Thu, 20 Feb 2014 00:05:43 -0800 (PST)
-Date: Thu, 20 Feb 2014 00:00:25 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH v2 4/5] mtd: nand: parse out the JEDEC compliant nand
-Message-ID: <20140220080025.GH3500@norris-Latitude-E6410>
-References: <1391839441-21006-1-git-send-email-b32955@freescale.com>
- <1391839441-21006-5-git-send-email-b32955@freescale.com>
- <20140211203224.GJ18440@ld-irv-0074>
- <20140214070853.GB22570@shlinux2.ap.freescale.net>
+Received: from smtp2.macqel.be ([109.135.2.61])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WGPMR-0005sq-5B
+ for linux-mtd@lists.infradead.org; Thu, 20 Feb 2014 08:52:04 +0000
+Date: Thu, 20 Feb 2014 09:34:40 +0100
+From: Philippe De Muyter <phdm@macq.eu>
+To: Markus Niebel <list-09@tqsc.de>
+Subject: Re: which driver for mmap-able battery-backed SRAM ?
+Message-ID: <20140220083440.GA15361@frolo.macqel>
+References: <20140211192910.GA23223@frolo.macqel> <5305BA30.8070609@tqsc.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20140214070853.GB22570@shlinux2.ap.freescale.net>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
+In-Reply-To: <5305BA30.8070609@tqsc.de>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,131 +22,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi Markus,
 
-On Fri, Feb 14, 2014 at 03:08:54PM +0800, Huang Shijie wrote:
-> On Tue, Feb 11, 2014 at 12:32:24PM -0800, Brian Norris wrote:
-> > On Sat, Feb 08, 2014 at 02:04:00PM +0800, Huang Shijie wrote:
-> > > --- a/drivers/mtd/nand/nand_base.c
-> > > +++ b/drivers/mtd/nand/nand_base.c
-> > > @@ -3163,6 +3163,88 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
-> > >  }
-> > >  
-> > >  /*
-> > > + * Check if the NAND chip is JEDEC compliant, returns 1 if it is, 0 otherwise.
-> > > + */
-> > > +static int nand_flash_detect_jedec(struct mtd_info *mtd, struct nand_chip *chip,
-> > > +					int *busw)
-> > > +{
-> > > +	struct nand_jedec_params *p = &chip->jedec_params;
-> > > +	struct jedec_ecc_info *ecc;
-> > > +	int val;
-> > > +	int i, j;
-> > > +
-> > > +	/* Try JEDEC for unknown chip or LP */
-> > > +	chip->cmdfunc(mtd, NAND_CMD_READID, 0x40, -1);
+On Thu, Feb 20, 2014 at 09:17:52AM +0100, Markus Niebel wrote:
+> Hi,
+> 
+> Am 11.02.2014 20:29, wrote Philippe De Muyter:
+> > Hi mtd experts,
 > > 
-> > Where did you get this READID column address? I may be misreading
 > 
-> I get the column from the Toshiba and Micron datasheet.
-> the JEDEC really does not mention it.
+> not an expert, but this should be done as a simple char device driver?
 
-OK, that's fine. It's still a bit strange the JEDEC doesn't mention it.
+Actually, I am surprised that this does not exist yet, (or did I
+not search enough ?)
 
-> > something, but I don't even find this in the JESD230A spec.
+At the moment, the only solution I have found is using /dev/mem, and
+mmap-ing the part of it starting at the physical address of my sram
+into my user program.
+
+But my user program must know the physical address of the sram, and run as root;
+I cannot give individual access rights to my sram.
+
+> 
+> BTW. if you intend to try mainlining such a driver I can send you a piece of raw code
+> offlist.
+
+I would gladly look at it.  Thanks for the proposal.
+
+Philippe
+
+> 
+> > I try to find the right driver for a memory-mapped battery-backed SRAM chip.
+> > I have tried two drivers : 
+> > 	"mmio-sram"	drivers/misc/sram.c
+> > and
+> > 	"mtd-ram"	drivers/mtd/chips/map_ram.c
+> > but none of them provides me the expected interface : being able to mmap
+> > it in a user program, and ensure that every write access to it happens
+> > at the moment it is executed in the user program.
 > > 
-> > > +	if (chip->read_byte(mtd) != 'J' || chip->read_byte(mtd) != 'E' ||
-> > > +		chip->read_byte(mtd) != 'D' || chip->read_byte(mtd) != 'E' ||
-> > > +		chip->read_byte(mtd) != 'C')
-> > > +		return 0;
-> > > +
-> > > +	chip->cmdfunc(mtd, NAND_CMD_PARAM, 0x40, -1);
+> > Is there already a driver that has those functionalities, or which one should
+> > I enhance ?
 > > 
-> > Same here. I don't actually find this column address in the spec. I
-> ditto.
-> 
-> > really hope this is specified somewhere.
+> > TIA
 > > 
-> > Also, now that we may have non-zero address to NAND_CMD_PARAM, do we
-> > need to make this adjustment so it can be used on x16 buswidth? Perhaps this diff?
-> 
-> sorry, I really do not know the x16 issue :(
-> 
-> the gpmi is 8bit.
+> Markus
 
-That's fine, I expected that. But I think that in the absence of
-evidence otherwise, we should always send the address for NAND_CMD_PARAM
-as if it's only on the lower 8 bits, not a x16-width column address. Can
-you squash in my diff below, or else I can send it as a separate patch?
-
-> > diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> > index 84cca611c2fd..1b1ad3d25336 100644
-> > --- a/include/linux/mtd/nand.h
-> > +++ b/include/linux/mtd/nand.h
-> > @@ -921,7 +921,7 @@ static inline bool nand_is_slc(struct nand_chip *chip)
-> >   */
-> >  static inline int nand_opcode_8bits(unsigned int command)
-> >  {
-> > -	return command == NAND_CMD_READID;
-> > +	return command == NAND_CMD_READID || command == NAND_CMD_PARAM;
-> >  }
-> >  
-> >  /* return the supported JEDEC features. */
-> > 
-> > > +	for (i = 0; i < 3; i++) {
-> > > +		for (j = 0; j < sizeof(*p); j++)
-> > > +			((uint8_t *)p)[j] = chip->read_byte(mtd);
-> > > +
-> > > +		if (onfi_crc16(ONFI_CRC_BASE, (uint8_t *)p, 510) ==
-> > > +				le16_to_cpu(p->crc))
-> > > +			break;
-> > > +	}
-> > > +
-> > > +	if (i == 3) {
-> > > +		pr_err("Could not find valid JEDEC parameter page; aborting\n");
-> > > +		return 0;
-> > > +	}
-> > > +
-> > > +	/* Check version */
-> > > +	val = le16_to_cpu(p->revision);
-> > > +	if (val & (1 << 2))
-> > > +		chip->jedec_version = 10;
-> > > +	else if (val & (1 << 1))
-> > > +		chip->jedec_version = 1; /* vendor specific version */
-> > 
-> > How did you determine that bit[1] means version 1 (or v0.1)? It's
-> 
-> The bit[1] is the vendor specific version. 
-> Some Micron chips uses the bit[1], such as MT29F64G08CBAB.
-
-I noticed a similar thing with my Micron datasheet.
-
-> If we do not use the 1 for the it, do you have any suggestion
-> for the vendor specific version?
-> 
-> 
-> > unclear to me how to interpret the revision bitfield here, but it
-> > appears that bit[1] is not really useful to us yet, unless we're using
-> > vendor specific parameter page.
-> 
-> > 
-> > What do we do if we see bit[1] (vendor specific parameter page) but not
-> > bit[2] (parameter page revision 1.0 / standard revision 1.0)? I'm
-> > thinking that we should just ignore bit[1] entirely for now, and if the
-> > flash is missing bit[2], then we can't support it.
-> 
-> some Micron chips do use the bit[1]. i think that's why the JEDEC say:
-> "supports vendor specific parameter page" for the bit[1].
-> 
-> We'd better keep the support for the bit[1].
-
-OK. But we need to be careful that whatever this "vendor specific
-parameter page" is, it's always compatible with the spec we're referring
-to (v1.0). Otherwise, we can't rely on bit[1] to tell us anything
-specific. This really seems like some sloppiness on either Micron or
-JEDEC.
-
-[snip]
-
-Thanks,
-Brian
+-- 
+Philippe De Muyter +32 2 6101532 Macq SA rue de l'Aeronef 2 B-1140 Bruxelles
