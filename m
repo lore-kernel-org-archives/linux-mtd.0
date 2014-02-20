@@ -1,18 +1,31 @@
-Received: from smtp2.macqel.be ([109.135.2.61])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WGPMR-0005sq-5B
- for linux-mtd@lists.infradead.org; Thu, 20 Feb 2014 08:52:04 +0000
-Date: Thu, 20 Feb 2014 09:34:40 +0100
-From: Philippe De Muyter <phdm@macq.eu>
-To: Markus Niebel <list-09@tqsc.de>
-Subject: Re: which driver for mmap-able battery-backed SRAM ?
-Message-ID: <20140220083440.GA15361@frolo.macqel>
-References: <20140211192910.GA23223@frolo.macqel> <5305BA30.8070609@tqsc.de>
+Message-ID: <5305F898.6020401@ti.com>
+Date: Thu, 20 Feb 2014 14:44:08 +0200
+From: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5305BA30.8070609@tqsc.de>
-Cc: linux-mtd@lists.infradead.org
+To: Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v5 2/2] memory: ti-aemif: add bindings for AEMIF driver
+References: <1392817210-14312-1-git-send-email-ivan.khoronzhuk@ti.com>
+ <1392817210-14312-3-git-send-email-ivan.khoronzhuk@ti.com>
+ <20140219181152.GG25079@e106331-lin.cambridge.arm.com>
+In-Reply-To: <20140219181152.GG25079@e106331-lin.cambridge.arm.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "grygorii.strashko@ti.com" <grygorii.strashko@ti.com>,
+ "linux@arm.linux.org.uk" <linux@arm.linux.org.uk>,
+ Pawel Moll <Pawel.Moll@arm.com>,
+ "swarren@wwwdotorg.org" <swarren@wwwdotorg.org>,
+ "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+ "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>,
+ "nsekhar@ti.com" <nsekhar@ti.com>,
+ "galak@kernel.crashing.org" <galak@kernel.crashing.org>,
+ "rob.herring@calxeda.com" <rob.herring@calxeda.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "santosh.shilimkar@ti.com" <santosh.shilimkar@ti.com>,
+ "rob@landley.net" <rob@landley.net>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,51 +35,143 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Markus,
 
-On Thu, Feb 20, 2014 at 09:17:52AM +0100, Markus Niebel wrote:
-> Hi,
-> 
-> Am 11.02.2014 20:29, wrote Philippe De Muyter:
-> > Hi mtd experts,
-> > 
-> 
-> not an expert, but this should be done as a simple char device driver?
+On 02/19/2014 08:11 PM, Mark Rutland wrote:
+> On Wed, Feb 19, 2014 at 01:40:10PM +0000, Ivan Khoronzhuk wrote:
+>> Add bindings for TI Async External Memory Interface (AEMIF) controller.
+>>
+>> The Async External Memory Interface (EMIF16/AEMIF) controller is intended to
+>> provide a glue-less interface to a variety of asynchronous memory devices like
+>> ASRA M, NOR and NAND memory. A total of 256M bytes of any of these memories
+>> can be accessed via 4 chip selects with 64M byte access per chip select.
+>>
+>> We are not encoding CS number in reg property, it's memory partition number.
+>> The CS number is encoded for Davinci NAND node using standalone property
+>> "ti,davinci-chipselect" and we need to provide two memory ranges to it,
+>> as result we can't encode CS number in "reg" for AEMIF child devices
+>> (NAND/NOR/etc), as it will break bindings compatibility.
+>>
+>> In this patch, NAND node is used just as an example of child node.
+>>
+>> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+>> ---
+>>   .../bindings/memory-controllers/ti-aemif.txt       | 210 +++++++++++++++++++++
+>>   1 file changed, 210 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/memory-controllers/ti-aemif.txt
+> [...]
+>
+>> +- ranges:		Contains memory regions. There are two types of
+>> +			ranges/partitions:
+>> +			- CS-specific partition/range. If continuous, must be
+>> +			set up to reflect the memory layout for 4 chipselects,
+>> +			if not then additional range/partition can be added and
+>> +			child device can select the proper one.
+>> +			- control partition which is common for all CS
+>> +			interfaces.
+> This really doesn't sound anything like the typical meaning of ranges on
+> a bus.
+>
+> Why isn't this information encoded in reg properties on the child nodes?
+>
+> [...]
 
-Actually, I am surprised that this does not exist yet, (or did I
-not search enough ?)
+Note that we do not introduce NAND device bindings here.
+The Davinci NAND bindings was introduced and accepted more then one year ago.
+And the CS number is encoded for Davinci NAND node using standalone property
+"ti,davinci-chipselect" and we need to provide two memory ranges to it,
+as result we can't encode CS number in "reg" for AEMIF child devices (NAND/NOR/etc),
+as it will break bindings compatibility.
 
-At the moment, the only solution I have found is using /dev/mem, and
-mmap-ing the part of it starting at the physical address of my sram
-into my user program.
+In this document, NAND node is used just as an example of child node.
 
-But my user program must know the physical address of the sram, and run as root;
-I cannot give individual access rights to my sram.
+>> +- ti,cs-ss:		enable/disable select strobe mode
+>> +				In select strobe mode chip select behaves as
+>> +				the strobe and is active only during the strobe
+>> +				period. If present then enable.
+>> +
+>> +- ti,cs-ew:		enable/disable extended wait mode
+>> +				if set, the controller monitors the EMIFWAIT pin
+>> +				mapped to that chip select to determine if the
+>> +				device wants to extend the strobe period. If
+>> +				present then enable.
+> When would you have these two in the DT and when wouldn't you? Why can't
+> the driver decide?
 
-> 
-> BTW. if you intend to try mainlining such a driver I can send you a piece of raw code
-> offlist.
+These are properties of cs node, not the driver itself.
+The driver cannot know what child device you are going to attach to cs node
+, as result it cannot decide what settings you are using for particular 
+cs node.
 
-I would gladly look at it.  Thanks for the proposal.
+> These names are also opaque. We can clearly do better.
 
-Philippe
+I propose the following names?:
 
-> 
-> > I try to find the right driver for a memory-mapped battery-backed SRAM chip.
-> > I have tried two drivers : 
-> > 	"mmio-sram"	drivers/misc/sram.c
-> > and
-> > 	"mtd-ram"	drivers/mtd/chips/map_ram.c
-> > but none of them provides me the expected interface : being able to mmap
-> > it in a user program, and ensure that every write access to it happens
-> > at the moment it is executed in the user program.
-> > 
-> > Is there already a driver that has those functionalities, or which one should
-> > I enhance ?
-> > 
-> > TIA
-> > 
-> Markus
+ti,cs-ss  --> ti,cs-select-strobe-mode
+ti,cs-ew --> ti,cs-extended-waite-mode
+
+Are you OK with it?
+
+>> +
+>> +- ti,cs-ta:		minimum turn around time, ns
+>> +				Time between the end of one asynchronous memory
+>> +				access and the start of another asynchronous
+>> +				memory access. This delay is not incurred
+>> +				between a read followed by read or a write
+>> +				followed by a write to same chip select.
+> The name is opaque. How about ti,min-turnaround-time-ns ?
+
+I like without -ns suffix and with cs- prefix:
+ti,cs-ta --> ti,cs-min-turnaround-time
+
+Is it OK?
+
+>> +
+>> +- ti,cs-rsetup:		read setup width, ns
+>> +				Time between the beginning of a memory cycle
+>> +				and the activation of read strobe.
+>> +				Minimum value is 1 (0 treated as 1).
+>> +
+>> +- ti,cs-rstobe:		read strobe width, ns
+>> +				Time between the activation and deactivation of
+>> +				the read strobe.
+>> +				Minimum value is 1 (0 treated as 1).
+>> +
+>> +- ti,cs-rhold:		read hold width, ns
+>> +				Time between the deactivation of the read
+>> +				strobe and the end of the cycle (which may be
+>> +				either an address change or the deactivation of
+>> +				the chip select signal.
+>> +				Minimum value is 1 (0 treated as 1).
+>> +
+>> +- ti,cs-wsetup:		write setup width, ns
+>> +				Time between the beginning of a memory cycle
+>> +				and the activation of write strobe.
+>> +				Minimum value is 1 (0 treated as 1).
+>> +
+>> +- ti,cs-wstrobe:	write strobe width, ns
+>> +				Time between the activation and deactivation of
+>> +				the write strobe.
+>> +				Minimum value is 1 (0 treated as 1).
+>> +
+>> +- ti,cs-whold:		write hold width, ns
+>> +				Time between the deactivation of the write
+>> +				strobe and the end of the cycle (which may be
+>> +				either an address change or the deactivation of
+>> +				the chip select signal.
+>> +				Minimum value is 1 (0 treated as 1).
+> Likewise I think these can be given more descriptive names.
+
+Ok. How about:
+
+ti,cs-rsetup --> ti,cs-read-setup-time
+ti,cs-rstobe --> ti,cs-read-strobe-time
+ti,cs-rhold  --> ti,cs-read-hold-time
+ti,cs-wsetup --> ti,cs-write-setup-time
+ti,cs-wstrobe --> ti,cs-write-strobe-time
+ti,cs-whold --> ti,cs-write-hold-time
+
+Thanks
 
 -- 
-Philippe De Muyter +32 2 6101532 Macq SA rue de l'Aeronef 2 B-1140 Bruxelles
+Regards,
+Ivan Khoronzhuk
