@@ -1,33 +1,27 @@
-Received: from 71-19-161-253.dedicated.allstream.net ([71.19.161.253]
- helo=nsa.nbspaymentsolutions.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WGXgn-0007Gy-AK
- for linux-mtd@lists.infradead.org; Thu, 20 Feb 2014 17:45:39 +0000
-From: Bill Pringlemeir <bpringlemeir@nbsps.com>
-To: "Wiedemer, Thorsten (Lawo AG)" <Thorsten.Wiedemer@lawo.com>
-Subject: Re: UBI leb_write_unlock NULL pointer Oops (continuation)
-References: <D7B1B5F4F3F27A4CB073BF422331203F2A18997F1F@Exchange1.lawo.de>
- <CAFLxGvya5WXoKcYmOgeM_SmVVEht1jEzeLG9vHhwFudFU+Ny8A@mail.gmail.com>
- <D7B1B5F4F3F27A4CB073BF422331203F2A18997F8B@Exchange1.lawo.de>
- <52EF772D.8080207@nod.at>
- <D7B1B5F4F3F27A4CB073BF422331203F2A18DD7989@Exchange1.lawo.de>
- <52EF9FFE.4020405@nod.at>
- <D7B1B5F4F3F27A4CB073BF422331203F2A18A7474A@Exchange1.lawo.de>
- <52F1F658.9080701@nod.at>
- <D7B1B5F4F3F27A4CB073BF422331203F2A1ECCF6AE@Exchange1.lawo.de>
- <87zjlxy8lj.fsf@nbsps.com>
- <D7B1B5F4F3F27A4CB073BF422331203F2A1ECCFB51@Exchange1.lawo.de>
- <87txc4w698.fsf@nbsps.com>
- <D7B1B5F4F3F27A4CB073BF422331203F2A250B53F4@Exchange1.lawo.de>
- <8738jdofu5.fsf@nbsps.com>
-Date: Thu, 20 Feb 2014 12:38:07 -0500
-In-Reply-To: <8738jdofu5.fsf@nbsps.com> (Bill Pringlemeir's message of "Thu,
- 20 Feb 2014 12:26:42 -0500")
-Message-ID: <87y515n0qo.fsf@nbsps.com>
+Received: from ch1ehsobe002.messaging.microsoft.com ([216.32.181.182]
+ helo=ch1outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WGhIA-0005BZ-9P
+ for linux-mtd@lists.infradead.org; Fri, 21 Feb 2014 04:00:52 +0000
+Message-ID: <5306CF49.1030206@freescale.com>
+Date: Fri, 21 Feb 2014 09:30:09 +0530
+From: Prabhakar Kushwaha <prabhakar@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Richard Weinberger <richard@nod.at>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+To: Paul Gortmaker <paul.gortmaker@windriver.com>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v2] powerpc: select MEMORY for FSL_IFC to not break
+ existing .config files
+References: <1392848350.6733.809.camel@snotra.buserror.net>
+ <1392850000-4601-1-git-send-email-paul.gortmaker@windriver.com>
+ <53059B47.8000103@freescale.com> <530613CD.2080309@windriver.com>
+In-Reply-To: <530613CD.2080309@windriver.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Arnd Bergmann <arnd@arndb.de>,
+ Benjamin Herrenschmidt <benh@kernel.crashing.org>, linux-next@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Scott Wood <scottwood@freescale.com>,
+ Paul Mackerras <paulus@samba.org>, linuxppc-dev@lists.ozlabs.org,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,66 +31,135 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 20 Feb 2014, bpringlemeir@nbsps.com wrote:
 
-> You could alter '__rwsem_do_wake',
+On 2/20/2014 8:10 PM, Paul Gortmaker wrote:
+> On 14-02-20 01:05 AM, Prabhakar Kushwaha wrote:
+>> On 2/20/2014 4:16 AM, Paul Gortmaker wrote:
+>>> commit d2ae2e20fbdde5a65f3a5a153044ab1e5c53f7cc ("driver/memory:Move
+>>> Freescale IFC driver to a common driver") introduces this build
+>>> regression into the mpc85xx_defconfig:
+>>>
+>>>    drivers/built-in.o: In function `fsl_ifc_nand_remove':
+>>>    drivers/mtd/nand/fsl_ifc_nand.c:1147: undefined reference to `fsl_ifc_ctrl_dev'
+>>>    drivers/mtd/nand/fsl_ifc_nand.c:1147: undefined reference to `fsl_ifc_ctrl_dev'
+>>>    drivers/built-in.o: In function `fsl_ifc_nand_probe':
+>>>    drivers/mtd/nand/fsl_ifc_nand.c:1031: undefined reference to `fsl_ifc_ctrl_dev'
+>>>    drivers/mtd/nand/fsl_ifc_nand.c:1031: undefined reference to `fsl_ifc_ctrl_dev'
+>>>    drivers/built-in.o: In function `match_bank':
+>>>    drivers/mtd/nand/fsl_ifc_nand.c:1013: undefined reference to `convert_ifc_address'
+>>>    drivers/built-in.o: In function `fsl_ifc_nand_probe':
+>>>    drivers/mtd/nand/fsl_ifc_nand.c:1059: undefined reference to `fsl_ifc_ctrl_dev'
+>>>    drivers/mtd/nand/fsl_ifc_nand.c:1080: undefined reference to `fsl_ifc_ctrl_dev'
+>>>    drivers/mtd/nand/fsl_ifc_nand.c:1069: undefined reference to `fsl_ifc_ctrl_dev'
+>>>    drivers/mtd/nand/fsl_ifc_nand.c:1069: undefined reference to `fsl_ifc_ctrl_dev'
+>>>    make: *** [vmlinux] Error 1
+>>>
+>>> This happens because there is nothing to descend us into the
+>>> drivers/memory directory in the mpc85xx_defconfig.  It wasn't
+>>> selecting CONFIG_MEMORY.  So we never built drivers/memory/fsl_ifc.o
+>>> and so we have nothing to link the above symbols against.
+>>>
+>>> Since the goal of the original commit was to relocate the driver to
+>>> an arch independent location, it only makes sense to relocate the
+>>> Kconfig setting there as well.  But that alone won't fix the build
+>>> failure; for that we ensure whoever selects FSL_IFC also selects MEMORY.
+>>>
+>>> Cc: Prabhakar Kushwaha <prabhakar@freescale.com>
+>>> Cc: Scott Wood <scottwood@freescale.com>
+>>> Cc: Arnd Bergmann <arnd@arndb.de>
+>>> Cc: David Woodhouse <dwmw2@infradead.org>
+>>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>>> Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+>>> ---
+>>>
+>>> [v2: fix the mislocated FSL_IFC as per Scott's comment.  It still
+>>>    probably makes sense to go in via Greg's char-misc/char-misc-next
+>>>    (vs. powerpc-next) since that is where the regression was introduced.]
+>>>
+>>>    arch/powerpc/Kconfig     | 4 ----
+>>>    drivers/memory/Kconfig   | 4 ++++
+>>>    drivers/mtd/nand/Kconfig | 1 +
+>>>    3 files changed, 5 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+>>> index 957bf344c0f5..b9fcecc706ab 100644
+>>> --- a/arch/powerpc/Kconfig
+>>> +++ b/arch/powerpc/Kconfig
+>>> @@ -736,10 +736,6 @@ config FSL_LBC
+>>>    	  controller.  Also contains some common code used by
+>>>    	  drivers for specific local bus peripherals.
+>>>    
+>>> -config FSL_IFC
+>>> -	bool
+>>> -        depends on FSL_SOC
+>>> -
+>>>    config FSL_GTM
+>>>    	bool
+>>>    	depends on PPC_83xx || QUICC_ENGINE || CPM2
+>>> diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
+>>> index 29a11db365bc..a3640fe9852f 100644
+>>> --- a/drivers/memory/Kconfig
+>>> +++ b/drivers/memory/Kconfig
+>>> @@ -50,4 +50,8 @@ config TEGRA30_MC
+>>>    	  analysis, especially for IOMMU/SMMU(System Memory Management
+>>>    	  Unit) module.
+>>>    
+>>> +config FSL_IFC
+>>> +	bool
+>>> +	depends on FSL_SOC
+>>> +
+>>>    endif
+>>> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+>>> index 90ff447bf043..a4bee41ad5cb 100644
+>>> --- a/drivers/mtd/nand/Kconfig
+>>> +++ b/drivers/mtd/nand/Kconfig
+>>> @@ -428,6 +428,7 @@ config MTD_NAND_FSL_IFC
+>>>    	tristate "NAND support for Freescale IFC controller"
+>>>    	depends on MTD_NAND && FSL_SOC
+>>>    	select FSL_IFC
+>>> +	select MEMORY
+>>>    	help
+>>>    	  Various Freescale chips e.g P1010, include a NAND Flash machine
+>>>    	  with built-in hardware ECC capabilities.
+>> Hi All,
+>>
+>> I am not sure which version of patch is being picked here.
+>>
+>> Latest version is v8 and it is a "patch set" and it do enable
+>> CONFIG_MEMORY in powerpc/configs
+> It really doesn't matter what the latest version is, if the
+> maintainer has already taken an earlier version and merged it.
+> In that case one needs to work with the maintainer to determine
+> whether they want a new version, or a delta/fixup commit on the
+> old one.
+I think, I got the reason of this issue.
+I thought this patch will be picked by powerpc.git and updated version 
+were sent on linuxppc-dev mail list after initial version review on both 
+powerpc and linux-kernel mailing list. It should have sent on both the 
+list "always".   A learning for future :)
+
+I am OK with the current patch and modification  because it  full fill 
+my requirements.
+I will sent separate patch to fix other things.
+
+
+>> 1.  driver/memory:Move Freescale IFC driver to a common driver
+>> http://patchwork.ozlabs.org/patch/315531/
+> So, this has the Kconfig move part, but the one currently in
+> char-misc does not.  And it still needs the "select".
 >
-> static inline struct rw_semaphore *
-> __rwsem_do_wake(struct rw_semaphore *sem, int wakewrite)
-> {
-> 	struct rwsem_waiter *waiter;
-> 	struct task_struct *tsk;
-> 	int woken;
+>> 2. powerpc/config: Enable memory driver
+>> http://patchwork.ozlabs.org/patch/315532/
+> Updating the defconfigs is fine, but incomplete in itself.  You
+> still need the IFC users to select MEMORY, otherwise you still
+> introduce build failures for anyone else who chooses IFC but
+> does not choose MEMORY.
 >
-	waiter = list_entry(sem->wait_list.next, struct rwsem_waiter, list);
-+       if(!waiter) {
-+          printk("Bad rwsem\n");
-+          printk("activity is %d.\n", sem->activity);
-+          BUG();
-+       }
-	if (waiter->type == RWSEM_WAITING_FOR_WRITE) {
-		if (wakewrite)
+> In short, the char-misc tree still needs the v2 patch above.
 >
-> ... or something like that.
 >
-> * the rw-semaphore definition
-> * - if activity is 0 then there are no active readers or writers
-> * - if activity is +ve then that is the number of active readers
-> * - if activity is -1 then there is one active writer
-> * - if wait_list is not empty, then there are processes waiting...
->
-> It seems inconsistent to have a non-empty list with activity as 0 as
-> well?  The above is trying to trace when we find a 'NULL' in the
-> 'wait_list', which always seems to be the issue, but probably not the
-> root cause.
->
-> You can also put similar code in '__rwsem_wake_one_writer' if you
-> instead get the 'up_read()' fault.
 
-Sorry, this code has to go in the callers before they write to
-'activity'.
+Yes,  this patch still required.
 
-void __up_write(struct rw_semaphore *sem)
-{
-	unsigned long flags;
-+	struct rwsem_waiter *waiter;
-
-
-	raw_spin_lock_irqsave(&sem->wait_lock, flags);
-
-+	waiter = list_entry(sem->wait_list.next, struct rwsem_waiter, list);
-+       if(!waiter) {
-+          printk("Bad rwsem\n");
-+          printk("activity is %d.\n", sem->activity);
-+          BUG();
-+       }
-
-	sem->activity = 0;
-	if (!list_empty(&sem->wait_list))
-		sem = __rwsem_do_wake(sem, 1);
-
-	raw_spin_unlock_irqrestore(&sem->wait_lock, flags);
-}
-
-__up_read() is the other one.  Or you wait to see if the function traces
-are helpful.
+Thanks,
+Prabhakar
