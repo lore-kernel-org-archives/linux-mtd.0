@@ -1,14 +1,14 @@
-Received: from co9ehsobe005.messaging.microsoft.com ([207.46.163.28]
- helo=co9outboundpool.messaging.microsoft.com)
+Received: from tx2ehsobe005.messaging.microsoft.com ([65.55.88.15]
+ helo=tx2outboundpool.messaging.microsoft.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WGjWc-0003aG-Gu
+ id 1WGjWd-0003aA-7D
  for linux-mtd@lists.infradead.org; Fri, 21 Feb 2014 06:23:55 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH v3 3/5] mtd: nand: add a helper to get the supported features
- for JEDEC
-Date: Fri, 21 Feb 2014 13:39:39 +0800
-Message-ID: <1392961181-20693-4-git-send-email-b32955@freescale.com>
+Subject: [PATCH v3 5/5] mtd: nand: print out the right information for JEDEC
+ compliant nand
+Date: Fri, 21 Feb 2014 13:39:41 +0800
+Message-ID: <1392961181-20693-6-git-send-email-b32955@freescale.com>
 In-Reply-To: <1392961181-20693-1-git-send-email-b32955@freescale.com>
 References: <1392961181-20693-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
@@ -24,39 +24,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add a helper to get the supported features for JEDEC compliant nand.
-Also add a macro JEDEC_FEATURE_16_BIT_BUS.
+Check the chip->jedec_version, and print out the right information
+for JEDEC compliant nand.
 
 Acked-by: Brian Norris <computersforpeace@gmail.com>
 Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
- include/linux/mtd/nand.h |    9 +++++++++
- 1 files changed, 9 insertions(+), 0 deletions(-)
+ drivers/mtd/nand/nand_base.c |   13 +++++++++++--
+ 1 files changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index f9af756..afd1cf9b 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -350,6 +350,9 @@ struct jedec_ecc_info {
- 	u8 reserved[2];
- } __packed;
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 42461f9..bd4e5f6 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3691,8 +3691,17 @@ ident_done:
  
-+/* JEDEC features */
-+#define JEDEC_FEATURE_16_BIT_BUS	(1 << 0)
+ 	pr_info("device found, Manufacturer ID: 0x%02x, Chip ID: 0x%02x\n",
+ 		*maf_id, *dev_id);
+-	pr_info("%s %s\n", nand_manuf_ids[maf_idx].name,
+-		chip->onfi_version ? chip->onfi_params.model : type->name);
 +
- struct nand_jedec_params {
- 	/* rev info and features block */
- 	/* 'J' 'E' 'S' 'D'  */
-@@ -925,4 +928,10 @@ static inline int nand_opcode_8bits(unsigned int command)
- 	return command == NAND_CMD_READID;
- }
- 
-+/* return the supported JEDEC features. */
-+static inline int jedec_feature(struct nand_chip *chip)
-+{
-+	return chip->jedec_version ? le16_to_cpu(chip->jedec_params.features)
-+		: 0;
-+}
- #endif /* __LINUX_MTD_NAND_H */
++	if (chip->onfi_version)
++		pr_info("%s %s\n", nand_manuf_ids[maf_idx].name,
++				chip->onfi_params.model);
++	else if (chip->jedec_version)
++		pr_info("%s %s\n", nand_manuf_ids[maf_idx].name,
++				chip->jedec_params.model);
++	else
++		pr_info("%s %s\n", nand_manuf_ids[maf_idx].name,
++				type->name);
++
+ 	pr_info("%dMiB, %s, page size: %d, OOB size: %d\n",
+ 		(int)(chip->chipsize >> 20), nand_is_slc(chip) ? "SLC" : "MLC",
+ 		mtd->writesize, mtd->oobsize);
 -- 
 1.7.2.rc3
