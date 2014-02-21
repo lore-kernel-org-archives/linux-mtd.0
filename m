@@ -1,27 +1,17 @@
-Received: from ch1ehsobe002.messaging.microsoft.com ([216.32.181.182]
- helo=ch1outboundpool.messaging.microsoft.com)
+Received: from co9ehsobe005.messaging.microsoft.com ([207.46.163.28]
+ helo=co9outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WGhIA-0005BZ-9P
- for linux-mtd@lists.infradead.org; Fri, 21 Feb 2014 04:00:52 +0000
-Message-ID: <5306CF49.1030206@freescale.com>
-Date: Fri, 21 Feb 2014 09:30:09 +0530
-From: Prabhakar Kushwaha <prabhakar@freescale.com>
+ id 1WGjWT-0007vm-2U
+ for linux-mtd@lists.infradead.org; Fri, 21 Feb 2014 06:23:46 +0000
+From: Huang Shijie <b32955@freescale.com>
+To: <dwmw2@infradead.org>
+Subject: [PATCH v3 0/5] mtd: nand: support the JEDEC compliant nand.
+Date: Fri, 21 Feb 2014 13:39:36 +0800
+Message-ID: <1392961181-20693-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-To: Paul Gortmaker <paul.gortmaker@windriver.com>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v2] powerpc: select MEMORY for FSL_IFC to not break
- existing .config files
-References: <1392848350.6733.809.camel@snotra.buserror.net>
- <1392850000-4601-1-git-send-email-paul.gortmaker@windriver.com>
- <53059B47.8000103@freescale.com> <530613CD.2080309@windriver.com>
-In-Reply-To: <530613CD.2080309@windriver.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Arnd Bergmann <arnd@arndb.de>,
- Benjamin Herrenschmidt <benh@kernel.crashing.org>, linux-next@vger.kernel.org,
- linux-mtd@lists.infradead.org, Scott Wood <scottwood@freescale.com>,
- Paul Mackerras <paulus@samba.org>, linuxppc-dev@lists.ozlabs.org,
- David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain
+Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,135 +21,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Some vendors support the JEDEC standard only, such as Toshiba.
+We can get all the information for the JEDEC parameter page, just like
+we did with the ONFI parameter page.
 
-On 2/20/2014 8:10 PM, Paul Gortmaker wrote:
-> On 14-02-20 01:05 AM, Prabhakar Kushwaha wrote:
->> On 2/20/2014 4:16 AM, Paul Gortmaker wrote:
->>> commit d2ae2e20fbdde5a65f3a5a153044ab1e5c53f7cc ("driver/memory:Move
->>> Freescale IFC driver to a common driver") introduces this build
->>> regression into the mpc85xx_defconfig:
->>>
->>>    drivers/built-in.o: In function `fsl_ifc_nand_remove':
->>>    drivers/mtd/nand/fsl_ifc_nand.c:1147: undefined reference to `fsl_ifc_ctrl_dev'
->>>    drivers/mtd/nand/fsl_ifc_nand.c:1147: undefined reference to `fsl_ifc_ctrl_dev'
->>>    drivers/built-in.o: In function `fsl_ifc_nand_probe':
->>>    drivers/mtd/nand/fsl_ifc_nand.c:1031: undefined reference to `fsl_ifc_ctrl_dev'
->>>    drivers/mtd/nand/fsl_ifc_nand.c:1031: undefined reference to `fsl_ifc_ctrl_dev'
->>>    drivers/built-in.o: In function `match_bank':
->>>    drivers/mtd/nand/fsl_ifc_nand.c:1013: undefined reference to `convert_ifc_address'
->>>    drivers/built-in.o: In function `fsl_ifc_nand_probe':
->>>    drivers/mtd/nand/fsl_ifc_nand.c:1059: undefined reference to `fsl_ifc_ctrl_dev'
->>>    drivers/mtd/nand/fsl_ifc_nand.c:1080: undefined reference to `fsl_ifc_ctrl_dev'
->>>    drivers/mtd/nand/fsl_ifc_nand.c:1069: undefined reference to `fsl_ifc_ctrl_dev'
->>>    drivers/mtd/nand/fsl_ifc_nand.c:1069: undefined reference to `fsl_ifc_ctrl_dev'
->>>    make: *** [vmlinux] Error 1
->>>
->>> This happens because there is nothing to descend us into the
->>> drivers/memory directory in the mpc85xx_defconfig.  It wasn't
->>> selecting CONFIG_MEMORY.  So we never built drivers/memory/fsl_ifc.o
->>> and so we have nothing to link the above symbols against.
->>>
->>> Since the goal of the original commit was to relocate the driver to
->>> an arch independent location, it only makes sense to relocate the
->>> Kconfig setting there as well.  But that alone won't fix the build
->>> failure; for that we ensure whoever selects FSL_IFC also selects MEMORY.
->>>
->>> Cc: Prabhakar Kushwaha <prabhakar@freescale.com>
->>> Cc: Scott Wood <scottwood@freescale.com>
->>> Cc: Arnd Bergmann <arnd@arndb.de>
->>> Cc: David Woodhouse <dwmw2@infradead.org>
->>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->>> Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
->>> ---
->>>
->>> [v2: fix the mislocated FSL_IFC as per Scott's comment.  It still
->>>    probably makes sense to go in via Greg's char-misc/char-misc-next
->>>    (vs. powerpc-next) since that is where the regression was introduced.]
->>>
->>>    arch/powerpc/Kconfig     | 4 ----
->>>    drivers/memory/Kconfig   | 4 ++++
->>>    drivers/mtd/nand/Kconfig | 1 +
->>>    3 files changed, 5 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
->>> index 957bf344c0f5..b9fcecc706ab 100644
->>> --- a/arch/powerpc/Kconfig
->>> +++ b/arch/powerpc/Kconfig
->>> @@ -736,10 +736,6 @@ config FSL_LBC
->>>    	  controller.  Also contains some common code used by
->>>    	  drivers for specific local bus peripherals.
->>>    
->>> -config FSL_IFC
->>> -	bool
->>> -        depends on FSL_SOC
->>> -
->>>    config FSL_GTM
->>>    	bool
->>>    	depends on PPC_83xx || QUICC_ENGINE || CPM2
->>> diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
->>> index 29a11db365bc..a3640fe9852f 100644
->>> --- a/drivers/memory/Kconfig
->>> +++ b/drivers/memory/Kconfig
->>> @@ -50,4 +50,8 @@ config TEGRA30_MC
->>>    	  analysis, especially for IOMMU/SMMU(System Memory Management
->>>    	  Unit) module.
->>>    
->>> +config FSL_IFC
->>> +	bool
->>> +	depends on FSL_SOC
->>> +
->>>    endif
->>> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
->>> index 90ff447bf043..a4bee41ad5cb 100644
->>> --- a/drivers/mtd/nand/Kconfig
->>> +++ b/drivers/mtd/nand/Kconfig
->>> @@ -428,6 +428,7 @@ config MTD_NAND_FSL_IFC
->>>    	tristate "NAND support for Freescale IFC controller"
->>>    	depends on MTD_NAND && FSL_SOC
->>>    	select FSL_IFC
->>> +	select MEMORY
->>>    	help
->>>    	  Various Freescale chips e.g P1010, include a NAND Flash machine
->>>    	  with built-in hardware ECC capabilities.
->> Hi All,
->>
->> I am not sure which version of patch is being picked here.
->>
->> Latest version is v8 and it is a "patch set" and it do enable
->> CONFIG_MEMORY in powerpc/configs
-> It really doesn't matter what the latest version is, if the
-> maintainer has already taken an earlier version and merged it.
-> In that case one needs to work with the maintainer to determine
-> whether they want a new version, or a delta/fixup commit on the
-> old one.
-I think, I got the reason of this issue.
-I thought this patch will be picked by powerpc.git and updated version 
-were sent on linuxppc-dev mail list after initial version review on both 
-powerpc and linux-kernel mailing list. It should have sent on both the 
-list "always".   A learning for future :)
+This patch set adds the support for the JEDEC compliant nand chips.
 
-I am OK with the current patch and modification  because it  full fill 
-my requirements.
-I will sent separate patch to fix other things.
+You can download the JEDEC standard about the NAND in the:
+    www.jedec.org
+
+My code references to the JESD230A, August 2013, revision 1.
+
+Tested with Toshiba TH58TEG7DDKTA20(16K + 1280).
+(Unfortuately, this ECC info of its JEDEC parameter page is zero,
+ TOSHIBA FAE confirmed that they will fix it in future.)
+
+v2 --> v3:
+	[1] add more comment for the new fields.
+	[2] follow Brian's suggestions to change the parsing code.
+
+v1 --> v2:
+	[1] use the read_byte to replace the read_buf.
 
 
->> 1.  driver/memory:Move Freescale IFC driver to a common driver
->> http://patchwork.ozlabs.org/patch/315531/
-> So, this has the Kconfig move part, but the one currently in
-> char-misc does not.  And it still needs the "select".
->
->> 2. powerpc/config: Enable memory driver
->> http://patchwork.ozlabs.org/patch/315532/
-> Updating the defconfigs is fine, but incomplete in itself.  You
-> still need the IFC users to select MEMORY, otherwise you still
-> introduce build failures for anyone else who chooses IFC but
-> does not choose MEMORY.
->
-> In short, the char-misc tree still needs the v2 patch above.
->
->
+Huang Shijie (5):
+  mtd: nand: add the data structures for JEDEC parameter page
+  mtd: nand: add fields for JEDEC in nand_chip
+  mtd: nand: add a helper to get the supported features for JEDEC
+  mtd: nand: parse out the JEDEC compliant nand
+  mtd: nand: print out the right information for JEDEC compliant nand
 
-Yes,  this patch still required.
+ drivers/mtd/nand/nand_base.c |   98 +++++++++++++++++++++++++++++++++++++++++-
+ include/linux/mtd/nand.h     |   96 ++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 190 insertions(+), 4 deletions(-)
 
-Thanks,
-Prabhakar
+-- 
+1.7.2.rc3
