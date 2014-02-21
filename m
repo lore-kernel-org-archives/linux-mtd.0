@@ -1,14 +1,13 @@
-Received: from co9ehsobe004.messaging.microsoft.com ([207.46.163.27]
- helo=co9outboundpool.messaging.microsoft.com)
+Received: from am1ehsobe001.messaging.microsoft.com ([213.199.154.204]
+ helo=am1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WGjWZ-0007vy-26
- for linux-mtd@lists.infradead.org; Fri, 21 Feb 2014 06:23:51 +0000
+ id 1WGjWa-0007w0-Qq
+ for linux-mtd@lists.infradead.org; Fri, 21 Feb 2014 06:23:55 +0000
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH v3 1/5] mtd: nand: add the data structures for JEDEC parameter
- page
-Date: Fri, 21 Feb 2014 13:39:37 +0800
-Message-ID: <1392961181-20693-2-git-send-email-b32955@freescale.com>
+Subject: [PATCH v3 4/5] mtd: nand: parse out the JEDEC compliant nand
+Date: Fri, 21 Feb 2014 13:39:40 +0800
+Message-ID: <1392961181-20693-5-git-send-email-b32955@freescale.com>
 In-Reply-To: <1392961181-20693-1-git-send-email-b32955@freescale.com>
 References: <1392961181-20693-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
@@ -24,100 +23,132 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Create the nand_jedec_params{} and jedec_ecc_info{} according to
-the JESD230A(Revision of JESD230, October 2012).
+This patch adds the parsing code for the JEDEC compliant nand.
 
-Acked-by: Brian Norris <computersforpeace@gmail.com>
+Since we need the 0x40 as the column address, this patch also
+makes the NAND_CMD_PARAM to use the 8-bit address only.
+
 Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
- include/linux/mtd/nand.h |   75 ++++++++++++++++++++++++++++++++++++++++++++++
- 1 files changed, 75 insertions(+), 0 deletions(-)
+ drivers/mtd/nand/nand_base.c |   85 ++++++++++++++++++++++++++++++++++++++++++
+ include/linux/mtd/nand.h     |    2 +-
+ 2 files changed, 86 insertions(+), 1 deletions(-)
 
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 9be7842..42461f9 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3163,6 +3163,87 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+ }
+ 
+ /*
++ * Check if the NAND chip is JEDEC compliant, returns 1 if it is, 0 otherwise.
++ */
++static int nand_flash_detect_jedec(struct mtd_info *mtd, struct nand_chip *chip,
++					int *busw)
++{
++	struct nand_jedec_params *p = &chip->jedec_params;
++	struct jedec_ecc_info *ecc;
++	int val;
++	int i, j;
++
++	/* Try JEDEC for unknown chip or LP */
++	chip->cmdfunc(mtd, NAND_CMD_READID, 0x40, -1);
++	if (chip->read_byte(mtd) != 'J' || chip->read_byte(mtd) != 'E' ||
++		chip->read_byte(mtd) != 'D' || chip->read_byte(mtd) != 'E' ||
++		chip->read_byte(mtd) != 'C')
++		return 0;
++
++	chip->cmdfunc(mtd, NAND_CMD_PARAM, 0x40, -1);
++	for (i = 0; i < 3; i++) {
++		for (j = 0; j < sizeof(*p); j++)
++			((uint8_t *)p)[j] = chip->read_byte(mtd);
++
++		if (onfi_crc16(ONFI_CRC_BASE, (uint8_t *)p, 510) ==
++				le16_to_cpu(p->crc))
++			break;
++	}
++
++	if (i == 3) {
++		pr_err("Could not find valid JEDEC parameter page; aborting\n");
++		return 0;
++	}
++
++	/* Check version */
++	val = le16_to_cpu(p->revision);
++	if (val & (1 << 2))
++		chip->jedec_version = 10;
++	else if (val & (1 << 1))
++		chip->jedec_version = 1; /* vendor specific version */
++
++	if (!chip->jedec_version) {
++		pr_info("unsupported JEDEC version: %d\n", val);
++		return 0;
++	}
++
++	sanitize_string(p->manufacturer, sizeof(p->manufacturer));
++	sanitize_string(p->model, sizeof(p->model));
++	if (!mtd->name)
++		mtd->name = p->model;
++
++	mtd->writesize = le32_to_cpu(p->byte_per_page);
++
++	/* Please reference to the comment for nand_flash_detect_onfi. */
++	mtd->erasesize = 1 << (fls(le32_to_cpu(p->pages_per_block)) - 1);
++	mtd->erasesize *= mtd->writesize;
++
++	mtd->oobsize = le16_to_cpu(p->spare_bytes_per_page);
++
++	/* Please reference to the comment for nand_flash_detect_onfi. */
++	chip->chipsize = 1 << (fls(le32_to_cpu(p->blocks_per_lun)) - 1);
++	chip->chipsize *= (uint64_t)mtd->erasesize * p->lun_count;
++	chip->bits_per_cell = p->bits_per_cell;
++
++	if (jedec_feature(chip) & JEDEC_FEATURE_16_BIT_BUS)
++		*busw = NAND_BUSWIDTH_16;
++	else
++		*busw = 0;
++
++	/* ECC info */
++	ecc = &p->ecc_info[0];
++
++	if (ecc->codeword_size >= 9) {
++		chip->ecc_strength_ds = ecc->ecc_bits;
++		chip->ecc_step_ds = 1 << ecc->codeword_size;
++	} else {
++		pr_warn("Invalid codeword size\n");
++	}
++
++	return 1;
++}
++
++/*
+  * nand_id_has_period - Check if an ID string has a given wraparound period
+  * @id_data: the ID string
+  * @arrlen: the length of the @id_data array
+@@ -3527,6 +3608,10 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
+ 		/* Check is chip is ONFI compliant */
+ 		if (nand_flash_detect_onfi(mtd, chip, &busw))
+ 			goto ident_done;
++
++		/* Check if the chip is JEDEC compliant */
++		if (nand_flash_detect_jedec(mtd, chip, &busw))
++			goto ident_done;
+ 	}
+ 
+ 	if (!type->name)
 diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index c034dc4..588f8a4 100644
+index afd1cf9b..aa005e8 100644
 --- a/include/linux/mtd/nand.h
 +++ b/include/linux/mtd/nand.h
-@@ -342,6 +342,81 @@ struct nand_onfi_vendor_micron {
- 	u8 param_revision;
- } __packed;
+@@ -925,7 +925,7 @@ static inline bool nand_is_slc(struct nand_chip *chip)
+  */
+ static inline int nand_opcode_8bits(unsigned int command)
+ {
+-	return command == NAND_CMD_READID;
++	return command == NAND_CMD_READID || command == NAND_CMD_PARAM;
+ }
  
-+struct jedec_ecc_info {
-+	u8 ecc_bits;
-+	u8 codeword_size;
-+	__le16 bb_per_lun;
-+	__le16 block_endurance;
-+	u8 reserved[2];
-+} __packed;
-+
-+struct nand_jedec_params {
-+	/* rev info and features block */
-+	/* 'J' 'E' 'S' 'D'  */
-+	u8 sig[4];
-+	__le16 revision;
-+	__le16 features;
-+	u8 opt_cmd[3];
-+	__le16 sec_cmd;
-+	u8 num_of_param_pages;
-+	u8 reserved0[18];
-+
-+	/* manufacturer information block */
-+	char manufacturer[12];
-+	char model[20];
-+	u8 jedec_id[6];
-+	u8 reserved1[10];
-+
-+	/* memory organization block */
-+	__le32 byte_per_page;
-+	__le16 spare_bytes_per_page;
-+	u8 reserved2[6];
-+	__le32 pages_per_block;
-+	__le32 blocks_per_lun;
-+	u8 lun_count;
-+	u8 addr_cycles;
-+	u8 bits_per_cell;
-+	u8 programs_per_page;
-+	u8 multi_plane_addr;
-+	u8 multi_plane_op_attr;
-+	u8 reserved3[38];
-+
-+	/* electrical parameter block */
-+	__le16 async_sdr_speed_grade;
-+	__le16 toggle_ddr_speed_grade;
-+	__le16 sync_ddr_speed_grade;
-+	u8 async_sdr_features;
-+	u8 toggle_ddr_features;
-+	u8 sync_ddr_features;
-+	__le16 t_prog;
-+	__le16 t_bers;
-+	__le16 t_r;
-+	__le16 t_r_multi_plane;
-+	__le16 t_ccs;
-+	__le16 io_pin_capacitance_typ;
-+	__le16 input_pin_capacitance_typ;
-+	__le16 clk_pin_capacitance_typ;
-+	u8 driver_strength_support;
-+	__le16 t_ald;
-+	u8 reserved4[36];
-+
-+	/* ECC and endurance block */
-+	u8 guaranteed_good_blocks;
-+	__le16 guaranteed_block_endurance;
-+	struct jedec_ecc_info ecc_info[4];
-+	u8 reserved5[29];
-+
-+	/* reserved */
-+	u8 reserved6[148];
-+
-+	/* vendor */
-+	__le16 vendor_rev_num;
-+	u8 reserved7[88];
-+
-+	/* CRC for Parameter Page */
-+	__le16 crc;
-+} __packed;
-+
- /**
-  * struct nand_hw_control - Control structure for hardware controller (e.g ECC generator) shared among independent devices
-  * @lock:               protection lock
+ /* return the supported JEDEC features. */
 -- 
 1.7.2.rc3
