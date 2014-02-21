@@ -1,16 +1,32 @@
-Date: Fri, 21 Feb 2014 14:51:03 +0800
-From: Huang Shijie <b32955@freescale.com>
-To: <dwmw2@infradead.org>
-Subject: Re: [PATCH 0/3] mtd: gpmi: add subpage read support
-Message-ID: <20140221065101.GB29360@shlinux2.ap.freescale.net>
-References: <a>
- <1388718102-26097-1-git-send-email-b32955@freescale.com>
-MIME-Version: 1.0
+Received: from mail2.lawo.de ([80.149.95.33] helo=ExchangeEdge1.lawo.de)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WGlto-00040S-L5
+ for linux-mtd@lists.infradead.org; Fri, 21 Feb 2014 08:56:01 +0000
+From: "Wiedemer, Thorsten (Lawo AG)" <Thorsten.Wiedemer@lawo.com>
+To: Bill Pringlemeir <bpringlemeir@nbsps.com>
+Date: Fri, 21 Feb 2014 09:55:28 +0100
+Subject: AW: AW: AW: UBI leb_write_unlock NULL pointer Oops (continuation)
+Message-ID: <D7B1B5F4F3F27A4CB073BF422331203F2A250B54E6@Exchange1.lawo.de>
+References: <D7B1B5F4F3F27A4CB073BF422331203F2A18997F1F@Exchange1.lawo.de>
+ <CAFLxGvya5WXoKcYmOgeM_SmVVEht1jEzeLG9vHhwFudFU+Ny8A@mail.gmail.com>
+ <D7B1B5F4F3F27A4CB073BF422331203F2A18997F8B@Exchange1.lawo.de>
+ <52EF772D.8080207@nod.at>
+ <D7B1B5F4F3F27A4CB073BF422331203F2A18DD7989@Exchange1.lawo.de>
+ <52EF9FFE.4020405@nod.at>
+ <D7B1B5F4F3F27A4CB073BF422331203F2A18A7474A@Exchange1.lawo.de>
+ <52F1F658.9080701@nod.at>
+ <D7B1B5F4F3F27A4CB073BF422331203F2A1ECCF6AE@Exchange1.lawo.de>
+ <87zjlxy8lj.fsf@nbsps.com>
+ <D7B1B5F4F3F27A4CB073BF422331203F2A1ECCFB51@Exchange1.lawo.de>
+ <87txc4w698.fsf@nbsps.com>
+ <D7B1B5F4F3F27A4CB073BF422331203F2A250B53F4@Exchange1.lawo.de>
+In-Reply-To: <D7B1B5F4F3F27A4CB073BF422331203F2A250B53F4@Exchange1.lawo.de>
+Content-Language: de-DE
 Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1388718102-26097-1-git-send-email-b32955@freescale.com>
-Cc: computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: Richard Weinberger <richard@nod.at>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,102 +36,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jan 03, 2014 at 11:01:39AM +0800, Huang Shijie wrote:
-> 1) Why add the subpage read support?
->   The page size of the nand chip becomes larger and larger, the imx6 has to
->   supports the 16K page or even bigger page. But sometimes, the upper layer only
->   needs a small part of the page, such as 512 bytes or less.
-> 
->   For example, ubiattach may only read 64 bytes per page.
-> 
-> 2) We only enable the subpage read support when it meets the conditions:
->    <1> the chip is imx6 (or later chips) which can supports large nand page.
->    <2> the size of ECC parity is byte aligned.
->        If the size of ECC parity is not byte aligned, the calling of NAND_CMD_RNDOUT
->        will fail.
-> 
-> 3) What does this patch set do?
->    patch 1: add a new argument for read_subpage hook
->    patch 2: do not use the mtd->writesize. 
->    patch 3: This patch will fake a virtual small page for the subpage read,
->             and call the gpmi_ecc_read_page() to do the real work.
->             In order to fake a virtual small page, the patch changes
-> 	    the BCH registers and the bch_geometry{}. After the subpage read
-> 	    finished, we will restore them back.
-> 
-> 4) Performace:
->     4.1) Tested with Toshiba TC58NVG2S0F(4096 + 224) with the following command:
->          #ubiattach /dev/ubi_ctrl -m 4
-> 
->        The detail information of /dev/mtd4 shows below:
->        --------------------------------------------------------------
->        #mtdinfo /dev/mtd4
->         mtd4
->         Name:                           test
->         Type:                           nand
->         Eraseblock size:                262144 bytes, 256.0 KiB
->         Amount of eraseblocks:          1856 (486539264 bytes, 464.0 MiB)
->         Minimum input/output unit size: 4096 bytes
->         Sub-page size:                  4096 bytes
->         OOB size:                       224 bytes
->         Character device major/minor:   90:8
->         Bad blocks are allowed:         true
->         Device is writable:             true
->        --------------------------------------------------------------
-> 
->     4.2) Before this patch:
->        --------------------------------------------------------------
->        [   94.530495] UBI: attaching mtd4 to ubi0
->        [   98.928850] UBI: scanning is finished
->        [   98.953594] UBI: attached mtd4 (name "test", size 464 MiB) to ubi0
->        [   98.958562] UBI: PEB size: 262144 bytes (256 KiB), LEB size: 253952 bytes
->        [   98.964076] UBI: min./max. I/O unit sizes: 4096/4096, sub-page size 4096
->        [   98.969518] UBI: VID header offset: 4096 (aligned 4096), data offset: 8192
->        [   98.975128] UBI: good PEBs: 1856, bad PEBs: 0, corrupted PEBs: 0
->        [   98.979843] UBI: user volume: 1, internal volumes: 1, max. volumes count: 128
->        [   98.985878] UBI: max/mean erase counter: 2/1, WL threshold: 4096, image sequence number: 2024916145
->        [   98.993635] UBI: available PEBs: 0, total reserved PEBs: 1856, PEBs reserved for bad PEB handling: 40
->        [   99.001807] UBI: background thread "ubi_bgt0d" started, PID 831
->        --------------------------------------------------------------
->        The attach time is about 98.9 - 94.5 = 4.4s
-> 
->     4.3) After this patch:
->        --------------------------------------------------------------
->        [  286.464906] UBI: attaching mtd4 to ubi0
->        [  289.186129] UBI: scanning is finished
->        [  289.211416] UBI: attached mtd4 (name "test", size 464 MiB) to ubi0
->        [  289.216360] UBI: PEB size: 262144 bytes (256 KiB), LEB size: 253952 bytes
->        [  289.221858] UBI: min./max. I/O unit sizes: 4096/4096, sub-page size 4096
->        [  289.227293] UBI: VID header offset: 4096 (aligned 4096), data offset: 8192
->        [  289.232878] UBI: good PEBs: 1856, bad PEBs: 0, corrupted PEBs: 0
->        [  289.237628] UBI: user volume: 0, internal volumes: 1, max. volumes count: 128
->        [  289.243553] UBI: max/mean erase counter: 1/1, WL threshold: 4096, image sequence number: 2024916145
->        [  289.251348] UBI: available PEBs: 1812, total reserved PEBs: 44, PEBs reserved for bad PEB handling: 40
->        [  289.259417] UBI: background thread "ubi_bgt0d" started, PID 847
->        --------------------------------------------------------------
->        The attach time is about 289.18 - 286.46 = 2.7s
-> 
->      4.4) The conclusion:
->        We achieve (4.4 - 2.7) / 4.4 = 38.6% faster in the ubiattach.
-> 
->  5) This patch depends on the following patch:
->     http://lists.infradead.org/pipermail/linux-mtd/2013-December/051091.html
-> 
-> Huang Shijie (3):
->   mtd: nand: add "page" argument for read_subpage hook
->   mtd: gpmi: do not use the mtd->writesize
->   mtd: gpmi: add subpage read support
-> 
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |  102 +++++++++++++++++++++++++++++++-
->  drivers/mtd/nand/nand_base.c           |    7 ++-
->  include/linux/mtd/nand.h               |    2 +-
->  3 files changed, 105 insertions(+), 6 deletions(-)
-> 
-> -- 
-> 1.7.2.rc3
-> 
-> 
-just a ping.
+Hi,
 
-Best Regards
-Huang Shijie
+> Thorsten Wiedemer wrote:
+>=20
+> We could reproduce the error now with function tracing enabled, so we hav=
+e two hopefully valuable traces. But they are rather big (around 4MB each).=
+ Shall I use pastebin and cut them in several peaces to provide them? Or of=
+f-list as email attachment?
+>
+
+Here I have the last parts of the two hopefully "valuable" traces. The piec=
+es show what happens between the leb_write_lock() und the leb_write unlock(=
+) of the process which triggers the oops.
+If this is not enough, I can provide also more ...
+Take care of the PIDs, there are several processes with the same name runni=
+ng.
+Boths traces did not result from identical test cases, so there are some di=
+fferent processes running.
+
+The part of the first trace fits in one paste:
+
+http://pastebin.com/TL3yNVcw
+
+The part of the second trace is bigger than 500k, so split into two pastes.
+
+http://pastebin.com/1qMt0Pqg
+http://pastebin.com/ZLXU17wx
+
+We'll have a closer look at that.
+
+Regards,
+Thorsten
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
