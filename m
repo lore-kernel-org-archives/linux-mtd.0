@@ -1,18 +1,21 @@
-Date: Sat, 22 Feb 2014 18:26:37 -0800
+Received: from mail-pb0-x235.google.com ([2607:f8b0:400e:c01::235])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WHOnH-0000x0-VM
+ for linux-mtd@lists.infradead.org; Sun, 23 Feb 2014 02:27:52 +0000
+Received: by mail-pb0-f53.google.com with SMTP id ma3so2405618pbc.40
+ for <linux-mtd@lists.infradead.org>; Sat, 22 Feb 2014 18:27:30 -0800 (PST)
+Date: Sat, 22 Feb 2014 18:27:28 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Subject: Re: [PATCH] MTD: atmel_nand: POI fall back is not an issue: change
- log level
-Message-ID: <20140223022637.GD11836@norris-Latitude-E6410>
-References: <1392204414-20700-1-git-send-email-nicolas.ferre@atmel.com>
- <20140212114200.GA11498@piout.net>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [patch] mtd: remove some duplicative checks
+Message-ID: <20140223022728.GE11836@norris-Latitude-E6410>
+References: <20140213112144.GD15549@elgon.mountain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20140212114200.GA11498@piout.net>
-Cc: dedekind1@gmail.com, Nicolas Ferre <nicolas.ferre@atmel.com>,
- linux-kernel@vger.kernel.org, Josh Wu <josh.wu@atmel.com>,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20140213112144.GD15549@elgon.mountain>
+Cc: linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,9 +25,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Feb 12, 2014 at 12:42:00PM +0100, Alexandre Belloni wrote:
-> Small nitpick, subject should read PIO, not POI.
+On Thu, Feb 13, 2014 at 02:21:44PM +0300, Dan Carpenter wrote:
+> "rc" is an error code here, no need to check it a second time.
+> 
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Amended the commit message and pushed to l2-mtd.git. Thanks!
+Pushed to l2-mtd.git. Thanks!
 
 Brian
