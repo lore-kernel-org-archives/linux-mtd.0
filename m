@@ -1,21 +1,26 @@
-Received: from mail-pb0-x22f.google.com ([2607:f8b0:400e:c01::22f])
+Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WHha4-0001mD-L9
- for linux-mtd@lists.infradead.org; Sun, 23 Feb 2014 22:31:29 +0000
-Received: by mail-pb0-f47.google.com with SMTP id rp16so5678390pbb.20
- for <linux-mtd@lists.infradead.org>; Sun, 23 Feb 2014 14:31:07 -0800 (PST)
-Date: Sun, 23 Feb 2014 14:31:00 -0800
+ id 1WHhxL-0001yN-Ck
+ for linux-mtd@lists.infradead.org; Sun, 23 Feb 2014 22:55:33 +0000
+Received: by mail-pa0-f43.google.com with SMTP id rd3so5759758pab.30
+ for <linux-mtd@lists.infradead.org>; Sun, 23 Feb 2014 14:55:09 -0800 (PST)
+Date: Sun, 23 Feb 2014 14:55:05 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Jean Delvare <jdelvare@suse.de>
-Subject: Re: [PATCH v2] mtd/ts5500: Add dependency
-Message-ID: <20140223223100.GB16834@norris-Latitude-E6410>
-References: <20140223103201.73f63642@endymion.delvare>
+To: Albert ARIBAUD <albert.u.boot@aribaud.net>
+Subject: Re: [U-Boot] [PATCH v3 1/3] mtd: nand: omap: fix ecclayout to be in
+ sync with u-boot NAND driver
+Message-ID: <20140223225505.GC16834@norris-Latitude-E6410>
+References: <1392622885-8415-1-git-send-email-pekon@ti.com>
+ <1392622885-8415-2-git-send-email-pekon@ti.com>
+ <20140217101152.1fb2dd50@lilith>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20140223103201.73f63642@endymion.delvare>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Vivien Didelot <vivien.didelot@savoirfairelinux.com>
+In-Reply-To: <20140217101152.1fb2dd50@lilith>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, Felipe Balbi <balbi@ti.com>,
+ u-boot@lists.denx.de, Enric Balletbo Serra <eballetbo@iseebcn.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>, Pekon Gupta <pekon@ti.com>,
+ stable@vger.kernel.org, Stefan Roese <sr@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,18 +30,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Feb 23, 2014 at 10:32:01AM +0100, Jean Delvare wrote:
-> There is no point in displaying the TS5500-specific driver entries if
-> TS5500 board support itself isn't enabled.
+On Mon, Feb 17, 2014 at 10:11:52AM +0100, Albert ARIBAUD wrote:
+> On Mon, 17 Feb 2014 13:11:23 +0530, Pekon Gupta <pekon@ti.com> wrote:
+> > Fixes: commit a919e51161b58ed7e6e663daba99ab7d558808f3
+> >        mtd: nand: omap2: clean-up BCHx_HW and BCHx_SW ECC configurations in device_probe
+> > 
+> > Fixes ecclayout mismatch introduced in above commit for following ecc-schemes:
+> >  - OMAP_ECC_BCH4_CODE_HW_DETECTION_SW
+> >  - OMAP_ECC_BCH8_CODE_HW_DETECTION_SW
+> >  However, this patch also touches other ecc-schemes as the fix required
+> >  refactoring common code, into ecc-scheme specific code.
+> > 
+> > This patch aligns ecc-layout for below ecc-schemes as per reference [1],[2],[3]
+> >                 Figure="ECC Locations in NAND Spare Areas"
+[snip]
 > 
-> Signed-off-by: Jean Delvare <jdelvare@suse.de>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Brian Norris <computersforpeace@gmail.com>
-> Cc: Vivien Didelot <vivien.didelot@savoirfairelinux.com>
-> ---
-> Changes in v2:
->  * Drop the dependency on X86, as suggested by Brian Norris.
+> Seems to me that the commit message above could actually be placed in
+> a doc/README.* file, making the commit message itself less bulky.
 
-Pushed to l2-mtd.git. Thanks!
+Yes, I have suggested Pekon add this as a proper documentation file. But
+I will take the patches as-is anyway.
 
 Brian
