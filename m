@@ -1,22 +1,18 @@
-Received: from mail-ee0-x22e.google.com ([2a00:1450:4013:c00::22e])
+Received: from mail-ea0-x230.google.com ([2a00:1450:4013:c01::230])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WJQpU-0005Kc-5I
- for linux-mtd@lists.infradead.org; Fri, 28 Feb 2014 17:02:32 +0000
-Received: by mail-ee0-f46.google.com with SMTP id d49so2407643eek.33
- for <linux-mtd@lists.infradead.org>; Fri, 28 Feb 2014 09:02:09 -0800 (PST)
+ id 1WHXDY-00083l-AW
+ for linux-mtd@lists.infradead.org; Sun, 23 Feb 2014 11:27:32 +0000
+Received: by mail-ea0-f176.google.com with SMTP id b10so2461654eae.35
+ for <linux-mtd@lists.infradead.org>; Sun, 23 Feb 2014 03:27:10 -0800 (PST)
 From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH V2] mtd: bcm47xxpart: allow enabling on ARCH_BCM_5301X
-Date: Fri, 28 Feb 2014 18:02:01 +0100
-Message-Id: <1393606921-9488-1-git-send-email-zajec5@gmail.com>
-In-Reply-To: <1393422939-25360-1-git-send-email-zajec5@gmail.com>
-References: <1393422939-25360-1-git-send-email-zajec5@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Subject: [RFC 1/3] Revert "mtd: bcm47xxnflash: Use module_platform_driver"
+Date: Sun, 23 Feb 2014 12:26:57 +0100
+Message-Id: <1393154819-7369-2-git-send-email-zajec5@gmail.com>
+In-Reply-To: <1393154819-7369-1-git-send-email-zajec5@gmail.com>
+References: <1393154819-7369-1-git-send-email-zajec5@gmail.com>
 Cc: Hauke Mehrtens <hauke@hauke-m.de>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
- Florian Fainelli <florian@openwrt.org>
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,48 +22,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Home routers based on SoCs like BCM53010 (AKA BCM4708) use flashes
-which can be nicely partitioned with bcm47xxpart. Header bcm47xx_nvram.h
-is not available on bcm53xx, so don't include it.
+This reverts commit 994bbd0e91c0dfa4dcda9097b0716607aeec5470.
 
-Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+We're going to add support for more NAND flashes and the new ones are
+not registered as platform devices. So we need our own init function.
 ---
- drivers/mtd/Kconfig       | 2 +-
- drivers/mtd/bcm47xxpart.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/bcm47xxnflash/main.c | 20 +++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-index 5ebcda3..5d49a21 100644
---- a/drivers/mtd/Kconfig
-+++ b/drivers/mtd/Kconfig
-@@ -150,7 +150,7 @@ config MTD_BCM63XX_PARTS
+diff --git a/drivers/mtd/nand/bcm47xxnflash/main.c b/drivers/mtd/nand/bcm47xxnflash/main.c
+index 1074459..52611ef 100644
+--- a/drivers/mtd/nand/bcm47xxnflash/main.c
++++ b/drivers/mtd/nand/bcm47xxnflash/main.c
+@@ -77,4 +77,22 @@ static struct platform_driver bcm47xxnflash_driver = {
+ 	},
+ };
  
- config MTD_BCM47XX_PARTS
- 	tristate "BCM47XX partitioning support"
--	depends on BCM47XX
-+	depends on BCM47XX || ARCH_BCM_5301X
- 	help
- 	  This provides partitions parser for devices based on BCM47xx
- 	  boards.
-diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
-index 23d7122..adfa74c 100644
---- a/drivers/mtd/bcm47xxpart.c
-+++ b/drivers/mtd/bcm47xxpart.c
-@@ -14,7 +14,6 @@
- #include <linux/slab.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
--#include <bcm47xx_nvram.h>
- 
- /* 10 parts were found on sflash on Netgear WNDR4500 */
- #define BCM47XXPART_MAX_PARTS		12
-@@ -30,6 +29,7 @@
- #define BOARD_DATA_MAGIC2		0xBD0D0BBD
- #define CFE_MAGIC			0x43464531	/* 1EFC */
- #define FACTORY_MAGIC			0x59544346	/* FCTY */
-+#define NVRAM_HEADER			0x48534C46	/* FLSH */
- #define POT_MAGIC1			0x54544f50	/* POTT */
- #define POT_MAGIC2			0x504f		/* OP */
- #define ML_MAGIC1			0x39685a42
+-module_platform_driver(bcm47xxnflash_driver);
++static int __init bcm47xxnflash_init(void)
++{
++	int err;
++
++	err = platform_driver_register(&bcm47xxnflash_driver);
++	if (err)
++		pr_err("Failed to register bcm47xx nand flash driver: %d\n",
++		       err);
++
++	return err;
++}
++
++static void __exit bcm47xxnflash_exit(void)
++{
++	platform_driver_unregister(&bcm47xxnflash_driver);
++}
++
++module_init(bcm47xxnflash_init);
++module_exit(bcm47xxnflash_exit);
 -- 
 1.8.4.5
