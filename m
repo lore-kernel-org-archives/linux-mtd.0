@@ -1,19 +1,23 @@
-Received: from mail-wg0-x235.google.com ([2a00:1450:400c:c00::235])
+Received: from mail-ve0-f172.google.com ([209.85.128.172])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WHzMI-0004mO-D0
- for linux-mtd@lists.infradead.org; Mon, 24 Feb 2014 17:30:27 +0000
-Received: by mail-wg0-f53.google.com with SMTP id x12so5021370wgg.32
- for <linux-mtd@lists.infradead.org>; Mon, 24 Feb 2014 09:30:02 -0800 (PST)
-From: Boris BREZILLON <b.brezillon.dev@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: [RFC PATCH 2/2] mtd: nand: add hynix specific initializer
-Date: Mon, 24 Feb 2014 18:29:53 +0100
-Message-Id: <1393262993-22040-3-git-send-email-b.brezillon.dev@gmail.com>
-In-Reply-To: <1393262993-22040-1-git-send-email-b.brezillon.dev@gmail.com>
-References: <1393262993-22040-1-git-send-email-b.brezillon.dev@gmail.com>
-Cc: Boris BREZILLON <b.brezillon.dev@gmail.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+ id 1WHzmv-00063n-4P
+ for linux-mtd@lists.infradead.org; Mon, 24 Feb 2014 17:57:58 +0000
+Received: by mail-ve0-f172.google.com with SMTP id jz11so4304906veb.17
+ for <linux-mtd@lists.infradead.org>; Mon, 24 Feb 2014 09:57:36 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <CAAEAJfCC7UhwSa+106C9qzJJnkbDYGA7wiYGwfZqY2NZ8SWACA@mail.gmail.com>
+References: <CADL8D3ZrL5FKE=E4gYw81fKwQ0DEHdVPHsM8Hwji--CkTBEJ5g@mail.gmail.com>
+ <CAAEAJfCC7UhwSa+106C9qzJJnkbDYGA7wiYGwfZqY2NZ8SWACA@mail.gmail.com>
+From: Jon Cormier <jcormier@criticallink.com>
+Date: Mon, 24 Feb 2014 12:57:15 -0500
+Message-ID: <CADL8D3bQoFuzMgVuFo9ZjdtmZnM0FbRpWMFH3TuT+1Jc8OFWqg@mail.gmail.com>
+Subject: Re: Question about AM335x SoC supported NAND flash (Ezequiel Garc?a)
+To: =?ISO-8859-1?Q?Ezequiel_Garc=EDa?= <ezequiel@vanguardiasur.com.ar>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: Stefan Roese <sr@denx.de>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Pekon Gupta <pekon@ti.com>, Daniel Mack <zonque@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,220 +27,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add an hynix initializer to manage read retries on h27uxgt8t2a chips.
+Mailing list bumped my email since gmail was in html mode.  Switched
+to plain text mode.  Hopefully this goes through.
 
-Signed-off-by: Boris BREZILLON <b.brezillon.dev@gmail.com>
----
- drivers/mtd/nand/Makefile     |    2 +-
- drivers/mtd/nand/nand_hynix.c |  151 +++++++++++++++++++++++++++++++++++++++++
- drivers/mtd/nand/nand_ids.c   |    3 +-
- include/linux/mtd/nand.h      |    2 +
- 4 files changed, 156 insertions(+), 2 deletions(-)
- create mode 100644 drivers/mtd/nand/nand_hynix.c
+On Mon, Feb 24, 2014 at 12:29 PM, Ezequiel Garc=EDa
+<ezequiel@vanguardiasur.com.ar> wrote:
+> On 24 February 2014 14:15, Jon Cormier <jcormier@criticallink.com> wrote:
+> First off apologizes if I've replied to the mailing list digest incorrect=
+ly.
+>>>
+>>> We're developing a custom AM335x-based board, which is meant to boot fr=
+om
+>>> NAND.
+>>>
+>>> The flash device is a Micron MT29F8G08ABABA NAND. This device is
+>>> ONFI-compliant
+>>> and has 4 KiB page size, 512 KiB block size.
+>>>
+>>> Accessing it from U-Boot and Linux works just fine, apparently in ECC B=
+CH8
+>>> mode.
+>>>
+>>> However, we cannot get the SoC to boot from NAND. We've double-checked
+>>> the hardware
+>>> and the SYSBOOT, but still no luck with it.
+>>>
+>>> So, I thought about asking here, in case this device is (for some
+>>> reason) not supported by the
+>>> ROM code booting. Maybe someone already struggled with this and has
+>>> some idea to suggest?
+>>>
+> [..]
+>>
+>> As Pekon pointed out the 335x expects BCH16 for nand devices with a 4K p=
+age
+>> size.  Critical Link has gotten this to work for our custom SoM.   Your
+>> welcome to check it out if it will be helpful.  We are using Micron
+>> MT29F4G08ABAEAH4-IT Nand.  BCH16 is working for us in our u-boot 2013.10
+>> branch and in our kernel 3.2 branch (based off of TI's PSP .07).  Our
+>> changes are probably not up to mainline standard as I don't have a lot o=
+f
+>> mainline experience yet.  Hope it helps.
+>>
+>
+> It sure will! I'll take a look right away and let you know.
+>
+> Thanks a lot!
+> --
+> Ezequiel Garc=EDa, VanguardiaSur
+> www.vanguardiasur.com.ar
 
-diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-index 542b568..c970ce7 100644
---- a/drivers/mtd/nand/Makefile
-+++ b/drivers/mtd/nand/Makefile
-@@ -5,7 +5,7 @@
- obj-$(CONFIG_MTD_NAND)			+= nand.o
- obj-$(CONFIG_MTD_NAND_ECC)		+= nand_ecc.o
- obj-$(CONFIG_MTD_NAND_BCH)		+= nand_bch.o
--obj-$(CONFIG_MTD_NAND_IDS)		+= nand_ids.o
-+obj-$(CONFIG_MTD_NAND_IDS)		+= nand_ids.o nand_hynix.o
- obj-$(CONFIG_MTD_SM_COMMON) 		+= sm_common.o
- 
- obj-$(CONFIG_MTD_NAND_CAFE)		+= cafe_nand.o
-diff --git a/drivers/mtd/nand/nand_hynix.c b/drivers/mtd/nand/nand_hynix.c
-new file mode 100644
-index 0000000..c1d0017
---- /dev/null
-+++ b/drivers/mtd/nand/nand_hynix.c
-@@ -0,0 +1,151 @@
-+/*
-+ * Copyright (C) 2014 Boris BREZILLON <b.brezillon.dev@gmail.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/mtd/nand.h>
-+#include <linux/slab.h>
-+
-+static u8 h27ucg8t2a_read_retry_regs[] = {
-+	0xcc, 0xbf, 0xaa, 0xab, 0xcd, 0xad, 0xae, 0xaf
-+};
-+
-+struct hynix_read_retry {
-+	u8 *regs;
-+	u8 values[64];
-+};
-+
-+struct hynix_nand {
-+	struct hynix_read_retry read_retry;
-+};
-+
-+int nand_setup_read_retry_hynix(struct mtd_info *mtd, int retry_mode)
-+{
-+	struct nand_chip *chip = mtd->priv;
-+	struct hynix_nand *hynix = chip->manuf_priv;
-+	int offset = retry_mode * 8;
-+	int status;
-+	int i;
-+
-+	chip->cmdfunc(mtd, 0x36, -1, -1);
-+	for (i = 0; i < 8; i++) {
-+		int column = hynix->read_retry.regs[i];
-+		column |= column << 8;
-+		chip->cmdfunc(mtd, NAND_CMD_NONE, column, -1);
-+		chip->write_byte(mtd, hynix->read_retry.values[offset + i]);
-+	}
-+	chip->cmdfunc(mtd, 0x16, -1, -1);
-+
-+	status = chip->waitfunc(mtd, chip);
-+	if (status & NAND_STATUS_FAIL)
-+		return -EIO;
-+
-+	return 0;
-+}
-+
-+static void h27ucg8t2a_cleanup(struct mtd_info *mtd)
-+{
-+	struct nand_chip *chip = mtd->priv;
-+	kfree(chip->manuf_priv);
-+}
-+
-+static int h27ucg8t2a_init(struct mtd_info *mtd, const uint8_t *id)
-+{
-+	struct nand_chip *chip = mtd->priv;
-+	struct hynix_nand *hynix;
-+	u8 buf[1024];
-+	int i, j;
-+	int ret;
-+
-+	chip->select_chip(mtd, 0);
-+	chip->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
-+	chip->cmdfunc(mtd, 0x36, 0xff, -1);
-+	chip->write_byte(mtd, 0x40);
-+	chip->cmdfunc(mtd, NAND_CMD_NONE, 0xcc, -1);
-+	chip->write_byte(mtd, 0x4d);
-+	chip->cmdfunc(mtd, 0x16, -1, -1);
-+	chip->cmdfunc(mtd, 0x17, -1, -1);
-+	chip->cmdfunc(mtd, 0x04, -1, -1);
-+	chip->cmdfunc(mtd, 0x19, -1, -1);
-+	chip->cmdfunc(mtd, NAND_CMD_READ0, 0x0, 0x200);
-+
-+	chip->read_buf(mtd, buf, 2);
-+	if (buf[0] != 0x8 || buf[1] != 0x8)
-+		return -EINVAL;
-+	chip->read_buf(mtd, buf, 1024);
-+
-+	ret = 0;
-+	for (j = 0; j < 8; j++) {
-+		for (i = 0; i < 64; i++) {
-+			u8 *tmp = buf + (128 * j);
-+			if ((tmp[i] | tmp[i + 64]) != 0xff) {
-+				ret = -EINVAL;
-+				break;
-+			}
-+		}
-+
-+		if (ret)
-+			break;
-+	}
-+
-+	chip->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
-+	chip->cmdfunc(mtd, 0x38, -1, -1);
-+	chip->select_chip(mtd, -1);
-+
-+	if (!ret) {
-+		hynix = kzalloc(sizeof(*hynix), GFP_KERNEL);
-+		if (!hynix)
-+			return -ENOMEM;
-+
-+		hynix->read_retry.regs = h27ucg8t2a_read_retry_regs;
-+		memcpy(hynix->read_retry.values, buf, 64);
-+		chip->manuf_priv = hynix;
-+		chip->setup_read_retry = nand_setup_read_retry_hynix;
-+		chip->read_retries = 8;
-+		chip->manuf_cleanup = h27ucg8t2a_cleanup;
-+	}
-+
-+	return ret;
-+}
-+
-+struct hynix_nand_initializer {
-+	u8 id[6];
-+	int (*init)(struct mtd_info *mtd, const uint8_t *id);
-+};
-+
-+struct hynix_nand_initializer initializers[] = {
-+	{
-+		.id = {NAND_MFR_HYNIX, 0xde, 0x94, 0xda, 0x74, 0xc4},
-+		.init = h27ucg8t2a_init,
-+	},
-+};
-+
-+int hynix_nand_init(struct mtd_info *mtd, const uint8_t *id)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(initializers); i++) {
-+		struct hynix_nand_initializer *initializer = &initializers[i];
-+		if (memcmp(id, initializer->id, sizeof(initializer->id)))
-+			continue;
-+
-+		return initializer->init(mtd, id);
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(hynix_nand_init);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Boris BREZILLON <b.brezillon.dev@gmail.com>");
-+MODULE_DESCRIPTION("Hynix NAND specific code");
-diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
-index daa2faa..8d373af 100644
---- a/drivers/mtd/nand/nand_ids.c
-+++ b/drivers/mtd/nand/nand_ids.c
-@@ -156,6 +156,7 @@ struct nand_flash_dev nand_flash_ids[] = {
- 	{NULL}
- };
- 
-+
- /* Manufacturer IDs */
- struct nand_manufacturers nand_manuf_ids[] = {
- 	{NAND_MFR_TOSHIBA, "Toshiba"},
-@@ -164,7 +165,7 @@ struct nand_manufacturers nand_manuf_ids[] = {
- 	{NAND_MFR_NATIONAL, "National"},
- 	{NAND_MFR_RENESAS, "Renesas"},
- 	{NAND_MFR_STMICRO, "ST Micro"},
--	{NAND_MFR_HYNIX, "Hynix"},
-+	{NAND_MFR_HYNIX, "Hynix", hynix_nand_init},
- 	{NAND_MFR_MICRON, "Micron"},
- 	{NAND_MFR_AMD, "AMD/Spansion"},
- 	{NAND_MFR_MACRONIX, "Macronix"},
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 6189312..389b3c5 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -729,6 +729,8 @@ struct nand_manufacturers {
- extern struct nand_flash_dev nand_flash_ids[];
- extern struct nand_manufacturers nand_manuf_ids[];
- 
-+int hynix_nand_init(struct mtd_info *mtd, const uint8_t *id);
-+
- extern int nand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd);
- extern int nand_default_bbt(struct mtd_info *mtd);
- extern int nand_markbad_bbt(struct mtd_info *mtd, loff_t offs);
--- 
-1.7.9.5
+
+
+--=20
+Jonathan Cormier
+CriticalLink
