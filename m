@@ -1,22 +1,20 @@
-Received: from mail-yh0-f45.google.com ([209.85.213.45])
+Received: from mail-wi0-x234.google.com ([2a00:1450:400c:c05::234])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WHzM1-0004km-2S
- for linux-mtd@lists.infradead.org; Mon, 24 Feb 2014 17:30:09 +0000
-Received: by mail-yh0-f45.google.com with SMTP id i57so5596682yha.18
- for <linux-mtd@lists.infradead.org>; Mon, 24 Feb 2014 09:29:44 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <CADL8D3ZrL5FKE=E4gYw81fKwQ0DEHdVPHsM8Hwji--CkTBEJ5g@mail.gmail.com>
-References: <CADL8D3ZrL5FKE=E4gYw81fKwQ0DEHdVPHsM8Hwji--CkTBEJ5g@mail.gmail.com>
-Date: Mon, 24 Feb 2014 14:29:44 -0300
-Message-ID: <CAAEAJfCC7UhwSa+106C9qzJJnkbDYGA7wiYGwfZqY2NZ8SWACA@mail.gmail.com>
-Subject: Re: Question about AM335x SoC supported NAND flash (Ezequiel Garc?a)
-From: =?ISO-8859-1?Q?Ezequiel_Garc=EDa?= <ezequiel@vanguardiasur.com.ar>
-To: Jon Cormier <jcormier@criticallink.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: Stefan Roese <sr@denx.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Pekon Gupta <pekon@ti.com>, Daniel Mack <zonque@gmail.com>
+ id 1WHzMG-0004lx-8Z
+ for linux-mtd@lists.infradead.org; Mon, 24 Feb 2014 17:30:25 +0000
+Received: by mail-wi0-f180.google.com with SMTP id hm4so3364019wib.7
+ for <linux-mtd@lists.infradead.org>; Mon, 24 Feb 2014 09:30:00 -0800 (PST)
+From: Boris BREZILLON <b.brezillon.dev@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+Subject: [RFC PATCH 1/2] mtd: nand: add manufacturer specific init
+ infrastructure
+Date: Mon, 24 Feb 2014 18:29:52 +0100
+Message-Id: <1393262993-22040-2-git-send-email-b.brezillon.dev@gmail.com>
+In-Reply-To: <1393262993-22040-1-git-send-email-b.brezillon.dev@gmail.com>
+References: <1393262993-22040-1-git-send-email-b.brezillon.dev@gmail.com>
+Cc: Boris BREZILLON <b.brezillon.dev@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,45 +24,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 24 February 2014 14:15, Jon Cormier <jcormier@criticallink.com> wrote:
-[..]
->>
->> We're developing a custom AM335x-based board, which is meant to boot fro=
-m
->> NAND.
->>
->> The flash device is a Micron MT29F8G08ABABA NAND. This device is
->> ONFI-compliant
->> and has 4 KiB page size, 512 KiB block size.
->>
->> Accessing it from U-Boot and Linux works just fine, apparently in ECC BC=
-H8
->> mode.
->>
->> However, we cannot get the SoC to boot from NAND. We've double-checked
->> the hardware
->> and the SYSBOOT, but still no luck with it.
->>
->> So, I thought about asking here, in case this device is (for some
->> reason) not supported by the
->> ROM code booting. Maybe someone already struggled with this and has
->> some idea to suggest?
->>
-[..]
->
-> As Pekon pointed out the 335x expects BCH16 for nand devices with a 4K pa=
-ge
-> size.  Critical Link has gotten this to work for our custom SoM.   Your
-> welcome to check it out if it will be helpful.  We are using Micron
-> MT29F4G08ABAEAH4-IT Nand.  BCH16 is working for us in our u-boot 2013.10
-> branch and in our kernel 3.2 branch (based off of TI's PSP .07).  Our
-> changes are probably not up to mainline standard as I don't have a lot of
-> mainline experience yet.  Hope it helps.
->
+Add new fields in nand_manufacturers and nand_chip struct to provide
+manufacturer specific handling like read retries.
 
-It sure will! I'll take a look right away and let you know.
+Signed-off-by: Boris BREZILLON <b.brezillon.dev@gmail.com>
+---
+ drivers/mtd/nand/nand_base.c |    7 +++++++
+ include/linux/mtd/nand.h     |    4 ++++
+ 2 files changed, 11 insertions(+)
 
-Thanks a lot!
---=20
-Ezequiel Garc=EDa, VanguardiaSur
-www.vanguardiasur.com.ar
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 9715a7b..8b16479 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3610,6 +3610,13 @@ ident_done:
+ 	if (mtd->writesize > 512 && chip->cmdfunc == nand_command)
+ 		chip->cmdfunc = nand_command_lp;
+ 
++	if (nand_manuf_ids[maf_idx].init) {
++		int err;
++		err = nand_manuf_ids[maf_idx].init(mtd, id_data);
++		if (err)
++			return ERR_PTR(err);
++	}
++
+ 	pr_info("device found, Manufacturer ID: 0x%02x, Chip ID: 0x%02x\n",
+ 		*maf_id, *dev_id);
+ 	pr_info("%s %s\n", nand_manuf_ids[maf_idx].name,
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 32f8612..6189312 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -575,6 +575,9 @@ struct nand_chip {
+ 	int (*onfi_get_features)(struct mtd_info *mtd, struct nand_chip *chip,
+ 			int feature_addr, uint8_t *subfeature_para);
+ 	int (*setup_read_retry)(struct mtd_info *mtd, int retry_mode);
++	void (*manuf_cleanup)(struct mtd_info *mtd);
++
++	void *manuf_priv;
+ 
+ 	int chip_delay;
+ 	unsigned int options;
+@@ -720,6 +723,7 @@ struct nand_flash_dev {
+ struct nand_manufacturers {
+ 	int id;
+ 	char *name;
++	int (*init)(struct mtd_info *mtd, const uint8_t *id);
+ };
+ 
+ extern struct nand_flash_dev nand_flash_ids[];
+-- 
+1.7.9.5
