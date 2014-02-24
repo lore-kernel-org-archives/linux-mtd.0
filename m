@@ -1,19 +1,19 @@
 Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WHylv-0003HL-Ba
- for linux-mtd@lists.infradead.org; Mon, 24 Feb 2014 16:52:52 +0000
+ id 1WHysL-0003XV-JV
+ for linux-mtd@lists.infradead.org; Mon, 24 Feb 2014 16:59:30 +0000
 From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
 To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Date: Mon, 24 Feb 2014 17:52:18 +0100
-Message-Id: <1393260738-11824-1-git-send-email-u.kleine-koenig@pengutronix.de>
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Date: Mon, 24 Feb 2014 17:58:57 +0100
+Message-Id: <1393261137-12088-1-git-send-email-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Subject: [PATCH] mtd: fix bug in partition size calculation related to
+Subject: [PATCH RESEND] mtd: fix bug in partition size calculation related to
  MTDPART_OFS_RETAIN
 Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- kernel@pengutronix.de
+ linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,7 +37,9 @@ Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
 Hello,
 
-this MTDPART_OFS_RETAIN feature looks very special, and there is only a single
+resending with the correct email address of Artem.
+
+This MTDPART_OFS_RETAIN feature looks very special, and there is only a single
 user (arch/arm/mach-ep93xx/ts72xx.c). Moreover I didn't understand its purpose
 from reading the documentation in include/linux/mtd/partitions.h:
 
