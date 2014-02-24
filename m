@@ -1,19 +1,17 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WHysL-0003XV-JV
- for linux-mtd@lists.infradead.org; Mon, 24 Feb 2014 16:59:30 +0000
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Date: Mon, 24 Feb 2014 17:58:57 +0100
-Message-Id: <1393261137-12088-1-git-send-email-u.kleine-koenig@pengutronix.de>
+From: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+To: <gregkh@linuxfoundation.org>, <santosh.shilimkar@ti.com>,
+ <galak@kernel.crashing.org>
+Subject: [PATCH v6 0/2]  Introduce AEMIF driver for Davinci/Keystone archs
+Date: Mon, 24 Feb 2014 19:26:10 +0200
+Message-ID: <1393262772-24442-1-git-send-email-ivan.khoronzhuk@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Subject: [PATCH RESEND] mtd: fix bug in partition size calculation related to
- MTDPART_OFS_RETAIN
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de
+Content-Type: text/plain
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, grygorii.strashko@ti.com,
+ linux@arm.linux.org.uk, pawel.moll@arm.com, swarren@wwwdotorg.org,
+ ijc+devicetree@hellion.org.uk, nsekhar@ti.com, linux-kernel@vger.kernel.org,
+ rob.herring@calxeda.com, robherring2@gmail.com, rob@landley.net,
+ Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>, linux-mtd@lists.infradead.org,
+ dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,64 +21,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If the remaining space is exactly what should still be available after
-the partition in question is added slave->mtd.size was set to zero
-instead of erroring out. In the next code block this was then
-interpreted as MTDPART_SIZ_FULL filling the rest of the partition
-instead of keeping it free for the next partition.
+These patches introduce Async External Memory Interface (EMIF16/AEMIF)
+controller driver for Davinci/Keystone archs.
 
-This problem existed since the MTDPART_OFS_RETAIN feature was introduced
-for 3.2-rc1.
+For more informations see documentation:
+Davinci DM646x - http://www.ti.com/lit/ug/sprueq7c/sprueq7c.pdf
+OMAP-L138 - http://www.ti.com/lit/ug/spruh77a/spruh77a.pdf
+Kestone - http://www.ti.com/lit/ug/sprugz3a/sprugz3a.pdf
 
-Fixes: 1a31368bf92e ("mtd: add a flags for partitions which should just leave smth. after them")
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
-Hello,
+Based on v3.14-rc4
 
-resending with the correct email address of Artem.
+v5..v6:
+- memory: ti-aemif: introduce AEMIF driver
+- memory: ti-aemif: add bindings for AEMIF driver
+	changed opaque names for cs node properties
 
-This MTDPART_OFS_RETAIN feature looks very special, and there is only a single
-user (arch/arm/mach-ep93xx/ts72xx.c). Moreover I didn't understand its purpose
-from reading the documentation in include/linux/mtd/partitions.h:
+v4..v5:
+- memory: ti-aemif: introduce AEMIF driver
+	deleted DRV_NAME in favour of KBUILD_MODNAME
+	deleted redundant err message in case of memory allocation
+	some cosmetic changes
 
-	offset: absolute starting position within the master MTD device; [...]
-	if [defined as] MTDPART_OFS_RETAIN, consume as much as possible,
-	leaving size after the end of partition.
+v3..v4:
+	rebased on latest of linux-keystone.git keystone/master
 
-But maybe it's only me.
+v2..v3 (https://lkml.org/lkml/2013/12/11/148):
+- memory: ti-aemif: introduce AEMIF driver
+	changed to work with multiple AEMIF controllers
+	corrected "copyright" to "authors" in header
+	changed compatible "ti,omap-L138-aemif" to "ti,da850-aeimf"
+	used NULL in clk_get() instead of "aemif" name
+	driver can be build as loadable module
+	treat all child nodes as cs nodes, it makes code simpler
 
-Anyhow I wonder if this feature is still considered valuable and if it's maybe
-better to just drop support for MTDPART_OFS_RETAIN. A more intuive replacement
-could be to specify start and end(+1) of partitions and interpret .start =
--0x100000 as 1 MiB before the end of the device.
+- memory: ti-aemif: add bindings for AEMIF driver
+	deleted direct link driver/memory/ti-aemif.c
+	clarified description of controller ranges property
+	changed compatible "ti,omap-L138-aemif" to "ti,da850-aeimf"
+	added cs number information in commit log
+	removed compatible property from cs node, it makes code simpler
 
-Best regards
-Uwe
+v1..v2 (https://lkml.org/lkml/2013/11/21/170):
+- memory: ti-aemif: introduce AEMIF driver
+- memory: ti-aemif: add bindings for AEMIF driver
+	added ti.cs-chipselect property instead of representing chipselect
+	number in cs node name.
 
- drivers/mtd/mtdpart.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 6e732c3820c1..3ca9d7fbf126 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -442,16 +442,16 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
- 	}
- 	if (slave->offset == MTDPART_OFS_RETAIN) {
- 		slave->offset = cur_offset;
--		if (master->size - slave->offset >= slave->mtd.size) {
-+		if (master->size - slave->offset > slave->mtd.size) {
- 			slave->mtd.size = master->size - slave->offset
- 							- slave->mtd.size;
- 		} else {
- 			printk(KERN_ERR "mtd partition \"%s\" doesn't have enough space: %#llx < %#llx, disabled\n",
- 				part->name, master->size - slave->offset,
- 				slave->mtd.size);
- 			/* register to preserve ordering */
- 			goto out_register;
- 		}
- 	}
- 	if (slave->mtd.size == MTDPART_SIZ_FULL)
- 		slave->mtd.size = master->size - slave->offset;
+Ivan Khoronzhuk (2):
+  memory: ti-aemif: introduce AEMIF driver
+  memory: ti-aemif: add bindings for AEMIF driver
+
+ .../bindings/memory-controllers/ti-aemif.txt       | 210 ++++++++++
+ drivers/memory/Kconfig                             |  11 +
+ drivers/memory/Makefile                            |   1 +
+ drivers/memory/ti-aemif.c                          | 427 +++++++++++++++++++++
+ 4 files changed, 649 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/memory-controllers/ti-aemif.txt
+ create mode 100644 drivers/memory/ti-aemif.c
+
 -- 
-1.9.0
+1.8.3.2
