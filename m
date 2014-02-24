@@ -1,16 +1,36 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
+Received: from 71-19-161-253.dedicated.allstream.net ([71.19.161.253]
+ helo=nsa.nbspaymentsolutions.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WHupN-0002yJ-6u
- for linux-mtd@lists.infradead.org; Mon, 24 Feb 2014 12:40:19 +0000
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v7 3/3] Add UBI block interface documentation
-Date: Mon, 24 Feb 2014 09:39:24 -0300
-Message-Id: <1393245564-23947-4-git-send-email-ezequiel.garcia@free-electrons.com>
-In-Reply-To: <1393245564-23947-1-git-send-email-ezequiel.garcia@free-electrons.com>
-References: <1393245564-23947-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+ id 1WHxHm-00084w-Ct
+ for linux-mtd@lists.infradead.org; Mon, 24 Feb 2014 15:17:39 +0000
+From: Bill Pringlemeir <bpringlemeir@nbsps.com>
+To: Richard Weinberger <richard@nod.at>
+Subject: Re: UBI leb_write_unlock NULL pointer Oops (continuation)
+References: <D7B1B5F4F3F27A4CB073BF422331203F2A18997F1F@Exchange1.lawo.de>
+ <CAFLxGvya5WXoKcYmOgeM_SmVVEht1jEzeLG9vHhwFudFU+Ny8A@mail.gmail.com>
+ <D7B1B5F4F3F27A4CB073BF422331203F2A18997F8B@Exchange1.lawo.de>
+ <52EF772D.8080207@nod.at>
+ <D7B1B5F4F3F27A4CB073BF422331203F2A18DD7989@Exchange1.lawo.de>
+ <52EF9FFE.4020405@nod.at>
+ <D7B1B5F4F3F27A4CB073BF422331203F2A18A7474A@Exchange1.lawo.de>
+ <52F1F658.9080701@nod.at>
+ <D7B1B5F4F3F27A4CB073BF422331203F2A1ECCF6AE@Exchange1.lawo.de>
+ <87zjlxy8lj.fsf@nbsps.com>
+ <D7B1B5F4F3F27A4CB073BF422331203F2A1ECCFB51@Exchange1.lawo.de>
+ <87txc4w698.fsf@nbsps.com>
+ <D7B1B5F4F3F27A4CB073BF422331203F2A250B53F4@Exchange1.lawo.de>
+ <D7B1B5F4F3F27A4CB073BF422331203F2A250B54E6@Exchange1.lawo.de>
+ <877g8ojqsn.fsf@nbsps.com> <53079725.6080105@nod.at>
+ <87ios8gsho.fsf@nbsps.com> <87k3coq8di.fsf@nbsps.com>
+ <530860B1.9000808@nod.at>
+Date: Mon, 24 Feb 2014 10:09:56 -0500
+In-Reply-To: <530860B1.9000808@nod.at> (Richard Weinberger's message of "Sat,
+ 22 Feb 2014 09:32:49 +0100")
+Message-ID: <877g8kr1h7.fsf@nbsps.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: "Wiedemer, Thorsten \(Lawo AG\)" <Thorsten.Wiedemer@lawo.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,156 +40,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
----
- doc/general.xml |  4 ++++
- doc/ubi.xml     | 61 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- faq/ubi.xml     | 16 +++++++--------
- 3 files changed, 73 insertions(+), 8 deletions(-)
+On 22 Feb 2014, richard@nod.at wrote:
 
-diff --git a/doc/general.xml b/doc/general.xml
-index 31ea243..06cb887 100644
---- a/doc/general.xml
-+++ b/doc/general.xml
-@@ -182,6 +182,10 @@ use block-based file systems on top of bare flashes using
- In other words, please, <b>do not use</b> <code>mtdblock</code> unless you
- know exactly what you are doing.</p>
- 
-+<p>Instead, you may find the block device emulation provided by <code>UBI</code>
-+useful. Please refer to the <a href="ubi.html#L_block">UBI section</a> for more
-+details.</p>
-+
- <p>There is also a read-only version of this driver which doesn't have the
- capacity to do the caching and erase/writeback, mainly for use with uCLinux
- where the extra RAM requirement was considered too large.</p>
-diff --git a/doc/ubi.xml b/doc/ubi.xml
-index f55c04a..a65f18e 100644
---- a/doc/ubi.xml
-+++ b/doc/ubi.xml
-@@ -47,6 +47,7 @@
- 		</ol>
- 	</li>
- 	<li><a href="ubi.html#L_fastmap">Fastmap</a></li>
-+	<li><a href="ubi.html#L_block">Block device</a></li>
- 	<li><a href="ubi.html#L_ubidoc">More documentation</a></li>
- </ol>
- 
-@@ -173,6 +174,10 @@ because:</p>
- 	mechanisms).</li>
- </ul>
- 
-+<p>UBI also provides a block device that allows regular, block-oriented
-+file systems to be mounted on top of an UBI volume. This is possible because UBI
-+handles bad-blocks transparently.</p>
-+
- <p>There is an additional driver called <code>gluebi</code> which emulates MTD
- devices on top of UBI volumes. This looks a little strange, because UBI works
- on top of an MTD device, then <code>gluebi</code> emulates other MTD devices
-@@ -236,6 +241,8 @@ sub-directory.</p>
- 	devices (the opposite to what <code>ubiattach</code> does);</li>
- 	<li><code>ubimkvol</code> - creates UBI volumes on UBI devices;</li>
- 	<li><code>ubirmvol</code> - removes UBI volumes from UBI devices;</li>
-+	<li><code>ubiblock</code> - manages block interfaces for UBI volumes.
-+	See <a href="ubi.html#L_block">here</a> for more information;</li>
- 	<li><code>ubiupdatevol</code> - updates UBI volumes; this tool uses the
- 	<a href="ubi.html#L_volupdate">UBI volume update feature</a> which
- 	leaves the volume in "corrupted" state if the update was interrupted;
-@@ -1261,6 +1268,60 @@ second. Therefore, fastmap makes only sense on fast and large flash devices
- where a full scan takes too long. E.g. On 4GiB NAND chips a full scan takes
- several seconds whereas a fast attach needs less than one second.</p>
- 
-+<h2><a name="L_block">Read-only block device access</a></h2>
-+
-+<p>UBI allows to create a block device on top of each UBI volume. The block
-+device implementation currently has the following limitations:
-+
-+<ul>
-+	<li>Read-only operation.</li>
-+	<li>Serialized operation.</li>
-+	<li>1-to-1 mapping between block sectors and logical eraseblocks.
-+	In other words, no wear-leveling is provided.</li>
-+</ul></p>
-+
-+<p>Keep in mind the NAND driver core already serializes all I/O anyway,
-+so it's not expected this limitation will affect performance.</p>
-+
-+<p>Despite these limitations, a block device is still very useful to mount
-+read-only, regular file systems on top of UBI volumes. This is the case
-+of squashfs, which can be used as a lightweigth read-only rootfs on a NAND
-+device.</p>
-+
-+<h4><a name="L_block_usage">Usage</a></h4>
-+<p>Attaching and detaching a block device on a UBI volume is fairly easy.
-+You can do this either by using the <code>block</code> UBI module parameter
-+or with the <code>ubiblock</code> user-space tool.</p>
-+
-+<p>In order to attach a block device on bootup time (e.g. to mount the rootfs
-+on such a block device) you can specify the <code>block</code> parameter as
-+a kernel boot arguments:</p>
-+
-+<p><code>ubi.mtd=5 ubi.block=0,0 root=/dev/ubiblock0_0</code></p>
-+
-+<p>There are several ways if specifying a volume:</p>
-+<ul>
-+	<li><p>Using the UBI volume path:</p>
-+	<code>ubi.block=/dev/ubi0_0</code></li>
-+
-+	<li><p>Using the UBI device, and the volume name:</p>
-+	<code>ubi.block=0,rootfs</code></li>
-+
-+	<li><p>Using both UBI device number and UBI volume number:</p>
-+	<code>ubi.block=0,0</code></li>
-+</ul>
-+
-+<p>If you've built UBI as a module you can use this parameter at module insertion
-+time:</p>
-+
-+<code>$ modprobe ubi mtd=/dev/mtd5 block=/dev/ubi0_0</code>
-+
-+<p>A block device can also be attached/detached dynamically at runtime, using
-+the <code>ubiblock</code> user-space tool:</p>
-+
-+<p><code>$ ubiblock --attach /dev/ubi0_0</code></p>
-+<p><code>$ ubiblock --detach /dev/ubi0_0</code></p>
-+
- <h2><a name="L_ubidoc">More documentation</a></h2>
- 
- <p>Unfortunately, there are no thorough and strict UBI documents. But there is
-diff --git a/faq/ubi.xml b/faq/ubi.xml
-index 2832928..e207862 100644
---- a/faq/ubi.xml
-+++ b/faq/ubi.xml
-@@ -18,6 +18,7 @@
- 	<li><a href="ubi.html#L_mkvol">How do I create/delete UBI volumes?</a></li>
- 	<li><a href="ubi.html#L_run_jffs2">How do I run JFFS2 on top of an UBI volume?</a></li>
- 	<li><a href="ubi.html#L_ext2_over_ubi">Can I run ext2 on top of UBI?</a></li>
-+	<li><a href="ubi.html#L_squashfs_over_ubi">Can I run squashfs on top of UBI?</a></li>
- 	<li><a href="ubi.html#L_format_mtd">Do I have to format my empty flash before running UBI on top of it?</a></li>
- 	<li><a href="ubi.html#L_ubierase">How do I erase flash and preserve erase counters?</a></li>
- 	<li><a href="ubi.html#L_ubi_mkimg">How do I create UBI images?</a></li>
-@@ -159,16 +160,15 @@ Please, read the <a href="../doc/ubi.html#L_rednote">big red note</a>
- and <a href="../doc/ubi.html#L_overview">overview</a> documentation sections to
- realize why.</p>
- 
--<p>But it is much easier to implement FTL on top of UBI than on top of MTD,
--because UBI takes care about many flash complexities and makes it
--possible to concentrate on on upper-level issues rather then solving flash
--media problems like wear-leveling, bit-flips, bad eraseblocks, etc.</p>
--
--<p><a
--href="http://lists.infradead.org/pipermail/linux-mtd/2008-January/020381.html">
--This</a> e-mail describes an idea of a simple FTL layer on top of UBI.</p>
-+<p>However, given UBI takes care of many flash complexities, it provides a
-+bad-block-free block device access on top of UBI volumes. This feature is useful to
-+mount read-only file systems.</p>
- 
-+<h2><a name="L_squashfs_over_ubi">Can I run squashfs on top of UBI?</a></h2>
- 
-+<p>Yes. UBI allows to create a read-only block device on top of a UBI volume
-+which is suitable for read-only, block-oriented file systems, such as squashfs.
-+See the <a href="..doc/ubi.html#L_block">UBI block device</a> section for more details.</p>
- 
- <h2><a name="L_format_mtd">
- 	Do I have to format my empty flash before running UBI on top of it?
--- 
-1.8.1.5
+> Am 22.02.2014 01:49, schrieb Bill Pringlemeir:
+
+>> I think the 'ubi_eba_copy_leb()' may have an issue.
+>>
+>> int ubi_eba_copy_leb(struct ubi_device *ubi, int from, int to,
+>> 		     struct ubi_vid_hdr *vid_hdr)
+>> {
+>> ...
+>>
+>> 	err = leb_write_trylock(ubi, vol_id, lnum);
+>>
+>> static int leb_write_trylock(struct ubi_device *ubi, int vol_id, int lnum)
+>> {
+>> ..
+>> 	le = ltree_add_entry(ubi, vol_id, lnum);  /* users + 1 */
+>> 	if (IS_ERR(le))
+>> 		return PTR_ERR(le);
+>> 	if (down_write_trylock(&le->mutex))
+>> 		return 0;
+>>
+>> 	/* Contention, cancel */
+>> 	spin_lock(&ubi->ltree_lock);
+>> 	le->users -= 1;                           /* user - 1 */
+>> ...
+>> 	spin_unlock(&ubi->ltree_lock);           
+>>
+>> 	return 1;
+>> }
+>>
+>> 	if (err)...
+>>
+	if (vol->eba_tbl[lnum] != from) {
+		dbg_wl("LEB %d:%d is no longer mapped to PEB %d, mapped to PEB %d, cancel",
+		       vol_id, lnum, from, vol->eba_tbl[lnum]);
+		err = MOVE_CANCEL_RACE;
+		goto out_unlock_leb;
+	}
+...
+out_unlock_leb:
+	leb_write_unlock(ubi, vol_id, lnum);     /* user - 1 */
+
+
+>> Didn't the count have to bump up in this case?  This isn't in Thorsten's
+>> traces, but neither are any 'down_read' or 'up_read' traces; maybe
+>> everything is in cache?
+
+> Hmm, I'm not sure whether I was able to follow your thought.  But
+> leb_write_unlock() is balanced with leb_write_trylock() in
+> ubi_eba_copy_leb() which makes perfectly sense to me.  What exactly is
+> the problem?
+
+There are two things that must be balanced.  The 'reference count'
+ubi_ltree_entry -> users and the rw_semaphore down/up.  You are right,
+the trylock needs to be balanced by the 'leb_write_unlock'.  However,
+the 'leb_write_trylock()' has already decremented 'users' in preperation
+to move the 'lnum'.  However, in the case of contention,
+'ubi_eba_copy_leb' bails and does the 'leb_write_unlock()', which
+balances the 'trylock', but unbalances the 'users' reference count (I
+added some comments on the lines).
+
+I was postulating that the down/up paths are not on the same semaphore.
+There is nothing in the code to check this.  It is possible for someone
+to come in and recycle the 'lnum' and create a new rwsemaphore.  Here,
+the down/up are done on different 'rwsemaphores' and this will cause
+issues.
+
+I was looking at using a 'kref' instead of 'users' and then I found this
+path.
+
+Fwiw,
+Bill Pringlemeir.
