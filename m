@@ -1,24 +1,19 @@
-Received: from mail-wg0-x22f.google.com ([2a00:1450:400c:c00::22f])
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WHyAG-0001rD-7P
- for linux-mtd@lists.infradead.org; Mon, 24 Feb 2014 16:13:57 +0000
-Received: by mail-wg0-f47.google.com with SMTP id k14so4746413wgh.26
- for <linux-mtd@lists.infradead.org>; Mon, 24 Feb 2014 08:13:31 -0800 (PST)
-Message-ID: <530B6FA9.5050902@gmail.com>
-Date: Mon, 24 Feb 2014 17:13:29 +0100
-From: Boris BREZILLON <b.brezillon.dev@gmail.com>
+ id 1WHylv-0003HL-Ba
+ for linux-mtd@lists.infradead.org; Mon, 24 Feb 2014 16:52:52 +0000
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+ Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Date: Mon, 24 Feb 2014 17:52:18 +0100
+Message-Id: <1393260738-11824-1-git-send-email-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2 1/2] of_mtd: Add helpers to get ECC strength and ECC
- step size
-References: <1392749474-12936-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1392749474-12936-2-git-send-email-ezequiel.garcia@free-electrons.com>
-In-Reply-To: <1392749474-12936-2-git-send-email-ezequiel.garcia@free-electrons.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Grant Likely <grant.likely@secretlab.ca>,
- Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Subject: [PATCH] mtd: fix bug in partition size calculation related to
+ MTDPART_OFS_RETAIN
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ kernel@pengutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,93 +23,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 18/02/2014 19:51, Ezequiel Garcia wrote:
-> This commit adds simple helpers to obtain the devicetree properties
-> that specify the ECC strength and ECC step size to use on a given
-> NAND controller.
->
-> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> ---
->   drivers/of/of_mtd.c    | 34 ++++++++++++++++++++++++++++++++++
->   include/linux/of_mtd.h | 12 ++++++++++++
->   2 files changed, 46 insertions(+)
->
-> diff --git a/drivers/of/of_mtd.c b/drivers/of/of_mtd.c
-> index a27ec94..b7361ed 100644
-> --- a/drivers/of/of_mtd.c
-> +++ b/drivers/of/of_mtd.c
-> @@ -50,6 +50,40 @@ int of_get_nand_ecc_mode(struct device_node *np)
->   EXPORT_SYMBOL_GPL(of_get_nand_ecc_mode);
->   
->   /**
-> + * of_get_nand_ecc_step_size - Get ECC step size associated to
-> + * the required ECC strength (see below).
-> + * @np:	Pointer to the given device_node
-> + *
-> + * return the ECC step size, or errno in error case.
-> + */
-> +int of_get_nand_ecc_step_size(struct device_node *np)
-> +{
-> +	int ret;
-> +	u32 val;
-> +
-> +	ret = of_property_read_u32(np, "nand-ecc-step-size", &val);
-> +	return ret ? ret : val;
-> +}
-> +EXPORT_SYMBOL_GPL(of_get_nand_ecc_step_size);
-> +
-> +/**
-> + * of_get_nand_ecc_strength - Get required ECC strength over the
-> + * correspnding step size as defined by 'nand-ecc-size'
-> + * @np:	Pointer to the given device_node
-> + *
-> + * return the ECC strength, or errno in error case.
-> + */
-> +int of_get_nand_ecc_strength(struct device_node *np)
-> +{
-> +	int ret;
-> +	u32 val;
-> +
-> +	ret = of_property_read_u32(np, "nand-ecc-strength", &val);
-> +	return ret ? ret : val;
-> +}
-> +EXPORT_SYMBOL_GPL(of_get_nand_ecc_strength);
-> +
-> +/**
->    * of_get_nand_bus_width - Get nand bus witdh for given device_node
->    * @np:	Pointer to the given device_node
->    *
-> diff --git a/include/linux/of_mtd.h b/include/linux/of_mtd.h
-> index cb32d9c..c078f99 100644
-> --- a/include/linux/of_mtd.h
-> +++ b/include/linux/of_mtd.h
-> @@ -13,6 +13,8 @@
->   
->   #include <linux/of.h>
->   int of_get_nand_ecc_mode(struct device_node *np);
-> +int of_get_nand_ecc_step_size(struct device_node *np)
-> +int of_get_nand_ecc_strength(struct device_node *np)
+If the remaining space is exactly what should still be available after
+the partition in question is added slave->mtd.size was set to zero
+instead of erroring out. In the next code block this was then
+interpreted as MTDPART_SIZ_FULL filling the rest of the partition
+instead of keeping it free for the next partition.
 
-You forgot the semicolon.
+This problem existed since the MTDPART_OFS_RETAIN feature was introduced
+for 3.2-rc1.
 
+Fixes: 1a31368bf92e ("mtd: add a flags for partitions which should just leave smth. after them")
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+Hello,
 
->   int of_get_nand_bus_width(struct device_node *np);
->   bool of_get_nand_on_flash_bbt(struct device_node *np);
->   
-> @@ -23,6 +25,16 @@ static inline int of_get_nand_ecc_mode(struct device_node *np)
->   	return -ENOSYS;
->   }
->   
-> +static inline int of_get_nand_ecc_step_size(struct device_node *np)
-> +{
-> +	return -ENOSYS;
-> +}
-> +
-> +static inline int of_get_nand_ecc_strength(struct device_node *np)
-> +{
-> +	return -ENOSYS;
-> +}
-> +
->   static inline int of_get_nand_bus_width(struct device_node *np)
->   {
->   	return -ENOSYS;
+this MTDPART_OFS_RETAIN feature looks very special, and there is only a single
+user (arch/arm/mach-ep93xx/ts72xx.c). Moreover I didn't understand its purpose
+from reading the documentation in include/linux/mtd/partitions.h:
+
+	offset: absolute starting position within the master MTD device; [...]
+	if [defined as] MTDPART_OFS_RETAIN, consume as much as possible,
+	leaving size after the end of partition.
+
+But maybe it's only me.
+
+Anyhow I wonder if this feature is still considered valuable and if it's maybe
+better to just drop support for MTDPART_OFS_RETAIN. A more intuive replacement
+could be to specify start and end(+1) of partitions and interpret .start =
+-0x100000 as 1 MiB before the end of the device.
+
+Best regards
+Uwe
+
+ drivers/mtd/mtdpart.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index 6e732c3820c1..3ca9d7fbf126 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -442,16 +442,16 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
+ 	}
+ 	if (slave->offset == MTDPART_OFS_RETAIN) {
+ 		slave->offset = cur_offset;
+-		if (master->size - slave->offset >= slave->mtd.size) {
++		if (master->size - slave->offset > slave->mtd.size) {
+ 			slave->mtd.size = master->size - slave->offset
+ 							- slave->mtd.size;
+ 		} else {
+ 			printk(KERN_ERR "mtd partition \"%s\" doesn't have enough space: %#llx < %#llx, disabled\n",
+ 				part->name, master->size - slave->offset,
+ 				slave->mtd.size);
+ 			/* register to preserve ordering */
+ 			goto out_register;
+ 		}
+ 	}
+ 	if (slave->mtd.size == MTDPART_SIZ_FULL)
+ 		slave->mtd.size = master->size - slave->offset;
+-- 
+1.9.0
