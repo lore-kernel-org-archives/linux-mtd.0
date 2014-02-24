@@ -1,24 +1,24 @@
-Received: from mail-wi0-x22c.google.com ([2a00:1450:400c:c05::22c])
+Received: from mail-wi0-x231.google.com ([2a00:1450:400c:c05::231])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WHxiT-0000oX-C8
- for linux-mtd@lists.infradead.org; Mon, 24 Feb 2014 15:45:14 +0000
-Received: by mail-wi0-f172.google.com with SMTP id e4so3244000wiv.5
- for <linux-mtd@lists.infradead.org>; Mon, 24 Feb 2014 07:44:51 -0800 (PST)
-Message-ID: <530B68F0.5050406@gmail.com>
-Date: Mon, 24 Feb 2014 16:44:48 +0100
+ id 1WHxjB-0000px-6h
+ for linux-mtd@lists.infradead.org; Mon, 24 Feb 2014 15:45:57 +0000
+Received: by mail-wi0-f177.google.com with SMTP id e4so3220887wiv.4
+ for <linux-mtd@lists.infradead.org>; Mon, 24 Feb 2014 07:45:35 -0800 (PST)
+Message-ID: <530B691D.7000909@gmail.com>
+Date: Mon, 24 Feb 2014 16:45:33 +0100
 From: Boris BREZILLON <b.brezillon.dev@gmail.com>
 MIME-Version: 1.0
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ linux-mtd@lists.infradead.org
 Subject: Re: [PATCH v2 1/2] of_mtd: Add helpers to get ECC strength and ECC
  step size
 References: <1392749474-12936-1-git-send-email-ezequiel.garcia@free-electrons.com>
  <1392749474-12936-2-git-send-email-ezequiel.garcia@free-electrons.com>
- <5303BC07.2090300@gmail.com> <20140218202552.GB13799@localhost>
-In-Reply-To: <20140218202552.GB13799@localhost>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1392749474-12936-2-git-send-email-ezequiel.garcia@free-electrons.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Cc: Grant Likely <grant.likely@secretlab.ca>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+ Brian Norris <computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,32 +28,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 18/02/2014 21:25, Ezequiel Garcia wrote:
-> On Tue, Feb 18, 2014 at 09:01:11PM +0100, Boris BREZILLON wrote:
->> Le 18/02/2014 19:51, Ezequiel Garcia a écrit :
->>> This commit adds simple helpers to obtain the devicetree properties
->>> that specify the ECC strength and ECC step size to use on a given
->>> NAND controller.
->> As already discussed with you, IMHO these 2 properties should both
->> be available to be meaningful, hence, we should provide an helper
->> function that gets both properties or return an error if one of them
->> is missing.
->>
-> I think this way is both cleaner and simpler. I don't see the advantage
-> of having a single function.
-
-Okay, I'll ack this version and do the check in my driver then.
-
-Thanks.
-
-Best Regards,
-
-Boris
+On 18/02/2014 19:51, Ezequiel Garcia wrote:
+> This commit adds simple helpers to obtain the devicetree properties
+> that specify the ECC strength and ECC step size to use on a given
+> NAND controller.
 >
->> Do you plan to provide a default value (within controller drivers) if one
->> of these properties is missing ? In this case seperating the helper
->> functions make sense.
->>
-> Being a general framework, we can't know what drivers will want to do,
-> which is why I usually like helper function to say as simple as
-> policy-free as possible.
+> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Acked-by: Boris BREZILLOn <b.brezillon.dev@gmail.com>
+> ---
+>   drivers/of/of_mtd.c    | 34 ++++++++++++++++++++++++++++++++++
+>   include/linux/of_mtd.h | 12 ++++++++++++
+>   2 files changed, 46 insertions(+)
+>
+> diff --git a/drivers/of/of_mtd.c b/drivers/of/of_mtd.c
+> index a27ec94..b7361ed 100644
+> --- a/drivers/of/of_mtd.c
+> +++ b/drivers/of/of_mtd.c
+> @@ -50,6 +50,40 @@ int of_get_nand_ecc_mode(struct device_node *np)
+>   EXPORT_SYMBOL_GPL(of_get_nand_ecc_mode);
+>   
+>   /**
+> + * of_get_nand_ecc_step_size - Get ECC step size associated to
+> + * the required ECC strength (see below).
+> + * @np:	Pointer to the given device_node
+> + *
+> + * return the ECC step size, or errno in error case.
+> + */
+> +int of_get_nand_ecc_step_size(struct device_node *np)
+> +{
+> +	int ret;
+> +	u32 val;
+> +
+> +	ret = of_property_read_u32(np, "nand-ecc-step-size", &val);
+> +	return ret ? ret : val;
+> +}
+> +EXPORT_SYMBOL_GPL(of_get_nand_ecc_step_size);
+> +
+> +/**
+> + * of_get_nand_ecc_strength - Get required ECC strength over the
+> + * correspnding step size as defined by 'nand-ecc-size'
+> + * @np:	Pointer to the given device_node
+> + *
+> + * return the ECC strength, or errno in error case.
+> + */
+> +int of_get_nand_ecc_strength(struct device_node *np)
+> +{
+> +	int ret;
+> +	u32 val;
+> +
+> +	ret = of_property_read_u32(np, "nand-ecc-strength", &val);
+> +	return ret ? ret : val;
+> +}
+> +EXPORT_SYMBOL_GPL(of_get_nand_ecc_strength);
+> +
+> +/**
+>    * of_get_nand_bus_width - Get nand bus witdh for given device_node
+>    * @np:	Pointer to the given device_node
+>    *
+> diff --git a/include/linux/of_mtd.h b/include/linux/of_mtd.h
+> index cb32d9c..c078f99 100644
+> --- a/include/linux/of_mtd.h
+> +++ b/include/linux/of_mtd.h
+> @@ -13,6 +13,8 @@
+>   
+>   #include <linux/of.h>
+>   int of_get_nand_ecc_mode(struct device_node *np);
+> +int of_get_nand_ecc_step_size(struct device_node *np)
+> +int of_get_nand_ecc_strength(struct device_node *np)
+>   int of_get_nand_bus_width(struct device_node *np);
+>   bool of_get_nand_on_flash_bbt(struct device_node *np);
+>   
+> @@ -23,6 +25,16 @@ static inline int of_get_nand_ecc_mode(struct device_node *np)
+>   	return -ENOSYS;
+>   }
+>   
+> +static inline int of_get_nand_ecc_step_size(struct device_node *np)
+> +{
+> +	return -ENOSYS;
+> +}
+> +
+> +static inline int of_get_nand_ecc_strength(struct device_node *np)
+> +{
+> +	return -ENOSYS;
+> +}
+> +
+>   static inline int of_get_nand_bus_width(struct device_node *np)
+>   {
+>   	return -ENOSYS;
