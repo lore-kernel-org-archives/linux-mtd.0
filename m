@@ -1,16 +1,29 @@
-Received: from baptiste.telenet-ops.be ([195.130.132.51])
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WIFvp-00066F-1D
- for linux-mtd@lists.infradead.org; Tue, 25 Feb 2014 11:12:13 +0000
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH] mtd: m25p80: Enable Dual and Quad SPI read transfers for
- s25sl032p
-Date: Tue, 25 Feb 2014 12:11:46 +0100
-Message-Id: <1393326706-17979-1-git-send-email-geert@linux-m68k.org>
-Cc: Geert Uytterhoeven <geert+renesas@linux-m68k.org>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+ id 1WIJyO-0005qZ-KI
+ for linux-mtd@lists.infradead.org; Tue, 25 Feb 2014 15:31:09 +0000
+Date: Tue, 25 Feb 2014 12:30:41 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH v6 1/3] ubi: Introduce block devices for UBI volumes
+Message-ID: <20140225153041.GB22740@localhost>
+References: <1392581041-8099-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1392581041-8099-2-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1392633946.12215.150.camel@sauron.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1392633946.12215.150.camel@sauron.fi.intel.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Mike Frysinger <vapier@gentoo.org>,
+ Richard Weinberger <richard.weinberger@gmail.com>,
+ Michael Opdenacker <michael.opdenacker@free-electrons.com>,
+ linux-mtd@lists.infradead.org,
+ Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,28 +33,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Geert Uytterhoeven <geert+renesas@linux-m68k.org>
+On Mon, Feb 17, 2014 at 12:45:46PM +0200, Artem Bityutskiy wrote:
+> On Sun, 2014-02-16 at 17:03 -0300, Ezequiel Garcia wrote:
+> 
+[..]
+> > @@ -0,0 +1,660 @@
+> > +/*
+> > + * Copyright (c) 2014 Ezequiel Garcia
+> > + * Copyright (c) 2011 Free Electrons
+> 
+> If you copy-pasted _any_ code from UBI, do not forget to add original
+> copyrights here too. Otherwise, this is fine.
+> 
 
-Spansion s25sl032p supports Dual and Quad SPI transfers, hence set the
-M25P80_DUAL_READ and M25P80_QUAD_READ flags.
+Hm... after re-reading the code in detail, it's obvious I took the
+parameter handling code from mtd/ubi/build.c. So I'll push a v8 with
+this additional copyright notice:
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@linux-m68k.org>
----
- drivers/mtd/devices/m25p80.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+"""
+  Driver parameter handling strongly based on drivers/mtd/ubi/build.c
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 0b9a3ca310f7..1b2ec49cceea 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -957,7 +957,7 @@ static const struct spi_device_id m25p_ids[] = {
- 	/* Spansion -- single (large) sector size only, at least
- 	 * for the chips listed here (without boot sectors).
- 	 */
--	{ "s25sl032p",  INFO(0x010215, 0x4d00,  64 * 1024,  64, 0) },
-+	{ "s25sl032p",  INFO(0x010215, 0x4d00,  64 * 1024,  64, M25P80_DUAL_READ | M25P80_QUAD_READ) },
- 	{ "s25sl064p",  INFO(0x010216, 0x4d00,  64 * 1024, 128, 0) },
- 	{ "s25fl256s0", INFO(0x010219, 0x4d00, 256 * 1024, 128, 0) },
- 	{ "s25fl256s1", INFO(0x010219, 0x4d01,  64 * 1024, 512, M25P80_DUAL_READ | M25P80_QUAD_READ) },
+    Copyright (c) International Business Machines Corp., 2006
+    Copyright (c) Nokia Corporation, 2007
+    Authors: Artem Bityutskiy (Битюцкий Артём), Frank Haverkamp
+"""
 -- 
-1.7.9.5
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
