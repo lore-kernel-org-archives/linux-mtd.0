@@ -1,29 +1,21 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
+Received: from antispam01.maxim-ic.com ([205.153.101.182]
+ helo=antispam01.maximintegrated.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WIJyO-0005qZ-KI
- for linux-mtd@lists.infradead.org; Tue, 25 Feb 2014 15:31:09 +0000
-Date: Tue, 25 Feb 2014 12:30:41 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH v6 1/3] ubi: Introduce block devices for UBI volumes
-Message-ID: <20140225153041.GB22740@localhost>
-References: <1392581041-8099-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1392581041-8099-2-git-send-email-ezequiel.garcia@free-electrons.com>
- <1392633946.12215.150.camel@sauron.fi.intel.com>
+ id 1WIKS4-0006l1-Mt
+ for linux-mtd@lists.infradead.org; Tue, 25 Feb 2014 16:01:49 +0000
+Received: from maxdalex02.maxim-ic.internal (maxdalex02.maxim-ic.internal
+ [10.16.15.104]) by antispam01.maximintegrated.com with ESMTP id
+ 5pK5d5ewHp5crr5U for <linux-mtd@lists.infradead.org>;
+ Tue, 25 Feb 2014 10:01:21 -0600 (CST)
+From: Brian Foster <brian.foster@maximintegrated.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: [Q] `ubiattach: ioctl 0x40186f40 failed: Inappropriate ioctl for
+ device' - What changed?
+Date: Tue, 25 Feb 2014 17:01:18 +0100
+Message-ID: <4790760.yeQTJBGPZK@laclwks004>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1392633946.12215.150.camel@sauron.fi.intel.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Mike Frysinger <vapier@gentoo.org>,
- Richard Weinberger <richard.weinberger@gmail.com>,
- Michael Opdenacker <michael.opdenacker@free-electrons.com>,
- linux-mtd@lists.infradead.org,
- Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,31 +25,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Feb 17, 2014 at 12:45:46PM +0200, Artem Bityutskiy wrote:
-> On Sun, 2014-02-16 at 17:03 -0300, Ezequiel Garcia wrote:
-> 
-[..]
-> > @@ -0,0 +1,660 @@
-> > +/*
-> > + * Copyright (c) 2014 Ezequiel Garcia
-> > + * Copyright (c) 2011 Free Electrons
-> 
-> If you copy-pasted _any_ code from UBI, do not forget to add original
-> copyrights here too. Otherwise, this is fine.
-> 
 
-Hm... after re-reading the code in detail, it's obvious I took the
-parameter handling code from mtd/ubi/build.c. So I'll push a v8 with
-this additional copyright notice:
+Hello,
 
-"""
-  Driver parameter handling strongly based on drivers/mtd/ubi/build.c
+ Using an (admittedly ancient) BuildRoot v2010.11
+ (which uses v2.6.36.4 kernel headers) with an
+ (also admittedly ancient) v2.6.36.4 Linux kernel,
+ ubiattach(1) works fine.  The =E2=80=98ubiattach=E2=80=99 is of
+ vintage v1.4.6 (and has not been modified).
 
-    Copyright (c) International Business Machines Corp., 2006
-    Copyright (c) Nokia Corporation, 2007
-    Authors: Artem Bityutskiy (Битюцкий Артём), Frank Haverkamp
-"""
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+ However, using that _identical_ =E2=80=98ubiattach=E2=80=99 binary
+ (which is for an ARM926EJ-S CPU) with a more recent
+ v3.10.30 kernel, it fails.  For example:
+
+    # ubiattach -m7 -d0 /dev/ubi_ctrl
+    ubiattach: ioctl 0x40186f40 failed: Inappropriate ioctl for device
+    #
+
+ I assume the value of, and/or parameter to, some
+ ioctl command has changed v2.6.36 =E2=86=92 v3.10, but
+ am at a loss as to just _what_ changed (or why).
+
+ Any pointers would be appreciated.
+
+cheers!
+=09-blf-
+
+--=20
+Brian Foster
+Principal MTS, Software        |  La Ciotat, France
+Maxim Integrated               |  http://www.maximintegrated.com/
