@@ -1,18 +1,24 @@
-Received: from extern.plris.com ([212.199.10.23] helo=plris.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WIf9F-0008S2-O0
- for linux-mtd@lists.infradead.org; Wed, 26 Feb 2014 14:07:46 +0000
-Received: from leonp.plris.com (leonp.plris.com [192.168.50.57])
- by plris.com (Postfix) with ESMTP id D7577870001
- for <linux-mtd@lists.infradead.org>; Wed, 26 Feb 2014 16:07:21 +0200 (IST)
-From: Leon Pollak <leonp@plris.com>
-To: linux-mtd@lists.infradead.org
-Subject: What is wrong?
-Date: Wed, 26 Feb 2014 16:07:21 +0200
-Message-ID: <4315632.KkRm7kzq26@leonp.plris.com>
+Received: from mail-ob0-x235.google.com ([2607:f8b0:4003:c01::235])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WIhfI-0006hr-8r
+ for linux-mtd@lists.infradead.org; Wed, 26 Feb 2014 16:49:00 +0000
+Received: by mail-ob0-f181.google.com with SMTP id wo20so1046682obc.12
+ for <linux-mtd@lists.infradead.org>; Wed, 26 Feb 2014 08:48:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <1393422939-25360-1-git-send-email-zajec5@gmail.com>
+References: <1393422939-25360-1-git-send-email-zajec5@gmail.com>
+Date: Wed, 26 Feb 2014 17:48:38 +0100
+Message-ID: <CACna6ry9mtujhnnTS5hChKHMx5yD3Aj0F2-69UV1fkRtX8o=xw@mail.gmail.com>
+Subject: Re: [PATCH] mtd: bcm47xxpart: allow enabling on ARCH_BCM_5301X
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: linux-mtd@lists.infradead.org, David Woodhouse <David.Woodhouse@intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Hauke Mehrtens <hauke@hauke-m.de>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Florian Fainelli <florian@openwrt.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,41 +28,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello, all.
-I will be very thankful for any hint...:)
+2014-02-26 14:55 GMT+01:00 Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>:
+> Home routers based on SoCs like BCM53010 (AKA BCM4708) use flashes
+> which can be nicely partitioned with bcm47xxpart.
 
-I use JFFS2 version 2.2.(NAND)(SUMMARY)(C) 2001-2006 Red Hat, Inc. 
-(comes with MontaVistaPro 5.0). Kernel 2.6.18.
-I prepare JFFS2 partition with mkfs.jffs2 and sumtool and burn it with 
-flash_eraseall and 'nandwrite -p'.
-Everything works fine.
-
-The NAND is write protected by HW and the partition is mounted as RO. 
-At some moment I need to update a small file. 
-So I do: 
-- HW write protect off, 
-- remount RW, 
-- update file, 
-- sync, 
-- remount RO, 
-- write protect on.
-
-Looking at linux console I see a lot of messages like:
-Erase at 0x00400000 failed immediately: errno -5
-Erase at 0x003e0000 failed immediately: errno -5
-......
-Erase at 0x00340000 failed immediately: errno -5
-jffs2_flush_wbuf(): Write failed with -5
-Write of 2016 bytes at 0x002578a0 failed. returned -5, retlen 0
-Not marking the space at 0x002578a0 as dirty because the flash driver 
-returned retlen zero.
-
-
-This is repeated for a long time, but everything seems work OK.
-The sequential starts and even file updates are also OK, without error 
-messages.
-
-What do I do wrong? Thanks a lot.
-
---  
-Leon
+This one is wrong (I forgot I have more local changes), drop it please.
