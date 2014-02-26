@@ -1,24 +1,25 @@
-Received: from mail-ob0-x235.google.com ([2607:f8b0:4003:c01::235])
+Received: from mail-ie0-x232.google.com ([2607:f8b0:4001:c03::232])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WIhfI-0006hr-8r
- for linux-mtd@lists.infradead.org; Wed, 26 Feb 2014 16:49:00 +0000
-Received: by mail-ob0-f181.google.com with SMTP id wo20so1046682obc.12
- for <linux-mtd@lists.infradead.org>; Wed, 26 Feb 2014 08:48:38 -0800 (PST)
+ id 1WIin5-0001Gr-Du
+ for linux-mtd@lists.infradead.org; Wed, 26 Feb 2014 18:01:08 +0000
+Received: by mail-ie0-f178.google.com with SMTP id ar20so1006945iec.9
+ for <linux-mtd@lists.infradead.org>; Wed, 26 Feb 2014 10:00:46 -0800 (PST)
+Date: Wed, 26 Feb 2014 10:00:43 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Brian Foster <brian.foster@maximintegrated.com>
+Subject: Re: SOLVED: [Q] `ubiattach: ioctl 0x40186f40 failed: Inappropriate
+ ioctl for device' - What changed?
+Message-ID: <20140226180043.GH4194@ld-irv-0074>
+References: <4790760.yeQTJBGPZK@laclwks004>
+ <20140226072141.GA13420@norris-Latitude-E6410>
+ <3376417.FgNKArDazm@laclwks004> <3384625.n7jGnVRFVi@laclwks004>
 MIME-Version: 1.0
-In-Reply-To: <1393422939-25360-1-git-send-email-zajec5@gmail.com>
-References: <1393422939-25360-1-git-send-email-zajec5@gmail.com>
-Date: Wed, 26 Feb 2014 17:48:38 +0100
-Message-ID: <CACna6ry9mtujhnnTS5hChKHMx5yD3Aj0F2-69UV1fkRtX8o=xw@mail.gmail.com>
-Subject: Re: [PATCH] mtd: bcm47xxpart: allow enabling on ARCH_BCM_5301X
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: linux-mtd@lists.infradead.org, David Woodhouse <David.Woodhouse@intel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Hauke Mehrtens <hauke@hauke-m.de>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Florian Fainelli <florian@openwrt.org>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3384625.n7jGnVRFVi@laclwks004>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,8 +29,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2014-02-26 14:55 GMT+01:00 Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com>:
-> Home routers based on SoCs like BCM53010 (AKA BCM4708) use flashes
-> which can be nicely partitioned with bcm47xxpart.
++Artem
 
-This one is wrong (I forgot I have more local changes), drop it please.
+Replying just to get the message through to the mailing list
+
+On Wed, Feb 26, 2014 at 10:54:02AM +0100, Brian Foster wrote:
+> On Tuesday 25-February-2014 23:42:11 Brian Foster wrote:
+> > On Tuesday 25-February-2014 23:21:41 Brian Norris wrote:
+> > >[...]
+> > 
+> >  Another guess: We are using a static /dev/ubi_ctrl
+> >  node.  However, that is a dynamic minor misc device,
+> >  so I am currently _guessing_ the v3.10 system assigned
+> >  a different minor number than the v2.6.36 system usually
+> >  does (and the FAE's system also picked a different minor
+> >  for some currently unknown reason).   I will check this
+> >  possibility as soon as I can ....
+> 
+>  Yep, that's the problem.  The “failing” systems have allocated
+>  a different minor device number (according to /proc/misc) than
+>  that of the static /dev/ubi_ctrl node.
+> 
+> cheers!
+> 	-blf-
+> 
+> p.s.  I am not sure if this will go to the list or into
+>      moderation, as my previous attempt to reply to myself
+>      went into moderation ....   ;-\    (Brian Norris,
+>      please feel free to re-send this to the list if it
+>      doesn't make it, or kick the moderator  ;-)  or ....)
+
+The moderator is thinking of turning some of the problematic filtering
+off. You are not the only one who has ever been stopped by this.
+
+> -- 
+> Brian Foster
+> Principal MTS, Software        |  La Ciotat, France
+> Office:  +33 (0)4 42 98 15 35  |  Fax:  +33 (0)4 42 08 33 19
+> Maxim Integrated               |  http://www.maximintegrated.com/
+> 
+
+Brian
