@@ -1,19 +1,22 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WIdbj-0004ot-Hc
- for linux-mtd@lists.infradead.org; Wed, 26 Feb 2014 12:29:04 +0000
-Message-ID: <1393417719.3412.158.camel@sauron.fi.intel.com>
-Subject: Re: Is UBIFS need backgroud gc?
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: wang.bo116@zte.com.cn
-Date: Wed, 26 Feb 2014 14:28:39 +0200
-In-Reply-To: <OFC030C4C7.8C547214-ON48257C8B.00314D67-48257C8B.00349BF7@zte.com.cn>
-References: <OFC030C4C7.8C547214-ON48257C8B.00314D67-48257C8B.00349BF7@zte.com.cn>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, cui.yunfeng@zte.com.cn
-Reply-To: dedekind1@gmail.com
+Received: from mail-ea0-x22f.google.com ([2a00:1450:4013:c01::22f])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WIe3n-0005lM-3A
+ for linux-mtd@lists.infradead.org; Wed, 26 Feb 2014 12:58:03 +0000
+Received: by mail-ea0-f175.google.com with SMTP id z10so903291ead.34
+ for <linux-mtd@lists.infradead.org>; Wed, 26 Feb 2014 04:57:40 -0800 (PST)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: linux-mtd@lists.infradead.org, David Woodhouse <David.Woodhouse@intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCH] mtd: bcm47xxpart: fix off by one in partitions limit
+Date: Wed, 26 Feb 2014 13:57:20 +0100
+Message-Id: <1393419440-26400-1-git-send-email-zajec5@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Hauke Mehrtens <hauke@hauke-m.de>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
+ Florian Fainelli <florian@openwrt.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,16 +26,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2014-02-26 at 17:34 +0800, wang.bo116@zte.com.cn wrote:
-> 	UBIFS now use ubifs_budget_space to ensure there is enough space to complete an operation.
-> When an operation cannot be budgeted, make_free_space -> run_gc called to make some free space.
-> 	My questions is that why not attempt run gc in backgroud when UBIFS is in idle? Do gc
-> when an operation cannot be budgeted is too late, and this may block the operation for a while.
-> 	Maybe now it is time to add backgroud gc in ubifs_bg_thread?
+Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+---
+ drivers/mtd/bcm47xxpart.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-May be. Someone should just experiment with this, come up with some
-numbers and the solution.
-
+diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
+index de1eb92..88802a8 100644
+--- a/drivers/mtd/bcm47xxpart.c
++++ b/drivers/mtd/bcm47xxpart.c
+@@ -91,7 +91,7 @@ static int bcm47xxpart_parse(struct mtd_info *master,
+ 		if (offset >= 0x2000000)
+ 			break;
+ 
+-		if (curr_part > BCM47XXPART_MAX_PARTS) {
++		if (curr_part >= BCM47XXPART_MAX_PARTS) {
+ 			pr_warn("Reached maximum number of partitions, scanning stopped!\n");
+ 			break;
+ 		}
 -- 
-Best Regards,
-Artem Bityutskiy
+1.8.4.5
