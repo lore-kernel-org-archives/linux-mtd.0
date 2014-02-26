@@ -1,23 +1,22 @@
-Received: from mail-ie0-x231.google.com ([2607:f8b0:4001:c03::231])
+Received: from mail-ig0-x231.google.com ([2607:f8b0:4001:c05::231])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WIUsf-00081G-Rk
- for linux-mtd@lists.infradead.org; Wed, 26 Feb 2014 03:09:58 +0000
-Received: by mail-ie0-f177.google.com with SMTP id rl12so193846iec.8
- for <linux-mtd@lists.infradead.org>; Tue, 25 Feb 2014 19:09:33 -0800 (PST)
-Date: Tue, 25 Feb 2014 19:09:29 -0800
+ id 1WIYpR-0003bv-Kf
+ for linux-mtd@lists.infradead.org; Wed, 26 Feb 2014 07:22:54 +0000
+Received: by mail-ig0-f177.google.com with SMTP id h3so792779igd.4
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Feb 2014 23:22:32 -0800 (PST)
+Date: Tue, 25 Feb 2014 23:21:41 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Hauke Mehrtens <hauke@hauke-m.de>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Subject: Re: [RFC 0/3] mtd: bcm47xxnflash: adding support for new NANDs
-Message-ID: <20140226030929.GG4194@ld-irv-0074>
-References: <1393154819-7369-1-git-send-email-zajec5@gmail.com>
- <5309DBF4.50305@hauke-m.de>
+To: Brian Foster <brian.foster@maximintegrated.com>
+Subject: Re: [Q] `ubiattach: ioctl 0x40186f40 failed: Inappropriate ioctl for
+ device' - What changed?
+Message-ID: <20140226072141.GA13420@norris-Latitude-E6410>
+References: <4790760.yeQTJBGPZK@laclwks004>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <5309DBF4.50305@hauke-m.de>
-Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <4790760.yeQTJBGPZK@laclwks004>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,36 +26,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Rafal,
+Hi Brian,
 
-On Sun, Feb 23, 2014 at 12:31:00PM +0100, Hauke Mehrtens wrote:
-> On 02/23/2014 12:26 PM, Rafał Miłecki wrote:
-> > New Broadcom SoCs have NAND flashes attached & programmed in a totally different
-> > way. Instead of accessing them with help of ChipCommon core, they can be used
-> > directly.
-> > 
-> > To support them we can extend bcm47xxnflash in the way this patches implements.
-> > However almost nothing in the code will be shared between support for old and
-> > new devices.
-> > 
-> > How should we proceed? Implement it that way anyway? Or maybe writing a
-> > separated driver (bcm53xxnflash?) would be a better idea?
+On Tue, Feb 25, 2014 at 05:01:18PM +0100, Brian Foster wrote:
+>  Using an (admittedly ancient) BuildRoot v2010.11
+>  (which uses v2.6.36.4 kernel headers) with an
+>  (also admittedly ancient) v2.6.36.4 Linux kernel,
+>  ubiattach(1) works fine.  The ‘ubiattach’ is of
+>  vintage v1.4.6 (and has not been modified).
 > 
-> if this controller is completely different I would suggest writing a new
-> driver for that controller. Extending the existing driver would make if
-> just more complex.
+>  However, using that _identical_ ‘ubiattach’ binary
+>  (which is for an ARM926EJ-S CPU) with a more recent
+>  v3.10.30 kernel, it fails.  For example:
+> 
+>     # ubiattach -m7 -d0 /dev/ubi_ctrl
+>     ubiattach: ioctl 0x40186f40 failed: Inappropriate ioctl for device
+>     #
 
-Judging by your (mostly non-functional) patch:
+I'm honestly not sure where the above print came from. I'm checking out
+ubiattach.c in mtd-utils v1.4.6, and I don't see this print. But
+perhaps I'm just missing it...
 
-  [WIP][FYI] mtd: bcm53xxnflash: add driver for NAND on new BCMA SoCs
+>  I assume the value of, and/or parameter to, some
+>  ioctl command has changed v2.6.36 → v3.10, but
+>  am at a loss as to just _what_ changed (or why).
 
-it looks like your hardware is very similar to a line of NAND
-controllers that I support at Broadcom. I'm planning to upstream the
-driver eventually, and it is much more mature than what you have there.
-Perhaps you can wait to integrate with it?
+The parameter *shouldn't* have changed. We try to keep ABI
+compatibility, as Linus sometimes loudly proclaims. And I don't think
+I've seen any changes to ioctl(UBI_IOCATT). In fact, the reported ioctl
+number (0x40186f40) still matches my functioning mtd-utils + 3.8.x
+kernel.
 
-The main difference between my driver and what I see you doing for 53xx
-is that you require the bcma_* accessors, whereas my platforms just
-perform direct memory-mapped register access.
+>  Any pointers would be appreciated.
+
+Well, here's a wild guess; it looks like struct ubi_attach_req is the
+only UBI ioctl struct that does not have the __attribute__((packed))
+annotation. So it's possible that your compiler didn't pack the struct
+the same for your 3.10 kernel. Perhaps the following patch would help?
 
 Brian
+
+diff --git a/include/uapi/mtd/ubi-user.h b/include/uapi/mtd/ubi-user.h
+index 723c324590c1..9dd7f31a2527 100644
+--- a/include/uapi/mtd/ubi-user.h
++++ b/include/uapi/mtd/ubi-user.h
+@@ -268,7 +268,7 @@ struct ubi_attach_req {
+ 	__s32 vid_hdr_offset;
+ 	__s16 max_beb_per1024;
+ 	__s8 padding[10];
+-};
++} __packed;
+ 
+ /**
+  * struct ubi_mkvol_req - volume description data structure used in
