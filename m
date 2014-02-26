@@ -1,22 +1,17 @@
-Received: from mx5.zte.com.cn ([63.217.80.70])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WIatR-00080h-EC
- for linux-mtd@lists.infradead.org; Wed, 26 Feb 2014 09:35:11 +0000
-Received: from mse02.zte.com.cn (unknown [10.30.3.21])
- by Websense Email Security Gateway with ESMTPS id EBD7712AC5B1
- for <linux-mtd@lists.infradead.org>; Wed, 26 Feb 2014 17:34:29 +0800 (CST)
-Received: from notes_smtp.zte.com.cn ([10.30.1.239])
- by mse02.zte.com.cn with ESMTP id s1Q9YSRR057701
- for <linux-mtd@lists.infradead.org>; Wed, 26 Feb 2014 17:34:28 +0800 (GMT-8)
- (envelope-from wang.bo116@zte.com.cn)
-Subject: Is UBIFS need backgroud gc?
-To: linux-mtd@lists.infradead.org
-Message-ID: <OFC030C4C7.8C547214-ON48257C8B.00314D67-48257C8B.00349BF7@zte.com.cn>
-From: wang.bo116@zte.com.cn
-Date: Wed, 26 Feb 2014 17:34:18 +0800
+Received: from arroyo.ext.ti.com ([192.94.94.40])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WIbel-0001An-On
+ for linux-mtd@lists.infradead.org; Wed, 26 Feb 2014 10:24:04 +0000
+From: Pekon Gupta <pekon@ti.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCH v6 0/4] mtd: nand: omap: optimize chip->ecc.calculate() for
+ H/W ECC schemes
+Date: Wed, 26 Feb 2014 15:53:10 +0530
+Message-ID: <1393410194-15094-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Cc: cui.yunfeng@zte.com.cn
+Content-Type: text/plain
+Cc: Stefan Roese <sr@denx.de>, linux-mtd <linux-mtd@lists.infradead.org>,
+ Pekon Gupta <pekon@ti.com>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,9 +21,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Changes v6->v7
+rebased on http://lists.infradead.org/pipermail/linux-mtd/2014-February/052092.html
 
-	UBIFS now use ubifs_budget_space to ensure there is enough space to complete an operation.
-When an operation cannot be budgeted, make_free_space -> run_gc called to make some free space.
-	My questions is that why not attempt run gc in backgroud when UBIFS is in idle? Do gc
-when an operation cannot be budgeted is too late, and this may block the operation for a while.
-	Maybe now it is time to add backgroud gc in ubifs_bg_thread?
+This patch series is split version of earlier patch:
+http://lists.infradead.org/pipermail/linux-mtd/2013-November/050240.html
+
+chip->ecc.calculate() is used for calculating and fetching of ECC syndrome by
+processing the data passed during Read/Write accesses.
+Though all H/W ECC schemes in OMAP NAND use GPMC controller for ECC calculation
+But each of them implements its own callback to process and fetch ECC syndrome.
+
+This patch tries to merge common code for different BCHx_ECC schemes into single
+omap_calculate_ecc_bch(). This imporves scalability for future ecc-schemes.
+Following is the summary of this patch series.
+ +----------------------+---------------------------+--------------------------+
+ | ecc-scheme           | nand_chip->ecc.calculate  | nand_chip->ecc.calculate |
+ |                      | (before this patch series)| (after this patch series)|
+ +----------------------+---------------------------+--------------------------+
+ | HAM1_ECC             | omap_calculate_ecc()      | omap_calculate_ecc()     |
+ | BCH4_HW_DETECTION_SW | omap3_calculate_ecc_bch4()| omap_calculate_ecc_bch() |
+ | BCH4_HW              | omap3_calculate_ecc_bch() | omap_calculate_ecc_bch() |
+ | BCH8_HW_DETECTION_SW | omap3_calculate_ecc_bch8()| omap_calculate_ecc_bch() |
+ | BCH8_HW              | omap3_calculate_ecc_bch() | omap_calculate_ecc_bch() |
+ +----------------------+---------------------------+--------------------------+
+
+
+Pekon Gupta (4):
+  mtd: nand: omap: ecc.calculate: rename omap3_calculate_ecc_bch to
+    omap_calculate_ecc_bch
+  mtd: nand: omap: ecc.calculate: refactor omap_calculate_ecc_bch for
+    BCHx_HW ecc-scheme
+  mtd: nand: omap: ecc.calculate: merge omap3_calculate_ecc_bch4 in
+    omap_calculate_ecc_bch
+  mtd: nand: omap: ecc.calculate: merge omap3_calculate_ecc_bch8 in
+    omap_calculate_ecc_bch
+
+ drivers/mtd/nand/omap2.c | 186 +++++++++++++++--------------------------------
+ 1 file changed, 59 insertions(+), 127 deletions(-)
+
+-- 
+1.8.5.1.163.gd7aced9
