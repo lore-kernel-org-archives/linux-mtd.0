@@ -1,13 +1,15 @@
 Received: from arroyo.ext.ti.com ([192.94.94.40])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WIbel-0001An-On
- for linux-mtd@lists.infradead.org; Wed, 26 Feb 2014 10:24:04 +0000
+ id 1WIbel-0001Ao-Ol
+ for linux-mtd@lists.infradead.org; Wed, 26 Feb 2014 10:24:05 +0000
 From: Pekon Gupta <pekon@ti.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v6 0/4] mtd: nand: omap: optimize chip->ecc.calculate() for
- H/W ECC schemes
-Date: Wed, 26 Feb 2014 15:53:10 +0530
-Message-ID: <1393410194-15094-1-git-send-email-pekon@ti.com>
+Subject: [PATCH v6 1/4] mtd: nand: omap: ecc.calculate: rename
+ omap3_calculate_ecc_bch to omap_calculate_ecc_bch
+Date: Wed, 26 Feb 2014 15:53:11 +0530
+Message-ID: <1393410194-15094-2-git-send-email-pekon@ti.com>
+In-Reply-To: <1393410194-15094-1-git-send-email-pekon@ti.com>
+References: <1393410194-15094-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: Stefan Roese <sr@denx.de>, linux-mtd <linux-mtd@lists.infradead.org>,
@@ -21,44 +23,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Changes v6->v7
-rebased on http://lists.infradead.org/pipermail/linux-mtd/2014-February/052092.html
+rename omap3_calculate_ecc_bch -> omap_calculate_ecc_bch to
+keep nomenclature independent of any device family.
 
-This patch series is split version of earlier patch:
-http://lists.infradead.org/pipermail/linux-mtd/2013-November/050240.html
+Tested-by: Stefan Roese <sr@denx.de>
+Signed-off-by: Pekon Gupta <pekon@ti.com>
+---
+ drivers/mtd/nand/omap2.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-chip->ecc.calculate() is used for calculating and fetching of ECC syndrome by
-processing the data passed during Read/Write accesses.
-Though all H/W ECC schemes in OMAP NAND use GPMC controller for ECC calculation
-But each of them implements its own callback to process and fetch ECC syndrome.
-
-This patch tries to merge common code for different BCHx_ECC schemes into single
-omap_calculate_ecc_bch(). This imporves scalability for future ecc-schemes.
-Following is the summary of this patch series.
- +----------------------+---------------------------+--------------------------+
- | ecc-scheme           | nand_chip->ecc.calculate  | nand_chip->ecc.calculate |
- |                      | (before this patch series)| (after this patch series)|
- +----------------------+---------------------------+--------------------------+
- | HAM1_ECC             | omap_calculate_ecc()      | omap_calculate_ecc()     |
- | BCH4_HW_DETECTION_SW | omap3_calculate_ecc_bch4()| omap_calculate_ecc_bch() |
- | BCH4_HW              | omap3_calculate_ecc_bch() | omap_calculate_ecc_bch() |
- | BCH8_HW_DETECTION_SW | omap3_calculate_ecc_bch8()| omap_calculate_ecc_bch() |
- | BCH8_HW              | omap3_calculate_ecc_bch() | omap_calculate_ecc_bch() |
- +----------------------+---------------------------+--------------------------+
-
-
-Pekon Gupta (4):
-  mtd: nand: omap: ecc.calculate: rename omap3_calculate_ecc_bch to
-    omap_calculate_ecc_bch
-  mtd: nand: omap: ecc.calculate: refactor omap_calculate_ecc_bch for
-    BCHx_HW ecc-scheme
-  mtd: nand: omap: ecc.calculate: merge omap3_calculate_ecc_bch4 in
-    omap_calculate_ecc_bch
-  mtd: nand: omap: ecc.calculate: merge omap3_calculate_ecc_bch8 in
-    omap_calculate_ecc_bch
-
- drivers/mtd/nand/omap2.c | 186 +++++++++++++++--------------------------------
- 1 file changed, 59 insertions(+), 127 deletions(-)
-
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index 05467c6..a3f7707 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -1206,15 +1206,15 @@ static int omap3_calculate_ecc_bch8(struct mtd_info *mtd, const u_char *dat,
+ 
+ #ifdef CONFIG_MTD_NAND_OMAP_BCH
+ /**
+- * omap3_calculate_ecc_bch - Generate bytes of ECC bytes
++ * omap_calculate_ecc_bch - Generate bytes of ECC bytes
+  * @mtd:	MTD device structure
+  * @dat:	The pointer to data on which ecc is computed
+  * @ecc_code:	The ecc_code buffer
+  *
+  * Support calculating of BCH4/8 ecc vectors for the page
+  */
+-static int omap3_calculate_ecc_bch(struct mtd_info *mtd, const u_char *dat,
+-				    u_char *ecc_code)
++static int __maybe_unused omap_calculate_ecc_bch(struct mtd_info *mtd,
++					const u_char *dat, u_char *ecc_code)
+ {
+ 	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
+ 						   mtd);
+@@ -1879,7 +1879,7 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 		nand_chip->ecc.strength		= 4;
+ 		nand_chip->ecc.hwctl		= omap3_enable_hwecc_bch;
+ 		nand_chip->ecc.correct		= omap_elm_correct_data;
+-		nand_chip->ecc.calculate	= omap3_calculate_ecc_bch;
++		nand_chip->ecc.calculate	= omap_calculate_ecc_bch;
+ 		nand_chip->ecc.read_page	= omap_read_page_bch;
+ 		nand_chip->ecc.write_page	= omap_write_page_bch;
+ 		/* define ECC layout */
+@@ -1955,7 +1955,7 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 		nand_chip->ecc.strength		= 8;
+ 		nand_chip->ecc.hwctl		= omap3_enable_hwecc_bch;
+ 		nand_chip->ecc.correct		= omap_elm_correct_data;
+-		nand_chip->ecc.calculate	= omap3_calculate_ecc_bch;
++		nand_chip->ecc.calculate	= omap_calculate_ecc_bch;
+ 		nand_chip->ecc.read_page	= omap_read_page_bch;
+ 		nand_chip->ecc.write_page	= omap_write_page_bch;
+ 		/* This ECC scheme requires ELM H/W block */
 -- 
 1.8.5.1.163.gd7aced9
