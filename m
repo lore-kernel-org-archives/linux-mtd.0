@@ -1,23 +1,18 @@
-Received: from mail-ig0-x22f.google.com ([2607:f8b0:4001:c05::22f])
+Received: from mail-ie0-x234.google.com ([2607:f8b0:4001:c03::234])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WIUBf-0007FO-H6
- for linux-mtd@lists.infradead.org; Wed, 26 Feb 2014 02:25:32 +0000
-Received: by mail-ig0-f175.google.com with SMTP id hl1so9124027igb.2
- for <linux-mtd@lists.infradead.org>; Tue, 25 Feb 2014 18:25:10 -0800 (PST)
-Date: Tue, 25 Feb 2014 18:25:06 -0800
+ id 1WIUES-0007Lo-PT
+ for linux-mtd@lists.infradead.org; Wed, 26 Feb 2014 02:28:25 +0000
+Received: by mail-ie0-f180.google.com with SMTP id ar20so173226iec.11
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Feb 2014 18:28:03 -0800 (PST)
 From: Brian Norris <computersforpeace@gmail.com>
-To: akpm@linux-foundation.org
-Subject: Re: [patch 1/4] jffs2: unlock f->sem on error in jffs2_new_inode()
-Message-ID: <20140226022506.GE4194@ld-irv-0074>
-References: <20140212204454.8FA415A40F6@corp2gmr1-2.hot.corp.google.com>
- <20140226020331.GB4194@ld-irv-0074>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20140226020331.GB4194@ld-irv-0074>
-Cc: wangnan0@huawei.com, artem.bityutskiy@linux.intel.com,
- stable@vger.kernel.org, linux-mtd@lists.infradead.org,
- andy.wangguoli@huawei.com, dwmw2@infradead.org
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] jffs2: fix unbalanced locking
+Date: Tue, 25 Feb 2014 18:27:40 -0800
+Message-Id: <1393381660-26150-1-git-send-email-computersforpeace@gmail.com>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Li Zefan <lizefan@huawei.com>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Andrew Morton <akpm@linux-foundation.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,80 +22,137 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ linux-mtd (I realized MTD wasn't CC'd on these re-sends)
+Li Zefan reported an unbalanced locking issue, found by his
+internal debugging feature on runtime. The particular case he was
+looking at doesn't lead to a deadlock, as the structure that this lock
+is embedded in is freed on error. But we should straighten out the error
+handling.
 
-On Tue, Feb 25, 2014 at 06:03:31PM -0800, Brian Norris wrote:
-> Hi Andrew,
-> 
-> I've run all 4 of these patches (for the second one, I'm using my latest
-> version; I'll resend it formally) through a little bit of testing here.
-> 
-> Hi Wang,
-> 
-> Thanks for the patch.
-> 
-> On Wed, Feb 12, 2014 at 12:44:54PM -0800, Andrew Morton wrote:
-> > From: Wang Guoli <andy.wangguoli@huawei.com>
-> > Subject: jffs2: unlock f->sem on error in jffs2_new_inode()
-> > 
-> > If jffs2_new_inode() succeeds, it returns with f->sem held, and the caller
-> > is responsible for releasing the lock.  If it fails, it still returns with
-> > the lock held, but the caller won't release the lock, which will lead to
-> > deadlock.
-> 
-> Have you actually seen a deadlock for this? AFAICT, the error cases for
-> jffs2_new_inode() all occur before anyone else actually has a reference
-> to the inode, so I don't expect that we should see the deadlock.
-> 
-> > Fix it by releasing the lock in jffs2_new_inode() on error.
-> > 
-> > Signed-off-by: Wang Guoli <andy.wangguoli@huawei.com>
-> > Signed-off-by: Wang Nan <wangnan0@huawei.com>
-> > Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> > Cc: David Woodhouse <dwmw2@infradead.org>
-> > Cc: Wang Guoli <andy.wangguoli@huawei.com>
-> > Cc: Brian Norris <computersforpeace@gmail.com>
-> > Cc: <stable@vger.kernel.org> # 2.6.34+
+Because several callers of jffs2_do_read_inode_internal() /
+jffs2_do_read_inode() already handle the locking/unlocking and inode
+clearing at their own level, let's just push any unlocks/clearing down
+to the caller. This consistency is much easier to verify.
 
-Is there anything specific to 2.6.34 for this patch, other than your
-testing?
+Reported-by: Li Zefan <lizefan@huawei.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+Not CC'd to -stable this time, since the bug seems non-critical, and it has
+only limited testing (I did a few quick sanity tests, and Li tested an earlier
+revision)
 
-> > Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> > ---
-> > 
-> >  fs/jffs2/fs.c |    9 ++++++---
-> >  1 file changed, 6 insertions(+), 3 deletions(-)
-> > 
-> > diff -puN fs/jffs2/fs.c~jffs2-unlock-f-sem-on-error-in-jffs2_new_inode fs/jffs2/fs.c
-> > --- a/fs/jffs2/fs.c~jffs2-unlock-f-sem-on-error-in-jffs2_new_inode
-> > +++ a/fs/jffs2/fs.c
-> > @@ -457,12 +457,14 @@ struct inode *jffs2_new_inode (struct in
-> >  	   The umask is only applied if there's no default ACL */
-> >  	ret = jffs2_init_acl_pre(dir_i, inode, &mode);
-> >  	if (ret) {
-> > -	    make_bad_inode(inode);
-> > -	    iput(inode);
-> > -	    return ERR_PTR(ret);
-> > +		mutex_unlock(&f->sem);
-> > +		make_bad_inode(inode);
-> > +		iput(inode);
-> > +		return ERR_PTR(ret);
-> >  	}
-> >  	ret = jffs2_do_new_inode (c, f, mode, ri);
-> >  	if (ret) {
-> > +		mutex_unlock(&f->sem);
-> >  		make_bad_inode(inode);
-> >  		iput(inode);
-> >  		return ERR_PTR(ret);
-> > @@ -479,6 +481,7 @@ struct inode *jffs2_new_inode (struct in
-> >  	inode->i_size = 0;
-> >  
-> >  	if (insert_inode_locked(inode) < 0) {
-> > +		mutex_unlock(&f->sem);
-> >  		make_bad_inode(inode);
-> >  		iput(inode);
-> >  		return ERR_PTR(-EINVAL);
+ fs/jffs2/fs.c        |  7 ++-----
+ fs/jffs2/readinode.c | 27 ++++-----------------------
+ 2 files changed, 6 insertions(+), 28 deletions(-)
 
-Applied to l2-mtd.git, thanks.
-
-Brian
+diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
+index 560821bff038..ea753a2a893e 100644
+--- a/fs/jffs2/fs.c
++++ b/fs/jffs2/fs.c
+@@ -272,12 +272,9 @@ struct inode *jffs2_iget(struct super_block *sb, unsigned long ino)
+ 	mutex_lock(&f->sem);
+ 
+ 	ret = jffs2_do_read_inode(c, f, inode->i_ino, &latest_node);
++	if (ret)
++		goto error;
+ 
+-	if (ret) {
+-		mutex_unlock(&f->sem);
+-		iget_failed(inode);
+-		return ERR_PTR(ret);
+-	}
+ 	inode->i_mode = jemode_to_cpu(latest_node.mode);
+ 	i_uid_write(inode, je16_to_cpu(latest_node.uid));
+ 	i_gid_write(inode, je16_to_cpu(latest_node.gid));
+diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
+index 386303dca382..5539ed46e89b 100644
+--- a/fs/jffs2/readinode.c
++++ b/fs/jffs2/readinode.c
+@@ -1203,17 +1203,13 @@ static int jffs2_do_read_inode_internal(struct jffs2_sb_info *c,
+ 		JFFS2_ERROR("failed to read from flash: error %d, %zd of %zd bytes read\n",
+ 			ret, retlen, sizeof(*latest_node));
+ 		/* FIXME: If this fails, there seems to be a memory leak. Find it. */
+-		mutex_unlock(&f->sem);
+-		jffs2_do_clear_inode(c, f);
+-		return ret?ret:-EIO;
++		return ret ? ret : -EIO;
+ 	}
+ 
+ 	crc = crc32(0, latest_node, sizeof(*latest_node)-8);
+ 	if (crc != je32_to_cpu(latest_node->node_crc)) {
+ 		JFFS2_ERROR("CRC failed for read_inode of inode %u at physical location 0x%x\n",
+ 			f->inocache->ino, ref_offset(rii.latest_ref));
+-		mutex_unlock(&f->sem);
+-		jffs2_do_clear_inode(c, f);
+ 		return -EIO;
+ 	}
+ 
+@@ -1250,16 +1246,11 @@ static int jffs2_do_read_inode_internal(struct jffs2_sb_info *c,
+ 			 * keep in RAM to facilitate quick follow symlink
+ 			 * operation. */
+ 			uint32_t csize = je32_to_cpu(latest_node->csize);
+-			if (csize > JFFS2_MAX_NAME_LEN) {
+-				mutex_unlock(&f->sem);
+-				jffs2_do_clear_inode(c, f);
++			if (csize > JFFS2_MAX_NAME_LEN)
+ 				return -ENAMETOOLONG;
+-			}
+ 			f->target = kmalloc(csize + 1, GFP_KERNEL);
+ 			if (!f->target) {
+ 				JFFS2_ERROR("can't allocate %u bytes of memory for the symlink target path cache\n", csize);
+-				mutex_unlock(&f->sem);
+-				jffs2_do_clear_inode(c, f);
+ 				return -ENOMEM;
+ 			}
+ 
+@@ -1271,8 +1262,6 @@ static int jffs2_do_read_inode_internal(struct jffs2_sb_info *c,
+ 					ret = -EIO;
+ 				kfree(f->target);
+ 				f->target = NULL;
+-				mutex_unlock(&f->sem);
+-				jffs2_do_clear_inode(c, f);
+ 				return ret;
+ 			}
+ 
+@@ -1289,15 +1278,11 @@ static int jffs2_do_read_inode_internal(struct jffs2_sb_info *c,
+ 		if (f->metadata) {
+ 			JFFS2_ERROR("Argh. Special inode #%u with mode 0%o had metadata node\n",
+ 			       f->inocache->ino, jemode_to_cpu(latest_node->mode));
+-			mutex_unlock(&f->sem);
+-			jffs2_do_clear_inode(c, f);
+ 			return -EIO;
+ 		}
+ 		if (!frag_first(&f->fragtree)) {
+ 			JFFS2_ERROR("Argh. Special inode #%u with mode 0%o has no fragments\n",
+ 			       f->inocache->ino, jemode_to_cpu(latest_node->mode));
+-			mutex_unlock(&f->sem);
+-			jffs2_do_clear_inode(c, f);
+ 			return -EIO;
+ 		}
+ 		/* ASSERT: f->fraglist != NULL */
+@@ -1305,8 +1290,6 @@ static int jffs2_do_read_inode_internal(struct jffs2_sb_info *c,
+ 			JFFS2_ERROR("Argh. Special inode #%u with mode 0x%x had more than one node\n",
+ 			       f->inocache->ino, jemode_to_cpu(latest_node->mode));
+ 			/* FIXME: Deal with it - check crc32, check for duplicate node, check times and discard the older one */
+-			mutex_unlock(&f->sem);
+-			jffs2_do_clear_inode(c, f);
+ 			return -EIO;
+ 		}
+ 		/* OK. We're happy */
+@@ -1400,10 +1383,8 @@ int jffs2_do_crccheck_inode(struct jffs2_sb_info *c, struct jffs2_inode_cache *i
+ 	f->inocache = ic;
+ 
+ 	ret = jffs2_do_read_inode_internal(c, f, &n);
+-	if (!ret) {
+-		mutex_unlock(&f->sem);
+-		jffs2_do_clear_inode(c, f);
+-	}
++	mutex_unlock(&f->sem);
++	jffs2_do_clear_inode(c, f);
+ 	jffs2_xattr_do_crccheck_inode(c, ic);
+ 	kfree (f);
+ 	return ret;
+-- 
+1.8.3.2
