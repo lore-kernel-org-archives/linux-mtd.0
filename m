@@ -1,19 +1,20 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
+Received: from szxga01-in.huawei.com ([119.145.14.64])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WIber-0001Aq-D4
- for linux-mtd@lists.infradead.org; Wed, 26 Feb 2014 10:24:11 +0000
-From: Pekon Gupta <pekon@ti.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v6 3/4] mtd: nand: omap: ecc.calculate: merge
- omap3_calculate_ecc_bch4 in omap_calculate_ecc_bch
-Date: Wed, 26 Feb 2014 15:53:13 +0530
-Message-ID: <1393410194-15094-4-git-send-email-pekon@ti.com>
-In-Reply-To: <1393410194-15094-1-git-send-email-pekon@ti.com>
-References: <1393410194-15094-1-git-send-email-pekon@ti.com>
+ id 1WIdIQ-0004JW-Nt
+ for linux-mtd@lists.infradead.org; Wed, 26 Feb 2014 12:09:08 +0000
+Message-ID: <530DD83D.5090507@huawei.com>
+Date: Wed, 26 Feb 2014 20:04:13 +0800
+From: Li Zefan <lizefan@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Stefan Roese <sr@denx.de>, linux-mtd <linux-mtd@lists.infradead.org>,
- Pekon Gupta <pekon@ti.com>, Artem Bityutskiy <dedekind1@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [patch 3/4] jffs2: avoid soft-lockup in jffs2_reserve_space_gc()
+References: <20140212204456.E010B5A40F6@corp2gmr1-2.hot.corp.google.com>
+ <20140226021709.GD4194@ld-irv-0074>
+In-Reply-To: <20140226021709.GD4194@ld-irv-0074>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, artem.bityutskiy@linux.intel.com,
+ akpm@linux-foundation.org, dwmw2@infradead.org, stable@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,126 +24,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-merges omap3_calculate_ecc_bch4() into omap_calculate_ecc_bch() so that
-common callback can be used for both OMAP_ECC_BCH4_CODE_HW and
-OMAP_ECC_BCH4_CODE_HW_DETECTION_SW ecc-schemes
+>>  fs/jffs2/nodemgmt.c |   13 +++++++++----
+>>  1 file changed, 9 insertions(+), 4 deletions(-)
+>>
+>> diff -puN fs/jffs2/nodemgmt.c~jffs2-avoid-soft-lockup-in-jffs2_reserve_space_gc fs/jffs2/nodemgmt.c
+>> --- a/fs/jffs2/nodemgmt.c~jffs2-avoid-soft-lockup-in-jffs2_reserve_space_gc
+>> +++ a/fs/jffs2/nodemgmt.c
+>> @@ -211,20 +211,25 @@ out:
+>>  int jffs2_reserve_space_gc(struct jffs2_sb_info *c, uint32_t minsize,
+>>  			   uint32_t *len, uint32_t sumsize)
+>>  {
+>> -	int ret = -EAGAIN;
+>> +	int ret;
+>>  	minsize = PAD(minsize);
+>>  
+>>  	jffs2_dbg(1, "%s(): Requested 0x%x bytes\n", __func__, minsize);
+>>  
+>> -	spin_lock(&c->erase_completion_lock);
+>> -	while(ret == -EAGAIN) {
+>> +	while (true) {
+>> +		spin_lock(&c->erase_completion_lock);
+>>  		ret = jffs2_do_reserve_space(c, minsize, len, sumsize);
+>>  		if (ret) {
+>>  			jffs2_dbg(1, "%s(): looping, ret is %d\n",
+>>  				  __func__, ret);
+>>  		}
+>> +		spin_unlock(&c->erase_completion_lock);
+>> +
+>> +		if (ret == -EAGAIN)
+>> +			cond_resched();
+> 
+> Just curious: would this be a place to use cond_resched_lock(), and keep
+> the lock outside the loop?
+> 
 
-+---------------------+-------------------------------------------------------+
-|ecc-scheme           | nand_chip->calculate() after this patch               |
-+---------------------+-------------------------------------------------------+
-|HAM1_ECC             | omap_calculate_ecc()                                  |
-+---------------------+-------------------------------------------------------+
-|BCH4_HW_DETECTION_SW | omap3_calculate_ecc_bch4() -> omap_calculate_ecc_bch()|
-|BCH4_HW              | omap_calculate_ecc_bch()                              |
-|BCH8_HW_DETECTION_SW | omap3_calculate_ecc_bch8()                            |
-|BCH8_HW              | omap_calculate_ecc_bch()                              |
-+---------------------+-------------------------------------------------------+
+Yeah, cond_resched_lock() can be used too, but doesn't make much difference.
+This patch adds 5 LOC, and using cond_resched_lock() will also add 5 LOC.
 
-Tested-by: Stefan Roese <sr@denx.de>
-Signed-off-by: Pekon Gupta <pekon@ti.com>
----
- drivers/mtd/nand/omap2.c | 51 ++++++++++--------------------------------------
- 1 file changed, 10 insertions(+), 41 deletions(-)
+As you've already merged it, I think it isn't worth borthing to make this change.
 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index f1a33eb..bcc7ecc1 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -1116,48 +1116,10 @@ static void omap3_enable_hwecc_bch(struct mtd_info *mtd, int mode)
- 	writel(ECCCLEAR | ECC1, info->reg.gpmc_ecc_control);
- }
- #endif
-+static u8  bch4_polynomial[] = {0x28, 0x13, 0xcc, 0x39, 0x96, 0xac, 0x7f};
- 
- #ifdef CONFIG_MTD_NAND_ECC_BCH
- /**
-- * omap3_calculate_ecc_bch4 - Generate 7 bytes of ECC bytes
-- * @mtd: MTD device structure
-- * @dat: The pointer to data on which ecc is computed
-- * @ecc_code: The ecc_code buffer
-- */
--static int omap3_calculate_ecc_bch4(struct mtd_info *mtd, const u_char *dat,
--				    u_char *ecc_code)
--{
--	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
--						   mtd);
--	unsigned long nsectors, val1, val2;
--	int i;
--
--	nsectors = ((readl(info->reg.gpmc_ecc_config) >> 4) & 0x7) + 1;
--
--	for (i = 0; i < nsectors; i++) {
--
--		/* Read hw-computed remainder */
--		val1 = readl(info->reg.gpmc_bch_result0[i]);
--		val2 = readl(info->reg.gpmc_bch_result1[i]);
--
--		/*
--		 * Add constant polynomial to remainder, in order to get an ecc
--		 * sequence of 0xFFs for a buffer filled with 0xFFs; and
--		 * left-justify the resulting polynomial.
--		 */
--		*ecc_code++ = 0x28 ^ ((val2 >> 12) & 0xFF);
--		*ecc_code++ = 0x13 ^ ((val2 >>  4) & 0xFF);
--		*ecc_code++ = 0xcc ^ (((val2 & 0xF) << 4)|((val1 >> 28) & 0xF));
--		*ecc_code++ = 0x39 ^ ((val1 >> 20) & 0xFF);
--		*ecc_code++ = 0x96 ^ ((val1 >> 12) & 0xFF);
--		*ecc_code++ = 0xac ^ ((val1 >> 4) & 0xFF);
--		*ecc_code++ = 0x7f ^ ((val1 & 0xF) << 4);
--	}
--
--	return 0;
--}
--
--/**
-  * omap3_calculate_ecc_bch8 - Generate 13 bytes of ECC bytes
-  * @mtd: MTD device structure
-  * @dat: The pointer to data on which ecc is computed
-@@ -1204,7 +1166,6 @@ static int omap3_calculate_ecc_bch8(struct mtd_info *mtd, const u_char *dat,
- }
- #endif /* CONFIG_MTD_NAND_ECC_BCH */
- 
--#ifdef CONFIG_MTD_NAND_OMAP_BCH
- /**
-  * omap_calculate_ecc_bch - Generate bytes of ECC bytes
-  * @mtd:	MTD device structure
-@@ -1247,6 +1208,7 @@ static int __maybe_unused omap_calculate_ecc_bch(struct mtd_info *mtd,
- 			*ecc_code++ = ((bch_val1 >> 8) & 0xFF);
- 			*ecc_code++ = (bch_val1 & 0xFF);
- 			break;
-+		case OMAP_ECC_BCH4_CODE_HW_DETECTION_SW:
- 		case OMAP_ECC_BCH4_CODE_HW:
- 			bch_val1 = readl(gpmc_regs->gpmc_bch_result0[i]);
- 			bch_val2 = readl(gpmc_regs->gpmc_bch_result1[i]);
-@@ -1265,6 +1227,12 @@ static int __maybe_unused omap_calculate_ecc_bch(struct mtd_info *mtd,
- 
- 		/* ECC scheme specific syndrome customizations */
- 		switch (info->ecc_opt) {
-+		case OMAP_ECC_BCH4_CODE_HW_DETECTION_SW:
-+			/* Add constant polynomial to remainder, so that
-+			 * ECC of blank pages results in 0x0 on reading back */
-+			for (i = 0; i < eccbytes; i++)
-+				ecc_calc[i] ^= bch4_polynomial[i];
-+			break;
- 		case OMAP_ECC_BCH4_CODE_HW:
- 			/* Set  8th ECC byte as 0x0 for ROM compatibility */
- 			ecc_calc[eccbytes - 1] = 0x0;
-@@ -1307,6 +1275,7 @@ static int count_zero_bits(u_char *buf, int length,
- 	return 0;
- }
- 
-+#ifdef CONFIG_MTD_NAND_OMAP_BCH
- /**
-  * omap_elm_correct_data - corrects page data area in case error reported
-  * @mtd:	MTD device structure
-@@ -1841,7 +1810,7 @@ static int omap_nand_probe(struct platform_device *pdev)
- 		nand_chip->ecc.strength		= 4;
- 		nand_chip->ecc.hwctl		= omap3_enable_hwecc_bch;
- 		nand_chip->ecc.correct		= nand_bch_correct_data;
--		nand_chip->ecc.calculate	= omap3_calculate_ecc_bch4;
-+		nand_chip->ecc.calculate	= omap_calculate_ecc_bch;
- 		/* define ECC layout */
- 		ecclayout->eccbytes		= nand_chip->ecc.bytes *
- 							(mtd->writesize /
--- 
-1.8.5.1.163.gd7aced9
+diff --git a/fs/jffs2/nodemgmt.c b/fs/jffs2/nodemgmt.c
+index 0331072..36e9538 100644
+--- a/fs/jffs2/nodemgmt.c
++++ b/fs/jffs2/nodemgmt.c
+@@ -223,6 +223,11 @@ int jffs2_reserve_space_gc(struct jffs2_sb_info *c, uint32_t mi
+nsize,
+                        jffs2_dbg(1, "%s(): looping, ret is %d\n",
+                                  __func__, ret);
+                }
++
++               if (ret == -EAGAIN)
++                       cond_resched_lock(&c->erease_completion_lock);
++               else
++                       break;
+        }
+        spin_unlock(&c->erase_completion_lock);
+
+
+>> +		else
+>> +			break;
+>>  	}
+>> -	spin_unlock(&c->erase_completion_lock);
+>>  	if (!ret)
+>>  		ret = jffs2_prealloc_raw_node_refs(c, c->nextblock, 1);
+>>  
+> 
+> Anyway, pushed to l2-mtd.git.
+> 
+
+Thanks!
