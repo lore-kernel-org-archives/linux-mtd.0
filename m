@@ -1,22 +1,24 @@
-Received: from mail-ie0-x22b.google.com ([2607:f8b0:4001:c03::22b])
+Received: from mail-pb0-x233.google.com ([2607:f8b0:400e:c01::233])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WIpXZ-00060Q-D9
- for linux-mtd@lists.infradead.org; Thu, 27 Feb 2014 01:13:33 +0000
-Received: by mail-ie0-f171.google.com with SMTP id to1so1478866ieb.30
- for <linux-mtd@lists.infradead.org>; Wed, 26 Feb 2014 17:13:12 -0800 (PST)
-Date: Wed, 26 Feb 2014 17:13:08 -0800
+ id 1WIut6-0002cM-OH
+ for linux-mtd@lists.infradead.org; Thu, 27 Feb 2014 06:56:10 +0000
+Received: by mail-pb0-f51.google.com with SMTP id un15so2117107pbc.38
+ for <linux-mtd@lists.infradead.org>; Wed, 26 Feb 2014 22:55:44 -0800 (PST)
+Date: Wed, 26 Feb 2014 22:55:40 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Leon Pollak <leonp@plris.com>
-Subject: Re: What is wrong?
-Message-ID: <20140227011308.GJ4194@ld-irv-0074>
-References: <4315632.KkRm7kzq26@leonp.plris.com>
- <20140227011148.GI4194@ld-irv-0074>
+To: Wang Nan <wangnan0@huawei.com>
+Subject: Re: [patch 1/4] jffs2: unlock f->sem on error in jffs2_new_inode()
+Message-ID: <20140227065540.GC13420@norris-Latitude-E6410>
+References: <20140212204454.8FA415A40F6@corp2gmr1-2.hot.corp.google.com>
+ <20140226020331.GB4194@ld-irv-0074> <530E8C91.4060703@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20140227011148.GI4194@ld-irv-0074>
-Cc: Richard Weinberger <richard@nod.at>,
- Andrew Ruder <andrew.ruder@elecsyscorp.com>, linux-mtd@lists.infradead.org
+In-Reply-To: <530E8C91.4060703@huawei.com>
+Cc: artem.bityutskiy@linux.intel.com, stable@vger.kernel.org,
+ linux-mtd@lists.infradead.org, andy.wangguoli@huawei.com,
+ genghui 00204690 <hui.geng@huawei.com>, akpm@linux-foundation.org,
+ dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,59 +28,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ Richard, Andrew
++ linux-mtd
 
-(Meant to CC earlier)
+Hi Wang,
 
-On Wed, Feb 26, 2014 at 05:11:48PM -0800, Brian Norris wrote:
-> On Wed, Feb 26, 2014 at 04:07:21PM +0200, Leon Pollak wrote:
-> > I use JFFS2 version 2.2.(NAND)(SUMMARY)(C) 2001-2006 Red Hat, Inc. 
-> > (comes with MontaVistaPro 5.0). Kernel 2.6.18.
-> > I prepare JFFS2 partition with mkfs.jffs2 and sumtool and burn it with 
-> > flash_eraseall and 'nandwrite -p'.
-> > Everything works fine.
+On Thu, Feb 27, 2014 at 08:53:37AM +0800, Wang Nan wrote:
+> On 2014/2/26 10:03, Brian Norris wrote:
+> > On Wed, Feb 12, 2014 at 12:44:54PM -0800, Andrew Morton wrote:
+> >> From: Wang Guoli <andy.wangguoli@huawei.com>
+> >> Subject: jffs2: unlock f->sem on error in jffs2_new_inode()
+> >>
+> >> If jffs2_new_inode() succeeds, it returns with f->sem held, and the caller
+> >> is responsible for releasing the lock.  If it fails, it still returns with
+> >> the lock held, but the caller won't release the lock, which will lead to
+> >> deadlock.
 > > 
-> > The NAND is write protected by HW and the partition is mounted as RO. 
-> > At some moment I need to update a small file. 
-> > So I do: 
-> > - HW write protect off, 
-> > - remount RW, 
-> > - update file, 
-> > - sync, 
-> > - remount RO, 
-> > - write protect on.
+> > Have you actually seen a deadlock for this? AFAICT, the error cases for
+> > jffs2_new_inode() all occur before anyone else actually has a reference
+> > to the inode, so I don't expect that we should see the deadlock.
 > > 
-> > Looking at linux console I see a lot of messages like:
-> > Erase at 0x00400000 failed immediately: errno -5
-> > Erase at 0x003e0000 failed immediately: errno -5
-> > ......
-> > Erase at 0x00340000 failed immediately: errno -5
-> > jffs2_flush_wbuf(): Write failed with -5
-> > Write of 2016 bytes at 0x002578a0 failed. returned -5, retlen 0
-> > Not marking the space at 0x002578a0 as dirty because the flash driver 
-> > returned retlen zero.
-> > 
-> > 
-> > This is repeated for a long time, but everything seems work OK.
-> > The sequential starts and even file updates are also OK, without error 
-> > messages.
-> > 
-> > What do I do wrong? Thanks a lot.
 > 
-> It's possible you're seeing symptoms of this:
-> 
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=807612db2f9940b9fa6deaef054eb16d51bd3e00
-> 
-> It seems like maybe JFFS2 is still doing some GC and/or write flushing
-> after the remount.
-> 
-> Could try this?
-> 
->  - HW write protect off, 
->  - remount RW, 
->  - update file, 
->  - sync, 
->  - remount RO, 
->  - sync, <---------- add this, to see if you're experiencing any
->                      writeback after remount
->  - write protect on.
+> We found this bug by reading code. There's no deadlock have been actually seen.
+
+Hmm, then I think maybe we should drop the stable tag. I'm not sure it's
+a practical issue, and it also has unrelated indentation changes. That
+means it breaks two of the rules in
+Documentation/stable_kernel_rules.txt. I'm dropping the stable tag
+unless someone shouts.
+
+> >> Fix it by releasing the lock in jffs2_new_inode() on error.
+> >>
+> >> Signed-off-by: Wang Guoli <andy.wangguoli@huawei.com>
+> >> Signed-off-by: Wang Nan <wangnan0@huawei.com>
+> >> Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+> >> Cc: David Woodhouse <dwmw2@infradead.org>
+> >> Cc: Wang Guoli <andy.wangguoli@huawei.com>
+> >> Cc: Brian Norris <computersforpeace@gmail.com>
+> >> Cc: <stable@vger.kernel.org> # 2.6.34+
+> >> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> >> ---
+> >>
+> >>  fs/jffs2/fs.c |    9 ++++++---
+> >>  1 file changed, 6 insertions(+), 3 deletions(-)
+> >>
+> >> diff -puN fs/jffs2/fs.c~jffs2-unlock-f-sem-on-error-in-jffs2_new_inode fs/jffs2/fs.c
+> >> --- a/fs/jffs2/fs.c~jffs2-unlock-f-sem-on-error-in-jffs2_new_inode
+> >> +++ a/fs/jffs2/fs.c
+> >> @@ -457,12 +457,14 @@ struct inode *jffs2_new_inode (struct in
+> >>  	   The umask is only applied if there's no default ACL */
+> >>  	ret = jffs2_init_acl_pre(dir_i, inode, &mode);
+> >>  	if (ret) {
+> >> -	    make_bad_inode(inode);
+> >> -	    iput(inode);
+> >> -	    return ERR_PTR(ret);
+> >> +		mutex_unlock(&f->sem);
+> >> +		make_bad_inode(inode);
+> >> +		iput(inode);
+> >> +		return ERR_PTR(ret);
+> >>  	}
+> >>  	ret = jffs2_do_new_inode (c, f, mode, ri);
+> >>  	if (ret) {
+> >> +		mutex_unlock(&f->sem);
+> >>  		make_bad_inode(inode);
+> >>  		iput(inode);
+> >>  		return ERR_PTR(ret);
+> >> @@ -479,6 +481,7 @@ struct inode *jffs2_new_inode (struct in
+> >>  	inode->i_size = 0;
+> >>  
+> >>  	if (insert_inode_locked(inode) < 0) {
+> >> +		mutex_unlock(&f->sem);
+> >>  		make_bad_inode(inode);
+> >>  		iput(inode);
+> >>  		return ERR_PTR(-EINVAL);
+
+Brian
