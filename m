@@ -1,23 +1,23 @@
-Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
+Received: from szxga02-in.huawei.com ([119.145.14.65])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WIvcN-0003n4-21
- for linux-mtd@lists.infradead.org; Thu, 27 Feb 2014 07:42:56 +0000
-Received: by mail-pa0-f41.google.com with SMTP id fa1so2158935pad.0
- for <linux-mtd@lists.infradead.org>; Wed, 26 Feb 2014 23:42:33 -0800 (PST)
-Date: Wed, 26 Feb 2014 23:42:30 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Denis Carikli <denis@eukrea.com>
-Subject: Re: [PATCHv3][ 1/2] mtd: nand: mxc_nand: Enforce a minimum mtd_info
- writesize default value.
-Message-ID: <20140227074230.GE13420@norris-Latitude-E6410>
-References: <1389024157-19279-1-git-send-email-denis@eukrea.com>
+ id 1WIwRv-0005IW-Dx
+ for linux-mtd@lists.infradead.org; Thu, 27 Feb 2014 08:36:14 +0000
+Message-ID: <530EF850.4030202@huawei.com>
+Date: Thu, 27 Feb 2014 16:33:20 +0800
+From: Wang Nan <wangnan0@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1389024157-19279-1-git-send-email-denis@eukrea.com>
-Cc: linux-mtd@lists.infradead.org, Sascha Hauer <s.hauer@pengutronix.de>,
- David Woodhouse <dwmw2@infradead.org>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [patch 1/4] jffs2: unlock f->sem on error in jffs2_new_inode()
+References: <20140212204454.8FA415A40F6@corp2gmr1-2.hot.corp.google.com>
+ <20140226020331.GB4194@ld-irv-0074> <530E8C91.4060703@huawei.com>
+ <20140227065540.GC13420@norris-Latitude-E6410>
+In-Reply-To: <20140227065540.GC13420@norris-Latitude-E6410>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: artem.bityutskiy@linux.intel.com, stable@vger.kernel.org,
+ linux-mtd@lists.infradead.org, andy.wangguoli@huawei.com,
+ genghui 00204690 <hui.geng@huawei.com>, akpm@linux-foundation.org,
+ dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,62 +27,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jan 06, 2014 at 05:02:36PM +0100, Denis Carikli wrote:
-> The linux/mtd/mtd.h header has a comment in the
->   mtd_info struct definition that says that
->   having a writesize of 0 is illegal.
+On 2014/2/27 14:55, Brian Norris wrote:
+> + linux-mtd
 > 
-> When nand_flash_detect_onfi is called (in the case
->   of an ONFI flash), it will call the function
->   pointed by read_buf in order to get some parameters
->   of the flash chip, including its writesize.
-
-Note that (for fixing buswidth issues when using x16 vs. x8)
-nand_flash_detect_onfi() no longer uses read_buf(). So this shouldn't
-actually be an issue any more, I don't think. But we still might want to
-set some value, due to the strange implementation of read_buf() in this
-driver.
-
-> Before decoding the writesize value that was retrived
->   with that read, the mxc_nand's mtd_info struct had
->   a writesize set to zero.
+> Hi Wang,
 > 
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: linux-mtd@lists.infradead.org
-> Cc: Sascha Hauer <s.hauer@pengutronix.de>
-> Cc: Eric Bénard <eric@eukrea.com>
-> Signed-off-by: Denis Carikli <denis@eukrea.com>
-> ---
-> ChangeLog v2->v3:
-> New patch in this serie.
-> ---
->  drivers/mtd/nand/mxc_nand.c |    3 +++
->  1 file changed, 3 insertions(+)
+> On Thu, Feb 27, 2014 at 08:53:37AM +0800, Wang Nan wrote:
+>> On 2014/2/26 10:03, Brian Norris wrote:
+>>> On Wed, Feb 12, 2014 at 12:44:54PM -0800, Andrew Morton wrote:
+>>>> From: Wang Guoli <andy.wangguoli@huawei.com>
+>>>> Subject: jffs2: unlock f->sem on error in jffs2_new_inode()
+>>>>
+>>>> If jffs2_new_inode() succeeds, it returns with f->sem held, and the caller
+>>>> is responsible for releasing the lock.  If it fails, it still returns with
+>>>> the lock held, but the caller won't release the lock, which will lead to
+>>>> deadlock.
+>>>
+>>> Have you actually seen a deadlock for this? AFAICT, the error cases for
+>>> jffs2_new_inode() all occur before anyone else actually has a reference
+>>> to the inode, so I don't expect that we should see the deadlock.
+>>>
+>>
+>> We found this bug by reading code. There's no deadlock have been actually seen.
 > 
-> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-> index 567a5e5..d4d8d66 100644
-> --- a/drivers/mtd/nand/mxc_nand.c
-> +++ b/drivers/mtd/nand/mxc_nand.c
-> @@ -1415,6 +1415,9 @@ static int mxcnd_probe(struct platform_device *pdev)
->  	mtd->dev.parent = &pdev->dev;
->  	mtd->name = DRIVER_NAME;
->  
-> +	/* Enforce a minimum writesize */
-> +	mtd->writesize = 512;
-> +
+> Hmm, then I think maybe we should drop the stable tag. I'm not sure it's
+> a practical issue, and it also has unrelated indentation changes. That
+> means it breaks two of the rules in
+> Documentation/stable_kernel_rules.txt. I'm dropping the stable tag
+> unless someone shouts.
+> 
 
-Is this "initial" writesize just needed for the bounds checking in
-read_buf() (and write_buf())? Then wouldn't it make sense to match the
-buffer size allocated initially? See:
+Thank you for your review, but it is still an obvious bug, isn't it?
 
-	/* allocate a temporary buffer for the nand_scan_ident() */
-	host->data_buf = devm_kzalloc(&pdev->dev, PAGE_SIZE, GFP_KERNEL);
+We will work for test case, and will let you know if we successfully
+trigger deadlock.
 
-Also, I don't think you actually need the bounds checks in
-read_buf()/write_buf(), although I guess there's no real harm...
-
->  	/* 50 us command delay time */
->  	this->chip_delay = 5;
->  
-
-Brian
+>>>> Fix it by releasing the lock in jffs2_new_inode() on error.
+>>>>
+>>>> Signed-off-by: Wang Guoli <andy.wangguoli@huawei.com>
+>>>> Signed-off-by: Wang Nan <wangnan0@huawei.com>
+>>>> Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+>>>> Cc: David Woodhouse <dwmw2@infradead.org>
+>>>> Cc: Wang Guoli <andy.wangguoli@huawei.com>
+>>>> Cc: Brian Norris <computersforpeace@gmail.com>
+>>>> Cc: <stable@vger.kernel.org> # 2.6.34+
+>>>> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+>>>> ---
+>>>>
+>>>>  fs/jffs2/fs.c |    9 ++++++---
+>>>>  1 file changed, 6 insertions(+), 3 deletions(-)
+>>>>
+>>>> diff -puN fs/jffs2/fs.c~jffs2-unlock-f-sem-on-error-in-jffs2_new_inode fs/jffs2/fs.c
+>>>> --- a/fs/jffs2/fs.c~jffs2-unlock-f-sem-on-error-in-jffs2_new_inode
+>>>> +++ a/fs/jffs2/fs.c
+>>>> @@ -457,12 +457,14 @@ struct inode *jffs2_new_inode (struct in
+>>>>  	   The umask is only applied if there's no default ACL */
+>>>>  	ret = jffs2_init_acl_pre(dir_i, inode, &mode);
+>>>>  	if (ret) {
+>>>> -	    make_bad_inode(inode);
+>>>> -	    iput(inode);
+>>>> -	    return ERR_PTR(ret);
+>>>> +		mutex_unlock(&f->sem);
+>>>> +		make_bad_inode(inode);
+>>>> +		iput(inode);
+>>>> +		return ERR_PTR(ret);
+>>>>  	}
+>>>>  	ret = jffs2_do_new_inode (c, f, mode, ri);
+>>>>  	if (ret) {
+>>>> +		mutex_unlock(&f->sem);
+>>>>  		make_bad_inode(inode);
+>>>>  		iput(inode);
+>>>>  		return ERR_PTR(ret);
+>>>> @@ -479,6 +481,7 @@ struct inode *jffs2_new_inode (struct in
+>>>>  	inode->i_size = 0;
+>>>>  
+>>>>  	if (insert_inode_locked(inode) < 0) {
+>>>> +		mutex_unlock(&f->sem);
+>>>>  		make_bad_inode(inode);
+>>>>  		iput(inode);
+>>>>  		return ERR_PTR(-EINVAL);
+> 
+> Brian
+> 
