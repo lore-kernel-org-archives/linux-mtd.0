@@ -1,24 +1,23 @@
-Received: from mail-pb0-x233.google.com ([2607:f8b0:400e:c01::233])
+Received: from mail-pb0-x22a.google.com ([2607:f8b0:400e:c01::22a])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WIut6-0002cM-OH
- for linux-mtd@lists.infradead.org; Thu, 27 Feb 2014 06:56:10 +0000
-Received: by mail-pb0-f51.google.com with SMTP id un15so2117107pbc.38
- for <linux-mtd@lists.infradead.org>; Wed, 26 Feb 2014 22:55:44 -0800 (PST)
-Date: Wed, 26 Feb 2014 22:55:40 -0800
+ id 1WIvTT-0003Tq-TW
+ for linux-mtd@lists.infradead.org; Thu, 27 Feb 2014 07:33:48 +0000
+Received: by mail-pb0-f42.google.com with SMTP id rr13so2155211pbb.15
+ for <linux-mtd@lists.infradead.org>; Wed, 26 Feb 2014 23:33:19 -0800 (PST)
+Date: Wed, 26 Feb 2014 23:33:14 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Wang Nan <wangnan0@huawei.com>
-Subject: Re: [patch 1/4] jffs2: unlock f->sem on error in jffs2_new_inode()
-Message-ID: <20140227065540.GC13420@norris-Latitude-E6410>
-References: <20140212204454.8FA415A40F6@corp2gmr1-2.hot.corp.google.com>
- <20140226020331.GB4194@ld-irv-0074> <530E8C91.4060703@huawei.com>
+To: Insop Song <Insop.Song@gainspeed.com>
+Subject: Re: [PATCH] Check flag status register for Micron n25q512a
+Message-ID: <20140227073314.GD13420@norris-Latitude-E6410>
+References: <6bf927e513554e628fe15d309aac698e@BLUPR07MB002.namprd07.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <530E8C91.4060703@huawei.com>
-Cc: artem.bityutskiy@linux.intel.com, stable@vger.kernel.org,
- linux-mtd@lists.infradead.org, andy.wangguoli@huawei.com,
- genghui 00204690 <hui.geng@huawei.com>, akpm@linux-foundation.org,
- dwmw2@infradead.org
+In-Reply-To: <6bf927e513554e628fe15d309aac698e@BLUPR07MB002.namprd07.prod.outlook.com>
+Cc: Marek Vasut <marex@denx.de>,
+ "Priyanka.Jain@freescale.com" <Priyanka.Jain@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,77 +27,221 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ linux-mtd
++ Marek
 
-Hi Wang,
+Hi Insop, 
 
-On Thu, Feb 27, 2014 at 08:53:37AM +0800, Wang Nan wrote:
-> On 2014/2/26 10:03, Brian Norris wrote:
-> > On Wed, Feb 12, 2014 at 12:44:54PM -0800, Andrew Morton wrote:
-> >> From: Wang Guoli <andy.wangguoli@huawei.com>
-> >> Subject: jffs2: unlock f->sem on error in jffs2_new_inode()
-> >>
-> >> If jffs2_new_inode() succeeds, it returns with f->sem held, and the caller
-> >> is responsible for releasing the lock.  If it fails, it still returns with
-> >> the lock held, but the caller won't release the lock, which will lead to
-> >> deadlock.
-> > 
-> > Have you actually seen a deadlock for this? AFAICT, the error cases for
-> > jffs2_new_inode() all occur before anyone else actually has a reference
-> > to the inode, so I don't expect that we should see the deadlock.
-> > 
+On Mon, Jan 06, 2014 at 05:21:17AM +0000, Insop Song wrote:
+> In order to use Micron n25q512a, MTD, two changes are required as follows:
+> - jedec code should be fixed
+
+I have a feeling there are more than one "n25q512a" device, with
+different IDs.
+
+> - flag status should be read for writing.
 > 
-> We found this bug by reading code. There's no deadlock have been actually seen.
+> Check flag status register for Micron n25q512a
+>     - Programing Micron n25q512a requires to check flag status register
+>     - According to datasheet
+>     	"
+>     	The flag status register must be read any time a PROGRAM, ERASE,
+>     	SUSPEND/RESUME command is issued, or after a RESET command while device
+>     	is busy. The cycle is not complete until bit 7 of the flag status
+>     	register output 1.
+>     	"
+>     - Ref: https://www.micron.com/~/media/Documents/Products/Data%20Sheet/NOR%20Flash/Serial%20NOR/N25Q/n25q_512mb_1ce_3v_65nm.pdf
 
-Hmm, then I think maybe we should drop the stable tag. I'm not sure it's
-a practical issue, and it also has unrelated indentation changes. That
-means it breaks two of the rules in
-Documentation/stable_kernel_rules.txt. I'm dropping the stable tag
-unless someone shouts.
+Hmm, are you sure that all Micron n25q512a need to check the flag status
+register? I'll check my datasheets when I'm back in the office, but this
+seems peculiar.
+ 
+> Signed-off-by: Insop Song <insop.song@gainspeed.com>
+> ---
+>  drivers/mtd/devices/m25p80.c |   91 +++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 90 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+> index 7eda71d..e53e522 100644
+> --- a/drivers/mtd/devices/m25p80.c
+> +++ b/drivers/mtd/devices/m25p80.c
+> @@ -38,6 +38,7 @@
+>  /* Flash opcodes. */
+>  #define	OPCODE_WREN		0x06	/* Write enable */
+>  #define	OPCODE_RDSR		0x05	/* Read status register */
+> +#define	OPCODE_RDFSR		0x70	/* Read flag status register */
+>  #define	OPCODE_WRSR		0x01	/* Write status register 1 byte */
+>  #define	OPCODE_NORM_READ	0x03	/* Read data bytes (low frequency) */
+>  #define	OPCODE_FAST_READ	0x0b	/* Read data bytes (high frequency) */
+> @@ -70,6 +71,8 @@
+>  /* Status Register bits. */
+>  #define	SR_WIP			1	/* Write in progress */
+>  #define	SR_WEL			2	/* Write enable latch */
+> +/* Flag Status Register bits. */
+> +#define	FSR_RDY			0x80	/* FSR ready */
+>  /* meaning of other SR_* bits may differ between vendors */
+>  #define	SR_BP0			4	/* Block protect 0 */
+>  #define	SR_BP1			8	/* Block protect 1 */
+> @@ -95,6 +98,7 @@ struct m25p {
+>  	u8			program_opcode;
+>  	u8			*command;
+>  	bool			fast_read;
+> +	bool			flag_status;
+>  };
+>  
+>  static inline struct m25p *mtd_to_m25p(struct mtd_info *mtd)
+> @@ -131,6 +135,28 @@ static int read_sr(struct m25p *flash)
+>  }
+>  
+>  /*
+> + * Read the flag status register, returning its value in the location
+> + * Return the status register value.
+> + * Returns negative if error occurred.
+> + */
+> +static int read_fsr(struct m25p *flash)
+> +{
+> +	ssize_t retval;
+> +	u8 code = OPCODE_RDFSR;
+> +	u8 val;
+> +
+> +	retval = spi_write_then_read(flash->spi, &code, 1, &val, 1);
+> +
+> +	if (retval < 0) {
+> +		printk(&flash->spi->dev, "error %d reading FSR\n",
+> +				(int) retval);
+> +		return retval;
+> +	}
+> +
+> +	return val;
+> +}
+> +
+> +/*
+>   * Write status register 1 byte
+>   * Returns negative if error occurred.
+>   */
+> @@ -220,6 +246,30 @@ static int wait_till_ready(struct m25p *flash)
+>  }
+>  
+>  /*
+> + * Service routine to read flag status register until ready, or timeout occurs.
+> + * Returns non-zero if error.
+> + */
+> +static int wait_till_fsr_ready(struct m25p *flash)
+> +{
+> +	unsigned long deadline;
+> +	int sr;
+> +
+> +	deadline = jiffies + MAX_READY_WAIT_JIFFIES;
+> +
+> +	do {
+> +		if ((sr = read_fsr(flash)) < 0)
+> +			break;
+> +		else if ((sr & FSR_RDY))
+> +			return 0;
+> +
+> +		cond_resched();
+> +
+> +	} while (!time_after_eq(jiffies, deadline));
+> +
+> +	return 1;
+> +}
+> +
+> +/*
+>   * Erase the whole flash memory
+>   *
+>   * Returns 0 if successful, non-zero otherwise.
+> @@ -273,6 +323,14 @@ static int erase_sector(struct m25p *flash, u32 offset)
+>  	if (wait_till_ready(flash))
+>  		return 1;
+>  
+> +	/* Flag status, Wait until finished previous write command. */
+> +	if (flash->flag_status == true) {
+> +		if (wait_till_fsr_ready(flash)) {
+> +			mutex_unlock(&flash->lock);
+> +			return 1;
+> +		}
+> +	}
+> +
+>  	/* Send write enable, then erase commands. */
+>  	write_enable(flash);
+>  
+> @@ -427,6 +485,14 @@ static int m25p80_write(struct mtd_info *mtd, loff_t to, size_t len,
+>  
+>  	mutex_lock(&flash->lock);
+>  
+> +	/* Flag status, Wait until finished previous write command. */
+> +	if (flash->flag_status == true) {
+> +		if (wait_till_fsr_ready(flash)) {
+> +			mutex_unlock(&flash->lock);
+> +			return 1;
+> +		}
+> +	}
+> +
+>  	/* Wait until finished previous write command. */
+>  	if (wait_till_ready(flash)) {
+>  		mutex_unlock(&flash->lock);
+> @@ -457,6 +523,14 @@ static int m25p80_write(struct mtd_info *mtd, loff_t to, size_t len,
+>  		t[1].len = page_size;
+>  		spi_sync(flash->spi, &m);
+>  
+> +		/* Flag status, Wait until finished previous write command. */
+> +		if (flash->flag_status == true) {
+> +			if (wait_till_fsr_ready(flash)) {
+> +				mutex_unlock(&flash->lock);
+> +				return 1;
+> +			}
+> +		}
+> +
+>  		*retlen = m.actual_length - m25p_cmdsz(flash);
+>  
+>  		/* write everything in flash->page_size chunks */
+> @@ -477,6 +551,14 @@ static int m25p80_write(struct mtd_info *mtd, loff_t to, size_t len,
+>  
+>  			spi_sync(flash->spi, &m);
+>  
+> +			/* Flag status, Wait until finished previous write command. */
+> +			if (flash->flag_status == true) {
+> +				if (wait_till_fsr_ready(flash)) {
+> +					mutex_unlock(&flash->lock);
+> +					return 1;
+> +				}
+> +			}
+> +
+>  			*retlen += m.actual_length - m25p_cmdsz(flash);
+>  		}
+>  	}
+> @@ -782,7 +864,7 @@ static const struct spi_device_id m25p_ids[] = {
+>  	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, 0) },
+>  	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, 0) },
+>  	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K) },
+> -	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K) },
+> +	{ "n25q512a",    INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K) },
 
-> >> Fix it by releasing the lock in jffs2_new_inode() on error.
-> >>
-> >> Signed-off-by: Wang Guoli <andy.wangguoli@huawei.com>
-> >> Signed-off-by: Wang Nan <wangnan0@huawei.com>
-> >> Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> >> Cc: David Woodhouse <dwmw2@infradead.org>
-> >> Cc: Wang Guoli <andy.wangguoli@huawei.com>
-> >> Cc: Brian Norris <computersforpeace@gmail.com>
-> >> Cc: <stable@vger.kernel.org> # 2.6.34+
-> >> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> >> ---
-> >>
-> >>  fs/jffs2/fs.c |    9 ++++++---
-> >>  1 file changed, 6 insertions(+), 3 deletions(-)
-> >>
-> >> diff -puN fs/jffs2/fs.c~jffs2-unlock-f-sem-on-error-in-jffs2_new_inode fs/jffs2/fs.c
-> >> --- a/fs/jffs2/fs.c~jffs2-unlock-f-sem-on-error-in-jffs2_new_inode
-> >> +++ a/fs/jffs2/fs.c
-> >> @@ -457,12 +457,14 @@ struct inode *jffs2_new_inode (struct in
-> >>  	   The umask is only applied if there's no default ACL */
-> >>  	ret = jffs2_init_acl_pre(dir_i, inode, &mode);
-> >>  	if (ret) {
-> >> -	    make_bad_inode(inode);
-> >> -	    iput(inode);
-> >> -	    return ERR_PTR(ret);
-> >> +		mutex_unlock(&f->sem);
-> >> +		make_bad_inode(inode);
-> >> +		iput(inode);
-> >> +		return ERR_PTR(ret);
-> >>  	}
-> >>  	ret = jffs2_do_new_inode (c, f, mode, ri);
-> >>  	if (ret) {
-> >> +		mutex_unlock(&f->sem);
-> >>  		make_bad_inode(inode);
-> >>  		iput(inode);
-> >>  		return ERR_PTR(ret);
-> >> @@ -479,6 +481,7 @@ struct inode *jffs2_new_inode (struct in
-> >>  	inode->i_size = 0;
-> >>  
-> >>  	if (insert_inode_locked(inode) < 0) {
-> >> +		mutex_unlock(&f->sem);
-> >>  		make_bad_inode(inode);
-> >>  		iput(inode);
-> >>  		return ERR_PTR(-EINVAL);
+You probably want to figure out the distinction between the old table
+entry and the new one, and assign your new entry a new string
+accordingly.
+
+>  
+>  	/* PMC */
+>  	{ "pm25lv512",   INFO(0,        0, 32 * 1024,    2, SECT_4K_PMC) },
+> @@ -996,6 +1078,13 @@ static int m25p_probe(struct spi_device *spi)
+>  	spi_set_drvdata(spi, flash);
+>  
+>  	/*
+> +	 * Micron n25q512a requires to check flag status register
+> +	 */
+> +	flash->flag_status = false;
+> +	if (strcmp(id->name, "n25q512a") == 0)
+> +		flash->flag_status = true;;
+
+This doesn't look good at all. If any other flash start to need this, we
+don't want to code each ID string here. That's fragile and
+non-scaleable. If we need this option, you need to add another flag to
+the m25p_ids[] table, I guess...
+
+> +
+> +	/*
+>  	 * Atmel, SST and Intel/Numonyx serial flash tend to power
+>  	 * up with the software protection bits set
+>  	 */
 
 Brian
