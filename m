@@ -1,30 +1,22 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WJOrz-0007if-5t
- for linux-mtd@lists.infradead.org; Fri, 28 Feb 2014 14:56:59 +0000
-Date: Fri, 28 Feb 2014 11:56:26 -0300
+ id 1WJOug-0007pl-4U
+ for linux-mtd@lists.infradead.org; Fri, 28 Feb 2014 14:59:46 +0000
+Date: Fri, 28 Feb 2014 11:59:24 -0300
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH v7 1/3] ubi: Introduce read-only block devices on top of
- UBI volumes
-Message-ID: <20140228145625.GA24805@localhost>
-References: <1393245564-23947-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1393245564-23947-2-git-send-email-ezequiel.garcia@free-electrons.com>
- <1393597747.3412.191.camel@sauron.fi.intel.com>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v3 0/2] Add NAND ECC devicetree binding
+Message-ID: <20140228145923.GB24805@localhost>
+References: <1393280689-24267-1-git-send-email-ezequiel.garcia@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1393597747.3412.191.camel@sauron.fi.intel.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Mike Frysinger <vapier@gentoo.org>,
- Richard Weinberger <richard.weinberger@gmail.com>,
- Michael Opdenacker <michael.opdenacker@free-electrons.com>,
- linux-mtd@lists.infradead.org,
- Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
+In-Reply-To: <1393280689-24267-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: Grant Likely <grant.likely@secretlab.ca>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>
+ Boris BREZILLON <b.brezillon.dev@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,22 +26,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Feb 28, 2014 at 04:29:07PM +0200, Artem Bityutskiy wrote:
-> On Mon, 2014-02-24 at 09:39 -0300, Ezequiel Garcia wrote:
-> > This commit introduces read-only block device emulation on top of UBI volumes.
-> > 
-> > Given UBI takes care of wear leveling and bad block management it's possible
-> > to add a thin layer to enable block device access to UBI volumes.
-> > This allows to use a block-oriented filesystem on a flash device.
-> > 
-> > The UBI block devices are meant to be used in conjunction with any
-> > regular, block-oriented file system (e.g. ext4), although it's primarily
-> > targeted at read-only file systems, such as squashfs.
+On Mon, Feb 24, 2014 at 07:24:47PM -0300, Ezequiel Garcia wrote:
+> Third round, fixing a stupid semi-colon miss.
 > 
-> Massaged a tiny bit and pushed to linux-ubifs.git, thanks!
+> NAND controllers have special ECC modes, raising per-driver ECC mode devicetree
+> binding. See for instance the binding for OMAP:
+> 
+>  - ti,nand-ecc-opt: A string setting the ECC layout to use. One of:
+> 	"sw"		<deprecated> use "ham1" instead
+> 	"hw"		<deprecated> use "ham1" instead
+> 	"hw-romcode"	<deprecated> use "ham1" instead
+> 	"ham1"		1-bit Hamming ecc code
+> 	"bch4"		4-bit BCH ecc code
+> 	"bch8"		8-bit BCH ecc code
+> 
+> Other drivers (such as pxa3xx-nand) have similar requirements, with special
+> (controller-specific) ECC modes. Instead of adding a possibly different
+> binding per compatible-string, let's add generic ECC strength and ECC step size.
+> 
+> This properties aim at providing a complete description of the required ECC
+> correction to let drivers choose the appropriate ECC mode.
+> 
+> Changes from v2:
+> 
+>   * Added a missing semi-colon.
+> 
+> Changes from v1:
+> 
+>   * Improve the binding documentation, as per Brian Norris' suggestions.
+> 
+>   * Added the helper functions.
+> 
+> Ezequiel Garcia (2):
+>   of_mtd: Add helpers to get ECC strength and ECC step size
+>   mtd: nand: Add a devicetree binding for ECC strength and ECC step size
+> 
+>  Documentation/devicetree/bindings/mtd/nand.txt | 14 +++++++++++
+>  drivers/of/of_mtd.c                            | 34 ++++++++++++++++++++++++++
+>  include/linux/of_mtd.h                         | 12 +++++++++
+>  3 files changed, 60 insertions(+)
 > 
 
-Thanks for the massage!
+Brian? Any chance this lands on v3.15?
+
 -- 
 Ezequiel García, Free Electrons
 Embedded Linux, Kernel and Android Engineering
