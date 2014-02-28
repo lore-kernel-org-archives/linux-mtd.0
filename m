@@ -1,21 +1,22 @@
-Message-ID: <5310B6C3.1020501@ti.com>
-Date: Fri, 28 Feb 2014 11:18:11 -0500
-From: Santosh Shilimkar <santosh.shilimkar@ti.com>
-MIME-Version: 1.0
-To: Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v6 0/2] Introduce AEMIF driver for Davinci/Keystone archs
-References: <1393262772-24442-1-git-send-email-ivan.khoronzhuk@ti.com>
- <5310AEA8.1070804@ti.com> <20140228160635.GA6144@kroah.com>
-In-Reply-To: <20140228160635.GA6144@kroah.com>
-Content-Type: text/plain; charset="ISO-8859-1"
+Received: from mail-bn1on0143.outbound.protection.outlook.com
+ ([157.56.110.143] helo=na01-bn1-obe.outbound.protection.outlook.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WJQDv-0002fB-Sx
+ for linux-mtd@lists.infradead.org; Fri, 28 Feb 2014 16:23:45 +0000
+Message-ID: <1393604458.26059.1.camel@linux-builds1>
+Subject: Re: [PATCH 1/2] mtd: denali_dt: Use devm_ioremap_resource()
+From: Dinh Nguyen <dinguyen@altera.com>
+To: Jingoo Han <jg1.han@samsung.com>
+Date: Fri, 28 Feb 2014 10:20:58 -0600
+In-Reply-To: <17863671.112301393204091097.JavaMail.weblogic@epml01>
+References: <17863671.112301393204091097.JavaMail.weblogic@epml01>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, grygorii.strashko@ti.com,
- linux@arm.linux.org.uk, pawel.moll@arm.com, swarren@wwwdotorg.org,
- ijc+devicetree@hellion.org.uk, nsekhar@ti.com, galak@kernel.crashing.org,
- rob.herring@calxeda.com, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, robherring2@gmail.com, rob@landley.net,
- Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
+MIME-Version: 1.0
+Cc: thierry.reding@gmail.com,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ 'David Woodhouse' <dwmw2@infradead.org>, lars@metafoo.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,37 +26,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday 28 February 2014 11:06 AM, Greg KH wrote:
-> On Fri, Feb 28, 2014 at 10:43:36AM -0500, Santosh Shilimkar wrote:
->> Greg,
->>
->> On Monday 24 February 2014 12:26 PM, Ivan Khoronzhuk wrote:
->>> These patches introduce Async External Memory Interface (EMIF16/AEMIF)
->>> controller driver for Davinci/Keystone archs.
->>>
->>> For more informations see documentation:
->>> Davinci DM646x - http://www.ti.com/lit/ug/sprueq7c/sprueq7c.pdf
->>> OMAP-L138 - http://www.ti.com/lit/ug/spruh77a/spruh77a.pdf
->>> Kestone - http://www.ti.com/lit/ug/sprugz3a/sprugz3a.pdf
->>>
->> [..]
->>
->>>
->>> v5..v6:
->>> - memory: ti-aemif: introduce AEMIF driver
->>> - memory: ti-aemif: add bindings for AEMIF driver
->>> 	changed opaque names for cs node properties
->>>
->> Can you please pick these two patches ? 
+On Mon, 2014-02-24 at 01:08 +0000, Jingoo Han wrote:
+> On Sunday, February 23, 2014 11:20 AM, Brian Norris wrote:
+> > On Wed, Feb 12, 2014 at 11:29:42AM +0900, Jingoo Han wrote:
+> > > Use devm_ioremap_resource() in order to make the code
+> > > simpler, and remove redundant return value check of
+> > > platform_get_resource_byname() because the value is
+> > > checked by devm_ioremap_resource().
+> > >
+> > > Signed-off-by: Jingoo Han <jg1.han@samsung.com>
+> > > ---
+> > >  drivers/mtd/nand/denali_dt.c |   39 ++++++++-------------------------------
+> > >  1 file changed, 8 insertions(+), 31 deletions(-)
+> > >
+> > > diff --git a/drivers/mtd/nand/denali_dt.c b/drivers/mtd/nand/denali_dt.c
+> > > index babb02c..35cb17f 100644
+> > > --- a/drivers/mtd/nand/denali_dt.c
+> > > +++ b/drivers/mtd/nand/denali_dt.c
+> > > @@ -30,24 +30,6 @@ struct denali_dt {
+> > >  	struct clk		*clk;
+> > >  };
+> > >
+> > > -static void __iomem *request_and_map(struct device *dev,
+> > > -				     const struct resource *res)
+> > > -{
+> > > -	void __iomem *ptr;
+> > > -
+> > > -	if (!devm_request_mem_region(dev, res->start, resource_size(res),
+> > > -				     "denali-dt")) {
+> > > -		dev_err(dev, "unable to request %s\n", res->name);
+> > > -		return NULL;
+> > > -	}
+> > > -
+> > > -	ptr = devm_ioremap_nocache(dev, res->start, resource_size(res));
+> > 
+> > Your code here is not a direct replacement; Dinh originally used the
+> > _nocache variant of ioremap, but you are replacing it with the standard
+> > one. There is no difference between the two on several ARCH's, but I
+> > can't guarantee that your patch is safe without confirmation/testing. So
+> > I will not take this without an Ack or Tested-by from someone
+> > knowledgeable about denali.
 > 
-> Asking for a response with less than a weeks time is really bold:
->   $ ~/bin/mdfrm -c ~/mail/todo/
->   521 messages in /home/gregkh/mail/todo/
-> 
-> Give me a chance to catch up please...
-> 
-Sorry for that. This version was just minor update from previous
-version and hence asked it. 
 
-Regards,
-Santosh
+Sorry that it took a while to get around to this. But I was able to test
+the patch and it looks fine.
+
+Tested-by: Dinh Nguyen <dinguyen@altera.com>
+
+Thanks,
+Dinh
+> (+cc Lars-Peter Clausen, Thierry Reding)
+> 
+> According to the comment of devm_ioremap_resource(), 
+> 'devm_ioremap_resource()' ioremaps it either as cacheable or
+> as non-cacheable memory depending on the resource's flags
+> Thus, devm_ioremap_nocache() will be called automatically.
+> 
+> ./lib/devres.c
+> void __iomem *devm_ioremap_resource(struct device *dev, struct resource *res)
+> {
+> 	....
+> 
+> 	if (res->flags & IORESOURCE_CACHEABLE)
+> 		dest_ptr = devm_ioremap(dev, res->start, size);
+> 	else
+> 		dest_ptr = devm_ioremap_nocache(dev, res->start, size);
+> 
+> Best regards,
+> Jingoo Han
