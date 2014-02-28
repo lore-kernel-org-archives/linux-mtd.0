@@ -1,22 +1,28 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WJJhY-0003tf-10
- for linux-mtd@lists.infradead.org; Fri, 28 Feb 2014 09:25:53 +0000
-Message-ID: <53105604.4050501@nod.at>
-Date: Fri, 28 Feb 2014 10:25:24 +0100
-From: Richard Weinberger <richard@nod.at>
-MIME-Version: 1.0
-To: Christoph Hellwig <hch@infradead.org>,
- Andrew Ruder <andrew.ruder@elecsyscorp.com>
-Subject: Re: [HACK] fs/super.c: sync ro remount after blocking writers
-References: <1391095614-21554-1-git-send-email-andrew.ruder@elecsyscorp.com>
- <20140203102303.GB11829@infradead.org>
-In-Reply-To: <20140203102303.GB11829@infradead.org>
-Content-Type: text/plain; charset=ISO-8859-1
+Received: from mga03.intel.com ([143.182.124.21])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WJORQ-0006ho-W1
+ for linux-mtd@lists.infradead.org; Fri, 28 Feb 2014 14:29:33 +0000
+Message-ID: <1393597747.3412.191.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v7 1/3] ubi: Introduce read-only block devices on top of
+ UBI volumes
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Date: Fri, 28 Feb 2014 16:29:07 +0200
+In-Reply-To: <1393245564-23947-2-git-send-email-ezequiel.garcia@free-electrons.com>
+References: <1393245564-23947-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1393245564-23947-2-git-send-email-ezequiel.garcia@free-electrons.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Mike Frysinger <vapier@gentoo.org>,
+ Richard Weinberger <richard.weinberger@gmail.com>,
+ Michael Opdenacker <michael.opdenacker@free-electrons.com>,
+ linux-mtd@lists.infradead.org,
+ Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,26 +32,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Andrew,
-
-Am 03.02.2014 11:23, schrieb Christoph Hellwig:
-> On Thu, Jan 30, 2014 at 09:26:54AM -0600, Andrew Ruder wrote:
->> Move sync_filesystem() after sb_prepare_remount_readonly().  If writers
->> sneak in anywhere from sync_filesystem() to sb_prepare_remount_readonly()
->> it can cause inodes to be dirtied and writeback to occur well after
->> sys_mount() has completely successfully.
->>
->> This was spotted by corrupted ubifs filesystems on reboot, but appears
->> that it can cause issues with any filesystem using writeback.
+On Mon, 2014-02-24 at 09:39 -0300, Ezequiel Garcia wrote:
+> This commit introduces read-only block device emulation on top of UBI volumes.
 > 
-> From the link that Richard posted it seems like you have a testcase.
-> Can you please integrate it into xfstests so that we can properly
-> regression test for this issue from now on?
+> Given UBI takes care of wear leveling and bad block management it's possible
+> to add a thin layer to enable block device access to UBI volumes.
+> This allows to use a block-oriented filesystem on a flash device.
+> 
+> The UBI block devices are meant to be used in conjunction with any
+> regular, block-oriented file system (e.g. ext4), although it's primarily
+> targeted at read-only file systems, such as squashfs.
 
-Is it possible to create such a test case?
-I don't know whether it is possible to trigger the issue on
-a regular filesystem.
-But as hch noted, it would be nice to have. :)
+Massaged a tiny bit and pushed to linux-ubifs.git, thanks!
 
-Thanks,
-//richard
+
+-- 
+Best Regards,
+Artem Bityutskiy
