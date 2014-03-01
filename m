@@ -1,24 +1,17 @@
-Received: from mail-bn1lp0144.outbound.protection.outlook.com
- ([207.46.163.144] helo=na01-bn1-obe.outbound.protection.outlook.com)
+Received: from mail-la0-x232.google.com ([2a00:1450:4010:c03::232])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WJZvM-0003rf-Bq
- for linux-mtd@lists.infradead.org; Sat, 01 Mar 2014 02:45:13 +0000
-From: Insop Song <Insop.Song@gainspeed.com>
-To: Marek Vasut <marex@denx.de>, Brian Norris <computersforpeace@gmail.com>
-Subject: RE: [PATCH] Check flag status register for Micron n25q512a
-Date: Sat, 1 Mar 2014 02:44:46 +0000
-Message-ID: <106fa8b5760a4a88be8cb469fab79186@BY2PR07MB011.namprd07.prod.outlook.com>
-References: <6bf927e513554e628fe15d309aac698e@BLUPR07MB002.namprd07.prod.outlook.com>
- <20140227073314.GD13420@norris-Latitude-E6410>
- <201402272101.59845.marex@denx.de>
-In-Reply-To: <201402272101.59845.marex@denx.de>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1WJab1-0004Pz-L9
+ for linux-mtd@lists.infradead.org; Sat, 01 Mar 2014 03:28:16 +0000
+Received: by mail-la0-f50.google.com with SMTP id y1so3242843lam.37
+ for <linux-mtd@lists.infradead.org>; Fri, 28 Feb 2014 19:27:50 -0800 (PST)
 MIME-Version: 1.0
-Cc: "Priyanka.Jain@freescale.com" <Priyanka.Jain@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
+Sender: pladow@gmail.com
+Date: Fri, 28 Feb 2014 19:27:50 -0800
+Message-ID: <CAN8Q1Ed_o3xFK_xag76CbiSWNuM-rnSbGSFc5uZ7KjcA5kOXqQ@mail.gmail.com>
+Subject: ECC Errors/Sub-page Read Failures
+From: Peter LaDow <petela@gocougs.wsu.edu>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,102 +21,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Marek,
+We have been using a Samsung NAND part for several years (Samsung
+K9WAG08U1D) without any problems.  We transitioned from 2.6 to the 3.0
+kernel with a few tweaks to our NAND driver without any hiccups.  (Or
+NAND controller is a custom part implemented in an FPGA with our own
+NAND driver in the kernel).
 
-> From: Marek Vasut [mailto:marex@denx.de]
-> Sent: Thursday, February 27, 2014 12:02 PM
->=20
-> On Thursday, February 27, 2014 at 08:33:14 AM, Brian Norris wrote:
-> > + Marek
->=20
-> Thanks, I really need to subscribe to this ML ;-/
->=20
-> > Hi Insop,
-> >
-> > On Mon, Jan 06, 2014 at 05:21:17AM +0000, Insop Song wrote:
-> > > In order to use Micron n25q512a, MTD, two changes are required as
-> > > follows: - jedec code should be fixed
-> >
-> > I have a feeling there are more than one "n25q512a" device, with
-> > different IDs.
->=20
-> ACK, I have similar feeling. Jain, can you tell us the precise marking on=
- your
-> N25Q512A chip (that is, every single letter on the top of the chip packag=
-e
-> exactly as it is engraved there ) please? Or make a photo ...
->=20
-> Insop, can you please do the same ?
->=20
-> [...]
+However, Samsung has announced the end of life for the part.  However,
+they have a revision (K9WAG08U1E) they claim is a drop-in replacement.
+ But so far we are having trouble qualifying the part because of ECC
+errors.  We made no changes to our kernel, driver, or NAND controller.
+ The only change is the physical part.
 
-25Q512A
-13640
+Review of the datasheet says the only change was the maximum busy
+pulse width (from 25us to 40us).  Our NAND controller already monitors
+busy, so we don't think this is the issue.  We've queried Samsung
+about any other changes, and they claim the parts are functionally
+identical.
 
->=20
-> > > @@ -782,7 +864,7 @@ static const struct spi_device_id m25p_ids[] =3D =
-{
-> > >
-> > >  	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, 0) },
-> > >  	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, 0) },
-> > >  	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K) },
-> > >
-> > > -	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K) },
-> > > +	{ "n25q512a",    INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K) },
-> >
-> > You probably want to figure out the distinction between the old table
-> > entry and the new one, and assign your new entry a new string
-> > accordingly.
->=20
-> ACK. The datasheet actually claims this change is correct, see [1] (page =
-40,
-> table 21), but as we know, Micron really does shitty job when it comes to
-> using the JEDEC IDs for it's chips.
->=20
+So, here's what we've done to try and figure things out.  I've
+searched the archives and found mention of the MTD_TESTS, and I
+recompiled the kernel with those modules and used them.  The notable
+module with an error is mtd_subpagetest.  In the archives, I see
+issues related to this failing (specifically the thread on 'Assistance
+with debugging ubi_io_read' on 2012-03-15).  From that thread there
+was mention of an issue with sub-page reads.
 
-"n25q512a1" okay?
-Or any other suggestion?
+I've tried this using 3.0 and 3.10, and I get the same behavior.  So I
+don't think Samsung added any functionality that isn't supported by
+3.0.
 
-> > >  	/* PMC */
-> > >  	{ "pm25lv512",   INFO(0,        0, 32 * 1024,    2, SECT_4K_PMC) },
-> > >
-> > > @@ -996,6 +1078,13 @@ static int m25p_probe(struct spi_device *spi)
-> > >
-> > >  	spi_set_drvdata(spi, flash);
-> > >
-> > >  	/*
-> > >
-> > > +	 * Micron n25q512a requires to check flag status register
-> > > +	 */
-> > > +	flash->flag_status =3D false;
-> > > +	if (strcmp(id->name, "n25q512a") =3D=3D 0)
-> > > +		flash->flag_status =3D true;;
-> >
-> > This doesn't look good at all. If any other flash start to need this,
-> > we don't want to code each ID string here. That's fragile and
-> > non-scaleable. If we need this option, you need to add another flag to
-> > the m25p_ids[] table, I guess...
->=20
-> This waiting for some bit in FSR looks like it can be wrapped into
-> wait_till_ready(), no ?
->=20
-> What I cannot find in the datasheet though is any evidence which would
-> clearly mandate the use of FSR bit 0x80 to test if the chip is ready for =
-next
-> operation instead of using the regular STATUS register bit . Insop, can y=
-ou
-> please elaborate on why using the FSR is needed ?
->=20
+So, first thing I so is format.
 
-If I don't check FSR(Flag Status Register), then I was not able to program =
-this flash.
-I've used C SDK from Aardvark I2C/SPI Host Adapter to program directly, and=
- we had to check FSR.
-Also in linux driver, I had to put the check otherwise, I am not able to wr=
-ite the flash.
-I think it is mandatory though datasheet is not so clear about it.
+# ubiformat /dev/mtd1
+uncorrectable error :
+uncorrectable error :
+....
+uncorrectable error :
+uncorrectable error :
+ubiformat: 8 bad eraseblocks found, numbers: 8188, 8189, 8190, 8191, 16380, 1633
+ubiformat: warning!: 16376 of 16376 eraseblocks contain non-ubifs data
+ubiformat: continue? (yes/no)  yes
+ubiformat: warning!: only 0 of 16376 eraseblocks have valid erase counter
+ubiformat: erase counter 0 will be used for all eraseblocks
+ubiformat: note, arbitrary erase counter value may be specified using -e option
+ubiformat: continue? (yes/no)  yes
+#
 
+Now things seem to be ok.  I can do the format again:
 
-> [1]
-> https://www.micron.com/~/media/Documents/Products/Data%20Sheet/N
-> OR%20Flash/Serial%20NOR/N25Q/n25q_512mb_1ce_3v_65nm.pdf
+# ubiformat /dev/mtd1
+ubiformat: mtd1 (nand), size 2147483648 bytes (2.0 GiB), 16384
+eraseblocks of 131072 bytes (128.0 KiB), min. I/O size 2048 bytes
+libscan: scanning eraseblock 16383 -- 100 % complete
+ubiformat: 16376 eraseblocks have valid erase counter, mean value is 0
+ubiformat: 8 bad eraseblocks found, numbers: 8188, 8189, 8190, 8191,
+16380, 16381, 16382, 16383
+ubiformat: formatting eraseblock 16383 -- 100 % complete
+
+Now I load the mtd_subpagetest module, and I get:
+
+# insmod mtd_subpagetest.ko dev=1
+=================================================
+mtd_subpagetest: MTD device: 1
+mtd_subpagetest: MTD device size 2147483648, eraseblock size 131072,
+page size 2048, subpage size 512, count of eraseblocks 16384, pages
+per eraseblock 64, OOB size 64
+mtd_subpagetest: scanning for bad eraseblocks
+mtd_subpagetest: block 8188 is bad
+mtd_subpagetest: block 8189 is bad
+mtd_subpagetest: block 8190 is bad
+mtd_subpagetest: block 8191 is bad
+mtd_subpagetest: block 16380 is bad
+mtd_subpagetest: block 16381 is bad
+mtd_subpagetest: block 16382 is bad
+mtd_subpagetest: block 16383 is bad
+mtd_subpagetest: scanned 16384 eraseblocks, 8 are bad
+mtd_subpagetest: erasing whole device
+mtd_subpagetest: written up to eraseblock 0
+mtd_subpagetest: written up to eraseblock 256
+mtd_subpagetest: written up to eraseblock 512
+mtd_subpagetest: written up to eraseblock 768
+mtd_subpagetest: written up to eraseblock 1024
+mtd_subpagetest: written up to eraseblock 1280
+mtd_subpagetest: written up to eraseblock 1536
+...
+mtd_subpagetest: written up to eraseblock 15872
+mtd_subpagetest: written up to eraseblock 16128
+mtd_subpagetest: written 16384 eraseblocks
+mtd_subpagetest: verifying all eraseblocks
+__nand_correct_data: uncorrectable ECC error
+__nand_correct_data: uncorrectable ECC errormtd_subpagetest: error:
+read failed at 0x0
+mtd_subpagetest: error -74 occurred
+=================================================
+insmod: can't insert 'mtd_subpagetest.ko': Bad message
+
+Now, things are back to the screwed up state.  If I re-run ubiformat,
+I get the same error as before.  So this flopping between ubiformat,
+mtd_subpagetest, ubiformat, etc causes these ECC errors to appear.
+
+What boggles me is that things work just fine with our NAND controller
+and driver with the earlier revision part, and suddenly fail with this
+new part.  Samsung claims the flash layout is identical (OOB space is
+the same), the level of ECC necessary is the same, etc.
+
+Thanks,
+Pete
