@@ -1,26 +1,25 @@
-Received: from mail-ie0-f169.google.com ([209.85.223.169])
+Received: from mail-ie0-f178.google.com ([209.85.223.178])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WKaBa-0005eK-8j
- for linux-mtd@lists.infradead.org; Mon, 03 Mar 2014 21:14:06 +0000
-Received: by mail-ie0-f169.google.com with SMTP id to1so503224ieb.14
- for <linux-mtd@lists.infradead.org>; Mon, 03 Mar 2014 13:13:39 -0800 (PST)
-Date: Mon, 3 Mar 2014 15:13:36 -0600
+ id 1WKaH0-0005o6-6k
+ for linux-mtd@lists.infradead.org; Mon, 03 Mar 2014 21:19:42 +0000
+Received: by mail-ie0-f178.google.com with SMTP id lx4so2191696iec.37
+ for <linux-mtd@lists.infradead.org>; Mon, 03 Mar 2014 13:19:20 -0800 (PST)
+Received: from gmail.com (64-198-156-98.ip.mcleodusa.net. [64.198.156.98])
+ by mx.google.com with ESMTPSA id ai4sm42826335igd.3.2014.03.03.13.12.07
+ for <linux-mtd@lists.infradead.org>
+ (version=TLSv1.2 cipher=RC4-SHA bits=128/128);
+ Mon, 03 Mar 2014 13:12:07 -0800 (PST)
+Date: Mon, 3 Mar 2014 15:12:05 -0600
 From: Andrew Ruder <andy@aeruder.net>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: What is wrong?
-Message-ID: <20140303211336.GA7369@gmail.com>
-References: <4315632.KkRm7kzq26@leonp.plris.com>
- <20140227011148.GI4194@ld-irv-0074>
- <1553411.O1igofskp7@leonp.plris.com>
- <20140227212208.GG13420@norris-Latitude-E6410>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [HACK] fs/super.c: sync ro remount after blocking writers
+Message-ID: <20140303211205.GA7311@gmail.com>
+References: <1391095614-21554-1-git-send-email-andrew.ruder@elecsyscorp.com>
+ <20140203102303.GB11829@infradead.org> <53105604.4050501@nod.at>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20140227212208.GG13420@norris-Latitude-E6410>
-Cc: Leon Pollak <leonp@plris.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- Richard Weinberger <richard@nod.at>,
- Linux Kernel <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
- Al Viro <viro@zeniv.linux.org.uk>
+In-Reply-To: <53105604.4050501@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,15 +29,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Feb 27, 2014 at 01:22:08PM -0800, Brian Norris wrote:
-> Perhaps Richard or Andrew can comment on whether this patch should help
-> you. But I think JFFS2 on NAND uses write-buffered support which can be
-> affected by this bug.
+On Fri, Feb 28, 2014 at 10:25:24AM +0100, Richard Weinberger wrote:
+> Is it possible to create such a test case?  I don't know whether it is
+> possible to trigger the issue on a regular filesystem.  But as hch
+> noted, it would be nice to have. :)
 
-Definitely sounds like the same issue and I'm kind of glad to see it
-crop up in another filesystem.  Also glad you Cc'd me with the URL
-because I had the painful task of recreating this issue on another
-filesystem on my TODO list as I didn't think it had ever been committed.
+I've given this some thought after initially receiving the email and it
+would not be easily recreated.  As best as I can tell, the test case
+would be something along the line of:
 
-Cheers,
-Andy
+1. # Start up a filesystem writer
+2. mount -o remount,ro /testfilesystem
+3. # Immediately mark block device as read only
+4. # Reboot, show that the filesystem is dirty next time around.
+
+Step 3 I'm not sure how to do, Step 4 makes for the world's most painful
+test case.  The thread from Leon Pollak is probably the easiest way to
+recreate these issues (remount,ro followed by a hardware-enabled
+read-only) and I'm just not sure it belongs in a test case.
+
+- Andy
