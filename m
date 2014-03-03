@@ -1,13 +1,13 @@
 Received: from devils.ext.ti.com ([198.47.26.153])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WKPoF-0001YD-Vm
- for linux-mtd@lists.infradead.org; Mon, 03 Mar 2014 10:09:21 +0000
+ id 1WKPoF-0001XM-Vn
+ for linux-mtd@lists.infradead.org; Mon, 03 Mar 2014 10:09:22 +0000
 From: Pekon Gupta <pekon@ti.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v5 3/4] mtd: nand: omap: ecc.hwctl: clean
- omap_enable_hwecc_bch for redundant ECC configs
-Date: Mon, 3 Mar 2014 15:38:32 +0530
-Message-ID: <1393841313-28214-4-git-send-email-pekon@ti.com>
+Subject: [PATCH v5 1/4] mtd: nand: omap: ecc.hwctl: rename
+ omap3_enable_hwecc_bch to omap_enable_hwecc_bch
+Date: Mon, 3 Mar 2014 15:38:30 +0530
+Message-ID: <1393841313-28214-2-git-send-email-pekon@ti.com>
 In-Reply-To: <1393841313-28214-1-git-send-email-pekon@ti.com>
 References: <1393841313-28214-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
@@ -26,86 +26,84 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 This patch
- - refactors GPMC configurations based on ecc-scheme
- - removed dependency on is_elm_present() flag, which is implicitely
-   taken care by selecting appropriate ecc-scheme
+ - renames omap3_enable_hwecc_bch -> omap_enable_hwecc_bch to keep
+   nomenclature independent of any device family.
+ - using '__maybe_unused' instead of `ifdef based conditional compilation
+   to suppress warning for un-used functions
 
 Signed-off-by: Pekon Gupta <pekon@ti.com>
 ---
- drivers/mtd/nand/omap2.c | 23 ++++++++++-------------
- 1 file changed, 10 insertions(+), 13 deletions(-)
+ drivers/mtd/nand/omap2.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 99f9223..c057a88 100644
+index 7428ed0..efc94f1 100644
 --- a/drivers/mtd/nand/omap2.c
 +++ b/drivers/mtd/nand/omap2.c
-@@ -1048,7 +1048,7 @@ static int omap_dev_ready(struct mtd_info *mtd)
+@@ -1034,9 +1034,8 @@ static int omap_dev_ready(struct mtd_info *mtd)
+ 	}
+ }
+ 
+-#if defined(CONFIG_MTD_NAND_ECC_BCH) || defined(CONFIG_MTD_NAND_OMAP_BCH)
+ /**
+- * omap3_enable_hwecc_bch - Program OMAP3 GPMC to perform BCH ECC correction
++ * omap_enable_hwecc_bch - Program GPMC to perform BCH ECC calculation
+  * @mtd: MTD device structure
+  * @mode: Read/Write mode
+  *
+@@ -1047,7 +1046,7 @@ static int omap_dev_ready(struct mtd_info *mtd)
+  * eccsize0 = 0  (no additional protected byte in spare area)
+  * eccsize1 = 32 (skip 32 nibbles = 16 bytes per sector in spare area)
   */
- static void __maybe_unused omap_enable_hwecc_bch(struct mtd_info *mtd, int mode)
+-static void omap3_enable_hwecc_bch(struct mtd_info *mtd, int mode)
++static void __maybe_unused omap_enable_hwecc_bch(struct mtd_info *mtd, int mode)
  {
--	int nerrors;
-+	unsigned int bch_type;
+ 	int nerrors;
  	unsigned int dev_width, nsectors;
- 	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
- 						   mtd);
-@@ -1057,20 +1057,11 @@ static void __maybe_unused omap_enable_hwecc_bch(struct mtd_info *mtd, int mode)
- 	u32 val, wr_mode;
- 	unsigned int ecc_size1, ecc_size0;
- 
--	/* Perform ecc calculation on 512-byte sector */
--	nsectors = 1;
--
--	/* Update number of error correction */
--	nerrors = info->nand.ecc.strength;
--
--	/* Multi sector reading/writing for NAND flash with page size < 4096 */
--	if (info->is_elm_used && (mtd->writesize <= 4096)) {
--		/* Perform ecc calculation for one page (< 4096) */
--		nsectors = info->nand.ecc.steps;
--	}
- 	/* GPMC configurations for calculating ECC */
- 	switch (ecc_opt) {
- 	case OMAP_ECC_BCH4_CODE_HW_DETECTION_SW:
-+		bch_type = 0;
-+		nsectors = 1;
- 		if (mode == NAND_ECC_READ) {
- 			wr_mode	  = BCH_WRAPMODE_6;
- 			ecc_size0 = BCH_ECC_SIZE0;
-@@ -1082,6 +1073,8 @@ static void __maybe_unused omap_enable_hwecc_bch(struct mtd_info *mtd, int mode)
- 		}
- 		break;
- 	case OMAP_ECC_BCH4_CODE_HW:
-+		bch_type = 0;
-+		nsectors = chip->ecc.steps;
- 		if (mode == NAND_ECC_READ) {
- 			wr_mode	  = BCH_WRAPMODE_1;
- 			ecc_size0 = BCH4R_ECC_SIZE0;
-@@ -1093,6 +1086,8 @@ static void __maybe_unused omap_enable_hwecc_bch(struct mtd_info *mtd, int mode)
- 		}
- 		break;
- 	case OMAP_ECC_BCH8_CODE_HW_DETECTION_SW:
-+		bch_type = 1;
-+		nsectors = 1;
- 		if (mode == NAND_ECC_READ) {
- 			wr_mode	  = BCH_WRAPMODE_6;
- 			ecc_size0 = BCH_ECC_SIZE0;
-@@ -1104,6 +1099,8 @@ static void __maybe_unused omap_enable_hwecc_bch(struct mtd_info *mtd, int mode)
- 		}
- 		break;
- 	case OMAP_ECC_BCH8_CODE_HW:
-+		bch_type = 1;
-+		nsectors = chip->ecc.steps;
- 		if (mode == NAND_ECC_READ) {
- 			wr_mode	  = BCH_WRAPMODE_1;
- 			ecc_size0 = BCH8R_ECC_SIZE0;
-@@ -1128,7 +1125,7 @@ static void __maybe_unused omap_enable_hwecc_bch(struct mtd_info *mtd, int mode)
- 
- 	/* BCH configuration */
- 	val = ((1                        << 16) | /* enable BCH */
--	       (((nerrors == 8) ? 1 : 0) << 12) | /* 8 or 4 bits */
-+	       (bch_type		 << 12) | /* BCH4/BCH8/BCH16 */
- 	       (wr_mode                  <<  8) | /* wrap mode */
- 	       (dev_width                <<  7) | /* bus width */
- 	       (((nsectors-1) & 0x7)     <<  4) | /* number of sectors */
+@@ -1115,7 +1114,7 @@ static void omap3_enable_hwecc_bch(struct mtd_info *mtd, int mode)
+ 	/* Clear ecc and enable bits */
+ 	writel(ECCCLEAR | ECC1, info->reg.gpmc_ecc_control);
+ }
+-#endif
++
+ static u8  bch4_polynomial[] = {0x28, 0x13, 0xcc, 0x39, 0x96, 0xac, 0x7f};
+ static u8  bch8_polynomial[] = {0xef, 0x51, 0x2e, 0x09, 0xed, 0x93, 0x9a, 0xc2,
+ 				0x97, 0x79, 0xe5, 0x24, 0xb5};
+@@ -1769,7 +1768,7 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 		nand_chip->ecc.size		= 512;
+ 		nand_chip->ecc.bytes		= 7;
+ 		nand_chip->ecc.strength		= 4;
+-		nand_chip->ecc.hwctl		= omap3_enable_hwecc_bch;
++		nand_chip->ecc.hwctl		= omap_enable_hwecc_bch;
+ 		nand_chip->ecc.correct		= nand_bch_correct_data;
+ 		nand_chip->ecc.calculate	= omap_calculate_ecc_bch;
+ 		/* define ECC layout */
+@@ -1809,7 +1808,7 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 		/* 14th bit is kept reserved for ROM-code compatibility */
+ 		nand_chip->ecc.bytes		= 7 + 1;
+ 		nand_chip->ecc.strength		= 4;
+-		nand_chip->ecc.hwctl		= omap3_enable_hwecc_bch;
++		nand_chip->ecc.hwctl		= omap_enable_hwecc_bch;
+ 		nand_chip->ecc.correct		= omap_elm_correct_data;
+ 		nand_chip->ecc.calculate	= omap_calculate_ecc_bch;
+ 		nand_chip->ecc.read_page	= omap_read_page_bch;
+@@ -1844,7 +1843,7 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 		nand_chip->ecc.size		= 512;
+ 		nand_chip->ecc.bytes		= 13;
+ 		nand_chip->ecc.strength		= 8;
+-		nand_chip->ecc.hwctl		= omap3_enable_hwecc_bch;
++		nand_chip->ecc.hwctl		= omap_enable_hwecc_bch;
+ 		nand_chip->ecc.correct		= nand_bch_correct_data;
+ 		nand_chip->ecc.calculate	= omap_calculate_ecc_bch;
+ 		/* define ECC layout */
+@@ -1885,7 +1884,7 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 		/* 14th bit is kept reserved for ROM-code compatibility */
+ 		nand_chip->ecc.bytes		= 13 + 1;
+ 		nand_chip->ecc.strength		= 8;
+-		nand_chip->ecc.hwctl		= omap3_enable_hwecc_bch;
++		nand_chip->ecc.hwctl		= omap_enable_hwecc_bch;
+ 		nand_chip->ecc.correct		= omap_elm_correct_data;
+ 		nand_chip->ecc.calculate	= omap_calculate_ecc_bch;
+ 		nand_chip->ecc.read_page	= omap_read_page_bch;
 -- 
 1.8.5.1.163.gd7aced9
