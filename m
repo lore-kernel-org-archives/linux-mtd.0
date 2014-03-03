@@ -1,22 +1,19 @@
-Received: from mail-ig0-f176.google.com ([209.85.213.176])
+Received: from mail-la0-x22e.google.com ([2a00:1450:4010:c03::22e])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WKW6O-0005kp-4B
- for linux-mtd@lists.infradead.org; Mon, 03 Mar 2014 16:52:28 +0000
-Received: by mail-ig0-f176.google.com with SMTP id uy17so8111706igb.3
- for <linux-mtd@lists.infradead.org>; Mon, 03 Mar 2014 08:52:06 -0800 (PST)
-Message-ID: <5314B336.7090306@mds.com>
-Date: Mon, 03 Mar 2014 10:52:06 -0600
-From: Chuck Peplinski <chuck@mds.com>
+ id 1WKYSQ-0002e4-Oq
+ for linux-mtd@lists.infradead.org; Mon, 03 Mar 2014 19:23:23 +0000
+Received: by mail-la0-f46.google.com with SMTP id hr17so4958886lab.33
+ for <linux-mtd@lists.infradead.org>; Mon, 03 Mar 2014 11:22:59 -0800 (PST)
 MIME-Version: 1.0
-To: Marek Vasut <marex@denx.de>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] Check flag status register for Micron n25q512a
-References: <6bf927e513554e628fe15d309aac698e@BLUPR07MB002.namprd07.prod.outlook.com>
- <201403012022.10111.marex@denx.de> <5312C17A.6010600@mds.com>
- <201403021542.09196.marex@denx.de>
-In-Reply-To: <201403021542.09196.marex@denx.de>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Reply-To: chuck@mds.com
+Sender: pladow@gmail.com
+In-Reply-To: <CAN8Q1Ed_o3xFK_xag76CbiSWNuM-rnSbGSFc5uZ7KjcA5kOXqQ@mail.gmail.com>
+References: <CAN8Q1Ed_o3xFK_xag76CbiSWNuM-rnSbGSFc5uZ7KjcA5kOXqQ@mail.gmail.com>
+Date: Mon, 3 Mar 2014 11:22:59 -0800
+Message-ID: <CAN8Q1Ee+5=Gp=ur_+i_Vw0W6MTQGkCRHy_HvwS1sTCa1GRsgJw@mail.gmail.com>
+Subject: Re: ECC Errors/Sub-page Read Failures
+From: Peter LaDow <petela@gocougs.wsu.edu>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,71 +23,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 3/2/2014 8:42 AM, Marek Vasut wrote:
-> On Sunday, March 02, 2014 at 06:28:26 AM, Chuck Peplinski wrote:
->> Sorry about top posting.
-> You are sorry, yet you did it again :-(
->
->> I am also using this n25q512.  My working code includes a fix similar to
->> what Song posted.  I don't consider it elegant.  The problem is that
->> this 25q512 apparently behaves in a unique fashion.  If you read the
->> status register instead of the flag status register, reads work but
->> erases and writes fail.  I know this from a couple of days of
->> debugging.
-> So does the SR and FSR not toggle the bit 7 at the same time or what ?
->
->> You must respond to the flag status register.
-> What do you mean by "respond" ?
->
->> Yes, this is
->> different from every other part.
->>
->> Some possible solutions are:
->> - hard code support for this device, as Song did.
->> - add some other abstraction that affects support for every other part.
->> I leave the decision to you, but neither sounds very pretty.
->>
->>       Chuck
->>
->> On 3/1/2014 1:22 PM, Marek Vasut wrote:
->>> To me, it looks like FSR bit 7 and SR bit 7 should toggle exactly at the
->>> same time and exactly for the same events. Can you try for example
->>> reading them both and checking that the bit 7 really toggles at
->>> different times please?
->> ______________________________________________________
->> Linux MTD discussion mailing list
->> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> Best regards,
-> Marek Vasut
->
+On Fri, Feb 28, 2014 at 7:27 PM, Peter LaDow <petela@gocougs.wsu.edu> wrote:
+> What boggles me is that things work just fine with our NAND controller
+> and driver with the earlier revision part, and suddenly fail with this
+> new part.  Samsung claims the flash layout is identical (OOB space is
+> the same), the level of ECC necessary is the same, etc.
 
-I'm learning about top posting.  How about this?
+After more digging through the mailing list and the MTD web page, I've
+tried some things.  I disabled the sub-pages:
 
-FSR can apparently toggle without SR.  For the device to work, I must 
-read and then clear the flag status register.
+u-boot> set bootargs 'ubi.mtd=1,2048 ...'
 
-My "wait_till_done()" (below) is called at the end of m25p80_erase() and 
-m25p80_write().
-If you would like, I could submit a patch, or just a copy of m25p80.c.
+Then a ubiformat followed by a ubimkvol/ubiupdatevol work fine.  And
+after rebooting, things look good.  In fact, this disabling of
+sub-pages makes the NAND perfectly functional (though the number of
+LEB was reduced from 16384 to 16376--ignoring bad blocks).
 
-// used with N25Q512A
-static int wait_till_done(struct m25p *flash) {
-     unsigned long deadline;
-     u8 code, fsreg;
+This is confusing that our controller/driver works fine with the
+previous part.  In fact, the mtd_subpagetest works fine with the exact
+same controller/driver/kernel version with the older revision part,
+but fails with the same controller/driver/kernel on the newer part.
+So clearly our driver handles sub-page reads fine.
 
-     code = OPCODE_RD_FLAG_SR;    // read flag status register
-     deadline = jiffies + (1* HZ);  // one second
+So, this leads me to the conclusion that the newer part does not
+support sub-page reads OR the part has changed the sub-page read
+mechanism.  Yet reviewing the datasheets there is nothing to indicate
+that this is the case.  In fact, the datasheets look identical (except
+for the maximum busy pulse time).  And the datasheets suggest sub-page
+reads are possible via random data out accesses.
 
-     do {
-         spi_write_then_read(flash->spi, &code, 1, &fsreg, 1);
-         if (fsreg & BIT_FLAG_STATUS_READY) {   // not busy.
-             code = OPCODE_CLEAR_FLAG_SR;    // clear flag status register
-             spi_write_then_read(flash->spi, &code, 1, NULL, 0);
-             return 0;
-         }
-         cond_resched();  // a form of kernel sleep
-     } while (!time_after_eq(jiffies, deadline));
-     return 1;
-}
+Now, we can of course get around this by disabling sub-page reads.
+But of course this isn't ideal, and isn't consistent with our previous
+use of the NAND.  In fact, it breaks compatibility with our older
+firmware and newer hardware.
 
-Chuck
+Any suggestions on how to debug this would be very helpful.
+
+Thanks,
+Pete
