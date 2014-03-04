@@ -1,22 +1,13 @@
-Received: from extern.plris.com ([212.199.10.23] helo=plris.com)
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WKl7Q-0003CE-4S
- for linux-mtd@lists.infradead.org; Tue, 04 Mar 2014 08:54:33 +0000
-From: Leon Pollak <leonp@plris.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: What is wrong?
-Date: Tue, 04 Mar 2014 10:54:04 +0200
-Message-ID: <20500571.Fgyz0I6ATm@leonp.plris.com>
-In-Reply-To: <20140304083325.GJ13420@norris-Latitude-E6410>
-References: <4315632.KkRm7kzq26@leonp.plris.com>
- <20140303211336.GA7369@gmail.com>
- <20140304083325.GJ13420@norris-Latitude-E6410>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
-Cc: Richard Weinberger <richard@nod.at>, Artem Bityutskiy <dedekind1@gmail.com>,
- linux-mtd@lists.infradead.org, Linux Kernel <linux-kernel@vger.kernel.org>,
- Al Viro <viro@zeniv.linux.org.uk>
+ id 1WKmBz-00062I-Ua
+ for linux-mtd@lists.infradead.org; Tue, 04 Mar 2014 10:03:24 +0000
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: [PATCH] UBI: block: do not use term "attach"
+Date: Tue,  4 Mar 2014 12:02:53 +0200
+Message-Id: <1393927373-1472-1-git-send-email-dedekind1@gmail.com>
+Cc: MTD Maling List <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,39 +17,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello, all.
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-I am really sorry for the silence - I was on the business trip and 
-returned today.
+We already use term attach/detach for UBI->MTD relations, let's not use this
+for UBI->ubiblock relations to avoid confusion. Just use 'create' and 'delete'
+instead. E.g., "create a R/O block device on top of a UBI volume".
 
-I will recheck everything and try. Meanwhile, the news are not good: our 
-guys say that it appears that the additional sync DOES NOT SOLVE the 
-issue.
-I ask for excuse, but as I did not know the exact processing, I was 
-mistaken and, probably, used already gc-ted unit for tests.
+Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+---
+ drivers/mtd/ubi/block.c | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
-Sorry, again.
-
-BR
-
-On Tuesday 04 March 2014 00:33:25 Brian Norris wrote:
-> On Mon, Mar 03, 2014 at 03:13:36PM -0600, Andrew Ruder wrote:
-> > On Thu, Feb 27, 2014 at 01:22:08PM -0800, Brian Norris wrote:
-> > > Perhaps Richard or Andrew can comment on whether this patch should
-> > > help you. But I think JFFS2 on NAND uses write-buffered support
-> > > which can be affected by this bug.
-> > 
-> > Definitely sounds like the same issue and I'm kind of glad to see it
-> > crop up in another filesystem.
-> 
-> We haven't confirmed that the *patch* actually affects Leon's problem;
-> just that if he runs an additional 'sync' it solves his problem.
-> Leon, did you get to try the patch?
-> 
-> Anyway, should commit 807612db2f9940b9fa6deaef054eb16d51bd3e00 be
-> marked for -stable?
-> 
-> Brian
-
+diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
+index cea7d1c..69955ce 100644
+--- a/drivers/mtd/ubi/block.c
++++ b/drivers/mtd/ubi/block.c
+@@ -29,10 +29,10 @@
+  *
+  *   LEB number = addressed byte / LEB size
+  *
+- * This feature is compiled in the UBI core, and adds a new 'block' parameter
+- * to allow early block device attaching. Runtime  block attach/detach for UBI
+- * volumes is provided through two new UBI ioctls: UBI_IOCVOLATTBLK and
+- * UBI_IOCVOLDETBLK.
++ * This feature is compiled in the UBI core, and adds a 'block' parameter
++ * to allow early creation of block devices on top of UBI volumes. Runtime
++ * block creation/removal for UBI volumes is provided through two UBI ioctls:
++ * UBI_IOCVOLATTBLK and UBI_IOCVOLDETBLK.
+  */
+ 
+ #include <linux/module.h>
+@@ -528,7 +528,7 @@ static int ubiblock_notify(struct notifier_block *nb,
+ 	switch (notification_type) {
+ 	case UBI_VOLUME_ADDED:
+ 		/*
+-		 * We want to enforce explicit block device attaching for
++		 * We want to enforce explicit block device creation for
+ 		 * volumes, so when a volume is added we do nothing.
+ 		 */
+ 		break;
+@@ -561,7 +561,7 @@ open_volume_desc(const char *name, int ubi_num, int vol_id)
+ 		return ubi_open_volume(ubi_num, vol_id, UBI_READONLY);
+ }
+ 
+-static int __init ubiblock_attach_from_param(void)
++static int __init ubiblock_create_from_param(void)
+ {
+ 	int i, ret;
+ 	struct ubiblock_param *p;
+@@ -592,7 +592,7 @@ static int __init ubiblock_attach_from_param(void)
+ 	return ret;
+ }
+ 
+-static void ubiblock_detach_all(void)
++static void ubiblock_remove_all(void)
+ {
+ 	struct ubiblock *next;
+ 	struct ubiblock *dev;
+@@ -618,13 +618,13 @@ int __init ubiblock_init(void)
+ 		return ubiblock_major;
+ 
+ 	/* Attach block devices from 'block=' module param */
+-	ret = ubiblock_attach_from_param();
++	ret = ubiblock_create_from_param();
+ 	if (ret)
+-		goto err_detach;
++		goto err_remove;
+ 
+ 	/*
+-	 * Block devices needs to be attached to volumes explicitly
+-	 * upon user request. So we ignore existing volumes.
++	 * Block devices are only created upon user requests, so we ignore
++	 * existing volumes.
+ 	 */
+ 	ret = ubi_register_volume_notifier(&ubiblock_notifier, 1);
+ 	if (ret)
+@@ -633,14 +633,14 @@ int __init ubiblock_init(void)
+ 
+ err_unreg:
+ 	unregister_blkdev(ubiblock_major, "ubiblock");
+-err_detach:
+-	ubiblock_detach_all();
++err_remove:
++	ubiblock_remove_all();
+ 	return ret;
+ }
+ 
+ void __exit ubiblock_exit(void)
+ {
+ 	ubi_unregister_volume_notifier(&ubiblock_notifier);
+-	ubiblock_detach_all();
++	ubiblock_remove_all();
+ 	unregister_blkdev(ubiblock_major, "ubiblock");
+ }
 -- 
-Leon
+1.8.5.3
