@@ -1,15 +1,20 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WKn35-0007tc-B1
- for linux-mtd@lists.infradead.org; Tue, 04 Mar 2014 10:58:11 +0000
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>,
-	<linux-mtd@lists.infradead.org>
-Subject: [PATCH] UBI: block: Use ENOSYS as return value when CONFIG_UBIBLOCK=n
-Date: Tue,  4 Mar 2014 07:57:43 -0300
-Message-Id: <1393930663-8737-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+ id 1WKnrT-0001As-ED
+ for linux-mtd@lists.infradead.org; Tue, 04 Mar 2014 11:50:16 +0000
+Message-ID: <1393933791.3412.208.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] UBI: block: Use ENOSYS as return value when
+ CONFIG_UBIBLOCK=n
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Date: Tue, 04 Mar 2014 13:49:51 +0200
+In-Reply-To: <1393930663-8737-1-git-send-email-ezequiel.garcia@free-electrons.com>
+References: <1393930663-8737-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,32 +24,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In order to have a way of distinguishing an invalid ioctl from a
-not supported (but otherwise valid) ioctl, this commit changes the
-return value of the ioctl stubs from ENOTTY to ENOSYS.
+On Tue, 2014-03-04 at 07:57 -0300, Ezequiel Garcia wrote:
+> In order to have a way of distinguishing an invalid ioctl from a
+> not supported (but otherwise valid) ioctl, this commit changes the
+> return value of the ioctl stubs from ENOTTY to ENOSYS.
 
-This will be useful to report more accurate error messages from
-userspace tools.
+Sounds logical, no objections, except it is curious if this is something
+you invented or this is a general rule in the Linux kernel? If it is,
+may be you can point to some discussions, or give some example or other
+source of this knowledge? I just want to be educated a bit. Thanks!
 
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
----
- drivers/mtd/ubi/ubi.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index e76ff98..a8118f2 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -873,8 +873,8 @@ int ubiblock_del(struct ubi_volume_info *vi);
- #else
- static inline int ubiblock_init(void) { return 0; }
- static inline void ubiblock_exit(void) {}
--static inline int ubiblock_add(struct ubi_volume_info *vi) { return -ENOTTY; }
--static inline int ubiblock_del(struct ubi_volume_info *vi) { return -ENOTTY; }
-+static inline int ubiblock_add(struct ubi_volume_info *vi) { return -ENOSYS; }
-+static inline int ubiblock_del(struct ubi_volume_info *vi) { return -ENOSYS; }
- #endif
- 
- 
 -- 
-1.8.1.5
+Best Regards,
+Artem Bityutskiy
