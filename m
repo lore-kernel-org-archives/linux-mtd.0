@@ -1,15 +1,15 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WKmEa-00068L-ES
- for linux-mtd@lists.infradead.org; Tue, 04 Mar 2014 10:06:01 +0000
-Message-ID: <1393927525.3412.200.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v7 3/3] Add UBI block interface documentation
+ id 1WKmIF-0006FK-54
+ for linux-mtd@lists.infradead.org; Tue, 04 Mar 2014 10:09:47 +0000
+Message-ID: <1393927755.3412.202.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v7 2/3] ubi-utils: Add ubiblock tool
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Date: Tue, 04 Mar 2014 12:05:25 +0200
-In-Reply-To: <1393245564-23947-4-git-send-email-ezequiel.garcia@free-electrons.com>
+Date: Tue, 04 Mar 2014 12:09:15 +0200
+In-Reply-To: <1393245564-23947-3-git-send-email-ezequiel.garcia@free-electrons.com>
 References: <1393245564-23947-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1393245564-23947-4-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1393245564-23947-3-git-send-email-ezequiel.garcia@free-electrons.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -24,18 +24,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2014-02-24 at 09:39 -0300, Ezequiel Garcia wrote:
-> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> ---
->  doc/general.xml |  4 ++++
->  doc/ubi.xml     | 61 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
->  faq/ubi.xml     | 16 +++++++--------
->  3 files changed, 73 insertions(+), 8 deletions(-)
+Would it please be possible to use 'create' and 'remove' instead of
+'attach' and 'detach'. I believe the whole thing will be less confusing
+then, because these terms are already used for UBI<->MTD relations.
 
-Pushed to mtd-www and then massaged a bit. I changed it so that it stops
-using "attach" and "detach", but instead, uses "create" and "remove".
-
-Thanks!
+Also, would you please contribute this tool under GPLv2 license, rather
+than GPL 2 or any later version. Because all the other UBI tools are
+like this, it will make things simpler.
 
 -- 
 Best Regards,
