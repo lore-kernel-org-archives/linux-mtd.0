@@ -1,20 +1,15 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WKmsC-0007Z0-Go
- for linux-mtd@lists.infradead.org; Tue, 04 Mar 2014 10:46:57 +0000
-Date: Tue, 4 Mar 2014 07:46:25 -0300
+ id 1WKn35-0007tc-B1
+ for linux-mtd@lists.infradead.org; Tue, 04 Mar 2014 10:58:11 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH] UBI: block: do not use term "attach"
-Message-ID: <20140304104624.GD28411@localhost>
-References: <1393927373-1472-1-git-send-email-dedekind1@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1393927373-1472-1-git-send-email-dedekind1@gmail.com>
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>
+To: Artem Bityutskiy <dedekind1@gmail.com>,
+	<linux-mtd@lists.infradead.org>
+Subject: [PATCH] UBI: block: Use ENOSYS as return value when CONFIG_UBIBLOCK=n
+Date: Tue,  4 Mar 2014 07:57:43 -0300
+Message-Id: <1393930663-8737-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,30 +19,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Mar 04, 2014 at 12:02:53PM +0200, Artem Bityutskiy wrote:
-> From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> 
-> We already use term attach/detach for UBI->MTD relations, let's not use this
-> for UBI->ubiblock relations to avoid confusion. Just use 'create' and 'delete'
+In order to have a way of distinguishing an invalid ioctl from a
+not supported (but otherwise valid) ioctl, this commit changes the
+return value of the ioctl stubs from ENOTTY to ENOSYS.
 
-s/delete/remove
+This will be useful to report more accurate error messages from
+userspace tools.
 
-> instead. E.g., "create a R/O block device on top of a UBI volume".
-> 
-> Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> ---
->  drivers/mtd/ubi/block.c | 28 ++++++++++++++--------------
->  1 file changed, 14 insertions(+), 14 deletions(-)
-> 
+Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+---
+ drivers/mtd/ubi/ubi.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Change looks good, except I'd like to change ubiblock_add/ubiblock_del
-with ubiblock_create/ubiblock_remove for consistency.
-
-I haven't been too consistent with this terms and it's a good time to
-fix it.
-
-Want me to prepare a patch?
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index e76ff98..a8118f2 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -873,8 +873,8 @@ int ubiblock_del(struct ubi_volume_info *vi);
+ #else
+ static inline int ubiblock_init(void) { return 0; }
+ static inline void ubiblock_exit(void) {}
+-static inline int ubiblock_add(struct ubi_volume_info *vi) { return -ENOTTY; }
+-static inline int ubiblock_del(struct ubi_volume_info *vi) { return -ENOTTY; }
++static inline int ubiblock_add(struct ubi_volume_info *vi) { return -ENOSYS; }
++static inline int ubiblock_del(struct ubi_volume_info *vi) { return -ENOSYS; }
+ #endif
+ 
+ 
 -- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+1.8.1.5
