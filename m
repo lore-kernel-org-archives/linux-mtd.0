@@ -1,20 +1,25 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
+Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WKdEs-0001ap-1e
- for linux-mtd@lists.infradead.org; Tue, 04 Mar 2014 00:29:44 +0000
-From: Marek Vasut <marex@denx.de>
-To: chuck@mds.com
-Subject: Re: [PATCH] Check flag status register for Micron n25q512a
-Date: Tue, 4 Mar 2014 01:29:12 +0100
-References: <6bf927e513554e628fe15d309aac698e@BLUPR07MB002.namprd07.prod.outlook.com>
- <201403021542.09196.marex@denx.de> <5314B336.7090306@mds.com>
-In-Reply-To: <5314B336.7090306@mds.com>
+ id 1WKknW-0002mg-54
+ for linux-mtd@lists.infradead.org; Tue, 04 Mar 2014 08:33:59 +0000
+Received: by mail-pa0-f42.google.com with SMTP id fb1so3444618pad.1
+ for <linux-mtd@lists.infradead.org>; Tue, 04 Mar 2014 00:33:30 -0800 (PST)
+Date: Tue, 4 Mar 2014 00:33:25 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Leon Pollak <leonp@plris.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org, Linux Kernel <linux-kernel@vger.kernel.org>,
+ Al Viro <viro@zeniv.linux.org.uk>, Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: What is wrong?
+Message-ID: <20140304083325.GJ13420@norris-Latitude-E6410>
+References: <4315632.KkRm7kzq26@leonp.plris.com>
+ <20140227011148.GI4194@ld-irv-0074>
+ <1553411.O1igofskp7@leonp.plris.com>
+ <20140227212208.GG13420@norris-Latitude-E6410>
+ <20140303211336.GA7369@gmail.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201403040129.12504.marex@denx.de>
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20140303211336.GA7369@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,91 +29,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday, March 03, 2014 at 05:52:06 PM, Chuck Peplinski wrote:
-> On 3/2/2014 8:42 AM, Marek Vasut wrote:
-> > On Sunday, March 02, 2014 at 06:28:26 AM, Chuck Peplinski wrote:
-> >> Sorry about top posting.
-> > 
-> > You are sorry, yet you did it again :-(
-> > 
-> >> I am also using this n25q512.  My working code includes a fix similar to
-> >> what Song posted.  I don't consider it elegant.  The problem is that
-> >> this 25q512 apparently behaves in a unique fashion.  If you read the
-> >> status register instead of the flag status register, reads work but
-> >> erases and writes fail.  I know this from a couple of days of
-> >> debugging.
-> > 
-> > So does the SR and FSR not toggle the bit 7 at the same time or what ?
-> > 
-> >> You must respond to the flag status register.
-> > 
-> > What do you mean by "respond" ?
-> > 
-> >> Yes, this is
-> >> different from every other part.
-> >> 
-> >> Some possible solutions are:
-> >> - hard code support for this device, as Song did.
-> >> - add some other abstraction that affects support for every other part.
-> >> I leave the decision to you, but neither sounds very pretty.
-> >> 
-> >>       Chuck
-> >> 
-> >> On 3/1/2014 1:22 PM, Marek Vasut wrote:
-> >>> To me, it looks like FSR bit 7 and SR bit 7 should toggle exactly at
-> >>> the same time and exactly for the same events. Can you try for example
-> >>> reading them both and checking that the bit 7 really toggles at
-> >>> different times please?
-> >> 
-> >> ______________________________________________________
-> >> Linux MTD discussion mailing list
-> >> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> > 
-> > Best regards,
-> > Marek Vasut
+On Mon, Mar 03, 2014 at 03:13:36PM -0600, Andrew Ruder wrote:
+> On Thu, Feb 27, 2014 at 01:22:08PM -0800, Brian Norris wrote:
+> > Perhaps Richard or Andrew can comment on whether this patch should help
+> > you. But I think JFFS2 on NAND uses write-buffered support which can be
+> > affected by this bug.
 > 
-> I'm learning about top posting.  How about this?
+> Definitely sounds like the same issue and I'm kind of glad to see it
+> crop up in another filesystem.
 
-Better, good job ;-)
+We haven't confirmed that the *patch* actually affects Leon's problem;
+just that if he runs an additional 'sync' it solves his problem. Leon,
+did you get to try the patch?
 
-Now , how come the CC list was dropped ?
+Anyway, should commit 807612db2f9940b9fa6deaef054eb16d51bd3e00 be marked
+for -stable? 
 
-> FSR can apparently toggle without SR.
-
-Is that documented anywhere ? How can that be ?
-
-> For the device to work, I must
-> read and then clear the flag status register.
-> 
-> My "wait_till_done()" (below) is called at the end of m25p80_erase() and
-> m25p80_write().
-
-Hmmmm , I have a feeling that if you actually added wait_till_ready() call at 
-the end of _erase() and _write(), you would get the same effect. This would in 
-turn mean you are instead missing wait_till_ready() somewhere else.
-
-Can you try using wait_till_ready() at the end of _erase() and _write() please ?
-
-> If you would like, I could submit a patch, or just a copy of m25p80.c.
-> 
-> // used with N25Q512A
-> static int wait_till_done(struct m25p *flash) {
->      unsigned long deadline;
->      u8 code, fsreg;
-> 
->      code = OPCODE_RD_FLAG_SR;    // read flag status register
->      deadline = jiffies + (1* HZ);  // one second
-> 
->      do {
->          spi_write_then_read(flash->spi, &code, 1, &fsreg, 1);
->          if (fsreg & BIT_FLAG_STATUS_READY) {   // not busy.
->              code = OPCODE_CLEAR_FLAG_SR;    // clear flag status register
->              spi_write_then_read(flash->spi, &code, 1, NULL, 0);
->              return 0;
->          }
->          cond_resched();  // a form of kernel sleep
->      } while (!time_after_eq(jiffies, deadline));
->      return 1;
-> }
-> 
-> Chuck
+Brian
