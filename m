@@ -1,23 +1,25 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WKqVE-0006Vi-Mk
- for linux-mtd@lists.infradead.org; Tue, 04 Mar 2014 14:39:29 +0000
-Date: Tue, 4 Mar 2014 11:39:03 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH] UBI: block: do not use term "attach"
-Message-ID: <20140304143901.GC8826@localhost>
-References: <1393927373-1472-1-git-send-email-dedekind1@gmail.com>
- <1393937858.6302.1.camel@sauron.fi.intel.com>
- <20140304135910.GB8826@localhost>
- <1393942396.6302.7.camel@sauron.fi.intel.com>
+Received: from mail-ig0-f180.google.com ([209.85.213.180])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WKsPF-00028S-IF
+ for linux-mtd@lists.infradead.org; Tue, 04 Mar 2014 16:41:26 +0000
+Received: by mail-ig0-f180.google.com with SMTP id hl1so1869467igb.1
+ for <linux-mtd@lists.infradead.org>; Tue, 04 Mar 2014 08:41:01 -0800 (PST)
+Date: Tue, 4 Mar 2014 10:40:53 -0600
+From: Andrew Ruder <andy@aeruder.net>
+To: Leon Pollak <leonp@plris.com>
+Subject: Re: What is wrong?
+Message-ID: <20140304164053.GA25961@gmail.com>
+References: <4315632.KkRm7kzq26@leonp.plris.com>
+ <20140303211336.GA7369@gmail.com>
+ <20140304083325.GJ13420@norris-Latitude-E6410>
+ <20500571.Fgyz0I6ATm@leonp.plris.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1393942396.6302.7.camel@sauron.fi.intel.com>
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>
+In-Reply-To: <20500571.Fgyz0I6ATm@leonp.plris.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Linux Kernel <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
+ Al Viro <viro@zeniv.linux.org.uk>, Brian Norris <computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,43 +29,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Mar 04, 2014 at 04:13:16PM +0200, Artem Bityutskiy wrote:
-> On Tue, 2014-03-04 at 10:59 -0300, Ezequiel Garcia wrote:
-> > On Tue, Mar 04, 2014 at 02:57:38PM +0200, Artem Bityutskiy wrote:
-> > > On Tue, 2014-03-04 at 12:02 +0200, Artem Bityutskiy wrote:
-> > > > + * This feature is compiled in the UBI core, and adds a 'block' parameter
-> > > > + * to allow early creation of block devices on top of UBI volumes. Runtime
-> > > > + * block creation/removal for UBI volumes is provided through two UBI ioctls:
-> > > > + * UBI_IOCVOLATTBLK and UBI_IOCVOLDETBLK.
-> > > >   */
-> > > 
-> > > I think the ioctl names should also be consistent.
-> > > s/AT/CR/, s/DET/RM/, may be?
-> > > 
-> > 
-> > Ah, yes. Good catch.
-> > 
-> > Let's write them down, so we can see how they result: UBI_IOCVOLCRBLK,
-> > UBI_IOCVOLRMBLK. Aren't these too unreadable?
-> 
-> Dunno, the other ones are similarly unreadable.
-> 
+On Tue, Mar 04, 2014 at 10:54:04AM +0200, Leon Pollak wrote:
+> I will recheck everything and try. Meanwhile, the news are not good: our 
+> guys say that it appears that the additional sync DOES NOT SOLVE the 
+> issue.
 
-Yes, indeed.
+Gonna be honest, I have a tough time explaining this. :(  Unfortunately
+I don't have a board here with a hardware write protect which would make
+things easier to verify.
 
-> > How about something along UBI_IOCBLK_CREAT UBI_IOCBLK_RM ?
-> 
-> Well, would be a little inconsistent, but more readable, yes.
-
-Indeed, it's less consistent.
-
-> Usually
-> ioctl names to not have underscores, though, no?
-> 
-
-A quick grep shows some ioctls follow that rule, some don't.
-I'd say it's your call.
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+- Andy
