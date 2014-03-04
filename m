@@ -1,23 +1,22 @@
-Received: from mail-ie0-f178.google.com ([209.85.223.178])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WKxFt-0006EM-VH
- for linux-mtd@lists.infradead.org; Tue, 04 Mar 2014 21:52:06 +0000
-Received: by mail-ie0-f178.google.com with SMTP id lx4so167731iec.37
- for <linux-mtd@lists.infradead.org>; Tue, 04 Mar 2014 13:51:44 -0800 (PST)
-Message-ID: <5316498A.8080200@mds.com>
-Date: Tue, 04 Mar 2014 15:45:46 -0600
-From: Chuck Peplinski <chuck@mds.com>
+From: Marek Vasut <marex@denx.de>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v5 1/8] mtd: spi-nor: copy the SPI NOR commands to a new
+ header file
+Date: Tue, 4 Mar 2014 23:13:14 +0100
+References: <1393238262-8622-1-git-send-email-b32955@freescale.com>
+ <1393238262-8622-2-git-send-email-b32955@freescale.com>
+In-Reply-To: <1393238262-8622-2-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-To: Marek Vasut <marex@denx.de>
-Subject: Re: [PATCH] Check flag status register for Micron n25q512a
-References: <6bf927e513554e628fe15d309aac698e@BLUPR07MB002.namprd07.prod.outlook.com>
- <201403021542.09196.marex@denx.de> <5314B336.7090306@mds.com>
- <201403040129.12504.marex@denx.de>
-In-Reply-To: <201403040129.12504.marex@denx.de>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: Text/Plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: chuck@mds.com
+Message-Id: <201403042313.14353.marex@denx.de>
+Cc: angus.clark@st.com, computersforpeace@gmail.com, b44548@freescale.com,
+ broonie@linaro.org, lee.jones@linaro.org, linux-doc@vger.kernel.org,
+ b18965@freescale.com, linux-spi@vger.kernel.org,
+ Huang Shijie <b32955@freescale.com>, devicetree@vger.kernel.org, pekon@ti.com,
+ sourav.poddar@ti.com, shawn.guo@linaro.org, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,34 +26,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 3/3/2014 6:29 PM, Marek Vasut wrote:
->> FSR can apparently toggle without SR.
-> Is that documented anywhere ? How can that be ?
-I'm looking at the data sheet for the part, n25q_512mb_1ce3v_65nm.pdf, 
-from the Micron web site at 
-http://www.micron.com/products/nor-flash/serial-nor-flash#fullPart&236=10.
-The comment that led us in this direction is on page 62:
+On Monday, February 24, 2014 at 11:37:35 AM, Huang Shijie wrote:
+> This patch adds a new header :spi-nor.h,
+> and copies all the SPI NOR commands and relative macros into this new
+> header.
+> 
+> This hearder can be used by the m25p80.c and other spi-nor controller,
+> such as Freescale's Quadspi.
+> 
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
 
-"ERASE Operations
-When the operation is in progress, the program or erase controller bit 
-of the flag status
-register is set to 0. The flag status register must be polled for the 
-operation status. When
-the operation completes, that bit is cleared to 1.
-Note that the flag status register must be polled even if operation 
-times out."
+Please keep me on CC ;-)
 
-> Hmmmm , I have a feeling that if you actually added wait_till_ready() 
-> call at the end of _erase() and _write(), you would get the same 
-> effect. This would in turn mean you are instead missing 
-> wait_till_ready() somewhere else. Can you try using wait_till_ready() 
-> at the end of _erase() and _write() please ? 
+I honestly have to wonder ... why do you not 'move' these definitions instead of 
+copying them ?
 
-That would be the standard code, right?  That's where we started and it 
-did not work.
-
-At some point I'll try some more tests.  I'm not blocked on this now, so 
-it's not totally critical.
-One thing I notice:  The web site notes that this part stacks two 256M 
-dies.  Maybe that's why it is non-standard?
-Sure would be nice to hear from someone at Micron...
+Best regards,
+Marek Vasut
