@@ -1,23 +1,27 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WL7bp-00007X-Rd
- for linux-mtd@lists.infradead.org; Wed, 05 Mar 2014 08:55:26 +0000
-Message-ID: <1394009699.6302.19.camel@sauron.fi.intel.com>
-Subject: Re: Annoying ML complains about "suspicious header"
+ id 1WL9Wt-0004LV-Ht
+ for linux-mtd@lists.infradead.org; Wed, 05 Mar 2014 10:58:28 +0000
+Message-ID: <1394017054.6302.46.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v7 1/3] ubi: Introduce read-only block devices on top of
+ UBI volumes
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Wed, 05 Mar 2014 10:54:59 +0200
-In-Reply-To: <CAN8TOE_6AjRBJGX2vCcS1VEJAy0xt00VXPvDwKoNq4_uXJWr7A@mail.gmail.com>
-References: <CACna6rzSrnx8ueOn1O5k62eTppPDRVFgTA56WgQQqWUW1asMJw@mail.gmail.com>
- <1393325817.3412.94.camel@sauron.fi.intel.com>
- <CAN8TOE8Cu0fkdV7J6ZxMAoN0oAdvBMFQETMZUa7sp0v3wocJ6w@mail.gmail.com>
- <CAN8TOE_6AjRBJGX2vCcS1VEJAy0xt00VXPvDwKoNq4_uXJWr7A@mail.gmail.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Date: Wed, 05 Mar 2014 12:57:34 +0200
+In-Reply-To: <1393245564-23947-2-git-send-email-ezequiel.garcia@free-electrons.com>
+References: <1393245564-23947-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1393245564-23947-2-git-send-email-ezequiel.garcia@free-electrons.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>,
- =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Transfer-Encoding: 7bit
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Mike Frysinger <vapier@gentoo.org>,
+ Richard Weinberger <richard.weinberger@gmail.com>,
+ Michael Opdenacker <michael.opdenacker@free-electrons.com>,
+ linux-mtd@lists.infradead.org,
+ Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,37 +32,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2014-03-05 at 00:40 -0800, Brian Norris wrote:
-> On Wed, Mar 5, 2014 at 12:35 AM, Brian Norris
-> <computersforpeace@gmail.com> wrote:
-> > On Tue, Feb 25, 2014 at 2:56 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> >> On Tue, 2014-02-25 at 07:09 +0100, Rafał Miłecki wrote:
-> >>> I think it's 5th time ML complains about some unspecified "suspicious
-> >>> header" in my patches. I sent patches using "git send-email", so I
-> >>> really don't know what may be wrong with them.
-> >>
-> >> There are several rules on the server which try to trap mails which
-> >> break threading, and HTML mails.
-> ...
-> >> Anyway, I'd vote to remove these rules altogether.
-> >
-> > OK, but who can actually *do* this? Is dwmw the only ML moderator?
-> 
-> BTW, I wouldn't vote to remove *all* the aforementioned rules. I think
-> the HTML filter is probably still valid (it's standard practice for
-> all other Linux mailing lists, I think; and HTML mail is unnecessary
-> and even problematic), but some of the threading ones have really
-> stumped me before and probably should be improved or dropped.
+On Mon, 2014-02-24 at 09:39 -0300, Ezequiel Garcia wrote:
+> +/* Attach a block device to an UBI volume */
+> +#define UBI_IOCVOLATTBLK _IO(UBI_VOL_IOC_MAGIC, 7)
 
-I would vote to remove all the trapping. Especially if you take into
-account that no one moderates that the list nowadays. I did this in the
-past occasionally, but not anymore.
+Ezequiel,
 
-For html - if the community wants to be that strict, it is better to
-reject them with a notification. Trapping makes little sense, no?
+please, change this before it goes upstream and instead, make the ioctls
+accept a 'struct ubi_blkcreate_req' object pointer.
 
-Then there are the multipart/alternative e-mails with both paint-text
-and HTML versions of the text, one could let them go through, I guess.
+/**
+ * blah
+ * @padding1:  reserved for future, not used, has to be zeroed
+ */
+struct ubi_blkcreate_req {
+	__s8 padding1[128];
+} __packed;
+
+This will make sure we have a possibility to extend this ioctl in the
+future with something like volume creation flags etc. Otherwise, if we
+need to add a flag, we'll have to introduce a new ioctl.
+
+Thanks!
 
 -- 
 Best Regards,
