@@ -1,15 +1,27 @@
-Received: from smtp2.macqel.be ([109.135.2.61])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WLKo1-0003tr-6G
- for linux-mtd@lists.infradead.org; Wed, 05 Mar 2014 23:00:54 +0000
-From: Philippe De Muyter <phdm@macqel.be>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH RESEND] mtd: allow CONFIG_MTD_PHYSMAP_OF also for
- CONFIG_MTD_RAM
-Date: Thu,  6 Mar 2014 00:00:00 +0100
-Message-Id: <1394060400-25149-1-git-send-email-phdm@macqel.be>
-In-Reply-To: <1392223785-21067-1-git-send-email-phdm@macqel.be>
-References: <1392223785-21067-1-git-send-email-phdm@macqel.be>
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WLL0L-00049q-9L
+ for linux-mtd@lists.infradead.org; Wed, 05 Mar 2014 23:13:38 +0000
+Message-ID: <5317AF63.8000807@nod.at>
+Date: Thu, 06 Mar 2014 00:12:35 +0100
+From: Richard Weinberger <richard@nod.at>
+MIME-Version: 1.0
+To: Bill Pringlemeir <bpringlemeir@nbsps.com>
+Subject: Re: UBI leb_write_unlock NULL pointer Oops (continuation)
+References: <D7B1B5F4F3F27A4CB073BF422331203F2A18997F1F@Exchange1.lawo.de>	<52EF9FFE.4020405@nod.at>	<D7B1B5F4F3F27A4CB073BF422331203F2A18A7474A@Exchange1.lawo.de>	<52F1F658.9080701@nod.at>	<D7B1B5F4F3F27A4CB073BF422331203F2A1ECCF6AE@Exchange1.lawo.de>	<87zjlxy8lj.fsf@nbsps.com>	<D7B1B5F4F3F27A4CB073BF422331203F2A1ECCFB51@Exchange1.lawo.de>	<87txc4w698.fsf@nbsps.com>	<D7B1B5F4F3F27A4CB073BF422331203F2A250B53F4@Exchange1.lawo.de>	<D7B1B5F4F3F27A4CB073BF422331203F2A250B54E6@Exchange1.lawo.de>	<877g8ojqsn.fsf@nbsps.com>
+ <53079725.6080105@nod.at>	<87ios8gsho.fsf@nbsps.com>
+ <87k3coq8di.fsf@nbsps.com>	<530860B1.9000808@nod.at>
+ <877g8kr1h7.fsf@nbsps.com>	<530B670B.3090002@nod.at>
+ <87sir8ms41.fsf@nbsps.com>	<87ob1wmrzi.fsf@nbsps.com>
+ <53178FC6.6060605@nod.at>	<87txbcib93.fsf@nbsps.com>
+ <87ppm0iaq3.fsf@nbsps.com>
+In-Reply-To: <87ppm0iaq3.fsf@nbsps.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: "Wiedemer, Thorsten \(Lawo AG\)" <Thorsten.Wiedemer@lawo.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Ziegler,
+ Emanuel \(Lawo AG\)" <Emanuel.Ziegler@lawo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,36 +31,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Up to now mtd-ram devices described in device trees were only accessible
-if mtd-flash or mtd-rom were also configured at linux configuration
-time, because MTD_PHYSMAP_OF was only available if (MTD_CFI ||
-MTD_JEDECPROBE || MTD_ROM).  Allow MTD_PHYSMAP_OF selection also
-when only MTD_RAM is set.
+Am 05.03.2014 22:42, schrieb Bill Pringlemeir:
+> On  5 Mar 2014, bpringlemeir@nbsps.com wrote:
+> 
+>> On  5 Mar 2014, richard@nod.at wrote:
+> 
+>>> The solution is rather trivial.
+> 
+> [snip]
+> 
+>> Still, the logic of ubi_eba_copy_leb() seems really weird to me.  I
+>> don't understand,
+> 
+>> It looks like a double reference count decrement.  Maybe they operate on
+>> different ltree nodes, but then the locks mis-match.
+> 
+> 	if (down_write_trylock(&le->mutex))
+> 		return 0;
+> 
+> Ah, I mis-understood.  The path where the lock is taken doesn't
+> decrement the 'users' count; I was thinking of '0' as fail.
 
-Signed-off-by: Philippe De Muyter <phdm@macqel.be>
----
- drivers/mtd/maps/Kconfig |    8 ++++----
- 1 files changed, 4 insertions(+), 4 deletions(-)
+Welcome to UNIX where 0 is success. :-)
 
-diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-index 310dc7c..aa9addd 100644
---- a/drivers/mtd/maps/Kconfig
-+++ b/drivers/mtd/maps/Kconfig
-@@ -66,11 +66,11 @@ config MTD_PHYSMAP_BANKWIDTH
- 	  used internally by the CFI drivers.
- 
- config MTD_PHYSMAP_OF
--	tristate "Flash device in physical memory map based on OF description"
--	depends on OF && (MTD_CFI || MTD_JEDECPROBE || MTD_ROM)
-+	tristate "Memory device in physical memory map based on OF description"
-+	depends on OF && (MTD_CFI || MTD_JEDECPROBE || MTD_ROM || MTD_RAM)
- 	help
--	  This provides a 'mapping' driver which allows the NOR Flash and
--	  ROM driver code to communicate with chips which are mapped
-+	  This provides a 'mapping' driver which allows the NOR Flash, ROM
-+	  and RAM driver code to communicate with chips which are mapped
- 	  physically into the CPU's memory. The mapping description here is
- 	  taken from OF device tree.
- 
--- 
-1.7.5.3
+Thanks,
+//richard
