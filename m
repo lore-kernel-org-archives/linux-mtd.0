@@ -1,26 +1,24 @@
-Received: from mail-pd0-x22c.google.com ([2607:f8b0:400e:c02::22c])
+Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WL6Mi-000641-Qa
- for linux-mtd@lists.infradead.org; Wed, 05 Mar 2014 07:35:45 +0000
-Received: by mail-pd0-f172.google.com with SMTP id p10so702503pdj.17
- for <linux-mtd@lists.infradead.org>; Tue, 04 Mar 2014 23:35:23 -0800 (PST)
-Date: Tue, 4 Mar 2014 23:35:16 -0800
+ id 1WL6uV-0006zS-AP
+ for linux-mtd@lists.infradead.org; Wed, 05 Mar 2014 08:10:40 +0000
+Received: by mail-pa0-f43.google.com with SMTP id bj1so768730pad.30
+ for <linux-mtd@lists.infradead.org>; Wed, 05 Mar 2014 00:10:13 -0800 (PST)
+Date: Wed, 5 Mar 2014 00:10:08 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Christian Riesch <christian.riesch@omicron.at>
-Subject: Re: [PATCH v2 RESEND 2/2] mtd: Fix the behavior of otp write if
- there is not enough room for data
-Message-ID: <20140305073516.GM13420@norris-Latitude-E6410>
-References: <1390897785-991-1-git-send-email-christian.riesch@omicron.at>
- <b8fb0b78-04b2-41bf-a1f4-6f54039b7829@mary.at.omicron.at>
- <20140305072010.GL13420@norris-Latitude-E6410>
+To: Gerlando Falauto <gerlando.falauto@keymile.com>
+Subject: Re: [PATCH] mtd: m25p80: Flash protection support for STmicro chips
+Message-ID: <20140305081008.GP13420@norris-Latitude-E6410>
+References: <1357257748.31023.12.camel@pc786-ubu.GNET.GLOBAL.VPN>
+ <528D15B6.2030800@keymile.com> <530F4CDE.7010205@keymile.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20140305072010.GL13420@norris-Latitude-E6410>
-Cc: Amul Kumar Saha <amul.saha@samsung.com>,
+In-Reply-To: <530F4CDE.7010205@keymile.com>
+Cc: Marek Vasut <marex@denx.de>, Angus Clark <angus.clark@st.com>,
  Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Kyungmin Park <kyungmin.park@samsung.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+ Austin Boyle <Austin.Boyle@aviatnet.com>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,125 +28,201 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-A few more things...
++ Marek, Angus
 
-On Tue, Mar 04, 2014 at 11:20:10PM -0800, Brian Norris wrote:
-> On Tue, Jan 28, 2014 at 09:29:45AM +0100, Christian Riesch wrote:
-> > An OTP write shall write as much data as possible to the OTP memory
-> > and return the number of bytes that have actually been written.
-> > If no data could be written at all due to lack of OTP memory,
-> > return -ENOSPC.
-[snip]
-> > diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-> > index 7aa581f..cf423a6 100644
-> > --- a/drivers/mtd/chips/cfi_cmdset_0001.c
-> > +++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-> > @@ -2387,8 +2387,17 @@ static int cfi_intelext_write_user_prot_reg(struct mtd_info *mtd, loff_t from,
-> >  					    size_t len, size_t *retlen,
-> >  					     u_char *buf)
-> >  {
-> > -	return cfi_intelext_otp_walk(mtd, from, len, retlen,
-> > -				     buf, do_otp_write, 1);
-> > +	int ret;
-> > +
-> > +	ret = cfi_intelext_otp_walk(mtd, from, len, retlen,
-> > +				    buf, do_otp_write, 1);
-> > +
-> > +	/* if no data could be written due to lack of OTP memory,
-> > +	   return ENOSPC */
+On Thu, Feb 27, 2014 at 03:34:06PM +0100, Gerlando Falauto wrote:
+> Hi,
 > 
-> /*
->  * Can you use this style of mult-line comments please?
->  * It's in Documentation/CodingStyle
->  */
-> 
-> > +	if (!ret && len && !(*retlen))
-> > +		return -ENOSPC;
-> 
-> Couldn't (shouldn't) this check be pushed to the common
-> mtd_write_user_prot_reg() helper in mtdcore.c? And once you do that, you
-> will see that cfi_intelext_write_user_prot_reg() (and other
-> mtd->_write_user_prot_reg() implementations) will never be called with
-> len == 0. So this just becomes (in mtdcore.c):
-> 
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index 0a7d77e65335..ee6730748f7e 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -909,11 +909,16 @@ EXPORT_SYMBOL_GPL(mtd_read_fact_prot_reg);
->  int mtd_get_user_prot_info(struct mtd_info *mtd, size_t len, size_t *retlen,
->  			   struct otp_info *buf)
->  {
-> +	int ret;
-> +
->  	if (!mtd->_get_user_prot_info)
->  		return -EOPNOTSUPP;
->  	if (!len)
->  		return 0;
-> -	return mtd->_get_user_prot_info(mtd, len, retlen, buf);
-> +	ret = mtd->_get_user_prot_info(mtd, len, retlen, buf);
-> +	if (ret)
-> +		return ret;
-> +	return !(*retlen) ? -ENOSPC: 0;
->  }
->  EXPORT_SYMBOL_GPL(mtd_get_user_prot_info);
+> it's me again.
+> In my opinion (and experience) this introduces a pretty serious bug
+> (not to mention the compatibility issues), yet I haven't heard a
+> single word or found a patch applied about it in three months.
+> Am I the only one having this issue? Or maybe I'm just "seeing things"?
 
-Sorry, I patched the wrong function here! Please use your brain and
-apply this to the OTP write function :)
+I agree that this doesn't look quite like the best implementation. As
+you note, this feature is not available on *ALL* ST SPI flash. I think
+it should require yet another device flag in m25p_ids[]...
 
-> > +
-> > +	return ret;
-> >  }
-> >  
-> >  static int cfi_intelext_lock_user_prot_reg(struct mtd_info *mtd,
-> > diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
-> > index 09c69ce..5236d85 100644
-> > --- a/drivers/mtd/devices/mtd_dataflash.c
-> > +++ b/drivers/mtd/devices/mtd_dataflash.c
-> > @@ -545,14 +545,11 @@ static int dataflash_write_user_otp(struct mtd_info *mtd,
-> >  	struct dataflash	*priv = mtd->priv;
-> >  	int			status;
-> >  
-> 
-> I'm not sure I quite follow the logic for the following hunk. I think it
-> deserves some more explanation, either in your commit or in a comment.
-> As it stands, you're deleting a comment and potentially changing the
-> return code behavior subtly.
-> 
-> > -	if (len > 64)
-> > -		return -EINVAL;
-> > -
-> > -	/* Strictly speaking, we *could* truncate the write ... but
-> > -	 * let's not do that for the only write that's ever possible.
-> > -	 */
-> > -	if ((from + len) > 64)
-> > -		return -EINVAL;
-> > +	if ((from + len) > 64) {
-> > +		len = 64 - from;
-> 
-> Why are you reassigning len? Are you trying to undo the comment above,
-> so that you *can* truncate the write? (It looks like there are other
-> implmentations which will truncate the write and return -ENOSPC, FWIW.)
-> 
-> > +		if (len <= 0)
-> > +			return -ENOSPC;
-> > +	}
+But I don't see why this is a concern for "certain bootloaders". If your
+bootloader doesn't support locked blocks, then don't run ioctl(MEMLOCK)
+on the device.
 
-I looked a bit more at [1] and it looks like you're actually trying to
-straighten out some inconsistencies (hence the "harmonizing" in
-$subject). I think this warrants:
+Leaving the following context intact for now, since it's old. But please
+trim your replies and bottom-post in the future. Thanks!
 
-(1) A little more in the commit message. You describe the new policy,
-    but you should also note *how* this is changing existing
-    implementations.
-
-(2) A comment next to mtd_write_user_prot_reg() to describe the new
-    harmony.
-
-> >  
-> >  	/* OUT: OP_WRITE_SECURITY, 3 zeroes, 64 data-or-zero bytes
-> >  	 * IN:  ignore all
-
-[1] http://patchwork.ozlabs.org/patch/239897/
-
+Regards,
 Brian
+
+> Thank you,
+> Gerlando
+> 
+> P.S. FWIW, the original author of the patch seem to have disappeared.
+> 
+> On 11/20/2013 09:04 PM, Gerlando Falauto wrote:
+> >Hi,
+> >
+> >On 01/04/2013 01:02 AM, Austin Boyle wrote:
+> >>This patch adds generic support for flash protection on STmicro chips.
+> >>On chips with less than 3 protection bits, the unused bits are don't
+> >>cares
+> >>and so can be written anyway.
+> >
+> >I have two remarks:
+> >
+> >1) I believe this introduces incompatibilities with existing bootloaders
+> >which do not support this feature.
+> >Namely, u-boot is not able (to the best of my knowledge) to treat these
+> >bits properly. So as soon as you write something to your SPI nor flash
+> >from within linux, u-boot is not able to erase/rewrite those blocks
+> >anymore.
+> >
+> >Wouldn't it make more sense to selectively enable this feature, only if
+> >explicity configured to do so (e.g. through its device tree node)?
+> >Like what was used for the Spansion's PPB, see:
+> >
+> >http://lists.infradead.org/pipermail/linux-mtd/2013-January/045536.html
+> >
+> > > The lock function will only change the
+> >>protection bits if it would not unlock other areas. Similarly, the unlock
+> >>function will not lock currently unlocked areas. Tested on the m25p64.
+> > >
+> >>From: Austin Boyle <Austin.Boyle@aviatnet.com>
+> >>Signed-off-by: Austin Boyle <Austin.Boyle@aviatnet.com>
+> >>---
+> >>diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+> >>index 4eeeb2d..069e34f 100644
+> >>--- a/drivers/mtd/devices/m25p80.c
+> >>+++ b/drivers/mtd/devices/m25p80.c
+> >>@@ -565,6 +565,96 @@ time_out:
+> >>      return ret;
+> >>  }
+> >>
+> >>+static int m25p80_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+> >>+{
+> >>+    struct m25p *flash = mtd_to_m25p(mtd);
+> >>+    uint32_t offset = ofs;
+> >>+    uint8_t status_old, status_new;
+> >>+    int res = 0;
+> >>+
+> >>+    mutex_lock(&flash->lock);
+> >>+    /* Wait until finished previous command */
+> >>+    if (wait_till_ready(flash)) {
+> >>+        res = 1;
+> >>+        goto err;
+> >>+    }
+> >>+
+> >>+    status_old = read_sr(flash);
+> >>+
+> >>+    if (offset < flash->mtd.size-(flash->mtd.size/2))
+> >>+        status_new = status_old | SR_BP2 | SR_BP1 | SR_BP0;
+> >>+    else if (offset < flash->mtd.size-(flash->mtd.size/4))
+> >>+        status_new = (status_old & ~SR_BP0) | SR_BP2 | SR_BP1;
+> >>+    else if (offset < flash->mtd.size-(flash->mtd.size/8))
+> >>+        status_new = (status_old & ~SR_BP1) | SR_BP2 | SR_BP0;
+> >>+    else if (offset < flash->mtd.size-(flash->mtd.size/16))
+> >>+        status_new = (status_old & ~(SR_BP0|SR_BP1)) | SR_BP2;
+> >>+    else if (offset < flash->mtd.size-(flash->mtd.size/32))
+> >>+        status_new = (status_old & ~SR_BP2) | SR_BP1 | SR_BP0;
+> >>+    else if (offset < flash->mtd.size-(flash->mtd.size/64))
+> >>+        status_new = (status_old & ~(SR_BP2|SR_BP0)) | SR_BP1;
+> >>+    else
+> >>+        status_new = (status_old & ~(SR_BP2|SR_BP1)) | SR_BP0;
+> >
+> >2) While I believe this might work on m25p32, m25p64 and m25p128 (i.e.
+> >flashes with 64 blocks or more), it looks incorrect for smaller chips
+> >(namely our m25p80, with just 16 blocks). There, the 1/64 logic scales
+> >down to 1/16, e.g.
+> >- 000 means protect nothing
+> >- 001 means protect 1/16th (=1 blocks)    [m25p64 => 1/64th]
+> >- 010 means protect 1/8th  (=2 blocks)    [m25p64 => 1/32th]
+> >- ...
+> >- 100 means protect 1/2nd  (=8 blocks)
+> >- 101,110, 111 mean protect everything
+> >
+> >and I assume the same goes for chips with fewer sectors.
+> >
+> >Any comments?
+> >
+> >Thanks,
+> >Gerlando
+> >
+> >>+
+> >>+    /* Only modify protection if it will not unlock other areas */
+> >>+    if ((status_new&(SR_BP2|SR_BP1|SR_BP0)) >
+> >>+                    (status_old&(SR_BP2|SR_BP1|SR_BP0))) {
+> >>+        write_enable(flash);
+> >>+        if (write_sr(flash, status_new) < 0) {
+> >>+            res = 1;
+> >>+            goto err;
+> >>+        }
+> >>+    }
+> >>+
+> >>+err:    mutex_unlock(&flash->lock);
+> >>+    return res;
+> >>+}
+> >>+
+> >>+static int m25p80_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+> >>+{
+> >>+    struct m25p *flash = mtd_to_m25p(mtd);
+> >>+    uint32_t offset = ofs;
+> >>+    uint8_t status_old, status_new;
+> >>+    int res = 0;
+> >>+
+> >>+    mutex_lock(&flash->lock);
+> >>+    /* Wait until finished previous command */
+> >>+    if (wait_till_ready(flash)) {
+> >>+        res = 1;
+> >>+        goto err;
+> >>+    }
+> >>+
+> >>+    status_old = read_sr(flash);
+> >>+
+> >>+    if (offset+len > flash->mtd.size-(flash->mtd.size/64))
+> >>+        status_new = status_old & ~(SR_BP2|SR_BP1|SR_BP0);
+> >>+    else if (offset+len > flash->mtd.size-(flash->mtd.size/32))
+> >>+        status_new = (status_old & ~(SR_BP2|SR_BP1)) | SR_BP0;
+> >>+    else if (offset+len > flash->mtd.size-(flash->mtd.size/16))
+> >>+        status_new = (status_old & ~(SR_BP2|SR_BP0)) | SR_BP1;
+> >>+    else if (offset+len > flash->mtd.size-(flash->mtd.size/8))
+> >>+        status_new = (status_old & ~SR_BP2) | SR_BP1 | SR_BP0;
+> >>+    else if (offset+len > flash->mtd.size-(flash->mtd.size/4))
+> >>+        status_new = (status_old & ~(SR_BP0|SR_BP1)) | SR_BP2;
+> >>+    else if (offset+len > flash->mtd.size-(flash->mtd.size/2))
+> >>+        status_new = (status_old & ~SR_BP1) | SR_BP2 | SR_BP0;
+> >>+    else
+> >>+        status_new = (status_old & ~SR_BP0) | SR_BP2 | SR_BP1;
+> >>+
+> >>+    /* Only modify protection if it will not lock other areas */
+> >>+    if ((status_new&(SR_BP2|SR_BP1|SR_BP0)) <
+> >>+                    (status_old&(SR_BP2|SR_BP1|SR_BP0))) {
+> >>+        write_enable(flash);
+> >>+        if (write_sr(flash, status_new) < 0) {
+> >>+            res = 1;
+> >>+            goto err;
+> >>+        }
+> >>+    }
+> >>+
+> >>+err:    mutex_unlock(&flash->lock);
+> >>+    return res;
+> >>+}
+> >>+
+> >>
+> >>/****************************************************************************/
+> >>
+> >>
+> >>  /*
+> >>@@ -899,6 +989,12 @@ static int m25p_probe(struct spi_device *spi)
+> >>      flash->mtd._erase = m25p80_erase;
+> >>      flash->mtd._read = m25p80_read;
+> >>
+> >>+    /* flash protection support for STmicro chips */
+> >>+    if (JEDEC_MFR(info->jedec_id) == CFI_MFR_ST) {
+> >>+        flash->mtd._lock = m25p80_lock;
+> >>+        flash->mtd._unlock = m25p80_unlock;
+> >>+    }
+> >>+
+> >>      /* sst flash chips use AAI word program */
+> >>      if (JEDEC_MFR(info->jedec_id) == CFI_MFR_SST)
+> >>          flash->mtd._write = sst_write;
+> >>
+> >>
