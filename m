@@ -1,30 +1,13 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga02.intel.com ([134.134.136.20])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WLBMv-0000R5-GJ
- for linux-mtd@lists.infradead.org; Wed, 05 Mar 2014 12:56:18 +0000
-Message-ID: <1394024109.6302.57.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v7 1/3] ubi: Introduce read-only block devices on top of
- UBI volumes
+ id 1WLBT1-0000ec-Gp
+ for linux-mtd@lists.infradead.org; Wed, 05 Mar 2014 13:02:36 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Date: Wed, 05 Mar 2014 14:55:09 +0200
-In-Reply-To: <20140305125229.GA776@arch.cereza>
-References: <1393245564-23947-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1393245564-23947-2-git-send-email-ezequiel.garcia@free-electrons.com>
- <1394017054.6302.46.camel@sauron.fi.intel.com>
- <20140305125229.GA776@arch.cereza>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Mike Frysinger <vapier@gentoo.org>,
- Richard Weinberger <richard.weinberger@gmail.com>,
- Michael Opdenacker <michael.opdenacker@free-electrons.com>,
- linux-mtd@lists.infradead.org,
- Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>
-Reply-To: dedekind1@gmail.com
+Subject: [PATCH] UBI: rename block device ioctls
+Date: Wed,  5 Mar 2014 15:02:10 +0200
+Message-Id: <1394024530-17379-1-git-send-email-dedekind1@gmail.com>
+Cc: MTD Maling List <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,13 +17,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2014-03-05 at 09:52 -0300, Ezequiel Garcia wrote:
-> Sure, that sounds great. And I'll change this ioctl names:
-> 
-> UBI_IOCBLKCR and UBI_IOCBLKRM ?
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-I actually did this, let me send the patch.
+Rename the UBI_IOCVOLATTBLK and UBI_IOCVOLDETBLK to UBI_IOCVOLCRBLK and
+UBI_IOCVOLRMBLK, because we do not use terms "attach" and "detach" for the R/O
+block devices on top of UBI volumes. Instead, we use terms "create" and
+"remove". This patch also amends the related commentaries.
 
+Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+---
+ drivers/mtd/ubi/block.c     |  2 +-
+ drivers/mtd/ubi/cdev.c      |  8 ++++----
+ include/uapi/mtd/ubi-user.h | 14 +++++++-------
+ 3 files changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
+index 16e6731..69a74fd 100644
+--- a/drivers/mtd/ubi/block.c
++++ b/drivers/mtd/ubi/block.c
+@@ -32,7 +32,7 @@
+  * This feature is compiled in the UBI core, and adds a 'block' parameter
+  * to allow early creation of block devices on top of UBI volumes. Runtime
+  * block creation/removal for UBI volumes is provided through two UBI ioctls:
+- * UBI_IOCVOLATTBLK and UBI_IOCVOLDETBLK.
++ * UBI_IOCVOLCRBLK and UBI_IOCVOLRMBLK.
+  */
+ 
+ #include <linux/module.h>
+diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
+index 11c8473..f54562a 100644
+--- a/drivers/mtd/ubi/cdev.c
++++ b/drivers/mtd/ubi/cdev.c
+@@ -561,8 +561,8 @@ static long vol_cdev_ioctl(struct file *file, unsigned int cmd,
+ 		break;
+ 	}
+ 
+-	/* Attach a block device to an UBI volume */
+-	case UBI_IOCVOLATTBLK:
++	/* Create a R/O block device on top of the UBI volume */
++	case UBI_IOCVOLCRBLK:
+ 	{
+ 		struct ubi_volume_info vi;
+ 
+@@ -571,8 +571,8 @@ static long vol_cdev_ioctl(struct file *file, unsigned int cmd,
+ 		break;
+ 	}
+ 
+-	/* Dettach a block device from an UBI volume */
+-	case UBI_IOCVOLDETBLK:
++	/* Remove the R/O block device */
++	case UBI_IOCVOLRMBLK:
+ 	{
+ 		struct ubi_volume_info vi;
+ 
+diff --git a/include/uapi/mtd/ubi-user.h b/include/uapi/mtd/ubi-user.h
+index b98585a..9c885e2 100644
+--- a/include/uapi/mtd/ubi-user.h
++++ b/include/uapi/mtd/ubi-user.h
+@@ -138,9 +138,9 @@
+  * Block devices on UBI volumes
+  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  *
+- * To attach or detach a block device from an UBI volume the %UBI_IOCVOLATTBLK
+- * and %UBI_IOCVOLDETBLK ioctl commands should be used, respectively.
+- * These commands take no arguments.
++ * To create or remove a R/O block device on top of an UBI volume the
++ * %UBI_IOCVOLCRBLK and %UBI_IOCVOLRMBLK ioctl commands should be used,
++ * respectively. These commands take no arguments.
+  */
+ 
+ /*
+@@ -198,10 +198,10 @@
+ /* Set an UBI volume property */
+ #define UBI_IOCSETVOLPROP _IOW(UBI_VOL_IOC_MAGIC, 6, \
+ 			       struct ubi_set_vol_prop_req)
+-/* Attach a block device to an UBI volume */
+-#define UBI_IOCVOLATTBLK _IO(UBI_VOL_IOC_MAGIC, 7)
+-/* Detach a block device from an UBI volume */
+-#define UBI_IOCVOLDETBLK _IO(UBI_VOL_IOC_MAGIC, 8)
++/* Create a R/O block device on top of an UBI volume */
++#define UBI_IOCVOLCRBLK _IO(UBI_VOL_IOC_MAGIC, 7)
++/* Remove the R/O block device */
++#define UBI_IOCVOLRMBLK _IO(UBI_VOL_IOC_MAGIC, 8)
+ 
+ /* Maximum MTD device name length supported by UBI */
+ #define MAX_UBI_MTD_NAME_LEN 127
 -- 
-Best Regards,
-Artem Bityutskiy
+1.9.0
