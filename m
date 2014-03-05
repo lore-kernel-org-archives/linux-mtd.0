@@ -1,13 +1,24 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WLBT1-0000ec-Gp
- for linux-mtd@lists.infradead.org; Wed, 05 Mar 2014 13:02:36 +0000
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: [PATCH] UBI: rename block device ioctls
-Date: Wed,  5 Mar 2014 15:02:10 +0200
-Message-Id: <1394024530-17379-1-git-send-email-dedekind1@gmail.com>
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>
+ id 1WLBuM-0001YM-2F
+ for linux-mtd@lists.infradead.org; Wed, 05 Mar 2014 13:30:50 +0000
+Date: Wed, 5 Mar 2014 10:30:02 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH] UBI: block: Use ENOSYS as return value when
+ CONFIG_UBIBLOCK=n
+Message-ID: <20140305133002.GA1284@arch.cereza>
+References: <1393930663-8737-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1393933791.3412.208.camel@sauron.fi.intel.com>
+ <20140304121446.GA8826@localhost>
+ <1393938044.6302.2.camel@sauron.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1393938044.6302.2.camel@sauron.fi.intel.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,90 +28,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+On Mar 04, Artem Bityutskiy wrote:
+> On Tue, 2014-03-04 at 09:14 -0300, Ezequiel Garcia wrote:
+> > On Tue, Mar 04, 2014 at 01:49:51PM +0200, Artem Bityutskiy wrote:
+> > > On Tue, 2014-03-04 at 07:57 -0300, Ezequiel Garcia wrote:
+> > > > In order to have a way of distinguishing an invalid ioctl from a
+> > > > not supported (but otherwise valid) ioctl, this commit changes the
+> > > > return value of the ioctl stubs from ENOTTY to ENOSYS.
+> > > 
+> > > Sounds logical, no objections, except it is curious if this is something
+> > > you invented or this is a general rule in the Linux kernel? If it is,
+> > > may be you can point to some discussions, or give some example or other
+> > > source of this knowledge? I just want to be educated a bit. Thanks!
+> > > 
+> > 
+> > Yes, I think it's a pretty extended kernel practice to return -ENOSYS when
+> > a function is not built or either not implemented.
+> 
+> Pushed this one and the previous 3 ones. I think what is left is ioctl
+> names and the user-space tool.
+> 
 
-Rename the UBI_IOCVOLATTBLK and UBI_IOCVOLDETBLK to UBI_IOCVOLCRBLK and
-UBI_IOCVOLRMBLK, because we do not use terms "attach" and "detach" for the R/O
-block devices on top of UBI volumes. Instead, we use terms "create" and
-"remove". This patch also amends the related commentaries.
-
-Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
----
- drivers/mtd/ubi/block.c     |  2 +-
- drivers/mtd/ubi/cdev.c      |  8 ++++----
- include/uapi/mtd/ubi-user.h | 14 +++++++-------
- 3 files changed, 12 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
-index 16e6731..69a74fd 100644
---- a/drivers/mtd/ubi/block.c
-+++ b/drivers/mtd/ubi/block.c
-@@ -32,7 +32,7 @@
-  * This feature is compiled in the UBI core, and adds a 'block' parameter
-  * to allow early creation of block devices on top of UBI volumes. Runtime
-  * block creation/removal for UBI volumes is provided through two UBI ioctls:
-- * UBI_IOCVOLATTBLK and UBI_IOCVOLDETBLK.
-+ * UBI_IOCVOLCRBLK and UBI_IOCVOLRMBLK.
-  */
- 
- #include <linux/module.h>
-diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
-index 11c8473..f54562a 100644
---- a/drivers/mtd/ubi/cdev.c
-+++ b/drivers/mtd/ubi/cdev.c
-@@ -561,8 +561,8 @@ static long vol_cdev_ioctl(struct file *file, unsigned int cmd,
- 		break;
- 	}
- 
--	/* Attach a block device to an UBI volume */
--	case UBI_IOCVOLATTBLK:
-+	/* Create a R/O block device on top of the UBI volume */
-+	case UBI_IOCVOLCRBLK:
- 	{
- 		struct ubi_volume_info vi;
- 
-@@ -571,8 +571,8 @@ static long vol_cdev_ioctl(struct file *file, unsigned int cmd,
- 		break;
- 	}
- 
--	/* Dettach a block device from an UBI volume */
--	case UBI_IOCVOLDETBLK:
-+	/* Remove the R/O block device */
-+	case UBI_IOCVOLRMBLK:
- 	{
- 		struct ubi_volume_info vi;
- 
-diff --git a/include/uapi/mtd/ubi-user.h b/include/uapi/mtd/ubi-user.h
-index b98585a..9c885e2 100644
---- a/include/uapi/mtd/ubi-user.h
-+++ b/include/uapi/mtd/ubi-user.h
-@@ -138,9 +138,9 @@
-  * Block devices on UBI volumes
-  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  *
-- * To attach or detach a block device from an UBI volume the %UBI_IOCVOLATTBLK
-- * and %UBI_IOCVOLDETBLK ioctl commands should be used, respectively.
-- * These commands take no arguments.
-+ * To create or remove a R/O block device on top of an UBI volume the
-+ * %UBI_IOCVOLCRBLK and %UBI_IOCVOLRMBLK ioctl commands should be used,
-+ * respectively. These commands take no arguments.
-  */
- 
- /*
-@@ -198,10 +198,10 @@
- /* Set an UBI volume property */
- #define UBI_IOCSETVOLPROP _IOW(UBI_VOL_IOC_MAGIC, 6, \
- 			       struct ubi_set_vol_prop_req)
--/* Attach a block device to an UBI volume */
--#define UBI_IOCVOLATTBLK _IO(UBI_VOL_IOC_MAGIC, 7)
--/* Detach a block device from an UBI volume */
--#define UBI_IOCVOLDETBLK _IO(UBI_VOL_IOC_MAGIC, 8)
-+/* Create a R/O block device on top of an UBI volume */
-+#define UBI_IOCVOLCRBLK _IO(UBI_VOL_IOC_MAGIC, 7)
-+/* Remove the R/O block device */
-+#define UBI_IOCVOLRMBLK _IO(UBI_VOL_IOC_MAGIC, 8)
- 
- /* Maximum MTD device name length supported by UBI */
- #define MAX_UBI_MTD_NAME_LEN 127
+I'm seeing all the other patches pushed, but not this one. Do you want me to
+send a rebased patch?
 -- 
-1.9.0
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
