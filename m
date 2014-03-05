@@ -1,22 +1,23 @@
-Message-ID: <5316B9F2.8050301@freescale.com>
-Date: Wed, 5 Mar 2014 13:45:22 +0800
-From: Huang Shijie <b32955@freescale.com>
+Received: from mail-pa0-x233.google.com ([2607:f8b0:400e:c03::233])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WL5Ba-0003j5-Ac
+ for linux-mtd@lists.infradead.org; Wed, 05 Mar 2014 06:20:11 +0000
+Received: by mail-pa0-f51.google.com with SMTP id kq14so648609pab.38
+ for <linux-mtd@lists.infradead.org>; Tue, 04 Mar 2014 22:19:45 -0800 (PST)
+Date: Tue, 4 Mar 2014 22:19:37 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Christian Riesch <christian.riesch@omicron.at>
+Subject: Re: [PATCH v2 RESEND 1/2] mtd: Add a retlen parameter to
+ _get_{fact,user}_prot_info
+Message-ID: <20140305061937.GK13420@norris-Latitude-E6410>
+References: <1390897785-991-1-git-send-email-christian.riesch@omicron.at>
+ <db5db0eb-2c50-4642-ab11-5c406356bdeb@mary.at.omicron.at>
 MIME-Version: 1.0
-To: Marek Vasut <marex@denx.de>
-Subject: Re: [PATCH v5 1/8] mtd: spi-nor: copy the SPI NOR commands to a new
- header file
-References: <1393238262-8622-1-git-send-email-b32955@freescale.com>
- <201403042313.14353.marex@denx.de> <5316932C.5040405@freescale.com>
- <201403050443.19529.marex@denx.de>
-In-Reply-To: <201403050443.19529.marex@denx.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: angus.clark@st.com, computersforpeace@gmail.com, b44548@freescale.com,
- broonie@linaro.org, lee.jones@linaro.org, linux-doc@vger.kernel.org,
- b18965@freescale.com, linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
- linux-mtd@lists.infradead.org, pekon@ti.com, sourav.poddar@ti.com,
- shawn.guo@linaro.org, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <db5db0eb-2c50-4642-ab11-5c406356bdeb@mary.at.omicron.at>
+Cc: Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,16 +27,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2014=E5=B9=B403=E6=9C=8805=E6=97=A5 11:43, Marek Vasut =E5=86=99=
-=E9=81=93:
-> Why didn't you keep it like that? Was there some reason for that ?
-http://marc.info/?l=3Dlinux-arm-kernel&m=3D138545182232220&w=3D4
+On Tue, Jan 28, 2014 at 09:29:44AM +0100, Christian Riesch wrote:
+> Signed-off-by: Christian Riesch <christian.riesch@omicron.at>
+> Cc: Artem Bityutskiy <Artem.Bityutskiy@linux.intel.com>
+> Cc: Brian Norris <computersforpeace@gmail.com>
+> ---
+>  drivers/mtd/chips/cfi_cmdset_0001.c |   31 +++++++++++++------------------
+>  drivers/mtd/devices/mtd_dataflash.c |    7 ++++---
+>  drivers/mtd/mtdchar.c               |   11 ++++++-----
+>  drivers/mtd/mtdcore.c               |   12 ++++++------
+>  drivers/mtd/mtdpart.c               |   14 ++++++++------
+>  drivers/mtd/onenand/onenand_base.c  |   30 ++++++++++++------------------
+>  include/linux/mtd/mtd.h             |   16 ++++++++--------
+>  7 files changed, 57 insertions(+), 64 deletions(-)
 
-Pekon suggestted  do not touch the m25p80.c.
-So i just copy these commands to a new header.
-Anyway, it's really not an important issue for me. :)
+Pushed patch 1 to l2-mtd.git. I may not push patch 2 yet; let me know if
+you see a problem with that.
 
-
-
-thanks
-Huang Shijie
+Thanks,
+Brian
