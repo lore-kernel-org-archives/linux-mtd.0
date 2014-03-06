@@ -1,20 +1,25 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WLVG1-0001uf-4G
- for linux-mtd@lists.infradead.org; Thu, 06 Mar 2014 10:10:29 +0000
-Message-ID: <1394100605.6302.63.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] UBI: Make UBI_IOCVOLCRBLK take a parameter for future
- usage
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Date: Thu, 06 Mar 2014 12:10:05 +0200
-In-Reply-To: <1394028974-27570-1-git-send-email-ezequiel.garcia@free-electrons.com>
-References: <1394028974-27570-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+ id 1WLWM0-0003qs-AM
+ for linux-mtd@lists.infradead.org; Thu, 06 Mar 2014 11:20:44 +0000
+Date: Thu, 6 Mar 2014 08:20:03 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 3/4] mtd: block2mtd: check device size
+Message-ID: <20140306112003.GC532@arch.cereza>
+References: <20140123205331.03314c6f82f24a6bb4b8ef53@skynet.be>
+ <20140129100424.GA15271@localhost>
+ <20140129205105.b88b00ea09c07de7014ab1d9@skynet.be>
+ <20140306085422.GY13420@norris-Latitude-E6410>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20140306085422.GY13420@norris-Latitude-E6410>
+Cc: rdunlap@infradead.org, joern@lazybastard.org, linux-kernel@vger.kernel.org,
+ Fabian Frederick <fabf@skynet.be>, linux-mtd@lists.infradead.org,
+ akpm@linux-foundation.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,18 +29,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2014-03-05 at 11:16 -0300, Ezequiel Garcia wrote:
-> In order to allow a future ioctl parameter, such as a creation flag,
-> we change the UBI_IOCVOLCRBLK so it accepts a struct ubi_blkcreate_req.
-> For the time being the structure is not in use, but fully reserved.
+On Mar 06, Brian Norris wrote:
+[..]
 > 
-> This ABI change is still possible and harmless, because the ioctl has just
-> been introduced and there's no userspace program which uses it.
+> I'm not sure block2mtd would have many users, but the hunk above looks
+> reasonable. Feel free to send a patch.
 > 
-> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 
-Pushed to linux-ubifs.git, thank you!
-
+I've bounced you the original patch from Fabian.
 -- 
-Best Regards,
-Artem Bityutskiy
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
