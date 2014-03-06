@@ -1,13 +1,26 @@
-Received: from smtp2.macqel.be ([109.135.2.61])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WLSnv-0006DS-Rc
- for linux-mtd@lists.infradead.org; Thu, 06 Mar 2014 07:33:21 +0000
-From: Philippe De Muyter <phdm@macqel.be>
-To: linux-mtd@lists.infradead.org
-Subject: [RFC PATCH] mtd: allow mmap for ram devices in memory address space.
-Date: Thu,  6 Mar 2014 08:32:26 +0100
-Message-Id: <1394091146-26122-1-git-send-email-phdm@macqel.be>
-Cc: David Howells <dhowells@redhat.com>, Markus Niebel <list-09@tqsc.de>
+Received: from mail-pb0-x230.google.com ([2607:f8b0:400e:c01::230])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WLSwh-0006Kv-6P
+ for linux-mtd@lists.infradead.org; Thu, 06 Mar 2014 07:42:23 +0000
+Received: by mail-pb0-f48.google.com with SMTP id md12so2251145pbc.7
+ for <linux-mtd@lists.infradead.org>; Wed, 05 Mar 2014 23:41:59 -0800 (PST)
+Date: Wed, 5 Mar 2014 23:41:54 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Wang Nan <wangnan0@huawei.com>
+Subject: Re: [patch 1/4] jffs2: unlock f->sem on error in jffs2_new_inode()
+Message-ID: <20140306074154.GV13420@norris-Latitude-E6410>
+References: <20140212204454.8FA415A40F6@corp2gmr1-2.hot.corp.google.com>
+ <20140226020331.GB4194@ld-irv-0074> <530E8C91.4060703@huawei.com>
+ <20140227065540.GC13420@norris-Latitude-E6410>
+ <530EF850.4030202@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <530EF850.4030202@huawei.com>
+Cc: artem.bityutskiy@linux.intel.com, stable@vger.kernel.org,
+ linux-mtd@lists.infradead.org, andy.wangguoli@huawei.com,
+ genghui 00204690 <hui.geng@huawei.com>, akpm@linux-foundation.org,
+ dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,63 +30,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Implement mmap for mtd-ram, by using mtd->_get_unmapped_area, as asked by
-an ancient comment, to get the physical address (if any) in memory of the
-mtd device.
+On Thu, Feb 27, 2014 at 04:33:20PM +0800, Wang Nan wrote:
+> On 2014/2/27 14:55, Brian Norris wrote:
+> > On Thu, Feb 27, 2014 at 08:53:37AM +0800, Wang Nan wrote:
+> >> On 2014/2/26 10:03, Brian Norris wrote:
+> >>> On Wed, Feb 12, 2014 at 12:44:54PM -0800, Andrew Morton wrote:
+> >>>> From: Wang Guoli <andy.wangguoli@huawei.com>
+> >>>> Subject: jffs2: unlock f->sem on error in jffs2_new_inode()
+> >>>>
+> >>>> If jffs2_new_inode() succeeds, it returns with f->sem held, and the caller
+> >>>> is responsible for releasing the lock.  If it fails, it still returns with
+> >>>> the lock held, but the caller won't release the lock, which will lead to
+> >>>> deadlock.
+> >>>
+> >>> Have you actually seen a deadlock for this? AFAICT, the error cases for
+> >>> jffs2_new_inode() all occur before anyone else actually has a reference
+> >>> to the inode, so I don't expect that we should see the deadlock.
+> >>>
+> >>
+> >> We found this bug by reading code. There's no deadlock have been actually seen.
+> > 
+> > Hmm, then I think maybe we should drop the stable tag. I'm not sure it's
+> > a practical issue, and it also has unrelated indentation changes. That
+> > means it breaks two of the rules in
+> > Documentation/stable_kernel_rules.txt. I'm dropping the stable tag
+> > unless someone shouts.
+> 
+> Thank you for your review, but it is still an obvious bug, isn't it?
 
-Therefore, mapram_unmapped_area had to be changed to return the physical
-address, not the virtual one, For the NOMMU case, that makes no difference,
-but for the MMU case, this is needed by mapram_unmapped_area to implement mmap.
+Maybe. I'm not really an expert in file systems, but it looks like you
+won't ever hit a deadlock, because no one will ever get a reference to
+this inode in the error path, and therefore no one will ever try to
+re-lock the lock. So while it looks like an inconsistent error path, it
+may be benign, and therefore this patch is not really a necessary
+bugfix.
 
-Signed-off-by: Philippe De Muyter <phdm@macqel.be>
-Cc: David Howells <dhowells@redhat.com>
-Cc: Markus Niebel <list-09@tqsc.de>
----
- drivers/mtd/chips/map_ram.c |    2 +-
- drivers/mtd/mtdchar.c       |   12 +++++++++++-
- 2 files changed, 12 insertions(+), 2 deletions(-)
+Again, I'm not really sure, and I'm not willing to stake a "stable"
+patch on code reading by two non-experts with no test case. As I see it,
+Documentation/stable_kernel_rules.txt is written for a reason.
 
-diff --git a/drivers/mtd/chips/map_ram.c b/drivers/mtd/chips/map_ram.c
-index 991c2a1..e93d147 100644
---- a/drivers/mtd/chips/map_ram.c
-+++ b/drivers/mtd/chips/map_ram.c
-@@ -92,7 +92,7 @@ static unsigned long mapram_unmapped_area(struct mtd_info *mtd,
- 					  unsigned long flags)
- {
- 	struct map_info *map = mtd->priv;
--	return (unsigned long) map->virt + offset;
-+	return (unsigned long) map->phys + offset;
- }
- 
- static int mapram_read (struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen, u_char *buf)
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 2147e73..00eac7a 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -1112,13 +1112,23 @@ static int mtdchar_mmap(struct file *file, struct vm_area_struct *vma)
- #ifdef CONFIG_MMU
- 	struct mtd_file_info *mfi = file->private_data;
- 	struct mtd_info *mtd = mfi->mtd;
--	struct map_info *map = mtd->priv;
-+	loff_t offset = vma->vm_pgoff << PAGE_SHIFT;
-+	loff_t len = vma->vm_end - vma->vm_start;
- 
-+	if (offset > mtd->size - len)
-+		return (unsigned long) -EINVAL;
-+	if (mtd->_get_unmapped_area) {
-+		phys_addr_t start;
-+
-+		start = mtd->_get_unmapped_area(mtd, len, offset, vma->vm_flags);
-+		return vm_iomap_memory(vma, start, len);
-+	}
-         /* This is broken because it assumes the MTD device is map-based
- 	   and that mtd->priv is a valid struct map_info.  It should be
- 	   replaced with something that uses the mtd_get_unmapped_area()
- 	   operation properly. */
- 	if (0 /*mtd->type == MTD_RAM || mtd->type == MTD_ROM*/) {
-+		struct map_info *map = mtd->priv;
- #ifdef pgprot_noncached
- 		if (file->f_flags & O_DSYNC || map->phys >= __pa(high_memory))
- 			vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
--- 
-1.7.5.3
+> We will work for test case, and will let you know if we successfully
+> trigger deadlock.
+
+Yes, please do let me know if you can identify one in practice. Or if
+you can convince me how the inode may leak out to cause a deadlock on
+the error paths in question.
+
+Brian
