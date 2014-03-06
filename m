@@ -1,21 +1,22 @@
-Received: from mail-ie0-x22a.google.com ([2607:f8b0:4001:c03::22a])
+Received: from mail-ig0-x233.google.com ([2607:f8b0:4001:c05::233])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WLf9o-0004W4-H3
- for linux-mtd@lists.infradead.org; Thu, 06 Mar 2014 20:44:46 +0000
-Received: by mail-ie0-f170.google.com with SMTP id rd18so3409895iec.15
- for <linux-mtd@lists.infradead.org>; Thu, 06 Mar 2014 12:44:22 -0800 (PST)
-Date: Thu, 6 Mar 2014 12:44:11 -0800
+ id 1WLg1P-0005vV-JA
+ for linux-mtd@lists.infradead.org; Thu, 06 Mar 2014 21:40:08 +0000
+Received: by mail-ig0-f179.google.com with SMTP id t19so197963igi.0
+ for <linux-mtd@lists.infradead.org>; Thu, 06 Mar 2014 13:39:45 -0800 (PST)
+Date: Thu, 6 Mar 2014 13:39:41 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Marek Vasut <marex@denx.de>
-Subject: Re: [PATCH] mtd: m25p80: add Macronix mx66l1g55g 1Gbit SPI flash
-Message-ID: <20140306204411.GA5232@ld-irv-0074>
-References: <1391031826-28794-1-git-send-email-computersforpeace@gmail.com>
- <201402010235.27291.marex@denx.de>
+To: Philippe De Muyter <phdm@macqel.be>
+Subject: Re: [RFC PATCH] mtd: allow mmap for ram devices in memory address
+ space.
+Message-ID: <20140306213941.GB5232@ld-irv-0074>
+References: <1394091146-26122-1-git-send-email-phdm@macqel.be>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <201402010235.27291.marex@denx.de>
-Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <1394091146-26122-1-git-send-email-phdm@macqel.be>
+Cc: David Howells <dhowells@redhat.com>, Markus Niebel <list-09@tqsc.de>,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +26,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Feb 01, 2014 at 02:35:27AM +0100, Marek Vasut wrote:
-> On Wednesday, January 29, 2014 at 10:43:46 PM, Brian Norris wrote:
-> > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> > ---
-> >  drivers/mtd/devices/m25p80.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> > index 1e147a849c35..5124b649d68c 100644
-> > --- a/drivers/mtd/devices/m25p80.c
-> > +++ b/drivers/mtd/devices/m25p80.c
-> > @@ -940,6 +940,7 @@ static const struct spi_device_id m25p_ids[] = {
-> >  	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, 0) },
-> >  	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
-> >  	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, M25P80_QUAD_READ) },
-> > +	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, M25P80_QUAD_READ) },
+On Thu, Mar 06, 2014 at 08:32:26AM +0100, Philippe De Muyter wrote:
+> Implement mmap for mtd-ram, by using mtd->_get_unmapped_area, as asked by
+> an ancient comment, to get the physical address (if any) in memory of the
+> mtd device.
 > 
-> Well it does make sense, doesn't it ? :)
+> Therefore, mapram_unmapped_area had to be changed to return the physical
+> address, not the virtual one, For the NOMMU case, that makes no difference,
+> but for the MMU case, this is needed by mapram_unmapped_area to implement mmap.
 > 
-> Acked-by: Marek Vasut <marex@denx.de>
+> Signed-off-by: Philippe De Muyter <phdm@macqel.be>
+> Cc: David Howells <dhowells@redhat.com>
+> Cc: Markus Niebel <list-09@tqsc.de>
+> ---
+>  drivers/mtd/chips/map_ram.c |    2 +-
+>  drivers/mtd/mtdchar.c       |   12 +++++++++++-
+>  2 files changed, 12 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/chips/map_ram.c b/drivers/mtd/chips/map_ram.c
+> index 991c2a1..e93d147 100644
+> --- a/drivers/mtd/chips/map_ram.c
+> +++ b/drivers/mtd/chips/map_ram.c
+> @@ -92,7 +92,7 @@ static unsigned long mapram_unmapped_area(struct mtd_info *mtd,
+>  					  unsigned long flags)
+>  {
+>  	struct map_info *map = mtd->priv;
+> -	return (unsigned long) map->virt + offset;
+> +	return (unsigned long) map->phys + offset;
+>  }
+>  
+>  static int mapram_read (struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen, u_char *buf)
+> diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+> index 2147e73..00eac7a 100644
+> --- a/drivers/mtd/mtdchar.c
+> +++ b/drivers/mtd/mtdchar.c
+> @@ -1112,13 +1112,23 @@ static int mtdchar_mmap(struct file *file, struct vm_area_struct *vma)
+>  #ifdef CONFIG_MMU
+>  	struct mtd_file_info *mfi = file->private_data;
+>  	struct mtd_info *mtd = mfi->mtd;
+> -	struct map_info *map = mtd->priv;
+> +	loff_t offset = vma->vm_pgoff << PAGE_SHIFT;
+> +	loff_t len = vma->vm_end - vma->vm_start;
+>  
+> +	if (offset > mtd->size - len)
+> +		return (unsigned long) -EINVAL;
 
-Pushed to l2-mtd.git.
+What's the cast doing? This function returns 'int'.
+
+And anyway, you're duplicating the checks that are already in
+mtd_get_unmapped_area(). See below.
+
+> +	if (mtd->_get_unmapped_area) {
+> +		phys_addr_t start;
+> +
+> +		start = mtd->_get_unmapped_area(mtd, len, offset, vma->vm_flags);
+
+You should be using mtd_get_unmapped_area(), as the comment below says.
+The underscore in front of the function pointer is to prevent people
+from using them directly. You can check for -EOPNOTSUPP after calling
+mtd_get_unmapped_area().
+
+> +		return vm_iomap_memory(vma, start, len);
+> +	}
+>          /* This is broken because it assumes the MTD device is map-based
+>  	   and that mtd->priv is a valid struct map_info.  It should be
+>  	   replaced with something that uses the mtd_get_unmapped_area()
+>  	   operation properly. */
+>  	if (0 /*mtd->type == MTD_RAM || mtd->type == MTD_ROM*/) {
+> +		struct map_info *map = mtd->priv;
+
+You're adding dead code. It's behind an 'if (0)'. Could you perhaps take
+a harder look at this code and fix up or kill any cruft?
+
+>  #ifdef pgprot_noncached
+>  		if (file->f_flags & O_DSYNC || map->phys >= __pa(high_memory))
+>  			vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
 
 Brian
