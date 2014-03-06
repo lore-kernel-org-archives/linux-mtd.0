@@ -1,20 +1,17 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WLWZ7-0004Ct-H3
- for linux-mtd@lists.infradead.org; Thu, 06 Mar 2014 11:34:19 +0000
-Date: Thu, 6 Mar 2014 08:33:34 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: ayaka <lxr1234@hotmail.com>
-Subject: Re: about porting ubiblock to make squashfs work on it
-Message-ID: <20140306113334.GD532@arch.cereza>
-References: <BLU0-SMTP222D7E8438812853BF4B0AAD880@phx.gbl>
+Received: from ns.omicron.at ([212.183.10.25])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WLWiU-0004Y7-NA
+ for linux-mtd@lists.infradead.org; Thu, 06 Mar 2014 11:44:00 +0000
+From: Christian Riesch <christian.riesch@omicron.at>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH v3] mtd: Fix the behavior of OTP write if there is not enough
+ room for data
+Date: Thu, 6 Mar 2014 12:42:37 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <BLU0-SMTP222D7E8438812853BF4B0AAD880@phx.gbl>
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Message-ID: <4cb7a3dd-9eac-41c5-8498-f2695f01576c@mary.at.omicron.at>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Christian Riesch <christian.riesch@omicron.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,30 +21,128 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mar 06, ayaka wrote:
-> 
->    I will do a overlayfs on nand flash, about overlayfs, I will ask
-> linux-fsdevel for help, now I want to talking about ubiblcok.
-> As I know that the squashfs is not suitable for raw nand flash, so I
-> need the ubiblock to manage the nand flash then I will create a squashfs
-> on it as the lower of overlayfs, about the upper, I will try, ubifs,
+If a write to one time programmable memory (OTP) hits the end of this
+memory area, no more data can be written. The count variable in
+mtdchar_write() in drivers/mtd/mtdchar.c is not decreased anymore.
+We are trapped in the loop forever, mtdchar_write() will never return
+in this case.
 
-Putting squashfs on top of an UBI volume can be achieved using a recent
-UBI feature, that allows block creation on UBI volumes.
+The desired behavior of a write in such a case is described in [1]:
+- Try to write as much data as possible, truncate the write to fit into
+  the available memory and return the number of bytes that actually
+  have been written.
+- If no data could be written at all, return -ENOSPC.
 
-You can find the latest kernel patches at:
+This patch fixes the behavior of OTP write if there is not enough space
+for all data:
 
-http://git.infradead.org/linux-ubifs.git
+1) mtd_write_user_prot_reg() in drivers/mtd/mtdcore.c is modified to
+   return -ENOSPC if no data could be written at all.
+2) mtdchar_write() is modified to handle -ENOSPC correctly. Exit if a
+   write returned -ENOSPC and yield the correct return value, either
+   then number of bytes that could be written, or -ENOSPC, if no data
+   could be written at all.
 
-These patches are very easy to backport on v3.10 (I use them on v3.2).
+Furthermore the patch harmonizes the behavior of the OTP memory write
+in drivers/mtd/devices/mtd_dataflash.c with the other implementations
+and the requirements from [1]. Instead of returning -EINVAL if the data
+does not fit into the OTP memory, we try to write as much data as
+possible/truncate the write.
 
-The website documentation should be updated soon, but here's something
-until that happens:
+[1] http://pubs.opengroup.org/onlinepubs/9699919799/functions/write.html
 
-http://patchwork.ozlabs.org/patch/323628/
+Signed-off-by: Christian Riesch <christian.riesch@omicron.at>
+Cc: Brian Norris <computersforpeace@gmail.com>
+---
 
-The userspace tool to handle this will be pushed soon.
+Changes for v3:
+- Moved logic for returning -ENOSPC from cfi_intelext_write_user_prot_reg,
+  dataflash_write_user_otp, onenand_write_user_prot_reg to a common
+  implementation in mtd_write_user_prot_reg, as requested by Brian Norris.
+- Simplified the code in mtdchar_write as suggested by Brian.
+- Added more comments, commit message.
+
+ drivers/mtd/devices/mtd_dataflash.c |   16 ++++++++++------
+ drivers/mtd/mtdchar.c               |    9 +++++++++
+ drivers/mtd/mtdcore.c               |   12 +++++++++++-
+ 3 files changed, 30 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
+index c89f1c5..10b7608 100644
+--- a/drivers/mtd/devices/mtd_dataflash.c
++++ b/drivers/mtd/devices/mtd_dataflash.c
+@@ -543,14 +543,18 @@ static int dataflash_write_user_otp(struct mtd_info *mtd,
+ 	struct dataflash	*priv = mtd->priv;
+ 	int			status;
+ 
+-	if (len > 64)
+-		return -EINVAL;
++	if (from >= 64) {
++		/*
++		 * Attempting to write beyond the end of OTP memory,
++		 * no data can be written.
++		 */
++		*retlen = 0;
++		return 0;
++	}
+ 
+-	/* Strictly speaking, we *could* truncate the write ... but
+-	 * let's not do that for the only write that's ever possible.
+-	 */
++	/* Truncate the write to fit into OTP memory. */
+ 	if ((from + len) > 64)
+-		return -EINVAL;
++		len = 64 - from;
+ 
+ 	/* OUT: OP_WRITE_SECURITY, 3 zeroes, 64 data-or-zero bytes
+ 	 * IN:  ignore all
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index 250798c..7d4e7b9 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -324,6 +324,15 @@ static ssize_t mtdchar_write(struct file *file, const char __user *buf, size_t c
+ 		default:
+ 			ret = mtd_write(mtd, *ppos, len, &retlen, kbuf);
+ 		}
++
++		/*
++		 * Return -ENOSPC only if no data could be written at all.
++		 * Otherwise just return the number of bytes that actually
++		 * have been written.
++		 */
++		if ((ret == -ENOSPC) && (total_retlen))
++			break;
++
+ 		if (!ret) {
+ 			*ppos += retlen;
+ 			total_retlen += retlen;
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 0a7d77e..d201fee 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -932,12 +932,22 @@ EXPORT_SYMBOL_GPL(mtd_read_user_prot_reg);
+ int mtd_write_user_prot_reg(struct mtd_info *mtd, loff_t to, size_t len,
+ 			    size_t *retlen, u_char *buf)
+ {
++	int ret;
++
+ 	*retlen = 0;
+ 	if (!mtd->_write_user_prot_reg)
+ 		return -EOPNOTSUPP;
+ 	if (!len)
+ 		return 0;
+-	return mtd->_write_user_prot_reg(mtd, to, len, retlen, buf);
++	ret = mtd->_write_user_prot_reg(mtd, to, len, retlen, buf);
++	if (ret)
++		return ret;
++
++	/*
++	 * If no data could be written at all, we are out of memory and
++	 * must return -ENOSPC.
++	 */
++	return (*retlen) ? 0 : -ENOSPC;
+ }
+ EXPORT_SYMBOL_GPL(mtd_write_user_prot_reg);
+ 
 -- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+1.7.9.5
