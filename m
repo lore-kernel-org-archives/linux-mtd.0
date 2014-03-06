@@ -1,26 +1,22 @@
-Received: from mail-pb0-x230.google.com ([2607:f8b0:400e:c01::230])
+Received: from mail-pa0-x233.google.com ([2607:f8b0:400e:c03::233])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WLSwh-0006Kv-6P
- for linux-mtd@lists.infradead.org; Thu, 06 Mar 2014 07:42:23 +0000
-Received: by mail-pb0-f48.google.com with SMTP id md12so2251145pbc.7
- for <linux-mtd@lists.infradead.org>; Wed, 05 Mar 2014 23:41:59 -0800 (PST)
-Date: Wed, 5 Mar 2014 23:41:54 -0800
+ id 1WLTGq-0006cF-Vw
+ for linux-mtd@lists.infradead.org; Thu, 06 Mar 2014 08:03:14 +0000
+Received: by mail-pa0-f51.google.com with SMTP id kq14so2303113pab.24
+ for <linux-mtd@lists.infradead.org>; Thu, 06 Mar 2014 00:02:50 -0800 (PST)
+Date: Thu, 6 Mar 2014 00:02:46 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Wang Nan <wangnan0@huawei.com>
-Subject: Re: [patch 1/4] jffs2: unlock f->sem on error in jffs2_new_inode()
-Message-ID: <20140306074154.GV13420@norris-Latitude-E6410>
-References: <20140212204454.8FA415A40F6@corp2gmr1-2.hot.corp.google.com>
- <20140226020331.GB4194@ld-irv-0074> <530E8C91.4060703@huawei.com>
- <20140227065540.GC13420@norris-Latitude-E6410>
- <530EF850.4030202@huawei.com>
+To: Michael Grzeschik <m.grzeschik@pengutronix.de>
+Subject: Re: [PATCH] mtd: m25p80: set erasesize to 1 if device doesn't need
+ erase
+Message-ID: <20140306080246.GW13420@norris-Latitude-E6410>
+References: <1392115749-5940-1-git-send-email-m.grzeschik@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <530EF850.4030202@huawei.com>
-Cc: artem.bityutskiy@linux.intel.com, stable@vger.kernel.org,
- linux-mtd@lists.infradead.org, andy.wangguoli@huawei.com,
- genghui 00204690 <hui.geng@huawei.com>, akpm@linux-foundation.org,
- dwmw2@infradead.org
+In-Reply-To: <1392115749-5940-1-git-send-email-m.grzeschik@pengutronix.de>
+Cc: marex@denx.de, dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,50 +26,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Feb 27, 2014 at 04:33:20PM +0800, Wang Nan wrote:
-> On 2014/2/27 14:55, Brian Norris wrote:
-> > On Thu, Feb 27, 2014 at 08:53:37AM +0800, Wang Nan wrote:
-> >> On 2014/2/26 10:03, Brian Norris wrote:
-> >>> On Wed, Feb 12, 2014 at 12:44:54PM -0800, Andrew Morton wrote:
-> >>>> From: Wang Guoli <andy.wangguoli@huawei.com>
-> >>>> Subject: jffs2: unlock f->sem on error in jffs2_new_inode()
-> >>>>
-> >>>> If jffs2_new_inode() succeeds, it returns with f->sem held, and the caller
-> >>>> is responsible for releasing the lock.  If it fails, it still returns with
-> >>>> the lock held, but the caller won't release the lock, which will lead to
-> >>>> deadlock.
-> >>>
-> >>> Have you actually seen a deadlock for this? AFAICT, the error cases for
-> >>> jffs2_new_inode() all occur before anyone else actually has a reference
-> >>> to the inode, so I don't expect that we should see the deadlock.
-> >>>
-> >>
-> >> We found this bug by reading code. There's no deadlock have been actually seen.
-> > 
-> > Hmm, then I think maybe we should drop the stable tag. I'm not sure it's
-> > a practical issue, and it also has unrelated indentation changes. That
-> > means it breaks two of the rules in
-> > Documentation/stable_kernel_rules.txt. I'm dropping the stable tag
-> > unless someone shouts.
+Hi Michael,
+
+On Tue, Feb 11, 2014 at 11:49:09AM +0100, Michael Grzeschik wrote:
+> The driver currently set eraseblocksize to sector_size if the device has
+> the SECT_4K{,_PMC} flag not set. The mtdpart layer will check the
+> partitions to be bound to eraseblock size bounderies. Devices which do
+> not need to be erased before use, like e.g. mrams, this will always
+> trigger if the partition is smaller then the sectorsize.
+
+Just because they don't *need* to be erased doesn't mean they aren't
+erased. AFAICT only mtdblock actually checks the MTD_NO_ERASE flag.
+Otherwise, it looks like UBI (for instance) will perform typical MTD
+erasure. Thus, it is not safe even on these flash to have writeable (and
+therefore eraseable) partitions not aligned to the true sector size
+boundary. Or am I mistaken in how these mrams work?
+
+> This patch
+> fixes this by setting the eraseblocksize 1 for such devices.
+
+I'm not sure changing the eraseblock size is a great idea anyway. This
+creates incompatibilities for those who are already using the supported
+device, e.g., with UBIFS.
+
+> Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+> ---
+>  drivers/mtd/devices/m25p80.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> Thank you for your review, but it is still an obvious bug, isn't it?
-
-Maybe. I'm not really an expert in file systems, but it looks like you
-won't ever hit a deadlock, because no one will ever get a reference to
-this inode in the error path, and therefore no one will ever try to
-re-lock the lock. So while it looks like an inconsistent error path, it
-may be benign, and therefore this patch is not really a necessary
-bugfix.
-
-Again, I'm not really sure, and I'm not willing to stake a "stable"
-patch on code reading by two non-experts with no test case. As I see it,
-Documentation/stable_kernel_rules.txt is written for a reason.
-
-> We will work for test case, and will let you know if we successfully
-> trigger deadlock.
-
-Yes, please do let me know if you can identify one in practice. Or if
-you can convince me how the inode may leak out to cause a deadlock on
-the error paths in question.
+> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+> index ad1913909702..c7bdce75f574 100644
+> --- a/drivers/mtd/devices/m25p80.c
+> +++ b/drivers/mtd/devices/m25p80.c
+> @@ -1203,8 +1203,10 @@ static int m25p_probe(struct spi_device *spi)
+>  		flash->mtd.erasesize = info->sector_size;
+>  	}
+>  
+> -	if (info->flags & M25P_NO_ERASE)
+> +	if (info->flags & M25P_NO_ERASE) {
+>  		flash->mtd.flags |= MTD_NO_ERASE;
+> +		flash->mtd.erasesize = 1;
+> +	}
+>  
+>  	ppdata.of_node = spi->dev.of_node;
+>  	flash->mtd.dev.parent = &spi->dev;
 
 Brian
