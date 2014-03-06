@@ -1,24 +1,21 @@
-Received: from mailrelay012.isp.belgacom.be ([195.238.6.179])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WLcmK-0000hb-7q
- for linux-mtd@lists.infradead.org; Thu, 06 Mar 2014 18:12:22 +0000
-Date: Thu, 6 Mar 2014 18:13:05 +0800
-From: Fabian Frederick <fabf@skynet.be>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 3/4] mtd: block2mtd: check device size
-Message-Id: <20140306181305.3275a72f0070762cfd6e5670@skynet.be>
-In-Reply-To: <20140306085422.GY13420@norris-Latitude-E6410>
-References: <20140123205331.03314c6f82f24a6bb4b8ef53@skynet.be>
- <20140129100424.GA15271@localhost>
- <20140129205105.b88b00ea09c07de7014ab1d9@skynet.be>
- <20140306085422.GY13420@norris-Latitude-E6410>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: rdunlap@infradead.org, joern@lazybastard.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- akpm@linux-foundation.org
+Received: from mail-ie0-x22a.google.com ([2607:f8b0:4001:c03::22a])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WLf9o-0004W4-H3
+ for linux-mtd@lists.infradead.org; Thu, 06 Mar 2014 20:44:46 +0000
+Received: by mail-ie0-f170.google.com with SMTP id rd18so3409895iec.15
+ for <linux-mtd@lists.infradead.org>; Thu, 06 Mar 2014 12:44:22 -0800 (PST)
+Date: Thu, 6 Mar 2014 12:44:11 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Marek Vasut <marex@denx.de>
+Subject: Re: [PATCH] mtd: m25p80: add Macronix mx66l1g55g 1Gbit SPI flash
+Message-ID: <20140306204411.GA5232@ld-irv-0074>
+References: <1391031826-28794-1-git-send-email-computersforpeace@gmail.com>
+ <201402010235.27291.marex@denx.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <201402010235.27291.marex@denx.de>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,67 +25,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 6 Mar 2014 00:54:22 -0800
-Brian Norris <computersforpeace@gmail.com> wrote:
-
-> Hi,
-> 
-> On Wed, Jan 29, 2014 at 08:51:05PM +0800, Fabian Frederick wrote:
-> > On Wed, 29 Jan 2014 07:04:25 -0300 Ezequiel Garcia <ezequiel.garcia@free-electrons.com> wrote:
-> > > I saw you sent a v2 for one of the patches on this series,
-> > > but maybe this is worth considering too.
-> > > 
-> > > On Thu, Jan 23, 2014 at 08:53:31PM +0100, Fabian Frederick wrote:
-> > > [..]
-> > > > -/* FIXME: ensure that mtd->size % erase_size == 0 */
-> > > >  static struct block2mtd_dev *add_device(char *devname, int erase_size)
-> > > >  {
-> > > >  	const fmode_t mode = FMODE_READ | FMODE_WRITE | FMODE_EXCL;
-> > > > @@ -250,6 +249,11 @@ static struct block2mtd_dev *add_device(char *devname, int erase_size)
-> > > >  		goto devinit_err1;
-> > > >  	}
-> > > >  
-> > > > +	if ((long)dev->blkdev->bd_inode->i_size % erase_size) {
-> > > > +		pr_err("erasesize muse be a divisor of device size\n");
-> > > > +		goto devinit_err1;
-> > > > +	}
-> > > > +
-> > > 
-> > > Brian: What do you think?
-> > > 
-> > > Fabian: Have you tested this patch? Can you elaborate a bit more about
-> > > the effect it would have, compared to the current behavior?
+On Sat, Feb 01, 2014 at 02:35:27AM +0100, Marek Vasut wrote:
+> On Wednesday, January 29, 2014 at 10:43:46 PM, Brian Norris wrote:
+> > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> > ---
+> >  drivers/mtd/devices/m25p80.c | 1 +
+> >  1 file changed, 1 insertion(+)
 > > 
-> > Hi Ezequiel,
-> > 
-> >    This patch was tested with the following commands :
-> >    
-> > rmmod block2mtd;modprobe block2mtd block2mtd=/dev/loop0,<erasesize>;dmesg
-> > 
-> > with both correct and incorrect values.It tries to address the fixme 
-> > comment above the function.
-> > (/* FIXME: ensure that mtd->size % erase_size == 0 */) 
-> >    
-> >    From what I understand, global size must be a multiple of 
-> > erase_size when it comes to any MTD I/O operations. If Brian finds this one 
-> > interesting I can repost it with current error names against l2-mtd.git/next
+> > diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+> > index 1e147a849c35..5124b649d68c 100644
+> > --- a/drivers/mtd/devices/m25p80.c
+> > +++ b/drivers/mtd/devices/m25p80.c
+> > @@ -940,6 +940,7 @@ static const struct spi_device_id m25p_ids[] = {
+> >  	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, 0) },
+> >  	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
+> >  	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, M25P80_QUAD_READ) },
+> > +	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, M25P80_QUAD_READ) },
 > 
-> I'm not sure block2mtd would have many users, but the hunk above looks
-> reasonable. Feel free to send a patch.
+> Well it does make sense, doesn't it ? :)
+> 
+> Acked-by: Marek Vasut <marex@denx.de>
 
-Hi Brian,
+Pushed to l2-mtd.git.
 
-   I just send a patch v2 based on linux-next to avoid conflicts with my previous commit about
- mutex management in the same function and still staging there.
-
-Fabian
-
-> 
-> >    AFAICS, current behavior let any value work...
-> 
-> I bet this doesn't work out too well in the end. Maybe I'll give this a
-> whirl just to see.
-> 
-> >  PS : This would need further testing (eg boot command).
-> 
-> Brian
+Brian
