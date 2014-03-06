@@ -1,17 +1,23 @@
-Received: from ns.omicron.at ([212.183.10.25])
+Received: from mail-out.m-online.net ([212.18.0.10])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WLWiU-0004Y7-NA
- for linux-mtd@lists.infradead.org; Thu, 06 Mar 2014 11:44:00 +0000
-From: Christian Riesch <christian.riesch@omicron.at>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v3] mtd: Fix the behavior of OTP write if there is not enough
- room for data
-Date: Thu, 6 Mar 2014 12:42:37 +0100
+ id 1WLWs3-0004px-O5
+ for linux-mtd@lists.infradead.org; Thu, 06 Mar 2014 11:53:52 +0000
+From: Marek Vasut <marex@denx.de>
+To: Harini Katakam <harini.katakam@xilinx.com>
+Subject: Re: [PATCH] Check flag status register for Micron n25q512a
+Date: Thu, 6 Mar 2014 12:53:28 +0100
+References: <6bf927e513554e628fe15d309aac698e@BLUPR07MB002.namprd07.prod.outlook.com>
+ <CAD6G_RSXtjNuGy83CbOQRjmcAXEXThr4dEBjboUYrk6+ftSY-w@mail.gmail.com>
+ <4090135b-c01f-43f1-a953-24dccbb5353d@AM1EHSMHS001.ehs.local>
+In-Reply-To: <4090135b-c01f-43f1-a953-24dccbb5353d@AM1EHSMHS001.ehs.local>
 MIME-Version: 1.0
-Content-Type: text/plain
-Message-ID: <4cb7a3dd-9eac-41c5-8498-f2695f01576c@mary.at.omicron.at>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Christian Riesch <christian.riesch@omicron.at>
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201403061253.28360.marex@denx.de>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "chuck@mds.com" <chuck@mds.com>, Jagan Teki <jagannadh.teki@gmail.com>,
+ "Todd Legler \(tlegler\)" <tlegler@micron.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,128 +27,106 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If a write to one time programmable memory (OTP) hits the end of this
-memory area, no more data can be written. The count variable in
-mtdchar_write() in drivers/mtd/mtdchar.c is not decreased anymore.
-We are trapped in the loop forever, mtdchar_write() will never return
-in this case.
+On Thursday, March 06, 2014 at 11:03:50 AM, Harini Katakam wrote:
+> Hi,
+> 
+> > -----Original Message-----
+> > From: Jagan Teki [mailto:jagannadh.teki@gmail.com]
+> > Sent: Thursday, March 06, 2014 2:56 PM
+> > To: chuck@mds.com
+> > Cc: Marek Vasut; linux-mtd@lists.infradead.org; Todd Legler (tlegler);
+> > Harini Katakam
+> > Subject: Re: [PATCH] Check flag status register for Micron n25q512a
+> > 
+> > Hi All,
+> > 
+> > On Wed, Mar 5, 2014 at 3:15 AM, Chuck Peplinski <chuck@mds.com> wrote:
+> > > On 3/3/2014 6:29 PM, Marek Vasut wrote:
+> > >>> FSR can apparently toggle without SR.
+> > >> 
+> > >> Is that documented anywhere ? How can that be ?
+> > > 
+> > > I'm looking at the data sheet for the part, n25q_512mb_1ce3v_65nm.pdf,
+> > > from the Micron web site at
+> > > http://www.micron.com/products/nor-flash/serial-nor-
+> > 
+> > flash#fullPart&236=10.
+> > 
+> > > The comment that led us in this direction is on page 62:
+> > > 
+> > > "ERASE Operations
+> > > When the operation is in progress, the program or erase controller bit
+> > > of the flag status register is set to 0. The flag status register must
+> > > be polled for the operation status. When the operation completes, that
+> > > bit is cleared to 1.
+> > > Note that the flag status register must be polled even if operation
+> > > times out."
+> > > 
+> > >> Hmmmm , I have a feeling that if you actually added wait_till_ready()
+> > >> call at the end of _erase() and _write(), you would get the same
+> > >> effect. This would in turn mean you are instead missing
+> > >> wait_till_ready()
+> > 
+> > somewhere else.
+> > 
+> > >> Can you try using wait_till_ready() at the end of _erase() and
+> > >> _write() please ?
+> > > 
+> > > That would be the standard code, right?  That's where we started and
+> > > it did not work.
+> > > 
+> > > At some point I'll try some more tests.  I'm not blocked on this now,
+> > > so it's not totally critical.
+> > > One thing I notice:  The web site notes that this part stacks two 256M
+> > > dies. Maybe that's why it is non-standard?
+> > > Sure would be nice to hear from someone at Micron...
+> > 
+> > BTW: I have some information regarding this part.
+> > 
+> > We have tested this part both in u-boot and Linux where we could see an
+> > issue while polling read_status, and then we moved to use flag_status
+> > then we saw the consistent behavior.
+> > 
+> > Inputs we're got from Micron are:
+> > 1. Micron (though not clearly documented), stated that flag_status is
+> > clearly
+> > 
+> >     required to be polled, even though read_status reports the exact
+> >     status. They are not willing to change the datasheet but plan on
+> >     releasing an app note or something because this has led to a lot of
+> >     confusion.
+> > 
+> > 2. At this moment, no one else has such weird design of needing an
+> > flag_status poll.
+> > 
+> >     So checking for the device ID and polling flag_status looks like the
+> >     only
+> > 
+> > option.
+> > 
+> > The same approach we tried as well.
+> > 
+> > CCing - Harini (tested flag_status on Linux) CCing - Todd Legler from
+> > Micron.
+> > 
+> > Todd and Harini - Please share your inputs.
+> 
+> Micron devices with more than one die i.e. n25q_512mb and n25q_1gb
+> have this additional check.
+> Notes 14 and 15 under command definition table 18 describe this best.
+> Although, it is stated that the WIP bit in status register is NOT of
+> bit 7 in Flag status register, FSR still needs to be polled.
+> 
+> We had a discussion with Micron from which we learnt the following:
+> 1. Program/erase operations in multi-die devices are not complete until
+> Read FSR command receives a ready response form flash at least one time.
+> 2. In addition, if you are doing a Write Non-volatile configuration
+> register/ Write status register operation, the operation is only complete
+> after FSR poll returns ready consecutively 2 or 4 times (as many times as
+> the number of die). In this case, each time the chip select is toggled and
+> Read FSR command is sent, response is sent by alternate die (1,2,1,2... or
+> 1,2,3,4,1,2,3,4.....).
+> 
+> Todd, please add to this if you would like to elaborate.
 
-The desired behavior of a write in such a case is described in [1]:
-- Try to write as much data as possible, truncate the write to fit into
-  the available memory and return the number of bytes that actually
-  have been written.
-- If no data could be written at all, return -ENOSPC.
-
-This patch fixes the behavior of OTP write if there is not enough space
-for all data:
-
-1) mtd_write_user_prot_reg() in drivers/mtd/mtdcore.c is modified to
-   return -ENOSPC if no data could be written at all.
-2) mtdchar_write() is modified to handle -ENOSPC correctly. Exit if a
-   write returned -ENOSPC and yield the correct return value, either
-   then number of bytes that could be written, or -ENOSPC, if no data
-   could be written at all.
-
-Furthermore the patch harmonizes the behavior of the OTP memory write
-in drivers/mtd/devices/mtd_dataflash.c with the other implementations
-and the requirements from [1]. Instead of returning -EINVAL if the data
-does not fit into the OTP memory, we try to write as much data as
-possible/truncate the write.
-
-[1] http://pubs.opengroup.org/onlinepubs/9699919799/functions/write.html
-
-Signed-off-by: Christian Riesch <christian.riesch@omicron.at>
-Cc: Brian Norris <computersforpeace@gmail.com>
----
-
-Changes for v3:
-- Moved logic for returning -ENOSPC from cfi_intelext_write_user_prot_reg,
-  dataflash_write_user_otp, onenand_write_user_prot_reg to a common
-  implementation in mtd_write_user_prot_reg, as requested by Brian Norris.
-- Simplified the code in mtdchar_write as suggested by Brian.
-- Added more comments, commit message.
-
- drivers/mtd/devices/mtd_dataflash.c |   16 ++++++++++------
- drivers/mtd/mtdchar.c               |    9 +++++++++
- drivers/mtd/mtdcore.c               |   12 +++++++++++-
- 3 files changed, 30 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
-index c89f1c5..10b7608 100644
---- a/drivers/mtd/devices/mtd_dataflash.c
-+++ b/drivers/mtd/devices/mtd_dataflash.c
-@@ -543,14 +543,18 @@ static int dataflash_write_user_otp(struct mtd_info *mtd,
- 	struct dataflash	*priv = mtd->priv;
- 	int			status;
- 
--	if (len > 64)
--		return -EINVAL;
-+	if (from >= 64) {
-+		/*
-+		 * Attempting to write beyond the end of OTP memory,
-+		 * no data can be written.
-+		 */
-+		*retlen = 0;
-+		return 0;
-+	}
- 
--	/* Strictly speaking, we *could* truncate the write ... but
--	 * let's not do that for the only write that's ever possible.
--	 */
-+	/* Truncate the write to fit into OTP memory. */
- 	if ((from + len) > 64)
--		return -EINVAL;
-+		len = 64 - from;
- 
- 	/* OUT: OP_WRITE_SECURITY, 3 zeroes, 64 data-or-zero bytes
- 	 * IN:  ignore all
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 250798c..7d4e7b9 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -324,6 +324,15 @@ static ssize_t mtdchar_write(struct file *file, const char __user *buf, size_t c
- 		default:
- 			ret = mtd_write(mtd, *ppos, len, &retlen, kbuf);
- 		}
-+
-+		/*
-+		 * Return -ENOSPC only if no data could be written at all.
-+		 * Otherwise just return the number of bytes that actually
-+		 * have been written.
-+		 */
-+		if ((ret == -ENOSPC) && (total_retlen))
-+			break;
-+
- 		if (!ret) {
- 			*ppos += retlen;
- 			total_retlen += retlen;
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 0a7d77e..d201fee 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -932,12 +932,22 @@ EXPORT_SYMBOL_GPL(mtd_read_user_prot_reg);
- int mtd_write_user_prot_reg(struct mtd_info *mtd, loff_t to, size_t len,
- 			    size_t *retlen, u_char *buf)
- {
-+	int ret;
-+
- 	*retlen = 0;
- 	if (!mtd->_write_user_prot_reg)
- 		return -EOPNOTSUPP;
- 	if (!len)
- 		return 0;
--	return mtd->_write_user_prot_reg(mtd, to, len, retlen, buf);
-+	ret = mtd->_write_user_prot_reg(mtd, to, len, retlen, buf);
-+	if (ret)
-+		return ret;
-+
-+	/*
-+	 * If no data could be written at all, we are out of memory and
-+	 * must return -ENOSPC.
-+	 */
-+	return (*retlen) ? 0 : -ENOSPC;
- }
- EXPORT_SYMBOL_GPL(mtd_write_user_prot_reg);
- 
--- 
-1.7.9.5
+Thanks for pointing this out.
