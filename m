@@ -1,20 +1,16 @@
-Received: from mail-pd0-x235.google.com ([2607:f8b0:400e:c02::235])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WLpHR-0002pR-Ob
- for linux-mtd@lists.infradead.org; Fri, 07 Mar 2014 07:33:18 +0000
-Received: by mail-pd0-f181.google.com with SMTP id p10so3656744pdj.26
- for <linux-mtd@lists.infradead.org>; Thu, 06 Mar 2014 23:32:56 -0800 (PST)
-Date: Thu, 6 Mar 2014 23:32:54 -0800
+Date: Thu, 6 Mar 2014 23:27:02 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH 0/2] pxa3xx-nand: Minor cleanup
-Message-ID: <20140307073254.GC31517@norris-Latitude-E6410>
-References: <1393521206-4623-1-git-send-email-ezequiel.garcia@free-electrons.com>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH 0/3] mtd: gpmi: add subpage read support
+Message-ID: <20140307072702.GC13420@norris-Latitude-E6410>
+References: <a>
+ <1388718102-26097-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1393521206-4623-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <1388718102-26097-1-git-send-email-b32955@freescale.com>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,13 +20,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Feb 27, 2014 at 02:13:24PM -0300, Ezequiel Garcia wrote:
-> Two very small cleanups.
-> 
-> Ezequiel Garcia (2):
->   mtd: nand: pxa3xx: Remove unused macro
->   mtd: nand: pxa3xx: Print actual ECC strength in error message
+On Fri, Jan 03, 2014 at 11:01:39AM +0800, Huang Shijie wrote:
+>  5) This patch depends on the following patch:
+>     http://lists.infradead.org/pipermail/linux-mtd/2013-December/051091.html
 
-Pushed both to l2-mtd.git. Thanks!
+Do you have an actual dependency? I don't spot it myself. They applied
+fine to my tree, and the code is logically independent.
 
+I'm ready to push this series (but not the linked one quite yet; let me
+have a look). Shout if this is incorrect.
+
+> Huang Shijie (3):
+>   mtd: nand: add "page" argument for read_subpage hook
+>   mtd: gpmi: do not use the mtd->writesize
+>   mtd: gpmi: add subpage read support
+
+Thanks,
 Brian
