@@ -1,12 +1,12 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
+Received: from comal.ext.ti.com ([198.47.26.152])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WLuQd-0008AP-Cx
+ id 1WLuQd-0008Ag-JV
  for linux-mtd@lists.infradead.org; Fri, 07 Mar 2014 13:03:09 +0000
 From: Pekon Gupta <pekon@ti.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v6 2/4] mtd: devices: elm: clean elm_load_syndrome
-Date: Fri, 7 Mar 2014 18:32:22 +0530
-Message-ID: <1394197344-9468-3-git-send-email-pekon@ti.com>
+Subject: [PATCH v6 4/4] mtd: devices: elm: update DRIVER_NAME as "omap-elm"
+Date: Fri, 7 Mar 2014 18:32:24 +0530
+Message-ID: <1394197344-9468-5-git-send-email-pekon@ti.com>
 In-Reply-To: <1394197344-9468-1-git-send-email-pekon@ti.com>
 References: <1394197344-9468-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
@@ -24,75 +24,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
- - replace ECC_BYTES* macros with ecc->bytes
- - Add scalability for future ecc-schemes
+use "omap-elm" as DRIVER_NAME
+prefix DRIVER_NAME in debug and error messages
 
 Signed-off-by: Pekon Gupta <pekon@ti.com>
 ---
- drivers/mtd/devices/elm.c         | 14 ++++++++------
- include/linux/platform_data/elm.h |  7 -------
- 2 files changed, 8 insertions(+), 13 deletions(-)
+ drivers/mtd/devices/elm.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/devices/elm.c b/drivers/mtd/devices/elm.c
-index 7fda50f..f59c100 100644
+index 43fd81d..16e62ae 100644
 --- a/drivers/mtd/devices/elm.c
 +++ b/drivers/mtd/devices/elm.c
-@@ -181,10 +181,8 @@ static void elm_load_syndrome(struct elm_info *info,
- 			elm_configure_page_mode(info, i, true);
- 			offset = ELM_SYNDROME_FRAGMENT_0 +
- 				SYNDROME_FRAGMENT_REG_SIZE * i;
--
--			/* BCH8 */
--			if (info->bch_type) {
--
-+			switch (info->bch_type) {
-+			case BCH8_ECC:
- 				/* syndrome fragment 0 = ecc[9-12B] */
- 				val = cpu_to_be32(*(u32 *) &ecc[9]);
- 				elm_write_reg(info, offset, val);
-@@ -203,7 +201,8 @@ static void elm_load_syndrome(struct elm_info *info,
- 				offset += 4;
- 				val = ecc[0];
- 				elm_write_reg(info, offset, val);
--			} else {
-+				break;
-+			case BCH4_ECC:
- 				/* syndrome fragment 0 = ecc[20-52b] bits */
- 				val = (cpu_to_be32(*(u32 *) &ecc[3]) >> 4) |
- 					((ecc[2] & 0xf) << 28);
-@@ -213,11 +212,14 @@ static void elm_load_syndrome(struct elm_info *info,
- 				offset += 4;
- 				val = cpu_to_be32(*(u32 *) &ecc[0]) >> 12;
- 				elm_write_reg(info, offset, val);
-+				break;
-+			default:
-+				pr_err("invalid config bch_type\n");
- 			}
- 		}
+@@ -15,6 +15,9 @@
+  *
+  */
  
- 		/* Update ecc pointer with ecc byte size */
--		ecc += info->bch_type ? BCH8_SIZE : BCH4_SIZE;
-+		ecc += info->ecc_step_bytes;
- 	}
- }
++#define	DRIVER_NAME	"omap-elm"
++#define pr_fmt(fmt)	DRIVER_NAME ": " fmt
++
+ #include <linux/platform_device.h>
+ #include <linux/module.h>
+ #include <linux/interrupt.h>
+@@ -522,7 +525,7 @@ MODULE_DEVICE_TABLE(of, elm_of_match);
  
-diff --git a/include/linux/platform_data/elm.h b/include/linux/platform_data/elm.h
-index b824ff3..dc0218d 100644
---- a/include/linux/platform_data/elm.h
-+++ b/include/linux/platform_data/elm.h
-@@ -26,13 +26,6 @@ enum bch_ecc {
- /* ELM support 8 error syndrome process */
- #define ERROR_VECTOR_MAX		8
- 
--#define BCH8_ECC_OOB_BYTES		13
--#define BCH4_ECC_OOB_BYTES		7
--/* RBL requires 14 byte even though BCH8 uses only 13 byte */
--#define BCH8_SIZE			(BCH8_ECC_OOB_BYTES + 1)
--/* Uses 1 extra byte to handle erased pages */
--#define BCH4_SIZE			(BCH4_ECC_OOB_BYTES + 1)
--
- /**
-  * struct elm_errorvec - error vector for elm
-  * @error_reported:		set true for vectors error is reported
+ static struct platform_driver elm_driver = {
+ 	.driver	= {
+-		.name	= "elm",
++		.name	= DRIVER_NAME,
+ 		.owner	= THIS_MODULE,
+ 		.of_match_table = of_match_ptr(elm_of_match),
+ 		.pm	= &elm_pm_ops,
 -- 
 1.8.5.1.163.gd7aced9
