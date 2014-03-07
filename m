@@ -1,22 +1,19 @@
-Received: from mail-pd0-x22e.google.com ([2607:f8b0:400e:c02::22e])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WLoWD-0000NT-2X
- for linux-mtd@lists.infradead.org; Fri, 07 Mar 2014 06:44:29 +0000
-Received: by mail-pd0-f174.google.com with SMTP id y13so3597172pdi.5
- for <linux-mtd@lists.infradead.org>; Thu, 06 Mar 2014 22:44:06 -0800 (PST)
-Date: Thu, 6 Mar 2014 22:44:02 -0800
+Date: Thu, 6 Mar 2014 23:12:54 -0800
 From: Brian Norris <computersforpeace@gmail.com>
-To: Roman Pen <r.peniaev@gmail.com>
-Subject: Re: [PATCH 1/1] mtd: mtd_blkdevs: handle REQ_FLUSH request and do
- explicit flush of writeback buffer
-Message-ID: <20140307064402.GA13420@norris-Latitude-E6410>
-References: <1388593281-22613-1-git-send-email-r.peniaev@gmail.com>
+To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH RESEND] mtd: fix bug in partition size calculation
+ related to MTDPART_OFS_RETAIN
+Message-ID: <20140307071254.GB13420@norris-Latitude-E6410>
+References: <1393261137-12088-1-git-send-email-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <1388593281-22613-1-git-send-email-r.peniaev@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1393261137-12088-1-git-send-email-u.kleine-koenig@pengutronix.de>
+Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-mtd@lists.infradead.org, kernel@pengutronix.de,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,69 +23,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jan 02, 2014 at 01:21:21AM +0900, Roman Pen wrote:
-> From: Roman Peniaev <r.peniaev@gmail.com>
+On Mon, Feb 24, 2014 at 05:58:57PM +0100, Uwe Kleine-König wrote:
+> If the remaining space is exactly what should still be available after
+> the partition in question is added slave->mtd.size was set to zero
+> instead of erroring out. In the next code block this was then
+> interpreted as MTDPART_SIZ_FULL filling the rest of the partition
+> instead of keeping it free for the next partition.
 > 
-> mtd_blkdevs is device with volatile cache (writeback buffer), so it should support
-> REQ_FLUSH to do explicit flush.
+> This problem existed since the MTDPART_OFS_RETAIN feature was introduced
+> for 3.2-rc1.
 > 
-> Without this patch 'sync' does not guarantee that writeback buffer will be flushed
-> on disk in case of power off, e.g.:
-> 
->   $ cp some_file /mnt
->   $ sync
-> 
->   ### POWER OFF
-> 
-> In case of this sequence writeback buffer will not be flushed on disk.
-> 
-> This patch fixes this behaviour and explicitly reports to block layer that flush
-> requests are being supported.
-> 
-> Signed-off-by: Roman Peniaev <r.peniaev@gmail.com>
-> CC: David Woodhouse <dwmw2@infradead.org>
-> CC: linux-mtd@lists.infradead.org
-> CC: linux-kernel@vger.kernel.org
+> Fixes: 1a31368bf92e ("mtd: add a flags for partitions which should just leave smth. after them")
+> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 > ---
->  drivers/mtd/mtd_blkdevs.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
+> Hello,
 > 
-> diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-> index 5073cbc..feafe5c 100644
-> --- a/drivers/mtd/mtd_blkdevs.c
-> +++ b/drivers/mtd/mtd_blkdevs.c
-> @@ -89,6 +89,12 @@ static int do_blktrans_request(struct mtd_blktrans_ops *tr,
->  	if (req->cmd_type != REQ_TYPE_FS)
->  		return -EIO;
->  
-> +	if (req->cmd_flags & REQ_FLUSH) {
-> +		if (tr->flush)
-> +			return tr->flush(dev);
-> +		return 0;
-> +	}
-> +
->  	if (blk_rq_pos(req) + blk_rq_cur_sectors(req) >
->  	    get_capacity(req->rq_disk))
->  		return -EIO;
-> @@ -409,6 +415,8 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
->  	if (!new->rq)
->  		goto error3;
->  
-> +	blk_queue_flush(new->rq, REQ_FLUSH);
+> resending with the correct email address of Artem.
+> 
+> This MTDPART_OFS_RETAIN feature looks very special, and there is only a single
+> user (arch/arm/mach-ep93xx/ts72xx.c). Moreover I didn't understand its purpose
+> from reading the documentation in include/linux/mtd/partitions.h:
+> 
+> 	offset: absolute starting position within the master MTD device; [...]
+> 	if [defined as] MTDPART_OFS_RETAIN, consume as much as possible,
+> 	leaving size after the end of partition.
+> 
+> But maybe it's only me.
 
-How about only registering the flush command if we support it? So:
+Yeah, it's kind of odd. Not sure what a better solution is, exactly.
 
-	if (tr->flush)
-		blk_queue_flush(new->rq, REQ_FLUSH);
+> Anyhow I wonder if this feature is still considered valuable and if it's maybe
+> better to just drop support for MTDPART_OFS_RETAIN. A more intuive replacement
+> could be to specify start and end(+1) of partitions and interpret .start =
+> -0x100000 as 1 MiB before the end of the device.
 
-Then you can probably also change the earlier hunk to the following, no?
+Well, we're already using negative numbers (embedded in an *unsigned*
+field!) to represent a few special cases, so I'm not sure if we want to
+overload "large" negative numbers to be offsets from the end...
 
-	if (req->cmd_flags & REQ_FLUSH)
-		return tr->flush(dev);
+> Best regards
+> Uwe
+> 
+>  drivers/mtd/mtdpart.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+> index 6e732c3820c1..3ca9d7fbf126 100644
+> --- a/drivers/mtd/mtdpart.c
+> +++ b/drivers/mtd/mtdpart.c
+> @@ -442,16 +442,16 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
+>  	}
+>  	if (slave->offset == MTDPART_OFS_RETAIN) {
+>  		slave->offset = cur_offset;
+> -		if (master->size - slave->offset >= slave->mtd.size) {
+> +		if (master->size - slave->offset > slave->mtd.size) {
+>  			slave->mtd.size = master->size - slave->offset
+>  							- slave->mtd.size;
+>  		} else {
+>  			printk(KERN_ERR "mtd partition \"%s\" doesn't have enough space: %#llx < %#llx, disabled\n",
 
-> +
->  	new->rq->queuedata = new;
->  	blk_queue_logical_block_size(new->rq, tr->blksize);
->  
+Change the '<' in the message here, to '<='?
+
+>  				part->name, master->size - slave->offset,
+>  				slave->mtd.size);
+>  			/* register to preserve ordering */
+>  			goto out_register;
+
+It seems like this has a bug too; shouldn't we be registering this
+partition as 0-sized in this case? So:
+
+	slave->mtd.size = 0;
+
+>  		}
+>  	}
+>  	if (slave->mtd.size == MTDPART_SIZ_FULL)
+>  		slave->mtd.size = master->size - slave->offset;
 
 Brian
