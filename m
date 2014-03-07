@@ -1,15 +1,22 @@
-Message-ID: <53194432.50104@atmel.com>
-Date: Fri, 7 Mar 2014 11:59:46 +0800
-From: Josh Wu <josh.wu@atmel.com>
+Received: from mail-pd0-x22e.google.com ([2607:f8b0:400e:c02::22e])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WLoWD-0000NT-2X
+ for linux-mtd@lists.infradead.org; Fri, 07 Mar 2014 06:44:29 +0000
+Received: by mail-pd0-f174.google.com with SMTP id y13so3597172pdi.5
+ for <linux-mtd@lists.infradead.org>; Thu, 06 Mar 2014 22:44:06 -0800 (PST)
+Date: Thu, 6 Mar 2014 22:44:02 -0800
+From: Brian Norris <computersforpeace@gmail.com>
+To: Roman Pen <r.peniaev@gmail.com>
+Subject: Re: [PATCH 1/1] mtd: mtd_blkdevs: handle REQ_FLUSH request and do
+ explicit flush of writeback buffer
+Message-ID: <20140307064402.GA13420@norris-Latitude-E6410>
+References: <1388593281-22613-1-git-send-email-r.peniaev@gmail.com>
 MIME-Version: 1.0
-To: Herve Codina <Herve.CODINA@celad.com>, <linux-mtd@lists.infradead.org>,
- <linux-arm-kernel@lists.infradead.org>, Brian Norris
- <computersforpeace@gmail.com>
-Subject: Re: [PATCH] Disable Subpage nand write when using Atmel PMECC
-References: <1393845329-18175-1-git-send-email-Herve.CODINA@celad.com>
-In-Reply-To: <1393845329-18175-1-git-send-email-Herve.CODINA@celad.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1388593281-22613-1-git-send-email-r.peniaev@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,40 +26,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Herve
-
-I add the Brian in the email, who is the maintainer of the mtd.
-
-On 3/3/2014 7:15 PM, Herve Codina wrote:
-> Crash detected on sam5d35 and its pmecc nand ecc controller.
->
-> The problem was a call to chip->ecc.hwctl from nand_write_subpage_hwecc
-> (nand_base.c) when we write a sub page.
-> chip->ecc.hwctl function is not set when we are using PMECC controller.
-> As a workaround, set NAND_NO_SUBPAGE_WRITE for PMECC controller in
-> order to disable sub page access in nand_write_page.
->
->
-> Signed-off-by: Herve Codina <Herve.CODINA@celad.com>
-
-Acked-by: Josh Wu <josh.wu@atmel.com>
-
+On Thu, Jan 02, 2014 at 01:21:21AM +0900, Roman Pen wrote:
+> From: Roman Peniaev <r.peniaev@gmail.com>
+> 
+> mtd_blkdevs is device with volatile cache (writeback buffer), so it should support
+> REQ_FLUSH to do explicit flush.
+> 
+> Without this patch 'sync' does not guarantee that writeback buffer will be flushed
+> on disk in case of power off, e.g.:
+> 
+>   $ cp some_file /mnt
+>   $ sync
+> 
+>   ### POWER OFF
+> 
+> In case of this sequence writeback buffer will not be flushed on disk.
+> 
+> This patch fixes this behaviour and explicitly reports to block layer that flush
+> requests are being supported.
+> 
+> Signed-off-by: Roman Peniaev <r.peniaev@gmail.com>
+> CC: David Woodhouse <dwmw2@infradead.org>
+> CC: linux-mtd@lists.infradead.org
+> CC: linux-kernel@vger.kernel.org
 > ---
->   drivers/mtd/nand/atmel_nand.c |    1 +
->   1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-> index 1f719e0..4ce181a 100644
-> --- a/drivers/mtd/nand/atmel_nand.c
-> +++ b/drivers/mtd/nand/atmel_nand.c
-> @@ -1220,6 +1220,7 @@ static int atmel_pmecc_nand_init_params(struct platform_device *pdev,
->   		goto err;
->   	}
->   
-> +	nand_chip->options |= NAND_NO_SUBPAGE_WRITE;
->   	nand_chip->ecc.read_page = atmel_nand_pmecc_read_page;
->   	nand_chip->ecc.write_page = atmel_nand_pmecc_write_page;
->   
+>  drivers/mtd/mtd_blkdevs.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+> index 5073cbc..feafe5c 100644
+> --- a/drivers/mtd/mtd_blkdevs.c
+> +++ b/drivers/mtd/mtd_blkdevs.c
+> @@ -89,6 +89,12 @@ static int do_blktrans_request(struct mtd_blktrans_ops *tr,
+>  	if (req->cmd_type != REQ_TYPE_FS)
+>  		return -EIO;
+>  
+> +	if (req->cmd_flags & REQ_FLUSH) {
+> +		if (tr->flush)
+> +			return tr->flush(dev);
+> +		return 0;
+> +	}
+> +
+>  	if (blk_rq_pos(req) + blk_rq_cur_sectors(req) >
+>  	    get_capacity(req->rq_disk))
+>  		return -EIO;
+> @@ -409,6 +415,8 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
+>  	if (!new->rq)
+>  		goto error3;
+>  
+> +	blk_queue_flush(new->rq, REQ_FLUSH);
 
-Best Regards,
-Josh Wu
+How about only registering the flush command if we support it? So:
+
+	if (tr->flush)
+		blk_queue_flush(new->rq, REQ_FLUSH);
+
+Then you can probably also change the earlier hunk to the following, no?
+
+	if (req->cmd_flags & REQ_FLUSH)
+		return tr->flush(dev);
+
+> +
+>  	new->rq->queuedata = new;
+>  	blk_queue_logical_block_size(new->rq, tr->blksize);
+>  
+
+Brian
