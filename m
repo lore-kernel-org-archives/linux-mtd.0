@@ -1,17 +1,19 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
+Received: from bear.ext.ti.com ([192.94.94.41])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WLuQZ-0008AD-QE
- for linux-mtd@lists.infradead.org; Fri, 07 Mar 2014 13:03:04 +0000
-From: Pekon Gupta <pekon@TI.COM>
+ id 1WLuQb-0008AF-KD
+ for linux-mtd@lists.infradead.org; Fri, 07 Mar 2014 13:03:06 +0000
+From: Pekon Gupta <pekon@ti.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v6 0/4] mtd: devices: elm: add checks ELM H/W constrains,
- driver code cleanup
-Date: Fri, 7 Mar 2014 18:32:20 +0530
-Message-ID: <1394197344-9468-1-git-send-email-pekon@ti.com>
+Subject: [PATCH v6 1/4] mtd: devices: elm: check for hardware engine's design
+ constrains
+Date: Fri, 7 Mar 2014 18:32:21 +0530
+Message-ID: <1394197344-9468-2-git-send-email-pekon@ti.com>
+In-Reply-To: <1394197344-9468-1-git-send-email-pekon@ti.com>
+References: <1394197344-9468-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Cc: avinashphilipk@gmail.com, Felipe Balbi <balbi@TI.COM>,
- linux-mtd <linux-mtd@lists.infradead.org>, Pekon Gupta <pekon@TI.COM>,
+Cc: avinashphilipk@gmail.com, Felipe Balbi <balbi@ti.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>, Pekon Gupta <pekon@ti.com>,
  Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
  Stefan Roese <sr@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,37 +25,109 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-*changes v5 -> v6*
-[PATCH 02/04] minor cleanup
+ELM hardware engine is used by BCH ecc-schemes for detecting and locating
+ECC errors. This patch adds following checks as per ELM design constrains:
 
-*changes v4 -> v5*
-This patch series is split version from earlier series [1].
-This series refactors and cleans ELM driver which is used by Hardware
-based BCHx ecc-schemes.
- - Undo: introduction of 'struct mtd_info' and 'struct nand_chip'. Instead
-         keep ELM driver independent of mtd_info and nand_chip structs and
-         pass only required ECC configurations as elm_config() arguments
-         elm_config(..., int ecc_steps, int ecc_step_size, int ecc_step_bytes)
- - Undo: re-writing of elm_load_syndrome() ECC register configurations.
+ - ELM internal buffers are of 1K,
+   So it cannot process data with ecc-step-size > 1K.
 
-*changes v3 -> v4 [1]*
- - in-corporated feedbacks from Brian Norris <computersforpeace@gmail.com>
- - updated: use 'pr_fmt(fmt)' to suffix DRIVER_NAME
- - removed: local 'eccsteps' in ELM driver, instead using nand_chip->ecc.steps
- - undo: irrelavant white-space changes
+ - ELM engine can execute upto maximum of 8 threads in parallel,
+   So in *page-mode* (when complete page is processed in single iteration),
+   ELM cannot support ecc-steps > 8.
 
-[1] http://lists.infradead.org/pipermail/linux-mtd/2013-November/050242.html
+Signed-off-by: Pekon Gupta <pekon@ti.com>
+---
+ drivers/mtd/devices/elm.c         | 19 ++++++++++++++++++-
+ drivers/mtd/nand/omap2.c          |  9 ++++++---
+ include/linux/platform_data/elm.h |  3 ++-
+ 3 files changed, 26 insertions(+), 5 deletions(-)
 
-Pekon Gupta (4):
-  mtd: devices: elm: check for hardware engine's design constrains
-  mtd: devices: elm: clean elm_load_syndrome
-  mtd: devices: elm: configure parallel channels based on ecc_steps
-  mtd: devices: elm: update DRIVER_NAME as "omap-elm"
-
- drivers/mtd/devices/elm.c         | 44 +++++++++++++++++++++++++++++----------
- drivers/mtd/nand/omap2.c          |  9 +++++---
- include/linux/platform_data/elm.h | 10 ++-------
- 3 files changed, 41 insertions(+), 22 deletions(-)
-
+diff --git a/drivers/mtd/devices/elm.c b/drivers/mtd/devices/elm.c
+index f160d2c..7fda50f 100644
+--- a/drivers/mtd/devices/elm.c
++++ b/drivers/mtd/devices/elm.c
+@@ -84,6 +84,9 @@ struct elm_info {
+ 	struct list_head list;
+ 	enum bch_ecc bch_type;
+ 	struct elm_registers elm_regs;
++	int ecc_steps;
++	int ecc_step_size;
++	int ecc_step_bytes;
+ };
+ 
+ static LIST_HEAD(elm_devices);
+@@ -103,7 +106,8 @@ static u32 elm_read_reg(struct elm_info *info, int offset)
+  * @dev:	ELM device
+  * @bch_type:	Type of BCH ecc
+  */
+-int elm_config(struct device *dev, enum bch_ecc bch_type)
++int elm_config(struct device *dev, enum bch_ecc bch_type,
++	int ecc_steps, int ecc_step_size, int ecc_step_bytes)
+ {
+ 	u32 reg_val;
+ 	struct elm_info *info = dev_get_drvdata(dev);
+@@ -112,10 +116,23 @@ int elm_config(struct device *dev, enum bch_ecc bch_type)
+ 		dev_err(dev, "Unable to configure elm - device not probed?\n");
+ 		return -ENODEV;
+ 	}
++	/* ELM cannot detect ECC errors for chunks > 1KB */
++	if (ecc_step_size > (ELM_ECC_SIZE/2 + 1)) {
++		pr_err("unsupported config ecc-size=%d", ecc_step_size);
++		return -EINVAL;
++	}
++	/* ELM support 8 error syndrome process */
++	if (ecc_steps > ERROR_VECTOR_MAX) {
++		pr_err("unsupported config ecc-step=%d", ecc_steps);
++		return -EINVAL;
++	}
+ 
+ 	reg_val = (bch_type & ECC_BCH_LEVEL_MASK) | (ELM_ECC_SIZE << 16);
+ 	elm_write_reg(info, ELM_LOCATION_CONFIG, reg_val);
+ 	info->bch_type = bch_type;
++	info->ecc_steps		= ecc_steps;
++	info->ecc_step_size	= ecc_step_size;
++	info->ecc_step_bytes	= ecc_step_bytes;
+ 
+ 	return 0;
+ }
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index 5ce2097..369aee7 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -1546,6 +1546,8 @@ static int is_elm_present(struct omap_nand_info *info,
+ 			struct device_node *elm_node, enum bch_ecc bch_type)
+ {
+ 	struct platform_device *pdev;
++	struct nand_ecc_ctrl *ecc = &info->nand.ecc;
++	int err = 0;
+ 	/* check whether elm-id is passed via DT */
+ 	if (!elm_node) {
+ 		pr_err("nand: error: ELM DT node not found\n");
+@@ -1559,9 +1561,10 @@ static int is_elm_present(struct omap_nand_info *info,
+ 	}
+ 	/* ELM module available, now configure it */
+ 	info->elm_dev = &pdev->dev;
+-	if (elm_config(info->elm_dev, bch_type))
+-		return -ENODEV;
+-	return 0;
++	err = elm_config(info->elm_dev, bch_type,
++		(info->mtd.writesize / ecc->size), ecc->size, ecc->bytes);
++
++	return err;
+ }
+ #endif /* CONFIG_MTD_NAND_ECC_BCH */
+ 
+diff --git a/include/linux/platform_data/elm.h b/include/linux/platform_data/elm.h
+index bf0a83b..b824ff3 100644
+--- a/include/linux/platform_data/elm.h
++++ b/include/linux/platform_data/elm.h
+@@ -50,5 +50,6 @@ struct elm_errorvec {
+ 
+ void elm_decode_bch_error_page(struct device *dev, u8 *ecc_calc,
+ 		struct elm_errorvec *err_vec);
+-int elm_config(struct device *dev, enum bch_ecc bch_type);
++int elm_config(struct device *dev, enum bch_ecc bch_type,
++	int ecc_steps, int ecc_step_size, int ecc_step_bytes);
+ #endif /* __ELM_H */
 -- 
 1.8.5.1.163.gd7aced9
