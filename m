@@ -1,24 +1,17 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WLunI-0000dp-5i
- for linux-mtd@lists.infradead.org; Fri, 07 Mar 2014 13:26:33 +0000
-From: Pekon Gupta <pekon@ti.com>
-To: Brian Norris <computersforpeace@gmail.com>, Tony Lindgren
- <tony@atomide.com>
-Subject: [PATCH v2 4/4] mtd: nand: omap: Documentation: How to select correct
- ECC scheme for your device ?
-Date: Fri, 7 Mar 2014 18:54:53 +0530
-Message-ID: <1394198693-8003-5-git-send-email-pekon@ti.com>
-In-Reply-To: <1394198693-8003-1-git-send-email-pekon@ti.com>
-References: <1394198693-8003-1-git-send-email-pekon@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Jon Cormier <jcormier@criticallink.com>,
- linux-omap <linux-omap@vger.kernel.org>, Felipe Balbi <balbi@ti.com>,
- Daniel Mack <zonque@gmail.com>, linux-mtd <linux-mtd@lists.infradead.org>,
- Pekon Gupta <pekon@ti.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Stefan Roese <sr@denx.de>
+Received: from smtp2.macqel.be ([109.135.2.61])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WLvF9-0001YG-Si
+ for linux-mtd@lists.infradead.org; Fri, 07 Mar 2014 13:55:21 +0000
+From: Philippe De Muyter <phdm@macqel.be>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH v3] mtd: mtdchar: allow mmap for ram devices in memory address
+ space.
+Date: Fri,  7 Mar 2014 14:54:39 +0100
+Message-Id: <1394200479-17168-1-git-send-email-phdm@macqel.be>
+In-Reply-To: <1394189058-12711-1-git-send-email-phdm@macqel.be>
+References: <1394189058-12711-1-git-send-email-phdm@macqel.be>
+Cc: David Howells <dhowells@redhat.com>, Markus Niebel <Markus.Niebel@tqs.de>,
+ Brian Norris <computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,67 +21,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
- - Adds DT binding property for BCH16 ECC scheme
- - Adds describes on factors which determine choice of ECC scheme for particular device
+use mtd_get_unmapped_area, as asked by an ancient comment, to get
+the physical address (if any) in memory of the mtd device.
 
-Signed-off-by: Pekon Gupta <pekon@ti.com>
+Therefore, mapram_unmapped_area had to be changed to return the physical
+address, not the virtual one, For the NOMMU case, that makes no difference,
+but for the MMU case, it is needed by mapram_unmapped_area to implement mmap.
+
+Signed-off-by: Philippe De Muyter <phdm@macqel.be>
+Cc: David Howells <dhowells@redhat.com>
+Cc: Markus Niebel <Markus.Niebel@tqs.de>
+Cc: Brian Norris <computersforpeace@gmail.com>
 ---
- .../devicetree/bindings/mtd/gpmc-nand.txt          | 39 ++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
+v3: avoid duplicating test done by mtd_get_unmapped_area
 
-diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-index 5e1f31b..f2dbb33 100644
---- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-@@ -28,6 +28,8 @@ Optional properties:
- 		"ham1"		1-bit Hamming ecc code
- 		"bch4"		4-bit BCH ecc code
- 		"bch8"		8-bit BCH ecc code
-+		"bch16"		16-bit BCH ECC code
-+		Refer below "How to select correct ECC scheme for your device ?"
+ drivers/mtd/chips/map_ram.c |    2 +-
+ drivers/mtd/mtdchar.c       |   24 ++++++++++--------------
+ 2 files changed, 11 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/mtd/chips/map_ram.c b/drivers/mtd/chips/map_ram.c
+index 991c2a1..e93d147 100644
+--- a/drivers/mtd/chips/map_ram.c
++++ b/drivers/mtd/chips/map_ram.c
+@@ -92,7 +92,7 @@ static unsigned long mapram_unmapped_area(struct mtd_info *mtd,
+ 					  unsigned long flags)
+ {
+ 	struct map_info *map = mtd->priv;
+-	return (unsigned long) map->virt + offset;
++	return (unsigned long) map->phys + offset;
+ }
  
-  - ti,nand-xfer-type:		A string setting the data transfer type. One of:
- 
-@@ -90,3 +92,40 @@ Example for an AM33xx board:
- 		};
- 	};
- 
-+How to select correct ECC scheme for your device ?
-+--------------------------------------------------
-+Higher ECC scheme usually means better protection against bit-flips and
-+increased system lifetime. However, selection of ECC scheme is dependent
-+on various other factors like;
-+(1) Presence of supporting hardware engines on SoC.
-+	Some legacy OMAP SoC do not have ELM h/w engine thus such SoC cannot
-+	support BCHx_HW ECC schemes. But such SoC can support
-+	BCHx_HW_DETECTION_SW ECC schemes which use s/w library with slight
-+	CPU performance panalty only when too bit-flips are detected.
-+(2) Device parameters like OOBSIZE
-+	Higher ECC schemes require more OOB/Spare area to store ECC.
-+	So choice of ECC scheme is limited by NAND oobsize. In general
-+	following expression help determine whether given device can
-+	accomodate ECC syndrome or not:
-+	"2 + (PAGESIZE / 512) * ECC_BYTES" >= OOBSIZE
-+	where
-+		OOBSIZE		number of bytes in OOB/spare area
-+		PAGESIZE	number of bytes in main-area of device page
-+		ECC_BYTES	number of ECC bytes generated to protect
-+		                512 bytes of data, which is:
-+				'3' for HAM1_xx ecc schemes
-+				'7' for BCH4_xx ecc schemes
-+				'14' for BCH8_xx ecc schemes
-+				'26' for BCH16_xx ecc schemes
+ static int mapram_read (struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen, u_char *buf)
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index 2147e73..5956246 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -1112,20 +1112,16 @@ static int mtdchar_mmap(struct file *file, struct vm_area_struct *vma)
+ #ifdef CONFIG_MMU
+ 	struct mtd_file_info *mfi = file->private_data;
+ 	struct mtd_info *mtd = mfi->mtd;
+-	struct map_info *map = mtd->priv;
+-
+-        /* This is broken because it assumes the MTD device is map-based
+-	   and that mtd->priv is a valid struct map_info.  It should be
+-	   replaced with something that uses the mtd_get_unmapped_area()
+-	   operation properly. */
+-	if (0 /*mtd->type == MTD_RAM || mtd->type == MTD_ROM*/) {
+-#ifdef pgprot_noncached
+-		if (file->f_flags & O_DSYNC || map->phys >= __pa(high_memory))
+-			vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
+-#endif
+-		return vm_iomap_memory(vma, map->phys, map->size);
+-	}
+-	return -ENODEV;
++	loff_t offset = vma->vm_pgoff << PAGE_SHIFT;
++	loff_t len = vma->vm_end - vma->vm_start;
++	phys_addr_t start;
 +
-+	Example(a): For a device with PAGESIZE = 2048 and OOBSIZE = 64
-+		Number of spare/OOB bytes required for using BCH16 ecc-scheme
-+		"(2 + (2048 / 512) * 26) = 106 bytes" is greater than OOBSIZE
-+		(As per above table for BCH16 ecc-scheme, ECC_BYTES = 26)
-+		Thus BCH16 cannot be supported on 2K NAND with OOBSIZE=64 bytes
-+
-+	Example(b): For a device with PAGESIZE = 2048 and OOBSIZE = 128
-+		Number of spare/OOB bytes required for using BCH16 ecc-scheme
-+		"(2 + (2048 / 512) * 26) = 106 bytes" is less than OOBSIZE
-+		(As per above table for BCH16 ecc-scheme, ECC_BYTES = 26)
-+		Thus BCH16 can be supported on 4K NAND with OOBSIZE=128 bytes
++	start = mtd_get_unmapped_area(mtd, len, offset, vma->vm_flags);
++	if (start == -EOPNOTSUPP)
++		return -ENODEV;
++	if (start == -EINVAL)
++		return -EINVAL;
++	return vm_iomap_memory(vma, start, len);
+ #else
+ 	return vma->vm_flags & VM_SHARED ? 0 : -EACCES;
+ #endif
 -- 
-1.8.5.1.163.gd7aced9
+1.7.5.3
