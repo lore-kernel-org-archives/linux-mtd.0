@@ -1,13 +1,12 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
+Received: from devils.ext.ti.com ([198.47.26.153])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WLuQb-0008AF-KD
- for linux-mtd@lists.infradead.org; Fri, 07 Mar 2014 13:03:06 +0000
+ id 1WLuQd-0008AP-Cx
+ for linux-mtd@lists.infradead.org; Fri, 07 Mar 2014 13:03:09 +0000
 From: Pekon Gupta <pekon@ti.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v6 1/4] mtd: devices: elm: check for hardware engine's design
- constrains
-Date: Fri, 7 Mar 2014 18:32:21 +0530
-Message-ID: <1394197344-9468-2-git-send-email-pekon@ti.com>
+Subject: [PATCH v6 2/4] mtd: devices: elm: clean elm_load_syndrome
+Date: Fri, 7 Mar 2014 18:32:22 +0530
+Message-ID: <1394197344-9468-3-git-send-email-pekon@ti.com>
 In-Reply-To: <1394197344-9468-1-git-send-email-pekon@ti.com>
 References: <1394197344-9468-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
@@ -25,109 +24,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ELM hardware engine is used by BCH ecc-schemes for detecting and locating
-ECC errors. This patch adds following checks as per ELM design constrains:
-
- - ELM internal buffers are of 1K,
-   So it cannot process data with ecc-step-size > 1K.
-
- - ELM engine can execute upto maximum of 8 threads in parallel,
-   So in *page-mode* (when complete page is processed in single iteration),
-   ELM cannot support ecc-steps > 8.
+ - replace ECC_BYTES* macros with ecc->bytes
+ - Add scalability for future ecc-schemes
 
 Signed-off-by: Pekon Gupta <pekon@ti.com>
 ---
- drivers/mtd/devices/elm.c         | 19 ++++++++++++++++++-
- drivers/mtd/nand/omap2.c          |  9 ++++++---
- include/linux/platform_data/elm.h |  3 ++-
- 3 files changed, 26 insertions(+), 5 deletions(-)
+ drivers/mtd/devices/elm.c         | 14 ++++++++------
+ include/linux/platform_data/elm.h |  7 -------
+ 2 files changed, 8 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/mtd/devices/elm.c b/drivers/mtd/devices/elm.c
-index f160d2c..7fda50f 100644
+index 7fda50f..f59c100 100644
 --- a/drivers/mtd/devices/elm.c
 +++ b/drivers/mtd/devices/elm.c
-@@ -84,6 +84,9 @@ struct elm_info {
- 	struct list_head list;
- 	enum bch_ecc bch_type;
- 	struct elm_registers elm_regs;
-+	int ecc_steps;
-+	int ecc_step_size;
-+	int ecc_step_bytes;
- };
+@@ -181,10 +181,8 @@ static void elm_load_syndrome(struct elm_info *info,
+ 			elm_configure_page_mode(info, i, true);
+ 			offset = ELM_SYNDROME_FRAGMENT_0 +
+ 				SYNDROME_FRAGMENT_REG_SIZE * i;
+-
+-			/* BCH8 */
+-			if (info->bch_type) {
+-
++			switch (info->bch_type) {
++			case BCH8_ECC:
+ 				/* syndrome fragment 0 = ecc[9-12B] */
+ 				val = cpu_to_be32(*(u32 *) &ecc[9]);
+ 				elm_write_reg(info, offset, val);
+@@ -203,7 +201,8 @@ static void elm_load_syndrome(struct elm_info *info,
+ 				offset += 4;
+ 				val = ecc[0];
+ 				elm_write_reg(info, offset, val);
+-			} else {
++				break;
++			case BCH4_ECC:
+ 				/* syndrome fragment 0 = ecc[20-52b] bits */
+ 				val = (cpu_to_be32(*(u32 *) &ecc[3]) >> 4) |
+ 					((ecc[2] & 0xf) << 28);
+@@ -213,11 +212,14 @@ static void elm_load_syndrome(struct elm_info *info,
+ 				offset += 4;
+ 				val = cpu_to_be32(*(u32 *) &ecc[0]) >> 12;
+ 				elm_write_reg(info, offset, val);
++				break;
++			default:
++				pr_err("invalid config bch_type\n");
+ 			}
+ 		}
  
- static LIST_HEAD(elm_devices);
-@@ -103,7 +106,8 @@ static u32 elm_read_reg(struct elm_info *info, int offset)
-  * @dev:	ELM device
-  * @bch_type:	Type of BCH ecc
-  */
--int elm_config(struct device *dev, enum bch_ecc bch_type)
-+int elm_config(struct device *dev, enum bch_ecc bch_type,
-+	int ecc_steps, int ecc_step_size, int ecc_step_bytes)
- {
- 	u32 reg_val;
- 	struct elm_info *info = dev_get_drvdata(dev);
-@@ -112,10 +116,23 @@ int elm_config(struct device *dev, enum bch_ecc bch_type)
- 		dev_err(dev, "Unable to configure elm - device not probed?\n");
- 		return -ENODEV;
+ 		/* Update ecc pointer with ecc byte size */
+-		ecc += info->bch_type ? BCH8_SIZE : BCH4_SIZE;
++		ecc += info->ecc_step_bytes;
  	}
-+	/* ELM cannot detect ECC errors for chunks > 1KB */
-+	if (ecc_step_size > (ELM_ECC_SIZE/2 + 1)) {
-+		pr_err("unsupported config ecc-size=%d", ecc_step_size);
-+		return -EINVAL;
-+	}
-+	/* ELM support 8 error syndrome process */
-+	if (ecc_steps > ERROR_VECTOR_MAX) {
-+		pr_err("unsupported config ecc-step=%d", ecc_steps);
-+		return -EINVAL;
-+	}
- 
- 	reg_val = (bch_type & ECC_BCH_LEVEL_MASK) | (ELM_ECC_SIZE << 16);
- 	elm_write_reg(info, ELM_LOCATION_CONFIG, reg_val);
- 	info->bch_type = bch_type;
-+	info->ecc_steps		= ecc_steps;
-+	info->ecc_step_size	= ecc_step_size;
-+	info->ecc_step_bytes	= ecc_step_bytes;
- 
- 	return 0;
  }
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 5ce2097..369aee7 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -1546,6 +1546,8 @@ static int is_elm_present(struct omap_nand_info *info,
- 			struct device_node *elm_node, enum bch_ecc bch_type)
- {
- 	struct platform_device *pdev;
-+	struct nand_ecc_ctrl *ecc = &info->nand.ecc;
-+	int err = 0;
- 	/* check whether elm-id is passed via DT */
- 	if (!elm_node) {
- 		pr_err("nand: error: ELM DT node not found\n");
-@@ -1559,9 +1561,10 @@ static int is_elm_present(struct omap_nand_info *info,
- 	}
- 	/* ELM module available, now configure it */
- 	info->elm_dev = &pdev->dev;
--	if (elm_config(info->elm_dev, bch_type))
--		return -ENODEV;
--	return 0;
-+	err = elm_config(info->elm_dev, bch_type,
-+		(info->mtd.writesize / ecc->size), ecc->size, ecc->bytes);
-+
-+	return err;
- }
- #endif /* CONFIG_MTD_NAND_ECC_BCH */
  
 diff --git a/include/linux/platform_data/elm.h b/include/linux/platform_data/elm.h
-index bf0a83b..b824ff3 100644
+index b824ff3..dc0218d 100644
 --- a/include/linux/platform_data/elm.h
 +++ b/include/linux/platform_data/elm.h
-@@ -50,5 +50,6 @@ struct elm_errorvec {
+@@ -26,13 +26,6 @@ enum bch_ecc {
+ /* ELM support 8 error syndrome process */
+ #define ERROR_VECTOR_MAX		8
  
- void elm_decode_bch_error_page(struct device *dev, u8 *ecc_calc,
- 		struct elm_errorvec *err_vec);
--int elm_config(struct device *dev, enum bch_ecc bch_type);
-+int elm_config(struct device *dev, enum bch_ecc bch_type,
-+	int ecc_steps, int ecc_step_size, int ecc_step_bytes);
- #endif /* __ELM_H */
+-#define BCH8_ECC_OOB_BYTES		13
+-#define BCH4_ECC_OOB_BYTES		7
+-/* RBL requires 14 byte even though BCH8 uses only 13 byte */
+-#define BCH8_SIZE			(BCH8_ECC_OOB_BYTES + 1)
+-/* Uses 1 extra byte to handle erased pages */
+-#define BCH4_SIZE			(BCH4_ECC_OOB_BYTES + 1)
+-
+ /**
+  * struct elm_errorvec - error vector for elm
+  * @error_reported:		set true for vectors error is reported
 -- 
 1.8.5.1.163.gd7aced9
