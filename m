@@ -1,20 +1,21 @@
-Received: from mail-pd0-x22b.google.com ([2607:f8b0:400e:c02::22b])
+Received: from mail-pb0-x236.google.com ([2607:f8b0:400e:c01::236])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WLpPy-0003f5-Hl
- for linux-mtd@lists.infradead.org; Fri, 07 Mar 2014 07:42:07 +0000
-Received: by mail-pd0-f171.google.com with SMTP id r10so3693376pdi.30
- for <linux-mtd@lists.infradead.org>; Thu, 06 Mar 2014 23:41:45 -0800 (PST)
-Date: Thu, 6 Mar 2014 23:41:34 -0800
+ id 1WLpV3-00044M-6A
+ for linux-mtd@lists.infradead.org; Fri, 07 Mar 2014 07:47:22 +0000
+Received: by mail-pb0-f54.google.com with SMTP id ma3so3845038pbc.27
+ for <linux-mtd@lists.infradead.org>; Thu, 06 Mar 2014 23:46:59 -0800 (PST)
+Date: Thu, 6 Mar 2014 23:46:57 -0800
 From: Brian Norris <computersforpeace@gmail.com>
 To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH v3 1/3] mtd: nand: add a helper to parse the Hynix nand
-Message-ID: <20140307074134.GE31517@norris-Latitude-E6410>
+Subject: Re: [PATCH v3 2/3] mtd: nand: add new parsing rule for Hynix's
+ H27UBG8T2CTR
+Message-ID: <20140307074657.GF31517@norris-Latitude-E6410>
 References: <1388736518-5934-1-git-send-email-b32955@freescale.com>
- <1388736518-5934-2-git-send-email-b32955@freescale.com>
+ <1388736518-5934-3-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1388736518-5934-2-git-send-email-b32955@freescale.com>
+In-Reply-To: <1388736518-5934-3-git-send-email-b32955@freescale.com>
 Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,31 +26,138 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jan 03, 2014 at 04:08:36PM +0800, Huang Shijie wrote:
-> This patch adds a nand_parse_hynix() to parse the Hynix MLC nand
-> whose ID length is 6 bytes.
+On Fri, Jan 03, 2014 at 04:08:37PM +0800, Huang Shijie wrote:
+> The H27UBG8T2CTR is produced by the 20nm technology, and Hynix uses
+> different ID rules for it.
 > 
-> This patch makes preparations for parsing other Hynix nand.
+> In order to parse out the correct information, we should check the
+> process technology and the Device ID, and then determine whether to
+> use a new parsing rule for this chip.
+> 
+> This patch adds the new parsing rule for the H27UBG8T2CTR.
+> 
+> Tested with H27UBG8T2CTR(8192 + 640).
 > 
 > Signed-off-by: Huang Shijie <b32955@freescale.com>
 > ---
->  drivers/mtd/nand/nand_base.c |   89 +++++++++++++++++++++++------------------
->  1 files changed, 50 insertions(+), 39 deletions(-)
+>  drivers/mtd/nand/nand_base.c |   90 +++++++++++++++++++++++++++++++-----------
+>  1 files changed, 67 insertions(+), 23 deletions(-)
 > 
 > diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 4ce8007..d6b7dc3 100644
+> index d6b7dc3..2c2f7af 100644
 > --- a/drivers/mtd/nand/nand_base.c
 > +++ b/drivers/mtd/nand/nand_base.c
-> @@ -3198,6 +3198,55 @@ static int nand_get_bits_per_cell(u8 cellinfo)
->  	return bits + 1;
->  }
+> @@ -3204,34 +3204,78 @@ static void nand_parse_hynix(struct mtd_info *mtd, struct nand_chip *chip,
+>  {
+>  	int extid = id_data[3];
+>  	unsigned int tmp;
+> +	bool new_rule;
 >  
-> +/* Parse for the Hynix MLC nand which has 6-bytes ID */
-> +static void nand_parse_hynix(struct mtd_info *mtd, struct nand_chip *chip,
-> +			u8 id_data[8], int *busw)
-> +{
+> +	/*
+> +	 * The ((id_data[5] & 0x7) < 4) means the nand uses >20nm technology;
+> +	 * The ((id_data[5] & 0x7) >= 4) means the nand uses <=20nm technology;
+> +	 *
+> +	 * Please reference to the H27UBG8T2B (p.23) and H27UBG8T2C (p.23).
+> +	 *
+> +	 * The new parsing rule is used in the H27UBG8T2C, we have to use the
+> +	 * process technology and the Device ID to distinguish this new rule.
+> +	 */
+> +	new_rule = ((id_data[5] & 0x7) >= 4) && (id_data[1] == 0xd7);
 
-Can you use 'decode' instead of 'parse', so the naming is like
-nand_decode_id() and nand_decode_ext_id()?
+Are you sure you need to use the device ID (0xD7)? It's best if we don't
+have to constrain ourselves to particular flash sizes here... Are there
+Hynix MLC that don't follow the id_data[5] pattern for differentiating
+technology types (>20nm vs <=20nm)? I'll have to check my datasheets
+when I get back in the office.
+
+> +
+> +	tmp = new_rule ? SZ_4K : SZ_2K;
+
+You forgot to include <linux/sizes.h> again :)
+
+>  	/* Calc pagesize */
+> -	mtd->writesize = 2048 << (extid & 0x03);
+> +	mtd->writesize = tmp << (extid & 0x03);
+>  	extid >>= 2;
+>  
+>  	/* Calc oobsize */
+> -	switch (((extid >> 2) & 0x04) | (extid & 0x03)) {
+> -	case 0:
+> -		mtd->oobsize = 128;
+> -		break;
+> -	case 1:
+> -		mtd->oobsize = 224;
+> -		break;
+> -	case 2:
+> -		mtd->oobsize = 448;
+> -		break;
+> -	case 3:
+> -		mtd->oobsize = 64;
+> -		break;
+> -	case 4:
+> -		mtd->oobsize = 32;
+> -		break;
+> -	case 5:
+> -		mtd->oobsize = 16;
+> -		break;
+> -	default:
+> -		mtd->oobsize = 640;
+> -		break;
+> +	tmp = ((extid >> 2) & 0x04) | (extid & 0x03);
+> +
+> +	if (!new_rule) {
+> +		switch (tmp) {
+> +		case 0:
+> +			mtd->oobsize = 128;
+> +			break;
+> +		case 1:
+> +			mtd->oobsize = 224;
+> +			break;
+> +		case 2:
+> +			mtd->oobsize = 448;
+> +			break;
+> +		case 3:
+> +			mtd->oobsize = 64;
+> +			break;
+> +		case 4:
+> +			mtd->oobsize = 32;
+> +			break;
+> +		case 5:
+> +			mtd->oobsize = 16;
+> +			break;
+> +		default:
+> +			mtd->oobsize = 640;
+> +			break;
+> +		}
+> +	} else {
+> +		switch (tmp) {
+> +		case 0:
+> +			mtd->oobsize = 640;
+> +			break;
+> +		case 1:
+> +			mtd->oobsize = 448;
+> +			break;
+> +		case 2:
+> +			mtd->oobsize = 224;
+> +			break;
+> +		case 3:
+> +			mtd->oobsize = 128;
+> +			break;
+> +		case 4:
+> +			mtd->oobsize = 64;
+> +			break;
+> +		case 5:
+> +			mtd->oobsize = 32;
+> +			break;
+> +		case 6:
+> +			mtd->oobsize = 16;
+> +			break;
+> +		default:
+> +			mtd->oobsize = 640;
+> +			break;
+> +		}
+>  	}
+>  	extid >>= 2;
+>  
 
 Brian
