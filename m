@@ -1,26 +1,22 @@
-Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
+Received: from ch1ehsobe006.messaging.microsoft.com ([216.32.181.186]
+ helo=ch1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WLpga-00054C-41
- for linux-mtd@lists.infradead.org; Fri, 07 Mar 2014 07:59:17 +0000
-Received: by mail-pa0-f43.google.com with SMTP id bj1so3816110pad.16
- for <linux-mtd@lists.infradead.org>; Thu, 06 Mar 2014 23:58:54 -0800 (PST)
-Date: Thu, 6 Mar 2014 23:58:51 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Elie De Brauwer <eliedebrauwer@gmail.com>
-Subject: Re: [PATCH V4] mtd: gpmi: fix the bitflips for erased page
-Message-ID: <20140307075851.GH31517@norris-Latitude-E6410>
-References: <1389602838-25212-1-git-send-email-b32955@freescale.com>
- <20140221060833.GA29360@shlinux2.ap.freescale.net>
- <CAGWqfig_LO69C6dHt0qwVEtt0Winu5Jqk7Ef5N6H1qaPMnw58A@mail.gmail.com>
- <20140307075615.GG31517@norris-Latitude-E6410>
+ id 1WLph2-00057t-3z
+ for linux-mtd@lists.infradead.org; Fri, 07 Mar 2014 07:59:46 +0000
+Message-ID: <53197C8D.3010604@freescale.com>
+Date: Fri, 7 Mar 2014 16:00:13 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20140307075615.GG31517@norris-Latitude-E6410>
-Cc: bpringlemeir@nbsps.com, Vikram.Narayanan@in.bosch.com,
- Huang Shijie <b32955@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Pekon Gupta <pekon@ti.com>, David Woodhouse <dwmw2@infradead.org>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v3 2/3] mtd: nand: add new parsing rule for Hynix's
+ H27UBG8T2CTR
+References: <1388736518-5934-1-git-send-email-b32955@freescale.com>
+ <1388736518-5934-3-git-send-email-b32955@freescale.com>
+ <20140307074657.GF31517@norris-Latitude-E6410>
+In-Reply-To: <20140307074657.GF31517@norris-Latitude-E6410>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,40 +26,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-(+ Pekon for real this time! Sorry for the noise)
+=E4=BA=8E 2014=E5=B9=B403=E6=9C=8807=E6=97=A5 15:46, Brian Norris =E5=86=99=
+=E9=81=93:
+> Are you sure you need to use the device ID (0xD7)? It's best if we don'=
+t
+> have to constrain ourselves to particular flash sizes here... Are there
+> Hynix MLC that don't follow the id_data[5] pattern for differentiating
+> technology types (>20nm vs<=3D20nm)? I'll have to check my datasheets
+> when I get back in the office.
+>
+The H27UCG8T2ATR is also a 20nm chip whose device ID is 0xDE. Its=20
+id_data[5] is 0xc4.
+But it also use the old parsing rule: the page size is the multiple of 2K=
+.
 
-Pekon, please note the question directed to you (and others) below.
+that's why i checked the device ID.
 
-And in case you're missing the actual patch context:
-
-  http://lists.infradead.org/pipermail/linux-mtd/2014-January/051513.html
-
-On Thu, Mar 06, 2014 at 11:56:15PM -0800, Brian Norris wrote:
-> + Pekon (he's doing something similar in OMAP NAND)
-> 
-> On Mon, Mar 03, 2014 at 08:47:07AM +0100, Elie De Brauwer wrote:
-> > On Fri, Feb 21, 2014 at 7:08 AM, Huang Shijie <b32955@freescale.com> wrote:
-> > > On Mon, Jan 13, 2014 at 04:47:18PM +0800, Huang Shijie wrote:
-> > > Just a ping.
-> > >
-> > > could you merge this patch?
-> > 
-> > Also a ping from my side, I'm also a demanding party for a solution
-> > for this issue, and I'm also waiting for a solution to get applied
-> > upstream to integrate it into my board.
-> 
-> Hmm, I'm not terribly opposed to this patch, but you, Pekon, and I
-> (in my local driver) are all doing something very similar, and I believe
-> Pekon has gotten the logic wrong one or more times. I believe I actually
-> have a version of this type of patch locally that could probably be put
-> into the nand_base layer, with a flag so that drivers could request the
-> check themselves (something like chip->options |=
-> NAND_NEED_FF_ECC_CHECK; or pick your own name!).
-> 
-> What do you think? All interested parties please chime in. I can try to
-> push a patch out soon for you all to test soon, or else I can see about
-> taking your patches as-is for now, then try to unify them myself
-> afterward.
-
-Thanks,
-Brian
+thanks
+Huang Shijie
