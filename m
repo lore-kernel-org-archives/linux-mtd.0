@@ -1,17 +1,26 @@
-Received: from smtp2.macqel.be ([109.135.2.61])
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WLvF9-0001YG-Si
- for linux-mtd@lists.infradead.org; Fri, 07 Mar 2014 13:55:21 +0000
-From: Philippe De Muyter <phdm@macqel.be>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH v3] mtd: mtdchar: allow mmap for ram devices in memory address
- space.
-Date: Fri,  7 Mar 2014 14:54:39 +0100
-Message-Id: <1394200479-17168-1-git-send-email-phdm@macqel.be>
-In-Reply-To: <1394189058-12711-1-git-send-email-phdm@macqel.be>
-References: <1394189058-12711-1-git-send-email-phdm@macqel.be>
-Cc: David Howells <dhowells@redhat.com>, Markus Niebel <Markus.Niebel@tqs.de>,
- Brian Norris <computersforpeace@gmail.com>
+ id 1WLvGG-0001aS-E0
+ for linux-mtd@lists.infradead.org; Fri, 07 Mar 2014 13:56:28 +0000
+Date: Fri, 7 Mar 2014 10:55:44 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: Annoying ML complains about "suspicious header"
+Message-ID: <20140307135544.GA27354@arch.cereza>
+References: <CACna6rzSrnx8ueOn1O5k62eTppPDRVFgTA56WgQQqWUW1asMJw@mail.gmail.com>
+ <1393325817.3412.94.camel@sauron.fi.intel.com>
+ <CAN8TOE8Cu0fkdV7J6ZxMAoN0oAdvBMFQETMZUa7sp0v3wocJ6w@mail.gmail.com>
+ <1394009048.6302.12.camel@sauron.fi.intel.com>
+ <1394017388.21141.56.camel@i7.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1394017388.21141.56.camel@i7.infradead.org>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,71 +30,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-use mtd_get_unmapped_area, as asked by an ancient comment, to get
-the physical address (if any) in memory of the mtd device.
+On Mar 05, David Woodhouse wrote:
+[..]
+> The complexity with the threading check is that it has false positives
+> with patch sets, because we *expect* those to be in a thread but without
+> the normal 'Re:' in the subject. The check already does have an
+> exemption if it finds [Pp][Aa][Tt][Cc][Hh] in the subject — Rafał,
+> looking at the four messages in the moderation queue from you, if you'd
+> just said [RFC PATCH] and [WIP PATCH] instead of just [RFC] and [WIP]
+> alone, then they'd have sailed straight through.
+> 
 
-Therefore, mapram_unmapped_area had to be changed to return the physical
-address, not the virtual one, For the NOMMU case, that makes no difference,
-but for the MMU case, it is needed by mapram_unmapped_area to implement mmap.
-
-Signed-off-by: Philippe De Muyter <phdm@macqel.be>
-Cc: David Howells <dhowells@redhat.com>
-Cc: Markus Niebel <Markus.Niebel@tqs.de>
-Cc: Brian Norris <computersforpeace@gmail.com>
----
-v3: avoid duplicating test done by mtd_get_unmapped_area
-
- drivers/mtd/chips/map_ram.c |    2 +-
- drivers/mtd/mtdchar.c       |   24 ++++++++++--------------
- 2 files changed, 11 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/mtd/chips/map_ram.c b/drivers/mtd/chips/map_ram.c
-index 991c2a1..e93d147 100644
---- a/drivers/mtd/chips/map_ram.c
-+++ b/drivers/mtd/chips/map_ram.c
-@@ -92,7 +92,7 @@ static unsigned long mapram_unmapped_area(struct mtd_info *mtd,
- 					  unsigned long flags)
- {
- 	struct map_info *map = mtd->priv;
--	return (unsigned long) map->virt + offset;
-+	return (unsigned long) map->phys + offset;
- }
- 
- static int mapram_read (struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen, u_char *buf)
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 2147e73..5956246 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -1112,20 +1112,16 @@ static int mtdchar_mmap(struct file *file, struct vm_area_struct *vma)
- #ifdef CONFIG_MMU
- 	struct mtd_file_info *mfi = file->private_data;
- 	struct mtd_info *mtd = mfi->mtd;
--	struct map_info *map = mtd->priv;
--
--        /* This is broken because it assumes the MTD device is map-based
--	   and that mtd->priv is a valid struct map_info.  It should be
--	   replaced with something that uses the mtd_get_unmapped_area()
--	   operation properly. */
--	if (0 /*mtd->type == MTD_RAM || mtd->type == MTD_ROM*/) {
--#ifdef pgprot_noncached
--		if (file->f_flags & O_DSYNC || map->phys >= __pa(high_memory))
--			vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
--#endif
--		return vm_iomap_memory(vma, map->phys, map->size);
--	}
--	return -ENODEV;
-+	loff_t offset = vma->vm_pgoff << PAGE_SHIFT;
-+	loff_t len = vma->vm_end - vma->vm_start;
-+	phys_addr_t start;
-+
-+	start = mtd_get_unmapped_area(mtd, len, offset, vma->vm_flags);
-+	if (start == -EOPNOTSUPP)
-+		return -ENODEV;
-+	if (start == -EINVAL)
-+		return -EINVAL;
-+	return vm_iomap_memory(vma, start, len);
- #else
- 	return vma->vm_flags & VM_SHARED ? 0 : -EACCES;
- #endif
+FWIW, the LAKML also has this rule. IIRC, I've been bitten by it.
 -- 
-1.7.5.3
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
