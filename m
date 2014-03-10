@@ -1,18 +1,24 @@
-Date: Sat, 8 Mar 2014 21:33:06 -0800
-From: Brian Norris <computersforpeace@gmail.com>
-To: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 01/35] mtd: st_spi_fsm: Allocate resources and register
- with MTD framework
-Message-ID: <20140309053306.GL31517@norris-Latitude-E6410>
-References: <1392735362-1245-1-git-send-email-lee.jones@linaro.org>
- <1392735362-1245-2-git-send-email-lee.jones@linaro.org>
+Received: from mail-de.keymile.com ([195.8.104.250])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WMwBD-0007DC-LP
+ for linux-mtd@lists.infradead.org; Mon, 10 Mar 2014 09:07:29 +0000
+Message-ID: <531D80AB.5010209@keymile.com>
+Date: Mon, 10 Mar 2014 10:06:51 +0100
+From: Gerlando Falauto <gerlando.falauto@keymile.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1392735362-1245-2-git-send-email-lee.jones@linaro.org>
-Cc: Angus.Clark@st.com, DCG_UPD_stlinux_kernel@list.st.com,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+To: Austin Boyle <boyle.austin@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH] mtd: m25p80: Flash protection support for STmicro chips
+References: <1357257748.31023.12.camel@pc786-ubu.GNET.GLOBAL.VPN>	<528D15B6.2030800@keymile.com>	<530F4CDE.7010205@keymile.com>	<20140305081008.GP13420@norris-Latitude-E6410>	<20140305083153.GR13420@norris-Latitude-E6410>
+ <CADnxWiqfaaRoaL+B_WQxx38-gpSDmdFQPLN-bs-moGRECXeJxg@mail.gmail.com>
+In-Reply-To: <CADnxWiqfaaRoaL+B_WQxx38-gpSDmdFQPLN-bs-moGRECXeJxg@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Marek Vasut <marex@denx.de>, Angus Clark <angus.clark@st.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,229 +28,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Lee,
+Hi Austin, Brian,
 
->From my very first glance here, it looks like there are several (mostly
-minor) comments that still aren't addressed in this series. I'll point
-at the ones I notice in this patch, but can you recheck my comments from
-v2? I'll still try to take another pass at reading the next 34
-patches...
+thank you for taking care of this.
 
-On Tue, Feb 18, 2014 at 02:55:28PM +0000, Lee Jones wrote:
-> This is a new driver. It's used to communicate with a special type of
-> optimised Serial Flash Controller called the FSM. The FSM uses a subset
+On 03/08/2014 04:03 PM, Austin Boyle wrote:
+[...]
+>
+> I don't think there is an issue with some bootloaders not supporting
+> this feature, it is already optional.
 
-The question was asked earlier: what does FSM stand for? Perhaps include
-the expansion in either the Kconfig or driver?
+What do you mean exactly by "it is optional"?
+I agree with you that an explicit ioctl(MEMLOCK) is order for locking to 
+take place. However, this seems to be the default action for the u-boot 
+environment userspace tools. They will issue a MEMUNLOCK/MEMLOCK pair 
+when trying to write some changes to the environment, without even 
+checking the return value. This would of course fail silently when the 
+feature was not implemented (as it was the case before the original 
+patch was applied) and everything was working as expected.
+Now linux supports this feature, and u-boot doesn't, so as soon as you 
+write something to the flash from userspace, it will be locked and 
+u-boot won't ever be able to write to it again.
 
-> of the SPI protocol to communicate with supported NOR-Flash devices.
-> 
-> Acked-by Angus Clark <angus.clark@st.com>
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/mtd/devices/Kconfig      |   8 ++++
->  drivers/mtd/devices/Makefile     |   1 +
->  drivers/mtd/devices/st_spi_fsm.c | 101 +++++++++++++++++++++++++++++++++++++++
->  drivers/mtd/devices/st_spi_fsm.h |  27 +++++++++++
->  4 files changed, 137 insertions(+)
->  create mode 100644 drivers/mtd/devices/st_spi_fsm.c
->  create mode 100644 drivers/mtd/devices/st_spi_fsm.h
-> 
-> diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
-> index 74ab4b7..0cf48ac 100644
-> --- a/drivers/mtd/devices/Kconfig
-> +++ b/drivers/mtd/devices/Kconfig
-> @@ -217,6 +217,14 @@ config MTD_DOCG3
->  	  M-Systems and now Sandisk. The support is very experimental,
->  	  and doesn't give access to any write operations.
->  
-> +config MTD_ST_SPI_FSM
-> +	tristate "ST Microelectronics SPI FSM Serial Flash Controller"
-> +	depends on ARM || SH
-> +	help
-> +	  This provides an MTD device driver for the ST Microelectronics
-> +	  SPI FSM Serial Flash Controller and support for a subset of
-> +	  connected Serial Flash devices.
-> +
->  if MTD_DOCG3
->  config BCH_CONST_M
->  	default 14
-> diff --git a/drivers/mtd/devices/Makefile b/drivers/mtd/devices/Makefile
-> index d83bd73..c68868f 100644
-> --- a/drivers/mtd/devices/Makefile
-> +++ b/drivers/mtd/devices/Makefile
-> @@ -16,6 +16,7 @@ obj-$(CONFIG_MTD_NAND_OMAP_BCH)	+= elm.o
->  obj-$(CONFIG_MTD_SPEAR_SMI)	+= spear_smi.o
->  obj-$(CONFIG_MTD_SST25L)	+= sst25l.o
->  obj-$(CONFIG_MTD_BCM47XXSFLASH)	+= bcm47xxsflash.o
-> +obj-$(CONFIG_MTD_ST_SPI_FSM)    += st_spi_fsm.o
->  
->  
->  CFLAGS_docg3.o			+= -I$(src)
-> diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-> new file mode 100644
-> index 0000000..2f4ebb4
-> --- /dev/null
-> +++ b/drivers/mtd/devices/st_spi_fsm.c
-> @@ -0,0 +1,101 @@
-> +/*
-> + * st_spi_fsm.c	Support for ST Serial Flash Controller
-> + *
-> + * Author: Angus Clark <angus.clark@st.com>
-> + *
-> + * Copyright (C) 2010-2013 STicroelectronics Limited
+In my opinion, we're breaking something here (call it userspace API or 
+otherwise). My suggestion would then be to make it an optional feature 
+to be explicitly enabled on the device tree, like Heicho did for CFI 
+flashes:
 
-I commented before:
+http://lists.infradead.org/pipermail/linux-mtd/2013-January/045536.html
 
-s/STicro/STMicro/
+Or I guess another way would be to implement the _is_locked() function, 
+so to have the userspace tools check the locking status before 
+unlocking, and only lock it again if was locked in the first place.
+It wouldn't fix my issue right away (as the userspace tools don't 
+currenctly perform this check), but at least it would provide some way 
+out here without breaking compatibility with the existing u-boot.
 
-This is in the header, too. I'm guessing that's just a typo. Maybe
-update the year too?
+> It is a good idea to add another flag for flash protection to be
+> explicitly clear which devices support this. (I previously made the
+> assumption that writing to those status bits when unused was harmless,
+> from the datasheets I found they seem to be don't cares.)
 
-> + *
-> + * JEDEC probe based on drivers/mtd/devices/m25p80.c
-> + *
-> + * This code is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
-> + *
-> + */
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/mtd/mtd.h>
-> +#include <linux/sched.h>
-> +#include <linux/delay.h>
-> +#include <linux/io.h>
-> +#include <linux/of.h>
-> +
-> +#include "st_spi_fsm.h"
-> +
-> +static int stfsm_probe(struct platform_device *pdev)
-> +{
-> +	struct device_node *np = pdev->dev.of_node;
-> +	struct resource *res;
-> +	struct stfsm *fsm;
-> +
-> +	if (!np) {
-> +		dev_err(&pdev->dev, "No DT found\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	fsm = devm_kzalloc(&pdev->dev, sizeof(*fsm), GFP_KERNEL);
-> +	if (!fsm)
-> +		return -ENOMEM;
-> +
-> +	fsm->dev = &pdev->dev;
-> +
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	if (!res) {
-> +		dev_err(&pdev->dev, "Resource not found\n");
-> +		return -ENODEV;
-> +	}
-> +
-> +	fsm->base = devm_ioremap_resource(&pdev->dev, res);
-> +	if (IS_ERR(fsm->base)) {
-> +		dev_err(&pdev->dev,
-> +			"Failed to reserve memory region [0x%08x-0x%08x]\n",
-> +			res->start, res->end);
+Agreed.
 
-I'll repeat my comment:
+> The following logic for calculating the block protect bits applies to
+> the majority of the STmicro devices that support protection (m25p10,
+> p20, p40, p80, p16, pe16, p32, p64, p128):
+>
+> SR_BPs| Protected (upper)| Unprotected (lower)
+> =====================================================
+> 0| 0/n| n - 0/n
+> 1| 1/n| n - 1/n
+> 2| 2/n| n - 2/n
+> 3| 3/n| n - 4/n
+> 4| 4/n| n - 8/n
+> 5| 5/n| n - 16/n
+> 6| 6/n| n - 32/n
+> 7| 7/n| n - 64/n
 
-Use the special %pr or %pR format specifier? See
-Documentation/printk-formats.txt
+Uhm, I believe it should read like this (unprotected portion is of 
+course "n - protected portion"):
 
-> +		return PTR_ERR(fsm->base);
-> +	}
-> +
-> +	mutex_init(&fsm->lock);
-> +
-> +	platform_set_drvdata(pdev, fsm);
-> +
-> +	fsm->mtd.dev.parent	= &pdev->dev;
-> +	fsm->mtd.type		= MTD_NORFLASH;
-> +	fsm->mtd.writesize	= 4;
-> +	fsm->mtd.writebufsize	= fsm->mtd.writesize;
-> +	fsm->mtd.flags		= MTD_CAP_NORFLASH;
-> +
-> +	return mtd_device_parse_register(&fsm->mtd, NULL, NULL, NULL, 0);
-> +}
-> +
-> +static int stfsm_remove(struct platform_device *pdev)
-> +{
-> +	struct stfsm *fsm = platform_get_drvdata(pdev);
-> +	int err;
-> +
-> +	err = mtd_device_unregister(&fsm->mtd);
-> +	if (err)
-> +		return err;
-> +
-> +	return 0;
+SR BPs | Protected portion
+---------------------------
+   0    | 0/n
+   1    | 1/n
+   2    | 2/n
+   3    | min(4,n)/n
+   4    | min(8,n)/n
+   5    | min(16,n)/n
+   6    | min(32,n)/n
+   7    | min(64,n)/n
 
-I'll repeat my comment: just make this
+Or at least that was my understanding.
 
-	return mtd_device_unregister(&fsm->mtd);
+> Where n is number of sectors if less than 64.
+>
+> Some special cases:
+> - m25p64 has 128 sectors but only supports protection to 64 sector
+> resolution.
+> - m25p05 uses SR=1/2 for protect Block Erase, and SR=3 for protect Block
+> Erase, Page Program, Sector Erase.
+> - m25px32 has an additional bit for locking the lower sections.
+>
+> A patch with this implementation follows. Let me know what you think. I
+> have a spreadsheet summarising the block protect bits for the STmicro
+> devices I can share if it will help.
 
-> +}
-> +
-> +static struct of_device_id stfsm_match[] = {
-> +	{ .compatible = "st,spi-fsm", },
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(of, stfsm_match);
-> +
-> +static struct platform_driver stfsm_driver = {
-> +	.probe		= stfsm_probe,
-> +	.remove		= stfsm_remove,
-> +	.driver		= {
-> +		.name	= "st-spi-fsm",
-> +		.owner	= THIS_MODULE,
-> +		.of_match_table = stfsm_match,
-> +	},
-> +};
-> +module_platform_driver(stfsm_driver);
-> +
-> +MODULE_AUTHOR("Angus Clark <angus.clark@st.com>");
-> +MODULE_DESCRIPTION("ST SPI FSM driver");
-> +MODULE_LICENSE("GPL");
-> diff --git a/drivers/mtd/devices/st_spi_fsm.h b/drivers/mtd/devices/st_spi_fsm.h
-> new file mode 100644
-> index 0000000..df45e1a
-> --- /dev/null
-> +++ b/drivers/mtd/devices/st_spi_fsm.h
+Could you please share this?
 
-You add this header here, but (per my suggestions) you merge it back
-into st_spi_fsm.c in patch 2. Perhaps you never should have created it?
-Maybe this was a side effect of git-rebase over a few review cycles?
+Thank you,
+Gerlando
 
-> @@ -0,0 +1,27 @@
-> +/*
-> + * st_spi_fsm.c	Support for ST Serial Flash Controller
-> + *
-> + * Author: Angus Clark <angus.clark@st.com>
-> + *
-> + * Copyright (C) 2010-2013 STicroelectronics Limited
-> + *
-> + * JEDEC probe based on drivers/mtd/devices/m25p80.c
-> + *
-> + * This code is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
-> + *
-> + */
-> +
-> +#ifndef ST_SPI_FSM_H
-> +#define ST_SPI_FSM_H
-> +
-> +struct stfsm {
-> +	struct device		*dev;
-> +	void __iomem		*base;
-> +	struct resource		*region;
-> +	struct mtd_info		mtd;
-> +	struct mutex		lock;
-> +};
-> +
-> +#endif	/* ST_SPI_FSM_H */
-
-Thanks,
-Brian
+>
+> Thanks,
+> Austin.
