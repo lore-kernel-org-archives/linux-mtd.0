@@ -1,20 +1,21 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WN0ko-00074T-G9
- for linux-mtd@lists.infradead.org; Mon, 10 Mar 2014 14:00:30 +0000
-Date: Mon, 10 Mar 2014 10:59:46 -0300
+ id 1WN0sf-0007Gg-Nb
+ for linux-mtd@lists.infradead.org; Mon, 10 Mar 2014 14:08:38 +0000
+Date: Mon, 10 Mar 2014 11:08:01 -0300
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: Pekon Gupta <pekon@ti.com>
-Subject: Re: [PATCH v6 4/4] mtd: devices: elm: update DRIVER_NAME as "omap-elm"
-Message-ID: <20140310135946.GD5994@arch.cereza>
+Subject: Re: [PATCH v6 3/4] mtd: devices: elm: configure parallel channels
+ based on ecc_steps
+Message-ID: <20140310140801.GE5994@arch.cereza>
 References: <1394197344-9468-1-git-send-email-pekon@ti.com>
- <1394197344-9468-5-git-send-email-pekon@ti.com>
+ <1394197344-9468-4-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1394197344-9468-5-git-send-email-pekon@ti.com>
+In-Reply-To: <1394197344-9468-4-git-send-email-pekon@ti.com>
 Cc: Stefan Roese <sr@denx.de>, avinashphilipk@gmail.com,
  Brian Norris <computersforpeace@gmail.com>,
  linux-mtd <linux-mtd@lists.infradead.org>, Felipe Balbi <balbi@ti.com>
@@ -28,29 +29,39 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Mar 07, Pekon Gupta wrote:
-> use "omap-elm" as DRIVER_NAME
-> prefix DRIVER_NAME in debug and error messages
-> 
+> Though ELM hardware can process upto maximum of 8 channels in parallel for
+> ECC error detection. But actual number of channels need to be processed in
+> parallel depends on ecc_steps (for page mode configuration).
+>
+ 
+This commit log needs some love ;) How about something along these lines:
+
+"ELM hardware can process up to ERR_VECTOR_MAX channels in parallel for
+ECC error detection. However, the actual number of channels that need to
+be processed is the ECC step number." ?
+
+Perhaps you could add some more information (I'm not too familiar with ELM),
+what's the impact of this change? Does it fix any bug or the over-looping
+was harmless?
+
 > Signed-off-by: Pekon Gupta <pekon@ti.com>
 > ---
->  drivers/mtd/devices/elm.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+>  drivers/mtd/devices/elm.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
 > diff --git a/drivers/mtd/devices/elm.c b/drivers/mtd/devices/elm.c
-> index 43fd81d..16e62ae 100644
+> index f59c100..43fd81d 100644
 > --- a/drivers/mtd/devices/elm.c
 > +++ b/drivers/mtd/devices/elm.c
-> @@ -15,6 +15,9 @@
->   *
->   */
+> @@ -174,7 +174,7 @@ static void elm_load_syndrome(struct elm_info *info,
+>  	int i, offset;
+>  	u32 val;
 >  
-> +#define	DRIVER_NAME	"omap-elm"
-> +#define pr_fmt(fmt)	DRIVER_NAME ": " fmt
-> +
+> -	for (i = 0; i < ERROR_VECTOR_MAX; i++) {
+> +	for (i = 0; i < info->ecc_steps; i++) {
 
-As per my previous comment about pr_{} vs. dev_{}, I think
-you can now drop the pr_fmt and just leave the name change here.
-
+I think it would be less confusing if you can add the ecc_steps field on this
+patch, where you start to use it.
 -- 
 Ezequiel García, Free Electrons
 Embedded Linux, Kernel and Android Engineering
