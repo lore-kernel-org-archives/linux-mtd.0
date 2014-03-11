@@ -1,16 +1,17 @@
-Message-ID: <531E7E0D.6080605@atmel.com>
-Date: Tue, 11 Mar 2014 11:07:57 +0800
-From: Josh Wu <josh.wu@atmel.com>
-MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] Disable Subpage nand write when using Atmel PMECC
-References: <1393845329-18175-1-git-send-email-Herve.CODINA@celad.com>
- <53194432.50104@atmel.com> <20140307080251.GI31517@norris-Latitude-E6410>
-In-Reply-To: <20140307080251.GI31517@norris-Latitude-E6410>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Herve Codina <Herve.CODINA@celad.com>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
+Received: from mail-yk0-f175.google.com ([209.85.160.175])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WNEMi-0007VR-Vo
+ for linux-mtd@lists.infradead.org; Tue, 11 Mar 2014 04:32:33 +0000
+Received: by mail-yk0-f175.google.com with SMTP id 131so21829312ykp.6
+ for <linux-mtd@lists.infradead.org>; Mon, 10 Mar 2014 21:32:08 -0700 (PDT)
+From: Erico Nunes <nunes.erico@gmail.com>
+To: dwmw2@infradead.org
+Subject: [PATCH] mtd: nand: fix mention to CONFIG_MTD_NAND_ECC_BCH
+Date: Tue, 11 Mar 2014 01:31:26 -0300
+Message-Id: <1394512286-31481-1-git-send-email-nunes.erico@gmail.com>
+Cc: artem.bityutskiy@linux.intel.com, linux-kernel@vger.kernel.org,
+ b32955@freescale.com, linux-mtd@lists.infradead.org,
+ computersforpeace@gmail.com, Erico Nunes <nunes.erico@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,32 +21,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Brian
+Mention to CONFIG_MTD_ECC_BCH in the warning message can be confusing as this
+doesn't match the exact name of the configuration option.
+This warning showed up once to me when I was starting to set up BCH. After
+checking my .config file, it took a moment before realizing it is
+CONFIG_MTD_NAND_ECC_BCH instead of CONFIG_MTD_ECC_BCH.
 
-On 3/7/2014 4:02 PM, Brian Norris wrote:
-> On Fri, Mar 07, 2014 at 11:59:46AM +0800, Josh Wu wrote:
->> On 3/3/2014 7:15 PM, Herve Codina wrote:
->>> Crash detected on sam5d35 and its pmecc nand ecc controller.
->>>
->>> The problem was a call to chip->ecc.hwctl from nand_write_subpage_hwecc
->>> (nand_base.c) when we write a sub page.
->>> chip->ecc.hwctl function is not set when we are using PMECC controller.
->>> As a workaround, set NAND_NO_SUBPAGE_WRITE for PMECC controller in
->>> order to disable sub page access in nand_write_page.
->>>
->>>
->>> Signed-off-by: Herve Codina <Herve.CODINA@celad.com>
->> Acked-by: Josh Wu <josh.wu@atmel.com>
-> Pushed to l2-mtd.git. Thanks!
+Signed-off-by: Erico Nunes <nunes.erico@gmail.com>
+---
+ drivers/mtd/nand/nand_base.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Sorry for the later thought. But I think this patch should go to the 
-stable Linux branch
-since any subpage write will cause crash in SAMA5D3 and AT91SAM9X5.
-So is it possible to add a tag: "Cc: stable@vger.kernel.org" for this 
-commit?
-
-Best Regards,
-Josh Wu
-
->
-> Brian
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 9715a7b..5a93787 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3825,7 +3825,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 
+ 	case NAND_ECC_SOFT_BCH:
+ 		if (!mtd_nand_has_bch()) {
+-			pr_warn("CONFIG_MTD_ECC_BCH not enabled\n");
++			pr_warn("CONFIG_MTD_NAND_ECC_BCH not enabled\n");
+ 			BUG();
+ 		}
+ 		ecc->calculate = nand_bch_calculate_ecc;
+-- 
+1.9.0
