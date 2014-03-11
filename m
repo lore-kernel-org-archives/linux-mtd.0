@@ -1,26 +1,25 @@
-Received: from mail-bn1ln0141.outbound.protection.outlook.com
- ([2a01:111:f400:7c10::141] helo=na01-bn1-obe.outbound.protection.outlook.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WNM9c-00051V-Id
- for linux-mtd@lists.infradead.org; Tue, 11 Mar 2014 12:51:36 +0000
-From: Kent Li <Kent.Li@radisys.com>
-To: Matthieu CASTET <matthieu.castet@parrot.com>, Pekon Gupta <pekon@ti.com>
-Subject: RE: [RFC PATCH] UBIFS: remove check for all(0xff) for empty pages
-Date: Tue, 11 Mar 2014 12:51:08 +0000
-Message-ID: <0394da9ccd594dca864494ba16a64f29@BLUPR08MB103.namprd08.prod.outlook.com>
+Received: from mga11.intel.com ([192.55.52.93])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WNMPk-0005nH-Fx
+ for linux-mtd@lists.infradead.org; Tue, 11 Mar 2014 13:08:13 +0000
+Message-ID: <1394543187.2399.11.camel@sauron.fi.intel.com>
+Subject: Re: [RFC PATCH] UBIFS: remove check for all(0xff) for empty pages
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Matthieu CASTET <matthieu.castet@parrot.com>
+Date: Tue, 11 Mar 2014 15:06:27 +0200
+In-Reply-To: <20140311132109.4201b0dd@parrot.com>
 References: <1394518992-26969-1-git-send-email-pekon@ti.com>
- <20140311133533.7ae34928@parrot.com>
-In-Reply-To: <20140311133533.7ae34928@parrot.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Artem Bityutskiy <dedekind1@gmail.com>,
+ <1394523766.6302.216.camel@sauron.fi.intel.com>
+ <20140311132109.4201b0dd@parrot.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Kent Li <Kent.Li@radisys.com>, Stefan Roese <sr@denx.de>,
  HOUR Frderic <frederic.hour@safran-engineering.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>, Pekon Gupta <pekon@ti.com>,
  Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Stefan Roese <sr@denx.de>
+ Brian Norris <computersforpeace@gmail.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,52 +29,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SSBhZ3JlZSB3aXRoIE1hdHRoaWV1LCB0aGUgZW1wdHkgY2hlY2sgc2hvdWxkIGJlIGRvbmUgaW4g
-VUJJLCBNVEQgb3IgRmxhc2ggZHJpdmVyIGxheWVyLg0KV2hlbiByZWFkaW5nIGFuIGVyYXNlZCBw
-YWdlLCB0aGUgRUNDIGRhdGEgZmFpbCB0byByZWNvdmVyIGNvcnJlY3QgdGhlIGRhdGEgYXJlYSwg
-YmVjYXVzZSB0aGUgT09CIGRhdGEgYXJlIGFsc28gYWxsIDB4ZmYuDQpBbGwgZmxhc2ggY29udHJv
-bGxlciBzaG91bGQgYmUgYWJsZSB0byBkZXRlY3QgdGhpcyBzaXR1YXRpb24sIA0KYnV0IHVuZm9y
-dHVuYXRlbHksIGFsbW9zdCBhbGwgZmxhc2ggZHJpdmVyIGlnbm9yZSB0aGlzLCBhbmQgcGFzcyB0
-aGUgZGF0YSB0byB1cHBlciBsYXllciBkaXJlY3RseS4NCg0KS2VudCBMaQ0KDQotLS0tLU9yaWdp
-bmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogTWF0dGhpZXUgQ0FTVEVUIFttYWlsdG86bWF0dGhpZXUu
-Y2FzdGV0QHBhcnJvdC5jb21dIA0KU2VudDogMjAxNMTqM9TCMTHI1SAyMDozNg0KVG86IFBla29u
-IEd1cHRhDQpDYzogQnJpYW4gTm9ycmlzOyBBcnRlbSBCaXR5dXRza2l5OyBLZW50IExpOyBIT1VS
-IEZyZGVyaWM7IGxpbnV4LW10ZDsgRXplcXVpZWwgR2FyY2lhOyBTdGVmYW4gUm9lc2UNClN1Ympl
-Y3Q6IFJlOiBbUkZDIFBBVENIXSBVQklGUzogcmVtb3ZlIGNoZWNrIGZvciBhbGwoMHhmZikgZm9y
-IGVtcHR5IHBhZ2VzDQoNCkxlIFR1ZSwgMTEgTWFyIDIwMTQgMTE6NTM6MTIgKzA1MzAsDQpQZWtv
-biBHdXB0YSA8cGVrb25AdGkuY29tPiBhIKimY3JpdCA6DQoNCj4gVUJJRlMgdGhyb3dzIGZvbGxv
-d2luZyBlcnJvciBpZiBhbiBibGFuayBwYWdlIGRvZXMgbm90IGNvbnRhaW4gcGVyZmVjdCANCj4g
-YWxsKDB4ZmYpIGRhdGEsIGR1cmluZyBMRUIgc2NhbiwgZXZlbiB0aG91Z2ggaWYgbnVtYmVyIG9m
-IGJpdC1mbGlwcyBpcyB3aXRoaW4gZWNjLnN0cmVuZ3RoDQo+IAkiVUJJRlMgZXJyb3IgKHBpZCAx
-KTogdWJpZnNfc2NhbjogY29ycnVwdCBlbXB0eSBzcGFjZSBhdCBMRUIgNDE3OjUzMTY4Ig0KPiAN
-Cj4gQnV0IG5ld2VyIHRlY2hub2xvZ3kgZGV2aWNlcyAobGlrZSBNTEMgTkFORCkgYXJlIHByb25l
-IHRvIHJlYWQtZGlzdHVyYiANCj4gYml0LWZsaXBzIGFuZCBzbyBoYXZpbmcgcGVyZmVjdCBhbGwo
-MHhmZikgZGF0YSBvbiBlbXB0eS1wYWdlcyBpcyANCj4gcHJhY3RpY2FsbHkgbm90IGZlYXNpYmxl
-IG9uIHRoZXNlIG5ld2VyIHRlY2hub2xvZ3kgZGV2aWNlcyAobGlrZSBNTEMgTkFORCkuDQo+IEFs
-c28sIHN1Y2ggZGV2aWNlIHNwZWMgc3VnZ2VzdCB1c2luZyBzdHJvbmdlciBFQ0Mgc2NoZW1lcyAo
-bGlrZSANCj4gQkNIMTYpLCBhbmQgaGF2ZSBsYXJnZSBPT0Igc2l6ZSB0byBndWFyYW50ZWUgbG9u
-Z2VyIGZpZWxkIGxpZmUuDQo+IA0KPiBTbyB0aGlzIGNoZWNrIG9mIHBlcmZlY3QgYWxsKDB4ZmYp
-IGRhdGEgY2FuIGJlIHNhZmVseSByZW1vdmVkIGZyb20gDQo+IFVCSUZTLCBhcyBVQkkgYW5kIE1U
-RCBsYXllcnMgYWxyZWFkeSB0aGVzZSBiZWZvcmUgcGFzc2luZyB0aGUgZGF0YSB0byBVQklGUzoN
-Cj4gIGlmIChudW1iZXItb2YtYml0ZmxpcHMgPCBtdGQtPmJpdGZsaXBfdGhyZXNob2xkKQ0KPiAg
-ICAgICAgIERyaXZlcidzIEVDQyBzY2hlbWUgaXMgc3Ryb25nIGVub3VnaCB0byBoYW5kbGUgZXhp
-c3RpbmcgYml0LWZsaXBzIGluDQo+ICAgICAgICAgZnV0dXJlLCBzbyBib3RoIE1URCBhbmQgVUJJ
-IGlnbm9yZSBzdWNoIGJpdC1mbGlwcy4NCj4gIGlmIChudW1iZXItb2YtYml0ZmxpcHMgPj0gbXRk
-LT5iaXRmbGlwX3RocmVzaG9sZCkNCj4gICAgICAgICBNVEQgZmxhZ3MgLUVVQ0xFQU4uDQo+ICAg
-ICAgICAgVUJJIHNjaGVkdWxlcyB0aGUgYmxvY2sgZm9yIHNjcnViYmluZy4NCj4gIGlmIChudW1i
-ZXItb2YtYml0ZmxpcHMgPiBuYW5kX2NoaXAtPmVjYy5zdHJlbmd0aCkNCj4gICAgICAgICBNVEQg
-ZmxhZ3MgLUVCQURNU0cuDQo+ICAgICAgICAgVUJJIHRyaWVzIHRvIGV4dHJhY3QgZGF0YSByZWxl
-dmFudCBkYXRhIGZyb20gYmxvY2sgYmFzZWQgb24gc2FuaXR5IG9mDQo+ICAgICAgICAgaXRzIGhl
-YWRlcnMsIGFuZCB0aGVuIHNjaGVkdWxlIGl0IGZvciByZS1lcmFzZS4NCg0KSWYgdGhlIG10ZCBs
-YXllciBjaGVjayB0aGUgbnVtYmVyIG9mIGJpdGZsaXAgb24gZW1wdHkgcGFnZSB3aHkgaXQgZG9l
-c24ndCBjb3JyZWN0IGl0IGFuZCBVQklGUyBzZWUgYWxsIDB4ZmYgPw0KDQpJbiB0aGUgb3RoZXIg
-aGFuZCBpZiBtdGQgbGF5ZXIgaXMgbm90IGFibGUgdG8gY2hlY2sgZW1wdHkgcGFnZSB0aGlzIGlz
-IHZlcnkgZGFuZ2Vyb3VzLiBXaGF0IGhhcHBlbiBpZiBhbiBlbXB0eSBwYWdlIGFscmVhZHkgaGF2
-ZSB0b28gbXVjaCBiaXRmbGlwID8NClRoZSBkYXRhIHdlIHdyaXRlIG9uIHRoaXMgcGFnZSB3aWxs
-IGJlIGNvcnJ1cHRlZC4NCg0KSW4gbXkgb3BpbmlvbiB0aGUgY2hhbmdlIHNob3VsZCBiZSBkb25l
-IG9uIG10ZC9VQkkgbGF5ZXIgbm90IHViaWZzLiANClRoZSBtYWluIHByb2JsZW0gdG9kYXkgaXMg
-dGhhdCBzb21lIGRyaXZlciBkb24ndCByZWFkIGVtcHR5IHBhZ2Ugd2l0aCBlY2MgKGJlY2F1c2Ug
-dGhlaXIgZWNjIG9mIGVtcHR5IHBhZ2UgaXMgbm90IDB4ZmYpLg0KV2UgY2FuIGFkZCBtZXRhZGF0
-YSAoaW4gc3BhcmUgYmVjYXVzZSB1YmlmcyB3YW50IHBvd2VyIG9mIDIgd3JpdGUgdW5pdCAhKSB0
-aGF0IGNhbiBoZWxwIHRvIHNlZSBpdCB0aGUgcGFnZSBpcyBlbXB0eSBvciBub3QuDQoNCg0KTWF0
-dGhpZXUNCg==
+On Tue, 2014-03-11 at 13:21 +0100, Matthieu CASTET wrote:
+> I think this is not true with MLC flash that Pekon want to handle.
+
+Correct. But this is a different issue. Let's not confuse ourselves and
+not mix them. Right now we are discussing bit-flips in the empty space.
+We are not discussing MLC issues.
+
+> There is the paired page problem [1] and the power cut corruption can
+> happen in more than one page.
+
+That's right. But this is another issue: UBIFS was not designed for MLC.
+This can also be fixed, but this is a completely separate activity.
+
+-- 
+Best Regards,
+Artem Bityutskiy
