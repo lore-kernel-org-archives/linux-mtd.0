@@ -1,20 +1,18 @@
-Received: from mail-bn1lp0141.outbound.protection.outlook.com
- ([207.46.163.141] helo=na01-bn1-obe.outbound.protection.outlook.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WNFIS-0000Fg-Hx
- for linux-mtd@lists.infradead.org; Tue, 11 Mar 2014 05:32:13 +0000
-From: Kent Li <Kent.Li@radisys.com>
-To: =?utf-8?B?SE9VUiBGcsOpZGVyaWM=?= <frederic.hour@safran-engineering.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: RE: Corrupt empty space
-Date: Tue, 11 Mar 2014 05:31:49 +0000
-Message-ID: <aadf057c868c47128845c19d69933c46@BLUPR08MB103.namprd08.prod.outlook.com>
-References: <D2D3E4C4A672E847B422D1E5F695E1A402E61608@sreublc136.eu.labinal.snecma>
-In-Reply-To: <D2D3E4C4A672E847B422D1E5F695E1A402E61608@sreublc136.eu.labinal.snecma>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Date: Mon, 10 Mar 2014 22:36:44 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Josh Wu <josh.wu@atmel.com>
+Subject: Re: [PATCH] Disable Subpage nand write when using Atmel PMECC
+Message-ID: <20140311053644.GM31517@norris-Latitude-E6410>
+References: <1393845329-18175-1-git-send-email-Herve.CODINA@celad.com>
+ <53194432.50104@atmel.com>
+ <20140307080251.GI31517@norris-Latitude-E6410>
+ <531E7E0D.6080605@atmel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <531E7E0D.6080605@atmel.com>
+Cc: Herve Codina <Herve.CODINA@celad.com>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,74 +22,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-RnJlZGVyaWMsDQoNCkknbSBub3Qgc3VyZSBpZiB0aGlzIGlzIHRoZSB1bnN0YWJsZSBiaXQgaXNz
-dWUsIGJ1dCBJIGp1c3QgcmVzb2x2ZWQgc3VjaCBpc3N1ZSBieSBlbmhhbmNpbmcgbXkgTmFuZCBk
-cml2ZXIgaW4gYm90aCBVYm9vdCBjb2RlIGFuZCBMaW51eCBjb2RlLg0KDQpUaGUgbWFpbiBpZGVh
-IGlzOg0KUmVhZCBhIHBhZ2UNCklmICggRUNDIGZhaWwgKSA7dGhlbg0KCUNoZWNrIHRoZSBob3cg
-bWFueSAwIGJpdCB0aGVyZSBpcy4NCglJZiAoIDAgYml0IG51bWJlciA+IHRvbGVyYW5jZSB2YWx1
-ZSkgLy90b2xlcmFuY2UgdmFsdWUgaXMgZGVwZW5kcyBvbiB0aGUgRUNDIGNvcnJlY3RhYmxlIGJp
-dHMuDQoJCVByaW50ICJGYWlsIHRvIHJlY292ZXIgYnkgRUNDIg0KCUVsc2UNCgkJRm9yY2UgY2hh
-bmdlIHRoZSAwIGJpdHMgdG8gMQ0KCWZpDQpmaQ0KDQpUaGlzIGlkZWEgYXNzdW1lIHRoYXQgDQox
-LiB0aGVyZSBpcyBub3QgRUNDIGZhaWwgd2hlbiByZWFkaW5nIGEgbm9ybWFsIHBhZ2UuDQoyLiBz
-dWItcGFnZSBpcyBkaXNhYmxlZC4NCjMuIG9ubHkgRUNDIGZhaWwgaGFwcGVuIHdoZW4gcmVhZGlu
-ZyBhbiBlbXB0eSBwYWdlLg0KDQpCUg0KS2VudCBMaQ0KDQoNCi0tLS0tT3JpZ2luYWwgTWVzc2Fn
-ZS0tLS0tDQpGcm9tOiBsaW51eC1tdGQgW21haWx0bzpsaW51eC1tdGQtYm91bmNlc0BsaXN0cy5p
-bmZyYWRlYWQub3JnXSBPbiBCZWhhbGYgT2YgSE9VUiBGcsOpZGVyaWMNClNlbnQ6IDIwMTTlubQz
-5pyIMTHml6UgMTozNQ0KVG86IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnDQpTdWJqZWN0
-OiBDb3JydXB0IGVtcHR5IHNwYWNlDQoNCkhlbGxvLA0KDQpJJ20gd29ya2luZyBvbiBVQklGUyAo
-IGxpbnV4IDMuMywgb21hcDEzOCApLiBJIG5lZWQgc29tZSBoZWxwIHdpdGggYSBwcm9ibGVtIG9u
-IGEgY3VzdG9tIGJvYXJkIChvbWFwbDEzOCkuDQpJIGhhdmUgYSBzb2Z0d2FyZSB0aGF0IHJ1bnMg
-aW4gYmFja2dyb3VuZCBhbmQgd3JpdGVzIGRhdGEgaW4gYSBVQklGUyB2b2x1bWUuIEkgY2FuIG5v
-dCBjb250cm9sIHdoZW4gdGhlIHBvd2VyIGN1dCBoYXBwZW5zLg0KU29tZXRpbWVzLCB3aGVuIGJv
-b3RpbmcgbXkgYm9hcmQsIEkgZ290IHRoaXMgImNvbW1vbiIgZXJyb3I6DQoNClVCSTogYmFja2dy
-b3VuZCB0aHJlYWQgInViaV9iZ3QwZCIgc3RhcnRlZCwgUElEIDM5MQ0KVUJJRlM6IHJlY292ZXJ5
-IG5lZWRlZA0KVUJJRlM6IHJlY292ZXJ5IGNvbXBsZXRlZA0KVUJJRlM6IG1vdW50ZWQgVUJJIGRl
-dmljZSAwLCB2b2x1bWUgMCwgbmFtZSAibG9nIg0KVUJJRlM6IGZpbGUgc3lzdGVtIHNpemU6wqDC
-oCAzMTc0NDAwIGJ5dGVzICgzMTAwIEtpQiwgMyBNaUIsIDI1IExFQnMpDQpVQklGUzogam91cm5h
-bCBzaXplOsKgwqDCoMKgwqDCoCAxMDE1ODA5IGJ5dGVzICg5OTIgS2lCLCAwIE1pQiwgNiBMRUJz
-KQ0KVUJJRlM6IG1lZGlhIGZvcm1hdDrCoMKgwqDCoMKgwqAgdzQvcjAgKGxhdGVzdCBpcyB3NC9y
-MCkNClVCSUZTOiBkZWZhdWx0IGNvbXByZXNzb3I6IG5vbmUNClVCSUZTOiByZXNlcnZlZCBmb3Ig
-cm9vdDrCoCAxNDk5MzQgYnl0ZXMgKDE0NiBLaUIpDQpVQklGUzogcmVjb3ZlcnkgbmVlZGVkDQpV
-QklGUyBlcnJvciAocGlkIDM5NSk6IHViaWZzX3NjYW46IGNvcnJ1cHQgZW1wdHkgc3BhY2UgYXQg
-TEVCIDE1MzQ6MTI1MTcwIFVCSUZTIGVycm9yIChwaWQgMzk1KTogdWJpZnNfc2Nhbm5lZF9jb3Jy
-dXB0aW9uOiBjb3JydXB0aW9uIGF0IExFQiAxNTM0OjEyNTE3MA0KMDAwMDAwMDA6IGZmZmZmZjdm
-IGZmZmZmZmZmIGZmZmZmZmZmIGZmZmZmZmZmIGZmZmZmZmZmIGZmZmZmZmZmIGZmZmZmZmZmIGZm
-ZmZmZmZmwqAgLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4NCjAwMDAwMDIwOiBmZmZm
-ZmZmZiBmZmZmZmZmZiBmZmZmZmZmZiBmZmZmZmZmZiBmZmZmZmZmZiBmZmZmZmZmZiBmZmZmZmZm
-ZiBmZmZmZmZmZsKgIC4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uLi4uDQpbLi5dDQpVQklG
-UyBlcnJvciAocGlkIDM5NSk6IHViaWZzX3NjYW46IExFQiAxNTM0IHNjYW5uaW5nIGZhaWxlZA0K
-DQpNeSBOQU5EIHZvbHVtZSBjb3VsZCBub3QgYmUgbW91bnRlZC4gTXkgcHJvYmxlbSBpcyB0aGF0
-IEkgd2FudCB0byBoYXZlIGFuIGFjY2VzcyB0byB0aGUgZmlsZXMgc3RvcmVkIGluIHRoaXMgVUJJ
-RlMgdm9sdW1lLg0KDQpTbyBJIGhhZCBzb21lIHF1ZXN0aW9ucyA6IA0KLSBXaGF0IGFyZSB0aGUg
-cmlzayBvZiBjb21tZW50aW5nIG91dCB0aGUgJ2dvdG8gY29ycnVwdGVkJyBpbiB0aGUgZm9uY3Rp
-b24gdWJpZnNfc2Nhbj8gKGluIG9yZGVyIHRvIG1vdW50IG15IHBhcnRpdGlvbiBhbmQgaGF2ZSBh
-biBhY2Nlc3MgdG8gbXkgZmlsZXMpDQotIElzIHRoaXMgdGhlICJ1bnN0YWJsZSBiaXRzIGlzc3Vl
-Ij8gKGh0dHA6Ly93d3cubGludXgtbXRkLmluZnJhZGVhZC5vcmcvZG9jL3ViaWZzLmh0bWwjTF91
-bnN0YWJsZV9iaXRzKQ0KLSBXaGF0IGNvdWxkIGJlIGEgcHJvcGVyIHNvbHV0aW9uIHRvIGdldCBt
-eSBmaWxlcz8NCi0gSXMgdGhlcmUgYSBzb2x1dGlvbiB1c2luZyBVLUJvb3Q/DQoNClRoYW5rcyBm
-b3IgeW91ciBoZWxwLg0KDQpSZWdhcmRzLA0KDQpGcmVkZXJpYw0KDQojDQoiIENlIGNvdXJyaWVs
-IGV0IGxlcyBkb2N1bWVudHMgcXVpIGx1aSBzb250IGpvaW50cyBwZXV2ZW50IGNvbnRlbmlyIGRl
-cyBpbmZvcm1hdGlvbnMgY29uZmlkZW50aWVsbGVzLCDDqnRyZSBzb3VtaXMgYXV4IHLDqGdsZW1l
-bnRhdGlvbnMgcmVsYXRpdmVzIGF1IGNvbnRyw7RsZSBkZXMgZXhwb3J0YXRpb25zIG91IGF5YW50
-IHVuIGNhcmFjdMOocmUgcHJpdsOpLiBTJ2lscyBuZSB2b3VzIHNvbnQgcGFzIGRlc3RpbsOpcywg
-bm91cyB2b3VzIHNpZ25hbG9ucyBxdSdpbCBlc3Qgc3RyaWN0ZW1lbnQgaW50ZXJkaXQgZGUgbGVz
-IGRpdnVsZ3VlciwgZGUgbGVzIHJlcHJvZHVpcmUgb3UgZCdlbiB1dGlsaXNlciBkZSBxdWVscXVl
-IG1hbmnDqHJlIHF1ZSBjZSBzb2l0IGxlIGNvbnRlbnUuIFRvdXRlIGV4cG9ydGF0aW9uIG91IHLD
-qWV4cG9ydGF0aW9uIG5vbiBhdXRvcmlzw6llIGVzdCBpbnRlcmRpdGUgU2kgY2UgbWVzc2FnZSB2
-b3VzIGEgw6l0w6kgdHJhbnNtaXMgcGFyIGVycmV1ciwgbWVyY2kgZCdlbiBpbmZvcm1lciBsJ2V4
-cMOpZGl0ZXVyIGV0IGRlIHN1cHByaW1lciBpbW3DqWRpYXRlbWVudCBkZSB2b3RyZSBzeXN0w6ht
-ZSBpbmZvcm1hdGlxdWUgY2UgY291cnJpZWwgYWluc2kgcXVlIHRvdXMgbGVzIGRvY3VtZW50cyBx
-dWkgeSBzb250IGF0dGFjaMOpcy4iDQoqKioqKioNCiIgVGhpcyBlLW1haWwgYW5kIGFueSBhdHRh
-Y2hlZCBkb2N1bWVudHMgbWF5IGNvbnRhaW4gY29uZmlkZW50aWFsIG9yIHByb3ByaWV0YXJ5IGlu
-Zm9ybWF0aW9uIGFuZCBtYXkgYmUgc3ViamVjdCB0byBleHBvcnQgY29udHJvbCBsYXdzIGFuZCBy
-ZWd1bGF0aW9ucy4gSWYgeW91IGFyZSBub3QgdGhlIGludGVuZGVkIHJlY2lwaWVudCwgeW91IGFy
-ZSBub3RpZmllZCB0aGF0IGFueSBkaXNzZW1pbmF0aW9uLCBjb3B5aW5nIG9mIHRoaXMgZS1tYWls
-IGFuZCBhbnkgYXR0YWNobWVudHMgdGhlcmV0byBvciB1c2Ugb2YgdGhlaXIgY29udGVudHMgYnkg
-YW55IG1lYW5zIHdoYXRzb2V2ZXIgaXMgc3RyaWN0bHkgcHJvaGliaXRlZC4gVW5hdXRob3JpemVk
-IGV4cG9ydCBvciByZS1leHBvcnQgaXMgcHJvaGliaXRlZC4gSWYgeW91IGhhdmUgcmVjZWl2ZWQg
-dGhpcyBlLW1haWwgaW4gZXJyb3IsIHBsZWFzZSBhZHZpc2UgdGhlIHNlbmRlciBpbW1lZGlhdGVs
-eSBhbmQgZGVsZXRlIHRoaXMgZS1tYWlsIGFuZCBhbGwgYXR0YWNoZWQgZG9jdW1lbnRzIGZyb20g
-eW91ciBjb21wdXRlciBzeXN0ZW0uIg0KIw0KDQoNCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KTGludXggTVREIGRpc2N1c3Npb24gbWFpbGlu
-ZyBsaXN0DQpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4
-LW10ZC8NCg==
+On Tue, Mar 11, 2014 at 11:07:57AM +0800, Josh Wu wrote:
+> On 3/7/2014 4:02 PM, Brian Norris wrote:
+> >On Fri, Mar 07, 2014 at 11:59:46AM +0800, Josh Wu wrote:
+> >>On 3/3/2014 7:15 PM, Herve Codina wrote:
+> >>>Crash detected on sam5d35 and its pmecc nand ecc controller.
+> >>>
+> >>>The problem was a call to chip->ecc.hwctl from nand_write_subpage_hwecc
+> >>>(nand_base.c) when we write a sub page.
+> >>>chip->ecc.hwctl function is not set when we are using PMECC controller.
+> >>>As a workaround, set NAND_NO_SUBPAGE_WRITE for PMECC controller in
+> >>>order to disable sub page access in nand_write_page.
+> >>>
+> >>>
+> >>>Signed-off-by: Herve Codina <Herve.CODINA@celad.com>
+> >>Acked-by: Josh Wu <josh.wu@atmel.com>
+> >Pushed to l2-mtd.git. Thanks!
+> 
+> Sorry for the later thought. But I think this patch should go to the
+> stable Linux branch
+> since any subpage write will cause crash in SAMA5D3 and AT91SAM9X5.
+> So is it possible to add a tag: "Cc: stable@vger.kernel.org" for
+> this commit?
+
+Done, thanks for mentioning it! I was thinking of this when I applied
+it, actually.
+
+Brian
