@@ -1,20 +1,27 @@
-Received: from smtp2.macqel.be ([109.135.2.61])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WNLG8-0002GN-HA
- for linux-mtd@lists.infradead.org; Tue, 11 Mar 2014 11:54:13 +0000
-Date: Tue, 11 Mar 2014 12:53:47 +0100
-From: Philippe De Muyter <phdm@macqel.be>
+Received: from comal.ext.ti.com ([198.47.26.152])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WNLJe-0002N5-Dn
+ for linux-mtd@lists.infradead.org; Tue, 11 Mar 2014 11:57:51 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
 To: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH] mtd: Kconfig: give the CFI command set version in
- prompt and help
-Message-ID: <20140311115347.GA20584@frolo.macqel>
-References: <1394204641-23453-1-git-send-email-phdm@macqel.be>
- <20140311102738.GB18811@lee--X1>
+Subject: RE: [PATCH v6 0/4] mtd: devices: elm: add checks ELM H/W
+ constrains, driver code cleanup
+Date: Tue, 11 Mar 2014 11:57:14 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EAB1714@DBDE04.ent.ti.com>
+References: <1394197344-9468-1-git-send-email-pekon@ti.com>
+ <20140311101342.GA18811@lee--X1>
+ <20980858CB6D3A4BAE95CA194937D5E73EAB169A@DBDE04.ent.ti.com>
+ <20140311114727.GG21216@lee--X1>
+In-Reply-To: <20140311114727.GG21216@lee--X1>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20140311102738.GB18811@lee--X1>
-Cc: linux-mtd@lists.infradead.org
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ "avinashphilipk@gmail.com" <avinashphilipk@gmail.com>, "Balbi,
+ Felipe" <balbi@ti.com>, linux-mtd <linux-mtd@lists.infradead.org>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Stefan Roese <sr@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,53 +31,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Mar 11, 2014 at 10:27:38AM +0000, Lee Jones wrote:
-> > Enhances the help for the CFI command set choices.
-> > 
-> > Signed-off-by: Philippe De Muyter <phdm@macqel.be>
-> > ---
-> >  drivers/mtd/chips/Kconfig |   16 ++++++++--------
-> >  1 files changed, 8 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/chips/Kconfig b/drivers/mtd/chips/Kconfig
-> > index e4696b3..9f02c28 100644
-> > --- a/drivers/mtd/chips/Kconfig
-> > +++ b/drivers/mtd/chips/Kconfig
-> > @@ -169,33 +169,33 @@ config MTD_OTP
-> >  	  in the programming of OTP bits will waste them.
-> >  
-> >  config MTD_CFI_INTELEXT
-> > -	tristate "Support for Intel/Sharp flash chips"
-> > +	tristate "Support for CFI command set 0001 (Intel/Sharp chips)"
-> 
-> tristate "Support for Intel/Sharp flash chips (CFI Command Set 0001)"
-> 
-> >  	depends on MTD_GEN_PROBE
-> >  	select MTD_CFI_UTIL
-> >  	help
-> >  	  The Common Flash Interface defines a number of different command
-> >  	  sets which a CFI-compliant chip may claim to implement. This code
-> > -	  provides support for one of those command sets, used on Intel
-> > -	  StrataFlash and other parts.
-> > +	  provides support for command set 0001, used on Intel StrataFlash
-> > +	  and other parts.
-> >  
-> >  config MTD_CFI_AMDSTD
-> > -	tristate "Support for AMD/Fujitsu/Spansion flash chips"
-> > +	tristate "Support for CFI command set 0002 (AMD/Fujitsu/Spansion chips)"
-> 
-> tristate "Support for AMD/Fujitsu/Spansion flash chips (CFI Command Set 0002)"
-> 
-> Etc ... read better for me.
-
-What's important here is the command set version, not the names of some
-old flash chips producers.  Some have stopped producing flash chips
-or have sold or renamed their flash chips divisions.
-
-And on a 80 columns screen, the command set version would fall out of the
-screen in menuconfig.
-
-Philippe
-
--- 
-Philippe De Muyter +32 2 6101532 Macq SA rue de l'Aeronef 2 B-1140 Bruxelles
+SGksDQoNCj5Gcm9tOiBMZWUgSm9uZXMgW21haWx0bzpsZWUuam9uZXNAbGluYXJvLm9yZ10NCj4+
+ID4+ICpjaGFuZ2VzIHY1IC0+IHY2Kg0KPj4gPj4gW1BBVENIIDAyLzA0XSBtaW5vciBjbGVhbnVw
+DQo+PiA+Pg0KPj4gPj4gKmNoYW5nZXMgdjQgLT4gdjUqDQo+PiA+PiBUaGlzIHBhdGNoIHNlcmll
+cyBpcyBzcGxpdCB2ZXJzaW9uIGZyb20gZWFybGllciBzZXJpZXMgWzFdLg0KPj4gPj4gVGhpcyBz
+ZXJpZXMgcmVmYWN0b3JzIGFuZCBjbGVhbnMgRUxNIGRyaXZlciB3aGljaCBpcyB1c2VkIGJ5IEhh
+cmR3YXJlDQo+PiA+PiBiYXNlZCBCQ0h4IGVjYy1zY2hlbWVzLg0KPj4gPj4gIC0gVW5kbzogaW50
+cm9kdWN0aW9uIG9mICdzdHJ1Y3QgbXRkX2luZm8nIGFuZCAnc3RydWN0IG5hbmRfY2hpcCcuIElu
+c3RlYWQNCj4+ID4+ICAgICAgICAgIGtlZXAgRUxNIGRyaXZlciBpbmRlcGVuZGVudCBvZiBtdGRf
+aW5mbyBhbmQgbmFuZF9jaGlwIHN0cnVjdHMgYW5kDQo+PiA+PiAgICAgICAgICBwYXNzIG9ubHkg
+cmVxdWlyZWQgRUNDIGNvbmZpZ3VyYXRpb25zIGFzIGVsbV9jb25maWcoKSBhcmd1bWVudHMNCj4+
+ID4+ICAgICAgICAgIGVsbV9jb25maWcoLi4uLCBpbnQgZWNjX3N0ZXBzLCBpbnQgZWNjX3N0ZXBf
+c2l6ZSwgaW50IGVjY19zdGVwX2J5dGVzKQ0KPj4gPj4gIC0gVW5kbzogcmUtd3JpdGluZyBvZiBl
+bG1fbG9hZF9zeW5kcm9tZSgpIEVDQyByZWdpc3RlciBjb25maWd1cmF0aW9ucy4NCj4+ID4+DQo+
+PiA+PiAqY2hhbmdlcyB2MyAtPiB2NCBbMV0qDQo+PiA+PiAgLSBpbi1jb3Jwb3JhdGVkIGZlZWRi
+YWNrcyBmcm9tIEJyaWFuIE5vcnJpcyA8Y29tcHV0ZXJzZm9ycGVhY2VAZ21haWwuY29tPg0KPj4g
+Pj4gIC0gdXBkYXRlZDogdXNlICdwcl9mbXQoZm10KScgdG8gc3VmZml4IERSSVZFUl9OQU1FDQo+
+PiA+PiAgLSByZW1vdmVkOiBsb2NhbCAnZWNjc3RlcHMnIGluIEVMTSBkcml2ZXIsIGluc3RlYWQg
+dXNpbmcgbmFuZF9jaGlwLT5lY2Muc3RlcHMNCj4+ID4+ICAtIHVuZG86IGlycmVsYXZhbnQgd2hp
+dGUtc3BhY2UgY2hhbmdlcw0KPj4gPj4NCj4+ID4+IFsxXSBodHRwOi8vbGlzdHMuaW5mcmFkZWFk
+Lm9yZy9waXBlcm1haWwvbGludXgtbXRkLzIwMTMtTm92ZW1iZXIvMDUwMjQyLmh0bWwNCj4+ID4+
+DQo+PiA+PiBQZWtvbiBHdXB0YSAoNCk6DQo+PiA+PiAgIG10ZDogZGV2aWNlczogZWxtOiBjaGVj
+ayBmb3IgaGFyZHdhcmUgZW5naW5lJ3MgZGVzaWduIGNvbnN0cmFpbnMNCj4+ID4+ICAgbXRkOiBk
+ZXZpY2VzOiBlbG06IGNsZWFuIGVsbV9sb2FkX3N5bmRyb21lDQo+PiA+PiAgIG10ZDogZGV2aWNl
+czogZWxtOiBjb25maWd1cmUgcGFyYWxsZWwgY2hhbm5lbHMgYmFzZWQgb24gZWNjX3N0ZXBzDQo+
+PiA+PiAgIG10ZDogZGV2aWNlczogZWxtOiB1cGRhdGUgRFJJVkVSX05BTUUgYXMgIm9tYXAtZWxt
+Ig0KPj4gPj4NCj4+ID4+ICBkcml2ZXJzL210ZC9kZXZpY2VzL2VsbS5jICAgICAgICAgfCA0NCAr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0NCj4+ID4+ICBkcml2ZXJzL210
+ZC9uYW5kL29tYXAyLmMgICAgICAgICAgfCAgOSArKysrKy0tLQ0KPj4gPj4gIGluY2x1ZGUvbGlu
+dXgvcGxhdGZvcm1fZGF0YS9lbG0uaCB8IDEwICsrLS0tLS0tLQ0KPj4gPj4gIDMgZmlsZXMgY2hh
+bmdlZCwgNDEgaW5zZXJ0aW9ucygrKSwgMjIgZGVsZXRpb25zKC0pDQo+PiA+DQo+PiA+SSBjYW4n
+dCBzZWVtIHRvIGJlIGFibGUgdG8gYXBwbHkgdGhpcyBzZXQuIFdoYXQga2VybmVsIHJlbGVhc2Ug
+aXQgaXMNCj4+ID5iYXNlZCBvbj8NCj4+ID4NCj4+IFRoaXMgaXMgcmViYXNlZCBvbiBsMi1tdGQv
+bWFzdGVyLiBZb3UgY2FuIGFsc28gcHVsbCBmcm9tIFsxXQ0KPj4NCj4+IFsxXSBodHRwOi8vZ2l0
+LnRpLmNvbS9+cGVrb24vY29ubmVjdGl2aXR5LWludGVncmF0aW9uLXRyZWUvcGVrb25zLWNvbm5l
+Y3Rpdml0eS10aS1saW51eC1rZXJuZWwvY29tbWl0cy9sMi1tdGQvYmNoMTZfc3VwcG9ydA0KPg0K
+PkknbSBzb3JyeSBJJ20gbm90IGZhbWlsaWFyIHdpdGggdGhlIGwyLW10ZCB0cmVlLiBXaGljaCB1
+cHN0cmVhbQ0KPmNvbW1pdCBhcmUgdGhlc2UgcGF0Y2hlcyBhcHBsaWVkIG9uIHRvcCBvZj8NCj4N
+ClRoZXNlIGFyZSByZWJhc2VkIG9uIGZvbGxvd2luZyB0cmVlIGZvciBsaW51eC1tdGQgc3Vic3lz
+dGVtLg0KCWdpdDovL2dpdC5pbmZyYWRlYWQub3JnL3VzZXJzL2RlZGVraW5kL2wyLW10ZC5naXQN
+Cgl3aGljaCBpcyBJIHRoaW5rIGJhc2VkIG9uIHVwc3RyZWFtIHRhZyBvZiAidjMuMTQtcmMxIg0K
+DQpJZiB5b3Ugc3RpbGwgc2VlIGNvbmZsaWN0cyAoZXNwZWNpYWxseSBpbiBkcml2ZXJzL210ZC9u
+YW5kL29tYXAyLmMpIHRoZW4NClBsZWFzZSBwdWxsIGluIGZvbGxvd2luZyBwcmV2aW91cyBwYXRj
+aGVzIHNlcmllcyBpbiBnaXZlbiBvcmRlcg0KKHRob3VnaCBlYWNoIG9mIGZvbGxvd2luZyBpcyBm
+dW5jdGlvbmFsbHkgaW5kZXBlbmRlbnRseSkuDQoNCigwKSBodHRwOi8vbGlzdHMuaW5mcmFkZWFk
+Lm9yZy9waXBlcm1haWwvbGludXgtbXRkLzIwMTQtRmVicnVhcnkvMDUyMDY4Lmh0bWwNCg0KKDEp
+IFtQQVRDSCB2OCAwLzZdIG10ZDogbmFuZDogb21hcDogb3B0aW1pemVkIGNoaXAtPmVjYy5jb3Jy
+ZWN0KCkgZm9yIEgvVyBFQ0Mgc2NoZW1lcw0KICBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9w
+aXBlcm1haWwvbGludXgtbXRkLzIwMTQtRmVicnVhcnkvMDUyMDkyLmh0bWwNCg0KKDIpIFtQQVRD
+SCB2NiAwLzRdIG10ZDogbmFuZDogb21hcDogb3B0aW1pemUgY2hpcC0+ZWNjLmNhbGN1bGF0ZSgp
+IGZvciBIL1cgRUNDIHNjaGVtZXMNCiAgaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvcGlwZXJt
+YWlsL2xpbnV4LW10ZC8yMDE0LUZlYnJ1YXJ5LzA1MjI3Mi5odG1sDQoNCigzKSBbUEFUQ0ggdjUg
+MC80XSBtdGQ6IG5hbmQ6IG9tYXA6IG9wdGltaXplIGNoaXAtPmVjYy5od2N0bCgpIGZvciBIL1cg
+RUNDIHNjaGVtZXMNCiAgaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvcGlwZXJtYWlsL2xpbnV4
+LW10ZC8yMDE0LU1hcmNoLzA1MjMyNy5odG1sDQoNCiAoNCkgW1BBVENIIHY2IDAvNF0gbXRkOiBk
+ZXZpY2VzOiBlbG06IGFkZCBjaGVja3MgRUxNIEgvVyBjb25zdHJhaW5zLCBkcml2ZXIgY29kZSBj
+bGVhbnVwDQogIGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9saW51eC1tdGQv
+MjAxNC1NYXJjaC8wNTI0NTUuaHRtbA0KIA0Kd2l0aCByZWdhcmRzLCBwZWtvbg0K
