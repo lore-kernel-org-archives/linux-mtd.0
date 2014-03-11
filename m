@@ -1,20 +1,22 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
+Received: from bear.ext.ti.com ([192.94.94.41])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WNG6W-000120-QK
- for linux-mtd@lists.infradead.org; Tue, 11 Mar 2014 06:23:57 +0000
-From: Pekon Gupta <pekon@ti.com>
-To: Brian Norris <computersforpeace@gmail.com>, Artem Bityutskiy
+ id 1WNGgT-0001pu-Q7
+ for linux-mtd@lists.infradead.org; Tue, 11 Mar 2014 07:01:06 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Kent Li <Kent.Li@radisys.com>, =?utf-8?B?SE9VUiBGcsOpZGVyaWM=?=
+ <frederic.hour@safran-engineering.com>, "dedekind1@gmail.com"
  <dedekind1@gmail.com>
-Subject: [RFC PATCH] UBIFS: remove check for all(0xff) for empty pages
-Date: Tue, 11 Mar 2014 11:53:12 +0530
-Message-ID: <1394518992-26969-1-git-send-email-pekon@ti.com>
+Subject: RE: Corrupt empty space
+Date: Tue, 11 Mar 2014 07:00:37 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EAB154D@DBDE04.ent.ti.com>
+References: <D2D3E4C4A672E847B422D1E5F695E1A402E61608@sreublc136.eu.labinal.snecma>
+ <aadf057c868c47128845c19d69933c46@BLUPR08MB103.namprd08.prod.outlook.com>
+In-Reply-To: <aadf057c868c47128845c19d69933c46@BLUPR08MB103.namprd08.prod.outlook.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Kent Li <Kent.Li@radisys.com>,
- HOUR Frderic <frederic.hour@safran-engineering.com>,
- linux-mtd <linux-mtd@lists.infradead.org>, Pekon Gupta <pekon@ti.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Stefan Roese <sr@denx.de>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,55 +26,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-UBIFS throws following error if an blank page does not contain perfect all(0xff)
-data, during LEB scan, even though if number of bit-flips is within ecc.strength
-	"UBIFS error (pid 1): ubifs_scan: corrupt empty space at LEB 417:53168"
-
-But newer technology devices (like MLC NAND) are prone to read-disturb bit-flips
-and so having perfect all(0xff) data on empty-pages is practically not feasible
-on these newer technology devices (like MLC NAND).
-Also, such device spec suggest using stronger ECC schemes (like BCH16), and have
-large OOB size to guarantee longer field life.
-
-So this check of perfect all(0xff) data can be safely removed from UBIFS, as
-UBI and MTD layers already these before passing the data to UBIFS:
- if (number-of-bitflips < mtd->bitflip_threshold)
-        Driver's ECC scheme is strong enough to handle existing bit-flips in
-        future, so both MTD and UBI ignore such bit-flips.
- if (number-of-bitflips >= mtd->bitflip_threshold)
-        MTD flags -EUCLEAN.
-        UBI schedules the block for scrubbing.
- if (number-of-bitflips > nand_chip->ecc.strength)
-        MTD flags -EBADMSG.
-        UBI tries to extract data relevant data from block based on sanity of
-        its headers, and then schedule it for re-erase.
-
-Signed-off-by: Pekon Gupta <pekon@ti.com>
----
- fs/ubifs/scan.c | 11 -----------
- 1 file changed, 11 deletions(-)
-
-diff --git a/fs/ubifs/scan.c b/fs/ubifs/scan.c
-index 58aa05d..b6ab396 100644
---- a/fs/ubifs/scan.c
-+++ b/fs/ubifs/scan.c
-@@ -332,17 +332,6 @@ struct ubifs_scan_leb *ubifs_scan(const struct ubifs_info *c, int lnum,
- 
- 	ubifs_end_scan(c, sleb, lnum, offs);
- 
--	for (; len > 4; offs += 4, buf = buf + 4, len -= 4)
--		if (*(uint32_t *)buf != 0xffffffff)
--			break;
--	for (; len; offs++, buf++, len--)
--		if (*(uint8_t *)buf != 0xff) {
--			if (!quiet)
--				ubifs_err("corrupt empty space at LEB %d:%d",
--					  lnum, offs);
--			goto corrupted;
--		}
--
- 	return sleb;
- 
- corrupted:
--- 
-1.8.5.1.163.gd7aced9
+SGksDQoNCj4NCj5GcmVkZXJpYywNCj4NCj5JJ20gbm90IHN1cmUgaWYgdGhpcyBpcyB0aGUgdW5z
+dGFibGUgYml0IGlzc3VlLCBidXQgSSBqdXN0IHJlc29sdmVkIHN1Y2ggaXNzdWUgYnkgZW5oYW5j
+aW5nIG15IE5hbmQgZHJpdmVyIGluIGJvdGggVWJvb3QgY29kZSBhbmQgTGludXgNCj5jb2RlLg0K
+Pg0KPlRoZSBtYWluIGlkZWEgaXM6DQo+UmVhZCBhIHBhZ2UNCj5JZiAoIEVDQyBmYWlsICkgO3Ro
+ZW4NCj4JQ2hlY2sgdGhlIGhvdyBtYW55IDAgYml0IHRoZXJlIGlzLg0KPglJZiAoIDAgYml0IG51
+bWJlciA+IHRvbGVyYW5jZSB2YWx1ZSkgLy90b2xlcmFuY2UgdmFsdWUgaXMgZGVwZW5kcyBvbiB0
+aGUgRUNDIGNvcnJlY3RhYmxlIGJpdHMuDQo+CQlQcmludCAiRmFpbCB0byByZWNvdmVyIGJ5IEVD
+QyINCj4JRWxzZQ0KPgkJRm9yY2UgY2hhbmdlIHRoZSAwIGJpdHMgdG8gMQ0KPglmaQ0KPmZpDQo+
+DQo+VGhpcyBpZGVhIGFzc3VtZSB0aGF0DQo+MS4gdGhlcmUgaXMgbm90IEVDQyBmYWlsIHdoZW4g
+cmVhZGluZyBhIG5vcm1hbCBwYWdlLg0KPjIuIHN1Yi1wYWdlIGlzIGRpc2FibGVkLg0KPjMuIG9u
+bHkgRUNDIGZhaWwgaGFwcGVuIHdoZW4gcmVhZGluZyBhbiBlbXB0eSBwYWdlLg0KPg0KDQpJJ20g
+ZmFjaW5nIHNpbWlsYXIgcHJvYmxlbSB3aXRoIHNvbWUgbmV3ZXIgdGVjaG5vbG9neSBOQU5EIGRl
+dmljZXMsDQpBbmQgdGhlIGFib3ZlIGFwcHJvYWNoIGlzIHNpbWlsYXIgdG8gd2hhdCB3YXMgcHJv
+cG9zZWQgaW4gT01BUCBOQU5EDQpkcml2ZXIsIEJ1dCBpdHMgc3RpbGwgdW5kZXIgZGlzY3Vzc2lv
+biBbMV0NCglpZiAocGFnZV9pc19lcmFzZWQpDQoJCS8qIHJldHVybiBjbGVhbiByZWFkLWJ1ZmZl
+ciAqLw0KCQltZW1zZXQoYnVmLCAweGZmLCBlY2MtPnNpemUpOw0KDQpIb3dldmVyLCBmcm9tIDMu
+OSBrZXJuZWwgdmVyc2lvbiwgTVREIGFuZCBVQkkgbGF5ZXIgYWxyZWFkeSBoYXZlIGNoZWNrcw0K
+Zm9yIGJpdC1mbGlwcyB0aHJlc2hvbGQgWzJdLCBzbyB0aGlzIGV4dHJhIGNoZWNrIGZvciBhbGwo
+MHhmZikgZGF0YSBpbiBVQklGUyBpcyByZWR1bmRhbnQuDQpJIGhhdmUganVzdCBzZW50IGFuIFJG
+QyBwYXRjaCB0byByZW1vdmUgdGhpcyBhbGwoMHhmZikgY2hlY2sgZnJvbSBVQklGUyBbM10sDQpJ
+J2xsIGxldCBBcnRlbSAoVUJJRlMgTWFpbnRhaW5lcikgY29tbWVudCBvbiB0aGlzLCBhcyBzdWNo
+IGVtcHR5LXBhZ2UNCmNvcnJ1cHRpb25zIGFyZSBjb21tb24gaW4gTUxDIGFuZCBuZXdlciB0ZWNo
+bm9sb2d5IE5BTkRzLg0KDQoNClsxXSBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9waXBlcm1h
+aWwvbGludXgtbXRkLzIwMTQtTWFyY2gvMDUyNDcyLmh0bWwNClsyXSBodHRwOi8vbGlzdHMuaW5m
+cmFkZWFkLm9yZy9waXBlcm1haWwvbGludXgtbXRkLzIwMTItQXByaWwvMDQwOTQ1Lmh0bWwNClsz
+XSBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9waXBlcm1haWwvbGludXgtbXRkLzIwMTQtTWFy
+Y2gvMDUyNDk5Lmh0bWwNCg0KDQp3aXRoIHJlZ2FyZHMsIHBla29uDQo=
