@@ -1,28 +1,20 @@
-Received: from mail-wi0-f178.google.com ([209.85.212.178])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WNLA4-00027e-UK
- for linux-mtd@lists.infradead.org; Tue, 11 Mar 2014 11:47:57 +0000
-Received: by mail-wi0-f178.google.com with SMTP id n15so729501wiw.11
- for <linux-mtd@lists.infradead.org>; Tue, 11 Mar 2014 04:47:32 -0700 (PDT)
-Date: Tue, 11 Mar 2014 11:47:27 +0000
-From: Lee Jones <lee.jones@linaro.org>
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [PATCH v6 0/4] mtd: devices: elm: add checks ELM H/W constrains,
- driver code cleanup
-Message-ID: <20140311114727.GG21216@lee--X1>
-References: <1394197344-9468-1-git-send-email-pekon@ti.com>
- <20140311101342.GA18811@lee--X1>
- <20980858CB6D3A4BAE95CA194937D5E73EAB169A@DBDE04.ent.ti.com>
+Received: from smtp2.macqel.be ([109.135.2.61])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WNLG8-0002GN-HA
+ for linux-mtd@lists.infradead.org; Tue, 11 Mar 2014 11:54:13 +0000
+Date: Tue, 11 Mar 2014 12:53:47 +0100
+From: Philippe De Muyter <phdm@macqel.be>
+To: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH] mtd: Kconfig: give the CFI command set version in
+ prompt and help
+Message-ID: <20140311115347.GA20584@frolo.macqel>
+References: <1394204641-23453-1-git-send-email-phdm@macqel.be>
+ <20140311102738.GB18811@lee--X1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EAB169A@DBDE04.ent.ti.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- "avinashphilipk@gmail.com" <avinashphilipk@gmail.com>, "Balbi,
- Felipe" <balbi@ti.com>, linux-mtd <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Stefan Roese <sr@denx.de>
+In-Reply-To: <20140311102738.GB18811@lee--X1>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,50 +24,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> >> *changes v5 -> v6*
-> >> [PATCH 02/04] minor cleanup
-> >>
-> >> *changes v4 -> v5*
-> >> This patch series is split version from earlier series [1].
-> >> This series refactors and cleans ELM driver which is used by Hardware
-> >> based BCHx ecc-schemes.
-> >>  - Undo: introduction of 'struct mtd_info' and 'struct nand_chip'. Instead
-> >>          keep ELM driver independent of mtd_info and nand_chip structs and
-> >>          pass only required ECC configurations as elm_config() arguments
-> >>          elm_config(..., int ecc_steps, int ecc_step_size, int ecc_step_bytes)
-> >>  - Undo: re-writing of elm_load_syndrome() ECC register configurations.
-> >>
-> >> *changes v3 -> v4 [1]*
-> >>  - in-corporated feedbacks from Brian Norris <computersforpeace@gmail.com>
-> >>  - updated: use 'pr_fmt(fmt)' to suffix DRIVER_NAME
-> >>  - removed: local 'eccsteps' in ELM driver, instead using nand_chip->ecc.steps
-> >>  - undo: irrelavant white-space changes
-> >>
-> >> [1] http://lists.infradead.org/pipermail/linux-mtd/2013-November/050242.html
-> >>
-> >> Pekon Gupta (4):
-> >>   mtd: devices: elm: check for hardware engine's design constrains
-> >>   mtd: devices: elm: clean elm_load_syndrome
-> >>   mtd: devices: elm: configure parallel channels based on ecc_steps
-> >>   mtd: devices: elm: update DRIVER_NAME as "omap-elm"
-> >>
-> >>  drivers/mtd/devices/elm.c         | 44 +++++++++++++++++++++++++++++----------
-> >>  drivers/mtd/nand/omap2.c          |  9 +++++---
-> >>  include/linux/platform_data/elm.h | 10 ++-------
-> >>  3 files changed, 41 insertions(+), 22 deletions(-)
-> >
-> >I can't seem to be able to apply this set. What kernel release it is
-> >based on?
-> >
-> This is rebased on l2-mtd/master. You can also pull from [1]
+On Tue, Mar 11, 2014 at 10:27:38AM +0000, Lee Jones wrote:
+> > Enhances the help for the CFI command set choices.
+> > 
+> > Signed-off-by: Philippe De Muyter <phdm@macqel.be>
+> > ---
+> >  drivers/mtd/chips/Kconfig |   16 ++++++++--------
+> >  1 files changed, 8 insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/chips/Kconfig b/drivers/mtd/chips/Kconfig
+> > index e4696b3..9f02c28 100644
+> > --- a/drivers/mtd/chips/Kconfig
+> > +++ b/drivers/mtd/chips/Kconfig
+> > @@ -169,33 +169,33 @@ config MTD_OTP
+> >  	  in the programming of OTP bits will waste them.
+> >  
+> >  config MTD_CFI_INTELEXT
+> > -	tristate "Support for Intel/Sharp flash chips"
+> > +	tristate "Support for CFI command set 0001 (Intel/Sharp chips)"
 > 
-> [1] http://git.ti.com/~pekon/connectivity-integration-tree/pekons-connectivity-ti-linux-kernel/commits/l2-mtd/bch16_support
+> tristate "Support for Intel/Sharp flash chips (CFI Command Set 0001)"
+> 
+> >  	depends on MTD_GEN_PROBE
+> >  	select MTD_CFI_UTIL
+> >  	help
+> >  	  The Common Flash Interface defines a number of different command
+> >  	  sets which a CFI-compliant chip may claim to implement. This code
+> > -	  provides support for one of those command sets, used on Intel
+> > -	  StrataFlash and other parts.
+> > +	  provides support for command set 0001, used on Intel StrataFlash
+> > +	  and other parts.
+> >  
+> >  config MTD_CFI_AMDSTD
+> > -	tristate "Support for AMD/Fujitsu/Spansion flash chips"
+> > +	tristate "Support for CFI command set 0002 (AMD/Fujitsu/Spansion chips)"
+> 
+> tristate "Support for AMD/Fujitsu/Spansion flash chips (CFI Command Set 0002)"
+> 
+> Etc ... read better for me.
 
-I'm sorry I'm not familiar with the l2-mtd tree. Which upstream
-commit are these patches applied on top of?
+What's important here is the command set version, not the names of some
+old flash chips producers.  Some have stopped producing flash chips
+or have sold or renamed their flash chips divisions.
+
+And on a 80 columns screen, the command set version would fall out of the
+screen in menuconfig.
+
+Philippe
 
 -- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Philippe De Muyter +32 2 6101532 Macq SA rue de l'Aeronef 2 B-1140 Bruxelles
