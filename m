@@ -1,16 +1,29 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WNRLV-0007cY-8J
- for linux-mtd@lists.infradead.org; Tue, 11 Mar 2014 18:24:13 +0000
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd: Add sysfs attr to expose ECC stats
-Date: Tue, 11 Mar 2014 15:23:15 -0300
-Message-Id: <1394562195-16406-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Date: Tue, 11 Mar 2014 12:45:13 -0600
+From: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
+To: Boris BREZILLON <b.brezillon.dev@gmail.com>
+Subject: Re: [linux-sunxi] Re: [RFC PATCH v2 08/14] mtd: nand: add sunxi NAND
+ flash controller support
+Message-ID: <20140311184513.GC31835@obsidianresearch.com>
+References: <1391006064-28890-1-git-send-email-b.brezillon.dev@gmail.com>
+ <1391006064-28890-9-git-send-email-b.brezillon.dev@gmail.com>
+ <20140129175641.GF1427@obsidianresearch.com>
+ <20140129184619.GC27143@localhost>
+ <20140129191005.GG1427@obsidianresearch.com>
+ <531D9F4B.6040505@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <531D9F4B.6040505@gmail.com>
+Cc: devicetree@vger.kernel.org, Russell King <linux@arm.linux.org.uk>,
+ Rob Landley <rob@landley.net>, Arnd Bergmann <arnd@arndb.de>,
+ linux-doc@vger.kernel.org, dev@linux-sunxi.org, linux-kernel@vger.kernel.org,
+ linux-sunxi@googlegroups.com, linux-mtd@lists.infradead.org,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Grant Likely <grant.likely@linaro.org>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,59 +33,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This new sysfs device attribute allows to retrieve the ECC stats
-by poking a sysfs file, which is much simpler than using the ioctl.
+On Mon, Mar 10, 2014 at 12:17:31PM +0100, Boris BREZILLON wrote:
+> Hello Jason,
+> 
+> Le 29/01/2014 20:10, Jason Gunthorpe a écrit :
+> >On Wed, Jan 29, 2014 at 03:46:20PM -0300, Ezequiel Garcia wrote:
+> >
+> >>After CE# has been pulled high and then transitioned low again, the host
+> >>should issue a Set Features to select the appropriate asynchronous timing mode.
+> >>"""
+> >Oh, I had forgot you should do a set feature too
+> >
+> >Boris, I think the core core should handle this dance and the driver
+> >should just implement a call back to change the timing mode on the
+> >interface..
+> >
+> >If I ever get a moment I can work on support for timing setting in the
+> >mvebu driver, I have boards here with ONFI NAND..
+> 
+> Any progress on this ?
+> I'm about to post the 3rd version of this series and if you already have
+> something working I could base my work on your proposal.
 
-The output format is inspired in block device sysfs 'stat' file.
-The ecc_stats struct fields are shown as ordered in the structure,
-in a machine parseable format.
+Sorry, no, I will try to look over your v3 though.
 
-Here's a typical output showing 3 ECC-corrected and 8 bad blocks:
-       3        0        8        0
-
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
----
-The above example seems to be wrong, as the 8 "bad" blocks are
-actually the 8 "reserved" blocks for the BBT. As such, I expected
-them to appear on the 4th column. Is this a bug?
-
-This issue is completely independent from this patch, but I wanted
-to mention it now, before my brain circular buffer forgets about it.
-
- drivers/mtd/mtdcore.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
-
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 0a7d77e..db50a51 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -298,6 +298,19 @@ static ssize_t mtd_ecc_step_size_show(struct device *dev,
- }
- static DEVICE_ATTR(ecc_step_size, S_IRUGO, mtd_ecc_step_size_show, NULL);
- 
-+static ssize_t mtd_ecc_stats_show(struct device *dev,
-+		struct device_attribute *attr, char *buf)
-+{
-+	struct mtd_info *mtd = dev_get_drvdata(dev);
-+	struct mtd_ecc_stats *ecc_stats = &mtd->ecc_stats;
-+
-+	return snprintf(buf, PAGE_SIZE, "%8u %8u %8u %8u\n", ecc_stats->corrected,
-+						ecc_stats->failed,
-+						ecc_stats->badblocks,
-+						ecc_stats->bbtblocks);
-+}
-+static DEVICE_ATTR(ecc_stats, S_IRUGO, mtd_ecc_stats_show, NULL);
-+
- static struct attribute *mtd_attrs[] = {
- 	&dev_attr_type.attr,
- 	&dev_attr_flags.attr,
-@@ -310,6 +323,7 @@ static struct attribute *mtd_attrs[] = {
- 	&dev_attr_name.attr,
- 	&dev_attr_ecc_strength.attr,
- 	&dev_attr_ecc_step_size.attr,
-+	&dev_attr_ecc_stats.attr,
- 	&dev_attr_bitflip_threshold.attr,
- 	NULL,
- };
--- 
-1.9.0
+Regards,
+Jason
