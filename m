@@ -1,26 +1,18 @@
-Date: Tue, 11 Mar 2014 12:45:13 -0600
+Date: Tue, 11 Mar 2014 12:55:54 -0600
 From: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
 To: Boris BREZILLON <b.brezillon.dev@gmail.com>
-Subject: Re: [linux-sunxi] Re: [RFC PATCH v2 08/14] mtd: nand: add sunxi NAND
- flash controller support
-Message-ID: <20140311184513.GC31835@obsidianresearch.com>
+Subject: Re: [RFC PATCH v2 04/14] mtd: nand: define struct nand_timings
+Message-ID: <20140311185554.GD31835@obsidianresearch.com>
 References: <1391006064-28890-1-git-send-email-b.brezillon.dev@gmail.com>
- <1391006064-28890-9-git-send-email-b.brezillon.dev@gmail.com>
- <20140129175641.GF1427@obsidianresearch.com>
- <20140129184619.GC27143@localhost>
- <20140129191005.GG1427@obsidianresearch.com>
- <531D9F4B.6040505@gmail.com>
+ <1391006064-28890-5-git-send-email-b.brezillon.dev@gmail.com>
+ <531DC1A4.7010208@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <531D9F4B.6040505@gmail.com>
-Cc: devicetree@vger.kernel.org, Russell King <linux@arm.linux.org.uk>,
- Rob Landley <rob@landley.net>, Arnd Bergmann <arnd@arndb.de>,
- linux-doc@vger.kernel.org, dev@linux-sunxi.org, linux-kernel@vger.kernel.org,
- linux-sunxi@googlegroups.com, linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Grant Likely <grant.likely@linaro.org>,
+In-Reply-To: <531DC1A4.7010208@gmail.com>
+Cc: devicetree@vger.kernel.org, linux-doc@vger.kernel.org, dev@linux-sunxi.org,
+ linux-kernel@vger.kernel.org, Rob Herring <rob.herring@calxeda.com>,
+ linux-mtd@lists.infradead.org, Grant Likely <grant.likely@linaro.org>,
  Maxime Ripard <maxime.ripard@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
@@ -33,29 +25,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Mar 10, 2014 at 12:17:31PM +0100, Boris BREZILLON wrote:
-> Hello Jason,
-> 
-> Le 29/01/2014 20:10, Jason Gunthorpe a écrit :
-> >On Wed, Jan 29, 2014 at 03:46:20PM -0300, Ezequiel Garcia wrote:
-> >
-> >>After CE# has been pulled high and then transitioned low again, the host
-> >>should issue a Set Features to select the appropriate asynchronous timing mode.
-> >>"""
-> >Oh, I had forgot you should do a set feature too
-> >
-> >Boris, I think the core core should handle this dance and the driver
-> >should just implement a call back to change the timing mode on the
-> >interface..
-> >
-> >If I ever get a moment I can work on support for timing setting in the
-> >mvebu driver, I have boards here with ONFI NAND..
-> 
-> Any progress on this ?
-> I'm about to post the 3rd version of this series and if you already have
-> something working I could base my work on your proposal.
+On Mon, Mar 10, 2014 at 02:44:04PM +0100, Boris BREZILLON wrote:
 
-Sorry, no, I will try to look over your v3 though.
+> Some timings are missing here (see Table 55 in the ONFI spec):
+
+Right..
+
+The 'mode' covers only the raw electrical parameters needed to
+exchange commands, other timings cover the commands
+themselves. Notably the timing mode does not alter those parameters.
+
+To me it seems tidy to keep the 'mode' timings contained in their own
+struct and find other homes for the other parameters.
+
+> -tR
+> -tBERS
+> -tCCS
+> -tPLEBSY
+> -...
+> 
+> I see at least 3 of those timings that could be useful (for the moment) :
+> - tR: this one should be used to fill the chip_delay field
+> - tPROG and tBERS: could be used within nand_wait to choose the timeo
+>   value appropriately.
+
+IIRC these timing values are really only necessary if the controller
+does not support the READY/BUSY input, in that case drivers typically
+seem to use 'chip_delay' which is the maximum possible command
+execution time (a sleep long enough to guarentee that READY/BUSY is
+de-asserted).
+
+> Or should I create a new struct for these timings ?
+> In the latter case how should I name it ?
+
+struct onfi_command_timings ?
 
 Regards,
 Jason
