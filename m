@@ -1,26 +1,16 @@
-Received: from mail-pb0-x236.google.com ([2607:f8b0:400e:c01::236])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WNPm0-0004jv-1N
- for linux-mtd@lists.infradead.org; Tue, 11 Mar 2014 16:43:24 +0000
-Received: by mail-pb0-f54.google.com with SMTP id ma3so9028534pbc.41
- for <linux-mtd@lists.infradead.org>; Tue, 11 Mar 2014 09:43:02 -0700 (PDT)
-Date: Tue, 11 Mar 2014 09:42:58 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [PATCH V4] mtd: gpmi: fix the bitflips for erased pag
-Message-ID: <20140311164258.GO31517@norris-Latitude-E6410>
-References: <20980858CB6D3A4BAE95CA194937D5E73EAB0919@DBDE04.ent.ti.com>
- <20140311164109.GN31517@norris-Latitude-E6410>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20140311164109.GN31517@norris-Latitude-E6410>
-Cc: Elie De Brauwer <eliedebrauwer@gmail.com>,
- "bpringlemeir@nbsps.com" <bpringlemeir@nbsps.com>,
- Huang Shijie <b32955@freescale.com>,
- "Vikram.Narayanan@in.bosch.com" <Vikram.Narayanan@in.bosch.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WNRLV-0007cY-8J
+ for linux-mtd@lists.infradead.org; Tue, 11 Mar 2014 18:24:13 +0000
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: Add sysfs attr to expose ECC stats
+Date: Tue, 11 Mar 2014 15:23:15 -0300
+Message-Id: <1394562195-16406-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,12 +20,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Mar 11, 2014 at 09:41:09AM -0700, Brian Norris wrote:
-> I just spun a patch set and CC'd all of you. I think it's
-> at least an improvement on the independent solutions I've seen so far.
+This new sysfs device attribute allows to retrieve the ECC stats
+by poking a sysfs file, which is much simpler than using the ioctl.
 
-In cased I missed anyone on CC who was interested:
+The output format is inspired in block device sysfs 'stat' file.
+The ecc_stats struct fields are shown as ordered in the structure,
+in a machine parseable format.
 
-http://lists.infradead.org/pipermail/linux-mtd/2014-March/052507.html
+Here's a typical output showing 3 ECC-corrected and 8 bad blocks:
+       3        0        8        0
 
-Brian
+Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+---
+The above example seems to be wrong, as the 8 "bad" blocks are
+actually the 8 "reserved" blocks for the BBT. As such, I expected
+them to appear on the 4th column. Is this a bug?
+
+This issue is completely independent from this patch, but I wanted
+to mention it now, before my brain circular buffer forgets about it.
+
+ drivers/mtd/mtdcore.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 0a7d77e..db50a51 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -298,6 +298,19 @@ static ssize_t mtd_ecc_step_size_show(struct device *dev,
+ }
+ static DEVICE_ATTR(ecc_step_size, S_IRUGO, mtd_ecc_step_size_show, NULL);
+ 
++static ssize_t mtd_ecc_stats_show(struct device *dev,
++		struct device_attribute *attr, char *buf)
++{
++	struct mtd_info *mtd = dev_get_drvdata(dev);
++	struct mtd_ecc_stats *ecc_stats = &mtd->ecc_stats;
++
++	return snprintf(buf, PAGE_SIZE, "%8u %8u %8u %8u\n", ecc_stats->corrected,
++						ecc_stats->failed,
++						ecc_stats->badblocks,
++						ecc_stats->bbtblocks);
++}
++static DEVICE_ATTR(ecc_stats, S_IRUGO, mtd_ecc_stats_show, NULL);
++
+ static struct attribute *mtd_attrs[] = {
+ 	&dev_attr_type.attr,
+ 	&dev_attr_flags.attr,
+@@ -310,6 +323,7 @@ static struct attribute *mtd_attrs[] = {
+ 	&dev_attr_name.attr,
+ 	&dev_attr_ecc_strength.attr,
+ 	&dev_attr_ecc_step_size.attr,
++	&dev_attr_ecc_stats.attr,
+ 	&dev_attr_bitflip_threshold.attr,
+ 	NULL,
+ };
+-- 
+1.9.0
