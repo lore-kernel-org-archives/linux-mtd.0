@@ -1,18 +1,20 @@
-Date: Mon, 10 Mar 2014 22:36:44 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Josh Wu <josh.wu@atmel.com>
-Subject: Re: [PATCH] Disable Subpage nand write when using Atmel PMECC
-Message-ID: <20140311053644.GM31517@norris-Latitude-E6410>
-References: <1393845329-18175-1-git-send-email-Herve.CODINA@celad.com>
- <53194432.50104@atmel.com>
- <20140307080251.GI31517@norris-Latitude-E6410>
- <531E7E0D.6080605@atmel.com>
+Received: from arroyo.ext.ti.com ([192.94.94.40])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WNG6W-000120-QK
+ for linux-mtd@lists.infradead.org; Tue, 11 Mar 2014 06:23:57 +0000
+From: Pekon Gupta <pekon@ti.com>
+To: Brian Norris <computersforpeace@gmail.com>, Artem Bityutskiy
+ <dedekind1@gmail.com>
+Subject: [RFC PATCH] UBIFS: remove check for all(0xff) for empty pages
+Date: Tue, 11 Mar 2014 11:53:12 +0530
+Message-ID: <1394518992-26969-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <531E7E0D.6080605@atmel.com>
-Cc: Herve Codina <Herve.CODINA@celad.com>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain
+Cc: Kent Li <Kent.Li@radisys.com>,
+ HOUR Frderic <frederic.hour@safran-engineering.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>, Pekon Gupta <pekon@ti.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Stefan Roese <sr@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,30 +24,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Mar 11, 2014 at 11:07:57AM +0800, Josh Wu wrote:
-> On 3/7/2014 4:02 PM, Brian Norris wrote:
-> >On Fri, Mar 07, 2014 at 11:59:46AM +0800, Josh Wu wrote:
-> >>On 3/3/2014 7:15 PM, Herve Codina wrote:
-> >>>Crash detected on sam5d35 and its pmecc nand ecc controller.
-> >>>
-> >>>The problem was a call to chip->ecc.hwctl from nand_write_subpage_hwecc
-> >>>(nand_base.c) when we write a sub page.
-> >>>chip->ecc.hwctl function is not set when we are using PMECC controller.
-> >>>As a workaround, set NAND_NO_SUBPAGE_WRITE for PMECC controller in
-> >>>order to disable sub page access in nand_write_page.
-> >>>
-> >>>
-> >>>Signed-off-by: Herve Codina <Herve.CODINA@celad.com>
-> >>Acked-by: Josh Wu <josh.wu@atmel.com>
-> >Pushed to l2-mtd.git. Thanks!
-> 
-> Sorry for the later thought. But I think this patch should go to the
-> stable Linux branch
-> since any subpage write will cause crash in SAMA5D3 and AT91SAM9X5.
-> So is it possible to add a tag: "Cc: stable@vger.kernel.org" for
-> this commit?
+UBIFS throws following error if an blank page does not contain perfect all(0xff)
+data, during LEB scan, even though if number of bit-flips is within ecc.strength
+	"UBIFS error (pid 1): ubifs_scan: corrupt empty space at LEB 417:53168"
 
-Done, thanks for mentioning it! I was thinking of this when I applied
-it, actually.
+But newer technology devices (like MLC NAND) are prone to read-disturb bit-flips
+and so having perfect all(0xff) data on empty-pages is practically not feasible
+on these newer technology devices (like MLC NAND).
+Also, such device spec suggest using stronger ECC schemes (like BCH16), and have
+large OOB size to guarantee longer field life.
 
-Brian
+So this check of perfect all(0xff) data can be safely removed from UBIFS, as
+UBI and MTD layers already these before passing the data to UBIFS:
+ if (number-of-bitflips < mtd->bitflip_threshold)
+        Driver's ECC scheme is strong enough to handle existing bit-flips in
+        future, so both MTD and UBI ignore such bit-flips.
+ if (number-of-bitflips >= mtd->bitflip_threshold)
+        MTD flags -EUCLEAN.
+        UBI schedules the block for scrubbing.
+ if (number-of-bitflips > nand_chip->ecc.strength)
+        MTD flags -EBADMSG.
+        UBI tries to extract data relevant data from block based on sanity of
+        its headers, and then schedule it for re-erase.
+
+Signed-off-by: Pekon Gupta <pekon@ti.com>
+---
+ fs/ubifs/scan.c | 11 -----------
+ 1 file changed, 11 deletions(-)
+
+diff --git a/fs/ubifs/scan.c b/fs/ubifs/scan.c
+index 58aa05d..b6ab396 100644
+--- a/fs/ubifs/scan.c
++++ b/fs/ubifs/scan.c
+@@ -332,17 +332,6 @@ struct ubifs_scan_leb *ubifs_scan(const struct ubifs_info *c, int lnum,
+ 
+ 	ubifs_end_scan(c, sleb, lnum, offs);
+ 
+-	for (; len > 4; offs += 4, buf = buf + 4, len -= 4)
+-		if (*(uint32_t *)buf != 0xffffffff)
+-			break;
+-	for (; len; offs++, buf++, len--)
+-		if (*(uint8_t *)buf != 0xff) {
+-			if (!quiet)
+-				ubifs_err("corrupt empty space at LEB %d:%d",
+-					  lnum, offs);
+-			goto corrupted;
+-		}
+-
+ 	return sleb;
+ 
+ corrupted:
+-- 
+1.8.5.1.163.gd7aced9
