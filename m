@@ -1,19 +1,16 @@
-Received: from blu0-omc1-s17.blu0.hotmail.com ([65.55.116.28])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WNkQB-0005Zw-2u
- for linux-mtd@lists.infradead.org; Wed, 12 Mar 2014 14:46:16 +0000
-Message-ID: <BLU0-SMTP337D056766A2230A59D6971AD760@phx.gbl>
-Date: Wed, 12 Mar 2014 22:45:52 +0800
-From: ayaka <lxr1234@hotmail.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: about porting ubiblock to make squashfs work on it
-References: <BLU0-SMTP222D7E8438812853BF4B0AAD880@phx.gbl>
- <20140306113334.GD532@arch.cereza>
-In-Reply-To: <20140306113334.GD532@arch.cereza>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Mike Turquette <mturquette@linaro.org>, <devicetree@vger.kernel.org>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-mtd@lists.infradead.org>,
+ Jason Cooper <jason@lakedaemon.net>
+Subject: [PATCH 0/6] Armada 380 NAND support
+Date: Wed, 12 Mar 2014 12:16:38 -0300
+Message-Id: <1394637404-7651-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Lior Amsalem <alior@marvell.com>, Tawfik Bayouk <tawfik@marvell.com>,
+ Andrew Lunn <andrew@lunn.ch>, Seif Mazareeb <seif@marvell.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,42 +20,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+This patchset adds support for the NAND on Armada 380/385 SoCs.
 
- 2014 03 06 19:33, Ezequiel Garcia wrote:
+The first patch adds a new "armada-380-corediv-clock" compatible
+string, with its proper SoC-specific structure, adding the register
+layout for this SoC family.
 
-> 
-> You can find the latest kernel patches at:
-> 
-> http://git.infradead.org/linux-ubifs.git
-> 
-I have backported that driver into my kernel(3.10.y branch), now I have
-deply a squashfs on it and mount it successfully.
-I wonder whether I could use any filesystem in it(like ext2 without
-write). It is the greatest thing, I could have a read-only filesystem as
-the lower of overlayfs in nand mtd.
-It seems that ubi.block kernel parameters won't work, I just copy all
-file in driver/mtd/ubi from git and include/uapi/mtd/ubi-user.h , I am
-not familar with git and that tree has a delta unsolved so I failed in
-99%,
-what worse, that repo is quite slowly in my country.
+The second and third patches add the devicetree changes to support
+the Core Divider clock.
 
-I wise I could done overlayfs backport later.
+After adding its clock source, the fourth and fifth patches add
+the NAND devicetree changes. The NAND controller is compatible with
+the Armada 370 controller, so we are currently support it using the
+same compatible string.
 
-Thanks your work and all mtd and ubi developers.
+The last patch updates the binding documentation for the Core Divider
+clock, which is missing the information about the already supported
+Armada 375 compatible string.
 
+This series is based on linux-next 20140307. I expect it will apply
+cleanly on v3.15-rc1; if that's not the case, I'll send a rebased patchset.
 
-ayaka
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+The clock and devicetree changes are mostly independent so they
+can be merged through the clock and mvebu tree respectively.
 
-iQEcBAEBAgAGBQJTIHMcAAoJEPb4VsMIzTziPcsIAI2/DZQ3yvNkgF6F82fYvPV3
-a69B54BJX7UgCJbRtCclBPJ61dacEE4mmOSDE2d5tDAdkgD5AofW3VtlIqKxlDLz
-9yc6gga56/zBOEuX9lNhtqWa07HiXJ8YQX8fF+HxKooyqcn0dZHeUXxYWdNFPmPD
-xk9zxE6KmqXtRPWdVCK6UNISanZhTu9uoMF3ep0M7hfgOKN9yCXF5AR095KENTFw
-bKVW7MPv1qQ4PF5ivcB4thK8w/+iSXEWs8FXBCdnb3DiJSezRCYmiYQr8GAXFRXa
-2dCcJPOu3K6mH1KwS7CCtf5I6xz7wFSrTJQhqOj9uD5CfTaALbZHgI24hXv1sRU=
-=XLrA
------END PGP SIGNATURE-----
+Ezequiel Garcia (6):
+  clk: mvebu: Support Armada 380 SoC on the core divider clock
+  ARM: mvebu: Add a 2 GHz fixed-clock on Armada 38x SoCs
+  ARM: mvebu: Add the Core Divider clock to Armada 38x SoCs
+  ARM: mvebu: Add support for NAND controller in Armada 38x SoC
+  ARM: mvebu: Enable NAND controller in Armada 385-DB
+  clk: mvebu: Update binding documentation for the core divider clock
+
+ .../bindings/clock/mvebu-corediv-clock.txt         |  5 ++++-
+ arch/arm/boot/dts/armada-385-db.dts                | 21 ++++++++++++++++++
+ arch/arm/boot/dts/armada-38x.dtsi                  | 25 ++++++++++++++++++++++
+ drivers/clk/mvebu/clk-corediv.c                    | 23 ++++++++++++++++++++
+ 4 files changed, 73 insertions(+), 1 deletion(-)
+
+-- 
+1.9.0
