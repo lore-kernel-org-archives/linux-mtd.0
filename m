@@ -1,29 +1,30 @@
-Received: from mail-lb0-f169.google.com ([209.85.217.169])
+Received: from mail-pb0-f49.google.com ([209.85.160.49])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WNpbG-0002Pv-7H
- for linux-mtd@lists.infradead.org; Wed, 12 Mar 2014 20:18:03 +0000
-Received: by mail-lb0-f169.google.com with SMTP id q8so21107lbi.14
- for <linux-mtd@lists.infradead.org>; Wed, 12 Mar 2014 13:17:33 -0700 (PDT)
-Message-ID: <5320CEE7.6020506@cogentembedded.com>
-Date: Thu, 13 Mar 2014 00:17:27 +0300
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-MIME-Version: 1.0
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Mike Turquette <mturquette@linaro.org>,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mtd@lists.infradead.org, Jason Cooper <jason@lakedaemon.net>
-Subject: Re: [PATCH 4/6] ARM: mvebu: Add support for NAND controller in Armada
- 38x SoC
-References: <1394637404-7651-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1394637404-7651-5-git-send-email-ezequiel.garcia@free-electrons.com>
-In-Reply-To: <1394637404-7651-5-git-send-email-ezequiel.garcia@free-electrons.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>, Tawfik Bayouk <tawfik@marvell.com>,
- Andrew Lunn <andrew@lunn.ch>, Seif Mazareeb <seif@marvell.com>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+ id 1WNpc9-0002Ti-F3
+ for linux-mtd@lists.infradead.org; Wed, 12 Mar 2014 20:18:58 +0000
+Received: by mail-pb0-f49.google.com with SMTP id jt11so25835pbb.22
+ for <linux-mtd@lists.infradead.org>; Wed, 12 Mar 2014 13:18:33 -0700 (PDT)
+Sender: Warner Losh <wlosh@bsdimp.com>
+Content-Type: text/plain; charset=windows-1252
+Mime-Version: 1.0 (Mac OS X Mail 7.2 \(1874\))
+Subject: Re: [RFC PATCH v2 04/14] mtd: nand: define struct nand_timings
+From: Warner Losh <imp@bsdimp.com>
+In-Reply-To: <20140312190737.GA27388@obsidianresearch.com>
+Date: Wed, 12 Mar 2014 14:18:27 -0600
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <5B3F0425-9D7A-4D22-86A0-2E870E25396A@gmail.com>
+References: <1391006064-28890-1-git-send-email-b.brezillon.dev@gmail.com>
+ <1391006064-28890-5-git-send-email-b.brezillon.dev@gmail.com>
+ <531DC1A4.7010208@gmail.com> <20140311185554.GD31835@obsidianresearch.com>
+ <53208F7D.8090104@gmail.com> <20140312190737.GA27388@obsidianresearch.com>
+To: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
+Cc: devicetree@vger.kernel.org, Boris BREZILLON <b.brezillon.dev@gmail.com>,
+ linux-doc@vger.kernel.org, dev@linux-sunxi.org, linux-kernel@vger.kernel.org,
+ Rob Herring <rob.herring@calxeda.com>, linux-mtd@lists.infradead.org,
+ Grant Likely <grant.likely@linaro.org>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,39 +34,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello.
 
-On 03/12/2014 06:16 PM, Ezequiel Garcia wrote:
+On Mar 12, 2014, at 1:07 PM, Jason Gunthorpe =
+<jgunthorpe@obsidianresearch.com> wrote:
 
-> The Armada 38x SoC family has a NAND controller, compatible
-> with the controller in Armada 370/375/XP SoCs. Add support for
-> it in the devicetree file.
+> On Wed, Mar 12, 2014 at 05:46:53PM +0100, Boris BREZILLON wrote:
+>> I'm not a big fan of this name. I think timing structs should not
+>> contain onfi in their names, because these timings are also
+>> available on non ONFI chips.
+>=20
+> Explicitly defering to the ONFI spec makes it clear what the
+> definition of the timing parameter actually is.
 
-> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> ---
->   arch/arm/boot/dts/armada-38x.dtsi | 10 ++++++++++
->   1 file changed, 10 insertions(+)
+This is good, since ONFI is a very public spec.
 
-> diff --git a/arch/arm/boot/dts/armada-38x.dtsi b/arch/arm/boot/dts/armada-38x.dtsi
-> index 76cc27e..18d8f80 100644
-> --- a/arch/arm/boot/dts/armada-38x.dtsi
-> +++ b/arch/arm/boot/dts/armada-38x.dtsi
-> @@ -345,6 +345,16 @@
->   				clocks = <&mainpll>;
->   				clock-output-names = "nand";
->   			};
-> +
-> +			nand@d0000 {
+> If JEDEC has a different model then drivers will need to configure
+> their interfaces a little differently.
 
-    ePAPR standard [1] tells us:
+JEDEC=92s spec is just a public as ONFI=92s, but in the past at least it =
+has been difficult
+to get without purchase.
 
-The name of a node should be somewhat generic, reflecting the function of the 
-device and not its precise programming model. If appropriate, the name should 
-be one of the following choices:
+> So we might end up with a jedec_sdr_timings too :|
 
-[...]
-• flash
+And onfi_ddr_timings and jedec_ddr_timings since those timing modes are =
+appearing
+on shipping parts.
 
-[1] http://www.power.org/resources/downloads/Power_ePAPR_APPROVED_v1.0.pdf
-
-WBR, Sergei
+Warner
