@@ -1,19 +1,21 @@
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Mike Turquette <mturquette@linaro.org>, <devicetree@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, <linux-mtd@lists.infradead.org>,
- Jason Cooper <jason@lakedaemon.net>
-Subject: [PATCH 6/6] clk: mvebu: Update binding documentation for the core
- divider clock
-Date: Wed, 12 Mar 2014 12:16:44 -0300
-Message-Id: <1394637404-7651-7-git-send-email-ezequiel.garcia@free-electrons.com>
-In-Reply-To: <1394637404-7651-1-git-send-email-ezequiel.garcia@free-electrons.com>
-References: <1394637404-7651-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>, Tawfik Bayouk <tawfik@marvell.com>,
- Andrew Lunn <andrew@lunn.ch>, Seif Mazareeb <seif@marvell.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Message-ID: <53208F7D.8090104@gmail.com>
+Date: Wed, 12 Mar 2014 17:46:53 +0100
+From: Boris BREZILLON <b.brezillon.dev@gmail.com>
+MIME-Version: 1.0
+To: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
+Subject: Re: [RFC PATCH v2 04/14] mtd: nand: define struct nand_timings
+References: <1391006064-28890-1-git-send-email-b.brezillon.dev@gmail.com>
+ <1391006064-28890-5-git-send-email-b.brezillon.dev@gmail.com>
+ <531DC1A4.7010208@gmail.com> <20140311185554.GD31835@obsidianresearch.com>
+In-Reply-To: <20140311185554.GD31835@obsidianresearch.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: devicetree@vger.kernel.org, linux-doc@vger.kernel.org, dev@linux-sunxi.org,
+ linux-kernel@vger.kernel.org, Rob Herring <rob.herring@calxeda.com>,
+ linux-mtd@lists.infradead.org, Grant Likely <grant.likely@linaro.org>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,29 +25,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The Core Divider clock support two new compatible strings for Armada
-375 and Armada 380 SoCs. Add the compatible strings to the documentation.
+Le 11/03/2014 19:55, Jason Gunthorpe a écrit :
+> On Mon, Mar 10, 2014 at 02:44:04PM +0100, Boris BREZILLON wrote:
+>
+>> Some timings are missing here (see Table 55 in the ONFI spec):
+> Right..
+>
+> The 'mode' covers only the raw electrical parameters needed to
+> exchange commands, other timings cover the commands
+> themselves. Notably the timing mode does not alter those parameters.
+>
+> To me it seems tidy to keep the 'mode' timings contained in their own
+> struct and find other homes for the other parameters.
+>
+>> -tR
+>> -tBERS
+>> -tCCS
+>> -tPLEBSY
+>> -...
+>>
+>> I see at least 3 of those timings that could be useful (for the moment) :
+>> - tR: this one should be used to fill the chip_delay field
+>> - tPROG and tBERS: could be used within nand_wait to choose the timeo
+>>    value appropriately.
+> IIRC these timing values are really only necessary if the controller
+> does not support the READY/BUSY input, in that case drivers typically
+> seem to use 'chip_delay' which is the maximum possible command
+> execution time (a sleep long enough to guarentee that READY/BUSY is
+> de-asserted).
+You're right about tR (or chip_delay): it's only used when there are no 
+R/B pin.
+I experienced it when I tried the RB_NONE case in the sunxi driver: the 
+default
+chip_delay set by the NAND core code was too small to fit the NAND chip 
+requirements.
 
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
----
- Documentation/devicetree/bindings/clock/mvebu-corediv-clock.txt | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Anyway, I really think the chip_delay field should be set according to 
+NAND chip
+characteristics not harcoded in NAND controller driver code (as 
+currently done).
 
-diff --git a/Documentation/devicetree/bindings/clock/mvebu-corediv-clock.txt b/Documentation/devicetree/bindings/clock/mvebu-corediv-clock.txt
-index c62391f..520562a 100644
---- a/Documentation/devicetree/bindings/clock/mvebu-corediv-clock.txt
-+++ b/Documentation/devicetree/bindings/clock/mvebu-corediv-clock.txt
-@@ -4,7 +4,10 @@ The following is a list of provided IDs and clock names on Armada 370/XP:
-  0 = nand (NAND clock)
- 
- Required properties:
--- compatible : must be "marvell,armada-370-corediv-clock"
-+- compatible : must be "marvell,armada-370-corediv-clock",
-+		       "marvell,armada-375-corediv-clock",
-+		       "marvell,armada-380-corediv-clock",
-+
- - reg : must be the register address of Core Divider control register
- - #clock-cells : from common clock binding; shall be set to 1
- - clocks : must be set to the parent's phandle
--- 
-1.9.0
+tPROG and tBERS, would be used in nand_wait function and do not depend 
+on the R/B pin.
+These are just used as timeouts.
+
+>
+>> Or should I create a new struct for these timings ?
+>> In the latter case how should I name it ?
+> struct onfi_command_timings ?
+
+I'm not a big fan of this name. I think timing structs should not 
+contain onfi in their
+names, because these timings are also available on non ONFI chips.
+
+Moreover, these timings are also part of the SDR NAND timings, they are 
+just retrieved
+using another method when interfacing with an ONFI chip.
+
+Maybe we should change the nand_sdr_timings struct name too.
+
+What do you think ?
+
+Best Regards,
+
+Boris
+
+>
+> Regards,
+> Jason
