@@ -1,26 +1,23 @@
-Received: from mail-wi0-f179.google.com ([209.85.212.179])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WNoLl-0008UW-A9
- for linux-mtd@lists.infradead.org; Wed, 12 Mar 2014 18:57:58 +0000
-Received: by mail-wi0-f179.google.com with SMTP id f8so94604wiw.12
- for <linux-mtd@lists.infradead.org>; Wed, 12 Mar 2014 11:57:30 -0700 (PDT)
+Date: Wed, 12 Mar 2014 13:07:37 -0600
+From: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
+To: Boris BREZILLON <b.brezillon.dev@gmail.com>
+Subject: Re: [RFC PATCH v2 04/14] mtd: nand: define struct nand_timings
+Message-ID: <20140312190737.GA27388@obsidianresearch.com>
+References: <1391006064-28890-1-git-send-email-b.brezillon.dev@gmail.com>
+ <1391006064-28890-5-git-send-email-b.brezillon.dev@gmail.com>
+ <531DC1A4.7010208@gmail.com>
+ <20140311185554.GD31835@obsidianresearch.com>
+ <53208F7D.8090104@gmail.com>
 MIME-Version: 1.0
-Sender: menon.nishanth@gmail.com
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EAB2CF1@DBDE04.ent.ti.com>
-References: <1394621360-2457-1-git-send-email-pekon@ti.com>
- <1394621360-2457-2-git-send-email-pekon@ti.com>
- <532070C8.1030903@ti.com>
- <20980858CB6D3A4BAE95CA194937D5E73EAB2CF1@DBDE04.ent.ti.com>
-Date: Wed, 12 Mar 2014 13:57:27 -0500
-Message-ID: <CAGo_u6rvUqa-7afTFzBahDJuyVkXAj5J2LL8tQRjZuf8_xWXWA@mail.gmail.com>
-Subject: Re: [PATCH v1 1/3] ARM: dts: am335x-bone: add support for beaglebone
- NAND cape
-From: Nishanth Menon <nm@ti.com>
-To: "Gupta, Pekon" <pekon@ti.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Tony Lindgren <tony@atomide.com>, linux-omap <linux-omap@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- "bcousson@baylibre.com" <bcousson@baylibre.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <53208F7D.8090104@gmail.com>
+Cc: devicetree@vger.kernel.org, linux-doc@vger.kernel.org, dev@linux-sunxi.org,
+ linux-kernel@vger.kernel.org, Rob Herring <rob.herring@calxeda.com>,
+ linux-mtd@lists.infradead.org, Grant Likely <grant.likely@linaro.org>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,57 +27,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Mar 12, 2014 at 1:26 PM, Gupta, Pekon <pekon@ti.com> wrote:
-> Hi,
->
->>From: Menon, Nishanth
->>>On 03/12/2014 05:49 AM, Pekon Gupta wrote:
->>> Beaglebone Board can be connected to expansion boards to add devices to them.
->>> These expansion boards are called 'capes'. This patch adds support for
->>> following versions of Beaglebone(AM335x) NAND capes
->>> (a) NAND Device with bus-width=16, block-size=128k, page-size=2k, oob-size=64
->>> (b) NAND Device with bus-width=16, block-size=256k, page-size=4k, oob-size=224
->>> Further information and datasheets can be found at [1] and [2]
-> [...]
->>> [1] http://beagleboardtoys.info/index.php?title=BeagleBone_Memory_Expansion
->>> [2] http://beagleboardtoys.info/index.php?title=BeagleBone_4Gb_16-Bit_NAND_Module
->>>
->>> Signed-off-by: Pekon Gupta <pekon@ti.com>
->>> ---
->>>  arch/arm/boot/dts/am335x-bone.dts | 123 ++++++++++++++++++++++++++++++++++++++
->>>  1 file changed, 123 insertions(+)
->>>
->>> diff --git a/arch/arm/boot/dts/am335x-bone.dts b/arch/arm/boot/dts/am335x-bone.dts
->>> index 94ee427..be2c572 100644
->>> --- a/arch/arm/boot/dts/am335x-bone.dts
->>> +++ b/arch/arm/boot/dts/am335x-bone.dts
->>
->>better to make a nand_cape dts which includes the am335x-bone.dts?
->>
-> Actually, I'm not in favor of having too many "xx_board_common.dts" files,
-> because it un-necessarily complexes things.
->
-> We already have "arch/arm/boot/dts/am335x-bone-common.dtsi" which just saves
-> some lines common to DTS of both Beaglebone-LT(white) and Beaglebone-Black.
-> And, there is no guarantee that Beaglebone-LT(white) will remain compatible to
-> Beaglebone-black in future.
-> Example: some capes are not compatible to beaglebone-black [1], [2].
->
-> So, I prefer to keep separate GPMC NAND nodes separately in both DTS,
-> unless there is a strong convincing reason otherwise.
->
->
-> [1] http://elinux.org/CircuitCo:BeagleBoardToys
-> [2] http://elinux.org/BeagleBone_Black_Capes
+On Wed, Mar 12, 2014 at 05:46:53PM +0100, Boris BREZILLON wrote:
 
+> >>I see at least 3 of those timings that could be useful (for the moment) :
+> >>- tR: this one should be used to fill the chip_delay field
+> >>- tPROG and tBERS: could be used within nand_wait to choose the timeo
+> >>   value appropriately.
+> >IIRC these timing values are really only necessary if the controller
+> >does not support the READY/BUSY input, in that case drivers typically
+> >seem to use 'chip_delay' which is the maximum possible command
+> >execution time (a sleep long enough to guarentee that READY/BUSY is
+> >de-asserted).
 
+> You're right about tR (or chip_delay): it's only used when there are
+> no R/B pin.  I experienced it when I tried the RB_NONE case in the
+> sunxi driver: the default chip_delay set by the NAND core code was
+> too small to fit the NAND chip requirements.
+> 
+> Anyway, I really think the chip_delay field should be set according
+> to NAND chip characteristics not harcoded in NAND controller driver
+> code (as currently done).
 
-Right, and adding NAND, GPMC nodes and asking folks to uncomment
-sections into a generic board file (which by default has none) makes
-more sense? I dont use NAND capes or might create my own cape. overo
-has the same challenges as bone family has.I dont see asking folks to
-uncomment entries to use the cape is a nicer alternative to having
-more dts entries.
+Drivers these days are often taking this value from the DT node
+property 'chip-delay'. I think this would be nice to have in common
+code too...
 
-Regards,
-Nishanth Menon
+> tPROG and tBERS, would be used in nand_wait function and do not
+> depend on the R/B pin.  These are just used as timeouts.
+
+tPROG/tBERS have that special mode where R/B remains asserted but you
+can still issue a status read to the chip to check on the command, so
+the timeout required here is just a big number to detect failed NAND
+controllers, it isn't really too important to have an exact value..
+
+> >>Or should I create a new struct for these timings ?
+> >>In the latter case how should I name it ?
+> >struct onfi_command_timings ?
+> 
+> I'm not a big fan of this name. I think timing structs should not
+> contain onfi in their names, because these timings are also
+> available on non ONFI chips.
+
+Explicitly defering to the ONFI spec makes it clear what the
+definition of the timing parameter actually is.
+
+If JEDEC has a different model then drivers will need to configure
+their interfaces a little differently.
+
+So we might end up with a jedec_sdr_timings too :|
+
+> What do you think ?
+
+I'd focus on getting the bus timings working before tackling too much
+more ...
+
+Jason
