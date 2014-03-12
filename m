@@ -2,10 +2,9 @@ From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: Mike Turquette <mturquette@linaro.org>, <devicetree@vger.kernel.org>,
  <linux-arm-kernel@lists.infradead.org>, <linux-mtd@lists.infradead.org>,
  Jason Cooper <jason@lakedaemon.net>
-Subject: [PATCH 1/6] clk: mvebu: Support Armada 380 SoC on the core divider
- clock
-Date: Wed, 12 Mar 2014 12:16:39 -0300
-Message-Id: <1394637404-7651-2-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH 3/6] ARM: mvebu: Add the Core Divider clock to Armada 38x SoCs
+Date: Wed, 12 Mar 2014 12:16:41 -0300
+Message-Id: <1394637404-7651-4-git-send-email-ezequiel.garcia@free-electrons.com>
 In-Reply-To: <1394637404-7651-1-git-send-email-ezequiel.garcia@free-electrons.com>
 References: <1394637404-7651-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
@@ -23,52 +22,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This commit adds support for the Core Divider clocks of the Armada
-380 SoCs. Similarly to Armada 370 and XP, the Core Divider clocks of
-the 380 have gate capabilities. The only difference is the register layout.
+The Armada 38x SoC family has a clock provider called "Core Divider",
+derived from the fixed 2 GHz main PLL clock. This is similar to the
+one on A370, A375 and AXP.
 
 Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 ---
- drivers/clk/mvebu/clk-corediv.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+ arch/arm/boot/dts/armada-38x.dtsi | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/clk/mvebu/clk-corediv.c b/drivers/clk/mvebu/clk-corediv.c
-index 4da6076..911dbb6 100644
---- a/drivers/clk/mvebu/clk-corediv.c
-+++ b/drivers/clk/mvebu/clk-corediv.c
-@@ -204,6 +204,22 @@ static const struct clk_corediv_soc_desc armada370_corediv_soc = {
- 	.ratio_offset = 0x8,
- };
+diff --git a/arch/arm/boot/dts/armada-38x.dtsi b/arch/arm/boot/dts/armada-38x.dtsi
+index 38fc3a0..76cc27e 100644
+--- a/arch/arm/boot/dts/armada-38x.dtsi
++++ b/arch/arm/boot/dts/armada-38x.dtsi
+@@ -337,6 +337,14 @@
+ 				compatible = "marvell,orion-mdio";
+ 				reg = <0x72004 0x4>;
+ 			};
++
++			coredivclk: corediv-clock@e4250 {
++				compatible = "marvell,armada-380-corediv-clock";
++				reg = <0xe4250 0xc>;
++				#clock-cells = <1>;
++				clocks = <&mainpll>;
++				clock-output-names = "nand";
++			};
+ 		};
+ 	};
  
-+static const struct clk_corediv_soc_desc armada380_corediv_soc = {
-+	.descs = mvebu_corediv_desc,
-+	.ndescs = ARRAY_SIZE(mvebu_corediv_desc),
-+	.ops = {
-+		.enable = clk_corediv_enable,
-+		.disable = clk_corediv_disable,
-+		.is_enabled = clk_corediv_is_enabled,
-+		.recalc_rate = clk_corediv_recalc_rate,
-+		.round_rate = clk_corediv_round_rate,
-+		.set_rate = clk_corediv_set_rate,
-+	},
-+	.ratio_reload = BIT(8),
-+	.enable_bit_offset = 16,
-+	.ratio_offset = 0x4,
-+};
-+
- static const struct clk_corediv_soc_desc armada375_corediv_soc = {
- 	.descs = mvebu_corediv_desc,
- 	.ndescs = ARRAY_SIZE(mvebu_corediv_desc),
-@@ -290,3 +306,10 @@ static void __init armada375_corediv_clk_init(struct device_node *node)
- }
- CLK_OF_DECLARE(armada375_corediv_clk, "marvell,armada-375-corediv-clock",
- 	       armada375_corediv_clk_init);
-+
-+static void __init armada380_corediv_clk_init(struct device_node *node)
-+{
-+	return mvebu_corediv_clk_init(node, &armada380_corediv_soc);
-+}
-+CLK_OF_DECLARE(armada380_corediv_clk, "marvell,armada-380-corediv-clock",
-+	       armada380_corediv_clk_init);
 -- 
 1.9.0
