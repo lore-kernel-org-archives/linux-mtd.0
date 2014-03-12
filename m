@@ -1,22 +1,19 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WNkK1-0005ME-La
- for linux-mtd@lists.infradead.org; Wed, 12 Mar 2014 14:39:54 +0000
-Message-ID: <532071A2.5020400@ti.com>
-Date: Wed, 12 Mar 2014 09:39:30 -0500
-From: Nishanth Menon <nm@ti.com>
+Received: from blu0-omc1-s17.blu0.hotmail.com ([65.55.116.28])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WNkQB-0005Zw-2u
+ for linux-mtd@lists.infradead.org; Wed, 12 Mar 2014 14:46:16 +0000
+Message-ID: <BLU0-SMTP337D056766A2230A59D6971AD760@phx.gbl>
+Date: Wed, 12 Mar 2014 22:45:52 +0800
+From: ayaka <lxr1234@hotmail.com>
 MIME-Version: 1.0
-To: Pekon Gupta <pekon@ti.com>, Tony Lindgren <tony@atomide.com>,
- <bcousson@baylibre.com>
-Subject: Re: [PATCH v1 3/3] ARM: dts: am437x-gp-evm: add support for parallel
- NAND flash
-References: <1394621360-2457-1-git-send-email-pekon@ti.com>
- <1394621360-2457-4-git-send-email-pekon@ti.com>
-In-Reply-To: <1394621360-2457-4-git-send-email-pekon@ti.com>
+To: linux-mtd@lists.infradead.org
+Subject: Re: about porting ubiblock to make squashfs work on it
+References: <BLU0-SMTP222D7E8438812853BF4B0AAD880@phx.gbl>
+ <20140306113334.GD532@arch.cereza>
+In-Reply-To: <20140306113334.GD532@arch.cereza>
 Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Cc: linux-omap <linux-omap@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>
+Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,155 +23,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/12/2014 05:49 AM, Pekon Gupta wrote:
-> Adds pinmux and DT node for Micron (MT29F4G08AB) x8 NAND device present on
-> am437x-gp-evm board.
-> (1) As NAND Flash data lines are muxed with eMMC, Thus at a given time either
->     eMMC or NAND can be enabled. Selection between eMMC and NAND is controlled:
->     (a) By dynamically driving following GPIO pin from software
->         SPI2_CS0(GPIO) == 0 NAND is selected (default)
->         SPI2_CS0(GPIO) == 1 eMMC is selected
->     (b) By statically using Jumper (J89) on the board
-> 
-> (2) As NAND device connnected to this board has page-size=4K and oob-size=224,
->     So ROM code expects boot-loaders to be flashed in BCH16 ECC scheme for
->     NAND boot.
-> 
-> Signed-off-by: Pekon Gupta <pekon@ti.com>
-> ---
->  arch/arm/boot/dts/am437x-gp-evm.dts | 107 ++++++++++++++++++++++++++++++++++++
->  1 file changed, 107 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/am437x-gp-evm.dts b/arch/arm/boot/dts/am437x-gp-evm.dts
-> index df8798e..0027ea7 100644
-> --- a/arch/arm/boot/dts/am437x-gp-evm.dts
-> +++ b/arch/arm/boot/dts/am437x-gp-evm.dts
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-which branch does this apply on? I assume you mean this for Tony's
-omap-for-v3.15/dt branch? it would be nice if you'd make that clear in
-cover letter.
+ 2014 03 06 19:33, Ezequiel Garcia wrote:
 
-> @@ -81,6 +81,27 @@
->  			0x164 MUX_MODE0       /* eCAP0_in_PWM0_out.eCAP0_in_PWM0_out MODE0 */
->  		>;
->  	};
-> +
-> +	nand_flash_x8: nand_flash_x8 {
-> +		pinctrl-single,pins = <
-> +			0x26C(PIN_OUTPUT_PULLDOWN | MUX_MODE7)	/* spi2_cs0.gpio/eMMCorNANDsel */
-> +			0x0  (PIN_INPUT  | MUX_MODE0)	/* gpmc_ad0.gpmc_ad0 */
-> +			0x4  (PIN_INPUT  | MUX_MODE0)	/* gpmc_ad1.gpmc_ad1 */
-> +			0x8  (PIN_INPUT  | MUX_MODE0)	/* gpmc_ad2.gpmc_ad2 */
-> +			0xc  (PIN_INPUT  | MUX_MODE0)	/* gpmc_ad3.gpmc_ad3 */
-> +			0x10 (PIN_INPUT  | MUX_MODE0)	/* gpmc_ad4.gpmc_ad4 */
-> +			0x14 (PIN_INPUT  | MUX_MODE0)	/* gpmc_ad5.gpmc_ad5 */
-> +			0x18 (PIN_INPUT  | MUX_MODE0)	/* gpmc_ad6.gpmc_ad6 */
-> +			0x1c (PIN_INPUT  | MUX_MODE0)	/* gpmc_ad7.gpmc_ad7 */
-> +			0x70 (PIN_INPUT_PULLUP | MUX_MODE0)	/* gpmc_wait0.gpmc_wait0 */
-> +			0x74 (PIN_OUTPUT_PULLUP | MUX_MODE7)	/* gpmc_wpn.gpmc_wpn */
-> +			0x7c (PIN_OUTPUT | MUX_MODE0)		/* gpmc_csn0.gpmc_csn0  */
-> +			0x90 (PIN_OUTPUT | MUX_MODE0)		/* gpmc_advn_ale.gpmc_advn_ale */
-> +			0x94 (PIN_OUTPUT | MUX_MODE0)		/* gpmc_oen_ren.gpmc_oen_ren */
-> +			0x98 (PIN_OUTPUT | MUX_MODE0)		/* gpmc_wen.gpmc_wen */
-> +			0x9c (PIN_OUTPUT | MUX_MODE0)		/* gpmc_be0n_cle.gpmc_be0n_cle */
-> +		>;
-> +	};
->  };
->  
->  &i2c0 {
-> @@ -125,3 +146,89 @@
->  	pinctrl-0 = <&mmc1_pins>;
->  	cd-gpios = <&gpio0 6 GPIO_ACTIVE_HIGH>;
->  };
-> +
-> +&elm {
-> +	status = "okay";
-> +};
-> +
-> +&gpmc {
-> +	status = "okay";
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&nand_flash_x8>;
-> +	ranges = <0 0 0x08000000 0x10000000>;	/* CS0: NAND */
-> +	nand@0,0 {
-> +		reg = <0 0 0>; /* CS0, offset 0 */
-> +		ti,nand-ecc-opt = "bch8";
-> +		ti,elm-id = <&elm>;
-> +		nand-bus-width = <8>;
-> +		gpmc,device-width = <1>;
-> +		gpmc,sync-clk-ps = <0>;
-> +		gpmc,cs-on-ns = <0>;
-> +		gpmc,cs-rd-off-ns = <40>;
-> +		gpmc,cs-wr-off-ns = <40>;
-> +		gpmc,adv-on-ns = <0>;
-> +		gpmc,adv-rd-off-ns = <25>;
-> +		gpmc,adv-wr-off-ns = <25>;
-> +		gpmc,we-on-ns = <0>;
-> +		gpmc,we-off-ns = <20>;
-> +		gpmc,oe-on-ns = <3>;
-> +		gpmc,oe-off-ns = <30>;
-> +		gpmc,access-ns = <30>;
-> +		gpmc,rd-cycle-ns = <40>;
-> +		gpmc,wr-cycle-ns = <40>;
-> +		gpmc,wait-on-read = "true";
-> +		gpmc,wait-on-write = "true";
-> +		gpmc,bus-turnaround-ns = <0>;
-> +		gpmc,cycle2cycle-delay-ns = <0>;
-> +		gpmc,clk-activation-ns = <0>;
-> +		gpmc,wait-monitoring-ns = <0>;
-> +		gpmc,wr-access-ns = <40>;
-> +		gpmc,wr-data-mux-bus-ns = <0>;
-> +		/* MTD partition table */
-> +		/* All SPL-* partitions are sized to minimal length
-> +		 * which can be independently programmable. For
-> +		 * NAND flash this is equal to size of erase-block */
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		partition@0 {
-> +			label = "NAND.SPL";
-> +			reg = <0x00000000 0x00040000>;
-> +		};
-> +		partition@1 {
-> +			label = "NAND.SPL.backup1";
-> +			reg = <0x00040000 0x00040000>;
-> +		};
-> +		partition@2 {
-> +			label = "NAND.SPL.backup2";
-> +			reg = <0x00080000 0x00040000>;
-> +		};
-> +		partition@3 {
-> +			label = "NAND.SPL.backup3";
-> +			reg = <0x000C0000 0x00040000>;
-> +		};
-> +		partition@4 {
-> +			label = "NAND.u-boot-spl-os";
-> +			reg = <0x00100000 0x00080000>;
-> +		};
-> +		partition@5 {
-> +			label = "NAND.u-boot";
-> +			reg = <0x00180000 0x00100000>;
-> +		};
-> +		partition@6 {
-> +			label = "NAND.u-boot-env";
-> +			reg = <0x00280000 0x00040000>;
-> +		};
-> +		partition@7 {
-> +			label = "NAND.u-boot-env.backup1";
-> +			reg = <0x002C0000 0x00040000>;
-> +		};
-> +		partition@8 {
-> +			label = "NAND.kernel";
-> +			reg = <0x00300000 0x00700000>;
-> +		};
-> +		partition@9 {
-> +			label = "NAND.file-system";
-> +			reg = <0x00A00000 0x1F600000>;
-> +		};
-> +	};
-> +};
 > 
+> You can find the latest kernel patches at:
+> 
+> http://git.infradead.org/linux-ubifs.git
+> 
+I have backported that driver into my kernel(3.10.y branch), now I have
+deply a squashfs on it and mount it successfully.
+I wonder whether I could use any filesystem in it(like ext2 without
+write). It is the greatest thing, I could have a read-only filesystem as
+the lower of overlayfs in nand mtd.
+It seems that ubi.block kernel parameters won't work, I just copy all
+file in driver/mtd/ubi from git and include/uapi/mtd/ubi-user.h , I am
+not familar with git and that tree has a delta unsolved so I failed in
+99%,
+what worse, that repo is quite slowly in my country.
+
+I wise I could done overlayfs backport later.
+
+Thanks your work and all mtd and ubi developers.
 
 
--- 
-Regards,
-Nishanth Menon
+ayaka
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+
+iQEcBAEBAgAGBQJTIHMcAAoJEPb4VsMIzTziPcsIAI2/DZQ3yvNkgF6F82fYvPV3
+a69B54BJX7UgCJbRtCclBPJ61dacEE4mmOSDE2d5tDAdkgD5AofW3VtlIqKxlDLz
+9yc6gga56/zBOEuX9lNhtqWa07HiXJ8YQX8fF+HxKooyqcn0dZHeUXxYWdNFPmPD
+xk9zxE6KmqXtRPWdVCK6UNISanZhTu9uoMF3ep0M7hfgOKN9yCXF5AR095KENTFw
+bKVW7MPv1qQ4PF5ivcB4thK8w/+iSXEWs8FXBCdnb3DiJSezRCYmiYQr8GAXFRXa
+2dCcJPOu3K6mH1KwS7CCtf5I6xz7wFSrTJQhqOj9uD5CfTaALbZHgI24hXv1sRU=
+=XLrA
+-----END PGP SIGNATURE-----
