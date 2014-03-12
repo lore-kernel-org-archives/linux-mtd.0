@@ -1,19 +1,17 @@
-Date: Wed, 12 Mar 2014 16:13:51 +0800
-From: Huang Shijie <b32955@freescale.com>
-To: <dwmw2@infradead.org>
-Subject: Re: [PATCH v5 0/8] mtd: spi-nor: add a new framework for SPI NOR
-Message-ID: <20140312081350.GC30808@shlinux2.ap.freescale.net>
-References: <1393238262-8622-1-git-send-email-b32955@freescale.com>
+Received: from devils.ext.ti.com ([198.47.26.153])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WNgjo-0005yY-Vd
+ for linux-mtd@lists.infradead.org; Wed, 12 Mar 2014 10:50:17 +0000
+From: Pekon Gupta <pekon@ti.com>
+To: Tony Lindgren <tony@atomide.com>, <bcousson@baylibre.com>
+Subject: [PATCH v1 0/3] add parallel NAND support for TI's new OMAPx and AMxx
+ platforms (Part-2)
+Date: Wed, 12 Mar 2014 16:19:17 +0530
+Message-ID: <1394621360-2457-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1393238262-8622-1-git-send-email-b32955@freescale.com>
-Cc: angus.clark@st.com, shawn.guo@linaro.org, b44548@freescale.com,
- broonie@linaro.org, linux-doc@vger.kernel.org, b18965@freescale.com,
- linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
- linux-mtd@lists.infradead.org, pekon@ti.com, sourav.poddar@ti.com,
- computersforpeace@gmail.com, lee.jones@linaro.org,
- linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain
+Cc: linux-omap <linux-omap@vger.kernel.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>, Pekon Gupta <pekon@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,15 +21,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Feb 24, 2014 at 06:37:34PM +0800, Huang Shijie wrote:
-Hi Brian:
+This patch-set adds parallel NAND support on following TI platforms
+ - AM335x (am335x-bone LT, am335x-boneblack): <disabled by default>
+ - AM43xx (am437x-gp-evm)
 
-   Could you please review this patch set? I really hope it can be merged
-   as soon as possibel.  But now, the patch set has stalled for a long time.
 
-   Since you have pushed the patches for m25p80.c, i have to rebase this
-   patch set again and again...
+Pekon Gupta (3):
+  ARM: dts: am335x-bone: add support for beaglebone NAND cape
+  ARM: dts: am335x-boneblack: add support for beaglebone NAND cape
+  ARM: dts: am437x-gp-evm: add support for parallel NAND flash
 
-   thanks
-   Huang Shijie
-   
+ arch/arm/boot/dts/am335x-bone.dts      | 123 +++++++++++++++++++++++++++++++++
+ arch/arm/boot/dts/am335x-boneblack.dts | 120 ++++++++++++++++++++++++++++++++
+ arch/arm/boot/dts/am437x-gp-evm.dts    | 107 ++++++++++++++++++++++++++++
+ 3 files changed, 350 insertions(+)
+
+-- 
+1.8.5.1.163.gd7aced9
