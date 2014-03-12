@@ -1,27 +1,22 @@
-Received: from mail-pd0-x233.google.com ([2607:f8b0:400e:c02::233])
+Received: from comal.ext.ti.com ([198.47.26.152])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WNieS-00019s-51
- for linux-mtd@lists.infradead.org; Wed, 12 Mar 2014 12:52:53 +0000
-Received: by mail-pd0-f179.google.com with SMTP id w10so1034510pde.38
- for <linux-mtd@lists.infradead.org>; Wed, 12 Mar 2014 05:52:30 -0700 (PDT)
+ id 1WNkGW-0005E9-AR
+ for linux-mtd@lists.infradead.org; Wed, 12 Mar 2014 14:36:17 +0000
+Message-ID: <532070C8.1030903@ti.com>
+Date: Wed, 12 Mar 2014 09:35:52 -0500
+From: Nishanth Menon <nm@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <532005C6.3090805@gmail.com>
-References: <1394529112-9659-1-git-send-email-computersforpeace@gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73EAB1679@DBDE04.ent.ti.com>
- <531FF16F.7060808@gmail.com>
- <CAGWqfijgOL4Qk4axrPo=Z2vcq_upBCM-jQCm-wkSs12RqTeR8Q@mail.gmail.com>
- <532005C6.3090805@gmail.com>
-Date: Wed, 12 Mar 2014 13:45:15 +0100
-Message-ID: <CAGWqfigu3GFPS3Ykap4_hjkMtEUCv8bXGOt2h7GGQ=Sgip=DdQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mtd: nand: add erased-page bitflip correction
-From: Elie De Brauwer <eliedebrauwer@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Kent Li <kent.li@radisys.com>, Artem Bityutskiy <dedekind1@gmail.com>,
- HOUR Frederic <frederic.hour@safran-engineering.com>,
- Huang Shijie <b32955@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
- Pekon" <pekon@ti.com>
+To: Pekon Gupta <pekon@ti.com>, Tony Lindgren <tony@atomide.com>,
+ <bcousson@baylibre.com>
+Subject: Re: [PATCH v1 1/3] ARM: dts: am335x-bone: add support for beaglebone
+ NAND cape
+References: <1394621360-2457-1-git-send-email-pekon@ti.com>
+ <1394621360-2457-2-git-send-email-pekon@ti.com>
+In-Reply-To: <1394621360-2457-2-git-send-email-pekon@ti.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: linux-omap <linux-omap@vger.kernel.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,123 +26,193 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Mar 12, 2014 at 7:59 AM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> Hi Elie,
->
-> Thanks for your response.
->
-> On 03/11/2014 10:59 PM, Elie De Brauwer wrote:
->> In [1] you an find some benchmarks which I did in the early days of the GPMI fix
->> where I tried several approaches ranging from the naive version based on some
->> of Pekon's work, going to making using of the BCH status register ending with
->> reading the syndromes and caching them, for me this last version is what I have
->> in our own Linux tree, because after this Huang took over and came
->> with the patch
->> which started these discussions which I'm waiting to upstream.
->
-> I'm a little confused by the number of different patches out here. I'll
-> summarize what I understand, but please correct if I'm wrong:
->
-> [A] First, you (Elie) sent a series of patches that made it to v7 [1].
-> This utilizes a special GPMI hardware feature that can tell report an
-> ECC chunk as "erased" based on how many 0 bits it has (between 0 and
-> some threshold). This still required a fallback to count the number of
-> bits whenever it's under this threshold
->
-> [B] Then, you sent an additional patch [2] (on top of [1]) which tries
-> to cache the syndrome related to a fully erased page (no bitflips) for
-> speeding up some comparisons. You provided benchmarks in [3]
->
-> [C] Finally, Huang followed up with his own patch [4]. It doesn't do
-> anything specific to GPMI really, and it encouraged me to just submit my
-> own patch (the current thread) for nand_base.
->
-> But I can't tell what to do with your performance numbers. I see results
-> for [1] and for [1]+[2], but I don't see any results for [4].
->
-> Finally, is [4] supposed to replace your (Elie's) work from [1] and [2],
-> or supplement it? It sounded like you two were encouraging me to merge
-> it by itself.
+On 03/12/2014 05:49 AM, Pekon Gupta wrote:
+> Beaglebone Board can be connected to expansion boards to add devices to them.
+> These expansion boards are called 'capes'. This patch adds support for
+> following versions of Beaglebone(AM335x) NAND capes
+> (a) NAND Device with bus-width=16, block-size=128k, page-size=2k, oob-size=64
+> (b) NAND Device with bus-width=16, block-size=256k, page-size=4k, oob-size=224
+> Further information and datasheets can be found at [1] and [2]
+> 
+> * How to boot from NAND using Memory Expander + NAND Cape ? *
+>  - Important: As BOOTSEL values are sampled only at POR, so after changing any
+>    setting on SW2 (DIP switch), disconnect and reconnect all board power supply
+>    (including mini-USB console port) to POR the beaglebone.
+> 
+>  - Selection of ECC scheme
+>   for NAND cape(a), ROM code expects BCH8_HW ecc-scheme
+>   for NAND cape(b), ROM code expects BCH16_HW ecc-scheme
+> 
+>  - Selction of boot modes can be controlled via  DIP switch(SW2) present on
+>    Memory Expander cape.
+>    SW2[SWITCH_BOOT] == OFF  follow default boot order  MMC-> SPI -> UART -> USB
+>    SW2[SWITCH_BOOT] == ON   boot mode selected via DIP switch(SW2)
+>    So to flash NAND, first boot via MMC or other sources and then switch to
+>    SW2[SWITCH_BOOT]=ON to boot from NAND Cape.
+> 
+>  - For NAND boot following switch settings need to be followed
+>    SW2[ 0] = ON   (SYSBOOT[ 0]==0: NAND boot mode selected )
+>    SW2[ 1] = ON   (SYSBOOT[ 1]==0:       -- do --          )
+>    SW2[ 2] = OFF  (SYSBOOT[ 2]==1:       -- do --          )
+>    SW2[ 3] = OFF  (SYSBOOT[ 3]==1:       -- do --          )
+>    SW2[ 4] = ON   (SYSBOOT[ 4]==0:       -- do --          )
+>    SW2[ 8] = OFF  (SYSBOOT[ 8]==1: 0:x8 device, 1:x16 device )
+>    SW2[ 9] = ON   (SYSBOOT[ 9]==0: ECC done by ROM  )
+>    SW2[10] = ON   (SYSBOOT[10]==0: Non Muxed device )
+>    SW2[11] = ON   (SYSBOOT[11]==0:    -- do --      )
+> 
+> [1] http://beagleboardtoys.info/index.php?title=BeagleBone_Memory_Expansion
+> [2] http://beagleboardtoys.info/index.php?title=BeagleBone_4Gb_16-Bit_NAND_Module
+> 
+> Signed-off-by: Pekon Gupta <pekon@ti.com>
+> ---
+>  arch/arm/boot/dts/am335x-bone.dts | 123 ++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 123 insertions(+)
+> 
+> diff --git a/arch/arm/boot/dts/am335x-bone.dts b/arch/arm/boot/dts/am335x-bone.dts
+> index 94ee427..be2c572 100644
+> --- a/arch/arm/boot/dts/am335x-bone.dts
+> +++ b/arch/arm/boot/dts/am335x-bone.dts
 
-Your archeological research is  correct. During A-B I followed a track in
-which I believed was a water-tight system using as much as possible
-assist  from hardware as possible. But Huang turned this into something
-more usable using more internal knowledge of the working of the
-BCH syndromes.
+better to make a nand_cape dts which includes the am335x-bone.dts?
 
->> What my tests haves learned me is that there's probably very little to
->> gain in the
->> actual optimization of the erased-page correction, but the magic lies in quickly
->> and efficiently determining if a read-page is actually an all-0xff
->> case with a bitflip
->> causing the BCH block to detect it as an error.
->
-> I'm not quite sure what you're saying here. What do you mean
-> "erased-page correction" vs. "determining ... all-0xff"? Aren't those
-> the same thing?
->
-
-I meant there are two things:
-a) "erase-page correction": if you have an erased page with bitflips,
- count and correct them. (E.g. the for loop with the hweight and
-a potential break when you each a threshold, possible with an in
-place setting of the to 0xff of the byte in question or followed by
-a memset to 0xff at the end).
-b) "determining you read an erased page". In case of the i.mx (and
-thus GPMI) the BCH block can tell you three things:
- 1. I read all 0xff's
- 2. I read some data and nothing got corrected
- 3. I read something but failed to correct it.
-The third case can have two causes:
- 3.a you read valid data with bitflips exceeding what the BCH could
-correct
- 3.b you read an erased page with bitflips.
-
-Obviously case 3.b is what this discussion is all about, and my quest
-revolved around a means to quickly identify case '3.b'.
-
-And once you're in case '3' it's difficult to actually distinguish between
-3.a and 3.b (think of a page wich consists out of 99.99% 1-bits but
-has bitflips exceeding the threshold), You could only identify this by
-looking at the syndrome data (which should be 0xff) but which is not
-at hand in the GPMI.
-
-So we experimented with tuning the '0xff' case detecting algorithm
-(mainly [A] which I improved by caching the correct syndromes for
-an erased page addition [B]).  Mainly focusing on the theoretical
-background, Huang turned this into a more down to earth approach.
-
-In my own kernel tree I'm still using my patches [A] and [B], and this
-is what goes out to the field if we need to start shipping (since vanilla
-has a high risk of turning our devices into bricks), but if I have time
-I plan to integrate whatever makes it upstream (unless it really messes
-up my boot times ;) ).
-
-
-my 2 cents
-E.
-
-
->> (In the case of GPMI
->> is, our n-bit
->> ECC failed to withstand a single bitflip).
->
-> That's understandable. ECC algorithms must be written specifically so
-> that they can match and correct mostly-0xff patterns. You can't really
-> massage an inflexible hardware implementation to do this.
->
-> Brian
->
-> [1] http://lists.infradead.org/pipermail/linux-mtd/2014-January/051357.html
->
-> [2] http://lists.infradead.org/pipermail/linux-mtd/2014-January/051413.html
->
-> [3] http://lists.infradead.org/pipermail/linux-mtd/2014-January/051414.html
->
-> [4] http://lists.infradead.org/pipermail/linux-mtd/2014-January/051513.html
-
+> @@ -10,6 +10,36 @@
+>  #include "am33xx.dtsi"
+>  #include "am335x-bone-common.dtsi"
+>  
+> +&am33xx_pinmux {
+> +	nand_flash_x16: nand_flash_x16 {
+> +		pinctrl-single,pins = <
+> +			0x00 (MUX_MODE0 | PIN_INPUT)	/* gpmc_ad0.gpmc_ad0 */
+> +			0x04 (MUX_MODE0 | PIN_INPUT)	/* gpmc_ad1.gpmc_ad1 */
+> +			0x08 (MUX_MODE0 | PIN_INPUT)	/* gpmc_ad2.gpmc_ad2 */
+> +			0x0c (MUX_MODE0 | PIN_INPUT)	/* gpmc_ad3.gpmc_ad3 */
+> +			0x10 (MUX_MODE0 | PIN_INPUT)	/* gpmc_ad4.gpmc_ad4 */
+> +			0x14 (MUX_MODE0 | PIN_INPUT)	/* gpmc_ad5.gpmc_ad5 */
+> +			0x18 (MUX_MODE0 | PIN_INPUT)	/* gpmc_ad6.gpmc_ad6 */
+> +			0x1c (MUX_MODE0 | PIN_INPUT)	/* gpmc_ad7.gpmc_ad7 */
+> +			0x20 (MUX_MODE0 | PIN_INPUT)	/* gpmc_ad8.gpmc_ad8 */
+> +			0x24 (MUX_MODE0 | PIN_INPUT)	/* gpmc_ad9.gpmc_ad9 */
+> +			0x28 (MUX_MODE0 | PIN_INPUT)	/* gpmc_ad10.gpmc_ad10 */
+> +			0x2c (MUX_MODE0 | PIN_INPUT)	/* gpmc_ad11.gpmc_ad11 */
+> +			0x30 (MUX_MODE0 | PIN_INPUT)	/* gpmc_ad12.gpmc_ad12 */
+> +			0x34 (MUX_MODE0 | PIN_INPUT)	/* gpmc_ad13.gpmc_ad13 */
+> +			0x38 (MUX_MODE0 | PIN_INPUT)	/* gpmc_ad14.gpmc_ad14 */
+> +			0x3c (MUX_MODE0 | PIN_INPUT)	/* gpmc_ad15.gpmc_ad15 */
+> +			0x70 (MUX_MODE0 | PIN_INPUT_PULLUP )	/* gpmc_wait0.gpmc_wait0 */
+> +			0x74 (MUX_MODE7 | PIN_OUTPUT_PULLUP)	/* gpmc_wpn.gpio0_30 */
+> +			0x7c (MUX_MODE0 | PIN_OUTPUT_PULLUP)	/* gpmc_csn0.gpmc_csn0  */
+> +			0x90 (MUX_MODE0 | PIN_OUTPUT)		/* gpmc_advn_ale.gpmc_advn_ale */
+> +			0x94 (MUX_MODE0 | PIN_OUTPUT)		/* gpmc_oen_ren.gpmc_oen_ren */
+> +			0x98 (MUX_MODE0 | PIN_OUTPUT)		/* gpmc_wen.gpmc_wen */
+> +			0x9c (MUX_MODE0 | PIN_OUTPUT)		/* gpmc_be0n_cle.gpmc_be0n_cle */
+> +		>;
+> +	};
+> +};
+> +
+>  &ldo3_reg {
+>  	regulator-min-microvolt = <1800000>;
+>  	regulator-max-microvolt = <3300000>;
+> @@ -27,3 +57,96 @@
+>  &aes {
+>  	status = "okay";
+>  };
+> +
+> +/*
+> + * uncomment following to enable NAND cape support
+> + * &mmc2 {
+> + *      status = "disabled";
+> + * };
+> + * &elm {
+> + *	status = "okay";
+> + * };
+> + * &gpmc {
+> + *	status = "okay";
+> + * };
+> + */
+> +&gpmc {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&nand_flash_x16>;
+> +	ranges = <0 0 0x08000000 0x10000000>;	/* CS0: NAND */
+> +	nand@0,0 {
+> +		reg = <0 0 0>; /* CS0, offset 0 */
+> +		ti,nand-ecc-opt = "bch8";
+> +		ti,elm-id = <&elm>;
+> +		nand-bus-width = <16>;
+> +		gpmc,device-width = <2>;
+> +		gpmc,sync-clk-ps = <0>;
+> +		gpmc,cs-on-ns = <0>;
+> +		gpmc,cs-rd-off-ns = <80>;
+> +		gpmc,cs-wr-off-ns = <80>;
+> +		gpmc,adv-on-ns = <0>;
+> +		gpmc,adv-rd-off-ns = <80>;
+> +		gpmc,adv-wr-off-ns = <80>;
+> +		gpmc,we-on-ns = <20>;
+> +		gpmc,we-off-ns = <60>;
+> +		gpmc,oe-on-ns = <20>;
+> +		gpmc,oe-off-ns = <60>;
+> +		gpmc,access-ns = <40>;
+> +		gpmc,rd-cycle-ns = <80>;
+> +		gpmc,wr-cycle-ns = <80>;
+> +		gpmc,wait-on-read = "true";
+> +		gpmc,wait-on-write = "true";
+> +		gpmc,bus-turnaround-ns = <0>;
+> +		gpmc,cycle2cycle-delay-ns = <0>;
+> +		gpmc,clk-activation-ns = <0>;
+> +		gpmc,wait-monitoring-ns = <0>;
+> +		gpmc,wr-access-ns = <40>;
+> +		gpmc,wr-data-mux-bus-ns = <0>;
+> +		/* MTD partition table */
+> +		/* All SPL-* partitions are sized to minimal length
+> +		 * which can be independently programmable. For
+> +		 * NAND flash this is equal to size of erase-block */
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		partition@0 {
+> +			label = "NAND.SPL";
+> +			reg = <0x00000000 0x00040000>;
+> +		};
+> +		partition@1 {
+> +			label = "NAND.SPL.backup1";
+> +			reg = <0x00040000 0x00040000>;
+> +		};
+> +		partition@2 {
+> +			label = "NAND.SPL.backup2";
+> +			reg = <0x00080000 0x00040000>;
+> +		};
+> +		partition@3 {
+> +			label = "NAND.SPL.backup3";
+> +			reg = <0x000C0000 0x00040000>;
+> +		};
+> +		partition@4 {
+> +			label = "NAND.u-boot-spl-os";
+> +			reg = <0x00100000 0x00080000>;
+> +		};
+> +		partition@5 {
+> +			label = "NAND.u-boot";
+> +			reg = <0x00180000 0x00100000>;
+> +		};
+> +		partition@6 {
+> +			label = "NAND.u-boot-env";
+> +			reg = <0x00280000 0x00040000>;
+> +		};
+> +		partition@7 {
+> +			label = "NAND.u-boot-env.backup1";
+> +			reg = <0x002C0000 0x00040000>;
+> +		};
+> +		partition@8 {
+> +			label = "NAND.kernel";
+> +			reg = <0x00300000 0x00700000>;
+> +		};
+> +		partition@9 {
+> +			label = "NAND.file-system";
+> +			reg = <0x00A00000 0x1F600000>;
+> +		};
+> +	};
+> +};
+> 
 
 
 -- 
-Elie De Brauwer
+Regards,
+Nishanth Menon
