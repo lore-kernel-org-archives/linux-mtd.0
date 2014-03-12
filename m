@@ -1,21 +1,16 @@
-Message-ID: <53208F7D.8090104@gmail.com>
-Date: Wed, 12 Mar 2014 17:46:53 +0100
 From: Boris BREZILLON <b.brezillon.dev@gmail.com>
-MIME-Version: 1.0
-To: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
-Subject: Re: [RFC PATCH v2 04/14] mtd: nand: define struct nand_timings
-References: <1391006064-28890-1-git-send-email-b.brezillon.dev@gmail.com>
- <1391006064-28890-5-git-send-email-b.brezillon.dev@gmail.com>
- <531DC1A4.7010208@gmail.com> <20140311185554.GD31835@obsidianresearch.com>
-In-Reply-To: <20140311185554.GD31835@obsidianresearch.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, linux-doc@vger.kernel.org, dev@linux-sunxi.org,
- linux-kernel@vger.kernel.org, Rob Herring <rob.herring@calxeda.com>,
- linux-mtd@lists.infradead.org, Grant Likely <grant.likely@linaro.org>,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
+To: Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Rob Herring <robherring2@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ Grant Likely <grant.likely@linaro.org>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH v3 0/9] mtd: nand: add sunxi NAND Flash Controller support
+Date: Wed, 12 Mar 2014 19:07:35 +0100
+Message-Id: <1394647664-8258-1-git-send-email-b.brezillon.dev@gmail.com>
+Cc: devicetree@vger.kernel.org, Boris BREZILLON <b.brezillon.dev@gmail.com>,
+ linux-doc@vger.kernel.org, dev@linux-sunxi.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,71 +20,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 11/03/2014 19:55, Jason Gunthorpe a écrit :
-> On Mon, Mar 10, 2014 at 02:44:04PM +0100, Boris BREZILLON wrote:
->
->> Some timings are missing here (see Table 55 in the ONFI spec):
-> Right..
->
-> The 'mode' covers only the raw electrical parameters needed to
-> exchange commands, other timings cover the commands
-> themselves. Notably the timing mode does not alter those parameters.
->
-> To me it seems tidy to keep the 'mode' timings contained in their own
-> struct and find other homes for the other parameters.
->
->> -tR
->> -tBERS
->> -tCCS
->> -tPLEBSY
->> -...
->>
->> I see at least 3 of those timings that could be useful (for the moment) :
->> - tR: this one should be used to fill the chip_delay field
->> - tPROG and tBERS: could be used within nand_wait to choose the timeo
->>    value appropriately.
-> IIRC these timing values are really only necessary if the controller
-> does not support the READY/BUSY input, in that case drivers typically
-> seem to use 'chip_delay' which is the maximum possible command
-> execution time (a sleep long enough to guarentee that READY/BUSY is
-> de-asserted).
-You're right about tR (or chip_delay): it's only used when there are no 
-R/B pin.
-I experienced it when I tried the RB_NONE case in the sunxi driver: the 
-default
-chip_delay set by the NAND core code was too small to fit the NAND chip 
-requirements.
+This series adds support for the sunxi NAND Flash Controller (NFC).
 
-Anyway, I really think the chip_delay field should be set according to 
-NAND chip
-characteristics not harcoded in NAND controller driver code (as 
-currently done).
+I'll split this series for the next round:
+1) NAND timings
+2) sunxi NAND controller driver
 
-tPROG and tBERS, would be used in nand_wait function and do not depend 
-on the R/B pin.
-These are just used as timeouts.
+But I'd like to have some feedback on the NAND timings stuff before doing this.
 
->
->> Or should I create a new struct for these timings ?
->> In the latter case how should I name it ?
-> struct onfi_command_timings ?
+Any review on the sunxi driver is welcome (for the moment I only got feedback
+on the NAND timings code).
 
-I'm not a big fan of this name. I think timing structs should not 
-contain onfi in their
-names, because these timings are also available on non ONFI chips.
-
-Moreover, these timings are also part of the SDR NAND timings, they are 
-just retrieved
-using another method when interfacing with an ONFI chip.
-
-Maybe we should change the nand_sdr_timings struct name too.
-
-What do you think ?
+I also have patches adding support for HW randomizer and per ECC partition
+config that you can find here:
+https://groups.google.com/forum/#!searchin/linux-sunxi/boris/linux-sunxi/s3lBb01I0Js/Bem2X1wKPa4J
+But I'd like to get the sunxi NAND driver mainlined before adding more
+intrusive parts.
 
 Best Regards,
 
 Boris
 
->
-> Regards,
-> Jason
+Changes since v2:
+ - merge HW ECC implementation in base implementation patch
+ - fix timing config when interfacing with an ONFI compatible chip
+
+Changes since v1:
+ - add HW ECC support
+ - rework NAND timings retrieval (use ONFI timing mode instead of raw timings)
+ - add nand-ecc-level property to specify NAND ECC requirements from DT
+
+
+Boris BREZILLON (9):
+  mtd: nand: define struct nand_timings
+  mtd: nand: add ONFI timing mode to nand_timings converter
+  of: mtd: add NAND timing mode retrieval support
+  of: mtd: add documentation for the ONFI NAND timing mode property
+  mtd: nand: add sunxi NAND flash controller support
+  mtd: nand: add sunxi NFC dt bindings doc
+  ARM: dt/sunxi: add NFC node to Allwinner A20 SoC
+  ARM: dt/sunxi: add A20 NAND controller pin definitions
+  ARM: sunxi/dt: enable NAND on cubietruck board
+
+ Documentation/devicetree/bindings/mtd/nand.txt     |    8 +
+ .../devicetree/bindings/mtd/sunxi-nand.txt         |   48 +
+ arch/arm/boot/dts/sun7i-a20-cubietruck.dts         |   17 +
+ arch/arm/boot/dts/sun7i-a20.dtsi                   |   91 ++
+ drivers/mtd/nand/Kconfig                           |    6 +
+ drivers/mtd/nand/Makefile                          |    3 +-
+ drivers/mtd/nand/nand_timings.c                    |  248 ++++
+ drivers/mtd/nand/sunxi_nand.c                      | 1276 ++++++++++++++++++++
+ drivers/of/of_mtd.c                                |   19 +
+ include/linux/mtd/nand.h                           |   53 +
+ include/linux/of_mtd.h                             |    8 +
+ 11 files changed, 1776 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/sunxi-nand.txt
+ create mode 100644 drivers/mtd/nand/nand_timings.c
+ create mode 100644 drivers/mtd/nand/sunxi_nand.c
+
+-- 
+1.7.9.5
