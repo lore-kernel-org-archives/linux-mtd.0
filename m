@@ -5,11 +5,14 @@ To: Maxime Ripard <maxime.ripard@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
  Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH v3 6/9] mtd: nand: add sunxi NFC dt bindings doc
-Date: Wed, 12 Mar 2014 19:07:41 +0100
-Message-Id: <1394647664-8258-7-git-send-email-b.brezillon.dev@gmail.com>
+Subject: =?UTF-8?q?=5BPATCH=20v3=201/9=5D=20mtd=3A=20nand=3A=20define=20struct=20nand=5Ftimings?=
+Date: Wed, 12 Mar 2014 19:07:36 +0100
+Message-Id: <1394647664-8258-2-git-send-email-b.brezillon.dev@gmail.com>
 In-Reply-To: <1394647664-8258-1-git-send-email-b.brezillon.dev@gmail.com>
 References: <1394647664-8258-1-git-send-email-b.brezillon.dev@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Cc: devicetree@vger.kernel.org, Boris BREZILLON <b.brezillon.dev@gmail.com>,
  linux-doc@vger.kernel.org, dev@linux-sunxi.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
@@ -22,67 +25,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add the sunxi NAND Flash Controller dt bindings documentation.
+Define a struct containing the standard NAND timings as described in NAND
+datasheets.
 
 Signed-off-by: Boris BREZILLON <b.brezillon.dev@gmail.com>
 ---
- .../devicetree/bindings/mtd/sunxi-nand.txt         |   48 ++++++++++++++++++++
- 1 file changed, 48 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/sunxi-nand.txt
+ include/linux/mtd/nand.h |   49 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mtd/sunxi-nand.txt b/Documentation/devicetree/bindings/mtd/sunxi-nand.txt
-new file mode 100644
-index 0000000..4bf5b07
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/sunxi-nand.txt
-@@ -0,0 +1,48 @@
-+Allwinner NAND Flash Controller (NFC)
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 389b3c5..f3ff3a3 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -846,4 +846,53 @@ static inline bool nand_is_slc(struct nand_chip *chip)
+ {
+ 	return chip->bits_per_cell == 1;
+ }
 +
-+Required properties:
-+- compatible : "allwinner,sun4i-nand".
-+- reg : shall contain registers location and length for data and reg.
-+- interrupts : shall define the nand controller interrupt.
-+- #address-cells: shall be set to 1. Encode the nand CS.
-+- #size-cells : shall be set to 0.
-+- clocks : shall reference nand controller clocks.
-+- clock-names : nand controller internal clock names. Shall contain :
-+    * "ahb_clk" : AHB gating clock
-+    * "sclk" : nand controller clock
++/**
++ * struct nand_sdr_timings - SDR NAND chip timings
++ *
++ * This struct defines the timing requirements of a SDR NAND chip.
++ * These informations can be found in every NAND datasheets and the timings
++ * meaning are described in the ONFI specifications:
++ * www.onfi.org/~/media/ONFI/specs/onfi_3_1_spec.pdf‎ (chapter 4.15 Timing
++ * Parameters)
++ *
++ */
 +
-+Optional children nodes:
-+Children nodes represent the available nand chips.
-+
-+Optional properties:
-+- onfi,nand-timing-mode : mandatory if the chip does not support the ONFI
-+  standard.
-+- allwinner,rb : shall contain the native Ready/Busy ids.
-+ or
-+- rb-gpios : shall contain the gpios used as R/B pins.
-+- nand-ecc-mode : one of the supported ECC modes ("hw", "hw_syndrome", "soft",
-+  "soft_bch" or "none")
-+
-+see Documentation/devicetree/mtd/nand.txt for generic bindings.
-+
-+
-+Examples:
-+nfc: nand@01c03000 {
-+	compatible = "allwinner,sun4i-nand";
-+	reg = <0x01c03000 0x1000>;
-+	interrupts = <0 37 1>;
-+	clocks = <&ahb_gates 13>, <&nand_clk>;
-+	clock-names = "ahb_clk", "sclk";
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&nand_pins_a &nand_cs0_pins_a &nand_rb0_pins_a>;
-+	status = "okay";
-+
-+	nand@0 {
-+		reg = <0>;
-+		allwinner,rb = <0>;
-+		nand-ecc-mode = "soft_bch";
-+		onfi,nand-timing-mode = <4>;
-+	};
++struct nand_sdr_timings {
++	u32 tALH_min;
++	u32 tADL_min;
++	u32 tALS_min;
++	u32 tAR_min;
++	u32 tCEA_max;
++	u32 tCEH_min;
++	u32 tCH_min;
++	u32 tCHZ_max;
++	u32 tCLH_min;
++	u32 tCLR_min;
++	u32 tCLS_min;
++	u32 tCOH_min;
++	u32 tCS_min;
++	u32 tDH_min;
++	u32 tDS_min;
++	u32 tFEAT_max;
++	u32 tIR_min;
++	u32 tITC_max;
++	u32 tRC_min;
++	u32 tREA_max;
++	u32 tREH_min;
++	u32 tRHOH_min;
++	u32 tRHW_min;
++	u32 tRHZ_max;
++	u32 tRLOH_min;
++	u32 tRP_min;
++	u32 tRR_min;
++	u64 tRST_max;
++	u32 tWB_max;
++	u32 tWC_min;
++	u32 tWH_min;
++	u32 tWHR_min;
++	u32 tWP_min;
++	u32 tWW_min;
 +};
++
+ #endif /* __LINUX_MTD_NAND_H */
 -- 
 1.7.9.5
