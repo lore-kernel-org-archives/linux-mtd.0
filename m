@@ -1,27 +1,29 @@
-Received: from mho-03-ewr.mailhop.org ([204.13.248.66]
- helo=mho-01-ewr.mailhop.org)
+Received: from mail-lb0-f169.google.com ([209.85.217.169])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WNoq6-0001Mn-2E
- for linux-mtd@lists.infradead.org; Wed, 12 Mar 2014 19:29:19 +0000
-Date: Wed, 12 Mar 2014 12:28:50 -0700
-From: Tony Lindgren <tony@atomide.com>
-To: Robert Nelson <robertcnelson@gmail.com>
-Subject: Re: [PATCH v1 1/3] ARM: dts: am335x-bone: add support for beaglebone
- NAND cape
-Message-ID: <20140312192850.GF1996@atomide.com>
-References: <1394621360-2457-1-git-send-email-pekon@ti.com>
- <1394621360-2457-2-git-send-email-pekon@ti.com>
- <532070C8.1030903@ti.com>
- <20980858CB6D3A4BAE95CA194937D5E73EAB2CF1@DBDE04.ent.ti.com>
- <CAGo_u6rvUqa-7afTFzBahDJuyVkXAj5J2LL8tQRjZuf8_xWXWA@mail.gmail.com>
- <CAOCHtYhqZoCF13e1YjBiWPufDEmVotL3chO9ZUtivWbVTWVfiQ@mail.gmail.com>
+ id 1WNpbG-0002Pv-7H
+ for linux-mtd@lists.infradead.org; Wed, 12 Mar 2014 20:18:03 +0000
+Received: by mail-lb0-f169.google.com with SMTP id q8so21107lbi.14
+ for <linux-mtd@lists.infradead.org>; Wed, 12 Mar 2014 13:17:33 -0700 (PDT)
+Message-ID: <5320CEE7.6020506@cogentembedded.com>
+Date: Thu, 13 Mar 2014 00:17:27 +0300
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOCHtYhqZoCF13e1YjBiWPufDEmVotL3chO9ZUtivWbVTWVfiQ@mail.gmail.com>
-Cc: Nishanth Menon <nm@ti.com>, linux-omap <linux-omap@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>, "Gupta, Pekon" <pekon@ti.com>,
- "bcousson@baylibre.com" <bcousson@baylibre.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Mike Turquette <mturquette@linaro.org>,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mtd@lists.infradead.org, Jason Cooper <jason@lakedaemon.net>
+Subject: Re: [PATCH 4/6] ARM: mvebu: Add support for NAND controller in Armada
+ 38x SoC
+References: <1394637404-7651-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1394637404-7651-5-git-send-email-ezequiel.garcia@free-electrons.com>
+In-Reply-To: <1394637404-7651-5-git-send-email-ezequiel.garcia@free-electrons.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Lior Amsalem <alior@marvell.com>, Tawfik Bayouk <tawfik@marvell.com>,
+ Andrew Lunn <andrew@lunn.ch>, Seif Mazareeb <seif@marvell.com>,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,73 +33,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Robert Nelson <robertcnelson@gmail.com> [140312 12:11]:
-> On Wed, Mar 12, 2014 at 1:57 PM, Nishanth Menon <nm@ti.com> wrote:
-> > On Wed, Mar 12, 2014 at 1:26 PM, Gupta, Pekon <pekon@ti.com> wrote:
-> >> Hi,
-> >>
-> >>>From: Menon, Nishanth
-> >>>>On 03/12/2014 05:49 AM, Pekon Gupta wrote:
-> >>>> Beaglebone Board can be connected to expansion boards to add devices to them.
-> >>>> These expansion boards are called 'capes'. This patch adds support for
-> >>>> following versions of Beaglebone(AM335x) NAND capes
-> >>>> (a) NAND Device with bus-width=16, block-size=128k, page-size=2k, oob-size=64
-> >>>> (b) NAND Device with bus-width=16, block-size=256k, page-size=4k, oob-size=224
-> >>>> Further information and datasheets can be found at [1] and [2]
-> >> [...]
-> >>>> [1] http://beagleboardtoys.info/index.php?title=BeagleBone_Memory_Expansion
-> >>>> [2] http://beagleboardtoys.info/index.php?title=BeagleBone_4Gb_16-Bit_NAND_Module
-> >>>>
-> >>>> Signed-off-by: Pekon Gupta <pekon@ti.com>
-> >>>> ---
-> >>>>  arch/arm/boot/dts/am335x-bone.dts | 123 ++++++++++++++++++++++++++++++++++++++
-> >>>>  1 file changed, 123 insertions(+)
-> >>>>
-> >>>> diff --git a/arch/arm/boot/dts/am335x-bone.dts b/arch/arm/boot/dts/am335x-bone.dts
-> >>>> index 94ee427..be2c572 100644
-> >>>> --- a/arch/arm/boot/dts/am335x-bone.dts
-> >>>> +++ b/arch/arm/boot/dts/am335x-bone.dts
-> >>>
-> >>>better to make a nand_cape dts which includes the am335x-bone.dts?
-> >>>
-> >> Actually, I'm not in favor of having too many "xx_board_common.dts" files,
-> >> because it un-necessarily complexes things.
-> >>
-> >> We already have "arch/arm/boot/dts/am335x-bone-common.dtsi" which just saves
-> >> some lines common to DTS of both Beaglebone-LT(white) and Beaglebone-Black.
-> >> And, there is no guarantee that Beaglebone-LT(white) will remain compatible to
-> >> Beaglebone-black in future.
-> >> Example: some capes are not compatible to beaglebone-black [1], [2].
-> >>
-> >> So, I prefer to keep separate GPMC NAND nodes separately in both DTS,
-> >> unless there is a strong convincing reason otherwise.
-> >>
-> >>
-> >> [1] http://elinux.org/CircuitCo:BeagleBoardToys
-> >> [2] http://elinux.org/BeagleBone_Black_Capes
-> >
-> >
-> >
-> > Right, and adding NAND, GPMC nodes and asking folks to uncomment
-> > sections into a generic board file (which by default has none) makes
-> > more sense? I dont use NAND capes or might create my own cape. overo
-> > has the same challenges as bone family has.I dont see asking folks to
-> > uncomment entries to use the cape is a nicer alternative to having
-> > more dts entries.
-> 
-> This is just going to get more messy with every cape addition. Should
-> we maybe just leave a basic BeagleBone & BeagleBone Black dts file in
-> mainline kernel.org.
-> 
-> Then create a repo on github.com/beagleboard/ with every
-> <bone/black>-<first level cape>.dts option?
+Hello.
 
-Or just include all devices on the most common capes but have their
-status as disabled by default.
+On 03/12/2014 06:16 PM, Ezequiel Garcia wrote:
 
-For the pinctrl, we need to make sure the pins for a device are not
-muxed if it's set to disabled state.
+> The Armada 38x SoC family has a NAND controller, compatible
+> with the controller in Armada 370/375/XP SoCs. Add support for
+> it in the devicetree file.
 
-Regards,
+> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> ---
+>   arch/arm/boot/dts/armada-38x.dtsi | 10 ++++++++++
+>   1 file changed, 10 insertions(+)
 
-Tony
+> diff --git a/arch/arm/boot/dts/armada-38x.dtsi b/arch/arm/boot/dts/armada-38x.dtsi
+> index 76cc27e..18d8f80 100644
+> --- a/arch/arm/boot/dts/armada-38x.dtsi
+> +++ b/arch/arm/boot/dts/armada-38x.dtsi
+> @@ -345,6 +345,16 @@
+>   				clocks = <&mainpll>;
+>   				clock-output-names = "nand";
+>   			};
+> +
+> +			nand@d0000 {
+
+    ePAPR standard [1] tells us:
+
+The name of a node should be somewhat generic, reflecting the function of the 
+device and not its precise programming model. If appropriate, the name should 
+be one of the following choices:
+
+[...]
+• flash
+
+[1] http://www.power.org/resources/downloads/Power_ePAPR_APPROVED_v1.0.pdf
+
+WBR, Sergei
