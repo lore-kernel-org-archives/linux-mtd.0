@@ -5,14 +5,11 @@ To: Maxime Ripard <maxime.ripard@free-electrons.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
  Arnd Bergmann <arnd@arndb.de>
-Subject: =?UTF-8?q?=5BPATCH=20v3=201/9=5D=20mtd=3A=20nand=3A=20define=20struct=20nand=5Ftimings?=
-Date: Wed, 12 Mar 2014 19:07:36 +0100
-Message-Id: <1394647664-8258-2-git-send-email-b.brezillon.dev@gmail.com>
+Subject: [PATCH v3 8/9] ARM: dt/sunxi: add A20 NAND controller pin definitions
+Date: Wed, 12 Mar 2014 19:07:43 +0100
+Message-Id: <1394647664-8258-9-git-send-email-b.brezillon.dev@gmail.com>
 In-Reply-To: <1394647664-8258-1-git-send-email-b.brezillon.dev@gmail.com>
 References: <1394647664-8258-1-git-send-email-b.brezillon.dev@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 Cc: devicetree@vger.kernel.org, Boris BREZILLON <b.brezillon.dev@gmail.com>,
  linux-doc@vger.kernel.org, dev@linux-sunxi.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
@@ -25,71 +22,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Define a struct containing the standard NAND timings as described in NAND
-datasheets.
+Define the NAND controller pin configs.
 
 Signed-off-by: Boris BREZILLON <b.brezillon.dev@gmail.com>
 ---
- include/linux/mtd/nand.h |   49 ++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 49 insertions(+)
+ arch/arm/boot/dts/sun7i-a20.dtsi |   80 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 80 insertions(+)
 
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 389b3c5..f3ff3a3 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -846,4 +846,53 @@ static inline bool nand_is_slc(struct nand_chip *chip)
- {
- 	return chip->bits_per_cell == 1;
- }
+diff --git a/arch/arm/boot/dts/sun7i-a20.dtsi b/arch/arm/boot/dts/sun7i-a20.dtsi
+index 4c14ed8..c8095c5 100644
+--- a/arch/arm/boot/dts/sun7i-a20.dtsi
++++ b/arch/arm/boot/dts/sun7i-a20.dtsi
+@@ -443,6 +443,86 @@
+ 				allwinner,drive = <0>;
+ 				allwinner,pull = <0>;
+ 			};
 +
-+/**
-+ * struct nand_sdr_timings - SDR NAND chip timings
-+ *
-+ * This struct defines the timing requirements of a SDR NAND chip.
-+ * These informations can be found in every NAND datasheets and the timings
-+ * meaning are described in the ONFI specifications:
-+ * www.onfi.org/~/media/ONFI/specs/onfi_3_1_spec.pdf‎ (chapter 4.15 Timing
-+ * Parameters)
-+ *
-+ */
++			nand_pins_a: nand_base0@0 {
++				allwinner,pins = "PC0", "PC1", "PC2",
++						"PC5", "PC8", "PC9", "PC10",
++						"PC11", "PC12", "PC13", "PC14",
++						"PC15", "PC16";
++				allwinner,function = "nand0";
++				allwinner,drive = <0>;
++				allwinner,pull = <0>;
++			};
 +
-+struct nand_sdr_timings {
-+	u32 tALH_min;
-+	u32 tADL_min;
-+	u32 tALS_min;
-+	u32 tAR_min;
-+	u32 tCEA_max;
-+	u32 tCEH_min;
-+	u32 tCH_min;
-+	u32 tCHZ_max;
-+	u32 tCLH_min;
-+	u32 tCLR_min;
-+	u32 tCLS_min;
-+	u32 tCOH_min;
-+	u32 tCS_min;
-+	u32 tDH_min;
-+	u32 tDS_min;
-+	u32 tFEAT_max;
-+	u32 tIR_min;
-+	u32 tITC_max;
-+	u32 tRC_min;
-+	u32 tREA_max;
-+	u32 tREH_min;
-+	u32 tRHOH_min;
-+	u32 tRHW_min;
-+	u32 tRHZ_max;
-+	u32 tRLOH_min;
-+	u32 tRP_min;
-+	u32 tRR_min;
-+	u64 tRST_max;
-+	u32 tWB_max;
-+	u32 tWC_min;
-+	u32 tWH_min;
-+	u32 tWHR_min;
-+	u32 tWP_min;
-+	u32 tWW_min;
-+};
++			nand_cs0_pins_a: nand_cs@0 {
++				allwinner,pins = "PC4";
++				allwinner,function = "nand0";
++				allwinner,drive = <0>;
++				allwinner,pull = <0>;
++			};
 +
- #endif /* __LINUX_MTD_NAND_H */
++			nand_cs1_pins_a: nand_cs@1 {
++				allwinner,pins = "PC3";
++				allwinner,function = "nand0";
++				allwinner,drive = <0>;
++				allwinner,pull = <0>;
++			};
++
++			nand_cs2_pins_a: nand_cs@2 {
++				allwinner,pins = "PC17";
++				allwinner,function = "nand0";
++				allwinner,drive = <0>;
++				allwinner,pull = <0>;
++			};
++
++			nand_cs3_pins_a: nand_cs@3 {
++				allwinner,pins = "PC18";
++				allwinner,function = "nand0";
++				allwinner,drive = <0>;
++				allwinner,pull = <0>;
++			};
++
++			nand_cs4_pins_a: nand_cs@4 {
++				allwinner,pins = "PC19";
++				allwinner,function = "nand0";
++				allwinner,drive = <0>;
++				allwinner,pull = <0>;
++			};
++
++			nand_cs5_pins_a: nand_cs@5 {
++				allwinner,pins = "PC20";
++				allwinner,function = "nand0";
++				allwinner,drive = <0>;
++				allwinner,pull = <0>;
++			};
++
++			nand_cs6_pins_a: nand_cs@6 {
++				allwinner,pins = "PC21";
++				allwinner,function = "nand0";
++				allwinner,drive = <0>;
++				allwinner,pull = <0>;
++			};
++
++			nand_cs7_pins_a: nand_cs@7 {
++				allwinner,pins = "PC22";
++				allwinner,function = "nand0";
++				allwinner,drive = <0>;
++				allwinner,pull = <0>;
++			};
++
++			nand_rb0_pins_a: nand_rb@0 {
++				allwinner,pins = "PC6";
++				allwinner,function = "nand0";
++				allwinner,drive = <0>;
++				allwinner,pull = <0>;
++			};
++
++			nand_rb1_pins_a: nand_rb@1 {
++				allwinner,pins = "PC7";
++				allwinner,function = "nand0";
++				allwinner,drive = <0>;
++				allwinner,pull = <0>;
++			};
+ 		};
+ 
+ 		timer@01c20c00 {
 -- 
 1.7.9.5
