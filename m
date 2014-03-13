@@ -1,25 +1,18 @@
-Date: Thu, 13 Mar 2014 17:05:46 -0300
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Subject: Re: [PATCH v2 3/6] ARM: mvebu: Add the Core Divider clock to Armada
- 38x SoCs
-Message-ID: <20140313200546.GB30590@arch.cereza>
-References: <1394739542-30017-1-git-send-email-ezequiel@vanguardiasur.com.ar>
- <1394739542-30017-4-git-send-email-ezequiel@vanguardiasur.com.ar>
- <53221B41.2030001@cogentembedded.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <53221B41.2030001@cogentembedded.com>
-Cc: Lior Amsalem <alior@marvell.com>, devicetree@vger.kernel.org,
- Mike Turquette <mturquette@linaro.org>, Jason Cooper <jason@lakedaemon.net>,
- Tawfik Bayouk <tawfik@marvell.com>, Andrew Lunn <andrew@lunn.ch>,
- Seif Mazareeb <seif@marvell.com>, linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- Gregory Clement <gregory.clement@free-electrons.com>,
+To: Mike Turquette <mturquette@linaro.org>,
+ Jason Cooper <jason@lakedaemon.net>, <devicetree@vger.kernel.org>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-mtd@lists.infradead.org>
+Subject: [PATCH v3 2/6] ARM: mvebu: Add a 2 GHz fixed-clock on Armada 38x SoCs
+Date: Thu, 13 Mar 2014 17:24:29 -0300
+Message-Id: <1394742273-5113-3-git-send-email-ezequiel.garcia@free-electrons.com>
+In-Reply-To: <1394742273-5113-1-git-send-email-ezequiel.garcia@free-electrons.com>
+References: <1394742273-5113-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: Lior Amsalem <alior@marvell.com>,
  Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- linux-arm-kernel@lists.infradead.org,
+ sergei.shtylyov@cogentembedded.com, Tawfik Bayouk <tawfik@marvell.com>,
+ Andrew Lunn <andrew@lunn.ch>, Seif Mazareeb <seif@marvell.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Gregory Clement <gregory.clement@free-electrons.com>,
  Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,40 +23,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mar 13, Sergei Shtylyov wrote:
-> Hello.
-> 
-> On 03/13/2014 10:38 PM, Ezequiel Garcia wrote:
-> 
-> >From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> 
-> >The Armada 38x SoC family has a clock provider called "Core Divider",
-> >derived from the fixed 2 GHz main PLL clock. This is similar to the
-> >one on A370, A375 and AXP.
-> 
-> >Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> >---
-> >  arch/arm/boot/dts/armada-38x.dtsi | 8 ++++++++
-> >  1 file changed, 8 insertions(+)
-> 
-> >diff --git a/arch/arm/boot/dts/armada-38x.dtsi b/arch/arm/boot/dts/armada-38x.dtsi
-> >index 38fc3a0..76cc27e 100644
-> >--- a/arch/arm/boot/dts/armada-38x.dtsi
-> >+++ b/arch/arm/boot/dts/armada-38x.dtsi
-> >@@ -337,6 +337,14 @@
-> >  				compatible = "marvell,orion-mdio";
-> >  				reg = <0x72004 0x4>;
-> >  			};
-> >+
-> >+			coredivclk: corediv-clock@e4250 {
-> 
->    I would suggest naming the device just "clock@e4250" on the same grounds
-> of having the generic device names.
-> 
+Armada 38x SoCs have a 2 GHz fixed main PLL that is used to feed
+other clocks. This commit adds a DT representation of this clock
+through a fixed-clock compatible node.
 
-Right, I overlooked this.
+Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+---
+ arch/arm/boot/dts/armada-38x.dtsi | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
+diff --git a/arch/arm/boot/dts/armada-38x.dtsi b/arch/arm/boot/dts/armada-38x.dtsi
+index 812ce28..38fc3a0 100644
+--- a/arch/arm/boot/dts/armada-38x.dtsi
++++ b/arch/arm/boot/dts/armada-38x.dtsi
+@@ -341,6 +341,13 @@
+ 	};
+ 
+ 	clocks {
++		/* 2 GHz fixed main PLL */
++		mainpll: mainpll {
++			compatible = "fixed-clock";
++			#clock-cells = <0>;
++			clock-frequency = <2000000000>;
++		};
++
+ 		/* 25 MHz reference crystal */
+ 		refclk: oscillator {
+ 			compatible = "fixed-clock";
 -- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+1.9.0
