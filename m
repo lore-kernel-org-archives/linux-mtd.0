@@ -1,32 +1,29 @@
-Received: from mail-yk0-f175.google.com ([209.85.160.175])
+Received: from mail-de.keymile.com ([195.8.104.250])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WO5ie-0000AT-1X
- for linux-mtd@lists.infradead.org; Thu, 13 Mar 2014 13:30:44 +0000
-Received: by mail-yk0-f175.google.com with SMTP id 131so2692969ykp.6
- for <linux-mtd@lists.infradead.org>; Thu, 13 Mar 2014 06:30:20 -0700 (PDT)
+ id 1WO5yL-0000gr-DX
+ for linux-mtd@lists.infradead.org; Thu, 13 Mar 2014 13:46:58 +0000
+Message-ID: <5321B6AE.1050401@keymile.com>
+Date: Thu, 13 Mar 2014 14:46:22 +0100
+From: Gerlando Falauto <gerlando.falauto@keymile.com>
 MIME-Version: 1.0
-In-Reply-To: <5321AC92.2090307@ti.com>
-References: <1394621360-2457-1-git-send-email-pekon@ti.com>
- <1394621360-2457-2-git-send-email-pekon@ti.com>
- <532070C8.1030903@ti.com>
- <20980858CB6D3A4BAE95CA194937D5E73EAB2CF1@DBDE04.ent.ti.com>
- <CAGo_u6rvUqa-7afTFzBahDJuyVkXAj5J2LL8tQRjZuf8_xWXWA@mail.gmail.com>
- <CAOCHtYhqZoCF13e1YjBiWPufDEmVotL3chO9ZUtivWbVTWVfiQ@mail.gmail.com>
- <20140312192850.GF1996@atomide.com> <5320C8B5.601@ti.com>
- <20980858CB6D3A4BAE95CA194937D5E73EAB2E95@DBDE04.ent.ti.com>
- <20140312215337.GA5735@kahuna>
- <20980858CB6D3A4BAE95CA194937D5E73EAB2F96@DBDE04.ent.ti.com>
- <5321AC92.2090307@ti.com>
-Date: Thu, 13 Mar 2014 08:30:19 -0500
-Message-ID: <CAOCHtYhcJZ711XaJhBAPNSoHH-dK_tH8ZgB-AHZ86POXas1OfQ@mail.gmail.com>
-Subject: Re: [PATCH v1 1/3] ARM: dts: am335x-bone: add support for beaglebone
- NAND cape
-From: Robert Nelson <robertcnelson@gmail.com>
-To: Nishanth Menon <nm@ti.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Tony Lindgren <tony@atomide.com>, linux-omap <linux-omap@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>, "Gupta, Pekon" <pekon@ti.com>,
- "bcousson@baylibre.com" <bcousson@baylibre.com>
+To: Austin Boyle <boyle.austin@gmail.com>
+Subject: Re: [PATCH] mtd: m25p80: Flash protection support for STmicro chips
+References: <1357257748.31023.12.camel@pc786-ubu.GNET.GLOBAL.VPN>
+ <528D15B6.2030800@keymile.com> <530F4CDE.7010205@keymile.com>
+ <20140305081008.GP13420@norris-Latitude-E6410>
+ <20140305083153.GR13420@norris-Latitude-E6410>
+ <CADnxWiqfaaRoaL+B_WQxx38-gpSDmdFQPLN-bs-moGRECXeJxg@mail.gmail.com>
+ <531D80AB.5010209@keymile.com>
+ <alpine.DEB.2.02.1403132239490.4383@austin-Satellite-L510>
+In-Reply-To: <alpine.DEB.2.02.1403132239490.4383@austin-Satellite-L510>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Marek Vasut <marex@denx.de>, Angus Clark <angus.clark@st.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,64 +33,104 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Mar 13, 2014 at 8:03 AM, Nishanth Menon <nm@ti.com> wrote:
-> On 03/13/2014 01:19 AM, Gupta, Pekon wrote:
-> [..]
->>> diff --git a/arch/arm/boot/dts/am335x-bone-memory-cape.dts b/arch/arm/boot/dts/am335x-bone-memory-cape.dts
->>> new file mode 100644
->>> index 0000000..7ab088d
->>> --- /dev/null
->>> +++ b/arch/arm/boot/dts/am335x-bone-memory-cape.dts
->>>
->> From discussions, option I could think are..
->>
->> (a) NAND cape node added in both 'am335x-bone.dts' and
->>    'am335x-boneblack.dts' but "disabled" by default.
->>
->> (b) NAND cape node in new '.dts' file (as mentioned above), and generate
->>    a separate blob individual for cape.
->>
->> (c) NAND cape node in existing 'am335x-bone-common.dtsi', "disabled"
->>    by default. But there is no guarantee that future boards remain
->>    compatible and same 'common_xx.dtsi' can be reused later.
->>
->> I'll wait for Tony/Benoit-C. to decide on what suits them, as they are the
->> ones who have to maintain all these. Tony ?
->>
+Hi,
+
+On 03/13/2014 01:57 PM, Austin Boyle wrote:
 >
-> Key for us is that we'd have to live with what ever we introduce in
-> the interest of backward dtb compatibility. both (a) and (c) requires
-> hand modification by user of nand cape - considering this might be the
-> strategy for "most common capes", we might end up with confusing
-> entries that in many cases will require additional documentation
-> example: option a, c: consider both audio cape (which needs hdmi
-> disabled) and nand cape (which needs mmc2 disabled) - how'd the user
-> know which entries to enable/disable for the user of the cape -
-> documentation needed and potentially user error prone implementation
-> as well.
+> Hi Gerlando,
+[...]
+
 >
-> There is as well a option (d) where we wait for FDT overlay to mature,
-> write up a resource manager and support all level capes.
+>> In my opinion, we're breaking something here (call it userspace API or
+>> otherwise). My suggestion would then be to make it an optional feature to be
+>> explicitly enabled on the device tree, like Heicho did for CFI flashes:
+>>
+>> http://lists.infradead.org/pipermail/linux-mtd/2013-January/045536.html
+>>
+>> Or I guess another way would be to implement the _is_locked() function, so to
+>> have the userspace tools check the locking status before unlocking, and only
+>> lock it again if was locked in the first place.
+>> It wouldn't fix my issue right away (as the userspace tools don't currenctly
+>> perform this check), but at least it would provide some way out here without
+>> breaking compatibility with the existing u-boot.
+>>
+> I prefer this suggestion of implementing _is_locked(). It is a simple
+> change so may as well be done while fixing the lock/unlock code anyway.
 
-(b) is the direction i'm currently trying to transition the
-beagleboard.org community till (d) actually shows any life/hope again.
+I agree, plus it would be useful anyway (btw, shouldn't that be a 
+requirement anyway?).
+There is one thing I don't understand though.
+The _lock()/_unlock()/_is_locked() functions will take arbitrary ranges 
+of flash, whereas the BP only allows you to lock predefined portions of 
+it (or, let's say, from a discrete number of predefined starting points 
+up to the end).
+What should be the expected behavior resp. return value when the 
+specified portion crosses one of the starting points (resp. the current 
+starting point)?
 
-example:
-https://github.com/RobertCNelson/linux-dev/tree/am33x-v3.13/patches/static-capes
+> One could say it is counterintuitive for ioctl(MEMLOCK) not to work
+> without previous configuration, as in the first suggestion. If people are
+> passionate about making the feature configurable it could be done
+> separately once we've fixed the logic with _lock/_unlock and
+> adding _is_locked.
 
-I really like Nishanth's simpler version he posted, so I'll be
-converting mine to that style later today.
+Don't know how this falls into the whole device tree logic, but we could 
+also have it default to "enabled", and provide a specific way to 
+explicitly disable the feature.
 
-Also with u-boot v2014.04-rcX we now have "test -e" (exist support) so
-we can actively check for the presence of <board>-<cape>.dtb and
-safely fall back to <board>.dtb if it didn't actually exist.  The only
-requirement is the end user specify the <cape> as a variable in
-uEnv.txt
+> I will submit a change to the u-boot env tool to check the locking state
+> if supported and restore the same state after - obviously more
+> correct, regardless of the decision made here.
 
-https://github.com/RobertCNelson/Bootloader-Builder/blob/master/patches/v2014.04-rc2/0001-am335x_evm-uEnv.txt-bootz-n-fixes.patch#L76
+That would be great, thank you!
+Back to my point above, I believe it should be put in a way so that no 
+matter what the initial protection status, the whole sequence 
+(check/unlock/lock) should put you back in the same status as before.
+Not sure if/how this would be at all feasible though, especially if your 
+u-boot environment(s) is(are) stored at very weird locations.
 
-Regards,
+> Not ideal but in the meantime if someone needs to ensure the device is
+> unlocked they can run the flash_unlock from mtd-utils after writing u-boot
+> environment variables from the userspace tool. (Call it a user space
+> work around for a user space bug?)
 
--- 
-Robert Nelson
-http://www.rcn-ee.com/
+Definitely better than having to throw the whole board away ;-)
+
+>
+>> Uhm, I believe it should read like this (unprotected portion is of course "n
+>> - protected portion"):
+>>
+>> SR BPs | Protected portion
+>> ---------------------------
+>>   0    | 0/n
+>>   1    | 1/n
+>>   2    | 2/n
+>>   3    | min(4,n)/n
+>>   4    | min(8,n)/n
+>>   5    | min(16,n)/n
+>>   6    | min(32,n)/n
+>>   7    | min(64,n)/n
+>>
+> Yes sorry that was a typo in the previous email, should have been powers
+> of 2 as above and the patch. Also technically correct about the min macro,
+> as you saw I was just terminating the loop before that condition was met.
+>
+>>> A patch with this implementation follows. Let me know what you think. I
+>>> have a spreadsheet summarising the block protect bits for the STmicro
+>>> devices I can share if it will help.
+>>
+>> Could you please share this?
+> It sounds like you have already done your own research but here is what I
+> have:
+> https://docs.google.com/spreadsheet/ccc?key=0AhKBO-EQCLLkdGR1Q05qLUs2RURsMFA4V2s2X1llY3c&usp=sharing
+
+Thank you... BTW, I had only opened 2-3 datasheets, did not go through 
+the whole family as you did. ;-)
+
+> Thanks for your comments on this issue and patch. I will resubmit
+> another version addressing your points soon.
+
+Thank you for taking my complaints upon yourself ;-)
+
+Best,
+Gerlando
