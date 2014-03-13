@@ -1,16 +1,16 @@
-Received: from mail-yk0-f177.google.com ([209.85.160.177])
+Received: from mail-yh0-f54.google.com ([209.85.213.54])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WOBTu-0004nX-Tx
- for linux-mtd@lists.infradead.org; Thu, 13 Mar 2014 19:40:03 +0000
-Received: by mail-yk0-f177.google.com with SMTP id q200so3963508ykb.8
- for <linux-mtd@lists.infradead.org>; Thu, 13 Mar 2014 12:39:28 -0700 (PDT)
+ id 1WOBU0-0004no-4N
+ for linux-mtd@lists.infradead.org; Thu, 13 Mar 2014 19:40:07 +0000
+Received: by mail-yh0-f54.google.com with SMTP id f73so1579909yha.27
+ for <linux-mtd@lists.infradead.org>; Thu, 13 Mar 2014 12:39:39 -0700 (PDT)
 From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 To: Mike Turquette <mturquette@linaro.org>,
  Jason Cooper <jason@lakedaemon.net>, <devicetree@vger.kernel.org>,
  <linux-arm-kernel@lists.infradead.org>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH v2 2/6] ARM: mvebu: Add a 2 GHz fixed-clock on Armada 38x SoCs
-Date: Thu, 13 Mar 2014 16:38:58 -0300
-Message-Id: <1394739542-30017-3-git-send-email-ezequiel@vanguardiasur.com.ar>
+Subject: [PATCH v2 5/6] ARM: mvebu: Enable NAND controller in Armada 385-DB
+Date: Thu, 13 Mar 2014 16:39:01 -0300
+Message-Id: <1394739542-30017-6-git-send-email-ezequiel@vanguardiasur.com.ar>
 In-Reply-To: <1394739542-30017-1-git-send-email-ezequiel@vanguardiasur.com.ar>
 References: <1394739542-30017-1-git-send-email-ezequiel@vanguardiasur.com.ar>
 Cc: Lior Amsalem <alior@marvell.com>,
@@ -31,32 +31,45 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 
-Armada 38x SoCs have a 2 GHz fixed main PLL that is used to feed
-other clocks. This commit adds a DT representation of this clock
-through a fixed-clock compatible node.
+The Armada 385-DB board has a NAND flash, so enable it in the
+devicetree and add the partitions as prepared in the factory images.
 
 Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 ---
- arch/arm/boot/dts/armada-38x.dtsi | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/arm/boot/dts/armada-385-db.dts | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-diff --git a/arch/arm/boot/dts/armada-38x.dtsi b/arch/arm/boot/dts/armada-38x.dtsi
-index 812ce28..38fc3a0 100644
---- a/arch/arm/boot/dts/armada-38x.dtsi
-+++ b/arch/arm/boot/dts/armada-38x.dtsi
-@@ -341,6 +341,13 @@
- 	};
- 
- 	clocks {
-+		/* 2 GHz fixed main PLL */
-+		mainpll: mainpll {
-+			compatible = "fixed-clock";
-+			#clock-cells = <0>;
-+			clock-frequency = <2000000000>;
-+		};
+diff --git a/arch/arm/boot/dts/armada-385-db.dts b/arch/arm/boot/dts/armada-385-db.dts
+index 9a13642..edcf7ff 100644
+--- a/arch/arm/boot/dts/armada-385-db.dts
++++ b/arch/arm/boot/dts/armada-385-db.dts
+@@ -80,6 +80,27 @@
+ 					reg = <1>;
+ 				};
+ 			};
 +
- 		/* 25 MHz reference crystal */
- 		refclk: oscillator {
- 			compatible = "fixed-clock";
++			flash: flash@d0000 {
++				status = "okay";
++				num-cs = <1>;
++				marvell,nand-keep-config;
++				marvell,nand-enable-arbiter;
++				nand-on-flash-bbt;
++
++				partition@0 {
++					label = "U-Boot";
++					reg = <0 0x800000>;
++				};
++				partition@800000 {
++					label = "Linux";
++					reg = <0x800000 0x800000>;
++				};
++				partition@1000000 {
++					label = "Filesystem";
++					reg = <0x1000000 0x3f000000>;
++				};
++			};
+ 		};
+ 
+ 		pcie-controller {
 -- 
 1.9.0
