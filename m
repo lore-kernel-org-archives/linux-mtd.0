@@ -1,36 +1,21 @@
-Received: from imap.thunk.org ([2600:3c02::f03c:91ff:fe96:be03])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WOEqr-0002wD-TU
- for linux-mtd@lists.infradead.org; Thu, 13 Mar 2014 23:15:50 +0000
-Date: Thu, 13 Mar 2014 19:15:06 -0400
-From: Theodore Ts'o <tytso@mit.edu>
-To: Steven Whitehouse <swhiteho@redhat.com>
-Subject: Re: [Cluster-devel] [PATCH] fs: push sync_filesystem() down to the
- file system's remount_fs()
-Message-ID: <20140313231506.GB16785@thunk.org>
-References: <20140313073936.GA14663@infradead.org>
- <1394720456-16629-1-git-send-email-tytso@mit.edu>
- <20140313162319.GA504@quack.suse.cz>
- <1394728103.2767.32.camel@menhir>
+Date: Thu, 13 Mar 2014 19:44:48 -0400
+From: Jason Cooper <jason@lakedaemon.net>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH v3 0/6] Armada 380 NAND support
+Message-ID: <20140313234448.GB15608@titan.lakedaemon.net>
+References: <1394742273-5113-1-git-send-email-ezequiel.garcia@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1394728103.2767.32.camel@menhir>
-Cc: jfs-discussion@lists.sourceforge.net, Jan Kara <jack@suse.cz>,
- Anders Larsen <al@alarsen.net>, linux-mtd@lists.infradead.org,
- Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
- Petr Vandrovec <petr@vandrovec.name>, codalist@TELEMANN.coda.cs.cmu.edu,
- linux-cifs@vger.kernel.org, linux-fsdevel@thunk.org, cluster-devel@redhat.com,
- Ext4 Developers List <linux-ext4@vger.kernel.org>,
- Evgeniy Dushistov <dushistov@mail.ru>, Kees Cook <keescook@chromium.org>,
- fuse-devel@lists.sourceforge.net, reiserfs-devel@vger.kernel.org,
- xfs@oss.sgi.com, linux-nilfs@vger.kernel.org,
- OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, linux-nfs@vger.kernel.org,
- Artem Bityutskiy <dedekind1@gmail.com>, linux-ntfs-dev@lists.sourceforge.net,
- samba-technical@lists.samba.org, Adrian Hunter <adrian.hunter@intel.com>,
- linux-f2fs-devel@lists.sourceforge.net, linux-btrfs@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, Phillip Lougher <phillip@squashfs.org.uk>,
- ocfs2-devel@oss.oracle.com
+In-Reply-To: <1394742273-5113-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: Lior Amsalem <alior@marvell.com>, devicetree@vger.kernel.org,
+ Mike Turquette <mturquette@linaro.org>, Tawfik Bayouk <tawfik@marvell.com>,
+ sergei.shtylyov@cogentembedded.com, Andrew Lunn <andrew@lunn.ch>,
+ Seif Mazareeb <seif@marvell.com>, linux-mtd@lists.infradead.org,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ linux-arm-kernel@lists.infradead.org,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,35 +25,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Mar 13, 2014 at 04:28:23PM +0000, Steven Whitehouse wrote:
+On Thu, Mar 13, 2014 at 05:24:27PM -0300, Ezequiel Garcia wrote:
+> This patchset adds support for the NAND on Armada 380/385 SoCs.
 > 
-> I guess the same is true for other file systems which are mounted ro
-> too. So maybe a check for MS_RDONLY before doing the sync in those
-> cases?
+> The first patch adds a new "armada-380-corediv-clock" compatible
+> string, with its proper SoC-specific structure, adding the register
+> layout for this SoC family.
+> 
+> The second and third patches add the devicetree changes to support
+> the Core Divider clock.
+> 
+> After adding its clock source, the fourth and fifth patches add
+> the NAND devicetree changes. The NAND controller is compatible with
+> the Armada 370 controller, so we are currently support it using the
+> same compatible string.
+> 
+> The last patch updates the binding documentation for the Core Divider
+> clock, which is missing the information about the already supported
+> Armada 375 compatible string.
+> 
+> This series is based on linux-next 20140307. I expect it will apply
+> cleanly on v3.15-rc1; if that's not the case, I'll send a rebased patchset.
+> 
+> The clock and devicetree changes are mostly independent so they
+> can be merged through the clock and mvebu tree respectively.
+> 
+> Changes from v2:
+> 
+>   * Removed the unneeded 'nand' label from the flash@d0000 node.
+> 
+>   * Renamed 'coredivclk@e4250' to 'clock@e4250' according to
+>     ePAPR recomendation, below.
+> 
+> Changes from v1:
+> 
+>   * Changed nand@d0000 with flash@d0000 in the devicetree. The
+>     latter is compliant with ePAPR recomendation (see ePAPR v1.1,
+>     section 2.2.2, Generic Names Recommendation).
+> 
+> Ezequiel Garcia (6):
+>   clk: mvebu: Support Armada 380 SoC on the core divider clock
 
-My original patch moved the sync_filesystem into the check for
-MS_RDONLY in the core VFS code.  The objection was raised that there
-might be some file system out there that might depend on this
-behaviour.  I can't imagine why, but I suppose it's at least
-theoretically possible.
+Applied to mvebu/clk-3xx
 
-So the idea is that this particular patch is *guaranteed* not to make
-any difference.  That way there can be no question about the patch'es
-correctness.
+>   ARM: mvebu: Add a 2 GHz fixed-clock on Armada 38x SoCs
+>   ARM: mvebu: Add the Core Divider clock to Armada 38x SoCs
+>   ARM: mvebu: Add support for NAND controller in Armada 38x SoC
+>   ARM: mvebu: Enable NAND controller in Armada 385-DB
 
-I'm going to follow up with a patch for ext4 that does exactly that,
-but the idea is to allow each file system maintainer to do that for
-their own file system.
+Applied to mvebu/dt
 
-I could do that as well for file systems that are "obviously"
-read-only, but then I'll find out that there's some wierd case where
-the file system can be used in a read-write fashion.  (Example: UDF is
-normally used for DVD's, but at least in theory it can be used
-read/write --- I'm told that Windows supports read-write UDF file
-systems on USB sticks, and at least in theory it could be used as a
-inter-OS exchange format in situations where VFAT and exFAT might not
-be appropriate for various reasons.)
+>   clk: mvebu: Update binding documentation for the core divider clock
 
-Cheers,
+Applied to mvebu/clk-3xx
 
-						- Ted
+I'll push for-next with tonight's additions in an hour or so.
+
+thx,
+
+Jason.
