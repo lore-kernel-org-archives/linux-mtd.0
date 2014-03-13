@@ -1,23 +1,28 @@
-Received: from mail-yh0-f44.google.com ([209.85.213.44])
+Received: from mail-lb0-f173.google.com ([209.85.217.173])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WOBU3-0004o0-Mc
- for linux-mtd@lists.infradead.org; Thu, 13 Mar 2014 19:40:09 +0000
-Received: by mail-yh0-f44.google.com with SMTP id f10so1565350yha.17
- for <linux-mtd@lists.infradead.org>; Thu, 13 Mar 2014 12:39:42 -0700 (PDT)
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To: Mike Turquette <mturquette@linaro.org>,
- Jason Cooper <jason@lakedaemon.net>, <devicetree@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, <linux-mtd@lists.infradead.org>
-Subject: [PATCH v2 6/6] clk: mvebu: Update binding documentation for the core
- divider clock
-Date: Thu, 13 Mar 2014 16:39:02 -0300
-Message-Id: <1394739542-30017-7-git-send-email-ezequiel@vanguardiasur.com.ar>
-In-Reply-To: <1394739542-30017-1-git-send-email-ezequiel@vanguardiasur.com.ar>
+ id 1WOBjM-0005VP-Kt
+ for linux-mtd@lists.infradead.org; Thu, 13 Mar 2014 19:55:53 +0000
+Received: by mail-lb0-f173.google.com with SMTP id p9so1058466lbv.18
+ for <linux-mtd@lists.infradead.org>; Thu, 13 Mar 2014 12:55:30 -0700 (PDT)
+Message-ID: <53221B41.2030001@cogentembedded.com>
+Date: Thu, 13 Mar 2014 23:55:29 +0300
+From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+MIME-Version: 1.0
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ Mike Turquette <mturquette@linaro.org>,
+ Jason Cooper <jason@lakedaemon.net>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2 3/6] ARM: mvebu: Add the Core Divider clock to Armada
+ 38x SoCs
 References: <1394739542-30017-1-git-send-email-ezequiel@vanguardiasur.com.ar>
+ <1394739542-30017-4-git-send-email-ezequiel@vanguardiasur.com.ar>
+In-Reply-To: <1394739542-30017-4-git-send-email-ezequiel@vanguardiasur.com.ar>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Cc: Lior Amsalem <alior@marvell.com>,
  Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- sergei.shtylyov@cogentembedded.com, Tawfik Bayouk <tawfik@marvell.com>,
- Andrew Lunn <andrew@lunn.ch>, Seif Mazareeb <seif@marvell.com>,
+ Tawfik Bayouk <tawfik@marvell.com>, Andrew Lunn <andrew@lunn.ch>,
+ Seif Mazareeb <seif@marvell.com>,
  Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
  Gregory Clement <gregory.clement@free-electrons.com>,
  Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
@@ -30,31 +35,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Hello.
 
-The Core Divider clock support two new compatible strings for Armada
-375 and Armada 380 SoCs. Add the compatible strings to the documentation.
+On 03/13/2014 10:38 PM, Ezequiel Garcia wrote:
 
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
----
- Documentation/devicetree/bindings/clock/mvebu-corediv-clock.txt | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+> From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 
-diff --git a/Documentation/devicetree/bindings/clock/mvebu-corediv-clock.txt b/Documentation/devicetree/bindings/clock/mvebu-corediv-clock.txt
-index c62391f..520562a 100644
---- a/Documentation/devicetree/bindings/clock/mvebu-corediv-clock.txt
-+++ b/Documentation/devicetree/bindings/clock/mvebu-corediv-clock.txt
-@@ -4,7 +4,10 @@ The following is a list of provided IDs and clock names on Armada 370/XP:
-  0 = nand (NAND clock)
- 
- Required properties:
--- compatible : must be "marvell,armada-370-corediv-clock"
-+- compatible : must be "marvell,armada-370-corediv-clock",
-+		       "marvell,armada-375-corediv-clock",
-+		       "marvell,armada-380-corediv-clock",
-+
- - reg : must be the register address of Core Divider control register
- - #clock-cells : from common clock binding; shall be set to 1
- - clocks : must be set to the parent's phandle
--- 
-1.9.0
+> The Armada 38x SoC family has a clock provider called "Core Divider",
+> derived from the fixed 2 GHz main PLL clock. This is similar to the
+> one on A370, A375 and AXP.
+
+> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> ---
+>   arch/arm/boot/dts/armada-38x.dtsi | 8 ++++++++
+>   1 file changed, 8 insertions(+)
+
+> diff --git a/arch/arm/boot/dts/armada-38x.dtsi b/arch/arm/boot/dts/armada-38x.dtsi
+> index 38fc3a0..76cc27e 100644
+> --- a/arch/arm/boot/dts/armada-38x.dtsi
+> +++ b/arch/arm/boot/dts/armada-38x.dtsi
+> @@ -337,6 +337,14 @@
+>   				compatible = "marvell,orion-mdio";
+>   				reg = <0x72004 0x4>;
+>   			};
+> +
+> +			coredivclk: corediv-clock@e4250 {
+
+    I would suggest naming the device just "clock@e4250" on the same grounds 
+of having the generic device names.
+
+WBR, Sergei
