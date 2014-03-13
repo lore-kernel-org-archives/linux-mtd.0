@@ -1,31 +1,33 @@
-Received: from mail-pb0-x229.google.com ([2607:f8b0:400e:c01::229])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WO5Ck-0007lZ-Cn
- for linux-mtd@lists.infradead.org; Thu, 13 Mar 2014 12:57:48 +0000
-Received: by mail-pb0-f41.google.com with SMTP id jt11so1075958pbb.0
- for <linux-mtd@lists.infradead.org>; Thu, 13 Mar 2014 05:57:20 -0700 (PDT)
-Date: Thu, 13 Mar 2014 23:57:11 +1100 (EST)
-From: Austin Boyle <boyle.austin@gmail.com>
-To: Gerlando Falauto <gerlando.falauto@keymile.com>
-Subject: Re: [PATCH] mtd: m25p80: Flash protection support for STmicro
- chips
-In-Reply-To: <531D80AB.5010209@keymile.com>
-Message-ID: <alpine.DEB.2.02.1403132239490.4383@austin-Satellite-L510>
-References: <1357257748.31023.12.camel@pc786-ubu.GNET.GLOBAL.VPN>
- <528D15B6.2030800@keymile.com> <530F4CDE.7010205@keymile.com>
- <20140305081008.GP13420@norris-Latitude-E6410>
- <20140305083153.GR13420@norris-Latitude-E6410>
- <CADnxWiqfaaRoaL+B_WQxx38-gpSDmdFQPLN-bs-moGRECXeJxg@mail.gmail.com>
- <531D80AB.5010209@keymile.com>
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WO5Cy-0007ls-CN
+ for linux-mtd@lists.infradead.org; Thu, 13 Mar 2014 12:58:00 +0000
+Date: Thu, 13 Mar 2014 09:57:17 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 1/2] mtd: nand: add erased-page bitflip correction
+Message-ID: <20140313125717.GB1758@arch.cereza>
+References: <1394529112-9659-1-git-send-email-computersforpeace@gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EAB1679@DBDE04.ent.ti.com>
+ <531FF16F.7060808@gmail.com>
+ <CAGWqfijgOL4Qk4axrPo=Z2vcq_upBCM-jQCm-wkSs12RqTeR8Q@mail.gmail.com>
+ <532005C6.3090805@gmail.com>
+ <CAGWqfigu3GFPS3Ykap4_hjkMtEUCv8bXGOt2h7GGQ=Sgip=DdQ@mail.gmail.com>
+ <20140313052219.GQ31517@norris-Latitude-E6410>
+ <20980858CB6D3A4BAE95CA194937D5E73EAB2F71@DBDE04.ent.ti.com>
+ <20140313062845.GT31517@norris-Latitude-E6410>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
-Cc: Marek Vasut <marex@denx.de>, Angus Clark <angus.clark@st.com>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Austin Boyle <boyle.austin@gmail.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20140313062845.GT31517@norris-Latitude-E6410>
+Cc: Kent Li <kent.li@radisys.com>, Elie De Brauwer <eliedebrauwer@gmail.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ HOUR Frederic <frederic.hour@safran-engineering.com>,
+ Huang Shijie <b32955@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
+ Pekon" <pekon@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,83 +37,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Mar 12, Brian Norris wrote:
+> Hi Pekon,
+> 
+> On Thu, Mar 13, 2014 at 05:55:32AM +0000, Pekon Gupta wrote:
+> > >From: Brian Norris [mailto:computersforpeace@gmail.com]
+> > >On Wed, Mar 12, 2014 at 01:45:15PM +0100, Elie De Brauwer wrote:
+> > >> b) "determining you read an erased page". In case of the i.mx (and
+> > >> thus GPMI) the BCH block can tell you three things:
+> > >>  1. I read all 0xff's
+> > >>  2. I read some data and nothing got corrected
+> > >>  3. I read something but failed to correct it.
+> > >> The third case can have two causes:
+> > >>  3.a you read valid data with bitflips exceeding what the BCH could
+> > >> correct
+> > >>  3.b you read an erased page with bitflips.
+> > >>
+> > >> Obviously case 3.b is what this discussion is all about, and my quest
+> > >> revolved around a means to quickly identify case '3.b'.
+> > >
+> > >Yes, 3.a vs. 3.b is the big problem.
+> [...]
+> 
+> > I think for OMAP NAND driver there needs to be some help on "1." also.
+> > There is no hardware support in GPMC (Ti's controller) to find out if the
+> > (read_data + read_oob) == 0xff. So you have to do this comparison in
+> > software.
+> 
+> Really? So if you read a blank (all 0xff) page that has no bitflips, you
+> see an ECC error? I'm sorry, but I didn't realize that's how your
+> hardware worked. That's the worst hardware ECC design I've seen so far
+> :(
+> 
 
-Hi Gerlando,
+I haven't had time to follow this discussion yet, but just wanted to point
+out the above is also true for pxa3xx-nand.c.
 
-On Mon, 10 Mar 2014, Gerlando Falauto wrote:
-> What do you mean exactly by "it is optional"?
-> I agree with you that an explicit ioctl(MEMLOCK) is order for locking to take 
-> place. However, this seems to be the default action for the u-boot 
-> environment userspace tools. They will issue a MEMUNLOCK/MEMLOCK pair when 
-> trying to write some changes to the environment, without even checking the 
-> return value. This would of course fail silently when the feature was not 
-> implemented (as it was the case before the original patch was applied) and 
-> everything was working as expected.
-> Now linux supports this feature, and u-boot doesn't, so as soon as you write 
-> something to the flash from userspace, it will be locked and u-boot won't 
-> ever be able to write to it again.
->
-OK I understand your point after checking the code for the u-boot tool.
+If a completely erased page is read, the calculated ECC would be 0 and the
+stored ECC would be all 0xff (although I never actually checked this).
+See the snippet below:
 
-> In my opinion, we're breaking something here (call it userspace API or 
-> otherwise). My suggestion would then be to make it an optional feature to be 
-> explicitly enabled on the device tree, like Heicho did for CFI flashes:
->
-> http://lists.infradead.org/pipermail/linux-mtd/2013-January/045536.html
->
-> Or I guess another way would be to implement the _is_locked() function, so to 
-> have the userspace tools check the locking status before unlocking, and only 
-> lock it again if was locked in the first place.
-> It wouldn't fix my issue right away (as the userspace tools don't currenctly 
-> perform this check), but at least it would provide some way out here without 
-> breaking compatibility with the existing u-boot.
->
-I prefer this suggestion of implementing _is_locked(). It is a simple 
-change so may as well be done while fixing the lock/unlock code anyway. 
-One could say it is counterintuitive for ioctl(MEMLOCK) not to work
-without previous configuration, as in the first suggestion. If people are 
-passionate about making the feature configurable it could be done 
-separately once we've fixed the logic with _lock/_unlock and 
-adding _is_locked.
+static int pxa3xx_nand_read_page_hwecc(struct mtd_info *mtd,
+		struct nand_chip *chip, uint8_t *buf, int oob_required,
+		int page)
+{
+	[..]
+	} else if (info->retcode == ERR_UNCORERR) {
+		/*
+		 * for blank page (all 0xff), HW will calculate its ECC as
+		 * 0, which is different from the ECC information within
+		 * OOB, ignore such uncorrectable errors
+		 */
+		if (is_buf_blank(buf, mtd->writesize))
+			info->retcode = ERR_NONE;
+	}
+	[..]
+}
 
-I will submit a change to the u-boot env tool to check the locking state 
-if supported and restore the same state after - obviously more 
-correct, regardless of the decision made here.
-
-Not ideal but in the meantime if someone needs to ensure the device is 
-unlocked they can run the flash_unlock from mtd-utils after writing u-boot
-environment variables from the userspace tool. (Call it a user space 
-work around for a user space bug?)
-
-> Uhm, I believe it should read like this (unprotected portion is of course "n 
-> - protected portion"):
->
-> SR BPs | Protected portion
-> ---------------------------
->  0    | 0/n
->  1    | 1/n
->  2    | 2/n
->  3    | min(4,n)/n
->  4    | min(8,n)/n
->  5    | min(16,n)/n
->  6    | min(32,n)/n
->  7    | min(64,n)/n
->
-Yes sorry that was a typo in the previous email, should have been powers 
-of 2 as above and the patch. Also technically correct about the min macro, 
-as you saw I was just terminating the loop before that condition was met.
-
->> A patch with this implementation follows. Let me know what you think. I
->> have a spreadsheet summarising the block protect bits for the STmicro
->> devices I can share if it will help.
->
-> Could you please share this?
-It sounds like you have already done your own research but here is what I 
-have: 
-https://docs.google.com/spreadsheet/ccc?key=0AhKBO-EQCLLkdGR1Q05qLUs2RURsMFA4V2s2X1llY3c&usp=sharing
-
-Thanks for your comments on this issue and patch. I will resubmit 
-another version addressing your points soon.
-
-Cheers,
-Austin.
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
