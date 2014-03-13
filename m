@@ -1,33 +1,30 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WO5Cy-0007ls-CN
- for linux-mtd@lists.infradead.org; Thu, 13 Mar 2014 12:58:00 +0000
-Date: Thu, 13 Mar 2014 09:57:17 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 1/2] mtd: nand: add erased-page bitflip correction
-Message-ID: <20140313125717.GB1758@arch.cereza>
-References: <1394529112-9659-1-git-send-email-computersforpeace@gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73EAB1679@DBDE04.ent.ti.com>
- <531FF16F.7060808@gmail.com>
- <CAGWqfijgOL4Qk4axrPo=Z2vcq_upBCM-jQCm-wkSs12RqTeR8Q@mail.gmail.com>
- <532005C6.3090805@gmail.com>
- <CAGWqfigu3GFPS3Ykap4_hjkMtEUCv8bXGOt2h7GGQ=Sgip=DdQ@mail.gmail.com>
- <20140313052219.GQ31517@norris-Latitude-E6410>
- <20980858CB6D3A4BAE95CA194937D5E73EAB2F71@DBDE04.ent.ti.com>
- <20140313062845.GT31517@norris-Latitude-E6410>
+Received: from comal.ext.ti.com ([198.47.26.152])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WO5IR-0007uv-W8
+ for linux-mtd@lists.infradead.org; Thu, 13 Mar 2014 13:03:41 +0000
+Message-ID: <5321AC92.2090307@ti.com>
+Date: Thu, 13 Mar 2014 08:03:14 -0500
+From: Nishanth Menon <nm@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20140313062845.GT31517@norris-Latitude-E6410>
-Cc: Kent Li <kent.li@radisys.com>, Elie De Brauwer <eliedebrauwer@gmail.com>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- HOUR Frederic <frederic.hour@safran-engineering.com>,
- Huang Shijie <b32955@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
- Pekon" <pekon@ti.com>
+To: "Gupta, Pekon" <pekon@ti.com>, Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH v1 1/3] ARM: dts: am335x-bone: add support for beaglebone
+ NAND cape
+References: <1394621360-2457-1-git-send-email-pekon@ti.com>
+ <1394621360-2457-2-git-send-email-pekon@ti.com> <532070C8.1030903@ti.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EAB2CF1@DBDE04.ent.ti.com>
+ <CAGo_u6rvUqa-7afTFzBahDJuyVkXAj5J2LL8tQRjZuf8_xWXWA@mail.gmail.com>
+ <CAOCHtYhqZoCF13e1YjBiWPufDEmVotL3chO9ZUtivWbVTWVfiQ@mail.gmail.com>
+ <20140312192850.GF1996@atomide.com> <5320C8B5.601@ti.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EAB2E95@DBDE04.ent.ti.com>
+ <20140312215337.GA5735@kahuna>
+ <20980858CB6D3A4BAE95CA194937D5E73EAB2F96@DBDE04.ent.ti.com>
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EAB2F96@DBDE04.ent.ti.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ linux-omap <linux-omap@vger.kernel.org>,
+ Robert Nelson <robertcnelson@gmail.com>,
+ "bcousson@baylibre.com" <bcousson@baylibre.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,64 +34,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mar 12, Brian Norris wrote:
-> Hi Pekon,
+On 03/13/2014 01:19 AM, Gupta, Pekon wrote:
+[..]
+>> diff --git a/arch/arm/boot/dts/am335x-bone-memory-cape.dts b/arch/arm/boot/dts/am335x-bone-memory-cape.dts
+>> new file mode 100644
+>> index 0000000..7ab088d
+>> --- /dev/null
+>> +++ b/arch/arm/boot/dts/am335x-bone-memory-cape.dts
+>>
+> From discussions, option I could think are..
 > 
-> On Thu, Mar 13, 2014 at 05:55:32AM +0000, Pekon Gupta wrote:
-> > >From: Brian Norris [mailto:computersforpeace@gmail.com]
-> > >On Wed, Mar 12, 2014 at 01:45:15PM +0100, Elie De Brauwer wrote:
-> > >> b) "determining you read an erased page". In case of the i.mx (and
-> > >> thus GPMI) the BCH block can tell you three things:
-> > >>  1. I read all 0xff's
-> > >>  2. I read some data and nothing got corrected
-> > >>  3. I read something but failed to correct it.
-> > >> The third case can have two causes:
-> > >>  3.a you read valid data with bitflips exceeding what the BCH could
-> > >> correct
-> > >>  3.b you read an erased page with bitflips.
-> > >>
-> > >> Obviously case 3.b is what this discussion is all about, and my quest
-> > >> revolved around a means to quickly identify case '3.b'.
-> > >
-> > >Yes, 3.a vs. 3.b is the big problem.
-> [...]
+> (a) NAND cape node added in both 'am335x-bone.dts' and
+>    'am335x-boneblack.dts' but "disabled" by default.
 > 
-> > I think for OMAP NAND driver there needs to be some help on "1." also.
-> > There is no hardware support in GPMC (Ti's controller) to find out if the
-> > (read_data + read_oob) == 0xff. So you have to do this comparison in
-> > software.
+> (b) NAND cape node in new '.dts' file (as mentioned above), and generate
+>    a separate blob individual for cape.
 > 
-> Really? So if you read a blank (all 0xff) page that has no bitflips, you
-> see an ECC error? I'm sorry, but I didn't realize that's how your
-> hardware worked. That's the worst hardware ECC design I've seen so far
-> :(
+> (c) NAND cape node in existing 'am335x-bone-common.dtsi', "disabled"
+>    by default. But there is no guarantee that future boards remain
+>    compatible and same 'common_xx.dtsi' can be reused later.
+> 
+> I'll wait for Tony/Benoit-C. to decide on what suits them, as they are the
+> ones who have to maintain all these. Tony ?
 > 
 
-I haven't had time to follow this discussion yet, but just wanted to point
-out the above is also true for pxa3xx-nand.c.
+Key for us is that we'd have to live with what ever we introduce in
+the interest of backward dtb compatibility. both (a) and (c) requires
+hand modification by user of nand cape - considering this might be the
+strategy for "most common capes", we might end up with confusing
+entries that in many cases will require additional documentation
+example: option a, c: consider both audio cape (which needs hdmi
+disabled) and nand cape (which needs mmc2 disabled) - how'd the user
+know which entries to enable/disable for the user of the cape -
+documentation needed and potentially user error prone implementation
+as well.
 
-If a completely erased page is read, the calculated ECC would be 0 and the
-stored ECC would be all 0xff (although I never actually checked this).
-See the snippet below:
-
-static int pxa3xx_nand_read_page_hwecc(struct mtd_info *mtd,
-		struct nand_chip *chip, uint8_t *buf, int oob_required,
-		int page)
-{
-	[..]
-	} else if (info->retcode == ERR_UNCORERR) {
-		/*
-		 * for blank page (all 0xff), HW will calculate its ECC as
-		 * 0, which is different from the ECC information within
-		 * OOB, ignore such uncorrectable errors
-		 */
-		if (is_buf_blank(buf, mtd->writesize))
-			info->retcode = ERR_NONE;
-	}
-	[..]
-}
+There is as well a option (d) where we wait for FDT overlay to mature,
+write up a resource manager and support all level capes.
 
 -- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+Regards,
+Nishanth Menon
