@@ -1,24 +1,16 @@
-Received: from tx2ehsobe003.messaging.microsoft.com ([65.55.88.13]
- helo=tx2outboundpool.messaging.microsoft.com)
+Received: from mail-ob0-x230.google.com ([2607:f8b0:4003:c01::230])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WO1Nm-00081M-E8
- for linux-mtd@lists.infradead.org; Thu, 13 Mar 2014 08:52:55 +0000
-Date: Thu, 13 Mar 2014 16:04:27 +0800
-From: Huang Shijie <b32955@freescale.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 1/2] mtd: nand: add erased-page bitflip correction
-Message-ID: <20140313080426.GA19311@shlinux2.ap.freescale.net>
-References: <1394529112-9659-1-git-send-email-computersforpeace@gmail.com>
- <20140312080605.GB30808@shlinux2.ap.freescale.net>
- <20140313045519.GP31517@norris-Latitude-E6410>
+ id 1WO35u-0003tx-GJ
+ for linux-mtd@lists.infradead.org; Thu, 13 Mar 2014 10:42:35 +0000
+Received: by mail-ob0-f176.google.com with SMTP id wp18so815583obc.21
+ for <linux-mtd@lists.infradead.org>; Thu, 13 Mar 2014 03:42:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20140313045519.GP31517@norris-Latitude-E6410>
-Cc: Kent Li <kent.li@radisys.com>, Elie De Brauwer <eliedebrauwer@gmail.com>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- HOUR Frederic <frederic.hour@safran-engineering.com>,
- linux-mtd@lists.infradead.org, Pekon Gupta <pekon@ti.com>
+From: Auclair Vincent <auclair.vincent@gmail.com>
+Date: Thu, 13 Mar 2014 11:41:51 +0100
+Message-ID: <CAC2x2XHNW6HytsBipspPkQOBup27G1-WXrWG+ec43EbS_pjROA@mail.gmail.com>
+Subject: nand erratic behavior with data loss
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,125 +20,182 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Mar 12, 2014 at 09:55:19PM -0700, Brian Norris wrote:
-> Hi Huang,
-> 
-> On Wed, Mar 12, 2014 at 04:06:07PM +0800, Huang Shijie wrote:
-> > On Tue, Mar 11, 2014 at 02:11:51AM -0700, Brian Norris wrote:
-> > > +	/* Check each ECC step individually */
-> > > +	for (i = 0; i < chip->ecc.steps; i++) {
-> 
-> [...]
-> 
-> > The gpmi uses a NAND layout like this:
-> > 
-> > 	 *    +---+----------+-+----------+-+----------+-+----------+-+
-> > 	 *    | M |   data   |E|   data   |E|   data   |E|   data   |E|
-> > 	 *    +---+----------+-+----------+-+----------+-+----------+-+
-> > 
-> >         M : The metadata, which is 10 by default.	 
-> >  	E : The ECC parity for "data" or "data + M".
-> > 
-> > If you want to count each sector, it makes the code very complicated. :(
-> 
-> I see. That does make things complicated.
-> 
-> But I'm curious: why does GPMI's ecc.read_page_raw() implementation (the
-> default) have to give such a different data/spare layout than its
-> ecc.read_page() implementation? There seems to be no benefit to this,
-> except that it means gpmi-nand doesn't have to implement its own
-> read_page_raw() callback...
+Hello,
 
-The raw data of the NAND is like the diagram above.
+We've been having the following problem on two different boards with different
+uboot & linux kernel version pair. If we write on the nand and reboot, from time
+to time, the uboot env or uboot itself becomes corrupted and either the default
+env kicks in or the board doesn't boot at all. We think this comes from linux,
+but not sure how code could bypass the mtd slice code to write into
+another slice.
 
-Do you mean i should implement the ecc.read_page_raw to read out all
-the "data"s in the diagram above, and concatenate them together? 
+We can randomly reproduce by running bonnie++ on a ubifs slice. We are
+trying to test if the error can be reproduced via mtd directly by writing random
+data on a /dev/mtdblock?. But we get random failures on the mtdblock at
+different offsets each time.
 
-What is the "raw" data meaning? I feel confused now.
+We've been investigating this error for several weeks and are now in a dead-end.
+Do you have any idea what could cause the nand to suddenly loose data from
+a part which is never written to ?
 
+We've investigated more on the following board, but exact same problem
+happens on another one.
 
-> 
-> Look, for instance, at nand_base's nand_read_page_raw_syndrome(). It
-> actually bothers to untangle a layout like yours and place it into the
-> appropriate places in the data and OOB buffers. I think this is the
-> ideal implementation for read_page_raw(), at which point my patch makes
-> more sense; all NAND drivers should have a (reasonably) similar layout
-> when viewed from nand_base, without any mixed data/OOB striping like in
-> your diagram.
-We'd better add more comment in the:
- * @read_page_raw:	function to read a raw page without ECC
+The following script is used to stresstest the nand.
 
-Make it clear that the @read_oob_raw read out the data which do not contain
-the ECC parity. 
+```
+#!/bin/sh
 
-> 
-> Side topic: did you plan on looking at this FIXME in gpmi-nand.c?
-> 
->  * FIXME: The following paragraph is incorrect, now that there exist
->  * ecc.read_oob_raw and ecc.write_oob_raw functions.
-> 
-I should remove these stale comments.
+FILE=/tmp/test
+set -e
 
-> It might be worth addressing at the same time, since the stale comments
-> near the FIXME talk about a difference between a raw and an ECC-based
-> "view" of the page. IMO, there should be no difference between these
-The difference is caused by the block marker swap. That is maybe a different
-topic from this one.
+while true; do
+  flash_erase /dev/mtd4 0 256
+  dd if=/dev/urandom of=$FILE bs=1k count=32k
+  dd if=$FILE of=/dev/mtdblock3 bs=1k count=32k
+  cmp $FILE /dev/mtdblock3
+done
+'''
 
-> types of "view", if at all possible. The only difference should be that
-> one tries to apply ECC and the other doesn't.
-> 
-> > > @@ -1554,6 +1610,18 @@ read_retry:
-> > >  				break;
-> > >  			}
-> > >  
-> > > +			/* Check an ECC error for 0xff + bitflips? */
-> > > +			if ((chip->options & NAND_ECC_NEED_CHECK_FF) &&
-> > > +					mtd->ecc_stats.failed - ecc_failures) {
-> > > +				ret = nand_verify_erased_page(mtd, bufpoi,
-> > > +						page);
-> > I think we can merge this code into the read-retry check like:
-> 
-> There's some very specific ordering requirements for some of the steps,
-> so we'd have to be careful about moving this code downward (max_bitflips
-> checks; the !aligned buffer copy; nand_transfer_oob()). I'm not sure
-> your suggestion is possible. And now that I mention it, I think the
-> NAND_NEED_READRDY check might already be a bit misplaced in my patch...
+The following randomly error appears after a while :
 
-okay.
+```
+end_request: I/O error, dev mtdblock4, sector 7664
+Buffer I/O error on device mtdblock4, logical block 958
+end_request: I/O error, dev mtdblock4, sector 7664
+Buffer I/O error on device mtdblock4, logical block 958
+cmp: /dev/mtdblock4: I/O error
+end_request: I/O error, dev mtdblock4, sector 25888
+Buffer I/O error on device mtdblock4, logical block 3236
+end_request: I/O error, dev mtdblock4, sector 25888
+Buffer I/O error on device mtdblock4, logical block 3236
+cmp: /dev/mtdblock4: I/O error
+'''
 
+Here follows mtdinfo -a
 
-> 
-> > 	---------------------------------------------
-> > 			if (mtd->ecc_stats.failed - ecc_failures) {
-> > 
-> > 				// step 1: count the bitflips, assume N.
-> > 				N = bitflips_count();
-> > 				// step 2:  
-> > 				if (N < ecc_strength) {
-> > 					do the erase-page-check;
-> > 				} else
-> > 					do the read-retry.
-> 
-> I'm not 100% clear on the pseudocode here, but it looks like you're
-> saying erased-page checks and read-retry would be mutually exclusive. I
-> believe that is wrong. In fact, they may *both* be required; we should
+````
+Count of MTD devices:           6
+Present MTD devices:            mtd0, mtd1, mtd2, mtd3, mtd4, mtd5
+Sysfs interface supported:      yes
 
-yes, that is what i meant. they both are required.
-But could we find a way to know that it is _NOT_ an erased-page-ECC-fail?
+mtd0
+Name:                           uboot
+Type:                           nand
+Eraseblock size:                131072 bytes, 128.0 KiB
+Amount of eraseblocks:          16 (2097152 bytes, 2.0 MiB)
+Minimum input/output unit size: 2048 bytes
+Sub-page size:                  512 bytes
+OOB size:                       64 bytes
+Character device major/minor:   90:0
+Bad blocks are allowed:         true
+Device is writable:             false
 
-> first check if the ECC failure was just an erased page, and if not, we
-> should retry the page.
-My pseudocode code is not accurate enough.
-Maybe it should like this:
-                    if (is_NOT_an_erase_page_failure()) {
-			    do the read-retry;
-		    } else {
-			   if (check_erase_page_ok())
-				   /* nothing */;
-			   else
-				do the read-retry;
-		    }
+mtd1
+Name:                           kernel
+Type:                           nand
+Eraseblock size:                131072 bytes, 128.0 KiB
+Amount of eraseblocks:          48 (6291456 bytes, 6.0 MiB)
+Minimum input/output unit size: 2048 bytes
+Sub-page size:                  512 bytes
+OOB size:                       64 bytes
+Character device major/minor:   90:2
+Bad blocks are allowed:         true
+Device is writable:             false
 
-thanks
-Huang Shijie
+mtd2
+Name:                           rootfs
+Type:                           nand
+Eraseblock size:                131072 bytes, 128.0 KiB
+Amount of eraseblocks:          1216 (159383552 bytes, 152.0 MiB)
+Minimum input/output unit size: 2048 bytes
+Sub-page size:                  512 bytes
+OOB size:                       64 bytes
+Character device major/minor:   90:4
+Bad blocks are allowed:         true
+Device is writable:             true
+
+mtd3
+Name:                           XXX
+Type:                           nand
+Eraseblock size:                131072 bytes, 128.0 KiB
+Amount of eraseblocks:          256 (33554432 bytes, 32.0 MiB)
+Minimum input/output unit size: 2048 bytes
+Sub-page size:                  512 bytes
+OOB size:                       64 bytes
+Character device major/minor:   90:6
+Bad blocks are allowed:         true
+Device is writable:             true
+
+mtd4
+Name:                           backup
+Type:                           nand
+Eraseblock size:                131072 bytes, 128.0 KiB
+Amount of eraseblocks:          256 (33554432 bytes, 32.0 MiB)
+Minimum input/output unit size: 2048 bytes
+Sub-page size:                  512 bytes
+OOB size:                       64 bytes
+Character device major/minor:   90:8
+Bad blocks are allowed:         true
+Device is writable:             true
+
+mtd5
+Name:                           rsvd
+Type:                           nand
+Eraseblock size:                131072 bytes, 128.0 KiB
+Amount of eraseblocks:          256 (33554432 bytes, 32.0 MiB)
+Minimum input/output unit size: 2048 bytes
+Sub-page size:                  512 bytes
+OOB size:                       64 bytes
+Character device major/minor:   90:10
+Bad blocks are allowed:         true
+Device is writable:             true
+''''
+
+Ubinfo of the two ubidevices, first one is mounted read-only :
+```
+# ubinfo /dev/ubi0
+ubi0
+Volumes count:                           1
+Logical eraseblock size:                 129024 bytes, 126.0 KiB
+Total amount of logical eraseblocks:     1216 (156893184 bytes, 149.6 MiB)
+Amount of available logical eraseblocks: 0 (0 bytes)
+Maximum count of volumes                 128
+Count of bad physical eraseblocks:       0
+Count of reserved physical eraseblocks:  24
+Current maximum erase counter value:     13
+Minimum input/output unit size:          2048 bytes
+Character device major/minor:            254:0
+Present volumes:                         0
+# ubinfo /dev/ubi1
+ubi1
+Volumes count:                           1
+Logical eraseblock size:                 129024 bytes, 126.0 KiB
+Total amount of logical eraseblocks:     256 (33030144 bytes, 31.5 MiB)
+Amount of available logical eraseblocks: 20 (2580480 bytes, 2.5 MiB)
+Maximum count of volumes                 128
+Count of bad physical eraseblocks:       0
+Count of reserved physical eraseblocks:  4
+Current maximum erase counter value:     1140
+Minimum input/output unit size:          2048 bytes
+Character device major/minor:            253:0
+Present volumes:                         0
+'''
+
+Nand device is : ``NAND device: Manufacturer ID: 0x2c, Chip ID: 0xda
+(Micron MT29F2G08ABAEAH4), page size: 2048, OOB size: 64''
+Nand driver is : ``orion_nand''
+Kernel cmdline for nand is :
+``mtdparts="orion_nand:0x00200000(uboot)ro,0x600000(kernel)ro,0x09800000(rootfs),0x02000000(XXX),0x02000000(backup),0x02000000(rsvd)"''
+
+Kernel version is : ``3.4.0'' with custom patches (nand/mtd/orion code path
+is clean) as well as the following patches from mainline applied :
+cf38aca520741ccdc1365efbef5a4cab33b0a4ac
+78b495c39add820ab66ab897af9bd77a5f2e91f6
+
+CPU: Feroceon
+
+Thanks in advance
+
+-- 
+Vincent Auclair        -      auclair.vincent[ at ]gmail.com
