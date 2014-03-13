@@ -1,31 +1,20 @@
-Received: from mail-pd0-x235.google.com ([2607:f8b0:400e:c02::235])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WNz8h-0005Q9-UL
- for linux-mtd@lists.infradead.org; Thu, 13 Mar 2014 06:29:12 +0000
-Received: by mail-pd0-f181.google.com with SMTP id p10so628612pdj.26
- for <linux-mtd@lists.infradead.org>; Wed, 12 Mar 2014 23:28:49 -0700 (PDT)
-Date: Wed, 12 Mar 2014 23:28:45 -0700
+Date: Wed, 12 Mar 2014 23:39:40 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [PATCH 1/2] mtd: nand: add erased-page bitflip correction
-Message-ID: <20140313062845.GT31517@norris-Latitude-E6410>
-References: <1394529112-9659-1-git-send-email-computersforpeace@gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73EAB1679@DBDE04.ent.ti.com>
- <531FF16F.7060808@gmail.com>
- <CAGWqfijgOL4Qk4axrPo=Z2vcq_upBCM-jQCm-wkSs12RqTeR8Q@mail.gmail.com>
- <532005C6.3090805@gmail.com>
- <CAGWqfigu3GFPS3Ykap4_hjkMtEUCv8bXGOt2h7GGQ=Sgip=DdQ@mail.gmail.com>
- <20140313052219.GQ31517@norris-Latitude-E6410>
- <20980858CB6D3A4BAE95CA194937D5E73EAB2F71@DBDE04.ent.ti.com>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH v5 0/8] mtd: spi-nor: add a new framework for SPI NOR
+Message-ID: <20140313063940.GU31517@norris-Latitude-E6410>
+References: <1393238262-8622-1-git-send-email-b32955@freescale.com>
+ <20140312081350.GC30808@shlinux2.ap.freescale.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EAB2F71@DBDE04.ent.ti.com>
-Cc: Kent Li <kent.li@radisys.com>, Elie De Brauwer <eliedebrauwer@gmail.com>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- HOUR Frederic <frederic.hour@safran-engineering.com>,
- Huang Shijie <b32955@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+In-Reply-To: <20140312081350.GC30808@shlinux2.ap.freescale.net>
+Cc: angus.clark@st.com, b44548@freescale.com, broonie@linaro.org,
+ dwmw2@infradead.org, linux-doc@vger.kernel.org, b18965@freescale.com,
+ linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-mtd@lists.infradead.org, pekon@ti.com, sourav.poddar@ti.com,
+ shawn.guo@linaro.org, lee.jones@linaro.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,51 +24,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Pekon,
+On Wed, Mar 12, 2014 at 04:13:51PM +0800, Huang Shijie wrote:
+> On Mon, Feb 24, 2014 at 06:37:34PM +0800, Huang Shijie wrote:
+>    Could you please review this patch set? I really hope it can be merged
+>    as soon as possibel.  But now, the patch set has stalled for a long time.
 
-On Thu, Mar 13, 2014 at 05:55:32AM +0000, Pekon Gupta wrote:
-> >From: Brian Norris [mailto:computersforpeace@gmail.com]
-> >On Wed, Mar 12, 2014 at 01:45:15PM +0100, Elie De Brauwer wrote:
-> >> b) "determining you read an erased page". In case of the i.mx (and
-> >> thus GPMI) the BCH block can tell you three things:
-> >>  1. I read all 0xff's
-> >>  2. I read some data and nothing got corrected
-> >>  3. I read something but failed to correct it.
-> >> The third case can have two causes:
-> >>  3.a you read valid data with bitflips exceeding what the BCH could
-> >> correct
-> >>  3.b you read an erased page with bitflips.
-> >>
-> >> Obviously case 3.b is what this discussion is all about, and my quest
-> >> revolved around a means to quickly identify case '3.b'.
-> >
-> >Yes, 3.a vs. 3.b is the big problem.
-[...]
+I'm sorry for the delay. Others are in the same position of delay (e.g.,
+Lee's SPI-NOR driver), because I simply have not had the time to really
+devote this the attention it deserves, especially considering how it
+rearchitects such an important, commonly-used driver.
 
-> I think for OMAP NAND driver there needs to be some help on "1." also.
-> There is no hardware support in GPMC (Ti's controller) to find out if the
-> (read_data + read_oob) == 0xff. So you have to do this comparison in
-> software.
+Nonetheless, I will try to give your patches some more attention soon.
 
-Really? So if you read a blank (all 0xff) page that has no bitflips, you
-see an ECC error? I'm sorry, but I didn't realize that's how your
-hardware worked. That's the worst hardware ECC design I've seen so far
-:(
+>    Since you have pushed the patches for m25p80.c, i have to rebase this
+>    patch set again and again...
 
-So currently, omap2.c tries to mitigate the overhead of checking 1 (and
-3.b) by using a fixed-offset "programmed" marker, right? But this isn't
-workable for all platforms (why, exactly?) so you're trying to remove
-this marker in your patch sets, right? (Could you possibly move the
-marker somewhere else, depending on the platform? But admittedly, this
-is still fragile.)
-
-In any case, if the special marker approach fails, you're falling back
-to an approach similar to the Freescale approach (and mine), with a few
-extra tweaks.
-
-> And, thus there is performance penalty right at first-step.
-> (I'm trying to get the statistics of this soon).
-
-Yes, that would be nice.
+You mean locally? I promise you, I can handle rebasing on my reviewing
+end for small one-line conflicts like new chip IDs, so don't rebase and
+resend simply for that. Unless I find substantive things that you should
+change, I'd only expect at most one more rebase to be necessary.
 
 Brian
