@@ -1,16 +1,31 @@
-Received: from mail-ob0-x230.google.com ([2607:f8b0:4003:c01::230])
+Received: from mail-pb0-x229.google.com ([2607:f8b0:400e:c01::229])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WO35u-0003tx-GJ
- for linux-mtd@lists.infradead.org; Thu, 13 Mar 2014 10:42:35 +0000
-Received: by mail-ob0-f176.google.com with SMTP id wp18so815583obc.21
- for <linux-mtd@lists.infradead.org>; Thu, 13 Mar 2014 03:42:11 -0700 (PDT)
+ id 1WO5Ck-0007lZ-Cn
+ for linux-mtd@lists.infradead.org; Thu, 13 Mar 2014 12:57:48 +0000
+Received: by mail-pb0-f41.google.com with SMTP id jt11so1075958pbb.0
+ for <linux-mtd@lists.infradead.org>; Thu, 13 Mar 2014 05:57:20 -0700 (PDT)
+Date: Thu, 13 Mar 2014 23:57:11 +1100 (EST)
+From: Austin Boyle <boyle.austin@gmail.com>
+To: Gerlando Falauto <gerlando.falauto@keymile.com>
+Subject: Re: [PATCH] mtd: m25p80: Flash protection support for STmicro
+ chips
+In-Reply-To: <531D80AB.5010209@keymile.com>
+Message-ID: <alpine.DEB.2.02.1403132239490.4383@austin-Satellite-L510>
+References: <1357257748.31023.12.camel@pc786-ubu.GNET.GLOBAL.VPN>
+ <528D15B6.2030800@keymile.com> <530F4CDE.7010205@keymile.com>
+ <20140305081008.GP13420@norris-Latitude-E6410>
+ <20140305083153.GR13420@norris-Latitude-E6410>
+ <CADnxWiqfaaRoaL+B_WQxx38-gpSDmdFQPLN-bs-moGRECXeJxg@mail.gmail.com>
+ <531D80AB.5010209@keymile.com>
 MIME-Version: 1.0
-From: Auclair Vincent <auclair.vincent@gmail.com>
-Date: Thu, 13 Mar 2014 11:41:51 +0100
-Message-ID: <CAC2x2XHNW6HytsBipspPkQOBup27G1-WXrWG+ec43EbS_pjROA@mail.gmail.com>
-Subject: nand erratic behavior with data loss
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Cc: Marek Vasut <marex@denx.de>, Angus Clark <angus.clark@st.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Austin Boyle <boyle.austin@gmail.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,182 +35,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
 
-We've been having the following problem on two different boards with different
-uboot & linux kernel version pair. If we write on the nand and reboot, from time
-to time, the uboot env or uboot itself becomes corrupted and either the default
-env kicks in or the board doesn't boot at all. We think this comes from linux,
-but not sure how code could bypass the mtd slice code to write into
-another slice.
+Hi Gerlando,
 
-We can randomly reproduce by running bonnie++ on a ubifs slice. We are
-trying to test if the error can be reproduced via mtd directly by writing random
-data on a /dev/mtdblock?. But we get random failures on the mtdblock at
-different offsets each time.
+On Mon, 10 Mar 2014, Gerlando Falauto wrote:
+> What do you mean exactly by "it is optional"?
+> I agree with you that an explicit ioctl(MEMLOCK) is order for locking to take 
+> place. However, this seems to be the default action for the u-boot 
+> environment userspace tools. They will issue a MEMUNLOCK/MEMLOCK pair when 
+> trying to write some changes to the environment, without even checking the 
+> return value. This would of course fail silently when the feature was not 
+> implemented (as it was the case before the original patch was applied) and 
+> everything was working as expected.
+> Now linux supports this feature, and u-boot doesn't, so as soon as you write 
+> something to the flash from userspace, it will be locked and u-boot won't 
+> ever be able to write to it again.
+>
+OK I understand your point after checking the code for the u-boot tool.
 
-We've been investigating this error for several weeks and are now in a dead-end.
-Do you have any idea what could cause the nand to suddenly loose data from
-a part which is never written to ?
+> In my opinion, we're breaking something here (call it userspace API or 
+> otherwise). My suggestion would then be to make it an optional feature to be 
+> explicitly enabled on the device tree, like Heicho did for CFI flashes:
+>
+> http://lists.infradead.org/pipermail/linux-mtd/2013-January/045536.html
+>
+> Or I guess another way would be to implement the _is_locked() function, so to 
+> have the userspace tools check the locking status before unlocking, and only 
+> lock it again if was locked in the first place.
+> It wouldn't fix my issue right away (as the userspace tools don't currenctly 
+> perform this check), but at least it would provide some way out here without 
+> breaking compatibility with the existing u-boot.
+>
+I prefer this suggestion of implementing _is_locked(). It is a simple 
+change so may as well be done while fixing the lock/unlock code anyway. 
+One could say it is counterintuitive for ioctl(MEMLOCK) not to work
+without previous configuration, as in the first suggestion. If people are 
+passionate about making the feature configurable it could be done 
+separately once we've fixed the logic with _lock/_unlock and 
+adding _is_locked.
 
-We've investigated more on the following board, but exact same problem
-happens on another one.
+I will submit a change to the u-boot env tool to check the locking state 
+if supported and restore the same state after - obviously more 
+correct, regardless of the decision made here.
 
-The following script is used to stresstest the nand.
+Not ideal but in the meantime if someone needs to ensure the device is 
+unlocked they can run the flash_unlock from mtd-utils after writing u-boot
+environment variables from the userspace tool. (Call it a user space 
+work around for a user space bug?)
 
-```
-#!/bin/sh
+> Uhm, I believe it should read like this (unprotected portion is of course "n 
+> - protected portion"):
+>
+> SR BPs | Protected portion
+> ---------------------------
+>  0    | 0/n
+>  1    | 1/n
+>  2    | 2/n
+>  3    | min(4,n)/n
+>  4    | min(8,n)/n
+>  5    | min(16,n)/n
+>  6    | min(32,n)/n
+>  7    | min(64,n)/n
+>
+Yes sorry that was a typo in the previous email, should have been powers 
+of 2 as above and the patch. Also technically correct about the min macro, 
+as you saw I was just terminating the loop before that condition was met.
 
-FILE=/tmp/test
-set -e
+>> A patch with this implementation follows. Let me know what you think. I
+>> have a spreadsheet summarising the block protect bits for the STmicro
+>> devices I can share if it will help.
+>
+> Could you please share this?
+It sounds like you have already done your own research but here is what I 
+have: 
+https://docs.google.com/spreadsheet/ccc?key=0AhKBO-EQCLLkdGR1Q05qLUs2RURsMFA4V2s2X1llY3c&usp=sharing
 
-while true; do
-  flash_erase /dev/mtd4 0 256
-  dd if=/dev/urandom of=$FILE bs=1k count=32k
-  dd if=$FILE of=/dev/mtdblock3 bs=1k count=32k
-  cmp $FILE /dev/mtdblock3
-done
-'''
+Thanks for your comments on this issue and patch. I will resubmit 
+another version addressing your points soon.
 
-The following randomly error appears after a while :
-
-```
-end_request: I/O error, dev mtdblock4, sector 7664
-Buffer I/O error on device mtdblock4, logical block 958
-end_request: I/O error, dev mtdblock4, sector 7664
-Buffer I/O error on device mtdblock4, logical block 958
-cmp: /dev/mtdblock4: I/O error
-end_request: I/O error, dev mtdblock4, sector 25888
-Buffer I/O error on device mtdblock4, logical block 3236
-end_request: I/O error, dev mtdblock4, sector 25888
-Buffer I/O error on device mtdblock4, logical block 3236
-cmp: /dev/mtdblock4: I/O error
-'''
-
-Here follows mtdinfo -a
-
-````
-Count of MTD devices:           6
-Present MTD devices:            mtd0, mtd1, mtd2, mtd3, mtd4, mtd5
-Sysfs interface supported:      yes
-
-mtd0
-Name:                           uboot
-Type:                           nand
-Eraseblock size:                131072 bytes, 128.0 KiB
-Amount of eraseblocks:          16 (2097152 bytes, 2.0 MiB)
-Minimum input/output unit size: 2048 bytes
-Sub-page size:                  512 bytes
-OOB size:                       64 bytes
-Character device major/minor:   90:0
-Bad blocks are allowed:         true
-Device is writable:             false
-
-mtd1
-Name:                           kernel
-Type:                           nand
-Eraseblock size:                131072 bytes, 128.0 KiB
-Amount of eraseblocks:          48 (6291456 bytes, 6.0 MiB)
-Minimum input/output unit size: 2048 bytes
-Sub-page size:                  512 bytes
-OOB size:                       64 bytes
-Character device major/minor:   90:2
-Bad blocks are allowed:         true
-Device is writable:             false
-
-mtd2
-Name:                           rootfs
-Type:                           nand
-Eraseblock size:                131072 bytes, 128.0 KiB
-Amount of eraseblocks:          1216 (159383552 bytes, 152.0 MiB)
-Minimum input/output unit size: 2048 bytes
-Sub-page size:                  512 bytes
-OOB size:                       64 bytes
-Character device major/minor:   90:4
-Bad blocks are allowed:         true
-Device is writable:             true
-
-mtd3
-Name:                           XXX
-Type:                           nand
-Eraseblock size:                131072 bytes, 128.0 KiB
-Amount of eraseblocks:          256 (33554432 bytes, 32.0 MiB)
-Minimum input/output unit size: 2048 bytes
-Sub-page size:                  512 bytes
-OOB size:                       64 bytes
-Character device major/minor:   90:6
-Bad blocks are allowed:         true
-Device is writable:             true
-
-mtd4
-Name:                           backup
-Type:                           nand
-Eraseblock size:                131072 bytes, 128.0 KiB
-Amount of eraseblocks:          256 (33554432 bytes, 32.0 MiB)
-Minimum input/output unit size: 2048 bytes
-Sub-page size:                  512 bytes
-OOB size:                       64 bytes
-Character device major/minor:   90:8
-Bad blocks are allowed:         true
-Device is writable:             true
-
-mtd5
-Name:                           rsvd
-Type:                           nand
-Eraseblock size:                131072 bytes, 128.0 KiB
-Amount of eraseblocks:          256 (33554432 bytes, 32.0 MiB)
-Minimum input/output unit size: 2048 bytes
-Sub-page size:                  512 bytes
-OOB size:                       64 bytes
-Character device major/minor:   90:10
-Bad blocks are allowed:         true
-Device is writable:             true
-''''
-
-Ubinfo of the two ubidevices, first one is mounted read-only :
-```
-# ubinfo /dev/ubi0
-ubi0
-Volumes count:                           1
-Logical eraseblock size:                 129024 bytes, 126.0 KiB
-Total amount of logical eraseblocks:     1216 (156893184 bytes, 149.6 MiB)
-Amount of available logical eraseblocks: 0 (0 bytes)
-Maximum count of volumes                 128
-Count of bad physical eraseblocks:       0
-Count of reserved physical eraseblocks:  24
-Current maximum erase counter value:     13
-Minimum input/output unit size:          2048 bytes
-Character device major/minor:            254:0
-Present volumes:                         0
-# ubinfo /dev/ubi1
-ubi1
-Volumes count:                           1
-Logical eraseblock size:                 129024 bytes, 126.0 KiB
-Total amount of logical eraseblocks:     256 (33030144 bytes, 31.5 MiB)
-Amount of available logical eraseblocks: 20 (2580480 bytes, 2.5 MiB)
-Maximum count of volumes                 128
-Count of bad physical eraseblocks:       0
-Count of reserved physical eraseblocks:  4
-Current maximum erase counter value:     1140
-Minimum input/output unit size:          2048 bytes
-Character device major/minor:            253:0
-Present volumes:                         0
-'''
-
-Nand device is : ``NAND device: Manufacturer ID: 0x2c, Chip ID: 0xda
-(Micron MT29F2G08ABAEAH4), page size: 2048, OOB size: 64''
-Nand driver is : ``orion_nand''
-Kernel cmdline for nand is :
-``mtdparts="orion_nand:0x00200000(uboot)ro,0x600000(kernel)ro,0x09800000(rootfs),0x02000000(XXX),0x02000000(backup),0x02000000(rsvd)"''
-
-Kernel version is : ``3.4.0'' with custom patches (nand/mtd/orion code path
-is clean) as well as the following patches from mainline applied :
-cf38aca520741ccdc1365efbef5a4cab33b0a4ac
-78b495c39add820ab66ab897af9bd77a5f2e91f6
-
-CPU: Feroceon
-
-Thanks in advance
-
--- 
-Vincent Auclair        -      auclair.vincent[ at ]gmail.com
+Cheers,
+Austin.
