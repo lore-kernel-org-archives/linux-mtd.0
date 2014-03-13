@@ -1,36 +1,21 @@
-Received: from mx1.redhat.com ([209.132.183.28])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WO98n-0007Ux-Uj
- for linux-mtd@lists.infradead.org; Thu, 13 Mar 2014 17:09:59 +0000
-Subject: Re: [Cluster-devel] [PATCH] fs: push sync_filesystem() down to the
- file system's remount_fs()
-From: Steven Whitehouse <swhiteho@redhat.com>
-To: Jan Kara <jack@suse.cz>
-In-Reply-To: <20140313162319.GA504@quack.suse.cz>
-References: <20140313073936.GA14663@infradead.org>
- <1394720456-16629-1-git-send-email-tytso@mit.edu>
- <20140313162319.GA504@quack.suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 13 Mar 2014 16:28:23 +0000
-Message-ID: <1394728103.2767.32.camel@menhir>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: jfs-discussion@lists.sourceforge.net, Anders Larsen <al@alarsen.net>,
+Date: Thu, 13 Mar 2014 15:19:25 -0400
+From: Jason Cooper <jason@lakedaemon.net>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH 0/6] Armada 380 NAND support
+Message-ID: <20140313191925.GE7811@titan.lakedaemon.net>
+References: <1394637404-7651-1-git-send-email-ezequiel.garcia@free-electrons.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1394637404-7651-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ devicetree@vger.kernel.org, Mike Turquette <mturquette@linaro.org>,
+ Tawfik Bayouk <tawfik@marvell.com>, Andrew Lunn <andrew@lunn.ch>,
+ Seif Mazareeb <seif@marvell.com>, Lior Amsalem <alior@marvell.com>,
  linux-mtd@lists.infradead.org,
- Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
- Petr Vandrovec <petr@vandrovec.name>, codalist@TELEMANN.coda.cs.cmu.edu,
- linux-cifs@vger.kernel.org, linux-fsdevel@thunk.org, cluster-devel@redhat.com,
- Ext4 Developers List <linux-ext4@vger.kernel.org>,
- Evgeniy Dushistov <dushistov@mail.ru>, Kees Cook <keescook@chromium.org>,
- fuse-devel@lists.sourceforge.net, reiserfs-devel@vger.kernel.org,
- xfs@oss.sgi.com, linux-nilfs@vger.kernel.org,
- OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, linux-nfs@vger.kernel.org,
- Theodore Ts'o <tytso@mit.edu>, Artem Bityutskiy <dedekind1@gmail.com>,
- linux-ntfs-dev@lists.sourceforge.net, samba-technical@lists.samba.org,
- Adrian Hunter <adrian.hunter@intel.com>,
- linux-f2fs-devel@lists.sourceforge.net, linux-btrfs@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, Phillip Lougher <phillip@squashfs.org.uk>,
- ocfs2-devel@oss.oracle.com
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ linux-arm-kernel@lists.infradead.org,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,36 +25,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Ezequiel,
 
-On Thu, 2014-03-13 at 17:23 +0100, Jan Kara wrote:
-> On Thu 13-03-14 10:20:56, Ted Tso wrote:
-> > Previously, the no-op "mount -o mount /dev/xxx" operation when the
->                                   ^^remount
+On Wed, Mar 12, 2014 at 12:16:38PM -0300, Ezequiel Garcia wrote:
+> This patchset adds support for the NAND on Armada 380/385 SoCs.
 > 
-> > file system is already mounted read-write causes an implied,
-> > unconditional syncfs().  This seems pretty stupid, and it's certainly
-> > documented or guaraunteed to do this, nor is it particularly useful,
-> > except in the case where the file system was mounted rw and is getting
-> > remounted read-only.
-> > 
-> > However, it's possible that there might be some file systems that are
-> > actually depending on this behavior.  In most file systems, it's
-> > probably fine to only call sync_filesystem() when transitioning from
-> > read-write to read-only, and there are some file systems where this is
-> > not needed at all (for example, for a pseudo-filesystem or something
-> > like romfs).
->   Hum, I'd avoid this excercise at least for filesystem where
-> sync_filesystem() is obviously useless - proc, debugfs, pstore, devpts,
-> also always read-only filesystems such as isofs, qnx4, qnx6, befs, cramfs,
-> efs, freevxfs, romfs, squashfs. I think you can find a couple more which
-> clearly don't care about sync_filesystem() if you look a bit closer.
+> The first patch adds a new "armada-380-corediv-clock" compatible
+> string, with its proper SoC-specific structure, adding the register
+> layout for this SoC family.
 > 
->
-> 								Honza
+> The second and third patches add the devicetree changes to support
+> the Core Divider clock.
+> 
+> After adding its clock source, the fourth and fifth patches add
+> the NAND devicetree changes. The NAND controller is compatible with
+> the Armada 370 controller, so we are currently support it using the
+> same compatible string.
+> 
+> The last patch updates the binding documentation for the Core Divider
+> clock, which is missing the information about the already supported
+> Armada 375 compatible string.
+> 
+> This series is based on linux-next 20140307. I expect it will apply
+> cleanly on v3.15-rc1; if that's not the case, I'll send a rebased patchset.
+> 
+> The clock and devicetree changes are mostly independent so they
+> can be merged through the clock and mvebu tree respectively.
+> 
+> Ezequiel Garcia (6):
+>   clk: mvebu: Support Armada 380 SoC on the core divider clock
+>   ARM: mvebu: Add a 2 GHz fixed-clock on Armada 38x SoCs
+>   ARM: mvebu: Add the Core Divider clock to Armada 38x SoCs
+>   ARM: mvebu: Add support for NAND controller in Armada 38x SoC
+>   ARM: mvebu: Enable NAND controller in Armada 385-DB
+>   clk: mvebu: Update binding documentation for the core divider clock
+> 
+>  .../bindings/clock/mvebu-corediv-clock.txt         |  5 ++++-
+>  arch/arm/boot/dts/armada-385-db.dts                | 21 ++++++++++++++++++
+>  arch/arm/boot/dts/armada-38x.dtsi                  | 25 ++++++++++++++++++++++
+>  drivers/clk/mvebu/clk-corediv.c                    | 23 ++++++++++++++++++++
+>  4 files changed, 73 insertions(+), 1 deletion(-)
 
-I guess the same is true for other file systems which are mounted ro
-too. So maybe a check for MS_RDONLY before doing the sync in those
-cases?
+This clock changes looks really clean and simple.  Mike says he has time
+for one more pull.  Can you fixup the s/nand/flash/ and resend?  I'd
+like to pull this and your fix in and possibly send a pull request for
+v3.15 tomorrow.
 
-Steve.
+thx,
+
+Jason.
