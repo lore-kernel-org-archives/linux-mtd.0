@@ -1,19 +1,22 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
+Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WOSy1-0004YZ-9K
- for linux-mtd@lists.infradead.org; Fri, 14 Mar 2014 14:20:09 +0000
-Date: Fri, 14 Mar 2014 11:19:28 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] ubi-utils: Add ubiblock tool
-Message-ID: <20140314141928.GB5964@arch.cereza>
-References: <1394806381-25458-1-git-send-email-ezequiel.garcia@free-electrons.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1394806381-25458-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ id 1WOSyK-0004Zh-9n
+ for linux-mtd@lists.infradead.org; Fri, 14 Mar 2014 14:20:29 +0000
+Message-ID: <1394806804.5163.21.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] UBI: Make UBI_IOCVOLCRBLK take a parameter for future
+ usage
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Date: Fri, 14 Mar 2014 16:20:04 +0200
+In-Reply-To: <20140314135115.GA5964@arch.cereza>
+References: <1394028974-27570-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1394100605.6302.63.camel@sauron.fi.intel.com>
+ <20140314135115.GA5964@arch.cereza>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,22 +26,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mar 14, Ezequiel Garcia wrote:
-> With the addition of block device access to UBI volumes, we now
-> add a simple userspace tool to access the new ioctls.
-> 
-> Usage of this tool is as simple as it gets:
-> 
->   $ ubiblock --attach /dev/ubi0_0
-> 
-> will create a new block device /dev/ubiblock0_0, and
-> 
->   $ ubiblock --detach /dev/ubi0_0
+On Fri, 2014-03-14 at 10:51 -0300, Ezequiel Garcia wrote:
+> Artem: Would you mind pushing this to the linux-next branch as well?
+> It's an important ABI change, so I'd rather see it on v3.15.
 
-Crap, forgot to update this commit message. The new patch uses
---create and --remove as previously agreed.
+Done.
+
+> (you plan to push all this for v3.15, right?)
+
+Yes.
+
+Thanks!
 
 -- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+Best Regards,
+Artem Bityutskiy
