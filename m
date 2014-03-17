@@ -1,16 +1,19 @@
-Received: from ppp118-210-37-193.lns20.adl2.internode.on.net ([118.210.37.193]
- helo=audi.shelbyville.oz)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WOsYU-0000On-As
- for linux-mtd@lists.infradead.org; Sat, 15 Mar 2014 17:39:33 +0000
-From: Ron <ron@debian.org>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH 1/2] Fix index regression in nand_read_subpage
-Date: Sun, 16 Mar 2014 04:01:07 +1030
-Message-Id: <1394904668-22978-2-git-send-email-ron@debian.org>
-In-Reply-To: <1394904668-22978-1-git-send-email-ron@debian.org>
-References: <1394904668-22978-1-git-send-email-ron@debian.org>
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WPZlk-0006w9-RN
+ for linux-mtd@lists.infradead.org; Mon, 17 Mar 2014 15:48:05 +0000
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: <linux-mtd@lists.infradead.org>, Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCH 0/4] pxa3xx-nand: Allow to specify an ECC scheme through DT
+Date: Mon, 17 Mar 2014 12:47:03 -0300
+Message-Id: <1395071227-31909-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: Lior Amsalem <alior@marvell.com>,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Tawfik Bayouk <tawfik@marvell.com>, Seif Mazareeb <seif@marvell.com>,
+ Simon Guinot <sguinot@lacie.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Gregory Clement <gregory.clement@free-electrons.com>, Willy Tarreau <w@1wt.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,48 +23,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Commit 7351d3a5dbf42ba3299af71db3296be447bc1516 added an index variable
-as part of fixing checkpatch warnings, presumably as a tool to make some
-long lines shorter, however it only set that index in the case of there
-being no gaps in eccpos for the fragment being read.  Which means the
-later step of filling ecccode from oob_poi will use the wrong indexing
-into eccpos in that case.
+Now that we have agreed on the ECC devicetree binding, here's a patchset
+that makes pxa3xx-nand driver use it.
 
-This patch restores the behaviour that existed prior to that change.
+This work is required on platforms where the flash device reports a required
+ECC strength, but that are capable of handling a stronger one. Simon Guinot
+reported a situation where the vendor provided a bootloader configured with
+a stronger than required ECC scheme. Without this patches, such a situation
+would require a hack to make the driver use a specific ECC scheme.
 
-Signed-off-by: Ron <ron@debian.org>
----
- drivers/mtd/nand/nand_base.c |    5 ++---
- 1 files changed, 2 insertions(+), 3 deletions(-)
+(Simon: it would be great if you can confirm this allows you to remove any hacks).
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 9715a7b..be23dff 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -1170,13 +1170,14 @@ static int nand_read_subpage(struct mtd_info *mtd, struct nand_chip *chip,
- 	int data_col_addr, i, gaps = 0;
- 	int datafrag_len, eccfrag_len, aligned_len, aligned_pos;
- 	int busw = (chip->options & NAND_BUSWIDTH_16) ? 2 : 1;
--	int index = 0;
-+	int index;
- 	unsigned int max_bitflips = 0;
- 
- 	/* Column address within the page aligned to ECC size (256bytes) */
- 	start_step = data_offs / chip->ecc.size;
- 	end_step = (data_offs + readlen - 1) / chip->ecc.size;
- 	num_steps = end_step - start_step + 1;
-+	index = start_step * chip->ecc.bytes;
- 
- 	/* Data size aligned to ECC ecc.size */
- 	datafrag_len = num_steps * chip->ecc.size;
-@@ -1213,8 +1214,6 @@ static int nand_read_subpage(struct mtd_info *mtd, struct nand_chip *chip,
- 		 * Send the command to read the particular ECC bytes take care
- 		 * about buswidth alignment in read_buf.
- 		 */
--		index = start_step * chip->ecc.bytes;
--
- 		aligned_pos = eccpos[index] & ~(busw - 1);
- 		aligned_len = eccfrag_len;
- 		if (eccpos[index] & (busw - 1))
+The first two patches clean the pxa_ecc_init(), preparing for the real
+work to be done.
+
+The third patch makes use of the ECC strength and ECC step size parameters.
+To ensure full backward compatibility, the patch *tries* to use DT-specified
+ECC parameters, falling back to using the ONFI-specified settings if the
+former are missing.
+
+Also, we use the ONFI 'datasheet' ECC strength requirement, to ensure the
+DT-specified ECC strength is strong enough to meet the requirement.
+
+Finally, the last patch updates the documentation binding, with the supported
+ECC parameters.
+
+Tested on Marvell's Armada 370 RD and also Compulab's CM-X300 (PXA3xx SoC),
+which is a non-DT platform. Based on today's l2-mtd.git.
+
+Ezequiel Garcia (4):
+  mtd: nand: pxa3xx: Normalize ECC strength for ECC scheme selection
+  mtd: nand: pxa3xx: Clean pxa_ecc_init() error handling
+  mtd: nand: pxa3xx: Use ECC strength and step size devicetree binding
+  mtd: nand: pxa3xx: Add supported ECC strength and step size to the DT
+    binding
+
+ .../devicetree/bindings/mtd/pxa3xx-nand.txt        |  8 +++
+ drivers/mtd/nand/pxa3xx_nand.c                     | 78 +++++++++++++---------
+ include/linux/platform_data/mtd-nand-pxa3xx.h      |  3 +
+ 3 files changed, 59 insertions(+), 30 deletions(-)
+
 -- 
-1.7.2.5
+1.9.0
