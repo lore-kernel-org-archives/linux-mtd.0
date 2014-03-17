@@ -1,13 +1,14 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WPZlk-0006wC-R0
- for linux-mtd@lists.infradead.org; Mon, 17 Mar 2014 15:48:05 +0000
+ id 1WPZlk-0006wE-UG
+ for linux-mtd@lists.infradead.org; Mon, 17 Mar 2014 15:48:06 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>, Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH 2/4] mtd: nand: pxa3xx: Clean pxa_ecc_init() error handling
-Date: Mon, 17 Mar 2014 12:47:05 -0300
-Message-Id: <1395071227-31909-3-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH 4/4] mtd: nand: pxa3xx: Add supported ECC strength and step
+ size to the DT binding
+Date: Mon, 17 Mar 2014 12:47:07 -0300
+Message-Id: <1395071227-31909-5-git-send-email-ezequiel.garcia@free-electrons.com>
 In-Reply-To: <1395071227-31909-1-git-send-email-ezequiel.garcia@free-electrons.com>
 References: <1395071227-31909-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Lior Amsalem <alior@marvell.com>,
@@ -25,74 +26,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Let's make pxa_ecc_init() return a negative errno on error or zero
-if succesful, which is standard kernel practice. Also, report the
-selected ECC strength and step size, which is important information.
+This commit updated the devicetree binding documentation for this driver
+with the supported ECC strength and step size combinations.
 
 Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 ---
- drivers/mtd/nand/pxa3xx_nand.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 0196e33..092a17c 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -1353,7 +1353,6 @@ static int pxa_ecc_init(struct pxa3xx_nand_info *info,
- 		ecc->mode = NAND_ECC_HW;
- 		ecc->size = 512;
- 		ecc->strength = 1;
--		return 1;
- 
- 	} else if (strength == 1 && page_size == 512) {
- 		info->chunk_size = 512;
-@@ -1362,7 +1361,6 @@ static int pxa_ecc_init(struct pxa3xx_nand_info *info,
- 		ecc->mode = NAND_ECC_HW;
- 		ecc->size = 512;
- 		ecc->strength = 1;
--		return 1;
- 
- 	/*
- 	 * Required ECC: 4-bit correction per 512 bytes
-@@ -1388,7 +1386,6 @@ static int pxa_ecc_init(struct pxa3xx_nand_info *info,
- 		ecc->size = info->chunk_size;
- 		ecc->layout = &ecc_layout_4KB_bch4bit;
- 		ecc->strength = 16;
--		return 1;
- 
- 	/*
- 	 * Required ECC: 8-bit correction per 512 bytes
-@@ -1403,8 +1400,15 @@ static int pxa_ecc_init(struct pxa3xx_nand_info *info,
- 		ecc->size = info->chunk_size;
- 		ecc->layout = &ecc_layout_4KB_bch8bit;
- 		ecc->strength = 16;
--		return 1;
-+	} else {
-+		dev_err(&info->pdev->dev,
-+			"ECC strength %d at page size %d is not supported\n",
-+			strength, page_size);
-+		return -ENODEV;
- 	}
+diff --git a/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt b/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
+index 86e0a56..650c0dc 100644
+--- a/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
+@@ -17,6 +17,14 @@ Optional properties:
+  - num-cs:			Number of chipselect lines to usw
+  - nand-on-flash-bbt: 		boolean to enable on flash bbt option if
+ 				not present false
++ - nand-ecc-strength:           number of bits to correct per ECC step
++ - nand-ecc-step-size:          number of data bytes covered by a single ECC step
 +
-+	dev_info(&info->pdev->dev, "ECC strength %d, ECC step size %d\n",
-+		 ecc->strength, ecc->size);
- 	return 0;
- }
++The following ECC strength and step size are currently supported:
++
++ - nand-ecc-strength = <1>, nand-ecc-step-size = <512>   (aka Hamming)
++ - nand-ecc-strength = <16>, nand-ecc-step-size = <2048> (aka BCH-4)
++ - nand-ecc-strength = <16>, nand-ecc-step-size = <1024> (aka BCH-8)
  
-@@ -1526,12 +1530,8 @@ KEEP_CONFIG:
+ Example:
  
- 	ret = pxa_ecc_init(info, &chip->ecc, (ecc_strength * ecc_step) / 512,
- 			   mtd->writesize);
--	if (!ret) {
--		dev_err(&info->pdev->dev,
--			"ECC strength %d at page size %d is not supported\n",
--			ecc_strength, mtd->writesize);
--		return -ENODEV;
--	}
-+	if (ret)
-+		return ret;
- 
- 	/* calculate addressing information */
- 	if (mtd->writesize >= 2048)
 -- 
 1.9.0
