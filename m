@@ -1,28 +1,33 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
+Received: from mail-pb0-x230.google.com ([2607:f8b0:400e:c01::230])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WPbgb-0001pk-Hs
- for linux-mtd@lists.infradead.org; Mon, 17 Mar 2014 17:50:54 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Brian Norris <computersforpeace@gmail.com>, Huang Shijie
- <b32955@freescale.com>
-Subject: RE: [PATCH 1/2] mtd: nand: add erased-page bitflip correction
-Date: Mon, 17 Mar 2014 17:50:22 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EAB3C6C@DBDE04.ent.ti.com>
+ id 1WPcZy-0003Zg-3p
+ for linux-mtd@lists.infradead.org; Mon, 17 Mar 2014 18:48:06 +0000
+Received: by mail-pb0-f48.google.com with SMTP id md12so6049726pbc.7
+ for <linux-mtd@lists.infradead.org>; Mon, 17 Mar 2014 11:47:44 -0700 (PDT)
+Date: Mon, 17 Mar 2014 11:47:41 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: "Gupta, Pekon" <pekon@ti.com>
+Subject: Re: [PATCH 1/2] mtd: nand: add erased-page bitflip correction
+Message-ID: <20140317184741.GB3834@ld-irv-0074>
 References: <1394529112-9659-1-git-send-email-computersforpeace@gmail.com>
- <20140312080605.GB30808@shlinux2.ap.freescale.net>
- <20140313045519.GP31517@norris-Latitude-E6410>
- <20140313080426.GA19311@shlinux2.ap.freescale.net>,
- <20140317164635.GX31517@norris-Latitude-E6410>
-In-Reply-To: <20140317164635.GX31517@norris-Latitude-E6410>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ <20980858CB6D3A4BAE95CA194937D5E73EAB1679@DBDE04.ent.ti.com>
+ <531FF16F.7060808@gmail.com>
+ <CAGWqfijgOL4Qk4axrPo=Z2vcq_upBCM-jQCm-wkSs12RqTeR8Q@mail.gmail.com>
+ <532005C6.3090805@gmail.com>
+ <CAGWqfigu3GFPS3Ykap4_hjkMtEUCv8bXGOt2h7GGQ=Sgip=DdQ@mail.gmail.com>
+ <20140313052219.GQ31517@norris-Latitude-E6410>
+ <20980858CB6D3A4BAE95CA194937D5E73EAB2F71@DBDE04.ent.ti.com>
+ <20140313062845.GT31517@norris-Latitude-E6410>
+ <20980858CB6D3A4BAE95CA194937D5E73EAB2FD2@DBDE04.ent.ti.com>
 MIME-Version: 1.0
-Cc: HOUR
- Frederic <frederic.hour@safran-engineering.com>, Kent Li <kent.li@radisys.com>,
- Elie De Brauwer <eliedebrauwer@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Artem
- Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EAB2FD2@DBDE04.ent.ti.com>
+Cc: Kent Li <kent.li@radisys.com>, Elie De Brauwer <eliedebrauwer@gmail.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ HOUR Frederic <frederic.hour@safran-engineering.com>,
+ Huang Shijie <b32955@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,37 +37,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> On Wed, Mar 12, 2014 at 09:55:19PM -0700, Brian Norris wrote:=0A=
-> > On Wed, Mar 12, 2014 at 04:06:07PM +0800, Huang Shijie wrote:=0A=
-> > > On Tue, Mar 11, 2014 at 02:11:51AM -0700, Brian Norris wrote:=0A=
-> > > > +       /* Check each ECC step individually */=0A=
-> > > > +       for (i =3D 0; i < chip->ecc.steps; i++) {=0A=
-> >=0A=
-> > [...]=0A=
-> >=0A=
-> > > The gpmi uses a NAND layout like this:=0A=
-> > >=0A=
-> > >    *    +---+----------+-+----------+-+----------+-+----------+-+=0A=
-> > >    *    | M |   data   |E|   data   |E|   data   |E|   data   |E|=0A=
-> > >    *    +---+----------+-+----------+-+----------+-+----------+-+=0A=
-> > >=0A=
-> > >         M : The metadata, which is 10 by default.=0A=
-> > >   E : The ECC parity for "data" or "data + M".=0A=
-> > >=0A=
-> > > If you want to count each sector, it makes the code very complicated.=
- :(=0A=
-> >=0A=
-> > I see. That does make things complicated.=0A=
-> >=0A=
-=0A=
-I have implemented another version of Brian's patch [1], which eliminates=
-=0A=
-need for chip->ecc.read_page_raw(). Its tested on OMAP NAND driver,=0A=
-and does not degrade too much performance either. Please see if it works=0A=
-well with GPMI and pxa3xx-nand controllers too.=0A=
-=0A=
-[1] [RFC PATCH v2] mtd: nand: add erased-page bitflip correction=0A=
-http://lists.infradead.org/pipermail/linux-mtd/2014-March/052625.html=0A=
-=0A=
-=0A=
-with regards, pekon=
+On Thu, Mar 13, 2014 at 07:01:13AM +0000, Pekon Gupta wrote:
+> >From: Brian Norris [mailto:computersforpeace@gmail.com]
+> >Really? So if you read a blank (all 0xff) page that has no bitflips, you
+> >see an ECC error? I'm sorry, but I didn't realize that's how your
+> >hardware worked. 
+> >
+> > That's the worst hardware ECC design I've seen so far
+> >:(
+> >
+> - GPMC and ELM hardware engines were design during OMAP3 and earlier
+>   time-frames. When only 1-bit Hamming was enough, and there were
+>   hardly any bit-flips seen on erased-pages :-).
+> - And I don't think h/w IP designers have too much visibility on actual usage
+>   and software framework of these engines. So this remained un-changed.
+> However, I do have internally raised this issue of getting a feature added
+> in hardware to check for all(0xff). But still we have to support legacy devices.
+
+I would think even a hardware designer could figure out that flagging an
+ECC error every time you read an all-0xff erased page would be a bad
+idea. And that has nothing to do with bit error rates.
+
+Brian
