@@ -1,13 +1,13 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
+Received: from bear.ext.ti.com ([192.94.94.41])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WPu3D-0002Nn-N4
- for linux-mtd@lists.infradead.org; Tue, 18 Mar 2014 13:27:29 +0000
+ id 1WPu3E-0002NX-TN
+ for linux-mtd@lists.infradead.org; Tue, 18 Mar 2014 13:27:31 +0000
 From: Pekon Gupta <pekon@ti.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v9 5/5] mtd: nand: omap: ecc.correct: omap_elm_correct_data:
- fix programmed-page bit-flip correction logic
-Date: Tue, 18 Mar 2014 18:56:46 +0530
-Message-ID: <1395149206-23713-6-git-send-email-pekon@ti.com>
+Subject: [PATCH v9 2/5] mtd: nand: omap: ecc.correct: omap_elm_correct_data:
+ rename ambiguous variable 'eccsize' and 'ecc_vector_size'
+Date: Tue, 18 Mar 2014 18:56:43 +0530
+Message-ID: <1395149206-23713-3-git-send-email-pekon@ti.com>
 In-Reply-To: <1395149206-23713-1-git-send-email-pekon@ti.com>
 References: <1395149206-23713-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
@@ -25,95 +25,117 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch updates following checks when bit-flips are detected by ELM:
-
- - Do not evaluate bit-flips when un-correctable bit-flips is reported by ELM,
-   because as per [1] when ELM reports an un-correctable bit-flips,
-   'number of error' field in its ELM_LOCATION_STATUS register is also invalid.
-
- - Return with error-code '-EBADMSG' on detection of un-correctable bit-flip.
-
- - Return with error-code '-EBADMSG' when bit-flips position is outside current
-   Sector and OOB area.
-
-[1] ELM IP spec Table-25 ELM_LOCATION_STATUS Register.
-    ELM_LOCATION_STATUS[8] = ECC_CORRECTABLE: Error location process exit status
-        0x0: ECC error location process failed.
-             Number of errors and error locations are invalid.
-        0x1: all errors were successfully located.
-             Number of errors and error locations are valid.
+renaming following variables as they cause confusion due to resemblence to
+another similar field in 'struct nand_ecc_ctrl' (nand_chip->ecc.size).
+renaming: ecc_vector_size --> ecc->bytes	(info->nand.ecc.bytes)
+renaming: eccsize         --> actual_eccbytes	(info->nand.ecc.bytes - 1) for BCH4 and BCH8
 
 Tested-by: Stefan Roese <sr@denx.de>
 Signed-off-by: Pekon Gupta <pekon@ti.com>
 ---
- drivers/mtd/nand/omap2.c | 29 +++++++++++++++++++----------
- 1 file changed, 19 insertions(+), 10 deletions(-)
+ drivers/mtd/nand/omap2.c | 39 +++++++++++++++++++++++----------------
+ 1 file changed, 23 insertions(+), 16 deletions(-)
 
 diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 39e3f50..4f067f0 100644
+index 403afa7..4bf2f76d 100644
 --- a/drivers/mtd/nand/omap2.c
 +++ b/drivers/mtd/nand/omap2.c
-@@ -1353,6 +1353,7 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
- 	int bitflip_count;
+@@ -1359,9 +1359,10 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
+ {
+ 	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
+ 			mtd);
++	struct nand_ecc_ctrl *ecc = &info->nand.ecc;
+ 	int eccsteps = info->nand.ecc.steps;
+ 	int i , j, stat = 0;
+-	int eccsize, eccflag, ecc_vector_size;
++	int eccflag, actual_eccbytes;
+ 	struct elm_errorvec err_vec[ERROR_VECTOR_MAX];
+ 	u_char *ecc_vec = calc_ecc;
+ 	u_char *spare_ecc = read_ecc;
+@@ -1369,6 +1370,20 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
+ 	enum bch_ecc type;
  	bool is_error_reported = false;
- 	u32 bit_pos, byte_pos, error_max, pos;
-+	int err;
  
- 	switch (info->ecc_opt) {
- 	case OMAP_ECC_BCH4_CODE_HW:
-@@ -1434,8 +1435,12 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
- 	/* Decode BCH error using ELM module */
- 	elm_decode_bch_error_page(info->elm_dev, ecc_vec, err_vec);
++	switch (info->ecc_opt) {
++	case OMAP_ECC_BCH4_CODE_HW:
++		/* omit  7th ECC byte reserved for ROM code compatibility */
++		actual_eccbytes = ecc->bytes - 1;
++		break;
++	case OMAP_ECC_BCH8_CODE_HW:
++		/* omit 14th ECC byte reserved for ROM code compatibility */
++		actual_eccbytes = ecc->bytes - 1;
++		break;
++	default:
++		pr_err("invalid driver configuration\n");
++		return -EINVAL;
++	}
++
+ 	/* Initialize elm error vector to zero */
+ 	memset(err_vec, 0, sizeof(err_vec));
  
-+	err = 0;
- 	for (i = 0; i < eccsteps; i++) {
--		if (err_vec[i].error_reported) {
-+		if (err_vec[i].error_uncorrectable) {
-+			pr_err("nand: uncorrectable bit-flips found\n");
-+			err = -EBADMSG;
-+		} else if (err_vec[i].error_reported) {
- 			for (j = 0; j < err_vec[i].error_count; j++) {
- 				switch (info->ecc_opt) {
- 				case OMAP_ECC_BCH4_CODE_HW:
-@@ -1457,13 +1462,22 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
- 				byte_pos = (error_max - pos - 1) / 8;
- 
- 				if (pos < error_max) {
--					if (byte_pos < 512)
-+					if (byte_pos < 512) {
-+						pr_debug("bitflip@dat[%d]=%x\n",
-+						     byte_pos, data[byte_pos]);
- 						data[byte_pos] ^= 1 << bit_pos;
--					else
-+					} else {
-+						pr_debug("bitflip@oob[%d]=%x\n",
-+							(byte_pos - 512),
-+						     spare_ecc[byte_pos - 512]);
- 						spare_ecc[byte_pos - 512] ^=
- 							1 << bit_pos;
-+					}
-+				} else {
-+					pr_err("invalid bit-flip @ %d:%d\n",
-+							 byte_pos, bit_pos);
-+					err = -EBADMSG;
- 				}
--				/* else, not interested to correct ecc */
- 			}
- 		}
- 
-@@ -1475,12 +1489,7 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
- 		spare_ecc += ecc->bytes;
+@@ -1380,14 +1395,6 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
+ 		erased_ecc_vec = bch4_vector;
  	}
  
--	for (i = 0; i < eccsteps; i++)
--		/* Return error if uncorrectable error present */
--		if (err_vec[i].error_uncorrectable)
--			return -EINVAL;
+-	ecc_vector_size = info->nand.ecc.bytes;
 -
--	return stat;
-+	return (err) ? err : stat;
- }
+-	/*
+-	 * Remove extra byte padding for BCH8 RBL
+-	 * compatibility and erased page handling
+-	 */
+-	eccsize = ecc_vector_size - 1;
+-
+ 	for (i = 0; i < eccsteps ; i++) {
+ 		eccflag = 0;	/* initialize eccflag */
  
- /**
+@@ -1395,8 +1402,7 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
+ 		 * Check any error reported,
+ 		 * In case of error, non zero ecc reported.
+ 		 */
+-
+-		for (j = 0; (j < eccsize); j++) {
++		for (j = 0; j < actual_eccbytes; j++) {
+ 			if (calc_ecc[j] != 0) {
+ 				eccflag = 1; /* non zero ecc, error present */
+ 				break;
+@@ -1421,7 +1427,7 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
+ 			 * zeros are more than threshold erased page, either
+ 			 * case page reported as uncorrectable.
+ 			 */
+-			if (hweight8(~read_ecc[eccsize]) >= threshold) {
++			if (hweight8(~read_ecc[actual_eccbytes]) >= threshold) {
+ 				/*
+ 				 * Update elm error vector as
+ 				 * data area is programmed
+@@ -1433,7 +1439,8 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
+ 				int bitflip_count;
+ 				u_char *buf = &data[info->nand.ecc.size * i];
+ 
+-				if (memcmp(calc_ecc, erased_ecc_vec, eccsize)) {
++				if (memcmp(calc_ecc, erased_ecc_vec,
++							 actual_eccbytes)) {
+ 					bitflip_count = erased_sector_bitflips(
+ 							buf, read_ecc, info);
+ 
+@@ -1446,8 +1453,8 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
+ 		}
+ 
+ 		/* Update the ecc vector */
+-		calc_ecc += ecc_vector_size;
+-		read_ecc += ecc_vector_size;
++		calc_ecc += ecc->bytes;
++		read_ecc += ecc->bytes;
+ 	}
+ 
+ 	/* Check if any error reported */
+@@ -1496,7 +1503,7 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
+ 
+ 		/* Update page data with sector size */
+ 		data += info->nand.ecc.size;
+-		spare_ecc += ecc_vector_size;
++		spare_ecc += ecc->bytes;
+ 	}
+ 
+ 	for (i = 0; i < eccsteps; i++)
 -- 
 1.8.5.1.163.gd7aced9
