@@ -1,21 +1,15 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
+Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WPu3G-0002Ni-Fu
- for linux-mtd@lists.infradead.org; Tue, 18 Mar 2014 13:27:33 +0000
-From: Pekon Gupta <pekon@ti.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v9 4/5] mtd: nand: omap: ecc.correct: omap_elm_correct_data:
- cleanup for future enhancements
-Date: Tue, 18 Mar 2014 18:56:45 +0530
-Message-ID: <1395149206-23713-5-git-send-email-pekon@ti.com>
-In-Reply-To: <1395149206-23713-1-git-send-email-pekon@ti.com>
-References: <1395149206-23713-1-git-send-email-pekon@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Stefan Roese <sr@denx.de>, linux-mtd <linux-mtd@lists.infradead.org>,
- Pekon Gupta <pekon@ti.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+ id 1WQDyb-0006GE-Fn
+ for linux-mtd@lists.infradead.org; Wed, 19 Mar 2014 10:44:03 +0000
+From: Richard Weinberger <richard@nod.at>
+To: dedekind1@gmail.com
+Subject: [PATCH 1/2] UBI: block: Remove __initdata from ubiblock_param_ops
+Date: Wed, 19 Mar 2014 11:43:22 +0100
+Message-Id: <1395225803-25037-1-git-send-email-richard@nod.at>
+Cc: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, ezequiel.garcia@free-electrons.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,105 +19,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Current omap_elm_correct_data() code is not scalable for future ecc-schemes
-due to presence of tweaks and hard-coded macros for BCH4_ECC and BCH8_ECC
-ecc-schemes at multiple places.
+You cannot mark these parameters as __initdata.
+Otherwise the data is gone upon module exit.
 
-This patch:
- - replaces 'ecc_opt' with '(info->nand.ecc.strength == BCH8_MAX_ERROR)
-   used to differentiate between BCH8_HW and BCH4_SW
- - replaces macros (defining magic number for specific ecc-scheme) with
-   generic variables
- - removes dependency on macros defined in elm.h (like BCHx_ECC_OOB_BYTES)
+Fixes:
+[  172.045465] BUG: unable to handle kernel paging request at ffffffffa001db38
+[  172.046020] IP: [<ffffffff81067aa4>] destroy_params+0x24/0x50
 
-Tested-by: Stefan Roese <sr@denx.de>
-Signed-off-by: Pekon Gupta <pekon@ti.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/nand/omap2.c | 38 +++++++++++++-------------------------
- 1 file changed, 13 insertions(+), 25 deletions(-)
+ drivers/mtd/ubi/block.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index a6c979f..39e3f50 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -118,14 +118,9 @@
+diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
+index 69a74fd..7ff473c 100644
+--- a/drivers/mtd/ubi/block.c
++++ b/drivers/mtd/ubi/block.c
+@@ -156,7 +156,7 @@ static int __init ubiblock_set_param(const char *val,
+ 	return 0;
+ }
  
- #define OMAP24XX_DMA_GPMC		4
- 
--#define BCH8_MAX_ERROR		8	/* upto 8 bit correctable */
--#define BCH4_MAX_ERROR		4	/* upto 4 bit correctable */
--
- #define SECTOR_BYTES		512
- /* 4 bit padding to make byte aligned, 56 = 52 + 4 */
- #define BCH4_BIT_PAD		4
--#define BCH8_ECC_MAX		((SECTOR_BYTES + BCH8_ECC_OOB_BYTES) * 8)
--#define BCH4_ECC_MAX		((SECTOR_BYTES + BCH4_ECC_OOB_BYTES) * 8)
- 
- /* GPMC ecc engine settings for read */
- #define BCH_WRAPMODE_1		1	/* BCH wrap mode 1 */
-@@ -1356,8 +1351,8 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
- 	u_char *erased_ecc_vec;
- 	u_char *buf;
- 	int bitflip_count;
--	enum bch_ecc type;
- 	bool is_error_reported = false;
-+	u32 bit_pos, byte_pos, error_max, pos;
- 
- 	switch (info->ecc_opt) {
- 	case OMAP_ECC_BCH4_CODE_HW:
-@@ -1378,12 +1373,6 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
- 	/* Initialize elm error vector to zero */
- 	memset(err_vec, 0, sizeof(err_vec));
- 
--	if (info->nand.ecc.strength == BCH8_MAX_ERROR) {
--		type = BCH8_ECC;
--	} else {
--		type = BCH4_ECC;
--	}
--
- 	for (i = 0; i < eccsteps ; i++) {
- 		eccflag = 0;	/* initialize eccflag */
- 
-@@ -1448,20 +1437,19 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
- 	for (i = 0; i < eccsteps; i++) {
- 		if (err_vec[i].error_reported) {
- 			for (j = 0; j < err_vec[i].error_count; j++) {
--				u32 bit_pos, byte_pos, error_max, pos;
--
--				if (type == BCH8_ECC)
--					error_max = BCH8_ECC_MAX;
--				else
--					error_max = BCH4_ECC_MAX;
--
--				if (info->nand.ecc.strength == BCH8_MAX_ERROR)
--					pos = err_vec[i].error_loc[j];
--				else
--					/* Add 4 to take care 4 bit padding */
-+				switch (info->ecc_opt) {
-+				case OMAP_ECC_BCH4_CODE_HW:
-+					/* Add 4 bits to take care of padding */
- 					pos = err_vec[i].error_loc[j] +
- 						BCH4_BIT_PAD;
--
-+					break;
-+				case OMAP_ECC_BCH8_CODE_HW:
-+					pos = err_vec[i].error_loc[j];
-+					break;
-+				default:
-+					return -EINVAL;
-+				}
-+				error_max = (ecc->size + actual_eccbytes) * 8;
- 				/* Calculate bit position of error */
- 				bit_pos = pos % 8;
- 
-@@ -1483,7 +1471,7 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
- 		stat += err_vec[i].error_count;
- 
- 		/* Update page data with sector size */
--		data += info->nand.ecc.size;
-+		data += ecc->size;
- 		spare_ecc += ecc->bytes;
- 	}
- 
+-static struct kernel_param_ops ubiblock_param_ops __initdata = {
++static struct kernel_param_ops ubiblock_param_ops = {
+ 	.set    = ubiblock_set_param,
+ };
+ module_param_cb(block, &ubiblock_param_ops, NULL, 0);
 -- 
-1.8.5.1.163.gd7aced9
+1.8.1.4
