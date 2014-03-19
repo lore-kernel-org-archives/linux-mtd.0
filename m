@@ -1,21 +1,15 @@
 Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQGXE-0002x5-9h
- for linux-mtd@lists.infradead.org; Wed, 19 Mar 2014 13:27:56 +0000
-Message-ID: <53299AF5.5020607@nod.at>
-Date: Wed, 19 Mar 2014 14:26:13 +0100
+ id 1WQHwm-000608-1v
+ for linux-mtd@lists.infradead.org; Wed, 19 Mar 2014 14:58:25 +0000
 From: Richard Weinberger <richard@nod.at>
-MIME-Version: 1.0
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH 2/2] UBI: block: Implement kernel_param_ops->get()
-References: <1395225803-25037-1-git-send-email-richard@nod.at>
- <1395225803-25037-2-git-send-email-richard@nod.at>
- <20140319131543.GA529@arch.cereza>
-In-Reply-To: <20140319131543.GA529@arch.cereza>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-kernel@vger.kernel.org, dedekind1@gmail.com
+To: dedekind1@gmail.com
+Subject: [PATCH] UBI: block: Avoid disk size integer overflow
+Date: Wed, 19 Mar 2014 15:57:54 +0100
+Message-Id: <1395241074-15506-1-git-send-email-richard@nod.at>
+Cc: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, ezequiel.garcia@free-electrons.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,39 +19,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 19.03.2014 14:15, schrieb Ezequiel Garcia:
-> Hi Richard,
-> 
-> On Mar 19, Richard Weinberger wrote:
->> The ->get() function is not optional.
->>
-> 
-> [..]
->>  static struct kernel_param_ops ubiblock_param_ops = {
->>  	.set    = ubiblock_set_param,
->> +	.get	= param_get_charp,
->>  };
->>  module_param_cb(block, &ubiblock_param_ops, NULL, 0);
-> 
-> The comment for the function says they are both optional:
-> 
-> /**
->  * module_param_cb - general callback for a module/cmdline parameter
->  * @name: a valid C identifier which is the parameter name.
->  * @ops: the set & get operations for this parameter.
->  * @perm: visibility in sysfs.
->  *
->  * The ops can have NULL set or get functions.
->  */
-> 
-> This has no visibility in sysfs, so I can't see how having a NULL
-> get() is a problem. What's the issue you're trying to fix here?
-> 
-> Maybe I'm missing something?
-> 
+This patch fixes the issue that on very large UBI volumes
+UBI block does not work correctly.
 
-BTW: I think we can omit ->get() as some other drivers also only have ->set().
-Who want the credit for a documentation fix? ;)
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ drivers/mtd/ubi/block.c | 19 +++++++++++++++----
+ 1 file changed, 15 insertions(+), 4 deletions(-)
 
-Thanks,
-//richard
+diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
+index 9ef7df7..8887d4b 100644
+--- a/drivers/mtd/ubi/block.c
++++ b/drivers/mtd/ubi/block.c
+@@ -379,7 +379,7 @@ int ubiblock_create(struct ubi_volume_info *vi)
+ {
+ 	struct ubiblock *dev;
+ 	struct gendisk *gd;
+-	int disk_capacity;
++	u64 disk_capacity;
+ 	int ret;
+ 
+ 	/* Check that the volume isn't already handled */
+@@ -413,7 +413,12 @@ int ubiblock_create(struct ubi_volume_info *vi)
+ 	gd->first_minor = dev->ubi_num * UBI_MAX_VOLUMES + dev->vol_id;
+ 	gd->private_data = dev;
+ 	sprintf(gd->disk_name, "ubiblock%d_%d", dev->ubi_num, dev->vol_id);
+-	disk_capacity = (vi->size * vi->usable_leb_size) >> 9;
++	disk_capacity = ((u64)vi->size * vi->usable_leb_size) >> 9;
++	if ((sector_t)disk_capacity != disk_capacity) {
++		ubi_err("block: disk capacity %llu too large", disk_capacity);
++		ret = -E2BIG;
++		goto out_free_dev;
++	}
+ 	set_capacity(gd, disk_capacity);
+ 	dev->gd = gd;
+ 
+@@ -500,7 +505,7 @@ int ubiblock_remove(struct ubi_volume_info *vi)
+ static void ubiblock_resize(struct ubi_volume_info *vi)
+ {
+ 	struct ubiblock *dev;
+-	int disk_capacity;
++	u64 disk_capacity;
+ 
+ 	/*
+ 	 * Need to lock the device list until we stop using the device,
+@@ -515,7 +520,13 @@ static void ubiblock_resize(struct ubi_volume_info *vi)
+ 	}
+ 
+ 	mutex_lock(&dev->dev_mutex);
+-	disk_capacity = (vi->size * vi->usable_leb_size) >> 9;
++	disk_capacity = ((u64)vi->size * vi->usable_leb_size) >> 9;
++	if ((sector_t)disk_capacity != disk_capacity) {
++		ubi_err("block: disk capacity %llu too large", disk_capacity);
++		mutex_unlock(&dev->dev_mutex);
++		mutex_unlock(&devices_mutex);
++		return;
++	}
+ 	set_capacity(dev->gd, disk_capacity);
+ 	ubi_msg("%s resized to %d LEBs", dev->gd->disk_name, vi->size);
+ 	mutex_unlock(&dev->dev_mutex);
+-- 
+1.8.1.4
