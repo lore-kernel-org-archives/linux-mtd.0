@@ -1,19 +1,14 @@
-Received: from mail-lb0-x22b.google.com ([2a00:1450:4010:c04::22b])
+Received: from aserp1040.oracle.com ([141.146.126.69])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQIa6-0007CA-Aw
- for linux-mtd@lists.infradead.org; Wed, 19 Mar 2014 15:39:03 +0000
-Received: by mail-lb0-f171.google.com with SMTP id w7so6044430lbi.16
- for <linux-mtd@lists.infradead.org>; Wed, 19 Mar 2014 08:38:39 -0700 (PDT)
-MIME-Version: 1.0
-Sender: pladow@gmail.com
-In-Reply-To: <CAN8Q1Ed_o3xFK_xag76CbiSWNuM-rnSbGSFc5uZ7KjcA5kOXqQ@mail.gmail.com>
-References: <CAN8Q1Ed_o3xFK_xag76CbiSWNuM-rnSbGSFc5uZ7KjcA5kOXqQ@mail.gmail.com>
-Date: Wed, 19 Mar 2014 08:38:36 -0700
-Message-ID: <CAN8Q1Efhzi30St8N_s2Yrj8cY40B8HUMg3S_gEOyY+9LxgeRTA@mail.gmail.com>
-Subject: Re: ECC Errors/Sub-page Read Failures
-From: Peter LaDow <petela@gocougs.wsu.edu>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+ id 1WQOvB-0003IP-Fy
+ for linux-mtd@lists.infradead.org; Wed, 19 Mar 2014 22:25:14 +0000
+From: Sasha Levin <sasha.levin@oracle.com>
+To: shc_work@mail.ru, computersforpeace@gmail.com
+Subject: [PATCH] mtd: diskonchip: mem resource name is not optional
+Date: Wed, 19 Mar 2014 18:24:37 -0400
+Message-Id: <1395267877-15223-1-git-send-email-sasha.levin@oracle.com>
+Cc: Sasha Levin <sasha.levin@oracle.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,21 +18,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Feb 28, 2014 at 7:27 PM, Peter LaDow <petela@gocougs.wsu.edu> wrote:
-> We have been using a Samsung NAND part for several years (Samsung
-> K9WAG08U1D) without any problems.  We transitioned from 2.6 to the 3.0
-> kernel with a few tweaks to our NAND driver without any hiccups.  (Or
-> NAND controller is a custom part implemented in an FPGA with our own
-> NAND driver in the kernel).
->
-> However, Samsung has announced the end of life for the part.  However,
-> they have a revision (K9WAG08U1E) they claim is a drop-in replacement.
->  But so far we are having trouble qualifying the part because of ECC
-> errors.  We made no changes to our kernel, driver, or NAND controller.
->  The only change is the physical part.
+Passing a name to request_mem_region() isn't optional and can't just
+be NULL. Passing NULL causes a NULL ptr deref later in the boot
+process.
 
-For those that are interested, we tracked down the issue.  The die rev
-changed the number of partial programs per page from 4 to 1.  Hence
-the additional sub-page writes corrupted the data.
+Signed-off-by: Sasha Levin <sasha.levin@oracle.com>
+---
+ drivers/mtd/nand/diskonchip.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Pete
+diff --git a/drivers/mtd/nand/diskonchip.c b/drivers/mtd/nand/diskonchip.c
+index b9b4db6..f68a7bc 100644
+--- a/drivers/mtd/nand/diskonchip.c
++++ b/drivers/mtd/nand/diskonchip.c
+@@ -1439,7 +1439,7 @@ static int __init doc_probe(unsigned long physadr)
+ 	int reg, len, numchips;
+ 	int ret = 0;
+ 
+-	if (!request_mem_region(physadr, DOC_IOREMAP_LEN, NULL))
++	if (!request_mem_region(physadr, DOC_IOREMAP_LEN, "DiskOnChip"))
+ 		return -EBUSY;
+ 	virtadr = ioremap(physadr, DOC_IOREMAP_LEN);
+ 	if (!virtadr) {
+-- 
+1.7.2.5
