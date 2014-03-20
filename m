@@ -1,15 +1,13 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
+Received: from devils.ext.ti.com ([198.47.26.153])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQctB-0000aM-Nj
- for linux-mtd@lists.infradead.org; Thu, 20 Mar 2014 13:20:07 +0000
+ id 1WQctb-0000dr-RJ
+ for linux-mtd@lists.infradead.org; Thu, 20 Mar 2014 13:20:32 +0000
 From: Pekon Gupta <pekon@ti.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v8 3/4] mtd: devices: elm: configure parallel channels based
- on ecc_steps
-Date: Thu, 20 Mar 2014 18:48:36 +0530
-Message-ID: <1395321517-4490-4-git-send-email-pekon@ti.com>
-In-Reply-To: <1395321517-4490-1-git-send-email-pekon@ti.com>
-References: <1395321517-4490-1-git-send-email-pekon@ti.com>
+Subject: [PATCH] mtd: nand: omap: ecc.correct: omap_elm_correct_data: return
+ number of bit-flips detected in erased-page
+Date: Thu, 20 Mar 2014 18:49:58 +0530
+Message-ID: <1395321598-4565-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: Stefan Roese <sr@denx.de>, linux-mtd <linux-mtd@lists.infradead.org>,
@@ -24,63 +22,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ELM hardware can process up to maximum of 8 hannels in parallel for
-ECC error detection. Currently the number of channels getting configured for
-processing is static determined by macro ERROR_VECTOR_MAX. However, the actual
-number of channels that need to be processed is the ECC step number.
-This patch just avoids configuring extra unused channels.
+fixes: commit 62116e5171e00f85a8d53f76e45b84423c89ff34
+       mtd: nand: omap2: Support for hardware BCH error correction.
 
+In current omap_elm_correct_data(), an erased-page is also identified based on
+	'bitflip_count <= ecc.strength' per ecc-step (data+oob)
+But bitflip_count is ignored, unless errors are detected in other ecc.steps.
+------------------
+  if (bitflip_count) {
+        /*
+         * number of 0-bits within ECC limits
+         * So this may be an erased-page
+         */
+        stat += bitflip_count;
+  }
+  [...]
+  /* Check if any error reported */
+  if (!is_error_reported)
+        return 0;
+------------------
+
+This patch returns bitflip_count found in erased-page to chip->ecc.read_page()
+
+Reported-by: Brian Norris <computersforpeace@gmail.com>
 Signed-off-by: Pekon Gupta <pekon@ti.com>
 ---
- drivers/mtd/devices/elm.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/omap2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/devices/elm.c b/drivers/mtd/devices/elm.c
-index 4fbfaf6..26df41f 100644
---- a/drivers/mtd/devices/elm.c
-+++ b/drivers/mtd/devices/elm.c
-@@ -84,6 +84,7 @@ struct elm_info {
- 	struct list_head list;
- 	enum bch_ecc bch_type;
- 	struct elm_registers elm_regs;
-+	int ecc_steps;
- 	int ecc_syndrome_size;
- };
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index 6f9b339..d161c9b 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -1383,7 +1383,7 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
  
-@@ -128,6 +129,7 @@ int elm_config(struct device *dev, enum bch_ecc bch_type,
- 	reg_val = (bch_type & ECC_BCH_LEVEL_MASK) | (ELM_ECC_SIZE << 16);
- 	elm_write_reg(info, ELM_LOCATION_CONFIG, reg_val);
- 	info->bch_type		= bch_type;
-+	info->ecc_steps		= ecc_steps;
- 	info->ecc_syndrome_size	= ecc_syndrome_size;
+ 	/* Check if any error reported */
+ 	if (!is_error_reported)
+-		return 0;
++		return stat;
  
- 	return 0;
-@@ -170,7 +172,7 @@ static void elm_load_syndrome(struct elm_info *info,
- 	int i, offset;
- 	u32 val;
- 
--	for (i = 0; i < ERROR_VECTOR_MAX; i++) {
-+	for (i = 0; i < info->ecc_steps; i++) {
- 
- 		/* Check error reported */
- 		if (err_vec[i].error_reported) {
-@@ -238,7 +240,7 @@ static void elm_start_processing(struct elm_info *info,
- 	 * Set syndrome vector valid, so that ELM module
- 	 * will process it for vectors error is reported
- 	 */
--	for (i = 0; i < ERROR_VECTOR_MAX; i++) {
-+	for (i = 0; i < info->ecc_steps; i++) {
- 		if (err_vec[i].error_reported) {
- 			offset = ELM_SYNDROME_FRAGMENT_6 +
- 				SYNDROME_FRAGMENT_REG_SIZE * i;
-@@ -267,7 +269,7 @@ static void elm_error_correction(struct elm_info *info,
- 	int offset;
- 	u32 reg_val;
- 
--	for (i = 0; i < ERROR_VECTOR_MAX; i++) {
-+	for (i = 0; i < info->ecc_steps; i++) {
- 
- 		/* Check error reported */
- 		if (err_vec[i].error_reported) {
+ 	/* Decode BCH error using ELM module */
+ 	elm_decode_bch_error_page(info->elm_dev, ecc_vec, err_vec);
 -- 
 1.8.5.1.163.gd7aced9
