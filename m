@@ -1,28 +1,16 @@
-Date: Thu, 20 Mar 2014 09:58:07 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Joe Perches <joe@perches.com>
-Subject: Re: [PATCH 1/5] mtd: st_spi_fsm: Remove useless consts from function
- arguments
-Message-ID: <20140320165807.GV31517@norris-Latitude-E6410>
-References: <1395313907-25318-1-git-send-email-lee.jones@linaro.org>
- <1395313907-25318-2-git-send-email-lee.jones@linaro.org>
- <1395314713.7776.17.camel@joe-AO722>
- <20140320114123.GE21349@lee--X1>
- <1395316090.7776.24.camel@joe-AO722>
- <20140320115412.GU31517@norris-Latitude-E6410>
- <20140320120307.GA9240@lee--X1>
- <1395317630.7776.29.camel@joe-AO722>
- <CAN8TOE9g2VwVgVx1Sj3OcguuwP_A9pJS+WpgTAL49KyN9r1CiA@mail.gmail.com>
- <1395319485.7776.32.camel@joe-AO722>
+From: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+To: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <galak@codeaurora.org>, <santosh.shilimkar@ti.com>
+Subject: [PATCH 0/3] Fix NAND propeties for k2hk-evm
+Date: Thu, 20 Mar 2014 19:06:21 +0200
+Message-ID: <1395335184-4745-1-git-send-email-ivan.khoronzhuk@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1395319485.7776.32.camel@joe-AO722>
-Cc: Angus CLARK <angus.clark@st.com>, kernel@stlinux.com,
- Lee Jones <lee.jones@linaro.org>, Linux Kernel <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, grygorii.strashko@ti.com,
+ linux@arm.linux.org.uk, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+ linux-mtd@lists.infradead.org, rob@landley.net,
+ Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,28 +20,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Mar 20, 2014 at 05:44:45AM -0700, Joe Perches wrote:
-> On Thu, 2014-03-20 at 05:41 -0700, Brian Norris wrote:
-> > I also don't think that a function parameter is the right place to
-> > mark const like this. Function arguments are always pass-by-value, so
-> > this 'const' tells users (callers) nothing useful. It only provides
-> > useless constraints on what the function can do with its copy of the
-> > parameter.
-> 
-> Again, that's not useless information.
+This series is intedent to fix problems founded when checked NAND flash
+for k2hk-emv board rev2.0. Whithout this series we cannot use ubifs and
+whole volume of present NAND memory.
 
-For local, pass-by-value function arguments (i.e., constant data, or
-constant pointers to data), I respectfully disagree. (For "pointers to
-constant data", I completely agree that the 'const' info is useful.)
+Based on linux-next tag: next-20140320
 
-> And as you've seen, just making these changes
-> can be error prone.
+Murali Karicheri (3):
+  ARM: dts: k2hk-evm: set ubifs partition size for 512M NAND
+  mtd: davinci-nand: add dts property for NAND_NO_SUBPAGE_WRITE option
+  ARM: dts: k2hk-evm: disable subpage write for davinci nand device
 
-Thank you for catching our mistake now. But I don't think that is
-relevant; just because you caught an error doesn't mean that the change
-(primarily for consistency's sake) should be avoided entirely.
+ Documentation/devicetree/bindings/mtd/davinci-nand.txt | 2 ++
+ arch/arm/boot/dts/k2hk-evm.dts                         | 3 ++-
+ drivers/mtd/nand/davinci_nand.c                        | 3 +++
+ 3 files changed, 7 insertions(+), 1 deletion(-)
 
-Unless you have a more convincing argument, this code will remain as-is.
-
-Regards,
-Brian
+-- 
+1.8.3.2
