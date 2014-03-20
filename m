@@ -1,16 +1,16 @@
-Received: from mail-we0-f178.google.com ([74.125.82.178])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQZBZ-0007gv-EW
- for linux-mtd@lists.infradead.org; Thu, 20 Mar 2014 09:22:55 +0000
-Received: by mail-we0-f178.google.com with SMTP id u56so360239wes.37
- for <linux-mtd@lists.infradead.org>; Thu, 20 Mar 2014 02:22:28 -0700 (PDT)
+Received: from mail-wi0-f172.google.com ([209.85.212.172])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WQZBj-0006bc-Pf
+ for linux-mtd@lists.infradead.org; Thu, 20 Mar 2014 09:23:00 +0000
+Received: by mail-wi0-f172.google.com with SMTP id hi5so5978603wib.5
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Mar 2014 02:22:34 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  computersforpeace@gmail.com
-Subject: [PATCH v6 33/36] mtd: st_spi_fsm: Supply the W25Qxxx chip specific
- configuration call-back
-Date: Thu, 20 Mar 2014 09:21:05 +0000
-Message-Id: <1395307268-12721-34-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH v6 36/36] ARM: STi: Add support for the FSM Serial Flash
+ Controller
+Date: Thu, 20 Mar 2014 09:21:08 +0000
+Message-Id: <1395307268-12721-37-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1395307268-12721-1-git-send-email-lee.jones@linaro.org>
 References: <1395307268-12721-1-git-send-email-lee.jones@linaro.org>
 Cc: dwmw2@infradead.org, Lee Jones <lee.jones@linaro.org>,
@@ -24,90 +24,112 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Here we add the necessary device nodes required for successful device
+probing and Pinctrl setup for the FSM.
+
+Acked-by: Srinivas Kandagatla <srinivas.kandagatla@st.com>
 Acked-by Angus Clark <angus.clark@st.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/devices/st_spi_fsm.c | 47 ++++++++++++++++++++++++++++++++++++----
- 1 file changed, 43 insertions(+), 4 deletions(-)
+ arch/arm/boot/dts/stih416-pinctrl.dtsi | 13 +++++++++++++
+ arch/arm/boot/dts/stih416.dtsi         | 13 +++++++++++++
+ arch/arm/boot/dts/stih41x-b2020.dtsi   |  1 +
+ arch/arm/boot/dts/stih41x-b2020x.dtsi  | 28 ++++++++++++++++++++++++++++
+ 4 files changed, 55 insertions(+)
+ create mode 100644 arch/arm/boot/dts/stih41x-b2020x.dtsi
 
-diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index 9db5641..dc9412a 100644
---- a/drivers/mtd/devices/st_spi_fsm.c
-+++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -341,6 +341,7 @@ struct flash_info {
- static int stfsm_n25q_config(struct stfsm *fsm);
- static int stfsm_mx25_config(struct stfsm *fsm);
- static int stfsm_s25fl_config(struct stfsm *fsm);
-+static int stfsm_w25q_config(struct stfsm *fsm);
+diff --git a/arch/arm/boot/dts/stih416-pinctrl.dtsi b/arch/arm/boot/dts/stih416-pinctrl.dtsi
+index b29ff4b..81df8e7 100644
+--- a/arch/arm/boot/dts/stih416-pinctrl.dtsi
++++ b/arch/arm/boot/dts/stih416-pinctrl.dtsi
+@@ -210,6 +210,19 @@
+ 					};
+ 				};
+ 			};
++
++			fsm {
++				pinctrl_fsm: fsm {
++					st,pins {
++						spi-fsm-clk  = <&PIO12 2 ALT1 OUT>;
++						spi-fsm-cs   = <&PIO12 3 ALT1 OUT>;
++						spi-fsm-mosi = <&PIO12 4 ALT1 OUT>;
++						spi-fsm-miso = <&PIO12 5 ALT1 IN>;
++						spi-fsm-hol  = <&PIO12 6 ALT1 OUT>;
++						spi-fsm-wp   = <&PIO12 7 ALT1 OUT>;
++					};
++				};
++			};
+ 		};
  
- static struct flash_info flash_types[] = {
- 	/*
-@@ -446,10 +447,14 @@ static struct flash_info flash_types[] = {
- 		   FLASH_FLAG_READ_1_1_4        |	\
- 		   FLASH_FLAG_READ_1_4_4        |	\
- 		   FLASH_FLAG_WRITE_1_1_4)
--	{ "w25q80",  0xef4014, 0,  64 * 1024,  16, W25Q_FLAG, 80, NULL },
--	{ "w25q16",  0xef4015, 0,  64 * 1024,  32, W25Q_FLAG, 80, NULL },
--	{ "w25q32",  0xef4016, 0,  64 * 1024,  64, W25Q_FLAG, 80, NULL },
--	{ "w25q64",  0xef4017, 0,  64 * 1024, 128, W25Q_FLAG, 80, NULL },
-+	{ "w25q80",  0xef4014, 0,  64 * 1024,  16, W25Q_FLAG, 80,
-+	  stfsm_w25q_config },
-+	{ "w25q16",  0xef4015, 0,  64 * 1024,  32, W25Q_FLAG, 80,
-+	  stfsm_w25q_config },
-+	{ "w25q32",  0xef4016, 0,  64 * 1024,  64, W25Q_FLAG, 80,
-+	  stfsm_w25q_config },
-+	{ "w25q64",  0xef4017, 0,  64 * 1024, 128, W25Q_FLAG, 80,
-+	  stfsm_w25q_config },
+ 		pin-controller-rear {
+diff --git a/arch/arm/boot/dts/stih416.dtsi b/arch/arm/boot/dts/stih416.dtsi
+index b7ab47b..1e24b9e 100644
+--- a/arch/arm/boot/dts/stih416.dtsi
++++ b/arch/arm/boot/dts/stih416.dtsi
+@@ -145,5 +145,18 @@
  
- 	/* Sentinel */
- 	{ NULL, 0x000000, 0, 0, 0, 0, 0, NULL },
-@@ -577,6 +582,11 @@ static struct seq_rw_config stfsm_s25fl_write4_configs[] = {
- 	{0x00,                   0,                      0, 0, 0, 0x00, 0, 0},
+ 			status		= "disabled";
+ 		};
++
++		/* FSM */
++		spifsm: spifsm@fe902000 {
++			compatible	   = "st,spi-fsm";
++			reg		   = <0xfe902000 0x1000>;
++			pinctrl-0	   = <&pinctrl_fsm>;
++
++			st,syscfg	   = <&syscfg_rear>;
++			st,boot-device-reg = <0x958>;
++			st,boot-device-spi = <0x1a>;
++
++			status = "disabled";
++		};
+ 	};
  };
- 
+diff --git a/arch/arm/boot/dts/stih41x-b2020.dtsi b/arch/arm/boot/dts/stih41x-b2020.dtsi
+index 0ef0a69..01487e0 100644
+--- a/arch/arm/boot/dts/stih41x-b2020.dtsi
++++ b/arch/arm/boot/dts/stih41x-b2020.dtsi
+@@ -6,6 +6,7 @@
+  * it under the terms of the GNU General Public License version 2 as
+  * publishhed by the Free Software Foundation.
+  */
++#include "stih41x-b2020x.dtsi"
+ / {
+ 	memory{
+ 		device_type = "memory";
+diff --git a/arch/arm/boot/dts/stih41x-b2020x.dtsi b/arch/arm/boot/dts/stih41x-b2020x.dtsi
+new file mode 100644
+index 0000000..d9af63d
+--- /dev/null
++++ b/arch/arm/boot/dts/stih41x-b2020x.dtsi
+@@ -0,0 +1,28 @@
 +/*
-+ * [W25Qxxx] Configuration
++ * Copyright (C) 2013 STMicroelectronics (R&D) Limited.
++ * Author: Lee Jones <lee.jones@linaro.org>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * publishhed by the Free Software Foundation.
 + */
-+#define W25Q_STATUS_QE			(0x1 << 9)
++/ {
++	soc {
++		spifsm: spifsm@fe902000 {
++			#address-cells = <1>;
++			#size-cells    = <1>;
 +
- static struct stfsm_seq stfsm_seq_read;		/* Dynamically populated */
- static struct stfsm_seq stfsm_seq_write;	/* Dynamically populated */
- static struct stfsm_seq stfsm_seq_en_32bit_addr;/* Dynamically populated */
-@@ -1443,6 +1453,35 @@ static int stfsm_s25fl_config(struct stfsm *fsm)
- 	return 0;
- }
- 
-+static int stfsm_w25q_config(struct stfsm *fsm)
-+{
-+	uint32_t data_pads;
-+	uint16_t sta_wr;
-+	uint8_t sta1, sta2;
-+	int ret;
++			status = "okay";
 +
-+	ret = stfsm_prepare_rwe_seqs_default(fsm);
-+	if (ret)
-+		return ret;
++			partition@0 {
++				label = "Serial Flash 1";
++				reg   = <0x00000000 0x00500000>;
++			};
 +
-+	/* If using QUAD mode, set QE STATUS bit */
-+	data_pads = ((stfsm_seq_read.seq_cfg >> 16) & 0x3) + 1;
-+	if (data_pads == 4) {
-+		stfsm_read_status(fsm, FLASH_CMD_RDSR, &sta1);
-+		stfsm_read_status(fsm, FLASH_CMD_RDSR2, &sta2);
-+
-+		sta_wr = ((uint16_t)sta2 << 8) | sta1;
-+
-+		sta_wr |= W25Q_STATUS_QE;
-+
-+		stfsm_write_status(fsm, sta_wr, 2);
-+
-+		stfsm_wait_busy(fsm);
-+	}
-+
-+	return 0;
-+}
-+
- static int stfsm_read(struct stfsm *fsm, uint8_t *buf, uint32_t size,
- 		      uint32_t offset)
- {
++			partition@500000 {
++				label = "Serial Flash 2";
++				reg   = <0x00500000 0x00b00000>;
++			};
++		};
++	};
++};
 -- 
 1.8.3.2
