@@ -1,24 +1,26 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
+Received: from mail-wi0-f179.google.com ([209.85.212.179])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQbJT-0004yi-RF
- for linux-mtd@lists.infradead.org; Thu, 20 Mar 2014 11:39:09 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: RE: [PATCH v5 1/4] mtd: devices: elm: check for hardware engine's
- design constrains
-Date: Thu, 20 Mar 2014 11:38:18 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EAB49CC@DBDE04.ent.ti.com>
-References: <1393845563-7800-1-git-send-email-pekon@ti.com>
- <1393845563-7800-2-git-send-email-pekon@ti.com>
- <20140320105259.GM31517@norris-Latitude-E6410>
-In-Reply-To: <20140320105259.GM31517@norris-Latitude-E6410>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1WQbM5-00056V-Q6
+ for linux-mtd@lists.infradead.org; Thu, 20 Mar 2014 11:41:50 +0000
+Received: by mail-wi0-f179.google.com with SMTP id f8so634722wiw.0
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Mar 2014 04:41:28 -0700 (PDT)
+Date: Thu, 20 Mar 2014 11:41:23 +0000
+From: Lee Jones <lee.jones@linaro.org>
+To: Joe Perches <joe@perches.com>
+Subject: Re: [PATCH 1/5] mtd: st_spi_fsm: Remove useless consts from function
+ arguments
+Message-ID: <20140320114123.GE21349@lee--X1>
+References: <1395313907-25318-1-git-send-email-lee.jones@linaro.org>
+ <1395313907-25318-2-git-send-email-lee.jones@linaro.org>
+ <1395314713.7776.17.camel@joe-AO722>
 MIME-Version: 1.0
-Cc: Stefan Roese <sr@denx.de>, linux-mtd <linux-mtd@lists.infradead.org>,
- "Balbi,
- Felipe" <balbi@ti.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1395314713.7776.17.camel@joe-AO722>
+Cc: angus.clark@st.com, kernel@stlinux.com, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,30 +30,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+On Thu, 20 Mar 2014, Joe Perches wrote:
 
->From: Brian Norris [mailto:computersforpeace@gmail.com]
+> On Thu, 2014-03-20 at 11:11 +0000, Lee Jones wrote:
+> > Reported-by: Brian Norris <computersforpeace@gmail.com>
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> 
+> Why are these useless?
+> 
+> Even if the object code produced is the same,
+> these serve as information to the human reader
+> about how the arguments are used.
 
-Thanks a lot for picking up the other patch series.
-These patches make OMAP NAND look cleaner, scalable and stable.
+https://lkml.org/lkml/2014/3/20/69
 
->> @@ -1559,9 +1561,10 @@ static int is_elm_present(struct omap_nand_info *=
-info,
->>  	}
->>  	/* ELM module available, now configure it */
->>  	info->elm_dev =3D &pdev->dev;
->> -	if (elm_config(info->elm_dev, bch_type))
->> -		return -ENODEV;
->> -	return 0;
->> +	err =3D elm_config(info->elm_dev, bch_type,
->> +		(info->mtd.writesize / ecc->size), ecc->size, ecc->bytes);
->
->Isn't info->mtd.writesize / ecc->size the same as just ecc->steps?
->
-'ecc->steps' gets its value in nand_scan_tail(), but this particular
-check on ELM driver, gets executed before nand_scan_tail() is called
-in driver probe(), so have do the ecc->steps calculation myself.
-
-I'll include all other comments in next version..
-
-with regards, pekon
+-- 
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
