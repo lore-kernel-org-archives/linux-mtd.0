@@ -1,16 +1,32 @@
-Date: Thu, 20 Mar 2014 01:06:32 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v5 00/35] mtd: st_spi_fsm: Add new driver
-Message-ID: <20140320080632.GE31517@norris-Latitude-E6410>
-References: <1392735362-1245-1-git-send-email-lee.jones@linaro.org>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WQYOI-0006Qz-Dh
+ for linux-mtd@lists.infradead.org; Thu, 20 Mar 2014 08:31:54 +0000
+From: Juergen Beisert <jbe@pengutronix.de>
+To: linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] mtd: gpmi: make blockmark swapping optional
+Date: Thu, 20 Mar 2014 09:33:39 +0100
+References: <1395235406-13449-1-git-send-email-y>
+In-Reply-To: <1395235406-13449-1-git-send-email-y>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
-In-Reply-To: <1392735362-1245-1-git-send-email-lee.jones@linaro.org>
-Cc: Angus.Clark@st.com, DCG_UPD_stlinux_kernel@list.st.com,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+Message-Id: <201403200933.39382.jbe@pengutronix.de>
+Cc: Fabio Estevam <fabio.estevam@freescale.com>,
+ Mark Rutland <mark.rutland@arm.com>, Russell King <linux@arm.linux.org.uk>,
+ Pawel Moll <pawel.moll@arm.com>, Arnd Bergmann <arnd@arndb.de>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, y@karo-electronics.de,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Huang Shijie <b32955@freescale.com>, devicetree@vger.kernel.org,
+ Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
+ Rob Landley <rob@landley.net>, Kumar Gala <galak@codeaurora.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Sascha Hauer <kernel@pengutronix.de>,
+ Shawn Guo <shawn.guo@freescale.com>,
+ Lothar =?utf-8?q?Wa=C3=9Fmann?= <LW@karo-electronics.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,15 +36,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Feb 18, 2014 at 02:55:27PM +0000, Lee Jones wrote:
-> This should be the final version.
+Hi Lothar,
 
-:)
+On Wednesday 19 March 2014 14:23:26 y@karo-electronics.de wrote:
+> With a flash-based BBT there is no reason to move the Factory Bad
+> Block Marker from the data area buffer (to where it is mapped by the
+> GPMI NAND controller) to the OOB buffer. Thus, make this feature
+> configurable via DT. This is required for the Ka-Ro electronics
+> platforms.
+> [...]
 
-I had a few more comments. Contrary to my comment on patch 1, I don't
-think too many of my comments were repeats. But nothing too big anyway.
-I expect that I'll merge this as soon as you address my last comments.
+How do you create the BBT the very first time with valuable data when the N=
+AND=20
+already contains factory bad blocks?
 
-Thanks for the patience.
+jbe
 
-Brian
+=2D-=20
+Pengutronix e.K. =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0| Juergen Beisert =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 |
+Linux Solutions for Science and Industry =C2=A0 =C2=A0 =C2=A0| http://www.p=
+engutronix.de/  |
