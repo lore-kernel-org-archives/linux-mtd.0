@@ -1,13 +1,14 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
+Received: from comal.ext.ti.com ([198.47.26.152])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQcsf-0000XV-JY
- for linux-mtd@lists.infradead.org; Thu, 20 Mar 2014 13:19:34 +0000
+ id 1WQcsm-0000Xo-Vn
+ for linux-mtd@lists.infradead.org; Thu, 20 Mar 2014 13:19:42 +0000
 From: Pekon Gupta <pekon@ti.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v8 0/4] mtd: devices: elm: add checks ELM H/W constrains,
- driver code cleanup
-Date: Thu, 20 Mar 2014 18:48:33 +0530
-Message-ID: <1395321517-4490-1-git-send-email-pekon@ti.com>
+Subject: [PATCH v8 4/4] mtd: devices: elm: update DRIVER_NAME as "omap-elm"
+Date: Thu, 20 Mar 2014 18:48:37 +0530
+Message-ID: <1395321517-4490-5-git-send-email-pekon@ti.com>
+In-Reply-To: <1395321517-4490-1-git-send-email-pekon@ti.com>
+References: <1395321517-4490-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: Stefan Roese <sr@denx.de>, linux-mtd <linux-mtd@lists.infradead.org>,
@@ -22,50 +23,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-*changes v7 -> v8*
-Incorporated feedbacks from Brian Norris <computersforpeace@gmail.com>
- - renamed ecc_step_bytes -> ecc_syndrome_size
+use "omap-elm" as DRIVER_NAME
 
+Signed-off-by: Pekon Gupta <pekon@ti.com>
+---
+ drivers/mtd/devices/elm.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-*changes v6 -> v7*
-Incorporated feedbacks from Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
- - using dev_err() instead of pr_err()
- - moved un-related addition of info->ecc_steps, info->ecc_step_bytes,
-   info->ecc_step_size from [PATCH v6 1/4] into subsequent patches
- - dropped pr_fmt() change
-
-
-*changes v5 -> v6*
-[PATCH 02/04] minor cleanup
-
-*changes v4 -> v5*
-This patch series is split version from earlier series [1].
-This series refactors and cleans ELM driver which is used by Hardware
-based BCHx ecc-schemes.
- - Undo: introduction of 'struct mtd_info' and 'struct nand_chip'. Instead
-         keep ELM driver independent of mtd_info and nand_chip structs and
-         pass only required ECC configurations as elm_config() arguments
-         elm_config(..., int ecc_steps, int ecc_step_size, int ecc_step_bytes)
- - Undo: re-writing of elm_load_syndrome() ECC register configurations.
-
-*changes v3 -> v4 [1]*
- - in-corporated feedbacks from Brian Norris <computersforpeace@gmail.com>
- - updated: use 'pr_fmt(fmt)' to suffix DRIVER_NAME
- - removed: local 'eccsteps' in ELM driver, instead using nand_chip->ecc.steps
- - undo: irrelavant white-space changes
-
-[1] http://lists.infradead.org/pipermail/linux-mtd/2013-November/050242.html
-
-Pekon Gupta (4):
-  mtd: devices: elm: check for hardware engine's design constraints
-  mtd: devices: elm: clean elm_load_syndrome
-  mtd: devices: elm: configure parallel channels based on ecc_steps
-  mtd: devices: elm: update DRIVER_NAME as "omap-elm"
-
- drivers/mtd/devices/elm.c         | 43 ++++++++++++++++++++++++++++-----------
- drivers/mtd/nand/omap2.c          |  9 +++++---
- include/linux/platform_data/elm.h | 10 ++-------
- 3 files changed, 39 insertions(+), 23 deletions(-)
-
+diff --git a/drivers/mtd/devices/elm.c b/drivers/mtd/devices/elm.c
+index 26df41f..1fd4a0f 100644
+--- a/drivers/mtd/devices/elm.c
++++ b/drivers/mtd/devices/elm.c
+@@ -15,6 +15,8 @@
+  *
+  */
+ 
++#define DRIVER_NAME	"omap-elm"
++
+ #include <linux/platform_device.h>
+ #include <linux/module.h>
+ #include <linux/interrupt.h>
+@@ -520,7 +522,7 @@ MODULE_DEVICE_TABLE(of, elm_of_match);
+ 
+ static struct platform_driver elm_driver = {
+ 	.driver	= {
+-		.name	= "elm",
++		.name	= DRIVER_NAME,
+ 		.owner	= THIS_MODULE,
+ 		.of_match_table = of_match_ptr(elm_of_match),
+ 		.pm	= &elm_pm_ops,
 -- 
 1.8.5.1.163.gd7aced9
