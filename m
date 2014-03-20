@@ -1,18 +1,24 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
+Received: from arroyo.ext.ti.com ([192.94.94.40])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQctb-0000dr-RJ
- for linux-mtd@lists.infradead.org; Thu, 20 Mar 2014 13:20:32 +0000
-From: Pekon Gupta <pekon@ti.com>
+ id 1WQcvz-0000lU-Eg
+ for linux-mtd@lists.infradead.org; Thu, 20 Mar 2014 13:22:59 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH] mtd: nand: omap: ecc.correct: omap_elm_correct_data: return
- number of bit-flips detected in erased-page
-Date: Thu, 20 Mar 2014 18:49:58 +0530
-Message-ID: <1395321598-4565-1-git-send-email-pekon@ti.com>
+Subject: RE: [PATCH v9 3/5] mtd: nand: omap: ecc.correct:
+ omap_elm_correct_data: fix erased-page detection for BCHx_HW ECC schemes
+Date: Thu, 20 Mar 2014 13:22:26 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EAB4AAD@DBDE04.ent.ti.com>
+References: <1395149206-23713-1-git-send-email-pekon@ti.com>
+ <1395149206-23713-4-git-send-email-pekon@ti.com>
+ <20140320092746.GH31517@norris-Latitude-E6410>
+In-Reply-To: <20140320092746.GH31517@norris-Latitude-E6410>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
 Cc: Stefan Roese <sr@denx.de>, linux-mtd <linux-mtd@lists.infradead.org>,
- Pekon Gupta <pekon@ti.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Artem
+ Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,46 +28,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-fixes: commit 62116e5171e00f85a8d53f76e45b84423c89ff34
-       mtd: nand: omap2: Support for hardware BCH error correction.
+>From: Brian Norris [mailto:computersforpeace@gmail.com]
+[...]
 
-In current omap_elm_correct_data(), an erased-page is also identified based on
-	'bitflip_count <= ecc.strength' per ecc-step (data+oob)
-But bitflip_count is ignored, unless errors are detected in other ecc.steps.
-------------------
-  if (bitflip_count) {
-        /*
-         * number of 0-bits within ECC limits
-         * So this may be an erased-page
-         */
-        stat += bitflip_count;
-  }
-  [...]
-  /* Check if any error reported */
-  if (!is_error_reported)
-        return 0;
-------------------
+>I see we update 'stat', but in the case that this is a correctable
+>erased page, don't we just ignore it? i.e., you'll hit this case below
+>(not shown here):
+>
+>	/* Check if any error reported */
+>	if (!is_error_reported)
+>		return 0;
+>
+>Perhaps this should be changed to:
+>
+>	if (!is_error_reported)
+>		return stat;
+>
+>?
+>
+Thanks much. nice catch. I missed this scenario. I have just sent a fix for=
+ this.
 
-This patch returns bitflip_count found in erased-page to chip->ecc.read_page()
+[PATCH] mtd: nand: omap: ecc.correct: omap_elm_correct_data: return number =
+of bit-flips detected in erased-page
 
-Reported-by: Brian Norris <computersforpeace@gmail.com>
-Signed-off-by: Pekon Gupta <pekon@ti.com>
----
- drivers/mtd/nand/omap2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 6f9b339..d161c9b 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -1383,7 +1383,7 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
- 
- 	/* Check if any error reported */
- 	if (!is_error_reported)
--		return 0;
-+		return stat;
- 
- 	/* Decode BCH error using ELM module */
- 	elm_decode_bch_error_page(info->elm_dev, ecc_vec, err_vec);
--- 
-1.8.5.1.163.gd7aced9
+with regards, pekon
