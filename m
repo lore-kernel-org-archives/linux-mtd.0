@@ -1,16 +1,28 @@
-Date: Thu, 20 Mar 2014 02:48:20 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v6 00/36] mtd: st_spi_fsm: Add new driver
-Message-ID: <20140320094820.GJ31517@norris-Latitude-E6410>
-References: <1395307268-12721-1-git-send-email-lee.jones@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1395307268-12721-1-git-send-email-lee.jones@linaro.org>
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- Angus.Clark@st.com
+Date: Thu, 20 Mar 2014 11:09:14 +0100
+From: Lothar =?UTF-8?B?V2HDn21hbm4=?= <LW@KARO-electronics.de>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH] mtd: gpmi: make blockmark swapping optional
+Message-ID: <20140320110914.731db7cf@ipc1.ka-ro>
+In-Reply-To: <532AB94D.1050406@freescale.com>
+References: <1395235406-13449-1-git-send-email-y>
+ <532AB1A2.9010702@freescale.com>
+ <20140320102153.7106f915@ipc1.ka-ro>
+ <532AB94D.1050406@freescale.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Fabio Estevam <fabio.estevam@freescale.com>,
+ Mark Rutland <mark.rutland@arm.com>, b47714@freescale.com,
+ Russell King <linux@arm.linux.org.uk>, Pawel Moll <pawel.moll@arm.com>,
+ Arnd Bergmann <arnd@arndb.de>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, y@KARO-electronics.de,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ Rob Landley <rob@landley.net>, Kumar Gala <galak@codeaurora.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Sascha Hauer <kernel@pengutronix.de>,
+ Shawn Guo <shawn.guo@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,41 +32,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Mar 20, 2014 at 09:20:32AM +0000, Lee Jones wrote:
-> This should be the final version (again) :)
-> 
-> Version 6:
->   Serviced 3 nits picked up by Brian during final review.
+Hi,
 
-I'm really sorry to do this again, but can you *please* read *all* of my
-comments? You're missing at least the following diff! I'm fine with an
-incremental patch on top of this series.
+Huang Shijie wrote:
+> =E4=BA=8E 2014=E5=B9=B403=E6=9C=8820=E6=97=A5 17:21, Lothar Wa=C3=9Fmann =
+=E5=86=99=E9=81=93:
+> > Hi,
+> >
+> > Huang Shijie wrote:
+> >> =E4=BA=8E 2014=E5=B9=B403=E6=9C=8819=E6=97=A5 21:23, y@karo-electronic=
+s.de =E5=86=99=E9=81=93:
+> >>> configurable via DT. This is required for the Ka-Ro electronics
+> >>> platforms.
+> >>>
+> >> If you disable the swapping, you will disable the NAND boot in actuall=
+y.
+> >>
+> > No. All our modules do boot from NAND and none of them does the
+> > swapping.
+> >
+> >
+> It seems the NAND boot runs well by luck.
+>=20
+> The ROM will do the swapping when it reads the BBT table written by the=20
+> kobs-ng (or something else?).
+>=20
+This can be disabled by parameter in the FCB (at least according to
+the i.MX6 reference Manual):
+|DISBBM 172 4 If 0 ROM will swap BadBlockMarkerByte with
+|             metadata[0] after reading a page using BCH40.
+|             If the value set is 1 then ROM will not do
+|             swapping
 
-diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index aefd48db7ade..6369636e980a 100644
---- a/drivers/mtd/devices/st_spi_fsm.c
-+++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -3,7 +3,7 @@
-  *
-  * Author: Angus Clark <angus.clark@st.com>
-  *
-- * Copyright (C) 2010-2014 STicroelectronics Limited
-+ * Copyright (C) 2010-2014 STMicroelectronics Limited
-  *
-  * JEDEC probe based on drivers/mtd/devices/m25p80.c
-  *
-@@ -1730,14 +1730,6 @@ static int stfsm_mtd_write(struct mtd_info *mtd, loff_t to, size_t len,
- 
- 	dev_dbg(fsm->dev, "%s to 0x%08x, len %zd\n", __func__, (u32)to, len);
- 
--	*retlen = 0;
--
--	if (!len)
--		return 0;
--
--	if (to + len > mtd->size)
--		return -EINVAL;
--
- 	/* Offset within page */
- 	page_offs = to % FLASH_PAGESIZE;
- 
+
+Lothar Wa=C3=9Fmann
+--=20
+___________________________________________________________
+
+Ka-Ro electronics GmbH | Pascalstra=C3=9Fe 22 | D - 52076 Aachen
+Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
+Gesch=C3=A4ftsf=C3=BChrer: Matthias Kaussen
+Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
+
+www.karo-electronics.de | info@karo-electronics.de
+___________________________________________________________
