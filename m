@@ -1,23 +1,26 @@
-Received: from mail-pb0-x22a.google.com ([2607:f8b0:400e:c01::22a])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQZKS-0000Ki-NR
- for linux-mtd@lists.infradead.org; Thu, 20 Mar 2014 09:32:03 +0000
-Received: by mail-pb0-f42.google.com with SMTP id rr13so676984pbb.29
- for <linux-mtd@lists.infradead.org>; Thu, 20 Mar 2014 02:31:38 -0700 (PDT)
-Date: Thu, 20 Mar 2014 02:31:00 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Pekon Gupta <pekon@ti.com>
-Subject: Re: [PATCH v9 0/5] mtd: nand: omap: optimized chip->ecc.correct()
- for H/W ECC schemes
-Message-ID: <20140320093100.GI31517@norris-Latitude-E6410>
-References: <1395149206-23713-1-git-send-email-pekon@ti.com>
+Message-ID: <532AB94D.1050406@freescale.com>
+Date: Thu, 20 Mar 2014 17:47:57 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1395149206-23713-1-git-send-email-pekon@ti.com>
-Cc: Stefan Roese <sr@denx.de>, linux-mtd <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+To: =?UTF-8?B?TG90aGFyIFdhw59tYW5u?= <LW@KARO-electronics.de>
+Subject: Re: [PATCH] mtd: gpmi: make blockmark swapping optional
+References: <1395235406-13449-1-git-send-email-y>	<532AB1A2.9010702@freescale.com>
+ <20140320102153.7106f915@ipc1.ka-ro>
+In-Reply-To: <20140320102153.7106f915@ipc1.ka-ro>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: Fabio Estevam <fabio.estevam@freescale.com>,
+ Mark Rutland <mark.rutland@arm.com>, b47714@freescale.com,
+ Russell King <linux@arm.linux.org.uk>, Pawel Moll <pawel.moll@arm.com>,
+ Arnd Bergmann <arnd@arndb.de>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, y@KARO-electronics.de,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ Rob Landley <rob@landley.net>, Kumar Gala <galak@codeaurora.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Sascha Hauer <kernel@pengutronix.de>,
+ Shawn Guo <shawn.guo@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,19 +30,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Mar 18, 2014 at 06:56:41PM +0530, Pekon Gupta wrote:
-> *changes v8 -> v9*
-> [PATCH v9 1/5] <no change>
-> [PATCH v9 2/5] <no change>
-> [PATCH v9 3/5]
->  - dropped earlier versions [PATCH v8 3/6] and PATCH v8 4/6], as per feedbacks from
->    MTD maintainer 'Brian Norris <computersforpeace@gmail.com>'
->    http://lists.infradead.org/pipermail/linux-mtd/2014-March/052472.html
->  - Current patch uses existing method of comparing calc_ecc[] with pre-known ECC(all 0xff data + OOB)
->    to identify erased-pages. Thereby removing dependency on 'reserved-marker'.
-> [PATCH v9 4/5] <same as [PATCH v8 5/6]>
-> [PATCH v9 5/5] <same as [PATCH v8 6/6]>
+=E4=BA=8E 2014=E5=B9=B403=E6=9C=8820=E6=97=A5 17:21, Lothar Wa=C3=9Fmann =
+=E5=86=99=E9=81=93:
+> Hi,
+>
+> Huang Shijie wrote:
+>> =E4=BA=8E 2014=E5=B9=B403=E6=9C=8819=E6=97=A5 21:23, y@karo-electronic=
+s.de =E5=86=99=E9=81=93:
+>>> configurable via DT. This is required for the Ka-Ro electronics
+>>> platforms.
+>>>
+>> If you disable the swapping, you will disable the NAND boot in actuall=
+y.
+>>
+> No. All our modules do boot from NAND and none of them does the
+> swapping.
+>
+>
+It seems the NAND boot runs well by luck.
 
-Pushed all 5 to l2-mtd.git. Thanks!
+The ROM will do the swapping when it reads the BBT table written by the=20
+kobs-ng (or something else?).
 
-Brian
+If the BBT table is small, not bigger then a page, the NAND boot may=20
+runs well when you disable the swapping;
+But it the BBT table is bigger, the ROM will get a corrupted BBT table.
+
+
+
+thanks
+Huang Shijie
