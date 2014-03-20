@@ -1,16 +1,16 @@
-Received: from mail-we0-f177.google.com ([74.125.82.177])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQZB7-0006Uh-Ft
- for linux-mtd@lists.infradead.org; Thu, 20 Mar 2014 09:22:21 +0000
-Received: by mail-we0-f177.google.com with SMTP id u57so361922wes.22
- for <linux-mtd@lists.infradead.org>; Thu, 20 Mar 2014 02:22:02 -0700 (PDT)
+Received: from mail-wg0-f51.google.com ([74.125.82.51])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WQZB4-0007Yt-9b
+ for linux-mtd@lists.infradead.org; Thu, 20 Mar 2014 09:22:24 +0000
+Received: by mail-wg0-f51.google.com with SMTP id k14so359891wgh.34
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Mar 2014 02:21:56 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  computersforpeace@gmail.com
-Subject: [PATCH v6 21/36] mtd: st_spi_fsm: Provide the default read/write
- configurations
-Date: Thu, 20 Mar 2014 09:20:53 +0000
-Message-Id: <1395307268-12721-22-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH v6 18/36] mtd: st_spi_fsm: Add a check to if the chip can
+ handle an SoC reset
+Date: Thu, 20 Mar 2014 09:20:50 +0000
+Message-Id: <1395307268-12721-19-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1395307268-12721-1-git-send-email-lee.jones@linaro.org>
 References: <1395307268-12721-1-git-send-email-lee.jones@linaro.org>
 Cc: dwmw2@infradead.org, Lee Jones <lee.jones@linaro.org>,
@@ -24,57 +24,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Message sequences can vary depending on how many pads (lines) are
-required to address the chip (mode & dummy), how many data pads (lines)
-are required to write out to the chip which will determine speed
-amongst other things which are detailed by the SFDP specification. We
-are able to use multiple configurations for each chip, but they need
-to me matched to a device's capabilities. These configurations are
-listed in preference order - most preferred first.
+Based on information we can obtain though platform specific data and/or
+chip capabilities we are able to determine whether or not we can handle
+a SoC reset or not. To find out why this is important please read the
+comment provided in the patch.
 
 Acked-by Angus Clark <angus.clark@st.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/devices/st_spi_fsm.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+ drivers/mtd/devices/st_spi_fsm.c | 40 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
 
 diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index 5683443..03b49a4 100644
+index 3e13d57..7cc4425 100644
 --- a/drivers/mtd/devices/st_spi_fsm.c
 +++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -375,6 +375,33 @@ static struct flash_info flash_types[] = {
- 	{ NULL, 0x000000, 0, 0, 0, 0, 0, NULL },
+@@ -210,6 +210,8 @@ struct stfsm {
+ 
+ 	uint32_t                fifo_dir_delay;
+ 	bool                    booted_from_spi;
++	bool                    reset_signal;
++	bool                    reset_por;
  };
  
-+/*
-+ * FSM message sequence configurations:
-+ *
-+ * All configs are presented in order of preference
-+ */
-+
-+/* Default READ configurations, in order of preference */
-+static struct seq_rw_config default_read_configs[] = {
-+	{FLASH_FLAG_READ_1_4_4, FLASH_CMD_READ_1_4_4,	0, 4, 4, 0x00, 2, 4},
-+	{FLASH_FLAG_READ_1_1_4, FLASH_CMD_READ_1_1_4,	0, 1, 4, 0x00, 4, 0},
-+	{FLASH_FLAG_READ_1_2_2, FLASH_CMD_READ_1_2_2,	0, 2, 2, 0x00, 4, 0},
-+	{FLASH_FLAG_READ_1_1_2, FLASH_CMD_READ_1_1_2,	0, 1, 2, 0x00, 0, 8},
-+	{FLASH_FLAG_READ_FAST,	FLASH_CMD_READ_FAST,	0, 1, 1, 0x00, 0, 8},
-+	{FLASH_FLAG_READ_WRITE, FLASH_CMD_READ,		0, 1, 1, 0x00, 0, 0},
-+	{0x00,			0,			0, 0, 0, 0x00, 0, 0},
-+};
-+
-+/* Default WRITE configurations */
-+static struct seq_rw_config default_write_configs[] = {
-+	{FLASH_FLAG_WRITE_1_4_4, FLASH_CMD_WRITE_1_4_4, 1, 4, 4, 0x00, 0, 0},
-+	{FLASH_FLAG_WRITE_1_1_4, FLASH_CMD_WRITE_1_1_4, 1, 1, 4, 0x00, 0, 0},
-+	{FLASH_FLAG_WRITE_1_2_2, FLASH_CMD_WRITE_1_2_2, 1, 2, 2, 0x00, 0, 0},
-+	{FLASH_FLAG_WRITE_1_1_2, FLASH_CMD_WRITE_1_1_2, 1, 1, 2, 0x00, 0, 0},
-+	{FLASH_FLAG_READ_WRITE,  FLASH_CMD_WRITE,       1, 1, 1, 0x00, 0, 0},
-+	{0x00,			 0,			0, 0, 0, 0x00, 0, 0},
-+};
-+
- static struct stfsm_seq stfsm_seq_en_32bit_addr;/* Dynamically populated */
+ struct stfsm_seq {
+@@ -521,6 +523,40 @@ static void stfsm_read_fifo(struct stfsm *fsm, uint32_t *buf,
+ 	}
+ }
  
- static struct stfsm_seq stfsm_seq_read_jedec = {
++/*
++ * SoC reset on 'boot-from-spi' systems
++ *
++ * Certain modes of operation cause the Flash device to enter a particular state
++ * for a period of time (e.g. 'Erase Sector', 'Quad Enable', and 'Enter 32-bit
++ * Addr' commands).  On boot-from-spi systems, it is important to consider what
++ * happens if a warm reset occurs during this period.  The SPIBoot controller
++ * assumes that Flash device is in its default reset state, 24-bit address mode,
++ * and ready to accept commands.  This can be achieved using some form of
++ * on-board logic/controller to force a device POR in response to a SoC-level
++ * reset or by making use of the device reset signal if available (limited
++ * number of devices only).
++ *
++ * Failure to take such precautions can cause problems following a warm reset.
++ * For some operations (e.g. ERASE), there is little that can be done.  For
++ * other modes of operation (e.g. 32-bit addressing), options are often
++ * available that can help minimise the window in which a reset could cause a
++ * problem.
++ *
++ */
++static bool stfsm_can_handle_soc_reset(struct stfsm *fsm)
++{
++	/* Reset signal is available on the board and supported by the device */
++	if (fsm->reset_signal && fsm->info->flags & FLASH_FLAG_RESET)
++		return true;
++
++	/* Board-level logic forces a power-on-reset */
++	if (fsm->reset_por)
++		return true;
++
++	/* Reset is not properly handled and may result in failure to reboot */
++	return false;
++}
++
+ /* Configure 'addr_cfg' according to addressing mode */
+ static void stfsm_prepare_erasesec_seq(struct stfsm *fsm,
+ 				       struct stfsm_seq *seq)
+@@ -786,6 +822,10 @@ static void stfsm_fetch_platform_configs(struct platform_device *pdev)
+ 	if (IS_ERR(regmap))
+ 		goto boot_device_fail;
+ 
++	fsm->reset_signal = of_property_read_bool(np, "st,reset-signal");
++
++	fsm->reset_por = of_property_read_bool(np, "st,reset-por");
++
+ 	/* Where in the syscon the boot device information lives */
+ 	ret = of_property_read_u32(np, "st,boot-device-reg", &boot_device_reg);
+ 	if (ret)
 -- 
 1.8.3.2
