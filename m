@@ -1,16 +1,15 @@
-Received: from mail-we0-f172.google.com ([74.125.82.172])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQZAp-0007W1-EZ
- for linux-mtd@lists.infradead.org; Thu, 20 Mar 2014 09:22:11 +0000
-Received: by mail-we0-f172.google.com with SMTP id t61so364960wes.31
- for <linux-mtd@lists.infradead.org>; Thu, 20 Mar 2014 02:21:44 -0700 (PDT)
+Received: from mail-we0-f174.google.com ([74.125.82.174])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WQZAx-0006So-BO
+ for linux-mtd@lists.infradead.org; Thu, 20 Mar 2014 09:22:12 +0000
+Received: by mail-we0-f174.google.com with SMTP id t60so361123wes.19
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Mar 2014 02:21:48 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  computersforpeace@gmail.com
-Subject: [PATCH v6 12/36] mtd: st_spi_fsm: Prepare the read/write FSM message
- sequence(s)
-Date: Thu, 20 Mar 2014 09:20:44 +0000
-Message-Id: <1395307268-12721-13-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH v6 14/36] mtd: st_spi_fsm: Fetch boot-device from mode pins
+Date: Thu, 20 Mar 2014 09:20:46 +0000
+Message-Id: <1395307268-12721-15-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1395307268-12721-1-git-send-email-lee.jones@linaro.org>
 References: <1395307268-12721-1-git-send-email-lee.jones@linaro.org>
 Cc: dwmw2@infradead.org, Lee Jones <lee.jones@linaro.org>,
@@ -24,96 +23,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The FSM Serial Flash Controller is driven by issuing a standard set of
-register writes we call a message sequence. This patch supplies a method
-to prepare read/write FSM message sequence(s) based on chip capability
-and configuration.
+It's important for us to determine which device was used to boot from in
+order to make some correct decisions surrounding Power Management. On
+each of the platforms which support the FSM this is communicated via
+a set of mode pins held in the system configuration area. This patch
+determine the boot device and stores the result.
 
 Acked-by Angus Clark <angus.clark@st.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/devices/st_spi_fsm.c | 69 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 69 insertions(+)
+ drivers/mtd/devices/st_spi_fsm.c | 46 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 46 insertions(+)
 
 diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index 5a1b470..83cf9df 100644
+index 83cf9df..6be2672 100644
 --- a/drivers/mtd/devices/st_spi_fsm.c
 +++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -489,6 +489,75 @@ stfsm_search_seq_rw_configs(struct stfsm *fsm,
- 	return NULL;
+@@ -14,7 +14,9 @@
+  */
+ #include <linux/kernel.h>
+ #include <linux/module.h>
++#include <linux/regmap.h>
+ #include <linux/platform_device.h>
++#include <linux/mfd/syscon.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/sched.h>
+ #include <linux/delay.h>
+@@ -207,6 +209,7 @@ struct stfsm {
+ 	struct flash_info       *info;
+ 
+ 	uint32_t                fifo_dir_delay;
++	bool                    booted_from_spi;
+ };
+ 
+ struct stfsm_seq {
+@@ -692,6 +695,47 @@ static int stfsm_init(struct stfsm *fsm)
+ 	return 0;
  }
  
-+/* Prepare a READ/WRITE sequence according to configuration parameters */
-+static void stfsm_prepare_rw_seq(struct stfsm *fsm,
-+				 struct stfsm_seq *seq,
-+				 struct seq_rw_config *cfg)
++static void stfsm_fetch_platform_configs(struct platform_device *pdev)
 +{
-+	int addr1_cycles, addr2_cycles;
-+	int i = 0;
++	struct stfsm *fsm = platform_get_drvdata(pdev);
++	struct device_node *np = pdev->dev.of_node;
++	struct regmap *regmap;
++	uint32_t boot_device_reg;
++	uint32_t boot_device_spi;
++	uint32_t boot_device;     /* Value we read from *boot_device_reg */
++	int ret;
 +
-+	memset(seq, 0, sizeof(*seq));
++	/* Booting from SPI NOR Flash is the default */
++	fsm->booted_from_spi = true;
 +
-+	/* Add READ/WRITE OPC  */
-+	seq->seq_opc[i++] = (SEQ_OPC_PADS_1 |
-+			     SEQ_OPC_CYCLES(8) |
-+			     SEQ_OPC_OPCODE(cfg->cmd));
++	regmap = syscon_regmap_lookup_by_phandle(np, "st,syscfg");
++	if (IS_ERR(regmap))
++		goto boot_device_fail;
 +
-+	/* Add WREN OPC for a WRITE sequence */
-+	if (cfg->write)
-+		seq->seq_opc[i++] = (SEQ_OPC_PADS_1 |
-+				     SEQ_OPC_CYCLES(8) |
-+				     SEQ_OPC_OPCODE(FLASH_CMD_WREN) |
-+				     SEQ_OPC_CSDEASSERT);
++	/* Where in the syscon the boot device information lives */
++	ret = of_property_read_u32(np, "st,boot-device-reg", &boot_device_reg);
++	if (ret)
++		goto boot_device_fail;
 +
-+	/* Address configuration (24 or 32-bit addresses) */
-+	addr1_cycles  = (fsm->info->flags & FLASH_FLAG_32BIT_ADDR) ? 16 : 8;
-+	addr1_cycles /= cfg->addr_pads;
-+	addr2_cycles  = 16 / cfg->addr_pads;
-+	seq->addr_cfg = ((addr1_cycles & 0x3f) << 0 |	/* ADD1 cycles */
-+			 (cfg->addr_pads - 1) << 6 |	/* ADD1 pads */
-+			 (addr2_cycles & 0x3f) << 16 |	/* ADD2 cycles */
-+			 ((cfg->addr_pads - 1) << 22));	/* ADD2 pads */
++	/* Boot device value when booted from SPI NOR */
++	ret = of_property_read_u32(np, "st,boot-device-spi", &boot_device_spi);
++	if (ret)
++		goto boot_device_fail;
 +
-+	/* Data/Sequence configuration */
-+	seq->seq_cfg = ((cfg->data_pads - 1) << 16 |
-+			SEQ_CFG_STARTSEQ |
-+			SEQ_CFG_CSDEASSERT);
-+	if (!cfg->write)
-+		seq->seq_cfg |= SEQ_CFG_READNOTWRITE;
++	ret = regmap_read(regmap, boot_device_reg, &boot_device);
++	if (ret)
++		goto boot_device_fail;
 +
-+	/* Mode configuration (no. of pads taken from addr cfg) */
-+	seq->mode = ((cfg->mode_data & 0xff) << 0 |	/* data */
-+		     (cfg->mode_cycles & 0x3f) << 16 |	/* cycles */
-+		     (cfg->addr_pads - 1) << 22);	/* pads */
++	if (boot_device != boot_device_spi)
++		fsm->booted_from_spi = false;
 +
-+	/* Dummy configuration (no. of pads taken from addr cfg) */
-+	seq->dummy = ((cfg->dummy_cycles & 0x3f) << 16 |	/* cycles */
-+		      (cfg->addr_pads - 1) << 22);		/* pads */
++	return;
 +
-+
-+	/* Instruction sequence */
-+	i = 0;
-+	if (cfg->write)
-+		seq->seq[i++] = STFSM_INST_CMD2;
-+
-+	seq->seq[i++] = STFSM_INST_CMD1;
-+
-+	seq->seq[i++] = STFSM_INST_ADD1;
-+	seq->seq[i++] = STFSM_INST_ADD2;
-+
-+	if (cfg->mode_cycles)
-+		seq->seq[i++] = STFSM_INST_MODE;
-+
-+	if (cfg->dummy_cycles)
-+		seq->seq[i++] = STFSM_INST_DUMMY;
-+
-+	seq->seq[i++] =
-+		cfg->write ? STFSM_INST_DATA_WRITE : STFSM_INST_DATA_READ;
-+	seq->seq[i++] = STFSM_INST_STOP;
++boot_device_fail:
++	dev_warn(&pdev->dev,
++		 "failed to fetch boot device, assuming boot from SPI\n");
 +}
 +
- static void stfsm_read_jedec(struct stfsm *fsm, uint8_t *const jedec)
+ static int stfsm_probe(struct platform_device *pdev)
  {
- 	const struct stfsm_seq *seq = &stfsm_seq_read_jedec;
+ 	struct device_node *np = pdev->dev.of_node;
+@@ -734,6 +778,8 @@ static int stfsm_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
++	stfsm_fetch_platform_configs(pdev);
++
+ 	/* Detect SPI FLASH device */
+ 	info = stfsm_jedec_probe(fsm);
+ 	if (!info)
 -- 
 1.8.3.2
