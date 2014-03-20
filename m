@@ -1,20 +1,23 @@
-Received: from mail-wi0-f179.google.com ([209.85.212.179])
+Received: from mail-pb0-x22a.google.com ([2607:f8b0:400e:c01::22a])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQZHU-0008SY-0s
- for linux-mtd@lists.infradead.org; Thu, 20 Mar 2014 09:28:57 +0000
-Received: by mail-wi0-f179.google.com with SMTP id f8so494782wiw.6
- for <linux-mtd@lists.infradead.org>; Thu, 20 Mar 2014 02:28:34 -0700 (PDT)
-From: Lee Jones <lee.jones@linaro.org>
-To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- computersforpeace@gmail.com
-Subject: [PATCH v6 35/36] mtd: st_spi_fsm: Convert ST SPI FSM (NOR) Flash
- driver to new DT partitions
-Date: Thu, 20 Mar 2014 09:21:07 +0000
-Message-Id: <1395307268-12721-36-git-send-email-lee.jones@linaro.org>
-In-Reply-To: <1395307268-12721-1-git-send-email-lee.jones@linaro.org>
-References: <1395307268-12721-1-git-send-email-lee.jones@linaro.org>
-Cc: dwmw2@infradead.org, Lee Jones <lee.jones@linaro.org>,
- linux-mtd@lists.infradead.org, Angus.Clark@st.com
+ id 1WQZKS-0000Ki-NR
+ for linux-mtd@lists.infradead.org; Thu, 20 Mar 2014 09:32:03 +0000
+Received: by mail-pb0-f42.google.com with SMTP id rr13so676984pbb.29
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Mar 2014 02:31:38 -0700 (PDT)
+Date: Thu, 20 Mar 2014 02:31:00 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Pekon Gupta <pekon@ti.com>
+Subject: Re: [PATCH v9 0/5] mtd: nand: omap: optimized chip->ecc.correct()
+ for H/W ECC schemes
+Message-ID: <20140320093100.GI31517@norris-Latitude-E6410>
+References: <1395149206-23713-1-git-send-email-pekon@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1395149206-23713-1-git-send-email-pekon@ti.com>
+Cc: Stefan Roese <sr@denx.de>, linux-mtd <linux-mtd@lists.infradead.org>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,61 +27,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The old API expected a "partitions" property provided a phandle to a
-separate partitions node, which itself contained yet more nodes each
-representing one partition. The new API rids the requirement for the
-superfluous intermediary partitions node. This patch provides the
-added information required for automatic parsing by the core.
+On Tue, Mar 18, 2014 at 06:56:41PM +0530, Pekon Gupta wrote:
+> *changes v8 -> v9*
+> [PATCH v9 1/5] <no change>
+> [PATCH v9 2/5] <no change>
+> [PATCH v9 3/5]
+>  - dropped earlier versions [PATCH v8 3/6] and PATCH v8 4/6], as per feedbacks from
+>    MTD maintainer 'Brian Norris <computersforpeace@gmail.com>'
+>    http://lists.infradead.org/pipermail/linux-mtd/2014-March/052472.html
+>  - Current patch uses existing method of comparing calc_ecc[] with pre-known ECC(all 0xff data + OOB)
+>    to identify erased-pages. Thereby removing dependency on 'reserved-marker'.
+> [PATCH v9 4/5] <same as [PATCH v8 5/6]>
+> [PATCH v9 5/5] <same as [PATCH v8 6/6]>
 
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/mtd/devices/st_spi_fsm.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+Pushed all 5 to l2-mtd.git. Thanks!
 
-diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index dccbac0..aefd48d 100644
---- a/drivers/mtd/devices/st_spi_fsm.c
-+++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -18,6 +18,7 @@
- #include <linux/platform_device.h>
- #include <linux/mfd/syscon.h>
- #include <linux/mtd/mtd.h>
-+#include <linux/mtd/partitions.h>
- #include <linux/sched.h>
- #include <linux/delay.h>
- #include <linux/io.h>
-@@ -1997,6 +1998,7 @@ boot_device_fail:
- static int stfsm_probe(struct platform_device *pdev)
- {
- 	struct device_node *np = pdev->dev.of_node;
-+	struct mtd_part_parser_data ppdata;
- 	struct flash_info *info;
- 	struct resource *res;
- 	struct stfsm *fsm;
-@@ -2006,6 +2008,7 @@ static int stfsm_probe(struct platform_device *pdev)
- 		dev_err(&pdev->dev, "No DT found\n");
- 		return -EINVAL;
- 	}
-+	ppdata.of_node = np;
- 
- 	fsm = devm_kzalloc(&pdev->dev, sizeof(*fsm), GFP_KERNEL);
- 	if (!fsm)
-@@ -2062,6 +2065,7 @@ static int stfsm_probe(struct platform_device *pdev)
- 			return ret;
- 	}
- 
-+	fsm->mtd.name		= info->name;
- 	fsm->mtd.dev.parent	= &pdev->dev;
- 	fsm->mtd.type		= MTD_NORFLASH;
- 	fsm->mtd.writesize	= 4;
-@@ -2081,7 +2085,7 @@ static int stfsm_probe(struct platform_device *pdev)
- 		(long long)fsm->mtd.size, (long long)(fsm->mtd.size >> 20),
- 		fsm->mtd.erasesize, (fsm->mtd.erasesize >> 10));
- 
--	return mtd_device_parse_register(&fsm->mtd, NULL, NULL, NULL, 0);
-+	return mtd_device_parse_register(&fsm->mtd, NULL, &ppdata, NULL, 0);
- }
- 
- static int stfsm_remove(struct platform_device *pdev)
--- 
-1.8.3.2
+Brian
