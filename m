@@ -1,26 +1,28 @@
-Received: from mail-wi0-f173.google.com ([209.85.212.173])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQfFy-0005vh-1F
- for linux-mtd@lists.infradead.org; Thu, 20 Mar 2014 15:51:46 +0000
-Received: by mail-wi0-f173.google.com with SMTP id f8so6413119wiw.0
- for <linux-mtd@lists.infradead.org>; Thu, 20 Mar 2014 08:51:23 -0700 (PDT)
-Date: Thu, 20 Mar 2014 15:51:19 +0000
-From: Lee Jones <lee.jones@linaro.org>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v6 36/36] ARM: STi: Add support for the FSM Serial Flash
- Controller
-Message-ID: <20140320155119.GG8207@lee--X1>
-References: <1395307268-12721-1-git-send-email-lee.jones@linaro.org>
- <1395307268-12721-37-git-send-email-lee.jones@linaro.org>
- <20140320112703.GS31517@norris-Latitude-E6410>
+Date: Thu, 20 Mar 2014 09:58:07 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Joe Perches <joe@perches.com>
+Subject: Re: [PATCH 1/5] mtd: st_spi_fsm: Remove useless consts from function
+ arguments
+Message-ID: <20140320165807.GV31517@norris-Latitude-E6410>
+References: <1395313907-25318-1-git-send-email-lee.jones@linaro.org>
+ <1395313907-25318-2-git-send-email-lee.jones@linaro.org>
+ <1395314713.7776.17.camel@joe-AO722>
+ <20140320114123.GE21349@lee--X1>
+ <1395316090.7776.24.camel@joe-AO722>
+ <20140320115412.GU31517@norris-Latitude-E6410>
+ <20140320120307.GA9240@lee--X1>
+ <1395317630.7776.29.camel@joe-AO722>
+ <CAN8TOE9g2VwVgVx1Sj3OcguuwP_A9pJS+WpgTAL49KyN9r1CiA@mail.gmail.com>
+ <1395319485.7776.32.camel@joe-AO722>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20140320112703.GS31517@norris-Latitude-E6410>
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- Angus.Clark@st.com
+In-Reply-To: <1395319485.7776.32.camel@joe-AO722>
+Cc: Angus CLARK <angus.clark@st.com>, kernel@stlinux.com,
+ Lee Jones <lee.jones@linaro.org>, Linux Kernel <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,47 +32,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> > Here we add the necessary device nodes required for successful device
-> > probing and Pinctrl setup for the FSM.
-> > 
-> > Acked-by: Srinivas Kandagatla <srinivas.kandagatla@st.com>
-> > Acked-by Angus Clark <angus.clark@st.com>
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> >  arch/arm/boot/dts/stih416-pinctrl.dtsi | 13 +++++++++++++
-> >  arch/arm/boot/dts/stih416.dtsi         | 13 +++++++++++++
-> >  arch/arm/boot/dts/stih41x-b2020.dtsi   |  1 +
-> >  arch/arm/boot/dts/stih41x-b2020x.dtsi  | 28 ++++++++++++++++++++++++++++
-> >  4 files changed, 55 insertions(+)
-> >  create mode 100644 arch/arm/boot/dts/stih41x-b2020x.dtsi
-
-[...]
-
-> > +	soc {
-> > +		spifsm: spifsm@fe902000 {
-> > +			#address-cells = <1>;
-> > +			#size-cells    = <1>;
-> > +
-> > +			status = "okay";
-> > +
-> > +			partition@0 {
-> > +				label = "Serial Flash 1";
+On Thu, Mar 20, 2014 at 05:44:45AM -0700, Joe Perches wrote:
+> On Thu, 2014-03-20 at 05:41 -0700, Brian Norris wrote:
+> > I also don't think that a function parameter is the right place to
+> > mark const like this. Function arguments are always pass-by-value, so
+> > this 'const' tells users (callers) nothing useful. It only provides
+> > useless constraints on what the function can do with its copy of the
+> > parameter.
 > 
-> Are you sure you want spaces in the partition label? I suppose MTD can
-> probably handle this fine, but it doesn't seem standard, and it may
-> prevent you from using the partition name in certain ways. For instance,
-> it might make it harder to use with the "ubi.mtd=" module parameter.
-> 
-> But otherwise:
-> 
-> Acked-by: Brian Norris <computersforpeace@gmail.com>
+> Again, that's not useless information.
 
-Code fixed and Ack applied.
+For local, pass-by-value function arguments (i.e., constant data, or
+constant pointers to data), I respectfully disagree. (For "pointers to
+constant data", I completely agree that the 'const' info is useful.)
 
-Thanks Brian.
+> And as you've seen, just making these changes
+> can be error prone.
 
--- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Thank you for catching our mistake now. But I don't think that is
+relevant; just because you caught an error doesn't mean that the change
+(primarily for consistency's sake) should be avoided entirely.
+
+Unless you have a more convincing argument, this code will remain as-is.
+
+Regards,
+Brian
