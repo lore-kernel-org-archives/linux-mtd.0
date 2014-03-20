@@ -1,14 +1,16 @@
 Received: from comal.ext.ti.com ([198.47.26.152])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQXJ9-000525-6J
+ id 1WQXJ9-000528-1z
  for linux-mtd@lists.infradead.org; Thu, 20 Mar 2014 07:22:32 +0000
 From: Pekon Gupta <pekon@ti.com>
 To: Brian Norris <computersforpeace@gmail.com>, Ezequiel Garcia
  <ezequiel.garcia@free-electrons.com>
-Subject: [PATCH v7 0/4] mtd: devices: elm: add checks ELM H/W constrains,
- driver code cleanup
-Date: Thu, 20 Mar 2014 12:51:54 +0530
-Message-ID: <1395300118-32202-1-git-send-email-pekon@ti.com>
+Subject: [PATCH v7 3/4] mtd: devices: elm: configure parallel channels based
+ on ecc_steps
+Date: Thu, 20 Mar 2014 12:51:57 +0530
+Message-ID: <1395300118-32202-4-git-send-email-pekon@ti.com>
+In-Reply-To: <1395300118-32202-1-git-send-email-pekon@ti.com>
+References: <1395300118-32202-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: Stefan Roese <sr@denx.de>, linux-mtd <linux-mtd@lists.infradead.org>,
@@ -22,45 +24,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-*changes v6 -> v7*
-Incorporated feedbacks from Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
- - using dev_err() instead of pr_err()
- - moved un-related addition of info->ecc_steps, info->ecc_step_bytes,
-   info->ecc_step_size from [PATCH v6 1/4] into subsequent patches
- - dropped pr_fmt() change
+ELM hardware can process up to maximum of 8 hannels in parallel for
+ECC error detection. Currently the number of channels getting configured for
+processing is static determined by macro ERROR_VECTOR_MAX. However, the actual
+number of channels that need to be processed is the ECC step number.
+This patch just avoids configuring extra unused channels.
 
+Signed-off-by: Pekon Gupta <pekon@ti.com>
+---
+ drivers/mtd/devices/elm.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-*changes v5 -> v6*
-[PATCH 02/04] minor cleanup
-
-*changes v4 -> v5*
-This patch series is split version from earlier series [1].
-This series refactors and cleans ELM driver which is used by Hardware
-based BCHx ecc-schemes.
- - Undo: introduction of 'struct mtd_info' and 'struct nand_chip'. Instead
-         keep ELM driver independent of mtd_info and nand_chip structs and
-         pass only required ECC configurations as elm_config() arguments
-         elm_config(..., int ecc_steps, int ecc_step_size, int ecc_step_bytes)
- - Undo: re-writing of elm_load_syndrome() ECC register configurations.
-
-*changes v3 -> v4 [1]*
- - in-corporated feedbacks from Brian Norris <computersforpeace@gmail.com>
- - updated: use 'pr_fmt(fmt)' to suffix DRIVER_NAME
- - removed: local 'eccsteps' in ELM driver, instead using nand_chip->ecc.steps
- - undo: irrelavant white-space changes
-
-[1] http://lists.infradead.org/pipermail/linux-mtd/2013-November/050242.html
-
-Pekon Gupta (4):
-  mtd: devices: elm: check for hardware engine's design constraints
-  mtd: devices: elm: clean elm_load_syndrome
-  mtd: devices: elm: configure parallel channels based on ecc_steps
-  mtd: devices: elm: update DRIVER_NAME as "omap-elm"
-
- drivers/mtd/devices/elm.c         | 43 ++++++++++++++++++++++++++++-----------
- drivers/mtd/nand/omap2.c          |  9 +++++---
- include/linux/platform_data/elm.h | 10 ++-------
- 3 files changed, 39 insertions(+), 23 deletions(-)
-
+diff --git a/drivers/mtd/devices/elm.c b/drivers/mtd/devices/elm.c
+index a19a833..271da6e 100644
+--- a/drivers/mtd/devices/elm.c
++++ b/drivers/mtd/devices/elm.c
+@@ -84,6 +84,7 @@ struct elm_info {
+ 	struct list_head list;
+ 	enum bch_ecc bch_type;
+ 	struct elm_registers elm_regs;
++	int ecc_steps;
+ 	int ecc_step_bytes;
+ };
+ 
+@@ -128,6 +129,7 @@ int elm_config(struct device *dev, enum bch_ecc bch_type,
+ 	reg_val = (bch_type & ECC_BCH_LEVEL_MASK) | (ELM_ECC_SIZE << 16);
+ 	elm_write_reg(info, ELM_LOCATION_CONFIG, reg_val);
+ 	info->bch_type		= bch_type;
++	info->ecc_steps		= ecc_steps;
+ 	info->ecc_step_bytes	= ecc_step_bytes;
+ 
+ 	return 0;
+@@ -170,7 +172,7 @@ static void elm_load_syndrome(struct elm_info *info,
+ 	int i, offset;
+ 	u32 val;
+ 
+-	for (i = 0; i < ERROR_VECTOR_MAX; i++) {
++	for (i = 0; i < info->ecc_steps; i++) {
+ 
+ 		/* Check error reported */
+ 		if (err_vec[i].error_reported) {
+@@ -238,7 +240,7 @@ static void elm_start_processing(struct elm_info *info,
+ 	 * Set syndrome vector valid, so that ELM module
+ 	 * will process it for vectors error is reported
+ 	 */
+-	for (i = 0; i < ERROR_VECTOR_MAX; i++) {
++	for (i = 0; i < info->ecc_steps; i++) {
+ 		if (err_vec[i].error_reported) {
+ 			offset = ELM_SYNDROME_FRAGMENT_6 +
+ 				SYNDROME_FRAGMENT_REG_SIZE * i;
+@@ -267,7 +269,7 @@ static void elm_error_correction(struct elm_info *info,
+ 	int offset;
+ 	u32 reg_val;
+ 
+-	for (i = 0; i < ERROR_VECTOR_MAX; i++) {
++	for (i = 0; i < info->ecc_steps; i++) {
+ 
+ 		/* Check error reported */
+ 		if (err_vec[i].error_reported) {
 -- 
 1.8.5.1.163.gd7aced9
