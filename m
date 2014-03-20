@@ -1,27 +1,17 @@
-Message-ID: <532B40E5.4070201@ti.com>
-Date: Thu, 20 Mar 2014 21:26:29 +0200
 From: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+To: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <galak@codeaurora.org>, <santosh.shilimkar@ti.com>
+Subject: [PATCH v2] mtd: davinci-nand: disable subpage write for keystone-nand
+Date: Thu, 20 Mar 2014 22:08:32 +0200
+Message-ID: <1395346112-13350-1-git-send-email-ivan.khoronzhuk@ti.com>
 MIME-Version: 1.0
-To: Santosh Shilimkar <santosh.shilimkar@ti.com>, Brian Norris
- <computersforpeace@gmail.com>
-Subject: Re: [PATCH 2/3] mtd: davinci-nand: add dts property for
- NAND_NO_SUBPAGE_WRITE option
-References: <1395335184-4745-1-git-send-email-ivan.khoronzhuk@ti.com>
- <1395335184-4745-3-git-send-email-ivan.khoronzhuk@ti.com>
- <532B2183.2080309@ti.com> <20140320172912.GW31517@norris-Latitude-E6410>
- <532B2766.6090506@ti.com> <D69011BE-C37F-4085-B992-45F6F32AF1D0@gmail.com>
- <532B2D3F.6050004@ti.com> <20140320185452.GB21018@ld-irv-0074>
- <532B3D74.6070703@ti.com>
-In-Reply-To: <532B3D74.6070703@ti.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, grygorii.strashko@ti.com,
- Russell King - ARM Linux <linux@arm.linux.org.uk>, pawel.moll@arm.com,
- ijc+devicetree@hellion.org.uk, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, Murali Karicheri <m-karicheri2@ti.com>,
- robh+dt@kernel.org, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, rob@landley.net, galak@codeaurora.org,
- David Woodhouse <dwmw2@infradead.org>, Warner Losh <imp@bsdimp.com>
+ linux@arm.linux.org.uk, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk,
+ linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+ linux-mtd@lists.infradead.org, m-karicheri2@ti.com, rob@landley.net,
+ Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>, Warner Losh <imp@bsdimp.com>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,49 +21,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+From: Murali Karicheri <m-karicheri2@ti.com>
 
-On 03/20/2014 09:11 PM, Santosh Shilimkar wrote:
-> On Thursday 20 March 2014 02:54 PM, Brian Norris wrote:
->> On Thu, Mar 20, 2014 at 02:02:39PM -0400, Santosh Shilimkar wrote:
->>> On Thursday 20 March 2014 01:44 PM, Warner Losh wrote:
->>>> I though sub page writing was one of the fields in the onfi and/or jedec(toggle) meta data structures. Have you looked there?
->>>>
->>> Am not sure if I follow you. The limitation is from the TI NAND controller(AEMIF) and
->>> not the NAND memory.
->> That doesn't match the patch description, which says "that flash doesn't
->> support subpage writing". Flash != flash controller.
->>
-> Patch description is indeed doesn't reflect the actual issue.
->
->> Which one is it? If it's a controller limitation, I think we should be
->> able to pull this from a "compatible" property, no?
->>
-> Just to be accurate, the limitation(bug) is on the controller found on Keystone
-> SOCs. AEMIF controller is also used on DaVinci SOCs which don't seems to have
-> any issue. So even for compatible, you need to add keystone specific one.
-> Hence thought dt property is better option.
->
-> regards,
-> Santosh
->
+Sub page write doesn't work because of hw issue in controller found on
+Keystone SOCs. AEMIF controller is also used on DaVinci SOCs which
+don't seems to have any issue. So add "ti,keysone-nand" compatible
+to nand driver in order to set NAND_NO_SUBPAGE_WRITE option.
 
-I will use compatible approach.
-We have keystone compatible in k2hk-evm.dts,
-so I need to add it only in the davinci-nand driver.
-I will add the following:
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: Warner Losh <imp@bsdimp.com>
+Cc: Santosh Shilimkar <santosh.shilimkar@ti.com>
 
-if (of_device_is_compatible(np, "ti,keystone-nand")) {
-             pdata->options |= NAND_NO_SUBPAGE_WRITE;
-  }
+Signed-off-by: Murali Karicheri <m-karicheri2@ti.com>
+Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+---
 
-...
+This patch is a result of discussion on patch v1:
+https://lkml.org/lkml/2014/3/20/461
 
-static const struct of_device_id davinci_nand_of_match[] = {
-     {.compatible = "ti,davinci-nand", },
-     {.compatible = "ti,keystone-nand", },
-     {},
-};
+ drivers/mtd/nand/davinci_nand.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
+diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
+index 4615d79..b922c8e 100644
+--- a/drivers/mtd/nand/davinci_nand.c
++++ b/drivers/mtd/nand/davinci_nand.c
+@@ -523,6 +523,7 @@ static struct nand_ecclayout hwecc4_2048 = {
+ #if defined(CONFIG_OF)
+ static const struct of_device_id davinci_nand_of_match[] = {
+ 	{.compatible = "ti,davinci-nand", },
++	{.compatible = "ti,keystone-nand", },
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(of, davinci_nand_of_match);
+@@ -581,6 +582,11 @@ static struct davinci_nand_pdata
+ 		    of_property_read_bool(pdev->dev.of_node,
+ 			"ti,davinci-nand-use-bbt"))
+ 			pdata->bbt_options = NAND_BBT_USE_FLASH;
++
++		if (of_device_is_compatible(pdev->dev.of_node,
++					    "ti,keystone-nand")) {
++			pdata->options |= NAND_NO_SUBPAGE_WRITE;
++		}
+ 	}
+ 
+ 	return dev_get_platdata(&pdev->dev);
 -- 
-Regards,
-Ivan Khoronzhuk
+1.8.3.2
