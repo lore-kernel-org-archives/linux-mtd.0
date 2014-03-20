@@ -1,16 +1,16 @@
-Received: from mail-we0-f173.google.com ([74.125.82.173])
+Received: from mail-wi0-f175.google.com ([209.85.212.175])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQZAY-0007TM-KJ
- for linux-mtd@lists.infradead.org; Thu, 20 Mar 2014 09:21:53 +0000
-Received: by mail-we0-f173.google.com with SMTP id w61so368741wes.32
- for <linux-mtd@lists.infradead.org>; Thu, 20 Mar 2014 02:21:27 -0700 (PDT)
+ id 1WQZAY-0007T2-KD
+ for linux-mtd@lists.infradead.org; Thu, 20 Mar 2014 09:21:57 +0000
+Received: by mail-wi0-f175.google.com with SMTP id cc10so5978267wib.2
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Mar 2014 02:21:23 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  computersforpeace@gmail.com
-Subject: [PATCH v6 05/36] mtd: st_spi_fsm: Supply a method to read from the
- FSM's FIFO
-Date: Thu, 20 Mar 2014 09:20:37 +0000
-Message-Id: <1395307268-12721-6-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH v6 03/36] mtd: st_spi_fsm: Initialise and configure the FSM
+ for normal working conditions
+Date: Thu, 20 Mar 2014 09:20:35 +0000
+Message-Id: <1395307268-12721-4-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1395307268-12721-1-git-send-email-lee.jones@linaro.org>
 References: <1395307268-12721-1-git-send-email-lee.jones@linaro.org>
 Cc: dwmw2@infradead.org, Lee Jones <lee.jones@linaro.org>,
@@ -24,52 +24,181 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When invoked the driver will attempt to read any available data from
-the FSM's data register. Any data collected from this FIFO would have
-originated from the flash chip.
+This patch uses default values to initialise a connected flash chip. This
+includes; a device soft reset, setting of a safe working frequency, a
+switch into Fast Sequencing Mode, configuring of timing data and a purge
+of the FIFO.
 
 Acked-by Angus Clark <angus.clark@st.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/devices/st_spi_fsm.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ drivers/mtd/devices/st_spi_fsm.c | 127 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 127 insertions(+)
 
 diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index 5e22c86..73e0f27 100644
+index 000bc25..7048ea7 100644
 --- a/drivers/mtd/devices/st_spi_fsm.c
 +++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -281,6 +281,32 @@ static void stfsm_wait_seq(struct stfsm *fsm)
- 	dev_err(fsm->dev, "timeout on sequence completion\n");
- }
+@@ -74,6 +74,10 @@
+ #define SPI_CFG_CS_SETUPHOLD(x)		(((x) & 0xff) << 16)
+ #define SPI_CFG_DATA_HOLD(x)		(((x) & 0xff) << 24)
  
-+static void stfsm_read_fifo(struct stfsm *fsm, uint32_t *buf,
-+			    const uint32_t size)
++#define SPI_CFG_DEFAULT_MIN_CS_HIGH    SPI_CFG_MIN_CS_HIGH(0x0AA)
++#define SPI_CFG_DEFAULT_CS_SETUPHOLD   SPI_CFG_CS_SETUPHOLD(0xA0)
++#define SPI_CFG_DEFAULT_DATA_HOLD      SPI_CFG_DATA_HOLD(0x00)
++
+ /*
+  * Register: SPI_FAST_SEQ_TRANSFER_SIZE
+  */
+@@ -185,19 +189,136 @@
+ #define STFSM_INST_WAIT			STFSM_INSTR(STFSM_OPC_WAIT,	0)
+ #define STFSM_INST_STOP			STFSM_INSTR(STFSM_OPC_STOP,	0)
+ 
++#define STFSM_DEFAULT_EMI_FREQ 100000000UL                        /* 100 MHz */
++#define STFSM_DEFAULT_WR_TIME  (STFSM_DEFAULT_EMI_FREQ * (15/1000)) /* 15ms */
++
++#define STFSM_FLASH_SAFE_FREQ  10000000UL                         /* 10 MHz */
++
+ struct stfsm {
+ 	struct device		*dev;
+ 	void __iomem		*base;
+ 	struct resource		*region;
+ 	struct mtd_info		mtd;
+ 	struct mutex		lock;
++
++	uint32_t                fifo_dir_delay;
+ };
+ 
++static inline uint32_t stfsm_fifo_available(struct stfsm *fsm)
 +{
-+	uint32_t remaining = size >> 2;
++	return (readl(fsm->base + SPI_FAST_SEQ_STA) >> 5) & 0x7f;
++}
++
++static void stfsm_clear_fifo(struct stfsm *fsm)
++{
 +	uint32_t avail;
-+	uint32_t words;
 +
-+	dev_dbg(fsm->dev, "Reading %d bytes from FIFO\n", size);
++	for (;;) {
++		avail = stfsm_fifo_available(fsm);
++		if (!avail)
++			break;
 +
-+	BUG_ON((((uint32_t)buf) & 0x3) || (size & 0x3));
-+
-+	while (remaining) {
-+		for (;;) {
-+			avail = stfsm_fifo_available(fsm);
-+			if (avail)
-+				break;
-+			udelay(1);
++		while (avail) {
++			readl(fsm->base + SPI_FAST_SEQ_DATA_REG);
++			avail--;
 +		}
-+		words = min(avail, remaining);
-+		remaining -= words;
-+
-+		readsl(fsm->base + SPI_FAST_SEQ_DATA_REG, buf, words);
-+		buf += words;
 +	}
 +}
 +
- static int stfsm_set_mode(struct stfsm *fsm, uint32_t mode)
++static int stfsm_set_mode(struct stfsm *fsm, uint32_t mode)
++{
++	int ret, timeout = 10;
++
++	/* Wait for controller to accept mode change */
++	while (--timeout) {
++		ret = readl(fsm->base + SPI_STA_MODE_CHANGE);
++		if (ret & 0x1)
++			break;
++		udelay(1);
++	}
++
++	if (!timeout)
++		return -EBUSY;
++
++	writel(mode, fsm->base + SPI_MODESELECT);
++
++	return 0;
++}
++
++static void stfsm_set_freq(struct stfsm *fsm, uint32_t spi_freq)
++{
++	uint32_t emi_freq;
++	uint32_t clk_div;
++
++	/* TODO: Make this dynamic */
++	emi_freq = STFSM_DEFAULT_EMI_FREQ;
++
++	/*
++	 * Calculate clk_div - values between 2 and 128
++	 * Multiple of 2, rounded up
++	 */
++	clk_div = 2 * DIV_ROUND_UP(emi_freq, 2 * spi_freq);
++	if (clk_div < 2)
++		clk_div = 2;
++	else if (clk_div > 128)
++		clk_div = 128;
++
++	/*
++	 * Determine a suitable delay for the IP to complete a change of
++	 * direction of the FIFO. The required delay is related to the clock
++	 * divider used. The following heuristics are based on empirical tests,
++	 * using a 100MHz EMI clock.
++	 */
++	if (clk_div <= 4)
++		fsm->fifo_dir_delay = 0;
++	else if (clk_div <= 10)
++		fsm->fifo_dir_delay = 1;
++	else
++		fsm->fifo_dir_delay = DIV_ROUND_UP(clk_div, 10);
++
++	dev_dbg(fsm->dev, "emi_clk = %uHZ, spi_freq = %uHZ, clk_div = %u\n",
++		emi_freq, spi_freq, clk_div);
++
++	writel(clk_div, fsm->base + SPI_CLOCKDIV);
++}
++
++static int stfsm_init(struct stfsm *fsm)
++{
++	int ret;
++
++	/* Perform a soft reset of the FSM controller */
++	writel(SEQ_CFG_SWRESET, fsm->base + SPI_FAST_SEQ_CFG);
++	udelay(1);
++	writel(0, fsm->base + SPI_FAST_SEQ_CFG);
++
++	/* Set clock to 'safe' frequency initially */
++	stfsm_set_freq(fsm, STFSM_FLASH_SAFE_FREQ);
++
++	/* Switch to FSM */
++	ret = stfsm_set_mode(fsm, SPI_MODESELECT_FSM);
++	if (ret)
++		return ret;
++
++	/* Set timing parameters */
++	writel(SPI_CFG_DEVICE_ST            |
++	       SPI_CFG_DEFAULT_MIN_CS_HIGH  |
++	       SPI_CFG_DEFAULT_CS_SETUPHOLD |
++	       SPI_CFG_DEFAULT_DATA_HOLD,
++	       fsm->base + SPI_CONFIGDATA);
++	writel(STFSM_DEFAULT_WR_TIME, fsm->base + SPI_STATUS_WR_TIME_REG);
++
++	/* Clear FIFO, just in case */
++	stfsm_clear_fifo(fsm);
++
++	return 0;
++}
++
+ static int stfsm_probe(struct platform_device *pdev)
  {
- 	int ret, timeout = 10;
+ 	struct device_node *np = pdev->dev.of_node;
+ 	struct resource *res;
+ 	struct stfsm *fsm;
++	int ret;
+ 
+ 	if (!np) {
+ 		dev_err(&pdev->dev, "No DT found\n");
+@@ -227,6 +348,12 @@ static int stfsm_probe(struct platform_device *pdev)
+ 
+ 	mutex_init(&fsm->lock);
+ 
++	ret = stfsm_init(fsm);
++	if (ret) {
++		dev_err(&pdev->dev, "Failed to initialise FSM Controller\n");
++		return ret;
++	}
++
+ 	fsm->mtd.dev.parent	= &pdev->dev;
+ 	fsm->mtd.type		= MTD_NORFLASH;
+ 	fsm->mtd.writesize	= 4;
 -- 
 1.8.3.2
