@@ -1,20 +1,26 @@
-Received: from mail-wi0-f174.google.com ([209.85.212.174])
- by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQZB2-0007iY-Qw
- for linux-mtd@lists.infradead.org; Thu, 20 Mar 2014 09:22:17 +0000
-Received: by mail-wi0-f174.google.com with SMTP id d1so5977851wiv.7
- for <linux-mtd@lists.infradead.org>; Thu, 20 Mar 2014 02:21:46 -0700 (PDT)
-From: Lee Jones <lee.jones@linaro.org>
-To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- computersforpeace@gmail.com
-Subject: [PATCH v6 13/36] mtd: st_spi_fsm: Add device-tree binding
- documentation
-Date: Thu, 20 Mar 2014 09:20:45 +0000
-Message-Id: <1395307268-12721-14-git-send-email-lee.jones@linaro.org>
-In-Reply-To: <1395307268-12721-1-git-send-email-lee.jones@linaro.org>
-References: <1395307268-12721-1-git-send-email-lee.jones@linaro.org>
-Cc: dwmw2@infradead.org, Lee Jones <lee.jones@linaro.org>,
- linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, Angus.Clark@st.com
+Date: Thu, 20 Mar 2014 10:21:53 +0100
+From: Lothar =?UTF-8?B?V2HDn21hbm4=?= <LW@KARO-electronics.de>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH] mtd: gpmi: make blockmark swapping optional
+Message-ID: <20140320102153.7106f915@ipc1.ka-ro>
+In-Reply-To: <532AB1A2.9010702@freescale.com>
+References: <1395235406-13449-1-git-send-email-y>
+ <532AB1A2.9010702@freescale.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Fabio Estevam <fabio.estevam@freescale.com>,
+ Mark Rutland <mark.rutland@arm.com>, Russell King <linux@arm.linux.org.uk>,
+ Pawel Moll <pawel.moll@arm.com>, Arnd Bergmann <arnd@arndb.de>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, y@karo-electronics.de,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ Rob Landley <rob@landley.net>, Kumar Gala <galak@codeaurora.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Sascha Hauer <kernel@pengutronix.de>,
+ Shawn Guo <shawn.guo@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,45 +30,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Cc: devicetree@vger.kernel.org
-Acked-by Angus Clark <angus.clark@st.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- Documentation/devicetree/bindings/mtd/st-fsm.txt | 26 ++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/st-fsm.txt
+Hi,
 
-diff --git a/Documentation/devicetree/bindings/mtd/st-fsm.txt b/Documentation/devicetree/bindings/mtd/st-fsm.txt
-new file mode 100644
-index 0000000..c248939
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/st-fsm.txt
-@@ -0,0 +1,26 @@
-+* ST-Microelectronics SPI FSM Serial (NOR) Flash Controller
-+
-+Required properties:
-+  - compatible : Should be "st,spi-fsm"
-+  - reg        : Contains register's location and length.
-+  - reg-names  : Should contain the reg names "spi-fsm"
-+  - interrupts : The interrupt number
-+  - pinctrl-0  : Standard Pinctrl phandle (see: pinctrl/pinctrl-bindings.txt)
-+
-+Optional properties:
-+  - st,syscfg          : Phandle to boot-device system configuration registers
-+  - st,boot-device-reg : Address of the aforementioned boot-device register(s)
-+  - st,boot-device-spi : Expected boot-device value if booted via this device
-+
-+Example:
-+	spifsm: spifsm@fe902000{
-+	        compatible         = "st,spi-fsm";
-+	        reg                =  <0xfe902000 0x1000>;
-+	        reg-names          = "spi-fsm";
-+	        pinctrl-0          = <&pinctrl_fsm>;
-+		st,syscfg	   = <&syscfg_rear>;
-+	        st,boot-device-reg = <0x958>;
-+	        st,boot-device-spi = <0x1a>;
-+		status = "okay";
-+	};
-+
--- 
-1.8.3.2
+Huang Shijie wrote:
+> =E4=BA=8E 2014=E5=B9=B403=E6=9C=8819=E6=97=A5 21:23, y@karo-electronics.d=
+e =E5=86=99=E9=81=93:
+> > configurable via DT. This is required for the Ka-Ro electronics
+> > platforms.
+> >
+> If you disable the swapping, you will disable the NAND boot in actually.
+>=20
+No. All our modules do boot from NAND and none of them does the
+swapping.
+
+
+Lothar Wa=C3=9Fmann
+--=20
+___________________________________________________________
+
+Ka-Ro electronics GmbH | Pascalstra=C3=9Fe 22 | D - 52076 Aachen
+Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
+Gesch=C3=A4ftsf=C3=BChrer: Matthias Kaussen
+Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
+
+www.karo-electronics.de | info@karo-electronics.de
+___________________________________________________________
