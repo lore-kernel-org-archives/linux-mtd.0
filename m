@@ -1,20 +1,20 @@
-Received: from mail-we0-f174.google.com ([74.125.82.174])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQZBc-0007ii-MD
- for linux-mtd@lists.infradead.org; Thu, 20 Mar 2014 09:23:01 +0000
-Received: by mail-we0-f174.google.com with SMTP id t60so367091wes.33
- for <linux-mtd@lists.infradead.org>; Thu, 20 Mar 2014 02:22:30 -0700 (PDT)
+Received: from mail-wi0-f174.google.com ([209.85.212.174])
+ by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WQZB2-0007iY-Qw
+ for linux-mtd@lists.infradead.org; Thu, 20 Mar 2014 09:22:17 +0000
+Received: by mail-wi0-f174.google.com with SMTP id d1so5977851wiv.7
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Mar 2014 02:21:46 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  computersforpeace@gmail.com
-Subject: [PATCH v6 34/36] mtd: st_spi_fsm: Move runtime configurable msg
- sequences into device's struct
-Date: Thu, 20 Mar 2014 09:21:06 +0000
-Message-Id: <1395307268-12721-35-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH v6 13/36] mtd: st_spi_fsm: Add device-tree binding
+ documentation
+Date: Thu, 20 Mar 2014 09:20:45 +0000
+Message-Id: <1395307268-12721-14-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1395307268-12721-1-git-send-email-lee.jones@linaro.org>
 References: <1395307268-12721-1-git-send-email-lee.jones@linaro.org>
 Cc: dwmw2@infradead.org, Lee Jones <lee.jones@linaro.org>,
- linux-mtd@lists.infradead.org, Angus.Clark@st.com
+ linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, Angus.Clark@st.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,205 +24,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Until now the dynamically configurable message sequences for read, write
-and enable 32bit addressing have been global. Brian makes a good point
-why this should not be the case. If there are ever two FSM's located on
-the same platform, we could be potentially introducing a race condition
-on "needlessly shared data".
-
-Suggested-by: Brian Norris <computersforpeace@gmail.com>
+Cc: devicetree@vger.kernel.org
 Acked-by Angus Clark <angus.clark@st.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/devices/st_spi_fsm.c | 64 ++++++++++++++++++++--------------------
- 1 file changed, 32 insertions(+), 32 deletions(-)
+ Documentation/devicetree/bindings/mtd/st-fsm.txt | 26 ++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/st-fsm.txt
 
-diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index dc9412a..dccbac0 100644
---- a/drivers/mtd/devices/st_spi_fsm.c
-+++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -273,6 +273,19 @@
- #define CFG_ERASESEC_TOGGLE_32BIT_ADDR 0x00000008
- #define CFG_S25FL_CHECK_ERROR_FLAGS    0x00000010
- 
-+struct stfsm_seq {
-+	uint32_t data_size;
-+	uint32_t addr1;
-+	uint32_t addr2;
-+	uint32_t addr_cfg;
-+	uint32_t seq_opc[5];
-+	uint32_t mode;
-+	uint32_t dummy;
-+	uint32_t status;
-+	uint8_t  seq[16];
-+	uint32_t seq_cfg;
-+} __packed __aligned(4);
+diff --git a/Documentation/devicetree/bindings/mtd/st-fsm.txt b/Documentation/devicetree/bindings/mtd/st-fsm.txt
+new file mode 100644
+index 0000000..c248939
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/st-fsm.txt
+@@ -0,0 +1,26 @@
++* ST-Microelectronics SPI FSM Serial (NOR) Flash Controller
 +
- struct stfsm {
- 	struct device		*dev;
- 	void __iomem		*base;
-@@ -286,20 +299,11 @@ struct stfsm {
- 	bool                    booted_from_spi;
- 	bool                    reset_signal;
- 	bool                    reset_por;
--};
- 
--struct stfsm_seq {
--	uint32_t data_size;
--	uint32_t addr1;
--	uint32_t addr2;
--	uint32_t addr_cfg;
--	uint32_t seq_opc[5];
--	uint32_t mode;
--	uint32_t dummy;
--	uint32_t status;
--	uint8_t  seq[16];
--	uint32_t seq_cfg;
--} __packed __aligned(4);
-+	struct stfsm_seq stfsm_seq_read;
-+	struct stfsm_seq stfsm_seq_write;
-+	struct stfsm_seq stfsm_seq_en_32bit_addr;
-+};
- 
- /* Parameters to configure a READ or WRITE FSM sequence */
- struct seq_rw_config {
-@@ -587,10 +591,6 @@ static struct seq_rw_config stfsm_s25fl_write4_configs[] = {
-  */
- #define W25Q_STATUS_QE			(0x1 << 9)
- 
--static struct stfsm_seq stfsm_seq_read;		/* Dynamically populated */
--static struct stfsm_seq stfsm_seq_write;	/* Dynamically populated */
--static struct stfsm_seq stfsm_seq_en_32bit_addr;/* Dynamically populated */
--
- static struct stfsm_seq stfsm_seq_read_jedec = {
- 	.data_size = TRANSFER_SIZE(8),
- 	.seq_opc[0] = (SEQ_OPC_PADS_1 |
-@@ -826,7 +826,7 @@ static int stfsm_write_fifo(struct stfsm *fsm,
- 
- static int stfsm_enter_32bit_addr(struct stfsm *fsm, int enter)
- {
--	struct stfsm_seq *seq = &stfsm_seq_en_32bit_addr;
-+	struct stfsm_seq *seq = &fsm->stfsm_seq_en_32bit_addr;
- 	uint32_t cmd = enter ? FLASH_CMD_EN4B_ADDR : FLASH_CMD_EX4B_ADDR;
- 
- 	seq->seq_opc[0] = (SEQ_OPC_PADS_1 |
-@@ -1101,7 +1101,7 @@ static int stfsm_prepare_rwe_seqs_default(struct stfsm *fsm)
- 	int ret;
- 
- 	/* Configure 'READ' sequence */
--	ret = stfsm_search_prepare_rw_seq(fsm, &stfsm_seq_read,
-+	ret = stfsm_search_prepare_rw_seq(fsm, &fsm->stfsm_seq_read,
- 					  default_read_configs);
- 	if (ret) {
- 		dev_err(fsm->dev,
-@@ -1111,7 +1111,7 @@ static int stfsm_prepare_rwe_seqs_default(struct stfsm *fsm)
- 	}
- 
- 	/* Configure 'WRITE' sequence */
--	ret = stfsm_search_prepare_rw_seq(fsm, &stfsm_seq_write,
-+	ret = stfsm_search_prepare_rw_seq(fsm, &fsm->stfsm_seq_write,
- 					  default_write_configs);
- 	if (ret) {
- 		dev_err(fsm->dev,
-@@ -1146,7 +1146,7 @@ static int stfsm_mx25_config(struct stfsm *fsm)
- 	 */
- 	if (flags & FLASH_FLAG_32BIT_ADDR) {
- 		/* Configure 'enter_32bitaddr' FSM sequence */
--		stfsm_mx25_en_32bit_addr_seq(&stfsm_seq_en_32bit_addr);
-+		stfsm_mx25_en_32bit_addr_seq(&fsm->stfsm_seq_en_32bit_addr);
- 
- 		soc_reset = stfsm_can_handle_soc_reset(fsm);
- 		if (soc_reset || !fsm->booted_from_spi) {
-@@ -1169,7 +1169,7 @@ static int stfsm_mx25_config(struct stfsm *fsm)
- 	}
- 
- 	/* For QUAD mode, set 'QE' STATUS bit */
--	data_pads = ((stfsm_seq_read.seq_cfg >> 16) & 0x3) + 1;
-+	data_pads = ((fsm->stfsm_seq_read.seq_cfg >> 16) & 0x3) + 1;
- 	if (data_pads == 4) {
- 		stfsm_read_status(fsm, FLASH_CMD_RDSR, &sta);
- 		sta |= MX25_STATUS_QE;
-@@ -1188,10 +1188,10 @@ static int stfsm_n25q_config(struct stfsm *fsm)
- 
- 	/* Configure 'READ' sequence */
- 	if (flags & FLASH_FLAG_32BIT_ADDR)
--		ret = stfsm_search_prepare_rw_seq(fsm, &stfsm_seq_read,
-+		ret = stfsm_search_prepare_rw_seq(fsm, &fsm->stfsm_seq_read,
- 						  n25q_read4_configs);
- 	else
--		ret = stfsm_search_prepare_rw_seq(fsm, &stfsm_seq_read,
-+		ret = stfsm_search_prepare_rw_seq(fsm, &fsm->stfsm_seq_read,
- 						  n25q_read3_configs);
- 	if (ret) {
- 		dev_err(fsm->dev,
-@@ -1201,7 +1201,7 @@ static int stfsm_n25q_config(struct stfsm *fsm)
- 	}
- 
- 	/* Configure 'WRITE' sequence (default configs) */
--	ret = stfsm_search_prepare_rw_seq(fsm, &stfsm_seq_write,
-+	ret = stfsm_search_prepare_rw_seq(fsm, &fsm->stfsm_seq_write,
- 					  default_write_configs);
- 	if (ret) {
- 		dev_err(fsm->dev,
-@@ -1215,7 +1215,7 @@ static int stfsm_n25q_config(struct stfsm *fsm)
- 
- 	/* Configure 32-bit address support */
- 	if (flags & FLASH_FLAG_32BIT_ADDR) {
--		stfsm_n25q_en_32bit_addr_seq(&stfsm_seq_en_32bit_addr);
-+		stfsm_n25q_en_32bit_addr_seq(&fsm->stfsm_seq_en_32bit_addr);
- 
- 		soc_reset = stfsm_can_handle_soc_reset(fsm);
- 		if (soc_reset || !fsm->booted_from_spi) {
-@@ -1374,12 +1374,12 @@ static int stfsm_s25fl_config(struct stfsm *fsm)
- 		 * Prepare Read/Write/Erase sequences according to S25FLxxx
- 		 * 32-bit address command set
- 		 */
--		ret = stfsm_search_prepare_rw_seq(fsm, &stfsm_seq_read,
-+		ret = stfsm_search_prepare_rw_seq(fsm, &fsm->stfsm_seq_read,
- 						  stfsm_s25fl_read4_configs);
- 		if (ret)
- 			return ret;
- 
--		ret = stfsm_search_prepare_rw_seq(fsm, &stfsm_seq_write,
-+		ret = stfsm_search_prepare_rw_seq(fsm, &fsm->stfsm_seq_write,
- 						  stfsm_s25fl_write4_configs);
- 		if (ret)
- 			return ret;
-@@ -1415,7 +1415,7 @@ static int stfsm_s25fl_config(struct stfsm *fsm)
- 	}
- 
- 	/* Check status of 'QE' bit */
--	data_pads = ((stfsm_seq_read.seq_cfg >> 16) & 0x3) + 1;
-+	data_pads = ((fsm->stfsm_seq_read.seq_cfg >> 16) & 0x3) + 1;
- 	stfsm_read_status(fsm, FLASH_CMD_RDSR2, &cr1);
- 	if (data_pads == 4) {
- 		if (!(cr1 & STFSM_S25FL_CONFIG_QE)) {
-@@ -1465,7 +1465,7 @@ static int stfsm_w25q_config(struct stfsm *fsm)
- 		return ret;
- 
- 	/* If using QUAD mode, set QE STATUS bit */
--	data_pads = ((stfsm_seq_read.seq_cfg >> 16) & 0x3) + 1;
-+	data_pads = ((fsm->stfsm_seq_read.seq_cfg >> 16) & 0x3) + 1;
- 	if (data_pads == 4) {
- 		stfsm_read_status(fsm, FLASH_CMD_RDSR, &sta1);
- 		stfsm_read_status(fsm, FLASH_CMD_RDSR2, &sta2);
-@@ -1485,7 +1485,7 @@ static int stfsm_w25q_config(struct stfsm *fsm)
- static int stfsm_read(struct stfsm *fsm, uint8_t *buf, uint32_t size,
- 		      uint32_t offset)
- {
--	struct stfsm_seq *seq = &stfsm_seq_read;
-+	struct stfsm_seq *seq = &fsm->stfsm_seq_read;
- 	uint32_t data_pads;
- 	uint32_t read_mask;
- 	uint32_t size_ub;
-@@ -1546,7 +1546,7 @@ static int stfsm_read(struct stfsm *fsm, uint8_t *buf, uint32_t size,
- static int stfsm_write(struct stfsm *fsm, const uint8_t *const buf,
- 		       const uint32_t size, const uint32_t offset)
- {
--	struct stfsm_seq *seq = &stfsm_seq_write;
-+	struct stfsm_seq *seq = &fsm->stfsm_seq_write;
- 	uint32_t data_pads;
- 	uint32_t write_mask;
- 	uint32_t size_ub;
++Required properties:
++  - compatible : Should be "st,spi-fsm"
++  - reg        : Contains register's location and length.
++  - reg-names  : Should contain the reg names "spi-fsm"
++  - interrupts : The interrupt number
++  - pinctrl-0  : Standard Pinctrl phandle (see: pinctrl/pinctrl-bindings.txt)
++
++Optional properties:
++  - st,syscfg          : Phandle to boot-device system configuration registers
++  - st,boot-device-reg : Address of the aforementioned boot-device register(s)
++  - st,boot-device-spi : Expected boot-device value if booted via this device
++
++Example:
++	spifsm: spifsm@fe902000{
++	        compatible         = "st,spi-fsm";
++	        reg                =  <0xfe902000 0x1000>;
++	        reg-names          = "spi-fsm";
++	        pinctrl-0          = <&pinctrl_fsm>;
++		st,syscfg	   = <&syscfg_rear>;
++	        st,boot-device-reg = <0x958>;
++	        st,boot-device-spi = <0x1a>;
++		status = "okay";
++	};
++
 -- 
 1.8.3.2
