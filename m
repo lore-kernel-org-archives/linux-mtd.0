@@ -1,13 +1,13 @@
 Received: from arroyo.ext.ti.com ([192.94.94.40])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQcsx-0000YJ-Q0
- for linux-mtd@lists.infradead.org; Thu, 20 Mar 2014 13:19:54 +0000
+ id 1WQctB-0000aM-Nj
+ for linux-mtd@lists.infradead.org; Thu, 20 Mar 2014 13:20:07 +0000
 From: Pekon Gupta <pekon@ti.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v8 1/4] mtd: devices: elm: check for hardware engine's design
- constraints
-Date: Thu, 20 Mar 2014 18:48:34 +0530
-Message-ID: <1395321517-4490-2-git-send-email-pekon@ti.com>
+Subject: [PATCH v8 3/4] mtd: devices: elm: configure parallel channels based
+ on ecc_steps
+Date: Thu, 20 Mar 2014 18:48:36 +0530
+Message-ID: <1395321517-4490-4-git-send-email-pekon@ti.com>
 In-Reply-To: <1395321517-4490-1-git-send-email-pekon@ti.com>
 References: <1395321517-4490-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
@@ -24,92 +24,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ELM hardware engine is used by BCH ecc-schemes for detecting and locating ECC
-errors. This patch adds the following checks for ELM hardware engine:
-
- - ELM internal buffers are of 1K,
-   so it cannot process data with ecc-step-size > 1K.
-
- - ELM engine can execute upto maximum of 8 threads in parallel,
-   so in *page-mode* (when complete page is processed in single iteration),
-   ELM cannot support ecc-steps > 8.
+ELM hardware can process up to maximum of 8 hannels in parallel for
+ECC error detection. Currently the number of channels getting configured for
+processing is static determined by macro ERROR_VECTOR_MAX. However, the actual
+number of channels that need to be processed is the ECC step number.
+This patch just avoids configuring extra unused channels.
 
 Signed-off-by: Pekon Gupta <pekon@ti.com>
 ---
- drivers/mtd/devices/elm.c         | 13 ++++++++++++-
- drivers/mtd/nand/omap2.c          |  9 ++++++---
- include/linux/platform_data/elm.h |  3 ++-
- 3 files changed, 20 insertions(+), 5 deletions(-)
+ drivers/mtd/devices/elm.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/mtd/devices/elm.c b/drivers/mtd/devices/elm.c
-index f160d2c..c51752a 100644
+index 4fbfaf6..26df41f 100644
 --- a/drivers/mtd/devices/elm.c
 +++ b/drivers/mtd/devices/elm.c
-@@ -103,7 +103,8 @@ static u32 elm_read_reg(struct elm_info *info, int offset)
-  * @dev:	ELM device
-  * @bch_type:	Type of BCH ecc
-  */
--int elm_config(struct device *dev, enum bch_ecc bch_type)
-+int elm_config(struct device *dev, enum bch_ecc bch_type,
-+	int ecc_steps, int ecc_step_size, int ecc_syndrome_size)
- {
- 	u32 reg_val;
- 	struct elm_info *info = dev_get_drvdata(dev);
-@@ -112,6 +113,16 @@ int elm_config(struct device *dev, enum bch_ecc bch_type)
- 		dev_err(dev, "Unable to configure elm - device not probed?\n");
- 		return -ENODEV;
- 	}
-+	/* ELM cannot detect ECC errors for chunks > 1KB */
-+	if (ecc_step_size > ((ELM_ECC_SIZE + 1) / 2)) {
-+		dev_err(dev, "unsupported config ecc-size=%d\n", ecc_step_size);
-+		return -EINVAL;
-+	}
-+	/* ELM support 8 error syndrome process */
-+	if (ecc_steps > ERROR_VECTOR_MAX) {
-+		dev_err(dev, "unsupported config ecc-step=%d\n", ecc_steps);
-+		return -EINVAL;
-+	}
+@@ -84,6 +84,7 @@ struct elm_info {
+ 	struct list_head list;
+ 	enum bch_ecc bch_type;
+ 	struct elm_registers elm_regs;
++	int ecc_steps;
+ 	int ecc_syndrome_size;
+ };
  
+@@ -128,6 +129,7 @@ int elm_config(struct device *dev, enum bch_ecc bch_type,
  	reg_val = (bch_type & ECC_BCH_LEVEL_MASK) | (ELM_ECC_SIZE << 16);
  	elm_write_reg(info, ELM_LOCATION_CONFIG, reg_val);
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index ab9c472..6f9b339 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -1540,6 +1540,8 @@ static int is_elm_present(struct omap_nand_info *info,
- 			struct device_node *elm_node, enum bch_ecc bch_type)
- {
- 	struct platform_device *pdev;
-+	struct nand_ecc_ctrl *ecc = &info->nand.ecc;
-+	int err;
- 	/* check whether elm-id is passed via DT */
- 	if (!elm_node) {
- 		pr_err("nand: error: ELM DT node not found\n");
-@@ -1553,9 +1555,10 @@ static int is_elm_present(struct omap_nand_info *info,
- 	}
- 	/* ELM module available, now configure it */
- 	info->elm_dev = &pdev->dev;
--	if (elm_config(info->elm_dev, bch_type))
--		return -ENODEV;
--	return 0;
-+	err = elm_config(info->elm_dev, bch_type,
-+		(info->mtd.writesize / ecc->size), ecc->size, ecc->bytes);
-+
-+	return err;
- }
- #endif /* CONFIG_MTD_NAND_ECC_BCH */
+ 	info->bch_type		= bch_type;
++	info->ecc_steps		= ecc_steps;
+ 	info->ecc_syndrome_size	= ecc_syndrome_size;
  
-diff --git a/include/linux/platform_data/elm.h b/include/linux/platform_data/elm.h
-index bf0a83b..6e37156 100644
---- a/include/linux/platform_data/elm.h
-+++ b/include/linux/platform_data/elm.h
-@@ -50,5 +50,6 @@ struct elm_errorvec {
+ 	return 0;
+@@ -170,7 +172,7 @@ static void elm_load_syndrome(struct elm_info *info,
+ 	int i, offset;
+ 	u32 val;
  
- void elm_decode_bch_error_page(struct device *dev, u8 *ecc_calc,
- 		struct elm_errorvec *err_vec);
--int elm_config(struct device *dev, enum bch_ecc bch_type);
-+int elm_config(struct device *dev, enum bch_ecc bch_type,
-+	int ecc_steps, int ecc_step_size, int ecc_syndrome_size);
- #endif /* __ELM_H */
+-	for (i = 0; i < ERROR_VECTOR_MAX; i++) {
++	for (i = 0; i < info->ecc_steps; i++) {
+ 
+ 		/* Check error reported */
+ 		if (err_vec[i].error_reported) {
+@@ -238,7 +240,7 @@ static void elm_start_processing(struct elm_info *info,
+ 	 * Set syndrome vector valid, so that ELM module
+ 	 * will process it for vectors error is reported
+ 	 */
+-	for (i = 0; i < ERROR_VECTOR_MAX; i++) {
++	for (i = 0; i < info->ecc_steps; i++) {
+ 		if (err_vec[i].error_reported) {
+ 			offset = ELM_SYNDROME_FRAGMENT_6 +
+ 				SYNDROME_FRAGMENT_REG_SIZE * i;
+@@ -267,7 +269,7 @@ static void elm_error_correction(struct elm_info *info,
+ 	int offset;
+ 	u32 reg_val;
+ 
+-	for (i = 0; i < ERROR_VECTOR_MAX; i++) {
++	for (i = 0; i < info->ecc_steps; i++) {
+ 
+ 		/* Check error reported */
+ 		if (err_vec[i].error_reported) {
 -- 
 1.8.5.1.163.gd7aced9
