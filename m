@@ -1,22 +1,21 @@
-Received: from mail-pa0-x236.google.com ([2607:f8b0:400e:c03::236])
+Received: from mail-pb0-x22d.google.com ([2607:f8b0:400e:c01::22d])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQaj1-0003Qh-4F
- for linux-mtd@lists.infradead.org; Thu, 20 Mar 2014 11:01:27 +0000
-Received: by mail-pa0-f54.google.com with SMTP id lf10so780284pab.13
- for <linux-mtd@lists.infradead.org>; Thu, 20 Mar 2014 04:01:05 -0700 (PDT)
-Date: Thu, 20 Mar 2014 04:00:59 -0700
+ id 1WQanO-0003au-Lo
+ for linux-mtd@lists.infradead.org; Thu, 20 Mar 2014 11:05:59 +0000
+Received: by mail-pb0-f45.google.com with SMTP id uo5so787157pbc.32
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Mar 2014 04:05:34 -0700 (PDT)
+Date: Thu, 20 Mar 2014 04:05:31 -0700
 From: Brian Norris <computersforpeace@gmail.com>
 To: Pekon Gupta <pekon@ti.com>
-Subject: Re: [PATCH v5 4/4] mtd: devices: elm: update DRIVER_NAME as "omap-elm"
-Message-ID: <20140320110059.GO31517@norris-Latitude-E6410>
-References: <1393845563-7800-1-git-send-email-pekon@ti.com>
- <1393845563-7800-5-git-send-email-pekon@ti.com>
+Subject: Re: [PATCH v7 0/4] mtd: devices: elm: add checks ELM H/W constrains,
+ driver code cleanup
+Message-ID: <20140320110531.GP31517@norris-Latitude-E6410>
+References: <1395300118-32202-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1393845563-7800-5-git-send-email-pekon@ti.com>
+In-Reply-To: <1395300118-32202-1-git-send-email-pekon@ti.com>
 Cc: Stefan Roese <sr@denx.de>, linux-mtd <linux-mtd@lists.infradead.org>,
- Felipe Balbi <balbi@ti.com>,
  Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,41 +26,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Mar 03, 2014 at 04:49:23PM +0530, Pekon Gupta wrote:
-> use "omap-elm" as DRIVER_NAME
-> prefix DRIVER_NAME in debug and error messages
-> 
-> Signed-off-by: Pekon Gupta <pekon@ti.com>
-> ---
->  drivers/mtd/devices/elm.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/devices/elm.c b/drivers/mtd/devices/elm.c
-> index 43fd81d..16e62ae 100644
-> --- a/drivers/mtd/devices/elm.c
-> +++ b/drivers/mtd/devices/elm.c
-> @@ -15,6 +15,9 @@
->   *
->   */
->  
-> +#define	DRIVER_NAME	"omap-elm"
+On Thu, Mar 20, 2014 at 12:51:54PM +0530, Pekon Gupta wrote:
+> *changes v6 -> v7*
+> Incorporated feedbacks from Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+>  - using dev_err() instead of pr_err()
+>  - moved un-related addition of info->ecc_steps, info->ecc_step_bytes,
+>    info->ecc_step_size from [PATCH v6 1/4] into subsequent patches
+>  - dropped pr_fmt() change
 
-Your spacing is a little off. You have a tab between 'define' and
-'DRIVER_NAME'.
+I just realized I replied to the old patches (v5 or so?). But I think
+all my comments apply to this series. If you can address the comments,
+then you have my Ack.
 
-> +#define pr_fmt(fmt)	DRIVER_NAME ": " fmt
-> +
->  #include <linux/platform_device.h>
->  #include <linux/module.h>
->  #include <linux/interrupt.h>
-> @@ -522,7 +525,7 @@ MODULE_DEVICE_TABLE(of, elm_of_match);
->  
->  static struct platform_driver elm_driver = {
->  	.driver	= {
-> -		.name	= "elm",
-> +		.name	= DRIVER_NAME,
->  		.owner	= THIS_MODULE,
->  		.of_match_table = of_match_ptr(elm_of_match),
->  		.pm	= &elm_pm_ops,
-
+Regards,
 Brian
