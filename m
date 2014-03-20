@@ -1,22 +1,24 @@
-Received: from mail-pa0-f45.google.com ([209.85.220.45])
+Received: from mail-pd0-x22b.google.com ([2607:f8b0:400e:c02::22b])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQaKX-0002ap-JP
- for linux-mtd@lists.infradead.org; Thu, 20 Mar 2014 10:36:10 +0000
-Received: by mail-pa0-f45.google.com with SMTP id kl14so750086pab.32
- for <linux-mtd@lists.infradead.org>; Thu, 20 Mar 2014 03:35:44 -0700 (PDT)
-Date: Thu, 20 Mar 2014 03:35:32 -0700
+ id 1WQabE-00033P-5S
+ for linux-mtd@lists.infradead.org; Thu, 20 Mar 2014 10:53:25 +0000
+Received: by mail-pd0-f171.google.com with SMTP id r10so760282pdi.2
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Mar 2014 03:53:02 -0700 (PDT)
+Date: Thu, 20 Mar 2014 03:52:59 -0700
 From: Brian Norris <computersforpeace@gmail.com>
 To: Pekon Gupta <pekon@ti.com>
-Subject: Re: [PATCH v6 0/4] mtd: nand: omap: optimize chip->ecc.calculate()
- for H/W ECC schemes
-Message-ID: <20140320103532.GL31517@norris-Latitude-E6410>
-References: <1393410194-15094-1-git-send-email-pekon@ti.com>
+Subject: Re: [PATCH v5 1/4] mtd: devices: elm: check for hardware engine's
+ design constrains
+Message-ID: <20140320105259.GM31517@norris-Latitude-E6410>
+References: <1393845563-7800-1-git-send-email-pekon@ti.com>
+ <1393845563-7800-2-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1393410194-15094-1-git-send-email-pekon@ti.com>
+In-Reply-To: <1393845563-7800-2-git-send-email-pekon@ti.com>
 Cc: Stefan Roese <sr@denx.de>, linux-mtd <linux-mtd@lists.infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+ Felipe Balbi <balbi@ti.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,32 +28,132 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Feb 26, 2014 at 03:53:10PM +0530, Pekon Gupta wrote:
-> Changes v6->v7
-> rebased on http://lists.infradead.org/pipermail/linux-mtd/2014-February/052092.html
-> 
-> This patch series is split version of earlier patch:
-> http://lists.infradead.org/pipermail/linux-mtd/2013-November/050240.html
-> 
-> chip->ecc.calculate() is used for calculating and fetching of ECC syndrome by
-> processing the data passed during Read/Write accesses.
-> Though all H/W ECC schemes in OMAP NAND use GPMC controller for ECC calculation
-> But each of them implements its own callback to process and fetch ECC syndrome.
-> 
-> This patch tries to merge common code for different BCHx_ECC schemes into single
-> omap_calculate_ecc_bch(). This imporves scalability for future ecc-schemes.
-> Following is the summary of this patch series.
->  +----------------------+---------------------------+--------------------------+
->  | ecc-scheme           | nand_chip->ecc.calculate  | nand_chip->ecc.calculate |
->  |                      | (before this patch series)| (after this patch series)|
->  +----------------------+---------------------------+--------------------------+
->  | HAM1_ECC             | omap_calculate_ecc()      | omap_calculate_ecc()     |
->  | BCH4_HW_DETECTION_SW | omap3_calculate_ecc_bch4()| omap_calculate_ecc_bch() |
->  | BCH4_HW              | omap3_calculate_ecc_bch() | omap_calculate_ecc_bch() |
->  | BCH8_HW_DETECTION_SW | omap3_calculate_ecc_bch8()| omap_calculate_ecc_bch() |
->  | BCH8_HW              | omap3_calculate_ecc_bch() | omap_calculate_ecc_bch() |
->  +----------------------+---------------------------+--------------------------+
+On Mon, Mar 03, 2014 at 04:49:20PM +0530, Pekon Gupta wrote:
+> ELM hardware engine is used by BCH ecc-schemes for detecting and locating
+> ECC errors. This patch adds following checks as per ELM design constrains:
 
-Pushed to l2-mtd.git. Thanks!
+s/constrains/constraints/
+
+> 
+>  - ELM internal buffers are of 1K,
+>    So it cannot process data with ecc-step-size > 1K.
+> 
+>  - ELM engine can execute upto maximum of 8 threads in parallel,
+>    So in *page-mode* (when complete page is processed in single iteration),
+>    ELM cannot support ecc-steps > 8.
+> 
+> Signed-off-by: Pekon Gupta <pekon@ti.com>
+> ---
+>  drivers/mtd/devices/elm.c         | 19 ++++++++++++++++++-
+>  drivers/mtd/nand/omap2.c          |  9 ++++++---
+>  include/linux/platform_data/elm.h |  3 ++-
+>  3 files changed, 26 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/mtd/devices/elm.c b/drivers/mtd/devices/elm.c
+> index f160d2c..7fda50f 100644
+> --- a/drivers/mtd/devices/elm.c
+> +++ b/drivers/mtd/devices/elm.c
+> @@ -84,6 +84,9 @@ struct elm_info {
+>  	struct list_head list;
+>  	enum bch_ecc bch_type;
+>  	struct elm_registers elm_regs;
+> +	int ecc_steps;
+> +	int ecc_step_size;
+> +	int ecc_step_bytes;
+
+I'm not sure 'ecc_step_bytes' is the right name. It sounds too similar
+to 'ecc_step_size', when in fact it means "ECC syndrome bytes per step",
+right? Maybe just 'ecc_syndrome_size'?
+
+>  };
+>  
+>  static LIST_HEAD(elm_devices);
+> @@ -103,7 +106,8 @@ static u32 elm_read_reg(struct elm_info *info, int offset)
+>   * @dev:	ELM device
+>   * @bch_type:	Type of BCH ecc
+>   */
+> -int elm_config(struct device *dev, enum bch_ecc bch_type)
+> +int elm_config(struct device *dev, enum bch_ecc bch_type,
+> +	int ecc_steps, int ecc_step_size, int ecc_step_bytes)
+>  {
+>  	u32 reg_val;
+>  	struct elm_info *info = dev_get_drvdata(dev);
+> @@ -112,10 +116,23 @@ int elm_config(struct device *dev, enum bch_ecc bch_type)
+>  		dev_err(dev, "Unable to configure elm - device not probed?\n");
+>  		return -ENODEV;
+>  	}
+> +	/* ELM cannot detect ECC errors for chunks > 1KB */
+> +	if (ecc_step_size > (ELM_ECC_SIZE/2 + 1)) {
+
+Please add a space around the divide operator:
+
+	if (ecc_step_size > (ELM_ECC_SIZE / 2 + 1)) {
+
+> +		pr_err("unsupported config ecc-size=%d", ecc_step_size);
+
+You're missing "\n" in your format string.
+
+> +		return -EINVAL;
+> +	}
+> +	/* ELM support 8 error syndrome process */
+> +	if (ecc_steps > ERROR_VECTOR_MAX) {
+> +		pr_err("unsupported config ecc-step=%d", ecc_steps);
+
+Also missing "\n" here.
+
+> +		return -EINVAL;
+> +	}
+>  
+>  	reg_val = (bch_type & ECC_BCH_LEVEL_MASK) | (ELM_ECC_SIZE << 16);
+>  	elm_write_reg(info, ELM_LOCATION_CONFIG, reg_val);
+>  	info->bch_type = bch_type;
+> +	info->ecc_steps		= ecc_steps;
+> +	info->ecc_step_size	= ecc_step_size;
+> +	info->ecc_step_bytes	= ecc_step_bytes;
+>  
+>  	return 0;
+>  }
+> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+> index 5ce2097..369aee7 100644
+> --- a/drivers/mtd/nand/omap2.c
+> +++ b/drivers/mtd/nand/omap2.c
+> @@ -1546,6 +1546,8 @@ static int is_elm_present(struct omap_nand_info *info,
+>  			struct device_node *elm_node, enum bch_ecc bch_type)
+>  {
+>  	struct platform_device *pdev;
+> +	struct nand_ecc_ctrl *ecc = &info->nand.ecc;
+> +	int err = 0;
+>  	/* check whether elm-id is passed via DT */
+>  	if (!elm_node) {
+>  		pr_err("nand: error: ELM DT node not found\n");
+> @@ -1559,9 +1561,10 @@ static int is_elm_present(struct omap_nand_info *info,
+>  	}
+>  	/* ELM module available, now configure it */
+>  	info->elm_dev = &pdev->dev;
+> -	if (elm_config(info->elm_dev, bch_type))
+> -		return -ENODEV;
+> -	return 0;
+> +	err = elm_config(info->elm_dev, bch_type,
+> +		(info->mtd.writesize / ecc->size), ecc->size, ecc->bytes);
+
+Isn't info->mtd.writesize / ecc->size the same as just ecc->steps?
+
+> +
+> +	return err;
+>  }
+>  #endif /* CONFIG_MTD_NAND_ECC_BCH */
+>  
+> diff --git a/include/linux/platform_data/elm.h b/include/linux/platform_data/elm.h
+> index bf0a83b..b824ff3 100644
+> --- a/include/linux/platform_data/elm.h
+> +++ b/include/linux/platform_data/elm.h
+> @@ -50,5 +50,6 @@ struct elm_errorvec {
+>  
+>  void elm_decode_bch_error_page(struct device *dev, u8 *ecc_calc,
+>  		struct elm_errorvec *err_vec);
+> -int elm_config(struct device *dev, enum bch_ecc bch_type);
+> +int elm_config(struct device *dev, enum bch_ecc bch_type,
+> +	int ecc_steps, int ecc_step_size, int ecc_step_bytes);
+>  #endif /* __ELM_H */
 
 Brian
