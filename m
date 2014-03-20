@@ -1,22 +1,26 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQeOK-0003ph-Vx
- for linux-mtd@lists.infradead.org; Thu, 20 Mar 2014 14:56:21 +0000
-Date: Thu, 20 Mar 2014 11:55:30 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Pekon Gupta <pekon@ti.com>
-Subject: Re: [PATCH] mtd: nand: omap: ecc.correct: omap_elm_correct_data:
- return number of bit-flips detected in erased-page
-Message-ID: <20140320145530.GA23161@arch.cereza>
-References: <1395321598-4565-1-git-send-email-pekon@ti.com>
+Received: from mail-wi0-f173.google.com ([209.85.212.173])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WQfFy-0005vh-1F
+ for linux-mtd@lists.infradead.org; Thu, 20 Mar 2014 15:51:46 +0000
+Received: by mail-wi0-f173.google.com with SMTP id f8so6413119wiw.0
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Mar 2014 08:51:23 -0700 (PDT)
+Date: Thu, 20 Mar 2014 15:51:19 +0000
+From: Lee Jones <lee.jones@linaro.org>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v6 36/36] ARM: STi: Add support for the FSM Serial Flash
+ Controller
+Message-ID: <20140320155119.GG8207@lee--X1>
+References: <1395307268-12721-1-git-send-email-lee.jones@linaro.org>
+ <1395307268-12721-37-git-send-email-lee.jones@linaro.org>
+ <20140320112703.GS31517@norris-Latitude-E6410>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1395321598-4565-1-git-send-email-pekon@ti.com>
-Cc: Stefan Roese <sr@denx.de>, Brian Norris <computersforpeace@gmail.com>,
- linux-mtd <linux-mtd@lists.infradead.org>
+In-Reply-To: <20140320112703.GS31517@norris-Latitude-E6410>
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Angus.Clark@st.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,48 +30,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Pekon,
+> > Here we add the necessary device nodes required for successful device
+> > probing and Pinctrl setup for the FSM.
+> > 
+> > Acked-by: Srinivas Kandagatla <srinivas.kandagatla@st.com>
+> > Acked-by Angus Clark <angus.clark@st.com>
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > ---
+> >  arch/arm/boot/dts/stih416-pinctrl.dtsi | 13 +++++++++++++
+> >  arch/arm/boot/dts/stih416.dtsi         | 13 +++++++++++++
+> >  arch/arm/boot/dts/stih41x-b2020.dtsi   |  1 +
+> >  arch/arm/boot/dts/stih41x-b2020x.dtsi  | 28 ++++++++++++++++++++++++++++
+> >  4 files changed, 55 insertions(+)
+> >  create mode 100644 arch/arm/boot/dts/stih41x-b2020x.dtsi
 
-I'm not sure we need such a detailed subject. Just "mtd: nand: omap:
-Return detected bitflip count" should be enough.
+[...]
 
-This goes for your other patches. It's just a nitpick, of course,
-but it's good to have commit log consistency.
-
-On Mar 20, Pekon Gupta wrote:
-> fixes: commit 62116e5171e00f85a8d53f76e45b84423c89ff34
->        mtd: nand: omap2: Support for hardware BCH error correction.
+> > +	soc {
+> > +		spifsm: spifsm@fe902000 {
+> > +			#address-cells = <1>;
+> > +			#size-cells    = <1>;
+> > +
+> > +			status = "okay";
+> > +
+> > +			partition@0 {
+> > +				label = "Serial Flash 1";
 > 
-
-Remove these extra whitespace.
-
-> In current omap_elm_correct_data(), an erased-page is also identified based on
-> 	'bitflip_count <= ecc.strength' per ecc-step (data+oob)
-
-And this extra tab.
-
-> But bitflip_count is ignored, unless errors are detected in other ecc.steps.
-> ------------------
->   if (bitflip_count) {
->         /*
->          * number of 0-bits within ECC limits
->          * So this may be an erased-page
->          */
->         stat += bitflip_count;
->   }
->   [...]
->   /* Check if any error reported */
->   if (!is_error_reported)
->         return 0;
-> ------------------
+> Are you sure you want spaces in the partition label? I suppose MTD can
+> probably handle this fine, but it doesn't seem standard, and it may
+> prevent you from using the partition name in certain ways. For instance,
+> it might make it harder to use with the "ubi.mtd=" module parameter.
 > 
+> But otherwise:
+> 
+> Acked-by: Brian Norris <computersforpeace@gmail.com>
 
-We don't need a piece of code here, we can see that in the patch itself.
-The commit log should be a text explaining what you are doing, why you are doing
-it and perhaps the impact it has.
+Code fixed and Ack applied.
 
-I suggest that you clean-up this a bit and resend it.
+Thanks Brian.
+
 -- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org â”‚ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
