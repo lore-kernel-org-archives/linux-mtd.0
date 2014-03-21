@@ -1,25 +1,27 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQuLZ-0003NN-7o
- for linux-mtd@lists.infradead.org; Fri, 21 Mar 2014 07:58:33 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-Subject: RE: [RFC PATCH] UBIFS: remove check for all(0xff) for empty pages
-Date: Fri, 21 Mar 2014 07:57:57 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EAB4E0D@DBDE04.ent.ti.com>
-References: <1394518992-26969-1-git-send-email-pekon@ti.com>
- <20140311133533.7ae34928@parrot.com>
-In-Reply-To: <20140311133533.7ae34928@parrot.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: Kent Li <Kent.Li@radisys.com>, Stefan Roese <sr@denx.de>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- HOUR Frderic <frederic.hour@safran-engineering.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>
+Received: from mga09.intel.com ([134.134.136.24])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WQubG-0003u5-U6
+ for linux-mtd@lists.infradead.org; Fri, 21 Mar 2014 08:14:47 +0000
+Message-ID: <1395389636.5163.104.camel@sauron.fi.intel.com>
+Subject: Re: Corrupt empty space
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: "Gupta, Pekon" <pekon@ti.com>
+Date: Fri, 21 Mar 2014 10:13:56 +0200
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EAB4DF3@DBDE04.ent.ti.com>
+References: <D2D3E4C4A672E847B422D1E5F695E1A402E61608@sreublc136.eu.labinal.snecma>
+ <aadf057c868c47128845c19d69933c46@BLUPR08MB103.namprd08.prod.outlook.com>
+ <1394524000.6302.217.camel@sauron.fi.intel.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EAB4DAF@DBDE04.ent.ti.com>
+ <1395387117.5163.79.camel@sauron.fi.intel.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EAB4DF3@DBDE04.ent.ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
+ HOUR =?ISO-8859-1?Q?Fr=E9deric?= <frederic.hour@safran-engineering.com>,
+ Kent Li <Kent.Li@radisys.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,50 +31,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From: Matthieu CASTET [mailto:matthieu.castet@parrot.com]
->>Pekon Gupta <pekon@ti.com> a =E9crit :
->
-[...]
->
->If the mtd layer check the number of bitflip on empty page why it
->doesn't correct it and UBIFS see all 0xff ?
->
-Most drivers already do that. But my question is bit different.
-UBI returns UBI_IO_FF_BITFLIP, when it finds bit-flips in erased-pages
-Then why can't UBIFS reuse that information, instead of repeating the
-check by itself (comparing each byte with 0xff)
+On Fri, 2014-03-21 at 07:50 +0000, Gupta, Pekon wrote:
+> Also, as there are multiple threads on same topic, If would be helpful
+> if you can review and continue discussion over there.
 
+Pekon, I apologise, I do not have time to review these threads now. If
+this is difficult to implement generically on the MTD level, I trust
+you.
 
->In the other hand if mtd layer is not able to check empty page this is
->very dangerous. What happen if an empty page already have too much
->bitflip ?
->The data we write on this page will be corrupted.
->
-It already does so, nand_base.c returns with -EBADMSG when there are
-bitflip_count > ecc.strength.
+I think there are only few places where UBI or UBIFS really need to know
+an answer to the following question: is this min. I/O unit empty (never
+written to) or not?
 
+1. Recovery in UBIFS
+2. Auto-formatting decision in UBI/UBIFS
+3. Some debugging stuff in UBI where we try to make sure we write only
+to empty pages.
 
->In my opinion the change should be done on mtd/UBI layer not ubifs.
->The main problem today is that some driver don't read empty page with
->ecc (because their ecc of empty page is not 0xff).
->We can add metadata (in spare because ubifs want power of 2=09
->write unit !) that can help to see it the page is empty or not.
->
-We cannot add any extra marker to OOB/spare area because:
-(1) That breaks compatibility with ECC layout expected by ROM code.
-  Thus, many legacy devices might fail to boot from NAND.
+If MTD layer provides helpers which UBIFS could call to get the answer,
+that could probably work.
 
-(2) extra marker in ECC layout is itself subjected to bit-flips, thereby
-  making an erased-page getting recognized as programmed-page,
-  so this is not a fool-proof solution.
+I mean, probably it is not necessary to make every read do this empty
+page processing. It would be cool, but if the price is read throughput
+drop, probably not worth it. All MTD reads can be the old style reads
+which give no ECC protection when the page is empty. This could be
+documented somewhere, BTW, in the code, and web site, too.
 
+Then when UBI/UBIFS needs to know whether certain min. I/O unit is empty
+or not, then UBI/UBIFS calls a special MTD helper function to get the
+answer.
 
-Artem,
-Can you please review [1], and if there is a way in which we can avoid
-UBIFS giving "corrupt white-space" error during scan, then=20
-I'll try to get patch for that.
+This would probably need some work in UBI/UBIFS, but I think this should
+not be too difficult.
 
-[1] http://lists.infradead.org/pipermail/linux-mtd/2014-March/052513.html
-
-
-with regards, pekon
+-- 
+Best Regards,
+Artem Bityutskiy
