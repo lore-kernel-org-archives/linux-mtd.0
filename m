@@ -1,28 +1,19 @@
-From: =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>
-To: Arnd Bergmann <arnd@arndb.de>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Fabio Estevam <fabio.estevam@freescale.com>,
- Huang Shijie <b32955@freescale.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>,
- =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>,
- Mark Rutland <mark.rutland@arm.com>, Pawel Moll <pawel.moll@arm.com>,
- Rob Herring <robh+dt@kernel.org>, Rob Landley <rob@landley.net>,
- Russell King <linux@arm.linux.org.uk>,
- Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@freescale.com>,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Shawn Guo <shawn.guo@linaro.org>
-Subject: [PATCHv2 1/1] mtd: gpmi: make blockmark swapping optional
-Date: Fri, 21 Mar 2014 11:50:17 +0100
-Message-Id: <1395399017-19005-1-git-send-email-LW@KARO-electronics.de>
-In-Reply-To: <532BCFCC.4080205@freescale.com>
-References: <532BCFCC.4080205@freescale.com>
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Huang Shijie <b32955@freescale.com>
+Subject: RE: [PATCH] mtd: gpmi: add gpmi_devdata{} to simplify the code
+Date: Fri, 21 Mar 2014 11:15:21 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EAB4F02@DBDE04.ent.ti.com>
+References: <1395397179-17449-1-git-send-email-b32955@freescale.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EAB4ECF@DBDE04.ent.ti.com>
+ <532C15EB.9010600@freescale.com>
+In-Reply-To: <532C15EB.9010600@freescale.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,59 +23,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-With a flash-based BBT there is no reason to move the Factory Bad
-Block Marker from the data area buffer (to where it is mapped by the
-GPMI NAND controller) to the OOB buffer. Thus, make this feature
-configurable via DT. This is required for the Ka-Ro electronics
-platforms.
-
-Signed-off-by: Lothar Waßmann <LW@KARO-electronics.de>
----
- Documentation/devicetree/bindings/mtd/gpmi-nand.txt |    3 +++
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c              |   10 +++++++---
- 2 files changed, 10 insertions(+), 3 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
-index 458d596..f28949a 100644
---- a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
-@@ -25,6 +25,9 @@ Optional properties:
-                        discoverable or this property is not enabled,
-                        the software may chooses an implementation-defined
-                        ECC scheme.
-+  - fsl,no-blockmark-swap: Don't swap the bad block marker from the OOB
-+                       area with the byte in the data area but rely on the
-+                       BBT for identifying bad blocks.
- 
- The device tree may optionally contain sub-nodes describing partitions of the
- address space. See partition.txt for more detail.
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index bb77f75..98562eb 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -1632,9 +1632,6 @@ static int gpmi_init_last(struct gpmi_nand_data *this)
- 	struct bch_geometry *bch_geo = &this->bch_geometry;
- 	int ret;
- 
--	/* Set up swap_block_mark, must be set before the gpmi_set_geometry() */
--	this->swap_block_mark = !GPMI_IS_MX23(this);
--
- 	/* Set up the medium geometry */
- 	ret = gpmi_set_geometry(this);
- 	if (ret)
-@@ -1701,6 +1698,13 @@ static int gpmi_nand_init(struct gpmi_nand_data *this)
- 	if (of_get_nand_on_flash_bbt(this->dev->of_node))
- 		chip->bbt_options |= NAND_BBT_USE_FLASH | NAND_BBT_NO_OOB;
- 
-+	/* Set up swap_block_mark, must be set before the gpmi_set_geometry() */
-+	if (!of_property_read_bool(this->dev->of_node, "fsl,no-blockmark-swap"))
-+		this->swap_block_mark = !GPMI_IS_MX23(this);
-+
-+	dev_dbg(this->dev, "Blockmark swapping %sabled\n",
-+		this->swap_block_mark ? "en" : "dis");
-+
- 	/*
- 	 * Allocate a temporary DMA buffer for reading ID in the
- 	 * nand_scan_ident().
--- 
-1.7.10.4
+PkZyb206IEh1YW5nIFNoaWppZSBbbWFpbHRvOmIzMjk1NUBmcmVlc2NhbGUuY29tXQ0KPuS6jiAy
+MDE05bm0MDPmnIgyMeaXpSAxODoyOSwgR3VwdGEsIFBla29uIOWGmemBkzoNCj4+IEV6ZXF1aWVs
+IGhhcyBnb3QgYXBwcm92YWwgZm9yIDIgbmV3IGdlbmVyaWMgTVREIGJpbmRpbmdzIChyZWZlciBs
+Mi1tdGQuZ2l0KQ0KPj4gCWNvbW1pdCA4ZGQ0OTE2NWVmNWY0NmI1YWQ5YmEyOTZjNTU5Y2NmZjMx
+NWY5NDIxDQo+PiAJbXRkOiBuYW5kOiBBZGQgYSBkZXZpY2V0cmVlIGJpbmRpbmcgZm9yIEVDQyBz
+dHJlbmd0aCBhbmQgRUNDIHN0ZXAgc2l6ZQ0KPj4gU28sIEkgdGhpbms8MT4gIGNhbiBiZSByZXBs
+YWNlZCBieSAibmFuZC1lY2Mtc3RyZW5ndGgiLg0KPj4NCj4+DQo+Im5hbmQtZWNjLXN0cmVuZ3Ro
+IiBpcyBhZGQgdGhlIEVDQyBzdHJlbmd0aCBmb3IgdGhlIE5BTkQsIGJ1dCBteSBwYXRjaA0KPmlz
+IGFkZA0KPnRoZSBtYXhpbXVtIEVDQyBzdHJlbmd0aCB0aGUgQkNIIGNvbnRyb2xsZXIgY2FuIHN1
+cHBvcnQuDQo+DQo+dGhleSBhcmUgZGlmZmVyZW50IHRoaW5ncy4NCj4NCk9rIHRoZW4gaXQncyBh
+bHNvIHRpZWQgdG8geW91ciBJUCAvIFNvQyByZXZpc2lvbiByaWdodCA/DQoNCj4+PiA+DQo+Pj4g
+PiAgICBbMl0gYWRkIHRoZSBncG1pX2RldmRhdGFfaW14ezIzfDI4fDZxfSB0byByZXBsYWNlIHRo
+ZSBncG1pX2lkcy4NCj4+PiA+DQo+PiBDYW4geW91IHVzZSAiY29tcGF0aWJsZSIgc3RyaW5nIGlu
+IERUIGZvciB0aGlzID8NCj4+DQo+Pg0KPnNvcnJ5LCBjb3VsZCB5b3UgcGxlYXNlIGdpdmUgbWUg
+YW4gZXhhbXBsZT8NCj4NCj5JIGRvIG5vdCBrbm93IHdoYXQncyB5b3VyIG1lYW5pbmcuIDooDQo+
+DQoNCkNhbiB5b3UgdXNlIHNvbWV0aGluZyBsaWtlIHRoaXMsIGluc3RlYWQgb2YgcG9wdWxhdGlu
+ZyBzdGF0aWMgZm9yIGVhY2ggY2hpcC4NCg0KaWYgKG9mX2RldmljZV9pc19jb21wYXRpYmxlKG9m
+X25vZGUsICJpbXgyMyIpIHx8IG9mX2RldmljZV9pc19jb21wYXRpYmxlKGNoaWxkLCAiaW14Mjgi
+KSkgew0KCWJjaF9tYXhfZWNjX3N0cmVuZ3RoID0gMjA7DQoJbWF4X2NoYWluX2RlbGF5ID0gMTY7
+DQp9IGVsc2VpZiAob2ZfZGV2aWNlX2lzX2NvbXBhdGlibGUob2Zfbm9kZSwgImlteDZxIikgew0K
+CWJjaF9tYXhfZWNjX3N0cmVuZ3RoID0gNDA7DQoJbWF4X2NoYWluX2RlbGF5ID0gMTI7DQp9IGVs
+c2VpZiAob2ZfZGV2aWNlX2lzX2NvbXBhdGlibGUob2Zfbm9kZSwgImlteDZzeCIpIHsNCgliY2hf
+bWF4X2VjY19zdHJlbmd0aCA9IDQwOw0KCW1heF9jaGFpbl9kZWxheSA9IDA7IC8qIHdoYXRldmVy
+IGlzIGhlcmUgKi8NCn0gZWxzZSB7DQoJYmNoX21heF9lY2Nfc3RyZW5ndGggPSAxOyAvKiB3aGF0
+ZXZlciBpcyBkZWZhdWx0ICovDQoJbWF4X2NoYWluX2RlbGF5ID0gMDsgLyogd2hhdGV2ZXIgaXMg
+ZGVmYXVsdCAqLw0KfQ0KDQoNCndpdGggcmVnYXJkcywgcGVrb24NCg==
