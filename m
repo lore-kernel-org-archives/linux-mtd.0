@@ -1,25 +1,26 @@
-Received: from bes.se.axis.com ([195.60.68.10])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQu7B-0002z3-A3
- for linux-mtd@lists.infradead.org; Fri, 21 Mar 2014 07:43:41 +0000
-Date: Fri, 21 Mar 2014 08:43:15 +0100
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: Corrupt empty space
-In-Reply-To: <1395387117.5163.79.camel@sauron.fi.intel.com>
-Message-ID: <alpine.DEB.2.02.1403210838360.26118@lnxricardw1.se.axis.com>
+Received: from bear.ext.ti.com ([192.94.94.41])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WQuDz-00038N-Vj
+ for linux-mtd@lists.infradead.org; Fri, 21 Mar 2014 07:50:44 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>
+Subject: RE: Corrupt empty space
+Date: Fri, 21 Mar 2014 07:50:10 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EAB4DF3@DBDE04.ent.ti.com>
 References: <D2D3E4C4A672E847B422D1E5F695E1A402E61608@sreublc136.eu.labinal.snecma>
  <aadf057c868c47128845c19d69933c46@BLUPR08MB103.namprd08.prod.outlook.com>
  <1394524000.6302.217.camel@sauron.fi.intel.com>
  <20980858CB6D3A4BAE95CA194937D5E73EAB4DAF@DBDE04.ent.ti.com>
  <1395387117.5163.79.camel@sauron.fi.intel.com>
+In-Reply-To: <1395387117.5163.79.camel@sauron.fi.intel.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"; format=flowed
-Content-Transfer-Encoding: 8BIT
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
+ =?utf-8?B?SE9VUiBGcsOpZGVyaWM=?= <frederic.hour@safran-engineering.com>,
  Kent Li <Kent.Li@radisys.com>,
- =?ISO-8859-15?Q?HOUR_Fr=E9deric?= <frederic.hour@safran-engineering.com>,
- "Gupta, Pekon" <pekon@ti.com>
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,39 +30,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-On Fri, 21 Mar 2014, Artem Bityutskiy wrote:
-
-> On Fri, 2014-03-21 at 07:18 +0000, Gupta, Pekon wrote:
->> It's still getting discussed in [a] and [b]. But there are multiple issues to it.
->>
->>  (1) Many hardware controllers cannot parse ECC errors in blank-pages.
->>    So, checking number of 0-bits in a page is done in software by comparing
->>    each byte with 0xff.
->
-> OK.
->
->> (2) Counting number of 0-bits in a page in software, brings down your read-performance.
->
-> UBIFS _only_ needs this when doing recovery, which is _only_ done after
-> unclean reboots, and this kind of reads would be done _only_ for a
-> couple of max I/O units and _only_ if there is a corrupted node in the
-> journal.
->
-> IOW, this would be done rarely, and for just few pages on mount.
-
-What about when attaching a UBI volume to a completely a erased partition? 
-I would assume that with the EC and VID headers thus missing, that UBI 
-would erase each block prior to writing the headers, and then knowing that 
-they were erased not need to check for 0xff in the blocks?
-
-Admittedly this would only happen once in a products lifetime so even if 
-UBI did need to scan each block, it won't have much of an impact on 
-performance, except possibly that the additional time would be spent in 
-production where time is a premium.
-
-/Ricard
--- 
-Ricard Wolf Wanderlöf                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+PkZyb206IEFydGVtIEJpdHl1dHNraXkgW21haWx0bzpkZWRla2luZDFAZ21haWwuY29tXQ0KPg0K
+Pk9uIEZyaSwgMjAxNC0wMy0yMSBhdCAwNzoxOCArMDAwMCwgR3VwdGEsIFBla29uIHdyb3RlOg0K
+Pj4gSXQncyBzdGlsbCBnZXR0aW5nIGRpc2N1c3NlZCBpbiBbYV0gYW5kIFtiXS4gQnV0IHRoZXJl
+IGFyZSBtdWx0aXBsZSBpc3N1ZXMgdG8gaXQuDQo+Pg0KPj4gICgxKSBNYW55IGhhcmR3YXJlIGNv
+bnRyb2xsZXJzIGNhbm5vdCBwYXJzZSBFQ0MgZXJyb3JzIGluIGJsYW5rLXBhZ2VzLg0KPj4gICAg
+U28sIGNoZWNraW5nIG51bWJlciBvZiAwLWJpdHMgaW4gYSBwYWdlIGlzIGRvbmUgaW4gc29mdHdh
+cmUgYnkgY29tcGFyaW5nDQo+PiAgICBlYWNoIGJ5dGUgd2l0aCAweGZmLg0KPg0KPk9LLg0KPg0K
+Pj4gKDIpIENvdW50aW5nIG51bWJlciBvZiAwLWJpdHMgaW4gYSBwYWdlIGluIHNvZnR3YXJlLCBi
+cmluZ3MgZG93biB5b3VyIHJlYWQtcGVyZm9ybWFuY2UuDQo+DQo+VUJJRlMgX29ubHlfIG5lZWRz
+IHRoaXMgd2hlbiBkb2luZyByZWNvdmVyeSwgd2hpY2ggaXMgX29ubHlfIGRvbmUgYWZ0ZXINCj51
+bmNsZWFuIHJlYm9vdHMsIGFuZCB0aGlzIGtpbmQgb2YgcmVhZHMgd291bGQgYmUgZG9uZSBfb25s
+eV8gZm9yIGENCj5jb3VwbGUgb2YgbWF4IEkvTyB1bml0cyBhbmQgX29ubHlfIGlmIHRoZXJlIGlz
+IGEgY29ycnVwdGVkIG5vZGUgaW4gdGhlDQo+am91cm5hbC4NCj4NCj5JT1csIHRoaXMgd291bGQg
+YmUgZG9uZSByYXJlbHksIGFuZCBmb3IganVzdCBmZXcgcGFnZXMgb24gbW91bnQuDQo+DQpTb3Jy
+eS4gSSBkaW4ndCBjbGFyaWZ5LiBSZWFkIHBlcmZvcm1hbmNlIGRyb3BzIGluIE5BTkQgZHJpdmVy
+IGl0c2VsZiwgbm90aGluZw0KcmVsYXRlZCB0byBVQklGUy4gIA0KQmVjYXVzZSBvZiAoMSkgeW91
+IG5lZWQgdG8gZmlsdGVyLW91dCBlcmFzZWQtcGFnZXMgd2l0aCBiaXQtZmxpcHMgYmVmb3JlDQpk
+cml2ZXIgc2VuZHMgZGF0YSB0byBoYXJkd2FyZSBlbmdpbmUgZm9yIEVDQyBlcnJvciBjb3JyZWN0
+aW9uLiBUaGlzIGZpbHRlcmluZw0Kb2YgZXJhc2VkLXBhZ2UgaW4gc29mdHdhcmUgKGJ5IGNvbXBh
+cmluZyBlYWNoIGJ5dGUgZm9yIDAtYml0cykgY2F1c2VzDQp0aGlzIHJlYWQgcGVyZm9ybWFuY2Ug
+ZHJvcC4NCkhvd2V2ZXIsIHRoZXJlIGlzIG5vIHdvcmstYXJvdW5kIHRvIGl0LCBhcyBpdOKAmXMg
+YSBraW5kIG9mIG1pc3NpbmcgZmVhdHVyZQ0KaW4gaGFyZHdhcmUuIEJ1dCB3ZSBhcmUgdHJ5aW5n
+IHRvIG9wdGltaXplIHRoaXMgaW1wbGVtZW50YXRpb24uDQpodHRwOi8vbGlzdHMuaW5mcmFkZWFk
+Lm9yZy9waXBlcm1haWwvbGludXgtbXRkLzIwMTQtTWFyY2gvMDUyNjUzLmh0bWwNCg0KDQpBbHNv
+LCBhcyB0aGVyZSBhcmUgbXVsdGlwbGUgdGhyZWFkcyBvbiBzYW1lIHRvcGljLCBJZiB3b3VsZCBi
+ZSBoZWxwZnVsDQppZiB5b3UgY2FuIHJldmlldyBhbmQgY29udGludWUgZGlzY3Vzc2lvbiBvdmVy
+IHRoZXJlLg0KDQoqVGhyZWFkIG9uIE5BTkQgRHJpdmVyIGNoYW5nZXMqDQpodHRwOi8vbGlzdHMu
+aW5mcmFkZWFkLm9yZy9waXBlcm1haWwvbGludXgtbXRkLzIwMTQtTWFyY2gvdGhyZWFkLmh0bWwN
+CglncmVwICJtdGQ6IG5hbmQ6IGFkZCBlcmFzZWQtcGFnZSBiaXRmbGlwIGNvcnJlY3Rpb24iDQoN
+CipUaHJlYWQgb24gVUJJRlMgY2hhbmdlcyoNCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL3Bp
+cGVybWFpbC9saW51eC1tdGQvMjAxNC1NYXJjaC90aHJlYWQuaHRtbA0KCWdyZXAgIlVCSUZTOiBy
+ZW1vdmUgY2hlY2sgZm9yIGFsbCgweGZmKSBmb3IgZW1wdHkgcGFnZXMiDQoNCg0Kd2l0aCByZWdh
+cmRzLCBwZWtvbg0K
