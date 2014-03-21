@@ -1,19 +1,17 @@
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Huang Shijie <b32955@freescale.com>
-Subject: RE: [PATCH] mtd: gpmi: add gpmi_devdata{} to simplify the code
-Date: Fri, 21 Mar 2014 11:15:21 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EAB4F02@DBDE04.ent.ti.com>
-References: <1395397179-17449-1-git-send-email-b32955@freescale.com>
- <20980858CB6D3A4BAE95CA194937D5E73EAB4ECF@DBDE04.ent.ti.com>
- <532C15EB.9010600@freescale.com>
-In-Reply-To: <532C15EB.9010600@freescale.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from va3ehsobe002.messaging.microsoft.com ([216.32.180.12]
+ helo=va3outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WQxT6-0000p5-Ti
+ for linux-mtd@lists.infradead.org; Fri, 21 Mar 2014 11:18:34 +0000
+From: Hou Zhiqiang <B48286@freescale.com>
+To: <linux-mtd@lists.infradead.org>, <linuxppc-dev@ozlabs.org>
+Subject: [PATCH] mtd: m25p80: Modify the name of mtd_info
+Date: Fri, 21 Mar 2014 19:16:18 +0800
+Message-ID: <1395400578-5637-1-git-send-email-B48286@freescale.com>
 MIME-Version: 1.0
-Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain
+Cc: scottwood@freescale.com, mingkai.hu@freescale.com,
+ Hou Zhiqiang <B48286@freescale.com>, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,29 +21,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PkZyb206IEh1YW5nIFNoaWppZSBbbWFpbHRvOmIzMjk1NUBmcmVlc2NhbGUuY29tXQ0KPuS6jiAy
-MDE05bm0MDPmnIgyMeaXpSAxODoyOSwgR3VwdGEsIFBla29uIOWGmemBkzoNCj4+IEV6ZXF1aWVs
-IGhhcyBnb3QgYXBwcm92YWwgZm9yIDIgbmV3IGdlbmVyaWMgTVREIGJpbmRpbmdzIChyZWZlciBs
-Mi1tdGQuZ2l0KQ0KPj4gCWNvbW1pdCA4ZGQ0OTE2NWVmNWY0NmI1YWQ5YmEyOTZjNTU5Y2NmZjMx
-NWY5NDIxDQo+PiAJbXRkOiBuYW5kOiBBZGQgYSBkZXZpY2V0cmVlIGJpbmRpbmcgZm9yIEVDQyBz
-dHJlbmd0aCBhbmQgRUNDIHN0ZXAgc2l6ZQ0KPj4gU28sIEkgdGhpbms8MT4gIGNhbiBiZSByZXBs
-YWNlZCBieSAibmFuZC1lY2Mtc3RyZW5ndGgiLg0KPj4NCj4+DQo+Im5hbmQtZWNjLXN0cmVuZ3Ro
-IiBpcyBhZGQgdGhlIEVDQyBzdHJlbmd0aCBmb3IgdGhlIE5BTkQsIGJ1dCBteSBwYXRjaA0KPmlz
-IGFkZA0KPnRoZSBtYXhpbXVtIEVDQyBzdHJlbmd0aCB0aGUgQkNIIGNvbnRyb2xsZXIgY2FuIHN1
-cHBvcnQuDQo+DQo+dGhleSBhcmUgZGlmZmVyZW50IHRoaW5ncy4NCj4NCk9rIHRoZW4gaXQncyBh
-bHNvIHRpZWQgdG8geW91ciBJUCAvIFNvQyByZXZpc2lvbiByaWdodCA/DQoNCj4+PiA+DQo+Pj4g
-PiAgICBbMl0gYWRkIHRoZSBncG1pX2RldmRhdGFfaW14ezIzfDI4fDZxfSB0byByZXBsYWNlIHRo
-ZSBncG1pX2lkcy4NCj4+PiA+DQo+PiBDYW4geW91IHVzZSAiY29tcGF0aWJsZSIgc3RyaW5nIGlu
-IERUIGZvciB0aGlzID8NCj4+DQo+Pg0KPnNvcnJ5LCBjb3VsZCB5b3UgcGxlYXNlIGdpdmUgbWUg
-YW4gZXhhbXBsZT8NCj4NCj5JIGRvIG5vdCBrbm93IHdoYXQncyB5b3VyIG1lYW5pbmcuIDooDQo+
-DQoNCkNhbiB5b3UgdXNlIHNvbWV0aGluZyBsaWtlIHRoaXMsIGluc3RlYWQgb2YgcG9wdWxhdGlu
-ZyBzdGF0aWMgZm9yIGVhY2ggY2hpcC4NCg0KaWYgKG9mX2RldmljZV9pc19jb21wYXRpYmxlKG9m
-X25vZGUsICJpbXgyMyIpIHx8IG9mX2RldmljZV9pc19jb21wYXRpYmxlKGNoaWxkLCAiaW14Mjgi
-KSkgew0KCWJjaF9tYXhfZWNjX3N0cmVuZ3RoID0gMjA7DQoJbWF4X2NoYWluX2RlbGF5ID0gMTY7
-DQp9IGVsc2VpZiAob2ZfZGV2aWNlX2lzX2NvbXBhdGlibGUob2Zfbm9kZSwgImlteDZxIikgew0K
-CWJjaF9tYXhfZWNjX3N0cmVuZ3RoID0gNDA7DQoJbWF4X2NoYWluX2RlbGF5ID0gMTI7DQp9IGVs
-c2VpZiAob2ZfZGV2aWNlX2lzX2NvbXBhdGlibGUob2Zfbm9kZSwgImlteDZzeCIpIHsNCgliY2hf
-bWF4X2VjY19zdHJlbmd0aCA9IDQwOw0KCW1heF9jaGFpbl9kZWxheSA9IDA7IC8qIHdoYXRldmVy
-IGlzIGhlcmUgKi8NCn0gZWxzZSB7DQoJYmNoX21heF9lY2Nfc3RyZW5ndGggPSAxOyAvKiB3aGF0
-ZXZlciBpcyBkZWZhdWx0ICovDQoJbWF4X2NoYWluX2RlbGF5ID0gMDsgLyogd2hhdGV2ZXIgaXMg
-ZGVmYXVsdCAqLw0KfQ0KDQoNCndpdGggcmVnYXJkcywgcGVrb24NCg==
+To specify spi flash layouts by "mtdparts=..." in cmdline, we must
+give mtd_info a fixed name,because the cmdlinepart's parser will
+match the name of mtd_info given in cmdline.
+Now, if use DT, the mtd_info's name will be spi->dev->name. It
+consists of spi_master->bus_num, and the spi_master->bus_num maybe
+dynamically fetched. So, in this case, replace the component bus_num
+with thei physical address of spi master.
+
+Signed-off-by: Hou Zhiqiang <B48286@freescale.com>
+---
+ drivers/mtd/devices/m25p80.c | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 7eda71d..64450a2 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -30,6 +30,7 @@
+ #include <linux/mtd/cfi.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
++#include <linux/of_address.h>
+ #include <linux/of_platform.h>
+ 
+ #include <linux/spi/spi.h>
+@@ -934,9 +935,11 @@ static int m25p_probe(struct spi_device *spi)
+ 	struct flash_platform_data	*data;
+ 	struct m25p			*flash;
+ 	struct flash_info		*info;
+-	unsigned			i;
++	unsigned			i, ret;
+ 	struct mtd_part_parser_data	ppdata;
+ 	struct device_node *np = spi->dev.of_node;
++	struct resource res;
++	struct device_node *mnp = spi->master->dev.of_node;
+ 
+ 	/* Platform data helps sort out which chip type we have, as
+ 	 * well as how this board partitions it.  If we don't have
+@@ -1009,8 +1012,17 @@ static int m25p_probe(struct spi_device *spi)
+ 
+ 	if (data && data->name)
+ 		flash->mtd.name = data->name;
+-	else
+-		flash->mtd.name = dev_name(&spi->dev);
++	else{
++		ret = of_address_to_resource(mnp, 0, &res);
++		if (ret) {
++			dev_err(&spi->dev, "failed to get spi master resource\n");
++			return ret;
++		}
++		flash->mtd.name = kasprintf(GFP_KERNEL, "spi%x.%d",
++				(unsigned)res.start, spi->chip_select);
++		if (!flash->mtd.name)
++			return -ENOMEM;
++	}
+ 
+ 	flash->mtd.type = MTD_NORFLASH;
+ 	flash->mtd.writesize = 1;
+-- 
+1.8.5
