@@ -1,14 +1,15 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQy5q-0002In-Nz
- for linux-mtd@lists.infradead.org; Fri, 21 Mar 2014 11:58:36 +0000
+ id 1WQy5q-0002Ip-Nu
+ for linux-mtd@lists.infradead.org; Fri, 21 Mar 2014 11:58:37 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH 1/4] mtd: Add sysfs attr to expose ECC stats
-Date: Fri, 21 Mar 2014 08:57:41 -0300
-Message-Id: <1395403064-28113-2-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH 4/4] mtd: Account for BBT blocks when a partition is being
+ allocated
+Date: Fri, 21 Mar 2014 08:57:44 -0300
+Message-Id: <1395403064-28113-5-git-send-email-ezequiel.garcia@free-electrons.com>
 In-Reply-To: <1395403064-28113-1-git-send-email-ezequiel.garcia@free-electrons.com>
 References: <1395403064-28113-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
@@ -21,52 +22,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This new sysfs device attribute allows to retrieve the ECC stats
-by poking a sysfs file, which is much simpler than using the ioctl.
+With the introduction of mtd_block_isreserved(), it's now possible
+to fix the bad and reserved block distribution exposed by ecc_stats,
+instead of accounting all the bad or reserved blocks as 'bad'.
 
-The output format is inspired in block device sysfs 'stat' file.
-The ecc_stats struct fields are shown as ordered in the structure,
-in a machine parseable format.
+For instance, a device with eight blocks used for the BBT in the last
+partition would now show (getting ECC stats from sysfs):
 
-Here's a typical output showing 3 ECC-corrected and 8 bad blocks:
-       3        0        8        0
+$ cat /sys/class/mtd/mtd2/ecc_stats
+       0        0       10        0
+       0        0        4        0
+       0        0        0        8
+
+instead of the currently wrong stats:
+
+$ cat /sys/class/mtd/mtd2/ecc_stats
+       0        0       10        0
+       0        0        4        0
+       0        0        8        0
 
 Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 ---
- drivers/mtd/mtdcore.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ drivers/mtd/mtdpart.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index d201fee..c5e9943 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -298,6 +298,19 @@ static ssize_t mtd_ecc_step_size_show(struct device *dev,
- }
- static DEVICE_ATTR(ecc_step_size, S_IRUGO, mtd_ecc_step_size_show, NULL);
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index 921e8c6..a3e3a7d 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -535,7 +535,9 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
+ 		uint64_t offs = 0;
  
-+static ssize_t mtd_ecc_stats_show(struct device *dev,
-+		struct device_attribute *attr, char *buf)
-+{
-+	struct mtd_info *mtd = dev_get_drvdata(dev);
-+	struct mtd_ecc_stats *ecc_stats = &mtd->ecc_stats;
-+
-+	return snprintf(buf, PAGE_SIZE, "%8u %8u %8u %8u\n", ecc_stats->corrected,
-+						ecc_stats->failed,
-+						ecc_stats->badblocks,
-+						ecc_stats->bbtblocks);
-+}
-+static DEVICE_ATTR(ecc_stats, S_IRUGO, mtd_ecc_stats_show, NULL);
-+
- static struct attribute *mtd_attrs[] = {
- 	&dev_attr_type.attr,
- 	&dev_attr_flags.attr,
-@@ -310,6 +323,7 @@ static struct attribute *mtd_attrs[] = {
- 	&dev_attr_name.attr,
- 	&dev_attr_ecc_strength.attr,
- 	&dev_attr_ecc_step_size.attr,
-+	&dev_attr_ecc_stats.attr,
- 	&dev_attr_bitflip_threshold.attr,
- 	NULL,
- };
+ 		while (offs < slave->mtd.size) {
+-			if (mtd_block_isbad(master, offs + slave->offset))
++			if (mtd_block_isreserved(master, offs + slave->offset))
++				slave->mtd.ecc_stats.bbtblocks++;
++			else if (mtd_block_isbad(master, offs + slave->offset))
+ 				slave->mtd.ecc_stats.badblocks++;
+ 			offs += slave->mtd.erasesize;
+ 		}
 -- 
 1.9.0
