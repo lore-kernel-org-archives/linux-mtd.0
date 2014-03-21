@@ -1,21 +1,16 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WR3Qg-0005YM-8l
- for linux-mtd@lists.infradead.org; Fri, 21 Mar 2014 17:40:27 +0000
-Message-ID: <1395423599.24683.56.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/2] UBI: block: Remove __initdata from ubiblock_param_ops
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-Date: Fri, 21 Mar 2014 19:39:59 +0200
-In-Reply-To: <1395225803-25037-1-git-send-email-richard@nod.at>
-References: <1395225803-25037-1-git-send-email-richard@nod.at>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-kernel@vger.kernel.org,
- ezequiel.garcia@free-electrons.com
-Reply-To: dedekind1@gmail.com
+Received: from mail-vc0-f170.google.com ([209.85.220.170])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WR3T6-0005eG-Ub
+ for linux-mtd@lists.infradead.org; Fri, 21 Mar 2014 17:42:57 +0000
+Received: by mail-vc0-f170.google.com with SMTP id hu19so3000649vcb.15
+ for <linux-mtd@lists.infradead.org>; Fri, 21 Mar 2014 10:42:31 -0700 (PDT)
+MIME-Version: 1.0
+Date: Fri, 21 Mar 2014 11:42:31 -0600
+Message-ID: <CALnQHM3PJCzB86S65TmKE14_HY7DxwVgtXAOcphrGcCJ4t24GQ@mail.gmail.com>
+Subject: [PATCH] mtd: nand: fix byte addressing on 16-bit wide devices
+From: David Mosberger <davidm@egauge.net>
+To: linux-mtd@lists.infradead.org
+Content-Type: multipart/mixed; boundary=001a1134011405af2904f5216970
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,18 +20,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2014-03-19 at 11:43 +0100, Richard Weinberger wrote:
-> You cannot mark these parameters as __initdata.
-> Otherwise the data is gone upon module exit.
-> 
-> Fixes:
-> [  172.045465] BUG: unable to handle kernel paging request at ffffffffa001db38
-> [  172.046020] IP: [<ffffffff81067aa4>] destroy_params+0x24/0x50
-> 
-> Signed-off-by: Richard Weinberger <richard@nod.at>
+--001a1134011405af2904f5216970
+Content-Type: text/plain; charset=ISO-8859-1
 
-Pushed to linux-ubifs.git, thanks!
+This is a revised version of a patch that I submitted a while ago.
+It's relative to linux-mtd.
+Please apply.
 
+Thanks!
+
+  --david
 -- 
-Best Regards,
-Artem Bityutskiy
+eGauge Systems LLC, http://egauge.net/, 1.877-EGAUGE1, fax 720.545.9768
+
+--001a1134011405af2904f5216970
+Content-Type: text/plain; charset=US-ASCII; name="nand-byte-addr.diff"
+Content-Disposition: attachment; filename="nand-byte-addr.diff"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_ht1r9pp40
+
+bXRkOiBuYW5kOiBmaXggYnl0ZSBhZHJlc3Npbmcgb24gMTYtYml0IHdpZGUgZGV2aWNlcwoKU29t
+ZSBjb21tYW5kcyAoUkVBRElELCBHRVRfRkVBVFVSRVMsIGFuZCBTRVRfRkVBVFVSRVMpIHJlcXVp
+cmUKYnl0ZS1hZGRyZXNzZXMgZXZlbiB3aGVuIHRoZSBkYXRhYnVzIGlzIDE2IGJpdHMgd2lkZS4g
+IFdpdGhvdXQgdGhpcwpwYXRjaCwgMTYtYml0IHdpZGUgZGV2aWNlcyBhcmUgdW5hYmxlIHRvIGRl
+dGVjdCBPTkZJLgoKU2lnbmVkLW9mZi1ieTogRGF2aWQgTW9zYmVyZ2VyIDxkYXZpZG1AZWdhdWdl
+Lm5ldD4KCmRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL25hbmRfYmFzZS5jIGIvZHJpdmVy
+cy9tdGQvbmFuZC9uYW5kX2Jhc2UuYwppbmRleCA5NzE1YTdiLi4xMzI4NjZjIDEwMDY0NAotLS0g
+YS9kcml2ZXJzL210ZC9uYW5kL25hbmRfYmFzZS5jCisrKyBiL2RyaXZlcnMvbXRkL25hbmQvbmFu
+ZF9iYXNlLmMKQEAgLTEwMyw2ICsxMDMsMjAgQEAgc3RhdGljIGludCBuYW5kX2RvX3dyaXRlX29v
+YihzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgbG9mZl90IHRvLAogICovCiBERUZJTkVfTEVEX1RSSUdH
+RVIobmFuZF9sZWRfdHJpZ2dlcik7CiAKKy8qCisgKiBTb21lIGNvbW1hbmRzIChSRUFESUQsIEdF
+VF9GRUFUVVJFUywgYW5kIFNFVF9GRUFUVVJFUykgYXJlCisgKiBieXRlLW9yaWVudGVkIGV2ZW4g
+d2hlbiB0aGUgZGF0YS1idXMgaXMgMTYgYml0cyB3aWRlLiAgVG8gcHJlc2VydmUKKyAqIHRoZSBi
+eXRlLWFkZHJlc3MsIHdlIG5lZWQgdG8gZW5jb2RlIGl0IHByb3Blcmx5IGRlcGVuZGluZyBvbgor
+ICogd2hldGhlciBvciBub3QgdGhlIGRldmljZSBoYXMgYSAxNiBiaXQgd2lkZSBidXMuCisgKi8K
+K3N0YXRpYyBpbmxpbmUgaW50IGJ5dGVfYWRkcihzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwLCBpbnQg
+YWRkcikKK3sKKwlpZiAoY2hpcC0+b3B0aW9ucyAmIE5BTkRfQlVTV0lEVEhfMTYpCisJCXJldHVy
+biBhZGRyIDw8IDE7CisJZWxzZQorCQlyZXR1cm4gYWRkcjsKK30KKwogc3RhdGljIGludCBjaGVj
+a19vZmZzX2xlbihzdHJ1Y3QgbXRkX2luZm8gKm10ZCwKIAkJCQkJbG9mZl90IG9mcywgdWludDY0
+X3QgbGVuKQogewpAQCAtMjgyMSw3ICsyODM1LDcgQEAgc3RhdGljIGludCBuYW5kX29uZmlfc2V0
+X2ZlYXR1cmVzKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwLAog
+CSAgICAgICYgT05GSV9PUFRfQ01EX1NFVF9HRVRfRkVBVFVSRVMpKQogCQlyZXR1cm4gLUVJTlZB
+TDsKIAotCWNoaXAtPmNtZGZ1bmMobXRkLCBOQU5EX0NNRF9TRVRfRkVBVFVSRVMsIGFkZHIsIC0x
+KTsKKwljaGlwLT5jbWRmdW5jKG10ZCwgTkFORF9DTURfU0VUX0ZFQVRVUkVTLCBieXRlX2FkZHIo
+Y2hpcCwgYWRkciksIC0xKTsKIAlmb3IgKGkgPSAwOyBpIDwgT05GSV9TVUJGRUFUVVJFX1BBUkFN
+X0xFTjsgKytpKQogCQljaGlwLT53cml0ZV9ieXRlKG10ZCwgc3ViZmVhdHVyZV9wYXJhbVtpXSk7
+CiAKQEAgLTI4NTEsNyArMjg2NSw3IEBAIHN0YXRpYyBpbnQgbmFuZF9vbmZpX2dldF9mZWF0dXJl
+cyhzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwKIAkvKiBjbGVh
+ciB0aGUgc3ViIGZlYXR1cmUgcGFyYW1ldGVycyAqLwogCW1lbXNldChzdWJmZWF0dXJlX3BhcmFt
+LCAwLCBPTkZJX1NVQkZFQVRVUkVfUEFSQU1fTEVOKTsKIAotCWNoaXAtPmNtZGZ1bmMobXRkLCBO
+QU5EX0NNRF9HRVRfRkVBVFVSRVMsIGFkZHIsIC0xKTsKKwljaGlwLT5jbWRmdW5jKG10ZCwgTkFO
+RF9DTURfR0VUX0ZFQVRVUkVTLCBieXRlX2FkZHIoY2hpcCwgYWRkciksIC0xKTsKIAlmb3IgKGkg
+PSAwOyBpIDwgT05GSV9TVUJGRUFUVVJFX1BBUkFNX0xFTjsgKytpKQogCQkqc3ViZmVhdHVyZV9w
+YXJhbSsrID0gY2hpcC0+cmVhZF9ieXRlKG10ZCk7CiAJcmV0dXJuIDA7CkBAIC0zMDY3LDcgKzMw
+ODEsNyBAQCBzdGF0aWMgaW50IG5hbmRfZmxhc2hfZGV0ZWN0X29uZmkoc3RydWN0IG10ZF9pbmZv
+ICptdGQsIHN0cnVjdCBuYW5kX2NoaXAgKmNoaXAsCiAJaW50IHZhbDsKIAogCS8qIFRyeSBPTkZJ
+IGZvciB1bmtub3duIGNoaXAgb3IgTFAgKi8KLQljaGlwLT5jbWRmdW5jKG10ZCwgTkFORF9DTURf
+UkVBRElELCAweDIwLCAtMSk7CisJY2hpcC0+Y21kZnVuYyhtdGQsIE5BTkRfQ01EX1JFQURJRCwg
+Ynl0ZV9hZGRyKGNoaXAsIDB4MjApLCAtMSk7CiAJaWYgKGNoaXAtPnJlYWRfYnl0ZShtdGQpICE9
+ICdPJyB8fCBjaGlwLT5yZWFkX2J5dGUobXRkKSAhPSAnTicgfHwKIAkJY2hpcC0+cmVhZF9ieXRl
+KG10ZCkgIT0gJ0YnIHx8IGNoaXAtPnJlYWRfYnl0ZShtdGQpICE9ICdJJykKIAkJcmV0dXJuIDA7
+CkBAIC0zNDkxLDcgKzM1MDUsNyBAQCBzdGF0aWMgc3RydWN0IG5hbmRfZmxhc2hfZGV2ICpuYW5k
+X2dldF9mbGFzaF90eXBlKHN0cnVjdCBtdGRfaW5mbyAqbXRkLAogCWNoaXAtPmNtZGZ1bmMobXRk
+LCBOQU5EX0NNRF9SRVNFVCwgLTEsIC0xKTsKIAogCS8qIFNlbmQgdGhlIGNvbW1hbmQgZm9yIHJl
+YWRpbmcgZGV2aWNlIElEICovCi0JY2hpcC0+Y21kZnVuYyhtdGQsIE5BTkRfQ01EX1JFQURJRCwg
+MHgwMCwgLTEpOworCWNoaXAtPmNtZGZ1bmMobXRkLCBOQU5EX0NNRF9SRUFESUQsIGJ5dGVfYWRk
+cihjaGlwLCAweDAwKSwgLTEpOwogCiAJLyogUmVhZCBtYW51ZmFjdHVyZXIgYW5kIGRldmljZSBJ
+RHMgKi8KIAkqbWFmX2lkID0gY2hpcC0+cmVhZF9ieXRlKG10ZCk7CkBAIC0zNTA0LDcgKzM1MTgs
+NyBAQCBzdGF0aWMgc3RydWN0IG5hbmRfZmxhc2hfZGV2ICpuYW5kX2dldF9mbGFzaF90eXBlKHN0
+cnVjdCBtdGRfaW5mbyAqbXRkLAogCSAqIG5vdCBtYXRjaCwgaWdub3JlIHRoZSBkZXZpY2UgY29t
+cGxldGVseS4KIAkgKi8KIAotCWNoaXAtPmNtZGZ1bmMobXRkLCBOQU5EX0NNRF9SRUFESUQsIDB4
+MDAsIC0xKTsKKwljaGlwLT5jbWRmdW5jKG10ZCwgTkFORF9DTURfUkVBRElELCBieXRlX2FkZHIo
+Y2hpcCwgMHgwMCksIC0xKTsKIAogCS8qIFJlYWQgZW50aXJlIElEIHN0cmluZyAqLwogCWZvciAo
+aSA9IDA7IGkgPCA4OyBpKyspCkBAIC0zNjYyLDcgKzM2NzYsNyBAQCBpbnQgbmFuZF9zY2FuX2lk
+ZW50KHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBpbnQgbWF4Y2hpcHMsCiAJCS8qIFNlZSBjb21tZW50
+IGluIG5hbmRfZ2V0X2ZsYXNoX3R5cGUgZm9yIHJlc2V0ICovCiAJCWNoaXAtPmNtZGZ1bmMobXRk
+LCBOQU5EX0NNRF9SRVNFVCwgLTEsIC0xKTsKIAkJLyogU2VuZCB0aGUgY29tbWFuZCBmb3IgcmVh
+ZGluZyBkZXZpY2UgSUQgKi8KLQkJY2hpcC0+Y21kZnVuYyhtdGQsIE5BTkRfQ01EX1JFQURJRCwg
+MHgwMCwgLTEpOworCQljaGlwLT5jbWRmdW5jKG10ZCwgTkFORF9DTURfUkVBRElELCBieXRlX2Fk
+ZHIoY2hpcCwgMHgwMCksIC0xKTsKIAkJLyogUmVhZCBtYW51ZmFjdHVyZXIgYW5kIGRldmljZSBJ
+RHMgKi8KIAkJaWYgKG5hbmRfbWFmX2lkICE9IGNoaXAtPnJlYWRfYnl0ZShtdGQpIHx8CiAJCSAg
+ICBuYW5kX2Rldl9pZCAhPSBjaGlwLT5yZWFkX2J5dGUobXRkKSkgewo=
+--001a1134011405af2904f5216970--
