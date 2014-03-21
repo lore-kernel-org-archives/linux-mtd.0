@@ -1,22 +1,28 @@
-Received: from va3ehsobe006.messaging.microsoft.com ([216.32.180.16]
- helo=va3outboundpool.messaging.microsoft.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQwmV-0007uW-N6
- for linux-mtd@lists.infradead.org; Fri, 21 Mar 2014 10:34:33 +0000
-Message-ID: <532C15EB.9010600@freescale.com>
-Date: Fri, 21 Mar 2014 18:35:23 +0800
-From: Huang Shijie <b32955@freescale.com>
+From: =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>
+To: Arnd Bergmann <arnd@arndb.de>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Fabio Estevam <fabio.estevam@freescale.com>,
+ Huang Shijie <b32955@freescale.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>,
+ =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>,
+ Mark Rutland <mark.rutland@arm.com>, Pawel Moll <pawel.moll@arm.com>,
+ Rob Herring <robh+dt@kernel.org>, Rob Landley <rob@landley.net>,
+ Russell King <linux@arm.linux.org.uk>,
+ Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@freescale.com>,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Shawn Guo <shawn.guo@linaro.org>
+Subject: [PATCHv2 1/1] mtd: gpmi: make blockmark swapping optional
+Date: Fri, 21 Mar 2014 11:50:17 +0100
+Message-Id: <1395399017-19005-1-git-send-email-LW@KARO-electronics.de>
+In-Reply-To: <532BCFCC.4080205@freescale.com>
+References: <532BCFCC.4080205@freescale.com>
 MIME-Version: 1.0
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [PATCH] mtd: gpmi: add gpmi_devdata{} to simplify the code
-References: <1395397179-17449-1-git-send-email-b32955@freescale.com>
- <20980858CB6D3A4BAE95CA194937D5E73EAB4ECF@DBDE04.ent.ti.com>
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EAB4ECF@DBDE04.ent.ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,29 +32,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2014=E5=B9=B403=E6=9C=8821=E6=97=A5 18:29, Gupta, Pekon =E5=86=99=
-=E9=81=93:
-> Ezequiel has got approval for 2 new generic MTD bindings (refer l2-mtd.=
-git)
-> 	commit 8dd49165ef5f46b5ad9ba296c559ccff315f9421
-> 	mtd: nand: Add a devicetree binding for ECC strength and ECC step size
-> So, I think<1>  can be replaced by "nand-ecc-strength".
->
->
-"nand-ecc-strength" is add the ECC strength for the NAND, but my patch=20
-is add
-the maximum ECC strength the BCH controller can support.
+With a flash-based BBT there is no reason to move the Factory Bad
+Block Marker from the data area buffer (to where it is mapped by the
+GPMI NAND controller) to the OOB buffer. Thus, make this feature
+configurable via DT. This is required for the Ka-Ro electronics
+platforms.
 
-they are different things.
->> >
->> >    [2] add the gpmi_devdata_imx{23|28|6q} to replace the gpmi_ids.
->> >
-> Can you use "compatible" string in DT for this ?
->
->
-sorry, could you please give me an example?
+Signed-off-by: Lothar Waßmann <LW@KARO-electronics.de>
+---
+ Documentation/devicetree/bindings/mtd/gpmi-nand.txt |    3 +++
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c              |   10 +++++++---
+ 2 files changed, 10 insertions(+), 3 deletions(-)
 
-I do not know what's your meaning. :(
-
-thanks
-Huang Shijie
+diff --git a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
+index 458d596..f28949a 100644
+--- a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
+@@ -25,6 +25,9 @@ Optional properties:
+                        discoverable or this property is not enabled,
+                        the software may chooses an implementation-defined
+                        ECC scheme.
++  - fsl,no-blockmark-swap: Don't swap the bad block marker from the OOB
++                       area with the byte in the data area but rely on the
++                       BBT for identifying bad blocks.
+ 
+ The device tree may optionally contain sub-nodes describing partitions of the
+ address space. See partition.txt for more detail.
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index bb77f75..98562eb 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -1632,9 +1632,6 @@ static int gpmi_init_last(struct gpmi_nand_data *this)
+ 	struct bch_geometry *bch_geo = &this->bch_geometry;
+ 	int ret;
+ 
+-	/* Set up swap_block_mark, must be set before the gpmi_set_geometry() */
+-	this->swap_block_mark = !GPMI_IS_MX23(this);
+-
+ 	/* Set up the medium geometry */
+ 	ret = gpmi_set_geometry(this);
+ 	if (ret)
+@@ -1701,6 +1698,13 @@ static int gpmi_nand_init(struct gpmi_nand_data *this)
+ 	if (of_get_nand_on_flash_bbt(this->dev->of_node))
+ 		chip->bbt_options |= NAND_BBT_USE_FLASH | NAND_BBT_NO_OOB;
+ 
++	/* Set up swap_block_mark, must be set before the gpmi_set_geometry() */
++	if (!of_property_read_bool(this->dev->of_node, "fsl,no-blockmark-swap"))
++		this->swap_block_mark = !GPMI_IS_MX23(this);
++
++	dev_dbg(this->dev, "Blockmark swapping %sabled\n",
++		this->swap_block_mark ? "en" : "dis");
++
+ 	/*
+ 	 * Allocate a temporary DMA buffer for reading ID in the
+ 	 * nand_scan_ident().
+-- 
+1.7.10.4
