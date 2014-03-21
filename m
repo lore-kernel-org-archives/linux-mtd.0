@@ -1,20 +1,21 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WR3q6-0006KE-Ms
- for linux-mtd@lists.infradead.org; Fri, 21 Mar 2014 18:06:43 +0000
-Date: Fri, 21 Mar 2014 15:05:47 -0300
+ id 1WR3u2-0006Tv-W1
+ for linux-mtd@lists.infradead.org; Fri, 21 Mar 2014 18:10:47 +0000
+Date: Fri, 21 Mar 2014 15:09:56 -0300
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: David Mosberger <davidm@egauge.net>
-Subject: Re: [PATCH] mtd: nand: fix byte addressing on 16-bit wide devices
-Message-ID: <20140321180547.GA11793@arch.cereza>
-References: <CALnQHM3PJCzB86S65TmKE14_HY7DxwVgtXAOcphrGcCJ4t24GQ@mail.gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2] ubi-utils: Add ubiblock tool
+Message-ID: <20140321180955.GB8890@arch>
+References: <1394806381-25458-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1394807124-25916-1-git-send-email-ezequiel.garcia@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CALnQHM3PJCzB86S65TmKE14_HY7DxwVgtXAOcphrGcCJ4t24GQ@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <1394807124-25916-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: Brian Norris <computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,39 +25,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi David,
-
-On Mar 21, David Mosberger wrote:
-> This is a revised version of a patch that I submitted a while ago.
-> It's relative to linux-mtd.
-> Please apply.
+On Mar 14, Ezequiel Garcia wrote:
+> With the addition of block device access to UBI volumes, we now
+> add a simple userspace tool to access the new ioctls.
 > 
-> Thanks!
+> Usage of this tool is as simple as it gets:
 > 
->   --david
-> -- 
-> eGauge Systems LLC, http://egauge.net/, 1.877-EGAUGE1, fax 720.545.9768
-
-> mtd: nand: fix byte adressing on 16-bit wide devices
+>   $ ubiblock --create /dev/ubi0_0
 > 
-> Some commands (READID, GET_FEATURES, and SET_FEATURES) require
-> byte-addresses even when the databus is 16 bits wide.  Without this
-> patch, 16-bit wide devices are unable to detect ONFI.
+> will create a new block device /dev/ubiblock0_0, and
 > 
+>   $ ubiblock --remove /dev/ubi0_0
+> 
+> will remove the device.
+> 
+> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> ---
 
-I haven't looked at your patch, but I think this is already fixed.
-You can take a look at these commits:
+Ping?
 
-bd9c6e99b58255b9de1982711ac9487c9a2f18be
-3dad2344e92c6e1aeae42df1c4824f307c51bcc7
-
-AFAIK, the READID command data is now issued as 8-bit, disregarding of
-NAND_BUSWIDTH_16.
-
-Maybe you can re-test this building a kernel from linux-next.git and
-report if your issues are now fixed?
-
-Thanks!
+I'm wondering how's the release cycle for this. Is it possible
+to make a release more or less soon, so this new ubiblock tool
+is available?
 -- 
 Ezequiel García, Free Electrons
 Embedded Linux, Kernel and Android Engineering
