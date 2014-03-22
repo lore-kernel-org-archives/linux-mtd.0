@@ -1,17 +1,21 @@
-Received: from tx2ehsobe003.messaging.microsoft.com ([65.55.88.13]
- helo=tx2outboundpool.messaging.microsoft.com)
+Received: from f224.i.mail.ru ([94.100.178.211])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WRGrU-0005C5-Sp
- for linux-mtd@lists.infradead.org; Sat, 22 Mar 2014 08:01:01 +0000
-From: Hou Zhiqiang <B48286@freescale.com>
-To: <linux-mtd@lists.infradead.org>, <linuxppc-dev@ozlabs.org>
-Subject: [v2] mtd: m25p80: Modify the name of mtd_info
-Date: Sat, 22 Mar 2014 15:58:06 +0800
-Message-ID: <1395475086-31195-1-git-send-email-B48286@freescale.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: scottwood@freescale.com, mingkai.hu@freescale.com,
- Hou Zhiqiang <B48286@freescale.com>, dwmw2@infradead.org
+ id 1WRHTC-0005eE-RN
+ for linux-mtd@lists.infradead.org; Sat, 22 Mar 2014 08:40:00 +0000
+From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+To: =?UTF-8?B?U2FzaGEgTGV2aW4=?= <sasha.levin@oracle.com>
+Subject: =?UTF-8?B?UmU6IFtQQVRDSF0gbXRkOiBkaXNrb25jaGlwOiBtZW0gcmVzb3VyY2UgbmFt?=
+ =?UTF-8?B?ZSBpcyBub3Qgb3B0aW9uYWw=?=
+Mime-Version: 1.0
+Date: Sat, 22 Mar 2014 12:39:32 +0400
+Message-ID: <1395477572.57478225@f224.i.mail.ru>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
+In-Reply-To: <1395267877-15223-1-git-send-email-sasha.levin@oracle.com>
+References: <1395267877-15223-1-git-send-email-sasha.levin@oracle.com>
+Cc: computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,68 +25,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-To specify spi flash layouts by "mtdparts=..." in cmdline, we must
-give mtd_info a fixed name,because the cmdlinepart's parser will
-match the name of mtd_info given in cmdline.
-Now, if use DT, the mtd_info's name will be spi->dev->name. It
-consists of spi_master->bus_num, and the spi_master->bus_num maybe
-dynamically fetched. So, in this case, replace the component bus_num
-with thei physical address of spi master.
-
-Signed-off-by: Hou Zhiqiang <B48286@freescale.com>
----
-v2:
-	1. Fix some code style issue.
-	2. Cast physical address to unsigned long long.
-
- drivers/mtd/devices/m25p80.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 7eda71d..cbb04aa 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -30,6 +30,7 @@
- #include <linux/mtd/cfi.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
-+#include <linux/of_address.h>
- #include <linux/of_platform.h>
- 
- #include <linux/spi/spi.h>
-@@ -934,9 +935,11 @@ static int m25p_probe(struct spi_device *spi)
- 	struct flash_platform_data	*data;
- 	struct m25p			*flash;
- 	struct flash_info		*info;
--	unsigned			i;
-+	unsigned			i, ret;
- 	struct mtd_part_parser_data	ppdata;
- 	struct device_node *np = spi->dev.of_node;
-+	struct resource res;
-+	struct device_node *mnp = spi->master->dev.of_node;
- 
- 	/* Platform data helps sort out which chip type we have, as
- 	 * well as how this board partitions it.  If we don't have
-@@ -1009,8 +1012,18 @@ static int m25p_probe(struct spi_device *spi)
- 
- 	if (data && data->name)
- 		flash->mtd.name = data->name;
--	else
--		flash->mtd.name = dev_name(&spi->dev);
-+	else {
-+		ret = of_address_to_resource(mnp, 0, &res);
-+		if (ret) {
-+			dev_err(&spi->dev, "failed to get spi master resource\n");
-+			return ret;
-+		}
-+		flash->mtd.name = kasprintf(GFP_KERNEL, "spi%x.%d",
-+				(unsigned long long)res.start,
-+				spi->chip_select);
-+		if (!flash->mtd.name)
-+			return -ENOMEM;
-+	}
- 
- 	flash->mtd.type = MTD_NORFLASH;
- 	flash->mtd.writesize = 1;
--- 
-1.8.5
+V2VkLCAxOSBNYXIgMjAxNCAxODoyNDozNyAtMDQwMCDQvtGCIFNhc2hhIExldmluIDxzYXNoYS5s
+ZXZpbkBvcmFjbGUuY29tPjoKPiBQYXNzaW5nIGEgbmFtZSB0byByZXF1ZXN0X21lbV9yZWdpb24o
+KSBpc24ndCBvcHRpb25hbCBhbmQgY2FuJ3QganVzdAo+IGJlIE5VTEwuIFBhc3NpbmcgTlVMTCBj
+YXVzZXMgYSBOVUxMIHB0ciBkZXJlZiBsYXRlciBpbiB0aGUgYm9vdAo+IHByb2Nlc3MuCj4gCj4g
+U2lnbmVkLW9mZi1ieTogU2FzaGEgTGV2aW4gPHNhc2hhLmxldmluQG9yYWNsZS5jb20+Cj4gLS0t
+Cj4gIGRyaXZlcnMvbXRkL25hbmQvZGlza29uY2hpcC5jIHwgICAgMiArLQo+ICAxIGZpbGVzIGNo
+YW5nZWQsIDEgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbnMoLSkKPiAKPiBkaWZmIC0tZ2l0IGEv
+ZHJpdmVycy9tdGQvbmFuZC9kaXNrb25jaGlwLmMgYi9kcml2ZXJzL210ZC9uYW5kL2Rpc2tvbmNo
+aXAuYwo+IGluZGV4IGI5YjRkYjYuLmY2OGE3YmMgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9tdGQv
+bmFuZC9kaXNrb25jaGlwLmMKPiArKysgYi9kcml2ZXJzL210ZC9uYW5kL2Rpc2tvbmNoaXAuYwo+
+IEBAIC0xNDM5LDcgKzE0MzksNyBAQCBzdGF0aWMgaW50IF9faW5pdCBkb2NfcHJvYmUodW5zaWdu
+ZWQgbG9uZyBwaHlzYWRyKQo+ICAJaW50IHJlZywgbGVuLCBudW1jaGlwczsKPiAgCWludCByZXQg
+PSAwOwo+ICAKPiAtCWlmICghcmVxdWVzdF9tZW1fcmVnaW9uKHBoeXNhZHIsIERPQ19JT1JFTUFQ
+X0xFTiwgTlVMTCkpCj4gKwlpZiAoIXJlcXVlc3RfbWVtX3JlZ2lvbihwaHlzYWRyLCBET0NfSU9S
+RU1BUF9MRU4sICJEaXNrT25DaGlwIikpCj4gIAkJcmV0dXJuIC1FQlVTWTsKPiAgCXZpcnRhZHIg
+PSBpb3JlbWFwKHBoeXNhZHIsIERPQ19JT1JFTUFQX0xFTik7Cj4gIAlpZiAoIXZpcnRhZHIpIHsK
+PiAtLSAKClRlc3RlZC1ieTogQWxleGFuZGVyIFNoaXlhbiA8c2hjX3dvcmtAbWFpbC5ydT4KCi0t
+LQoK
