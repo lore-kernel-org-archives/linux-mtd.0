@@ -1,15 +1,17 @@
-Received: from mail-pd0-x234.google.com ([2607:f8b0:400e:c02::234])
+Received: from tx2ehsobe003.messaging.microsoft.com ([65.55.88.13]
+ helo=tx2outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WRFhI-0004Ta-5T
- for linux-mtd@lists.infradead.org; Sat, 22 Mar 2014 06:46:24 +0000
-Received: by mail-pd0-f180.google.com with SMTP id v10so3216518pde.25
- for <linux-mtd@lists.infradead.org>; Fri, 21 Mar 2014 23:46:02 -0700 (PDT)
-From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mkfs.ubifs: correct and improve LEB size error prints
-Date: Fri, 21 Mar 2014 23:45:44 -0700
-Message-Id: <1395470744-7281-1-git-send-email-computersforpeace@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>
+ id 1WRGrU-0005C5-Sp
+ for linux-mtd@lists.infradead.org; Sat, 22 Mar 2014 08:01:01 +0000
+From: Hou Zhiqiang <B48286@freescale.com>
+To: <linux-mtd@lists.infradead.org>, <linuxppc-dev@ozlabs.org>
+Subject: [v2] mtd: m25p80: Modify the name of mtd_info
+Date: Sat, 22 Mar 2014 15:58:06 +0800
+Message-ID: <1395475086-31195-1-git-send-email-B48286@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: scottwood@freescale.com, mingkai.hu@freescale.com,
+ Hou Zhiqiang <B48286@freescale.com>, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,37 +21,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The error message is incorrect for "too small LEB size" -- we were
-printing the minimum I/O size instead of the LEB size.
+To specify spi flash layouts by "mtdparts=..." in cmdline, we must
+give mtd_info a fixed name,because the cmdlinepart's parser will
+match the name of mtd_info given in cmdline.
+Now, if use DT, the mtd_info's name will be spi->dev->name. It
+consists of spi_master->bus_num, and the spi_master->bus_num maybe
+dynamically fetched. So, in this case, replace the component bus_num
+with thei physical address of spi master.
 
-At the same time, let's print the max LEB size along with the message
-for "too large LEB size", to be consistent and more helpful.
-
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Signed-off-by: Hou Zhiqiang <B48286@freescale.com>
 ---
- mkfs.ubifs/mkfs.ubifs.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+v2:
+	1. Fix some code style issue.
+	2. Cast physical address to unsigned long long.
 
-diff --git a/mkfs.ubifs/mkfs.ubifs.c b/mkfs.ubifs/mkfs.ubifs.c
-index f9977bcad73f..200c8a5007e4 100644
---- a/mkfs.ubifs/mkfs.ubifs.c
-+++ b/mkfs.ubifs/mkfs.ubifs.c
-@@ -352,13 +352,14 @@ static int validate_options(void)
- 		return err_msg("min. I/O unit cannot be larger than LEB size");
- 	if (c->leb_size < UBIFS_MIN_LEB_SZ)
- 		return err_msg("too small LEB size %d, minimum is %d",
--			       c->min_io_size, UBIFS_MIN_LEB_SZ);
-+			       c->leb_size, UBIFS_MIN_LEB_SZ);
- 	if (c->leb_size % c->min_io_size)
- 		return err_msg("LEB should be multiple of min. I/O units");
- 	if (c->leb_size % 8)
- 		return err_msg("LEB size has to be multiple of 8");
- 	if (c->leb_size > UBIFS_MAX_LEB_SZ)
--		return err_msg("too large LEB size %d", c->leb_size);
-+		return err_msg("too large LEB size %d, maximum is %d",
-+				c->leb_size, UBIFS_MAX_LEB_SZ);
- 	if (c->max_leb_cnt < UBIFS_MIN_LEB_CNT)
- 		return err_msg("too low max. count of LEBs, minimum is %d",
- 			       UBIFS_MIN_LEB_CNT);
+ drivers/mtd/devices/m25p80.c | 19 ++++++++++++++++---
+ 1 file changed, 16 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 7eda71d..cbb04aa 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -30,6 +30,7 @@
+ #include <linux/mtd/cfi.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
++#include <linux/of_address.h>
+ #include <linux/of_platform.h>
+ 
+ #include <linux/spi/spi.h>
+@@ -934,9 +935,11 @@ static int m25p_probe(struct spi_device *spi)
+ 	struct flash_platform_data	*data;
+ 	struct m25p			*flash;
+ 	struct flash_info		*info;
+-	unsigned			i;
++	unsigned			i, ret;
+ 	struct mtd_part_parser_data	ppdata;
+ 	struct device_node *np = spi->dev.of_node;
++	struct resource res;
++	struct device_node *mnp = spi->master->dev.of_node;
+ 
+ 	/* Platform data helps sort out which chip type we have, as
+ 	 * well as how this board partitions it.  If we don't have
+@@ -1009,8 +1012,18 @@ static int m25p_probe(struct spi_device *spi)
+ 
+ 	if (data && data->name)
+ 		flash->mtd.name = data->name;
+-	else
+-		flash->mtd.name = dev_name(&spi->dev);
++	else {
++		ret = of_address_to_resource(mnp, 0, &res);
++		if (ret) {
++			dev_err(&spi->dev, "failed to get spi master resource\n");
++			return ret;
++		}
++		flash->mtd.name = kasprintf(GFP_KERNEL, "spi%x.%d",
++				(unsigned long long)res.start,
++				spi->chip_select);
++		if (!flash->mtd.name)
++			return -ENOMEM;
++	}
+ 
+ 	flash->mtd.type = MTD_NORFLASH;
+ 	flash->mtd.writesize = 1;
 -- 
-1.8.3.2
+1.8.5
