@@ -1,13 +1,13 @@
 Received: from arroyo.ext.ti.com ([192.94.94.40])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WS2w2-0004Nj-5e
- for linux-mtd@lists.infradead.org; Mon, 24 Mar 2014 11:20:56 +0000
+ id 1WS2w2-0004Nh-5c
+ for linux-mtd@lists.infradead.org; Mon, 24 Mar 2014 11:20:57 +0000
 From: Pekon Gupta <pekon@ti.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v3 1/4] mtd: nand: omap: add support for BCH16_ECC - GPMC
+Subject: [PATCH v3 2/4] mtd: nand: omap: add support for BCH16_ECC - ELM
  driver updates
-Date: Mon, 24 Mar 2014 16:50:03 +0530
-Message-ID: <1395660006-27560-2-git-send-email-pekon@ti.com>
+Date: Mon, 24 Mar 2014 16:50:04 +0530
+Message-ID: <1395660006-27560-3-git-send-email-pekon@ti.com>
 In-Reply-To: <1395660006-27560-1-git-send-email-pekon@ti.com>
 References: <1395660006-27560-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
@@ -25,78 +25,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch add support for BCH16_ECC in GPMC (controller) driver:
- - extend configuration space to include BCH16 registers
- - extend parsing of DT binding for selecting BCH16 ecc-scheme
+ELM hardware engine is used to detect ECC errors for BCHx ecc-schemes
+(like BCH4/BCH8/BCH16). This patch extends configuration of ELM registers
+for loading of BCH16 ECC syndrome.
 
 Signed-off-by: Pekon Gupta <pekon@ti.com>
 ---
- arch/arm/mach-omap2/gpmc.c                   | 15 +++++++++++++++
- include/linux/platform_data/mtd-nand-omap2.h |  5 +++++
- 2 files changed, 20 insertions(+)
+ drivers/mtd/devices/elm.c         | 42 +++++++++++++++++++++++++++++++++++++++
+ include/linux/platform_data/elm.h |  3 ++-
+ 2 files changed, 44 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
-index ab43755..9b27773 100644
---- a/arch/arm/mach-omap2/gpmc.c
-+++ b/arch/arm/mach-omap2/gpmc.c
-@@ -68,6 +68,9 @@
- #define	GPMC_ECC_BCH_RESULT_1	0x244	/* not available on OMAP2 */
- #define	GPMC_ECC_BCH_RESULT_2	0x248	/* not available on OMAP2 */
- #define	GPMC_ECC_BCH_RESULT_3	0x24c	/* not available on OMAP2 */
-+#define	GPMC_ECC_BCH_RESULT_4	0x300	/* not available on OMAP2 */
-+#define	GPMC_ECC_BCH_RESULT_5	0x304	/* not available on OMAP2 */
-+#define	GPMC_ECC_BCH_RESULT_6	0x308	/* not available on OMAP2 */
- 
- /* GPMC ECC control settings */
- #define GPMC_ECC_CTRL_ECCCLEAR		0x100
-@@ -666,6 +669,12 @@ void gpmc_update_nand_reg(struct gpmc_nand_regs *reg, int cs)
- 					   GPMC_BCH_SIZE * i;
- 		reg->gpmc_bch_result3[i] = gpmc_base + GPMC_ECC_BCH_RESULT_3 +
- 					   GPMC_BCH_SIZE * i;
-+		reg->gpmc_bch_result4[i] = gpmc_base + GPMC_ECC_BCH_RESULT_4 +
-+					   i * GPMC_BCH_SIZE;
-+		reg->gpmc_bch_result5[i] = gpmc_base + GPMC_ECC_BCH_RESULT_5 +
-+					   i * GPMC_BCH_SIZE;
-+		reg->gpmc_bch_result6[i] = gpmc_base + GPMC_ECC_BCH_RESULT_6 +
-+					   i * GPMC_BCH_SIZE;
- 	}
- }
- 
-@@ -1401,6 +1410,12 @@ static int gpmc_probe_nand_child(struct platform_device *pdev,
- 		else
- 			gpmc_nand_data->ecc_opt =
- 				OMAP_ECC_BCH8_CODE_HW_DETECTION_SW;
-+	else if (!strcmp(s, "bch16"))
-+		if (gpmc_nand_data->elm_of_node)
-+			gpmc_nand_data->ecc_opt =
-+				OMAP_ECC_BCH16_CODE_HW;
-+		else
-+			pr_err("%s: BCH16 requires ELM support\n", __func__);
- 	else
- 		pr_err("%s: ti,nand-ecc-opt invalid value\n", __func__);
- 
-diff --git a/include/linux/platform_data/mtd-nand-omap2.h b/include/linux/platform_data/mtd-nand-omap2.h
-index 3e9dd66..c2172e8 100644
---- a/include/linux/platform_data/mtd-nand-omap2.h
-+++ b/include/linux/platform_data/mtd-nand-omap2.h
-@@ -31,6 +31,8 @@ enum omap_ecc {
- 	OMAP_ECC_BCH8_CODE_HW_DETECTION_SW,
- 	/* 8-bit  ECC calculation by GPMC, Error detection by ELM */
- 	OMAP_ECC_BCH8_CODE_HW,
-+	/* 16-bit ECC calculation by GPMC, Error detection by ELM */
-+	OMAP_ECC_BCH16_CODE_HW
+diff --git a/drivers/mtd/devices/elm.c b/drivers/mtd/devices/elm.c
+index 1fd4a0f..b4b02a1 100644
+--- a/drivers/mtd/devices/elm.c
++++ b/drivers/mtd/devices/elm.c
+@@ -213,6 +213,34 @@ static void elm_load_syndrome(struct elm_info *info,
+ 				val = cpu_to_be32(*(u32 *) &ecc[0]) >> 12;
+ 				elm_write_reg(info, offset, val);
+ 				break;
++			case BCH16_ECC:
++				val =	ecc[25] << 0  | ecc[24] <<  8 |
++					ecc[23] << 16 | ecc[22] << 24;
++				elm_write_reg(info, offset, val);
++				offset += 4;
++				val =	ecc[21] <<  0 | ecc[20] <<  8 |
++					ecc[19] << 16 | ecc[18] << 24;
++				elm_write_reg(info, offset, val);
++				offset += 4;
++				val =	ecc[17] <<  0 | ecc[16] <<  8 |
++					ecc[15] << 16 | ecc[14] << 24;
++				elm_write_reg(info, offset, val);
++				offset += 4;
++				val =	ecc[13] <<  0 | ecc[12] <<  8 |
++					ecc[11] << 16 | ecc[10] << 24;
++				elm_write_reg(info, offset, val);
++				offset += 4;
++				val =	ecc[9]  <<  0 | ecc[8]  <<  8 |
++					ecc[7]  << 16 | ecc[6]  << 24;
++				elm_write_reg(info, offset, val);
++				offset += 4;
++				val =	ecc[5]  <<  0 | ecc[4]  <<  8 |
++					ecc[3]  << 16 | ecc[2]  << 24;
++				elm_write_reg(info, offset, val);
++				offset += 4;
++				val =	ecc[1]  <<  0 | ecc[0]  <<  8;
++				elm_write_reg(info, offset, val);
++				break;
+ 			default:
+ 				pr_err("invalid config bch_type\n");
+ 			}
+@@ -435,6 +463,13 @@ static int elm_context_save(struct elm_info *info)
+ 	for (i = 0; i < ERROR_VECTOR_MAX; i++) {
+ 		offset = i * SYNDROME_FRAGMENT_REG_SIZE;
+ 		switch (bch_type) {
++		case BCH16_ECC:
++			regs->elm_syndrome_fragment_6[i] = elm_read_reg(info,
++					ELM_SYNDROME_FRAGMENT_6 + offset);
++			regs->elm_syndrome_fragment_5[i] = elm_read_reg(info,
++					ELM_SYNDROME_FRAGMENT_5 + offset);
++			regs->elm_syndrome_fragment_4[i] = elm_read_reg(info,
++					ELM_SYNDROME_FRAGMENT_4 + offset);
+ 		case BCH8_ECC:
+ 			regs->elm_syndrome_fragment_3[i] = elm_read_reg(info,
+ 					ELM_SYNDROME_FRAGMENT_3 + offset);
+@@ -473,6 +508,13 @@ static int elm_context_restore(struct elm_info *info)
+ 	for (i = 0; i < ERROR_VECTOR_MAX; i++) {
+ 		offset = i * SYNDROME_FRAGMENT_REG_SIZE;
+ 		switch (bch_type) {
++		case BCH16_ECC:
++			elm_write_reg(info, ELM_SYNDROME_FRAGMENT_6 + offset,
++					regs->elm_syndrome_fragment_6[i]);
++			elm_write_reg(info, ELM_SYNDROME_FRAGMENT_5 + offset,
++					regs->elm_syndrome_fragment_5[i]);
++			elm_write_reg(info, ELM_SYNDROME_FRAGMENT_4 + offset,
++					regs->elm_syndrome_fragment_4[i]);
+ 		case BCH8_ECC:
+ 			elm_write_reg(info, ELM_SYNDROME_FRAGMENT_3 + offset,
+ 					regs->elm_syndrome_fragment_3[i]);
+diff --git a/include/linux/platform_data/elm.h b/include/linux/platform_data/elm.h
+index 4edb406..ac2f266 100644
+--- a/include/linux/platform_data/elm.h
++++ b/include/linux/platform_data/elm.h
+@@ -21,6 +21,7 @@
+ enum bch_ecc {
+ 	BCH4_ECC = 0,
+ 	BCH8_ECC,
++	BCH16_ECC
  };
  
- struct gpmc_nand_regs {
-@@ -50,6 +52,9 @@ struct gpmc_nand_regs {
- 	void __iomem	*gpmc_bch_result1[GPMC_BCH_NUM_REMAINDER];
- 	void __iomem	*gpmc_bch_result2[GPMC_BCH_NUM_REMAINDER];
- 	void __iomem	*gpmc_bch_result3[GPMC_BCH_NUM_REMAINDER];
-+	void __iomem	*gpmc_bch_result4[GPMC_BCH_NUM_REMAINDER];
-+	void __iomem	*gpmc_bch_result5[GPMC_BCH_NUM_REMAINDER];
-+	void __iomem	*gpmc_bch_result6[GPMC_BCH_NUM_REMAINDER];
+ /* ELM support 8 error syndrome process */
+@@ -38,7 +39,7 @@ struct elm_errorvec {
+ 	bool error_reported;
+ 	bool error_uncorrectable;
+ 	int error_count;
+-	int error_loc[ERROR_VECTOR_MAX];
++	int error_loc[16];
  };
  
- struct omap_nand_platform_data {
+ void elm_decode_bch_error_page(struct device *dev, u8 *ecc_calc,
 -- 
 1.8.5.1.163.gd7aced9
