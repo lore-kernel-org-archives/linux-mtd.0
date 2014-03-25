@@ -1,16 +1,16 @@
-Received: from mail-we0-f180.google.com ([74.125.82.180])
+Received: from mail-wi0-f172.google.com ([209.85.212.172])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSMbL-00026E-3t
- for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 08:21:26 +0000
-Received: by mail-we0-f180.google.com with SMTP id p61so81090wes.11
- for <linux-mtd@lists.infradead.org>; Tue, 25 Mar 2014 01:20:29 -0700 (PDT)
+ id 1WSMbi-0002Ay-KD
+ for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 08:21:27 +0000
+Received: by mail-wi0-f172.google.com with SMTP id hi5so3184190wib.5
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Mar 2014 01:20:52 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [RFC 06/47] mtd: nand: stm_nand_bch: change between BCH and Hamming
- modes
-Date: Tue, 25 Mar 2014 08:19:23 +0000
-Message-Id: <1395735604-26706-7-git-send-email-lee.jones@linaro.org>
+Subject: [RFC 18/47] mtd: nand: stm_nand_bch: ensure configuration is
+ compatible with this driver
+Date: Tue, 25 Mar 2014 08:19:35 +0000
+Message-Id: <1395735604-26706-19-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
 References: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
 Cc: angus.clark@st.com, kernel@stlinux.com, lee.jones@linaro.org,
@@ -25,74 +25,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The EMISS is a device which, amongst other things, controls various
-flash memory modes. We make use of it here merely to flip the
-HAMMING_NOT_BCH bit dependant on whether we wish to operate in Hamming
-or BCH modes. The STM BCH driver makes good use of the helper introduced
-here.
+Some chip characteristics have known incompatibilities with the function
+of this driver. Here we check for this characteristics and refuse to run
+if they are present.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- include/linux/mtd/stm_nand.h | 42 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+ drivers/mtd/nand/stm_nand_bch.c | 39 ++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 38 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/mtd/stm_nand.h b/include/linux/mtd/stm_nand.h
-index 9210d5c..da2006c 100644
---- a/include/linux/mtd/stm_nand.h
-+++ b/include/linux/mtd/stm_nand.h
-@@ -15,6 +15,8 @@
- #ifndef __LINUX_STM_NAND_H
- #define __LINUX_STM_NAND_H
+diff --git a/drivers/mtd/nand/stm_nand_bch.c b/drivers/mtd/nand/stm_nand_bch.c
+index 60a7800..365a73b 100644
+--- a/drivers/mtd/nand/stm_nand_bch.c
++++ b/drivers/mtd/nand/stm_nand_bch.c
+@@ -142,6 +142,36 @@ static void nandi_disable_interrupts(struct nandi_controller *nandi,
+ 	writel(val, nandi->base + NANDBCH_INT_EN);
+ }
  
-+#include <linux/io.h>
-+
- struct stm_plat_nand_bch_data {
- 	struct stm_nand_bank_data *bank;
- 	enum stm_nand_bch_ecc_config bch_ecc_cfg;
-@@ -30,4 +32,44 @@ struct stm_plat_nand_bch_data {
- 	bool flashss;
- };
- 
-+#define EMISS_BASE				0xfef01000
-+#define EMISS_CONFIG				0x0000
-+#define EMISS_CONFIG_HAMMING_NOT_BCH		(0x1 << 6)
-+
-+enum nandi_controllers {
-+	STM_NANDI_UNCONFIGURED,
-+	STM_NANDI_HAMMING,
-+	STM_NANDI_BCH
-+};
-+
-+static inline void emiss_nandi_select(enum nandi_controllers controller)
++/*
++ * Initialisation
++ */
++static int bch_check_compatibility(struct nandi_controller *nandi,
++				   struct mtd_info *mtd,
++				   struct nand_chip *chip)
 +{
-+	unsigned v;
-+	void __iomem *emiss_config_base;
++	if (chip->bits_per_cell > 1)
++		dev_warn(nandi->dev, "MLC NAND not fully supported\n");
 +
-+	emiss_config_base = ioremap(EMISS_BASE, 4);
-+	if (!emiss_config_base) {
-+		pr_err("%s: failed to ioremap EMISS\n", __func__);
-+		return;
++	if (chip->options & NAND_BUSWIDTH_16) {
++		dev_err(nandi->dev, "x16 NAND not supported\n");
++		return false;
 +	}
 +
-+	v = readl(emiss_config_base + EMISS_CONFIG);
-+
-+	if (controller == STM_NANDI_HAMMING) {
-+		if (v & EMISS_CONFIG_HAMMING_NOT_BCH)
-+			goto out;
-+		v |= EMISS_CONFIG_HAMMING_NOT_BCH;
-+	} else {
-+		if (!(v & EMISS_CONFIG_HAMMING_NOT_BCH))
-+			goto out;
-+		v &= ~EMISS_CONFIG_HAMMING_NOT_BCH;
++	if (nandi->blocks_per_device / 4 > mtd->writesize) {
++		/* Need to implement multi-page BBT support... */
++		dev_err(nandi->dev, "BBT too big to fit in single page\n");
++		return false;
 +	}
 +
-+	writel(v, emiss_config_base + EMISS_CONFIG);
-+	readl(emiss_config_base + EMISS_CONFIG);
++	if (bch_ecc_sizes[nandi->bch_ecc_mode] * nandi->sectors_per_page >
++	    mtd->oobsize) {
++		dev_err(nandi->dev, "insufficient OOB for selected ECC\n");
++		return false;
++	}
 +
-+out:
-+	iounmap(emiss_config_base);
++	return true;
 +}
 +
- #endif /* __LINUX_STM_NAND_H */
+ /* Select strongest ECC scheme compatible with OOB size */
+ static int bch_set_ecc_auto(struct nandi_controller *nandi,
+ 			    struct mtd_info *mtd)
+@@ -737,7 +767,7 @@ static int stm_nand_bch_probe(struct platform_device *pdev)
+ 	struct nandi_info *info;
+ 	struct nand_chip *chip;
+ 	struct mtd_info *mtd;
+-	int err;
++	int compatible, err;
+ 
+ 	if (!pdata) {
+ 		if (!np) {
+@@ -832,6 +862,13 @@ static int stm_nand_bch_probe(struct platform_device *pdev)
+ 	info->ecclayout.eccbytes =
+ 		nandi->sectors_per_page * bch_ecc_sizes[nandi->bch_ecc_mode];
+ 
++	compatible = bch_check_compatibility(nandi, mtd, chip);
++	if (!compatible) {
++		dev_err(nandi->dev,
++			"NAND device incompatible with NANDi/BCH Controller\n");
++		return -EINVAL;
++	}
++
+ 	return 0;
+ }
+ 
 -- 
 1.8.3.2
