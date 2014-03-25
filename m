@@ -1,21 +1,20 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSLRQ-0007wm-Fk
- for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 07:06:33 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Brian Norris <computersforpeace@gmail.com>, Ezequiel Garcia
- <ezequiel.garcia@free-electrons.com>
-Subject: RE: [PATCH v2] mtd: nand: omap: fix BCHx ecc.correct to return
- detected bit-flips in erased-page
-Date: Tue, 25 Mar 2014 07:05:58 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EAB5659@DBDE04.ent.ti.com>
-References: <1395730699-14687-1-git-send-email-pekon@ti.com>
-In-Reply-To: <1395730699-14687-1-git-send-email-pekon@ti.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: Stefan Roese <sr@denx.de>, linux-mtd <linux-mtd@lists.infradead.org>
+Received: from mga11.intel.com ([192.55.52.93])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WSMAN-0001DJ-Om
+ for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 07:53:01 +0000
+Message-ID: <1395733934.1549.46.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v2] ubi-utils: Add ubiblock tool
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Date: Tue, 25 Mar 2014 09:52:14 +0200
+In-Reply-To: <1394807124-25916-1-git-send-email-ezequiel.garcia@free-electrons.com>
+References: <1394806381-25458-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1394807124-25916-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,31 +24,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+On Fri, 2014-03-14 at 11:25 -0300, Ezequiel Garcia wrote:
+> With the addition of block device access to UBI volumes, we now
+> add a simple userspace tool to access the new ioctls.
+> 
+> Usage of this tool is as simple as it gets:
+> 
+>   $ ubiblock --create /dev/ubi0_0
+> 
+> will create a new block device /dev/ubiblock0_0, and
 
+Pushed to mtd-utils, thanks!
 
->
->fixes: commit 62116e5171e00f85a8d53f76e45b84423c89ff34
->       mtd: nand: omap2: Support for hardware BCH error correction.
->
->In omap_elm_correct_data(), if bitflip_count in an erased-page is within t=
-he
->correctable limit (< ecc.strength), then it is not indicated back to the c=
-aller
->ecc->read_page().
->This mis-guides upper layers like MTD and UBIFS layer to assume erased-pag=
-e as
->perfectly clean and use it for writing even if actual bitflip_count was
->dangerously high (bitflip_count > mtd->bitflip_threshold).
->
->This patch fixes this above issue, by returning 'stats' to caller
->ecc->read_page() under all scenarios.
->
->Reported-by: Brian Norris <computersforpeace@gmail.com>
->Signed-off-by: Pekon Gupta <pekon@ti.com>
->---
-I you think this qualifies for stable then please mark it for
-CC: <stable@vger.kernel.org> # 3.9.x+
-
-
-with regards, pekon
+-- 
+Best Regards,
+Artem Bityutskiy
