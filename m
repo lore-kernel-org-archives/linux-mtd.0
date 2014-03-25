@@ -1,15 +1,15 @@
-Received: from mail-wg0-f43.google.com ([74.125.82.43])
- by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSMbX-0007H7-RX
- for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 08:21:04 +0000
-Received: by mail-wg0-f43.google.com with SMTP id x13so79946wgg.14
- for <linux-mtd@lists.infradead.org>; Tue, 25 Mar 2014 01:20:40 -0700 (PDT)
+Received: from mail-wg0-f50.google.com ([74.125.82.50])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WSMcc-0002I0-TE
+ for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 08:22:11 +0000
+Received: by mail-wg0-f50.google.com with SMTP id x13so76314wgg.33
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Mar 2014 01:21:49 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [RFC 12/47] mtd: nand: stm_nand_bch: scan for NAND devices
-Date: Tue, 25 Mar 2014 08:19:29 +0000
-Message-Id: <1395735604-26706-13-git-send-email-lee.jones@linaro.org>
+Subject: [RFC 47/47] mtd: nand: stm_nand_bch: catch unsupported calls
+Date: Tue, 25 Mar 2014 08:20:04 +0000
+Message-Id: <1395735604-26706-48-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
 References: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
 Cc: angus.clark@st.com, kernel@stlinux.com, lee.jones@linaro.org,
@@ -24,44 +24,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use the core nand_scan_ident() routine to locate connected NAND chips.
+Display a BUG() message and return appropriate/expected value.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/nand/stm_nand_bch.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/mtd/nand/stm_nand_bch.c | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
 diff --git a/drivers/mtd/nand/stm_nand_bch.c b/drivers/mtd/nand/stm_nand_bch.c
-index e1ebf92..1de13bd 100644
+index 4103d4f..e732bf3 100644
 --- a/drivers/mtd/nand/stm_nand_bch.c
 +++ b/drivers/mtd/nand/stm_nand_bch.c
-@@ -374,6 +374,7 @@ static int stm_nand_bch_probe(struct platform_device *pdev)
- 	struct nandi_info *info;
- 	struct nand_chip *chip;
- 	struct mtd_info *mtd;
-+	int err;
- 
- 	if (!pdata) {
- 		dev_err(&pdev->dev, "no platform data found\n");
-@@ -403,6 +404,10 @@ static int stm_nand_bch_probe(struct platform_device *pdev)
- 
- 	nandi_set_mtd_defaults(nandi, mtd, chip);
- 
-+	err = nand_scan_ident(mtd, 1, NULL);
-+	if (err)
-+		return err;
-+
- 	return 0;
+@@ -852,6 +852,31 @@ static void flex_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
+ 	}
  }
  
-@@ -410,6 +415,8 @@ static int stm_nand_bch_remove(struct platform_device *pdev)
- {
- 	struct nandi_controller *nandi = platform_get_drvdata(pdev);
- 
-+	nand_release(&nandi->info.mtd);
++/* Catch calls to non-supported functions */
++static uint16_t flex_read_word_bug(struct mtd_info *mtd)
++{
++	BUG();
++	return 0;
++}
 +
- 	nandi_clk_disable(nandi);
++static int flex_block_bad_bug(struct mtd_info *mtd, loff_t ofs, int getchip)
++{
++	BUG();
++	return 1;
++}
++
++static int flex_block_markbad_bug(struct mtd_info *mtd, loff_t ofs)
++{
++	BUG();
++	return 1;
++}
++
++int flex_scan_bbt_bug(struct mtd_info *mtd)
++{
++	BUG();
++	return 1;
++}
++
+ /*
+  * Hamming-FLEX operations (optimised replacements for nand_base.c versions)
+  */
+@@ -1916,7 +1941,12 @@ static void nandi_set_mtd_defaults(struct nandi_controller *nandi,
+ 	chip->read_buf = flex_read_buf;
+ 	chip->write_buf = flex_write_buf;
  
- 	return 0;
++	chip->read_word = flex_read_word_bug;
++	chip->block_bad = flex_block_bad_bug;
++	chip->block_markbad = flex_block_markbad_bug;
++
+ 	chip->bbt_options |= NAND_BBT_USE_FLASH;
++	chip->scan_bbt = flex_scan_bbt_bug;
+ 
+ 	/* mtd_info */
+ 	mtd->owner = THIS_MODULE;
 -- 
 1.8.3.2
