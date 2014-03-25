@@ -1,15 +1,16 @@
-Received: from mail-we0-f176.google.com ([74.125.82.176])
+Received: from mail-wi0-f177.google.com ([209.85.212.177])
  by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSMbw-0007rR-3P
- for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 08:21:30 +0000
-Received: by mail-we0-f176.google.com with SMTP id x48so77930wes.35
- for <linux-mtd@lists.infradead.org>; Tue, 25 Mar 2014 01:21:02 -0700 (PDT)
+ id 1WSMbd-0007X3-71
+ for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 08:21:10 +0000
+Received: by mail-wi0-f177.google.com with SMTP id cc10so339978wib.4
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Mar 2014 01:20:48 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [RFC 23/47] mtd: nand: stm_nand_bch: read and write page (BCH)
-Date: Tue, 25 Mar 2014 08:19:40 +0000
-Message-Id: <1395735604-26706-24-git-send-email-lee.jones@linaro.org>
+Subject: [RFC 16/47] mtd: nand: stm_nand_bch: derive some working variables
+ for latter use
+Date: Tue, 25 Mar 2014 08:19:33 +0000
+Message-Id: <1395735604-26706-17-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
 References: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
 Cc: angus.clark@st.com, kernel@stlinux.com, lee.jones@linaro.org,
@@ -24,149 +25,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use DMA to read and/or write a single page of data.
+A few of the working variables can either be taken or derived from
+existing knowledge about the connected chip. Rather than attempt to
+provide each specification manually, here we make assumptions based
+on information already obtained.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/nand/stm_nand_bch.c | 119 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 119 insertions(+)
+ drivers/mtd/nand/stm_nand_bch.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
 diff --git a/drivers/mtd/nand/stm_nand_bch.c b/drivers/mtd/nand/stm_nand_bch.c
-index 7874d85..6323590 100644
+index 93fe835..f5a3e80 100644
 --- a/drivers/mtd/nand/stm_nand_bch.c
 +++ b/drivers/mtd/nand/stm_nand_bch.c
-@@ -21,6 +21,7 @@
- #include <linux/interrupt.h>
- #include <linux/device.h>
- #include <linux/platform_device.h>
-+#include <linux/dma-mapping.h>
- #include <linux/completion.h>
- #include <linux/mtd/nand.h>
- #include <linux/mtd/stm_nand.h>
-@@ -345,6 +346,124 @@ static int check_erased_page(uint8_t *data, uint32_t page_size, int max_zeros)
- 	return zeros;
+@@ -783,6 +783,15 @@ static int stm_nand_bch_probe(struct platform_device *pdev)
+ 		return -EINVAL;
+ 	}
+ 
++	/* Derive some working variables */
++	nandi->sectors_per_page = mtd->writesize / NANDI_BCH_SECTOR_SIZE;
++	nandi->blocks_per_device = mtd->size >> chip->phys_erase_shift;
++	nandi->page_shift = chip->page_shift;
++	nandi->block_shift = chip->phys_erase_shift;
++	nandi->extra_addr = ((chip->chipsize >> nandi->page_shift) >
++			     0x10000) ? true : false;
++	mtd->writebufsize = mtd->writesize;
++
+ 	return 0;
  }
  
-+/* Returns the number of ECC errors, or '-1' for uncorrectable error */
-+static int bch_read_page(struct nandi_controller *nandi,
-+			 loff_t offs,
-+			 uint8_t *buf)
-+{
-+	struct bch_prog *prog = &bch_prog_read_page;
-+	uint32_t page_size = nandi->info.mtd.writesize;
-+	unsigned long list_phys;
-+	unsigned long buf_phys;
-+	uint32_t ecc_err;
-+	int ret = 0;
-+
-+	dev_dbg(nandi->dev, "%s: offs = 0x%012llx\n", __func__, offs);
-+
-+	BUG_ON((unsigned long)buf & (NANDI_BCH_DMA_ALIGNMENT - 1));
-+	BUG_ON(offs & (NANDI_BCH_DMA_ALIGNMENT - 1));
-+
-+	emiss_nandi_select(STM_NANDI_BCH);
-+
-+	nandi_enable_interrupts(nandi, NANDBCH_INT_SEQNODESOVER);
-+	reinit_completion(&nandi->seq_completed);
-+
-+	/* Reset ECC stats */
-+	writel(CFG_RESET_ECC_ALL | CFG_ENABLE_AFM,
-+	       nandi->base + NANDBCH_CONTROLLER_CFG);
-+	writel(CFG_ENABLE_AFM, nandi->base + NANDBCH_CONTROLLER_CFG);
-+
-+	prog->addr = (uint32_t)((offs >> (nandi->page_shift - 8)) & 0xffffff00);
-+
-+	buf_phys = dma_map_single(NULL, buf, page_size, DMA_FROM_DEVICE);
-+
-+	memset(nandi->buf_list, 0x00, NANDI_BCH_BUF_LIST_SIZE);
-+	nandi->buf_list[0] = buf_phys | (nandi->sectors_per_page - 1);
-+
-+	list_phys = dma_map_single(NULL, nandi->buf_list,
-+				   NANDI_BCH_BUF_LIST_SIZE, DMA_TO_DEVICE);
-+
-+	writel(list_phys, nandi->base + NANDBCH_BUFFER_LIST_PTR);
-+
-+	bch_load_prog_cpu(nandi, prog);
-+
-+	bch_wait_seq(nandi);
-+
-+	nandi_disable_interrupts(nandi, NANDBCH_INT_SEQNODESOVER);
-+
-+	dma_unmap_single(NULL, list_phys, NANDI_BCH_BUF_LIST_SIZE,
-+			 DMA_TO_DEVICE);
-+	dma_unmap_single(NULL, buf_phys, page_size, DMA_FROM_DEVICE);
-+
-+	/* Use the maximum per-sector ECC count! */
-+	ecc_err = readl(nandi->base + NANDBCH_ECC_SCORE_REG_A) & 0xff;
-+	if (ecc_err == 0xff) {
-+		/*
-+		 * Downgrade uncorrectable ECC error for an erased page,
-+		 * tolerating 'sectors_per_page' bits at zero.
-+		 */
-+		ret = check_erased_page(buf, page_size,
-+					nandi->sectors_per_page);
-+		if (ret >= 0)
-+			dev_dbg(nandi->dev,
-+				"%s: erased page detected: \n"
-+				"  downgrading uncorrectable ECC error.\n",
-+				__func__);
-+	} else {
-+		ret = (int)ecc_err;
-+	}
-+
-+	return ret;
-+}
-+
-+/* Returns the status of the NAND device following the write operation */
-+static uint8_t bch_write_page(struct nandi_controller *nandi,
-+			      loff_t offs, const uint8_t *buf)
-+{
-+	struct bch_prog *prog = &bch_prog_write_page;
-+	uint32_t page_size = nandi->info.mtd.writesize;
-+	uint8_t *p = (uint8_t *)buf;
-+	unsigned long list_phys;
-+	unsigned long buf_phys;
-+	uint8_t status;
-+
-+	dev_dbg(nandi->dev, "%s: offs = 0x%012llx\n", __func__, offs);
-+
-+	BUG_ON((unsigned int)buf & (NANDI_BCH_DMA_ALIGNMENT - 1));
-+	BUG_ON(offs & (page_size - 1));
-+
-+	emiss_nandi_select(STM_NANDI_BCH);
-+
-+	nandi_enable_interrupts(nandi, NANDBCH_INT_SEQNODESOVER);
-+	reinit_completion(&nandi->seq_completed);
-+
-+	prog->addr = (uint32_t)((offs >> (nandi->page_shift - 8)) & 0xffffff00);
-+
-+	buf_phys = dma_map_single(NULL, p, page_size, DMA_TO_DEVICE);
-+	memset(nandi->buf_list, 0x00, NANDI_BCH_BUF_LIST_SIZE);
-+	nandi->buf_list[0] = buf_phys | (nandi->sectors_per_page - 1);
-+
-+	list_phys = dma_map_single(NULL, nandi->buf_list,
-+				   NANDI_BCH_BUF_LIST_SIZE, DMA_TO_DEVICE);
-+
-+	writel(list_phys, nandi->base + NANDBCH_BUFFER_LIST_PTR);
-+
-+	bch_load_prog_cpu(nandi, prog);
-+
-+	bch_wait_seq(nandi);
-+
-+	nandi_disable_interrupts(nandi, NANDBCH_INT_SEQNODESOVER);
-+
-+	dma_unmap_single(NULL, list_phys, NANDI_BCH_BUF_LIST_SIZE,
-+			 DMA_TO_DEVICE);
-+	dma_unmap_single(NULL, buf_phys, page_size, DMA_FROM_DEVICE);
-+
-+	status = (uint8_t)(readl(nandi->base +
-+				 NANDBCH_CHECK_STATUS_REG_A) & 0xff);
-+
-+	return status;
-+}
-+
- /*
-  * Initialisation
-  */
 -- 
 1.8.3.2
