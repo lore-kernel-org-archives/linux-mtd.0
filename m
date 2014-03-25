@@ -1,23 +1,18 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSMVt-0001tF-I0
- for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 08:15:14 +0000
-Message-ID: <1395735262.1549.52.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v2] ubi-utils: Add ubiblock tool
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "dwmw2@infradead.org" <dwmw2@infradead.org>
-Date: Tue, 25 Mar 2014 10:14:22 +0200
-In-Reply-To: <1395734925.1549.51.camel@sauron.fi.intel.com>
-References: <1394806381-25458-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1394807124-25916-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1395733934.1549.46.camel@sauron.fi.intel.com>
- <1395734925.1549.51.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Reply-To: dedekind1@gmail.com
+Received: from mail-wg0-f48.google.com ([74.125.82.48])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WSMbB-00025X-Dh
+ for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 08:20:41 +0000
+Received: by mail-wg0-f48.google.com with SMTP id l18so74457wgh.31
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Mar 2014 01:20:18 -0700 (PDT)
+From: Lee Jones <lee.jones@linaro.org>
+To: linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [RFC 00/47] mtd: nand: Add new driver supporting ST's BCH h/w
+Date: Tue, 25 Mar 2014 08:19:17 +0000
+Message-Id: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
+Cc: angus.clark@st.com, kernel@stlinux.com, lee.jones@linaro.org,
+ linux-mtd@lists.infradead.org, pekon@ti.com, computersforpeace@gmail.com,
+ dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,37 +22,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2014-03-25 at 10:08 +0200, Artem Bityutskiy wrote:
-> On Tue, 2014-03-25 at 09:52 +0200, Artem Bityutskiy wrote:
-> > On Fri, 2014-03-14 at 11:25 -0300, Ezequiel Garcia wrote:
-> > > With the addition of block device access to UBI volumes, we now
-> > > add a simple userspace tool to access the new ioctls.
-> > > 
-> > > Usage of this tool is as simple as it gets:
-> > > 
-> > >   $ ubiblock --create /dev/ubi0_0
-> > > 
-> > > will create a new block device /dev/ubiblock0_0, and
-> > 
-> > Pushed to mtd-utils, thanks!
-> 
-> Actually, I did not, push fails.
-> 
-> The root-cause, AFAICS, is that when Brian pushes there, files and
-> directories in .git/objects/ get created without "write" group
-> permissions. So I cannot create new objects.
-> 
-> I _think_ this is because of Brian's umask. If Brian could set it to
-> '002', that would not happen.
-> 
-> Brian or David, would you please fix-up the permissions and add g+w? Is
-> there a way to force g+w, I wonder? I am not aware of such...
+All,
 
-There are many discussions on the topic, actually, e.g.:
+This patch-set was written against kernel version v3.4, but applies
+cleanly to v3.13-rc7 which it is currently based. I understand that
+the core has changed significantly since and that some of the
+infrastructure this driver provides is now available either through
+the framework or similar means. I'm looking for someone with inside
+knowledge to draw attention to those areas so we can align with the
+most recent API.
 
-http://serverfault.com/questions/26954/how-do-i-share-a-git-repository-with-multiple-users-on-a-machine
-http://stackoverflow.com/questions/6448242/git-push-error-insufficient-permission-for-adding-an-object-to-repository-datab
+Any help would be gratefully received.
 
--- 
-Best Regards,
-Artem Bityutskiy
+ drivers/mtd/nand/Kconfig         |   13 +
+ drivers/mtd/nand/Makefile        |    2 +
+ drivers/mtd/nand/nand_base.c     |   18 +-
+ drivers/mtd/nand/nand_ids.c      |  165 ++++++++
+ drivers/mtd/nand/stm_nand_bch.c  | 2769 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ drivers/mtd/nand/stm_nand_dt.c   |  146 +++++++
+ drivers/mtd/nand/stm_nand_dt.h   |   39 ++
+ drivers/mtd/nand/stm_nand_regs.h |  302 ++++++++++++++
+ include/linux/mtd/nand.h         |   40 ++
+ include/linux/mtd/stm_nand.h     |  104 +++++
+ 10 files changed, 3591 insertions(+), 7 deletions(-)
