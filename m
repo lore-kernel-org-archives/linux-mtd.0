@@ -1,27 +1,22 @@
-Received: from mail-wg0-f45.google.com ([74.125.82.45])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSMHW-0001Nt-9a
- for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 08:00:23 +0000
-Received: by mail-wg0-f45.google.com with SMTP id l18so65302wgh.16
- for <linux-mtd@lists.infradead.org>; Tue, 25 Mar 2014 00:59:59 -0700 (PDT)
-Date: Tue, 25 Mar 2014 07:59:54 +0000
-From: Lee Jones <lee.jones@linaro.org>
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: New NAND driver
-Message-ID: <20140325075954.GD21665@lee--X1>
-References: <20140324132446.GA21665@lee--X1>
- <20980858CB6D3A4BAE95CA194937D5E73EAB561C@DBDE04.ent.ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EAB561C@DBDE04.ent.ti.com>
-Cc: "angus.clark@st.com" <angus.clark@st.com>,
- "kernel@stlinux.com" <kernel@stlinux.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+Received: from mga02.intel.com ([134.134.136.20])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WSMQk-0001gX-FW
+ for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 08:09:55 +0000
+Message-ID: <1395734925.1549.51.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v2] ubi-utils: Add ubiblock tool
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Brian Norris
+ <computersforpeace@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>
+Date: Tue, 25 Mar 2014 10:08:45 +0200
+In-Reply-To: <1395733934.1549.46.camel@sauron.fi.intel.com>
+References: <1394806381-25458-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1394807124-25916-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1395733934.1549.46.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,52 +26,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Morning Pekon,
+On Tue, 2014-03-25 at 09:52 +0200, Artem Bityutskiy wrote:
+> On Fri, 2014-03-14 at 11:25 -0300, Ezequiel Garcia wrote:
+> > With the addition of block device access to UBI volumes, we now
+> > add a simple userspace tool to access the new ioctls.
+> > 
+> > Usage of this tool is as simple as it gets:
+> > 
+> >   $ ubiblock --create /dev/ubi0_0
+> > 
+> > will create a new block device /dev/ubiblock0_0, and
+> 
+> Pushed to mtd-utils, thanks!
 
-> >From: Lee Jones
-> >
-> >Hi Brian,
-> >
-> >Firstly I'd like to thank you for supporting the inclusion of ST's SPI
-> >NOR (FSM) driver. As promised I will convert it over to the new
-> >framework once it has been applied by your good self.
-> >
-> >In the meantime however, I have a NAND driver which I need to
-> >submit. I wanted to give you a heads-up prior to sending it in case
-> >you had any special requests. FYI: Shoving it where the sun don't
-> >shine, is not a valid request by the way :). It's 2700 lines and I've
-> >split it over 47 patches for reviewing purposes.
-> >
-> Will it be possible for you to send the patches split in one patch per file ?
-> As switching back and forth, between 47 patches may be bit troublesome.
-> Later you may split it as you or others like..
+Actually, I did not, push fails.
 
-There is only one file. I can send it as a single patch; however, when
-I sent the NOR driver [1], it was considered helpful to review in
-chunks, kinda how the driver was written. I'll send it as a set to
-start with and if you think it creates more problems than it solves
-then we'll do something about it.
+The root-cause, AFAICS, is that when Brian pushes there, files and
+directories in .git/objects/ get created without "write" group
+permissions. So I cannot create new objects.
 
-[1] https://lkml.org/lkml/2014/3/20/103
+I _think_ this is because of Brian's umask. If Brian could set it to
+'002', that would not happen.
 
-> >Sorry to do this to you Brian, I am sensitive to how over-burdened you
-> >are with the subsystem already. Perhaps it might make sense to put out
-> >a plea for volunteers to help with maintain MTD subsystem on LKML?
-> >
-> I can help reviewing those patches, if you can please share your
-> controller specs, and also share if there are any already know
-> hardware limitations.
-
-Thanks for your kind offer. I will send it right away.
-
-> >Anyway, what's the best thing to do in this instance? Should I just
-> >send it to the list as an RFC and be done with it?
-
-Kind regards,
-Lee
+Brian or David, would you please fix-up the permissions and add g+w? Is
+there a way to force g+w, I wonder? I am not aware of such...
 
 -- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Best Regards,
+Artem Bityutskiy
