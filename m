@@ -1,15 +1,16 @@
-Received: from mail-we0-f172.google.com ([74.125.82.172])
+Received: from mail-we0-f180.google.com ([74.125.82.180])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSMbH-00025l-Dd
- for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 08:21:21 +0000
-Received: by mail-we0-f172.google.com with SMTP id t61so78662wes.17
- for <linux-mtd@lists.infradead.org>; Tue, 25 Mar 2014 01:20:25 -0700 (PDT)
+ id 1WSMbL-00026E-3t
+ for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 08:21:26 +0000
+Received: by mail-we0-f180.google.com with SMTP id p61so81090wes.11
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Mar 2014 01:20:29 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [RFC 04/47] mtd: nand: adding ST's BCH NAND Controller driver
-Date: Tue, 25 Mar 2014 08:19:21 +0000
-Message-Id: <1395735604-26706-5-git-send-email-lee.jones@linaro.org>
+Subject: [RFC 06/47] mtd: nand: stm_nand_bch: change between BCH and Hamming
+ modes
+Date: Tue, 25 Mar 2014 08:19:23 +0000
+Message-Id: <1395735604-26706-7-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
 References: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
 Cc: angus.clark@st.com, kernel@stlinux.com, lee.jones@linaro.org,
@@ -24,242 +25,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-First introduction of the driver. Includes the basic device struct
-(some functionality isn't utilised as of yet) and supplies some of the
-important resources required for basic running of the Controller.
+The EMISS is a device which, amongst other things, controls various
+flash memory modes. We make use of it here merely to flip the
+HAMMING_NOT_BCH bit dependant on whether we wish to operate in Hamming
+or BCH modes. The STM BCH driver makes good use of the helper introduced
+here.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/nand/Kconfig        |   6 ++
- drivers/mtd/nand/Makefile       |   1 +
- drivers/mtd/nand/stm_nand_bch.c | 151 ++++++++++++++++++++++++++++++++++++++++
- include/linux/mtd/stm_nand.h    |  33 +++++++++
- 4 files changed, 191 insertions(+)
- create mode 100644 drivers/mtd/nand/stm_nand_bch.c
- create mode 100644 include/linux/mtd/stm_nand.h
+ include/linux/mtd/stm_nand.h | 42 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 42 insertions(+)
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 93ae6a6..2bf972c 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -510,4 +510,10 @@ config MTD_NAND_XWAY
- 	  Enables support for NAND Flash chips on Lantiq XWAY SoCs. NAND is attached
- 	  to the External Bus Unit (EBU).
- 
-+config MTD_NAND_STM_BCH
-+	tristate "STMicroelectronics: NANDi BCH Controller"
-+	depends on ARM
-+	help
-+	  Adds support for the STMicroelectronics NANDi BCH Controller.
-+
- endif # MTD_NAND
-diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-index 542b568..94e7737 100644
---- a/drivers/mtd/nand/Makefile
-+++ b/drivers/mtd/nand/Makefile
-@@ -46,6 +46,7 @@ obj-$(CONFIG_MTD_NAND_NUC900)		+= nuc900_nand.o
- obj-$(CONFIG_MTD_NAND_MPC5121_NFC)	+= mpc5121_nfc.o
- obj-$(CONFIG_MTD_NAND_RICOH)		+= r852.o
- obj-$(CONFIG_MTD_NAND_JZ4740)		+= jz4740_nand.o
-+obj-$(CONFIG_MTD_NAND_STM_BCH)		+= stm_nand_bch.o
- obj-$(CONFIG_MTD_NAND_GPMI_NAND)	+= gpmi-nand/
- obj-$(CONFIG_MTD_NAND_XWAY)		+= xway_nand.o
- obj-$(CONFIG_MTD_NAND_BCM47XXNFLASH)	+= bcm47xxnflash/
-diff --git a/drivers/mtd/nand/stm_nand_bch.c b/drivers/mtd/nand/stm_nand_bch.c
-new file mode 100644
-index 0000000..bd11070
---- /dev/null
-+++ b/drivers/mtd/nand/stm_nand_bch.c
-@@ -0,0 +1,151 @@
-+/*
-+ * drivers/mtd/nand/stm_nand_bch.c
-+ *
-+ * Support for STMicroelectronics NANDi BCH Controller
-+ *
-+ * Copyright (c) 2014 STMicroelectronics Limited
-+ * Author: Angus Clark <Angus.Clark@st.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ */
-+
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/io.h>
-+#include <linux/device.h>
-+#include <linux/platform_device.h>
-+#include <linux/completion.h>
-+#include <linux/mtd/stm_nand.h>
-+
-+/* NANDi Controller (Hamming/BCH) */
-+struct nandi_controller {
-+	void __iomem		*base;		/* Controller base*/
-+	void __iomem		*dma;		/* DMA control base */
-+						/* IRQ-triggered Completions: */
-+	struct completion	seq_completed;	/*   SEQ Over */
-+	struct completion	rbn_completed;	/*   RBn */
-+
-+	struct device		*dev;
-+
-+	int			bch_ecc_mode;	/* ECC mode */
-+	bool			extra_addr;	/* Extra address cycle */
-+
-+	/*
-+	 * The threshold at which the number of corrected bit-flips per sector
-+	 * is deemed to have reached an excessive level (triggers '-EUCLEAN'
-+	 * return code).
-+	 */
-+	int			bitflip_threshold;
-+
-+	uint32_t		page_shift;	/* Some working variables */
-+	uint32_t		block_shift;
-+	uint32_t		blocks_per_device;
-+	uint32_t		sectors_per_page;
-+
-+	uint8_t			*buf;		/* Some buffers to use */
-+	uint8_t			*page_buf;
-+	uint8_t			*oob_buf;
-+	uint32_t		*buf_list;
-+
-+	int			cached_page;	/* page number of page in */
-+						/* 'page_buf'             */
-+};
-+
-+static int remap_named_resource(struct platform_device *pdev,
-+				char *name,
-+				void __iomem **io_ptr)
-+{
-+	struct resource *res, *mem;
-+	resource_size_t size;
-+	void __iomem *p;
-+
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, name);
-+	if (!res)
-+		return -ENXIO;
-+
-+	size = resource_size(res);
-+
-+	mem = devm_request_mem_region(&pdev->dev, res->start, size, name);
-+	if (!mem)
-+		return -EBUSY;
-+
-+	p = devm_ioremap_nocache(&pdev->dev, res->start, size);
-+	if (!p)
-+		return -ENOMEM;
-+
-+	*io_ptr = p;
-+
-+	return 0;
-+}
-+
-+static struct nandi_controller *
-+nandi_init_resources(struct platform_device *pdev)
-+{
-+	struct nandi_controller *nandi;
-+	int err;
-+
-+	nandi = devm_kzalloc(&pdev->dev, sizeof(*nandi), GFP_KERNEL);
-+	if (!nandi) {
-+		dev_err(&pdev->dev,
-+			"failed to allocate NANDi controller data\n");
-+		return ERR_PTR(-ENOMEM);
-+	}
-+
-+	nandi->dev = &pdev->dev;
-+
-+	err = remap_named_resource(pdev, "nand_mem", &nandi->base);
-+	if (err)
-+		return ERR_PTR(err);
-+
-+	err = remap_named_resource(pdev, "nand_dma", &nandi->dma);
-+	if (err)
-+		return ERR_PTR(err);
-+
-+	platform_set_drvdata(pdev, nandi);
-+
-+	return nandi;
-+}
-+
-+static int stm_nand_bch_probe(struct platform_device *pdev)
-+{
-+	struct stm_plat_nand_bch_data *pdata = pdev->dev.platform_data;
-+	struct nandi_controller *nandi;
-+
-+	if (!pdata) {
-+		dev_err(&pdev->dev, "no platform data found\n");
-+		return -EINVAL;
-+	}
-+
-+	nandi = nandi_init_resources(pdev);
-+	if (IS_ERR(nandi)) {
-+		dev_err(&pdev->dev, "failed to initialise NANDi resources\n");
-+		return PTR_ERR(nandi);
-+	}
-+
-+	init_completion(&nandi->seq_completed);
-+	init_completion(&nandi->rbn_completed);
-+
-+	return 0;
-+}
-+
-+static int stm_nand_bch_remove(struct platform_device *pdev)
-+{
-+	return 0;
-+}
-+
-+static struct platform_driver stm_nand_bch_driver = {
-+	.probe	= stm_nand_bch_probe ,
-+	.remove	= stm_nand_bch_remove,
-+	.driver	= {
-+		.name	= "stm-nand-bch",
-+		.owner	= THIS_MODULE,
-+	},
-+};
-+module_platform_driver(stm_nand_bch_driver);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Angus Clark");
-+MODULE_DESCRIPTION("STM NAND BCH driver");
 diff --git a/include/linux/mtd/stm_nand.h b/include/linux/mtd/stm_nand.h
-new file mode 100644
-index 0000000..9210d5c
---- /dev/null
+index 9210d5c..da2006c 100644
+--- a/include/linux/mtd/stm_nand.h
 +++ b/include/linux/mtd/stm_nand.h
-@@ -0,0 +1,33 @@
-+/*
-+ * include/linux/mtd/stm_mtd.h
-+ *
-+ * Support for STMicroelectronics NAND Controllers
-+ *
-+ * Copyright (c) 2014 STMicroelectronics Limited
-+ * Author: Angus Clark <Angus.Clark@st.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ */
+@@ -15,6 +15,8 @@
+ #ifndef __LINUX_STM_NAND_H
+ #define __LINUX_STM_NAND_H
+ 
++#include <linux/io.h>
 +
-+#ifndef __LINUX_STM_NAND_H
-+#define __LINUX_STM_NAND_H
+ struct stm_plat_nand_bch_data {
+ 	struct stm_nand_bank_data *bank;
+ 	enum stm_nand_bch_ecc_config bch_ecc_cfg;
+@@ -30,4 +32,44 @@ struct stm_plat_nand_bch_data {
+ 	bool flashss;
+ };
+ 
++#define EMISS_BASE				0xfef01000
++#define EMISS_CONFIG				0x0000
++#define EMISS_CONFIG_HAMMING_NOT_BCH		(0x1 << 6)
 +
-+struct stm_plat_nand_bch_data {
-+	struct stm_nand_bank_data *bank;
-+	enum stm_nand_bch_ecc_config bch_ecc_cfg;
-+
-+	/* The threshold at which the number of corrected bit-flips per sector
-+	 * is deemed to have reached an excessive level (triggers '-EUCLEAN' to
-+	 * be returned to the caller).  The value should be in the range 1 to
-+	 * <ecc-strength> where <ecc-strength> is 18 or 30, depending on the BCH
-+	 * ECC mode in operation.  A value of 0 is interpreted by the driver as
-+	 * <ecc-strength>.
-+	 */
-+	unsigned int bch_bitflip_threshold;
-+	bool flashss;
++enum nandi_controllers {
++	STM_NANDI_UNCONFIGURED,
++	STM_NANDI_HAMMING,
++	STM_NANDI_BCH
 +};
 +
-+#endif /* __LINUX_STM_NAND_H */
++static inline void emiss_nandi_select(enum nandi_controllers controller)
++{
++	unsigned v;
++	void __iomem *emiss_config_base;
++
++	emiss_config_base = ioremap(EMISS_BASE, 4);
++	if (!emiss_config_base) {
++		pr_err("%s: failed to ioremap EMISS\n", __func__);
++		return;
++	}
++
++	v = readl(emiss_config_base + EMISS_CONFIG);
++
++	if (controller == STM_NANDI_HAMMING) {
++		if (v & EMISS_CONFIG_HAMMING_NOT_BCH)
++			goto out;
++		v |= EMISS_CONFIG_HAMMING_NOT_BCH;
++	} else {
++		if (!(v & EMISS_CONFIG_HAMMING_NOT_BCH))
++			goto out;
++		v &= ~EMISS_CONFIG_HAMMING_NOT_BCH;
++	}
++
++	writel(v, emiss_config_base + EMISS_CONFIG);
++	readl(emiss_config_base + EMISS_CONFIG);
++
++out:
++	iounmap(emiss_config_base);
++}
++
+ #endif /* __LINUX_STM_NAND_H */
 -- 
 1.8.3.2
