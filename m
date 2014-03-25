@@ -1,21 +1,27 @@
-Received: from mail-wg0-f41.google.com ([74.125.82.41])
- by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSMbN-000774-M3
- for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 08:20:55 +0000
-Received: by mail-wg0-f41.google.com with SMTP id n12so79793wgh.12
- for <linux-mtd@lists.infradead.org>; Tue, 25 Mar 2014 01:20:27 -0700 (PDT)
-From: Lee Jones <lee.jones@linaro.org>
-To: linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [RFC 05/47] mtd: nand: stm_nand_bch: IRQ support for ST's BCH NAND
- Controller driver
-Date: Tue, 25 Mar 2014 08:19:22 +0000
-Message-Id: <1395735604-26706-6-git-send-email-lee.jones@linaro.org>
-In-Reply-To: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
-References: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
-Cc: angus.clark@st.com, kernel@stlinux.com, lee.jones@linaro.org,
- linux-mtd@lists.infradead.org, pekon@ti.com, computersforpeace@gmail.com,
- dwmw2@infradead.org
+Received: from mail-bk0-x235.google.com ([2a00:1450:4008:c01::235])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WSNmA-0005hT-Qh
+ for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 09:36:08 +0000
+Received: by mail-bk0-f53.google.com with SMTP id r7so76283bkg.40
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Mar 2014 02:35:41 -0700 (PDT)
+Received: from CHRRIE10.omicron.at (vs162244.vserver.de. [62.75.162.244])
+ by mx.google.com with ESMTPSA id bh9sm17582228bkb.16.2014.03.25.02.35.40
+ for <linux-mtd@lists.infradead.org>
+ (version=TLSv1 cipher=RC4-SHA bits=128/128);
+ Tue, 25 Mar 2014 02:35:40 -0700 (PDT)
+Sender: Christian Riesch <christian.riesch@gmail.com>
+Date: Tue, 25 Mar 2014 10:35:38 +0100
+From: Christian Riesch <christian.riesch@omicron.at>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v3 0/4] mtd: cfi_cmdset_0002: Add OTP support for Micron
+ M29EW NOR flashes
+Message-ID: <129F8D9CF5CA0628D616AD9C@[172.22.2.41]>
+In-Reply-To: <b3773cf0-45be-4b83-afcc-c1d1c64065b6@mary.at.omicron.at>
+References: <b3773cf0-45be-4b83-afcc-c1d1c64065b6@mary.at.omicron.at>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,116 +31,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Obtain IRQ number and request IRQ resource via the usual methods. We're
-also registering an IRQ handler to inform us of any completed tasks.
-Notice that we're starting to make use of the device struct that we
-defined before. In keeping with the subject of the patch, we're also
-adding the related local enable_irq() and disable_irq() methods. Again,
-these will be utilised in a greater capacity in latter commits.
+Hi all,
 
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/mtd/nand/stm_nand_bch.c | 62 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 62 insertions(+)
+--On March 06, 2014 13:18 +0100 Christian Riesch 
+<christian.riesch@omicron.at> wrote:
 
-diff --git a/drivers/mtd/nand/stm_nand_bch.c b/drivers/mtd/nand/stm_nand_bch.c
-index bd11070..76a0d02 100644
---- a/drivers/mtd/nand/stm_nand_bch.c
-+++ b/drivers/mtd/nand/stm_nand_bch.c
-@@ -15,11 +15,14 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/io.h>
-+#include <linux/interrupt.h>
- #include <linux/device.h>
- #include <linux/platform_device.h>
- #include <linux/completion.h>
- #include <linux/mtd/stm_nand.h>
- 
-+#include "stm_nand_regs.h"
-+
- /* NANDi Controller (Hamming/BCH) */
- struct nandi_controller {
- 	void __iomem		*base;		/* Controller base*/
-@@ -54,6 +57,51 @@ struct nandi_controller {
- 						/* 'page_buf'             */
- };
- 
-+/*
-+ * NANDi Interrupts (shared by Hamming and BCH controllers)
-+ */
-+static irqreturn_t nandi_irq_handler(int irq, void *dev)
-+{
-+	struct nandi_controller *nandi = dev;
-+	unsigned int status;
-+
-+	status = readl(nandi->base + NANDBCH_INT_STA);
-+
-+	if (status & NANDBCH_INT_SEQNODESOVER) {
-+		/* BCH */
-+		writel(NANDBCH_INT_CLR_SEQNODESOVER,
-+		       nandi->base + NANDBCH_INT_CLR);
-+		complete(&nandi->seq_completed);
-+	}
-+	if (status & NAND_INT_RBN) {
-+		/* Hamming */
-+		writel(NAND_INT_CLR_RBN, nandi->base + NANDHAM_INT_CLR);
-+		complete(&nandi->rbn_completed);
-+	}
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static void nandi_enable_interrupts(struct nandi_controller *nandi,
-+				    uint32_t irqs)
-+{
-+	uint32_t val;
-+
-+	val = readl(nandi->base + NANDBCH_INT_EN);
-+	val |= irqs;
-+	writel(val, nandi->base + NANDBCH_INT_EN);
-+}
-+
-+static void nandi_disable_interrupts(struct nandi_controller *nandi,
-+				     uint32_t irqs)
-+{
-+	uint32_t val;
-+
-+	val = readl(nandi->base + NANDBCH_INT_EN);
-+	val &= ~irqs;
-+	writel(val, nandi->base + NANDBCH_INT_EN);
-+}
-+
- static int remap_named_resource(struct platform_device *pdev,
- 				char *name,
- 				void __iomem **io_ptr)
-@@ -85,6 +133,7 @@ static struct nandi_controller *
- nandi_init_resources(struct platform_device *pdev)
- {
- 	struct nandi_controller *nandi;
-+	int irq;
- 	int err;
- 
- 	nandi = devm_kzalloc(&pdev->dev, sizeof(*nandi), GFP_KERNEL);
-@@ -104,6 +153,19 @@ nandi_init_resources(struct platform_device *pdev)
- 	if (err)
- 		return ERR_PTR(err);
- 
-+	irq = platform_get_irq_byname(pdev, "nand_irq");
-+	if (irq < 0) {
-+		dev_err(&pdev->dev, "failed to find IRQ resource\n");
-+		return ERR_PTR(irq);
-+	}
-+
-+	err = devm_request_irq(&pdev->dev, irq, nandi_irq_handler,
-+			       IRQF_DISABLED, dev_name(&pdev->dev), nandi);
-+	if (err) {
-+		dev_err(&pdev->dev, "irq request failed\n");
-+		return ERR_PTR(err);
-+	}
-+
- 	platform_set_drvdata(pdev, nandi);
- 
- 	return nandi;
--- 
-1.8.3.2
+> Hi,
+> This patchset adds support for the reading, writing, and locking of the
+> one time programmable (OTP) memory of Micron M29EW NOR flashes.
+>
+
+Any comments on this?
+
+Thanks,
+Christian
+
+> These flashes have a 256 byte OTP memory, which is called extended
+> memory region in its datasheet. The flash is compatible to Spansion S29GL
+> and Macronix MX29GL devices, so support for the OTP memory of these
+> flashes should also be possible.
+>
+> Tests with this patchset were done with a single Micron M29EW device
+> (512 Mbit, 16 bit) on a custom board with a Texas Instruments AM1808
+> system on chip.
+>
+> Prerequisites:
+> - Patch mtd: Add a retlen parameter to _get_{fact,user}_prot_info,
+>   commit 102f842b7aafee364659a0a45663d53085638312 in l2-mtd.git
+>
+> Changes since v1:
+> - dropped one patch that changes the detection of M29EW devices,
+>   this patch is currently not required
+> - added support for locking
+> - fixed a few bugs in the loop that walks through the OTP memory
+>
+> Changes since v2:
+> - Added retlet parameter to cfi_amdstd_get_{fact,user}_prot_info
+> - Fixed partial write of words
+>
+> Christian Riesch (4):
+>   mtd: cfi_cmdset_0002: Add support for reading OTP
+>   mtd: cfi_cmdset_0002: Invalidate cache after entering/exiting OTP
+>     memory
+>   mtd: cfi_cmdset_0002: Add support for writing OTP memory
+>   mtd: cfi_cmdset_0002: Add support for locking OTP memory
+>
+>  drivers/mtd/chips/cfi_cmdset_0002.c |  350
+> +++++++++++++++++++++++++++++++++--  1 file changed, 331 insertions(+),
+> 19 deletions(-)
+>
+> --
+> 1.7.9.5
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
