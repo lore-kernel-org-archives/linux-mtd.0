@@ -1,15 +1,15 @@
-Received: from mail-we0-f170.google.com ([74.125.82.170])
+Received: from mail-wg0-f46.google.com ([74.125.82.46])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSMbq-000274-5c
- for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 08:21:22 +0000
-Received: by mail-we0-f170.google.com with SMTP id w61so81006wes.1
- for <linux-mtd@lists.infradead.org>; Tue, 25 Mar 2014 01:20:59 -0700 (PDT)
+ id 1WSMbm-00026P-Ah
+ for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 08:21:18 +0000
+Received: by mail-wg0-f46.google.com with SMTP id b13so80818wgh.5
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Mar 2014 01:20:56 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [RFC 22/47] mtd: nand: stm_nand_bch: check erased page for zeros
-Date: Tue, 25 Mar 2014 08:19:39 +0000
-Message-Id: <1395735604-26706-23-git-send-email-lee.jones@linaro.org>
+Subject: [RFC 20/47] mtd: nand: stm_nand_bch: initialise working buffers
+Date: Tue, 25 Mar 2014 08:19:37 +0000
+Message-Id: <1395735604-26706-21-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
 References: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
 Cc: angus.clark@st.com, kernel@stlinux.com, lee.jones@linaro.org,
@@ -24,52 +24,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Detect an erased page, tolerating and correcting up to a specified number
-of bits at '0'. Downgrade uncorrectable ECC error for an erased page,
-tolerating 'sectors_per_page' bits at '0'.
+Initialise working buffers, accomodating DMA alignment constraints.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/nand/stm_nand_bch.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+ drivers/mtd/nand/stm_nand_bch.c | 45 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
 
 diff --git a/drivers/mtd/nand/stm_nand_bch.c b/drivers/mtd/nand/stm_nand_bch.c
-index 2042cdd..7874d85 100644
+index 351f5e2..fafde22 100644
 --- a/drivers/mtd/nand/stm_nand_bch.c
 +++ b/drivers/mtd/nand/stm_nand_bch.c
-@@ -319,6 +319,33 @@ static uint8_t bch_erase_block(struct nandi_controller *nandi,
+@@ -31,6 +31,9 @@
+ 
+ /* NANDi BCH Controller properties */
+ #define NANDI_BCH_SECTOR_SIZE			1024
++#define NANDI_BCH_DMA_ALIGNMENT			64
++#define NANDI_BCH_MAX_BUF_LIST			8
++#define NANDI_BCH_BUF_LIST_SIZE			(4 * NANDI_BCH_MAX_BUF_LIST)
+ 
+ /* BCH ECC sizes */
+ static int bch_ecc_sizes[] = {
+@@ -762,6 +765,44 @@ static void nandi_init_controller(struct nandi_controller *nandi,
+ 	nandi_init_hamming(nandi, emi_bank);
  }
  
- /*
-+ * Detect an erased page, tolerating and correcting up to a specified number of
-+ * bits at '0'.  (For many devices, it is now deemed within spec for an erased
-+ * page to include a number of bits at '0', either as a result of read-disturb
-+ * behaviour or 'stuck-at-zero' failures.)  Returns the number of corrected
-+ * bits, or a '-1' if we have exceeded the maximum number of bits at '0' (likely
-+ * to be a genuine uncorrectable ECC error).  In the latter case, the data must
-+ * be returned unmodified, in accordance with the MTD API.
-+ */
-+static int check_erased_page(uint8_t *data, uint32_t page_size, int max_zeros)
++/* Initialise working buffers, accomodating DMA alignment constraints */
++static int nandi_init_working_buffers(struct nandi_controller *nandi,
++				      struct nandi_bbt_info *bbt_info,
++				      struct mtd_info *mtd)
 +{
-+	uint8_t *b = data;
-+	int zeros = 0;
-+	int i;
++	uint32_t bbt_buf_size;
++	uint32_t buf_size;
 +
-+	for (i = 0; i < page_size; i++) {
-+		zeros += hweight8(~*b++);
-+		if (zeros > max_zeros)
-+			return -1;
++	/*	- Page and OOB */
++	buf_size = mtd->writesize + mtd->oobsize + NANDI_BCH_DMA_ALIGNMENT;
++
++	/*	- BBT data (page-size aligned) */
++	bbt_info->bbt_size = nandi->blocks_per_device >> 2; /* 2 bits/block */
++	bbt_buf_size = ALIGN(bbt_info->bbt_size, mtd->writesize);
++	buf_size += bbt_buf_size + NANDI_BCH_DMA_ALIGNMENT;
++
++	/*	- BCH BUF list */
++	buf_size += NANDI_BCH_BUF_LIST_SIZE + NANDI_BCH_DMA_ALIGNMENT;
++
++	/* Allocate bufffer */
++	nandi->buf = devm_kzalloc(nandi->dev, buf_size, GFP_KERNEL);
++	if (!nandi->buf) {
++		dev_err(nandi->dev, "failed to allocate working buffers\n");
++		return -ENOMEM;
 +	}
 +
-+	if (zeros)
-+		memset(data, 0xff, page_size);
++	/* Set/Align buffer pointers */
++	nandi->page_buf = PTR_ALIGN(nandi->buf, NANDI_BCH_DMA_ALIGNMENT);
++	nandi->oob_buf  = nandi->page_buf + mtd->writesize;
++	bbt_info->bbt   = PTR_ALIGN(nandi->oob_buf + mtd->oobsize,
++				    NANDI_BCH_DMA_ALIGNMENT);
++	nandi->buf_list = (uint32_t *)PTR_ALIGN(bbt_info->bbt + bbt_buf_size,
++						NANDI_BCH_DMA_ALIGNMENT);
++	nandi->cached_page = -1;
 +
-+	return zeros;
++	return 0;
 +}
 +
-+/*
-  * Initialisation
-  */
- static int bch_check_compatibility(struct nandi_controller *nandi,
+ static int remap_named_resource(struct platform_device *pdev,
+ 				char *name,
+ 				void __iomem **io_ptr)
+@@ -990,6 +1031,10 @@ static int stm_nand_bch_probe(struct platform_device *pdev)
+ 	/* Tune BCH programs according to device found and ECC mode */
+ 	bch_configure_progs(nandi);
+ 
++	err = nandi_init_working_buffers(nandi, bbt_info, mtd);
++	if (err)
++		return err;
++
+ 	return 0;
+ }
+ 
 -- 
 1.8.3.2
