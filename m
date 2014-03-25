@@ -1,16 +1,15 @@
-Received: from mail-we0-f177.google.com ([74.125.82.177])
+Received: from mail-wg0-f41.google.com ([74.125.82.41])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSMcQ-0002ES-Ls
- for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 08:21:59 +0000
-Received: by mail-we0-f177.google.com with SMTP id u57so79450wes.36
- for <linux-mtd@lists.infradead.org>; Tue, 25 Mar 2014 01:21:36 -0700 (PDT)
+ id 1WSMcL-0002Db-14
+ for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 08:21:53 +0000
+Received: by mail-wg0-f41.google.com with SMTP id n12so81123wgh.24
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Mar 2014 01:21:30 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [RFC 41/47] mtd: nand: stm_nand_bch: MTD mark and check for bad
- blocks (BCH)
-Date: Tue, 25 Mar 2014 08:19:58 +0000
-Message-Id: <1395735604-26706-42-git-send-email-lee.jones@linaro.org>
+Subject: [RFC 38/47] mtd: nand: stm_nand_bch: check WP (FLEX)
+Date: Tue, 25 Mar 2014 08:19:55 +0000
+Message-Id: <1395735604-26706-39-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
 References: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
 Cc: angus.clark@st.com, kernel@stlinux.com, lee.jones@linaro.org,
@@ -25,81 +24,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use the local BBM helpers to check for and mark bad blocks.
+Return status of the Write Protect bit for the NAND device.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/nand/stm_nand_bch.c | 51 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 51 insertions(+)
+ drivers/mtd/nand/stm_nand_bch.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
 diff --git a/drivers/mtd/nand/stm_nand_bch.c b/drivers/mtd/nand/stm_nand_bch.c
-index 55f4a4c..38658b8 100644
+index 3853e7a..18601e5 100644
 --- a/drivers/mtd/nand/stm_nand_bch.c
 +++ b/drivers/mtd/nand/stm_nand_bch.c
-@@ -1218,6 +1218,55 @@ static int flex_do_write_ops(struct nandi_controller *nandi,
- 	return 0;
+@@ -543,6 +543,22 @@ static void flex_addr(struct nandi_controller *nandi,
+ 	writel(addr, nandi->base + NANDHAM_FLEX_ADD);
  }
  
-+static int bch_mtd_block_isbad(struct mtd_info *mtd, loff_t offs)
++/*
++ * Hamming-FLEX operations (optimised replacements for nand_base.c versions)
++ */
++static int flex_check_wp(struct nandi_controller *nandi)
 +{
-+	struct nand_chip *chip = mtd->priv;
-+	struct nandi_controller *nandi = chip->priv;
++	uint8_t status;
 +
-+	uint32_t block;
++	emiss_nandi_select(STM_NANDI_HAMMING);
 +
-+	/* Check for invalid offset */
-+	if (offs > mtd->size)
-+		return -EINVAL;
++	flex_cmd(nandi, NAND_CMD_STATUS);
 +
-+	block = offs >> nandi->block_shift;
++	status = (uint8_t)(readl(nandi->base + NANDHAM_FLEX_DATA) & 0xff);
 +
-+	/* Protect blocks reserved for BBTs */
-+	if (block >= (nandi->blocks_per_device - NAND_IBBT_NBLOCKS))
-+		return 1;
-+
-+	return bbt_is_block_bad(nandi->info.bbt_info.bbt, block);
++	return status & NAND_STATUS_WP ? 0 : 1;
 +}
 +
-+static int bch_mtd_block_markbad(struct mtd_info *mtd, loff_t offs)
-+{
-+	struct nand_chip *chip = mtd->priv;
-+	struct nandi_controller *nandi = chip->priv;
-+
-+	uint32_t block;
-+	int ret;
-+
-+	/* Is block already considered bad? (will also catch invalid offsets) */
-+	ret = mtd_block_isbad(mtd, offs);
-+	if (ret < 0)
-+		return ret;
-+	if (ret == 1)
-+		return 0;
-+
-+	/* Mark bad */
-+	block = offs >> nandi->block_shift;
-+	bbt_set_block_mark(nandi->info.bbt_info.bbt, block, BBT_MARK_BAD_WEAR);
-+
-+	/* Update BBTs, incrementing bbt_vers */
-+	nand_get_device(mtd, FL_WRITING);
-+	ret = bch_update_bbts(nandi, &nandi->info.bbt_info,
-+			      NAND_IBBT_UPDATE_BOTH,
-+			      nandi->info.bbt_info.bbt_vers[0] + 1);
-+	nand_release_device(mtd);
-+
-+	return ret;
-+}
-+
- static int bch_mtd_erase(struct mtd_info *mtd, struct erase_info *instr)
- {
- 	struct nand_chip *chip = mtd->priv;
-@@ -1405,6 +1454,8 @@ static void nandi_set_mtd_defaults(struct nandi_controller *nandi,
- 	mtd->subpage_sft = 0;
- 
- 	mtd->_erase = bch_mtd_erase;
-+	mtd->_block_isbad = bch_mtd_block_isbad;
-+	mtd->_block_markbad = bch_mtd_block_markbad;
- 
- 	mtd->_point = NULL;
- 	mtd->_unpoint = NULL;
+ static int flex_read_raw(struct nandi_controller *nandi,
+ 			 uint32_t page_addr,
+ 			 uint32_t col_addr,
 -- 
 1.8.3.2
