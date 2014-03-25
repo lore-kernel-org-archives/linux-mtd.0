@@ -1,15 +1,16 @@
-Received: from mail-wg0-f42.google.com ([74.125.82.42])
+Received: from mail-wg0-f41.google.com ([74.125.82.41])
  by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSMbS-0007BQ-0Z
- for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 08:21:00 +0000
-Received: by mail-wg0-f42.google.com with SMTP id y10so75340wgg.13
- for <linux-mtd@lists.infradead.org>; Tue, 25 Mar 2014 01:20:33 -0700 (PDT)
+ id 1WSMbN-000774-M3
+ for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 08:20:55 +0000
+Received: by mail-wg0-f41.google.com with SMTP id n12so79793wgh.12
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Mar 2014 01:20:27 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [RFC 08/47] mtd: nand: stm_nand_bch: supply clock support
-Date: Tue, 25 Mar 2014 08:19:25 +0000
-Message-Id: <1395735604-26706-9-git-send-email-lee.jones@linaro.org>
+Subject: [RFC 05/47] mtd: nand: stm_nand_bch: IRQ support for ST's BCH NAND
+ Controller driver
+Date: Tue, 25 Mar 2014 08:19:22 +0000
+Message-Id: <1395735604-26706-6-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
 References: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
 Cc: angus.clark@st.com, kernel@stlinux.com, lee.jones@linaro.org,
@@ -24,103 +25,116 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add support for clocks when, and only when, they are supplied. It is
-not yet compulsory to provide the BCH and EMI clocks, as Common Clk isn't
-supported Mainline yet. Until an implementation lands upstream all clocks
-located on STM boards default to always-on.
+Obtain IRQ number and request IRQ resource via the usual methods. We're
+also registering an IRQ handler to inform us of any completed tasks.
+Notice that we're starting to make use of the device struct that we
+defined before. In keeping with the subject of the patch, we're also
+adding the related local enable_irq() and disable_irq() methods. Again,
+these will be utilised in a greater capacity in latter commits.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/nand/stm_nand_bch.c | 49 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 49 insertions(+)
+ drivers/mtd/nand/stm_nand_bch.c | 62 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 62 insertions(+)
 
 diff --git a/drivers/mtd/nand/stm_nand_bch.c b/drivers/mtd/nand/stm_nand_bch.c
-index 1a93f8d..cc0159e 100644
+index bd11070..76a0d02 100644
 --- a/drivers/mtd/nand/stm_nand_bch.c
 +++ b/drivers/mtd/nand/stm_nand_bch.c
-@@ -16,6 +16,7 @@
+@@ -15,11 +15,14 @@
+ #include <linux/kernel.h>
  #include <linux/module.h>
- #include <linux/delay.h>
  #include <linux/io.h>
-+#include <linux/clk.h>
- #include <linux/interrupt.h>
++#include <linux/interrupt.h>
  #include <linux/device.h>
  #include <linux/platform_device.h>
-@@ -28,6 +29,9 @@
+ #include <linux/completion.h>
+ #include <linux/mtd/stm_nand.h>
+ 
++#include "stm_nand_regs.h"
++
+ /* NANDi Controller (Hamming/BCH) */
  struct nandi_controller {
  	void __iomem		*base;		/* Controller base*/
- 	void __iomem		*dma;		/* DMA control base */
-+
-+	struct clk		*bch_clk;
-+	struct clk		*emi_clk;
- 						/* IRQ-triggered Completions: */
- 	struct completion	seq_completed;	/*   SEQ Over */
- 	struct completion	rbn_completed;	/*   RBn */
-@@ -103,6 +107,44 @@ static void nandi_disable_interrupts(struct nandi_controller *nandi,
- 	writel(val, nandi->base + NANDBCH_INT_EN);
- }
+@@ -54,6 +57,51 @@ struct nandi_controller {
+ 						/* 'page_buf'             */
+ };
  
-+static void nandi_clk_enable(struct nandi_controller *nandi)
++/*
++ * NANDi Interrupts (shared by Hamming and BCH controllers)
++ */
++static irqreturn_t nandi_irq_handler(int irq, void *dev)
 +{
-+	if (nandi->emi_clk)
-+		clk_prepare_enable(nandi->emi_clk);
-+	if (nandi->bch_clk)
-+		clk_prepare_enable(nandi->bch_clk);
-+}
++	struct nandi_controller *nandi = dev;
++	unsigned int status;
 +
-+static void nandi_clk_disable(struct nandi_controller *nandi)
-+{
-+	if (nandi->emi_clk)
-+		clk_disable_unprepare(nandi->emi_clk);
-+	if (nandi->bch_clk)
-+		clk_disable_unprepare(nandi->bch_clk);
-+}
++	status = readl(nandi->base + NANDBCH_INT_STA);
 +
-+static struct clk *nandi_clk_setup(struct nandi_controller *nandi,
-+				   char *clkname)
-+{
-+	struct clk *clk;
-+	int ret;
-+
-+	clk = clk_get(nandi->dev, clkname);
-+	if (IS_ERR_OR_NULL(clk)) {
-+		dev_warn(nandi->dev, "Failed to get %s clock\n", clkname);
-+		return NULL;
++	if (status & NANDBCH_INT_SEQNODESOVER) {
++		/* BCH */
++		writel(NANDBCH_INT_CLR_SEQNODESOVER,
++		       nandi->base + NANDBCH_INT_CLR);
++		complete(&nandi->seq_completed);
++	}
++	if (status & NAND_INT_RBN) {
++		/* Hamming */
++		writel(NAND_INT_CLR_RBN, nandi->base + NANDHAM_INT_CLR);
++		complete(&nandi->rbn_completed);
 +	}
 +
-+	ret = clk_prepare_enable(clk);
-+	if (ret) {
-+		dev_warn(nandi->dev, "Failed to enable %s clock\n", clkname);
-+		clk_put(clk);
-+		return NULL;
-+	}
-+
-+	return clk;
++	return IRQ_HANDLED;
 +}
 +
- static void nandi_init_bch(struct nandi_controller *nandi, int emi_bank)
++static void nandi_enable_interrupts(struct nandi_controller *nandi,
++				    uint32_t irqs)
++{
++	uint32_t val;
++
++	val = readl(nandi->base + NANDBCH_INT_EN);
++	val |= irqs;
++	writel(val, nandi->base + NANDBCH_INT_EN);
++}
++
++static void nandi_disable_interrupts(struct nandi_controller *nandi,
++				     uint32_t irqs)
++{
++	uint32_t val;
++
++	val = readl(nandi->base + NANDBCH_INT_EN);
++	val &= ~irqs;
++	writel(val, nandi->base + NANDBCH_INT_EN);
++}
++
+ static int remap_named_resource(struct platform_device *pdev,
+ 				char *name,
+ 				void __iomem **io_ptr)
+@@ -85,6 +133,7 @@ static struct nandi_controller *
+ nandi_init_resources(struct platform_device *pdev)
  {
- 	dev_dbg(nandi->dev, "%s\n", __func__);
-@@ -217,6 +259,9 @@ nandi_init_resources(struct platform_device *pdev)
- 		return ERR_PTR(err);
- 	}
+ 	struct nandi_controller *nandi;
++	int irq;
+ 	int err;
  
-+	nandi->emi_clk = nandi_clk_setup(nandi, "emi_clk");
-+	nandi->bch_clk = nandi_clk_setup(nandi, "bch_clk");
+ 	nandi = devm_kzalloc(&pdev->dev, sizeof(*nandi), GFP_KERNEL);
+@@ -104,6 +153,19 @@ nandi_init_resources(struct platform_device *pdev)
+ 	if (err)
+ 		return ERR_PTR(err);
+ 
++	irq = platform_get_irq_byname(pdev, "nand_irq");
++	if (irq < 0) {
++		dev_err(&pdev->dev, "failed to find IRQ resource\n");
++		return ERR_PTR(irq);
++	}
++
++	err = devm_request_irq(&pdev->dev, irq, nandi_irq_handler,
++			       IRQF_DISABLED, dev_name(&pdev->dev), nandi);
++	if (err) {
++		dev_err(&pdev->dev, "irq request failed\n");
++		return ERR_PTR(err);
++	}
 +
  	platform_set_drvdata(pdev, nandi);
  
  	return nandi;
-@@ -251,6 +296,10 @@ static int stm_nand_bch_probe(struct platform_device *pdev)
- 
- static int stm_nand_bch_remove(struct platform_device *pdev)
- {
-+	struct nandi_controller *nandi = platform_get_drvdata(pdev);
-+
-+	nandi_clk_disable(nandi);
-+
- 	return 0;
- }
- 
 -- 
 1.8.3.2
