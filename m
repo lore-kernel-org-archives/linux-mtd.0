@@ -1,15 +1,15 @@
-Received: from mail-wi0-f180.google.com ([209.85.212.180])
+Received: from mail-wi0-f173.google.com ([209.85.212.173])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSMcY-0002Gp-Iv
- for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 08:22:07 +0000
-Received: by mail-wi0-f180.google.com with SMTP id hr14so344706wib.1
- for <linux-mtd@lists.infradead.org>; Tue, 25 Mar 2014 01:21:44 -0700 (PDT)
+ id 1WSMcX-0002GE-6D
+ for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 08:22:05 +0000
+Received: by mail-wi0-f173.google.com with SMTP id f8so3189308wiw.12
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Mar 2014 01:21:42 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [RFC 45/47] mtd: nand: stm_nand_bch: read and write buffers (FLEX)
-Date: Tue, 25 Mar 2014 08:20:02 +0000
-Message-Id: <1395735604-26706-46-git-send-email-lee.jones@linaro.org>
+Subject: [RFC 44/47] mtd: nand: stm_nand_bch: MTD read and write (BCH)
+Date: Tue, 25 Mar 2014 08:20:01 +0000
+Message-Id: <1395735604-26706-45-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
 References: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
 Cc: angus.clark@st.com, kernel@stlinux.com, lee.jones@linaro.org,
@@ -24,104 +24,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-read or write in 4 Byte chunks at a time until there is less than
-8 Bytes remaining, at which point split down into reading the
-reset a single Byte at a time.
+MTD interfaces: Standard set of callbacks for MTD functionality.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/nand/stm_nand_bch.c | 72 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 72 insertions(+)
+ drivers/mtd/nand/stm_nand_bch.c | 54 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 54 insertions(+)
 
 diff --git a/drivers/mtd/nand/stm_nand_bch.c b/drivers/mtd/nand/stm_nand_bch.c
-index f5b0a00..975326e 100644
+index bcaed32..f5b0a00 100644
 --- a/drivers/mtd/nand/stm_nand_bch.c
 +++ b/drivers/mtd/nand/stm_nand_bch.c
-@@ -686,6 +686,75 @@ static void flex_addr(struct nandi_controller *nandi,
- 	writel(addr, nandi->base + NANDHAM_FLEX_ADD);
+@@ -1226,6 +1226,58 @@ static int bch_load_bbt(struct nandi_controller *nandi,
  }
  
-+static void flex_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
-+{
-+	struct nand_chip *chip = mtd->priv;
-+	struct nandi_controller *nandi = chip->priv;
-+	int aligned;
-+
-+	emiss_nandi_select(STM_NANDI_HAMMING);
-+
-+	/* Read bytes until buf is 4-byte aligned */
-+	while (len && ((unsigned int)buf & 0x3)) {
-+		*buf++ = (uint8_t)(readl(nandi->base + NANDHAM_FLEX_DATA)
-+				   & 0xff);
-+		len--;
-+	};
-+
-+	/* Use 'BEATS_4'/readsl */
-+	if (len > 8) {
-+		aligned = len & ~0x3;
-+		writel(FLEX_DATA_CFG_BEATS_4 | FLEX_DATA_CFG_CSN,
-+		       nandi->base + NANDHAM_FLEX_DATAREAD_CONFIG);
-+
-+		readsl(nandi->base + NANDHAM_FLEX_DATA, buf, aligned >> 2);
-+
-+		buf += aligned;
-+		len -= aligned;
-+
-+		writel(FLEX_DATA_CFG_BEATS_1 | FLEX_DATA_CFG_CSN,
-+		       nandi->base + NANDHAM_FLEX_DATAREAD_CONFIG);
-+	}
-+
-+	/* Mop up remaining bytes */
-+	while (len > 0) {
-+		*buf++ = (uint8_t)(readl(nandi->base + NANDHAM_FLEX_DATA)
-+				   & 0xff);
-+		len--;
-+	}
-+}
-+
-+static void flex_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
-+{
-+	struct nand_chip *chip = mtd->priv;
-+	struct nandi_controller *nandi = chip->priv;
-+	int aligned;
-+
-+	/* Write bytes until buf is 4-byte aligned */
-+	while (len && ((unsigned int)buf & 0x3)) {
-+		writel(*buf++, nandi->base + NANDHAM_FLEX_DATA);
-+		len--;
-+	};
-+
-+	/* USE 'BEATS_4/writesl */
-+	if (len > 8) {
-+		aligned = len & ~0x3;
-+		writel(FLEX_DATA_CFG_BEATS_4 | FLEX_DATA_CFG_CSN,
-+		       nandi->base + NANDHAM_FLEX_DATAWRITE_CONFIG);
-+		writesl(nandi->base + NANDHAM_FLEX_DATA, buf, aligned >> 2);
-+		buf += aligned;
-+		len -= aligned;
-+		writel(FLEX_DATA_CFG_BEATS_1 | FLEX_DATA_CFG_CSN,
-+		       nandi->base + NANDHAM_FLEX_DATAWRITE_CONFIG);
-+	}
-+
-+	/* Mop up remaining bytes */
-+	while (len > 0) {
-+		writel(*buf++, nandi->base + NANDHAM_FLEX_DATA);
-+		len--;
-+	}
-+}
-+
  /*
-  * Hamming-FLEX operations (optimised replacements for nand_base.c versions)
-  */
-@@ -1743,6 +1812,9 @@ static void nandi_set_mtd_defaults(struct nandi_controller *nandi,
- 	chip->priv = nandi;
- 	chip->ecc.layout = &info->ecclayout;
- 
-+	chip->read_buf = flex_read_buf;
-+	chip->write_buf = flex_write_buf;
++ * MTD Interface: Standard set of callbacks for MTD functionality
++ */
++static int bch_mtd_read(struct mtd_info *mtd, loff_t from, size_t len,
++			size_t *retlen, uint8_t *buf)
++{
++	struct nand_chip *chip = mtd->priv;
++	struct nandi_controller *nandi = chip->priv;
++	int ret;
 +
- 	chip->bbt_options |= NAND_BBT_USE_FLASH;
++	dev_dbg(nandi->dev, "%s: %llu @ 0x%012llx\n", __func__,
++		(unsigned long long)len, from);
++
++	nand_get_device(mtd, FL_READING);
++
++	ret = bch_read(nandi, from, len, retlen, buf);
++
++	nand_release_device(mtd);
++
++	return ret;
++}
++
++static int bch_mtd_write(struct mtd_info *mtd, loff_t to, size_t len,
++			 size_t *retlen, const uint8_t *buf)
++{
++	struct nand_chip *chip = mtd->priv;
++	struct nandi_controller *nandi = chip->priv;
++	uint32_t page_mask = mtd->writesize - 1;
++	int ret;
++
++	dev_dbg(nandi->dev, "%s: %llu @ 0x%012llx\n", __func__,
++		(unsigned long long)len, to);
++
++	if ((to & page_mask) || (len & page_mask)) {
++		dev_err(nandi->dev, "attempt to write non-page-aligned data\n");
++		return -EINVAL;
++	}
++
++	nand_get_device(mtd, FL_WRITING);
++
++	if (flex_check_wp(nandi)) {
++		dev_dbg(nandi->dev, "device is write-protected\n");
++		return -EIO;
++	}
++
++	ret = bch_write(nandi, to, len, retlen, buf);
++
++	nand_release_device(mtd);
++
++	return ret;
++}
++
++/*
+  * Helper function for mtd_read_oob(): handles multi-page transfers
+  * and mapping between BCH sectors and MTD page+OOB data.
+  */
+@@ -1701,6 +1753,8 @@ static void nandi_set_mtd_defaults(struct nandi_controller *nandi,
+ 	mtd->oobavail = 0;
+ 	mtd->subpage_sft = 0;
  
- 	/* mtd_info */
++	mtd->_read = bch_mtd_read;
++	mtd->_write = bch_mtd_write;
+ 	mtd->_erase = bch_mtd_erase;
+ 	mtd->_read_oob = bch_mtd_read_oob;
+ 	mtd->_write_oob = bch_mtd_write_oob;
 -- 
 1.8.3.2
