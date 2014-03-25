@@ -1,15 +1,15 @@
-Received: from mail-we0-x22b.google.com ([2a00:1450:400c:c03::22b])
+Received: from mail-wi0-f169.google.com ([209.85.212.169])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSMc5-0002AF-1D
- for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 08:21:37 +0000
-Received: by mail-we0-f171.google.com with SMTP id t61so79457wes.2
- for <linux-mtd@lists.infradead.org>; Tue, 25 Mar 2014 01:21:13 -0700 (PDT)
+ id 1WSMbz-00029K-J3
+ for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 08:21:32 +0000
+Received: by mail-wi0-f169.google.com with SMTP id hm4so3171526wib.0
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Mar 2014 01:21:09 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [RFC 29/47] mtd: nand: stm_nand_bch: add Hamming-FLEX operations
-Date: Tue, 25 Mar 2014 08:19:46 +0000
-Message-Id: <1395735604-26706-30-git-send-email-lee.jones@linaro.org>
+Subject: [RFC 27/47] mtd: nand: stm_nand_bch: write IBBT to Flash
+Date: Tue, 25 Mar 2014 08:19:44 +0000
+Message-Id: <1395735604-26706-28-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
 References: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
 Cc: angus.clark@st.com, kernel@stlinux.com, lee.jones@linaro.org,
@@ -24,61 +24,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Including; a check for Ready/NotBusy (RBn) (i.e. wait for current
-operation to finish and a method to issue Flex commands to the
-controller.
+Write BBT contents to the first page of a specified block, then
+update the IBBT header and write it to last page of the same block.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/nand/stm_nand_bch.c | 36 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
+ drivers/mtd/nand/stm_nand_bch.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
 diff --git a/drivers/mtd/nand/stm_nand_bch.c b/drivers/mtd/nand/stm_nand_bch.c
-index a4f3e46..baecc40 100644
+index 2d03113..76ed99b 100644
 --- a/drivers/mtd/nand/stm_nand_bch.c
 +++ b/drivers/mtd/nand/stm_nand_bch.c
-@@ -502,6 +502,42 @@ static uint8_t bch_write_page(struct nandi_controller *nandi,
+@@ -541,6 +541,35 @@ static void bch_fill_ibbt_header(struct nandi_controller *nandi,
+ 	memcpy(ibbt_header->author, author, sizeof(author));
  }
  
- /*
-+ * Hamming-FLEX operations
-+ */
-+static int flex_wait_rbn(struct nandi_controller *nandi)
++/* Write IBBT to Flash */
++static int bch_write_bbt_data(struct nandi_controller *nandi,
++			      struct nandi_bbt_info *bbt_info,
++			      uint32_t block, int bak, uint8_t vers)
 +{
-+	int ret;
++	uint32_t page_size = nandi->info.mtd.writesize;
++	uint32_t block_size = nandi->info.mtd.erasesize;
++	struct nand_ibbt_bch_header *ibbt_header =
++		(struct nand_ibbt_bch_header *)nandi->page_buf;
++	loff_t offs;
 +
-+	ret = wait_for_completion_timeout(&nandi->rbn_completed, HZ/2);
-+	if (!ret)
-+		dev_err(nandi->dev, "FLEX RBn timeout\n");
++	nandi->cached_page = -1;
 +
-+	return ret;
++	/* Write BBT contents to first page of block */
++	offs = (loff_t)block << nandi->block_shift;
++	if (bch_write_page(nandi, offs, bbt_info->bbt) & NAND_STATUS_FAIL)
++		return 1;
++
++	/* Update IBBT header and write to last page of block */
++	memset(ibbt_header, 0xff, nandi->info.mtd.writesize);
++	bch_fill_ibbt_header(nandi, ibbt_header, bak, vers);
++	offs += block_size - page_size;
++	if (bch_write_page(nandi, offs, (uint8_t *)ibbt_header) &
++	    NAND_STATUS_FAIL)
++		return 1;
++
++	return 0;
 +}
 +
-+static void flex_cmd(struct nandi_controller *nandi, uint8_t cmd)
-+{
-+	uint32_t val;
-+
-+	val = (FLEX_CMD_CSN | FLEX_CMD_BEATS_1 | cmd);
-+	writel(val, nandi->base + NANDHAM_FLEX_CMD);
-+}
-+
-+static void flex_addr(struct nandi_controller *nandi,
-+		      uint32_t addr, int cycles)
-+{
-+	addr &= 0x00ffffff;
-+
-+	BUG_ON(cycles < 1);
-+	BUG_ON(cycles > 3);
-+
-+	addr |= (FLEX_ADDR_CSN | FLEX_ADDR_ADD8_VALID);
-+	addr |= (cycles & 0x3) << 28;
-+
-+	writel(addr, nandi->base + NANDHAM_FLEX_ADD);
-+}
-+
-+/*
-  * Bad Block Tables/Bad Block Markers
-  */
- #define BBT_MARK_BAD_FACTORY	0x0
+ /* Scan block for IBBT signature */
+ static int bch_find_ibbt_sig(struct nandi_controller *nandi,
+ 			     uint32_t block, int *bak, uint8_t *vers,
 -- 
 1.8.3.2
