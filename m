@@ -1,15 +1,16 @@
-Received: from mail-wi0-f173.google.com ([209.85.212.173])
+Received: from mail-we0-f171.google.com ([74.125.82.171])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSMcD-0002Cb-Ex
- for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 08:21:45 +0000
-Received: by mail-wi0-f173.google.com with SMTP id f8so3187995wiw.0
- for <linux-mtd@lists.infradead.org>; Tue, 25 Mar 2014 01:21:22 -0700 (PDT)
+ id 1WSMcB-0002Bk-QM
+ for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 08:21:44 +0000
+Received: by mail-we0-f171.google.com with SMTP id t61so79236wes.30
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Mar 2014 01:21:21 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [RFC 34/47] mtd: nand: stm_nand_bch: load flash-resident BBT
-Date: Tue, 25 Mar 2014 08:19:51 +0000
-Message-Id: <1395735604-26706-35-git-send-email-lee.jones@linaro.org>
+Subject: [RFC 33/47] mtd: nand: stm_nand_bch: search for and load
+ flash-resident BBT
+Date: Tue, 25 Mar 2014 08:19:50 +0000
+Message-Id: <1395735604-26706-34-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
 References: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
 Cc: angus.clark@st.com, kernel@stlinux.com, lee.jones@linaro.org,
@@ -24,39 +25,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If load of existing BBT fails (first run), scan device for factory-set
-BBMs (Bad-Block Markers) and create a new flash-resident.
+If a BBT already exists in flash, it's this function's task to locate
+it and load it into the driver for local consumption.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/nand/stm_nand_bch.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ drivers/mtd/nand/stm_nand_bch.c | 87 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 87 insertions(+)
 
 diff --git a/drivers/mtd/nand/stm_nand_bch.c b/drivers/mtd/nand/stm_nand_bch.c
-index d1d84c1..6698b1f 100644
+index d7d97720..d1d84c1 100644
 --- a/drivers/mtd/nand/stm_nand_bch.c
 +++ b/drivers/mtd/nand/stm_nand_bch.c
-@@ -1834,6 +1834,21 @@ static int stm_nand_bch_probe(struct platform_device *pdev)
- 	if (err)
- 		return err;
- 
-+	/* Load Flash-resident BBT */
-+	err = bch_load_bbt(nandi, bbt_info);
-+	if (err) {
-+		dev_warn(nandi->dev,
-+			"failed to find BBTs:"
-+			"  scanning device for bad-block markers\n");
-+
-+		/* Scan, build, and write BBT */
-+		nandi_scan_build_bbt(nandi, bbt_info);
-+		err = bch_update_bbts(nandi, bbt_info, NAND_IBBT_UPDATE_BOTH,
-+				      bbt_info->bbt_vers[0] + 1);
-+		if (err)
-+			return err;
-+	}
-+
- 	return 0;
+@@ -973,6 +973,93 @@ static int bch_find_ibbt_sig(struct nandi_controller *nandi,
+ 	return 1;
  }
  
++/* Search for and load Flash-resident BBT, updating Primary/Mirror if req'd */
++static int bch_load_bbt(struct nandi_controller *nandi,
++			struct nandi_bbt_info *bbt_info)
++{
++	unsigned int update = 0;
++	uint32_t block;
++	loff_t offs;
++	uint8_t vers;
++	char author[64];
++	int bak;
++
++	dev_dbg(nandi->dev, "looking for Flash-resident BBTs\n");
++
++	bbt_info->bbt_block[0] = 0;
++	bbt_info->bbt_block[1] = 0;
++	bbt_info->bbt_vers[0] = 0;
++	bbt_info->bbt_vers[1] = 0;
++
++	/* Look for IBBT signatures */
++	for (block = nandi->blocks_per_device - NAND_IBBT_NBLOCKS;
++	     block < nandi->blocks_per_device;
++	     block++) {
++		offs = (loff_t)block << nandi->block_shift;
++
++		if (bch_find_ibbt_sig(nandi, block, &bak, &vers, author)) {
++			dev_dbg(nandi->dev,
++				"found BBT [%s:%u] at 0x%012llx [%u] (%s)\n",
++				bbt_strs[bak], vers, offs, block,
++				author);
++
++			if (bbt_info->bbt_block[bak] == 0 ||
++			    ((int8_t)(bbt_info->bbt_vers[bak] - vers)) < 0) {
++				bbt_info->bbt_block[bak] = block;
++				bbt_info->bbt_vers[bak] = vers;
++			}
++		}
++	}
++
++	/* What have we found? */
++	if (bbt_info->bbt_block[0] == 0 && bbt_info->bbt_block[1] == 0) {
++		/* no primary, no mirror: return error */
++		return 1;
++	} else if (bbt_info->bbt_block[0] == 0) {
++		/* no primary: use mirror, update primary */
++		bak = 1;
++		update = NAND_IBBT_UPDATE_PRIMARY;
++		bbt_info->bbt_block[0] = nandi->blocks_per_device - 1;
++	} else if (bbt_info->bbt_block[1] == 0) {
++		/* no mirror: use primary, update mirror */
++		bak = 0;
++		update = NAND_IBBT_UPDATE_MIRROR;
++		bbt_info->bbt_block[1] = nandi->blocks_per_device - 1;
++	} else if (bbt_info->bbt_vers[0] == bbt_info->bbt_vers[1]) {
++		/* primary == mirror: use primary, no update required */
++		bak = 0;
++	} else if ((int8_t)(bbt_info->bbt_vers[1] -
++			    bbt_info->bbt_vers[0]) < 0) {
++		/* primary > mirror: use primary, update mirror */
++		bak = 0;
++		update = NAND_IBBT_UPDATE_MIRROR;
++	} else {
++		/* mirror > primary: use mirror, update primary */
++		bak = 1;
++		update = NAND_IBBT_UPDATE_PRIMARY;
++	}
++
++	vers = bbt_info->bbt_vers[bak];
++	block = bbt_info->bbt_block[bak];
++	offs = block << nandi->block_shift;
++	dev_info(nandi->dev, "using BBT [%s:%u] at 0x%012llx [%u]\n",
++		 bbt_strs[bak], vers, offs, block);
++
++	/* Read BBT data */
++	if (bch_read_page(nandi, offs, bbt_info->bbt) < 0) {
++		dev_err(nandi->dev,
++			"error while reading BBT %s:%u] at 0x%012llx [%u]\n",
++			bbt_strs[bak], vers, offs, block);
++		return 1;
++	}
++
++	/* Update other BBT if required */
++	if (update)
++		bch_update_bbts(nandi, bbt_info, update, vers);
++
++	return 0;
++}
++
+ /*
+  * Initialisation
+  */
 -- 
 1.8.3.2
