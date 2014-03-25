@@ -1,15 +1,15 @@
-Received: from mail-we0-f176.google.com ([74.125.82.176])
+Received: from mail-wg0-x233.google.com ([2a00:1450:400c:c00::233])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSMcS-0002Hb-My
- for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 08:22:11 +0000
-Received: by mail-we0-f176.google.com with SMTP id x48so78295wes.35
- for <linux-mtd@lists.infradead.org>; Tue, 25 Mar 2014 01:21:38 -0700 (PDT)
+ id 1WSMcV-0002IF-LR
+ for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 08:22:12 +0000
+Received: by mail-wg0-f51.google.com with SMTP id k14so79718wgh.10
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Mar 2014 01:21:40 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [RFC 42/47] mtd: nand: stm_nand_bch: add read and write OOB (BCH)
-Date: Tue, 25 Mar 2014 08:19:59 +0000
-Message-Id: <1395735604-26706-43-git-send-email-lee.jones@linaro.org>
+Subject: [RFC 43/47] mtd: nand: stm_nand_bch: read and write functions (BCH)
+Date: Tue, 25 Mar 2014 08:20:00 +0000
+Message-Id: <1395735604-26706-44-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
 References: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
 Cc: angus.clark@st.com, kernel@stlinux.com, lee.jones@linaro.org,
@@ -24,137 +24,167 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Provide functions to read and write to the Out-Of-Bounds (OOB) area.
+Helper function for bch_mtd_read() and bch_mtd_write() to handle
+multi-page or non-aligned reads and writes respectively.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/nand/stm_nand_bch.c | 107 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 107 insertions(+)
+ drivers/mtd/nand/stm_nand_bch.c | 143 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 143 insertions(+)
 
 diff --git a/drivers/mtd/nand/stm_nand_bch.c b/drivers/mtd/nand/stm_nand_bch.c
-index 38658b8..389ccee 100644
+index 389ccee..bcaed32 100644
 --- a/drivers/mtd/nand/stm_nand_bch.c
 +++ b/drivers/mtd/nand/stm_nand_bch.c
-@@ -1218,6 +1218,111 @@ static int flex_do_write_ops(struct nandi_controller *nandi,
- 	return 0;
+@@ -507,6 +507,149 @@ static uint8_t bch_write_page(struct nandi_controller *nandi,
+ 	return status;
  }
  
-+static char *mtd_oob_mode_strs[] = {"PLACE", "AUTO", "RAW"};
-+
-+static int bch_mtd_read_and_write_oob(struct mtd_info *mtd, loff_t tofrom,
-+				      struct mtd_oob_ops *ops,
-+				      bool read)
++/* Helper function for bch_mtd_read to handle multi-page or non-aligned reads */
++static int bch_read(struct nandi_controller *nandi,
++		    loff_t from, size_t len,
++		    size_t *retlen, u_char *buf)
 +{
-+	struct nand_chip *chip = mtd->priv;
-+	struct nandi_controller *nandi = chip->priv;
-+	uint32_t page_mask = mtd->writesize - 1;
-+	int ret;
++	struct mtd_ecc_stats stats;
++	uint32_t page_size = nandi->info.mtd.writesize;
++	uint32_t col_offs;
++	loff_t page_mask;
++	loff_t page_offs;
++	int ecc_errs, max_ecc_errs = 0;
++	int page_num;
++	size_t bytes;
++	uint8_t *p;
++	bool bounce = false;
 +
-+	dev_dbg(nandi->dev, "%s: 0x%012llx [page = %u, oob = %u mode = %s]\n",
-+		__func__, tofrom,
-+		(ops->datbuf ? ops->len : 0),
-+		(ops->oobbuf ? ops->ooblen : 0),
-+		mtd_oob_mode_strs[ops->mode]);
++	dev_dbg(nandi->dev, "%s: %llu @ 0x%012llx\n", __func__,
++		(unsigned long long)len, from);
 +
-+	if (!ops->oobbuf && ops->mode != MTD_OPS_RAW) {
-+		if (read)
-+			return mtd_read(mtd, tofrom, ops->len,
-+					&ops->retlen, ops->datbuf);
-+		else
-+			return mtd_write(mtd, tofrom, ops->len,
-+					 &ops->retlen, ops->datbuf);
++	stats = nandi->info.mtd.ecc_stats;
++	page_mask = (loff_t)page_size - 1;
++	col_offs  = (uint32_t)(from & page_mask);
++	page_offs = from & ~page_mask;
++	page_num  = (int)(page_offs >> nandi->page_shift);
++
++	while (len > 0) {
++		bytes = min((page_size - col_offs), len);
++
++		if ((bytes != page_size) ||
++		    ((unsigned int)buf & (NANDI_BCH_DMA_ALIGNMENT - 1)) ||
++		    (!virt_addr_valid(buf))) /* vmalloc'd buffer! */
++			bounce = true;
++
++		if (page_num == nandi->cached_page) {
++			memcpy(buf, nandi->page_buf + col_offs, bytes);
++			goto done;
++		}
++
++		p = bounce ? nandi->page_buf : buf;
++
++		ecc_errs = bch_read_page(nandi, page_offs, p);
++		if (bounce)
++			memcpy(buf, p + col_offs, bytes);
++
++		if (ecc_errs < 0) {
++			dev_err(nandi->dev,
++				"%s: uncorrectable error at 0x%012llx\n",
++				__func__, page_offs);
++			nandi->info.mtd.ecc_stats.failed++;
++
++			/* Do not cache uncorrectable pages */
++			if (bounce)
++				nandi->cached_page = -1;
++
++			goto done;
++		}
++
++		if (ecc_errs) {
++			dev_info(nandi->dev,
++				 "%s: corrected %u error(s) at 0x%012llx\n",
++				 __func__, ecc_errs, page_offs);
++
++			nandi->info.mtd.ecc_stats.corrected += ecc_errs;
++
++			if (ecc_errs > max_ecc_errs)
++				max_ecc_errs = ecc_errs;
++		}
++
++		if (bounce)
++			nandi->cached_page = page_num;
++
++done:
++		buf += bytes;
++		len -= bytes;
++
++		if (retlen)
++			*retlen += bytes;
++
++		/* We are now page-aligned */
++		page_offs += page_size;
++		page_num++;
++		col_offs = 0;
 +	}
 +
-+	ops->oobretlen = 0;
-+	ops->retlen = 0;
++	/* Return '-EBADMSG' on uncorrectable errors */
++	if (nandi->info.mtd.ecc_stats.failed - stats.failed)
++		return -EBADMSG;
 +
-+	/*
-+	 * We report OOB as unavailable (i.e. oobavail = 0), therefore nothing
-+	 * should call this
-+	 */
-+	if (ops->oobbuf && ops->mode == MTD_OPS_AUTO_OOB)
-+		return -ENOTSUPP;
-+
-+	/* Not currently supported by MTD */
-+	if (ops->datbuf && ops->oobbuf && ops->mode == MTD_OPS_PLACE_OOB)
-+		return -ENOTSUPP;
-+
-+	/* Do not allow oob reads with ooboffs */
-+	if (ops->oobbuf && ops->ooboffs)
-+		return -ENOTSUPP;
-+
-+	/* Do not allow reads past end of device */
-+	if (ops->datbuf && (tofrom + ops->len) > mtd->size) {
-+		dev_err(nandi->dev, "attempt %s beyond end of device\n",
-+			read ? "read" : "write");
-+		return -EINVAL;
-+	}
-+
-+	if (ops->oobbuf &&
-+	    (tofrom + mtd->writesize * (ops->ooblen / mtd->oobsize))
-+	    > mtd->size) {
-+		dev_err(nandi->dev, "attempt %s beyond end of device\n",
-+			read ? "read" : "write");
-+		return -EINVAL;
-+	}
-+
-+	/* Do not allow non-aligned reads/writes */
-+	if ((tofrom & page_mask) ||
-+	    (ops->datbuf && (ops->len & page_mask)) ||
-+	    (ops->oobbuf && (ops->ooblen % mtd->oobsize))) {
-+		dev_err(nandi->dev, "attempt to %s non-aligned data\n",
-+			read ? "read" : "write");
-+		return -EINVAL;
-+	}
-+
-+	/* Do not allow inconsistent data and oob lengths */
-+	if (ops->datbuf && ops->oobbuf &&
-+	    (ops->len / mtd->writesize != ops->ooblen / mtd->oobsize)) {
-+		dev_err(nandi->dev,
-+			"data length inconsistent with oob length\n");
-+		return -EINVAL;
-+	}
-+
-+	nand_get_device(mtd, read ? FL_READING : FL_WRITING);
-+
-+	if (!read && flex_check_wp(nandi)) {
-+		dev_dbg(nandi->dev, "device is write-protected\n");
-+		return -EIO;
-+	}
-+
-+	if (read)
-+		ret = flex_do_read_ops(nandi, tofrom, ops);
-+	else
-+		ret = flex_do_write_ops(nandi, tofrom, ops);
-+
-+	nand_release_device(mtd);
-+
-+	return ret;
++	return max_ecc_errs;
 +}
 +
-+static int bch_mtd_read_oob(struct mtd_info *mtd, loff_t from,
-+			    struct mtd_oob_ops *ops)
++/* Helper function for mtd_write, to handle multi-page and non-aligned writes */
++static int bch_write(struct nandi_controller *nandi,
++		     loff_t to, size_t len,
++		     size_t *retlen, const uint8_t *buf)
 +{
-+	return bch_mtd_read_and_write_oob(mtd, from, ops, true);
++	uint32_t page_size = nandi->info.mtd.writesize;
++	int page_num;
++	bool bounce = false;
++	const uint8_t *p = NULL;
++	uint8_t ret;
++
++	dev_dbg(nandi->dev, "%s: %llu @ 0x%012llx\n", __func__,
++		(unsigned long long)len, to);
++
++	BUG_ON(len & (page_size - 1));
++	BUG_ON(to & (page_size - 1));
++
++	if (((unsigned long)buf & (NANDI_BCH_DMA_ALIGNMENT - 1)) ||
++	    !virt_addr_valid(buf)) { /* vmalloc'd buffer! */
++		bounce = true;
++	}
++
++	page_num = (int)(to >> nandi->page_shift);
++
++	while (len > 0) {
++		if (bounce) {
++			memcpy(nandi->page_buf, buf, page_size);
++			p = nandi->page_buf;
++			nandi->cached_page = -1;
++		} else {
++			p = buf;
++		}
++
++		if (nandi->cached_page == page_num)
++			nandi->cached_page = -1;
++
++		ret = bch_write_page(nandi, to, p);
++		if (ret & NAND_STATUS_FAIL)
++			return -EIO;
++
++		to += page_size;
++		page_num++;
++		buf += page_size;
++		len -= page_size;
++
++		if (retlen)
++			*retlen += page_size;
++	}
++
++	return 0;
 +}
 +
-+static int bch_mtd_write_oob(struct mtd_info *mtd, loff_t to,
-+			     struct mtd_oob_ops *ops)
-+{
-+	return bch_mtd_read_and_write_oob(mtd, to, ops, false);
-+}
-+
- static int bch_mtd_block_isbad(struct mtd_info *mtd, loff_t offs)
- {
- 	struct nand_chip *chip = mtd->priv;
-@@ -1454,6 +1559,8 @@ static void nandi_set_mtd_defaults(struct nandi_controller *nandi,
- 	mtd->subpage_sft = 0;
- 
- 	mtd->_erase = bch_mtd_erase;
-+	mtd->_read_oob = bch_mtd_read_oob;
-+	mtd->_write_oob = bch_mtd_write_oob;
- 	mtd->_block_isbad = bch_mtd_block_isbad;
- 	mtd->_block_markbad = bch_mtd_block_markbad;
- 
+ /*
+  * Hamming-FLEX operations
+  */
 -- 
 1.8.3.2
