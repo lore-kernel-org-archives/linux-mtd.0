@@ -1,23 +1,16 @@
-Received: from mail-wg0-f45.google.com ([74.125.82.45])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSSoB-0007UB-NP
- for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 14:58:32 +0000
-Received: by mail-wg0-f45.google.com with SMTP id l18so414910wgh.16
- for <linux-mtd@lists.infradead.org>; Tue, 25 Mar 2014 07:58:08 -0700 (PDT)
-Date: Tue, 25 Mar 2014 14:58:02 +0000
-From: Lee Jones <lee.jones@linaro.org>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [RFC 01/47] mtd: nand: export useful functions from core driver
-Message-ID: <20140325145802.GC24823@lee--X1>
+Date: Tue, 25 Mar 2014 11:01:02 -0600
+From: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
+To: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [RFC 02/47] mtd: nand: add ONFI NAND Timing Mode Specifications
+Message-ID: <20140325170102.GC30641@obsidianresearch.com>
 References: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
- <1395735604-26706-2-git-send-email-lee.jones@linaro.org>
- <20140325125755.GD665@arch.cereza>
+ <1395735604-26706-3-git-send-email-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20140325125755.GD665@arch.cereza>
-Cc: angus.clark@st.com, kernel@stlinux.com, linux-kernel@vger.kernel.org,
+In-Reply-To: <1395735604-26706-3-git-send-email-lee.jones@linaro.org>
+Cc: angus.clark@st.com, Boris BREZILLON <b.brezillon.dev@gmail.com>,
+ kernel@stlinux.com, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, pekon@ti.com, computersforpeace@gmail.com,
  dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,55 +22,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 25 Mar 2014, Ezequiel Garcia wrote:
+On Tue, Mar 25, 2014 at 08:19:19AM +0000, Lee Jones wrote:
+> This patch adds a new structure, 'nand_timing_spec', to capture the A/C
+> timing characteristics of NAND devices.
 
-> On Mar 25, Lee Jones wrote:
-> > These functions are utilised by the STM BCH NAND Controller driver.
-> > 
-> [..]
-> > -static int nand_suspend(struct mtd_info *mtd)
-> > +int nand_suspend(struct mtd_info *mtd)
-> >  {
-> >  	return nand_get_device(mtd, FL_PM_SUSPENDED);
-> >  }
-> > +EXPORT_SYMBOL(nand_suspend);
-> >  
-> >  /**
-> >   * nand_resume - [MTD Interface] Resume the NAND flash
-> >   * @mtd: MTD device structure
-> >   */
-> > -static void nand_resume(struct mtd_info *mtd)
-> > +void nand_resume(struct mtd_info *mtd)
-> >  {
-> >  	struct nand_chip *chip = mtd->priv;
-> >  
-> > @@ -2776,6 +2779,7 @@ static void nand_resume(struct mtd_info *mtd)
-> >  		pr_err("%s called for a chip which is not in suspended state\n",
-> >  			__func__);
-> >  }
-> > +EXPORT_SYMBOL(nand_resume);
-> >  
-> 
-> The patch that adds the PM support for the driver makes no use of these.
-> 
-> Can you detail why do you need to export these?
+Boris BREZILLON <b.brezillon.dev@gmail.com> has been working on a
+similar patch for a time now, and I think has an implementation for
+the sunxi driver.
+ 
+> some of the major NAND manufacturers (e.g. Samsung, Toshiba). Here we
+> have followed broadly the ONFI timing definitions.
 
-Please see RFC PATCH 9:
+Timing specifications that are not precisely defined are
+useless.. I would stick entirely with the well defined ONFI ones
+until a need arises..
 
-mtd: nand: stm_nand_bch: introduce and initialise some important data structures
+> + * Note, 'tR' field (maximum page read time) is extracted from the ONFI
+> + * parameter page during device probe.
+> + */
+> +struct nand_timing_spec nand_onfi_timing_specs[] = {
 
-static void nandi_set_mtd_defaults(struct nandi_controller *nandi,
-                                   struct mtd_info *mtd, struct nand_chip *chip)
-{
+const?
 
-[...]
-       mtd->_sync = nand_sync;
-       mtd->_suspend = nand_suspend;
-       mtd->_resume = nand_resume;
-}
+> +	/*
+> +	 * ONFI Timing Mode '0' (supported on all ONFI compliant devices)
+> +	 */
+> +	[0] = {
+> +		.tCLS	= 50,
+> +		.tCS	= 70,
+> +		.tALS	= 50,
 
--- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Use picoseconds, ns is already loosing precision at the higher timing
+modes.
+
+Cheers,
+Jason
