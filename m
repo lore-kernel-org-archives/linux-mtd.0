@@ -1,16 +1,15 @@
-Received: from mail-wi0-f177.google.com ([209.85.212.177])
+Received: from mail-wg0-f43.google.com ([74.125.82.43])
  by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSMbd-0007X3-71
- for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 08:21:10 +0000
-Received: by mail-wi0-f177.google.com with SMTP id cc10so339978wib.4
- for <linux-mtd@lists.infradead.org>; Tue, 25 Mar 2014 01:20:48 -0700 (PDT)
+ id 1WSMbX-0007H7-RX
+ for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 08:21:04 +0000
+Received: by mail-wg0-f43.google.com with SMTP id x13so79946wgg.14
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Mar 2014 01:20:40 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [RFC 16/47] mtd: nand: stm_nand_bch: derive some working variables
- for latter use
-Date: Tue, 25 Mar 2014 08:19:33 +0000
-Message-Id: <1395735604-26706-17-git-send-email-lee.jones@linaro.org>
+Subject: [RFC 12/47] mtd: nand: stm_nand_bch: scan for NAND devices
+Date: Tue, 25 Mar 2014 08:19:29 +0000
+Message-Id: <1395735604-26706-13-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
 References: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
 Cc: angus.clark@st.com, kernel@stlinux.com, lee.jones@linaro.org,
@@ -25,35 +24,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-A few of the working variables can either be taken or derived from
-existing knowledge about the connected chip. Rather than attempt to
-provide each specification manually, here we make assumptions based
-on information already obtained.
+Use the core nand_scan_ident() routine to locate connected NAND chips.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/nand/stm_nand_bch.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/mtd/nand/stm_nand_bch.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
 diff --git a/drivers/mtd/nand/stm_nand_bch.c b/drivers/mtd/nand/stm_nand_bch.c
-index 93fe835..f5a3e80 100644
+index e1ebf92..1de13bd 100644
 --- a/drivers/mtd/nand/stm_nand_bch.c
 +++ b/drivers/mtd/nand/stm_nand_bch.c
-@@ -783,6 +783,15 @@ static int stm_nand_bch_probe(struct platform_device *pdev)
- 		return -EINVAL;
- 	}
+@@ -374,6 +374,7 @@ static int stm_nand_bch_probe(struct platform_device *pdev)
+ 	struct nandi_info *info;
+ 	struct nand_chip *chip;
+ 	struct mtd_info *mtd;
++	int err;
  
-+	/* Derive some working variables */
-+	nandi->sectors_per_page = mtd->writesize / NANDI_BCH_SECTOR_SIZE;
-+	nandi->blocks_per_device = mtd->size >> chip->phys_erase_shift;
-+	nandi->page_shift = chip->page_shift;
-+	nandi->block_shift = chip->phys_erase_shift;
-+	nandi->extra_addr = ((chip->chipsize >> nandi->page_shift) >
-+			     0x10000) ? true : false;
-+	mtd->writebufsize = mtd->writesize;
+ 	if (!pdata) {
+ 		dev_err(&pdev->dev, "no platform data found\n");
+@@ -403,6 +404,10 @@ static int stm_nand_bch_probe(struct platform_device *pdev)
+ 
+ 	nandi_set_mtd_defaults(nandi, mtd, chip);
+ 
++	err = nand_scan_ident(mtd, 1, NULL);
++	if (err)
++		return err;
 +
  	return 0;
  }
  
+@@ -410,6 +415,8 @@ static int stm_nand_bch_remove(struct platform_device *pdev)
+ {
+ 	struct nandi_controller *nandi = platform_get_drvdata(pdev);
+ 
++	nand_release(&nandi->info.mtd);
++
+ 	nandi_clk_disable(nandi);
+ 
+ 	return 0;
 -- 
 1.8.3.2
