@@ -1,15 +1,16 @@
-Received: from mail-wi0-f170.google.com ([209.85.212.170])
+Received: from mail-wg0-f45.google.com ([74.125.82.45])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSMc5-0002D7-J0
- for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 08:21:45 +0000
-Received: by mail-wi0-f170.google.com with SMTP id bs8so3173868wib.3
- for <linux-mtd@lists.infradead.org>; Tue, 25 Mar 2014 01:21:15 -0700 (PDT)
+ id 1WSMcG-0002Ew-8f
+ for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 08:21:52 +0000
+Received: by mail-wg0-f45.google.com with SMTP id l18so80376wgh.16
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Mar 2014 01:21:26 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [RFC 30/47] mtd: nand: stm_nand_bch: read and write raw (FLEX)
-Date: Tue, 25 Mar 2014 08:19:47 +0000
-Message-Id: <1395735604-26706-31-git-send-email-lee.jones@linaro.org>
+Subject: [RFC 36/47] mtd: nand: stm_nand_bch: parse partitions and register an
+ MTD device
+Date: Tue, 25 Mar 2014 08:19:53 +0000
+Message-Id: <1395735604-26706-37-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
 References: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
 Cc: angus.clark@st.com, kernel@stlinux.com, lee.jones@linaro.org,
@@ -24,102 +25,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Once the correct READ/WRITE(SEQIN) commands and address locations have
-been sent to the Controller, these calls are able to read/write the
-requested information from the FLEX_DATA register.
+Issue the core parse partitions and register as MTD device call.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/nand/stm_nand_bch.c | 77 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 77 insertions(+)
+ drivers/mtd/nand/stm_nand_bch.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/nand/stm_nand_bch.c b/drivers/mtd/nand/stm_nand_bch.c
-index baecc40..4812431 100644
+index abbb4d9..a0f0ae2 100644
 --- a/drivers/mtd/nand/stm_nand_bch.c
 +++ b/drivers/mtd/nand/stm_nand_bch.c
-@@ -537,6 +537,83 @@ static void flex_addr(struct nandi_controller *nandi,
- 	writel(addr, nandi->base + NANDHAM_FLEX_ADD);
+@@ -1738,6 +1738,7 @@ static void *stm_bch_dt_get_pdata(struct platform_device *pdev)
+ 
+ static int stm_nand_bch_probe(struct platform_device *pdev)
+ {
++	const char *part_probes[] = { "cmdlinepart", "ofpart", NULL, };
+ 	struct stm_plat_nand_bch_data *pdata = pdev->dev.platform_data;
+ 	struct device_node *np = pdev->dev.of_node;
+ 	struct mtd_part_parser_data ppdata;
+@@ -1873,7 +1874,9 @@ static int stm_nand_bch_probe(struct platform_device *pdev)
+ 
+ 	nandi_dump_bad_blocks(nandi);
+ 
+-	return 0;
++	/* Add partitions */
++	return mtd_device_parse_register(mtd, part_probes, &ppdata,
++					bank->partitions, bank->nr_partitions);
  }
  
-+static int flex_read_raw(struct nandi_controller *nandi,
-+			 uint32_t page_addr,
-+			 uint32_t col_addr,
-+			 uint8_t *buf, uint32_t len)
-+{
-+	dev_dbg(nandi->dev, "%s %u bytes at [0x%06x,0x%04x]\n",
-+		__func__, len, page_addr, col_addr);
-+
-+	BUG_ON(len & 0x3);
-+	BUG_ON((unsigned long)buf & 0x3);
-+
-+	emiss_nandi_select(STM_NANDI_HAMMING);
-+	nandi_enable_interrupts(nandi, NAND_INT_RBN);
-+	reinit_completion(&nandi->rbn_completed);
-+
-+	writel(FLEX_DATA_CFG_BEATS_4 | FLEX_DATA_CFG_CSN,
-+	       nandi->base + NANDHAM_FLEX_DATAREAD_CONFIG);
-+
-+	flex_cmd(nandi, NAND_CMD_READ0);
-+	flex_addr(nandi, col_addr, 2);
-+	flex_addr(nandi, page_addr, nandi->extra_addr ? 3 : 2);
-+	flex_cmd(nandi, NAND_CMD_READSTART);
-+
-+	flex_wait_rbn(nandi);
-+
-+	readsl(nandi->base + NANDHAM_FLEX_DATA, buf, len / 4);
-+
-+	nandi_disable_interrupts(nandi, NAND_INT_RBN);
-+
-+	writel(FLEX_DATA_CFG_BEATS_1 | FLEX_DATA_CFG_CSN,
-+	       nandi->base + NANDHAM_FLEX_DATAREAD_CONFIG);
-+
-+	return 0;
-+}
-+
-+static int flex_write_raw(struct nandi_controller *nandi,
-+			  uint32_t page_addr,
-+			  uint32_t col_addr,
-+			  uint8_t *buf, uint32_t len)
-+{
-+	uint8_t status;
-+
-+	dev_dbg(nandi->dev, "%s %u bytes at [0x%06x,0x%04x]\n",
-+		__func__, len, page_addr, col_addr);
-+
-+	BUG_ON(len & 0x3);
-+	BUG_ON((unsigned long)buf & 0x3);
-+
-+	emiss_nandi_select(STM_NANDI_HAMMING);
-+	nandi_enable_interrupts(nandi, NAND_INT_RBN);
-+	reinit_completion(&nandi->rbn_completed);
-+
-+	writel(FLEX_DATA_CFG_BEATS_4 | FLEX_DATA_CFG_CSN,
-+	       nandi->base + NANDHAM_FLEX_DATAWRITE_CONFIG);
-+
-+	flex_cmd(nandi, NAND_CMD_SEQIN);
-+	flex_addr(nandi, col_addr, 2);
-+	flex_addr(nandi, page_addr, nandi->extra_addr ? 3 : 2);
-+
-+	writesl(nandi->base + NANDHAM_FLEX_DATA, buf, len / 4);
-+
-+	flex_cmd(nandi, NAND_CMD_PAGEPROG);
-+
-+	flex_wait_rbn(nandi);
-+
-+	nandi_disable_interrupts(nandi, NAND_INT_RBN);
-+
-+	writel(FLEX_DATA_CFG_BEATS_1 | FLEX_DATA_CFG_CSN,
-+	       nandi->base + NANDHAM_FLEX_DATAWRITE_CONFIG);
-+
-+	flex_cmd(nandi, NAND_CMD_STATUS);
-+
-+	status = (uint8_t)(readl(nandi->base + NANDHAM_FLEX_DATA) & 0xff);
-+
-+	return status;
-+}
-+
- /*
-  * Bad Block Tables/Bad Block Markers
-  */
+ static int stm_nand_bch_remove(struct platform_device *pdev)
 -- 
 1.8.3.2
