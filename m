@@ -1,15 +1,16 @@
-Received: from mail-wg0-f46.google.com ([74.125.82.46])
+Received: from mail-we0-f182.google.com ([74.125.82.182])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSMbm-00026P-Ah
- for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 08:21:18 +0000
-Received: by mail-wg0-f46.google.com with SMTP id b13so80818wgh.5
- for <linux-mtd@lists.infradead.org>; Tue, 25 Mar 2014 01:20:56 -0700 (PDT)
+ id 1WSMbh-00025k-Cw
+ for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 08:21:14 +0000
+Received: by mail-we0-f182.google.com with SMTP id p61so74995wes.41
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Mar 2014 01:20:50 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [RFC 20/47] mtd: nand: stm_nand_bch: initialise working buffers
-Date: Tue, 25 Mar 2014 08:19:37 +0000
-Message-Id: <1395735604-26706-21-git-send-email-lee.jones@linaro.org>
+Subject: [RFC 17/47] mtd: nand: stm_nand_bch: automatically set EEC mode if
+ requested
+Date: Tue, 25 Mar 2014 08:19:34 +0000
+Message-Id: <1395735604-26706-18-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
 References: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
 Cc: angus.clark@st.com, kernel@stlinux.com, lee.jones@linaro.org,
@@ -24,79 +25,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Initialise working buffers, accomodating DMA alignment constraints.
+Here we automatically select the strongest ECC scheme compatible with
+the size of the OOB.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/nand/stm_nand_bch.c | 45 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
+ drivers/mtd/nand/stm_nand_bch.c | 40 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
 
 diff --git a/drivers/mtd/nand/stm_nand_bch.c b/drivers/mtd/nand/stm_nand_bch.c
-index 351f5e2..fafde22 100644
+index f5a3e80..60a7800 100644
 --- a/drivers/mtd/nand/stm_nand_bch.c
 +++ b/drivers/mtd/nand/stm_nand_bch.c
-@@ -31,6 +31,9 @@
- 
+@@ -32,6 +32,13 @@
  /* NANDi BCH Controller properties */
  #define NANDI_BCH_SECTOR_SIZE			1024
-+#define NANDI_BCH_DMA_ALIGNMENT			64
-+#define NANDI_BCH_MAX_BUF_LIST			8
-+#define NANDI_BCH_BUF_LIST_SIZE			(4 * NANDI_BCH_MAX_BUF_LIST)
  
- /* BCH ECC sizes */
- static int bch_ecc_sizes[] = {
-@@ -762,6 +765,44 @@ static void nandi_init_controller(struct nandi_controller *nandi,
- 	nandi_init_hamming(nandi, emi_bank);
++/* BCH ECC sizes */
++static int bch_ecc_sizes[] = {
++	[BCH_18BIT_ECC] = 32,
++	[BCH_30BIT_ECC] = 54,
++	[BCH_NO_ECC] = 0,
++};
++
+ /* Bad Block Table (BBT) */
+ struct nandi_bbt_info {
+ 	uint32_t	bbt_size;		/* Size of bad-block table */
+@@ -135,6 +142,25 @@ static void nandi_disable_interrupts(struct nandi_controller *nandi,
+ 	writel(val, nandi->base + NANDBCH_INT_EN);
  }
  
-+/* Initialise working buffers, accomodating DMA alignment constraints */
-+static int nandi_init_working_buffers(struct nandi_controller *nandi,
-+				      struct nandi_bbt_info *bbt_info,
-+				      struct mtd_info *mtd)
++/* Select strongest ECC scheme compatible with OOB size */
++static int bch_set_ecc_auto(struct nandi_controller *nandi,
++			    struct mtd_info *mtd)
 +{
-+	uint32_t bbt_buf_size;
-+	uint32_t buf_size;
++	int oob_bytes_per_sector = mtd->oobsize / nandi->sectors_per_page;
++	int try_ecc_modes[] = { BCH_30BIT_ECC, BCH_18BIT_ECC, -1 };
++	int m, ecc_mode;
 +
-+	/*	- Page and OOB */
-+	buf_size = mtd->writesize + mtd->oobsize + NANDI_BCH_DMA_ALIGNMENT;
-+
-+	/*	- BBT data (page-size aligned) */
-+	bbt_info->bbt_size = nandi->blocks_per_device >> 2; /* 2 bits/block */
-+	bbt_buf_size = ALIGN(bbt_info->bbt_size, mtd->writesize);
-+	buf_size += bbt_buf_size + NANDI_BCH_DMA_ALIGNMENT;
-+
-+	/*	- BCH BUF list */
-+	buf_size += NANDI_BCH_BUF_LIST_SIZE + NANDI_BCH_DMA_ALIGNMENT;
-+
-+	/* Allocate bufffer */
-+	nandi->buf = devm_kzalloc(nandi->dev, buf_size, GFP_KERNEL);
-+	if (!nandi->buf) {
-+		dev_err(nandi->dev, "failed to allocate working buffers\n");
-+		return -ENOMEM;
++	for (m = 0; try_ecc_modes[m] >= 0; m++) {
++		ecc_mode = try_ecc_modes[m];
++		if (oob_bytes_per_sector >= bch_ecc_sizes[ecc_mode]) {
++			nandi->bch_ecc_mode = ecc_mode;
++			return 0;
++		}
 +	}
 +
-+	/* Set/Align buffer pointers */
-+	nandi->page_buf = PTR_ALIGN(nandi->buf, NANDI_BCH_DMA_ALIGNMENT);
-+	nandi->oob_buf  = nandi->page_buf + mtd->writesize;
-+	bbt_info->bbt   = PTR_ALIGN(nandi->oob_buf + mtd->oobsize,
-+				    NANDI_BCH_DMA_ALIGNMENT);
-+	nandi->buf_list = (uint32_t *)PTR_ALIGN(bbt_info->bbt + bbt_buf_size,
-+						NANDI_BCH_DMA_ALIGNMENT);
-+	nandi->cached_page = -1;
-+
-+	return 0;
++	return -EINVAL;
 +}
 +
- static int remap_named_resource(struct platform_device *pdev,
- 				char *name,
- 				void __iomem **io_ptr)
-@@ -990,6 +1031,10 @@ static int stm_nand_bch_probe(struct platform_device *pdev)
- 	/* Tune BCH programs according to device found and ECC mode */
- 	bch_configure_progs(nandi);
+ static void nandi_set_mtd_defaults(struct nandi_controller *nandi,
+ 				   struct mtd_info *mtd, struct nand_chip *chip)
+ {
+@@ -792,6 +818,20 @@ static int stm_nand_bch_probe(struct platform_device *pdev)
+ 			     0x10000) ? true : false;
+ 	mtd->writebufsize = mtd->writesize;
  
-+	err = nandi_init_working_buffers(nandi, bbt_info, mtd);
-+	if (err)
-+		return err;
++	/* Set ECC mode */
++	if (pdata->bch_ecc_cfg == BCH_ECC_AUTO) {
++		err = bch_set_ecc_auto(nandi, mtd);
++		if (err) {
++			dev_err(nandi->dev, "insufficient OOB for BCH ECC\n");
++			return err;
++		}
++	} else {
++		nandi->bch_ecc_mode = pdata->bch_ecc_cfg;
++	}
++
++	info->ecclayout.eccbytes =
++		nandi->sectors_per_page * bch_ecc_sizes[nandi->bch_ecc_mode];
 +
  	return 0;
  }
