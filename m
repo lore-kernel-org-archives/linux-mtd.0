@@ -1,18 +1,21 @@
-Date: Wed, 26 Mar 2014 00:28:05 -0700
+Received: from mail-pd0-x229.google.com ([2607:f8b0:400e:c02::229])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WSiMW-0005f6-Ox
+ for linux-mtd@lists.infradead.org; Wed, 26 Mar 2014 07:35:01 +0000
+Received: by mail-pd0-f169.google.com with SMTP id fp1so1518556pdb.28
+ for <linux-mtd@lists.infradead.org>; Wed, 26 Mar 2014 00:34:38 -0700 (PDT)
+Date: Wed, 26 Mar 2014 00:34:33 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [RFC 00/47] mtd: nand: Add new driver supporting ST's BCH h/w
-Message-ID: <20140326072805.GB31517@norris-Latitude-E6410>
-References: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
- <20140325125050.GB665@arch.cereza> <20140325131139.GB24823@lee--X1>
- <20140325220045.GA12185@arch.cereza>
+To: Erico Nunes <nunes.erico@gmail.com>
+Subject: Re: [PATCH] mtd: nand: fix mention to CONFIG_MTD_NAND_ECC_BCH
+Message-ID: <20140326073433.GC31517@norris-Latitude-E6410>
+References: <1394512286-31481-1-git-send-email-nunes.erico@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20140325220045.GA12185@arch.cereza>
-Cc: angus.clark@st.com, kernel@stlinux.com, dwmw2@infradead.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, pekon@ti.com,
- Lee Jones <lee.jones@linaro.org>, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <1394512286-31481-1-git-send-email-nunes.erico@gmail.com>
+Cc: b32955@freescale.com, dwmw2@infradead.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,51 +25,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Mar 25, 2014 at 07:00:45PM -0300, Ezequiel Garcia wrote:
-> After taking a quick glance at the whole driver I noticed you have something
-> strange going on. AFAIK, the typical NAND driver probe() should be one of
-> these two:
+On Tue, Mar 11, 2014 at 01:31:26AM -0300, Erico Nunes wrote:
+> Mention to CONFIG_MTD_ECC_BCH in the warning message can be confusing as this
+> doesn't match the exact name of the configuration option.
+> This warning showed up once to me when I was starting to set up BCH. After
+> checking my .config file, it took a moment before realizing it is
+> CONFIG_MTD_NAND_ECC_BCH instead of CONFIG_MTD_ECC_BCH.
 > 
-> * Call nand_scan() which calls nand_scan_ident() + nand_scan_tail().
-> 
-> * Call nand_scan_ident() to identify the NAND device geometry, do some
->   driver specific initialization, fill some hooks, and finally call
->   nand_scan_tail() to complete the initialization.
-> 
-> You driver call nand_scan_ident() and then does some bad block scan, and
-> fills some callbacks on its own, but never calls nand_scan_tail().
-> 
-> The call to nand_scan_tail() would remove the need to export those NAND
-> core functions, and remove the need to scan and print the bad blocks.
-> I don't know if you have a real reason for not doing it this way, or
-> maybe it's the way this driver was originally written.
-> 
-> Care to review this and re-spin the driver? You'll have a more nicer
-> driver, and more framework-compliant.
+> Signed-off-by: Erico Nunes <nunes.erico@gmail.com>
 
-A hearty +1 to this. You are avoiding much of the core of the NAND
-framework by avoiding the nand_chip callbacks and nand_scan_tail(), and
-by reimplementing the BBT. I will have to NAK to some of the patches
-that EXPORT the nand_base private core (e.g., nand_get_device()), and I
-will most likely NAK the custom BBT implementation (please improve
-nand_bbt.c as needed).
-
-> Also, if you plan to target v3.16 on this, I'd suggest that you pick
-> some pack of features and submit those first, reducing the amount of code
-> to be reviewed. For instance, you may choose to leave some of the ECC bits
-> aside for now.
-> 
-> It's just a suggestion to get at least some of the code merged quicker,
-> don't take me too seriously on this.
-
-That's a possible approach if it still leaves your driver functional.
-But I wouldn't trim the driver too much just for sake of reviewing.
-
-BTW, why do you call this driver stm_nand_bch? BCH is a particular type
-of ECC algorithm, not unique at all to ST's hardware. Can you drop the
-_bch and make it just stm_nand? Also, you might want to change the
-namespacing on some of your functions; for instance, I don't think you
-can own the name bch_write(). Possibly prefix things with stm_* or
-stm_nand_* where reasonable.
+Pushed to l2-mtd.git. Thanks!
 
 Brian
