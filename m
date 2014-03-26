@@ -1,22 +1,20 @@
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Lee Jones <lee.jones@linaro.org>, "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: RE: [RFC 13/47] mtd: nand: stm_nand_bch: provide Device Tree support
-Date: Wed, 26 Mar 2014 09:18:59 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EAB5C83@DBDE04.ent.ti.com>
-References: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
- <1395735604-26706-14-git-send-email-lee.jones@linaro.org>
-In-Reply-To: <1395735604-26706-14-git-send-email-lee.jones@linaro.org>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail-we0-f179.google.com ([74.125.82.179])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WSkCp-0007jj-A5
+ for linux-mtd@lists.infradead.org; Wed, 26 Mar 2014 09:33:08 +0000
+Received: by mail-we0-f179.google.com with SMTP id x48so963304wes.10
+ for <linux-mtd@lists.infradead.org>; Wed, 26 Mar 2014 02:32:39 -0700 (PDT)
+Date: Wed, 26 Mar 2014 09:32:35 +0000
+From: Lee Jones <lee.jones@linaro.org>
+To: pekon@ti.com, ezequiel.garcia@free-electrons.com,
+ computersforpeace@gmail.com, jgunthorpe@obsidianresearch.com
+Subject: ST NAND BCH Driver
+Message-ID: <20140326093235.GH24823@lee--X1>
 MIME-Version: 1.0
-Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "kernel@stlinux.com" <kernel@stlinux.com>,
- "angus.clark@st.com" <angus.clark@st.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+Cc: angus.clark@st.com, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,132 +24,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Lee,
+Guys,
 
->From: Lee Jones [mailto:lee.jones@linaro.org]
->
->Fetch platform specific data from Device Tree. Any functions which
->are useful to other STM NAND Controllers have been separated into a
->separate file so they can be easily referenced by them as they
->appear.
->
->Signed-off-by: Lee Jones <lee.jones@linaro.org>
->---
-[...]
+Firstly I wanted to thank all of your for your responses. I will get
+round to answering them and/or fixing-up the code with your great
+advice.
 
->--- a/drivers/mtd/nand/stm_nand_bch.c
->+++ b/drivers/mtd/nand/stm_nand_bch.c
->@@ -16,6 +16,7 @@
-> #include <linux/module.h>
-> #include <linux/delay.h>
-> #include <linux/io.h>
->+#include <linux/of.h>
-> #include <linux/clk.h>
-> #include <linux/interrupt.h>
-> #include <linux/device.h>
->@@ -23,8 +24,10 @@
-> #include <linux/completion.h>
-> #include <linux/mtd/nand.h>
-> #include <linux/mtd/stm_nand.h>
->+#include <linux/mtd/partitions.h>
->
-> #include "stm_nand_regs.h"
->+#include "stm_nand_dt.h"
->
-> /* Bad Block Table (BBT) */
-> struct nandi_bbt_info {
->@@ -365,9 +368,51 @@ nandi_init_resources(struct platform_device *pdev)
-> 	return nandi;
-> }
->
->+#ifdef CONFIG_OF
->+static void *stm_bch_dt_get_pdata(struct platform_device *pdev)
->+{
->+	struct device_node *np =3D pdev->dev.of_node;
->+	struct stm_plat_nand_bch_data *pdata;
->+	const char *ecc_config;
->+	int ret;
->+
->+	pdata =3D devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
->+	if (!pdata)
->+		return ERR_PTR(-ENOMEM);
->+
->+	of_property_read_string(np, "st,bch-ecc-mode", &ecc_config);
+Secondly I just wanted to explain my slowness in replying, as I feel
+rude just letting your messages sit in my inbox without reply. I'm
+currently working on updating ST's (FSM) NOR driver with recent
+internal developments. Once complete and submitted I'll turn my hand
+to the NAND driver where you'll receive answer to your queries.
 
-Can you use any of the existing generic NAND bindings like combination of
-"nand-ecc-mode" and "nand-ecc-strength" ?
-Example: nand-ecc-mode =3D "bch" & nand-ecc-strength=3D18
-Some of generic bindings are recently added
-	commit 8dd49165ef5f46b5ad9ba296c559ccff315f9421  (currently in l2-mtd tree=
-)
-	mtd: nand: Add a devicetree binding for ECC strength and ECC step size
+Thanks again and keep the suggestions coming. I am reading all of them
+and will endeavour to utilise them on next submission.
 
-It's good to use generic bindings as much as you can, and you don't need
-any approvals from DT Maintainers too. Though you may need to add
-new values for "nand-ecc-mode" like {auto, hw-ham, hw-bch}
-=20
+Kind regards,
+Lee
 
->+	if (!strcmp("noecc", ecc_config))
->+		pdata->bch_ecc_cfg =3D BCH_NO_ECC;
->+	else if (!strcmp("18bit", ecc_config))
->+		pdata->bch_ecc_cfg =3D BCH_18BIT_ECC;
->+	else if (!strcmp("30bit", ecc_config))
->+		pdata->bch_ecc_cfg =3D BCH_30BIT_ECC;
->+	else
->+		pdata->bch_ecc_cfg =3D BCH_ECC_AUTO;
->+
->+	ret =3D stm_of_get_nand_banks(&pdev->dev, np, &pdata->bank);
->+	if (ret < 0)
->+		return ERR_PTR(ret);
->+
->+	pdata->flashss =3D of_property_read_bool(np, "st,nand-flashss");
->+
->+	of_property_read_u32(np, "st,bch-bitflip-threshold",
->+			     &pdata->bch_bitflip_threshold);
->+
-mtd->bitflip_threshold is by default set to ecc.strength (unless a driver i=
-nitializes it).
-And then can be re-configured for each MTD partition separately=20
-	/sys/class/mtd/mtdX/bitflip_threshold
-	Refer: $kernel/Documentation/ABI/testing/sysfs-class-mtd
-So, I don't think this is a HW parameter, and so should not be passed from =
-DT.
-
-
->+	return pdata;
->+}
->+#else
-
-[...]
-
->+struct device_node *stm_of_get_partitions_node(struct device_node *np,
->+					       int bank_nr)
->+{
->+	struct device_node *banksnp, *banknp, *partsnp =3D NULL;
->+	char name[10];
->+
->+	banksnp =3D of_parse_phandle(np, "st,nand-banks", 0);
->+	if (!banksnp)
->+		return NULL;
->+
->+	sprintf(name, "bank%d", bank_nr);
->+	banknp =3D of_get_child_by_name(banksnp, name);
->+	if (banknp)
->+		return NULL;
->+
->+	partsnp =3D of_get_child_by_name(banknp, "partitions");
->+	of_node_put(banknp);
->+
-Sorry, I'm bit confused here .. I think you don't need to find children of
-Your bank node. This should already taken care in default parser
-drivers/mtd/ofpart.c : parse_ofpart_partitions()
-And all you need to pass is 'of_node' of bank (device).
-Is my understanding correct ?
-
->+	return partsnp;
->+}
->+EXPORT_SYMBOL(stm_of_get_partitions_node);
->+
-
-
-with regards, pekon
+-- 
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
