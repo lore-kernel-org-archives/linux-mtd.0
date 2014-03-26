@@ -1,19 +1,23 @@
-Received: from mail-qa0-f73.google.com ([209.85.216.73])
+Received: from mail-pb0-x22d.google.com ([2607:f8b0:400e:c01::22d])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSbBA-0006tG-Bb
- for linux-mtd@lists.infradead.org; Tue, 25 Mar 2014 23:54:48 +0000
-Received: by mail-qa0-f73.google.com with SMTP id f11so165224qae.2
- for <linux-mtd@lists.infradead.org>; Tue, 25 Mar 2014 16:54:26 -0700 (PDT)
-From: Gwendal Grignou <gwendal@chromium.org>
-To: axboe@kernel.dk,
-	ulf.hansson@linaro.org
-Subject: [PATCH 3/4] Limit max_discard_sectors to UINT_MAX>>9
-Date: Tue, 25 Mar 2014 16:48:25 -0700
-Message-Id: <1395791307-23727-4-git-send-email-gwendal@chromium.org>
-In-Reply-To: <1395791307-23727-1-git-send-email-gwendal@chromium.org>
-References: <1395791307-23727-1-git-send-email-gwendal@chromium.org>
-Cc: linux-mmc@vger.kernel.org, Gwendal Grignou <gwendal@chromium.org>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+ id 1WSh4g-0004Dy-IF
+ for linux-mtd@lists.infradead.org; Wed, 26 Mar 2014 06:12:31 +0000
+Received: by mail-pb0-f45.google.com with SMTP id uo5so1486960pbc.32
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Mar 2014 23:12:06 -0700 (PDT)
+Date: Tue, 25 Mar 2014 23:12:01 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH v8 0/4] mtd: devices: elm: add checks ELM H/W constrains,
+ driver code cleanup
+Message-ID: <20140326061201.GX31517@norris-Latitude-E6410>
+References: <1395321517-4490-1-git-send-email-pekon@ti.com>
+ <20140320134828.GA1585@arch.cereza>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20140320134828.GA1585@arch.cereza>
+Cc: Stefan Roese <sr@denx.de>, linux-mtd <linux-mtd@lists.infradead.org>,
+ Pekon Gupta <pekon@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,46 +27,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-max_discard_sectors can not be larger than UINT_MAX>>9,
-otherwise, there is a risk that discard requests would be merged
-into a request larger than 4GB.
-Ensure that max_discard_sectors is in unit of sectors.
+On Thu, Mar 20, 2014 at 10:48:28AM -0300, Ezequiel Garcia wrote:
+> On Mar 20, Pekon Gupta wrote:
+> > *changes v7 -> v8*
+> > Incorporated feedbacks from Brian Norris <computersforpeace@gmail.com>
+> >  - renamed ecc_step_bytes -> ecc_syndrome_size
+> > 
+[...]
+> > Pekon Gupta (4):
+> >   mtd: devices: elm: check for hardware engine's design constraints
+> >   mtd: devices: elm: clean elm_load_syndrome
+> >   mtd: devices: elm: configure parallel channels based on ecc_steps
+> >   mtd: devices: elm: update DRIVER_NAME as "omap-elm"
+> > 
+> 
+> For the whole series:
+> 
+> Reviewed-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 
-Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
----
- drivers/mmc/core/core.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Pushed to l2-mtd.git. Thanks!
 
-diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
-index 57a2b40..46e7ced 100644
---- a/drivers/mmc/core/core.c
-+++ b/drivers/mmc/core/core.c
-@@ -2153,7 +2153,7 @@ static unsigned int mmc_do_calc_max_discard(struct mmc_card *card,
- 	if (qty == 1)
- 		return 1;
- 
--	/* Convert qty to sectors */
-+	/* Convert qty to bytes */
- 	if (card->erase_shift)
- 		max_discard = --qty << card->erase_shift;
- 	else if (mmc_card_sd(card))
-@@ -2170,7 +2170,7 @@ unsigned int mmc_calc_max_discard(struct mmc_card *card)
- 	unsigned int max_discard, max_trim;
- 
- 	if (!host->max_discard_to)
--		return UINT_MAX;
-+		return UINT_MAX >> 9;
- 
- 	/*
- 	 * Without erase_group_def set, MMC erase timeout depends on clock
-@@ -2188,6 +2188,8 @@ unsigned int mmc_calc_max_discard(struct mmc_card *card)
- 	} else if (max_discard < card->erase_size) {
- 		max_discard = 0;
- 	}
-+	/* convert max_discard to sectors */
-+	max_discard >>= 9;
- 	pr_debug("%s: calculated max. discard sectors %u for timeout %u ms\n",
- 		 mmc_hostname(host), max_discard, host->max_discard_to);
- 	return max_discard;
--- 
-1.9.1.423.g4596e3a
+Brian
