@@ -1,27 +1,22 @@
-Date: Wed, 26 Mar 2014 09:51:56 +0100
-From: Lothar =?UTF-8?B?V2HDn21hbm4=?= <LW@KARO-electronics.de>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCHv2 1/1] mtd: gpmi: make blockmark swapping optional
-Message-ID: <20140326095156.3e5585b8@ipc1.ka-ro>
-In-Reply-To: <20140324095902.GB11377@localhost>
-References: <532BCFCC.4080205@freescale.com>
- <1395399017-19005-1-git-send-email-LW@KARO-electronics.de>
- <20140324095902.GB11377@localhost>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Lee Jones <lee.jones@linaro.org>, "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: RE: [RFC 13/47] mtd: nand: stm_nand_bch: provide Device Tree support
+Date: Wed, 26 Mar 2014 09:18:59 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EAB5C83@DBDE04.ent.ti.com>
+References: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
+ <1395735604-26706-14-git-send-email-lee.jones@linaro.org>
+In-Reply-To: <1395735604-26706-14-git-send-email-lee.jones@linaro.org>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-Cc: Fabio Estevam <fabio.estevam@freescale.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Russell King <linux@arm.linux.org.uk>, Pawel Moll <pawel.moll@arm.com>,
- Arnd Bergmann <arnd@arndb.de>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
- Shawn Guo <shawn.guo@freescale.com>, Rob Landley <rob@landley.net>,
- Kumar Gala <galak@codeaurora.org>, Shawn Guo <shawn.guo@linaro.org>,
- David Woodhouse <dwmw2@infradead.org>, Sascha Hauer <kernel@pengutronix.de>,
- linux-arm-kernel@lists.infradead.org
+MIME-Version: 1.0
+Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "kernel@stlinux.com" <kernel@stlinux.com>,
+ "angus.clark@st.com" <angus.clark@st.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,120 +26,132 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi Lee,
 
-Huang Shijie wrote:
-> On Fri, Mar 21, 2014 at 11:50:17AM +0100, Lothar Wa=C3=9Fmann wrote:
-> > With a flash-based BBT there is no reason to move the Factory Bad
-> > Block Marker from the data area buffer (to where it is mapped by the
-> > GPMI NAND controller) to the OOB buffer. Thus, make this feature
-> > configurable via DT. This is required for the Ka-Ro electronics
-> > platforms.
-> >=20
-> > Signed-off-by: Lothar Wa=C3=9Fmann <LW@KARO-electronics.de>
-> > ---
-> >  Documentation/devicetree/bindings/mtd/gpmi-nand.txt |    3 +++
-> >  drivers/mtd/nand/gpmi-nand/gpmi-nand.c              |   10 +++++++---
-> >  2 files changed, 10 insertions(+), 3 deletions(-)
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt b/Docu=
-mentation/devicetree/bindings/mtd/gpmi-nand.txt
-> > index 458d596..f28949a 100644
-> > --- a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
-> > +++ b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
-> > @@ -25,6 +25,9 @@ Optional properties:
-> >                         discoverable or this property is not enabled,
-> >                         the software may chooses an implementation-defi=
-ned
-> >                         ECC scheme.
-> > +  - fsl,no-blockmark-swap: Don't swap the bad block marker from the OOB
-> > +                       area with the byte in the data area but rely on=
- the
-> > +                       BBT for identifying bad blocks.
->=20
-> Please add the following:
->        "NOTE: This property is not supported by the imx23 and imx28"
+>From: Lee Jones [mailto:lee.jones@linaro.org]
 >
-I don't see why this should not be supported on i.MX28 (i.MX23 doesn't
-do byteswapping anyway, so this wouldn't change anything for i.MX23).
-The partitions used by Linux need not necessarily be accessible for the
-Boot ROM code (and vice versa).
-
-> >  The device tree may optionally contain sub-nodes describing partitions=
- of the
-> >  address space. See partition.txt for more detail.
-> > diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/=
-gpmi-nand/gpmi-nand.c
-> > index bb77f75..98562eb 100644
-> > --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> > +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> > @@ -1632,9 +1632,6 @@ static int gpmi_init_last(struct gpmi_nand_data *=
-this)
-> >  	struct bch_geometry *bch_geo =3D &this->bch_geometry;
-> >  	int ret;
-> > =20
-> > -	/* Set up swap_block_mark, must be set before the gpmi_set_geometry()=
- */
-> > -	this->swap_block_mark =3D !GPMI_IS_MX23(this);
-> > -
-> >  	/* Set up the medium geometry */
-> >  	ret =3D gpmi_set_geometry(this);
-> >  	if (ret)
-> > @@ -1701,6 +1698,13 @@ static int gpmi_nand_init(struct gpmi_nand_data =
-*this)
-> >  	if (of_get_nand_on_flash_bbt(this->dev->of_node))
-> >  		chip->bbt_options |=3D NAND_BBT_USE_FLASH | NAND_BBT_NO_OOB;
-> > =20
-> > +	/* Set up swap_block_mark, must be set before the gpmi_set_geometry()=
- */
-> > +	if (!of_property_read_bool(this->dev->of_node, "fsl,no-blockmark-swap=
-"))
-> > +		this->swap_block_mark =3D !GPMI_IS_MX23(this);
->=20
-> the code should like this:
-> ----------------------------------------------
-> 	this->swap_block_mark =3D !GPMI_IS_MX23(this);
->=20
-> 	if (!GPMI_IS_IMX23(this) && !GPMI_IS_MX28(this) &&
+>Fetch platform specific data from Device Tree. Any functions which
+>are useful to other STM NAND Controllers have been separated into a
+>separate file so they can be easily referenced by them as they
+>appear.
 >
-the !GPMI_IS_MX23() is redundant here as i.MX23 will always have
-swap_block_mark =3D=3D false.
-I would rather add a dependency on nand-on-flash-bbt as a
-prerequisite for not checking the BB marks in each block.
+>Signed-off-by: Lee Jones <lee.jones@linaro.org>
+>---
+[...]
 
-> > +
-> > +	dev_dbg(this->dev, "Blockmark swapping %sabled\n",
-> > +		this->swap_block_mark ? "en" : "dis");
-> > +
-> >  	/*
-> >  	 * Allocate a temporary DMA buffer for reading ID in the
-> >  	 * nand_scan_ident().
->=20
-> There are some bugs in the gpmi driver which is caused by the assumption =
-that
-> we always enable the swapping except the imx23.=20
->=20
-> So, there are some places should be changed with this patch:
->    [1] the subpage hook,
->         Please also change the gpmi_ecc_read_subpage() too.
->=20
->    [2] the OOB hook,
->    	Please also change the gpmi_ecc_read_oob().=20
->=20
->    [3] the markbad hook,
->    	Please also change the gpmi_block_markbad() .=20
->=20
-OK, I'll check that.
+>--- a/drivers/mtd/nand/stm_nand_bch.c
+>+++ b/drivers/mtd/nand/stm_nand_bch.c
+>@@ -16,6 +16,7 @@
+> #include <linux/module.h>
+> #include <linux/delay.h>
+> #include <linux/io.h>
+>+#include <linux/of.h>
+> #include <linux/clk.h>
+> #include <linux/interrupt.h>
+> #include <linux/device.h>
+>@@ -23,8 +24,10 @@
+> #include <linux/completion.h>
+> #include <linux/mtd/nand.h>
+> #include <linux/mtd/stm_nand.h>
+>+#include <linux/mtd/partitions.h>
+>
+> #include "stm_nand_regs.h"
+>+#include "stm_nand_dt.h"
+>
+> /* Bad Block Table (BBT) */
+> struct nandi_bbt_info {
+>@@ -365,9 +368,51 @@ nandi_init_resources(struct platform_device *pdev)
+> 	return nandi;
+> }
+>
+>+#ifdef CONFIG_OF
+>+static void *stm_bch_dt_get_pdata(struct platform_device *pdev)
+>+{
+>+	struct device_node *np =3D pdev->dev.of_node;
+>+	struct stm_plat_nand_bch_data *pdata;
+>+	const char *ecc_config;
+>+	int ret;
+>+
+>+	pdata =3D devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
+>+	if (!pdata)
+>+		return ERR_PTR(-ENOMEM);
+>+
+>+	of_property_read_string(np, "st,bch-ecc-mode", &ecc_config);
+
+Can you use any of the existing generic NAND bindings like combination of
+"nand-ecc-mode" and "nand-ecc-strength" ?
+Example: nand-ecc-mode =3D "bch" & nand-ecc-strength=3D18
+Some of generic bindings are recently added
+	commit 8dd49165ef5f46b5ad9ba296c559ccff315f9421  (currently in l2-mtd tree=
+)
+	mtd: nand: Add a devicetree binding for ECC strength and ECC step size
+
+It's good to use generic bindings as much as you can, and you don't need
+any approvals from DT Maintainers too. Though you may need to add
+new values for "nand-ecc-mode" like {auto, hw-ham, hw-bch}
+=20
+
+>+	if (!strcmp("noecc", ecc_config))
+>+		pdata->bch_ecc_cfg =3D BCH_NO_ECC;
+>+	else if (!strcmp("18bit", ecc_config))
+>+		pdata->bch_ecc_cfg =3D BCH_18BIT_ECC;
+>+	else if (!strcmp("30bit", ecc_config))
+>+		pdata->bch_ecc_cfg =3D BCH_30BIT_ECC;
+>+	else
+>+		pdata->bch_ecc_cfg =3D BCH_ECC_AUTO;
+>+
+>+	ret =3D stm_of_get_nand_banks(&pdev->dev, np, &pdata->bank);
+>+	if (ret < 0)
+>+		return ERR_PTR(ret);
+>+
+>+	pdata->flashss =3D of_property_read_bool(np, "st,nand-flashss");
+>+
+>+	of_property_read_u32(np, "st,bch-bitflip-threshold",
+>+			     &pdata->bch_bitflip_threshold);
+>+
+mtd->bitflip_threshold is by default set to ecc.strength (unless a driver i=
+nitializes it).
+And then can be re-configured for each MTD partition separately=20
+	/sys/class/mtd/mtdX/bitflip_threshold
+	Refer: $kernel/Documentation/ABI/testing/sysfs-class-mtd
+So, I don't think this is a HW parameter, and so should not be passed from =
+DT.
 
 
-Lothar Wa=C3=9Fmann
---=20
-___________________________________________________________
+>+	return pdata;
+>+}
+>+#else
 
-Ka-Ro electronics GmbH | Pascalstra=C3=9Fe 22 | D - 52076 Aachen
-Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
-Gesch=C3=A4ftsf=C3=BChrer: Matthias Kaussen
-Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
+[...]
 
-www.karo-electronics.de | info@karo-electronics.de
-___________________________________________________________
+>+struct device_node *stm_of_get_partitions_node(struct device_node *np,
+>+					       int bank_nr)
+>+{
+>+	struct device_node *banksnp, *banknp, *partsnp =3D NULL;
+>+	char name[10];
+>+
+>+	banksnp =3D of_parse_phandle(np, "st,nand-banks", 0);
+>+	if (!banksnp)
+>+		return NULL;
+>+
+>+	sprintf(name, "bank%d", bank_nr);
+>+	banknp =3D of_get_child_by_name(banksnp, name);
+>+	if (banknp)
+>+		return NULL;
+>+
+>+	partsnp =3D of_get_child_by_name(banknp, "partitions");
+>+	of_node_put(banknp);
+>+
+Sorry, I'm bit confused here .. I think you don't need to find children of
+Your bank node. This should already taken care in default parser
+drivers/mtd/ofpart.c : parse_ofpart_partitions()
+And all you need to pass is 'of_node' of bank (device).
+Is my understanding correct ?
+
+>+	return partsnp;
+>+}
+>+EXPORT_SYMBOL(stm_of_get_partitions_node);
+>+
+
+
+with regards, pekon
