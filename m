@@ -1,20 +1,20 @@
-Received: from mail-wi0-f170.google.com ([209.85.212.170])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSqsX-0008TJ-AF
- for linux-mtd@lists.infradead.org; Wed, 26 Mar 2014 16:40:38 +0000
-Received: by mail-wi0-f170.google.com with SMTP id bs8so4778629wib.1
- for <linux-mtd@lists.infradead.org>; Wed, 26 Mar 2014 09:40:14 -0700 (PDT)
+Received: from mail-wi0-f171.google.com ([209.85.212.171])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WSqsK-0004Yh-Kc
+ for linux-mtd@lists.infradead.org; Wed, 26 Mar 2014 16:40:41 +0000
+Received: by mail-wi0-f171.google.com with SMTP id hr14so3399808wib.4
+ for <linux-mtd@lists.infradead.org>; Wed, 26 Mar 2014 09:40:03 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 12/15] mtd: st_spi_fsm: Update Spansion device entries
-Date: Wed, 26 Mar 2014 16:39:26 +0000
-Message-Id: <1395851969-13520-13-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 07/15] mtd: st_spi_fsm: Extend fsm_clear_fifo to handle
+ unwanted bytes
+Date: Wed, 26 Mar 2014 16:39:21 +0000
+Message-Id: <1395851969-13520-8-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1395851969-13520-1-git-send-email-lee.jones@linaro.org>
 References: <1395851969-13520-1-git-send-email-lee.jones@linaro.org>
-Cc: angus.clark@st.com, kernel@stlinux.com,
- Carmelo Amoroso <carmelo.amoroso@st.com>, linux-mtd@lists.infradead.org,
- computersforpeace@gmail.com, lee.jones@linaro.org
+Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ lee.jones@linaro.org, kernel@stlinux.com, angus.clark@st.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,66 +26,187 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Angus Clark <angus.clark@st.com>
 
-This patch updates various Spansion device entries in the flash_types[] table:
-  - Define full 6-byte READIDs for S25FL128Sx devices (and fix the 4th
-    byte). This allows us to differentiate between S25FL129P and S25FL128S
-    devices.
-  - Add S25FL128Px device entries.
+Under certain conditions, the SPI-FSM Controller can be left in a state where
+the data FIFO is not entirely empty.  This can lead to problems where subsequent
+data transfers appear to have been shifted by a number of unidentified bytes.
+
+One simple example would be an errant FSM sequence which loaded more data to the
+FIFO than was read by the host.  Another more interesting case results from an
+obscure artefact in the FSM Controller.  When switching from data transfers in
+x4 or x2 mode to data transfers in x1 mode, extraneous bytes will appear in the
+FIFO, unless the previous data transfer was a multiple of 32 cycles (i.e. 8
+bytes for x2, and 16 bytes for x4).  This applies equally whether FSM is being
+operated directly by a S/W driver, or by the SPI boot-controller in FSM-Boot
+mode.  Furthermore, data in the FIFO not only survive a transition between
+FSM-Boot and FSM, but also a S/W reset of IP block [1].
+
+By taking certain precautions, it is possible to prevent the driver from causing
+this type of problem (e.g. ensuring that the host and programmed sequence
+agree on the transfer size, and restricting transfer sizes to multiples of
+32-cycles [2]).  However, at the point the driver is loaded, no assumptions can be
+made regarding the state of the FIFO.  Even if previous S/W drivers have behaved
+correctly, it is impossible to control the number of transactions serviced by
+the controller operating in FSM-Boot.
+
+To address this problem, we ensure the FIFO is cleared during initialisation,
+before performing any FSM operations.  Previously, the fsm_clear_fifo() code was
+capable of detecting and clearing any unwanted 32-bit words from the FIFO.  This
+patch extends the capability to handle an arbitrary number of bytes present in
+the FIFO [3].  Now that the issue is better understood, we also remove the calls
+to fsm_clear_fifo() following the fsm_read() and fsm_write() operations.
+
+The process of actually clearing the FIFO deserves a mention.  While the FIFO
+may contain any number of bytes, the SPI_FAST_SEQ_STA register only reports the
+number of complete 32-bit words present.  Furthermore, data can only be drained
+from the FIFO by reading complete 32-bit words.  With this in mind, a two stage
+process is used to the clear the FIFO:
+
+    1. Read any complete 32-bit words from the FIFO, as reported by the
+           SPI_FAST_SEQ_STA register.
+
+    2. Mop up any remaining bytes.  At this point, it is not known if there
+           are 0, 1, 2, or 3 bytes in the FIFO.  To handle all cases, a dummy
+           FSM sequence is used to load one byte at a time, until a complete
+           32-bit word is formed; at most, 4 bytes will need to be loaded.
+
+[1] Although this issue has existed since early versions of the SPI-FSM
+    controller, its full extent only emerged recently as a consequence of the
+    targetpacks starting to use FSM-Boot(x4) as the default configuration.
+
+[2] The requirement to restrict transfers to multiples of 32 cycles was found
+    empirically back when DUAL and QUAD mode support was added.  The current
+    analysis now gives a satisfactory explanation for this requirement.
+
+[3] Theoretically, it is possible for the FIFO to contain an arbitrary number of
+    bits.  However, since there are no known use-cases that leave incomplete
+    bytes in the FIFO, only words and bytes are considered here.
 
 Signed-off-by: Angus Clark <angus.clark@st.com>
-Signed-off-by: Carmelo Amoroso <carmelo.amoroso@st.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/devices/st_spi_fsm.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+ drivers/mtd/devices/st_spi_fsm.c | 96 +++++++++++++++++++++++++++++++++-------
+ 1 file changed, 80 insertions(+), 16 deletions(-)
 
 diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index ced7dca..a223d8a 100644
+index 8c56b94..9df59e7 100644
 --- a/drivers/mtd/devices/st_spi_fsm.c
 +++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -480,6 +480,7 @@ static struct flash_info flash_types[] = {
- 	/*
- 	 * Spansion S25FLxxxP
- 	 *     - 256KiB and 64KiB sector variants (identified by ext. JEDEC)
-+	 *     - S25FL128Px devices do not support DUAL or QUAD I/O
- 	 */
- #define S25FLXXXP_FLAG (FLASH_FLAG_READ_WRITE  |	\
- 			FLASH_FLAG_READ_1_1_2   |	\
-@@ -490,6 +491,12 @@ static struct flash_info flash_types[] = {
- 			FLASH_FLAG_READ_FAST)
- 	RDID_INFO("s25fl032p", RDID({0x01, 0x02, 0x15, 0x4d, 0x00}), 5,
- 		  64 * 1024,  64, S25FLXXXP_FLAG, 80, stfsm_s25fl_config),
-+	RDID_INFO("s25fl128p1", RDID({0x01, 0x20, 0x18, 0x03, 0x00}), 5,
-+		  256 * 1024, 64,
-+		  (FLASH_FLAG_READ_WRITE | FLASH_FLAG_READ_FAST), 104, NULL),
-+	RDID_INFO("s25fl128p0", RDID({0x01, 0x20, 0x18, 0x03, 0x01}), 5,
-+		  64 * 1024, 256,
-+		  (FLASH_FLAG_READ_WRITE | FLASH_FLAG_READ_FAST), 104, NULL),
- 	RDID_INFO("s25fl129p0", RDID({0x01, 0x20, 0x18, 0x4d, 0x00}), 5,
- 		  256 * 1024,  64, S25FLXXXP_FLAG, 80, stfsm_s25fl_config),
- 	RDID_INFO("s25fl129p1", RDID({0x01, 0x20, 0x18, 0x4d, 0x01}), 5,
-@@ -503,17 +510,18 @@ static struct flash_info flash_types[] = {
- 	 *       so this information is captured in the board's flags.
- 	 *     - Supports 'DYB' sector protection. Depending on variant, sectors
- 	 *       may default to locked state on power-on.
-+	 *     - S25FL127Sx handled as S25FL128Sx
- 	 */
- #define S25FLXXXS_FLAG (S25FLXXXP_FLAG         |	\
- 			FLASH_FLAG_RESET        |	\
- 			FLASH_FLAG_DYB_LOCKING)
--	RDID_INFO("s25fl128s0", RDID({0x01, 0x20, 0x18, 0x03, 0x00}), 5,
-+	RDID_INFO("s25fl128s0", RDID({0x01, 0x20, 0x18, 0x4d, 0x00, 0x80}), 6,
- 		  256 * 1024, 64, S25FLXXXS_FLAG, 80, stfsm_s25fl_config),
--	RDID_INFO("s25fl128s1", RDID({0x01, 0x20, 0x18, 0x03, 0x01}), 5,
-+	RDID_INFO("s25fl128s1", RDID({0x01, 0x20, 0x18, 0x4d, 0x01, 0x80}), 6,
- 		  64 * 1024, 256, S25FLXXXS_FLAG, 80, stfsm_s25fl_config),
--	RDID_INFO("s25fl256s0", RDID({0x01, 0x02, 0x19, 0x4d, 0x00}), 5,
-+	RDID_INFO("s25fl256s0", RDID({0x01, 0x02, 0x19, 0x4d, 0x00, 0x80}), 6,
- 		  256 * 1024, 128, S25FLXXXS_FLAG, 80, stfsm_s25fl_config),
--	RDID_INFO("s25fl256s1", RDID({0x01, 0x02, 0x19, 0x4d, 0x01}), 5,
-+	RDID_INFO("s25fl256s1", RDID({0x01, 0x02, 0x19, 0x4d, 0x01, 0x80}), 6,
- 		  64 * 1024, 512, S25FLXXXS_FLAG, 80, stfsm_s25fl_config),
+@@ -698,6 +698,23 @@ static struct stfsm_seq stfsm_seq_write_status = {
+ 		    SEQ_CFG_STARTSEQ),
+ };
  
- #define W25X_FLAG (FLASH_FLAG_READ_WRITE       |	\
++/* Dummy sequence to read one byte of data from flash into the FIFO */
++static const struct stfsm_seq stfsm_seq_load_fifo_byte = {
++	.data_size = TRANSFER_SIZE(1),
++	.seq_opc[0] = (SEQ_OPC_PADS_1 |
++		       SEQ_OPC_CYCLES(8) |
++		       SEQ_OPC_OPCODE(FLASH_CMD_RDID)),
++	.seq = {
++		STFSM_INST_CMD1,
++		STFSM_INST_DATA_READ,
++		STFSM_INST_STOP,
++	},
++	.seq_cfg = (SEQ_CFG_PADS_1 |
++		    SEQ_CFG_READNOTWRITE |
++		    SEQ_CFG_CSDEASSERT |
++		    SEQ_CFG_STARTSEQ),
++};
++
+ static int stfsm_n25q_en_32bit_addr_seq(struct stfsm_seq *seq)
+ {
+ 	seq->seq_opc[0] = (SEQ_OPC_PADS_1 | SEQ_OPC_CYCLES(8) |
+@@ -730,22 +747,6 @@ static inline uint32_t stfsm_fifo_available(struct stfsm *fsm)
+ 	return (readl(fsm->base + SPI_FAST_SEQ_STA) >> 5) & 0x7f;
+ }
+ 
+-static void stfsm_clear_fifo(struct stfsm *fsm)
+-{
+-	uint32_t avail;
+-
+-	for (;;) {
+-		avail = stfsm_fifo_available(fsm);
+-		if (!avail)
+-			break;
+-
+-		while (avail) {
+-			readl(fsm->base + SPI_FAST_SEQ_DATA_REG);
+-			avail--;
+-		}
+-	}
+-}
+-
+ static inline void stfsm_load_seq(struct stfsm *fsm,
+ 				  const struct stfsm_seq *seq)
+ {
+@@ -807,6 +808,69 @@ static void stfsm_read_fifo(struct stfsm *fsm, uint32_t *buf, uint32_t size)
+ 	}
+ }
+ 
++/*
++ * Clear the data FIFO
++ *
++ * Typically, this is only required during driver initialisation, where no
++ * assumptions can be made regarding the state of the FIFO.
++ *
++ * The process of clearing the FIFO is complicated by fact that while it is
++ * possible for the FIFO to contain an arbitrary number of bytes [1], the
++ * SPI_FAST_SEQ_STA register only reports the number of complete 32-bit words
++ * present.  Furthermore, data can only be drained from the FIFO by reading
++ * complete 32-bit words.
++ *
++ * With this in mind, a two stage process is used to the clear the FIFO:
++ *
++ *     1. Read any complete 32-bit words from the FIFO, as reported by the
++ *        SPI_FAST_SEQ_STA register.
++ *
++ *     2. Mop up any remaining bytes.  At this point, it is not known if there
++ *        are 0, 1, 2, or 3 bytes in the FIFO.  To handle all cases, a dummy FSM
++ *        sequence is used to load one byte at a time, until a complete 32-bit
++ *        word is formed; at most, 4 bytes will need to be loaded.
++ *
++ * [1] It is theoretically possible for the FIFO to contain an arbitrary number
++ *     of bits.  However, since there are no known use-cases that leave
++ *     incomplete bytes in the FIFO, only words and bytes are considered here.
++ */
++static void stfsm_clear_fifo(struct stfsm *fsm)
++{
++	const struct stfsm_seq *seq = &stfsm_seq_load_fifo_byte;
++	uint32_t words;
++	int i;
++
++	/* 1. Clear any 32-bit words */
++	words = stfsm_fifo_available(fsm);
++	if (words) {
++		for (i = 0; i < words; i++)
++			readl(fsm->base + SPI_FAST_SEQ_DATA_REG);
++		dev_dbg(fsm->dev, "cleared %d words from FIFO\n", words);
++	}
++
++	/*
++	 * 2. Clear any remaining bytes
++	 *    - Load the FIFO, one byte at a time, until a complete 32-bit word
++	 *      is available.
++	 */
++	for (i = 0, words = 0; i < 4 && !words; i++) {
++		stfsm_load_seq(fsm, seq);
++		stfsm_wait_seq(fsm);
++		words = stfsm_fifo_available(fsm);
++	}
++
++	/*    - A single word must be available now */
++	if (words != 1) {
++		dev_err(fsm->dev, "failed to clear bytes from the data FIFO\n");
++		return;
++	}
++
++	/*    - Read the 32-bit word */
++	readl(fsm->base + SPI_FAST_SEQ_DATA_REG);
++
++	dev_dbg(fsm->dev, "cleared %d byte(s) from the data FIFO\n", 4 - i);
++}
++
+ static int stfsm_write_fifo(struct stfsm *fsm, uint32_t *buf, uint32_t size)
+ {
+ 	uint32_t words = size >> 2;
 -- 
 1.8.3.2
