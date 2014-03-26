@@ -1,19 +1,27 @@
-Received: from mail-lb0-x22f.google.com ([2a00:1450:4010:c04::22f])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSj6h-0006OF-Dz
- for linux-mtd@lists.infradead.org; Wed, 26 Mar 2014 08:22:44 +0000
-Received: by mail-lb0-f175.google.com with SMTP id w7so1196518lbi.20
- for <linux-mtd@lists.infradead.org>; Wed, 26 Mar 2014 01:22:20 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <558570e7e38747ba93d4e2617feb14cd@SERVER75.skov.com>
-References: <558570e7e38747ba93d4e2617feb14cd@SERVER75.skov.com>
-Date: Wed, 26 Mar 2014 09:22:17 +0100
-Message-ID: <CAAQYJAuvwnE_mxMU0phiupTUP1P3X0WNYx7FQk+3Eqe6t-YVSg@mail.gmail.com>
-Subject: Re: Near full problem (old version)
-From: Andrea Adami <andrea.adami@gmail.com>
-To: Karsten Jeppesen <kjp@skov.dk>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Wed, 26 Mar 2014 09:51:56 +0100
+From: Lothar =?UTF-8?B?V2HDn21hbm4=?= <LW@KARO-electronics.de>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCHv2 1/1] mtd: gpmi: make blockmark swapping optional
+Message-ID: <20140326095156.3e5585b8@ipc1.ka-ro>
+In-Reply-To: <20140324095902.GB11377@localhost>
+References: <532BCFCC.4080205@freescale.com>
+ <1395399017-19005-1-git-send-email-LW@KARO-electronics.de>
+ <20140324095902.GB11377@localhost>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Fabio Estevam <fabio.estevam@freescale.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Russell King <linux@arm.linux.org.uk>, Pawel Moll <pawel.moll@arm.com>,
+ Arnd Bergmann <arnd@arndb.de>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
+ Shawn Guo <shawn.guo@freescale.com>, Rob Landley <rob@landley.net>,
+ Kumar Gala <galak@codeaurora.org>, Shawn Guo <shawn.guo@linaro.org>,
+ David Woodhouse <dwmw2@infradead.org>, Sascha Hauer <kernel@pengutronix.de>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,66 +31,120 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Mar 24, 2014 at 8:08 AM, Karsten Jeppesen <kjp@skov.dk> wrote:
-> Hi Guys,
+Hi,
+
+Huang Shijie wrote:
+> On Fri, Mar 21, 2014 at 11:50:17AM +0100, Lothar Wa=C3=9Fmann wrote:
+> > With a flash-based BBT there is no reason to move the Factory Bad
+> > Block Marker from the data area buffer (to where it is mapped by the
+> > GPMI NAND controller) to the OOB buffer. Thus, make this feature
+> > configurable via DT. This is required for the Ka-Ro electronics
+> > platforms.
+> >=20
+> > Signed-off-by: Lothar Wa=C3=9Fmann <LW@KARO-electronics.de>
+> > ---
+> >  Documentation/devicetree/bindings/mtd/gpmi-nand.txt |    3 +++
+> >  drivers/mtd/nand/gpmi-nand/gpmi-nand.c              |   10 +++++++---
+> >  2 files changed, 10 insertions(+), 3 deletions(-)
+> >=20
+> > diff --git a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt b/Docu=
+mentation/devicetree/bindings/mtd/gpmi-nand.txt
+> > index 458d596..f28949a 100644
+> > --- a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
+> > +++ b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
+> > @@ -25,6 +25,9 @@ Optional properties:
+> >                         discoverable or this property is not enabled,
+> >                         the software may chooses an implementation-defi=
+ned
+> >                         ECC scheme.
+> > +  - fsl,no-blockmark-swap: Don't swap the bad block marker from the OOB
+> > +                       area with the byte in the data area but rely on=
+ the
+> > +                       BBT for identifying bad blocks.
+>=20
+> Please add the following:
+>        "NOTE: This property is not supported by the imx23 and imx28"
 >
-> I've been using UBIFS for a long time now. Needless to say it works very well.
-> However as every corner of such embedded solutions tend to fill up I am faced with a grave problem that I don't know how to get around:
+I don't see why this should not be supported on i.MX28 (i.MX23 doesn't
+do byteswapping anyway, so this wouldn't change anything for i.MX23).
+The partitions used by Linux need not necessarily be accessible for the
+Boot ROM code (and vice versa).
+
+> >  The device tree may optionally contain sub-nodes describing partitions=
+ of the
+> >  address space. See partition.txt for more detail.
+> > diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/=
+gpmi-nand/gpmi-nand.c
+> > index bb77f75..98562eb 100644
+> > --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> > +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> > @@ -1632,9 +1632,6 @@ static int gpmi_init_last(struct gpmi_nand_data *=
+this)
+> >  	struct bch_geometry *bch_geo =3D &this->bch_geometry;
+> >  	int ret;
+> > =20
+> > -	/* Set up swap_block_mark, must be set before the gpmi_set_geometry()=
+ */
+> > -	this->swap_block_mark =3D !GPMI_IS_MX23(this);
+> > -
+> >  	/* Set up the medium geometry */
+> >  	ret =3D gpmi_set_geometry(this);
+> >  	if (ret)
+> > @@ -1701,6 +1698,13 @@ static int gpmi_nand_init(struct gpmi_nand_data =
+*this)
+> >  	if (of_get_nand_on_flash_bbt(this->dev->of_node))
+> >  		chip->bbt_options |=3D NAND_BBT_USE_FLASH | NAND_BBT_NO_OOB;
+> > =20
+> > +	/* Set up swap_block_mark, must be set before the gpmi_set_geometry()=
+ */
+> > +	if (!of_property_read_bool(this->dev->of_node, "fsl,no-blockmark-swap=
+"))
+> > +		this->swap_block_mark =3D !GPMI_IS_MX23(this);
+>=20
+> the code should like this:
+> ----------------------------------------------
+> 	this->swap_block_mark =3D !GPMI_IS_MX23(this);
+>=20
+> 	if (!GPMI_IS_IMX23(this) && !GPMI_IS_MX28(this) &&
 >
-> We are talking about the 2.6.32 kernel backport but the problem may be general anyway.
-> I am formatting the NOR FLASH, then populating it.
-> At the end of populating the FLASH I am reaching 100% fill and I can actually see UBIFS packing the file system, in the end reaching 93%.
-> "umount" and "detach" both returns ok, but once the target has been powered off and then powers on again, the UBIFS suddenly reports errors where none were before:
->
->  [   38.100000] UBIFS error (pid 1935): ubifs_read_node: bad node type (255 but expected 1)
-> [   38.140000] UBIFS error (pid 1935): ubifs_read_node: bad node at LEB 410:96096, LEB mapping status 0
-> [   38.140000] UBIFS error (pid 1935): do_readpage: cannot read page 0 of inode 3090, error -22
->  [   46.670000] UBIFS error (pid 2575): ubifs_read_node: bad node type (255 but expected 1)
-> [   46.700000] UBIFS error (pid 2575): ubifs_read_node: bad node at LEB 410:96096, LEB mapping status 0
-> [   46.700000] UBIFS error (pid 2575): do_readpage: cannot read page 0 of inode 3090, error -22
-> [   52.370000] UBIFS error (pid 2686): ubifs_read_node: bad node type (255 but expected 1)
-> [   52.410000] UBIFS error (pid 2686): ubifs_read_node: bad node at LEB 410:96096, LEB mapping status 0
-> [   52.410000] UBIFS error (pid 2686): do_readpage: cannot read page 0 of inode 3090, error -22
->
-> It looks like inserting delays after population does influence the problem, but as of now I have no real solution.
-> Can I somehow tell when UBI has ended repacking and is in a safe-to-poweroff state? (as detach is not the answer)
->
->
-> Med venlig hilsen / Sincerely yours,
->
-> Karsten Jeppesen, D.D.S;  Bsc. CS
-> Senior Software Engineer
-> Ext.: +45 72 17 56 69
-> Mobile phone: +45 25 66 00 23
-> ______________________________________
-> SKOV A/S
-> Hedelund 4, Glyngoere, 7870 Roslev, Denmark
-> Tel.: +45 72 17 55 55 - Fax: +45 72 17 59 59
-> www.skov.com
->
->
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+the !GPMI_IS_MX23() is redundant here as i.MX23 will always have
+swap_block_mark =3D=3D false.
+I would rather add a dependency on nand-on-flash-bbt as a
+prerequisite for not checking the BB marks in each block.
+
+> > +
+> > +	dev_dbg(this->dev, "Blockmark swapping %sabled\n",
+> > +		this->swap_block_mark ? "en" : "dis");
+> > +
+> >  	/*
+> >  	 * Allocate a temporary DMA buffer for reading ID in the
+> >  	 * nand_scan_ident().
+>=20
+> There are some bugs in the gpmi driver which is caused by the assumption =
+that
+> we always enable the swapping except the imx23.=20
+>=20
+> So, there are some places should be changed with this patch:
+>    [1] the subpage hook,
+>         Please also change the gpmi_ecc_read_subpage() too.
+>=20
+>    [2] the OOB hook,
+>    	Please also change the gpmi_ecc_read_oob().=20
+>=20
+>    [3] the markbad hook,
+>    	Please also change the gpmi_block_markbad() .=20
+>=20
+OK, I'll check that.
 
 
-I'm using more recent kernel and very old and small NOR and I see
-corruption after mount/umount cycles.
-Unfortunately I couldn't fully debug it, sometimes it repairs itself
-after more cycles...I suspect some race between the background
-threads.
+Lothar Wa=C3=9Fmann
+--=20
+___________________________________________________________
 
-I have some debug logs here on github:
-https://github.com/andrea-adami/collie-nor-flash/blob/master/debug-20140203/ubi-repair.txt
+Ka-Ro electronics GmbH | Pascalstra=C3=9Fe 22 | D - 52076 Aachen
+Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
+Gesch=C3=A4ftsf=C3=BChrer: Matthias Kaussen
+Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
 
-In my specific case, the definitive fixup is to disable both "Suspend
-erase on write" extp->FeatureSupport &= ~512;
-and "Simultaneous Operations" extp->SuspendCmdSupport &= ~1;
-
-Suboptimal but stable.
-
-Regards
-
-Andrea
+www.karo-electronics.de | info@karo-electronics.de
+___________________________________________________________
