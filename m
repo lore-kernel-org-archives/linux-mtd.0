@@ -1,26 +1,30 @@
-Received: from mail-wg0-f41.google.com ([74.125.82.41])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WT7Yb-0000zs-2v
- for linux-mtd@lists.infradead.org; Thu, 27 Mar 2014 10:29:10 +0000
-Received: by mail-wg0-f41.google.com with SMTP id n12so2369374wgh.24
- for <linux-mtd@lists.infradead.org>; Thu, 27 Mar 2014 03:28:44 -0700 (PDT)
-Date: Thu, 27 Mar 2014 10:28:35 +0000
-From: Lee Jones <lee.jones@linaro.org>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [RFC 00/47] mtd: nand: Add new driver supporting ST's BCH h/w
-Message-ID: <20140327102835.GA17779@lee--X1>
-References: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
- <20140325125050.GB665@arch.cereza> <20140325131139.GB24823@lee--X1>
- <20140325220045.GA12185@arch.cereza>
- <20140326072805.GB31517@norris-Latitude-E6410>
+Date: Thu, 27 Mar 2014 17:59:58 +0800
+From: Huang Shijie <b32955@freescale.com>
+To: Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
+Subject: Re: [PATCHv2 1/1] mtd: gpmi: make blockmark swapping optional
+Message-ID: <20140327095956.GA29623@localhost>
+References: <532BCFCC.4080205@freescale.com>
+ <1395399017-19005-1-git-send-email-LW@KARO-electronics.de>
+ <20140324095902.GB11377@localhost>
+ <20140326095156.3e5585b8@ipc1.ka-ro>
+ <5332AEE7.2040402@freescale.com>
+ <20140326125502.0e8d0657@ipc1.ka-ro>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20140326072805.GB31517@norris-Latitude-E6410>
-Cc: angus.clark@st.com, kernel@stlinux.com, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, pekon@ti.com,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, dwmw2@infradead.org,
+In-Reply-To: <20140326125502.0e8d0657@ipc1.ka-ro>
+Content-Transfer-Encoding: quoted-printable
+Cc: Fabio Estevam <fabio.estevam@freescale.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Russell King <linux@arm.linux.org.uk>, Pawel Moll <pawel.moll@arm.com>,
+ Arnd Bergmann <arnd@arndb.de>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
+ Shawn Guo <shawn.guo@freescale.com>, Rob Landley <rob@landley.net>,
+ Kumar Gala <galak@codeaurora.org>, Shawn Guo <shawn.guo@linaro.org>,
+ David Woodhouse <dwmw2@infradead.org>, Sascha Hauer <kernel@pengutronix.de>,
  linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -31,85 +35,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> > After taking a quick glance at the whole driver I noticed you have something
-> > strange going on. AFAIK, the typical NAND driver probe() should be one of
-> > these two:
-> > 
-> > * Call nand_scan() which calls nand_scan_ident() + nand_scan_tail().
-> > 
-> > * Call nand_scan_ident() to identify the NAND device geometry, do some
-> >   driver specific initialization, fill some hooks, and finally call
-> >   nand_scan_tail() to complete the initialization.
-> > 
-> > You driver call nand_scan_ident() and then does some bad block scan, and
-> > fills some callbacks on its own, but never calls nand_scan_tail().
-> > 
-> > The call to nand_scan_tail() would remove the need to export those NAND
-> > core functions, and remove the need to scan and print the bad blocks.
-> > I don't know if you have a real reason for not doing it this way, or
-> > maybe it's the way this driver was originally written.
-> > 
-> > Care to review this and re-spin the driver? You'll have a more nicer
-> > driver, and more framework-compliant.
-> 
-> A hearty +1 to this. You are avoiding much of the core of the NAND
-> framework by avoiding the nand_chip callbacks and nand_scan_tail(), and
-> by reimplementing the BBT. I will have to NAK to some of the patches
-> that EXPORT the nand_base private core (e.g., nand_get_device()), and I
-> will most likely NAK the custom BBT implementation (please improve
-> nand_bbt.c as needed).
+On Wed, Mar 26, 2014 at 12:55:02PM +0100, Lothar Wa=C3=9Fmann wrote:
+> Hi,
+>=20
+> Huang Shijie wrote:
+> > =E4=BA=8E 2014=E5=B9=B403=E6=9C=8826=E6=97=A5 16:51, Lothar Wa=C3=9Fm=
+ann =E5=86=99=E9=81=93:
+> > > I don't see why this should not be supported on i.MX28 (i.MX23 does=
+n't
+> > > do byteswapping anyway, so this wouldn't change anything for i.MX23=
+).
+> > > The partitions used by Linux need not necessarily be accessible for=
+ the
+> > > Boot ROM code (and vice versa).
+> > But the first partition used to store the u-boot is accessible for th=
+e ROM.
+> >=20
+> Whether this partition is available to Linux depends on the partition t=
+able
+> passed in the DT.
+yes, i agree.
 
-This is a good catch. I will attempt to reimplement the driver's
-initialisation steps to utilise more of the core infrastructure in an
-attempt to mitigate the requirement for exportation of private
-routines.
+But it is strange if we do not export this partition to Linux.
 
-The BBT requirements are somewhere more complex. To provide you with
-the complete picture, a little knowledge of driver history is
-required. When it was initially created the MTD core only supported
-OOB BBTs, but the ST BCH Controller doesn't support OOB access, so
-Angus wrote his on In-Band (IB) implementation. Unfortunately the IB
-support which _is_ now present in the kernel doesn't match the
-internal implementation. Normally this wouldn't be an issue in itself,
-but ST's boot-stack and tooling (Primary Bootloader, U-Boot, various
-Programmers, etc) are aware of the internal IB BTT and utilise it
-in varying ways. Shifting over to the Mainline version in
-one-foul-swoop _will_ cause lots of pain and will probably result in
-the disownership of driver we're trying to Mainline today. Naturally
-I'm keen to avoid this.
+>=20
+> > Please see "Figure 12-13" in the 12.12.1.12:
+> >    "In order to preserve the BI (bad block information), flash update=
+r=20
+> > or gang programmer
+> > applications need to swap Bad Block Information (BI) data to byte 0 o=
+f=20
+> > metadata area for
+> > every page before programming NAND Flash. ROM when loading firmware,=20
+> > copies back
+> > the value at metadata[0] to BI offset in page data. The following fig=
+ure=20
+> > shows how the
+> > factory bad block marker is preserved."
+> >=20
+> The inspection of the BB markers is only a fallback for the case that
+> there is no DBBT. From the same chapter that you quoted above:
+> | ROM uses DBBT to skip any bad block that falls within firmware data
+> | on NAND Flash device.
+> | If the address of DBBT Search Area in FCB is 0, ROM will rely on
+> | factory marked bad block markers to find out if a block is good or ba=
+d.
+>=20
+> Thus, even the boot ROM of i.MX28 can well live without blockmark
+> swapping.
 
-> > Also, if you plan to target v3.16 on this, I'd suggest that you pick
-> > some pack of features and submit those first, reducing the amount of code
-> > to be reviewed. For instance, you may choose to leave some of the ECC bits
-> > aside for now.
-> > 
-> > It's just a suggestion to get at least some of the code merged quicker,
-> > don't take me too seriously on this.
-> 
-> That's a possible approach if it still leaves your driver functional.
-> But I wouldn't trim the driver too much just for sake of reviewing.
-> 
-> BTW, why do you call this driver stm_nand_bch? BCH is a particular type
-> of ECC algorithm, not unique at all to ST's hardware. Can you drop the
-> _bch and make it just stm_nand?
+Assume that there is a NAND block "A",  and the A consist of 256 pages.
+the uboot is burned to the "A", can occupy 6 pages:
 
->From my knowledge (Angus feel free to jump in anywhere you like), ST
-have 4 NAND drivers. This is just one of them. The others are EMI,
-Flex and Advanced Flex (AFM). This particular controller is described
-as the BCH throughout ST's documentation. Much of this documentation is
-available freely online [1].
+  -----------------------------------------------------------------------=
+------
+ | page 0 |  page 1 | page 2 | page 3 | page 4 | page 5 | ... | ... | pag=
+e 255 |
+  -----------------------------------------------------------------------=
+------
+=20
+  \-------------------------------------- -------------------------------=
+-----/
+                                         V =20
+                                        "A"					=20
 
-> Also, you might want to change the
-> namespacing on some of your functions; for instance, I don't think you
-> can own the name bch_write(). Possibly prefix things with stm_* or
-> stm_nand_* where reasonable.
+The DBBT is used to track if "A" is bad or not.
+Assume we know that "A" is a good block, ROM then need to read out the ub=
+oot.
+When the ROM needs to read out the 6 pages one by one. And each time the =
+ROM read
+the page, it should do the swapping for this page.
 
-Yes, absolutely.
+In this case, the ROM will do the swapping six times.
 
-[1] http://www.stlinux.com/howto/NAND
+Please read the sector again, you will see the "every page" in it:
+--------------------------------------------------------------------
+   "In order to preserve the BI (bad block information), flash updater=20
+or gang programmer applications need to swap Bad Block Information (BI) d=
+ata to byte 0 of=20
+metadata area for every page before programming NAND Flash. ROM when load=
+ing firmware,=20
+copies back
+--------------------------------------------------------------------
 
--- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+thanks
+Huang Shijie
