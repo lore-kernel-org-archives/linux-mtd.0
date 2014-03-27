@@ -1,31 +1,23 @@
-Date: Thu, 27 Mar 2014 17:59:58 +0800
-From: Huang Shijie <b32955@freescale.com>
-To: Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
-Subject: Re: [PATCHv2 1/1] mtd: gpmi: make blockmark swapping optional
-Message-ID: <20140327095956.GA29623@localhost>
-References: <532BCFCC.4080205@freescale.com>
- <1395399017-19005-1-git-send-email-LW@KARO-electronics.de>
- <20140324095902.GB11377@localhost>
- <20140326095156.3e5585b8@ipc1.ka-ro>
- <5332AEE7.2040402@freescale.com>
- <20140326125502.0e8d0657@ipc1.ka-ro>
+Received: from mail-out.m-online.net ([212.18.0.9])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WT8TM-0002ix-8l
+ for linux-mtd@lists.infradead.org; Thu, 27 Mar 2014 11:27:50 +0000
+Date: Thu, 27 Mar 2014 12:27:22 +0100
+From: Gerhard Sittig <gsi@denx.de>
+To: "Gupta, Pekon" <pekon@ti.com>
+Subject: Re: [PATCH] mtd: nand: Add support for Micron on-die ECC controller
+ (rev2).
+Message-ID: <20140327112722.GQ3998@book.gsilab.sittig.org>
+References: <1395875121-9320-1-git-send-email-davidm@egauge.net>
+ <20980858CB6D3A4BAE95CA194937D5E73EAB5F84@DBDE04.ent.ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20140326125502.0e8d0657@ipc1.ka-ro>
-Content-Transfer-Encoding: quoted-printable
-Cc: Fabio Estevam <fabio.estevam@freescale.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Russell King <linux@arm.linux.org.uk>, Pawel Moll <pawel.moll@arm.com>,
- Arnd Bergmann <arnd@arndb.de>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
- Shawn Guo <shawn.guo@freescale.com>, Rob Landley <rob@landley.net>,
- Kumar Gala <galak@codeaurora.org>, Shawn Guo <shawn.guo@linaro.org>,
- David Woodhouse <dwmw2@infradead.org>, Sascha Hauer <kernel@pengutronix.de>,
- linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EAB5F84@DBDE04.ent.ti.com>
+Cc: David Mosberger <davidm@egauge.net>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,88 +27,253 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Mar 26, 2014 at 12:55:02PM +0100, Lothar Wa=C3=9Fmann wrote:
-> Hi,
->=20
-> Huang Shijie wrote:
-> > =E4=BA=8E 2014=E5=B9=B403=E6=9C=8826=E6=97=A5 16:51, Lothar Wa=C3=9Fm=
-ann =E5=86=99=E9=81=93:
-> > > I don't see why this should not be supported on i.MX28 (i.MX23 does=
-n't
-> > > do byteswapping anyway, so this wouldn't change anything for i.MX23=
-).
-> > > The partitions used by Linux need not necessarily be accessible for=
- the
-> > > Boot ROM code (and vice versa).
-> > But the first partition used to store the u-boot is accessible for th=
-e ROM.
-> >=20
-> Whether this partition is available to Linux depends on the partition t=
-able
-> passed in the DT.
-yes, i agree.
+thanks for adding me to Cc:
 
-But it is strange if we do not export this partition to Linux.
+On Thu, 2014-03-27 at 06:56 +0000, Gupta, Pekon wrote:
+> 
+> >From: linux-mtd [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of David Mosberger
+> >Subject: [PATCH] mtd: nand: Add support for Micron on-die ECC controller (rev2).
+> >
+> Sorry, I looked at this patch little lately.
+> But good, if you can keep $subject consistent, like using
+> prefix "[PATCH v2]"  instead of adding suffix "(rev2)".
 
->=20
-> > Please see "Figure 12-13" in the 12.12.1.12:
-> >    "In order to preserve the BI (bad block information), flash update=
-r=20
-> > or gang programmer
-> > applications need to swap Bad Block Information (BI) data to byte 0 o=
-f=20
-> > metadata area for
-> > every page before programming NAND Flash. ROM when loading firmware,=20
-> > copies back
-> > the value at metadata[0] to BI offset in page data. The following fig=
-ure=20
-> > shows how the
-> > factory bad block marker is preserved."
-> >=20
-> The inspection of the BB markers is only a fallback for the case that
-> there is no DBBT. From the same chapter that you quoted above:
-> | ROM uses DBBT to skip any bad block that falls within firmware data
-> | on NAND Flash device.
-> | If the address of DBBT Search Area in FCB is 0, ROM will rely on
-> | factory marked bad block markers to find out if a block is good or ba=
-d.
->=20
-> Thus, even the boot ROM of i.MX28 can well live without blockmark
-> swapping.
+David, "PATCH v2" (can be applied with --subject-prefix in the
+--format-patch invocation) has several benefits, reviewers
+clearly notice it's another iteration, and the irrelevant
+"(rev2)" won't clobber the commit message upon application
 
-Assume that there is a NAND block "A",  and the A consist of 256 pages.
-the uboot is burned to the "A", can occupy 6 pages:
+> >+static int
+> >+check_for_bitflips(struct mtd_info *mtd, struct nand_chip *chip, int page)
+> >+{
+> >+	int flips = 0, max_bitflips = 0, i, j, read_size;
+> >+	uint8_t *chkbuf, *rawbuf, *chkoob, *rawoob;
+> >+	uint32_t *eccpos;
+> >+
+> >+	chkbuf = chip->buffers->chkbuf;
+> >+	rawbuf = chip->buffers->rawbuf;
+> >+	read_size = mtd->writesize + mtd->oobsize;
+> >+
+> >+	/* Read entire page w/OOB area with on-die ECC on: */
+> >+	chip->read_buf(mtd, chkbuf, read_size);
+> 
+> This should have been called directly from nand_read_page_on_die()
 
-  -----------------------------------------------------------------------=
-------
- | page 0 |  page 1 | page 2 | page 3 | page 4 | page 5 | ... | ... | pag=
-e 255 |
-  -----------------------------------------------------------------------=
-------
-=20
-  \-------------------------------------- -------------------------------=
------/
-                                         V =20
-                                        "A"					=20
+given that there are questions and concerns raised, a comment in
+the source about the program flow (in the "good" and "corrected"
+and "beyond repair" cases) might be good
 
-The DBBT is used to track if "A" is bad or not.
-Assume we know that "A" is a good block, ROM then need to read out the ub=
-oot.
-When the ROM needs to read out the 6 pages one by one. And each time the =
-ROM read
-the page, it should do the swapping for this page.
+I'll respond to the "don't do this here" below
 
-In this case, the ROM will do the swapping six times.
+> >+static int check_read_status_on_die(struct mtd_info *mtd,
+> >+				    struct nand_chip *chip, int page)
+> >+{
+> >+	int max_bitflips = 0;
+> >+	uint8_t status;
+> >+
+> >+	/* Check ECC status of page just transferred into NAND's page buffer: */
+> >+	chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
+> >+	status = chip->read_byte(mtd);
+> >+
+> >+	/* Switch back to data reading: */
+> >+	chip->cmd_ctrl(mtd, NAND_CMD_READ0,
+> >+		       NAND_NCE | NAND_CLE | NAND_CTRL_CHANGE);
+> >+	chip->cmd_ctrl(mtd, NAND_CMD_NONE,
+> >+		       NAND_NCE | NAND_CTRL_CHANGE);
+> >+
+> >+	if (status & NAND_STATUS_FAIL) {
+> >+		/* Page has invalid ECC. */
+> >+		mtd->ecc_stats.failed++;
+> >+	} else if (status & NAND_STATUS_REWRITE) {
+> >+		/*
+> >+		 * The Micron chips turn on the REWRITE status bit for
+> >+		 * ANY bit flips.  Some pages have stuck bits, so we
+> >+		 * don't want to migrate a block just because of
+> >+		 * single bit errors because otherwise, that block
+> >+		 * would effectively become unusable.  So, work out in
+> >+		 * software what the max number of flipped bits is for
+> >+		 * all subpages in a page:
+> >+		 */
+> >+		max_bitflips = check_for_bitflips(mtd, chip, page);
+> >+	}
+> >+	return max_bitflips;
+> >+}
 
-Please read the sector again, you will see the "every page" in it:
---------------------------------------------------------------------
-   "In order to preserve the BI (bad block information), flash updater=20
-or gang programmer applications need to swap Bad Block Information (BI) d=
-ata to byte 0 of=20
-metadata area for every page before programming NAND Flash. ROM when load=
-ing firmware,=20
-copies back
---------------------------------------------------------------------
+a quick search even suggests that the REWRITE status bit need not
+be seen upon _any_ fixable ECC error, but might depend on an
+internal threshold (i.e. when this chip or a later model thinks
+that a data refresh might be due); this is an assumption, cannot
+tell whether it was verified
 
-thanks
-Huang Shijie
+http://lists.infradead.org/pipermail/linux-mtd/2012-November/044855.html
+
+it's a pity that the hardware won't tell how many bit errors were
+detected, and that you feel you have to do the dance of switching
+modes and reading raw data just to find this detail for yourself
+:(  this is a new quality in all the patches I have seen floating
+around
+
+
+> >+/**
+> >+ * nand_read_page_on_die - [INTERN] read raw page data without ecc
+> >+ * @mtd: mtd info structure
+> >+ * @chip: nand chip info structure
+> >+ * @buf: buffer to store read data
+> >+ * @oob_required: caller requires OOB data read to chip->oob_poi
+> >+ * @page: page number to read
+> >+ */
+> >+static int nand_read_page_on_die(struct mtd_info *mtd, struct nand_chip *chip,
+> >+				 uint8_t *buf, int oob_required, int page)
+> >+{
+> >+	uint32_t failed;
+> >+	int ret;
+> >+
+> >+	failed = mtd->ecc_stats.failed;
+> >+
+> 
+> This is the entry point of chip->ecc.read_page(),  So, your first call to ecc.read_buf
+> should have happened here, not in check_for_bitflips(). And you should have just
+> passed the read_buffer to for checking of bit-flips.
+> 
+> >+	ret = check_read_status_on_die(mtd, chip, page);
+> Also this should have been part of nand_chip->ecc.correct() interface.
+
+AFAIU the sequence of commands which the NAND chip requires
+doesn't quite map to the sequence of what the MTD layer does
+(emit the read command, read the data, optionally check ECC)
+
+when "on die ECC" is enabled, the chip requires a sequence of
+- read page command (READ0, addresses, READSTART)
+- status check (mandatory! cmd 70, to check FAIL and REWRITE bits)
+- re-enter data read mode (READ0, _without_ addresses and START)
+- fetch data bytes
+
+actually the READ0 plus READSTART does a transfer from the chip's
+array into the chip's caches, before data is fetched out of the
+chip into the SoC; the repeated READ0 does some kind of "rewind"
+from status output to data output, it doesn't re-read the array
+within the chip
+
+> 
+> >+	if (ret < 0 || mtd->ecc_stats.failed != failed) {
+> >+		memset(buf, 0, mtd->writesize);
+> 
+> This is not required, because if there are ECC failure (uncorrectable bit-flips)
+> then, nand_do_read_ops() will automatically convert it into -EBADMSG.
+> And then let above layers MTD, UBI determine what to do with the corrupted data.
+> Un-correctable bit-flips may be in those portions of  a page which do not
+> contain any data. Hence, you should not reset the buffer even for ECC failures.
+> 
+> Example: UBIFS erase-header and volume-id-headers occupy on first few
+> bytes of the page. And so UBIFS uses in-band CRC checks to see if its headers
+> have any corruption. Now, even if the NAND page had some uncorrectable
+> bit-flips, but those bit-flips do not affect the data of UBIFS headers,
+> then UBIFS just reads those pages and scrubs the block.
+
+that's a good hint, one might want to check the other ECC
+callback routines (I thought I saw that pattern elsewhere, but
+was working on a different kernel version)
+
+> >+		if (oob_required)
+> >+			memset(chip->oob_poi, 0, mtd->oobsize);
+>  -- same here --
+> 
+> >+		return ret;
+> >+	}
+> >+
+> >+	chip->read_buf(mtd, buf, mtd->writesize);
+> 
+> This is not correct. You first read the data, and then check for bit-flips.
+> You *don't* re-read the page again, because on re-read you may find
+> new bit-flips due to read-disturb errors, which were not accounted in
+> the earlier count. 
+> 
+> So, if you follow the below sequence..
+> (1) read buffer (with on-die ECC == ON)
+> (2) check for bit-flips (just pass the read_buffer)
+> (3) correct bit-flips (again just pass read_buffer)
+> Then probably you don't need this call, and you can re-use existing generic
+> NAND driver implementations.
+
+unfortunately this is not possible according to the chip's
+datasheet; even if you _evaluate_ the status only later, you have
+to _fetch_ it before the data, and thus do the command re-issue
+dance, and cannot use nand_command_lp() since it automatically
+does READSTART for READ0
+
+adding another pseudo command with high bits set and LSB 0x00
+might help (similar to deplete), then the common command routine
+can get re-used
+
+> >@@ -3956,6 +4184,25 @@ int nand_scan_tail(struct mtd_info *mtd)
+> > 		ecc->strength = ecc->bytes * 8 / fls(8 * ecc->size);
+> > 		break;
+> >
+> >+	case NAND_ECC_HW_ON_DIE:
+> >+		/* nand_bbt attempts to put Bbt marker at offset 8 in
+> >+		   oob, which is used for ECC by Micron
+> >+		   MT29F4G16ABADAWP, for example.  Fixed by not using
+> >+		   OOB for BBT marker.  */
+> >+		chip->bbt_options |= NAND_BBT_NO_OOB;
+> >+		chip->ecc.layout = &nand_oob_64_on_die;
+> >+		chip->ecc.read_page = nand_read_page_on_die;
+> >+		chip->ecc.read_subpage = nand_read_subpage_on_die;
+> >+		chip->ecc.write_page = nand_write_page_raw;
+> >+		chip->ecc.read_oob = nand_read_oob_std;
+> >+		chip->ecc.read_page_raw = nand_read_page_raw;
+> >+		chip->ecc.write_page_raw = nand_write_page_raw;
+> >+		chip->ecc.write_oob = nand_write_oob_std;
+> >+		chip->ecc.size = 512;
+> >+		chip->ecc.bytes = 8;
+> >+		chip->ecc.strength = 4;
+> >+		break;
+> >+
+
+I was wondering, have you seen an explicit discussion of how many
+data bytes to read and to write in read and program requests?  I
+missed this in the datasheet, neither found it in TN-29-56, but
+just might have been blind ...
+
+
+> >@@ -4023,8 +4270,13 @@ int nand_scan_tail(struct mtd_info *mtd)
+> > 	/* Invalidate the pagebuffer reference */
+> > 	chip->pagebuf = -1;
+> >
+> >-	/* Large page NAND with SOFT_ECC should support subpage reads */
+> >-	if ((ecc->mode == NAND_ECC_SOFT) && (chip->page_shift > 9))
+> >+	/*
+> >+	 * Large page NAND with SOFT_ECC or on-die ECC should support
+> >+	 * subpage reads.
+> >+	 */
+> >+	if (((ecc->mode == NAND_ECC_SOFT)
+> >+	     || (chip->ecc.mode == NAND_ECC_HW_ON_DIE))
+> >+	    && (chip->page_shift > 9))
+> > 		chip->options |= NAND_SUBPAGE_READ;
+> >
+> > 	/* Fill in remaining MTD driver data */
+
+this might apply to this specific model, but is it a general rule
+that chips with on-die-ECC will have subpage support?  and that
+we always want to use it?
+
+> Also, can include a link to public copy of the Micron device datasheet
+> which has on-die ECC feature. It would be helpful to understand your patch
+
+I don't have a link at hand, but the datasheet's footer reads
+"m60a_4gb_8gb_16gb_ecc_nand.pdf"
+
+searching for implementations, there's the "sketch" or outline in
+TN-29-56, but I haven't seen an official implementation from
+Micron yet, and all the floating patches appear to "be inspired
+by each other" if they are not identical (they all follow a
+certain scheme, and even use identical identifiers) -- would be
+nice to see some official reference, regardless of how much test
+an "arbitrary" external implementation has received
+
+
+virtually yours
+Gerhard Sittig
+-- 
+DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
+HRB 165235 Munich, Office: Kirchenstr. 5, D-82194 Groebenzell, Germany
+Phone: +49-8142-66989-0 Fax: +49-8142-66989-80  Email: office@denx.de
