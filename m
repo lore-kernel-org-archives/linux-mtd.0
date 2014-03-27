@@ -1,24 +1,22 @@
-Received: from mail-ve0-f177.google.com ([209.85.128.177])
+Received: from mail-ig0-x230.google.com ([2607:f8b0:4001:c05::230])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WTFzG-0007kr-NV
- for linux-mtd@lists.infradead.org; Thu, 27 Mar 2014 19:29:15 +0000
-Received: by mail-ve0-f177.google.com with SMTP id sa20so4597317veb.8
- for <linux-mtd@lists.infradead.org>; Thu, 27 Mar 2014 12:28:53 -0700 (PDT)
+ id 1WTJA3-0004Fq-Mt
+ for linux-mtd@lists.infradead.org; Thu, 27 Mar 2014 22:52:39 +0000
+Received: by mail-ig0-f176.google.com with SMTP id uy17so126485igb.15
+ for <linux-mtd@lists.infradead.org>; Thu, 27 Mar 2014 15:52:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20140327112722.GQ3998@book.gsilab.sittig.org>
-References: <1395875121-9320-1-git-send-email-davidm@egauge.net>
- <20980858CB6D3A4BAE95CA194937D5E73EAB5F84@DBDE04.ent.ti.com>
- <20140327112722.GQ3998@book.gsilab.sittig.org>
-Date: Thu, 27 Mar 2014 13:28:53 -0600
-Message-ID: <CALnQHM0PkQUQk0uYGBL3TwgWaComHfZNBxu1e45_FJK2i+TrbA@mail.gmail.com>
-Subject: Re: [PATCH] mtd: nand: Add support for Micron on-die ECC controller
- (rev2).
-From: David Mosberger <davidm@egauge.net>
-To: Gerhard Sittig <gsi@denx.de>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
- Pekon" <pekon@ti.com>, "dedekind1@gmail.com" <dedekind1@gmail.com>
+In-Reply-To: <20140327140140.GA9083@localhost>
+References: <20140327140140.GA9083@localhost>
+From: Bjorn Helgaas <bhelgaas@google.com>
+Date: Thu, 27 Mar 2014 16:51:53 -0600
+Message-ID: <CAErSpo7b+OJUoRcMY0edZPgEKG6DbwdLcq5M0-9B6JKALpm+QQ@mail.gmail.com>
+Subject: Re: [mtd/sbc_gxx] kernel BUG at include/linux/mtd/map.h:148!
+To: Fengguang Wu <fengguang.wu@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,131 +26,135 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Mar 27, 2014 at 5:27 AM, Gerhard Sittig <gsi@denx.de> wrote:
-> thanks for adding me to Cc:
+[+cc David, Brian]
+
+On Thu, Mar 27, 2014 at 8:01 AM, Fengguang Wu <fengguang.wu@intel.com> wrote:
+> FYI, here is a very old warning, too old to be bisected.
 >
-> On Thu, 2014-03-27 at 06:56 +0000, Gupta, Pekon wrote:
->>
->> >From: linux-mtd [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of David Mosberger
->> >Subject: [PATCH] mtd: nand: Add support for Micron on-die ECC controller (rev2).
->> >
->> Sorry, I looked at this patch little lately.
->> But good, if you can keep $subject consistent, like using
->> prefix "[PATCH v2]"  instead of adding suffix "(rev2)".
+> [    5.282127] sd 0:0:0:0: [sda] Write cache: enabled, read cache: enabled, supports DPO and FUA
+> [    5.286079] SBC-GXx flash: IO:0x258-0x259 MEM:0xdc000-0xdffff
+> [    5.288723] ------------[ cut here ]------------
+> [    5.289649] kernel BUG at include/linux/mtd/map.h:148!
+
+I think the problem is that your randconfig happens to have none of
+CONFIG_MTD_MAP_BANK_WIDTH_* set (you should have played the lottery
+today!), and the default implementation of map_bankwidth() in that
+case is just "BUG()":
+
+  $ grep MTD_MAP config-3.14.0-rc8-wl-03045-gdf16ea4
+  # CONFIG_MTD_MAP_BANK_WIDTH_1 is not set
+  # CONFIG_MTD_MAP_BANK_WIDTH_2 is not set
+  # CONFIG_MTD_MAP_BANK_WIDTH_4 is not set
+  # CONFIG_MTD_MAP_BANK_WIDTH_8 is not set
+  # CONFIG_MTD_MAP_BANK_WIDTH_16 is not set
+  # CONFIG_MTD_MAP_BANK_WIDTH_32 is not set
+
+I don't know enough Kconfig or MTD to fix this.
+
+> [    5.289649] invalid opcode: 0000 [#1] PREEMPT DEBUG_PAGEALLOC
+> [    5.289649] CPU: 0 PID: 1 Comm: swapper Not tainted 3.14.0-rc8-wl-03045-gdf16ea4 #6
+> [    5.289649] Hardware name: Bochs Bochs, BIOS Bochs 01/01/2011
+> [    5.289649] task: d1c48000 ti: d1c36000 task.ti: d1c36000
+> [    5.289649] EIP: 0060:[<c17982d8>] EFLAGS: 00010296 CPU: 0
+> [    5.289649] EIP is at mtd_do_chip_probe+0x15/0x17
+> [    5.289649] EAX: 00000000 EBX: c242bf28 ECX: 00000000 EDX: d1c37e88
+> [    5.289649] ESI: c2275f71 EDI: d1c37ec4 EBP: d1c37ec8 ESP: d1c37e88
+> [    5.289649]  DS: 007b ES: 007b FS: 0000 GS: 0000 SS: 0068
+> [    5.289649] CR0: 8005003b CR2: 00000000 CR3: 02556000 CR4: 000006f0
+> [    5.289649] Stack:
+> [    5.289649]  00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+> [    5.289649]  00000000 00000000 00000000 00000000 00000000 00000000 00000000 c242c500
+> [    5.289649]  d1c37ed0 c1794d3e d1c37ee4 c1794cf5 00000000 c24f0561 00000564 d1c37f04
+> [    5.289649] Call Trace:
+> [    5.289649]  [<c1794d3e>] cfi_probe+0xd/0xf
+> [    5.289649]  [<c1794cf5>] do_map_probe+0x50/0x66
+> [    5.289649]  [<c24f0561>] ? init_ck804xrom+0x37d/0x37d
+> [    5.289649]  [<c24f0649>] init_sbc_gxx+0xe8/0x123
+> [    5.289649]  [<c24b8b54>] do_one_initcall+0x80/0x107
+> [    5.289649]  [<c13e5049>] ? strlen+0xf/0x19
+> [    5.289649]  [<c24b8500>] ? repair_env_string+0xa/0x51
+> [    5.289649]  [<c1049aef>] ? parse_args+0x1bd/0x308
+> [    5.289649]  [<c1056a24>] ? __wake_up+0x3a/0x42
+> [    5.289649]  [<c24b8cd0>] kernel_init_freeable+0xf5/0x18c
+> [    5.289649]  [<c24b84f6>] ? do_early_param+0x78/0x78
+> [    5.289649]  [<c1e80009>] kernel_init+0xb/0xc2
+> [    5.289649]  [<c1051d85>] ? schedule_tail+0x12/0x3a
+> [    5.289649]  [<c1e93e3b>] ret_from_kernel_thread+0x1b/0x30
+> [    5.289649]  [<c1e7fffe>] ? rest_init+0x6e/0x6e
+> [    5.289649] Code: e9 1e fd ff ff c7 04 24 44 8e 30 c2 e8 df df 6e 00 e9 28 fb ff ff 55 31 c0 89 e5 b9 0f 00 00 00 8d 55 c0 57 89 d7 83 ec 3c f3 ab <0f> 0b 55 ba 90 c1 42 c2 89 e5 e8 dc ff ff ff 5d c3 55 89 e5 57
+> [    5.289649] EIP: [<c17982d8>] mtd_do_chip_probe+0x15/0x17 SS:ESP 0068:d1c37e88
+> [    5.425765] ---[ end trace ad16f43410cd0373 ]---
+> [    5.428287] swapper (1) used greatest stack depth: 5800 bytes left
 >
-> David, "PATCH v2" (can be applied with --subject-prefix in the
-> --format-patch invocation) has several benefits, reviewers
-> clearly notice it's another iteration, and the irrelevant
-> "(rev2)" won't clobber the commit message upon application
-
-OK, thanks for the tip!
-
-> a quick search even suggests that the REWRITE status bit need not
-> be seen upon _any_ fixable ECC error, but might depend on an
-> internal threshold (i.e. when this chip or a later model thinks
-> that a data refresh might be due); this is an assumption, cannot
-> tell whether it was verified
-
-That's correct.  Micron doesn't define that clearly, but we found that for the
-chip we used (MT29F4G16ABADAWP) the bit gets set for any ECC errors
-(and that behavior was confirmed by others on the linux-mtd list previously).
-
-> http://lists.infradead.org/pipermail/linux-mtd/2012-November/044855.html
+> git bisect  bad df16ea4de143a63d0f598003bde671cc277390e0  # 16:57      0-     25  0day head guard for 'devel-hourly-2014032612'
+> git bisect  bad b098d6726bbfb94c06d6e1097466187afddae61f  # 16:58      0-     20  Linux 3.14-rc8
+> git bisect  bad d8ec26d7f8287f5788a494f56e8814210f0e64be  # 16:58      0-     20  Linux 3.13
+> git bisect  bad 5e01dc7b26d9f24f39abace5da98ccbd6a5ceb52  # 16:58      0-     20  Linux 3.12
+> git bisect  bad 6e4664525b1db28f8c4e1130957f70a94c19213e  # 16:58      0-     20  Linux 3.11
+> git bisect  bad 8bb495e3f02401ee6f76d1b1d77f3ac9f079e376  # 16:58      0-     20  Linux 3.10
+> git bisect  bad c1be5a5b1b355d40e6cf79cc979eb66dafa24ad1  # 16:58      0-     20  Linux 3.9
+> git bisect  bad 19f949f52599ba7c3f67a5897ac6be14bfcb1200  # 16:58      0-     20  Linux 3.8
+> git bisect  bad 29594404d7fe73cd80eaa4ee8c43dcc53970c60e  # 16:59      0-     20  Linux 3.7
+> git bisect  bad a0d271cbfed1dd50278c6b06bead3d00ba0a88f9  # 16:59      0-     20  Linux 3.6
+> git bisect  bad 28a33cbc24e4256c143dce96c7d93bf423229f92  # 16:59      0-     20  Linux 3.5
+> git bisect  bad 76e10d158efb6d4516018846f60c2ab5501900bc  # 16:59      0-     20  Linux 3.4
+> git bisect  bad c16fa4f2ad19908a47c63d8fa436a1178438c7e7  # 16:59      0-     40  Linux 3.3
+> git bisect  bad 805a6af8dba5dfdd35ec35dc52ec0122400b2610  # 16:59      0-     20  Linux 3.2
+> git bisect  bad c3b92c8787367a8bb53d57d9789b558f1295cc96  # 16:59      0-     20  Linux 3.1
+> git bisect  bad 02f8c6aee8df3cdc935e9bdd4f2d020306035dbe  # 16:59      0-     20  Linux 3.0
 >
-> it's a pity that the hardware won't tell how many bit errors were
-> detected, and that you feel you have to do the dance of switching
-> modes and reading raw data just to find this detail for yourself
-> :(  this is a new quality in all the patches I have seen floating
-> around
-
-I agree.  I'm certainly not looking for extra work or creating needless
-complexity in the driver and at first was hoping that we could get away
-without having to count bitflips, but in the end, it was the only solution
-that worked correctly.  Without it, you'd end up rewriting blocks
-needlessly, making the problem only worse.
-
-> AFAIU the sequence of commands which the NAND chip requires
-> doesn't quite map to the sequence of what the MTD layer does
-> (emit the read command, read the data, optionally check ECC)
 >
-> when "on die ECC" is enabled, the chip requires a sequence of
-> - read page command (READ0, addresses, READSTART)
-> - status check (mandatory! cmd 70, to check FAIL and REWRITE bits)
-> - re-enter data read mode (READ0, _without_ addresses and START)
-> - fetch data bytes
+> This script may reproduce the error.
 >
-> actually the READ0 plus READSTART does a transfer from the chip's
-> array into the chip's caches, before data is fetched out of the
-> chip into the SoC; the repeated READ0 does some kind of "rewind"
-> from status output to data output, it doesn't re-read the array
-> within the chip
-
-That's correct.
-
->> >+    if (ret < 0 || mtd->ecc_stats.failed != failed) {
->> >+            memset(buf, 0, mtd->writesize);
->>
->> This is not required, because if there are ECC failure (uncorrectable bit-flips)
->> then, nand_do_read_ops() will automatically convert it into -EBADMSG.
->> And then let above layers MTD, UBI determine what to do with the corrupted data.
->> Un-correctable bit-flips may be in those portions of  a page which do not
->> contain any data. Hence, you should not reset the buffer even for ECC failures.
->>
->> Example: UBIFS erase-header and volume-id-headers occupy on first few
->> bytes of the page. And so UBIFS uses in-band CRC checks to see if its headers
->> have any corruption. Now, even if the NAND page had some uncorrectable
->> bit-flips, but those bit-flips do not affect the data of UBIFS headers,
->> then UBIFS just reads those pages and scrubs the block.
-
-I see.  OK, I'll fix that, thanks!
-
-> I was wondering, have you seen an explicit discussion of how many
-> data bytes to read and to write in read and program requests?  I
-> missed this in the datasheet, neither found it in TN-29-56, but
-> just might have been blind ...
-
-Sorry, I'm not sure I understand the question.  Let me know if this doesn't
-answer your question: the way those chips work is that when you issue a
-READ command, the entire page gets transferred and ECC applied.
-After that, you can transfer bytes from the read buffer at will (even
-randomly).
-
->> >+     * Large page NAND with SOFT_ECC or on-die ECC should support
->> >+     * subpage reads.
->> >+     */
->> >+    if (((ecc->mode == NAND_ECC_SOFT)
->> >+         || (chip->ecc.mode == NAND_ECC_HW_ON_DIE))
->> >+        && (chip->page_shift > 9))
->> >             chip->options |= NAND_SUBPAGE_READ;
->> >
->> >     /* Fill in remaining MTD driver data */
+> -----------------------------------------------------------------------------
+> #!/bin/bash
 >
-> this might apply to this specific model, but is it a general rule
-> that chips with on-die-ECC will have subpage support?  and that
-> we always want to use it?
-
-I don't know, but obviously that can be tweaked later if it's not perfect.
-
->> Also, can include a link to public copy of the Micron device datasheet
->> which has on-die ECC feature. It would be helpful to understand your patch
+> kernel=$1
+> initrd=quantal-core-i386.cgz
 >
-> I don't have a link at hand, but the datasheet's footer reads
-> "m60a_4gb_8gb_16gb_ecc_nand.pdf"
+> wget --no-clobber https://github.com/fengguang/reproduce-kernel-bug/blob/master/initrd/$initrd
 >
-> searching for implementations, there's the "sketch" or outline in
-> TN-29-56, but I haven't seen an official implementation from
-> Micron yet, and all the floating patches appear to "be inspired
-> by each other" if they are not identical (they all follow a
-> certain scheme, and even use identical identifiers) -- would be
-> nice to see some official reference, regardless of how much test
-> an "arbitrary" external implementation has received
-
-As far as I know, those datasheets all require an NDA.
-For example, google for MT29F4G16ABADAWP and then try
-to download the datasheet: you'll have to create an account and
-agree to an NDA.  (This is part of the reason we don't use Micron
-for our manufacturing anymore).
-
-  --david
--- 
-eGauge Systems LLC, http://egauge.net/, 1.877-EGAUGE1, fax 720.545.9768
+> kvm=(
+>         qemu-system-x86_64 -cpu kvm64 -enable-kvm
+>         -kernel $kernel
+>         -initrd $initrd
+>         -smp 2
+>         -m 256M
+>         -net nic,vlan=0,macaddr=00:00:00:00:00:00,model=virtio
+>         -net user,vlan=0
+>         -net nic,vlan=1,model=e1000
+>         -net user,vlan=1
+>         -boot order=nc
+>         -no-reboot
+>         -watchdog i6300esb
+>         -serial stdio
+>         -display none
+>         -monitor null
+> )
+>
+> append=(
+>         debug
+>         sched_debug
+>         apic=debug
+>         ignore_loglevel
+>         sysrq_always_enabled
+>         panic=10
+>         prompt_ramdisk=0
+>         earlyprintk=ttyS0,115200
+>         console=ttyS0,115200
+>         console=tty0
+>         vga=normal
+>         root=/dev/ram0
+>         rw
+> )
+>
+> "${kvm[@]}" --append "${append[*]}"
+> -----------------------------------------------------------------------------
+>
+> Thanks,
+> Fengguang
+>
+> _______________________________________________
+> LKP mailing list
+> LKP@linux.intel.com
+>
