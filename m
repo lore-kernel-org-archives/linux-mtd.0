@@ -1,26 +1,26 @@
-Received: from smtprelay.synopsys.com ([198.182.44.111])
+Received: from ch1ehsobe005.messaging.microsoft.com ([216.32.181.185]
+ helo=ch1outboundpool.messaging.microsoft.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WTCDR-0000eG-5Z
- for linux-mtd@lists.infradead.org; Thu, 27 Mar 2014 15:27:38 +0000
-From: Alexey Brodkin <Alexey.Brodkin@synopsys.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH] axs_nand - add driver for NAND controller used on
- Synopsys AXS dev boards
-Date: Thu, 27 Mar 2014 15:27:04 +0000
-Message-ID: <1395934023.3511.1.camel@abrodkin-8560l.internal.synopsys.com>
-References: <1394626349-16024-1-git-send-email-abrodkin@synopsys.com>
-In-Reply-To: <1394626349-16024-1-git-send-email-abrodkin@synopsys.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="koi8-r"
-Content-ID: <1CFA6DDAFF3CB74B8CBFE99EE64EEDB8@internal.synopsys.com>
-Content-Transfer-Encoding: quoted-printable
+ id 1WTEw0-0005vi-7y
+ for linux-mtd@lists.infradead.org; Thu, 27 Mar 2014 18:21:50 +0000
+From: Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>
+To: <robh+dt@kernel.org>, <pawel.moll@arm.com>, <mark.rutland@arm.com>,
+ <ijc+devicetree@hellion.org.uk>, <galak@codeaurora.org>, <rob@landley.net>,
+ <michal.simek@xilinx.com>, <grant.likely@linaro.org>,
+ <gregkh@linuxfoundation.org>, <jason@lakedaemon.net>,
+ <ezequiel.garcia@free-electrons.com>, <arnd@arndb.de>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <artem.bityutskiy@linux.intel.com>,
+ <pekon@ti.com>, <jussi.kivilinna@iki.fi>, <acourbot@nvidia.com>,
+ <ivan.khoronzhuk@ti.com>, <joern@logfs.org>
+Subject: [PATCH RFC 0/3] Add arm pl353 smc driver for xilinx zynq soc
+Date: Thu, 27 Mar 2014 23:51:04 +0530
 MIME-Version: 1.0
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Francois Bedard <Francois.Bedard@synopsys.com>,
- Vineet Gupta <Vineet.Gupta1@synopsys.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "grant.likely@linaro.org" <grant.likely@linaro.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+Content-Type: text/plain
+Message-ID: <bb33414a-fa06-4aea-af85-143e6dca95c7@CH1EHSMHS001.ehs.local>
+Cc: devicetree@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ kalluripunnaiahchoudary@gmail.com, kpc528@gmail.com,
+ Punnaiah Choudary Kalluri <punnaia@xilinx.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,21 +30,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2014-03-12 at 16:12 +0400, Alexey Brodkin wrote:
-> Signed-off-by: Alexey Brodkin <abrodkin@synopsys.com>
->=20
-> Cc: Vineet Gupta <vgupta@synopsys.com>
-> ---
->  Documentation/devicetree/bindings/mtd/axs-nand.txt |  17 +
->  drivers/mtd/nand/Kconfig                           |   6 +
->  drivers/mtd/nand/Makefile                          |   1 +
->  drivers/mtd/nand/axs_nand.c                        | 412 +++++++++++++++=
-++++++
->  4 files changed, 436 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/axs-nand.txt
->  create mode 100644 drivers/mtd/nand/axs_nand.c
+The following patches add arm pl353 static memory controller driver for
+xilinx zynq soc. The arm pl353 smc supports two interfaces i.e nand and
+nor/sram memory interfaces. The current implementation supports only a
+single SMC instance and nand specific configuration.
 
-Any chance to this patch reviewed, commented, accepted?
+xilinx zynq TRM link:
+http://www.xilinx.com/support/documentation/user_guides/ug585-Zynq-7000-TRM.pdf
 
-Regards,
-Alexey
+ARM pl353 smc TRM link:
+http://infocenter.arm.com/help/topic/com.arm.doc.ddi0380g/
+DDI0380G_smc_pl350_series_r2p1_trm.pdf
+
+Punnaiah Choudary Kalluri (3):
+  Devicetree: Add pl353 smc controller devicetree binding information
+  memory: pl353: Add driver for arm pl353 static memory controller
+  nand: pl353: Add driver for arm pl353 smc nand interface
+
+ .../bindings/memory-controllers/pl353-smc.txt      |   53 +
+ drivers/memory/Kconfig                             |    8 +
+ drivers/memory/Makefile                            |    1 +
+ drivers/memory/pl353-smc.c                         |  560 ++++++++++
+ drivers/mtd/nand/Kconfig                           |    8 +
+ drivers/mtd/nand/Makefile                          |    1 +
+ drivers/mtd/nand/pl353_nand.c                      | 1122 ++++++++++++++++++++
+ include/linux/memory/pl353-smc.h                   |   37 +
+ 8 files changed, 1790 insertions(+), 0 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt
+ create mode 100644 drivers/memory/pl353-smc.c
+ create mode 100644 drivers/mtd/nand/pl353_nand.c
+ create mode 100644 include/linux/memory/pl353-smc.h
+
+-- 
+1.7.4
