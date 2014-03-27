@@ -1,15 +1,17 @@
-Received: from c-67-176-60-102.hsd1.co.comcast.net ([67.176.60.102]
- helo=pearl.egauge.net)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSwtY-0006ef-B2
- for linux-mtd@lists.infradead.org; Wed, 26 Mar 2014 23:06:05 +0000
-From: David Mosberger <davidm@egauge.net>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: nand: Add support for Micron on-die ECC controller
- (rev2).
-Date: Wed, 26 Mar 2014 17:05:21 -0600
-Message-Id: <1395875121-9320-1-git-send-email-davidm@egauge.net>
-Cc: David Mosberger <davidm@egauge.net>
+Received: from am1ehsobe003.messaging.microsoft.com ([213.199.154.206]
+ helo=am1outboundpool.messaging.microsoft.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WT15o-0002K5-E4
+ for linux-mtd@lists.infradead.org; Thu, 27 Mar 2014 03:35:02 +0000
+From: Huang Shijie <b32955@freescale.com>
+To: <dwmw2@infradead.org>
+Subject: [PATCH] mtd: gpmi: add gpmi support for imx6sx
+Date: Thu, 27 Mar 2014 10:43:22 +0800
+Message-ID: <1395888202-24415-1-git-send-email-b32955@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,370 +21,212 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch enables support for on-die ECC controllers as found on
-certain Micron chips, for example.  On-die ECC can be useful for
-platforms lacking hardware-support for multi-bit ECC.  The patch is
-safe to apply because it never turns on on-die ECC on its own (that
-job is left to the bootloader).  Instead, this code simply checks
-whether the on-die ECC controller is enabled and, if so, uses it.
+The gpmi's IP for imx6sx is nearly the same as the gpmi's IP for imx6q,
+except the following two new features:
 
-Signed-of-by: David Mosberger <davidm@egauge.net>
+     (1) the new BCH contoller has 62-BIT correcting ECC strength
+            (The BCH for imx6q only has 40-BIT ECC strength).
+
+     (2) add the hardware Randomizer support.
+
+This patch does the follow changes:
+
+     (1) add a new macro GPMI_IS_MX6SX to represent the imx6sx's gpmi.
+
+     (2) add a new macro GPMI_IS_MX6.
+           We use this macro to initialize the same registers for both
+         imx6sx and imx6q, and so on.
+
+     (3) add a new gpmi_devdata instance, the gpmi_devdata_imx6sx, for
+         imx6sx.
+
+Signed-off-by: Huang Shijie <b32955@freescale.com>
 ---
- drivers/mtd/nand/nand_base.c |  258 +++++++++++++++++++++++++++++++++++++++++-
- include/linux/mtd/nand.h     |    8 ++
- 2 files changed, 263 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 5826da3..e642d1f 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -78,6 +78,20 @@ static struct nand_ecclayout nand_oob_64 = {
- 		 .length = 38} }
+This patch depends on the patch:
+   "mtd: gpmi: add gpmi_devdata{} to simplify the code"
+   http://lists.infradead.org/pipermail/linux-mtd/2014-March/052793.html
+
+---
+ drivers/mtd/nand/gpmi-nand/bch-regs.h  |   12 ++++++------
+ drivers/mtd/nand/gpmi-nand/gpmi-lib.c  |    6 +++---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   19 ++++++++++++++-----
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.h |    6 +++++-
+ 4 files changed, 28 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/mtd/nand/gpmi-nand/bch-regs.h b/drivers/mtd/nand/gpmi-nand/bch-regs.h
+index 588f537..05bb91f 100644
+--- a/drivers/mtd/nand/gpmi-nand/bch-regs.h
++++ b/drivers/mtd/nand/gpmi-nand/bch-regs.h
+@@ -54,7 +54,7 @@
+ #define MX6Q_BP_BCH_FLASH0LAYOUT0_ECC0		11
+ #define MX6Q_BM_BCH_FLASH0LAYOUT0_ECC0	(0x1f << MX6Q_BP_BCH_FLASH0LAYOUT0_ECC0)
+ #define BF_BCH_FLASH0LAYOUT0_ECC0(v, x)				\
+-	(GPMI_IS_MX6Q(x)					\
++	(GPMI_IS_MX6(x)					\
+ 		? (((v) << MX6Q_BP_BCH_FLASH0LAYOUT0_ECC0)	\
+ 			& MX6Q_BM_BCH_FLASH0LAYOUT0_ECC0)	\
+ 		: (((v) << BP_BCH_FLASH0LAYOUT0_ECC0)		\
+@@ -65,7 +65,7 @@
+ #define MX6Q_BM_BCH_FLASH0LAYOUT0_GF_13_14			\
+ 				(0x1 << MX6Q_BP_BCH_FLASH0LAYOUT0_GF_13_14)
+ #define BF_BCH_FLASH0LAYOUT0_GF(v, x)				\
+-	((GPMI_IS_MX6Q(x) && ((v) == 14))			\
++	((GPMI_IS_MX6(x) && ((v) == 14))			\
+ 		? (((1) << MX6Q_BP_BCH_FLASH0LAYOUT0_GF_13_14)	\
+ 			& MX6Q_BM_BCH_FLASH0LAYOUT0_GF_13_14)	\
+ 		: 0						\
+@@ -77,7 +77,7 @@
+ #define MX6Q_BM_BCH_FLASH0LAYOUT0_DATA0_SIZE	\
+ 			(0x3ff << BP_BCH_FLASH0LAYOUT0_DATA0_SIZE)
+ #define BF_BCH_FLASH0LAYOUT0_DATA0_SIZE(v, x)				\
+-	(GPMI_IS_MX6Q(x)						\
++	(GPMI_IS_MX6(x)						\
+ 		? (((v) >> 2) & MX6Q_BM_BCH_FLASH0LAYOUT0_DATA0_SIZE)	\
+ 		: ((v) & BM_BCH_FLASH0LAYOUT0_DATA0_SIZE)		\
+ 	)
+@@ -96,7 +96,7 @@
+ #define MX6Q_BP_BCH_FLASH0LAYOUT1_ECCN		11
+ #define MX6Q_BM_BCH_FLASH0LAYOUT1_ECCN	(0x1f << MX6Q_BP_BCH_FLASH0LAYOUT1_ECCN)
+ #define BF_BCH_FLASH0LAYOUT1_ECCN(v, x)				\
+-	(GPMI_IS_MX6Q(x)					\
++	(GPMI_IS_MX6(x)					\
+ 		? (((v) << MX6Q_BP_BCH_FLASH0LAYOUT1_ECCN)	\
+ 			& MX6Q_BM_BCH_FLASH0LAYOUT1_ECCN)	\
+ 		: (((v) << BP_BCH_FLASH0LAYOUT1_ECCN)		\
+@@ -107,7 +107,7 @@
+ #define MX6Q_BM_BCH_FLASH0LAYOUT1_GF_13_14			\
+ 				(0x1 << MX6Q_BP_BCH_FLASH0LAYOUT1_GF_13_14)
+ #define BF_BCH_FLASH0LAYOUT1_GF(v, x)				\
+-	((GPMI_IS_MX6Q(x) && ((v) == 14))			\
++	((GPMI_IS_MX6(x) && ((v) == 14))			\
+ 		? (((1) << MX6Q_BP_BCH_FLASH0LAYOUT1_GF_13_14)	\
+ 			& MX6Q_BM_BCH_FLASH0LAYOUT1_GF_13_14)	\
+ 		: 0						\
+@@ -119,7 +119,7 @@
+ #define MX6Q_BM_BCH_FLASH0LAYOUT1_DATAN_SIZE	\
+ 			(0x3ff << BP_BCH_FLASH0LAYOUT1_DATAN_SIZE)
+ #define BF_BCH_FLASH0LAYOUT1_DATAN_SIZE(v, x)				\
+-	(GPMI_IS_MX6Q(x)						\
++	(GPMI_IS_MX6(x)						\
+ 		? (((v) >> 2) & MX6Q_BM_BCH_FLASH0LAYOUT1_DATAN_SIZE)	\
+ 		: ((v) & BM_BCH_FLASH0LAYOUT1_DATAN_SIZE)		\
+ 	)
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+index cec019f..27f6cf1 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
+@@ -971,7 +971,7 @@ int gpmi_extra_init(struct gpmi_nand_data *this)
+ 	struct nand_chip *chip = &this->nand;
+ 
+ 	/* Enable the asynchronous EDO feature. */
+-	if (GPMI_IS_MX6Q(this) && chip->onfi_version) {
++	if (GPMI_IS_MX6(this) && chip->onfi_version) {
+ 		int mode = onfi_get_async_timing_mode(chip);
+ 
+ 		/* We only support the timing mode 4 and mode 5. */
+@@ -1093,12 +1093,12 @@ int gpmi_is_ready(struct gpmi_nand_data *this, unsigned chip)
+ 	if (GPMI_IS_MX23(this)) {
+ 		mask = MX23_BM_GPMI_DEBUG_READY0 << chip;
+ 		reg = readl(r->gpmi_regs + HW_GPMI_DEBUG);
+-	} else if (GPMI_IS_MX28(this) || GPMI_IS_MX6Q(this)) {
++	} else if (GPMI_IS_MX28(this) || GPMI_IS_MX6(this)) {
+ 		/*
+ 		 * In the imx6, all the ready/busy pins are bound
+ 		 * together. So we only need to check chip 0.
+ 		 */
+-		if (GPMI_IS_MX6Q(this))
++		if (GPMI_IS_MX6(this))
+ 			chip = 0;
+ 
+ 		/* MX28 shares the same R/B register as MX6Q. */
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index de668d8..92c0ef0 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -71,6 +71,12 @@ static const struct gpmi_devdata gpmi_devdata_imx6q = {
+ 	.max_chain_delay = 12,
  };
  
-+static struct nand_ecclayout nand_oob_64_on_die = {
-+	.eccbytes = 32,
-+	.eccpos = {
-+		    8,  9, 10, 11, 12, 13, 14, 15,
-+		   24, 25, 26, 27, 28, 29, 30, 31,
-+		   40, 41, 42, 43, 44, 45, 46, 47,
-+		   56, 57, 58, 59, 60, 61, 62, 63},
-+	.oobfree = {
-+		{.offset =  4,	 .length = 4},
-+		{.offset = 20,	 .length = 4},
-+		{.offset = 36,	 .length = 4},
-+		{.offset = 52,	 .length = 4}}
++static const struct gpmi_devdata gpmi_devdata_imx6sx = {
++	.type = IS_MX6SX,
++	.bch_max_ecc_strength = 62,
++	.max_chain_delay = 12,
 +};
 +
- static struct nand_ecclayout nand_oob_128 = {
- 	.eccbytes = 48,
- 	.eccpos = {
-@@ -1250,6 +1264,196 @@ static int nand_read_subpage(struct mtd_info *mtd, struct nand_chip *chip,
- 	return max_bitflips;
- }
- 
-+static int
-+set_on_die_ecc(struct mtd_info *mtd, struct nand_chip *chip, int on)
-+{
-+	u8 data[ONFI_SUBFEATURE_PARAM_LEN] = { 0, };
-+
-+	if (chip->ecc.mode != NAND_ECC_HW_ON_DIE)
-+		return 0;
-+
-+	if (on)
-+		data[0] = ONFI_FEATURE_OP_MODE_ENABLE_ON_DIE_ECC;
-+
-+	return chip->onfi_set_features(mtd, chip, ONFI_FEATURE_ADDR_OP_MODE,
-+				       data);
-+}
-+
-+/*
-+ * Return the number of bits that differ between buffers SRC1 and
-+ * SRC2, both of which are LEN bytes long.
-+ *
-+ * This code could be optimized for, but it only gets called on pages
-+ * with bitflips and compared to the cost of migrating an eraseblock,
-+ * the execution time here is trivial...
-+ */
-+static int
-+bitdiff(const void *s1, const void *s2, size_t len)
-+{
-+	const uint8_t *src1 = s1, *src2 = s2;
-+	int count = 0, i;
-+
-+	for (i = 0; i < len; ++i)
-+		count += hweight8(*src1++ ^ *src2++);
-+	return count;
-+}
-+
-+static int
-+check_for_bitflips(struct mtd_info *mtd, struct nand_chip *chip, int page)
-+{
-+	int flips = 0, max_bitflips = 0, i, j, read_size;
-+	uint8_t *chkbuf, *rawbuf, *chkoob, *rawoob;
-+	uint32_t *eccpos;
-+
-+	chkbuf = chip->buffers->chkbuf;
-+	rawbuf = chip->buffers->rawbuf;
-+	read_size = mtd->writesize + mtd->oobsize;
-+
-+	/* Read entire page w/OOB area with on-die ECC on: */
-+	chip->read_buf(mtd, chkbuf, read_size);
-+
-+	/* Re-read page with on-die ECC off: */
-+	set_on_die_ecc(mtd, chip, 0);
-+	{
-+		chip->cmdfunc(mtd, NAND_CMD_READ0, 0x00, page);
-+		chip->read_buf(mtd, rawbuf, read_size);
-+	}
-+	set_on_die_ecc(mtd, chip, 1);
-+
-+	chkoob = chkbuf + mtd->writesize;
-+	rawoob = rawbuf + mtd->writesize;
-+	eccpos = chip->ecc.layout->eccpos;
-+	for (i = 0; i < chip->ecc.steps; ++i) {
-+		/* Count bit flips in the actual data area: */
-+		flips = bitdiff(chkbuf, rawbuf, chip->ecc.size);
-+		/* Count bit flips in the ECC bytes: */
-+		for (j = 0; j < chip->ecc.bytes; ++j) {
-+			flips += hweight8(chkoob[*eccpos] ^ rawoob[*eccpos]);
-+			++eccpos;
-+		}
-+		if (flips > 0)
-+			mtd->ecc_stats.corrected += flips;
-+		max_bitflips = max_t(int, max_bitflips, flips);
-+		chkbuf += chip->ecc.size;
-+		rawbuf += chip->ecc.size;
-+	}
-+
-+	/* Re-issue the READ command for the actual data read that follows.  */
-+	chip->cmdfunc(mtd, NAND_CMD_READ0, 0x00, page);
-+
-+	return max_bitflips;
-+}
-+
-+static int check_read_status_on_die(struct mtd_info *mtd,
-+				    struct nand_chip *chip, int page)
-+{
-+	int max_bitflips = 0;
-+	uint8_t status;
-+
-+	/* Check ECC status of page just transferred into NAND's page buffer: */
-+	chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
-+	status = chip->read_byte(mtd);
-+
-+	/* Switch back to data reading: */
-+	chip->cmd_ctrl(mtd, NAND_CMD_READ0,
-+		       NAND_NCE | NAND_CLE | NAND_CTRL_CHANGE);
-+	chip->cmd_ctrl(mtd, NAND_CMD_NONE,
-+		       NAND_NCE | NAND_CTRL_CHANGE);
-+
-+	if (status & NAND_STATUS_FAIL) {
-+		/* Page has invalid ECC. */
-+		mtd->ecc_stats.failed++;
-+	} else if (status & NAND_STATUS_REWRITE) {
-+		/*
-+		 * The Micron chips turn on the REWRITE status bit for
-+		 * ANY bit flips.  Some pages have stuck bits, so we
-+		 * don't want to migrate a block just because of
-+		 * single bit errors because otherwise, that block
-+		 * would effectively become unusable.  So, work out in
-+		 * software what the max number of flipped bits is for
-+		 * all subpages in a page:
-+		 */
-+		max_bitflips = check_for_bitflips(mtd, chip, page);
-+	}
-+	return max_bitflips;
-+}
-+
-+/**
-+ * nand_read_subpage_on_die - [REPLACEABLE] raw sub-page read function
-+ * @mtd: mtd info structure
-+ * @chip: nand chip info structure
-+ * @data_offs: offset of requested data within the page
-+ * @readlen: data length
-+ * @bufpoi: buffer to store read data
-+ */
-+static int nand_read_subpage_on_die(struct mtd_info *mtd,
-+				    struct nand_chip *chip,
-+				    uint32_t data_offs, uint32_t readlen,
-+				    uint8_t *bufpoi, int page)
-+{
-+	int start_step, end_step, num_steps, ret;
-+	int data_col_addr;
-+	int datafrag_len;
-+	uint32_t failed;
-+	uint8_t *p;
-+
-+	/* Column address within the page aligned to ECC size */
-+	start_step = data_offs / chip->ecc.size;
-+	end_step = (data_offs + readlen - 1) / chip->ecc.size;
-+	num_steps = end_step - start_step + 1;
-+
-+	/* Data size aligned to ECC ecc.size */
-+	datafrag_len = num_steps * chip->ecc.size;
-+	data_col_addr = start_step * chip->ecc.size;
-+	p = bufpoi + data_col_addr;
-+
-+	failed = mtd->ecc_stats.failed;
-+
-+	ret = check_read_status_on_die(mtd, chip, page);
-+	if (ret < 0 || mtd->ecc_stats.failed != failed) {
-+		memset(p, 0, datafrag_len);
-+		return ret;
-+	}
-+
-+	/* If we read not a page aligned data */
-+	if (data_col_addr != 0)
-+		chip->cmdfunc(mtd, NAND_CMD_RNDOUT, data_col_addr, -1);
-+
-+	chip->read_buf(mtd, p, datafrag_len);
-+
-+	return ret;
-+}
-+
-+/**
-+ * nand_read_page_on_die - [INTERN] read raw page data without ecc
-+ * @mtd: mtd info structure
-+ * @chip: nand chip info structure
-+ * @buf: buffer to store read data
-+ * @oob_required: caller requires OOB data read to chip->oob_poi
-+ * @page: page number to read
-+ */
-+static int nand_read_page_on_die(struct mtd_info *mtd, struct nand_chip *chip,
-+				 uint8_t *buf, int oob_required, int page)
-+{
-+	uint32_t failed;
-+	int ret;
-+
-+	failed = mtd->ecc_stats.failed;
-+
-+	ret = check_read_status_on_die(mtd, chip, page);
-+	if (ret < 0 || mtd->ecc_stats.failed != failed) {
-+		memset(buf, 0, mtd->writesize);
-+		if (oob_required)
-+			memset(chip->oob_poi, 0, mtd->oobsize);
-+		return ret;
-+	}
-+
-+	chip->read_buf(mtd, buf, mtd->writesize);
-+	if (oob_required)
-+		chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
-+	return ret;
-+}
-+
- /**
-  * nand_read_page_hwecc - [REPLACEABLE] hardware ECC based page read function
-  * @mtd: mtd info structure
-@@ -3783,22 +3987,46 @@ EXPORT_SYMBOL(nand_scan_ident);
- int nand_scan_tail(struct mtd_info *mtd)
+ static irqreturn_t bch_irq(int irq, void *cookie)
  {
- 	int i;
-+	u8 features[ONFI_SUBFEATURE_PARAM_LEN];
- 	struct nand_chip *chip = mtd->priv;
- 	struct nand_ecc_ctrl *ecc = &chip->ecc;
- 	struct nand_buffers *nbuf;
+ 	struct gpmi_nand_data *this = cookie;
+@@ -583,7 +589,7 @@ static int gpmi_get_clks(struct gpmi_nand_data *this)
+ 	}
  
-+	if (chip->onfi_get_features(mtd, chip, ONFI_FEATURE_ADDR_OP_MODE,
-+				    features) >= 0) {
-+		if (features[0] & ONFI_FEATURE_OP_MODE_ENABLE_ON_DIE_ECC) {
-+			/*
-+			 * If the chip has on-die ECC enabled, we kind
-+			 * of have to do the same...
-+			 */
-+			chip->ecc.mode = NAND_ECC_HW_ON_DIE;
-+			pr_info("Using on-die ECC\n");
-+		}
-+	}
-+
- 	/* New bad blocks should be marked in OOB, flash-based BBT, or both */
- 	BUG_ON((chip->bbt_options & NAND_BBT_NO_OOB_BBM) &&
- 			!(chip->bbt_options & NAND_BBT_USE_FLASH));
+ 	/* Get extra clocks */
+-	if (GPMI_IS_MX6Q(this))
++	if (GPMI_IS_MX6(this))
+ 		extra_clks = extra_clks_for_mx6q;
+ 	if (!extra_clks)
+ 		return 0;
+@@ -601,9 +607,9 @@ static int gpmi_get_clks(struct gpmi_nand_data *this)
+ 		r->clock[i] = clk;
+ 	}
  
- 	if (!(chip->options & NAND_OWN_BUFFERS)) {
-+		size_t on_die_bufsz = 0;
-+
-+		if (chip->ecc.mode == NAND_ECC_HW_ON_DIE)
-+			on_die_bufsz = 2*(mtd->writesize + mtd->oobsize);
-+
- 		nbuf = kzalloc(sizeof(*nbuf) + mtd->writesize
--				+ mtd->oobsize * 3, GFP_KERNEL);
-+				+ mtd->oobsize * 3 + on_die_bufsz, GFP_KERNEL);
- 		if (!nbuf)
- 			return -ENOMEM;
- 		nbuf->ecccalc = (uint8_t *)(nbuf + 1);
- 		nbuf->ecccode = nbuf->ecccalc + mtd->oobsize;
- 		nbuf->databuf = nbuf->ecccode + mtd->oobsize;
-+		if (chip->ecc.mode == NAND_ECC_HW_ON_DIE) {
-+			nbuf->chkbuf = (nbuf->databuf + mtd->writesize
-+					+ mtd->oobsize);
-+			nbuf->rawbuf = (nbuf->chkbuf + mtd->writesize
-+					+ mtd->oobsize);
-+		}
- 
- 		chip->buffers = nbuf;
- 	} else {
-@@ -3956,6 +4184,25 @@ int nand_scan_tail(struct mtd_info *mtd)
- 		ecc->strength = ecc->bytes * 8 / fls(8 * ecc->size);
- 		break;
- 
-+	case NAND_ECC_HW_ON_DIE:
-+		/* nand_bbt attempts to put Bbt marker at offset 8 in
-+		   oob, which is used for ECC by Micron
-+		   MT29F4G16ABADAWP, for example.  Fixed by not using
-+		   OOB for BBT marker.  */
-+		chip->bbt_options |= NAND_BBT_NO_OOB;
-+		chip->ecc.layout = &nand_oob_64_on_die;
-+		chip->ecc.read_page = nand_read_page_on_die;
-+		chip->ecc.read_subpage = nand_read_subpage_on_die;
-+		chip->ecc.write_page = nand_write_page_raw;
-+		chip->ecc.read_oob = nand_read_oob_std;
-+		chip->ecc.read_page_raw = nand_read_page_raw;
-+		chip->ecc.write_page_raw = nand_write_page_raw;
-+		chip->ecc.write_oob = nand_write_oob_std;
-+		chip->ecc.size = 512;
-+		chip->ecc.bytes = 8;
-+		chip->ecc.strength = 4;
-+		break;
-+
- 	case NAND_ECC_NONE:
- 		pr_warn("NAND_ECC_NONE selected by board driver. "
- 			   "This is not recommended!\n");
-@@ -4023,8 +4270,13 @@ int nand_scan_tail(struct mtd_info *mtd)
- 	/* Invalidate the pagebuffer reference */
- 	chip->pagebuf = -1;
- 
--	/* Large page NAND with SOFT_ECC should support subpage reads */
--	if ((ecc->mode == NAND_ECC_SOFT) && (chip->page_shift > 9))
-+	/*
-+	 * Large page NAND with SOFT_ECC or on-die ECC should support
-+	 * subpage reads.
-+	 */
-+	if (((ecc->mode == NAND_ECC_SOFT)
-+	     || (chip->ecc.mode == NAND_ECC_HW_ON_DIE))
-+	    && (chip->page_shift > 9))
+-	if (GPMI_IS_MX6Q(this))
++	if (GPMI_IS_MX6(this))
+ 		/*
+-		 * Set the default value for the gpmi clock in mx6q:
++		 * Set the default value for the gpmi clock.
+ 		 *
+ 		 * If you want to use the ONFI nand which is in the
+ 		 * Synchronous Mode, you should change the clock as you need.
+@@ -1666,7 +1672,7 @@ static int gpmi_init_last(struct gpmi_nand_data *this)
+ 	 *  (1) the chip is imx6, and
+ 	 *  (2) the size of the ECC parity is byte aligned.
+ 	 */
+-	if (GPMI_IS_MX6Q(this) &&
++	if (GPMI_IS_MX6(this) &&
+ 		((bch_geo->gf_len * bch_geo->ecc_strength) % 8) == 0) {
+ 		ecc->read_subpage = gpmi_ecc_read_subpage;
  		chip->options |= NAND_SUBPAGE_READ;
+@@ -1722,7 +1728,7 @@ static int gpmi_nand_init(struct gpmi_nand_data *this)
+ 	if (ret)
+ 		goto err_out;
  
- 	/* Fill in remaining MTD driver data */
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 450d61e..4514ced 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -101,6 +101,7 @@ extern int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
- /* Status bits */
- #define NAND_STATUS_FAIL	0x01
- #define NAND_STATUS_FAIL_N1	0x02
-+#define NAND_STATUS_REWRITE	0x08
- #define NAND_STATUS_TRUE_READY	0x20
- #define NAND_STATUS_READY	0x40
- #define NAND_STATUS_WP		0x80
-@@ -115,6 +116,7 @@ typedef enum {
- 	NAND_ECC_HW_SYNDROME,
- 	NAND_ECC_HW_OOB_FIRST,
- 	NAND_ECC_SOFT_BCH,
-+	NAND_ECC_HW_ON_DIE,
- } nand_ecc_modes_t;
+-	ret = nand_scan_ident(mtd, GPMI_IS_MX6Q(this) ? 2 : 1, NULL);
++	ret = nand_scan_ident(mtd, GPMI_IS_MX6(this) ? 2 : 1, NULL);
+ 	if (ret)
+ 		goto err_out;
  
- /*
-@@ -214,6 +216,10 @@ struct nand_chip;
- /* Vendor-specific feature address (Micron) */
- #define ONFI_FEATURE_ADDR_READ_RETRY	0x89
- 
-+/* Vendor-specific array operation mode (Micron) */
-+#define ONFI_FEATURE_ADDR_OP_MODE	0x90
-+#define ONFI_FEATURE_OP_MODE_ENABLE_ON_DIE_ECC		0x08
-+
- /* ONFI subfeature parameters length */
- #define ONFI_SUBFEATURE_PARAM_LEN	4
- 
-@@ -516,6 +522,8 @@ struct nand_buffers {
- 	uint8_t	*ecccalc;
- 	uint8_t	*ecccode;
- 	uint8_t *databuf;
-+	uint8_t *chkbuf;
-+	uint8_t *rawbuf;
+@@ -1761,6 +1767,9 @@ static const struct of_device_id gpmi_nand_id_table[] = {
+ 	}, {
+ 		.compatible = "fsl,imx6q-gpmi-nand",
+ 		.data = (void *)&gpmi_devdata_imx6q,
++	}, {
++		.compatible = "fsl,imx6sx-gpmi-nand",
++		.data = (void *)&gpmi_devdata_imx6sx,
+ 	}, {}
+ };
+ MODULE_DEVICE_TABLE(of, gpmi_nand_id_table);
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+index 1b7c6ae..783fb96b 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
+@@ -122,7 +122,8 @@ struct nand_timing {
+ enum gpmi_type {
+ 	IS_MX23,
+ 	IS_MX28,
+-	IS_MX6Q
++	IS_MX6Q,
++	IS_MX6SX
  };
  
- /**
+ struct gpmi_devdata {
+@@ -298,4 +299,7 @@ extern int gpmi_read_page(struct gpmi_nand_data *,
+ #define GPMI_IS_MX23(x)		((x)->devdata->type == IS_MX23)
+ #define GPMI_IS_MX28(x)		((x)->devdata->type == IS_MX28)
+ #define GPMI_IS_MX6Q(x)		((x)->devdata->type == IS_MX6Q)
++#define GPMI_IS_MX6SX(x)	((x)->devdata->type == IS_MX6SX)
++
++#define GPMI_IS_MX6(x)		(GPMI_IS_MX6Q(x) || GPMI_IS_MX6SX(x))
+ #endif
 -- 
-1.7.9.5
+1.7.2.rc3
