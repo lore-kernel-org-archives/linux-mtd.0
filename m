@@ -1,18 +1,31 @@
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "David
- Woodhouse" <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: RE: [PATCH 1/4] mtd: Add sysfs attr to expose ECC stats
-Date: Thu, 27 Mar 2014 11:56:48 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EAB91D7@DBDE04.ent.ti.com>
-References: <1395403064-28113-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1395403064-28113-2-git-send-email-ezequiel.garcia@free-electrons.com>
-In-Reply-To: <1395403064-28113-2-git-send-email-ezequiel.garcia@free-electrons.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
+Date: Thu, 27 Mar 2014 13:21:09 +0100
+From: Lothar =?UTF-8?B?V2HDn21hbm4=?= <LW@KARO-electronics.de>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCHv2 1/1] mtd: gpmi: make blockmark swapping optional
+Message-ID: <20140327132109.06258526@ipc1.ka-ro>
+In-Reply-To: <20140327095956.GA29623@localhost>
+References: <532BCFCC.4080205@freescale.com>
+ <1395399017-19005-1-git-send-email-LW@KARO-electronics.de>
+ <20140324095902.GB11377@localhost>
+ <20140326095156.3e5585b8@ipc1.ka-ro>
+ <5332AEE7.2040402@freescale.com>
+ <20140326125502.0e8d0657@ipc1.ka-ro>
+ <20140327095956.GA29623@localhost>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
+Cc: Fabio Estevam <fabio.estevam@freescale.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Russell King <linux@arm.linux.org.uk>, Pawel Moll <pawel.moll@arm.com>,
+ Arnd Bergmann <arnd@arndb.de>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
+ Shawn Guo <shawn.guo@freescale.com>, Rob Landley <rob@landley.net>,
+ Kumar Gala <galak@codeaurora.org>, Shawn Guo <shawn.guo@linaro.org>,
+ David Woodhouse <dwmw2@infradead.org>, Sascha Hauer <kernel@pengutronix.de>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,86 +35,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ezequiel,
+Hi,
 
->From: Ezequiel Garcia
+Huang Shijie wrote:
+> > > Please see "Figure 12-13" in the 12.12.1.12:
+> > >    "In order to preserve the BI (bad block information), flash update=
+r=20
+> > > or gang programmer
+> > > applications need to swap Bad Block Information (BI) data to byte 0 o=
+f=20
+> > > metadata area for
+> > > every page before programming NAND Flash. ROM when loading firmware,=
+=20
+> > > copies back
+> > > the value at metadata[0] to BI offset in page data. The following fig=
+ure=20
+> > > shows how the
+> > > factory bad block marker is preserved."
+> > >=20
+> > The inspection of the BB markers is only a fallback for the case that
+> > there is no DBBT. From the same chapter that you quoted above:
+> > | ROM uses DBBT to skip any bad block that falls within firmware data
+> > | on NAND Flash device.
+> > | If the address of DBBT Search Area in FCB is 0, ROM will rely on
+> > | factory marked bad block markers to find out if a block is good or ba=
+d.
+> >=20
+> > Thus, even the boot ROM of i.MX28 can well live without blockmark
+> > swapping.
+>=20
+> Assume that there is a NAND block "A",  and the A consist of 256 pages.
+> the uboot is burned to the "A", can occupy 6 pages:
+>=20
+>   -----------------------------------------------------------------------=
+------
+>  | page 0 |  page 1 | page 2 | page 3 | page 4 | page 5 | ... | ... | pag=
+e 255 |
+>   -----------------------------------------------------------------------=
+------
+> =20
+>   \-------------------------------------- -------------------------------=
+-----/
+>                                          V =20
+>                                         "A"					=20
+>=20
+> The DBBT is used to track if "A" is bad or not.
+> Assume we know that "A" is a good block, ROM then need to read out the ub=
+oot.
+> When the ROM needs to read out the 6 pages one by one. And each time the =
+ROM read
+> the page, it should do the swapping for this page.
+>=20
+> In this case, the ROM will do the swapping six times.
+>=20
+> Please read the sector again, you will see the "every page" in it:
+> --------------------------------------------------------------------
+>    "In order to preserve the BI (bad block information), flash updater=20
+> or gang programmer applications need to swap Bad Block Information (BI) d=
+ata to byte 0 of=20
+> metadata area for every page before programming NAND Flash. ROM when load=
+ing firmware,=20
+> copies back
+> --------------------------------------------------------------------
 >
->This new sysfs device attribute allows to retrieve the ECC stats
->by poking a sysfs file, which is much simpler than using the ioctl.
->
->The output format is inspired in block device sysfs 'stat' file.
->The ecc_stats struct fields are shown as ordered in the structure,
->in a machine parseable format.
->
->Here's a typical output showing 3 ECC-corrected and 8 bad blocks:
->       3        0        8        0
->
->Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
->---
-> drivers/mtd/mtdcore.c | 14 ++++++++++++++
-> 1 file changed, 14 insertions(+)
->
->diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
->index d201fee..c5e9943 100644
->--- a/drivers/mtd/mtdcore.c
->+++ b/drivers/mtd/mtdcore.c
->@@ -298,6 +298,19 @@ static ssize_t mtd_ecc_step_size_show(struct device *=
-dev,
-> }
-> static DEVICE_ATTR(ecc_step_size, S_IRUGO, mtd_ecc_step_size_show, NULL);
->
->+static ssize_t mtd_ecc_stats_show(struct device *dev,
->+		struct device_attribute *attr, char *buf)
->+{
->+	struct mtd_info *mtd =3D dev_get_drvdata(dev);
->+	struct mtd_ecc_stats *ecc_stats =3D &mtd->ecc_stats;
->+
->+	return snprintf(buf, PAGE_SIZE, "%8u %8u %8u %8u\n", ecc_stats->correcte=
-d,
->+						ecc_stats->failed,
->+						ecc_stats->badblocks,
->+						ecc_stats->bbtblocks);
-Though I would have liked to see each field of ecc_stats as a separate sysf=
-s entry
-But, I don't know what it impacts to keep it different from /sys/block/<dev=
-ice>/stat
-Do you know any user-space tools which utilize these, and can be re-used on
-UBI-block kind of layer, if we keep this compatibility ?
+I can assure you that the >100.000 i.MX28 based modules, that we sold
+up to now boot from NAND just fine without any block mark swapping in
+the U-Boot pages.
 
-Also, How about printing what these numbers mean ?
-I hope this will still keep it machine readable.
-snprintf(buf, PAGE_SIZE, "%16s %16s %16s %16s\n",
-					"ecc_corrected",
- 					"ecc_failed",
-					"ecc_badblocks",
-					"ecc_bbtblocks");
- return snprintf(buf, PAGE_SIZE, " %16u  %16u  %16u  %16u\n",
-					ecc_stats->corrected,
- 					ecc_stats->failed,
-					ecc_stats->badblocks,
-					ecc_stats->bbtblocks);
 
->+}
+Lothar Wa=C3=9Fmann
+--=20
+___________________________________________________________
 
+Ka-Ro electronics GmbH | Pascalstra=C3=9Fe 22 | D - 52076 Aachen
+Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
+Gesch=C3=A4ftsf=C3=BChrer: Matthias Kaussen
+Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
 
->+static DEVICE_ATTR(ecc_stats, S_IRUGO, mtd_ecc_stats_show, NULL);
->+
-> static struct attribute *mtd_attrs[] =3D {
-> 	&dev_attr_type.attr,
-> 	&dev_attr_flags.attr,
->@@ -310,6 +323,7 @@ static struct attribute *mtd_attrs[] =3D {
-> 	&dev_attr_name.attr,
-> 	&dev_attr_ecc_strength.attr,
-> 	&dev_attr_ecc_step_size.attr,
->+	&dev_attr_ecc_stats.attr,
-> 	&dev_attr_bitflip_threshold.attr,
-> 	NULL,
-> };
->--
->1.9.0
->
-
-Also please update "Documentation/ABI/testing/sysfs-class-mtd"
-with details about 'ecc_stats'
-
-with regards, pekon
+www.karo-electronics.de | info@karo-electronics.de
+___________________________________________________________
