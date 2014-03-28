@@ -1,26 +1,18 @@
-Message-ID: <5334D9F7.2030001@freescale.com>
-Date: Fri, 28 Mar 2014 10:09:59 +0800
-From: Huang Shijie <b32955@freescale.com>
-MIME-Version: 1.0
-To: =?UTF-8?B?TG90aGFyIFdhw59tYW5u?= <LW@KARO-electronics.de>
-Subject: Re: [PATCHv2 1/1] mtd: gpmi: make blockmark swapping optional
-References: <532BCFCC.4080205@freescale.com>	<1395399017-19005-1-git-send-email-LW@KARO-electronics.de>	<20140324095902.GB11377@localhost>	<20140326095156.3e5585b8@ipc1.ka-ro>	<5332AEE7.2040402@freescale.com>	<20140326125502.0e8d0657@ipc1.ka-ro>	<20140327095956.GA29623@localhost>
- <20140327132109.06258526@ipc1.ka-ro>
-In-Reply-To: <20140327132109.06258526@ipc1.ka-ro>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: Fabio Estevam <fabio.estevam@freescale.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Russell King <linux@arm.linux.org.uk>, Pawel Moll <pawel.moll@arm.com>,
- Arnd Bergmann <arnd@arndb.de>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
- Shawn Guo <shawn.guo@freescale.com>, Rob Landley <rob@landley.net>,
- Kumar Gala <galak@codeaurora.org>, Shawn Guo <shawn.guo@linaro.org>,
- David Woodhouse <dwmw2@infradead.org>, Sascha Hauer <kernel@pengutronix.de>,
- linux-arm-kernel@lists.infradead.org
+Received: from c-67-176-60-102.hsd1.co.comcast.net ([67.176.60.102]
+ helo=pearl.egauge.net)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WTN0V-0007s3-E5
+ for linux-mtd@lists.infradead.org; Fri, 28 Mar 2014 02:59:00 +0000
+From: David Mosberger <davidm@egauge.net>
+To: pekon@ti.com
+Subject: [RFC] mtd: nand: Preparatory patch for adding on-die ECC controller
+ support. This patch adds NAND_ECC_HW_ON_DIE and all other changes to generic
+ code.
+Date: Thu, 27 Mar 2014 20:58:24 -0600
+Message-Id: <1395975504-11301-1-git-send-email-davidm@egauge.net>
+Cc: David Mosberger <davidm@egauge.net>, gsi@denx.de,
+ computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,13 +22,145 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2014=E5=B9=B403=E6=9C=8827=E6=97=A5 20:21, Lothar Wa=C3=9Fmann =
-=E5=86=99=E9=81=93:
-> I can assure you that the>100.000 i.MX28 based modules, that we sold
-> up to now boot from NAND just fine without any block mark swapping in
-> the U-Boot pages.
->
-Our driver should follow the Reference manual, not the product.
+Pekon,
 
-thanks
-Huang Shijie
+Before I go any further with this, could you confirm that what is
+below is what you had in mind as far as the generic portion of the
+patch is concerned.  If so, I'll go ahead and create the second,
+Micron-specific part next.
+
+Thanks,
+
+  --david
+
+PS: This patch adds a one-liner to of_mtd.c that I forgot about previously.
+
+Signed-off-by: David Mosberger <davidm@egauge.net>
+---
+ drivers/mtd/nand/nand_base.c |   36 +++++++++++++++++++++++++++++++++---
+ drivers/of/of_mtd.c          |    1 +
+ include/linux/mtd/nand.h     |    7 +++++++
+ 3 files changed, 41 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 5826da3..b94e2e9 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3783,22 +3783,46 @@ EXPORT_SYMBOL(nand_scan_ident);
+ int nand_scan_tail(struct mtd_info *mtd)
+ {
+ 	int i;
++	u8 features[ONFI_SUBFEATURE_PARAM_LEN];
+ 	struct nand_chip *chip = mtd->priv;
+ 	struct nand_ecc_ctrl *ecc = &chip->ecc;
+ 	struct nand_buffers *nbuf;
+ 
++	if (chip->onfi_get_features(mtd, chip, ONFI_FEATURE_ADDR_OP_MODE,
++				    features) >= 0) {
++		if (features[0] & ONFI_FEATURE_OP_MODE_ENABLE_ON_DIE_ECC) {
++			/*
++			 * If the chip has on-die ECC enabled, we kind
++			 * of have to do the same...
++			 */
++			chip->ecc.mode = NAND_ECC_HW_ON_DIE;
++			pr_info("Using on-die ECC\n");
++		}
++	}
++
+ 	/* New bad blocks should be marked in OOB, flash-based BBT, or both */
+ 	BUG_ON((chip->bbt_options & NAND_BBT_NO_OOB_BBM) &&
+ 			!(chip->bbt_options & NAND_BBT_USE_FLASH));
+ 
+ 	if (!(chip->options & NAND_OWN_BUFFERS)) {
++		size_t on_die_bufsz = 0;
++
++		if (chip->ecc.mode == NAND_ECC_HW_ON_DIE)
++			on_die_bufsz = 2*(mtd->writesize + mtd->oobsize);
++
+ 		nbuf = kzalloc(sizeof(*nbuf) + mtd->writesize
+-				+ mtd->oobsize * 3, GFP_KERNEL);
++				+ mtd->oobsize * 3 + on_die_bufsz, GFP_KERNEL);
+ 		if (!nbuf)
+ 			return -ENOMEM;
+ 		nbuf->ecccalc = (uint8_t *)(nbuf + 1);
+ 		nbuf->ecccode = nbuf->ecccalc + mtd->oobsize;
+ 		nbuf->databuf = nbuf->ecccode + mtd->oobsize;
++		if (chip->ecc.mode == NAND_ECC_HW_ON_DIE) {
++			nbuf->chkbuf = (nbuf->databuf + mtd->writesize
++					+ mtd->oobsize);
++			nbuf->rawbuf = (nbuf->chkbuf + mtd->writesize
++					+ mtd->oobsize);
++		}
+ 
+ 		chip->buffers = nbuf;
+ 	} else {
+@@ -3956,6 +3980,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 		ecc->strength = ecc->bytes * 8 / fls(8 * ecc->size);
+ 		break;
+ 
++	case NAND_ECC_HW_ON_DIE:
+ 	case NAND_ECC_NONE:
+ 		pr_warn("NAND_ECC_NONE selected by board driver. "
+ 			   "This is not recommended!\n");
+@@ -4023,8 +4048,13 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 	/* Invalidate the pagebuffer reference */
+ 	chip->pagebuf = -1;
+ 
+-	/* Large page NAND with SOFT_ECC should support subpage reads */
+-	if ((ecc->mode == NAND_ECC_SOFT) && (chip->page_shift > 9))
++	/*
++	 * Large page NAND with SOFT_ECC or on-die ECC should support
++	 * subpage reads.
++	 */
++	if (((ecc->mode == NAND_ECC_SOFT)
++	     || (chip->ecc.mode == NAND_ECC_HW_ON_DIE))
++	    && (chip->page_shift > 9))
+ 		chip->options |= NAND_SUBPAGE_READ;
+ 
+ 	/* Fill in remaining MTD driver data */
+diff --git a/drivers/of/of_mtd.c b/drivers/of/of_mtd.c
+index b7361ed..c844c84 100644
+--- a/drivers/of/of_mtd.c
++++ b/drivers/of/of_mtd.c
+@@ -23,6 +23,7 @@ static const char *nand_ecc_modes[] = {
+ 	[NAND_ECC_HW_SYNDROME]	= "hw_syndrome",
+ 	[NAND_ECC_HW_OOB_FIRST]	= "hw_oob_first",
+ 	[NAND_ECC_SOFT_BCH]	= "soft_bch",
++	[NAND_ECC_HW_ON_DIE]	= "hw_on_die",
+ };
+ 
+ /**
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 450d61e..a1cc980 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -115,6 +115,7 @@ typedef enum {
+ 	NAND_ECC_HW_SYNDROME,
+ 	NAND_ECC_HW_OOB_FIRST,
+ 	NAND_ECC_SOFT_BCH,
++	NAND_ECC_HW_ON_DIE,
+ } nand_ecc_modes_t;
+ 
+ /*
+@@ -214,6 +215,10 @@ struct nand_chip;
+ /* Vendor-specific feature address (Micron) */
+ #define ONFI_FEATURE_ADDR_READ_RETRY	0x89
+ 
++/* Vendor-specific array operation mode (Micron) */
++#define ONFI_FEATURE_ADDR_OP_MODE	0x90
++#define ONFI_FEATURE_OP_MODE_ENABLE_ON_DIE_ECC		0x08
++
+ /* ONFI subfeature parameters length */
+ #define ONFI_SUBFEATURE_PARAM_LEN	4
+ 
+@@ -516,6 +521,8 @@ struct nand_buffers {
+ 	uint8_t	*ecccalc;
+ 	uint8_t	*ecccode;
+ 	uint8_t *databuf;
++	uint8_t *chkbuf;
++	uint8_t *rawbuf;
+ };
+ 
+ /**
+-- 
+1.7.9.5
