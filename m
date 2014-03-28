@@ -1,16 +1,27 @@
-Received: from c-67-176-60-102.hsd1.co.comcast.net ([67.176.60.102]
- helo=pearl.egauge.net)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WTa5n-0005QO-Ny
- for linux-mtd@lists.infradead.org; Fri, 28 Mar 2014 16:57:20 +0000
-From: David Mosberger <davidm@egauge.net>
-To: pekon@ti.com
-Subject: [REV3] mtd: nand: Prepare for Micron on-die ECC controller support.
-Date: Fri, 28 Mar 2014 10:56:40 -0600
-Message-Id: <1396025800-18444-1-git-send-email-davidm@egauge.net>
-Cc: David Mosberger <davidm@egauge.net>, gsi@denx.de,
- computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
- dedekind1@gmail.com
+Received: from comal.ext.ti.com ([198.47.26.152])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WTabo-00069m-6w
+ for linux-mtd@lists.infradead.org; Fri, 28 Mar 2014 17:30:25 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Gerhard Sittig <gsi@denx.de>
+Subject: RE: [PATCH] mtd: nand: Add support for Micron on-die ECC controller
+ (rev2).
+Date: Fri, 28 Mar 2014 17:27:51 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EAB9761@DBDE04.ent.ti.com>
+References: <1395875121-9320-1-git-send-email-davidm@egauge.net>
+ <20980858CB6D3A4BAE95CA194937D5E73EAB5F84@DBDE04.ent.ti.com>
+ <20140327112722.GQ3998@book.gsilab.sittig.org>
+ <20980858CB6D3A4BAE95CA194937D5E73EAB9500@DBDE04.ent.ti.com>,
+ <20140328124313.GB3998@book.gsilab.sittig.org>
+In-Reply-To: <20140328124313.GB3998@book.gsilab.sittig.org>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: David Mosberger <davidm@egauge.net>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,154 +31,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds NAND_ECC_HW_ON_DIE and all other changes to generic code.
-On-die ECC detection now has moved into nand_onfi_detect_micron().
-
-Signed-off-by: David Mosberger <davidm@egauge.net>
----
- drivers/mtd/nand/nand_base.c |   42 ++++++++++++++++++++++++++++++++++++------
- drivers/of/of_mtd.c          |    1 +
- include/linux/mtd/nand.h     |    7 +++++++
- 3 files changed, 44 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 5826da3..1f4a9d8 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -3049,16 +3049,29 @@ static int nand_setup_read_retry_micron(struct mtd_info *mtd, int retry_mode)
- /*
-  * Configure chip properties from Micron vendor-specific ONFI table
-  */
--static void nand_onfi_detect_micron(struct nand_chip *chip,
--		struct nand_onfi_params *p)
-+static void nand_onfi_detect_micron(struct mtd_info *mtd,
-+		struct nand_chip *chip, struct nand_onfi_params *p)
- {
- 	struct nand_onfi_vendor_micron *micron = (void *)p->vendor;
-+	u8 features[ONFI_SUBFEATURE_PARAM_LEN];
- 
- 	if (le16_to_cpu(p->vendor_revision) < 1)
- 		return;
- 
- 	chip->read_retries = micron->read_retry_options;
- 	chip->setup_read_retry = nand_setup_read_retry_micron;
-+
-+	if (chip->onfi_get_features(mtd, chip, ONFI_FEATURE_ADDR_OP_MODE,
-+				    features) >= 0) {
-+		if (features[0] & ONFI_FEATURE_OP_MODE_ENABLE_ON_DIE_ECC) {
-+			/*
-+			 * If the chip has on-die ECC enabled, we kind
-+			 * of have to do the same...
-+			 */
-+			chip->ecc.mode = NAND_ECC_HW_ON_DIE;
-+			pr_info("Using on-die ECC\n");
-+		}
-+	}
- }
- 
- /*
-@@ -3160,7 +3173,7 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
- 	}
- 
- 	if (p->jedec_id == NAND_MFR_MICRON)
--		nand_onfi_detect_micron(chip, p);
-+		nand_onfi_detect_micron(mtd, chip, p);
- 
- 	return 1;
- }
-@@ -3792,13 +3805,24 @@ int nand_scan_tail(struct mtd_info *mtd)
- 			!(chip->bbt_options & NAND_BBT_USE_FLASH));
- 
- 	if (!(chip->options & NAND_OWN_BUFFERS)) {
-+		size_t on_die_bufsz = 0;
-+
-+		if (chip->ecc.mode == NAND_ECC_HW_ON_DIE)
-+			on_die_bufsz = 2*(mtd->writesize + mtd->oobsize);
-+
- 		nbuf = kzalloc(sizeof(*nbuf) + mtd->writesize
--				+ mtd->oobsize * 3, GFP_KERNEL);
-+				+ mtd->oobsize * 3 + on_die_bufsz, GFP_KERNEL);
- 		if (!nbuf)
- 			return -ENOMEM;
- 		nbuf->ecccalc = (uint8_t *)(nbuf + 1);
- 		nbuf->ecccode = nbuf->ecccalc + mtd->oobsize;
- 		nbuf->databuf = nbuf->ecccode + mtd->oobsize;
-+		if (chip->ecc.mode == NAND_ECC_HW_ON_DIE) {
-+			nbuf->chkbuf = (nbuf->databuf + mtd->writesize
-+					+ mtd->oobsize);
-+			nbuf->rawbuf = (nbuf->chkbuf + mtd->writesize
-+					+ mtd->oobsize);
-+		}
- 
- 		chip->buffers = nbuf;
- 	} else {
-@@ -3956,6 +3980,7 @@ int nand_scan_tail(struct mtd_info *mtd)
- 		ecc->strength = ecc->bytes * 8 / fls(8 * ecc->size);
- 		break;
- 
-+	case NAND_ECC_HW_ON_DIE:
- 	case NAND_ECC_NONE:
- 		pr_warn("NAND_ECC_NONE selected by board driver. "
- 			   "This is not recommended!\n");
-@@ -4023,8 +4048,13 @@ int nand_scan_tail(struct mtd_info *mtd)
- 	/* Invalidate the pagebuffer reference */
- 	chip->pagebuf = -1;
- 
--	/* Large page NAND with SOFT_ECC should support subpage reads */
--	if ((ecc->mode == NAND_ECC_SOFT) && (chip->page_shift > 9))
-+	/*
-+	 * Large page NAND with SOFT_ECC or on-die ECC should support
-+	 * subpage reads.
-+	 */
-+	if (((ecc->mode == NAND_ECC_SOFT)
-+	     || (chip->ecc.mode == NAND_ECC_HW_ON_DIE))
-+	    && (chip->page_shift > 9))
- 		chip->options |= NAND_SUBPAGE_READ;
- 
- 	/* Fill in remaining MTD driver data */
-diff --git a/drivers/of/of_mtd.c b/drivers/of/of_mtd.c
-index b7361ed..c844c84 100644
---- a/drivers/of/of_mtd.c
-+++ b/drivers/of/of_mtd.c
-@@ -23,6 +23,7 @@ static const char *nand_ecc_modes[] = {
- 	[NAND_ECC_HW_SYNDROME]	= "hw_syndrome",
- 	[NAND_ECC_HW_OOB_FIRST]	= "hw_oob_first",
- 	[NAND_ECC_SOFT_BCH]	= "soft_bch",
-+	[NAND_ECC_HW_ON_DIE]	= "hw_on_die",
- };
- 
- /**
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 450d61e..a1cc980 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -115,6 +115,7 @@ typedef enum {
- 	NAND_ECC_HW_SYNDROME,
- 	NAND_ECC_HW_OOB_FIRST,
- 	NAND_ECC_SOFT_BCH,
-+	NAND_ECC_HW_ON_DIE,
- } nand_ecc_modes_t;
- 
- /*
-@@ -214,6 +215,10 @@ struct nand_chip;
- /* Vendor-specific feature address (Micron) */
- #define ONFI_FEATURE_ADDR_READ_RETRY	0x89
- 
-+/* Vendor-specific array operation mode (Micron) */
-+#define ONFI_FEATURE_ADDR_OP_MODE	0x90
-+#define ONFI_FEATURE_OP_MODE_ENABLE_ON_DIE_ECC		0x08
-+
- /* ONFI subfeature parameters length */
- #define ONFI_SUBFEATURE_PARAM_LEN	4
- 
-@@ -516,6 +521,8 @@ struct nand_buffers {
- 	uint8_t	*ecccalc;
- 	uint8_t	*ecccode;
- 	uint8_t *databuf;
-+	uint8_t *chkbuf;
-+	uint8_t *rawbuf;
- };
- 
- /**
--- 
-1.7.9.5
+Hi Gerhard,=0A=
+[...]=0A=
+=0A=
+>> >when "on die ECC" is enabled, the chip requires a sequence of=0A=
+>> >- read page command (READ0, addresses, READSTART)=0A=
+>> >- status check (mandatory! cmd 70, to check FAIL and REWRITE bits)=0A=
+>> >- re-enter data read mode (READ0, _without_ addresses and START)=0A=
+>> >- fetch data bytes=0A=
+>> >=0A=
+>> I checked Micron Datasheet for "MT29F4G16ABADAWP by name=0A=
+>> "m60a_4gb_8gb_16gb_ecc_nand.pdf" and on its=0A=
+>> "Figure 39: READ PAGE (00h-30h) Operation with Internal ECC Enabled"=0A=
+>> There is no mention of above third step.=0A=
+>>=0A=
+>> As per the "figure 39" a READ_PAGE Operation with internal ECC enabled=
+=0A=
+>> requires following sequence..=0A=
+>> - [00h] <address> <address> ... <address> [30h]  /* READ_PAGE command */=
+=0A=
+>> - [70h] <status> [00h]        /* READ_STATUS command */=0A=
+>> And after that data comes our serial on the bus. So in that case you can=
+=0A=
+>=0A=
+>They cheat. :)  You'll only notice when you look closely, I=0A=
+>misread this stuff too at first.  The Micron datasheet uses=0A=
+>different terms than the MTD implementation in Linux does.=0A=
+>=0A=
+>Their "READ_PAGE" command, referred to as 00-30, actually is in=0A=
+>Linux the "READ0 command (0x00) and READSTART command (0x30)"=0A=
+>sequence.  (I'd like to see them as sequences or aggregates of=0A=
+>existing commands, instead of even more commands that happen to=0A=
+>re-use other command's opcodes, which I feel is confusing.)=0A=
+>=0A=
+Yes, I think its correctly implemented in nand_command_lp()=0A=
+(Kindly cross check if I misunderstood below)=0A=
+=0A=
+For chip->cmd(mtd, NAND_CMD_READ0, column, page);=0A=
+=0A=
+@@nand_command_lp(..)=0A=
+(Step-1) : Sends READ0 =3D=3D [00h]=0A=
+         /* Command latch cycle */=0A=
+	chip->cmd_ctrl(mtd, command, NAND_NCE | NAND_CLE | NAND_CTRL_CHANGE);=0A=
+=0A=
+(Step-2): Sends <column-address> .. <page-address>=0A=
+        if (column !=3D -1) {=0A=
+        ...=0A=
+        }=0A=
+        if (page !=3D -1) {=0A=
+        ...=0A=
+        }=0A=
+=0A=
+(Step-3): Send READ_START =3D=3D [30h]=0A=
+                switch (command) {=0A=
+                ...=0A=
+                case NAND_CMD_READ0:=0A=
+                         chip->cmd_ctrl(mtd, NAND_CMD_READSTART,=0A=
+			          NAND_NCE | NAND_CLE | NAND_CTRL_CHANGE);=0A=
+                         chip->cmd_ctrl(mtd, NAND_CMD_NONE,=0A=
+			          NAND_NCE | NAND_CTRL_CHANGE);=0A=
+                }=0A=
+=0A=
+So, I think nand_command_lp() follows the sequence as per Micron device.=0A=
+As it has been working for normal nand_reads also.=0A=
+=0A=
+=0A=
+>The above "70 status 00" actually is "STATUS (command 70 and a=0A=
+>status byte) plus READ0 (command 00)".  Not re-emitting the READ0=0A=
+>(this time without the addresses and READSTART) would make you=0A=
+>fetch more status bytes instead of the cached data bytes.=0A=
+>=0A=
+Yes, this is why I said ("this may require some tweaks").=0A=
+So, actually you can modify nand_command_lp()=0A=
+- to add new command =3D NAND_CMD_END_STATUS which just issues [00h],=0A=
+- OR modify existing NAND_CMD_STATUS to do something similar.=0A=
+=0A=
+But I think for most of the command sequences nand_command_lp()=0A=
+can be re-used, if not then please improve it.=0A=
+=0A=
+with regards, pekon=
