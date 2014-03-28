@@ -1,38 +1,36 @@
-Date: Fri, 28 Mar 2014 11:18:05 +0100
-From: Lothar =?UTF-8?B?V2HDn21hbm4=?= <LW@KARO-electronics.de>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCHv2 1/1] mtd: gpmi: make blockmark swapping optional
-Message-ID: <20140328111805.76b6513d@ipc1.ka-ro>
-In-Reply-To: <53354A46.9040807@freescale.com>
-References: <1395399017-19005-1-git-send-email-LW@KARO-electronics.de>
- <20140324095902.GB11377@localhost>
- <20140326095156.3e5585b8@ipc1.ka-ro>
- <5332AEE7.2040402@freescale.com>
- <20140326125502.0e8d0657@ipc1.ka-ro>
- <20140327095956.GA29623@localhost>
- <20140327132109.06258526@ipc1.ka-ro>
- <5334D9F7.2030001@freescale.com>
- <20140328091646.1ce03f90@ipc1.ka-ro>
- <53353524.9020605@freescale.com>
- <20140328090023.GB17250@pengutronix.de>
- <53354057.6030004@freescale.com>
- <20140328103147.3fdadfd7@ipc1.ka-ro>
- <53354A46.9040807@freescale.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Fabio Estevam <fabio.estevam@freescale.com>,
- Mark Rutland <mark.rutland@arm.com>, Shawn Guo <shawn.guo@linaro.org>,
- Russell King <linux@arm.linux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
- Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
+From: =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>
+To: Arnd Bergmann <arnd@arndb.de>,
  Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Sascha Hauer <s.hauer@pengutronix.de>, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, Rob Landley <rob@landley.net>,
- Kumar Gala <galak@codeaurora.org>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Sascha Hauer <kernel@pengutronix.de>,
- Shawn Guo <shawn.guo@freescale.com>
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Fabio Estevam <fabio.estevam@freescale.com>,
+ Huang Shijie <b32955@freescale.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>,
+ =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>,
+ Mark Rutland <mark.rutland@arm.com>, Pawel Moll <pawel.moll@arm.com>,
+ Rob Herring <robh+dt@kernel.org>, Rob Landley <rob@landley.net>,
+ Russell King <linux@arm.linux.org.uk>,
+ Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@freescale.com>,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Shawn Guo <shawn.guo@linaro.org>,
+ Boris BREZILLON <b.brezillon.dev@gmail.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Grant Likely <grant.likely@linaro.org>, Jingoo Han <jg1.han@samsung.com>,
+ Michael Grzeschik <m.grzeschik@pengutronix.de>,
+ Michael Opdenacker <michael.opdenacker@free-electrons.com>,
+ Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+Subject: [PATCHv3 2/2] of/mtd/nand: add generic binding and helper for
+ NAND_BBT_NO_OOB_BBM
+Date: Fri, 28 Mar 2014 11:35:07 +0100
+Message-Id: <1396002907-17750-3-git-send-email-LW@KARO-electronics.de>
+In-Reply-To: <1396002907-17750-1-git-send-email-LW@KARO-electronics.de>
+References: <1395235406-13449-1-git-send-email-y>
+ <1396002907-17750-1-git-send-email-LW@KARO-electronics.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,48 +40,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+add a boolean property 'nand-no-oob-bbm' and helper function to be
+able to set the NAND_BBT_NO_OOB_BBM flag in DT capable NAND drivers
+and use it for i.MX and MXS nand drivers.
 
-Huang Shijie wrote:
-> =E4=BA=8E 2014=E5=B9=B403=E6=9C=8828=E6=97=A5 17:31, Lothar Wa=C3=9Fmann =
-=E5=86=99=E9=81=93:
-> > Hi,
-> >
-> > Huang Shijie wrote:
-> >> =E4=BA=8E 2014=E5=B9=B403=E6=9C=8828=E6=97=A5 17:00, Sascha Hauer =E5=
-=86=99=E9=81=93:
-> >>> - disables swapping of BB marks in the FCB the ROM won't swap bytes.
-> >> We can not disable the swapping in the FCB in the imx28.
-> >> The DISBBM bit in the FCB does _NOT_ exit in the imx28's FCB.
-> >>
-> > The Linux kernel does not have any business with the FCB, so it is
-> > completely irrelevant for Linux whether byte swapping can be disabled
-> > in the FCB or not.
-> >
-> But the gpmi is relevant to the ROM.
-> the gpmi driver should keep consistency with the ROM.
->=20
-> I do not object you add the swapping optional the gpmi driver(since it's=
-=20
-> ok for imx50/imx6q/imx6sx),
-> i just object that you enable this feature for imx28.
->=20
-We are talking about a Linux Kernel Driver here, not about a flashtool
-for i.MX28.
-It is a valid usecase for Linux not being able to write the bootloader,
-so there is no reason to disallow this feature in the driver code.
-Since it is a DT option it can be trivially switched on and off without
-having to change anything in the kernel.
+Signed-off-by: Lothar Waßmann <LW@KARO-electronics.de>
+---
+ Documentation/devicetree/bindings/mtd/nand.txt |    1 +
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c         |    3 +++
+ drivers/mtd/nand/mxc_nand.c                    |    2 ++
+ drivers/of/of_mtd.c                            |   12 ++++++++++++
+ include/linux/of_mtd.h                         |    6 ++++++
+ 5 files changed, 24 insertions(+)
 
-
-Lothar Wa=C3=9Fmann
---=20
-___________________________________________________________
-
-Ka-Ro electronics GmbH | Pascalstra=C3=9Fe 22 | D - 52076 Aachen
-Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
-Gesch=C3=A4ftsf=C3=BChrer: Matthias Kaussen
-Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
-
-www.karo-electronics.de | info@karo-electronics.de
-___________________________________________________________
+diff --git a/Documentation/devicetree/bindings/mtd/nand.txt b/Documentation/devicetree/bindings/mtd/nand.txt
+index b53f92e..e46bfbe 100644
+--- a/Documentation/devicetree/bindings/mtd/nand.txt
++++ b/Documentation/devicetree/bindings/mtd/nand.txt
+@@ -5,6 +5,7 @@
+   "soft_bch".
+ - nand-bus-width : 8 or 16 bus width if not present 8
+ - nand-on-flash-bbt: boolean to enable on flash bbt option if not present false
++- nand-no-oob-bbm: boolean to disable writing bad block markers to flash
+ 
+ - nand-ecc-strength: integer representing the number of bits to correct
+ 		     per ECC step.
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 2a489b3..c23f27b 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -1707,6 +1707,9 @@ static int gpmi_nand_init(struct gpmi_nand_data *this)
+ 	if (of_get_nand_on_flash_bbt(this->dev->of_node)) {
+ 		chip->bbt_options |= NAND_BBT_USE_FLASH | NAND_BBT_NO_OOB;
+ 
++		if (of_get_nand_no_oob_bbm(this->dev->of_node))
++			chip->bbt_options |= NAND_BBT_NO_OOB_BBM;
++
+ 		if (of_property_read_bool(this->dev->of_node,
+ 						"fsl,no-blockmark-swap"))
+ 			this->swap_block_mark = false;
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index dba262b..bb54a2a 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -1496,6 +1496,8 @@ static int mxcnd_probe(struct platform_device *pdev)
+ 		this->bbt_md = &bbt_mirror_descr;
+ 		/* update flash based bbt */
+ 		this->bbt_options |= NAND_BBT_USE_FLASH;
++		if (of_get_nand_no_oob_bbm(pdev->dev.of_node))
++			this->bbt_options |= NAND_BBT_NO_OOB_BBM;
+ 	}
+ 
+ 	init_completion(&host->op_completion);
+diff --git a/drivers/of/of_mtd.c b/drivers/of/of_mtd.c
+index b7361ed..d947acc 100644
+--- a/drivers/of/of_mtd.c
++++ b/drivers/of/of_mtd.c
+@@ -117,3 +117,15 @@ bool of_get_nand_on_flash_bbt(struct device_node *np)
+ 	return of_property_read_bool(np, "nand-on-flash-bbt");
+ }
+ EXPORT_SYMBOL_GPL(of_get_nand_on_flash_bbt);
++
++/**
++ * of_get_nand_no_oob_bbm - Get nand no oob bbm for given device_node
++ * @np:	Pointer to the given device_node
++ *
++ * return true if present, false otherwise
++ */
++bool of_get_nand_no_oob_bbm(struct device_node *np)
++{
++	return of_property_read_bool(np, "nand-no-oob-bbm");
++}
++EXPORT_SYMBOL_GPL(of_get_nand_no_oob_bbm);
+diff --git a/include/linux/of_mtd.h b/include/linux/of_mtd.h
+index e266caa..6ece1a9 100644
+--- a/include/linux/of_mtd.h
++++ b/include/linux/of_mtd.h
+@@ -17,6 +17,7 @@ int of_get_nand_ecc_step_size(struct device_node *np);
+ int of_get_nand_ecc_strength(struct device_node *np);
+ int of_get_nand_bus_width(struct device_node *np);
+ bool of_get_nand_on_flash_bbt(struct device_node *np);
++bool of_get_nand_no_oob_bbm(struct device_node *np);
+ 
+ #else /* CONFIG_OF_MTD */
+ 
+@@ -45,6 +46,11 @@ static inline bool of_get_nand_on_flash_bbt(struct device_node *np)
+ 	return false;
+ }
+ 
++static inline bool of_get_nand_no_oob_bbm(struct device_node *np)
++{
++	return false;
++}
++
+ #endif /* CONFIG_OF_MTD */
+ 
+ #endif /* __LINUX_OF_MTD_H */
+-- 
+1.7.10.4
