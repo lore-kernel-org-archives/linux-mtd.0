@@ -1,34 +1,28 @@
-Date: Fri, 28 Mar 2014 10:01:58 +0100
-From: Lothar =?UTF-8?B?V2HDn21hbm4=?= <LW@KARO-electronics.de>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCHv2 1/1] mtd: gpmi: make blockmark swapping optional
-Message-ID: <20140328100158.042a3d68@ipc1.ka-ro>
-In-Reply-To: <53353524.9020605@freescale.com>
-References: <532BCFCC.4080205@freescale.com>
- <1395399017-19005-1-git-send-email-LW@KARO-electronics.de>
- <20140324095902.GB11377@localhost>
- <20140326095156.3e5585b8@ipc1.ka-ro>
- <5332AEE7.2040402@freescale.com>
- <20140326125502.0e8d0657@ipc1.ka-ro>
- <20140327095956.GA29623@localhost>
- <20140327132109.06258526@ipc1.ka-ro>
- <5334D9F7.2030001@freescale.com>
- <20140328091646.1ce03f90@ipc1.ka-ro>
- <53353524.9020605@freescale.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Fabio Estevam <fabio.estevam@freescale.com>,
- Mark Rutland <mark.rutland@arm.com>, Shawn Guo <shawn.guo@linaro.org>,
- Russell King <linux@arm.linux.org.uk>, Pawel Moll <pawel.moll@arm.com>,
- Arnd Bergmann <arnd@arndb.de>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, Rob Landley <rob@landley.net>,
- Kumar Gala <galak@codeaurora.org>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Sascha Hauer <kernel@pengutronix.de>,
- Shawn Guo <shawn.guo@freescale.com>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WTSpb-0006Er-4r
+ for linux-mtd@lists.infradead.org; Fri, 28 Mar 2014 09:12:12 +0000
+Date: Fri, 28 Mar 2014 10:11:42 +0100
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: =?iso-8859-15?Q?Ga=EBtan?= Carlier <gcembed@gmail.com>
+Subject: Re: [PATCH 1/1] mxc_nand : allow swapping the Bad block Indicator
+ for NFC v1.
+Message-ID: <20140328091142.GE17250@pengutronix.de>
+References: <1345811288.2848.308.camel@sauron.fi.intel.com>
+ <1345825064-9147-1-git-send-email-gcembed@gmail.com>
+ <201209061056.12386.jbe@pengutronix.de>
+ <504DF9BB.8050509@gmail.com>
+ <20120911071715.GB18243@pengutronix.de>
+ <5332DBDD.4090802@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5332DBDD.4090802@gmail.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, J.Lambrecht@televic.com,
+ Juergen Beisert <jbe@pengutronix.de>, linux-mtd@lists.infradead.org,
+ Sascha Hauer <kernel@pengutronix.de>, David Woodhouse <dwmw2@infradead.org>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,47 +32,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-Huang Shijie wrote:
-> =E4=BA=8E 2014=E5=B9=B403=E6=9C=8828=E6=97=A5 16:16, Lothar Wa=C3=9Fmann =
-=E5=86=99=E9=81=93:
-> > Still there is no need for the Linux NAND driver to be able to read or
-> > write partitions in a format that the Boot ROM can understand. Thus it
-> If you do not use the NAND boot, there really no need to do so.
->
-There is no need for the ROM code to access any other partition than
-the bootloader itself. Thus Linux can perfectly well be booted from
-NAND without any byte swapping.
-
-> Since you need the NAND boot, we should enable the swapping for imx28.
->
-Why? There is no need for Linux to do any swapping when not accessing
-the bootloader partition.
-
-> > is perfectly legal to allow disregarding the BB marks and solely rely on
-> > a flash based BBT.
+On Wed, Mar 26, 2014 at 02:53:33PM +0100, Gaëtan Carlier wrote:
+> Hi,
+> I don't see where the problem is. The fact that bad block marker are
+> used or not, is not related to "my" patch. This patch just places
+> data where they should be. If I take the Nand and connect it to a
+> not-bugged NFC controller, all data will be read correctly with data
+> is main area and OOB is spare area.
 > >
-> The BB mark is in the page 0 of a NAND block. But the swapping can occur=
-=20
-> in _each_ page of
-> a NAND block, _NOT_ only the page 0.
->=20
-> I think you are confusing at these two things.
->=20
-No, I'm not confusing anything. The swapping in any other page than
-page 0 is completely useless. Thus, when there is no need to recognize
-the BB markers, there in no need to do any swapping too.
+> >In this form the patch is simply not correct and should be dropped.
+> >
+> Now I want to adapt and publish my platform file to latest kernel
+> version and I am still stopped with this biswap patch that is not
+> applied. As I said before, I must not be the only that have used
+> this damned original patch from Freescale that swaps byte in their
+> ATK programming soft, redboot and Kernel and it is impossible to
+> fallback to current NAND handling (without swapping).
+> 
+> Is there any chance that if I send this patch against
+> linux-next/master branch, it will be finally accepted. Only people
+> that needs it will use it. There is so much option in menuconfig
+> with so little explaination and mark as "Only say Yes if you known
+> what you do".
+
+I'm ok with supporting a devicetree option that decides whether to do
+bad block marker swapping or not. It shouldn't be a Kconfig option.
+
+Sascha
 
 
-Lothar Wa=C3=9Fmann
---=20
-___________________________________________________________
-
-Ka-Ro electronics GmbH | Pascalstra=C3=9Fe 22 | D - 52076 Aachen
-Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
-Gesch=C3=A4ftsf=C3=BChrer: Matthias Kaussen
-Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
-
-www.karo-electronics.de | info@karo-electronics.de
-___________________________________________________________
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
