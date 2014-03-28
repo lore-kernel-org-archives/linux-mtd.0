@@ -1,16 +1,34 @@
-Received: from mail-qg0-x22a.google.com ([2607:f8b0:400d:c04::22a])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WTSfx-0005vO-C2
- for linux-mtd@lists.infradead.org; Fri, 28 Mar 2014 09:02:10 +0000
-Received: by mail-qg0-f42.google.com with SMTP id q107so4071393qgd.15
- for <linux-mtd@lists.infradead.org>; Fri, 28 Mar 2014 02:01:38 -0700 (PDT)
-MIME-Version: 1.0
-Date: Fri, 28 Mar 2014 10:01:38 +0100
-Message-ID: <CAGL2vdwia5vmAgqkJBWKPYNMJiS2dn627t9a8jsjht2G=mqG1Q@mail.gmail.com>
-Subject: jffs2dump endian convert does not convert major/minor numbers
-From: Norbert Nemeth <nyonhar@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: multipart/mixed; boundary=089e013cba9816747a04f5a6f306
+Date: Fri, 28 Mar 2014 10:01:58 +0100
+From: Lothar =?UTF-8?B?V2HDn21hbm4=?= <LW@KARO-electronics.de>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCHv2 1/1] mtd: gpmi: make blockmark swapping optional
+Message-ID: <20140328100158.042a3d68@ipc1.ka-ro>
+In-Reply-To: <53353524.9020605@freescale.com>
+References: <532BCFCC.4080205@freescale.com>
+ <1395399017-19005-1-git-send-email-LW@KARO-electronics.de>
+ <20140324095902.GB11377@localhost>
+ <20140326095156.3e5585b8@ipc1.ka-ro>
+ <5332AEE7.2040402@freescale.com>
+ <20140326125502.0e8d0657@ipc1.ka-ro>
+ <20140327095956.GA29623@localhost>
+ <20140327132109.06258526@ipc1.ka-ro>
+ <5334D9F7.2030001@freescale.com>
+ <20140328091646.1ce03f90@ipc1.ka-ro>
+ <53353524.9020605@freescale.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Fabio Estevam <fabio.estevam@freescale.com>,
+ Mark Rutland <mark.rutland@arm.com>, Shawn Guo <shawn.guo@linaro.org>,
+ Russell King <linux@arm.linux.org.uk>, Pawel Moll <pawel.moll@arm.com>,
+ Arnd Bergmann <arnd@arndb.de>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, Rob Landley <rob@landley.net>,
+ Kumar Gala <galak@codeaurora.org>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Sascha Hauer <kernel@pengutronix.de>,
+ Shawn Guo <shawn.guo@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,80 +38,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---089e013cba9816747a04f5a6f306
-Content-Type: text/plain; charset=ISO-8859-1
-
 Hi,
 
-Using jffs2dump endian convert feature would leave the major and minor
-numbers untouched, so they will be "swapped" in the resulting image.
+Huang Shijie wrote:
+> =E4=BA=8E 2014=E5=B9=B403=E6=9C=8828=E6=97=A5 16:16, Lothar Wa=C3=9Fmann =
+=E5=86=99=E9=81=93:
+> > Still there is no need for the Linux NAND driver to be able to read or
+> > write partitions in a format that the Boot ROM can understand. Thus it
+> If you do not use the NAND boot, there really no need to do so.
+>
+There is no need for the ROM code to access any other partition than
+the bootloader itself. Thus Linux can perfectly well be booted from
+NAND without any byte swapping.
 
-Looking into mkfs.jffs2.c, major/minor data is written by
-write_special_file as a byte each into the data section.  There is no
-special handling for this in jffs2dump.c / do_endianconvert.
+> Since you need the NAND boot, we should enable the swapping for imx28.
+>
+Why? There is no need for Linux to do any swapping when not accessing
+the bootloader partition.
 
-The attached patch is a possible solution for this issue.
+> > is perfectly legal to allow disregarding the BB marks and solely rely on
+> > a flash based BBT.
+> >
+> The BB mark is in the page 0 of a NAND block. But the swapping can occur=
+=20
+> in _each_ page of
+> a NAND block, _NOT_ only the page 0.
+>=20
+> I think you are confusing at these two things.
+>=20
+No, I'm not confusing anything. The swapping in any other page than
+page 0 is completely useless. Thus, when there is no need to recognize
+the BB markers, there in no need to do any swapping too.
 
-One way to reproduce it:
-$ ls -l test
-total 0
-brw-r--r-- 1 root root 1, 2 Mar 28 09:32 myblockdev
-crw-r--r-- 1 root root 1, 2 Mar 28 09:32 mychardev
-$ mkfs.jffs2 -d test -b -o testfs.big.jffs2
-$ jffs2dump -b -e testfs.little.jffs2 testfs.big.jffs2
-$ xxd testfs.big.jffs2 | grep 0102
-0000080: ecd7 187b 0102 ffff 1985 e001 0000 0031  ...{...........1
-0000100: 0102 ffff                                ....
-$ xxd testfs.little.jffs2 | grep 0102
-0000080: d848 a9f0 0102 ffff 8519 01e0 3100 0000  .H..........1...
-0000100: 0102 ffff
-$ xxd testfs.little.jffs2 | grep 0201
-$
 
-BR,
-N.
+Lothar Wa=C3=9Fmann
+--=20
+___________________________________________________________
 
---089e013cba9816747a04f5a6f306
-Content-Type: text/x-patch; charset=US-ASCII; name="jffs2dump.c.patch"
-Content-Disposition: attachment; filename="jffs2dump.c.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_htb8qn400
+Ka-Ro electronics GmbH | Pascalstra=C3=9Fe 22 | D - 52076 Aachen
+Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
+Gesch=C3=A4ftsf=C3=BChrer: Matthias Kaussen
+Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
 
-ZGlmZiAtLWdpdCBhL2pmZnMyZHVtcC5jIGIvamZmczJkdW1wLmMKaW5kZXggOWUxM2U5OC4uNjNi
-Mzc1MyAxMDA2NDQKLS0tIGEvamZmczJkdW1wLmMKKysrIGIvamZmczJkdW1wLmMKQEAgLTQ2MCw3
-ICs0NjAsOSBAQCB2b2lkIGRvX2VuZGlhbmNvbnZlcnQgKHZvaWQpCiAKIAkJc3dpdGNoKGplMTZf
-dG9fY3B1KG5vZGUtPnUubm9kZXR5cGUpKSB7CiAKLQkJCWNhc2UgSkZGUzJfTk9ERVRZUEVfSU5P
-REU6CisJCQljYXNlIEpGRlMyX05PREVUWVBFX0lOT0RFOnsKKwkJCQlqaW50MTZfdCBrZGV2WzJd
-OyAKKwkJCQl1aW50MzJfdCBpc19kZXY7IAogCiAJCQkJbmV3bm9kZS5pLm1hZ2ljID0gY252X2Ux
-NiAobm9kZS0+aS5tYWdpYyk7CiAJCQkJbmV3bm9kZS5pLm5vZGV0eXBlID0gY252X2UxNiAobm9k
-ZS0+aS5ub2RldHlwZSk7CkBAIC00ODMsMTkgKzQ4NSwzOSBAQCB2b2lkIGRvX2VuZGlhbmNvbnZl
-cnQgKHZvaWQpCiAJCQkJbmV3bm9kZS5pLmNvbXByID0gbm9kZS0+aS5jb21wcjsKIAkJCQluZXdu
-b2RlLmkudXNlcmNvbXByID0gbm9kZS0+aS51c2VyY29tcHI7CiAJCQkJbmV3bm9kZS5pLmZsYWdz
-ID0gY252X2UxNiAobm9kZS0+aS5mbGFncyk7CisJCQkJCisJCQkJaXNfZGV2ID0gU19JU0NIUihq
-ZW1vZGVfdG9fY3B1KG5vZGUtPmkubW9kZSkpIHx8IFNfSVNCTEsoamVtb2RlX3RvX2NwdShub2Rl
-LT5pLm1vZGUpKTsKKwkJCQlpZiAoaXNfZGV2KXsKKwkJCQkJLyogcmVhZCBtYWpvciwgbWlub3Ig
-YW5kIHBhZGRpbmcgKi8KKwkJCQkJbWVtY3B5IChrZGV2LCBwICsgc2l6ZW9mIChzdHJ1Y3QgamZm
-czJfcmF3X2lub2RlKSwgc2l6ZW9mIChrZGV2KSk7CisJCQkJCS8qc3dhcCBtYWpvciBhbmQgbWlu
-b3IsIHRvIGJlIGluIHRoZSByaWdodCBvcmRlciovCisJCQkJCWtkZXZbMF09Y252X2UxNihrZGV2
-WzBdKTsKKwkJCQkJaWYoIXJlY2FsY2NyYykKKwkJCQkJCXByaW50ZigiUmVjYWxjIGNyYyBpcyBk
-aXNhYmxlZCwgZGF0YSBjcmMgb2YgZGV2aWNlIGZpbGVzIHdpbGwgYmUgY29ycnVwdCEhIVxuIik7
-CisJCQkJfQorCisKIAkJCQlpZiAocmVjYWxjY3JjKSB7CiAJCQkJCWxlbiA9IGplMzJfdG9fY3B1
-KG5vZGUtPmkuY3NpemUpOwotCQkJCQluZXdub2RlLmkuZGF0YV9jcmMgPSBjcHVfdG9fZTMyICgg
-bXRkX2NyYzMyKDAsIHAgKyBzaXplb2YgKHN0cnVjdCBqZmZzMl9yYXdfaW5vZGUpLCBsZW4pKTsK
-KwkJCQkJaWYgKGlzX2RldikKKwkJCQkJCW5ld25vZGUuaS5kYXRhX2NyYyA9IGNwdV90b19lMzIg
-KCBtdGRfY3JjMzIoMCwga2RldiwgbGVuKSk7CisJCQkJCWVsc2UKKwkJCQkJCW5ld25vZGUuaS5k
-YXRhX2NyYyA9IGNwdV90b19lMzIgKCBtdGRfY3JjMzIoMCwgcCArIHNpemVvZiAoc3RydWN0IGpm
-ZnMyX3Jhd19pbm9kZSksIGxlbikpOwogCQkJCX0gZWxzZQogCQkJCQluZXdub2RlLmkuZGF0YV9j
-cmMgPSBjbnZfZTMyIChub2RlLT5pLmRhdGFfY3JjKTsKIAogCQkJCW5ld25vZGUuaS5ub2RlX2Ny
-YyA9IGNwdV90b19lMzIgKG10ZF9jcmMzMiAoMCwgJm5ld25vZGUsIHNpemVvZiAoc3RydWN0IGpm
-ZnMyX3Jhd19pbm9kZSkgLSA4KSk7CiAKIAkJCQl3cml0ZSAoZmQsICZuZXdub2RlLCBzaXplb2Yg
-KHN0cnVjdCBqZmZzMl9yYXdfaW5vZGUpKTsKLQkJCQl3cml0ZSAoZmQsIHAgKyBzaXplb2YgKHN0
-cnVjdCBqZmZzMl9yYXdfaW5vZGUpLCBQQUQgKGplMzJfdG9fY3B1IChub2RlLT5pLnRvdGxlbikg
-LSAgc2l6ZW9mIChzdHJ1Y3QgamZmczJfcmF3X2lub2RlKSkpOworCisJCQkJaWYgKGlzX2RldikK
-KwkJCQkJd3JpdGUgKGZkLCBrZGV2LCBzaXplb2YgKGtkZXYpKTsKKwkJCQllbHNlCisJCQkJCXdy
-aXRlIChmZCwgcCArIHNpemVvZiAoc3RydWN0IGpmZnMyX3Jhd19pbm9kZSksIFBBRCAoamUzMl90
-b19jcHUgKG5vZGUtPmkudG90bGVuKSAtICBzaXplb2YgKHN0cnVjdCBqZmZzMl9yYXdfaW5vZGUp
-KSk7CiAKIAkJCQlwICs9IFBBRChqZTMyX3RvX2NwdSAobm9kZS0+aS50b3RsZW4pKTsKIAkJCQli
-cmVhazsKKwkJCX0KIAogCQkJY2FzZSBKRkZTMl9OT0RFVFlQRV9ESVJFTlQ6CiAJCQkJbmV3bm9k
-ZS5kLm1hZ2ljID0gY252X2UxNiAobm9kZS0+ZC5tYWdpYyk7Cg==
---089e013cba9816747a04f5a6f306--
+www.karo-electronics.de | info@karo-electronics.de
+___________________________________________________________
