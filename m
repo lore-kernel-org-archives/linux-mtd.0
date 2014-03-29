@@ -1,22 +1,19 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WTzpH-0005yz-9i
- for linux-mtd@lists.infradead.org; Sat, 29 Mar 2014 20:25:59 +0000
-Date: Sat, 29 Mar 2014 17:24:57 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH v2] ubi-utils: Add ubiblock tool
-Message-ID: <20140329202457.GA742@arch.cereza>
-References: <1394806381-25458-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1394807124-25916-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1395733934.1549.46.camel@sauron.fi.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1395733934.1549.46.camel@sauron.fi.intel.com>
-Cc: linux-mtd@lists.infradead.org
+Received: from smtprelay06.ispgateway.de ([80.67.31.102])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WU33N-0007PU-LQ
+ for linux-mtd@lists.infradead.org; Sat, 29 Mar 2014 23:52:47 +0000
+Received: from [78.43.41.9] (helo=abel)
+ by smtprelay06.ispgateway.de with esmtpsa (SSLv3:AES128-SHA:128)
+ (Exim 4.68) (envelope-from <daniel@vangerpen.de>) id 1WU32y-0004MO-M3
+ for linux-mtd@lists.infradead.org; Sun, 30 Mar 2014 00:52:20 +0100
+Date: Sun, 30 Mar 2014 00:52:10 +0100
+From: Daniel van Gerpen <daniel@vangerpen.de>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] ubi-utils: Fix file descriptor leaks in libubi
+Message-ID: <20140330005210.6df43941@abel>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,23 +23,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mar 25, Artem Bityutskiy wrote:
-> On Fri, 2014-03-14 at 11:25 -0300, Ezequiel Garcia wrote:
-> > With the addition of block device access to UBI volumes, we now
-> > add a simple userspace tool to access the new ioctls.
-> > 
-> > Usage of this tool is as simple as it gets:
-> > 
-> >   $ ubiblock --create /dev/ubi0_0
-> > 
-> > will create a new block device /dev/ubiblock0_0, and
-> 
-> Pushed to mtd-utils, thanks!
-> 
 
-Thanks! Do you think it would be appropriate to do a new release, so
-the new tool is included?
+Signed-off-by: Daniel van Gerpen <daniel@vangerpen.de>
+---
+ ubi-utils/libubi.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/ubi-utils/libubi.c b/ubi-utils/libubi.c
+index 598191e..c2d67af 100644
+--- a/ubi-utils/libubi.c
++++ b/ubi-utils/libubi.c
+@@ -419,6 +419,11 @@ static int vol_node2nums(struct libubi *lib, const char *node, int *dev_num,
+ 		errno = ENODEV;
+ 		return -1;
+ 	}
++	
++	if (close(fd)) {
++		sys_errmsg("close failed on \"%s\"", file);
++		return -1;
++	}
+ 
+ 	*dev_num = i;
+ 	*vol_id = minor - 1;
+@@ -910,6 +915,11 @@ int ubi_probe_node(libubi_t desc, const char *node)
+ 	fd = open(file, O_RDONLY);
+ 	if (fd == -1)
+ 		goto out_not_ubi;
++	
++        if (close(fd)) {
++		sys_errmsg("close failed on \"%s\"", file);
++		return -1;
++	}
+ 
+ 	return 2;
+ 
 -- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+1.8.3.2
