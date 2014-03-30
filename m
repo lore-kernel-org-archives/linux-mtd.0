@@ -1,20 +1,22 @@
-Received: from userp1040.oracle.com ([156.151.31.81])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WU3fp-0007g9-0z
- for linux-mtd@lists.infradead.org; Sun, 30 Mar 2014 00:32:30 +0000
-Message-ID: <533765F8.2090700@oracle.com>
-Date: Sat, 29 Mar 2014 20:31:52 -0400
-From: Sasha Levin <sasha.levin@oracle.com>
+Received: from extern.plris.com ([212.199.10.23] helo=plris.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WU9zi-0002k7-L9
+ for linux-mtd@lists.infradead.org; Sun, 30 Mar 2014 07:17:27 +0000
+From: Leon Pollak <leonp@plris.com>
+To: linux-mtd@lists.infradead.org, Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: What is wrong? - Cont
+Date: Sun, 30 Mar 2014 10:16:51 +0300
+Message-ID: <1762128.E80Aghzg1W@leonp.plris.com>
+In-Reply-To: <20500571.Fgyz0I6ATm@leonp.plris.com>
+References: <4315632.KkRm7kzq26@leonp.plris.com>
+ <20140304083325.GJ13420@norris-Latitude-E6410>
+ <20500571.Fgyz0I6ATm@leonp.plris.com>
 MIME-Version: 1.0
-To: Alexander Shiyan <shc_work@mail.ru>
-Subject: Re: [PATCH] mtd: diskonchip: mem resource name is not optional
-References: <1395267877-15223-1-git-send-email-sasha.levin@oracle.com>
- <1395477572.57478225@f224.i.mail.ru>
-In-Reply-To: <1395477572.57478225@f224.i.mail.ru>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="utf-8"
+Cc: Richard Weinberger <richard@nod.at>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,39 +26,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/22/2014 04:39 AM, Alexander Shiyan wrote:
-> Wed, 19 Mar 2014 18:24:37 -0400 от Sasha Levin <sasha.levin@oracle.com>:
->> Passing a name to request_mem_region() isn't optional and can't just
->> be NULL. Passing NULL causes a NULL ptr deref later in the boot
->> process.
->>
->> Signed-off-by: Sasha Levin <sasha.levin@oracle.com>
->> ---
->>   drivers/mtd/nand/diskonchip.c |    2 +-
->>   1 files changed, 1 insertions(+), 1 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/diskonchip.c b/drivers/mtd/nand/diskonchip.c
->> index b9b4db6..f68a7bc 100644
->> --- a/drivers/mtd/nand/diskonchip.c
->> +++ b/drivers/mtd/nand/diskonchip.c
->> @@ -1439,7 +1439,7 @@ static int __init doc_probe(unsigned long physadr)
->>   	int reg, len, numchips;
->>   	int ret = 0;
->>
->> -	if (!request_mem_region(physadr, DOC_IOREMAP_LEN, NULL))
->> +	if (!request_mem_region(physadr, DOC_IOREMAP_LEN, "DiskOnChip"))
->>   		return -EBUSY;
->>   	virtadr = ioremap(physadr, DOC_IOREMAP_LEN);
->>   	if (!virtadr) {
->> --
->
-> Tested-by: Alexander Shiyan <shc_work@mail.ru>
+Meanwhile, some more inputs:
 
-It seems that no one pulled this patch anywhere. It fixes a straightforward
-boot failure on boot when diskonchip is enabled in the config.
+First, to remind, the scenario:
+After the first burning (from withing U-Boot), the NAND is write 
+protected by HW and the partition is mounted as RO.
+At some moment I need to update a small file. 
+So I do: 
+- HW write protect off, 
+- remount RW, 
+- update file, <---- The main point  <----
+- sync, 
+- remount RO, 
+- write protect on.
+At this moment, the console is full of error messages - crash or a lot 
+of "Erase at 0x..... failed immediately: errno -5".
+-------------------------------
 
-Someone grab it please?
+Now two more test cases:
+
+1. After burning JFFS2 from U-Boot and STILL WITHOUT working from flash, 
+I boot into NFS, mount the partition as RW, keep it for 3-5 seconds and 
+reboot into flashes.
+This works FINE, updating passes silently, no crazy messages and/or 
+crashes.
+
+2. I added to the partition a flag file "first_time.dat" and in rc3.d 
+added script:
+if [ -e first_time.dat ] ; then
+    'HW unlock flash'
+    mount -o,remount,rw /home
+    sleep 20
+    mount -o,remount,ro /home
+    'HW lock flash';
+    rm first_time.dat
+fi
+Against my hopes, this DOES NOT helped. Crashes and messages appeared as 
+"usual"....
 
 
-Thanks,
-Sasha
+Any help will be highly appreciated.
+-- 
+Leon
