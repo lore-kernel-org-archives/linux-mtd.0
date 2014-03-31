@@ -1,25 +1,20 @@
-Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
+Received: from mail-lb0-x235.google.com ([2a00:1450:4010:c04::235])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WUfm9-0000kN-66
- for linux-mtd@lists.infradead.org; Mon, 31 Mar 2014 17:13:33 +0000
-Received: by mail-pa0-f50.google.com with SMTP id kq14so8534829pab.9
- for <linux-mtd@lists.infradead.org>; Mon, 31 Mar 2014 10:13:12 -0700 (PDT)
-Date: Mon, 31 Mar 2014 10:13:07 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH v2] ubi-utils: Add ubiblock tool
-Message-ID: <20140331171307.GF29542@ld-irv-0074>
-References: <1394806381-25458-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1394807124-25916-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1395733934.1549.46.camel@sauron.fi.intel.com>
- <20140329202457.GA742@arch.cereza>
- <1396259134.9016.58.camel@sauron.fi.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1396259134.9016.58.camel@sauron.fi.intel.com>
-Cc: linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+ id 1WUgBn-0001mj-1O
+ for linux-mtd@lists.infradead.org; Mon, 31 Mar 2014 17:40:03 +0000
+Received: by mail-lb0-f181.google.com with SMTP id c11so6138329lbj.12
+ for <linux-mtd@lists.infradead.org>; Mon, 31 Mar 2014 10:39:40 -0700 (PDT)
+Subject: [PATCH] mtd: cfi_cmdset_0001 - fixup for PC28F512P33TFA
+From: Christoph Fritz <chf.fritz@googlemail.com>
+To: Brian Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 31 Mar 2014 19:32:31 +0200
+Message-ID: <1396287151.4857.50.camel@mars>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Marius Achilles <M.Achilles@phytec.de>, linux-mtd@lists.infradead.org,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,18 +24,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Mar 31, 2014 at 12:45:34PM +0300, Artem Bityutskiy wrote:
-> On Sat, 2014-03-29 at 17:24 -0300, Ezequiel Garcia wrote:
-> > Thanks! Do you think it would be appropriate to do a new release, so
-> > the new tool is included?
-> 
-> Yeah, probably. Let's check if Brian has anything in mind and then I can
-> make a release.
+Add a fixup (quirk) for Micron NOR flash PC28F512P33TFA: This patch
+disables option 'suspend erase' due to "internal timing issues on
+some revisions of the P3x" which is pointed out by Micron TechNote-PDF
+"Adapting the Linux Kernel for Micron P30, P33, and J3 Flash Memory" [1].
 
-Other than the trivial ubiformat patch I just sent, no objections here.
-A release is probably a good idea.
+Without this patch, errors occur during heavy flash usage mostly in minus
+degree temperature environments.
 
-(NB: I just upgraded my rootfs mtd-utils to the latest git HEAD a week
-or two ago; I suppose a release tag would have been better!)
+It's very likely that other P3x chips suffer from the same issue.
 
-Brian
+[1]: https://www.micron.com/~/media/Documents/Products/Technical%20Note/NOR%20Flash/tn1206_p30_p33_j3_linux.pdf
+
+Signed-off-by: Christoph Fritz <chf.fritz@googlemail.com>
+Tested-by: Marius Achilles <M.Achilles@phytec.de>
+---
+ drivers/mtd/chips/cfi_cmdset_0001.c |   13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+index 7751443..eb951b1 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+@@ -279,6 +279,18 @@ static void fixup_use_write_buffers(struct mtd_info *mtd)
+ 	}
+ }
+ 
++static void fixup_micron_pc28f512p33(struct mtd_info *mtd)
++{
++	struct map_info *map = mtd->priv;
++	struct cfi_private *cfi = map->fldrv_priv;
++	struct cfi_pri_intelext *cfip = cfi->cmdset_priv;
++
++	if (cfip->FeatureSupport & 2) {
++		printk(KERN_INFO "Disable Suspend Erase\n");
++		cfip->FeatureSupport &= ~2;
++	}
++}
++
+ /*
+  * Some chips power-up with all sectors locked by default.
+  */
+@@ -309,6 +321,7 @@ static struct cfi_fixup cfi_fixup_table[] = {
+ #endif
+ 	{ CFI_MFR_ST, 0x00ba, /* M28W320CT */ fixup_st_m28w320ct },
+ 	{ CFI_MFR_ST, 0x00bb, /* M28W320CB */ fixup_st_m28w320cb },
++	{ CFI_MFR_INTEL, 0x8964, /* PC28F512P33 */ fixup_micron_pc28f512p33 },
+ 	{ CFI_MFR_INTEL, CFI_ID_ANY, fixup_unlock_powerup_lock },
+ 	{ 0, 0, NULL }
+ };
+-- 
+1.7.10.4
