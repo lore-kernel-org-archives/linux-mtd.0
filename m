@@ -1,24 +1,21 @@
-Received: from cantor2.suse.de ([195.135.220.15] helo=mx2.suse.de)
+Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WUdJm-0002fq-Hy
- for linux-mtd@lists.infradead.org; Mon, 31 Mar 2014 14:36:07 +0000
-Date: Mon, 31 Mar 2014 16:35:43 +0200
-From: Michal Marek <mmarek@suse.cz>
-To: Fengguang Wu <fengguang.wu@intel.com>
-Subject: Re: [mtd/sbc_gxx] kernel BUG at include/linux/mtd/map.h:148!
-Message-ID: <20140331143543.GA9764@sepie.suse.cz>
-References: <20140327140140.GA9083@localhost>
- <CAErSpo7b+OJUoRcMY0edZPgEKG6DbwdLcq5M0-9B6JKALpm+QQ@mail.gmail.com>
- <20140331113412.GA13548@localhost>
+ id 1WUfWI-0000Ba-DK
+ for linux-mtd@lists.infradead.org; Mon, 31 Mar 2014 16:57:11 +0000
+Received: by mail-pa0-f45.google.com with SMTP id kl14so8493317pab.32
+ for <linux-mtd@lists.infradead.org>; Mon, 31 Mar 2014 09:56:46 -0700 (PDT)
+Date: Mon, 31 Mar 2014 09:56:42 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Ron <ron@debian.org>
+Subject: Re: [PATCH 1/2] Fix index regression in nand_read_subpage
+Message-ID: <20140331165642.GE29542@ld-irv-0074>
+References: <1394904668-22978-1-git-send-email-ron@debian.org>
+ <1394904668-22978-2-git-send-email-ron@debian.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20140331113412.GA13548@localhost>
-Cc: linux-kbuild <linux-kbuild@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Bjorn Helgaas <bhelgaas@google.com>,
- Brian Norris <computersforpeace@gmail.com>,
+In-Reply-To: <1394904668-22978-2-git-send-email-ron@debian.org>
+Cc: linux-mtd@lists.infradead.org, Florian Fainelli <f.fainelli@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,96 +26,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Mar 31, 2014 at 07:34:12PM +0800, Fengguang Wu wrote:
-> CC Michal and kbuild list.
++ Florian
+
+(FYI Ron: 3 of your emails were filtered as spam in my mailbox, for some
+reason. I only pass over my spam mailbox every once in a few weeks; I
+only noticed this because of your IRC ping!)
+
+On Sun, Mar 16, 2014 at 04:01:07AM +1030, Ron wrote:
+> Commit 7351d3a5dbf42ba3299af71db3296be447bc1516 added an index variable
+> as part of fixing checkpatch warnings, presumably as a tool to make some
+> long lines shorter, however it only set that index in the case of there
+> being no gaps in eccpos for the fragment being read.  Which means the
+> later step of filling ecccode from oob_poi will use the wrong indexing
+> into eccpos in that case.
 > 
-> On Thu, Mar 27, 2014 at 04:51:53PM -0600, Bjorn Helgaas wrote:
-> > [+cc David, Brian]
-> > 
-> > On Thu, Mar 27, 2014 at 8:01 AM, Fengguang Wu <fengguang.wu@intel.com> wrote:
-> > > FYI, here is a very old warning, too old to be bisected.
-> > >
-> > > [    5.282127] sd 0:0:0:0: [sda] Write cache: enabled, read cache: enabled, supports DPO and FUA
-> > > [    5.286079] SBC-GXx flash: IO:0x258-0x259 MEM:0xdc000-0xdffff
-> > > [    5.288723] ------------[ cut here ]------------
-> > > [    5.289649] kernel BUG at include/linux/mtd/map.h:148!
-> > 
-> > I think the problem is that your randconfig happens to have none of
-> > CONFIG_MTD_MAP_BANK_WIDTH_* set (you should have played the lottery
-> > today!), and the default implementation of map_bankwidth() in that
-> > case is just "BUG()":
-> > 
-> >   $ grep MTD_MAP config-3.14.0-rc8-wl-03045-gdf16ea4
-> >   # CONFIG_MTD_MAP_BANK_WIDTH_1 is not set
-> >   # CONFIG_MTD_MAP_BANK_WIDTH_2 is not set
-> >   # CONFIG_MTD_MAP_BANK_WIDTH_4 is not set
-> >   # CONFIG_MTD_MAP_BANK_WIDTH_8 is not set
-> >   # CONFIG_MTD_MAP_BANK_WIDTH_16 is not set
-> >   # CONFIG_MTD_MAP_BANK_WIDTH_32 is not set
-> > 
-> > I don't know enough Kconfig or MTD to fix this.
+> This patch restores the behaviour that existed prior to that change.
 > 
-> Michal, the problem we run into is, how to select one of the above
-> CONFIG_MTD_MAP_BANK_WIDTH_xx in "make randconfig".
-
-You can't enforce this in Kconfig. What you can do is to make the logic
-more fool-proof and fall back to some sensible default if none of the
-CONFIG_MTD_MAP_BANK_WIDTH_* options is enabled. Like this
-
-
->From 76e66ceea7e2ffbb1d39c01af2eaf6f2b66c2be3 Mon Sep 17 00:00:00 2001
-From: Michal Marek <mmarek@suse.cz>
-Date: Mon, 31 Mar 2014 16:25:32 +0200
-Subject: [PATCH] mtd: Fall back to MTD_MAP_BANK_WIDTH_1 if none is specified
-
-This is mainly to fix make randconfig errors.
-
-Signed-off-by: Michal Marek <mmarek@suse.cz>
----
- drivers/mtd/chips/Kconfig | 8 ++++++++
- include/linux/mtd/map.h   | 4 ++--
- 2 files changed, 10 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/chips/Kconfig b/drivers/mtd/chips/Kconfig
-index e4696b3..219de49 100644
---- a/drivers/mtd/chips/Kconfig
-+++ b/drivers/mtd/chips/Kconfig
-@@ -115,6 +115,14 @@ config MTD_MAP_BANK_WIDTH_32
- 	  If you wish to support CFI devices on a physical bus which is
- 	  256 bits wide, say 'Y'.
- 
-+config HAVE_MTD_MAP_BANK_WIDTH_1
-+	bool
-+	default MTD_MAP_BANK_WIDTH_1 || (!MTD_MAP_BANK_WIDTH_2 && !MTD_MAP_BANK_WIDTH_4 && !MTD_MAP_BANK_WIDTH_8 && !MTD_MAP_BANK_WIDTH_16 && !MTD_MAP_BANK_WIDTH_32)
-+
-+if HAVE_MTD_MAP_BANK_WIDTH_1 && !MTD_MAP_BANK_WIDTH_1
-+comment "no buswidth selected, using 8-bit as a fallback "
-+endif
-+
- config MTD_CFI_I1
- 	bool "Support 1-chip flash interleave" if MTD_CFI_GEOMETRY
- 	default y
-diff --git a/include/linux/mtd/map.h b/include/linux/mtd/map.h
-index 5f487d7..d4f4f49 100644
---- a/include/linux/mtd/map.h
-+++ b/include/linux/mtd/map.h
-@@ -32,7 +32,7 @@
- #include <asm/io.h>
- #include <asm/barrier.h>
- 
--#ifdef CONFIG_MTD_MAP_BANK_WIDTH_1
-+#ifdef CONFIG_HAVE_MTD_MAP_BANK_WIDTH_1
- #define map_bankwidth(map) 1
- #define map_bankwidth_is_1(map) (map_bankwidth(map) == 1)
- #define map_bankwidth_is_large(map) (0)
-@@ -156,7 +156,7 @@ static inline int map_bankwidth(void *map)
- static inline int map_bankwidth_supported(int w)
- {
- 	switch (w) {
--#ifdef CONFIG_MTD_MAP_BANK_WIDTH_1
-+#ifdef CONFIG_HAVE_MTD_MAP_BANK_WIDTH_1
- 	case 1:
- #endif
- #ifdef CONFIG_MTD_MAP_BANK_WIDTH_2
--- 
-1.8.4.5
+> Signed-off-by: Ron <ron@debian.org>
+> ---
+>  drivers/mtd/nand/nand_base.c |    5 ++---
+>  1 files changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 9715a7b..be23dff 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -1170,13 +1170,14 @@ static int nand_read_subpage(struct mtd_info *mtd, struct nand_chip *chip,
+>  	int data_col_addr, i, gaps = 0;
+>  	int datafrag_len, eccfrag_len, aligned_len, aligned_pos;
+>  	int busw = (chip->options & NAND_BUSWIDTH_16) ? 2 : 1;
+> -	int index = 0;
+> +	int index;
+>  	unsigned int max_bitflips = 0;
+>  
+>  	/* Column address within the page aligned to ECC size (256bytes) */
+>  	start_step = data_offs / chip->ecc.size;
+>  	end_step = (data_offs + readlen - 1) / chip->ecc.size;
+>  	num_steps = end_step - start_step + 1;
+> +	index = start_step * chip->ecc.bytes;
+>  
+>  	/* Data size aligned to ECC ecc.size */
+>  	datafrag_len = num_steps * chip->ecc.size;
+> @@ -1213,8 +1214,6 @@ static int nand_read_subpage(struct mtd_info *mtd, struct nand_chip *chip,
+>  		 * Send the command to read the particular ECC bytes take care
+>  		 * about buswidth alignment in read_buf.
+>  		 */
+> -		index = start_step * chip->ecc.bytes;
+> -
+>  		aligned_pos = eccpos[index] & ~(busw - 1);
+>  		aligned_len = eccfrag_len;
+>  		if (eccpos[index] & (busw - 1))
+> -- 
+> 1.7.2.5
+> 
