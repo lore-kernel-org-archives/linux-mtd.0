@@ -1,19 +1,23 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga01.intel.com ([192.55.52.88])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WUZFb-0003i8-DT
- for linux-mtd@lists.infradead.org; Mon, 31 Mar 2014 10:15:31 +0000
-Message-ID: <1396260879.9016.70.camel@sauron.fi.intel.com>
-Subject: Re: ubifs: assertion fails
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Dolev Raviv <draviv@codeaurora.org>
-Date: Mon, 31 Mar 2014 13:14:39 +0300
-In-Reply-To: <f08bbebef039d5bb28c2fcd3022165b0.squirrel@www.codeaurora.org>
-References: <f08bbebef039d5bb28c2fcd3022165b0.squirrel@www.codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+ id 1WUaUD-00062d-7I
+ for linux-mtd@lists.infradead.org; Mon, 31 Mar 2014 11:34:42 +0000
+Date: Mon, 31 Mar 2014 19:34:12 +0800
+From: Fengguang Wu <fengguang.wu@intel.com>
+To: Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [mtd/sbc_gxx] kernel BUG at include/linux/mtd/map.h:148!
+Message-ID: <20140331113412.GA13548@localhost>
+References: <20140327140140.GA9083@localhost>
+ <CAErSpo7b+OJUoRcMY0edZPgEKG6DbwdLcq5M0-9B6JKALpm+QQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAErSpo7b+OJUoRcMY0edZPgEKG6DbwdLcq5M0-9B6JKALpm+QQ@mail.gmail.com>
+Cc: Michal Marek <mmarek@suse.cz>, linux-kbuild <linux-kbuild@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,57 +27,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2014-03-24 at 06:03 +0000, Dolev Raviv wrote:
-> Hi all,
+CC Michal and kbuild list.
+
+On Thu, Mar 27, 2014 at 04:51:53PM -0600, Bjorn Helgaas wrote:
+> [+cc David, Brian]
 > 
-> Im doing my first steps learning ubifs and Im trying to understand a
-> something that does not make much sense to me.
+> On Thu, Mar 27, 2014 at 8:01 AM, Fengguang Wu <fengguang.wu@intel.com> wrote:
+> > FYI, here is a very old warning, too old to be bisected.
+> >
+> > [    5.282127] sd 0:0:0:0: [sda] Write cache: enabled, read cache: enabled, supports DPO and FUA
+> > [    5.286079] SBC-GXx flash: IO:0x258-0x259 MEM:0xdc000-0xdffff
+> > [    5.288723] ------------[ cut here ]------------
+> > [    5.289649] kernel BUG at include/linux/mtd/map.h:148!
 > 
-> In fs/ubifs/shrinker.c, at shrink_tnc(), there is an assert condition that
-> shows up every once I a while (after stressing).
-> ubifs_assert(atomic_long_read(&c->clean_zn_cnt) >= 0);
+> I think the problem is that your randconfig happens to have none of
+> CONFIG_MTD_MAP_BANK_WIDTH_* set (you should have played the lottery
+> today!), and the default implementation of map_bankwidth() in that
+> case is just "BUG()":
+> 
+>   $ grep MTD_MAP config-3.14.0-rc8-wl-03045-gdf16ea4
+>   # CONFIG_MTD_MAP_BANK_WIDTH_1 is not set
+>   # CONFIG_MTD_MAP_BANK_WIDTH_2 is not set
+>   # CONFIG_MTD_MAP_BANK_WIDTH_4 is not set
+>   # CONFIG_MTD_MAP_BANK_WIDTH_8 is not set
+>   # CONFIG_MTD_MAP_BANK_WIDTH_16 is not set
+>   # CONFIG_MTD_MAP_BANK_WIDTH_32 is not set
+> 
+> I don't know enough Kconfig or MTD to fix this.
 
-When this happens, do you then see a storm of similar assertions from
-other parts of the code? I am trying to understand if this assertion is
-incorrect, or you really get the accounting screwed when shrinking
-happens.
+Michal, the problem we run into is, how to select one of the above
+CONFIG_MTD_MAP_BANK_WIDTH_xx in "make randconfig".
 
-In the former case, this would probably be a single assertion, on the
-latter you'd probably see many similar warnings from other code. E.g.,
-when you unmount.
-
-> In another place in the same file in the function ubifs_shrinker(), I
-> found the following comment:
-> /*
-> * Due to the way UBIFS updates the clean znode counter it may
-> * temporarily be negative.
-> */
-
-Yeah. The key here is this 'c->next'. If it is NULL, the accounting must
-be correct, if it is not NULL, it may be incorrect. And it will be
-correct when the on-going commit operation finishes and
-'free_obsolete_znodes()' is called.
-
-> Could the assertion condition be wrong?
-
-Could be, but could also show that there is an accounting error
-happening when shrinker starts.
-
-And I saw misterious errors when shrinker starts working at some point,
-but did not have time to dig this. So there is at least 1 bug in the
-shrinker path which I saw.
-
-> Can anyone share information on what are those times that the counter can
-> be negative?
-
-When the commit operation starts, it grabs the tnc_mutex, prepares the
-list of nodes to commit, and release tnc_mutex. Now the accounting is
-incorrect. When the commit finishes, it grabs the mutex again, does some
-stuff, and also fixes the accounting. Then drops the mutex.
-
-The idea was to make sure that commit does not block I/O. Meaning that
-you can still write files while commit is going on.
-
--- 
-Best Regards,
-Artem Bityutskiy
+Thanks,
+Fengguang
