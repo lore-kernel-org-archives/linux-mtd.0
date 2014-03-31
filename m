@@ -1,22 +1,33 @@
-Received: from extern.plris.com ([212.199.10.23] helo=plris.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WU9zi-0002k7-L9
- for linux-mtd@lists.infradead.org; Sun, 30 Mar 2014 07:17:27 +0000
-From: Leon Pollak <leonp@plris.com>
-To: linux-mtd@lists.infradead.org, Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: What is wrong? - Cont
-Date: Sun, 30 Mar 2014 10:16:51 +0300
-Message-ID: <1762128.E80Aghzg1W@leonp.plris.com>
-In-Reply-To: <20500571.Fgyz0I6ATm@leonp.plris.com>
-References: <4315632.KkRm7kzq26@leonp.plris.com>
- <20140304083325.GJ13420@norris-Latitude-E6410>
- <20500571.Fgyz0I6ATm@leonp.plris.com>
+Date: Mon, 31 Mar 2014 10:06:59 +0800
+From: Huang Shijie <b32955@freescale.com>
+To: Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
+Subject: Re: [PATCHv3 1/2] mtd: gpmi: make blockmark swapping optional
+Message-ID: <20140331020657.GA32650@localhost>
+References: <1395235406-13449-1-git-send-email-y>
+ <1396002907-17750-1-git-send-email-LW@KARO-electronics.de>
+ <1396002907-17750-2-git-send-email-LW@KARO-electronics.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
-Cc: Richard Weinberger <richard@nod.at>,
- Brian Norris <computersforpeace@gmail.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+In-Reply-To: <1396002907-17750-2-git-send-email-LW@KARO-electronics.de>
+Content-Transfer-Encoding: quoted-printable
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ Boris BREZILLON <b.brezillon.dev@gmail.com>, linux-doc@vger.kernel.org,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Wei Yongjun <yongjun_wei@trendmicro.com.cn>, linux-mtd@lists.infradead.org,
+ Michael Grzeschik <m.grzeschik@pengutronix.de>,
+ Russell King <linux@arm.linux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
+ Jingoo Han <jg1.han@samsung.com>, Shawn Guo <shawn.guo@freescale.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Michael Opdenacker <michael.opdenacker@free-electrons.com>,
+ Grant Likely <grant.likely@linaro.org>, devicetree@vger.kernel.org,
+ Sascha Hauer <kernel@pengutronix.de>, Pawel Moll <pawel.moll@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>, Rob Herring <robh+dt@kernel.org>,
+ linux-arm-kernel@lists.infradead.org,
+ Fabio Estevam <fabio.estevam@freescale.com>,
+ Brian Norris <computersforpeace@gmail.com>, linux-kernel@vger.kernel.org,
+ Rob Landley <rob@landley.net>, Kumar Gala <galak@codeaurora.org>,
+ Shawn Guo <shawn.guo@linaro.org>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,45 +37,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Meanwhile, some more inputs:
+On Fri, Mar 28, 2014 at 11:35:06AM +0100, Lothar Wa=DFmann wrote:
+> +  - fsl,no-blockmark-swap: Don't swap the bad block marker from the OO=
+B
+> +                       area with the byte in the data area but rely on=
+ the
+> +                       flash based BBT for identifying bad blocks.
+> +                       NOTE: this is only valid in conjunction with
+> +                             'nand-on-flash-bbt'.
+> +                       WARNING: on i.MX28 blockmark swapping cannot be
+> +                       disabled for the BootROM in the FCB. Thus,
+> +                       partitions written from Linux with this feature
+> +                       turned on may not be accessible by the BootROM
+> +                       code.
 
-First, to remind, the scenario:
-After the first burning (from withing U-Boot), the NAND is write 
-protected by HW and the partition is mounted as RO.
-At some moment I need to update a small file. 
-So I do: 
-- HW write protect off, 
-- remount RW, 
-- update file, <---- The main point  <----
-- sync, 
-- remount RO, 
-- write protect on.
-At this moment, the console is full of error messages - crash or a lot 
-of "Erase at 0x..... failed immediately: errno -5".
--------------------------------
+Thanks for adding this warning.
 
-Now two more test cases:
-
-1. After burning JFFS2 from U-Boot and STILL WITHOUT working from flash, 
-I boot into NFS, mount the partition as RW, keep it for 3-5 seconds and 
-reboot into flashes.
-This works FINE, updating passes silently, no crazy messages and/or 
-crashes.
-
-2. I added to the partition a flag file "first_time.dat" and in rc3.d 
-added script:
-if [ -e first_time.dat ] ; then
-    'HW unlock flash'
-    mount -o,remount,rw /home
-    sleep 20
-    mount -o,remount,ro /home
-    'HW lock flash';
-    rm first_time.dat
-fi
-Against my hopes, this DOES NOT helped. Crashes and messages appeared as 
-"usual"....
+Acked-by: Huang Shijie <b32955@freescale.com>
 
 
-Any help will be highly appreciated.
--- 
-Leon
+thanks
+Huang Shijie
