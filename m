@@ -1,23 +1,19 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
+Received: from smtprelay02.ispgateway.de ([80.67.29.24])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WUi9S-0005W2-DP
- for linux-mtd@lists.infradead.org; Mon, 31 Mar 2014 19:45:47 +0000
-Date: Mon, 31 Mar 2014 21:45:22 +0200
-From: Gerhard Sittig <gsi@denx.de>
-To: David Mosberger <davidm@egauge.net>
-Subject: Re: [REV3] mtd: nand: Prepare for Micron on-die ECC controller
- support.
-Message-ID: <20140331194522.GL2775@book.gsilab.sittig.org>
-References: <1396025800-18444-1-git-send-email-davidm@egauge.net>
- <20140329131642.GA2775@book.gsilab.sittig.org>
- <CALnQHM2whsLcM_4q76Skgjj4oVjgAbofX7iAVBgqZkPOu5UWEQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALnQHM2whsLcM_4q76Skgjj4oVjgAbofX7iAVBgqZkPOu5UWEQ@mail.gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
- Pekon" <pekon@ti.com>, Artem Bityutskiy <dedekind1@gmail.com>
+ id 1WUiUI-0006GR-98
+ for linux-mtd@lists.infradead.org; Mon, 31 Mar 2014 20:07:20 +0000
+Received: from [78.43.41.9] (helo=abel)
+ by smtprelay02.ispgateway.de with esmtpsa (SSLv3:AES128-SHA:128)
+ (Exim 4.68) (envelope-from <daniel@vangerpen.de>) id 1WUiTu-000211-J1
+ for linux-mtd@lists.infradead.org; Mon, 31 Mar 2014 22:06:54 +0200
+Date: Mon, 31 Mar 2014 22:06:53 +0200
+From: Daniel van Gerpen <daniel@vangerpen.de>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] Fix memory leaks found by clang's static analyzer
+Message-ID: <20140331220653.5b26c11e@abel>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,42 +23,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2014-03-31 at 12:33 -0600, David Mosberger wrote:
-> 
-> On Sat, Mar 29, 2014 at 7:16 AM, Gerhard Sittig <gsi@denx.de> wrote:
-> 
-> > so the additional buffers only get allocated when upon
-> > identification the on-die-ECC feature already is enabled?
-> 
-> Yes.
-> 
-> > not
-> > when it's supported, and might get enabled at any later point in
-> > time?
-> 
-> There is no way to switch ECC mode later on, is there?
 
-Isn't there the ONFI SETFEATURE request?  And don't you use this
-very request to disable and enable chip internal ECC support, to
-get the raw (uncorrected) bits after bitflips were detected?  So
-I understand that there is support to enable this mode at will,
-and we already have (or will have) code to do so.
+Signed-off-by: Daniel van Gerpen <daniel@vangerpen.de>
+---
+ ftl_format.c          |  4 ++++
+ lib/libmtd.c          |  1 +
+ mkfs.ubifs/devtable.c | 12 ++++++++----
+ 3 files changed, 13 insertions(+), 4 deletions(-)
 
-If we consider disabling on-die-ECC support when we find it
-enabled and know it's not what the user wants to run, then the
-next logical step might be to support enabling this feature if
-the user wants it and the chip doesn't have it enabled at this
-point in time.
-
-So I guess the buffers should get allocated as soon as the chip
-supports on-die-ECC.  (While the allocation should only get
-introduced in the phase where the raw-read and bitflip count gets
-added.)
-
-
-virtually yours
-Gerhard Sittig
+diff --git a/ftl_format.c b/ftl_format.c
+index b58677f..80144d4 100644
+--- a/ftl_format.c
++++ b/ftl_format.c
+@@ -190,6 +190,7 @@ static int format_partition(int fd, int quiet, int interrogate,
+ 				fflush(stdout);
+ 			}
+ 			perror("block erase failed");
++			free(bam);
+ 			return -1;
+ 		}
+ 		erase.start += erase.length;
+@@ -245,6 +246,9 @@ static int format_partition(int fd, int quiet, int interrogate,
+ 			break;
+ 		}
+ 	}
++
++	free(bam);
++
+ 	if (i < le16_to_cpu(hdr.NumEraseUnits))
+ 		return -1;
+ 	else
+diff --git a/lib/libmtd.c b/lib/libmtd.c
+index 2089373..6b83832 100644
+--- a/lib/libmtd.c
++++ b/lib/libmtd.c
+@@ -1113,6 +1113,7 @@ static int legacy_auto_oob_layout(const struct mtd_dev_info *mtd, int fd,
+ 		memcpy(oob + start, tmp_buf + start, len);
+ 	}
+ 
++	free(tmp_buf);
+ 	return 0;
+ }
+ 
+diff --git a/mkfs.ubifs/devtable.c b/mkfs.ubifs/devtable.c
+index dee035d..1ab242e 100644
+--- a/mkfs.ubifs/devtable.c
++++ b/mkfs.ubifs/devtable.c
+@@ -213,8 +213,10 @@ static int interpret_table_entry(const char *line)
+ 		}
+ 	}
+ 
+-	if (increment != 0 && count == 0)
+-		return err_msg("count cannot be zero if increment is non-zero");
++	if (increment != 0 && count == 0) {
++		err_msg("count cannot be zero if increment is non-zero");
++		goto out_free;
++	}
+ 
+ 	/*
+ 	 * Add the file/directory/device node (last component of the path) to
+@@ -239,8 +241,10 @@ static int interpret_table_entry(const char *line)
+ 		dbg_msg(3, "inserting '%s' into name hash table (major %d, minor %d)",
+ 			name, major(nh_elt->dev), minor(nh_elt->dev));
+ 
+-		if (hashtable_search(ph_elt->name_htbl, name))
+-			return err_msg("'%s' is referred twice", buf);
++		if (hashtable_search(ph_elt->name_htbl, name)) {
++			err_msg("'%s' is referred twice", buf);
++			goto out_free;
++		}
+ 
+ 		nh_elt->name = name;
+ 		if (!hashtable_insert(ph_elt->name_htbl, name, nh_elt)) {
 -- 
-DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
-HRB 165235 Munich, Office: Kirchenstr. 5, D-82194 Groebenzell, Germany
-Phone: +49-8142-66989-0 Fax: +49-8142-66989-80  Email: office@denx.de
+1.8.3.2
