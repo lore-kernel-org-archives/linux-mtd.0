@@ -1,19 +1,19 @@
-Received: from smtprelay02.ispgateway.de ([80.67.29.24])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WUiUI-0006GR-98
- for linux-mtd@lists.infradead.org; Mon, 31 Mar 2014 20:07:20 +0000
-Received: from [78.43.41.9] (helo=abel)
- by smtprelay02.ispgateway.de with esmtpsa (SSLv3:AES128-SHA:128)
- (Exim 4.68) (envelope-from <daniel@vangerpen.de>) id 1WUiTu-000211-J1
- for linux-mtd@lists.infradead.org; Mon, 31 Mar 2014 22:06:54 +0200
-Date: Mon, 31 Mar 2014 22:06:53 +0200
-From: Daniel van Gerpen <daniel@vangerpen.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] Fix memory leaks found by clang's static analyzer
-Message-ID: <20140331220653.5b26c11e@abel>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from gw1.transmode.se ([195.58.98.146])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WUirl-0006lz-Iw
+ for linux-mtd@lists.infradead.org; Mon, 31 Mar 2014 20:31:34 +0000
+In-Reply-To: <1396287151.4857.50.camel@mars>
+References: <1396287151.4857.50.camel@mars>
+To: Christoph Fritz <chf.fritz@googlemail.com>
+MIME-Version: 1.0
+Subject: Re: [PATCH] mtd: cfi_cmdset_0001 - fixup for PC28F512P33TFA
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Message-ID: <OFA78F5CB9.63C292B4-ONC1257CAC.006FBDC4-C1257CAC.0070B588@transmode.se>
+Date: Mon, 31 Mar 2014 22:31:05 +0200
+Content-Type: text/plain; charset="US-ASCII"
+Cc: linux-mtd@lists.infradead.org, Marius Achilles <M.Achilles@phytec.de>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,77 +23,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+"linux-mtd" <linux-mtd-bounces@lists.infradead.org> wrote on 2014/03/31 
+19:32:31:
+> 
+> Add a fixup (quirk) for Micron NOR flash PC28F512P33TFA: This patch
+> disables option 'suspend erase' due to "internal timing issues on
+> some revisions of the P3x" which is pointed out by Micron TechNote-PDF
+> "Adapting the Linux Kernel for Micron P30, P33, and J3 Flash Memory" 
+[1].
+> 
+> Without this patch, errors occur during heavy flash usage mostly in 
+minus
+> degree temperature environments.
+> 
+> It's very likely that other P3x chips suffer from the same issue.
+> 
+> [1]: 
+https://www.micron.com/~/media/Documents/Products/Technical%20Note/NOR%20Flash/tn1206_p30_p33_j3_linux.pdf
 
-Signed-off-by: Daniel van Gerpen <daniel@vangerpen.de>
----
- ftl_format.c          |  4 ++++
- lib/libmtd.c          |  1 +
- mkfs.ubifs/devtable.c | 12 ++++++++----
- 3 files changed, 13 insertions(+), 4 deletions(-)
+> 
+> Signed-off-by: Christoph Fritz <chf.fritz@googlemail.com>
+> Tested-by: Marius Achilles <M.Achilles@phytec.de>
 
-diff --git a/ftl_format.c b/ftl_format.c
-index b58677f..80144d4 100644
---- a/ftl_format.c
-+++ b/ftl_format.c
-@@ -190,6 +190,7 @@ static int format_partition(int fd, int quiet, int interrogate,
- 				fflush(stdout);
- 			}
- 			perror("block erase failed");
-+			free(bam);
- 			return -1;
- 		}
- 		erase.start += erase.length;
-@@ -245,6 +246,9 @@ static int format_partition(int fd, int quiet, int interrogate,
- 			break;
- 		}
- 	}
-+
-+	free(bam);
-+
- 	if (i < le16_to_cpu(hdr.NumEraseUnits))
- 		return -1;
- 	else
-diff --git a/lib/libmtd.c b/lib/libmtd.c
-index 2089373..6b83832 100644
---- a/lib/libmtd.c
-+++ b/lib/libmtd.c
-@@ -1113,6 +1113,7 @@ static int legacy_auto_oob_layout(const struct mtd_dev_info *mtd, int fd,
- 		memcpy(oob + start, tmp_buf + start, len);
- 	}
+No way, disabling erase suspend will cause severe latencies for read/write 
+ops.
+
+The document mentions other ways to get around this problem, I suggest you 
+explore
+these first.
+Minus degrees is not a common environment either so perhaps any fix should 
+be selectable?
  
-+	free(tmp_buf);
- 	return 0;
- }
- 
-diff --git a/mkfs.ubifs/devtable.c b/mkfs.ubifs/devtable.c
-index dee035d..1ab242e 100644
---- a/mkfs.ubifs/devtable.c
-+++ b/mkfs.ubifs/devtable.c
-@@ -213,8 +213,10 @@ static int interpret_table_entry(const char *line)
- 		}
- 	}
- 
--	if (increment != 0 && count == 0)
--		return err_msg("count cannot be zero if increment is non-zero");
-+	if (increment != 0 && count == 0) {
-+		err_msg("count cannot be zero if increment is non-zero");
-+		goto out_free;
-+	}
- 
- 	/*
- 	 * Add the file/directory/device node (last component of the path) to
-@@ -239,8 +241,10 @@ static int interpret_table_entry(const char *line)
- 		dbg_msg(3, "inserting '%s' into name hash table (major %d, minor %d)",
- 			name, major(nh_elt->dev), minor(nh_elt->dev));
- 
--		if (hashtable_search(ph_elt->name_htbl, name))
--			return err_msg("'%s' is referred twice", buf);
-+		if (hashtable_search(ph_elt->name_htbl, name)) {
-+			err_msg("'%s' is referred twice", buf);
-+			goto out_free;
-+		}
- 
- 		nh_elt->name = name;
- 		if (!hashtable_insert(ph_elt->name_htbl, name, nh_elt)) {
--- 
-1.8.3.2
+ Jocke
