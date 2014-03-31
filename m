@@ -1,33 +1,16 @@
-Date: Mon, 31 Mar 2014 10:06:59 +0800
-From: Huang Shijie <b32955@freescale.com>
-To: Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
-Subject: Re: [PATCHv3 1/2] mtd: gpmi: make blockmark swapping optional
-Message-ID: <20140331020657.GA32650@localhost>
-References: <1395235406-13449-1-git-send-email-y>
- <1396002907-17750-1-git-send-email-LW@KARO-electronics.de>
- <1396002907-17750-2-git-send-email-LW@KARO-electronics.de>
-MIME-Version: 1.0
+From: =?iso-8859-1?Q?Mats_K=E4rrman?= <Mats.Karrman@tritech.se>
+To: Alexander Stein <alexanders83@web.de>, Artem Bityutskiy
+ <dedekind1@gmail.com>, David Woodhouse <dwmw2@infradead.org>
+Subject: RE: [PATCH] UBI: Fix potential NULL-pointer dereference
+Date: Mon, 31 Mar 2014 06:18:51 +0000
+Message-ID: <ED3E0BCACD909541BA94A34C4A164D4C5B3A869F@post.tritech.se>
+References: <1396040689-12419-1-git-send-email-alexanders83@web.de>
+In-Reply-To: <1396040689-12419-1-git-send-email-alexanders83@web.de>
+Content-Language: en-US
 Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-In-Reply-To: <1396002907-17750-2-git-send-email-LW@KARO-electronics.de>
 Content-Transfer-Encoding: quoted-printable
-Cc: Mark Rutland <mark.rutland@arm.com>,
- Boris BREZILLON <b.brezillon.dev@gmail.com>, linux-doc@vger.kernel.org,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Wei Yongjun <yongjun_wei@trendmicro.com.cn>, linux-mtd@lists.infradead.org,
- Michael Grzeschik <m.grzeschik@pengutronix.de>,
- Russell King <linux@arm.linux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
- Jingoo Han <jg1.han@samsung.com>, Shawn Guo <shawn.guo@freescale.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Michael Opdenacker <michael.opdenacker@free-electrons.com>,
- Grant Likely <grant.likely@linaro.org>, devicetree@vger.kernel.org,
- Sascha Hauer <kernel@pengutronix.de>, Pawel Moll <pawel.moll@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>, Rob Herring <robh+dt@kernel.org>,
- linux-arm-kernel@lists.infradead.org,
- Fabio Estevam <fabio.estevam@freescale.com>,
- Brian Norris <computersforpeace@gmail.com>, linux-kernel@vger.kernel.org,
- Rob Landley <rob@landley.net>, Kumar Gala <galak@codeaurora.org>,
- Shawn Guo <shawn.guo@linaro.org>, David Woodhouse <dwmw2@infradead.org>
+MIME-Version: 1.0
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,24 +20,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Mar 28, 2014 at 11:35:06AM +0100, Lothar Wa=DFmann wrote:
-> +  - fsl,no-blockmark-swap: Don't swap the bad block marker from the OO=
-B
-> +                       area with the byte in the data area but rely on=
- the
-> +                       flash based BBT for identifying bad blocks.
-> +                       NOTE: this is only valid in conjunction with
-> +                             'nand-on-flash-bbt'.
-> +                       WARNING: on i.MX28 blockmark swapping cannot be
-> +                       disabled for the BootROM in the FCB. Thus,
-> +                       partitions written from Linux with this feature
-> +                       turned on may not be accessible by the BootROM
-> +                       code.
-
-Thanks for adding this warning.
-
-Acked-by: Huang Shijie <b32955@freescale.com>
-
-
-thanks
-Huang Shijie
+On Friday, March 28, 2014 10:04 PM, Alexander Stein wrote:=0A=
+>=0A=
+> It's no use to debug print a string before checking on NULL.=0A=
+>=0A=
+=0A=
+If the string is NULL, that could be very useful to know when debugging and=
+=0A=
+the print function should handle that gracefully, i.e. by not printing anyt=
+hing=0A=
+for %s.=0A=
+=0A=
+BR // Mats=0A=
