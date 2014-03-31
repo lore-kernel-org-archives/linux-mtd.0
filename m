@@ -1,14 +1,14 @@
 Received: from mga11.intel.com ([192.55.52.93])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WUYrK-0003Ij-JL
- for linux-mtd@lists.infradead.org; Mon, 31 Mar 2014 09:50:27 +0000
-Message-ID: <1396259402.9016.60.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] mkfs.ubifs: correct and improve LEB size error prints
+ id 1WUYvA-0003QW-5A
+ for linux-mtd@lists.infradead.org; Mon, 31 Mar 2014 09:54:24 +0000
+Message-ID: <1396259602.9016.61.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] ubi-utils: Fix file descriptor leaks in libubi
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Mon, 31 Mar 2014 12:50:02 +0300
-In-Reply-To: <1395470744-7281-1-git-send-email-computersforpeace@gmail.com>
-References: <1395470744-7281-1-git-send-email-computersforpeace@gmail.com>
+To: Daniel van Gerpen <daniel@vangerpen.de>
+Date: Mon, 31 Mar 2014 12:53:22 +0300
+In-Reply-To: <20140330005210.6df43941@abel>
+References: <20140330005210.6df43941@abel>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -23,17 +23,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2014-03-21 at 23:45 -0700, Brian Norris wrote:
-> The error message is incorrect for "too small LEB size" -- we were
-> printing the minimum I/O size instead of the LEB size.
-> 
-> At the same time, let's print the max LEB size along with the message
-> for "too large LEB size", to be consistent and more helpful.
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> 			       UBIFS_MIN_LEB_CNT);
+On Sun, 2014-03-30 at 00:52 +0100, Daniel van Gerpen wrote:
+> Signed-off-by: Daniel van Gerpen <daniel@vangerpen.de>
 
-Pushed, thanks!
+Tweaked a bit and pushed to mtd-utils, thanks!
 
 -- 
 Best Regards,
