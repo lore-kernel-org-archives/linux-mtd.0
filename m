@@ -1,24 +1,28 @@
-Received: from gw1.transmode.se ([195.58.98.146])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WUwfK-0004wo-8C
- for linux-mtd@lists.infradead.org; Tue, 01 Apr 2014 11:15:39 +0000
-In-Reply-To: <OFA7BCC382.7C5EA8B7-ONC1257CAD.002CA0C1-C1257CAD.002EAA92@LocalDomain>
-References: <1396287151.4857.50.camel@mars>	
- <OFA78F5CB9.63C292B4-ONC1257CAC.006FBDC4-C1257CAC.0070B588@transmode.se>
- <1396303460.4857.111.camel@mars>
- <OFA7BCC382.7C5EA8B7-ONC1257CAD.002CA0C1-C1257CAD.002EAA92@LocalDomain>
+Received: from mail-wi0-f179.google.com ([209.85.212.179])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WUwtC-0005Xo-SA
+ for linux-mtd@lists.infradead.org; Tue, 01 Apr 2014 11:30:00 +0000
+Received: by mail-wi0-f179.google.com with SMTP id z2so3176884wiv.0
+ for <linux-mtd@lists.infradead.org>; Tue, 01 Apr 2014 04:29:31 -0700 (PDT)
+Date: Tue, 1 Apr 2014 12:29:26 +0100
+From: Lee Jones <lee.jones@linaro.org>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [RFC 00/47] mtd: nand: Add new driver supporting ST's BCH h/w
+Message-ID: <20140401112926.GB24013@lee--X1>
+References: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
+ <20140325125050.GB665@arch.cereza> <20140325131139.GB24823@lee--X1>
+ <20140325220045.GA12185@arch.cereza>
+ <20140326072805.GB31517@norris-Latitude-E6410>
+ <20140327102835.GA17779@lee--X1>
 MIME-Version: 1.0
-Subject: Re: [PATCH] mtd: cfi_cmdset_0001 - fixup for PC28F512P33TFA
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-Message-ID: <OFCD64B0EF.BC0E327D-ONC1257CAD.003CE517-C1257CAD.003DCE3D@transmode.se>
-Date: Tue, 1 Apr 2014 13:15:04 +0200
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Cc: Marius Achilles <M.Achilles@phytec.de>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Christoph Fritz <chf.fritz@googlemail.com>, linux-mtd@lists.infradead.org,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20140327102835.GA17779@lee--X1>
+Cc: angus.clark@st.com, kernel@stlinux.com, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, pekon@ti.com,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,27 +32,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Sm9ha2ltIFRqZXJubHVuZC9UcmFuc21vZGUgd3JvdGUgb24gMjAxNC8wNC8wMSAxMDoyOTo0MzoN
-Cj4gDQo+IENocmlzdG9waCBGcml0eiA8Y2hmLmZyaXR6QGdvb2dsZW1haWwuY29tPiB3cm90ZSBv
-biAyMDE0LzA0LzAxIDAwOjA0OjIwOg0KPiA+IA0KPiA+IE9uIE1vbiwgMjAxNC0wMy0zMSBhdCAy
-MjozMSArMDIwMCwgSm9ha2ltIFRqZXJubHVuZCB3cm90ZToNCj4gPiA+IE5vIHdheSwgZGlzYWJs
-aW5nIGVyYXNlIHN1c3BlbmQgd2lsbCBjYXVzZSBzZXZlcmUgbGF0ZW5jaWVzIGZvciANCnJlYWQv
-d3JpdGUgDQo+ID4gPiBvcHMuDQo+ID4gDQo+ID4gSGVyZSBvbiBhIG14MzUgaXQncyBub3QgcmVh
-bGx5IHNldmVyZS4NCj4gDQo+IFRoZXJlIGhhcyBiZWVuIGNvbXBsYWludHMgaW4gdGhlIHBhc3Qg
-d2l0aCBubyBlcmFzZSBzdXNwZW5kLg0KPiBZb3UgZ2V0IGRlbGF5cyBjb25zaWRlcmluZyB0aGF0
-IGFuIGVyYXNlIHRha2VzIGMuYSAxIHNlayBzbw0KPiBvbmNlIHlvdSBnZXQgaW50byBhIHN0YXRl
-IHdoZXJlIEdDIGlzIGVyYXNpbmcgbG90cyBvZiBibG9ja3MgYW5kIG90aGVyDQo+IHByb2dzIHdh
-bnRzIHJlYWQvd3JpdGUgeW91IHdpbGwgbm90aWNlLg0KPiANCj4gPiANCj4gPiA+IFRoZSBkb2N1
-bWVudCBtZW50aW9ucyBvdGhlciB3YXlzIHRvIGdldCBhcm91bmQgdGhpcyBwcm9ibGVtLCBJIA0K
-c3VnZ2VzdCB5b3UgDQo+ID4gPiBleHBsb3JlDQo+ID4gPiB0aGVzZSBmaXJzdC4NCj4gPiANCj4g
-PiBBbHJlYWR5IHRyaWVkIHRoZSDigJwweEZG4oCdIGR1bW15IHdyaXRlIGN5Y2xlIHN1Z2dlc3Rp
-b24sIHNob3VsZCBoYXZlDQo+ID4gbWVudGlvbmVkIHRoYXQuDQo+IA0KPiBPSywgYnV0IG9uZSBt
-b3JlIHdvcmthcm91bmQodGhlIHVkZWxheSBwYXJ0KSBpcyByZXF1aXJlZCwgcmlnaHQ/DQoNClRo
-ZXJlIHNvbWV0aGluZyBvZGQgd2l0aCB0aGUgcGF0Y2hlcyBpbiB0aGUgbWVudGlvbmVkIGRvYy4N
-CjEpICJSZXNvbHZpbmcgRVJBU0UgU1VTUEVORCBIYW5ndXBzIiB0b3VjaGVzIHRoZSBzYW1lIGNv
-ZGUgYXMNCjIpICJFUkFTRSBTVVNQRU5EIEZvbGxvd2luZyBFUkFTRSBSRVNVTUUiDQoNCjEpIHNh
-eXMgdG8gYWRkIHdyaXRlKDB4ZmYpIGFuZCAyKSBhZGRzIGEgdWRlbGF5DQoNCldoYXQgc2hvdWxk
-IGl0IGJlLCBib3RoPyBpbiB3aGF0IG9yZGVyPw0KDQpJIHN1c3BlY3QgdGhhdCBhbnkgd3JpdGUo
-MHhmZikgY2FuIGJlIHRoZXJlIHVuY29uZGl0aW9uYWxseSwgcHJvdmlkZWQgdGhhdCANCnRoZSBj
-bWQwMDAxIHNwZWMgYWxsb3dzIGl0Lg0KVGhlIGRlbGF5IGNvdWxkIGJlIGEgcXVpcmsgZGVmYXVs
-dCB0byAwDQoNCiBKb2NrZQ0KDQogSm9ja2UNCg==
+> > > The call to nand_scan_tail() would remove the need to export those NAND
+> > > core functions, and remove the need to scan and print the bad blocks.
+> > > I don't know if you have a real reason for not doing it this way, or
+> > > maybe it's the way this driver was originally written.
+> > > 
+> > > Care to review this and re-spin the driver? You'll have a more nicer
+> > > driver, and more framework-compliant.
+> > 
+> > A hearty +1 to this. You are avoiding much of the core of the NAND
+> > framework by avoiding the nand_chip callbacks and nand_scan_tail(), and
+> > by reimplementing the BBT. I will have to NAK to some of the patches
+> > that EXPORT the nand_base private core (e.g., nand_get_device()), and I
+> > will most likely NAK the custom BBT implementation (please improve
+> > nand_bbt.c as needed).
+> 
+> This is a good catch. I will attempt to reimplement the driver's
+> initialisation steps to utilise more of the core infrastructure in an
+> attempt to mitigate the requirement for exportation of private
+> routines.
+> 
+> The BBT requirements are somewhere more complex. To provide you with
+> the complete picture, a little knowledge of driver history is
+> required. When it was initially created the MTD core only supported
+> OOB BBTs, but the ST BCH Controller doesn't support OOB access, so
+> Angus wrote his on In-Band (IB) implementation. Unfortunately the IB
+> support which _is_ now present in the kernel doesn't match the
+> internal implementation. Normally this wouldn't be an issue in itself,
+> but ST's boot-stack and tooling (Primary Bootloader, U-Boot, various
+> Programmers, etc) are aware of the internal IB BTT and utilise it
+> in varying ways. Shifting over to the Mainline version in
+> one-foul-swoop _will_ cause lots of pain and will probably result in
+> the disownership of driver we're trying to Mainline today. Naturally
+> I'm keen to avoid this.
+
+Just looking into this now. Can I add support for a vendor specific
+signature extension? ST's flashers, bootloaders and tooling currently
+use the format:
+
+/* Extend IBBT header with some stm-nand-bch niceties */
+struct nand_ibbt_bch_header {
+	uint8_t signature[4];           /* "Bbt0" or "1tbB" signature */
+	uint8_t version;                /* BBT version ("age") */
+	uint8_t reserved[3];            /* padding */
+	uint8_t baseschema[4];          /* "base" schema (x4) */
+	uint8_t privschema[4];          /* "private" schema (x4) */
+	uint8_t ecc_size[4];            /* ECC bytes (0, 32, 54) (x4) */
+	char    author[64];             /* Arbitrary string for S/W to use */
+}; __attribute__((__packed__))
+
+It would be great if we can support this with a descriptor option or
+suchlike, as it would a) save me a lot of aggravation and b) continue
+to support ST with their current use-case.
+
+-- 
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
