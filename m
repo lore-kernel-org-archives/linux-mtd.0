@@ -1,26 +1,23 @@
-Received: from mail-la0-f47.google.com ([209.85.215.47])
+Received: from mail-oa0-f41.google.com ([209.85.219.41])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WV0KX-0004TJ-79
- for linux-mtd@lists.infradead.org; Tue, 01 Apr 2014 15:10:26 +0000
-Received: by mail-la0-f47.google.com with SMTP id pn19so2828763lab.34
- for <linux-mtd@lists.infradead.org>; Tue, 01 Apr 2014 08:09:57 -0700 (PDT)
-Subject: Re: [PATCH] mtd: cfi_cmdset_0001 - fixup for PC28F512P33TFA
-From: Christoph Fritz <chf.fritz@googlemail.com>
-To: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-In-Reply-To: <OFCD64B0EF.BC0E327D-ONC1257CAD.003CE517-C1257CAD.003DCE3D@transmode.se>
-References: <1396287151.4857.50.camel@mars>
- <OFA78F5CB9.63C292B4-ONC1257CAC.006FBDC4-C1257CAC.0070B588@transmode.se>
- <1396303460.4857.111.camel@mars>
- <OFA7BCC382.7C5EA8B7-ONC1257CAD.002CA0C1-C1257CAD.002EAA92@LocalDomain>
- <OFCD64B0EF.BC0E327D-ONC1257CAD.003CE517-C1257CAD.003DCE3D@transmode.se>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 01 Apr 2014 17:09:51 +0200
-Message-ID: <1396364991.4850.37.camel@mars>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, Marius Achilles <M.Achilles@phytec.de>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
+ id 1WV0L9-0004U3-C6
+ for linux-mtd@lists.infradead.org; Tue, 01 Apr 2014 15:11:03 +0000
+Received: by mail-oa0-f41.google.com with SMTP id j17so11267671oag.14
+ for <linux-mtd@lists.infradead.org>; Tue, 01 Apr 2014 08:10:42 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <CALnQHM3r9DDqjmo=s1aFLgob+ztzfqjVrGbOS9QWGLKB+nv=fQ@mail.gmail.com>
+References: <1395875121-9320-1-git-send-email-davidm@egauge.net>
+ <20980858CB6D3A4BAE95CA194937D5E73EAB5F84@DBDE04.ent.ti.com>
+ <CALnQHM3Yn01qJdpHaqhA3Z+onVeaROTF0esv7S-ctY3y7dgNjw@mail.gmail.com>
+ <20140401083644.GG6400@brian-ubuntu>
+ <CALnQHM3r9DDqjmo=s1aFLgob+ztzfqjVrGbOS9QWGLKB+nv=fQ@mail.gmail.com>
+Date: Tue, 1 Apr 2014 09:10:41 -0600
+Message-ID: <CALnQHM17jn3=VWYtb8cok_Sydh6ShUmoFdEOPF9Z7sFyUHXKBA@mail.gmail.com>
+Subject: Fwd: [PATCH] mtd: nand: Add support for Micron on-die ECC controller
+ (rev2).
+From: David Mosberger <davidm@egauge.net>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,53 +27,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Joakim,
+[Forward as plain text.  Thanks, Gmail...]
 
- thanks for your input, please see my further comments below.
+---------- Forwarded message ----------
+From: David Mosberger <davidm@egauge.net>
+Date: Tue, Apr 1, 2014 at 9:09 AM
+Subject: Re: [PATCH] mtd: nand: Add support for Micron on-die ECC
+controller (rev2).
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: "Gupta, Pekon" <pekon@ti.com>, "dedekind1@gmail.com"
+<dedekind1@gmail.com>, "linux-mtd@lists.infradead.org"
+<linux-mtd@lists.infradead.org>, Gerhard Sittig <gsi@denx.de>
 
-On Tue, 2014-04-01 at 13:15 +0200, Joakim Tjernlund wrote:
-> > There has been complaints in the past with no erase suspend.
-> > You get delays considering that an erase takes c.a 1 sek so
-> > once you get into a state where GC is erasing lots of blocks and other
-> > progs wants read/write you will notice.
 
-Yes it's not a fine solution, it's a quirk for a hardware with issues.
-But here for me it's better to get delays than having to suffer from
-flash errors.
+On Tue, Apr 1, 2014 at 2:36 AM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+>
+>
+> But for this case, the max_bitflips count is used for determining when
+> the error rate is unacceptably high, not just to see whether your data
+> is currently corrupt. So if extra bitflips in this (otherwise
+> unimportant) spare area might eventually cause the ECC hardware to
+> report an error, then we need to count them.
+>
 
-> > > > The document mentions other ways to get around this problem, I 
-> suggest you 
-> > > > explore
-> > > > these first.
-> > > 
-> > > Already tried the “0xFF” dummy write cycle suggestion, should have
-> > > mentioned that.
-> > 
-> > OK, but one more workaround(the udelay part) is required, right?
-> 
-> There something odd with the patches in the mentioned doc.
-> 1) "Resolving ERASE SUSPEND Hangups" touches the same code as
-> 2) "ERASE SUSPEND Following ERASE RESUME"
-> 
-> 1) says to add write(0xff) and 2) adds a udelay
-> 
-> What should it be, both? in what order?
-> 
-> I suspect that any write(0xff) can be there unconditionally, provided that 
-> the cmd0001 spec allows it.
-> The delay could be a quirk default to 0
+To do this properly would require describing which OOB bytes are
+included in the ECC.
+I don't think that's possible with the current nand_ecclayout, no?
 
-I already tried all sorts of combinations of various delays and 0xff
-writes, which can be used wasteful without impact. And yes, errors are
-happening less -- but are still happening (at for example -2°C starting
-udev or a filesys-bench program like bonnie++).
+Also, effectively what my patch does is to make those OOB bytes not
+ECC protected, which
+is perfectly fine semantics as far as Linux is concerned.  So yes,
+what you say would be
+an improvement, but it's not strictly needed.
 
-Sure, it's possible that I missed the holy right
-delay-0xff-quirk-combination to get this NOR flash reliable working for
-its specified temperature range. But until nobody has found it, I would
-prefer to stick to my posted quirk and just disable suspend erase.
+  --david
+-- 
+eGauge Systems LLC, http://egauge.net/, 1.877-EGAUGE1, fax 720.545.9768
 
-Maybe someone from Micron can help?
 
- Thanks
-  -- Christoph
+
+-- 
+eGauge Systems LLC, http://egauge.net/, 1.877-EGAUGE1, fax 720.545.9768
