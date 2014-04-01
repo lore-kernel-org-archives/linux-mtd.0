@@ -1,18 +1,25 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WV3M9-0001bp-HV
- for linux-mtd@lists.infradead.org; Tue, 01 Apr 2014 18:24:18 +0000
-Date: Tue, 1 Apr 2014 20:23:50 +0200
-From: Gerhard Sittig <gsi@denx.de>
-To: Stas Sergeev <stsp@list.ru>
-Subject: Re: nandwrite and contiguous space
-Message-ID: <20140401182350.GS2775@book.gsilab.sittig.org>
-References: <533A8749.4050802@list.ru>
+Received: from gw1.transmode.se ([195.58.98.146])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WV47q-0003Ad-Qt
+ for linux-mtd@lists.infradead.org; Tue, 01 Apr 2014 19:13:36 +0000
+In-Reply-To: <1396364991.4850.37.camel@mars>
+References: <1396287151.4857.50.camel@mars>	
+ <OFA78F5CB9.63C292B4-ONC1257CAC.006FBDC4-C1257CAC.0070B588@transmode.se>
+ <1396303460.4857.111.camel@mars>	
+ <OFA7BCC382.7C5EA8B7-ONC1257CAD.002CA0C1-C1257CAD.002EAA92@LocalDomain>
+ <OFCD64B0EF.BC0E327D-ONC1257CAD.003CE517-C1257CAD.003DCE3D@transmode.se>
+ <1396364991.4850.37.camel@mars>
+To: Christoph Fritz <chf.fritz@googlemail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <533A8749.4050802@list.ru>
-Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: cfi_cmdset_0001 - fixup for PC28F512P33TFA
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Message-ID: <OFDA5ED549.208718B9-ONC1257CAD.0068922B-C1257CAD.006990F4@transmode.se>
+Date: Tue, 1 Apr 2014 21:13:03 +0200
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Cc: linux-mtd@lists.infradead.org, Marius Achilles <M.Achilles@phytec.de>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,31 +29,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2014-04-01 at 13:30 +0400, Stas Sergeev wrote:
-> 
-> I am looking for a NAND flasher that supports searching
-> for the contiguous region of good blocks (within a specified
-> range), and flashes an image to it. It seems nandwrite - the
-> default linux flasher - can only skip bad blocks, but the scenario
-> I need, doesn't seem to be supported.
-
-Isn't the point that the set of good blocks keeps changing over
-time?  What might be good now, may be bad a second later or next
-year, doesn't matter as long as it won't stay good forever.
-
-> Is there any other flasher that does support this?
-> Or maybe some trick with nandwrite exists?
-> If not, how difficult is it to implement such a capability into
-> nandwrite?
-
-If you want a sequence of good blocks, this very much sounds like
-the LEBs which UBI provides.  Aren't you asking for an UBI
-volume?  What am I missing?
-
-
-virtually yours
-Gerhard Sittig
--- 
-DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
-HRB 165235 Munich, Office: Kirchenstr. 5, D-82194 Groebenzell, Germany
-Phone: +49-8142-66989-0 Fax: +49-8142-66989-80  Email: office@denx.de
+Q2hyaXN0b3BoIEZyaXR6IDxjaGYuZnJpdHpAZ29vZ2xlbWFpbC5jb20+IHdyb3RlIG9uIDIwMTQv
+MDQvMDEgMTc6MDk6NTE6DQo+IA0KPiBIaSBKb2FraW0sDQo+IA0KPiAgdGhhbmtzIGZvciB5b3Vy
+IGlucHV0LCBwbGVhc2Ugc2VlIG15IGZ1cnRoZXIgY29tbWVudHMgYmVsb3cuDQo+IA0KPiBPbiBU
+dWUsIDIwMTQtMDQtMDEgYXQgMTM6MTUgKzAyMDAsIEpvYWtpbSBUamVybmx1bmQgd3JvdGU6DQo+
+ID4gPiBUaGVyZSBoYXMgYmVlbiBjb21wbGFpbnRzIGluIHRoZSBwYXN0IHdpdGggbm8gZXJhc2Ug
+c3VzcGVuZC4NCj4gPiA+IFlvdSBnZXQgZGVsYXlzIGNvbnNpZGVyaW5nIHRoYXQgYW4gZXJhc2Ug
+dGFrZXMgYy5hIDEgc2VrIHNvDQo+ID4gPiBvbmNlIHlvdSBnZXQgaW50byBhIHN0YXRlIHdoZXJl
+IEdDIGlzIGVyYXNpbmcgbG90cyBvZiBibG9ja3MgYW5kIA0Kb3RoZXINCj4gPiA+IHByb2dzIHdh
+bnRzIHJlYWQvd3JpdGUgeW91IHdpbGwgbm90aWNlLg0KPiANCj4gWWVzIGl0J3Mgbm90IGEgZmlu
+ZSBzb2x1dGlvbiwgaXQncyBhIHF1aXJrIGZvciBhIGhhcmR3YXJlIHdpdGggaXNzdWVzLg0KPiBC
+dXQgaGVyZSBmb3IgbWUgaXQncyBiZXR0ZXIgdG8gZ2V0IGRlbGF5cyB0aGFuIGhhdmluZyB0byBz
+dWZmZXIgZnJvbQ0KPiBmbGFzaCBlcnJvcnMuDQo+IA0KPiA+ID4gPiA+IFRoZSBkb2N1bWVudCBt
+ZW50aW9ucyBvdGhlciB3YXlzIHRvIGdldCBhcm91bmQgdGhpcyBwcm9ibGVtLCBJIA0KPiA+IHN1
+Z2dlc3QgeW91IA0KPiA+ID4gPiA+IGV4cGxvcmUNCj4gPiA+ID4gPiB0aGVzZSBmaXJzdC4NCj4g
+PiA+ID4gDQo+ID4gPiA+IEFscmVhZHkgdHJpZWQgdGhlIOKAnDB4RkbigJ0gZHVtbXkgd3JpdGUg
+Y3ljbGUgc3VnZ2VzdGlvbiwgc2hvdWxkIGhhdmUNCj4gPiA+ID4gbWVudGlvbmVkIHRoYXQuDQo+
+ID4gPiANCj4gPiA+IE9LLCBidXQgb25lIG1vcmUgd29ya2Fyb3VuZCh0aGUgdWRlbGF5IHBhcnQp
+IGlzIHJlcXVpcmVkLCByaWdodD8NCj4gPiANCj4gPiBUaGVyZSBzb21ldGhpbmcgb2RkIHdpdGgg
+dGhlIHBhdGNoZXMgaW4gdGhlIG1lbnRpb25lZCBkb2MuDQo+ID4gMSkgIlJlc29sdmluZyBFUkFT
+RSBTVVNQRU5EIEhhbmd1cHMiIHRvdWNoZXMgdGhlIHNhbWUgY29kZSBhcw0KPiA+IDIpICJFUkFT
+RSBTVVNQRU5EIEZvbGxvd2luZyBFUkFTRSBSRVNVTUUiDQo+ID4gDQo+ID4gMSkgc2F5cyB0byBh
+ZGQgd3JpdGUoMHhmZikgYW5kIDIpIGFkZHMgYSB1ZGVsYXkNCj4gPiANCj4gPiBXaGF0IHNob3Vs
+ZCBpdCBiZSwgYm90aD8gaW4gd2hhdCBvcmRlcj8NCj4gPiANCj4gPiBJIHN1c3BlY3QgdGhhdCBh
+bnkgd3JpdGUoMHhmZikgY2FuIGJlIHRoZXJlIHVuY29uZGl0aW9uYWxseSwgcHJvdmlkZWQgDQp0
+aGF0IA0KPiA+IHRoZSBjbWQwMDAxIHNwZWMgYWxsb3dzIGl0Lg0KPiA+IFRoZSBkZWxheSBjb3Vs
+ZCBiZSBhIHF1aXJrIGRlZmF1bHQgdG8gMA0KPiANCj4gSSBhbHJlYWR5IHRyaWVkIGFsbCBzb3J0
+cyBvZiBjb21iaW5hdGlvbnMgb2YgdmFyaW91cyBkZWxheXMgYW5kIDB4ZmYNCj4gd3JpdGVzLCB3
+aGljaCBjYW4gYmUgdXNlZCB3YXN0ZWZ1bCB3aXRob3V0IGltcGFjdC4gQW5kIHllcywgZXJyb3Jz
+IGFyZQ0KPiBoYXBwZW5pbmcgbGVzcyAtLSBidXQgYXJlIHN0aWxsIGhhcHBlbmluZyAoYXQgZm9y
+IGV4YW1wbGUgLTLCsEMgc3RhcnRpbmcNCj4gdWRldiBvciBhIGZpbGVzeXMtYmVuY2ggcHJvZ3Jh
+bSBsaWtlIGJvbm5pZSsrKS4NCg0KQW1hemluZyBNaWNyb24gc3RpbGwgc2VsbHMgdGhlc2UgZGVm
+ZWN0IGNoaXBzDQoNCj4gDQo+IFN1cmUsIGl0J3MgcG9zc2libGUgdGhhdCBJIG1pc3NlZCB0aGUg
+aG9seSByaWdodA0KPiBkZWxheS0weGZmLXF1aXJrLWNvbWJpbmF0aW9uIHRvIGdldCB0aGlzIE5P
+UiBmbGFzaCByZWxpYWJsZSB3b3JraW5nIGZvcg0KPiBpdHMgc3BlY2lmaWVkIHRlbXBlcmF0dXJl
+IHJhbmdlLiBCdXQgdW50aWwgbm9ib2R5IGhhcyBmb3VuZCBpdCwgSSB3b3VsZA0KPiBwcmVmZXIg
+dG8gc3RpY2sgdG8gbXkgcG9zdGVkIHF1aXJrIGFuZCBqdXN0IGRpc2FibGUgc3VzcGVuZCBlcmFz
+ZS4NCg0KUHJvYmxlbSBpcywgaWYgeW91IGFkZCB0aGF0IHF1aXJrIG5vLW9uZSB3aWxsIGJlIGFi
+bGUgdG8gcmVtb3ZlIGl0IGxhdGVyIA0Kc28gd2UNCmJldHRlciBtYWtlIHN1cmUgdGhlcmUgaXNu
+J3QgYSBsZXNzIGludHJ1c2l2ZSBzb2x1dGlvbi4NCg0KaG1tLCBoYXZlIHlvdSBjaGVja2VkIHlv
+dSBidXMgdGltaW5nPyBQZXJoYXBzIHlvdSBuZWVkIHRvIHJlbGF4IGl0IA0Kc29tZXdoYXQuDQoN
+Cj4gDQo+IE1heWJlIHNvbWVvbmUgZnJvbSBNaWNyb24gY2FuIGhlbHA/DQoNClllcywgeW91IHNo
+b3VsZCBjb250YWN0IHRoZW0uDQoNCiBUaGFua3MNCiAgICAgICAgIEpvY2tlDQoNCg==
