@@ -1,23 +1,25 @@
-Received: from mail-pd0-x235.google.com ([2607:f8b0:400e:c02::235])
+Received: from arroyo.ext.ti.com ([192.94.94.40])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WUt7g-00013u-Ny
- for linux-mtd@lists.infradead.org; Tue, 01 Apr 2014 07:28:41 +0000
-Received: by mail-pd0-f181.google.com with SMTP id p10so9135516pdj.12
- for <linux-mtd@lists.infradead.org>; Tue, 01 Apr 2014 00:28:19 -0700 (PDT)
-Date: Tue, 1 Apr 2014 00:28:15 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: David Mosberger <davidm@egauge.net>
-Subject: Re: [PATCH v4 4/5] mtd: nand: Allocate extra buffers needed for
+ id 1WUtH1-0001Iy-T8
+ for linux-mtd@lists.infradead.org; Tue, 01 Apr 2014 07:38:20 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Brian Norris <computersforpeace@gmail.com>, David Mosberger
+ <davidm@egauge.net>
+Subject: RE: [PATCH v4 4/5] mtd: nand: Allocate extra buffers needed for
  on-die ECC controller.
-Message-ID: <20140401072815.GC6400@brian-ubuntu>
+Date: Tue, 1 Apr 2014 07:37:46 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EABA125@DBDE04.ent.ti.com>
 References: <1396308537-16013-1-git-send-email-davidm@egauge.net>
  <1396308537-16013-5-git-send-email-davidm@egauge.net>
+ <20140401072815.GC6400@brian-ubuntu>
+In-Reply-To: <20140401072815.GC6400@brian-ubuntu>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1396308537-16013-5-git-send-email-davidm@egauge.net>
-Cc: gsi@denx.de, linux-mtd@lists.infradead.org, pekon@ti.com,
- dedekind1@gmail.com
+Cc: "gsi@denx.de" <gsi@denx.de>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,69 +29,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Mar 31, 2014 at 05:28:56PM -0600, David Mosberger wrote:
-> To avoid unnecessary rewrites, it is necessary to count the number of
-> actual bitflips that occurred when the NAND_STATUS_REWRITE bit is set.
-> This patch introduces the extra buffers needed to implement that
-> counting.  The actual counting is in the next patch.
-> 
-> Signed-off-by: David Mosberger <davidm@egauge.net>
-> ---
->  drivers/mtd/nand/nand_base.c |   13 ++++++++++++-
->  include/linux/mtd/nand.h     |    2 ++
->  2 files changed, 14 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 435ef44..834352a 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -3935,13 +3935,24 @@ int nand_scan_tail(struct mtd_info *mtd)
->  			!(chip->bbt_options & NAND_BBT_USE_FLASH));
->  
->  	if (!(chip->options & NAND_OWN_BUFFERS)) {
-> +		size_t on_die_bufsz = 0;
-> +
-> +		if (chip->ecc.mode == NAND_ECC_HW_ON_DIE)
-> +			on_die_bufsz = 2*(mtd->writesize + mtd->oobsize);
+Hi Brian,
 
-Spacing:
+>From: Brian Norris [mailto:computersforpeace@gmail.com]
+>>On Mon, Mar 31, 2014 at 05:28:56PM -0600, David Mosberger wrote:
+[...]
+>> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+>> index dbb99b3..456809b 100644
+>> --- a/include/linux/mtd/nand.h
+>> +++ b/include/linux/mtd/nand.h
+>> @@ -533,6 +533,8 @@ struct nand_buffers {
+>>  	uint8_t	*ecccalc;
+>>  	uint8_t	*ecccode;
+>>  	uint8_t *databuf;
+>> +	uint8_t *chkbuf;
+>> +	uint8_t *rawbuf;
+>
+>Do you really need two additional buffers? Can you get by with just one
+>of them?
+>
 
-			on_die_bufsz = 2 * (mtd->writesize + mtd->oobsize);
+Some similar comments have been provided in the previous versions
+of the patch. But due to in-consistency in $subject, they might not
+be visible as a thread of same discussion.
+You may like to review and comment on below threads also.
 
-> +
->  		nbuf = kzalloc(sizeof(*nbuf) + mtd->writesize
-> -				+ mtd->oobsize * 3, GFP_KERNEL);
-> +				+ mtd->oobsize * 3 + on_die_bufsz, GFP_KERNEL);
->  		if (!nbuf)
->  			return -ENOMEM;
->  		nbuf->ecccalc = (uint8_t *)(nbuf + 1);
->  		nbuf->ecccode = nbuf->ecccalc + mtd->oobsize;
->  		nbuf->databuf = nbuf->ecccode + mtd->oobsize;
-> +		if (chip->ecc.mode == NAND_ECC_HW_ON_DIE) {
-> +			nbuf->chkbuf = (nbuf->databuf + mtd->writesize
-> +					+ mtd->oobsize);
-> +			nbuf->rawbuf = (nbuf->chkbuf + mtd->writesize
-> +					+ mtd->oobsize);
-> +		}
->  
->  		chip->buffers = nbuf;
->  	} else {
-> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> index dbb99b3..456809b 100644
-> --- a/include/linux/mtd/nand.h
-> +++ b/include/linux/mtd/nand.h
-> @@ -533,6 +533,8 @@ struct nand_buffers {
->  	uint8_t	*ecccalc;
->  	uint8_t	*ecccode;
->  	uint8_t *databuf;
-> +	uint8_t *chkbuf;
-> +	uint8_t *rawbuf;
 
-Do you really need two additional buffers? Can you get by with just one
-of them?
+[PATCH] mtd: nand: Add support for Micron on-die ECC controller (rev2).
+http://lists.infradead.org/pipermail/linux-mtd/2014-March/052949.html
 
->  };
->  
->  /**
+[RFC] mtd: nand: Preparatory patch for adding on-die ECC controller support=
+ ...
+http://lists.infradead.org/pipermail/linux-mtd/2014-March/052969.html
 
-Brian
+
+with regards, pekon
