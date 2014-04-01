@@ -1,22 +1,28 @@
-Received: from mail-pb0-x22b.google.com ([2607:f8b0:400e:c01::22b])
+Received: from mail-lb0-x233.google.com ([2a00:1450:4010:c04::233])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WV6xu-0007EO-1S
- for linux-mtd@lists.infradead.org; Tue, 01 Apr 2014 22:15:30 +0000
-Received: by mail-pb0-f43.google.com with SMTP id um1so10502457pbc.16
- for <linux-mtd@lists.infradead.org>; Tue, 01 Apr 2014 15:15:06 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20140331165642.GE29542@ld-irv-0074>
-References: <1394904668-22978-1-git-send-email-ron@debian.org>
- <1394904668-22978-2-git-send-email-ron@debian.org>
- <20140331165642.GE29542@ld-irv-0074>
-From: Florian Fainelli <f.fainelli@gmail.com>
-Date: Tue, 1 Apr 2014 15:14:24 -0700
-Message-ID: <CAGVrzcadyo5S3YOTQnMzijjcBM+9qM3tihARU2ur7JV_nmeFpQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] Fix index regression in nand_read_subpage
-To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>, Ron <ron@debian.org>
+ id 1WV7pZ-0000CR-Ot
+ for linux-mtd@lists.infradead.org; Tue, 01 Apr 2014 23:10:59 +0000
+Received: by mail-lb0-f179.google.com with SMTP id p9so7644905lbv.10
+ for <linux-mtd@lists.infradead.org>; Tue, 01 Apr 2014 16:10:34 -0700 (PDT)
+Subject: Re: [PATCH] mtd: cfi_cmdset_0001 - fixup for PC28F512P33TFA
+From: Christoph Fritz <chf.fritz@googlemail.com>
+To: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+In-Reply-To: <OFDA5ED549.208718B9-ONC1257CAD.0068922B-C1257CAD.006990F4@transmode.se>
+References: <1396287151.4857.50.camel@mars>
+ <OFA78F5CB9.63C292B4-ONC1257CAC.006FBDC4-C1257CAC.0070B588@transmode.se>
+ <1396303460.4857.111.camel@mars>
+ <OFA7BCC382.7C5EA8B7-ONC1257CAD.002CA0C1-C1257CAD.002EAA92@LocalDomain>
+ <OFCD64B0EF.BC0E327D-ONC1257CAD.003CE517-C1257CAD.003DCE3D@transmode.se>
+ <1396364991.4850.37.camel@mars>
+ <OFDA5ED549.208718B9-ONC1257CAD.0068922B-C1257CAD.006990F4@transmode.se>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 02 Apr 2014 01:10:30 +0200
+Message-ID: <1396393830.6474.31.camel@mars>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, Marius Achilles <M.Achilles@phytec.de>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,68 +32,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Tue, 2014-04-01 at 21:13 +0200, Joakim Tjernlund wrote:
+> Christoph Fritz <chf.fritz@googlemail.com> wrote on 2014/04/01 17:09:51:
+> > I already tried all sorts of combinations of various delays and 0xff
+> > writes, which can be used wasteful without impact. And yes, errors are
+> > happening less -- but are still happening (at for example -2°C starting
+> > udev or a filesys-bench program like bonnie++).
+> 
+> Amazing Micron still sells these defect chips
 
-2014-03-31 9:56 GMT-07:00 Brian Norris <computersforpeace@gmail.com>:
-> + Florian
->
-> (FYI Ron: 3 of your emails were filtered as spam in my mailbox, for some
-> reason. I only pass over my spam mailbox every once in a few weeks; I
-> only noticed this because of your IRC ping!)
+Yeah, and it was pain to do all these kinds of tests to get it reliably
+working for a real world application where minus degrees can happen. For
+me it would be no problem to keep this quirk in my private queue, but
+involving a bigger audience seems to be right considering the facts.
 
-BTW, you will need to sign-off on these patches using your full name.
-Your patch does look good to me. Thanks!
+> > Sure, it's possible that I missed the holy right
+> > delay-0xff-quirk-combination to get this NOR flash reliable working for
+> > its specified temperature range. But until nobody has found it, I would
+> > prefer to stick to my posted quirk and just disable suspend erase.
+> 
+> Problem is, if you add that quirk no-one will be able to remove it later 
+> so we
+> better make sure there isn't a less intrusive solution.
 
->
-> On Sun, Mar 16, 2014 at 04:01:07AM +1030, Ron wrote:
->> Commit 7351d3a5dbf42ba3299af71db3296be447bc1516 added an index variable
->> as part of fixing checkpatch warnings, presumably as a tool to make some
->> long lines shorter, however it only set that index in the case of there
->> being no gaps in eccpos for the fragment being read.  Which means the
->> later step of filling ecccode from oob_poi will use the wrong indexing
->> into eccpos in that case.
->>
->> This patch restores the behaviour that existed prior to that change.
->>
->> Signed-off-by: Ron <ron@debian.org>
->> ---
->>  drivers/mtd/nand/nand_base.c |    5 ++---
->>  1 files changed, 2 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
->> index 9715a7b..be23dff 100644
->> --- a/drivers/mtd/nand/nand_base.c
->> +++ b/drivers/mtd/nand/nand_base.c
->> @@ -1170,13 +1170,14 @@ static int nand_read_subpage(struct mtd_info *mtd, struct nand_chip *chip,
->>       int data_col_addr, i, gaps = 0;
->>       int datafrag_len, eccfrag_len, aligned_len, aligned_pos;
->>       int busw = (chip->options & NAND_BUSWIDTH_16) ? 2 : 1;
->> -     int index = 0;
->> +     int index;
->>       unsigned int max_bitflips = 0;
->>
->>       /* Column address within the page aligned to ECC size (256bytes) */
->>       start_step = data_offs / chip->ecc.size;
->>       end_step = (data_offs + readlen - 1) / chip->ecc.size;
->>       num_steps = end_step - start_step + 1;
->> +     index = start_step * chip->ecc.bytes;
->>
->>       /* Data size aligned to ECC ecc.size */
->>       datafrag_len = num_steps * chip->ecc.size;
->> @@ -1213,8 +1214,6 @@ static int nand_read_subpage(struct mtd_info *mtd, struct nand_chip *chip,
->>                * Send the command to read the particular ECC bytes take care
->>                * about buswidth alignment in read_buf.
->>                */
->> -             index = start_step * chip->ecc.bytes;
->> -
->>               aligned_pos = eccpos[index] & ~(busw - 1);
->>               aligned_len = eccfrag_len;
->>               if (eccpos[index] & (busw - 1))
->> --
->> 1.7.2.5
->>
+What about a comment or printk which makes that clear? I anyway don't
+think that there are interested users of this specific NOR flash left
+using a current kernel -- but who knows, right.
 
+> hmm, have you checked you bus timing? Perhaps you need to relax it 
+> somewhat.
 
+Sure, I rechecked the WEIM interface (imx35 bus) settings more than
+once. I also did testings with most relaxed settings (highest delays
+possible). But still, flash errors do occur.
 
--- 
-Florian
+I should mention that a PC28F256P33BFE (a similar 32 MB NOR flash) works
+without any quirk in all my testing environments just reliable as it
+should be.
+ 
+> > Maybe someone from Micron can help?
+> 
+> Yes, you should contact them.
+
+Is there anybody out there knowing a contact without the need of going
+through a business-ticket-support-hell ?
+
+Thanks
+  -- Christoph
