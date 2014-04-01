@@ -1,24 +1,23 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
+Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WUsDI-0008Qe-An
- for linux-mtd@lists.infradead.org; Tue, 01 Apr 2014 06:30:25 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
+ id 1WUsN8-00008Y-Bo
+ for linux-mtd@lists.infradead.org; Tue, 01 Apr 2014 06:40:35 +0000
+Received: by mail-pa0-f53.google.com with SMTP id ld10so9340983pab.40
+ for <linux-mtd@lists.infradead.org>; Mon, 31 Mar 2014 23:40:08 -0700 (PDT)
+Date: Mon, 31 Mar 2014 23:39:58 -0700
+From: Brian Norris <computersforpeace@gmail.com>
 To: David Mosberger <davidm@egauge.net>
-Subject: RE: [PATCH v4 5/5] mtd: nand: Improve bitflip detection for on-die
- ECC scheme.
-Date: Tue, 1 Apr 2014 06:29:52 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EABA022@DBDE04.ent.ti.com>
+Subject: Re: [PATCH v4 1/5] mtd: nand: Detect Micron flash with on-die ECC
+ (aka "internal ECC") enabled.
+Message-ID: <20140401063958.GA6400@brian-ubuntu>
 References: <1396308537-16013-1-git-send-email-davidm@egauge.net>
- <1396308537-16013-6-git-send-email-davidm@egauge.net>
-In-Reply-To: <1396308537-16013-6-git-send-email-davidm@egauge.net>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ <1396308537-16013-2-git-send-email-davidm@egauge.net>
 MIME-Version: 1.0
-Cc: "gsi@denx.de" <gsi@denx.de>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1396308537-16013-2-git-send-email-davidm@egauge.net>
+Cc: gsi@denx.de, linux-mtd@lists.infradead.org, pekon@ti.com,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,166 +27,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi David,
+On Mon, Mar 31, 2014 at 05:28:53PM -0600, David Mosberger wrote:
+> Signed-off-by: David Mosberger <davidm@egauge.net>
+> ---
+>  drivers/mtd/nand/nand_base.c |   27 ++++++++++++++++++++++++---
+>  include/linux/mtd/nand.h     |    4 ++++
+>  2 files changed, 28 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 09fe1b1..f145f00 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -3054,11 +3054,30 @@ static int nand_setup_read_retry_micron(struct mtd_info *mtd, int retry_mode)
+>  			feature);
+>  }
+>  
+> +static void
 
->From: David Mosberger
->
->When NAND_STATUS_REWRITE is set, there is no direct indication as to
->how many bits have were flipped.  This patch improves the existing
->code by manually counting the number of bitflips, rather than just
->assuming the worst-case of mtd->bitflip_threshold.  This avoids
->unnecessary rewrites, e.g., due to a single stuck bit.
->
->Signed-off-by: David Mosberger <davidm@egauge.net>
->---
-> drivers/mtd/nand/nand_base.c |   90 +++++++++++++++++++++++++++++++++++++=
-+++--
-> 1 file changed, 86 insertions(+), 4 deletions(-)
->
->diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
->index 834352a..80cfaa8 100644
->--- a/drivers/mtd/nand/nand_base.c
->+++ b/drivers/mtd/nand/nand_base.c
->@@ -1272,6 +1272,84 @@ static int nand_read_subpage(struct mtd_info *mtd, =
-struct nand_chip *chip,
-> 	return max_bitflips;
-> }
->
->+static int
->+set_on_die_ecc(struct mtd_info *mtd, struct nand_chip *chip, int on)
->+{
->+	u8 data[ONFI_SUBFEATURE_PARAM_LEN] =3D { 0, };
->+
->+	if (chip->ecc.mode !=3D NAND_ECC_HW_ON_DIE)
->+		return 0;
->+
->+	if (on)
->+		data[0] =3D ONFI_FEATURE_ARRAY_OP_MODE_ENABLE_ON_DIE_ECC;
->+
->+	return chip->onfi_set_features(mtd, chip,
->+				       ONFI_FEATURE_ADDR_ARRAY_OP_MODE, data);
->+}
->+
->+/*
->+ * Return the number of bits that differ between buffers SRC1 and
->+ * SRC2, both of which are LEN bytes long.
->+ *
->+ * This code could be optimized for, but it only gets called on pages
->+ * with bitflips and compared to the cost of migrating an eraseblock,
->+ * the execution time here is trivial...
->+ */
->+static int
->+bitdiff(const void *s1, const void *s2, size_t len)
->+{
->+	const uint8_t *src1 =3D s1, *src2 =3D s2;
->+	int count =3D 0, i;
->+
->+	for (i =3D 0; i < len; ++i)
->+		count +=3D hweight8(*src1++ ^ *src2++);
->+	return count;
+Does this really need to be on its own line? It doesn't match the style
+of anything else.
 
-hweight8() might not be good option, how about using hweight32 ?
+> +nand_onfi_detect_micron_on_die_ecc(struct mtd_info *mtd,
+> +				   struct nand_chip *chip)
 
->+}
->+
->+static int
->+check_for_bitflips(struct mtd_info *mtd, struct nand_chip *chip, int page=
-)
->+{
->+	int flips =3D 0, max_bitflips =3D 0, i, j, read_size;
->+	uint8_t *chkbuf, *rawbuf, *chkoob, *rawoob;
->+	uint32_t *eccpos;
->+
->+	chkbuf =3D chip->buffers->chkbuf;
->+	rawbuf =3D chip->buffers->rawbuf;
->+	read_size =3D mtd->writesize + mtd->oobsize;
->+
->+	/* Read entire page w/OOB area with on-die ECC on: */
->+	chip->read_buf(mtd, chkbuf, read_size);
->+
->+	/* Re-read page with on-die ECC off: */
->+	set_on_die_ecc(mtd, chip, 0);
->+	chip->cmdfunc(mtd, NAND_CMD_READ0, 0x00, page);
->+	chip->read_buf(mtd, rawbuf, read_size);
->+	set_on_die_ecc(mtd, chip, 1);
->+
->+	chkoob =3D chkbuf + mtd->writesize;
->+	rawoob =3D rawbuf + mtd->writesize;
->+	eccpos =3D chip->ecc.layout->eccpos;
->+	for (i =3D 0; i < chip->ecc.steps; ++i) {
->+		/* Count bit flips in the actual data area: */
->+		flips =3D bitdiff(chkbuf, rawbuf, chip->ecc.size);
+I'm really not sure why the inconsistent style throughout nand_base on
+using both an 'mtd' and a 'chip' parameter (we often assume that
+'mtd->priv == chip'). If you need the mtd parameter, let's just pass it
+instead of 'chip'.
 
-Do you really need this as separate function call ?
-You could make it inline, like you did below of OOB.
-Also, you may stop checking bitflips, once count > chip->ecc.strength.
+> +{
+> +	u8 features[ONFI_SUBFEATURE_PARAM_LEN];
+> +
+> +	if (chip->onfi_get_features(mtd, chip, ONFI_FEATURE_ADDR_ARRAY_OP_MODE,
+> +				    features) < 0)
+> +		return;
+> +
+> +	if (features[0] & ONFI_FEATURE_ARRAY_OP_MODE_ENABLE_ON_DIE_ECC) {
+> +		/*
+> +		 * If the chip has on-die ECC enabled, we kind of have
+> +		 * to do the same...
+> +		 */
 
-Some of the discussion on different patch may be helpful here, please see
-Brian's comments on [1].
+That's not really true at all, is it? We can simply disable the on-die
+ECC and use the provided spare area with a different ECC scheme, can't
+we? (e.g., software BCH; or an SoC's HW ECC) In fact, I think disabling
+the on-die ECC is a more reasonable default; nand_base is used by many
+drivers, most of which provide their own implementations, and many of
+which would not be compatible with the implementations you provide. A
+system should have to "opt in" somehow to enable this, I think.
 
->+		/* Count bit flips in the ECC bytes: */
->+		for (j =3D 0; j < chip->ecc.bytes; ++j) {
+Additionally, you need a way to inform the hardware driver that you're
+using on-die ECC, so they can make the appropriate choices (to disable
+their HW ECC, for instance).
 
-Again, why checking only for ecc.bytes ? should have been.
+BTW, what driver/controller/SoC are you running this with?
 
->+			flips +=3D hweight8(chkoob[*eccpos] ^ rawoob[*eccpos]);
->+			++eccpos;
->+		}
->+		if (flips > 0)
->+			mtd->ecc_stats.corrected +=3D flips;
->+		max_bitflips =3D max_t(int, max_bitflips, flips);
->+		chkbuf +=3D chip->ecc.size;
->+		rawbuf +=3D chip->ecc.size;
->+	}
->+
->+	/* Re-issue the READ command for the actual data read that follows.  */
->+	chip->cmdfunc(mtd, NAND_CMD_READ0, 0x00, page);
->+
+> +		pr_info("Using on-die ECC\n");
+> +	}
+> +}
+> +
+>  /*
+>   * Configure chip properties from Micron vendor-specific ONFI table
+>   */
+> -static void nand_onfi_detect_micron(struct nand_chip *chip,
+> -		struct nand_onfi_params *p)
+> +static void nand_onfi_detect_micron(struct mtd_info *mtd,
+> +		struct nand_chip *chip, struct nand_onfi_params *p)
 
-If you refer my previous feedbacks, you could avoided this extra
-"chip->read_buf(mtd, chkbuf, read_size);" by calling it in nand_page_read_o=
-n_die();
+Ditto on mtd + chip.
 
->+	return max_bitflips;
->+}
->+
-> static int check_read_status_on_die(struct mtd_info *mtd,
-> 				    struct nand_chip *chip, int page)
-> {
->@@ -1290,11 +1368,15 @@ static int check_read_status_on_die(struct mtd_inf=
-o *mtd,
-> 		mtd->ecc_stats.failed++;
-> 	} else if (status & NAND_STATUS_REWRITE) {
-> 		/*
->-		 * Simple but suboptimal: any page with a single stuck
->-		 * bit will be unusable since it'll be rewritten on
->-		 * each read...
->+		 * The Micron chips turn on the REWRITE status bit for
->+		 * ANY bit flips.  Some pages have stuck bits, so we
->+		 * don't want to migrate a block just because of
->+		 * single bit errors because otherwise, that block
->+		 * would effectively become unusable.  So, work out in
->+		 * software what the max number of flipped bits is for
->+		 * all subpages in a page:
-> 		 */
->-		max_bitflips =3D mtd->bitflip_threshold;
->+		max_bitflips =3D check_for_bitflips(mtd, chip, page);
+>  {
+>  	struct nand_onfi_vendor_micron *micron = (void *)p->vendor;
+>  
+> @@ -3067,6 +3086,8 @@ static void nand_onfi_detect_micron(struct nand_chip *chip,
+>  
+>  	chip->read_retries = micron->read_retry_options;
+>  	chip->setup_read_retry = nand_setup_read_retry_micron;
+> +
+> +	nand_onfi_detect_micron_on_die_ecc(mtd, chip);
+>  }
+>  
+>  /*
+> @@ -3168,7 +3189,7 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+>  	}
+>  
+>  	if (p->jedec_id == NAND_MFR_MICRON)
+> -		nand_onfi_detect_micron(chip, p);
+> +		nand_onfi_detect_micron(mtd, chip, p);
+>  
+>  	return 1;
+>  }
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> index 2bd6e4e..780ab58 100644
+> --- a/include/linux/mtd/nand.h
+> +++ b/include/linux/mtd/nand.h
+> @@ -225,6 +225,10 @@ struct nand_chip;
+>  /* Vendor-specific feature address (Micron) */
+>  #define ONFI_FEATURE_ADDR_READ_RETRY	0x89
+>  
+> +/* Vendor-specific array operation mode (Micron) */
+> +#define ONFI_FEATURE_ADDR_ARRAY_OP_MODE	0x90
+> +#define ONFI_FEATURE_ARRAY_OP_MODE_ENABLE_ON_DIE_ECC		0x08
+> +
+>  /* ONFI subfeature parameters length */
+>  #define ONFI_SUBFEATURE_PARAM_LEN	4
+>  
 
-We usually don't delete the changes, introduced in previous patches
-of same series. So, take one approach and then logically divide the patches=
-.
-
-> 	}
-> 	return max_bitflips;
-> }
->--
->1.7.9.5
->
-
-Again, please review all the comments given by Gerhard and myself
-on previous patches. Don't hurry in sending newer revisions, as it
-would just increase your iterations.
-
-[1] http://lists.infradead.org/pipermail/linux-mtd/2014-March/052625.html
-
-with regards, pekon
+Brian
