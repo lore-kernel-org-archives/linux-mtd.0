@@ -1,23 +1,25 @@
-Received: from mail-pa0-f50.google.com ([209.85.220.50])
+Received: from mailout4.samsung.com ([203.254.224.34])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WUnmz-0004JM-2f
- for linux-mtd@lists.infradead.org; Tue, 01 Apr 2014 01:46:58 +0000
-Received: by mail-pa0-f50.google.com with SMTP id kq14so9047633pab.37
- for <linux-mtd@lists.infradead.org>; Mon, 31 Mar 2014 18:46:30 -0700 (PDT)
-Date: Mon, 31 Mar 2014 18:46:27 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Sasha Levin <sasha.levin@oracle.com>
-Subject: Re: [PATCH] mtd: diskonchip: mem resource name is not optional
-Message-ID: <20140401014627.GG29542@ld-irv-0074>
-References: <1395267877-15223-1-git-send-email-sasha.levin@oracle.com>
- <1395477572.57478225@f224.i.mail.ru> <533765F8.2090700@oracle.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <533765F8.2090700@oracle.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Alexander Shiyan <shc_work@mail.ru>
+ id 1WUnpw-0004OE-1B
+ for linux-mtd@lists.infradead.org; Tue, 01 Apr 2014 01:50:01 +0000
+Received: from epcpsbgr2.samsung.com
+ (u142.gpu120.samsung.co.kr [203.254.230.142])
+ by mailout4.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ (7.0.4.24.0) 64bit (built Nov 17 2011))
+ with ESMTP id <0N3B003YGX2FTXC0@mailout4.samsung.com> for
+ linux-mtd@lists.infradead.org; Tue, 01 Apr 2014 10:49:27 +0900 (KST)
+Date: Tue, 01 Apr 2014 01:49:27 +0000 (GMT)
+From: Eunbong Song <eunb.song@samsung.com>
+Subject: [PATCH] mtd: fsl_ifc_nand: Recover corrupted empty page for preventing
+ read-only mount in UBIFS
+To: computersforpeace@gmail.com, artem.bityutskiy@linux.intel.com
+MIME-version: 1.0
+Content-transfer-encoding: base64
+Content-type: text/plain; charset=euc-kr
+MIME-version: 1.0
+Message-id: <26017351.61791396316965998.JavaMail.weblogic@epv6ml06>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Reply-To: eunb.song@samsung.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,40 +29,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Mar 29, 2014 at 08:31:52PM -0400, Sasha Levin wrote:
-> On 03/22/2014 04:39 AM, Alexander Shiyan wrote:
-> >Wed, 19 Mar 2014 18:24:37 -0400 от Sasha Levin <sasha.levin@oracle.com>:
-> >>Passing a name to request_mem_region() isn't optional and can't just
-> >>be NULL. Passing NULL causes a NULL ptr deref later in the boot
-> >>process.
-> >>
-> >>Signed-off-by: Sasha Levin <sasha.levin@oracle.com>
-> >>---
-> >>  drivers/mtd/nand/diskonchip.c |    2 +-
-> >>  1 files changed, 1 insertions(+), 1 deletions(-)
-> >>
-> >>diff --git a/drivers/mtd/nand/diskonchip.c b/drivers/mtd/nand/diskonchip.c
-> >>index b9b4db6..f68a7bc 100644
-> >>--- a/drivers/mtd/nand/diskonchip.c
-> >>+++ b/drivers/mtd/nand/diskonchip.c
-> >>@@ -1439,7 +1439,7 @@ static int __init doc_probe(unsigned long physadr)
-> >>  	int reg, len, numchips;
-> >>  	int ret = 0;
-> >>
-> >>-	if (!request_mem_region(physadr, DOC_IOREMAP_LEN, NULL))
-> >>+	if (!request_mem_region(physadr, DOC_IOREMAP_LEN, "DiskOnChip"))
-> >>  		return -EBUSY;
-> >>  	virtadr = ioremap(physadr, DOC_IOREMAP_LEN);
-> >>  	if (!virtadr) {
-> >>--
-> >
-> >Tested-by: Alexander Shiyan <shc_work@mail.ru>
-> 
-> It seems that no one pulled this patch anywhere. It fixes a straightforward
-> boot failure on boot when diskonchip is enabled in the config.
-> 
-> Someone grab it please?
-
-Pushed to l2-mtd.git, marked for stable >= 3.14.
-
-Brian
+RXZlbiBpZiB0aGUgbWVhbmluZyBvZiBFVUNMRUFOIHdhcyBjaGFuZ2VkIGJ5IGNvbW1pdCBlZGJj
+NDU0MC4NClRoZXJlIGlzIHN0aWxsIHBvc3NpYmlsaXR5IG9mIHJlYWQtb25seSBtb3VudCBpbiBV
+QklGUyB3aXRoIHViaWZzX3NjYW4oKSAiY29ycnVwdCBlbXB0eSBzcGFjZSBhdCBMRUIiLg0KU28g
+aSBtYWRlIHRoaXMgcGF0Y2ggZm9yIGZpeCB0aGF0IHByb2JsZW0uDQpUaGlzIHBhdGNoIGRvIGFz
+IGZvbGxvdy4NCiAtIElmIHRoZXJlIGFyZSBlY2MgZXJyb3JzIHdoaWNoIGlzIGVxdWFsIHRvIG9y
+IGxlc3MgdGhhbiBjaGlwLT5lY2Muc3RyZW5ndGggaW4gcGFnZS4NCiAtIENoZWNrIHRoYXQgcGFn
+ZSBoYXMgaG93IG1hbnkgemVybyBiaXRzLCBhbmQgaWYgemVybyBiaXRzIGFyZSBlcXVhbCB0byBv
+ciBsZXNzIHRoYW4NCiAgIGNoaXAtPmVjYy5zdHJlbmd0aCB0aGVuIG92ZXJ3cml0ZSAxIHRvIHpl
+cm8gYml0cyBpbiBidWYuDQoNCnViaWZzX3NjYW4oKSBjYW5ub3QgZGV0ZWN0IGNvcnJ1cHRlZCBl
+bXB0eSBzcGFjZSBiZWNhdXNlIGJ1ZiBpcyByZWNvdmVyZWQgYnkgdGhpcyBwYXRjaC4NCkFuZCB0
+aGlzIGlzIHNhZmUgYmVjYXVzZSBlY2MgY29udHJvbGxlciBjYW4gY29ycmVjdCB1cCB0byBjaGlw
+LT5lY2Muc3RyZW5ndGggYml0cy4NCg0KU2lnbmVkLW9mZi1ieTogRXVuYm9uZyBTb25nIDxldW5i
+LnNvbmdAc2Ftc3VuZy5jb20+DQotLS0NCiBkcml2ZXJzL210ZC9uYW5kL2ZzbF9pZmNfbmFuZC5j
+IHwgICA0MSArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysNCiAxIGZpbGVz
+IGNoYW5nZWQsIDQxIGluc2VydGlvbnMoKyksIDAgZGVsZXRpb25zKC0pDQoNCmRpZmYgLS1naXQg
+YS9kcml2ZXJzL210ZC9uYW5kL2ZzbF9pZmNfbmFuZC5jIGIvZHJpdmVycy9tdGQvbmFuZC9mc2xf
+aWZjX25hbmQuYw0KaW5kZXggOTBjYTdlNy4uMjEyOWMzOSAxMDA2NDQNCi0tLSBhL2RyaXZlcnMv
+bXRkL25hbmQvZnNsX2lmY19uYW5kLmMNCisrKyBiL2RyaXZlcnMvbXRkL25hbmQvZnNsX2lmY19u
+YW5kLmMNCkBAIC0yNzcsNiArMjc3LDQyIEBAIHN0YXRpYyBpbnQgaXNfYmxhbmsoc3RydWN0IG10
+ZF9pbmZvICptdGQsIHVuc2lnbmVkIGludCBidWZudW0pDQogCXJldHVybiAxOw0KIH0NCiANCitz
+dGF0aWMgaW50IG51bV96ZXJvX2JpdHModWludDhfdCB2YWwpDQorew0KKwlpbnQgaSwgcmV0PTA7
+DQorDQorCWZvcihpPTc7IGk+PTAgOyBpLS0pDQorCQlpZighKDB4MSAmICh2YWwgPj4gaSkpKQ0K
+KwkJCXJldCsrOw0KKw0KKwlyZXR1cm4gcmV0Ow0KK30NCisNCitzdGF0aWMgaW50IGlzX2NvcnJ1
+cHRlZF9ibGFuayhzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgdWludDhfdCAqIGJ1ZikNCit7DQorCXN0
+cnVjdCBuYW5kX2NoaXAgKmNoaXAgPSBtdGQtPnByaXY7DQorCWludCBpOw0KKwlpbnQgemVyb19i
+aXRzID0gMDsNCisNCisJZm9yIChpID0gMDsgaSA8IG10ZC0+d3JpdGVzaXplIDsgaSsrKSB7DQor
+CQlpZihidWZbaV0gIT0gMHhmZikgew0KKwkJCXplcm9fYml0cyArPSBudW1femVyb19iaXRzKGJ1
+ZltpXSk7CQ0KKwkJfQ0KKwl9DQorDQorCWlmKHplcm9fYml0cyAmJiAoemVyb19iaXRzIDw9IGNo
+aXAtPmVjYy5zdHJlbmd0aCkpew0KKwkJcmV0dXJuIDE7DQorCX0NCisNCisJcmV0dXJuIDA7DQor
+fQ0KKw0KK3N0YXRpYyB2b2lkIHJlY292ZXJfY29ycnVwdGVkX2JsYW5rKHN0cnVjdCBtdGRfaW5m
+byAqbXRkLCB1aW50OF90ICogYnVmKQ0KK3sNCisJbWVtc2V0KGJ1ZiwgMHhmZiwgbXRkLT53cml0
+ZXNpemUpOw0KKwlyZXR1cm47DQorfQ0KKw0KIC8qIHJldHVybnMgbm9uemVybyBpZiBlbnRpcmUg
+cGFnZSBpcyBibGFuayAqLw0KIHN0YXRpYyBpbnQgY2hlY2tfcmVhZF9lY2Moc3RydWN0IG10ZF9p
+bmZvICptdGQsIHN0cnVjdCBmc2xfaWZjX2N0cmwgKmN0cmwsDQogCQkJICB1MzIgKmVjY3N0YXQs
+IHVuc2lnbmVkIGludCBidWZudW0pDQpAQCAtNzYwLDYgKzc5NiwxMSBAQCBzdGF0aWMgaW50IGZz
+bF9pZmNfcmVhZF9wYWdlKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBzdHJ1Y3QgbmFuZF9jaGlwICpj
+aGlwLA0KIAlpZiAoY3RybC0+bmFuZF9zdGF0ICE9IElGQ19OQU5EX0VWVEVSX1NUQVRfT1BDKQ0K
+IAkJbXRkLT5lY2Nfc3RhdHMuZmFpbGVkKys7DQogDQorCWlmKG5jdHJsLT5tYXhfYml0ZmxpcHMg
+JiYgKG5jdHJsLT5tYXhfYml0ZmxpcHMgPD0gY2hpcC0+ZWNjLnN0cmVuZ3RoKSl7DQorCQlpZihp
+c19jb3JydXB0ZWRfYmxhbmsobXRkLCBidWYpKQ0KKwkJCXJlY292ZXJfY29ycnVwdGVkX2JsYW5r
+KG10ZCwgYnVmKTsNCisJfQ0KKw0KIAlyZXR1cm4gbmN0cmwtPm1heF9iaXRmbGlwczsNCiB9DQog
+DQotLSANCjEuNy4wLjENCg==
