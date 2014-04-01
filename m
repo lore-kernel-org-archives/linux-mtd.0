@@ -1,24 +1,24 @@
-Received: from mail-ob0-f182.google.com ([209.85.214.182])
+Received: from mail-oa0-f54.google.com ([209.85.219.54])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WV0aD-0004qV-K1
- for linux-mtd@lists.infradead.org; Tue, 01 Apr 2014 15:26:38 +0000
-Received: by mail-ob0-f182.google.com with SMTP id uz6so11093735obc.41
- for <linux-mtd@lists.infradead.org>; Tue, 01 Apr 2014 08:26:15 -0700 (PDT)
+ id 1WV0gV-00051O-Jm
+ for linux-mtd@lists.infradead.org; Tue, 01 Apr 2014 15:33:08 +0000
+Received: by mail-oa0-f54.google.com with SMTP id n16so11303952oag.41
+ for <linux-mtd@lists.infradead.org>; Tue, 01 Apr 2014 08:32:44 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20140401063958.GA6400@brian-ubuntu>
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EAB9FF9@DBDE04.ent.ti.com>
 References: <1396308537-16013-1-git-send-email-davidm@egauge.net>
- <1396308537-16013-2-git-send-email-davidm@egauge.net>
- <20140401063958.GA6400@brian-ubuntu>
-Date: Tue, 1 Apr 2014 09:26:13 -0600
-Message-ID: <CALnQHM1Z048h0BvbhAwussYH27mdV9kO6Q=74Wqa1CHpsbi4+w@mail.gmail.com>
-Subject: Re: [PATCH v4 1/5] mtd: nand: Detect Micron flash with on-die ECC
- (aka "internal ECC") enabled.
+ <1396308537-16013-3-git-send-email-davidm@egauge.net>
+ <20980858CB6D3A4BAE95CA194937D5E73EAB9FF9@DBDE04.ent.ti.com>
+Date: Tue, 1 Apr 2014 09:32:43 -0600
+Message-ID: <CALnQHM22RAUfF=Zb7BOAgnJfQW-niq3Ri0zu0a8gSuyXdX_9EQ@mail.gmail.com>
+Subject: Re: [PATCH v4 2/5] mtd: nand: Add NAND_ECC_HW_ON_DIE ECC-mode.
 From: David Mosberger <davidm@egauge.net>
-To: Brian Norris <computersforpeace@gmail.com>
+To: "Gupta, Pekon" <pekon@ti.com>
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: Gerhard Sittig <gsi@denx.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
- Pekon" <pekon@ti.com>, Artem Bityutskiy <dedekind1@gmail.com>
+Cc: "gsi@denx.de" <gsi@denx.de>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,83 +28,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Brian,
+Pekon,
 
-On Tue, Apr 1, 2014 at 12:39 AM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> On Mon, Mar 31, 2014 at 05:28:53PM -0600, David Mosberger wrote:
->> Signed-off-by: David Mosberger <davidm@egauge.net>
->> ---
->>  drivers/mtd/nand/nand_base.c |   27 ++++++++++++++++++++++++---
->>  include/linux/mtd/nand.h     |    4 ++++
->>  2 files changed, 28 insertions(+), 3 deletions(-)
+On Tue, Apr 1, 2014 at 12:02 AM, Gupta, Pekon <pekon@ti.com> wrote:
+
+>>+      } else if (status & NAND_STATUS_REWRITE) {
+>>+              /*
+>>+               * Simple but suboptimal: any page with a single stuck
+>>+               * bit will be unusable since it'll be rewritten on
+>>+               * each read...
+>>+               */
+>>+              max_bitflips = mtd->bitflip_threshold;
+>
+> This is not correct. You need to count the bit-flips. This would lead to
+> un-necessary scrubbing of the pages by UBI even for single-bit errors.
+
+Wrong.  It is correct, it's just not optimal.
+Patch 5 of 5 changes this part to count the bitflips, to get optimal behavior.
+
+> Please spawn out nand_read_subpage_on_die() into a separate patch
+> (or may be later) so that basic framework with nand_read_page_on_die()
+> can be independently reviewed and accepted.
+
+Good point, thanks.
+
+
+>>@@ -3985,6 +4099,25 @@ int nand_scan_tail(struct mtd_info *mtd)
+>>               ecc->strength = ecc->bytes * 8 / fls(8 * ecc->size);
+>>               break;
 >>
->> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
->> index 09fe1b1..f145f00 100644
->> --- a/drivers/mtd/nand/nand_base.c
->> +++ b/drivers/mtd/nand/nand_base.c
->> @@ -3054,11 +3054,30 @@ static int nand_setup_read_retry_micron(struct mtd_info *mtd, int retry_mode)
->>                       feature);
->>  }
+>>+      case NAND_ECC_HW_ON_DIE:
+>>+              /* nand_bbt attempts to put Bbt marker at offset 8 in
+>>+                 oob, which is used for ECC by Micron
+>>+                 MT29F4G16ABADAWP, for example.  Fixed by not using
+>>+                 OOB for BBT marker.  */
+>>+              chip->bbt_options |= NAND_BBT_NO_OOB;
+>>+              chip->ecc.layout = &nand_oob_64_on_die;
+>>+              chip->ecc.read_page = nand_read_page_on_die;
+>>+              chip->ecc.read_subpage = nand_read_subpage_on_die;
+>>+              chip->ecc.write_page = nand_write_page_raw;
+>>+              chip->ecc.read_oob = nand_read_oob_std;
+>>+              chip->ecc.read_page_raw = nand_read_page_raw;
+>>+              chip->ecc.write_page_raw = nand_write_page_raw;
+>>+              chip->ecc.write_oob = nand_write_oob_std;
+>>+              chip->ecc.size = 512;
+>>+              chip->ecc.bytes = 8;
+>>+              chip->ecc.strength = 4;
+>
+> Shouldn't you parse these value from ONFI params ?
+> Do Byte[112] (Number of bits ECC bits) of ONFI param page still holds
+> good when on-die-ECC is enabled ?
+
+Probably.  I just don't know how to do that.  If someone wants to send
+me a patch,
+I'll be happy to test it.
+
+
+>>--- a/drivers/of/of_mtd.c
+>>+++ b/drivers/of/of_mtd.c
+>>@@ -23,6 +23,7 @@ static const char *nand_ecc_modes[] = {
+>>       [NAND_ECC_HW_SYNDROME]  = "hw_syndrome",
+>>       [NAND_ECC_HW_OOB_FIRST] = "hw_oob_first",
+>>       [NAND_ECC_SOFT_BCH]     = "soft_bch",
+>>+      [NAND_ECC_HW_ON_DIE]    = "hw_on_die",
+>> };
 >>
->> +static void
->
-> Does this really need to be on its own line? It doesn't match the style
-> of anything else.
+> Why are you adding this an selectable option for "nand-ecc-mode"
+> DT binding ? (as you are not giving user to choose ECC mode).
+> Also, description of this new DT binding value needs to be added in
+> Documentation/devicetree/bindings/mtd/nand.txt
 
-Sure, I changed that.  It's not something that's flagged by chkpatch
-and I'm working on enough different code-bases that I'm pretty
-much blind to such things.
+I don't know how this is used.  If it's not needed, we can leave it out.
+I was just worried about some code indexing into nand_ecc_modes[].
 
->> +nand_onfi_detect_micron_on_die_ecc(struct mtd_info *mtd,
->> +                                struct nand_chip *chip)
->
-> I'm really not sure why the inconsistent style throughout nand_base on
-> using both an 'mtd' and a 'chip' parameter (we often assume that
-> 'mtd->priv == chip'). If you need the mtd parameter, let's just pass it
-> instead of 'chip'.
+> In summary, It seems that you havn't followed the recommendations by
+> given on previous patches. If you feel those are not applicable to your driver
+> then please feel free to discuss before re-sending the new version.
 
-Ah, yes, that makes sense.  I updated my code.
-
->> +{
->> +     u8 features[ONFI_SUBFEATURE_PARAM_LEN];
->> +
->> +     if (chip->onfi_get_features(mtd, chip, ONFI_FEATURE_ADDR_ARRAY_OP_MODE,
->> +                                 features) < 0)
->> +             return;
->> +
->> +     if (features[0] & ONFI_FEATURE_ARRAY_OP_MODE_ENABLE_ON_DIE_ECC) {
->> +             /*
->> +              * If the chip has on-die ECC enabled, we kind of have
->> +              * to do the same...
->> +              */
->
-> That's not really true at all, is it? We can simply disable the on-die
-> ECC and use the provided spare area with a different ECC scheme, can't
-> we? (e.g., software BCH; or an SoC's HW ECC) In fact, I think disabling
-> the on-die ECC is a more reasonable default; nand_base is used by many
-> drivers, most of which provide their own implementations, and many of
-> which would not be compatible with the implementations you provide. A
-> system should have to "opt in" somehow to enable this, I think.
->
-> Additionally, you need a way to inform the hardware driver that you're
-> using on-die ECC, so they can make the appropriate choices (to disable
-> their HW ECC, for instance).
->
-> BTW, what driver/controller/SoC are you running this with?
-
-No, if you booted with on-die ECC enabled, presumably you have the
-on-die ECC layout and you can't switch (sure, you can turn off ECC
-but all hell will break lose when you actually try to read data with
-the wrong ECC layout).
-
-There seems to be this misconception that somehow on-die ECC would
-be turned on "accidentially".  It is not.  Either a boot loader has to turn
-it on or you have to pay Micron extra money (several dollars/chip, AFAIR)
-to have them send you custom chips with on-die ECC enabled by default.
-
-This is not to say that you may want a way to override it, but the patch
-as it stands is safe.
+That's a bit thick, isn't it?
 
   --david
 -- 
