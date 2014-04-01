@@ -1,15 +1,16 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
+Received: from bear.ext.ti.com ([192.94.94.41])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WUrn8-0007xf-2e
- for linux-mtd@lists.infradead.org; Tue, 01 Apr 2014 06:03:23 +0000
+ id 1WUsDI-0008Qe-An
+ for linux-mtd@lists.infradead.org; Tue, 01 Apr 2014 06:30:25 +0000
 From: "Gupta, Pekon" <pekon@ti.com>
 To: David Mosberger <davidm@egauge.net>
-Subject: RE: [PATCH v4 2/5] mtd: nand: Add NAND_ECC_HW_ON_DIE ECC-mode.
-Date: Tue, 1 Apr 2014 06:02:50 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EAB9FF9@DBDE04.ent.ti.com>
+Subject: RE: [PATCH v4 5/5] mtd: nand: Improve bitflip detection for on-die
+ ECC scheme.
+Date: Tue, 1 Apr 2014 06:29:52 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EABA022@DBDE04.ent.ti.com>
 References: <1396308537-16013-1-git-send-email-davidm@egauge.net>
- <1396308537-16013-3-git-send-email-davidm@egauge.net>
-In-Reply-To: <1396308537-16013-3-git-send-email-davidm@egauge.net>
+ <1396308537-16013-6-git-send-email-davidm@egauge.net>
+In-Reply-To: <1396308537-16013-6-git-send-email-davidm@egauge.net>
 Content-Language: en-US
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
@@ -30,250 +31,163 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Hi David,
 
 >From: David Mosberger
->Some Micron chips such as the MT29F4G16ABADAWP have an internal
->(on-die) ECC-controller that is useful when the host-platform doesn't
->have hardware-support for multi-bit ECC.  This patch adds
->NAND_ECC_HW_ON_DIE to support such chips when the driver detects that
->the on-die ECC controller is enabled.
+>
+>When NAND_STATUS_REWRITE is set, there is no direct indication as to
+>how many bits have were flipped.  This patch improves the existing
+>code by manually counting the number of bitflips, rather than just
+>assuming the worst-case of mtd->bitflip_threshold.  This avoids
+>unnecessary rewrites, e.g., due to a single stuck bit.
 >
 >Signed-off-by: David Mosberger <davidm@egauge.net>
 >---
-> drivers/mtd/nand/nand_base.c |  133 +++++++++++++++++++++++++++++++++++++=
-+++++
-> drivers/of/of_mtd.c          |    1 +
-> include/linux/mtd/nand.h     |    2 +
-> 3 files changed, 136 insertions(+)
+> drivers/mtd/nand/nand_base.c |   90 +++++++++++++++++++++++++++++++++++++=
++++--
+> 1 file changed, 86 insertions(+), 4 deletions(-)
 >
 >diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
->index f145f00..7047e9f5 100644
+>index 834352a..80cfaa8 100644
 >--- a/drivers/mtd/nand/nand_base.c
 >+++ b/drivers/mtd/nand/nand_base.c
->@@ -78,6 +78,20 @@ static struct nand_ecclayout nand_oob_64 =3D {
-> 		 .length =3D 38} }
-> };
->
->+static struct nand_ecclayout nand_oob_64_on_die =3D {
->+	.eccbytes =3D 32,
->+	.eccpos =3D {
->+		    8,  9, 10, 11, 12, 13, 14, 15,
->+		   24, 25, 26, 27, 28, 29, 30, 31,
->+		   40, 41, 42, 43, 44, 45, 46, 47,
->+		   56, 57, 58, 59, 60, 61, 62, 63},
->+	.oobfree =3D {
->+		{.offset =3D  4,	 .length =3D 4},
->+		{.offset =3D 20,	 .length =3D 4},
->+		{.offset =3D 36,	 .length =3D 4},
->+		{.offset =3D 52,	 .length =3D 4}}
->+};
->+
-> static struct nand_ecclayout nand_oob_128 =3D {
-> 	.eccbytes =3D 48,
-> 	.eccpos =3D {
->@@ -1258,6 +1272,105 @@ static int nand_read_subpage(struct mtd_info *mtd,=
- struct nand_chip *chip,
+>@@ -1272,6 +1272,84 @@ static int nand_read_subpage(struct mtd_info *mtd, =
+struct nand_chip *chip,
 > 	return max_bitflips;
 > }
 >
->+static int check_read_status_on_die(struct mtd_info *mtd,
->+				    struct nand_chip *chip, int page)
+>+static int
+>+set_on_die_ecc(struct mtd_info *mtd, struct nand_chip *chip, int on)
 >+{
->+	int max_bitflips =3D 0;
->+	uint8_t status;
+>+	u8 data[ONFI_SUBFEATURE_PARAM_LEN] =3D { 0, };
 >+
->+	/* Check ECC status of page just transferred into NAND's page buffer: */
->+	chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
->+	status =3D chip->read_byte(mtd);
+>+	if (chip->ecc.mode !=3D NAND_ECC_HW_ON_DIE)
+>+		return 0;
 >+
->+	/* Switch back to data reading: */
->+	chip->cmdfunc(mtd, NAND_CMD_READMODE, -1, -1);
+>+	if (on)
+>+		data[0] =3D ONFI_FEATURE_ARRAY_OP_MODE_ENABLE_ON_DIE_ECC;
 >+
->+	if (status & NAND_STATUS_FAIL) {
->+		/* Page has invalid ECC. */
->+		mtd->ecc_stats.failed++;
->+	} else if (status & NAND_STATUS_REWRITE) {
->+		/*
->+		 * Simple but suboptimal: any page with a single stuck
->+		 * bit will be unusable since it'll be rewritten on
->+		 * each read...
->+		 */
->+		max_bitflips =3D mtd->bitflip_threshold;
+>+	return chip->onfi_set_features(mtd, chip,
+>+				       ONFI_FEATURE_ADDR_ARRAY_OP_MODE, data);
+>+}
+>+
+>+/*
+>+ * Return the number of bits that differ between buffers SRC1 and
+>+ * SRC2, both of which are LEN bytes long.
+>+ *
+>+ * This code could be optimized for, but it only gets called on pages
+>+ * with bitflips and compared to the cost of migrating an eraseblock,
+>+ * the execution time here is trivial...
+>+ */
+>+static int
+>+bitdiff(const void *s1, const void *s2, size_t len)
+>+{
+>+	const uint8_t *src1 =3D s1, *src2 =3D s2;
+>+	int count =3D 0, i;
+>+
+>+	for (i =3D 0; i < len; ++i)
+>+		count +=3D hweight8(*src1++ ^ *src2++);
+>+	return count;
 
-This is not correct. You need to count the bit-flips. This would lead to
-un-necessary scrubbing of the pages by UBI even for single-bit errors.
+hweight8() might not be good option, how about using hweight32 ?
 
+>+}
+>+
+>+static int
+>+check_for_bitflips(struct mtd_info *mtd, struct nand_chip *chip, int page=
+)
+>+{
+>+	int flips =3D 0, max_bitflips =3D 0, i, j, read_size;
+>+	uint8_t *chkbuf, *rawbuf, *chkoob, *rawoob;
+>+	uint32_t *eccpos;
+>+
+>+	chkbuf =3D chip->buffers->chkbuf;
+>+	rawbuf =3D chip->buffers->rawbuf;
+>+	read_size =3D mtd->writesize + mtd->oobsize;
+>+
+>+	/* Read entire page w/OOB area with on-die ECC on: */
+>+	chip->read_buf(mtd, chkbuf, read_size);
+>+
+>+	/* Re-read page with on-die ECC off: */
+>+	set_on_die_ecc(mtd, chip, 0);
+>+	chip->cmdfunc(mtd, NAND_CMD_READ0, 0x00, page);
+>+	chip->read_buf(mtd, rawbuf, read_size);
+>+	set_on_die_ecc(mtd, chip, 1);
+>+
+>+	chkoob =3D chkbuf + mtd->writesize;
+>+	rawoob =3D rawbuf + mtd->writesize;
+>+	eccpos =3D chip->ecc.layout->eccpos;
+>+	for (i =3D 0; i < chip->ecc.steps; ++i) {
+>+		/* Count bit flips in the actual data area: */
+>+		flips =3D bitdiff(chkbuf, rawbuf, chip->ecc.size);
+
+Do you really need this as separate function call ?
+You could make it inline, like you did below of OOB.
+Also, you may stop checking bitflips, once count > chip->ecc.strength.
+
+Some of the discussion on different patch may be helpful here, please see
+Brian's comments on [1].
+
+>+		/* Count bit flips in the ECC bytes: */
+>+		for (j =3D 0; j < chip->ecc.bytes; ++j) {
+
+Again, why checking only for ecc.bytes ? should have been.
+
+>+			flips +=3D hweight8(chkoob[*eccpos] ^ rawoob[*eccpos]);
+>+			++eccpos;
+>+		}
+>+		if (flips > 0)
+>+			mtd->ecc_stats.corrected +=3D flips;
+>+		max_bitflips =3D max_t(int, max_bitflips, flips);
+>+		chkbuf +=3D chip->ecc.size;
+>+		rawbuf +=3D chip->ecc.size;
 >+	}
+>+
+>+	/* Re-issue the READ command for the actual data read that follows.  */
+>+	chip->cmdfunc(mtd, NAND_CMD_READ0, 0x00, page);
+>+
+
+If you refer my previous feedbacks, you could avoided this extra
+"chip->read_buf(mtd, chkbuf, read_size);" by calling it in nand_page_read_o=
+n_die();
+
 >+	return max_bitflips;
 >+}
 >+
->+/**
->+ * nand_read_subpage_on_die - [REPLACEABLE] raw sub-page read function
->+ * @mtd: mtd info structure
->+ * @chip: nand chip info structure
->+ * @data_offs: offset of requested data within the page
->+ * @readlen: data length
->+ * @bufpoi: buffer to store read data
->+ */
->+static int nand_read_subpage_on_die(struct mtd_info *mtd,
->+				    struct nand_chip *chip,
->+				    uint32_t data_offs, uint32_t readlen,
->+				    uint8_t *bufpoi, int page)
->+{
->+	int start_step, end_step, num_steps, ret;
->+	int data_col_addr;
->+	int datafrag_len;
->+	uint32_t failed;
->+	uint8_t *p;
->+
->+	/* Column address within the page aligned to ECC size */
->+	start_step =3D data_offs / chip->ecc.size;
->+	end_step =3D (data_offs + readlen - 1) / chip->ecc.size;
->+	num_steps =3D end_step - start_step + 1;
->+
->+	/* Data size aligned to ECC ecc.size */
->+	datafrag_len =3D num_steps * chip->ecc.size;
->+	data_col_addr =3D start_step * chip->ecc.size;
->+	p =3D bufpoi + data_col_addr;
->+
->+	failed =3D mtd->ecc_stats.failed;
->+
->+	ret =3D check_read_status_on_die(mtd, chip, page);
->+	if (ret < 0 || mtd->ecc_stats.failed !=3D failed) {
->+		memset(p, 0, datafrag_len);
->+		return ret;
->+	}
->+
->+	/* If we read not a page aligned data */
->+	if (data_col_addr !=3D 0)
->+		chip->cmdfunc(mtd, NAND_CMD_RNDOUT, data_col_addr, -1);
->+
->+	chip->read_buf(mtd, p, datafrag_len);
->+
->+	return ret;
->+}
->+
-Please spawn out nand_read_subpage_on_die() into a separate patch
-(or may be later) so that basic framework with nand_read_page_on_die()
-can be independently reviewed and accepted.
-
-
->+/**
->+ * nand_read_page_on_die - [INTERN] read raw page data without ecc
->+ * @mtd: mtd info structure
->+ * @chip: nand chip info structure
->+ * @buf: buffer to store read data
->+ * @oob_required: caller requires OOB data read to chip->oob_poi
->+ * @page: page number to read
->+ */
->+static int nand_read_page_on_die(struct mtd_info *mtd, struct nand_chip *=
-chip,
->+				 uint8_t *buf, int oob_required, int page)
->+{
->+	uint32_t failed;
->+	int ret;
->+
->+	failed =3D mtd->ecc_stats.failed;
->+
->+	ret =3D check_read_status_on_die(mtd, chip, page);
->+	if (ret < 0 || mtd->ecc_stats.failed !=3D failed)
->+		return ret;
->+
->+	chip->read_buf(mtd, buf, mtd->writesize);
->+	if (oob_required)
->+		chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
->+	return ret;
->+}
->+
-> /**
->  * nand_read_page_hwecc - [REPLACEABLE] hardware ECC based page read func=
-tion
->  * @mtd: mtd info structure
->@@ -3069,6 +3182,7 @@ nand_onfi_detect_micron_on_die_ecc(struct mtd_info *=
-mtd,
-> 		 * If the chip has on-die ECC enabled, we kind of have
-> 		 * to do the same...
+> static int check_read_status_on_die(struct mtd_info *mtd,
+> 				    struct nand_chip *chip, int page)
+> {
+>@@ -1290,11 +1368,15 @@ static int check_read_status_on_die(struct mtd_inf=
+o *mtd,
+> 		mtd->ecc_stats.failed++;
+> 	} else if (status & NAND_STATUS_REWRITE) {
+> 		/*
+>-		 * Simple but suboptimal: any page with a single stuck
+>-		 * bit will be unusable since it'll be rewritten on
+>-		 * each read...
+>+		 * The Micron chips turn on the REWRITE status bit for
+>+		 * ANY bit flips.  Some pages have stuck bits, so we
+>+		 * don't want to migrate a block just because of
+>+		 * single bit errors because otherwise, that block
+>+		 * would effectively become unusable.  So, work out in
+>+		 * software what the max number of flipped bits is for
+>+		 * all subpages in a page:
 > 		 */
->+		chip->ecc.mode =3D NAND_ECC_HW_ON_DIE;
-> 		pr_info("Using on-die ECC\n");
+>-		max_bitflips =3D mtd->bitflip_threshold;
+>+		max_bitflips =3D check_for_bitflips(mtd, chip, page);
+
+We usually don't delete the changes, introduced in previous patches
+of same series. So, take one approach and then logically divide the patches=
+.
+
 > 	}
+> 	return max_bitflips;
 > }
->@@ -3985,6 +4099,25 @@ int nand_scan_tail(struct mtd_info *mtd)
-> 		ecc->strength =3D ecc->bytes * 8 / fls(8 * ecc->size);
-> 		break;
->
->+	case NAND_ECC_HW_ON_DIE:
->+		/* nand_bbt attempts to put Bbt marker at offset 8 in
->+		   oob, which is used for ECC by Micron
->+		   MT29F4G16ABADAWP, for example.  Fixed by not using
->+		   OOB for BBT marker.  */
->+		chip->bbt_options |=3D NAND_BBT_NO_OOB;
->+		chip->ecc.layout =3D &nand_oob_64_on_die;
->+		chip->ecc.read_page =3D nand_read_page_on_die;
->+		chip->ecc.read_subpage =3D nand_read_subpage_on_die;
->+		chip->ecc.write_page =3D nand_write_page_raw;
->+		chip->ecc.read_oob =3D nand_read_oob_std;
->+		chip->ecc.read_page_raw =3D nand_read_page_raw;
->+		chip->ecc.write_page_raw =3D nand_write_page_raw;
->+		chip->ecc.write_oob =3D nand_write_oob_std;
->+		chip->ecc.size =3D 512;
->+		chip->ecc.bytes =3D 8;
->+		chip->ecc.strength =3D 4;
-
-Shouldn't you parse these value from ONFI params ?
-Do Byte[112] (Number of bits ECC bits) of ONFI param page still holds
-good when on-die-ECC is enabled ?=20
-
->+		break;
->+
-> 	case NAND_ECC_NONE:
-> 		pr_warn("NAND_ECC_NONE selected by board driver. "
-> 			   "This is not recommended!\n");
->diff --git a/drivers/of/of_mtd.c b/drivers/of/of_mtd.c
->index b7361ed..c844c84 100644
->--- a/drivers/of/of_mtd.c
->+++ b/drivers/of/of_mtd.c
->@@ -23,6 +23,7 @@ static const char *nand_ecc_modes[] =3D {
-> 	[NAND_ECC_HW_SYNDROME]	=3D "hw_syndrome",
-> 	[NAND_ECC_HW_OOB_FIRST]	=3D "hw_oob_first",
-> 	[NAND_ECC_SOFT_BCH]	=3D "soft_bch",
->+	[NAND_ECC_HW_ON_DIE]	=3D "hw_on_die",
-> };
->
-Why are you adding this an selectable option for "nand-ecc-mode"
-DT binding ? (as you are not giving user to choose ECC mode).
-Also, description of this new DT binding value needs to be added in
-Documentation/devicetree/bindings/mtd/nand.txt
-
-
-> /**
->diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
->index 780ab58..dbb99b3 100644
->--- a/include/linux/mtd/nand.h
->+++ b/include/linux/mtd/nand.h
->@@ -112,6 +112,7 @@ extern int nand_unlock(struct mtd_info *mtd, loff_t of=
-s, uint64_t len);
-> /* Status bits */
-> #define NAND_STATUS_FAIL	0x01
-> #define NAND_STATUS_FAIL_N1	0x02
->+#define NAND_STATUS_REWRITE	0x08
-> #define NAND_STATUS_TRUE_READY	0x20
-> #define NAND_STATUS_READY	0x40
-> #define NAND_STATUS_WP		0x80
->@@ -126,6 +127,7 @@ typedef enum {
-> 	NAND_ECC_HW_SYNDROME,
-> 	NAND_ECC_HW_OOB_FIRST,
-> 	NAND_ECC_SOFT_BCH,
->+	NAND_ECC_HW_ON_DIE,
-> } nand_ecc_modes_t;
->
-> /*
 >--
 >1.7.9.5
 >
 
-In summary, It seems that you havn't followed the recommendations by
-given on previous patches. If you feel those are not applicable to your dri=
-ver
-then please feel free to discuss before re-sending the new version.
+Again, please review all the comments given by Gerhard and myself
+on previous patches. Don't hurry in sending newer revisions, as it
+would just increase your iterations.
 
+[1] http://lists.infradead.org/pipermail/linux-mtd/2014-March/052625.html
 
 with regards, pekon
