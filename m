@@ -1,25 +1,26 @@
-Received: from mailout4.samsung.com ([203.254.224.34])
+Received: from bear.ext.ti.com ([192.94.94.41])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WUnpw-0004OE-1B
- for linux-mtd@lists.infradead.org; Tue, 01 Apr 2014 01:50:01 +0000
-Received: from epcpsbgr2.samsung.com
- (u142.gpu120.samsung.co.kr [203.254.230.142])
- by mailout4.samsung.com (Oracle Communications Messaging Server 7u4-24.01
- (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0N3B003YGX2FTXC0@mailout4.samsung.com> for
- linux-mtd@lists.infradead.org; Tue, 01 Apr 2014 10:49:27 +0900 (KST)
-Date: Tue, 01 Apr 2014 01:49:27 +0000 (GMT)
-From: Eunbong Song <eunb.song@samsung.com>
-Subject: [PATCH] mtd: fsl_ifc_nand: Recover corrupted empty page for preventing
- read-only mount in UBIFS
-To: computersforpeace@gmail.com, artem.bityutskiy@linux.intel.com
-MIME-version: 1.0
-Content-transfer-encoding: base64
-Content-type: text/plain; charset=euc-kr
-MIME-version: 1.0
-Message-id: <26017351.61791396316965998.JavaMail.weblogic@epv6ml06>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Reply-To: eunb.song@samsung.com
+ id 1WUrHI-0007a7-U1
+ for linux-mtd@lists.infradead.org; Tue, 01 Apr 2014 05:30:29 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: David Mosberger <davidm@egauge.net>, Gerhard Sittig <gsi@denx.de>
+Subject: RE: [REV3] mtd: nand: Prepare for Micron on-die ECC controller
+ support.
+Date: Tue, 1 Apr 2014 05:29:54 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EAB9FD4@DBDE04.ent.ti.com>
+References: <1396025800-18444-1-git-send-email-davidm@egauge.net>
+ <20140329131642.GA2775@book.gsilab.sittig.org>
+ <CALnQHM2whsLcM_4q76Skgjj4oVjgAbofX7iAVBgqZkPOu5UWEQ@mail.gmail.com>
+ <20140331194522.GL2775@book.gsilab.sittig.org>
+ <CALnQHM29vnXxpFNEe1rtgc1-yuSSy8e6hSna-WJ+=YvzZJ1pAQ@mail.gmail.com>
+In-Reply-To: <CALnQHM29vnXxpFNEe1rtgc1-yuSSy8e6hSna-WJ+=YvzZJ1pAQ@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,45 +30,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-RXZlbiBpZiB0aGUgbWVhbmluZyBvZiBFVUNMRUFOIHdhcyBjaGFuZ2VkIGJ5IGNvbW1pdCBlZGJj
-NDU0MC4NClRoZXJlIGlzIHN0aWxsIHBvc3NpYmlsaXR5IG9mIHJlYWQtb25seSBtb3VudCBpbiBV
-QklGUyB3aXRoIHViaWZzX3NjYW4oKSAiY29ycnVwdCBlbXB0eSBzcGFjZSBhdCBMRUIiLg0KU28g
-aSBtYWRlIHRoaXMgcGF0Y2ggZm9yIGZpeCB0aGF0IHByb2JsZW0uDQpUaGlzIHBhdGNoIGRvIGFz
-IGZvbGxvdy4NCiAtIElmIHRoZXJlIGFyZSBlY2MgZXJyb3JzIHdoaWNoIGlzIGVxdWFsIHRvIG9y
-IGxlc3MgdGhhbiBjaGlwLT5lY2Muc3RyZW5ndGggaW4gcGFnZS4NCiAtIENoZWNrIHRoYXQgcGFn
-ZSBoYXMgaG93IG1hbnkgemVybyBiaXRzLCBhbmQgaWYgemVybyBiaXRzIGFyZSBlcXVhbCB0byBv
-ciBsZXNzIHRoYW4NCiAgIGNoaXAtPmVjYy5zdHJlbmd0aCB0aGVuIG92ZXJ3cml0ZSAxIHRvIHpl
-cm8gYml0cyBpbiBidWYuDQoNCnViaWZzX3NjYW4oKSBjYW5ub3QgZGV0ZWN0IGNvcnJ1cHRlZCBl
-bXB0eSBzcGFjZSBiZWNhdXNlIGJ1ZiBpcyByZWNvdmVyZWQgYnkgdGhpcyBwYXRjaC4NCkFuZCB0
-aGlzIGlzIHNhZmUgYmVjYXVzZSBlY2MgY29udHJvbGxlciBjYW4gY29ycmVjdCB1cCB0byBjaGlw
-LT5lY2Muc3RyZW5ndGggYml0cy4NCg0KU2lnbmVkLW9mZi1ieTogRXVuYm9uZyBTb25nIDxldW5i
-LnNvbmdAc2Ftc3VuZy5jb20+DQotLS0NCiBkcml2ZXJzL210ZC9uYW5kL2ZzbF9pZmNfbmFuZC5j
-IHwgICA0MSArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysNCiAxIGZpbGVz
-IGNoYW5nZWQsIDQxIGluc2VydGlvbnMoKyksIDAgZGVsZXRpb25zKC0pDQoNCmRpZmYgLS1naXQg
-YS9kcml2ZXJzL210ZC9uYW5kL2ZzbF9pZmNfbmFuZC5jIGIvZHJpdmVycy9tdGQvbmFuZC9mc2xf
-aWZjX25hbmQuYw0KaW5kZXggOTBjYTdlNy4uMjEyOWMzOSAxMDA2NDQNCi0tLSBhL2RyaXZlcnMv
-bXRkL25hbmQvZnNsX2lmY19uYW5kLmMNCisrKyBiL2RyaXZlcnMvbXRkL25hbmQvZnNsX2lmY19u
-YW5kLmMNCkBAIC0yNzcsNiArMjc3LDQyIEBAIHN0YXRpYyBpbnQgaXNfYmxhbmsoc3RydWN0IG10
-ZF9pbmZvICptdGQsIHVuc2lnbmVkIGludCBidWZudW0pDQogCXJldHVybiAxOw0KIH0NCiANCitz
-dGF0aWMgaW50IG51bV96ZXJvX2JpdHModWludDhfdCB2YWwpDQorew0KKwlpbnQgaSwgcmV0PTA7
-DQorDQorCWZvcihpPTc7IGk+PTAgOyBpLS0pDQorCQlpZighKDB4MSAmICh2YWwgPj4gaSkpKQ0K
-KwkJCXJldCsrOw0KKw0KKwlyZXR1cm4gcmV0Ow0KK30NCisNCitzdGF0aWMgaW50IGlzX2NvcnJ1
-cHRlZF9ibGFuayhzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgdWludDhfdCAqIGJ1ZikNCit7DQorCXN0
-cnVjdCBuYW5kX2NoaXAgKmNoaXAgPSBtdGQtPnByaXY7DQorCWludCBpOw0KKwlpbnQgemVyb19i
-aXRzID0gMDsNCisNCisJZm9yIChpID0gMDsgaSA8IG10ZC0+d3JpdGVzaXplIDsgaSsrKSB7DQor
-CQlpZihidWZbaV0gIT0gMHhmZikgew0KKwkJCXplcm9fYml0cyArPSBudW1femVyb19iaXRzKGJ1
-ZltpXSk7CQ0KKwkJfQ0KKwl9DQorDQorCWlmKHplcm9fYml0cyAmJiAoemVyb19iaXRzIDw9IGNo
-aXAtPmVjYy5zdHJlbmd0aCkpew0KKwkJcmV0dXJuIDE7DQorCX0NCisNCisJcmV0dXJuIDA7DQor
-fQ0KKw0KK3N0YXRpYyB2b2lkIHJlY292ZXJfY29ycnVwdGVkX2JsYW5rKHN0cnVjdCBtdGRfaW5m
-byAqbXRkLCB1aW50OF90ICogYnVmKQ0KK3sNCisJbWVtc2V0KGJ1ZiwgMHhmZiwgbXRkLT53cml0
-ZXNpemUpOw0KKwlyZXR1cm47DQorfQ0KKw0KIC8qIHJldHVybnMgbm9uemVybyBpZiBlbnRpcmUg
-cGFnZSBpcyBibGFuayAqLw0KIHN0YXRpYyBpbnQgY2hlY2tfcmVhZF9lY2Moc3RydWN0IG10ZF9p
-bmZvICptdGQsIHN0cnVjdCBmc2xfaWZjX2N0cmwgKmN0cmwsDQogCQkJICB1MzIgKmVjY3N0YXQs
-IHVuc2lnbmVkIGludCBidWZudW0pDQpAQCAtNzYwLDYgKzc5NiwxMSBAQCBzdGF0aWMgaW50IGZz
-bF9pZmNfcmVhZF9wYWdlKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBzdHJ1Y3QgbmFuZF9jaGlwICpj
-aGlwLA0KIAlpZiAoY3RybC0+bmFuZF9zdGF0ICE9IElGQ19OQU5EX0VWVEVSX1NUQVRfT1BDKQ0K
-IAkJbXRkLT5lY2Nfc3RhdHMuZmFpbGVkKys7DQogDQorCWlmKG5jdHJsLT5tYXhfYml0ZmxpcHMg
-JiYgKG5jdHJsLT5tYXhfYml0ZmxpcHMgPD0gY2hpcC0+ZWNjLnN0cmVuZ3RoKSl7DQorCQlpZihp
-c19jb3JydXB0ZWRfYmxhbmsobXRkLCBidWYpKQ0KKwkJCXJlY292ZXJfY29ycnVwdGVkX2JsYW5r
-KG10ZCwgYnVmKTsNCisJfQ0KKw0KIAlyZXR1cm4gbmN0cmwtPm1heF9iaXRmbGlwczsNCiB9DQog
-DQotLSANCjEuNy4wLjENCg==
+Hi David,
+
+>From: David Mosberger [mailto:davidm@egauge.net]
+>>On Mon, Mar 31, 2014 at 1:45 PM, Gerhard Sittig <gsi@denx.de> wrote:
+>
+>> Isn't there the ONFI SETFEATURE request?  And don't you use this
+>> very request to disable and enable chip internal ECC support, to
+>> get the raw (uncorrected) bits after bitflips were detected?  So
+>> I understand that there is support to enable this mode at will,
+>> and we already have (or will have) code to do so.
+>>
+>> If we consider disabling on-die-ECC support when we find it
+>> enabled and know it's not what the user wants to run, then the
+>> next logical step might be to support enabling this feature if
+>> the user wants it and the chip doesn't have it enabled at this
+>> point in time.
+>>
+>> So I guess the buffers should get allocated as soon as the chip
+>> supports on-die-ECC.  (While the allocation should only get
+>> introduced in the phase where the raw-read and bitflip count gets
+>> added.)
+>
+>The ECC-mode of the driver never changes.
+>Sure, what you describe could be implemented as an additional feature
+>in the future (I don't have any plans to do so since it makes little sense=
+ to
+>me, as no other ECC-mode uses the layout of the on-die-controller).
+>
+>To be honest, I'm a bit confused: on the one hand, you're asking me to
+>simplify the patches into smaller pieces, on the other you seem to ask
+>for new features.
+>
+I too would like to see ECC-mode selection based on user's choice.
+So there should be mechanism to enable/disable this feature based on
+DT or platform-data. And onfi_set_feature() is the correct thing to use.
+This would make your patches more simple, without disturbing the generic
+frame-work. If you patch causes any regression, or abruptly changes
+behavior of any working driver, then it's less likely to get accepted.
+So, instead of re-sending patches it's important to discuss the changes.
+
+
+with regards, pekon
