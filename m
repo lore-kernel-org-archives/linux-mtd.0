@@ -1,23 +1,26 @@
-Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
+Received: from mail-la0-f47.google.com ([209.85.215.47])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WUzPD-0002qO-6Z
- for linux-mtd@lists.infradead.org; Tue, 01 Apr 2014 14:11:11 +0000
-Date: Tue, 1 Apr 2014 16:10:35 +0200
-From: Gerhard Sittig <gsi@denx.de>
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [PATCH v1 3/3] mtd: nand: introduce a READMODE command
-Message-ID: <20140401141035.GR2775@book.gsilab.sittig.org>
-References: <1396100184-7110-1-git-send-email-gsi@denx.de>
- <1396100184-7110-4-git-send-email-gsi@denx.de>
- <20980858CB6D3A4BAE95CA194937D5E73EABA0E1@DBDE04.ent.ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EABA0E1@DBDE04.ent.ti.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
+ id 1WV0KX-0004TJ-79
+ for linux-mtd@lists.infradead.org; Tue, 01 Apr 2014 15:10:26 +0000
+Received: by mail-la0-f47.google.com with SMTP id pn19so2828763lab.34
+ for <linux-mtd@lists.infradead.org>; Tue, 01 Apr 2014 08:09:57 -0700 (PDT)
+Subject: Re: [PATCH] mtd: cfi_cmdset_0001 - fixup for PC28F512P33TFA
+From: Christoph Fritz <chf.fritz@googlemail.com>
+To: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+In-Reply-To: <OFCD64B0EF.BC0E327D-ONC1257CAD.003CE517-C1257CAD.003DCE3D@transmode.se>
+References: <1396287151.4857.50.camel@mars>
+ <OFA78F5CB9.63C292B4-ONC1257CAC.006FBDC4-C1257CAC.0070B588@transmode.se>
+ <1396303460.4857.111.camel@mars>
+ <OFA7BCC382.7C5EA8B7-ONC1257CAD.002CA0C1-C1257CAD.002EAA92@LocalDomain>
+ <OFCD64B0EF.BC0E327D-ONC1257CAD.003CE517-C1257CAD.003DCE3D@transmode.se>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 01 Apr 2014 17:09:51 +0200
+Message-ID: <1396364991.4850.37.camel@mars>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, Marius Achilles <M.Achilles@phytec.de>,
  Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Alexander Shiyan <shc_work@mail.ru>
+ David Woodhouse <dwmw2@infradead.org>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,43 +30,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2014-04-01 at 06:56 +0000, Gupta, Pekon wrote:
+Hi Joakim,
+
+ thanks for your input, please see my further comments below.
+
+On Tue, 2014-04-01 at 13:15 +0200, Joakim Tjernlund wrote:
+> > There has been complaints in the past with no erase suspend.
+> > You get delays considering that an erase takes c.a 1 sek so
+> > once you get into a state where GC is erasing lots of blocks and other
+> > progs wants read/write you will notice.
+
+Yes it's not a fine solution, it's a quirk for a hardware with issues.
+But here for me it's better to get delays than having to suffer from
+flash errors.
+
+> > > > The document mentions other ways to get around this problem, I 
+> suggest you 
+> > > > explore
+> > > > these first.
+> > > 
+> > > Already tried the “0xFF” dummy write cycle suggestion, should have
+> > > mentioned that.
+> > 
+> > OK, but one more workaround(the udelay part) is required, right?
 > 
-> Hi Gerhard,
+> There something odd with the patches in the mentioned doc.
+> 1) "Resolving ERASE SUSPEND Hangups" touches the same code as
+> 2) "ERASE SUSPEND Following ERASE RESUME"
 > 
-> >From: Gerhard Sittig [mailto:gsi@denx.de]
-> >
-> >the nand_command_lp() implementation derives a "READPAGE" sequence from
-> >a passed in READ0 opcode, i.e. emits a sequence of READ0 _and_ READSTART
-> >commands in this case
-> >
-> >introduce a "READMODE" command which sends the READ0 opcode to the chip
-> >exclusively and doesn't send the READSTART opcode
-> >
-> >such a "READMODE" command is useful in the context of on-die-ECC support
-> >where a sequence of READ0, READSTART, STATUS, READ0 is required; having
-> >support for READMODE in the common nand_command_lp() routine avoids the
-> >need for duplication and open coded cmd_ctrl() calls
-> >
-> >[ ... ]
+> 1) says to add write(0xff) and 2) adds a udelay
 > 
-> Thanks. This should help 'David Mosberger <davidm@egauge.net>' patches.
-> I think, NAND_CMD_READMODE should also be added to nand_command(), right ?  
+> What should it be, both? in what order?
+> 
+> I suspect that any write(0xff) can be there unconditionally, provided that 
+> the cmd0001 spec allows it.
+> The delay could be a quirk default to 0
 
-Oh, that has slipped my attention.  I'll wait a few more days for
-feedback, and update the series to support READMODE in both the
-nand_command() as well as nand_command_lp() variants.  Callers
-should not mind which one is the registered cmdfunc() callback.
+I already tried all sorts of combinations of various delays and 0xff
+writes, which can be used wasteful without impact. And yes, errors are
+happening less -- but are still happening (at for example -2°C starting
+udev or a filesys-bench program like bonnie++).
 
-> With that please feel free to apply ..
-> Acked-by: Pekon Gupta <pekon@ti.com>
+Sure, it's possible that I missed the holy right
+delay-0xff-quirk-combination to get this NOR flash reliable working for
+its specified temperature range. But until nobody has found it, I would
+prefer to stick to my posted quirk and just disable suspend erase.
 
-thank you, both for looking and for the ACK
+Maybe someone from Micron can help?
 
-
-virtually yours
-Gerhard Sittig
--- 
-DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
-HRB 165235 Munich, Office: Kirchenstr. 5, D-82194 Groebenzell, Germany
-Phone: +49-8142-66989-0 Fax: +49-8142-66989-80  Email: office@denx.de
+ Thanks
+  -- Christoph
