@@ -1,24 +1,24 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
+Received: from gw1.transmode.se ([195.58.98.146])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WUweg-0004uk-7C
- for linux-mtd@lists.infradead.org; Tue, 01 Apr 2014 11:14:59 +0000
-Date: Tue, 1 Apr 2014 08:13:59 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [PATCH 1/4] mtd: Add sysfs attr to expose ECC stats
-Message-ID: <20140401111359.GA3324@arch.cereza>
-References: <1395403064-28113-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1395403064-28113-2-git-send-email-ezequiel.garcia@free-electrons.com>
- <20980858CB6D3A4BAE95CA194937D5E73EAB91D7@DBDE04.ent.ti.com>
+ id 1WUwfK-0004wo-8C
+ for linux-mtd@lists.infradead.org; Tue, 01 Apr 2014 11:15:39 +0000
+In-Reply-To: <OFA7BCC382.7C5EA8B7-ONC1257CAD.002CA0C1-C1257CAD.002EAA92@LocalDomain>
+References: <1396287151.4857.50.camel@mars>	
+ <OFA78F5CB9.63C292B4-ONC1257CAC.006FBDC4-C1257CAC.0070B588@transmode.se>
+ <1396303460.4857.111.camel@mars>
+ <OFA7BCC382.7C5EA8B7-ONC1257CAD.002CA0C1-C1257CAD.002EAA92@LocalDomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EAB91D7@DBDE04.ent.ti.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
+Subject: Re: [PATCH] mtd: cfi_cmdset_0001 - fixup for PC28F512P33TFA
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Message-ID: <OFCD64B0EF.BC0E327D-ONC1257CAD.003CE517-C1257CAD.003DCE3D@transmode.se>
+Date: Tue, 1 Apr 2014 13:15:04 +0200
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Cc: Marius Achilles <M.Achilles@phytec.de>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Christoph Fritz <chf.fritz@googlemail.com>, linux-mtd@lists.infradead.org,
  Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,51 +28,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Pekon,
-
-On Mar 27, Gupta, Pekon wrote:
-> >
-> >+static ssize_t mtd_ecc_stats_show(struct device *dev,
-> >+		struct device_attribute *attr, char *buf)
-> >+{
-> >+	struct mtd_info *mtd = dev_get_drvdata(dev);
-> >+	struct mtd_ecc_stats *ecc_stats = &mtd->ecc_stats;
-> >+
-> >+	return snprintf(buf, PAGE_SIZE, "%8u %8u %8u %8u\n", ecc_stats->corrected,
-> >+						ecc_stats->failed,
-> >+						ecc_stats->badblocks,
-> >+						ecc_stats->bbtblocks);
-> Though I would have liked to see each field of ecc_stats as a separate sysfs entry
-
-I tried to match the ecc_stats structure exactly in the sysfs entry. Keep
-in mind creating/keeping a sysfs file has its cost. Since it's trivial
-to get one of the fields with any text parsing tool I didn't think having
-a file per stat was worth it.
-
-> But, I don't know what it impacts to keep it different from /sys/block/<device>/stat
-> Do you know any user-space tools which utilize these, and can be re-used on
-> UBI-block kind of layer, if we keep this compatibility ?
-> 
-
-It won't impact as they are two completely different things. The ecc_stats
-output is only "vaguely inspired" in block stats; but these are two completely
-different stats. It's not about tool reusability, but about consistency.
-
-> Also, How about printing what these numbers mean ?
-> I hope this will still keep it machine readable.
-
-Well, this is not a debugfs entry, so I'm not sure we want to add such debug
-information. Anyone can take a look at the code and see what ecc_stats mean.
-
-On the other side, I don't have a strong opinion on this.
-
-> 
-> Also please update "Documentation/ABI/testing/sysfs-class-mtd"
-> with details about 'ecc_stats'
-> 
-
-OK, I will.
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+Sm9ha2ltIFRqZXJubHVuZC9UcmFuc21vZGUgd3JvdGUgb24gMjAxNC8wNC8wMSAxMDoyOTo0MzoN
+Cj4gDQo+IENocmlzdG9waCBGcml0eiA8Y2hmLmZyaXR6QGdvb2dsZW1haWwuY29tPiB3cm90ZSBv
+biAyMDE0LzA0LzAxIDAwOjA0OjIwOg0KPiA+IA0KPiA+IE9uIE1vbiwgMjAxNC0wMy0zMSBhdCAy
+MjozMSArMDIwMCwgSm9ha2ltIFRqZXJubHVuZCB3cm90ZToNCj4gPiA+IE5vIHdheSwgZGlzYWJs
+aW5nIGVyYXNlIHN1c3BlbmQgd2lsbCBjYXVzZSBzZXZlcmUgbGF0ZW5jaWVzIGZvciANCnJlYWQv
+d3JpdGUgDQo+ID4gPiBvcHMuDQo+ID4gDQo+ID4gSGVyZSBvbiBhIG14MzUgaXQncyBub3QgcmVh
+bGx5IHNldmVyZS4NCj4gDQo+IFRoZXJlIGhhcyBiZWVuIGNvbXBsYWludHMgaW4gdGhlIHBhc3Qg
+d2l0aCBubyBlcmFzZSBzdXNwZW5kLg0KPiBZb3UgZ2V0IGRlbGF5cyBjb25zaWRlcmluZyB0aGF0
+IGFuIGVyYXNlIHRha2VzIGMuYSAxIHNlayBzbw0KPiBvbmNlIHlvdSBnZXQgaW50byBhIHN0YXRl
+IHdoZXJlIEdDIGlzIGVyYXNpbmcgbG90cyBvZiBibG9ja3MgYW5kIG90aGVyDQo+IHByb2dzIHdh
+bnRzIHJlYWQvd3JpdGUgeW91IHdpbGwgbm90aWNlLg0KPiANCj4gPiANCj4gPiA+IFRoZSBkb2N1
+bWVudCBtZW50aW9ucyBvdGhlciB3YXlzIHRvIGdldCBhcm91bmQgdGhpcyBwcm9ibGVtLCBJIA0K
+c3VnZ2VzdCB5b3UgDQo+ID4gPiBleHBsb3JlDQo+ID4gPiB0aGVzZSBmaXJzdC4NCj4gPiANCj4g
+PiBBbHJlYWR5IHRyaWVkIHRoZSDigJwweEZG4oCdIGR1bW15IHdyaXRlIGN5Y2xlIHN1Z2dlc3Rp
+b24sIHNob3VsZCBoYXZlDQo+ID4gbWVudGlvbmVkIHRoYXQuDQo+IA0KPiBPSywgYnV0IG9uZSBt
+b3JlIHdvcmthcm91bmQodGhlIHVkZWxheSBwYXJ0KSBpcyByZXF1aXJlZCwgcmlnaHQ/DQoNClRo
+ZXJlIHNvbWV0aGluZyBvZGQgd2l0aCB0aGUgcGF0Y2hlcyBpbiB0aGUgbWVudGlvbmVkIGRvYy4N
+CjEpICJSZXNvbHZpbmcgRVJBU0UgU1VTUEVORCBIYW5ndXBzIiB0b3VjaGVzIHRoZSBzYW1lIGNv
+ZGUgYXMNCjIpICJFUkFTRSBTVVNQRU5EIEZvbGxvd2luZyBFUkFTRSBSRVNVTUUiDQoNCjEpIHNh
+eXMgdG8gYWRkIHdyaXRlKDB4ZmYpIGFuZCAyKSBhZGRzIGEgdWRlbGF5DQoNCldoYXQgc2hvdWxk
+IGl0IGJlLCBib3RoPyBpbiB3aGF0IG9yZGVyPw0KDQpJIHN1c3BlY3QgdGhhdCBhbnkgd3JpdGUo
+MHhmZikgY2FuIGJlIHRoZXJlIHVuY29uZGl0aW9uYWxseSwgcHJvdmlkZWQgdGhhdCANCnRoZSBj
+bWQwMDAxIHNwZWMgYWxsb3dzIGl0Lg0KVGhlIGRlbGF5IGNvdWxkIGJlIGEgcXVpcmsgZGVmYXVs
+dCB0byAwDQoNCiBKb2NrZQ0KDQogSm9ja2UNCg==
