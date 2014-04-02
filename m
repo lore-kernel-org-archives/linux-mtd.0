@@ -1,34 +1,28 @@
-Received: from mail-la0-x22b.google.com ([2a00:1450:4010:c03::22b])
+Received: from mail-yk0-x233.google.com ([2607:f8b0:4002:c07::233])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WVHJg-0005aK-Du
- for linux-mtd@lists.infradead.org; Wed, 02 Apr 2014 09:18:41 +0000
-Received: by mail-la0-f43.google.com with SMTP id e16so8087303lan.30
- for <linux-mtd@lists.infradead.org>; Wed, 02 Apr 2014 02:18:17 -0700 (PDT)
-Subject: Re: [PATCH] mtd: cfi_cmdset_0001 - fixup for PC28F512P33TFA
-From: Christoph Fritz <chf.fritz@googlemail.com>
-To: Andrea Adami <andrea.adami@gmail.com>
-In-Reply-To: <CAAQYJAvRWt7fEyFbYf9UrK4f5TZDu48dyiVwSfm=MXZnzk5E8A@mail.gmail.com>
-References: <1396287151.4857.50.camel@mars>
- <OFA78F5CB9.63C292B4-ONC1257CAC.006FBDC4-C1257CAC.0070B588@transmode.se>
- <1396303460.4857.111.camel@mars>
- <OFA7BCC382.7C5EA8B7-ONC1257CAD.002CA0C1-C1257CAD.002EAA92@LocalDomain>
- <OFCD64B0EF.BC0E327D-ONC1257CAD.003CE517-C1257CAD.003DCE3D@transmode.se>
- <1396364991.4850.37.camel@mars>
- <OFDA5ED549.208718B9-ONC1257CAD.0068922B-C1257CAD.006990F4@transmode.se>
- <1396393830.6474.31.camel@mars>
- <OF12157674.86C034EE-ONC1257CAE.00287492-C1257CAE.0028C422@transmode.se>
- <CAAQYJAvRWt7fEyFbYf9UrK4f5TZDu48dyiVwSfm=MXZnzk5E8A@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 02 Apr 2014 11:18:13 +0200
-Message-ID: <1396430293.5197.14.camel@mars>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Marius Achilles <M.Achilles@phytec.de>,
- Joakim Tjernlund <joakim.tjernlund@transmode.se>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ id 1WVMlu-0006kJ-C8
+ for linux-mtd@lists.infradead.org; Wed, 02 Apr 2014 15:08:11 +0000
+Received: by mail-yk0-f179.google.com with SMTP id 9so303675ykp.24
+ for <linux-mtd@lists.infradead.org>; Wed, 02 Apr 2014 08:07:48 -0700 (PDT)
+MIME-Version: 1.0
+Sender: dmosberger@gmail.com
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EAC059F@DBDE04.ent.ti.com>
+References: <1396308537-16013-1-git-send-email-davidm@egauge.net>
+ <1396308537-16013-2-git-send-email-davidm@egauge.net>
+ <20140401063958.GA6400@brian-ubuntu>
+ <CALnQHM1Z048h0BvbhAwussYH27mdV9kO6Q=74Wqa1CHpsbi4+w@mail.gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EAC059F@DBDE04.ent.ti.com>
+Date: Wed, 2 Apr 2014 09:07:48 -0600
+Message-ID: <CACwUX0O2NZYU+FysS46Rtvpm2C5G06yee1C1rSM2CEm0XEo-_A@mail.gmail.com>
+Subject: Re: [PATCH v4 1/5] mtd: nand: Detect Micron flash with on-die ECC
+ (aka "internal ECC") enabled.
+From: David Mosberger-Tang <davidm@egauge.net>
+To: "Gupta, Pekon" <pekon@ti.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: David Mosberger <davidm@egauge.net>, Gerhard Sittig <gsi@denx.de>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,14 +32,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2014-04-02 at 10:06 +0200, Andrea Adami wrote:
-> Have you tried disabling only "Suspend erase on write" ?
-> 
-> cfip->SuspendCmdSupport &= ~1;
-> 
-> That did the trick for other stubborn flash chips.
+Pekon,
 
-I'll recheck to be sure.
+On Wed, Apr 2, 2014 at 1:27 AM, Gupta, Pekon <pekon@ti.com> wrote:
 
- Thanks
-  -- Christoph
+> You have to consider multiple scenarios here (as Brian also suggested).
+>
+> (1) If a system does _not_ boot from NAND, instead it enables NAND
+> only in kernel (like for rootfs). Then you need a mechanism to
+> enable/disable on-die ECC in the kernel, the same way boot-loader does.
+
+Why?  Like I said before, on-die ECC does not get turned on "accidentally".
+Furthermore, it is always *safe* to use on-die ECC,  unlike the ECC provided
+by the platform-specific drivers.
+
+> (2) If a boot-loader, has enabled on-die ECC, but kernel driver supports
+> even higher ECC scheme, then you need a hook in driver to allow user
+> to 'disable' this feature.
+
+Does that really happen in practice?
+
+I'm much more worried about someone using too weak an ECC than wanting
+to use a stronger than required ECC.  In fact, that's what got us
+into this mess: we ended up using SWECC on a chip that required multi-bit
+ECC (yes, shame on us that we didn't catch that, but stuff happens; obviously
+we were not the only ones caught off-guard by this change).
+
+  --david
