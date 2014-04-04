@@ -1,12 +1,12 @@
-Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
+Received: from mail-out.m-online.net ([212.18.0.9])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WW2Zv-00071I-Q3
- for linux-mtd@lists.infradead.org; Fri, 04 Apr 2014 11:46:37 +0000
+ id 1WW2aG-00072u-L1
+ for linux-mtd@lists.infradead.org; Fri, 04 Apr 2014 11:46:57 +0000
 From: Gerhard Sittig <gsi@denx.de>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH v2 2/3] mtd: nand: re-introduce command bits masking
-Date: Fri,  4 Apr 2014 13:45:47 +0200
-Message-Id: <1396611948-4523-3-git-send-email-gsi@denx.de>
+Subject: [PATCH v2 3/3] mtd: nand: introduce a READMODE command
+Date: Fri,  4 Apr 2014 13:45:48 +0200
+Message-Id: <1396611948-4523-4-git-send-email-gsi@denx.de>
 In-Reply-To: <1396611948-4523-1-git-send-email-gsi@denx.de>
 References: <1396611948-4523-1-git-send-email-gsi@denx.de>
 Cc: Alexander Shiyan <shc_work@mail.ru>, David Mosberger <davidm@egauge.net>,
@@ -22,74 +22,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-re-introduce the mask operation which was removed in fb066adadd22
-"mtd: nand_base: Removed unnecessary command masking" after the DEPLETE1
-command has gone and the masking no longer was strictly required
+the nand_command_lp() implementation derives a "READPAGE" sequence from
+a passed in READ0 opcode, i.e. emits a sequence of READ0 _and_ READSTART
+commands in this case
 
-keeping the operation here is cheap and does not influence behaviour as
-long as all passed in command opcodes are within a byte's range
+introduce a "READMODE" command which sends the READ0 opcode to the chip
+exclusively and doesn't send the READSTART opcode
 
-pending introduction of on-die-ECC support needs a "READMODE" command,
-which shares a lot of the READ0 code path, yet would require duplication
-or open coding if "READMODE" (aka "READ0 exclusively") cannot be told from
-"READPAGE" (aka "the READ0 and READSTART sequence")
+such a "READMODE" command is useful in the context of on-die-ECC support
+where a sequence of READ0, READSTART, STATUS, READ0 is required; having
+support for READMODE in the common nand_command_lp() routine avoids the
+need for duplication and open coded cmd_ctrl() calls
 
-(the "READPAGE" and "READMODE" terms are coined in Micron datasheets)
+for the non-"large page" setup (i.e. the nand_command() routine) both
+commands "READMODE" and "READ0" are identical, "READSTART" exclusively
+applies to large page configurations
 
 Signed-off-by: Gerhard Sittig <gsi@denx.de>
 ---
 changes in v2:
-- mask command bits in nand_command() as well, such that large page and
-  non-large page configurations can accept all defined commands
-- reword comments and align their nand_command() and nand_command_lp()
-  versions
+- update the commmit message to discuss that for the nand_command()
+  routine READMODE results in identical behaviour as READ0
+- rephrase the NAND_CMD_READMODE command to better reflect that it
+  re-uses the NAND_CMD_READ0 opcode plus has high bits set
 
- drivers/mtd/nand/nand_base.c |   19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+ drivers/mtd/nand/nand_base.c |    4 +++-
+ include/linux/mtd/nand.h     |   11 +++++++++++
+ 2 files changed, 14 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 567620e81ce2..7108191b1598 100644
+index 7108191b1598..50b8a2a93b4f 100644
 --- a/drivers/mtd/nand/nand_base.c
 +++ b/drivers/mtd/nand/nand_base.c
-@@ -564,7 +564,12 @@ static void nand_command(struct mtd_info *mtd, unsigned int command,
- 	register struct nand_chip *chip = mtd->priv;
- 	int ctrl = NAND_CTRL_CLE | NAND_CTRL_CHANGE;
+@@ -711,7 +711,8 @@ static void nand_command_lp(struct mtd_info *mtd, unsigned int command,
  
--	/* Write out the command to the device */
-+	/*
-+	 * Command latch cycle, write out the command's lower bits
-+	 * to the device, followed by optional address specs and
-+	 * subsequent commands, while the command's higher bits
-+	 * might modify the below logic of post-operation and delays
-+	 */
- 	if (command == NAND_CMD_SEQIN) {
- 		int readcmd;
+ 	/*
+ 	 * Program and erase have their own busy handlers status, sequential
+-	 * in and status need no delay.
++	 * in and status need no delay, read mode just reverts back to
++	 * data output after a status command and needs no read start.
+ 	 */
+ 	switch (command) {
  
-@@ -582,7 +587,7 @@ static void nand_command(struct mtd_info *mtd, unsigned int command,
- 		chip->cmd_ctrl(mtd, readcmd, ctrl);
- 		ctrl &= ~NAND_CTRL_CHANGE;
- 	}
--	chip->cmd_ctrl(mtd, command, ctrl);
-+	chip->cmd_ctrl(mtd, command & 0xff, ctrl);
+@@ -722,6 +723,7 @@ static void nand_command_lp(struct mtd_info *mtd, unsigned int command,
+ 	case NAND_CMD_SEQIN:
+ 	case NAND_CMD_RNDIN:
+ 	case NAND_CMD_STATUS:
++	case NAND_CMD_READMODE:
+ 		return;
  
- 	/* Address cycle, when necessary */
- 	ctrl = NAND_CTRL_ALE | NAND_CTRL_CHANGE;
-@@ -671,8 +676,14 @@ static void nand_command_lp(struct mtd_info *mtd, unsigned int command,
- 		command = NAND_CMD_READ0;
- 	}
+ 	case NAND_CMD_RESET:
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 32f8612469d8..f294c9a47143 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -106,6 +106,17 @@ extern int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
  
--	/* Command latch cycle */
--	chip->cmd_ctrl(mtd, command, NAND_NCE | NAND_CLE | NAND_CTRL_CHANGE);
-+	/*
-+	 * Command latch cycle, write out the command's lower bits
-+	 * to the device, followed by optional address specs and
-+	 * subsequent commands, while the command's higher bits
-+	 * might modify the below logic of post-operation and delays
-+	 */
-+	chip->cmd_ctrl(mtd, command & 0xff,
-+		       NAND_NCE | NAND_CLE | NAND_CTRL_CHANGE);
+ #define NAND_CMD_NONE		-1
  
- 	if (column != -1 || page_addr != -1) {
- 		int ctrl = NAND_CTRL_CHANGE | NAND_NCE | NAND_ALE;
++/*
++ * Pseudo commands, which map to the above "real" commands for the NAND chip
++ * yet involve slightly different behaviour in related software layers
++ *
++ * READMODE switches back from status output to data output after a
++ * previously emitted sequence of READ0, READSTART, and STATUS commands;
++ * actually it's a mere READ0 without the address specs and without the
++ * READSTART command which the READ0 convenience logic would imply
++ */
++#define NAND_CMD_READMODE	(0x100 | NAND_CMD_READ0)
++
+ /* Status bits */
+ #define NAND_STATUS_FAIL	0x01
+ #define NAND_STATUS_FAIL_N1	0x02
 -- 
 1.7.10.4
