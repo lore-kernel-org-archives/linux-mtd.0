@@ -1,12 +1,15 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
+Received: from mail-out.m-online.net ([212.18.0.9])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WW2Zn-00071D-Vz
- for linux-mtd@lists.infradead.org; Fri, 04 Apr 2014 11:46:28 +0000
+ id 1WW2Zv-00071F-1Z
+ for linux-mtd@lists.infradead.org; Fri, 04 Apr 2014 11:46:35 +0000
 From: Gerhard Sittig <gsi@denx.de>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH v2 0/3] mtd: nand: introduce a READMODE command
-Date: Fri,  4 Apr 2014 13:45:45 +0200
-Message-Id: <1396611948-4523-1-git-send-email-gsi@denx.de>
+Subject: [PATCH v2 1/3] mtd: nand: comment update,
+ the DEPLETE1 command has gone
+Date: Fri,  4 Apr 2014 13:45:46 +0200
+Message-Id: <1396611948-4523-2-git-send-email-gsi@denx.de>
+In-Reply-To: <1396611948-4523-1-git-send-email-gsi@denx.de>
+References: <1396611948-4523-1-git-send-email-gsi@denx.de>
 Cc: Alexander Shiyan <shc_work@mail.ru>, David Mosberger <davidm@egauge.net>,
  Gerhard Sittig <gsi@denx.de>, Pekon Gupta <pekon@ti.com>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -20,32 +23,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-this series does some minor cleanup in nand_command_lp() and then
-introduces a NAND_CMD_READMODE opcode which is similar to the existing
-NAND_CMD_READ0 but does not imply NAND_CMD_READSTART
+update a comment in nand_command_lp() about specific requirements of
+individual commands, the DEPLETE1 command was removed in the past and
+the comment no longer applied
 
-such a READMODE command is useful in preparation of the pending
-introduction of on-die-ECC support
+Signed-off-by: Gerhard Sittig <gsi@denx.de>
+---
+changes in v2: none
 
-changes in v2:
-- apply command bit masking in nand_command() as well, such that all
-  cmdfunc() variants can accept all defined NAND commands
-- reword the command bit masking comments and align their versions in
-  the large page and non-large page cases
-- rephrase the NAND_CMD_READMODE declaration to better reflect that it
-  re-uses the NAND_CMD_READ0 opcode
-- update commit messages, mention that for nand_command() the READMODE
-  and READ0 commands result in identical behaviour, because there is no
-  READSTART involved
+ drivers/mtd/nand/nand_base.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Gerhard Sittig (3):
-  mtd: nand: comment update, the DEPLETE1 command has gone
-  mtd: nand: re-introduce command bits masking
-  mtd: nand: introduce a READMODE command
-
- drivers/mtd/nand/nand_base.c |   23 ++++++++++++++++++-----
- include/linux/mtd/nand.h     |   11 +++++++++++
- 2 files changed, 29 insertions(+), 5 deletions(-)
-
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 9715a7ba164a..567620e81ce2 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -700,7 +700,7 @@ static void nand_command_lp(struct mtd_info *mtd, unsigned int command,
+ 
+ 	/*
+ 	 * Program and erase have their own busy handlers status, sequential
+-	 * in, and deplete1 need no delay.
++	 * in and status need no delay.
+ 	 */
+ 	switch (command) {
+ 
 -- 
 1.7.10.4
