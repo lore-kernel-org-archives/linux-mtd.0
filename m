@@ -1,16 +1,23 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WW2aG-00072u-L1
- for linux-mtd@lists.infradead.org; Fri, 04 Apr 2014 11:46:57 +0000
-From: Gerhard Sittig <gsi@denx.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH v2 3/3] mtd: nand: introduce a READMODE command
-Date: Fri,  4 Apr 2014 13:45:48 +0200
-Message-Id: <1396611948-4523-4-git-send-email-gsi@denx.de>
-In-Reply-To: <1396611948-4523-1-git-send-email-gsi@denx.de>
-References: <1396611948-4523-1-git-send-email-gsi@denx.de>
-Cc: Alexander Shiyan <shc_work@mail.ru>, David Mosberger <davidm@egauge.net>,
- Gerhard Sittig <gsi@denx.de>, Pekon Gupta <pekon@ti.com>,
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WW4p7-0003Ap-Ix
+ for linux-mtd@lists.infradead.org; Fri, 04 Apr 2014 14:10:36 +0000
+Date: Fri, 4 Apr 2014 11:09:34 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Alexey Brodkin <Alexey.Brodkin@synopsys.com>
+Subject: Re: [PATCH v2] axs_nand - add driver for NAND controller used on
+ Synopsys AXS dev boards
+Message-ID: <20140404140933.GA25772@arch.cereza>
+References: <1396597089-1081-1-git-send-email-abrodkin@synopsys.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1396597089-1081-1-git-send-email-abrodkin@synopsys.com>
+Cc: devicetree@vger.kernel.org, Francois Bedard <Francois.Bedard@synopsys.com>,
+ Vineet Gupta <Vineet.Gupta1@synopsys.com>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Grant Likely <grant.likely@linaro.org>,
  Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,77 +29,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-the nand_command_lp() implementation derives a "READPAGE" sequence from
-a passed in READ0 opcode, i.e. emits a sequence of READ0 _and_ READSTART
-commands in this case
+On Apr 04, Alexey Brodkin wrote:
+> Signed-off-by: Alexey Brodkin <abrodkin@synopsys.com>
+> 
 
-introduce a "READMODE" command which sends the READ0 opcode to the chip
-exclusively and doesn't send the READSTART opcode
+Maybe it would be nice adding some driver description here, so the commit
+log actually says something useful about the commit.
 
-such a "READMODE" command is useful in the context of on-die-ECC support
-where a sequence of READ0, READSTART, STATUS, READ0 is required; having
-support for READMODE in the common nand_command_lp() routine avoids the
-need for duplication and open coded cmd_ctrl() calls
+[..]
+> Reviewed-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> 
+> +/**
+> + * axs_flag_wait_and_reset - Waits until requested flag in INT_STATUS register
+> + *              is set by HW and resets it by writing "1" in INT_CLR_STATUS.
+> + * @host:	Pointer to private data structure.
+> + * @flag:	Bit/flag offset in INT_STATUS register
+> + */
+> +static void axs_flag_wait_and_reset(struct axs_nand_host *host, int flag)
+> +{
+> +	unsigned int i;
+> +
+> +	for (i = 0; i < AXS_FLAG_WAIT_DELAY * 100; i++) {
+> +		unsigned int status = reg_get(host, INT_STATUS);
+> +
+> +		if (status & (1 << flag)) {
+> +			reg_set(host, INT_CLR_STATUS, 1 << flag);
+> +			return;
+> +		}
+> +
+> +		udelay(10);
+> +	}
+> +
+> +	/*
+> +	 * Since we cannot report this problem any further than
+> +	 * axs_nand_{write|read}_buf() letting user know there's a problem.
+> +	 */
+> +	dev_err(host->dev, "Waited too long (%d s.) for flag/bit %d\n",
+> +		AXS_FLAG_WAIT_DELAY, flag);
+> +}
 
-for the non-"large page" setup (i.e. the nand_command() routine) both
-commands "READMODE" and "READ0" are identical, "READSTART" exclusively
-applies to large page configurations
+Hm... I'm not sure the above is really true.
 
-Signed-off-by: Gerhard Sittig <gsi@denx.de>
----
-changes in v2:
-- update the commmit message to discuss that for the nand_command()
-  routine READMODE results in identical behaviour as READ0
-- rephrase the NAND_CMD_READMODE command to better reflect that it
-  re-uses the NAND_CMD_READ0 opcode plus has high bits set
+The NAND core uses the replaceable chip->waitfunc callback to check the
+status of issued commands. See for instance:
 
- drivers/mtd/nand/nand_base.c |    4 +++-
- include/linux/mtd/nand.h     |   11 +++++++++++
- 2 files changed, 14 insertions(+), 1 deletion(-)
+static int nand_write_oob_std(struct mtd_info *mtd, struct nand_chip *chip,
+                              int page)
+{
+        int status = 0;
+        const uint8_t *buf = chip->oob_poi;
+        int length = mtd->oobsize;
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 7108191b1598..50b8a2a93b4f 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -711,7 +711,8 @@ static void nand_command_lp(struct mtd_info *mtd, unsigned int command,
- 
- 	/*
- 	 * Program and erase have their own busy handlers status, sequential
--	 * in and status need no delay.
-+	 * in and status need no delay, read mode just reverts back to
-+	 * data output after a status command and needs no read start.
- 	 */
- 	switch (command) {
- 
-@@ -722,6 +723,7 @@ static void nand_command_lp(struct mtd_info *mtd, unsigned int command,
- 	case NAND_CMD_SEQIN:
- 	case NAND_CMD_RNDIN:
- 	case NAND_CMD_STATUS:
-+	case NAND_CMD_READMODE:
- 		return;
- 
- 	case NAND_CMD_RESET:
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 32f8612469d8..f294c9a47143 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -106,6 +106,17 @@ extern int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
- 
- #define NAND_CMD_NONE		-1
- 
-+/*
-+ * Pseudo commands, which map to the above "real" commands for the NAND chip
-+ * yet involve slightly different behaviour in related software layers
-+ *
-+ * READMODE switches back from status output to data output after a
-+ * previously emitted sequence of READ0, READSTART, and STATUS commands;
-+ * actually it's a mere READ0 without the address specs and without the
-+ * READSTART command which the READ0 convenience logic would imply
-+ */
-+#define NAND_CMD_READMODE	(0x100 | NAND_CMD_READ0)
-+
- /* Status bits */
- #define NAND_STATUS_FAIL	0x01
- #define NAND_STATUS_FAIL_N1	0x02
+        chip->cmdfunc(mtd, NAND_CMD_SEQIN, mtd->writesize, page);
+        chip->write_buf(mtd, buf, length);
+        /* Send command to program the OOB data */
+        chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
+
+        status = chip->waitfunc(mtd, chip);
+
+        return status & NAND_STATUS_FAIL ? -EIO : 0;
+}
+
+On the other side, if you are clearing the flags in axs_flag_wait_and_reset()
+it might be a bit hard for you to get this right.
+
+IOW, I'm not saying you *must* do this, but instead suggesting that you take
+a look at waitfunc() and see if it helps report a proper error in the
+read/write path.
 -- 
-1.7.10.4
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
