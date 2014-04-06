@@ -1,22 +1,22 @@
-Received: from mail-pd0-x229.google.com ([2607:f8b0:400e:c02::229])
+Received: from mail-pd0-f172.google.com ([209.85.192.172])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WWl8S-0000vs-Ge
- for linux-mtd@lists.infradead.org; Sun, 06 Apr 2014 11:21:15 +0000
-Received: by mail-pd0-f169.google.com with SMTP id fp1so5298707pdb.14
- for <linux-mtd@lists.infradead.org>; Sun, 06 Apr 2014 04:20:46 -0700 (PDT)
-Date: Sun, 6 Apr 2014 21:19:59 +1000 (EST)
-From: Austin Boyle <boyle.austin@gmail.com>
-To: Gerlando Falauto <gerlando.falauto@keymile.com>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v2] mtd: m25p80: Calculate flash block protect bits based on
- number of sectors
-Message-ID: <alpine.DEB.2.02.1404062115570.19515@austin-Satellite-L510>
+ id 1WWwQK-0000T2-4N
+ for linux-mtd@lists.infradead.org; Sun, 06 Apr 2014 23:24:25 +0000
+Received: by mail-pd0-f172.google.com with SMTP id p10so5746108pdj.3
+ for <linux-mtd@lists.infradead.org>; Sun, 06 Apr 2014 16:23:56 -0700 (PDT)
+Date: Sun, 6 Apr 2014 16:23:51 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [GIT PULL] MTD changes for 3.15
+Message-ID: <20140406232351.GB3131@norris-Latitude-E6410>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: Marek Vasut <marex@denx.de>, Angus Clark <angus.clark@st.com>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ Linux Kernel <linux-kernel@vger.kernel.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,307 +26,303 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch generalises the calculation of block protect bits based on the number
-of sectors and implements the _is_locked function.
+Hi Linus,
 
-Existing calculation of block protect bits only works for devices with 64
-sectors or more. This new logic is applicable to the STmicro devices:
-m25p10, p20, p40, p80, p16, pe16, p32, p64, p128.
-Note devices with >64 sectors only allow the protected region to be specified
-to a resolution of 1/64th of the total size (such as m25p64).
+The following changes since commit fa389e220254c69ffae0d403eac4146171062d08:
 
-New return codes for ioctl(MEMISLOCKED) have been added to uapi/mtd/mtd-abi.h
-because the _is_locked function can query a region which is partially unlocked.
+  Linux 3.14-rc6 (2014-03-09 19:41:57 -0700)
 
-Added flag to m25p_ids table to indicate if flash protection is supported.
+are available in the git repository at:
 
-Added n_sectors and sector_size to m25p flash structure so it can be used in
-block protect bit calculation.
+  git://git.infradead.org/linux-mtd.git tags/for-linus-20140405
 
-From: Austin Boyle <boyle.austin@gmail.com>
-Signed-off-by: Austin Boyle <boyle.austin@gmail.com>
----
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index ad19139..f632e41 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -77,8 +77,13 @@
- #define	SR_BP0			4	/* Block protect 0 */
- #define	SR_BP1			8	/* Block protect 1 */
- #define	SR_BP2			0x10	/* Block protect 2 */
-+#define	SR_BP_BIT_OFFSET	2	/* Offset to Block protect 0 */
-+#define	SR_BP_BIT_MASK		(SR_BP2 | SR_BP1 | SR_BP0)
- #define	SR_SRWD			0x80	/* SR write protect */
- 
-+/* Highest resolution of sector locking */
-+#define M25P_MAX_LOCKABLE_SECTORS	64
-+
- #define SR_QUAD_EN_MX           0x40    /* Macronix Quad I/O */
- 
- /* Configuration Register bits. */
-@@ -104,6 +109,8 @@ struct m25p {
- 	struct mtd_info		mtd;
- 	u16			page_size;
- 	u16			addr_width;
-+	u16			n_sectors;
-+	u32			sector_size;
- 	u8			erase_opcode;
- 	u8			read_opcode;
- 	u8			program_opcode;
-@@ -736,11 +743,25 @@ time_out:
- 	return ret;
- }
- 
-+static inline uint16_t min_lockable_sectors(uint16_t n_sectors)
-+{
-+	return max(1, n_sectors/M25P_MAX_LOCKABLE_SECTORS);
-+}
-+
-+static inline uint32_t get_protected_area(struct m25p *flash,
-+							uint8_t lock_bits)
-+{
-+	return (1<<(lock_bits-1)) * min_lockable_sectors(flash->n_sectors) *
-+							flash->sector_size;
-+}
-+
- static int m25p80_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- {
- 	struct m25p *flash = mtd_to_m25p(mtd);
- 	uint32_t offset = ofs;
- 	uint8_t status_old, status_new;
-+	uint8_t lock_bits;
-+	uint32_t protected_area_start;
- 	int res = 0;
- 
- 	mutex_lock(&flash->lock);
-@@ -752,24 +773,18 @@ static int m25p80_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- 
- 	status_old = read_sr(flash);
- 
--	if (offset < flash->mtd.size-(flash->mtd.size/2))
--		status_new = status_old | SR_BP2 | SR_BP1 | SR_BP0;
--	else if (offset < flash->mtd.size-(flash->mtd.size/4))
--		status_new = (status_old & ~SR_BP0) | SR_BP2 | SR_BP1;
--	else if (offset < flash->mtd.size-(flash->mtd.size/8))
--		status_new = (status_old & ~SR_BP1) | SR_BP2 | SR_BP0;
--	else if (offset < flash->mtd.size-(flash->mtd.size/16))
--		status_new = (status_old & ~(SR_BP0|SR_BP1)) | SR_BP2;
--	else if (offset < flash->mtd.size-(flash->mtd.size/32))
--		status_new = (status_old & ~SR_BP2) | SR_BP1 | SR_BP0;
--	else if (offset < flash->mtd.size-(flash->mtd.size/64))
--		status_new = (status_old & ~(SR_BP2|SR_BP0)) | SR_BP1;
--	else
--		status_new = (status_old & ~(SR_BP2|SR_BP1)) | SR_BP0;
-+	for (lock_bits = 1; lock_bits < 7; lock_bits++) {
-+		protected_area_start = flash->mtd.size -
-+					get_protected_area(flash, lock_bits);
-+		if (offset >= protected_area_start)
-+			break;
-+	}
-+
-+	status_new = (status_old & ~SR_BP_BIT_MASK) |
-+			((lock_bits << SR_BP_BIT_OFFSET) & SR_BP_BIT_MASK);
- 
- 	/* Only modify protection if it will not unlock other areas */
--	if ((status_new&(SR_BP2|SR_BP1|SR_BP0)) >
--					(status_old&(SR_BP2|SR_BP1|SR_BP0))) {
-+	if ((status_new & SR_BP_BIT_MASK) > (status_old & SR_BP_BIT_MASK)) {
- 		write_enable(flash);
- 		if (write_sr(flash, status_new) < 0) {
- 			res = 1;
-@@ -786,6 +801,8 @@ static int m25p80_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- 	struct m25p *flash = mtd_to_m25p(mtd);
- 	uint32_t offset = ofs;
- 	uint8_t status_old, status_new;
-+	uint8_t lock_bits;
-+	uint32_t protected_area_start;
- 	int res = 0;
- 
- 	mutex_lock(&flash->lock);
-@@ -797,24 +814,19 @@ static int m25p80_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- 
- 	status_old = read_sr(flash);
- 
--	if (offset+len > flash->mtd.size-(flash->mtd.size/64))
--		status_new = status_old & ~(SR_BP2|SR_BP1|SR_BP0);
--	else if (offset+len > flash->mtd.size-(flash->mtd.size/32))
--		status_new = (status_old & ~(SR_BP2|SR_BP1)) | SR_BP0;
--	else if (offset+len > flash->mtd.size-(flash->mtd.size/16))
--		status_new = (status_old & ~(SR_BP2|SR_BP0)) | SR_BP1;
--	else if (offset+len > flash->mtd.size-(flash->mtd.size/8))
--		status_new = (status_old & ~SR_BP2) | SR_BP1 | SR_BP0;
--	else if (offset+len > flash->mtd.size-(flash->mtd.size/4))
--		status_new = (status_old & ~(SR_BP0|SR_BP1)) | SR_BP2;
--	else if (offset+len > flash->mtd.size-(flash->mtd.size/2))
--		status_new = (status_old & ~SR_BP1) | SR_BP2 | SR_BP0;
--	else
--		status_new = (status_old & ~SR_BP0) | SR_BP2 | SR_BP1;
-+	for (lock_bits = 1; lock_bits < 7; lock_bits++) {
-+		protected_area_start = flash->mtd.size -
-+					get_protected_area(flash, lock_bits);
-+		if (offset+len >= protected_area_start)
-+			break;
-+	}
-+	lock_bits--;
-+
-+	status_new = (status_old & ~SR_BP_BIT_MASK) |
-+			((lock_bits << SR_BP_BIT_OFFSET) & SR_BP_BIT_MASK);
- 
- 	/* Only modify protection if it will not lock other areas */
--	if ((status_new&(SR_BP2|SR_BP1|SR_BP0)) <
--					(status_old&(SR_BP2|SR_BP1|SR_BP0))) {
-+	if ((status_new & SR_BP_BIT_MASK) < (status_old & SR_BP_BIT_MASK)) {
- 		write_enable(flash);
- 		if (write_sr(flash, status_new) < 0) {
- 			res = 1;
-@@ -826,6 +838,39 @@ err:	mutex_unlock(&flash->lock);
- 	return res;
- }
- 
-+static int m25p80_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
-+{
-+	struct m25p *flash = mtd_to_m25p(mtd);
-+	uint32_t offset = ofs;
-+	uint8_t status;
-+	uint8_t lock_bits;
-+	uint32_t protected_area_start;
-+	int res;
-+
-+	mutex_lock(&flash->lock);
-+	/* Wait until finished previous command */
-+	if (wait_till_ready(flash)) {
-+		mutex_unlock(&flash->lock);
-+		return -EBUSY;
-+	}
-+	status = read_sr(flash);
-+	mutex_unlock(&flash->lock);
-+
-+	lock_bits = ((status & SR_BP_BIT_MASK) >> SR_BP_BIT_OFFSET);
-+
-+	protected_area_start = flash->mtd.size -
-+					get_protected_area(flash, lock_bits);
-+
-+	if (offset > protected_area_start)
-+		res = MTD_IS_LOCKED;
-+	else if (offset+len < protected_area_start)
-+		res = MTD_IS_UNLOCKED;
-+	else
-+		res = MTD_IS_PARTIALLY_LOCKED;
-+
-+	return res;
-+}
-+
- /****************************************************************************/
- 
- /*
-@@ -856,6 +901,7 @@ struct flash_info {
- #define	M25P_NO_FR	0x08		/* Can't do fastread */
- #define	SECT_4K_PMC	0x10		/* OPCODE_BE_4K_PMC works uniformly */
- #define	M25P80_QUAD_READ	0x20    /* Flash supports Quad Read */
-+#define	M25P_FLASH_LOCK	0x40		/* Flash protection support */
- };
- 
- #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)	\
-@@ -981,25 +1027,25 @@ static const struct spi_device_id m25p_ids[] = {
- 
- 	/* ST Microelectronics -- newer production may have feature updates */
- 	{ "m25p05",  INFO(0x202010,  0,  32 * 1024,   2, 0) },
--	{ "m25p10",  INFO(0x202011,  0,  32 * 1024,   4, 0) },
--	{ "m25p20",  INFO(0x202012,  0,  64 * 1024,   4, 0) },
--	{ "m25p40",  INFO(0x202013,  0,  64 * 1024,   8, 0) },
--	{ "m25p80",  INFO(0x202014,  0,  64 * 1024,  16, 0) },
--	{ "m25p16",  INFO(0x202015,  0,  64 * 1024,  32, 0) },
--	{ "m25p32",  INFO(0x202016,  0,  64 * 1024,  64, 0) },
--	{ "m25p64",  INFO(0x202017,  0,  64 * 1024, 128, 0) },
--	{ "m25p128", INFO(0x202018,  0, 256 * 1024,  64, 0) },
-+	{ "m25p10",  INFO(0x202011,  0,  32 * 1024,   4, M25P_FLASH_LOCK) },
-+	{ "m25p20",  INFO(0x202012,  0,  64 * 1024,   4, M25P_FLASH_LOCK) },
-+	{ "m25p40",  INFO(0x202013,  0,  64 * 1024,   8, M25P_FLASH_LOCK) },
-+	{ "m25p80",  INFO(0x202014,  0,  64 * 1024,  16, M25P_FLASH_LOCK) },
-+	{ "m25p16",  INFO(0x202015,  0,  64 * 1024,  32, M25P_FLASH_LOCK) },
-+	{ "m25p32",  INFO(0x202016,  0,  64 * 1024,  64, M25P_FLASH_LOCK) },
-+	{ "m25p64",  INFO(0x202017,  0,  64 * 1024, 128, M25P_FLASH_LOCK) },
-+	{ "m25p128", INFO(0x202018,  0, 256 * 1024,  64, M25P_FLASH_LOCK) },
- 	{ "n25q032", INFO(0x20ba16,  0,  64 * 1024,  64, 0) },
- 
- 	{ "m25p05-nonjedec",  INFO(0, 0,  32 * 1024,   2, 0) },
--	{ "m25p10-nonjedec",  INFO(0, 0,  32 * 1024,   4, 0) },
--	{ "m25p20-nonjedec",  INFO(0, 0,  64 * 1024,   4, 0) },
--	{ "m25p40-nonjedec",  INFO(0, 0,  64 * 1024,   8, 0) },
--	{ "m25p80-nonjedec",  INFO(0, 0,  64 * 1024,  16, 0) },
--	{ "m25p16-nonjedec",  INFO(0, 0,  64 * 1024,  32, 0) },
--	{ "m25p32-nonjedec",  INFO(0, 0,  64 * 1024,  64, 0) },
--	{ "m25p64-nonjedec",  INFO(0, 0,  64 * 1024, 128, 0) },
--	{ "m25p128-nonjedec", INFO(0, 0, 256 * 1024,  64, 0) },
-+	{ "m25p10-nonjedec",  INFO(0, 0,  32 * 1024,   4, M25P_FLASH_LOCK) },
-+	{ "m25p20-nonjedec",  INFO(0, 0,  64 * 1024,   4, M25P_FLASH_LOCK) },
-+	{ "m25p40-nonjedec",  INFO(0, 0,  64 * 1024,   8, M25P_FLASH_LOCK) },
-+	{ "m25p80-nonjedec",  INFO(0, 0,  64 * 1024,  16, M25P_FLASH_LOCK) },
-+	{ "m25p16-nonjedec",  INFO(0, 0,  64 * 1024,  32, M25P_FLASH_LOCK) },
-+	{ "m25p32-nonjedec",  INFO(0, 0,  64 * 1024,  64, M25P_FLASH_LOCK) },
-+	{ "m25p64-nonjedec",  INFO(0, 0,  64 * 1024, 128, M25P_FLASH_LOCK) },
-+	{ "m25p128-nonjedec", INFO(0, 0, 256 * 1024,  64, M25P_FLASH_LOCK) },
- 
- 	{ "m45pe10", INFO(0x204011,  0, 64 * 1024,    2, 0) },
- 	{ "m45pe80", INFO(0x204014,  0, 64 * 1024,   16, 0) },
-@@ -1007,7 +1053,7 @@ static const struct spi_device_id m25p_ids[] = {
- 
- 	{ "m25pe20", INFO(0x208012,  0, 64 * 1024,  4,       0) },
- 	{ "m25pe80", INFO(0x208014,  0, 64 * 1024, 16,       0) },
--	{ "m25pe16", INFO(0x208015,  0, 64 * 1024, 32, SECT_4K) },
-+	{ "m25pe16", INFO(0x208015,  0, 64 * 1024, 32, SECT_4K | M25P_FLASH_LOCK) },
- 
- 	{ "m25px16",    INFO(0x207115,  0, 64 * 1024, 32, SECT_4K) },
- 	{ "m25px32",    INFO(0x207116,  0, 64 * 1024, 64, SECT_4K) },
-@@ -1176,13 +1222,17 @@ static int m25p_probe(struct spi_device *spi)
- 	flash->mtd.writesize = 1;
- 	flash->mtd.flags = MTD_CAP_NORFLASH;
- 	flash->mtd.size = info->sector_size * info->n_sectors;
-+	flash->n_sectors = info->n_sectors;
-+	flash->sector_size = info->sector_size;
- 	flash->mtd._erase = m25p80_erase;
- 	flash->mtd._read = m25p80_read;
- 
- 	/* flash protection support for STmicro chips */
--	if (JEDEC_MFR(info->jedec_id) == CFI_MFR_ST) {
-+	if (JEDEC_MFR(info->jedec_id) == CFI_MFR_ST &&
-+					(info->flags & M25P_FLASH_LOCK)) {
- 		flash->mtd._lock = m25p80_lock;
- 		flash->mtd._unlock = m25p80_unlock;
-+		flash->mtd._is_locked = m25p80_is_locked;
- 	}
- 
- 	/* sst flash chips use AAI word program */
-diff --git a/include/uapi/mtd/mtd-abi.h b/include/uapi/mtd/mtd-abi.h
-index e272ea0..f8f5e9d 100644
---- a/include/uapi/mtd/mtd-abi.h
-+++ b/include/uapi/mtd/mtd-abi.h
-@@ -251,7 +251,7 @@ struct mtd_ecc_stats {
- 	__u32 bbtblocks;
- };
- 
--/*
-+/**
-  * MTD file modes - for read/write access to MTD
-  *
-  * @MTD_FILE_MODE_NORMAL:	OTP disabled, ECC enabled
-@@ -275,6 +275,19 @@ enum mtd_file_modes {
- 	MTD_FILE_MODE_RAW,
- };
- 
-+/**
-+ * MTD locking states - return codes for ioctl(MEMISLOCKED)
-+ *
-+ * @MTD_IS_UNLOCKED:		Specified region is completely unlocked
-+ * @MTD_IS_LOCKED:		Specified region is completely locked
-+ * @MTD_IS_PARTIALLY_LOCKED:	Specified region is partially locked
-+ */
-+enum mtd_locking_states {
-+	MTD_IS_UNLOCKED,
-+	MTD_IS_LOCKED,
-+	MTD_IS_PARTIALLY_LOCKED,
-+};
-+
- static inline int mtd_type_is_nand_user(const struct mtd_info_user *mtd)
- {
- 	return mtd->type == MTD_NANDFLASH || mtd->type == MTD_MLCNANDFLASH;
+for you to fetch changes up to 4a4163caccae97a23d97c29032664ee7b7a498d0:
+
+  Fix index regression in nand_read_subpage (2014-04-04 23:13:17 -0700)
+
+----------------------------------------------------------------
+MTD updates for 3.15:
+ - A few SPI NOR ID definitions
+ - Kill the NAND "max pagesize" restriction
+ - Fix some x16 bus-width NAND support
+ - Add NAND JEDEC parameter page support
+ - DT bindings for NAND ECC
+ - GPMI NAND updates (subpage reads)
+ - More OMAP NAND refactoring
+ - New STMicro SPI NOR driver (now in 40 patches!)
+ - A few other random bugfixes
+
+----------------------------------------------------------------
+Ajesh Kunhipurayil Vijayan (1):
+      jffs2: Fix crash due to truncation of csize
+
+Alexander Sverdlin (1):
+      mtd: phram: Repair multiple instances support
+
+Axel Lin (1):
+      mtd: m25p80: Use positive logic to check JEDEC ID
+
+Boris BREZILLON (1):
+      mtd: nand: fix erroneous read_buf call in nand_write_page_raw_syndrome
+
+Brian Norris (3):
+      mtd: nand: force NAND_CMD_READID onto 8-bit bus
+      mtd: nand: don't use read_buf for 8-bit ONFI transfers
+      mtd: m25p80: add Macronix mx66l1g55g 1Gbit SPI flash
+
+Cai Zhiyong (1):
+      mtd: nand: remove unused function input parameter
+
+Christian Riesch (2):
+      mtd: Add a retlen parameter to _get_{fact,user}_prot_info
+      mtd: Fix the behavior of OTP write if there is not enough room for data
+
+Dan Carpenter (3):
+      mtd: sm_ftl: heap corruption in sm_create_sysfs_attributes()
+      mtd: remove some duplicative checks
+      mtd: nuc900_nand: NULL dereference in nuc900_nand_enable()
+
+David Mosberger (1):
+      mtd: nand: fix GET/SET_FEATURES address on 16-bit devices
+
+Erico Nunes (1):
+      mtd: nand: fix mention to CONFIG_MTD_NAND_ECC_BCH
+
+Ezequiel Garcia (4):
+      of_mtd: Add helpers to get ECC strength and ECC step size
+      mtd: nand: Add a devicetree binding for ECC strength and ECC step size
+      mtd: nand: pxa3xx: Remove unused macro
+      mtd: nand: pxa3xx: Print actual ECC strength in error message
+
+Fabian Frederick (2):
+      mtd: block2mtd: Add mutex_destroy
+      mtd: block2mtd: check device size
+
+Fabio Estevam (1):
+      mtd: mxc_nand: Propagate the error if platform_get_irq() fails
+
+Geert Uytterhoeven (2):
+      mtd: m25p80: Add dual read support
+      mtd: m25p80: Enable Dual SPI read transfers for s25fl256s1 and s25fl512s
+
+Herve Codina (1):
+      mtd: atmel_nand: Disable subpage NAND write when using Atmel PMECC
+
+Huang Shijie (11):
+      mtd: nand: kill the the NAND_MAX_PAGESIZE/NAND_MAX_OOBSIZE for nand_buffers{}
+      mtd: nand: remove the NAND_MAX_PAGESIZE/NAND_MAX_OOBSIZE
+      mtd: nand: add support for SanDisk SDTNRGAMA-008G
+      mtd: nand: add the data structures for JEDEC parameter page
+      mtd: nand: add fields for JEDEC in nand_chip
+      mtd: nand: add a helper to get the supported features for JEDEC
+      mtd: nand: parse out the JEDEC compliant NAND
+      mtd: nand: print out the right information for JEDEC compliant NAND
+      mtd: nand: add "page" argument for read_subpage hook
+      mtd: gpmi: do not use the mtd->writesize
+      mtd: gpmi: add subpage read support
+
+Jean Delvare (1):
+      mtd: ts5500: Add dependency
+
+Jingoo Han (10):
+      mtd: devices: elm: Remove unnecessary OOM messages
+      mtd: spear_smi: Remove unnecessary OOM messages
+      mtd: pmc551: Remove unnecessary OOM messages
+      mtd: plat-ram: Remove unnecessary OOM messages
+      mtd: lpddr: Remove unnecessary OOM messages
+      mtd: onenand: Remove unnecessary OOM messages
+      mtd: cfi: Remove unnecessary OOM messages
+      mtd: gen_probe: Remove unnecessary OOM messages
+      mtd: denali_dt: Use devm_ioremap_resource()
+      mtd: omap2: Use devm_ioremap_resource()
+
+Kamlakant Patel (1):
+      jffs2: Fix segmentation fault found in stress test
+
+Kuninori Morimoto (1):
+      mtd: m25p80: add support for the Spansion s25fl008k chip
+
+Lee Jones (40):
+      mtd: st_spi_fsm: Allocate resources and register with MTD framework
+      mtd: st_spi_fsm: Supply all register address and bit logic defines
+      mtd: st_spi_fsm: Initialise and configure the FSM for normal working conditions
+      mtd: st_spi_fsm: Supply framework for device requests
+      mtd: st_spi_fsm: Supply a method to read from the FSM's FIFO
+      mtd: st_spi_fsm: Add support for JEDEC ID extraction
+      mtd: devices: Provide header for shared OPCODEs and SFDP commands
+      mtd: st_spi_fsm: Provide device look-up table
+      mtd: st_spi_fsm: Dynamically setup flash device based on JEDEC ID
+      mtd: st_spi_fsm: Search for preferred FSM message sequence configurations
+      mtd: st_spi_fsm: Use device size to determine address width
+      mtd: st_spi_fsm: Prepare the read/write FSM message sequence(s)
+      mtd: st_spi_fsm: Add device-tree binding documentation
+      mtd: st_spi_fsm: Fetch boot-device from mode pins
+      mtd: st_spi_fsm: Provide the erase one sector sequence
+      mtd: st_spi_fsm: Provide the sequence for enabling 32bit addressing mode
+      mtd: st_spi_fsm: Prepare read/write sequences according to configuration
+      mtd: st_spi_fsm: Add a check to if the chip can handle an SoC reset
+      mtd: st_spi_fsm: Provide a method to put the chip into 32bit addressing mode
+      mtd: st_spi_fsm: Update the flash Volatile Configuration Register
+      mtd: st_spi_fsm: Provide the default read/write configurations
+      mtd: st_spi_fsm: Supply the N25Qxxx specific read configurations
+      mtd: st_spi_fsm: Supply the N25Qxxx chip specific configuration call-back
+      mtd: st_spi_fsm: Prepare default sequences for read/write/erase
+      mtd: st_spi_fsm: Add the ability to read from a Serial Flash device
+      mtd: st_spi_fsm: Write to Flash via the FSM FIFO
+      mtd: st_spi_fsm: Supply a busy wait for post-write status
+      mtd: st_spi_fsm: Erase partly or as a whole a Serial Flash device
+      mtd: st_spi_fsm: Add the ability to read the FSM's status
+      mtd: st_spi_fsm: Add the ability to write to FSM's status register
+      mtd: st_spi_fsm: Supply the MX25xxx chip specific configuration call-back
+      mtd: st_spi_fsm: Supply the S25FLxxx chip specific configuration call-back
+      mtd: st_spi_fsm: Supply the W25Qxxx chip specific configuration call-back
+      mtd: st_spi_fsm: Move runtime configurable msg sequences into device's struct
+      mtd: st_spi_fsm: Convert ST SPI FSM (NOR) Flash driver to new DT partitions
+      mtd: st_spi_fsm: Remove useless consts from function arguments
+      mtd: st_spi_fsm: Avoid duplicating MTD core code
+      mtd: st_spi_fsm: Correct vendor name spelling issue - missing "M"
+      mtd: st_spi_fsm: Allow loop to run at least once before giving up CPU
+      mtd: st_spi_fsm: Succinctly reorganise .remove()
+
+Li Zefan (2):
+      jffs2: remove from wait queue after schedule()
+      jffs2: avoid soft-lockup in jffs2_reserve_space_gc()
+
+Nicolas Ferre (1):
+      mtd: atmel_nand: change log level
+
+Paul Gortmaker (1):
+      mtd: delete non-required instances of include <linux/init.h>
+
+Pekon Gupta (17):
+      mtd: nand: omap: add field to indicate current ecc-scheme in 'struct omap_nand_info'
+      mtd: nand: omap: ecc.correct: omap_elm_correct_data: rename ambiguous variable 'eccsize' and 'ecc_vector_size'
+      mtd: nand: omap: ecc.correct: omap_elm_correct_data: fix erased-page detection for BCHx_HW ECC schemes
+      mtd: nand: omap: ecc.correct: omap_elm_correct_data: cleanup for future enhancements
+      mtd: nand: omap: ecc.correct: omap_elm_correct_data: fix programmed-page bit-flip correction logic
+      mtd: nand: omap: ecc.calculate: rename omap3_calculate_ecc_bch to omap_calculate_ecc_bch
+      mtd: nand: omap: ecc.calculate: refactor omap_calculate_ecc_bch for BCHx_HW ecc-scheme
+      mtd: nand: omap: ecc.calculate: merge omap3_calculate_ecc_bch4 in omap_calculate_ecc_bch
+      mtd: nand: omap: ecc.calculate: merge omap3_calculate_ecc_bch8 in omap_calculate_ecc_bch
+      mtd: nand: omap: ecc.hwctl: rename omap3_enable_hwecc_bch to omap_enable_hwecc_bch
+      mtd: nand: omap: ecc.hwctl: refactor omap_enable_hwecc_bch for ECC related GPMC configs
+      mtd: nand: omap: ecc.hwctl: clean omap_enable_hwecc_bch for redundant ECC configs
+      mtd: nand: omap: remove is_elm_present flag
+      mtd: devices: elm: check for hardware engine's design constraints
+      mtd: devices: elm: clean elm_load_syndrome
+      mtd: devices: elm: configure parallel channels based on ecc_steps
+      mtd: devices: elm: update DRIVER_NAME as "omap-elm"
+
+Philippe De Muyter (1):
+      mtd: allow CONFIG_MTD_PHYSMAP_OF also for CONFIG_MTD_RAM
+
+Rafał Miłecki (3):
+      mtd: bcm47xxpart: fix off by one in partitions limit
+      mtd: bcm47xxpart: avoid overflowing when registering trx
+      mtd: bcm47xxpart: allow enabling on ARCH_BCM_5301X
+
+Richard Weinberger (1):
+      mtd: nand: flctl: Add dependency on HAS_IOMEM and HAS_DMA
+
+Ron (1):
+      Fix index regression in nand_read_subpage
+
+Sachin Kamat (1):
+      mtd: nand: s3c2410: Trivial cleanup in header file
+
+Sasha Levin (1):
+      mtd: diskonchip: mem resource name is not optional
+
+Stefan Sørensen (1):
+      mtd: elm: Use correct check on return value of pm_runtime_get_sync
+
+Wang Guoli (1):
+      jffs2: unlock f->sem on error in jffs2_new_inode()
+
+ Documentation/devicetree/bindings/mtd/nand.txt   |   14 +
+ Documentation/devicetree/bindings/mtd/st-fsm.txt |   26 +
+ drivers/mtd/Kconfig                              |    2 +-
+ drivers/mtd/bcm47xxpart.c                        |   11 +-
+ drivers/mtd/chips/cfi_cmdset_0001.c              |   40 +-
+ drivers/mtd/chips/cfi_cmdset_0002.c              |    9 +-
+ drivers/mtd/chips/cfi_cmdset_0020.c              |    3 -
+ drivers/mtd/chips/cfi_probe.c                    |    4 +-
+ drivers/mtd/chips/cfi_util.c                     |    4 +-
+ drivers/mtd/chips/gen_probe.c                    |    2 -
+ drivers/mtd/devices/Kconfig                      |    8 +
+ drivers/mtd/devices/Makefile                     |    1 +
+ drivers/mtd/devices/block2mtd.c                  |   19 +-
+ drivers/mtd/devices/elm.c                        |   49 +-
+ drivers/mtd/devices/m25p80.c                     |   35 +-
+ drivers/mtd/devices/mtd_dataflash.c              |   24 +-
+ drivers/mtd/devices/phram.c                      |   41 +-
+ drivers/mtd/devices/pmc551.c                     |    7 +-
+ drivers/mtd/devices/serial_flash_cmds.h          |   81 +
+ drivers/mtd/devices/spear_smi.c                  |    2 -
+ drivers/mtd/devices/sst25l.c                     |    1 -
+ drivers/mtd/devices/st_spi_fsm.c                 | 2108 ++++++++++++++++++++++
+ drivers/mtd/inftlmount.c                         |    1 -
+ drivers/mtd/lpddr/lpddr_cmds.c                   |    4 +-
+ drivers/mtd/lpddr/qinfo_probe.c                  |    5 +-
+ drivers/mtd/maps/Kconfig                         |   10 +-
+ drivers/mtd/maps/bfin-async-flash.c              |    1 -
+ drivers/mtd/maps/gpio-addr-flash.c               |    1 -
+ drivers/mtd/maps/intel_vr_nor.c                  |    1 -
+ drivers/mtd/maps/ixp4xx.c                        |    1 -
+ drivers/mtd/maps/lantiq-flash.c                  |    1 -
+ drivers/mtd/maps/latch-addr-flash.c              |    1 -
+ drivers/mtd/maps/pci.c                           |    1 -
+ drivers/mtd/maps/physmap_of.c                    |    1 -
+ drivers/mtd/maps/plat-ram.c                      |    2 -
+ drivers/mtd/maps/pxa2xx-flash.c                  |    1 -
+ drivers/mtd/maps/rbtx4939-flash.c                |    1 -
+ drivers/mtd/maps/scb2_flash.c                    |    1 -
+ drivers/mtd/maps/sun_uflash.c                    |    1 -
+ drivers/mtd/mtd_blkdevs.c                        |    1 -
+ drivers/mtd/mtdchar.c                            |   20 +-
+ drivers/mtd/mtdcore.c                            |   24 +-
+ drivers/mtd/mtdpart.c                            |   14 +-
+ drivers/mtd/nand/Kconfig                         |    2 +
+ drivers/mtd/nand/ams-delta.c                     |    1 -
+ drivers/mtd/nand/atmel_nand.c                    |   14 +-
+ drivers/mtd/nand/au1550nd.c                      |    4 +-
+ drivers/mtd/nand/bf5xx_nand.c                    |    1 -
+ drivers/mtd/nand/cafe_nand.c                     |   68 +-
+ drivers/mtd/nand/davinci_nand.c                  |    1 -
+ drivers/mtd/nand/denali_dt.c                     |   39 +-
+ drivers/mtd/nand/diskonchip.c                    |    5 +-
+ drivers/mtd/nand/fsl_elbc_nand.c                 |    1 -
+ drivers/mtd/nand/fsl_ifc_nand.c                  |    1 -
+ drivers/mtd/nand/gpio.c                          |    1 -
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c           |  102 +-
+ drivers/mtd/nand/mpc5121_nfc.c                   |    1 -
+ drivers/mtd/nand/mxc_nand.c                      |    2 +
+ drivers/mtd/nand/nand_base.c                     |  165 +-
+ drivers/mtd/nand/nand_ids.c                      |    3 +
+ drivers/mtd/nand/nuc900_nand.c                   |    6 +-
+ drivers/mtd/nand/omap2.c                         |  512 +++---
+ drivers/mtd/nand/pasemi_nand.c                   |    1 -
+ drivers/mtd/nand/pxa3xx_nand.c                   |    3 +-
+ drivers/mtd/nand/s3c2410.c                       |    1 -
+ drivers/mtd/onenand/generic.c                    |    1 -
+ drivers/mtd/onenand/omap2.c                      |    1 -
+ drivers/mtd/onenand/onenand_base.c               |   38 +-
+ drivers/mtd/onenand/samsung.c                    |    4 +-
+ drivers/mtd/rfd_ftl.c                            |    9 +-
+ drivers/mtd/sm_ftl.c                             |   11 +-
+ drivers/mtd/tests/mtd_test.c                     |    1 -
+ drivers/mtd/ubi/ubi.h                            |    1 -
+ drivers/of/of_mtd.c                              |   34 +
+ fs/jffs2/compr_rtime.c                           |    4 +-
+ fs/jffs2/fs.c                                    |    9 +-
+ fs/jffs2/nodelist.h                              |    2 +-
+ fs/jffs2/nodemgmt.c                              |   14 +-
+ include/linux/mtd/mtd.h                          |   16 +-
+ include/linux/mtd/nand.h                         |  135 +-
+ include/linux/of_mtd.h                           |   12 +
+ include/linux/platform_data/elm.h                |   10 +-
+ include/linux/platform_data/mtd-nand-s3c2410.h   |    8 +-
+ 83 files changed, 3181 insertions(+), 647 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/st-fsm.txt
+ create mode 100644 drivers/mtd/devices/serial_flash_cmds.h
+ create mode 100644 drivers/mtd/devices/st_spi_fsm.c
