@@ -1,19 +1,17 @@
-Message-ID: <1396863705.8506.39.camel@x220>
-Subject: Re: [PATCH v6 01/36] mtd: st_spi_fsm: Allocate resources and
- register with MTD framework
-From: Paul Bolle <pebolle@tiscali.nl>
-To: Lee Jones <lee.jones@linaro.org>
-Date: Mon, 07 Apr 2014 11:41:45 +0200
-In-Reply-To: <20140407091110.GB8888@lee--X1>
-References: <1395307268-12721-1-git-send-email-lee.jones@linaro.org>
- <1395307268-12721-2-git-send-email-lee.jones@linaro.org>
- <1396858351.8506.8.camel@x220> <20140407091110.GB8888@lee--X1>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Angus.Clark@st.com, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+Received: from ns.omicron.at ([212.183.10.25])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WX6ET-0001Yj-TT
+ for linux-mtd@lists.infradead.org; Mon, 07 Apr 2014 09:52:51 +0000
+From: Christian Riesch <christian.riesch@omicron.at>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH v4 0/4] mtd: cfi_cmdset_0002: Add OTP support for Micron M29EW
+ NOR flashes
+Date: Mon, 7 Apr 2014 11:51:43 +0200
+MIME-Version: 1.0
+Content-Type: text/plain
+Message-ID: <a5c03d3d-3fd8-427e-b01c-d50483153420@mary.at.omicron.at>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Christian Riesch <christian.riesch@omicron.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,48 +21,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2014-04-07 at 10:11 +0100, Lee Jones wrote:
-> > > diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
-> > > index 0128138..1210bc2 100644
-> > > --- a/drivers/mtd/devices/Kconfig
-> > > +++ b/drivers/mtd/devices/Kconfig
-> > > @@ -210,6 +210,14 @@ config MTD_DOCG3
-> > >  	  M-Systems and now Sandisk. The support is very experimental,
-> > >  	  and doesn't give access to any write operations.
-> > >  
-> > > +config MTD_ST_SPI_FSM
-> > > +	tristate "ST Microelectronics SPI FSM Serial Flash Controller"
-> > > +	depends on ARM || SH
-> > 
-> > That should probably be
-> >           depends on ARM || SUPERH
-> 
-> Actually it should be ARCH_STI, but thanks for the prompt.
+Hi,
+This patchset adds support for the reading, writing, and locking of the
+one time programmable (OTP) memory of Micron M29EW NOR flashes.
 
-I wouldn't have guessed that!
+These flashes have a 256 byte OTP memory, which is called extended
+memory region in its datasheet. The flash is compatible to Spansion S29GL
+and Macronix MX29GL devices, so support for the OTP memory of these
+flashes should also be possible.
 
-(Is ARCH_STI actually needed? ARCH_STI doesn't formally depend on ARM
-but I don't think one can end up with a .config with ARCH_STI set
-without ARM also set. Or am I mistaken?)
+Tests with this patchset were done with a single Micron M29EW device
+(512 Mbit, 16 bit) on a custom board with a Texas Instruments AM1808
+system on chip.
 
-> > > +	help
-> > > +	  This provides an MTD device driver for the ST Microelectronics
-> > > +	  SPI Fast Sequence Mode (FSM) Serial Flash Controller and support
-> > > +	  for a subset of connected Serial Flash devices.
-> > > +
-> > >  if MTD_DOCG3
-> > >  config BCH_CONST_M
-> > >  	default 14
-> > 
-> > Can this still be fixed in a future version of this series or should I
-> > send a trivial patch?
-> 
-> Do you mean the SH thing, or are you now referencing something else?
-> 
-> If the former then I'm happy to send a fixup patch.
+Prerequisites:
+- Applies on linux-mtd.git
 
-No, I was talking about the SH symbol. I'll gladly leave it up to you to
-fix this.
+Changes for v2:
+- dropped one patch that changes the detection of M29EW devices,
+  this patch is currently not required
+- added support for locking
+- fixed a few bugs in the loop that walks through the OTP memory
 
+Changes for v3:
+- Added retlet parameter to cfi_amdstd_get_{fact,user}_prot_info
+- Fixed partial write of words
 
-Paul Bolle
+Changes for v4:
+- Updated prerequisites in cover letter
+
+Christian Riesch (4):
+  mtd: cfi_cmdset_0002: Add support for reading OTP
+  mtd: cfi_cmdset_0002: Invalidate cache after entering/exiting OTP
+    memory
+  mtd: cfi_cmdset_0002: Add support for writing OTP memory
+  mtd: cfi_cmdset_0002: Add support for locking OTP memory
+
+ drivers/mtd/chips/cfi_cmdset_0002.c |  350 +++++++++++++++++++++++++++++++++--
+ 1 file changed, 331 insertions(+), 19 deletions(-)
+
+-- 
+1.7.9.5
