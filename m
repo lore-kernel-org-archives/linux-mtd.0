@@ -1,18 +1,35 @@
-Received: from ns.omicron.at ([212.183.10.25])
+Received: from mail-la0-x22f.google.com ([2a00:1450:4010:c03::22f])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WX6EY-0001Ya-UH
- for linux-mtd@lists.infradead.org; Mon, 07 Apr 2014 09:53:03 +0000
-From: Christian Riesch <christian.riesch@omicron.at>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v4 1/4] mtd: cfi_cmdset_0002: Add support for reading OTP
-Date: Mon, 7 Apr 2014 11:51:44 +0200
-In-Reply-To: <1396864307-25679-1-git-send-email-christian.riesch@omicron.at>
-References: <1396864307-25679-1-git-send-email-christian.riesch@omicron.at>
-MIME-Version: 1.0
-Content-Type: text/plain
-Message-ID: <68b1c36f-7cb1-437e-83dd-fe4a51b19ab1@mary.at.omicron.at>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Christian Riesch <christian.riesch@omicron.at>
+ id 1WX6GI-0001hQ-CA
+ for linux-mtd@lists.infradead.org; Mon, 07 Apr 2014 09:54:43 +0000
+Received: by mail-la0-f47.google.com with SMTP id pn19so4540673lab.34
+ for <linux-mtd@lists.infradead.org>; Mon, 07 Apr 2014 02:54:20 -0700 (PDT)
+Subject: Re: [PATCH] mtd: cfi_cmdset_0001 - fixup for PC28F512P33TFA
+From: Christoph Fritz <chf.fritz@googlemail.com>
+To: Christian Riesch <christian.riesch@gmail.com>
+In-Reply-To: <080F496E4E3B84A0EEF7E915@[172.22.2.41]>
+References: <1396287151.4857.50.camel@mars>
+ <OFA78F5CB9.63C292B4-ONC1257CAC.006FBDC4-C1257CAC.0070B588@transmode.se>
+ <1396303460.4857.111.camel@mars>
+ <OFA7BCC382.7C5EA8B7-ONC1257CAD.002CA0C1-C1257CAD.002EAA92@LocalDomain>
+ <OFCD64B0EF.BC0E327D-ONC1257CAD.003CE517-C1257CAD.003DCE3D@transmode.se>
+ <1396364991.4850.37.camel@mars>
+ <OFDA5ED549.208718B9-ONC1257CAD.0068922B-C1257CAD.006990F4@transmode.se>
+ <1396393830.6474.31.camel@mars>
+ <OF12157674.86C034EE-ONC1257CAE.00287492-C1257CAE.0028C422@transmode.se>
+ <49896FD866D95E20142E6B80@[172.22.2.41]> <1396646233.17753.237.camel@mars>
+ <080F496E4E3B84A0EEF7E915@[172.22.2.41]>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 07 Apr 2014 11:54:14 +0200
+Message-ID: <1396864454.3285.160.camel@lovely>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Marius Achilles <M.Achilles@phytec.de>,
+ Joakim Tjernlund <joakim.tjernlund@transmode.se>,
+ Artem Bityutskiy <dedekind1@gmail.com>, linux-mtd@lists.infradead.org,
+ Andrea Adami <andrea.adami@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,203 +39,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The Micron M29EW has a 256 byte one time programmable (OTP) memory.
-This patch adds support for reading this memory. This support will be
-extended for locking and writing in subsequent patches.
+On Mon, 2014-04-07 at 10:41 +0200, Christian Riesch wrote:
+> > The board is back on my desk and I did some further promising tests.
+> 
+> Since the board is "on your desk", I guess you did the test at room 
+> temperature, right? Your desk is not cooled down to -40°C, right?
 
-Signed-off-by: Christian Riesch <christian.riesch@omicron.at>
----
- drivers/mtd/chips/cfi_cmdset_0002.c |  156 +++++++++++++++++++++++++++++++++++
- 1 file changed, 156 insertions(+)
+Further tests, as done with the disabled suspend erase patch, will be in
+a climatic exposure test cabinet. Here on my desk I use massive amounts
+of cooling spray. Its tin is labeled for cooling down to max -35°C.
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index 89b9d68..6e2ce76 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -59,7 +59,15 @@ static void cfi_amdstd_sync (struct mtd_info *);
- static int cfi_amdstd_suspend (struct mtd_info *);
- static void cfi_amdstd_resume (struct mtd_info *);
- static int cfi_amdstd_reboot(struct notifier_block *, unsigned long, void *);
-+static int cfi_amdstd_get_fact_prot_info(struct mtd_info *, size_t,
-+					 size_t *, struct otp_info *);
-+static int cfi_amdstd_get_user_prot_info(struct mtd_info *, size_t,
-+					 size_t *, struct otp_info *);
- static int cfi_amdstd_secsi_read (struct mtd_info *, loff_t, size_t, size_t *, u_char *);
-+static int cfi_amdstd_read_fact_prot_reg(struct mtd_info *, loff_t, size_t,
-+					 size_t *, u_char *);
-+static int cfi_amdstd_read_user_prot_reg(struct mtd_info *, loff_t, size_t,
-+					 size_t *, u_char *);
- 
- static int cfi_amdstd_panic_write(struct mtd_info *mtd, loff_t to, size_t len,
- 				  size_t *retlen, const u_char *buf);
-@@ -521,6 +529,10 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
- 	mtd->_sync    = cfi_amdstd_sync;
- 	mtd->_suspend = cfi_amdstd_suspend;
- 	mtd->_resume  = cfi_amdstd_resume;
-+	mtd->_read_user_prot_reg = cfi_amdstd_read_user_prot_reg;
-+	mtd->_read_fact_prot_reg = cfi_amdstd_read_fact_prot_reg;
-+	mtd->_get_fact_prot_info = cfi_amdstd_get_fact_prot_info;
-+	mtd->_get_user_prot_info = cfi_amdstd_get_user_prot_info;
- 	mtd->flags   = MTD_CAP_NORFLASH;
- 	mtd->name    = map->name;
- 	mtd->writesize = 1;
-@@ -1142,6 +1154,8 @@ static int cfi_amdstd_read (struct mtd_info *mtd, loff_t from, size_t len, size_
- 	return ret;
- }
- 
-+typedef int (*otp_op_t)(struct map_info *map, struct flchip *chip,
-+			loff_t adr, size_t len, u_char *buf);
- 
- static inline int do_read_secsi_onechip(struct map_info *map, struct flchip *chip, loff_t adr, size_t len, u_char *buf)
- {
-@@ -1224,6 +1238,148 @@ static int cfi_amdstd_secsi_read (struct mtd_info *mtd, loff_t from, size_t len,
- 	return ret;
- }
- 
-+static int cfi_amdstd_otp_walk(struct mtd_info *mtd, loff_t from, size_t len,
-+			       size_t *retlen, u_char *buf,
-+			       otp_op_t action, int user_regs)
-+{
-+	struct map_info *map = mtd->priv;
-+	struct cfi_private *cfi = map->fldrv_priv;
-+	int ofs_factor = cfi->interleave * cfi->device_type;
-+	unsigned long base;
-+	int chipnum;
-+	struct flchip *chip;
-+	uint8_t otp, lockreg;
-+	int ret;
-+
-+	size_t user_size, factory_size, otpsize;
-+	loff_t user_offset, factory_offset, otpoffset;
-+	int user_locked = 0, otplocked;
-+
-+	*retlen = 0;
-+
-+	for (chipnum = 0; chipnum < cfi->numchips; chipnum++) {
-+		chip = &cfi->chips[chipnum];
-+		factory_size = 0;
-+		user_size = 0;
-+
-+		/* Micron M29EW family */
-+		if (is_m29ew(cfi)) {
-+			base = chip->start;
-+
-+			/* check whether secsi area is factory locked
-+			   or user lockable */
-+			mutex_lock(&chip->mutex);
-+			ret = get_chip(map, chip, base, FL_CFI_QUERY);
-+			if (ret) {
-+				mutex_unlock(&chip->mutex);
-+				return ret;
-+			}
-+			cfi_qry_mode_on(base, map, cfi);
-+			otp = cfi_read_query(map, base + 0x3 * ofs_factor);
-+			cfi_qry_mode_off(base, map, cfi);
-+			put_chip(map, chip, base);
-+			mutex_unlock(&chip->mutex);
-+
-+			if (otp & 0x80) {
-+				/* factory locked */
-+				factory_offset = 0;
-+				factory_size = 0x100;
-+			} else {
-+				/* customer lockable */
-+				user_offset = 0;
-+				user_size = 0x100;
-+
-+				mutex_lock(&chip->mutex);
-+				ret = get_chip(map, chip, base, FL_LOCKING);
-+
-+				/* Enter lock register command */
-+				cfi_send_gen_cmd(0xAA, cfi->addr_unlock1,
-+						 chip->start, map, cfi,
-+						 cfi->device_type, NULL);
-+				cfi_send_gen_cmd(0x55, cfi->addr_unlock2,
-+						 chip->start, map, cfi,
-+						 cfi->device_type, NULL);
-+				cfi_send_gen_cmd(0x40, cfi->addr_unlock1,
-+						 chip->start, map, cfi,
-+						 cfi->device_type, NULL);
-+				/* read lock register */
-+				lockreg = cfi_read_query(map, 0);
-+				/* exit protection commands */
-+				map_write(map, CMD(0x90), chip->start);
-+				map_write(map, CMD(0x00), chip->start);
-+				put_chip(map, chip, chip->start);
-+				mutex_unlock(&chip->mutex);
-+
-+				user_locked = ((lockreg & 0x01) == 0x00);
-+			}
-+		}
-+
-+		otpsize = user_regs ? user_size : factory_size;
-+		if (!otpsize)
-+			continue;
-+		otpoffset = user_regs ? user_offset : factory_offset;
-+		otplocked = user_regs ? user_locked : 1;
-+
-+		if (!action) {
-+			/* return otpinfo */
-+			struct otp_info *otpinfo;
-+			len -= sizeof(*otpinfo);
-+			if (len <= 0)
-+				return -ENOSPC;
-+			otpinfo = (struct otp_info *)buf;
-+			otpinfo->start = from;
-+			otpinfo->length = otpsize;
-+			otpinfo->locked = otplocked;
-+			buf += sizeof(*otpinfo);
-+			*retlen += sizeof(*otpinfo);
-+			from += otpsize;
-+		} else if ((from < otpsize) && (len > 0)) {
-+			size_t size;
-+			size = (len < otpsize - from) ? len : otpsize - from;
-+			ret = action(map, chip, otpoffset + from, size, buf);
-+			if (ret < 0)
-+				return ret;
-+
-+			buf += size;
-+			len -= size;
-+			*retlen += size;
-+			from = 0;
-+		} else {
-+			from -= otpsize;
-+		}
-+	}
-+	return 0;
-+}
-+
-+static int cfi_amdstd_get_fact_prot_info(struct mtd_info *mtd, size_t len,
-+					 size_t *retlen, struct otp_info *buf)
-+{
-+	return cfi_amdstd_otp_walk(mtd, 0, len, retlen, (u_char *)buf,
-+				   NULL, 0);
-+}
-+
-+static int cfi_amdstd_get_user_prot_info(struct mtd_info *mtd, size_t len,
-+					 size_t *retlen, struct otp_info *buf)
-+{
-+	return cfi_amdstd_otp_walk(mtd, 0, len, retlen, (u_char *)buf,
-+				   NULL, 1);
-+}
-+
-+static int cfi_amdstd_read_fact_prot_reg(struct mtd_info *mtd, loff_t from,
-+					 size_t len, size_t *retlen,
-+					 u_char *buf)
-+{
-+	return cfi_amdstd_otp_walk(mtd, from, len, retlen,
-+				   buf, do_read_secsi_onechip, 0);
-+}
-+
-+static int cfi_amdstd_read_user_prot_reg(struct mtd_info *mtd, loff_t from,
-+					 size_t len, size_t *retlen,
-+					 u_char *buf)
-+{
-+	return cfi_amdstd_otp_walk(mtd, from, len, retlen,
-+				   buf, do_read_secsi_onechip, 1);
-+}
- 
- static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip, unsigned long adr, map_word datum)
- {
--- 
-1.7.9.5
+> At first sight I thought it was quite strange that a delay of 1000us does 
+> not solve the problem, whereas it works fine with 1024us. But then I had a 
+> look at the implementation of cfi_udelay(): Actually, 
+> cfi_udelay(900)/cond_resched() becomes udelay(900), cfi_udelay(1000) 
+> becomes msleep(1), and cfi_udelay(1024) becomes msleep(2).
+
+Nice catch! According to timers-howto.txt [1] usleep_range() should be
+used here because:
+
+    msleep(1~20) may not do what the caller intends, and
+    will often sleep longer (~20 ms actual sleep for any
+    value given in the 1~20ms range)
+
+[1] https://www.kernel.org/doc/Documentation/timers/timers-howto.txt
+
+> > Preferably I would go with a cleaned up version of patch "TESTHACK 12",
+> > after some more stress testings have been passed. What do you think?
+> 
+> You should thoroughly test it at -40°C. This temperature required the 
+> largest delays for the M29EW.
+
+I'll try to kick of some tests with usleep_range() in a climatic
+exposure test cabinet the next days.
+
+> > I now also have a contact to Micron, so I hope they can shed some light
+> > on this issue.
+> 
+> I am looking forward to their response ;-)
+
+I also invited them to this open discussion.
+
+Thanks
+  -- Christoph
