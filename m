@@ -1,18 +1,18 @@
-Received: from mail-ve0-x229.google.com ([2607:f8b0:400c:c01::229])
+Received: from smtp.codeaurora.org ([198.145.11.231])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WX9Ry-0006W6-Ma
- for linux-mtd@lists.infradead.org; Mon, 07 Apr 2014 13:19:00 +0000
-Received: by mail-ve0-f169.google.com with SMTP id pa12so3623122veb.14
- for <linux-mtd@lists.infradead.org>; Mon, 07 Apr 2014 06:18:37 -0700 (PDT)
+ id 1WXC3p-0003DQ-Eo
+ for linux-mtd@lists.infradead.org; Mon, 07 Apr 2014 16:06:14 +0000
+Message-ID: <5342CCDB.3080402@codeaurora.org>
+Date: Mon, 07 Apr 2014 19:05:47 +0300
+From: Tanya Brokhman <tlinder@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <1396339327-16090-1-git-send-email-tlinder@codeaurora.org>
-References: <1396339327-16090-1-git-send-email-tlinder@codeaurora.org>
-Date: Mon, 7 Apr 2014 15:18:37 +0200
-Message-ID: <CAFLxGvyHL2Fjk3Zvqr5Y89R7vC8wjWwUi98UESdX-Ue9h6y3pA@mail.gmail.com>
-Subject: Re: [RFC/PATCH] mtd: ubi: Fix ubi free PEBs count calculation
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: Tanya Brokhman <tlinder@codeaurora.org>
-Content-Type: text/plain; charset=ISO-8859-1
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Subject: Re: [RFC/PATCH] mtd: ubi: Free peb's synchronously for fastmap
+References: <1396339305-16005-1-git-send-email-tlinder@codeaurora.org>
+ <CAFLxGvyUsLZsi3iiape6BivaduvfqZh8kXXwYOFuExUJho09kg@mail.gmail.com>
+In-Reply-To: <CAFLxGvyUsLZsi3iiape6BivaduvfqZh8kXXwYOFuExUJho09kg@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  open list <linux-kernel@vger.kernel.org>,
  Artem Bityutskiy <dedekind1@gmail.com>
@@ -25,37 +25,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Apr 1, 2014 at 10:02 AM, Tanya Brokhman <tlinder@codeaurora.org> wrote:
-> The ubi->free_count should be updated with every insert/remove to/from
-> the ubi->free list.
+On 4/7/2014 4:02 PM, Richard Weinberger wrote:
+> On Tue, Apr 1, 2014 at 10:01 AM, Tanya Brokhman <tlinder@codeaurora.org> wrote:
+>> At first mount it's possible that there are not enough free PEBs since
+>> there are PEB's pending to be erased. In such scenario, fm_pool (which is
+>> the pool from which user required PEBs are allocated) will be empty.
+>> Try fixing the above described situation by synchronously performing
+>> pending erase work, thus produce another free PEB.
+>>
+>> Signed-off-by: Tatyana Brokhman <tlinder@codeaurora.org>
+>>
+>> diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+>> index 457ead3..9a36f78 100644
+>> --- a/drivers/mtd/ubi/wl.c
+>> +++ b/drivers/mtd/ubi/wl.c
+>> @@ -595,10 +595,29 @@ static void refill_wl_pool(struct ubi_device *ubi)
+>>   static void refill_wl_user_pool(struct ubi_device *ubi)
+>>   {
+>>          struct ubi_fm_pool *pool = &ubi->fm_pool;
+>> +       int err;
+>>
+>>          return_unused_pool_pebs(ubi, pool);
+>>
+>>          for (pool->size = 0; pool->size < pool->max_size; pool->size++) {
+>> +retry:
+>> +               if (!ubi->free.rb_node ||
+>> +                  (ubi->free_count - ubi->beb_rsvd_pebs < 1)) {
+>> +                       /*
+>> +                        * There are no available PEBs. Try to free
+>> +                        * PEB by means of synchronous execution of
+>> +                        * pending works.
+>> +                        */
+>> +                       if (ubi->works_count == 0)
+>> +                               break;
+>> +                       spin_unlock(&ubi->wl_lock);
+>> +                       err = do_work(ubi);
+>> +                       spin_lock(&ubi->wl_lock);
 >
-> Signed-off-by: Tanya Brokhman <tlinder@codeaurora.org>
->
-> diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-> index 9a36f78..ca74d19 100644
-> --- a/drivers/mtd/ubi/wl.c
-> +++ b/drivers/mtd/ubi/wl.c
-> @@ -690,6 +690,8 @@ static struct ubi_wl_entry *get_peb_for_wl(struct ubi_device *ubi)
->
->         e = find_wl_entry(ubi, &ubi->free, WL_FREE_MAX_DIFF);
->         self_check_in_wl_tree(ubi, e, &ubi->free);
-> +       ubi->free_count--;
-> +       ubi_assert(ubi->free_count >= 0);
->         rb_erase(&e->u.rb, &ubi->free);
->
->         return e;
-> @@ -1090,6 +1092,7 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
->
->                         /* Give the unused PEB back */
->                         wl_tree_add(e2, &ubi->free);
-> +                       ubi->free_count++;
->                         goto out_cancel;
->                 }
->                 self_check_in_wl_tree(ubi, e1, &ubi->used);
-> --
+> This is basically what produce_free_peb() does.
 
-Acked-by: Richard Weinberger <richard@nod.at>
+Right. I didn't use t just because of the termination condition. 
+produce_free_peb stops if there is 1 free peb. I need more then 1
+
+>
+>> +                       if (err < 0)
+>> +                               break;
+>> +                       goto retry;
+>> +               }
+>> +
+>>                  pool->pebs[pool->size] = __wl_get_peb(ubi);
+>
+> __wl_get_peb() already calls produce_free_peb() when we run out of free PEBs.
+>
+> Does your patch really fix a problem you encounter or did you find the
+> issue by reviewing
+> the code?
+>
+
+Yes. We encountered this issue, as described in the commit message. This 
+is the fix. Verified and working for us.
 
 -- 
-Thanks,
-//richard
+QUALCOMM ISRAEL, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
