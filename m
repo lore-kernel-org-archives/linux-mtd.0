@@ -1,35 +1,23 @@
-Received: from mail-la0-x22f.google.com ([2a00:1450:4010:c03::22f])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WX6GI-0001hQ-CA
- for linux-mtd@lists.infradead.org; Mon, 07 Apr 2014 09:54:43 +0000
-Received: by mail-la0-f47.google.com with SMTP id pn19so4540673lab.34
- for <linux-mtd@lists.infradead.org>; Mon, 07 Apr 2014 02:54:20 -0700 (PDT)
-Subject: Re: [PATCH] mtd: cfi_cmdset_0001 - fixup for PC28F512P33TFA
-From: Christoph Fritz <chf.fritz@googlemail.com>
-To: Christian Riesch <christian.riesch@gmail.com>
-In-Reply-To: <080F496E4E3B84A0EEF7E915@[172.22.2.41]>
-References: <1396287151.4857.50.camel@mars>
- <OFA78F5CB9.63C292B4-ONC1257CAC.006FBDC4-C1257CAC.0070B588@transmode.se>
- <1396303460.4857.111.camel@mars>
- <OFA7BCC382.7C5EA8B7-ONC1257CAD.002CA0C1-C1257CAD.002EAA92@LocalDomain>
- <OFCD64B0EF.BC0E327D-ONC1257CAD.003CE517-C1257CAD.003DCE3D@transmode.se>
- <1396364991.4850.37.camel@mars>
- <OFDA5ED549.208718B9-ONC1257CAD.0068922B-C1257CAD.006990F4@transmode.se>
- <1396393830.6474.31.camel@mars>
- <OF12157674.86C034EE-ONC1257CAE.00287492-C1257CAE.0028C422@transmode.se>
- <49896FD866D95E20142E6B80@[172.22.2.41]> <1396646233.17753.237.camel@mars>
- <080F496E4E3B84A0EEF7E915@[172.22.2.41]>
+Received: from mga11.intel.com ([192.55.52.93])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WX785-0002ud-8c
+ for linux-mtd@lists.infradead.org; Mon, 07 Apr 2014 10:50:17 +0000
+Message-ID: <1396867423.17040.13.camel@sauron.fi.intel.com>
+Subject: Re: UBIFS: make space fixup work in the remount case
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Date: Mon, 07 Apr 2014 13:43:43 +0300
+In-Reply-To: <20140401130848.GF18506@mwanda>
+References: <20130415095924.GA26544@elgon.mountain>
+ <1366020693.2768.41.camel@sauron.fi.intel.com>
+ <20130415101936.GM6692@mwanda>
+ <1366022346.2768.60.camel@sauron.fi.intel.com>
+ <20140401130848.GF18506@mwanda>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 07 Apr 2014 11:54:14 +0200
-Message-ID: <1396864454.3285.160.camel@lovely>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Marius Achilles <M.Achilles@phytec.de>,
- Joakim Tjernlund <joakim.tjernlund@transmode.se>,
- Artem Bityutskiy <dedekind1@gmail.com>, linux-mtd@lists.infradead.org,
- Andrea Adami <andrea.adami@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: artem.bityutskiy@linux.intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,46 +27,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2014-04-07 at 10:41 +0200, Christian Riesch wrote:
-> > The board is back on my desk and I did some further promising tests.
+On Tue, 2014-04-01 at 16:39 +0300, Dan Carpenter wrote:
+> On Mon, Apr 15, 2013 at 01:39:06PM +0300, Artem Bityutskiy wrote:
+> > On Mon, 2013-04-15 at 13:19 +0300, Dan Carpenter wrote:
+> > > On Mon, Apr 15, 2013 at 01:11:33PM +0300, Artem Bityutskiy wrote:
+> > > > On Mon, 2013-04-15 at 12:59 +0300, Dan Carpenter wrote:
+> > > > >   1571          if (c->space_fixup) {
+> > > > >   1572                  err = ubifs_fixup_free_space(c);
+> > > > >   1573                  if (err)
+> > > > >   1574                          return err;
+> > > > >                                 ^^^^^^^^^^
+> > > > > Shouldn't this be a "goto out?".  We're holding the c->umount_mutex.
+> > > > 
+> > > > Hi Dan, I fixed this up and answered the reporter:
+> > > > https://patchwork.kernel.org/patch/2284681/
+> > > > 
+> > > > It is now 'goto out'. Thanks!
+> > > 
+> > > Huh...  That wasn't who I expected to report it.  :P  It's good to
+> > > know that these kind of bugs don't last very long.
+> > 
+> > The story actually was that I noticed this myself after running Aiaiai
+> > and fixed it up "in-place", and then several people reported, and I
+> > answered to one of them.
 > 
-> Since the board is "on your desk", I guess you did the test at room 
-> temperature, right? Your desk is not cooled down to -40°C, right?
-
-Further tests, as done with the disabled suspend erase patch, will be in
-a climatic exposure test cabinet. Here on my desk I use massive amounts
-of cooling spray. Its tin is labeled for cooling down to max -35°C.
-
-> At first sight I thought it was quite strange that a delay of 1000us does 
-> not solve the problem, whereas it works fine with 1024us. But then I had a 
-> look at the implementation of cfi_udelay(): Actually, 
-> cfi_udelay(900)/cond_resched() becomes udelay(900), cfi_udelay(1000) 
-> becomes msleep(1), and cfi_udelay(1024) becomes msleep(2).
-
-Nice catch! According to timers-howto.txt [1] usleep_range() should be
-used here because:
-
-    msleep(1~20) may not do what the caller intends, and
-    will often sleep longer (~20 ms actual sleep for any
-    value given in the 1~20ms range)
-
-[1] https://www.kernel.org/doc/Documentation/timers/timers-howto.txt
-
-> > Preferably I would go with a cleaned up version of patch "TESTHACK 12",
-> > after some more stress testings have been passed. What do you think?
+> Hi Artem,
 > 
-> You should thoroughly test it at -40°C. This temperature required the 
-> largest delays for the M29EW.
+> This showed up in my smatch output again today.  Whatever happened with
+> this.  I reported it last Jun and last Nov as well apparently.
 
-I'll try to kick of some tests with usleep_range() in a climatic
-exposure test cabinet the next days.
+Hmm, I was sure I fixed this, but it is still there.
 
-> > I now also have a contact to Micron, so I hope they can shed some light
-> > on this issue.
-> 
-> I am looking forward to their response ;-)
+OK, created and pushed a fix to the master branch. It won't hit
+linux-next so far, I'll propagate it there once 3.15-rc1 or -rc2 is out.
+Thanks!
 
-I also invited them to this open discussion.
 
-Thanks
-  -- Christoph
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Date: Mon, 7 Apr 2014 13:39:06 +0300
+Subject: [PATCH] UBIFS: fix remount error path
+
+Dan's "smatch" checker found out that there was a bug in the error path of the
+'ubifs_remount_rw()' function. Instead of jumping to the "out" label which
+cleans-things up, we just returned.
+
+This patch fixes the problem.
+
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+---
+ fs/ubifs/super.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 5ded849..7e71ac9 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -1556,7 +1556,7 @@ static int ubifs_remount_rw(struct ubifs_info *c)
+        if (c->space_fixup) {
+                err = ubifs_fixup_free_space(c);
+                if (err)
+-                       return err;
++                       goto out;
+        }
+ 
+        err = check_free_space(c);
+-- 
+1.8.5.3
+
+-- 
+Best Regards,
+Artem Bityutskiy
