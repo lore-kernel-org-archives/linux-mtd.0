@@ -1,16 +1,21 @@
-Received: from am1ehsobe003.messaging.microsoft.com ([213.199.154.206]
- helo=am1outboundpool.messaging.microsoft.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WXViw-0006yt-SB
- for linux-mtd@lists.infradead.org; Tue, 08 Apr 2014 13:05:59 +0000
-From: Fabio Estevam <fabio.estevam@freescale.com>
-To: <computersforpeace@gmail.com>
-Subject: [PATCH] nand: omap2: Fix warning when CONFIG_MTD_NAND_OMAP_BCH=n
-Date: Tue, 8 Apr 2014 10:05:00 -0300
-Message-ID: <1396962300-4956-1-git-send-email-fabio.estevam@freescale.com>
+Message-ID: <5343F0D6.2010804@ti.com>
+Date: Tue, 8 Apr 2014 15:51:34 +0300
+From: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, linux-mtd@lists.infradead.org
+To: Brian Norris <computersforpeace@gmail.com>, <dwmw2@infradead.org>, Santosh
+ Shilimkar <santosh.shilimkar@ti.com>, <galak@codeaurora.org>
+Subject: Re: [PATCH v2] mtd: davinci-nand: disable subpage write for
+ keystone-nand
+References: <1395346112-13350-1-git-send-email-ivan.khoronzhuk@ti.com>
+ <532B4C36.8060405@ti.com>
+In-Reply-To: <532B4C36.8060405@ti.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, grygorii.strashko@ti.com,
+ linux@arm.linux.org.uk, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk,
+ linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+ linux-mtd@lists.infradead.org, m-karicheri2@ti.com, rob@landley.net,
+ Warner Losh <imp@bsdimp.com>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,38 +25,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When CONFIG_MTD_NAND_OMAP_BCH is not defined the following build warning 
-happens:
 
-drivers/mtd/nand/omap2.c:1250:12: warning: 'erased_sector_bitflips' defined but not used [-Wunused-function]
+On 03/20/2014 10:14 PM, Santosh Shilimkar wrote:
+> On Thursday 20 March 2014 04:08 PM, Ivan Khoronzhuk wrote:
+>> From: Murali Karicheri <m-karicheri2@ti.com>
+>>
+>> Sub page write doesn't work because of hw issue in controller found on
+>> Keystone SOCs. AEMIF controller is also used on DaVinci SOCs which
+>> don't seems to have any issue. So add "ti,keysone-nand" compatible
+>> to nand driver in order to set NAND_NO_SUBPAGE_WRITE option.
+>>
+>> Cc: Brian Norris <computersforpeace@gmail.com>
+>> Cc: Warner Losh <imp@bsdimp.com>
+>> Cc: Santosh Shilimkar <santosh.shilimkar@ti.com>
+>>
+>> Signed-off-by: Murali Karicheri <m-karicheri2@ti.com>
+>> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+>> ---
+>>
+> Acked-by: Santosh Shilimkar <santosh.shilimkar@ti.com>
+>
+>> This patch is a result of discussion on patch v1:
+>> https://lkml.org/lkml/2014/3/20/461
+>>
+>>   drivers/mtd/nand/davinci_nand.c | 6 ++++++
+>>   1 file changed, 6 insertions(+)
+>>
+>> diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
+>> index 4615d79..b922c8e 100644
+>> --- a/drivers/mtd/nand/davinci_nand.c
+>> +++ b/drivers/mtd/nand/davinci_nand.c
+>> @@ -523,6 +523,7 @@ static struct nand_ecclayout hwecc4_2048 = {
+>>   #if defined(CONFIG_OF)
+>>   static const struct of_device_id davinci_nand_of_match[] = {
+>>   	{.compatible = "ti,davinci-nand", },
+>> +	{.compatible = "ti,keystone-nand", },
+>>   	{},
+>>   };
+>>   MODULE_DEVICE_TABLE(of, davinci_nand_of_match);
+>> @@ -581,6 +582,11 @@ static struct davinci_nand_pdata
+>>   		    of_property_read_bool(pdev->dev.of_node,
+>>   			"ti,davinci-nand-use-bbt"))
+>>   			pdata->bbt_options = NAND_BBT_USE_FLASH;
+>> +
+>> +		if (of_device_is_compatible(pdev->dev.of_node,
+>> +					    "ti,keystone-nand")) {
+>> +			pdata->options |= NAND_NO_SUBPAGE_WRITE;
+>> +		}
+>>   	}
+>>   
+>>   	return dev_get_platdata(&pdev->dev);
+>>
+>>
 
-Protect the definition of erased_sector_bitflips() with 
-'ifdef CONFIG_MTD_NAND_OMAP_BCH' to fix the warning.
+Brian,
+Could you pick up subj patch?
 
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
- drivers/mtd/nand/omap2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 1ff49b8..4c4c700 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -1247,6 +1247,7 @@ static int __maybe_unused omap_calculate_ecc_bch(struct mtd_info *mtd,
-  * If falls below, report the page as erased with correctable bit
-  * flip, else report as uncorrectable page.
-  */
-+#ifdef CONFIG_MTD_NAND_OMAP_BCH
- static int erased_sector_bitflips(u_char *data, u_char *oob,
- 		struct omap_nand_info *info)
- {
-@@ -1276,7 +1277,6 @@ static int erased_sector_bitflips(u_char *data, u_char *oob,
- 	return flip_bits;
- }
- 
--#ifdef CONFIG_MTD_NAND_OMAP_BCH
- /**
-  * omap_elm_correct_data - corrects page data area in case error reported
-  * @mtd:	MTD device structure
 -- 
-1.8.3.2
+Regards,
+Ivan Khoronzhuk
