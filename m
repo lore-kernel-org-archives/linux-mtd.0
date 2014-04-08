@@ -1,25 +1,25 @@
-Received: from mail-oa0-x236.google.com ([2607:f8b0:4003:c02::236])
+Received: from mail-by2on0123.outbound.protection.outlook.com
+ ([207.46.100.123] helo=na01-by2-obe.outbound.protection.outlook.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WXYR2-0007hi-Ts
- for linux-mtd@lists.infradead.org; Tue, 08 Apr 2014 15:59:42 +0000
-Received: by mail-oa0-f54.google.com with SMTP id n16so1238724oag.41
- for <linux-mtd@lists.infradead.org>; Tue, 08 Apr 2014 08:59:19 -0700 (PDT)
+ id 1WXYez-0008NI-19
+ for linux-mtd@lists.infradead.org; Tue, 08 Apr 2014 16:14:06 +0000
+From: <grmoore@altera.com>
+To: <ggrahammoore@gmail.com>
+Subject: [PATCH] Add support for flag status register on Micron chips   
+Date: Tue, 8 Apr 2014 11:12:49 -0500
+Message-ID: <1396973570-13995-1-git-send-email-grmoore@altera.com>
 MIME-Version: 1.0
-Sender: keescook@google.com
-In-Reply-To: <1396968207.30750.17.camel@sauron.fi.intel.com>
-References: <20140408044407.GA13141@www.outflux.net>
- <20140408135729.GC2429@arch.cereza>
- <1396968207.30750.17.camel@sauron.fi.intel.com>
-Date: Tue, 8 Apr 2014 08:59:19 -0700
-Message-ID: <CAGXu5j+-1o9TmqLrq2ZPhoRvOmiv4Do5wvGkasxHb+Frm7hutA@mail.gmail.com>
-Subject: Re: [PATCH] ubi: avoid workqueue format string leak
-From: Kees Cook <keescook@chromium.org>
-To: artem.bityutskiy@linux.intel.com
-Content-Type: text/plain; charset=UTF-8
-Cc: Linux mtd <linux-mtd@lists.infradead.org>,
+Content-Type: text/plain
+Cc: Marek Vasut <marex@denx.de>,
+ Geert Uytterhoeven <geert+renesas@linux-m68k.org>,
+ Graham Moore <grmoore@altera.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Jingoo Han <jg1.han@samsung.com>,
+ linux-kernel@vger.kernel.org, Yves Vandervennet <rocket.yvanderv@gmail.com>,
+ linux-mtd@lists.infradead.org, Insop Song <insop.song@gainspeed.com>,
+ Alan Tull <atull@altera.com>, Sourav Poddar <sourav.poddar@ti.com>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+ David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen <dinguyen@altera.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,52 +29,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Apr 8, 2014 at 7:43 AM, Artem Bityutskiy
-<artem.bityutskiy@linux.intel.com> wrote:
-> On Tue, 2014-04-08 at 10:57 -0300, Ezequiel Garcia wrote:
->> Hello Kees,
->>
->> Thanks for the patch.
->>
->> On Apr 07, Kees Cook wrote:
->> > When building the name for the workqueue thread, make sure a format
->> > string cannot leak in from the disk name.
->> >
->>
->> Could you enlighten me and explain why you want to avoid the name leak?
->> Is it a security concern?
->>
->> I'd like to understad this better, so I can avoid making such mistakes
->> in the future.
->
-> Well, the basics seem to be simple, attacker makes sure gd->disk_name
-> contains a bunch of "%s" and other placeholders, and this leads
-> "workqueue_alloc()" to read kernel memory and form the workqueue name.
+From: Graham Moore <grmoore@altera.com>
 
-Right. I don't think there is an actual exploitable vulnerability
-here, but it's a best-practice to not pass variable strings in as a
-potential format string.
+This is a slightly different version of the patch that Insop Song
+submitted (http://marc.info/?i=201403012022.10111.marex%20()%20denx%20!%20de).
 
-> I did not think it through further, though, but that was enough for me
-> to apply the patch right away. But yeah, curios parts are:
->
-> 1. How attacker could end up with a crafted "gd->disk_name"
+I talked to Insop, and he agreed I should submit this patch as a follow-on to his.
 
-At present, the only way I know how to set that is via some special
-controls in md, but I assume that would not work via ubi.
+This patch uses a flag in the m25p_ids[] array to determine which chips need
+to use the FSR (Flag Status Register).
 
-> 2. How attacker gets the workqueue name then, I guess there is a sysfs
-> file or something, but I do not know off the top of my head.
+Rationale for using the FSR:
 
-This I haven't checked, but if there isn't a way to do it now, we can
-at least avoid a nasty surprise in the future if one is created. :)
+The Micron data sheets say we have to do this, at least for the multi-die 512M 
+and 1G parts (n25q512 and n25q00).  In practice, if we don't check the FSR 
+for program/erase status, and we rely solely on the status register (SR), 
+then we get corrupted data in the flash.
 
-> Yeah, I am interested to get educated on this a too.
+Micron told us (Altera) that for multi-die chips based on the 65nm 256MB
+die, we need to check the SR first, then check the FSR, which is why the 
+wait_for_fsr_ready function does that.  Future chips based on 45 nm 512MB die 
+will use the FSR only.              
 
-Thanks for pulling the fix!
+Thanks.
 
--Kees
+Graham Moore (1):
+  Add support for flag status register on Micron chips.
+
+ drivers/mtd/devices/m25p80.c |   94 +++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 80 insertions(+), 14 deletions(-)
 
 -- 
-Kees Cook
-Chrome OS Security
+1.7.10.4
