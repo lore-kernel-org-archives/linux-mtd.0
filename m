@@ -1,23 +1,19 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
+Received: from mga01.intel.com ([192.55.52.88])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WXWYE-0001aK-Fw
- for linux-mtd@lists.infradead.org; Tue, 08 Apr 2014 13:58:59 +0000
-Date: Tue, 8 Apr 2014 10:57:30 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH] ubi: avoid workqueue format string leak
-Message-ID: <20140408135729.GC2429@arch.cereza>
-References: <20140408044407.GA13141@www.outflux.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20140408044407.GA13141@www.outflux.net>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org
+ id 1WXWMt-0007nB-Qs
+ for linux-mtd@lists.infradead.org; Tue, 08 Apr 2014 13:47:16 +0000
+Message-ID: <1396964546.26672.65.camel@sauron.fi.intel.com>
+Subject: Re: [RFC/PATCH] mtd: ubi: Free peb's synchronously for fastmap
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Tanya Brokhman <tlinder@codeaurora.org>
+Date: Tue, 08 Apr 2014 16:42:26 +0300
+In-Reply-To: <1396339305-16005-1-git-send-email-tlinder@codeaurora.org>
+References: <1396339305-16005-1-git-send-email-tlinder@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, open list <linux-kernel@vger.kernel.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,23 +23,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Kees,
-
-Thanks for the patch.
-
-On Apr 07, Kees Cook wrote:
-> When building the name for the workqueue thread, make sure a format
-> string cannot leak in from the disk name.
+On Tue, 2014-04-01 at 11:01 +0300, Tanya Brokhman wrote:
+> At first mount it's possible that there are not enough free PEBs since
+> there are PEB's pending to be erased. In such scenario, fm_pool (which is
+> the pool from which user required PEBs are allocated) will be empty.
+> Try fixing the above described situation by synchronously performing
+> pending erase work, thus produce another free PEB.
 > 
+> Signed-off-by: Tatyana Brokhman <tlinder@codeaurora.org>
 
-Could you enlighten me and explain why you want to avoid the name leak?
-Is it a security concern?
+Pushed to linux-ubifs.git / master, thanks!
 
-I'd like to understad this better, so I can avoid making such mistakes
-in the future.
-
-Thanks,
 -- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+Best Regards,
+Artem Bityutskiy
