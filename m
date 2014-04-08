@@ -1,19 +1,23 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by casper.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WXWKj-0007pe-JJ
- for linux-mtd@lists.infradead.org; Tue, 08 Apr 2014 13:45:02 +0000
-Message-ID: <1396964655.26672.67.camel@sauron.fi.intel.com>
-Subject: Re: [RFC/PATCH] mtd: ubi: Test return value of __wl_get_peb
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Tanya Brokhman <tlinder@codeaurora.org>
-Date: Tue, 08 Apr 2014 16:44:15 +0300
-In-Reply-To: <1396339273-15904-1-git-send-email-tlinder@codeaurora.org>
-References: <1396339273-15904-1-git-send-email-tlinder@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, open list <linux-kernel@vger.kernel.org>
-Reply-To: dedekind1@gmail.com
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WXWYE-0001aK-Fw
+ for linux-mtd@lists.infradead.org; Tue, 08 Apr 2014 13:58:59 +0000
+Date: Tue, 8 Apr 2014 10:57:30 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH] ubi: avoid workqueue format string leak
+Message-ID: <20140408135729.GC2429@arch.cereza>
+References: <20140408044407.GA13141@www.outflux.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20140408044407.GA13141@www.outflux.net>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,15 +27,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2014-04-01 at 11:01 +0300, Tanya Brokhman wrote:
-> In case of an error (if there are not free PEB's for example),
-> __wl_get_peb will return a negative value. In order to prevent access
-> violation we need to test the returned value prior to using it later on.
+Hello Kees,
+
+Thanks for the patch.
+
+On Apr 07, Kees Cook wrote:
+> When building the name for the workqueue thread, make sure a format
+> string cannot leak in from the disk name.
 > 
-> Signed-off-by: Tatyana Brokhman <tlinder@codeaurora.org>
 
-Pushed to linux-ubifs.git / master, thanks!
+Could you enlighten me and explain why you want to avoid the name leak?
+Is it a security concern?
 
+I'd like to understad this better, so I can avoid making such mistakes
+in the future.
+
+Thanks,
 -- 
-Best Regards,
-Artem Bityutskiy
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
