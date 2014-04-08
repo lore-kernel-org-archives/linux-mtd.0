@@ -1,27 +1,19 @@
-Received: from plane.gmane.org ([80.91.229.3])
+Received: from smtp.outflux.net ([2001:19d0:2:6:c0de:0:736d:7470])
  by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WXPOe-0002Zt-0i
- for linux-mtd@lists.infradead.org; Tue, 08 Apr 2014 06:20:36 +0000
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1WXPO8-0002PY-Vg
- for linux-mtd@lists.infradead.org; Tue, 08 Apr 2014 08:20:05 +0200
-Received: from ABTS-North-Dynamic-042.7.177.122.airtelbroadband.in
- ([ABTS-North-Dynamic-042.7.177.122.airtelbroadband.in])
- by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <linux-mtd@lists.infradead.org>; Tue, 08 Apr 2014 08:20:04 +0200
-Received: from hf.basit by ABTS-North-Dynamic-042.7.177.122.airtelbroadband.in
- with local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
- for <linux-mtd@lists.infradead.org>; Tue, 08 Apr 2014 08:20:04 +0200
-To: linux-mtd@lists.infradead.org
-From: gpuguy <hf.basit@gmail.com>
-Subject: While trying to open /dev/mtd2 for read/write access: Permission
- denied
-Date: Tue, 8 Apr 2014 06:14:01 +0000 (UTC)
-Message-ID: <loom.20140408T081131-273@post.gmane.org>
-Mime-Version: 1.0
+ id 1WXNus-0005jd-QZ
+ for linux-mtd@lists.infradead.org; Tue, 08 Apr 2014 04:45:47 +0000
+Date: Mon, 7 Apr 2014 21:44:07 -0700
+From: Kees Cook <keescook@chromium.org>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: [PATCH] ubi: avoid workqueue format string leak
+Message-ID: <20140408044407.GA13141@www.outflux.net>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,83 +23,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Looks like my MTD2,and MTD3 partitions are write protected. The OS is 
-booting from SD card on a ARM Cortex A 9 processor.
+When building the name for the workqueue thread, make sure a format
+string cannot leak in from the disk name.
 
-root@Xilinx-ZC702-2013_3:~# mount /dev/mmcblk0p1 /mnt/
-root@Xilinx-ZC702-2013_3:~#
-root@Xilinx-ZC702-2013_3:~# cd /mnt/flash/
-root@Xilinx-ZC702-2013_3:/mnt/flash#
-root@Xilinx-ZC702-2013_3:/mnt/flash# ls
-BOOT.BIN      image.ub      rootfs.jffs2
-root@Xilinx-ZC702-2013_3:/mnt/flash# flashcp -v image.ub /dev/mtd2
-While trying to open /dev/mtd2 for read/write access: Permission denied
-root@Xilinx-ZC702-2013_3:/mnt/flash#
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ drivers/mtd/ubi/block.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-Even I tried alternate:
-
-root@Xilinx-ZC702-2013_3:/mnt/flash# flash_eraseall -j /dev/mtd2
-flash_eraseall has been replaced by `flash_erase <mtddev> 0 0`; please use 
-it
-flash_erase: error!: /dev/mtd2
-             error 13 (Permission denied)
-
-
-Here are additional info:
-
-root@Xilinx-ZC702-2013_3:/mnt/flash# mtdinfo
-Count of MTD devices:           4
-Present MTD devices:            mtd0, mtd1, mtd2, mtd3
-Sysfs interface supported:      yes
-
-root@Xilinx-ZC702-2013_3:~# cat /proc/mtd
-    dev:    size   erasesize  name
-    mtd0: 00500000 00010000 "boot"
-    mtd1: 00020000 00010000 "bootenv"
-    mtd2: 001202c0 00010000 "image"
-    mtd3: 00500000 00010000 "jffs2"
-Also:
-
-root@Xilinx-ZC702-2013_3:/mnt/flash# mtd_debug info /dev/mtd3
-mtd.type = MTD_NORFLASH
-mtd.flags = MTD_BIT_WRITEABLE
-mtd.size = 5242880 (5M)
-mtd.erasesize = 65536 (64K)
-mtd.writesize = 1
-mtd.oobsize = 0
-regions = 0
-
-root@Xilinx-ZC702-2013_3:/mnt/flash# mtd_debug info /dev/mtd2
-mtd.type = MTD_NORFLASH
-mtd.flags = MTD_BIT_WRITEABLE
-mtd.size = 1180352 (1M)
-mtd.erasesize = 65536 (64K)
-mtd.writesize = 1
-mtd.oobsize = 0
-regions = 0
-
-root@Xilinx-ZC702-2013_3:/mnt/flash# mtd_debug info /dev/mtd1
-mtd.type = MTD_NORFLASH
-mtd.flags = MTD_CAP_NORFLASH
-mtd.size = 131072 (128K)
-mtd.erasesize = 65536 (64K)
-mtd.writesize = 1
-mtd.oobsize = 0
-regions = 0
-
-root@Xilinx-ZC702-2013_3:/mnt/flash# mtd_debug info /dev/mtd0
-mtd.type = MTD_NORFLASH
-mtd.flags = MTD_CAP_NORFLASH
-mtd.size = 5242880 (5M)
-mtd.erasesize = 65536 (64K)
-mtd.writesize = 1
-mtd.oobsize = 0
-regions = 0
-
-root@Xilinx-ZC702-2013_3:/mnt/flash#
+diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
+index 7ff473c871a9..8d659e6a1b4c 100644
+--- a/drivers/mtd/ubi/block.c
++++ b/drivers/mtd/ubi/block.c
+@@ -431,7 +431,7 @@ int ubiblock_create(struct ubi_volume_info *vi)
+ 	 * Create one workqueue per volume (per registered block device).
+ 	 * Rembember workqueues are cheap, they're not threads.
+ 	 */
+-	dev->wq = alloc_workqueue(gd->disk_name, 0, 0);
++	dev->wq = alloc_workqueue("%s", 0, 0, gd->disk_name);
+ 	if (!dev->wq)
+ 		goto out_free_queue;
+ 	INIT_WORK(&dev->work, ubiblock_do_work);
+-- 
+1.7.9.5
 
 
-
-
-How do I solve this issue?
+-- 
+Kees Cook
+Chrome OS Security
