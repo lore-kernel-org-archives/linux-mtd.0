@@ -1,21 +1,27 @@
-Message-ID: <5343F0D6.2010804@ti.com>
-Date: Tue, 8 Apr 2014 15:51:34 +0300
-From: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
-MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>, <dwmw2@infradead.org>, Santosh
- Shilimkar <santosh.shilimkar@ti.com>, <galak@codeaurora.org>
-Subject: Re: [PATCH v2] mtd: davinci-nand: disable subpage write for
- keystone-nand
-References: <1395346112-13350-1-git-send-email-ivan.khoronzhuk@ti.com>
- <532B4C36.8060405@ti.com>
-In-Reply-To: <532B4C36.8060405@ti.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Received: from plane.gmane.org ([80.91.229.3])
+ by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WXPOe-0002Zt-0i
+ for linux-mtd@lists.infradead.org; Tue, 08 Apr 2014 06:20:36 +0000
+Received: from list by plane.gmane.org with local (Exim 4.69)
+ (envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1WXPO8-0002PY-Vg
+ for linux-mtd@lists.infradead.org; Tue, 08 Apr 2014 08:20:05 +0200
+Received: from ABTS-North-Dynamic-042.7.177.122.airtelbroadband.in
+ ([ABTS-North-Dynamic-042.7.177.122.airtelbroadband.in])
+ by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+ id 1AlnuQ-0007hv-00
+ for <linux-mtd@lists.infradead.org>; Tue, 08 Apr 2014 08:20:04 +0200
+Received: from hf.basit by ABTS-North-Dynamic-042.7.177.122.airtelbroadband.in
+ with local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+ for <linux-mtd@lists.infradead.org>; Tue, 08 Apr 2014 08:20:04 +0200
+To: linux-mtd@lists.infradead.org
+From: gpuguy <hf.basit@gmail.com>
+Subject: While trying to open /dev/mtd2 for read/write access: Permission
+ denied
+Date: Tue, 8 Apr 2014 06:14:01 +0000 (UTC)
+Message-ID: <loom.20140408T081131-273@post.gmane.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, grygorii.strashko@ti.com,
- linux@arm.linux.org.uk, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk,
- linux-kernel@vger.kernel.org, robh+dt@kernel.org,
- linux-mtd@lists.infradead.org, m-karicheri2@ti.com, rob@landley.net,
- Warner Losh <imp@bsdimp.com>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,62 +31,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Looks like my MTD2,and MTD3 partitions are write protected. The OS is 
+booting from SD card on a ARM Cortex A 9 processor.
 
-On 03/20/2014 10:14 PM, Santosh Shilimkar wrote:
-> On Thursday 20 March 2014 04:08 PM, Ivan Khoronzhuk wrote:
->> From: Murali Karicheri <m-karicheri2@ti.com>
->>
->> Sub page write doesn't work because of hw issue in controller found on
->> Keystone SOCs. AEMIF controller is also used on DaVinci SOCs which
->> don't seems to have any issue. So add "ti,keysone-nand" compatible
->> to nand driver in order to set NAND_NO_SUBPAGE_WRITE option.
->>
->> Cc: Brian Norris <computersforpeace@gmail.com>
->> Cc: Warner Losh <imp@bsdimp.com>
->> Cc: Santosh Shilimkar <santosh.shilimkar@ti.com>
->>
->> Signed-off-by: Murali Karicheri <m-karicheri2@ti.com>
->> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
->> ---
->>
-> Acked-by: Santosh Shilimkar <santosh.shilimkar@ti.com>
->
->> This patch is a result of discussion on patch v1:
->> https://lkml.org/lkml/2014/3/20/461
->>
->>   drivers/mtd/nand/davinci_nand.c | 6 ++++++
->>   1 file changed, 6 insertions(+)
->>
->> diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
->> index 4615d79..b922c8e 100644
->> --- a/drivers/mtd/nand/davinci_nand.c
->> +++ b/drivers/mtd/nand/davinci_nand.c
->> @@ -523,6 +523,7 @@ static struct nand_ecclayout hwecc4_2048 = {
->>   #if defined(CONFIG_OF)
->>   static const struct of_device_id davinci_nand_of_match[] = {
->>   	{.compatible = "ti,davinci-nand", },
->> +	{.compatible = "ti,keystone-nand", },
->>   	{},
->>   };
->>   MODULE_DEVICE_TABLE(of, davinci_nand_of_match);
->> @@ -581,6 +582,11 @@ static struct davinci_nand_pdata
->>   		    of_property_read_bool(pdev->dev.of_node,
->>   			"ti,davinci-nand-use-bbt"))
->>   			pdata->bbt_options = NAND_BBT_USE_FLASH;
->> +
->> +		if (of_device_is_compatible(pdev->dev.of_node,
->> +					    "ti,keystone-nand")) {
->> +			pdata->options |= NAND_NO_SUBPAGE_WRITE;
->> +		}
->>   	}
->>   
->>   	return dev_get_platdata(&pdev->dev);
->>
->>
+root@Xilinx-ZC702-2013_3:~# mount /dev/mmcblk0p1 /mnt/
+root@Xilinx-ZC702-2013_3:~#
+root@Xilinx-ZC702-2013_3:~# cd /mnt/flash/
+root@Xilinx-ZC702-2013_3:/mnt/flash#
+root@Xilinx-ZC702-2013_3:/mnt/flash# ls
+BOOT.BIN      image.ub      rootfs.jffs2
+root@Xilinx-ZC702-2013_3:/mnt/flash# flashcp -v image.ub /dev/mtd2
+While trying to open /dev/mtd2 for read/write access: Permission denied
+root@Xilinx-ZC702-2013_3:/mnt/flash#
 
-Brian,
-Could you pick up subj patch?
 
--- 
-Regards,
-Ivan Khoronzhuk
+Even I tried alternate:
+
+root@Xilinx-ZC702-2013_3:/mnt/flash# flash_eraseall -j /dev/mtd2
+flash_eraseall has been replaced by `flash_erase <mtddev> 0 0`; please use 
+it
+flash_erase: error!: /dev/mtd2
+             error 13 (Permission denied)
+
+
+Here are additional info:
+
+root@Xilinx-ZC702-2013_3:/mnt/flash# mtdinfo
+Count of MTD devices:           4
+Present MTD devices:            mtd0, mtd1, mtd2, mtd3
+Sysfs interface supported:      yes
+
+root@Xilinx-ZC702-2013_3:~# cat /proc/mtd
+    dev:    size   erasesize  name
+    mtd0: 00500000 00010000 "boot"
+    mtd1: 00020000 00010000 "bootenv"
+    mtd2: 001202c0 00010000 "image"
+    mtd3: 00500000 00010000 "jffs2"
+Also:
+
+root@Xilinx-ZC702-2013_3:/mnt/flash# mtd_debug info /dev/mtd3
+mtd.type = MTD_NORFLASH
+mtd.flags = MTD_BIT_WRITEABLE
+mtd.size = 5242880 (5M)
+mtd.erasesize = 65536 (64K)
+mtd.writesize = 1
+mtd.oobsize = 0
+regions = 0
+
+root@Xilinx-ZC702-2013_3:/mnt/flash# mtd_debug info /dev/mtd2
+mtd.type = MTD_NORFLASH
+mtd.flags = MTD_BIT_WRITEABLE
+mtd.size = 1180352 (1M)
+mtd.erasesize = 65536 (64K)
+mtd.writesize = 1
+mtd.oobsize = 0
+regions = 0
+
+root@Xilinx-ZC702-2013_3:/mnt/flash# mtd_debug info /dev/mtd1
+mtd.type = MTD_NORFLASH
+mtd.flags = MTD_CAP_NORFLASH
+mtd.size = 131072 (128K)
+mtd.erasesize = 65536 (64K)
+mtd.writesize = 1
+mtd.oobsize = 0
+regions = 0
+
+root@Xilinx-ZC702-2013_3:/mnt/flash# mtd_debug info /dev/mtd0
+mtd.type = MTD_NORFLASH
+mtd.flags = MTD_CAP_NORFLASH
+mtd.size = 5242880 (5M)
+mtd.erasesize = 65536 (64K)
+mtd.writesize = 1
+mtd.oobsize = 0
+regions = 0
+
+root@Xilinx-ZC702-2013_3:/mnt/flash#
+
+
+
+
+How do I solve this issue?
