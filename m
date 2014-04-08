@@ -1,19 +1,26 @@
-Received: from mail-wg0-x232.google.com ([2a00:1450:400c:c00::232])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WXZh8-0002Cu-Dp
- for linux-mtd@lists.infradead.org; Tue, 08 Apr 2014 17:20:23 +0000
-Received: by mail-wg0-f50.google.com with SMTP id x13so1315906wgg.9
- for <linux-mtd@lists.infradead.org>; Tue, 08 Apr 2014 10:19:59 -0700 (PDT)
-From: =?UTF-8?q?Rapha=C3=ABl=20Poggi?= <poggi.raph@gmail.com>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: nand: add line feed to pr_err
-Date: Tue,  8 Apr 2014 10:19:48 -0700
-Message-Id: <1396977588-49131-1-git-send-email-poggi.raph@gmail.com>
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WXaTF-0004fh-R5
+ for linux-mtd@lists.infradead.org; Tue, 08 Apr 2014 18:10:06 +0000
+Date: Tue, 8 Apr 2014 15:09:15 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH] ubi: avoid workqueue format string leak
+Message-ID: <20140408180915.GA1221@arch.cereza>
+References: <20140408044407.GA13141@www.outflux.net>
+ <20140408135729.GC2429@arch.cereza>
+ <1396968207.30750.17.camel@sauron.fi.intel.com>
+ <CAGXu5j+-1o9TmqLrq2ZPhoRvOmiv4Do5wvGkasxHb+Frm7hutA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org,
- =?UTF-8?q?Rapha=C3=ABl=20Poggi?= <poggi.raph@gmail.com>, dwmw2@infradead.org
+In-Reply-To: <CAGXu5j+-1o9TmqLrq2ZPhoRvOmiv4Do5wvGkasxHb+Frm7hutA@mail.gmail.com>
+Cc: artem.bityutskiy@linux.intel.com,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>,
+ Linux mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,25 +30,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add line feed to pr_err.
+On Apr 08, Kees Cook wrote:
+> On Tue, Apr 8, 2014 at 7:43 AM, Artem Bityutskiy
+> <artem.bityutskiy@linux.intel.com> wrote:
+> > On Tue, 2014-04-08 at 10:57 -0300, Ezequiel Garcia wrote:
+> >> Hello Kees,
+> >>
+> >> Thanks for the patch.
+> >>
+> >> On Apr 07, Kees Cook wrote:
+> >> > When building the name for the workqueue thread, make sure a format
+> >> > string cannot leak in from the disk name.
+> >> >
+> >>
+> >> Could you enlighten me and explain why you want to avoid the name leak?
+> >> Is it a security concern?
+> >>
+> >> I'd like to understad this better, so I can avoid making such mistakes
+> >> in the future.
+> >
+> > Well, the basics seem to be simple, attacker makes sure gd->disk_name
+> > contains a bunch of "%s" and other placeholders, and this leads
+> > "workqueue_alloc()" to read kernel memory and form the workqueue name.
+> 
+> Right. I don't think there is an actual exploitable vulnerability
+> here, but it's a best-practice to not pass variable strings in as a
+> potential format string.
+> 
 
-Signed-off-by: RaphaÃ«l Poggi <poggi.raph@gmail.com>
----
- drivers/mtd/nand/nand_ecc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I see, thanks for explanation. I'll certainly try to keep this in mind!
 
-diff --git a/drivers/mtd/nand/nand_ecc.c b/drivers/mtd/nand/nand_ecc.c
-index 053c9a2..97c4c02 100644
---- a/drivers/mtd/nand/nand_ecc.c
-+++ b/drivers/mtd/nand/nand_ecc.c
-@@ -506,7 +506,7 @@ int __nand_correct_data(unsigned char *buf,
- 	if ((bitsperbyte[b0] + bitsperbyte[b1] + bitsperbyte[b2]) == 1)
- 		return 1;	/* error in ECC data; no action needed */
- 
--	pr_err("%s: uncorrectable ECC error", __func__);
-+	pr_err("%s: uncorrectable ECC error\n", __func__);
- 	return -1;
- }
- EXPORT_SYMBOL(__nand_correct_data);
+> > I did not think it through further, though, but that was enough for me
+> > to apply the patch right away. But yeah, curios parts are:
+> >
+> > 1. How attacker could end up with a crafted "gd->disk_name"
+> 
+> At present, the only way I know how to set that is via some special
+> controls in md, but I assume that would not work via ubi.
+> 
+
+I guess it's not possible in our case, given we are hard-setting the name
+to ubiblock%d_%d:
+
+  sprintf(gd->disk_name, "ubiblock%d_%d", dev->ubi_num, dev->vol_id);
+
+Nevertheless the fix is valid, so thanks a lot and keep them coming!
 -- 
-1.8.3.2
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
