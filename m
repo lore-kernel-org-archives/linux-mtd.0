@@ -1,18 +1,20 @@
-Date: Wed, 9 Apr 2014 00:11:05 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 14/15] mtd: st_spi_fsm: Provide mask to obtain correct
- boot device pins
-Message-ID: <20140409071105.GE3131@norris-Latitude-E6410>
-References: <1395851969-13520-1-git-send-email-lee.jones@linaro.org>
- <1395851969-13520-15-git-send-email-lee.jones@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1395851969-13520-15-git-send-email-lee.jones@linaro.org>
-Cc: angus.clark@st.com, Christophe Kerello <christophe.kerello@st.com>,
- kernel@stlinux.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Received: from smtp.mei.co.jp ([133.183.100.20])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WXmuU-0008Iu-KN
+ for linux-mtd@lists.infradead.org; Wed, 09 Apr 2014 07:27:04 +0000
+Received: from mail-gw.jp.panasonic.com ([157.8.1.157])
+ by smtp.mei.co.jp (8.12.11.20060614/3.7W/kc-maile13) with ESMTP id
+ s397Qcrf026275
+ for <linux-mtd@lists.infradead.org>; Wed, 9 Apr 2014 16:26:38 +0900 (JST)
+Received: from epochmail.jp.panasonic.com ([157.8.1.130])
+ by mail.jp.panasonic.com (8.11.6p2/3.7W/kc-maili13) with ESMTP id s397QbJ12670
+ for <linux-mtd@lists.infradead.org>; Wed, 9 Apr 2014 16:26:37 +0900
+From: Masahiro Yamada <yamada.m@jp.panasonic.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: nand: fix a typo in a comment line
+Date: Wed,  9 Apr 2014 16:26:26 +0900
+Message-Id: <1397028386-16304-1-git-send-email-yamada.m@jp.panasonic.com>
+Cc: Masahiro Yamada <yamada.m@jp.panasonic.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,57 +24,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ DT list
+Signed-off-by: Masahiro Yamada <yamada.m@jp.panasonic.com>
+---
+ drivers/mtd/nand/nand_base.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Wed, Mar 26, 2014 at 04:39:28PM +0000, Lee Jones wrote:
-> From: Christophe Kerello <christophe.kerello@st.com>
-> 
-> This patch adds a mask to be able to get the right boot device selection.
-> 
-> For example:
->     for STiH415, value = SYSTEM_STATUS398[4:0]
->     for STiH416, value = SYSTEM_STATUS2598[4:0]
->     for STiH407, value = SYSTEM_STATUS5561[6:2]
-> 
-> Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/mtd/devices/st_spi_fsm.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-> index 9e00173..3ab27c8 100644
-> --- a/drivers/mtd/devices/st_spi_fsm.c
-> +++ b/drivers/mtd/devices/st_spi_fsm.c
-> @@ -2159,6 +2159,7 @@ static void stfsm_fetch_platform_configs(struct platform_device *pdev)
->  	struct regmap *regmap;
->  	uint32_t boot_device_reg;
->  	uint32_t boot_device_spi;
-> +	uint32_t boot_device_msk;
->  	uint32_t boot_device;     /* Value we read from *boot_device_reg */
->  	int ret;
->  
-> @@ -2183,10 +2184,17 @@ static void stfsm_fetch_platform_configs(struct platform_device *pdev)
->  	if (ret)
->  		goto boot_device_fail;
->  
-> +	/* Mask to apply on boot_device_reg */
-> +	ret = of_property_read_u32(np, "st,boot-device-msk", &boot_device_msk);
-
-You need to document this binding in Documentation/devicetree/bindings/,
-and CC the devicetree list.
-
-> +	if (ret)
-> +		goto boot_device_fail;
-> +
->  	ret = regmap_read(regmap, boot_device_reg, &boot_device);
->  	if (ret)
->  		goto boot_device_fail;
->  
-> +	boot_device &= boot_device_msk;
-> +
->  	if (boot_device != boot_device_spi)
->  		fsm->booted_from_spi = false;
->  
-
-Brian
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 9d01c4d..33ec641 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3607,7 +3607,7 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
+ 
+ 	chip->onfi_version = 0;
+ 	if (!type->name || !type->pagesize) {
+-		/* Check is chip is ONFI compliant */
++		/* Check if the chip is ONFI compliant */
+ 		if (nand_flash_detect_onfi(mtd, chip, &busw))
+ 			goto ident_done;
+ 
+-- 
+1.8.3.2
