@@ -1,21 +1,18 @@
-Received: from mail-pa0-x22f.google.com ([2607:f8b0:400e:c03::22f])
+Received: from mail-qc0-x230.google.com ([2607:f8b0:400d:c01::230])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WXn1p-00009l-RD
- for linux-mtd@lists.infradead.org; Wed, 09 Apr 2014 07:34:39 +0000
-Received: by mail-pa0-f47.google.com with SMTP id lj1so2141614pab.6
- for <linux-mtd@lists.infradead.org>; Wed, 09 Apr 2014 00:34:15 -0700 (PDT)
-Date: Wed, 9 Apr 2014 00:34:10 -0700
-From: Brian Norris <computersforpeace@gmail.com>
+ id 1WXohr-0002bG-Bo
+ for linux-mtd@lists.infradead.org; Wed, 09 Apr 2014 09:22:08 +0000
+Received: by mail-qc0-f176.google.com with SMTP id m20so2388542qcx.21
+ for <linux-mtd@lists.infradead.org>; Wed, 09 Apr 2014 02:21:43 -0700 (PDT)
+From: Helmut Schaa <helmut.schaa@googlemail.com>
 To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: spi-nor: EXPORT symbols which could be used by
- module drivers
-Message-ID: <20140409073410.GG3131@norris-Latitude-E6410>
-References: <1397023781-1103-1-git-send-email-computersforpeace@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1397023781-1103-1-git-send-email-computersforpeace@gmail.com>
-Cc: Marek Vasut <marex@denx.de>, Huang Shijie <b32955@freescale.com>
+Subject: [PATCH] mtd: nand: Disable subpage writes for drivers without
+ ecc->hwctl
+Date: Wed,  9 Apr 2014 11:13:24 +0200
+Message-Id: <1397034804-27161-1-git-send-email-helmut.schaa@googlemail.com>
+Cc: David Woodhouse <David.Woodhouse@intel.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Helmut Schaa <helmut.schaa@googlemail.com>, "Gupta, Pekon" <pekon@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,18 +22,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Apr 08, 2014 at 11:09:41PM -0700, Brian Norris wrote:
-> Fix errors like this:
-> 
->     ERROR: "spi_nor_ids" [drivers/mtd/devices/m25p80.ko] undefined!
->     ERROR: "spi_nor_scan" [drivers/mtd/devices/m25p80.ko] undefined!
->     make[1]: *** [__modpost] Error 1
->     make: *** [modules] Error 2
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> ---
-> Based on l2-mtd.git:spinor
+nand_write_subpage_hwecc causes a crash if the driver did not register
+ecc->hwctl or ecc->calculate. Fix this by disabling subpage writes if
+ecc->hwctl or ecc->calculate is not provided by the driver.
 
-Applied to l2-mtd.git/spinor, to fix the build errors.
+This behavior was introduced in commit 837a6ba4f3b6d23026674e6af6b6849a4634fff9
+"mtd: nand: subpage write support for hardware based ECC schemes".
 
-Brian
+This fixes a crash with fsl_elbc_nand and maybe others:
+
+Unable to handle kernel paging request for instruction fetch
+Faulting instruction address: 0x00000000
+Oops: Kernel access of bad area, sig: 11 [#1]
+SMP NR_CPUS=2 P1020 RDB
+Modules linked in: ath9k ath9k_common pppoe ppp_async option iptable_nat ath9k_hw ath usb_wwan pppox ppp_generic nf_nat_ipv4 nf_conntrack_ipv4 mac80211 ipt_MASQUERADE cfg80211 xt_time xt_tcpudp xt_state xt_quota xt_policy xt_pkttype xt_owner xt_nat xt_multiport xt_mh
+CPU: 1 PID: 2161 Comm: ubiformat Not tainted 3.10.26 #6
+task: efbc2700 ti: c7950000 task.ti: c7950000
+NIP: 00000000 LR: c01a495c CTR: 00000000
+REGS: c7951cb0 TRAP: 0400   Not tainted  (3.10.26)
+MSR: 00029000 <CE,EE,ME>  CR: 24002028  XER: 00000000
+
+GPR00: c01a4b6c c7951d60 efbc2700 ef84b000 00000001 00000000 000001ff c7800500
+GPR08: 00000000 00000000 efae5e40 c01a4ae4 24002022 10023418 c7951e5c c7800500
+GPR16: c017b6a8 00000000 0000003f c053404c 00000000 00000004 00000000 00000003
+GPR24: 00000010 00000200 ef84b000 c7800d00 c7800000 c7800500 ef84b1c8 00000000
+NIP [00000000]   (null)
+LR [c01a495c] nand_write_subpage_hwecc+0x74/0x174
+Call Trace:
+[c7951d60] [c7951d64] 0xc7951d64 (unreliable)
+[c7951da0] [c01a4b6c] nand_write_page+0x88/0x198
+[c7951dd0] [c01a5f7c] nand_do_write_ops+0x2f4/0x39c
+[c7951e40] [c01a61e0] nand_write+0x58/0x84
+[c7951e80] [c019e29c] mtdchar_write+0x1dc/0x28c
+[c7951ef0] [c00aba84] vfs_write+0xcc/0x1ac
+[c7951f10] [c00ac04c] SyS_write+0x4c/0x90
+[c7951f40] [c000cd84] ret_from_syscall+0x0/0x3c
+ --- Exception: c01 at 0x48050ed8
+     LR = 0x100071b8
+ Instruction dump:
+ XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX
+ XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX
+ ---[ end trace 161d3c65a2a15cb8 ]---
+
+Kernel panic - not syncing: Fatal exception
+
+Cc: Gupta, Pekon <pekon@ti.com>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Cc: David Woodhouse <David.Woodhouse@intel.com>
+Signed-off-by: Helmut Schaa <helmut.schaa@googlemail.com>
+---
+I noticed this bug on openwrt with kernel 3.10 but it looks as if this can
+still happen in more recent kernels.
+
+ drivers/mtd/nand/nand_base.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 9715a7b..2298289 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3768,7 +3768,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 			ecc->write_oob = nand_write_oob_std;
+ 		if (!ecc->read_subpage)
+ 			ecc->read_subpage = nand_read_subpage;
+-		if (!ecc->write_subpage)
++		if (!ecc->write_subpage && ecc->hwctl && ecc->calculate)
+ 			ecc->write_subpage = nand_write_subpage_hwecc;
+ 
+ 	case NAND_ECC_HW_SYNDROME:
+-- 
+1.8.4.5
