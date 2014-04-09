@@ -1,21 +1,20 @@
-Date: Tue, 8 Apr 2014 22:47:00 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 01/15] mtd: st_spi_fsm: Add Macronix MX25L25655E device
-Message-ID: <20140409054700.GC3131@norris-Latitude-E6410>
-References: <1395851969-13520-1-git-send-email-lee.jones@linaro.org>
- <1395851969-13520-2-git-send-email-lee.jones@linaro.org>
- <CAMuHMdXgPiJSrA4Txp_OxrGx7osNsprm5a+w3Qag=Yd-_nFVBw@mail.gmail.com>
- <20140327082047.GB26627@lee--X1>
+Received: from tritech.se ([46.59.120.190])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WXmEI-00024i-H5
+ for linux-mtd@lists.infradead.org; Wed, 09 Apr 2014 06:43:27 +0000
+From: =?iso-8859-1?Q?Mats_K=E4rrman?= <Mats.Karrman@tritech.se>
+To: gpuguy <hf.basit@gmail.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: RE: While trying to open /dev/mtd2 for read/write access:
+ Permission denied
+Date: Wed, 9 Apr 2014 06:42:50 +0000
+Message-ID: <ED3E0BCACD909541BA94A34C4A164D4C5B3B08DF@post.tritech.se>
+References: <loom.20140408T081131-273@post.gmane.org>
+In-Reply-To: <loom.20140408T081131-273@post.gmane.org>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20140327082047.GB26627@lee--X1>
-Cc: angus.clark@st.com, kernel@stlinux.com,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,40 +24,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Mar 27, 2014 at 08:20:47AM +0000, Lee Jones wrote:
-> > > From: Angus Clark <angus.clark@st.com>
-> > >
-> > > Add Macronix MX25L25655E to the list of known devices.
-> > >
-> > > Signed-off-by: Angus Clark <angus.clark@st.com>
-> > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > > ---
-> > >  drivers/mtd/devices/st_spi_fsm.c | 3 +++
-> > >  1 file changed, 3 insertions(+)
-> > >
-> > > diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-> > > index bea1416..2471061 100644
-> > > --- a/drivers/mtd/devices/st_spi_fsm.c
-> > > +++ b/drivers/mtd/devices/st_spi_fsm.c
-> > > @@ -380,6 +380,9 @@ static struct flash_info flash_types[] = {
-> > >         { "mx25l25635e", 0xc22019, 0, 64*1024, 512,
-> > >           (MX25_FLAG | FLASH_FLAG_32BIT_ADDR | FLASH_FLAG_RESET), 70,
-> > >           stfsm_mx25_config },
-> > > +       { "mx25l25655e", 0xc22619, 0, 64*1024, 512,
-> > > +         (MX25_FLAG | FLASH_FLAG_32BIT_ADDR | FLASH_FLAG_RESET), 70,
-> > > +         stfsm_mx25_config},
-> > >
-> > >  #define N25Q_FLAG (FLASH_FLAG_READ_WRITE       |       \
-> > >                    FLASH_FLAG_READ_FAST         |       \
-> > 
-> > How much of this table can be shared with the one in m25p80.c?
-> 
-> I have a long term plan to merge the two. Just waiting for the SPI NOR
-> Framework to land before I do so.
-
-Huang's work landed in the spinor branch at l2-mtd.git a bit ago. I will
-take a look at this series and probably take this as-is, but long-term I
-will not be taking many more additions to this custom table.
-
-Regards,
-Brian
+What do you have in your device tree for these partitions?=0A=
+=0A=
+// Mats=0A=
+=0A=
+________________________________________=0A=
+From: linux-mtd [linux-mtd-bounces@lists.infradead.org] on behalf of gpuguy=
+ [hf.basit@gmail.com]=0A=
+Sent: Tuesday, April 08, 2014 8:14 AM=0A=
+To: linux-mtd@lists.infradead.org=0A=
+Subject: While trying to open /dev/mtd2 for read/write access: Permission d=
+enied=0A=
+=0A=
+Looks like my MTD2,and MTD3 partitions are write protected. The OS is=0A=
+booting from SD card on a ARM Cortex A 9 processor.=0A=
+=0A=
+root@Xilinx-ZC702-2013_3:~# mount /dev/mmcblk0p1 /mnt/=0A=
+root@Xilinx-ZC702-2013_3:~#=0A=
+root@Xilinx-ZC702-2013_3:~# cd /mnt/flash/=0A=
+root@Xilinx-ZC702-2013_3:/mnt/flash#=0A=
+root@Xilinx-ZC702-2013_3:/mnt/flash# ls=0A=
+BOOT.BIN      image.ub      rootfs.jffs2=0A=
+root@Xilinx-ZC702-2013_3:/mnt/flash# flashcp -v image.ub /dev/mtd2=0A=
+While trying to open /dev/mtd2 for read/write access: Permission denied=0A=
+root@Xilinx-ZC702-2013_3:/mnt/flash#=0A=
+=0A=
+=0A=
+Even I tried alternate:=0A=
+=0A=
+root@Xilinx-ZC702-2013_3:/mnt/flash# flash_eraseall -j /dev/mtd2=0A=
+flash_eraseall has been replaced by `flash_erase <mtddev> 0 0`; please use=
+=0A=
+it=0A=
+flash_erase: error!: /dev/mtd2=0A=
+             error 13 (Permission denied)=0A=
+=0A=
+=0A=
+Here are additional info:=0A=
+=0A=
+root@Xilinx-ZC702-2013_3:/mnt/flash# mtdinfo=0A=
+Count of MTD devices:           4=0A=
+Present MTD devices:            mtd0, mtd1, mtd2, mtd3=0A=
+Sysfs interface supported:      yes=0A=
+=0A=
+root@Xilinx-ZC702-2013_3:~# cat /proc/mtd=0A=
+    dev:    size   erasesize  name=0A=
+    mtd0: 00500000 00010000 "boot"=0A=
+    mtd1: 00020000 00010000 "bootenv"=0A=
+    mtd2: 001202c0 00010000 "image"=0A=
+    mtd3: 00500000 00010000 "jffs2"=0A=
+Also:=0A=
+=0A=
+root@Xilinx-ZC702-2013_3:/mnt/flash# mtd_debug info /dev/mtd3=0A=
+mtd.type =3D MTD_NORFLASH=0A=
+mtd.flags =3D MTD_BIT_WRITEABLE=0A=
+mtd.size =3D 5242880 (5M)=0A=
+mtd.erasesize =3D 65536 (64K)=0A=
+mtd.writesize =3D 1=0A=
+mtd.oobsize =3D 0=0A=
+regions =3D 0=0A=
+=0A=
+root@Xilinx-ZC702-2013_3:/mnt/flash# mtd_debug info /dev/mtd2=0A=
+mtd.type =3D MTD_NORFLASH=0A=
+mtd.flags =3D MTD_BIT_WRITEABLE=0A=
+mtd.size =3D 1180352 (1M)=0A=
+mtd.erasesize =3D 65536 (64K)=0A=
+mtd.writesize =3D 1=0A=
+mtd.oobsize =3D 0=0A=
+regions =3D 0=0A=
+=0A=
+root@Xilinx-ZC702-2013_3:/mnt/flash# mtd_debug info /dev/mtd1=0A=
+mtd.type =3D MTD_NORFLASH=0A=
+mtd.flags =3D MTD_CAP_NORFLASH=0A=
+mtd.size =3D 131072 (128K)=0A=
+mtd.erasesize =3D 65536 (64K)=0A=
+mtd.writesize =3D 1=0A=
+mtd.oobsize =3D 0=0A=
+regions =3D 0=0A=
+=0A=
+root@Xilinx-ZC702-2013_3:/mnt/flash# mtd_debug info /dev/mtd0=0A=
+mtd.type =3D MTD_NORFLASH=0A=
+mtd.flags =3D MTD_CAP_NORFLASH=0A=
+mtd.size =3D 5242880 (5M)=0A=
+mtd.erasesize =3D 65536 (64K)=0A=
+mtd.writesize =3D 1=0A=
+mtd.oobsize =3D 0=0A=
+regions =3D 0=0A=
+=0A=
+root@Xilinx-ZC702-2013_3:/mnt/flash#=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+How do I solve this issue?=0A=
+=0A=
+=0A=
+______________________________________________________=0A=
+Linux MTD discussion mailing list=0A=
+http://lists.infradead.org/mailman/listinfo/linux-mtd/=0A=
