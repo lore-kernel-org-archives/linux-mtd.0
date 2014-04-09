@@ -1,21 +1,22 @@
-Date: Wed, 9 Apr 2014 10:48:37 -0700
+Received: from mail-pd0-x22e.google.com ([2607:f8b0:400e:c02::22e])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WXwkT-0006tn-9X
+ for linux-mtd@lists.infradead.org; Wed, 09 Apr 2014 17:57:22 +0000
+Received: by mail-pd0-f174.google.com with SMTP id y13so2739132pdi.19
+ for <linux-mtd@lists.infradead.org>; Wed, 09 Apr 2014 10:57:00 -0700 (PDT)
+Date: Wed, 9 Apr 2014 10:56:56 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH v5 3/8] mtd: spi-nor: add the framework for SPI NOR
-Message-ID: <20140409174837.GE32070@ld-irv-0074>
-References: <1393238262-8622-1-git-send-email-b32955@freescale.com>
- <1393238262-8622-4-git-send-email-b32955@freescale.com>
+To: Marek Vasut <marex@denx.de>
+Subject: Re: [PATCH 1/9] mtd: spi-nor: drop \t after #define
+Message-ID: <20140409175656.GF32070@ld-irv-0074>
+References: <1397064774-31784-1-git-send-email-computersforpeace@gmail.com>
+ <201404091940.14392.marex@denx.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1393238262-8622-4-git-send-email-b32955@freescale.com>
-Cc: angus.clark@st.com, b44548@freescale.com, broonie@linaro.org,
- dwmw2@infradead.org, linux-doc@vger.kernel.org, b18965@freescale.com,
- linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
- linux-mtd@lists.infradead.org, pekon@ti.com, sourav.poddar@ti.com,
- shawn.guo@linaro.org, lee.jones@linaro.org,
- linux-arm-kernel@lists.infradead.org
+In-Reply-To: <201404091940.14392.marex@denx.de>
+Cc: Huang Shijie <b32955@freescale.com>, Lee Jones <lee.jones@linaro.org>,
+ linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,40 +26,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Feb 24, 2014 at 06:37:37PM +0800, Huang Shijie wrote:
-> This patch cloned most of the m25p80.c. In theory, it adds a new spi-nor layer.
-...
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> new file mode 100644
-> index 0000000..a840e88
-> --- /dev/null
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -0,0 +1,1087 @@
-> +/*
-> + * Cloned most of the code from the m25p80.c
+On Wed, Apr 09, 2014 at 07:40:14PM +0200, Marek Vasut wrote:
+> On Wednesday, April 09, 2014 at 07:32:46 PM, Brian Norris wrote:
+> > +#define OPCODE_DUAL_READ        0x3b    /* Read data bytes (Dual SPI) */
+> > +#define OPCODE_QUAD_READ        0x6b    /* Read data bytes (Quad SPI) */
+> 
+> This is still a little non-standard -- or rather -- inconsistent here. You 
+> should use space after #define and \t after the name I'd say. I'd also say these 
+> two slipped your attention as the others do it just like that.
 
-Please include a copyright notice here. This should carry both the
-original m25p80.c copyright notice, as well as your own additional
-copyright if you choose. For instance:
+Thanks. I think I noticed this at one point, but in my patch juggling, I
+never straightened it out. I'll send v2 eventually. And in the meantime,
+I'm keeping my patches here:
 
- * Based on m25p80.c, by Mike Lavender (mike@steroidmicros.com), with
- * influence from lart.c (Abraham Van Der Merwe) and mtd_dataflash.c
- *
- * Copyright © 2005, Intec Automation Inc.
- * Copyright © 2014, Freescale Semiconductor, Inc.
-
-> + *
-> + * This code is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
-> + */
-> +
-> +#include <linux/err.h>
-> +#include <linux/errno.h>
-> +#include <linux/module.h>
-> +#include <linux/device.h>
-> +#include <linux/mutex.h>
-> +#include <linux/math64.h>
-...
+  http://git.infradead.org/users/norris/linux-mtd.git/shortlog/refs/heads/spinor
 
 Brian
