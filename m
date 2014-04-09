@@ -1,21 +1,24 @@
-Date: Wed, 9 Apr 2014 10:40:12 -0700
+Received: from mail-pd0-x233.google.com ([2607:f8b0:400e:c02::233])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WXwVS-000642-4J
+ for linux-mtd@lists.infradead.org; Wed, 09 Apr 2014 17:41:51 +0000
+Received: by mail-pd0-f179.google.com with SMTP id w10so2743451pde.10
+ for <linux-mtd@lists.infradead.org>; Wed, 09 Apr 2014 10:41:28 -0700 (PDT)
+Date: Wed, 9 Apr 2014 10:35:27 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH v5 1/8] mtd: spi-nor: copy the SPI NOR commands to a new
- header file
-Message-ID: <20140409174012.GD32070@ld-irv-0074>
-References: <1393238262-8622-1-git-send-email-b32955@freescale.com>
- <1393238262-8622-2-git-send-email-b32955@freescale.com>
+To: Marek Vasut <marex@denx.de>
+Subject: Re: [PATCH] mtd: spi-nor: EXPORT symbols which could be used by
+ module drivers
+Message-ID: <20140409173527.GC32070@ld-irv-0074>
+References: <1397023781-1103-1-git-send-email-computersforpeace@gmail.com>
+ <201404091043.38198.marex@denx.de>
+ <20140409170720.GB32070@ld-irv-0074>
+ <201404091927.31018.marex@denx.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1393238262-8622-2-git-send-email-b32955@freescale.com>
-Cc: angus.clark@st.com, b44548@freescale.com, broonie@linaro.org,
- dwmw2@infradead.org, linux-doc@vger.kernel.org, b18965@freescale.com,
- linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
- linux-mtd@lists.infradead.org, pekon@ti.com, sourav.poddar@ti.com,
- shawn.guo@linaro.org, lee.jones@linaro.org,
- linux-arm-kernel@lists.infradead.org
+In-Reply-To: <201404091927.31018.marex@denx.de>
+Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,79 +28,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Feb 24, 2014 at 06:37:35PM +0800, Huang Shijie wrote:
-> This patch adds a new header :spi-nor.h,
-> and copies all the SPI NOR commands and relative macros into this new header.
-...
-> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-> new file mode 100644
-> index 0000000..483fc2a
-> --- /dev/null
-> +++ b/include/linux/mtd/spi-nor.h
-> @@ -0,0 +1,55 @@
-> +#ifndef __LINUX_MTD_SPI_NOR_H
-> +#define __LINUX_MTD_SPI_NOR_H
-> +
+On Wed, Apr 09, 2014 at 07:27:30PM +0200, Marek Vasut wrote:
+> btw Brian, completely off-topic, but is there a special ML for SPI NOR stuff or 
+> is all of that going through linux-mtd ?
 
-You're missing a copyright and license header. Please submit one against
-l2-mtd.git/spinor, preferably after the patch series I just sent out
-that renames a few things here.
-
-Regarding copyright assignments (also an issue with spi-nor.c): please
-carry the original copyright from m25p80.c, and add your own or your
-employer's wherever your work was a significant addition.
-
-> +/* Flash opcodes. */
-> +#define	OPCODE_WREN		0x06	/* Write enable */
-> +#define	OPCODE_RDSR		0x05	/* Read status register */
-> +#define	OPCODE_WRSR		0x01	/* Write status register 1 byte */
-> +#define	OPCODE_NORM_READ	0x03	/* Read data bytes (low frequency) */
-> +#define	OPCODE_FAST_READ	0x0b	/* Read data bytes (high frequency) */
-> +#define	OPCODE_DUAL_READ        0x3b    /* Read data bytes (Dual SPI) */
-> +#define	OPCODE_QUAD_READ        0x6b    /* Read data bytes (Quad SPI) */
-> +#define	OPCODE_PP		0x02	/* Page program (up to 256 bytes) */
-> +#define	OPCODE_BE_4K		0x20	/* Erase 4KiB block */
-> +#define	OPCODE_BE_4K_PMC	0xd7	/* Erase 4KiB block on PMC chips */
-> +#define	OPCODE_BE_32K		0x52	/* Erase 32KiB block */
-> +#define	OPCODE_CHIP_ERASE	0xc7	/* Erase whole flash chip */
-> +#define	OPCODE_SE		0xd8	/* Sector erase (usually 64KiB) */
-> +#define	OPCODE_RDID		0x9f	/* Read JEDEC ID */
-> +#define	OPCODE_RDCR             0x35    /* Read configuration register */
-> +
-> +/* 4-byte address opcodes - used on Spansion and some Macronix flashes. */
-> +#define	OPCODE_NORM_READ_4B	0x13	/* Read data bytes (low frequency) */
-> +#define	OPCODE_FAST_READ_4B	0x0c	/* Read data bytes (high frequency) */
-> +#define	OPCODE_DUAL_READ_4B	0x3c    /* Read data bytes (Dual SPI) */
-> +#define	OPCODE_QUAD_READ_4B	0x6c    /* Read data bytes (Quad SPI) */
-> +#define	OPCODE_PP_4B		0x12	/* Page program (up to 256 bytes) */
-> +#define	OPCODE_SE_4B		0xdc	/* Sector erase (usually 64KiB) */
-> +
-> +/* Used for SST flashes only. */
-> +#define	OPCODE_BP		0x02	/* Byte program */
-> +#define	OPCODE_WRDI		0x04	/* Write disable */
-> +#define	OPCODE_AAI_WP		0xad	/* Auto address increment word program */
-> +
-> +/* Used for Macronix and Winbond flashes. */
-> +#define	OPCODE_EN4B		0xb7	/* Enter 4-byte mode */
-> +#define	OPCODE_EX4B		0xe9	/* Exit 4-byte mode */
-> +
-> +/* Used for Spansion flashes only. */
-> +#define	OPCODE_BRWR		0x17	/* Bank register write */
-> +
-> +/* Status Register bits. */
-> +#define	SR_WIP			1	/* Write in progress */
-> +#define	SR_WEL			2	/* Write enable latch */
-> +/* meaning of other SR_* bits may differ between vendors */
-> +#define	SR_BP0			4	/* Block protect 0 */
-> +#define	SR_BP1			8	/* Block protect 1 */
-> +#define	SR_BP2			0x10	/* Block protect 2 */
-> +#define	SR_SRWD			0x80	/* SR write protect */
-> +
-> +#define SR_QUAD_EN_MX           0x40    /* Macronix Quad I/O */
-> +
-> +/* Configuration Register bits. */
-> +#define CR_QUAD_EN_SPAN		0x2     /* Spansion Quad I/O */
-> +
-> +#endif
+All on linux-mtd, AFAIK. Occasionally we'll CC linux-spi as well, since
+Mark Brown was interested in some of this (mostly to keep "SPI NOR" out
+of drivers/spi/, I think).
 
 Brian
