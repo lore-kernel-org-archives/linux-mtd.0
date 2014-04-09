@@ -1,15 +1,16 @@
-Date: Tue, 8 Apr 2014 20:36:03 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
+Message-ID: <5344CCA4.4090401@freescale.com>
+Date: Wed, 9 Apr 2014 12:29:24 +0800
+From: Huang Shijie <b32955@freescale.com>
+MIME-Version: 1.0
+To: Brian Norris <computersforpeace@gmail.com>
 Subject: Re: [PATCH v5 0/8] mtd: spi-nor: add a new framework for SPI NOR
-Message-ID: <20140409033603.GA32070@ld-irv-0074>
 References: <1393238262-8622-1-git-send-email-b32955@freescale.com>
  <20140312081350.GC30808@shlinux2.ap.freescale.net>
  <20140313063940.GU31517@norris-Latitude-E6410>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20140313063940.GU31517@norris-Latitude-E6410>
+ <20140409033603.GA32070@ld-irv-0074>
+In-Reply-To: <20140409033603.GA32070@ld-irv-0074>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Cc: Marek Vasut <marex@denx.de>, angus.clark@st.com, b44548@freescale.com,
  broonie@linaro.org, dwmw2@infradead.org, linux-doc@vger.kernel.org,
  b18965@freescale.com, linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
@@ -25,57 +26,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ Lee, Marek
+=E4=BA=8E 2014=E5=B9=B404=E6=9C=8809=E6=97=A5 11:36, Brian Norris =E5=86=99=
+=E9=81=93:
+> For any additional comments/corrections (I have a few), please just
+> submit patches on top, rather than resending the whole series.
+thanks a lot!
 
-Hi Huang,
+i am happy that we can add more features on base of the spi nor framework=
+.
 
-On Wed, Mar 12, 2014 at 11:39:40PM -0700, Brian Norris wrote:
-> On Wed, Mar 12, 2014 at 04:13:51PM +0800, Huang Shijie wrote:
-> > On Mon, Feb 24, 2014 at 06:37:34PM +0800, Huang Shijie wrote:
-> >    Could you please review this patch set? I really hope it can be merged
-> >    as soon as possibel.  But now, the patch set has stalled for a long time.
-> 
-> I'm sorry for the delay. Others are in the same position of delay (e.g.,
-> Lee's SPI-NOR driver), because I simply have not had the time to really
-> devote this the attention it deserves, especially considering how it
-> rearchitects such an important, commonly-used driver.
-> 
-> Nonetheless, I will try to give your patches some more attention soon.
-> 
-> >    Since you have pushed the patches for m25p80.c, i have to rebase this
-> >    patch set again and again...
-> 
-> You mean locally? I promise you, I can handle rebasing on my reviewing
-> end for small one-line conflicts like new chip IDs, so don't rebase and
-> resend simply for that. Unless I find substantive things that you should
-> change, I'd only expect at most one more rebase to be necessary.
-
-Unfortunately, I did not get the time to review and test this
-sufficiently for the 3.15 merge window, but to avoid further delay, I've
-queued it up in l2-mtd.git [1] under its own branch for now. I rebased
-it myself, to accommodate for changes to m25p80.c since your submission.
-Please take a look at the branch.
-
-If all goes well, I should merge the spinor branch into master some time
-after the 3.15 merge window closes, so it will get linux-next testing.
-For any additional comments/corrections (I have a few), please just
-submit patches on top, rather than resending the whole series.
-
-Marek, what was your opinion on this series? Last response I saw was
-"looking good"; is that an Ack? Or did you have any more gating
-requests?
-
-Personally, I think it looks ready enough, and it's better to merge this
-than not. I was able to test with my platforms, with no regression.
-
-Lee, I have a few patches that do some trivial unification of your ST
-SPI FSM driver and the SPI-NOR framework. I plan to send these out
-soon, and I will begin applying any ST-FSM patches to the same spinor
-branch along with Huang's code. I hope that you can spend some effort on
-improving integration within the next few months in preparation for
-3.16, when I expect this to all go upstream.
-
-Thanks,
-Brian
-
-[1] branch spinor, at http://git.infradead.org/l2-mtd.git
+Huang Shijie
