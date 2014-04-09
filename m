@@ -1,20 +1,18 @@
-Received: from tritech.se ([46.59.120.190])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WXmEI-00024i-H5
- for linux-mtd@lists.infradead.org; Wed, 09 Apr 2014 06:43:27 +0000
-From: =?iso-8859-1?Q?Mats_K=E4rrman?= <Mats.Karrman@tritech.se>
-To: gpuguy <hf.basit@gmail.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-Subject: RE: While trying to open /dev/mtd2 for read/write access:
- Permission denied
-Date: Wed, 9 Apr 2014 06:42:50 +0000
-Message-ID: <ED3E0BCACD909541BA94A34C4A164D4C5B3B08DF@post.tritech.se>
-References: <loom.20140408T081131-273@post.gmane.org>
-In-Reply-To: <loom.20140408T081131-273@post.gmane.org>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Date: Wed, 9 Apr 2014 00:11:05 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 14/15] mtd: st_spi_fsm: Provide mask to obtain correct
+ boot device pins
+Message-ID: <20140409071105.GE3131@norris-Latitude-E6410>
+References: <1395851969-13520-1-git-send-email-lee.jones@linaro.org>
+ <1395851969-13520-15-git-send-email-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1395851969-13520-15-git-send-email-lee.jones@linaro.org>
+Cc: angus.clark@st.com, Christophe Kerello <christophe.kerello@st.com>,
+ kernel@stlinux.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,101 +22,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-What do you have in your device tree for these partitions?=0A=
-=0A=
-// Mats=0A=
-=0A=
-________________________________________=0A=
-From: linux-mtd [linux-mtd-bounces@lists.infradead.org] on behalf of gpuguy=
- [hf.basit@gmail.com]=0A=
-Sent: Tuesday, April 08, 2014 8:14 AM=0A=
-To: linux-mtd@lists.infradead.org=0A=
-Subject: While trying to open /dev/mtd2 for read/write access: Permission d=
-enied=0A=
-=0A=
-Looks like my MTD2,and MTD3 partitions are write protected. The OS is=0A=
-booting from SD card on a ARM Cortex A 9 processor.=0A=
-=0A=
-root@Xilinx-ZC702-2013_3:~# mount /dev/mmcblk0p1 /mnt/=0A=
-root@Xilinx-ZC702-2013_3:~#=0A=
-root@Xilinx-ZC702-2013_3:~# cd /mnt/flash/=0A=
-root@Xilinx-ZC702-2013_3:/mnt/flash#=0A=
-root@Xilinx-ZC702-2013_3:/mnt/flash# ls=0A=
-BOOT.BIN      image.ub      rootfs.jffs2=0A=
-root@Xilinx-ZC702-2013_3:/mnt/flash# flashcp -v image.ub /dev/mtd2=0A=
-While trying to open /dev/mtd2 for read/write access: Permission denied=0A=
-root@Xilinx-ZC702-2013_3:/mnt/flash#=0A=
-=0A=
-=0A=
-Even I tried alternate:=0A=
-=0A=
-root@Xilinx-ZC702-2013_3:/mnt/flash# flash_eraseall -j /dev/mtd2=0A=
-flash_eraseall has been replaced by `flash_erase <mtddev> 0 0`; please use=
-=0A=
-it=0A=
-flash_erase: error!: /dev/mtd2=0A=
-             error 13 (Permission denied)=0A=
-=0A=
-=0A=
-Here are additional info:=0A=
-=0A=
-root@Xilinx-ZC702-2013_3:/mnt/flash# mtdinfo=0A=
-Count of MTD devices:           4=0A=
-Present MTD devices:            mtd0, mtd1, mtd2, mtd3=0A=
-Sysfs interface supported:      yes=0A=
-=0A=
-root@Xilinx-ZC702-2013_3:~# cat /proc/mtd=0A=
-    dev:    size   erasesize  name=0A=
-    mtd0: 00500000 00010000 "boot"=0A=
-    mtd1: 00020000 00010000 "bootenv"=0A=
-    mtd2: 001202c0 00010000 "image"=0A=
-    mtd3: 00500000 00010000 "jffs2"=0A=
-Also:=0A=
-=0A=
-root@Xilinx-ZC702-2013_3:/mnt/flash# mtd_debug info /dev/mtd3=0A=
-mtd.type =3D MTD_NORFLASH=0A=
-mtd.flags =3D MTD_BIT_WRITEABLE=0A=
-mtd.size =3D 5242880 (5M)=0A=
-mtd.erasesize =3D 65536 (64K)=0A=
-mtd.writesize =3D 1=0A=
-mtd.oobsize =3D 0=0A=
-regions =3D 0=0A=
-=0A=
-root@Xilinx-ZC702-2013_3:/mnt/flash# mtd_debug info /dev/mtd2=0A=
-mtd.type =3D MTD_NORFLASH=0A=
-mtd.flags =3D MTD_BIT_WRITEABLE=0A=
-mtd.size =3D 1180352 (1M)=0A=
-mtd.erasesize =3D 65536 (64K)=0A=
-mtd.writesize =3D 1=0A=
-mtd.oobsize =3D 0=0A=
-regions =3D 0=0A=
-=0A=
-root@Xilinx-ZC702-2013_3:/mnt/flash# mtd_debug info /dev/mtd1=0A=
-mtd.type =3D MTD_NORFLASH=0A=
-mtd.flags =3D MTD_CAP_NORFLASH=0A=
-mtd.size =3D 131072 (128K)=0A=
-mtd.erasesize =3D 65536 (64K)=0A=
-mtd.writesize =3D 1=0A=
-mtd.oobsize =3D 0=0A=
-regions =3D 0=0A=
-=0A=
-root@Xilinx-ZC702-2013_3:/mnt/flash# mtd_debug info /dev/mtd0=0A=
-mtd.type =3D MTD_NORFLASH=0A=
-mtd.flags =3D MTD_CAP_NORFLASH=0A=
-mtd.size =3D 5242880 (5M)=0A=
-mtd.erasesize =3D 65536 (64K)=0A=
-mtd.writesize =3D 1=0A=
-mtd.oobsize =3D 0=0A=
-regions =3D 0=0A=
-=0A=
-root@Xilinx-ZC702-2013_3:/mnt/flash#=0A=
-=0A=
-=0A=
-=0A=
-=0A=
-How do I solve this issue?=0A=
-=0A=
-=0A=
-______________________________________________________=0A=
-Linux MTD discussion mailing list=0A=
-http://lists.infradead.org/mailman/listinfo/linux-mtd/=0A=
++ DT list
+
+On Wed, Mar 26, 2014 at 04:39:28PM +0000, Lee Jones wrote:
+> From: Christophe Kerello <christophe.kerello@st.com>
+> 
+> This patch adds a mask to be able to get the right boot device selection.
+> 
+> For example:
+>     for STiH415, value = SYSTEM_STATUS398[4:0]
+>     for STiH416, value = SYSTEM_STATUS2598[4:0]
+>     for STiH407, value = SYSTEM_STATUS5561[6:2]
+> 
+> Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/mtd/devices/st_spi_fsm.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
+> index 9e00173..3ab27c8 100644
+> --- a/drivers/mtd/devices/st_spi_fsm.c
+> +++ b/drivers/mtd/devices/st_spi_fsm.c
+> @@ -2159,6 +2159,7 @@ static void stfsm_fetch_platform_configs(struct platform_device *pdev)
+>  	struct regmap *regmap;
+>  	uint32_t boot_device_reg;
+>  	uint32_t boot_device_spi;
+> +	uint32_t boot_device_msk;
+>  	uint32_t boot_device;     /* Value we read from *boot_device_reg */
+>  	int ret;
+>  
+> @@ -2183,10 +2184,17 @@ static void stfsm_fetch_platform_configs(struct platform_device *pdev)
+>  	if (ret)
+>  		goto boot_device_fail;
+>  
+> +	/* Mask to apply on boot_device_reg */
+> +	ret = of_property_read_u32(np, "st,boot-device-msk", &boot_device_msk);
+
+You need to document this binding in Documentation/devicetree/bindings/,
+and CC the devicetree list.
+
+> +	if (ret)
+> +		goto boot_device_fail;
+> +
+>  	ret = regmap_read(regmap, boot_device_reg, &boot_device);
+>  	if (ret)
+>  		goto boot_device_fail;
+>  
+> +	boot_device &= boot_device_msk;
+> +
+>  	if (boot_device != boot_device_spi)
+>  		fsm->booted_from_spi = false;
+>  
+
+Brian
