@@ -1,21 +1,20 @@
-Received: from mail-pd0-x234.google.com ([2607:f8b0:400e:c02::234])
+Received: from mail-out.m-online.net ([212.18.0.10])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WXw6J-00053F-Jo
- for linux-mtd@lists.infradead.org; Wed, 09 Apr 2014 17:15:52 +0000
-Received: by mail-pd0-f180.google.com with SMTP id v10so2688476pde.25
- for <linux-mtd@lists.infradead.org>; Wed, 09 Apr 2014 10:15:27 -0700 (PDT)
-Date: Wed, 9 Apr 2014 10:07:20 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Marek Vasut <marex@denx.de>
+ id 1WXwI0-0005Mf-Ru
+ for linux-mtd@lists.infradead.org; Wed, 09 Apr 2014 17:27:59 +0000
+From: Marek Vasut <marex@denx.de>
+To: Brian Norris <computersforpeace@gmail.com>
 Subject: Re: [PATCH] mtd: spi-nor: EXPORT symbols which could be used by
  module drivers
-Message-ID: <20140409170720.GB32070@ld-irv-0074>
+Date: Wed, 9 Apr 2014 19:27:30 +0200
 References: <1397023781-1103-1-git-send-email-computersforpeace@gmail.com>
- <201404091043.38198.marex@denx.de>
+ <201404091043.38198.marex@denx.de> <20140409170720.GB32070@ld-irv-0074>
+In-Reply-To: <20140409170720.GB32070@ld-irv-0074>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <201404091043.38198.marex@denx.de>
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201404091927.31018.marex@denx.de>
 Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,19 +25,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Apr 09, 2014 at 10:43:38AM +0200, Marek Vasut wrote:
-> On Wednesday, April 09, 2014 at 08:09:41 AM, Brian Norris wrote:
-> > Fix errors like this:
+On Wednesday, April 09, 2014 at 07:07:20 PM, Brian Norris wrote:
+> On Wed, Apr 09, 2014 at 10:43:38AM +0200, Marek Vasut wrote:
+> > On Wednesday, April 09, 2014 at 08:09:41 AM, Brian Norris wrote:
+> > > Fix errors like this:
+> > >     ERROR: "spi_nor_ids" [drivers/mtd/devices/m25p80.ko] undefined!
+> > >     ERROR: "spi_nor_scan" [drivers/mtd/devices/m25p80.ko] undefined!
+> > >     make[1]: *** [__modpost] Error 1
+> > >     make: *** [modules] Error 2
 > > 
-> >     ERROR: "spi_nor_ids" [drivers/mtd/devices/m25p80.ko] undefined!
-> >     ERROR: "spi_nor_scan" [drivers/mtd/devices/m25p80.ko] undefined!
-> >     make[1]: *** [__modpost] Error 1
-> >     make: *** [modules] Error 2
+> > Why not EXPORT_SYMBOL_GPL ?
 > 
-> Why not EXPORT_SYMBOL_GPL ?
+> _GPL probably makes more sense. Squashed this in and pushed to
+> l2-mtd.git/spinor.
 
-_GPL probably makes more sense. Squashed this in and pushed to
-l2-mtd.git/spinor.
+Thanks!
 
-Thanks,
-Brian
+btw Brian, completely off-topic, but is there a special ML for SPI NOR stuff or 
+is all of that going through linux-mtd ?
+
+Best regards,
+Marek Vasut
