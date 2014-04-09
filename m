@@ -1,18 +1,17 @@
-Date: Tue, 8 Apr 2014 23:00:59 -0700
+Received: from mail-pa0-x233.google.com ([2607:f8b0:400e:c03::233])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WXliD-0001OF-DV
+ for linux-mtd@lists.infradead.org; Wed, 09 Apr 2014 06:10:18 +0000
+Received: by mail-pa0-f51.google.com with SMTP id kq14so2055814pab.24
+ for <linux-mtd@lists.infradead.org>; Tue, 08 Apr 2014 23:09:53 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
-To: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 07/15] mtd: st_spi_fsm: Extend fsm_clear_fifo to handle
- unwanted bytes
-Message-ID: <20140409060059.GD3131@norris-Latitude-E6410>
-References: <1395851969-13520-1-git-send-email-lee.jones@linaro.org>
- <1395851969-13520-8-git-send-email-lee.jones@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1395851969-13520-8-git-send-email-lee.jones@linaro.org>
-Cc: angus.clark@st.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- kernel@stlinux.com
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: spi-nor: EXPORT symbols which could be used by module
+ drivers
+Date: Tue,  8 Apr 2014 23:09:41 -0700
+Message-Id: <1397023781-1103-1-git-send-email-computersforpeace@gmail.com>
+Cc: Marek Vasut <marex@denx.de>, Huang Shijie <b32955@freescale.com>,
+ Brian Norris <computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,24 +21,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Mar 26, 2014 at 04:39:21PM +0000, Lee Jones wrote:
-> From: Angus Clark <angus.clark@st.com>
-...
-> diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-> index 8c56b94..9df59e7 100644
-> --- a/drivers/mtd/devices/st_spi_fsm.c
-> +++ b/drivers/mtd/devices/st_spi_fsm.c
-...
-> +	dev_dbg(fsm->dev, "cleared %d byte(s) from the data FIFO\n", 4 - i);
-> +}
-> +
->  static int stfsm_write_fifo(struct stfsm *fsm, uint32_t *buf, uint32_t size)
+Fix errors like this:
 
-This patch does not apply to l2-mtd.git, and neither do several of the
-following patches. You probably didn't rebase onto the patches regarding
-the above line (adding 'const').
+    ERROR: "spi_nor_ids" [drivers/mtd/devices/m25p80.ko] undefined!
+    ERROR: "spi_nor_scan" [drivers/mtd/devices/m25p80.ko] undefined!
+    make[1]: *** [__modpost] Error 1
+    make: *** [modules] Error 2
 
->  {
->  	uint32_t words = size >> 2;
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+Based on l2-mtd.git:spinor
 
-Brian
+ drivers/mtd/spi-nor/spi-nor.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index f7c9e638623b..2c292f95142e 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -584,6 +584,7 @@ const struct spi_device_id spi_nor_ids[] = {
+ 	{ "cat25128", CAT25_INFO(2048, 8, 64, 2, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
+ 	{ },
+ };
++EXPORT_SYMBOL(spi_nor_ids);
+ 
+ static const struct spi_device_id *spi_nor_read_id(struct spi_nor *nor)
+ {
+@@ -1081,6 +1082,7 @@ int spi_nor_scan(struct spi_nor *nor, const struct spi_device_id *id,
+ 				mtd->eraseregions[i].numblocks);
+ 	return 0;
+ }
++EXPORT_SYMBOL(spi_nor_scan);
+ 
+ const struct spi_device_id *spi_nor_match_id(char *name)
+ {
+@@ -1093,6 +1095,7 @@ const struct spi_device_id *spi_nor_match_id(char *name)
+ 	}
+ 	return NULL;
+ }
++EXPORT_SYMBOL(spi_nor_match_id);
+ 
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Huang Shijie <shijie8@gmail.com>");
+-- 
+1.8.3.2
