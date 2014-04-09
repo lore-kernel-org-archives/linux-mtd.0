@@ -1,14 +1,14 @@
-Received: from mail-ie0-x232.google.com ([2607:f8b0:4001:c03::232])
+Received: from mail-ie0-x22c.google.com ([2607:f8b0:4001:c03::22c])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WXwNM-0005aV-HX
- for linux-mtd@lists.infradead.org; Wed, 09 Apr 2014 17:33:34 +0000
-Received: by mail-ie0-f178.google.com with SMTP id lx4so2750654iec.37
- for <linux-mtd@lists.infradead.org>; Wed, 09 Apr 2014 10:33:05 -0700 (PDT)
+ id 1WXwNM-0005aC-H1
+ for linux-mtd@lists.infradead.org; Wed, 09 Apr 2014 17:33:36 +0000
+Received: by mail-ie0-f172.google.com with SMTP id as1so2784729iec.17
+ for <linux-mtd@lists.infradead.org>; Wed, 09 Apr 2014 10:33:04 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 4/9] Documentation: spi-nor: rewrite some portions
-Date: Wed,  9 Apr 2014 10:32:49 -0700
-Message-Id: <1397064774-31784-4-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 3/9] mtd: spi-nor: unify read opcode variants with ST SPI FSM
+Date: Wed,  9 Apr 2014 10:32:48 -0700
+Message-Id: <1397064774-31784-3-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1397064774-31784-1-git-send-email-computersforpeace@gmail.com>
 References: <1397064774-31784-1-git-send-email-computersforpeace@gmail.com>
 Cc: Marek Vasut <marex@denx.de>, Huang Shijie <b32955@freescale.com>,
@@ -23,65 +23,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+serial_flash_cmds.h defines our opcodes a little differently. Let's
+borrow its naming, since it's borrowed from the SFDP standard, and it's
+more extensible.
+
+This prepares us for merging serial_flash_cmds.h and spi-nor.h opcode
+listing.
+
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
-WIP. This could be improved more (e.g., don't spend too much time documenting
-history; just document the current framework)
+ drivers/mtd/spi-nor/spi-nor.c | 16 ++++++++--------
+ include/linux/mtd/spi-nor.h   | 24 ++++++++++++++++--------
+ 2 files changed, 24 insertions(+), 16 deletions(-)
 
- Documentation/mtd/spi-nor.txt | 27 +++++++++++++++------------
- 1 file changed, 15 insertions(+), 12 deletions(-)
-
-diff --git a/Documentation/mtd/spi-nor.txt b/Documentation/mtd/spi-nor.txt
-index 294d5b06f892..bfcdeb94e053 100644
---- a/Documentation/mtd/spi-nor.txt
-+++ b/Documentation/mtd/spi-nor.txt
-@@ -1,16 +1,20 @@
-                           SPI NOR framework
-                ============================================
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 462f1c8c3a7d..de04d6e2cf02 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1010,16 +1010,16 @@ int spi_nor_scan(struct spi_nor *nor, const struct spi_device_id *id,
+ 	/* Default commands */
+ 	switch (nor->flash_read) {
+ 	case SPI_NOR_QUAD:
+-		nor->read_opcode = SPINOR_OP_QUAD_READ;
++		nor->read_opcode = SPINOR_OP_READ_1_1_4;
+ 		break;
+ 	case SPI_NOR_DUAL:
+-		nor->read_opcode = SPINOR_OP_DUAL_READ;
++		nor->read_opcode = SPINOR_OP_READ_1_1_2;
+ 		break;
+ 	case SPI_NOR_FAST:
+-		nor->read_opcode = SPINOR_OP_FAST_READ;
++		nor->read_opcode = SPINOR_OP_READ_FAST;
+ 		break;
+ 	case SPI_NOR_NORMAL:
+-		nor->read_opcode = SPINOR_OP_NORM_READ;
++		nor->read_opcode = SPINOR_OP_READ;
+ 		break;
+ 	default:
+ 		dev_err(dev, "No Read opcode defined\n");
+@@ -1037,16 +1037,16 @@ int spi_nor_scan(struct spi_nor *nor, const struct spi_device_id *id,
+ 			/* Dedicated 4-byte command set */
+ 			switch (nor->flash_read) {
+ 			case SPI_NOR_QUAD:
+-				nor->read_opcode = SPINOR_OP_QUAD_READ_4B;
++				nor->read_opcode = SPINOR_OP_READ4_1_1_4;
+ 				break;
+ 			case SPI_NOR_DUAL:
+-				nor->read_opcode = SPINOR_OP_DUAL_READ_4B;
++				nor->read_opcode = SPINOR_OP_READ4_1_1_2;
+ 				break;
+ 			case SPI_NOR_FAST:
+-				nor->read_opcode = SPINOR_OP_FAST_READ_4B;
++				nor->read_opcode = SPINOR_OP_READ4_FAST;
+ 				break;
+ 			case SPI_NOR_NORMAL:
+-				nor->read_opcode = SPINOR_OP_NORM_READ_4B;
++				nor->read_opcode = SPINOR_OP_READ4;
+ 				break;
+ 			}
+ 			nor->program_opcode = SPINOR_OP_PP_4B;
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index 2c827b5bf773..2a5c30196749 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -1,14 +1,22 @@
+ #ifndef __LINUX_MTD_SPI_NOR_H
+ #define __LINUX_MTD_SPI_NOR_H
  
--Part I - why we need this framework?
-+Part I - Why do we need this framework?
- -------------------------------------
++/*
++ * Note on opcode nomenclature: some opcodes have a format like
++ * SPINOR_OP_FUNCTION{4,}_x_y_z. The numbers x, y, and z stand for the number
++ * of I/O lines used for the opcode, address, and data (respectively). The
++ * FUNCTION has an optional suffix of '4', to represent an opcode which
++ * requires a 4-byte (32-bit) address.
++ */
++
+ /* Flash opcodes. */
+ #define SPINOR_OP_WREN		0x06	/* Write enable */
+ #define SPINOR_OP_RDSR		0x05	/* Read status register */
+ #define SPINOR_OP_WRSR		0x01	/* Write status register 1 byte */
+-#define SPINOR_OP_NORM_READ	0x03	/* Read data bytes (low frequency) */
+-#define SPINOR_OP_FAST_READ	0x0b	/* Read data bytes (high frequency) */
+-#define SPINOR_OP_DUAL_READ	0x3b	/* Read data bytes (Dual SPI) */
+-#define SPINOR_OP_QUAD_READ	0x6b	/* Read data bytes (Quad SPI) */
++#define SPINOR_OP_READ		0x03	/* Read data bytes (low frequency) */
++#define SPINOR_OP_READ_FAST	0x0b	/* Read data bytes (high frequency) */
++#define SPINOR_OP_READ_1_1_2	0x3b	/* Read data bytes (Dual SPI) */
++#define SPINOR_OP_READ_1_1_4	0x6b	/* Read data bytes (Quad SPI) */
+ #define SPINOR_OP_PP		0x02	/* Page program (up to 256 bytes) */
+ #define SPINOR_OP_BE_4K		0x20	/* Erase 4KiB block */
+ #define SPINOR_OP_BE_4K_PMC	0xd7	/* Erase 4KiB block on PMC chips */
+@@ -19,10 +27,10 @@
+ #define SPINOR_OP_RDCR		0x35	/* Read configuration register */
  
--The SPI bus controller only deals with the byte stream.
--Some controller does not works like a SPI bus controller, it works
--like a SPI NOR controller instead, such as the Freescale's QuadSPI controller.
-+SPI bus controllers (drivers/spi/) only deal with streams of bytes; the bus
-+controller operates agnostic of the specific device attached. However, some
-+controllers (such as Freescale's QuadSPI controller) cannot easily handle
-+arbitrary streams of bytes, but rather are designed specifically for SPI NOR.
+ /* 4-byte address opcodes - used on Spansion and some Macronix flashes. */
+-#define SPINOR_OP_NORM_READ_4B	0x13	/* Read data bytes (low frequency) */
+-#define SPINOR_OP_FAST_READ_4B	0x0c	/* Read data bytes (high frequency) */
+-#define SPINOR_OP_DUAL_READ_4B	0x3c	/* Read data bytes (Dual SPI) */
+-#define SPINOR_OP_QUAD_READ_4B	0x6c	/* Read data bytes (Quad SPI) */
++#define SPINOR_OP_READ4		0x13	/* Read data bytes (low frequency) */
++#define SPINOR_OP_READ4_FAST	0x0c	/* Read data bytes (high frequency) */
++#define SPINOR_OP_READ4_1_1_2	0x3c	/* Read data bytes (Dual SPI) */
++#define SPINOR_OP_READ4_1_1_4	0x6c	/* Read data bytes (Quad SPI) */
+ #define SPINOR_OP_PP_4B		0x12	/* Page program (up to 256 bytes) */
+ #define SPINOR_OP_SE_4B		0xdc	/* Sector erase (usually 64KiB) */
  
--The Freescale's QuadSPI controller should know the NOR commands to
--find the right LUT sequence. Unfortunately, the old code can not meet
--this requirement.
-+Specifically, Freescale's QuadSPI controller must know the NOR commands to
-+find the right LUT sequence. Unfortunately, the SPI subsystem has no notion of
-+opcodes, addresses, or data payloads; a SPI controller simply knows to send or
-+receive bytes (Tx and Rx). Therefore, we must define a new layering scheme under
-+which the controller driver is aware of the opcodes, addressing, and other
-+details of the SPI NOR protocol.
- 
- Part II - How does the framework work?
- -------------------------------------
-@@ -40,7 +44,7 @@ m25p80 code anymore.
-          ------------------------
- 	       SPI NOR chip
- 
--  With the SPI NOR controller driver(Freescale QuadSPI), it looks like:
-+  With the SPI NOR controller driver (Freescale QuadSPI), it looks like:
-                    MTD
-          ------------------------
-               SPI NOR framework
-@@ -53,7 +57,6 @@ Part III - How can the drivers use the framework
- -------------------------------------
- 
- The main API is the spi_nor_scan(). Before you call the hook, you should
--initialize the necessary fields for spi_nor{}.
--Please see the drivers/mtd/spi-nor/spi-nor.c for detail.
--Please also reference to the fsl-quadspi.c when you want to write a new driver
--for a SPI NOR controller.
-+initialize the necessary fields for spi_nor{}. Please see the
-+drivers/mtd/spi-nor/spi-nor.c for detail. Please also refer to the fsl-quadspi.c
-+when you want to write a new driver for a SPI NOR controller.
 -- 
 1.8.3.2
