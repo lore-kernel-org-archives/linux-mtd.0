@@ -1,18 +1,19 @@
 Received: from mail-out.m-online.net ([212.18.0.9])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WXwap-0006JJ-2A
- for linux-mtd@lists.infradead.org; Wed, 09 Apr 2014 17:47:24 +0000
+ id 1WXwbA-0006Lh-Rs
+ for linux-mtd@lists.infradead.org; Wed, 09 Apr 2014 17:47:45 +0000
 From: Marek Vasut <marex@denx.de>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 1/9] mtd: spi-nor: drop \t after #define
-Date: Wed, 9 Apr 2014 19:40:14 +0200
+Subject: Re: [PATCH 5/9] mtd: spi-nor: shorten Kconfig naming
+Date: Wed, 9 Apr 2014 19:44:42 +0200
 References: <1397064774-31784-1-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1397064774-31784-1-git-send-email-computersforpeace@gmail.com>
+ <1397064774-31784-5-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1397064774-31784-5-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
 Content-Type: Text/Plain;
   charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Message-Id: <201404091940.14392.marex@denx.de>
+Message-Id: <201404091944.42548.marex@denx.de>
 Cc: Huang Shijie <b32955@freescale.com>, Lee Jones <lee.jones@linaro.org>,
  linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,88 +25,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday, April 09, 2014 at 07:32:46 PM, Brian Norris wrote:
-> Spacing is a little non-standard here.
-> 
+On Wednesday, April 09, 2014 at 07:32:50 PM, Brian Norris wrote:
 > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 > ---
-> Series based on l2-mtd.git/spinor:
-> 
->   http://git.infradead.org/l2-mtd.git
-> 
->  include/linux/mtd/spi-nor.h | 68
-> ++++++++++++++++++++++----------------------- 1 file changed, 34
-> insertions(+), 34 deletions(-)
-> 
-> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-> index 41dae78fbd1d..558097e14932 100644
-> --- a/include/linux/mtd/spi-nor.h
-> +++ b/include/linux/mtd/spi-nor.h
-> @@ -2,50 +2,50 @@
->  #define __LINUX_MTD_SPI_NOR_H
-> 
->  /* Flash opcodes. */
-> -#define	OPCODE_WREN		0x06	/* Write enable */
-> -#define	OPCODE_RDSR		0x05	/* Read status register */
-> -#define	OPCODE_WRSR		0x01	/* Write status register 1 byte 
-*/
-> -#define	OPCODE_NORM_READ	0x03	/* Read data bytes (low 
-frequency) */
-> -#define	OPCODE_FAST_READ	0x0b	/* Read data bytes (high 
-frequency) */
-> -#define	OPCODE_DUAL_READ        0x3b    /* Read data bytes (Dual SPI) */
-> -#define	OPCODE_QUAD_READ        0x6b    /* Read data bytes (Quad SPI) */
-> -#define	OPCODE_PP		0x02	/* Page program (up to 256 
-bytes) */
-> -#define	OPCODE_BE_4K		0x20	/* Erase 4KiB block */
-> -#define	OPCODE_BE_4K_PMC	0xd7	/* Erase 4KiB block on PMC chips 
-*/
-> -#define	OPCODE_BE_32K		0x52	/* Erase 32KiB block */
-> -#define	OPCODE_CHIP_ERASE	0xc7	/* Erase whole flash chip */
-> -#define	OPCODE_SE		0xd8	/* Sector erase (usually 64KiB) 
-*/
-> -#define	OPCODE_RDID		0x9f	/* Read JEDEC ID */
-> -#define	OPCODE_RDCR             0x35    /* Read configuration register 
-*/
-> +#define OPCODE_WREN		0x06	/* Write enable */
-> +#define OPCODE_RDSR		0x05	/* Read status register */
-> +#define OPCODE_WRSR		0x01	/* Write status register 1 byte */
-> +#define OPCODE_NORM_READ	0x03	/* Read data bytes (low frequency) */
-> +#define OPCODE_FAST_READ	0x0b	/* Read data bytes (high frequency) */
-> +#define OPCODE_DUAL_READ        0x3b    /* Read data bytes (Dual SPI) */
-> +#define OPCODE_QUAD_READ        0x6b    /* Read data bytes (Quad SPI) */
+>  drivers/mtd/Makefile         |  2 +-
+>  drivers/mtd/devices/Kconfig  |  2 +-
+>  drivers/mtd/spi-nor/Kconfig  | 11 ++++++++---
+>  drivers/mtd/spi-nor/Makefile |  2 +-
+>  4 files changed, 11 insertions(+), 6 deletions(-)
 
-This is still a little non-standard -- or rather -- inconsistent here. You 
-should use space after #define and \t after the name I'd say. I'd also say these 
-two slipped your attention as the others do it just like that.
+Reviewed-by: Marek Vasut <marex@denx.de>
 
-> +#define OPCODE_PP		0x02	/* Page program (up to 256 bytes) */
-> +#define OPCODE_BE_4K		0x20	/* Erase 4KiB block */
-> +#define OPCODE_BE_4K_PMC	0xd7	/* Erase 4KiB block on PMC chips */
-> +#define OPCODE_BE_32K		0x52	/* Erase 32KiB block */
-> +#define OPCODE_CHIP_ERASE	0xc7	/* Erase whole flash chip */
-> +#define OPCODE_SE		0xd8	/* Sector erase (usually 64KiB) */
-> +#define OPCODE_RDID		0x9f	/* Read JEDEC ID */
-> +#define OPCODE_RDCR             0x35    /* Read configuration register */
-
-DTTO here.
-
->  /* 4-byte address opcodes - used on Spansion and some Macronix flashes. */
-> -#define	OPCODE_NORM_READ_4B	0x13	/* Read data bytes (low 
-frequency) */
-> -#define	OPCODE_FAST_READ_4B	0x0c	/* Read data bytes (high 
-frequency) */
-> -#define	OPCODE_DUAL_READ_4B	0x3c    /* Read data bytes (Dual SPI) */
-> -#define	OPCODE_QUAD_READ_4B	0x6c    /* Read data bytes (Quad SPI) */
-> -#define	OPCODE_PP_4B		0x12	/* Page program (up to 256 
-bytes) */
-> -#define	OPCODE_SE_4B		0xdc	/* Sector erase (usually 64KiB) 
-*/
-> +#define OPCODE_NORM_READ_4B	0x13	/* Read data bytes (low frequency) */
-> +#define OPCODE_FAST_READ_4B	0x0c	/* Read data bytes (high frequency) */
-> +#define OPCODE_DUAL_READ_4B	0x3c    /* Read data bytes (Dual SPI) */
-> +#define OPCODE_QUAD_READ_4B	0x6c    /* Read data bytes (Quad SPI) */
-
-This comment here is indented with spaces, while the other comments are indented 
-with tabs ;-/
-[...]
+Best regards,
+Marek Vasut
