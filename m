@@ -1,14 +1,14 @@
-Received: from mail-ie0-x22d.google.com ([2607:f8b0:4001:c03::22d])
+Received: from mail-ie0-x235.google.com ([2607:f8b0:4001:c03::235])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WXwNM-0005ar-NJ
- for linux-mtd@lists.infradead.org; Wed, 09 Apr 2014 17:33:33 +0000
-Received: by mail-ie0-f173.google.com with SMTP id rl12so2786211iec.32
- for <linux-mtd@lists.infradead.org>; Wed, 09 Apr 2014 10:33:11 -0700 (PDT)
+ id 1WXwNN-0005ac-PD
+ for linux-mtd@lists.infradead.org; Wed, 09 Apr 2014 17:33:34 +0000
+Received: by mail-ie0-f181.google.com with SMTP id tp5so2752778ieb.40
+ for <linux-mtd@lists.infradead.org>; Wed, 09 Apr 2014 10:33:08 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 7/9] mtd: st_spi_fsm: kill duplicate CMD definitions
-Date: Wed,  9 Apr 2014 10:32:52 -0700
-Message-Id: <1397064774-31784-7-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 6/9] mtd: st_spi_fsm: fixup Kconfig dependency
+Date: Wed,  9 Apr 2014 10:32:51 -0700
+Message-Id: <1397064774-31784-6-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1397064774-31784-1-git-send-email-computersforpeace@gmail.com>
 References: <1397064774-31784-1-git-send-email-computersforpeace@gmail.com>
 Cc: Marek Vasut <marex@denx.de>, Huang Shijie <b32955@freescale.com>,
@@ -23,61 +23,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-These are also in serial_flash_cmds.h. (FWIW, I didn't know the C
-preprocessor allowed redefinitions without warning like this.)
+I hear that this driver should depend on ARCH_STI, and that "SH" is not
+actually a real symbol. At the same time, let's allow compile-testing on
+other ARCH'es.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 Cc: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/devices/st_spi_fsm.c | 36 ------------------------------------
- 1 file changed, 36 deletions(-)
+ drivers/mtd/devices/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index 30082a09f68b..122a8a14ef84 100644
---- a/drivers/mtd/devices/st_spi_fsm.c
-+++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -201,42 +201,6 @@
+diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
+index f9e32b53dfc6..9aae1042c14f 100644
+--- a/drivers/mtd/devices/Kconfig
++++ b/drivers/mtd/devices/Kconfig
+@@ -212,7 +212,7 @@ config MTD_DOCG3
  
- #define STFSM_MAX_WAIT_SEQ_MS  1000     /* FSM execution time */
- 
--/* Flash Commands */
--#define FLASH_CMD_WREN         0x06
--#define FLASH_CMD_WRDI         0x04
--#define FLASH_CMD_RDID         0x9f
--#define FLASH_CMD_RDSR         0x05
--#define FLASH_CMD_RDSR2                0x35
--#define FLASH_CMD_WRSR         0x01
--#define FLASH_CMD_SE_4K                0x20
--#define FLASH_CMD_SE_32K       0x52
--#define FLASH_CMD_SE           0xd8
--#define FLASH_CMD_CHIPERASE    0xc7
--
--#define FLASH_CMD_READ         0x03    /* READ */
--#define FLASH_CMD_READ_FAST    0x0b    /* FAST READ */
--#define FLASH_CMD_READ_1_1_2   0x3b    /* DUAL OUTPUT READ */
--#define FLASH_CMD_READ_1_2_2   0xbb    /* DUAL I/O READ */
--#define FLASH_CMD_READ_1_1_4   0x6b    /* QUAD OUTPUT READ */
--#define FLASH_CMD_READ_1_4_4   0xeb    /* QUAD I/O READ */
--
--#define FLASH_CMD_WRITE                0x02    /* PAGE PROGRAM */
--#define FLASH_CMD_WRITE_1_1_2  0xa2    /* DUAL INPUT PROGRAM */
--#define FLASH_CMD_WRITE_1_2_2  0xd2    /* DUAL INPUT EXT PROGRAM */
--#define FLASH_CMD_WRITE_1_1_4  0x32    /* QUAD INPUT PROGRAM */
--#define FLASH_CMD_WRITE_1_4_4  0x12    /* QUAD INPUT EXT PROGRAM */
--
--#define FLASH_CMD_EN4B_ADDR    0xb7    /* Enter 4-byte address mode */
--#define FLASH_CMD_EX4B_ADDR    0xe9    /* Exit 4-byte address mode */
--
--/* READ commands with 32-bit addressing (N25Q256 and S25FLxxxS) */
--#define FLASH_CMD_READ4                0x13
--#define FLASH_CMD_READ4_FAST   0x0c
--#define FLASH_CMD_READ4_1_1_2  0x3c
--#define FLASH_CMD_READ4_1_2_2  0xbc
--#define FLASH_CMD_READ4_1_1_4  0x6c
--#define FLASH_CMD_READ4_1_4_4  0xec
--
- /* S25FLxxxS commands */
- #define S25FL_CMD_WRITE4_1_1_4 0x34
- #define S25FL_CMD_SE4          0xdc
+ config MTD_ST_SPI_FSM
+ 	tristate "ST Microelectronics SPI FSM Serial Flash Controller"
+-	depends on ARM || SH
++	depends on ARCH_STI || COMPILE_TEST
+ 	help
+ 	  This provides an MTD device driver for the ST Microelectronics
+ 	  SPI Fast Sequence Mode (FSM) Serial Flash Controller and support
 -- 
 1.8.3.2
