@@ -1,14 +1,16 @@
-Received: from mail-ig0-x232.google.com ([2607:f8b0:4001:c05::232])
+Received: from mail-ie0-x234.google.com ([2607:f8b0:4001:c03::234])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WXwNM-0005Zy-H1
- for linux-mtd@lists.infradead.org; Wed, 09 Apr 2014 17:33:40 +0000
-Received: by mail-ig0-f178.google.com with SMTP id hn18so2696428igb.17
- for <linux-mtd@lists.infradead.org>; Wed, 09 Apr 2014 10:33:01 -0700 (PDT)
+ id 1WXwNS-0005ax-PA
+ for linux-mtd@lists.infradead.org; Wed, 09 Apr 2014 17:33:36 +0000
+Received: by mail-ie0-f180.google.com with SMTP id as1so2764791iec.39
+ for <linux-mtd@lists.infradead.org>; Wed, 09 Apr 2014 10:33:14 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 1/9] mtd: spi-nor: drop \t after #define
-Date: Wed,  9 Apr 2014 10:32:46 -0700
-Message-Id: <1397064774-31784-1-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 9/9] mtd: st_spi_fsm: begin using spi-nor.h opcodes
+Date: Wed,  9 Apr 2014 10:32:54 -0700
+Message-Id: <1397064774-31784-9-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1397064774-31784-1-git-send-email-computersforpeace@gmail.com>
+References: <1397064774-31784-1-git-send-email-computersforpeace@gmail.com>
 Cc: Marek Vasut <marex@denx.de>, Huang Shijie <b32955@freescale.com>,
  Brian Norris <computersforpeace@gmail.com>, Lee Jones <lee.jones@linaro.org>,
  linux-spi@vger.kernel.org
@@ -21,113 +23,109 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Spacing is a little non-standard here.
+Many of the serial_flash_cmds.h opcodes are duplicated with spi-nor.h.
+Let's begin to unify them.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Cc: Lee Jones <lee.jones@linaro.org>
 ---
-Series based on l2-mtd.git/spinor:
+ drivers/mtd/devices/serial_flash_cmds.h | 20 --------------------
+ drivers/mtd/devices/st_spi_fsm.c        |  9 +++++----
+ 2 files changed, 5 insertions(+), 24 deletions(-)
 
-  http://git.infradead.org/l2-mtd.git
-
- include/linux/mtd/spi-nor.h | 68 ++++++++++++++++++++++-----------------------
- 1 file changed, 34 insertions(+), 34 deletions(-)
-
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index 41dae78fbd1d..558097e14932 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -2,50 +2,50 @@
- #define __LINUX_MTD_SPI_NOR_H
+diff --git a/drivers/mtd/devices/serial_flash_cmds.h b/drivers/mtd/devices/serial_flash_cmds.h
+index 82fa1687a2d3..f59a125295d0 100644
+--- a/drivers/mtd/devices/serial_flash_cmds.h
++++ b/drivers/mtd/devices/serial_flash_cmds.h
+@@ -13,25 +13,12 @@
+ #define _MTD_SERIAL_FLASH_CMDS_H
  
- /* Flash opcodes. */
--#define	OPCODE_WREN		0x06	/* Write enable */
--#define	OPCODE_RDSR		0x05	/* Read status register */
--#define	OPCODE_WRSR		0x01	/* Write status register 1 byte */
--#define	OPCODE_NORM_READ	0x03	/* Read data bytes (low frequency) */
--#define	OPCODE_FAST_READ	0x0b	/* Read data bytes (high frequency) */
--#define	OPCODE_DUAL_READ        0x3b    /* Read data bytes (Dual SPI) */
--#define	OPCODE_QUAD_READ        0x6b    /* Read data bytes (Quad SPI) */
--#define	OPCODE_PP		0x02	/* Page program (up to 256 bytes) */
--#define	OPCODE_BE_4K		0x20	/* Erase 4KiB block */
--#define	OPCODE_BE_4K_PMC	0xd7	/* Erase 4KiB block on PMC chips */
--#define	OPCODE_BE_32K		0x52	/* Erase 32KiB block */
--#define	OPCODE_CHIP_ERASE	0xc7	/* Erase whole flash chip */
--#define	OPCODE_SE		0xd8	/* Sector erase (usually 64KiB) */
--#define	OPCODE_RDID		0x9f	/* Read JEDEC ID */
--#define	OPCODE_RDCR             0x35    /* Read configuration register */
-+#define OPCODE_WREN		0x06	/* Write enable */
-+#define OPCODE_RDSR		0x05	/* Read status register */
-+#define OPCODE_WRSR		0x01	/* Write status register 1 byte */
-+#define OPCODE_NORM_READ	0x03	/* Read data bytes (low frequency) */
-+#define OPCODE_FAST_READ	0x0b	/* Read data bytes (high frequency) */
-+#define OPCODE_DUAL_READ        0x3b    /* Read data bytes (Dual SPI) */
-+#define OPCODE_QUAD_READ        0x6b    /* Read data bytes (Quad SPI) */
-+#define OPCODE_PP		0x02	/* Page program (up to 256 bytes) */
-+#define OPCODE_BE_4K		0x20	/* Erase 4KiB block */
-+#define OPCODE_BE_4K_PMC	0xd7	/* Erase 4KiB block on PMC chips */
-+#define OPCODE_BE_32K		0x52	/* Erase 32KiB block */
-+#define OPCODE_CHIP_ERASE	0xc7	/* Erase whole flash chip */
-+#define OPCODE_SE		0xd8	/* Sector erase (usually 64KiB) */
-+#define OPCODE_RDID		0x9f	/* Read JEDEC ID */
-+#define OPCODE_RDCR             0x35    /* Read configuration register */
+ /* Generic Flash Commands/OPCODEs */
+-#define SPINOR_OP_WREN		0x06
+-#define SPINOR_OP_WRDI		0x04
+-#define SPINOR_OP_RDID		0x9f
+-#define SPINOR_OP_RDSR		0x05
+ #define SPINOR_OP_RDSR2		0x35
+-#define SPINOR_OP_WRSR		0x01
+-#define SPINOR_OP_SE_4K		0x20
+-#define SPINOR_OP_SE_32K	0x52
+-#define SPINOR_OP_SE		0xd8
+-#define SPINOR_OP_CHIPERASE	0xc7
+ #define SPINOR_OP_WRVCR		0x81
+ #define SPINOR_OP_RDVCR		0x85
  
- /* 4-byte address opcodes - used on Spansion and some Macronix flashes. */
--#define	OPCODE_NORM_READ_4B	0x13	/* Read data bytes (low frequency) */
--#define	OPCODE_FAST_READ_4B	0x0c	/* Read data bytes (high frequency) */
--#define	OPCODE_DUAL_READ_4B	0x3c    /* Read data bytes (Dual SPI) */
--#define	OPCODE_QUAD_READ_4B	0x6c    /* Read data bytes (Quad SPI) */
--#define	OPCODE_PP_4B		0x12	/* Page program (up to 256 bytes) */
--#define	OPCODE_SE_4B		0xdc	/* Sector erase (usually 64KiB) */
-+#define OPCODE_NORM_READ_4B	0x13	/* Read data bytes (low frequency) */
-+#define OPCODE_FAST_READ_4B	0x0c	/* Read data bytes (high frequency) */
-+#define OPCODE_DUAL_READ_4B	0x3c    /* Read data bytes (Dual SPI) */
-+#define OPCODE_QUAD_READ_4B	0x6c    /* Read data bytes (Quad SPI) */
-+#define OPCODE_PP_4B		0x12	/* Page program (up to 256 bytes) */
-+#define OPCODE_SE_4B		0xdc	/* Sector erase (usually 64KiB) */
+ /* JEDEC Standard - Serial Flash Discoverable Parmeters (SFDP) Commands */
+-#define SPINOR_OP_READ		0x03	/* READ */
+-#define SPINOR_OP_READ_FAST	0x0b	/* FAST READ */
+-#define SPINOR_OP_READ_1_1_2	0x3b	/* DUAL OUTPUT READ */
+ #define SPINOR_OP_READ_1_2_2	0xbb	/* DUAL I/O READ */
+-#define SPINOR_OP_READ_1_1_4	0x6b	/* QUAD OUTPUT READ */
+ #define SPINOR_OP_READ_1_4_4	0xeb	/* QUAD I/O READ */
  
- /* Used for SST flashes only. */
--#define	OPCODE_BP		0x02	/* Byte program */
--#define	OPCODE_WRDI		0x04	/* Write disable */
--#define	OPCODE_AAI_WP		0xad	/* Auto address increment word program */
-+#define OPCODE_BP		0x02	/* Byte program */
-+#define OPCODE_WRDI		0x04	/* Write disable */
-+#define OPCODE_AAI_WP		0xad	/* Auto address increment word program */
+ #define SPINOR_OP_WRITE		0x02	/* PAGE PROGRAM */
+@@ -40,15 +27,8 @@
+ #define SPINOR_OP_WRITE_1_1_4	0x32	/* QUAD INPUT PROGRAM */
+ #define SPINOR_OP_WRITE_1_4_4	0x12	/* QUAD INPUT EXT PROGRAM */
  
- /* Used for Macronix and Winbond flashes. */
--#define	OPCODE_EN4B		0xb7	/* Enter 4-byte mode */
--#define	OPCODE_EX4B		0xe9	/* Exit 4-byte mode */
-+#define OPCODE_EN4B		0xb7	/* Enter 4-byte mode */
-+#define OPCODE_EX4B		0xe9	/* Exit 4-byte mode */
+-#define SPINOR_OP_EN4B_ADDR	0xb7	/* Enter 4-byte address mode */
+-#define SPINOR_OP_EX4B_ADDR	0xe9	/* Exit 4-byte address mode */
+-
+ /* READ commands with 32-bit addressing */
+-#define SPINOR_OP_READ4		0x13
+-#define SPINOR_OP_READ4_FAST	0x0c
+-#define SPINOR_OP_READ4_1_1_2	0x3c
+ #define SPINOR_OP_READ4_1_2_2	0xbc
+-#define SPINOR_OP_READ4_1_1_4	0x6c
+ #define SPINOR_OP_READ4_1_4_4	0xec
  
- /* Used for Spansion flashes only. */
--#define	OPCODE_BRWR		0x17	/* Bank register write */
-+#define OPCODE_BRWR		0x17	/* Bank register write */
+ /* Configuration flags */
+diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
+index fc193a94307d..7cc49ba78f68 100644
+--- a/drivers/mtd/devices/st_spi_fsm.c
++++ b/drivers/mtd/devices/st_spi_fsm.c
+@@ -19,6 +19,7 @@
+ #include <linux/mfd/syscon.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
++#include <linux/mtd/spi-nor.h>
+ #include <linux/sched.h>
+ #include <linux/delay.h>
+ #include <linux/io.h>
+@@ -522,7 +523,7 @@ static int stfsm_mx25_en_32bit_addr_seq(struct stfsm_seq *seq)
+ {
+ 	seq->seq_opc[0] = (SEQ_OPC_PADS_1 |
+ 			   SEQ_OPC_CYCLES(8) |
+-			   SEQ_OPC_OPCODE(SPINOR_OP_EN4B_ADDR) |
++			   SEQ_OPC_OPCODE(SPINOR_OP_EN4B) |
+ 			   SEQ_OPC_CSDEASSERT);
  
- /* Status Register bits. */
--#define	SR_WIP			1	/* Write in progress */
--#define	SR_WEL			2	/* Write enable latch */
-+#define SR_WIP			1	/* Write in progress */
-+#define SR_WEL			2	/* Write enable latch */
- /* meaning of other SR_* bits may differ between vendors */
--#define	SR_BP0			4	/* Block protect 0 */
--#define	SR_BP1			8	/* Block protect 1 */
--#define	SR_BP2			0x10	/* Block protect 2 */
--#define	SR_SRWD			0x80	/* SR write protect */
-+#define SR_BP0			4	/* Block protect 0 */
-+#define SR_BP1			8	/* Block protect 1 */
-+#define SR_BP2			0x10	/* Block protect 2 */
-+#define SR_SRWD			0x80	/* SR write protect */
+ 	seq->seq[0] = STFSM_INST_CMD1;
+@@ -630,7 +631,7 @@ static struct stfsm_seq stfsm_seq_erase_chip = {
+ 		 SEQ_OPC_OPCODE(SPINOR_OP_WREN) | SEQ_OPC_CSDEASSERT),
  
- #define SR_QUAD_EN_MX           0x40    /* Macronix Quad I/O */
+ 		(SEQ_OPC_PADS_1 | SEQ_OPC_CYCLES(8) |
+-		 SEQ_OPC_OPCODE(SPINOR_OP_CHIPERASE) | SEQ_OPC_CSDEASSERT),
++		 SEQ_OPC_OPCODE(SPINOR_OP_CHIP_ERASE) | SEQ_OPC_CSDEASSERT),
+ 	},
+ 	.seq = {
+ 		STFSM_INST_CMD1,
+@@ -665,7 +666,7 @@ static struct stfsm_seq stfsm_seq_write_status = {
+ static int stfsm_n25q_en_32bit_addr_seq(struct stfsm_seq *seq)
+ {
+ 	seq->seq_opc[0] = (SEQ_OPC_PADS_1 | SEQ_OPC_CYCLES(8) |
+-			   SEQ_OPC_OPCODE(SPINOR_OP_EN4B_ADDR));
++			   SEQ_OPC_OPCODE(SPINOR_OP_EN4B));
+ 	seq->seq_opc[1] = (SEQ_OPC_PADS_1 | SEQ_OPC_CYCLES(8) |
+ 			   SEQ_OPC_OPCODE(SPINOR_OP_WREN) |
+ 			   SEQ_OPC_CSDEASSERT);
+@@ -788,7 +789,7 @@ static int stfsm_write_fifo(struct stfsm *fsm, const uint32_t *buf,
+ static int stfsm_enter_32bit_addr(struct stfsm *fsm, int enter)
+ {
+ 	struct stfsm_seq *seq = &fsm->stfsm_seq_en_32bit_addr;
+-	uint32_t cmd = enter ? SPINOR_OP_EN4B_ADDR : SPINOR_OP_EX4B_ADDR;
++	uint32_t cmd = enter ? SPINOR_OP_EN4B : SPINOR_OP_EX4B;
  
-@@ -86,7 +86,7 @@ struct spi_nor_xfer_cfg {
- 	u8		dummy_cycles;
- };
- 
--#define	SPI_NOR_MAX_CMD_SIZE	8
-+#define SPI_NOR_MAX_CMD_SIZE	8
- enum spi_nor_ops {
- 	SPI_NOR_OPS_READ = 0,
- 	SPI_NOR_OPS_WRITE,
+ 	seq->seq_opc[0] = (SEQ_OPC_PADS_1 |
+ 			   SEQ_OPC_CYCLES(8) |
 -- 
 1.8.3.2
