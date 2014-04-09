@@ -1,20 +1,27 @@
-Date: Wed, 9 Apr 2014 14:37:49 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH v5 5/8 fix] mtd: m25p80: use the SPI nor framework
-Message-ID: <20140409213749.GH32070@ld-irv-0074>
-References: <1393238262-8622-6-git-send-email-b32955@freescale.com>
- <1393574142-17234-1-git-send-email-b32955@freescale.com>
+Received: from mail-bn1blp0186.outbound.protection.outlook.com
+ ([207.46.163.186] helo=na01-bn1-obe.outbound.protection.outlook.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WY21g-0005py-Ei
+ for linux-mtd@lists.infradead.org; Wed, 09 Apr 2014 23:35:30 +0000
+Message-ID: <1397086473.20280.33.camel@snotra.buserror.net>
+Subject: Re: [PATCH] mtd: nand: Disable subpage writes for drivers without
+ ecc->hwctl
+From: Scott Wood <scottwood@freescale.com>
+To: "Gupta, Pekon" <pekon@ti.com>
+Date: Wed, 9 Apr 2014 18:34:33 -0500
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EAC1D89@DBDE04.ent.ti.com>
+References: <1397034804-27161-1-git-send-email-helmut.schaa@googlemail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EAC1D46@DBDE04.ent.ti.com>
+ <CAGXE3d8H=y3LeW54kwZg04-Edm-KkNbqXLCduNuPfAOrLymO+A@mail.gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EAC1D89@DBDE04.ent.ti.com>
+Content-Type: text/plain; charset="UTF-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1393574142-17234-1-git-send-email-b32955@freescale.com>
-Cc: angus.clark@st.com, Russel King <linux@arm.linux.org.uk>,
- broonie@linaro.org, dwmw2@infradead.org, linux-doc@vger.kernel.org,
- linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
- linux-mtd@lists.infradead.org, pekon@ti.com, sourav.poddar@ti.com,
- shawn.guo@linaro.org, lee.jones@linaro.org,
- linux-arm-kernel@lists.infradead.org
+Content-Transfer-Encoding: 7bit
+Cc: David Woodhouse <David.Woodhouse@intel.com>, "Huang Shijie
+ \(b32955@freescale.com\)" <b32955@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Helmut Schaa <helmut.schaa@googlemail.com>, Artem
+ Bityutskiy <artem.bityutskiy@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,42 +31,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ Russell
-
-On Fri, Feb 28, 2014 at 03:55:42PM +0800, Huang Shijie wrote:
-> add back the dependency information in the Kconfig. 
+On Wed, 2014-04-09 at 10:33 +0000, Gupta, Pekon wrote:
+> >From: Helmut Schaa [mailto:helmut.schaa@googlemail.com]
+> >>On Wed, Apr 9, 2014 at 11:38 AM, Gupta, Pekon <pekon@ti.com> wrote:
+> [...]
+> >>
+> >> (1) if chip->ecc.hwctl() and chip->ecc.calculate are not implemented but you
+> >>  still want to use subpage write feature, then you need to provide custom
+> >>  implementation for chip->ecc.write_subpage().
+> >>  that's same for other interfaces of nand_chip like chip->ecc.write_page().
+> >
+> >But these don't cause panics :)
+> >
+> because fsl_elbc_nand.c uses custom implementations of chip->ecc.write_page()
+> 	@@ fsl_elbc_chip_init(...)
+> 		chip->ecc.write_page = fsl_elbc_write_page;
 > 
+> Same needs to be done if subpage write is needed. However, as this is
+> a regression so please check if following patch solves your problem.[1]
+> 
+> 
+> >> (2) If you don't want to use subpage write feature then just disable it using
+> >>         chip->options |= NAND_NO_SUBPAGE_WRITE;
+> >>
+> >> Can you please tell which NAND controller driver is causing this ?
+> >> We need to fix that..
+> >
+> >This happens with fsl_elbc_nand (while trying to run ubiformat on a
+> >mtd dev) but the
+> >crash was caused by the introduction of nand_write_subpage_hwecc. So, in this
+> >case I think instead of trying to fix every possible driver we should
+> >let the nand core
+> >code handle this issue gracefully. Maybe we could add a WARN_ON_ONCE to
+> >notice which drivers require adjustments.
+> >
+> Yes agree. May be good to keep subpage write disabled by default,
+> as only handful drivers possibly use that.
+> 
+> 
+> [1] ## <not compile tested>
+> ------------
+> From bfd39102ed6aa99b7ac2b8394a2d12b879fbb4b7 Mon Sep 17 00:00:00 2001
+> From: Pekon Gupta <pekon@ti.com>
+> Date: Wed, 9 Apr 2014 15:51:25 +0530
+> Subject: [PATCH] mtd: eLBC NAND: disable subpage write support
+> 
+> As fsl_elbc_nand do not implement NAND ECC interfaces (like chip->ecc.hwctl(),
+> chip->ecc.calculate, and chip->ecc.correct) So it cannot use default
+> implementation of nand_write_subpage_hwecc() as in nand_base.c.
+> Hence disabling subpage write support till a custom implementation for
+> chip->ecc_write_subpage is added.
+> 
+> CC: <stable@vger.kernel.org> # 3.10.x+
+> Signed-off-by: Pekon Gupta <pekon@ti.com>
 > ---
->  drivers/mtd/devices/Kconfig  |    2 +-
->  drivers/mtd/devices/m25p80.c | 1302 ++++--------------------------------------
->  2 files changed, 106 insertions(+), 1198 deletions(-)
+>  drivers/mtd/nand/fsl_elbc_nand.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
-> index 0128138..004b17b 100644
-> --- a/drivers/mtd/devices/Kconfig
-> +++ b/drivers/mtd/devices/Kconfig
-> @@ -80,7 +80,7 @@ config MTD_DATAFLASH_OTP
->  
->  config MTD_M25P80
->  	tristate "Support most SPI Flash chips (AT26DF, M25P, W25X, ...)"
-> -	depends on SPI_MASTER
-> +	depends on SPI_MASTER && MTD_SPI_NOR_BASE
->  	help
->  	  This enables access to most modern SPI flash chips, used for
->  	  program and data storage.   Series supported include Atmel AT26DF,
+> diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
+> index ec549cd..a21252c 100644
+> --- a/drivers/mtd/nand/fsl_elbc_nand.c
+> +++ b/drivers/mtd/nand/fsl_elbc_nand.c
+> @@ -755,6 +755,7 @@ static int fsl_elbc_chip_init(struct fsl_elbc_mtd *priv)
+> 
+>         /* set up nand options */
+>         chip->bbt_options = NAND_BBT_USE_FLASH;
+> +       chip->options |= NAND_NO_SUBPAGE_WRITE;
 
-Now that M25P80 depends on MTD_SPI_NOR_BASE (which I proposed to rename
-to MTD_SPI_NOR a few hours ago), shouldn't we be updating everybody's
-defconfigs? As it stands, the defconfigs that use M25P80 will just drop
-it silently when built.
+Won't this break compatibility with existing UBI volumes?  That's why I
+didn't set this flag on eLBC when I set it on IFC (on the latter UBI is
+simply broken without that flag, but eLBC gets away with it because of
+the ECC algorithm used).
 
-And if so, I'm not sure how this should be handled. Should defconfig
-patches be sent to their respective arch maintainers?
-
-Also, I think m25p80.c is no longer a "self-contained MTD device driver"
-and should be moved under drivers/mtd/spi-nor/.
-
-(Once these questions are settled, did you want to handle cooking the
-patches, Huang, or should I?)
-
-Brian
+-Scott
