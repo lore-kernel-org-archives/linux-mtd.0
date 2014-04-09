@@ -1,20 +1,27 @@
-Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
+Received: from mail-out.m-online.net ([212.18.0.10])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WXpPt-0004DT-VN
- for linux-mtd@lists.infradead.org; Wed, 09 Apr 2014 10:07:39 +0000
+ id 1WXpPv-0004Dm-TK
+ for linux-mtd@lists.infradead.org; Wed, 09 Apr 2014 10:07:41 +0000
 From: Marek Vasut <marex@denx.de>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: EXPORT symbols which could be used by
- module drivers
-Date: Wed, 9 Apr 2014 10:43:38 +0200
-References: <1397023781-1103-1-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1397023781-1103-1-git-send-email-computersforpeace@gmail.com>
+To: grmoore@altera.com
+Subject: Re: [PATCH] Add support for flag status register on Micron chips.
+Date: Wed, 9 Apr 2014 12:06:45 +0200
+References: <1396973570-13995-1-git-send-email-grmoore@altera.com>
+ <1396973570-13995-2-git-send-email-grmoore@altera.com>
+In-Reply-To: <1396973570-13995-2-git-send-email-grmoore@altera.com>
 MIME-Version: 1.0
 Content-Type: Text/Plain;
   charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Message-Id: <201404091043.38198.marex@denx.de>
-Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org
+Message-Id: <201404091206.45967.marex@denx.de>
+Cc: ggrahammoore@gmail.com, Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Jingoo Han <jg1.han@samsung.com>,
+ Geert Uytterhoeven <geert+renesas@linux-m68k.org>,
+ linux-kernel@vger.kernel.org, Yves Vandervennet <rocket.yvanderv@gmail.com>,
+ linux-mtd@lists.infradead.org, Insop Song <insop.song@gainspeed.com>,
+ Alan Tull <atull@altera.com>, Sourav Poddar <sourav.poddar@ti.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen <dinguyen@altera.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,15 +31,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday, April 09, 2014 at 08:09:41 AM, Brian Norris wrote:
-> Fix errors like this:
+On Tuesday, April 08, 2014 at 06:12:50 PM, grmoore@altera.com wrote:
+> From: Graham Moore <grmoore@altera.com>
 > 
->     ERROR: "spi_nor_ids" [drivers/mtd/devices/m25p80.ko] undefined!
->     ERROR: "spi_nor_scan" [drivers/mtd/devices/m25p80.ko] undefined!
->     make[1]: *** [__modpost] Error 1
->     make: *** [modules] Error 2
+> Some new Micron flash chips require reading the flag
+> status register to determine when operations have completed.
+> 
+> Furthermore, chips with multi-die stacks of the 65nm 256Mb QSPI also
+> require reading the status register before reading the flag status
+> register.
+> 
+> This patch adds support for the flag status register in the n25q512a1 and
+> n25q00 Micron QSPI flash chips.
 
-Why not EXPORT_SYMBOL_GPL ?
+[...]
+
+> +static int read_fsr(struct m25p *flash)
+> +{
+> +	ssize_t retval;
+> +	u8 code = OPCODE_RDFSR;
+> +	u8 val;
+> +
+> +	retval = spi_write_then_read(flash->spi, &code, 1, &val, 1);
+> +
+> +	if (retval < 0) {
+> +		dev_err(&flash->spi->dev, "error %d reading FSR\n",
+> +				(int) retval);
+
+Is the type-cast really needed here? Why ?
+
+> +		return retval;
+> +	}
+> +
+> +	return val;
+> +}
+> +/*
+>   * Read configuration register, returning its value in the
+>   * location. Return the configuration register value.
+>   * Returns negative if error occured.
+> @@ -233,7 +259,7 @@ static inline int set_4byte(struct m25p *flash, u32
+> jedec_id, int enable) * Service routine to read status register until
+> ready, or timeout occurs. * Returns non-zero if error.
+>   */
+> -static int wait_till_ready(struct m25p *flash)
+> +static int _wait_till_ready(struct m25p *flash)
+
+Please avoid using function names that start with underscore .
+[...]
+
+Thanks!
 
 Best regards,
 Marek Vasut
