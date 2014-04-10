@@ -1,29 +1,29 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
+Received: from mail-wi0-f170.google.com ([209.85.212.170])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WY9Nl-0004GN-4r
- for linux-mtd@lists.infradead.org; Thu, 10 Apr 2014 07:26:46 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Helmut Schaa <helmut.schaa@googlemail.com>, Scott Wood
- <scottwood@freescale.com>
-Subject: RE: [PATCH] mtd: nand: Disable subpage writes for drivers without
- ecc->hwctl
-Date: Thu, 10 Apr 2014 07:26:14 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EAC2146@DBDE04.ent.ti.com>
-References: <1397034804-27161-1-git-send-email-helmut.schaa@googlemail.com>
- <20980858CB6D3A4BAE95CA194937D5E73EAC1D46@DBDE04.ent.ti.com>
- <CAGXE3d8H=y3LeW54kwZg04-Edm-KkNbqXLCduNuPfAOrLymO+A@mail.gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73EAC1D89@DBDE04.ent.ti.com>
- <1397086473.20280.33.camel@snotra.buserror.net>
- <5dc1853e-694c-4add-bd62-e0c2a66f4c95@email.android.com>
-In-Reply-To: <5dc1853e-694c-4add-bd62-e0c2a66f4c95@email.android.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1WY9dn-0004ix-7l
+ for linux-mtd@lists.infradead.org; Thu, 10 Apr 2014 07:43:21 +0000
+Received: by mail-wi0-f170.google.com with SMTP id bs8so546814wib.5
+ for <linux-mtd@lists.infradead.org>; Thu, 10 Apr 2014 00:42:57 -0700 (PDT)
+Date: Thu, 10 Apr 2014 08:42:53 +0100
+From: Lee Jones <lee.jones@linaro.org>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v5 0/8] mtd: spi-nor: add a new framework for SPI NOR
+Message-ID: <20140410074253.GD4214@lee--X1>
+References: <1393238262-8622-1-git-send-email-b32955@freescale.com>
+ <20140312081350.GC30808@shlinux2.ap.freescale.net>
+ <20140313063940.GU31517@norris-Latitude-E6410>
+ <20140409033603.GA32070@ld-irv-0074>
 MIME-Version: 1.0
-Cc: "Huang Shijie \(b32955@freescale.com\)" <b32955@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <David.Woodhouse@intel.com>, Artem
- Bityutskiy <artem.bityutskiy@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20140409033603.GA32070@ld-irv-0074>
+Cc: Marek Vasut <marex@denx.de>, angus.clark@st.com, b44548@freescale.com,
+ broonie@linaro.org, linux-doc@vger.kernel.org, b18965@freescale.com,
+ linux-spi@vger.kernel.org, Huang Shijie <b32955@freescale.com>,
+ devicetree@vger.kernel.org, linux-mtd@lists.infradead.org, pekon@ti.com,
+ sourav.poddar@ti.com, shawn.guo@linaro.org, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,53 +33,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgSGVsbXV0IFNjaGFhLA0KDQo+RnJvbTogSGVsbXV0IFNjaGFhIFttYWlsdG86aGVsbXV0LnNj
-aGFhQGdvb2dsZW1haWwuY29tXQ0KPj5TY290dCBXb29kIDxzY290dHdvb2RAZnJlZXNjYWxlLmNv
-bT4gc2NocmllYjoNClsuLi5dDQo+Pj4gRnJvbTogUGVrb24gR3VwdGEgPHBla29uQHRpLmNvbT4N
-Cj4+PiBEYXRlOiBXZWQsIDkgQXByIDIwMTQgMTU6NTE6MjUgKzA1MzANCj4+PiBTdWJqZWN0OiBb
-UEFUQ0hdIG10ZDogZUxCQyBOQU5EOiBkaXNhYmxlIHN1YnBhZ2Ugd3JpdGUgc3VwcG9ydA0KPj4+
-DQo+Pj4gQXMgZnNsX2VsYmNfbmFuZCBkbyBub3QgaW1wbGVtZW50IE5BTkQgRUNDIGludGVyZmFj
-ZXMgKGxpa2UNCj4+Y2hpcC0+ZWNjLmh3Y3RsKCksDQo+Pj4gY2hpcC0+ZWNjLmNhbGN1bGF0ZSwg
-YW5kIGNoaXAtPmVjYy5jb3JyZWN0KSBTbyBpdCBjYW5ub3QgdXNlIGRlZmF1bHQNCj4+PiBpbXBs
-ZW1lbnRhdGlvbiBvZiBuYW5kX3dyaXRlX3N1YnBhZ2VfaHdlY2MoKSBhcyBpbiBuYW5kX2Jhc2Uu
-Yy4NCj4+PiBIZW5jZSBkaXNhYmxpbmcgc3VicGFnZSB3cml0ZSBzdXBwb3J0IHRpbGwgYSBjdXN0
-b20gaW1wbGVtZW50YXRpb24NCj4+Zm9yDQo+Pj4gY2hpcC0+ZWNjX3dyaXRlX3N1YnBhZ2UgaXMg
-YWRkZWQuDQo+Pj4NCj4+PiBDQzogPHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmc+ICMgMy4xMC54Kw0K
-Pj4+IFNpZ25lZC1vZmYtYnk6IFBla29uIEd1cHRhIDxwZWtvbkB0aS5jb20+DQo+Pj4gLS0tDQo+
-Pj4gIGRyaXZlcnMvbXRkL25hbmQvZnNsX2VsYmNfbmFuZC5jIHwgMSArDQo+Pj4gIDEgZmlsZSBj
-aGFuZ2VkLCAxIGluc2VydGlvbigrKQ0KPj4+DQo+Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRk
-L25hbmQvZnNsX2VsYmNfbmFuZC5jDQo+PmIvZHJpdmVycy9tdGQvbmFuZC9mc2xfZWxiY19uYW5k
-LmMNCj4+PiBpbmRleCBlYzU0OWNkLi5hMjEyNTJjIDEwMDY0NA0KPj4+IC0tLSBhL2RyaXZlcnMv
-bXRkL25hbmQvZnNsX2VsYmNfbmFuZC5jDQo+Pj4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9mc2xf
-ZWxiY19uYW5kLmMNCj4+PiBAQCAtNzU1LDYgKzc1NSw3IEBAIHN0YXRpYyBpbnQgZnNsX2VsYmNf
-Y2hpcF9pbml0KHN0cnVjdCBmc2xfZWxiY19tdGQNCj4+KnByaXYpDQo+Pj4NCj4+PiAgICAgICAg
-IC8qIHNldCB1cCBuYW5kIG9wdGlvbnMgKi8NCj4+PiAgICAgICAgIGNoaXAtPmJidF9vcHRpb25z
-ID0gTkFORF9CQlRfVVNFX0ZMQVNIOw0KPj4+ICsgICAgICAgY2hpcC0+b3B0aW9ucyB8PSBOQU5E
-X05PX1NVQlBBR0VfV1JJVEU7DQo+Pg0KPj5Xb24ndCB0aGlzIGJyZWFrIGNvbXBhdGliaWxpdHkg
-d2l0aCBleGlzdGluZyBVQkkgdm9sdW1lcz8gIFRoYXQncyB3aHkgSQ0KPj5kaWRuJ3Qgc2V0IHRo
-aXMgZmxhZyBvbiBlTEJDIHdoZW4gSSBzZXQgaXQgb24gSUZDIChvbiB0aGUgbGF0dGVyIFVCSSBp
-cw0KPj5zaW1wbHkgYnJva2VuIHdpdGhvdXQgdGhhdCBmbGFnLCBidXQgZUxCQyBnZXRzIGF3YXkg
-d2l0aCBpdCBiZWNhdXNlIG9mDQo+PnRoZSBFQ0MgYWxnb3JpdGhtIHVzZWQpLg0KPg0KPkNvdWxk
-IGJlLiBJIGhhZCB0byBvdmVycmlkZSB0aGUgVklEIGhlYWRlciBvZmZzZXQgYWNjb3JkaW5nbHkg
-dG8gYmUgYWJsZSB0byBhdHRhY2ggdG8gdGhlIHViaSB2b2x1bWUgYWZ0ZXIgYXBwbHlpbmcgdGhp
-cyBwYXRjaCAuLi4NCj4NClRoZXJlIGNvdWxkIGJlIHNvbWUgbWlzY29uZmlndXJhdGlvbiBpbiB0
-aGUgd2F5IHlvdSBnZW5lcmF0ZSB5b3VyDQpVQklGUyBpbWFnZS4gSnVzdCBjaGVjayBmb2xsb3dp
-bmc6DQooMSkgbWluLWlvLXNpemUgKC1tKSBwYXNzZWQgdG8gbWtmcy51YmlmcyBhbmQgdWJpbml6
-ZSBjb21tYW5kcz8NCigyKSB2aWQtaGRyLW9mZnNldCAoLU8pIHBhc3NlZCB0byB1YmluaXplIGFu
-ZCB1YmlhdHRhY2ggY29tbWFuZHM/DQooMykgc3VicGFnZS1zaXplICgtcykgcGFzc2VkIHRvIHVi
-aW5pemUgY29tbWFuZHM/IFtvcHRpb25hbF0NCkFsbCBvZiB0aGUgYWJvdmUgc2hvdWxkIGJlIHNl
-dCB0byAkUEFHRV9TSVpFIG9mIHlvdXIgTkFORCBkZXZpY2UuDQoNCkJlY2F1c2UgaWYgeW91ciBp
-bWFnZSBpdHNlbGYgd2FzIGdlbmVyYXRlZCBzdWNoIGEgd2F5IHRoYXQgdmlkLWhkciB3YXMNCm9m
-ZnNldCBhdCBwYWdlLWJvdW5kYXJpZXMgdGhlbiB5b3Ugc2hvdWxkbid0IGhhdmUgbmVlZGVkIHRo
-aXMgY2hhbmdlLg0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQpuYW5kX2Jhc2UuYyBAQCBu
-YW5kX3dyaXRlX3BhZ2UoLi4pDQoJaWYgKCEoY2hpcC0+b3B0aW9ucyAmIE5BTkRfTk9fU1VCUEFH
-RV9XUklURSkgJiYNCgkJY2hpcC0+ZWNjLndyaXRlX3N1YnBhZ2UpDQoJCXN1YnBhZ2UgPSBvZmZz
-ZXQgfHwgKGRhdGFfbGVuIDwgbXRkLT53cml0ZXNpemUpOyAgIDw8LS0tLS0NCgllbHNlDQoJCXN1
-YnBhZ2UgPSAwOw0KCVsuLi5dDQoJZWxzZSBpZiAoc3VicGFnZSkgIDw8LS0tLS0tLS0NCgkJc3Rh
-dHVzID0gY2hpcC0+ZWNjLndyaXRlX3N1YnBhZ2UobXRkLCBjaGlwLCBvZmZzZXQsIGRhdGFfbGVu
-LA0KCQkJCQkJCSBidWYsIG9vYl9yZXF1aXJlZCk7DQotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0NClNvLCBldmVuIGlmIHRoZSBzdWJwYWdlLXdyaXRlIGlzIGVuYWJsZWQsIGJ1dCBhbGwgdGhl
-IHdyaXRlIGFjY2Vzc2VzIGFyZQ0KcGFnZS1hbGlnbmVkLCAodGhhdCBpcyBvZmZzZXQ9PTAgJiYg
-ZGF0YV9sZW4gJSBtdGQtPndyaXRlc2l6ZSA9PTApDQp0aGVuIGFsc28gY2hpcC0+ZWNjLndyaXRl
-X3N1YnBhZ2UoKSBkb2VzIF9ub3RfIGNvbWUgaW4gcGF0aC4NCg0KDQp3aXRoIHJlZ2FyZHMsIHBl
-a29uDQo=
+> + Lee, Marek
+> 
+> Hi Huang,
+> 
+> On Wed, Mar 12, 2014 at 11:39:40PM -0700, Brian Norris wrote:
+> > On Wed, Mar 12, 2014 at 04:13:51PM +0800, Huang Shijie wrote:
+> > > On Mon, Feb 24, 2014 at 06:37:34PM +0800, Huang Shijie wrote:
+> > >    Could you please review this patch set? I really hope it can be merged
+> > >    as soon as possibel.  But now, the patch set has stalled for a long time.
+> > 
+> > I'm sorry for the delay. Others are in the same position of delay (e.g.,
+> > Lee's SPI-NOR driver), because I simply have not had the time to really
+> > devote this the attention it deserves, especially considering how it
+> > rearchitects such an important, commonly-used driver.
+> > 
+> > Nonetheless, I will try to give your patches some more attention soon.
+> > 
+> > >    Since you have pushed the patches for m25p80.c, i have to rebase this
+> > >    patch set again and again...
+> > 
+> > You mean locally? I promise you, I can handle rebasing on my reviewing
+> > end for small one-line conflicts like new chip IDs, so don't rebase and
+> > resend simply for that. Unless I find substantive things that you should
+> > change, I'd only expect at most one more rebase to be necessary.
+> 
+> Unfortunately, I did not get the time to review and test this
+> sufficiently for the 3.15 merge window, but to avoid further delay, I've
+> queued it up in l2-mtd.git [1] under its own branch for now. I rebased
+> it myself, to accommodate for changes to m25p80.c since your submission.
+> Please take a look at the branch.
+> 
+> If all goes well, I should merge the spinor branch into master some time
+> after the 3.15 merge window closes, so it will get linux-next testing.
+> For any additional comments/corrections (I have a few), please just
+> submit patches on top, rather than resending the whole series.
+> 
+> Marek, what was your opinion on this series? Last response I saw was
+> "looking good"; is that an Ack? Or did you have any more gating
+> requests?
+> 
+> Personally, I think it looks ready enough, and it's better to merge this
+> than not. I was able to test with my platforms, with no regression.
+> 
+> Lee, I have a few patches that do some trivial unification of your ST
+> SPI FSM driver and the SPI-NOR framework. I plan to send these out
+> soon, and I will begin applying any ST-FSM patches to the same spinor
+> branch along with Huang's code. I hope that you can spend some effort on
+> improving integration within the next few months in preparation for
+> 3.16, when I expect this to all go upstream.
+
+I certainly plan to. Although, I'm up to my neck in the ST BCH NAND
+driver at the moment. Trying to re-spin something that'll be
+accepted i.e. more intensive use of the framework.
+
+Quick question, is there a chat medium for MTD? Somewhere for
+quick-fire questions i.e. an IRC channel or similar?
+
+> [1] branch spinor, at http://git.infradead.org/l2-mtd.git
+
+-- 
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
