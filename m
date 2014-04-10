@@ -1,14 +1,14 @@
-Received: from mail-ig0-x22d.google.com ([2607:f8b0:4001:c05::22d])
+Received: from mail-ig0-x232.google.com ([2607:f8b0:4001:c05::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WYKXg-0005vO-Jz
- for linux-mtd@lists.infradead.org; Thu, 10 Apr 2014 19:21:45 +0000
-Received: by mail-ig0-f173.google.com with SMTP id hl10so8217589igb.0
- for <linux-mtd@lists.infradead.org>; Thu, 10 Apr 2014 12:21:23 -0700 (PDT)
+ id 1WYKXh-0005vR-RX
+ for linux-mtd@lists.infradead.org; Thu, 10 Apr 2014 19:21:46 +0000
+Received: by mail-ig0-f178.google.com with SMTP id hn18so4173939igb.17
+ for <linux-mtd@lists.infradead.org>; Thu, 10 Apr 2014 12:21:24 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v2 04/10] Documentation: spi-nor: rewrite some portions
-Date: Thu, 10 Apr 2014 12:20:58 -0700
-Message-Id: <1397157664-24405-5-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v2 05/10] mtd: spi-nor: shorten Kconfig naming
+Date: Thu, 10 Apr 2014 12:20:59 -0700
+Message-Id: <1397157664-24405-6-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1397157664-24405-1-git-send-email-computersforpeace@gmail.com>
 References: <1397157664-24405-1-git-send-email-computersforpeace@gmail.com>
 Cc: Marek Vasut <marex@denx.de>, Huang Shijie <b32955@freescale.com>,
@@ -23,73 +23,71 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Reviewed-by: Marek Vasut <marex@denx.de>
+Acked-by: Huang Shijie <b32955@freescale.com>
 ---
- Documentation/mtd/spi-nor.txt | 37 ++++++++++++++++++++-----------------
- 1 file changed, 20 insertions(+), 17 deletions(-)
+ drivers/mtd/Makefile         |  2 +-
+ drivers/mtd/devices/Kconfig  |  2 +-
+ drivers/mtd/spi-nor/Kconfig  | 11 ++++++++---
+ drivers/mtd/spi-nor/Makefile |  2 +-
+ 4 files changed, 11 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/mtd/spi-nor.txt b/Documentation/mtd/spi-nor.txt
-index 294d5b06f892..548d6306ebca 100644
---- a/Documentation/mtd/spi-nor.txt
-+++ b/Documentation/mtd/spi-nor.txt
-@@ -1,19 +1,23 @@
-                           SPI NOR framework
-                ============================================
+diff --git a/drivers/mtd/Makefile b/drivers/mtd/Makefile
+index 40fd15344387..99bb9a1f6e16 100644
+--- a/drivers/mtd/Makefile
++++ b/drivers/mtd/Makefile
+@@ -32,5 +32,5 @@ inftl-objs		:= inftlcore.o inftlmount.o
  
--Part I - why we need this framework?
---------------------------------------
-+Part I - Why do we need this framework?
-+---------------------------------------
+ obj-y		+= chips/ lpddr/ maps/ devices/ nand/ onenand/ tests/
  
--The SPI bus controller only deals with the byte stream.
--Some controller does not works like a SPI bus controller, it works
--like a SPI NOR controller instead, such as the Freescale's QuadSPI controller.
-+SPI bus controllers (drivers/spi/) only deal with streams of bytes; the bus
-+controller operates agnostic of the specific device attached. However, some
-+controllers (such as Freescale's QuadSPI controller) cannot easily handle
-+arbitrary streams of bytes, but rather are designed specifically for SPI NOR.
+-obj-$(CONFIG_MTD_SPI_NOR_BASE)	+= spi-nor/
++obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor/
+ obj-$(CONFIG_MTD_UBI)		+= ubi/
+diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
+index 48aa1aa5820b..f9e32b53dfc6 100644
+--- a/drivers/mtd/devices/Kconfig
++++ b/drivers/mtd/devices/Kconfig
+@@ -80,7 +80,7 @@ config MTD_DATAFLASH_OTP
  
--The Freescale's QuadSPI controller should know the NOR commands to
--find the right LUT sequence. Unfortunately, the old code can not meet
--this requirement.
-+In particular, Freescale's QuadSPI controller must know the NOR commands to
-+find the right LUT sequence. Unfortunately, the SPI subsystem has no notion of
-+opcodes, addresses, or data payloads; a SPI controller simply knows to send or
-+receive bytes (Tx and Rx). Therefore, we must define a new layering scheme under
-+which the controller driver is aware of the opcodes, addressing, and other
-+details of the SPI NOR protocol.
- 
- Part II - How does the framework work?
---------------------------------------
-+--------------------------------------
- 
- This framework just adds a new layer between the MTD and the SPI bus driver.
- With this new layer, the SPI NOR controller driver does not depend on the
-@@ -40,7 +44,7 @@ m25p80 code anymore.
-          ------------------------
- 	       SPI NOR chip
- 
--  With the SPI NOR controller driver(Freescale QuadSPI), it looks like:
-+  With the SPI NOR controller driver (Freescale QuadSPI), it looks like:
-                    MTD
-          ------------------------
-               SPI NOR framework
-@@ -49,11 +53,10 @@ m25p80 code anymore.
-          ------------------------
- 	       SPI NOR chip
- 
--Part III - How can the drivers use the framework
---------------------------------------
-+Part III - How can drivers use the framework?
-+---------------------------------------------
- 
--The main API is the spi_nor_scan(). Before you call the hook, you should
--initialize the necessary fields for spi_nor{}.
--Please see the drivers/mtd/spi-nor/spi-nor.c for detail.
--Please also reference to the fsl-quadspi.c when you want to write a new driver
--for a SPI NOR controller.
-+The main API is spi_nor_scan(). Before you call the hook, a driver should
-+initialize the necessary fields for spi_nor{}. Please see
-+drivers/mtd/spi-nor/spi-nor.c for detail. Please also refer to fsl-quadspi.c
-+when you want to write a new driver for a SPI NOR controller.
+ config MTD_M25P80
+ 	tristate "Support most SPI Flash chips (AT26DF, M25P, W25X, ...)"
+-	depends on SPI_MASTER && MTD_SPI_NOR_BASE
++	depends on SPI_MASTER && MTD_SPI_NOR
+ 	help
+ 	  This enables access to most modern SPI flash chips, used for
+ 	  program and data storage.   Series supported include Atmel AT26DF,
+diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+index 64cfc39ad17e..d682fb440e06 100644
+--- a/drivers/mtd/spi-nor/Kconfig
++++ b/drivers/mtd/spi-nor/Kconfig
+@@ -1,12 +1,17 @@
+-config MTD_SPI_NOR_BASE
+-	bool "the framework for SPI-NOR support"
++config MTD_SPI_NOR
++	bool "SPI-NOR device support"
+ 	depends on MTD
+ 	help
+ 	  This is the framework for the SPI NOR which can be used by the SPI
+ 	  device drivers and the SPI-NOR device driver.
++
++if MTD_SPI_NOR
++
+ config SPI_FSL_QUADSPI
+ 	tristate "Freescale Quad SPI controller"
+-	depends on ARCH_MXC && MTD_SPI_NOR_BASE
++	depends on ARCH_MXC
+ 	help
+ 	  This enables support for the Quad SPI controller in master mode.
+ 	  We only connect the NOR to this controller now.
++
++endif # MTD_SPI_NOR
+diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
+index 51f9d8b99ab7..6a7ce1462247 100644
+--- a/drivers/mtd/spi-nor/Makefile
++++ b/drivers/mtd/spi-nor/Makefile
+@@ -1,2 +1,2 @@
+-obj-$(CONFIG_MTD_SPI_NOR_BASE)	+= spi-nor.o
++obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor.o
+ obj-$(CONFIG_SPI_FSL_QUADSPI)	+= fsl-quadspi.o
 -- 
 1.8.3.2
