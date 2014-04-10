@@ -1,14 +1,16 @@
-Received: from mail-ie0-x22e.google.com ([2607:f8b0:4001:c03::22e])
+Received: from mail-ig0-x231.google.com ([2607:f8b0:4001:c05::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WYKXb-0005uk-80
- for linux-mtd@lists.infradead.org; Thu, 10 Apr 2014 19:21:39 +0000
-Received: by mail-ie0-f174.google.com with SMTP id rp18so4253740iec.5
- for <linux-mtd@lists.infradead.org>; Thu, 10 Apr 2014 12:21:17 -0700 (PDT)
+ id 1WYKXf-0005vJ-6u
+ for linux-mtd@lists.infradead.org; Thu, 10 Apr 2014 19:21:43 +0000
+Received: by mail-ig0-f177.google.com with SMTP id ur14so4189460igb.4
+ for <linux-mtd@lists.infradead.org>; Thu, 10 Apr 2014 12:21:19 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v2 00/10] mtd: spi-nor: misc. updates, de-duplication
-Date: Thu, 10 Apr 2014 12:20:54 -0700
-Message-Id: <1397157664-24405-1-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v2 01/10] mtd: spi-nor: drop \t after #define
+Date: Thu, 10 Apr 2014 12:20:55 -0700
+Message-Id: <1397157664-24405-2-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1397157664-24405-1-git-send-email-computersforpeace@gmail.com>
+References: <1397157664-24405-1-git-send-email-computersforpeace@gmail.com>
 Cc: Marek Vasut <marex@denx.de>, Huang Shijie <b32955@freescale.com>,
  Brian Norris <computersforpeace@gmail.com>, Lee Jones <lee.jones@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,39 +22,117 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-A few miscellaneous updates, cleanups, and de-duplications. Mostly trivial
-stuff, but I had a few oversights in the first round.
+Spacing is a little non-standard here. Fix up tabs vs. spaces.
 
-v2:
- - opcode renames to fsl-quadspi.c (missed a few; I compiled it this time!)
- - additional whitespace consistency cleanups
- - tweak documentation wording/formatting
- - additonal patch (patch 10), to allow building spi-nor as a module
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Acked-by: Huang Shijie <b32955@freescale.com>
+---
+ include/linux/mtd/spi-nor.h | 72 ++++++++++++++++++++++-----------------------
+ 1 file changed, 36 insertions(+), 36 deletions(-)
 
-Brian Norris (10):
-  mtd: spi-nor: drop \t after #define
-  mtd: spi-nor: re-name OPCODE_* to SPINOR_OP_*
-  mtd: spi-nor: unify read opcode variants with ST SPI FSM
-  Documentation: spi-nor: rewrite some portions
-  mtd: spi-nor: shorten Kconfig naming
-  mtd: st_spi_fsm: fixup Kconfig dependency
-  mtd: st_spi_fsm: kill duplicate CMD definitions
-  mtd: st_spi_fsm: replace FLACH_CMD_* with SPINOR_OP_*
-  mtd: st_spi_fsm: begin using spi-nor.h opcodes
-  mtd: spi-nor: allow to be built as module
-
- Documentation/mtd/spi-nor.txt           |  37 ++++----
- drivers/mtd/Makefile                    |   2 +-
- drivers/mtd/devices/Kconfig             |   4 +-
- drivers/mtd/devices/m25p80.c            |   4 +-
- drivers/mtd/devices/serial_flash_cmds.h |  44 +++-------
- drivers/mtd/devices/st_spi_fsm.c        | 149 ++++++++++++--------------------
- drivers/mtd/spi-nor/Kconfig             |  11 ++-
- drivers/mtd/spi-nor/Makefile            |   2 +-
- drivers/mtd/spi-nor/fsl-quadspi.c       |  58 ++++++-------
- drivers/mtd/spi-nor/spi-nor.c           |  64 +++++++-------
- include/linux/mtd/spi-nor.h             |  80 +++++++++--------
- 11 files changed, 208 insertions(+), 247 deletions(-)
-
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index 9428d285489b..a6e87190ead1 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -11,55 +11,55 @@
+ #define __LINUX_MTD_SPI_NOR_H
+ 
+ /* Flash opcodes. */
+-#define	OPCODE_WREN		0x06	/* Write enable */
+-#define	OPCODE_RDSR		0x05	/* Read status register */
+-#define	OPCODE_WRSR		0x01	/* Write status register 1 byte */
+-#define	OPCODE_NORM_READ	0x03	/* Read data bytes (low frequency) */
+-#define	OPCODE_FAST_READ	0x0b	/* Read data bytes (high frequency) */
+-#define	OPCODE_DUAL_READ        0x3b    /* Read data bytes (Dual SPI) */
+-#define	OPCODE_QUAD_READ        0x6b    /* Read data bytes (Quad SPI) */
+-#define	OPCODE_PP		0x02	/* Page program (up to 256 bytes) */
+-#define	OPCODE_BE_4K		0x20	/* Erase 4KiB block */
+-#define	OPCODE_BE_4K_PMC	0xd7	/* Erase 4KiB block on PMC chips */
+-#define	OPCODE_BE_32K		0x52	/* Erase 32KiB block */
+-#define	OPCODE_CHIP_ERASE	0xc7	/* Erase whole flash chip */
+-#define	OPCODE_SE		0xd8	/* Sector erase (usually 64KiB) */
+-#define	OPCODE_RDID		0x9f	/* Read JEDEC ID */
+-#define	OPCODE_RDCR             0x35    /* Read configuration register */
++#define OPCODE_WREN		0x06	/* Write enable */
++#define OPCODE_RDSR		0x05	/* Read status register */
++#define OPCODE_WRSR		0x01	/* Write status register 1 byte */
++#define OPCODE_NORM_READ	0x03	/* Read data bytes (low frequency) */
++#define OPCODE_FAST_READ	0x0b	/* Read data bytes (high frequency) */
++#define OPCODE_DUAL_READ	0x3b	/* Read data bytes (Dual SPI) */
++#define OPCODE_QUAD_READ	0x6b	/* Read data bytes (Quad SPI) */
++#define OPCODE_PP		0x02	/* Page program (up to 256 bytes) */
++#define OPCODE_BE_4K		0x20	/* Erase 4KiB block */
++#define OPCODE_BE_4K_PMC	0xd7	/* Erase 4KiB block on PMC chips */
++#define OPCODE_BE_32K		0x52	/* Erase 32KiB block */
++#define OPCODE_CHIP_ERASE	0xc7	/* Erase whole flash chip */
++#define OPCODE_SE		0xd8	/* Sector erase (usually 64KiB) */
++#define OPCODE_RDID		0x9f	/* Read JEDEC ID */
++#define OPCODE_RDCR		0x35	/* Read configuration register */
+ 
+ /* 4-byte address opcodes - used on Spansion and some Macronix flashes. */
+-#define	OPCODE_NORM_READ_4B	0x13	/* Read data bytes (low frequency) */
+-#define	OPCODE_FAST_READ_4B	0x0c	/* Read data bytes (high frequency) */
+-#define	OPCODE_DUAL_READ_4B	0x3c    /* Read data bytes (Dual SPI) */
+-#define	OPCODE_QUAD_READ_4B	0x6c    /* Read data bytes (Quad SPI) */
+-#define	OPCODE_PP_4B		0x12	/* Page program (up to 256 bytes) */
+-#define	OPCODE_SE_4B		0xdc	/* Sector erase (usually 64KiB) */
++#define OPCODE_NORM_READ_4B	0x13	/* Read data bytes (low frequency) */
++#define OPCODE_FAST_READ_4B	0x0c	/* Read data bytes (high frequency) */
++#define OPCODE_DUAL_READ_4B	0x3c	/* Read data bytes (Dual SPI) */
++#define OPCODE_QUAD_READ_4B	0x6c	/* Read data bytes (Quad SPI) */
++#define OPCODE_PP_4B		0x12	/* Page program (up to 256 bytes) */
++#define OPCODE_SE_4B		0xdc	/* Sector erase (usually 64KiB) */
+ 
+ /* Used for SST flashes only. */
+-#define	OPCODE_BP		0x02	/* Byte program */
+-#define	OPCODE_WRDI		0x04	/* Write disable */
+-#define	OPCODE_AAI_WP		0xad	/* Auto address increment word program */
++#define OPCODE_BP		0x02	/* Byte program */
++#define OPCODE_WRDI		0x04	/* Write disable */
++#define OPCODE_AAI_WP		0xad	/* Auto address increment word program */
+ 
+ /* Used for Macronix and Winbond flashes. */
+-#define	OPCODE_EN4B		0xb7	/* Enter 4-byte mode */
+-#define	OPCODE_EX4B		0xe9	/* Exit 4-byte mode */
++#define OPCODE_EN4B		0xb7	/* Enter 4-byte mode */
++#define OPCODE_EX4B		0xe9	/* Exit 4-byte mode */
+ 
+ /* Used for Spansion flashes only. */
+-#define	OPCODE_BRWR		0x17	/* Bank register write */
++#define OPCODE_BRWR		0x17	/* Bank register write */
+ 
+ /* Status Register bits. */
+-#define	SR_WIP			1	/* Write in progress */
+-#define	SR_WEL			2	/* Write enable latch */
++#define SR_WIP			1	/* Write in progress */
++#define SR_WEL			2	/* Write enable latch */
+ /* meaning of other SR_* bits may differ between vendors */
+-#define	SR_BP0			4	/* Block protect 0 */
+-#define	SR_BP1			8	/* Block protect 1 */
+-#define	SR_BP2			0x10	/* Block protect 2 */
+-#define	SR_SRWD			0x80	/* SR write protect */
++#define SR_BP0			4	/* Block protect 0 */
++#define SR_BP1			8	/* Block protect 1 */
++#define SR_BP2			0x10	/* Block protect 2 */
++#define SR_SRWD			0x80	/* SR write protect */
+ 
+-#define SR_QUAD_EN_MX           0x40    /* Macronix Quad I/O */
++#define SR_QUAD_EN_MX		0x40	/* Macronix Quad I/O */
+ 
+ /* Configuration Register bits. */
+-#define CR_QUAD_EN_SPAN		0x2     /* Spansion Quad I/O */
++#define CR_QUAD_EN_SPAN		0x2	/* Spansion Quad I/O */
+ 
+ enum read_mode {
+ 	SPI_NOR_NORMAL = 0,
+@@ -95,7 +95,7 @@ struct spi_nor_xfer_cfg {
+ 	u8		dummy_cycles;
+ };
+ 
+-#define	SPI_NOR_MAX_CMD_SIZE	8
++#define SPI_NOR_MAX_CMD_SIZE	8
+ enum spi_nor_ops {
+ 	SPI_NOR_OPS_READ = 0,
+ 	SPI_NOR_OPS_WRITE,
 -- 
 1.8.3.2
