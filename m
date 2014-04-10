@@ -1,24 +1,21 @@
-Received: from mail-ig0-x234.google.com ([2607:f8b0:4001:c05::234])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WYKkB-00012s-4l
- for linux-mtd@lists.infradead.org; Thu, 10 Apr 2014 19:34:39 +0000
-Received: by mail-ig0-f180.google.com with SMTP id c1so4205450igq.1
- for <linux-mtd@lists.infradead.org>; Thu, 10 Apr 2014 12:34:15 -0700 (PDT)
-Date: Thu, 10 Apr 2014 12:34:12 -0700
+Date: Thu, 10 Apr 2014 13:00:04 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH 3/9] mtd: spi-nor: unify read opcode variants with ST SPI
- FSM
-Message-ID: <20140410193412.GO32070@ld-irv-0074>
-References: <1397064774-31784-1-git-send-email-computersforpeace@gmail.com>
- <1397064774-31784-3-git-send-email-computersforpeace@gmail.com>
- <20140410074711.GG24100@localhost>
+To: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [RFC 00/47] mtd: nand: Add new driver supporting ST's BCH h/w
+Message-ID: <20140410200004.GP32070@ld-irv-0074>
+References: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
+ <20140325125050.GB665@arch.cereza> <20140325131139.GB24823@lee--X1>
+ <20140325220045.GA12185@arch.cereza>
+ <20140326072805.GB31517@norris-Latitude-E6410>
+ <20140327102835.GA17779@lee--X1> <20140401112926.GB24013@lee--X1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20140410074711.GG24100@localhost>
-Cc: Marek Vasut <marex@denx.de>, Lee Jones <lee.jones@linaro.org>,
- linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org
+In-Reply-To: <20140401112926.GB24013@lee--X1>
+Cc: angus.clark@st.com, kernel@stlinux.com, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, pekon@ti.com,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,22 +25,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Apr 10, 2014 at 03:47:13PM +0800, Huang Shijie wrote:
-> On Wed, Apr 09, 2014 at 10:32:48AM -0700, Brian Norris wrote:
-> > serial_flash_cmds.h defines our opcodes a little differently. Let's
-> > borrow its naming, since it's borrowed from the SFDP standard, and it's
-> > more extensible.
-> > 
-> > This prepares us for merging serial_flash_cmds.h and spi-nor.h opcode
-> > listing.
-> > 
-> > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> > ---
-> >  drivers/mtd/spi-nor/spi-nor.c | 16 ++++++++--------
-> >  include/linux/mtd/spi-nor.h   | 24 ++++++++++++++++--------
-> Please also change the fsl-quadspi.c which also uses the opcodes.
+On Tue, Apr 01, 2014 at 12:29:26PM +0100, Lee Jones wrote:
+> > The BBT requirements are somewhere more complex. To provide you with
+> > the complete picture, a little knowledge of driver history is
+> > required. When it was initially created the MTD core only supported
+> > OOB BBTs, but the ST BCH Controller doesn't support OOB access, so
+> > Angus wrote his on In-Band (IB) implementation. Unfortunately the IB
+> > support which _is_ now present in the kernel doesn't match the
+> > internal implementation. Normally this wouldn't be an issue in itself,
+> > but ST's boot-stack and tooling (Primary Bootloader, U-Boot, various
+> > Programmers, etc) are aware of the internal IB BTT and utilise it
+> > in varying ways. Shifting over to the Mainline version in
+> > one-foul-swoop _will_ cause lots of pain and will probably result in
+> > the disownership of driver we're trying to Mainline today. Naturally
+> > I'm keen to avoid this.
+> 
+> Just looking into this now. Can I add support for a vendor specific
+> signature extension? ST's flashers, bootloaders and tooling currently
+> use the format:
+> 
+> /* Extend IBBT header with some stm-nand-bch niceties */
+> struct nand_ibbt_bch_header {
+> 	uint8_t signature[4];           /* "Bbt0" or "1tbB" signature */
+> 	uint8_t version;                /* BBT version ("age") */
+> 	uint8_t reserved[3];            /* padding */
+> 	uint8_t baseschema[4];          /* "base" schema (x4) */
+> 	uint8_t privschema[4];          /* "private" schema (x4) */
 
-My bad. I missed compiling this driver. Fixed in v2.
+Not sure what these schema mean.
 
-Thanks,
+> 	uint8_t ecc_size[4];            /* ECC bytes (0, 32, 54) (x4) */
+> 	char    author[64];             /* Arbitrary string for S/W to use */
+> }; __attribute__((__packed__))
+
+Nit: that would just be __packed (see compiler-gcc.h).
+
+In principle, I'm OK with extending the BBT somewhat. Preferably, this
+would provide some extensibility, so that other custom formats can use
+the same base code. For instance, it looks like many of these fields
+would be fixed, and specific to your platform. So (from nand_bbt's
+perspective) these could just be consolidated int a field:
+
+	u8 custom[76];
+
+Or make it variable-length, with the length provided by the driver?
+nand_bbt would just know not to check for it when scanning, and it
+would know to program it to flash when updating.
+
+> It would be great if we can support this with a descriptor option or
+> suchlike, as it would a) save me a lot of aggravation and b) continue
+> to support ST with their current use-case.
+
+Yeah, I realize you can't just jump over to the current format for
+production systems. And there are admittedly some rough spots in our
+current nand_bbt; it's not perfect.
+
+Some random notes (not necessarily your problem; but things to be aware
+of): nand_bbt could use some additional robustness checks, I think. Like
+a CRC field, and maybe a versioning system for allowing
+(backwards-compatible) changes in the format. To make
+backwards-compatible changes, though, the original format needs to have
+reserved space, or at least an 'offset' field, which would point to
+where the actual BBT starts--not just a fixed offset.
+
+There's also still a bit of cruft that really can be removed from
+nand_bbt (the handling of bad block markers, which is duplicated in
+nand_base). It's a low-priority item on my plate, but I think it might
+be a good first step before trying to expand nand_bbt much.
+
 Brian
