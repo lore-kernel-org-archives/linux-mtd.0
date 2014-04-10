@@ -1,25 +1,20 @@
-Received: from mail-ie0-x231.google.com ([2607:f8b0:4001:c03::231])
+Received: from mail-pb0-x22d.google.com ([2607:f8b0:400e:c01::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WYKCP-0007vt-1I
- for linux-mtd@lists.infradead.org; Thu, 10 Apr 2014 18:59:45 +0000
-Received: by mail-ie0-f177.google.com with SMTP id rl12so4397842iec.36
- for <linux-mtd@lists.infradead.org>; Thu, 10 Apr 2014 11:59:22 -0700 (PDT)
-Date: Thu, 10 Apr 2014 11:59:19 -0700
+ id 1WYKGd-0000m8-Ln
+ for linux-mtd@lists.infradead.org; Thu, 10 Apr 2014 19:04:08 +0000
+Received: by mail-pb0-f45.google.com with SMTP id uo5so4314406pbc.18
+ for <linux-mtd@lists.infradead.org>; Thu, 10 Apr 2014 12:03:46 -0700 (PDT)
+Date: Thu, 10 Apr 2014 12:03:43 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 7/9] mtd: st_spi_fsm: kill duplicate CMD definitions
-Message-ID: <20140410185919.GJ32070@ld-irv-0074>
-References: <1397064774-31784-1-git-send-email-computersforpeace@gmail.com>
- <1397064774-31784-7-git-send-email-computersforpeace@gmail.com>
- <CAMuHMdWu7YVO_RD-SUfaTw1Jp97i5bm8iX5TzKeqgWAk_iN5qQ@mail.gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH] mtd: spi-nor: add the copyright information
+Message-ID: <20140410190343.GK32070@ld-irv-0074>
+References: <1397118448-23788-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMuHMdWu7YVO_RD-SUfaTw1Jp97i5bm8iX5TzKeqgWAk_iN5qQ@mail.gmail.com>
-Cc: Marek Vasut <marex@denx.de>, Huang Shijie <b32955@freescale.com>,
- Lee Jones <lee.jones@linaro.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- linux-spi <linux-spi@vger.kernel.org>
+In-Reply-To: <1397118448-23788-1-git-send-email-b32955@freescale.com>
+Cc: marex@denx.de, linux-mtd@lists.infradead.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,14 +24,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Apr 10, 2014 at 08:01:55PM +0200, Geert Uytterhoeven wrote:
-> On Wed, Apr 9, 2014 at 7:32 PM, Brian Norris
-> <computersforpeace@gmail.com> wrote:
-> > These are also in serial_flash_cmds.h. (FWIW, I didn't know the C
-> > preprocessor allowed redefinitions without warning like this.)
+On Thu, Apr 10, 2014 at 04:27:28PM +0800, Huang Shijie wrote:
+> Add the copyright information for spi-nor.c and spi-nor.h.
 > 
-> Cpp only complains when the redefinitions are different.
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
+> ---
 
-Good to know. Thanks.
+Pushed to l2-mtd.git/spinor. Thanks!
 
+> based on Brian's patch set.
+
+BTW, it applied fine with and without my patchset, so I just took it
+first.
+
+Thanks,
 Brian
