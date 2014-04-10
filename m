@@ -1,23 +1,17 @@
-Received: from mx0a-00103a01.pphosted.com ([67.231.144.234])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WYIXk-0006c6-FK
- for linux-mtd@lists.infradead.org; Thu, 10 Apr 2014 17:13:40 +0000
-Received: from pps.filterd (m0000419.ppops.net [127.0.0.1])
- by mx0a-00103a01.pphosted.com (8.14.5/8.14.5) with SMTP id s3AHAcUC029159
- for <linux-mtd@lists.infradead.org>; Thu, 10 Apr 2014 13:13:17 -0400
-Received: from mdwexght02.ciena.com (LIN1-118-36-29.ciena.com [63.118.36.29])
- by mx0a-00103a01.pphosted.com with ESMTP id 1k5v4prvsb-17
- (version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=NOT)
- for <linux-mtd@lists.infradead.org>; Thu, 10 Apr 2014 13:13:17 -0400
-From: "Moffatt, Greg" <gmoffatt@ciena.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Thu, 10 Apr 2014 13:12:54 -0400
-Subject: UBIFS: kernel bug scheduling while atomic on full volume
-Message-ID: <D35CC66D869D1840B7A4E35C6477E0EA0201099034@ONWVEXCHMB03.ciena.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
+In-Reply-To: <201404101807.48238.marex@denx.de>
+References: <CAOMZO5DR00ea=zfr+eM0uh2L5a6QB93g8X48JNkXZZc4UavdZA@mail.gmail.com>
+ <201404101807.48238.marex@denx.de>
+Date: Thu, 10 Apr 2014 14:16:49 -0300
+Message-ID: <CAOMZO5CBV0tXhbBBFBO=T62nmCn9TenK8BgdAhT8r3b-30u6qg@mail.gmail.com>
+Subject: Re: Wrong SPI NOR model detected by mx6sl
+From: Fabio Estevam <festevam@gmail.com>
+To: Marek Vasut <marex@denx.de>
+Content-Type: text/plain; charset=UTF-8
+Cc: Huang Shijie <b32955@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Shawn Guo <shawn.guo@freescale.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,14 +21,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I'm seeing occasional instances of "scheduling while atomic" when doing wri=
-tes to a nearly-full volume.=A0 This is on a 3.4.34 kernel.
+Hi Marek,
 
-I found an old reference to a similar problem back in 2008 but haven't seen=
- anything more on it.
+On Thu, Apr 10, 2014 at 1:07 PM, Marek Vasut <marex@denx.de> wrote:
 
-It seems to happen when the volume is nearly full, and we're doing a large =
-write (for example, dumping a core file).
+> Can you share the JEDEC ID codes that both of the boards actually read from the
+> SPI NOR ? You can dump those in the m25p80.c driver . That'd be helpful, I
+> suspect some kind of an "offset" or "polarity inversion" in the SPI
+> communication causing this.
 
-Greg Moffatt.
-gmoffatt@ciena.com
+On mx6qsabresd:
+
+m25p80 spi0.0: JEDEC id: 0x202016
+m25p80 spi0.0: m25p32 (4096 Kbytes)
+
+On mx6sl-evk:
+
+m25p80 spi0.0: JEDEC id: 0x000000
+m25p80 spi0.0: found mr25h256, expected m25p32
+m25p80 spi0.0: mr25h256 (32 Kbytes)
+
+Will need to dump the SPI registers to understand why mx6sl behaves like this.
+
+Thanks,
+
+Fabio Estevam
