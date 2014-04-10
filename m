@@ -1,28 +1,29 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
+Received: from mail-ee0-x236.google.com ([2a00:1450:4013:c00::236])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WY6Sd-00014F-AO
- for linux-mtd@lists.infradead.org; Thu, 10 Apr 2014 04:19:36 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Scott Wood <scottwood@freescale.com>
-Subject: RE: [PATCH] mtd: nand: Disable subpage writes for drivers without
- ecc->hwctl
-Date: Thu, 10 Apr 2014 04:19:02 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EAC20C9@DBDE04.ent.ti.com>
+ id 1WY8k7-0003Ac-9V
+ for linux-mtd@lists.infradead.org; Thu, 10 Apr 2014 06:45:48 +0000
+Received: by mail-ee0-f54.google.com with SMTP id d49so2580270eek.41
+ for <linux-mtd@lists.infradead.org>; Wed, 09 Apr 2014 23:45:25 -0700 (PDT)
+In-Reply-To: <1397086473.20280.33.camel@snotra.buserror.net>
 References: <1397034804-27161-1-git-send-email-helmut.schaa@googlemail.com>
  <20980858CB6D3A4BAE95CA194937D5E73EAC1D46@DBDE04.ent.ti.com>
  <CAGXE3d8H=y3LeW54kwZg04-Edm-KkNbqXLCduNuPfAOrLymO+A@mail.gmail.com>
  <20980858CB6D3A4BAE95CA194937D5E73EAC1D89@DBDE04.ent.ti.com>
  <1397086473.20280.33.camel@snotra.buserror.net>
-In-Reply-To: <1397086473.20280.33.camel@snotra.buserror.net>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Cc: David Woodhouse <David.Woodhouse@intel.com>, "Huang Shijie
- \(b32955@freescale.com\)" <b32955@freescale.com>,
+Content-Type: text/plain;
+ charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] mtd: nand: Disable subpage writes for drivers without
+ ecc->hwctl
+From: Helmut Schaa <helmut.schaa@googlemail.com>
+Date: Thu, 10 Apr 2014 08:45:11 +0200
+To: Scott Wood <scottwood@freescale.com>,"Gupta, Pekon" <pekon@ti.com>
+Message-ID: <5dc1853e-694c-4add-bd62-e0c2a66f4c95@email.android.com>
+Cc: "Huang Shijie \(b32955@freescale.com\)" <b32955@freescale.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Helmut Schaa <helmut.schaa@googlemail.com>, Artem
- Bityutskiy <artem.bityutskiy@linux.intel.com>
+ David Woodhouse <David.Woodhouse@intel.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,72 +33,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PkZyb206IFNjb3R0IFdvb2QgW21haWx0bzpzY290dHdvb2RAZnJlZXNjYWxlLmNvbV0NCj4+T24g
-V2VkLCAyMDE0LTA0LTA5IGF0IDEwOjMzICswMDAwLCBHdXB0YSwgUGVrb24gd3JvdGU6DQo+PiA+
-RnJvbTogSGVsbXV0IFNjaGFhIFttYWlsdG86aGVsbXV0LnNjaGFhQGdvb2dsZW1haWwuY29tXQ0K
-Pj4gPj5PbiBXZWQsIEFwciA5LCAyMDE0IGF0IDExOjM4IEFNLCBHdXB0YSwgUGVrb24gPHBla29u
-QHRpLmNvbT4gd3JvdGU6DQo+PiBbLi4uXQ0KPj4gPj4NCj4+ID4+ICgxKSBpZiBjaGlwLT5lY2Mu
-aHdjdGwoKSBhbmQgY2hpcC0+ZWNjLmNhbGN1bGF0ZSBhcmUgbm90IGltcGxlbWVudGVkIGJ1dCB5
-b3UNCj4+ID4+ICBzdGlsbCB3YW50IHRvIHVzZSBzdWJwYWdlIHdyaXRlIGZlYXR1cmUsIHRoZW4g
-eW91IG5lZWQgdG8gcHJvdmlkZSBjdXN0b20NCj4+ID4+ICBpbXBsZW1lbnRhdGlvbiBmb3IgY2hp
-cC0+ZWNjLndyaXRlX3N1YnBhZ2UoKS4NCj4+ID4+ICB0aGF0J3Mgc2FtZSBmb3Igb3RoZXIgaW50
-ZXJmYWNlcyBvZiBuYW5kX2NoaXAgbGlrZSBjaGlwLT5lY2Mud3JpdGVfcGFnZSgpLg0KPj4gPg0K
-Pj4gPkJ1dCB0aGVzZSBkb24ndCBjYXVzZSBwYW5pY3MgOikNCj4+ID4NCj4+IGJlY2F1c2UgZnNs
-X2VsYmNfbmFuZC5jIHVzZXMgY3VzdG9tIGltcGxlbWVudGF0aW9ucyBvZiBjaGlwLT5lY2Mud3Jp
-dGVfcGFnZSgpDQo+PiAJQEAgZnNsX2VsYmNfY2hpcF9pbml0KC4uLikNCj4+IAkJY2hpcC0+ZWNj
-LndyaXRlX3BhZ2UgPSBmc2xfZWxiY193cml0ZV9wYWdlOw0KPj4NCj4+IFNhbWUgbmVlZHMgdG8g
-YmUgZG9uZSBpZiBzdWJwYWdlIHdyaXRlIGlzIG5lZWRlZC4gSG93ZXZlciwgYXMgdGhpcyBpcw0K
-Pj4gYSByZWdyZXNzaW9uIHNvIHBsZWFzZSBjaGVjayBpZiBmb2xsb3dpbmcgcGF0Y2ggc29sdmVz
-IHlvdXIgcHJvYmxlbS5bMV0NCj4+DQo+Pg0KPj4gPj4gKDIpIElmIHlvdSBkb24ndCB3YW50IHRv
-IHVzZSBzdWJwYWdlIHdyaXRlIGZlYXR1cmUgdGhlbiBqdXN0IGRpc2FibGUgaXQgdXNpbmcNCj4+
-ID4+ICAgICAgICAgY2hpcC0+b3B0aW9ucyB8PSBOQU5EX05PX1NVQlBBR0VfV1JJVEU7DQo+PiA+
-Pg0KPj4gPj4gQ2FuIHlvdSBwbGVhc2UgdGVsbCB3aGljaCBOQU5EIGNvbnRyb2xsZXIgZHJpdmVy
-IGlzIGNhdXNpbmcgdGhpcyA/DQo+PiA+PiBXZSBuZWVkIHRvIGZpeCB0aGF0Li4NCj4+ID4NCj4+
-ID5UaGlzIGhhcHBlbnMgd2l0aCBmc2xfZWxiY19uYW5kICh3aGlsZSB0cnlpbmcgdG8gcnVuIHVi
-aWZvcm1hdCBvbiBhDQo+PiA+bXRkIGRldikgYnV0IHRoZQ0KPj4gPmNyYXNoIHdhcyBjYXVzZWQg
-YnkgdGhlIGludHJvZHVjdGlvbiBvZiBuYW5kX3dyaXRlX3N1YnBhZ2VfaHdlY2MuIFNvLCBpbiB0
-aGlzDQo+PiA+Y2FzZSBJIHRoaW5rIGluc3RlYWQgb2YgdHJ5aW5nIHRvIGZpeCBldmVyeSBwb3Nz
-aWJsZSBkcml2ZXIgd2Ugc2hvdWxkDQo+PiA+bGV0IHRoZSBuYW5kIGNvcmUNCj4+ID5jb2RlIGhh
-bmRsZSB0aGlzIGlzc3VlIGdyYWNlZnVsbHkuIE1heWJlIHdlIGNvdWxkIGFkZCBhIFdBUk5fT05f
-T05DRSB0bw0KPj4gPm5vdGljZSB3aGljaCBkcml2ZXJzIHJlcXVpcmUgYWRqdXN0bWVudHMuDQo+
-PiA+DQo+PiBZZXMgYWdyZWUuIE1heSBiZSBnb29kIHRvIGtlZXAgc3VicGFnZSB3cml0ZSBkaXNh
-YmxlZCBieSBkZWZhdWx0LA0KPj4gYXMgb25seSBoYW5kZnVsIGRyaXZlcnMgcG9zc2libHkgdXNl
-IHRoYXQuDQo+Pg0KPj4NCj4+IFsxXSAjIyA8bm90IGNvbXBpbGUgdGVzdGVkPg0KPj4gLS0tLS0t
-LS0tLS0tDQo+PiBGcm9tIGJmZDM5MTAyZWQ2YWE5OWI3YWMyYjgzOTRhMmQxMmI4NzlmYmI0Yjcg
-TW9uIFNlcCAxNyAwMDowMDowMCAyMDAxDQo+PiBGcm9tOiBQZWtvbiBHdXB0YSA8cGVrb25AdGku
-Y29tPg0KPj4gRGF0ZTogV2VkLCA5IEFwciAyMDE0IDE1OjUxOjI1ICswNTMwDQo+PiBTdWJqZWN0
-OiBbUEFUQ0hdIG10ZDogZUxCQyBOQU5EOiBkaXNhYmxlIHN1YnBhZ2Ugd3JpdGUgc3VwcG9ydA0K
-Pj4NCj4+IEFzIGZzbF9lbGJjX25hbmQgZG8gbm90IGltcGxlbWVudCBOQU5EIEVDQyBpbnRlcmZh
-Y2VzIChsaWtlIGNoaXAtPmVjYy5od2N0bCgpLA0KPj4gY2hpcC0+ZWNjLmNhbGN1bGF0ZSwgYW5k
-IGNoaXAtPmVjYy5jb3JyZWN0KSBTbyBpdCBjYW5ub3QgdXNlIGRlZmF1bHQNCj4+IGltcGxlbWVu
-dGF0aW9uIG9mIG5hbmRfd3JpdGVfc3VicGFnZV9od2VjYygpIGFzIGluIG5hbmRfYmFzZS5jLg0K
-Pj4gSGVuY2UgZGlzYWJsaW5nIHN1YnBhZ2Ugd3JpdGUgc3VwcG9ydCB0aWxsIGEgY3VzdG9tIGlt
-cGxlbWVudGF0aW9uIGZvcg0KPj4gY2hpcC0+ZWNjX3dyaXRlX3N1YnBhZ2UgaXMgYWRkZWQuDQo+
-Pg0KPj4gQ0M6IDxzdGFibGVAdmdlci5rZXJuZWwub3JnPiAjIDMuMTAueCsNCj4+IFNpZ25lZC1v
-ZmYtYnk6IFBla29uIEd1cHRhIDxwZWtvbkB0aS5jb20+DQo+PiAtLS0NCj4+ICBkcml2ZXJzL210
-ZC9uYW5kL2ZzbF9lbGJjX25hbmQuYyB8IDEgKw0KPj4gIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2Vy
-dGlvbigrKQ0KPj4NCj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL2ZzbF9lbGJjX25h
-bmQuYyBiL2RyaXZlcnMvbXRkL25hbmQvZnNsX2VsYmNfbmFuZC5jDQo+PiBpbmRleCBlYzU0OWNk
-Li5hMjEyNTJjIDEwMDY0NA0KPj4gLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9mc2xfZWxiY19uYW5k
-LmMNCj4+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvZnNsX2VsYmNfbmFuZC5jDQo+PiBAQCAtNzU1
-LDYgKzc1NSw3IEBAIHN0YXRpYyBpbnQgZnNsX2VsYmNfY2hpcF9pbml0KHN0cnVjdCBmc2xfZWxi
-Y19tdGQgKnByaXYpDQo+Pg0KPj4gICAgICAgICAvKiBzZXQgdXAgbmFuZCBvcHRpb25zICovDQo+
-PiAgICAgICAgIGNoaXAtPmJidF9vcHRpb25zID0gTkFORF9CQlRfVVNFX0ZMQVNIOw0KPj4gKyAg
-ICAgICBjaGlwLT5vcHRpb25zIHw9IE5BTkRfTk9fU1VCUEFHRV9XUklURTsNCj4NCj5Xb24ndCB0
-aGlzIGJyZWFrIGNvbXBhdGliaWxpdHkgd2l0aCBleGlzdGluZyBVQkkgdm9sdW1lcz8NCj4gVGhh
-dCdzIHdoeSBJIGRpZG4ndCBzZXQgdGhpcyBmbGFnIG9uIGVMQkMgd2hlbiBJIHNldCBpdCBvbiBJ
-RkMgKG9uIHRoZSBsYXR0ZXIgVUJJIGlzDQo+c2ltcGx5IGJyb2tlbiB3aXRob3V0IHRoYXQgZmxh
-ZywgYnV0IGVMQkMgZ2V0cyBhd2F5IHdpdGggaXQgYmVjYXVzZSBvZg0KPnRoZSBFQ0MgYWxnb3Jp
-dGhtIHVzZWQpLg0KDQpBcmUgeW91IHN1cmUgc3VicGFnZSB3cml0ZSBpcyBzdXBwb3J0ZWQgb24g
-dGhpcyBkcml2ZXIgPyBJIGNvdWxkbid0IGZpbmQgYW55DQpjdXN0b20gaW1wbGVtZW50YXRpb24g
-Zm9yIGNoaXAtPmVjYy53cml0ZV9zdWJwYWdlKCkgaW4gZnNsX2VsYmNfbmFuZC5jLg0KDQpBbmQg
-d2hlbiBmc2xfZWxiY19uYW5kLmMgdXNlcyBkZWZhdWx0IGltcGxlbWVudGF0aW9uIG9mDQpjaGlw
-LT5lY2Mud3JpdGVfc3VicGFnZSgpID0gbmFuZF93cml0ZV9zdWJwYWdlX2h3ZWNjIHRoZW4gaXQg
-Y3Jhc2hlcw0KYmVjYXVzZSBpdCBkb2VzIG5vdCBpbXBsZW1lbnQgY2hpcC0+ZWNjLmh3Y3RsKCku
-ICAocmVmZXIgWzFdKQ0KDQpIb3dldmVyIGFib3ZlIGlzIGp1c3QgYSBmaXggZm9yIHRoaXMgcmVn
-cmVzc2lvbiwgYXMgaXQgbmVlZHMgdG8gYmUgYmFjayBwb3J0ZWQNCnRpbGwga2VybmVsIDMuMTAu
-eCsuIEknbGwgc2VuZCBhbm90aGVyIHBhdGNoIHRvICAnZGlzYWJsZScgc3VicGFnZSB3cml0ZSBz
-dXBwb3J0DQpieSBkZWZhdWx0IGZvciBkcml2ZXJzLCBhbmQgb25seSB0aGUgb25lcyB3aGljaCBu
-ZWVkIGl0IHNob3VsZCBleHBsaWNpdGx5IGVuYWJsZSBpdC4NCg0KDQpbMV0gaHR0cDovL2xpc3Rz
-LmluZnJhZGVhZC5vcmcvcGlwZXJtYWlsL2xpbnV4LW10ZC8yMDE0LUFwcmlsLzA1MzE4Mi5odG1s
-DQoNCndpdGggcmVnYXJkcywgcGVrb24NCg==
+
+
+
+
+Scott Wood <scottwood@freescale.com> schrieb:
+>On Wed, 2014-04-09 at 10:33 +0000, Gupta, Pekon wrote:
+>> >From: Helmut Schaa [mailto:helmut.schaa@googlemail.com]
+>> >>On Wed, Apr 9, 2014 at 11:38 AM, Gupta, Pekon <pekon@ti.com> wrote:
+>> [...]
+>> >>
+>> >> (1) if chip->ecc.hwctl() and chip->ecc.calculate are not
+>implemented but you
+>> >>  still want to use subpage write feature, then you need to provide
+>custom
+>> >>  implementation for chip->ecc.write_subpage().
+>> >>  that's same for other interfaces of nand_chip like
+>chip->ecc.write_page().
+>> >
+>> >But these don't cause panics :)
+>> >
+>> because fsl_elbc_nand.c uses custom implementations of
+>chip->ecc.write_page()
+>> 	@@ fsl_elbc_chip_init(...)
+>> 		chip->ecc.write_page = fsl_elbc_write_page;
+>> 
+>> Same needs to be done if subpage write is needed. However, as this is
+>> a regression so please check if following patch solves your
+>problem.[1]
+>> 
+>> 
+>> >> (2) If you don't want to use subpage write feature then just
+>disable it using
+>> >>         chip->options |= NAND_NO_SUBPAGE_WRITE;
+>> >>
+>> >> Can you please tell which NAND controller driver is causing this ?
+>> >> We need to fix that..
+>> >
+>> >This happens with fsl_elbc_nand (while trying to run ubiformat on a
+>> >mtd dev) but the
+>> >crash was caused by the introduction of nand_write_subpage_hwecc.
+>So, in this
+>> >case I think instead of trying to fix every possible driver we
+>should
+>> >let the nand core
+>> >code handle this issue gracefully. Maybe we could add a WARN_ON_ONCE
+>to
+>> >notice which drivers require adjustments.
+>> >
+>> Yes agree. May be good to keep subpage write disabled by default,
+>> as only handful drivers possibly use that.
+>> 
+>> 
+>> [1] ## <not compile tested>
+>> ------------
+>> From bfd39102ed6aa99b7ac2b8394a2d12b879fbb4b7 Mon Sep 17 00:00:00
+>2001
+>> From: Pekon Gupta <pekon@ti.com>
+>> Date: Wed, 9 Apr 2014 15:51:25 +0530
+>> Subject: [PATCH] mtd: eLBC NAND: disable subpage write support
+>> 
+>> As fsl_elbc_nand do not implement NAND ECC interfaces (like
+>chip->ecc.hwctl(),
+>> chip->ecc.calculate, and chip->ecc.correct) So it cannot use default
+>> implementation of nand_write_subpage_hwecc() as in nand_base.c.
+>> Hence disabling subpage write support till a custom implementation
+>for
+>> chip->ecc_write_subpage is added.
+>> 
+>> CC: <stable@vger.kernel.org> # 3.10.x+
+>> Signed-off-by: Pekon Gupta <pekon@ti.com>
+>> ---
+>>  drivers/mtd/nand/fsl_elbc_nand.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>> 
+>> diff --git a/drivers/mtd/nand/fsl_elbc_nand.c
+>b/drivers/mtd/nand/fsl_elbc_nand.c
+>> index ec549cd..a21252c 100644
+>> --- a/drivers/mtd/nand/fsl_elbc_nand.c
+>> +++ b/drivers/mtd/nand/fsl_elbc_nand.c
+>> @@ -755,6 +755,7 @@ static int fsl_elbc_chip_init(struct fsl_elbc_mtd
+>*priv)
+>> 
+>>         /* set up nand options */
+>>         chip->bbt_options = NAND_BBT_USE_FLASH;
+>> +       chip->options |= NAND_NO_SUBPAGE_WRITE;
+>
+>Won't this break compatibility with existing UBI volumes?  That's why I
+>didn't set this flag on eLBC when I set it on IFC (on the latter UBI is
+>simply broken without that flag, but eLBC gets away with it because of
+>the ECC algorithm used).
+
+Could be. I had to override the VID header offset accordingly to be able to attach to the ubi volume after applying this patch ...
+
+Helmut
