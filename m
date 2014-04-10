@@ -1,24 +1,23 @@
-Received: from mail-lb0-x229.google.com ([2a00:1450:4010:c04::229])
+Received: from mx0a-00103a01.pphosted.com ([67.231.144.234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WYJIp-0001v9-TO
- for linux-mtd@lists.infradead.org; Thu, 10 Apr 2014 18:02:21 +0000
-Received: by mail-lb0-f169.google.com with SMTP id q8so2697055lbi.28
- for <linux-mtd@lists.infradead.org>; Thu, 10 Apr 2014 11:01:55 -0700 (PDT)
+ id 1WYIXk-0006c6-FK
+ for linux-mtd@lists.infradead.org; Thu, 10 Apr 2014 17:13:40 +0000
+Received: from pps.filterd (m0000419.ppops.net [127.0.0.1])
+ by mx0a-00103a01.pphosted.com (8.14.5/8.14.5) with SMTP id s3AHAcUC029159
+ for <linux-mtd@lists.infradead.org>; Thu, 10 Apr 2014 13:13:17 -0400
+Received: from mdwexght02.ciena.com (LIN1-118-36-29.ciena.com [63.118.36.29])
+ by mx0a-00103a01.pphosted.com with ESMTP id 1k5v4prvsb-17
+ (version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=NOT)
+ for <linux-mtd@lists.infradead.org>; Thu, 10 Apr 2014 13:13:17 -0400
+From: "Moffatt, Greg" <gmoffatt@ciena.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Thu, 10 Apr 2014 13:12:54 -0400
+Subject: UBIFS: kernel bug scheduling while atomic on full volume
+Message-ID: <D35CC66D869D1840B7A4E35C6477E0EA0201099034@ONWVEXCHMB03.ciena.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <1397064774-31784-7-git-send-email-computersforpeace@gmail.com>
-References: <1397064774-31784-1-git-send-email-computersforpeace@gmail.com>
- <1397064774-31784-7-git-send-email-computersforpeace@gmail.com>
-Date: Thu, 10 Apr 2014 20:01:55 +0200
-Message-ID: <CAMuHMdWu7YVO_RD-SUfaTw1Jp97i5bm8iX5TzKeqgWAk_iN5qQ@mail.gmail.com>
-Subject: Re: [PATCH 7/9] mtd: st_spi_fsm: kill duplicate CMD definitions
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: Marek Vasut <marex@denx.de>, Huang Shijie <b32955@freescale.com>,
- Lee Jones <lee.jones@linaro.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- linux-spi <linux-spi@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,20 +27,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Apr 9, 2014 at 7:32 PM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> These are also in serial_flash_cmds.h. (FWIW, I didn't know the C
-> preprocessor allowed redefinitions without warning like this.)
+I'm seeing occasional instances of "scheduling while atomic" when doing wri=
+tes to a nearly-full volume.=A0 This is on a 3.4.34 kernel.
 
-Cpp only complains when the redefinitions are different.
+I found an old reference to a similar problem back in 2008 but haven't seen=
+ anything more on it.
 
-Gr{oetje,eeting}s,
+It seems to happen when the volume is nearly full, and we're doing a large =
+write (for example, dumping a core file).
 
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Greg Moffatt.
+gmoffatt@ciena.com
