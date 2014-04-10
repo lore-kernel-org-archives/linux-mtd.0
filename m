@@ -1,21 +1,22 @@
-Received: from mail-ig0-x232.google.com ([2607:f8b0:4001:c05::232])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WYKZ2-0006Kk-Tb
- for linux-mtd@lists.infradead.org; Thu, 10 Apr 2014 19:23:09 +0000
-Received: by mail-ig0-f178.google.com with SMTP id hn18so4185750igb.11
- for <linux-mtd@lists.infradead.org>; Thu, 10 Apr 2014 12:22:48 -0700 (PDT)
-Date: Thu, 10 Apr 2014 12:22:44 -0700
+Date: Thu, 10 Apr 2014 12:29:02 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2 00/10] mtd: spi-nor: misc. updates, de-duplication
-Message-ID: <20140410192244.GL32070@ld-irv-0074>
-References: <1397157664-24405-1-git-send-email-computersforpeace@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH v5 5/8 fix] mtd: m25p80: use the SPI nor framework
+Message-ID: <20140410192902.GM32070@ld-irv-0074>
+References: <1393238262-8622-6-git-send-email-b32955@freescale.com>
+ <1393574142-17234-1-git-send-email-b32955@freescale.com>
+ <20140409213749.GH32070@ld-irv-0074>
+ <20140410072509.GA24100@localhost>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1397157664-24405-1-git-send-email-computersforpeace@gmail.com>
-Cc: Marek Vasut <marex@denx.de>, Huang Shijie <b32955@freescale.com>,
- Lee Jones <lee.jones@linaro.org>
+In-Reply-To: <20140410072509.GA24100@localhost>
+Cc: angus.clark@st.com, Russel King <linux@arm.linux.org.uk>,
+ broonie@linaro.org, dwmw2@infradead.org, linux-doc@vger.kernel.org,
+ linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-mtd@lists.infradead.org, pekon@ti.com, sourav.poddar@ti.com,
+ shawn.guo@linaro.org, lee.jones@linaro.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,32 +26,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Apr 10, 2014 at 12:20:54PM -0700, Brian Norris wrote:
-> Brian Norris (10):
->   mtd: spi-nor: drop \t after #define
->   mtd: spi-nor: re-name OPCODE_* to SPINOR_OP_*
->   mtd: spi-nor: unify read opcode variants with ST SPI FSM
->   Documentation: spi-nor: rewrite some portions
->   mtd: spi-nor: shorten Kconfig naming
->   mtd: st_spi_fsm: fixup Kconfig dependency
->   mtd: st_spi_fsm: kill duplicate CMD definitions
->   mtd: st_spi_fsm: replace FLACH_CMD_* with SPINOR_OP_*
->   mtd: st_spi_fsm: begin using spi-nor.h opcodes
->   mtd: spi-nor: allow to be built as module
+On Thu, Apr 10, 2014 at 03:25:11PM +0800, Huang Shijie wrote:
+> On Wed, Apr 09, 2014 at 02:37:49PM -0700, Brian Norris wrote:
+> > >  config MTD_M25P80
+> > >  	tristate "Support most SPI Flash chips (AT26DF, M25P, W25X, ...)"
+> > > -	depends on SPI_MASTER
+> > > +	depends on SPI_MASTER && MTD_SPI_NOR_BASE
+> > >  	help
+> > >  	  This enables access to most modern SPI flash chips, used for
+> > >  	  program and data storage.   Series supported include Atmel AT26DF,
+> > 
+> > Now that M25P80 depends on MTD_SPI_NOR_BASE (which I proposed to rename
+> > to MTD_SPI_NOR a few hours ago), shouldn't we be updating everybody's
+> > defconfigs? As it stands, the defconfigs that use M25P80 will just drop
+> > it silently when built.
+> > 
+> > And if so, I'm not sure how this should be handled. Should defconfig
+> > patches be sent to their respective arch maintainers?
 > 
->  Documentation/mtd/spi-nor.txt           |  37 ++++----
->  drivers/mtd/Makefile                    |   2 +-
->  drivers/mtd/devices/Kconfig             |   4 +-
->  drivers/mtd/devices/m25p80.c            |   4 +-
->  drivers/mtd/devices/serial_flash_cmds.h |  44 +++-------
->  drivers/mtd/devices/st_spi_fsm.c        | 149 ++++++++++++--------------------
->  drivers/mtd/spi-nor/Kconfig             |  11 ++-
->  drivers/mtd/spi-nor/Makefile            |   2 +-
->  drivers/mtd/spi-nor/fsl-quadspi.c       |  58 ++++++-------
->  drivers/mtd/spi-nor/spi-nor.c           |  64 +++++++-------
->  include/linux/mtd/spi-nor.h             |  80 +++++++++--------
->  11 files changed, 208 insertions(+), 247 deletions(-)
+> IMHO, we should create a patch or several patches to add the MTD_SPI_NOR
+> to the defconfigs.
 
-Forgot to mention: this whole series is based on l2-mtd.git/spinor.
+Yeah, I think that's best.
+
+> Another method is to select the MTD_SPI_NOR which we enable the MTD.
+
+I'm pretty sure it's a rule that drivers should not 'select' subsystems.
+
+> > Also, I think m25p80.c is no longer a "self-contained MTD device driver"
+> > and should be moved under drivers/mtd/spi-nor/.
+> If we move the m25p80.c to the drivers/mtd/spi-nor/, we also need to move
+> other drivers too.
+
+Which ones? I think it only makes sense to move those that depend on the
+same core code (i.e., spi-nor.c), or have a close relation to it (so
+Lee's st_spi_fsm.c is a candidate).
 
 Brian
