@@ -1,21 +1,29 @@
-Date: Thu, 10 Apr 2014 13:00:04 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [RFC 00/47] mtd: nand: Add new driver supporting ST's BCH h/w
-Message-ID: <20140410200004.GP32070@ld-irv-0074>
-References: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
- <20140325125050.GB665@arch.cereza> <20140325131139.GB24823@lee--X1>
- <20140325220045.GA12185@arch.cereza>
- <20140326072805.GB31517@norris-Latitude-E6410>
- <20140327102835.GA17779@lee--X1> <20140401112926.GB24013@lee--X1>
+Received: from mail-bn1lp0142.outbound.protection.outlook.com
+ ([207.46.163.142] helo=na01-bn1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WYLtF-0002eT-IH
+ for linux-mtd@lists.infradead.org; Thu, 10 Apr 2014 20:48:06 +0000
+Message-ID: <1397162856.20280.99.camel@snotra.buserror.net>
+Subject: Re: [PATCH] mtd: nand: Disable subpage writes for drivers without
+ ecc->hwctl
+From: Scott Wood <scottwood@freescale.com>
+To: "Gupta, Pekon" <pekon@ti.com>
+Date: Thu, 10 Apr 2014 15:47:36 -0500
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EAC20C9@DBDE04.ent.ti.com>
+References: <1397034804-27161-1-git-send-email-helmut.schaa@googlemail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EAC1D46@DBDE04.ent.ti.com>
+ <CAGXE3d8H=y3LeW54kwZg04-Edm-KkNbqXLCduNuPfAOrLymO+A@mail.gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EAC1D89@DBDE04.ent.ti.com>
+ <1397086473.20280.33.camel@snotra.buserror.net>
+ <20980858CB6D3A4BAE95CA194937D5E73EAC20C9@DBDE04.ent.ti.com>
+Content-Type: text/plain; charset="UTF-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20140401112926.GB24013@lee--X1>
-Cc: angus.clark@st.com, kernel@stlinux.com, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, pekon@ti.com,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
+Content-Transfer-Encoding: 7bit
+Cc: David Woodhouse <David.Woodhouse@intel.com>, "Huang Shijie
+ \(b32955@freescale.com\)" <b32955@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Helmut Schaa <helmut.schaa@googlemail.com>, Artem
+ Bityutskiy <artem.bityutskiy@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,72 +33,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Apr 01, 2014 at 12:29:26PM +0100, Lee Jones wrote:
-> > The BBT requirements are somewhere more complex. To provide you with
-> > the complete picture, a little knowledge of driver history is
-> > required. When it was initially created the MTD core only supported
-> > OOB BBTs, but the ST BCH Controller doesn't support OOB access, so
-> > Angus wrote his on In-Band (IB) implementation. Unfortunately the IB
-> > support which _is_ now present in the kernel doesn't match the
-> > internal implementation. Normally this wouldn't be an issue in itself,
-> > but ST's boot-stack and tooling (Primary Bootloader, U-Boot, various
-> > Programmers, etc) are aware of the internal IB BTT and utilise it
-> > in varying ways. Shifting over to the Mainline version in
-> > one-foul-swoop _will_ cause lots of pain and will probably result in
-> > the disownership of driver we're trying to Mainline today. Naturally
-> > I'm keen to avoid this.
+On Thu, 2014-04-10 at 04:19 +0000, Gupta, Pekon wrote:
+> >From: Scott Wood [mailto:scottwood@freescale.com]
+> >>On Wed, 2014-04-09 at 10:33 +0000, Gupta, Pekon wrote:
+> >> >From: Helmut Schaa [mailto:helmut.schaa@googlemail.com]
+> >> >>On Wed, Apr 9, 2014 at 11:38 AM, Gupta, Pekon <pekon@ti.com> wrote:
+> >> [...]
+> >> >>
+> >> >> (1) if chip->ecc.hwctl() and chip->ecc.calculate are not implemented but you
+> >> >>  still want to use subpage write feature, then you need to provide custom
+> >> >>  implementation for chip->ecc.write_subpage().
+> >> >>  that's same for other interfaces of nand_chip like chip->ecc.write_page().
+> >> >
+> >> >But these don't cause panics :)
+> >> >
+> >> because fsl_elbc_nand.c uses custom implementations of chip->ecc.write_page()
+> >> 	@@ fsl_elbc_chip_init(...)
+> >> 		chip->ecc.write_page = fsl_elbc_write_page;
+> >>
+> >> Same needs to be done if subpage write is needed. However, as this is
+> >> a regression so please check if following patch solves your problem.[1]
+> >>
+> >>
+> >> >> (2) If you don't want to use subpage write feature then just disable it using
+> >> >>         chip->options |= NAND_NO_SUBPAGE_WRITE;
+> >> >>
+> >> >> Can you please tell which NAND controller driver is causing this ?
+> >> >> We need to fix that..
+> >> >
+> >> >This happens with fsl_elbc_nand (while trying to run ubiformat on a
+> >> >mtd dev) but the
+> >> >crash was caused by the introduction of nand_write_subpage_hwecc. So, in this
+> >> >case I think instead of trying to fix every possible driver we should
+> >> >let the nand core
+> >> >code handle this issue gracefully. Maybe we could add a WARN_ON_ONCE to
+> >> >notice which drivers require adjustments.
+> >> >
+> >> Yes agree. May be good to keep subpage write disabled by default,
+> >> as only handful drivers possibly use that.
+> >>
+> >>
+> >> [1] ## <not compile tested>
+> >> ------------
+> >> From bfd39102ed6aa99b7ac2b8394a2d12b879fbb4b7 Mon Sep 17 00:00:00 2001
+> >> From: Pekon Gupta <pekon@ti.com>
+> >> Date: Wed, 9 Apr 2014 15:51:25 +0530
+> >> Subject: [PATCH] mtd: eLBC NAND: disable subpage write support
+> >>
+> >> As fsl_elbc_nand do not implement NAND ECC interfaces (like chip->ecc.hwctl(),
+> >> chip->ecc.calculate, and chip->ecc.correct) So it cannot use default
+> >> implementation of nand_write_subpage_hwecc() as in nand_base.c.
+> >> Hence disabling subpage write support till a custom implementation for
+> >> chip->ecc_write_subpage is added.
+> >>
+> >> CC: <stable@vger.kernel.org> # 3.10.x+
+> >> Signed-off-by: Pekon Gupta <pekon@ti.com>
+> >> ---
+> >>  drivers/mtd/nand/fsl_elbc_nand.c | 1 +
+> >>  1 file changed, 1 insertion(+)
+> >>
+> >> diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
+> >> index ec549cd..a21252c 100644
+> >> --- a/drivers/mtd/nand/fsl_elbc_nand.c
+> >> +++ b/drivers/mtd/nand/fsl_elbc_nand.c
+> >> @@ -755,6 +755,7 @@ static int fsl_elbc_chip_init(struct fsl_elbc_mtd *priv)
+> >>
+> >>         /* set up nand options */
+> >>         chip->bbt_options = NAND_BBT_USE_FLASH;
+> >> +       chip->options |= NAND_NO_SUBPAGE_WRITE;
+> >
+> >Won't this break compatibility with existing UBI volumes?
+> > That's why I didn't set this flag on eLBC when I set it on IFC (on the latter UBI is
+> >simply broken without that flag, but eLBC gets away with it because of
+> >the ECC algorithm used).
 > 
-> Just looking into this now. Can I add support for a vendor specific
-> signature extension? ST's flashers, bootloaders and tooling currently
-> use the format:
-> 
-> /* Extend IBBT header with some stm-nand-bch niceties */
-> struct nand_ibbt_bch_header {
-> 	uint8_t signature[4];           /* "Bbt0" or "1tbB" signature */
-> 	uint8_t version;                /* BBT version ("age") */
-> 	uint8_t reserved[3];            /* padding */
-> 	uint8_t baseschema[4];          /* "base" schema (x4) */
-> 	uint8_t privschema[4];          /* "private" schema (x4) */
+> Are you sure subpage write is supported on this driver ? I couldn't find any
+> custom implementation for chip->ecc.write_subpage() in fsl_elbc_nand.c.
 
-Not sure what these schema mean.
+I'm referring to UBI volumes created before chip->ecc.write_subpage()
+existed.
 
-> 	uint8_t ecc_size[4];            /* ECC bytes (0, 32, 54) (x4) */
-> 	char    author[64];             /* Arbitrary string for S/W to use */
-> }; __attribute__((__packed__))
-
-Nit: that would just be __packed (see compiler-gcc.h).
-
-In principle, I'm OK with extending the BBT somewhat. Preferably, this
-would provide some extensibility, so that other custom formats can use
-the same base code. For instance, it looks like many of these fields
-would be fixed, and specific to your platform. So (from nand_bbt's
-perspective) these could just be consolidated int a field:
-
-	u8 custom[76];
-
-Or make it variable-length, with the length provided by the driver?
-nand_bbt would just know not to check for it when scanning, and it
-would know to program it to flash when updating.
-
-> It would be great if we can support this with a descriptor option or
-> suchlike, as it would a) save me a lot of aggravation and b) continue
-> to support ST with their current use-case.
-
-Yeah, I realize you can't just jump over to the current format for
-production systems. And there are admittedly some rough spots in our
-current nand_bbt; it's not perfect.
-
-Some random notes (not necessarily your problem; but things to be aware
-of): nand_bbt could use some additional robustness checks, I think. Like
-a CRC field, and maybe a versioning system for allowing
-(backwards-compatible) changes in the format. To make
-backwards-compatible changes, though, the original format needs to have
-reserved space, or at least an 'offset' field, which would point to
-where the actual BBT starts--not just a fixed offset.
-
-There's also still a bit of cruft that really can be removed from
-nand_bbt (the handling of bad block markers, which is duplicated in
-nand_base). It's a low-priority item on my plate, but I think it might
-be a good first step before trying to expand nand_bbt much.
-
-Brian
+-Scott
