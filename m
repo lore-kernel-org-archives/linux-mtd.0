@@ -1,20 +1,19 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WYWew-00055Y-0n
- for linux-mtd@lists.infradead.org; Fri, 11 Apr 2014 08:18:03 +0000
-From: Marek Vasut <marex@denx.de>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v2 00/10] mtd: spi-nor: misc. updates, de-duplication
-Date: Fri, 11 Apr 2014 09:35:38 +0200
-References: <1397157664-24405-1-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1397157664-24405-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201404110935.38887.marex@denx.de>
-Cc: Huang Shijie <b32955@freescale.com>, Lee Jones <lee.jones@linaro.org>,
- linux-mtd@lists.infradead.org
+In-Reply-To: <20140411002635.GB3837@localhost.localdomain>
+References: <CAOMZO5DR00ea=zfr+eM0uh2L5a6QB93g8X48JNkXZZc4UavdZA@mail.gmail.com>
+ <201404101807.48238.marex@denx.de>
+ <CAOMZO5CBV0tXhbBBFBO=T62nmCn9TenK8BgdAhT8r3b-30u6qg@mail.gmail.com>
+ <20140411002635.GB3837@localhost.localdomain>
+Date: Fri, 11 Apr 2014 08:43:50 -0300
+Message-ID: <CAOMZO5CzMyB=boSO+1QeJbw0yYsa1mME-sMVb6yocJAfnErksA@mail.gmail.com>
+Subject: Re: Wrong SPI NOR model detected by mx6sl
+From: Fabio Estevam <festevam@gmail.com>
+To: Huang Shijie <shijie8@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: Marek Vasut <marex@denx.de>, Huang Shijie <b32955@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ Shawn Guo <shawn.guo@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,15 +23,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday, April 10, 2014 at 09:20:54 PM, Brian Norris wrote:
-> A few miscellaneous updates, cleanups, and de-duplications. Mostly trivial
-> stuff, but I had a few oversights in the first round.
+On Thu, Apr 10, 2014 at 9:26 PM, Huang Shijie <shijie8@gmail.com> wrote:
+> On Thu, Apr 10, 2014 at 02:16:49PM -0300, Fabio Estevam wrote:
+>> Hi Marek,
+>>
+>> On Thu, Apr 10, 2014 at 1:07 PM, Marek Vasut <marex@denx.de> wrote:
+>>
+>> > Can you share the JEDEC ID codes that both of the boards actually read from the
+>> > SPI NOR ? You can dump those in the m25p80.c driver . That'd be helpful, I
+>> > suspect some kind of an "offset" or "polarity inversion" in the SPI
+>> > communication causing this.
+>>
+>> On mx6qsabresd:
+>>
+>> m25p80 spi0.0: JEDEC id: 0x202016
+>> m25p80 spi0.0: m25p32 (4096 Kbytes)
+>>
+>> On mx6sl-evk:
+>>
+>> m25p80 spi0.0: JEDEC id: 0x000000
+> It seems the kernel can not read out anything from the NOR.
+> Please check the pinctrl or the schematic.
 
-Other than the incorrect squashing:
+Yes, there was a pinmux issue in U-boot and I have fixed it.
 
-Reviewed-by: Marek Vasut <marex@denx.de>
+SPI NOR is properly detected in U-boot and kernel now.
 
-Thanks!
+Regards,
 
-Best regards,
-Marek Vasut
+Fabio Estevam
