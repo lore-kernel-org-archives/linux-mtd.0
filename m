@@ -1,14 +1,14 @@
-Received: from mail-qc0-x22e.google.com ([2607:f8b0:400d:c01::22e])
+Received: from mail-qg0-x236.google.com ([2607:f8b0:400d:c04::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WYghA-0005Nu-Qo
- for linux-mtd@lists.infradead.org; Fri, 11 Apr 2014 19:01:01 +0000
-Received: by mail-qc0-f174.google.com with SMTP id c9so6304358qcz.19
- for <linux-mtd@lists.infradead.org>; Fri, 11 Apr 2014 12:00:39 -0700 (PDT)
+ id 1WYghC-0005Ni-22
+ for linux-mtd@lists.infradead.org; Fri, 11 Apr 2014 19:01:02 +0000
+Received: by mail-qg0-f54.google.com with SMTP id a108so5918275qge.27
+ for <linux-mtd@lists.infradead.org>; Fri, 11 Apr 2014 12:00:38 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v3 06/11] mtd: st_spi_fsm: fixup Kconfig dependency
-Date: Fri, 11 Apr 2014 12:00:01 -0700
-Message-Id: <1397242806-7575-7-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v3 05/11] mtd: spi-nor: shorten Kconfig naming
+Date: Fri, 11 Apr 2014 12:00:00 -0700
+Message-Id: <1397242806-7575-6-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1397242806-7575-1-git-send-email-computersforpeace@gmail.com>
 References: <1397242806-7575-1-git-send-email-computersforpeace@gmail.com>
 Cc: Marek Vasut <marex@denx.de>, Huang Shijie <b32955@freescale.com>,
@@ -22,31 +22,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I hear that this driver should depend on ARCH_STI, and that "SH" is not
-actually a real symbol. At the same time, let's allow compile-testing on
-other ARCH'es.
-
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Acked-by: Lee Jones <lee.jones@linaro.org>
 Reviewed-by: Marek Vasut <marex@denx.de>
+Acked-by: Huang Shijie <b32955@freescale.com>
 ---
 v3: no change
 
- drivers/mtd/devices/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/Makefile         |  2 +-
+ drivers/mtd/devices/Kconfig  |  2 +-
+ drivers/mtd/spi-nor/Kconfig  | 11 ++++++++---
+ drivers/mtd/spi-nor/Makefile |  2 +-
+ 4 files changed, 11 insertions(+), 6 deletions(-)
 
+diff --git a/drivers/mtd/Makefile b/drivers/mtd/Makefile
+index 40fd15344387..99bb9a1f6e16 100644
+--- a/drivers/mtd/Makefile
++++ b/drivers/mtd/Makefile
+@@ -32,5 +32,5 @@ inftl-objs		:= inftlcore.o inftlmount.o
+ 
+ obj-y		+= chips/ lpddr/ maps/ devices/ nand/ onenand/ tests/
+ 
+-obj-$(CONFIG_MTD_SPI_NOR_BASE)	+= spi-nor/
++obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor/
+ obj-$(CONFIG_MTD_UBI)		+= ubi/
 diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
-index f9e32b53dfc6..9aae1042c14f 100644
+index 48aa1aa5820b..f9e32b53dfc6 100644
 --- a/drivers/mtd/devices/Kconfig
 +++ b/drivers/mtd/devices/Kconfig
-@@ -212,7 +212,7 @@ config MTD_DOCG3
+@@ -80,7 +80,7 @@ config MTD_DATAFLASH_OTP
  
- config MTD_ST_SPI_FSM
- 	tristate "ST Microelectronics SPI FSM Serial Flash Controller"
--	depends on ARM || SH
-+	depends on ARCH_STI || COMPILE_TEST
+ config MTD_M25P80
+ 	tristate "Support most SPI Flash chips (AT26DF, M25P, W25X, ...)"
+-	depends on SPI_MASTER && MTD_SPI_NOR_BASE
++	depends on SPI_MASTER && MTD_SPI_NOR
  	help
- 	  This provides an MTD device driver for the ST Microelectronics
- 	  SPI Fast Sequence Mode (FSM) Serial Flash Controller and support
+ 	  This enables access to most modern SPI flash chips, used for
+ 	  program and data storage.   Series supported include Atmel AT26DF,
+diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+index 64cfc39ad17e..d682fb440e06 100644
+--- a/drivers/mtd/spi-nor/Kconfig
++++ b/drivers/mtd/spi-nor/Kconfig
+@@ -1,12 +1,17 @@
+-config MTD_SPI_NOR_BASE
+-	bool "the framework for SPI-NOR support"
++config MTD_SPI_NOR
++	bool "SPI-NOR device support"
+ 	depends on MTD
+ 	help
+ 	  This is the framework for the SPI NOR which can be used by the SPI
+ 	  device drivers and the SPI-NOR device driver.
++
++if MTD_SPI_NOR
++
+ config SPI_FSL_QUADSPI
+ 	tristate "Freescale Quad SPI controller"
+-	depends on ARCH_MXC && MTD_SPI_NOR_BASE
++	depends on ARCH_MXC
+ 	help
+ 	  This enables support for the Quad SPI controller in master mode.
+ 	  We only connect the NOR to this controller now.
++
++endif # MTD_SPI_NOR
+diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
+index 51f9d8b99ab7..6a7ce1462247 100644
+--- a/drivers/mtd/spi-nor/Makefile
++++ b/drivers/mtd/spi-nor/Makefile
+@@ -1,2 +1,2 @@
+-obj-$(CONFIG_MTD_SPI_NOR_BASE)	+= spi-nor.o
++obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor.o
+ obj-$(CONFIG_SPI_FSL_QUADSPI)	+= fsl-quadspi.o
 -- 
 1.8.3.2
