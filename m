@@ -1,21 +1,16 @@
-Received: from mail-pb0-x233.google.com ([2607:f8b0:400e:c01::233])
+Received: from mail-qg0-x234.google.com ([2607:f8b0:400d:c04::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WYeup-0006bZ-07
- for linux-mtd@lists.infradead.org; Fri, 11 Apr 2014 17:06:59 +0000
-Received: by mail-pb0-f51.google.com with SMTP id uo5so5659057pbc.38
- for <linux-mtd@lists.infradead.org>; Fri, 11 Apr 2014 10:06:35 -0700 (PDT)
-Date: Fri, 11 Apr 2014 10:06:31 -0700
+ id 1WYgh3-0005MK-RD
+ for linux-mtd@lists.infradead.org; Fri, 11 Apr 2014 19:00:54 +0000
+Received: by mail-qg0-f52.google.com with SMTP id q107so5946875qgd.11
+ for <linux-mtd@lists.infradead.org>; Fri, 11 Apr 2014 12:00:31 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
-To: Vincenzo Aliberti <vincenzo.aliberti@gmail.com>
-Subject: Re: mtd: lpddr: add driver for LPDDR2-NVM PCM memories
-Message-ID: <20140411170631.GR32070@ld-irv-0074>
-References: <1390167262-4030-1-git-send-email-vincenzo.aliberti@gmail.com>
- <CADBu1QvJ8XWM8Ot5UQ3zXz5piD3iXrTff9VMXTupNdD5=Qdd+w@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CADBu1QvJ8XWM8Ot5UQ3zXz5piD3iXrTff9VMXTupNdD5=Qdd+w@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH v3 00/11] mtd: spi-nor: misc. updates, de-duplication
+Date: Fri, 11 Apr 2014 11:59:55 -0700
+Message-Id: <1397242806-7575-1-git-send-email-computersforpeace@gmail.com>
+Cc: Marek Vasut <marex@denx.de>, Huang Shijie <b32955@freescale.com>,
+ Brian Norris <computersforpeace@gmail.com>, Lee Jones <lee.jones@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,15 +20,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Apr 11, 2014 at 04:43:43PM +0200, Vincenzo Aliberti wrote:
-> If you have no further comment is it possible to push upstream?
+A few miscellaneous updates, cleanups, and de-duplications. Mostly trivial
+stuff, but I had a few oversights in the first round...and in the second round 
+too :(
 
-Sorry, I haven't made time to review your patch again. But remember,
-last time I checked, you hadn't even read all my comments, so I hope you
-can understand how I might not be motivated to quickly read your patch
-again ;)
+v3:
+ - move the fsl-quadspi.c rename of
+     SPINOR_OP_QUAD_READ => SPINOR_OP_READ_1_1_4
+   from patch 8 to patch 3, so that the series bisects properly
+ - add new patch 11, caught while testing with sparse
 
-But I'll take a look soon and probably queue it up for 3.16 after the
-merge window if it looks alright.
+v2:
+ - opcode renames to fsl-quadspi.c (missed a few; I compiled it this time!)
+ - additional whitespace consistency cleanups
+ - tweak documentation wording/formatting
+ - additonal patch (patch 10), to allow building spi-nor as a module
 
-Brian
+
+Brian Norris (11):
+  mtd: spi-nor: drop \t after #define
+  mtd: spi-nor: re-name OPCODE_* to SPINOR_OP_*
+  mtd: spi-nor: unify read opcode variants with ST SPI FSM
+  Documentation: spi-nor: rewrite some portions
+  mtd: spi-nor: shorten Kconfig naming
+  mtd: st_spi_fsm: fixup Kconfig dependency
+  mtd: st_spi_fsm: kill duplicate CMD definitions
+  mtd: st_spi_fsm: replace FLACH_CMD_* with SPINOR_OP_*
+  mtd: st_spi_fsm: begin using spi-nor.h opcodes
+  mtd: spi-nor: allow to be built as module
+  mtd: fsl-quadspi: fix __iomem annotations, accessors
+
+ Documentation/mtd/spi-nor.txt           |  37 ++++----
+ drivers/mtd/Makefile                    |   2 +-
+ drivers/mtd/devices/Kconfig             |   4 +-
+ drivers/mtd/devices/m25p80.c            |   4 +-
+ drivers/mtd/devices/serial_flash_cmds.h |  44 +++-------
+ drivers/mtd/devices/st_spi_fsm.c        | 149 ++++++++++++--------------------
+ drivers/mtd/spi-nor/Kconfig             |  11 ++-
+ drivers/mtd/spi-nor/Makefile            |   2 +-
+ drivers/mtd/spi-nor/fsl-quadspi.c       |  64 +++++++-------
+ drivers/mtd/spi-nor/spi-nor.c           |  64 +++++++-------
+ include/linux/mtd/spi-nor.h             |  80 +++++++++--------
+ 11 files changed, 211 insertions(+), 250 deletions(-)
+
+-- 
+1.8.3.2
