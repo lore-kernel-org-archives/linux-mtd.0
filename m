@@ -1,14 +1,14 @@
-Received: from mail-qg0-x236.google.com ([2607:f8b0:400d:c04::236])
+Received: from mail-qc0-x236.google.com ([2607:f8b0:400d:c01::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WYghC-0005Ni-22
+ id 1WYghC-0005O2-FN
  for linux-mtd@lists.infradead.org; Fri, 11 Apr 2014 19:01:02 +0000
-Received: by mail-qg0-f54.google.com with SMTP id a108so5918275qge.27
- for <linux-mtd@lists.infradead.org>; Fri, 11 Apr 2014 12:00:38 -0700 (PDT)
+Received: by mail-qc0-f182.google.com with SMTP id e16so6419850qcx.13
+ for <linux-mtd@lists.infradead.org>; Fri, 11 Apr 2014 12:00:40 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v3 05/11] mtd: spi-nor: shorten Kconfig naming
-Date: Fri, 11 Apr 2014 12:00:00 -0700
-Message-Id: <1397242806-7575-6-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v3 07/11] mtd: st_spi_fsm: kill duplicate CMD definitions
+Date: Fri, 11 Apr 2014 12:00:02 -0700
+Message-Id: <1397242806-7575-8-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1397242806-7575-1-git-send-email-computersforpeace@gmail.com>
 References: <1397242806-7575-1-git-send-email-computersforpeace@gmail.com>
 Cc: Marek Vasut <marex@denx.de>, Huang Shijie <b32955@freescale.com>,
@@ -22,74 +22,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+These are also in serial_flash_cmds.h. (FWIW, I didn't know the C
+preprocessor allowed redefinitions without warning like this.)
+
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Acked-by: Lee Jones <lee.jones@linaro.org>
 Reviewed-by: Marek Vasut <marex@denx.de>
-Acked-by: Huang Shijie <b32955@freescale.com>
 ---
 v3: no change
 
- drivers/mtd/Makefile         |  2 +-
- drivers/mtd/devices/Kconfig  |  2 +-
- drivers/mtd/spi-nor/Kconfig  | 11 ++++++++---
- drivers/mtd/spi-nor/Makefile |  2 +-
- 4 files changed, 11 insertions(+), 6 deletions(-)
+ drivers/mtd/devices/st_spi_fsm.c | 36 ------------------------------------
+ 1 file changed, 36 deletions(-)
 
-diff --git a/drivers/mtd/Makefile b/drivers/mtd/Makefile
-index 40fd15344387..99bb9a1f6e16 100644
---- a/drivers/mtd/Makefile
-+++ b/drivers/mtd/Makefile
-@@ -32,5 +32,5 @@ inftl-objs		:= inftlcore.o inftlmount.o
+diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
+index 30082a09f68b..122a8a14ef84 100644
+--- a/drivers/mtd/devices/st_spi_fsm.c
++++ b/drivers/mtd/devices/st_spi_fsm.c
+@@ -201,42 +201,6 @@
  
- obj-y		+= chips/ lpddr/ maps/ devices/ nand/ onenand/ tests/
+ #define STFSM_MAX_WAIT_SEQ_MS  1000     /* FSM execution time */
  
--obj-$(CONFIG_MTD_SPI_NOR_BASE)	+= spi-nor/
-+obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor/
- obj-$(CONFIG_MTD_UBI)		+= ubi/
-diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
-index 48aa1aa5820b..f9e32b53dfc6 100644
---- a/drivers/mtd/devices/Kconfig
-+++ b/drivers/mtd/devices/Kconfig
-@@ -80,7 +80,7 @@ config MTD_DATAFLASH_OTP
- 
- config MTD_M25P80
- 	tristate "Support most SPI Flash chips (AT26DF, M25P, W25X, ...)"
--	depends on SPI_MASTER && MTD_SPI_NOR_BASE
-+	depends on SPI_MASTER && MTD_SPI_NOR
- 	help
- 	  This enables access to most modern SPI flash chips, used for
- 	  program and data storage.   Series supported include Atmel AT26DF,
-diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-index 64cfc39ad17e..d682fb440e06 100644
---- a/drivers/mtd/spi-nor/Kconfig
-+++ b/drivers/mtd/spi-nor/Kconfig
-@@ -1,12 +1,17 @@
--config MTD_SPI_NOR_BASE
--	bool "the framework for SPI-NOR support"
-+config MTD_SPI_NOR
-+	bool "SPI-NOR device support"
- 	depends on MTD
- 	help
- 	  This is the framework for the SPI NOR which can be used by the SPI
- 	  device drivers and the SPI-NOR device driver.
-+
-+if MTD_SPI_NOR
-+
- config SPI_FSL_QUADSPI
- 	tristate "Freescale Quad SPI controller"
--	depends on ARCH_MXC && MTD_SPI_NOR_BASE
-+	depends on ARCH_MXC
- 	help
- 	  This enables support for the Quad SPI controller in master mode.
- 	  We only connect the NOR to this controller now.
-+
-+endif # MTD_SPI_NOR
-diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-index 51f9d8b99ab7..6a7ce1462247 100644
---- a/drivers/mtd/spi-nor/Makefile
-+++ b/drivers/mtd/spi-nor/Makefile
-@@ -1,2 +1,2 @@
--obj-$(CONFIG_MTD_SPI_NOR_BASE)	+= spi-nor.o
-+obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor.o
- obj-$(CONFIG_SPI_FSL_QUADSPI)	+= fsl-quadspi.o
+-/* Flash Commands */
+-#define FLASH_CMD_WREN         0x06
+-#define FLASH_CMD_WRDI         0x04
+-#define FLASH_CMD_RDID         0x9f
+-#define FLASH_CMD_RDSR         0x05
+-#define FLASH_CMD_RDSR2                0x35
+-#define FLASH_CMD_WRSR         0x01
+-#define FLASH_CMD_SE_4K                0x20
+-#define FLASH_CMD_SE_32K       0x52
+-#define FLASH_CMD_SE           0xd8
+-#define FLASH_CMD_CHIPERASE    0xc7
+-
+-#define FLASH_CMD_READ         0x03    /* READ */
+-#define FLASH_CMD_READ_FAST    0x0b    /* FAST READ */
+-#define FLASH_CMD_READ_1_1_2   0x3b    /* DUAL OUTPUT READ */
+-#define FLASH_CMD_READ_1_2_2   0xbb    /* DUAL I/O READ */
+-#define FLASH_CMD_READ_1_1_4   0x6b    /* QUAD OUTPUT READ */
+-#define FLASH_CMD_READ_1_4_4   0xeb    /* QUAD I/O READ */
+-
+-#define FLASH_CMD_WRITE                0x02    /* PAGE PROGRAM */
+-#define FLASH_CMD_WRITE_1_1_2  0xa2    /* DUAL INPUT PROGRAM */
+-#define FLASH_CMD_WRITE_1_2_2  0xd2    /* DUAL INPUT EXT PROGRAM */
+-#define FLASH_CMD_WRITE_1_1_4  0x32    /* QUAD INPUT PROGRAM */
+-#define FLASH_CMD_WRITE_1_4_4  0x12    /* QUAD INPUT EXT PROGRAM */
+-
+-#define FLASH_CMD_EN4B_ADDR    0xb7    /* Enter 4-byte address mode */
+-#define FLASH_CMD_EX4B_ADDR    0xe9    /* Exit 4-byte address mode */
+-
+-/* READ commands with 32-bit addressing (N25Q256 and S25FLxxxS) */
+-#define FLASH_CMD_READ4                0x13
+-#define FLASH_CMD_READ4_FAST   0x0c
+-#define FLASH_CMD_READ4_1_1_2  0x3c
+-#define FLASH_CMD_READ4_1_2_2  0xbc
+-#define FLASH_CMD_READ4_1_1_4  0x6c
+-#define FLASH_CMD_READ4_1_4_4  0xec
+-
+ /* S25FLxxxS commands */
+ #define S25FL_CMD_WRITE4_1_1_4 0x34
+ #define S25FL_CMD_SE4          0xdc
 -- 
 1.8.3.2
