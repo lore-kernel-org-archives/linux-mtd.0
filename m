@@ -1,14 +1,14 @@
 Received: from mail-qc0-x22e.google.com ([2607:f8b0:400d:c01::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WYghA-0005Op-Qh
+ id 1WYghA-0005Nu-Qo
  for linux-mtd@lists.infradead.org; Fri, 11 Apr 2014 19:01:01 +0000
-Received: by mail-qc0-f174.google.com with SMTP id c9so6402825qcz.33
- for <linux-mtd@lists.infradead.org>; Fri, 11 Apr 2014 12:00:44 -0700 (PDT)
+Received: by mail-qc0-f174.google.com with SMTP id c9so6304358qcz.19
+ for <linux-mtd@lists.infradead.org>; Fri, 11 Apr 2014 12:00:39 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v3 10/11] mtd: spi-nor: allow to be built as module
-Date: Fri, 11 Apr 2014 12:00:05 -0700
-Message-Id: <1397242806-7575-11-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v3 06/11] mtd: st_spi_fsm: fixup Kconfig dependency
+Date: Fri, 11 Apr 2014 12:00:01 -0700
+Message-Id: <1397242806-7575-7-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1397242806-7575-1-git-send-email-computersforpeace@gmail.com>
 References: <1397242806-7575-1-git-send-email-computersforpeace@gmail.com>
 Cc: Marek Vasut <marex@denx.de>, Huang Shijie <b32955@freescale.com>,
@@ -22,29 +22,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There's no reason this can't be a module. Also, give SPI-NOR its own
-submenu.
+I hear that this driver should depend on ARCH_STI, and that "SH" is not
+actually a real symbol. At the same time, let's allow compile-testing on
+other ARCH'es.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Acked-by: Lee Jones <lee.jones@linaro.org>
 Reviewed-by: Marek Vasut <marex@denx.de>
 ---
 v3: no change
-v2: new patch
 
- drivers/mtd/spi-nor/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/devices/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-index d682fb440e06..f8acfa4310ef 100644
---- a/drivers/mtd/spi-nor/Kconfig
-+++ b/drivers/mtd/spi-nor/Kconfig
-@@ -1,5 +1,5 @@
--config MTD_SPI_NOR
--	bool "SPI-NOR device support"
-+menuconfig MTD_SPI_NOR
-+	tristate "SPI-NOR device support"
- 	depends on MTD
+diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
+index f9e32b53dfc6..9aae1042c14f 100644
+--- a/drivers/mtd/devices/Kconfig
++++ b/drivers/mtd/devices/Kconfig
+@@ -212,7 +212,7 @@ config MTD_DOCG3
+ 
+ config MTD_ST_SPI_FSM
+ 	tristate "ST Microelectronics SPI FSM Serial Flash Controller"
+-	depends on ARM || SH
++	depends on ARCH_STI || COMPILE_TEST
  	help
- 	  This is the framework for the SPI NOR which can be used by the SPI
+ 	  This provides an MTD device driver for the ST Microelectronics
+ 	  SPI Fast Sequence Mode (FSM) Serial Flash Controller and support
 -- 
 1.8.3.2
