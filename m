@@ -1,31 +1,25 @@
-Received: from smtprelay2.synopsys.com ([198.182.60.111]
- helo=smtprelay.synopsys.com)
+Received: from mail-bn1bbn0102.outbound.protection.outlook.com
+ ([157.56.111.102] helo=na01-bn1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WYcoB-0006mT-4c
- for linux-mtd@lists.infradead.org; Fri, 11 Apr 2014 14:52:00 +0000
-From: Alexey Brodkin <Alexey.Brodkin@synopsys.com>
-To: "ezequiel.garcia@free-electrons.com" <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH v2] axs_nand - add driver for NAND controller used on
- Synopsys AXS dev boards
-Date: Fri, 11 Apr 2014 14:51:29 +0000
-Message-ID: <1397227889.3284.17.camel@abrodkin-8560l.internal.synopsys.com>
-References: <1396597089-1081-1-git-send-email-abrodkin@synopsys.com>
- <20140404140933.GA25772@arch.cereza>
- <1396851239.4081.10.camel@abrodkin-8560l.internal.synopsys.com>
-In-Reply-To: <1396851239.4081.10.camel@abrodkin-8560l.internal.synopsys.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="koi8-r"
-Content-ID: <FA034EBC1515CA4A815AE778F2E19C94@internal.synopsys.com>
-Content-Transfer-Encoding: quoted-printable
+ id 1WYczn-0002U5-Gg
+ for linux-mtd@lists.infradead.org; Fri, 11 Apr 2014 15:04:01 +0000
+From: <grmoore@altera.com>
+To: <ggrahammoore@gmail.com>
+Subject: [PATCH V2] Add support for flag status register on Micron chips.
+Date: Fri, 11 Apr 2014 10:03:13 -0500
+Message-ID: <1397228593-17996-1-git-send-email-grmoore@altera.com>
 MIME-Version: 1.0
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "Francois.Bedard@synopsys.com" <Francois.Bedard@synopsys.com>,
- "Vineet.Gupta1@synopsys.com" <Vineet.Gupta1@synopsys.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "grant.likely@linaro.org" <grant.likely@linaro.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+Content-Type: text/plain
+Cc: Marek Vasut <marex@denx.de>,
+ Geert Uytterhoeven <geert+renesas@linux-m68k.org>,
+ Graham Moore <grmoore@altera.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Jingoo Han <jg1.han@samsung.com>,
+ linux-kernel@vger.kernel.org, Yves Vandervennet <rocket.yvanderv@gmail.com>,
+ linux-mtd@lists.infradead.org, Insop Song <insop.song@gainspeed.com>,
+ Alan Tull <atull@altera.com>, Sourav Poddar <sourav.poddar@ti.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen <dinguyen@altera.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,109 +29,268 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ezequiel,
+From: Graham Moore <grmoore@altera.com>
 
-On Mon, 2014-04-07 at 10:13 +0400, Alexey Brodkin wrote:
-> Hi Ezequiel,
->=20
-> On Fri, 2014-04-04 at 11:09 -0300, Ezequiel Garcia wrote:
-> > On Apr 04, Alexey Brodkin wrote:
-> > > Signed-off-by: Alexey Brodkin <abrodkin@synopsys.com>
-> > >=20
-> >=20
-> > Maybe it would be nice adding some driver description here, so the comm=
-it
-> > log actually says something useful about the commit.
->=20
-> Well, I thought about it but frankly I'm not sure if there's anything
-> else to add to commit title "driver for NAND controller used on Synopsys
-> AXS dev boards".
->=20
-> Do you think more info may make sense?
->=20
-> > > +/**
-> > > + * axs_flag_wait_and_reset - Waits until requested flag in INT_STATU=
-S register
-> > > + *              is set by HW and resets it by writing "1" in INT_CLR=
-_STATUS.
-> > > + * @host:	Pointer to private data structure.
-> > > + * @flag:	Bit/flag offset in INT_STATUS register
-> > > + */
-> > > +static void axs_flag_wait_and_reset(struct axs_nand_host *host, int =
-flag)
-> > > +{
-> > > +	unsigned int i;
-> > > +
-> > > +	for (i =3D 0; i < AXS_FLAG_WAIT_DELAY * 100; i++) {
-> > > +		unsigned int status =3D reg_get(host, INT_STATUS);
-> > > +
-> > > +		if (status & (1 << flag)) {
-> > > +			reg_set(host, INT_CLR_STATUS, 1 << flag);
-> > > +			return;
-> > > +		}
-> > > +
-> > > +		udelay(10);
-> > > +	}
-> > > +
-> > > +	/*
-> > > +	 * Since we cannot report this problem any further than
-> > > +	 * axs_nand_{write|read}_buf() letting user know there's a problem.
-> > > +	 */
-> > > +	dev_err(host->dev, "Waited too long (%d s.) for flag/bit %d\n",
-> > > +		AXS_FLAG_WAIT_DELAY, flag);
-> > > +}
-> >=20
-> > Hm... I'm not sure the above is really true.
-> >=20
-> > The NAND core uses the replaceable chip->waitfunc callback to check the
-> > status of issued commands. See for instance:
-> >=20
-> > static int nand_write_oob_std(struct mtd_info *mtd, struct nand_chip *c=
-hip,
-> >                               int page)
-> > {
-> >         int status =3D 0;
-> >         const uint8_t *buf =3D chip->oob_poi;
-> >         int length =3D mtd->oobsize;
-> >=20
-> >         chip->cmdfunc(mtd, NAND_CMD_SEQIN, mtd->writesize, page);
-> >         chip->write_buf(mtd, buf, length);
-> >         /* Send command to program the OOB data */
-> >         chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
-> >=20
-> >         status =3D chip->waitfunc(mtd, chip);
-> >=20
-> >         return status & NAND_STATUS_FAIL ? -EIO : 0;
-> > }
-> >=20
-> > On the other side, if you are clearing the flags in axs_flag_wait_and_r=
-eset()
-> > it might be a bit hard for you to get this right.
-> >=20
-> > IOW, I'm not saying you *must* do this, but instead suggesting that you=
- take
-> > a look at waitfunc() and see if it helps report a proper error in the
-> > read/write path.
->=20
-> As I may understand from generic implementation of "waitfunc" in
-> "nand_base.c" it checks status of NAND chip itself - which IMHO makes
-> sense. And this is done via NAND_CMD_STATUS command sent to chip through
-> NAND controller.
->=20
-> In AXS NAND driver you may see 2 types of wait checks:
-> 1. NAND_ISR_CMDDONE - this flag means that NAND controller has just
-> executed provided command (i.e. set proper signal on control lines of
-> NAND chip etc), but it doesn't mean NAND chip itself has completed
-> command execution. That's why "waitfunc" is not direct replacement here.
->=20
-> 2. NAND_ISR_{RX|TX}DMACOMPLETE - this flag indicates completion of DMA
-> transfer to/from NAND chip to RAM. "waitfunc" won't work here as well.
->=20
-> I hope this explanation makes sense.
+Some new Micron flash chips require reading the flag
+status register to determine when operations have completed.
 
-Please treat this message as a gentle reminder.
-I'm wondering if my explanation in the previous email makes any sense or
-I still need to fix stuff.
+Furthermore, chips with multi-die stacks of the 65nm 256Mb QSPI also
+require reading the status register before reading the flag status register.
 
-Regards,
-Alexey
+This patch adds support for the flag status register in the n25q512a1 and n25q00
+Micron QSPI flash chips.
+
+Signed-off-by: Graham Moore <grmoore@altera.com>
+---
+V2:
+Remove leading underscore in function names.
+Remove type cast in dev_err call and use the proper format
+specifier instead.
+---
+ drivers/mtd/devices/m25p80.c |   91 ++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 78 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index ad19139..4cddbc8 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -39,6 +39,7 @@
+ #define	OPCODE_WREN		0x06	/* Write enable */
+ #define	OPCODE_RDSR		0x05	/* Read status register */
+ #define	OPCODE_WRSR		0x01	/* Write status register 1 byte */
++#define	OPCODE_RDFSR		0x70  /* read flag status register */
+ #define	OPCODE_NORM_READ	0x03	/* Read data bytes (low frequency) */
+ #define	OPCODE_FAST_READ	0x0b	/* Read data bytes (high frequency) */
+ #define	OPCODE_QUAD_READ        0x6b    /* Read data bytes */
+@@ -81,6 +82,9 @@
+ 
+ #define SR_QUAD_EN_MX           0x40    /* Macronix Quad I/O */
+ 
++/* Flag Status Register bits */
++#define FSR_READY               0x80    /* FSR ready */
++
+ /* Configuration Register bits. */
+ #define CR_QUAD_EN_SPAN		0x2     /* Spansion Quad I/O */
+ 
+@@ -109,6 +113,7 @@ struct m25p {
+ 	u8			program_opcode;
+ 	u8			*command;
+ 	enum read_type		flash_read;
++	int (*wait_till_ready)(struct m25p *flash);
+ };
+ 
+ static inline struct m25p *mtd_to_m25p(struct mtd_info *mtd)
+@@ -145,6 +150,27 @@ static int read_sr(struct m25p *flash)
+ }
+ 
+ /*
++ * Read the flag status register, returning its value in the location
++ * Return the status register value.
++ * Returns negative if error occurred.
++ */
++static int read_fsr(struct m25p *flash)
++{
++	ssize_t retval;
++	u8 code = OPCODE_RDFSR;
++	u8 val;
++
++	retval = spi_write_then_read(flash->spi, &code, 1, &val, 1);
++
++	if (retval < 0) {
++		dev_err(&flash->spi->dev, "error %zd reading FSR\n",
++			retval);
++		return retval;
++	}
++
++	return val;
++}
++/*
+  * Read configuration register, returning its value in the
+  * location. Return the configuration register value.
+  * Returns negative if error occured.
+@@ -254,6 +280,37 @@ static int wait_till_ready(struct m25p *flash)
+ }
+ 
+ /*
++ * Service routine to read flag status register until ready, or timeout occurs.
++ * Returns non-zero if error.
++ */
++static int wait_till_fsr_ready(struct m25p *flash)
++{
++	unsigned long deadline;
++	int fsr;
++	int sr;
++
++	deadline = jiffies + MAX_READY_WAIT_JIFFIES;
++
++	do {
++		sr = read_sr(flash);
++		if (sr < 0)
++			break;
++		/* only check fsr if sr not busy */
++		if (!(sr & SR_WIP)) {
++			fsr = read_fsr(flash);
++			if (fsr < 0)
++				break;
++			if (fsr & FSR_READY)
++				return 0;
++		}
++
++		cond_resched();
++
++	} while (!time_after_eq(jiffies, deadline));
++
++	return 1;
++}
++/*
+  * Write status Register and configuration register with 2 bytes
+  * The first byte will be written to the status register, while the
+  * second byte will be written to the configuration register.
+@@ -280,7 +337,7 @@ static int macronix_quad_enable(struct m25p *flash)
+ 
+ 	spi_write(flash->spi, &cmd, 2);
+ 
+-	if (wait_till_ready(flash))
++	if (flash->wait_till_ready(flash))
+ 		return 1;
+ 
+ 	ret = read_sr(flash);
+@@ -351,7 +408,7 @@ static int erase_chip(struct m25p *flash)
+ 			(long long)(flash->mtd.size >> 10));
+ 
+ 	/* Wait until finished previous write command. */
+-	if (wait_till_ready(flash))
++	if (flash->wait_till_ready(flash))
+ 		return 1;
+ 
+ 	/* Send write enable, then erase commands. */
+@@ -391,7 +448,7 @@ static int erase_sector(struct m25p *flash, u32 offset)
+ 			__func__, flash->mtd.erasesize / 1024, offset);
+ 
+ 	/* Wait until finished previous write command. */
+-	if (wait_till_ready(flash))
++	if (flash->wait_till_ready(flash))
+ 		return 1;
+ 
+ 	/* Send write enable, then erase commands. */
+@@ -536,7 +593,7 @@ static int m25p80_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	mutex_lock(&flash->lock);
+ 
+ 	/* Wait till previous write/erase is done. */
+-	if (wait_till_ready(flash)) {
++	if (flash->wait_till_ready(flash)) {
+ 		/* REVISIT status return?? */
+ 		mutex_unlock(&flash->lock);
+ 		return 1;
+@@ -585,7 +642,7 @@ static int m25p80_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	mutex_lock(&flash->lock);
+ 
+ 	/* Wait until finished previous write command. */
+-	if (wait_till_ready(flash)) {
++	if (flash->wait_till_ready(flash)) {
+ 		mutex_unlock(&flash->lock);
+ 		return 1;
+ 	}
+@@ -628,7 +685,7 @@ static int m25p80_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 			t[1].tx_buf = buf + i;
+ 			t[1].len = page_size;
+ 
+-			wait_till_ready(flash);
++			flash->wait_till_ready(flash);
+ 
+ 			write_enable(flash);
+ 
+@@ -668,7 +725,7 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	mutex_lock(&flash->lock);
+ 
+ 	/* Wait until finished previous write command. */
+-	ret = wait_till_ready(flash);
++	ret = flash->wait_till_ready(flash);
+ 	if (ret)
+ 		goto time_out;
+ 
+@@ -683,7 +740,7 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 		/* write one byte. */
+ 		t[1].len = 1;
+ 		spi_sync(flash->spi, &m);
+-		ret = wait_till_ready(flash);
++		ret = flash->wait_till_ready(flash);
+ 		if (ret)
+ 			goto time_out;
+ 		*retlen += m.actual_length - m25p_cmdsz(flash);
+@@ -702,7 +759,7 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 		t[1].tx_buf = buf + actual;
+ 
+ 		spi_sync(flash->spi, &m);
+-		ret = wait_till_ready(flash);
++		ret = flash->wait_till_ready(flash);
+ 		if (ret)
+ 			goto time_out;
+ 		*retlen += m.actual_length - cmd_sz;
+@@ -710,7 +767,7 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 		to += 2;
+ 	}
+ 	write_disable(flash);
+-	ret = wait_till_ready(flash);
++	ret = flash->wait_till_ready(flash);
+ 	if (ret)
+ 		goto time_out;
+ 
+@@ -724,7 +781,7 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 		t[1].tx_buf = buf + actual;
+ 
+ 		spi_sync(flash->spi, &m);
+-		ret = wait_till_ready(flash);
++		ret = flash->wait_till_ready(flash);
+ 		if (ret)
+ 			goto time_out;
+ 		*retlen += m.actual_length - m25p_cmdsz(flash);
+@@ -745,7 +802,7 @@ static int m25p80_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 
+ 	mutex_lock(&flash->lock);
+ 	/* Wait until finished previous command */
+-	if (wait_till_ready(flash)) {
++	if (flash->wait_till_ready(flash)) {
+ 		res = 1;
+ 		goto err;
+ 	}
+@@ -790,7 +847,7 @@ static int m25p80_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 
+ 	mutex_lock(&flash->lock);
+ 	/* Wait until finished previous command */
+-	if (wait_till_ready(flash)) {
++	if (flash->wait_till_ready(flash)) {
+ 		res = 1;
+ 		goto err;
+ 	}
+@@ -856,6 +913,7 @@ struct flash_info {
+ #define	M25P_NO_FR	0x08		/* Can't do fastread */
+ #define	SECT_4K_PMC	0x10		/* OPCODE_BE_4K_PMC works uniformly */
+ #define	M25P80_QUAD_READ	0x20    /* Flash supports Quad Read */
++#define	USE_FSR		0x40		/* use flag status register */
+ };
+ 
+ #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)	\
+@@ -941,6 +999,8 @@ static const struct spi_device_id m25p_ids[] = {
+ 	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, 0) },
+ 	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K) },
+ 	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K) },
++	{ "n25q512a1",   INFO(0x20ba20, 0, 64 * 1024, 1024, USE_FSR) },
++	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, USE_FSR) },
+ 
+ 	/* PMC */
+ 	{ "pm25lv512",   INFO(0,        0, 32 * 1024,    2, SECT_4K_PMC) },
+@@ -1206,6 +1266,11 @@ static int m25p_probe(struct spi_device *spi)
+ 	if (info->flags & M25P_NO_ERASE)
+ 		flash->mtd.flags |= MTD_NO_ERASE;
+ 
++	if (info->flags & USE_FSR)
++		flash->wait_till_ready = &wait_till_fsr_ready;
++	else
++		flash->wait_till_ready = &wait_till_ready;
++
+ 	ppdata.of_node = spi->dev.of_node;
+ 	flash->mtd.dev.parent = &spi->dev;
+ 	flash->page_size = info->page_size;
+-- 
+1.7.10.4
