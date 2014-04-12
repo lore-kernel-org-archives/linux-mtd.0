@@ -1,25 +1,20 @@
-Received: from mail-pa0-x236.google.com ([2607:f8b0:400e:c03::236])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WYyKC-00055W-SF
- for linux-mtd@lists.infradead.org; Sat, 12 Apr 2014 13:50:29 +0000
-Received: by mail-pa0-f54.google.com with SMTP id lf10so6562566pab.27
- for <linux-mtd@lists.infradead.org>; Sat, 12 Apr 2014 06:50:05 -0700 (PDT)
-Date: Sat, 12 Apr 2014 21:49:43 +0800
-From: Huang Shijie <shijie8@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v3 11/11] mtd: fsl-quadspi: fix __iomem annotations,
- accessors
-Message-ID: <20140412134939.GA2952@localhost.localdomain>
-References: <1397242806-7575-1-git-send-email-computersforpeace@gmail.com>
- <1397242806-7575-12-git-send-email-computersforpeace@gmail.com>
- <20140412045700.GA1545@localhost.localdomain>
- <20140412061333.GI3131@norris-Latitude-E6410>
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WYz75-00023l-9M
+ for linux-mtd@lists.infradead.org; Sat, 12 Apr 2014 14:40:59 +0000
+Date: Sat, 12 Apr 2014 11:40:00 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 0/4] mtd: Fix wrong bad block account in ECC stats
+Message-ID: <20140412144000.GD583@arch.cereza>
+References: <1395403064-28113-1-git-send-email-ezequiel.garcia@free-electrons.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20140412061333.GI3131@norris-Latitude-E6410>
-Cc: Marek Vasut <marex@denx.de>, Huang Shijie <b32955@freescale.com>,
- Lee Jones <lee.jones@linaro.org>, linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1395403064-28113-1-git-send-email-ezequiel.garcia@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,52 +24,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Apr 11, 2014 at 11:13:33PM -0700, Brian Norris wrote:
-> On Sat, Apr 12, 2014 at 12:57:03PM +0800, Huang Shijie wrote:
-> > On Fri, Apr 11, 2014 at 12:00:06PM -0700, Brian Norris wrote:
-> > > @@ -730,7 +730,7 @@ static int fsl_qspi_read(struct spi_nor *nor, loff_t from,
-> > >  		return ret;
-> > >  
-> > >  	/* Read out the data directly from the AHB buffer.*/
-> > > -	memcpy(buf, q->ahb_base + q->chip_base_addr + from, len);
-> > > +	memcpy_fromio(buf, q->ahb_base + q->chip_base_addr + from, len);
-> > ARM does some optimazation to the memcpy, please see arch/arm/lib/memcpy.S.
-> > 
-> > But the memcpy_fromio does not do optimazation, please see _memcpy_fromio.
+On Mar 21, Ezequiel Garcia wrote:
+> This series addresses the wrong bad and bbt block accounting we currently
+> have in MTD.
 > 
-> Ah, yes. I noticed this actually, but didn't think much about it.
+> Notice that this is a very old issue, probably around since the dawn of time,
+> and nobody seem to care much about it. However, with the introduction of
+> the sysfs ECC stats access, it's easier to access this stats and easier to
+> see the issue.
 > 
-> > Someone ever sent a patch to fix the issue, but Russell did not merge it.
+> Currently, a device with eight blocks used for the BBT in the last partition
+> would show (getting ECC stats from sysfs):
 > 
-> That's unfortunate.
+> $ cat /sys/class/mtd/mtd2/ecc_stats
+>        0        0       10        0
+>        0        0        4        0
+>        0        0        8        0
 > 
-> > please see:
-> > http://lists.infradead.org/pipermail/linux-arm-kernel/2009-November/003860.html
-> > 
-> > So we'd better do not change to use memcpy_fromio.
+> The third column is the badblocks field in the ecc_stats structure. The
+> number of badblocks is obtained for each partition near the end of
+> allocate_partition(). The partition is scanned for badblocks and this
+> number is updated. This series fixes this by adding a check for BBT reserved
+> blocks, showing:
 > 
-> How about the last recommendation of that thread, readsl()?
+> $ cat /sys/class/mtd/mtd2/ecc_stats
+>        0        0       10        0
+>        0        0        4        0
+>        0        0        0        8
 > 
-[1] firstly, I think it is not an IO read actually.
-   We read the data from the AHB memory address in fact, a miss will make the
-   controller to trigger a QUAD read to the NOR flash.
-   
-[2] secondly, the memcpy can work by the unit of 8 bytes (or more?),
-	while the readsl can work by the unit of 4 bytes at most.
-    
+> The first two patches have already been posted. I'm resending them here for
+> conveniency.
+> 
+> Ezequiel Garcia (4):
+>   mtd: Add sysfs attr to expose ECC stats
+>   mtd: nand: Account the blocks used by the BBT in the ecc_stats
+>   mtd: Introduce mtd_block_isreserved()
+>   mtd: Account for BBT blocks when a partition is being allocated
+> 
+>  drivers/mtd/mtdcore.c        | 24 ++++++++++++++++++++++++
+>  drivers/mtd/mtdpart.c        | 13 ++++++++++++-
+>  drivers/mtd/nand/nand_base.c |  1 +
+>  drivers/mtd/nand/nand_bbt.c  | 16 ++++++++++++++++
+>  include/linux/mtd/mtd.h      |  2 ++
+>  include/linux/mtd/nand.h     |  1 +
+>  6 files changed, 56 insertions(+), 1 deletion(-)
+> 
 
-So use memcpy here is better then using the readsl.
+Any comments?
 
-
->   http://lists.infradead.org/pipermail/linux-arm-kernel/2009-November/003984.html
-> 
-> It has your optimization, and it has the type-checking we'd like.
-> 
-> > BTW: i am okay with other patches about the spi-nor.
-> 
-> Thanks. I'll probably merge the first 10 soon and see about respinning
-> this one eventually.
-Please merge the first 10 patches as soon as possible. :)
-
-thanks
-Huang Shijie
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
