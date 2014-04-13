@@ -1,20 +1,13 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WYz75-00023l-9M
- for linux-mtd@lists.infradead.org; Sat, 12 Apr 2014 14:40:59 +0000
-Date: Sat, 12 Apr 2014 11:40:00 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 0/4] mtd: Fix wrong bad block account in ECC stats
-Message-ID: <20140412144000.GD583@arch.cereza>
-References: <1395403064-28113-1-git-send-email-ezequiel.garcia@free-electrons.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1395403064-28113-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Received: from guitar.tcltek.co.il ([192.115.133.116] helo=mx.tkos.co.il)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WZJVH-0007sH-Bq
+ for linux-mtd@lists.infradead.org; Sun, 13 Apr 2014 12:27:20 +0000
+From: Baruch Siach <baruch@tkos.co.il>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] include/common.h: fix build against current uClibc
+Date: Sun, 13 Apr 2014 15:26:46 +0300
+Message-Id: <98c2959992086acd792ef9850c90cc9da8a2a063.1397392006.git.baruch@tkos.co.il>
+Cc: Baruch Siach <baruch@tkos.co.il>, Mike Frysinger <vapier@gentoo.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,55 +17,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mar 21, Ezequiel Garcia wrote:
-> This series addresses the wrong bad and bbt block accounting we currently
-> have in MTD.
-> 
-> Notice that this is a very old issue, probably around since the dawn of time,
-> and nobody seem to care much about it. However, with the introduction of
-> the sysfs ECC stats access, it's easier to access this stats and easier to
-> see the issue.
-> 
-> Currently, a device with eight blocks used for the BBT in the last partition
-> would show (getting ECC stats from sysfs):
-> 
-> $ cat /sys/class/mtd/mtd2/ecc_stats
->        0        0       10        0
->        0        0        4        0
->        0        0        8        0
-> 
-> The third column is the badblocks field in the ecc_stats structure. The
-> number of badblocks is obtained for each partition near the end of
-> allocate_partition(). The partition is scanned for badblocks and this
-> number is updated. This series fixes this by adding a check for BBT reserved
-> blocks, showing:
-> 
-> $ cat /sys/class/mtd/mtd2/ecc_stats
->        0        0       10        0
->        0        0        4        0
->        0        0        0        8
-> 
-> The first two patches have already been posted. I'm resending them here for
-> conveniency.
-> 
-> Ezequiel Garcia (4):
->   mtd: Add sysfs attr to expose ECC stats
->   mtd: nand: Account the blocks used by the BBT in the ecc_stats
->   mtd: Introduce mtd_block_isreserved()
->   mtd: Account for BBT blocks when a partition is being allocated
-> 
->  drivers/mtd/mtdcore.c        | 24 ++++++++++++++++++++++++
->  drivers/mtd/mtdpart.c        | 13 ++++++++++++-
->  drivers/mtd/nand/nand_base.c |  1 +
->  drivers/mtd/nand/nand_bbt.c  | 16 ++++++++++++++++
->  include/linux/mtd/mtd.h      |  2 ++
->  include/linux/mtd/nand.h     |  1 +
->  6 files changed, 56 insertions(+), 1 deletion(-)
-> 
+Commit dbe0fd17f2 (mtd-utils: new prompt() helper for talking to the user)
+introduced a rpmatch() call. However, uClibc versions older than (not yet
+released) 0.9.34 don't have rpmatch() implementation. Add one.
 
-Any comments?
+Cc: Mike Frysinger <vapier@gentoo.org>
+Signed-off-by: Baruch Siach <baruch@tkos.co.il>
+---
+ include/common.h | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
+diff --git a/include/common.h b/include/common.h
+index 4ffccea17213..3b1366e927c4 100644
+--- a/include/common.h
++++ b/include/common.h
+@@ -102,6 +102,19 @@ extern "C" {
+ 	fprintf(stderr, "%s: warning!: " fmt "\n", PROGRAM_NAME, ##__VA_ARGS__); \
+ } while(0)
+ 
++#if defined(__UCLIBC__)
++/* uClibc versions before 0.9.34 don't have rpmatch() */
++#if __UCLIBC_MAJOR__ == 0 && \
++		(__UCLIBC_MINOR__ < 9 || \
++		(__UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ < 34))
++static inline int rpmatch(const char *resp)
++{
++    return (resp[0] == 'y' || resp[0] == 'Y') ? 1 :
++	(resp[0] == 'n' || resp[0] == 'N') ? 0 : -1;
++}
++#endif
++#endif
++
+ /**
+  * prompt the user for confirmation
+  */
 -- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+1.9.1
