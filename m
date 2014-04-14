@@ -1,30 +1,22 @@
-Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
+Received: from mail-out.m-online.net ([212.18.0.9])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WZmBm-0001WV-Do
- for linux-mtd@lists.infradead.org; Mon, 14 Apr 2014 19:05:07 +0000
+ id 1WZmC2-0001rG-94
+ for linux-mtd@lists.infradead.org; Mon, 14 Apr 2014 19:05:22 +0000
 From: Marek Vasut <marex@denx.de>
-To: Graham Moore <ggrahammoore@gmail.com>
-Subject: Re: [PATCH V2] Add support for flag status register on Micron chips.
-Date: Mon, 14 Apr 2014 20:29:15 +0200
-References: <1397228593-17996-1-git-send-email-grmoore@altera.com>
- <201404131918.45753.marex@denx.de>
- <CA+iBjpSHL0+A=wzhhVvT_y+mhZoFNLUkNe18OtxPn1hZVCdUDw@mail.gmail.com>
-In-Reply-To: <CA+iBjpSHL0+A=wzhhVvT_y+mhZoFNLUkNe18OtxPn1hZVCdUDw@mail.gmail.com>
+To: Huang Shijie <shijie8@gmail.com>
+Subject: Re: [PATCH] mtd: spi-nor: read 6 bytes for the ID
+Date: Mon, 14 Apr 2014 20:23:47 +0200
+References: <1397470174-27856-1-git-send-email-b32955@freescale.com>
+ <201404141353.07427.marex@denx.de>
+ <20140414144346.GA4363@localhost.localdomain>
+In-Reply-To: <20140414144346.GA4363@localhost.localdomain>
 MIME-Version: 1.0
 Content-Type: Text/Plain;
   charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Message-Id: <201404142029.15280.marex@denx.de>
-Cc: Geert Uytterhoeven <geert+renesas@linux-m68k.org>,
- Insop Song <insop.song@gainspeed.com>,
- "grmoore@altera.com" <grmoore@altera.com>,
- Sascha Hauer <s.hauer@pengutronix.de>, Jingoo Han <jg1.han@samsung.com>,
- linux-kernel@vger.kernel.org, Yves Vandervennet <rocket.yvanderv@gmail.com>,
- linux-mtd@lists.infradead.org,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Alan Tull <atull@altera.com>, Sourav Poddar <sourav.poddar@ti.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen <dinguyen@altera.com>
+Message-Id: <201404142023.47986.marex@denx.de>
+Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org, dwmw2@infradead.org, angus.clark@st.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,53 +26,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday, April 14, 2014 at 06:19:24 PM, Graham Moore wrote:
-> On Sun, Apr 13, 2014 at 12:18 PM, Marek Vasut <marex@denx.de> wrote:
-> [...]
+On Monday, April 14, 2014 at 04:44:01 PM, Huang Shijie wrote:
+> On Mon, Apr 14, 2014 at 01:53:07PM +0200, Marek Vasut wrote:
+> > > @@ -614,8 +616,23 @@ static const struct spi_device_id
+> > > *spi_nor_read_id(struct spi_nor *nor) for (tmp = 0; tmp <
+> > > ARRAY_SIZE(spi_nor_ids) - 1; tmp++) {
+> > > 
+> > >  		info = (void *)spi_nor_ids[tmp].driver_data;
+> > >  		if (info->jedec_id == jedec) {
+> > > 
+> > > -			if (info->ext_id == 0 || info->ext_id == ext_jedec)
+> > > +			if (info->ext_id == 0)
+> > > 
+> > >  				return &spi_nor_ids[tmp];
+> > > 
+> > > +
+> > > +			/* the legacy two bytes ext_id */
+> > > +			if ((info->ext_id >> 16) == 0) {
+> > > +				if (info->ext_id == ext_jedec)
+> > > +					matched = tmp;
+> > > +			} else {
+> > > +				/* check the sixth byte now */
+> > > +				ext_jedec = ext_jedec << 8 | id[5];
+> > > +				if (info->ext_id == ext_jedec)
+> > > +					return &spi_nor_ids[tmp];
+> > > +			}
+> > > +		} else {
+> > > +			/* shortcut */
+> > > +			if (matched != -1)
+> > > +				return &spi_nor_ids[matched];
+> > 
+> > I wonder if the ID-bytes wraparound cannot cause us trouble here. For
+> > example if we try to detect a SPI NOR which has 5-byte ID code, but in
+> > the table, we'd also have a SPI NOR with has a 6-byte code where the
+> > last byte of ext-jedec matches the first byte of JEDEC ID , this would
+> > actually match on the later.
 > 
-> >> +#define      OPCODE_RDFSR            0x70  /* read flag status register
-> >> */
-> > 
-> > I know this is not your fault, but can you please indent this properly
-> > with tabs?
-> > 
-> >>  #define      OPCODE_NORM_READ        0x03    /* Read data bytes (low
-> > 
-> > frequency) */
-> > 
-> >>  #define      OPCODE_FAST_READ        0x0b    /* Read data bytes (high
-> > 
-> > frequency) */
-> > 
-> >>  #define      OPCODE_QUAD_READ        0x6b    /* Read data bytes */
-> > 
-> > And fix this one in a separate patch to use tabs as well please ?
+> could you give me detail example?
 > 
-> I'm rebasing on l2-mtd spinor, and the tabs are jacked up there too.
-> I'll fix the
-> one I added, and fix other tabs in a new patch on that branch.
+> I feel sorry that i do not quit understand your meaning.
 
-I know :( , thanks!
+Imagine two chips with two IDs:
+Chip 1 has IDs: 0xf00b42 0x4242f0 and readID[6] returns 0x420bf0f04242
+Chip 2 has IDs: 0xf00b42   0x42f0 and readID[6] returns 0x420bf0f04242
+This is because in the second chips' case the ID wraps around at 5 bytes. But 
+chip #1 matches the ID, so if chip #1 is earlier in the list of SPI NOR flashes, 
+we will get an incorrect detection of that chip.
 
-> [...]
-> 
-> > I wonder, can't wait_till_ready() be made a wrapper that will check the
-> > USE_FSR flag and call correct wait-function ? This would avoid adding a
-> > new member to *flash and also would avoid so many changes throughout the
-> > code. What do you think?
-> 
-> Yeah, that's kind of ugly, but the flags exist only in the static
-> m25p_ids[] and are only
-> used in the scan/init.  I'd have to add a new member to save them for
-> later use.
-> And then other uses would crop up.  So, seemed kinda iffy either way.
-> 
-> It's going to change anyway, because l2-mtd spinor branch has refactored
-> wait_till_ready() such that it uses a function pointer from the new
-> spi_nor struct.
-> I'm still mulling it over :)
-
-Roger that, I'll wait for the V3 . Thanks!
+Does it make sense now please ?
 
 Best regards,
 Marek Vasut
