@@ -1,21 +1,30 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WZmBg-0001W4-69
- for linux-mtd@lists.infradead.org; Mon, 14 Apr 2014 19:05:00 +0000
+ id 1WZmBm-0001WV-Do
+ for linux-mtd@lists.infradead.org; Mon, 14 Apr 2014 19:05:07 +0000
 From: Marek Vasut <marex@denx.de>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v3 00/11] mtd: spi-nor: misc. updates, de-duplication
-Date: Mon, 14 Apr 2014 20:26:46 +0200
-References: <1397242806-7575-1-git-send-email-computersforpeace@gmail.com>
- <20140414182142.GS32070@ld-irv-0074>
-In-Reply-To: <20140414182142.GS32070@ld-irv-0074>
+To: Graham Moore <ggrahammoore@gmail.com>
+Subject: Re: [PATCH V2] Add support for flag status register on Micron chips.
+Date: Mon, 14 Apr 2014 20:29:15 +0200
+References: <1397228593-17996-1-git-send-email-grmoore@altera.com>
+ <201404131918.45753.marex@denx.de>
+ <CA+iBjpSHL0+A=wzhhVvT_y+mhZoFNLUkNe18OtxPn1hZVCdUDw@mail.gmail.com>
+In-Reply-To: <CA+iBjpSHL0+A=wzhhVvT_y+mhZoFNLUkNe18OtxPn1hZVCdUDw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: Text/Plain;
   charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Message-Id: <201404142026.46967.marex@denx.de>
-Cc: Huang Shijie <b32955@freescale.com>, Lee Jones <lee.jones@linaro.org>,
- linux-mtd@lists.infradead.org
+Message-Id: <201404142029.15280.marex@denx.de>
+Cc: Geert Uytterhoeven <geert+renesas@linux-m68k.org>,
+ Insop Song <insop.song@gainspeed.com>,
+ "grmoore@altera.com" <grmoore@altera.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Jingoo Han <jg1.han@samsung.com>,
+ linux-kernel@vger.kernel.org, Yves Vandervennet <rocket.yvanderv@gmail.com>,
+ linux-mtd@lists.infradead.org,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Alan Tull <atull@altera.com>, Sourav Poddar <sourav.poddar@ti.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen <dinguyen@altera.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,34 +34,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday, April 14, 2014 at 08:21:42 PM, Brian Norris wrote:
-> On Fri, Apr 11, 2014 at 11:59:55AM -0700, Brian Norris wrote:
-> > A few miscellaneous updates, cleanups, and de-duplications. Mostly
-> > trivial stuff, but I had a few oversights in the first round...and in
-> > the second round too :(
-> > 
-> > v3:
-> >  - move the fsl-quadspi.c rename of
-> >  
-> >      SPINOR_OP_QUAD_READ => SPINOR_OP_READ_1_1_4
-> >    
-> >    from patch 8 to patch 3, so that the series bisects properly
-> >  
-> >  - add new patch 11, caught while testing with sparse
-> > 
-> > v2:
-> >  - opcode renames to fsl-quadspi.c (missed a few; I compiled it this
-> >  time!) - additional whitespace consistency cleanups
-> >  - tweak documentation wording/formatting
-> >  - additonal patch (patch 10), to allow building spi-nor as a module
+On Monday, April 14, 2014 at 06:19:24 PM, Graham Moore wrote:
+> On Sun, Apr 13, 2014 at 12:18 PM, Marek Vasut <marex@denx.de> wrote:
+> [...]
 > 
-> Pushed the first 10 to l2-mtd.git/spinor. I'll revisit #11 later.
+> >> +#define      OPCODE_RDFSR            0x70  /* read flag status register
+> >> */
+> > 
+> > I know this is not your fault, but can you please indent this properly
+> > with tabs?
+> > 
+> >>  #define      OPCODE_NORM_READ        0x03    /* Read data bytes (low
+> > 
+> > frequency) */
+> > 
+> >>  #define      OPCODE_FAST_READ        0x0b    /* Read data bytes (high
+> > 
+> > frequency) */
+> > 
+> >>  #define      OPCODE_QUAD_READ        0x6b    /* Read data bytes */
+> > 
+> > And fix this one in a separate patch to use tabs as well please ?
 > 
-> Will rebase on 3.15-rc1 soon, and likely will merge to l2-mtd.git/master
-> soon enough, so we can get -next coverage and begin informing others of
-> the M25P80 -> MTD_SPI_NOR dependency.
+> I'm rebasing on l2-mtd spinor, and the tabs are jacked up there too.
+> I'll fix the
+> one I added, and fix other tabs in a new patch on that branch.
 
-Aye aye, captain ! :)
+I know :( , thanks!
+
+> [...]
+> 
+> > I wonder, can't wait_till_ready() be made a wrapper that will check the
+> > USE_FSR flag and call correct wait-function ? This would avoid adding a
+> > new member to *flash and also would avoid so many changes throughout the
+> > code. What do you think?
+> 
+> Yeah, that's kind of ugly, but the flags exist only in the static
+> m25p_ids[] and are only
+> used in the scan/init.  I'd have to add a new member to save them for
+> later use.
+> And then other uses would crop up.  So, seemed kinda iffy either way.
+> 
+> It's going to change anyway, because l2-mtd spinor branch has refactored
+> wait_till_ready() such that it uses a function pointer from the new
+> spi_nor struct.
+> I'm still mulling it over :)
+
+Roger that, I'll wait for the V3 . Thanks!
 
 Best regards,
 Marek Vasut
