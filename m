@@ -1,22 +1,27 @@
-Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WZi8s-000090-RU
- for linux-mtd@lists.infradead.org; Mon, 14 Apr 2014 14:45:51 +0000
-Received: by mail-pa0-f42.google.com with SMTP id fb1so8354542pad.29
- for <linux-mtd@lists.infradead.org>; Mon, 14 Apr 2014 07:45:28 -0700 (PDT)
-Date: Mon, 14 Apr 2014 22:44:01 +0800
-From: Huang Shijie <shijie8@gmail.com>
-To: Marek Vasut <marex@denx.de>
-Subject: Re: [PATCH] mtd: spi-nor: read 6 bytes for the ID
-Message-ID: <20140414144346.GA4363@localhost.localdomain>
-References: <1397470174-27856-1-git-send-email-b32955@freescale.com>
- <201404141353.07427.marex@denx.de>
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WZiJu-0001lF-LP
+ for linux-mtd@lists.infradead.org; Mon, 14 Apr 2014 14:57:15 +0000
+Date: Mon, 14 Apr 2014 11:56:22 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Simon Guinot <simon.guinot@sequanux.org>,
+ Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v2 0/4] Allow to specify an ECC scheme through DT
+Message-ID: <20140414145622.GA9294@arch>
+References: <1395401690-25221-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20140401100417.GI27979@kw.sim.vm.gnt>
+ <20140403151941.GA21114@arch.cereza>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <201404141353.07427.marex@denx.de>
-Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, dwmw2@infradead.org, angus.clark@st.com
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20140403151941.GA21114@arch.cereza>
+Cc: Lior Amsalem <alior@marvell.com>, devicetree@vger.kernel.org,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Tawfik Bayouk <tawfik@marvell.com>, Seif Mazareeb <seif@marvell.com>,
+ Simon Guinot <sguinot@lacie.com>, linux-mtd@lists.infradead.org,
+ Gregory Clement <gregory.clement@free-electrons.com>, Willy Tarreau <w@1wt.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,38 +31,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Apr 14, 2014 at 01:53:07PM +0200, Marek Vasut wrote:
-> > @@ -614,8 +616,23 @@ static const struct spi_device_id
-> > *spi_nor_read_id(struct spi_nor *nor) for (tmp = 0; tmp <
-> > ARRAY_SIZE(spi_nor_ids) - 1; tmp++) {
-> >  		info = (void *)spi_nor_ids[tmp].driver_data;
-> >  		if (info->jedec_id == jedec) {
-> > -			if (info->ext_id == 0 || info->ext_id == ext_jedec)
-> > +			if (info->ext_id == 0)
-> >  				return &spi_nor_ids[tmp];
-> > +
-> > +			/* the legacy two bytes ext_id */
-> > +			if ((info->ext_id >> 16) == 0) {
-> > +				if (info->ext_id == ext_jedec)
-> > +					matched = tmp;
-> > +			} else {
-> > +				/* check the sixth byte now */
-> > +				ext_jedec = ext_jedec << 8 | id[5];
-> > +				if (info->ext_id == ext_jedec)
-> > +					return &spi_nor_ids[tmp];
-> > +			}
-> > +		} else {
-> > +			/* shortcut */
-> > +			if (matched != -1)
-> > +				return &spi_nor_ids[matched];
+On Apr 03, Ezequiel Garcia wrote:
+> On Apr 01, Simon Guinot wrote:
+> > On Fri, Mar 21, 2014 at 08:34:46AM -0300, Ezequiel Garcia wrote:
+> > > Now that we have agreed on the ECC devicetree binding, here's a patchset
+> > > that makes pxa3xx-nand driver use it.
+> > > 
+> > > This work is required on platforms where the flash device reports a required
+> > > ECC strength, but that are capable of handling a stronger one. Simon Guinot
+> > > reported a situation where the vendor provided a bootloader configured with
+> > > a stronger than required ECC scheme. Without this patches, such a situation
+> > > would require a hack to make the driver use a specific ECC scheme.
+> > > 
+> > > (Simon: it would be great if you can confirm this allows you to remove any hacks).
+> > 
+> > Hi Ezequiel,
+> > 
+> > I confirm this allows me to configure the ECC strength and step size
+> > from DT.
+> > 
+> > Tested-by: Simon Guinot <simon.guinot@sequanux.org>
+> > 
 > 
-> I wonder if the ID-bytes wraparound cannot cause us trouble here. For example if 
-> we try to detect a SPI NOR which has 5-byte ID code, but in the table, we'd also 
-> have a SPI NOR with has a 6-byte code where the last byte of ext-jedec matches 
-> the first byte of JEDEC ID , this would actually match on the later.
-could you give me detail example?
+> Thanks a lot for the test.
+> 
+> Brian, any comments?
 
-I feel sorry that i do not quit understand your meaning.
-
-thanks
-Huang Shijie
+Any chance this can be applied?
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
