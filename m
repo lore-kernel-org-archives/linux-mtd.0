@@ -1,17 +1,20 @@
-Received: from [210.61.82.184] (helo=mailgw02.mediatek.com)
+Received: from mga09.intel.com ([134.134.136.24])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WZdp4-0004fa-Fr
- for linux-mtd@lists.infradead.org; Mon, 14 Apr 2014 10:09:07 +0000
-From: =?gb2312?B?TGluZ2VyIExlZSAowO695+RoKQ==?= <linger.lee@mediatek.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Xent node beem GCed issue
-Date: Mon, 14 Apr 2014 10:03:19 +0000
-Message-ID: <9266B5DBC751A74B83243C1543B26C2E2E803240@MTKMBS05N1.mediatek.inc>
-Content-Language: en-US
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-Cc: =?gb2312?B?S3VuIENoZW4gKLPCwKUp?= <Kun.Chen@mediatek.com>
+ id 1WZeLL-00026v-Ug
+ for linux-mtd@lists.infradead.org; Mon, 14 Apr 2014 10:42:29 +0000
+Message-ID: <1397472124.3287.6.camel@karhu>
+Subject: Re: [PATCH] ubiblock: Support UBI volume name or volume ID
+ parameter passing
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Date: Mon, 14 Apr 2014 13:42:04 +0300
+In-Reply-To: <1397141020-6363-1-git-send-email-ezequiel.garcia@free-electrons.com>
+References: <1397141020-6363-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,30 +24,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgYWxsLA0KDQpJIGZvdW5kIGEgaXNzdWUgYWJvdXQgWGVudCBub2RlIGJlZW4gR0NlZCBhbmQg
-ZmFpbCBpbiB1Ymlmc190bmNfcmVtb3ZlX2lubyBmdW5jdGlvbg0KR290IGVycm9yIG1lc3NhZ2Ug
-obBiYWQgbm9kZSB0eXBlICgyNTUgYnV0IGV4cGVjdGVkIDMpobENCg0KVGhlIHNpdHVhdGlvbiBp
-cw0KMS4gQ3JlYXRlIGEgZmlsZSBhbmQgc2V0IHhhdHRyICh5b3UgZ2V0IGRlbnQgbm9kZSBBLCBp
-bm9kZSBCLCB4ZW50IEMsIHhhdHRyIGlub2RlIEQpDQoyLiBVbmxpbmsgdGhlIGZpbGUgKGdvdCBB
-IHcvIGlubyAwLCBpbm9kZSBCIHcvIG5saW5rIDAgaW4gbG9nKQ0KMy4gR0MgdGhlIExFQiB3aGVy
-ZSBDL0QgaXMgYmVsb25nIHRvIGFuZCB3cml0ZSBuZXcgZGF0YSBvbiB0aGUgTEVCDQo0LiBSZWJv
-b3Qgdy9vIGNvbW1pdA0KNS4gVGhlbiB1Ymlmc190bmNfcmVtb3ZlX2lubyBnZXQgdGhlIGluZGV4
-IG9mIG5vZGUgQywgYnV0IGNhbqGvdCBnZXQgdGhlIG5vZGUgQyAoYmFkIG5vZGUgaGFwcGVuZWQp
-DQoNCldlIGNhbqGvdCBtb3VudCB0aGUgdm9sdW1lIGFueW1vcmUNCg0KU3VnZ2VzdGlvbjogSW4g
-U3RlcCAyLCB3ZSBtYXliZSBuZWVkIGxvZyBtb3JlIChDIHcvIGlubyAwIGFuZCBEIHcvIG5saW5r
-IDApDQoNCkNoZWVycywNCkxpbmdlcg0KDQoNCioqKioqKioqKioqKiogRW1haWwgQ29uZmlkZW50
-aWFsaXR5IE5vdGljZSAqKioqKioqKioqKioqKioqKioqKg0KVGhlIGluZm9ybWF0aW9uIGNvbnRh
-aW5lZCBpbiB0aGlzIGUtbWFpbCBtZXNzYWdlIChpbmNsdWRpbmcgYW55IA0KYXR0YWNobWVudHMp
-IG1heSBiZSBjb25maWRlbnRpYWwsIHByb3ByaWV0YXJ5LCBwcml2aWxlZ2VkLCBvciBvdGhlcndp
-c2UNCmV4ZW1wdCBmcm9tIGRpc2Nsb3N1cmUgdW5kZXIgYXBwbGljYWJsZSBsYXdzLiBJdCBpcyBp
-bnRlbmRlZCB0byBiZSANCmNvbnZleWVkIG9ubHkgdG8gdGhlIGRlc2lnbmF0ZWQgcmVjaXBpZW50
-KHMpLiBBbnkgdXNlLCBkaXNzZW1pbmF0aW9uLCANCmRpc3RyaWJ1dGlvbiwgcHJpbnRpbmcsIHJl
-dGFpbmluZyBvciBjb3B5aW5nIG9mIHRoaXMgZS1tYWlsIChpbmNsdWRpbmcgaXRzIA0KYXR0YWNo
-bWVudHMpIGJ5IHVuaW50ZW5kZWQgcmVjaXBpZW50KHMpIGlzIHN0cmljdGx5IHByb2hpYml0ZWQg
-YW5kIG1heSANCmJlIHVubGF3ZnVsLiBJZiB5b3UgYXJlIG5vdCBhbiBpbnRlbmRlZCByZWNpcGll
-bnQgb2YgdGhpcyBlLW1haWwsIG9yIGJlbGlldmUgDQp0aGF0IHlvdSBoYXZlIHJlY2VpdmVkIHRo
-aXMgZS1tYWlsIGluIGVycm9yLCBwbGVhc2Ugbm90aWZ5IHRoZSBzZW5kZXIgDQppbW1lZGlhdGVs
-eSAoYnkgcmVwbHlpbmcgdG8gdGhpcyBlLW1haWwpLCBkZWxldGUgYW55IGFuZCBhbGwgY29waWVz
-IG9mIA0KdGhpcyBlLW1haWwgKGluY2x1ZGluZyBhbnkgYXR0YWNobWVudHMpIGZyb20geW91ciBz
-eXN0ZW0sIGFuZCBkbyBub3QNCmRpc2Nsb3NlIHRoZSBjb250ZW50IG9mIHRoaXMgZS1tYWlsIHRv
-IGFueSBvdGhlciBwZXJzb24uIFRoYW5rIHlvdSE=
+On Thu, 2014-04-10 at 11:43 -0300, Ezequiel Garcia wrote:
+> +static int ubi_open_volume_by_id(libubi_t desc, const char *node, int vol_id, int mode)
+>  {
+> +       char file[256];
+> +       struct ubi_dev_info dev_info;
+>         int err, fd;
+> -       libubi_t libubi;
+>  
+> -       err = parse_opt(argc, argv);
+> +       err = ubi_get_dev_info(desc, node, &dev_info);
+>         if (err)
+> +               return errmsg("cannot get information about UBI device \"%s\"", node);
+> +
+> +       sprintf(file, "/dev/ubi%d_%d", dev_info.dev_num, vol_id);
+
+Device node names may ve anything. Please, do not rely on the "/dev/ubi%
+d_%d" naming scheme in the tool.
+
+I think device node can be found out by scanning "/dev" and looking at
+the device node major/minor numbers. This is more work of course.
+
+However, libubi does exactly the same assumption about UBI volume names
+as you do, so if you move this function to libubi, I think it will be
+good enough. At least if someone wants to change this in the future,
+then it will only require changing the library, but not its users.
+
+> +       fd = open(file, mode);
+> +       if (fd == -1)
+> +               errmsg("Failed to open '%s' volume device", file);
+> +       return fd;
+> +}
+> +
+
+-- 
+Best Regards,
+Artem Bityutskiy
