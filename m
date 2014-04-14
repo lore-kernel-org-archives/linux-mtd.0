@@ -1,20 +1,22 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
+Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WZfS7-0000VS-62
- for linux-mtd@lists.infradead.org; Mon, 14 Apr 2014 11:53:32 +0000
-From: Marek Vasut <marex@denx.de>
-To: Huang Shijie <b32955@freescale.com>
+ id 1WZi8s-000090-RU
+ for linux-mtd@lists.infradead.org; Mon, 14 Apr 2014 14:45:51 +0000
+Received: by mail-pa0-f42.google.com with SMTP id fb1so8354542pad.29
+ for <linux-mtd@lists.infradead.org>; Mon, 14 Apr 2014 07:45:28 -0700 (PDT)
+Date: Mon, 14 Apr 2014 22:44:01 +0800
+From: Huang Shijie <shijie8@gmail.com>
+To: Marek Vasut <marex@denx.de>
 Subject: Re: [PATCH] mtd: spi-nor: read 6 bytes for the ID
-Date: Mon, 14 Apr 2014 13:53:07 +0200
+Message-ID: <20140414144346.GA4363@localhost.localdomain>
 References: <1397470174-27856-1-git-send-email-b32955@freescale.com>
-In-Reply-To: <1397470174-27856-1-git-send-email-b32955@freescale.com>
+ <201404141353.07427.marex@denx.de>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201404141353.07427.marex@denx.de>
-Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, angus.clark@st.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <201404141353.07427.marex@denx.de>
+Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org, dwmw2@infradead.org, angus.clark@st.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,66 +26,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday, April 14, 2014 at 12:09:34 PM, Huang Shijie wrote:
-
-[...]
-
-> @@ -505,6 +505,7 @@ const struct spi_device_id spi_nor_ids[] = {
->  	{ "s70fl01gs",  INFO(0x010221, 0x4d00, 256 * 1024, 256, 0) },
->  	{ "s25sl12800", INFO(0x012018, 0x0300, 256 * 1024,  64, 0) },
->  	{ "s25sl12801", INFO(0x012018, 0x0301,  64 * 1024, 256, 0) },
-> +	{ "s25fl128s",	INFO(0x012018, 0x4d0180, 64 * 1024, 256,
-> SPI_NOR_QUAD_READ) }, { "s25fl129p0", INFO(0x012018, 0x4d00, 256 * 1024, 
-> 64, 0) },
-
-Support for new hardware should go in separatelly.
-
->  	{ "s25fl129p1", INFO(0x012018, 0x4d01,  64 * 1024, 256, 0) },
->  	{ "s25sl004a",  INFO(0x010212,      0,  64 * 1024,   8, 0) },
-> @@ -593,12 +594,13 @@ EXPORT_SYMBOL_GPL(spi_nor_ids);
->  static const struct spi_device_id *spi_nor_read_id(struct spi_nor *nor)
->  {
->  	int			tmp;
-> -	u8			id[5];
-> +	u8			id[6];
->  	u32			jedec;
-> -	u16                     ext_jedec;
-> +	u32                     ext_jedec;
->  	struct flash_info	*info;
-> +	int			matched = -1;
+On Mon, Apr 14, 2014 at 01:53:07PM +0200, Marek Vasut wrote:
+> > @@ -614,8 +616,23 @@ static const struct spi_device_id
+> > *spi_nor_read_id(struct spi_nor *nor) for (tmp = 0; tmp <
+> > ARRAY_SIZE(spi_nor_ids) - 1; tmp++) {
+> >  		info = (void *)spi_nor_ids[tmp].driver_data;
+> >  		if (info->jedec_id == jedec) {
+> > -			if (info->ext_id == 0 || info->ext_id == ext_jedec)
+> > +			if (info->ext_id == 0)
+> >  				return &spi_nor_ids[tmp];
+> > +
+> > +			/* the legacy two bytes ext_id */
+> > +			if ((info->ext_id >> 16) == 0) {
+> > +				if (info->ext_id == ext_jedec)
+> > +					matched = tmp;
+> > +			} else {
+> > +				/* check the sixth byte now */
+> > +				ext_jedec = ext_jedec << 8 | id[5];
+> > +				if (info->ext_id == ext_jedec)
+> > +					return &spi_nor_ids[tmp];
+> > +			}
+> > +		} else {
+> > +			/* shortcut */
+> > +			if (matched != -1)
+> > +				return &spi_nor_ids[matched];
 > 
-> -	tmp = nor->read_reg(nor, SPINOR_OP_RDID, id, 5);
-> +	tmp = nor->read_reg(nor, SPINOR_OP_RDID, id, 6);
->  	if (tmp < 0) {
->  		dev_dbg(nor->dev, " error %d reading JEDEC ID\n", tmp);
->  		return ERR_PTR(tmp);
-> @@ -614,8 +616,23 @@ static const struct spi_device_id
-> *spi_nor_read_id(struct spi_nor *nor) for (tmp = 0; tmp <
-> ARRAY_SIZE(spi_nor_ids) - 1; tmp++) {
->  		info = (void *)spi_nor_ids[tmp].driver_data;
->  		if (info->jedec_id == jedec) {
-> -			if (info->ext_id == 0 || info->ext_id == ext_jedec)
-> +			if (info->ext_id == 0)
->  				return &spi_nor_ids[tmp];
-> +
-> +			/* the legacy two bytes ext_id */
-> +			if ((info->ext_id >> 16) == 0) {
-> +				if (info->ext_id == ext_jedec)
-> +					matched = tmp;
-> +			} else {
-> +				/* check the sixth byte now */
-> +				ext_jedec = ext_jedec << 8 | id[5];
-> +				if (info->ext_id == ext_jedec)
-> +					return &spi_nor_ids[tmp];
-> +			}
-> +		} else {
-> +			/* shortcut */
-> +			if (matched != -1)
-> +				return &spi_nor_ids[matched];
+> I wonder if the ID-bytes wraparound cannot cause us trouble here. For example if 
+> we try to detect a SPI NOR which has 5-byte ID code, but in the table, we'd also 
+> have a SPI NOR with has a 6-byte code where the last byte of ext-jedec matches 
+> the first byte of JEDEC ID , this would actually match on the later.
+could you give me detail example?
 
-I wonder if the ID-bytes wraparound cannot cause us trouble here. For example if 
-we try to detect a SPI NOR which has 5-byte ID code, but in the table, we'd also 
-have a SPI NOR with has a 6-byte code where the last byte of ext-jedec matches 
-the first byte of JEDEC ID , this would actually match on the later.
+I feel sorry that i do not quit understand your meaning.
 
-Shall we not add an ID code length field into the table instead ?
+thanks
+Huang Shijie
