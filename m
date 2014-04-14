@@ -1,26 +1,27 @@
-Received: from mail-yh0-x22c.google.com ([2607:f8b0:4002:c01::22c])
+Received: from mail-lb0-x22e.google.com ([2a00:1450:4010:c04::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WZj1D-0004nZ-TO
- for linux-mtd@lists.infradead.org; Mon, 14 Apr 2014 15:42:00 +0000
-Received: by mail-yh0-f44.google.com with SMTP id f10so8180931yha.17
- for <linux-mtd@lists.infradead.org>; Mon, 14 Apr 2014 08:41:36 -0700 (PDT)
+ id 1WZjbo-0002kh-0Q
+ for linux-mtd@lists.infradead.org; Mon, 14 Apr 2014 16:19:48 +0000
+Received: by mail-lb0-f174.google.com with SMTP id u14so5837014lbd.19
+ for <linux-mtd@lists.infradead.org>; Mon, 14 Apr 2014 09:19:24 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1397228593-17996-1-git-send-email-grmoore@altera.com>
+In-Reply-To: <201404131918.45753.marex@denx.de>
 References: <1397228593-17996-1-git-send-email-grmoore@altera.com>
-Date: Mon, 14 Apr 2014 21:11:34 +0530
-Message-ID: <CAFcVECLH432pP_hCZXpbKCrOO_tV9v2ev4kLNzUjro68BnADkA@mail.gmail.com>
+ <201404131918.45753.marex@denx.de>
+Date: Mon, 14 Apr 2014 11:19:24 -0500
+Message-ID: <CA+iBjpSHL0+A=wzhhVvT_y+mhZoFNLUkNe18OtxPn1hZVCdUDw@mail.gmail.com>
 Subject: Re: [PATCH V2] Add support for flag status register on Micron chips.
-From: Harini Katakam <harinikatakamlinux@gmail.com>
-To: grmoore@altera.com
+From: Graham Moore <ggrahammoore@gmail.com>
+To: Marek Vasut <marex@denx.de>
 Content-Type: text/plain; charset=UTF-8
-Cc: Marek Vasut <marex@denx.de>, ggrahammoore@gmail.com,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+Cc: Geert Uytterhoeven <geert+renesas@linux-m68k.org>,
+ Insop Song <insop.song@gainspeed.com>,
+ "grmoore@altera.com" <grmoore@altera.com>,
  Sascha Hauer <s.hauer@pengutronix.de>, Jingoo Han <jg1.han@samsung.com>,
- Geert Uytterhoeven <geert+renesas@linux-m68k.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Yves Vandervennet <rocket.yvanderv@gmail.com>, linux-mtd@lists.infradead.org,
- Insop Song <insop.song@gainspeed.com>, Alan Tull <atull@altera.com>,
- Sourav Poddar <sourav.poddar@ti.com>,
+ linux-kernel@vger.kernel.org, Yves Vandervennet <rocket.yvanderv@gmail.com>,
+ linux-mtd@lists.infradead.org,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Alan Tull <atull@altera.com>, Sourav Poddar <sourav.poddar@ti.com>,
  Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen <dinguyen@altera.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -32,43 +33,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-On Fri, Apr 11, 2014 at 8:33 PM,  <grmoore@altera.com> wrote:
-> From: Graham Moore <grmoore@altera.com>
+On Sun, Apr 13, 2014 at 12:18 PM, Marek Vasut <marex@denx.de> wrote:
+[...]
+>> +#define      OPCODE_RDFSR            0x70  /* read flag status register */
 >
-> Some new Micron flash chips require reading the flag
-> status register to determine when operations have completed.
+> I know this is not your fault, but can you please indent this properly with
+> tabs?
 >
-> Furthermore, chips with multi-die stacks of the 65nm 256Mb QSPI also
-> require reading the status register before reading the flag status register.
+>>  #define      OPCODE_NORM_READ        0x03    /* Read data bytes (low
+> frequency) */
+>>  #define      OPCODE_FAST_READ        0x0b    /* Read data bytes (high
+> frequency) */
+>>  #define      OPCODE_QUAD_READ        0x6b    /* Read data bytes */
 >
-> This patch adds support for the flag status register in the n25q512a1 and n25q00
-> Micron QSPI flash chips.
->
-> Signed-off-by: Graham Moore <grmoore@altera.com>
+> And fix this one in a separate patch to use tabs as well please ?
 
-<snip>
+I'm rebasing on l2-mtd spinor, and the tabs are jacked up there too.
+I'll fix the
+one I added, and fix other tabs in a new patch on that branch.
 
->  #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)     \
-> @@ -941,6 +999,8 @@ static const struct spi_device_id m25p_ids[] = {
->         { "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, 0) },
->         { "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K) },
->         { "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K) },
-> +       { "n25q512a1",   INFO(0x20ba20, 0, 64 * 1024, 1024, USE_FSR) },
-> +       { "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, USE_FSR) },
->
+[...]
+> I wonder, can't wait_till_ready() be made a wrapper that will check the USE_FSR
+> flag and call correct wait-function ? This would avoid adding a new member to
+> *flash and also would avoid so many changes throughout the code. What do you
+> think?
 
-I understand that "n25q512a1" was added to distinguish between
-0x20bb20 and 0x20ba20,
-which is essentially 1.8V and 3V parts.
-(The actual part numbers are n25q512a11 and n25q512a13 respectively)
-But USE_FSR is required for both parts.
+Yeah, that's kind of ugly, but the flags exist only in the static
+m25p_ids[] and are only
+used in the scan/init.  I'd have to add a new member to save them for
+later use.
+And then other uses would crop up.  So, seemed kinda iffy either way.
 
-Sorry for posting this question here but it seemed relevant:
-When such devices differ only in supply voltages (and return different
-response to READ ID),
-which we don't act on, is there a way to use the same string?
+It's going to change anyway, because l2-mtd spinor branch has refactored
+wait_till_ready() such that it uses a function pointer from the new
+spi_nor struct.
+I'm still mulling it over :)
 
-Regards,
-Harini
+Thanks,
+-Graham
