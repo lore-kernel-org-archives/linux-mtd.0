@@ -1,15 +1,22 @@
-Received: from andre.telenet-ops.be ([195.130.132.53])
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WZjy5-0007uI-EJ
- for linux-mtd@lists.infradead.org; Mon, 14 Apr 2014 16:42:50 +0000
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH resend] mtd: m25p80: Enable Dual and Quad SPI read transfers
- for s25sl032p
-Date: Mon, 14 Apr 2014 18:42:22 +0200
-Message-Id: <1397493742-21384-1-git-send-email-geert@linux-m68k.org>
-Cc: linux-mtd@lists.infradead.org, Geert Uytterhoeven <geert+renesas@glider.be>
+ id 1WZlu5-0005OZ-KE
+ for linux-mtd@lists.infradead.org; Mon, 14 Apr 2014 18:46:50 +0000
+Date: Mon, 14 Apr 2014 15:45:51 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH] ubiblock: Support UBI volume name or volume ID parameter
+ passing
+Message-ID: <20140414184551.GC23722@arch.cereza>
+References: <1397141020-6363-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1397472124.3287.6.camel@karhu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1397472124.3287.6.camel@karhu>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,30 +26,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+On Apr 14, Artem Bityutskiy wrote:
+> On Thu, 2014-04-10 at 11:43 -0300, Ezequiel Garcia wrote:
+> > +static int ubi_open_volume_by_id(libubi_t desc, const char *node, int vol_id, int mode)
+> >  {
+> > +       char file[256];
+> > +       struct ubi_dev_info dev_info;
+> >         int err, fd;
+> > -       libubi_t libubi;
+> >  
+> > -       err = parse_opt(argc, argv);
+> > +       err = ubi_get_dev_info(desc, node, &dev_info);
+> >         if (err)
+> > +               return errmsg("cannot get information about UBI device \"%s\"", node);
+> > +
+> > +       sprintf(file, "/dev/ubi%d_%d", dev_info.dev_num, vol_id);
+> 
+> Device node names may ve anything. Please, do not rely on the "/dev/ubi%
+> d_%d" naming scheme in the tool.
+> 
 
-Spansion s25sl032p supports Dual and Quad SPI transfers, hence set the
-M25P80_DUAL_READ and M25P80_QUAD_READ flags.
+Yeah, I know this sucks.
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-I think this one fell through the cracks... (sent before on 2014-02-25)
+> I think device node can be found out by scanning "/dev" and looking at
+> the device node major/minor numbers. This is more work of course.
+>
 
- drivers/mtd/devices/m25p80.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Ah, that's a good idea. Let me give it a try.
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 524dab3ac938..e62cee93c919 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -957,7 +957,7 @@ static const struct spi_device_id m25p_ids[] = {
- 	/* Spansion -- single (large) sector size only, at least
- 	 * for the chips listed here (without boot sectors).
- 	 */
--	{ "s25sl032p",  INFO(0x010215, 0x4d00,  64 * 1024,  64, 0) },
-+	{ "s25sl032p",  INFO(0x010215, 0x4d00,  64 * 1024,  64, M25P80_DUAL_READ | M25P80_QUAD_READ) },
- 	{ "s25sl064p",  INFO(0x010216, 0x4d00,  64 * 1024, 128, 0) },
- 	{ "s25fl256s0", INFO(0x010219, 0x4d00, 256 * 1024, 128, 0) },
- 	{ "s25fl256s1", INFO(0x010219, 0x4d01,  64 * 1024, 512, M25P80_DUAL_READ | M25P80_QUAD_READ) },
+> However, libubi does exactly the same assumption about UBI volume names
+> as you do, so if you move this function to libubi, I think it will be
+> good enough. At least if someone wants to change this in the future,
+> then it will only require changing the library, but not its users.
+> 
+
+OK, I will.
 -- 
-1.7.9.5
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
