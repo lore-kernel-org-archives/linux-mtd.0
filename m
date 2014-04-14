@@ -1,20 +1,17 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WZeLL-00026v-Ug
- for linux-mtd@lists.infradead.org; Mon, 14 Apr 2014 10:42:29 +0000
-Message-ID: <1397472124.3287.6.camel@karhu>
-Subject: Re: [PATCH] ubiblock: Support UBI volume name or volume ID
- parameter passing
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Date: Mon, 14 Apr 2014 13:42:04 +0300
-In-Reply-To: <1397141020-6363-1-git-send-email-ezequiel.garcia@free-electrons.com>
-References: <1397141020-6363-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from co9ehsobe003.messaging.microsoft.com ([207.46.163.26]
+ helo=co9outboundpool.messaging.microsoft.com)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WZehH-0008KX-Nx
+ for linux-mtd@lists.infradead.org; Mon, 14 Apr 2014 11:05:08 +0000
+From: Huang Shijie <b32955@freescale.com>
+To: <dwmw2@infradead.org>
+Subject: [PATCH] mtd: spi-nor: read 6 bytes for the ID
+Date: Mon, 14 Apr 2014 18:09:34 +0800
+Message-ID: <1397470174-27856-1-git-send-email-b32955@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: marex@denx.de, angus.clark@st.com, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org, Huang Shijie <b32955@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,39 +21,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2014-04-10 at 11:43 -0300, Ezequiel Garcia wrote:
-> +static int ubi_open_volume_by_id(libubi_t desc, const char *node, int vol_id, int mode)
->  {
-> +       char file[256];
-> +       struct ubi_dev_info dev_info;
->         int err, fd;
-> -       libubi_t libubi;
->  
-> -       err = parse_opt(argc, argv);
-> +       err = ubi_get_dev_info(desc, node, &dev_info);
->         if (err)
-> +               return errmsg("cannot get information about UBI device \"%s\"", node);
-> +
-> +       sprintf(file, "/dev/ubi%d_%d", dev_info.dev_num, vol_id);
+Currently, we read 5 bytes for ID, but s25fl128s has the same ext_id(0x4d01)
+with s25fl129p1. The s25fl128s can support the DDR Quad read, while s25fl129p1
+does not. So we have to distinguish the two NOR flashs.
 
-Device node names may ve anything. Please, do not rely on the "/dev/ubi%
-d_%d" naming scheme in the tool.
+This patch reads out 6 bytes for the ID, and use the 6 bytes ID to search the
+right flash_info.
 
-I think device node can be found out by scanning "/dev" and looking at
-the device node major/minor numbers. This is more work of course.
+The detail of the patch is:
+  [1] change the "ext_id" from u16 to u32.
+      We can store two bytes or three bytes with the @ext_id now.
 
-However, libubi does exactly the same assumption about UBI volume names
-as you do, so if you move this function to libubi, I think it will be
-good enough. At least if someone wants to change this in the future,
-then it will only require changing the library, but not its users.
+  [2] search the right flash_info with the 6byte ID and the new @ext_id.
+      We use "matched" variable to track the legacy two bytes @ext_id.
+      If the flash_info's @ext_id is three bytes, we will use the
+      sixth byte of the ID to check it.
 
-> +       fd = open(file, mode);
-> +       if (fd == -1)
-> +               errmsg("Failed to open '%s' volume device", file);
-> +       return fd;
-> +}
-> +
+  [3] add the new item to spi_nor_ids for s25fl128s.
 
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+---
+based on Brian's patch set.
+---
+ drivers/mtd/spi-nor/spi-nor.c |   27 ++++++++++++++++++++++-----
+ 1 files changed, 22 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index d6f44d5..cd4b277 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -383,7 +383,7 @@ struct flash_info {
+ 	 * then a two byte device id.
+ 	 */
+ 	u32		jedec_id;
+-	u16             ext_id;
++	u32		ext_id;
+ 
+ 	/* The size listed here is what works with SPINOR_OP_SE, which isn't
+ 	 * necessarily called a "sector" by the vendor.
+@@ -505,6 +505,7 @@ const struct spi_device_id spi_nor_ids[] = {
+ 	{ "s70fl01gs",  INFO(0x010221, 0x4d00, 256 * 1024, 256, 0) },
+ 	{ "s25sl12800", INFO(0x012018, 0x0300, 256 * 1024,  64, 0) },
+ 	{ "s25sl12801", INFO(0x012018, 0x0301,  64 * 1024, 256, 0) },
++	{ "s25fl128s",	INFO(0x012018, 0x4d0180, 64 * 1024, 256, SPI_NOR_QUAD_READ) },
+ 	{ "s25fl129p0", INFO(0x012018, 0x4d00, 256 * 1024,  64, 0) },
+ 	{ "s25fl129p1", INFO(0x012018, 0x4d01,  64 * 1024, 256, 0) },
+ 	{ "s25sl004a",  INFO(0x010212,      0,  64 * 1024,   8, 0) },
+@@ -593,12 +594,13 @@ EXPORT_SYMBOL_GPL(spi_nor_ids);
+ static const struct spi_device_id *spi_nor_read_id(struct spi_nor *nor)
+ {
+ 	int			tmp;
+-	u8			id[5];
++	u8			id[6];
+ 	u32			jedec;
+-	u16                     ext_jedec;
++	u32                     ext_jedec;
+ 	struct flash_info	*info;
++	int			matched = -1;
+ 
+-	tmp = nor->read_reg(nor, SPINOR_OP_RDID, id, 5);
++	tmp = nor->read_reg(nor, SPINOR_OP_RDID, id, 6);
+ 	if (tmp < 0) {
+ 		dev_dbg(nor->dev, " error %d reading JEDEC ID\n", tmp);
+ 		return ERR_PTR(tmp);
+@@ -614,8 +616,23 @@ static const struct spi_device_id *spi_nor_read_id(struct spi_nor *nor)
+ 	for (tmp = 0; tmp < ARRAY_SIZE(spi_nor_ids) - 1; tmp++) {
+ 		info = (void *)spi_nor_ids[tmp].driver_data;
+ 		if (info->jedec_id == jedec) {
+-			if (info->ext_id == 0 || info->ext_id == ext_jedec)
++			if (info->ext_id == 0)
+ 				return &spi_nor_ids[tmp];
++
++			/* the legacy two bytes ext_id */
++			if ((info->ext_id >> 16) == 0) {
++				if (info->ext_id == ext_jedec)
++					matched = tmp;
++			} else {
++				/* check the sixth byte now */
++				ext_jedec = ext_jedec << 8 | id[5];
++				if (info->ext_id == ext_jedec)
++					return &spi_nor_ids[tmp];
++			}
++		} else {
++			/* shortcut */
++			if (matched != -1)
++				return &spi_nor_ids[matched];
+ 		}
+ 	}
+ 	dev_err(nor->dev, "unrecognized JEDEC id %06x\n", jedec);
 -- 
-Best Regards,
-Artem Bityutskiy
+1.7.2.rc3
