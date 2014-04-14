@@ -1,22 +1,21 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WZlu5-0005OZ-KE
- for linux-mtd@lists.infradead.org; Mon, 14 Apr 2014 18:46:50 +0000
-Date: Mon, 14 Apr 2014 15:45:51 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH] ubiblock: Support UBI volume name or volume ID parameter
- passing
-Message-ID: <20140414184551.GC23722@arch.cereza>
-References: <1397141020-6363-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1397472124.3287.6.camel@karhu>
+Received: from mail-ie0-x22d.google.com ([2607:f8b0:4001:c03::22d])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WZlx1-0006lQ-MR
+ for linux-mtd@lists.infradead.org; Mon, 14 Apr 2014 18:49:52 +0000
+Received: by mail-ie0-f173.google.com with SMTP id rl12so8561196iec.18
+ for <linux-mtd@lists.infradead.org>; Mon, 14 Apr 2014 11:49:27 -0700 (PDT)
+Date: Mon, 14 Apr 2014 11:21:42 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v3 00/11] mtd: spi-nor: misc. updates, de-duplication
+Message-ID: <20140414182142.GS32070@ld-irv-0074>
+References: <1397242806-7575-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1397472124.3287.6.camel@karhu>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+In-Reply-To: <1397242806-7575-1-git-send-email-computersforpeace@gmail.com>
+Cc: Marek Vasut <marex@denx.de>, Huang Shijie <b32955@freescale.com>,
+ Lee Jones <lee.jones@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,42 +25,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Apr 14, Artem Bityutskiy wrote:
-> On Thu, 2014-04-10 at 11:43 -0300, Ezequiel Garcia wrote:
-> > +static int ubi_open_volume_by_id(libubi_t desc, const char *node, int vol_id, int mode)
-> >  {
-> > +       char file[256];
-> > +       struct ubi_dev_info dev_info;
-> >         int err, fd;
-> > -       libubi_t libubi;
-> >  
-> > -       err = parse_opt(argc, argv);
-> > +       err = ubi_get_dev_info(desc, node, &dev_info);
-> >         if (err)
-> > +               return errmsg("cannot get information about UBI device \"%s\"", node);
-> > +
-> > +       sprintf(file, "/dev/ubi%d_%d", dev_info.dev_num, vol_id);
+On Fri, Apr 11, 2014 at 11:59:55AM -0700, Brian Norris wrote:
+> A few miscellaneous updates, cleanups, and de-duplications. Mostly trivial
+> stuff, but I had a few oversights in the first round...and in the second round 
+> too :(
 > 
-> Device node names may ve anything. Please, do not rely on the "/dev/ubi%
-> d_%d" naming scheme in the tool.
+> v3:
+>  - move the fsl-quadspi.c rename of
+>      SPINOR_OP_QUAD_READ => SPINOR_OP_READ_1_1_4
+>    from patch 8 to patch 3, so that the series bisects properly
+>  - add new patch 11, caught while testing with sparse
 > 
+> v2:
+>  - opcode renames to fsl-quadspi.c (missed a few; I compiled it this time!)
+>  - additional whitespace consistency cleanups
+>  - tweak documentation wording/formatting
+>  - additonal patch (patch 10), to allow building spi-nor as a module
 
-Yeah, I know this sucks.
+Pushed the first 10 to l2-mtd.git/spinor. I'll revisit #11 later.
 
-> I think device node can be found out by scanning "/dev" and looking at
-> the device node major/minor numbers. This is more work of course.
->
+Will rebase on 3.15-rc1 soon, and likely will merge to l2-mtd.git/master
+soon enough, so we can get -next coverage and begin informing others of
+the M25P80 -> MTD_SPI_NOR dependency.
 
-Ah, that's a good idea. Let me give it a try.
-
-> However, libubi does exactly the same assumption about UBI volume names
-> as you do, so if you move this function to libubi, I think it will be
-> good enough. At least if someone wants to change this in the future,
-> then it will only require changing the library, but not its users.
-> 
-
-OK, I will.
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+Brian
