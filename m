@@ -1,21 +1,24 @@
-Received: from tritech.se ([46.59.120.190])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wa4xp-0000vb-7H
- for linux-mtd@lists.infradead.org; Tue, 15 Apr 2014 15:07:58 +0000
-From: =?iso-8859-1?Q?Mats_K=E4rrman?= <Mats.Karrman@tritech.se>
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>
-Subject: RE: [PATCH 2/2] mtd-utils: integck: add support for volume specific
- power-cut test
-Date: Tue, 15 Apr 2014 15:07:16 +0000
-Message-ID: <ED3E0BCACD909541BA94A34C4A164D4C5B3D17D4@post.tritech.se>
-References: <ED3E0BCACD909541BA94A34C4A164D4C5B3D11F5@post.tritech.se>,
- <1397567532.4441.9.camel@karhu>
-In-Reply-To: <1397567532.4441.9.camel@karhu>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Wa5qm-0005nn-EH
+ for linux-mtd@lists.infradead.org; Tue, 15 Apr 2014 16:04:44 +0000
+Received: by mail-pa0-f53.google.com with SMTP id ld10so9750620pab.40
+ for <linux-mtd@lists.infradead.org>; Tue, 15 Apr 2014 09:04:18 -0700 (PDT)
+Date: Wed, 16 Apr 2014 00:04:05 +0800
+From: Huang Shijie <shijie8@gmail.com>
+To: Marek Vasut <marex@denx.de>
+Subject: Re: [PATCH] mtd: spi-nor: read 6 bytes for the ID
+Message-ID: <20140415160402.GA2926@localhost.localdomain>
+References: <1397470174-27856-1-git-send-email-b32955@freescale.com>
+ <201404142023.47986.marex@denx.de>
+ <20140415052236.GA12237@localhost>
+ <201404151535.05561.marex@denx.de>
 MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <201404151535.05561.marex@denx.de>
+Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org, dwmw2@infradead.org, angus.clark@st.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,79 +28,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,=0A=
-=0A=
-Ehhhh.... I think either you have confused things a bit or I totally misund=
-erstand you.=0A=
-=0A=
-Both the "-p" and the "-P" options enable UBIFS power-cut tests. AfaIk ther=
-e is no such thing for UBI (?).=0A=
-My problem is that I like to run the tests on my target platform that uses =
-UBIFS as root FS.=0A=
-If I enable "power-cut" emulation globally (i.e. echo 1 > /sys/kernel/debug=
-/ubifs/tst_recovery) this will=0A=
-enable "power-cuts" not only for the tested partition (good) but also for m=
-y root fs (bad).=0A=
-UBIFS gives the opportunity to also enable "power-cuts" for a specific UBI =
-volume (e.g.=0A=
-echo 1 > /sys/kernel/debug/ubifs/ubi1_0/tst_recovery) but this only works u=
-ntil the UBI partition=0A=
-is reattached (the flag is initialized to 0).=0A=
-What "-P" does differently from "-p" is that it re-enables the power-cut em=
-ulation for the used=0A=
-partition before continuing the test after a remount.=0A=
-=0A=
-It seems that the help-text of integck suggests that the power-cut test mod=
-e is available for=0A=
-any filesystem that is "able to emulate power-cuts" so the "(currently impl=
-emented for UBIFS only)"=0A=
-is there because this is the only fs integck is (currently) able to reenabl=
-e emulation for. ("-p"=0A=
-requires emulation to be enabled before launching integck which took me a w=
-hile to figure out=0A=
-so this should perhaps also be written in the help text).=0A=
-=0A=
-BR // Mats=0A=
-=0A=
-________________________________________=0A=
-From: Artem Bityutskiy [dedekind1@gmail.com]=0A=
-Sent: Tuesday, April 15, 2014 3:12 PM=0A=
-To: Mats K=E4rrman=0A=
-Cc: linux-mtd@lists.infradead.org=0A=
-Subject: Re: [PATCH 2/2] mtd-utils: integck: add support for volume specifi=
-c power-cut test=0A=
-=0A=
-Hi Mats,=0A=
-=0A=
-pushed the first patch out, thanks.=0A=
-=0A=
-On Mon, 2014-04-14 at 11:47 +0000, Mats K=E4rrman wrote:=0A=
-> -"continues forever.\n";=0A=
-> +"continues forever.\n"=0A=
-> +"Whereas -p requires power cut emulation to be enabled globally, the -P =
-option\n"=0A=
-> +"automatically enables the use of power cut emulation on the tested fs i=
-nstance\n"=0A=
-> +"only (currently implemented for UBIFS only).\n";=0A=
-=0A=
-Could we please invent an easy to understand way of naming this and the=0A=
-option.=0A=
-=0A=
-So essentially, this is about emulating power cuts at UBI and UBIFS=0A=
-levels. The "reenabling" thing is a small details which should not be=0A=
-visible in --help, because it is confusing anyway.=0A=
-=0A=
-I'd suggest to split this patch on 2. First patch renames the option to=0A=
-'--ubi-power-cut', refines help message, may be some comments and=0A=
-function names, if needed.=0A=
-=0A=
-The second patch introduces '--ubifs-power-cut', and explains that this=0A=
-makes sure that power cuts happen in the UBIFS driver, versus the=0A=
-underlying UBI driver.=0A=
-=0A=
-Thanks!=0A=
-=0A=
---=0A=
-Best Regards,=0A=
-Artem Bityutskiy=0A=
-=0A=
+On Tue, Apr 15, 2014 at 03:35:05PM +0200, Marek Vasut wrote:
+> On Tuesday, April 15, 2014 at 07:22:39 AM, Huang Shijie wrote:
+> > On Mon, Apr 14, 2014 at 08:23:47PM +0200, Marek Vasut wrote:
+> 
+> [...]
+> 
+> > > > > I wonder if the ID-bytes wraparound cannot cause us trouble here. For
+> > > > > example if we try to detect a SPI NOR which has 5-byte ID code, but
+> > > > > in the table, we'd also have a SPI NOR with has a 6-byte code where
+> > > > > the last byte of ext-jedec matches the first byte of JEDEC ID , this
+> > > > > would actually match on the later.
+> > > > 
+> > > > could you give me detail example?
+> > > > 
+> > > > I feel sorry that i do not quit understand your meaning.
+> > > 
+> > > Imagine two chips with two IDs:
+> > > Chip 1 has IDs: 0xf00b42 0x4242f0 and readID[6] returns 0x420bf0f04242
+> > 
+> > It will not return 0x420bf0f04242.
+> > 
+> > The readID[6] should be: f0, 0b, 42, 42, 42, f0.
+> > 
+> > > Chip 2 has IDs: 0xf00b42   0x42f0 and readID[6] returns 0x420bf0f04242
+> > 
+> > the readID[6] should be: f0, 0b, 42, 42, f0, XX.
+> > 
+> >  "XX" stands for the sixth byte.
+> > 
+> > The current patch can distinguish these two chips.
+> > 
+> > > This is because in the second chips' case the ID wraps around at 5 bytes.
+> > > But chip #1 matches the ID, so if chip #1 is earlier in the list of SPI
+> > > NOR flashes, we will get an incorrect detection of that chip.
+> > 
+> > I guess your meaning is that the chip 2 has IDs: 0xf00b42   0x4242
+> > and the sixth byte is 0xf0 which wraps the first byte.
+> 
+> Huang, what I meant is that if you read 6 bytes of ID from a chip which wraps 
+> the READID command output on 5 bytes AND the first and last byte match in the 
+> table for some 6-byte chip, then this 6-byte chip will be used as a 
+> configuration for the different 5-byte chip.
+
+Does the chip vendor so silly to produce such chips? :)
+
+> 
+> This code should be future-proof, but if we keep adding such special cases, we 
+> will end up with false matches sooner or later anyway I'm afraid.
+> 
+> What do you say we add the READID length field into the table ?
+If we add the length field into the table, we have to sort the table by
+some kind of order. Btw: I do not object to add the length field. 
+
+thanks
+Huang Shijie
