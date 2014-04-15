@@ -1,18 +1,31 @@
-Received: from smtp.gentoo.org ([140.211.166.183])
+Received: from mailout3.samsung.com ([203.254.224.33])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WZpUF-0000Z7-JF
- for linux-mtd@lists.infradead.org; Mon, 14 Apr 2014 22:36:23 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-To: Baruch Siach <baruch@tkos.co.il>
-Subject: Re: [PATCH] include/common.h: fix build against current uClibc
-Date: Mon, 14 Apr 2014 18:35:54 -0400
-Message-ID: <5227862.qFZQ1ofhsA@vapier>
-In-Reply-To: <98c2959992086acd792ef9850c90cc9da8a2a063.1397392006.git.baruch@tkos.co.il>
-References: <98c2959992086acd792ef9850c90cc9da8a2a063.1397392006.git.baruch@tkos.co.il>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart1828931.9J8Totoxsb";
- micalg="pgp-sha1"; protocol="application/pgp-signature"
-Cc: linux-mtd@lists.infradead.org
+ id 1WZrJW-0001u1-Pa
+ for linux-mtd@lists.infradead.org; Tue, 15 Apr 2014 00:33:27 +0000
+Received: from epcpsbgr4.samsung.com
+ (u144.gpu120.samsung.co.kr [203.254.230.144])
+ by mailout3.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ (7.0.4.24.0) 64bit (built Nov 17 2011))
+ with ESMTP id <0N4100D4IQV4G960@mailout3.samsung.com> for
+ linux-mtd@lists.infradead.org; Tue, 15 Apr 2014 09:33:04 +0900 (KST)
+From: Jingoo Han <jg1.han@samsung.com>
+To: 'Christian Engelmayer' <cengelma@gmx.at>,
+ 'Brian Norris' <computersforpeace@gmail.com>
+References: <20140415003205.0bb2cf44@spike>
+In-reply-to: <20140415003205.0bb2cf44@spike>
+Subject: =?utf-8?Q?Re:_=5BPATCH=5D_mtd:_nand:_omap:_fix?=
+ =?utf-8?Q?_compile_warning_on_=E2=80=98erased=5Fsect?=
+ =?utf-8?Q?or=5Fbitflips=E2=80=99?=
+Date: Tue, 15 Apr 2014 09:33:03 +0900
+Message-id: <007d01cf5842$435dcba0$ca1962e0$%han@samsung.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=utf-8
+Content-transfer-encoding: quoted-printable
+Content-language: ko
+Cc: 'Artem Bityutskiy' <artem.bityutskiy@linux.intel.com>,
+ 'Jingoo Han' <jg1.han@samsung.com>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, 'Pekon Gupta' <pekon@ti.com>,
+ 'David Woodhouse' <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,34 +35,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Tuesday, April 15, 2014 7:32 AM, Christian Engelmayer wrote:
+>=20
+> Commit 2c9f2365 (mtd: nand: omap: ecc.calculate: merge =
+omap3_calculate_ecc_bch4
+> in omap_calculate_ecc_bch) introduced minor compile warning
+> "=E2=80=98erased_sector_bitflips=E2=80=99 defined but not used =
+[-Wunused-function]" when
+> compiling without CONFIG_MTD_NAND_OMAP_BCH. Move function
+> erased_sector_bitflips() into the same ifdef section as the only =
+caller.
+>=20
+> Signed-off-by: Christian Engelmayer <cengelma@gmx.at>
 
---nextPart1828931.9J8Totoxsb
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="us-ascii"
+Reviewed-by: Jingoo Han <jg1.han@samsung.com>
 
-Acked-by: Mike Frysinger <vapier@gentoo.org>
-=2Dmike
---nextPart1828931.9J8Totoxsb
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
+Best regards,
+Jingoo Han
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAABAgAGBQJTTGLPAAoJEEFjO5/oN/WBhi8QAL8bplaAtu4lCLIR0+PU6tWR
-+6AzklqaM13f80WT6247InlXmldNF7UP172Pn5ia7Rn2SdQE4aI7tBVGQyMbH02H
-dBrZ807EECf6FwPHSzZQUyemlC5q0/ua4KaDsG8Ngu3udVvyNB6KoDKuvGvi/dQ0
-WjsjGQ5zwtSKCgAeW6g1e6GSo/Tp3jmvTRO7AMNBT6ELCjZNo3vkiqBHbPMNfh4e
-DLmwFwssYsn5pPDIahL+BTpbbAr+VhI6yGIZTipPB+tKls4H2XfynDsMrm8EP5ig
-dZ+Ub3+bXTaGlfEYGKt8W08iK5wtMWeRynGaIwlfTQ7x/c974IWY+gvNhhEhQiLx
-hFkUZKQAuvtFZu0kNKS6BCKcTHQouSOD7j1IdjmTPz7PzMVpkiFKZrQTzrQ0ydWo
-tdPJjNKHQ9oZ4LNMS7J6kmJjMTBlfUF12Nk4ExFN/tCNdMYhYrecaFtrqV4CEuE0
-Yu88PEMUJtbNZDLW6g93DJPkmBFJDArHGjVltdHp2pyXGr7FPVrHTwqTOwjvDlDF
-2ZUsdT4wTuISkf1ac90VVj8rdsxiDP8RrD62Zim5/EyrGkuvyMbiXkTjk+caWT5Z
-yzBrfUFvIf7vKrUl5bzcs2CajEQhvP0yGHvW1IOJI+z5jNtvF+6sXi6YNnC71l+V
-18N+vcKGUC9NwhbCwrYY
-=gnge
------END PGP SIGNATURE-----
-
---nextPart1828931.9J8Totoxsb--
+> ---
+>  drivers/mtd/nand/omap2.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+> index 1ff49b8..1b800bc 100644
+> --- a/drivers/mtd/nand/omap2.c
+> +++ b/drivers/mtd/nand/omap2.c
+> @@ -1237,6 +1237,7 @@ static int __maybe_unused =
+omap_calculate_ecc_bch(struct mtd_info *mtd,
+>  	return 0;
+>  }
+>=20
+> +#ifdef CONFIG_MTD_NAND_OMAP_BCH
+>  /**
+>   * erased_sector_bitflips - count bit flips
+>   * @data:	data sector buffer
+> @@ -1276,7 +1277,6 @@ static int erased_sector_bitflips(u_char *data, =
+u_char *oob,
+>  	return flip_bits;
+>  }
+>=20
+> -#ifdef CONFIG_MTD_NAND_OMAP_BCH
+>  /**
+>   * omap_elm_correct_data - corrects page data area in case error =
+reported
+>   * @mtd:	MTD device structure
+> --
+> 1.8.3.2
