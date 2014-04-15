@@ -1,22 +1,18 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
+Received: from smtp.gentoo.org ([140.211.166.183])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WaC0t-0000xg-MN
- for linux-mtd@lists.infradead.org; Tue, 15 Apr 2014 22:39:36 +0000
-From: Marek Vasut <marex@denx.de>
-To: Huang Shijie <shijie8@gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: read 6 bytes for the ID
-Date: Tue, 15 Apr 2014 20:48:50 +0200
-References: <1397470174-27856-1-git-send-email-b32955@freescale.com>
- <201404151535.05561.marex@denx.de>
- <20140415160402.GA2926@localhost.localdomain>
-In-Reply-To: <20140415160402.GA2926@localhost.localdomain>
+ id 1WaCUT-0005C7-5r
+ for linux-mtd@lists.infradead.org; Tue, 15 Apr 2014 23:10:09 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+To: Baruch Siach <baruch@tkos.co.il>
+Subject: Re: [PATCH] include/common.h: fix build against recent 0.9.33 uClibc
+Date: Tue, 15 Apr 2014 19:09:45 -0400
+Message-ID: <2055220.5Wt3obd1St@vapier>
+In-Reply-To: <f4242477d038f71b8dce112047fae342878ebcf3.1397593003.git.baruch@tkos.co.il>
+References: <f4242477d038f71b8dce112047fae342878ebcf3.1397593003.git.baruch@tkos.co.il>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201404152048.50321.marex@denx.de>
-Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, dwmw2@infradead.org, angus.clark@st.com
+Content-Type: multipart/signed; boundary="nextPart1430243.Ui82vA7CMc";
+ micalg="pgp-sha1"; protocol="application/pgp-signature"
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,69 +22,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday, April 15, 2014 at 06:04:05 PM, Huang Shijie wrote:
-> On Tue, Apr 15, 2014 at 03:35:05PM +0200, Marek Vasut wrote:
-> > On Tuesday, April 15, 2014 at 07:22:39 AM, Huang Shijie wrote:
-> > > On Mon, Apr 14, 2014 at 08:23:47PM +0200, Marek Vasut wrote:
-> > [...]
-> > 
-> > > > > > I wonder if the ID-bytes wraparound cannot cause us trouble here.
-> > > > > > For example if we try to detect a SPI NOR which has 5-byte ID
-> > > > > > code, but in the table, we'd also have a SPI NOR with has a
-> > > > > > 6-byte code where the last byte of ext-jedec matches the first
-> > > > > > byte of JEDEC ID , this would actually match on the later.
-> > > > > 
-> > > > > could you give me detail example?
-> > > > > 
-> > > > > I feel sorry that i do not quit understand your meaning.
-> > > > 
-> > > > Imagine two chips with two IDs:
-> > > > Chip 1 has IDs: 0xf00b42 0x4242f0 and readID[6] returns
-> > > > 0x420bf0f04242
-> > > 
-> > > It will not return 0x420bf0f04242.
-> > > 
-> > > The readID[6] should be: f0, 0b, 42, 42, 42, f0.
-> > > 
-> > > > Chip 2 has IDs: 0xf00b42   0x42f0 and readID[6] returns
-> > > > 0x420bf0f04242
-> > > 
-> > > the readID[6] should be: f0, 0b, 42, 42, f0, XX.
-> > > 
-> > >  "XX" stands for the sixth byte.
-> > > 
-> > > The current patch can distinguish these two chips.
-> > > 
-> > > > This is because in the second chips' case the ID wraps around at 5
-> > > > bytes. But chip #1 matches the ID, so if chip #1 is earlier in the
-> > > > list of SPI NOR flashes, we will get an incorrect detection of that
-> > > > chip.
-> > > 
-> > > I guess your meaning is that the chip 2 has IDs: 0xf00b42   0x4242
-> > > and the sixth byte is 0xf0 which wraps the first byte.
-> > 
-> > Huang, what I meant is that if you read 6 bytes of ID from a chip which
-> > wraps the READID command output on 5 bytes AND the first and last byte
-> > match in the table for some 6-byte chip, then this 6-byte chip will be
-> > used as a configuration for the different 5-byte chip.
-> 
-> Does the chip vendor so silly to produce such chips? :)
 
-I don't quite understand the meaning of this sentence, but the approach where we 
-try heuristics doesn't scale.
+--nextPart1430243.Ui82vA7CMc
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
 
-> > This code should be future-proof, but if we keep adding such special
-> > cases, we will end up with false matches sooner or later anyway I'm
-> > afraid.
-> > 
-> > What do you say we add the READID length field into the table ?
-> 
-> If we add the length field into the table, we have to sort the table by
-> some kind of order.
+On Tue 15 Apr 2014 23:16:43 Baruch Siach wrote:
+> An implementation of rpmatch() was backported to the 0.9.33 branch of=
 
-Why, please elaborate.
+> uClibc. So the uClibc version check introduced in commit 50c9e11f7e
+> (include/common.h: fix build against current uClibc) is not enough. R=
+ename
+> the local rpmatch() implementation to avoid collision.
+>=20
+> Cc: Mike Frysinger <vapier@gentoo.org>
+> Signed-off-by: Baruch Siach <baruch@tkos.co.il>
+> ---
+>  include/common.h | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/include/common.h b/include/common.h
+> index 3b1366e927c4..838dc757bdf1 100644
+> --- a/include/common.h
+> +++ b/include/common.h
+> @@ -107,7 +107,8 @@ extern "C" {
+>  #if __UCLIBC_MAJOR__ =3D=3D 0 && \
+>  =09=09(__UCLIBC_MINOR__ < 9 || \
+>  =09=09(__UCLIBC_MINOR__ =3D=3D 9 && __UCLIBC_SUBLEVEL__ < 34))
+> -static inline int rpmatch(const char *resp)
+> +#define rpmatch __rpmatch
 
-> Btw: I do not object to add the length field.
+probably want to:
+=09#undef rpmatch
+=2Dmike
+--nextPart1430243.Ui82vA7CMc
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
 
-Best regards,
-Marek Vasut
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAABAgAGBQJTTbw5AAoJEEFjO5/oN/WB9mUQAL8TfT2vWzrAksQxgyNMZmZy
+Om2nIitBBpZi0L/H3PRHgfJah993fpqBpVTJgDuPTrOizN9XzCd5+IMf99yR/rY+
+8pS6H5SbIY7yF/RQcZ+ri//UQUOeiuEqAp5O6Isf20OvOTTIWoQRsbKt+LJwug+a
+EkYz9Zbdnj13CYv5Gq0PrzkzlZsqEmz0SgcjfdTwNbt4lMtNbgHyOJnFuC5JvXsP
+Q7heiK+Rqmt5D29DBqI8CK8AJmA/aNlV5kamkt08CdJwREO0KZ+QPhxcWJNbY/A6
+7l+q1SlBg9PHd2wMZm/TYQpU7XVwqdJrQDf/SP+hP3nGGTdoop4cmj965Nkgn4aU
+12fdB9b34ZEVTkXrPbjHiiG47+24qboUcq3U5xs07AzSVyE8W8kFWGyULryvUrDz
+Xbyxmfj3B8lQEhNMscurd0k8Bq+/09XcmUGVWCsRz4mgMDHO9JXQ86WFuUQSTPwh
+smpTpVNymh7gxW6zS3r02t12xUJh1qXkYINDNRcgzzMywgQNH0orat+lZbNdkNl1
++4Kdkm7yZlM3y+Q6+f40bg2GO9+FCdAeaybvv+ITgFf1qWBCDnZSYwqfqRioBk68
+l7ReFqPvOGPB/3tpeYg70ly0/wlF3/JzXP2jnP1RkMWuvVrCy7WWsI4gL5nyuq0y
+IKMlL0fiU065CBmnaCJi
+=t5P3
+-----END PGP SIGNATURE-----
+
+--nextPart1430243.Ui82vA7CMc--
