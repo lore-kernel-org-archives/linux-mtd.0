@@ -1,22 +1,22 @@
-Received: from mail-pb0-f49.google.com ([209.85.160.49])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WaJsH-0000Jl-3H
- for linux-mtd@lists.infradead.org; Wed, 16 Apr 2014 07:03:13 +0000
-Received: by mail-pb0-f49.google.com with SMTP id jt11so10403591pbb.8
- for <linux-mtd@lists.infradead.org>; Wed, 16 Apr 2014 00:02:47 -0700 (PDT)
-Date: Tue, 15 Apr 2014 23:57:29 -0700
+Date: Wed, 16 Apr 2014 00:08:33 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Roman Pen <r.peniaev@gmail.com>
-Subject: Re: [v2 PATCH 1/1] mtd: mtd_blkdevs: handle REQ_FLUSH request and do
- explicit flush of writeback buffer
-Message-ID: <20140416065729.GP3131@norris-Latitude-E6410>
-References: <1394283554-27423-1-git-send-email-r.peniaev@gmail.com>
+To: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+Subject: Re: [PATCH v2] mtd: davinci-nand: disable subpage write for
+ keystone-nand
+Message-ID: <20140416070833.GA5512@norris-Latitude-E6410>
+References: <1395346112-13350-1-git-send-email-ivan.khoronzhuk@ti.com>
+ <532B4C36.8060405@ti.com> <5343F0D6.2010804@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1394283554-27423-1-git-send-email-r.peniaev@gmail.com>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- linux-kernel@vger.kernel.org
+In-Reply-To: <5343F0D6.2010804@ti.com>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, grygorii.strashko@ti.com,
+ linux@arm.linux.org.uk, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk,
+ linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+ Santosh Shilimkar <santosh.shilimkar@ti.com>, m-karicheri2@ti.com,
+ rob@landley.net, galak@codeaurora.org, linux-mtd@lists.infradead.org,
+ dwmw2@infradead.org, Warner Losh <imp@bsdimp.com>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,31 +26,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Mar 08, 2014 at 09:59:14PM +0900, Roman Pen wrote:
-> From: Roman Peniaev <r.peniaev@gmail.com>
+On Tue, Apr 08, 2014 at 03:51:34PM +0300, Ivan Khoronzhuk wrote:
+> On 03/20/2014 10:14 PM, Santosh Shilimkar wrote:
+> >On Thursday 20 March 2014 04:08 PM, Ivan Khoronzhuk wrote:
+> >>From: Murali Karicheri <m-karicheri2@ti.com>
+> >>Sub page write doesn't work because of hw issue in controller found on
+> >>Keystone SOCs. AEMIF controller is also used on DaVinci SOCs which
+> >>don't seems to have any issue. So add "ti,keysone-nand" compatible
+> >>to nand driver in order to set NAND_NO_SUBPAGE_WRITE option.
+> >>
+> >>Cc: Brian Norris <computersforpeace@gmail.com>
+> >>Cc: Warner Losh <imp@bsdimp.com>
+> >>Cc: Santosh Shilimkar <santosh.shilimkar@ti.com>
+> >>
+> >>Signed-off-by: Murali Karicheri <m-karicheri2@ti.com>
+> >>Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+> >>---
+> >>
+> >Acked-by: Santosh Shilimkar <santosh.shilimkar@ti.com>
 > 
-> mtd_blkdevs is device with volatile cache (writeback buffer), so it should support
-> REQ_FLUSH to do explicit flush.
-> 
-> Without this patch 'sync' does not guarantee that writeback buffer will be flushed
-> on disk in case of power off, e.g.:
-> 
->   $ cp some_file /mnt
->   $ sync
-> 
->   ### POWER OFF
-> 
-> In case of this sequence writeback buffer will not be flushed on disk.
-> 
-> This patch fixes this behaviour and explicitly reports to block layer that flush
-> requests are being supported.
-> 
-> Signed-off-by: Roman Peniaev <r.peniaev@gmail.com>
-> CC: David Woodhouse <dwmw2@infradead.org>
-> CC: Brian Norris <computersforpeace@gmail.com>
-> CC: linux-mtd@lists.infradead.org
-> CC: linux-kernel@vger.kernel.org
+> Brian,
+> Could you pick up subj patch?
 
-Pushed to l2-mtd.git. Thanks!
+Pushed to l2-mtd.git. Is it critical this goes in for 3.15? It's
+currently queued for -next (3.16).
 
 Brian
