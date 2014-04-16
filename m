@@ -1,21 +1,23 @@
-Received: from am1ehsobe005.messaging.microsoft.com ([213.199.154.208]
- helo=am1outboundpool.messaging.microsoft.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WaM10-00082w-C6
- for linux-mtd@lists.infradead.org; Wed, 16 Apr 2014 09:20:22 +0000
-Message-ID: <534E4BA7.2040901@freescale.com>
-Date: Wed, 16 Apr 2014 17:21:43 +0800
-From: Huang Shijie <b32955@freescale.com>
+Message-ID: <534E51BF.9050508@ti.com>
+Date: Wed, 16 Apr 2014 12:47:43 +0300
+From: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
 MIME-Version: 1.0
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] mtd: fsl-quadspi: fix __iomem annotations
-References: <1397638079-1894-1-git-send-email-computersforpeace@gmail.com>
- <534E4528.6030700@freescale.com>
- <20140416091512.GG5512@norris-Latitude-E6410>
-In-Reply-To: <20140416091512.GG5512@norris-Latitude-E6410>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2] mtd: davinci-nand: disable subpage write for
+ keystone-nand
+References: <1395346112-13350-1-git-send-email-ivan.khoronzhuk@ti.com>
+ <532B4C36.8060405@ti.com> <5343F0D6.2010804@ti.com>
+ <20140416070833.GA5512@norris-Latitude-E6410>
+In-Reply-To: <20140416070833.GA5512@norris-Latitude-E6410>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, grygorii.strashko@ti.com,
+ linux@arm.linux.org.uk, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk,
+ linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+ Santosh Shilimkar <santosh.shilimkar@ti.com>, m-karicheri2@ti.com,
+ rob@landley.net, galak@codeaurora.org, linux-mtd@lists.infradead.org,
+ dwmw2@infradead.org, Warner Losh <imp@bsdimp.com>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,14 +27,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=E4=BA=8E 2014=E5=B9=B404=E6=9C=8816=E6=97=A5 17:15, Brian Norris =E5=86=99=
-=E9=81=93:
-> Pushed to l2-mtd.git/spinor.
-I think you can rebase patches in the spinor branch to the master branch=20
-now.
 
-After the rebase, we can add the patch for the *defconfig for the=20
-linux-next.
+On 04/16/2014 10:08 AM, Brian Norris wrote:
+> On Tue, Apr 08, 2014 at 03:51:34PM +0300, Ivan Khoronzhuk wrote:
+>> On 03/20/2014 10:14 PM, Santosh Shilimkar wrote:
+>>> On Thursday 20 March 2014 04:08 PM, Ivan Khoronzhuk wrote:
+>>>> From: Murali Karicheri <m-karicheri2@ti.com>
+>>>> Sub page write doesn't work because of hw issue in controller found on
+>>>> Keystone SOCs. AEMIF controller is also used on DaVinci SOCs which
+>>>> don't seems to have any issue. So add "ti,keysone-nand" compatible
+>>>> to nand driver in order to set NAND_NO_SUBPAGE_WRITE option.
+>>>>
+>>>> Cc: Brian Norris <computersforpeace@gmail.com>
+>>>> Cc: Warner Losh <imp@bsdimp.com>
+>>>> Cc: Santosh Shilimkar <santosh.shilimkar@ti.com>
+>>>>
+>>>> Signed-off-by: Murali Karicheri <m-karicheri2@ti.com>
+>>>> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+>>>> ---
+>>>>
+>>> Acked-by: Santosh Shilimkar <santosh.shilimkar@ti.com>
+>> Brian,
+>> Could you pick up subj patch?
+> Pushed to l2-mtd.git. Is it critical this goes in for 3.15? It's
+> currently queued for -next (3.16).
+>
+> Brian
 
-thanks
-Huang Shijie
+This is a critical fix and it should be for 3.15.
+Thanks.
+
+-- 
+Regards,
+Ivan Khoronzhuk
