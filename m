@@ -1,22 +1,22 @@
-Date: Wed, 16 Apr 2014 00:08:33 -0700
+Received: from mail-pd0-x232.google.com ([2607:f8b0:400e:c02::232])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WaK82-0000gf-GD
+ for linux-mtd@lists.infradead.org; Wed, 16 Apr 2014 07:19:30 +0000
+Received: by mail-pd0-f178.google.com with SMTP id x10so10383887pdj.23
+ for <linux-mtd@lists.infradead.org>; Wed, 16 Apr 2014 00:19:08 -0700 (PDT)
+Date: Wed, 16 Apr 2014 00:19:05 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
-Subject: Re: [PATCH v2] mtd: davinci-nand: disable subpage write for
- keystone-nand
-Message-ID: <20140416070833.GA5512@norris-Latitude-E6410>
-References: <1395346112-13350-1-git-send-email-ivan.khoronzhuk@ti.com>
- <532B4C36.8060405@ti.com> <5343F0D6.2010804@ti.com>
+To: =?iso-8859-1?Q?Rapha=EBl?= Poggi <poggi.raph@gmail.com>
+Subject: Re: [PATCH] mtd: nand: add line feed to pr_err
+Message-ID: <20140416071905.GB5512@norris-Latitude-E6410>
+References: <1396977588-49131-1-git-send-email-poggi.raph@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <5343F0D6.2010804@ti.com>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, grygorii.strashko@ti.com,
- linux@arm.linux.org.uk, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk,
- linux-kernel@vger.kernel.org, robh+dt@kernel.org,
- Santosh Shilimkar <santosh.shilimkar@ti.com>, m-karicheri2@ti.com,
- rob@landley.net, galak@codeaurora.org, linux-mtd@lists.infradead.org,
- dwmw2@infradead.org, Warner Losh <imp@bsdimp.com>,
- linux-arm-kernel@lists.infradead.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1396977588-49131-1-git-send-email-poggi.raph@gmail.com>
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,29 +26,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Apr 08, 2014 at 03:51:34PM +0300, Ivan Khoronzhuk wrote:
-> On 03/20/2014 10:14 PM, Santosh Shilimkar wrote:
-> >On Thursday 20 March 2014 04:08 PM, Ivan Khoronzhuk wrote:
-> >>From: Murali Karicheri <m-karicheri2@ti.com>
-> >>Sub page write doesn't work because of hw issue in controller found on
-> >>Keystone SOCs. AEMIF controller is also used on DaVinci SOCs which
-> >>don't seems to have any issue. So add "ti,keysone-nand" compatible
-> >>to nand driver in order to set NAND_NO_SUBPAGE_WRITE option.
-> >>
-> >>Cc: Brian Norris <computersforpeace@gmail.com>
-> >>Cc: Warner Losh <imp@bsdimp.com>
-> >>Cc: Santosh Shilimkar <santosh.shilimkar@ti.com>
-> >>
-> >>Signed-off-by: Murali Karicheri <m-karicheri2@ti.com>
-> >>Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
-> >>---
-> >>
-> >Acked-by: Santosh Shilimkar <santosh.shilimkar@ti.com>
+On Tue, Apr 08, 2014 at 10:19:48AM -0700, Raphaël Poggi wrote:
+> Add line feed to pr_err.
 > 
-> Brian,
-> Could you pick up subj patch?
+> Signed-off-by: Raphaël Poggi <poggi.raph@gmail.com>
 
-Pushed to l2-mtd.git. Is it critical this goes in for 3.15? It's
-currently queued for -next (3.16).
+Pushed to l2-mtd.git. Thanks!
 
 Brian
