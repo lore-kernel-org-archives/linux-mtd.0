@@ -1,17 +1,25 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WaWl2-000353-9o
- for linux-mtd@lists.infradead.org; Wed, 16 Apr 2014 20:48:36 +0000
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH] UBI: weaken the 'exclusive' constraint when opening volumes
- to rename
-Date: Wed, 16 Apr 2014 17:47:33 -0300
-Message-Id: <1397681253-5203-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: Richard Weinberger <richard@nod.at>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Received: from mail-out.m-online.net ([212.18.0.10])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WaZSA-0000Dh-RL
+ for linux-mtd@lists.infradead.org; Wed, 16 Apr 2014 23:41:19 +0000
+From: Marek Vasut <marex@denx.de>
+To: Austin Boyle <boyle.austin@gmail.com>
+Subject: Re: [PATCH v3] mtd: m25p80: Calculate flash block protect bits based
+ on number of sectors
+Date: Thu, 17 Apr 2014 01:22:20 +0200
+References: <alpine.DEB.2.02.1404162227120.3848@austin-Satellite-L510>
+In-Reply-To: <alpine.DEB.2.02.1404162227120.3848@austin-Satellite-L510>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201404170122.20996.marex@denx.de>
+Cc: Angus Clark <angus.clark@st.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Gerlando Falauto <gerlando.falauto@keymile.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,44 +29,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The UBI volume rename ioctl (UBI_IOCRNVOL) open the volumes in exclusive
-mode. The volumes are opened for two reasons: to build a volume rename list,
-and a volume remove list.
+On Wednesday, April 16, 2014 at 02:37:13 PM, Austin Boyle wrote:
+> This patch generalises the calculation of block protect bits based on the
+> number of sectors and implements the _is_locked function.
+> 
+> Existing calculation of block protect bits only works for devices with 64
+> sectors or more. This new logic is applicable to the STmicro devices:
+> m25p10, p20, p40, p80, p16, pe16, p32, p64, p128.
+> Note devices with >64 sectors only allow the protected region to be
+> specified to a resolution of 1/64th of the total size (such as m25p64).
+> 
+> New return codes for ioctl(MEMISLOCKED) have been added to
+> uapi/mtd/mtd-abi.h because the _is_locked function can query a region
+> which is partially unlocked.
+> 
+> Added flag to m25p_ids table to indicate if flash protection is supported.
+> 
+> Added n_sectors and sector_size to m25p flash structure so it can be used
+> in block protect bit calculation.
+> 
+> From: Austin Boyle <boyle.austin@gmail.com>
+> Signed-off-by: Austin Boyle <boyle.austin@gmail.com>
 
-However, the first open constraint is excessive and can be replaced by
-a 'read-write' open mode. The second open constraint is properly set as
-'exclusive' given the volume is opened for removal and we don't want any
-users around.
+Acked-by: Marek Vasut <marex@denx.de>
 
-By weakening the former 'exclusive' mode, we allow 'read-only' users to keep
-the volume open, while a rename is taking place. This is useful to perform
-an atomic rename, in a firmware upgrade scenario, while keeping the volume
-in read-only use (for instance, if a ubiblock is mounted as rootfs).
+Thanks!
 
-It's worth mention this is not the case of UBIFS, which keeps the volume
-opened as 'read-write' despite mounted as read-write or read-only mode.
-
-This change was suggested at least twice by Artem:
-http://lists.infradead.org/pipermail/linux-mtd/2012-September/044175.html
-http://permalink.gmane.org/gmane.linux.drivers.mtd/39866
-
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
----
- drivers/mtd/ubi/cdev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
-index f54562a..7646220 100644
---- a/drivers/mtd/ubi/cdev.c
-+++ b/drivers/mtd/ubi/cdev.c
-@@ -731,7 +731,7 @@ static int rename_volumes(struct ubi_device *ubi,
- 			goto out_free;
- 		}
- 
--		re->desc = ubi_open_volume(ubi->ubi_num, vol_id, UBI_EXCLUSIVE);
-+		re->desc = ubi_open_volume(ubi->ubi_num, vol_id, UBI_READWRITE);
- 		if (IS_ERR(re->desc)) {
- 			err = PTR_ERR(re->desc);
- 			ubi_err("cannot open volume %d, error %d", vol_id, err);
--- 
-1.9.1
+Best regards,
+Marek Vasut
