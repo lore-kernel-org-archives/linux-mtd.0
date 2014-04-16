@@ -1,21 +1,21 @@
-Received: from mail-wg0-f44.google.com ([74.125.82.44])
+Received: from mail-out.m-online.net ([212.18.0.9])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WaNMX-0005R3-5q
- for linux-mtd@lists.infradead.org; Wed, 16 Apr 2014 10:46:41 +0000
-Received: by mail-wg0-f44.google.com with SMTP id m15so10830237wgh.27
- for <linux-mtd@lists.infradead.org>; Wed, 16 Apr 2014 03:46:15 -0700 (PDT)
-Date: Wed, 16 Apr 2014 11:46:11 +0100
-From: Lee Jones <lee.jones@linaro.org>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 1/2] mtd: st_spi_fsm: correct type issues
-Message-ID: <20140416104611.GP4754@lee--X1>
-References: <1397637782-26843-1-git-send-email-computersforpeace@gmail.com>
+ id 1WaNdO-0000qc-GO
+ for linux-mtd@lists.infradead.org; Wed, 16 Apr 2014 11:04:08 +0000
+From: Marek Vasut <marex@denx.de>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH] mtd: spi-nor: read 6 bytes for the ID
+Date: Wed, 16 Apr 2014 12:18:28 +0200
+References: <1397470174-27856-1-git-send-email-b32955@freescale.com>
+ <201404152048.50321.marex@denx.de> <20140416015201.GA3204@localhost>
+In-Reply-To: <20140416015201.GA3204@localhost>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1397637782-26843-1-git-send-email-computersforpeace@gmail.com>
-Cc: linux-mtd@lists.infradead.org
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201404161218.28828.marex@denx.de>
+Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ Huang Shijie <shijie8@gmail.com>, dwmw2@infradead.org, angus.clark@st.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,46 +25,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> Compile-testing for a 64-bit arch uncovers several bad casts:
-> 
->     In file included from include/linux/linkage.h:4:0,
->                      from include/linux/kernel.h:6,
->                      from drivers/mtd/devices/st_spi_fsm.c:15:
->     drivers/mtd/devices/st_spi_fsm.c: In function ‘stfsm_read_fifo’:
->     drivers/mtd/devices/st_spi_fsm.c:758:11: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
->       BUG_ON((((uint32_t)buf) & 0x3) || (size & 0x3));
->     ...
-> 
-> Use uintptr_t instead of uint32_t, since it's guaranteed to be
-> pointer-sized.
-> 
-> We also see this warning, if size_t is not 32 bits wide:
-> 
->     In file included from drivers/mtd/devices/st_spi_fsm.c:15:0:
->     drivers/mtd/devices/st_spi_fsm.c: In function ‘stfsm_mtd_write’:
->     include/linux/kernel.h:712:17: warning: comparison of distinct pointer types lacks a cast [enabled by default]
->       (void) (&_min1 == &_min2);  \
->                      ^
->     drivers/mtd/devices/st_spi_fsm.c:1704:11: note: in expansion of macro ‘min’
->        bytes = min(FLASH_PAGESIZE - page_offs, len);
->                ^
-> 
-> Just use min_t() to force the type conversion, since we don't really
-> want to upgrade 'page_offs' and 'bytes' to size_t; they only should be
-> handling <= 256 byte offsets.
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Cc: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/mtd/devices/st_spi_fsm.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
+On Wednesday, April 16, 2014 at 03:52:03 AM, Huang Shijie wrote:
 
-Thanks for fixing Brian. Fixes look good.
+[...]
 
-Acked-by: Lee Jones <lee.jones@linaro.org>
+> > > Does the chip vendor so silly to produce such chips? :)
+> > 
+> > I don't quite understand the meaning of this sentence, but the approach
+> > where we try heuristics doesn't scale.
+> 
+> If two chips share the same jedec_id, it means the two chips are produced
+> from the same chip vendor, such as 0x012018 means the chip is from
+> Spansion.
+> 
+> If two chips share the same 5 bytes ID, the two chips definitely are
+> produced from the same vendor.
+> 
+> So my meaning is the case what are you mentioned will _not_ exit in the
+> real world. Spansion will not so silly.
 
--- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+You do have an awful amount of trust for those things. I am better of with 
+"better safe than sorry".
+ 
+> > > > This code should be future-proof, but if we keep adding such special
+> > > > cases, we will end up with false matches sooner or later anyway I'm
+> > > > 
+> > > > afraid.
+> > > > 
+> > > > What do you say we add the READID length field into the table ?
+> > > 
+> > > If we add the length field into the table, we have to sort the table by
+> > > some kind of order.
+> > 
+> > Why, please elaborate.
+> 
+> pleas see:
+> http://lists.infradead.org/pipermail/linux-mtd/2013-December/050670.html
+
+Sorry, but this really doesn't answer my question. It's only a matter of 
+correctly implementing the matching function to find a proper match.
+
+Can we get insight on this from the others please ?
+
+> If you are interested in this issue, please give us a patch.
+> What I want is making the kernel can support the s25fl128s as soon as
+> possible.
+
+Perfect, I'd prefer to support it as correctly as possible.
+
+Best regards,
+Marek Vasut
