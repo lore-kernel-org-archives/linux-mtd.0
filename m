@@ -1,19 +1,17 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WaW8w-00080Z-It
- for linux-mtd@lists.infradead.org; Wed, 16 Apr 2014 20:09:15 +0000
-Date: Wed, 16 Apr 2014 22:08:49 +0200
-From: Gerhard Sittig <gsi@denx.de>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH] mtd: spi-nor: fix the wrong dummy value
-Message-ID: <20140416200849.GO3528@book.gsilab.sittig.org>
-References: <1397636299-2390-1-git-send-email-b32955@freescale.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1397636299-2390-1-git-send-email-b32955@freescale.com>
-Cc: marex@denx.de, linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WaWl2-000353-9o
+ for linux-mtd@lists.infradead.org; Wed, 16 Apr 2014 20:48:36 +0000
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] UBI: weaken the 'exclusive' constraint when opening volumes
+ to rename
+Date: Wed, 16 Apr 2014 17:47:33 -0300
+Message-Id: <1397681253-5203-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: Richard Weinberger <richard@nod.at>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,60 +21,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2014-04-16 at 16:18 +0800, Huang Shijie wrote:
-> 
-> The dummy cycles is actually 8 for SPI fast/dual/quad read.
-> 
-> This patch fixes the wrong dummy value for both the spi-nor.c and m25p80.c.
-> 
-> Signed-off-by: Huang Shijie <b32955@freescale.com>
-> ---
->  drivers/mtd/devices/m25p80.c  |    3 +++
->  drivers/mtd/spi-nor/spi-nor.c |    2 +-
->  2 files changed, 4 insertions(+), 1 deletions(-)
-> 
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 1557d8f..112ca8b 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -131,6 +131,9 @@ static int m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
->  	int dummy = nor->read_dummy;
->  	int ret;
->  
-> +	/* convert the dummy cycles to the number of byte */
-> +	dummy >>= 3;
-> +
+The UBI volume rename ioctl (UBI_IOCRNVOL) open the volumes in exclusive
+mode. The volumes are opened for two reasons: to build a volume rename list,
+and a volume remove list.
 
-"dummy /= 8" to match the comment / commit message, and for
-better mental association with a byte's width and the below
-return value?
+However, the first open constraint is excessive and can be replaced by
+a 'read-write' open mode. The second open constraint is properly set as
+'exclusive' given the volume is opened for removal and we don't want any
+users around.
 
-is the number of bits guaranteed to always be a multiple of 8
-bits?  I guess it is for m25p80, but thought I'd ask (have seen
-"odd" numbers like 6 bits in quad spi implementations -- those
-are impossible to run with "traditional" SPI controllers)
+By weakening the former 'exclusive' mode, we allow 'read-only' users to keep
+the volume open, while a rename is taking place. This is useful to perform
+an atomic rename, in a firmware upgrade scenario, while keeping the volume
+in read-only use (for instance, if a ubiblock is mounted as rootfs).
 
->  	/* Wait till previous write/erase is done. */
->  	ret = nor->wait_till_ready(nor);
->  	if (ret)
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index cd4b277..b88cc7e 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -77,7 +77,7 @@ static inline int spi_nor_read_dummy_cycles(struct spi_nor *nor)
->  	case SPI_NOR_FAST:
->  	case SPI_NOR_DUAL:
->  	case SPI_NOR_QUAD:
-> -		return 1;
-> +		return 8;
->  	case SPI_NOR_NORMAL:
->  		return 0;
->  	}
+It's worth mention this is not the case of UBIFS, which keeps the volume
+opened as 'read-write' despite mounted as read-write or read-only mode.
 
+This change was suggested at least twice by Artem:
+http://lists.infradead.org/pipermail/linux-mtd/2012-September/044175.html
+http://permalink.gmane.org/gmane.linux.drivers.mtd/39866
 
-virtually yours
-Gerhard Sittig
+Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+---
+ drivers/mtd/ubi/cdev.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
+index f54562a..7646220 100644
+--- a/drivers/mtd/ubi/cdev.c
++++ b/drivers/mtd/ubi/cdev.c
+@@ -731,7 +731,7 @@ static int rename_volumes(struct ubi_device *ubi,
+ 			goto out_free;
+ 		}
+ 
+-		re->desc = ubi_open_volume(ubi->ubi_num, vol_id, UBI_EXCLUSIVE);
++		re->desc = ubi_open_volume(ubi->ubi_num, vol_id, UBI_READWRITE);
+ 		if (IS_ERR(re->desc)) {
+ 			err = PTR_ERR(re->desc);
+ 			ubi_err("cannot open volume %d, error %d", vol_id, err);
 -- 
-DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
-HRB 165235 Munich, Office: Kirchenstr. 5, D-82194 Groebenzell, Germany
-Phone: +49-8142-66989-0 Fax: +49-8142-66989-80  Email: office@denx.de
+1.9.1
