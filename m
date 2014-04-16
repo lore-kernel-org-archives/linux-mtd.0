@@ -1,23 +1,19 @@
-Received: from am1ehsobe002.messaging.microsoft.com ([213.199.154.205]
- helo=am1outboundpool.messaging.microsoft.com)
+Received: from guitar.tcltek.co.il ([192.115.133.116] helo=mx.tkos.co.il)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WaFsy-0008Ep-7v
- for linux-mtd@lists.infradead.org; Wed, 16 Apr 2014 02:47:41 +0000
-Date: Wed, 16 Apr 2014 09:52:03 +0800
-From: Huang Shijie <b32955@freescale.com>
-To: Marek Vasut <marex@denx.de>
-Subject: Re: [PATCH] mtd: spi-nor: read 6 bytes for the ID
-Message-ID: <20140416015201.GA3204@localhost>
-References: <1397470174-27856-1-git-send-email-b32955@freescale.com>
- <201404151535.05561.marex@denx.de>
- <20140415160402.GA2926@localhost.localdomain>
- <201404152048.50321.marex@denx.de>
+ id 1WaHRw-0007Hb-9G
+ for linux-mtd@lists.infradead.org; Wed, 16 Apr 2014 04:27:54 +0000
+Date: Wed, 16 Apr 2014 07:27:27 +0300
+From: Baruch Siach <baruch@tkos.co.il>
+To: Mike Frysinger <vapier@gentoo.org>
+Subject: Re: [PATCH] include/common.h: fix build against recent 0.9.33 uClibc
+Message-ID: <20140416042727.GB4849@sapphire.tkos.co.il>
+References: <f4242477d038f71b8dce112047fae342878ebcf3.1397593003.git.baruch@tkos.co.il>
+ <2055220.5Wt3obd1St@vapier>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <201404152048.50321.marex@denx.de>
-Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- Huang Shijie <shijie8@gmail.com>, dwmw2@infradead.org, angus.clark@st.com
+In-Reply-To: <2055220.5Wt3obd1St@vapier>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,85 +23,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Apr 15, 2014 at 08:48:50PM +0200, Marek Vasut wrote:
-> On Tuesday, April 15, 2014 at 06:04:05 PM, Huang Shijie wrote:
-> > On Tue, Apr 15, 2014 at 03:35:05PM +0200, Marek Vasut wrote:
-> > > On Tuesday, April 15, 2014 at 07:22:39 AM, Huang Shijie wrote:
-> > > > On Mon, Apr 14, 2014 at 08:23:47PM +0200, Marek Vasut wrote:
-> > > [...]
-> > > 
-> > > > > > > I wonder if the ID-bytes wraparound cannot cause us trouble here.
-> > > > > > > For example if we try to detect a SPI NOR which has 5-byte ID
-> > > > > > > code, but in the table, we'd also have a SPI NOR with has a
-> > > > > > > 6-byte code where the last byte of ext-jedec matches the first
-> > > > > > > byte of JEDEC ID , this would actually match on the later.
-> > > > > > 
-> > > > > > could you give me detail example?
-> > > > > > 
-> > > > > > I feel sorry that i do not quit understand your meaning.
-> > > > > 
-> > > > > Imagine two chips with two IDs:
-> > > > > Chip 1 has IDs: 0xf00b42 0x4242f0 and readID[6] returns
-> > > > > 0x420bf0f04242
-> > > > 
-> > > > It will not return 0x420bf0f04242.
-> > > > 
-> > > > The readID[6] should be: f0, 0b, 42, 42, 42, f0.
-> > > > 
-> > > > > Chip 2 has IDs: 0xf00b42   0x42f0 and readID[6] returns
-> > > > > 0x420bf0f04242
-> > > > 
-> > > > the readID[6] should be: f0, 0b, 42, 42, f0, XX.
-> > > > 
-> > > >  "XX" stands for the sixth byte.
-> > > > 
-> > > > The current patch can distinguish these two chips.
-> > > > 
-> > > > > This is because in the second chips' case the ID wraps around at 5
-> > > > > bytes. But chip #1 matches the ID, so if chip #1 is earlier in the
-> > > > > list of SPI NOR flashes, we will get an incorrect detection of that
-> > > > > chip.
-> > > > 
-> > > > I guess your meaning is that the chip 2 has IDs: 0xf00b42   0x4242
-> > > > and the sixth byte is 0xf0 which wraps the first byte.
-> > > 
-> > > Huang, what I meant is that if you read 6 bytes of ID from a chip which
-> > > wraps the READID command output on 5 bytes AND the first and last byte
-> > > match in the table for some 6-byte chip, then this 6-byte chip will be
-> > > used as a configuration for the different 5-byte chip.
+Hi Mike,
+
+On Tue, Apr 15, 2014 at 07:09:45PM -0400, Mike Frysinger wrote:
+> On Tue 15 Apr 2014 23:16:43 Baruch Siach wrote:
+> > An implementation of rpmatch() was backported to the 0.9.33 branch of
+> > uClibc. So the uClibc version check introduced in commit 50c9e11f7e
+> > (include/common.h: fix build against current uClibc) is not enough. Rename
+> > the local rpmatch() implementation to avoid collision.
 > > 
-> > Does the chip vendor so silly to produce such chips? :)
-> 
-> I don't quite understand the meaning of this sentence, but the approach where we 
-> try heuristics doesn't scale.
-
-If two chips share the same jedec_id, it means the two chips are produced from
-the same chip vendor, such as 0x012018 means the chip is from Spansion.
-
-If two chips share the same 5 bytes ID, the two chips definitely are produced
-from the same vendor.
-
-So my meaning is the case what are you mentioned will _not_ exit in the real world.
-Spansion will not so silly.
-
-> 
-> > > This code should be future-proof, but if we keep adding such special
-> > > cases, we will end up with false matches sooner or later anyway I'm
-
-> > > afraid.
-> > > 
-> > > What do you say we add the READID length field into the table ?
+> > Cc: Mike Frysinger <vapier@gentoo.org>
+> > Signed-off-by: Baruch Siach <baruch@tkos.co.il>
+> > ---
+> >  include/common.h | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
 > > 
-> > If we add the length field into the table, we have to sort the table by
-> > some kind of order.
+> > diff --git a/include/common.h b/include/common.h
+> > index 3b1366e927c4..838dc757bdf1 100644
+> > --- a/include/common.h
+> > +++ b/include/common.h
+> > @@ -107,7 +107,8 @@ extern "C" {
+> >  #if __UCLIBC_MAJOR__ == 0 && \
+> >  		(__UCLIBC_MINOR__ < 9 || \
+> >  		(__UCLIBC_MINOR__ == 9 && __UCLIBC_SUBLEVEL__ < 34))
+> > -static inline int rpmatch(const char *resp)
+> > +#define rpmatch __rpmatch
 > 
-> Why, please elaborate.
-pleas see:
-http://lists.infradead.org/pipermail/linux-mtd/2013-December/050670.html
+> probably want to:
+> 	#undef rpmatch
 
-If you are interested in this issue, please give us a patch.
-What I want is making the kernel can support the s25fl128s as soon as possible.
+Thanks for reviewing. I'll update and repost.
 
-thanks
-Huang Shijie
-   
+baruch
+
+
+-- 
+     http://baruch.siach.name/blog/                  ~. .~   Tk Open Systems
+=}------------------------------------------------ooO--U--Ooo------------{=
+   - baruch@tkos.co.il - tel: +972.2.679.5364, http://www.tkos.co.il -
