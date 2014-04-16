@@ -1,17 +1,19 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from mail-out.m-online.net ([212.18.0.10])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WaUsS-0003Ap-7L
- for linux-mtd@lists.infradead.org; Wed, 16 Apr 2014 18:48:10 +0000
-Date: Wed, 16 Apr 2014 20:47:42 +0200
+ id 1WaUvA-0001QP-Uw
+ for linux-mtd@lists.infradead.org; Wed, 16 Apr 2014 18:50:58 +0000
+Date: Wed, 16 Apr 2014 20:50:32 +0200
 From: Gerhard Sittig <gsi@denx.de>
 To: David Mosberger <davidm@egauge.net>
-Subject: Re: [PATCH v5 0/5] mtd: nand: Add on-die ECC support
-Message-ID: <20140416184742.GI3528@book.gsilab.sittig.org>
+Subject: Re: [PATCH v5 1/5] mtd: nand: Detect Micron flash with on-die ECC
+ (aka "internal ECC") enabled.
+Message-ID: <20140416185032.GJ3528@book.gsilab.sittig.org>
 References: <1397504134-32178-1-git-send-email-davidm@egauge.net>
+ <1397504134-32178-2-git-send-email-davidm@egauge.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1397504134-32178-1-git-send-email-davidm@egauge.net>
+In-Reply-To: <1397504134-32178-2-git-send-email-davidm@egauge.net>
 Cc: computersforpeace@gmail.com, linux-mtd@lists.infradead.org, pekon@ti.com,
  dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,24 +27,49 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 On Mon, 2014-04-14 at 13:35 -0600, David Mosberger wrote:
 > 
-> This series adds support for Micron on-die ECC.
-> The patches are designed to go on top of Gerhard Sittig's patches
-> to introduce a READMODE command.
+> Signed-off-by: David Mosberger <davidm@egauge.net>
+
+commit message is missing
+
+> ---
+>  drivers/mtd/nand/nand_base.c |   27 ++++++++++++++++++++++++---
+>  include/linux/mtd/nand.h     |    4 ++++
+>  2 files changed, 28 insertions(+), 3 deletions(-)
 > 
-> Changes in v5:
->  - Fixed some formatting issues.
->  - Wherever possible, new functions take only mtd argument (not also chip).
->  - Eliminated bitdiff() function.
->  - Clarified/shortened some comments.
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 50a6e07..7d1ec81 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -3058,19 +3058,40 @@ static int nand_setup_read_retry_micron(struct mtd_info *mtd, int retry_mode)
+>  			feature);
+>  }
+>  
+> +static void nand_onfi_detect_micron_on_die_ecc(struct mtd_info *mtd)
+> +{
+> +	u8 features[ONFI_SUBFEATURE_PARAM_LEN];
+> +	struct nand_chip *chip = mtd->priv;
+> +
+> +	if (chip->onfi_get_features(mtd, chip, ONFI_FEATURE_ADDR_ARRAY_OP_MODE,
+> +				    features) < 0)
+> +		return;
+> +
+> +	if (features[0] & ONFI_FEATURE_ARRAY_OP_MODE_ENABLE_ON_DIE_ECC) {
+> +		/*
+> +		 * If the chip has on-die ECC enabled, we kind of have
+> +		 * to do the same...
+> +		 */
+> +		pr_info("Using on-die ECC\n");
+> +	}
 
-nit: please supply the change log for past revisions as well if
-you resubmit, reviewers should not have to do the book keeping or
-archeology for you if they want to know whether some aspect has
-been addressed that was raised before
+the comment and the code don't match -- at this point it's mere
+detection, no action is taken nor is the detection result stored
+nor communicated
 
-some readers prefer or even demand that individual patches have
-their change log, because cover letters are optional, and most of
-all cover letters won't end up in trackers while patches do
+> +}
+> +
+>  /*
+>   * Configure chip properties from Micron vendor-specific ONFI table
+>   */
 
 
 virtually yours
