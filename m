@@ -1,20 +1,25 @@
-Received: from tps-liv-spam.topcon.com ([12.107.178.116]
- helo=smtpca.topcon.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WaeaD-0000kp-QU
- for linux-mtd@lists.infradead.org; Thu, 17 Apr 2014 05:09:58 +0000
-Received: from LIV-EXCHCAS2.TOPCON.com (liv-exchcas2.topcon.com [10.1.4.57])
- by smtpca.topcon.com with ESMTP id CC6t5c0mRlX5IPl8 for
- <linux-mtd@lists.infradead.org>; Wed, 16 Apr 2014 22:09:29 -0700 (PDT)
-From: Paul McGougan <PMcGougan@topcon.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd: tests: Fix endian issue with CRC generation algorithm
-Date: Thu, 17 Apr 2014 05:09:26 +0000
-Message-ID: <C7589FE7B0DE58488F2B9BF79840E9D90D525AF7@ADL-EXCHMBX1.TOPCON.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail-pa0-x231.google.com ([2607:f8b0:400e:c03::231])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WaeeD-0002wy-U8
+ for linux-mtd@lists.infradead.org; Thu, 17 Apr 2014 05:14:06 +0000
+Received: by mail-pa0-f49.google.com with SMTP id lj1so11614711pab.8
+ for <linux-mtd@lists.infradead.org>; Wed, 16 Apr 2014 22:13:42 -0700 (PDT)
+Date: Wed, 16 Apr 2014 22:13:38 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH] mtd: fsl-quadspi: fix __iomem annotations
+Message-ID: <20140417051338.GI5512@norris-Latitude-E6410>
+References: <1397638079-1894-1-git-send-email-computersforpeace@gmail.com>
+ <534E4528.6030700@freescale.com>
+ <20140416091512.GG5512@norris-Latitude-E6410>
+ <534E4BA7.2040901@freescale.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <534E4BA7.2040901@freescale.com>
+Cc: Marek Vasut <marex@denx.de>, Lee Jones <lee.jones@linaro.org>,
+ linux-mtd@lists.infradead.org, Linux Kernel <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,34 +29,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The calculation of the CRC in /tests/checkfs/makefiles.c was writing the CRC
-Into the produced files in host byte-order which would cause CRC validation
-to fail on big-endian systems as the validation is performed bytewise.
+On Wed, Apr 16, 2014 at 05:21:43PM +0800, Huang Shijie wrote:
+> 于 2014年04月16日 17:15, Brian Norris 写道:
+> >Pushed to l2-mtd.git/spinor.
+> I think you can rebase patches in the spinor branch to the master
+> branch now.
 
-Signed-off-by: Paul McGougan <pmcgougan AT topcon.com>
----
-tests/checkfs/makefiles.c |    1 +
- 1 file changed, 1 insertion(+)
+I merged spinor into master for now, so it will be in -next. I think
+I'll keep the separate branch, in case we need something stable for
+others to pull in.
 
-diff --git a/tests/checkfs/makefiles.c b/tests/checkfs/makefiles.c
-index 662fe86..050ea60 100644
---- a/tests/checkfs/makefiles.c
-+++ b/tests/checkfs/makefiles.c
-@@ -170,6 +170,7 @@ void checksum(char *filename){
-     printf("Error! Cannot open filename to update checksum: %s\n",filename=
-);
-     exit(1);
-   }
-+  crc =3D htole16(crc);
-   if(fwrite(&crc, sizeof(crc), 1, fp) !=3D 1){
-     printf("error! unable to update the file for checksum.\n");
-     fclose(fp);
+> After the rebase, we can add the patch for the *defconfig for the
+> linux-next.
 
+Yeah, I guess we should send patches. I'll try to do that soon.
 
-Confidentiality Notice:  This message (including attachments) is a private =
-communication solely for use of the intended recipient(s).  =0D
-If you are not the intended recipient(s) or believe you received this messa=
-ge in error, notify the sender immediately and then delete this =0D
-message.  Any other use, retention, dissemination or copying is prohibited =
-and may be a violation of law, including the Electronic =0D
-Communication Privacy Act of 1986."
+Brian
