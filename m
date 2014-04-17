@@ -1,22 +1,20 @@
-Received: from mail-pb0-f46.google.com ([209.85.160.46])
+Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wamzt-0007lD-Vm
- for linux-mtd@lists.infradead.org; Thu, 17 Apr 2014 14:09:03 +0000
-Received: by mail-pb0-f46.google.com with SMTP id rq2so416990pbb.33
- for <linux-mtd@lists.infradead.org>; Thu, 17 Apr 2014 07:08:39 -0700 (PDT)
-Received: from [172.16.1.87] ([182.73.114.58])
- by mx.google.com with ESMTPSA id y4sm53786336pbk.76.2014.04.17.07.08.37
- for <linux-mtd@lists.infradead.org>
- (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
- Thu, 17 Apr 2014 07:08:38 -0700 (PDT)
-Message-ID: <534FE062.4080202@mobiveil.com>
-Date: Thu, 17 Apr 2014 19:38:34 +0530
-From: Brajesh Sharma <s.brajesh@mobiveil.com>
+ id 1WaoVb-0007F6-T9
+ for linux-mtd@lists.infradead.org; Thu, 17 Apr 2014 15:45:52 +0000
+From: Marek Vasut <marex@denx.de>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [RFC PATCH] mtd: spi-nor: add DDR quad read support
+Date: Thu, 17 Apr 2014 16:24:36 +0200
+References: <1397641641-11430-1-git-send-email-b32955@freescale.com>
+In-Reply-To: <1397641641-11430-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Need Help in Testing FTL code using NAND simulator
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201404171624.36700.marex@denx.de>
+Cc: linux-mtd@lists.infradead.org, sourav.poddar@ti.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org, angus.clark@st.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,33 +24,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
+On Wednesday, April 16, 2014 at 11:47:21 AM, Huang Shijie wrote:
+[...]
 
-I’ve started recently working on FTL thing and now I need some kind of 
-help from all of you as I’ve seen similar kind of thread just now.
-I'm having a Huge FTL code (block + character) driver which is a linux 
-kernel module and is having a specific PCIe based hardware. But i don 
-have that H/W so I'll be porting this code for generic Flash device but 
-i'm not sure how to test the code in absence pf H/W. I'm removing the 
-character driver complications and wanna use just block driver which 
-offers management module implementations (bad block , GC, Address 
-mapping etc).
-I've come across NANDsim which i find can be really useful in my case to 
-emulate the virtual flash device in host memory (RAM) . But NANDsim is a 
-part of MTD subsystem and My code doesn't have anything to do with MTD. 
-SO i'm not sure can i use it with my code. I've seen usage of NANDsim on 
-web with mtdblock device & on top of it an NFTL or something else though 
-i'm having my own block device driver with FTL implementation in it.
+> @@ -74,6 +74,11 @@ static int read_cr(struct spi_nor *nor)
+>  static inline int spi_nor_read_dummy_cycles(struct spi_nor *nor)
+>  {
+>  	switch (nor->flash_read) {
+> +	case SPI_NOR_DDR_QUAD:
+> +		/*
+> +		 * We set 8 for the DDR Quad read, the SPI NOR controller
+> +		 * can change it to 6 or 4 with DeviceTree property.
+> +		 */
 
-e.g. NFTL/UBIFS --> mtdblock/mtdchar --> Virtual Flash (RAM) using 
-NANDsim ....
+Isn't the number of dummy cycles a property of the chip ?
+[...]
 
-But for me it'll be like (FTL+block driver) --> Character driver --> 
-Virtual Flash (NANDsim)... or do i have any other alternative ????
+> +static int set_ddr_quad_mode(struct spi_nor *nor, u32 jedec_id)
+> +{
+> +	int status;
+> +
+> +	switch (JEDEC_MFR(jedec_id)) {
+> +	default: /* Spansion */
 
-Any help would be appreciated.
+This should really _check_ the jedec ID here and only enable the quad mode for 
+spansion on spansion flashes. The default case should just return -ENOTSUP or 
+something.
+[...]
 
+> @@ -1016,8 +1038,15 @@ int spi_nor_scan(struct spi_nor *nor, const struct
+> spi_device_id *id, if (info->flags & SPI_NOR_NO_FR)
+>  		nor->flash_read = SPI_NOR_NORMAL;
+> 
+> -	/* Quad/Dual-read mode takes precedence over fast/normal */
+> -	if (mode == SPI_NOR_QUAD && info->flags & SPI_NOR_QUAD_READ) {
+> +	/* DDR Quad/Quad/Dual-read mode takes precedence over fast/normal */
+> +	if (mode == SPI_NOR_DDR_QUAD && info->flags & SPI_NOR_DDR_QUAD_READ) {
+> +		ret = set_ddr_quad_mode(nor, info->jedec_id);
+> +		if (ret) {
+> +			dev_err(dev, "DDR quad mode not supported\n");
+> +			return ret;
 
+Is it really necessary to fail here? Can we not fall back to some "lower" mode ?
+[...]
 
--- Thanks & Regards
-Brajesh Sharma
+Best regards,
+Marek Vasut
