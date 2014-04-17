@@ -1,23 +1,29 @@
-Received: from mail-ee0-x229.google.com ([2a00:1450:4013:c00::229])
+Received: from ch1ehsobe006.messaging.microsoft.com ([216.32.181.186]
+ helo=ch1outboundpool.messaging.microsoft.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Warhj-0004tp-D9
- for linux-mtd@lists.infradead.org; Thu, 17 Apr 2014 19:10:36 +0000
-Received: by mail-ee0-f41.google.com with SMTP id t10so990041eei.28
- for <linux-mtd@lists.infradead.org>; Thu, 17 Apr 2014 12:10:12 -0700 (PDT)
-Received: from leonp.plris.com ([5.29.131.36])
- by mx.google.com with ESMTPSA id bc51sm69813104eeb.22.2014.04.17.12.10.10
- for <linux-mtd@lists.infradead.org>
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Thu, 17 Apr 2014 12:10:11 -0700 (PDT)
-Sender: Leon Pollak <leon.pollak@gmail.com>
-From: Leon Pollak <leonp@plris.com>
-To: MTD Maling List <linux-mtd@lists.infradead.org>
-Subject: Problem with JFFS2 garbage collector
-Date: Thu, 17 Apr 2014 22:10:02 +0300
-Message-ID: <1752110.UB8PI1dY1s@leonp.plris.com>
+ id 1WasSk-0004Qi-Mn
+ for linux-mtd@lists.infradead.org; Thu, 17 Apr 2014 19:59:11 +0000
+From: Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>
+To: <robh+dt@kernel.org>, <pawel.moll@arm.com>, <mark.rutland@arm.com>,
+ <ijc+devicetree@hellion.org.uk>, <galak@codeaurora.org>, <rob@landley.net>,
+ <michal.simek@xilinx.com>, <grant.likely@linaro.org>,
+ <gregkh@linuxfoundation.org>, <jason@lakedaemon.net>,
+ <ezequiel.garcia@free-electrons.com>, <arnd@arndb.de>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <artem.bityutskiy@linux.intel.com>,
+ <pekon@ti.com>, <jussi.kivilinna@iki.fi>, <acourbot@nvidia.com>,
+ <ivan.khoronzhuk@ti.com>, <joern@logfs.org>
+Subject: [PATCH RFC v2 4/4] mtd: nand: Add a devicetree binding for onfi
+ timing parameters
+Date: Fri, 18 Apr 2014 01:28:40 +0530
+In-Reply-To: <1397764720-29846-1-git-send-email-punnaia@xilinx.com>
+References: <1397764720-29846-1-git-send-email-punnaia@xilinx.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain
+Message-ID: <3ce233c6-0549-41bb-a417-3f66cc707cfa@CH1EHSMHS043.ehs.local>
+Cc: devicetree@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ kalluripunnaiahchoudary@gmail.com, kpc528@gmail.com,
+ Punnaiah Choudary Kalluri <punnaia@xilinx.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,35 +33,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello to all.
+Added binding information for onfi timing parameters as per the
+onfi 1.0 specification. So, nand controllers that have support for
+configuring any of these timing parameters can use this binding
+information.
 
-About a month ago I already wrote here about the problem I have (see below).
-At that time 3-4 of list members reacted saying this is the bug and there were 
-some suggestions for testing/work-arounding it.
+Signed-off-by: Punnaiah Choudary Kalluri <punnaia@xilinx.com>
+---
+ Documentation/devicetree/bindings/mtd/nand.txt |   46 ++++++++++++++++++++++++
+ 1 files changed, 46 insertions(+), 0 deletions(-)
 
-I kindly ask people to return to this issue and I am ready to debug the 
-possible solutions/work-arounds....
--------------------------------------------
-The following scenario produces a lot of errors -5 or crashes in the following 
-case:
-After initial flash partition burn from within U-Boot, JFFS2 partition is 
-mounted RO at fstab, flashes are write protected by HW. 
-
-On the first boot I:
-- take HW flash write protect off;
-- remount as RW;
-- make a small update to a small file;
-- sync;
-- remount as RO;
-- HW write protect ON.
-
-At this moment I receive a lot of error -5 messages and sometimes even crash 
-dumps.
-This problem repeats at each sequential boot 5-8 times with each time less 
-number of -5 errors till it finally is gone.
-
-I will be very thankful to you for any tip what can be done.
-
-Many thanks ahead and best regards
+diff --git a/Documentation/devicetree/bindings/mtd/nand.txt b/Documentation/devicetree/bindings/mtd/nand.txt
+index b53f92e..4901091 100644
+--- a/Documentation/devicetree/bindings/mtd/nand.txt
++++ b/Documentation/devicetree/bindings/mtd/nand.txt
+@@ -19,3 +19,49 @@ errors per {size} bytes".
+ The interpretation of these parameters is implementation-defined, so not all
+ implementations must support all possible combinations. However, implementations
+ are encouraged to further specify the value(s) they support.
++
++Timing parameters:
++  Based on onfi specification 1.0, following are defined parameters.Each
++controller should add supported parameters to IP node.
++All the timing parameters are in nano second time units.
++
++- nand-tADL-ns   : ALE to data loading time
++- nand-tALH-ns   : ALE hold time
++- nand-tALS-ns   : ALE setup time
++- nand-tAR-ns    : ALE to RE# delay
++- nand-tBERS-ns  : Block erase time
++- nand-tCEA-ns   : CE# access time
++- nand-tCCS-ns   : Change column setup time
++- nand-tCH-ns    : CE# hold time
++- nand-tCHZ-ns   : CE# high to output hi-Z
++- nand-tCLH-ns   : CLE hold time
++- nand-tCLR-ns   : CLE to RE# delay
++- nand-tCLS-ns   : CLE setup time
++- nand-tCOH-ns   : CE# high to output hold
++- nand-tCS-ns    : CE# setup time
++- nand-tDH-ns    : Data hold time
++- nand-tDS-ns    : Data setup time
++- nand-tFEAT-ns  : Busy time for Set Features and Get Features
++- nand-tIEBSY-ns : Busy time for interleaved erase operation
++- nand-tIPBSY-ns : Busy time for interleaved program operation
++- nand-tIR-ns    : Output hi-Z to RE# low
++- nand-tPCBSY-ns : Program cache busy time
++- nand-tPROG-ns  : Page program time
++- nand-tR-ns     : Page read time
++- nand-tRC-ns    : RE# cycle time
++- nand-tRCBSY-ns : Read cache busy time
++- nand-tREA-ns   : RE# access time
++- nand-tREH-ns   : RE# high hold time
++- nand-tRHOH-ns  : RE# high to output hold
++- nand-tRHW-ns   : RE# high to WE# low
++- nand-tRHZ-ns   : RE# high to output hi-z
++- nand-tRLOH-ns  : RE# low to output hold
++- nand-tRP-ns    : RE# pulse width
++- nand-tRR-ns    : Ready to RE# low
++- nand-tRST-ns   : Device reset time
++- nand-tWB-ns    : WE# high to R/B# low
++- nand-tWC-ns    : WE# cycle time
++- nand-tWH-ns    : WE# high hold time
++- nand-tWHR-ns   : WE# high to RE# low
++- nand-tWP-ns    : WE# pulse width
++- nand-tWW-ns    : WP# transition to WE# low
 -- 
-Leon
+1.7.4
