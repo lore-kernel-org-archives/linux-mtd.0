@@ -1,22 +1,22 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
+Received: from mail-pa0-f44.google.com ([209.85.220.44])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WaZSA-0000A7-Rd
- for linux-mtd@lists.infradead.org; Wed, 16 Apr 2014 23:41:20 +0000
-From: Marek Vasut <marex@denx.de>
-To: Huang Shijie <shijie8@gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: read 6 bytes for the ID
-Date: Thu, 17 Apr 2014 01:23:31 +0200
-References: <1397470174-27856-1-git-send-email-b32955@freescale.com>
- <201404161218.28828.marex@denx.de>
- <20140416135640.GA1869@localhost.localdomain>
-In-Reply-To: <20140416135640.GA1869@localhost.localdomain>
+ id 1WaeSV-0006z2-SO
+ for linux-mtd@lists.infradead.org; Thu, 17 Apr 2014 05:02:00 +0000
+Received: by mail-pa0-f44.google.com with SMTP id bj1so11760497pad.31
+ for <linux-mtd@lists.infradead.org>; Wed, 16 Apr 2014 22:01:34 -0700 (PDT)
+Date: Wed, 16 Apr 2014 22:01:31 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 1/2] mtd: st_spi_fsm: correct type issues
+Message-ID: <20140417050131.GH5512@norris-Latitude-E6410>
+References: <1397637782-26843-1-git-send-email-computersforpeace@gmail.com>
+ <20140416104611.GP4754@lee--X1>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201404170123.31700.marex@denx.de>
-Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, dwmw2@infradead.org, angus.clark@st.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20140416104611.GP4754@lee--X1>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,65 +26,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday, April 16, 2014 at 03:56:43 PM, Huang Shijie wrote:
-> On Wed, Apr 16, 2014 at 12:18:28PM +0200, Marek Vasut wrote:
-> > On Wednesday, April 16, 2014 at 03:52:03 AM, Huang Shijie wrote:
+On Wed, Apr 16, 2014 at 11:46:11AM +0100, Lee Jones wrote:
+> > Compile-testing for a 64-bit arch uncovers several bad casts:
 > > 
-> > [...]
+> >     In file included from include/linux/linkage.h:4:0,
+> >                      from include/linux/kernel.h:6,
+> >                      from drivers/mtd/devices/st_spi_fsm.c:15:
+> >     drivers/mtd/devices/st_spi_fsm.c: In function ‘stfsm_read_fifo’:
+> >     drivers/mtd/devices/st_spi_fsm.c:758:11: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+> >       BUG_ON((((uint32_t)buf) & 0x3) || (size & 0x3));
+> >     ...
 > > 
-> > > > > Does the chip vendor so silly to produce such chips? :)
-> > > > 
-> > > > I don't quite understand the meaning of this sentence, but the
-> > > > approach where we try heuristics doesn't scale.
-> > > 
-> > > If two chips share the same jedec_id, it means the two chips are
-> > > produced from the same chip vendor, such as 0x012018 means the chip is
-> > > from Spansion.
-> > > 
-> > > If two chips share the same 5 bytes ID, the two chips definitely are
-> > > produced from the same vendor.
-> > > 
-> > > So my meaning is the case what are you mentioned will _not_ exit in the
-> > > real world. Spansion will not so silly.
+> > Use uintptr_t instead of uint32_t, since it's guaranteed to be
+> > pointer-sized.
 > > 
-> > You do have an awful amount of trust for those things. I am better of
-> > with "better safe than sorry".
+> > We also see this warning, if size_t is not 32 bits wide:
+> > 
+> >     In file included from drivers/mtd/devices/st_spi_fsm.c:15:0:
+> >     drivers/mtd/devices/st_spi_fsm.c: In function ‘stfsm_mtd_write’:
+> >     include/linux/kernel.h:712:17: warning: comparison of distinct pointer types lacks a cast [enabled by default]
+> >       (void) (&_min1 == &_min2);  \
+> >                      ^
+> >     drivers/mtd/devices/st_spi_fsm.c:1704:11: note: in expansion of macro ‘min’
+> >        bytes = min(FLASH_PAGESIZE - page_offs, len);
+> >                ^
+> > 
+> > Just use min_t() to force the type conversion, since we don't really
+> > want to upgrade 'page_offs' and 'bytes' to size_t; they only should be
+> > handling <= 256 byte offsets.
+> > 
+> > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> > Cc: Lee Jones <lee.jones@linaro.org>
+> > ---
+> >  drivers/mtd/devices/st_spi_fsm.c | 12 ++++++------
+> >  1 file changed, 6 insertions(+), 6 deletions(-)
 > 
-> okay.
+> Thanks for fixing Brian. Fixes look good.
 > 
-> > > > > > This code should be future-proof, but if we keep adding such
-> > > > > > special cases, we will end up with false matches sooner or later
-> > > > > > anyway I'm
-> > > > > > 
-> > > > > > afraid.
-> > > > > > 
-> > > > > > What do you say we add the READID length field into the table ?
-> > > > > 
-> > > > > If we add the length field into the table, we have to sort the
-> > > > > table by some kind of order.
-> > > > 
-> > > > Why, please elaborate.
-> > > 
-> > > pleas see:
-> > > http://lists.infradead.org/pipermail/linux-mtd/2013-December/050670.htm
-> > > l
-> > 
-> > Sorry, but this really doesn't answer my question. It's only a matter of
-> > correctly implementing the matching function to find a proper match.
-> > 
-> > Can we get insight on this from the others please ?
-> > 
-> > > If you are interested in this issue, please give us a patch.
-> > > What I want is making the kernel can support the s25fl128s as soon as
-> > > possible.
-> > 
-> > Perfect, I'd prefer to support it as correctly as possible.
-> 
-> wait for your patch.
+> Acked-by: Lee Jones <lee.jones@linaro.org>
 
-Please keep the discussion professional and avoid threats.
+Pushed both to l2-mtd.git/spinor.
 
-Thank you
-
-Best regards,
-Marek Vasut
+Brian
