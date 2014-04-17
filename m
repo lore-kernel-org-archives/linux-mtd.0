@@ -1,22 +1,20 @@
-Received: from mail-pa0-f44.google.com ([209.85.220.44])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WaeSV-0006z2-SO
- for linux-mtd@lists.infradead.org; Thu, 17 Apr 2014 05:02:00 +0000
-Received: by mail-pa0-f44.google.com with SMTP id bj1so11760497pad.31
- for <linux-mtd@lists.infradead.org>; Wed, 16 Apr 2014 22:01:34 -0700 (PDT)
-Date: Wed, 16 Apr 2014 22:01:31 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 1/2] mtd: st_spi_fsm: correct type issues
-Message-ID: <20140417050131.GH5512@norris-Latitude-E6410>
-References: <1397637782-26843-1-git-send-email-computersforpeace@gmail.com>
- <20140416104611.GP4754@lee--X1>
+Received: from tps-liv-spam.topcon.com ([12.107.178.116]
+ helo=smtpca.topcon.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WaeaD-0000kp-QU
+ for linux-mtd@lists.infradead.org; Thu, 17 Apr 2014 05:09:58 +0000
+Received: from LIV-EXCHCAS2.TOPCON.com (liv-exchcas2.topcon.com [10.1.4.57])
+ by smtpca.topcon.com with ESMTP id CC6t5c0mRlX5IPl8 for
+ <linux-mtd@lists.infradead.org>; Wed, 16 Apr 2014 22:09:29 -0700 (PDT)
+From: Paul McGougan <PMcGougan@topcon.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: tests: Fix endian issue with CRC generation algorithm
+Date: Thu, 17 Apr 2014 05:09:26 +0000
+Message-ID: <C7589FE7B0DE58488F2B9BF79840E9D90D525AF7@ADL-EXCHMBX1.TOPCON.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20140416104611.GP4754@lee--X1>
-Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,45 +24,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Apr 16, 2014 at 11:46:11AM +0100, Lee Jones wrote:
-> > Compile-testing for a 64-bit arch uncovers several bad casts:
-> > 
-> >     In file included from include/linux/linkage.h:4:0,
-> >                      from include/linux/kernel.h:6,
-> >                      from drivers/mtd/devices/st_spi_fsm.c:15:
-> >     drivers/mtd/devices/st_spi_fsm.c: In function ‘stfsm_read_fifo’:
-> >     drivers/mtd/devices/st_spi_fsm.c:758:11: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-> >       BUG_ON((((uint32_t)buf) & 0x3) || (size & 0x3));
-> >     ...
-> > 
-> > Use uintptr_t instead of uint32_t, since it's guaranteed to be
-> > pointer-sized.
-> > 
-> > We also see this warning, if size_t is not 32 bits wide:
-> > 
-> >     In file included from drivers/mtd/devices/st_spi_fsm.c:15:0:
-> >     drivers/mtd/devices/st_spi_fsm.c: In function ‘stfsm_mtd_write’:
-> >     include/linux/kernel.h:712:17: warning: comparison of distinct pointer types lacks a cast [enabled by default]
-> >       (void) (&_min1 == &_min2);  \
-> >                      ^
-> >     drivers/mtd/devices/st_spi_fsm.c:1704:11: note: in expansion of macro ‘min’
-> >        bytes = min(FLASH_PAGESIZE - page_offs, len);
-> >                ^
-> > 
-> > Just use min_t() to force the type conversion, since we don't really
-> > want to upgrade 'page_offs' and 'bytes' to size_t; they only should be
-> > handling <= 256 byte offsets.
-> > 
-> > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> > Cc: Lee Jones <lee.jones@linaro.org>
-> > ---
-> >  drivers/mtd/devices/st_spi_fsm.c | 12 ++++++------
-> >  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> Thanks for fixing Brian. Fixes look good.
-> 
-> Acked-by: Lee Jones <lee.jones@linaro.org>
+The calculation of the CRC in /tests/checkfs/makefiles.c was writing the CRC
+Into the produced files in host byte-order which would cause CRC validation
+to fail on big-endian systems as the validation is performed bytewise.
 
-Pushed both to l2-mtd.git/spinor.
+Signed-off-by: Paul McGougan <pmcgougan AT topcon.com>
+---
+tests/checkfs/makefiles.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-Brian
+diff --git a/tests/checkfs/makefiles.c b/tests/checkfs/makefiles.c
+index 662fe86..050ea60 100644
+--- a/tests/checkfs/makefiles.c
++++ b/tests/checkfs/makefiles.c
+@@ -170,6 +170,7 @@ void checksum(char *filename){
+     printf("Error! Cannot open filename to update checksum: %s\n",filename=
+);
+     exit(1);
+   }
++  crc =3D htole16(crc);
+   if(fwrite(&crc, sizeof(crc), 1, fp) !=3D 1){
+     printf("error! unable to update the file for checksum.\n");
+     fclose(fp);
+
+
+Confidentiality Notice:  This message (including attachments) is a private =
+communication solely for use of the intended recipient(s).  =0D
+If you are not the intended recipient(s) or believe you received this messa=
+ge in error, notify the sender immediately and then delete this =0D
+message.  Any other use, retention, dissemination or copying is prohibited =
+and may be a violation of law, including the Electronic =0D
+Communication Privacy Act of 1986."
