@@ -1,7 +1,7 @@
-Received: from ch1ehsobe006.messaging.microsoft.com ([216.32.181.186]
+Received: from ch1ehsobe001.messaging.microsoft.com ([216.32.181.181]
  helo=ch1outboundpool.messaging.microsoft.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WasSk-0004Qi-Mn
+ id 1WasSk-0004R1-Mo
  for linux-mtd@lists.infradead.org; Thu, 17 Apr 2014 19:59:11 +0000
 From: Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>
 To: <robh+dt@kernel.org>, <pawel.moll@arm.com>, <mark.rutland@arm.com>,
@@ -12,14 +12,11 @@ To: <robh+dt@kernel.org>, <pawel.moll@arm.com>, <mark.rutland@arm.com>,
  <computersforpeace@gmail.com>, <artem.bityutskiy@linux.intel.com>,
  <pekon@ti.com>, <jussi.kivilinna@iki.fi>, <acourbot@nvidia.com>,
  <ivan.khoronzhuk@ti.com>, <joern@logfs.org>
-Subject: [PATCH RFC v2 4/4] mtd: nand: Add a devicetree binding for onfi
- timing parameters
-Date: Fri, 18 Apr 2014 01:28:40 +0530
-In-Reply-To: <1397764720-29846-1-git-send-email-punnaia@xilinx.com>
-References: <1397764720-29846-1-git-send-email-punnaia@xilinx.com>
+Subject: [PATCH RFC v2 0/4] Add arm pl353 smc driver for xilinx zynq soc
+Date: Fri, 18 Apr 2014 01:28:36 +0530
 MIME-Version: 1.0
 Content-Type: text/plain
-Message-ID: <3ce233c6-0549-41bb-a417-3f66cc707cfa@CH1EHSMHS043.ehs.local>
+Message-ID: <55244391-e8e8-44ea-86e4-cb4d4af28208@CH1EHSMHS016.ehs.local>
 Cc: devicetree@vger.kernel.org, linux-doc@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  kalluripunnaiahchoudary@gmail.com, kpc528@gmail.com,
@@ -33,69 +30,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Added binding information for onfi timing parameters as per the
-onfi 1.0 specification. So, nand controllers that have support for
-configuring any of these timing parameters can use this binding
-information.
+The following patches add arm pl353 static memory controller driver for
+xilinx zynq soc. The arm pl353 smc supports two interfaces i.e nand and
+nor/sram memory interfaces. The current implementation supports only a
+single SMC instance and nand specific configuration.
 
-Signed-off-by: Punnaiah Choudary Kalluri <punnaia@xilinx.com>
----
- Documentation/devicetree/bindings/mtd/nand.txt |   46 ++++++++++++++++++++++++
- 1 files changed, 46 insertions(+), 0 deletions(-)
+xilinx zynq TRM link:
+http://www.xilinx.com/support/documentation/user_guides/ug585-Zynq-7000-TRM.pdf
 
-diff --git a/Documentation/devicetree/bindings/mtd/nand.txt b/Documentation/devicetree/bindings/mtd/nand.txt
-index b53f92e..4901091 100644
---- a/Documentation/devicetree/bindings/mtd/nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/nand.txt
-@@ -19,3 +19,49 @@ errors per {size} bytes".
- The interpretation of these parameters is implementation-defined, so not all
- implementations must support all possible combinations. However, implementations
- are encouraged to further specify the value(s) they support.
-+
-+Timing parameters:
-+  Based on onfi specification 1.0, following are defined parameters.Each
-+controller should add supported parameters to IP node.
-+All the timing parameters are in nano second time units.
-+
-+- nand-tADL-ns   : ALE to data loading time
-+- nand-tALH-ns   : ALE hold time
-+- nand-tALS-ns   : ALE setup time
-+- nand-tAR-ns    : ALE to RE# delay
-+- nand-tBERS-ns  : Block erase time
-+- nand-tCEA-ns   : CE# access time
-+- nand-tCCS-ns   : Change column setup time
-+- nand-tCH-ns    : CE# hold time
-+- nand-tCHZ-ns   : CE# high to output hi-Z
-+- nand-tCLH-ns   : CLE hold time
-+- nand-tCLR-ns   : CLE to RE# delay
-+- nand-tCLS-ns   : CLE setup time
-+- nand-tCOH-ns   : CE# high to output hold
-+- nand-tCS-ns    : CE# setup time
-+- nand-tDH-ns    : Data hold time
-+- nand-tDS-ns    : Data setup time
-+- nand-tFEAT-ns  : Busy time for Set Features and Get Features
-+- nand-tIEBSY-ns : Busy time for interleaved erase operation
-+- nand-tIPBSY-ns : Busy time for interleaved program operation
-+- nand-tIR-ns    : Output hi-Z to RE# low
-+- nand-tPCBSY-ns : Program cache busy time
-+- nand-tPROG-ns  : Page program time
-+- nand-tR-ns     : Page read time
-+- nand-tRC-ns    : RE# cycle time
-+- nand-tRCBSY-ns : Read cache busy time
-+- nand-tREA-ns   : RE# access time
-+- nand-tREH-ns   : RE# high hold time
-+- nand-tRHOH-ns  : RE# high to output hold
-+- nand-tRHW-ns   : RE# high to WE# low
-+- nand-tRHZ-ns   : RE# high to output hi-z
-+- nand-tRLOH-ns  : RE# low to output hold
-+- nand-tRP-ns    : RE# pulse width
-+- nand-tRR-ns    : Ready to RE# low
-+- nand-tRST-ns   : Device reset time
-+- nand-tWB-ns    : WE# high to R/B# low
-+- nand-tWC-ns    : WE# cycle time
-+- nand-tWH-ns    : WE# high hold time
-+- nand-tWHR-ns   : WE# high to RE# low
-+- nand-tWP-ns    : WE# pulse width
-+- nand-tWW-ns    : WP# transition to WE# low
+ARM pl353 smc TRM link:
+http://infocenter.arm.com/help/topic/com.arm.doc.ddi0380g/
+DDI0380G_smc_pl350_series_r2p1_trm.pdf
+
+Punnaiah Choudary Kalluri (4):
+  Devicetree: Add pl353 smc controller devicetree binding information
+  memory: pl353: Add driver for arm pl353 static memory controller
+  nand: pl353: Add driver for arm pl353 smc nand interface
+  mtd: nand: Add a devicetree binding for onfi timing parameters
+
+ .../bindings/memory-controllers/pl353-smc.txt      |   53 +
+ Documentation/devicetree/bindings/mtd/nand.txt     |   46 +
+ drivers/memory/Kconfig                             |    6 +
+ drivers/memory/Makefile                            |    1 +
+ drivers/memory/pl353-smc.c                         |  569 ++++++++++
+ drivers/mtd/nand/Kconfig                           |    8 +
+ drivers/mtd/nand/Makefile                          |    1 +
+ drivers/mtd/nand/pl353_nand.c                      | 1112 ++++++++++++++++++++
+ include/linux/memory/pl353-smc.h                   |   34 +
+ 9 files changed, 1830 insertions(+), 0 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt
+ create mode 100644 drivers/memory/pl353-smc.c
+ create mode 100644 drivers/mtd/nand/pl353_nand.c
+ create mode 100644 include/linux/memory/pl353-smc.h
+
 -- 
 1.7.4
