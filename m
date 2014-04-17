@@ -1,23 +1,22 @@
-Date: Thu, 17 Apr 2014 12:53:03 +0200
-From: Thierry Reding <thierry.reding@gmail.com>
+From: Marek Vasut <marex@denx.de>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 0/5] defconfigs: add MTD_SPI_NOR (dependency for M25P80)
-Message-ID: <20140417105302.GA32603@ulmo>
+Subject: Re: [PATCH 1/5] ARM: defconfigs: add MTD_SPI_NOR (new dependency for
+ M25P80)
+Date: Thu, 17 Apr 2014 13:08:34 +0200
 References: <1397719309-2022-1-git-send-email-computersforpeace@gmail.com>
+ <1397719309-2022-2-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1397719309-2022-2-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="azLHFNyN32YCQGCU"
-Content-Disposition: inline
-In-Reply-To: <1397719309-2022-1-git-send-email-computersforpeace@gmail.com>
-Cc: Marek Vasut <marex@denx.de>, linux-mips@linux-mips.org,
- Russell King <linux@arm.linux.org.uk>, Stephen Warren <swarren@wwwdotorg.org>,
- linux-sh@vger.kernel.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>,
- Steven Miao <realmz6@gmail.com>, Linux Kernel <linux-kernel@vger.kernel.org>,
- Ralf Baechle <ralf@linux-mips.org>, adi-buildroot-devel@lists.sourceforge.net,
- linux-tegra@vger.kernel.org, linux-mtd@lists.infradead.org,
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201404171308.34570.marex@denx.de>
+Cc: Russell King <linux@arm.linux.org.uk>,
+ Stephen Warren <swarren@wwwdotorg.org>,
+ Linux Kernel <linux-kernel@vger.kernel.org>,
+ Thierry Reding <thierry.reding@gmail.com>, linux-mtd@lists.infradead.org,
  linux-arm-kernel@lists.infradead.org, Sascha Hauer <kernel@pengutronix.de>,
- Olof Johansson <olof@lixom.net>, Paul Mackerras <paulus@samba.org>,
- linuxppc-dev@lists.ozlabs.org, Shawn Guo <shawn.guo@freescale.com>
+ Olof Johansson <olof@lixom.net>, Shawn Guo <shawn.guo@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,50 +26,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thursday, April 17, 2014 at 09:21:45 AM, Brian Norris wrote:
+> These defconfigs contain the CONFIG_M25P80 symbol, which is now
+> dependent on the MTD_SPI_NOR symbol. Add CONFIG_MTD_SPI_NOR to the
+> relevant defconfigs.
+> 
+> At the same time, drop the now-nonexistent CONFIG_MTD_CHAR symbol.
+> 
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Cc: Russell King <linux@arm.linux.org.uk>
+> Cc: Shawn Guo <shawn.guo@freescale.com>
+> Cc: Sascha Hauer <kernel@pengutronix.de>
+> Cc: Stephen Warren <swarren@wwwdotorg.org>
+> Cc: Thierry Reding <thierry.reding@gmail.com>
+> Cc: Olof Johansson <olof@lixom.net>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
 
---azLHFNyN32YCQGCU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+mxs_defconfig is
+Reviewed-by: Marek Vasut <marex@denx.de>
 
-On Thu, Apr 17, 2014 at 12:21:44AM -0700, Brian Norris wrote:
-> Hi all,
->=20
-> We are introducing a new SPI-NOR library/framework for MTD, to support va=
-rious
-> types of SPI-NOR flash controllers which require (or benefit from) intima=
-te
-> knowledge of the flash interface, rather than just the relatively dumb SPI
-> interface. This library borrows much of the m25p80 driver for its abstrac=
-tion
-> and moves this code into a spi-nor module.
-
-If this is a common library, then the more common approach to solve this
-would be to have each driver that uses it to select MTD_SPI_NOR rather
-than depend on it. That way you can drop this whole series to update the
-default configurations.
-
-Thierry
-
---azLHFNyN32YCQGCU
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTT7KNAAoJEN0jrNd/PrOhzhQP/3ocjlUpPSUcBT7myTaYn8dC
-zbZ0Zp5MO34d42OXHqfYC0q6LiCYp4I6xQDn8usqKBxpHd1dBAirD0z7Ofp3nAo5
-JwH+vr8zDZNTZcQd5W/LRI90fa/9qVNytVFNSEbmeNUop74+yhnQb//rq3YCskEZ
-v8rHJpH7uaJUPeVTsvrbmtW/9ZW5+ofFWj2JffogOyC4NY/oOldXl4gsOcP+PuF7
-gFdIn+D+hyEa2ZLjdeYD9lIvmLHczXhda0KPDZO31gDQyHvgMt+goUUgtWlqfHv+
-8cuKJjhHeMhMYtdZByrYRRVuhlafZlLJ2PqmunFCgsd/1P9Ww+k+nZJASw8jFqbd
-nGxDcgXG/4vfiFj0HMZoR/cWh845wYrWXdzaZdmY0bjiHEsz1ip+OVNq5ACq+d+L
-9posY8HH1btDrrcJEsce4DTHTJsAYdeX0oik8DK+gHi5no7sd8Twd2ZjJaZxtwXk
-pH+RZqVa3Wrj68vCXuyTZSFZb/QC/ZttUgW5YhfVcQJcsOC02+LRKOIbu0Em8hMq
-3sdsgTImKHFAEdWm4oNOHlOPN4nk/tMRo3nrCUV4Pb+yaCelIBlKo/9JLK0JfDQJ
-/qPtjG0OAPJYmHmwPcSB57kA/MZlF6RnNI1V8CHWOCQm94NwGirKBropQ/9yLxs7
-lrnTat974tXvX/gLJ7Do
-=Xz6I
------END PGP SIGNATURE-----
-
---azLHFNyN32YCQGCU--
+Best regards,
+Marek Vasut
