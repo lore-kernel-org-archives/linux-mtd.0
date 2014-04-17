@@ -1,20 +1,22 @@
 Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WaoVb-0007F6-T9
+ id 1WaoVb-0007Ew-T8
  for linux-mtd@lists.infradead.org; Thu, 17 Apr 2014 15:45:52 +0000
 From: Marek Vasut <marex@denx.de>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [RFC PATCH] mtd: spi-nor: add DDR quad read support
-Date: Thu, 17 Apr 2014 16:24:36 +0200
-References: <1397641641-11430-1-git-send-email-b32955@freescale.com>
-In-Reply-To: <1397641641-11430-1-git-send-email-b32955@freescale.com>
+To: Huang Shijie <shijie8@gmail.com>
+Subject: Re: [PATCH] mtd: spi-nor: fix the wrong dummy value
+Date: Thu, 17 Apr 2014 16:15:24 +0200
+References: <1397636299-2390-1-git-send-email-b32955@freescale.com>
+ <201404171332.52954.marex@denx.de>
+ <20140417125918.GA3248@localhost.localdomain>
+In-Reply-To: <20140417125918.GA3248@localhost.localdomain>
 MIME-Version: 1.0
 Content-Type: Text/Plain;
   charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Message-Id: <201404171624.36700.marex@denx.de>
-Cc: linux-mtd@lists.infradead.org, sourav.poddar@ti.com,
- computersforpeace@gmail.com, dwmw2@infradead.org, angus.clark@st.com
+Message-Id: <201404171615.24744.marex@denx.de>
+Cc: Huang Shijie <b32955@freescale.com>, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,49 +26,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday, April 16, 2014 at 11:47:21 AM, Huang Shijie wrote:
-[...]
-
-> @@ -74,6 +74,11 @@ static int read_cr(struct spi_nor *nor)
->  static inline int spi_nor_read_dummy_cycles(struct spi_nor *nor)
->  {
->  	switch (nor->flash_read) {
-> +	case SPI_NOR_DDR_QUAD:
-> +		/*
-> +		 * We set 8 for the DDR Quad read, the SPI NOR controller
-> +		 * can change it to 6 or 4 with DeviceTree property.
-> +		 */
-
-Isn't the number of dummy cycles a property of the chip ?
-[...]
-
-> +static int set_ddr_quad_mode(struct spi_nor *nor, u32 jedec_id)
-> +{
-> +	int status;
-> +
-> +	switch (JEDEC_MFR(jedec_id)) {
-> +	default: /* Spansion */
-
-This should really _check_ the jedec ID here and only enable the quad mode for 
-spansion on spansion flashes. The default case should just return -ENOTSUP or 
-something.
-[...]
-
-> @@ -1016,8 +1038,15 @@ int spi_nor_scan(struct spi_nor *nor, const struct
-> spi_device_id *id, if (info->flags & SPI_NOR_NO_FR)
->  		nor->flash_read = SPI_NOR_NORMAL;
+On Thursday, April 17, 2014 at 02:59:21 PM, Huang Shijie wrote:
+> On Thu, Apr 17, 2014 at 01:32:52PM +0200, Marek Vasut wrote:
+> > On Thursday, April 17, 2014 at 07:01:25 AM, Huang Shijie wrote:
+> > > On Thu, Apr 17, 2014 at 01:40:29AM +0200, Marek Vasut wrote:
+> > > > On Wednesday, April 16, 2014 at 10:18:19 AM, Huang Shijie wrote:
+> > > > > The dummy cycles is actually 8 for SPI fast/dual/quad read.
+> > > > > 
+> > > > > This patch fixes the wrong dummy value for both the spi-nor.c and
+> > > > > m25p80.c.
+> > > > > 
+> > > > > Signed-off-by: Huang Shijie <b32955@freescale.com>
+> > > > 
+> > > > Inspecting this patch, I see the code will behave identically
+> > > > with/without this patch. It is thus unclear to me from the commit
+> > > > message, why this change is necessary.
+> > > 
+> > > firstly, in theory, the dummy cycles should be 8, not 1.
+> > > secondly, the DDR QUAD READ may use 4 dummy cycles.
+> > 
+> > Right, it took me a bit of reading into the thread until I understood the
+> > intention of the patch. If in doubt, try reading the commit message a day
+> > later and you'll see that it might be insufficient. Basically, try
+> > looking at the commit message from the receiving party's side ;-)
 > 
-> -	/* Quad/Dual-read mode takes precedence over fast/normal */
-> -	if (mode == SPI_NOR_QUAD && info->flags & SPI_NOR_QUAD_READ) {
-> +	/* DDR Quad/Quad/Dual-read mode takes precedence over fast/normal */
-> +	if (mode == SPI_NOR_DDR_QUAD && info->flags & SPI_NOR_DDR_QUAD_READ) {
-> +		ret = set_ddr_quad_mode(nor, info->jedec_id);
-> +		if (ret) {
-> +			dev_err(dev, "DDR quad mode not supported\n");
-> +			return ret;
+> my fault.
+> 
+> I will update the commit message in the next version.
 
-Is it really necessary to fail here? Can we not fall back to some "lower" mode ?
-[...]
+Thanks!
 
 Best regards,
 Marek Vasut
