@@ -1,23 +1,25 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
+Received: from mail-la0-x22b.google.com ([2a00:1450:4010:c03::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Waqnn-0006gq-8m
- for linux-mtd@lists.infradead.org; Thu, 17 Apr 2014 18:12:48 +0000
-From: Marek Vasut <marex@denx.de>
-To: Huang Shijie <shijie8@gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: fix the wrong dummy value
-Date: Thu, 17 Apr 2014 20:12:22 +0200
-References: <1397636299-2390-1-git-send-email-b32955@freescale.com>
- <20140417155507.GT3528@book.gsilab.sittig.org>
- <20140417155758.GA14819@localhost.localdomain>
-In-Reply-To: <20140417155758.GA14819@localhost.localdomain>
+ id 1WarGJ-00066O-2c
+ for linux-mtd@lists.infradead.org; Thu, 17 Apr 2014 18:42:15 +0000
+Received: by mail-la0-f43.google.com with SMTP id e16so706715lan.30
+ for <linux-mtd@lists.infradead.org>; Thu, 17 Apr 2014 11:41:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201404172012.22979.marex@denx.de>
-Cc: Huang Shijie <b32955@freescale.com>, Gerhard Sittig <gsi@denx.de>,
- computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
- dwmw2@infradead.org
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <201404171624.36700.marex@denx.de>
+References: <1397641641-11430-1-git-send-email-b32955@freescale.com>
+ <201404171624.36700.marex@denx.de>
+Date: Thu, 17 Apr 2014 20:41:50 +0200
+Message-ID: <CAMuHMdVY_n88uR7zOAZTo_V7Sg5zzaUFQjdaTSZeVj6Jbh0Txw@mail.gmail.com>
+Subject: Re: [RFC PATCH] mtd: spi-nor: add DDR quad read support
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Marek Vasut <marex@denx.de>
+Content-Type: text/plain; charset=UTF-8
+Cc: angus.clark@st.com, Huang Shijie <b32955@freescale.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Sourav Poddar <sourav.poddar@ti.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,80 +29,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday, April 17, 2014 at 05:57:59 PM, Huang Shijie wrote:
-> On Thu, Apr 17, 2014 at 05:55:07PM +0200, Gerhard Sittig wrote:
-> > On Thu, 2014-04-17 at 21:41 +0800, Huang Shijie wrote:
-> > > The disassemble code for "int dummy = 8; dummy /= 8;" is:
-> > > --------------------------------------------------
-> > > 
-> > >     83a6:	2308      	movs	r3, #8
-> > >     83a8:	607b      	str	r3, [r7, #4]
-> > >     83aa:	687b      	ldr	r3, [r7, #4]
-> > >     83ac:	1dda      	adds	r2, r3, #7
-> > >     83ae:	2b00      	cmp	r3, #0
-> > >     83b0:	bfb4      	ite	lt
-> > >     83b2:	4613      	movlt	r3, r2
-> > >     83b4:	461b      	movge	r3, r3
-> > >     83b6:	10db      	asrs	r3, r3, #3
-> > >     83b8:	607b      	str	r3, [r7, #4]
-> > > 
-> > > --------------------------------------------------
-> > > 
-> > > The disassemble code for "int dummy = 8; dummy >>= 3;" is:
-> > > --------------------------------------------------
-> > > 
-> > >     83a6:	2308      	movs	r3, #8
-> > >     83a8:	607b      	str	r3, [r7, #4]
-> > >     83aa:	687b      	ldr	r3, [r7, #4]
-> > >     83ac:	10db      	asrs	r3, r3, #3
-> > >     83ae:	607b      	str	r3, [r7, #4]
-> > > 
-> > > --------------------------------------------------
-> > > 
-> > > Obviously, the "dummy >>= 3" is faster then "dummy /= 8".
-> > 
-> > That is because of signedness.  Both forms of "/= 8" and ">>= 3"
-> > should be identical to the compiler, and generate the same
-> > output.  Compilers know that division by powers of two can be
-> > done with a shift.
-> > 
-> > Signedness apparently makes a difference.  If you know that the
-> > number of clocks always is non-negative, use appropriate data
-> > types.  Or let the compiler carry out the correct instructions
-> > for the very data type that was declared.  Pick one, don't
-> > violate abstractions.
-> > 
-> > Counter example, matching the expectation:
-> > 	unsigned int u_div(unsigned int v) {
-> > 	
-> > 		return v / 8;
-> > 	
-> > 	}
-> > 	
-> > 	unsigned int u_shift(unsigned int v) {
-> > 	
-> > 		return v >> 3;
-> > 	
-> > 	}
-> > 	
-> > 	0000001c <u_div>:
-> > 	  1c:   e1a001a0        lsr     r0, r0, #3
-> > 	  20:   e12fff1e        bx      lr
-> > 	
-> > 	00000024 <u_shift>:
-> > 	  24:   e1a001a0        lsr     r0, r0, #3
-> > 	  28:   e12fff1e        bx      lr
-> > 
-> > Anyway, source code should be written for humans, as it gets read
-> > more often than written, and maintenance is hard enough already.
-> > Try to come up with a text search pattern to catch both the 3 and
-> > 8 values at the same time.  Or try to easily see how they are the
-> > same when there is no comment.  Is the code path so hot that
-> > single instructions count so badly, that the downsides should be
-> > considered acceptable?
-> 
-> okay.
-> 
-> I will change to "dummy /= 8" in the next version.
+On Thu, Apr 17, 2014 at 4:24 PM, Marek Vasut <marex@denx.de> wrote:
+>> @@ -1016,8 +1038,15 @@ int spi_nor_scan(struct spi_nor *nor, const struct
+>> spi_device_id *id, if (info->flags & SPI_NOR_NO_FR)
+>>               nor->flash_read = SPI_NOR_NORMAL;
+>>
+>> -     /* Quad/Dual-read mode takes precedence over fast/normal */
+>> -     if (mode == SPI_NOR_QUAD && info->flags & SPI_NOR_QUAD_READ) {
+>> +     /* DDR Quad/Quad/Dual-read mode takes precedence over fast/normal */
+>> +     if (mode == SPI_NOR_DDR_QUAD && info->flags & SPI_NOR_DDR_QUAD_READ) {
+>> +             ret = set_ddr_quad_mode(nor, info->jedec_id);
+>> +             if (ret) {
+>> +                     dev_err(dev, "DDR quad mode not supported\n");
+>> +                     return ret;
+>
+> Is it really necessary to fail here? Can we not fall back to some "lower" mode ?
 
-My impression is that you also need to change the signedness of the data type.
+IIRC, the original m25p80 also fails, FWIW...
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
