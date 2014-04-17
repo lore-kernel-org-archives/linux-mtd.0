@@ -1,20 +1,23 @@
-Received: from smtp.mei.co.jp ([133.183.100.20])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WajTZ-0002RA-Jf
- for linux-mtd@lists.infradead.org; Thu, 17 Apr 2014 10:23:26 +0000
-Received: from mail-gw.jp.panasonic.com ([157.8.1.157])
- by smtp.mei.co.jp (8.12.11.20060614/3.7W/kc-maile11) with ESMTP id
- s3HAN33i010990
- for <linux-mtd@lists.infradead.org>; Thu, 17 Apr 2014 19:23:03 +0900 (JST)
-Received: from epochmail.jp.panasonic.com ([157.8.1.130])
- by mail.jp.panasonic.com (8.11.6p2/3.7W/kc-maili16) with ESMTP id s3HAN4M08972
- for <linux-mtd@lists.infradead.org>; Thu, 17 Apr 2014 19:23:04 +0900
-From: Masahiro Yamada <yamada.m@jp.panasonic.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: denali: fix write_oob_data() function
-Date: Thu, 17 Apr 2014 19:22:54 +0900
-Message-Id: <1397730174-4763-1-git-send-email-yamada.m@jp.panasonic.com>
-Cc: Masahiro Yamada <yamada.m@jp.panasonic.com>
+Date: Thu, 17 Apr 2014 12:53:03 +0200
+From: Thierry Reding <thierry.reding@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 0/5] defconfigs: add MTD_SPI_NOR (dependency for M25P80)
+Message-ID: <20140417105302.GA32603@ulmo>
+References: <1397719309-2022-1-git-send-email-computersforpeace@gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="azLHFNyN32YCQGCU"
+Content-Disposition: inline
+In-Reply-To: <1397719309-2022-1-git-send-email-computersforpeace@gmail.com>
+Cc: Marek Vasut <marex@denx.de>, linux-mips@linux-mips.org,
+ Russell King <linux@arm.linux.org.uk>, Stephen Warren <swarren@wwwdotorg.org>,
+ linux-sh@vger.kernel.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+ Steven Miao <realmz6@gmail.com>, Linux Kernel <linux-kernel@vger.kernel.org>,
+ Ralf Baechle <ralf@linux-mips.org>, adi-buildroot-devel@lists.sourceforge.net,
+ linux-tegra@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, Sascha Hauer <kernel@pengutronix.de>,
+ Olof Johansson <olof@lixom.net>, Paul Mackerras <paulus@samba.org>,
+ linuxppc-dev@lists.ozlabs.org, Shawn Guo <shawn.guo@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,29 +27,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Since write_oob_data is calling denali_send_pipeline_cmd()
-with access_type=SPARE_ACCESS, this might has no impact.
 
-But calling it with tranfser_spare=false looks weird because
-write_oob_data() is the function for transferring the spare area.
+--azLHFNyN32YCQGCU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Masahiro Yamada <yamada.m@jp.panasonic.com>
----
- drivers/mtd/nand/denali.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Thu, Apr 17, 2014 at 12:21:44AM -0700, Brian Norris wrote:
+> Hi all,
+>=20
+> We are introducing a new SPI-NOR library/framework for MTD, to support va=
+rious
+> types of SPI-NOR flash controllers which require (or benefit from) intima=
+te
+> knowledge of the flash interface, rather than just the relatively dumb SPI
+> interface. This library borrows much of the m25p80 driver for its abstrac=
+tion
+> and moves this code into a spi-nor module.
 
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index c07cd57..a55b9d4 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -841,7 +841,7 @@ static int write_oob_data(struct mtd_info *mtd, uint8_t *buf, int page)
- 
- 	denali->page = page;
- 
--	if (denali_send_pipeline_cmd(denali, false, false, SPARE_ACCESS,
-+	if (denali_send_pipeline_cmd(denali, false, true, SPARE_ACCESS,
- 							DENALI_WRITE) == PASS) {
- 		write_data_to_flash_mem(denali, buf, mtd->oobsize);
- 
--- 
-1.8.3.2
+If this is a common library, then the more common approach to solve this
+would be to have each driver that uses it to select MTD_SPI_NOR rather
+than depend on it. That way you can drop this whole series to update the
+default configurations.
+
+Thierry
+
+--azLHFNyN32YCQGCU
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTT7KNAAoJEN0jrNd/PrOhzhQP/3ocjlUpPSUcBT7myTaYn8dC
+zbZ0Zp5MO34d42OXHqfYC0q6LiCYp4I6xQDn8usqKBxpHd1dBAirD0z7Ofp3nAo5
+JwH+vr8zDZNTZcQd5W/LRI90fa/9qVNytVFNSEbmeNUop74+yhnQb//rq3YCskEZ
+v8rHJpH7uaJUPeVTsvrbmtW/9ZW5+ofFWj2JffogOyC4NY/oOldXl4gsOcP+PuF7
+gFdIn+D+hyEa2ZLjdeYD9lIvmLHczXhda0KPDZO31gDQyHvgMt+goUUgtWlqfHv+
+8cuKJjhHeMhMYtdZByrYRRVuhlafZlLJ2PqmunFCgsd/1P9Ww+k+nZJASw8jFqbd
+nGxDcgXG/4vfiFj0HMZoR/cWh845wYrWXdzaZdmY0bjiHEsz1ip+OVNq5ACq+d+L
+9posY8HH1btDrrcJEsce4DTHTJsAYdeX0oik8DK+gHi5no7sd8Twd2ZjJaZxtwXk
+pH+RZqVa3Wrj68vCXuyTZSFZb/QC/ZttUgW5YhfVcQJcsOC02+LRKOIbu0Em8hMq
+3sdsgTImKHFAEdWm4oNOHlOPN4nk/tMRo3nrCUV4Pb+yaCelIBlKo/9JLK0JfDQJ
+/qPtjG0OAPJYmHmwPcSB57kA/MZlF6RnNI1V8CHWOCQm94NwGirKBropQ/9yLxs7
+lrnTat974tXvX/gLJ7Do
+=Xz6I
+-----END PGP SIGNATURE-----
+
+--azLHFNyN32YCQGCU--
