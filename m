@@ -1,21 +1,20 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
+Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WaoVb-0007Et-Sy
- for linux-mtd@lists.infradead.org; Thu, 17 Apr 2014 15:45:52 +0000
-From: Marek Vasut <marex@denx.de>
+ id 1Waoex-0006I6-1n
+ for linux-mtd@lists.infradead.org; Thu, 17 Apr 2014 15:55:31 +0000
+Date: Thu, 17 Apr 2014 17:55:07 +0200
+From: Gerhard Sittig <gsi@denx.de>
 To: Huang Shijie <shijie8@gmail.com>
 Subject: Re: [PATCH] mtd: spi-nor: fix the wrong dummy value
-Date: Thu, 17 Apr 2014 16:15:12 +0200
+Message-ID: <20140417155507.GT3528@book.gsilab.sittig.org>
 References: <1397636299-2390-1-git-send-email-b32955@freescale.com>
  <20140416200849.GO3528@book.gsilab.sittig.org>
  <20140417134127.GA3980@localhost.localdomain>
-In-Reply-To: <20140417134127.GA3980@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201404171615.12880.marex@denx.de>
-Cc: Huang Shijie <b32955@freescale.com>, Gerhard Sittig <gsi@denx.de>,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20140417134127.GA3980@localhost.localdomain>
+Cc: marex@denx.de, Huang Shijie <b32955@freescale.com>,
  computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
  dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,38 +26,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday, April 17, 2014 at 03:41:29 PM, Huang Shijie wrote:
-> On Wed, Apr 16, 2014 at 10:08:49PM +0200, Gerhard Sittig wrote:
-> > On Wed, 2014-04-16 at 16:18 +0800, Huang Shijie wrote:
-> > > The dummy cycles is actually 8 for SPI fast/dual/quad read.
-> > > 
-> > > This patch fixes the wrong dummy value for both the spi-nor.c and
-> > > m25p80.c.
-> > > 
-> > > Signed-off-by: Huang Shijie <b32955@freescale.com>
-> > > ---
-> > > 
-> > >  drivers/mtd/devices/m25p80.c  |    3 +++
-> > >  drivers/mtd/spi-nor/spi-nor.c |    2 +-
-> > >  2 files changed, 4 insertions(+), 1 deletions(-)
-> > > 
-> > > diff --git a/drivers/mtd/devices/m25p80.c
-> > > b/drivers/mtd/devices/m25p80.c index 1557d8f..112ca8b 100644
-> > > --- a/drivers/mtd/devices/m25p80.c
-> > > +++ b/drivers/mtd/devices/m25p80.c
-> > > @@ -131,6 +131,9 @@ static int m25p80_read(struct spi_nor *nor, loff_t
-> > > from, size_t len,
-> > > 
-> > >  	int dummy = nor->read_dummy;
-> > >  	int ret;
-> > > 
-> > > +	/* convert the dummy cycles to the number of byte */
-> > > +	dummy >>= 3;
-> > > +
-> > 
-> > "dummy /= 8" to match the comment / commit message, and for
-> > better mental association with a byte's width and the below
-> > return value?
+On Thu, 2014-04-17 at 21:41 +0800, Huang Shijie wrote:
 > 
 > The disassemble code for "int dummy = 8; dummy /= 8;" is:
 > --------------------------------------------------
@@ -85,7 +53,48 @@ On Thursday, April 17, 2014 at 03:41:29 PM, Huang Shijie wrote:
 > 
 > Obviously, the "dummy >>= 3" is faster then "dummy /= 8".
 
-Which GCC compiler is that please ? I'm surprised GCC doesn't optimize it.
+That is because of signedness.  Both forms of "/= 8" and ">>= 3"
+should be identical to the compiler, and generate the same
+output.  Compilers know that division by powers of two can be
+done with a shift.
 
-Best regards,
-Marek Vasut
+Signedness apparently makes a difference.  If you know that the
+number of clocks always is non-negative, use appropriate data
+types.  Or let the compiler carry out the correct instructions
+for the very data type that was declared.  Pick one, don't
+violate abstractions.
+
+Counter example, matching the expectation:
+
+	unsigned int u_div(unsigned int v) {
+		return v / 8;
+	}
+
+	unsigned int u_shift(unsigned int v) {
+		return v >> 3;
+	}
+
+	0000001c <u_div>:
+	  1c:   e1a001a0        lsr     r0, r0, #3
+	  20:   e12fff1e        bx      lr
+
+	00000024 <u_shift>:
+	  24:   e1a001a0        lsr     r0, r0, #3
+	  28:   e12fff1e        bx      lr
+
+
+Anyway, source code should be written for humans, as it gets read
+more often than written, and maintenance is hard enough already.
+Try to come up with a text search pattern to catch both the 3 and
+8 values at the same time.  Or try to easily see how they are the
+same when there is no comment.  Is the code path so hot that
+single instructions count so badly, that the downsides should be
+considered acceptable?
+
+
+virtually yours
+Gerhard Sittig
+-- 
+DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
+HRB 165235 Munich, Office: Kirchenstr. 5, D-82194 Groebenzell, Germany
+Phone: +49-8142-66989-0 Fax: +49-8142-66989-80  Email: office@denx.de
