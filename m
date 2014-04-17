@@ -1,23 +1,23 @@
-Received: from mail-pd0-x22f.google.com ([2607:f8b0:400e:c02::22f])
+Received: from mail-out.m-online.net ([212.18.0.10])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WaouV-0001NE-Gw
- for linux-mtd@lists.infradead.org; Thu, 17 Apr 2014 16:11:35 +0000
-Received: by mail-pd0-f175.google.com with SMTP id x10so514490pdj.6
- for <linux-mtd@lists.infradead.org>; Thu, 17 Apr 2014 09:10:54 -0700 (PDT)
-Date: Fri, 18 Apr 2014 00:05:17 +0800
-From: Huang Shijie <shijie8@gmail.com>
-To: Marek Vasut <marex@denx.de>
-Subject: Re: [RFC PATCH] mtd: spi-nor: add DDR quad read support
-Message-ID: <20140417160515.GB14819@localhost.localdomain>
-References: <1397641641-11430-1-git-send-email-b32955@freescale.com>
- <201404171624.36700.marex@denx.de>
+ id 1Waqnn-0006gq-8m
+ for linux-mtd@lists.infradead.org; Thu, 17 Apr 2014 18:12:48 +0000
+From: Marek Vasut <marex@denx.de>
+To: Huang Shijie <shijie8@gmail.com>
+Subject: Re: [PATCH] mtd: spi-nor: fix the wrong dummy value
+Date: Thu, 17 Apr 2014 20:12:22 +0200
+References: <1397636299-2390-1-git-send-email-b32955@freescale.com>
+ <20140417155507.GT3528@book.gsilab.sittig.org>
+ <20140417155758.GA14819@localhost.localdomain>
+In-Reply-To: <20140417155758.GA14819@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <201404171624.36700.marex@denx.de>
-Cc: angus.clark@st.com, Huang Shijie <b32955@freescale.com>,
- linux-mtd@lists.infradead.org, sourav.poddar@ti.com,
- computersforpeace@gmail.com, dwmw2@infradead.org
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201404172012.22979.marex@denx.de>
+Cc: Huang Shijie <b32955@freescale.com>, Gerhard Sittig <gsi@denx.de>,
+ computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
+ dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,61 +27,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Apr 17, 2014 at 04:24:36PM +0200, Marek Vasut wrote:
-> On Wednesday, April 16, 2014 at 11:47:21 AM, Huang Shijie wrote:
-> [...]
-> 
-> > @@ -74,6 +74,11 @@ static int read_cr(struct spi_nor *nor)
-> >  static inline int spi_nor_read_dummy_cycles(struct spi_nor *nor)
-> >  {
-> >  	switch (nor->flash_read) {
-> > +	case SPI_NOR_DDR_QUAD:
-> > +		/*
-> > +		 * We set 8 for the DDR Quad read, the SPI NOR controller
-> > +		 * can change it to 6 or 4 with DeviceTree property.
-> > +		 */
-> 
-> Isn't the number of dummy cycles a property of the chip ?
-I want to add DT node, such as "ddr_quad_read_dummy".
-But I do not know which Document file to put the DT node to. 
-
-the spi-bus.txt ? or the spi-nor.txt? 
-
-
-> [...]
-> 
-> > +static int set_ddr_quad_mode(struct spi_nor *nor, u32 jedec_id)
-> > +{
-> > +	int status;
-> > +
-> > +	switch (JEDEC_MFR(jedec_id)) {
-> > +	default: /* Spansion */
-> 
-> This should really _check_ the jedec ID here and only enable the quad mode for 
-> spansion on spansion flashes. The default case should just return -ENOTSUP or 
-> something.
-> [...]
-ok. change it in next version.
-
-
-> 
-> > @@ -1016,8 +1038,15 @@ int spi_nor_scan(struct spi_nor *nor, const struct
-> > spi_device_id *id, if (info->flags & SPI_NOR_NO_FR)
-> >  		nor->flash_read = SPI_NOR_NORMAL;
+On Thursday, April 17, 2014 at 05:57:59 PM, Huang Shijie wrote:
+> On Thu, Apr 17, 2014 at 05:55:07PM +0200, Gerhard Sittig wrote:
+> > On Thu, 2014-04-17 at 21:41 +0800, Huang Shijie wrote:
+> > > The disassemble code for "int dummy = 8; dummy /= 8;" is:
+> > > --------------------------------------------------
+> > > 
+> > >     83a6:	2308      	movs	r3, #8
+> > >     83a8:	607b      	str	r3, [r7, #4]
+> > >     83aa:	687b      	ldr	r3, [r7, #4]
+> > >     83ac:	1dda      	adds	r2, r3, #7
+> > >     83ae:	2b00      	cmp	r3, #0
+> > >     83b0:	bfb4      	ite	lt
+> > >     83b2:	4613      	movlt	r3, r2
+> > >     83b4:	461b      	movge	r3, r3
+> > >     83b6:	10db      	asrs	r3, r3, #3
+> > >     83b8:	607b      	str	r3, [r7, #4]
+> > > 
+> > > --------------------------------------------------
+> > > 
+> > > The disassemble code for "int dummy = 8; dummy >>= 3;" is:
+> > > --------------------------------------------------
+> > > 
+> > >     83a6:	2308      	movs	r3, #8
+> > >     83a8:	607b      	str	r3, [r7, #4]
+> > >     83aa:	687b      	ldr	r3, [r7, #4]
+> > >     83ac:	10db      	asrs	r3, r3, #3
+> > >     83ae:	607b      	str	r3, [r7, #4]
+> > > 
+> > > --------------------------------------------------
+> > > 
+> > > Obviously, the "dummy >>= 3" is faster then "dummy /= 8".
 > > 
-> > -	/* Quad/Dual-read mode takes precedence over fast/normal */
-> > -	if (mode == SPI_NOR_QUAD && info->flags & SPI_NOR_QUAD_READ) {
-> > +	/* DDR Quad/Quad/Dual-read mode takes precedence over fast/normal */
-> > +	if (mode == SPI_NOR_DDR_QUAD && info->flags & SPI_NOR_DDR_QUAD_READ) {
-> > +		ret = set_ddr_quad_mode(nor, info->jedec_id);
-> > +		if (ret) {
-> > +			dev_err(dev, "DDR quad mode not supported\n");
-> > +			return ret;
+> > That is because of signedness.  Both forms of "/= 8" and ">>= 3"
+> > should be identical to the compiler, and generate the same
+> > output.  Compilers know that division by powers of two can be
+> > done with a shift.
+> > 
+> > Signedness apparently makes a difference.  If you know that the
+> > number of clocks always is non-negative, use appropriate data
+> > types.  Or let the compiler carry out the correct instructions
+> > for the very data type that was declared.  Pick one, don't
+> > violate abstractions.
+> > 
+> > Counter example, matching the expectation:
+> > 	unsigned int u_div(unsigned int v) {
+> > 	
+> > 		return v / 8;
+> > 	
+> > 	}
+> > 	
+> > 	unsigned int u_shift(unsigned int v) {
+> > 	
+> > 		return v >> 3;
+> > 	
+> > 	}
+> > 	
+> > 	0000001c <u_div>:
+> > 	  1c:   e1a001a0        lsr     r0, r0, #3
+> > 	  20:   e12fff1e        bx      lr
+> > 	
+> > 	00000024 <u_shift>:
+> > 	  24:   e1a001a0        lsr     r0, r0, #3
+> > 	  28:   e12fff1e        bx      lr
+> > 
+> > Anyway, source code should be written for humans, as it gets read
+> > more often than written, and maintenance is hard enough already.
+> > Try to come up with a text search pattern to catch both the 3 and
+> > 8 values at the same time.  Or try to easily see how they are the
+> > same when there is no comment.  Is the code path so hot that
+> > single instructions count so badly, that the downsides should be
+> > considered acceptable?
 > 
-> Is it really necessary to fail here? Can we not fall back to some "lower" mode ?
-I perfer to fail here.
-If we fail to enable the quad read, we also do not fall back to fast
-read mode.
+> okay.
+> 
+> I will change to "dummy /= 8" in the next version.
 
-thanks
-Huang Shijie
+My impression is that you also need to change the signedness of the data type.
