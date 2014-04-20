@@ -1,25 +1,22 @@
-Received: from mail-ve0-x22b.google.com ([2607:f8b0:400c:c01::22b])
+Received: from smtp.codeaurora.org ([198.145.11.231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WbJTh-00021i-Bn
- for linux-mtd@lists.infradead.org; Sat, 19 Apr 2014 00:49:57 +0000
-Received: by mail-ve0-f171.google.com with SMTP id jy13so4012173veb.16
- for <linux-mtd@lists.infradead.org>; Fri, 18 Apr 2014 17:49:33 -0700 (PDT)
+ id 1WbqIg-0005zz-8u
+ for linux-mtd@lists.infradead.org; Sun, 20 Apr 2014 11:52:46 +0000
+Received: from [192.168.0.103] (93-173-56-17.bb.netvision.net.il
+ [93.173.56.17])
+ (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+ (No client certificate requested)
+ (Authenticated sender: tlinder@smtp.codeaurora.org)
+ by smtp.codeaurora.org (Postfix) with ESMTPSA id 8F50913F362
+ for <linux-mtd@lists.infradead.org>; Sun, 20 Apr 2014 11:52:24 +0000 (UTC)
+Message-ID: <5353B4F5.6040603@codeaurora.org>
+Date: Sun, 20 Apr 2014 14:52:21 +0300
+From: Tanya Brokhman <tlinder@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <CAGVrzcZLUgpZZKAHjPSWaBs6w1XoegLaoWUAaMYUD9zW9yzq0w@mail.gmail.com>
-References: <1397719309-2022-1-git-send-email-computersforpeace@gmail.com>
- <1397719309-2022-4-git-send-email-computersforpeace@gmail.com>
- <CAGVrzcZLUgpZZKAHjPSWaBs6w1XoegLaoWUAaMYUD9zW9yzq0w@mail.gmail.com>
-Date: Fri, 18 Apr 2014 17:49:33 -0700
-Message-ID: <CAN8TOE90nh1v_84FSvF8MrN=eR-dOcXAYiOLeqRqXd3JCjfAzw@mail.gmail.com>
-Subject: Re: [PATCH 3/5] mips: defconfigs: add MTD_SPI_NOR (new dependency for
- M25P80)
-From: Brian Norris <computersforpeace@gmail.com>
-To: Florian Fainelli <f.fainelli@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: Marek Vasut <marex@denx.de>, Linux-MIPS <linux-mips@linux-mips.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Linux Kernel <linux-kernel@vger.kernel.org>,
- Ralf Baechle <ralf@linux-mips.org>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: nandsim configuration question
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,23 +26,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Apr 18, 2014 at 5:24 PM, Florian Fainelli <f.fainelli@gmail.com> wrote:
-> 2014-04-17 0:21 GMT-07:00 Brian Norris <computersforpeace@gmail.com>:
->> These defconfigs contain the CONFIG_M25P80 symbol, which is now
->> dependent on the MTD_SPI_NOR symbol. Add CONFIG_MTD_SPI_NOR to the
->> relevant defconfigs.
->
-> so CONFIG_M25P80 should select CONFIG_MTD_SPI_NOR, right? in that
-> case, I do not think this is needed at all, as it would be
-> automatically picked up during the build and if someone refreshes the
-> defconfigs, although it cannot hurt.
+Hi
 
-Can you reply to the cover letter? 3 people have made the same
-comment, and I had a rebuttal that I'm not sure if anyone considered
-yet.
+I'm trying to use the nandsim but unfortunately encountered some 
+difficulties in configuring it. I need to simulate mtd device with the 
+following parameters:
 
-(And it wouldn't be picked up by 'savedefconfig', since it saves a
-minimal .config; when one symbol 'select's another, the latter is not
-needed in the defconfig)
+Eraseblock size:                131072 bytes, 128.0 KiB
+Minimum input/output unit size: 2048 bytes
+Sub-page size:                  2048 bytes
+OOB size:                       64 bytes
+Bad blocks are allowed:         true
+Device is writable:             true
+Default UBI VID header offset:  2048
+Default UBI data offset:        4096
+Default UBI LEB size:           126976 bytes, 124.0 KiB
+Maximum UBI volumes count:      128
 
-Brian
+I can't figure out how to set sub-page size to 2048. Or basically - how 
+to disable sub-page support?
+
+I found only usage examples so I'm using the following command:
+modprobe nandsim first_id_byte=0x20 second_id_byte=0xaa 
+third_id_byte=0x00 fourth_id_byte=0x15 overridesize=12 
+cache_file=cashe_file.txt
+
+the mtd device created is:
+Name:                           NAND simulator partition 0
+Type:                           nand
+Eraseblock size:                131072 bytes, 128.0 KiB
+Amount of eraseblocks:          4096 (536870912 bytes, 512.0 MiB)
+Minimum input/output unit size: 2048 bytes
+Sub-page size:                  512 bytes
+OOB size:                       64 bytes
+Bad blocks are allowed:         true
+Device is writable:             true
+Default UBI VID header offset:  512
+Default UBI data offset:        2048
+Default UBI LEB size:           129024 bytes, 126.0 KiB
+Maximum UBI volumes count:      128
+
+How do I set sub-page size to 2048?
+
+Thanks!
+Tanya Brokhman
+-- 
+QUALCOMM ISRAEL, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
