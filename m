@@ -1,20 +1,15 @@
 Received: from smtp.codeaurora.org ([198.145.11.231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WbqIg-0005zz-8u
- for linux-mtd@lists.infradead.org; Sun, 20 Apr 2014 11:52:46 +0000
-Received: from [192.168.0.103] (93-173-56-17.bb.netvision.net.il
- [93.173.56.17])
- (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
- (No client certificate requested)
- (Authenticated sender: tlinder@smtp.codeaurora.org)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id 8F50913F362
- for <linux-mtd@lists.infradead.org>; Sun, 20 Apr 2014 11:52:24 +0000 (UTC)
-Message-ID: <5353B4F5.6040603@codeaurora.org>
-Date: Sun, 20 Apr 2014 14:52:21 +0300
+ id 1WbweL-0006FD-GU
+ for linux-mtd@lists.infradead.org; Sun, 20 Apr 2014 18:39:34 +0000
+Message-ID: <53541449.9080308@codeaurora.org>
+Date: Sun, 20 Apr 2014 21:39:05 +0300
 From: Tanya Brokhman <tlinder@codeaurora.org>
 MIME-Version: 1.0
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: nandsim configuration question
+To: Artem Bityutskiy <dedekind1@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Dolev Raviv <draviv@codeaurora.org>
+Subject: UBIFS CRC error, calculated from ubifs_check_node
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,47 +21,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi
+Hi All
 
-I'm trying to use the nandsim but unfortunately encountered some 
-difficulties in configuring it. I need to simulate mtd device with the 
-following parameters:
+I'm hitting "UBIFS error (pid 1026): ubifs_check_node: bad CRC: 
+calculated 0x79dbca01, read 0x31afb5d7" and as a result the partition is 
+remounted as RO.
 
-Eraseblock size:                131072 bytes, 128.0 KiB
-Minimum input/output unit size: 2048 bytes
-Sub-page size:                  2048 bytes
-OOB size:                       64 bytes
-Bad blocks are allowed:         true
-Device is writable:             true
-Default UBI VID header offset:  2048
-Default UBI data offset:        4096
-Default UBI LEB size:           126976 bytes, 124.0 KiB
-Maximum UBI volumes count:      128
+I'm using 3.10 based kernel.
+The test scenario to reproduce this is:
+1. fill the partition tested using dd
+2. try to write some more data
 
-I can't figure out how to set sub-page size to 2048. Or basically - how 
-to disable sub-page support?
+There are no errors in the log from the ubi layer or from the underlying 
+nand driver, both also testing crc.
 
-I found only usage examples so I'm using the following command:
-modprobe nandsim first_id_byte=0x20 second_id_byte=0xaa 
-third_id_byte=0x00 fourth_id_byte=0x15 overridesize=12 
-cache_file=cashe_file.txt
+I've tried disabling compression, mounting the partition as sync and 
+issuing the write command with sync param. None of the former has any 
+effect on this crash.
+I tried disabling crc on data nodes. This lowered the possibility of 
+hitting the above error but eventually, with stress test of concurrent 
+read and write we hit the same error with a different node type.
 
-the mtd device created is:
-Name:                           NAND simulator partition 0
-Type:                           nand
-Eraseblock size:                131072 bytes, 128.0 KiB
-Amount of eraseblocks:          4096 (536870912 bytes, 512.0 MiB)
-Minimum input/output unit size: 2048 bytes
-Sub-page size:                  512 bytes
-OOB size:                       64 bytes
-Bad blocks are allowed:         true
-Device is writable:             true
-Default UBI VID header offset:  512
-Default UBI data offset:        2048
-Default UBI LEB size:           129024 bytes, 126.0 KiB
-Maximum UBI volumes count:      128
+Has any one encountered similar behavior? I'm not that much familiar 
+with ubifs so any help will be highly apritiated!
 
-How do I set sub-page size to 2048?
+Bellow is the snippet of the call stack in question and the command I 
+used to hit it:
+dd if=/dev/zero of=/firmware/file2 bs=1M count=5000
+[ 187.472289] UBIFS error (pid 1026): ubifs_check_node: bad CRC: 
+calculated 0x79dbca01, read 0x31afb5d7
+[ 187.480925] UBIFS error (pid 1026): ubifs_check_node: bad node at LEB 
+263:94456
+[ 187.488385] magic 0x6101831
+[ 187.491483] crc 0x31afb5d7
+[ 187.495198] node_type 1 (data node)
+[ 187.499147] group_type 0 (no node group)
+[ 187.503522] sqnum 10721
+[ 187.506791] len 4013
+[ 187.510002] key (102, data, 2102)
+[ 187.514369] size 4096
+[ 187.517552] compr_typ 1
+[ 187.520508] data size 3965
+[ 187.523740] data:
+...
+188.849392] CPU: 0 PID: 1026 Comm: dd Tainted: G W 3.10.28+ #1
+[ 188.855598] [sched_delayed] sched: RT throttling activated
+[ 188.861091] [<c0014674>] (unwind_backtrace+0x0/0x11c) from 
+[<c0011a34>] (show_stack+0x10/0x14)
+[ 188.869687] [<c0011a34>] (show_stack+0x10/0x14) from [<c0163e40>] 
+(ubifs_check_node+0x280/0x2b8)
+[ 188.878447] [<c0163e40>] (ubifs_check_node+0x280/0x2b8) from 
+[<c016ba6c>] (ubifs_scan_a_node+0x190/0x304)
+[ 188.888002] [<c016ba6c>] (ubifs_scan_a_node+0x190/0x304) from 
+[<c016c038>] (ubifs_scan+0xa0/0x348)
+[ 188.896939] [<c016c038>] (ubifs_scan+0xa0/0x348) from [<c0170bb0>] 
+(ubifs_garbage_collect_leb+0x1e0/0x76c)
+[ 188.906569] [<c0170bb0>] (ubifs_garbage_collect_leb+0x1e0/0x76c) from 
+[<c01713c8>] (ubifs_garbage_collect+0x28c/0x5fc)
+[ 188.917248] [<c01713c8>] (ubifs_garbage_collect+0x28c/0x5fc) from 
+[<c0173b0c>] (ubifs_budget_space+0x64c/0x898)
+[ 188.927320] [<c0173b0c>] (ubifs_budget_space+0x64c/0x898) from 
+[<c015a320>] (ubifs_write_begin+0x3b0/0x524)
+[ 188.937047] [<c015a320>] (ubifs_write_begin+0x3b0/0x524) from 
+[<c009a2d8>] (generic_file_buffered_write+0xd8/0x250)
+[ 188.947461] [<c009a2d8>] (generic_file_buffered_write+0xd8/0x250) from 
+[<c009b614>] (__generic_file_aio_write+0x364/0x3b0)
+[ 188.958486] [<c009b614>] (__generic_file_aio_write+0x364/0x3b0) from 
+[<c009b6b4>] (generic_file_aio_write+0x54/0xb0)
+[ 188.968982] [<c009b6b4>] (generic_file_aio_write+0x54/0xb0) from 
+[<c01597f8>] (ubifs_aio_write+0x16c/0x180)
+[ 188.978708] [<c01597f8>] (ubifs_aio_write+0x16c/0x180) from 
+[<c00d47d4>] (do_sync_write+0x74/0x98)
+[ 188.987648] [<c00d47d4>] (do_sync_write+0x74/0x98) from [<c00d5138>] 
+(vfs_write+0xd4/0x16c)
+[ 188.995979] [<c00d5138>] (vfs_write+0xd4/0x16c) from [<c00d5478>] 
+(SyS_write+0x3c/0x60)
+[ 189.005059] [<c00d5478>] (SyS_write+0x3c/0x60) from [<c000e440>] 
+(ret_fast_syscall+0x0/0x30)
+[ 189.012651] UBIFS error (pid 1026): ubifs_scan: bad node
+[ 189.018546] UBIFS error (pid 1026): ubifs_scanned_corruption: 
+corruption at LEB 263:94456
+[ 189.026124] UBIFS error (pid 1026): ubifs_scanned_corruption: first 
+8192 bytes from LEB 263:94456
+[ 189.039633] UBIFS error (pid 1026): ubifs_scan: LEB 263 scanning failed
+[ 189.045313] UBIFS warning (pid 1026): ubifs_ro_mode: switched to 
+read-only mode, error -117
+[ 189.053634] CPU: 0 PID: 1026 Comm: dd Tainted: G W 3.10.28+ #1
+
 
 Thanks!
 Tanya Brokhman
