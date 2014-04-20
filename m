@@ -1,9 +1,9 @@
 Received: from smtp.codeaurora.org ([198.145.11.231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WbweL-0006FD-GU
- for linux-mtd@lists.infradead.org; Sun, 20 Apr 2014 18:39:34 +0000
-Message-ID: <53541449.9080308@codeaurora.org>
-Date: Sun, 20 Apr 2014 21:39:05 +0300
+ id 1WbweZ-0006QA-Pl
+ for linux-mtd@lists.infradead.org; Sun, 20 Apr 2014 18:39:48 +0000
+Message-ID: <53541460.30500@codeaurora.org>
+Date: Sun, 20 Apr 2014 21:39:28 +0300
 From: Tanya Brokhman <tlinder@codeaurora.org>
 MIME-Version: 1.0
 To: Artem Bityutskiy <dedekind1@gmail.com>,
@@ -43,7 +43,7 @@ hitting the above error but eventually, with stress test of concurrent
 read and write we hit the same error with a different node type.
 
 Has any one encountered similar behavior? I'm not that much familiar 
-with ubifs so any help will be highly apritiated!
+with ubifs so any help will be highly appreciated!
 
 Bellow is the snippet of the call stack in question and the command I 
 used to hit it:
