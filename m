@@ -1,21 +1,16 @@
-Received: from mail-pb0-x229.google.com ([2607:f8b0:400e:c01::229])
+Received: from mail-qc0-x22b.google.com ([2607:f8b0:400d:c01::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WcHMw-0000jK-4W
- for linux-mtd@lists.infradead.org; Mon, 21 Apr 2014 16:46:58 +0000
-Received: by mail-pb0-f41.google.com with SMTP id jt11so3903502pbb.14
- for <linux-mtd@lists.infradead.org>; Mon, 21 Apr 2014 09:46:33 -0700 (PDT)
-Date: Mon, 21 Apr 2014 09:46:30 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Baruch Siach <baruch@tkos.co.il>
-Subject: Re: [PATCH v2] include/common.h: fix build against recent 0.9.33
- uClibc
-Message-ID: <20140421164630.GT32070@ld-irv-0074>
-References: <2c54c99957bae293249f9ab2a6077570d8671260.1397623968.git.baruch@tkos.co.il>
+ id 1WcK68-0003fS-VQ
+ for linux-mtd@lists.infradead.org; Mon, 21 Apr 2014 19:41:49 +0000
+Received: by mail-qc0-f171.google.com with SMTP id c9so4490633qcz.30
+ for <linux-mtd@lists.infradead.org>; Mon, 21 Apr 2014 12:41:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2c54c99957bae293249f9ab2a6077570d8671260.1397623968.git.baruch@tkos.co.il>
-Cc: Mike Frysinger <vapier@gentoo.org>, linux-mtd@lists.infradead.org
+Date: Mon, 21 Apr 2014 15:41:26 -0400
+Message-ID: <CAMPHVD9=1icuuuXybU2qCyc6n9ZzF2igpr1HFjBU_RUHEaADPw@mail.gmail.com>
+Subject: Estimating flash life by reading EC (Erase Counters)
+From: David Yat Sin <jd.yatsin@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,18 +20,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Apr 16, 2014 at 07:52:48AM +0300, Baruch Siach wrote:
-> An implementation of rpmatch() was backported to the 0.9.33 branch of uClibc.
-> So the uClibc version check introduced in commit 50c9e11f7e (include/common.h:
-> fix build against current uClibc) is not enough. Rename the local rpmatch()
-> implementation to avoid collision.
-> 
-> Cc: Mike Frysinger <vapier@gentoo.org>
-> Signed-off-by: Baruch Siach <baruch@tkos.co.il>
-> ---
-> v2:
->    #undef rpmatch before redefining it (Mike Frysinger)
+Hi,
+My goal is to be able to estimate the flash drive life in a production
+environment, so if there is a better/easier way of achieving this,
+please let me know.
 
-Pushed to mtd-utils.git. Thanks!
+I have a small embedded device using NAND than runs UBIFS for the user
+partition. Our application constantly writes to log files, the log
+files are appended and gzip'ed, so it is hard to determine how much
+data is actually written to disk.
 
-Brian
+I am hoping to do this by:
+
+1. Read the EC (Erase Count) headers for each page on the partition
+2. Let my system run for several days/weeks/months
+3. Read the EC headers again
+4. Then extrapolate drive life expectancy by comparing number of erase
+counts with the NAND endurance.
+
+Is there a utility that I could use to read the Erase Counters on a
+UBIFS partition?
+
+Thank you
+David
