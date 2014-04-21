@@ -1,23 +1,25 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WcLn3-0006yk-0c
- for linux-mtd@lists.infradead.org; Mon, 21 Apr 2014 21:30:14 +0000
 From: Marek Vasut <marex@denx.de>
-To: Huang Shijie <shijie8@gmail.com>
-Subject: Re: [RFC PATCH] mtd: spi-nor: add DDR quad read support
-Date: Mon, 21 Apr 2014 17:26:07 +0200
-References: <1397641641-11430-1-git-send-email-b32955@freescale.com>
- <201404171624.36700.marex@denx.de>
- <20140417160515.GB14819@localhost.localdomain>
-In-Reply-To: <20140417160515.GB14819@localhost.localdomain>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 0/5] defconfigs: add MTD_SPI_NOR (dependency for M25P80)
+Date: Mon, 21 Apr 2014 16:52:39 +0200
+References: <1397719309-2022-1-git-send-email-computersforpeace@gmail.com>
+ <20140417105302.GA32603@ulmo> <20140418063054.GK5512@norris-Latitude-E6410>
+In-Reply-To: <20140418063054.GK5512@norris-Latitude-E6410>
 MIME-Version: 1.0
 Content-Type: Text/Plain;
   charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Message-Id: <201404211726.07963.marex@denx.de>
-Cc: angus.clark@st.com, Huang Shijie <b32955@freescale.com>,
- linux-mtd@lists.infradead.org, sourav.poddar@ti.com,
- computersforpeace@gmail.com, dwmw2@infradead.org
+Message-Id: <201404211652.39704.marex@denx.de>
+Cc: linux-mips@linux-mips.org, Russell King <linux@arm.linux.org.uk>,
+ Stephen Warren <swarren@wwwdotorg.org>, linux-sh@vger.kernel.org,
+ Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+ Steven Miao <realmz6@gmail.com>, Linux Kernel <linux-kernel@vger.kernel.org>,
+ Ralf Baechle <ralf@linux-mips.org>, adi-buildroot-devel@lists.sourceforge.net,
+ linux-tegra@vger.kernel.org, Thierry Reding <thierry.reding@gmail.com>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ Sascha Hauer <kernel@pengutronix.de>, Olof Johansson <olof@lixom.net>,
+ Paul Mackerras <paulus@samba.org>, linuxppc-dev@lists.ozlabs.org,
+ Shawn Guo <shawn.guo@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,35 +29,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday, April 17, 2014 at 06:05:17 PM, Huang Shijie wrote:
-> On Thu, Apr 17, 2014 at 04:24:36PM +0200, Marek Vasut wrote:
-> > On Wednesday, April 16, 2014 at 11:47:21 AM, Huang Shijie wrote:
-> > [...]
-> > 
-> > > @@ -74,6 +74,11 @@ static int read_cr(struct spi_nor *nor)
-> > > 
-> > >  static inline int spi_nor_read_dummy_cycles(struct spi_nor *nor)
-> > >  {
-> > >  
-> > >  	switch (nor->flash_read) {
-> > > 
-> > > +	case SPI_NOR_DDR_QUAD:
-> > > +		/*
-> > > +		 * We set 8 for the DDR Quad read, the SPI NOR controller
-> > > +		 * can change it to 6 or 4 with DeviceTree property.
-> > > +		 */
-> > 
-> > Isn't the number of dummy cycles a property of the chip ?
+On Friday, April 18, 2014 at 08:30:54 AM, Brian Norris wrote:
+> Hi,
 > 
-> I want to add DT node, such as "ddr_quad_read_dummy".
-> But I do not know which Document file to put the DT node to.
+> On Thu, Apr 17, 2014 at 12:53:03PM +0200, Thierry Reding wrote:
+> > On Thu, Apr 17, 2014 at 12:21:44AM -0700, Brian Norris wrote:
+> > > We are introducing a new SPI-NOR library/framework for MTD, to support
+> > > various types of SPI-NOR flash controllers which require (or benefit
+> > > from) intimate knowledge of the flash interface, rather than just the
+> > > relatively dumb SPI interface. This library borrows much of the m25p80
+> > > driver for its abstraction and moves this code into a spi-nor module.
+> > 
+> > If this is a common library, then the more common approach to solve this
+> > would be to have each driver that uses it to select MTD_SPI_NOR rather
+> > than depend on it. That way you can drop this whole series to update the
+> > default configurations.
 > 
-> the spi-bus.txt ? or the spi-nor.txt?
+> But does MTD_SPI_NOR (and drivers/mtd/spi-nor/) qualify as a "library"
+> or as a "subsystem"? I thought the latter were typically expected to be
+> user-selectable options, not automatically-"select"ed.
 
-It's a property of the chip, therefore spi-nor.txt , no ?
-[...]
+I agree the "subsystem" is user-selectable while the "library" is to be 
+'select'ed .
 
-I replied about the failing-to-lower-mode in the other email.
+> I would say that, except for its age, MTD_SPI_NOR is very similar in to
+> MTD_NAND (driver/mtd/nand/), which I'd consider a kind of subsystem, and
+> which users must select before they are asked about drivers which fall
+> under its category.
+> 
+> Perhaps my usage of the word "library" in the description was a mistake,
+> as I don't exactly consider it like a library in the sense of many other
+> "select"ed libraries.
+
+It did look like a library to me at first, but it's rather a subsystem that 
+contains a small library in it. Thus, I retract my previous comment about using 
+'select' and add :
+
+Acked-by: Marek Vasut <marex@denx.de>
 
 Best regards,
 Marek Vasut
