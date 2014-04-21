@@ -1,22 +1,21 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WbzKU-00041M-KS
- for linux-mtd@lists.infradead.org; Sun, 20 Apr 2014 21:31:15 +0000
-Message-ID: <53543C7B.5000202@nod.at>
-Date: Sun, 20 Apr 2014 23:30:35 +0200
-From: Richard Weinberger <richard@nod.at>
+Date: Mon, 21 Apr 2014 10:32:11 +0800
+From: Huang Shijie <b32955@freescale.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 1/5] ARM: defconfigs: add MTD_SPI_NOR (new dependency
+ for M25P80)
+Message-ID: <20140421023208.GA5268@localhost>
+References: <1397719309-2022-1-git-send-email-computersforpeace@gmail.com>
+ <1397719309-2022-2-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
-To: Tanya Brokhman <tlinder@codeaurora.org>
-Subject: Re: UBIFS CRC error, calculated from ubifs_check_node
-References: <53541449.9080308@codeaurora.org>
- <CAFLxGvwTa3RMjxwONXyYwt5LGfAP1oLk906usw6-nana=MUNFQ@mail.gmail.com>
- <53543AFC.7050202@codeaurora.org>
-In-Reply-To: <53543AFC.7050202@codeaurora.org>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: Dolev Raviv <draviv@codeaurora.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1397719309-2022-2-git-send-email-computersforpeace@gmail.com>
+Cc: Marek Vasut <marex@denx.de>, Russell King <linux@arm.linux.org.uk>,
+ Stephen Warren <swarren@wwwdotorg.org>,
+ Linux Kernel <linux-kernel@vger.kernel.org>,
+ Thierry Reding <thierry.reding@gmail.com>, linux-mtd@lists.infradead.org,
+ Shawn Guo <shawn.guo@freescale.com>, Sascha Hauer <kernel@pengutronix.de>,
+ Olof Johansson <olof@lixom.net>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,53 +25,266 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 20.04.2014 23:24, schrieb Tanya Brokhman:
-> On 4/20/2014 11:55 PM, Richard Weinberger wrote:
->> On Sun, Apr 20, 2014 at 8:39 PM, Tanya Brokhman <tlinder@codeaurora.org> wrote:
->>> Hi All
->>>
->>> I'm hitting "UBIFS error (pid 1026): ubifs_check_node: bad CRC: calculated
->>> 0x79dbca01, read 0x31afb5d7" and as a result the partition is remounted as
->>> RO.
->>>
->>> I'm using 3.10 based kernel.
->>> The test scenario to reproduce this is:
->>> 1. fill the partition tested using dd
->>> 2. try to write some more data
->>>
->>> There are no errors in the log from the ubi layer or from the underlying
->>> nand driver, both also testing crc.
->>>
->>> I've tried disabling compression, mounting the partition as sync and issuing
->>> the write command with sync param. None of the former has any effect on this
->>> crash.
->>> I tried disabling crc on data nodes. This lowered the possibility of hitting
->>> the above error but eventually, with stress test of concurrent read and
->>> write we hit the same error with a different node type.
->>>
->>> Has any one encountered similar behavior? I'm not that much familiar with
->>> ubifs so any help will be highly apritiated!
->>
->> Before we start digging into this, do mtd-tests and ubi-tests pass?
->>
+On Thu, Apr 17, 2014 at 12:21:45AM -0700, Brian Norris wrote:
+> These defconfigs contain the CONFIG_M25P80 symbol, which is now
+> dependent on the MTD_SPI_NOR symbol. Add CONFIG_MTD_SPI_NOR to the
+> relevant defconfigs.
 > 
+> At the same time, drop the now-nonexistent CONFIG_MTD_CHAR symbol.
 > 
-> mtd-tests: yes.
-
-Good. :)
-
-> ubi-tests: never run those. Where can I find them? I see only debug.c at mtd/ubi with helping functions but no tests.
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Cc: Russell King <linux@arm.linux.org.uk>
+> Cc: Shawn Guo <shawn.guo@freescale.com>
+> Cc: Sascha Hauer <kernel@pengutronix.de>
+> Cc: Stephen Warren <swarren@wwwdotorg.org>
+> Cc: Thierry Reding <thierry.reding@gmail.com>
+> Cc: Olof Johansson <olof@lixom.net>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+> This change is based on l2-mtd.git/spinor, which is based on 3.15-rc1:
 > 
-> We're just switching to ubifs from yaffs2. I looked at the diff between linux-next and our branch (3.10 based) and tried to bring in all of the fixes in mtd and ubi layers.
-> I'll try running ubi-tests and update on the result.
+>   git://git.infradead.org/l2-mtd.git +spinor
 > 
-> Do you think we should run ubifs tests as well? Are there such tests?
+>  arch/arm/configs/bockw_defconfig     | 2 +-
+>  arch/arm/configs/dove_defconfig      | 2 +-
+>  arch/arm/configs/imx_v6_v7_defconfig | 1 +
+>  arch/arm/configs/keystone_defconfig  | 1 +
+>  arch/arm/configs/kirkwood_defconfig  | 1 +
+>  arch/arm/configs/koelsch_defconfig   | 1 +
+>  arch/arm/configs/lager_defconfig     | 1 +
+>  arch/arm/configs/lpc32xx_defconfig   | 2 +-
+>  arch/arm/configs/multi_v5_defconfig  | 1 +
+>  arch/arm/configs/multi_v7_defconfig  | 1 +
+>  arch/arm/configs/mvebu_v5_defconfig  | 1 +
+>  arch/arm/configs/mvebu_v7_defconfig  | 1 +
+>  arch/arm/configs/mxs_defconfig       | 1 +
+>  arch/arm/configs/sama5_defconfig     | 2 +-
+>  arch/arm/configs/shmobile_defconfig  | 1 +
+>  arch/arm/configs/tegra_defconfig     | 1 +
+>  16 files changed, 16 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/arm/configs/bockw_defconfig b/arch/arm/configs/bockw_defconfig
+> index e816140d81c5..28339e072a71 100644
+> --- a/arch/arm/configs/bockw_defconfig
+> +++ b/arch/arm/configs/bockw_defconfig
+> @@ -50,11 +50,11 @@ CONFIG_DEVTMPFS_MOUNT=y
+>  # CONFIG_PREVENT_FIRMWARE_BUILD is not set
+>  # CONFIG_FW_LOADER is not set
+>  CONFIG_MTD=y
+> -CONFIG_MTD_CHAR=y
+>  CONFIG_MTD_BLOCK=y
+>  CONFIG_MTD_CFI=y
+>  CONFIG_MTD_CFI_AMDSTD=y
+>  CONFIG_MTD_M25P80=y
+> +CONFIG_MTD_SPI_NOR=y
+>  CONFIG_SCSI=y
+>  CONFIG_BLK_DEV_SD=y
+>  CONFIG_NETDEVICES=y
+> diff --git a/arch/arm/configs/dove_defconfig b/arch/arm/configs/dove_defconfig
+> index f15955144175..701677f9248c 100644
+> --- a/arch/arm/configs/dove_defconfig
+> +++ b/arch/arm/configs/dove_defconfig
+> @@ -37,7 +37,6 @@ CONFIG_DEVTMPFS=y
+>  CONFIG_DEVTMPFS_MOUNT=y
+>  CONFIG_MTD=y
+>  CONFIG_MTD_CMDLINE_PARTS=y
+> -CONFIG_MTD_CHAR=y
+>  CONFIG_MTD_BLOCK=y
+>  CONFIG_MTD_CFI=y
+>  CONFIG_MTD_JEDECPROBE=y
+> @@ -48,6 +47,7 @@ CONFIG_MTD_CFI_INTELEXT=y
+>  CONFIG_MTD_CFI_STAA=y
+>  CONFIG_MTD_PHYSMAP=y
+>  CONFIG_MTD_M25P80=y
+> +CONFIG_MTD_SPI_NOR=y
+>  CONFIG_BLK_DEV_LOOP=y
+>  CONFIG_BLK_DEV_RAM=y
+>  CONFIG_BLK_DEV_RAM_COUNT=1
+> diff --git a/arch/arm/configs/imx_v6_v7_defconfig b/arch/arm/configs/imx_v6_v7_defconfig
+> index 09e974392fa1..c098195e9bd3 100644
+> --- a/arch/arm/configs/imx_v6_v7_defconfig
+> +++ b/arch/arm/configs/imx_v6_v7_defconfig
+> @@ -89,6 +89,7 @@ CONFIG_MTD_SST25L=y
+>  CONFIG_MTD_NAND=y
+>  CONFIG_MTD_NAND_GPMI_NAND=y
+>  CONFIG_MTD_NAND_MXC=y
+> +CONFIG_MTD_SPI_NOR=y
+>  CONFIG_MTD_UBI=y
+>  CONFIG_BLK_DEV_LOOP=y
+>  CONFIG_BLK_DEV_RAM=y
+> diff --git a/arch/arm/configs/keystone_defconfig b/arch/arm/configs/keystone_defconfig
+> index ec9a41d50680..b3057730689f 100644
+> --- a/arch/arm/configs/keystone_defconfig
+> +++ b/arch/arm/configs/keystone_defconfig
+> @@ -112,6 +112,7 @@ CONFIG_MTD_PLATRAM=y
+>  CONFIG_MTD_M25P80=y
+>  CONFIG_MTD_NAND=y
+>  CONFIG_MTD_NAND_DAVINCI=y
+> +CONFIG_MTD_SPI_NOR=y
+>  CONFIG_MTD_UBI=y
+>  CONFIG_PROC_DEVICETREE=y
+>  CONFIG_BLK_DEV_LOOP=y
+> diff --git a/arch/arm/configs/kirkwood_defconfig b/arch/arm/configs/kirkwood_defconfig
+> index 2e762d94e94b..b9e480c10b10 100644
+> --- a/arch/arm/configs/kirkwood_defconfig
+> +++ b/arch/arm/configs/kirkwood_defconfig
+> @@ -61,6 +61,7 @@ CONFIG_MTD_PHYSMAP=y
+>  CONFIG_MTD_M25P80=y
+>  CONFIG_MTD_NAND=y
+>  CONFIG_MTD_NAND_ORION=y
+> +CONFIG_MTD_SPI_NOR=y
+>  CONFIG_BLK_DEV_LOOP=y
+>  CONFIG_EEPROM_AT24=y
+>  # CONFIG_SCSI_PROC_FS is not set
+> diff --git a/arch/arm/configs/koelsch_defconfig b/arch/arm/configs/koelsch_defconfig
+> index 86faab565a96..dcd55f20d36e 100644
+> --- a/arch/arm/configs/koelsch_defconfig
+> +++ b/arch/arm/configs/koelsch_defconfig
+> @@ -42,6 +42,7 @@ CONFIG_ATA=y
+>  CONFIG_SATA_RCAR=y
+>  CONFIG_MTD=y
+>  CONFIG_MTD_M25P80=y
+> +CONFIG_MTD_SPI_NOR=y
+>  CONFIG_NETDEVICES=y
+>  # CONFIG_NET_VENDOR_ARC is not set
+>  # CONFIG_NET_CADENCE is not set
+> diff --git a/arch/arm/configs/lager_defconfig b/arch/arm/configs/lager_defconfig
+> index 58702440472a..c4dbd778458b 100644
+> --- a/arch/arm/configs/lager_defconfig
+> +++ b/arch/arm/configs/lager_defconfig
+> @@ -53,6 +53,7 @@ CONFIG_DEVTMPFS=y
+>  CONFIG_DEVTMPFS_MOUNT=y
+>  CONFIG_MTD=y
+>  CONFIG_MTD_M25P80=y
+> +CONFIG_MTD_SPI_NOR=y
+>  CONFIG_BLK_DEV_SD=y
+>  CONFIG_ATA=y
+>  CONFIG_SATA_RCAR=y
+> diff --git a/arch/arm/configs/lpc32xx_defconfig b/arch/arm/configs/lpc32xx_defconfig
+> index 398a367ffce8..2de54c35fb47 100644
+> --- a/arch/arm/configs/lpc32xx_defconfig
+> +++ b/arch/arm/configs/lpc32xx_defconfig
+> @@ -53,12 +53,12 @@ CONFIG_DEVTMPFS_MOUNT=y
+>  # CONFIG_FW_LOADER is not set
+>  CONFIG_MTD=y
+>  CONFIG_MTD_CMDLINE_PARTS=y
+> -CONFIG_MTD_CHAR=y
+>  CONFIG_MTD_BLOCK=y
+>  CONFIG_MTD_M25P80=y
+>  CONFIG_MTD_NAND=y
+>  CONFIG_MTD_NAND_SLC_LPC32XX=y
+>  CONFIG_MTD_NAND_MLC_LPC32XX=y
+> +CONFIG_MTD_SPI_NOR=y
+>  CONFIG_BLK_DEV_LOOP=y
+>  CONFIG_BLK_DEV_CRYPTOLOOP=y
+>  CONFIG_BLK_DEV_RAM=y
+> diff --git a/arch/arm/configs/multi_v5_defconfig b/arch/arm/configs/multi_v5_defconfig
+> index aa3dfb084fed..aaf23933fb91 100644
+> --- a/arch/arm/configs/multi_v5_defconfig
+> +++ b/arch/arm/configs/multi_v5_defconfig
+> @@ -56,6 +56,7 @@ CONFIG_MTD_PHYSMAP=y
+>  CONFIG_MTD_M25P80=y
+>  CONFIG_MTD_NAND=y
+>  CONFIG_MTD_NAND_ORION=y
+> +CONFIG_MTD_SPI_NOR=y
+>  CONFIG_BLK_DEV_LOOP=y
+>  CONFIG_EEPROM_AT24=y
+>  # CONFIG_SCSI_PROC_FS is not set
+> diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
+> index d4e8a47a2f7c..9937db16050c 100644
+> --- a/arch/arm/configs/multi_v7_defconfig
+> +++ b/arch/arm/configs/multi_v7_defconfig
+> @@ -108,6 +108,7 @@ CONFIG_CMA_SIZE_MBYTES=64
+>  CONFIG_OMAP_OCP2SCP=y
+>  CONFIG_MTD=y
+>  CONFIG_MTD_M25P80=y
+> +CONFIG_MTD_SPI_NOR=y
+>  CONFIG_BLK_DEV_LOOP=y
+>  CONFIG_ICS932S401=y
+>  CONFIG_APDS9802ALS=y
+> diff --git a/arch/arm/configs/mvebu_v5_defconfig b/arch/arm/configs/mvebu_v5_defconfig
+> index 36484a37a1ca..85d20666cef5 100644
+> --- a/arch/arm/configs/mvebu_v5_defconfig
+> +++ b/arch/arm/configs/mvebu_v5_defconfig
+> @@ -50,6 +50,7 @@ CONFIG_MTD_PHYSMAP=y
+>  CONFIG_MTD_M25P80=y
+>  CONFIG_MTD_NAND=y
+>  CONFIG_MTD_NAND_ORION=y
+> +CONFIG_MTD_SPI_NOR=y
+>  CONFIG_BLK_DEV_LOOP=y
+>  CONFIG_EEPROM_AT24=y
+>  # CONFIG_SCSI_PROC_FS is not set
+> diff --git a/arch/arm/configs/mvebu_v7_defconfig b/arch/arm/configs/mvebu_v7_defconfig
+> index a34713d8db9f..ae45bf05fa00 100644
+> --- a/arch/arm/configs/mvebu_v7_defconfig
+> +++ b/arch/arm/configs/mvebu_v7_defconfig
+> @@ -53,6 +53,7 @@ CONFIG_I2C_MV64XXX=y
+>  CONFIG_MTD=y
+>  CONFIG_MTD_CHAR=y
+>  CONFIG_MTD_M25P80=y
+> +CONFIG_MTD_SPI_NOR=y
+>  CONFIG_MTD_CFI=y
+>  CONFIG_MTD_CFI_INTELEXT=y
+>  CONFIG_MTD_CFI_AMDSTD=y
+> diff --git a/arch/arm/configs/mxs_defconfig b/arch/arm/configs/mxs_defconfig
+> index 6150108e15de..eac87f4fae07 100644
+> --- a/arch/arm/configs/mxs_defconfig
+> +++ b/arch/arm/configs/mxs_defconfig
+> @@ -55,6 +55,7 @@ CONFIG_MTD_M25P80=y
+>  CONFIG_MTD_SST25L=y
+>  CONFIG_MTD_NAND=y
+>  CONFIG_MTD_NAND_GPMI_NAND=y
+> +CONFIG_MTD_SPI_NOR=y
+>  CONFIG_MTD_UBI=y
+>  # CONFIG_BLK_DEV is not set
+>  CONFIG_EEPROM_AT24=y
+> diff --git a/arch/arm/configs/sama5_defconfig b/arch/arm/configs/sama5_defconfig
+> index dc3881e07630..8282ebab6e52 100644
+> --- a/arch/arm/configs/sama5_defconfig
+> +++ b/arch/arm/configs/sama5_defconfig
+> @@ -65,12 +65,12 @@ CONFIG_DEVTMPFS_MOUNT=y
+>  # CONFIG_PREVENT_FIRMWARE_BUILD is not set
+>  CONFIG_MTD=y
+>  CONFIG_MTD_CMDLINE_PARTS=y
+> -CONFIG_MTD_CHAR=y
+>  CONFIG_MTD_BLOCK=y
+>  CONFIG_MTD_CFI=y
+>  CONFIG_MTD_M25P80=y
+>  CONFIG_MTD_NAND=y
+>  CONFIG_MTD_NAND_ATMEL=y
+> +CONFIG_MTD_SPI_NOR=y
+>  CONFIG_MTD_UBI=y
+>  CONFIG_MTD_UBI_GLUEBI=y
+>  CONFIG_PROC_DEVICETREE=y
+> diff --git a/arch/arm/configs/shmobile_defconfig b/arch/arm/configs/shmobile_defconfig
+> index 83b07258a385..ddfdc36be9c8 100644
+> --- a/arch/arm/configs/shmobile_defconfig
+> +++ b/arch/arm/configs/shmobile_defconfig
+> @@ -43,6 +43,7 @@ CONFIG_DEVTMPFS=y
+>  CONFIG_DEVTMPFS_MOUNT=y
+>  CONFIG_MTD=y
+>  CONFIG_MTD_M25P80=y
+> +CONFIG_MTD_SPI_NOR=y
+>  CONFIG_BLK_DEV_SD=y
+>  CONFIG_ATA=y
+>  CONFIG_SATA_RCAR=y
+> diff --git a/arch/arm/configs/tegra_defconfig b/arch/arm/configs/tegra_defconfig
+> index 2926281368ab..e4464986d7b4 100644
+> --- a/arch/arm/configs/tegra_defconfig
+> +++ b/arch/arm/configs/tegra_defconfig
+> @@ -90,6 +90,7 @@ CONFIG_DMA_CMA=y
+>  CONFIG_CMA_SIZE_MBYTES=64
+>  CONFIG_MTD=y
+>  CONFIG_MTD_M25P80=y
+> +CONFIG_MTD_SPI_NOR=y
+>  CONFIG_PROC_DEVICETREE=y
+>  CONFIG_BLK_DEV_LOOP=y
+>  CONFIG_AD525X_DPOT=y
+> -- 
+I think we should not use the "select", since the SPI-NOR framework also depends
+on the MTD code.
 
-Yes. Fetch mtd-utils source.
-See tests/ubi-tests directory.
-It contains UBI and UBIFS tests.
+For the mxs_defconfig and imx_v6_v7_defconfig
 
-Please run first ubi tests (runtests.sh).
-
-Thanks,
-//richard
+Acked-by: Huang Shijie <b32955@freescale.com>
