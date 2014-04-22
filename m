@@ -1,20 +1,20 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
+Received: from mail-out.m-online.net ([212.18.0.9])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wce2I-00074N-2q
- for linux-mtd@lists.infradead.org; Tue, 22 Apr 2014 16:59:10 +0000
-From: Marek Vasut <marex@denx.de>
+ id 1WcfhW-0006tN-Ni
+ for linux-mtd@lists.infradead.org; Tue, 22 Apr 2014 18:45:51 +0000
+Date: Tue, 22 Apr 2014 20:45:18 +0200
+From: Gerhard Sittig <gsi@denx.de>
 To: Graham Moore <grmoore@altera.com>
 Subject: Re: [PATCH V3] Add support for flag status register on Micron chips.
-Date: Tue, 22 Apr 2014 18:55:57 +0200
+Message-ID: <20140422184518.GC3528@book.gsilab.sittig.org>
 References: <1398175396-7560-1-git-send-email-grmoore@altera.com>
  <1398175396-7560-2-git-send-email-grmoore@altera.com>
-In-Reply-To: <1398175396-7560-2-git-send-email-grmoore@altera.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201404221855.57247.marex@denx.de>
-Cc: ggrahammoore@gmail.com, Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1398175396-7560-2-git-send-email-grmoore@altera.com>
+Cc: ZY - marex <marex@denx.de>, ggrahammoore@gmail.com,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
  Sascha Hauer <s.hauer@pengutronix.de>, Jingoo Han <jg1.han@samsung.com>,
  Geert Uytterhoeven <geert+renesas@linux-m68k.org>,
  linux-kernel@vger.kernel.org, Yves Vandervennet <rocket.yvanderv@gmail.com>,
@@ -31,20 +31,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday, April 22, 2014 at 04:03:16 PM, Graham Moore wrote:
-[...]
+On Tue, 2014-04-22 at 09:03 -0500, Graham Moore wrote:
+> 
+> ---
+> V3:
+> Rebase to l2-mtd spinor branch.
+> V2:
+> Remove leading underscore in function names.
+> Remove type cast in dev_err call and use the proper format
+> specifier instead.
 
->  #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)	\
-> @@ -488,6 +534,8 @@ const struct spi_device_id spi_nor_ids[] = {
->  	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, 0) },
->  	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K) },
->  	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K) },
-> +	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, USE_FSR) },
-> +	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, USE_FSR) },
+the patch appears to not have dev_err() references, were they
+removed? see below
 
-Are you sure the n25q512a doesn't use FSR ? Do n25q512a{1,8}3 share the same 
-IDs?
+> [ ... ]
+> + * Read the flag status register, returning its value in the location
+> + * Return the status register value.
+> + * Returns negative if error occurred.
+> + */
+> +static int read_fsr(struct spi_nor *nor)
+> +{
+> +	int ret;
+> +	u8 val;
+> +
+> +	ret = nor->read_reg(nor, SPINOR_OP_RDFSR, &val, 1);
+> +	if (ret < 0) {
+> +		pr_err("error %d reading FSR\n", ret);
+> +		return ret;
+> +	}
+> [ ... ]
 
-[...]
-Best regards,
-Marek Vasut
+this emits a message that an error has occured, but doesn't tell
+where it occured -- can you dev_err() here to make the message
+even more helpful?
+
+> @@ -165,6 +184,32 @@ static int spi_nor_wait_till_ready(struct spi_nor *nor)
+>  	return -ETIMEDOUT;
+>  }
+>  
+> +static int spi_nor_wait_till_fsr_ready(struct spi_nor *nor)
+> +{
+> +	unsigned long deadline;
+> +	int sr;
+> +	int fsr;
+> +
+> +	deadline = jiffies + MAX_READY_WAIT_JIFFIES;
+> +
+> +	do {
+> +		cond_resched();
+> +
+> +		sr = read_sr(nor);
+> +		if (sr < 0)
+> +			break;
+> +		else if (!(sr & SR_WIP)) {
+> +			fsr = read_fsr(nor);
+> +			if (fsr < 0)
+> +				break;
+> +			if (fsr & FSR_READY)
+> +				return 0;			
+> +		}
+> +	} while (!time_after_eq(jiffies, deadline));
+> +
+> +	return -ETIMEDOUT;
+> +}
+
+this logic always returns "timed out" when the ready flag is not
+seen, even in the case of read errors -- can you "preset" the
+error code with "timed out", and update it with something more
+appropriate before returning when other errors are seen?
+
+though this is an internal helper, and callers may not tell the
+situations apart in the first place, so this might be a minor nit
+
+
+virtually yours
+Gerhard Sittig
+-- 
+DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
+HRB 165235 Munich, Office: Kirchenstr. 5, D-82194 Groebenzell, Germany
+Phone: +49-8142-66989-0 Fax: +49-8142-66989-80  Email: office@denx.de
