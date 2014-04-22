@@ -1,24 +1,22 @@
-Received: from mail-bl2lp0206.outbound.protection.outlook.com
- ([207.46.163.206] helo=na01-bl2-obe.outbound.protection.outlook.com)
+Received: from mail-by2lp0239.outbound.protection.outlook.com
+ ([207.46.163.239] helo=na01-by2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WcW6Z-0003qD-Dr
- for linux-mtd@lists.infradead.org; Tue, 22 Apr 2014 08:31:04 +0000
-Date: Tue, 22 Apr 2014 15:33:58 +0800
+ id 1WcWor-0001c0-Oy
+ for linux-mtd@lists.infradead.org; Tue, 22 Apr 2014 09:16:50 +0000
+Date: Tue, 22 Apr 2014 16:19:54 +0800
 From: Huang Shijie <b32955@freescale.com>
 To: Marek Vasut <marex@denx.de>
-Subject: Re: [RFC PATCH] mtd: spi-nor: add DDR quad read support
-Message-ID: <20140422073355.GA32474@localhost>
-References: <1397641641-11430-1-git-send-email-b32955@freescale.com>
- <201404171624.36700.marex@denx.de>
- <20140417160515.GB14819@localhost.localdomain>
- <201404211726.07963.marex@denx.de>
+Subject: Re: [PATCH] mtd: spi-nor: read 6 bytes for the ID
+Message-ID: <20140422081951.GA29950@localhost>
+References: <1397470174-27856-1-git-send-email-b32955@freescale.com>
+ <201404142023.47986.marex@denx.de> <20140415052236.GA12237@localhost>
+ <201404151535.05561.marex@denx.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <201404211726.07963.marex@denx.de>
-Cc: angus.clark@st.com, dwmw2@infradead.org, linux-mtd@lists.infradead.org,
- sourav.poddar@ti.com, computersforpeace@gmail.com,
- Huang Shijie <shijie8@gmail.com>
+In-Reply-To: <201404151535.05561.marex@denx.de>
+Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ Huang Shijie <shijie8@gmail.com>, dwmw2@infradead.org, angus.clark@st.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,67 +26,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Apr 21, 2014 at 05:26:07PM +0200, Marek Vasut wrote:
-> On Thursday, April 17, 2014 at 06:05:17 PM, Huang Shijie wrote:
-> > On Thu, Apr 17, 2014 at 04:24:36PM +0200, Marek Vasut wrote:
-> > > On Wednesday, April 16, 2014 at 11:47:21 AM, Huang Shijie wrote:
-> > > [...]
-> > > 
-> > > > @@ -74,6 +74,11 @@ static int read_cr(struct spi_nor *nor)
-> > > > 
-> > > >  static inline int spi_nor_read_dummy_cycles(struct spi_nor *nor)
-> > > >  {
-> > > >  
-> > > >  	switch (nor->flash_read) {
-> > > > 
-> > > > +	case SPI_NOR_DDR_QUAD:
-> > > > +		/*
-> > > > +		 * We set 8 for the DDR Quad read, the SPI NOR controller
-> > > > +		 * can change it to 6 or 4 with DeviceTree property.
-> > > > +		 */
-> > > 
-> > > Isn't the number of dummy cycles a property of the chip ?
-> > 
-> > I want to add DT node, such as "ddr_quad_read_dummy".
-> > But I do not know which Document file to put the DT node to.
-> > 
-> > the spi-bus.txt ? or the spi-nor.txt?
+On Tue, Apr 15, 2014 at 03:35:05PM +0200, Marek Vasut wrote:
+> On Tuesday, April 15, 2014 at 07:22:39 AM, Huang Shijie wrote:
+> > On Mon, Apr 14, 2014 at 08:23:47PM +0200, Marek Vasut wrote:
 > 
-> It's a property of the chip, therefore spi-nor.txt , no ?
+> [...]
+> 
+> > > > > I wonder if the ID-bytes wraparound cannot cause us trouble here. For
+> > > > > example if we try to detect a SPI NOR which has 5-byte ID code, but
+> > > > > in the table, we'd also have a SPI NOR with has a 6-byte code where
+> > > > > the last byte of ext-jedec matches the first byte of JEDEC ID , this
+> > > > > would actually match on the later.
+> > > > 
+> > > > could you give me detail example?
+> > > > 
+> > > > I feel sorry that i do not quit understand your meaning.
+> > > 
+> > > Imagine two chips with two IDs:
+> > > Chip 1 has IDs: 0xf00b42 0x4242f0 and readID[6] returns 0x420bf0f04242
+> > 
+> > It will not return 0x420bf0f04242.
+> > 
+> > The readID[6] should be: f0, 0b, 42, 42, 42, f0.
+> > 
+> > > Chip 2 has IDs: 0xf00b42   0x42f0 and readID[6] returns 0x420bf0f04242
+> > 
+> > the readID[6] should be: f0, 0b, 42, 42, f0, XX.
+> > 
+> >  "XX" stands for the sixth byte.
+> > 
+> > The current patch can distinguish these two chips.
+> > 
+> > > This is because in the second chips' case the ID wraps around at 5 bytes.
+> > > But chip #1 matches the ID, so if chip #1 is earlier in the list of SPI
+> > > NOR flashes, we will get an incorrect detection of that chip.
+> > 
+> > I guess your meaning is that the chip 2 has IDs: 0xf00b42   0x4242
+> > and the sixth byte is 0xf0 which wraps the first byte.
+> 
+> Huang, what I meant is that if you read 6 bytes of ID from a chip which wraps 
+> the READID command output on 5 bytes AND the first and last byte match in the 
+> table for some 6-byte chip, then this 6-byte chip will be used as a 
+> configuration for the different 5-byte chip.
+what are you saying is that we meet the same 6 bytes for two different NOR flashes.
 
-[1] For the m25p80.c, the @nor->dev points to a spi_device{}.
 
-   If the spi core can support the DDR QUAD read, we can add the DT node to
-  the spi-bus.txt. Please see the spi-bus.txt:
-  
-  ----------------------------------------------------------------------
-  SPI slave nodes must be children of the SPI master node and can
-  contain the following properties.
-  - reg             - (required) chip select address of device.
-  - compatible      - (required) name of SPI device following generic names
-      		recommended practice
-  - spi-max-frequency - (required) Maximum SPI clocking speed of device in Hz
-  - spi-cpol        - (optional) Empty property indicating device requires
-      		inverse clock polarity (CPOL) mode
-  - spi-cpha        - (optional) Empty property indicating device requires
-      		shifted clock phase (CPHA) mode
-  - spi-cs-high     - (optional) Empty property indicating device requires
-      		chip select active high
-  - spi-3wire       - (optional) Empty property indicating device requires
-  ----------------------------------------------------------------------
-  
-  As a SPI slave DT node, we can put the "ddr_quad_read_dummy" to the spi-bus.txt.
-  
-  But unfortunately, I am not sure if the SPI core can support the DDR quad read
-  or not. :( IMHO, it can _NOT_ support. 
+> 
+> This code should be future-proof, but if we keep adding such special cases, we 
+> will end up with false matches sooner or later anyway I'm afraid.
+> 
+> What do you say we add the READID length field into the table ?
 
-[2] For the SPI NOR controller(such as fsl-quadspi.c), the @nor->dev points
-   to a platform_device{}.  I did not allocate a device{} for the NOR flash.
-   so i could add the "ddr_quad_read_dummy" to the fsl-quadspi.txt.
+could you tell us how do you implement the "add the READID length field .."?
 
-   what's your opinion?
+IMHO, even we add the readid length field, we also can not avoid the case you
+mentioned.
 
-thanks   
+hi Brian & Clark, what's your opinion about this?
+
+thanks
 Huang Shijie
-
-		
