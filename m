@@ -1,21 +1,27 @@
-Received: from mail-pd0-f169.google.com ([209.85.192.169])
+Received: from mail-out.m-online.net ([212.18.0.10])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wccw7-0006rd-GD
- for linux-mtd@lists.infradead.org; Tue, 22 Apr 2014 15:48:44 +0000
-Received: by mail-pd0-f169.google.com with SMTP id fp1so5049575pdb.28
- for <linux-mtd@lists.infradead.org>; Tue, 22 Apr 2014 08:48:18 -0700 (PDT)
-Date: Tue, 22 Apr 2014 23:48:08 +0800
-From: Huang Shijie <shijie8@gmail.com>
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: Re: [PATCH 1/2] mtd: m25p80: Revive dual read support
-Message-ID: <20140422154806.GA4230@localhost.localdomain>
-References: <1398170732-19773-1-git-send-email-geert+renesas@glider.be>
+ id 1Wce2I-00074N-2q
+ for linux-mtd@lists.infradead.org; Tue, 22 Apr 2014 16:59:10 +0000
+From: Marek Vasut <marex@denx.de>
+To: Graham Moore <grmoore@altera.com>
+Subject: Re: [PATCH V3] Add support for flag status register on Micron chips.
+Date: Tue, 22 Apr 2014 18:55:57 +0200
+References: <1398175396-7560-1-git-send-email-grmoore@altera.com>
+ <1398175396-7560-2-git-send-email-grmoore@altera.com>
+In-Reply-To: <1398175396-7560-2-git-send-email-grmoore@altera.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1398170732-19773-1-git-send-email-geert+renesas@glider.be>
-Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- linux-spi@vger.kernel.org
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201404221855.57247.marex@denx.de>
+Cc: ggrahammoore@gmail.com, Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Jingoo Han <jg1.han@samsung.com>,
+ Geert Uytterhoeven <geert+renesas@linux-m68k.org>,
+ linux-kernel@vger.kernel.org, Yves Vandervennet <rocket.yvanderv@gmail.com>,
+ linux-mtd@lists.infradead.org, Insop Song <insop.song@gainspeed.com>,
+ Alan Tull <atull@altera.com>, Sourav Poddar <sourav.poddar@ti.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen <dinguyen@altera.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,29 +31,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Apr 22, 2014 at 02:45:31PM +0200, Geert Uytterhoeven wrote:
-> Commit 03e296f613affcc2671c1e86d8c25ecad867204e ("mtd: m25p80: use the SPI
-> nor framework") accidentally removed support for Dual SPI read transfers.
-> Add it back.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
->  drivers/mtd/devices/m25p80.c |    2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 1557d8f672c1..ed7e0a1bed3c 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -221,6 +221,8 @@ static int m25p_probe(struct spi_device *spi)
->  
->  	if (spi->mode & SPI_RX_QUAD)
->  		mode = SPI_NOR_QUAD;
-> +	else if (spi->mode & SPI_RX_DUAL)
-> +		mode = SPI_NOR_DUAL;
->  	ret = spi_nor_scan(nor, spi_get_device_id(spi), mode);
->  	if (ret)
->  		return ret;
-sorry for the mistake.
+On Tuesday, April 22, 2014 at 04:03:16 PM, Graham Moore wrote:
+[...]
 
-Acked-by: Huang Shijie <shijie8@gmail.com>
+>  #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)	\
+> @@ -488,6 +534,8 @@ const struct spi_device_id spi_nor_ids[] = {
+>  	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, 0) },
+>  	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K) },
+>  	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K) },
+> +	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, USE_FSR) },
+> +	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, USE_FSR) },
+
+Are you sure the n25q512a doesn't use FSR ? Do n25q512a{1,8}3 share the same 
+IDs?
+
+[...]
+Best regards,
+Marek Vasut
