@@ -1,18 +1,19 @@
-From: Marek Vasut <marex@denx.de>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH v1 2/7] mtd: spi-nor: add DDR quad read support
-Date: Wed, 23 Apr 2014 21:45:57 +0200
-References: <a> <1398248215-26768-3-git-send-email-b32955@freescale.com>
-In-Reply-To: <1398248215-26768-3-git-send-email-b32955@freescale.com>
+Received: from mail-vc0-x231.google.com ([2607:f8b0:400c:c03::231])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Wd5Tl-0006tH-Vd
+ for linux-mtd@lists.infradead.org; Wed, 23 Apr 2014 22:17:22 +0000
+Received: by mail-vc0-f177.google.com with SMTP id if17so1953428vcb.22
+ for <linux-mtd@lists.infradead.org>; Wed, 23 Apr 2014 15:17:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201404232145.57404.marex@denx.de>
-Cc: devicetree@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
- computersforpeace@gmail.com, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
+In-Reply-To: <1398286150-1590-1-git-send-email-kdasu.kdev@gmail.com>
+References: <1398286150-1590-1-git-send-email-kdasu.kdev@gmail.com>
+Date: Wed, 23 Apr 2014 18:16:59 -0400
+Message-ID: <CAC=U0a0kPTn_Tuc33WYyEMeimrynmpHPaD47qcTyihnxCuh8zg@mail.gmail.com>
+Subject: Fwd: [PATCH] mtd: nand: Add support to use nand_base poi databuf as
+ bounce buffer
+From: Kamal Dasu <kdasu.kdev@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,63 +23,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday, April 23, 2014 at 12:16:50 PM, Huang Shijie wrote:
-> This patch adds the DDR quad read support by the following:
-> 
->   [1] add SPI_NOR_DDR_QUAD read mode.
-> 
->   [2] add DDR Quad read opcodes:
->        SPINOR_OP_READ_1_4_4_D / SPINOR_OP_READ4_1_4_4_D
-> 
->   [3] add set_ddr_quad_mode() to initialize for the DDR quad read.
->       Currently it only works for Spansion NOR.
-> 
->   [3] set the dummy with 8 for DDR quad read.
->       The m25p80.c can not support the DDR quad read, the SPI NOR
-> controller can set the dummy value in its driver, such as fsl-quadspi.c.
-> 
-> Test this patch for Spansion s25fl128s NOR flash.
-> 
-> Signed-off-by: Huang Shijie <b32955@freescale.com>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c |   50
-> +++++++++++++++++++++++++++++++++++++++- include/linux/mtd/spi-nor.h   |  
->  8 +++++-
->  2 files changed, 54 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 1a12f81..e2f69db 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -74,6 +74,15 @@ static int read_cr(struct spi_nor *nor)
->  static inline int spi_nor_read_dummy_cycles(struct spi_nor *nor)
->  {
->  	switch (nor->flash_read) {
-> +	case SPI_NOR_DDR_QUAD:
-> +		/*
-> +		 * The m25p80.c can not support the DDR quad read.
-> +		 * We set the dummy cycles to 8 by default. If the SPI NOR
-> +		 * controller driver has already set it before call the
-> +		 * spi_nor_scan(), we just keep it as it is.
-> +		 */
-> +		if (nor->read_dummy)
-> +			return nor->read_dummy;
+nand_base can be passed a kmap()'d buffers from highmem by
+filesystems like jffs2. This results in failure to map the
+physical address of the DMA buffer on various contoller
+driver on different platforms. This change adds a chip option
+to use preallocated databuf as bounce buffers used in
+nand_do_read_ops() and nand_do_write_ops().
+This allows for specific nand controller driver to set this
+option as needed.
 
-Can the controller set this variable to zero ?
+Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+---
+ drivers/mtd/nand/nand_base.c | 27 +++++++++++++++++++++------
+ include/linux/mtd/nand.h     |  5 +++++
+ 2 files changed, 26 insertions(+), 6 deletions(-)
 
-[...]
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 9d01c4d..37d7315 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -1501,6 +1501,7 @@ static int nand_do_read_ops(struct mtd_info
+*mtd, loff_t from,
+                mtd->oobavail : mtd->oobsize;
 
-> +static int set_ddr_quad_mode(struct spi_nor *nor, u32 jedec_id)
-> +{
-> +	int status;
-> +
-> +	switch (JEDEC_MFR(jedec_id)) {
-> +	case CFI_MFR_AMD: /* Spansion, actually */
-> +		status = spansion_quad_enable(nor);
-> +		if (status) {
-> +			dev_err(nor->dev,
-> +				"Spansion DDR quad-read not enabled\n");
-> +			return -EINVAL;
+        uint8_t *bufpoi, *oob, *buf;
++       int use_bufpoi;
+        unsigned int max_bitflips = 0;
+        int retry_mode = 0;
+        bool ecc_fail = false;
+@@ -1522,10 +1523,16 @@ static int nand_do_read_ops(struct mtd_info
+*mtd, loff_t from,
 
-Can't you just return status here as well to propagate the failure?
-[...]
+                bytes = min(mtd->writesize - col, readlen);
+                aligned = (bytes == mtd->writesize);
++               use_bufpoi = (chip->options & NAND_USE_BOUNCE_BUFFER) ?
++                               !virt_addr_valid(buf) : 0;
+
+                /* Is the current page in the buffer? */
+                if (realpage != chip->pagebuf || oob) {
+-                       bufpoi = aligned ? buf : chip->buffers->databuf;
++                       bufpoi = (aligned && !use_bufpoi) ? buf :
++                               chip->buffers->databuf;
++
++                       if (use_bufpoi && aligned)
++                               pr_debug("%s: using bounce buffer\n", __func__);
+
+ read_retry:
+                        chip->cmdfunc(mtd, NAND_CMD_READ0, 0x00, page);
+@@ -1547,7 +1554,7 @@ read_retry:
+                                ret = chip->ecc.read_page(mtd, chip, bufpoi,
+                                                          oob_required, page);
+                        if (ret < 0) {
+-                               if (!aligned)
++                               if (!aligned || use_bufpoi)
+                                        /* Invalidate page cache */
+                                        chip->pagebuf = -1;
+                                break;
+@@ -1556,7 +1563,7 @@ read_retry:
+                        max_bitflips = max_t(unsigned int, max_bitflips, ret);
+
+                        /* Transfer not aligned data */
+-                       if (!aligned) {
++                       if (!aligned || use_bufpoi) {
+                                if (!NAND_HAS_SUBPAGE_READ(chip) && !oob &&
+                                    !(mtd->ecc_stats.failed - ecc_failures) &&
+                                    (ops->mode != MTD_OPS_RAW)) {
+@@ -2376,11 +2383,19 @@ static int nand_do_write_ops(struct mtd_info
+*mtd, loff_t to,
+                int bytes = mtd->writesize;
+                int cached = writelen > bytes && page != blockmask;
+                uint8_t *wbuf = buf;
+-
+-               /* Partial page write? */
+-               if (unlikely(column || writelen < (mtd->writesize - 1))) {
++               int use_bufpoi = (chip->options & NAND_USE_BOUNCE_BUFFER ?
++                                 !virt_addr_valid(buf) : 0);
++               int part_pagewr = unlikely(column ||
++                                          writelen < (mtd->writesize - 1));
++
++               /* Partial page write?, or need to use bounce buffer */
++               if (part_pagewr || use_bufpoi) {
++                       pr_debug("%s: using write bounce buffer\n", __func__);
+                        cached = 0;
+                        bytes = min_t(int, bytes - column, (int) writelen);
++                       if (part_pagewr)
++                               bytes = min_t(int,
++                                             bytes - column, (int) writelen);
+                        chip->pagebuf = -1;
+                        memset(chip->buffers->databuf, 0xff, mtd->writesize);
+                        memcpy(&chip->buffers->databuf[column], buf, bytes);
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 450d61e..bb3e064 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -176,6 +176,11 @@ typedef enum {
+ /* Chip may not exist, so silence any errors in scan */
+ #define NAND_SCAN_SILENT_NODEV 0x00040000
+ /*
++ * This option is defined to protect against kmapped buffers
++ * being passed from highmem when using DMA
++ */
++#define NAND_USE_BOUNCE_BUFFER 0x00080000
++/*
+  * Autodetect nand buswidth with readid/onfi.
+  * This suppose the driver will configure the hardware in 8 bits mode
+  * when calling nand_scan_ident, and update its configuration
+--
+1.9.2
