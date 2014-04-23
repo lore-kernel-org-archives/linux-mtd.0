@@ -1,17 +1,20 @@
+Received: from comal.ext.ti.com ([198.47.26.152])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WcqhI-0000Ze-L7
+ for linux-mtd@lists.infradead.org; Wed, 23 Apr 2014 06:30:21 +0000
 From: "Gupta, Pekon" <pekon@ti.com>
-To: Wolfram Sang <wsa@the-dreams.de>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-Subject: RE: [PATCH] mtd: elm: compile suspend/resume only with PM_SLEEP
-Date: Wed, 23 Apr 2014 06:00:58 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EAC497C@DBDE04.ent.ti.com>
-References: <1397720349-5825-1-git-send-email-wsa@the-dreams.de>
-In-Reply-To: <1397720349-5825-1-git-send-email-wsa@the-dreams.de>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: RE: [PATCH v2] mtd: nand: omap: fix BCHx ecc.correct to return
+ detected bit-flips in erased-page
+Date: Wed, 23 Apr 2014 06:29:47 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EAC49CF@DBDE04.ent.ti.com>
+References: <1395730699-14687-1-git-send-email-pekon@ti.com> 
 Content-Language: en-US
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Cc: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: Stefan Roese <sr@denx.de>, linux-mtd <linux-mtd@lists.infradead.org>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,45 +24,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From: Wolfram Sang <wsa@sang-engineering.com>
->
->Fixes:
->drivers/mtd/devices/elm.c:480:12: warning: 'elm_suspend' defined but not u=
-sed [-Wunused-function]
->drivers/mtd/devices/elm.c:488:12: warning: 'elm_resume' defined but not us=
-ed [-Wunused-function]
->
->Signed-off-by: Wolfram Sang <wsa@sang-engineering.com>
->---
-> drivers/mtd/devices/elm.c | 2 ++
-> 1 file changed, 2 insertions(+)
->
->diff --git a/drivers/mtd/devices/elm.c b/drivers/mtd/devices/elm.c
->index 1fd4a0f77967..0a037b15c11b 100644
->--- a/drivers/mtd/devices/elm.c
->+++ b/drivers/mtd/devices/elm.c
->@@ -418,6 +418,7 @@ static int elm_remove(struct platform_device *pdev)
-> 	return 0;
-> }
->
->+#ifdef CONFIG_PM_SLEEP
-> /**
->  * elm_context_save
->  * saves ELM configurations to preserve them across Hardware powered-down
->@@ -509,6 +510,7 @@ static int elm_resume(struct device *dev)
-> 	elm_context_restore(info);
-> 	return 0;
-> }
->+#endif
->
-> static SIMPLE_DEV_PM_OPS(elm_pm_ops, elm_suspend, elm_resume);
->
->--
->1.9.1
->
-Acked-by: Pekon Gupta <pekon@ti.com>
+Hi Brian,
 
-I think it's safe to mark it for stable also
-CC: <stable@vger.kernel.org> # 3.12.x+
+>>fixes: commit 62116e5171e00f85a8d53f76e45b84423c89ff34
+>>       mtd: nand: omap2: Support for hardware BCH error correction.
+>>
+>>In omap_elm_correct_data(), if bitflip_count in an erased-page is within =
+the
+>>correctable limit (< ecc.strength), then it is not indicated back to the =
+caller
+>>ecc->read_page().
+>>This mis-guides upper layers like MTD and UBIFS layer to assume erased-pa=
+ge as
+>>perfectly clean and use it for writing even if actual bitflip_count was
+>>dangerously high (bitflip_count > mtd->bitflip_threshold).
+>>
+>>This patch fixes this above issue, by returning 'stats' to caller
+>>ecc->read_page() under all scenarios.
+>>
+>>Reported-by: Brian Norris <computersforpeace@gmail.com>
+>>Signed-off-by: Pekon Gupta <pekon@ti.com>
+>>---
+>I you think this qualifies for stable then please mark it for
+>CC: <stable@vger.kernel.org> # 3.9.x+
+>
+>
+Ping on this..=20
 
 with regards, pekon
