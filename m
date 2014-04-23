@@ -1,17 +1,20 @@
-From: Huang Shijie <b32955@freescale.com>
-To: <dwmw2@infradead.org>
-Subject: [PATCH v1 6/7] mtd: fsl-quadspi: use the information stored in
- spi-nor{}
-Date: Wed, 23 Apr 2014 18:16:54 +0800
-Message-ID: <1398248215-26768-7-git-send-email-b32955@freescale.com>
-In-Reply-To: <a>
-References: <a>
+Received: from mail-out.m-online.net ([212.18.0.10])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WcwaJ-00015V-0G
+ for linux-mtd@lists.infradead.org; Wed, 23 Apr 2014 12:47:32 +0000
+From: Marek Vasut <marex@denx.de>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH] Documentation: mtd: update the document for m25p80
+Date: Wed, 23 Apr 2014 14:28:10 +0200
+References: <1398237167-23881-1-git-send-email-b32955@freescale.com>
+In-Reply-To: <1398237167-23881-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: marex@denx.de, devicetree@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-spi@vger.kernel.org, Huang Shijie <b32955@freescale.com>,
- linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- linux-arm-kernel@lists.infradead.org
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201404231428.10487.marex@denx.de>
+Cc: linux-mtd@lists.infradead.org, devicetree-discuss@lists.ozlabs.org,
+ computersforpeace@gmail.com, dwmw2@infradead.org, linux-doc@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,107 +24,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We can get the read/write/erase opcode from the spi nor framework now.
-What's more is that we can get the correct dummy cycles.
+On Wednesday, April 23, 2014 at 09:12:47 AM, Huang Shijie wrote:
+> The m25p80.c has used the SPI NOR framework now, and the m25p_ids has
+> been moved to spi-nor.c and renamed to spi_nor_ids.
+> 
+> This patch updates the document for m25p80.
+> 
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
 
-This patch uses the information stored in the spi_nor{} to remove the
-hardcode in the fsl_qspi_init_lut().
+Acked-by: Marek Vasut <marex@denx.de>
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
----
- drivers/mtd/spi-nor/fsl-quadspi.c |   57 ++++++++++++------------------------
- 1 files changed, 19 insertions(+), 38 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-index 15bdeb9..0a2901e 100644
---- a/drivers/mtd/spi-nor/fsl-quadspi.c
-+++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-@@ -280,8 +280,10 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
- {
- 	void __iomem *base = q->iobase;
- 	int rxfifo = q->devtype_data->rxfifo;
-+	struct spi_nor *nor = &q->nor[0];
-+	u8 addrlen = (nor->addr_width == 3) ? ADDR24BIT : ADDR32BIT;
- 	u32 lut_base;
--	u8 cmd, addrlen, dummy;
-+	u8 op, dm;
- 	int i;
- 
- 	fsl_qspi_unlock_lut(q);
-@@ -292,40 +294,29 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
- 
- 	/* Quad Read */
- 	lut_base = SEQID_QUAD_READ * 4;
--
--	if (q->nor_size <= SZ_16M) {
--		cmd = SPINOR_OP_READ_1_1_4;
--		addrlen = ADDR24BIT;
--		dummy = 8;
--	} else {
--		/* use the 4-byte address */
--		cmd = SPINOR_OP_READ_1_1_4;
--		addrlen = ADDR32BIT;
--		dummy = 8;
-+	op = nor->read_opcode;
-+	dm = nor->read_dummy;
-+	if (nor->flash_read == SPI_NOR_QUAD) {
-+		if (op == SPINOR_OP_READ_1_1_4 || op == SPINOR_OP_READ4_1_1_4) {
-+			/* read mode : 1-1-4 */
-+			writel(LUT0(CMD, PAD1, op) | LUT1(ADDR, PAD1, addrlen),
-+				base + QUADSPI_LUT(lut_base));
-+
-+			writel(LUT0(DUMMY, PAD1, dm) | LUT1(READ, PAD4, rxfifo),
-+				base + QUADSPI_LUT(lut_base + 1));
-+		} else {
-+			dev_err(nor->dev,
-+				"Unsupported cmd:%.2x\n", nor->read_opcode);
-+		}
- 	}
- 
--	writel(LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
--			base + QUADSPI_LUT(lut_base));
--	writel(LUT0(DUMMY, PAD1, dummy) | LUT1(READ, PAD4, rxfifo),
--			base + QUADSPI_LUT(lut_base + 1));
--
- 	/* Write enable */
- 	lut_base = SEQID_WREN * 4;
- 	writel(LUT0(CMD, PAD1, SPINOR_OP_WREN), base + QUADSPI_LUT(lut_base));
- 
- 	/* Page Program */
- 	lut_base = SEQID_PP * 4;
--
--	if (q->nor_size <= SZ_16M) {
--		cmd = SPINOR_OP_PP;
--		addrlen = ADDR24BIT;
--	} else {
--		/* use the 4-byte address */
--		cmd = SPINOR_OP_PP;
--		addrlen = ADDR32BIT;
--	}
--
--	writel(LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
-+	writel(LUT0(CMD, PAD1, nor->program_opcode) | LUT1(ADDR, PAD1, addrlen),
- 			base + QUADSPI_LUT(lut_base));
- 	writel(LUT0(WRITE, PAD1, 0), base + QUADSPI_LUT(lut_base + 1));
- 
-@@ -336,17 +327,7 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
- 
- 	/* Erase a sector */
- 	lut_base = SEQID_SE * 4;
--
--	if (q->nor_size <= SZ_16M) {
--		cmd = SPINOR_OP_SE;
--		addrlen = ADDR24BIT;
--	} else {
--		/* use the 4-byte address */
--		cmd = SPINOR_OP_SE;
--		addrlen = ADDR32BIT;
--	}
--
--	writel(LUT0(CMD, PAD1, cmd) | LUT1(ADDR, PAD1, addrlen),
-+	writel(LUT0(CMD, PAD1, nor->erase_opcode) | LUT1(ADDR, PAD1, addrlen),
- 			base + QUADSPI_LUT(lut_base));
- 
- 	/* Erase the whole chip */
--- 
-1.7.2.rc3
+Best regards,
+Marek Vasut
