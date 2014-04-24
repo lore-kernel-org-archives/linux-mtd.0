@@ -1,20 +1,18 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wd75F-0006pi-03
- for linux-mtd@lists.infradead.org; Thu, 24 Apr 2014 00:00:09 +0000
-Date: Wed, 23 Apr 2014 20:59:11 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH for v3.15 0/2] UBI: block: Support very large volumes
-Message-ID: <20140423235911.GB1628@arch.cereza>
-References: <1397741023-2122-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Date: Thu, 24 Apr 2014 12:50:29 +0800
+From: Huang Shijie <b32955@freescale.com>
+To: Marek Vasut <marex@denx.de>
+Subject: Re: [PATCH v1 1/7] mtd: spi-nor: fix the wrong dummy value
+Message-ID: <20140424045027.GA29664@localhost>
+References: <a> <1398248215-26768-2-git-send-email-b32955@freescale.com>
+ <201404232141.27005.marex@denx.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1397741023-2122-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: Richard Weinberger <richard@nod.at>
+In-Reply-To: <201404232141.27005.marex@denx.de>
+Cc: devicetree@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
+ computersforpeace@gmail.com, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,38 +22,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem,
+On Wed, Apr 23, 2014 at 09:41:26PM +0200, Marek Vasut wrote:
+> On Wednesday, April 23, 2014 at 12:16:49 PM, Huang Shijie wrote:
+> > For the DDR Quad read, the dummy cycles maybe 3 or 6 which is less then 8.
+> > The dummy cycles is actually 8 for SPI fast/dual/quad read.
+> > 
+> > This patch makes preparations for the DDR quad read, it fixes the wrong
+> > dummy value for both the spi-nor.c and m25p80.c.
+> > 
+> > Signed-off-by: Huang Shijie <b32955@freescale.com>
+> 
+> This patch is actually V2, right ?
+yes.
 
-On Apr 17, Ezequiel Garcia wrote:
-> This is a re-spin of Richard's work [1]. I've added a patch for some minor
-> clean-up, so the large volume fix is a less intrusive one.
+I mentioned it in the cover letter. Since other patches are the V1.
+I did not change it to v2.
 > 
-> The proposed returned value E2BIG has been changed for EFBIG, which results
-> in a slightly more accurate error. Also, the user messages have been removed
-> entirely; returning an error seems enough.
+> > ---
+> >  drivers/mtd/devices/m25p80.c  |    5 ++++-
+> >  drivers/mtd/spi-nor/spi-nor.c |    2 +-
+> >  2 files changed, 5 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+> > index 1557d8f..693e25f 100644
+> > --- a/drivers/mtd/devices/m25p80.c
+> > +++ b/drivers/mtd/devices/m25p80.c
+> > @@ -128,9 +128,12 @@ static int m25p80_read(struct spi_nor *nor, loff_t
+> > from, size_t len, struct spi_device *spi = flash->spi;
+> >  	struct spi_transfer t[2];
+> >  	struct spi_message m;
+> > -	int dummy = nor->read_dummy;
+> > +	unsigned int dummy = nor->read_dummy;
+> >  	int ret;
+> > 
+> > +	/* convert the dummy cycles to the number of byte */
 > 
-> This bug was reported on #mtd IRC. I don't have to reporter name to give proper
-> credit. It should be applied as a fix for v3.15.
-> 
-> Richard: Thanks a lot for hunting this down, and feel free to disagree about
-> my changes.
-> 
-> [1] https://lkml.org/lkml/2014/3/19/333
->  
-> Ezequiel Garcia (1):
->   UBI: block: Set disk_capacity out of the mutex
-> 
-> Richard Weinberger (1):
->   UBI: block: Avoid disk size integer overflow
-> 
->  drivers/mtd/ubi/block.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
-> 
+> 'bytes', plural ...
+I will change it in the next version.
 
-Do you think you can pick this for v3.15-rc3?
+thanks.
 
-Thanks!
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+Huang Shijie
