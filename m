@@ -1,13 +1,13 @@
-Received: from mail-bn1blp0182.outbound.protection.outlook.com
- ([207.46.163.182] helo=na01-bn1-obe.outbound.protection.outlook.com)
+Received: from mail-bn1lp0142.outbound.protection.outlook.com
+ ([207.46.163.142] helo=na01-bn1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WdWDT-0007B8-GA
- for linux-mtd@lists.infradead.org; Fri, 25 Apr 2014 02:50:20 +0000
-Date: Fri, 25 Apr 2014 09:52:46 +0800
+ id 1WdWFF-0000QI-Sh
+ for linux-mtd@lists.infradead.org; Fri, 25 Apr 2014 02:52:10 +0000
+Date: Fri, 25 Apr 2014 09:54:38 +0800
 From: Huang Shijie <b32955@freescale.com>
 To: Marek Vasut <marex@denx.de>
 Subject: Re: [PATCH V3] Add support for flag status register on Micron chips.
-Message-ID: <20140425015245.GB24530@localhost>
+Message-ID: <20140425015437.GC24530@localhost>
 References: <1398175396-7560-1-git-send-email-grmoore@altera.com>
  <1398175396-7560-2-git-send-email-grmoore@altera.com>
  <20140425013434.GA24530@localhost> <201404250442.33197.marex@denx.de>
@@ -177,19 +177,13 @@ On Fri, Apr 25, 2014 at 04:42:33AM +0200, Marek Vasut wrote:
 > > 	       	nor->wait_till_ready == spi_nor_wait_till_fsr_ready)
 > > 		nor->wait_till_ready = spi_nor_wait_till_fsr_ready;
 > >    --------------------------------------------------
-> 
-> I sense a misdesign of the SPI NOR subsystem here. The subsystem and the driver 
-> compete for a function pointer here ? I guess one should have precedence in some 
-> way then ... and also, they should be two different pointers, where the 
-> subsystem decides which to use.
-the subsystem do not decides which one to use, the driver decides which one to use.
-
-If driver has its own @wait_till_ready , it means the driver knows the feature,
-and has implemented it in its own @wait_till_ready.
-
-If the driver does not fill any wait_till_ready, it means the driver will use the
-default @wait_till_ready. We can treat the spi_nor_wait_till_fsr_ready as a default hook 
-too.
+sorry, the code should like this:
+   --------------------------------------------------
+   if ((info->flags & USE_FSR) &&
+          	nor->wait_till_ready == spi_nor_wait_till_ready)
+   	nor->wait_till_ready = spi_nor_wait_till_fsr_ready;
+  --------------------------------------------------
+	  
 
 thanks
 Huang Shijie
