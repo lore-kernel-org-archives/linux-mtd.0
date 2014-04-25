@@ -1,23 +1,30 @@
-Received: from mail-bl2lp0203.outbound.protection.outlook.com
- ([207.46.163.203] helo=na01-bl2-obe.outbound.protection.outlook.com)
+Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wdbwh-00027f-Fb
- for linux-mtd@lists.infradead.org; Fri, 25 Apr 2014 08:57:23 +0000
-Date: Fri, 25 Apr 2014 15:59:45 +0800
-From: Huang Shijie <b32955@freescale.com>
-To: Kamal Dasu <kdasu.kdev@gmail.com>
-Subject: Re: [PATCH v2] mtd: nand: Add support to use nand_base poi databuf
- as bounce buffer
-Message-ID: <20140425075943.GA2221@localhost>
-References: <1398375634-24759-1-git-send-email-kdasu.kdev@gmail.com>
- <5359C361.9000302@freescale.com>
- <CAC=U0a0OwJe4f4ZC6GBWzrVZ6fF1Lq=QB1E0ZBANww=k7L4cXA@mail.gmail.com>
- <20140425074310.GA2117@localhost>
+ id 1Wdidr-0005PK-Aa
+ for linux-mtd@lists.infradead.org; Fri, 25 Apr 2014 16:06:24 +0000
+From: Marek Vasut <marex@denx.de>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH V3] Add support for flag status register on Micron chips.
+Date: Fri, 25 Apr 2014 17:50:54 +0200
+References: <1398175396-7560-1-git-send-email-grmoore@altera.com>
+ <CA+iBjpR=CYd5JRs6u+BCbqicjoMqRwFRFRS7OFxOrYjetg5mgQ@mail.gmail.com>
+ <20140425044703.GD24530@localhost>
+In-Reply-To: <20140425044703.GD24530@localhost>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20140425074310.GA2117@localhost>
-Cc: linux-mtd@lists.infradead.org
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201404251750.54582.marex@denx.de>
+Cc: Graham Moore <ggrahammoore@gmail.com>,
+ Insop Song <insop.song@gainspeed.com>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Jingoo Han <jg1.han@samsung.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Geert Uytterhoeven <geert+renesas@linux-m68k.org>,
+ linux-kernel@vger.kernel.org, Yves Vandervennet <rocket.yvanderv@gmail.com>,
+ linux-mtd@lists.infradead.org, Graham Moore <grmoore@altera.com>,
+ Alan Tull <atull@altera.com>, Sourav Poddar <sourav.poddar@ti.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen <dinguyen@altera.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,37 +34,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Apr 25, 2014 at 03:43:13PM +0800, Huang Shijie wrote:
-> On Thu, Apr 24, 2014 at 11:52:41PM -0400, Kamal Dasu wrote:
-> > Huang,
+On Friday, April 25, 2014 at 06:47:04 AM, Huang Shijie wrote:
+> On Tue, Apr 22, 2014 at 01:48:21PM -0500, Graham Moore wrote:
+> > On Tue, Apr 22, 2014 at 11:55 AM, Marek Vasut <marex@denx.de> wrote:
+> > > Are you sure the n25q512a doesn't use FSR ? Do n25q512a{1,8}3 share the
+> > > same IDs?
 > > 
-> > "could you show us how do the driver use the highmem buffer?"
-> > 
-> > This is the stack on a BMIPS platform we are doing a read dma transaction.
-> > drv_*  calls are from out of tree nand controller  driver. This
-> I can read the driver since it is not in the l2-mtd. :(
-
-s/can/can't/		
-
+> > I looked at the datasheet and the n25q512a *does* have the same FSR
+> > usage note, so I suppose I should add USE_FSR to it as well.  But how
+> > is it working now?  Maybe nobody is actually using that chip.
+> > Yes, n25q512a{1,8}3 share the same id, 0x20ba20.
 > 
-> > example shows the driver trying to map
-> > highmem virtual address(0xfe1141e0)  for DMA operation passed from
+> could use the ext_id to distinguish them ? just as we did for Spansion NOR.
 > 
-> Which dma api do you use?
+> i dumped out 5 bytes of my n25q256a: 0x20, 0xba, 0x19, 0x10, 0x00.
 
-In the ARM platform, we use the sg_init_one to initialize the sg.
+The q256 and q512 are rather different chips it seems to me ...
 
-It can only convert the kmalloc memory, please see the code:
-
-   #define __virt_to_phys(x)	((x) - PAGE_OFFSET + PHYS_OFFSET)
-
-It does a linear convert for a kernel address.
-So in the ARM platform, it can _NOT_ support the highmem which is not linear.
-
-
-I am not familiar with MIPS.
-
-I do not know how the MIPS convert the highmem address.
-
-thanks
-Huang Shijie
+Best regards,
+Marek Vasut
