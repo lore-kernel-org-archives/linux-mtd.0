@@ -1,14 +1,31 @@
-Received: from ppp118-210-9-147.lns20.adl2.internode.on.net ([118.210.9.147]
- helo=audi.shelbyville.oz)
+Received: from mail-by2lp0238.outbound.protection.outlook.com
+ ([207.46.163.238] helo=na01-by2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WdYrF-0004KK-0b
- for linux-mtd@lists.infradead.org; Fri, 25 Apr 2014 05:39:33 +0000
-From: Ron <ron@debian.org>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH] NAND_ECC_SOFT_BCH can support subpage reads too
-Date: Fri, 25 Apr 2014 15:01:35 +0930
-Message-Id: <1398403895-5176-1-git-send-email-ron@debian.org>
+ id 1WdYwH-0006Md-6E
+ for linux-mtd@lists.infradead.org; Fri, 25 Apr 2014 05:44:46 +0000
+Date: Fri, 25 Apr 2014 12:47:04 +0800
+From: Huang Shijie <b32955@freescale.com>
+To: Graham Moore <ggrahammoore@gmail.com>
+Subject: Re: [PATCH V3] Add support for flag status register on Micron chips.
+Message-ID: <20140425044703.GD24530@localhost>
+References: <1398175396-7560-1-git-send-email-grmoore@altera.com>
+ <1398175396-7560-2-git-send-email-grmoore@altera.com>
+ <201404221855.57247.marex@denx.de>
+ <CA+iBjpR=CYd5JRs6u+BCbqicjoMqRwFRFRS7OFxOrYjetg5mgQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <CA+iBjpR=CYd5JRs6u+BCbqicjoMqRwFRFRS7OFxOrYjetg5mgQ@mail.gmail.com>
+Cc: Marek Vasut <marex@denx.de>,
+ Geert Uytterhoeven <geert+renesas@linux-m68k.org>,
+ Insop Song <insop.song@gainspeed.com>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Jingoo Han <jg1.han@samsung.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-kernel@vger.kernel.org, Yves Vandervennet <rocket.yvanderv@gmail.com>,
+ linux-mtd@lists.infradead.org, Graham Moore <grmoore@altera.com>,
+ Alan Tull <atull@altera.com>, Sourav Poddar <sourav.poddar@ti.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen <dinguyen@altera.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,33 +35,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Ron Lee <ron@debian.org>
----
- drivers/mtd/nand/nand_base.c |   12 ++++++++++--
- 1 files changed, 10 insertions(+), 2 deletions(-)
+On Tue, Apr 22, 2014 at 01:48:21PM -0500, Graham Moore wrote:
+> On Tue, Apr 22, 2014 at 11:55 AM, Marek Vasut <marex@denx.de> wrote:
+> > Are you sure the n25q512a doesn't use FSR ? Do n25q512a{1,8}3 share the same
+> > IDs?
+> 
+> I looked at the datasheet and the n25q512a *does* have the same FSR
+> usage note, so I suppose I should add USE_FSR to it as well.  But how
+> is it working now?  Maybe nobody is actually using that chip.
+> Yes, n25q512a{1,8}3 share the same id, 0x20ba20.
+> 
+could use the ext_id to distinguish them ? just as we did for Spansion NOR.
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 9d01c4d..7f5b814 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -4023,8 +4023,16 @@ int nand_scan_tail(struct mtd_info *mtd)
- 	chip->pagebuf = -1;
- 
- 	/* Large page NAND with SOFT_ECC should support subpage reads */
--	if ((ecc->mode == NAND_ECC_SOFT) && (chip->page_shift > 9))
--		chip->options |= NAND_SUBPAGE_READ;
-+	switch (ecc->mode) {
-+	case NAND_ECC_SOFT:
-+	case NAND_ECC_SOFT_BCH:
-+		if (chip->page_shift > 9)
-+			chip->options |= NAND_SUBPAGE_READ;
-+		break;
-+
-+	default:
-+		break;
-+	}
- 
- 	/* Fill in remaining MTD driver data */
- 	mtd->type = nand_is_slc(chip) ? MTD_NANDFLASH : MTD_MLCNANDFLASH;
--- 
-1.7.2.5
+i dumped out 5 bytes of my n25q256a: 0x20, 0xba, 0x19, 0x10, 0x00.
+
+thanks
+Huang Shijie
