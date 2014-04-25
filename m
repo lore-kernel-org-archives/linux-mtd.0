@@ -1,30 +1,22 @@
-Received: from mail-bn1lp0142.outbound.protection.outlook.com
- ([207.46.163.142] helo=na01-bn1-obe.outbound.protection.outlook.com)
+Received: from mail-vc0-x236.google.com ([2607:f8b0:400c:c03::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WdWFF-0000QI-Sh
- for linux-mtd@lists.infradead.org; Fri, 25 Apr 2014 02:52:10 +0000
-Date: Fri, 25 Apr 2014 09:54:38 +0800
-From: Huang Shijie <b32955@freescale.com>
-To: Marek Vasut <marex@denx.de>
-Subject: Re: [PATCH V3] Add support for flag status register on Micron chips.
-Message-ID: <20140425015437.GC24530@localhost>
-References: <1398175396-7560-1-git-send-email-grmoore@altera.com>
- <1398175396-7560-2-git-send-email-grmoore@altera.com>
- <20140425013434.GA24530@localhost> <201404250442.33197.marex@denx.de>
+ id 1WdXCD-0007IK-9F
+ for linux-mtd@lists.infradead.org; Fri, 25 Apr 2014 03:53:05 +0000
+Received: by mail-vc0-f182.google.com with SMTP id lf12so1860209vcb.13
+ for <linux-mtd@lists.infradead.org>; Thu, 24 Apr 2014 20:52:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <201404250442.33197.marex@denx.de>
-Cc: ggrahammoore@gmail.com, Graham Moore <grmoore@altera.com>,
- Sascha Hauer <s.hauer@pengutronix.de>, Jingoo Han <jg1.han@samsung.com>,
- Geert Uytterhoeven <geert+renesas@linux-m68k.org>,
- linux-kernel@vger.kernel.org, Yves Vandervennet <rocket.yvanderv@gmail.com>,
- linux-mtd@lists.infradead.org,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Alan Tull <atull@altera.com>, Sourav Poddar <sourav.poddar@ti.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Insop Song <insop.song@gainspeed.com>, David Woodhouse <dwmw2@infradead.org>,
- Dinh Nguyen <dinguyen@altera.com>
+In-Reply-To: <5359C361.9000302@freescale.com>
+References: <1398375634-24759-1-git-send-email-kdasu.kdev@gmail.com>
+ <5359C361.9000302@freescale.com>
+Date: Thu, 24 Apr 2014 23:52:41 -0400
+Message-ID: <CAC=U0a0OwJe4f4ZC6GBWzrVZ6fF1Lq=QB1E0ZBANww=k7L4cXA@mail.gmail.com>
+Subject: Re: [PATCH v2] mtd: nand: Add support to use nand_base poi databuf as
+ bounce buffer
+From: Kamal Dasu <kdasu.kdev@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,156 +26,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Apr 25, 2014 at 04:42:33AM +0200, Marek Vasut wrote:
-> On Friday, April 25, 2014 at 03:34:36 AM, Huang Shijie wrote:
-> > On Tue, Apr 22, 2014 at 09:03:16AM -0500, Graham Moore wrote:
-> > > Some new Micron flash chips require reading the flag
-> > > status register to determine when operations have completed.
-> > > 
-> > > Furthermore, chips with multi-die stacks of the 65nm 256Mb QSPI also
-> > > require reading the status register before reading the flag status
-> > > register.
-> > > 
-> > > This patch adds support for the flag status register in the n25q512ax3
-> > > and n25q00 Micron QSPI flash chips.
-> > > 
-> > > Signed-off-by: Graham Moore <grmoore@altera.com>
-> > > ---
-> > > V3:
-> > > Rebase to l2-mtd spinor branch.
-> > > V2:
-> > > Remove leading underscore in function names.
-> > > Remove type cast in dev_err call and use the proper format
-> > > specifier instead.
-> > > ---
-> > > 
-> > >  drivers/mtd/spi-nor/spi-nor.c |   51
-> > >  +++++++++++++++++++++++++++++++++++++++++ include/linux/mtd/spi-nor.h  
-> > >  |    4 ++++
-> > >  2 files changed, 55 insertions(+)
-> > > 
-> > > diff --git a/drivers/mtd/spi-nor/spi-nor.c
-> > > b/drivers/mtd/spi-nor/spi-nor.c index d6f44d5..24b84d8 100644
-> > > --- a/drivers/mtd/spi-nor/spi-nor.c
-> > > +++ b/drivers/mtd/spi-nor/spi-nor.c
-> > > @@ -48,6 +48,25 @@ static int read_sr(struct spi_nor *nor)
-> > > 
-> > >  }
-> > >  
-> > >  /*
-> > > 
-> > > + * Read the flag status register, returning its value in the location
-> > > + * Return the status register value.
-> > > + * Returns negative if error occurred.
-> > > + */
-> > > +static int read_fsr(struct spi_nor *nor)
-> > > +{
-> > > +	int ret;
-> > > +	u8 val;
-> > > +
-> > > +	ret = nor->read_reg(nor, SPINOR_OP_RDFSR, &val, 1);
-> > > +	if (ret < 0) {
-> > > +		pr_err("error %d reading FSR\n", ret);
-> > > +		return ret;
-> > > +	}
-> > > +
-> > > +	return val;
-> > > +}
-> > > +
-> > > +/*
-> > > 
-> > >   * Read configuration register, returning its value in the
-> > >   * location. Return the configuration register value.
-> > >   * Returns negative if error occured.
-> > > 
-> > > @@ -165,6 +184,32 @@ static int spi_nor_wait_till_ready(struct spi_nor
-> > > *nor)
-> > > 
-> > >  	return -ETIMEDOUT;
-> > >  
-> > >  }
-> > > 
-> > > +static int spi_nor_wait_till_fsr_ready(struct spi_nor *nor)
-> > > +{
-> > > +	unsigned long deadline;
-> > > +	int sr;
-> > > +	int fsr;
-> > > +
-> > > +	deadline = jiffies + MAX_READY_WAIT_JIFFIES;
-> > > +
-> > > +	do {
-> > > +		cond_resched();
-> > > +
-> > > +		sr = read_sr(nor);
-> > > +		if (sr < 0)
-> > > +			break;
-> > > +		else if (!(sr & SR_WIP)) {
-> > > +			fsr = read_fsr(nor);
-> > > +			if (fsr < 0)
-> > > +				break;
-> > > +			if (fsr & FSR_READY)
-> > > +				return 0;
-> > > +		}
-> > > +	} while (!time_after_eq(jiffies, deadline));
-> > > +
-> > > +	return -ETIMEDOUT;
-> > > +}
-> > > +
-> > > 
-> > >  /*
-> > >  
-> > >   * Service routine to read status register until ready, or timeout
-> > >   occurs. * Returns non-zero if error.
-> > > 
-> > > @@ -402,6 +447,7 @@ struct flash_info {
-> > > 
-> > >  #define	SECT_4K_PMC		0x10	/* SPINOR_OP_BE_4K_PMC works 
-> uniformly */
-> > >  #define	SPI_NOR_DUAL_READ	0x20    /* Flash supports Dual Read */
-> > >  #define	SPI_NOR_QUAD_READ	0x40    /* Flash supports Quad Read */
-> > > 
-> > > +#define	USE_FSR			0x80	/* use flag status register */
-> > > 
-> > >  };
-> > >  
-> > >  #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)	\
-> > > 
-> > > @@ -488,6 +534,8 @@ const struct spi_device_id spi_nor_ids[] = {
-> > > 
-> > >  	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, 0) },
-> > >  	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K) },
-> > >  	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K) },
-> > > 
-> > > +	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, USE_FSR) },
-> > > +	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, USE_FSR) },
-> > > 
-> > >  	/* PMC */
-> > >  	{ "pm25lv512",   INFO(0,        0, 32 * 1024,    2, SECT_4K_PMC) },
-> > > 
-> > > @@ -965,6 +1013,9 @@ int spi_nor_scan(struct spi_nor *nor, const struct
-> > > spi_device_id *id,
-> > > 
-> > >  	else
-> > >  	
-> > >  		mtd->_write = spi_nor_write;
-> > > 
-> > > +	if (info->flags & USE_FSR)
-> > > +		nor->wait_till_ready = spi_nor_wait_till_fsr_ready;
-> > > +
-> > 
-> > the drivers may fills this hook itself, so the code should like this:
-> >    --------------------------------------------------
-> > 	if ((info->flags & USE_FSR) &&
-> > 	       	nor->wait_till_ready == spi_nor_wait_till_fsr_ready)
-> > 		nor->wait_till_ready = spi_nor_wait_till_fsr_ready;
-> >    --------------------------------------------------
-sorry, the code should like this:
-   --------------------------------------------------
-   if ((info->flags & USE_FSR) &&
-          	nor->wait_till_ready == spi_nor_wait_till_ready)
-   	nor->wait_till_ready = spi_nor_wait_till_fsr_ready;
-  --------------------------------------------------
-	  
+Huang,
 
-thanks
-Huang Shijie
+"could you show us how do the driver use the highmem buffer?"
+
+This is the stack on a BMIPS platform we are doing a read dma transaction.
+drv_*  calls are from out of tree nand controller  driver. This
+example shows the driver trying to map
+highmem virtual address(0xfe1141e0)  for DMA operation passed from
+higher layer, and we get an oops.
+
+[<80010764>] mips_dma_map_page+0x64/0x1f8
+[<80394a80>] drv_nand_dma_trans+0xd0/0x23c
+[<80394f60>] drv_nand_read+0x374/0x3dc
+[<8039536c>] drv_nand_read_page+0x78/0x84
+[<803903c8>] nand_do_read_ops+0x1c0/0x48c
+[<80390b2c>] nand_read+0xbc/0xec
+[<8036df10>] part_read+0x7c/0x128
+[<8039fa48>] ubi_io_read+0x98/0x1bc
+[<8039d954>] ubi_eba_read_leb+0x130/0x320
+[<8039cd80>] ubi_leb_read+0xf8/0x164
+[<803a5034>] gluebi_read+0xf0/0x148
+[<801d2b9c>] jffs2_flash_read+0x74/0x284
+[<801c5930>] jffs2_read_dnode+0x140/0x3d0
+[<801c5c88>] jffs2_read_inode_range+0xc8/0x1d0
+[<801c3d0c>] jffs2_do_readpage_nolock+0x5c/0x208
+[<801c4270>] jffs2_do_readpage_unlock+0x14/0x34
+[<80088b68>] do_read_cache_page+0xa4/0x23c
+[<80088d50>] read_cache_page_async+0x20/0x2c
+[<801d0740>] jffs2_gc_fetch_page+0x2c/0x5c
+[<801cc958>] jffs2_garbage_collect_live+0x55c/0xfb0
+[<801cd810>] jffs2_garbage_collect_pass+0x464/0x894
+[<801cf2f8>] jffs2_garbage_collect_thread+0x108/0x224
+[<800481fc>] kthread+0x90/0x98
+[<8000698c>] kernel_thread_helper+0x10/0x18
+
+"In the gpmi driver, i do a memcpy for the highmem buffer passed from
+upper layer."
+
+In the nand controller driver that needs to bounce buffer the
+"chip->option |=3D NAND_USE_BOUNCE_BUFFER" can be set during
+initialization, nand_base uses the already allocated databuf and does
+the memcpy. Much like the unaligned access case. So multiple drivers
+can use this
+generic feature on other platforms as well.
+
+Thanks
+Kamal
+
+On Thu, Apr 24, 2014 at 10:07 PM, Huang Shijie <b32955@freescale.com> wrote=
+:
+> =E4=BA=8E 2014=E5=B9=B404=E6=9C=8825=E6=97=A5 05:40, Kamal Dasu =E5=86=99=
+=E9=81=93:
+>
+>> + * This option is defined to protect against kmapped buffers
+>> + * being passed from highmem when using DMA
+>
+> the dma API can not support the highmem.
+>
+> could you show us how do the driver use the highmem buffer?
+>
+> In the gpmi driver, i do a memcpy for the highmem buffer passed from uppe=
+r
+> layer.
+>
+> thanks
+> Huang Shijie
+>
+>
