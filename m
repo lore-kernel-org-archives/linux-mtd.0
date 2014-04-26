@@ -1,32 +1,17 @@
-Received: from mail-pb0-x236.google.com ([2607:f8b0:400e:c01::236])
+Received: from szxga02-in.huawei.com ([119.145.14.65])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wdt0t-00009J-Gf
- for linux-mtd@lists.infradead.org; Sat, 26 Apr 2014 03:10:52 +0000
-Received: by mail-pb0-f54.google.com with SMTP id rp16so409486pbb.41
- for <linux-mtd@lists.infradead.org>; Fri, 25 Apr 2014 20:10:29 -0700 (PDT)
-Date: Sat, 26 Apr 2014 11:10:13 +0800
-From: Huang Shijie <shijie8@gmail.com>
-To: Marek Vasut <marex@denx.de>
-Subject: Re: [PATCH V3] Add support for flag status register on Micron chips.
-Message-ID: <20140426031011.GA4811@localhost.localdomain>
-References: <1398175396-7560-1-git-send-email-grmoore@altera.com>
- <201404250442.33197.marex@denx.de>
- <20140425015245.GB24530@localhost>
- <201404260012.24311.marex@denx.de>
+ id 1Wdysl-000256-St
+ for linux-mtd@lists.infradead.org; Sat, 26 Apr 2014 09:26:53 +0000
+Message-ID: <535B7B96.9030008@huawei.com>
+Date: Sat, 26 Apr 2014 17:25:42 +0800
+From: hujianyang <hujianyang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <201404260012.24311.marex@denx.de>
-Cc: ggrahammoore@gmail.com, Yves Vandervennet <rocket.yvanderv@gmail.com>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Sascha Hauer <s.hauer@pengutronix.de>, Jingoo Han <jg1.han@samsung.com>,
- Geert Uytterhoeven <geert+renesas@linux-m68k.org>,
- linux-kernel@vger.kernel.org, Huang Shijie <b32955@freescale.com>,
- linux-mtd@lists.infradead.org, Graham Moore <grmoore@altera.com>,
- Alan Tull <atull@altera.com>, Sourav Poddar <sourav.poddar@ti.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Insop Song <insop.song@gainspeed.com>, David Woodhouse <dwmw2@infradead.org>,
- Dinh Nguyen <dinguyen@altera.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>, Laurence Withers
+ <lwithers@guralp.com>
+Subject: [PATCH RFC] UBIFS: Fix assert failed in ubifs_set_page_dirty
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,42 +21,120 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Apr 26, 2014 at 12:12:24AM +0200, Marek Vasut wrote:
-> > > > the drivers may fills this hook itself, so the code should like this:
-> > > >    --------------------------------------------------
-> > > > 	
-> > > > 	if ((info->flags & USE_FSR) &&
-> > > > 	
-> > > > 	       	nor->wait_till_ready == spi_nor_wait_till_fsr_ready)
-> > > > 		
-> > > > 		nor->wait_till_ready = spi_nor_wait_till_fsr_ready;
-> > > > 		
-> > > >    --------------------------------------------------
-> > > 
-> > > I sense a misdesign of the SPI NOR subsystem here. The subsystem and the
-> > > driver compete for a function pointer here ? I guess one should have
-> > > precedence in some way then ... and also, they should be two different
-> > > pointers, where the subsystem decides which to use.
-> > 
-> > the subsystem do not decides which one to use, the driver decides which one
-> > to use.
-> > 
-> > If driver has its own @wait_till_ready , it means the driver knows the
-> > feature, and has implemented it in its own @wait_till_ready.
-> > 
-> > If the driver does not fill any wait_till_ready, it means the driver will
-> > use the default @wait_till_ready. We can treat the
-> > spi_nor_wait_till_fsr_ready as a default hook too.
-> 
-> I see the driver overwriting a hook previously set by the subsystem. This 
-not sure ;)
+Hi,
 
-The driver set the hooks before the subsystem set these hooks.
+I meet some assert failed as Laurence Withers reported in February.
 
-If the driver has already set the @wait_till_ready hook before it calls
-the spi_nor_scan, the subsystem will not set the hook anymore.
+show like this:
 
-Please see the spi_nor_check().
+[69440.577932] UBIFS assert failed in ubifs_set_page_dirty at 1421 (pid 2067)
+[69440.658567] UBIFS assert failed in ubifs_writepage at 1009 (pid 2069)
+[69440.735605] UBIFS assert failed in do_writepage at 936 (pid 2069)
+[69440.735881] UBIFS assert failed in ubifs_release_budget at 567 (pid 2069)
+[69440.736360] UBIFS assert failed in ubifs_release_budget at 567 (pid 2069)
+[69441.581541] UBIFS assert failed in ubifs_budget_space at 464 (pid 2070)
+[69441.659118] UBIFS assert failed in ubifs_release_budget at 567 (pid 2072)
+[69441.740405] UBIFS assert failed in ubifs_set_page_dirty at 1421 (pid 2070)
+[69441.822369] UBIFS assert failed in ubifs_writepage at 1009 (pid 2072)
+[69441.899574] UBIFS assert failed in do_writepage at 936 (pid 2072)
+[69441.899853] UBIFS assert failed in ubifs_release_budget at 567 (pid 2072)
+[69450.677679] UBIFS assert failed in ubifs_release_budget at 567 (pid 6)
+[69455.757670] UBIFS assert failed in ubifs_release_budget at 567 (pid 6)
+[69458.147075] UBIFS assert failed in ubifs_put_super at 1776 (pid 2077)
 
-thanks
-Huang Shijie
+After communicating with Laurence, I found this assert failed can
+be easily reproduced by running mmap(PROT_WRITE, MAP_SHARED) and
+fsync with same file at same time.
+
+I think there is a race in __do_fault and ubifs_writepage.
+
+We do ->page_mkwrite in __do_fault, perform space budget and set
+PagePrivate, then execute __set_page_dirty_nobuffers to make the
+page dirty. But at the end of ubifs_vm_page_mkwrite, we release
+page lock.
+
+At the same time, fsync process may hold the lock and do ->writepage
+as page is set to dirty in ->page_mkwrite. We will clear page_dirty,
+clear page_private and release budget here. In the end, unlock page.
+
+Mmap then get the lock and perform ->set_page_dirty. We will meet
+the first assert failed here because dirty bit is clear by fsync.
+
+"UBIFS assert failed in ubifs_set_page_dirty at 1421"
+
+static int ubifs_set_page_dirty(struct page *page)
+{
+        int ret;
+
+        ret = __set_page_dirty_nobuffers(page); /* Here reset dirty bit */
+        /*
+         * An attempt to dirty a page without budgeting for it - should not
+         * happen.
+         */
+        ubifs_assert(ret == 0);
+        return ret;
+}
+
+With this assert failed, ->set_page_dirty will reset the dirty bit
+without space budget and SetPagePrivate. When we want to writeback
+this page, we will meet PagePrivate assert failed.
+
+"UBIFS assert failed in ubifs_writepage at 1009 (pid 2069)
+ UBIFS assert failed in do_writepage at 936 (pid 2069)"
+
+Then, release budget without budgeting and meet budget assert failed.
+
+"UBIFS assert failed in ubifs_release_budget at 567
+ UBIFS assert failed in ubifs_budget_space at 464"
+
+c->bi.dd_growth is less than zero now.
+
+I want to fix this problem but I don't have enough knowledge about
+this filesystem. In my fix, I remove __set_page_dirty_nobuffers
+in ->page_mkwrite and just set dirty bit in ->set_page_dirty.
+
+I don't know if my fix works and causes no other problems. I can only
+test it with linux-3.10 and it seems not bad.
+
+-------------------------------------------------------------------
+
+>From 2e7de10767d687c28b90bf013cd20e96b5f0f1a3 Mon Sep 17 00:00:00 2001
+From: hujianyang <hujianyang@huawei.com>
+Date: Sat, 26 Apr 2014 17:17:19 +0800
+Subject: [PATCH] UBIFS: Fix assert failed in ubifs_set_page_dirty
+
+---
+ fs/ubifs/file.c | 11 +----------
+ 1 file changed, 1 insertion(+), 10 deletions(-)
+
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index 4f34dba..0f3e3ac 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -1412,15 +1412,7 @@ static ssize_t ubifs_aio_write(struct kiocb *iocb, const struct iovec *iov,
+
+ static int ubifs_set_page_dirty(struct page *page)
+ {
+-	int ret;
+-
+-	ret = __set_page_dirty_nobuffers(page);
+-	/*
+-	 * An attempt to dirty a page without budgeting for it - should not
+-	 * happen.
+-	 */
+-	ubifs_assert(ret == 0);
+-	return ret;
++	return __set_page_dirty_nobuffers(page);
+ }
+
+ static int ubifs_releasepage(struct page *page, gfp_t unused_gfp_flags)
+@@ -1508,7 +1500,6 @@ static int ubifs_vm_page_mkwrite(struct vm_area_struct *vma,
+ 			ubifs_convert_page_budget(c);
+ 		SetPagePrivate(page);
+ 		atomic_long_inc(&c->dirty_pg_cnt);
+-		__set_page_dirty_nobuffers(page);
+ 	}
+
+ 	if (update_time) {
+-- 
+1.8.5.5
