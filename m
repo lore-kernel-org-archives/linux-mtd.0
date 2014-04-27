@@ -1,22 +1,22 @@
 Received: from smtp.codeaurora.org ([198.145.11.231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WeN7r-0003eV-CU
- for linux-mtd@lists.infradead.org; Sun, 27 Apr 2014 11:20:03 +0000
-Message-ID: <535CE7C9.3010306@codeaurora.org>
-Date: Sun, 27 Apr 2014 14:19:37 +0300
-From: Tanya Brokhman <tlinder@codeaurora.org>
+ id 1WeNwe-00055C-FO
+ for linux-mtd@lists.infradead.org; Sun, 27 Apr 2014 12:12:32 +0000
+Message-ID: <789ed0034a7f4aa993addb2bc8c7e914.squirrel@www.codeaurora.org>
+In-Reply-To: <1396871016.17040.33.camel@sauron.fi.intel.com>
+References: <f08bbebef039d5bb28c2fcd3022165b0.squirrel@www.codeaurora.org>
+ <1396260879.9016.70.camel@sauron.fi.intel.com>
+ <533A5407.4060900@codeaurora.org>
+ <1396871016.17040.33.camel@sauron.fi.intel.com>
+Date: Sun, 27 Apr 2014 12:12:11 -0000
+Subject: Re: ubifs: assertion fails
+From: "Dolev Raviv" <draviv@codeaurora.org>
+To: dedekind1@gmail.com
 MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>
-Subject: Re: UBIFS CRC error, calculated from ubifs_check_node
-References: <53541449.9080308@codeaurora.org>
- <CAFLxGvwTa3RMjxwONXyYwt5LGfAP1oLk906usw6-nana=MUNFQ@mail.gmail.com>
- <53543AFC.7050202@codeaurora.org> <53543C7B.5000202@nod.at>
-In-Reply-To: <53543C7B.5000202@nod.at>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Dolev Raviv <draviv@codeaurora.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Cc: Dolev Raviv <draviv@codeaurora.org>, linux-mtd@lists.infradead.org,
+ Tanya Brokhman <tlinder@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,64 +26,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 4/21/2014 12:30 AM, Richard Weinberger wrote:
-> Am 20.04.2014 23:24, schrieb Tanya Brokhman:
->> On 4/20/2014 11:55 PM, Richard Weinberger wrote:
->>> On Sun, Apr 20, 2014 at 8:39 PM, Tanya Brokhman <tlinder@codeaurora.org> wrote:
->>>> Hi All
->>>>
->>>> I'm hitting "UBIFS error (pid 1026): ubifs_check_node: bad CRC: calculated
->>>> 0x79dbca01, read 0x31afb5d7" and as a result the partition is remounted as
->>>> RO.
->>>>
->>>> I'm using 3.10 based kernel.
->>>> The test scenario to reproduce this is:
->>>> 1. fill the partition tested using dd
->>>> 2. try to write some more data
->>>>
->>>> There are no errors in the log from the ubi layer or from the underlying
->>>> nand driver, both also testing crc.
->>>>
->>>> I've tried disabling compression, mounting the partition as sync and issuing
->>>> the write command with sync param. None of the former has any effect on this
->>>> crash.
->>>> I tried disabling crc on data nodes. This lowered the possibility of hitting
->>>> the above error but eventually, with stress test of concurrent read and
->>>> write we hit the same error with a different node type.
->>>>
->>>> Has any one encountered similar behavior? I'm not that much familiar with
->>>> ubifs so any help will be highly apritiated!
->>>
->>> Before we start digging into this, do mtd-tests and ubi-tests pass?
->>>
->>
->>
->> mtd-tests: yes.
+
+> On Tue, 2014-04-01 at 08:52 +0300, Tanya Brokhman wrote:
+>> The log isn't flooded with the above mentioned error, but it does repeat
+>> several times.
 >
-> Good. :)
+> Even though you do a lot of I/O operations?
 >
->> ubi-tests: never run those. Where can I find them? I see only debug.c at mtd/ubi with helping functions but no tests.
->>
->> We're just switching to ubifs from yaffs2. I looked at the diff between linux-next and our branch (3.10 based) and tried to bring in all of the fixes in mtd and ubi layers.
->> I'll try running ubi-tests and update on the result.
->>
->> Do you think we should run ubifs tests as well? Are there such tests?
+> If the accounting becomes incorrect, I think you'd see a warning for
+> each and every I/O operations.
+
+Yes, the log seems clean to me. The error actually occurs while stressing
+with iozone benchmark.
+Could the error be a result of the corner case you described in your
+previous mail.
+
 >
-> Yes. Fetch mtd-utils source.
-> See tests/ubi-tests directory.
-> It contains UBI and UBIFS tests.
->
-> Please run first ubi tests (runtests.sh).
->
-> Thanks,
-> //richard
+> Also, do you have several UBIFS file-systems mounted?
 >
 
-Hi Richard
+Yes, we have prepared images based on ubifs. So almost all the mounted
+partitions are ubifs.
 
-Eventually it turned out to be driver issue. Thank you for your help!
+>> Is there any way we can help in debugging and fixing this? Also, we're
+>> running on a 3.10 based kernel and I saw a lot of patches that change
+>> the shrinker after 3.10 on linux-next. What kernel version did you see
+>> the shrinker errors on?
+>
+> Well, you just need to stress the shrinker. I did it by simply adding a
+> hack to ubifs module init which kmalloc()'ed a lot of memory. Not
+> too-much, but enough to cause some pressure when doing a lot of I/O
+> operations and get UBIFS shrinker be invoked. This took me some amount
+> of time to get a good hack. I use a normal PC with some Fedora, and
+> nandsime. This makes it a lot easier to debug, comparing with doing this
+> on a real target. After all, shrinker is a generic component. I think
+> that PC had 4GB of RAM. I do not remember how much I allocated in my
+> hack.
 
-- Tanya
+I'll probably will take a look at this once I finish other more urgent tasks.
+>
+> I think I used older version than 3.10 back then.
+>
+> --
+> Best Regards,
+> Artem Bityutskiy
+>
+>
+
 
 -- 
 QUALCOMM ISRAEL, on behalf of Qualcomm Innovation Center, Inc. is a member
