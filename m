@@ -1,18 +1,22 @@
-Received: from extern.plris.com ([212.199.10.23] helo=plris.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WeKue-0005RB-KP
- for linux-mtd@lists.infradead.org; Sun, 27 Apr 2014 08:58:17 +0000
-Received: from leonp.plris.com (leonp.plris.com [192.168.50.57])
- by plris.com (Postfix) with ESMTP id 63407870001
- for <linux-mtd@lists.infradead.org>; Sun, 27 Apr 2014 11:57:42 +0300 (IDT)
-From: Leon Pollak <leonp@plris.com>
-To: MTD Maling List <linux-mtd@lists.infradead.org>
-Subject: Problem with JFFS2 garbage collector
-Date: Sun, 27 Apr 2014 11:57:42 +0300
-Message-ID: <2850202.tnNSLEu5dC@leonp.plris.com>
+Received: from smtp.codeaurora.org ([198.145.11.231])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WeN7r-0003eV-CU
+ for linux-mtd@lists.infradead.org; Sun, 27 Apr 2014 11:20:03 +0000
+Message-ID: <535CE7C9.3010306@codeaurora.org>
+Date: Sun, 27 Apr 2014 14:19:37 +0300
+From: Tanya Brokhman <tlinder@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+To: Richard Weinberger <richard@nod.at>
+Subject: Re: UBIFS CRC error, calculated from ubifs_check_node
+References: <53541449.9080308@codeaurora.org>
+ <CAFLxGvwTa3RMjxwONXyYwt5LGfAP1oLk906usw6-nana=MUNFQ@mail.gmail.com>
+ <53543AFC.7050202@codeaurora.org> <53543C7B.5000202@nod.at>
+In-Reply-To: <53543C7B.5000202@nod.at>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Dolev Raviv <draviv@codeaurora.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,42 +26,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I plead and beg the community for ANY answer!
+On 4/21/2014 12:30 AM, Richard Weinberger wrote:
+> Am 20.04.2014 23:24, schrieb Tanya Brokhman:
+>> On 4/20/2014 11:55 PM, Richard Weinberger wrote:
+>>> On Sun, Apr 20, 2014 at 8:39 PM, Tanya Brokhman <tlinder@codeaurora.org> wrote:
+>>>> Hi All
+>>>>
+>>>> I'm hitting "UBIFS error (pid 1026): ubifs_check_node: bad CRC: calculated
+>>>> 0x79dbca01, read 0x31afb5d7" and as a result the partition is remounted as
+>>>> RO.
+>>>>
+>>>> I'm using 3.10 based kernel.
+>>>> The test scenario to reproduce this is:
+>>>> 1. fill the partition tested using dd
+>>>> 2. try to write some more data
+>>>>
+>>>> There are no errors in the log from the ubi layer or from the underlying
+>>>> nand driver, both also testing crc.
+>>>>
+>>>> I've tried disabling compression, mounting the partition as sync and issuing
+>>>> the write command with sync param. None of the former has any effect on this
+>>>> crash.
+>>>> I tried disabling crc on data nodes. This lowered the possibility of hitting
+>>>> the above error but eventually, with stress test of concurrent read and
+>>>> write we hit the same error with a different node type.
+>>>>
+>>>> Has any one encountered similar behavior? I'm not that much familiar with
+>>>> ubifs so any help will be highly apritiated!
+>>>
+>>> Before we start digging into this, do mtd-tests and ubi-tests pass?
+>>>
+>>
+>>
+>> mtd-tests: yes.
+>
+> Good. :)
+>
+>> ubi-tests: never run those. Where can I find them? I see only debug.c at mtd/ubi with helping functions but no tests.
+>>
+>> We're just switching to ubifs from yaffs2. I looked at the diff between linux-next and our branch (3.10 based) and tried to bring in all of the fixes in mtd and ubi layers.
+>> I'll try running ubi-tests and update on the result.
+>>
+>> Do you think we should run ubifs tests as well? Are there such tests?
+>
+> Yes. Fetch mtd-utils source.
+> See tests/ubi-tests directory.
+> It contains UBI and UBIFS tests.
+>
+> Please run first ubi tests (runtests.sh).
+>
+> Thanks,
+> //richard
+>
 
-As there was an interest in the past (2 months), I am in doubts if it is not 
-interesting a person today!
+Hi Richard
 
-Please, even if there is no interest - let me know!
-=============================================================================
-Hello to all.
+Eventually it turned out to be driver issue. Thank you for your help!
 
-About a month ago I already wrote here about the problem I have (see below).
-At that time 3-4 of list members reacted saying this is the bug and there were 
-some suggestions for testing/work-arounding it.
+- Tanya
 
-I kindly ask people to return to this issue and I am ready to debug the 
-possible solutions/work-arounds....
--------------------------------------------
-The following scenario produces a lot of errors -5 or crashes in the following 
-case:
-After initial flash partition burn from within U-Boot, JFFS2 partition is 
-mounted RO at fstab, flashes are write protected by HW. 
-
-On the first boot I:
-- take HW flash write protect off;
-- remount as RW;
-- make a small update to a small file;
-- sync;
-- remount as RO;
-- HW write protect ON.
-
-At this moment I receive a lot of error -5 messages and sometimes even crash 
-dumps.
-This problem repeats at each sequential boot 5-8 times with each time less 
-number of -5 errors till it finally is gone.
-
-I will be very thankful to you for any tip what can be done.
-
-Many thanks ahead and best regards
 -- 
-Leon
+QUALCOMM ISRAEL, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
