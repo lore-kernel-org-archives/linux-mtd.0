@@ -1,8 +1,10 @@
 From: Huang Shijie <b32955@freescale.com>
 To: <dwmw2@infradead.org>
-Subject: [PATCH v2 00/10] mtd: spi-nor: Add the DDR quad read support
-Date: Mon, 28 Apr 2014 11:53:37 +0800
-Message-ID: <1398657227-20721-1-git-send-email-b32955@freescale.com>
+Subject: [PATCH v2 02/10] mtd: spi-nor: add a new field for spi_nor{}
+Date: Mon, 28 Apr 2014 11:53:39 +0800
+Message-ID: <1398657227-20721-3-git-send-email-b32955@freescale.com>
+In-Reply-To: <1398657227-20721-1-git-send-email-b32955@freescale.com>
+References: <1398657227-20721-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: marex@denx.de, devicetree@vger.kernel.org, linux-doc@vger.kernel.org,
@@ -18,127 +20,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
- (0) This patch set depends on the patch:
-	http://lists.infradead.org/pipermail/linux-mtd/2014-April/053308.html
-  
- (1) This patch set tries to add the DDR quad read support for the SPI
-     NOR framework, and it also adds the DDR quad read support for FREESCALE
-     quadspi controller driver.
+We need the SPI NOR child node to store some specific features, such as the
+dummy cycles for the DDR Quad read.
 
- (2) Test this patch set with Spansion s25fl128s, the performance with mtd_speedtest.ko:
-     =================================================
-     mtd_speedtest: MTD device: 0
-     mtd_speedtest: not NAND flash, assume page size is 512 bytes.
-     mtd_speedtest: MTD device size 16777216, eraseblock size 65536, page size 512,
-                    count of eraseblocks 256, pages per eraseblock 128, OOB size 0
-     mtd_speedtest: testing eraseblock write speed
-     mtd_speedtest: eraseblock write speed is 665 KiB/s
-     mtd_speedtest: testing eraseblock read speed
-     mtd_speedtest: eraseblock read speed is 49799 KiB/s
-     mtd_speedtest: testing page write speed
-     mtd_speedtest: page write speed is 662 KiB/s
-     mtd_speedtest: testing page read speed
-     mtd_speedtest: page read speed is 24236 KiB/s
-     mtd_speedtest: testing 2 page write speed
-     mtd_speedtest: 2 page write speed is 657 KiB/s
-     mtd_speedtest: testing 2 page read speed
-     mtd_speedtest: 2 page read speed is 32637 KiB/s
-     mtd_speedtest: Testing erase speed
-     mtd_speedtest: erase speed is 518 KiB/s
-     mtd_speedtest: Testing 2x multi-block erase speed
-     mtd_speedtest: 2x multi-block erase speed is 506 KiB/s
-     mtd_speedtest: Testing 4x multi-block erase speed
-     mtd_speedtest: 4x multi-block erase speed is 503 KiB/s
-     mtd_speedtest: Testing 8x multi-block erase speed
-     mtd_speedtest: 8x multi-block erase speed is 501 KiB/s
-     mtd_speedtest: Testing 16x multi-block erase speed
-     mtd_speedtest: 16x multi-block erase speed is 498 KiB/s
-     mtd_speedtest: Testing 32x multi-block erase speed
-     mtd_speedtest: 32x multi-block erase speed is 496 KiB/s
-     mtd_speedtest: Testing 64x multi-block erase speed
-     mtd_speedtest: 64x multi-block erase speed is 495 KiB/s
-     mtd_speedtest: finished
-     =================================================
+But now, we only have the @dev field in the spi_nor{}. The @dev may points to a
+spi_device{} for m25p80, while it may points to a platform_deivice{} for the
+SPI NOR controller, such as fsl_quadspi.c.
 
-  (3) Add the DDR quad read support for Micron N25Q256A:
-    =================================================
-    mtd_speedtest: MTD device: 1
-    mtd_speedtest: not NAND flash, assume page size is 512 bytes.
-    mtd_speedtest: MTD device size 33554432, eraseblock size 65536,
-                   page size 512, count of eraseblocks 512, pages per eraseblock 128, OOB size 0
-    mtd_speedtest: testing eraseblock write speed
-    mtd_speedtest: eraseblock write speed is 2426 KiB/s
-    mtd_speedtest: testing eraseblock read speed
-    mtd_speedtest: eraseblock read speed is 32157 KiB/s
-    mtd_speedtest: testing page write speed
-    mtd_speedtest: page write speed is 2362 KiB/s
-    mtd_speedtest: testing page read speed
-    mtd_speedtest: page read speed is 17741 KiB/s
-    mtd_speedtest: testing 2 page write speed
-    mtd_speedtest: 2 page write speed is 2384 KiB/s
-    mtd_speedtest: testing 2 page read speed
-    mtd_speedtest: 2 page read speed is 24058 KiB/s
-    mtd_speedtest: Testing erase speed
-    mtd_speedtest: erase speed is 1927529 KiB/s
-    mtd_speedtest: Testing 2x multi-block erase speed
-    mtd_speedtest: 2x multi-block erase speed is 2184533 KiB/s
-    mtd_speedtest: Testing 4x multi-block erase speed
-    mtd_speedtest: 4x multi-block erase speed is 2184533 KiB/s
-    mtd_speedtest: Testing 8x multi-block erase speed
-    mtd_speedtest: 8x multi-block erase speed is 2340571 KiB/s
-    mtd_speedtest: Testing 16x multi-block erase speed
-    mtd_speedtest: 16x multi-block erase speed is 2340571 KiB/s
-    mtd_speedtest: Testing 32x multi-block erase speed
-    mtd_speedtest: 32x multi-block erase speed is 2340571 KiB/s
-    mtd_speedtest: Testing 64x multi-block erase speed
-    mtd_speedtest: 64x multi-block erase speed is 2340571 KiB/s
-    mtd_speedtest: finished
+It is not convenient for us to get come information from the SPI NOR flash.
 
-  (3) Conclusion:
-     The DDR quad read could be 49799 KiB/s for Spansion s25fl128s,
-     The DDR quad read could be 32157/s for Micron N25Q256A;
-     
-Changlog:
+This patch adds a new field @np to spi_nor{}, it points to the child node for
+the SPI NOR flash.
 
-v1 --> v2:
-  [1] add the new patch: " mtd: spi-nor: add a new field for spi_nor{}"
-  [2] remove the patch :
-        "mtd: fsl-quadspi: get the dummy cycles for DDR Quad read from the DT
-	    property"
-  [3] add the DDR quad read for Micron N25Q256A.	    
-  [4] fix types.
-  [5] others.
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+---
+ drivers/mtd/devices/m25p80.c  |    1 +
+ drivers/mtd/spi-nor/spi-nor.c |    2 +-
+ include/linux/mtd/spi-nor.h   |    3 +++
+ 3 files changed, 5 insertions(+), 1 deletions(-)
 
-before v1:  
-
-  About this patch set:
-     For patch 1, please see the old discusstion:
-     http://lists.infradead.org/pipermail/linux-mtd/2014-April/053370.html
-
-     For patch 2, please see the old discusstion:
-     http://lists.infradead.org/pipermail/linux-mtd/2014-April/053374.html
-
-
-Huang Shijie (10):
-  mtd: spi-nor: fix the wrong dummy value
-  mtd: spi-nor: add a new field for spi_nor{}
-  mtd: spi-nor: add DDR quad read support
-  Documentation: mtd: add a new document for SPI NOR flash
-  Documentation: fsl-quadspi: update the document
-  mtd: fsl-quadspi: use the information stored in spi-nor{}
-  mtd: fsl-quadspi: add the DDR quad read support for Spansion NOR
-  mtd: spi-nor: add more read transfer flags for n25q256a
-  mtd: spi-nor: add DDR quad read support for Micron
-  mtd: fsl-quadspi: add DDR quad read support for Micron
-
- .../devicetree/bindings/mtd/fsl-quadspi.txt        |   16 +++
- .../devicetree/bindings/mtd/spi-nor-flash.txt      |    7 +
- drivers/mtd/devices/m25p80.c                       |    6 +-
- drivers/mtd/spi-nor/fsl-quadspi.c                  |  132 ++++++++++++++------
- drivers/mtd/spi-nor/spi-nor.c                      |   65 +++++++++-
- include/linux/mtd/spi-nor.h                        |   12 ++-
- 6 files changed, 189 insertions(+), 49 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mtd/spi-nor-flash.txt
-
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 3a1d9e0..f996c3a 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -215,6 +215,7 @@ static int m25p_probe(struct spi_device *spi)
+ 	nor->read_reg = m25p80_read_reg;
+ 
+ 	nor->dev = &spi->dev;
++	nor->np = spi->dev.of_node;
+ 	nor->mtd = &flash->mtd;
+ 	nor->priv = flash;
+ 
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 1a12f81..f374e44 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -891,7 +891,7 @@ int spi_nor_scan(struct spi_nor *nor, const struct spi_device_id *id,
+ 	struct flash_platform_data	*data;
+ 	struct device *dev = nor->dev;
+ 	struct mtd_info *mtd = nor->mtd;
+-	struct device_node *np = dev->of_node;
++	struct device_node *np = nor->np;
+ 	int ret;
+ 	int i;
+ 
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index 5324184..48fe9fc 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -117,6 +117,8 @@ enum spi_nor_ops {
+  * @mtd:		point to a mtd_info structure
+  * @lock:		the lock for the read/write/erase/lock/unlock operations
+  * @dev:		point to a spi device, or a spi nor controller device.
++ * @np:			If exit, it points to a device_node which stands for the
++ *			SPI NOR flash child node.
+  * @page_size:		the page size of the SPI NOR
+  * @addr_width:		number of address bytes
+  * @erase_opcode:	the opcode for erasing a sector
+@@ -148,6 +150,7 @@ struct spi_nor {
+ 	struct mtd_info		*mtd;
+ 	struct mutex		lock;
+ 	struct device		*dev;
++	struct device_node	*np;
+ 	u32			page_size;
+ 	u8			addr_width;
+ 	u8			erase_opcode;
 -- 
 1.7.2.rc3
