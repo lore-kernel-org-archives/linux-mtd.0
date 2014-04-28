@@ -1,23 +1,32 @@
-Message-ID: <535E5AF5.2020203@ti.com>
-Date: Mon, 28 Apr 2014 09:43:17 -0400
-From: Santosh Shilimkar <santosh.shilimkar@ti.com>
+Received: from mail-la0-x22b.google.com ([2a00:1450:4010:c03::22b])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WemSo-0008BS-47
+ for linux-mtd@lists.infradead.org; Mon, 28 Apr 2014 14:23:22 +0000
+Received: by mail-la0-f43.google.com with SMTP id c6so5018059lan.2
+ for <linux-mtd@lists.infradead.org>; Mon, 28 Apr 2014 07:22:58 -0700 (PDT)
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v2] mtd: davinci-nand: disable subpage write for
- keystone-nand
-References: <1395346112-13350-1-git-send-email-ivan.khoronzhuk@ti.com>
- <532B4C36.8060405@ti.com> <5343F0D6.2010804@ti.com>
- <20140416070833.GA5512@norris-Latitude-E6410> <534E51BF.9050508@ti.com>
-In-Reply-To: <534E51BF.9050508@ti.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, grygorii.strashko@ti.com,
- linux@arm.linux.org.uk, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk,
- linux-kernel@vger.kernel.org, robh+dt@kernel.org,
- linux-mtd@lists.infradead.org, m-karicheri2@ti.com, rob@landley.net,
- galak@codeaurora.org, Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>,
- dwmw2@infradead.org, Warner Losh <imp@bsdimp.com>,
- linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20140428070602.GA29525@localhost>
+References: <1398175396-7560-1-git-send-email-grmoore@altera.com>
+ <201404260012.24311.marex@denx.de>
+ <20140426031011.GA4811@localhost.localdomain>
+ <201404280706.18068.marex@denx.de>
+ <20140428070602.GA29525@localhost>
+Date: Mon, 28 Apr 2014 09:22:58 -0500
+Message-ID: <CA+iBjpS9gstvippLHzm_Tpgxx19VxnRzWEwi_tJV5d7+snnfWg@mail.gmail.com>
+Subject: Re: [PATCH V3] Add support for flag status register on Micron chips.
+From: Graham Moore <ggrahammoore@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: Marek Vasut <marex@denx.de>,
+ Geert Uytterhoeven <geert+renesas@linux-m68k.org>,
+ Insop Song <insop.song@gainspeed.com>, Graham Moore <grmoore@altera.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Jingoo Han <jg1.han@samsung.com>,
+ linux-kernel@vger.kernel.org, Yves Vandervennet <rocket.yvanderv@gmail.com>,
+ linux-mtd@lists.infradead.org,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Alan Tull <atull@altera.com>, Sourav Poddar <sourav.poddar@ti.com>,
+ Brian Norris <computersforpeace@gmail.com>, Huang Shijie <shijie8@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen <dinguyen@altera.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,41 +36,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Brian,
-
-On Wednesday 16 April 2014 05:47 AM, Ivan Khoronzhuk wrote:
-> 
-> On 04/16/2014 10:08 AM, Brian Norris wrote:
->> On Tue, Apr 08, 2014 at 03:51:34PM +0300, Ivan Khoronzhuk wrote:
->>> On 03/20/2014 10:14 PM, Santosh Shilimkar wrote:
->>>> On Thursday 20 March 2014 04:08 PM, Ivan Khoronzhuk wrote:
->>>>> From: Murali Karicheri <m-karicheri2@ti.com>
->>>>> Sub page write doesn't work because of hw issue in controller found on
->>>>> Keystone SOCs. AEMIF controller is also used on DaVinci SOCs which
->>>>> don't seems to have any issue. So add "ti,keysone-nand" compatible
->>>>> to nand driver in order to set NAND_NO_SUBPAGE_WRITE option.
->>>>>
->>>>> Cc: Brian Norris <computersforpeace@gmail.com>
->>>>> Cc: Warner Losh <imp@bsdimp.com>
->>>>> Cc: Santosh Shilimkar <santosh.shilimkar@ti.com>
->>>>>
->>>>> Signed-off-by: Murali Karicheri <m-karicheri2@ti.com>
->>>>> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
->>>>> ---
->>>>>
->>>> Acked-by: Santosh Shilimkar <santosh.shilimkar@ti.com>
->>> Brian,
->>> Could you pick up subj patch?
->> Pushed to l2-mtd.git. Is it critical this goes in for 3.15? It's
->> currently queued for -next (3.16).
+On Mon, Apr 28, 2014 at 2:06 AM, Huang Shijie <b32955@freescale.com> wrote:
+> On Mon, Apr 28, 2014 at 07:06:17AM +0200, Marek Vasut wrote:
 >>
+>> Two things competing over the same pointer looks misdesigned to me. I will need
+>> to dig into this one more time ...
+> Please refer to the code for NAND chip, the nand_get_flash_type() :
+>
+> -----------------------------------------------------------
+>         /* Do not replace user supplied command function! */
+>         if (mtd->writesize > 512 && chip->cmdfunc == nand_command)
+>                 chip->cmdfunc = nand_command_lp;
+> -----------------------------------------------------------
+>
+> It uses the same logic:
+>         " Do not replace user supplied command function!"
+>
+> thanks
+> Huang Shijie
 
-[..]
+I would like to set the @wait_till_ready in m25p80.c, because the
+USE_FSR flag is only for Micron chips.  But the m25p80 driver doesn't
+have access to the flags, they are contained in spi-nor.c.  It seems
+to me that the driver_data should be accessible by the driver.  So
+maybe there is room for improvement there.
 
-> 
-> This is a critical fix and it should be for 3.15.
-Ping. 3.15-rc3 is already out and I still see this fix merged
-yet.
-
-Regards,
-Santosh
+Thanks,
+Graham Moore
