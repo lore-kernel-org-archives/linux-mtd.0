@@ -1,32 +1,18 @@
-Received: from mail-la0-x22b.google.com ([2a00:1450:4010:c03::22b])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WemSo-0008BS-47
- for linux-mtd@lists.infradead.org; Mon, 28 Apr 2014 14:23:22 +0000
-Received: by mail-la0-f43.google.com with SMTP id c6so5018059lan.2
- for <linux-mtd@lists.infradead.org>; Mon, 28 Apr 2014 07:22:58 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20140428070602.GA29525@localhost>
-References: <1398175396-7560-1-git-send-email-grmoore@altera.com>
- <201404260012.24311.marex@denx.de>
- <20140426031011.GA4811@localhost.localdomain>
- <201404280706.18068.marex@denx.de>
- <20140428070602.GA29525@localhost>
-Date: Mon, 28 Apr 2014 09:22:58 -0500
-Message-ID: <CA+iBjpS9gstvippLHzm_Tpgxx19VxnRzWEwi_tJV5d7+snnfWg@mail.gmail.com>
-Subject: Re: [PATCH V3] Add support for flag status register on Micron chips.
-From: Graham Moore <ggrahammoore@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: Marek Vasut <marex@denx.de>,
- Geert Uytterhoeven <geert+renesas@linux-m68k.org>,
- Insop Song <insop.song@gainspeed.com>, Graham Moore <grmoore@altera.com>,
- Sascha Hauer <s.hauer@pengutronix.de>, Jingoo Han <jg1.han@samsung.com>,
- linux-kernel@vger.kernel.org, Yves Vandervennet <rocket.yvanderv@gmail.com>,
- linux-mtd@lists.infradead.org,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Alan Tull <atull@altera.com>, Sourav Poddar <sourav.poddar@ti.com>,
- Brian Norris <computersforpeace@gmail.com>, Huang Shijie <shijie8@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen <dinguyen@altera.com>
+Content-Type: text/plain; charset=
+Content-Transfer-Encoding: 7bit
+Date: Mon, 28 Apr 2014 16:41:48 +0200
+From: Stefan Agner <stefan@agner.ch>
+To: Bill Pringlemeir <bpringlemeir@nbsps.com>
+Subject: Re: [RFC 1/5] =?UTF-8?Q?mtd=3Afsl=5Fnfc=3A=20Nand=20flash=20contr?=
+ =?UTF-8?Q?oller=20for=20VF=36=31=30=2C=20MPC=35=31=32=35=2C=20etc=2E?=
+In-Reply-To: <1389222441-4322-2-git-send-email-bpringlemeir@nbsps.com>
+References: <87siupheou.fsf@nbsps.com>
+ <1389222441-4322-1-git-send-email-bpringlemeir@nbsps.com>
+ <1389222441-4322-2-git-send-email-bpringlemeir@nbsps.com>
+Message-ID: <708e6f84e177e1d02310358688b44c53@agner.ch>
+Cc: b21989@freescale.com, linux-mtd@lists.infradead.org,
+ Jason.jin@freescale.com, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,30 +22,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Apr 28, 2014 at 2:06 AM, Huang Shijie <b32955@freescale.com> wrote:
-> On Mon, Apr 28, 2014 at 07:06:17AM +0200, Marek Vasut wrote:
->>
->> Two things competing over the same pointer looks misdesigned to me. I will need
->> to dig into this one more time ...
-> Please refer to the code for NAND chip, the nand_get_flash_type() :
->
-> -----------------------------------------------------------
->         /* Do not replace user supplied command function! */
->         if (mtd->writesize > 512 && chip->cmdfunc == nand_command)
->                 chip->cmdfunc = nand_command_lp;
-> -----------------------------------------------------------
->
-> It uses the same logic:
->         " Do not replace user supplied command function!"
->
-> thanks
-> Huang Shijie
+Hi Bill,
 
-I would like to set the @wait_till_ready in m25p80.c, because the
-USE_FSR flag is only for Micron chips.  But the m25p80 driver doesn't
-have access to the flags, they are contained in spi-nor.c.  It seems
-to me that the driver_data should be accessible by the driver.  So
-maybe there is room for improvement there.
+The driver works fine for me using 3.14 on Colibri VF61 (8-Bit bus
+width, Samsung NAND, 2k page size). Also tested with the Hardware ECC.
+Do you plan to send an update patch of the driver?
 
-Thanks,
-Graham Moore
+FYI, I ported the driver to U-Boot and will send a patch to the U-Boot
+mailing list soon.
+
+Some minor comments below:
+
+Am 2014-01-09 00:07, schrieb Bill Pringlemeir:
+<snip>
+> +static u8 bbt_pattern[] = {'B', 'b', 't', '0' };
+> +static u8 mirror_pattern[] = {'1', 't', 'b', 'B' };
+> +
+> +static struct nand_bbt_descr bbt_main_descr = {
+> +	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE |
+> +		   NAND_BBT_2BIT | NAND_BBT_VERSION,
+> +	.offs =	11,
+> +	.len = 4,
+> +	.veroffs = 15,
+> +	.maxblocks = 4,
+> +	.pattern = bbt_pattern,
+> +};
+> +
+> +static struct nand_bbt_descr bbt_mirror_descr = {
+> +	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE |
+> +		   NAND_BBT_2BIT | NAND_BBT_VERSION,
+> +	.offs =	11,
+> +	.len = 4,
+> +	.veroffs = 15,
+> +	.maxblocks = 4,
+> +	.pattern = mirror_pattern,
+> +};
+
+This is the same BBT descriptor as used on Timesys Vybrid BSP. Other
+than this "backward compatibility", is there another reason to use non
+default BBT descriptor? As far as I can tell, the ECC does not conflict
+with the default BBT description.
+
+> +/* Write data to NFC buffers */
+> +static void nfc_write_buf(struct mtd_info *mtd, const u_char *buf, int len)
+> +{
+...
+IMHO this type of commands are not really required, the function name is
+descriptive enough.
+
+> +/* Vybrid only.  MPC5125 has full RB and four CS. Assume boot loader
+> + * has set this register for now.
+> + */
+
+Multi-line comment style (there are some malformed multi-line comments
+in the ECC patch as well)
+
+--
+Stefan
