@@ -1,18 +1,18 @@
-Received: from mail-bl2lp0211.outbound.protection.outlook.com
- ([207.46.163.211] helo=na01-bl2-obe.outbound.protection.outlook.com)
+Received: from smtp.codeaurora.org ([198.145.11.231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wef61-0006Ay-EM
- for linux-mtd@lists.infradead.org; Mon, 28 Apr 2014 06:31:22 +0000
-From: Hou Zhiqiang <B48286@freescale.com>
-To: <linux-mtd@lists.infradead.org>, <linuxppc-dev@ozlabs.org>
-Subject: [PATCH V5] mtd: m25p80: modify the name of mtd_info
-Date: Mon, 28 Apr 2014 14:28:25 +0800
-Message-ID: <1398666505-4907-1-git-send-email-B48286@freescale.com>
+ id 1WefuY-0003Im-5V
+ for linux-mtd@lists.infradead.org; Mon, 28 Apr 2014 07:23:34 +0000
+Message-ID: <535E01DB.5050405@codeaurora.org>
+Date: Mon, 28 Apr 2014 10:23:07 +0300
+From: Tanya Brokhman <tlinder@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: shijie8@gmail.com, Hou Zhiqiang <B48286@freescale.com>,
- scottwood@freescale.com, mingkai.hu@freescale.com, computersforpeace@gmail.com,
- dwmw2@infradead.org
+To: Richard Weinberger <richard@nod.at>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: ubi layer tests (fastmap testing)
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Dolev Raviv <draviv@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,69 +22,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-To specify spi flash layouts by "mtdparts=..." in cmdline, we must
-give mtd_info a fixed name, because the cmdlinepart's parser will
-match the name of mtd_info given in cmdline.
-Now, if it use DT, the mtd_info's name will be spi->dev->name. It
-consists of spi_master->bus_num, and the spi_master->bus_num maybe
-dynamically fetched. So, in this case, replace the component bus_num
-with the physical address of spi master.
+Hi Richard
 
-Signed-off-by: Hou Zhiqiang <B48286@freescale.com>
----
-V5:
-	Rebase on the latest l2-mtd tree.
-V4:
-	add check no-NULL for pointer of master's device node, and if it failed
-	to get physcial address of the master, then name the mtd_info by the
-	name of spi->dev.
-V3:
-	Fix a bug, matching unsigned long long with "%llx".
-V2:
-	1. Fix some code style issue.
-	2. Cast physical address to unsigned long long.
+You referred me to ubi-tests which were very helpful and discovered a 
+bug in our driver. Thank you!
+Unfortunately mtd-tests are not applicable to our driver.
 
- drivers/mtd/devices/m25p80.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+I was wondering if there are any other ubi test I can run? Specially 
+once concentrating on fastmap feature. How was it tested?
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 1557d8f..329aa2c 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -26,6 +26,7 @@
- #include <linux/spi/spi.h>
- #include <linux/spi/flash.h>
- #include <linux/mtd/spi-nor.h>
-+#include <linux/of_address.h>
- 
- #define	MAX_CMD_SIZE		6
- struct m25p {
-@@ -196,6 +197,8 @@ static int m25p_probe(struct spi_device *spi)
- 	struct m25p *flash;
- 	struct spi_nor *nor;
- 	enum read_mode mode = SPI_NOR_NORMAL;
-+	struct resource res;
-+	struct device_node *mnp = spi->master->dev.of_node;
- 	int ret;
- 
- 	flash = devm_kzalloc(&spi->dev, sizeof(*flash), GFP_KERNEL);
-@@ -228,6 +231,17 @@ static int m25p_probe(struct spi_device *spi)
- 	data = dev_get_platdata(&spi->dev);
- 	ppdata.of_node = spi->dev.of_node;
- 
-+	if (mnp) {
-+		ret = of_address_to_resource(mnp, 0, &res);
-+		if (!ret) {
-+			flash->mtd.name = kasprintf(GFP_KERNEL, "spi%llx.%d",
-+					(unsigned long long)res.start,
-+					spi->chip_select);
-+			if (!flash->mtd.name)
-+				return -ENOMEM;
-+		}
-+	}
-+
- 	return mtd_device_parse_register(&flash->mtd, NULL, &ppdata,
- 			data ? data->parts : NULL,
- 			data ? data->nr_parts : 0);
+Thanks
+Tanya Brokhman
+
 -- 
-1.8.5
+QUALCOMM ISRAEL, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
