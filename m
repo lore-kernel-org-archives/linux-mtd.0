@@ -1,19 +1,16 @@
-From: Bill Pringlemeir <bpringlemeir@nbsps.com>
-To: Stefan Agner <stefan@agner.ch>
-Subject: Re: [RFC 1/5] mtd:fsl_nfc: Nand flash controller for VF610, MPC5125,
- etc.
-References: <87siupheou.fsf@nbsps.com>
- <1389222441-4322-1-git-send-email-bpringlemeir@nbsps.com>
- <1389222441-4322-2-git-send-email-bpringlemeir@nbsps.com>
- <708e6f84e177e1d02310358688b44c53@agner.ch>
-Date: Mon, 28 Apr 2014 12:51:52 -0400
-In-Reply-To: <708e6f84e177e1d02310358688b44c53@agner.ch> (Stefan Agner's
- message of "Mon, 28 Apr 2014 16:41:48 +0200")
-Message-ID: <87mwf5v1lj.fsf@nbsps.com>
+Received: from mail-gw2-out.broadcom.com ([216.31.210.63])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Wes7u-0006ph-E2
+ for linux-mtd@lists.infradead.org; Mon, 28 Apr 2014 20:26:10 +0000
+From: Kamal Dasu <kdasu.kdev@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH v3] mtd: nand: Add support to use nand_base poi databuf as
+ bounce buffer
+Date: Mon, 28 Apr 2014 16:19:48 -0400
+Message-ID: <1398716388-14317-1-git-send-email-kdasu.kdev@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Cc: b21989@freescale.com, linux-mtd@lists.infradead.org,
- Jason.jin@freescale.com, linux-arm-kernel@lists.infradead.org
+Cc: Kamal Dasu <kdasu.kdev@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,52 +20,122 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 28 Apr 2014, stefan@agner.ch wrote:
+nand_base can be passed a kmap()'d buffers from highmem by
+filesystems like jffs2. This results in failure to map the
+physical address of the DMA buffer on various contoller
+driver on different platforms. This change adds a chip option
+to use preallocated databuf as bounce buffers used in
+nand_do_read_ops() and nand_do_write_ops().
+This allows for specific nand controller driver to set this
+option as needed.
 
-> The driver works fine for me using 3.14 on Colibri VF61 (8-Bit bus
-> width, Samsung NAND, 2k page size). Also tested with the Hardware ECC.
-> Do you plan to send an update patch of the driver?
+Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+---
 
-> FYI, I ported the driver to U-Boot and will send a patch to the U-Boot
-> mailing list soon.
+Changes since v2:
+ * fix ARM build by including linux/mm.h
+ * print highmem buffer address in pr_debug
 
-> Some minor comments below:
+ drivers/mtd/nand/nand_base.c | 31 ++++++++++++++++++++++++-------
+ include/linux/mtd/nand.h     |  5 +++++
+ 2 files changed, 29 insertions(+), 7 deletions(-)
 
-Well, I would love it if there are only 'minor comments'.  I don't think
-people will like the 'nfc' name.  I wanted a better name.  Also, the
-'linux-mtd' list bounced my post because I used some 'Ref:' to refer to
-another message.  It also bounce on the ARM list, but some kind
-moderator put it through.
-
- http://lists.infradead.org/pipermail/linux-arm-kernel/2014-January/226623.html
- http://lists.infradead.org/pipermail/linux-arm-kernel/2014-January/226627.html
- etc.
-
-Besides the Vybrid, the controller can support several other SOCs (some
-ARM, some note), Such as the MPC5125 (PowerPC), MCF54418 (ColdFire) and
-the Kinetis K70 (ARM Cortex-M).
-
-I also have some tickets open on the Hardware ECC with the Vybrid.
-
- https://community.freescale.com/message/358284 - booting
- https://community.freescale.com/message/368216 - ECC value
- https://community.freescale.com/message/384556 - clocking
-
-[There are also non-public freescale PR tickets]
-
-Especially, the ECC layout is important.  I think that an HW ECC layout
-with sub-page support is best.  The Linux-MTD community will want this
-to be right.  
-
-The email "reference" was a previous email I sent some time ago to the
-MTD mailing list.  I wondered if anyone was interested and I knew that
-people would not like the name 'fsl_nfc'.  But I don't know what to call
-it; it is a bike shed issue to me (specifics of what to call it), but I
-see how people will want to avoid a generic ambigious name like
-'fsl_nfc'.
-
-I was waiting to see about the clocking with HW-ECC; it seems above
-33MHz, the HW-ECC module doesn't seem to work (at least for me).
-
-Fwiw,
-Bill Pringlemeir.
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 9d01c4d..27505cd 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -37,6 +37,7 @@
+ #include <linux/err.h>
+ #include <linux/sched.h>
+ #include <linux/slab.h>
++#include <linux/mm.h>
+ #include <linux/types.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/nand.h>
+@@ -1501,6 +1502,7 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 		mtd->oobavail : mtd->oobsize;
+ 
+ 	uint8_t *bufpoi, *oob, *buf;
++	int use_bufpoi;
+ 	unsigned int max_bitflips = 0;
+ 	int retry_mode = 0;
+ 	bool ecc_fail = false;
+@@ -1522,10 +1524,17 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 
+ 		bytes = min(mtd->writesize - col, readlen);
+ 		aligned = (bytes == mtd->writesize);
++		use_bufpoi = (chip->options & NAND_USE_BOUNCE_BUFFER) ?
++				!virt_addr_valid(buf) : 0;
+ 
+ 		/* Is the current page in the buffer? */
+ 		if (realpage != chip->pagebuf || oob) {
+-			bufpoi = aligned ? buf : chip->buffers->databuf;
++			bufpoi = (aligned && !use_bufpoi) ? buf :
++				chip->buffers->databuf;
++
++			if (use_bufpoi && aligned)
++				pr_debug("%s: using bounce buffer for buf@%p\n",
++						 __func__, bufpoi);
+ 
+ read_retry:
+ 			chip->cmdfunc(mtd, NAND_CMD_READ0, 0x00, page);
+@@ -1547,7 +1556,7 @@ read_retry:
+ 				ret = chip->ecc.read_page(mtd, chip, bufpoi,
+ 							  oob_required, page);
+ 			if (ret < 0) {
+-				if (!aligned)
++				if (!aligned || use_bufpoi)
+ 					/* Invalidate page cache */
+ 					chip->pagebuf = -1;
+ 				break;
+@@ -1556,7 +1565,7 @@ read_retry:
+ 			max_bitflips = max_t(unsigned int, max_bitflips, ret);
+ 
+ 			/* Transfer not aligned data */
+-			if (!aligned) {
++			if (!aligned || use_bufpoi) {
+ 				if (!NAND_HAS_SUBPAGE_READ(chip) && !oob &&
+ 				    !(mtd->ecc_stats.failed - ecc_failures) &&
+ 				    (ops->mode != MTD_OPS_RAW)) {
+@@ -2376,11 +2385,19 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
+ 		int bytes = mtd->writesize;
+ 		int cached = writelen > bytes && page != blockmask;
+ 		uint8_t *wbuf = buf;
+-
+-		/* Partial page write? */
+-		if (unlikely(column || writelen < (mtd->writesize - 1))) {
++		int use_bufpoi = (chip->options & NAND_USE_BOUNCE_BUFFER ?
++				  !virt_addr_valid(buf) : 0);
++		int part_pagewr = unlikely(column ||
++					   writelen < (mtd->writesize - 1));
++
++		/* Partial page write?, or need to use bounce buffer */
++		if (part_pagewr || use_bufpoi) {
++			pr_debug("%s: using write bounce buffer for buf@%p\n",
++					 __func__, buf);
+ 			cached = 0;
+-			bytes = min_t(int, bytes - column, (int) writelen);
++			if (part_pagewr)
++				bytes = min_t(int,
++					      bytes - column, (int) writelen);
+ 			chip->pagebuf = -1;
+ 			memset(chip->buffers->databuf, 0xff, mtd->writesize);
+ 			memcpy(&chip->buffers->databuf[column], buf, bytes);
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 450d61e..bb3e064 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -176,6 +176,11 @@ typedef enum {
+ /* Chip may not exist, so silence any errors in scan */
+ #define NAND_SCAN_SILENT_NODEV	0x00040000
+ /*
++ * This option is defined to protect against kmapped buffers
++ * being passed from highmem when using DMA
++ */
++#define NAND_USE_BOUNCE_BUFFER	0x00080000
++/*
+  * Autodetect nand buswidth with readid/onfi.
+  * This suppose the driver will configure the hardware in 8 bits mode
+  * when calling nand_scan_ident, and update its configuration
+-- 
+1.9.2
