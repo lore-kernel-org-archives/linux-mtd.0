@@ -1,17 +1,23 @@
-In-Reply-To: <535E7A58.8090102@monstr.eu>
-References: <535E7A58.8090102@monstr.eu>
-To: monstr@monstr.eu
-MIME-Version: 1.0
+Received: from mail-pd0-x22a.google.com ([2607:f8b0:400e:c02::22a])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WeomD-0007Ba-O1
+ for linux-mtd@lists.infradead.org; Mon, 28 Apr 2014 16:51:34 +0000
+Received: by mail-pd0-f170.google.com with SMTP id x10so2525597pdj.15
+ for <linux-mtd@lists.infradead.org>; Mon, 28 Apr 2014 09:51:12 -0700 (PDT)
+Date: Mon, 28 Apr 2014 09:51:08 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Michal Simek <monstr@monstr.eu>
 Subject: Re: JFFS2 locking issue on 3.14 + patches
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-Message-ID: <OFB4A03062.544A67D6-ONC1257CC8.005BCD5F-C1257CC8.005BF962@transmode.se>
-Date: Mon, 28 Apr 2014 18:44:36 +0200
-Content-Type: text/plain; charset="US-ASCII"
-Cc: linux-mtd <linux-mtd-bounces@lists.infradead.org>,
+Message-ID: <20140428165108.GU32070@ld-irv-0074>
+References: <535E7A58.8090102@monstr.eu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <535E7A58.8090102@monstr.eu>
+Cc: Ajesh Kunhipurayil Vijayan <ajesh@broadcom.com>,
+ Li Zefan <lizefan@huawei.com>, linux-mtd@lists.infradead.org,
  Kamlakant Patel <kamlakant.patel@broadcom.com>,
- Wang Guoli <andy.wangguoli@huawei.com>, Li Zefan <lizefan@huawei.com>,
- linux-mtd@lists.infradead.org, Ajesh Kunhipurayil Vijayan <ajesh@broadcom.com>,
- Brian Norris <computersforpeace@gmail.com>
+ Wang Guoli <andy.wangguoli@huawei.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,21 +27,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-"linux-mtd" <linux-mtd-bounces@lists.infradead.org> wrote on 2014/04/28 
-17:57:12:
-
-> From: Michal Simek <monstr@monstr.eu>
-> To: linux-mtd@lists.infradead.org, Brian Norris 
-<computersforpeace@gmail.com>, Li Zefan <lizefan@huawei.com>, Wang Guoli 
-<andy.wangguoli@huawei.com>, Kamlakant Patel 
-<kamlakant.patel@broadcom.com>, Ajesh Kunhipurayil Vijayan 
-<ajesh@broadcom.com>, 
-> Date: 2014/04/28 18:01
-> Subject: JFFS2 locking issue on 3.14 + patches
-> Sent by: "linux-mtd" <linux-mtd-bounces@lists.infradead.org>
-> 
-> Hi,
-> 
+On Mon, Apr 28, 2014 at 05:57:12PM +0200, Michal Simek wrote:
 > we are having this problem with JFFS2 rootfs. It is v3.14 kernel
 > with these 5 patches which cherry-picked from 3.15.
 > 
@@ -44,22 +36,8 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 > 01887a3 jffs2: unlock f->sem on error in jffs2_new_inode()
 > 13b546d jffs2: avoid soft-lockup in jffs2_reserve_space_gc()
 > 3ead957 jffs2: remove from wait queue after schedule()
-> 
-> There were some discussions on mtd mailing list about these locking
-> issues which are probably not resolved yet.
-> 
-> Here is the full branch I do use if someone is interested.
-> 
-http://git.monstr.eu/?p=linux-2.6-microblaze.git;a=shortlog;h=refs/heads/xilinx/master-next
 
-> I have also attached .config file for reference.
-> 
-> I have tested jffs2 rootfs on previous kernel versions and it was 
-working
-> fine that's why I think there is no problem with jffs2 rootfs itself.
-> 
-> on unicpu system is less amount of CRC faults.
+Have you bisected these? And possibly test the patches in isolation
+(there are only 5)?
 
-Wild guess, JFFS2 lacks readpages(). Perhaps you need to add it?
-
-    Jocke
+Brian
