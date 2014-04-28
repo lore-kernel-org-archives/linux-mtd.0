@@ -1,22 +1,16 @@
-Received: from smtp.codeaurora.org ([198.145.11.231])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WeNwe-00055C-FO
- for linux-mtd@lists.infradead.org; Sun, 27 Apr 2014 12:12:32 +0000
-Message-ID: <789ed0034a7f4aa993addb2bc8c7e914.squirrel@www.codeaurora.org>
-In-Reply-To: <1396871016.17040.33.camel@sauron.fi.intel.com>
-References: <f08bbebef039d5bb28c2fcd3022165b0.squirrel@www.codeaurora.org>
- <1396260879.9016.70.camel@sauron.fi.intel.com>
- <533A5407.4060900@codeaurora.org>
- <1396871016.17040.33.camel@sauron.fi.intel.com>
-Date: Sun, 27 Apr 2014 12:12:11 -0000
-Subject: Re: ubifs: assertion fails
-From: "Dolev Raviv" <draviv@codeaurora.org>
-To: dedekind1@gmail.com
+From: Huang Shijie <b32955@freescale.com>
+To: <dwmw2@infradead.org>
+Subject: [PATCH v2 01/10] mtd: spi-nor: fix the wrong dummy value
+Date: Mon, 28 Apr 2014 11:53:38 +0800
+Message-ID: <1398657227-20721-2-git-send-email-b32955@freescale.com>
+In-Reply-To: <1398657227-20721-1-git-send-email-b32955@freescale.com>
+References: <1398657227-20721-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Cc: Dolev Raviv <draviv@codeaurora.org>, linux-mtd@lists.infradead.org,
- Tanya Brokhman <tlinder@codeaurora.org>
+Content-Type: text/plain
+Cc: marex@denx.de, devicetree@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-spi@vger.kernel.org, Huang Shijie <b32955@freescale.com>,
+ linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,54 +20,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+For the DDR Quad read, the dummy cycles maybe 3 or 6 which is less then 8.
+The dummy cycles is actually 8 for SPI fast/dual/quad read.
 
-> On Tue, 2014-04-01 at 08:52 +0300, Tanya Brokhman wrote:
->> The log isn't flooded with the above mentioned error, but it does repeat
->> several times.
->
-> Even though you do a lot of I/O operations?
->
-> If the accounting becomes incorrect, I think you'd see a warning for
-> each and every I/O operations.
+This patch makes preparations for the DDR quad read, it fixes the wrong dummy
+value for both the spi-nor.c and m25p80.c.
 
-Yes, the log seems clean to me. The error actually occurs while stressing
-with iozone benchmark.
-Could the error be a result of the corner case you described in your
-previous mail.
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+---
+This ia actually v3.
+---
+ drivers/mtd/devices/m25p80.c  |    5 ++++-
+ drivers/mtd/spi-nor/spi-nor.c |    2 +-
+ 2 files changed, 5 insertions(+), 2 deletions(-)
 
->
-> Also, do you have several UBIFS file-systems mounted?
->
-
-Yes, we have prepared images based on ubifs. So almost all the mounted
-partitions are ubifs.
-
->> Is there any way we can help in debugging and fixing this? Also, we're
->> running on a 3.10 based kernel and I saw a lot of patches that change
->> the shrinker after 3.10 on linux-next. What kernel version did you see
->> the shrinker errors on?
->
-> Well, you just need to stress the shrinker. I did it by simply adding a
-> hack to ubifs module init which kmalloc()'ed a lot of memory. Not
-> too-much, but enough to cause some pressure when doing a lot of I/O
-> operations and get UBIFS shrinker be invoked. This took me some amount
-> of time to get a good hack. I use a normal PC with some Fedora, and
-> nandsime. This makes it a lot easier to debug, comparing with doing this
-> on a real target. After all, shrinker is a generic component. I think
-> that PC had 4GB of RAM. I do not remember how much I allocated in my
-> hack.
-
-I'll probably will take a look at this once I finish other more urgent tasks.
->
-> I think I used older version than 3.10 back then.
->
-> --
-> Best Regards,
-> Artem Bityutskiy
->
->
-
-
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 1557d8f..3a1d9e0 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -128,9 +128,12 @@ static int m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
+ 	struct spi_device *spi = flash->spi;
+ 	struct spi_transfer t[2];
+ 	struct spi_message m;
+-	int dummy = nor->read_dummy;
++	unsigned int dummy = nor->read_dummy;
+ 	int ret;
+ 
++	/* convert the dummy cycles to the number of bytes */
++	dummy /= 8;
++
+ 	/* Wait till previous write/erase is done. */
+ 	ret = nor->wait_till_ready(nor);
+ 	if (ret)
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index f76f3fc..1a12f81 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -77,7 +77,7 @@ static inline int spi_nor_read_dummy_cycles(struct spi_nor *nor)
+ 	case SPI_NOR_FAST:
+ 	case SPI_NOR_DUAL:
+ 	case SPI_NOR_QUAD:
+-		return 1;
++		return 8;
+ 	case SPI_NOR_NORMAL:
+ 		return 0;
+ 	}
 -- 
-QUALCOMM ISRAEL, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+1.7.2.rc3
