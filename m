@@ -1,16 +1,19 @@
-Received: from mail-gw1-out.broadcom.com ([216.31.210.62])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wes9y-0007br-R9
- for linux-mtd@lists.infradead.org; Mon, 28 Apr 2014 20:28:19 +0000
-From: Kamal Dasu <kdasu.kdev@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v4] mtd: nand: Add support to use nand_base poi databuf as
- bounce buffer
-Date: Mon, 28 Apr 2014 16:27:51 -0400
-Message-ID: <1398716871-14371-1-git-send-email-kdasu.kdev@gmail.com>
+From: Marek Vasut <marex@denx.de>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH v2 02/10] mtd: spi-nor: add a new field for spi_nor{}
+Date: Mon, 28 Apr 2014 22:23:26 +0200
+References: <1398657227-20721-1-git-send-email-b32955@freescale.com>
+ <1398657227-20721-3-git-send-email-b32955@freescale.com>
+In-Reply-To: <1398657227-20721-3-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Kamal Dasu <kdasu.kdev@gmail.com>
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201404282223.26174.marex@denx.de>
+Cc: devicetree@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
+ computersforpeace@gmail.com, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,122 +23,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-nand_base can be passed a kmap()'d buffers from highmem by
-filesystems like jffs2. This results in failure to map the
-physical address of the DMA buffer on various contoller
-driver on different platforms. This change adds a chip option
-to use preallocated databuf as bounce buffers used in
-nand_do_read_ops() and nand_do_write_ops().
-This allows for specific nand controller driver to set this
-option as needed.
+On Monday, April 28, 2014 at 05:53:39 AM, Huang Shijie wrote:
+> We need the SPI NOR child node to store some specific features, such as the
+> dummy cycles for the DDR Quad read.
+> 
+> But now, we only have the @dev field in the spi_nor{}. The @dev may points
+> to a spi_device{} for m25p80, while it may points to a platform_deivice{}
+> for the SPI NOR controller, such as fsl_quadspi.c.
+> 
+> It is not convenient for us to get come information from the SPI NOR flash.
+> 
+> This patch adds a new field @np to spi_nor{}, it points to the child node
+> for the SPI NOR flash.
+> 
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
 
-Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
----
+Just handle the case where dev->of_node == NULL instead ?
 
-Changes since v3 :
-* print the right highmem buffer address in pr_debug in
-  nand_do_read_ops 
-
- drivers/mtd/nand/nand_base.c | 31 ++++++++++++++++++++++++-------
- include/linux/mtd/nand.h     |  5 +++++
- 2 files changed, 29 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 9d01c4d..69ef5d9 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -37,6 +37,7 @@
- #include <linux/err.h>
- #include <linux/sched.h>
- #include <linux/slab.h>
-+#include <linux/mm.h>
- #include <linux/types.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/nand.h>
-@@ -1501,6 +1502,7 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
- 		mtd->oobavail : mtd->oobsize;
- 
- 	uint8_t *bufpoi, *oob, *buf;
-+	int use_bufpoi;
- 	unsigned int max_bitflips = 0;
- 	int retry_mode = 0;
- 	bool ecc_fail = false;
-@@ -1522,10 +1524,17 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
- 
- 		bytes = min(mtd->writesize - col, readlen);
- 		aligned = (bytes == mtd->writesize);
-+		use_bufpoi = (chip->options & NAND_USE_BOUNCE_BUFFER) ?
-+				!virt_addr_valid(buf) : 0;
- 
- 		/* Is the current page in the buffer? */
- 		if (realpage != chip->pagebuf || oob) {
--			bufpoi = aligned ? buf : chip->buffers->databuf;
-+			bufpoi = (aligned && !use_bufpoi) ? buf :
-+				chip->buffers->databuf;
-+
-+			if (use_bufpoi && aligned)
-+				pr_debug("%s: using read bounce buffer for buf@%p\n",
-+						 __func__, buf);
- 
- read_retry:
- 			chip->cmdfunc(mtd, NAND_CMD_READ0, 0x00, page);
-@@ -1547,7 +1556,7 @@ read_retry:
- 				ret = chip->ecc.read_page(mtd, chip, bufpoi,
- 							  oob_required, page);
- 			if (ret < 0) {
--				if (!aligned)
-+				if (!aligned || use_bufpoi)
- 					/* Invalidate page cache */
- 					chip->pagebuf = -1;
- 				break;
-@@ -1556,7 +1565,7 @@ read_retry:
- 			max_bitflips = max_t(unsigned int, max_bitflips, ret);
- 
- 			/* Transfer not aligned data */
--			if (!aligned) {
-+			if (!aligned || use_bufpoi) {
- 				if (!NAND_HAS_SUBPAGE_READ(chip) && !oob &&
- 				    !(mtd->ecc_stats.failed - ecc_failures) &&
- 				    (ops->mode != MTD_OPS_RAW)) {
-@@ -2376,11 +2385,19 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
- 		int bytes = mtd->writesize;
- 		int cached = writelen > bytes && page != blockmask;
- 		uint8_t *wbuf = buf;
--
--		/* Partial page write? */
--		if (unlikely(column || writelen < (mtd->writesize - 1))) {
-+		int use_bufpoi = (chip->options & NAND_USE_BOUNCE_BUFFER ?
-+				  !virt_addr_valid(buf) : 0);
-+		int part_pagewr = unlikely(column ||
-+					   writelen < (mtd->writesize - 1));
-+
-+		/* Partial page write?, or need to use bounce buffer */
-+		if (part_pagewr || use_bufpoi) {
-+			pr_debug("%s: using write bounce buffer for buf@%p\n",
-+					 __func__, buf);
- 			cached = 0;
--			bytes = min_t(int, bytes - column, (int) writelen);
-+			if (part_pagewr)
-+				bytes = min_t(int,
-+					      bytes - column, (int) writelen);
- 			chip->pagebuf = -1;
- 			memset(chip->buffers->databuf, 0xff, mtd->writesize);
- 			memcpy(&chip->buffers->databuf[column], buf, bytes);
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 450d61e..bb3e064 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -176,6 +176,11 @@ typedef enum {
- /* Chip may not exist, so silence any errors in scan */
- #define NAND_SCAN_SILENT_NODEV	0x00040000
- /*
-+ * This option is defined to protect against kmapped buffers
-+ * being passed from highmem when using DMA
-+ */
-+#define NAND_USE_BOUNCE_BUFFER	0x00080000
-+/*
-  * Autodetect nand buswidth with readid/onfi.
-  * This suppose the driver will configure the hardware in 8 bits mode
-  * when calling nand_scan_ident, and update its configuration
--- 
-1.9.2
+Best regards,
+Marek Vasut
