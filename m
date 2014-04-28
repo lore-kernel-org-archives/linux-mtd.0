@@ -1,20 +1,23 @@
-Received: from mail-yh0-f50.google.com ([209.85.213.50])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WelOz-0003cF-Go
- for linux-mtd@lists.infradead.org; Mon, 28 Apr 2014 13:15:21 +0000
-Received: by mail-yh0-f50.google.com with SMTP id b6so3307990yha.9
- for <linux-mtd@lists.infradead.org>; Mon, 28 Apr 2014 06:14:55 -0700 (PDT)
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To: <linux-mtd@lists.infradead.org>,
-	Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH 1/3] nandtest: Remove redundant check
-Date: Mon, 28 Apr 2014 10:14:17 -0300
-Message-Id: <1398690859-11494-2-git-send-email-ezequiel@vanguardiasur.com.ar>
-In-Reply-To: <1398690859-11494-1-git-send-email-ezequiel@vanguardiasur.com.ar>
-References: <1398690859-11494-1-git-send-email-ezequiel@vanguardiasur.com.ar>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- =?UTF-8?q?Guido=20Mart=C3=ADnez?= <guido@vanguardiasur.com.ar>
+Message-ID: <535E5AF5.2020203@ti.com>
+Date: Mon, 28 Apr 2014 09:43:17 -0400
+From: Santosh Shilimkar <santosh.shilimkar@ti.com>
+MIME-Version: 1.0
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v2] mtd: davinci-nand: disable subpage write for
+ keystone-nand
+References: <1395346112-13350-1-git-send-email-ivan.khoronzhuk@ti.com>
+ <532B4C36.8060405@ti.com> <5343F0D6.2010804@ti.com>
+ <20140416070833.GA5512@norris-Latitude-E6410> <534E51BF.9050508@ti.com>
+In-Reply-To: <534E51BF.9050508@ti.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, grygorii.strashko@ti.com,
+ linux@arm.linux.org.uk, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk,
+ linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+ linux-mtd@lists.infradead.org, m-karicheri2@ti.com, rob@landley.net,
+ galak@codeaurora.org, Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>,
+ dwmw2@infradead.org, Warner Losh <imp@bsdimp.com>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,26 +27,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This commit removes a redundant 'len' check, which is already performed
-just after the pread call.
+Brian,
 
-Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
----
- nandtest.c | 2 --
- 1 file changed, 2 deletions(-)
+On Wednesday 16 April 2014 05:47 AM, Ivan Khoronzhuk wrote:
+> 
+> On 04/16/2014 10:08 AM, Brian Norris wrote:
+>> On Tue, Apr 08, 2014 at 03:51:34PM +0300, Ivan Khoronzhuk wrote:
+>>> On 03/20/2014 10:14 PM, Santosh Shilimkar wrote:
+>>>> On Thursday 20 March 2014 04:08 PM, Ivan Khoronzhuk wrote:
+>>>>> From: Murali Karicheri <m-karicheri2@ti.com>
+>>>>> Sub page write doesn't work because of hw issue in controller found on
+>>>>> Keystone SOCs. AEMIF controller is also used on DaVinci SOCs which
+>>>>> don't seems to have any issue. So add "ti,keysone-nand" compatible
+>>>>> to nand driver in order to set NAND_NO_SUBPAGE_WRITE option.
+>>>>>
+>>>>> Cc: Brian Norris <computersforpeace@gmail.com>
+>>>>> Cc: Warner Losh <imp@bsdimp.com>
+>>>>> Cc: Santosh Shilimkar <santosh.shilimkar@ti.com>
+>>>>>
+>>>>> Signed-off-by: Murali Karicheri <m-karicheri2@ti.com>
+>>>>> Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+>>>>> ---
+>>>>>
+>>>> Acked-by: Santosh Shilimkar <santosh.shilimkar@ti.com>
+>>> Brian,
+>>> Could you pick up subj patch?
+>> Pushed to l2-mtd.git. Is it critical this goes in for 3.15? It's
+>> currently queued for -next (3.16).
+>>
 
-diff --git a/nandtest.c b/nandtest.c
-index 1876bb2..fd78b95 100644
---- a/nandtest.c
-+++ b/nandtest.c
-@@ -107,8 +107,6 @@ int erase_and_write(loff_t ofs, unsigned char *data, unsigned char *rbuf)
- 		printf("\nECC failed at %08x\n", (unsigned) ofs);
- 		oldstats.failed = newstats.failed;
- 	}
--	if (len < meminfo.erasesize)
--		exit(1);
- 
- 	printf("\r%08x: checking...", (unsigned)ofs);
- 	fflush(stdout);
--- 
-1.9.1
+[..]
+
+> 
+> This is a critical fix and it should be for 3.15.
+Ping. 3.15-rc3 is already out and I still see this fix merged
+yet.
+
+Regards,
+Santosh
