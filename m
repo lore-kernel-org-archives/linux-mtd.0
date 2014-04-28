@@ -1,20 +1,31 @@
-Received: from b.ns.miles-group.at ([95.130.255.144] helo=radon.swed.at)
+Received: from mail-bl2lp0212.outbound.protection.outlook.com
+ ([207.46.163.212] helo=na01-bl2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WegSJ-00083a-9b
- for linux-mtd@lists.infradead.org; Mon, 28 Apr 2014 07:58:28 +0000
-Message-ID: <535E0A06.1080606@nod.at>
-Date: Mon, 28 Apr 2014 09:57:58 +0200
-From: Richard Weinberger <richard@nod.at>
+ id 1WegYA-0002o0-PB
+ for linux-mtd@lists.infradead.org; Mon, 28 Apr 2014 08:04:32 +0000
+Date: Mon, 28 Apr 2014 15:06:08 +0800
+From: Huang Shijie <b32955@freescale.com>
+To: Marek Vasut <marex@denx.de>
+Subject: Re: [PATCH V3] Add support for flag status register on Micron chips.
+Message-ID: <20140428070602.GA29525@localhost>
+References: <1398175396-7560-1-git-send-email-grmoore@altera.com>
+ <201404260012.24311.marex@denx.de>
+ <20140426031011.GA4811@localhost.localdomain>
+ <201404280706.18068.marex@denx.de>
 MIME-Version: 1.0
-To: Tanya Brokhman <tlinder@codeaurora.org>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: ubi layer tests (fastmap testing)
-References: <535E01DB.5050405@codeaurora.org>
-In-Reply-To: <535E01DB.5050405@codeaurora.org>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: Dolev Raviv <draviv@codeaurora.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <201404280706.18068.marex@denx.de>
+Cc: ggrahammoore@gmail.com, Insop Song <insop.song@gainspeed.com>,
+ Graham Moore <grmoore@altera.com>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Jingoo Han <jg1.han@samsung.com>,
+ Geert Uytterhoeven <geert+renesas@linux-m68k.org>,
+ linux-kernel@vger.kernel.org, Yves Vandervennet <rocket.yvanderv@gmail.com>,
+ linux-mtd@lists.infradead.org,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Alan Tull <atull@altera.com>, Sourav Poddar <sourav.poddar@ti.com>,
+ Brian Norris <computersforpeace@gmail.com>, Huang Shijie <shijie8@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen <dinguyen@altera.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,28 +35,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Tanya,
-
-Am 28.04.2014 09:23, schrieb Tanya Brokhman:
-> Hi Richard
+On Mon, Apr 28, 2014 at 07:06:17AM +0200, Marek Vasut wrote:
+> On Saturday, April 26, 2014 at 05:10:13 AM, Huang Shijie wrote:
+> > On Sat, Apr 26, 2014 at 12:12:24AM +0200, Marek Vasut wrote:
+> > > > > > the drivers may fills this hook itself, so the code should like this:
+> > > > > >    --------------------------------------------------
+> > > > > > 	
+> > > > > > 	if ((info->flags & USE_FSR) &&
+> > > > > > 	
+> > > > > > 	       	nor->wait_till_ready == spi_nor_wait_till_fsr_ready)
+> > > > > > 		
+> > > > > > 		nor->wait_till_ready = spi_nor_wait_till_fsr_ready;
+> > > > > > 		
+> > > > > >    --------------------------------------------------
+> > > > > 
+> > > > > I sense a misdesign of the SPI NOR subsystem here. The subsystem and
+> > > > > the driver compete for a function pointer here ? I guess one should
+> > > > > have precedence in some way then ... and also, they should be two
+> > > > > different pointers, where the subsystem decides which to use.
+> > > > 
+> > > > the subsystem do not decides which one to use, the driver decides which
+> > > > one to use.
+> > > > 
+> > > > If driver has its own @wait_till_ready , it means the driver knows the
+> > > > feature, and has implemented it in its own @wait_till_ready.
+> > > > 
+> > > > If the driver does not fill any wait_till_ready, it means the driver
+> > > > will use the default @wait_till_ready. We can treat the
+> > > > spi_nor_wait_till_fsr_ready as a default hook too.
+> > > 
+> > > I see the driver overwriting a hook previously set by the subsystem. This
+> > 
+> > not sure ;)
+> > 
+> > The driver set the hooks before the subsystem set these hooks.
+> > 
+> > If the driver has already set the @wait_till_ready hook before it calls
+> > the spi_nor_scan, the subsystem will not set the hook anymore.
+> > 
+> > Please see the spi_nor_check().
 > 
-> You referred me to ubi-tests which were very helpful and discovered a bug in our driver. Thank you!
+> Two things competing over the same pointer looks misdesigned to me. I will need 
+> to dig into this one more time ...
+Please refer to the code for NAND chip, the nand_get_flash_type() :
 
-Yay! :)
+-----------------------------------------------------------
+	/* Do not replace user supplied command function! */
+	if (mtd->writesize > 512 && chip->cmdfunc == nand_command)
+		chip->cmdfunc = nand_command_lp;
+-----------------------------------------------------------
 
-> Unfortunately mtd-tests are not applicable to our driver.
+It uses the same logic: 
+	" Do not replace user supplied command function!"
 
-Why are mtd-tests not useable?
-
-> I was wondering if there are any other ubi test I can run? Specially once concentrating on fastmap feature. How was it tested?
-
-Fastmap was mostly tested with ubi-tests (to see whether the fastmap data structure can always be written do flash)
-and by running many attach/detach cycles.
-The critical part of fastmap happens at attach time. If fastmap fails to construct the EBA you'll have to find out
-whether the on flash fastmap data structure is faulty (i.e. fastmap forgot to save some state) or fastmap interpreted the data
-in a wrong manner.
-
-BTW: It's awesome to see ongoing work on the still experimental fastmap feature. :-)
-
-Thanks,
-//richard
+thanks
+Huang Shijie
