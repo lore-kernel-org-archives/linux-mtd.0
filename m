@@ -1,13 +1,13 @@
-Received: from mail-gw2-out.broadcom.com ([216.31.210.63])
+Received: from mail-gw1-out.broadcom.com ([216.31.210.62])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wes7u-0006ph-E2
- for linux-mtd@lists.infradead.org; Mon, 28 Apr 2014 20:26:10 +0000
+ id 1Wes9y-0007br-R9
+ for linux-mtd@lists.infradead.org; Mon, 28 Apr 2014 20:28:19 +0000
 From: Kamal Dasu <kdasu.kdev@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v3] mtd: nand: Add support to use nand_base poi databuf as
+Subject: [PATCH v4] mtd: nand: Add support to use nand_base poi databuf as
  bounce buffer
-Date: Mon, 28 Apr 2014 16:19:48 -0400
-Message-ID: <1398716388-14317-1-git-send-email-kdasu.kdev@gmail.com>
+Date: Mon, 28 Apr 2014 16:27:51 -0400
+Message-ID: <1398716871-14371-1-git-send-email-kdasu.kdev@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: Kamal Dasu <kdasu.kdev@gmail.com>
@@ -32,16 +32,16 @@ option as needed.
 Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
 ---
 
-Changes since v2:
- * fix ARM build by including linux/mm.h
- * print highmem buffer address in pr_debug
+Changes since v3 :
+* print the right highmem buffer address in pr_debug in
+  nand_do_read_ops 
 
  drivers/mtd/nand/nand_base.c | 31 ++++++++++++++++++++++++-------
  include/linux/mtd/nand.h     |  5 +++++
  2 files changed, 29 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 9d01c4d..27505cd 100644
+index 9d01c4d..69ef5d9 100644
 --- a/drivers/mtd/nand/nand_base.c
 +++ b/drivers/mtd/nand/nand_base.c
 @@ -37,6 +37,7 @@
@@ -74,8 +74,8 @@ index 9d01c4d..27505cd 100644
 +				chip->buffers->databuf;
 +
 +			if (use_bufpoi && aligned)
-+				pr_debug("%s: using bounce buffer for buf@%p\n",
-+						 __func__, bufpoi);
++				pr_debug("%s: using read bounce buffer for buf@%p\n",
++						 __func__, buf);
  
  read_retry:
  			chip->cmdfunc(mtd, NAND_CMD_READ0, 0x00, page);
