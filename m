@@ -1,25 +1,19 @@
-Received: from mail-pa0-f51.google.com ([209.85.220.51])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WfAX1-0002CI-Gr
- for linux-mtd@lists.infradead.org; Tue, 29 Apr 2014 16:05:20 +0000
-Received: by mail-pa0-f51.google.com with SMTP id fb1so418983pad.24
- for <linux-mtd@lists.infradead.org>; Tue, 29 Apr 2014 09:04:53 -0700 (PDT)
-Message-ID: <535F94BF.60004@monstr.eu>
-Date: Tue, 29 Apr 2014 14:02:07 +0200
-From: Michal Simek <monstr@monstr.eu>
+From: Bill Pringlemeir <bpringlemeir@nbsps.com>
+To: Stefan Agner <stefan@agner.ch>
+Subject: Re: [RFC 1/5] mtd:fsl_nfc: Nand flash controller for VF610, MPC5125,
+ etc.
+References: <87siupheou.fsf@nbsps.com>
+ <1389222441-4322-1-git-send-email-bpringlemeir@nbsps.com>
+ <1389222441-4322-2-git-send-email-bpringlemeir@nbsps.com>
+ <708e6f84e177e1d02310358688b44c53@agner.ch>
+Date: Tue, 29 Apr 2014 12:36:40 -0400
+In-Reply-To: <708e6f84e177e1d02310358688b44c53@agner.ch> (Stefan Agner's
+ message of "Mon, 28 Apr 2014 16:41:48 +0200")
+Message-ID: <87tx9c5bzb.fsf@nbsps.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: JFFS2 locking issue on 3.14 + patches
-References: <535E7A58.8090102@monstr.eu> <20140428165108.GU32070@ld-irv-0074>
-In-Reply-To: <20140428165108.GU32070@ld-irv-0074>
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="XaUnpI1olQCdW8I2nc1tA6DwpeN8CII2D"
-Cc: Ajesh Kunhipurayil Vijayan <ajesh@broadcom.com>,
- Li Zefan <lizefan@huawei.com>, linux-mtd@lists.infradead.org,
- Kamlakant Patel <kamlakant.patel@broadcom.com>,
- Wang Guoli <andy.wangguoli@huawei.com>
-Reply-To: monstr@monstr.eu
+Content-Type: text/plain
+Cc: b21989@freescale.com, linux-mtd@lists.infradead.org,
+ Jason.jin@freescale.com, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,142 +23,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---XaUnpI1olQCdW8I2nc1tA6DwpeN8CII2D
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+On 28 Apr 2014, stefan@agner.ch wrote:
 
-On 04/28/2014 06:51 PM, Brian Norris wrote:
-> On Mon, Apr 28, 2014 at 05:57:12PM +0200, Michal Simek wrote:
->> we are having this problem with JFFS2 rootfs. It is v3.14 kernel
->> with these 5 patches which cherry-picked from 3.15.
->>
->> 41bf1a2 jffs2: Fix crash due to truncation of csize
->> 3367da5 jffs2: Fix segmentation fault found in stress test
->> 01887a3 jffs2: unlock f->sem on error in jffs2_new_inode()
->> 13b546d jffs2: avoid soft-lockup in jffs2_reserve_space_gc()
->> 3ead957 jffs2: remove from wait queue after schedule()
->=20
-> Have you bisected these? And possibly test the patches in isolation
-> (there are only 5)?
+> The driver works fine for me using 3.14 on Colibri VF61 (8-Bit bus
+> width, Samsung NAND, 2k page size). Also tested with the Hardware ECC.
+> Do you plan to send an update patch of the driver?
 
-=46rom top to down - reverts on the top of these 5 patches.
+> FYI, I ported the driver to U-Boot and will send a patch to the U-Boot
+> mailing list soon.
 
-HEAD: Locking issue I have sent in origin email and CRC problems
+> Some minor comments below:
 
-Reverting
-41bf1a2 jffs2: Fix crash due to truncation of csize
-Generates a lot of warnings like this.
-[    6.250541] jffs2: warning: (682) jffs2_get_inode_nodes: Eep. No valid=
- nodes for ino #261.
-[    6.258732] jffs2: warning: (682) jffs2_do_read_inode_internal: no dat=
-a nodes found for ino #261
+> Am 2014-01-09 00:07, schrieb Bill Pringlemeir:
+> <snip>
+>> +static u8 bbt_pattern[] = {'B', 'b', 't', '0' }; +static u8
+>> mirror_pattern[] = {'1', 't', 'b', 'B' }; + +static struct
+>> nand_bbt_descr bbt_main_descr = { + .options = NAND_BBT_LASTBLOCK |
+>> NAND_BBT_CREATE | NAND_BBT_WRITE | + NAND_BBT_2BIT |
+>> NAND_BBT_VERSION, + .offs = 11, + .len = 4, + .veroffs = 15, +
+>> .maxblocks = 4, + .pattern = bbt_pattern, +}; + +static struct
+>> nand_bbt_descr bbt_mirror_descr = { + .options = NAND_BBT_LASTBLOCK |
+>> NAND_BBT_CREATE | NAND_BBT_WRITE | + NAND_BBT_2BIT |
+>> NAND_BBT_VERSION, + .offs = 11, + .len = 4, + .veroffs = 15, +
+>> .maxblocks = 4, + .pattern = mirror_pattern, +};
 
+> This is the same BBT descriptor as used on Timesys Vybrid BSP. Other
+> than this "backward compatibility", is there another reason to use non
+> default BBT descriptor? As far as I can tell, the ECC does not
+> conflict with the default BBT description.
 
-Reverting one patch
-3367da5 jffs2: Fix segmentation fault found in stress test
-on the top of 5 patches
-- lock issue is present but CRC issue is gone on uniprocessor system. CRC=
- issue is present on SMP case
+Beyond the "TimeSys", there are OpenWRT projects and others that seem to
+use this BBT structure.  Myself, I don't care.  The question would be
+will someone ever get to use this driver with some other system?  It is
+simple enough to patch the driver; although a device tree binding
+supported by the driver might be more flexible to allow both from
+multi-machine builds.  This particular chip is not really a candidate as
+it always seems to be used with a different architecture; PowerPC,
+ColdFire/68k, ARM Cortex-A or Cortex-M.
 
-Reverting two patches
-3367da5 jffs2: Fix segmentation fault found in stress test
-01887a3 jffs2: unlock f->sem on error in jffs2_new_inode()
-on the top of 5 patches
-- only locking issue is reported, CRC issue is gone on uniprocessor syste=
-m
+>> +/* Write data to NFC buffers */ 
+>> +static void nfc_write_buf(struct mtd_info *mtd, const u_char *buf,
+>> int len)
+>> +{
+> ...  IMHO this type of commands are not really required, the function
+> name is descriptive enough.
 
+The comments are from the original.
 
-Reverting 3 patches
-3367da5 jffs2: Fix segmentation fault found in stress test
-01887a3 jffs2: unlock f->sem on error in jffs2_new_inode()
-13b546d jffs2: avoid soft-lockup in jffs2_reserve_space_gc()
-on the top of 5 patches
-- locking issue still present with CRC issue again and data problems.
+https://github.com/Timesys/linux-timesys/blob/3.0-mvf/drivers/mtd/nand/fsl_nfc.c#L170
 
-[   18.959144] jffs2: notice: (630) check_node_data: wrong data CRC in da=
-ta node at 0x0015348c: read 0x8fb195d5, calculated 0xbc622daa.
-[   18.971009] jffs2: warning: (630) jffs2_do_read_inode_internal: no dat=
-a nodes found for ino #392
-[   18.979766] jffs2: Returned error for crccheck of ino #392. Expect bad=
-ness...
-[   39.152478] jffs2: notice: (630) check_node_data: wrong data CRC in da=
-ta node at 0x00492cd8: read 0xe62c6036, calculated 0xf875522b.
-[   39.167465] jffs2: warning: (630) jffs2_do_read_inode_internal: Trunca=
-ting ino #822 to 41568 bytes failed because it only had 40960 bytes to st=
-art with!
+I agree they are not needed.
 
+>> +/* Vybrid only.  MPC5125 has full RB and four CS. Assume boot loader
+>> + * has set this register for now.
+>> + */
 
-Reverting 3 patches
-3367da5 jffs2: Fix segmentation fault found in stress test
-01887a3 jffs2: unlock f->sem on error in jffs2_new_inode()
-3ead957 jffs2: remove from wait queue after schedule()
-on the top of 5 patches
-- locking issue still present with CRC issue again and data problems.
+> Multi-line comment style (there are some malformed multi-line comments
+> in the ECC patch as well)
 
+This is my comment.  I must of missed the advice on multi-line comments.
+I did all sorts of strange things with test emails, building with
+different git trees, running different scripts, re-ordering the patches
+to try and make them understandable, testing different variants,
+benchmarking, etc.  White space is not a riveting issue for me.  I just
+cribbed some emacs code and hope it works.
 
-Origin testing was done on zynq with qspi and I have also
-retest it on microblaze and NOR flash and issue is just there.
+   (defun linux-c-mode ()
+     "C mode with adjusted defaults for use with the Linux kernel."
+     (interactive)
+     (c-mode)
+     (c-set-style "K&R")
+     (setq tab-width 8)
+     (setq indent-tabs-mode t)
+     (setq truncate-lines t)
+     (setq show-trailing-whitespace t)
+     (setq c-basic-offset 8))
 
-Bisecting these five patches don't solve anything.
+I looked again, you mean that I should have the first "star" line blank
+or is there more?
 
-Locking issue was introduced 3.6-rc3 by this commit.
-I will check CONFIG_JFFS2_FS_WRITEBUFFER option.
-
-commit a445f784ae5558a3da680aa6b39ed53c95a551c1
-Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Date:   Thu Aug 23 10:10:07 2012 +0300
-
-    JFFS2: fix unmount regression
-
-    This patch fixes regression introduced by
-    "8bdc81c jffs2: get rid of jffs2_sync_super". We submit a delayed wor=
-k in order
-    to make sure the write-buffer is synchronized at some point. But we d=
-o not
-    flush it when we unmount, which causes an oops when we unmount the fi=
-le-system
-    and then the delayed work is executed.
-
-    This patch fixes the issue by adding a "cancel_delayed_work_sync()" i=
-nfocation
-    in the '->sync_fs()' handler. This will make sure the delayed work is=
- canceled
-    on sync, unmount and re-mount. And because VFS always callse 'sync_fs=
-()' before
-    unmounting or remounting, this fixes the issue.
-
-    Reported-by: Ludovic Desroches <ludovic.desroches@atmel.com>
-    Cc: stable@vger.kernel.org [3.5+]
-    Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-    Tested-by: Ludovic Desroches <ludovic.desroches@atmel.com>
-    Signed-off-by: David Woodhouse <David.Woodhouse@intel.com>
-
+There are other issues, like Shawn Guo's IMX tree has a better structure
+for the IOMUX bindings.  I am also concerned that people don't like the
+order of the patches and I have to fsck with git to re-arrange them
+(again).  However, I think that having the MTD people willing to accept
+is my major hurdle on working on it further.  I don't know if they want
+yet another controller?  I am glad that you can use it too and have
+tested it with 8-bit flash.
 
 Thanks,
-Michal
-
---=20
-Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
-w: www.monstr.eu p: +42-0-721842854
-Maintainer of Linux kernel - Microblaze cpu - http://www.monstr.eu/fdt/
-Maintainer of Linux kernel - Xilinx Zynq ARM architecture
-Microblaze U-BOOT custodian and responsible for u-boot arm zynq platform
-
-
-
---XaUnpI1olQCdW8I2nc1tA6DwpeN8CII2D
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
-
-iEYEARECAAYFAlNflMEACgkQykllyylKDCFXewCffngs5ofLs2c50tCwUP4VrqB0
-+lcAn1UQd0z0UB8vKYwyMcZaSs/G8xBF
-=M3MZ
------END PGP SIGNATURE-----
-
---XaUnpI1olQCdW8I2nc1tA6DwpeN8CII2D--
+Bill Pringlemeir.
