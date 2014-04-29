@@ -1,21 +1,22 @@
-Date: Tue, 29 Apr 2014 12:06:03 -0700
+Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WfDUM-0000FJ-Uy
+ for linux-mtd@lists.infradead.org; Tue, 29 Apr 2014 19:14:49 +0000
+Received: by mail-pa0-f45.google.com with SMTP id kq14so674837pab.32
+ for <linux-mtd@lists.infradead.org>; Tue, 29 Apr 2014 12:14:23 -0700 (PDT)
+Date: Tue, 29 Apr 2014 12:14:17 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Stephen Warren <swarren@wwwdotorg.org>
-Subject: Re: [PATCH 1/5] ARM: defconfigs: add MTD_SPI_NOR (new dependency for
- M25P80)
-Message-ID: <20140429190603.GB9418@norris-Latitude-E6410>
-References: <1397719309-2022-1-git-send-email-computersforpeace@gmail.com>
- <1397719309-2022-2-git-send-email-computersforpeace@gmail.com>
- <535A8FC9.8040707@wwwdotorg.org>
+To: Masahiro Yamada <yamada.m@jp.panasonic.com>
+Subject: Re: [PATCH] mtd: nand: fix a typo in a comment line
+Message-ID: <20140429191417.GC9418@norris-Latitude-E6410>
+References: <1397028386-16304-1-git-send-email-yamada.m@jp.panasonic.com>
+ <20140416072311.GC5512@norris-Latitude-E6410>
+ <20140417185914.6CE8.AA925319@jp.panasonic.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <535A8FC9.8040707@wwwdotorg.org>
-Cc: Marek Vasut <marex@denx.de>, Russell King <linux@arm.linux.org.uk>,
- Linux Kernel <linux-kernel@vger.kernel.org>,
- Thierry Reding <thierry.reding@gmail.com>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, Sascha Hauer <kernel@pengutronix.de>,
- Olof Johansson <olof@lixom.net>, Shawn Guo <shawn.guo@freescale.com>
+In-Reply-To: <20140417185914.6CE8.AA925319@jp.panasonic.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,35 +26,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Stephen,
-
-On Fri, Apr 25, 2014 at 10:39:37AM -0600, Stephen Warren wrote:
-> On 04/17/2014 01:21 AM, Brian Norris wrote:
-> > These defconfigs contain the CONFIG_M25P80 symbol, which is now
-> > dependent on the MTD_SPI_NOR symbol. Add CONFIG_MTD_SPI_NOR to the
-> > relevant defconfigs.
+On Thu, Apr 17, 2014 at 06:59:16PM +0900, Masahiro Yamada wrote:
+> On Wed, 16 Apr 2014 00:23:11 -0700 Brian Norris <computersforpeace@gmail.com> wrote:
+> > On Wed, Apr 09, 2014 at 04:26:26PM +0900, Masahiro Yamada wrote:
+> > > Signed-off-by: Masahiro Yamada <yamada.m@jp.panasonic.com>
+> > > ---
+> > >  drivers/mtd/nand/nand_base.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> > > index 9d01c4d..33ec641 100644
+> > > --- a/drivers/mtd/nand/nand_base.c
+> > > +++ b/drivers/mtd/nand/nand_base.c
+> > > @@ -3607,7 +3607,7 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
+> > >  
+> > >  	chip->onfi_version = 0;
+> > >  	if (!type->name || !type->pagesize) {
+> > > -		/* Check is chip is ONFI compliant */
+> > > +		/* Check if the chip is ONFI compliant */
 > > 
-> > At the same time, drop the now-nonexistent CONFIG_MTD_CHAR symbol.
+> > Really? We don't spell out "the chip" every time we refer to "chip". I
+> > think this is just fine as-is.
 > 
-> I hadn't realized that the problem this patch solves was already present
-> in the code, so this patch is simply catching up the defconfigs rather
-> than part of a series which changed the code to cause the problem.
+> I am fixing two things here.
+...
 
-Yes, this is "catching up the defconfigs." The SPI_NOR framework is new,
-and I didn't want to generate defconfig noise until a few things
-stabilized (particularly, its Kconfig symbol name).
+My apologies. Apparently I can't tell the difference between "is" and
+"if". This patch is fine!
 
-> So, this needs to be applied ASAP.
-> 
-> I think this should be split it up so that each defconfig can go through
-> the tree that owns it to avoid conflicts. If you repost split up, I can
-> apply the tegra_defconfig change to the Tegra tree.
-
-OK, I'll try to split it up. Is ARM unique in tracking defconfigs in
-separate trees? I assume MIPS, PowerPC, and Blackfin won't require the
-same splitting? I'd like to avoid 31 patches when <20 could suffice.
-
-I'll also rebase on linux-next. I think there may be a few conflicts.
+Pushed to l2-mtd.git!
 
 Thanks,
 Brian
