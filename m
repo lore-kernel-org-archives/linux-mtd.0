@@ -1,16 +1,19 @@
-Received: from szxga03-in.huawei.com ([119.145.14.66])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wex7l-00057r-Jx
- for linux-mtd@lists.infradead.org; Tue, 29 Apr 2014 01:46:24 +0000
-Message-ID: <535F040C.8010903@huawei.com>
-Date: Tue, 29 Apr 2014 09:44:44 +0800
-From: hujianyang <hujianyang@huawei.com>
+Date: Tue, 29 Apr 2014 13:18:34 +0800
+From: Huang Shijie <b32955@freescale.com>
+To: Marek Vasut <marex@denx.de>
+Subject: Re: [PATCH v2 02/10] mtd: spi-nor: add a new field for spi_nor{}
+Message-ID: <20140429051832.GC21064@localhost>
+References: <1398657227-20721-1-git-send-email-b32955@freescale.com>
+ <1398657227-20721-3-git-send-email-b32955@freescale.com>
+ <201404282223.26174.marex@denx.de>
 MIME-Version: 1.0
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH] UBIFS: Remove unused variables in ubifs_budget_space
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <201404282223.26174.marex@denx.de>
+Cc: devicetree@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
+ computersforpeace@gmail.com, dwmw2@infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,26 +23,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I found two variables in ubifs_budget_space declared but not
-use. This state remains since the first commit 1e5176. So just
-remove them.
+On Mon, Apr 28, 2014 at 10:23:26PM +0200, Marek Vasut wrote:
+> On Monday, April 28, 2014 at 05:53:39 AM, Huang Shijie wrote:
+> > We need the SPI NOR child node to store some specific features, such as the
+> > dummy cycles for the DDR Quad read.
+> > 
+> > But now, we only have the @dev field in the spi_nor{}. The @dev may points
+> > to a spi_device{} for m25p80, while it may points to a platform_deivice{}
+> > for the SPI NOR controller, such as fsl_quadspi.c.
+> > 
+> > It is not convenient for us to get come information from the SPI NOR flash.
+> > 
+> > This patch adds a new field @np to spi_nor{}, it points to the child node
+> > for the SPI NOR flash.
+> > 
+> > Signed-off-by: Huang Shijie <b32955@freescale.com>
+> 
+> Just handle the case where dev->of_node == NULL instead ?
+It is not enough. 
 
-Signed-off-by: hujianyang <hujianyang@huawei.com>
----
- fs/ubifs/budget.c | 1 -
- 1 file changed, 1 deletion(-)
+For the m25p80.c, @dev stands for a child node for the SPI master,
+and it points to a spi_device{}. Yes, in this case, the dev->of_node is NULL.
 
-diff --git a/fs/ubifs/budget.c b/fs/ubifs/budget.c
-index e8e01d7..eb997e9 100644
---- a/fs/ubifs/budget.c
-+++ b/fs/ubifs/budget.c
-@@ -437,7 +437,6 @@ static int calc_dd_growth(const struct ubifs_info *c,
-  */
- int ubifs_budget_space(struct ubifs_info *c, struct ubifs_budget_req *req)
- {
--	int uninitialized_var(cmt_retries), uninitialized_var(wb_retries);
- 	int err, idx_growth, data_growth, dd_growth, retried = 0;
+But for the fsl_quadspi or other SPI NOR drivers, the @dev stands for the controller
+itself, the @dev->of_node is a list of the child nodes, so we can _NOT_ know which
+child node we are working at now.
 
- 	ubifs_assert(req->new_page <= 1);
--- 
-1.8.5.5
+
+So it's better to add a new field @np for the spi-nor{} which points the
+child node we are working at.
+
+thanks
+Huang Shijie
