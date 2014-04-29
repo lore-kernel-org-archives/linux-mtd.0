@@ -1,15 +1,15 @@
-From: Marek Vasut <marex@denx.de>
-To: Huang Shijie <b32955@freescale.com>
+Date: Tue, 29 Apr 2014 14:05:04 +0800
+From: Huang Shijie <b32955@freescale.com>
+To: Marek Vasut <marex@denx.de>
 Subject: Re: [PATCH v2 02/10] mtd: spi-nor: add a new field for spi_nor{}
-Date: Tue, 29 Apr 2014 08:54:24 +0200
+Message-ID: <20140429060502.GA14227@localhost>
 References: <1398657227-20721-1-git-send-email-b32955@freescale.com>
  <201404282223.26174.marex@denx.de> <20140429051832.GC21064@localhost>
-In-Reply-To: <20140429051832.GC21064@localhost>
+ <201404290854.25116.marex@denx.de>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201404290854.25116.marex@denx.de>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <201404290854.25116.marex@denx.de>
 Cc: devicetree@vger.kernel.org, "dzu@denx.de" <dzu@denx.de>,
  linux-doc@vger.kernel.org, linux-spi@vger.kernel.org,
  linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
@@ -23,40 +23,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday, April 29, 2014 at 07:18:34 AM, Huang Shijie wrote:
-> On Mon, Apr 28, 2014 at 10:23:26PM +0200, Marek Vasut wrote:
-> > On Monday, April 28, 2014 at 05:53:39 AM, Huang Shijie wrote:
-> > > We need the SPI NOR child node to store some specific features, such as
-> > > the dummy cycles for the DDR Quad read.
-> > > 
-> > > But now, we only have the @dev field in the spi_nor{}. The @dev may
-> > > points to a spi_device{} for m25p80, while it may points to a
-> > > platform_deivice{} for the SPI NOR controller, such as fsl_quadspi.c.
-> > > 
-> > > It is not convenient for us to get come information from the SPI NOR
-> > > flash.
-> > > 
-> > > This patch adds a new field @np to spi_nor{}, it points to the child
-> > > node for the SPI NOR flash.
-> > > 
-> > > Signed-off-by: Huang Shijie <b32955@freescale.com>
+On Tue, Apr 29, 2014 at 08:54:24AM +0200, Marek Vasut wrote:
+> On Tuesday, April 29, 2014 at 07:18:34 AM, Huang Shijie wrote:
+> > For the m25p80.c, @dev stands for a child node for the SPI master,
+> > and it points to a spi_device{}. Yes, in this case, the dev->of_node is
+> > NULL.
 > > 
-> > Just handle the case where dev->of_node == NULL instead ?
+> > But for the fsl_quadspi or other SPI NOR drivers, the @dev stands for the
+> > controller itself, the @dev->of_node is a list of the child nodes, so we
+> > can _NOT_ know which child node we are working at now.
 > 
-> It is not enough.
-> 
-> For the m25p80.c, @dev stands for a child node for the SPI master,
-> and it points to a spi_device{}. Yes, in this case, the dev->of_node is
-> NULL.
-> 
-> But for the fsl_quadspi or other SPI NOR drivers, the @dev stands for the
-> controller itself, the @dev->of_node is a list of the child nodes, so we
-> can _NOT_ know which child node we are working at now.
+> Huh ? The dev is being recycled for two different kind of things ?
+yes.
 
-Huh ? The dev is being recycled for two different kind of things ?
+for the SPI bus, the of_register_spi_devices() will allocate a spi_device{}
+for each child node for the SPI NOR flash. So in the m25p80.c, the @dev points
+to a spi_device{}.
 
-> So it's better to add a new field @np for the spi-nor{} which points the
-> child node we are working at.
+For the simplicity,  we do not allocate any *_device{} for the child
+node in the SPI NOR flash driver, such as in the fsl-quadspi.c.
 
-Best regards,
-Marek Vasut
+thanks
+Huang Shijie
