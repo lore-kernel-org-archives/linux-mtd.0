@@ -1,25 +1,25 @@
-Received: from mail-bl2on0126.outbound.protection.outlook.com ([65.55.169.126]
- helo=na01-bl2-obe.outbound.protection.outlook.com)
+Received: from mail-pa0-f51.google.com ([209.85.220.51])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wf9zS-0008DN-2F
- for linux-mtd@lists.infradead.org; Tue, 29 Apr 2014 15:30:38 +0000
-From: Graham Moore <grmoore@altera.com>
-To: <ggrahammoore@gmail.com>
-Subject: [PATCH V4] Add support for flag status register on Micron chips.
-Date: Tue, 29 Apr 2014 10:29:51 -0500
-Message-ID: <1398785391-10744-1-git-send-email-grmoore@altera.com>
+ id 1WfAX1-0002CI-Gr
+ for linux-mtd@lists.infradead.org; Tue, 29 Apr 2014 16:05:20 +0000
+Received: by mail-pa0-f51.google.com with SMTP id fb1so418983pad.24
+ for <linux-mtd@lists.infradead.org>; Tue, 29 Apr 2014 09:04:53 -0700 (PDT)
+Message-ID: <535F94BF.60004@monstr.eu>
+Date: Tue, 29 Apr 2014 14:02:07 +0200
+From: Michal Simek <monstr@monstr.eu>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: ZY - marex <marex@denx.de>,
- Geert Uytterhoeven <geert+renesas@linux-m68k.org>,
- Graham Moore <grmoore@altera.com>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Sascha Hauer <s.hauer@pengutronix.de>, Jingoo Han <jg1.han@samsung.com>,
- linux-kernel@vger.kernel.org, Yves Vandervennet <rocket.yvanderv@gmail.com>,
- linux-mtd@lists.infradead.org, Insop Song <insop.song@gainspeed.com>,
- Alan Tull <atull@altera.com>, Sourav Poddar <sourav.poddar@ti.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen <dinguyen@altera.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: JFFS2 locking issue on 3.14 + patches
+References: <535E7A58.8090102@monstr.eu> <20140428165108.GU32070@ld-irv-0074>
+In-Reply-To: <20140428165108.GU32070@ld-irv-0074>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="XaUnpI1olQCdW8I2nc1tA6DwpeN8CII2D"
+Cc: Ajesh Kunhipurayil Vijayan <ajesh@broadcom.com>,
+ Li Zefan <lizefan@huawei.com>, linux-mtd@lists.infradead.org,
+ Kamlakant Patel <kamlakant.patel@broadcom.com>,
+ Wang Guoli <andy.wangguoli@huawei.com>
+Reply-To: monstr@monstr.eu
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,142 +29,142 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some new Micron flash chips require reading the flag
-status register to determine when operations have completed.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--XaUnpI1olQCdW8I2nc1tA6DwpeN8CII2D
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Furthermore, chips with multi-die stacks of the 65nm 256Mb QSPI also
-require reading the status register before reading the flag status register.
+On 04/28/2014 06:51 PM, Brian Norris wrote:
+> On Mon, Apr 28, 2014 at 05:57:12PM +0200, Michal Simek wrote:
+>> we are having this problem with JFFS2 rootfs. It is v3.14 kernel
+>> with these 5 patches which cherry-picked from 3.15.
+>>
+>> 41bf1a2 jffs2: Fix crash due to truncation of csize
+>> 3367da5 jffs2: Fix segmentation fault found in stress test
+>> 01887a3 jffs2: unlock f->sem on error in jffs2_new_inode()
+>> 13b546d jffs2: avoid soft-lockup in jffs2_reserve_space_gc()
+>> 3ead957 jffs2: remove from wait queue after schedule()
+>=20
+> Have you bisected these? And possibly test the patches in isolation
+> (there are only 5)?
 
-This patch adds support for the flag status register in the n25q512ax3 and n25q00
-Micron QSPI flash chips.
+=46rom top to down - reverts on the top of these 5 patches.
 
-Signed-off-by: Graham Moore <grmoore@altera.com>
----
-V4:
-Do not set nor->wait_till_ready if driver has already set it.
-V3:
-Rebase to l2-mtd spinor branch.
-V2:
-Remove leading underscore in function names.
-Remove type cast in dev_err call and use the proper format
-specifier instead.
----
- drivers/mtd/spi-nor/spi-nor.c |   52 +++++++++++++++++++++++++++++++++++++++++
- include/linux/mtd/spi-nor.h   |    4 ++++
- 2 files changed, 56 insertions(+)
+HEAD: Locking issue I have sent in origin email and CRC problems
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index d6f44d5..7e2817e 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -48,6 +48,25 @@ static int read_sr(struct spi_nor *nor)
- }
- 
- /*
-+ * Read the flag status register, returning its value in the location
-+ * Return the status register value.
-+ * Returns negative if error occurred.
-+ */
-+static int read_fsr(struct spi_nor *nor)
-+{
-+	int ret;
-+	u8 val;
-+
-+	ret = nor->read_reg(nor, SPINOR_OP_RDFSR, &val, 1);
-+	if (ret < 0) {
-+		pr_err("error %d reading FSR\n", ret);
-+		return ret;
-+	}
-+
-+	return val;
-+}
-+
-+/*
-  * Read configuration register, returning its value in the
-  * location. Return the configuration register value.
-  * Returns negative if error occured.
-@@ -165,6 +184,32 @@ static int spi_nor_wait_till_ready(struct spi_nor *nor)
- 	return -ETIMEDOUT;
- }
- 
-+static int spi_nor_wait_till_fsr_ready(struct spi_nor *nor)
-+{
-+	unsigned long deadline;
-+	int sr;
-+	int fsr;
-+
-+	deadline = jiffies + MAX_READY_WAIT_JIFFIES;
-+
-+	do {
-+		cond_resched();
-+
-+		sr = read_sr(nor);
-+		if (sr < 0) {
-+			break;
-+		} else if (!(sr & SR_WIP)) {
-+			fsr = read_fsr(nor);
-+			if (fsr < 0)
-+				break;
-+			if (fsr & FSR_READY)
-+				return 0;
-+		}
-+	} while (!time_after_eq(jiffies, deadline));
-+
-+	return -ETIMEDOUT;
-+}
-+
- /*
-  * Service routine to read status register until ready, or timeout occurs.
-  * Returns non-zero if error.
-@@ -402,6 +447,7 @@ struct flash_info {
- #define	SECT_4K_PMC		0x10	/* SPINOR_OP_BE_4K_PMC works uniformly */
- #define	SPI_NOR_DUAL_READ	0x20    /* Flash supports Dual Read */
- #define	SPI_NOR_QUAD_READ	0x40    /* Flash supports Quad Read */
-+#define	USE_FSR			0x80	/* use flag status register */
- };
- 
- #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)	\
-@@ -488,6 +534,8 @@ const struct spi_device_id spi_nor_ids[] = {
- 	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, 0) },
- 	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K) },
- 	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K) },
-+	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, USE_FSR) },
-+	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, USE_FSR) },
- 
- 	/* PMC */
- 	{ "pm25lv512",   INFO(0,        0, 32 * 1024,    2, SECT_4K_PMC) },
-@@ -965,6 +1013,10 @@ int spi_nor_scan(struct spi_nor *nor, const struct spi_device_id *id,
- 	else
- 		mtd->_write = spi_nor_write;
- 
-+	if ((info->flags & USE_FSR) &&
-+	    nor->wait_till_ready == spi_nor_wait_till_ready)
-+		nor->wait_till_ready = spi_nor_wait_till_fsr_ready;
-+
- 	/* prefer "small sector" erase if possible */
- 	if (info->flags & SECT_4K) {
- 		nor->erase_opcode = SPINOR_OP_BE_4K;
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index 5324184..9e6294f 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -34,6 +34,7 @@
- #define SPINOR_OP_SE		0xd8	/* Sector erase (usually 64KiB) */
- #define SPINOR_OP_RDID		0x9f	/* Read JEDEC ID */
- #define SPINOR_OP_RDCR		0x35	/* Read configuration register */
-+#define SPINOR_OP_RDFSR		0x70	/* Read flag status register */
- 
- /* 4-byte address opcodes - used on Spansion and some Macronix flashes. */
- #define SPINOR_OP_READ4		0x13	/* Read data bytes (low frequency) */
-@@ -66,6 +67,9 @@
- 
- #define SR_QUAD_EN_MX		0x40	/* Macronix Quad I/O */
- 
-+/* Flag Status Register bits */
-+#define FSR_READY		0x80
-+
- /* Configuration Register bits. */
- #define CR_QUAD_EN_SPAN		0x2	/* Spansion Quad I/O */
- 
--- 
-1.7.9.5
+Reverting
+41bf1a2 jffs2: Fix crash due to truncation of csize
+Generates a lot of warnings like this.
+[    6.250541] jffs2: warning: (682) jffs2_get_inode_nodes: Eep. No valid=
+ nodes for ino #261.
+[    6.258732] jffs2: warning: (682) jffs2_do_read_inode_internal: no dat=
+a nodes found for ino #261
+
+
+Reverting one patch
+3367da5 jffs2: Fix segmentation fault found in stress test
+on the top of 5 patches
+- lock issue is present but CRC issue is gone on uniprocessor system. CRC=
+ issue is present on SMP case
+
+Reverting two patches
+3367da5 jffs2: Fix segmentation fault found in stress test
+01887a3 jffs2: unlock f->sem on error in jffs2_new_inode()
+on the top of 5 patches
+- only locking issue is reported, CRC issue is gone on uniprocessor syste=
+m
+
+
+Reverting 3 patches
+3367da5 jffs2: Fix segmentation fault found in stress test
+01887a3 jffs2: unlock f->sem on error in jffs2_new_inode()
+13b546d jffs2: avoid soft-lockup in jffs2_reserve_space_gc()
+on the top of 5 patches
+- locking issue still present with CRC issue again and data problems.
+
+[   18.959144] jffs2: notice: (630) check_node_data: wrong data CRC in da=
+ta node at 0x0015348c: read 0x8fb195d5, calculated 0xbc622daa.
+[   18.971009] jffs2: warning: (630) jffs2_do_read_inode_internal: no dat=
+a nodes found for ino #392
+[   18.979766] jffs2: Returned error for crccheck of ino #392. Expect bad=
+ness...
+[   39.152478] jffs2: notice: (630) check_node_data: wrong data CRC in da=
+ta node at 0x00492cd8: read 0xe62c6036, calculated 0xf875522b.
+[   39.167465] jffs2: warning: (630) jffs2_do_read_inode_internal: Trunca=
+ting ino #822 to 41568 bytes failed because it only had 40960 bytes to st=
+art with!
+
+
+Reverting 3 patches
+3367da5 jffs2: Fix segmentation fault found in stress test
+01887a3 jffs2: unlock f->sem on error in jffs2_new_inode()
+3ead957 jffs2: remove from wait queue after schedule()
+on the top of 5 patches
+- locking issue still present with CRC issue again and data problems.
+
+
+Origin testing was done on zynq with qspi and I have also
+retest it on microblaze and NOR flash and issue is just there.
+
+Bisecting these five patches don't solve anything.
+
+Locking issue was introduced 3.6-rc3 by this commit.
+I will check CONFIG_JFFS2_FS_WRITEBUFFER option.
+
+commit a445f784ae5558a3da680aa6b39ed53c95a551c1
+Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Date:   Thu Aug 23 10:10:07 2012 +0300
+
+    JFFS2: fix unmount regression
+
+    This patch fixes regression introduced by
+    "8bdc81c jffs2: get rid of jffs2_sync_super". We submit a delayed wor=
+k in order
+    to make sure the write-buffer is synchronized at some point. But we d=
+o not
+    flush it when we unmount, which causes an oops when we unmount the fi=
+le-system
+    and then the delayed work is executed.
+
+    This patch fixes the issue by adding a "cancel_delayed_work_sync()" i=
+nfocation
+    in the '->sync_fs()' handler. This will make sure the delayed work is=
+ canceled
+    on sync, unmount and re-mount. And because VFS always callse 'sync_fs=
+()' before
+    unmounting or remounting, this fixes the issue.
+
+    Reported-by: Ludovic Desroches <ludovic.desroches@atmel.com>
+    Cc: stable@vger.kernel.org [3.5+]
+    Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+    Tested-by: Ludovic Desroches <ludovic.desroches@atmel.com>
+    Signed-off-by: David Woodhouse <David.Woodhouse@intel.com>
+
+
+Thanks,
+Michal
+
+--=20
+Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
+w: www.monstr.eu p: +42-0-721842854
+Maintainer of Linux kernel - Microblaze cpu - http://www.monstr.eu/fdt/
+Maintainer of Linux kernel - Xilinx Zynq ARM architecture
+Microblaze U-BOOT custodian and responsible for u-boot arm zynq platform
+
+
+
+--XaUnpI1olQCdW8I2nc1tA6DwpeN8CII2D
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
+
+iEYEARECAAYFAlNflMEACgkQykllyylKDCFXewCffngs5ofLs2c50tCwUP4VrqB0
++lcAn1UQd0z0UB8vKYwyMcZaSs/G8xBF
+=M3MZ
+-----END PGP SIGNATURE-----
+
+--XaUnpI1olQCdW8I2nc1tA6DwpeN8CII2D--
