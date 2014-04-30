@@ -1,29 +1,21 @@
-Received: from mail-wi0-f178.google.com ([209.85.212.178])
+Received: from smtp.codeaurora.org ([198.145.11.231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WfU1z-0005bY-7w
- for linux-mtd@lists.infradead.org; Wed, 30 Apr 2014 12:54:35 +0000
-Received: by mail-wi0-f178.google.com with SMTP id hm4so904437wib.5
- for <linux-mtd@lists.infradead.org>; Wed, 30 Apr 2014 05:54:12 -0700 (PDT)
-Date: Wed, 30 Apr 2014 13:54:06 +0100
-From: Lee Jones <lee.jones@linaro.org>
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [RFC 13/47] mtd: nand: stm_nand_bch: provide Device Tree support
-Message-ID: <20140430125406.GN29462@lee--X1>
-References: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
- <1395735604-26706-14-git-send-email-lee.jones@linaro.org>
- <20980858CB6D3A4BAE95CA194937D5E73EAB5C83@DBDE04.ent.ti.com>
+ id 1WfUss-0007C7-0k
+ for linux-mtd@lists.infradead.org; Wed, 30 Apr 2014 13:49:14 +0000
+Message-ID: <3921496816192fe04ed3cdbb562fc6d8.squirrel@www.codeaurora.org>
+In-Reply-To: <20140430121846.GI1821@guralp.com>
+References: <535B7B96.9030008@huawei.com> <536092CE.2090209@huawei.com>
+ <20140430121846.GI1821@guralp.com>
+Date: Wed, 30 Apr 2014 13:48:51 -0000
+Subject: Re: [PATCH v2] UBIFS: Fix assert failed in ubifs_set_page_dirty
+From: "Dolev Raviv" <draviv@codeaurora.org>
+To: "Laurence Withers" <lwithers@guralp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain;charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EAB5C83@DBDE04.ent.ti.com>
-Cc: "angus.clark@st.com" <angus.clark@st.com>,
- "kernel@stlinux.com" <kernel@stlinux.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>, adrian.hunter@intel.com,
+ hujianyang <hujianyang@huawei.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,112 +25,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> >From: Lee Jones [mailto:lee.jones@linaro.org]
-> >
-> >Fetch platform specific data from Device Tree. Any functions which
-> >are useful to other STM NAND Controllers have been separated into a
-> >separate file so they can be easily referenced by them as they
-> >appear.
-> >
-> >Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Hi Hujianyang and Laurence,
+I'm hitting an assertion in very similar code during the callback
+ubifs_releasepage(). I'm quite new to this code area, and currently diving
+in to understanding the race you described (before I attempt to look at
+the patch).
 
-[...]
+I was wondering if this assertion is related?
 
-> >+#ifdef CONFIG_OF
-> >+static void *stm_bch_dt_get_pdata(struct platform_device *pdev)
-> >+{
-> >+	struct device_node *np = pdev->dev.of_node;
-> >+	struct stm_plat_nand_bch_data *pdata;
-> >+	const char *ecc_config;
-> >+	int ret;
-> >+
-> >+	pdata = devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
-> >+	if (!pdata)
-> >+		return ERR_PTR(-ENOMEM);
-> >+
-> >+	of_property_read_string(np, "st,bch-ecc-mode", &ecc_config);
-> 
-> Can you use any of the existing generic NAND bindings like combination of
-> "nand-ecc-mode" and "nand-ecc-strength" ?
-> Example: nand-ecc-mode = "bch" & nand-ecc-strength=18
-> Some of generic bindings are recently added
-> 	commit 8dd49165ef5f46b5ad9ba296c559ccff315f9421  (currently in l2-mtd tree)
-> 	mtd: nand: Add a devicetree binding for ECC strength and ECC step size
-> 
-> It's good to use generic bindings as much as you can, and you don't need
-> any approvals from DT Maintainers too. Though you may need to add
-> new values for "nand-ecc-mode" like {auto, hw-ham, hw-bch}
-
-Sure, I can make use of the generic bindings already offered here.
-
-> >+	if (!strcmp("noecc", ecc_config))
-> >+		pdata->bch_ecc_cfg = BCH_NO_ECC;
-> >+	else if (!strcmp("18bit", ecc_config))
-> >+		pdata->bch_ecc_cfg = BCH_18BIT_ECC;
-> >+	else if (!strcmp("30bit", ecc_config))
-> >+		pdata->bch_ecc_cfg = BCH_30BIT_ECC;
-> >+	else
-> >+		pdata->bch_ecc_cfg = BCH_ECC_AUTO;
-> >+
-> >+	ret = stm_of_get_nand_banks(&pdev->dev, np, &pdata->bank);
-> >+	if (ret < 0)
-> >+		return ERR_PTR(ret);
-> >+
-> >+	pdata->flashss = of_property_read_bool(np, "st,nand-flashss");
-> >+
-> >+	of_property_read_u32(np, "st,bch-bitflip-threshold",
-> >+			     &pdata->bch_bitflip_threshold);
-> >+
-> mtd->bitflip_threshold is by default set to ecc.strength (unless a driver initializes it).
-> And then can be re-configured for each MTD partition separately 
-> 	/sys/class/mtd/mtdX/bitflip_threshold
-> 	Refer: $kernel/Documentation/ABI/testing/sysfs-class-mtd
-> So, I don't think this is a HW parameter, and so should not be passed from DT.
-
-I think the bit-flip threshold is/can be chip specific, and as we know
-which chip we're likely to be booting on, we can specify this via the
-hardware description.  Thus, I think it's perfectly viable for an
-option to pass through DT to exist.
+[  862.695278] UBIFS assert failed in ubifs_releasepage at 1434 (pid 11088)
+[  862.700952] CPU: 0 PID: 11088 Comm: busybox Tainted: G        W   
+3.10.0+ #1
+[  862.714460] [<c00147f4>] (unwind_backtrace+0x0/0x11c) from [<c0011bc0>]
+(show_stack+0x10/0x14)
+[  862.722047] [<c0011bc0>] (show_stack+0x10/0x14) from [<c0187fe8>]
+(ubifs_releasepage+0x70/0xb8)
+[  862.746573] [<c0187fe8>] (ubifs_releasepage+0x70/0xb8) from
+[<c00c7228>] (try_to_release_page+0x44/0x5c)
+[  862.755865] [<c00c7228>] (try_to_release_page+0x44/0x5c) from
+[<c00d3b58>] (invalidate_inode_page+0x60/0x94)
+[  862.764955] vbat_low_handler: vbat low
+[  862.768728] [<c00d3b58>] (invalidate_inode_page+0x60/0x94) from
+[<c00d3c00>] (invalidate_mapping_pages+0x74/0x114)
+[  862.779244] [<c00d3c00>] (invalidate_mapping_pages+0x74/0x114) from
+[<c0145004>] (drop_pagecache_sb+0x7c/0xbc)
+[  862.789079] [<c0145004>] (drop_pagecache_sb+0x7c/0xbc) from
+[<c0104ab4>] (iterate_supers+0x74/0xc8)
+[  862.798092] [<c0104ab4>] (iterate_supers+0x74/0xc8) from [<c0145088>]
+(drop_caches_sysctl_handler+0x44/0x90)
+[  862.808907] [<c0145088>] (drop_caches_sysctl_handler+0x44/0x90) from
+[<c014f280>] (proc_sys_call_handler+0x84/0xa0)
+[  862.821868] [<c014f280>] (proc_sys_call_handler+0x84/0xa0) from
+[<c014f2ac>] (proc_sys_write+0x10/0x14)
+[  862.830349] [<c014f2ac>] (proc_sys_write+0x10/0x14) from [<c01022fc>]
+(vfs_write+0xd4/0x16c)
+[  862.838719] [<c01022fc>] (vfs_write+0xd4/0x16c) from [<c010263c>]
+(SyS_write+0x3c/0x60)
+[  862.846738] [<c010263c>] (SyS_write+0x3c/0x60) from [<c000e440>]
+(ret_fast_syscall+0x0/0x30)
 
 
-> >+struct device_node *stm_of_get_partitions_node(struct device_node *np,
-> >+					       int bank_nr)
-> >+{
-> >+	struct device_node *banksnp, *banknp, *partsnp = NULL;
-> >+	char name[10];
-> >+
-> >+	banksnp = of_parse_phandle(np, "st,nand-banks", 0);
-> >+	if (!banksnp)
-> >+		return NULL;
-> >+
-> >+	sprintf(name, "bank%d", bank_nr);
-> >+	banknp = of_get_child_by_name(banksnp, name);
-> >+	if (banknp)
-> >+		return NULL;
-> >+
-> >+	partsnp = of_get_child_by_name(banknp, "partitions");
-> >+	of_node_put(banknp);
-> >+
-> Sorry, I'm bit confused here .. I think you don't need to find children of
-> Your bank node. This should already taken care in default parser
-> drivers/mtd/ofpart.c : parse_ofpart_partitions()
-> And all you need to pass is 'of_node' of bank (device).
-> Is my understanding correct ?
+> On Wed, Apr 30, 2014 at 02:06:06PM +0800, hujianyang wrote:
+>> According to this situation, my v2 fix returns from page_mkwrite
+>> without performing unlock_page. We return VM_FAULT_LOCKED instead
+>> of just return 0. After doing this, the race above will not happen.
+>
+> Hi,
+>
+> I have been testing patch v1 on our hardware. Normally, at higher data
+> rates,
+> we can hit the assert in under 8 hours. So far I have been running for 48
+> hours on one system without seeing the assert message.
+>
+> I will now switch to running v2 and see if I can't find a few more systems
+> to
+> run in parallel.
+>
+> Many thanks, and bye for now,
+> --
+> Laurence Withers, <lwithers@guralp.com>
+> http://www.guralp.com/
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
 
-We have 3 options here, you _can_ use parse_ofpart_partitions() if
-your partition information conforms to its schema, but said schema
-does not support banks and/or other information that we choose to
-place within the bank node.  The second option is to register a
-parser.  My personal view is that registering a parser is using the
-framework for 'using the framework's' sake i.e. doesn't actually
-achieve anything special.  We've chosen the third option, which is to
-parse and extract the information ourselves - which is actually fairly
-trivial, and pass the required partition data in through the
-mtd_device_parse_register() call - which is where the information
-would be parsed in the case of the first two options.
 
 -- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+QUALCOMM ISRAEL, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
