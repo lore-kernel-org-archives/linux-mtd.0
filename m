@@ -1,18 +1,17 @@
-Received: from mail-pd0-x236.google.com ([2607:f8b0:400e:c02::236])
+Received: from mail-bl2lp0206.outbound.protection.outlook.com
+ ([207.46.163.206] helo=na01-bl2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WfGan-0005XJ-AP
- for linux-mtd@lists.infradead.org; Tue, 29 Apr 2014 22:33:37 +0000
-Received: by mail-pd0-f182.google.com with SMTP id v10so827931pde.27
- for <linux-mtd@lists.infradead.org>; Tue, 29 Apr 2014 15:33:13 -0700 (PDT)
-Date: Tue, 29 Apr 2014 15:33:09 -0700
-From: Brian Norris <computersforpeace@gmail.com>
+ id 1WfKQ8-0003z9-IG
+ for linux-mtd@lists.infradead.org; Wed, 30 Apr 2014 02:38:53 +0000
+Date: Wed, 30 Apr 2014 09:40:18 +0800
+From: Huang Shijie <b32955@freescale.com>
 To: Kamal Dasu <kdasu.kdev@gmail.com>
 Subject: Re: [PATCH v4] mtd: nand: Add support to use nand_base poi databuf
  as bounce buffer
-Message-ID: <20140429223309.GD9418@norris-Latitude-E6410>
+Message-ID: <20140430014015.GA19458@localhost>
 References: <1398716871-14371-1-git-send-email-kdasu.kdev@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
 In-Reply-To: <1398716871-14371-1-git-send-email-kdasu.kdev@gmail.com>
 Cc: linux-mtd@lists.infradead.org
@@ -91,20 +90,6 @@ On Mon, Apr 28, 2014 at 04:27:51PM -0400, Kamal Dasu wrote:
 >  			if (ret < 0) {
 > -				if (!aligned)
 > +				if (!aligned || use_bufpoi)
-
-It could help readability a lot if this was just a single condition:
-	if (use_bufpoi)
-
-We can compute 'use_bufpoi' like this earlier:
-
-	if (!aligned)
-		use_bufpoi = 1;
-	else if (chip->options & NAND_USE_BOUNCE_BUFFER)
-		use_bufpoi = !virt_addr_valid(buf);
-	else
-		use_bufpoi = 0;
-
-
 >  					/* Invalidate page cache */
 >  					chip->pagebuf = -1;
 >  				break;
@@ -128,24 +113,6 @@ We can compute 'use_bufpoi' like this earlier:
 > +				  !virt_addr_valid(buf) : 0);
 > +		int part_pagewr = unlikely(column ||
 > +					   writelen < (mtd->writesize - 1));
-
-I'm pretty sure the 'unlikely' has no effect here, since you're not
-doing the branch here. If you really wanted to "optimize" like that, you
-need to put it in the 'if' below. But really, it's totally unnecessary
-IMO.
-
-And again, I think it makes sense to modify 'use_bufpoi' like this:
-
-	if (partial)
-		use_bufpoi = 1;
-	else if (chip->options & NAND_USE_BOUNCE_BUFFER)
-		use_bufpoi = !virt_addr_valid(buf);
-	else
-		use_bufpoi = 0;
-
-I think the clarity is a lot better than the ?: operators, plus 2
-different variables.
-
 > +
 > +		/* Partial page write?, or need to use bounce buffer */
 > +		if (part_pagewr || use_bufpoi) {
@@ -156,10 +123,6 @@ different variables.
 > +			if (part_pagewr)
 > +				bytes = min_t(int,
 > +					      bytes - column, (int) writelen);
-
-The (int) cast for writelen is unnecessary in the first place, and you
-can save some indentation by dropping it.
-
 >  			chip->pagebuf = -1;
 >  			memset(chip->buffers->databuf, 0xff, mtd->writesize);
 >  			memcpy(&chip->buffers->databuf[column], buf, bytes);
@@ -172,12 +135,24 @@ can save some indentation by dropping it.
 >  #define NAND_SCAN_SILENT_NODEV	0x00040000
 >  /*
 > + * This option is defined to protect against kmapped buffers
+
+Could we change this to a more accurate comment?
+
+Not only the kmapped buffers, also the vmalloc buffers are the highmem we
+will meet.
+
+So I suggest write the comment like this:
+  
+  "This option is defined to protect against the highmem buffers when using DMA,
+   such as the kmapped buffers or the buffers allocated by vmalloc()."
+
+
+You can change the above more readable :)
+
+thanks
+Huang Shijie
+
+
 > + * being passed from highmem when using DMA
 > + */
 > +#define NAND_USE_BOUNCE_BUFFER	0x00080000
-> +/*
->   * Autodetect nand buswidth with readid/onfi.
->   * This suppose the driver will configure the hardware in 8 bits mode
->   * when calling nand_scan_ident, and update its configuration
-
-Brian
