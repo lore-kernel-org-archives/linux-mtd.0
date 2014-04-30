@@ -1,23 +1,20 @@
-Date: Wed, 30 Apr 2014 07:45:48 -0400
-From: Jason Cooper <jason@lakedaemon.net>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 1/5] ARM: defconfigs: add MTD_SPI_NOR (new dependency
- for M25P80)
-Message-ID: <20140430114548.GQ28159@titan.lakedaemon.net>
-References: <1397719309-2022-1-git-send-email-computersforpeace@gmail.com>
- <1397719309-2022-2-git-send-email-computersforpeace@gmail.com>
- <535A8FC9.8040707@wwwdotorg.org>
- <20140429190603.GB9418@norris-Latitude-E6410>
+Received: from chrysocolla.lwithers.me.uk ([2001:41c8:1:5763::2])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WfTUC-0004g8-BP
+ for linux-mtd@lists.infradead.org; Wed, 30 Apr 2014 12:19:41 +0000
+Date: Wed, 30 Apr 2014 12:18:46 +0000
+From: Laurence Withers <lwithers@guralp.com>
+To: hujianyang <hujianyang@huawei.com>
+Message-ID: <20140430121846.GI1821@guralp.com>
+References: <535B7B96.9030008@huawei.com>
+ <536092CE.2090209@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20140429190603.GB9418@norris-Latitude-E6410>
-Cc: Marek Vasut <marex@denx.de>, Russell King <linux@arm.linux.org.uk>,
- Stephen Warren <swarren@wwwdotorg.org>,
- Linux Kernel <linux-kernel@vger.kernel.org>,
- Thierry Reding <thierry.reding@gmail.com>, linux-mtd@lists.infradead.org,
- Shawn Guo <shawn.guo@freescale.com>, Sascha Hauer <kernel@pengutronix.de>,
- Olof Johansson <olof@lixom.net>, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <536092CE.2090209@huawei.com>
+Subject: Re: [PATCH v2] UBIFS: Fix assert failed in ubifs_set_page_dirty
+Cc: linux-mtd <linux-mtd@lists.infradead.org>, adrian.hunter@intel.com,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,44 +24,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Apr 29, 2014 at 12:06:03PM -0700, Brian Norris wrote:
-> Hi Stephen,
-> 
-> On Fri, Apr 25, 2014 at 10:39:37AM -0600, Stephen Warren wrote:
-> > On 04/17/2014 01:21 AM, Brian Norris wrote:
-> > > These defconfigs contain the CONFIG_M25P80 symbol, which is now
-> > > dependent on the MTD_SPI_NOR symbol. Add CONFIG_MTD_SPI_NOR to the
-> > > relevant defconfigs.
-> > > 
-> > > At the same time, drop the now-nonexistent CONFIG_MTD_CHAR symbol.
-> > 
-> > I hadn't realized that the problem this patch solves was already present
-> > in the code, so this patch is simply catching up the defconfigs rather
-> > than part of a series which changed the code to cause the problem.
-> 
-> Yes, this is "catching up the defconfigs." The SPI_NOR framework is new,
-> and I didn't want to generate defconfig noise until a few things
-> stabilized (particularly, its Kconfig symbol name).
-> 
-> > So, this needs to be applied ASAP.
-> > 
-> > I think this should be split it up so that each defconfig can go through
-> > the tree that owns it to avoid conflicts. If you repost split up, I can
-> > apply the tegra_defconfig change to the Tegra tree.
-> 
-> OK, I'll try to split it up. Is ARM unique in tracking defconfigs in
-> separate trees? I assume MIPS, PowerPC, and Blackfin won't require the
-> same splitting? I'd like to avoid 31 patches when <20 could suffice.
+On Wed, Apr 30, 2014 at 02:06:06PM +0800, hujianyang wrote:
+> According to this situation, my v2 fix returns from page_mkwrite
+> without performing unlock_page. We return VM_FAULT_LOCKED instead
+> of just return 0. After doing this, the race above will not happen.
 
-wrt arm-soc, typically they take all changes to multi_v7_defconfig
-directly since it is prone to conflicts.  All the other ones are managed
-by the individual sub-arch maintainers.
+Hi,
 
-> I'll also rebase on linux-next. I think there may be a few conflicts.
+I have been testing patch v1 on our hardware. Normally, at higher data rates,
+we can hit the assert in under 8 hours. So far I have been running for 48
+hours on one system without seeing the assert message.
 
-I can't speak for the other sub-archs, but I typically prefer that
-patches be based on an -rc tag, -rc1 if possible.
+I will now switch to running v2 and see if I can't find a few more systems to
+run in parallel.
 
-thx,
-
-Jason.
+Many thanks, and bye for now,
+-- 
+Laurence Withers, <lwithers@guralp.com>                http://www.guralp.com/
