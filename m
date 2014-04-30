@@ -1,29 +1,31 @@
-Received: from mail-we0-f177.google.com ([74.125.82.177])
+Received: from mail-wi0-f179.google.com ([209.85.212.179])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WfRGs-0006vX-PQ
- for linux-mtd@lists.infradead.org; Wed, 30 Apr 2014 09:57:47 +0000
-Received: by mail-we0-f177.google.com with SMTP id t60so1429689wes.36
- for <linux-mtd@lists.infradead.org>; Wed, 30 Apr 2014 02:57:23 -0700 (PDT)
-Date: Wed, 30 Apr 2014 10:57:18 +0100
+ id 1WfRfU-0002XL-Je
+ for linux-mtd@lists.infradead.org; Wed, 30 Apr 2014 10:23:13 +0000
+Received: by mail-wi0-f179.google.com with SMTP id z2so1898765wiv.0
+ for <linux-mtd@lists.infradead.org>; Wed, 30 Apr 2014 03:22:49 -0700 (PDT)
+Date: Wed, 30 Apr 2014 11:22:44 +0100
 From: Lee Jones <lee.jones@linaro.org>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [RFC 00/47] mtd: nand: Add new driver supporting ST's BCH h/w
-Message-ID: <20140430095718.GJ29462@lee--X1>
+To: "Gupta, Pekon" <pekon@ti.com>
+Subject: Re: [RFC 07/47] mtd: nand: stm_nand_bch: initialise the BCH Controller
+Message-ID: <20140430102244.GK29462@lee--X1>
 References: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
- <20140325125050.GB665@arch.cereza> <20140325131139.GB24823@lee--X1>
- <20140325220045.GA12185@arch.cereza>
- <20140326072805.GB31517@norris-Latitude-E6410>
- <20140327102835.GA17779@lee--X1> <20140401112926.GB24013@lee--X1>
- <20140410200004.GP32070@ld-irv-0074>
+ <1395735604-26706-8-git-send-email-lee.jones@linaro.org>
+ <20980858CB6D3A4BAE95CA194937D5E73EAB5CB7@DBDE04.ent.ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20140410200004.GP32070@ld-irv-0074>
-Cc: angus.clark@st.com, kernel@stlinux.com, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, pekon@ti.com,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, dwmw2@infradead.org,
- linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EAB5CB7@DBDE04.ent.ti.com>
+Cc: "angus.clark@st.com" <angus.clark@st.com>,
+ "kernel@stlinux.com" <kernel@stlinux.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "Ezequiel Garcia \(ezequiel.garcia@free-electrons.com\)"
+ <ezequiel.garcia@free-electrons.com>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,110 +35,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> > > The BBT requirements are somewhere more complex. To provide you with
-> > > the complete picture, a little knowledge of driver history is
-> > > required. When it was initially created the MTD core only supported
-> > > OOB BBTs, but the ST BCH Controller doesn't support OOB access, so
-> > > Angus wrote his on In-Band (IB) implementation. Unfortunately the IB
-> > > support which _is_ now present in the kernel doesn't match the
-> > > internal implementation. Normally this wouldn't be an issue in itself,
-> > > but ST's boot-stack and tooling (Primary Bootloader, U-Boot, various
-> > > Programmers, etc) are aware of the internal IB BTT and utilise it
-> > > in varying ways. Shifting over to the Mainline version in
-> > > one-foul-swoop _will_ cause lots of pain and will probably result in
-> > > the disownership of driver we're trying to Mainline today. Naturally
-> > > I'm keen to avoid this.
-> > 
-> > Just looking into this now. Can I add support for a vendor specific
-> > signature extension? ST's flashers, bootloaders and tooling currently
-> > use the format:
-> > 
-> > /* Extend IBBT header with some stm-nand-bch niceties */
-> > struct nand_ibbt_bch_header {
-> > 	uint8_t signature[4];           /* "Bbt0" or "1tbB" signature */
-> > 	uint8_t version;                /* BBT version ("age") */
-> > 	uint8_t reserved[3];            /* padding */
-> > 	uint8_t baseschema[4];          /* "base" schema (x4) */
-> > 	uint8_t privschema[4];          /* "private" schema (x4) */
+On Wed, 26 Mar 2014, Gupta, Pekon wrote:
+
+> Hi Lee,
 > 
-> Not sure what these schema mean.
-
-To be honest, me either, but I know that they are used by ST's
-tooling; flashers, bootloaders and debuggers.
-
-> > 	uint8_t ecc_size[4];            /* ECC bytes (0, 32, 54) (x4) */
-> > 	char    author[64];             /* Arbitrary string for S/W to use */
-> > }; __attribute__((__packed__))
+> >From: Lee Jones [mailto:lee.jones@linaro.org]
+> missing commit log :-)
+> Though $subject is self-explanatory, but you can add more description about
+> assumption and hardware caveats about the controller, and its use.
 > 
-> Nit: that would just be __packed (see compiler-gcc.h).
-
-Okay.
-
-> In principle, I'm OK with extending the BBT somewhat. Preferably, this
-> would provide some extensibility, so that other custom formats can use
-> the same base code. For instance, it looks like many of these fields
-> would be fixed, and specific to your platform. So (from nand_bbt's
-> perspective) these could just be consolidated int a field:
+> >
+> >Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> >---
+> > drivers/mtd/nand/stm_nand_bch.c | 56 +++++++++++++++++++++++++++++++++++++++++
+> > include/linux/mtd/stm_nand.h    | 20 +++++++++++++++
+> > 2 files changed, 76 insertions(+)
+> >
+> >diff --git a/drivers/mtd/nand/stm_nand_bch.c b/drivers/mtd/nand/stm_nand_bch.c
+> >index 76a0d02..1a93f8d 100644
+> >--- a/drivers/mtd/nand/stm_nand_bch.c
+> >+++ b/drivers/mtd/nand/stm_nand_bch.c
+> >@@ -14,6 +14,7 @@
+> >
+> > #include <linux/kernel.h>
+> > #include <linux/module.h>
+> >+#include <linux/delay.h>
+> > #include <linux/io.h>
+> > #include <linux/interrupt.h>
+> > #include <linux/device.h>
+> >@@ -102,6 +103,56 @@ static void nandi_disable_interrupts(struct nandi_controller *nandi,
+> > 	writel(val, nandi->base + NANDBCH_INT_EN);
+> > }
+> >
+> >+static void nandi_init_bch(struct nandi_controller *nandi, int emi_bank)
+> >+{
+> >+	dev_dbg(nandi->dev, "%s\n", __func__);
+> >+
+> >+	/* Initialise BCH Controller */
+> >+	emiss_nandi_select(STM_NANDI_BCH);
+> >+
+> >+	/* Reset and disable boot-mode controller */
+> >+	writel(BOOT_CFG_RESET, nandi->base + NANDBCH_BOOTBANK_CFG);
+> >+	udelay(1);
+> >+	writel(0x00000000, nandi->base + NANDBCH_BOOTBANK_CFG);
 > 
-> 	u8 custom[76];
-> 
-> Or make it variable-length, with the length provided by the driver?
-> nand_bbt would just know not to check for it when scanning, and it
-> would know to program it to flash when updating.
-> 
-> > It would be great if we can support this with a descriptor option or
-> > suchlike, as it would a) save me a lot of aggravation and b) continue
-> > to support ST with their current use-case.
-> 
-> Yeah, I realize you can't just jump over to the current format for
-> production systems. And there are admittedly some rough spots in our
-> current nand_bbt; it's not perfect.
-> 
-> Some random notes (not necessarily your problem; but things to be aware
-> of): nand_bbt could use some additional robustness checks, I think. Like
-> a CRC field, and maybe a versioning system for allowing
-> (backwards-compatible) changes in the format. To make
-> backwards-compatible changes, though, the original format needs to have
-> reserved space, or at least an 'offset' field, which would point to
-> where the actual BBT starts--not just a fixed offset.
-> 
-> There's also still a bit of cruft that really can be removed from
-> nand_bbt (the handling of bad block markers, which is duplicated in
-> nand_base). It's a low-priority item on my plate, but I think it might
-> be a good first step before trying to expand nand_bbt much.
+> Why using 'udelay' ?
+> Isn't there any status register which tells you that controller is reset / initialized ?
+> Or may be polling on NANDBCH_BOOTBANK_CFG may itself give you status.
 
-So I've been looking into the differences between the Mainline and
-ST's implementation.  I've concluded that the transition over to
-Mainline's version is best dealt with in the device driver.
+Documenation says:
 
-I have depicted the differences between the two versions at [1].
-You'll see that the BBT header and BBT data have been separated into
-different pages the ST version.  This hardens the process against
-power failures whilst creating the BBT by only writing the pattern
-once the BBT data has been successfully applied to flash.  A small
-corner-case perhaps, but these things do happen.
+  "The soft reset bit has to be reset to ‘0’ to de-assert the soft
+   reset. The soft reset bit is expected to be asserted for at least
+   one clock cycle for proper reset"
 
-What I'd like to do is supply our own scan_bbt() call.  This is
-supported by the framework already, so no extra modifications are
-required.  Converting nand_bbt to add support for our (and other)
-formats would be fairly intrusive.  The framework already allows us to
-search from the last block backwards, which is great, but that same
-functionality is missing for searching from the last page in the
-block.  The ability to separate header from data is also vacant,
-which we require for the aforementioned reasons.
+> >+
+> >+	/* Reset AFM controller */
+> >+	writel(CFG_RESET, nandi->base + NANDBCH_CONTROLLER_CFG);
+> >+	udelay(1);
+> >+	writel(0x00000000, nandi->base + NANDBCH_CONTROLLER_CFG);
+> >+
+> >+	/* Set EMI Bank */
+> >+	writel(0x1 << emi_bank, nandi->base + NANDBCH_FLEX_MUXCTRL);
+> >+
+> >+	/* Reset ECC stats */
+> >+	writel(0x7f0, nandi->base + NANDBCH_CONTROLLER_CFG);
+> >+	udelay(1);
+> >+
+> "0x7f0" ?? please use Macro instead.
 
-In our scan_bbt() I would like to start off by only supporting solely
-the ST schema, then over time search in both locations but preferring
-ST's.  Subsequently the choice should be version number based, with a
-view to phasing out ST's implementation completely once we've had a
-change to adapt the tooling which currently use only ST's
-implementation.
-
-I'm hoping to submit the next version either today or tomorrow, which
-will conform to the proposal above.  I hope that you find this
-adequate.
-
-[1] goo.gl/WnGLVQ
+Sure.
 
 -- 
 Lee Jones
