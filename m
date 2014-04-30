@@ -1,24 +1,22 @@
-Date: Wed, 30 Apr 2014 15:33:39 -0700
+Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WfdLY-0001s9-6X
+ for linux-mtd@lists.infradead.org; Wed, 30 Apr 2014 22:51:24 +0000
+Received: by mail-pa0-f50.google.com with SMTP id rd3so2743834pab.23
+ for <linux-mtd@lists.infradead.org>; Wed, 30 Apr 2014 15:51:02 -0700 (PDT)
+Date: Wed, 30 Apr 2014 15:23:53 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Santosh Shilimkar <santosh.shilimkar@ti.com>
-Subject: Re: [PATCH v2] mtd: davinci-nand: disable subpage write for
- keystone-nand
-Message-ID: <20140430223339.GF2497@norris-Latitude-E6410>
-References: <1395346112-13350-1-git-send-email-ivan.khoronzhuk@ti.com>
- <532B4C36.8060405@ti.com> <5343F0D6.2010804@ti.com>
- <20140416070833.GA5512@norris-Latitude-E6410>
- <534E51BF.9050508@ti.com> <535E5AF5.2020203@ti.com>
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [PATCH] mtd: denali: disable usage of subpages
+Message-ID: <20140430222353.GE2497@norris-Latitude-E6410>
+References: <1398862001-29785-1-git-send-email-bigeasy@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <535E5AF5.2020203@ti.com>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, grygorii.strashko@ti.com,
- linux@arm.linux.org.uk, pawel.moll@arm.com, ijc+devicetree@hellion.org.uk,
- linux-kernel@vger.kernel.org, robh+dt@kernel.org,
- linux-mtd@lists.infradead.org, m-karicheri2@ti.com, rob@landley.net,
- galak@codeaurora.org, Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>,
- dwmw2@infradead.org, Warner Losh <imp@bsdimp.com>,
- linux-arm-kernel@lists.infradead.org
+In-Reply-To: <1398862001-29785-1-git-send-email-bigeasy@linutronix.de>
+Cc: Huang Shijie <shijie8@gmail.com>, Josh Triplett <josh@joshtriplett.org>,
+ linux-mtd@lists.infradead.org, Pekon Gupta <pekon@ti.com>,
+ David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen <dinguyen@altera.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,24 +26,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Apr 28, 2014 at 09:43:17AM -0400, Santosh Shilimkar wrote:
-> On Wednesday 16 April 2014 05:47 AM, Ivan Khoronzhuk wrote:
-> > On 04/16/2014 10:08 AM, Brian Norris wrote:
-> >> On Tue, Apr 08, 2014 at 03:51:34PM +0300, Ivan Khoronzhuk wrote:
-> >>> Could you pick up subj patch?
-> >> Pushed to l2-mtd.git. Is it critical this goes in for 3.15? It's
-> >> currently queued for -next (3.16).
-> >>
+On Wed, Apr 30, 2014 at 02:46:41PM +0200, Sebastian Andrzej Siewior wrote:
+> I use this driver on an Altera SoC (not MRST) and its ECC algorithm
+> does not compute 0xff ECC of an empty page. That problem can be easily
+> noticed if ubifs is used. Therefore I disable subpages support.
 > 
-> [..]
-> 
-> > 
-> > This is a critical fix and it should be for 3.15.
-> Ping. 3.15-rc3 is already out and I still see this fix merged
-> yet.
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> ---
+> I can't test if this is also the case for MRST or not.
 
-OK, cherry-picked to linux-mtd.git with the intention of sending to
-Linus soon.
+This is an important change to get right; if any systems have been using
+Denali NAND with subpage writes, then this change will break any flash
+with existing UBI data. Can we either confirm that no Denali systems
+were using subpage writes successfully, or else tie this option to some
+kind of platform data or DT information (e.g., compatible string)?
 
-Regards,
+Or is this related to commit 837a6ba4f3b6d23026674e6af6b6849a4634fff9,
+which changed subpage write support? (Or conversely, could this help you
+support subpage writes properly?)
+
 Brian
