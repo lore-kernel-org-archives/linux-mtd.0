@@ -1,29 +1,23 @@
-Received: from mail-we0-f175.google.com ([74.125.82.175])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WfSYT-0006Tk-FB
- for linux-mtd@lists.infradead.org; Wed, 30 Apr 2014 11:20:02 +0000
-Received: by mail-we0-f175.google.com with SMTP id q58so1497257wes.6
- for <linux-mtd@lists.infradead.org>; Wed, 30 Apr 2014 04:19:38 -0700 (PDT)
-Date: Wed, 30 Apr 2014 12:19:33 +0100
-From: Lee Jones <lee.jones@linaro.org>
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [RFC 23/47] mtd: nand: stm_nand_bch: read and write page (BCH)
-Message-ID: <20140430111933.GL29462@lee--X1>
-References: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
- <1395735604-26706-24-git-send-email-lee.jones@linaro.org>
- <20980858CB6D3A4BAE95CA194937D5E73EAB5CAC@DBDE04.ent.ti.com>
+Date: Wed, 30 Apr 2014 07:45:48 -0400
+From: Jason Cooper <jason@lakedaemon.net>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 1/5] ARM: defconfigs: add MTD_SPI_NOR (new dependency
+ for M25P80)
+Message-ID: <20140430114548.GQ28159@titan.lakedaemon.net>
+References: <1397719309-2022-1-git-send-email-computersforpeace@gmail.com>
+ <1397719309-2022-2-git-send-email-computersforpeace@gmail.com>
+ <535A8FC9.8040707@wwwdotorg.org>
+ <20140429190603.GB9418@norris-Latitude-E6410>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EAB5CAC@DBDE04.ent.ti.com>
-Cc: "angus.clark@st.com" <angus.clark@st.com>,
- "kernel@stlinux.com" <kernel@stlinux.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+In-Reply-To: <20140429190603.GB9418@norris-Latitude-E6410>
+Cc: Marek Vasut <marex@denx.de>, Russell King <linux@arm.linux.org.uk>,
+ Stephen Warren <swarren@wwwdotorg.org>,
+ Linux Kernel <linux-kernel@vger.kernel.org>,
+ Thierry Reding <thierry.reding@gmail.com>, linux-mtd@lists.infradead.org,
+ Shawn Guo <shawn.guo@freescale.com>, Sascha Hauer <kernel@pengutronix.de>,
+ Olof Johansson <olof@lixom.net>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,93 +27,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> >From: Lee Jones [mailto:lee.jones@linaro.org]
-> >
-> >Use DMA to read and/or write a single page of data.
-> >
-> >Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> >---
-> > drivers/mtd/nand/stm_nand_bch.c | 119 ++++++++++++++++++++++++++++++++++++++++
-> > 1 file changed, 119 insertions(+)
-> >
-> >diff --git a/drivers/mtd/nand/stm_nand_bch.c b/drivers/mtd/nand/stm_nand_bch.c
-> >index 7874d85..6323590 100644
-> >--- a/drivers/mtd/nand/stm_nand_bch.c
-> >+++ b/drivers/mtd/nand/stm_nand_bch.c
-> >@@ -21,6 +21,7 @@
-
-[...]
-
-> >+/* Returns the number of ECC errors, or '-1' for uncorrectable error */
-> >+static int bch_read_page(struct nandi_controller *nandi,
-> >+			 loff_t offs,
-> >+			 uint8_t *buf)
-> >+{
-
-[...]
-
-> >+	/* Use the maximum per-sector ECC count! */
+On Tue, Apr 29, 2014 at 12:06:03PM -0700, Brian Norris wrote:
+> Hi Stephen,
 > 
-> Firstly, this ecc checking and correction should not be part of bch_read_page().
-> This should be part of chip->ecc.correct().
-
-I'm not sure that's true.  The functionality below isn't correcting
-any data.  I believe it's preventing a false-positive error return.
-All calculate() and correct() behaviour is dealt with internally by
-h/w.  There should be no intervention from s/w, hence the lack of
-call-back functions of the same name.
-
-> But, I don't see your driver using nand_chip->ecc interfaces.
-> Why do you want to break away from generic driver flow ? any controller limitation ?
-
-When this driver was written, a great deal of the framework was not
-present.  I believe the author also wanted to prevent any changes in
-the framework from adversely affecting the leaf driver.  It was
-considered that if there is no intention to upstream, it would be much
-better to hack around the framework and have full control of the
-driver.
-
-Things are different now, as upstreaming is considered necessary.
-It's my job to make this driver acceptable so it can be Mainlined.
-This includes a 'port' to ensure the driver is using the correct
-interfaces provided by the framework.
-
-> I think much of the code in below patch can be reused from nand_base.c
-> 	[RFC 43/47] mtd: nand: stm_nand_bch: read and write functions (BCH)
-
-I agree and have taken care of this now.
-
-> >+	ecc_err = readl(nandi->base + NANDBCH_ECC_SCORE_REG_A) & 0xff;
-> >+	if (ecc_err == 0xff) {
-> >+		/*
-> >+		 * Downgrade uncorrectable ECC error for an erased page,
-> >+		 * tolerating 'sectors_per_page' bits at zero.
-> >+		 */
-> >+		ret = check_erased_page(buf, page_size,
-> >+					nandi->sectors_per_page);
+> On Fri, Apr 25, 2014 at 10:39:37AM -0600, Stephen Warren wrote:
+> > On 04/17/2014 01:21 AM, Brian Norris wrote:
+> > > These defconfigs contain the CONFIG_M25P80 symbol, which is now
+> > > dependent on the MTD_SPI_NOR symbol. Add CONFIG_MTD_SPI_NOR to the
+> > > relevant defconfigs.
+> > > 
+> > > At the same time, drop the now-nonexistent CONFIG_MTD_CHAR symbol.
+> > 
+> > I hadn't realized that the problem this patch solves was already present
+> > in the code, so this patch is simply catching up the defconfigs rather
+> > than part of a series which changed the code to cause the problem.
 > 
-> This is also not correct. Here 'max_zeros' should be ecc.strength
-
-I need to check this with the original author, but I'm inclined to
-agree with you.  I'll make the changes before re-submitting.
-
-> >+		if (ret >= 0)
-> >+			dev_dbg(nandi->dev,
-> >+				"%s: erased page detected: \n"
-> >+				"  downgrading uncorrectable ECC error.\n",
-> >+				__func__);
-> >+	} else {
-> >+		ret = (int)ecc_err;
-> >+	}
-> >+
-> >+	return ret;
-> >+}
-> >+
+> Yes, this is "catching up the defconfigs." The SPI_NOR framework is new,
+> and I didn't want to generate defconfig noise until a few things
+> stabilized (particularly, its Kconfig symbol name).
 > 
-> with regards, pekon
+> > So, this needs to be applied ASAP.
+> > 
+> > I think this should be split it up so that each defconfig can go through
+> > the tree that owns it to avoid conflicts. If you repost split up, I can
+> > apply the tegra_defconfig change to the Tegra tree.
+> 
+> OK, I'll try to split it up. Is ARM unique in tracking defconfigs in
+> separate trees? I assume MIPS, PowerPC, and Blackfin won't require the
+> same splitting? I'd like to avoid 31 patches when <20 could suffice.
 
--- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+wrt arm-soc, typically they take all changes to multi_v7_defconfig
+directly since it is prone to conflicts.  All the other ones are managed
+by the individual sub-arch maintainers.
+
+> I'll also rebase on linux-next. I think there may be a few conflicts.
+
+I can't speak for the other sub-archs, but I typically prefer that
+patches be based on an -rc tag, -rc1 if possible.
+
+thx,
+
+Jason.
