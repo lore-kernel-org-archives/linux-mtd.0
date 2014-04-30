@@ -1,23 +1,26 @@
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Lee Jones <lee.jones@linaro.org>
-Subject: RE: [RFC 07/47] mtd: nand: stm_nand_bch: initialise the BCH Controller
-Date: Wed, 30 Apr 2014 10:59:33 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EAC6A35@DBDE04.ent.ti.com>
+Received: from mail-we0-f175.google.com ([74.125.82.175])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WfSYT-0006Tk-FB
+ for linux-mtd@lists.infradead.org; Wed, 30 Apr 2014 11:20:02 +0000
+Received: by mail-we0-f175.google.com with SMTP id q58so1497257wes.6
+ for <linux-mtd@lists.infradead.org>; Wed, 30 Apr 2014 04:19:38 -0700 (PDT)
+Date: Wed, 30 Apr 2014 12:19:33 +0100
+From: Lee Jones <lee.jones@linaro.org>
+To: "Gupta, Pekon" <pekon@ti.com>
+Subject: Re: [RFC 23/47] mtd: nand: stm_nand_bch: read and write page (BCH)
+Message-ID: <20140430111933.GL29462@lee--X1>
 References: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
- <1395735604-26706-8-git-send-email-lee.jones@linaro.org>
- <20980858CB6D3A4BAE95CA194937D5E73EAB5CB7@DBDE04.ent.ti.com>
- <20140430102244.GK29462@lee--X1>
-In-Reply-To: <20140430102244.GK29462@lee--X1>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ <1395735604-26706-24-git-send-email-lee.jones@linaro.org>
+ <20980858CB6D3A4BAE95CA194937D5E73EAB5CAC@DBDE04.ent.ti.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EAB5CAC@DBDE04.ent.ti.com>
 Cc: "angus.clark@st.com" <angus.clark@st.com>,
  "kernel@stlinux.com" <kernel@stlinux.com>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "Ezequiel Garcia \(ezequiel.garcia@free-electrons.com\)"
- <ezequiel.garcia@free-electrons.com>,
  "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
  "dwmw2@infradead.org" <dwmw2@infradead.org>,
  "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
@@ -30,23 +33,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PkZyb206IExlZSBKb25lcyBbbWFpbHRvOmxlZS5qb25lc0BsaW5hcm8ub3JnXQ0KPj5PbiBXZWQs
-IDI2IE1hciAyMDE0LCBHdXB0YSwgUGVrb24gd3JvdGU6DQpbLi4uXQ0KDQo+PiA+KwkvKiBSZXNl
-dCBhbmQgZGlzYWJsZSBib290LW1vZGUgY29udHJvbGxlciAqLw0KPj4gPisJd3JpdGVsKEJPT1Rf
-Q0ZHX1JFU0VULCBuYW5kaS0+YmFzZSArIE5BTkRCQ0hfQk9PVEJBTktfQ0ZHKTsNCj4+ID4rCXVk
-ZWxheSgxKTsNCj4+ID4rCXdyaXRlbCgweDAwMDAwMDAwLCBuYW5kaS0+YmFzZSArIE5BTkRCQ0hf
-Qk9PVEJBTktfQ0ZHKTsNCj4+DQo+PiBXaHkgdXNpbmcgJ3VkZWxheScgPw0KPj4gSXNuJ3QgdGhl
-cmUgYW55IHN0YXR1cyByZWdpc3RlciB3aGljaCB0ZWxscyB5b3UgdGhhdCBjb250cm9sbGVyIGlz
-IHJlc2V0IC8gaW5pdGlhbGl6ZWQgPw0KPj4gT3IgbWF5IGJlIHBvbGxpbmcgb24gTkFOREJDSF9C
-T09UQkFOS19DRkcgbWF5IGl0c2VsZiBnaXZlIHlvdSBzdGF0dXMuDQo+DQo+RG9jdW1lbmF0aW9u
-IHNheXM6DQo+DQo+ICAiVGhlIHNvZnQgcmVzZXQgYml0IGhhcyB0byBiZSByZXNldCB0byDigJgw
-4oCZIHRvIGRlLWFzc2VydCB0aGUgc29mdA0KPiAgIHJlc2V0LiBUaGUgc29mdCByZXNldCBiaXQg
-aXMgZXhwZWN0ZWQgdG8gYmUgYXNzZXJ0ZWQgZm9yIGF0IGxlYXN0DQo+ICAgb25lIGNsb2NrIGN5
-Y2xlIGZvciBwcm9wZXIgcmVzZXQiDQo+DQpUaGF04oCZcyB0aGUgaGFyZHdhcmUgd2F5IG9mIHNh
-eWluZyB0aGF0ICdlbmFibGUgdGhlIGNsb2NrIGJlZm9yZSBhcHBseWluZyByZXNldCcuDQpDbG9j
-ayBpcyByZXF1aXJlZCB0byBwcm9wYWdhdGUgcmVzZXQtbG9naWMgdG8gZmxpcC1mbG9wcyBpbiBw
-aXBlbGluZSwgd2hpY2ggZG8gbm90IGdldCBkaXJlY3QgcmVzZXQuDQoNCkhvd2V2ZXIgdGhhdCBh
-cGFydC4gWW91IG1heSBzYWZlbHkgZHJvcCB1ZGVsYXkoMSkgYmVjYXVzZSB0aGlzICd1ZGVsYXkn
-IGlzIGF0DQpDUFUgc2lkZSBhbmQgd29uJ3QgZ3VhcmFudGVlIGFueXRoaW5nIGFib3V0IGNsb2Nr
-cyBhdCB5b3VyIGNvbnRyb2xsZXIgc2lkZS4NCkJ1dCBJIGxlYXZlIGl0IHRvIHlvdSBhcyB0aGlz
-IGRlbGF5IGlzIHByZXR0eSBzbWFsbC4NCg0KDQp3aXRoIHJlZ2FyZHMsIHBla29uDQo=
+> >From: Lee Jones [mailto:lee.jones@linaro.org]
+> >
+> >Use DMA to read and/or write a single page of data.
+> >
+> >Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> >---
+> > drivers/mtd/nand/stm_nand_bch.c | 119 ++++++++++++++++++++++++++++++++++++++++
+> > 1 file changed, 119 insertions(+)
+> >
+> >diff --git a/drivers/mtd/nand/stm_nand_bch.c b/drivers/mtd/nand/stm_nand_bch.c
+> >index 7874d85..6323590 100644
+> >--- a/drivers/mtd/nand/stm_nand_bch.c
+> >+++ b/drivers/mtd/nand/stm_nand_bch.c
+> >@@ -21,6 +21,7 @@
+
+[...]
+
+> >+/* Returns the number of ECC errors, or '-1' for uncorrectable error */
+> >+static int bch_read_page(struct nandi_controller *nandi,
+> >+			 loff_t offs,
+> >+			 uint8_t *buf)
+> >+{
+
+[...]
+
+> >+	/* Use the maximum per-sector ECC count! */
+> 
+> Firstly, this ecc checking and correction should not be part of bch_read_page().
+> This should be part of chip->ecc.correct().
+
+I'm not sure that's true.  The functionality below isn't correcting
+any data.  I believe it's preventing a false-positive error return.
+All calculate() and correct() behaviour is dealt with internally by
+h/w.  There should be no intervention from s/w, hence the lack of
+call-back functions of the same name.
+
+> But, I don't see your driver using nand_chip->ecc interfaces.
+> Why do you want to break away from generic driver flow ? any controller limitation ?
+
+When this driver was written, a great deal of the framework was not
+present.  I believe the author also wanted to prevent any changes in
+the framework from adversely affecting the leaf driver.  It was
+considered that if there is no intention to upstream, it would be much
+better to hack around the framework and have full control of the
+driver.
+
+Things are different now, as upstreaming is considered necessary.
+It's my job to make this driver acceptable so it can be Mainlined.
+This includes a 'port' to ensure the driver is using the correct
+interfaces provided by the framework.
+
+> I think much of the code in below patch can be reused from nand_base.c
+> 	[RFC 43/47] mtd: nand: stm_nand_bch: read and write functions (BCH)
+
+I agree and have taken care of this now.
+
+> >+	ecc_err = readl(nandi->base + NANDBCH_ECC_SCORE_REG_A) & 0xff;
+> >+	if (ecc_err == 0xff) {
+> >+		/*
+> >+		 * Downgrade uncorrectable ECC error for an erased page,
+> >+		 * tolerating 'sectors_per_page' bits at zero.
+> >+		 */
+> >+		ret = check_erased_page(buf, page_size,
+> >+					nandi->sectors_per_page);
+> 
+> This is also not correct. Here 'max_zeros' should be ecc.strength
+
+I need to check this with the original author, but I'm inclined to
+agree with you.  I'll make the changes before re-submitting.
+
+> >+		if (ret >= 0)
+> >+			dev_dbg(nandi->dev,
+> >+				"%s: erased page detected: \n"
+> >+				"  downgrading uncorrectable ECC error.\n",
+> >+				__func__);
+> >+	} else {
+> >+		ret = (int)ecc_err;
+> >+	}
+> >+
+> >+	return ret;
+> >+}
+> >+
+> 
+> with regards, pekon
+
+-- 
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
