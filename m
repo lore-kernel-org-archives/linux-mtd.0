@@ -1,32 +1,21 @@
-Message-ID: <1398879317.15199.15.camel@host5.omatika.ru>
-Subject: Re: [PATCH v4 10/21] mtd: support BB SRAM on ICP DAS LP-8x4x
-From: =?UTF-8?Q?=D0=9E=D0=9E=D0=9E_?=
- =?UTF-8?Q?=22=D0=AD=D0=BB=D0=B5=D0=BA=D1=82=D1=80=D0=BE=D0=9F=D0=BB?=
- =?UTF-8?Q?=D1=8E=D1=81=22?= <5172643@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Date: Wed, 30 Apr 2014 21:35:17 +0400
-In-Reply-To: <20140430172114.GA2497@norris-Latitude-E6410>
-References: <1397668411-27162-7-git-send-email-ynvich@gmail.com>
- <1397668667-27328-1-git-send-email-ynvich@gmail.com>
- <1397668667-27328-4-git-send-email-ynvich@gmail.com>
- <20140430172114.GA2497@norris-Latitude-E6410>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Mark Rutland <mark.rutland@arm.com>,
- "open list:OPEN FIRMWARE AND..." <devicetree@vger.kernel.org>,
- Heikki Krogerus <heikki.krogerus@linux.intel.com>,
- Russell King <linux@arm.linux.org.uk>,
- "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
- Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Lee Jones <lee.jones@linaro.org>, Robert Jarzmik <robert.jarzmik@free.fr>,
- Randy Dunlap <rdunlap@infradead.org>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- linux-kernel@vger.kernel.org,
- Michael Opdenacker <michael.opdenacker@free-electrons.com>,
- Rob Herring <robh+dt@kernel.org>,
- "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
- Kumar Gala <galak@codeaurora.org>, Grant Likely <grant.likely@linaro.org>,
+Date: Wed, 30 Apr 2014 10:51:57 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Boris BREZILLON <b.brezillon.dev@gmail.com>
+Subject: Re: [PATCH v3 1/9] mtd: nand: define struct nand_timings
+Message-ID: <20140430175157.GB2497@norris-Latitude-E6410>
+References: <1394647664-8258-1-git-send-email-b.brezillon.dev@gmail.com>
+ <1394647664-8258-2-git-send-email-b.brezillon.dev@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1394647664-8258-2-git-send-email-b.brezillon.dev@gmail.com>
+Cc: devicetree@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+ linux-doc@vger.kernel.org, dev@linux-sunxi.org, linux-kernel@vger.kernel.org,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ Rob Herring <robherring2@gmail.com>, Grant Likely <grant.likely@linaro.org>,
+ linux-mtd@lists.infradead.org,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
  David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -37,87 +26,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+Hi Boris,
 
-On Wed, 2014-04-30 at 10:21 -0700, Brian Norris wrote:
-> A few more small comments.
+On Wed, Mar 12, 2014 at 07:07:36PM +0100, Boris BREZILLON wrote:
+> Define a struct containing the standard NAND timings as described in NAND
+> datasheets.
 > 
-> On Wed, Apr 16, 2014 at 09:17:15PM +0400, Sergei Ianovich wrote:
-> > +++ b/Documentation/devicetree/bindings/mtd/sram-lp8x4x.txt
-> > @@ -0,0 +1,22 @@
-> > +512kB battery backed up SRAM on LP-8x4x industrial computers
-> > +
-> > +Required properties:
-> > +- compatible : should be "icpdas,sram-lp8x4x"
-> > +
-> > +- reg: physical base addresses and region lengths of
-> > +       * IO memory range
-> > +       * SRAM page selector
+> Signed-off-by: Boris BREZILLON <b.brezillon.dev@gmail.com>
+> ---
+>  include/linux/mtd/nand.h |   49 ++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 49 insertions(+)
 > 
-> Are these region types pretty static for this type of hardware? If not,
-> it helps to have a reg-names property in the DT, when there are 2 or
-> more register resources.
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> index 389b3c5..f3ff3a3 100644
+> --- a/include/linux/mtd/nand.h
+> +++ b/include/linux/mtd/nand.h
+> @@ -846,4 +846,53 @@ static inline bool nand_is_slc(struct nand_chip *chip)
+>  {
+>  	return chip->bits_per_cell == 1;
+>  }
+> +
+> +/**
+> + * struct nand_sdr_timings - SDR NAND chip timings
+> + *
+> + * This struct defines the timing requirements of a SDR NAND chip.
+> + * These informations can be found in every NAND datasheets and the timings
+> + * meaning are described in the ONFI specifications:
+> + * www.onfi.org/~/media/ONFI/specs/onfi_3_1_spec.pdf‎ (chapter 4.15 Timing
 
-The regions are fixed. The addresses are hard-wired.
+Can you remove the unicode U+200E character?
 
-> > +- eeprom-gpios : should point to active-low write enable GPIO
-> 
-> I'm curious: your driver doesn't actually utilize this binding. Is this
-> intentional? Is it actually optional? (I note that the example DT below
-> doesn't have this property...)
+> + * Parameters)
 
-Thanks for noticing. It's an artifact of copy-paste. I'll drop this.
+Please document the units for these fields here. It looks like you're
+using picoseconds.
 
-> > +++ b/arch/arm/configs/lp8x4x_defconfig
-> > @@ -57,6 +57,7 @@ CONFIG_MTD_CFI_ADV_OPTIONS=y
-> >  CONFIG_MTD_CFI_GEOMETRY=y
-> >  CONFIG_MTD_CFI_INTELEXT=y
-> >  CONFIG_MTD_PHYSMAP_OF=y
-> > +CONFIG_MTD_SRAM_LP8X4X=y
-> >  CONFIG_PROC_DEVICETREE=y
-> >  CONFIG_BLK_DEV_LOOP=y
-> >  CONFIG_BLK_DEV_LOOP_MIN_COUNT=2
-> 
-> I can't take the defconfig update via MTD; it will need to go via the
-> appropriate ARM tree (arm-soc?). So this hunk needs to move to another
-> patch.
+> + *
+> + */
+> +
 
-Sure. I'll remove this chunk and put it into main device patch.
+Extra blank line.
 
-> > +	match = of_match_device(of_flash_match, &pdev->dev);
-> > +	if (!match)
-> > +		return -EINVAL;
-> 
-> Does this of_match_device() serve any particular purpose? Your driver
-> already matches against these IDs, and you're not actually retrieving
-> any of-data from the match, so this looks redundant.
+> +struct nand_sdr_timings {
+> +	u32 tALH_min;
+> +	u32 tADL_min;
+> +	u32 tALS_min;
+> +	u32 tAR_min;
+> +	u32 tCEA_max;
+> +	u32 tCEH_min;
+> +	u32 tCH_min;
+> +	u32 tCHZ_max;
+> +	u32 tCLH_min;
+> +	u32 tCLR_min;
+> +	u32 tCLS_min;
+> +	u32 tCOH_min;
+> +	u32 tCS_min;
+> +	u32 tDH_min;
+> +	u32 tDS_min;
+> +	u32 tFEAT_max;
+> +	u32 tIR_min;
+> +	u32 tITC_max;
+> +	u32 tRC_min;
+> +	u32 tREA_max;
+> +	u32 tREH_min;
+> +	u32 tRHOH_min;
+> +	u32 tRHW_min;
+> +	u32 tRHZ_max;
+> +	u32 tRLOH_min;
+> +	u32 tRP_min;
+> +	u32 tRR_min;
+> +	u64 tRST_max;
+> +	u32 tWB_max;
+> +	u32 tWC_min;
+> +	u32 tWH_min;
+> +	u32 tWHR_min;
+> +	u32 tWP_min;
+> +	u32 tWW_min;
+> +};
+> +
+>  #endif /* __LINUX_MTD_NAND_H */
 
-Point taken, I'll drop this.
-
-> > +
-> > +	info = devm_kzalloc(&pdev->dev, sizeof(*info), GFP_KERNEL);
-> > +	if (!info)
-> > +		return -ENOMEM;
-> > +
-> > +	res_virt = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> > +	info->virt =  devm_ioremap_resource(&pdev->dev, res_virt);
-> > +	if (IS_ERR(info->virt))
-> > +		return PTR_ERR(info->virt);
-> > +
-> > +	res_bank = platform_get_resource(pdev, IORESOURCE_MEM, 1);
-> > +	info->bank = devm_ioremap_resource(&pdev->dev, res_bank);
-> > +	if (IS_ERR(info->bank))
-> > +		return PTR_ERR(info->bank);
-> > +
-> > +	info->mtd.priv = info;
-> > +	info->mtd.name = "SRAM";
-> 
-> Are you absolutely sure there is only ever a single SRAM device on a
-> given system? Because otherwise, you will get redundantly-named MTD's.
-> If the answer is no, you might consider a unique naming scheme.
-
-Like .999999 sure. This one is hard-wired. There is no extension slots
-to plug in any memory device.
-
-I'll post a new version with the rest of the series. Thanks for
-reviewing.
+Brian
