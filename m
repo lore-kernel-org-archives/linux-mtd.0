@@ -1,15 +1,15 @@
-Received: from mail-we0-f181.google.com ([74.125.82.181])
+Received: from mail-wi0-f173.google.com ([209.85.212.173])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WfnkK-0002Zc-Me
- for linux-mtd@lists.infradead.org; Thu, 01 May 2014 09:57:41 +0000
-Received: by mail-we0-f181.google.com with SMTP id q58so2829733wes.40
- for <linux-mtd@lists.infradead.org>; Thu, 01 May 2014 02:57:18 -0700 (PDT)
+ id 1WfnkM-0002Zn-WD
+ for linux-mtd@lists.infradead.org; Thu, 01 May 2014 09:57:43 +0000
+Received: by mail-wi0-f173.google.com with SMTP id bs8so388486wib.12
+ for <linux-mtd@lists.infradead.org>; Thu, 01 May 2014 02:57:20 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 06/47] mtd: nand: stm_nand_bch: IRQ support for ST's BCH NAND
- Controller driver
-Date: Thu,  1 May 2014 10:56:13 +0100
-Message-Id: <1398938214-17847-7-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 07/47] mtd: nand: stm_nand_bch: change between BCH and Hamming
+ modes
+Date: Thu,  1 May 2014 10:56:14 +0100
+Message-Id: <1398938214-17847-8-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1398938214-17847-1-git-send-email-lee.jones@linaro.org>
 References: <1398938214-17847-1-git-send-email-lee.jones@linaro.org>
 Cc: Lee Jones <lee.jones@linaro.org>, computersforpeace@gmail.com,
@@ -23,116 +23,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Obtain IRQ number and request IRQ resource via the usual methods. We're
-also registering an IRQ handler to inform us of any completed tasks.
-Notice that we're starting to make use of the device struct that we
-defined before. In keeping with the subject of the patch, we're also
-adding the related local enable_irq() and disable_irq() methods. Again,
-these will be utilised in a greater capacity in latter commits.
+The EMISS is a device which, amongst other things, controls various
+flash memory modes. We make use of it here merely to flip the
+HAMMING_NOT_BCH bit dependant on whether we wish to operate in Hamming
+or BCH modes. The STM BCH driver makes good use of the helper introduced
+here.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/nand/stm_nand_bch.c | 62 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 62 insertions(+)
+ include/linux/mtd/stm_nand.h | 42 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 42 insertions(+)
 
-diff --git a/drivers/mtd/nand/stm_nand_bch.c b/drivers/mtd/nand/stm_nand_bch.c
-index 2d6a81f..d73568c 100644
---- a/drivers/mtd/nand/stm_nand_bch.c
-+++ b/drivers/mtd/nand/stm_nand_bch.c
-@@ -15,11 +15,14 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/io.h>
-+#include <linux/interrupt.h>
- #include <linux/device.h>
- #include <linux/platform_device.h>
- #include <linux/completion.h>
- #include <linux/mtd/stm_nand.h>
+diff --git a/include/linux/mtd/stm_nand.h b/include/linux/mtd/stm_nand.h
+index 9210d5c..da2006c 100644
+--- a/include/linux/mtd/stm_nand.h
++++ b/include/linux/mtd/stm_nand.h
+@@ -15,6 +15,8 @@
+ #ifndef __LINUX_STM_NAND_H
+ #define __LINUX_STM_NAND_H
  
-+#include "stm_nand_regs.h"
++#include <linux/io.h>
 +
- /* NANDi Controller (Hamming/BCH) */
- struct nandi_controller {
- 	void __iomem		*base;		/* Controller base*/
-@@ -221,6 +224,51 @@ const struct nand_timing_spec st_nand_onfi_timing_specs[] = {
- 	}
+ struct stm_plat_nand_bch_data {
+ 	struct stm_nand_bank_data *bank;
+ 	enum stm_nand_bch_ecc_config bch_ecc_cfg;
+@@ -30,4 +32,44 @@ struct stm_plat_nand_bch_data {
+ 	bool flashss;
  };
  
-+/*
-+ * NANDi Interrupts (shared by Hamming and BCH controllers)
-+ */
-+static irqreturn_t nandi_irq_handler(int irq, void *dev)
++#define EMISS_BASE				0xfef01000
++#define EMISS_CONFIG				0x0000
++#define EMISS_CONFIG_HAMMING_NOT_BCH		(0x1 << 6)
++
++enum nandi_controllers {
++	STM_NANDI_UNCONFIGURED,
++	STM_NANDI_HAMMING,
++	STM_NANDI_BCH
++};
++
++static inline void emiss_nandi_select(enum nandi_controllers controller)
 +{
-+	struct nandi_controller *nandi = dev;
-+	unsigned int status;
++	unsigned v;
++	void __iomem *emiss_config_base;
 +
-+	status = readl(nandi->base + NANDBCH_INT_STA);
-+
-+	if (status & NANDBCH_INT_SEQNODESOVER) {
-+		/* BCH */
-+		writel(NANDBCH_INT_CLR_SEQNODESOVER,
-+		       nandi->base + NANDBCH_INT_CLR);
-+		complete(&nandi->seq_completed);
-+	}
-+	if (status & NAND_INT_RBN) {
-+		/* Hamming */
-+		writel(NAND_INT_CLR_RBN, nandi->base + NANDHAM_INT_CLR);
-+		complete(&nandi->rbn_completed);
++	emiss_config_base = ioremap(EMISS_BASE, 4);
++	if (!emiss_config_base) {
++		pr_err("%s: failed to ioremap EMISS\n", __func__);
++		return;
 +	}
 +
-+	return IRQ_HANDLED;
++	v = readl(emiss_config_base + EMISS_CONFIG);
++
++	if (controller == STM_NANDI_HAMMING) {
++		if (v & EMISS_CONFIG_HAMMING_NOT_BCH)
++			goto out;
++		v |= EMISS_CONFIG_HAMMING_NOT_BCH;
++	} else {
++		if (!(v & EMISS_CONFIG_HAMMING_NOT_BCH))
++			goto out;
++		v &= ~EMISS_CONFIG_HAMMING_NOT_BCH;
++	}
++
++	writel(v, emiss_config_base + EMISS_CONFIG);
++	readl(emiss_config_base + EMISS_CONFIG);
++
++out:
++	iounmap(emiss_config_base);
 +}
 +
-+static void nandi_enable_interrupts(struct nandi_controller *nandi,
-+				    uint32_t irqs)
-+{
-+	uint32_t val;
-+
-+	val = readl(nandi->base + NANDBCH_INT_EN);
-+	val |= irqs;
-+	writel(val, nandi->base + NANDBCH_INT_EN);
-+}
-+
-+static void nandi_disable_interrupts(struct nandi_controller *nandi,
-+				     uint32_t irqs)
-+{
-+	uint32_t val;
-+
-+	val = readl(nandi->base + NANDBCH_INT_EN);
-+	val &= ~irqs;
-+	writel(val, nandi->base + NANDBCH_INT_EN);
-+}
-+
- static int remap_named_resource(struct platform_device *pdev,
- 				char *name,
- 				void __iomem **io_ptr)
-@@ -252,6 +300,7 @@ static struct nandi_controller *
- nandi_init_resources(struct platform_device *pdev)
- {
- 	struct nandi_controller *nandi;
-+	int irq;
- 	int err;
- 
- 	nandi = devm_kzalloc(&pdev->dev, sizeof(*nandi), GFP_KERNEL);
-@@ -271,6 +320,19 @@ nandi_init_resources(struct platform_device *pdev)
- 	if (err)
- 		return ERR_PTR(err);
- 
-+	irq = platform_get_irq_byname(pdev, "nand_irq");
-+	if (irq < 0) {
-+		dev_err(&pdev->dev, "failed to find IRQ resource\n");
-+		return ERR_PTR(irq);
-+	}
-+
-+	err = devm_request_irq(&pdev->dev, irq, nandi_irq_handler,
-+			       IRQF_DISABLED, dev_name(&pdev->dev), nandi);
-+	if (err) {
-+		dev_err(&pdev->dev, "irq request failed\n");
-+		return ERR_PTR(err);
-+	}
-+
- 	platform_set_drvdata(pdev, nandi);
- 
- 	return nandi;
+ #endif /* __LINUX_STM_NAND_H */
 -- 
 1.8.3.2
