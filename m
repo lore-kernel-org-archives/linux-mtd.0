@@ -1,15 +1,15 @@
-Received: from mail-wi0-f177.google.com ([209.85.212.177])
+Received: from mail-we0-f170.google.com ([74.125.82.170])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WfnlI-0003PM-9t
- for linux-mtd@lists.infradead.org; Thu, 01 May 2014 09:58:40 +0000
-Received: by mail-wi0-f177.google.com with SMTP id cc10so404120wib.10
- for <linux-mtd@lists.infradead.org>; Thu, 01 May 2014 02:58:18 -0700 (PDT)
+ id 1WfnlJ-0003Qh-MV
+ for linux-mtd@lists.infradead.org; Thu, 01 May 2014 09:58:42 +0000
+Received: by mail-we0-f170.google.com with SMTP id w61so2896749wes.1
+ for <linux-mtd@lists.infradead.org>; Thu, 01 May 2014 02:58:20 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 35/47] mtd: nand: stm_nand_bch: scan for BBMs and build
- memory-resident BBT
-Date: Thu,  1 May 2014 10:56:42 +0100
-Message-Id: <1398938214-17847-36-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 36/47] mtd: nand: stm_nand_bch: search for and load
+ flash-resident BBT
+Date: Thu,  1 May 2014 10:56:43 +0100
+Message-Id: <1398938214-17847-37-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1398938214-17847-1-git-send-email-lee.jones@linaro.org>
 References: <1398938214-17847-1-git-send-email-lee.jones@linaro.org>
 Cc: Lee Jones <lee.jones@linaro.org>, computersforpeace@gmail.com,
@@ -23,52 +23,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If at start-up time we can't find our own pre-built memory-resident BBT
-(e.g. at first run) this routine will search for factory set BBMs and
-duplicate them into our own BBT for local consumption.
+If a BBT already exists in flash, it's this function's task to locate
+it and load it into the driver for local consumption.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/nand/stm_nand_bch.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+ drivers/mtd/nand/stm_nand_bch.c | 87 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 87 insertions(+)
 
 diff --git a/drivers/mtd/nand/stm_nand_bch.c b/drivers/mtd/nand/stm_nand_bch.c
-index 7d242ad..1569738 100644
+index 1569738..2df452b 100644
 --- a/drivers/mtd/nand/stm_nand_bch.c
 +++ b/drivers/mtd/nand/stm_nand_bch.c
-@@ -878,6 +878,33 @@ static int nandi_scan_bad_block_markers_block(struct nandi_controller *nandi,
- 	return 0;
+@@ -1148,6 +1148,93 @@ static int bch_find_ibbt_sig(struct nandi_controller *nandi,
+ 	return 1;
  }
  
-+/* Scan for BBMs and build memory-resident BBT */
-+static int nandi_scan_build_bbt(struct nandi_controller *nandi,
-+				struct nandi_bbt_info *bbt_info)
++/* Search for and load Flash-resident BBT, updating Primary/Mirror if req'd */
++static int bch_load_bbt(struct nandi_controller *nandi,
++			struct nandi_bbt_info *bbt_info)
 +{
-+	struct mtd_info *mtd = &nandi->info.mtd;
-+	struct nand_chip *chip = mtd->priv;
-+	uint32_t page_size = mtd->writesize;
-+	uint8_t *bbt = bbt_info->bbt;
++	unsigned int update = 0;
 +	uint32_t block;
++	loff_t offs;
++	uint8_t vers;
++	char author[64];
++	int bak;
 +
-+	dev_dbg(nandi->dev,
-+		"scan device for bad-block markers [bbt options = 0x%02x]\n",
-+		chip->bbt_options);
++	dev_dbg(nandi->dev, "looking for Flash-resident BBTs\n");
 +
-+	memset(bbt, 0xff, page_size);
++	bbt_info->bbt_block[0] = 0;
++	bbt_info->bbt_block[1] = 0;
 +	bbt_info->bbt_vers[0] = 0;
 +	bbt_info->bbt_vers[1] = 0;
-+	bbt_info->bbt_block[0] = nandi->blocks_per_device - 1;
-+	bbt_info->bbt_block[1] = nandi->blocks_per_device - 2;
 +
-+	for (block = 0; block < nandi->blocks_per_device; block++)
-+		if (nandi_scan_bad_block_markers_block(nandi, block))
-+			bbt_set_block_mark(bbt, block, BBT_MARK_BAD_FACTORY);
++	/* Look for IBBT signatures */
++	for (block = nandi->blocks_per_device - NAND_IBBT_NBLOCKS;
++	     block < nandi->blocks_per_device;
++	     block++) {
++		offs = (loff_t)block << nandi->block_shift;
++
++		if (bch_find_ibbt_sig(nandi, block, &bak, &vers, author)) {
++			dev_dbg(nandi->dev,
++				"found BBT [%s:%u] at 0x%012llx [%u] (%s)\n",
++				bbt_strs[bak], vers, offs, block,
++				author);
++
++			if (bbt_info->bbt_block[bak] == 0 ||
++			    ((int8_t)(bbt_info->bbt_vers[bak] - vers)) < 0) {
++				bbt_info->bbt_block[bak] = block;
++				bbt_info->bbt_vers[bak] = vers;
++			}
++		}
++	}
++
++	/* What have we found? */
++	if (bbt_info->bbt_block[0] == 0 && bbt_info->bbt_block[1] == 0) {
++		/* no primary, no mirror: return error */
++		return 1;
++	} else if (bbt_info->bbt_block[0] == 0) {
++		/* no primary: use mirror, update primary */
++		bak = 1;
++		update = NAND_IBBT_UPDATE_PRIMARY;
++		bbt_info->bbt_block[0] = nandi->blocks_per_device - 1;
++	} else if (bbt_info->bbt_block[1] == 0) {
++		/* no mirror: use primary, update mirror */
++		bak = 0;
++		update = NAND_IBBT_UPDATE_MIRROR;
++		bbt_info->bbt_block[1] = nandi->blocks_per_device - 1;
++	} else if (bbt_info->bbt_vers[0] == bbt_info->bbt_vers[1]) {
++		/* primary == mirror: use primary, no update required */
++		bak = 0;
++	} else if ((int8_t)(bbt_info->bbt_vers[1] -
++			    bbt_info->bbt_vers[0]) < 0) {
++		/* primary > mirror: use primary, update mirror */
++		bak = 0;
++		update = NAND_IBBT_UPDATE_MIRROR;
++	} else {
++		/* mirror > primary: use mirror, update primary */
++		bak = 1;
++		update = NAND_IBBT_UPDATE_PRIMARY;
++	}
++
++	vers = bbt_info->bbt_vers[bak];
++	block = bbt_info->bbt_block[bak];
++	offs = block << nandi->block_shift;
++	dev_info(nandi->dev, "using BBT [%s:%u] at 0x%012llx [%u]\n",
++		 bbt_strs[bak], vers, offs, block);
++
++	/* Read BBT data */
++	if (bch_read_page(nandi, offs, bbt_info->bbt) < 0) {
++		dev_err(nandi->dev,
++			"error while reading BBT %s:%u] at 0x%012llx [%u]\n",
++			bbt_strs[bak], vers, offs, block);
++		return 1;
++	}
++
++	/* Update other BBT if required */
++	if (update)
++		bch_update_bbts(nandi, bbt_info, update, vers);
 +
 +	return 0;
 +}
 +
- /* Populate IBBT BCH Header */
- static void bch_fill_ibbt_header(struct nandi_controller *nandi,
- 				 struct nand_ibbt_bch_header *ibbt_header,
+ /*
+  * Initialisation
+  */
 -- 
 1.8.3.2
