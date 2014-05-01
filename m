@@ -1,14 +1,15 @@
-Received: from mail-we0-f181.google.com ([74.125.82.181])
+Received: from mail-wi0-f177.google.com ([209.85.212.177])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WfnlH-0003S5-Vw
+ id 1WfnlI-0003PM-9t
  for linux-mtd@lists.infradead.org; Thu, 01 May 2014 09:58:40 +0000
-Received: by mail-we0-f181.google.com with SMTP id q58so2788283wes.26
- for <linux-mtd@lists.infradead.org>; Thu, 01 May 2014 02:58:22 -0700 (PDT)
+Received: by mail-wi0-f177.google.com with SMTP id cc10so404120wib.10
+ for <linux-mtd@lists.infradead.org>; Thu, 01 May 2014 02:58:18 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 37/47] mtd: nand: stm_nand_bch: load flash-resident BBT
-Date: Thu,  1 May 2014 10:56:44 +0100
-Message-Id: <1398938214-17847-38-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 35/47] mtd: nand: stm_nand_bch: scan for BBMs and build
+ memory-resident BBT
+Date: Thu,  1 May 2014 10:56:42 +0100
+Message-Id: <1398938214-17847-36-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1398938214-17847-1-git-send-email-lee.jones@linaro.org>
 References: <1398938214-17847-1-git-send-email-lee.jones@linaro.org>
 Cc: Lee Jones <lee.jones@linaro.org>, computersforpeace@gmail.com,
@@ -22,57 +23,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If load of existing BBT fails (first run), scan device for factory-set
-BBMs (Bad-Block Markers) and create a new flash-resident.
+If at start-up time we can't find our own pre-built memory-resident BBT
+(e.g. at first run) this routine will search for factory set BBMs and
+duplicate them into our own BBT for local consumption.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/nand/stm_nand_bch.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ drivers/mtd/nand/stm_nand_bch.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
 diff --git a/drivers/mtd/nand/stm_nand_bch.c b/drivers/mtd/nand/stm_nand_bch.c
-index 2df452b..a06dca8 100644
+index 7d242ad..1569738 100644
 --- a/drivers/mtd/nand/stm_nand_bch.c
 +++ b/drivers/mtd/nand/stm_nand_bch.c
-@@ -1235,6 +1235,30 @@ static int bch_load_bbt(struct nandi_controller *nandi,
+@@ -878,6 +878,33 @@ static int nandi_scan_bad_block_markers_block(struct nandi_controller *nandi,
  	return 0;
  }
  
-+static int bch_scan_bbt(struct mtd_info *mtd)
++/* Scan for BBMs and build memory-resident BBT */
++static int nandi_scan_build_bbt(struct nandi_controller *nandi,
++				struct nandi_bbt_info *bbt_info)
 +{
++	struct mtd_info *mtd = &nandi->info.mtd;
 +	struct nand_chip *chip = mtd->priv;
-+	struct nandi_controller *nandi = chip->priv;
-+	struct nandi_bbt_info *bbt_info = &nandi->info.bbt_info;
-+	int err;
-+	/* Load Flash-resident BBT */
-+	err = bch_load_bbt(nandi, bbt_info);
-+	if (err) {
-+		dev_warn(nandi->dev,
-+			"failed to find BBTs:"
-+			"  scanning device for bad-block markers\n");
++	uint32_t page_size = mtd->writesize;
++	uint8_t *bbt = bbt_info->bbt;
++	uint32_t block;
 +
-+		/* Scan, build, and write BBT */
-+		nandi_scan_build_bbt(nandi, bbt_info);
-+		err = bch_update_bbts(nandi, bbt_info, NAND_IBBT_UPDATE_BOTH,
-+				      bbt_info->bbt_vers[0] + 1);
-+		if (err)
-+			return err;
-+	}
++	dev_dbg(nandi->dev,
++		"scan device for bad-block markers [bbt options = 0x%02x]\n",
++		chip->bbt_options);
++
++	memset(bbt, 0xff, page_size);
++	bbt_info->bbt_vers[0] = 0;
++	bbt_info->bbt_vers[1] = 0;
++	bbt_info->bbt_block[0] = nandi->blocks_per_device - 1;
++	bbt_info->bbt_block[1] = nandi->blocks_per_device - 2;
++
++	for (block = 0; block < nandi->blocks_per_device; block++)
++		if (nandi_scan_bad_block_markers_block(nandi, block))
++			bbt_set_block_mark(bbt, block, BBT_MARK_BAD_FACTORY);
 +
 +	return 0;
 +}
 +
- /*
-  * Initialisation
-  */
-@@ -1318,6 +1342,8 @@ static void nandi_set_mtd_defaults(struct nandi_controller *nandi,
- 
- 	chip->ecc.read_page = bch_read;
- 	chip->write_page = bch_write;
-+
-+	chip->scan_bbt = bch_scan_bbt;
- }
- 
- /*
+ /* Populate IBBT BCH Header */
+ static void bch_fill_ibbt_header(struct nandi_controller *nandi,
+ 				 struct nand_ibbt_bch_header *ibbt_header,
 -- 
 1.8.3.2
