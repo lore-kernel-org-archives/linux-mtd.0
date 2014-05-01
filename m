@@ -1,14 +1,15 @@
-Received: from mail-we0-f172.google.com ([74.125.82.172])
+Received: from mail-we0-f181.google.com ([74.125.82.181])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wfnkf-0002j8-SA
- for linux-mtd@lists.infradead.org; Thu, 01 May 2014 09:58:02 +0000
-Received: by mail-we0-f172.google.com with SMTP id u57so2913174wes.31
- for <linux-mtd@lists.infradead.org>; Thu, 01 May 2014 02:57:39 -0700 (PDT)
+ id 1Wfnkj-0002kx-3E
+ for linux-mtd@lists.infradead.org; Thu, 01 May 2014 09:58:05 +0000
+Received: by mail-we0-f181.google.com with SMTP id q58so2830086wes.40
+ for <linux-mtd@lists.infradead.org>; Thu, 01 May 2014 02:57:43 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 16/47] mtd: nand: stm_nand_bch: add compatible page size check
-Date: Thu,  1 May 2014 10:56:23 +0100
-Message-Id: <1398938214-17847-17-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 18/47] mtd: nand: stm_nand_bch: automatically set EEC mode if
+ requested
+Date: Thu,  1 May 2014 10:56:25 +0100
+Message-Id: <1398938214-17847-19-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1398938214-17847-1-git-send-email-lee.jones@linaro.org>
 References: <1398938214-17847-1-git-send-email-lee.jones@linaro.org>
 Cc: Lee Jones <lee.jones@linaro.org>, computersforpeace@gmail.com,
@@ -22,34 +23,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Here we automatically select the strongest ECC scheme compatible with
+the size of the OOB.
+
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/nand/stm_nand_bch.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/mtd/nand/stm_nand_bch.c | 43 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 43 insertions(+)
 
 diff --git a/drivers/mtd/nand/stm_nand_bch.c b/drivers/mtd/nand/stm_nand_bch.c
-index fdb06517..a1c25d0 100644
+index 8302273..31864e5 100644
 --- a/drivers/mtd/nand/stm_nand_bch.c
 +++ b/drivers/mtd/nand/stm_nand_bch.c
-@@ -29,6 +29,9 @@
- #include "stm_nand_regs.h"
- #include "stm_nand_dt.h"
+@@ -32,6 +32,13 @@
+ /* NANDi BCH Controller properties */
+ #define NANDI_BCH_SECTOR_SIZE			1024
  
-+/* NANDi BCH Controller properties */
-+#define NANDI_BCH_SECTOR_SIZE			1024
++/* BCH ECC sizes */
++static int bch_ecc_sizes[] = {
++	[BCH_18BIT_ECC] = 32,
++	[BCH_30BIT_ECC] = 54,
++	[BCH_NO_ECC] = 0,
++};
 +
  /* Bad Block Table (BBT) */
  struct nandi_bbt_info {
  	uint32_t	bbt_size;		/* Size of bad-block table */
-@@ -921,6 +924,12 @@ static int stm_nand_bch_probe(struct platform_device *pdev)
- 		dev_warn(&pdev->dev, "No timing data available\n");
- 	}
+@@ -302,6 +309,25 @@ static void nandi_disable_interrupts(struct nandi_controller *nandi,
+ 	writel(val, nandi->base + NANDBCH_INT_EN);
+ }
  
-+	if (mtd->writesize < NANDI_BCH_SECTOR_SIZE) {
-+		dev_err(nandi->dev,
-+			"page size incompatible with BCH ECC sector\n");
-+		return -EINVAL;
++/* Select strongest ECC scheme compatible with OOB size */
++static int bch_set_ecc_auto(struct nandi_controller *nandi,
++			    struct mtd_info *mtd)
++{
++	int oob_bytes_per_sector = mtd->oobsize / nandi->sectors_per_page;
++	int try_ecc_modes[] = { BCH_30BIT_ECC, BCH_18BIT_ECC, -1 };
++	int m, ecc_mode;
++
++	for (m = 0; try_ecc_modes[m] >= 0; m++) {
++		ecc_mode = try_ecc_modes[m];
++		if (oob_bytes_per_sector >= bch_ecc_sizes[ecc_mode]) {
++			nandi->bch_ecc_mode = ecc_mode;
++			return 0;
++		}
 +	}
++
++	return -EINVAL;
++}
++
+ static void nandi_set_mtd_defaults(struct nandi_controller *nandi,
+ 				   struct mtd_info *mtd, struct nand_chip *chip)
+ {
+@@ -939,6 +965,23 @@ static int stm_nand_bch_probe(struct platform_device *pdev)
+ 			     0x10000) ? true : false;
+ 	mtd->writebufsize = mtd->writesize;
+ 
++	/* Set ECC mode */
++	if (pdata->bch_ecc_cfg == BCH_ECC_AUTO) {
++		err = bch_set_ecc_auto(nandi, mtd);
++		if (err) {
++			dev_err(nandi->dev, "insufficient OOB for BCH ECC\n");
++			return err;
++		}
++	} else {
++		nandi->bch_ecc_mode = pdata->bch_ecc_cfg;
++	}
++
++	chip->ecc.size = NANDI_BCH_SECTOR_SIZE;
++	chip->ecc.bytes = mtd->oobsize;
++
++	info->ecclayout.eccbytes =
++		nandi->sectors_per_page * bch_ecc_sizes[nandi->bch_ecc_mode];
 +
  	return 0;
  }
