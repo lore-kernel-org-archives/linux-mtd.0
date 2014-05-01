@@ -1,14 +1,15 @@
-Received: from mail-we0-f179.google.com ([74.125.82.179])
+Received: from mail-we0-f181.google.com ([74.125.82.181])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WfnkJ-0002Ye-3d
- for linux-mtd@lists.infradead.org; Thu, 01 May 2014 09:57:39 +0000
-Received: by mail-we0-f179.google.com with SMTP id q59so499229wes.38
- for <linux-mtd@lists.infradead.org>; Thu, 01 May 2014 02:57:17 -0700 (PDT)
+ id 1WfnkK-0002Zc-Me
+ for linux-mtd@lists.infradead.org; Thu, 01 May 2014 09:57:41 +0000
+Received: by mail-we0-f181.google.com with SMTP id q58so2829733wes.40
+ for <linux-mtd@lists.infradead.org>; Thu, 01 May 2014 02:57:18 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 05/47] mtd: nand: add ONFI NAND Timing Mode Specifications
-Date: Thu,  1 May 2014 10:56:12 +0100
-Message-Id: <1398938214-17847-6-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 06/47] mtd: nand: stm_nand_bch: IRQ support for ST's BCH NAND
+ Controller driver
+Date: Thu,  1 May 2014 10:56:13 +0100
+Message-Id: <1398938214-17847-7-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1398938214-17847-1-git-send-email-lee.jones@linaro.org>
 References: <1398938214-17847-1-git-send-email-lee.jones@linaro.org>
 Cc: Lee Jones <lee.jones@linaro.org>, computersforpeace@gmail.com,
@@ -22,242 +23,116 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds a new structure, 'nand_timing_spec', to capture the A/C
-timing characteristics of NAND devices.
-
-Unfortunately, there is no universally accepted standard for defining
-NAND timing parameters. Different datasheets list different sets of
-parameters. The ONFI standard gets close, but support is missing from
-some of the major NAND manufacturers (e.g. Samsung, Toshiba). Here we
-have followed broadly the ONFI timing definitions.
-
-We also provide specifications for the six standard ONFI timing modes,
-in terms of the new nand_timing_spec structure. This will allow fully
-automated configuration of the timing registers when using
-ONFI-compliant NAND.
+Obtain IRQ number and request IRQ resource via the usual methods. We're
+also registering an IRQ handler to inform us of any completed tasks.
+Notice that we're starting to make use of the device struct that we
+defined before. In keeping with the subject of the patch, we're also
+adding the related local enable_irq() and disable_irq() methods. Again,
+these will be utilised in a greater capacity in latter commits.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/nand/stm_nand_bch.c  | 167 +++++++++++++++++++++++++++++++++++++++
- drivers/mtd/nand/stm_nand_regs.h |  30 +++++++
- 2 files changed, 197 insertions(+)
+ drivers/mtd/nand/stm_nand_bch.c | 62 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 62 insertions(+)
 
 diff --git a/drivers/mtd/nand/stm_nand_bch.c b/drivers/mtd/nand/stm_nand_bch.c
-index 09a7fdb..2d6a81f 100644
+index 2d6a81f..d73568c 100644
 --- a/drivers/mtd/nand/stm_nand_bch.c
 +++ b/drivers/mtd/nand/stm_nand_bch.c
-@@ -54,6 +54,173 @@ struct nandi_controller {
- 						/* 'page_buf'             */
+@@ -15,11 +15,14 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/io.h>
++#include <linux/interrupt.h>
+ #include <linux/device.h>
+ #include <linux/platform_device.h>
+ #include <linux/completion.h>
+ #include <linux/mtd/stm_nand.h>
+ 
++#include "stm_nand_regs.h"
++
+ /* NANDi Controller (Hamming/BCH) */
+ struct nandi_controller {
+ 	void __iomem		*base;		/* Controller base*/
+@@ -221,6 +224,51 @@ const struct nand_timing_spec st_nand_onfi_timing_specs[] = {
+ 	}
  };
  
-+/* ONFI define 6 timing modes */
-+#define ST_NAND_ONFI_TIMING_MODES		6
-+
 +/*
-+ * ONFI NAND Timing Mode Specifications
-+ *
-+ * Note, 'tR' field (maximum page read time) is extracted from the ONFI
-+ * parameter page during device probe.
++ * NANDi Interrupts (shared by Hamming and BCH controllers)
 + */
-+const struct nand_timing_spec st_nand_onfi_timing_specs[] = {
-+	/*
-+	 * ONFI Timing Mode '0' (supported on all ONFI compliant devices)
-+	 */
-+	[0] = {
-+		.tCLS	= 50,
-+		.tCS	= 70,
-+		.tALS	= 50,
-+		.tDS	= 40,
-+		.tWP	= 50,
-+		.tCLH	= 20,
-+		.tCH	= 20,
-+		.tALH	= 20,
-+		.tDH	= 20,
-+		.tWB	= 200,
-+		.tWH	= 30,
-+		.tWC	= 100,
-+		.tRP	= 50,
-+		.tREH	= 30,
-+		.tRC	= 100,
-+		.tREA	= 40,
-+		.tRHOH	= 0,
-+		.tCEA	= 100,
-+		.tCOH	= 0,
-+		.tCHZ	= 100,
-+	},
++static irqreturn_t nandi_irq_handler(int irq, void *dev)
++{
++	struct nandi_controller *nandi = dev;
++	unsigned int status;
 +
-+	/*
-+	 * ONFI Timing Mode '1'
-+	 */
-+	[1] = {
-+		.tCLS	= 25,
-+		.tCS	= 35,
-+		.tALS	= 25,
-+		.tDS	= 20,
-+		.tWP	= 25,
-+		.tCLH	= 10,
-+		.tCH	= 10,
-+		.tALH	= 10,
-+		.tDH	= 10,
-+		.tWB	= 100,
-+		.tWH	= 15,
-+		.tWC	= 45,
-+		.tRP	= 25,
-+		.tREH	= 15,
-+		.tRC	= 50,
-+		.tREA	= 30,
-+		.tRHOH	= 15,
-+		.tCEA	= 45,
-+		.tCOH	= 15,
-+		.tCHZ	= 50,
-+	},
++	status = readl(nandi->base + NANDBCH_INT_STA);
 +
-+	/*
-+	 * ONFI Timing Mode '2'
-+	 */
-+	[2] = {
-+		.tCLS	= 15,
-+		.tCS	= 25,
-+		.tALS	= 15,
-+		.tDS	= 15,
-+		.tWP	= 17,
-+		.tCLH	= 10,
-+		.tCH	= 10,
-+		.tALH	= 10,
-+		.tDH	= 5,
-+		.tWB	= 100,
-+		.tWH	= 15,
-+		.tWC	= 35,
-+		.tRP	= 17,
-+		.tREH	= 16,
-+		.tRC	= 35,
-+		.tREA	= 25,
-+		.tRHOH	= 15,
-+		.tCEA	= 30,
-+		.tCOH	= 15,
-+		.tCHZ	= 50,
-+	},
-+
-+	/*
-+	 * ONFI Timing Mode '3'
-+	 */
-+	[3] = {
-+		.tCLS	= 10,
-+		.tCS	= 25,
-+		.tALS	= 10,
-+		.tDS	= 10,
-+		.tWP	= 15,
-+		.tCLH	= 5,
-+		.tCH	= 5,
-+		.tALH	= 5,
-+		.tDH	= 5,
-+		.tWB	= 100,
-+		.tWH	= 10,
-+		.tWC	= 30,
-+		.tRP	= 15,
-+		.tREH	= 10,
-+		.tRC	= 30,
-+		.tREA	= 20,
-+		.tRHOH	= 15,
-+		.tCEA	= 25,
-+		.tCOH	= 15,
-+		.tCHZ	= 50,
-+	},
-+
-+	/*
-+	 * ONFI Timing Mode '4' (EDO only)
-+	 */
-+	[4] = {
-+		.tCLS	= 10,
-+		.tCS	= 20,
-+		.tALS	= 10,
-+		.tDS	= 10,
-+		.tWP	= 12,
-+		.tCLH	= 5,
-+		.tCH	= 5,
-+		.tALH	= 5,
-+		.tDH	= 5,
-+		.tWB	= 100,
-+		.tWH	= 10,
-+		.tWC	= 25,
-+		.tRP	= 12,
-+		.tREH	= 10,
-+		.tRC	= 25,
-+		.tREA	= 20,
-+		.tRHOH	= 15,
-+		.tCEA	= 25,
-+		.tCOH	= 15,
-+		.tCHZ	= 30,
-+	},
-+
-+	/*
-+	 * ONFI Timing Mode '5' (EDO only)
-+	 */
-+	[5] = {
-+		.tCLS	= 10,
-+		.tCS	= 15,
-+		.tALS	= 10,
-+		.tDS	= 7,
-+		.tWP	= 10,
-+		.tCLH	= 5,
-+		.tCH	= 5,
-+		.tALH	= 5,
-+		.tDH	= 5,
-+		.tWB	= 100,
-+		.tWH	= 7,
-+		.tWC	= 20,
-+		.tRP	= 10,
-+		.tREH	= 7,
-+		.tRC	= 20,
-+		.tREA	= 16,
-+		.tRHOH	= 15,
-+		.tCEA	= 25,
-+		.tCOH	= 15,
-+		.tCHZ	= 30,
++	if (status & NANDBCH_INT_SEQNODESOVER) {
++		/* BCH */
++		writel(NANDBCH_INT_CLR_SEQNODESOVER,
++		       nandi->base + NANDBCH_INT_CLR);
++		complete(&nandi->seq_completed);
 +	}
-+};
++	if (status & NAND_INT_RBN) {
++		/* Hamming */
++		writel(NAND_INT_CLR_RBN, nandi->base + NANDHAM_INT_CLR);
++		complete(&nandi->rbn_completed);
++	}
++
++	return IRQ_HANDLED;
++}
++
++static void nandi_enable_interrupts(struct nandi_controller *nandi,
++				    uint32_t irqs)
++{
++	uint32_t val;
++
++	val = readl(nandi->base + NANDBCH_INT_EN);
++	val |= irqs;
++	writel(val, nandi->base + NANDBCH_INT_EN);
++}
++
++static void nandi_disable_interrupts(struct nandi_controller *nandi,
++				     uint32_t irqs)
++{
++	uint32_t val;
++
++	val = readl(nandi->base + NANDBCH_INT_EN);
++	val &= ~irqs;
++	writel(val, nandi->base + NANDBCH_INT_EN);
++}
 +
  static int remap_named_resource(struct platform_device *pdev,
  				char *name,
  				void __iomem **io_ptr)
-diff --git a/drivers/mtd/nand/stm_nand_regs.h b/drivers/mtd/nand/stm_nand_regs.h
-index 2b0e069..e4951dc 100644
---- a/drivers/mtd/nand/stm_nand_regs.h
-+++ b/drivers/mtd/nand/stm_nand_regs.h
-@@ -299,4 +299,34 @@
- #define FLEX_ADDR_ADD8_VALID			(0x1 << 30)
- #define FLEX_ADDR_CSN				(0x1 << 31)
+@@ -252,6 +300,7 @@ static struct nandi_controller *
+ nandi_init_resources(struct platform_device *pdev)
+ {
+ 	struct nandi_controller *nandi;
++	int irq;
+ 	int err;
  
-+/*
-+ * NAND Device Timing Specification
-+ *
-+ * All values in nano seconds, except where specified.
-+ */
-+struct nand_timing_spec {
-+	int	tR;		/* Max Page Read delay [us]*/
-+	int	tCLS;		/* Min CLE setup time */
-+	int	tCS;		/* Min CE setup time */
-+	int	tALS;		/* Min ALE setup time */
-+	int	tDS;		/* Min Data setup time */
-+	int	tWP;		/* Min WE pulse width */
-+	int	tCLH;		/* Min CLE hold time */
-+	int	tCH;		/* Min CE hold time */
-+	int	tALH;		/* Min ALE hold time */
-+	int	tDH;		/* Min Data hold time */
-+	int	tWB;		/* Max WE high to busy */
-+	int	tWH;		/* Min WE hold time */
-+	int	tWC;		/* Min Write cycle time */
-+	int	tRP;		/* Min RE pulse width */
-+	int	tREH;		/* Min RE high hold time */
-+	int	tRC;		/* Min Read cycle time */
-+	int	tREA;		/* Max Read access time */
-+	int	tRHOH;		/* Min RE high to output hold */
-+	int	tCEA;		/* Max CE access time */
-+	int	tCOH;		/* Min CE high to output hold */
-+	int	tCHZ;		/* Max CE high to output high Z */
-+	int	tCSD;		/* Min CE high to ALE/CLE don't care */
-+};
+ 	nandi = devm_kzalloc(&pdev->dev, sizeof(*nandi), GFP_KERNEL);
+@@ -271,6 +320,19 @@ nandi_init_resources(struct platform_device *pdev)
+ 	if (err)
+ 		return ERR_PTR(err);
+ 
++	irq = platform_get_irq_byname(pdev, "nand_irq");
++	if (irq < 0) {
++		dev_err(&pdev->dev, "failed to find IRQ resource\n");
++		return ERR_PTR(irq);
++	}
 +
- #endif /* STM_NANDC_REGS_H */
++	err = devm_request_irq(&pdev->dev, irq, nandi_irq_handler,
++			       IRQF_DISABLED, dev_name(&pdev->dev), nandi);
++	if (err) {
++		dev_err(&pdev->dev, "irq request failed\n");
++		return ERR_PTR(err);
++	}
++
+ 	platform_set_drvdata(pdev, nandi);
+ 
+ 	return nandi;
 -- 
 1.8.3.2
