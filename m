@@ -1,14 +1,14 @@
-Received: from mail-we0-f176.google.com ([74.125.82.176])
+Received: from mail-we0-f179.google.com ([74.125.82.179])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WfnkG-0002Y4-PX
- for linux-mtd@lists.infradead.org; Thu, 01 May 2014 09:57:37 +0000
-Received: by mail-we0-f176.google.com with SMTP id q59so502180wes.35
- for <linux-mtd@lists.infradead.org>; Thu, 01 May 2014 02:57:14 -0700 (PDT)
+ id 1WfnkJ-0002Ye-3d
+ for linux-mtd@lists.infradead.org; Thu, 01 May 2014 09:57:39 +0000
+Received: by mail-we0-f179.google.com with SMTP id q59so499229wes.38
+ for <linux-mtd@lists.infradead.org>; Thu, 01 May 2014 02:57:17 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 04/47] mtd: nand: adding ST's BCH NAND Controller driver
-Date: Thu,  1 May 2014 10:56:11 +0100
-Message-Id: <1398938214-17847-5-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 05/47] mtd: nand: add ONFI NAND Timing Mode Specifications
+Date: Thu,  1 May 2014 10:56:12 +0100
+Message-Id: <1398938214-17847-6-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1398938214-17847-1-git-send-email-lee.jones@linaro.org>
 References: <1398938214-17847-1-git-send-email-lee.jones@linaro.org>
 Cc: Lee Jones <lee.jones@linaro.org>, computersforpeace@gmail.com,
@@ -22,238 +22,242 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-First introduction of the driver. Includes the basic device struct
-(some functionality isn't utilised as of yet) and supplies some of the
-important resources required for basic running of the Controller.
+This patch adds a new structure, 'nand_timing_spec', to capture the A/C
+timing characteristics of NAND devices.
+
+Unfortunately, there is no universally accepted standard for defining
+NAND timing parameters. Different datasheets list different sets of
+parameters. The ONFI standard gets close, but support is missing from
+some of the major NAND manufacturers (e.g. Samsung, Toshiba). Here we
+have followed broadly the ONFI timing definitions.
+
+We also provide specifications for the six standard ONFI timing modes,
+in terms of the new nand_timing_spec structure. This will allow fully
+automated configuration of the timing registers when using
+ONFI-compliant NAND.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/nand/Kconfig        |   7 ++
- drivers/mtd/nand/Makefile       |   1 +
- drivers/mtd/nand/stm_nand_bch.c | 146 ++++++++++++++++++++++++++++++++++++++++
- include/linux/mtd/stm_nand.h    |  33 +++++++++
- 4 files changed, 187 insertions(+)
- create mode 100644 drivers/mtd/nand/stm_nand_bch.c
- create mode 100644 include/linux/mtd/stm_nand.h
+ drivers/mtd/nand/stm_nand_bch.c  | 167 +++++++++++++++++++++++++++++++++++++++
+ drivers/mtd/nand/stm_nand_regs.h |  30 +++++++
+ 2 files changed, 197 insertions(+)
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 93ae6a6..7b1352a 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -510,4 +510,11 @@ config MTD_NAND_XWAY
- 	  Enables support for NAND Flash chips on Lantiq XWAY SoCs. NAND is attached
- 	  to the External Bus Unit (EBU).
- 
-+config MTD_NAND_STM_BCH
-+	tristate "STMicroelectronics: NANDi BCH Controller"
-+	depends on ARM
-+	depends on OF
-+	help
-+	  Adds support for the STMicroelectronics NANDi BCH Controller.
-+
- endif # MTD_NAND
-diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-index 542b568..94e7737 100644
---- a/drivers/mtd/nand/Makefile
-+++ b/drivers/mtd/nand/Makefile
-@@ -46,6 +46,7 @@ obj-$(CONFIG_MTD_NAND_NUC900)		+= nuc900_nand.o
- obj-$(CONFIG_MTD_NAND_MPC5121_NFC)	+= mpc5121_nfc.o
- obj-$(CONFIG_MTD_NAND_RICOH)		+= r852.o
- obj-$(CONFIG_MTD_NAND_JZ4740)		+= jz4740_nand.o
-+obj-$(CONFIG_MTD_NAND_STM_BCH)		+= stm_nand_bch.o
- obj-$(CONFIG_MTD_NAND_GPMI_NAND)	+= gpmi-nand/
- obj-$(CONFIG_MTD_NAND_XWAY)		+= xway_nand.o
- obj-$(CONFIG_MTD_NAND_BCM47XXNFLASH)	+= bcm47xxnflash/
 diff --git a/drivers/mtd/nand/stm_nand_bch.c b/drivers/mtd/nand/stm_nand_bch.c
-new file mode 100644
-index 0000000..09a7fdb
---- /dev/null
+index 09a7fdb..2d6a81f 100644
+--- a/drivers/mtd/nand/stm_nand_bch.c
 +++ b/drivers/mtd/nand/stm_nand_bch.c
-@@ -0,0 +1,146 @@
+@@ -54,6 +54,173 @@ struct nandi_controller {
+ 						/* 'page_buf'             */
+ };
+ 
++/* ONFI define 6 timing modes */
++#define ST_NAND_ONFI_TIMING_MODES		6
++
 +/*
-+ * drivers/mtd/nand/stm_nand_bch.c
++ * ONFI NAND Timing Mode Specifications
 + *
-+ * Support for STMicroelectronics NANDi BCH Controller
-+ *
-+ * Copyright (c) 2014 STMicroelectronics Limited
-+ * Author: Angus Clark <Angus.Clark@st.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
++ * Note, 'tR' field (maximum page read time) is extracted from the ONFI
++ * parameter page during device probe.
 + */
-+
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/io.h>
-+#include <linux/device.h>
-+#include <linux/platform_device.h>
-+#include <linux/completion.h>
-+#include <linux/mtd/stm_nand.h>
-+
-+/* NANDi Controller (Hamming/BCH) */
-+struct nandi_controller {
-+	void __iomem		*base;		/* Controller base*/
-+	void __iomem		*dma;		/* DMA control base */
-+						/* IRQ-triggered Completions: */
-+	struct completion	seq_completed;	/*   SEQ Over */
-+	struct completion	rbn_completed;	/*   RBn */
-+
-+	struct device		*dev;
-+
-+	int			bch_ecc_mode;	/* ECC mode */
-+	bool			extra_addr;	/* Extra address cycle */
++const struct nand_timing_spec st_nand_onfi_timing_specs[] = {
++	/*
++	 * ONFI Timing Mode '0' (supported on all ONFI compliant devices)
++	 */
++	[0] = {
++		.tCLS	= 50,
++		.tCS	= 70,
++		.tALS	= 50,
++		.tDS	= 40,
++		.tWP	= 50,
++		.tCLH	= 20,
++		.tCH	= 20,
++		.tALH	= 20,
++		.tDH	= 20,
++		.tWB	= 200,
++		.tWH	= 30,
++		.tWC	= 100,
++		.tRP	= 50,
++		.tREH	= 30,
++		.tRC	= 100,
++		.tREA	= 40,
++		.tRHOH	= 0,
++		.tCEA	= 100,
++		.tCOH	= 0,
++		.tCHZ	= 100,
++	},
 +
 +	/*
-+	 * The threshold at which the number of corrected bit-flips per sector
-+	 * is deemed to have reached an excessive level (triggers '-EUCLEAN'
-+	 * return code).
++	 * ONFI Timing Mode '1'
 +	 */
-+	int			bitflip_threshold;
-+
-+	uint32_t		page_shift;	/* Some working variables */
-+	uint32_t		block_shift;
-+	uint32_t		blocks_per_device;
-+	uint32_t		sectors_per_page;
-+
-+	uint8_t			*buf;		/* Some buffers to use */
-+	uint8_t			*page_buf;
-+	uint8_t			*oob_buf;
-+	uint32_t		*buf_list;
-+
-+	int			cached_page;	/* page number of page in */
-+						/* 'page_buf'             */
-+};
-+
-+static int remap_named_resource(struct platform_device *pdev,
-+				char *name,
-+				void __iomem **io_ptr)
-+{
-+	struct resource *res, *mem;
-+	resource_size_t size;
-+	void __iomem *p;
-+
-+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, name);
-+	if (!res)
-+		return -ENXIO;
-+
-+	size = resource_size(res);
-+
-+	mem = devm_request_mem_region(&pdev->dev, res->start, size, name);
-+	if (!mem)
-+		return -EBUSY;
-+
-+	p = devm_ioremap_nocache(&pdev->dev, res->start, size);
-+	if (!p)
-+		return -ENOMEM;
-+
-+	*io_ptr = p;
-+
-+	return 0;
-+}
-+
-+static struct nandi_controller *
-+nandi_init_resources(struct platform_device *pdev)
-+{
-+	struct nandi_controller *nandi;
-+	int err;
-+
-+	nandi = devm_kzalloc(&pdev->dev, sizeof(*nandi), GFP_KERNEL);
-+	if (!nandi) {
-+		dev_err(&pdev->dev,
-+			"failed to allocate NANDi controller data\n");
-+		return ERR_PTR(-ENOMEM);
-+	}
-+
-+	nandi->dev = &pdev->dev;
-+
-+	err = remap_named_resource(pdev, "nand_mem", &nandi->base);
-+	if (err)
-+		return ERR_PTR(err);
-+
-+	err = remap_named_resource(pdev, "nand_dma", &nandi->dma);
-+	if (err)
-+		return ERR_PTR(err);
-+
-+	platform_set_drvdata(pdev, nandi);
-+
-+	return nandi;
-+}
-+
-+static int stm_nand_bch_probe(struct platform_device *pdev)
-+{
-+	struct stm_plat_nand_bch_data *pdata = pdev->dev.platform_data;
-+	struct nandi_controller *nandi;
-+
-+	nandi = nandi_init_resources(pdev);
-+	if (IS_ERR(nandi)) {
-+		dev_err(&pdev->dev, "failed to initialise NANDi resources\n");
-+		return PTR_ERR(nandi);
-+	}
-+
-+	init_completion(&nandi->seq_completed);
-+	init_completion(&nandi->rbn_completed);
-+
-+	return 0;
-+}
-+
-+static int stm_nand_bch_remove(struct platform_device *pdev)
-+{
-+	return 0;
-+}
-+
-+static struct platform_driver stm_nand_bch_driver = {
-+	.probe	= stm_nand_bch_probe ,
-+	.remove	= stm_nand_bch_remove,
-+	.driver	= {
-+		.name	= "stm-nand-bch",
-+		.owner	= THIS_MODULE,
++	[1] = {
++		.tCLS	= 25,
++		.tCS	= 35,
++		.tALS	= 25,
++		.tDS	= 20,
++		.tWP	= 25,
++		.tCLH	= 10,
++		.tCH	= 10,
++		.tALH	= 10,
++		.tDH	= 10,
++		.tWB	= 100,
++		.tWH	= 15,
++		.tWC	= 45,
++		.tRP	= 25,
++		.tREH	= 15,
++		.tRC	= 50,
++		.tREA	= 30,
++		.tRHOH	= 15,
++		.tCEA	= 45,
++		.tCOH	= 15,
++		.tCHZ	= 50,
 +	},
-+};
-+module_platform_driver(stm_nand_bch_driver);
 +
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Angus Clark");
-+MODULE_DESCRIPTION("STM NAND BCH driver");
-diff --git a/include/linux/mtd/stm_nand.h b/include/linux/mtd/stm_nand.h
-new file mode 100644
-index 0000000..9210d5c
---- /dev/null
-+++ b/include/linux/mtd/stm_nand.h
-@@ -0,0 +1,33 @@
-+/*
-+ * include/linux/mtd/stm_mtd.h
-+ *
-+ * Support for STMicroelectronics NAND Controllers
-+ *
-+ * Copyright (c) 2014 STMicroelectronics Limited
-+ * Author: Angus Clark <Angus.Clark@st.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ */
-+
-+#ifndef __LINUX_STM_NAND_H
-+#define __LINUX_STM_NAND_H
-+
-+struct stm_plat_nand_bch_data {
-+	struct stm_nand_bank_data *bank;
-+	enum stm_nand_bch_ecc_config bch_ecc_cfg;
-+
-+	/* The threshold at which the number of corrected bit-flips per sector
-+	 * is deemed to have reached an excessive level (triggers '-EUCLEAN' to
-+	 * be returned to the caller).  The value should be in the range 1 to
-+	 * <ecc-strength> where <ecc-strength> is 18 or 30, depending on the BCH
-+	 * ECC mode in operation.  A value of 0 is interpreted by the driver as
-+	 * <ecc-strength>.
++	/*
++	 * ONFI Timing Mode '2'
 +	 */
-+	unsigned int bch_bitflip_threshold;
-+	bool flashss;
++	[2] = {
++		.tCLS	= 15,
++		.tCS	= 25,
++		.tALS	= 15,
++		.tDS	= 15,
++		.tWP	= 17,
++		.tCLH	= 10,
++		.tCH	= 10,
++		.tALH	= 10,
++		.tDH	= 5,
++		.tWB	= 100,
++		.tWH	= 15,
++		.tWC	= 35,
++		.tRP	= 17,
++		.tREH	= 16,
++		.tRC	= 35,
++		.tREA	= 25,
++		.tRHOH	= 15,
++		.tCEA	= 30,
++		.tCOH	= 15,
++		.tCHZ	= 50,
++	},
++
++	/*
++	 * ONFI Timing Mode '3'
++	 */
++	[3] = {
++		.tCLS	= 10,
++		.tCS	= 25,
++		.tALS	= 10,
++		.tDS	= 10,
++		.tWP	= 15,
++		.tCLH	= 5,
++		.tCH	= 5,
++		.tALH	= 5,
++		.tDH	= 5,
++		.tWB	= 100,
++		.tWH	= 10,
++		.tWC	= 30,
++		.tRP	= 15,
++		.tREH	= 10,
++		.tRC	= 30,
++		.tREA	= 20,
++		.tRHOH	= 15,
++		.tCEA	= 25,
++		.tCOH	= 15,
++		.tCHZ	= 50,
++	},
++
++	/*
++	 * ONFI Timing Mode '4' (EDO only)
++	 */
++	[4] = {
++		.tCLS	= 10,
++		.tCS	= 20,
++		.tALS	= 10,
++		.tDS	= 10,
++		.tWP	= 12,
++		.tCLH	= 5,
++		.tCH	= 5,
++		.tALH	= 5,
++		.tDH	= 5,
++		.tWB	= 100,
++		.tWH	= 10,
++		.tWC	= 25,
++		.tRP	= 12,
++		.tREH	= 10,
++		.tRC	= 25,
++		.tREA	= 20,
++		.tRHOH	= 15,
++		.tCEA	= 25,
++		.tCOH	= 15,
++		.tCHZ	= 30,
++	},
++
++	/*
++	 * ONFI Timing Mode '5' (EDO only)
++	 */
++	[5] = {
++		.tCLS	= 10,
++		.tCS	= 15,
++		.tALS	= 10,
++		.tDS	= 7,
++		.tWP	= 10,
++		.tCLH	= 5,
++		.tCH	= 5,
++		.tALH	= 5,
++		.tDH	= 5,
++		.tWB	= 100,
++		.tWH	= 7,
++		.tWC	= 20,
++		.tRP	= 10,
++		.tREH	= 7,
++		.tRC	= 20,
++		.tREA	= 16,
++		.tRHOH	= 15,
++		.tCEA	= 25,
++		.tCOH	= 15,
++		.tCHZ	= 30,
++	}
 +};
 +
-+#endif /* __LINUX_STM_NAND_H */
+ static int remap_named_resource(struct platform_device *pdev,
+ 				char *name,
+ 				void __iomem **io_ptr)
+diff --git a/drivers/mtd/nand/stm_nand_regs.h b/drivers/mtd/nand/stm_nand_regs.h
+index 2b0e069..e4951dc 100644
+--- a/drivers/mtd/nand/stm_nand_regs.h
++++ b/drivers/mtd/nand/stm_nand_regs.h
+@@ -299,4 +299,34 @@
+ #define FLEX_ADDR_ADD8_VALID			(0x1 << 30)
+ #define FLEX_ADDR_CSN				(0x1 << 31)
+ 
++/*
++ * NAND Device Timing Specification
++ *
++ * All values in nano seconds, except where specified.
++ */
++struct nand_timing_spec {
++	int	tR;		/* Max Page Read delay [us]*/
++	int	tCLS;		/* Min CLE setup time */
++	int	tCS;		/* Min CE setup time */
++	int	tALS;		/* Min ALE setup time */
++	int	tDS;		/* Min Data setup time */
++	int	tWP;		/* Min WE pulse width */
++	int	tCLH;		/* Min CLE hold time */
++	int	tCH;		/* Min CE hold time */
++	int	tALH;		/* Min ALE hold time */
++	int	tDH;		/* Min Data hold time */
++	int	tWB;		/* Max WE high to busy */
++	int	tWH;		/* Min WE hold time */
++	int	tWC;		/* Min Write cycle time */
++	int	tRP;		/* Min RE pulse width */
++	int	tREH;		/* Min RE high hold time */
++	int	tRC;		/* Min Read cycle time */
++	int	tREA;		/* Max Read access time */
++	int	tRHOH;		/* Min RE high to output hold */
++	int	tCEA;		/* Max CE access time */
++	int	tCOH;		/* Min CE high to output hold */
++	int	tCHZ;		/* Max CE high to output high Z */
++	int	tCSD;		/* Min CE high to ALE/CLE don't care */
++};
++
+ #endif /* STM_NANDC_REGS_H */
 -- 
 1.8.3.2
