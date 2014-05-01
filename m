@@ -1,15 +1,14 @@
-Received: from mail-wi0-f182.google.com ([209.85.212.182])
+Received: from mail-wi0-f173.google.com ([209.85.212.173])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WfnlU-0003hc-QW
- for linux-mtd@lists.infradead.org; Thu, 01 May 2014 09:58:53 +0000
-Received: by mail-wi0-f182.google.com with SMTP id d1so404245wiv.15
- for <linux-mtd@lists.infradead.org>; Thu, 01 May 2014 02:58:31 -0700 (PDT)
+ id 1WfnlW-0003jE-Hf
+ for linux-mtd@lists.infradead.org; Thu, 01 May 2014 09:58:55 +0000
+Received: by mail-wi0-f173.google.com with SMTP id bs8so389830wib.12
+ for <linux-mtd@lists.infradead.org>; Thu, 01 May 2014 02:58:32 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 42/47] mtd: nand: stm_nand_bch: MTD mark and check for bad
- blocks (BCH)
-Date: Thu,  1 May 2014 10:56:49 +0100
-Message-Id: <1398938214-17847-43-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 43/47] mtd: nand: stm_nand_bch: read and write buffers (FLEX)
+Date: Thu,  1 May 2014 10:56:50 +0100
+Message-Id: <1398938214-17847-44-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1398938214-17847-1-git-send-email-lee.jones@linaro.org>
 References: <1398938214-17847-1-git-send-email-lee.jones@linaro.org>
 Cc: Lee Jones <lee.jones@linaro.org>, computersforpeace@gmail.com,
@@ -23,79 +22,104 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use the local BBM helpers to check for and mark bad blocks.
+read or write in 4 Byte chunks at a time until there is less than
+8 Bytes remaining, at which point split down into reading the
+reset a single Byte at a time.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/nand/stm_nand_bch.c | 49 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 49 insertions(+)
+ drivers/mtd/nand/stm_nand_bch.c | 72 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 72 insertions(+)
 
 diff --git a/drivers/mtd/nand/stm_nand_bch.c b/drivers/mtd/nand/stm_nand_bch.c
-index 11735ee..046e435 100644
+index 046e435..ba6ac8f 100644
 --- a/drivers/mtd/nand/stm_nand_bch.c
 +++ b/drivers/mtd/nand/stm_nand_bch.c
-@@ -1275,6 +1275,53 @@ static int bch_scan_bbt(struct mtd_info *mtd)
- 	return 0;
+@@ -770,6 +770,75 @@ static void flex_addr(struct nandi_controller *nandi,
+ 	writel(addr, nandi->base + NANDHAM_FLEX_ADD);
  }
  
-+static int bch_block_isbad(struct mtd_info *mtd, loff_t offs, int getchip)
++static void flex_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
 +{
 +	struct nand_chip *chip = mtd->priv;
 +	struct nandi_controller *nandi = chip->priv;
++	int aligned;
 +
-+	uint32_t block;
++	emiss_nandi_select(STM_NANDI_HAMMING);
 +
-+	/* Check for invalid offset */
-+	if (offs > mtd->size)
-+		return -EINVAL;
++	/* Read bytes until buf is 4-byte aligned */
++	while (len && ((unsigned int)buf & 0x3)) {
++		*buf++ = (uint8_t)(readl(nandi->base + NANDHAM_FLEX_DATA)
++				   & 0xff);
++		len--;
++	};
 +
-+	block = offs >> nandi->block_shift;
++	/* Use 'BEATS_4'/readsl */
++	if (len > 8) {
++		aligned = len & ~0x3;
++		writel(FLEX_DATA_CFG_BEATS_4 | FLEX_DATA_CFG_CSN,
++		       nandi->base + NANDHAM_FLEX_DATAREAD_CONFIG);
 +
-+	/* Protect blocks reserved for BBTs */
-+	if (block >= (nandi->blocks_per_device - NAND_IBBT_NBLOCKS))
-+		return 1;
++		readsl(nandi->base + NANDHAM_FLEX_DATA, buf, aligned >> 2);
 +
-+	return bbt_is_block_bad(nandi->info.bbt_info.bbt, block);
++		buf += aligned;
++		len -= aligned;
++
++		writel(FLEX_DATA_CFG_BEATS_1 | FLEX_DATA_CFG_CSN,
++		       nandi->base + NANDHAM_FLEX_DATAREAD_CONFIG);
++	}
++
++	/* Mop up remaining bytes */
++	while (len > 0) {
++		*buf++ = (uint8_t)(readl(nandi->base + NANDHAM_FLEX_DATA)
++				   & 0xff);
++		len--;
++	}
 +}
 +
-+static int bch_block_markbad(struct mtd_info *mtd, loff_t offs)
++static void flex_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
 +{
 +	struct nand_chip *chip = mtd->priv;
 +	struct nandi_controller *nandi = chip->priv;
++	int aligned;
 +
-+	uint32_t block;
-+	int ret;
++	/* Write bytes until buf is 4-byte aligned */
++	while (len && ((unsigned int)buf & 0x3)) {
++		writel(*buf++, nandi->base + NANDHAM_FLEX_DATA);
++		len--;
++	};
 +
-+	/* Is block already considered bad? (will also catch invalid offsets) */
-+	ret = mtd_block_isbad(mtd, offs);
-+	if (ret < 0)
-+		return ret;
-+	if (ret == 1)
-+		return 0;
++	/* USE 'BEATS_4/writesl */
++	if (len > 8) {
++		aligned = len & ~0x3;
++		writel(FLEX_DATA_CFG_BEATS_4 | FLEX_DATA_CFG_CSN,
++		       nandi->base + NANDHAM_FLEX_DATAWRITE_CONFIG);
++		writesl(nandi->base + NANDHAM_FLEX_DATA, buf, aligned >> 2);
++		buf += aligned;
++		len -= aligned;
++		writel(FLEX_DATA_CFG_BEATS_1 | FLEX_DATA_CFG_CSN,
++		       nandi->base + NANDHAM_FLEX_DATAWRITE_CONFIG);
++	}
 +
-+	/* Mark bad */
-+	block = offs >> nandi->block_shift;
-+	bbt_set_block_mark(nandi->info.bbt_info.bbt, block, BBT_MARK_BAD_WEAR);
-+
-+	/* Update BBTs, incrementing bbt_vers */
-+	ret = bch_update_bbts(nandi, &nandi->info.bbt_info,
-+			      NAND_IBBT_UPDATE_BOTH,
-+			      nandi->info.bbt_info.bbt_vers[0] + 1);
-+
-+	return ret;
++	/* Mop up remaining bytes */
++	while (len > 0) {
++		writel(*buf++, nandi->base + NANDHAM_FLEX_DATA);
++		len--;
++	}
 +}
 +
- static void nandi_dump_bad_blocks(struct nandi_controller *nandi)
- {
- 	int bad_count = 0;
-@@ -1383,6 +1430,8 @@ static void nandi_set_mtd_defaults(struct nandi_controller *nandi,
- 	chip->erase = bch_erase;
+ static int flex_read_raw(struct nandi_controller *nandi,
+ 			 uint32_t page_addr,
+ 			 uint32_t col_addr,
+@@ -1416,6 +1485,9 @@ static void nandi_set_mtd_defaults(struct nandi_controller *nandi,
+ 	chip->ecc.layout = &info->ecclayout;
+ 	chip->options |= NAND_NO_SUBPAGE_WRITE;
  
- 	chip->scan_bbt = bch_scan_bbt;
-+	chip->block_bad = bch_block_isbad;
-+	chip->block_markbad = bch_block_markbad;
- }
++	chip->read_buf = flex_read_buf;
++	chip->write_buf = flex_write_buf;
++
+ 	chip->bbt_options |= NAND_BBT_USE_FLASH;
  
- /*
+ 	/* mtd_info */
 -- 
 1.8.3.2
