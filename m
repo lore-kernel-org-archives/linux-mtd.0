@@ -1,19 +1,19 @@
-Received: from mail-pa0-x22f.google.com ([2607:f8b0:400e:c03::22f])
+Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WfkTW-0000W5-LE
- for linux-mtd@lists.infradead.org; Thu, 01 May 2014 06:28:07 +0000
-Received: by mail-pa0-f47.google.com with SMTP id fa1so3216306pad.20
- for <linux-mtd@lists.infradead.org>; Wed, 30 Apr 2014 23:27:48 -0700 (PDT)
+ id 1WfkTa-0000W6-Sq
+ for linux-mtd@lists.infradead.org; Thu, 01 May 2014 06:28:11 +0000
+Received: by mail-pa0-f53.google.com with SMTP id ld10so3176003pab.40
+ for <linux-mtd@lists.infradead.org>; Wed, 30 Apr 2014 23:27:49 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: Linux Kernel <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 09/12] blackfin: defconfigs: add MTD_SPI_NOR (new
- dependency for M25P80)
-Date: Wed, 30 Apr 2014 23:26:44 -0700
-Message-Id: <1398925607-7482-10-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v2 10/12] mips: defconfigs: add MTD_SPI_NOR (new dependency
+ for M25P80)
+Date: Wed, 30 Apr 2014 23:26:45 -0700
+Message-Id: <1398925607-7482-11-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1398925607-7482-1-git-send-email-computersforpeace@gmail.com>
 References: <1398925607-7482-1-git-send-email-computersforpeace@gmail.com>
-Cc: Marek Vasut <marex@denx.de>, Steven Miao <realmz6@gmail.com>,
- adi-buildroot-devel@lists.sourceforge.net, Huang Shijie <b32955@freescale.com>,
+Cc: Marek Vasut <marex@denx.de>, linux-mips@linux-mips.org,
+ Ralf Baechle <ralf@linux-mips.org>, Huang Shijie <b32955@freescale.com>,
  linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -31,158 +31,67 @@ the new dependency.
 At the same time, drop the now-nonexistent CONFIG_MTD_CHAR symbol.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Cc: Steven Miao <realmz6@gmail.com>
-Cc: adi-buildroot-devel@lists.sourceforge.net
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org
 Cc: linux-kernel@vger.kernel.org
 ---
- arch/blackfin/configs/BF526-EZBRD_defconfig    | 2 +-
- arch/blackfin/configs/BF527-EZKIT-V2_defconfig | 2 +-
- arch/blackfin/configs/BF527-EZKIT_defconfig    | 2 +-
- arch/blackfin/configs/BF548-EZKIT_defconfig    | 2 +-
- arch/blackfin/configs/BF609-EZKIT_defconfig    | 2 +-
- arch/blackfin/configs/BlackStamp_defconfig     | 3 +--
- arch/blackfin/configs/H8606_defconfig          | 3 +--
- 7 files changed, 7 insertions(+), 9 deletions(-)
+ arch/mips/configs/ath79_defconfig  | 3 +--
+ arch/mips/configs/db1xxx_defconfig | 1 +
+ arch/mips/configs/rt305x_defconfig | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/blackfin/configs/BF526-EZBRD_defconfig b/arch/blackfin/configs/BF526-EZBRD_defconfig
-index 2f2c6acf210c..530ba7a6d7b0 100644
---- a/arch/blackfin/configs/BF526-EZBRD_defconfig
-+++ b/arch/blackfin/configs/BF526-EZBRD_defconfig
-@@ -53,7 +53,6 @@ CONFIG_IP_PNP=y
- CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
- # CONFIG_FW_LOADER is not set
- CONFIG_MTD=y
--CONFIG_MTD_CHAR=y
- CONFIG_MTD_BLOCK=y
- CONFIG_MTD_CFI=y
- CONFIG_MTD_CFI_INTELEXT=y
-@@ -63,6 +62,7 @@ CONFIG_MTD_COMPLEX_MAPPINGS=y
- CONFIG_MTD_PHYSMAP=y
- CONFIG_MTD_M25P80=y
- CONFIG_MTD_NAND=m
-+CONFIG_MTD_SPI_NOR=y
- CONFIG_BLK_DEV_RAM=y
- CONFIG_SCSI=y
- # CONFIG_SCSI_PROC_FS is not set
-diff --git a/arch/blackfin/configs/BF527-EZKIT-V2_defconfig b/arch/blackfin/configs/BF527-EZKIT-V2_defconfig
-index 91535c38e7f2..a21c79275eae 100644
---- a/arch/blackfin/configs/BF527-EZKIT-V2_defconfig
-+++ b/arch/blackfin/configs/BF527-EZKIT-V2_defconfig
-@@ -58,7 +58,6 @@ CONFIG_BFIN_SIR0=y
- CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
- # CONFIG_FW_LOADER is not set
- CONFIG_MTD=y
--CONFIG_MTD_CHAR=m
- CONFIG_MTD_BLOCK=y
- CONFIG_MTD_JEDECPROBE=m
- CONFIG_MTD_RAM=y
-@@ -66,6 +65,7 @@ CONFIG_MTD_ROM=m
- CONFIG_MTD_COMPLEX_MAPPINGS=y
- CONFIG_MTD_M25P80=y
- CONFIG_MTD_NAND=m
-+CONFIG_MTD_SPI_NOR=y
- CONFIG_BLK_DEV_RAM=y
- CONFIG_SCSI=y
- # CONFIG_SCSI_PROC_FS is not set
-diff --git a/arch/blackfin/configs/BF527-EZKIT_defconfig b/arch/blackfin/configs/BF527-EZKIT_defconfig
-index af2738c7441b..5070a860d8c4 100644
---- a/arch/blackfin/configs/BF527-EZKIT_defconfig
-+++ b/arch/blackfin/configs/BF527-EZKIT_defconfig
-@@ -57,7 +57,6 @@ CONFIG_BFIN_SIR0=y
- CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
- # CONFIG_FW_LOADER is not set
- CONFIG_MTD=y
--CONFIG_MTD_CHAR=m
- CONFIG_MTD_BLOCK=y
- CONFIG_MTD_JEDECPROBE=m
- CONFIG_MTD_RAM=y
-@@ -65,6 +64,7 @@ CONFIG_MTD_ROM=m
- CONFIG_MTD_COMPLEX_MAPPINGS=y
- CONFIG_MTD_M25P80=y
- CONFIG_MTD_NAND=m
-+CONFIG_MTD_SPI_NOR=y
- CONFIG_BLK_DEV_RAM=y
- CONFIG_SCSI=y
- # CONFIG_SCSI_PROC_FS is not set
-diff --git a/arch/blackfin/configs/BF548-EZKIT_defconfig b/arch/blackfin/configs/BF548-EZKIT_defconfig
-index e716fdfd2cf2..efb293057287 100644
---- a/arch/blackfin/configs/BF548-EZKIT_defconfig
-+++ b/arch/blackfin/configs/BF548-EZKIT_defconfig
-@@ -64,7 +64,6 @@ CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
- CONFIG_FW_LOADER=m
- CONFIG_MTD=y
+diff --git a/arch/mips/configs/ath79_defconfig b/arch/mips/configs/ath79_defconfig
+index e3a3836508ec..134879c1310a 100644
+--- a/arch/mips/configs/ath79_defconfig
++++ b/arch/mips/configs/ath79_defconfig
+@@ -46,7 +46,6 @@ CONFIG_MTD=y
+ CONFIG_MTD_REDBOOT_PARTS=y
+ CONFIG_MTD_REDBOOT_DIRECTORY_BLOCK=-2
  CONFIG_MTD_CMDLINE_PARTS=y
 -CONFIG_MTD_CHAR=y
  CONFIG_MTD_BLOCK=y
  CONFIG_MTD_CFI=y
- CONFIG_MTD_CFI_INTELEXT=y
-@@ -75,6 +74,7 @@ CONFIG_MTD_M25P80=y
- CONFIG_MTD_NAND=y
- CONFIG_MTD_NAND_BF5XX=y
- # CONFIG_MTD_NAND_BF5XX_HWECC is not set
-+CONFIG_MTD_SPI_NOR=y
- CONFIG_BLK_DEV_RAM=y
- # CONFIG_SCSI_PROC_FS is not set
- CONFIG_BLK_DEV_SD=y
-diff --git a/arch/blackfin/configs/BF609-EZKIT_defconfig b/arch/blackfin/configs/BF609-EZKIT_defconfig
-index 4ca39ab6b2bf..a7e9bfd84183 100644
---- a/arch/blackfin/configs/BF609-EZKIT_defconfig
-+++ b/arch/blackfin/configs/BF609-EZKIT_defconfig
-@@ -57,7 +57,6 @@ CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
- CONFIG_FW_LOADER=m
- CONFIG_MTD=y
- CONFIG_MTD_CMDLINE_PARTS=y
--CONFIG_MTD_CHAR=y
- CONFIG_MTD_BLOCK=y
- CONFIG_MTD_CFI=y
- CONFIG_MTD_CFI_INTELEXT=y
-@@ -65,6 +64,7 @@ CONFIG_MTD_CFI_STAA=y
+ CONFIG_MTD_JEDECPROBE=y
+@@ -54,7 +53,7 @@ CONFIG_MTD_CFI_AMDSTD=y
  CONFIG_MTD_COMPLEX_MAPPINGS=y
  CONFIG_MTD_PHYSMAP=y
  CONFIG_MTD_M25P80=y
-+CONFIG_MTD_SPI_NOR=y
- CONFIG_MTD_UBI=m
- CONFIG_SCSI=y
- CONFIG_BLK_DEV_SD=y
-diff --git a/arch/blackfin/configs/BlackStamp_defconfig b/arch/blackfin/configs/BlackStamp_defconfig
-index 3853c473b443..f4a9200e1ab1 100644
---- a/arch/blackfin/configs/BlackStamp_defconfig
-+++ b/arch/blackfin/configs/BlackStamp_defconfig
-@@ -45,7 +45,6 @@ CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
- # CONFIG_FW_LOADER is not set
- CONFIG_MTD=y
- CONFIG_MTD_CMDLINE_PARTS=y
--CONFIG_MTD_CHAR=m
- CONFIG_MTD_BLOCK=y
- CONFIG_MTD_CFI=m
- CONFIG_MTD_CFI_AMDSTD=m
-@@ -53,7 +52,7 @@ CONFIG_MTD_RAM=y
- CONFIG_MTD_ROM=m
- CONFIG_MTD_COMPLEX_MAPPINGS=y
- CONFIG_MTD_M25P80=y
 -# CONFIG_M25PXX_USE_FAST_READ is not set
 +CONFIG_MTD_SPI_NOR=y
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_BLK_DEV_NBD=y
- CONFIG_BLK_DEV_RAM=y
-diff --git a/arch/blackfin/configs/H8606_defconfig b/arch/blackfin/configs/H8606_defconfig
-index f754e490bbfd..0ff97d8d047a 100644
---- a/arch/blackfin/configs/H8606_defconfig
-+++ b/arch/blackfin/configs/H8606_defconfig
-@@ -36,13 +36,12 @@ CONFIG_IRTTY_SIR=m
- # CONFIG_WIRELESS is not set
- # CONFIG_FW_LOADER is not set
- CONFIG_MTD=y
--CONFIG_MTD_CHAR=y
- CONFIG_MTD_BLOCK=y
- CONFIG_MTD_RAM=y
- CONFIG_MTD_ROM=y
- CONFIG_MTD_COMPLEX_MAPPINGS=y
- CONFIG_MTD_M25P80=y
--# CONFIG_M25PXX_USE_FAST_READ is not set
+ CONFIG_NETDEVICES=y
+ # CONFIG_NET_PACKET_ENGINE is not set
+ CONFIG_ATH_COMMON=m
+diff --git a/arch/mips/configs/db1xxx_defconfig b/arch/mips/configs/db1xxx_defconfig
+index c99b6eeda90b..a64b30b96a0d 100644
+--- a/arch/mips/configs/db1xxx_defconfig
++++ b/arch/mips/configs/db1xxx_defconfig
+@@ -113,6 +113,7 @@ CONFIG_MTD_NAND=y
+ CONFIG_MTD_NAND_ECC_BCH=y
+ CONFIG_MTD_NAND_AU1550=y
+ CONFIG_MTD_NAND_PLATFORM=y
 +CONFIG_MTD_SPI_NOR=y
- CONFIG_BLK_DEV_RAM=y
- CONFIG_MISC_DEVICES=y
+ CONFIG_EEPROM_AT24=y
  CONFIG_EEPROM_AT25=y
+ CONFIG_SCSI_TGT=y
+diff --git a/arch/mips/configs/rt305x_defconfig b/arch/mips/configs/rt305x_defconfig
+index d1741bcf8949..d14ae2fa7d13 100644
+--- a/arch/mips/configs/rt305x_defconfig
++++ b/arch/mips/configs/rt305x_defconfig
+@@ -81,7 +81,6 @@ CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
+ # CONFIG_FIRMWARE_IN_KERNEL is not set
+ CONFIG_MTD=y
+ CONFIG_MTD_CMDLINE_PARTS=y
+-CONFIG_MTD_CHAR=y
+ CONFIG_MTD_BLOCK=y
+ CONFIG_MTD_CFI=y
+ CONFIG_MTD_CFI_AMDSTD=y
+@@ -89,6 +88,7 @@ CONFIG_MTD_COMPLEX_MAPPINGS=y
+ CONFIG_MTD_PHYSMAP=y
+ CONFIG_MTD_PHYSMAP_OF=y
+ CONFIG_MTD_M25P80=y
++CONFIG_MTD_SPI_NOR=y
+ CONFIG_EEPROM_93CX6=m
+ CONFIG_SCSI=y
+ CONFIG_BLK_DEV_SD=y
 -- 
 1.8.3.2
