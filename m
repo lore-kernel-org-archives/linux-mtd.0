@@ -1,19 +1,18 @@
-Message-ID: <536284E1.50001@free-electrons.com>
-Date: Thu, 01 May 2014 19:31:13 +0200
-From: Boris BREZILLON <boris.brezillon@free-electrons.com>
+Message-ID: <53628282.10201@antcom.de>
+Date: Thu, 01 May 2014 19:21:06 +0200
+From: Roland Stigge <stigge@antcom.de>
 MIME-Version: 1.0
-To: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
-Subject: Re: [RFC PATCH 0/3] mtd: nand: add randomizer support
-References: <1398906592-24677-1-git-send-email-b.brezillon.dev@gmail.com>
- <20140501163407.GB3296@obsidianresearch.com>
-In-Reply-To: <20140501163407.GB3296@obsidianresearch.com>
-Content-Type: text/plain; charset=ISO-8859-1
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v2 05/12] ARM: lpc32xx: add MTD_SPI_NOR (new dependency
+ for M25P80)
+References: <1398925607-7482-1-git-send-email-computersforpeace@gmail.com>
+ <1398925607-7482-6-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1398925607-7482-6-git-send-email-computersforpeace@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Cc: Marek Vasut <marex@denx.de>, Huang Shijie <b32955@freescale.com>,
+ linux-mtd@lists.infradead.org, Linux Kernel <linux-kernel@vger.kernel.org>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,44 +22,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 01/05/14 08:26, Brian Norris wrote:
+> This defconfig contains the CONFIG_M25P80 symbol, which is now
+> dependent on the MTD_SPI_NOR symbol. Add CONFIG_MTD_SPI_NOR to satisfy
+> the new dependency.
 
-On 01/05/2014 18:34, Jason Gunthorpe wrote:
-> On Thu, May 01, 2014 at 03:09:49AM +0200, Boris BREZILLON wrote:
->> Hello,
->>
->> This series is a proposal to add support for randomizers (either software
->> or hardware) to NAND flash controller drivers.
-> FWIW, I think the term for reversibly combining a PRBS with data is
-> 'scrambling', it is often used in communication systems for similar
-> reasons - probabilisticly increasing transition density.
->
-> randomizing is something else entirely :)
+Can't the CONFIG_M25P80 declare its dependency on CONFIG_MTD_SPI_NOR
+itself, or put CONFIG_M25P80 etc. into a submenu under CONFIG_MTD_SPI_NOR?
 
-I totally agree with you, this is not a randomizer but rather a scrambler.
-The reason I chose the "randomizer" word is that all the documents I
-read are talking about randomizers.
-But, other than I don't have any concern about changing all references
-to "randomizer" into "scrambler" ;-).
-
->
-> BTW, there are security concerns here. The scrambler PRBS must not be
-> predictable by the user, otherwise they can write data that undoes the
-> scramble and defeat it, ie deliberately writing the last 2k of a 4k
-> write block as all 0's after scrambling could cause the first 2k to be
-> lost. That feels like something that could be scary ..
-
-AFAICT, the scramblers/randomizers used in NAND applications are all
-predictable, which means the scrambler state does not depend on the last
-data being scrambled.
-For example, the sunxi HW scrambler is using a Fibonacci LFSR [1].
-Do you have any example of non predictable scrambler that are used to
-scramble NAND data ?
-
-Best Regards,
-
-Boris
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+> 
+> At the same time, drop the now-nonexistent CONFIG_MTD_CHAR symbol.
+> 
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Cc: Roland Stigge <stigge@antcom.de>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>  arch/arm/configs/lpc32xx_defconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm/configs/lpc32xx_defconfig b/arch/arm/configs/lpc32xx_defconfig
+> index 398a367ffce8..2de54c35fb47 100644
+> --- a/arch/arm/configs/lpc32xx_defconfig
+> +++ b/arch/arm/configs/lpc32xx_defconfig
+> @@ -53,12 +53,12 @@ CONFIG_DEVTMPFS_MOUNT=y
+>  # CONFIG_FW_LOADER is not set
+>  CONFIG_MTD=y
+>  CONFIG_MTD_CMDLINE_PARTS=y
+> -CONFIG_MTD_CHAR=y
+>  CONFIG_MTD_BLOCK=y
+>  CONFIG_MTD_M25P80=y
+>  CONFIG_MTD_NAND=y
+>  CONFIG_MTD_NAND_SLC_LPC32XX=y
+>  CONFIG_MTD_NAND_MLC_LPC32XX=y
+> +CONFIG_MTD_SPI_NOR=y
+>  CONFIG_BLK_DEV_LOOP=y
+>  CONFIG_BLK_DEV_CRYPTOLOOP=y
+>  CONFIG_BLK_DEV_RAM=y
+> 
