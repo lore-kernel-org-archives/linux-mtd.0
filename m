@@ -1,20 +1,22 @@
-Date: Thu, 1 May 2014 11:59:46 -0600
-From: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
-To: Boris BREZILLON <boris.brezillon@free-electrons.com>
-Subject: Re: [RFC PATCH 0/3] mtd: nand: add randomizer support
-Message-ID: <20140501175946.GA14539@obsidianresearch.com>
-References: <1398906592-24677-1-git-send-email-b.brezillon.dev@gmail.com>
- <20140501163407.GB3296@obsidianresearch.com>
- <536284E1.50001@free-electrons.com>
+Date: Thu, 1 May 2014 14:53:28 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v2 08/12] ARM: marvell: add MTD_SPI_NOR (new dependency
+ for M25P80)
+Message-ID: <20140501175328.GA22786@arch.cereza>
+References: <1398925607-7482-1-git-send-email-computersforpeace@gmail.com>
+ <1398925607-7482-9-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <536284E1.50001@free-electrons.com>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1398925607-7482-9-git-send-email-computersforpeace@gmail.com>
+Cc: Marek Vasut <marex@denx.de>, Andrew Lunn <andrew@lunn.ch>,
+ Jason Cooper <jason@lakedaemon.net>,
+ Linux Kernel <linux-kernel@vger.kernel.org>,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,65 +26,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, May 01, 2014 at 07:31:13PM +0200, Boris BREZILLON wrote:
-
-> I totally agree with you, this is not a randomizer but rather a scrambler.
-> The reason I chose the "randomizer" word is that all the documents I
-> read are talking about randomizers.
-> But, other than I don't have any concern about changing all references
-> to "randomizer" into "scrambler" ;-).
-
-If nobody else says anything, Scrambler is at least consistent with
-Wikipedia..
-
-and 'descrambler' sounds better than 'unrandomizer' :)
- 
-> > BTW, there are security concerns here. The scrambler PRBS must not be
-> > predictable by the user, otherwise they can write data that undoes the
-> > scramble and defeat it, ie deliberately writing the last 2k of a 4k
-> > write block as all 0's after scrambling could cause the first 2k to be
-> > lost. That feels like something that could be scary ..
+On Apr 30, Brian Norris wrote:
+> These defconfigs contain the CONFIG_M25P80 symbol, which is now
+> dependent on the MTD_SPI_NOR symbol. Add CONFIG_MTD_SPI_NOR to satisfy
+> the new dependency.
 > 
-> AFAICT, the scramblers/randomizers used in NAND applications are all
-> predictable, which means the scrambler state does not depend on the last
-> data being scrambled.
+> At the same time, drop the now-nonexistent CONFIG_MTD_CHAR symbol.
+> 
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Cc: Jason Cooper <jason@lakedaemon.net>
+> Cc: Andrew Lunn <andrew@lunn.ch>
+> Cc: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> Acked-by: Jason Cooper <jason@lakedaemon.net>
 
-Right, I'm not surprised storage would use a synchronous scrambler,
-self-synchronizing scramblers make the most sense for communication..
+Acked-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 
-However, with a synchronous scrambler the security concern boils down
-to how robust and unpredictable is the PRBS.
+And tested the SPI is now selected (and works on Armada XP GP)
+using mvebu_v7_defconfig.
 
-For instance, re-using the same PRBS seed and staring point for every
-block is probably a bad idea.
-
-At the very least I would think the block number should be included in
-the per-block seed of the PRBS.
-
-And also a per-parition/device global seed..
-
-I suspect even a properly seeded LFSR is sufficent, but by no means
-have I studied this :)
-
-> For example, the sunxi HW scrambler is using a Fibonacci LFSR [1].
-> Do you have any example of non predictable scrambler that are used to
-> scramble NAND data ?
-
-The benifit here is that the scrambled data is completely private to
-the driver and flash chip. So any attack on the scrambler would have
-to use the driver as some kind of oracle to search for
-synchornization. Eg running through the full keyspace of an N-Bit LFSR
-by writing an anti-scrambled block, reading it back and checking if it
-is corrupted.
-
-This is why per-block randomization of the PRBS is very important - if
-the attacker has only filesytems access then they don't know the block
-number and now have to attack the filesystem block allocator as well
-as the LFSR block-independent seed to generate an anti-scrambler data
-pattern.
-
-But that is just an off the cuff feeling. It would be smart to study
-it further :)
-
-Regards,
-Jason
+Thanks a lot for taking care of this,
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
