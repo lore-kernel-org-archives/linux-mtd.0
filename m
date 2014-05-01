@@ -1,14 +1,15 @@
-Received: from mail-wi0-f172.google.com ([209.85.212.172])
+Received: from mail-wi0-f182.google.com ([209.85.212.182])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WfnlZ-0003lf-BJ
- for linux-mtd@lists.infradead.org; Thu, 01 May 2014 09:58:57 +0000
-Received: by mail-wi0-f172.google.com with SMTP id hi2so406438wib.17
- for <linux-mtd@lists.infradead.org>; Thu, 01 May 2014 02:58:34 -0700 (PDT)
+ id 1WfnlZ-0003ov-Qp
+ for linux-mtd@lists.infradead.org; Thu, 01 May 2014 09:58:58 +0000
+Received: by mail-wi0-f182.google.com with SMTP id d1so404372wiv.15
+ for <linux-mtd@lists.infradead.org>; Thu, 01 May 2014 02:58:36 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 44/47] mtd: nand: mtd_nand_bch: add remaining FLEX functions
-Date: Thu,  1 May 2014 10:56:51 +0100
-Message-Id: <1398938214-17847-45-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 45/47] mtd: nand: stm_nand_bch: catch unhandled calls to read
+ and write to the OOB
+Date: Thu,  1 May 2014 10:56:52 +0100
+Message-Id: <1398938214-17847-46-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1398938214-17847-1-git-send-email-lee.jones@linaro.org>
 References: <1398938214-17847-1-git-send-email-lee.jones@linaro.org>
 Cc: Lee Jones <lee.jones@linaro.org>, computersforpeace@gmail.com,
@@ -22,136 +23,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Including a dummy function for selecting chips which isn't supported by
-our driver, the wait function as requested by the NAND sub system, a read
-Byte function also requested by NAND and finally a command function which
-provides a partial implementation of MTD/NAND Interface, based on
-Hamming-FLEX operation which allows us to make use of nand_base.c functions
-where possible (i.e.nand_scan_ident()).
+The OOB is filled with ECC data which is handled by the hardware
+controller. It's a mistake for the framework to attempt to read or
+write to the OOB area. If that happens, we'll BUG() out.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/nand/stm_nand_bch.c | 101 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 101 insertions(+)
+ drivers/mtd/nand/stm_nand_bch.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
 diff --git a/drivers/mtd/nand/stm_nand_bch.c b/drivers/mtd/nand/stm_nand_bch.c
-index ba6ac8f..89f1263 100644
+index 89f1263..bec7e23 100644
 --- a/drivers/mtd/nand/stm_nand_bch.c
 +++ b/drivers/mtd/nand/stm_nand_bch.c
-@@ -770,6 +770,103 @@ static void flex_addr(struct nandi_controller *nandi,
- 	writel(addr, nandi->base + NANDHAM_FLEX_ADD);
+@@ -1441,6 +1441,20 @@ static int bch_scan_bbt(struct mtd_info *mtd)
+ 	return 0;
  }
  
-+/*
-+ * Partial implementation of MTD/NAND Interface, based on Hamming-FLEX
-+ * operation.
-+ *
-+ * Allows us to make use of nand_base.c functions where possible
-+ * (e.g. nand_scan_ident() and friends).
-+ */
-+static void flex_command_lp(struct mtd_info *mtd, unsigned int command,
-+			    int column, int page)
++static int bch_mtd_read_oob(struct mtd_info *mtd,
++			    struct nand_chip *chip, int page)
 +{
-+	struct nand_chip *chip = mtd->priv;
-+	struct nandi_controller *nandi = chip->priv;
-+
-+	emiss_nandi_select(STM_NANDI_HAMMING);
-+
-+	switch (command) {
-+	case NAND_CMD_READOOB:
-+		/* Emulate NAND_CMD_READOOB */
-+		column += mtd->writesize;
-+		command = NAND_CMD_READ0;
-+		break;
-+	case NAND_CMD_READ0:
-+	case NAND_CMD_ERASE1:
-+	case NAND_CMD_SEQIN:
-+	case NAND_CMD_RESET:
-+	case NAND_CMD_PARAM:
-+		/* Prime RBn wait */
-+		nandi_enable_interrupts(nandi, NAND_INT_RBN);
-+		reinit_completion(&nandi->rbn_completed);
-+		break;
-+	case NAND_CMD_READID:
-+	case NAND_CMD_STATUS:
-+	case NAND_CMD_ERASE2:
-+		break;
-+	default:
-+		/* Catch unexpected commands */
-+		BUG();
-+	}
-+
-+	/*
-+	 * Command Cycle
-+	 */
-+	flex_cmd(nandi, command);
-+
-+	/*
-+	 * Address Cycles
-+	 */
-+	if (column != -1)
-+		flex_addr(nandi, column,
-+			  (command == NAND_CMD_READID) ? 1 : 2);
-+
-+	if (page != -1)
-+		flex_addr(nandi, page, nandi->extra_addr ? 3 : 2);
-+
-+	/* Complete 'READ0' command */
-+	if (command == NAND_CMD_READ0)
-+		flex_cmd(nandi, NAND_CMD_READSTART);
-+
-+	/* Wait for RBn, if required                        */
-+	/* (Note, other commands may handle wait elsewhere) */
-+	if (command == NAND_CMD_RESET ||
-+	    command == NAND_CMD_READ0 ||
-+	    command == NAND_CMD_PARAM) {
-+		flex_wait_rbn(nandi);
-+		nandi_disable_interrupts(nandi, NAND_INT_RBN);
-+	}
++	BUG();
++	return 0;
 +}
 +
-+static uint8_t flex_read_byte(struct mtd_info *mtd)
++static int bch_mtd_write_oob(struct mtd_info *mtd,
++			     struct nand_chip *chip, int page)
 +{
-+	struct nand_chip *chip = mtd->priv;
-+	struct nandi_controller *nandi = chip->priv;
-+
-+	emiss_nandi_select(STM_NANDI_HAMMING);
-+
-+	return (uint8_t)(readl(nandi->base + NANDHAM_FLEX_DATA) & 0xff);
++	BUG();
++	return 0;
 +}
 +
-+static int flex_wait_func(struct mtd_info *mtd, struct nand_chip *chip)
-+{
-+	struct nandi_controller *nandi = chip->priv;
-+
-+	emiss_nandi_select(STM_NANDI_HAMMING);
-+
-+	flex_wait_rbn(nandi);
-+
-+	flex_cmd(nandi, NAND_CMD_STATUS);
-+
-+	return (int)(readl(nandi->base + NANDHAM_FLEX_DATA) & 0xff);
-+}
-+
-+/* Multi-CS devices not supported */
-+static void flex_select_chip(struct mtd_info *mtd, int chipnr)
-+{
-+
-+}
-+
- static void flex_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
+ static int bch_block_isbad(struct mtd_info *mtd, loff_t offs, int getchip)
  {
  	struct nand_chip *chip = mtd->priv;
-@@ -1485,6 +1582,10 @@ static void nandi_set_mtd_defaults(struct nandi_controller *nandi,
- 	chip->ecc.layout = &info->ecclayout;
- 	chip->options |= NAND_NO_SUBPAGE_WRITE;
+@@ -1598,6 +1612,9 @@ static void nandi_set_mtd_defaults(struct nandi_controller *nandi,
+ 	mtd->ecclayout = &info->ecclayout;
+ 	mtd->subpage_sft = 0;
  
-+	chip->cmdfunc = flex_command_lp;
-+	chip->read_byte = flex_read_byte;
-+	chip->select_chip = flex_select_chip;
-+	chip->waitfunc = flex_wait_func;
- 	chip->read_buf = flex_read_buf;
- 	chip->write_buf = flex_write_buf;
- 
++	chip->ecc.read_oob = bch_mtd_read_oob;
++	chip->ecc.write_oob = bch_mtd_write_oob;
++
+ 	chip->ecc.read_page = bch_read;
+ 	chip->write_page = bch_write;
+ 	chip->erase = bch_erase;
 -- 
 1.8.3.2
