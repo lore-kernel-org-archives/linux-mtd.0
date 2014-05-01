@@ -1,16 +1,20 @@
+Received: from mail-pa0-x22f.google.com ([2607:f8b0:400e:c03::22f])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WfkTW-0000W5-LE
+ for linux-mtd@lists.infradead.org; Thu, 01 May 2014 06:28:07 +0000
+Received: by mail-pa0-f47.google.com with SMTP id fa1so3216306pad.20
+ for <linux-mtd@lists.infradead.org>; Wed, 30 Apr 2014 23:27:48 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: Linux Kernel <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 08/12] ARM: marvell: add MTD_SPI_NOR (new dependency for
- M25P80)
-Date: Wed, 30 Apr 2014 23:26:43 -0700
-Message-Id: <1398925607-7482-9-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v2 09/12] blackfin: defconfigs: add MTD_SPI_NOR (new
+ dependency for M25P80)
+Date: Wed, 30 Apr 2014 23:26:44 -0700
+Message-Id: <1398925607-7482-10-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1398925607-7482-1-git-send-email-computersforpeace@gmail.com>
 References: <1398925607-7482-1-git-send-email-computersforpeace@gmail.com>
-Cc: Marek Vasut <marex@denx.de>, Andrew Lunn <andrew@lunn.ch>,
- Jason Cooper <jason@lakedaemon.net>, Huang Shijie <b32955@freescale.com>,
- linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
- linux-arm-kernel@lists.infradead.org,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Cc: Marek Vasut <marex@denx.de>, Steven Miao <realmz6@gmail.com>,
+ adi-buildroot-devel@lists.sourceforge.net, Huang Shijie <b32955@freescale.com>,
+ linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,74 +31,158 @@ the new dependency.
 At the same time, drop the now-nonexistent CONFIG_MTD_CHAR symbol.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Cc: Jason Cooper <jason@lakedaemon.net>
-Cc: Andrew Lunn <andrew@lunn.ch>
-Cc: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-Cc: linux-arm-kernel@lists.infradead.org
+Cc: Steven Miao <realmz6@gmail.com>
+Cc: adi-buildroot-devel@lists.sourceforge.net
 Cc: linux-kernel@vger.kernel.org
-Acked-by: Jason Cooper <jason@lakedaemon.net>
 ---
- arch/arm/configs/dove_defconfig     | 2 +-
- arch/arm/configs/kirkwood_defconfig | 1 +
- arch/arm/configs/mvebu_v5_defconfig | 1 +
- arch/arm/configs/mvebu_v7_defconfig | 1 +
- 4 files changed, 4 insertions(+), 1 deletion(-)
+ arch/blackfin/configs/BF526-EZBRD_defconfig    | 2 +-
+ arch/blackfin/configs/BF527-EZKIT-V2_defconfig | 2 +-
+ arch/blackfin/configs/BF527-EZKIT_defconfig    | 2 +-
+ arch/blackfin/configs/BF548-EZKIT_defconfig    | 2 +-
+ arch/blackfin/configs/BF609-EZKIT_defconfig    | 2 +-
+ arch/blackfin/configs/BlackStamp_defconfig     | 3 +--
+ arch/blackfin/configs/H8606_defconfig          | 3 +--
+ 7 files changed, 7 insertions(+), 9 deletions(-)
 
-diff --git a/arch/arm/configs/dove_defconfig b/arch/arm/configs/dove_defconfig
-index f15955144175..701677f9248c 100644
---- a/arch/arm/configs/dove_defconfig
-+++ b/arch/arm/configs/dove_defconfig
-@@ -37,7 +37,6 @@ CONFIG_DEVTMPFS=y
- CONFIG_DEVTMPFS_MOUNT=y
+diff --git a/arch/blackfin/configs/BF526-EZBRD_defconfig b/arch/blackfin/configs/BF526-EZBRD_defconfig
+index 2f2c6acf210c..530ba7a6d7b0 100644
+--- a/arch/blackfin/configs/BF526-EZBRD_defconfig
++++ b/arch/blackfin/configs/BF526-EZBRD_defconfig
+@@ -53,7 +53,6 @@ CONFIG_IP_PNP=y
+ CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
+ # CONFIG_FW_LOADER is not set
+ CONFIG_MTD=y
+-CONFIG_MTD_CHAR=y
+ CONFIG_MTD_BLOCK=y
+ CONFIG_MTD_CFI=y
+ CONFIG_MTD_CFI_INTELEXT=y
+@@ -63,6 +62,7 @@ CONFIG_MTD_COMPLEX_MAPPINGS=y
+ CONFIG_MTD_PHYSMAP=y
+ CONFIG_MTD_M25P80=y
+ CONFIG_MTD_NAND=m
++CONFIG_MTD_SPI_NOR=y
+ CONFIG_BLK_DEV_RAM=y
+ CONFIG_SCSI=y
+ # CONFIG_SCSI_PROC_FS is not set
+diff --git a/arch/blackfin/configs/BF527-EZKIT-V2_defconfig b/arch/blackfin/configs/BF527-EZKIT-V2_defconfig
+index 91535c38e7f2..a21c79275eae 100644
+--- a/arch/blackfin/configs/BF527-EZKIT-V2_defconfig
++++ b/arch/blackfin/configs/BF527-EZKIT-V2_defconfig
+@@ -58,7 +58,6 @@ CONFIG_BFIN_SIR0=y
+ CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
+ # CONFIG_FW_LOADER is not set
+ CONFIG_MTD=y
+-CONFIG_MTD_CHAR=m
+ CONFIG_MTD_BLOCK=y
+ CONFIG_MTD_JEDECPROBE=m
+ CONFIG_MTD_RAM=y
+@@ -66,6 +65,7 @@ CONFIG_MTD_ROM=m
+ CONFIG_MTD_COMPLEX_MAPPINGS=y
+ CONFIG_MTD_M25P80=y
+ CONFIG_MTD_NAND=m
++CONFIG_MTD_SPI_NOR=y
+ CONFIG_BLK_DEV_RAM=y
+ CONFIG_SCSI=y
+ # CONFIG_SCSI_PROC_FS is not set
+diff --git a/arch/blackfin/configs/BF527-EZKIT_defconfig b/arch/blackfin/configs/BF527-EZKIT_defconfig
+index af2738c7441b..5070a860d8c4 100644
+--- a/arch/blackfin/configs/BF527-EZKIT_defconfig
++++ b/arch/blackfin/configs/BF527-EZKIT_defconfig
+@@ -57,7 +57,6 @@ CONFIG_BFIN_SIR0=y
+ CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
+ # CONFIG_FW_LOADER is not set
+ CONFIG_MTD=y
+-CONFIG_MTD_CHAR=m
+ CONFIG_MTD_BLOCK=y
+ CONFIG_MTD_JEDECPROBE=m
+ CONFIG_MTD_RAM=y
+@@ -65,6 +64,7 @@ CONFIG_MTD_ROM=m
+ CONFIG_MTD_COMPLEX_MAPPINGS=y
+ CONFIG_MTD_M25P80=y
+ CONFIG_MTD_NAND=m
++CONFIG_MTD_SPI_NOR=y
+ CONFIG_BLK_DEV_RAM=y
+ CONFIG_SCSI=y
+ # CONFIG_SCSI_PROC_FS is not set
+diff --git a/arch/blackfin/configs/BF548-EZKIT_defconfig b/arch/blackfin/configs/BF548-EZKIT_defconfig
+index e716fdfd2cf2..efb293057287 100644
+--- a/arch/blackfin/configs/BF548-EZKIT_defconfig
++++ b/arch/blackfin/configs/BF548-EZKIT_defconfig
+@@ -64,7 +64,6 @@ CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
+ CONFIG_FW_LOADER=m
  CONFIG_MTD=y
  CONFIG_MTD_CMDLINE_PARTS=y
 -CONFIG_MTD_CHAR=y
  CONFIG_MTD_BLOCK=y
  CONFIG_MTD_CFI=y
- CONFIG_MTD_JEDECPROBE=y
-@@ -48,6 +47,7 @@ CONFIG_MTD_CFI_INTELEXT=y
- CONFIG_MTD_CFI_STAA=y
+ CONFIG_MTD_CFI_INTELEXT=y
+@@ -75,6 +74,7 @@ CONFIG_MTD_M25P80=y
+ CONFIG_MTD_NAND=y
+ CONFIG_MTD_NAND_BF5XX=y
+ # CONFIG_MTD_NAND_BF5XX_HWECC is not set
++CONFIG_MTD_SPI_NOR=y
+ CONFIG_BLK_DEV_RAM=y
+ # CONFIG_SCSI_PROC_FS is not set
+ CONFIG_BLK_DEV_SD=y
+diff --git a/arch/blackfin/configs/BF609-EZKIT_defconfig b/arch/blackfin/configs/BF609-EZKIT_defconfig
+index 4ca39ab6b2bf..a7e9bfd84183 100644
+--- a/arch/blackfin/configs/BF609-EZKIT_defconfig
++++ b/arch/blackfin/configs/BF609-EZKIT_defconfig
+@@ -57,7 +57,6 @@ CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
+ CONFIG_FW_LOADER=m
+ CONFIG_MTD=y
+ CONFIG_MTD_CMDLINE_PARTS=y
+-CONFIG_MTD_CHAR=y
+ CONFIG_MTD_BLOCK=y
+ CONFIG_MTD_CFI=y
+ CONFIG_MTD_CFI_INTELEXT=y
+@@ -65,6 +64,7 @@ CONFIG_MTD_CFI_STAA=y
+ CONFIG_MTD_COMPLEX_MAPPINGS=y
  CONFIG_MTD_PHYSMAP=y
  CONFIG_MTD_M25P80=y
 +CONFIG_MTD_SPI_NOR=y
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_BLK_DEV_RAM=y
- CONFIG_BLK_DEV_RAM_COUNT=1
-diff --git a/arch/arm/configs/kirkwood_defconfig b/arch/arm/configs/kirkwood_defconfig
-index 2e762d94e94b..b9e480c10b10 100644
---- a/arch/arm/configs/kirkwood_defconfig
-+++ b/arch/arm/configs/kirkwood_defconfig
-@@ -61,6 +61,7 @@ CONFIG_MTD_PHYSMAP=y
- CONFIG_MTD_M25P80=y
- CONFIG_MTD_NAND=y
- CONFIG_MTD_NAND_ORION=y
-+CONFIG_MTD_SPI_NOR=y
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_EEPROM_AT24=y
- # CONFIG_SCSI_PROC_FS is not set
-diff --git a/arch/arm/configs/mvebu_v5_defconfig b/arch/arm/configs/mvebu_v5_defconfig
-index 36484a37a1ca..85d20666cef5 100644
---- a/arch/arm/configs/mvebu_v5_defconfig
-+++ b/arch/arm/configs/mvebu_v5_defconfig
-@@ -50,6 +50,7 @@ CONFIG_MTD_PHYSMAP=y
- CONFIG_MTD_M25P80=y
- CONFIG_MTD_NAND=y
- CONFIG_MTD_NAND_ORION=y
-+CONFIG_MTD_SPI_NOR=y
- CONFIG_BLK_DEV_LOOP=y
- CONFIG_EEPROM_AT24=y
- # CONFIG_SCSI_PROC_FS is not set
-diff --git a/arch/arm/configs/mvebu_v7_defconfig b/arch/arm/configs/mvebu_v7_defconfig
-index a34713d8db9f..ae45bf05fa00 100644
---- a/arch/arm/configs/mvebu_v7_defconfig
-+++ b/arch/arm/configs/mvebu_v7_defconfig
-@@ -53,6 +53,7 @@ CONFIG_I2C_MV64XXX=y
+ CONFIG_MTD_UBI=m
+ CONFIG_SCSI=y
+ CONFIG_BLK_DEV_SD=y
+diff --git a/arch/blackfin/configs/BlackStamp_defconfig b/arch/blackfin/configs/BlackStamp_defconfig
+index 3853c473b443..f4a9200e1ab1 100644
+--- a/arch/blackfin/configs/BlackStamp_defconfig
++++ b/arch/blackfin/configs/BlackStamp_defconfig
+@@ -45,7 +45,6 @@ CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
+ # CONFIG_FW_LOADER is not set
  CONFIG_MTD=y
- CONFIG_MTD_CHAR=y
+ CONFIG_MTD_CMDLINE_PARTS=y
+-CONFIG_MTD_CHAR=m
+ CONFIG_MTD_BLOCK=y
+ CONFIG_MTD_CFI=m
+ CONFIG_MTD_CFI_AMDSTD=m
+@@ -53,7 +52,7 @@ CONFIG_MTD_RAM=y
+ CONFIG_MTD_ROM=m
+ CONFIG_MTD_COMPLEX_MAPPINGS=y
  CONFIG_MTD_M25P80=y
+-# CONFIG_M25PXX_USE_FAST_READ is not set
 +CONFIG_MTD_SPI_NOR=y
- CONFIG_MTD_CFI=y
- CONFIG_MTD_CFI_INTELEXT=y
- CONFIG_MTD_CFI_AMDSTD=y
+ CONFIG_BLK_DEV_LOOP=y
+ CONFIG_BLK_DEV_NBD=y
+ CONFIG_BLK_DEV_RAM=y
+diff --git a/arch/blackfin/configs/H8606_defconfig b/arch/blackfin/configs/H8606_defconfig
+index f754e490bbfd..0ff97d8d047a 100644
+--- a/arch/blackfin/configs/H8606_defconfig
++++ b/arch/blackfin/configs/H8606_defconfig
+@@ -36,13 +36,12 @@ CONFIG_IRTTY_SIR=m
+ # CONFIG_WIRELESS is not set
+ # CONFIG_FW_LOADER is not set
+ CONFIG_MTD=y
+-CONFIG_MTD_CHAR=y
+ CONFIG_MTD_BLOCK=y
+ CONFIG_MTD_RAM=y
+ CONFIG_MTD_ROM=y
+ CONFIG_MTD_COMPLEX_MAPPINGS=y
+ CONFIG_MTD_M25P80=y
+-# CONFIG_M25PXX_USE_FAST_READ is not set
++CONFIG_MTD_SPI_NOR=y
+ CONFIG_BLK_DEV_RAM=y
+ CONFIG_MISC_DEVICES=y
+ CONFIG_EEPROM_AT25=y
 -- 
 1.8.3.2
