@@ -1,15 +1,14 @@
-Received: from mail-wi0-f178.google.com ([209.85.212.178])
+Received: from mail-we0-f181.google.com ([74.125.82.181])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WfnlG-0003O7-Tw
- for linux-mtd@lists.infradead.org; Thu, 01 May 2014 09:58:39 +0000
-Received: by mail-wi0-f178.google.com with SMTP id hm4so403527wib.17
- for <linux-mtd@lists.infradead.org>; Thu, 01 May 2014 02:58:16 -0700 (PDT)
+ id 1WfnlH-0003S5-Vw
+ for linux-mtd@lists.infradead.org; Thu, 01 May 2014 09:58:40 +0000
+Received: by mail-we0-f181.google.com with SMTP id q58so2788283wes.26
+ for <linux-mtd@lists.infradead.org>; Thu, 01 May 2014 02:58:22 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 34/47] mtd: nand: stm_nand_bch: scan block for BBM(s)
- according to specified BBT options
-Date: Thu,  1 May 2014 10:56:41 +0100
-Message-Id: <1398938214-17847-35-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 37/47] mtd: nand: stm_nand_bch: load flash-resident BBT
+Date: Thu,  1 May 2014 10:56:44 +0100
+Message-Id: <1398938214-17847-38-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1398938214-17847-1-git-send-email-lee.jones@linaro.org>
 References: <1398938214-17847-1-git-send-email-lee.jones@linaro.org>
 Cc: Lee Jones <lee.jones@linaro.org>, computersforpeace@gmail.com,
@@ -23,93 +22,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Search the specified (first and, second or last) page in a block for
-the BBT. Support Hamming or Advanced Flex Mode (AFM) BBMs too.
+If load of existing BBT fails (first run), scan device for factory-set
+BBMs (Bad-Block Markers) and create a new flash-resident.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/nand/stm_nand_bch.c | 62 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 62 insertions(+)
+ drivers/mtd/nand/stm_nand_bch.c | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
 diff --git a/drivers/mtd/nand/stm_nand_bch.c b/drivers/mtd/nand/stm_nand_bch.c
-index 32d2211..7d242ad 100644
+index 2df452b..a06dca8 100644
 --- a/drivers/mtd/nand/stm_nand_bch.c
 +++ b/drivers/mtd/nand/stm_nand_bch.c
-@@ -818,6 +818,66 @@ static int bbt_is_block_bad(uint8_t *bbt, uint32_t block)
- 	return bbt_get_block_mark(bbt, block) == BBT_MARK_GOOD ? 0 : 1;
+@@ -1235,6 +1235,30 @@ static int bch_load_bbt(struct nandi_controller *nandi,
+ 	return 0;
  }
  
-+/* Scan page for BBM(s), according to specified BBT options */
-+static int nandi_scan_bad_block_markers_page(struct nandi_controller *nandi,
-+					     uint32_t page)
++static int bch_scan_bbt(struct mtd_info *mtd)
 +{
-+	struct mtd_info *mtd = &nandi->info.mtd;
 +	struct nand_chip *chip = mtd->priv;
-+	uint8_t *oob_buf = nandi->oob_buf;
-+	int i, e;
++	struct nandi_controller *nandi = chip->priv;
++	struct nandi_bbt_info *bbt_info = &nandi->info.bbt_info;
++	int err;
++	/* Load Flash-resident BBT */
++	err = bch_load_bbt(nandi, bbt_info);
++	if (err) {
++		dev_warn(nandi->dev,
++			"failed to find BBTs:"
++			"  scanning device for bad-block markers\n");
 +
-+	/* Read the OOB area */
-+	flex_read_raw(nandi, page, mtd->writesize, oob_buf, mtd->oobsize);
-+
-+	if (oob_buf[chip->badblockpos] == 0xff)
-+		return 0;
-+
-+	/* Tolerate 'alien' Hamming Boot Mode ECC */
-+	e = 0;
-+	for (i = 0; i < mtd->oobsize; i += 16)
-+		e += hweight8(oob_buf[i + 3] ^ 'B');
-+	if (e <= 1)
-+		return 0;
-+
-+	/* Tolerate 'alien' Hamming AFM ECC */
-+	e = 0;
-+	for (i = 0; i < mtd->oobsize; i += 16) {
-+		e += hweight8(oob_buf[i + 3] ^ 'A');
-+		e += hweight8(oob_buf[i + 4] ^ 'F');
-+		e += hweight8(oob_buf[i + 5] ^ 'M');
-+		if (e <= 1)
-+			return 0;
++		/* Scan, build, and write BBT */
++		nandi_scan_build_bbt(nandi, bbt_info);
++		err = bch_update_bbts(nandi, bbt_info, NAND_IBBT_UPDATE_BOTH,
++				      bbt_info->bbt_vers[0] + 1);
++		if (err)
++			return err;
 +	}
-+
-+	return 1;
-+}
-+
-+/* Scan block for BBM(s), according to specified BBT options */
-+static int nandi_scan_bad_block_markers_block(struct nandi_controller *nandi,
-+					      uint32_t block)
-+
-+{
-+	struct mtd_info *mtd = &nandi->info.mtd;
-+	struct nand_chip *chip = mtd->priv;
-+	uint32_t pages_per_block = mtd->erasesize >> nandi->page_shift;
-+	uint32_t page = block << (nandi->block_shift - nandi->page_shift);
-+
-+	if (nandi_scan_bad_block_markers_page(nandi, page))
-+		return 1;
-+
-+	if ((chip->bbt_options & NAND_BBT_SCAN2NDPAGE) &&
-+	    nandi_scan_bad_block_markers_page(nandi, page + 1))
-+		return 1;
-+
-+	if ((chip->bbt_options & NAND_BBT_SCANLASTPAGE) &&
-+	    nandi_scan_bad_block_markers_page(nandi,
-+					      page + pages_per_block - 1))
-+		return 1;
 +
 +	return 0;
 +}
 +
- /* Populate IBBT BCH Header */
- static void bch_fill_ibbt_header(struct nandi_controller *nandi,
- 				 struct nand_ibbt_bch_header *ibbt_header,
-@@ -1133,6 +1193,8 @@ static void nandi_set_mtd_defaults(struct nandi_controller *nandi,
- 	chip->ecc.layout = &info->ecclayout;
- 	chip->options |= NAND_NO_SUBPAGE_WRITE;
+ /*
+  * Initialisation
+  */
+@@ -1318,6 +1342,8 @@ static void nandi_set_mtd_defaults(struct nandi_controller *nandi,
  
-+	chip->bbt_options |= NAND_BBT_USE_FLASH;
+ 	chip->ecc.read_page = bch_read;
+ 	chip->write_page = bch_write;
 +
- 	/* mtd_info */
- 	mtd->owner = THIS_MODULE;
- 	mtd->type = MTD_NANDFLASH;
++	chip->scan_bbt = bch_scan_bbt;
+ }
+ 
+ /*
 -- 
 1.8.3.2
