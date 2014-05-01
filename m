@@ -1,19 +1,18 @@
-Message-ID: <536281F4.1000402@gmail.com>
-Date: Thu, 01 May 2014 19:18:44 +0200
-From: Boris BREZILLON <b.brezillon.dev@gmail.com>
+Message-ID: <536283CF.2020304@wwwdotorg.org>
+Date: Thu, 01 May 2014 11:26:39 -0600
+From: Stephen Warren <swarren@wwwdotorg.org>
 MIME-Version: 1.0
-To: Grant Likely <grant.likely@secretlab.ca>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [RFC PATCH 2/3] of: mtd: add NAND randomizer mode retrieval
-References: <1398906592-24677-1-git-send-email-b.brezillon.dev@gmail.com>	<1398906592-24677-3-git-send-email-b.brezillon.dev@gmail.com>
- <20140501131605.9CB7CC409DA@trevor.secretlab.ca>
-In-Reply-To: <20140501131605.9CB7CC409DA@trevor.secretlab.ca>
+To: Brian Norris <computersforpeace@gmail.com>,
+ Linux Kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 04/12] ARM: tegra: add MTD_SPI_NOR (new dependency
+ for M25P80)
+References: <1398925607-7482-1-git-send-email-computersforpeace@gmail.com>
+ <1398925607-7482-5-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1398925607-7482-5-git-send-email-computersforpeace@gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: devicetree@vger.kernel.org,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+Cc: Marek Vasut <marex@denx.de>, Huang Shijie <b32955@freescale.com>,
+ Thierry Reding <thierry.reding@gmail.com>, linux-mtd@lists.infradead.org,
  linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,21 +23,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 05/01/2014 12:26 AM, Brian Norris wrote:
+> This defconfig contains the CONFIG_M25P80 symbol, which is now
+> dependent on the MTD_SPI_NOR symbol. Add CONFIG_MTD_SPI_NOR to satisfy
+> the new dependency.
 
-On 01/05/2014 15:16, Grant Likely wrote:
-> On Thu,  1 May 2014 03:09:51 +0200, Boris BREZILLON <b.brezillon.dev@gmail.com> wrote:
->> Signed-off-by: Boris BREZILLON <b.brezillon.dev@gmail.com>
->> ---
-> No commit message? Immediate NAK. Please, make sure you write a
-> description for each and every patch. This is not optional. Future
-> readers want to know what this patch solves and any other information
-> you can provide without having to read the diff.
-
-My bad. I just sent a commit I forgot to rework to add a proper commit
-message.
-I'll add a commit message describing the different options for the
-"nand-rnd-mode" property and update the nand DT bindings documentation.
-
-Best Regards,
-
-Boris
+Squashed into Tegra's for-3.16/defconfig branch.
