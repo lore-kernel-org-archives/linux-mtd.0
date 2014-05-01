@@ -1,14 +1,14 @@
-Received: from mail-wi0-f177.google.com ([209.85.212.177])
+Received: from mail-wi0-f176.google.com ([209.85.212.176])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wfnkv-0002s8-GJ
- for linux-mtd@lists.infradead.org; Thu, 01 May 2014 09:58:17 +0000
-Received: by mail-wi0-f177.google.com with SMTP id cc10so403670wib.10
- for <linux-mtd@lists.infradead.org>; Thu, 01 May 2014 02:57:55 -0700 (PDT)
+ id 1Wfnkx-0002u9-GO
+ for linux-mtd@lists.infradead.org; Thu, 01 May 2014 09:58:20 +0000
+Received: by mail-wi0-f176.google.com with SMTP id f8so407228wiw.15
+ for <linux-mtd@lists.infradead.org>; Thu, 01 May 2014 02:57:57 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 23/47] mtd: nand: stm_nand_bch: erase one block (BCH)
-Date: Thu,  1 May 2014 10:56:30 +0100
-Message-Id: <1398938214-17847-24-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 24/47] mtd: nand: stm_nand_bch: check erased page for zeros
+Date: Thu,  1 May 2014 10:56:31 +0100
+Message-Id: <1398938214-17847-25-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1398938214-17847-1-git-send-email-lee.jones@linaro.org>
 References: <1398938214-17847-1-git-send-email-lee.jones@linaro.org>
 Cc: Lee Jones <lee.jones@linaro.org>, computersforpeace@gmail.com,
@@ -22,7 +22,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Adding a function which simply erases a single flash block.
+Detect an erased page, tolerating and correcting up to a specified number
+of bits at '0'. Downgrade uncorrectable ECC error for an erased page,
+tolerating 'sectors_per_page' bits at '0'.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
@@ -30,42 +32,42 @@ Signed-off-by: Lee Jones <lee.jones@linaro.org>
  1 file changed, 27 insertions(+)
 
 diff --git a/drivers/mtd/nand/stm_nand_bch.c b/drivers/mtd/nand/stm_nand_bch.c
-index 40767b8..6d7ab79 100644
+index 6d7ab79..2ff72c9 100644
 --- a/drivers/mtd/nand/stm_nand_bch.c
 +++ b/drivers/mtd/nand/stm_nand_bch.c
-@@ -458,6 +458,33 @@ static void bch_wait_seq(struct nandi_controller *nandi)
- 		dev_err(nandi->dev, "BCH Seq timeout\n");
+@@ -486,6 +486,33 @@ static uint8_t bch_erase_block(struct nandi_controller *nandi,
  }
  
-+static uint8_t bch_erase_block(struct nandi_controller *nandi,
-+			       loff_t offs)
+ /*
++ * Detect an erased page, tolerating and correcting up to a specified number of
++ * bits at '0'.  (For many devices, it is now deemed within spec for an erased
++ * page to include a number of bits at '0', either as a result of read-disturb
++ * behaviour or 'stuck-at-zero' failures.)  Returns the number of corrected
++ * bits, or a '-1' if we have exceeded the maximum number of bits at '0' (likely
++ * to be a genuine uncorrectable ECC error).  In the latter case, the data must
++ * be returned unmodified, in accordance with the MTD API.
++ */
++static int check_erased_page(uint8_t *data, uint32_t page_size, int max_zeros)
 +{
-+	struct bch_prog *prog = &bch_prog_erase_block;
-+	uint8_t status;
++	uint8_t *b = data;
++	int zeros = 0;
++	int i;
 +
-+	dev_dbg(nandi->dev, "%s: offs = 0x%012llx\n", __func__, offs);
++	for (i = 0; i < page_size; i++) {
++		zeros += hweight8(~*b++);
++		if (zeros > max_zeros)
++			return -1;
++	}
 +
-+	prog->extra = (uint32_t)(offs >> nandi->page_shift);
++	if (zeros)
++		memset(data, 0xff, page_size);
 +
-+	emiss_nandi_select(STM_NANDI_BCH);
-+
-+	nandi_enable_interrupts(nandi, NANDBCH_INT_SEQNODESOVER);
-+	reinit_completion(&nandi->seq_completed);
-+
-+	bch_load_prog_cpu(nandi, prog);
-+
-+	bch_wait_seq(nandi);
-+
-+	nandi_disable_interrupts(nandi, NANDBCH_INT_SEQNODESOVER);
-+
-+	status = (uint8_t)(readl(nandi->base +
-+				 NANDBCH_CHECK_STATUS_REG_A) & 0xff);
-+
-+	return status;
++	return zeros;
 +}
 +
- /*
++/*
   * Initialisation
   */
+ static int bch_check_compatibility(struct nandi_controller *nandi,
 -- 
 1.8.3.2
