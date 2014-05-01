@@ -1,21 +1,19 @@
-Message-ID: <53628627.2020401@gmail.com>
-Date: Thu, 01 May 2014 19:36:39 +0200
-From: Boris BREZILLON <b.brezillon.dev@gmail.com>
+Date: Thu, 1 May 2014 11:59:46 -0600
+From: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
+To: Boris BREZILLON <boris.brezillon@free-electrons.com>
+Subject: Re: [RFC PATCH 0/3] mtd: nand: add randomizer support
+Message-ID: <20140501175946.GA14539@obsidianresearch.com>
+References: <1398906592-24677-1-git-send-email-b.brezillon.dev@gmail.com>
+ <20140501163407.GB3296@obsidianresearch.com>
+ <536284E1.50001@free-electrons.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v3 1/9] mtd: nand: define struct nand_timings
-References: <1394647664-8258-1-git-send-email-b.brezillon.dev@gmail.com>
- <1394647664-8258-2-git-send-email-b.brezillon.dev@gmail.com>
- <20140430175157.GB2497@norris-Latitude-E6410>
-In-Reply-To: <20140430175157.GB2497@norris-Latitude-E6410>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: devicetree@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
- linux-doc@vger.kernel.org, dev@linux-sunxi.org, linux-kernel@vger.kernel.org,
- Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
- Rob Herring <robherring2@gmail.com>, Grant Likely <grant.likely@linaro.org>,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <536284E1.50001@free-electrons.com>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org,
  Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,31 +24,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+On Thu, May 01, 2014 at 07:31:13PM +0200, Boris BREZILLON wrote:
 
-On 30/04/2014 19:51, Brian Norris wrote:
-> Hi Boris,
->
-> On Wed, Mar 12, 2014 at 07:07:36PM +0100, Boris BREZILLON wrote:
->> +
->> +/**
->> + * struct nand_sdr_timings - SDR NAND chip timings
->> + *
->> + * This struct defines the timing requirements of a SDR NAND chip.
->> + * These informations can be found in every NAND datasheets and the timings
->> + * meaning are described in the ONFI specifications:
->> + * www.onfi.org/~/media/ONFI/specs/onfi_3_1_spec.pdf‎ (chapter 4.15 Timing
-> Can you remove the unicode U+200E character?
+> I totally agree with you, this is not a randomizer but rather a scrambler.
+> The reason I chose the "randomizer" word is that all the documents I
+> read are talking about randomizers.
+> But, other than I don't have any concern about changing all references
+> to "randomizer" into "scrambler" ;-).
 
-Sure
+If nobody else says anything, Scrambler is at least consistent with
+Wikipedia..
 
->
->> + * Parameters)
-> Please document the units for these fields here. It looks like you're
-> using picoseconds.
+and 'descrambler' sounds better than 'unrandomizer' :)
+ 
+> > BTW, there are security concerns here. The scrambler PRBS must not be
+> > predictable by the user, otherwise they can write data that undoes the
+> > scramble and defeat it, ie deliberately writing the last 2k of a 4k
+> > write block as all 0's after scrambling could cause the first 2k to be
+> > lost. That feels like something that could be scary ..
+> 
+> AFAICT, the scramblers/randomizers used in NAND applications are all
+> predictable, which means the scrambler state does not depend on the last
+> data being scrambled.
 
-I'll add field units (which are indeed picoseconds) to this comment.
+Right, I'm not surprised storage would use a synchronous scrambler,
+self-synchronizing scramblers make the most sense for communication..
 
-Best Regards,
+However, with a synchronous scrambler the security concern boils down
+to how robust and unpredictable is the PRBS.
 
-Boris
+For instance, re-using the same PRBS seed and staring point for every
+block is probably a bad idea.
+
+At the very least I would think the block number should be included in
+the per-block seed of the PRBS.
+
+And also a per-parition/device global seed..
+
+I suspect even a properly seeded LFSR is sufficent, but by no means
+have I studied this :)
+
+> For example, the sunxi HW scrambler is using a Fibonacci LFSR [1].
+> Do you have any example of non predictable scrambler that are used to
+> scramble NAND data ?
+
+The benifit here is that the scrambled data is completely private to
+the driver and flash chip. So any attack on the scrambler would have
+to use the driver as some kind of oracle to search for
+synchornization. Eg running through the full keyspace of an N-Bit LFSR
+by writing an anti-scrambled block, reading it back and checking if it
+is corrupted.
+
+This is why per-block randomization of the PRBS is very important - if
+the attacker has only filesytems access then they don't know the block
+number and now have to attack the filesystem block allocator as well
+as the LFSR block-independent seed to generate an anti-scrambler data
+pattern.
+
+But that is just an off the cuff feeling. It would be smart to study
+it further :)
+
+Regards,
+Jason
