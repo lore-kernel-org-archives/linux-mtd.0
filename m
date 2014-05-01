@@ -1,14 +1,15 @@
-Received: from mail-wi0-f169.google.com ([209.85.212.169])
+Received: from mail-wi0-f173.google.com ([209.85.212.173])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wfnld-0003su-QJ
- for linux-mtd@lists.infradead.org; Thu, 01 May 2014 09:59:02 +0000
-Received: by mail-wi0-f169.google.com with SMTP id hi5so450239wib.2
- for <linux-mtd@lists.infradead.org>; Thu, 01 May 2014 02:58:39 -0700 (PDT)
+ id 1WfnpU-0002kf-5h
+ for linux-mtd@lists.infradead.org; Thu, 01 May 2014 10:03:00 +0000
+Received: by mail-wi0-f173.google.com with SMTP id bs8so395975wib.6
+ for <linux-mtd@lists.infradead.org>; Thu, 01 May 2014 03:02:33 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 47/47] mtd: nand: catch unsupported framework call-backs
-Date: Thu,  1 May 2014 10:56:54 +0100
-Message-Id: <1398938214-17847-48-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 01/47] ARM: sti: Add BCH (NAND Flash) Controller support for
+ STiH41x (Orly) SoCs
+Date: Thu,  1 May 2014 10:56:08 +0100
+Message-Id: <1398938214-17847-2-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1398938214-17847-1-git-send-email-lee.jones@linaro.org>
 References: <1398938214-17847-1-git-send-email-lee.jones@linaro.org>
 Cc: Lee Jones <lee.jones@linaro.org>, computersforpeace@gmail.com,
@@ -22,73 +23,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Display a BUG() message and return appropriate/expected value.
+Provide device information and flash layout for the NAND Micron
+MT29F8G08ABABAWP chip found on the STM B2020 Development Board.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/nand/stm_nand_bch.c | 39 +++++++++++++++++++++++++++++++++++++++
+ arch/arm/boot/dts/stih41x-b2020.dtsi | 39 ++++++++++++++++++++++++++++++++++++
  1 file changed, 39 insertions(+)
 
-diff --git a/drivers/mtd/nand/stm_nand_bch.c b/drivers/mtd/nand/stm_nand_bch.c
-index e7a4bed..2ba1d05 100644
---- a/drivers/mtd/nand/stm_nand_bch.c
-+++ b/drivers/mtd/nand/stm_nand_bch.c
-@@ -1455,6 +1455,39 @@ static int bch_mtd_write_oob(struct mtd_info *mtd,
- 	return 0;
- }
+diff --git a/arch/arm/boot/dts/stih41x-b2020.dtsi b/arch/arm/boot/dts/stih41x-b2020.dtsi
+index bc5818d..0fdeb44 100644
+--- a/arch/arm/boot/dts/stih41x-b2020.dtsi
++++ b/arch/arm/boot/dts/stih41x-b2020.dtsi
+@@ -52,5 +52,44 @@
+ 			pinctrl-0	= <&pinctrl_rgmii1>;
+ 		};
  
-+static int bch_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
-+			     uint8_t *buf, int oob_required, int page)
-+{
-+	BUG();
-+	return 0;
-+}
++		nandbch: nand-bch {
++			compatible = "st,nand-bch";
++			reg = <0xfe901000 0x1000>, <0xfef00800 0x0800>;
++			reg-names = "nand_mem", "nand_dma";
++			interrupts = <0 139 0x0>;
++			interrupt-names = "nand_irq";
++			st,nand-banks = <&nand_banks>;
 +
-+static int bch_write_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
-+			      const uint8_t *buf, int oob_required)
-+{
-+	BUG();
-+	return 0;
-+}
++			status = "okay";
++		};
 +
-+static void bch_hwctl(struct mtd_info *mtd, int mode)
-+{
-+	BUG();
-+}
++		nand_banks: nand-banks {
++			/*
++			 * Micron MT29F8G08ABABAWP:
++			 *  - Size = 8Gib(1GiB); Page = 4096+224; Block = 512KiB
++			 *  - ECC = 4-bit/540B min
++			 *  - ONFI 2.1 (timing parameters retrieved during probe)
++			 */
++			bank0 {
++				nand-on-flash-bbt;
++				st,nand-csn		= <0>;
++				st,nand-timing-relax	= <0>;
 +
-+static int bch_calculate(struct mtd_info *mtd, const uint8_t *dat,
-+			 uint8_t *ecc_code)
-+{
-+	BUG();
-+	return 0;
-+}
-+
-+static int bch_correct(struct mtd_info *mtd, uint8_t *dat, uint8_t *read_ecc,
-+		       uint8_t *calc_ecc)
-+{
-+	BUG();
-+	return 0;
-+}
-+
- static int bch_block_isbad(struct mtd_info *mtd, loff_t offs, int getchip)
- {
- 	struct nand_chip *chip = mtd->priv;
-@@ -1612,10 +1645,16 @@ static void nandi_set_mtd_defaults(struct nandi_controller *nandi,
- 	mtd->ecclayout = &info->ecclayout;
- 	mtd->subpage_sft = 0;
- 
-+	chip->ecc.hwctl = bch_hwctl;
-+	chip->ecc.calculate = bch_calculate;
-+	chip->ecc.correct = bch_correct;
-+
- 	chip->ecc.read_oob = bch_mtd_read_oob;
- 	chip->ecc.write_oob = bch_mtd_write_oob;
- 
- 	chip->ecc.read_page = bch_read;
-+	chip->ecc.read_page_raw = bch_read_page_raw;
-+	chip->ecc.write_page_raw = bch_write_page_raw;
- 	chip->write_page = bch_write;
- 	chip->erase = bch_erase;
- 
++				partitions {
++					#address-cells	= <1>;
++					#size-cells	= <1>;
++					partition@0 {
++						/* 8MB */
++						label = "NAND Flash 1";
++						reg = <0x00000000 0x00800000>;
++					};
++					partition@800000 {
++						/* 1GB - 8MB */
++						label = "NAND Flash 2";
++						reg = <0x00800000 0x1F000000>;
++					};
++				};
++			};
++		};
+ 	};
+ };
 -- 
 1.8.3.2
