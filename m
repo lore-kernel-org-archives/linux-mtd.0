@@ -1,19 +1,18 @@
-Message-ID: <53625725.6060401@ti.com>
-Date: Thu, 1 May 2014 10:16:05 -0400
-From: Santosh Shilimkar <santosh.shilimkar@ti.com>
+Date: Thu, 1 May 2014 10:34:07 -0600
+From: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
+To: Boris BREZILLON <b.brezillon.dev@gmail.com>
+Subject: Re: [RFC PATCH 0/3] mtd: nand: add randomizer support
+Message-ID: <20140501163407.GB3296@obsidianresearch.com>
+References: <1398906592-24677-1-git-send-email-b.brezillon.dev@gmail.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>, Linux Kernel
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 03/12] ARM: keystone: add MTD_SPI_NOR (new dependency
- for M25P80)
-References: <1398925607-7482-1-git-send-email-computersforpeace@gmail.com>
- <1398925607-7482-4-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1398925607-7482-4-git-send-email-computersforpeace@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: Marek Vasut <marex@denx.de>, Huang Shijie <b32955@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1398906592-24677-1-git-send-email-b.brezillon.dev@gmail.com>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,31 +22,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 01 May 2014 02:26 AM, Brian Norris wrote:
-> This defconfig contains the CONFIG_M25P80 symbol, which is now
-> dependent on the MTD_SPI_NOR symbol. Add CONFIG_MTD_SPI_NOR to satisfy
-> the new dependency.
+On Thu, May 01, 2014 at 03:09:49AM +0200, Boris BREZILLON wrote:
+> Hello,
 > 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Cc: Santosh Shilimkar <santosh.shilimkar@ti.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> ---
-I will pick this up for 3.16.
+> This series is a proposal to add support for randomizers (either software
+> or hardware) to NAND flash controller drivers.
 
->  arch/arm/configs/keystone_defconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/arm/configs/keystone_defconfig b/arch/arm/configs/keystone_defconfig
-> index ec9a41d50680..b3057730689f 100644
-> --- a/arch/arm/configs/keystone_defconfig
-> +++ b/arch/arm/configs/keystone_defconfig
-> @@ -112,6 +112,7 @@ CONFIG_MTD_PLATRAM=y
->  CONFIG_MTD_M25P80=y
->  CONFIG_MTD_NAND=y
->  CONFIG_MTD_NAND_DAVINCI=y
-> +CONFIG_MTD_SPI_NOR=y
->  CONFIG_MTD_UBI=y
->  CONFIG_PROC_DEVICETREE=y
->  CONFIG_BLK_DEV_LOOP=y
-> 
+FWIW, I think the term for reversibly combining a PRBS with data is
+'scrambling', it is often used in communication systems for similar
+reasons - probabilisticly increasing transition density.
+
+randomizing is something else entirely :)
+
+BTW, there are security concerns here. The scrambler PRBS must not be
+predictable by the user, otherwise they can write data that undoes the
+scramble and defeat it, ie deliberately writing the last 2k of a 4k
+write block as all 0's after scrambling could cause the first 2k to be
+lost. That feels like something that could be scary ..
+
+Jason
