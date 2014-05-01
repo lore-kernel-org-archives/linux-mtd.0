@@ -1,14 +1,15 @@
-Received: from mail-wi0-f169.google.com ([209.85.212.169])
+Received: from mail-we0-f182.google.com ([74.125.82.182])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WfnkQ-0002d5-Vb
- for linux-mtd@lists.infradead.org; Thu, 01 May 2014 09:57:47 +0000
-Received: by mail-wi0-f169.google.com with SMTP id hi5so447856wib.4
- for <linux-mtd@lists.infradead.org>; Thu, 01 May 2014 02:57:24 -0700 (PDT)
+ id 1WfnkT-0002eB-2J
+ for linux-mtd@lists.infradead.org; Thu, 01 May 2014 09:57:49 +0000
+Received: by mail-we0-f182.google.com with SMTP id u57so2913485wes.27
+ for <linux-mtd@lists.infradead.org>; Thu, 01 May 2014 02:57:26 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 09/47] mtd: nand: stm_nand_bch: supply clock support
-Date: Thu,  1 May 2014 10:56:16 +0100
-Message-Id: <1398938214-17847-10-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 10/47] mtd: nand: stm_nand_bch: introduce and initialise some
+ important data structures
+Date: Thu,  1 May 2014 10:56:17 +0100
+Message-Id: <1398938214-17847-11-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1398938214-17847-1-git-send-email-lee.jones@linaro.org>
 References: <1398938214-17847-1-git-send-email-lee.jones@linaro.org>
 Cc: Lee Jones <lee.jones@linaro.org>, computersforpeace@gmail.com,
@@ -22,100 +23,122 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add support for clocks when, and only when, they are supplied. It is
-not yet compulsory to provide the BCH and EMI clocks, as Common Clk isn't
-supported Mainline yet. Until an implementation lands upstream all clocks
-located on STM boards default to always-on.
+Provide some more in-depth structures which will be used heavily within
+the driver. We also add a convenience function, used to set the default
+values.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/nand/stm_nand_bch.c | 49 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 49 insertions(+)
+ drivers/mtd/nand/stm_nand_bch.c | 67 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 67 insertions(+)
 
 diff --git a/drivers/mtd/nand/stm_nand_bch.c b/drivers/mtd/nand/stm_nand_bch.c
-index 62a41de..8e28da0 100644
+index 8e28da0..19d090c 100644
 --- a/drivers/mtd/nand/stm_nand_bch.c
 +++ b/drivers/mtd/nand/stm_nand_bch.c
-@@ -16,6 +16,7 @@
- #include <linux/module.h>
- #include <linux/delay.h>
- #include <linux/io.h>
-+#include <linux/clk.h>
- #include <linux/interrupt.h>
+@@ -21,10 +21,30 @@
  #include <linux/device.h>
  #include <linux/platform_device.h>
-@@ -28,6 +29,9 @@
+ #include <linux/completion.h>
++#include <linux/mtd/nand.h>
+ #include <linux/mtd/stm_nand.h>
+ 
+ #include "stm_nand_regs.h"
+ 
++/* Bad Block Table (BBT) */
++struct nandi_bbt_info {
++	uint32_t	bbt_size;		/* Size of bad-block table */
++	uint32_t	bbt_vers[2];		/* Version (Primary/Mirror) */
++	uint32_t	bbt_block[2];		/* Block No. (Primary/Mirror) */
++	uint8_t		*bbt;			/* Table data */
++};
++
++/* Collection of MTD/NAND device information */
++struct nandi_info {
++	struct mtd_info		mtd;		/* MTD info */
++	struct nand_chip	chip;		/* NAND chip info */
++
++	struct nand_ecclayout	ecclayout;	/* MTD ECC layout */
++	struct nandi_bbt_info	bbt_info;	/* Bad Block Table */
++	int			nr_parts;	/* Number of MTD partitions */
++	struct	mtd_partition	*parts;		/* MTD partitions */
++};
++
+ /* NANDi Controller (Hamming/BCH) */
  struct nandi_controller {
  	void __iomem		*base;		/* Controller base*/
- 	void __iomem		*dma;		/* DMA control base */
+@@ -60,6 +80,8 @@ struct nandi_controller {
+ 
+ 	int			cached_page;	/* page number of page in */
+ 						/* 'page_buf'             */
 +
-+	struct clk		*bch_clk;
-+	struct clk		*emi_clk;
- 						/* IRQ-triggered Completions: */
- 	struct completion	seq_completed;	/*   SEQ Over */
- 	struct completion	rbn_completed;	/*   RBn */
-@@ -270,6 +274,44 @@ static void nandi_disable_interrupts(struct nandi_controller *nandi,
++	struct nandi_info	info;		/* NAND device info */
+ };
+ 
+ /* ONFI define 6 timing modes */
+@@ -274,6 +296,37 @@ static void nandi_disable_interrupts(struct nandi_controller *nandi,
  	writel(val, nandi->base + NANDBCH_INT_EN);
  }
  
-+static void nandi_clk_enable(struct nandi_controller *nandi)
++static void nandi_set_mtd_defaults(struct nandi_controller *nandi,
++				   struct mtd_info *mtd, struct nand_chip *chip)
 +{
-+	if (nandi->emi_clk)
-+		clk_prepare_enable(nandi->emi_clk);
-+	if (nandi->bch_clk)
-+		clk_prepare_enable(nandi->bch_clk);
++	struct nandi_info *info = &nandi->info;
++	int i;
++
++	/* ecclayout */
++	info->ecclayout.eccbytes = mtd->oobsize;
++	for (i = 0; i < 64; i++)
++		info->ecclayout.eccpos[i] = i;
++	info->ecclayout.oobfree[0].offset = 0;
++	info->ecclayout.oobfree[0].length = 0;
++	chip->ecc.mode = NAND_ECC_HW
++
++	/* nand_chip */
++	chip->controller = &chip->hwcontrol;
++	spin_lock_init(&chip->controller->lock);
++	init_waitqueue_head(&chip->controller->wq);
++	chip->state = FL_READY;
++	chip->priv = nandi;
++	chip->ecc.layout = &info->ecclayout;
++	chip->options |= NAND_NO_SUBPAGE_WRITE;
++
++	/* mtd_info */
++	mtd->owner = THIS_MODULE;
++	mtd->type = MTD_NANDFLASH;
++	mtd->flags = MTD_CAP_NANDFLASH;
++	mtd->ecclayout = &info->ecclayout;
++	mtd->subpage_sft = 0;
 +}
 +
-+static void nandi_clk_disable(struct nandi_controller *nandi)
-+{
-+	if (nandi->emi_clk)
-+		clk_disable_unprepare(nandi->emi_clk);
-+	if (nandi->bch_clk)
-+		clk_disable_unprepare(nandi->bch_clk);
-+}
-+
-+static struct clk *nandi_clk_setup(struct nandi_controller *nandi,
-+				   char *clkname)
-+{
-+	struct clk *clk;
-+	int ret;
-+
-+	clk = clk_get(nandi->dev, clkname);
-+	if (IS_ERR_OR_NULL(clk)) {
-+		dev_warn(nandi->dev, "Failed to get %s clock\n", clkname);
-+		return NULL;
-+	}
-+
-+	ret = clk_prepare_enable(clk);
-+	if (ret) {
-+		dev_warn(nandi->dev, "Failed to enable %s clock\n", clkname);
-+		clk_put(clk);
-+		return NULL;
-+	}
-+
-+	return clk;
-+}
-+
- static void nandi_init_bch(struct nandi_controller *nandi, int emi_bank)
+ static void nandi_clk_enable(struct nandi_controller *nandi)
  {
- 	dev_dbg(nandi->dev, "%s\n", __func__);
-@@ -384,6 +426,9 @@ nandi_init_resources(struct platform_device *pdev)
- 		return ERR_PTR(err);
- 	}
- 
-+	nandi->emi_clk = nandi_clk_setup(nandi, "emi_clk");
-+	nandi->bch_clk = nandi_clk_setup(nandi, "bch_clk");
-+
- 	platform_set_drvdata(pdev, nandi);
- 
- 	return nandi;
-@@ -413,6 +458,10 @@ static int stm_nand_bch_probe(struct platform_device *pdev)
- 
- static int stm_nand_bch_remove(struct platform_device *pdev)
+ 	if (nandi->emi_clk)
+@@ -438,7 +491,11 @@ static int stm_nand_bch_probe(struct platform_device *pdev)
  {
-+	struct nandi_controller *nandi = platform_get_drvdata(pdev);
+ 	struct stm_plat_nand_bch_data *pdata = pdev->dev.platform_data;
+ 	struct stm_nand_bank_data *bank;
++	struct nandi_bbt_info *bbt_info;
+ 	struct nandi_controller *nandi;
++	struct nandi_info *info;
++	struct nand_chip *chip;
++	struct mtd_info *mtd;
+ 
+ 	nandi = nandi_init_resources(pdev);
+ 	if (IS_ERR(nandi)) {
+@@ -453,6 +510,16 @@ static int stm_nand_bch_probe(struct platform_device *pdev)
+ 	if (bank)
+ 		nandi_init_controller(nandi, bank->csn);
+ 
++	info            = &nandi->info;
++	chip            = &info->chip;
++	bbt_info        = &info->bbt_info;
++	mtd             = &info->mtd;
++	mtd->priv       = chip;
++	mtd->name       = dev_name(&pdev->dev);
++	mtd->dev.parent = &pdev->dev;
 +
-+	nandi_clk_disable(nandi);
++	nandi_set_mtd_defaults(nandi, mtd, chip);
 +
  	return 0;
  }
