@@ -1,22 +1,20 @@
-Date: Thu, 1 May 2014 15:31:48 -0600
-From: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
-To: Boris BREZILLON <boris.brezillon@free-electrons.com>
-Subject: Re: [RFC PATCH 0/3] mtd: nand: add randomizer support
-Message-ID: <20140501213148.GA1563@obsidianresearch.com>
-References: <1398906592-24677-1-git-send-email-b.brezillon.dev@gmail.com>
- <20140501163407.GB3296@obsidianresearch.com>
- <536284E1.50001@free-electrons.com>
- <20140501175946.GA14539@obsidianresearch.com>
- <5362B4E6.7010009@free-electrons.com>
+Received: from mail-out.m-online.net ([212.18.0.9])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WfzWF-0006q6-Ia
+ for linux-mtd@lists.infradead.org; Thu, 01 May 2014 22:31:56 +0000
+To: Valentin Longchamp <valentin.longchamp@keymile.com>
+From: Wolfgang Denk <wd@denx.de>
+Subject: Re: Possible race condition when accessing SPI NOR Flash ?
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5362B4E6.7010009@free-electrons.com>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Content-type: text/plain; charset=UTF-8
+Content-transfer-encoding: 8bit
+In-reply-to: <53623597.8040909@keymile.com>
+References: <53623597.8040909@keymile.com>
+Date: Fri, 02 May 2014 00:31:26 +0200
+Message-Id: <20140501223126.E4CD63809A5@gemini.denx.de>
+Cc: "u-boot@lists.denx.de" <u-boot@lists.denx.de>,
+ Holger Brunck <holger.brunck@keymile.com>, linux-mtd@lists.infradead.org,
+ Stefan Bigler <stefan.bigler@keymile.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,58 +24,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, May 01, 2014 at 10:56:06PM +0200, Boris BREZILLON wrote:
+Dear Valentin,
 
-> > However, with a synchronous scrambler the security concern boils down
-> > to how robust and unpredictable is the PRBS.
+In message <53623597.8040909@keymile.com> you wrote:
+>
+> Now when fw_setenv ([1], [2]) updates the environment variables, it sometimes
+> (approximately 1 out of 100 runs) triggers such kernel errors:
+...
+> I see the same behavior with both the 2013.10 and the 2014.04 releases of
+> u-boot/fw_env. The kernel we are using is 3.10.36.
 > 
-> I'm not sure security is the main concern here.
-> AFAICT, NAND scramblers (note that I stopped using the name "randomizer"
-> :-)) is mainly used to avoid large island of identical data, because
-> some NAND chips are sensible to such patterns (see [1] page 14).
+> I suspect that the problem is related to SPI NOR/m25p80 driver: on the system we
+> have a NAND Flash device with UBI volumes. If I create 2 ubi volumes on the NAND
+> Flash and configure fw_setenv (/etc/fw_env.config) to use them instead of the
+> the mtd devices targetting the s25fl256s1, I am not able to reproduce the
+> problem, even over more than 10'000 runs.
 
-Right, if you send to the flash 'the wrong data' then some combination of:
-1) Retention time till ECC failure is reduced
-2) The flash block is permanently damaged early
-3) A 'nearby', unrelated flash block has ECC failure due to interference
+Um... this is _Linux_ crashing - at this point the U-Boot driver has
+nothing to do with it..  If there is a problem, then with the Linux
+kernel / driver code.  I guess you should rather post this on the MTD
+mailing ist.
 
-So, if someone deliberately and maliciously defeats the scrambler and
-deliberately sends in wrong data what happens?
- 1/3) Delibrate, predictable file system corruption
- 2) Create device damage and significantly early replacement of the device.
-All could lead to a DOS attack of some sort, at a minimum.
+> One other possible culprit that I see is the fsl_espi.c driver for the
+> underlying hardware connection from the CPU to the NOR Flash, but I wanted to
+> ask here if someone had an idea about what's going wrong.
 
-FWIW, there was a similar attack against a certain communication
-system. The line scrambler was statistically predictable, and if an
-attacker sent enough packets that were the predictable anti-scramble
-then enough would align with the scamble pattern and the
-communication channel would fail and retrain creating a DOS vector.
+It's Linux code....
 
-For this reason these days com systems tend to use a 58 bit
-self-synchronous LFSR for scrambling purposes.
+Best regards,
 
-> And this is exactly what's done in the sunxi HW  scrambler
-> implementation, or at least you can do it based on what you're
-> specifying in your DT (see the "nand-randomizer-seeds" in the 3rd
-> patch): you can define a seed table and the seed is selected based on
-> the page number you're reading or writing.
+Wolfgang Denk
 
-Well, re-using fixed (and public) seeds:
-
- state = rnd->seeds[page % rnd->nseeds];
-
-Just changes the probabilities. For instance, some filesystems can be
-asked to create extents with a large alignment (like 2M) to speed IOs,
-and a small seeds table means the seeds within such a file will be
-fully predictable.
-
-If you are already stuck with this, then fine, it can be a driver
-specific binding - but if this is a new green-field design, intended
-to be broadly used as a core MTD feature:
-
-I'd suggest just seeding with the block number xor some value, and
-using a LFSR with a state space larger than the number of blocks in
-the device, and don't specify a seeds array in DT.
-
-Regards,
-Jason
+-- 
+DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
+Don't hit a man when he's down - kick him; it's easier.
