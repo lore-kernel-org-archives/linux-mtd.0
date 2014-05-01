@@ -1,14 +1,14 @@
 Received: from mail-wi0-f169.google.com ([209.85.212.169])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wfnl2-0003Cb-At
+ id 1Wfnl2-0003BM-At
  for linux-mtd@lists.infradead.org; Thu, 01 May 2014 09:58:24 +0000
-Received: by mail-wi0-f169.google.com with SMTP id hi5so449589wib.2
- for <linux-mtd@lists.infradead.org>; Thu, 01 May 2014 02:58:06 -0700 (PDT)
+Received: by mail-wi0-f169.google.com with SMTP id hi5so448654wib.4
+ for <linux-mtd@lists.infradead.org>; Thu, 01 May 2014 02:58:04 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 28/47] mtd: nand: stm_nand_bch: bad block marking helpers
-Date: Thu,  1 May 2014 10:56:35 +0100
-Message-Id: <1398938214-17847-29-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 27/47] mtd: nand: stm_nand_bch: find IBBT signature
+Date: Thu,  1 May 2014 10:56:34 +0100
+Message-Id: <1398938214-17847-28-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1398938214-17847-1-git-send-email-lee.jones@linaro.org>
 References: <1398938214-17847-1-git-send-email-lee.jones@linaro.org>
 Cc: Lee Jones <lee.jones@linaro.org>, computersforpeace@gmail.com,
@@ -22,55 +22,122 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Bad Block Markers (BBMs) keep track of unusable/unsuitable memory
-blocks which can prevent unnecessary data loss. These helpers aid in
-reading and writing to/from the Bad Block Tables (BBTs) where the BBMs
-are stored.
+Scan block for IBBT signature, either "Bbt0" or "1tbB" from
+pre-specified data block.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/nand/stm_nand_bch.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+ drivers/mtd/nand/stm_nand_bch.c | 91 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 91 insertions(+)
 
 diff --git a/drivers/mtd/nand/stm_nand_bch.c b/drivers/mtd/nand/stm_nand_bch.c
-index 83faffe..27a87a3 100644
+index e875446..83faffe 100644
 --- a/drivers/mtd/nand/stm_nand_bch.c
 +++ b/drivers/mtd/nand/stm_nand_bch.c
-@@ -712,6 +712,35 @@ static int bch_write(struct mtd_info *mtd, struct nand_chip *chip,
+@@ -43,6 +43,37 @@ static int bch_ecc_sizes[] = {
+ 	[BCH_NO_ECC] = 0,
+ };
+ 
++/*
++ * Inband Bad Block Table (IBBT)
++ */
++#define NAND_IBBT_NBLOCKS	4
++#define NAND_IBBT_SIGLEN	4
++#define NAND_IBBT_PRIMARY	0
++#define NAND_IBBT_MIRROR	1
++#define NAND_IBBT_SCHEMA	0x10
++#define NAND_IBBT_BCH_SCHEMA	0x10
++
++static uint8_t ibbt_sigs[2][NAND_IBBT_SIGLEN] = {
++	{'B', 'b', 't', '0'},
++	{'1', 't', 'b', 'B'},
++};
++
++/* IBBT header */
++struct nand_ibbt_header {
++	uint8_t	signature[4];		/* "Bbt0" or "1tbB" signature */
++	uint8_t version;		/* BBT version ("age") */
++	uint8_t reserved[3];		/* padding */
++	uint8_t schema[4];		/* "base" schema (x4) */
++} __packed;
++
++/* Extend IBBT header with some stm-nand-bch niceties */
++struct nand_ibbt_bch_header {
++	struct nand_ibbt_header base;
++	uint8_t schema[4];		/* "private" schema (x4) */
++	uint8_t ecc_size[4];		/* ECC bytes (0, 32, 54) (x4) */
++	char	author[64];		/* Arbitrary string for S/W to use */
++} __packed;
++
+ /* Bad Block Table (BBT) */
+ struct nandi_bbt_info {
+ 	uint32_t	bbt_size;		/* Size of bad-block table */
+@@ -681,6 +712,66 @@ static int bch_write(struct mtd_info *mtd, struct nand_chip *chip,
  	return 0;
  }
  
-+/*
-+ * Bad Block Tables/Bad Block Markers
-+ */
-+#define BBT_MARK_BAD_FACTORY	0x0
-+#define BBT_MARK_BAD_WEAR	0x1
-+#define BBT_MARK_GOOD		0x3
-+
-+static void bbt_set_block_mark(uint8_t *bbt, uint32_t block, uint8_t mark)
++/* Scan block for IBBT signature */
++static int bch_find_ibbt_sig(struct nandi_controller *nandi,
++			     uint32_t block, int *bak, uint8_t *vers,
++			     char *author)
 +{
-+	unsigned int byte = block >> 2;
-+	unsigned int shift = (block & 0x3) << 1;
++	struct mtd_info *mtd = &nandi->info.mtd;
++	struct nand_ibbt_bch_header *ibbt_header;
++	loff_t offs;
++	uint8_t *buf = nandi->page_buf;
++	int match_sig;
++	unsigned int b;
++	unsigned int i;
 +
-+	bbt[byte] &= ~(0x3 << shift);
-+	bbt[byte] |= ((mark & 0x3) << shift);
++	nandi->cached_page = -1;
++
++	/* Load last page of block */
++	offs = (loff_t)block << nandi->block_shift;
++	offs += mtd->erasesize - mtd->writesize;
++	if (bch_read_page(nandi, offs, buf) < 0) {
++		dev_info(nandi->dev,
++			 "Uncorrectable ECC error while scanning BBT signature at block %u [0x%012llx]\n",
++			 block, offs);
++		return 0;
++	}
++	ibbt_header = (struct nand_ibbt_bch_header *)buf;
++
++	/* Test IBBT signature */
++	match_sig = 0;
++	for (b = 0; b < 2 && !match_sig; b++) {
++		match_sig = 1;
++		for (i = 0; i < NAND_IBBT_SIGLEN; i++) {
++			if (ibbt_header->base.signature[i] != ibbt_sigs[b][i]) {
++				match_sig = 0;
++				break;
++			}
++		}
++
++	}
++
++	if (!match_sig)
++		return 0; /* Failed to match IBBT signature */
++
++	/* Test IBBT schema */
++	for (i = 0; i < 4; i++)
++		if (ibbt_header->base.schema[i] != NAND_IBBT_SCHEMA)
++			return 0;
++
++	/* Test IBBT BCH schema */
++	for (i = 0; i < 4; i++)
++		if (ibbt_header->schema[i] != NAND_IBBT_BCH_SCHEMA)
++			return 0;
++
++	/* We have a match */
++	*vers = ibbt_header->base.version;
++	*bak = b - 1;
++	strncpy(author, ibbt_header->author, 64);
++
++	return 1;
 +}
 +
-+static uint8_t bbt_get_block_mark(uint8_t *bbt, uint32_t block)
-+{
-+	unsigned int byte = block >> 2;
-+	unsigned int shift = (block & 0x3) << 1;
-+
-+	return (bbt[byte] >> shift) & 0x3;
-+}
-+
-+static int bbt_is_block_bad(uint8_t *bbt, uint32_t block)
-+{
-+	return bbt_get_block_mark(bbt, block) == BBT_MARK_GOOD ? 0 : 1;
-+}
-+
- /* Scan block for IBBT signature */
- static int bch_find_ibbt_sig(struct nandi_controller *nandi,
- 			     uint32_t block, int *bak, uint8_t *vers,
+ /*
+  * Initialisation
+  */
 -- 
 1.8.3.2
