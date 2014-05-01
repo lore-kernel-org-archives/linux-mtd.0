@@ -1,14 +1,14 @@
-Received: from mail-wi0-f181.google.com ([209.85.212.181])
+Received: from mail-we0-f180.google.com ([74.125.82.180])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WfnlO-0003TV-3c
- for linux-mtd@lists.infradead.org; Thu, 01 May 2014 09:58:46 +0000
-Received: by mail-wi0-f181.google.com with SMTP id f8so403956wiw.14
- for <linux-mtd@lists.infradead.org>; Thu, 01 May 2014 02:58:24 -0700 (PDT)
+ id 1WfnlQ-0003bP-Ub
+ for linux-mtd@lists.infradead.org; Thu, 01 May 2014 09:58:49 +0000
+Received: by mail-we0-f180.google.com with SMTP id t61so2823416wes.25
+ for <linux-mtd@lists.infradead.org>; Thu, 01 May 2014 02:58:27 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 38/47] mtd: nand: stm_nand_bch: dump bad blocks
-Date: Thu,  1 May 2014 10:56:45 +0100
-Message-Id: <1398938214-17847-39-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 40/47] mtd: nand: stm_nand_bch: fetch the bit-flips threshold
+Date: Thu,  1 May 2014 10:56:47 +0100
+Message-Id: <1398938214-17847-41-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1398938214-17847-1-git-send-email-lee.jones@linaro.org>
 References: <1398938214-17847-1-git-send-email-lee.jones@linaro.org>
 Cc: Lee Jones <lee.jones@linaro.org>, computersforpeace@gmail.com,
@@ -22,56 +22,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Inform the user of any known bad blocks during initialisation.
-Conversely, if there aren't any known bad blocks, let the user know
-the good news.
+If none is provided by the platform, the default ECC mode will be used.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/nand/stm_nand_bch.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+ drivers/mtd/nand/stm_nand_bch.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
 diff --git a/drivers/mtd/nand/stm_nand_bch.c b/drivers/mtd/nand/stm_nand_bch.c
-index a06dca8..6aaa118 100644
+index 0f96f75..e742655 100644
 --- a/drivers/mtd/nand/stm_nand_bch.c
 +++ b/drivers/mtd/nand/stm_nand_bch.c
-@@ -1259,6 +1259,28 @@ static int bch_scan_bbt(struct mtd_info *mtd)
- 	return 0;
- }
+@@ -44,6 +44,12 @@ static int bch_ecc_sizes[] = {
+ 	[BCH_NO_ECC] = 0,
+ };
  
-+static void nandi_dump_bad_blocks(struct nandi_controller *nandi)
-+{
-+	int bad_count = 0;
-+	uint32_t block;
-+	uint8_t *bbt = nandi->info.bbt_info.bbt;
-+	uint8_t mark;
-+
-+	pr_info("BBT:\n");
-+	for (block = 0; block < nandi->blocks_per_device; block++) {
-+		mark = bbt_get_block_mark(bbt, block);
-+		if (mark != BBT_MARK_GOOD) {
-+			pr_info("\t\tBlock 0x%08x [%05u] marked bad [%s]\n",
-+				block << nandi->block_shift, block,
-+				(mark == BBT_MARK_BAD_FACTORY) ?
-+				"Factory" : "Wear");
-+			bad_count++;
-+		}
-+	}
-+	if (bad_count == 0)
-+		pr_info("\t\tNo bad blocks listed in BBT\n");
-+}
++static int bch_ecc_strength[] = {
++	[BCH_18BIT_ECC] = 18,
++	[BCH_30BIT_ECC] = 30,
++	[BCH_NO_ECC] = 0,
++};
 +
  /*
-  * Initialisation
+  * Inband Bad Block Table (IBBT)
   */
-@@ -2021,6 +2043,8 @@ static int stm_nand_bch_probe(struct platform_device *pdev)
- 	if (err)
- 		return err;
+@@ -2030,6 +2036,21 @@ static int stm_nand_bch_probe(struct platform_device *pdev)
+ 	info->ecclayout.eccbytes =
+ 		nandi->sectors_per_page * bch_ecc_sizes[nandi->bch_ecc_mode];
  
-+	nandi_dump_bad_blocks(nandi);
++	/*
++	 * Get bit-flips threshold. A value of '0' is interpreted as
++	 * <ecc_strength>.
++	 */
++	if (pdata->bch_bitflip_threshold) {
++		nandi->bitflip_threshold = pdata->bch_bitflip_threshold;
++	} else {
++		dev_warn(nandi->dev,
++			 "WARNING: bit-flips threshold not specified.\n"
++			 "         Defaulting to ECC strength [%d]\n",
++			 bch_ecc_strength[nandi->bch_ecc_mode]);
++		nandi->bitflip_threshold =
++			bch_ecc_strength[nandi->bch_ecc_mode];
++	}
 +
- 	return 0;
- }
- 
+ 	compatible = bch_check_compatibility(nandi, mtd, chip);
+ 	if (!compatible) {
+ 		dev_err(nandi->dev,
 -- 
 1.8.3.2
