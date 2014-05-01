@@ -1,22 +1,13 @@
-Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WfdLY-0001s9-6X
- for linux-mtd@lists.infradead.org; Wed, 30 Apr 2014 22:51:24 +0000
-Received: by mail-pa0-f50.google.com with SMTP id rd3so2743834pab.23
- for <linux-mtd@lists.infradead.org>; Wed, 30 Apr 2014 15:51:02 -0700 (PDT)
-Date: Wed, 30 Apr 2014 15:23:53 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: [PATCH] mtd: denali: disable usage of subpages
-Message-ID: <20140430222353.GE2497@norris-Latitude-E6410>
-References: <1398862001-29785-1-git-send-email-bigeasy@linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1398862001-29785-1-git-send-email-bigeasy@linutronix.de>
-Cc: Huang Shijie <shijie8@gmail.com>, Josh Triplett <josh@joshtriplett.org>,
- linux-mtd@lists.infradead.org, Pekon Gupta <pekon@ti.com>,
- David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen <dinguyen@altera.com>
+From: Boris BREZILLON <b.brezillon.dev@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Subject: [RFC PATCH 0/3] mtd: nand: add randomizer support
+Date: Thu,  1 May 2014 03:09:49 +0200
+Message-Id: <1398906592-24677-1-git-send-email-b.brezillon.dev@gmail.com>
+Cc: devicetree@vger.kernel.org, Boris BREZILLON <b.brezillon.dev@gmail.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,23 +17,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Apr 30, 2014 at 02:46:41PM +0200, Sebastian Andrzej Siewior wrote:
-> I use this driver on an Altera SoC (not MRST) and its ECC algorithm
-> does not compute 0xff ECC of an empty page. That problem can be easily
-> noticed if ubifs is used. Therefore I disable subpages support.
-> 
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> ---
-> I can't test if this is also the case for MRST or not.
+Hello,
 
-This is an important change to get right; if any systems have been using
-Denali NAND with subpage writes, then this change will break any flash
-with existing UBI data. Can we either confirm that no Denali systems
-were using subpage writes successfully, or else tie this option to some
-kind of platform data or DT information (e.g., compatible string)?
+This series is a proposal to add support for randomizers (either software
+or hardware) to NAND flash controller drivers.
 
-Or is this related to commit 837a6ba4f3b6d23026674e6af6b6849a4634fff9,
-which changed subpage write support? (Or conversely, could this help you
-support subpage writes properly?)
+The last patch is the sunxi HW randomizer implementation and is just given
+as an example (it won't apply on the MTD tree, because it depends on other
+stuff not yet posted on the MTD ML, but if you want a full overview of the
+NAND Flash controller driver you can take a look at this series [2]).
 
-Brian
+I can also provide a software implementation based on LFSR (Left Feedback
+Shift Register) algorithm, thought I haven't tested it yet, hence why it's
+not part of this series. Let me know if you're interested in this
+implementation.
+
+This series depends on the "per-partition ECC" series [1], because I need
+the randomizer seed to be different depending on the partition (for the
+same reason I needed ECC config to be different for each partition: the
+bootrom config might not fit the NAND chip requirements).
+
+I'd like to have feedback from both MTD maintainers and driver
+developers who might need to implement (or use) a randomizer in their
+system, so feel free to comment on this series.
+
+Best Regards,
+
+Boris
+
+[1] https://lkml.org/lkml/2014/2/12/627
+[2] https://groups.google.com/forum/#!msg/linux-sunxi/s3lBb01I0Js/z2NoCFJ83g4J 
+
+
+Boris BREZILLON (3):
+  mtd: nand: introduce a randomizer layer in the NAND framework
+  of: mtd: add NAND randomizer mode retrieval
+  mtd: nand: add sunxi randomizer support
+
+ drivers/mtd/nand/nand_base.c  | 278 ++++++++++++++++++-----
+ drivers/mtd/nand/sunxi_nand.c | 507 +++++++++++++++++++++++++++++++++++++++++-
+ drivers/of/of_mtd.c           |  35 +++
+ include/linux/mtd/nand.h      |  98 ++++++++
+ include/linux/of_mtd.h        |   6 +
+ 5 files changed, 858 insertions(+), 66 deletions(-)
+
+-- 
+1.8.3.2
