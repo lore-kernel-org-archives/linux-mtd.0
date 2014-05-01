@@ -1,22 +1,19 @@
-Date: Thu, 1 May 2014 14:53:28 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v2 08/12] ARM: marvell: add MTD_SPI_NOR (new dependency
- for M25P80)
-Message-ID: <20140501175328.GA22786@arch.cereza>
-References: <1398925607-7482-1-git-send-email-computersforpeace@gmail.com>
- <1398925607-7482-9-git-send-email-computersforpeace@gmail.com>
+Date: Thu, 1 May 2014 20:37:43 +0200
+From: Antoine =?iso-8859-1?Q?T=E9nart?= <antoine.tenart@free-electrons.com>
+To: Boris BREZILLON <b.brezillon.dev@gmail.com>
+Subject: Re: [RFC PATCH 0/3] mtd: nand: add randomizer support
+Message-ID: <20140501183743.GA17618@kwain>
+References: <1398906592-24677-1-git-send-email-b.brezillon.dev@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1398925607-7482-9-git-send-email-computersforpeace@gmail.com>
-Cc: Marek Vasut <marex@denx.de>, Andrew Lunn <andrew@lunn.ch>,
- Jason Cooper <jason@lakedaemon.net>,
- Linux Kernel <linux-kernel@vger.kernel.org>,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+In-Reply-To: <1398906592-24677-1-git-send-email-b.brezillon.dev@gmail.com>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,28 +23,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Apr 30, Brian Norris wrote:
-> These defconfigs contain the CONFIG_M25P80 symbol, which is now
-> dependent on the MTD_SPI_NOR symbol. Add CONFIG_MTD_SPI_NOR to satisfy
-> the new dependency.
+Hi Boris,
+
+On Thu, May 01, 2014 at 03:09:49AM +0200, Boris BREZILLON wrote:
+> Hello,
 > 
-> At the same time, drop the now-nonexistent CONFIG_MTD_CHAR symbol.
+> This series is a proposal to add support for randomizers (either software
+> or hardware) to NAND flash controller drivers.
+
+Thanks for providing this! I'll need these features soon and I'm happy
+to see them coming into the nand controller framework.
+
+
+Antoine
+
+> The last patch is the sunxi HW randomizer implementation and is just given
+> as an example (it won't apply on the MTD tree, because it depends on other
+> stuff not yet posted on the MTD ML, but if you want a full overview of the
+> NAND Flash controller driver you can take a look at this series [2]).
 > 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Cc: Jason Cooper <jason@lakedaemon.net>
-> Cc: Andrew Lunn <andrew@lunn.ch>
-> Cc: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Acked-by: Jason Cooper <jason@lakedaemon.net>
+> I can also provide a software implementation based on LFSR (Left Feedback
+> Shift Register) algorithm, thought I haven't tested it yet, hence why it's
+> not part of this series. Let me know if you're interested in this
+> implementation.
+> 
+> This series depends on the "per-partition ECC" series [1], because I need
+> the randomizer seed to be different depending on the partition (for the
+> same reason I needed ECC config to be different for each partition: the
+> bootrom config might not fit the NAND chip requirements).
+> 
+> I'd like to have feedback from both MTD maintainers and driver
+> developers who might need to implement (or use) a randomizer in their
+> system, so feel free to comment on this series.
+> 
+> Best Regards,
+> 
+> Boris
+> 
+> [1] https://lkml.org/lkml/2014/2/12/627
+> [2] https://groups.google.com/forum/#!msg/linux-sunxi/s3lBb01I0Js/z2NoCFJ83g4J 
+> 
+> 
+> Boris BREZILLON (3):
+>   mtd: nand: introduce a randomizer layer in the NAND framework
+>   of: mtd: add NAND randomizer mode retrieval
+>   mtd: nand: add sunxi randomizer support
+> 
+>  drivers/mtd/nand/nand_base.c  | 278 ++++++++++++++++++-----
+>  drivers/mtd/nand/sunxi_nand.c | 507 +++++++++++++++++++++++++++++++++++++++++-
+>  drivers/of/of_mtd.c           |  35 +++
+>  include/linux/mtd/nand.h      |  98 ++++++++
+>  include/linux/of_mtd.h        |   6 +
+>  5 files changed, 858 insertions(+), 66 deletions(-)
+> 
+> -- 
+> 1.8.3.2
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
-Acked-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-
-And tested the SPI is now selected (and works on Armada XP GP)
-using mvebu_v7_defconfig.
-
-Thanks a lot for taking care of this,
 -- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
+Antoine Ténart, Free Electrons
+Embedded Linux, Kernel and Android engineering
 http://free-electrons.com
