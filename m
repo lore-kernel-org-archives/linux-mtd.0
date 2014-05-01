@@ -1,15 +1,14 @@
-Received: from mail-we0-f170.google.com ([74.125.82.170])
+Received: from mail-we0-f176.google.com ([74.125.82.176])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WfnkV-0002ea-97
+ id 1WfnkV-0002em-IB
  for linux-mtd@lists.infradead.org; Thu, 01 May 2014 09:57:51 +0000
-Received: by mail-we0-f170.google.com with SMTP id w61so2894735wes.29
- for <linux-mtd@lists.infradead.org>; Thu, 01 May 2014 02:57:28 -0700 (PDT)
+Received: by mail-we0-f176.google.com with SMTP id q59so484989wes.7
+ for <linux-mtd@lists.infradead.org>; Thu, 01 May 2014 02:57:31 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 11/47] mtd: nand: stm_nand_bch: initialise the Hamming
- Controller
-Date: Thu,  1 May 2014 10:56:18 +0100
-Message-Id: <1398938214-17847-12-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 12/47] mtd: nand: stm_nand_bch: add Power Management
+Date: Thu,  1 May 2014 10:56:19 +0100
+Message-Id: <1398938214-17847-13-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1398938214-17847-1-git-send-email-lee.jones@linaro.org>
 References: <1398938214-17847-1-git-send-email-lee.jones@linaro.org>
 Cc: Lee Jones <lee.jones@linaro.org>, computersforpeace@gmail.com,
@@ -23,64 +22,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Populate the standard PM call-backs for; suspend, resume and restore.
+
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/nand/stm_nand_bch.c | 36 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
+ drivers/mtd/nand/stm_nand_bch.c | 39 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
 
 diff --git a/drivers/mtd/nand/stm_nand_bch.c b/drivers/mtd/nand/stm_nand_bch.c
-index 19d090c..0c6aad2 100644
+index 0c6aad2..8a63c4a 100644
 --- a/drivers/mtd/nand/stm_nand_bch.c
 +++ b/drivers/mtd/nand/stm_nand_bch.c
-@@ -365,6 +365,41 @@ static struct clk *nandi_clk_setup(struct nandi_controller *nandi,
- 	return clk;
+@@ -568,12 +568,51 @@ static int stm_nand_bch_remove(struct platform_device *pdev)
+ 	return 0;
  }
  
-+static void nandi_init_hamming(struct nandi_controller *nandi, int emi_bank)
++#ifdef CONFIG_PM
++static int stm_nand_bch_suspend(struct device *dev)
 +{
-+	dev_dbg(nandi->dev, "%s\n", __func__);
++	struct nandi_controller *nandi = dev_get_drvdata(dev);
 +
-+	emiss_nandi_select(STM_NANDI_HAMMING);
++	nandi_clk_disable(nandi);
 +
-+	/* Reset and disable boot-mode controller */
-+	writel(BOOT_CFG_RESET, nandi->base + NANDHAM_BOOTBANK_CFG);
-+	udelay(1);
-+	writel(0x00000000, nandi->base + NANDHAM_BOOTBANK_CFG);
++	return 0;
++}
++static int stm_nand_bch_resume(struct device *dev)
++{
++	struct nandi_controller *nandi = dev_get_drvdata(dev);
 +
-+	/* Reset controller */
-+	writel(CFG_RESET, nandi->base + NANDHAM_FLEXMODE_CFG);
-+	udelay(1);
-+	writel(0x00000000, nandi->base + NANDHAM_FLEXMODE_CFG);
++	nandi_clk_enable(nandi);
 +
-+	/* Set EMI Bank */
-+	writel(0x1 << emi_bank, nandi->base + NANDHAM_FLEX_MUXCTRL);
-+
-+	/* Enable FLEX mode */
-+	writel(CFG_ENABLE_FLEX, nandi->base + NANDHAM_FLEXMODE_CFG);
-+
-+	/* Configure FLEX_DATA_READ/WRITE for 1-byte access */
-+	writel(FLEX_DATA_CFG_BEATS_1 | FLEX_DATA_CFG_CSN,
-+	       nandi->base + NANDHAM_FLEX_DATAREAD_CONFIG);
-+	writel(FLEX_DATA_CFG_BEATS_1 | FLEX_DATA_CFG_CSN,
-+	       nandi->base + NANDHAM_FLEX_DATAREAD_CONFIG);
-+
-+	/* RBn interrupt on rising edge */
-+	writel(NAND_EDGE_CFG_RBN_RISING, nandi->base + NANDHAM_INT_EDGE_CFG);
-+
-+	/* Enable interrupts */
-+	nandi_enable_interrupts(nandi, NAND_INT_ENABLE);
++	return 0;
 +}
 +
- static void nandi_init_bch(struct nandi_controller *nandi, int emi_bank)
- {
- 	dev_dbg(nandi->dev, "%s\n", __func__);
-@@ -413,6 +448,7 @@ static void nandi_init_controller(struct nandi_controller *nandi,
- 				  int emi_bank)
- {
- 	nandi_init_bch(nandi, emi_bank);
-+	nandi_init_hamming(nandi, emi_bank);
- }
- 
- static int remap_named_resource(struct platform_device *pdev,
++static int stm_nand_bch_restore(struct device *dev)
++{
++	struct nandi_controller *nandi = dev_get_drvdata(dev);
++	struct stm_plat_nand_bch_data *pdata = dev->platform_data;
++	struct stm_nand_bank_data *bank = pdata->bank;
++
++	nandi_init_controller(nandi, bank->csn);
++
++	return 0;
++}
++
++static const struct dev_pm_ops stm_nand_bch_pm_ops = {
++	.suspend = stm_nand_bch_suspend,
++	.resume = stm_nand_bch_resume,
++	.restore = stm_nand_bch_restore,
++};
++#else
++static const struct dev_pm_ops stm_nand_bch_pm_ops;
++#endif
++
+ static struct platform_driver stm_nand_bch_driver = {
+ 	.probe	= stm_nand_bch_probe ,
+ 	.remove	= stm_nand_bch_remove,
+ 	.driver	= {
+ 		.name	= "stm-nand-bch",
+ 		.owner	= THIS_MODULE,
++		.pm	= &stm_nand_bch_pm_ops,
+ 	},
+ };
+ module_platform_driver(stm_nand_bch_driver);
 -- 
 1.8.3.2
