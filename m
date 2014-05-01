@@ -1,14 +1,14 @@
 Received: from mail-wi0-f169.google.com ([209.85.212.169])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wfnl2-0003BM-At
- for linux-mtd@lists.infradead.org; Thu, 01 May 2014 09:58:24 +0000
-Received: by mail-wi0-f169.google.com with SMTP id hi5so448654wib.4
- for <linux-mtd@lists.infradead.org>; Thu, 01 May 2014 02:58:04 -0700 (PDT)
+ id 1Wfnl7-0003Dg-Ar
+ for linux-mtd@lists.infradead.org; Thu, 01 May 2014 09:58:29 +0000
+Received: by mail-wi0-f169.google.com with SMTP id hi5so452672wib.0
+ for <linux-mtd@lists.infradead.org>; Thu, 01 May 2014 02:58:07 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 27/47] mtd: nand: stm_nand_bch: find IBBT signature
-Date: Thu,  1 May 2014 10:56:34 +0100
-Message-Id: <1398938214-17847-28-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 29/47] mtd: nand: stm_nand_bch: populate IBBT BCH Header
+Date: Thu,  1 May 2014 10:56:36 +0100
+Message-Id: <1398938214-17847-30-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1398938214-17847-1-git-send-email-lee.jones@linaro.org>
 References: <1398938214-17847-1-git-send-email-lee.jones@linaro.org>
 Cc: Lee Jones <lee.jones@linaro.org>, computersforpeace@gmail.com,
@@ -22,122 +22,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Scan block for IBBT signature, either "Bbt0" or "1tbB" from
-pre-specified data block.
+The STM NAND BCH Controller driver has extended the IBBT header with
+some extra convenience properties. This function populates both those
+and the standard header specified by 'struct nand_ibbt_header'.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/nand/stm_nand_bch.c | 91 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 91 insertions(+)
+ drivers/mtd/nand/stm_nand_bch.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
 diff --git a/drivers/mtd/nand/stm_nand_bch.c b/drivers/mtd/nand/stm_nand_bch.c
-index e875446..83faffe 100644
+index 27a87a3..bf8669b 100644
 --- a/drivers/mtd/nand/stm_nand_bch.c
 +++ b/drivers/mtd/nand/stm_nand_bch.c
-@@ -43,6 +43,37 @@ static int bch_ecc_sizes[] = {
- 	[BCH_NO_ECC] = 0,
- };
+@@ -26,6 +26,7 @@
+ #include <linux/mtd/nand.h>
+ #include <linux/mtd/stm_nand.h>
+ #include <linux/mtd/partitions.h>
++#include <generated/utsrelease.h>
  
-+/*
-+ * Inband Bad Block Table (IBBT)
-+ */
-+#define NAND_IBBT_NBLOCKS	4
-+#define NAND_IBBT_SIGLEN	4
-+#define NAND_IBBT_PRIMARY	0
-+#define NAND_IBBT_MIRROR	1
-+#define NAND_IBBT_SCHEMA	0x10
-+#define NAND_IBBT_BCH_SCHEMA	0x10
-+
-+static uint8_t ibbt_sigs[2][NAND_IBBT_SIGLEN] = {
-+	{'B', 'b', 't', '0'},
-+	{'1', 't', 'b', 'B'},
-+};
-+
-+/* IBBT header */
-+struct nand_ibbt_header {
-+	uint8_t	signature[4];		/* "Bbt0" or "1tbB" signature */
-+	uint8_t version;		/* BBT version ("age") */
-+	uint8_t reserved[3];		/* padding */
-+	uint8_t schema[4];		/* "base" schema (x4) */
-+} __packed;
-+
-+/* Extend IBBT header with some stm-nand-bch niceties */
-+struct nand_ibbt_bch_header {
-+	struct nand_ibbt_header base;
-+	uint8_t schema[4];		/* "private" schema (x4) */
-+	uint8_t ecc_size[4];		/* ECC bytes (0, 32, 54) (x4) */
-+	char	author[64];		/* Arbitrary string for S/W to use */
-+} __packed;
-+
- /* Bad Block Table (BBT) */
- struct nandi_bbt_info {
- 	uint32_t	bbt_size;		/* Size of bad-block table */
-@@ -681,6 +712,66 @@ static int bch_write(struct mtd_info *mtd, struct nand_chip *chip,
- 	return 0;
+ #include "stm_nand_regs.h"
+ #include "stm_nand_dt.h"
+@@ -741,6 +742,22 @@ static int bbt_is_block_bad(uint8_t *bbt, uint32_t block)
+ 	return bbt_get_block_mark(bbt, block) == BBT_MARK_GOOD ? 0 : 1;
  }
  
-+/* Scan block for IBBT signature */
-+static int bch_find_ibbt_sig(struct nandi_controller *nandi,
-+			     uint32_t block, int *bak, uint8_t *vers,
-+			     char *author)
++/* Populate IBBT BCH Header */
++static void bch_fill_ibbt_header(struct nandi_controller *nandi,
++				 struct nand_ibbt_bch_header *ibbt_header,
++				 int bak, uint8_t vers)
 +{
-+	struct mtd_info *mtd = &nandi->info.mtd;
-+	struct nand_ibbt_bch_header *ibbt_header;
-+	loff_t offs;
-+	uint8_t *buf = nandi->page_buf;
-+	int match_sig;
-+	unsigned int b;
-+	unsigned int i;
++	const char author[] = "STLinux " UTS_RELEASE " (stm-nand-bch)";
 +
-+	nandi->cached_page = -1;
++	memcpy(ibbt_header->base.signature, ibbt_sigs[bak], NAND_IBBT_SIGLEN);
++	ibbt_header->base.version = vers;
++	memset(ibbt_header->base.schema, NAND_IBBT_SCHEMA, 4);
 +
-+	/* Load last page of block */
-+	offs = (loff_t)block << nandi->block_shift;
-+	offs += mtd->erasesize - mtd->writesize;
-+	if (bch_read_page(nandi, offs, buf) < 0) {
-+		dev_info(nandi->dev,
-+			 "Uncorrectable ECC error while scanning BBT signature at block %u [0x%012llx]\n",
-+			 block, offs);
-+		return 0;
-+	}
-+	ibbt_header = (struct nand_ibbt_bch_header *)buf;
-+
-+	/* Test IBBT signature */
-+	match_sig = 0;
-+	for (b = 0; b < 2 && !match_sig; b++) {
-+		match_sig = 1;
-+		for (i = 0; i < NAND_IBBT_SIGLEN; i++) {
-+			if (ibbt_header->base.signature[i] != ibbt_sigs[b][i]) {
-+				match_sig = 0;
-+				break;
-+			}
-+		}
-+
-+	}
-+
-+	if (!match_sig)
-+		return 0; /* Failed to match IBBT signature */
-+
-+	/* Test IBBT schema */
-+	for (i = 0; i < 4; i++)
-+		if (ibbt_header->base.schema[i] != NAND_IBBT_SCHEMA)
-+			return 0;
-+
-+	/* Test IBBT BCH schema */
-+	for (i = 0; i < 4; i++)
-+		if (ibbt_header->schema[i] != NAND_IBBT_BCH_SCHEMA)
-+			return 0;
-+
-+	/* We have a match */
-+	*vers = ibbt_header->base.version;
-+	*bak = b - 1;
-+	strncpy(author, ibbt_header->author, 64);
-+
-+	return 1;
++	memset(ibbt_header->schema, NAND_IBBT_SCHEMA, 4);
++	memset(ibbt_header->ecc_size, bch_ecc_sizes[nandi->bch_ecc_mode], 4);
++	memcpy(ibbt_header->author, author, sizeof(author));
 +}
 +
- /*
-  * Initialisation
-  */
+ /* Scan block for IBBT signature */
+ static int bch_find_ibbt_sig(struct nandi_controller *nandi,
+ 			     uint32_t block, int *bak, uint8_t *vers,
 -- 
 1.8.3.2
