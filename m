@@ -1,14 +1,14 @@
-Received: from mail-wi0-f169.google.com ([209.85.212.169])
+Received: from mail-we0-f177.google.com ([74.125.82.177])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wfnl7-0003Dg-Ar
- for linux-mtd@lists.infradead.org; Thu, 01 May 2014 09:58:29 +0000
-Received: by mail-wi0-f169.google.com with SMTP id hi5so452672wib.0
- for <linux-mtd@lists.infradead.org>; Thu, 01 May 2014 02:58:07 -0700 (PDT)
+ id 1Wfnl9-0003Ei-9h
+ for linux-mtd@lists.infradead.org; Thu, 01 May 2014 09:58:31 +0000
+Received: by mail-we0-f177.google.com with SMTP id t60so2788068wes.8
+ for <linux-mtd@lists.infradead.org>; Thu, 01 May 2014 02:58:09 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 29/47] mtd: nand: stm_nand_bch: populate IBBT BCH Header
-Date: Thu,  1 May 2014 10:56:36 +0100
-Message-Id: <1398938214-17847-30-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 30/47] mtd: nand: stm_nand_bch: write IBBT to Flash
+Date: Thu,  1 May 2014 10:56:37 +0100
+Message-Id: <1398938214-17847-31-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1398938214-17847-1-git-send-email-lee.jones@linaro.org>
 References: <1398938214-17847-1-git-send-email-lee.jones@linaro.org>
 Cc: Lee Jones <lee.jones@linaro.org>, computersforpeace@gmail.com,
@@ -22,45 +22,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The STM NAND BCH Controller driver has extended the IBBT header with
-some extra convenience properties. This function populates both those
-and the standard header specified by 'struct nand_ibbt_header'.
+Write BBT contents to the first page of a specified block, then
+update the IBBT header and write it to last page of the same block.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/nand/stm_nand_bch.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ drivers/mtd/nand/stm_nand_bch.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
 diff --git a/drivers/mtd/nand/stm_nand_bch.c b/drivers/mtd/nand/stm_nand_bch.c
-index 27a87a3..bf8669b 100644
+index bf8669b..8b70a36 100644
 --- a/drivers/mtd/nand/stm_nand_bch.c
 +++ b/drivers/mtd/nand/stm_nand_bch.c
-@@ -26,6 +26,7 @@
- #include <linux/mtd/nand.h>
- #include <linux/mtd/stm_nand.h>
- #include <linux/mtd/partitions.h>
-+#include <generated/utsrelease.h>
- 
- #include "stm_nand_regs.h"
- #include "stm_nand_dt.h"
-@@ -741,6 +742,22 @@ static int bbt_is_block_bad(uint8_t *bbt, uint32_t block)
- 	return bbt_get_block_mark(bbt, block) == BBT_MARK_GOOD ? 0 : 1;
+@@ -758,6 +758,35 @@ static void bch_fill_ibbt_header(struct nandi_controller *nandi,
+ 	memcpy(ibbt_header->author, author, sizeof(author));
  }
  
-+/* Populate IBBT BCH Header */
-+static void bch_fill_ibbt_header(struct nandi_controller *nandi,
-+				 struct nand_ibbt_bch_header *ibbt_header,
-+				 int bak, uint8_t vers)
++/* Write IBBT to Flash */
++static int bch_write_bbt_data(struct nandi_controller *nandi,
++			      struct nandi_bbt_info *bbt_info,
++			      uint32_t block, int bak, uint8_t vers)
 +{
-+	const char author[] = "STLinux " UTS_RELEASE " (stm-nand-bch)";
++	uint32_t page_size = nandi->info.mtd.writesize;
++	uint32_t block_size = nandi->info.mtd.erasesize;
++	struct nand_ibbt_bch_header *ibbt_header =
++		(struct nand_ibbt_bch_header *)nandi->page_buf;
++	loff_t offs;
 +
-+	memcpy(ibbt_header->base.signature, ibbt_sigs[bak], NAND_IBBT_SIGLEN);
-+	ibbt_header->base.version = vers;
-+	memset(ibbt_header->base.schema, NAND_IBBT_SCHEMA, 4);
++	nandi->cached_page = -1;
 +
-+	memset(ibbt_header->schema, NAND_IBBT_SCHEMA, 4);
-+	memset(ibbt_header->ecc_size, bch_ecc_sizes[nandi->bch_ecc_mode], 4);
-+	memcpy(ibbt_header->author, author, sizeof(author));
++	/* Write BBT contents to first page of block */
++	offs = (loff_t)block << nandi->block_shift;
++	if (bch_write_page(nandi, offs, bbt_info->bbt) & NAND_STATUS_FAIL)
++		return 1;
++
++	/* Update IBBT header and write to last page of block */
++	memset(ibbt_header, 0xff, nandi->info.mtd.writesize);
++	bch_fill_ibbt_header(nandi, ibbt_header, bak, vers);
++	offs += block_size - page_size;
++	if (bch_write_page(nandi, offs, (uint8_t *)ibbt_header) &
++	    NAND_STATUS_FAIL)
++		return 1;
++
++	return 0;
 +}
 +
  /* Scan block for IBBT signature */
