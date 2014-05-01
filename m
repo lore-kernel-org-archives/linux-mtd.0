@@ -1,14 +1,14 @@
-Received: from mail-we0-f181.google.com ([74.125.82.181])
+Received: from mail-wi0-f171.google.com ([209.85.212.171])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WfnlC-0003Ik-Vf
- for linux-mtd@lists.infradead.org; Thu, 01 May 2014 09:58:35 +0000
-Received: by mail-we0-f181.google.com with SMTP id q58so2909537wes.12
- for <linux-mtd@lists.infradead.org>; Thu, 01 May 2014 02:58:13 -0700 (PDT)
+ id 1WfnlE-0003MG-Pp
+ for linux-mtd@lists.infradead.org; Thu, 01 May 2014 09:58:37 +0000
+Received: by mail-wi0-f171.google.com with SMTP id hm4so409035wib.10
+ for <linux-mtd@lists.infradead.org>; Thu, 01 May 2014 02:58:15 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 32/47] mtd: nand: stm_nand_bch: add Hamming-FLEX operations
-Date: Thu,  1 May 2014 10:56:39 +0100
-Message-Id: <1398938214-17847-33-git-send-email-lee.jones@linaro.org>
+Subject: [PATCH 33/47] mtd: nand: stm_nand_bch: read and write raw (FLEX)
+Date: Thu,  1 May 2014 10:56:40 +0100
+Message-Id: <1398938214-17847-34-git-send-email-lee.jones@linaro.org>
 In-Reply-To: <1398938214-17847-1-git-send-email-lee.jones@linaro.org>
 References: <1398938214-17847-1-git-send-email-lee.jones@linaro.org>
 Cc: Lee Jones <lee.jones@linaro.org>, computersforpeace@gmail.com,
@@ -22,61 +22,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Including; a check for Ready/NotBusy (RBn) (i.e. wait for current
-operation to finish and a method to issue Flex commands to the
-controller.
+Once the correct READ/WRITE(SEQIN) commands and address locations have
+been sent to the Controller, these calls are able to read/write the
+requested information from the FLEX_DATA register.
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mtd/nand/stm_nand_bch.c | 36 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
+ drivers/mtd/nand/stm_nand_bch.c | 35 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
 
 diff --git a/drivers/mtd/nand/stm_nand_bch.c b/drivers/mtd/nand/stm_nand_bch.c
-index e909d80..aba4bc5 100644
+index aba4bc5..32d2211 100644
 --- a/drivers/mtd/nand/stm_nand_bch.c
 +++ b/drivers/mtd/nand/stm_nand_bch.c
-@@ -719,6 +719,42 @@ static int bch_write(struct mtd_info *mtd, struct nand_chip *chip,
+@@ -754,6 +754,41 @@ static void flex_addr(struct nandi_controller *nandi,
+ 	writel(addr, nandi->base + NANDHAM_FLEX_ADD);
  }
  
++static int flex_read_raw(struct nandi_controller *nandi,
++			 uint32_t page_addr,
++			 uint32_t col_addr,
++			 uint8_t *buf, uint32_t len)
++{
++	dev_dbg(nandi->dev, "%s %u bytes at [0x%06x,0x%04x]\n",
++		__func__, len, page_addr, col_addr);
++
++	BUG_ON(len & 0x3);
++	BUG_ON((unsigned long)buf & 0x3);
++
++	emiss_nandi_select(STM_NANDI_HAMMING);
++	nandi_enable_interrupts(nandi, NAND_INT_RBN);
++	reinit_completion(&nandi->rbn_completed);
++
++	writel(FLEX_DATA_CFG_BEATS_4 | FLEX_DATA_CFG_CSN,
++	       nandi->base + NANDHAM_FLEX_DATAREAD_CONFIG);
++
++	flex_cmd(nandi, NAND_CMD_READ0);
++	flex_addr(nandi, col_addr, 2);
++	flex_addr(nandi, page_addr, nandi->extra_addr ? 3 : 2);
++	flex_cmd(nandi, NAND_CMD_READSTART);
++
++	flex_wait_rbn(nandi);
++
++	readsl(nandi->base + NANDHAM_FLEX_DATA, buf, len / 4);
++
++	nandi_disable_interrupts(nandi, NAND_INT_RBN);
++
++	writel(FLEX_DATA_CFG_BEATS_1 | FLEX_DATA_CFG_CSN,
++	       nandi->base + NANDHAM_FLEX_DATAREAD_CONFIG);
++
++	return 0;
++}
++
  /*
-+ * Hamming-FLEX operations
-+ */
-+static int flex_wait_rbn(struct nandi_controller *nandi)
-+{
-+	int ret;
-+
-+	ret = wait_for_completion_timeout(&nandi->rbn_completed, HZ/2);
-+	if (!ret)
-+		dev_err(nandi->dev, "FLEX RBn timeout\n");
-+
-+	return ret;
-+}
-+
-+static void flex_cmd(struct nandi_controller *nandi, uint8_t cmd)
-+{
-+	uint32_t val;
-+
-+	val = (FLEX_CMD_CSN | FLEX_CMD_BEATS_1 | cmd);
-+	writel(val, nandi->base + NANDHAM_FLEX_CMD);
-+}
-+
-+static void flex_addr(struct nandi_controller *nandi,
-+		      uint32_t addr, int cycles)
-+{
-+	addr &= 0x00ffffff;
-+
-+	BUG_ON(cycles < 1);
-+	BUG_ON(cycles > 3);
-+
-+	addr |= (FLEX_ADDR_CSN | FLEX_ADDR_ADD8_VALID);
-+	addr |= (cycles & 0x3) << 28;
-+
-+	writel(addr, nandi->base + NANDHAM_FLEX_ADD);
-+}
-+
-+/*
   * Bad Block Tables/Bad Block Markers
   */
- #define BBT_MARK_BAD_FACTORY	0x0
 -- 
 1.8.3.2
