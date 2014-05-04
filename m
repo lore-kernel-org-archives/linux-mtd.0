@@ -1,22 +1,27 @@
-Received: from smtp.codeaurora.org ([198.145.11.231])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wguzw-0001i9-Dw
- for linux-mtd@lists.infradead.org; Sun, 04 May 2014 11:54:24 +0000
-Message-ID: <b164fc802b8a22836092488f8cc498a1.squirrel@www.codeaurora.org>
-In-Reply-To: <5365E06B.8080300@huawei.com>
-References: <535B7B96.9030008@huawei.com> <536092CE.2090209@huawei.com>
- <20140430121846.GI1821@guralp.com>
- <3921496816192fe04ed3cdbb562fc6d8.squirrel@www.codeaurora.org>
- <5365E06B.8080300@huawei.com>
-Date: Sun, 4 May 2014 11:54:03 -0000
-Subject: Re: [PATCH v2] UBIFS: Fix assert failed in ubifs_set_page_dirty
-From: "Dolev Raviv" <draviv@codeaurora.org>
-To: "hujianyang" <hujianyang@huawei.com>
+Date: Sun, 4 May 2014 13:42:16 -0400
+From: Jason Cooper <jason@lakedaemon.net>
+To: Olof Johansson <olof@lixom.net>
+Subject: Re: [PATCH 1/5] ARM: defconfigs: add MTD_SPI_NOR (new dependency
+ for M25P80)
+Message-ID: <20140504174216.GV28159@titan.lakedaemon.net>
+References: <1397719309-2022-1-git-send-email-computersforpeace@gmail.com>
+ <1397719309-2022-2-git-send-email-computersforpeace@gmail.com>
+ <535A8FC9.8040707@wwwdotorg.org>
+ <20140429190603.GB9418@norris-Latitude-E6410>
+ <20140430114548.GQ28159@titan.lakedaemon.net>
+ <CAOesGMi0zK8H=Ok81ZLhssvG5gsbvanY4dct_PF95Exq6p3tfg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Cc: Dolev Raviv <draviv@codeaurora.org>,
- linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOesGMi0zK8H=Ok81ZLhssvG5gsbvanY4dct_PF95Exq6p3tfg@mail.gmail.com>
+Cc: Marek Vasut <marex@denx.de>, Russell King <linux@arm.linux.org.uk>,
+ Stephen Warren <swarren@wwwdotorg.org>,
+ Linux Kernel <linux-kernel@vger.kernel.org>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Shawn Guo <shawn.guo@freescale.com>, Sascha Hauer <kernel@pengutronix.de>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,76 +31,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Hu, Thanks allot for your help.
-> Hi, Dolev
->
-> On 2014/4/30 21:48, Dolev Raviv wrote:
->> Hi Hujianyang and Laurence,
->> I'm hitting an assertion in very similar code during the callback
->> ubifs_releasepage(). I'm quite new to this code area, and currently
->> diving
->> in to understanding the race you described (before I attempt to look at
->> the patch).
->>
->> I was wondering if this assertion is related?
->>
->> [  862.695278] UBIFS assert failed in ubifs_releasepage at 1434 (pid
->> 11088)
->
-> What's your kernel version? Because in v3.15 and v3.10, line 1434
-> present different assertion.
+On Sat, May 03, 2014 at 03:51:11PM -0700, Olof Johansson wrote:
+> On Wed, Apr 30, 2014 at 4:45 AM, Jason Cooper <jason@lakedaemon.net> wrote:
+> > On Tue, Apr 29, 2014 at 12:06:03PM -0700, Brian Norris wrote:
+> >> Hi Stephen,
+> >>
+> >> On Fri, Apr 25, 2014 at 10:39:37AM -0600, Stephen Warren wrote:
+> >> > On 04/17/2014 01:21 AM, Brian Norris wrote:
+> >> > > These defconfigs contain the CONFIG_M25P80 symbol, which is now
+> >> > > dependent on the MTD_SPI_NOR symbol. Add CONFIG_MTD_SPI_NOR to the
+> >> > > relevant defconfigs.
+> >> > >
+> >> > > At the same time, drop the now-nonexistent CONFIG_MTD_CHAR symbol.
+> >> >
+> >> > I hadn't realized that the problem this patch solves was already present
+> >> > in the code, so this patch is simply catching up the defconfigs rather
+> >> > than part of a series which changed the code to cause the problem.
+> >>
+> >> Yes, this is "catching up the defconfigs." The SPI_NOR framework is new,
+> >> and I didn't want to generate defconfig noise until a few things
+> >> stabilized (particularly, its Kconfig symbol name).
+> >>
+> >> > So, this needs to be applied ASAP.
+> >> >
+> >> > I think this should be split it up so that each defconfig can go through
+> >> > the tree that owns it to avoid conflicts. If you repost split up, I can
+> >> > apply the tegra_defconfig change to the Tegra tree.
+> >>
+> >> OK, I'll try to split it up. Is ARM unique in tracking defconfigs in
+> >> separate trees? I assume MIPS, PowerPC, and Blackfin won't require the
+> >> same splitting? I'd like to avoid 31 patches when <20 could suffice.
+> >
+> > wrt arm-soc, typically they take all changes to multi_v7_defconfig
+> > directly since it is prone to conflicts.  All the other ones are managed
+> > by the individual sub-arch maintainers.
+> >
+> >> I'll also rebase on linux-next. I think there may be a few conflicts.
+> >
+> > I can't speak for the other sub-archs, but I typically prefer that
+> > patches be based on an -rc tag, -rc1 if possible.
+> 
+> This is making a trivial patch a pain to get merged.
 
-You are right the version is v3.10 and I do hit the
-"ubifs_assert(0)"
+Sorry.
 
-> Page_Private bit seems to indicate page is budgeted in UBIFS. Dropping
-> caches performs with page lock and just deals with pages which are not
-> dirty. Then, if page_private bit is set, vfs performs ->releasepage at
-> try_to_release_page.
->
-> Maybe some explanation of this assert failed is that there is a private
-> (budgeted) but not dirty page in your page caches.
+> Cases like these are easiest that we just take the patch directly in
+> an early-merge branch (i.e. cleanup or fixes-non-critical, or a
+> generic depends branch), and if there's conflicts as topics are merged
+> in from subplatforms we can deal with it then.
 
-Wouldn't then the assertion in the previous line fail?
-I dove into the code, and I understood there probably isn't any real
-connection between the to.
-I do appreciate you took the time to answer me :) .
+Are you referring to basing on -rc1, or the series being split up to
+the individual sub-arch maintainers?
 
->
-> I think it is not related to my race because pages can just remain
-> in 3 states at fsync and mmap:
->
-> 1) Dirty, Private
-> 2) Not Dirty, Not Private
-> 3) Dirty, Not Private (wrong condition)
->
-> Did you get some more assert failed after this? If you umount UBIFS,
-> ubifs_put_super will check the budget info, and I think you should
-> hit some assertion there.
+*slightly* confused,
 
-I did notice, at least once, assertion failure:
-[ 4445.102863] UBIFS: un-mount UBI device 1, volume 0
-[ 4445.106627] UBIFS assert failed in ubifs_put_super at 1775 (pid 10416)
-
-But, this error happens only significantly later ~2 hours.
-
->
-> Do you have a simply way to reproduce this assert failed?
->
-
-At the moment I hit this randomly when stressing the system.
-I use a stress test that run parallel IOzone and lmdd benchmark, each
-100MB (out of ~217MB free)
-
-
-
-Wouldn't then the assertion in the previous line fail?
-I dove into the code, and I understood there probably isn't any real
-connection between the to.
-I do appreciate you took the time to answer me . :-)
-
-Thanks,
-Dolev
--- 
-QUALCOMM ISRAEL, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+Jason.
