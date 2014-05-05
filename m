@@ -1,24 +1,20 @@
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Lee Jones <lee.jones@linaro.org>
-Subject: RE: [RFC 13/47] mtd: nand: stm_nand_bch: provide Device Tree support
-Date: Mon, 5 May 2014 06:55:17 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EACA3F0@DBDE04.ent.ti.com>
-References: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
- <1395735604-26706-14-git-send-email-lee.jones@linaro.org>
- <20980858CB6D3A4BAE95CA194937D5E73EAB5C83@DBDE04.ent.ti.com>
- <20140430125406.GN29462@lee--X1>
-In-Reply-To: <20140430125406.GN29462@lee--X1>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-Cc: "angus.clark@st.com" <angus.clark@st.com>,
- "kernel@stlinux.com" <kernel@stlinux.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Received: from mga02.intel.com ([134.134.136.20])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WhCvV-0003X6-Hf
+ for linux-mtd@lists.infradead.org; Mon, 05 May 2014 07:03:01 +0000
+Message-ID: <1399273358.15290.0.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v2] UBIFS: Fix assert failed in ubifs_set_page_dirty
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: hujianyang <hujianyang@huawei.com>
+Date: Mon, 05 May 2014 10:02:38 +0300
+In-Reply-To: <536092CE.2090209@huawei.com>
+References: <535B7B96.9030008@huawei.com> <536092CE.2090209@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Laurence Withers <lwithers@guralp.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>, adrian.hunter@intel.com
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,74 +24,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgTGVlLA0KDQo+RnJvbTogTGVlIEpvbmVzIFttYWlsdG86bGVlLmpvbmVzQGxpbmFyby5vcmdd
-DQo+PiA+RnJvbTogTGVlIEpvbmVzIFttYWlsdG86bGVlLmpvbmVzQGxpbmFyby5vcmddDQoNClsu
-Li5dDQoNCj4+ID4rCW9mX3Byb3BlcnR5X3JlYWRfdTMyKG5wLCAic3QsYmNoLWJpdGZsaXAtdGhy
-ZXNob2xkIiwNCj4+ID4rCQkJICAgICAmcGRhdGEtPmJjaF9iaXRmbGlwX3RocmVzaG9sZCk7DQo+
-PiA+Kw0KPj4gbXRkLT5iaXRmbGlwX3RocmVzaG9sZCBpcyBieSBkZWZhdWx0IHNldCB0byBlY2Mu
-c3RyZW5ndGggKHVubGVzcyBhIGRyaXZlciBpbml0aWFsaXplcyBpdCkuDQo+PiBBbmQgdGhlbiBj
-YW4gYmUgcmUtY29uZmlndXJlZCBmb3IgZWFjaCBNVEQgcGFydGl0aW9uIHNlcGFyYXRlbHkNCj4+
-IAkvc3lzL2NsYXNzL210ZC9tdGRYL2JpdGZsaXBfdGhyZXNob2xkDQo+PiAJUmVmZXI6ICRrZXJu
-ZWwvRG9jdW1lbnRhdGlvbi9BQkkvdGVzdGluZy9zeXNmcy1jbGFzcy1tdGQNCj4+IFNvLCBJIGRv
-bid0IHRoaW5rIHRoaXMgaXMgYSBIVyBwYXJhbWV0ZXIsIGFuZCBzbyBzaG91bGQgbm90IGJlIHBh
-c3NlZCBmcm9tIERULg0KPg0KPkkgdGhpbmsgdGhlIGJpdC1mbGlwIHRocmVzaG9sZCBpcy9jYW4g
-YmUgY2hpcCBzcGVjaWZpYywgYW5kIGFzIHdlIGtub3cNCj53aGljaCBjaGlwIHdlJ3JlIGxpa2Vs
-eSB0byBiZSBib290aW5nIG9uLCB3ZSBjYW4gc3BlY2lmeSB0aGlzIHZpYSB0aGUNCj5oYXJkd2Fy
-ZSBkZXNjcmlwdGlvbi4gIFRodXMsIEkgdGhpbmsgaXQncyBwZXJmZWN0bHkgdmlhYmxlIGZvciBh
-bg0KPm9wdGlvbiB0byBwYXNzIHRocm91Z2ggRFQgdG8gZXhpc3QuDQo+DQpJIGRvbid0IHRoaW5r
-IHRoYXTigJlzIHRoZSBjb3JyZWN0IGludGVycHJldGF0aW9uIG9mIGJpdGZsaXBfdGhyZXNob2xk
-Lg0KDQooMSkgYml0ZmxpcF90aHJlc2hvbGQgaXMgZGVwZW5kZW50IG9uIGVjYy5zdHJlbmd0aCAo
-RUNDIHNjaGVtZSkgb2YgeW91ciBkcml2ZXIuDQpNVEQgbGF5ZXJzIHVzZXMgYml0ZmxpcF90aHJl
-c2hvbGQgdG8gd2FybiBhYm92ZSBsYXllcnMgdGhhdCBudW1iZXIgb2YNCmNvcnJlY3RhYmxlIGJp
-dC1mbGlwcyBoYXZlIHJlYWNoZWQgYSBkYW5nZXJvdXMgbGV2ZWwgYmV5b25kIHdoaWNoIGRyaXZl
-cidzDQpFQ0Mgc2NoZW1lIG1heSBub3QgYmUgYWJsZSB0byBjb3JyZWN0IHRoZW0uIFNvIGFib3Zl
-IGxheWVycyBzaG91bGQgc3RhcnQNCnRha2luZyBhZGRpdGlvbmFsIGNvcnJlY3RpdmUgYWN0aW9u
-IGxpa2Ugc2NydWJiaW5nLg0KCUBAZHJpdmVycy9tdGQvbXRkY29yZS5jOiBtdGRfcmVhZCgpDQoJ
-CXJldHVybiByZXRfY29kZSA+PSBtdGQtPmJpdGZsaXBfdGhyZXNob2xkID8gLUVVQ0xFQU4gOiAw
-Ow0KDQooMikgQWxzbywgdXNlci1zcGFjZSBtYXkgY29udHJvbCBpdCBiYXNlZCBvbiBob3cgeW91
-ciBkZXZpY2UgYWdlcyBvbiBmaWVsZC4NCkEgZnJlc2ggc2lsaWNvbiBtYXkgbm90IHNob3cgdG9v
-IG1hbnkgYml0ZmxpcHMuIEJ1dCBhcyBkZXZpY2UgYWdlcyB0aGUNCnByb2JhYmlsaXR5IG9mIHNp
-bXVsdGFuZW91cyBiaXRmbGlwcyB3aWxsIGluY3JlYXNlLiBTbyB1c2VyLXNwYWNlIG1heSBsb3dl
-cg0KdGhlIGJpdGZsaXBfdGhyZXNob2xkIHRvIGF2b2lkIGFjY3VtdWxhdGlvbiBvZiBiaXRmbGlw
-cyBpbiBhIHNpbmdsZSBwYWdlLg0KIA0KVGh1cywgYml0ZmxpcF90aHJlc2hvbGQgc2hvdWxkIG5v
-dCBiZSBwYXNzZWQgdmlhIERULg0KSXQncyBuZWl0aGVyIGEgaGFyZHdhcmUgcGFyYW1ldGVyLCBu
-b3IgaXTigJlzIGEgc3RhdGljIGNvbnN0YW50Lg0KDQo+DQo+PiA+K3N0cnVjdCBkZXZpY2Vfbm9k
-ZSAqc3RtX29mX2dldF9wYXJ0aXRpb25zX25vZGUoc3RydWN0IGRldmljZV9ub2RlICpucCwNCj4+
-ID4rCQkJCQkgICAgICAgaW50IGJhbmtfbnIpDQo+PiA+K3sNCj4+ID4rCXN0cnVjdCBkZXZpY2Vf
-bm9kZSAqYmFua3NucCwgKmJhbmtucCwgKnBhcnRzbnAgPSBOVUxMOw0KPj4gPisJY2hhciBuYW1l
-WzEwXTsNCj4+ID4rDQo+PiA+KwliYW5rc25wID0gb2ZfcGFyc2VfcGhhbmRsZShucCwgInN0LG5h
-bmQtYmFua3MiLCAwKTsNCj4+ID4rCWlmICghYmFua3NucCkNCj4+ID4rCQlyZXR1cm4gTlVMTDsN
-Cj4+ID4rDQo+PiA+KwlzcHJpbnRmKG5hbWUsICJiYW5rJWQiLCBiYW5rX25yKTsNCj4+ID4rCWJh
-bmtucCA9IG9mX2dldF9jaGlsZF9ieV9uYW1lKGJhbmtzbnAsIG5hbWUpOw0KPj4gPisJaWYgKGJh
-bmtucCkNCj4+ID4rCQlyZXR1cm4gTlVMTDsNCj4+ID4rDQo+PiA+KwlwYXJ0c25wID0gb2ZfZ2V0
-X2NoaWxkX2J5X25hbWUoYmFua25wLCAicGFydGl0aW9ucyIpOw0KPj4gPisJb2Zfbm9kZV9wdXQo
-YmFua25wKTsNCj4+ID4rDQo+PiBTb3JyeSwgSSdtIGJpdCBjb25mdXNlZCBoZXJlIC4uIEkgdGhp
-bmsgeW91IGRvbid0IG5lZWQgdG8gZmluZCBjaGlsZHJlbiBvZg0KPj4gWW91ciBiYW5rIG5vZGUu
-IFRoaXMgc2hvdWxkIGFscmVhZHkgdGFrZW4gY2FyZSBpbiBkZWZhdWx0IHBhcnNlcg0KPj4gZHJp
-dmVycy9tdGQvb2ZwYXJ0LmMgOiBwYXJzZV9vZnBhcnRfcGFydGl0aW9ucygpDQo+PiBBbmQgYWxs
-IHlvdSBuZWVkIHRvIHBhc3MgaXMgJ29mX25vZGUnIG9mIGJhbmsgKGRldmljZSkuDQo+PiBJcyBt
-eSB1bmRlcnN0YW5kaW5nIGNvcnJlY3QgPw0KPg0KPldlIGhhdmUgMyBvcHRpb25zIGhlcmUsIHlv
-dSBfY2FuXyB1c2UgcGFyc2Vfb2ZwYXJ0X3BhcnRpdGlvbnMoKSBpZg0KPnlvdXIgcGFydGl0aW9u
-IGluZm9ybWF0aW9uIGNvbmZvcm1zIHRvIGl0cyBzY2hlbWEsIGJ1dCBzYWlkIHNjaGVtYQ0KPmRv
-ZXMgbm90IHN1cHBvcnQgYmFua3MgYW5kL29yIG90aGVyIGluZm9ybWF0aW9uIHRoYXQgd2UgY2hv
-b3NlIHRvDQo+cGxhY2Ugd2l0aGluIHRoZSBiYW5rIG5vZGUuICBUaGUgc2Vjb25kIG9wdGlvbiBp
-cyB0byByZWdpc3RlciBhDQo+cGFyc2VyLiAgTXkgcGVyc29uYWwgdmlldyBpcyB0aGF0IHJlZ2lz
-dGVyaW5nIGEgcGFyc2VyIGlzIHVzaW5nIHRoZQ0KPmZyYW1ld29yayBmb3IgJ3VzaW5nIHRoZSBm
-cmFtZXdvcmsncycgc2FrZSBpLmUuIGRvZXNuJ3QgYWN0dWFsbHkNCj5hY2hpZXZlIGFueXRoaW5n
-IHNwZWNpYWwuICBXZSd2ZSBjaG9zZW4gdGhlIHRoaXJkIG9wdGlvbiwgd2hpY2ggaXMgdG8NCj5w
-YXJzZSBhbmQgZXh0cmFjdCB0aGUgaW5mb3JtYXRpb24gb3Vyc2VsdmVzIC0gd2hpY2ggaXMgYWN0
-dWFsbHkgZmFpcmx5DQo+dHJpdmlhbCwgYW5kIHBhc3MgdGhlIHJlcXVpcmVkIHBhcnRpdGlvbiBk
-YXRhIGluIHRocm91Z2ggdGhlDQo+bXRkX2RldmljZV9wYXJzZV9yZWdpc3RlcigpIGNhbGwgLSB3
-aGljaCBpcyB3aGVyZSB0aGUgaW5mb3JtYXRpb24NCj53b3VsZCBiZSBwYXJzZWQgaW4gdGhlIGNh
-c2Ugb2YgdGhlIGZpcnN0IHR3byBvcHRpb25zLg0KPg0KRG8geW91IHJlYWxseSB3YW50IHRvIGhh
-dmUgKmN1c3RvbSogcGFydGl0aW9uIGZvcm1hdCA/DQpJZiB5b3VyIHByZXZpb3VzIGNvZGUgd2Fz
-IG5vbi1EVCAocGxhdGZvcm0gZmlsZSBiYXNlZCksIHRoZW4gSSB0aGluaw0KSXQncyBnb29kIHBv
-aW50IHRvIG1vdmUgdG8gdW5pZmllZCBnZW5lcmljIHBhcnRpdGlvbiBmb3JtYXQgd2hpY2ggb3Ro
-ZXJzDQphcmUgZm9sbG93aW5nLCBhcyB5b3UgbWFrZSB5b3VyIGRyaXZlciBEVCBjb21wbGlhbnQs
-IGFuZCBpbiBtYWlubGluZS4NCg0KSSB1bmRlcnN0YW5kIHlvdSBwcmltYXJ5IG9iamVjdGl2ZSB3
-b3VsZCBiZSB0byBnZXQgU1QgZHJpdmVyIHdvcmsNCm91dCBvZiBtYWlubGluZSBhc2FwLCBidXQg
-aWYgeW91IHVwc3RyZWFtIHRvbyBtYW55IGN1c3RvbSBzdHVmZiB5b3UNCmFyZSBvbmx5IGFkZGlu
-ZyBtYWludGVuYW5jZSBidXJkZW4gZm9yIHlvdXIgY29kZS4gVGhpcyBpcyB3aGVyZQ0KbW9zdCBv
-ZiBteSBjb21tZW50cyBvcmlnaW5hdGUuDQpIb3dldmVyLCBJIGxlYXZlIGl0IHRvIEJyaWFuIHRv
-IGRlY2lkZSwgaWYgaGUgaXMgb2theSB3aXRoIHRoZXNlLg0KDQoNCndpdGggcmVnYXJkcywgcGVr
-b24NCg==
+
+On Wed, 2014-04-30 at 14:06 +0800, hujianyang wrote:
+> Hi, all
+> 
+> Basing on the perious mail, I would like to show a clear figure
+> about the race I have found.
+
+Looks correct, thanks. This probably needs to go the the stable tree.
+
+-- 
+Best Regards,
+Artem Bityutskiy
