@@ -1,20 +1,19 @@
-Date: Sun, 4 May 2014 21:03:44 -0400
-From: Jason Cooper <jason@lakedaemon.net>
+Received: from ns.omicron.at ([212.183.10.25])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WhCBf-00012x-7K
+ for linux-mtd@lists.infradead.org; Mon, 05 May 2014 06:15:41 +0000
+From: Christian Riesch <christian.riesch@omicron.at>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v2 08/12] ARM: marvell: add MTD_SPI_NOR (new dependency
- for M25P80)
-Message-ID: <20140505010344.GE28159@titan.lakedaemon.net>
-References: <1398925607-7482-1-git-send-email-computersforpeace@gmail.com>
- <1398925607-7482-9-git-send-email-computersforpeace@gmail.com>
+Subject: [RESEND PATCH v4 2/4] mtd: cfi_cmdset_0002: Invalidate cache after
+ entering/exiting OTP memory
+Date: Mon, 5 May 2014 08:14:27 +0200
+In-Reply-To: <1399270469-31022-1-git-send-email-christian.riesch@omicron.at>
+References: <1399270469-31022-1-git-send-email-christian.riesch@omicron.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1398925607-7482-9-git-send-email-computersforpeace@gmail.com>
-Cc: Marek Vasut <marex@denx.de>, Andrew Lunn <andrew@lunn.ch>,
- Linux Kernel <linux-kernel@vger.kernel.org>,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+Content-Type: text/plain
+Message-ID: <1d461044-07e9-48f2-a863-aa1920524b31@mary.at.omicron.at>
+Cc: Christian Riesch <christian.riesch@omicron.at>,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,31 +23,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Apr 30, 2014 at 11:26:43PM -0700, Brian Norris wrote:
-> These defconfigs contain the CONFIG_M25P80 symbol, which is now
-> dependent on the MTD_SPI_NOR symbol. Add CONFIG_MTD_SPI_NOR to satisfy
-> the new dependency.
-> 
-> At the same time, drop the now-nonexistent CONFIG_MTD_CHAR symbol.
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Cc: Jason Cooper <jason@lakedaemon.net>
-> Cc: Andrew Lunn <andrew@lunn.ch>
-> Cc: Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Acked-by: Jason Cooper <jason@lakedaemon.net>
-> ---
->  arch/arm/configs/dove_defconfig     | 2 +-
->  arch/arm/configs/kirkwood_defconfig | 1 +
->  arch/arm/configs/mvebu_v5_defconfig | 1 +
->  arch/arm/configs/mvebu_v7_defconfig | 1 +
->  4 files changed, 4 insertions(+), 1 deletion(-)
+When the one time programmable (OTP) memory region is entered by
+issuing the 0xaa/0x55/0x88 command, the OTP memory occupies the
+addresses which are normally used by the first sector of the regular
+flash memory. This patch therefore invalidates cache for this
+addresses after entering/exiting OTP memory.
 
-Applied to mvebu/defconfig with Ezequiel's Ack, and a reworded subject:
+This patch also moves the code into separate functions.
 
-"ARM: mvebu: defconfig: add MTD_SPI_NOR (new dependency for M25P80)"
+Signed-off-by: Christian Riesch <christian.riesch@omicron.at>
+---
+ drivers/mtd/chips/cfi_cmdset_0002.c |   44 +++++++++++++++++++++++++++--------
+ 1 file changed, 34 insertions(+), 10 deletions(-)
 
-thx,
-
-Jason.
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index 6e2ce76..bf72128 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -1157,11 +1157,42 @@ static int cfi_amdstd_read (struct mtd_info *mtd, loff_t from, size_t len, size_
+ typedef int (*otp_op_t)(struct map_info *map, struct flchip *chip,
+ 			loff_t adr, size_t len, u_char *buf);
+ 
++static inline void otp_enter(struct map_info *map, struct flchip *chip,
++			     loff_t adr, size_t len)
++{
++	struct cfi_private *cfi = map->fldrv_priv;
++
++	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi,
++			 cfi->device_type, NULL);
++	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi,
++			 cfi->device_type, NULL);
++	cfi_send_gen_cmd(0x88, cfi->addr_unlock1, chip->start, map, cfi,
++			 cfi->device_type, NULL);
++
++	INVALIDATE_CACHED_RANGE(map, chip->start + adr, len);
++}
++
++static inline void otp_exit(struct map_info *map, struct flchip *chip,
++			    loff_t adr, size_t len)
++{
++	struct cfi_private *cfi = map->fldrv_priv;
++
++	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi,
++			 cfi->device_type, NULL);
++	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi,
++			 cfi->device_type, NULL);
++	cfi_send_gen_cmd(0x90, cfi->addr_unlock1, chip->start, map, cfi,
++			 cfi->device_type, NULL);
++	cfi_send_gen_cmd(0x00, cfi->addr_unlock1, chip->start, map, cfi,
++			 cfi->device_type, NULL);
++
++	INVALIDATE_CACHED_RANGE(map, chip->start + adr, len);
++}
++
+ static inline int do_read_secsi_onechip(struct map_info *map, struct flchip *chip, loff_t adr, size_t len, u_char *buf)
+ {
+ 	DECLARE_WAITQUEUE(wait, current);
+ 	unsigned long timeo = jiffies + HZ;
+-	struct cfi_private *cfi = map->fldrv_priv;
+ 
+  retry:
+ 	mutex_lock(&chip->mutex);
+@@ -1183,16 +1214,9 @@ static inline int do_read_secsi_onechip(struct map_info *map, struct flchip *chi
+ 
+ 	chip->state = FL_READY;
+ 
+-	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
+-	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, cfi->device_type, NULL);
+-	cfi_send_gen_cmd(0x88, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
+-
++	otp_enter(map, chip, adr, len);
+ 	map_copy_from(map, buf, adr, len);
+-
+-	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
+-	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, cfi->device_type, NULL);
+-	cfi_send_gen_cmd(0x90, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
+-	cfi_send_gen_cmd(0x00, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
++	otp_exit(map, chip, adr, len);
+ 
+ 	wake_up(&chip->wq);
+ 	mutex_unlock(&chip->mutex);
+-- 
+1.7.9.5
