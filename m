@@ -1,15 +1,15 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga02.intel.com ([134.134.136.20])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WhCWe-0002VA-76
- for linux-mtd@lists.infradead.org; Mon, 05 May 2014 06:37:20 +0000
-Message-ID: <1399271816.17496.111.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH for v3.15 0/2] UBI: block: Support very large volumes
+ id 1WhCZZ-0003Md-6B
+ for linux-mtd@lists.infradead.org; Mon, 05 May 2014 06:40:21 +0000
+Message-ID: <1399271969.17496.112.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] UBI: weaken the 'exclusive' constraint when opening
+ volumes to rename
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Date: Mon, 05 May 2014 09:36:56 +0300
-In-Reply-To: <20140423235911.GB1628@arch.cereza>
-References: <1397741023-2122-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <20140423235911.GB1628@arch.cereza>
+Date: Mon, 05 May 2014 09:39:29 +0300
+In-Reply-To: <1397681253-5203-1-git-send-email-ezequiel.garcia@free-electrons.com>
+References: <1397681253-5203-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -24,14 +24,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2014-04-23 at 20:59 -0300, Ezequiel Garcia wrote:
-> >  drivers/mtd/ubi/block.c | 10 ++++++----
-> >  1 file changed, 6 insertions(+), 4 deletions(-)
-> > 
+On Wed, 2014-04-16 at 17:47 -0300, Ezequiel Garcia wrote:
+> The UBI volume rename ioctl (UBI_IOCRNVOL) open the volumes in exclusive
+> mode. The volumes are opened for two reasons: to build a volume rename list,
+> and a volume remove list.
 > 
-> Do you think you can pick this for v3.15-rc3?
+> However, the first open constraint is excessive and can be replaced by
+> a 'read-write' open mode. The second open constraint is properly set as
+> 'exclusive' given the volume is opened for removal and we don't want any
+> users around.
 
-Picked both, I'll send them to Linus soon, thanks!
+Pushed to l2-mtd.git, thanks!
 
 -- 
 Best Regards,
