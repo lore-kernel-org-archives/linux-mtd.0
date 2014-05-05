@@ -1,35 +1,23 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WhEYa-0005WZ-JY
- for linux-mtd@lists.infradead.org; Mon, 05 May 2014 08:47:29 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Helmut Schaa <helmut.schaa@googlemail.com>, Scott Wood
- <scottwood@freescale.com>
-Subject: RE: [PATCH] mtd: nand: Disable subpage writes for drivers without
- ecc->hwctl
-Date: Mon, 5 May 2014 08:46:54 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EACA532@DBDE04.ent.ti.com>
-References: <1397034804-27161-1-git-send-email-helmut.schaa@googlemail.com>
- <20980858CB6D3A4BAE95CA194937D5E73EAC1D46@DBDE04.ent.ti.com>
- <CAGXE3d8H=y3LeW54kwZg04-Edm-KkNbqXLCduNuPfAOrLymO+A@mail.gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73EAC1D89@DBDE04.ent.ti.com>
- <1397086473.20280.33.camel@snotra.buserror.net>
- <5dc1853e-694c-4add-bd62-e0c2a66f4c95@email.android.com>
- <20980858CB6D3A4BAE95CA194937D5E73EAC2146@DBDE04.ent.ti.com>
- <CAGXE3d8892D5JjFvs0Yxz6bpMciudq_95zeaKogYQqi2yMV7Pg@mail.gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73EAC2697@DBDE04.ent.ti.com>
- <1397247023.20280.144.camel@snotra.buserror.net>
- <20980858CB6D3A4BAE95CA194937D5E73EAC2C82@DBDE04.ent.ti.com>
- <951d14ea-6f8c-420a-8ddc-019a47965717@email.android.com>
-In-Reply-To: <951d14ea-6f8c-420a-8ddc-019a47965717@email.android.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WhF8s-0005Pj-7p
+ for linux-mtd@lists.infradead.org; Mon, 05 May 2014 09:24:58 +0000
+Date: Mon, 5 May 2014 06:24:04 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH for v3.15 0/2] UBI: block: Support very large volumes
+Message-ID: <20140505092403.GB2873@arch.cereza>
+References: <1397741023-2122-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20140423235911.GB1628@arch.cereza>
+ <1399271816.17496.111.camel@sauron.fi.intel.com>
+ <1399274592.15290.12.camel@sauron.fi.intel.com>
 MIME-Version: 1.0
-Cc: "Huang Shijie \(b32955@freescale.com\)" <b32955@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <David.Woodhouse@intel.com>, Artem
- Bityutskiy <artem.bityutskiy@linux.intel.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1399274592.15290.12.camel@sauron.fi.intel.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,52 +27,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGksDQoNCj5Gcm9tOiBIZWxtdXQgU2NoYWEgW21haWx0bzpoZWxtdXQuc2NoYWFAZ29vZ2xlbWFp
-bC5jb21dDQo+Pk9uIDE0LiBBcHJpbCAyMDE0IDA3OjU1OjMwIE1FU1osICJHdXB0YSwgUGVrb24i
-IDxwZWtvbkB0aS5jb20+DQo+Pj5Gcm9tOiBTY290dCBXb29kIFttYWlsdG86c2NvdHR3b29kQGZy
-ZWVzY2FsZS5jb21dDQo+Pj4+T24gRnJpLCAyMDE0LTA0LTExIGF0IDA2OjM1ICswMDAwLCBHdXB0
-YSwgUGVrb24gd3JvdGU6DQoNCj4+Pj4gQXMgcGVyIFsxXSBhbmQgWzJdLCBJZiB0aGUgc3VicGFn
-ZSBpcyBfbm90XyBzdXBwb3J0ZWQgdGhlbg0KPj5WSUQtaGVhZGVyIG9mZnNldA0KPj4+PiBzaG91
-bGQgYmUgYWxpZ25lZCB0byAgUEFHRV9TSVpFIGJvdW5kYXJ5LiBBbmQgaXQgaGFzDQo+aW1wbGlj
-YXRpb25zIG9uDQo+PkxFQiBzaXplDQo+Pj4+IGNhbGN1bGF0aW9uIHRvby4gSSBkb24ndCBrbm93
-IGhvdyBpdCB3YXMgd29ya2luZyBlYXJsaWVyIGJ1dCBpZiB0aGUNCj4+ZWFybGllcg0KPj4+PiBV
-QkkgaW1hZ2VzIHdlcmUgdXNpbmcgNTEyIGFzIFZJRCBIZWFkZXIgb2Zmc2V0IGV2ZW4gd2l0aG91
-dA0KPnN1YnBhZ2UNCj4+Pj4gU3VwcG9ydCB0aGVuIGl0J3MgaW5jb3JyZWN0IGNvbmZpZ3VyYXRp
-b24uDQo+Pj4NCj4+PkkgYmVsaWV2ZSB3aGF0IHdhcyBoYXBwZW5pbmcgYmVmb3JlIHdhcyBmdWxs
-IHBhZ2Ugd3JpdGVzIHdpdGggb25seQ0KPj4+c3VicGFnZSBjb250ZW50ICh0aGUgcmVzdCBsZWZ0
-IGF0IDB4ZmYpLg0KPj4+DQo+PlllcywgdGhhdCBpcyBwb3NzaWJsZSwgc29ycnkgSSBtaXNzZWQg
-dGhhdCBuYW5kX2RvX3dyaXRlX29wcygpIGRvZXMNCj4+MHhmZiBwYWRkaW5nDQo+PmZvciBub24t
-cGFnZSBhbGlnbmVkIHdyaXRlcy4gSW4gdGhhdCBjYXNlIHJlcGxpY2F0aW5nDQo+PmZzbF9lbGJj
-X3dyaXRlX3BhZ2UoKSBmb3INCj4+Y2hpcC0+ZWNjLndyaXRlX3N1YnBhZ2Ugc2hvdWxkIGFsc28g
-d29yayBhbmQgbWFpbnRhaW4gYmFja3dhcmQNCj4+Y29tcGF0aWJpbGl0eS4NCj4+DQo+Pihub3Qg
-Y29tcGlsZSB0ZXN0ZWQpDQo+DQo+SkZJLCBJJ20gaW4gdmFjYXRpb24gdGlsbCBuZXh0IHdlZWsg
-YW5kIGRvbid0IGhhdmUgYWNjZXNzIHRvIHRoZSBhZmZlY3RlZA0KPnN5c3RlbS4gV2lsbCBkbyBh
-IHRlc3Qgb25jZSBJJ20gYmFjay4NCj5IZWxtdXQNCj4NCg0KQW55IHVwZGF0ZSBvbiBiZWxvdyBw
-YXRjaD8gRG9lcyB0aGlzIG1haW50YWluIGNvbXBhdGliaWxpdHkgdG8NCmV4aXN0aW5nIFVCSUZT
-IGltYWdlcyA/DQoNCndpdGggcmVnYXJkcywgUGVrb24NCg0KDQoNCj4+LS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tDQo+PmRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL2Zz
-bF9lbGJjX25hbmQuYw0KPj5iL2RyaXZlcnMvbXRkL25hbmQvZnNsX2VsYmNfbmFuZC5jDQo+Pmlu
-ZGV4IGEyMTI1MmMuLmNjNzljZTQgMTAwNjQ0DQo+Pi0tLSBhL2RyaXZlcnMvbXRkL25hbmQvZnNs
-X2VsYmNfbmFuZC5jDQo+PisrKyBiL2RyaXZlcnMvbXRkL25hbmQvZnNsX2VsYmNfbmFuZC5jDQo+
-PkBAIC03MjMsNiArNzIzLDE5IEBAIHN0YXRpYyBpbnQgZnNsX2VsYmNfd3JpdGVfcGFnZShzdHJ1
-Y3QNCj5tdGRfaW5mbw0KPj4qbXRkLCBzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwLA0KPj4gICAgICAg
-IHJldHVybiAwOw0KPj4gfQ0KPj4NCj4+Ky8qIEVDQyB3aWxsIGJlIGNhbGN1bGF0ZWQgYXV0b21h
-dGljYWxseSwgYW5kIGVycm9ycyB3aWxsIGJlIGRldGVjdGVkDQo+PmluDQo+PisgKiB3YWl0ZnVu
-Yy4NCj4+KyAqLw0KPj4rc3RhdGljIGludCBmc2xfZWxiY193cml0ZV9zdWJwYWdlKHN0cnVjdCBt
-dGRfaW5mbyAqbXRkLCBzdHJ1Y3QNCj4+bmFuZF9jaGlwICpjaGlwLA0KPj4rICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIHVpbnQzMl90IG9mZnNldCwgdWludDMyX3QgZGF0YV9sZW4sDQo+
-PisgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29uc3QgdWludDhfdCAqYnVmLCBpbnQg
-b29iX3JlcXVpcmVkKQ0KPj4rew0KPj4rICAgICAgIGZzbF9lbGJjX3dyaXRlX2J1ZihtdGQsIGJ1
-ZiwgbXRkLT53cml0ZXNpemUpOw0KPj4rICAgICAgIGZzbF9lbGJjX3dyaXRlX2J1ZihtdGQsIGNo
-aXAtPm9vYl9wb2ksIG10ZC0+b29ic2l6ZSk7DQo+PisNCj4+KyAgICAgICByZXR1cm4gMDsNCj4+
-K30NCj4+Kw0KPj4gc3RhdGljIGludCBmc2xfZWxiY19jaGlwX2luaXQoc3RydWN0IGZzbF9lbGJj
-X210ZCAqcHJpdikNCj4+IHsNCj4+ICAgICAgICBzdHJ1Y3QgZnNsX2xiY19jdHJsICpjdHJsID0g
-cHJpdi0+Y3RybDsNCj4+QEAgLTc2Miw2ICs3NzUsNyBAQCBzdGF0aWMgaW50IGZzbF9lbGJjX2No
-aXBfaW5pdChzdHJ1Y3QNCj5mc2xfZWxiY19tdGQNCj4+KnByaXYpDQo+Pg0KPj4gICAgICAgIGNo
-aXAtPmVjYy5yZWFkX3BhZ2UgPSBmc2xfZWxiY19yZWFkX3BhZ2U7DQo+PiAgICAgICAgY2hpcC0+
-ZWNjLndyaXRlX3BhZ2UgPSBmc2xfZWxiY193cml0ZV9wYWdlOw0KPj4rICAgICAgIGNoaXAtPmVj
-Yy53cml0ZV9zdWJwYWdlID0gZnNsX2VsYmNfd3JpdGVfc3VicGFnZTsNCj4+DQo+PiAgICAgICAg
-LyogSWYgQ1MgQmFzZSBSZWdpc3RlciBzZWxlY3RzIGZ1bGwgaGFyZHdhcmUgRUNDIHRoZW4gdXNl
-IGl0ICovDQo+PiAgICAgICAgaWYgKChpbl9iZTMyKCZsYmMtPmJhbmtbcHJpdi0+YmFua10uYnIp
-ICYgQlJfREVDQykgPT0NCj4+DQo+Pi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LQ0K
+On 05 May 10:23 AM, Artem Bityutskiy wrote:
+> On Mon, 2014-05-05 at 09:36 +0300, Artem Bityutskiy wrote:
+> > On Wed, 2014-04-23 at 20:59 -0300, Ezequiel Garcia wrote:
+> > > >  drivers/mtd/ubi/block.c | 10 ++++++----
+> > > >  1 file changed, 6 insertions(+), 4 deletions(-)
+> > > > 
+> > > 
+> > > Do you think you can pick this for v3.15-rc3?
+> > 
+> > Picked both, I'll send them to Linus soon, thanks!
+> 
+> So kbuild caught a warning. Shame I did not notice this myself, but the
+> warning indicates a bigger problem - the entire function is not allowed
+> to fail, but it seems like there are conditions when it needs to fail.
+> Would you please analyze the error handling in the resize path?
+> 
+
+Working on it.
+
+Sorry for the crap,
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
