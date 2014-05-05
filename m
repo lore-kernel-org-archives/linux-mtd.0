@@ -1,28 +1,22 @@
-Received: from mail-yk0-f181.google.com ([209.85.160.181])
+Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WhIMu-0002Tn-8w
- for linux-mtd@lists.infradead.org; Mon, 05 May 2014 12:51:41 +0000
-Received: by mail-yk0-f181.google.com with SMTP id q200so6110944ykb.12
- for <linux-mtd@lists.infradead.org>; Mon, 05 May 2014 05:51:18 -0700 (PDT)
-Date: Mon, 5 May 2014 09:50:47 -0300
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Problems in Out of tree TI SDK omap2-nand driver (Re: [PATCH 3/3]
- nandtest: Introduce multiple reads & check iterations)
-Message-ID: <20140505125047.GA11106@arch.cereza>
-References: <1398690859-11494-1-git-send-email-ezequiel@vanguardiasur.com.ar>
- <1398690859-11494-4-git-send-email-ezequiel@vanguardiasur.com.ar>
- <20980858CB6D3A4BAE95CA194937D5E73EACA5DB@DBDE04.ent.ti.com>
- <20140505103335.GF2873@arch.cereza>
- <20980858CB6D3A4BAE95CA194937D5E73EACA6B9@DBDE04.ent.ti.com>
+ id 1WhIxW-0001vN-Bc
+ for linux-mtd@lists.infradead.org; Mon, 05 May 2014 13:29:32 +0000
+Date: Mon, 5 May 2014 15:29:03 +0200
+From: Gerhard Sittig <gsi@denx.de>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2 0/3] mtd: nand: introduce a READMODE command
+Message-ID: <20140505132903.GP2821@book.gsilab.sittig.org>
+References: <1396611948-4523-1-git-send-email-gsi@denx.de>
+ <20140414185541.GW3528@book.gsilab.sittig.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EACA6B9@DBDE04.ent.ti.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Guido =?iso-8859-1?Q?Mart=EDnez?= <guido@vanguardiasur.com.ar>,
- Artem Bityutskiy <dedekind1@gmail.com>
+In-Reply-To: <20140414185541.GW3528@book.gsilab.sittig.org>
+Cc: David Mosberger <davidm@egauge.net>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Pekon Gupta <pekon@ti.com>,
+ Alexander Shiyan <shc_work@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,56 +26,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I've changed the subject of this mail, since it seems we've moved from the
-discussion.
-
-On 05 May 10:58 AM, Gupta, Pekon wrote:
+On Mon, 2014-04-14 at 20:55 +0200, Gerhard Sittig wrote:
 > 
-> However, I know of some issues in OMAP NAND driver bundled with
-> 3.2 kernel, which might be helpful in nailing down your specific issue.
+> On Fri, 2014-04-04 at 13:45 +0200, Gerhard Sittig wrote:
+> > 
+> > this series does some minor cleanup in nand_command_lp() and then
+> > introduces a NAND_CMD_READMODE opcode which is similar to the existing
+> > NAND_CMD_READ0 but does not imply NAND_CMD_READSTART
+> > 
+> > such a READMODE command is useful in preparation of the pending
+> > introduction of on-die-ECC support
 > 
+> Are there any concerns left that I should address?
 
-FWIW, I'm not using such driver anymore. Right after spotting this, we've
-ran the *same* test on the mainline driver, which passed. This was the kick
-we needed to start using mainline (we also need mainline for other reasons).
+There have been two good weeks without further comments, and an
+ACK from Gupta Pekon.  Can the series get applied?  Should I
+re-submit with the ACK?
 
-> (1) 3.2 kernel does not have concept of bitflip_threshold, so by default
-> scrubbing and peb_torture happens even for single bit-flips. So please
-> pull-in following patch series.
-> [PATCH v2 0/7] mtd: Change meaning of -EUCLEAN return code on reads
-> http://lists.infradead.org/pipermail/linux-mtd/2012-April/040945.html
-> 
+I assume that trackers already did catch the ACK, so I only would
+duplicate their action and re-send what has not changed.  And I
+understand that the delay is because of the merge window.
 
-Isn't this series related to the higher-level treatment of bitflips?
-In that case, it's not related to the issue I got. Keep in mind that
-this simple test failed in our v3.2 stress (using this nandtest patch):
 
-  * erase
-  * write
-  * read
-  * read
-  * ...
-  * read (20 times)
-
-> (2) OMAP NAND in 3.2 kernel does not factor bit-flips in empty pages
-> Hence if empty pages with bit-flips are encountered, then it treats them
-> like programmed pages and expects a ECC correction on them. But as
-> empty pages do not have ECC stored in OOB, the driver bails out giving
-> 'uncorrectable ecc' read errors.
-> 
-
-Since the test doesn't involve empty pages, I'd say this is not relevant.
-
-If you're still interested in debugging the problematic TI SDK omap2-nand
-driver, I suggest that you try using this nandtest patch and see how it
-goes.
-
-Despite you saying drivers can fail the test, I think it's still a nice test.
-Keep in mind the nandtest tool reports the number of corrected ECC errors
-after reads, so if that number is adding-up and increasing you can even
-use this patch to see this evolution.
-
-All in all, I think it's still a nice improvement on stock nandtest.
+virtually yours
+Gerhard Sittig
 -- 
-Ezequiel Garcia, VanguardiaSur
-www.vanguardiasur.com.ar
+DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
+HRB 165235 Munich, Office: Kirchenstr. 5, D-82194 Groebenzell, Germany
+Phone: +49-8142-66989-0 Fax: +49-8142-66989-80  Email: office@denx.de
