@@ -1,19 +1,18 @@
 Received: from mga02.intel.com ([134.134.136.20])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WhCZZ-0003Md-6B
- for linux-mtd@lists.infradead.org; Mon, 05 May 2014 06:40:21 +0000
-Message-ID: <1399271969.17496.112.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] UBI: weaken the 'exclusive' constraint when opening
- volumes to rename
+ id 1WhCdB-0004pc-2I
+ for linux-mtd@lists.infradead.org; Mon, 05 May 2014 06:44:05 +0000
+Message-ID: <1399272221.17496.113.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] UBIFS: Remove unused variables in ubifs_budget_space
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Date: Mon, 05 May 2014 09:39:29 +0300
-In-Reply-To: <1397681253-5203-1-git-send-email-ezequiel.garcia@free-electrons.com>
-References: <1397681253-5203-1-git-send-email-ezequiel.garcia@free-electrons.com>
+To: hujianyang <hujianyang@huawei.com>
+Date: Mon, 05 May 2014 09:43:41 +0300
+In-Reply-To: <535F040C.8010903@huawei.com>
+References: <535F040C.8010903@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,17 +23,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2014-04-16 at 17:47 -0300, Ezequiel Garcia wrote:
-> The UBI volume rename ioctl (UBI_IOCRNVOL) open the volumes in exclusive
-> mode. The volumes are opened for two reasons: to build a volume rename list,
-> and a volume remove list.
+On Tue, 2014-04-29 at 09:44 +0800, hujianyang wrote:
+> I found two variables in ubifs_budget_space declared but not
+> use. This state remains since the first commit 1e5176. So just
+> remove them.
 > 
-> However, the first open constraint is excessive and can be replaced by
-> a 'read-write' open mode. The second open constraint is properly set as
-> 'exclusive' given the volume is opened for removal and we don't want any
-> users around.
+> Signed-off-by: hujianyang <hujianyang@huawei.com>
 
-Pushed to l2-mtd.git, thanks!
+Applied to linux-ubifs.git tree, thanks!
 
 -- 
 Best Regards,
