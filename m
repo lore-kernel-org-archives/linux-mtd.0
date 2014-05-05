@@ -1,14 +1,16 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WhFtB-0002YX-7r
- for linux-mtd@lists.infradead.org; Mon, 05 May 2014 10:12:49 +0000
+ id 1WhFtB-0002dP-7s
+ for linux-mtd@lists.infradead.org; Mon, 05 May 2014 10:12:50 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>,
 	Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH v2 for v3.15 0/3] UBI: block: Support very large volumes
-Date: Mon,  5 May 2014 07:11:51 -0300
-Message-Id: <1399284714-6283-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH v2 1/3] UBI: block: Make ubiblock_resize return something
+Date: Mon,  5 May 2014 07:11:52 -0300
+Message-Id: <1399284714-6283-2-git-send-email-ezequiel.garcia@free-electrons.com>
+In-Reply-To: <1399284714-6283-1-git-send-email-ezequiel.garcia@free-electrons.com>
+References: <1399284714-6283-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Richard Weinberger <richard@nod.at>,
  Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,39 +22,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Changes from v1:
+Currently, ubiblock_resize() can fail if the device is not found
+in the list. This commit changes the return type, so the function can
+return something meaningful on error paths.
 
-  * Fixed ubiblock_resize so it returns something. I've kept a ubi_warn
-    message in ubiblock_resize, because otherwise the failure is not reported
-    to the user in any way.
-    Thanks for the kbuild-robot for reporting this!
+Reported-by: kbuild test robot <fengguang.wu@intel.com>
+Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+---
+ drivers/mtd/ubi/block.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-Here's the v1 cover letter:
-
-This is a re-spin of Richard's work [1]. I've added a patch for some minor
-clean-up, so the large volume fix is a less intrusive one.
-
-The proposed returned value E2BIG has been changed for EFBIG, which results
-in a slightly more accurate error. Also, the user messages have been removed
-entirely; returning an error seems enough.
-
-This bug was reported on #mtd IRC. I don't have to reporter name to give proper
-credit. It should be applied as a fix for v3.15.
-
-Richard: Thanks a lot for hunting this down, and feel free to disagree about
-my changes.
-
-[1] https://lkml.org/lkml/2014/3/19/333
-
-Ezequiel Garcia (2):
-  UBI: block: Make ubiblock_resize return something
-  UBI: block: Set disk_capacity out of the mutex
-
-Richard Weinberger (1):
-  UBI: block: Avoid disk size integer overflow
-
- drivers/mtd/ubi/block.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
-
+diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
+index 8d659e6..a8e4b77 100644
+--- a/drivers/mtd/ubi/block.c
++++ b/drivers/mtd/ubi/block.c
+@@ -496,7 +496,7 @@ int ubiblock_remove(struct ubi_volume_info *vi)
+ 	return 0;
+ }
+ 
+-static void ubiblock_resize(struct ubi_volume_info *vi)
++static int ubiblock_resize(struct ubi_volume_info *vi)
+ {
+ 	struct ubiblock *dev;
+ 	int disk_capacity;
+@@ -510,7 +510,7 @@ static void ubiblock_resize(struct ubi_volume_info *vi)
+ 	dev = find_dev_nolock(vi->ubi_num, vi->vol_id);
+ 	if (!dev) {
+ 		mutex_unlock(&devices_mutex);
+-		return;
++		return -ENODEV;
+ 	}
+ 
+ 	mutex_lock(&dev->dev_mutex);
+@@ -519,6 +519,7 @@ static void ubiblock_resize(struct ubi_volume_info *vi)
+ 	ubi_msg("%s resized to %d LEBs", dev->gd->disk_name, vi->size);
+ 	mutex_unlock(&dev->dev_mutex);
+ 	mutex_unlock(&devices_mutex);
++	return 0;
+ }
+ 
+ static int ubiblock_notify(struct notifier_block *nb,
 -- 
 1.9.1
