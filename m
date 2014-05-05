@@ -1,21 +1,17 @@
 Received: from mga02.intel.com ([134.134.136.20])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WhDRo-00005d-AQ
- for linux-mtd@lists.infradead.org; Mon, 05 May 2014 07:36:24 +0000
-Message-ID: <1399275360.15290.16.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 2/3] nandtest: Move the "read and compare" code to a
- function
+ id 1WhDkL-0000Ls-VZ
+ for linux-mtd@lists.infradead.org; Mon, 05 May 2014 07:55:34 +0000
+Message-ID: <1399276474.15290.18.camel@sauron.fi.intel.com>
+Subject: [GIT PULL] UBIFS changes for 3.15-rc5
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Date: Mon, 05 May 2014 10:36:00 +0300
-In-Reply-To: <1398690859-11494-3-git-send-email-ezequiel@vanguardiasur.com.ar>
-References: <1398690859-11494-1-git-send-email-ezequiel@vanguardiasur.com.ar>
- <1398690859-11494-3-git-send-email-ezequiel@vanguardiasur.com.ar>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Mon, 05 May 2014 10:54:34 +0300
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- Guido =?ISO-8859-1?Q?Mart=EDnez?= <guido@vanguardiasur.com.ar>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,14 +22,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2014-04-28 at 10:14 -0300, Ezequiel Garcia wrote:
-> This commit makes no functionality change, and simply moves the
-> read and compare code into a separate read_and_compare() function.
-> 
-> Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Hi Linus,
 
-This patch looks like an acceptable clean-up on it's own, so let me
-apply it too.
+The following changes since commit 89ca3b881987f5a4be4c5dbaa7f0df12bbdde2fd:
+
+  Linux 3.15-rc4 (2014-05-04 18:14:42 -0700)
+
+are available in the git repository at:
+
+  git://git.infradead.org/linux-ubifs.git tags/upstream-3.15-rc5
+
+for you to fetch changes up to bebfef150e0b8fa68704cddacf05b8c26462d565:
+
+  UBI: avoid workqueue format string leak (2014-05-05 09:31:33 +0300)
+
+----------------------------------------------------------------
+This pull request includes the following fixes:
+
+* 2 real bug-fixes from Tanya for the still "experimental" UBI fastmap feature
+* a one-liner from Kees which hardens kernel security
+* a small error-path fix, where we forget to free various resources in case of
+  failure - spotted by the "smatch" tool
+
+----------------------------------------------------------------
+Artem Bityutskiy (1):
+      UBIFS: fix remount error path
+
+Kees Cook (1):
+      UBI: avoid workqueue format string leak
+
+Tanya Brokhman (2):
+      UBI: fix error path in __wl_get_peb
+      UBI: fix ubi free PEBs count calculation
+
+ drivers/mtd/ubi/block.c | 2 +-
+ drivers/mtd/ubi/wl.c    | 6 ++++++
+ fs/ubifs/super.c        | 2 +-
+ 3 files changed, 8 insertions(+), 2 deletions(-)
 
 -- 
 Best Regards,
