@@ -1,14 +1,14 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WhFtB-0002dP-7s
- for linux-mtd@lists.infradead.org; Mon, 05 May 2014 10:12:50 +0000
+ id 1WhFtG-0002ou-0j
+ for linux-mtd@lists.infradead.org; Mon, 05 May 2014 10:12:54 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>,
 	Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH v2 1/3] UBI: block: Make ubiblock_resize return something
-Date: Mon,  5 May 2014 07:11:52 -0300
-Message-Id: <1399284714-6283-2-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH v2 3/3] UBI: block: Avoid disk size integer overflow
+Date: Mon,  5 May 2014 07:11:54 -0300
+Message-Id: <1399284714-6283-4-git-send-email-ezequiel.garcia@free-electrons.com>
 In-Reply-To: <1399284714-6283-1-git-send-email-ezequiel.garcia@free-electrons.com>
 References: <1399284714-6283-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Richard Weinberger <richard@nod.at>,
@@ -22,45 +22,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Currently, ubiblock_resize() can fail if the device is not found
-in the list. This commit changes the return type, so the function can
-return something meaningful on error paths.
+From: Richard Weinberger <richard@nod.at>
 
-Reported-by: kbuild test robot <fengguang.wu@intel.com>
+This patch fixes the issue that on very large UBI volumes
+UBI block does not work correctly.
+
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 ---
- drivers/mtd/ubi/block.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/mtd/ubi/block.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
-index 8d659e6..a8e4b77 100644
+index 502f508..c1bb567 100644
 --- a/drivers/mtd/ubi/block.c
 +++ b/drivers/mtd/ubi/block.c
-@@ -496,7 +496,7 @@ int ubiblock_remove(struct ubi_volume_info *vi)
- 	return 0;
- }
- 
--static void ubiblock_resize(struct ubi_volume_info *vi)
-+static int ubiblock_resize(struct ubi_volume_info *vi)
+@@ -378,9 +378,11 @@ int ubiblock_create(struct ubi_volume_info *vi)
  {
  	struct ubiblock *dev;
- 	int disk_capacity;
-@@ -510,7 +510,7 @@ static void ubiblock_resize(struct ubi_volume_info *vi)
- 	dev = find_dev_nolock(vi->ubi_num, vi->vol_id);
- 	if (!dev) {
- 		mutex_unlock(&devices_mutex);
--		return;
-+		return -ENODEV;
- 	}
+ 	struct gendisk *gd;
+-	int disk_capacity = (vi->size * vi->usable_leb_size) >> 9;
++	u64 disk_capacity = ((u64)vi->size * vi->usable_leb_size) >> 9;
+ 	int ret;
  
- 	mutex_lock(&dev->dev_mutex);
-@@ -519,6 +519,7 @@ static void ubiblock_resize(struct ubi_volume_info *vi)
- 	ubi_msg("%s resized to %d LEBs", dev->gd->disk_name, vi->size);
- 	mutex_unlock(&dev->dev_mutex);
- 	mutex_unlock(&devices_mutex);
-+	return 0;
- }
++	if ((sector_t)disk_capacity != disk_capacity)
++		return -EFBIG;
+ 	/* Check that the volume isn't already handled */
+ 	mutex_lock(&devices_mutex);
+ 	if (find_dev_nolock(vi->ubi_num, vi->vol_id)) {
+@@ -498,8 +500,13 @@ int ubiblock_remove(struct ubi_volume_info *vi)
+ static int ubiblock_resize(struct ubi_volume_info *vi)
+ {
+ 	struct ubiblock *dev;
+-	int disk_capacity = (vi->size * vi->usable_leb_size) >> 9;
++	u64 disk_capacity = ((u64)vi->size * vi->usable_leb_size) >> 9;
  
- static int ubiblock_notify(struct notifier_block *nb,
++	if ((sector_t)disk_capacity != disk_capacity) {
++		ubi_warn("%s: the volume is too big, cannot resize (%d LEBs)",
++			 dev->gd->disk_name, vi->size);
++		return -EFBIG;
++	}
+ 	/*
+ 	 * Need to lock the device list until we stop using the device,
+ 	 * otherwise the device struct might get released in
 -- 
 1.9.1
