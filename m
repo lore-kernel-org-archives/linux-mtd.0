@@ -1,19 +1,20 @@
-Received: from ns.omicron.at ([212.183.10.25])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WhCBk-00013C-9G
- for linux-mtd@lists.infradead.org; Mon, 05 May 2014 06:15:46 +0000
-From: Christian Riesch <christian.riesch@omicron.at>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: [RESEND PATCH v4 3/4] mtd: cfi_cmdset_0002: Add support for writing
- OTP memory
-Date: Mon, 5 May 2014 08:14:28 +0200
-In-Reply-To: <1399270469-31022-1-git-send-email-christian.riesch@omicron.at>
-References: <1399270469-31022-1-git-send-email-christian.riesch@omicron.at>
-MIME-Version: 1.0
-Content-Type: text/plain
-Message-ID: <e4c14f49-3deb-4bde-94f2-70e52100431e@mary.at.omicron.at>
-Cc: Christian Riesch <christian.riesch@omicron.at>,
- linux-mtd@lists.infradead.org
+Received: from mga11.intel.com ([192.55.52.93])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WhCWe-0002VA-76
+ for linux-mtd@lists.infradead.org; Mon, 05 May 2014 06:37:20 +0000
+Message-ID: <1399271816.17496.111.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH for v3.15 0/2] UBI: block: Support very large volumes
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Date: Mon, 05 May 2014 09:36:56 +0300
+In-Reply-To: <20140423235911.GB1628@arch.cereza>
+References: <1397741023-2122-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20140423235911.GB1628@arch.cereza>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,173 +24,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds support for writing the one time programmable (OTP)
-memory of Micron M29EW devices.
+On Wed, 2014-04-23 at 20:59 -0300, Ezequiel Garcia wrote:
+> >  drivers/mtd/ubi/block.c | 10 ++++++----
+> >  1 file changed, 6 insertions(+), 4 deletions(-)
+> > 
+> 
+> Do you think you can pick this for v3.15-rc3?
 
-Signed-off-by: Christian Riesch <christian.riesch@omicron.at>
----
- drivers/mtd/chips/cfi_cmdset_0002.c |   67 +++++++++++++++++++++++++++++++----
- 1 file changed, 60 insertions(+), 7 deletions(-)
+Picked both, I'll send them to Linus soon, thanks!
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index bf72128..5d446f8 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -68,6 +68,8 @@ static int cfi_amdstd_read_fact_prot_reg(struct mtd_info *, loff_t, size_t,
- 					 size_t *, u_char *);
- static int cfi_amdstd_read_user_prot_reg(struct mtd_info *, loff_t, size_t,
- 					 size_t *, u_char *);
-+static int cfi_amdstd_write_user_prot_reg(struct mtd_info *, loff_t, size_t,
-+					  size_t *, u_char *);
- 
- static int cfi_amdstd_panic_write(struct mtd_info *mtd, loff_t to, size_t len,
- 				  size_t *retlen, const u_char *buf);
-@@ -533,6 +535,7 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
- 	mtd->_read_fact_prot_reg = cfi_amdstd_read_fact_prot_reg;
- 	mtd->_get_fact_prot_info = cfi_amdstd_get_fact_prot_info;
- 	mtd->_get_user_prot_info = cfi_amdstd_get_user_prot_info;
-+	mtd->_write_user_prot_reg = cfi_amdstd_write_user_prot_reg;
- 	mtd->flags   = MTD_CAP_NORFLASH;
- 	mtd->name    = map->name;
- 	mtd->writesize = 1;
-@@ -1262,6 +1265,40 @@ static int cfi_amdstd_secsi_read (struct mtd_info *mtd, loff_t from, size_t len,
- 	return ret;
- }
- 
-+static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
-+				     unsigned long adr, map_word datum,
-+				     int mode);
-+
-+static int do_otp_write(struct map_info *map, struct flchip *chip, loff_t adr,
-+			size_t len, u_char *buf)
-+{
-+	int ret;
-+	while (len) {
-+		unsigned long bus_ofs = adr & ~(map_bankwidth(map)-1);
-+		int gap = adr - bus_ofs;
-+		int n = min_t(int, len, map_bankwidth(map) - gap);
-+		map_word datum;
-+
-+		if (n != map_bankwidth(map)) {
-+			/* partial write of a word, load old contents */
-+			otp_enter(map, chip, bus_ofs, map_bankwidth(map));
-+			datum = map_read(map, bus_ofs);
-+			otp_exit(map, chip, bus_ofs, map_bankwidth(map));
-+		}
-+
-+		datum = map_word_load_partial(map, datum, buf, gap, n);
-+		ret = do_write_oneword(map, chip, bus_ofs, datum, FL_OTP_WRITE);
-+		if (ret)
-+			return ret;
-+
-+		adr += n;
-+		buf += n;
-+		len -= n;
-+	}
-+
-+	return 0;
-+}
-+
- static int cfi_amdstd_otp_walk(struct mtd_info *mtd, loff_t from, size_t len,
- 			       size_t *retlen, u_char *buf,
- 			       otp_op_t action, int user_regs)
-@@ -1405,7 +1442,17 @@ static int cfi_amdstd_read_user_prot_reg(struct mtd_info *mtd, loff_t from,
- 				   buf, do_read_secsi_onechip, 1);
- }
- 
--static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip, unsigned long adr, map_word datum)
-+static int cfi_amdstd_write_user_prot_reg(struct mtd_info *mtd, loff_t from,
-+					  size_t len, size_t *retlen,
-+					  u_char *buf)
-+{
-+	return cfi_amdstd_otp_walk(mtd, from, len, retlen, buf,
-+				   do_otp_write, 1);
-+}
-+
-+static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
-+				     unsigned long adr, map_word datum,
-+				     int mode)
- {
- 	struct cfi_private *cfi = map->fldrv_priv;
- 	unsigned long timeo = jiffies + HZ;
-@@ -1426,7 +1473,7 @@ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
- 	adr += chip->start;
- 
- 	mutex_lock(&chip->mutex);
--	ret = get_chip(map, chip, adr, FL_WRITING);
-+	ret = get_chip(map, chip, adr, mode);
- 	if (ret) {
- 		mutex_unlock(&chip->mutex);
- 		return ret;
-@@ -1435,6 +1482,9 @@ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
- 	pr_debug("MTD %s(): WRITE 0x%.8lx(0x%.8lx)\n",
- 	       __func__, adr, datum.x[0] );
- 
-+	if (mode == FL_OTP_WRITE)
-+		otp_enter(map, chip, adr, map_bankwidth(map));
-+
- 	/*
- 	 * Check for a NOP for the case when the datum to write is already
- 	 * present - it saves time and works around buggy chips that corrupt
-@@ -1451,12 +1501,13 @@ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
- 	XIP_INVAL_CACHED_RANGE(map, adr, map_bankwidth(map));
- 	ENABLE_VPP(map);
- 	xip_disable(map, chip, adr);
-+
-  retry:
- 	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
- 	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, cfi->device_type, NULL);
- 	cfi_send_gen_cmd(0xA0, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
- 	map_write(map, datum, adr);
--	chip->state = FL_WRITING;
-+	chip->state = mode;
- 
- 	INVALIDATE_CACHE_UDELAY(map, chip,
- 				adr, map_bankwidth(map),
-@@ -1465,7 +1516,7 @@ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
- 	/* See comment above for timeout value. */
- 	timeo = jiffies + uWriteTimeout;
- 	for (;;) {
--		if (chip->state != FL_WRITING) {
-+		if (chip->state != mode) {
- 			/* Someone's suspended the write. Sleep */
- 			DECLARE_WAITQUEUE(wait, current);
- 
-@@ -1505,6 +1556,8 @@ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
- 	}
- 	xip_enable(map, chip, adr);
-  op_done:
-+	if (mode == FL_OTP_WRITE)
-+		otp_exit(map, chip, adr, map_bankwidth(map));
- 	chip->state = FL_READY;
- 	DISABLE_VPP(map);
- 	put_chip(map, chip, adr);
-@@ -1560,7 +1613,7 @@ static int cfi_amdstd_write_words(struct mtd_info *mtd, loff_t to, size_t len,
- 		tmp_buf = map_word_load_partial(map, tmp_buf, buf, i, n);
- 
- 		ret = do_write_oneword(map, &cfi->chips[chipnum],
--				       bus_ofs, tmp_buf);
-+				       bus_ofs, tmp_buf, FL_WRITING);
- 		if (ret)
- 			return ret;
- 
-@@ -1584,7 +1637,7 @@ static int cfi_amdstd_write_words(struct mtd_info *mtd, loff_t to, size_t len,
- 		datum = map_word_load(map, buf);
- 
- 		ret = do_write_oneword(map, &cfi->chips[chipnum],
--				       ofs, datum);
-+				       ofs, datum, FL_WRITING);
- 		if (ret)
- 			return ret;
- 
-@@ -1627,7 +1680,7 @@ static int cfi_amdstd_write_words(struct mtd_info *mtd, loff_t to, size_t len,
- 		tmp_buf = map_word_load_partial(map, tmp_buf, buf, 0, len);
- 
- 		ret = do_write_oneword(map, &cfi->chips[chipnum],
--				ofs, tmp_buf);
-+				       ofs, tmp_buf, FL_WRITING);
- 		if (ret)
- 			return ret;
- 
 -- 
-1.7.9.5
+Best Regards,
+Artem Bityutskiy
