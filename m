@@ -1,13 +1,13 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WhF8s-0005Pj-7p
- for linux-mtd@lists.infradead.org; Mon, 05 May 2014 09:24:58 +0000
-Date: Mon, 5 May 2014 06:24:04 -0300
+ id 1WhFUA-0001Ha-LF
+ for linux-mtd@lists.infradead.org; Mon, 05 May 2014 09:46:59 +0000
+Date: Mon, 5 May 2014 06:46:06 -0300
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: Artem Bityutskiy <dedekind1@gmail.com>
 Subject: Re: [PATCH for v3.15 0/2] UBI: block: Support very large volumes
-Message-ID: <20140505092403.GB2873@arch.cereza>
+Message-ID: <20140505094606.GD2873@arch.cereza>
 References: <1397741023-2122-1-git-send-email-ezequiel.garcia@free-electrons.com>
  <20140423235911.GB1628@arch.cereza>
  <1399271816.17496.111.camel@sauron.fi.intel.com>
@@ -44,9 +44,17 @@ On 05 May 10:23 AM, Artem Bityutskiy wrote:
 > Would you please analyze the error handling in the resize path?
 > 
 
-Working on it.
+The ubiblock_resize function fails if the number of 512B sectors are not
+expressable as a sector_t. This function is only used to resize the block
+device, *after* UBI has resized the associated volume.
 
-Sorry for the crap,
+In other words, the UBI block driver fails to acknowledge the UBI volume resize
+if the new size is larger than the supported Linux block size (2 TiB if
+CONFIG_LBDAF=n, or a lot more if CONFIG_LBDAF=y).
+
+I don't think there's anything we can do, except maybe print a warning.
+
+I'll push a v2 with this in mind.
 -- 
 Ezequiel García, Free Electrons
 Embedded Linux, Kernel and Android Engineering
