@@ -1,18 +1,20 @@
 Received: from devils.ext.ti.com ([198.47.26.153])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WhWjY-0003jm-8I
- for linux-mtd@lists.infradead.org; Tue, 06 May 2014 04:12:01 +0000
-From: Pekon Gupta <pekon@ti.com>
+ id 1WhWss-0007A8-KM
+ for linux-mtd@lists.infradead.org; Tue, 06 May 2014 04:21:39 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH 1/1] mtd: eLBC NAND: fixes subpage write support
-Date: Tue, 6 May 2014 09:41:32 +0530
-Message-ID: <1399349492-3006-1-git-send-email-pekon@ti.com>
+Subject: RE: [PATCH v3 0/4]  mtd: nand: omap: add support for BCH16_ECC
+Date: Tue, 6 May 2014 04:21:01 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EACAB8C@DBDE04.ent.ti.com>
+References: <1395660006-27560-1-git-send-email-pekon@ti.com> 
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Scott Wood <scottwood@freescale.com>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Helmut Schaa <helmut.schaa@googlemail.com>
+Cc: "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
+ Stefan Roese <sr@denx.de>, linux-mtd <linux-mtd@lists.infradead.org>, "Balbi,
+ Felipe" <balbi@ti.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,55 +24,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-As subpage write is enabled by default for all drivers, nand_write_subpage_hwecc
-causes a crash if the driver did not register ecc->hwctl or ecc->calculate.
-This behavior was introduced in
-   commit 837a6ba4f3b6d23026674e6af6b6849a4634fff9
-   "mtd: nand: subpage write support for hardware based ECC schemes".
+Hello Brian,
 
-This fixes a crash by emulating subpage write support by padding sub-page data
-with 0xff on either sides to make it full page compatible.
+ [...]
 
-CC: <stable@vger.kernel.org> # 3.10.x+
+>>With increase in NAND flash densities and shrinking of technology
+>>NAND flash has become more suspectible to multiple bit-flips.
+>>Thus stronger ECC schemes are required for detecting and correcting multi=
+ple
+>>simultaneous bit-flips in same NAND page. But stronger ECC schemes have l=
+arge
+>>ECC syndrome which require more space in OOB/Spare.
+>>
+>>This patch add support for BCH16 ecc-scheme on OMAP NAND driver:
+>>(a) BCH16 ecc-scheme can correct 16 bit-flips per 512Bytes of data.
+>>(b) BCH16 ecc-scheme generates 26-bytes of ECC syndrome / 512B.
+>>
+>>Due to (b) this scheme can only be used with NAND devices which have enou=
+gh
+>>OOB to satisfy following equation:
+>>OOBsize per page >=3D 26 * (page-size / 512)
+>>
+>>
+>>Pekon Gupta (4):
+>>  mtd: nand: omap: add support for BCH16_ECC - GPMC driver updates
+>>  mtd: nand: omap: add support for BCH16_ECC - ELM driver updates
+>>  mtd: nand: omap: add support for BCH16_ECC - NAND driver updates
+>>  mtd: nand: omap: Documentation: How to select correct ECC scheme for
+>>    your device ?
+>>
+>> .../devicetree/bindings/mtd/gpmc-nand.txt          | 39 +++++++++
+>> arch/arm/mach-omap2/gpmc.c                         | 15 ++++
+>> drivers/mtd/devices/elm.c                          | 42 ++++++++++
+>> drivers/mtd/nand/omap2.c                           | 94 ++++++++++++++++=
+++++++
+>> include/linux/platform_data/elm.h                  |  3 +-
+>> include/linux/platform_data/mtd-nand-omap2.h       |  5 ++
+>> 6 files changed, 197 insertions(+), 1 deletion(-)
+>>
+>>--
+>>1.8.5.1.163.gd7aced9
+>
+>If this patch series looks good, them please accept it. This one is needed
+>for supporting NAND boot with 4K page-sized NAND devices, on TI platforms.
+>
+>Following patch also needs your attention, it fixes a long term issue.
+>"mtd: nand: omap: fix BCHx ecc.correct to return detected bit-flips in era=
+sed-page"
+>
 
-Reported-by: Helmut Schaa <helmut.schaa@googlemail.com>
-Tested-by: Helmut Schaa <helmut.schaa@googlemail.com>
-Signed-off-by: Pekon Gupta <pekon@ti.com>
----
- drivers/mtd/nand/fsl_elbc_nand.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+Please see that this series does not miss the 3.16 window.
+It has been there from quite long time and all its dependent patches
+have been already merged in last cycle.
 
-diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
-index ec549cd..545a5c0 100644
---- a/drivers/mtd/nand/fsl_elbc_nand.c
-+++ b/drivers/mtd/nand/fsl_elbc_nand.c
-@@ -723,6 +723,19 @@ static int fsl_elbc_write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	return 0;
- }
- 
-+/* ECC will be calculated automatically, and errors will be detected in
-+ * waitfunc.
-+ */
-+static int fsl_elbc_write_subpage(struct mtd_info *mtd, struct nand_chip *chip,
-+				uint32_t offset, uint32_t data_len,
-+				const uint8_t *buf, int oob_required)
-+{
-+	fsl_elbc_write_buf(mtd, buf, mtd->writesize);
-+	fsl_elbc_write_buf(mtd, chip->oob_poi, mtd->oobsize);
-+
-+	return 0;
-+}
-+
- static int fsl_elbc_chip_init(struct fsl_elbc_mtd *priv)
- {
- 	struct fsl_lbc_ctrl *ctrl = priv->ctrl;
-@@ -761,6 +774,7 @@ static int fsl_elbc_chip_init(struct fsl_elbc_mtd *priv)
- 
- 	chip->ecc.read_page = fsl_elbc_read_page;
- 	chip->ecc.write_page = fsl_elbc_write_page;
-+	chip->ecc.write_subpage = fsl_elbc_write_subpage;
- 
- 	/* If CS Base Register selects full hardware ECC then use it */
- 	if ((in_be32(&lbc->bank[priv->bank].br) & BR_DECC) ==
--- 
-1.8.5.1.163.gd7aced9
+
+with regards, pekon
