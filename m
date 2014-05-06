@@ -1,19 +1,18 @@
-Received: from mail-qg0-x22b.google.com ([2607:f8b0:400d:c04::22b])
+Received: from devils.ext.ti.com ([198.47.26.153])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WhWI5-00021J-NM
- for linux-mtd@lists.infradead.org; Tue, 06 May 2014 03:43:38 +0000
-Received: by mail-qg0-f43.google.com with SMTP id 63so3024034qgz.30
- for <linux-mtd@lists.infradead.org>; Mon, 05 May 2014 20:43:16 -0700 (PDT)
+ id 1WhWjY-0003jm-8I
+ for linux-mtd@lists.infradead.org; Tue, 06 May 2014 04:12:01 +0000
+From: Pekon Gupta <pekon@ti.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCH 1/1] mtd: eLBC NAND: fixes subpage write support
+Date: Tue, 6 May 2014 09:41:32 +0530
+Message-ID: <1399349492-3006-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <CAE94FHEYeaAPG8WPEwA10KGopY3UJUjcOPZucpgaB8Vp51RbWw@mail.gmail.com>
-References: <CAE94FHEYeaAPG8WPEwA10KGopY3UJUjcOPZucpgaB8Vp51RbWw@mail.gmail.com>
-Date: Tue, 6 May 2014 11:43:16 +0800
-Message-ID: <CAE94FHEJWzSUzjfpui63uvHFego=tANvm72=9HFHHEKoTppXXA@mail.gmail.com>
-Subject: Re: [UBI] is ubi_self_check_all_ff() with mtd_read() return value not
- match?
-From: Ted Juan <ted.juan@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain
+Cc: Scott Wood <scottwood@freescale.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Helmut Schaa <helmut.schaa@googlemail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,45 +22,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
+As subpage write is enabled by default for all drivers, nand_write_subpage_hwecc
+causes a crash if the driver did not register ecc->hwctl or ecc->calculate.
+This behavior was introduced in
+   commit 837a6ba4f3b6d23026674e6af6b6849a4634fff9
+   "mtd: nand: subpage write support for hardware based ECC schemes".
 
-Sorry to bother all. I got it.
-mtd_read() has check the "return ret_code >= mtd->bitflip_threshold ?
--EUCLEAN : 0;"
+This fixes a crash by emulating subpage write support by padding sub-page data
+with 0xff on either sides to make it full page compatible.
 
-Thanks.
+CC: <stable@vger.kernel.org> # 3.10.x+
 
+Reported-by: Helmut Schaa <helmut.schaa@googlemail.com>
+Tested-by: Helmut Schaa <helmut.schaa@googlemail.com>
+Signed-off-by: Pekon Gupta <pekon@ti.com>
+---
+ drivers/mtd/nand/fsl_elbc_nand.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-2014-05-06 9:59 GMT+08:00 Ted Juan <ted.juan@gmail.com>:
-> Hi All,
->
-> int ubi_self_check_all_ff(struct ubi_device *ubi, int pnum, int offset, int len)
-> {
->
->          ............................  // skip
->
->         err = mtd_read(ubi->mtd, addr, len, &read, buf);
->         if (err && !mtd_is_bitflip(err)) {
->                 ubi_err("error %d while reading %d bytes from PEB
-> %d:%d, read %zd bytes",
->                         err, len, pnum, offset, read);
->                 goto error;
->         }
->
->         err = ubi_check_pattern(buf, 0xFF, len);
->         ........................... // skip
-> }
->
-> In the low level nand flash driver (nand_base.c), the nand_read_page()
-> always return "max_bitflips".
-> That will cause the above code something wrong, err = mtd_read(), err
-> is max_bitflips.
-> It will "goto error" but not got to check pattern 0xff.
->
-> Is it something wrong, or I am misunderstanding?
->
-> Thanks much.
->
-> regards,
->
-> Ted
+diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
+index ec549cd..545a5c0 100644
+--- a/drivers/mtd/nand/fsl_elbc_nand.c
++++ b/drivers/mtd/nand/fsl_elbc_nand.c
+@@ -723,6 +723,19 @@ static int fsl_elbc_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 	return 0;
+ }
+ 
++/* ECC will be calculated automatically, and errors will be detected in
++ * waitfunc.
++ */
++static int fsl_elbc_write_subpage(struct mtd_info *mtd, struct nand_chip *chip,
++				uint32_t offset, uint32_t data_len,
++				const uint8_t *buf, int oob_required)
++{
++	fsl_elbc_write_buf(mtd, buf, mtd->writesize);
++	fsl_elbc_write_buf(mtd, chip->oob_poi, mtd->oobsize);
++
++	return 0;
++}
++
+ static int fsl_elbc_chip_init(struct fsl_elbc_mtd *priv)
+ {
+ 	struct fsl_lbc_ctrl *ctrl = priv->ctrl;
+@@ -761,6 +774,7 @@ static int fsl_elbc_chip_init(struct fsl_elbc_mtd *priv)
+ 
+ 	chip->ecc.read_page = fsl_elbc_read_page;
+ 	chip->ecc.write_page = fsl_elbc_write_page;
++	chip->ecc.write_subpage = fsl_elbc_write_subpage;
+ 
+ 	/* If CS Base Register selects full hardware ECC then use it */
+ 	if ((in_be32(&lbc->bank[priv->bank].br) & BR_DECC) ==
+-- 
+1.8.5.1.163.gd7aced9
