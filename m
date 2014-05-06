@@ -1,21 +1,22 @@
-Received: from galois.linutronix.de ([2001:470:1f0b:db:abcd:42:0:1])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WhjqS-00065J-Rh
- for linux-mtd@lists.infradead.org; Tue, 06 May 2014 18:12:01 +0000
-Message-ID: <536925C0.4060809@linutronix.de>
-Date: Tue, 06 May 2014 20:11:12 +0200
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Date: Tue, 6 May 2014 11:12:40 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Simon Horman <horms@verge.net.au>
+Subject: Re: [PATCH v2 02/12] ARM: defconfigs: add MTD_SPI_NOR (new
+ dependency for M25P80)
+Message-ID: <20140506181240.GC28907@ld-irv-0074>
+References: <1398925607-7482-1-git-send-email-computersforpeace@gmail.com>
+ <1398925607-7482-3-git-send-email-computersforpeace@gmail.com>
+ <20140501085447.GB20410@verge.net.au>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] mtd: denali: disable usage of subpages
-References: <1398862001-29785-1-git-send-email-bigeasy@linutronix.de>
- <20140430222353.GE2497@norris-Latitude-E6410>
-In-Reply-To: <20140430222353.GE2497@norris-Latitude-E6410>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: Huang Shijie <shijie8@gmail.com>, Josh Triplett <josh@joshtriplett.org>,
- linux-mtd@lists.infradead.org, Pekon Gupta <pekon@ti.com>,
- David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen <dinguyen@altera.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20140501085447.GB20410@verge.net.au>
+Cc: Marek Vasut <marex@denx.de>, Russell King <linux@arm.linux.org.uk>,
+ Arnd Bergmann <arnd@arndb.de>, Linux-sh list <linux-sh@vger.kernel.org>,
+ Magnus Damm <magnus.damm@gmail.com>,
+ Linux Kernel <linux-kernel@vger.kernel.org>,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ Olof Johansson <olof@lixom.net>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,38 +26,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 05/01/2014 12:23 AM, Brian Norris wrote:
-> On Wed, Apr 30, 2014 at 02:46:41PM +0200, Sebastian Andrzej Siewior wrote:
->> I use this driver on an Altera SoC (not MRST) and its ECC algorithm
->> does not compute 0xff ECC of an empty page. That problem can be easily
->> noticed if ubifs is used. Therefore I disable subpages support.
->>
->> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
->> ---
->> I can't test if this is also the case for MRST or not.
+On Thu, May 01, 2014 at 05:54:47PM +0900, Simon Horman wrote:
+> [ CC linux-sh and Magnus Damm (shmobile co-maintainer) ]
 > 
-> This is an important change to get right; if any systems have been using
-> Denali NAND with subpage writes, then this change will break any flash
-> with existing UBI data. Can we either confirm that no Denali systems
-> were using subpage writes successfully, or else tie this option to some
-> kind of platform data or DT information (e.g., compatible string)?
-
-First I would like to get some confirmation from the MRST hackers /
-users to make sure subpage write works for them (which I doubt).
-
-> Or is this related to commit 837a6ba4f3b6d23026674e6af6b6849a4634fff9,
-> which changed subpage write support? (Or conversely, could this help you
-> support subpage writes properly?)
-
-Not sure. If I look at the write_page() function in delali, it writes
-the whole page in one go. The ECC is transparently added. On read, the
-controller computes the data to fix and the driver just XORs the data
-(with the information the controller provided). And in case the the
-error is not recoverable it checks for an empty page which means 0xff is
-not the ECC for an empty page.
-Based on this I don't see how that commit could help.
-
+> On Wed, Apr 30, 2014 at 11:26:37PM -0700, Brian Norris wrote:
+> > These defconfigs contain the CONFIG_M25P80 symbol, which is now
+> > dependent on the MTD_SPI_NOR symbol. Add CONFIG_MTD_SPI_NOR to satisfy
+> > the new dependency.
+> > 
+> > At the same time, drop the now-nonexistent CONFIG_MTD_CHAR symbol.
+> > 
+> > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> > Cc: Russell King <linux@arm.linux.org.uk>
+> > Cc: Arnd Bergmann <arnd@arndb.de>
+> > Cc: Olof Johansson <olof@lixom.net>
+> > Cc: linux-arm-kernel@lists.infradead.org
+> > Cc: linux-kernel@vger.kernel.org
+> > ---
+> > This patch catches all the configs I couldn't find a sub-arch for, plus the ARM
+> > multiplatform defconfigs
+> > 
+> >  arch/arm/configs/bockw_defconfig    | 2 +-
+> >  arch/arm/configs/koelsch_defconfig  | 1 +
+> >  arch/arm/configs/lager_defconfig    | 1 +
 > 
-> Brian
+> The above changes are for shmobile SoC defconfigs which I maintain
+> (as is one other patch in the series).
+> While the below ones are not.
 
-Sebastian
+This is admittedly a confusing process. I have to parse each defconfig
+to figure out what the mach-* is, then read MAINTAINERS. Perhaps you can
+update your MAINTAINERS entries? This is a wide problem, that makes
+patch submission for defconfigs even more difficult.
+
+Olof, other ARM SOC maintainers,
+
+What do you recommend? Should I send another couple of patches just to
+split this trivial patch? Olof mentioned taking some patch(es) directly,
+and handling merge conflicts when they come.
+
+> With regards to updating shmobile configuration options,
+> we have recently moved towards using Kconfig rather than
+> defconfig in cases where selecting A means we really ought
+> to select B too. Something along the lines of:
+> 
+> 	select CONFIG_MTD_SPI_NOR if CONFIG_MTD_M25P80
+
+That seems like you're just avoiding touching defconfig for the sake of
+not touching defconfig. Additionally, this method only really makes
+sense for an upgrade path (otherwise, how would you configure MTD_M25P80
+&& !MTD_SPI_NOR?). Is this approach consistent across other mach-*?
+
+> Do you consider that CONFIG_MTD_SPI_NOR should always
+> be selected if CONFIG_MTD_M25P80 if selected?
+
+Yes. That's what "depends on" means.
+
+BTW, M25P80 will likely be moved under the SPI-NOR submenu eventually
+(its driver is not really a "Standalone MTD" anymore), but currently
+this is just a "depends on".
+
+> If so, perhaps it would be best to update the CONFIG_MTD_M25P80 Kconfig
+> node to select CONFIG_MTD_M25P80. This would probably imply that most
+> if not all of this series would no longer be needed.
+
+I do not understand this paragraph. How does M25P80 select M25P80?
+
+> If not, would you be able to make a patch to add something like
+> the above snippet to arch/arm/shmobile/Kconfig (probably more than once)
+> and drop the changes to shmobile defconfigs from this series?
+
+Feel free to submit your own patch if you don't want mine.
+
+> >  arch/arm/configs/multi_v5_defconfig | 1 +
+> >  arch/arm/configs/multi_v7_defconfig | 1 +
+> >  5 files changed, 5 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/arm/configs/bockw_defconfig b/arch/arm/configs/bockw_defconfig
+> > index e816140d81c5..28339e072a71 100644
+> > --- a/arch/arm/configs/bockw_defconfig
+> > +++ b/arch/arm/configs/bockw_defconfig
+> > @@ -50,11 +50,11 @@ CONFIG_DEVTMPFS_MOUNT=y
+> >  # CONFIG_PREVENT_FIRMWARE_BUILD is not set
+> >  # CONFIG_FW_LOADER is not set
+> >  CONFIG_MTD=y
+> > -CONFIG_MTD_CHAR=y
+> 
+> The above change seems unrelated to the subject of the patch.
+> 
+> If its valid then I'd prefer it submitted as a separate patch.
+
+Seriously? It's mentioned in the commit description, and it's really
+really trivial.
+
+Brian
