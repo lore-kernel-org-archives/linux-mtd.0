@@ -1,20 +1,16 @@
-Received: from vps0.lunn.ch ([178.209.37.122])
+Received: from hugovil.com ([192.210.230.32] helo=git.hugovil.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wi29L-0005Ug-Q2
- for linux-mtd@lists.infradead.org; Wed, 07 May 2014 13:44:44 +0000
-Date: Wed, 7 May 2014 15:41:28 +0200
-From: Andrew Lunn <andrew@lunn.ch>
-To: Jingoo Han <jg1.han@samsung.com>
-Subject: Re: [PATCH 3/3] mtd: orion_nand: Make of_device_id array const
-Message-ID: <20140507134128.GA24565@lunn.ch>
-References: <021e01cf69d0$e89e8290$b9db87b0$%han@samsung.com>
- <022001cf69d1$624bcd50$26e367f0$%han@samsung.com>
+ id 1Wi4mM-0001aD-84
+ for linux-mtd@lists.infradead.org; Wed, 07 May 2014 16:33:10 +0000
+Message-ID: <536A5FEE.9090705@hugovil.com>
+Date: Wed, 07 May 2014 12:31:42 -0400
+From: Hugo Villeneuve <hugo@hugovil.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <022001cf69d1$624bcd50$26e367f0$%han@samsung.com>
-Cc: linux-mtd@lists.infradead.org, 'Brian Norris' <computersforpeace@gmail.com>,
- 'David Woodhouse' <dwmw2@infradead.org>, 'Andrew Lunn' <andrew@lunn.ch>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: imx6 NAND chip selects
+Cc: b32955@freescale.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,29 +20,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, May 07, 2014 at 05:50:23PM +0900, Jingoo Han wrote:
-> Make of_device_id array const, because all OF functions
-> handle it as const.
-> 
-> Signed-off-by: Jingoo Han <jg1.han@samsung.com>
-> ---
->  drivers/mtd/nand/orion_nand.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nand.c
-> index dd7fe81..471b4df 100644
-> --- a/drivers/mtd/nand/orion_nand.c
-> +++ b/drivers/mtd/nand/orion_nand.c
-> @@ -214,7 +214,7 @@ static int orion_nand_remove(struct platform_device *pdev)
->  }
->  
->  #ifdef CONFIG_OF
-> -static struct of_device_id orion_nand_of_match_table[] = {
-> +static const struct of_device_id orion_nand_of_match_table[] = {
->  	{ .compatible = "marvell,orion-nand", },
->  	{},
->  };
+Hi,
+I am trying to connect a NAND flash device (Micron MT29F8G08) to a 
+Wandboard Dual.
 
-Acked-by: Andrew Lunn <andrew@lunn.ch>
+Here is the pin mapping:
 
-	  Andrew
+i.MX6             NAND flash
+----------------------------
+NANDF_CS0    -->  CE#
+NANDF_RB0    -->  R/B#
+NANDF_WP_B   -->  WP#
+NANDF_CLE    -->  CLE
+NANDF_ALE    -->  ALE
+NANDF_WE     -->  WE#
+NANDF_RE     -->  RE#
+NANDF_D[0-7] -->  I/O[0-7]
+
+This NAND flash has a single chip-select.
+
+I'm testing it using Linux kernel 3.15.0-rc3.
+
+In the wandboard device tree file, I have added all the above gpmi pins 
+as GPMI pins.
+
+I am still booting from the SD card, so at this point I am only trying 
+to detect the NAND device. Unfortunately, when the kernel boots, the 
+GPMI driver fails to register (error -19).
+
+If I monitor the NANDF_CS0 line, I can see that it is pulsed low, but I 
+am not seing any activity on the NANDF_WE line.
+
+However, If I monitor the NANDF_CS1 line, I can see that it is pulsed 
+low, and during the time it is low the NANDF_WE line is also going low.
+
+I then made sure to reconfigure the unused pins NANDF_CS[1-3] as GPIOs 
+(ALT5 function) in my device tree file. I have confirmed with kernel 
+debug traces that the iomux register for NANDF_CS1 have the value 0x05, 
+which means ALT5 function (GPIO). But I am still seeing the same 
+behavior as before on the oscilloscope.
+
+So how can I configure the GPMI driver to only use NANDF_CS0 and not 
+NANDF_CS1?
+
+And is it normal that NANDF_CS1 is still used by the GPMI driver when 
+configured as GPIO?
+
+Hugo.
