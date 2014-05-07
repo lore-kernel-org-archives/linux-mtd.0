@@ -1,22 +1,20 @@
-Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
+Received: from mail-ie0-x230.google.com ([2607:f8b0:4001:c03::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wi5Oo-0005hb-Ih
- for linux-mtd@lists.infradead.org; Wed, 07 May 2014 17:12:55 +0000
-Received: by mail-pa0-f50.google.com with SMTP id fb1so1452986pad.23
- for <linux-mtd@lists.infradead.org>; Wed, 07 May 2014 10:12:33 -0700 (PDT)
-Date: Wed, 7 May 2014 10:12:29 -0700
+ id 1Wi7NA-0002D3-G6
+ for linux-mtd@lists.infradead.org; Wed, 07 May 2014 19:19:20 +0000
+Received: by mail-ie0-f176.google.com with SMTP id rd18so1508246iec.21
+ for <linux-mtd@lists.infradead.org>; Wed, 07 May 2014 12:18:59 -0700 (PDT)
+Date: Wed, 7 May 2014 12:18:55 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH] mtd: nand: refactor erase_cmd() to return chip status
-Message-ID: <20140507171229.GD28907@ld-irv-0074>
-References: <1399417870-14436-1-git-send-email-computersforpeace@gmail.com>
- <CAF2Aj3hB-6=yfCOhqXrWGcPey1DEGqkUfkEsRdrQbXz80s_sug@mail.gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [GIT PULL] MTD update for 3.15-rc5
+Message-ID: <20140507191855.GF28907@ld-irv-0074>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="RnlQjJ0d97Da+TV1"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAF2Aj3hB-6=yfCOhqXrWGcPey1DEGqkUfkEsRdrQbXz80s_sug@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org, Mike Dunn <mikedunn@newsguy.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Linux Kernel <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,53 +24,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-(Your reply was multipart HTML/Text, so the list probably bounced you)
 
-On Wed, May 07, 2014 at 11:59:56AM +0100, Lee Jones wrote:
-> On 7 May 2014 00:12, &quot;Brian Norris&quot; <computersforpeace@gmail.com>
-> wrote:
-> >
-> > The nand_chip::erase_cmd callback previously served a dual purpose; for
-> > one, it allowed a per-flash-chip override, so that AG-AND devices could
-> > use a different erase command than other NAND. These AND devices were
-> > dropped in commit xxxxx. On the other hand, some drivers (denali and
-> I think you still need to fill this in.
+--RnlQjJ0d97Da+TV1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Yes... I should re-read my commit messages before sending! This should
-be:
+Hi Linus,
 
-commit 14c6578683367b1e7af0c3c09e872b45a45183a7
-(mtd: nand: remove AG-AND support)
+The following changes since commit c9eaa447e77efe77b7fa4c953bd62de8297fd6c5:
 
-> > doc-g4) need to use this sort of callback to implement
-> > controller-specific erase operations.
-> >
-> > To make the latter operation easier for some drivers (e.g., ST's new BCH
-> > NAND driver), it helps if the command dispatch and wait functions can be
-> > lumped together, rather than called separately.
-> >
-> > This patch does two things:
-> >  1. Pull the call to chip->waitfunc() into chip->erase_cmd(), and return
-> >     the status from this callback
-> >  2. Rename erase_cmd() to just erase(), since this callback does a
-> >     little more than just send a command
-> >
-> > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> > Cc: Mike Dunn <mikedunn@newsguy.com>
-> > Cc: Lee Jones <lee.jones@linaro.org>
-> > ---
-> >  drivers/mtd/nand/denali.c    |  7 +++----
-> >  drivers/mtd/nand/docg4.c     |  6 ++++--
-> >  drivers/mtd/nand/nand_base.c | 14 +++++++-------
-> >  include/linux/mtd/nand.h     |  5 ++---
-> >  4 files changed, 16 insertions(+), 16 deletions(-)
-> If the code hasn't changed since the pastebin:
-> Tested-by: Lee Jones <lee.jones@linaro.org>
+  Linux 3.15-rc1 (2014-04-13 14:18:35 -0700)
 
-It is the same.
+are available in the git repository at:
 
-I've updated my commit message locally. I'll give this a few days, then
-push the patch.
+  git://git.infradead.org/linux-mtd.git tags/for-linus-20140507
 
-Thanks,
-Brian
+for you to fetch changes up to 28c015a9daabe4ed3aeb0ccf669a3f1c2b8b81d5:
+
+  mtd: davinci-nand: disable subpage write for keystone-nand (2014-04-30 15:26:49 -0700)
+
+----------------------------------------------------------------
+MTD update for 3.15-rc5
+
+A single update for Keystone SoC's, whose NAND controller does not support
+subpage programming.
+
+----------------------------------------------------------------
+Murali Karicheri (1):
+      mtd: davinci-nand: disable subpage write for keystone-nand
+
+ drivers/mtd/nand/davinci_nand.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+--RnlQjJ0d97Da+TV1
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.14 (GNU/Linux)
+
+iQIcBAEBAgAGBQJTaocfAAoJEFySrpd9RFgtIK8P/RtmYYI7oSe3IKcms4t3tVtf
+0GD82wDjiOOoDxySKM5uXgSvoJHYvuCfydeN0vLLl78kvLPV8eD1YAuUNhNxXjSk
+0oxiE3Qmf97RMjKXEVLd5LPhAKtlxr3R6k4yqVMqafFXH3iHKwfKl81BYjcWR/MG
+LSiO13AoZVXpr2ULKsMgZjP1PLj0P1QYWg4Ly5xbXeRrTia1lzuR3CxJHj/rz8BL
+G4VlquLcvszJ1d5XdhCw3aLmjWYorazCAlJKE/WhUPGRNotgg2kRIXKl0P1kmXMr
+sNI54Qg04z2dyxLceQUwrj/Pas4VGxrrzODXTt7EQvRWAHkzgTAm9dfWySfxDU/J
+ij9QaPBdafMAEM/KAj+LbkN3Eztb6yZqLB50V3/x+rnTT4CkaWOwE8uBqLo3uzPK
+Sdc3sqxYy6I8f/OQna8dgLKj/PIBaVpQWojDIKz+i/hiKhB3k6eD6FV6miYla75O
+HFxPEtUzRAKNWEvlZjQqu0qri+aGiBZmoHN+byT412WgSViCWl6SUBkHTPUZKIk+
+l7/8bUumlyvrerWPE3Jm+R0RuXlHbsuvvn7cvuvOwG6UIJHFI+3DEKf2T7rapvbL
+aN1ZUVPmwtI1mTQkrxpHOXjoKoucjTK/WQq/oylLMxWSMutZ2Jaga9yHGbKVhUje
+yqjma5WX5GV3x1WId34i
+=m8w3
+-----END PGP SIGNATURE-----
+
+--RnlQjJ0d97Da+TV1--
