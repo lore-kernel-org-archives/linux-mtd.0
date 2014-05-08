@@ -1,26 +1,14 @@
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Thu, 8 May 2014 09:41:57 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 00/22] Random ARM randconfig fixes in drivers
-Message-ID: <20140508164157.GA22224@roeck-us.net>
-References: <1399560433-1402630-1-git-send-email-arnd@arndb.de>
+From: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+To: Brian Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>
+Subject: [PATCH] nand: davinci: add support for 4K page size nand devices
+Date: Fri, 9 May 2014 01:31:05 +0300
+Message-ID: <1399588265-7130-1-git-send-email-ivan.khoronzhuk@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1399560433-1402630-1-git-send-email-arnd@arndb.de>
-Cc: wsa@the-dreams.de, tony@atomide.com, linux-pci@vger.kernel.org,
- linus.walleij@linaro.org, nicolas.ferre@atmel.com, linux-ide@vger.kernel.org,
- wim@iguana.be, linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
- linux-samsung-soc@vger.kernel.org, mturquette@linaro.org, vinod.koul@intel.com,
- linux-sh@vger.kernel.org, kishon@ti.com, linux-iio@vger.kernel.org,
- linux-input@vger.kernel.org, plagnioj@jcrosoft.com, ohad@wizery.com,
- linux-watchdog@vger.kernel.org, broonie@kernel.org, bhelgaas@google.com,
- linux@arm.linux.org.uk, linux-arm-kernel@lists.infradead.org,
- gregkh@linuxfoundation.org, dmitry.torokhov@gmail.com,
- linux-kernel@vger.kernel.org, balbi@ti.com, josh.wu@atmel.com,
- netdev@vger.kernel.org, dmaengine@vger.kernel.org, dwmw2@infradead.org,
- jic23@kernel.org
+Content-Type: text/plain
+Cc: grygorii.strashko@ti.com, Santosh Shilimkar <santosh.shilimkar@ti.com>,
+ linux-kernel@vger.kernel.org, Murali Karicheri <m-karicheri2@ti.com>,
+ linux-mtd@lists.infradead.org, ivan.khoronzhuk@ti.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,17 +18,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, May 08, 2014 at 04:46:51PM +0200, Arnd Bergmann wrote:
-> These are a bunch of fixes I had to do to get all randconfig
-> configurations on ARM working. Most of these are really old
-> bugs, but there are also some new ones. I don't think any of
-> them require a backport to linux-stable.
-> 
-> I have checked that they are all still required on yesterday's
-> linux-next kernel. Please apply on the appropriate trees unless
-> there are objections.
-> 
-Is this series of patches also going to fix arm:allmodconfig ?
+From: Sandeep Paulraj <s-paulraj@ti.com>
 
-Thanks,
-Guenter
+It is needed for k2l keystone2 EVM which uses NAND flash with 4K page
+size, hence add support for 4K page size nand devices.
+
+Signed-off-by: Sandeep Paulraj <s-paulraj@ti.com>
+Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+---
+
+Based on l2-mtd/master
+
+ drivers/mtd/nand/davinci_nand.c | 41 ++++++++++++++++++++++++++++++-----------
+ 1 file changed, 30 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
+index b922c8e..24a5769 100644
+--- a/drivers/mtd/nand/davinci_nand.c
++++ b/drivers/mtd/nand/davinci_nand.c
+@@ -520,6 +520,31 @@ static struct nand_ecclayout hwecc4_2048 = {
+ 	},
+ };
+ 
++/* An ECC layout for using 4-bit ECC with large-page (4096bytes) flash,
++ * storing ten ECC bytes plus the manufacturer's bad block marker byte,
++ * and not overlapping the default BBT markers.
++ */
++static struct nand_ecclayout hwecc4_4096 __initconst = {
++          .eccbytes = 80,
++          .eccpos = {
++                  /* at the end of spare sector */
++                  48, 49, 50, 51, 52, 53, 54, 55, 56, 57,
++                  58, 59, 60, 61, 62, 63, 64, 65, 66, 67,
++                  68, 69, 70, 71, 72, 73, 74, 75, 76, 77,
++                  78, 79, 80, 81, 82, 83, 84, 85, 86, 87,
++                  88, 89, 90, 91, 92, 93, 94, 95, 96, 97,
++                  98, 99, 100, 101, 102, 103, 104, 105, 106, 107,
++                  108, 109, 110, 111, 112, 113, 114, 115, 116, 117,
++                  118, 119, 120, 121, 122, 123, 124, 125, 126, 127,
++                  },
++          .oobfree = {
++                  /* 2 bytes at offset 0 hold manufacturer badblock markers */
++                  {.offset = 2, .length = 46, },
++                  /* 5 bytes at offset 8 hold BBT markers */
++                  /* 8 bytes at offset 16 hold JFFS2 clean markers */
++         },
++};
++
+ #if defined(CONFIG_OF)
+ static const struct of_device_id davinci_nand_of_match[] = {
+ 	{.compatible = "ti,davinci-nand", },
+@@ -796,18 +821,12 @@ static int nand_davinci_probe(struct platform_device *pdev)
+ 			info->chip.ecc.mode = NAND_ECC_HW_OOB_FIRST;
+ 			goto syndrome_done;
+ 		}
++		if (chunks == 8) {
++			info->ecclayout = hwecc4_4096;
++			info->chip.ecc.mode = NAND_ECC_HW_OOB_FIRST;
++			goto syndrome_done;
++		}
+ 
+-		/* 4KiB page chips are not yet supported. The eccpos from
+-		 * nand_ecclayout cannot hold 80 bytes and change to eccpos[]
+-		 * breaks userspace ioctl interface with mtd-utils. Once we
+-		 * resolve this issue, NAND_ECC_HW_OOB_FIRST mode can be used
+-		 * for the 4KiB page chips.
+-		 *
+-		 * TODO: Note that nand_ecclayout has now been expanded and can
+-		 *  hold plenty of OOB entries.
+-		 */
+-		dev_warn(&pdev->dev, "no 4-bit ECC support yet "
+-				"for 4KiB-page NAND\n");
+ 		ret = -EIO;
+ 		goto err;
+ 
+-- 
+1.8.3.2
