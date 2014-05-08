@@ -1,13 +1,26 @@
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Thu, 8 May 2014 09:41:57 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+To: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 00/22] Random ARM randconfig fixes in drivers
+Message-ID: <20140508164157.GA22224@roeck-us.net>
+References: <1399560433-1402630-1-git-send-email-arnd@arndb.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date: Thu, 08 May 2014 18:03:24 +0200
-From: Gva Abogado <install@vtxmail.ch>
-To: undisclosed-recipients:;
-Subject: Please Acknowledge My Proposal!!
-Message-ID: <3685394e04785b6c20fcb76c3b10b6a2@vtxmail.ch>
-Reply-To: install@vtxmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1399560433-1402630-1-git-send-email-arnd@arndb.de>
+Cc: wsa@the-dreams.de, tony@atomide.com, linux-pci@vger.kernel.org,
+ linus.walleij@linaro.org, nicolas.ferre@atmel.com, linux-ide@vger.kernel.org,
+ wim@iguana.be, linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
+ linux-samsung-soc@vger.kernel.org, mturquette@linaro.org, vinod.koul@intel.com,
+ linux-sh@vger.kernel.org, kishon@ti.com, linux-iio@vger.kernel.org,
+ linux-input@vger.kernel.org, plagnioj@jcrosoft.com, ohad@wizery.com,
+ linux-watchdog@vger.kernel.org, broonie@kernel.org, bhelgaas@google.com,
+ linux@arm.linux.org.uk, linux-arm-kernel@lists.infradead.org,
+ gregkh@linuxfoundation.org, dmitry.torokhov@gmail.com,
+ linux-kernel@vger.kernel.org, balbi@ti.com, josh.wu@atmel.com,
+ netdev@vger.kernel.org, dmaengine@vger.kernel.org, dwmw2@infradead.org,
+ jic23@kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,16 +30,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, May 08, 2014 at 04:46:51PM +0200, Arnd Bergmann wrote:
+> These are a bunch of fixes I had to do to get all randconfig
+> configurations on ARM working. Most of these are really old
+> bugs, but there are also some new ones. I don't think any of
+> them require a backport to linux-stable.
+> 
+> I have checked that they are all still required on yesterday's
+> linux-next kernel. Please apply on the appropriate trees unless
+> there are objections.
+> 
+Is this series of patches also going to fix arm:allmodconfig ?
 
-
--- 
-Please Acknowledge My Proposal!!
-
-My name is Mr.Miguel Martinez Moreno a lawyer resident in Spain. I am 
-writing to let you know I have some FUNDS I want to transfer and am 
-seeking if you can be a beneficiary...Do not hesitate to Contact me 
-formore information if interested: martinezmoreno2011@aim.com
-
-Sincerely
-Miguel Martinez Moreno.
-martinezmoreno2011@aim.com
+Thanks,
+Guenter
