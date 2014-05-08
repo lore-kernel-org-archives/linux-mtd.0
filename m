@@ -1,22 +1,30 @@
-Received: from mo6-p05-ob.smtp.rzone.de ([2a01:238:20a:202:5305::4])
+Received: from mail-ie0-f182.google.com ([209.85.223.182])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WiMGP-0001Nx-OJ
- for linux-mtd@lists.infradead.org; Thu, 08 May 2014 11:13:22 +0000
-Message-ID: <536B66D7.3000007@denx.de>
-Date: Thu, 08 May 2014 13:13:27 +0200
-From: Stefan Roese <sr@denx.de>
+ id 1WiPKj-0003O9-LK
+ for linux-mtd@lists.infradead.org; Thu, 08 May 2014 14:30:02 +0000
+Received: by mail-ie0-f182.google.com with SMTP id tp5so2643171ieb.41
+ for <linux-mtd@lists.infradead.org>; Thu, 08 May 2014 07:29:39 -0700 (PDT)
+Date: Thu, 8 May 2014 15:29:30 +0100
+From: Lee Jones <lee.jones@linaro.org>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v3 1/9] mtd: nand: define struct nand_timings
+Message-ID: <20140508142930.GC5767@lee--X1>
+References: <1394647664-8258-1-git-send-email-b.brezillon.dev@gmail.com>
+ <1394647664-8258-2-git-send-email-b.brezillon.dev@gmail.com>
+ <20140430175157.GB2497@norris-Latitude-E6410>
 MIME-Version: 1.0
-To: Pekon Gupta <pekon@ti.com>, Brian Norris <computersforpeace@gmail.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH v2] mtd: nand: Fix problem with NAND_CMD_RNDOUT (05h-E0h)
-References: <1399372120-24089-1-git-send-email-pekon@ti.com>
-In-Reply-To: <1399372120-24089-1-git-send-email-pekon@ti.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Steven Kipisz <s-kipisz2@ti.com>, Marek Belisko <marek.belisko@gmail.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Bacem Daassi <Bacem.Daassi@spansion.com>,
- Samuel Egli <samuel.egli@siemens.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20140430175157.GB2497@norris-Latitude-E6410>
+Cc: devicetree@vger.kernel.org, Boris BREZILLON <b.brezillon.dev@gmail.com>,
+ Arnd Bergmann <arnd@arndb.de>, linux-doc@vger.kernel.org, dev@linux-sunxi.org,
+ linux-kernel@vger.kernel.org,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ Rob Herring <robherring2@gmail.com>, Grant Likely <grant.likely@linaro.org>,
+ linux-mtd@lists.infradead.org,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,44 +34,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06.05.2014 12:28, Pekon Gupta wrote:
-> From: Bacem Daassi <Bacem.Daassi@spansion.com>
->
-> Though the NAND_CMD_READ "Page Read" command expects the full address footprint
-> (2bytes for column address + 3bytes for row address).
-> But once the page is loaded into the read buffer, NAND_CMD_RNDOUT (05h-E0h) also
-> called "Random Data Output" command expects to see only the column address that
-> should be addressed within the already loaded page present in read buffers.
-> Only 2 address cycles with ALE active should be provided between the 05h and E0h
-> So expected sequence for NAND_CMD_RNDOUT is
-> 	<05h> <column-addr-byte1> <column-address-byte2> <E0h>
->
-> Though most NAND Devices mentioned above tend to work even if extra cycles of
-> page-address is issued between <05h> .... <E0h> command. But some Spansion and
-> Hynix devices break on this non-compliance.
-> The same issue has been reported by Bacem Daassi
->    http://e2e.ti.com/support/arm/sitara_arm/f/791/t/259699.aspx
->
-> This patch fixes nand_command for all vendors devices as datasheet of all
-> devices expect same sequence.
->
-> +--------+------------------------+---------------------------------------------
-> |Vendor  | Datasheet/Part#        |  Reference
-> +--------+------------------------+---------------------------------------------
-> |Spansion| S34ML{01|02|04}G2      | Figure 6.12 Random Data Output In a Page
-> |Micron  | MT29F{16|32|64|128}G08A| Figure 47: CHANGE READ COLUMN (05h-E0h) Operation
-> |Macronix| MX30LF1G08AA           | Figure 10. AC Waveforms for Random Data Output
-> |Toshiba | TC58NVG1S3ETAI0        | Figure Column Address Change in Read Cycle Timing Diagram (2/2)
-> +--------+------------------------+---------------------------------------------
->
-> Reported-by: Bacem Daassi <Bacem.Daassi@spansion.com>
-> Reported-by: Marek Belisko <marek.belisko@gmail.com>
-> Reported-by: Steven Kipisz <s-kipisz2@ti.com>
-> Signed-off-by: Pekon Gupta <pekon@ti.com>
+> > Define a struct containing the standard NAND timings as described in NAND
+> > datasheets.
+> > 
+> > Signed-off-by: Boris BREZILLON <b.brezillon.dev@gmail.com>
+> > ---
+> >  include/linux/mtd/nand.h |   49 ++++++++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 49 insertions(+)
+> > 
+> > diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> > index 389b3c5..f3ff3a3 100644
+> > --- a/include/linux/mtd/nand.h
+> > +++ b/include/linux/mtd/nand.h
 
-Looks good, so:
+[...]
 
-Reviewed-by: Stefan Roese <sr@denx.de>
+> > + * Parameters)
+> 
+> Please document the units for these fields here. It looks like you're
+> using picoseconds.
 
-Thanks,
-Stefan
+Can't we leave this open to interpretation?  For instance, it's more
+convenient for our driver to handle these as nano second values.
+
+> > + *
+> > + */
+> > +
+> 
+> Extra blank line.
+> 
+> > +struct nand_sdr_timings {
+> > +	u32 tALH_min;
+> > +	u32 tADL_min;
+> > +	u32 tALS_min;
+> > +	u32 tAR_min;
+> > +	u32 tCEA_max;
+> > +	u32 tCEH_min;
+> > +	u32 tCH_min;
+> > +	u32 tCHZ_max;
+> > +	u32 tCLH_min;
+> > +	u32 tCLR_min;
+> > +	u32 tCLS_min;
+> > +	u32 tCOH_min;
+> > +	u32 tCS_min;
+
+	u32 tCSD_min;
+
+> > +	u32 tDH_min;
+> > +	u32 tDS_min;
+> > +	u32 tFEAT_max;
+> > +	u32 tIR_min;
+> > +	u32 tITC_max;
+
+	u32 tR_max;
+
+> > +	u32 tRC_min;
+> > +	u32 tREA_max;
+> > +	u32 tREH_min;
+> > +	u32 tRHOH_min;
+> > +	u32 tRHW_min;
+> > +	u32 tRHZ_max;
+> > +	u32 tRLOH_min;
+> > +	u32 tRP_min;
+> > +	u32 tRR_min;
+> > +	u64 tRST_max;
+> > +	u32 tWB_max;
+> > +	u32 tWC_min;
+> > +	u32 tWH_min;
+> > +	u32 tWHR_min;
+> > +	u32 tWP_min;
+> > +	u32 tWW_min;
+> > +};
+> > +
+> >  #endif /* __LINUX_MTD_NAND_H */
+
+-- 
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
