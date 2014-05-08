@@ -1,15 +1,20 @@
-From: Arnd Bergmann <arnd@arndb.de>
-To: linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 2/2] mtd: orion-nand: fix build error with ARMv4
-Date: Thu,  8 May 2014 16:56:15 +0200
-Message-Id: <1399560990-1402858-4-git-send-email-arnd@arndb.de>
-In-Reply-To: <1399560990-1402858-1-git-send-email-arnd@arndb.de>
-References: <1399560433-1402630-1-git-send-email-arnd@arndb.de>
- <1399560990-1402858-1-git-send-email-arnd@arndb.de>
-Cc: Arnd Bergmann <arnd@arndb.de>, Jingoo Han <jg1.han@samsung.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WiQP3-00039V-8p
+ for linux-mtd@lists.infradead.org; Thu, 08 May 2014 15:38:33 +0000
+Received: by mail-pa0-f46.google.com with SMTP id kx10so2974007pab.19
+ for <linux-mtd@lists.infradead.org>; Thu, 08 May 2014 08:38:10 -0700 (PDT)
+Date: Thu, 8 May 2014 23:37:58 +0800
+From: Huang Shijie <shijie8@gmail.com>
+To: Hugo Villeneuve <hugo@hugovil.com>
+Subject: Re: imx6 NAND chip selects
+Message-ID: <20140508153756.GA2572@localhost.localdomain>
+References: <536A5FEE.9090705@hugovil.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <536A5FEE.9090705@hugovil.com>
+Cc: b32955@freescale.com, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,51 +24,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-orion_nand_read_buf uses an inline assembly with the "ldrd"
-instruction, which is only available from ARMv5 upwards. This
-used to be fine, since all users have an ARMv5 or ARMv7 CPU,
-but now we can also build a multiplatform kernel with ARMv4
-support enabled in addition to the "kirkwood" (mvebu) platform.
+On Wed, May 07, 2014 at 12:31:42PM -0400, Hugo Villeneuve wrote:
+> Hi,
+> I am trying to connect a NAND flash device (Micron MT29F8G08) to a
+> Wandboard Dual.
+> 
+> Here is the pin mapping:
+> 
+> i.MX6             NAND flash
+> ----------------------------
+> NANDF_CS0    -->  CE#
+> NANDF_RB0    -->  R/B#
+> NANDF_WP_B   -->  WP#
+> NANDF_CLE    -->  CLE
+> NANDF_ALE    -->  ALE
+> NANDF_WE     -->  WE#
+> NANDF_RE     -->  RE#
+> NANDF_D[0-7] -->  I/O[0-7]
+> 
+> This NAND flash has a single chip-select.
+> 
+> I'm testing it using Linux kernel 3.15.0-rc3.
+> 
+> In the wandboard device tree file, I have added all the above gpmi
+> pins as GPMI pins.
+> 
+> I am still booting from the SD card, so at this point I am only
+> trying to detect the NAND device. Unfortunately, when the kernel
+> boots, the GPMI driver fails to register (error -19).
+> 
+> If I monitor the NANDF_CS0 line, I can see that it is pulsed low,
+> but I am not seing any activity on the NANDF_WE line.
+> 
+> However, If I monitor the NANDF_CS1 line, I can see that it is
+> pulsed low, and during the time it is low the NANDF_WE line is also
+> going low.
+> 
+> I then made sure to reconfigure the unused pins NANDF_CS[1-3] as
+> GPIOs (ALT5 function) in my device tree file. I have confirmed with
+> kernel debug traces that the iomux register for NANDF_CS1 have the
+> value 0x05, which means ALT5 function (GPIO). But I am still seeing
+> the same behavior as before on the oscilloscope.
+> 
+> So how can I configure the GPMI driver to only use NANDF_CS0 and not
+> NANDF_CS1?
+> 
+> And is it normal that NANDF_CS1 is still used by the GPMI driver
+> when configured as GPIO?
+It is not normal at all.
 
-This provides an alternative to call the readsl() function that
-is supposed to have the same effect and is also optimized for
-performance.
+Please disable the GPIO pinctrl, and only enable the pinctrl for gpmi
+and try again.
 
-This patch is untested, and it would be worthwhile to check
-if there is any performance impact, especially in case the readsl
-version is actually faster.
+I am sure that you did not configure the PADs correctly.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: Jingoo Han <jg1.han@samsung.com>
-Cc: linux-mtd@lists.infradead.org
----
- drivers/mtd/nand/orion_nand.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nand.c
-index dd7fe81..c7b5e8a 100644
---- a/drivers/mtd/nand/orion_nand.c
-+++ b/drivers/mtd/nand/orion_nand.c
-@@ -56,6 +56,7 @@ static void orion_nand_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
- 		*buf++ = readb(io_base);
- 		len--;
- 	}
-+#if __LINUX_ARM_ARCH__ >= 5
- 	buf64 = (uint64_t *)buf;
- 	while (i < len/8) {
- 		/*
-@@ -68,6 +69,10 @@ static void orion_nand_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
- 		asm volatile ("ldrd\t%0, [%1]" : "=&r" (x) : "r" (io_base));
- 		buf64[i++] = x;
- 	}
-+#else
-+	readsl(io_base, buf, len/8);
-+	i = len / 8 * 8;
-+#endif
- 	i *= 8;
- 	while (i < len)
- 		buf[i++] = readb(io_base);
--- 
-1.8.3.2
+thanks
+Huang Shijie
