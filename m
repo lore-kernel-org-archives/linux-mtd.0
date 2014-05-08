@@ -1,13 +1,13 @@
 From: Arnd Bergmann <arnd@arndb.de>
 To: linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 1/2] mtd/onenand: fix build warning for dma type
-Date: Thu,  8 May 2014 16:56:14 +0200
-Message-Id: <1399560990-1402858-3-git-send-email-arnd@arndb.de>
+Subject: [PATCH 2/2] mtd: orion-nand: fix build error with ARMv4
+Date: Thu,  8 May 2014 16:56:15 +0200
+Message-Id: <1399560990-1402858-4-git-send-email-arnd@arndb.de>
 In-Reply-To: <1399560990-1402858-1-git-send-email-arnd@arndb.de>
 References: <1399560433-1402630-1-git-send-email-arnd@arndb.de>
  <1399560990-1402858-1-git-send-email-arnd@arndb.de>
-Cc: Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
- Kyungmin Park <kyungmin.park@samsung.com>, linux-mtd@lists.infradead.org,
+Cc: Arnd Bergmann <arnd@arndb.de>, Jingoo Han <jg1.han@samsung.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -19,58 +19,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The samsung onenand driver passes around a dma address token
-through a void pointer, which is incorrect and leads to
-warnings like this one:
+orion_nand_read_buf uses an inline assembly with the "ldrd"
+instruction, which is only available from ARMv5 upwards. This
+used to be fine, since all users have an ARMv5 or ARMv7 CPU,
+but now we can also build a multiplatform kernel with ARMv4
+support enabled in addition to the "kirkwood" (mvebu) platform.
 
-onenand/samsung.c:548:2: warning: passing argument 1 of '__fswab32' makes integer from pointer without a cast [enabled by default]
-  writel(src, base + S5PC110_DMA_SRC_ADDR);
-  ^
+This provides an alternative to call the readsl() function that
+is supposed to have the same effect and is also optimized for
+performance.
 
-This patch makes it use dma_addr_t here, which is more appropriate.
+This patch is untested, and it would be worthwhile to check
+if there is any performance impact, especially in case the readsl
+version is actually faster.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Cc: Kyungmin Park <kyungmin.park@samsung.com>
 Cc: David Woodhouse <dwmw2@infradead.org>
 Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: Jingoo Han <jg1.han@samsung.com>
 Cc: linux-mtd@lists.infradead.org
 ---
- drivers/mtd/onenand/samsung.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/mtd/nand/orion_nand.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/mtd/onenand/samsung.c b/drivers/mtd/onenand/samsung.c
-index b1a792f..efb819c 100644
---- a/drivers/mtd/onenand/samsung.c
-+++ b/drivers/mtd/onenand/samsung.c
-@@ -537,9 +537,9 @@ static int onenand_write_bufferram(struct mtd_info *mtd, int area,
- 	return 0;
- }
- 
--static int (*s5pc110_dma_ops)(void *dst, void *src, size_t count, int direction);
-+static int (*s5pc110_dma_ops)(dma_addr_t dst, dma_addr_t src, size_t count, int direction);
- 
--static int s5pc110_dma_poll(void *dst, void *src, size_t count, int direction)
-+static int s5pc110_dma_poll(dma_addr_t dst, dma_addr_t src, size_t count, int direction)
- {
- 	void __iomem *base = onenand->dma_addr;
- 	int status;
-@@ -605,7 +605,7 @@ static irqreturn_t s5pc110_onenand_irq(int irq, void *data)
- 	return IRQ_HANDLED;
- }
- 
--static int s5pc110_dma_irq(void *dst, void *src, size_t count, int direction)
-+static int s5pc110_dma_irq(dma_addr_t dst, dma_addr_t src, size_t count, int direction)
- {
- 	void __iomem *base = onenand->dma_addr;
- 	int status;
-@@ -686,7 +686,7 @@ static int s5pc110_read_bufferram(struct mtd_info *mtd, int area,
- 		dev_err(dev, "Couldn't map a %d byte buffer for DMA\n", count);
- 		goto normal;
+diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nand.c
+index dd7fe81..c7b5e8a 100644
+--- a/drivers/mtd/nand/orion_nand.c
++++ b/drivers/mtd/nand/orion_nand.c
+@@ -56,6 +56,7 @@ static void orion_nand_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
+ 		*buf++ = readb(io_base);
+ 		len--;
  	}
--	err = s5pc110_dma_ops((void *) dma_dst, (void *) dma_src,
-+	err = s5pc110_dma_ops(dma_dst, dma_src,
- 			count, S5PC110_DMA_DIR_READ);
- 
- 	if (page_dma)
++#if __LINUX_ARM_ARCH__ >= 5
+ 	buf64 = (uint64_t *)buf;
+ 	while (i < len/8) {
+ 		/*
+@@ -68,6 +69,10 @@ static void orion_nand_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
+ 		asm volatile ("ldrd\t%0, [%1]" : "=&r" (x) : "r" (io_base));
+ 		buf64[i++] = x;
+ 	}
++#else
++	readsl(io_base, buf, len/8);
++	i = len / 8 * 8;
++#endif
+ 	i *= 8;
+ 	while (i < len)
+ 		buf[i++] = readb(io_base);
 -- 
 1.8.3.2
