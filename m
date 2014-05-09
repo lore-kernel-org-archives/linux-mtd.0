@@ -1,23 +1,27 @@
-Received: from mezzanine.sirena.org.uk ([2400:8900::f03c:91ff:fedb:4f4])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WiiIE-0004xm-N8
- for linux-mtd@lists.infradead.org; Fri, 09 May 2014 10:44:43 +0000
-Date: Fri, 9 May 2014 11:44:04 +0100
-From: Mark Brown <broonie@kernel.org>
-To: "Mingkai.Hu@freescale.com" <Mingkai.Hu@freescale.com>
-Message-ID: <20140509104404.GK12304@sirena.org.uk>
-References: <92977332ffca4669b5c1987b42b0d0c5@BY2PR03MB508.namprd03.prod.outlook.com>
+From: Arnd Bergmann <arnd@arndb.de>
+To: Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH 00/22] Random ARM randconfig fixes in drivers
+Date: Fri, 9 May 2014 13:48:49 +0200
+References: <1399560433-1402630-1-git-send-email-arnd@arndb.de>
+ <20140508164157.GA22224@roeck-us.net>
+In-Reply-To: <20140508164157.GA22224@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="y7PtvmZky+k3cq9Z"
-Content-Disposition: inline
-In-Reply-To: <92977332ffca4669b5c1987b42b0d0c5@BY2PR03MB508.namprd03.prod.outlook.com>
-Subject: Re: Support of Micron SPI flash (size > 16MB)
-Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "vivien.didelot@savoirfairelinux.com"
- <vivien.didelot@savoirfairelinux.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201405091348.49713.arnd@arndb.de>
+Cc: wsa@the-dreams.de, tony@atomide.com, linux-pci@vger.kernel.org,
+ linus.walleij@linaro.org, nicolas.ferre@atmel.com, linux-ide@vger.kernel.org,
+ wim@iguana.be, linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
+ linux-samsung-soc@vger.kernel.org, mturquette@linaro.org, vinod.koul@intel.com,
+ linux-sh@vger.kernel.org, kishon@ti.com, linux-iio@vger.kernel.org,
+ linux-input@vger.kernel.org, plagnioj@jcrosoft.com, ohad@wizery.com,
+ linux-watchdog@vger.kernel.org, broonie@kernel.org, bhelgaas@google.com,
+ linux@arm.linux.org.uk, linux-arm-kernel@lists.infradead.org,
+ gregkh@linuxfoundation.org, dmitry.torokhov@gmail.com,
+ linux-kernel@vger.kernel.org, balbi@ti.com, josh.wu@atmel.com,
+ netdev@vger.kernel.org, dmaengine@vger.kernel.org, dwmw2@infradead.org,
+ jic23@kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,40 +31,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thursday 08 May 2014, Guenter Roeck wrote:
+> On Thu, May 08, 2014 at 04:46:51PM +0200, Arnd Bergmann wrote:
+> > These are a bunch of fixes I had to do to get all randconfig
+> > configurations on ARM working. Most of these are really old
+> > bugs, but there are also some new ones. I don't think any of
+> > them require a backport to linux-stable.
+> > 
+> > I have checked that they are all still required on yesterday's
+> > linux-next kernel. Please apply on the appropriate trees unless
+> > there are objections.
+> > 
+> Is this series of patches also going to fix arm:allmodconfig ?
 
---y7PtvmZky+k3cq9Z
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Possibly, I haven't checked in a while. I'm unfortunately sitting on
+about 200 other patches in the same branch, which together fix all
+build errors in any configuration I encountered.
 
-On Fri, May 09, 2014 at 10:25:04AM +0000, Mingkai.Hu@freescale.com wrote:
+I should really do some allmodconfig/allnoconfig/allyesconfig
+builds without my series again, and prioritize sending out the
+ones required for that.
 
-> 2.       What are the changes needed for SPI controller to support 4 byte addressing?
-
-If the SPI controller is a genuine SPI controller and not something
-specially optimised for flash it shouldn't need any changes, it doesn't
-know anything about the data it's sending.  The SPI flash code might
-need updating though, I don't know about that.
-
---y7PtvmZky+k3cq9Z
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJTbLFxAAoJELSic+t+oim91JEQAJLsYx7L71POM4gLDr/LkbOP
-hoERv6U3jlHjP+zmDim38ZBvy50XKxce+Lp8l5WmJkfKI9pfcnvmiIVx+eXiR4ri
-UZIfvh3zllzudrBck82FrBdtxKscTa3j9WMWgXRWkEXAVZyLzkd4rkWfEl7JDfQi
-qxSURxYdN83xn8bE48ExPps+LNCy84scid6l3GlghalNDWwLwx15t1CAbMoSEX7S
-/KxdUBs8uBOV69Zy3xSdSxesj+uF9ifv1bD1Y9VKJ3Fhmh8IwUNEb1q1/Inq4DF4
-VaDtUMZwDFxcyU3/D6cor1eIYfj7Jrz/jtTceSf7/vABOqgu/a6Nxyfn3ekeFKWE
-qtQDHR3okhTxY3KSdrkOcBO2/KKcMFN8edcibf/7jlMuTAkJ0FdYX61d9gOKA7G5
-NWWlfxOBT3gEJCnY8ui/M8KUD6FkZdZUU2iVZSGHhug0YkNfh4gy0Lh+cUk7/sff
-D2MCbBZblXAJkGdjQf/3Rdi2qyzKveQdBCkwiOhZ3z2xS+P71y5LPAFfWYoZltYS
-2IODuTZb38gBSUKaY/1nSKgqICXi04J4AYvSnoPAspzN6lPkqRAcYYxzf1iYNMTo
-3lfIbIOwZ2nQ86yIsdVwp3gv0g5+2CLE5uT3Xm1w6bxi4MXOiQnSE0qdLAK7DSnE
-HOr6kczm+xOD/aLg2ZTT
-=tt1j
------END PGP SIGNATURE-----
-
---y7PtvmZky+k3cq9Z--
+	Arnd
