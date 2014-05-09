@@ -1,13 +1,16 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
+Received: from arroyo.ext.ti.com ([192.94.94.40])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wigfa-0001JH-Db
- for linux-mtd@lists.infradead.org; Fri, 09 May 2014 09:00:42 +0000
+ id 1Wigfa-0001JK-Iv
+ for linux-mtd@lists.infradead.org; Fri, 09 May 2014 09:00:43 +0000
 From: Pekon Gupta <pekon@ti.com>
 To: Tony Lindgren <tony@atomide.com>, Brian Norris
  <computersforpeace@gmail.com>
-Subject: [PATCH v3 0/4]  mtd: nand: omap: add support for BCH16_ECC
-Date: Fri, 9 May 2014 14:29:11 +0530
-Message-ID: <1399625955-20882-1-git-send-email-pekon@ti.com>
+Subject: [PATCH v3 3/4] mtd: nand: omap: add support for BCH16_ECC - NAND
+ driver updates
+Date: Fri, 9 May 2014 14:29:14 +0530
+Message-ID: <1399625955-20882-4-git-send-email-pekon@ti.com>
+In-Reply-To: <1399625955-20882-1-git-send-email-pekon@ti.com>
+References: <1399625955-20882-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: linux-omap <linux-omap@vger.kernel.org>, Felipe Balbi <balbi@ti.com>,
@@ -23,63 +26,175 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-(re-sending as forgot to loop in linux-omap and Tony Lindgren <tony@atomide.com>)
+This patch add support for BCH16 ecc-scheme in OMAP NAND driver, by extending
+following functions:
+ - omap_enable_hwecc (nand_chip->ecc.hwctl): configure GPMC controller
+ - omap_calculate_ecc_bch (nand_chip->ecc.calculate): fetch ECC signature from GPMC controller
+ - omap_elm_correct_data (nand_chip->ecc.correct): detect and correct ECC errors using ELM
 
-*changes v2 -> v3*
-[PATCH v2 3/4] rebased to http://lists.infradead.org/pipermail/linux-mtd/2014-March/052655.html
-- no change in other patches
- 
-
-*changes v1 -> v2*
- rebased and cleaned on following versions of pending patches
-  (1) [PATCH v8 0/6] mtd: nand: omap: optimized chip->ecc.correct() for H/W ECC schemes
-  http://lists.infradead.org/pipermail/linux-mtd/2014-February/052092.html
-
-  (2) [PATCH v6 0/4] mtd: nand: omap: optimize chip->ecc.calculate() for H/W ECC schemes
-  http://lists.infradead.org/pipermail/linux-mtd/2014-February/052272.html
-
-  (3) [PATCH v5 0/4] mtd: nand: omap: optimize chip->ecc.hwctl() for H/W ECC schemes
-  http://lists.infradead.org/pipermail/linux-mtd/2014-March/052327.html
-
-  (4) [PATCH v6 0/4] mtd: devices: elm: add checks ELM H/W constrains, driver code cleanup
-  http://lists.infradead.org/pipermail/linux-mtd/2014-March/052455.html
- 
- Tested on Beaglebone-LT(white) NAND cape having NAND Device with
-       bus-width=16, block-size=256k, page-size=4k, oob-size=224
-
-
-*original v1*
-http://lists.infradead.org/pipermail/linux-mtd/2013-July/047562.html
-
-With increase in NAND flash densities and shrinking of technology
-NAND flash has become more suspectible to multiple bit-flips.
-Thus stronger ECC schemes are required for detecting and correcting multiple
-simultaneous bit-flips in same NAND page. But stronger ECC schemes have large
-ECC syndrome which require more space in OOB/Spare.
-
-This patch add support for BCH16 ecc-scheme on OMAP NAND driver:
-(a) BCH16 ecc-scheme can correct 16 bit-flips per 512Bytes of data.
+(a) BCH16 ecc-scheme can detect and correct 16 bit-flips per 512Bytes of data.
 (b) BCH16 ecc-scheme generates 26-bytes of ECC syndrome / 512B.
-
 Due to (b) this scheme can only be used with NAND devices which have enough
-OOB to satisfy following equation:
-OOBsize per page >= 26 * (page-size / 512)
+OOB to satisfy the relation: "OOBsize per page >= 26 * (page-size / 512)"
 
+Signed-off-by: Pekon Gupta <pekon@ti.com>
+---
+ drivers/mtd/nand/omap2.c | 94 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 94 insertions(+)
 
-Pekon Gupta (4):
-  mtd: nand: omap: add support for BCH16_ECC - GPMC driver updates
-  mtd: nand: omap: add support for BCH16_ECC - ELM driver updates
-  mtd: nand: omap: add support for BCH16_ECC - NAND driver updates
-  mtd: nand: omap: Documentation: How to select correct ECC scheme for
-    your device ?
-
- .../devicetree/bindings/mtd/gpmc-nand.txt          | 39 +++++++++
- arch/arm/mach-omap2/gpmc.c                         | 15 ++++
- drivers/mtd/devices/elm.c                          | 42 ++++++++++
- drivers/mtd/nand/omap2.c                           | 94 ++++++++++++++++++++++
- include/linux/platform_data/elm.h                  |  3 +-
- include/linux/platform_data/mtd-nand-omap2.h       |  5 ++
- 6 files changed, 197 insertions(+), 1 deletion(-)
-
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index d161c9b..c359af0 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -137,6 +137,10 @@
+ #define BADBLOCK_MARKER_LENGTH		2
+ 
+ #ifdef CONFIG_MTD_NAND_OMAP_BCH
++static u_char bch16_vector[] = {0xf5, 0x24, 0x1c, 0xd0, 0x61, 0xb3, 0xf1, 0x55,
++				0x2e, 0x2c, 0x86, 0xa3, 0xed, 0x36, 0x1b, 0x78,
++				0x48, 0x76, 0xa9, 0x3b, 0x97, 0xd1, 0x7a, 0x93,
++				0x07, 0x0e};
+ static u_char bch8_vector[] = {0xf3, 0xdb, 0x14, 0x16, 0x8b, 0xd2, 0xbe, 0xcc,
+ 	0xac, 0x6b, 0xff, 0x99, 0x7b};
+ static u_char bch4_vector[] = {0x00, 0x6b, 0x31, 0xdd, 0x41, 0xbc, 0x10};
+@@ -1115,6 +1119,19 @@ static void __maybe_unused omap_enable_hwecc_bch(struct mtd_info *mtd, int mode)
+ 			ecc_size1 = BCH_ECC_SIZE1;
+ 		}
+ 		break;
++	case OMAP_ECC_BCH16_CODE_HW:
++		bch_type = 0x2;
++		nsectors = chip->ecc.steps;
++		if (mode == NAND_ECC_READ) {
++			wr_mode	  = 0x01;
++			ecc_size0 = 52; /* ECC bits in nibbles per sector */
++			ecc_size1 = 0;  /* non-ECC bits in nibbles per sector */
++		} else {
++			wr_mode	  = 0x01;
++			ecc_size0 = 0;  /* extra bits in nibbles per sector */
++			ecc_size1 = 52; /* OOB bits in nibbles per sector */
++		}
++		break;
+ 	default:
+ 		return;
+ 	}
+@@ -1163,6 +1180,7 @@ static int __maybe_unused omap_calculate_ecc_bch(struct mtd_info *mtd,
+ 	struct gpmc_nand_regs	*gpmc_regs = &info->reg;
+ 	u8 *ecc_code;
+ 	unsigned long nsectors, bch_val1, bch_val2, bch_val3, bch_val4;
++	u32 val;
+ 	int i;
+ 
+ 	nsectors = ((readl(info->reg.gpmc_ecc_config) >> 4) & 0x7) + 1;
+@@ -1202,6 +1220,41 @@ static int __maybe_unused omap_calculate_ecc_bch(struct mtd_info *mtd,
+ 			*ecc_code++ = ((bch_val1 >> 4) & 0xFF);
+ 			*ecc_code++ = ((bch_val1 & 0xF) << 4);
+ 			break;
++		case OMAP_ECC_BCH16_CODE_HW:
++			val = readl(gpmc_regs->gpmc_bch_result6[i]);
++			ecc_code[0]  = ((val >>  8) & 0xFF);
++			ecc_code[1]  = ((val >>  0) & 0xFF);
++			val = readl(gpmc_regs->gpmc_bch_result5[i]);
++			ecc_code[2]  = ((val >> 24) & 0xFF);
++			ecc_code[3]  = ((val >> 16) & 0xFF);
++			ecc_code[4]  = ((val >>  8) & 0xFF);
++			ecc_code[5]  = ((val >>  0) & 0xFF);
++			val = readl(gpmc_regs->gpmc_bch_result4[i]);
++			ecc_code[6]  = ((val >> 24) & 0xFF);
++			ecc_code[7]  = ((val >> 16) & 0xFF);
++			ecc_code[8]  = ((val >>  8) & 0xFF);
++			ecc_code[9]  = ((val >>  0) & 0xFF);
++			val = readl(gpmc_regs->gpmc_bch_result3[i]);
++			ecc_code[10] = ((val >> 24) & 0xFF);
++			ecc_code[11] = ((val >> 16) & 0xFF);
++			ecc_code[12] = ((val >>  8) & 0xFF);
++			ecc_code[13] = ((val >>  0) & 0xFF);
++			val = readl(gpmc_regs->gpmc_bch_result2[i]);
++			ecc_code[14] = ((val >> 24) & 0xFF);
++			ecc_code[15] = ((val >> 16) & 0xFF);
++			ecc_code[16] = ((val >>  8) & 0xFF);
++			ecc_code[17] = ((val >>  0) & 0xFF);
++			val = readl(gpmc_regs->gpmc_bch_result1[i]);
++			ecc_code[18] = ((val >> 24) & 0xFF);
++			ecc_code[19] = ((val >> 16) & 0xFF);
++			ecc_code[20] = ((val >>  8) & 0xFF);
++			ecc_code[21] = ((val >>  0) & 0xFF);
++			val = readl(gpmc_regs->gpmc_bch_result0[i]);
++			ecc_code[22] = ((val >> 24) & 0xFF);
++			ecc_code[23] = ((val >> 16) & 0xFF);
++			ecc_code[24] = ((val >>  8) & 0xFF);
++			ecc_code[25] = ((val >>  0) & 0xFF);
++			break;
+ 		default:
+ 			return -EINVAL;
+ 		}
+@@ -1228,6 +1281,8 @@ static int __maybe_unused omap_calculate_ecc_bch(struct mtd_info *mtd,
+ 			/* Set 14th ECC byte as 0x0 for ROM compatibility */
+ 			ecc_calc[eccbytes - 1] = 0x0;
+ 			break;
++		case OMAP_ECC_BCH16_CODE_HW:
++			break;
+ 		default:
+ 			return -EINVAL;
+ 		}
+@@ -1319,6 +1374,10 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
+ 		actual_eccbytes = ecc->bytes - 1;
+ 		erased_ecc_vec = bch8_vector;
+ 		break;
++	case OMAP_ECC_BCH16_CODE_HW:
++		actual_eccbytes = ecc->bytes;
++		erased_ecc_vec = bch16_vector;
++		break;
+ 	default:
+ 		pr_err("invalid driver configuration\n");
+ 		return -EINVAL;
+@@ -1402,6 +1461,7 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
+ 						BCH4_BIT_PAD;
+ 					break;
+ 				case OMAP_ECC_BCH8_CODE_HW:
++				case OMAP_ECC_BCH16_CODE_HW:
+ 					pos = err_vec[i].error_loc[j];
+ 					break;
+ 				default:
+@@ -1929,6 +1989,40 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 		goto return_error;
+ #endif
+ 
++	case OMAP_ECC_BCH16_CODE_HW:
++#ifdef CONFIG_MTD_NAND_OMAP_BCH
++		pr_info("using OMAP_ECC_BCH16_CODE_HW ECC scheme\n");
++		nand_chip->ecc.mode		= NAND_ECC_HW;
++		nand_chip->ecc.size		= 512;
++		nand_chip->ecc.bytes		= 26;
++		nand_chip->ecc.strength		= 16;
++		nand_chip->ecc.hwctl		= omap_enable_hwecc_bch;
++		nand_chip->ecc.correct		= omap_elm_correct_data;
++		nand_chip->ecc.calculate	= omap_calculate_ecc_bch;
++		nand_chip->ecc.read_page	= omap_read_page_bch;
++		nand_chip->ecc.write_page	= omap_write_page_bch;
++		/* This ECC scheme requires ELM H/W block */
++		err = is_elm_present(info, pdata->elm_of_node, BCH16_ECC);
++		if (err < 0) {
++			pr_err("ELM is required for this ECC scheme\n");
++			goto return_error;
++		}
++		/* define ECC layout */
++		ecclayout->eccbytes		= nand_chip->ecc.bytes *
++							(mtd->writesize /
++							nand_chip->ecc.size);
++		oob_index			= BADBLOCK_MARKER_LENGTH;
++		for (i = 0; i < ecclayout->eccbytes; i++, oob_index++)
++			ecclayout->eccpos[i]	= oob_index;
++		/* reserved marker already included in ecclayout->eccbytes */
++		ecclayout->oobfree->offset	=
++				ecclayout->eccpos[ecclayout->eccbytes - 1] + 1;
++		break;
++#else
++		pr_err("nand: error: CONFIG_MTD_NAND_OMAP_BCH not enabled\n");
++		err = -EINVAL;
++		goto return_error;
++#endif
+ 	default:
+ 		pr_err("nand: error: invalid or unsupported ECC scheme\n");
+ 		err = -EINVAL;
 -- 
 1.8.5.1.163.gd7aced9
