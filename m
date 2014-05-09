@@ -1,24 +1,19 @@
-Received: from mail-ie0-f170.google.com ([209.85.223.170])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WihlP-0006TE-37
- for linux-mtd@lists.infradead.org; Fri, 09 May 2014 10:10:47 +0000
-Received: by mail-ie0-f170.google.com with SMTP id ar20so448440iec.15
- for <linux-mtd@lists.infradead.org>; Fri, 09 May 2014 03:10:25 -0700 (PDT)
-Date: Fri, 9 May 2014 11:03:04 +0100
-From: Lee Jones <lee.jones@linaro.org>
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [RFC 13/47] mtd: nand: stm_nand_bch: provide Device Tree support
-Message-ID: <20140509100304.GR5767@lee--X1>
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Lee Jones <lee.jones@linaro.org>
+Subject: RE: [RFC 13/47] mtd: nand: stm_nand_bch: provide Device Tree support
+Date: Fri, 9 May 2014 10:32:02 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EACBC8F@DBDE04.ent.ti.com>
 References: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
  <1395735604-26706-14-git-send-email-lee.jones@linaro.org>
  <20980858CB6D3A4BAE95CA194937D5E73EAB5C83@DBDE04.ent.ti.com>
  <20140430125406.GN29462@lee--X1>
  <20980858CB6D3A4BAE95CA194937D5E73EACA3F0@DBDE04.ent.ti.com>
+ <20140509100304.GR5767@lee--X1>
+In-Reply-To: <20140509100304.GR5767@lee--X1>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EACA3F0@DBDE04.ent.ti.com>
 Cc: "angus.clark@st.com" <angus.clark@st.com>,
  "kernel@stlinux.com" <kernel@stlinux.com>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
@@ -35,92 +30,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> >> >+	of_property_read_u32(np, "st,bch-bitflip-threshold",
-> >> >+			     &pdata->bch_bitflip_threshold);
-> >> >+
-> >> mtd->bitflip_threshold is by default set to ecc.strength (unless a driver initializes it).
-> >> And then can be re-configured for each MTD partition separately
-> >> 	/sys/class/mtd/mtdX/bitflip_threshold
-> >> 	Refer: $kernel/Documentation/ABI/testing/sysfs-class-mtd
-> >> So, I don't think this is a HW parameter, and so should not be passed from DT.
-> >
-> >I think the bit-flip threshold is/can be chip specific, and as we know
-> >which chip we're likely to be booting on, we can specify this via the
-> >hardware description.  Thus, I think it's perfectly viable for an
-> >option to pass through DT to exist.
-> >
-> I don't think that’s the correct interpretation of bitflip_threshold.
-> 
-> (1) bitflip_threshold is dependent on ecc.strength (ECC scheme) of your driver.
-> MTD layers uses bitflip_threshold to warn above layers that number of
-> correctable bit-flips have reached a dangerous level beyond which driver's
-> ECC scheme may not be able to correct them. So above layers should start
-> taking additional corrective action like scrubbing.
-> 	@@drivers/mtd/mtdcore.c: mtd_read()
-> 		return ret_code >= mtd->bitflip_threshold ? -EUCLEAN : 0;
-> 
-> (2) Also, user-space may control it based on how your device ages on field.
-> A fresh silicon may not show too many bitflips. But as device ages the
-> probability of simultaneous bitflips will increase. So user-space may lower
-> the bitflip_threshold to avoid accumulation of bitflips in a single page.
->  
-> Thus, bitflip_threshold should not be passed via DT.
-> It's neither a hardware parameter, nor it’s a static constant.
-
-Ah, I see.  I will fixup, thanks for the explanation.
-
-> >> >+struct device_node *stm_of_get_partitions_node(struct device_node *np,
-> >> >+					       int bank_nr)
-> >> >+{
-> >> >+	struct device_node *banksnp, *banknp, *partsnp = NULL;
-> >> >+	char name[10];
-> >> >+
-> >> >+	banksnp = of_parse_phandle(np, "st,nand-banks", 0);
-> >> >+	if (!banksnp)
-> >> >+		return NULL;
-> >> >+
-> >> >+	sprintf(name, "bank%d", bank_nr);
-> >> >+	banknp = of_get_child_by_name(banksnp, name);
-> >> >+	if (banknp)
-> >> >+		return NULL;
-> >> >+
-> >> >+	partsnp = of_get_child_by_name(banknp, "partitions");
-> >> >+	of_node_put(banknp);
-> >> >+
-> >> Sorry, I'm bit confused here .. I think you don't need to find children of
-> >> Your bank node. This should already taken care in default parser
-> >> drivers/mtd/ofpart.c : parse_ofpart_partitions()
-> >> And all you need to pass is 'of_node' of bank (device).
-> >> Is my understanding correct ?
-> >
-> >We have 3 options here, you _can_ use parse_ofpart_partitions() if
-> >your partition information conforms to its schema, but said schema
-> >does not support banks and/or other information that we choose to
-> >place within the bank node.  The second option is to register a
-> >parser.  My personal view is that registering a parser is using the
-> >framework for 'using the framework's' sake i.e. doesn't actually
-> >achieve anything special.  We've chosen the third option, which is to
-> >parse and extract the information ourselves - which is actually fairly
-> >trivial, and pass the required partition data in through the
-> >mtd_device_parse_register() call - which is where the information
-> >would be parsed in the case of the first two options.
-> >
-> Do you really want to have *custom* partition format ?
-> If your previous code was non-DT (platform file based), then I think
-> It's good point to move to unified generic partition format which others
-> are following, as you make your driver DT compliant, and in mainline.
-> 
-> I understand you primary objective would be to get ST driver work
-> out of mainline asap, but if you upstream too many custom stuff you
-> are only adding maintenance burden for your code. This is where
-> most of my comments originate.
-> However, I leave it to Brian to decide, if he is okay with these.
-> 
-> 
-> with regards, pekon
-
--- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+PkZyb206IExlZSBKb25lcyBbbWFpbHRvOmxlZS5qb25lc0BsaW5hcm8ub3JnXQ0KPg0KPj4gPj4g
+PisJb2ZfcHJvcGVydHlfcmVhZF91MzIobnAsICJzdCxiY2gtYml0ZmxpcC10aHJlc2hvbGQiLA0K
+Pj4gPj4gPisJCQkgICAgICZwZGF0YS0+YmNoX2JpdGZsaXBfdGhyZXNob2xkKTsNCj4+ID4+ID4r
+DQo+PiA+PiBtdGQtPmJpdGZsaXBfdGhyZXNob2xkIGlzIGJ5IGRlZmF1bHQgc2V0IHRvIGVjYy5z
+dHJlbmd0aCAodW5sZXNzIGEgZHJpdmVyIGluaXRpYWxpemVzIGl0KS4NCj4+ID4+IEFuZCB0aGVu
+IGNhbiBiZSByZS1jb25maWd1cmVkIGZvciBlYWNoIE1URCBwYXJ0aXRpb24gc2VwYXJhdGVseQ0K
+Pj4gPj4gCS9zeXMvY2xhc3MvbXRkL210ZFgvYml0ZmxpcF90aHJlc2hvbGQNCj4+ID4+IAlSZWZl
+cjogJGtlcm5lbC9Eb2N1bWVudGF0aW9uL0FCSS90ZXN0aW5nL3N5c2ZzLWNsYXNzLW10ZA0KPj4g
+Pj4gU28sIEkgZG9uJ3QgdGhpbmsgdGhpcyBpcyBhIEhXIHBhcmFtZXRlciwgYW5kIHNvIHNob3Vs
+ZCBub3QgYmUgcGFzc2VkIGZyb20gRFQuDQo+PiA+DQo+PiA+SSB0aGluayB0aGUgYml0LWZsaXAg
+dGhyZXNob2xkIGlzL2NhbiBiZSBjaGlwIHNwZWNpZmljLCBhbmQgYXMgd2Uga25vdw0KPj4gPndo
+aWNoIGNoaXAgd2UncmUgbGlrZWx5IHRvIGJlIGJvb3Rpbmcgb24sIHdlIGNhbiBzcGVjaWZ5IHRo
+aXMgdmlhIHRoZQ0KPj4gPmhhcmR3YXJlIGRlc2NyaXB0aW9uLiAgVGh1cywgSSB0aGluayBpdCdz
+IHBlcmZlY3RseSB2aWFibGUgZm9yIGFuDQo+PiA+b3B0aW9uIHRvIHBhc3MgdGhyb3VnaCBEVCB0
+byBleGlzdC4NCj4+ID4NCj4+IEkgZG9uJ3QgdGhpbmsgdGhhdOKAmXMgdGhlIGNvcnJlY3QgaW50
+ZXJwcmV0YXRpb24gb2YgYml0ZmxpcF90aHJlc2hvbGQuDQo+Pg0KPj4gKDEpIGJpdGZsaXBfdGhy
+ZXNob2xkIGlzIGRlcGVuZGVudCBvbiBlY2Muc3RyZW5ndGggKEVDQyBzY2hlbWUpIG9mIHlvdXIg
+ZHJpdmVyLg0KPj4gTVREIGxheWVycyB1c2VzIGJpdGZsaXBfdGhyZXNob2xkIHRvIHdhcm4gYWJv
+dmUgbGF5ZXJzIHRoYXQgbnVtYmVyIG9mDQo+PiBjb3JyZWN0YWJsZSBiaXQtZmxpcHMgaGF2ZSBy
+ZWFjaGVkIGEgZGFuZ2Vyb3VzIGxldmVsIGJleW9uZCB3aGljaCBkcml2ZXIncw0KPj4gRUNDIHNj
+aGVtZSBtYXkgbm90IGJlIGFibGUgdG8gY29ycmVjdCB0aGVtLiBTbyBhYm92ZSBsYXllcnMgc2hv
+dWxkIHN0YXJ0DQo+PiB0YWtpbmcgYWRkaXRpb25hbCBjb3JyZWN0aXZlIGFjdGlvbiBsaWtlIHNj
+cnViYmluZy4NCj4+IAlAQGRyaXZlcnMvbXRkL210ZGNvcmUuYzogbXRkX3JlYWQoKQ0KPj4gCQly
+ZXR1cm4gcmV0X2NvZGUgPj0gbXRkLT5iaXRmbGlwX3RocmVzaG9sZCA/IC1FVUNMRUFOIDogMDsN
+Cj4+DQo+PiAoMikgQWxzbywgdXNlci1zcGFjZSBtYXkgY29udHJvbCBpdCBiYXNlZCBvbiBob3cg
+eW91ciBkZXZpY2UgYWdlcyBvbiBmaWVsZC4NCj4+IEEgZnJlc2ggc2lsaWNvbiBtYXkgbm90IHNo
+b3cgdG9vIG1hbnkgYml0ZmxpcHMuIEJ1dCBhcyBkZXZpY2UgYWdlcyB0aGUNCj4+IHByb2JhYmls
+aXR5IG9mIHNpbXVsdGFuZW91cyBiaXRmbGlwcyB3aWxsIGluY3JlYXNlLiBTbyB1c2VyLXNwYWNl
+IG1heSBsb3dlcg0KPj4gdGhlIGJpdGZsaXBfdGhyZXNob2xkIHRvIGF2b2lkIGFjY3VtdWxhdGlv
+biBvZiBiaXRmbGlwcyBpbiBhIHNpbmdsZSBwYWdlLg0KPj4NCj4+IFRodXMsIGJpdGZsaXBfdGhy
+ZXNob2xkIHNob3VsZCBub3QgYmUgcGFzc2VkIHZpYSBEVC4NCj4+IEl0J3MgbmVpdGhlciBhIGhh
+cmR3YXJlIHBhcmFtZXRlciwgbm9yIGl04oCZcyBhIHN0YXRpYyBjb25zdGFudC4NCj4NCj5BaCwg
+SSBzZWUuICBJIHdpbGwgZml4dXAsIHRoYW5rcyBmb3IgdGhlIGV4cGxhbmF0aW9uLg0KPg0KDQpQ
+bGVhc2Ugd2FpdCwgSSdsbCByZXZpZXcgeW91ciBbdjJdIHNlcmllcyBhbHNvLCB0aGVuIHlvdSBj
+YW4gZnVydGhlcg0Kc2VuZCBhbGwgZml4ZXMgdG9nZXRoZXIuIEknbSBiaXQgY2F1Z2h0IGluIG90
+aGVyIGNvbW1pdG1lbnRzIGZvciAzLjE2LA0Kc28gaG9wZWZ1bGx5IEknbGwgYmUgYWJsZSB0byBy
+ZXZpZXcgeW91ciBwYXRjaGVzIGJ5IG5leHQgd2Vlay4NCg0KDQp3aXRoIHJlZ2FyZHMsIHBla29u
+DQo=
