@@ -1,19 +1,26 @@
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Lee Jones <lee.jones@linaro.org>
-Subject: RE: [RFC 13/47] mtd: nand: stm_nand_bch: provide Device Tree support
-Date: Fri, 9 May 2014 10:32:02 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EACBC8F@DBDE04.ent.ti.com>
+Received: from mail-ie0-f182.google.com ([209.85.223.182])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WiiCv-0002QZ-Ds
+ for linux-mtd@lists.infradead.org; Fri, 09 May 2014 10:39:14 +0000
+Received: by mail-ie0-f182.google.com with SMTP id tp5so3868276ieb.41
+ for <linux-mtd@lists.infradead.org>; Fri, 09 May 2014 03:38:51 -0700 (PDT)
+Date: Fri, 9 May 2014 11:38:46 +0100
+From: Lee Jones <lee.jones@linaro.org>
+To: "Gupta, Pekon" <pekon@ti.com>
+Subject: Re: [RFC 13/47] mtd: nand: stm_nand_bch: provide Device Tree support
+Message-ID: <20140509103846.GS5767@lee--X1>
 References: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
  <1395735604-26706-14-git-send-email-lee.jones@linaro.org>
  <20980858CB6D3A4BAE95CA194937D5E73EAB5C83@DBDE04.ent.ti.com>
  <20140430125406.GN29462@lee--X1>
  <20980858CB6D3A4BAE95CA194937D5E73EACA3F0@DBDE04.ent.ti.com>
  <20140509100304.GR5767@lee--X1>
-In-Reply-To: <20140509100304.GR5767@lee--X1>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ <20980858CB6D3A4BAE95CA194937D5E73EACBC8F@DBDE04.ent.ti.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EACBC8F@DBDE04.ent.ti.com>
 Cc: "angus.clark@st.com" <angus.clark@st.com>,
  "kernel@stlinux.com" <kernel@stlinux.com>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
@@ -30,41 +37,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PkZyb206IExlZSBKb25lcyBbbWFpbHRvOmxlZS5qb25lc0BsaW5hcm8ub3JnXQ0KPg0KPj4gPj4g
-PisJb2ZfcHJvcGVydHlfcmVhZF91MzIobnAsICJzdCxiY2gtYml0ZmxpcC10aHJlc2hvbGQiLA0K
-Pj4gPj4gPisJCQkgICAgICZwZGF0YS0+YmNoX2JpdGZsaXBfdGhyZXNob2xkKTsNCj4+ID4+ID4r
-DQo+PiA+PiBtdGQtPmJpdGZsaXBfdGhyZXNob2xkIGlzIGJ5IGRlZmF1bHQgc2V0IHRvIGVjYy5z
-dHJlbmd0aCAodW5sZXNzIGEgZHJpdmVyIGluaXRpYWxpemVzIGl0KS4NCj4+ID4+IEFuZCB0aGVu
-IGNhbiBiZSByZS1jb25maWd1cmVkIGZvciBlYWNoIE1URCBwYXJ0aXRpb24gc2VwYXJhdGVseQ0K
-Pj4gPj4gCS9zeXMvY2xhc3MvbXRkL210ZFgvYml0ZmxpcF90aHJlc2hvbGQNCj4+ID4+IAlSZWZl
-cjogJGtlcm5lbC9Eb2N1bWVudGF0aW9uL0FCSS90ZXN0aW5nL3N5c2ZzLWNsYXNzLW10ZA0KPj4g
-Pj4gU28sIEkgZG9uJ3QgdGhpbmsgdGhpcyBpcyBhIEhXIHBhcmFtZXRlciwgYW5kIHNvIHNob3Vs
-ZCBub3QgYmUgcGFzc2VkIGZyb20gRFQuDQo+PiA+DQo+PiA+SSB0aGluayB0aGUgYml0LWZsaXAg
-dGhyZXNob2xkIGlzL2NhbiBiZSBjaGlwIHNwZWNpZmljLCBhbmQgYXMgd2Uga25vdw0KPj4gPndo
-aWNoIGNoaXAgd2UncmUgbGlrZWx5IHRvIGJlIGJvb3Rpbmcgb24sIHdlIGNhbiBzcGVjaWZ5IHRo
-aXMgdmlhIHRoZQ0KPj4gPmhhcmR3YXJlIGRlc2NyaXB0aW9uLiAgVGh1cywgSSB0aGluayBpdCdz
-IHBlcmZlY3RseSB2aWFibGUgZm9yIGFuDQo+PiA+b3B0aW9uIHRvIHBhc3MgdGhyb3VnaCBEVCB0
-byBleGlzdC4NCj4+ID4NCj4+IEkgZG9uJ3QgdGhpbmsgdGhhdOKAmXMgdGhlIGNvcnJlY3QgaW50
-ZXJwcmV0YXRpb24gb2YgYml0ZmxpcF90aHJlc2hvbGQuDQo+Pg0KPj4gKDEpIGJpdGZsaXBfdGhy
-ZXNob2xkIGlzIGRlcGVuZGVudCBvbiBlY2Muc3RyZW5ndGggKEVDQyBzY2hlbWUpIG9mIHlvdXIg
-ZHJpdmVyLg0KPj4gTVREIGxheWVycyB1c2VzIGJpdGZsaXBfdGhyZXNob2xkIHRvIHdhcm4gYWJv
-dmUgbGF5ZXJzIHRoYXQgbnVtYmVyIG9mDQo+PiBjb3JyZWN0YWJsZSBiaXQtZmxpcHMgaGF2ZSBy
-ZWFjaGVkIGEgZGFuZ2Vyb3VzIGxldmVsIGJleW9uZCB3aGljaCBkcml2ZXIncw0KPj4gRUNDIHNj
-aGVtZSBtYXkgbm90IGJlIGFibGUgdG8gY29ycmVjdCB0aGVtLiBTbyBhYm92ZSBsYXllcnMgc2hv
-dWxkIHN0YXJ0DQo+PiB0YWtpbmcgYWRkaXRpb25hbCBjb3JyZWN0aXZlIGFjdGlvbiBsaWtlIHNj
-cnViYmluZy4NCj4+IAlAQGRyaXZlcnMvbXRkL210ZGNvcmUuYzogbXRkX3JlYWQoKQ0KPj4gCQly
-ZXR1cm4gcmV0X2NvZGUgPj0gbXRkLT5iaXRmbGlwX3RocmVzaG9sZCA/IC1FVUNMRUFOIDogMDsN
-Cj4+DQo+PiAoMikgQWxzbywgdXNlci1zcGFjZSBtYXkgY29udHJvbCBpdCBiYXNlZCBvbiBob3cg
-eW91ciBkZXZpY2UgYWdlcyBvbiBmaWVsZC4NCj4+IEEgZnJlc2ggc2lsaWNvbiBtYXkgbm90IHNo
-b3cgdG9vIG1hbnkgYml0ZmxpcHMuIEJ1dCBhcyBkZXZpY2UgYWdlcyB0aGUNCj4+IHByb2JhYmls
-aXR5IG9mIHNpbXVsdGFuZW91cyBiaXRmbGlwcyB3aWxsIGluY3JlYXNlLiBTbyB1c2VyLXNwYWNl
-IG1heSBsb3dlcg0KPj4gdGhlIGJpdGZsaXBfdGhyZXNob2xkIHRvIGF2b2lkIGFjY3VtdWxhdGlv
-biBvZiBiaXRmbGlwcyBpbiBhIHNpbmdsZSBwYWdlLg0KPj4NCj4+IFRodXMsIGJpdGZsaXBfdGhy
-ZXNob2xkIHNob3VsZCBub3QgYmUgcGFzc2VkIHZpYSBEVC4NCj4+IEl0J3MgbmVpdGhlciBhIGhh
-cmR3YXJlIHBhcmFtZXRlciwgbm9yIGl04oCZcyBhIHN0YXRpYyBjb25zdGFudC4NCj4NCj5BaCwg
-SSBzZWUuICBJIHdpbGwgZml4dXAsIHRoYW5rcyBmb3IgdGhlIGV4cGxhbmF0aW9uLg0KPg0KDQpQ
-bGVhc2Ugd2FpdCwgSSdsbCByZXZpZXcgeW91ciBbdjJdIHNlcmllcyBhbHNvLCB0aGVuIHlvdSBj
-YW4gZnVydGhlcg0Kc2VuZCBhbGwgZml4ZXMgdG9nZXRoZXIuIEknbSBiaXQgY2F1Z2h0IGluIG90
-aGVyIGNvbW1pdG1lbnRzIGZvciAzLjE2LA0Kc28gaG9wZWZ1bGx5IEknbGwgYmUgYWJsZSB0byBy
-ZXZpZXcgeW91ciBwYXRjaGVzIGJ5IG5leHQgd2Vlay4NCg0KDQp3aXRoIHJlZ2FyZHMsIHBla29u
-DQo=
+> >Ah, I see.  I will fixup, thanks for the explanation.
+> >
+> 
+> Please wait, I'll review your [v2] series also, then you can further
+> send all fixes together. I'm bit caught in other commitments for 3.16,
+> so hopefully I'll be able to review your patches by next week.
+
+I have already fixed up, but I won't resubmit until you have
+reviewed.
+
+FYI: I have made some changes since v2 including moving over to the
+recently submitted core timing structure submitted by Boris Brezillon
+and removal bitflip_threshold as an internal variable.
+
+-- 
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
