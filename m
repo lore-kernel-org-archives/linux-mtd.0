@@ -1,14 +1,22 @@
-From: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
-To: Brian Norris <computersforpeace@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>
-Subject: [PATCH] nand: davinci: add support for 4K page size nand devices
-Date: Fri, 9 May 2014 01:31:05 +0300
-Message-ID: <1399588265-7130-1-git-send-email-ivan.khoronzhuk@ti.com>
+Received: from bear.ext.ti.com ([192.94.94.41])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WigfX-0001Ix-Px
+ for linux-mtd@lists.infradead.org; Fri, 09 May 2014 09:00:40 +0000
+From: Pekon Gupta <pekon@ti.com>
+To: Tony Lindgren <tony@atomide.com>, Brian Norris
+ <computersforpeace@gmail.com>
+Subject: [PATCH v3 2/4] mtd: nand: omap: add support for BCH16_ECC - ELM
+ driver updates
+Date: Fri, 9 May 2014 14:29:13 +0530
+Message-ID: <1399625955-20882-3-git-send-email-pekon@ti.com>
+In-Reply-To: <1399625955-20882-1-git-send-email-pekon@ti.com>
+References: <1399625955-20882-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Cc: grygorii.strashko@ti.com, Santosh Shilimkar <santosh.shilimkar@ti.com>,
- linux-kernel@vger.kernel.org, Murali Karicheri <m-karicheri2@ti.com>,
- linux-mtd@lists.infradead.org, ivan.khoronzhuk@ti.com
+Cc: linux-omap <linux-omap@vger.kernel.org>, Felipe Balbi <balbi@ti.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>, Pekon Gupta <pekon@ti.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Stefan Roese <sr@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,79 +26,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Sandeep Paulraj <s-paulraj@ti.com>
+ELM hardware engine is used to detect ECC errors for BCHx ecc-schemes
+(like BCH4/BCH8/BCH16). This patch extends configuration of ELM registers
+for loading of BCH16 ECC syndrome.
 
-It is needed for k2l keystone2 EVM which uses NAND flash with 4K page
-size, hence add support for 4K page size nand devices.
-
-Signed-off-by: Sandeep Paulraj <s-paulraj@ti.com>
-Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+Signed-off-by: Pekon Gupta <pekon@ti.com>
 ---
+ drivers/mtd/devices/elm.c         | 42 +++++++++++++++++++++++++++++++++++++++
+ include/linux/platform_data/elm.h |  3 ++-
+ 2 files changed, 44 insertions(+), 1 deletion(-)
 
-Based on l2-mtd/master
-
- drivers/mtd/nand/davinci_nand.c | 41 ++++++++++++++++++++++++++++++-----------
- 1 file changed, 30 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-index b922c8e..24a5769 100644
---- a/drivers/mtd/nand/davinci_nand.c
-+++ b/drivers/mtd/nand/davinci_nand.c
-@@ -520,6 +520,31 @@ static struct nand_ecclayout hwecc4_2048 = {
- 	},
+diff --git a/drivers/mtd/devices/elm.c b/drivers/mtd/devices/elm.c
+index 1fd4a0f..b4b02a1 100644
+--- a/drivers/mtd/devices/elm.c
++++ b/drivers/mtd/devices/elm.c
+@@ -213,6 +213,34 @@ static void elm_load_syndrome(struct elm_info *info,
+ 				val = cpu_to_be32(*(u32 *) &ecc[0]) >> 12;
+ 				elm_write_reg(info, offset, val);
+ 				break;
++			case BCH16_ECC:
++				val =	ecc[25] << 0  | ecc[24] <<  8 |
++					ecc[23] << 16 | ecc[22] << 24;
++				elm_write_reg(info, offset, val);
++				offset += 4;
++				val =	ecc[21] <<  0 | ecc[20] <<  8 |
++					ecc[19] << 16 | ecc[18] << 24;
++				elm_write_reg(info, offset, val);
++				offset += 4;
++				val =	ecc[17] <<  0 | ecc[16] <<  8 |
++					ecc[15] << 16 | ecc[14] << 24;
++				elm_write_reg(info, offset, val);
++				offset += 4;
++				val =	ecc[13] <<  0 | ecc[12] <<  8 |
++					ecc[11] << 16 | ecc[10] << 24;
++				elm_write_reg(info, offset, val);
++				offset += 4;
++				val =	ecc[9]  <<  0 | ecc[8]  <<  8 |
++					ecc[7]  << 16 | ecc[6]  << 24;
++				elm_write_reg(info, offset, val);
++				offset += 4;
++				val =	ecc[5]  <<  0 | ecc[4]  <<  8 |
++					ecc[3]  << 16 | ecc[2]  << 24;
++				elm_write_reg(info, offset, val);
++				offset += 4;
++				val =	ecc[1]  <<  0 | ecc[0]  <<  8;
++				elm_write_reg(info, offset, val);
++				break;
+ 			default:
+ 				pr_err("invalid config bch_type\n");
+ 			}
+@@ -435,6 +463,13 @@ static int elm_context_save(struct elm_info *info)
+ 	for (i = 0; i < ERROR_VECTOR_MAX; i++) {
+ 		offset = i * SYNDROME_FRAGMENT_REG_SIZE;
+ 		switch (bch_type) {
++		case BCH16_ECC:
++			regs->elm_syndrome_fragment_6[i] = elm_read_reg(info,
++					ELM_SYNDROME_FRAGMENT_6 + offset);
++			regs->elm_syndrome_fragment_5[i] = elm_read_reg(info,
++					ELM_SYNDROME_FRAGMENT_5 + offset);
++			regs->elm_syndrome_fragment_4[i] = elm_read_reg(info,
++					ELM_SYNDROME_FRAGMENT_4 + offset);
+ 		case BCH8_ECC:
+ 			regs->elm_syndrome_fragment_3[i] = elm_read_reg(info,
+ 					ELM_SYNDROME_FRAGMENT_3 + offset);
+@@ -473,6 +508,13 @@ static int elm_context_restore(struct elm_info *info)
+ 	for (i = 0; i < ERROR_VECTOR_MAX; i++) {
+ 		offset = i * SYNDROME_FRAGMENT_REG_SIZE;
+ 		switch (bch_type) {
++		case BCH16_ECC:
++			elm_write_reg(info, ELM_SYNDROME_FRAGMENT_6 + offset,
++					regs->elm_syndrome_fragment_6[i]);
++			elm_write_reg(info, ELM_SYNDROME_FRAGMENT_5 + offset,
++					regs->elm_syndrome_fragment_5[i]);
++			elm_write_reg(info, ELM_SYNDROME_FRAGMENT_4 + offset,
++					regs->elm_syndrome_fragment_4[i]);
+ 		case BCH8_ECC:
+ 			elm_write_reg(info, ELM_SYNDROME_FRAGMENT_3 + offset,
+ 					regs->elm_syndrome_fragment_3[i]);
+diff --git a/include/linux/platform_data/elm.h b/include/linux/platform_data/elm.h
+index 4edb406..ac2f266 100644
+--- a/include/linux/platform_data/elm.h
++++ b/include/linux/platform_data/elm.h
+@@ -21,6 +21,7 @@
+ enum bch_ecc {
+ 	BCH4_ECC = 0,
+ 	BCH8_ECC,
++	BCH16_ECC
  };
  
-+/* An ECC layout for using 4-bit ECC with large-page (4096bytes) flash,
-+ * storing ten ECC bytes plus the manufacturer's bad block marker byte,
-+ * and not overlapping the default BBT markers.
-+ */
-+static struct nand_ecclayout hwecc4_4096 __initconst = {
-+          .eccbytes = 80,
-+          .eccpos = {
-+                  /* at the end of spare sector */
-+                  48, 49, 50, 51, 52, 53, 54, 55, 56, 57,
-+                  58, 59, 60, 61, 62, 63, 64, 65, 66, 67,
-+                  68, 69, 70, 71, 72, 73, 74, 75, 76, 77,
-+                  78, 79, 80, 81, 82, 83, 84, 85, 86, 87,
-+                  88, 89, 90, 91, 92, 93, 94, 95, 96, 97,
-+                  98, 99, 100, 101, 102, 103, 104, 105, 106, 107,
-+                  108, 109, 110, 111, 112, 113, 114, 115, 116, 117,
-+                  118, 119, 120, 121, 122, 123, 124, 125, 126, 127,
-+                  },
-+          .oobfree = {
-+                  /* 2 bytes at offset 0 hold manufacturer badblock markers */
-+                  {.offset = 2, .length = 46, },
-+                  /* 5 bytes at offset 8 hold BBT markers */
-+                  /* 8 bytes at offset 16 hold JFFS2 clean markers */
-+         },
-+};
-+
- #if defined(CONFIG_OF)
- static const struct of_device_id davinci_nand_of_match[] = {
- 	{.compatible = "ti,davinci-nand", },
-@@ -796,18 +821,12 @@ static int nand_davinci_probe(struct platform_device *pdev)
- 			info->chip.ecc.mode = NAND_ECC_HW_OOB_FIRST;
- 			goto syndrome_done;
- 		}
-+		if (chunks == 8) {
-+			info->ecclayout = hwecc4_4096;
-+			info->chip.ecc.mode = NAND_ECC_HW_OOB_FIRST;
-+			goto syndrome_done;
-+		}
+ /* ELM support 8 error syndrome process */
+@@ -38,7 +39,7 @@ struct elm_errorvec {
+ 	bool error_reported;
+ 	bool error_uncorrectable;
+ 	int error_count;
+-	int error_loc[ERROR_VECTOR_MAX];
++	int error_loc[16];
+ };
  
--		/* 4KiB page chips are not yet supported. The eccpos from
--		 * nand_ecclayout cannot hold 80 bytes and change to eccpos[]
--		 * breaks userspace ioctl interface with mtd-utils. Once we
--		 * resolve this issue, NAND_ECC_HW_OOB_FIRST mode can be used
--		 * for the 4KiB page chips.
--		 *
--		 * TODO: Note that nand_ecclayout has now been expanded and can
--		 *  hold plenty of OOB entries.
--		 */
--		dev_warn(&pdev->dev, "no 4-bit ECC support yet "
--				"for 4KiB-page NAND\n");
- 		ret = -EIO;
- 		goto err;
- 
+ void elm_decode_bch_error_page(struct device *dev, u8 *ecc_calc,
 -- 
-1.8.3.2
+1.8.5.1.163.gd7aced9
