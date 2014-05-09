@@ -1,20 +1,22 @@
-From: Arnd Bergmann <arnd@arndb.de>
-To: linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 2/2] mtd: orion-nand: fix build error with ARMv4
-Date: Fri, 09 May 2014 22:12:32 +0200
-Message-ID: <28202282.tsYsyDGHCL@wuerfel>
-In-Reply-To: <20140509184505.GA30330@arch.cereza>
-References: <1399560433-1402630-1-git-send-email-arnd@arndb.de>
- <1399560990-1402858-4-git-send-email-arnd@arndb.de>
- <20140509184505.GA30330@arch.cereza>
+Received: from mail-qg0-x22e.google.com ([2607:f8b0:400d:c04::22e])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WirIl-0003qM-9T
+ for linux-mtd@lists.infradead.org; Fri, 09 May 2014 20:21:51 +0000
+Received: by mail-qg0-f46.google.com with SMTP id q108so5076760qgd.33
+ for <linux-mtd@lists.infradead.org>; Fri, 09 May 2014 13:21:28 -0700 (PDT)
+Date: Fri, 9 May 2014 13:21:22 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH] mtd: nand: refactor erase_cmd() to return chip status
+Message-ID: <20140509202122.GG28907@ld-irv-0074>
+References: <1399417870-14436-1-git-send-email-computersforpeace@gmail.com>
+ <CAF2Aj3hB-6=yfCOhqXrWGcPey1DEGqkUfkEsRdrQbXz80s_sug@mail.gmail.com>
+ <20140507171229.GD28907@ld-irv-0074>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-Cc: Jingoo Han <jg1.han@samsung.com>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20140507171229.GD28907@ld-irv-0074>
+Cc: linux-mtd@lists.infradead.org, Mike Dunn <mikedunn@newsguy.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,48 +26,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday 09 May 2014 15:45:05 Ezequiel Garcia wrote:
-> On 08 May 04:56 PM, Arnd Bergmann wrote:
+On Wed, May 07, 2014 at 10:12:29AM -0700, Brian Norris wrote:
+> On Wed, May 07, 2014 at 11:59:56AM +0100, Lee Jones wrote:
+> > On 7 May 2014 00:12, &quot;Brian Norris&quot; <computersforpeace@gmail.com>
+> > wrote:
+> > >
+> > > The nand_chip::erase_cmd callback previously served a dual purpose; for
+> > > one, it allowed a per-flash-chip override, so that AG-AND devices could
+> > > use a different erase command than other NAND. These AND devices were
+> > > dropped in commit xxxxx. On the other hand, some drivers (denali and
+> > I think you still need to fill this in.
 > 
-> I gave this a try in order to answer Arnd's performance question.
-
-Thanks a lot for testing!
-
-> First of all,
-> the patch seems wrong. I guess it's because readsl reads 4-bytes pieces, instead of
-> 8-bytes.
-
-Oops. I guess I was thinking of a 64-bit system and didn't even notice
-the difference between 4 and 8 byte accesses here. I wonder where I have
-my mind sometimes.
-
-> In other words, the patch is still half-untested. Therefore, and given
-> this is meant only to coherce a build, maybe we'd rather just loop over
-> readb and stay on the safe side?
-
-I guess that would be equal to calling memcpy_fromio().
-
-> And now, answering Arnd's question:
+> Yes... I should re-read my commit messages before sending! This should
+> be:
 > 
-> # Using ldrd
-> # time nanddump /dev/mtd5 -f /dev/null -q
-> real	0m 5.90s
-> user	0m 0.22s
-> sys	0m 5.67s
+> commit 14c6578683367b1e7af0c3c09e872b45a45183a7
+> (mtd: nand: remove AG-AND support)
 > 
-> # Using readsl
-> # time nanddump /dev/mtd5 -f /dev/null -q
-> real	0m 6.39s
-> user	0m 0.17s
-> sys	0m 6.20s
+...
+> > Tested-by: Lee Jones <lee.jones@linaro.org>
 > 
-> So I'd say, let's stick to the ldrd magic.
+> I've updated my commit message locally. I'll give this a few days, then
+> push the patch.
 
-Ok, that is a noticeable difference. For scale, what is the size of that partition?
-If this is something that actually affects people, it might be worth also trying
-memcpy(), which should be better at saturating the bus, but might be wrong here
-(if alignment the alignment requirements on the external bus are stricter than
-what memcpy does) or it might not make a difference at all if the code is already
-ideal.
+Pushed to l2-mtd.git.
 
-	Arnd
+Brian
