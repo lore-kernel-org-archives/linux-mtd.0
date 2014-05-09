@@ -1,22 +1,31 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
+Received: from mail-ie0-f170.google.com ([209.85.223.170])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wigfj-0001Lh-V2
- for linux-mtd@lists.infradead.org; Fri, 09 May 2014 09:00:52 +0000
-From: Pekon Gupta <pekon@ti.com>
-To: Tony Lindgren <tony@atomide.com>, Brian Norris
- <computersforpeace@gmail.com>
-Subject: [PATCH v3 1/4] mtd: nand: omap: add support for BCH16_ECC - GPMC
- driver updates
-Date: Fri, 9 May 2014 14:29:12 +0530
-Message-ID: <1399625955-20882-2-git-send-email-pekon@ti.com>
-In-Reply-To: <1399625955-20882-1-git-send-email-pekon@ti.com>
-References: <1399625955-20882-1-git-send-email-pekon@ti.com>
+ id 1WihlP-0006TE-37
+ for linux-mtd@lists.infradead.org; Fri, 09 May 2014 10:10:47 +0000
+Received: by mail-ie0-f170.google.com with SMTP id ar20so448440iec.15
+ for <linux-mtd@lists.infradead.org>; Fri, 09 May 2014 03:10:25 -0700 (PDT)
+Date: Fri, 9 May 2014 11:03:04 +0100
+From: Lee Jones <lee.jones@linaro.org>
+To: "Gupta, Pekon" <pekon@ti.com>
+Subject: Re: [RFC 13/47] mtd: nand: stm_nand_bch: provide Device Tree support
+Message-ID: <20140509100304.GR5767@lee--X1>
+References: <1395735604-26706-1-git-send-email-lee.jones@linaro.org>
+ <1395735604-26706-14-git-send-email-lee.jones@linaro.org>
+ <20980858CB6D3A4BAE95CA194937D5E73EAB5C83@DBDE04.ent.ti.com>
+ <20140430125406.GN29462@lee--X1>
+ <20980858CB6D3A4BAE95CA194937D5E73EACA3F0@DBDE04.ent.ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: linux-omap <linux-omap@vger.kernel.org>, Felipe Balbi <balbi@ti.com>,
- linux-mtd <linux-mtd@lists.infradead.org>, Pekon Gupta <pekon@ti.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Stefan Roese <sr@denx.de>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EACA3F0@DBDE04.ent.ti.com>
+Cc: "angus.clark@st.com" <angus.clark@st.com>,
+ "kernel@stlinux.com" <kernel@stlinux.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,78 +35,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch add support for BCH16_ECC in GPMC (controller) driver:
- - extend configuration space to include BCH16 registers
- - extend parsing of DT binding for selecting BCH16 ecc-scheme
+> >> >+	of_property_read_u32(np, "st,bch-bitflip-threshold",
+> >> >+			     &pdata->bch_bitflip_threshold);
+> >> >+
+> >> mtd->bitflip_threshold is by default set to ecc.strength (unless a driver initializes it).
+> >> And then can be re-configured for each MTD partition separately
+> >> 	/sys/class/mtd/mtdX/bitflip_threshold
+> >> 	Refer: $kernel/Documentation/ABI/testing/sysfs-class-mtd
+> >> So, I don't think this is a HW parameter, and so should not be passed from DT.
+> >
+> >I think the bit-flip threshold is/can be chip specific, and as we know
+> >which chip we're likely to be booting on, we can specify this via the
+> >hardware description.  Thus, I think it's perfectly viable for an
+> >option to pass through DT to exist.
+> >
+> I don't think that’s the correct interpretation of bitflip_threshold.
+> 
+> (1) bitflip_threshold is dependent on ecc.strength (ECC scheme) of your driver.
+> MTD layers uses bitflip_threshold to warn above layers that number of
+> correctable bit-flips have reached a dangerous level beyond which driver's
+> ECC scheme may not be able to correct them. So above layers should start
+> taking additional corrective action like scrubbing.
+> 	@@drivers/mtd/mtdcore.c: mtd_read()
+> 		return ret_code >= mtd->bitflip_threshold ? -EUCLEAN : 0;
+> 
+> (2) Also, user-space may control it based on how your device ages on field.
+> A fresh silicon may not show too many bitflips. But as device ages the
+> probability of simultaneous bitflips will increase. So user-space may lower
+> the bitflip_threshold to avoid accumulation of bitflips in a single page.
+>  
+> Thus, bitflip_threshold should not be passed via DT.
+> It's neither a hardware parameter, nor it’s a static constant.
 
-Signed-off-by: Pekon Gupta <pekon@ti.com>
----
- arch/arm/mach-omap2/gpmc.c                   | 15 +++++++++++++++
- include/linux/platform_data/mtd-nand-omap2.h |  5 +++++
- 2 files changed, 20 insertions(+)
+Ah, I see.  I will fixup, thanks for the explanation.
 
-diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
-index ab43755..9b27773 100644
---- a/arch/arm/mach-omap2/gpmc.c
-+++ b/arch/arm/mach-omap2/gpmc.c
-@@ -68,6 +68,9 @@
- #define	GPMC_ECC_BCH_RESULT_1	0x244	/* not available on OMAP2 */
- #define	GPMC_ECC_BCH_RESULT_2	0x248	/* not available on OMAP2 */
- #define	GPMC_ECC_BCH_RESULT_3	0x24c	/* not available on OMAP2 */
-+#define	GPMC_ECC_BCH_RESULT_4	0x300	/* not available on OMAP2 */
-+#define	GPMC_ECC_BCH_RESULT_5	0x304	/* not available on OMAP2 */
-+#define	GPMC_ECC_BCH_RESULT_6	0x308	/* not available on OMAP2 */
- 
- /* GPMC ECC control settings */
- #define GPMC_ECC_CTRL_ECCCLEAR		0x100
-@@ -666,6 +669,12 @@ void gpmc_update_nand_reg(struct gpmc_nand_regs *reg, int cs)
- 					   GPMC_BCH_SIZE * i;
- 		reg->gpmc_bch_result3[i] = gpmc_base + GPMC_ECC_BCH_RESULT_3 +
- 					   GPMC_BCH_SIZE * i;
-+		reg->gpmc_bch_result4[i] = gpmc_base + GPMC_ECC_BCH_RESULT_4 +
-+					   i * GPMC_BCH_SIZE;
-+		reg->gpmc_bch_result5[i] = gpmc_base + GPMC_ECC_BCH_RESULT_5 +
-+					   i * GPMC_BCH_SIZE;
-+		reg->gpmc_bch_result6[i] = gpmc_base + GPMC_ECC_BCH_RESULT_6 +
-+					   i * GPMC_BCH_SIZE;
- 	}
- }
- 
-@@ -1401,6 +1410,12 @@ static int gpmc_probe_nand_child(struct platform_device *pdev,
- 		else
- 			gpmc_nand_data->ecc_opt =
- 				OMAP_ECC_BCH8_CODE_HW_DETECTION_SW;
-+	else if (!strcmp(s, "bch16"))
-+		if (gpmc_nand_data->elm_of_node)
-+			gpmc_nand_data->ecc_opt =
-+				OMAP_ECC_BCH16_CODE_HW;
-+		else
-+			pr_err("%s: BCH16 requires ELM support\n", __func__);
- 	else
- 		pr_err("%s: ti,nand-ecc-opt invalid value\n", __func__);
- 
-diff --git a/include/linux/platform_data/mtd-nand-omap2.h b/include/linux/platform_data/mtd-nand-omap2.h
-index 3e9dd66..c2172e8 100644
---- a/include/linux/platform_data/mtd-nand-omap2.h
-+++ b/include/linux/platform_data/mtd-nand-omap2.h
-@@ -31,6 +31,8 @@ enum omap_ecc {
- 	OMAP_ECC_BCH8_CODE_HW_DETECTION_SW,
- 	/* 8-bit  ECC calculation by GPMC, Error detection by ELM */
- 	OMAP_ECC_BCH8_CODE_HW,
-+	/* 16-bit ECC calculation by GPMC, Error detection by ELM */
-+	OMAP_ECC_BCH16_CODE_HW
- };
- 
- struct gpmc_nand_regs {
-@@ -50,6 +52,9 @@ struct gpmc_nand_regs {
- 	void __iomem	*gpmc_bch_result1[GPMC_BCH_NUM_REMAINDER];
- 	void __iomem	*gpmc_bch_result2[GPMC_BCH_NUM_REMAINDER];
- 	void __iomem	*gpmc_bch_result3[GPMC_BCH_NUM_REMAINDER];
-+	void __iomem	*gpmc_bch_result4[GPMC_BCH_NUM_REMAINDER];
-+	void __iomem	*gpmc_bch_result5[GPMC_BCH_NUM_REMAINDER];
-+	void __iomem	*gpmc_bch_result6[GPMC_BCH_NUM_REMAINDER];
- };
- 
- struct omap_nand_platform_data {
+> >> >+struct device_node *stm_of_get_partitions_node(struct device_node *np,
+> >> >+					       int bank_nr)
+> >> >+{
+> >> >+	struct device_node *banksnp, *banknp, *partsnp = NULL;
+> >> >+	char name[10];
+> >> >+
+> >> >+	banksnp = of_parse_phandle(np, "st,nand-banks", 0);
+> >> >+	if (!banksnp)
+> >> >+		return NULL;
+> >> >+
+> >> >+	sprintf(name, "bank%d", bank_nr);
+> >> >+	banknp = of_get_child_by_name(banksnp, name);
+> >> >+	if (banknp)
+> >> >+		return NULL;
+> >> >+
+> >> >+	partsnp = of_get_child_by_name(banknp, "partitions");
+> >> >+	of_node_put(banknp);
+> >> >+
+> >> Sorry, I'm bit confused here .. I think you don't need to find children of
+> >> Your bank node. This should already taken care in default parser
+> >> drivers/mtd/ofpart.c : parse_ofpart_partitions()
+> >> And all you need to pass is 'of_node' of bank (device).
+> >> Is my understanding correct ?
+> >
+> >We have 3 options here, you _can_ use parse_ofpart_partitions() if
+> >your partition information conforms to its schema, but said schema
+> >does not support banks and/or other information that we choose to
+> >place within the bank node.  The second option is to register a
+> >parser.  My personal view is that registering a parser is using the
+> >framework for 'using the framework's' sake i.e. doesn't actually
+> >achieve anything special.  We've chosen the third option, which is to
+> >parse and extract the information ourselves - which is actually fairly
+> >trivial, and pass the required partition data in through the
+> >mtd_device_parse_register() call - which is where the information
+> >would be parsed in the case of the first two options.
+> >
+> Do you really want to have *custom* partition format ?
+> If your previous code was non-DT (platform file based), then I think
+> It's good point to move to unified generic partition format which others
+> are following, as you make your driver DT compliant, and in mainline.
+> 
+> I understand you primary objective would be to get ST driver work
+> out of mainline asap, but if you upstream too many custom stuff you
+> are only adding maintenance burden for your code. This is where
+> most of my comments originate.
+> However, I leave it to Brian to decide, if he is okay with these.
+> 
+> 
+> with regards, pekon
+
 -- 
-1.8.5.1.163.gd7aced9
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
