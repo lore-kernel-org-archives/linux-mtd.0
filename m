@@ -1,20 +1,22 @@
-Date: Fri, 9 May 2014 20:55:06 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 2/2] mtd: orion-nand: fix build error with ARMv4
-Message-ID: <20140509235506.GA792@arch.cereza>
-References: <1399560433-1402630-1-git-send-email-arnd@arndb.de>
- <20140509212810.GF18257@obsidianresearch.com>
- <20140509220915.GA391@arch.cereza> <4160510.VJSlHZLhNz@wuerfel>
+Received: from mail-pa0-x231.google.com ([2607:f8b0:400e:c03::231])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Wivww-0000Un-5A
+ for linux-mtd@lists.infradead.org; Sat, 10 May 2014 01:19:38 +0000
+Received: by mail-pa0-f49.google.com with SMTP id lj1so5025557pab.8
+ for <linux-mtd@lists.infradead.org>; Fri, 09 May 2014 18:19:17 -0700 (PDT)
+Date: Fri, 9 May 2014 18:19:13 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Richard Weinberger <richard@nod.at>, Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [RFC PATCH] UBI: fix rb_tree node comparison in add_map
+Message-ID: <20140510011913.GH28907@ld-irv-0074>
+References: <20140321195403.GA32529@redhat.com>
+ <532CD1CB.4070707@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4160510.VJSlHZLhNz@wuerfel>
-Cc: Jingoo Han <jg1.han@samsung.com>, linux-kernel@vger.kernel.org,
- Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
- linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <532CD1CB.4070707@nod.at>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Mike Snitzer <snitzer@redhat.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,39 +26,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10 May 12:24 AM, Arnd Bergmann wrote:
-> On Friday 09 May 2014 19:09:15 Ezequiel Garcia wrote:
-> > # time nanddump /dev/mtd5 -f /dev/null -q
-> > real    0m 5.82s
-> > user    0m 0.20s
-> > sys     0m 5.60s
-> > 
-> > Jason: Care to submit a proper patch?
-> > 
-> > On 08 May 04:56 PM, Arnd Bergmann wrote:
-> > > Ok, that is a noticeable difference. For scale, what is the size of that partition?
-> > 
-> > The board is Openblocks A6, running mainline.
-> > 
-> > # cat /proc/mtd 
-> > dev:    size   erasesize  name
-> > mtd0: 00090000 00004000 "uboot"
-> > mtd1: 00044000 00004000 "env"
-> > mtd2: 00024000 00004000 "test"
-> > mtd3: 00400000 00004000 "conf"
-> > mtd4: 01d20000 00004000 "linux"
-> > mtd5: 01dec000 00004000 "user"
-> 
-> Ok, so it takes 5.6 seconds in kernel mode to access 31MB, which comes down
-> to 5.60MB/s. That isn't very fast compared to the time the CPU should take
-> for those instructions, so I'm surprised it actually makes any difference
-> at all.
->
-> There isn't a usable slave DMA engine in Armada XP by chance?
-> 
+Hi Artem,
 
-The Openblocks A6 is a Kirkwood, not Armada XP.
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+On Sat, Mar 22, 2014 at 12:56:59AM +0100, Richard Weinberger wrote:
+> Am 21.03.2014 20:54, schrieb Mike Snitzer:
+> > The comparisons used in add_vol() shouldn't be identical.  Pretty sure
+> > the following is correct but it is completely untested.
+> > 
+> > Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+> > ---
+> >  drivers/mtd/ubi/fastmap.c |    4 ++--
+> >  1 files changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > NOTE: I stumbled upon this code while implementing some rb_tree code
+> >       (and looking for some existing rb_tree code as a reference).
+> 
+> Thanks a lot for pointing this out!
+> 
+> Acked-by: Richard Weinberger <richard@nod.at>
+
+Bump?
+
+I'm passing through my queue, and I occasionally see some obvious,
+reviewed fixes like this one. Typically, you get around to them
+eventually, but you never know. Do you prefer the "bump"?
+
+Brian
