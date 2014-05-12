@@ -1,18 +1,23 @@
-Date: Mon, 12 May 2014 16:26:53 -0700
+Received: from mail-ie0-x229.google.com ([2607:f8b0:4001:c03::229])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WjzyG-00057T-Kr
+ for linux-mtd@lists.infradead.org; Mon, 12 May 2014 23:49:25 +0000
+Received: by mail-ie0-f169.google.com with SMTP id lx4so2104579iec.14
+ for <linux-mtd@lists.infradead.org>; Mon, 12 May 2014 16:49:03 -0700 (PDT)
+Date: Mon, 12 May 2014 16:49:00 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 1/2] mtd/onenand: fix build warning for dma type
-Message-ID: <20140512232653.GV28907@ld-irv-0074>
-References: <1399560433-1402630-1-git-send-email-arnd@arndb.de>
- <1399560990-1402858-1-git-send-email-arnd@arndb.de>
- <1399560990-1402858-3-git-send-email-arnd@arndb.de>
+To: Scott Wood <scottwood@freescale.com>
+Subject: Re: [PATCH 1/1] mtd: eLBC NAND: fixes subpage write support
+Message-ID: <20140512234900.GX28907@ld-irv-0074>
+References: <1399349492-3006-1-git-send-email-pekon@ti.com>
+ <1399504973.15726.356.camel@snotra.buserror.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1399560990-1402858-3-git-send-email-arnd@arndb.de>
-Cc: linux-mtd@lists.infradead.org, Kyungmin Park <kyungmin.park@samsung.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
+In-Reply-To: <1399504973.15726.356.camel@snotra.buserror.net>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>, Pekon Gupta <pekon@ti.com>,
+ Helmut Schaa <helmut.schaa@googlemail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,26 +27,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, May 08, 2014 at 04:56:14PM +0200, Arnd Bergmann wrote:
-> The samsung onenand driver passes around a dma address token
-> through a void pointer, which is incorrect and leads to
-> warnings like this one:
+On Wed, May 07, 2014 at 06:22:53PM -0500, Scott Wood wrote:
+> On Tue, 2014-05-06 at 09:41 +0530, Pekon Gupta wrote:
+> > As subpage write is enabled by default for all drivers, nand_write_subpage_hwecc
+> > causes a crash if the driver did not register ecc->hwctl or ecc->calculate.
+> > This behavior was introduced in
+> >    commit 837a6ba4f3b6d23026674e6af6b6849a4634fff9
+> >    "mtd: nand: subpage write support for hardware based ECC schemes".
+> > 
+> > This fixes a crash by emulating subpage write support by padding sub-page data
+> > with 0xff on either sides to make it full page compatible.
+> > 
+> > CC: <stable@vger.kernel.org> # 3.10.x+
+> > 
+> > Reported-by: Helmut Schaa <helmut.schaa@googlemail.com>
+> > Tested-by: Helmut Schaa <helmut.schaa@googlemail.com>
+> > Signed-off-by: Pekon Gupta <pekon@ti.com>
+> > ---
+> >  drivers/mtd/nand/fsl_elbc_nand.c | 14 ++++++++++++++
+> >  1 file changed, 14 insertions(+)
 > 
-> onenand/samsung.c:548:2: warning: passing argument 1 of '__fswab32' makes integer from pointer without a cast [enabled by default]
->   writel(src, base + S5PC110_DMA_SRC_ADDR);
->   ^
-> 
-> This patch makes it use dma_addr_t here, which is more appropriate.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> Cc: Kyungmin Park <kyungmin.park@samsung.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Brian Norris <computersforpeace@gmail.com>
-> Cc: linux-mtd@lists.infradead.org
+> Reviewed-by: Scott Wood <scottwood@freescale.com>
 
-Pushed this one to l2-mtd.git. Thanks!
-
-I think the second MTD patch is still under discussion, right? I'll
-follow up there if necessary.
+Pushed to l2-mtd. Thanks!
 
 Brian
