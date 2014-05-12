@@ -1,26 +1,20 @@
-Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
+Received: from mail-pa0-x22c.google.com ([2607:f8b0:400e:c03::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WjuXc-0000LM-CU
- for linux-mtd@lists.infradead.org; Mon, 12 May 2014 18:01:32 +0000
-Received: by mail-pa0-f41.google.com with SMTP id lj1so9022539pab.14
- for <linux-mtd@lists.infradead.org>; Mon, 12 May 2014 11:01:08 -0700 (PDT)
-Date: Mon, 12 May 2014 11:01:04 -0700
+ id 1Wjv0G-0006lt-Js
+ for linux-mtd@lists.infradead.org; Mon, 12 May 2014 18:31:09 +0000
+Received: by mail-pa0-f44.google.com with SMTP id ld10so9257354pab.3
+ for <linux-mtd@lists.infradead.org>; Mon, 12 May 2014 11:30:47 -0700 (PDT)
+Date: Mon, 12 May 2014 11:30:44 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH v2 3/4] mtd: nand: pxa3xx: Use ECC strength and step size
- devicetree binding
-Message-ID: <20140512180104.GJ28907@ld-irv-0074>
-References: <1395401690-25221-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1395401690-25221-4-git-send-email-ezequiel.garcia@free-electrons.com>
+To: Vincenzo Aliberti <vincenzo.aliberti@gmail.com>
+Subject: Re: [PATCH v3] mtd: lpddr: add driver for LPDDR2-NVM PCM memories
+Message-ID: <20140512183044.GK28907@ld-irv-0074>
+References: <1399670397-2247-1-git-send-email-vincenzo.aliberti@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1395401690-25221-4-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: Lior Amsalem <alior@marvell.com>, devicetree@vger.kernel.org,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Tawfik Bayouk <tawfik@marvell.com>, Seif Mazareeb <seif@marvell.com>,
- Simon Guinot <sguinot@lacie.com>, linux-mtd@lists.infradead.org,
- Gregory Clement <gregory.clement@free-electrons.com>, Willy Tarreau <w@1wt.eu>
+In-Reply-To: <1399670397-2247-1-git-send-email-vincenzo.aliberti@gmail.com>
+Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,173 +24,133 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ezequiel,
+Hi Vincenzo,
 
-On Fri, Mar 21, 2014 at 08:34:49AM -0300, Ezequiel Garcia wrote:
-> This commit adds support for the user to specify the ECC strength
-> and step size through the devicetree. We keep the previous behavior,
-> when there is no DT parameter provided.
+On Fri, May 09, 2014 at 11:19:57PM +0200, Vincenzo Aliberti wrote:
+> MTD: LPDDR: Add Driver for LPDDR2-NVM PCM memories
 > 
-> Also, if there is an ONFI-specified minimum ECC strength requirement,
-> and the DT-specified ECC strength is weaker, print a warning and try to
-> select a strength compatible with the ONFI requirement.
-
-Are you sure you want to override? That seems contrary to the idea of a
-DT property for specifying ECC. But maybe you have a good reason?
-
-If you'd rather just warn the user, it's possible we could move that to
-common code in nand_base.c.
-
+> Signed-off-by: Vincenzo Aliberti <vincenzo.aliberti@gmail.com>
 > 
-> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 > ---
->  drivers/mtd/nand/pxa3xx_nand.c                | 47 +++++++++++++++++++--------
->  include/linux/platform_data/mtd-nand-pxa3xx.h |  3 ++
->  2 files changed, 36 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-> index cf7d757..cc13896 100644
-> --- a/drivers/mtd/nand/pxa3xx_nand.c
-> +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> @@ -1344,8 +1344,30 @@ static int pxa3xx_nand_sensing(struct pxa3xx_nand_info *info)
->  }
->  
->  static int pxa_ecc_init(struct pxa3xx_nand_info *info,
-> -			struct nand_ecc_ctrl *ecc, int strength, int page_size)
-> +			struct nand_chip *chip,
-> +			struct pxa3xx_nand_platform_data *pdata,
-> +			unsigned int page_size)
->  {
-> +	struct nand_ecc_ctrl *ecc = &chip->ecc;
-> +	unsigned int strength, onfi_strength;
-> +
-> +	/* We need to normalize the ECC strengths, in order to compare them. */
-> +	strength = (pdata->ecc_strength * 512) / pdata->ecc_step_size;
-> +	onfi_strength = (chip->ecc_strength_ds * 512) / chip->ecc_step_ds;
+> Changes in v3:
+> 	- BusWidth no longer passed as argument: PCM devices available as x32
+> 	- Partitions no longer defined in the driver
+> 	- Added a remove callback
 
-This is not necessarily an "ONFI" property; we also have the full-ID
-table in which a minimum ECC strength can be specified. Maybe you can
-match the existing naming with "strength" and "strength_ds" (for
-"datasheet").
+OK, so you handled a lot of my requests. But you're still missing some
+error handling and a few other things. Rather than go through this whole
+patch again, I just made my own changes. Can you please review and test
+my diff, appended below?
 
-> +
-> +	/*
-> +	 * The user requested ECC strength cannot be weaker than the ONFI
-> +	 * minimum specified ECC strength.
-> +	 */
-> +	if (strength && strength < onfi_strength) {
-> +		dev_warn(&info->pdev->dev,
-> +			 "requested ECC strength is too weak\n");
-> +		strength = onfi_strength;
-> +	}
-> +
-> +	if (!strength)
-> +		strength = onfi_strength ? onfi_strength : 1;
-> +
+>  drivers/mtd/lpddr/Kconfig      |   12 +-
+>  drivers/mtd/lpddr/Makefile     |    1 +
+>  drivers/mtd/lpddr/lpddr2_nvm.c |  515 ++++++++++++++++++++++++++++++++++++++++
+>  include/uapi/mtd/mtd-abi.h     |    1 +
+>  4 files changed, 527 insertions(+), 2 deletions(-)
+>  create mode 100644 drivers/mtd/lpddr/lpddr2_nvm.c
+[snip]
 
-I'm also not sure your "normalization" is generally correct. You can't
-really normalize correction strengths to get a fully valid comparison.
-Remember, 4-bit/2048B correction is not the same as 1-bit/512B
-correction; it is at least as strong, yes. But then, the reverse is
-*not* a good comparison. So your code might say that a flash which
-requires 4-bit/2KB can be satisfied by 1-bit/512B. (These numbers may
-not be seen in practice, but you get my point, right?)
-
-By my understanding, a correct comparison requires two parts, which I've
-summarized like this in my own code:
-
-        /*
-         * Does the given configuration meet the requirements?
-         *
-         * If our configuration corrects A bits per B bytes and the minimum
-         * required correction level is X bits per Y bytes, then we must ensure
-         * both of the following are true:
-         *
-         * (1) A / B >= X / Y
-         * (2) A >= X
-         *
-         * Requirement (1) ensures we can correct for the required bitflip
-         * density.
-         * Requirement (2) ensures we can correct even when all bitflips are
-         * clumped in the same sector.
-         */
-
-I think you are doing (1), but not (2).
-
->  	if (strength == 1 && page_size == 2048) {
->  		info->chunk_size = 2048;
->  		info->spare_size = 40;
-> @@ -1375,7 +1397,6 @@ static int pxa_ecc_init(struct pxa3xx_nand_info *info,
->  		ecc->size = info->chunk_size;
->  		ecc->layout = &ecc_layout_2KB_bch4bit;
->  		ecc->strength = 16;
-> -		return 1;
->  
->  	} else if (strength == 4 && page_size == 4096) {
->  		info->ecc_bch = 1;
-> @@ -1424,7 +1445,6 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
->  	uint32_t id = -1;
->  	uint64_t chipsize;
->  	int i, ret, num;
-> -	uint16_t ecc_strength, ecc_step;
->  
->  	if (pdata->keep_config && !pxa3xx_nand_detect_config(info))
->  		goto KEEP_CONFIG;
-> @@ -1519,17 +1539,8 @@ KEEP_CONFIG:
->  		}
->  	}
->  
-> -	ecc_strength = chip->ecc_strength_ds;
-> -	ecc_step = chip->ecc_step_ds;
-> -
-> -	/* Set default ECC strength requirements on non-ONFI devices */
-> -	if (ecc_strength < 1 && ecc_step < 1) {
-> -		ecc_strength = 1;
-> -		ecc_step = 512;
-> -	}
-> -
-> -	ret = pxa_ecc_init(info, &chip->ecc, (ecc_strength * 512) / ecc_step,
-> -			   mtd->writesize);
-> +	/* Selects an ECC and fills pxa3xx_nand_info and nand_chip */
-> +	ret = pxa_ecc_init(info, chip, pdata, mtd->writesize);
->  	if (ret)
->  		return ret;
->  
-> @@ -1729,6 +1740,14 @@ static int pxa3xx_nand_probe_dt(struct platform_device *pdev)
->  	of_property_read_u32(np, "num-cs", &pdata->num_cs);
->  	pdata->flash_bbt = of_get_nand_on_flash_bbt(np);
->  
-> +	pdata->ecc_strength = of_get_nand_ecc_strength(np);
-> +	if (pdata->ecc_strength < 0)
-
-ecc_strength is unsigned, so this error check doesn't work. Maybe you
-want a local 'int ret' to temporarily stash the return value?
-
-> +		pdata->ecc_strength = 0;
-> +
-> +	pdata->ecc_step_size = of_get_nand_ecc_step_size(np);
-> +	if (pdata->ecc_step_size < 0)
-
-Ditto for ecc_step_size.
-
-> +		pdata->ecc_step_size = 0;
-> +
->  	pdev->dev.platform_data = pdata;
->  
->  	return 0;
-> diff --git a/include/linux/platform_data/mtd-nand-pxa3xx.h b/include/linux/platform_data/mtd-nand-pxa3xx.h
-> index a941471..5c0f2e3 100644
-> --- a/include/linux/platform_data/mtd-nand-pxa3xx.h
-> +++ b/include/linux/platform_data/mtd-nand-pxa3xx.h
-> @@ -58,6 +58,9 @@ struct pxa3xx_nand_platform_data {
->  	/* use an flash-based bad block table */
->  	bool	flash_bbt;
->  
-> +	/* requested ECC strength and ECC step size */
-> +	unsigned int ecc_strength, ecc_step_size;
-> +
->  	const struct mtd_partition		*parts[NUM_CHIP_SELECT];
->  	unsigned int				nr_parts[NUM_CHIP_SELECT];
->  
-
-Brian
+diff --git a/drivers/mtd/lpddr/lpddr2_nvm.c b/drivers/mtd/lpddr/lpddr2_nvm.c
+index 4ab9adb515eb..4e76f889c9c6 100644
+--- a/drivers/mtd/lpddr/lpddr2_nvm.c
++++ b/drivers/mtd/lpddr/lpddr2_nvm.c
+@@ -17,10 +17,6 @@
+  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc.
+  */
+ 
+ #define pr_fmt(fmt) KBUILD_MODNAME ": %s: " fmt, __func__
+@@ -35,7 +31,6 @@
+ #include <linux/slab.h>
+ #include <linux/platform_device.h>
+ #include <linux/ioport.h>
+-#include <linux/sched.h>
+ 
+ /* Parameters */
+ #define ERASE_BLOCKSIZE			(0x00020000/2)	/* in Word */
+@@ -419,17 +414,15 @@ static int lpddr2_nvm_probe(struct platform_device *pdev)
+ {
+ 	struct map_info *map;
+ 	struct mtd_info *mtd;
+-	struct resource *add_range = platform_get_resource(pdev,
+-						IORESOURCE_MEM, 0);
+-	struct resource *control_regs = platform_get_resource(pdev,
+-						IORESOURCE_MEM, 1);
++	struct resource *add_range;
++	struct resource *control_regs;
+ 	struct pcm_int_data *pcm_data;
+ 
+ 	/* Allocate memory control_regs data structures */
+ 	pcm_data = devm_kzalloc(&pdev->dev, sizeof(*pcm_data), GFP_KERNEL);
+ 	if (!pcm_data)
+ 		return -ENOMEM;
+-	pcm_data->ctl_regs = devm_ioremap_resource(&pdev->dev, control_regs);
++
+ 	pcm_data->bus_width = BUS_WIDTH;
+ 
+ 	/* Allocate memory for map_info & mtd_info data structures */
+@@ -441,34 +434,35 @@ static int lpddr2_nvm_probe(struct platform_device *pdev)
+ 	if (!mtd)
+ 		return -ENOMEM;
+ 
+-	/* Reserve lpddr2_nvm address range */
+-	if (devm_request_mem_region(&pdev->dev, add_range->start,
+-		resource_size(add_range), "lpddr2_nvm") == NULL) {
+-		pr_err("Unable to reserve address range\n");
+-		return -EBUSY;
+-	}
++	/* lpddr2_nvm address range */
++	add_range = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 
+ 	/* Populate map_info data structure */
+ 	*map = (struct map_info) {
+-		.virt		= devm_ioremap_nocache(&pdev->dev,
+-				add_range->start, (add_range->end -
+-				add_range->start + 1)),
++		.virt		= devm_ioremap_resource(&pdev->dev, add_range),
+ 		.name		= pdev->dev.init_name,
+ 		.phys		= add_range->start,
+-		.size		= add_range->end - add_range->start + 1,
+-		.bankwidth	= pcm_data->bus_width/2,
++		.size		= resource_size(add_range),
++		.bankwidth	= pcm_data->bus_width / 2,
+ 		.pfow_base	= OW_BASE_ADDRESS,
+ 		.fldrv_priv	= pcm_data,
+ 	};
++	if (IS_ERR(map->virt))
++		return PTR_ERR(map->virt);
+ 
+ 	simple_map_init(map);	/* fill with default methods */
+ 
++	control_regs = platform_get_resource(pdev, IORESOURCE_MEM, 1);
++	pcm_data->ctl_regs = devm_ioremap_resource(&pdev->dev, control_regs);
++	if (IS_ERR(pcm_data->ctl_regs))
++		return PTR_ERR(pcm_data->ctl_regs);
++
+ 	/* Populate mtd_info data structure */
+ 	*mtd = (struct mtd_info) {
+ 		.name		= pdev->dev.init_name,
+ 		.type		= MTD_RAM,
+ 		.priv		= map,
+-		.size		= add_range->end - add_range->start + 1,
++		.size		= resource_size(add_range),
+ 		.erasesize	= ERASE_BLOCKSIZE * pcm_data->bus_width,
+ 		.writesize	= 1,
+ 		.writebufsize	= WRITE_BUFFSIZE * pcm_data->bus_width,
+@@ -494,10 +488,7 @@ static int lpddr2_nvm_probe(struct platform_device *pdev)
+  */
+ static int lpddr2_nvm_remove(struct platform_device *pdev)
+ {
+-	/* Unregister the MTD device */
+-	mtd_device_unregister(dev_get_drvdata(&pdev->dev));
+-
+-	return 0;
++	return mtd_device_unregister(dev_get_drvdata(&pdev->dev));
+ }
+ 
+ /* Initialize platform_driver data structure for lpddr2_nvm */
