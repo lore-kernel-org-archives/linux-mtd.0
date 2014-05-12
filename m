@@ -1,23 +1,19 @@
-Received: from mail-ie0-x231.google.com ([2607:f8b0:4001:c03::231])
+Received: from hugovil.com ([192.210.230.32] helo=git.hugovil.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wjwkh-0006k8-47
- for linux-mtd@lists.infradead.org; Mon, 12 May 2014 20:23:11 +0000
-Received: by mail-ie0-f177.google.com with SMTP id rp18so7483812iec.22
- for <linux-mtd@lists.infradead.org>; Mon, 12 May 2014 13:22:48 -0700 (PDT)
-Date: Mon, 12 May 2014 13:22:45 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: Re: [PATCH 2/2] mtd: spi-nor: Enable Dual and Quad SPI read
- transfers for s25sl032p
-Message-ID: <20140512202245.GR28907@ld-irv-0074>
-References: <1398170732-19773-1-git-send-email-geert+renesas@glider.be>
- <1398170732-19773-2-git-send-email-geert+renesas@glider.be>
+ id 1WjwvE-0005J9-KA
+ for linux-mtd@lists.infradead.org; Mon, 12 May 2014 20:34:05 +0000
+Message-ID: <53712FE4.6080704@hugovil.com>
+Date: Mon, 12 May 2014 16:32:36 -0400
+From: Hugo Villeneuve <hugo@hugovil.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1398170732-19773-2-git-send-email-geert+renesas@glider.be>
-Cc: David Jander <david@protonic.nl>, linux-mtd@lists.infradead.org,
- linux-spi@vger.kernel.org
+To: linux-mtd@lists.infradead.org
+References: <536A5FEE.9090705@hugovil.com>
+ <20140508153756.GA2572@localhost.localdomain>
+In-Reply-To: <20140508153756.GA2572@localhost.localdomain>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 8bit
+Subject: Re: imx6 NAND chip selects
+Cc: b32955@freescale.com, Huang Shijie <shijie8@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,14 +23,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Apr 22, 2014 at 02:45:32PM +0200, Geert Uytterhoeven wrote:
-> Spansion s25sl032p supports Dual and Quad SPI transfers, hence set the
-> SPI_NOR_DUAL_READ and SPI_NOR_QUAD_READ flags.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
-> Updated for m25p80 -> spi-nor
+On 05/08/2014 11:37 AM, Huang Shijie wrote:
+> On Wed, May 07, 2014 at 12:31:42PM -0400, Hugo Villeneuve wrote:
+>> Hi,
+>> I am trying to connect a NAND flash device (Micron MT29F8G08) to a
+>> Wandboard Dual.
+>>
+>> Here is the pin mapping:
+>>
+>> i.MX6             NAND flash
+>> ----------------------------
+>> NANDF_CS0    -->  CE#
+>> NANDF_RB0    -->  R/B#
+>> NANDF_WP_B   -->  WP#
+>> NANDF_CLE    -->  CLE
+>> NANDF_ALE    -->  ALE
+>> NANDF_WE     -->  WE#
+>> NANDF_RE     -->  RE#
+>> NANDF_D[0-7] -->  I/O[0-7]
+>>
+>> This NAND flash has a single chip-select.
+>>
+>> I'm testing it using Linux kernel 3.15.0-rc3.
+>>
+>> In the wandboard device tree file, I have added all the above gpmi
+>> pins as GPMI pins.
+>>
+>> I am still booting from the SD card, so at this point I am only
+>> trying to detect the NAND device. Unfortunately, when the kernel
+>> boots, the GPMI driver fails to register (error -19).
+>>
+>> If I monitor the NANDF_CS0 line, I can see that it is pulsed low,
+>> but I am not seing any activity on the NANDF_WE line.
+>>
+>> However, If I monitor the NANDF_CS1 line, I can see that it is
+>> pulsed low, and during the time it is low the NANDF_WE line is also
+>> going low.
+>>
+>> I then made sure to reconfigure the unused pins NANDF_CS[1-3] as
+>> GPIOs (ALT5 function) in my device tree file. I have confirmed with
+>> kernel debug traces that the iomux register for NANDF_CS1 have the
+>> value 0x05, which means ALT5 function (GPIO). But I am still seeing
+>> the same behavior as before on the oscilloscope.
+>>
+>> So how can I configure the GPMI driver to only use NANDF_CS0 and not
+>> NANDF_CS1?
+>>
+>> And is it normal that NANDF_CS1 is still used by the GPMI driver
+>> when configured as GPIO?
+> It is not normal at all.
+>
+> Please disable the GPIO pinctrl, and only enable the pinctrl for gpmi
+> and try again.
+>
+> I am sure that you did not configure the PADs correctly.
+>
+> thanks
+> Huang Shijie
 
-Pushed to l2-mtd.git. Thanks!
+Hi Huang,
+knowing that it was not normal to have NANDF_CS1 toggling made me think 
+to look more closely at the hardware level, and I found that the 8 data 
+lines are unfortunately inverted on our PCB.
 
-Brian
+I have temporarily patched the Linux GPMI driver to invert LSB and MSBs 
+for read and writes, and voilà, now my NAND flash is correctly detected!
+
+Sorry for the noise.
+
+Hugo.
