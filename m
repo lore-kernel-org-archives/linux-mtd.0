@@ -1,24 +1,23 @@
-Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
+Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WjwIv-0001tz-VH
- for linux-mtd@lists.infradead.org; Mon, 12 May 2014 19:54:30 +0000
-Received: by mail-pa0-f42.google.com with SMTP id rd3so9329733pab.1
- for <linux-mtd@lists.infradead.org>; Mon, 12 May 2014 12:54:09 -0700 (PDT)
-Date: Mon, 12 May 2014 12:54:05 -0700
+ id 1Wjwci-0002WZ-17
+ for linux-mtd@lists.infradead.org; Mon, 12 May 2014 20:14:57 +0000
+Received: by mail-pa0-f48.google.com with SMTP id rd3so9236121pab.21
+ for <linux-mtd@lists.infradead.org>; Mon, 12 May 2014 13:14:34 -0700 (PDT)
+Date: Mon, 12 May 2014 13:14:31 -0700
 From: Brian Norris <computersforpeace@gmail.com>
 To: Pekon Gupta <pekon@ti.com>
-Subject: Re: [PATCH v3 4/4] mtd: nand: omap: Documentation: How to select
- correct ECC scheme for your device ?
-Message-ID: <20140512195405.GN28907@ld-irv-0074>
+Subject: Re: [PATCH v3 2/4] mtd: nand: omap: add support for BCH16_ECC - ELM
+ driver updates
+Message-ID: <20140512201431.GO28907@ld-irv-0074>
 References: <1399625955-20882-1-git-send-email-pekon@ti.com>
- <1399625955-20882-5-git-send-email-pekon@ti.com>
+ <1399625955-20882-3-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1399625955-20882-5-git-send-email-pekon@ti.com>
-Cc: devicetree@vger.kernel.org, Stefan Roese <sr@denx.de>,
- Tony Lindgren <tony@atomide.com>, Felipe Balbi <balbi@ti.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
+In-Reply-To: <1399625955-20882-3-git-send-email-pekon@ti.com>
+Cc: Stefan Roese <sr@denx.de>, Tony Lindgren <tony@atomide.com>,
+ Felipe Balbi <balbi@ti.com>, linux-mtd <linux-mtd@lists.infradead.org>,
  Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
  linux-omap <linux-omap@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,79 +29,117 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ devicetree@vger.kernel.org
-
-On Fri, May 09, 2014 at 02:29:15PM +0530, Pekon Gupta wrote:
->  - Adds DT binding property for BCH16 ECC scheme
->  - Adds describes on factors which determine choice of ECC scheme for particular device
+On Fri, May 09, 2014 at 02:29:13PM +0530, Pekon Gupta wrote:
+> ELM hardware engine is used to detect ECC errors for BCHx ecc-schemes
+> (like BCH4/BCH8/BCH16). This patch extends configuration of ELM registers
+> for loading of BCH16 ECC syndrome.
 > 
 > Signed-off-by: Pekon Gupta <pekon@ti.com>
 > ---
->  .../devicetree/bindings/mtd/gpmc-nand.txt          | 39 ++++++++++++++++++++++
->  1 file changed, 39 insertions(+)
+>  drivers/mtd/devices/elm.c         | 42 +++++++++++++++++++++++++++++++++++++++
+>  include/linux/platform_data/elm.h |  3 ++-
+>  2 files changed, 44 insertions(+), 1 deletion(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-> index 5e1f31b..f2dbb33 100644
-> --- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-> +++ b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-> @@ -28,6 +28,8 @@ Optional properties:
->  		"ham1"		1-bit Hamming ecc code
->  		"bch4"		4-bit BCH ecc code
->  		"bch8"		8-bit BCH ecc code
-> +		"bch16"		16-bit BCH ECC code
-> +		Refer below "How to select correct ECC scheme for your device ?"
->  
->   - ti,nand-xfer-type:		A string setting the data transfer type. One of:
->  
-> @@ -90,3 +92,40 @@ Example for an AM33xx board:
->  		};
->  	};
->  
-> +How to select correct ECC scheme for your device ?
-> +--------------------------------------------------
-> +Higher ECC scheme usually means better protection against bit-flips and
-> +increased system lifetime. However, selection of ECC scheme is dependent
-> +on various other factors like;
-> +(1) Presence of supporting hardware engines on SoC.
-> +	Some legacy OMAP SoC do not have ELM h/w engine thus such SoC cannot
-> +	support BCHx_HW ECC schemes. But such SoC can support
-> +	BCHx_HW_DETECTION_SW ECC schemes which use s/w library with slight
-> +	CPU performance panalty only when too bit-flips are detected.
+> diff --git a/drivers/mtd/devices/elm.c b/drivers/mtd/devices/elm.c
+> index 1fd4a0f..b4b02a1 100644
+> --- a/drivers/mtd/devices/elm.c
+> +++ b/drivers/mtd/devices/elm.c
+> @@ -213,6 +213,34 @@ static void elm_load_syndrome(struct elm_info *info,
+>  				val = cpu_to_be32(*(u32 *) &ecc[0]) >> 12;
+>  				elm_write_reg(info, offset, val);
+>  				break;
+> +			case BCH16_ECC:
+> +				val =	ecc[25] << 0  | ecc[24] <<  8 |
+> +					ecc[23] << 16 | ecc[22] << 24;
 
-s/panalty/penalty/
+Why can't you use the style of the rest of this switch block? Like:
 
-Please do not refer to Linux Kconfig symbols and jargon. It's already
-confusing to understand what your various permutations of
-BCHx_HW_DETECTION_SW mean. Please simply speak of hardware support and
-software library support that can be used to fill in the gaps, using
-plain English. This is not the place to discuss Linux details.
+				val = cpu_to_be32(*(u32 *)&ecc[22]);
 
-> +(2) Device parameters like OOBSIZE
-> +	Higher ECC schemes require more OOB/Spare area to store ECC.
-> +	So choice of ECC scheme is limited by NAND oobsize. In general
-> +	following expression help determine whether given device can
-> +	accomodate ECC syndrome or not:
-> +	"2 + (PAGESIZE / 512) * ECC_BYTES" >= OOBSIZE
-> +	where
-> +		OOBSIZE		number of bytes in OOB/spare area
-> +		PAGESIZE	number of bytes in main-area of device page
-> +		ECC_BYTES	number of ECC bytes generated to protect
-> +		                512 bytes of data, which is:
-> +				'3' for HAM1_xx ecc schemes
-> +				'7' for BCH4_xx ecc schemes
-> +				'14' for BCH8_xx ecc schemes
-> +				'26' for BCH16_xx ecc schemes
-> +
-> +	Example(a): For a device with PAGESIZE = 2048 and OOBSIZE = 64
-> +		Number of spare/OOB bytes required for using BCH16 ecc-scheme
-> +		"(2 + (2048 / 512) * 26) = 106 bytes" is greater than OOBSIZE
-> +		(As per above table for BCH16 ecc-scheme, ECC_BYTES = 26)
-> +		Thus BCH16 cannot be supported on 2K NAND with OOBSIZE=64 bytes
-> +
-> +	Example(b): For a device with PAGESIZE = 2048 and OOBSIZE = 128
-> +		Number of spare/OOB bytes required for using BCH16 ecc-scheme
-> +		"(2 + (2048 / 512) * 26) = 106 bytes" is less than OOBSIZE
-> +		(As per above table for BCH16 ecc-scheme, ECC_BYTES = 26)
-> +		Thus BCH16 can be supported on 4K NAND with OOBSIZE=128 bytes
+Or are there alignment assues with doing this?
+
+Anyway, you need to reconcile these two options, since it looks like
+you've only written this for little-endian.
+
+> +				elm_write_reg(info, offset, val);
+> +				offset += 4;
+> +				val =	ecc[21] <<  0 | ecc[20] <<  8 |
+> +					ecc[19] << 16 | ecc[18] << 24;
+
+(Same applies here, and below.)
+
+> +				elm_write_reg(info, offset, val);
+> +				offset += 4;
+> +				val =	ecc[17] <<  0 | ecc[16] <<  8 |
+> +					ecc[15] << 16 | ecc[14] << 24;
+> +				elm_write_reg(info, offset, val);
+> +				offset += 4;
+> +				val =	ecc[13] <<  0 | ecc[12] <<  8 |
+> +					ecc[11] << 16 | ecc[10] << 24;
+> +				elm_write_reg(info, offset, val);
+> +				offset += 4;
+> +				val =	ecc[9]  <<  0 | ecc[8]  <<  8 |
+> +					ecc[7]  << 16 | ecc[6]  << 24;
+> +				elm_write_reg(info, offset, val);
+> +				offset += 4;
+> +				val =	ecc[5]  <<  0 | ecc[4]  <<  8 |
+> +					ecc[3]  << 16 | ecc[2]  << 24;
+> +				elm_write_reg(info, offset, val);
+> +				offset += 4;
+> +				val =	ecc[1]  <<  0 | ecc[0]  <<  8;
+> +				elm_write_reg(info, offset, val);
+> +				break;
+>  			default:
+>  				pr_err("invalid config bch_type\n");
+>  			}
+> @@ -435,6 +463,13 @@ static int elm_context_save(struct elm_info *info)
+>  	for (i = 0; i < ERROR_VECTOR_MAX; i++) {
+>  		offset = i * SYNDROME_FRAGMENT_REG_SIZE;
+>  		switch (bch_type) {
+> +		case BCH16_ECC:
+> +			regs->elm_syndrome_fragment_6[i] = elm_read_reg(info,
+> +					ELM_SYNDROME_FRAGMENT_6 + offset);
+> +			regs->elm_syndrome_fragment_5[i] = elm_read_reg(info,
+> +					ELM_SYNDROME_FRAGMENT_5 + offset);
+> +			regs->elm_syndrome_fragment_4[i] = elm_read_reg(info,
+> +					ELM_SYNDROME_FRAGMENT_4 + offset);
+>  		case BCH8_ECC:
+>  			regs->elm_syndrome_fragment_3[i] = elm_read_reg(info,
+>  					ELM_SYNDROME_FRAGMENT_3 + offset);
+> @@ -473,6 +508,13 @@ static int elm_context_restore(struct elm_info *info)
+>  	for (i = 0; i < ERROR_VECTOR_MAX; i++) {
+>  		offset = i * SYNDROME_FRAGMENT_REG_SIZE;
+>  		switch (bch_type) {
+> +		case BCH16_ECC:
+> +			elm_write_reg(info, ELM_SYNDROME_FRAGMENT_6 + offset,
+> +					regs->elm_syndrome_fragment_6[i]);
+> +			elm_write_reg(info, ELM_SYNDROME_FRAGMENT_5 + offset,
+> +					regs->elm_syndrome_fragment_5[i]);
+> +			elm_write_reg(info, ELM_SYNDROME_FRAGMENT_4 + offset,
+> +					regs->elm_syndrome_fragment_4[i]);
+>  		case BCH8_ECC:
+>  			elm_write_reg(info, ELM_SYNDROME_FRAGMENT_3 + offset,
+>  					regs->elm_syndrome_fragment_3[i]);
+> diff --git a/include/linux/platform_data/elm.h b/include/linux/platform_data/elm.h
+> index 4edb406..ac2f266 100644
+> --- a/include/linux/platform_data/elm.h
+> +++ b/include/linux/platform_data/elm.h
+> @@ -21,6 +21,7 @@
+>  enum bch_ecc {
+>  	BCH4_ECC = 0,
+>  	BCH8_ECC,
+> +	BCH16_ECC
+>  };
+>  
+>  /* ELM support 8 error syndrome process */
+> @@ -38,7 +39,7 @@ struct elm_errorvec {
+>  	bool error_reported;
+>  	bool error_uncorrectable;
+>  	int error_count;
+> -	int error_loc[ERROR_VECTOR_MAX];
+> +	int error_loc[16];
+>  };
+>  
+>  void elm_decode_bch_error_page(struct device *dev, u8 *ecc_calc,
 
 Brian
