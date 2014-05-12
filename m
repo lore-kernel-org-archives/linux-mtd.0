@@ -1,22 +1,21 @@
-Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
+Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wjwxv-00083j-4C
- for linux-mtd@lists.infradead.org; Mon, 12 May 2014 20:36:51 +0000
-Received: by mail-pa0-f41.google.com with SMTP id lj1so9431596pab.0
- for <linux-mtd@lists.infradead.org>; Mon, 12 May 2014 13:36:29 -0700 (PDT)
-Date: Mon, 12 May 2014 13:36:26 -0700
+ id 1WjzSP-0006rQ-L5
+ for linux-mtd@lists.infradead.org; Mon, 12 May 2014 23:16:30 +0000
+Received: by mail-pa0-f48.google.com with SMTP id rd3so9426022pab.7
+ for <linux-mtd@lists.infradead.org>; Mon, 12 May 2014 16:16:08 -0700 (PDT)
+Date: Mon, 12 May 2014 16:16:04 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Pekon Gupta <pekon@ti.com>
-Subject: Re: [PATCH v2] mtd: nand: omap: fix BCHx ecc.correct to return
- detected bit-flips in erased-page
-Message-ID: <20140512203626.GS28907@ld-irv-0074>
-References: <1395730699-14687-1-git-send-email-pekon@ti.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] mtd: Fix warning in access_ok() parameter passing
+Message-ID: <20140512231604.GT28907@ld-irv-0074>
+References: <1398969654-5672-1-git-send-email-geert@linux-m68k.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1395730699-14687-1-git-send-email-pekon@ti.com>
-Cc: Stefan Roese <sr@denx.de>, linux-mtd <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+In-Reply-To: <1398969654-5672-1-git-send-email-geert@linux-m68k.org>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,22 +25,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Mar 25, 2014 at 12:28:19PM +0530, Pekon Gupta wrote:
-> fixes: commit 62116e5171e00f85a8d53f76e45b84423c89ff34
->        mtd: nand: omap2: Support for hardware BCH error correction.
+On Thu, May 01, 2014 at 08:40:54PM +0200, Geert Uytterhoeven wrote:
+> On m68k, where access_ok() doesn't cast the address parameter:
 > 
-> In omap_elm_correct_data(), if bitflip_count in an erased-page is within the
-> correctable limit (< ecc.strength), then it is not indicated back to the caller
-> ecc->read_page().
-> This mis-guides upper layers like MTD and UBIFS layer to assume erased-page as
-> perfectly clean and use it for writing even if actual bitflip_count was
-> dangerously high (bitflip_count > mtd->bitflip_threshold).
+> drivers/mtd/mtdchar.c: In function 'mtdchar_write_ioctl':
+> drivers/mtd/mtdchar.c:575:4: warning: passing argument 2 of 'access_ok' makes pointer from integer without a cast [enabled by default]
+> arch/m68k/include/asm/uaccess_mm.h:17:90: note: expected 'const void *' but argument is of type '__u64'
+> drivers/mtd/mtdchar.c:576:4: warning: passing argument 2 of 'access_ok' makes pointer from integer without a cast [enabled by default]
+> arch/m68k/include/asm/uaccess_mm.h:17:90: note: expected 'const void *' but argument is of type '__u64'
 > 
-> This patch fixes this above issue, by returning 'stats' to caller
-> ecc->read_page() under all scenarios.
+> The address parameter of access_ok() is really a userspace pointer.
+> On most architectures, access_ok() is a macro that casts the address
+> parameter, hiding issues in its users.
 > 
-> Reported-by: Brian Norris <computersforpeace@gmail.com>
-> Signed-off-by: Pekon Gupta <pekon@ti.com>
+> Move around and use the existing usr_data and usr_oob temporary variables
+> to kill the warnings. Add a few "consts", and make more use of the
+> temporaries while we're at it.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
 Pushed to l2-mtd.git. Thanks!
 
