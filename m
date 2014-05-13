@@ -1,30 +1,24 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WkCyF-0001w9-6t
- for linux-mtd@lists.infradead.org; Tue, 13 May 2014 13:42:15 +0000
-Date: Tue, 13 May 2014 10:41:10 -0300
+ id 1WkD2M-0004xv-7d
+ for linux-mtd@lists.infradead.org; Tue, 13 May 2014 13:46:30 +0000
+Date: Tue, 13 May 2014 10:44:48 -0300
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH 1/4] mtd: Add sysfs attr to expose ECC stats
-Message-ID: <20140513134109.GA1504@arch.cereza>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 2/4] mtd: nand: Account the blocks used by the BBT in the
+ ecc_stats
+Message-ID: <20140513134448.GB1504@arch.cereza>
 References: <1395403064-28113-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1395403064-28113-2-git-send-email-ezequiel.garcia@free-electrons.com>
- <20980858CB6D3A4BAE95CA194937D5E73EAB91D7@DBDE04.ent.ti.com>
- <20140401111359.GA3324@arch.cereza>
- <20980858CB6D3A4BAE95CA194937D5E73EAC31AE@DBDE04.ent.ti.com>
- <20140513005053.GZ28907@ld-irv-0074>
- <20140513022614.GA1447@arch.cereza>
- <20140513111524.GA29552@kroah.com>
+ <1395403064-28113-3-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20140513022753.GB1447@arch.cereza>
+ <20140513023651.GC28907@ld-irv-0074>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20140513111524.GA29552@kroah.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, "Gupta, Pekon" <pekon@ti.com>,
- Linux Kernel <linux-kernel@vger.kernel.org>
+In-Reply-To: <20140513023651.GC28907@ld-irv-0074>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,63 +28,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 13 May 01:15 PM, Greg Kroah-Hartman wrote:
-> On Mon, May 12, 2014 at 11:26:14PM -0300, Ezequiel Garcia wrote:
-> > On 12 May 05:50 PM, Brian Norris wrote:
-> > > > There are some guidelines about attributes in 'Documentation/filesystems/sysfs.txt'
-> > > > Though it's acceptable to put array of values of the "same type" in single sysfs file,
-> > > > But I'm still not confident on having all members of 'struct ecc_stats' being
-> > > > represented by single sysfs file
-> > > [...]
+On 12 May 07:36 PM, Brian Norris wrote:
+> On Mon, May 12, 2014 at 11:27:53PM -0300, Ezequiel Garcia wrote:
+> > On 21 Mar 08:57 AM, Ezequiel Garcia wrote:
+> > > Strictly speaking we should be updating the ecc_stats in the master
+> > > MTD object, with the blocks used by the bad block table.
 > > > 
-> > > I agree, it looks like the sysfs policy would recommend against putting
-> > > distinct properties in the same file.
+> > > This is already being done for bad and reserved blocks detected doing
+> > > the BBT search, but not for the blocks used by the BBT itself. This commit
+> > > adds the latter.
 > > > 
+> > > It should be noted that the ecc_stats structure is kept only for userspace
+> > > information, accesible through an ioctl. However, since the master MTD object
+> > > is not tied to any /dev/mtd{N} device node in the filesystem, there's currently
+> > > no way to retrieve this information.
+> > > 
+> > > This ecc_stats is used for the MTD partitions typically allocated and
+> > > registered by mtd_device_parse_register(). These have a device node, but scan
+> > > for bad blocks and updates the ecc_stats in a different code path.
+> > > 
+> > > Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> > > --
+> > > For the reasons exposed above, it's not clear we should remove the ecc_stats
+> > > update in the master MTD altogether or simply take account of the BBT blocks
+> > > for consistency. I've chosen the latter, for it seemed a safer changer.
+> > > 
+> > > I'm open to discussion, though.
 > > 
-> > OK...
+> > Brian,
 > > 
-> > > I'm not sure if /sys/block/<disk>/stat is a good example, as it does
-> > > violate this policy. It also seems to have some historical baggage.
-> > > 
-> > > But there is potentially one good reason for putting this distinct
-> > > information in a single file: if the information must be returned
-> > > atomically. For disk stats, it might be important to get a consistent
-> > > snapshot of the disk stats (or nearly so, with minimal locking
-> > > overhead), which might change significantly between file accesses if
-> > > we're doing half a dozen file queries instead.
-> > > 
-> > > This same reason may not apply to these ECC stats, since none of these
-> > > ECC stats are likely to be changing concurrently.
-> > > 
-> > 
-> > Right.
-> > 
-> > > So I personally might lean toward "one file per attribute" here.
-> > > 
-> > 
-> > Yup, no problem. Greg, if you can confirm this it'd be great.
+> > Can you comment a bit on this one? Should I keep this change in v2?
 > 
-> Yes, that is the rule for sysfs, please do not put multiple values in a
-> single sysfs file for a variety of good reasons.
+> I'm not really sure. I'm honestly having a hard time tracking all the
+> potentially-configurable knobs of nand_bbt.c. It looks like only
+> diskonchip sets a reserved_block_code, so some of the existing code
+> isn't really even tested widely. And like you mention, the ecc_stats
+> from the master MTD are not propagated directly to the partition (nor
+> should they be), so the stat is really unused.
 > 
-
-Will do!
-
-> > > > >> I hope this will still keep it machine readable.
-> > > > >Well, this is not a debugfs entry, so I'm not sure we want to add such debug
-> > > > >information. Anyone can take a look at the code and see what ecc_stats mean.
-> > > 
-> > > The code or (as suggested by Pekon) the documentation
-> > > (Documentation/ABI/). Either way -- with a single 'ecc_stats' table, or
-> > > with 4 separate files -- they need to be documented.
-> > > 
-> > 
-> > Sure, will document in next round.
-> 
-> This documentation is required, thanks.
+> I'm not 100% confident that we won't double-count any 'bbtblocks' in
+> your current patch. Maybe we should rewrite some of this stuff...
 > 
 
-Sure, no problem.
+Indeed, I wrote this stuff a while ago, but I remember having a really hard
+time to follow the bbtblocks count increments.
+
+> I'll look at this again when my eyes are fresh.
+> 
+
+No problem.
 -- 
 Ezequiel García, Free Electrons
 Embedded Linux, Kernel and Android Engineering
