@@ -1,22 +1,28 @@
-Date: Tue, 13 May 2014 14:55:48 -0600
-From: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
+Received: from mail-ie0-x232.google.com ([2607:f8b0:4001:c03::232])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WkMH5-00032d-5j
+ for linux-mtd@lists.infradead.org; Tue, 13 May 2014 23:38:19 +0000
+Received: by mail-ie0-f178.google.com with SMTP id rd18so1109896iec.37
+ for <linux-mtd@lists.infradead.org>; Tue, 13 May 2014 16:37:56 -0700 (PDT)
+Date: Tue, 13 May 2014 16:37:52 -0700
+From: Brian Norris <computersforpeace@gmail.com>
 To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH 2/2] mtd: orion-nand: fix build error with ARMv4
-Message-ID: <20140513205548.GC22907@obsidianresearch.com>
-References: <1399560433-1402630-1-git-send-email-arnd@arndb.de>
- <1399560990-1402858-1-git-send-email-arnd@arndb.de>
- <1399560990-1402858-4-git-send-email-arnd@arndb.de>
- <20140509184505.GA30330@arch.cereza>
- <20140509212810.GF18257@obsidianresearch.com>
- <20140509220915.GA391@arch.cereza>
+Subject: Re: [PATCH v2 3/4] mtd: nand: pxa3xx: Use ECC strength and step size
+ devicetree binding
+Message-ID: <20140513233752.GE28907@ld-irv-0074>
+References: <1395401690-25221-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1395401690-25221-4-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20140512180104.GJ28907@ld-irv-0074>
+ <20140512191841.GA3064@arch.cereza>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20140509220915.GA391@arch.cereza>
-Cc: Arnd Bergmann <arnd@arndb.de>, Jingoo Han <jg1.han@samsung.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20140512191841.GA3064@arch.cereza>
+Cc: Lior Amsalem <alior@marvell.com>, devicetree@vger.kernel.org,
+ Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Tawfik Bayouk <tawfik@marvell.com>, Seif Mazareeb <seif@marvell.com>,
+ Simon Guinot <sguinot@lacie.com>, linux-mtd@lists.infradead.org,
+ Gregory Clement <gregory.clement@free-electrons.com>, Willy Tarreau <w@1wt.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,70 +32,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, May 09, 2014 at 07:09:15PM -0300, Ezequiel Garcia wrote:
-> On 09 May 03:28 PM, Jason Gunthorpe wrote:
+On Mon, May 12, 2014 at 04:18:41PM -0300, Ezequiel Garcia wrote:
+> On 12 May 11:01 AM, Brian Norris wrote:
+> > On Fri, Mar 21, 2014 at 08:34:49AM -0300, Ezequiel Garcia wrote:
+> > > Also, if there is an ONFI-specified minimum ECC strength requirement,
+> > > and the DT-specified ECC strength is weaker, print a warning and try to
+> > > select a strength compatible with the ONFI requirement.
 > > 
-> > > I gave this a try in order to answer Arnd's performance
-> > > question. First of all, the patch seems wrong. I guess it's because
-> > > readsl reads 4-bytes pieces, instead of 8-bytes.
-> > > 
-> > > This patch below is tested (but not completely, see below) and works:
-> > 
-> > Compilers are better now, I think you can just ditch the weirdness:
-> > 
-> [..]
-> > 
-> > The below gives:
-> > 
-> >   c8:   ea000002        b       d8 <orion_nand_read_buf+0x84>
-> >   cc:   e5dc0000        ldrb    r0, [ip]
-> >   d0:   e7c30001        strb    r0, [r3, r1]
-> >   d4:   e2811001        add     r1, r1, #1
-> >   d8:   e1510002        cmp     r1, r2
-> > 
-> > Which looks the same as the asm version to me.
+> > Are you sure you want to override? That seems contrary to the idea of a
+> > DT property for specifying ECC. But maybe you have a good reason?
 > > 
 > 
-> Nice! It wasn't really needed but since I have the board here:
+> Actually, on IRC discussions you enforced the idea that the kernel shouldn't
+> allow a weaker ECC strength than the datasheet (ONFI or ID table) specified.
+> Hence, following your request, the implementation considers such devicetree
+> setting as illegal and tries to find another one.
+
+Hmm, I don't recall saying that exactly, although I might have said
+something similar that could have been misconstrued as such.
+
+I mostly recall discussing setting the ECC strength *without* device
+tree (as pxa3xx_nand currently does), which is a different case, since
+we don't have any outside input.
+
+But anyway...
+
+> > If you'd rather just warn the user, it's possible we could move that to
+> > common code in nand_base.c.
+> > 
 > 
-> # time nanddump /dev/mtd5 -f /dev/null -q
-> real	0m 5.82s
-> user	0m 0.20s
-> sys	0m 5.60s
+> Now that you mention this, I think you're right: it's very stupid to try to
+> match an ECC scheme, different from the requested.
 > 
-> Jason: Care to submit a proper patch?
+> So, we either just warn the user (nosily) or we fail to probe the driver.
+> If you ask me, I'd say let's just WARN() and let the user take the blame.
 
-Sure, but did anyone (Arnd?) have thoughts on a better way to do this:
+...yes, I (regardless of what "IRC Brian" said!) think that is the
+correct approach when given an ECC scheme via device-tree. We should
+honor it, and blame the user loudly.
 
-+#ifdef CONFIG_64BIT
-+               buf64[i++] = readq_relaxed(io_base);
-+#else
-+               buf64[i++] = *(const volatile u64 __force *)io_base;
-+#endif
-
-IMHO, readq should exist on any platform that can issue a 64 bit bus
-transaction, and I expect many ARM's qualify.
-
-> On 08 May 04:56 PM, Arnd Bergmann wrote:
-
-> Ok, so it takes 5.6 seconds in kernel mode to access 31MB, which
-> comes down to 5.60MB/s. That isn't very fast compared to the time
-> the CPU should take for those instructions, so I'm surprised it
-> actually makes any difference at all.
-
-Likely, what is happening is that the bus interface is holding off
-returning the read data until it complets the bus cycles, then the
-response travels to the CPU which turns around another.
-
-This creates a dead time where the bus isn't do anything.
-
-The larger bus transfer the CPU can do the less percentage of time the
-turnaround takes as overhead.
-
-If the cpu could pipeline two reads then it could be highest-possible,
-but I guess the memory ordering for the mapping prevents that??
-
-Regarding DMA, who knows if the interface can handle a burst
-transfer..
-
-Jason
+Brian
