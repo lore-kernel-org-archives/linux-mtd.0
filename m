@@ -1,24 +1,16 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WkD2M-0004xv-7d
- for linux-mtd@lists.infradead.org; Tue, 13 May 2014 13:46:30 +0000
-Date: Tue, 13 May 2014 10:44:48 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 2/4] mtd: nand: Account the blocks used by the BBT in the
- ecc_stats
-Message-ID: <20140513134448.GB1504@arch.cereza>
-References: <1395403064-28113-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1395403064-28113-3-git-send-email-ezequiel.garcia@free-electrons.com>
- <20140513022753.GB1447@arch.cereza>
- <20140513023651.GC28907@ld-irv-0074>
+Received: from fudo.makrotopia.org ([2001:41d0:8:c75d::1])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WkJJ8-0007YP-RI
+ for linux-mtd@lists.infradead.org; Tue, 13 May 2014 20:28:15 +0000
+Date: Tue, 13 May 2014 22:27:58 +0200
+From: Daniel Golle <daniel@makrotopia.org>
+To: Artem Bityutskiy <dedekind1@gmail.com>, linux-mtd@lists.infradead.org
+Subject: [PATCH] ubifs: add missing ui pointer in debugging code
+Message-ID: <20140513202750.GA27516@earthship.olsr.leipzig.freifunk.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="qDbXVdCdHGoSgWSk"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20140513023651.GC28907@ld-irv-0074>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,56 +20,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12 May 07:36 PM, Brian Norris wrote:
-> On Mon, May 12, 2014 at 11:27:53PM -0300, Ezequiel Garcia wrote:
-> > On 21 Mar 08:57 AM, Ezequiel Garcia wrote:
-> > > Strictly speaking we should be updating the ecc_stats in the master
-> > > MTD object, with the blocks used by the bad block table.
-> > > 
-> > > This is already being done for bad and reserved blocks detected doing
-> > > the BBT search, but not for the blocks used by the BBT itself. This commit
-> > > adds the latter.
-> > > 
-> > > It should be noted that the ecc_stats structure is kept only for userspace
-> > > information, accesible through an ioctl. However, since the master MTD object
-> > > is not tied to any /dev/mtd{N} device node in the filesystem, there's currently
-> > > no way to retrieve this information.
-> > > 
-> > > This ecc_stats is used for the MTD partitions typically allocated and
-> > > registered by mtd_device_parse_register(). These have a device node, but scan
-> > > for bad blocks and updates the ecc_stats in a different code path.
-> > > 
-> > > Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> > > --
-> > > For the reasons exposed above, it's not clear we should remove the ecc_stats
-> > > update in the master MTD altogether or simply take account of the BBT blocks
-> > > for consistency. I've chosen the latter, for it seemed a safer changer.
-> > > 
-> > > I'm open to discussion, though.
-> > 
-> > Brian,
-> > 
-> > Can you comment a bit on this one? Should I keep this change in v2?
-> 
-> I'm not really sure. I'm honestly having a hard time tracking all the
-> potentially-configurable knobs of nand_bbt.c. It looks like only
-> diskonchip sets a reserved_block_code, so some of the existing code
-> isn't really even tested widely. And like you mention, the ecc_stats
-> from the master MTD are not propagated directly to the partition (nor
-> should they be), so the stat is really unused.
-> 
-> I'm not 100% confident that we won't double-count any 'bbtblocks' in
-> your current patch. Maybe we should rewrite some of this stuff...
-> 
 
-Indeed, I wrote this stuff a while ago, but I remember having a really hard
-time to follow the bbtblocks count increments.
+--qDbXVdCdHGoSgWSk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> I'll look at this again when my eyes are fresh.
-> 
+If UBIFS_DEBUG is defined an additional assertion of the ui_lock
+spinlock in do_writepage cannot compile because the ui pointer has not
+been previously declared.
 
-No problem.
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+Fix this by declaring and initializing the ui pointer in case
+UBIFS_DEBUG is defined.
+
+Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+---
+ fs/ubifs/file.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index 4f34dba..e13ec5e 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -903,6 +903,7 @@ static int do_writepage(struct page *page, int len)
+ 	struct ubifs_info *c =3D inode->i_sb->s_fs_info;
+=20
+ #ifdef UBIFS_DEBUG
++	struct ubifs_inode *ui =3D ubifs_inode(inode);
+ 	spin_lock(&ui->ui_lock);
+ 	ubifs_assert(page->index <=3D ui->synced_i_size << PAGE_CACHE_SIZE);
+ 	spin_unlock(&ui->ui_lock);
+--=20
+1.9.2
+
+
+--qDbXVdCdHGoSgWSk
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQEcBAEBAgAGBQJTcoBGAAoJECBgbL4bcbCQokAH/A/zqKgT7qkEiSJ4Tgvmq7kh
+SuT86b0ek3ptXw5joM9QwWxB4euM+G2S9FgGP4ph++m6ybAHg40T9/XxSBfXBPSO
+HuiuJhnwsyqjyAKm6ytza6aXTtJfJtg2aaKjvhtFTYe5evsS0K8kagQC8D4t+DDN
+3KcJDhEPqTbnIVIipARjFfJ8wYDN+L0QJTEn2ANht/WapotwzG/B1HBAqv421OEQ
+CkDSs6I0Sohi7oraPxVvm2np5xv4+zAh5+izBDUfihUKxoqpYlhEiK7/Fjw3RS6q
+7agPWRxABINloUI0VdJnBpoAHUHoPN0peYCmRr1e+xseilTNgA2LQGfciu9tS1c=
+=rBVS
+-----END PGP SIGNATURE-----
+
+--qDbXVdCdHGoSgWSk--
