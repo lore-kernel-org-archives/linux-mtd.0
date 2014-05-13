@@ -1,23 +1,20 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga02.intel.com ([134.134.136.20])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wk8dH-0007Oj-DX
- for linux-mtd@lists.infradead.org; Tue, 13 May 2014 09:04:21 +0000
-Message-ID: <1399971821.1797.24.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] UBI: add a ubi forced detach ioctl
+ id 1Wk8hO-00011T-49
+ for linux-mtd@lists.infradead.org; Tue, 13 May 2014 09:08:34 +0000
+Message-ID: <1399972089.1797.29.camel@sauron.fi.intel.com>
+Subject: Re: [RFC PATCH] UBI: fix rb_tree node comparison in add_map
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Luka Perkov <luka@openwrt.org>
-Date: Tue, 13 May 2014 12:03:41 +0300
-In-Reply-To: <20140512104400.GA24995@w500.lan>
-References: <1399850250-24616-1-git-send-email-luka@openwrt.org>
- <CAFLxGvy+5udxOnRmEeKbHGr=z3a0H+vK07r+PbQdHiUkcJivQA@mail.gmail.com>
- <53709292.6070600@phrozen.org> <20140512104400.GA24995@w500.lan>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Tue, 13 May 2014 12:08:09 +0300
+In-Reply-To: <20140510011913.GH28907@ld-irv-0074>
+References: <20140321195403.GA32529@redhat.com> <532CD1CB.4070707@nod.at>
+ <20140510011913.GH28907@ld-irv-0074>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Richard Weinberger <richard.weinberger@gmail.com>,
- John Crispin <blogic@openwrt.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- John Crispin <john@phrozen.org>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Mike Snitzer <snitzer@redhat.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,17 +25,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2014-05-12 at 12:44 +0200, Luka Perkov wrote:
-> When running ubi rootfs upgrade on nand based OpenWrt device after
-> pivot_root init process is still "hooked" on the old file system. Thus,
-> the old file system can not be umounted. If the filesystem is mounted it
-> can not be upgraded with using for example ubiupdatevol or removed with
-> ubirmvol. Forcing umount would allow to run the before mentioned
-> commands.
+On Fri, 2014-05-09 at 18:19 -0700, Brian Norris wrote:
+> Hi Artem,
+> 
+> On Sat, Mar 22, 2014 at 12:56:59AM +0100, Richard Weinberger wrote:
+> > Am 21.03.2014 20:54, schrieb Mike Snitzer:
+> > > The comparisons used in add_vol() shouldn't be identical.  Pretty sure
+> > > the following is correct but it is completely untested.
+> > > 
+> > > Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+> > > ---
+> > >  drivers/mtd/ubi/fastmap.c |    4 ++--
+> > >  1 files changed, 2 insertions(+), 2 deletions(-)
+> > > 
+> > > NOTE: I stumbled upon this code while implementing some rb_tree code
+> > >       (and looking for some existing rb_tree code as a reference).
+> > 
+> > Thanks a lot for pointing this out!
+> > 
+> > Acked-by: Richard Weinberger <richard@nod.at>
+> 
+> Bump?
+> 
+> I'm passing through my queue, and I occasionally see some obvious,
+> reviewed fixes like this one. Typically, you get around to them
+> eventually, but you never know. Do you prefer the "bump"?
 
-Generally, a change like this may be fine, but I'd like to see more
-detailed description and analysis, which points to how other kernel
-subsystems deal with this.
+I'll pick this now, thanks for pointing. And yes, a "bump" is helpful.
+E.g., I missed this ones.
 
 -- 
 Best Regards,
