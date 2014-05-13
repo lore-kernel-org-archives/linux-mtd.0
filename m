@@ -1,28 +1,21 @@
-Received: from mail-pa0-x22f.google.com ([2607:f8b0:400e:c03::22f])
+Received: from mail-ie0-x231.google.com ([2607:f8b0:4001:c03::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wk0w9-0004Eg-Px
- for linux-mtd@lists.infradead.org; Tue, 13 May 2014 00:51:18 +0000
-Received: by mail-pa0-f47.google.com with SMTP id lf10so6972219pab.34
- for <linux-mtd@lists.infradead.org>; Mon, 12 May 2014 17:50:56 -0700 (PDT)
-Date: Mon, 12 May 2014 17:50:53 -0700
+ id 1Wk1ZY-0006rl-N2
+ for linux-mtd@lists.infradead.org; Tue, 13 May 2014 01:32:01 +0000
+Received: by mail-ie0-f177.google.com with SMTP id rp18so7837929iec.36
+ for <linux-mtd@lists.infradead.org>; Mon, 12 May 2014 18:31:39 -0700 (PDT)
+Date: Mon, 12 May 2014 18:31:33 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [PATCH 1/4] mtd: Add sysfs attr to expose ECC stats
-Message-ID: <20140513005053.GZ28907@ld-irv-0074>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH 3/4] mtd: Introduce mtd_block_isreserved()
+Message-ID: <20140513013133.GA28907@ld-irv-0074>
 References: <1395403064-28113-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1395403064-28113-2-git-send-email-ezequiel.garcia@free-electrons.com>
- <20980858CB6D3A4BAE95CA194937D5E73EAB91D7@DBDE04.ent.ti.com>
- <20140401111359.GA3324@arch.cereza>
- <20980858CB6D3A4BAE95CA194937D5E73EAC31AE@DBDE04.ent.ti.com>
+ <1395403064-28113-4-git-send-email-ezequiel.garcia@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EAC31AE@DBDE04.ent.ti.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>,
- Linux Kernel <linux-kernel@vger.kernel.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+In-Reply-To: <1395403064-28113-4-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,76 +25,155 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ Greg KH, LKML
+On Fri, Mar 21, 2014 at 08:57:43AM -0300, Ezequiel Garcia wrote:
+> In addition to mtd_block_isbad(), which checks if a block is bad or reserved,
+> it's needed to check if a block is reserved only (but not bad). This commit
+> adds an MTD interface for it, in a similar fashion to mtd_block_isbad().
+> 
+> Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> ---
+>  drivers/mtd/mtdcore.c        | 10 ++++++++++
+>  drivers/mtd/mtdpart.c        |  9 +++++++++
+>  drivers/mtd/nand/nand_base.c |  1 +
+>  drivers/mtd/nand/nand_bbt.c  | 14 ++++++++++++++
+>  include/linux/mtd/mtd.h      |  2 ++
+>  include/linux/mtd/nand.h     |  1 +
+>  6 files changed, 37 insertions(+)
+> 
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index c5e9943..d65c5dc 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -1012,6 +1012,16 @@ int mtd_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+>  }
+>  EXPORT_SYMBOL_GPL(mtd_is_locked);
+>  
+> +int mtd_block_isreserved(struct mtd_info *mtd, loff_t ofs)
+> +{
+> +	if (!mtd->_block_isreserved)
+> +		return 0;
+> +	if (ofs < 0 || ofs > mtd->size)
+> +		return -EINVAL;
 
-For context:
+At first, I was going to recommend that the out-of-bounds check go
+before the !mtd->_block_isreserved check, since it's best to warn users
+for invalid input. But then, mtd_block_isbad() has the same ordering, so
+it'd be nice to consistent...
 
-http://thread.gmane.org/gmane.linux.drivers.mtd/52517/focus=52518
+Do we flip a coin to decide whether to change both or leave as-is? :)
 
-On Tue, Apr 15, 2014 at 11:13:52AM +0000, Pekon Gupta wrote:
-> >From: Ezequiel Garcia
-> >>On Mar 27, Gupta, Pekon wrote:
-> >> >
-> >> >+static ssize_t mtd_ecc_stats_show(struct device *dev,
-> >> >+		struct device_attribute *attr, char *buf)
-> >> >+{
-> >> >+	struct mtd_info *mtd = dev_get_drvdata(dev);
-> >> >+	struct mtd_ecc_stats *ecc_stats = &mtd->ecc_stats;
-> >> >+
-> >> >+	return snprintf(buf, PAGE_SIZE, "%8u %8u %8u %8u\n", ecc_stats->corrected,
-> >> >+						ecc_stats->failed,
-> >> >+						ecc_stats->badblocks,
-> >> >+						ecc_stats->bbtblocks);
-> >> Though I would have liked to see each field of ecc_stats as a separate sysfs entry
-> >
-> >I tried to match the ecc_stats structure exactly in the sysfs entry. Keep
-> >in mind creating/keeping a sysfs file has its cost. Since it's trivial
-> >to get one of the fields with any text parsing tool I didn't think having
-> >a file per stat was worth it.
+> +	return mtd->_block_isreserved(mtd, ofs);
+> +}
+> +EXPORT_SYMBOL_GPL(mtd_block_isreserved);
+> +
+>  int mtd_block_isbad(struct mtd_info *mtd, loff_t ofs)
+>  {
+>  	if (!mtd->_block_isbad)
+> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+> index 1ca9aec..921e8c6 100644
+> --- a/drivers/mtd/mtdpart.c
+> +++ b/drivers/mtd/mtdpart.c
+> @@ -290,6 +290,13 @@ static void part_resume(struct mtd_info *mtd)
+>  	part->master->_resume(part->master);
+>  }
+>  
+> +static int part_block_isreserved(struct mtd_info *mtd, loff_t ofs)
+> +{
+> +	struct mtd_part *part = PART(mtd);
+> +	ofs += part->offset;
+> +	return part->master->_block_isreserved(part->master, ofs);
+> +}
+> +
+>  static int part_block_isbad(struct mtd_info *mtd, loff_t ofs)
+>  {
+>  	struct mtd_part *part = PART(mtd);
+> @@ -422,6 +429,8 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
+>  		slave->mtd._unlock = part_unlock;
+>  	if (master->_is_locked)
+>  		slave->mtd._is_locked = part_is_locked;
+> +	if (master->_block_isreserved)
+> +		slave->mtd._block_isreserved = part_block_isreserved;
+>  	if (master->_block_isbad)
+>  		slave->mtd._block_isbad = part_block_isbad;
+>  	if (master->_block_markbad)
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 5826da3..58f5884 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -4044,6 +4044,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+>  	mtd->_unlock = NULL;
+>  	mtd->_suspend = nand_suspend;
+>  	mtd->_resume = nand_resume;
+> +	mtd->_block_isreserved = nand_isreserved_bbt;
 
-I'm not sure what kind of cost this has these days. I thought there was
-some work to reduce the required kobject memory usage for each new sysfs
-file.
+I think you want a small wrapper function in case we aren't using a BBT
+at all. See nand_block_checkbad(), which checks for !chip->bbt. So we'd
+need:
 
-> There are some guidelines about attributes in 'Documentation/filesystems/sysfs.txt'
-> Though it's acceptable to put array of values of the "same type" in single sysfs file,
-> But I'm still not confident on having all members of 'struct ecc_stats' being
-> represented by single sysfs file
-[...]
+	if (!chip->bbt)
+		return 0;
 
-I agree, it looks like the sysfs policy would recommend against putting
-distinct properties in the same file.
+>  	mtd->_block_isbad = nand_block_isbad;
+>  	mtd->_block_markbad = nand_block_markbad;
+>  	mtd->writebufsize = mtd->writesize;
+> diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+> index ea9a266..fd21169 100644
+> --- a/drivers/mtd/nand/nand_bbt.c
+> +++ b/drivers/mtd/nand/nand_bbt.c
+> @@ -1312,6 +1312,20 @@ int nand_default_bbt(struct mtd_info *mtd)
+>  }
+>  
+>  /**
+> + * nand_isreserved_bbt - [NAND Interface] Check if a block is reserved
+> + * @mtd: MTD device structure
+> + * @offs: offset in the device
+> + */
+> +int nand_isreserved_bbt(struct mtd_info *mtd, loff_t offs)
+> +{
+> +	struct nand_chip *this = mtd->priv;
+> +	int block;
+> +
+> +	block = (int)(offs >> this->bbt_erase_shift);
+> +	return bbt_get_entry(this, block) == BBT_BLOCK_RESERVED;
+> +}
+> +
+> +/**
+>   * nand_isbad_bbt - [NAND Interface] Check if a block is bad
+>   * @mtd: MTD device structure
+>   * @offs: offset in the device
+> diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+> index a1b0b4c..031ff3a 100644
+> --- a/include/linux/mtd/mtd.h
+> +++ b/include/linux/mtd/mtd.h
+> @@ -222,6 +222,7 @@ struct mtd_info {
+>  	int (*_lock) (struct mtd_info *mtd, loff_t ofs, uint64_t len);
+>  	int (*_unlock) (struct mtd_info *mtd, loff_t ofs, uint64_t len);
+>  	int (*_is_locked) (struct mtd_info *mtd, loff_t ofs, uint64_t len);
+> +	int (*_block_isreserved) (struct mtd_info *mtd, loff_t ofs);
+>  	int (*_block_isbad) (struct mtd_info *mtd, loff_t ofs);
+>  	int (*_block_markbad) (struct mtd_info *mtd, loff_t ofs);
+>  	int (*_suspend) (struct mtd_info *mtd);
+> @@ -302,6 +303,7 @@ static inline void mtd_sync(struct mtd_info *mtd)
+>  int mtd_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
+>  int mtd_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
+>  int mtd_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len);
+> +int mtd_block_isreserved(struct mtd_info *mtd, loff_t ofs);
+>  int mtd_block_isbad(struct mtd_info *mtd, loff_t ofs);
+>  int mtd_block_markbad(struct mtd_info *mtd, loff_t ofs);
+>  
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> index 0747fef..3b78c6b 100644
+> --- a/include/linux/mtd/nand.h
+> +++ b/include/linux/mtd/nand.h
+> @@ -806,6 +806,7 @@ extern struct nand_manufacturers nand_manuf_ids[];
+>  extern int nand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd);
+>  extern int nand_default_bbt(struct mtd_info *mtd);
+>  extern int nand_markbad_bbt(struct mtd_info *mtd, loff_t offs);
+> +extern int nand_isreserved_bbt(struct mtd_info *mtd, loff_t offs);
+>  extern int nand_isbad_bbt(struct mtd_info *mtd, loff_t offs, int allowbbt);
+>  extern int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
+>  			   int allowbbt);
 
-I'm not sure if /sys/block/<disk>/stat is a good example, as it does
-violate this policy. It also seems to have some historical baggage.
-
-But there is potentially one good reason for putting this distinct
-information in a single file: if the information must be returned
-atomically. For disk stats, it might be important to get a consistent
-snapshot of the disk stats (or nearly so, with minimal locking
-overhead), which might change significantly between file accesses if
-we're doing half a dozen file queries instead.
-
-This same reason may not apply to these ECC stats, since none of these
-ECC stats are likely to be changing concurrently.
-
-So I personally might lean toward "one file per attribute" here.
-
-> >It won't impact as they are two completely different things. The ecc_stats
-> >output is only "vaguely inspired" in block stats; but these are two completely
-> >different stats. It's not about tool reusability, but about consistency.
-> >
-> >> Also, How about printing what these numbers mean ?
-
-This sounds like an argument from the /proc days. Not sure if we want to
-repeat that in /sys.
-
-> >> I hope this will still keep it machine readable.
-> >Well, this is not a debugfs entry, so I'm not sure we want to add such debug
-> >information. Anyone can take a look at the code and see what ecc_stats mean.
-
-The code or (as suggested by Pekon) the documentation
-(Documentation/ABI/). Either way -- with a single 'ecc_stats' table, or
-with 4 separate files -- they need to be documented.
+Otherwise, looks good.
 
 Brian
