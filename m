@@ -1,20 +1,17 @@
-From: Arnd Bergmann <arnd@arndb.de>
-To: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
-Subject: Re: [PATCH 2/2] mtd: orion-nand: fix build error with ARMv4
-Date: Wed, 14 May 2014 13:47:20 +0200
-Message-ID: <4645786.pJABUgPlCA@wuerfel>
-In-Reply-To: <20140513205548.GC22907@obsidianresearch.com>
-References: <1399560433-1402630-1-git-send-email-arnd@arndb.de>
- <20140509220915.GA391@arch.cereza>
- <20140513205548.GC22907@obsidianresearch.com>
+Received: from arroyo.ext.ti.com ([192.94.94.40])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WkYPM-0004DC-RZ
+ for linux-mtd@lists.infradead.org; Wed, 14 May 2014 12:35:41 +0000
+From: Roger Quadros <rogerq@ti.com>
+To: <tony@atomide.com>
+Subject: [PATCH] ARM: OMAP2+: nand: Fix NAND on OMAP2 and OMAP3 boards
+Date: Wed, 14 May 2014 15:35:08 +0300
+Message-ID: <1400070908-2929-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-Cc: Jingoo Han <jg1.han@samsung.com>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain
+Cc: linux-omap@vger.kernel.org, balbi@ti.com, linux-mtd@lists.infradead.org,
+ pekon@ti.com, ezequiel.garcia@free-electrons.com, computersforpeace@gmail.com,
+ Roger Quadros <rogerq@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,61 +21,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 13 May 2014 14:55:48 Jason Gunthorpe wrote:
-> On Fri, May 09, 2014 at 07:09:15PM -0300, Ezequiel Garcia wrote:
-> > On 09 May 03:28 PM, Jason Gunthorpe wrote:
-> > > 
-> > > > I gave this a try in order to answer Arnd's performance
-> > > > question. First of all, the patch seems wrong. I guess it's because
-> > > > readsl reads 4-bytes pieces, instead of 8-bytes.
-> > > > 
-> > > > This patch below is tested (but not completely, see below) and works:
-> > > 
-> > > Compilers are better now, I think you can just ditch the weirdness:
-> > > 
-> > [..]
-> > > 
-> > > The below gives:
-> > > 
-> > >   c8:   ea000002        b       d8 <orion_nand_read_buf+0x84>
-> > >   cc:   e5dc0000        ldrb    r0, [ip]
-> > >   d0:   e7c30001        strb    r0, [r3, r1]
-> > >   d4:   e2811001        add     r1, r1, #1
-> > >   d8:   e1510002        cmp     r1, r2
-> > > 
-> > > Which looks the same as the asm version to me.
-> > > 
-> > 
-> > Nice! It wasn't really needed but since I have the board here:
-> > 
-> > # time nanddump /dev/mtd5 -f /dev/null -q
-> > real  0m 5.82s
-> > user  0m 0.20s
-> > sys   0m 5.60s
-> > 
-> > Jason: Care to submit a proper patch?
-> 
-> Sure, but did anyone (Arnd?) have thoughts on a better way to do this:
-> 
-> +#ifdef CONFIG_64BIT
-> +               buf64[i++] = readq_relaxed(io_base);
-> +#else
-> +               buf64[i++] = *(const volatile u64 __force *)io_base;
-> +#endif
->
-> IMHO, readq should exist on any platform that can issue a 64 bit bus
-> transaction, and I expect many ARM's qualify.
+Commit c66d039197e4 broke NAND for non-DT boot on all OMAP2 and OMAP3
+boards using board_nand_init(). Following error is seen at boot
 
-Well, the original problem happened specifically for the case that doesn't
-have a 64-bit bus transaction (building for ARMv4). If we define
-readq_relaxed, it has to be an inline assembly, in order to work for
-drivers that require an atomic transaction, so that would have the
-same problem. We are a bit inconsistent here though: most 32-bit
-architectures have no readq, parisc has one that does two 32-bit accesses,
-sh relies on the compiler, and tile apparently has a native instruction.
+[    0.154998]  (null): Unsupported NAND ECC scheme selected
 
-It seems reasonable to replace the inline assembly in this driver with
-a new function as a cleanup, but then how do you want to solve the case
-of building a combined armv4/v5 kernel?
+For OMAP2 and OMAP3 platforms, the ecc_opt parameter in platform data
+must be set to OMAP_ECC_HAM1_CODE_HW to work properly.
 
-	Arnd
+Tested on omap3-beagle c4.
+
+Signed-off-by: Roger Quadros <rogerq@ti.com>
+---
+ arch/arm/mach-omap2/board-flash.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm/mach-omap2/board-flash.c b/arch/arm/mach-omap2/board-flash.c
+index ac82512..b6885e4 100644
+--- a/arch/arm/mach-omap2/board-flash.c
++++ b/arch/arm/mach-omap2/board-flash.c
+@@ -142,7 +142,7 @@ __init board_nand_init(struct mtd_partition *nand_parts, u8 nr_parts, u8 cs,
+ 	board_nand_data.nr_parts	= nr_parts;
+ 	board_nand_data.devsize		= nand_type;
+ 
+-	board_nand_data.ecc_opt = OMAP_ECC_BCH8_CODE_HW;
++	board_nand_data.ecc_opt = OMAP_ECC_HAM1_CODE_HW;
+ 	gpmc_nand_init(&board_nand_data, gpmc_t);
+ }
+ #endif /* CONFIG_MTD_NAND_OMAP2 || CONFIG_MTD_NAND_OMAP2_MODULE */
+-- 
+1.8.3.2
