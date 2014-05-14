@@ -1,14 +1,14 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WkdSZ-0007UO-Ku
+ id 1WkdSZ-0007T4-Kx
  for linux-mtd@lists.infradead.org; Wed, 14 May 2014 17:59:20 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>, Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v3 4/4] mtd: nand: pxa3xx: Add supported ECC strength and step
- size to the DT binding
-Date: Wed, 14 May 2014 14:58:09 -0300
-Message-Id: <1400090289-24581-5-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH v3 3/4] mtd: nand: pxa3xx: Use ECC strength and step size
+ devicetree binding
+Date: Wed, 14 May 2014 14:58:08 -0300
+Message-Id: <1400090289-24581-4-git-send-email-ezequiel.garcia@free-electrons.com>
 In-Reply-To: <1400090289-24581-1-git-send-email-ezequiel.garcia@free-electrons.com>
 References: <1400090289-24581-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
@@ -25,32 +25,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This commit updates the devicetree binding documentation for this driver
-with the supported ECC strength and step size combinations.
+This commit adds support for the user to specify the ECC strength
+and step size through the devicetree. We keep the previous behavior,
+when there is no DT parameter provided.
 
 Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 ---
- Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/mtd/nand/pxa3xx_nand.c                | 17 +++++++++++++++--
+ include/linux/platform_data/mtd-nand-pxa3xx.h |  3 +++
+ 2 files changed, 18 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt b/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
-index 86e0a56..de8b517 100644
---- a/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
-@@ -17,6 +17,14 @@ Optional properties:
-  - num-cs:			Number of chipselect lines to usw
-  - nand-on-flash-bbt: 		boolean to enable on flash bbt option if
- 				not present false
-+ - nand-ecc-strength:           number of bits to correct per ECC step
-+ - nand-ecc-step-size:          number of data bytes covered by a single ECC step
-+
-+The following ECC strength and step size are currently supported:
-+
-+ - nand-ecc-strength = <1>, nand-ecc-step-size = <512>
-+ - nand-ecc-strength = <4>, nand-ecc-step-size = <512>
-+ - nand-ecc-strength = <8>, nand-ecc-step-size = <512>
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 3b66a64..2a9add0 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -1519,8 +1519,13 @@ KEEP_CONFIG:
+ 		}
+ 	}
  
- Example:
+-	ecc_strength = chip->ecc_strength_ds;
+-	ecc_step = chip->ecc_step_ds;
++	if (pdata->ecc_strength && pdata->ecc_step_size) {
++		ecc_strength = pdata->ecc_strength;
++		ecc_step = pdata->ecc_step_size;
++	} else {
++		ecc_strength = chip->ecc_strength_ds;
++		ecc_step = chip->ecc_step_ds;
++	}
+ 
+ 	/* Set default ECC strength requirements on non-ONFI devices */
+ 	if (ecc_strength < 1 && ecc_step < 1) {
+@@ -1729,6 +1734,14 @@ static int pxa3xx_nand_probe_dt(struct platform_device *pdev)
+ 	of_property_read_u32(np, "num-cs", &pdata->num_cs);
+ 	pdata->flash_bbt = of_get_nand_on_flash_bbt(np);
+ 
++	pdata->ecc_strength = of_get_nand_ecc_strength(np);
++	if (pdata->ecc_strength < 0)
++		pdata->ecc_strength = 0;
++
++	pdata->ecc_step_size = of_get_nand_ecc_step_size(np);
++	if (pdata->ecc_step_size < 0)
++		pdata->ecc_step_size = 0;
++
+ 	pdev->dev.platform_data = pdata;
+ 
+ 	return 0;
+diff --git a/include/linux/platform_data/mtd-nand-pxa3xx.h b/include/linux/platform_data/mtd-nand-pxa3xx.h
+index a941471..ac4ea2e 100644
+--- a/include/linux/platform_data/mtd-nand-pxa3xx.h
++++ b/include/linux/platform_data/mtd-nand-pxa3xx.h
+@@ -58,6 +58,9 @@ struct pxa3xx_nand_platform_data {
+ 	/* use an flash-based bad block table */
+ 	bool	flash_bbt;
+ 
++	/* requested ECC strength and ECC step size */
++	int ecc_strength, ecc_step_size;
++
+ 	const struct mtd_partition		*parts[NUM_CHIP_SELECT];
+ 	unsigned int				nr_parts[NUM_CHIP_SELECT];
  
 -- 
 1.9.1
