@@ -1,23 +1,25 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
+Received: from mail-bn1blp0190.outbound.protection.outlook.com
+ ([207.46.163.190] helo=na01-bn1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WlCLv-0006R3-UC
- for linux-mtd@lists.infradead.org; Fri, 16 May 2014 07:14:48 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Ted Juan <ted.juan@gmail.com>
-Subject: RE: Problems in TI omap2-nand driver
- OMAP_ECC_BCH8_CODE_HW_DETECTION_SW mode
-Date: Fri, 16 May 2014 07:14:21 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EACD789@DBDE04.ent.ti.com>
-References: <CAE94FHEKTFKUDk1_+LMtJjUhcyowBV_=dyOyP-3emmw8-enVfg@mail.gmail.com>
- <CAE94FHEiu1BFAXyVSAeM+-RAXb2kEtK-AQ1GgnHsVpUJKD8n3w@mail.gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73EACC72F@DBDE04.ent.ti.com>
- <CAE94FHFR+YcEwXDkVzRg1cHxMJ9qofyBuGbEffK7u7NWUEJNQg@mail.gmail.com>
-In-Reply-To: <CAE94FHFR+YcEwXDkVzRg1cHxMJ9qofyBuGbEffK7u7NWUEJNQg@mail.gmail.com>
+ id 1WlCv8-0006QA-1C
+ for linux-mtd@lists.infradead.org; Fri, 16 May 2014 07:51:10 +0000
+From: "Mingkai.Hu@freescale.com" <Mingkai.Hu@freescale.com>
+To: Mark Brown <broonie@kernel.org>
+Subject: RE: Support of Micron SPI flash (size > 16MB)
+Date: Fri, 16 May 2014 07:50:46 +0000
+Message-ID: <73b4daa9267a4493b2f0bf85fa71ea3d@BY2PR03MB508.namprd03.prod.outlook.com>
+References: <92977332ffca4669b5c1987b42b0d0c5@BY2PR03MB508.namprd03.prod.outlook.com>
+ <20140509104404.GK12304@sirena.org.uk>
+In-Reply-To: <20140509104404.GK12304@sirena.org.uk>
 Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "vivien.didelot@savoirfairelinux.com"
+ <vivien.didelot@savoirfairelinux.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,49 +29,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgVGVkLA0KDQo+RnJvbTogVGVkIEp1YW4gW21haWx0bzp0ZWQuanVhbkBnbWFpbC5jb21dDQo+
-DQo+RGVhciBQZWtvbiwNCj4NCj5UaGFua3MgZ3JlYXQgaGVscC4NCj4NCj4+PlNvLCBkZWNvZGVf
-YmNoKCkgc2hvdWxkIGhhbmRsZSBib3RoIHRoZSBjaGVja3MgaW1wbGljaXRseToNCj4+Pi0gY2hl
-Y2tpbmcgZm9yIGJpdC1mbGlwIGVycm9ycyBieSBtYXRjaGluZyByZWFkX2VjY1tdIGFuZCBjYWxj
-X2VjY1tdDQo+Pj4tIGZpbHRlcmluZyBvdXQgImVtcHR5LXBhZ2VzIiBieSBjb21wYXJpbmcgcmVh
-ZF9lY2NbXSB3aXRoIDB4ZmYuDQo+DQo+SW4gbGliL2JjaC5jLCBJIGRvbid0IHF1aWV0IHVuZGVy
-c3RhbmQgaG93IHRvICIgZmlsdGVyaW5nIG91dCBlbXB0eS1wYWdlcyIuDQo+SXQganVzdCBjaGVj
-ayBiaXQtZmxpcCBlcnJvciBhcyBiZWxvdyBjb2RlLg0KPg0KPiAgICAgICAgICAgICAgICAgICAg
-ICAgIGZvciAoaSA9IDAsIHN1bSA9IDA7IGkgPCAoaW50KWVjY193b3JkczsgaSsrKSB7DQo+ICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBiY2gtPmVjY19idWZbaV0gXj0gYmNoLT5lY2Nf
-YnVmMltpXTsNCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN1bSB8PSBiY2gtPmVj
-Y19idWZbaV07DQo+ICAgICAgICAgICAgICAgICAgICAgICAgfQ0KPg0KPg0KTm8sIGl0cyBub3Qg
-aW4gbGliL2JjaC5jLiBQbGVhc2UgcmVmZXIuLg0KKlNjZW5hcmlvLTEqOiBCbGFuayBwYWdlcyB3
-aXRob3V0IGJpdC1mbGlwcw0KQEAgZHJpdmVycy9tdGQvbmFuZC9vbWFwMi5jOiBvbWFwX2NhbGN1
-bGF0ZV9lY2NfYmNoKCkNCgljYXNlIE9NQVBfRUNDX0JDSDhfQ09ERV9IV19ERVRFQ1RJT05fU1c6
-DQoJCQkvKiBBZGQgY29uc3RhbnQgcG9seW5vbWlhbCB0byByZW1haW5kZXIsIHNvIHRoYXQNCgkJ
-CSAqIEVDQyBvZiBibGFuayBwYWdlcyByZXN1bHRzIGluIDB4MCBvbiByZWFkaW5nIGJhY2sgKi8N
-CgkJCWZvciAoaSA9IDA7IGkgPCBlY2NieXRlczsgaSsrKQ0KCQkJCWVjY19jYWxjW2ldIF49IGJj
-aDhfcG9seW5vbWlhbFtpXTsNCgkJCWJyZWFrOw0KDQpUaHVzLCBibGFuayBwYWdlcyBhcmUgYXV0
-b21hdGljYWxseSBmaWx0ZXJlZCB1bmxlc3MgdGhleSBkb24ndCBoYXZlIGJpdC1mbGlwcy4NCg0K
-KkNhc2UtMio6IEJsYW5rIHBhZ2VzIHdpdGggYml0LWZsaXBzIHdpdGhpbiBjb3JyZWN0YWJsZSBy
-YW5nZQ0KVGhpcyBjYXNlIGlzIHN0aWxsIG5vdCBoYW5kbGVkIGZvciBCQ0g4X0NPREVfSFdfREVU
-RUNUSU9OX1NXIHNjaGVtZS4NClRoZXJlIHdhcyBkaXNjdXNzaW9uIG9uIGltcGxlbWVudGluZyBp
-dCBpbiBnZW5lcmljIGZyYW1ld29yaywgYnV0IGR1ZQ0KdG8gb3RoZXIgY29tcGxleGl0aWVzLCBp
-dCB3YXMgbm90IHBvc3NpYmxlLiBbMV0gWzJdDQpIb3dldmVyLCBsb2NhbGx5IHlvdSBtYXkgdXNl
-IHBhdGNoZXMgaW4gYWJvdmUgdGhyZWFkcyBhbmQgcmVwb3J0IHlvdXIganVkZ21lbnQuDQoNCg0K
-PkFub3RoZXIgcHJvYmxlbSBmb3IgYW0zNTA1L2FtMzUxNyBwcm9kdWN0LCB3ZSAgdXNlIHRoZSBu
-ZXcgZ2VuZXJhdGlvbg0KPm5hbmQgZmxhc2ggdGhhdCBjYXVzZSBtb3JlIGJpdC1mbGlwLg0KPklu
-IHRoZSBvbGRlciBvbWFwIG5hbmQgZmxhc2ggZHJpdmVyLCBpdCBzZWVtcyBpdCBpcyBubyBhYmls
-aXR5IHRvDQo+Y29ycmVjdCBPT0IgYml0LWZsaXAuDQo+RG9lcyB0aGUgbGF0ZXN0IGRyaXZlciBz
-dXBwb3J0IHRvIGNvcnJlY3QgT09CIGFuZCBEYXRhIGJpdC1mbGlwIGF0IHRoZQ0KPnNhbWUgdGlt
-ZT8NCj4NCkNvcnJlY3Rpb24gZm9yIEJDSDhfQ09ERV9IV19ERVRFQ1RJT05fU1cgaXMgaGFuZGxl
-ZCBwdXJlbHkNCmJ5IHNvZnR3YXJlIGxpYnJhcnkgKGxpYi9iY2guYykuIFNvIGlmIE9PQiBjb3Jy
-ZWN0aW9uIGlzIG5vdCBpbXBsZW1lbnRlZA0KaW4gdGhhdCwgdGhlbiBpdCdzIG5vdCBkb25lLg0K
-SG93ZXZlciwgd2h5IGRvIHlvdSBuZWVkIHRvIGNvcnJlY3QgT09CIGJpdC1mbGlwcywgeW91IGNh
-biBqdXN0IGRldGVjdA0KdGhlbSBhbmQgaWdub3JlLCBiZWNhdXNlIHVwcGVyIGxheWVyIGRvIG5v
-dCB1c2UgT09CIHRvIHN0b3JlIGFueSB1c2VyLWRhdGENCihleGNlcHQgZm9yIGZpbGUtc3lzdGVt
-IG1ldGFkYXRhIHRoYXQgdG9vIG9ubHkgSkZGUzIgYW5kIFlGRlMyIHVzZSBpdCkuDQpSZWZlciBb
-M10gZm9yIGRpc2N1c3Npb24uDQoNCg0KIFsxXSBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9w
-aXBlcm1haWwvbGludXgtbXRkLzIwMTQtTWFyY2gvMDUyNTA3Lmh0bWwNCihUaGlzIG9uZSBtYXkg
-bm90IHdvcmsgYXMtaXQtaXMgd2l0aCBPTUFQIGRyaXZlciBidXQgaXQgZ2l2ZXMgdGhlIGNvbmNl
-cHQNCiBzbyBJIHBvc3RlZCBbMl0gd2hpY2ggd29ya3Mgd2l0aCBhdC1sZWFzdCBvbWFwMiBkcml2
-ZXIpDQpbMl0gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvcGlwZXJtYWlsL2xpbnV4LW10ZC8y
-MDE0LU1hcmNoLzA1MjYyNS5odG1sDQoNClszXSBodHRwOi8vcGVybWFsaW5rLmdtYW5lLm9yZy9n
-bWFuZS5saW51eC5kcml2ZXJzLm10ZC81MjM2Mw0KKG9uIGNvcnJlY3RpbmcgT09CIGJpdC1mbGlw
-cykNCg0KDQp3aXRoIHJlZ2FyZHMsIHBla29uDQoNCg0K
+
+
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Friday, May 09, 2014 6:44 PM
+> To: Hu Mingkai-B21284
+> Cc: linux-spi@vger.kernel.org; linux-mtd@lists.infradead.org;
+> dwmw2@infradead.org; vivien.didelot@savoirfairelinux.com
+> Subject: Re: Support of Micron SPI flash (size > 16MB)
+>=20
+> On Fri, May 09, 2014 at 10:25:04AM +0000, Mingkai.Hu@freescale.com wrote:
+>=20
+> > 2.       What are the changes needed for SPI controller to support 4
+> byte addressing?
+>=20
+> If the SPI controller is a genuine SPI controller and not something
+> specially optimised for flash it shouldn't need any changes, it doesn't
+> know anything about the data it's sending.  The SPI flash code might need
+> updating though, I don't know about that.
+
+Thanks for your info.
+Mingkai
