@@ -1,22 +1,22 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
+Received: from comal.ext.ti.com ([198.47.26.152])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WmFgs-0007c5-2O
- for linux-mtd@lists.infradead.org; Mon, 19 May 2014 05:00:47 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: RE: [PATCH v2] mtd: nand: omap: fix BCHx ecc.correct to return
- detected bit-flips in erased-page
-Date: Mon, 19 May 2014 05:00:07 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EACDE66@DBDE04.ent.ti.com>
-References: <1395730699-14687-1-git-send-email-pekon@ti.com>
- <20140512203626.GS28907@ld-irv-0074>
-In-Reply-To: <20140512203626.GS28907@ld-irv-0074>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1WmIPv-0008Sq-Pv
+ for linux-mtd@lists.infradead.org; Mon, 19 May 2014 07:55:29 +0000
+From: Pekon Gupta <pekon@ti.com>
+To: Brian Norris <computersforpeace@gmail.com>, Tony Lindgren
+ <tony@atomide.com>
+Subject: [PATCH v4 1/4] mtd: nand: omap: add support for BCH16_ECC - GPMC
+ driver updates
+Date: Mon, 19 May 2014 13:24:39 +0530
+Message-ID: <1400486082-4345-2-git-send-email-pekon@ti.com>
+In-Reply-To: <1400486082-4345-1-git-send-email-pekon@ti.com>
+References: <1400486082-4345-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
-Cc: Stefan Roese <sr@denx.de>, linux-mtd <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Content-Type: text/plain
+Cc: linux-omap <linux-omap@vger.kernel.org>, Felipe Balbi <balbi@ti.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>, Pekon Gupta <pekon@ti.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Stefan Roese <sr@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,37 +26,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+This patch add support for BCH16_ECC in GPMC (controller) driver:
+- extends configuration space to include BCH16 registers
+- extends parsing of DT binding for selecting BCH16 ecc-scheme
 
->From: Brian Norris [mailto:computersforpeace@gmail.com]
->
->On Tue, Mar 25, 2014 at 12:28:19PM +0530, Pekon Gupta wrote:
->> fixes: commit 62116e5171e00f85a8d53f76e45b84423c89ff34
->>        mtd: nand: omap2: Support for hardware BCH error correction.
->>
->> In omap_elm_correct_data(), if bitflip_count in an erased-page is within=
- the
->> correctable limit (< ecc.strength), then it is not indicated back to the=
- caller
->> ecc->read_page().
->> This mis-guides upper layers like MTD and UBIFS layer to assume erased-p=
-age as
->> perfectly clean and use it for writing even if actual bitflip_count was
->> dangerously high (bitflip_count > mtd->bitflip_threshold).
->>
->> This patch fixes this above issue, by returning 'stats' to caller
->> ecc->read_page() under all scenarios.
->>
->> Reported-by: Brian Norris <computersforpeace@gmail.com>
->> Signed-off-by: Pekon Gupta <pekon@ti.com>
->
->Pushed to l2-mtd.git. Thanks!
->
+Signed-off-by: Pekon Gupta <pekon@ti.com>
+---
+ arch/arm/mach-omap2/gpmc.c                   | 15 +++++++++++++++
+ include/linux/platform_data/mtd-nand-omap2.h |  5 +++++
+ 2 files changed, 20 insertions(+)
 
-Just forgot to ask, Is this patch candidate for stable?=20
-
-This one fixes the long standing issue of returning bit-flip count of an
-erased-page to upper layers. So that upper layers take correct decision.
-
-
-with regards, pekon
+diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
+index 9fe8c94..4fc4963 100644
+--- a/arch/arm/mach-omap2/gpmc.c
++++ b/arch/arm/mach-omap2/gpmc.c
+@@ -68,6 +68,9 @@
+ #define	GPMC_ECC_BCH_RESULT_1	0x244	/* not available on OMAP2 */
+ #define	GPMC_ECC_BCH_RESULT_2	0x248	/* not available on OMAP2 */
+ #define	GPMC_ECC_BCH_RESULT_3	0x24c	/* not available on OMAP2 */
++#define	GPMC_ECC_BCH_RESULT_4	0x300	/* not available on OMAP2 */
++#define	GPMC_ECC_BCH_RESULT_5	0x304	/* not available on OMAP2 */
++#define	GPMC_ECC_BCH_RESULT_6	0x308	/* not available on OMAP2 */
+ 
+ /* GPMC ECC control settings */
+ #define GPMC_ECC_CTRL_ECCCLEAR		0x100
+@@ -677,6 +680,12 @@ void gpmc_update_nand_reg(struct gpmc_nand_regs *reg, int cs)
+ 					   GPMC_BCH_SIZE * i;
+ 		reg->gpmc_bch_result3[i] = gpmc_base + GPMC_ECC_BCH_RESULT_3 +
+ 					   GPMC_BCH_SIZE * i;
++		reg->gpmc_bch_result4[i] = gpmc_base + GPMC_ECC_BCH_RESULT_4 +
++					   i * GPMC_BCH_SIZE;
++		reg->gpmc_bch_result5[i] = gpmc_base + GPMC_ECC_BCH_RESULT_5 +
++					   i * GPMC_BCH_SIZE;
++		reg->gpmc_bch_result6[i] = gpmc_base + GPMC_ECC_BCH_RESULT_6 +
++					   i * GPMC_BCH_SIZE;
+ 	}
+ }
+ 
+@@ -1412,6 +1421,12 @@ static int gpmc_probe_nand_child(struct platform_device *pdev,
+ 		else
+ 			gpmc_nand_data->ecc_opt =
+ 				OMAP_ECC_BCH8_CODE_HW_DETECTION_SW;
++	else if (!strcmp(s, "bch16"))
++		if (gpmc_nand_data->elm_of_node)
++			gpmc_nand_data->ecc_opt =
++				OMAP_ECC_BCH16_CODE_HW;
++		else
++			pr_err("%s: BCH16 requires ELM support\n", __func__);
+ 	else
+ 		pr_err("%s: ti,nand-ecc-opt invalid value\n", __func__);
+ 
+diff --git a/include/linux/platform_data/mtd-nand-omap2.h b/include/linux/platform_data/mtd-nand-omap2.h
+index 3e9dd66..660c029 100644
+--- a/include/linux/platform_data/mtd-nand-omap2.h
++++ b/include/linux/platform_data/mtd-nand-omap2.h
+@@ -31,6 +31,8 @@ enum omap_ecc {
+ 	OMAP_ECC_BCH8_CODE_HW_DETECTION_SW,
+ 	/* 8-bit  ECC calculation by GPMC, Error detection by ELM */
+ 	OMAP_ECC_BCH8_CODE_HW,
++	/* 16-bit ECC calculation by GPMC, Error detection by ELM */
++	OMAP_ECC_BCH16_CODE_HW,
+ };
+ 
+ struct gpmc_nand_regs {
+@@ -50,6 +52,9 @@ struct gpmc_nand_regs {
+ 	void __iomem	*gpmc_bch_result1[GPMC_BCH_NUM_REMAINDER];
+ 	void __iomem	*gpmc_bch_result2[GPMC_BCH_NUM_REMAINDER];
+ 	void __iomem	*gpmc_bch_result3[GPMC_BCH_NUM_REMAINDER];
++	void __iomem	*gpmc_bch_result4[GPMC_BCH_NUM_REMAINDER];
++	void __iomem	*gpmc_bch_result5[GPMC_BCH_NUM_REMAINDER];
++	void __iomem	*gpmc_bch_result6[GPMC_BCH_NUM_REMAINDER];
+ };
+ 
+ struct omap_nand_platform_data {
+-- 
+1.8.5.1.163.gd7aced9
