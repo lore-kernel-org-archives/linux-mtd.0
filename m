@@ -1,22 +1,18 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
+Received: from szxga03-in.huawei.com ([119.145.14.66])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WmIPz-0008Sv-Oy
- for linux-mtd@lists.infradead.org; Mon, 19 May 2014 07:55:32 +0000
-From: Pekon Gupta <pekon@ti.com>
-To: Brian Norris <computersforpeace@gmail.com>, Tony Lindgren
- <tony@atomide.com>
-Subject: [PATCH v4 3/4] mtd: nand: omap: add support for BCH16_ECC - NAND
- driver updates
-Date: Mon, 19 May 2014 13:24:41 +0530
-Message-ID: <1400486082-4345-4-git-send-email-pekon@ti.com>
-In-Reply-To: <1400486082-4345-1-git-send-email-pekon@ti.com>
-References: <1400486082-4345-1-git-send-email-pekon@ti.com>
+ id 1WmJ6I-0004xV-3Z
+ for linux-mtd@lists.infradead.org; Mon, 19 May 2014 08:39:15 +0000
+Message-ID: <5379C2E8.5040000@huawei.com>
+Date: Mon, 19 May 2014 16:38:00 +0800
+From: Zhang Zhen <zhenzhang.zhang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: linux-omap <linux-omap@vger.kernel.org>, Felipe Balbi <balbi@ti.com>,
- linux-mtd <linux-mtd@lists.infradead.org>, Pekon Gupta <pekon@ti.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Stefan Roese <sr@denx.de>
+To: <adrian.hunter@intel.com>, <dedekind1@gmail.com>
+Subject: [PATCH] ubi: replace simple_strtoul() with kstrtoul()
+References: <1400488570-20288-1-git-send-email-zhenzhang.zhang@huawei.com>
+In-Reply-To: <1400488570-20288-1-git-send-email-zhenzhang.zhang@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, Hu Jianyang <hujianyang@huawei.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,175 +22,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch add support for BCH16 ecc-scheme in OMAP NAND driver, by extending
-following functions:
- - omap_enable_hwecc (nand_chip->ecc.hwctl): configure GPMC controller
- - omap_calculate_ecc_bch (nand_chip->ecc.calculate): fetch ECC signature from GPMC controller
- - omap_elm_correct_data (nand_chip->ecc.correct): detect and correct ECC errors using ELM
+use the newer and more pleasant kstrtoul() to replace simple_strtoul(),
+because simple_strtoul() is marked for obsoletion.
 
-(a) BCH16 ecc-scheme can detect and correct 16 bit-flips per 512Bytes of data.
-(b) BCH16 ecc-scheme generates 26-bytes of ECC syndrome / 512B.
-Due to (b) this scheme can only be used with NAND devices which have enough
-OOB to satisfy the relation: "OOBsize per page >= 26 * (page-size / 512)"
-
-Signed-off-by: Pekon Gupta <pekon@ti.com>
+Signed-off-by: Zhang Zhen <zhenzhang.zhang@huawei.com>
+Signed-off-by: hujianyang <hujianyang@huawei.com>
 ---
- drivers/mtd/nand/omap2.c | 94 ++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 94 insertions(+)
+ drivers/mtd/ubi/build.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 0a68508..e0a6c82 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -137,6 +137,10 @@
- #define BADBLOCK_MARKER_LENGTH		2
- 
- #ifdef CONFIG_MTD_NAND_OMAP_BCH
-+static u_char bch16_vector[] = {0xf5, 0x24, 0x1c, 0xd0, 0x61, 0xb3, 0xf1, 0x55,
-+				0x2e, 0x2c, 0x86, 0xa3, 0xed, 0x36, 0x1b, 0x78,
-+				0x48, 0x76, 0xa9, 0x3b, 0x97, 0xd1, 0x7a, 0x93,
-+				0x07, 0x0e};
- static u_char bch8_vector[] = {0xf3, 0xdb, 0x14, 0x16, 0x8b, 0xd2, 0xbe, 0xcc,
- 	0xac, 0x6b, 0xff, 0x99, 0x7b};
- static u_char bch4_vector[] = {0x00, 0x6b, 0x31, 0xdd, 0x41, 0xbc, 0x10};
-@@ -1114,6 +1118,19 @@ static void __maybe_unused omap_enable_hwecc_bch(struct mtd_info *mtd, int mode)
- 			ecc_size1 = BCH_ECC_SIZE1;
- 		}
- 		break;
-+	case OMAP_ECC_BCH16_CODE_HW:
-+		bch_type = 0x2;
-+		nsectors = chip->ecc.steps;
-+		if (mode == NAND_ECC_READ) {
-+			wr_mode	  = 0x01;
-+			ecc_size0 = 52; /* ECC bits in nibbles per sector */
-+			ecc_size1 = 0;  /* non-ECC bits in nibbles per sector */
-+		} else {
-+			wr_mode	  = 0x01;
-+			ecc_size0 = 0;  /* extra bits in nibbles per sector */
-+			ecc_size1 = 52; /* OOB bits in nibbles per sector */
-+		}
-+		break;
- 	default:
- 		return;
- 	}
-@@ -1162,6 +1179,7 @@ static int __maybe_unused omap_calculate_ecc_bch(struct mtd_info *mtd,
- 	struct gpmc_nand_regs	*gpmc_regs = &info->reg;
- 	u8 *ecc_code;
- 	unsigned long nsectors, bch_val1, bch_val2, bch_val3, bch_val4;
-+	u32 val;
- 	int i;
- 
- 	nsectors = ((readl(info->reg.gpmc_ecc_config) >> 4) & 0x7) + 1;
-@@ -1201,6 +1219,41 @@ static int __maybe_unused omap_calculate_ecc_bch(struct mtd_info *mtd,
- 			*ecc_code++ = ((bch_val1 >> 4) & 0xFF);
- 			*ecc_code++ = ((bch_val1 & 0xF) << 4);
- 			break;
-+		case OMAP_ECC_BCH16_CODE_HW:
-+			val = readl(gpmc_regs->gpmc_bch_result6[i]);
-+			ecc_code[0]  = ((val >>  8) & 0xFF);
-+			ecc_code[1]  = ((val >>  0) & 0xFF);
-+			val = readl(gpmc_regs->gpmc_bch_result5[i]);
-+			ecc_code[2]  = ((val >> 24) & 0xFF);
-+			ecc_code[3]  = ((val >> 16) & 0xFF);
-+			ecc_code[4]  = ((val >>  8) & 0xFF);
-+			ecc_code[5]  = ((val >>  0) & 0xFF);
-+			val = readl(gpmc_regs->gpmc_bch_result4[i]);
-+			ecc_code[6]  = ((val >> 24) & 0xFF);
-+			ecc_code[7]  = ((val >> 16) & 0xFF);
-+			ecc_code[8]  = ((val >>  8) & 0xFF);
-+			ecc_code[9]  = ((val >>  0) & 0xFF);
-+			val = readl(gpmc_regs->gpmc_bch_result3[i]);
-+			ecc_code[10] = ((val >> 24) & 0xFF);
-+			ecc_code[11] = ((val >> 16) & 0xFF);
-+			ecc_code[12] = ((val >>  8) & 0xFF);
-+			ecc_code[13] = ((val >>  0) & 0xFF);
-+			val = readl(gpmc_regs->gpmc_bch_result2[i]);
-+			ecc_code[14] = ((val >> 24) & 0xFF);
-+			ecc_code[15] = ((val >> 16) & 0xFF);
-+			ecc_code[16] = ((val >>  8) & 0xFF);
-+			ecc_code[17] = ((val >>  0) & 0xFF);
-+			val = readl(gpmc_regs->gpmc_bch_result1[i]);
-+			ecc_code[18] = ((val >> 24) & 0xFF);
-+			ecc_code[19] = ((val >> 16) & 0xFF);
-+			ecc_code[20] = ((val >>  8) & 0xFF);
-+			ecc_code[21] = ((val >>  0) & 0xFF);
-+			val = readl(gpmc_regs->gpmc_bch_result0[i]);
-+			ecc_code[22] = ((val >> 24) & 0xFF);
-+			ecc_code[23] = ((val >> 16) & 0xFF);
-+			ecc_code[24] = ((val >>  8) & 0xFF);
-+			ecc_code[25] = ((val >>  0) & 0xFF);
-+			break;
- 		default:
- 			return -EINVAL;
- 		}
-@@ -1227,6 +1280,8 @@ static int __maybe_unused omap_calculate_ecc_bch(struct mtd_info *mtd,
- 			/* Set 14th ECC byte as 0x0 for ROM compatibility */
- 			ecc_calc[eccbytes - 1] = 0x0;
- 			break;
-+		case OMAP_ECC_BCH16_CODE_HW:
-+			break;
- 		default:
- 			return -EINVAL;
- 		}
-@@ -1318,6 +1373,10 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
- 		actual_eccbytes = ecc->bytes - 1;
- 		erased_ecc_vec = bch8_vector;
- 		break;
-+	case OMAP_ECC_BCH16_CODE_HW:
-+		actual_eccbytes = ecc->bytes;
-+		erased_ecc_vec = bch16_vector;
-+		break;
- 	default:
- 		pr_err("invalid driver configuration\n");
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 6e30a3c..80c539c 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -1190,10 +1190,13 @@ static struct mtd_info * __init open_mtd_by_chdev(const char *mtd_dev)
+ static struct mtd_info * __init open_mtd_device(const char *mtd_dev)
+ {
+ 	struct mtd_info *mtd;
+-	int mtd_num;
++	int mtd_num, ret;
+ 	char *endp;
+
+-	mtd_num = simple_strtoul(mtd_dev, &endp, 0);
++	endp = (char *)mtd_dev;
++	ret = kstrtoul(endp, 0, (unsigned long *)&mtd_num);
++	if (ret)
++		return ERR_PTR(-EINVAL);
+ 	if (*endp != '\0' || mtd_dev == endp) {
+ 		/*
+ 		 * This does not look like an ASCII integer, probably this is
+@@ -1362,8 +1365,12 @@ static int __init bytes_str_to_int(const char *str)
+ {
+ 	char *endp;
+ 	unsigned long result;
++	int ret;
+
+-	result = simple_strtoul(str, &endp, 0);
++	endp = (char *)str;
++	ret = kstrtoul(endp, 0, &result);
++	if (ret)
++		return -EINVAL;
+ 	if (str == endp || result >= INT_MAX) {
+ 		ubi_err("incorrect bytes count: \"%s\"\n", str);
  		return -EINVAL;
-@@ -1401,6 +1460,7 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
- 						BCH4_BIT_PAD;
- 					break;
- 				case OMAP_ECC_BCH8_CODE_HW:
-+				case OMAP_ECC_BCH16_CODE_HW:
- 					pos = err_vec[i].error_loc[j];
- 					break;
- 				default:
-@@ -1912,6 +1972,40 @@ static int omap_nand_probe(struct platform_device *pdev)
- 		goto return_error;
- #endif
- 
-+	case OMAP_ECC_BCH16_CODE_HW:
-+#ifdef CONFIG_MTD_NAND_OMAP_BCH
-+		pr_info("using OMAP_ECC_BCH16_CODE_HW ECC scheme\n");
-+		nand_chip->ecc.mode		= NAND_ECC_HW;
-+		nand_chip->ecc.size		= 512;
-+		nand_chip->ecc.bytes		= 26;
-+		nand_chip->ecc.strength		= 16;
-+		nand_chip->ecc.hwctl		= omap_enable_hwecc_bch;
-+		nand_chip->ecc.correct		= omap_elm_correct_data;
-+		nand_chip->ecc.calculate	= omap_calculate_ecc_bch;
-+		nand_chip->ecc.read_page	= omap_read_page_bch;
-+		nand_chip->ecc.write_page	= omap_write_page_bch;
-+		/* This ECC scheme requires ELM H/W block */
-+		err = is_elm_present(info, pdata->elm_of_node, BCH16_ECC);
-+		if (err < 0) {
-+			pr_err("ELM is required for this ECC scheme\n");
-+			goto return_error;
-+		}
-+		/* define ECC layout */
-+		ecclayout->eccbytes		= nand_chip->ecc.bytes *
-+							(mtd->writesize /
-+							nand_chip->ecc.size);
-+		oob_index			= BADBLOCK_MARKER_LENGTH;
-+		for (i = 0; i < ecclayout->eccbytes; i++, oob_index++)
-+			ecclayout->eccpos[i]	= oob_index;
-+		/* reserved marker already included in ecclayout->eccbytes */
-+		ecclayout->oobfree->offset	=
-+				ecclayout->eccpos[ecclayout->eccbytes - 1] + 1;
-+		break;
-+#else
-+		pr_err("nand: error: CONFIG_MTD_NAND_OMAP_BCH not enabled\n");
-+		err = -EINVAL;
-+		goto return_error;
-+#endif
- 	default:
- 		pr_err("nand: error: invalid or unsupported ECC scheme\n");
- 		err = -EINVAL;
 -- 
-1.8.5.1.163.gd7aced9
+1.8.1.2
+
+
+.
