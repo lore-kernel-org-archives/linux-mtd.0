@@ -1,28 +1,22 @@
-Received: from f423.i.mail.ru ([185.5.136.94])
+Received: from bear.ext.ti.com ([192.94.94.41])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WmFSM-0003jq-33
- for linux-mtd@lists.infradead.org; Mon, 19 May 2014 04:45:47 +0000
-From: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
-To: =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
-Subject: =?UTF-8?B?UmU6IFtQQVRDSCAxLzFdIG10ZDpub3I6dGltZW91dDpmaXggZG9fd3JpdGVf?=
- =?UTF-8?B?YnVmZmVyKCkgdGltZW91dCBlcnJvcg==?=
-Mime-Version: 1.0
-Date: Mon, 19 May 2014 08:45:15 +0400
-Message-ID: <1400474715.883919171@f423.i.mail.ru>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
-In-Reply-To: <A765B125120D1346A63912DDE6D8B6315D03AC@NTXXIAMBX02.xacn.micron.com>
-References: <A765B125120D1346A63912DDE6D8B6315D03AC@NTXXIAMBX02.xacn.micron.com>
-Cc: =?UTF-8?B?S2VlcyBDb29r?= <keescook@chromium.org>,
- =?UTF-8?B?QXJ0ZW0gQml0eXV0c2tpeQ==?= <artem.bityutskiy@linux.intel.com>,
- =?UTF-8?B?SmluZ29vIEhhbg==?= <jg1.han@samsung.com>,
- =?UTF-8?B?UGF1bCBHb3J0bWFrZXI=?= <paul.gortmaker@windriver.com>,
- =?UTF-8?B?bGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc=?=
- <linux-mtd@lists.infradead.org>,
- =?UTF-8?B?QnJpYW4gTm9ycmlz?= <computersforpeace@gmail.com>,
- =?UTF-8?B?Q2hyaXN0aWFuIFJpZXNjaA==?= <christian.riesch@omicron.at>,
- =?UTF-8?B?RGF2aWQgV29vZGhvdXNl?= <dwmw2@infradead.org>
-Reply-To: =?UTF-8?B?QWxleGFuZGVyIFNoaXlhbg==?= <shc_work@mail.ru>
+ id 1WmFgs-0007c5-2O
+ for linux-mtd@lists.infradead.org; Mon, 19 May 2014 05:00:47 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: RE: [PATCH v2] mtd: nand: omap: fix BCHx ecc.correct to return
+ detected bit-flips in erased-page
+Date: Mon, 19 May 2014 05:00:07 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EACDE66@DBDE04.ent.ti.com>
+References: <1395730699-14687-1-git-send-email-pekon@ti.com>
+ <20140512203626.GS28907@ld-irv-0074>
+In-Reply-To: <20140512203626.GS28907@ld-irv-0074>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: Stefan Roese <sr@denx.de>, linux-mtd <linux-mtd@lists.infradead.org>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,60 +26,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-TW9uLCAxOSBNYXkgMjAxNCAwMjo0MToyOSArMDAwMCDQvtGCIEJlYW4gSHVvIOmcjeaWjOaWjCAo
-YmVhbmh1bykgPGJlYW5odW9AbWljcm9uLmNvbT46Cj4gVGhlIHNpemUgb2YgdGhlIGJ1ZmZlciBw
-cm9ncmFtIGhhcyBiZWVuIGluY3JlYXNlZCBmcm9tIDI1NiB0byA1MTIgLAo+IDJtcyBtYXhpbXVt
-IHRpbWVvdXQgY2FuIG5vdCBhZGFwdCB0byBhbGwgdGhlIGRpZmZlcmVudCB2ZW5kb3IncyBub3Jm
-bGFzaCwKPiBUaGVyZSBtYXhpbXVtIHRpbWVvdXQgaW5mb3JtYXRpb24gaW4gdGhlIENGSSBhcmVh
-LHNvIHRoZSBiZXN0IHdheSBpcyB0bwo+IGNob29zZSB0aGUgcmVzdWx0IGNhbGN1bGF0ZWQgYWNj
-b3JkaW5nIHRvIHRpbWVvdXQgZmllbGQgb2Ygc3RydWN0IGNmaV9pZGVudAo+IHRoYXQgcHJvYmVk
-IGZyb20gbm9yZmxhc2gncyBDRkkgYWVyYS5UaGlzIGlzIGFsc28gYSBzdGFuZGFyZCBkZWZpbmVk
-IGJ5IENGSS4KPiAKPiBXaXRob3V0IHRoaXMgY2hhbmdlLCBpZiB0aGUgc2l6ZSBvZiBidWZmZXIg
-cHJvZ3JhbSBpcyA1MTIgb3IgYmlnZ2VyIHRoYW4gMjU2LAo+IGR1ZSB0byB0aW1lb3V0IGlzIHRo
-ZSBzaG9ydGVyIHRoYW4gdGhhdCB0aGUgY2hpcCByZXF1aXJlZCxkb193cml0ZV9idWZmZXIKPiBz
-b21ldGltZXMgZmFpbHMuCj4gCj4gVGVzdGVkIHdpdGggTWljcm9uIEpTMjhGNTEyTTI5RVd4IGFu
-ZCBNaWNyb24gTVQyOEVXNTEyQUJBIGZsYXNoIGRldmljZXMuCj4gCj4gU2lnbmVkLW9mZi1ieTog
-YmVhbiBodW8gPGJlYW5odW9AbWljcm9uLmNvbT4KPiAtLS0KPiAgZHJpdmVycy9tdGQvY2hpcHMv
-Y2ZpX2NtZHNldF8wMDAyLmMgfCAgIDQ2ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-LS0tCj4gIDEgZmlsZSBjaGFuZ2VkLCA0MyBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQo+
-IAo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDIuYyBiL2Ry
-aXZlcnMvbXRkL2NoaXBzL2NmaV9jbWRzZXRfMDAwMi5jCj4gaW5kZXggZTIxZmRlOS4uMmEwOGY5
-ZiAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL210ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDIuYwo+ICsr
-KyBiL2RyaXZlcnMvbXRkL2NoaXBzL2NmaV9jbWRzZXRfMDAwMi5jCj4gQEAgLTYyOCwxMCArNjI4
-LDQyIEBAIHN0cnVjdCBtdGRfaW5mbyAqY2ZpX2NtZHNldF8wMDAyKHN0cnVjdCBtYXBfaW5mbyAq
-bWFwLCBpbnQgcHJpbWFyeSkKPiAgCQljZmktPmNoaXBzW2ldLndvcmRfd3JpdGVfdGltZSA9IDE8
-PGNmaS0+Y2ZpcS0+V29yZFdyaXRlVGltZW91dFR5cDsKPiAgCQljZmktPmNoaXBzW2ldLmJ1ZmZl
-cl93cml0ZV90aW1lID0gMTw8Y2ZpLT5jZmlxLT5CdWZXcml0ZVRpbWVvdXRUeXA7Cj4gIAkJY2Zp
-LT5jaGlwc1tpXS5lcmFzZV90aW1lID0gMTw8Y2ZpLT5jZmlxLT5CbG9ja0VyYXNlVGltZW91dFR5
-cDsKPiArCQkvKgo+ICsJCSAqIFdlIGZpcnN0IGNhbGN1bGF0ZSB0aGUgdGltZW91dCBtYXggYWNj
-b3JkaW5nIHRvIHRpbWVvdXQKPiArCQkgKiBmaWVsZCBvZiBzdHJ1Y3QgY2ZpX2lkZW50IHRoYXQg
-cHJvYmVkIGZyb20gY2hpcCdzIENGSQo+ICsJCSAqIGFlcmEsSWYgaGF2ZW4ndCBwcm9iZWQgdGhp
-cyBpbmZvcm1hdGlvbix3ZSB3aWxsIHNwZWNpZnkKPiArCQkgKiBhIGRlZmF1bHQgdmFsdWUsYW5k
-IHRoZSB0aW1lIHVuaXQgaXMgdXMuCj4gKwkJICovCj4gKwkJaWYgKGNmaS0+Y2ZpcS0+V29yZFdy
-aXRlVGltZW91dFR5cCAmJgo+ICsJCQljZmktPmNmaXEtPldvcmRXcml0ZVRpbWVvdXRNYXgpewo+
-ICsJCQljZmktPmNoaXBzW2ldLndvcmRfd3JpdGVfdGltZV9tYXggPQo+ICsJCQkJMTw8KGNmaS0+
-Y2ZpcS0+V29yZFdyaXRlVGltZW91dFR5cCArCj4gKwkJCQkJY2ZpLT5jZmlxLT5Xb3JkV3JpdGVU
-aW1lb3V0TWF4KTsKPiArCQkJfSBlbHNlIHsKPiArCQkvKiBzcGVjaWZ5IG1heGltdW0gdGltZW91
-dCBmb3IgYnl0ZS93b3JkIHByb2dyYW0gMjAwMHVzICovCj4gKwkJCQljZmktPmNoaXBzW2ldLndv
-cmRfd3JpdGVfdGltZV9tYXggPSAyMDAwOwo+ICsJCQkJfQo+ICsJCWlmIChjZmktPmNmaXEtPkJ1
-ZldyaXRlVGltZW91dFR5cCAmJgo+ICsJCQljZmktPmNmaXEtPkJ1ZldyaXRlVGltZW91dE1heCl7
-Cj4gKwkJCWNmaS0+Y2hpcHNbaV0uYnVmZmVyX3dyaXRlX3RpbWVfbWF4ID0KPiArCQkJCTE8PChj
-ZmktPmNmaXEtPkJ1ZldyaXRlVGltZW91dFR5cCArCj4gKwkJCQkJY2ZpLT5jZmlxLT5CdWZXcml0
-ZVRpbWVvdXRNYXgpOwo+ICsJCQl9IGVsc2Ugewo+ICsJCS8qIHNwZWNpZnkgbWF4aW11bSB0aW1l
-b3V0IGZvciBidWZmZXIgcHJvZ3JhbSAyMDAwdXMgKi8KPiArCQkJCWNmaS0+Y2hpcHNbaV0uYnVm
-ZmVyX3dyaXRlX3RpbWVfbWF4ID0gMjAwMDsKPiArCQkJCX0KPiArCQlpZiAoY2ZpLT5jZmlxLT5C
-bG9ja0VyYXNlVGltZW91dFR5cCAmJgo+ICsJCQljZmktPmNmaXEtPkJsb2NrRXJhc2VUaW1lb3V0
-TWF4KXsKPiArCQkJY2ZpLT5jaGlwc1tpXS5lcmFzZV90aW1lX21heCA9Cj4gKwkJCQkxPDwoY2Zp
-LT5jZmlxLT5CbG9ja0VyYXNlVGltZW91dFR5cCArCj4gKwkJCQkJY2ZpLT5jZmlxLT5CbG9ja0Vy
-YXNlVGltZW91dE1heCk7Cj4gKwkJCX0gZWxzZSB7Cj4gKwkvKiBzcGVjaWZ5IG1heGltdW0gdGlt
-ZW91dCBwZXIgaW5kaXZpZHVhbCBibG9jayBlcmFzZSAzMDAwMDAwdXMgKi8KPiArCQkJCWNmaS0+
-Y2hpcHNbaV0uZXJhc2VfdGltZV9tYXggPSAzMDAwMDAwOwo+ICsJCQkJfQo+ICAJCWNmaS0+Y2hp
-cHNbaV0ucmVmX3BvaW50X2NvdW50ZXIgPSAwOwo+ICAJCWluaXRfd2FpdHF1ZXVlX2hlYWQoJihj
-ZmktPmNoaXBzW2ldLndxKSk7Cj4gIAl9Cj4gLQo+ICAJbWFwLT5mbGRydiA9ICZjZmlfYW1kc3Rk
-X2NoaXBkcnY7Cj4gIAo+ICAJcmV0dXJuIGNmaV9hbWRzdGRfc2V0dXAobXRkKTsKPiBAQCAtMTQ2
-Miw4ICsxNDk0LDE2IEBAIHN0YXRpYyBpbnQgX194aXByYW0gZG9fd3JpdGVfYnVmZmVyKHN0cnVj
-dCBtYXBfaW5mbyAqbWFwLCBzdHJ1Y3QgZmxjaGlwICpjaGlwLAo+ICB7Cj4gIAlzdHJ1Y3QgY2Zp
-X3ByaXZhdGUgKmNmaSA9IG1hcC0+ZmxkcnZfcHJpdjsKPiAgCXVuc2lnbmVkIGxvbmcgdGltZW8g
-PSBqaWZmaWVzICsgSFo7CgpJIHdhbnQgdG8gc3VnZ2VzdCBvbmUgc3R1ZmYgbm90IHJlbGF0ZWQg
-dG8gdGhpcyBwYXRjaC4KT24gbXkgb3BpbmlvbiwgYWxsIG9jY3VycmVuY2VzIG9mIEhaIG11c3Qg
-YmUgY29udmVydGVkCmludG8gbXNlY3NfdG9famlmZmllcygpLgoKLS0tCgo=
+Hi Brian,
+
+>From: Brian Norris [mailto:computersforpeace@gmail.com]
+>
+>On Tue, Mar 25, 2014 at 12:28:19PM +0530, Pekon Gupta wrote:
+>> fixes: commit 62116e5171e00f85a8d53f76e45b84423c89ff34
+>>        mtd: nand: omap2: Support for hardware BCH error correction.
+>>
+>> In omap_elm_correct_data(), if bitflip_count in an erased-page is within=
+ the
+>> correctable limit (< ecc.strength), then it is not indicated back to the=
+ caller
+>> ecc->read_page().
+>> This mis-guides upper layers like MTD and UBIFS layer to assume erased-p=
+age as
+>> perfectly clean and use it for writing even if actual bitflip_count was
+>> dangerously high (bitflip_count > mtd->bitflip_threshold).
+>>
+>> This patch fixes this above issue, by returning 'stats' to caller
+>> ecc->read_page() under all scenarios.
+>>
+>> Reported-by: Brian Norris <computersforpeace@gmail.com>
+>> Signed-off-by: Pekon Gupta <pekon@ti.com>
+>
+>Pushed to l2-mtd.git. Thanks!
+>
+
+Just forgot to ask, Is this patch candidate for stable?=20
+
+This one fixes the long standing issue of returning bit-flip count of an
+erased-page to upper layers. So that upper layers take correct decision.
+
+
+with regards, pekon
