@@ -1,18 +1,22 @@
-Received: from szxga03-in.huawei.com ([119.145.14.66])
+Received: from mail-ie0-x229.google.com ([2607:f8b0:4001:c03::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WmJ6I-0004xV-3Z
- for linux-mtd@lists.infradead.org; Mon, 19 May 2014 08:39:15 +0000
-Message-ID: <5379C2E8.5040000@huawei.com>
-Date: Mon, 19 May 2014 16:38:00 +0800
-From: Zhang Zhen <zhenzhang.zhang@huawei.com>
+ id 1WmJe9-00074D-IB
+ for linux-mtd@lists.infradead.org; Mon, 19 May 2014 09:14:14 +0000
+Received: by mail-ie0-f169.google.com with SMTP id at1so2029958iec.28
+ for <linux-mtd@lists.infradead.org>; Mon, 19 May 2014 02:13:52 -0700 (PDT)
 MIME-Version: 1.0
-To: <adrian.hunter@intel.com>, <dedekind1@gmail.com>
-Subject: [PATCH] ubi: replace simple_strtoul() with kstrtoul()
-References: <1400488570-20288-1-git-send-email-zhenzhang.zhang@huawei.com>
-In-Reply-To: <1400488570-20288-1-git-send-email-zhenzhang.zhang@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Hu Jianyang <hujianyang@huawei.com>
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <537979E9.3060209@huawei.com>
+References: <1400469756-18212-1-git-send-email-zhenzhang.zhang@huawei.com>
+ <537979E9.3060209@huawei.com>
+Date: Mon, 19 May 2014 11:13:51 +0200
+Message-ID: <CAMuHMdXoJKgzfyo6OcLz1SaTO_zCuvwM8iu-cNt6msvVSRCFKA@mail.gmail.com>
+Subject: Re: [PATCH] ubifs: replace simple_strtoul() with kstrtoul()
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Zhang Zhen <zhenzhang.zhang@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: MTD Maling List <linux-mtd@lists.infradead.org>, adrian.hunter@intel.com,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,51 +26,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-use the newer and more pleasant kstrtoul() to replace simple_strtoul(),
-because simple_strtoul() is marked for obsoletion.
+Please don't add mindless casts!
 
-Signed-off-by: Zhang Zhen <zhenzhang.zhang@huawei.com>
-Signed-off-by: hujianyang <hujianyang@huawei.com>
----
- drivers/mtd/ubi/build.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+On Mon, May 19, 2014 at 5:26 AM, Zhang Zhen <zhenzhang.zhang@huawei.com> wrote:
+> --- a/fs/ubifs/super.c
+> +++ b/fs/ubifs/super.c
+> @@ -1905,6 +1905,7 @@ static struct ubi_volume_desc *open_ubi(const char *name, int mode)
+>         struct ubi_volume_desc *ubi;
+>         int dev, vol;
 
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index 6e30a3c..80c539c 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -1190,10 +1190,13 @@ static struct mtd_info * __init open_mtd_by_chdev(const char *mtd_dev)
- static struct mtd_info * __init open_mtd_device(const char *mtd_dev)
- {
- 	struct mtd_info *mtd;
--	int mtd_num;
-+	int mtd_num, ret;
- 	char *endp;
+dev is int
 
--	mtd_num = simple_strtoul(mtd_dev, &endp, 0);
-+	endp = (char *)mtd_dev;
-+	ret = kstrtoul(endp, 0, (unsigned long *)&mtd_num);
-+	if (ret)
-+		return ERR_PTR(-EINVAL);
- 	if (*endp != '\0' || mtd_dev == endp) {
- 		/*
- 		 * This does not look like an ASCII integer, probably this is
-@@ -1362,8 +1365,12 @@ static int __init bytes_str_to_int(const char *str)
- {
- 	char *endp;
- 	unsigned long result;
-+	int ret;
+>         char *endptr;
+> +       int ret;
+>
+>         /* First, try to open using the device node path method */
+>         ubi = ubi_open_volume_path(name, mode);
+> @@ -1922,7 +1923,10 @@ static struct ubi_volume_desc *open_ubi(const char *name, int mode)
+>         if (!isdigit(name[3]))
+>                 return ERR_PTR(-EINVAL);
+>
+> -       dev = simple_strtoul(name + 3, &endptr, 0);
+> +       endptr = (char *)name + 3;
+> +       ret = kstrtoul(endptr, 0, (unsigned long *)&dev);
 
--	result = simple_strtoul(str, &endp, 0);
-+	endp = (char *)str;
-+	ret = kstrtoul(endp, 0, &result);
-+	if (ret)
-+		return -EINVAL;
- 	if (str == endp || result >= INT_MAX) {
- 		ubi_err("incorrect bytes count: \"%s\"\n", str);
- 		return -EINVAL;
--- 
-1.8.1.2
+On 64-bit, long is 64-bit, hence this will write beyond dev and will corrupt
+the stack.
 
+> +       if (ret)
+> +               return ERR_PTR(-EINVAL);
+>
+>         /* ubiY method */
+>         if (*endptr == '\0')
 
-.
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
