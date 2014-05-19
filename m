@@ -1,21 +1,22 @@
-Received: from mail-ie0-x229.google.com ([2607:f8b0:4001:c03::229])
+Received: from mail-ie0-x234.google.com ([2607:f8b0:4001:c03::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WmJe9-00074D-IB
- for linux-mtd@lists.infradead.org; Mon, 19 May 2014 09:14:14 +0000
-Received: by mail-ie0-f169.google.com with SMTP id at1so2029958iec.28
- for <linux-mtd@lists.infradead.org>; Mon, 19 May 2014 02:13:52 -0700 (PDT)
+ id 1WmJfC-0007YB-29
+ for linux-mtd@lists.infradead.org; Mon, 19 May 2014 09:15:18 +0000
+Received: by mail-ie0-f180.google.com with SMTP id tp5so2150771ieb.39
+ for <linux-mtd@lists.infradead.org>; Mon, 19 May 2014 02:14:56 -0700 (PDT)
 MIME-Version: 1.0
 Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <537979E9.3060209@huawei.com>
-References: <1400469756-18212-1-git-send-email-zhenzhang.zhang@huawei.com>
- <537979E9.3060209@huawei.com>
-Date: Mon, 19 May 2014 11:13:51 +0200
-Message-ID: <CAMuHMdXoJKgzfyo6OcLz1SaTO_zCuvwM8iu-cNt6msvVSRCFKA@mail.gmail.com>
-Subject: Re: [PATCH] ubifs: replace simple_strtoul() with kstrtoul()
+In-Reply-To: <5379C2E8.5040000@huawei.com>
+References: <1400488570-20288-1-git-send-email-zhenzhang.zhang@huawei.com>
+ <5379C2E8.5040000@huawei.com>
+Date: Mon, 19 May 2014 11:14:56 +0200
+Message-ID: <CAMuHMdVyVyKifhntPBeFS893MfkugYsMpKOizfDD8CqzPP96vQ@mail.gmail.com>
+Subject: Re: [PATCH] ubi: replace simple_strtoul() with kstrtoul()
 From: Geert Uytterhoeven <geert@linux-m68k.org>
 To: Zhang Zhen <zhenzhang.zhang@huawei.com>
 Content-Type: text/plain; charset=UTF-8
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>, adrian.hunter@intel.com,
+Cc: Hu Jianyang <hujianyang@huawei.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>, adrian.hunter@intel.com,
  Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,36 +29,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Please don't add mindless casts!
 
-On Mon, May 19, 2014 at 5:26 AM, Zhang Zhen <zhenzhang.zhang@huawei.com> wrote:
-> --- a/fs/ubifs/super.c
-> +++ b/fs/ubifs/super.c
-> @@ -1905,6 +1905,7 @@ static struct ubi_volume_desc *open_ubi(const char *name, int mode)
->         struct ubi_volume_desc *ubi;
->         int dev, vol;
-
-dev is int
-
->         char *endptr;
-> +       int ret;
+On Mon, May 19, 2014 at 10:38 AM, Zhang Zhen <zhenzhang.zhang@huawei.com> wrote:
+> --- a/drivers/mtd/ubi/build.c
+> +++ b/drivers/mtd/ubi/build.c
+> @@ -1190,10 +1190,13 @@ static struct mtd_info * __init open_mtd_by_chdev(const char *mtd_dev)
+>  static struct mtd_info * __init open_mtd_device(const char *mtd_dev)
+>  {
+>         struct mtd_info *mtd;
+> -       int mtd_num;
+> +       int mtd_num, ret;
+>         char *endp;
 >
->         /* First, try to open using the device node path method */
->         ubi = ubi_open_volume_path(name, mode);
-> @@ -1922,7 +1923,10 @@ static struct ubi_volume_desc *open_ubi(const char *name, int mode)
->         if (!isdigit(name[3]))
->                 return ERR_PTR(-EINVAL);
->
-> -       dev = simple_strtoul(name + 3, &endptr, 0);
-> +       endptr = (char *)name + 3;
-> +       ret = kstrtoul(endptr, 0, (unsigned long *)&dev);
+> -       mtd_num = simple_strtoul(mtd_dev, &endp, 0);
+> +       endp = (char *)mtd_dev;
+> +       ret = kstrtoul(endp, 0, (unsigned long *)&mtd_num);
 
-On 64-bit, long is 64-bit, hence this will write beyond dev and will corrupt
+On 64-bit, long is 64-bit, hence this will write beyond mtd_num and will corrupt
 the stack.
-
-> +       if (ret)
-> +               return ERR_PTR(-EINVAL);
->
->         /* ubiY method */
->         if (*endptr == '\0')
 
 Gr{oetje,eeting}s,
 
