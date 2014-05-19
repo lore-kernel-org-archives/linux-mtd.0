@@ -1,18 +1,29 @@
-Received: from szxga01-in.huawei.com ([119.145.14.64])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WmEEj-0003yf-Cl
- for linux-mtd@lists.infradead.org; Mon, 19 May 2014 03:27:40 +0000
-Message-ID: <537979E9.3060209@huawei.com>
-Date: Mon, 19 May 2014 11:26:33 +0800
-From: Zhang Zhen <zhenzhang.zhang@huawei.com>
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WmEVV-0001sT-JU
+ for linux-mtd@lists.infradead.org; Mon, 19 May 2014 03:45:01 +0000
+Date: Mon, 19 May 2014 00:43:55 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 1/4] mtd: Add sysfs attr to expose ECC stats
+Message-ID: <20140519034355.GB1062@arch.cereza>
+References: <1395403064-28113-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1395403064-28113-2-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EAB91D7@DBDE04.ent.ti.com>
+ <20140401111359.GA3324@arch.cereza>
+ <20980858CB6D3A4BAE95CA194937D5E73EAC31AE@DBDE04.ent.ti.com>
+ <20140513005053.GZ28907@ld-irv-0074>
+ <20140513022614.GA1447@arch.cereza>
 MIME-Version: 1.0
-To: <adrian.hunter@intel.com>, <dedekind1@gmail.com>
-Subject: [PATCH] ubifs: replace simple_strtoul() with kstrtoul()
-References: <1400469756-18212-1-git-send-email-zhenzhang.zhang@huawei.com>
-In-Reply-To: <1400469756-18212-1-git-send-email-zhenzhang.zhang@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20140513022614.GA1447@arch.cereza>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>, "Gupta, Pekon" <pekon@ti.com>,
+ Linux Kernel <linux-kernel@vger.kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,52 +33,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-use the newer and more pleasant kstrtoul() to replace simple_strtoul(),
-because simple_strtoul() is marked for obsoletion.
+On 12 May 11:26 PM, Ezequiel Garcia wrote:
+> On 12 May 05:50 PM, Brian Norris wrote:
+> > > There are some guidelines about attributes in 'Documentation/filesystems/sysfs.txt'
+> > > Though it's acceptable to put array of values of the "same type" in single sysfs file,
+> > > But I'm still not confident on having all members of 'struct ecc_stats' being
+> > > represented by single sysfs file
+> > [...]
+> > 
+> > I agree, it looks like the sysfs policy would recommend against putting
+> > distinct properties in the same file.
+> > 
+[..]
+> > So I personally might lean toward "one file per attribute" here.
+> > 
 
-Signed-off-by: Zhang Zhen <zhenzhang.zhang@huawei.com>
----
- fs/ubifs/super.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+Brian,
 
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index a81c7b5..a30f297 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -1905,6 +1905,7 @@ static struct ubi_volume_desc *open_ubi(const char *name, int mode)
- 	struct ubi_volume_desc *ubi;
- 	int dev, vol;
- 	char *endptr;
-+	int ret;
+Having agreed on doing one file per attribute, I'm now not sure how to
+name them. Maybe you can give me a hand?
 
- 	/* First, try to open using the device node path method */
- 	ubi = ubi_open_volume_path(name, mode);
-@@ -1922,7 +1923,10 @@ static struct ubi_volume_desc *open_ubi(const char *name, int mode)
- 	if (!isdigit(name[3]))
- 		return ERR_PTR(-EINVAL);
+Let me add some context: these are the per-MTD partition fields of the
+mtd_ecc_stats struct, although two of them aren't related to ECC, but to
+the bad blocks management. This is the struct:
 
--	dev = simple_strtoul(name + 3, &endptr, 0);
-+	endptr = (char *)name + 3;
-+	ret = kstrtoul(endptr, 0, (unsigned long *)&dev);
-+	if (ret)
-+		return ERR_PTR(-EINVAL);
+struct mtd_ecc_stats {
+        __u32 corrected;
+        __u32 failed;
+        __u32 badblocks;
+        __u32 bbtblocks;
+};
 
- 	/* ubiY method */
- 	if (*endptr == '\0')
-@@ -1930,7 +1934,10 @@ static struct ubi_volume_desc *open_ubi(const char *name, int mode)
+How about the following?
 
- 	/* ubiX_Y method */
- 	if (*endptr == '_' && isdigit(endptr[1])) {
--		vol = simple_strtoul(endptr + 1, &endptr, 0);
-+		endptr = endptr + 1;
-+		ret = kstrtoul(endptr, 0, (unsigned long *)&vol);
-+		if (ret)
-+			return ERR_PTR(-EINVAL);
- 		if (*endptr != '\0')
- 			return ERR_PTR(-EINVAL);
- 		return ubi_open_volume(dev, vol, mode);
+* corrected_bits
+* uncorrectable_errors
+* badblocks
+* bbtblocks
 -- 
-1.8.1.2
-
-
-.
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
