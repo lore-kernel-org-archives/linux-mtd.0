@@ -1,25 +1,20 @@
-Received: from mail-pd0-x22b.google.com ([2607:f8b0:400e:c02::22b])
+Received: from szxga01-in.huawei.com ([119.145.14.64])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WmfWg-0006r8-Os
- for linux-mtd@lists.infradead.org; Tue, 20 May 2014 08:35:59 +0000
-Received: by mail-pd0-f171.google.com with SMTP id y13so115161pdi.30
- for <linux-mtd@lists.infradead.org>; Tue, 20 May 2014 01:35:35 -0700 (PDT)
-Date: Tue, 20 May 2014 01:35:31 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Julia Lawall <julia.lawall@lip6.fr>
-Subject: Re: [PATCH 1/2] mtd: delete unneeded call to platform_get_drvdata
-Message-ID: <20140520083531.GH2413@norris-Latitude-E6410>
-References: <1400308369-24375-1-git-send-email-Julia.Lawall@lip6.fr>
- <CAOMZO5AymcCnC6Awt2LiGP9yz=baRA0HLoLRUSBgNeg3b5=9xQ@mail.gmail.com>
- <alpine.DEB.2.10.1405171511140.2587@hadrien>
+ id 1WmfkI-0005kT-0N
+ for linux-mtd@lists.infradead.org; Tue, 20 May 2014 08:50:03 +0000
+Message-ID: <537B16CB.9070508@huawei.com>
+Date: Tue, 20 May 2014 16:48:11 +0800
+From: Zhang Zhen <zhenzhang.zhang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.10.1405171511140.2587@hadrien>
-Cc: Mike Frysinger <vapier.adi@gmail.com>, Fabio Estevam <festevam@gmail.com>,
- kernel-janitors@vger.kernel.org, linux-kernel <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>, <adrian.hunter@intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH v2] UBIFS: replace simple_strtoul() with kstrtoint()
+References: <1400575582-24841-1-git-send-email-zhenzhang.zhang@huawei.com>
+In-Reply-To: <1400575582-24841-1-git-send-email-zhenzhang.zhang@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
+ Hu Jianyang <hujianyang@huawei.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,88 +24,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ Mike
+use the newer and more pleasant kstrtoint() to replace simple_strtoul(),
+because simple_strtoul() is marked for obsoletion.
 
-On Sat, May 17, 2014 at 03:12:02PM +0800, Julia Lawall wrote:
-> On Sat, 17 May 2014, Fabio Estevam wrote:
-> > On Sat, May 17, 2014 at 3:32 AM, Julia Lawall <Julia.Lawall@lip6.fr> wrote:
-> > > From: Julia Lawall <Julia.Lawall@lip6.fr>
-> > >
-> > > Platform_get_drvdata is an accessor function, and has no purpose if its
-> > > result is not used.
-> > >
-> > > The semantic patch that fixes this problem is as follows:
-> > > (http://coccinelle.lip6.fr/)
-> > >
-> > > // <smpl>
-> > > @@
-> > > identifier x;
-> > > type T;
-> > > @@
-> > > - T x = platform_get_drvdata(...);
-> > > ... when != x
-> > > // </smpl>
-> > >
-> > > Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
-> > >
-> > > ---
-> > >  drivers/mtd/nand/bf5xx_nand.c |    4 ----
-> > >  1 file changed, 4 deletions(-)
-> > >
-> > > diff --git a/drivers/mtd/nand/bf5xx_nand.c b/drivers/mtd/nand/bf5xx_nand.c
-> > > index b7a2494..b5fbd48 100644
-> > > --- a/drivers/mtd/nand/bf5xx_nand.c
-> > > +++ b/drivers/mtd/nand/bf5xx_nand.c
-> > > @@ -840,15 +840,11 @@ out_err_kzalloc:
-> > >
-> > >  static int bf5xx_nand_suspend(struct platform_device *dev, pm_message_t pm)
-> > >  {
-> > > -       struct bf5xx_nand_info *info = platform_get_drvdata(dev);
-> > > -
-> > >         return 0;
-> > >  }
-> > >
-> > >  static int bf5xx_nand_resume(struct platform_device *dev)
-> > >  {
-> > > -       struct bf5xx_nand_info *info = platform_get_drvdata(dev);
-> > > -
-> > >         return 0;
-> >
-> > In this case bf5xx_nand_suspend/resume could be removed?
-> 
-> I don't know.  It looks like it is intentional to have a definition that
-> returns an indication of success?  The complete set of definitions is:
+Signed-off-by: Zhang Zhen <zhenzhang.zhang@huawei.com>
+Signed-off-by: hujianyang <hujianyang@huawei.com>
+---
+ drivers/mtd/ubi/build.c | 7 +++----
+ fs/ubifs/super.c        | 7 ++++---
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-I'm not so sure. I believe suspend/resume works just fine without the
-hooks, if those hooks would otherwise be doing nothing. It is notable
-that this driver is not using the modern dev_pm_ops form of the
-suspend/resume callbacks, so maybe it just hasn't aged gracefully--and
-possibly was never supported properly in the first place.
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 6e30a3c..77a2884 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -1190,11 +1190,10 @@ static struct mtd_info * __init open_mtd_by_chdev(const char *mtd_dev)
+ static struct mtd_info * __init open_mtd_device(const char *mtd_dev)
+ {
+ 	struct mtd_info *mtd;
+-	int mtd_num;
+-	char *endp;
++	int mtd_num, ret;
 
-I'll either take this patch as-is, or look to killing off the
-suspend/resume callbacks entirely here, depending on Mike's feedback.
+-	mtd_num = simple_strtoul(mtd_dev, &endp, 0);
+-	if (*endp != '\0' || mtd_dev == endp) {
++	ret = kstrtoint(mtd_dev, 0, &mtd_num);
++	if (ret) {
+ 		/*
+ 		 * This does not look like an ASCII integer, probably this is
+ 		 * MTD device name.
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index a81c7b5..d8c71a6 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -1903,7 +1903,7 @@ const struct super_operations ubifs_super_operations = {
+ static struct ubi_volume_desc *open_ubi(const char *name, int mode)
+ {
+ 	struct ubi_volume_desc *ubi;
+-	int dev, vol;
++	int dev, vol, ret;
+ 	char *endptr;
 
-> #ifdef CONFIG_PM
-> 
-> static int bf5xx_nand_suspend(struct platform_device *dev, pm_message_t
-> pm)
-> {
->         struct bf5xx_nand_info *info = platform_get_drvdata(dev);
-> 
-> 	return 0;
-> }
-> 
-> static int bf5xx_nand_resume(struct platform_device *dev)
-> {
->         struct bf5xx_nand_info *info = platform_get_drvdata(dev);
-> 
->         return 0;
-> }
-> 
-> #else
-> #define bf5xx_nand_suspend NULL
-> #define bf5xx_nand_resume NULL
-> #endif
+ 	/* First, try to open using the device node path method */
+@@ -1922,10 +1922,11 @@ static struct ubi_volume_desc *open_ubi(const char *name, int mode)
+ 	if (!isdigit(name[3]))
+ 		return ERR_PTR(-EINVAL);
 
-Thanks,
-Brian
+-	dev = simple_strtoul(name + 3, &endptr, 0);
++	endptr = (char *)name + 3;
++	ret = kstrtoint(endptr, 0, &dev);
+
+ 	/* ubiY method */
+-	if (*endptr == '\0')
++	if (!ret)
+ 		return ubi_open_volume(0, dev, mode);
+
+ 	/* ubiX_Y method */
+-- 
+1.8.1.2
+
+
+.
