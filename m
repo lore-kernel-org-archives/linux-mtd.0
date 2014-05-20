@@ -1,25 +1,22 @@
-Received: from mho-03-ewr.mailhop.org ([204.13.248.66]
- helo=mho-01-ewr.mailhop.org)
+Received: from szxga03-in.huawei.com ([119.145.14.66])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WmW9y-0001Zs-Rh
- for linux-mtd@lists.infradead.org; Mon, 19 May 2014 22:35:55 +0000
-Date: Mon, 19 May 2014 15:35:23 -0700
-From: Tony Lindgren <tony@atomide.com>
-To: Pekon Gupta <pekon@ti.com>
-Subject: Re: [PATCH v4 1/4] mtd: nand: omap: add support for BCH16_ECC - GPMC
- driver updates
-Message-ID: <20140519223523.GK11945@atomide.com>
-References: <1400486082-4345-1-git-send-email-pekon@ti.com>
- <1400486082-4345-2-git-send-email-pekon@ti.com>
+ id 1WmYiQ-0005Qg-MH
+ for linux-mtd@lists.infradead.org; Tue, 20 May 2014 01:19:39 +0000
+Message-ID: <537AAD6E.6020806@huawei.com>
+Date: Tue, 20 May 2014 09:18:38 +0800
+From: Zhang Zhen <zhenzhang.zhang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1400486082-4345-2-git-send-email-pekon@ti.com>
-Cc: linux-omap <linux-omap@vger.kernel.org>,
- Brian Norris <computersforpeace@gmail.com>, Felipe Balbi <balbi@ti.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Stefan Roese <sr@denx.de>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH] ubi: replace simple_strtoul() with kstrtoul()
+References: <1400488570-20288-1-git-send-email-zhenzhang.zhang@huawei.com>
+ <5379C2E8.5040000@huawei.com>
+ <CAMuHMdVyVyKifhntPBeFS893MfkugYsMpKOizfDD8CqzPP96vQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdVyVyKifhntPBeFS893MfkugYsMpKOizfDD8CqzPP96vQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Cc: Hu Jianyang <hujianyang@huawei.com>, MTD
+ Maling List <linux-mtd@lists.infradead.org>, adrian.hunter@intel.com,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,14 +26,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Pekon Gupta <pekon@ti.com> [140519 00:55]:
-> This patch add support for BCH16_ECC in GPMC (controller) driver:
-> - extends configuration space to include BCH16 registers
-> - extends parsing of DT binding for selecting BCH16 ecc-scheme
+On 2014/5/19 17:14, Geert Uytterhoeven wrote:
+> Please don't add mindless casts!
 > 
-> Signed-off-by: Pekon Gupta <pekon@ti.com>
+> On Mon, May 19, 2014 at 10:38 AM, Zhang Zhen <zhenzhang.zhang@huawei.com> wrote:
+>> --- a/drivers/mtd/ubi/build.c
+>> +++ b/drivers/mtd/ubi/build.c
+>> @@ -1190,10 +1190,13 @@ static struct mtd_info * __init open_mtd_by_chdev(const char *mtd_dev)
+>>  static struct mtd_info * __init open_mtd_device(const char *mtd_dev)
+>>  {
+>>         struct mtd_info *mtd;
+>> -       int mtd_num;
+>> +       int mtd_num, ret;
+>>         char *endp;
+>>
+>> -       mtd_num = simple_strtoul(mtd_dev, &endp, 0);
+>> +       endp = (char *)mtd_dev;
+>> +       ret = kstrtoul(endp, 0, (unsigned long *)&mtd_num);
+> 
+> On 64-bit, long is 64-bit, hence this will write beyond mtd_num and will corrupt
+> the stack.
 
-This patch seems OK to merge via the MTD tree, so for the
-arch/arm/*omap* changes:
+Yeah, you are right. This really may write beyond dev.
 
-Acked-by: Tony Lindgren <tony@atomide.com>
+The kstrtoul(const char *s, unsigned int base, unsigned long *res) only accept unsigned long
+pointer as the third parameter.
+And the original function simple_strtoul() returns unsigned long type value.
+It is also cast. So this may not corrupt the stack.
+
+Or do you have any better suggestion about this?
+Thanks.
+> 
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> 
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
+> 
+> 
