@@ -1,25 +1,28 @@
-Received: from mail-ig0-x233.google.com ([2607:f8b0:4001:c05::233])
+Received: from mail-pd0-x229.google.com ([2607:f8b0:400e:c02::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wmdzf-000267-Sk
- for linux-mtd@lists.infradead.org; Tue, 20 May 2014 06:57:48 +0000
-Received: by mail-ig0-f179.google.com with SMTP id hn18so354749igb.0
- for <linux-mtd@lists.infradead.org>; Mon, 19 May 2014 23:57:26 -0700 (PDT)
+ id 1Wmf9Z-0003vD-QL
+ for linux-mtd@lists.infradead.org; Tue, 20 May 2014 08:12:06 +0000
+Received: by mail-pd0-f169.google.com with SMTP id w10so98168pde.28
+ for <linux-mtd@lists.infradead.org>; Tue, 20 May 2014 01:11:40 -0700 (PDT)
+Date: Tue, 20 May 2014 01:11:35 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [PATCH 1/4] mtd: Add sysfs attr to expose ECC stats
+Message-ID: <20140520081135.GF2413@norris-Latitude-E6410>
+References: <1395403064-28113-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1395403064-28113-2-git-send-email-ezequiel.garcia@free-electrons.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EAB91D7@DBDE04.ent.ti.com>
+ <20140401111359.GA3324@arch.cereza>
+ <20980858CB6D3A4BAE95CA194937D5E73EAC31AE@DBDE04.ent.ti.com>
+ <20140513005053.GZ28907@ld-irv-0074>
+ <20140513022614.GA1447@arch.cereza>
+ <20140519034355.GB1062@arch.cereza>
 MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <537AAD6E.6020806@huawei.com>
-References: <1400488570-20288-1-git-send-email-zhenzhang.zhang@huawei.com>
- <5379C2E8.5040000@huawei.com>
- <CAMuHMdVyVyKifhntPBeFS893MfkugYsMpKOizfDD8CqzPP96vQ@mail.gmail.com>
- <537AAD6E.6020806@huawei.com>
-Date: Tue, 20 May 2014 08:57:26 +0200
-Message-ID: <CAMuHMdUgFX+OWxE0kN5TS6vWYMi_bjpNp9MsTEt7jaZhDhyjaA@mail.gmail.com>
-Subject: Re: [PATCH] ubi: replace simple_strtoul() with kstrtoul()
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Zhang Zhen <zhenzhang.zhang@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: Hu Jianyang <hujianyang@huawei.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>, adrian.hunter@intel.com,
- Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20140519034355.GB1062@arch.cereza>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>, "Gupta, Pekon" <pekon@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,46 +32,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, May 20, 2014 at 3:18 AM, Zhang Zhen <zhenzhang.zhang@huawei.com> wrote:
-> On 2014/5/19 17:14, Geert Uytterhoeven wrote:
->> Please don't add mindless casts!
->>
->> On Mon, May 19, 2014 at 10:38 AM, Zhang Zhen <zhenzhang.zhang@huawei.com> wrote:
->>> --- a/drivers/mtd/ubi/build.c
->>> +++ b/drivers/mtd/ubi/build.c
->>> @@ -1190,10 +1190,13 @@ static struct mtd_info * __init open_mtd_by_chdev(const char *mtd_dev)
->>>  static struct mtd_info * __init open_mtd_device(const char *mtd_dev)
->>>  {
->>>         struct mtd_info *mtd;
->>> -       int mtd_num;
->>> +       int mtd_num, ret;
->>>         char *endp;
->>>
->>> -       mtd_num = simple_strtoul(mtd_dev, &endp, 0);
->>> +       endp = (char *)mtd_dev;
->>> +       ret = kstrtoul(endp, 0, (unsigned long *)&mtd_num);
->>
->> On 64-bit, long is 64-bit, hence this will write beyond mtd_num and will corrupt
->> the stack.
->
-> Yeah, you are right. This really may write beyond dev.
->
-> The kstrtoul(const char *s, unsigned int base, unsigned long *res) only accept unsigned long
-> pointer as the third parameter.
-> And the original function simple_strtoul() returns unsigned long type value.
-> It is also cast. So this may not corrupt the stack.
->
-> Or do you have any better suggestion about this?
+Trimming CC list
 
-kstrtoint().
+On Mon, May 19, 2014 at 12:43:55AM -0300, Ezequiel Garcia wrote:
+> How about the following?
+> 
+> * corrected_bits
+> * uncorrectable_errors
+> * badblocks
+> * bbtblocks
 
-Gr{oetje,eeting}s,
+How about we consistently separate words with underscores ('_')? So:
 
-                        Geert
+ * corrected_bits
+ * uncorrectable_errors
+ * bad_blocks
+ * bbt_blocks
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+I'm not too stuck on the naming, so other ideas are welcome.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Brian
