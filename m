@@ -1,25 +1,23 @@
-Message-ID: <537BAEDB.7020605@gmail.com>
-Date: Tue, 20 May 2014 21:36:59 +0200
-From: Boris BREZILLON <b.brezillon.dev@gmail.com>
-MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v3 5/9] mtd: nand: add sunxi NAND flash controller support
+Date: Tue, 20 May 2014 13:51:40 -0600
+From: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
+To: Boris BREZILLON <boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH v3 4/9] of: mtd: add documentation for the ONFI NAND
+ timing mode property
+Message-ID: <20140520195140.GA32287@obsidianresearch.com>
 References: <1394647664-8258-1-git-send-email-b.brezillon.dev@gmail.com>
- <1394647664-8258-6-git-send-email-b.brezillon.dev@gmail.com>
- <20140509160341.GA6984@arch.cereza> <536D069A.40401@gmail.com>
- <20140520184942.GT28907@ld-irv-0074> <20140520192134.GU28907@ld-irv-0074>
-In-Reply-To: <20140520192134.GU28907@ld-irv-0074>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+ <1394647664-8258-5-git-send-email-b.brezillon.dev@gmail.com>
+ <20140520182542.GS28907@ld-irv-0074>
+ <537BAD59.3060902@free-electrons.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <537BAD59.3060902@free-electrons.com>
 Cc: devicetree@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
- linux-doc@vger.kernel.org,
- =?ISO-8859-1?Q?Emilio_L=F3pez?= <emilio@elopez.com.ar>,
- linux-kernel@vger.kernel.org,
- Jason Gunthorpe <jgunthorpe@obsidianresearch.com>, dev@linux-sunxi.org,
- Rob Herring <robherring2@gmail.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Grant Likely <grant.likely@linaro.org>, linux-mtd@lists.infradead.org,
+ linux-doc@vger.kernel.org, dev@linux-sunxi.org, linux-kernel@vger.kernel.org,
+ Rob Herring <robherring2@gmail.com>, Grant Likely <grant.likely@linaro.org>,
+ linux-mtd@lists.infradead.org,
  Maxime Ripard <maxime.ripard@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,55 +28,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Tue, May 20, 2014 at 09:30:33PM +0200, Boris BREZILLON wrote:
 
-On 20/05/2014 21:21, Brian Norris wrote:
-> On Tue, May 20, 2014 at 11:49:42AM -0700, Brian Norris wrote:
->> On Fri, May 09, 2014 at 06:47:22PM +0200, Boris BREZILLON wrote:
->>> On 09/05/2014 18:03, Ezequiel Garcia wrote:
->>>> On 12 Mar 07:07 PM, Boris BREZILLON wrote:
->>>>> --- /dev/null
->>>>> +++ b/drivers/mtd/nand/sunxi_nand.c
->>>>> @@ -0,0 +1,1276 @@
->> ...
->>>>> +static int sunxi_nand_ecc_init(struct mtd_info *mtd, struct nand_ecc_ctrl *ecc,
->>>>> +			       struct device_node *np)
->>>>> +{
->>>>> +	struct nand_chip *nand = mtd->priv;
->>>>> +	int ecc_step_size, ecc_strength;
->>>>> +	int ret;
->>>>> +
->>>>> +	ecc_step_size = of_get_nand_ecc_step_size(np);
->>>>> +	ecc_strength = of_get_nand_ecc_strength(np);
->>>>> +	if (ecc_step_size > 0 && ecc_strength > 0) {
->>>>> +		ecc->size = ecc_step_size;
->>>>> +		ecc->strength = ecc_strength;
->>>>> +	} else {
->>>>> +		ecc->size = nand->ecc_step_ds;
->>>>> +		ecc->strength = nand->ecc_strength_ds;
->>>>> +	}
->>>>> +
->>>> Shouldn't you check the devicetree value is not weaker than the ONFI-obtained?
->>> I can definitely do that.
->> You can do that here, but take a look at the discussion Ezequiel and I
->> had about this:
->>
->>   http://thread.gmane.org/gmane.linux.drivers.devicetree/67462
->>
->> We probably don't want to be doing anything drastic like overriding the
->> device tree configuration. Instead, we might want to stick a warning
->> into the core nand_base code that does the proper comparison of the
->> '*_ds' values with the actual values chosen in
->> chip->ecc->{size,strength}. The comparison is kind of subtle, actually,
->> so it'd be good to do it exactly once for everyone.
+> AFAICT nothing, but the same goes for the ECC requirements, and we've
+> recently added DT bindings to define these requirements.
+> I'm not telling we should drop these ECC requirements bindings (actually
+> I'm using them :-)), but what's different with the timings requirements ?
 
-Fair enough, I'll follow your suggestions on this specific point ;)
+ECC requirements are almost always something that has to be matched to
+the bootloader (since the bootloader typicaly reads the NAND to boot),
+so it is sensible to put that in the DT
 
-> I forgot, Ezequiel already submitted this. I'll look at it soon:
->
->   http://patchwork.ozlabs.org/patch/348901/
+The timings are a property of the chip, and if they can be detected
+they should be. IMHO, the main purpose of a DT property would be to
+lower the speed if, for some reason, the board cannot support the
+device's full speed.
 
-Thanks for pointing this out.
+> Indeed, I based it on the ONFI NAND timings mode model, but AFAIK
+> (tell me if I'm wrong), it should work because most of the timings
+> are min requirements.  This means, even if you provide slower
+> signals transitions, the NAND will work as expected.
 
+IIRC for ONFI a device must always work in the mode 0 timings, without
+requiring a command?
 
->
-> Brian
+Jason
