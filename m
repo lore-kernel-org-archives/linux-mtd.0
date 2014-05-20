@@ -1,25 +1,18 @@
-Date: Tue, 20 May 2014 11:49:42 -0700
+Received: from mail-ig0-x234.google.com ([2607:f8b0:4001:c05::234])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WmpX3-00077e-C7
+ for linux-mtd@lists.infradead.org; Tue, 20 May 2014 19:17:02 +0000
+Received: by mail-ig0-f180.google.com with SMTP id c1so1174387igq.1
+ for <linux-mtd@lists.infradead.org>; Tue, 20 May 2014 12:16:39 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
-To: Boris BREZILLON <b.brezillon.dev@gmail.com>
-Subject: Re: [PATCH v3 5/9] mtd: nand: add sunxi NAND flash controller support
-Message-ID: <20140520184942.GT28907@ld-irv-0074>
-References: <1394647664-8258-1-git-send-email-b.brezillon.dev@gmail.com>
- <1394647664-8258-6-git-send-email-b.brezillon.dev@gmail.com>
- <20140509160341.GA6984@arch.cereza> <536D069A.40401@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <536D069A.40401@gmail.com>
-Cc: devicetree@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
- linux-doc@vger.kernel.org,
- Emilio =?iso-8859-1?Q?L=F3pez?= <emilio@elopez.com.ar>,
- linux-kernel@vger.kernel.org,
- Jason Gunthorpe <jgunthorpe@obsidianresearch.com>, dev@linux-sunxi.org,
- Rob Herring <robherring2@gmail.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Grant Likely <grant.likely@linaro.org>, linux-mtd@lists.infradead.org,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: bf5xx_nand: drop no-op PM support
+Date: Tue, 20 May 2014 12:16:26 -0700
+Message-Id: <1400613386-8502-1-git-send-email-computersforpeace@gmail.com>
+Cc: Julia Lawall <Julia.Lawall@lip6.fr>,
+ Brian Norris <computersforpeace@gmail.com>, Fabio Estevam <festevam@gmail.com>,
+ Mike Frysinger <vapier.adi@gmail.com>,
+ Dan Carpenter <dan.carpenter@oracle.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,44 +22,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, May 09, 2014 at 06:47:22PM +0200, Boris BREZILLON wrote:
-> On 09/05/2014 18:03, Ezequiel Garcia wrote:
-> > On 12 Mar 07:07 PM, Boris BREZILLON wrote:
-> >> --- /dev/null
-> >> +++ b/drivers/mtd/nand/sunxi_nand.c
-> >> @@ -0,0 +1,1276 @@
-...
-> >> +static int sunxi_nand_ecc_init(struct mtd_info *mtd, struct nand_ecc_ctrl *ecc,
-> >> +			       struct device_node *np)
-> >> +{
-> >> +	struct nand_chip *nand = mtd->priv;
-> >> +	int ecc_step_size, ecc_strength;
-> >> +	int ret;
-> >> +
-> >> +	ecc_step_size = of_get_nand_ecc_step_size(np);
-> >> +	ecc_strength = of_get_nand_ecc_strength(np);
-> >> +	if (ecc_step_size > 0 && ecc_strength > 0) {
-> >> +		ecc->size = ecc_step_size;
-> >> +		ecc->strength = ecc_strength;
-> >> +	} else {
-> >> +		ecc->size = nand->ecc_step_ds;
-> >> +		ecc->strength = nand->ecc_strength_ds;
-> >> +	}
-> >> +
-> > Shouldn't you check the devicetree value is not weaker than the ONFI-obtained?
-> 
-> I can definitely do that.
+This driver's suspend/resume hooks are no-ops, so just remove them.
 
-You can do that here, but take a look at the discussion Ezequiel and I
-had about this:
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Cc: Julia Lawall <Julia.Lawall@lip6.fr>
+Cc: Fabio Estevam <festevam@gmail.com>
+Cc: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Mike Frysinger <vapier.adi@gmail.com>
+---
+ drivers/mtd/nand/bf5xx_nand.c | 24 ------------------------
+ 1 file changed, 24 deletions(-)
 
-  http://thread.gmane.org/gmane.linux.drivers.devicetree/67462
-
-We probably don't want to be doing anything drastic like overriding the
-device tree configuration. Instead, we might want to stick a warning
-into the core nand_base code that does the proper comparison of the
-'*_ds' values with the actual values chosen in
-chip->ecc->{size,strength}. The comparison is kind of subtle, actually,
-so it'd be good to do it exactly once for everyone.
-
-Brian
+diff --git a/drivers/mtd/nand/bf5xx_nand.c b/drivers/mtd/nand/bf5xx_nand.c
+index b7a24946ca26..47121d28015d 100644
+--- a/drivers/mtd/nand/bf5xx_nand.c
++++ b/drivers/mtd/nand/bf5xx_nand.c
+@@ -835,34 +835,10 @@ out_err_kzalloc:
+ 	return err;
+ }
+ 
+-/* PM Support */
+-#ifdef CONFIG_PM
+-
+-static int bf5xx_nand_suspend(struct platform_device *dev, pm_message_t pm)
+-{
+-	struct bf5xx_nand_info *info = platform_get_drvdata(dev);
+-
+-	return 0;
+-}
+-
+-static int bf5xx_nand_resume(struct platform_device *dev)
+-{
+-	struct bf5xx_nand_info *info = platform_get_drvdata(dev);
+-
+-	return 0;
+-}
+-
+-#else
+-#define bf5xx_nand_suspend NULL
+-#define bf5xx_nand_resume NULL
+-#endif
+-
+ /* driver device registration */
+ static struct platform_driver bf5xx_nand_driver = {
+ 	.probe		= bf5xx_nand_probe,
+ 	.remove		= bf5xx_nand_remove,
+-	.suspend	= bf5xx_nand_suspend,
+-	.resume		= bf5xx_nand_resume,
+ 	.driver		= {
+ 		.name	= DRV_NAME,
+ 		.owner	= THIS_MODULE,
+-- 
+1.8.3.2
