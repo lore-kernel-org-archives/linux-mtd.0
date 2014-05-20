@@ -1,24 +1,21 @@
-Received: from szxga01-in.huawei.com ([119.145.14.64])
+Received: from mail-pb0-x22e.google.com ([2607:f8b0:400e:c01::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WmfDB-0005jC-E1
- for linux-mtd@lists.infradead.org; Tue, 20 May 2014 08:15:50 +0000
-Message-ID: <537B0EF5.1080900@huawei.com>
-Date: Tue, 20 May 2014 16:14:45 +0800
-From: Zhang Zhen <zhenzhang.zhang@huawei.com>
+ id 1WmfFx-0007DP-1Y
+ for linux-mtd@lists.infradead.org; Tue, 20 May 2014 08:18:41 +0000
+Received: by mail-pb0-f46.google.com with SMTP id rq2so104633pbb.19
+ for <linux-mtd@lists.infradead.org>; Tue, 20 May 2014 01:18:20 -0700 (PDT)
+Date: Tue, 20 May 2014 01:18:16 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Kamal Dasu <kdasu.kdev@gmail.com>
+Subject: Re: [PATCH v5] mtd: nand: Add support to use nand_base poi databuf
+ as bounce buffer
+Message-ID: <20140520081816.GG2413@norris-Latitude-E6410>
+References: <1398991879-2448-1-git-send-email-kdasu.kdev@gmail.com>
 MIME-Version: 1.0
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] ubi: replace simple_strtoul() with kstrtoul()
-References: <1400488570-20288-1-git-send-email-zhenzhang.zhang@huawei.com>
- <5379C2E8.5040000@huawei.com>
- <CAMuHMdVyVyKifhntPBeFS893MfkugYsMpKOizfDD8CqzPP96vQ@mail.gmail.com>
- <537AAD6E.6020806@huawei.com>
- <CAMuHMdUgFX+OWxE0kN5TS6vWYMi_bjpNp9MsTEt7jaZhDhyjaA@mail.gmail.com>
-In-Reply-To: <CAMuHMdUgFX+OWxE0kN5TS6vWYMi_bjpNp9MsTEt7jaZhDhyjaA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Cc: Hu Jianyang <hujianyang@huawei.com>, MTD
- Maling List <linux-mtd@lists.infradead.org>, adrian.hunter@intel.com,
- Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1398991879-2448-1-git-send-email-kdasu.kdev@gmail.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,52 +25,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2014/5/20 14:57, Geert Uytterhoeven wrote:
-> On Tue, May 20, 2014 at 3:18 AM, Zhang Zhen <zhenzhang.zhang@huawei.com> wrote:
->> On 2014/5/19 17:14, Geert Uytterhoeven wrote:
->>> Please don't add mindless casts!
->>>
->>> On Mon, May 19, 2014 at 10:38 AM, Zhang Zhen <zhenzhang.zhang@huawei.com> wrote:
->>>> --- a/drivers/mtd/ubi/build.c
->>>> +++ b/drivers/mtd/ubi/build.c
->>>> @@ -1190,10 +1190,13 @@ static struct mtd_info * __init open_mtd_by_chdev(const char *mtd_dev)
->>>>  static struct mtd_info * __init open_mtd_device(const char *mtd_dev)
->>>>  {
->>>>         struct mtd_info *mtd;
->>>> -       int mtd_num;
->>>> +       int mtd_num, ret;
->>>>         char *endp;
->>>>
->>>> -       mtd_num = simple_strtoul(mtd_dev, &endp, 0);
->>>> +       endp = (char *)mtd_dev;
->>>> +       ret = kstrtoul(endp, 0, (unsigned long *)&mtd_num);
->>>
->>> On 64-bit, long is 64-bit, hence this will write beyond mtd_num and will corrupt
->>> the stack.
->>
->> Yeah, you are right. This really may write beyond dev.
->>
->> The kstrtoul(const char *s, unsigned int base, unsigned long *res) only accept unsigned long
->> pointer as the third parameter.
->> And the original function simple_strtoul() returns unsigned long type value.
->> It is also cast. So this may not corrupt the stack.
->>
->> Or do you have any better suggestion about this?
+On Thu, May 01, 2014 at 08:51:19PM -0400, Kamal Dasu wrote:
+> nand_base can be passed a kmap()'d buffers from highmem by
+> filesystems like jffs2. This results in failure to map the
+> physical address of the DMA buffer on various contoller
+> driver on different platforms. This change adds a chip option
+> to use preallocated databuf as bounce buffers used in
+> nand_do_read_ops() and nand_do_write_ops().
+> This allows for specific nand controller driver to set this
+> option as needed.
 > 
-> kstrtoint().
+> Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+> ---
 > 
-Hi Geert,
+> Changes since v4:
+> * Made code more readable as per review comments
 
-Thanks for your suggestion, i will send the version2 out.
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
-> 
-> 
+Pushed to l2-mtd.git. Thanks!
+
+Brian
