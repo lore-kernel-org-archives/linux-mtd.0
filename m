@@ -1,19 +1,17 @@
-Date: Tue, 20 May 2014 11:13:12 -0700
+Date: Tue, 20 May 2014 11:25:42 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v3 1/9] mtd: nand: define struct nand_timings
-Message-ID: <20140520181312.GR28907@ld-irv-0074>
+To: Boris BREZILLON <b.brezillon.dev@gmail.com>
+Subject: Re: [PATCH v3 4/9] of: mtd: add documentation for the ONFI NAND
+ timing mode property
+Message-ID: <20140520182542.GS28907@ld-irv-0074>
 References: <1394647664-8258-1-git-send-email-b.brezillon.dev@gmail.com>
- <1394647664-8258-2-git-send-email-b.brezillon.dev@gmail.com>
- <20140430175157.GB2497@norris-Latitude-E6410>
- <20140508142930.GC5767@lee--X1>
+ <1394647664-8258-5-git-send-email-b.brezillon.dev@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20140508142930.GC5767@lee--X1>
-Cc: devicetree@vger.kernel.org, Boris BREZILLON <b.brezillon.dev@gmail.com>,
- Arnd Bergmann <arnd@arndb.de>, linux-doc@vger.kernel.org, dev@linux-sunxi.org,
- linux-kernel@vger.kernel.org,
+In-Reply-To: <1394647664-8258-5-git-send-email-b.brezillon.dev@gmail.com>
+Cc: devicetree@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+ linux-doc@vger.kernel.org, dev@linux-sunxi.org, linux-kernel@vger.kernel.org,
  Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
  Rob Herring <robherring2@gmail.com>, Grant Likely <grant.likely@linaro.org>,
  linux-mtd@lists.infradead.org,
@@ -28,44 +26,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, May 08, 2014 at 03:29:30PM +0100, Lee Jones wrote:
-> > 
-> > Please document the units for these fields here. It looks like you're
-> > using picoseconds.
+Hi Boris,
+
+On Wed, Mar 12, 2014 at 07:07:39PM +0100, Boris BREZILLON wrote:
+> Add documentation for the ONFI NAND timing mode property.
 > 
-> Can't we leave this open to interpretation?  For instance, it's more
-> convenient for our driver to handle these as nano second values.
-
-No, their values will be determined by the nand_base core, and we must
-have something consistent for drivers to rely on. However, I don't
-really have a hard preference on nanoseconds versus picoseconds. If we
-see that many of the values reach low-digit nanosecons, or fractional
-nanoseconds, it probably makes sense to have the higher resolution.
-
-> > > +struct nand_sdr_timings {
-...
-> > > +	u32 tCS_min;
+> Signed-off-by: Boris BREZILLON <b.brezillon.dev@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/mtd/nand.txt |    8 ++++++++
+>  1 file changed, 8 insertions(+)
 > 
-> 	u32 tCSD_min;
+> diff --git a/Documentation/devicetree/bindings/mtd/nand.txt b/Documentation/devicetree/bindings/mtd/nand.txt
+> index b53f92e..2046027 100644
+> --- a/Documentation/devicetree/bindings/mtd/nand.txt
+> +++ b/Documentation/devicetree/bindings/mtd/nand.txt
+> @@ -19,3 +19,11 @@ errors per {size} bytes".
+>  The interpretation of these parameters is implementation-defined, so not all
+>  implementations must support all possible combinations. However, implementations
+>  are encouraged to further specify the value(s) they support.
+> +
+> +- onfi,nand-timing-mode: an integer encoding the supported ONFI timing modes of
+> +  the NAND chip. Each supported mode is represented as a bit position (i.e. :
+> +  mode 0 and 1 => (1 << 0) | (1 << 1) = 0x3).
+> +  This is only used when the chip does not support the ONFI standard.
+> +  The last bit set represent the closest mode fulfilling the NAND chip timings.
+> +  For a full description of the different timing modes see this document:
+> +  www.onfi.org/~/media/ONFI/specs/onfi_3_1_spec.pdf
 
-Is this a suggested addition, Lee? I agree with Boris that this looks
-like a DDR mode, which should not be covered here.
+I'm not 100% convinced this property should go in the device tree. With
+most other flash properties (device size, page size, and even minimum
+ECC requirements), we try to auto-detect these parameters to some
+extent. ONFI makes it easy for some class of chips, but for others, we
+typically rely on an in-kernel device ID table or ID decoding heuristic
+-- we don't require a DT description of every property of the flash. So
+what makes this property different?
 
-> > > +	u32 tDH_min;
-> > > +	u32 tDS_min;
-> > > +	u32 tFEAT_max;
-> > > +	u32 tIR_min;
-> > > +	u32 tITC_max;
-> 
-> 	u32 tR_max;
+I realize that we may not include device ID entries for every flash that
+you need in the ID table (although we still are able to detect the
+important properties accurately, like page and block size). But would it
+suffice to default these flash to a lowest common timing mode, like mode
+0?
 
-Same here, is this a suggested new field? If you need it, then we can
-follow up like Boris suggested, with a different method, since tR is not
-part of the electrical parameters of the timing mode.
+If no other option works well, then I am still open to describing the
+supported timing modes in the DT.
 
-...
-> > > +};
-> > > +
-> > >  #endif /* __LINUX_MTD_NAND_H */
+BTW, this bitfield property looks kinda strange to me. Do non-ONFI flash
+typically support multiple timing modes? And if so, how are we supposed
+to *change* modes? AFAIK, ONFI provides the only standard for
+configuring the flash's timing mode. So maybe you're really only wanting
+a "default timing mode" property that is a single integer, not a
+bitfield.
 
+Regards,
 Brian
