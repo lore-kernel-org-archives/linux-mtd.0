@@ -1,27 +1,24 @@
-Received: from mailout.micron.com ([137.201.242.129])
+Received: from mail-ig0-x235.google.com ([2607:f8b0:4001:c05::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WmdN3-0003iw-Ck
- for linux-mtd@lists.infradead.org; Tue, 20 May 2014 06:17:54 +0000
-From: =?utf-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
-To: Alexander Shiyan <shc_work@mail.ru>
-Subject: RE: [PATCH 1/1] mtd:nor:timeout:fix do_write_buffer() timeout error
-Date: Tue, 20 May 2014 06:17:23 +0000
-Message-ID: <A765B125120D1346A63912DDE6D8B6315D0491@NTXXIAMBX02.xacn.micron.com>
-References: <A765B125120D1346A63912DDE6D8B6315D03AC@NTXXIAMBX02.xacn.micron.com>
- <1400474715.883919171@f423.i.mail.ru>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1WmdwA-0000oh-S7
+ for linux-mtd@lists.infradead.org; Tue, 20 May 2014 06:54:11 +0000
+Received: by mail-ig0-f181.google.com with SMTP id h3so350487igd.8
+ for <linux-mtd@lists.infradead.org>; Mon, 19 May 2014 23:53:49 -0700 (PDT)
 MIME-Version: 1.0
-Cc: Kees Cook <keescook@chromium.org>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Jingoo Han <jg1.han@samsung.com>, Paul
- Gortmaker <paul.gortmaker@windriver.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Brian
- Norris <computersforpeace@gmail.com>,
- Christian Riesch <christian.riesch@omicron.at>,
- David Woodhouse <dwmw2@infradead.org>,
- =?utf-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <5379D3A1.8050703@huawei.com>
+References: <1400469756-18212-1-git-send-email-zhenzhang.zhang@huawei.com>
+ <537979E9.3060209@huawei.com>
+ <CAMuHMdXoJKgzfyo6OcLz1SaTO_zCuvwM8iu-cNt6msvVSRCFKA@mail.gmail.com>
+ <5379D3A1.8050703@huawei.com>
+Date: Tue, 20 May 2014 08:53:48 +0200
+Message-ID: <CAMuHMdU-3oUjvUtnfARjDZh8W_w3Yt4+deJdEy9F8ac9S8RmuA@mail.gmail.com>
+Subject: Re: [PATCH] ubifs: replace simple_strtoul() with kstrtoul()
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Zhang Zhen <zhenzhang.zhang@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: MTD Maling List <linux-mtd@lists.infradead.org>, adrian.hunter@intel.com,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,143 +28,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-VGhlIHNpemUgb2YgdGhlIGJ1ZmZlciBwcm9ncmFtIGhhcyBiZWVuIGluY3JlYXNlZCBmcm9tIDI1
-NiB0byA1MTIgLCAybXMgbWF4aW11bSB0aW1lb3V0IGNhbiBub3QgYWRhcHQgdG8gYWxsIHRoZSBk
-aWZmZXJlbnQgdmVuZG9yJ3Mgbm9yZmxhc2gsIFRoZXJlIG1heGltdW0gdGltZW91dCBpbmZvcm1h
-dGlvbiBpbiB0aGUgQ0ZJIGFyZWEsc28gdGhlIGJlc3Qgd2F5IGlzIHRvIGNob29zZSB0aGUgcmVz
-dWx0IGNhbGN1bGF0ZWQgYWNjb3JkaW5nIHRvIHRpbWVvdXQgZmllbGQgb2Ygc3RydWN0IGNmaV9p
-ZGVudCB0aGF0IHByb2JlZCBmcm9tIG5vcmZsYXNoJ3MgQ0ZJIGFlcmEuVGhpcyBpcyBhbHNvIGEg
-c3RhbmRhcmQgZGVmaW5lZCBieSBDRkkuDQoNCldpdGhvdXQgdGhpcyBjaGFuZ2UsIGlmIHRoZSBz
-aXplIG9mIGJ1ZmZlciBwcm9ncmFtIGlzIDUxMiBvciBiaWdnZXIgdGhhbiAyNTYsIGR1ZSB0byB0
-aW1lb3V0IGlzIHRoZSBzaG9ydGVyIHRoYW4gdGhhdCB0aGUgY2hpcCByZXF1aXJlZCxkb193cml0
-ZV9idWZmZXIgc29tZXRpbWVzIGZhaWxzLg0KDQpUZXN0ZWQgd2l0aCBNaWNyb24gSlMyOEY1MTJN
-MjlFV3ggYW5kIE1pY3JvbiBNVDI4RVc1MTJBQkEgZmxhc2ggZGV2aWNlcy4NCg0KU2lnbmVkLW9m
-Zi1ieTogYmVhbiBodW8gPGJlYW5odW9AbWljcm9uLmNvbT4NCi0tLQ0KIGRyaXZlcnMvbXRkL2No
-aXBzL2NmaV9jbWRzZXRfMDAwMi5jIHwgICA0OSArKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKy0tLQ0KIDEgZmlsZSBjaGFuZ2VkLCA0NSBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygt
-KQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAyLmMgYi9k
-cml2ZXJzL210ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDIuYw0KaW5kZXggZTIxZmRlOS4uODdkNDQ2
-YSAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvbXRkL2NoaXBzL2NmaV9jbWRzZXRfMDAwMi5jDQorKysg
-Yi9kcml2ZXJzL210ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDIuYw0KQEAgLTYyOCwxMCArNjI4LDQy
-IEBAIHN0cnVjdCBtdGRfaW5mbyAqY2ZpX2NtZHNldF8wMDAyKHN0cnVjdCBtYXBfaW5mbyAqbWFw
-LCBpbnQgcHJpbWFyeSkNCiAJCWNmaS0+Y2hpcHNbaV0ud29yZF93cml0ZV90aW1lID0gMTw8Y2Zp
-LT5jZmlxLT5Xb3JkV3JpdGVUaW1lb3V0VHlwOw0KIAkJY2ZpLT5jaGlwc1tpXS5idWZmZXJfd3Jp
-dGVfdGltZSA9IDE8PGNmaS0+Y2ZpcS0+QnVmV3JpdGVUaW1lb3V0VHlwOw0KIAkJY2ZpLT5jaGlw
-c1tpXS5lcmFzZV90aW1lID0gMTw8Y2ZpLT5jZmlxLT5CbG9ja0VyYXNlVGltZW91dFR5cDsNCisJ
-CS8qDQorCQkgKiBXZSBmaXJzdCBjYWxjdWxhdGUgdGhlIHRpbWVvdXQgbWF4IGFjY29yZGluZyB0
-byB0aW1lb3V0DQorCQkgKiBmaWVsZCBvZiBzdHJ1Y3QgY2ZpX2lkZW50IHRoYXQgcHJvYmVkIGZy
-b20gY2hpcCdzIENGSQ0KKwkJICogYWVyYSxJZiBoYXZlbid0IHByb2JlZCB0aGlzIGluZm9ybWF0
-aW9uLHdlIHdpbGwgc3BlY2lmeQ0KKwkJICogYSBkZWZhdWx0IHZhbHVlLGFuZCB0aGUgdGltZSB1
-bml0IGlzIHVzLg0KKwkJICovDQorCQlpZiAoY2ZpLT5jZmlxLT5Xb3JkV3JpdGVUaW1lb3V0VHlw
-ICYmDQorCQkJY2ZpLT5jZmlxLT5Xb3JkV3JpdGVUaW1lb3V0TWF4KXsNCisJCQljZmktPmNoaXBz
-W2ldLndvcmRfd3JpdGVfdGltZV9tYXggPQ0KKwkJCQkxPDwoY2ZpLT5jZmlxLT5Xb3JkV3JpdGVU
-aW1lb3V0VHlwICsNCisJCQkJCWNmaS0+Y2ZpcS0+V29yZFdyaXRlVGltZW91dE1heCk7DQorCQkJ
-fSBlbHNlIHsNCisJCS8qIHNwZWNpZnkgbWF4aW11bSB0aW1lb3V0IGZvciBieXRlL3dvcmQgcHJv
-Z3JhbSAyMDAwdXMgKi8NCisJCQkJY2ZpLT5jaGlwc1tpXS53b3JkX3dyaXRlX3RpbWVfbWF4ID0g
-MjAwMDsNCisJCQkJfQ0KKwkJaWYgKGNmaS0+Y2ZpcS0+QnVmV3JpdGVUaW1lb3V0VHlwICYmDQor
-CQkJY2ZpLT5jZmlxLT5CdWZXcml0ZVRpbWVvdXRNYXgpew0KKwkJCWNmaS0+Y2hpcHNbaV0uYnVm
-ZmVyX3dyaXRlX3RpbWVfbWF4ID0NCisJCQkJMTw8KGNmaS0+Y2ZpcS0+QnVmV3JpdGVUaW1lb3V0
-VHlwICsNCisJCQkJCWNmaS0+Y2ZpcS0+QnVmV3JpdGVUaW1lb3V0TWF4KTsNCisJCQl9IGVsc2Ug
-ew0KKwkJLyogc3BlY2lmeSBtYXhpbXVtIHRpbWVvdXQgZm9yIGJ1ZmZlciBwcm9ncmFtIDIwMDB1
-cyAqLw0KKwkJCQljZmktPmNoaXBzW2ldLmJ1ZmZlcl93cml0ZV90aW1lX21heCA9IDIwMDA7DQor
-CQkJCX0NCisJCWlmIChjZmktPmNmaXEtPkJsb2NrRXJhc2VUaW1lb3V0VHlwICYmDQorCQkJY2Zp
-LT5jZmlxLT5CbG9ja0VyYXNlVGltZW91dE1heCl7DQorCQkJY2ZpLT5jaGlwc1tpXS5lcmFzZV90
-aW1lX21heCA9DQorCQkJCTE8PChjZmktPmNmaXEtPkJsb2NrRXJhc2VUaW1lb3V0VHlwICsNCisJ
-CQkJCWNmaS0+Y2ZpcS0+QmxvY2tFcmFzZVRpbWVvdXRNYXgpOw0KKwkJCX0gZWxzZSB7DQorCS8q
-IHNwZWNpZnkgbWF4aW11bSB0aW1lb3V0IHBlciBpbmRpdmlkdWFsIGJsb2NrIGVyYXNlIDMwMDAw
-MDB1cyAqLw0KKwkJCQljZmktPmNoaXBzW2ldLmVyYXNlX3RpbWVfbWF4ID0gMzAwMDAwMDsNCisJ
-CQkJfQ0KIAkJY2ZpLT5jaGlwc1tpXS5yZWZfcG9pbnRfY291bnRlciA9IDA7DQogCQlpbml0X3dh
-aXRxdWV1ZV9oZWFkKCYoY2ZpLT5jaGlwc1tpXS53cSkpOw0KIAl9DQotDQogCW1hcC0+ZmxkcnYg
-PSAmY2ZpX2FtZHN0ZF9jaGlwZHJ2Ow0KIA0KIAlyZXR1cm4gY2ZpX2FtZHN0ZF9zZXR1cChtdGQp
-Ow0KQEAgLTE0NjIsOCArMTQ5NCwxNiBAQCBzdGF0aWMgaW50IF9feGlwcmFtIGRvX3dyaXRlX2J1
-ZmZlcihzdHJ1Y3QgbWFwX2luZm8gKm1hcCwgc3RydWN0IGZsY2hpcCAqY2hpcCwgIHsNCiAJc3Ry
-dWN0IGNmaV9wcml2YXRlICpjZmkgPSBtYXAtPmZsZHJ2X3ByaXY7DQogCXVuc2lnbmVkIGxvbmcg
-dGltZW8gPSBqaWZmaWVzICsgSFo7DQotCS8qIHNlZSBjb21tZW50cyBpbiBkb193cml0ZV9vbmV3
-b3JkKCkgcmVnYXJkaW5nIHVXcml0ZVRpbWVvLiAqLw0KLQl1bnNpZ25lZCBsb25nIHVXcml0ZVRp
-bWVvdXQgPSAoIEhaIC8gMTAwMCApICsgMTsNCisJLyogVGhlIHNpemUgb2YgdGhlIGJ1ZmZlciBw
-cm9ncmFtIGhhcyBiZWVuIGluY3JlYXNlZCBmcm9tIDI1NiB0byA1MTIsDQorCSAqIDJtcyBtYXhp
-bXVtIHRpbWVvdXQgY2FuIG5vdCBhZGFwdCB0byBhbGwgdGhlIGRpZmZlcmVudCB2ZW5kb3Incw0K
-KwkgKiBub3JmbGFzaC5UaGVyZSBtYXhpbXVtIHRpbWVvdXQgaW5mb3JtYXRpb24gaW4gdGhlIENG
-SSBhcmVhLHNvIHRoZQ0KKwkgKiBiZXN0IHdheSBpcyB0byBjaG9vc2UgdGhlIHJlc3VsdCBjYWxj
-dWxhdGVkIGFjY29yZGluZyB0byB0aW1lb3V0DQorCSAqIGZpZWxkIG9mIHN0cnVjdCBjZmlfaWRl
-bnQgdGhhdCBwcm9iZWQgZnJvbSBub3JmbGFzaCdzIENGSSBhZXJhLHNlZQ0KKwkgKiBjb21tZW50
-cyBpbiBjZmlfY21kc2V0XzAwMDIoKS5UaGUgdGltZSB1bml0IG9mIHVXcml0ZVRpbWVvdXQgaXMg
-bXMuDQorCSAqLw0KKwl1bnNpZ25lZCBsb25nIHVXcml0ZVRpbWVvdXQgPSAoY2hpcC0+YnVmZmVy
-X3dyaXRlX3RpbWVfbWF4ICUgMTAwMCkgPw0KKwkJCShjaGlwLT5idWZmZXJfd3JpdGVfdGltZV9t
-YXggLyAxMDAwICsgMSkgOg0KKwkJCShjaGlwLT5idWZmZXJfd3JpdGVfdGltZV9tYXggLyAxMDAw
-KTsNCiAJaW50IHJldCA9IC1FSU87DQogCXVuc2lnbmVkIGxvbmcgY21kX2FkcjsNCiAJaW50IHos
-IHdvcmRzOw0KQEAgLTE1MjAsNyArMTU2MCw4IEBAIHN0YXRpYyBpbnQgX194aXByYW0gZG9fd3Jp
-dGVfYnVmZmVyKHN0cnVjdCBtYXBfaW5mbyAqbWFwLCBzdHJ1Y3QgZmxjaGlwICpjaGlwLA0KIAkJ
-CQlhZHIsIG1hcF9iYW5rd2lkdGgobWFwKSwNCiAJCQkJY2hpcC0+d29yZF93cml0ZV90aW1lKTsN
-CiANCi0JdGltZW8gPSBqaWZmaWVzICsgdVdyaXRlVGltZW91dDsNCisJLypNYXhpbXVtIHRpbWVv
-dXQgbXVzdCBiZSBjb252ZXJ0ZWQgaW50byBqaWZmaWVzICovDQorCXRpbWVvID0gamlmZmllcyAr
-IG1zZWNzX3RvX2ppZmZpZXModVdyaXRlVGltZW91dCk7DQogDQogCWZvciAoOzspIHsNCiAJCWlm
-IChjaGlwLT5zdGF0ZSAhPSBGTF9XUklUSU5HKSB7DQotLQ0KMS43LjkuNQ0KDQpUaGFua3MgeW91
-ciBzdWdnZXN0LkhlcmUgaXMgbmV3IHBhdGNoIGZvciBpdC4gQ2FuIGFjY2VwdCB0aGlzIHBhdGNo
-P2ZvciBvdGhlciB0aW1lb3V0IGlzc3VlIGluIGNmaV9jbWRzZXRfMDAwMi5DLCBJIHdpbGwgc3Vi
-bWl0IHRoZW0gb25lIGJ5IG9uZSBsYXRlcmx5Lg0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0t
-LQ0KRnJvbTogQWxleGFuZGVyIFNoaXlhbiBbbWFpbHRvOnNoY193b3JrQG1haWwucnVdDQpTZW50
-OiBNb25kYXksIE1heSAxOSwgMjAxNCAxMjo0NSBQTQ0KVG86IEJlYW4gSHVvIOmcjeaWjOaWjCAo
-YmVhbmh1bykNCkNjOiBLZWVzIENvb2s7IEFydGVtIEJpdHl1dHNraXk7IEppbmdvbyBIYW47IFBh
-dWwgR29ydG1ha2VyOyBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsgQ2hyaXN0aWFuIFJp
-ZXNjaDsgRGF2aWQgV29vZGhvdXNlOyBCcmlhbiBOb3JyaXMNClN1YmplY3Q6IFJlOiBbUEFUQ0gg
-MS8xXSBtdGQ6bm9yOnRpbWVvdXQ6Zml4IGRvX3dyaXRlX2J1ZmZlcigpIHRpbWVvdXQgZXJyb3IN
-Cg0KTW9uLCAxOSBNYXkgMjAxNCAwMjo0MToyOSArMDAwMCDQvtGCIEJlYW4gSHVvIOmcjeaWjOaW
-jCAoYmVhbmh1bykgPGJlYW5odW9AbWljcm9uLmNvbT46DQo+IFRoZSBzaXplIG9mIHRoZSBidWZm
-ZXIgcHJvZ3JhbSBoYXMgYmVlbiBpbmNyZWFzZWQgZnJvbSAyNTYgdG8gNTEyICwgDQo+IDJtcyBt
-YXhpbXVtIHRpbWVvdXQgY2FuIG5vdCBhZGFwdCB0byBhbGwgdGhlIGRpZmZlcmVudCB2ZW5kb3In
-cyANCj4gbm9yZmxhc2gsIFRoZXJlIG1heGltdW0gdGltZW91dCBpbmZvcm1hdGlvbiBpbiB0aGUg
-Q0ZJIGFyZWEsc28gdGhlIA0KPiBiZXN0IHdheSBpcyB0byBjaG9vc2UgdGhlIHJlc3VsdCBjYWxj
-dWxhdGVkIGFjY29yZGluZyB0byB0aW1lb3V0IGZpZWxkIA0KPiBvZiBzdHJ1Y3QgY2ZpX2lkZW50
-IHRoYXQgcHJvYmVkIGZyb20gbm9yZmxhc2gncyBDRkkgYWVyYS5UaGlzIGlzIGFsc28gYSBzdGFu
-ZGFyZCBkZWZpbmVkIGJ5IENGSS4NCj4gDQo+IFdpdGhvdXQgdGhpcyBjaGFuZ2UsIGlmIHRoZSBz
-aXplIG9mIGJ1ZmZlciBwcm9ncmFtIGlzIDUxMiBvciBiaWdnZXIgDQo+IHRoYW4gMjU2LCBkdWUg
-dG8gdGltZW91dCBpcyB0aGUgc2hvcnRlciB0aGFuIHRoYXQgdGhlIGNoaXAgDQo+IHJlcXVpcmVk
-LGRvX3dyaXRlX2J1ZmZlciBzb21ldGltZXMgZmFpbHMuDQo+IA0KPiBUZXN0ZWQgd2l0aCBNaWNy
-b24gSlMyOEY1MTJNMjlFV3ggYW5kIE1pY3JvbiBNVDI4RVc1MTJBQkEgZmxhc2ggZGV2aWNlcy4N
-Cj4gDQo+IFNpZ25lZC1vZmYtYnk6IGJlYW4gaHVvIDxiZWFuaHVvQG1pY3Jvbi5jb20+DQo+IC0t
-LQ0KPiAgZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAyLmMgfCAgIDQ2ICsrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrLS0tDQo+ICAxIGZpbGUgY2hhbmdlZCwgNDMgaW5zZXJ0
-aW9ucygrKSwgMyBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9j
-aGlwcy9jZmlfY21kc2V0XzAwMDIuYw0KPiBiL2RyaXZlcnMvbXRkL2NoaXBzL2NmaV9jbWRzZXRf
-MDAwMi5jDQo+IGluZGV4IGUyMWZkZTkuLjJhMDhmOWYgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMv
-bXRkL2NoaXBzL2NmaV9jbWRzZXRfMDAwMi5jDQo+ICsrKyBiL2RyaXZlcnMvbXRkL2NoaXBzL2Nm
-aV9jbWRzZXRfMDAwMi5jDQo+IEBAIC02MjgsMTAgKzYyOCw0MiBAQCBzdHJ1Y3QgbXRkX2luZm8g
-KmNmaV9jbWRzZXRfMDAwMihzdHJ1Y3QgbWFwX2luZm8gKm1hcCwgaW50IHByaW1hcnkpDQo+ICAJ
-CWNmaS0+Y2hpcHNbaV0ud29yZF93cml0ZV90aW1lID0gMTw8Y2ZpLT5jZmlxLT5Xb3JkV3JpdGVU
-aW1lb3V0VHlwOw0KPiAgCQljZmktPmNoaXBzW2ldLmJ1ZmZlcl93cml0ZV90aW1lID0gMTw8Y2Zp
-LT5jZmlxLT5CdWZXcml0ZVRpbWVvdXRUeXA7DQo+ICAJCWNmaS0+Y2hpcHNbaV0uZXJhc2VfdGlt
-ZSA9IDE8PGNmaS0+Y2ZpcS0+QmxvY2tFcmFzZVRpbWVvdXRUeXA7DQo+ICsJCS8qDQo+ICsJCSAq
-IFdlIGZpcnN0IGNhbGN1bGF0ZSB0aGUgdGltZW91dCBtYXggYWNjb3JkaW5nIHRvIHRpbWVvdXQN
-Cj4gKwkJICogZmllbGQgb2Ygc3RydWN0IGNmaV9pZGVudCB0aGF0IHByb2JlZCBmcm9tIGNoaXAn
-cyBDRkkNCj4gKwkJICogYWVyYSxJZiBoYXZlbid0IHByb2JlZCB0aGlzIGluZm9ybWF0aW9uLHdl
-IHdpbGwgc3BlY2lmeQ0KPiArCQkgKiBhIGRlZmF1bHQgdmFsdWUsYW5kIHRoZSB0aW1lIHVuaXQg
-aXMgdXMuDQo+ICsJCSAqLw0KPiArCQlpZiAoY2ZpLT5jZmlxLT5Xb3JkV3JpdGVUaW1lb3V0VHlw
-ICYmDQo+ICsJCQljZmktPmNmaXEtPldvcmRXcml0ZVRpbWVvdXRNYXgpew0KPiArCQkJY2ZpLT5j
-aGlwc1tpXS53b3JkX3dyaXRlX3RpbWVfbWF4ID0NCj4gKwkJCQkxPDwoY2ZpLT5jZmlxLT5Xb3Jk
-V3JpdGVUaW1lb3V0VHlwICsNCj4gKwkJCQkJY2ZpLT5jZmlxLT5Xb3JkV3JpdGVUaW1lb3V0TWF4
-KTsNCj4gKwkJCX0gZWxzZSB7DQo+ICsJCS8qIHNwZWNpZnkgbWF4aW11bSB0aW1lb3V0IGZvciBi
-eXRlL3dvcmQgcHJvZ3JhbSAyMDAwdXMgKi8NCj4gKwkJCQljZmktPmNoaXBzW2ldLndvcmRfd3Jp
-dGVfdGltZV9tYXggPSAyMDAwOw0KPiArCQkJCX0NCj4gKwkJaWYgKGNmaS0+Y2ZpcS0+QnVmV3Jp
-dGVUaW1lb3V0VHlwICYmDQo+ICsJCQljZmktPmNmaXEtPkJ1ZldyaXRlVGltZW91dE1heCl7DQo+
-ICsJCQljZmktPmNoaXBzW2ldLmJ1ZmZlcl93cml0ZV90aW1lX21heCA9DQo+ICsJCQkJMTw8KGNm
-aS0+Y2ZpcS0+QnVmV3JpdGVUaW1lb3V0VHlwICsNCj4gKwkJCQkJY2ZpLT5jZmlxLT5CdWZXcml0
-ZVRpbWVvdXRNYXgpOw0KPiArCQkJfSBlbHNlIHsNCj4gKwkJLyogc3BlY2lmeSBtYXhpbXVtIHRp
-bWVvdXQgZm9yIGJ1ZmZlciBwcm9ncmFtIDIwMDB1cyAqLw0KPiArCQkJCWNmaS0+Y2hpcHNbaV0u
-YnVmZmVyX3dyaXRlX3RpbWVfbWF4ID0gMjAwMDsNCj4gKwkJCQl9DQo+ICsJCWlmIChjZmktPmNm
-aXEtPkJsb2NrRXJhc2VUaW1lb3V0VHlwICYmDQo+ICsJCQljZmktPmNmaXEtPkJsb2NrRXJhc2VU
-aW1lb3V0TWF4KXsNCj4gKwkJCWNmaS0+Y2hpcHNbaV0uZXJhc2VfdGltZV9tYXggPQ0KPiArCQkJ
-CTE8PChjZmktPmNmaXEtPkJsb2NrRXJhc2VUaW1lb3V0VHlwICsNCj4gKwkJCQkJY2ZpLT5jZmlx
-LT5CbG9ja0VyYXNlVGltZW91dE1heCk7DQo+ICsJCQl9IGVsc2Ugew0KPiArCS8qIHNwZWNpZnkg
-bWF4aW11bSB0aW1lb3V0IHBlciBpbmRpdmlkdWFsIGJsb2NrIGVyYXNlIDMwMDAwMDB1cyAqLw0K
-PiArCQkJCWNmaS0+Y2hpcHNbaV0uZXJhc2VfdGltZV9tYXggPSAzMDAwMDAwOw0KPiArCQkJCX0N
-Cj4gIAkJY2ZpLT5jaGlwc1tpXS5yZWZfcG9pbnRfY291bnRlciA9IDA7DQo+ICAJCWluaXRfd2Fp
-dHF1ZXVlX2hlYWQoJihjZmktPmNoaXBzW2ldLndxKSk7DQo+ICAJfQ0KPiAtDQo+ICAJbWFwLT5m
-bGRydiA9ICZjZmlfYW1kc3RkX2NoaXBkcnY7DQo+ICANCj4gIAlyZXR1cm4gY2ZpX2FtZHN0ZF9z
-ZXR1cChtdGQpOw0KPiBAQCAtMTQ2Miw4ICsxNDk0LDE2IEBAIHN0YXRpYyBpbnQgX194aXByYW0g
-ZG9fd3JpdGVfYnVmZmVyKHN0cnVjdCANCj4gbWFwX2luZm8gKm1hcCwgc3RydWN0IGZsY2hpcCAq
-Y2hpcCwgIHsNCj4gIAlzdHJ1Y3QgY2ZpX3ByaXZhdGUgKmNmaSA9IG1hcC0+ZmxkcnZfcHJpdjsN
-Cj4gIAl1bnNpZ25lZCBsb25nIHRpbWVvID0gamlmZmllcyArIEhaOw0KDQpJIHdhbnQgdG8gc3Vn
-Z2VzdCBvbmUgc3R1ZmYgbm90IHJlbGF0ZWQgdG8gdGhpcyBwYXRjaC4NCk9uIG15IG9waW5pb24s
-IGFsbCBvY2N1cnJlbmNlcyBvZiBIWiBtdXN0IGJlIGNvbnZlcnRlZCBpbnRvIG1zZWNzX3RvX2pp
-ZmZpZXMoKS4NCg0KLS0tDQoNCg==
+Hi Zhang,
+
+On Mon, May 19, 2014 at 11:49 AM, Zhang Zhen <zhenzhang.zhang@huawei.com> wrote:
+> On 2014/5/19 17:13, Geert Uytterhoeven wrote:
+>> Please don't add mindless casts!
+>>
+>> On Mon, May 19, 2014 at 5:26 AM, Zhang Zhen <zhenzhang.zhang@huawei.com> wrote:
+>>> --- a/fs/ubifs/super.c
+>>> +++ b/fs/ubifs/super.c
+>>> @@ -1905,6 +1905,7 @@ static struct ubi_volume_desc *open_ubi(const char *name, int mode)
+>>>         struct ubi_volume_desc *ubi;
+>>>         int dev, vol;
+>>
+>> dev is int
+>>
+>>>         char *endptr;
+>>> +       int ret;
+>>>
+>>>         /* First, try to open using the device node path method */
+>>>         ubi = ubi_open_volume_path(name, mode);
+>>> @@ -1922,7 +1923,10 @@ static struct ubi_volume_desc *open_ubi(const char *name, int mode)
+>>>         if (!isdigit(name[3]))
+>>>                 return ERR_PTR(-EINVAL);
+>>>
+>>> -       dev = simple_strtoul(name + 3, &endptr, 0);
+>>> +       endptr = (char *)name + 3;
+>>> +       ret = kstrtoul(endptr, 0, (unsigned long *)&dev);
+>>
+>> On 64-bit, long is 64-bit, hence this will write beyond dev and will corrupt
+>> the stack.
+>>
+> Yeah, you are right. This really may write beyond dev.
+>
+> The kstrtoul(const char *s, unsigned int base, unsigned long *res) only accept unsigned long
+> pointer as the third parameter.
+> And the original function simple_strtoul() returns unsigned long type value.
+> It is also cast. So this may not corrupt the stack.
+
+That's not a cast, but an implicit conversion (which may truncate the
+value from 64-bit to 32-bit).
+
+> Or do you have any better suggestion about this?
+
+Change dev and vol to long?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
