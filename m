@@ -1,16 +1,15 @@
-Received: from szxga02-in.huawei.com ([119.145.14.65])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wn2iJ-0000LA-8X
- for linux-mtd@lists.infradead.org; Wed, 21 May 2014 09:21:31 +0000
-Message-ID: <537C6FB1.4020305@huawei.com>
-Date: Wed, 21 May 2014 17:19:45 +0800
-From: hujianyang <hujianyang@huawei.com>
+From: Roger Quadros <rogerq@ti.com>
+To: <tony@atomide.com>, <computersforpeace@gmail.com>
+Subject: [RFC PATCH 00/16] OMAP: GPMC: Restructure OMAP GPMC driver (NAND)
+Date: Wed, 21 May 2014 14:20:48 +0300
+Message-ID: <1400671264-10702-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH] UBIFS: Fix dump messages in ubifs_dump_lprops
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Cc: devicetree@vger.kernel.org, robertcnelson@gmail.com, jg1.han@samsung.com,
+ nsekhar@ti.com, linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ pekon@ti.com, ezequiel.garcia@free-electrons.com, javier@dowhile0.org,
+ linux-omap@vger.kernel.org, dwmw2@infradead.org, Roger Quadros <rogerq@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,31 +19,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Function ubifs_read_one_lp will not set @lp and returns
-an error when ubifs_read_one_lp failed. We should not
-perform ubifs_dump_lprop in this case because @lp is not
-initialized as we wanted.
+Hi,
 
-Signed-off-by: hujianyang <hujianyang@huawei.com>
----
- fs/ubifs/debug.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+The existing OMAP GPMC driver has been suffering from ad-hoc architecture
+with no clear separation between GPMC driver, Chip Select timing/settings and
+Memory Device driver. The device tree implementation also reflects the same
+issues.
 
-diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
-index 5157b86..177b015 100644
---- a/fs/ubifs/debug.c
-+++ b/fs/ubifs/debug.c
-@@ -745,8 +745,10 @@ void ubifs_dump_lprops(struct ubifs_info *c)
+The purpose of this series is to clean up the OMAP GPMC driver architecture,
+provide a cleaner device tree implementation and finally move the gpmc driver
+out of arch/arm/mach-omap2 so that it can be used by other non-OMAP
+TI platforms.
 
- 	for (lnum = c->main_first; lnum < c->leb_cnt; lnum++) {
- 		err = ubifs_read_one_lp(c, lnum, &lp);
--		if (err)
-+		if (err) {
- 			ubifs_err("cannot read lprops for LEB %d", lnum);
-+			continue;
-+		}
+This series tries to solve the problem as follows
 
- 		ubifs_dump_lprop(c, &lp);
- 	}
+For non-DT boot:
+- Create a GPMC platform data structure that holds chip select
+  information as well as child platform device
+- Board files will build this structure using a helper function
+  gpmc_generic_init()
+- GPMC driver will configure the chip select region and create the
+  platform device for each chip select region. Introduce gpmc_probe_legacy()
+  for this purpose.
+
+For DT boot:
+- The GPMC controller node should have a chip select (CS) node for each used
+  chip select. The CS node must have a child device node for each device
+  attached to that chip select. Properties for that child are GPMC agnostic.
+
+  i.e.
+	gpmc {
+		cs0 {
+			nand0 {
+			}
+		};
+
+		cs1 {
+			nor0 {
+			}
+		}
+		...
+	};
+
+- The meaning of ranges and how address mapping is done has changed.
+  Ranges should now contain 2 ranges
+  - GPMC I/O map. This map will be partitioned among the
+    chip select (CS) nodes.
+  - GPMC register map. This is common for all the CS nodes.
+    
+- Chip select (CS) number is no longer specified via reg property. Instead
+  it is specified via the gpmc,cs property in the CS node.
+
+For NAND:
+- Move interrupt handling from GPMC driver to NAND driver. GPMC driver has nothing to do
+  with interrupts.
+- Expose GPMC register space to NAND driver. Both GPMC and NAND drivers share the same
+  register space but don't use the same registers so it is safe. A clear partitioning couldn't
+  be done since the GPMC config registers are interleaved with the NAND registers.
+- Add compatible id. Move NAND DT parsing code from GPMC to NAND driver.
+
+For now the series only addresses the OMAP NAND driver. I'm working at the moment
+to fix other GPMC tied drivers as well (onenand, smc91x, smsc91xx, usb-tusb6010).
+
+Tested on:
+- omap3-beagle
+
+NOTE: This series is only for review and most likely breaks everything apart from NAND on beagle board.
+I hope to get review comments early so that I can avoid any major rework.
+
+Thanks.
+
+--
+cheers,
+-roger
+
+Roger Quadros (16):
+  ARM: OMAP2+: gpmc: Add platform data
+  ARM: OMAP2+: gpmc: Add gpmc timings and settings to platform data
+  ARM: OMAP2+: gmpc: add gpmc_generic_init()
+  ARM: OMAP2+: gpmc: use platform data to configure CS space and
+    poplulate device
+  ARM: OMAP2+: gpmc: Use low level read/write for context save/restore
+  ARM: OMAP2+: gpmc: add NAND specific setup
+  ARM: OMAP2+: nand: Update gpmc_nand_init() to use generic_gpmc_init()
+  mtd: nand: omap: Fix build warning
+  mtd: nand: omap: Move IRQ handling from GPMC to NAND driver
+  mtd: nand: omap: Move gpmc_update_nand_reg to nand driver
+  mtd: nand: omap: Move NAND write protect code from GPMC to NAND driver
+  mtd: nand: omap: Copy platform data parameters to omap_nand_info data
+  mtd: nand: omap: True device tree support
+  ARM: OMAP: gpmc: Update DT binding documentation
+  mtd: nand: omap: Update DT binding documentation
+  ARM: dts: omap3-beagle: Add NAND device
+
+ Documentation/devicetree/bindings/bus/ti-gpmc.txt  | 109 ++-
+ .../devicetree/bindings/mtd/gpmc-nand.txt          |  86 ++-
+ arch/arm/boot/dts/omap3-beagle.dts                 |  66 ++
+ arch/arm/mach-omap2/gpmc-nand.c                    |  85 +--
+ arch/arm/mach-omap2/gpmc.c                         | 781 +++++++++++----------
+ arch/arm/mach-omap2/gpmc.h                         | 151 +---
+ arch/arm/mach-omap2/io.c                           |   2 +
+ drivers/mtd/nand/omap2.c                           | 365 ++++++++--
+ include/linux/platform_data/gpmc-omap.h            | 168 +++++
+ include/linux/platform_data/mtd-nand-omap2.h       |  10 +-
+ 10 files changed, 1103 insertions(+), 720 deletions(-)
+ create mode 100644 include/linux/platform_data/gpmc-omap.h
+
 -- 
-1.8.1.4
+1.8.3.2
