@@ -1,20 +1,23 @@
-Received: from mail-pb0-x22a.google.com ([2607:f8b0:400e:c01::22a])
+Received: from mail-pb0-x231.google.com ([2607:f8b0:400e:c01::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WmulV-0006TA-Uy
- for linux-mtd@lists.infradead.org; Wed, 21 May 2014 00:52:18 +0000
-Received: by mail-pb0-f42.google.com with SMTP id md12so840535pbc.29
- for <linux-mtd@lists.infradead.org>; Tue, 20 May 2014 17:51:56 -0700 (PDT)
-Date: Tue, 20 May 2014 17:51:53 -0700
+ id 1Wmuyv-0001wb-9o
+ for linux-mtd@lists.infradead.org; Wed, 21 May 2014 01:06:09 +0000
+Received: by mail-pb0-f49.google.com with SMTP id jt11so841897pbb.22
+ for <linux-mtd@lists.infradead.org>; Tue, 20 May 2014 18:05:47 -0700 (PDT)
+Date: Tue, 20 May 2014 18:05:44 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Ron <ron@debian.org>
-Subject: Re: [PATCH] NAND_ECC_SOFT_BCH can support subpage reads too
-Message-ID: <20140521005153.GB22233@ld-irv-0074>
-References: <1398403895-5176-1-git-send-email-ron@debian.org>
+To: Pekon Gupta <pekon@ti.com>
+Subject: Re: [PATCH v4 0/4]  mtd: nand: omap: add support for BCH16_ECC
+Message-ID: <20140521010544.GC22233@ld-irv-0074>
+References: <1400486082-4345-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1398403895-5176-1-git-send-email-ron@debian.org>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1400486082-4345-1-git-send-email-pekon@ti.com>
+Cc: Stefan Roese <sr@denx.de>, Tony Lindgren <tony@atomide.com>,
+ Felipe Balbi <balbi@ti.com>, linux-mtd <linux-mtd@lists.infradead.org>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ linux-omap <linux-omap@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,13 +27,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Apr 25, 2014 at 03:01:35PM +0930, Ron wrote:
-> Signed-off-by: Ron Lee <ron@debian.org>
+On Mon, May 19, 2014 at 01:24:38PM +0530, Pekon Gupta wrote:
+> As this series touches both linux-mtd and linux-omap (GPMC) sub-systems but in
+> independent patch-sets, so looping both maintainers. 'Ack' from maintainers would
+> help in getting this series accepted for 3.16
+> 
+> *changes v3 -> v4*
+> [PATCH v4 1/4]: minor update in comments
+> [PATCH v4 2/4]: fixed coding style to keep it generic for big/little endianess
+> [PATCH v4 3/4]: no change
+> [PATCH v4 4/4]: use plain english (non linux stuff)
 
-Pushed to l2-mtd.git. Thanks!
+Pushed all 4 to l2-mtd.git. Thanks!
 
-BTW, can you fix your git config so that it uses your full name? You
-have the sign-off right, but git-send-email is still just picking your
-name up as "Ron."
+I have one comment for patch 3, but it's not a blocker.
 
 Brian
