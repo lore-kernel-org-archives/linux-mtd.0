@@ -1,24 +1,20 @@
-Received: from szxga02-in.huawei.com ([119.145.14.65])
+Received: from szxga01-in.huawei.com ([119.145.14.64])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WmwCo-0007xg-33
- for linux-mtd@lists.infradead.org; Wed, 21 May 2014 02:24:34 +0000
-Message-ID: <537C0DF1.50309@huawei.com>
-Date: Wed, 21 May 2014 10:22:41 +0800
+ id 1WmwmW-0004lj-PR
+ for linux-mtd@lists.infradead.org; Wed, 21 May 2014 03:01:30 +0000
+Message-ID: <537C16C6.9070904@huawei.com>
+Date: Wed, 21 May 2014 11:00:22 +0800
 From: Zhang Zhen <zhenzhang.zhang@huawei.com>
 MIME-Version: 1.0
-To: Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH v2] UBIFS: replace simple_strtoul() with kstrtoint()
-References: <1400575582-24841-1-git-send-email-zhenzhang.zhang@huawei.com>
- <537B16CB.9070508@huawei.com> <537B48C7.6080105@intel.com>
- <CAMuHMdWu30E2jg3=Z_bnDknD-HJqEAn_KxQH4WJ+B9nmwiKwGQ@mail.gmail.com>
- <537B4E6C.7050008@intel.com>
- <CAMuHMdVKz1cvRiCp0Ni1Sv+=n3z78tWZ0w6ijfaGMjunb9oZag@mail.gmail.com>
-In-Reply-To: <CAMuHMdVKz1cvRiCp0Ni1Sv+=n3z78tWZ0w6ijfaGMjunb9oZag@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+To: Adrian Hunter <adrian.hunter@intel.com>, Geert Uytterhoeven
+ <geert@linux-m68k.org>, Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH v3] UBIFS: replace simple_strtoul() with kstrtoint()
+References: <1400641191-27877-1-git-send-email-zhenzhang.zhang@huawei.com>
+In-Reply-To: <1400641191-27877-1-git-send-email-zhenzhang.zhang@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>, Hu
- Jianyang <hujianyang@huawei.com>, Geert Uytterhoeven <geert@linux-m68k.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
+ Hu Jianyang <hujianyang@huawei.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,52 +24,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2014/5/20 20:55, Geert Uytterhoeven wrote:
-> On Tue, May 20, 2014 at 2:45 PM, Adrian Hunter <adrian.hunter@intel.com> wrote:
->>>>> +     ret = kstrtoint(endptr, 0, &dev);
->>>>
->>>> But endptr is used in the code later, so this is wrong.
->>>
->>> That was my first thought, too. But upon closer look, I think it's correct.
->>>
->>>>>
->>>>>       /* ubiY method */
->>>>> -     if (*endptr == '\0')
->>>
->>> endptr would point to the trailing nul on success...
->>>
->>>>> +     if (!ret)
->>>
->>> ... which is now replaced by a test for ret not being an errorcoe.
->>>
->>>>>               return ubi_open_volume(0, dev, mode);
->>>>>
->>>>>       /* ubiX_Y method */
->>>
->>> If ret is an errorcode, the flow continues.
->>>
->>> As parsing the number failed, the code checks if the first character
->>> (name + 3) is an underscore or colon:
->>
->> No, it does not check if parsing failed, it checks for end-of-input.
->> The "X" and "Y" of "ubiX_Y" are numbers.
-Sorry, i made a mistake. As parsing the number failed, it should just return
-ERR_PTR(-EINVAL).
+use the newer and more pleasant kstrtoint() to replace simple_strtoul(),
+because simple_strtoul() is marked for obsoletion.
 
-Thank you for your review. I learned a lot from you and Geert.
-I will send another version.
-> 
-> Sorry, you're right. Thanks for noticing!
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
-> 
-> 
+Signed-off-by: Zhang Zhen <zhenzhang.zhang@huawei.com>
+Signed-off-by: hujianyang <hujianyang@huawei.com>
+---
+ drivers/mtd/ubi/build.c |  9 +++++----
+ fs/ubifs/super.c        | 14 ++++++++++----
+ 2 files changed, 15 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 6e30a3c..489f5ef 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -1190,11 +1190,12 @@ static struct mtd_info * __init open_mtd_by_chdev(const char *mtd_dev)
+ static struct mtd_info * __init open_mtd_device(const char *mtd_dev)
+ {
+ 	struct mtd_info *mtd;
+-	int mtd_num;
+-	char *endp;
++	int mtd_num, ret;
+
+-	mtd_num = simple_strtoul(mtd_dev, &endp, 0);
+-	if (*endp != '\0' || mtd_dev == endp) {
++	ret = kstrtoint(mtd_dev, 0, &mtd_num);
++	if (ret)
++		return ERR_PTR(-EINVAL);
++	if (*mtd_dev != '\0') {
+ 		/*
+ 		 * This does not look like an ASCII integer, probably this is
+ 		 * MTD device name.
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index a81c7b5..4831b60 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -1903,8 +1903,8 @@ const struct super_operations ubifs_super_operations = {
+ static struct ubi_volume_desc *open_ubi(const char *name, int mode)
+ {
+ 	struct ubi_volume_desc *ubi;
+-	int dev, vol;
+-	char *endptr;
++	int dev, vol, ret;
++	const char *endptr;
+
+ 	/* First, try to open using the device node path method */
+ 	ubi = ubi_open_volume_path(name, mode);
+@@ -1922,7 +1922,10 @@ static struct ubi_volume_desc *open_ubi(const char *name, int mode)
+ 	if (!isdigit(name[3]))
+ 		return ERR_PTR(-EINVAL);
+
+-	dev = simple_strtoul(name + 3, &endptr, 0);
++	endptr = name + 3;
++	ret = kstrtoint(endptr, 0, &dev);
++	if (ret)
++		return ERR_PTR(-EINVAL);
+
+ 	/* ubiY method */
+ 	if (*endptr == '\0')
+@@ -1930,7 +1933,10 @@ static struct ubi_volume_desc *open_ubi(const char *name, int mode)
+
+ 	/* ubiX_Y method */
+ 	if (*endptr == '_' && isdigit(endptr[1])) {
+-		vol = simple_strtoul(endptr + 1, &endptr, 0);
++		endptr = endptr + 1;
++		ret = kstrtoint(endptr, 0, &vol);
++		if (ret)
++			return ERR_PTR(-EINVAL);
+ 		if (*endptr != '\0')
+ 			return ERR_PTR(-EINVAL);
+ 		return ubi_open_volume(dev, vol, mode);
+-- 
+1.8.1.2
+
+
+.
