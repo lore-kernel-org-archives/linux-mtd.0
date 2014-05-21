@@ -1,18 +1,22 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WnEfQ-0007mg-2q
- for linux-mtd@lists.infradead.org; Wed, 21 May 2014 22:07:20 +0000
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: <linux-mtd@lists.infradead.org>, Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v2 3/3] mtd: Account for BBT blocks when a partition is being
- allocated
-Date: Wed, 21 May 2014 19:06:13 -0300
-Message-Id: <1400709973-7991-4-git-send-email-ezequiel.garcia@free-electrons.com>
-In-Reply-To: <1400709973-7991-1-git-send-email-ezequiel.garcia@free-electrons.com>
-References: <1400709973-7991-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WnG4K-0000ue-Gz
+ for linux-mtd@lists.infradead.org; Wed, 21 May 2014 23:37:09 +0000
+Received: by mail-pa0-f52.google.com with SMTP id fa1so1858990pad.25
+ for <linux-mtd@lists.infradead.org>; Wed, 21 May 2014 16:36:47 -0700 (PDT)
+Date: Wed, 21 May 2014 16:36:44 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Ted Juan <ted.juan@gmail.com>
+Subject: Re: [PATCH] mtd: nand: omap: fix omap_calculate_ecc_bch() for-loop
+ error
+Message-ID: <20140521233644.GJ22233@ld-irv-0074>
+References: <CAE94FHH66=h0Px23dw8LX9_Hu+GtA1c6qVOqwo6U4uHq+d1zUw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAE94FHH66=h0Px23dw8LX9_Hu+GtA1c6qVOqwo6U4uHq+d1zUw@mail.gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
+ Pekon" <pekon@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,29 +26,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-With the introduction of mtd_block_isreserved(), it's now possible
-to fix the bad and reserved block distribution exposed by ecc_stats,
-instead of accounting all the bad or reserved blocks as 'bad'.
+On Fri, May 16, 2014 at 05:38:51PM +0800, Ted Juan wrote:
+> The patch is mirror issue that the for-loop use the same variable.
+> 
+> 
+> Signed-off-by: ted.juan <ted.juan@gmail.com>
 
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
----
- drivers/mtd/mtdpart.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Please fix your whitespace and line wrapping. I cannot apply your patch:
 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 921e8c6..a3e3a7d 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -535,7 +535,9 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
- 		uint64_t offs = 0;
- 
- 		while (offs < slave->mtd.size) {
--			if (mtd_block_isbad(master, offs + slave->offset))
-+			if (mtd_block_isreserved(master, offs + slave->offset))
-+				slave->mtd.ecc_stats.bbtblocks++;
-+			else if (mtd_block_isbad(master, offs + slave->offset))
- 				slave->mtd.ecc_stats.badblocks++;
- 			offs += slave->mtd.erasesize;
- 		}
--- 
-1.9.1
+Applying: mtd: nand: omap: fix omap_calculate_ecc_bch() for-loop error
+fatal: corrupt patch at line 10
+Patch failed at 0001 mtd: nand: omap: fix omap_calculate_ecc_bch() for-loop error
+The copy of the patch that failed is found in:
+   /home/norris/git/l2-mtd/.git/rebase-apply/patch
+When you have resolved this problem, run "git am --resolved".
+If you prefer to skip this patch, run "git am --skip" instead.
+To restore the original branch and stop patching, run "git am --abort".
+
+Brian
