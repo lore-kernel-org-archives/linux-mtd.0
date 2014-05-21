@@ -1,21 +1,20 @@
-Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
+Received: from mail-pb0-x22a.google.com ([2607:f8b0:400e:c01::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wmug1-0004h1-Q6
- for linux-mtd@lists.infradead.org; Wed, 21 May 2014 00:46:38 +0000
-Received: by mail-pa0-f50.google.com with SMTP id fb1so828951pad.37
- for <linux-mtd@lists.infradead.org>; Tue, 20 May 2014 17:46:16 -0700 (PDT)
-Date: Tue, 20 May 2014 17:46:08 -0700
+ id 1WmulV-0006TA-Uy
+ for linux-mtd@lists.infradead.org; Wed, 21 May 2014 00:52:18 +0000
+Received: by mail-pb0-f42.google.com with SMTP id md12so840535pbc.29
+ for <linux-mtd@lists.infradead.org>; Tue, 20 May 2014 17:51:56 -0700 (PDT)
+Date: Tue, 20 May 2014 17:51:53 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Vincenzo Aliberti <vincenzo.aliberti@gmail.com>
-Subject: Re: [PATCH v4] mtd: lpddr: add driver for LPDDR2-NVM PCM memories
-Message-ID: <20140521004608.GA22233@ld-irv-0074>
-References: <20140514161917.GJ28907@ld-irv-0074>
- <1400188772-2247-1-git-send-email-vincenzo.aliberti@gmail.com>
+To: Ron <ron@debian.org>
+Subject: Re: [PATCH] NAND_ECC_SOFT_BCH can support subpage reads too
+Message-ID: <20140521005153.GB22233@ld-irv-0074>
+References: <1398403895-5176-1-git-send-email-ron@debian.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1400188772-2247-1-git-send-email-vincenzo.aliberti@gmail.com>
-Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
+In-Reply-To: <1398403895-5176-1-git-send-email-ron@debian.org>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,16 +24,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, May 15, 2014 at 11:19:32PM +0200, Vincenzo Aliberti wrote:
-> MTD: LPDDR: Add Driver for LPDDR2-NVM PCM memories
-> 
-> Signed-off-by: Vincenzo Aliberti <vincenzo.aliberti@gmail.com>
-> 
-> ---
-> Changes in v4:
-> 	- Improved error handling
-> 	- Size now managed using resource_size(add_range)
+On Fri, Apr 25, 2014 at 03:01:35PM +0930, Ron wrote:
+> Signed-off-by: Ron Lee <ron@debian.org>
 
 Pushed to l2-mtd.git. Thanks!
+
+BTW, can you fix your git config so that it uses your full name? You
+have the sign-off right, but git-send-email is still just picking your
+name up as "Ron."
 
 Brian
