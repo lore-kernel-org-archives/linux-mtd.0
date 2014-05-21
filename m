@@ -1,14 +1,13 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WnEfM-0007la-VT
- for linux-mtd@lists.infradead.org; Wed, 21 May 2014 22:07:18 +0000
+ id 1WnEfM-0007mA-VY
+ for linux-mtd@lists.infradead.org; Wed, 21 May 2014 22:07:19 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>, Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH v2 1/3] mtd: Add sysfs attributes to expose the ECC stats
- fields
-Date: Wed, 21 May 2014 19:06:11 -0300
-Message-Id: <1400709973-7991-2-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH v2 2/3] mtd: Introduce mtd_block_isreserved()
+Date: Wed, 21 May 2014 19:06:12 -0300
+Message-Id: <1400709973-7991-3-git-send-email-ezequiel.garcia@free-electrons.com>
 In-Reply-To: <1400709973-7991-1-git-send-email-ezequiel.garcia@free-electrons.com>
 References: <1400709973-7991-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -22,78 +21,171 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-These new sysfs device attributes allows to retrieve the ECC
-and bad block stats by poking a sysfs file, which is often more convenient
-than using the ioctl.
+In addition to mtd_block_isbad(), which checks if a block is bad or reserved,
+it's needed to check if a block is reserved only (but not bad). This commit
+adds an MTD interface for it, in a similar fashion to mtd_block_isbad().
+
+While here, fix mtd_block_isbad() so the out-of-bounds checking is done the
+callback check.
 
 Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 ---
- drivers/mtd/mtdcore.c | 46 ++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 46 insertions(+)
+ drivers/mtd/mtdcore.c        | 14 ++++++++++++--
+ drivers/mtd/mtdpart.c        |  9 +++++++++
+ drivers/mtd/nand/nand_base.c | 18 ++++++++++++++++++
+ drivers/mtd/nand/nand_bbt.c  | 14 ++++++++++++++
+ include/linux/mtd/mtd.h      |  2 ++
+ include/linux/mtd/nand.h     |  1 +
+ 6 files changed, 56 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 21ce0f4..d4dcc45 100644
+index d4dcc45..0017ef6 100644
 --- a/drivers/mtd/mtdcore.c
 +++ b/drivers/mtd/mtdcore.c
-@@ -298,6 +298,48 @@ static ssize_t mtd_ecc_step_size_show(struct device *dev,
+@@ -1044,12 +1044,22 @@ int mtd_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
  }
- static DEVICE_ATTR(ecc_step_size, S_IRUGO, mtd_ecc_step_size_show, NULL);
+ EXPORT_SYMBOL_GPL(mtd_is_locked);
  
-+static ssize_t mtd_ecc_stats_corrected_show(struct device *dev,
-+		struct device_attribute *attr, char *buf)
-+{
-+	struct mtd_info *mtd = dev_get_drvdata(dev);
-+	struct mtd_ecc_stats *ecc_stats = &mtd->ecc_stats;
-+
-+	return snprintf(buf, PAGE_SIZE, "%u\n", ecc_stats->corrected);
+-int mtd_block_isbad(struct mtd_info *mtd, loff_t ofs)
++int mtd_block_isreserved(struct mtd_info *mtd, loff_t ofs)
+ {
+-	if (!mtd->_block_isbad)
++	if (ofs < 0 || ofs > mtd->size)
++		return -EINVAL;
++	if (!mtd->_block_isreserved)
+ 		return 0;
++	return mtd->_block_isreserved(mtd, ofs);
 +}
-+static DEVICE_ATTR(corrected_bits, S_IRUGO,
-+		   mtd_ecc_stats_corrected_show, NULL);
++EXPORT_SYMBOL_GPL(mtd_block_isreserved);
 +
-+static ssize_t mtd_ecc_stats_errors_show(struct device *dev,
-+		struct device_attribute *attr, char *buf)
++int mtd_block_isbad(struct mtd_info *mtd, loff_t ofs)
 +{
-+	struct mtd_info *mtd = dev_get_drvdata(dev);
-+	struct mtd_ecc_stats *ecc_stats = &mtd->ecc_stats;
-+
-+	return snprintf(buf, PAGE_SIZE, "%u\n", ecc_stats->failed);
-+}
-+static DEVICE_ATTR(uncorrectable_errors, S_IRUGO,
-+		   mtd_ecc_stats_errors_show, NULL);
-+
-+static ssize_t mtd_badblocks_show(struct device *dev,
-+		struct device_attribute *attr, char *buf)
+ 	if (ofs < 0 || ofs > mtd->size)
+ 		return -EINVAL;
++	if (!mtd->_block_isbad)
++		return 0;
+ 	return mtd->_block_isbad(mtd, ofs);
+ }
+ EXPORT_SYMBOL_GPL(mtd_block_isbad);
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index 1ca9aec..921e8c6 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -290,6 +290,13 @@ static void part_resume(struct mtd_info *mtd)
+ 	part->master->_resume(part->master);
+ }
+ 
++static int part_block_isreserved(struct mtd_info *mtd, loff_t ofs)
 +{
-+	struct mtd_info *mtd = dev_get_drvdata(dev);
-+	struct mtd_ecc_stats *ecc_stats = &mtd->ecc_stats;
-+
-+	return snprintf(buf, PAGE_SIZE, "%u\n", ecc_stats->badblocks);
++	struct mtd_part *part = PART(mtd);
++	ofs += part->offset;
++	return part->master->_block_isreserved(part->master, ofs);
 +}
-+static DEVICE_ATTR(bad_blocks, S_IRUGO, mtd_badblocks_show, NULL);
 +
-+static ssize_t mtd_bbtblocks_show(struct device *dev,
-+		struct device_attribute *attr, char *buf)
+ static int part_block_isbad(struct mtd_info *mtd, loff_t ofs)
+ {
+ 	struct mtd_part *part = PART(mtd);
+@@ -422,6 +429,8 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
+ 		slave->mtd._unlock = part_unlock;
+ 	if (master->_is_locked)
+ 		slave->mtd._is_locked = part_is_locked;
++	if (master->_block_isreserved)
++		slave->mtd._block_isreserved = part_block_isreserved;
+ 	if (master->_block_isbad)
+ 		slave->mtd._block_isbad = part_block_isbad;
+ 	if (master->_block_markbad)
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 7853b9b..65f59dd 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -487,6 +487,23 @@ static int nand_check_wp(struct mtd_info *mtd)
+  * nand_block_checkbad - [GENERIC] Check if a block is marked bad
+  * @mtd: MTD device structure
+  * @ofs: offset from device start
++ *
++ * Check if the block is mark as reserved.
++ */
++static int nand_block_isreserved(struct mtd_info *mtd, loff_t ofs)
 +{
-+	struct mtd_info *mtd = dev_get_drvdata(dev);
-+	struct mtd_ecc_stats *ecc_stats = &mtd->ecc_stats;
++	struct nand_chip *chip = mtd->priv;
 +
-+	return snprintf(buf, PAGE_SIZE, "%u\n", ecc_stats->bbtblocks);
++	if (!chip->bbt)
++		return 0;
++	/* Return info from the table */
++	return nand_isreserved_bbt(mtd, ofs);
 +}
-+static DEVICE_ATTR(bbt_blocks, S_IRUGO, mtd_bbtblocks_show, NULL);
 +
- static struct attribute *mtd_attrs[] = {
- 	&dev_attr_type.attr,
- 	&dev_attr_flags.attr,
-@@ -310,6 +352,10 @@ static struct attribute *mtd_attrs[] = {
- 	&dev_attr_name.attr,
- 	&dev_attr_ecc_strength.attr,
- 	&dev_attr_ecc_step_size.attr,
-+	&dev_attr_corrected_bits.attr,
-+	&dev_attr_uncorrectable_errors.attr,
-+	&dev_attr_bad_blocks.attr,
-+	&dev_attr_bbt_blocks.attr,
- 	&dev_attr_bitflip_threshold.attr,
- 	NULL,
- };
++/**
++ * nand_block_checkbad - [GENERIC] Check if a block is marked bad
++ * @mtd: MTD device structure
++ * @ofs: offset from device start
+  * @getchip: 0, if the chip is already selected
+  * @allowbbt: 1, if its allowed to access the bbt area
+  *
+@@ -4042,6 +4059,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 	mtd->_unlock = NULL;
+ 	mtd->_suspend = nand_suspend;
+ 	mtd->_resume = nand_resume;
++	mtd->_block_isreserved = nand_block_isreserved;
+ 	mtd->_block_isbad = nand_block_isbad;
+ 	mtd->_block_markbad = nand_block_markbad;
+ 	mtd->writebufsize = mtd->writesize;
+diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+index c0615d1..34db1e5 100644
+--- a/drivers/mtd/nand/nand_bbt.c
++++ b/drivers/mtd/nand/nand_bbt.c
+@@ -1310,6 +1310,20 @@ int nand_default_bbt(struct mtd_info *mtd)
+ }
+ 
+ /**
++ * nand_isreserved_bbt - [NAND Interface] Check if a block is reserved
++ * @mtd: MTD device structure
++ * @offs: offset in the device
++ */
++int nand_isreserved_bbt(struct mtd_info *mtd, loff_t offs)
++{
++	struct nand_chip *this = mtd->priv;
++	int block;
++
++	block = (int)(offs >> this->bbt_erase_shift);
++	return bbt_get_entry(this, block) == BBT_BLOCK_RESERVED;
++}
++
++/**
+  * nand_isbad_bbt - [NAND Interface] Check if a block is bad
+  * @mtd: MTD device structure
+  * @offs: offset in the device
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index a1b0b4c..031ff3a 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -222,6 +222,7 @@ struct mtd_info {
+ 	int (*_lock) (struct mtd_info *mtd, loff_t ofs, uint64_t len);
+ 	int (*_unlock) (struct mtd_info *mtd, loff_t ofs, uint64_t len);
+ 	int (*_is_locked) (struct mtd_info *mtd, loff_t ofs, uint64_t len);
++	int (*_block_isreserved) (struct mtd_info *mtd, loff_t ofs);
+ 	int (*_block_isbad) (struct mtd_info *mtd, loff_t ofs);
+ 	int (*_block_markbad) (struct mtd_info *mtd, loff_t ofs);
+ 	int (*_suspend) (struct mtd_info *mtd);
+@@ -302,6 +303,7 @@ static inline void mtd_sync(struct mtd_info *mtd)
+ int mtd_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
+ int mtd_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
+ int mtd_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len);
++int mtd_block_isreserved(struct mtd_info *mtd, loff_t ofs);
+ int mtd_block_isbad(struct mtd_info *mtd, loff_t ofs);
+ int mtd_block_markbad(struct mtd_info *mtd, loff_t ofs);
+ 
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 7a922e6..a2ccc63 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -805,6 +805,7 @@ extern struct nand_manufacturers nand_manuf_ids[];
+ extern int nand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd);
+ extern int nand_default_bbt(struct mtd_info *mtd);
+ extern int nand_markbad_bbt(struct mtd_info *mtd, loff_t offs);
++extern int nand_isreserved_bbt(struct mtd_info *mtd, loff_t offs);
+ extern int nand_isbad_bbt(struct mtd_info *mtd, loff_t offs, int allowbbt);
+ extern int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
+ 			   int allowbbt);
 -- 
 1.9.1
