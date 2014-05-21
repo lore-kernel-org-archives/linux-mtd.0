@@ -1,25 +1,22 @@
-Received: from mail-pd0-x22d.google.com ([2607:f8b0:400e:c02::22d])
+Received: from mail-ig0-x22b.google.com ([2607:f8b0:4001:c05::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WmvSl-0002An-Ea
- for linux-mtd@lists.infradead.org; Wed, 21 May 2014 01:36:59 +0000
-Received: by mail-pd0-f173.google.com with SMTP id v10so858244pde.4
- for <linux-mtd@lists.infradead.org>; Tue, 20 May 2014 18:36:35 -0700 (PDT)
-Date: Tue, 20 May 2014 18:36:32 -0700
+ id 1Wmvex-0005W2-2a
+ for linux-mtd@lists.infradead.org; Wed, 21 May 2014 01:49:35 +0000
+Received: by mail-ig0-f171.google.com with SMTP id c1so5651513igq.4
+ for <linux-mtd@lists.infradead.org>; Tue, 20 May 2014 18:49:11 -0700 (PDT)
+Date: Tue, 20 May 2014 18:49:08 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Pekon Gupta <pekon@ti.com>
-Subject: Re: [PATCH v4 3/4] mtd: nand: omap: add support for BCH16_ECC - NAND
- driver updates
-Message-ID: <20140521013632.GD22233@ld-irv-0074>
-References: <1400486082-4345-1-git-send-email-pekon@ti.com>
- <1400486082-4345-4-git-send-email-pekon@ti.com>
+To: kbuild test robot <fengguang.wu@intel.com>
+Subject: Re: [l2-mtd:master 28/29] drivers/mtd/lpddr/lpddr2_nvm.c:149:2:
+ error: implicit declaration of function 'writel_relaxed'
+Message-ID: <20140521014908.GE22233@ld-irv-0074>
+References: <537bfc24.N6Jd/c3WxnkfHn37%fengguang.wu@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1400486082-4345-4-git-send-email-pekon@ti.com>
-Cc: Stefan Roese <sr@denx.de>, Tony Lindgren <tony@atomide.com>,
- Felipe Balbi <balbi@ti.com>, linux-mtd <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- linux-omap <linux-omap@vger.kernel.org>
+In-Reply-To: <537bfc24.N6Jd/c3WxnkfHn37%fengguang.wu@intel.com>
+Cc: linux-mtd@lists.infradead.org, kbuild-all@01.org,
+ Vincenzo Aliberti <vincenzo.aliberti@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,67 +26,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, May 19, 2014 at 01:24:41PM +0530, Pekon Gupta wrote:
-> --- a/drivers/mtd/nand/omap2.c
-> +++ b/drivers/mtd/nand/omap2.c
-> @@ -1201,6 +1219,41 @@ static int __maybe_unused omap_calculate_ecc_bch(struct mtd_info *mtd,
->  			*ecc_code++ = ((bch_val1 >> 4) & 0xFF);
->  			*ecc_code++ = ((bch_val1 & 0xF) << 4);
->  			break;
-> +		case OMAP_ECC_BCH16_CODE_HW:
-> +			val = readl(gpmc_regs->gpmc_bch_result6[i]);
+On Wed, May 21, 2014 at 09:06:44AM +0800, kbuild test robot wrote:
+> tree:   git://git.infradead.org/users/dedekind/l2-mtd.git master
+> head:   4007e2d175cc83ea728b757e49155826b32fbff8
+> commit: 96ba9dd65788a0bd2a7d1e57ec78b7642f0ccc25 [28/29] mtd: lpddr: add driver for LPDDR2-NVM PCM memories
+> config: make ARCH=x86_64 allyesconfig
+> 
+> All error/warnings:
+> 
+>    drivers/mtd/lpddr/lpddr2_nvm.c: In function 'ow_enable':
+> >> drivers/mtd/lpddr/lpddr2_nvm.c:149:2: error: implicit declaration of function 'writel_relaxed' [-Werror=implicit-function-declaration]
+>      writel_relaxed(build_mr_cfgmask(pcm_data->bus_width) | 0x18,
+>      ^
+>    cc1: some warnings being treated as errors
+> 
+> vim +/writel_relaxed +149 drivers/mtd/lpddr/lpddr2_nvm.c
+> 
+>    143	 * Register, Device ID, etc
+>    144	 */
+>    145	static inline void ow_enable(struct map_info *map)
+>    146	{
+>    147		struct pcm_int_data *pcm_data = map->fldrv_priv;
+>    148	
+>  > 149		writel_relaxed(build_mr_cfgmask(pcm_data->bus_width) | 0x18,
+>    150			pcm_data->ctl_regs + LPDDR2_MODE_REG_CFG);
+>    151		writel_relaxed(0x01, pcm_data->ctl_regs + LPDDR2_MODE_REG_DATA);
+>    152	}
 
-For all of these 'gpmc_bch_resultX' fields, couldn't you make this into
-a 2-D array? So to access BCH result 6 at sector i, it would be:
+This is because writel_relaxed is not implemented consistently across
+all architectures. It looks like Will Deacon is trying to fix this.
 
-			val = readl(gpmc_regs->gpmc_bch_result[6][i];
+  https://lkml.org/lkml/2014/4/17/267
 
-This could help you to rewrite some of this stuff as loops, instead of
-giant blocks of copy-paste-modify.
+Vincenzo,
 
-> +			ecc_code[0]  = ((val >>  8) & 0xFF);
-> +			ecc_code[1]  = ((val >>  0) & 0xFF);
-> +			val = readl(gpmc_regs->gpmc_bch_result5[i]);
-> +			ecc_code[2]  = ((val >> 24) & 0xFF);
-> +			ecc_code[3]  = ((val >> 16) & 0xFF);
-> +			ecc_code[4]  = ((val >>  8) & 0xFF);
-> +			ecc_code[5]  = ((val >>  0) & 0xFF);
+What do you think? Should we:
 
-A lot of this code can be rewritten to use the endian swapping macros, I
-expect. Something like this looks equivalent:
-
-			*((uint32_t *)&ecc_code[2]) = cpu_to_be32(val);
-
-You could probably fix the types up to make this look a little nicer.
-
-> +			val = readl(gpmc_regs->gpmc_bch_result4[i]);
-> +			ecc_code[6]  = ((val >> 24) & 0xFF);
-> +			ecc_code[7]  = ((val >> 16) & 0xFF);
-> +			ecc_code[8]  = ((val >>  8) & 0xFF);
-> +			ecc_code[9]  = ((val >>  0) & 0xFF);
-> +			val = readl(gpmc_regs->gpmc_bch_result3[i]);
-> +			ecc_code[10] = ((val >> 24) & 0xFF);
-> +			ecc_code[11] = ((val >> 16) & 0xFF);
-> +			ecc_code[12] = ((val >>  8) & 0xFF);
-> +			ecc_code[13] = ((val >>  0) & 0xFF);
-> +			val = readl(gpmc_regs->gpmc_bch_result2[i]);
-> +			ecc_code[14] = ((val >> 24) & 0xFF);
-> +			ecc_code[15] = ((val >> 16) & 0xFF);
-> +			ecc_code[16] = ((val >>  8) & 0xFF);
-> +			ecc_code[17] = ((val >>  0) & 0xFF);
-> +			val = readl(gpmc_regs->gpmc_bch_result1[i]);
-> +			ecc_code[18] = ((val >> 24) & 0xFF);
-> +			ecc_code[19] = ((val >> 16) & 0xFF);
-> +			ecc_code[20] = ((val >>  8) & 0xFF);
-> +			ecc_code[21] = ((val >>  0) & 0xFF);
-> +			val = readl(gpmc_regs->gpmc_bch_result0[i]);
-> +			ecc_code[22] = ((val >> 24) & 0xFF);
-> +			ecc_code[23] = ((val >> 16) & 0xFF);
-> +			ecc_code[24] = ((val >>  8) & 0xFF);
-> +			ecc_code[25] = ((val >>  0) & 0xFF);
-> +			break;
->  		default:
->  			return -EINVAL;
->  		}
+ 1. Limit your driver to ARM (or other ARCH that supports
+    writel_relaxed()?
+ 2. Use writel() instead?
+ 3. Wait for other ARCH'es to support writel_relaxed()?
 
 Brian
