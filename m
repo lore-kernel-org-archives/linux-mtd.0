@@ -1,18 +1,24 @@
-Received: from mail-pb0-x22e.google.com ([2607:f8b0:400e:c01::22e])
+Received: from mail-we0-x230.google.com ([2a00:1450:400c:c03::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WmzqT-0000iz-TW
- for linux-mtd@lists.infradead.org; Wed, 21 May 2014 06:17:46 +0000
-Received: by mail-pb0-f46.google.com with SMTP id rq2so1084017pbb.5
- for <linux-mtd@lists.infradead.org>; Tue, 20 May 2014 23:17:25 -0700 (PDT)
-From: Brian Norris <computersforpeace@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 6/6] mtd: nand: r852: correct write_buf loop bounds
-Date: Tue, 20 May 2014 23:17:03 -0700
-Message-Id: <1400653023-25757-7-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1400653023-25757-1-git-send-email-computersforpeace@gmail.com>
-References: <1400653023-25757-1-git-send-email-computersforpeace@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Maxim Levitsky <maximlevitsky@gmail.com>
+ id 1Wn02l-00082m-N4
+ for linux-mtd@lists.infradead.org; Wed, 21 May 2014 06:30:28 +0000
+Received: by mail-we0-f176.google.com with SMTP id q59so1513148wes.7
+ for <linux-mtd@lists.infradead.org>; Tue, 20 May 2014 23:30:05 -0700 (PDT)
+MIME-Version: 1.0
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <537C16C6.9070904@huawei.com>
+References: <1400641191-27877-1-git-send-email-zhenzhang.zhang@huawei.com>
+ <537C16C6.9070904@huawei.com>
+Date: Wed, 21 May 2014 08:30:05 +0200
+Message-ID: <CAMuHMdVqimC046YXDVmPt5+8_bphy_gn963AMo-_bMtgobjMKA@mail.gmail.com>
+Subject: Re: [PATCH v3] UBIFS: replace simple_strtoul() with kstrtoint()
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Zhang Zhen <zhenzhang.zhang@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: Hu Jianyang <hujianyang@huawei.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,47 +28,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The two loops in r852_write_buf() are designed to handle 4-byte-aligned
-and then 1-byte-aligned portions, respectively. However, there are two
-issues:
+On Wed, May 21, 2014 at 5:00 AM, Zhang Zhen <zhenzhang.zhang@huawei.com> wrote:
+> @@ -1922,7 +1922,10 @@ static struct ubi_volume_desc *open_ubi(const char *name, int mode)
+>         if (!isdigit(name[3]))
+>                 return ERR_PTR(-EINVAL);
+>
+> -       dev = simple_strtoul(name + 3, &endptr, 0);
+> +       endptr = name + 3;
 
-(1) The first loop will only terminate if 'len' is a multiple of 4
-(2) The second loop will never terminate if it runs at least once
+As Adrian pointed out, endptr is used later, and it must point to the
+character after the parsed number.
 
-Rewrite these loops as they were probably intended. Compile tested only.
+> +       ret = kstrtoint(endptr, 0, &dev);
+> +       if (ret)
+> +               return ERR_PTR(-EINVAL);
+>
+>         /* ubiY method */
+>         if (*endptr == '\0')
+> @@ -1930,7 +1933,10 @@ static struct ubi_volume_desc *open_ubi(const char *name, int mode)
+>
+>         /* ubiX_Y method */
+>         if (*endptr == '_' && isdigit(endptr[1])) {
+> -               vol = simple_strtoul(endptr + 1, &endptr, 0);
+> +               endptr = endptr + 1;
+> +               ret = kstrtoint(endptr, 0, &vol);
+> +               if (ret)
+> +                       return ERR_PTR(-EINVAL);
 
-Issues pointed out by Coverity Scan.
+Gr{oetje,eeting}s,
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Cc: Maxim Levitsky <maximlevitsky@gmail.com>
----
- drivers/mtd/nand/r852.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+                        Geert
 
-diff --git a/drivers/mtd/nand/r852.c b/drivers/mtd/nand/r852.c
-index 325930db3f04..baea83f4dea8 100644
---- a/drivers/mtd/nand/r852.c
-+++ b/drivers/mtd/nand/r852.c
-@@ -245,7 +245,7 @@ static void r852_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
- 	}
- 
- 	/* write DWORD chinks - faster */
--	while (len) {
-+	while (len >= 4) {
- 		reg = buf[0] | buf[1] << 8 | buf[2] << 16 | buf[3] << 24;
- 		r852_write_reg_dword(dev, R852_DATALINE, reg);
- 		buf += 4;
-@@ -254,8 +254,10 @@ static void r852_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
- 	}
- 
- 	/* write rest */
--	while (len)
-+	while (len > 0) {
- 		r852_write_reg(dev, R852_DATALINE, *buf++);
-+		len--;
-+	}
- }
- 
- /*
--- 
-1.7.9.5
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
