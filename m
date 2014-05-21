@@ -1,9 +1,9 @@
 From: Roger Quadros <rogerq@ti.com>
 To: <tony@atomide.com>, <computersforpeace@gmail.com>
-Subject: [RFC PATCH 05/16] ARM: OMAP2+: gpmc: Use low level read/write for
- context save/restore
-Date: Wed, 21 May 2014 14:20:53 +0300
-Message-ID: <1400671264-10702-6-git-send-email-rogerq@ti.com>
+Subject: [RFC PATCH 07/16] ARM: OMAP2+: nand: Update gpmc_nand_init() to use
+ generic_gpmc_init()
+Date: Wed, 21 May 2014 14:20:55 +0300
+Message-ID: <1400671264-10702-8-git-send-email-rogerq@ti.com>
 In-Reply-To: <1400671264-10702-1-git-send-email-rogerq@ti.com>
 References: <1400671264-10702-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
@@ -21,200 +21,130 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This will make it easier to move the GPMC driver out of arch/arm/mach-omap2.
-Just the context save/restore code can remain there without any dependency
-with the GPMC driver.
+This function should only be called by board init code for
+legacy boot.
 
 Signed-off-by: Roger Quadros <rogerq@ti.com>
 ---
- arch/arm/mach-omap2/gpmc.c | 121 +++++++++++++++++++++++++++++++--------------
- arch/arm/mach-omap2/gpmc.h |   1 +
- arch/arm/mach-omap2/io.c   |   2 +
- 3 files changed, 88 insertions(+), 36 deletions(-)
+ arch/arm/mach-omap2/gpmc-nand.c | 79 ++++++++---------------------------------
+ 1 file changed, 14 insertions(+), 65 deletions(-)
 
-diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
-index 04bae67..26b26ec 100644
---- a/arch/arm/mach-omap2/gpmc.c
-+++ b/arch/arm/mach-omap2/gpmc.c
-@@ -1976,34 +1976,80 @@ static irqreturn_t gpmc_handle_irq(int irq, void *dev)
+diff --git a/arch/arm/mach-omap2/gpmc-nand.c b/arch/arm/mach-omap2/gpmc-nand.c
+index 4349e82..d536575 100644
+--- a/arch/arm/mach-omap2/gpmc-nand.c
++++ b/arch/arm/mach-omap2/gpmc-nand.c
+@@ -25,8 +25,11 @@
+ #define	NAND_IO_SIZE	4
  
- static struct omap3_gpmc_regs gpmc_context;
- 
-+/*
-+ * Below code only for OMAP3 OFF mode support.
-+ * This code must be left back in mach-omap2.
-+ */
-+void __iomem *omap2_gpmc_base;
-+
-+void __init omap2_set_globals_gpmc(void __iomem *gpmc)
-+{
-+	omap2_gpmc_base = gpmc;
-+}
-+
-+static u32 _gpmc_read_reg(u16 reg)
-+{
-+	return __raw_readl(omap2_gpmc_base + reg);
-+}
-+
-+static void _gpmc_write_reg(u32 val, u16 reg)
-+{
-+	__raw_readl(omap2_gpmc_base + reg);
-+}
-+
-+static u32 _gpmc_cs_read_reg(int cs, int idx)
-+{
-+	u16 reg;
-+
-+	reg = GPMC_CS0_OFFSET + (cs * GPMC_CS_SIZE) + idx;
-+
-+	return _gpmc_read_reg(reg);
-+}
-+
-+static void _gpmc_cs_write_reg(int cs, int idx, u32 val)
-+{
-+	u16 reg;
-+
-+	reg = GPMC_CS0_OFFSET + (cs * GPMC_CS_SIZE) + idx;
-+	_gpmc_write_reg(val, reg);
-+}
-+
- void omap3_gpmc_save_context(void)
- {
- 	int i;
-+	u32 val;
-+
-+	if (!omap2_gpmc_base)
-+		return;
- 
--	gpmc_context.sysconfig = gpmc_read_reg(GPMC_SYSCONFIG);
--	gpmc_context.irqenable = gpmc_read_reg(GPMC_IRQENABLE);
--	gpmc_context.timeout_ctrl = gpmc_read_reg(GPMC_TIMEOUT_CONTROL);
--	gpmc_context.config = gpmc_read_reg(GPMC_CONFIG);
--	gpmc_context.prefetch_config1 = gpmc_read_reg(GPMC_PREFETCH_CONFIG1);
--	gpmc_context.prefetch_config2 = gpmc_read_reg(GPMC_PREFETCH_CONFIG2);
--	gpmc_context.prefetch_control = gpmc_read_reg(GPMC_PREFETCH_CONTROL);
-+	gpmc_context.sysconfig = _gpmc_read_reg(GPMC_SYSCONFIG);
-+	gpmc_context.irqenable = _gpmc_read_reg(GPMC_IRQENABLE);
-+	gpmc_context.timeout_ctrl = _gpmc_read_reg(GPMC_TIMEOUT_CONTROL);
-+	gpmc_context.config = _gpmc_read_reg(GPMC_CONFIG);
-+	gpmc_context.prefetch_config1 = _gpmc_read_reg(GPMC_PREFETCH_CONFIG1);
-+	gpmc_context.prefetch_config2 = _gpmc_read_reg(GPMC_PREFETCH_CONFIG2);
-+	gpmc_context.prefetch_control = _gpmc_read_reg(GPMC_PREFETCH_CONTROL);
- 	for (i = 0; i < gpmc_cs_num; i++) {
--		gpmc_context.cs_context[i].is_valid = gpmc_cs_mem_enabled(i);
-+		/* check if valid */
-+		val = _gpmc_cs_read_reg(i, GPMC_CS_CONFIG7);
-+		gpmc_context.cs_context[i].is_valid =
-+						val & GPMC_CONFIG7_CSVALID;
-+
- 		if (gpmc_context.cs_context[i].is_valid) {
- 			gpmc_context.cs_context[i].config1 =
--				gpmc_cs_read_reg(i, GPMC_CS_CONFIG1);
-+				_gpmc_cs_read_reg(i, GPMC_CS_CONFIG1);
- 			gpmc_context.cs_context[i].config2 =
--				gpmc_cs_read_reg(i, GPMC_CS_CONFIG2);
-+				_gpmc_cs_read_reg(i, GPMC_CS_CONFIG2);
- 			gpmc_context.cs_context[i].config3 =
--				gpmc_cs_read_reg(i, GPMC_CS_CONFIG3);
-+				_gpmc_cs_read_reg(i, GPMC_CS_CONFIG3);
- 			gpmc_context.cs_context[i].config4 =
--				gpmc_cs_read_reg(i, GPMC_CS_CONFIG4);
-+				_gpmc_cs_read_reg(i, GPMC_CS_CONFIG4);
- 			gpmc_context.cs_context[i].config5 =
--				gpmc_cs_read_reg(i, GPMC_CS_CONFIG5);
-+				_gpmc_cs_read_reg(i, GPMC_CS_CONFIG5);
- 			gpmc_context.cs_context[i].config6 =
--				gpmc_cs_read_reg(i, GPMC_CS_CONFIG6);
-+				_gpmc_cs_read_reg(i, GPMC_CS_CONFIG6);
- 			gpmc_context.cs_context[i].config7 =
--				gpmc_cs_read_reg(i, GPMC_CS_CONFIG7);
-+				_gpmc_cs_read_reg(i, GPMC_CS_CONFIG7);
- 		}
- 	}
+ static struct resource gpmc_nand_resource[] = {
++/* GPMC driver will fixup all the resources, see gpmc_probe_legacy () */
+ 	{
+ 		.flags		= IORESOURCE_MEM,
++		.start          = 0,
++		.end            = NAND_IO_SIZE - 1,
+ 	},
+ 	{
+ 		.flags		= IORESOURCE_IRQ,
+@@ -72,89 +75,35 @@ static bool gpmc_hwecc_bch_capable(enum omap_ecc ecc_opt)
+ 		return 0;
  }
-@@ -2012,29 +2058,32 @@ void omap3_gpmc_restore_context(void)
+ 
+-/* This function will go away once the device-tree convertion is complete */
+-static void gpmc_set_legacy(struct omap_nand_platform_data *gpmc_nand_data,
+-			    struct gpmc_settings *s)
+-{
+-	/* Enable RD PIN Monitoring Reg */
+-	if (gpmc_nand_data->dev_ready) {
+-		s->wait_on_read = true;
+-		s->wait_on_write = true;
+-	}
+-
+-	if (gpmc_nand_data->devsize == NAND_BUSWIDTH_16)
+-		s->device_width = GPMC_DEVWIDTH_16BIT;
+-	else
+-		s->device_width = GPMC_DEVWIDTH_8BIT;
+-}
+-
+ int gpmc_nand_init(struct omap_nand_platform_data *gpmc_nand_data,
+ 		   struct gpmc_timings *gpmc_t)
  {
- 	int i;
+ 	int err	= 0;
+ 	struct gpmc_settings s;
+-	struct device *dev = &gpmc_nand_device.dev;
  
--	gpmc_write_reg(GPMC_SYSCONFIG, gpmc_context.sysconfig);
--	gpmc_write_reg(GPMC_IRQENABLE, gpmc_context.irqenable);
--	gpmc_write_reg(GPMC_TIMEOUT_CONTROL, gpmc_context.timeout_ctrl);
--	gpmc_write_reg(GPMC_CONFIG, gpmc_context.config);
--	gpmc_write_reg(GPMC_PREFETCH_CONFIG1, gpmc_context.prefetch_config1);
--	gpmc_write_reg(GPMC_PREFETCH_CONFIG2, gpmc_context.prefetch_config2);
--	gpmc_write_reg(GPMC_PREFETCH_CONTROL, gpmc_context.prefetch_control);
-+	if (!omap2_gpmc_base)
-+		return;
-+
-+	_gpmc_write_reg(GPMC_SYSCONFIG, gpmc_context.sysconfig);
-+	_gpmc_write_reg(GPMC_IRQENABLE, gpmc_context.irqenable);
-+	_gpmc_write_reg(GPMC_TIMEOUT_CONTROL, gpmc_context.timeout_ctrl);
-+	_gpmc_write_reg(GPMC_CONFIG, gpmc_context.config);
-+	_gpmc_write_reg(GPMC_PREFETCH_CONFIG1, gpmc_context.prefetch_config1);
-+	_gpmc_write_reg(GPMC_PREFETCH_CONFIG2, gpmc_context.prefetch_config2);
-+	_gpmc_write_reg(GPMC_PREFETCH_CONTROL, gpmc_context.prefetch_control);
- 	for (i = 0; i < gpmc_cs_num; i++) {
- 		if (gpmc_context.cs_context[i].is_valid) {
--			gpmc_cs_write_reg(i, GPMC_CS_CONFIG1,
--				gpmc_context.cs_context[i].config1);
--			gpmc_cs_write_reg(i, GPMC_CS_CONFIG2,
--				gpmc_context.cs_context[i].config2);
--			gpmc_cs_write_reg(i, GPMC_CS_CONFIG3,
--				gpmc_context.cs_context[i].config3);
--			gpmc_cs_write_reg(i, GPMC_CS_CONFIG4,
--				gpmc_context.cs_context[i].config4);
--			gpmc_cs_write_reg(i, GPMC_CS_CONFIG5,
--				gpmc_context.cs_context[i].config5);
--			gpmc_cs_write_reg(i, GPMC_CS_CONFIG6,
--				gpmc_context.cs_context[i].config6);
--			gpmc_cs_write_reg(i, GPMC_CS_CONFIG7,
--				gpmc_context.cs_context[i].config7);
-+			_gpmc_cs_write_reg(i, GPMC_CS_CONFIG1,
-+					   gpmc_context.cs_context[i].config1);
-+			_gpmc_cs_write_reg(i, GPMC_CS_CONFIG2,
-+					   gpmc_context.cs_context[i].config2);
-+			_gpmc_cs_write_reg(i, GPMC_CS_CONFIG3,
-+					   gpmc_context.cs_context[i].config3);
-+			_gpmc_cs_write_reg(i, GPMC_CS_CONFIG4,
-+					   gpmc_context.cs_context[i].config4);
-+			_gpmc_cs_write_reg(i, GPMC_CS_CONFIG5,
-+					   gpmc_context.cs_context[i].config5);
-+			_gpmc_cs_write_reg(i, GPMC_CS_CONFIG6,
-+					   gpmc_context.cs_context[i].config6);
-+			_gpmc_cs_write_reg(i, GPMC_CS_CONFIG7,
-+					   gpmc_context.cs_context[i].config7);
- 		}
+ 	memset(&s, 0, sizeof(struct gpmc_settings));
+-
+ 	gpmc_nand_device.dev.platform_data = gpmc_nand_data;
+ 
+-	err = gpmc_cs_request(gpmc_nand_data->cs, NAND_IO_SIZE,
+-				(unsigned long *)&gpmc_nand_resource[0].start);
+-	if (err < 0) {
+-		dev_err(dev, "Cannot request GPMC CS %d, error %d\n",
+-			gpmc_nand_data->cs, err);
+-		return err;
+-	}
+-
+-	gpmc_nand_resource[0].end = gpmc_nand_resource[0].start +
+-							NAND_IO_SIZE - 1;
+-
+-	gpmc_nand_resource[1].start =
+-				gpmc_get_client_irq(GPMC_IRQ_FIFOEVENTENABLE);
+-	gpmc_nand_resource[2].start =
+-				gpmc_get_client_irq(GPMC_IRQ_COUNT_EVENT);
+-
+-	if (gpmc_t) {
+-		err = gpmc_cs_set_timings(gpmc_nand_data->cs, gpmc_t);
+-		if (err < 0) {
+-			dev_err(dev, "Unable to set gpmc timings: %d\n", err);
+-			return err;
+-		}
+-	}
+-
+-	if (gpmc_nand_data->of_node)
+-		gpmc_read_settings_dt(gpmc_nand_data->of_node, &s);
++	/* GPMC settings */
++	if (gpmc_nand_data->devsize == NAND_BUSWIDTH_16)
++		s.device_width = GPMC_DEVWIDTH_16BIT;
+ 	else
+-		gpmc_set_legacy(gpmc_nand_data, &s);
++		s.device_width = GPMC_DEVWIDTH_8BIT;
+ 
+ 	s.device_nand = true;
+ 
+-	err = gpmc_cs_program_settings(gpmc_nand_data->cs, &s);
+-	if (err < 0)
+-		goto out_free_cs;
+-
+-	err = gpmc_configure(GPMC_CONFIG_WP, 0);
+-	if (err < 0)
+-		goto out_free_cs;
+-
+-	gpmc_update_nand_reg(&gpmc_nand_data->reg, gpmc_nand_data->cs);
+-
+ 	if (!gpmc_hwecc_bch_capable(gpmc_nand_data->ecc_opt)) {
+-		dev_err(dev, "Unsupported NAND ECC scheme selected\n");
++		pr_err("%s: Unsupported NAND ECC scheme selected\n", __func__);
+ 		return -EINVAL;
  	}
+ 
+-	err = platform_device_register(&gpmc_nand_device);
+-	if (err < 0) {
+-		dev_err(dev, "Unable to register NAND device\n");
+-		goto out_free_cs;
++	err = gpmc_generic_init(gpmc_nand_data->cs, GPMC_OMAP_TYPE_NAND, &s,
++				NULL, gpmc_t, &gpmc_nand_device,
++				sizeof(*gpmc_nand_data));
++	if (err) {
++		pr_err("%s: gpmc_generic_init() failed %d\n", __func__, err);
++		return err;
+ 	}
+ 
+ 	return 0;
+-
+-out_free_cs:
+-	gpmc_cs_free(gpmc_nand_data->cs);
+-
+-	return err;
  }
-diff --git a/arch/arm/mach-omap2/gpmc.h b/arch/arm/mach-omap2/gpmc.h
-index c18b022..795502f 100644
---- a/arch/arm/mach-omap2/gpmc.h
-+++ b/arch/arm/mach-omap2/gpmc.h
-@@ -107,4 +107,5 @@ extern int gpmc_generic_init(int cs, enum gpmc_omap_type type,
- 			     struct platform_device *pdev,
- 			     unsigned pdata_size);
- 
-+void __init omap2_set_globals_gpmc(void __iomem *gpmc);
- #endif
-diff --git a/arch/arm/mach-omap2/io.c b/arch/arm/mach-omap2/io.c
-index f14f9ac..e3321fd 100644
---- a/arch/arm/mach-omap2/io.c
-+++ b/arch/arm/mach-omap2/io.c
-@@ -53,6 +53,7 @@
- #include "prm2xxx.h"
- #include "prm3xxx.h"
- #include "prm44xx.h"
-+#include "gpmc.h"
- 
- /*
-  * omap_clk_soc_init: points to a function that does the SoC-specific
-@@ -464,6 +465,7 @@ void __init omap3_init_early(void)
- 				  NULL);
- 	omap2_set_globals_prm(OMAP2_L4_IO_ADDRESS(OMAP3430_PRM_BASE));
- 	omap2_set_globals_cm(OMAP2_L4_IO_ADDRESS(OMAP3430_CM_BASE), NULL);
-+	omap2_set_globals_gpmc(OMAP2_L3_IO_ADDRESS(OMAP34XX_GPMC_BASE));
- 	omap3xxx_check_revision();
- 	omap3xxx_check_features();
- 	omap3xxx_prm_init();
 -- 
 1.8.3.2
