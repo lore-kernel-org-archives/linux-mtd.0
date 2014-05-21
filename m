@@ -1,20 +1,23 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
- by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wn4bd-0000fh-EC
- for linux-mtd@lists.infradead.org; Wed, 21 May 2014 11:22:46 +0000
-From: Roger Quadros <rogerq@ti.com>
-To: <tony@atomide.com>, <computersforpeace@gmail.com>
-Subject: [RFC PATCH 16/16] ARM: dts: omap3-beagle: Add NAND device
-Date: Wed, 21 May 2014 14:21:04 +0300
-Message-ID: <1400671264-10702-17-git-send-email-rogerq@ti.com>
-In-Reply-To: <1400671264-10702-1-git-send-email-rogerq@ti.com>
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Wn94w-0003vh-Qp
+ for linux-mtd@lists.infradead.org; Wed, 21 May 2014 16:09:19 +0000
+Date: Wed, 21 May 2014 13:08:18 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Roger Quadros <rogerq@ti.com>
+Subject: Re: [RFC PATCH 00/16] OMAP: GPMC: Restructure OMAP GPMC driver (NAND)
+Message-ID: <20140521160818.GA1150@arch.cereza>
 References: <1400671264-10702-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: devicetree@vger.kernel.org, robertcnelson@gmail.com, jg1.han@samsung.com,
- nsekhar@ti.com, linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- pekon@ti.com, ezequiel.garcia@free-electrons.com, javier@dowhile0.org,
- linux-omap@vger.kernel.org, dwmw2@infradead.org, Roger Quadros <rogerq@ti.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1400671264-10702-1-git-send-email-rogerq@ti.com>
+Cc: devicetree@vger.kernel.org, linux-omap@vger.kernel.org, tony@atomide.com,
+ robertcnelson@gmail.com, jg1.han@samsung.com, nsekhar@ti.com,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, pekon@ti.com,
+ javier@dowhile0.org, computersforpeace@gmail.com, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,87 +27,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The beagle board contains a 16-bit NAND device connected to
-chip select 0 of the GPMC controller.
+Hi Roger,
 
-Signed-off-by: Roger Quadros <rogerq@ti.com>
----
- arch/arm/boot/dts/omap3-beagle.dts | 66 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 66 insertions(+)
+On 21 May 02:20 PM, Roger Quadros wrote:
+> 
+> For DT boot:
+> - The GPMC controller node should have a chip select (CS) node for each used
+>   chip select. The CS node must have a child device node for each device
+>   attached to that chip select. Properties for that child are GPMC agnostic.
+> 
+>   i.e.
+> 	gpmc {
+> 		cs0 {
+> 			nand0 {
+> 			}
+> 		};
+> 
+> 		cs1 {
+> 			nor0 {
+> 			}
+> 		}
+> 		...
+> 	};
+> 
 
-diff --git a/arch/arm/boot/dts/omap3-beagle.dts b/arch/arm/boot/dts/omap3-beagle.dts
-index 3c3e6da..825b364 100644
---- a/arch/arm/boot/dts/omap3-beagle.dts
-+++ b/arch/arm/boot/dts/omap3-beagle.dts
-@@ -350,3 +350,69 @@
- 		};
- 	};
- };
-+
-+&gpmc {
-+	ranges = <0 0 0x30000000 0x3FFFFFFF     /* I/O space */
-+		  1 0 0x6e000000 0x02d4>;       /* register space */
-+
-+	/* Chip select 0 */
-+	cs0 {
-+		#address-cells = <2>;
-+		#size-cells = <1>;
-+		reg = <0 0 0x1000000>;	/* CS0 partition, 16 MB min */
-+		ranges;
-+
-+		gpmc,cs = <0>;
-+		gpmc,device-width = <2>;	/* 16-bit */
-+		gpmc,nand;
-+
-+		gpmc,cs-on-ns = <0>;
-+		gpmc,cs-rd-off-ns = <36>;
-+		gpmc,cs-wr-off-ns = <36>;
-+		gpmc,adv-on-ns = <6>;
-+		gpmc,adv-rd-off-ns = <24>;
-+		gpmc,adv-wr-off-ns = <36>;
-+		gpmc,oe-on-ns = <6>;
-+		gpmc,oe-off-ns = <48>;
-+		gpmc,we-on-ns = <6>;
-+		gpmc,we-off-ns = <30>;
-+		gpmc,rd-cycle-ns = <72>;
-+		gpmc,wr-cycle-ns = <72>;
-+		gpmc,access-ns = <54>;
-+		gpmc,wr-access-ns = <30>;
-+
-+		nand@0,0 {
-+			compatible = "ti,omap2-nand";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			reg = <0 0 4		/* Nand I/O */
-+			       1 0 0x2d4>;	/* GPMC registers */
-+			interrupts = <20>;
-+
-+			ti,nand-cs = <0>;
-+			nand-bus-width = <16>;
-+			ti,nand-ecc-opt = "ham1";
-+
-+			partition@0 {
-+				label = "X-Loader";
-+				reg = <0 0x80000>;
-+			};
-+			partition@80000 {
-+				label = "U-Boot";
-+				reg = <0x80000 0x1e0000>;
-+			};
-+			partition@1c0000 {
-+				label = "U-Boot Env";
-+				reg = <0x260000 0x20000>;
-+			};
-+			partition@280000 {
-+				label = "Kernel";
-+				reg = <0x280000 0x400000>;
-+			};
-+			partition@780000 {
-+				label = "Filesystem";
-+				reg = <0x680000 0xf980000>;
-+			};
-+		};
-+	};
-+};
+While I agree that the GPMC driver is a bit messy, I'm not sure it's possible
+to go through such a complete devicetree binding re-design (breaking backwards
+compatibility) now that the binding is already in production.
+
+AFAIK, TI's SDK 7.0 is released, with a v3.8.x kernel which uses this GPMC
+binding. And then you have the ISEE board too, using this binding.
+
+Also, what's the problem with the current devicetree binding (not that I'm fan
+of it)?
 -- 
-1.8.3.2
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
