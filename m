@@ -1,22 +1,24 @@
-Received: from mail-ig0-x22b.google.com ([2607:f8b0:4001:c05::22b])
+Received: from szxga02-in.huawei.com ([119.145.14.65])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wmvex-0005W2-2a
- for linux-mtd@lists.infradead.org; Wed, 21 May 2014 01:49:35 +0000
-Received: by mail-ig0-f171.google.com with SMTP id c1so5651513igq.4
- for <linux-mtd@lists.infradead.org>; Tue, 20 May 2014 18:49:11 -0700 (PDT)
-Date: Tue, 20 May 2014 18:49:08 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: kbuild test robot <fengguang.wu@intel.com>
-Subject: Re: [l2-mtd:master 28/29] drivers/mtd/lpddr/lpddr2_nvm.c:149:2:
- error: implicit declaration of function 'writel_relaxed'
-Message-ID: <20140521014908.GE22233@ld-irv-0074>
-References: <537bfc24.N6Jd/c3WxnkfHn37%fengguang.wu@intel.com>
+ id 1WmwCo-0007xg-33
+ for linux-mtd@lists.infradead.org; Wed, 21 May 2014 02:24:34 +0000
+Message-ID: <537C0DF1.50309@huawei.com>
+Date: Wed, 21 May 2014 10:22:41 +0800
+From: Zhang Zhen <zhenzhang.zhang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <537bfc24.N6Jd/c3WxnkfHn37%fengguang.wu@intel.com>
-Cc: linux-mtd@lists.infradead.org, kbuild-all@01.org,
- Vincenzo Aliberti <vincenzo.aliberti@gmail.com>
+To: Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [PATCH v2] UBIFS: replace simple_strtoul() with kstrtoint()
+References: <1400575582-24841-1-git-send-email-zhenzhang.zhang@huawei.com>
+ <537B16CB.9070508@huawei.com> <537B48C7.6080105@intel.com>
+ <CAMuHMdWu30E2jg3=Z_bnDknD-HJqEAn_KxQH4WJ+B9nmwiKwGQ@mail.gmail.com>
+ <537B4E6C.7050008@intel.com>
+ <CAMuHMdVKz1cvRiCp0Ni1Sv+=n3z78tWZ0w6ijfaGMjunb9oZag@mail.gmail.com>
+In-Reply-To: <CAMuHMdVKz1cvRiCp0Ni1Sv+=n3z78tWZ0w6ijfaGMjunb9oZag@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Cc: MTD Maling List <linux-mtd@lists.infradead.org>, Hu
+ Jianyang <hujianyang@huawei.com>, Geert Uytterhoeven <geert@linux-m68k.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,45 +28,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, May 21, 2014 at 09:06:44AM +0800, kbuild test robot wrote:
-> tree:   git://git.infradead.org/users/dedekind/l2-mtd.git master
-> head:   4007e2d175cc83ea728b757e49155826b32fbff8
-> commit: 96ba9dd65788a0bd2a7d1e57ec78b7642f0ccc25 [28/29] mtd: lpddr: add driver for LPDDR2-NVM PCM memories
-> config: make ARCH=x86_64 allyesconfig
+On 2014/5/20 20:55, Geert Uytterhoeven wrote:
+> On Tue, May 20, 2014 at 2:45 PM, Adrian Hunter <adrian.hunter@intel.com> wrote:
+>>>>> +     ret = kstrtoint(endptr, 0, &dev);
+>>>>
+>>>> But endptr is used in the code later, so this is wrong.
+>>>
+>>> That was my first thought, too. But upon closer look, I think it's correct.
+>>>
+>>>>>
+>>>>>       /* ubiY method */
+>>>>> -     if (*endptr == '\0')
+>>>
+>>> endptr would point to the trailing nul on success...
+>>>
+>>>>> +     if (!ret)
+>>>
+>>> ... which is now replaced by a test for ret not being an errorcoe.
+>>>
+>>>>>               return ubi_open_volume(0, dev, mode);
+>>>>>
+>>>>>       /* ubiX_Y method */
+>>>
+>>> If ret is an errorcode, the flow continues.
+>>>
+>>> As parsing the number failed, the code checks if the first character
+>>> (name + 3) is an underscore or colon:
+>>
+>> No, it does not check if parsing failed, it checks for end-of-input.
+>> The "X" and "Y" of "ubiX_Y" are numbers.
+Sorry, i made a mistake. As parsing the number failed, it should just return
+ERR_PTR(-EINVAL).
+
+Thank you for your review. I learned a lot from you and Geert.
+I will send another version.
 > 
-> All error/warnings:
+> Sorry, you're right. Thanks for noticing!
 > 
->    drivers/mtd/lpddr/lpddr2_nvm.c: In function 'ow_enable':
-> >> drivers/mtd/lpddr/lpddr2_nvm.c:149:2: error: implicit declaration of function 'writel_relaxed' [-Werror=implicit-function-declaration]
->      writel_relaxed(build_mr_cfgmask(pcm_data->bus_width) | 0x18,
->      ^
->    cc1: some warnings being treated as errors
+> Gr{oetje,eeting}s,
 > 
-> vim +/writel_relaxed +149 drivers/mtd/lpddr/lpddr2_nvm.c
+>                         Geert
 > 
->    143	 * Register, Device ID, etc
->    144	 */
->    145	static inline void ow_enable(struct map_info *map)
->    146	{
->    147		struct pcm_int_data *pcm_data = map->fldrv_priv;
->    148	
->  > 149		writel_relaxed(build_mr_cfgmask(pcm_data->bus_width) | 0x18,
->    150			pcm_data->ctl_regs + LPDDR2_MODE_REG_CFG);
->    151		writel_relaxed(0x01, pcm_data->ctl_regs + LPDDR2_MODE_REG_DATA);
->    152	}
-
-This is because writel_relaxed is not implemented consistently across
-all architectures. It looks like Will Deacon is trying to fix this.
-
-  https://lkml.org/lkml/2014/4/17/267
-
-Vincenzo,
-
-What do you think? Should we:
-
- 1. Limit your driver to ARM (or other ARCH that supports
-    writel_relaxed()?
- 2. Use writel() instead?
- 3. Wait for other ARCH'es to support writel_relaxed()?
-
-Brian
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> 
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
+> 
+> 
