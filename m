@@ -1,14 +1,14 @@
-Received: from mail-pb0-x232.google.com ([2607:f8b0:400e:c01::232])
+Received: from mail-pd0-x22c.google.com ([2607:f8b0:400e:c02::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WmzqP-0000iZ-4n
- for linux-mtd@lists.infradead.org; Wed, 21 May 2014 06:17:41 +0000
-Received: by mail-pb0-f50.google.com with SMTP id ma3so1085717pbc.23
- for <linux-mtd@lists.infradead.org>; Tue, 20 May 2014 23:17:20 -0700 (PDT)
+ id 1WmzqQ-0000id-76
+ for linux-mtd@lists.infradead.org; Wed, 21 May 2014 06:17:42 +0000
+Received: by mail-pd0-f172.google.com with SMTP id x10so1077061pdj.3
+ for <linux-mtd@lists.infradead.org>; Tue, 20 May 2014 23:17:21 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 2/6] mtd: slram: fix unused variable warning
-Date: Tue, 20 May 2014 23:16:59 -0700
-Message-Id: <1400653023-25757-3-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 3/6] mtd: maps: sc520cdp: fix warnings
+Date: Tue, 20 May 2014 23:17:00 -0700
+Message-Id: <1400653023-25757-4-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1400653023-25757-1-git-send-email-computersforpeace@gmail.com>
 References: <1400653023-25757-1-git-send-email-computersforpeace@gmail.com>
 Cc: Brian Norris <computersforpeace@gmail.com>
@@ -21,40 +21,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-  drivers/mtd/devices/slram.c: In function 'init_slram':
-  drivers/mtd/devices/slram.c:283:6: warning: variable 'i' set but not used [-Wunused-but-set-variable]
+On m86k, and maybe a few other architectures, we get this kind of
+warning, due to misuse of volatile:
+
+   drivers/mtd/maps/sc520cdp.c: In function 'sc520cdp_setup_par':
+>> drivers/mtd/maps/sc520cdp.c:223:2: warning: passing argument 1 of 'iounmap' discards 'volatile' qualifier from pointer target type [enabled by default]
+   arch/m68k/include/asm/raw_io.h:22:13: note: expected 'void *' but argument is of type 'volatile long unsigned int *'
+
+Rather than annotating the variable declaration, let's just use the
+proper accessors, which add the 'volatile' qualifier to the operation.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/devices/slram.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/mtd/maps/sc520cdp.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/devices/slram.c b/drivers/mtd/devices/slram.c
-index 5a5cd2ace4a6..2fc4957cbe7f 100644
---- a/drivers/mtd/devices/slram.c
-+++ b/drivers/mtd/devices/slram.c
-@@ -280,14 +280,11 @@ __setup("slram=", mtd_slram_setup);
- static int __init init_slram(void)
+diff --git a/drivers/mtd/maps/sc520cdp.c b/drivers/mtd/maps/sc520cdp.c
+index 8fead8e46bce..093edd51bdc7 100644
+--- a/drivers/mtd/maps/sc520cdp.c
++++ b/drivers/mtd/maps/sc520cdp.c
+@@ -183,7 +183,7 @@ static const struct sc520_par_table par_table[NUM_FLASH_BANKS] =
+ 
+ static void sc520cdp_setup_par(void)
  {
- 	char *devname;
--	int i;
+-	volatile unsigned long __iomem *mmcr;
++	unsigned long __iomem *mmcr;
+ 	unsigned long mmcr_val;
+ 	int i, j;
  
- #ifndef MODULE
- 	char *devstart;
- 	char *devlength;
- 
--	i = 0;
--
- 	if (!map) {
- 		E("slram: not enough parameters.\n");
- 		return(-EINVAL);
-@@ -314,6 +311,7 @@ static int __init init_slram(void)
- 	}
- #else
- 	int count;
-+	int i;
- 
- 	for (count = 0; count < SLRAM_MAX_DEVICES_PARAMS && map[count];
- 			count++) {
+@@ -203,11 +203,11 @@ static void sc520cdp_setup_par(void)
+ 	*/
+ 	for(i = 0; i < NUM_FLASH_BANKS; i++) {		/* for each par_table entry  */
+ 		for(j = 0; j < NUM_SC520_PAR; j++) {	/* for each PAR register     */
+-			mmcr_val = mmcr[SC520_PAR(j)];
++			mmcr_val = readl(&mmcr[SC520_PAR(j)]);
+ 			/* if target device field matches, reprogram the PAR */
+ 			if((mmcr_val & SC520_PAR_TRGDEV) == par_table[i].trgdev)
+ 			{
+-				mmcr[SC520_PAR(j)] = par_table[i].new_par;
++				writel(par_table[i].new_par, &mmcr[SC520_PAR(j)]);
+ 				break;
+ 			}
+ 		}
 -- 
 1.7.9.5
