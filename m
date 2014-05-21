@@ -1,9 +1,9 @@
 From: Roger Quadros <rogerq@ti.com>
 To: <tony@atomide.com>, <computersforpeace@gmail.com>
-Subject: [RFC PATCH 02/16] ARM: OMAP2+: gpmc: Add gpmc timings and settings to
- platform data
-Date: Wed, 21 May 2014 14:20:50 +0300
-Message-ID: <1400671264-10702-3-git-send-email-rogerq@ti.com>
+Subject: [RFC PATCH 04/16] ARM: OMAP2+: gpmc: use platform data to configure
+ CS space and poplulate device
+Date: Wed, 21 May 2014 14:20:52 +0300
+Message-ID: <1400671264-10702-5-git-send-email-rogerq@ti.com>
 In-Reply-To: <1400671264-10702-1-git-send-email-rogerq@ti.com>
 References: <1400671264-10702-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
@@ -21,296 +21,237 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add device_timings, gpmc_timings and gpmc_setting to
-gpmc platform data.
+Add gpmc_probe_legacy() that will be called for non DT boots. This function
+will use platform data to setup each chip select and populate the child
+platform device for each of the chip selects.
+
+Re-arrange init order so that gpmc device is created after
+the gpmc platform data is initialized by board files.
+i.e. move omap_gpmc_init() to subsys_initcall.
+
+Load gpmc platform driver later in the boot process.
+i.e. move gpmc_init() to module_initcall.
+
+NOTE: this will break legacy boot since they call gpmc_cs_*()
+functions before gpmc_mem_init() is called. They will eventually
+be fixed.
 
 Signed-off-by: Roger Quadros <rogerq@ti.com>
 ---
- arch/arm/mach-omap2/gpmc.h              | 125 ------------------------------
- include/linux/platform_data/gpmc-omap.h | 131 ++++++++++++++++++++++++++++++++
- 2 files changed, 131 insertions(+), 125 deletions(-)
+ arch/arm/mach-omap2/gpmc.c | 137 ++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 118 insertions(+), 19 deletions(-)
 
-diff --git a/arch/arm/mach-omap2/gpmc.h b/arch/arm/mach-omap2/gpmc.h
-index c476712..681977f 100644
---- a/arch/arm/mach-omap2/gpmc.h
-+++ b/arch/arm/mach-omap2/gpmc.h
-@@ -79,131 +79,6 @@
- #define GPMC_MUX_AAD			1	/* Addr-Addr-Data multiplex */
- #define GPMC_MUX_AD			2	/* Addr-Data multiplex */
+diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
+index 6b4a322..04bae67 100644
+--- a/arch/arm/mach-omap2/gpmc.c
++++ b/arch/arm/mach-omap2/gpmc.c
+@@ -160,7 +160,6 @@ static DEFINE_SPINLOCK(gpmc_mem_lock);
+ static unsigned int gpmc_cs_map = ((1 << GPMC_CS_NUM) - 1);
+ static unsigned int gpmc_cs_num = GPMC_CS_NUM;
+ static unsigned int gpmc_nr_waitpins;
+-static struct device *gpmc_dev;
+ static int gpmc_irq;
+ static resource_size_t phys_base, mem_size;
+ static unsigned gpmc_capability;
+@@ -1630,11 +1629,102 @@ static int gpmc_probe_dt(struct platform_device *pdev)
+ }
+ #endif
  
--/* bool type time settings */
--struct gpmc_bool_timings {
--	bool cycle2cyclediffcsen;
--	bool cycle2cyclesamecsen;
--	bool we_extra_delay;
--	bool oe_extra_delay;
--	bool adv_extra_delay;
--	bool cs_extra_delay;
--	bool time_para_granularity;
--};
--
--/*
-- * Note that all values in this struct are in nanoseconds except sync_clk
-- * (which is in picoseconds), while the register values are in gpmc_fck cycles.
-- */
--struct gpmc_timings {
--	/* Minimum clock period for synchronous mode (in picoseconds) */
--	u32 sync_clk;
--
--	/* Chip-select signal timings corresponding to GPMC_CS_CONFIG2 */
--	u32 cs_on;		/* Assertion time */
--	u32 cs_rd_off;		/* Read deassertion time */
--	u32 cs_wr_off;		/* Write deassertion time */
--
--	/* ADV signal timings corresponding to GPMC_CONFIG3 */
--	u32 adv_on;		/* Assertion time */
--	u32 adv_rd_off;		/* Read deassertion time */
--	u32 adv_wr_off;		/* Write deassertion time */
--
--	/* WE signals timings corresponding to GPMC_CONFIG4 */
--	u32 we_on;		/* WE assertion time */
--	u32 we_off;		/* WE deassertion time */
--
--	/* OE signals timings corresponding to GPMC_CONFIG4 */
--	u32 oe_on;		/* OE assertion time */
--	u32 oe_off;		/* OE deassertion time */
--
--	/* Access time and cycle time timings corresponding to GPMC_CONFIG5 */
--	u32 page_burst_access;	/* Multiple access word delay */
--	u32 access;		/* Start-cycle to first data valid delay */
--	u32 rd_cycle;		/* Total read cycle time */
--	u32 wr_cycle;		/* Total write cycle time */
--
--	u32 bus_turnaround;
--	u32 cycle2cycle_delay;
--
--	u32 wait_monitoring;
--	u32 clk_activation;
--
--	/* The following are only on OMAP3430 */
--	u32 wr_access;		/* WRACCESSTIME */
--	u32 wr_data_mux_bus;	/* WRDATAONADMUXBUS */
--
--	struct gpmc_bool_timings bool_timings;
--};
--
--/* Device timings in picoseconds */
--struct gpmc_device_timings {
--	u32 t_ceasu;	/* address setup to CS valid */
--	u32 t_avdasu;	/* address setup to ADV valid */
--	/* XXX: try to combine t_avdp_r & t_avdp_w. Issue is
--	 * of tusb using these timings even for sync whilst
--	 * ideally for adv_rd/(wr)_off it should have considered
--	 * t_avdh instead. This indirectly necessitates r/w
--	 * variations of t_avdp as it is possible to have one
--	 * sync & other async
--	 */
--	u32 t_avdp_r;	/* ADV low time (what about t_cer ?) */
--	u32 t_avdp_w;
--	u32 t_aavdh;	/* address hold time */
--	u32 t_oeasu;	/* address setup to OE valid */
--	u32 t_aa;	/* access time from ADV assertion */
--	u32 t_iaa;	/* initial access time */
--	u32 t_oe;	/* access time from OE assertion */
--	u32 t_ce;	/* access time from CS asertion */
--	u32 t_rd_cycle;	/* read cycle time */
--	u32 t_cez_r;	/* read CS deassertion to high Z */
--	u32 t_cez_w;	/* write CS deassertion to high Z */
--	u32 t_oez;	/* OE deassertion to high Z */
--	u32 t_weasu;	/* address setup to WE valid */
--	u32 t_wpl;	/* write assertion time */
--	u32 t_wph;	/* write deassertion time */
--	u32 t_wr_cycle;	/* write cycle time */
--
--	u32 clk;
--	u32 t_bacc;	/* burst access valid clock to output delay */
--	u32 t_ces;	/* CS setup time to clk */
--	u32 t_avds;	/* ADV setup time to clk */
--	u32 t_avdh;	/* ADV hold time from clk */
--	u32 t_ach;	/* address hold time from clk */
--	u32 t_rdyo;	/* clk to ready valid */
--
--	u32 t_ce_rdyz;	/* XXX: description ?, or use t_cez instead */
--	u32 t_ce_avd;	/* CS on to ADV on delay */
--
--	/* XXX: check the possibility of combining
--	 * cyc_aavhd_oe & cyc_aavdh_we
--	 */
--	u8 cyc_aavdh_oe;/* read address hold time in cycles */
--	u8 cyc_aavdh_we;/* write address hold time in cycles */
--	u8 cyc_oe;	/* access time from OE assertion in cycles */
--	u8 cyc_wpl;	/* write deassertion time in cycles */
--	u32 cyc_iaa;	/* initial access time in cycles */
--
--	/* extra delays */
--	bool ce_xdelay;
--	bool avd_xdelay;
--	bool oe_xdelay;
--	bool we_xdelay;
--};
--
--struct gpmc_settings {
--	bool burst_wrap;	/* enables wrap bursting */
--	bool burst_read;	/* enables read page/burst mode */
--	bool burst_write;	/* enables write page/burst mode */
--	bool device_nand;	/* device is NAND */
--	bool sync_read;		/* enables synchronous reads */
--	bool sync_write;	/* enables synchronous writes */
--	bool wait_on_read;	/* monitor wait on reads */
--	bool wait_on_write;	/* monitor wait on writes */
--	u32 burst_len;		/* page/burst length */
--	u32 device_width;	/* device bus width (8 or 16 bit) */
--	u32 mux_add_data;	/* multiplex address & data */
--	u32 wait_pin;		/* wait-pin to be used */
--};
++static void gpmc_probe_legacy(struct platform_device *pdev)
++{
++	int i, rc;
++	struct device *dev = &pdev->dev;
++	struct gpmc_omap_platform_data *gpmc_pdata;
++
++	gpmc_pdata = dev->platform_data;
++	gpmc_cs_num = GPMC_CS_NUM;
++	gpmc_nr_waitpins = GPMC_NR_WAITPINS;
++
++	for (i = 0; i < GPMC_CS_NUM; i++) {
++		struct resource *mem_res;
++		unsigned long cs_base;
++		resource_size_t size;
++		struct gpmc_timings gpmc_timings;
++		struct gpmc_omap_cs_data *cs;
++
++		cs = &gpmc_pdata->cs[i];
++		if (!cs->valid)
++			continue;
++
++		/*
++		 * Request a CS space. Use size from
++		 * platform device's MEM resource
++		 */
++		if (!cs->pdev)
++			goto skip_mem;
++
++		mem_res = cs->pdev->resource;
++		if (cs->pdev->num_resources < 1 ||
++		    resource_type(mem_res) != IORESOURCE_MEM) {
++			dev_err(dev, "Invalid IOMEM resource for CS %d\n", i);
++			continue;
++		}
++
++		size = mem_res->end - mem_res->start + 1;
++		if (gpmc_cs_request(i, size, &cs_base)) {
++			dev_err(dev, "Couldn't request resource for CS %d\n",
++				i);
++			continue;
++		}
++
++		mem_res->start = cs_base;
++		mem_res->end = cs_base + size - 1;
++
++		/* FIXME: When do we need to call gpmc_cs_remap()? */
++skip_mem:
++
++		if (cs->settings) {
++			if (gpmc_cs_program_settings(i, cs->settings)) {
++				dev_err(dev,
++					"Couldn't program settings for CS %d\n",
++					i);
++				continue;
++			}
++		}
++
++		/* give device_timings priority over gpmc_timings */
++		if (cs->device_timings) {
++			gpmc_calc_timings(&gpmc_timings, cs->settings,
++					  cs->device_timings);
++
++			if (gpmc_cs_set_timings(i, &gpmc_timings)) {
++				dev_err(dev,
++					"Couldn't program timings for CS %d\n",
++					i);
++				continue;
++			}
++		} else if (cs->gpmc_timings) {
++			if (gpmc_cs_set_timings(i, cs->gpmc_timings)) {
++				dev_err(dev,
++					"Couldn't program timings for CS %d\n",
++					i);
++				continue;
++			}
++		}
++
++		if (!cs->pdev)
++			continue;
++
++		rc = platform_device_register(cs->pdev);
++		if (rc < 0) {
++			dev_err(dev,
++				"Failed to register device %s on CS %d\n",
++				cs->pdev->name, i);
++			continue;
++		}
++	}
++}
++
+ static int gpmc_probe(struct platform_device *pdev)
+ {
+ 	int rc;
+ 	u32 l;
+ 	struct resource *res;
++	struct device *dev = &pdev->dev;
  
- extern int gpmc_calc_timings(struct gpmc_timings *gpmc_t,
- 			     struct gpmc_settings *gpmc_s,
-diff --git a/include/linux/platform_data/gpmc-omap.h b/include/linux/platform_data/gpmc-omap.h
-index bff352f..52b6504 100644
---- a/include/linux/platform_data/gpmc-omap.h
-+++ b/include/linux/platform_data/gpmc-omap.h
-@@ -22,10 +22,141 @@ enum gpmc_omap_type {
- 	GPMC_OMAP_TYPE_GENERIC,
- };
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	if (res == NULL)
+@@ -1663,8 +1753,6 @@ static int gpmc_probe(struct platform_device *pdev)
+ 	pm_runtime_enable(&pdev->dev);
+ 	pm_runtime_get_sync(&pdev->dev);
  
-+/* bool type time settings */
-+struct gpmc_bool_timings {
-+	bool cycle2cyclediffcsen;
-+	bool cycle2cyclesamecsen;
-+	bool we_extra_delay;
-+	bool oe_extra_delay;
-+	bool adv_extra_delay;
-+	bool cs_extra_delay;
-+	bool time_para_granularity;
-+};
+-	gpmc_dev = &pdev->dev;
+-
+ 	l = gpmc_read_reg(GPMC_REVISION);
+ 
+ 	/*
+@@ -1683,31 +1771,40 @@ static int gpmc_probe(struct platform_device *pdev)
+ 		gpmc_capability = GPMC_HAS_WR_ACCESS | GPMC_HAS_WR_DATA_MUX_BUS;
+ 	if (GPMC_REVISION_MAJOR(l) > 0x5)
+ 		gpmc_capability |= GPMC_HAS_MUX_AAD;
+-	dev_info(gpmc_dev, "GPMC revision %d.%d\n", GPMC_REVISION_MAJOR(l),
++	dev_info(dev, "GPMC revision %d.%d\n", GPMC_REVISION_MAJOR(l),
+ 		 GPMC_REVISION_MINOR(l));
+ 
+ 	gpmc_mem_init();
+ 
+ 	if (gpmc_setup_irq() < 0)
+-		dev_warn(gpmc_dev, "gpmc_setup_irq failed\n");
++		dev_warn(dev, "gpmc_setup_irq failed\n");
+ 
+ 	/* Now the GPMC is initialised, unreserve the chip-selects */
+ 	gpmc_cs_map = 0;
+ 
+-	if (!pdev->dev.of_node) {
+-		gpmc_cs_num	 = GPMC_CS_NUM;
+-		gpmc_nr_waitpins = GPMC_NR_WAITPINS;
+-	}
++	if (!dev->of_node) {
++		/* Legacy probing based on platform data */
++		if (!dev->platform_data) {
++			dev_err(dev, "missing platform data\n");
++			rc = -EINVAL;
++			goto error;
++		}
++		gpmc_probe_legacy(pdev);
+ 
+-	rc = gpmc_probe_dt(pdev);
+-	if (rc < 0) {
+-		pm_runtime_put_sync(&pdev->dev);
+-		clk_put(gpmc_l3_clk);
+-		dev_err(gpmc_dev, "failed to probe DT parameters\n");
+-		return rc;
++	} else {
++		rc = gpmc_probe_dt(pdev);
++		if (rc < 0) {
++			dev_err(dev, "failed to probe DT parameters\n");
++			goto error;
++		}
+ 	}
+ 
+ 	return 0;
 +
-+/*
-+ * Note that all values in this struct are in nanoseconds except sync_clk
-+ * (which is in picoseconds), while the register values are in gpmc_fck cycles.
-+ */
-+struct gpmc_timings {
-+	/* Minimum clock period for synchronous mode (in picoseconds) */
-+	u32 sync_clk;
++error:
++	pm_runtime_put_sync(dev);
++	clk_put(gpmc_l3_clk);
++	return rc;
+ }
+ 
+ static int gpmc_remove(struct platform_device *pdev)
+@@ -1716,7 +1813,6 @@ static int gpmc_remove(struct platform_device *pdev)
+ 	gpmc_mem_exit();
+ 	pm_runtime_put_sync(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
+-	gpmc_dev = NULL;
+ 	return 0;
+ }
+ 
+@@ -1760,7 +1856,7 @@ static __exit void gpmc_exit(void)
+ 
+ }
+ 
+-omap_postcore_initcall(gpmc_init);
++module_init(gpmc_init);
+ module_exit(gpmc_exit);
+ 
+ static int __init omap_gpmc_init(void)
+@@ -1782,12 +1878,15 @@ static int __init omap_gpmc_init(void)
+ 		return -ENODEV;
+ 	}
+ 
+-	pdev = omap_device_build(DEVICE_NAME, -1, oh, NULL, 0);
++	pdev = omap_device_build(DEVICE_NAME, -1, oh, (void *)&gpmc_pdata,
++				 sizeof(gpmc_pdata));
+ 	WARN(IS_ERR(pdev), "could not build omap_device for %s\n", oh_name);
+ 
+ 	return PTR_RET(pdev);
+ }
+-omap_postcore_initcall(omap_gpmc_init);
 +
-+	/* Chip-select signal timings corresponding to GPMC_CS_CONFIG2 */
-+	u32 cs_on;		/* Assertion time */
-+	u32 cs_rd_off;		/* Read deassertion time */
-+	u32 cs_wr_off;		/* Write deassertion time */
-+
-+	/* ADV signal timings corresponding to GPMC_CONFIG3 */
-+	u32 adv_on;		/* Assertion time */
-+	u32 adv_rd_off;		/* Read deassertion time */
-+	u32 adv_wr_off;		/* Write deassertion time */
-+
-+	/* WE signals timings corresponding to GPMC_CONFIG4 */
-+	u32 we_on;		/* WE assertion time */
-+	u32 we_off;		/* WE deassertion time */
-+
-+	/* OE signals timings corresponding to GPMC_CONFIG4 */
-+	u32 oe_on;		/* OE assertion time */
-+	u32 oe_off;		/* OE deassertion time */
-+
-+	/* Access time and cycle time timings corresponding to GPMC_CONFIG5 */
-+	u32 page_burst_access;	/* Multiple access word delay */
-+	u32 access;		/* Start-cycle to first data valid delay */
-+	u32 rd_cycle;		/* Total read cycle time */
-+	u32 wr_cycle;		/* Total write cycle time */
-+
-+	u32 bus_turnaround;
-+	u32 cycle2cycle_delay;
-+
-+	u32 wait_monitoring;
-+	u32 clk_activation;
-+
-+	/* The following are only on OMAP3430 */
-+	u32 wr_access;		/* WRACCESSTIME */
-+	u32 wr_data_mux_bus;	/* WRDATAONADMUXBUS */
-+
-+	struct gpmc_bool_timings bool_timings;
-+};
-+
-+
-+/* Device timings in picoseconds */
-+struct gpmc_device_timings {
-+	u32 t_ceasu;	/* address setup to CS valid */
-+	u32 t_avdasu;	/* address setup to ADV valid */
-+	/* XXX: try to combine t_avdp_r & t_avdp_w. Issue is
-+	 * of tusb using these timings even for sync whilst
-+	 * ideally for adv_rd/(wr)_off it should have considered
-+	 * t_avdh instead. This indirectly necessitates r/w
-+	 * variations of t_avdp as it is possible to have one
-+	 * sync & other async
-+	 */
-+	u32 t_avdp_r;	/* ADV low time (what about t_cer ?) */
-+	u32 t_avdp_w;
-+	u32 t_aavdh;	/* address hold time */
-+	u32 t_oeasu;	/* address setup to OE valid */
-+	u32 t_aa;	/* access time from ADV assertion */
-+	u32 t_iaa;	/* initial access time */
-+	u32 t_oe;	/* access time from OE assertion */
-+	u32 t_ce;	/* access time from CS asertion */
-+	u32 t_rd_cycle;	/* read cycle time */
-+	u32 t_cez_r;	/* read CS deassertion to high Z */
-+	u32 t_cez_w;	/* write CS deassertion to high Z */
-+	u32 t_oez;	/* OE deassertion to high Z */
-+	u32 t_weasu;	/* address setup to WE valid */
-+	u32 t_wpl;	/* write assertion time */
-+	u32 t_wph;	/* write deassertion time */
-+	u32 t_wr_cycle;	/* write cycle time */
-+
-+	u32 clk;
-+	u32 t_bacc;	/* burst access valid clock to output delay */
-+	u32 t_ces;	/* CS setup time to clk */
-+	u32 t_avds;	/* ADV setup time to clk */
-+	u32 t_avdh;	/* ADV hold time from clk */
-+	u32 t_ach;	/* address hold time from clk */
-+	u32 t_rdyo;	/* clk to ready valid */
-+
-+	u32 t_ce_rdyz;	/* XXX: description ?, or use t_cez instead */
-+	u32 t_ce_avd;	/* CS on to ADV on delay */
-+
-+	/* XXX: check the possibility of combining
-+	 * cyc_aavhd_oe & cyc_aavdh_we
-+	 */
-+	u8 cyc_aavdh_oe;/* read address hold time in cycles */
-+	u8 cyc_aavdh_we;/* write address hold time in cycles */
-+	u8 cyc_oe;	/* access time from OE assertion in cycles */
-+	u8 cyc_wpl;	/* write deassertion time in cycles */
-+	u32 cyc_iaa;	/* initial access time in cycles */
-+
-+	/* extra delays */
-+	bool ce_xdelay;
-+	bool avd_xdelay;
-+	bool oe_xdelay;
-+	bool we_xdelay;
-+};
-+
-+struct gpmc_settings {
-+	bool burst_wrap;	/* enables wrap bursting */
-+	bool burst_read;	/* enables read page/burst mode */
-+	bool burst_write;	/* enables write page/burst mode */
-+	bool device_nand;	/* device is NAND */
-+	bool sync_read;		/* enables synchronous reads */
-+	bool sync_write;	/* enables synchronous writes */
-+	bool wait_on_read;	/* monitor wait on reads */
-+	bool wait_on_write;	/* monitor wait on writes */
-+	u32 burst_len;		/* page/burst length */
-+	u32 device_width;	/* device bus width (8 or 16 bit) */
-+	u32 mux_add_data;	/* multiplex address & data */
-+	u32 wait_pin;		/* wait-pin to be used */
-+};
-+
-+
- /* Data for each chip select */
- struct gpmc_omap_cs_data {
- 	bool valid;	/* data is valid */
- 	enum gpmc_omap_type type;
-+	struct gpmc_settings *settings;
-+	struct gpmc_device_timings *device_timings;
-+	struct gpmc_timings *gpmc_timings;
- 	struct platform_device *pdev;	/* device within this CS region */
- 	unsigned pdata_size;
- };
++/* must run after machine_init code. i.e. arch_init */
++omap_subsys_initcall(omap_gpmc_init);
+ 
+ /**
+  * gpmc_generic_init - Initialize platform data for a Chip Select
 -- 
 1.8.3.2
