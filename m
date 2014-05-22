@@ -1,23 +1,21 @@
-Received: from mail-ig0-f172.google.com ([209.85.213.172])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WnRf7-0003ZP-1d
- for linux-mtd@lists.infradead.org; Thu, 22 May 2014 11:59:53 +0000
-Received: by mail-ig0-f172.google.com with SMTP id uy17so7487427igb.11
- for <linux-mtd@lists.infradead.org>; Thu, 22 May 2014 04:59:32 -0700 (PDT)
-Date: Thu, 22 May 2014 12:59:27 +0100
-From: Lee Jones <lee.jones@linaro.org>
-To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 08/10] mtd: st_spi_fsm: Provide documentation for boot
- device mask property
-Message-ID: <20140522115927.GY6679@lee--X1>
-References: <1400757848-18075-1-git-send-email-lee.jones@linaro.org>
- <1400757848-18075-9-git-send-email-lee.jones@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1400757848-18075-9-git-send-email-lee.jones@linaro.org>
-Cc: devicetree@vger.kernel.org, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org, arnd@arndb.de
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WnSYf-0002gp-0V
+ for linux-mtd@lists.infradead.org; Thu, 22 May 2014 12:57:17 +0000
+From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Subject: [PATCH] mtd: pxa3xx_nand: make the driver work on big-endian systems
+Date: Thu, 22 May 2014 14:56:52 +0200
+Message-Id: <1400763412-10393-1-git-send-email-thomas.petazzoni@free-electrons.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Andrew Lunn <andrew@lunn.ch>, Jason Cooper <jason@lakedaemon.net>,
+ stable@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,29 +25,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-mtd: st_spi_fsm: Provide documentation for boot device mask property
+The pxa3xx_nand driver currently uses __raw_writel() and __raw_readl()
+to access I/O registers. However, those functions do not do any
+endianness swapping, which means that they won't work when the CPU
+runs in big-endian but the I/O registers are little endian, which is
+the common situation for ARM systems running big endian.
 
-The system configuration registers which display which device the system
-booted on are in the same place on all boards which support the FSM.
-However, the bits do shift every so slightly.  To combat these we're
-adding a new property which supplies the necessary mask used to abstract
-the required information.
+Since __raw_writel() and __raw_readl() do not include any memory
+barriers and the pxa3xx_nand driver can only be compiled for ARM
+platforms, the closest I/o accessors functions that do endianess
+swapping are writel_relaxed() and readl_relaxed().
 
-Cc: devicetree@vger.kernel.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+This patch has been verified to work on Armada XP GP: without the
+patch, the NAND is not detected when the kernel runs big endian while
+it is properly detected when the kernel runs little endian. With the
+patch applied, the NAND is properly detected in both situations
+(little and big endian).
 
-diff --git a/Documentation/devicetree/bindings/mtd/st-fsm.txt b/Documentation/devicetree/bindings/mtd/st-fsm.txt
-index c248939..2ef9710 100644
---- a/Documentation/devicetree/bindings/mtd/st-fsm.txt
-+++ b/Documentation/devicetree/bindings/mtd/st-fsm.txt
-@@ -11,6 +11,10 @@ Optional properties:
-   - st,syscfg          : Phandle to boot-device system configuration registers
-   - st,boot-device-reg : Address of the aforementioned boot-device register(s)
-   - st,boot-device-spi : Expected boot-device value if booted via this device
-+  - st,boot-device-msk : Mask to use when extracting boot device from the
-+                        above system config registers
-+  NB: If any of the st,boot-device-* properties are missing, the driver falls
-+  back to the default assumption of 'booted from SPI'.
+Signed-off-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Cc: <stable@vger.kernel.org> # v3.13+
+---
+This patch does not fix a regression introduced by a previous commit,
+but is still necessary for stable to allow NAND to work properly on
+ARM big endian platforms. The 3.13 starting point was chosen because
+the support for big endian on modern ARM systems was added in this
+kernel release.
+
+Signed-off-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+---
+ drivers/mtd/nand/pxa3xx_nand.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 7588fe2..3003611 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -127,10 +127,10 @@
  
- Example:
-        spifsm: spifsm@fe902000{
+ /* macros for registers read/write */
+ #define nand_writel(info, off, val)	\
+-	__raw_writel((val), (info)->mmio_base + (off))
++	writel_relaxed((val), (info)->mmio_base + (off))
+ 
+ #define nand_readl(info, off)		\
+-	__raw_readl((info)->mmio_base + (off))
++	readl_relaxed((info)->mmio_base + (off))
+ 
+ /* error code and state */
+ enum {
+-- 
+1.9.3
