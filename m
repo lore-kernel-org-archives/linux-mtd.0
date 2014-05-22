@@ -1,19 +1,25 @@
-Received: from mail.linuxfoundation.org ([140.211.169.12])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WnN6H-0006d6-JX
- for linux-mtd@lists.infradead.org; Thu, 22 May 2014 07:07:37 +0000
-Date: Thu, 22 May 2014 00:06:34 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: ravibhuva9955@gmail.com
-Subject: Re: [Bug 76701] New: Page Allocation failure during mount operation
-Message-Id: <20140522000634.65031979.akpm@linux-foundation.org>
-In-Reply-To: <bug-76701-27@https.bugzilla.kernel.org/>
-References: <bug-76701-27@https.bugzilla.kernel.org/>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from devils.ext.ti.com ([198.47.26.153])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WnO8C-00010I-PY
+ for linux-mtd@lists.infradead.org; Thu, 22 May 2014 08:13:41 +0000
+Message-ID: <537DB17A.6060608@ti.com>
+Date: Thu, 22 May 2014 11:12:42 +0300
+From: Roger Quadros <rogerq@ti.com>
+MIME-Version: 1.0
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: Re: [RFC PATCH 00/16] OMAP: GPMC: Restructure OMAP GPMC driver (NAND)
+ : DT binding change proposal
+References: <1400671264-10702-1-git-send-email-rogerq@ti.com>
+ <20140521160818.GA1150@arch.cereza>
+In-Reply-To: <20140521160818.GA1150@arch.cereza>
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, bugzilla-daemon@bugzilla.kernel.org,
- David Woodhouse <dwmw2@infradead.org>
+Cc: devicetree@vger.kernel.org, linux-omap@vger.kernel.org, tony@atomide.com,
+ robertcnelson@gmail.com, jg1.han@samsung.com, nsekhar@ti.com,
+ linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ linux-mtd@lists.infradead.org, pekon@ti.com,
+ Grant Likely <grant.likely@linaro.org>, javier@dowhile0.org,
+ computersforpeace@gmail.com, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,64 +29,126 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Ezequiel,
 
-(switched to email.  Please respond via emailed reply-to-all, not via the
-bugzilla web interface).
-
-On Thu, 22 May 2014 06:35:38 +0000 bugzilla-daemon@bugzilla.kernel.org wrote:
-
-> https://bugzilla.kernel.org/show_bug.cgi?id=76701
+On 05/21/2014 07:08 PM, Ezequiel Garcia wrote:
+> Hi Roger,
 > 
->             Bug ID: 76701
->            Summary: Page Allocation failure during mount operation
->            Product: Memory Management
->            Version: 2.5
->     Kernel Version: 2.6.37
->           Hardware: ARM
->                 OS: Linux
->               Tree: Mainline
->             Status: NEW
->           Severity: normal
->           Priority: P1
->          Component: Page Allocator
->           Assignee: akpm@linux-foundation.org
->           Reporter: ravibhuva9955@gmail.com
->         Regression: No
+> On 21 May 02:20 PM, Roger Quadros wrote:
+>>
+>> For DT boot:
+>> - The GPMC controller node should have a chip select (CS) node for each used
+>>   chip select. The CS node must have a child device node for each device
+>>   attached to that chip select. Properties for that child are GPMC agnostic.
+>>
+>>   i.e.
+>> 	gpmc {
+>> 		cs0 {
+>> 			nand0 {
+>> 			}
+>> 		};
+>>
+>> 		cs1 {
+>> 			nor0 {
+>> 			}
+>> 		}
+>> 		...
+>> 	};
+>>
 > 
-> Created attachment 137081
->   --> https://bugzilla.kernel.org/attachment.cgi?id=137081&action=edit
-> Mount Error Logs
+> While I agree that the GPMC driver is a bit messy, I'm not sure it's possible
+> to go through such a complete devicetree binding re-design (breaking backwards
+> compatibility) now that the binding is already in production.
+
+Why not? especially if the existing bindings are poorly dones. Is anyone using these
+bindings burning the DT into ROM and can't change it when they update the kernel?
+
+I wouldn't bother much about backward compatibility but just focus on not breaking
+functionality with all GPMC users while cleaning up the existing bindings.
+
 > 
-> Hello Friends,
+> AFAIK, TI's SDK 7.0 is released, with a v3.8.x kernel which uses this GPMC
+> binding. And then you have the ISEE board too, using this binding.
+
+How does this prevent them from not using the new bindings when they update the kernel?
+
 > 
-> I am mounting configuration partition(NAND) during firmware upgrade and commit
-> operations. And some times, I am getting error of mount failure and some of
-> logs in syslog and dmesg(attached).
+> Also, what's the problem with the current devicetree binding (not that I'm fan
+> of it)?
 > 
-> So how to resolve this issue?
 
-Jun 11 19:54:21 GJ-90012 user.warn kernel: mount: page allocation failure. order:5, mode:0x40d0
-Jun 11 19:54:21 GJ-90012 user.warn kernel: Backtrace: 
-Jun 11 19:54:21 GJ-90012 user.warn kernel: [<c0052078>] (dump_backtrace+0x0/0x110) from [<c04dc338>] (dump_stack+0x18/0x1c)
-Jun 11 19:54:21 GJ-90012 user.warn kernel:  r6:00000001 r5:00000005 r4:000040d0 r3:60000013
-Jun 11 19:54:21 GJ-90012 user.warn kernel: [<c04dc320>] (dump_stack+0x0/0x1c) from [<c00b0440>] (__alloc_pages_nodemask+0x4fc/0x560)
-Jun 11 19:54:21 GJ-90012 user.warn kernel: [<c00aff44>] (__alloc_pages_nodemask+0x0/0x560) from [<c00b04bc>] (__get_free_pages+0x18/0x34)
-Jun 11 19:54:21 GJ-90012 user.warn kernel: [<c00b04a4>] (__get_free_pages+0x0/0x34) from [<c00ce590>] (__kmalloc+0x3c/0xc0)
-Jun 11 19:54:21 GJ-90012 user.warn kernel: [<c00ce554>] (__kmalloc+0x0/0xc0) from [<c0231d98>] (jffs2_scan_medium+0xdc/0x119c)
-Jun 11 19:54:21 GJ-90012 user.warn kernel:  r8:c0237228 r7:00020000 r6:ea6e1200 r5:00000000 r4:ea6e1c00
-Jun 11 19:54:21 GJ-90012 user.warn kernel: r3:00000004
-Jun 11 19:54:21 GJ-90012 user.warn kernel: [<c0231cbc>] (jffs2_scan_medium+0x0/0x119c) from [<c0234bf0>] (jffs2_do_mount_fs+0x180/0x59c)
-Jun 11 19:54:21 GJ-90012 user.warn kernel: [<c0234a70>] (jffs2_do_mount_fs+0x0/0x59c) from [<c0236d80>] (jffs2_do_fill_super+0x154/0x238)
-Jun 11 19:54:21 GJ-90012 user.warn kernel:  r8:c0237228 r7:00020000 r6:ea6e1200 r5:00000000 r4:ea6e1c00
-Jun 11 19:54:21 GJ-90012 user.warn kernel: [<c0236c2c>] (jffs2_do_fill_super+0x0/0x238) from [<c02372e4>] (jffs2_fill_super+0xbc/0xdc)
-Jun 11 19:54:21 GJ-90012 user.warn kernel:  r7:00000000 r6:00000001 r5:ea6e1c00 r4:ea6e1200
-Jun 11 19:54:21 GJ-90012 user.warn kernel: [<c0237228>] (jffs2_fill_super+0x0/0xdc) from [<c0312944>] (mount_mtd_aux.clone.0+0x50/0xd4)
+The existing binding uses this format
 
-I'm not seeing mtd_kmalloc_up_to() in the backtrace, but that might be
-a post-2.6.37 change.
+	gpmc {
+		ranges <cs-num 0 IO_partition_start IO_partition_size,
+			cs-num 0 IO_partition_start IO_partition_size,
+			...>
 
-Perhaps mtd_kmalloc_up_to() should be including __GFP_NOWARN in its
-final kmalloc attemot, but that won't help you.
+		node-name0 {
+			compatible = "<id for device on this chip select>";
+			reg = <cs-num IO_offset IO_size>;
 
-As for why the mount actually fails I cannot say - hopefully the fs
-isn't dependent upon the success of an order-5 page allocation?
+			<gpmc cs properties>;
+
+			<device specific properties>;
+		};
+
+		node-name1 {
+			...
+		};
+	};
+
+with requirements that
+- chip select number (cs-num) is encoded in range id
+- child's node-name is used to identify device type (NAND, Onenand, etc) and driver expects that.
+
+All this results in the following issues
+- No way to define entire GPMC I/O map (typically 1st 1GB), without assigning them to a Chip select. i.e. incomplete hardware description.
+  TI SoCs variants can have different GPMC I/O sizes, some can have 512MB others can have 1GB. There needs to be a way to specify that.
+- No clean way to specify GPMC register map for use by child nodes. NAND controller which can be one of the children needs to use the GPMC register map.
+- Tricky to define multiple devices within a single chip select region.
+- Uses node name to identify device type like nand and onenand. Doesn't use compatible id for them.
+- GPMC CS properties are mixed with device properties, resulting in unnecessary binding documents like
+http://lxr.free-electrons.com/source/Documentation/devicetree/bindings/net/gpmc-eth.txt
+http://lxr.free-electrons.com/source/Documentation/devicetree/bindings/mtd/gpmc-nor.txt
+
+To solve these issues, I'm proposing the following format
+
+	gpmc {
+		ranges <0 0 IO_start IO_size		/* entire GPMC I/O space e.g. 1GB or 512MB */
+			1 0 Reg_start Reg_size>;	/* GPMC register space */
+
+		cs0 {
+			ranges <0 0 IO_partition_start IO_partition_size>;	/* CS0 IO partition e.g. 16MB */
+
+			gpmc,cs-num = <0>;		/* pass chip select number explicitly */
+			<gpmc cs properties>;
+
+			dev0 {
+				compatible = "<id for device on this chip select>";
+				reg = <0 IO_offset IO_size			/* Device IO region e.g. 1KB */
+					1 Reg_offset Reg_size>;
+
+				<device specific properties>;
+			};
+
+			dev1 {
+			...
+			};
+		};
+		
+		cs1 {
+			...
+		};
+	};
+
+All I'm doing is splitting up the CS node and the device node and removing the cs-num encoding from the ranges property.
+This results in a much cleaner DT binding and code.
+
+The format is similar to the one used by the ti-aemif driver.
+http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/memory-controllers/ti-aemif.txt
+
+Having a unified format for all TI memory controllers will make life much easier for us.
+
+cheers,
+-roger
