@@ -1,30 +1,23 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WnUGp-00062O-Dd
- for linux-mtd@lists.infradead.org; Thu, 22 May 2014 14:47:00 +0000
-Date: Thu, 22 May 2014 11:46:00 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Roger Quadros <rogerq@ti.com>, Tony Lindgren <tony@atomide.com>,
- Javier Martinez Canillas <javier@dowhile0.org>
-Subject: Re: [RFC PATCH 00/16] OMAP: GPMC: Restructure OMAP GPMC driver
- (NAND) : DT binding change proposal
-Message-ID: <20140522144600.GA1785@arch.cereza>
-References: <1400671264-10702-1-git-send-email-rogerq@ti.com>
- <20140521160818.GA1150@arch.cereza> <537DB17A.6060608@ti.com>
- <CABxcv=nbgGhVN+XYO8s=mYOpoLU9-kWuEqc+FLMaSbWS7BJNyQ@mail.gmail.com>
+Received: from mail-out.m-online.net ([212.18.0.9])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WnWN4-0002ol-EH
+ for linux-mtd@lists.infradead.org; Thu, 22 May 2014 17:01:35 +0000
+Date: Thu, 22 May 2014 19:01:08 +0200
+From: Gerhard Sittig <gsi@denx.de>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2 0/3] mtd: nand: introduce a READMODE command
+Message-ID: <20140522170108.GQ22644@book.gsilab.sittig.org>
+References: <1396611948-4523-1-git-send-email-gsi@denx.de>
+ <20140414185541.GW3528@book.gsilab.sittig.org>
+ <20140505132903.GP2821@book.gsilab.sittig.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABxcv=nbgGhVN+XYO8s=mYOpoLU9-kWuEqc+FLMaSbWS7BJNyQ@mail.gmail.com>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- Robert Nelson <robertcnelson@gmail.com>, Jingoo Han <jg1.han@samsung.com>,
- nsekhar@ti.com, Linux Kernel <linux-kernel@vger.kernel.org>,
- Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org, "Gupta,
- Pekon" <pekon@ti.com>, Grant Likely <grant.likely@linaro.org>,
- Brian Norris <computersforpeace@gmail.com>, dwmw2@infradead.org
+In-Reply-To: <20140505132903.GP2821@book.gsilab.sittig.org>
+Cc: David Mosberger <davidm@egauge.net>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Pekon Gupta <pekon@ti.com>,
+ Alexander Shiyan <shc_work@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,55 +27,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 22 May 01:51 PM, Javier Martinez Canillas wrote:
-> On Thu, May 22, 2014 at 10:12 AM, Roger Quadros <rogerq@ti.com> wrote:
-> >> On 21 May 02:20 PM, Roger Quadros wrote:
-> >>>
-> >>> For DT boot:
-> >>> - The GPMC controller node should have a chip select (CS) node for each used
-> >>>   chip select. The CS node must have a child device node for each device
-> >>>   attached to that chip select. Properties for that child are GPMC agnostic.
-> >>>
-> >>>   i.e.
-> >>>      gpmc {
-> >>>              cs0 {
-> >>>                      nand0 {
-> >>>                      }
-> >>>              };
-> >>>
-> >>>              cs1 {
-> >>>                      nor0 {
-> >>>                      }
-> >>>              }
-> >>>              ...
-> >>>      };
-> >>>
-> >>
-> >> While I agree that the GPMC driver is a bit messy, I'm not sure it's possible
-> >> to go through such a complete devicetree binding re-design (breaking backwards
-> >> compatibility) now that the binding is already in production.
-> >
-> > Why not? especially if the existing bindings are poorly dones. Is anyone using these
-> > bindings burning the DT into ROM and can't change it when they update the kernel?
-> >
+On Mon, 2014-05-05 at 15:29 +0200, Gerhard Sittig wrote:
 > 
-> While I do agree that your DT bindings are much better than the
-> current ones, there is a policy that DT bindings are an external API
-> and once are released with a kernel are set in stone and can't be
-> changed.
+> On Mon, 2014-04-14 at 20:55 +0200, Gerhard Sittig wrote:
+> > 
+> > On Fri, 2014-04-04 at 13:45 +0200, Gerhard Sittig wrote:
+> > > 
+> > > this series does some minor cleanup in nand_command_lp() and then
+> > > introduces a NAND_CMD_READMODE opcode which is similar to the existing
+> > > NAND_CMD_READ0 but does not imply NAND_CMD_READSTART
+> > > 
+> > > such a READMODE command is useful in preparation of the pending
+> > > introduction of on-die-ECC support
+> > 
+> > Are there any concerns left that I should address?
 > 
+> There have been two good weeks without further comments, and an
+> ACK from Gupta Pekon.  Can the series get applied?  Should I
+> re-submit with the ACK?
 
-Exactly. The DT binding is considered an ABI. Thus, invariant across kernel
-versions. Users can't be coherced into a DTB update after a kernel update.
+Are there any remaining concerns that I shall address?  Can the
+series get picked up?  Shall I re-send?  Thank you for checking!
 
-That said, I don't really care if you break compatilibity in this case.
-Rather, I'm suggesting that you make sure this change is going to be accepted
-upstream, before doing any more work. The DT maintainers are reluctant to do
-so.
 
-On the other side, I guess you will also break bisectability while breaking
-backward compatibility. Doesn't sound very nice.
+virtually yours
+Gerhard Sittig
 -- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
+HRB 165235 Munich, Office: Kirchenstr. 5, D-82194 Groebenzell, Germany
+Phone: +49-8142-66989-0 Fax: +49-8142-66989-80  Email: office@denx.de
