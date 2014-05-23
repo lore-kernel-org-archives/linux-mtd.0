@@ -1,17 +1,17 @@
-Received: from mail-ve0-x22a.google.com ([2607:f8b0:400c:c01::22a])
+Received: from mail-vc0-x234.google.com ([2607:f8b0:400c:c03::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wnfd0-0006Ga-St
- for linux-mtd@lists.infradead.org; Fri, 23 May 2014 02:54:39 +0000
-Received: by mail-ve0-f170.google.com with SMTP id db11so5607941veb.1
- for <linux-mtd@lists.infradead.org>; Thu, 22 May 2014 19:54:16 -0700 (PDT)
+ id 1Wng6R-0000US-1W
+ for linux-mtd@lists.infradead.org; Fri, 23 May 2014 03:25:04 +0000
+Received: by mail-vc0-f180.google.com with SMTP id hy4so5515577vcb.39
+ for <linux-mtd@lists.infradead.org>; Thu, 22 May 2014 20:24:40 -0700 (PDT)
 From: "ted.juan" <ted.juan@gmail.com>
 To: computersforpeace@gmail.com
 Subject: [PATCH] mtd: nand: omap: fix omap_calculate_ecc_bch() for-loop error
-Date: Fri, 23 May 2014 10:54:10 +0800
-Message-Id: <1400813650-7417-1-git-send-email-ted.juan@gmail.com>
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EAD825F@DBDE04.ent.ti.com>
-References: <20980858CB6D3A4BAE95CA194937D5E73EAD825F@DBDE04.ent.ti.com>
-Cc: "ted.juan" <ted.juan@gmail.com>, linux-mtd@lists.infradead.org,
+Date: Fri, 23 May 2014 11:24:34 +0800
+Message-Id: <1400815474-7871-1-git-send-email-ted.juan@gmail.com>
+In-Reply-To: <1400813650-7417-1-git-send-email-ted.juan@gmail.com>
+References: <1400813650-7417-1-git-send-email-ted.juan@gmail.com>
+Cc: "ted.juan" <ted_juan@weintek.com>, linux-mtd@lists.infradead.org,
  pekon@ti.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -22,19 +22,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: "ted.juan" <ted.juan@gmail.com>
-
+From: "ted.juan" <ted_juan@weintek.com>
 
  Fixes:  2c9f2365d1e1d0e318b068f683f18c99515b80f8
  mtd: nand: omap: ecc.calculate: merge omap3_calculate_ecc_bch4 in omap_calculate_ecc_bch
 
  Fixes: 7bcd1dca1d587ad29f9825ba4414620440e8c8da
  mtd: nand: omap: ecc.calculate: merge omap3_calculate_ecc_bch8 in omap_calculate_ecc_bch
-
-Hi Pekon,
-
-Thanks a lot for your comments.
-I hope I don't misunderstand what you say.
 
 CC: <stable@vger.kernel.org> # 3.13.x+
 Signed-off-by: ted.juan <ted.juan@gmail.com>
