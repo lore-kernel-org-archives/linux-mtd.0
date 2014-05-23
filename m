@@ -1,23 +1,29 @@
-Received: from mail-qc0-x236.google.com ([2607:f8b0:400d:c01::236])
+Received: from bear.ext.ti.com ([192.94.94.41])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wngjy-00034l-MQ
- for linux-mtd@lists.infradead.org; Fri, 23 May 2014 04:05:55 +0000
-Received: by mail-qc0-f182.google.com with SMTP id e16so7238533qcx.27
- for <linux-mtd@lists.infradead.org>; Thu, 22 May 2014 21:05:32 -0700 (PDT)
+ id 1Wnkf8-00012w-Hf
+ for linux-mtd@lists.infradead.org; Fri, 23 May 2014 08:17:10 +0000
+Message-ID: <537F03C8.3070101@ti.com>
+Date: Fri, 23 May 2014 11:16:08 +0300
+From: Roger Quadros <rogerq@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <1400813650-7417-1-git-send-email-ted.juan@gmail.com>
-References: <20980858CB6D3A4BAE95CA194937D5E73EAD825F@DBDE04.ent.ti.com>
- <1400813650-7417-1-git-send-email-ted.juan@gmail.com>
-Date: Fri, 23 May 2014 12:05:32 +0800
-Message-ID: <CAE94FHEEpdyO-4nk-CVvSh6agECKsMibxSzgS=U_8osdVav5Rg@mail.gmail.com>
-Subject: Re: [PATCH] mtd: nand: omap: fix omap_calculate_ecc_bch() for-loop
- error
-From: Ted Juan <ted.juan@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: "ted.juan" <ted.juan@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
- Pekon" <pekon@ti.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Tony Lindgren
+ <tony@atomide.com>, Javier Martinez Canillas <javier@dowhile0.org>
+Subject: Re: [RFC PATCH 00/16] OMAP: GPMC: Restructure OMAP GPMC driver (NAND)
+ : DT binding change proposal
+References: <1400671264-10702-1-git-send-email-rogerq@ti.com>
+ <20140521160818.GA1150@arch.cereza> <537DB17A.6060608@ti.com>
+ <CABxcv=nbgGhVN+XYO8s=mYOpoLU9-kWuEqc+FLMaSbWS7BJNyQ@mail.gmail.com>
+ <20140522144600.GA1785@arch.cereza>
+In-Reply-To: <20140522144600.GA1785@arch.cereza>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ Robert Nelson <robertcnelson@gmail.com>, Jingoo Han <jg1.han@samsung.com>,
+ nsekhar@ti.com, Linux Kernel <linux-kernel@vger.kernel.org>,
+ Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org, "Gupta,
+ Pekon" <pekon@ti.com>, Grant Likely <grant.likely@linaro.org>,
+ Brian Norris <computersforpeace@gmail.com>, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,85 +33,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Pekon,
+Ezequiel & Javier,
 
-When I add "CC: <stable@vger.kernel.org> # 3.13.x+" in patch, then git
-send-email.
+On 05/22/2014 05:46 PM, Ezequiel Garcia wrote:
+> On 22 May 01:51 PM, Javier Martinez Canillas wrote:
+>> On Thu, May 22, 2014 at 10:12 AM, Roger Quadros <rogerq@ti.com> wrote:
+>>>> On 21 May 02:20 PM, Roger Quadros wrote:
+>>>>>
+>>>>> For DT boot:
+>>>>> - The GPMC controller node should have a chip select (CS) node for each used
+>>>>>   chip select. The CS node must have a child device node for each device
+>>>>>   attached to that chip select. Properties for that child are GPMC agnostic.
+>>>>>
+>>>>>   i.e.
+>>>>>      gpmc {
+>>>>>              cs0 {
+>>>>>                      nand0 {
+>>>>>                      }
+>>>>>              };
+>>>>>
+>>>>>              cs1 {
+>>>>>                      nor0 {
+>>>>>                      }
+>>>>>              }
+>>>>>              ...
+>>>>>      };
+>>>>>
+>>>>
+>>>> While I agree that the GPMC driver is a bit messy, I'm not sure it's possible
+>>>> to go through such a complete devicetree binding re-design (breaking backwards
+>>>> compatibility) now that the binding is already in production.
+>>>
+>>> Why not? especially if the existing bindings are poorly dones. Is anyone using these
+>>> bindings burning the DT into ROM and can't change it when they update the kernel?
+>>>
+>>
+>> While I do agree that your DT bindings are much better than the
+>> current ones, there is a policy that DT bindings are an external API
+>> and once are released with a kernel are set in stone and can't be
+>> changed.
+>>
+> 
+> Exactly. The DT binding is considered an ABI. Thus, invariant across kernel
+> versions. Users can't be coherced into a DTB update after a kernel update.
+> 
+> That said, I don't really care if you break compatilibity in this case.
+> Rather, I'm suggesting that you make sure this change is going to be accepted
+> upstream, before doing any more work. The DT maintainers are reluctant to do
+> so.
 
-There are some warning message as blow. Should I fix it?
-And which stable version I should mark?
+Appreciate your concern.
 
+Would be really nice if you can review patches 1-12. They have nothing to do with DT changes.
 Thanks.
 
-(mbox) Adding cc: "ted.juan" <ted_juan@weintek.com> from line 'From:
-"ted.juan" <ted_juan@weintek.com>'
-(body) Adding cc: <stable@vger.kernel.org> # 3.13.x+ from line 'CC:
-<stable@vger.kernel.org> # 3.13.x+'
-Use of uninitialized value $cc in string eq at
-/usr/lib/git-core/git-send-email line 983.
-Use of uninitialized value $cc in quotemeta at
-/usr/lib/git-core/git-send-email line 983.
-W: unable to extract a valid address from: <stable@vger.kernel.org> # 3.13.x+
-W: unable to extract a valid address from: <stable@vger.kernel.org> # 3.13.x+
+cheers,
+-roger
 
-
-2014-05-23 10:54 GMT+08:00 ted.juan <ted.juan@gmail.com>:
-> From: "ted.juan" <ted.juan@gmail.com>
->
->
->  Fixes:  2c9f2365d1e1d0e318b068f683f18c99515b80f8
->  mtd: nand: omap: ecc.calculate: merge omap3_calculate_ecc_bch4 in omap_calculate_ecc_bch
->
->  Fixes: 7bcd1dca1d587ad29f9825ba4414620440e8c8da
->  mtd: nand: omap: ecc.calculate: merge omap3_calculate_ecc_bch8 in omap_calculate_ecc_bch
->
-> Hi Pekon,
->
-> Thanks a lot for your comments.
-> I hope I don't misunderstand what you say.
->
-> CC: <stable@vger.kernel.org> # 3.13.x+
-> Signed-off-by: ted.juan <ted.juan@gmail.com>
-> Acked-by: Pekon Gupta <pekon@ti.com>
-> ---
->  drivers/mtd/nand/omap2.c |   10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> index 1ff49b8..e21145a 100644
-> --- a/drivers/mtd/nand/omap2.c
-> +++ b/drivers/mtd/nand/omap2.c
-> @@ -1162,7 +1162,7 @@ static int __maybe_unused omap_calculate_ecc_bch(struct mtd_info *mtd,
->         struct gpmc_nand_regs   *gpmc_regs = &info->reg;
->         u8 *ecc_code;
->         unsigned long nsectors, bch_val1, bch_val2, bch_val3, bch_val4;
-> -       int i;
-> +       int i, j;
->
->         nsectors = ((readl(info->reg.gpmc_ecc_config) >> 4) & 0x7) + 1;
->         for (i = 0; i < nsectors; i++) {
-> @@ -1210,8 +1210,8 @@ static int __maybe_unused omap_calculate_ecc_bch(struct mtd_info *mtd,
->                 case OMAP_ECC_BCH4_CODE_HW_DETECTION_SW:
->                         /* Add constant polynomial to remainder, so that
->                          * ECC of blank pages results in 0x0 on reading back */
-> -                       for (i = 0; i < eccbytes; i++)
-> -                               ecc_calc[i] ^= bch4_polynomial[i];
-> +                       for (j = 0; j < eccbytes; j++)
-> +                               ecc_calc[j] ^= bch4_polynomial[j];
->                         break;
->                 case OMAP_ECC_BCH4_CODE_HW:
->                         /* Set  8th ECC byte as 0x0 for ROM compatibility */
-> @@ -1220,8 +1220,8 @@ static int __maybe_unused omap_calculate_ecc_bch(struct mtd_info *mtd,
->                 case OMAP_ECC_BCH8_CODE_HW_DETECTION_SW:
->                         /* Add constant polynomial to remainder, so that
->                          * ECC of blank pages results in 0x0 on reading back */
-> -                       for (i = 0; i < eccbytes; i++)
-> -                               ecc_calc[i] ^= bch8_polynomial[i];
-> +                       for (j = 0; j < eccbytes; j++)
-> +                               ecc_calc[j] ^= bch8_polynomial[j];
->                         break;
->                 case OMAP_ECC_BCH8_CODE_HW:
->                         /* Set 14th ECC byte as 0x0 for ROM compatibility */
-> --
-> 1.7.9.5
->
+> 
+> On the other side, I guess you will also break bisectability while breaking
+> backward compatibility. Doesn't sound very nice.
+> 
