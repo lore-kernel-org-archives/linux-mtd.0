@@ -1,24 +1,17 @@
-Received: from mail-ig0-f173.google.com ([209.85.213.173])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wnmk8-0000v9-LE
- for linux-mtd@lists.infradead.org; Fri, 23 May 2014 10:30:29 +0000
-Received: by mail-ig0-f173.google.com with SMTP id hn18so488879igb.6
- for <linux-mtd@lists.infradead.org>; Fri, 23 May 2014 03:30:06 -0700 (PDT)
-Date: Fri, 23 May 2014 11:30:01 +0100
-From: Lee Jones <lee.jones@linaro.org>
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [PATCH 04/47] mtd: nand: adding ST's BCH NAND Controller driver
-Message-ID: <20140523103001.GU19747@lee--X1>
-References: <20980858CB6D3A4BAE95CA194937D5E73EAD8267@DBDE04.ent.ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EAD8267@DBDE04.ent.ti.com>
-Cc: "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "kernel@stlinux.com" <kernel@stlinux.com>
+Received: from cpsmtpb-ews07.kpnxchange.com ([213.75.39.10])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WnqUG-0000zZ-4F
+ for linux-mtd@lists.infradead.org; Fri, 23 May 2014 14:30:21 +0000
+Message-ID: <1400855394.31526.37.camel@x220>
+Subject: [PATCH] mtd: maps: remove check for CONFIG_MTD_SUPERH_RESERVE
+From: Paul Bolle <pebolle@tiscali.nl>
+To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>
+Date: Fri, 23 May 2014 16:29:54 +0200
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,153 +21,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It's strange that your replies aren't connected to my original patches
-in my INBOX.  Is there something wrong with your mailer?
+Since (a few releases before) v2.6.0 there have been checks for
+CONFIG_MTD_SUPERH_RESERVE. One check is still present. But a Kconfig
+symbol MTD_SUPERH_RESERVE has never been added. So a few lines of dead
+code can be removed.
 
-> >First introduction of the driver. Includes the basic device struct
-> >(some functionality isn't utilised as of yet) and supplies some of the
-> >important resources required for basic running of the Controller.
-> >
-> >Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> >---
-> >--- /dev/null
-> >+++ b/drivers/mtd/nand/stm_nand_bch.c
-> [...]
-> >+
-> >+	uint32_t		page_shift;	/* Some working variables */
-> >+	uint32_t		block_shift;
-> 
-> I think you don't really need these variables for 2 reasons:
-> (1) Wherever you are using these variables, you can derive
->     struct *nand_chip and instead directly use
-> 	chip->page_shift;
-> 	chip->phys_erase_shift;
+Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
+---
+Untested.
 
-Okay, I'll look into that.
+ drivers/mtd/maps/solutionengine.c | 25 +------------------------
+ 1 file changed, 1 insertion(+), 24 deletions(-)
 
-> (2) Difference chip-selects might be connected to different
->  NAND devices having different  page-size and erase-size.
->  I'm not sure how that is handled in current generic NAND
->  framework (nand_base.c). But having different types of
->  NAND devices connected to different chip-selects is possible.
-
-It's not a problem for us, as this controller only supports one chip.
-
-> >+	uint32_t		blocks_per_device;
-> >+	uint32_t		sectors_per_page;
-> >+
-> >+	uint8_t			*buf;		/* Some buffers to use */
-> >+	uint8_t			*page_buf;
-> >+	uint8_t			*oob_buf;
-> >+	uint32_t		*buf_list;
-> >+
-> >+	int			cached_page;	/* page number of page in */
-> >+						/* 'page_buf'             */
-> >+};
-> >+
-> >+static int remap_named_resource(struct platform_device *pdev,
-> >+				char *name,
-> >+				void __iomem **io_ptr)
-> >+{
-> >+	struct resource *res, *mem;
-> >+	resource_size_t size;
-> >+	void __iomem *p;
-> >+
-> >+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, name);
-> >+	if (!res)
-> >+		return -ENXIO;
-> >+
-> >+	size = resource_size(res);
-> >+
-> >+	mem = devm_request_mem_region(&pdev->dev, res->start, size, name);
-> >+	if (!mem)
-> >+		return -EBUSY;
-> >+
-> >+	p = devm_ioremap_nocache(&pdev->dev, res->start, size);
-> >+	if (!p)
-> >+		return -ENOMEM;
-> >+
-> >+	*io_ptr = p;
-> >+
-> >+	return 0;
-> >+}
-> >+
-> >+static struct nandi_controller *
-> >+nandi_init_resources(struct platform_device *pdev)
-> >+{
-> >+	struct nandi_controller *nandi;
-> >+	int err;
-> >+
-> >+	nandi = devm_kzalloc(&pdev->dev, sizeof(*nandi), GFP_KERNEL);
-> >+	if (!nandi) {
-> >+		dev_err(&pdev->dev,
-> >+			"failed to allocate NANDi controller data\n");
-> 
-> Jingoo Han <jg1.han@samsung.com> has been cleaning these driver
-> specific OOM messages. So please drop dev_err(..) here. Refer
-> 	[Patch] mtd: xxxx: Remove unnecessary OOM messages
-> 	The site-specific OOM messages are unnecessary, because they
-> 	duplicate the MM subsystem generic OOM message.
-
-I agree.  I don't allow OOM errors through reviews either.  This one
-must have slipped through the net.
-
-Will fix.
-
-> >+		return ERR_PTR(-ENOMEM);
-> >+	}
-> >+
-> >+	nandi->dev = &pdev->dev;
-> >+
-> >+	err = remap_named_resource(pdev, "nand_mem", &nandi->base);
-> >+	if (err)
-> >+		return ERR_PTR(err);
-> >+
-> >+	err = remap_named_resource(pdev, "nand_dma", &nandi->dma);
-> >+	if (err)
-> >+		return ERR_PTR(err);
-> >+
-> >+	platform_set_drvdata(pdev, nandi);
-> >+
-> >+	return nandi;
-> >+}
-> 
-> [...]
-> 
-> >+
-> >+struct stm_plat_nand_bch_data {
-> >+	struct stm_nand_bank_data *bank;
-> >+	enum stm_nand_bch_ecc_config bch_ecc_cfg;
-> >+
-> >+	/* The threshold at which the number of corrected bit-flips per sector
-> >+	 * is deemed to have reached an excessive level (triggers '-EUCLEAN' to
-> >+	 * be returned to the caller).  The value should be in the range 1 to
-> >+	 * <ecc-strength> where <ecc-strength> is 18 or 30, depending on the BCH
-> >+	 * ECC mode in operation.  A value of 0 is interpreted by the driver as
-> >+	 * <ecc-strength>.
-> >+	 */
-> >+	unsigned int bch_bitflip_threshold;
-> 
-> As discussed in other thread, this is incorrect interpretation for
-> bitflip_threshold. As per MTD sub-system bitflips_threshold == 0
-> means ECC correction is not implemented.
-> @@drivers/mtd/mtdcore.c: mtd_read()
-> 		return ret_code >= mtd->bitflip_threshold ? -EUCLEAN : 0;
-
-Fixed.
-
-> >+	bool flashss;
-> 
-> I could not find the use of this member I current series.
-> In your earlier version of patch this was used for DT binding "st,nand-flashss"
-> Am I missing something ?
-
-If it's unused now, it won't be soon.  This is the new flash memory
-controller which we will have to support.  I'd rather leave it in this
-set, at the very least to serve as a reminder.
-
+diff --git a/drivers/mtd/maps/solutionengine.c b/drivers/mtd/maps/solutionengine.c
+index 83a7a7091562..bb580bc16445 100644
+--- a/drivers/mtd/maps/solutionengine.c
++++ b/drivers/mtd/maps/solutionengine.c
+@@ -33,28 +33,6 @@ struct map_info soleng_flash_map = {
+ 
+ static const char * const probes[] = { "RedBoot", "cmdlinepart", NULL };
+ 
+-#ifdef CONFIG_MTD_SUPERH_RESERVE
+-static struct mtd_partition superh_se_partitions[] = {
+-	/* Reserved for boot code, read-only */
+-	{
+-		.name = "flash_boot",
+-		.offset = 0x00000000,
+-		.size = CONFIG_MTD_SUPERH_RESERVE,
+-		.mask_flags = MTD_WRITEABLE,
+-	},
+-	/* All else is writable (e.g. JFFS) */
+-	{
+-		.name = "Flash FS",
+-		.offset = MTDPART_OFS_NXTBLK,
+-		.size = MTDPART_SIZ_FULL,
+-	}
+-};
+-#define NUM_PARTITIONS ARRAY_SIZE(superh_se_partitions)
+-#else
+-#define superh_se_partitions NULL
+-#define NUM_PARTITIONS 0
+-#endif /* CONFIG_MTD_SUPERH_RESERVE */
+-
+ static int __init init_soleng_maps(void)
+ {
+ 	/* First probe at offset 0 */
+@@ -92,8 +70,7 @@ static int __init init_soleng_maps(void)
+ 		mtd_device_register(eprom_mtd, NULL, 0);
+ 	}
+ 
+-	mtd_device_parse_register(flash_mtd, probes, NULL,
+-				  superh_se_partitions, NUM_PARTITIONS);
++	mtd_device_parse_register(flash_mtd, probes, NULL, NULL, 0);
+ 
+ 	return 0;
+ }
 -- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+1.9.0
