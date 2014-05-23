@@ -1,20 +1,18 @@
-Received: from mail-pb0-x233.google.com ([2607:f8b0:400e:c01::233])
+Received: from mail-ve0-x22a.google.com ([2607:f8b0:400c:c01::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WnYD0-0002ht-ML
- for linux-mtd@lists.infradead.org; Thu, 22 May 2014 18:59:19 +0000
-Received: by mail-pb0-f51.google.com with SMTP id ma3so2885214pbc.24
- for <linux-mtd@lists.infradead.org>; Thu, 22 May 2014 11:58:56 -0700 (PDT)
-Date: Fri, 23 May 2014 00:28:48 +0530
-From: Himangi Saraogi <himangi774@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: Introduce the use of the managed version of kzalloc
-Message-ID: <20140522185848.GA15125@himangi-Dell>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: julia.lawall@lip6.fr
+ id 1Wnfd0-0006Ga-St
+ for linux-mtd@lists.infradead.org; Fri, 23 May 2014 02:54:39 +0000
+Received: by mail-ve0-f170.google.com with SMTP id db11so5607941veb.1
+ for <linux-mtd@lists.infradead.org>; Thu, 22 May 2014 19:54:16 -0700 (PDT)
+From: "ted.juan" <ted.juan@gmail.com>
+To: computersforpeace@gmail.com
+Subject: [PATCH] mtd: nand: omap: fix omap_calculate_ecc_bch() for-loop error
+Date: Fri, 23 May 2014 10:54:10 +0800
+Message-Id: <1400813650-7417-1-git-send-email-ted.juan@gmail.com>
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EAD825F@DBDE04.ent.ti.com>
+References: <20980858CB6D3A4BAE95CA194937D5E73EAD825F@DBDE04.ent.ti.com>
+Cc: "ted.juan" <ted.juan@gmail.com>, linux-mtd@lists.infradead.org,
+ pekon@ti.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,95 +22,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch moves data allocated using kzalloc to managed data allocated
-using devm_kzalloc and cleans now unnecessary kfrees in probe and remove
-functions. Also, the now unnecessary label out_err_hw_init is done away
-with and the label out_err_kzalloc is renamed to out_err.
+From: "ted.juan" <ted.juan@gmail.com>
 
-The following Coccinelle semantic patch was used for making the change:
 
-@platform@
-identifier p, probefn, removefn;
-@@
-struct platform_driver p = {
-  .probe = probefn,
-  .remove = removefn,
-};
+ Fixes:  2c9f2365d1e1d0e318b068f683f18c99515b80f8
+ mtd: nand: omap: ecc.calculate: merge omap3_calculate_ecc_bch4 in omap_calculate_ecc_bch
 
-@prb@
-identifier platform.probefn, pdev;
-expression e, e1, e2;
-@@
-probefn(struct platform_device *pdev, ...) {
-  <+...
-- e = kzalloc(e1, e2)
-+ e = devm_kzalloc(&pdev->dev, e1, e2)
-  ...
-?-kfree(e);
-  ...+>
-}
+ Fixes: 7bcd1dca1d587ad29f9825ba4414620440e8c8da
+ mtd: nand: omap: ecc.calculate: merge omap3_calculate_ecc_bch8 in omap_calculate_ecc_bch
 
-@rem depends on prb@
-identifier platform.removefn;
-expression e;
-@@
-removefn(...) {
-  <...
-- kfree(e);
-  ...>
-}
+Hi Pekon,
 
-Signed-off-by: Himangi Saraogi <himangi774@gmail.com>
+Thanks a lot for your comments.
+I hope I don't misunderstand what you say.
+
+CC: <stable@vger.kernel.org> # 3.13.x+
+Signed-off-by: ted.juan <ted.juan@gmail.com>
+Acked-by: Pekon Gupta <pekon@ti.com>
 ---
- drivers/mtd/nand/bf5xx_nand.c | 13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
+ drivers/mtd/nand/omap2.c |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/nand/bf5xx_nand.c b/drivers/mtd/nand/bf5xx_nand.c
-index b7a2494..722898a 100644
---- a/drivers/mtd/nand/bf5xx_nand.c
-+++ b/drivers/mtd/nand/bf5xx_nand.c
-@@ -679,9 +679,6 @@ static int bf5xx_nand_remove(struct platform_device *pdev)
- 	peripheral_free_list(bfin_nfc_pin_req);
- 	bf5xx_nand_dma_remove(info);
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index 1ff49b8..e21145a 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -1162,7 +1162,7 @@ static int __maybe_unused omap_calculate_ecc_bch(struct mtd_info *mtd,
+ 	struct gpmc_nand_regs	*gpmc_regs = &info->reg;
+ 	u8 *ecc_code;
+ 	unsigned long nsectors, bch_val1, bch_val2, bch_val3, bch_val4;
+-	int i;
++	int i, j;
  
--	/* free the common resources */
--	kfree(info);
--
- 	return 0;
- }
- 
-@@ -742,10 +739,10 @@ static int bf5xx_nand_probe(struct platform_device *pdev)
- 		return -EFAULT;
- 	}
- 
--	info = kzalloc(sizeof(*info), GFP_KERNEL);
-+	info = devm_kzalloc(&pdev->dev, sizeof(*info), GFP_KERNEL);
- 	if (info == NULL) {
- 		err = -ENOMEM;
--		goto out_err_kzalloc;
-+		goto out_err;
- 	}
- 
- 	platform_set_drvdata(pdev, info);
-@@ -790,7 +787,7 @@ static int bf5xx_nand_probe(struct platform_device *pdev)
- 	/* initialise the hardware */
- 	err = bf5xx_nand_hw_init(info);
- 	if (err)
--		goto out_err_hw_init;
-+		goto out_err;
- 
- 	/* setup hardware ECC data struct */
- 	if (hardware_ecc) {
-@@ -827,9 +824,7 @@ static int bf5xx_nand_probe(struct platform_device *pdev)
- 
- out_err_nand_scan:
- 	bf5xx_nand_dma_remove(info);
--out_err_hw_init:
--	kfree(info);
--out_err_kzalloc:
-+out_err:
- 	peripheral_free_list(bfin_nfc_pin_req);
- 
- 	return err;
+ 	nsectors = ((readl(info->reg.gpmc_ecc_config) >> 4) & 0x7) + 1;
+ 	for (i = 0; i < nsectors; i++) {
+@@ -1210,8 +1210,8 @@ static int __maybe_unused omap_calculate_ecc_bch(struct mtd_info *mtd,
+ 		case OMAP_ECC_BCH4_CODE_HW_DETECTION_SW:
+ 			/* Add constant polynomial to remainder, so that
+ 			 * ECC of blank pages results in 0x0 on reading back */
+-			for (i = 0; i < eccbytes; i++)
+-				ecc_calc[i] ^= bch4_polynomial[i];
++			for (j = 0; j < eccbytes; j++)
++				ecc_calc[j] ^= bch4_polynomial[j];
+ 			break;
+ 		case OMAP_ECC_BCH4_CODE_HW:
+ 			/* Set  8th ECC byte as 0x0 for ROM compatibility */
+@@ -1220,8 +1220,8 @@ static int __maybe_unused omap_calculate_ecc_bch(struct mtd_info *mtd,
+ 		case OMAP_ECC_BCH8_CODE_HW_DETECTION_SW:
+ 			/* Add constant polynomial to remainder, so that
+ 			 * ECC of blank pages results in 0x0 on reading back */
+-			for (i = 0; i < eccbytes; i++)
+-				ecc_calc[i] ^= bch8_polynomial[i];
++			for (j = 0; j < eccbytes; j++)
++				ecc_calc[j] ^= bch8_polynomial[j];
+ 			break;
+ 		case OMAP_ECC_BCH8_CODE_HW:
+ 			/* Set 14th ECC byte as 0x0 for ROM compatibility */
 -- 
-1.9.1
+1.7.9.5
