@@ -1,17 +1,27 @@
-Received: from cpsmtpb-ews07.kpnxchange.com ([213.75.39.10])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WnqUG-0000zZ-4F
- for linux-mtd@lists.infradead.org; Fri, 23 May 2014 14:30:21 +0000
-Message-ID: <1400855394.31526.37.camel@x220>
-Subject: [PATCH] mtd: maps: remove check for CONFIG_MTD_SUPERH_RESERVE
-From: Paul Bolle <pebolle@tiscali.nl>
-To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>
-Date: Fri, 23 May 2014 16:29:54 +0200
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Date: Fri, 23 May 2014 07:53:55 -0700
+From: Tony Lindgren <tony@atomide.com>
+To: Roger Quadros <rogerq@ti.com>
+Subject: Re: [RFC PATCH 00/16] OMAP: GPMC: Restructure OMAP GPMC driver
+ (NAND) : DT binding change proposal
+Message-ID: <20140523145354.GE2321@atomide.com>
+References: <1400671264-10702-1-git-send-email-rogerq@ti.com>
+ <20140521160818.GA1150@arch.cereza> <537DB17A.6060608@ti.com>
+ <CABxcv=nbgGhVN+XYO8s=mYOpoLU9-kWuEqc+FLMaSbWS7BJNyQ@mail.gmail.com>
+ <20140522144600.GA1785@arch.cereza> <537F03C8.3070101@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <537F03C8.3070101@ti.com>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, dwmw2@infradead.org,
+ Jingoo Han <jg1.han@samsung.com>, nsekhar@ti.com,
+ Linux Kernel <linux-kernel@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ linux-mtd@lists.infradead.org, "Gupta, Pekon" <pekon@ti.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Grant Likely <grant.likely@linaro.org>,
+ Javier Martinez Canillas <javier@dowhile0.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Robert Nelson <robertcnelson@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,60 +31,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Since (a few releases before) v2.6.0 there have been checks for
-CONFIG_MTD_SUPERH_RESERVE. One check is still present. But a Kconfig
-symbol MTD_SUPERH_RESERVE has never been added. So a few lines of dead
-code can be removed.
+* Roger Quadros <rogerq@ti.com> [140523 01:17]:
+> On 05/22/2014 05:46 PM, Ezequiel Garcia wrote:
+> > On 22 May 01:51 PM, Javier Martinez Canillas wrote:
+> >> On Thu, May 22, 2014 at 10:12 AM, Roger Quadros <rogerq@ti.com> wrote:
+> >>>> On 21 May 02:20 PM, Roger Quadros wrote:
+> >>>> While I agree that the GPMC driver is a bit messy, I'm not sure it's possible
+> >>>> to go through such a complete devicetree binding re-design (breaking backwards
+> >>>> compatibility) now that the binding is already in production.
+> >>>
+> >>> Why not? especially if the existing bindings are poorly dones. Is anyone using these
+> >>> bindings burning the DT into ROM and can't change it when they update the kernel?
+> >>>
+> >>
+> >> While I do agree that your DT bindings are much better than the
+> >> current ones, there is a policy that DT bindings are an external API
+> >> and once are released with a kernel are set in stone and can't be
+> >> changed.
+> >>
+> > 
+> > Exactly. The DT binding is considered an ABI. Thus, invariant across kernel
+> > versions. Users can't be coherced into a DTB update after a kernel update.
+> > 
+> > That said, I don't really care if you break compatilibity in this case.
+> > Rather, I'm suggesting that you make sure this change is going to be accepted
+> > upstream, before doing any more work. The DT maintainers are reluctant to do
+> > so.
+> 
+> Appreciate your concern.
+> 
+> Would be really nice if you can review patches 1-12. They have nothing to do with DT changes.
+> Thanks.
 
-Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
----
-Untested.
+I'm mostly concerned about keeping things working. I think the
+only way we can keep things working is to keep support for
+the old binding around in addition to the new one. That way
+we can update devices one at a time.
 
- drivers/mtd/maps/solutionengine.c | 25 +------------------------
- 1 file changed, 1 insertion(+), 24 deletions(-)
+Regards,
 
-diff --git a/drivers/mtd/maps/solutionengine.c b/drivers/mtd/maps/solutionengine.c
-index 83a7a7091562..bb580bc16445 100644
---- a/drivers/mtd/maps/solutionengine.c
-+++ b/drivers/mtd/maps/solutionengine.c
-@@ -33,28 +33,6 @@ struct map_info soleng_flash_map = {
- 
- static const char * const probes[] = { "RedBoot", "cmdlinepart", NULL };
- 
--#ifdef CONFIG_MTD_SUPERH_RESERVE
--static struct mtd_partition superh_se_partitions[] = {
--	/* Reserved for boot code, read-only */
--	{
--		.name = "flash_boot",
--		.offset = 0x00000000,
--		.size = CONFIG_MTD_SUPERH_RESERVE,
--		.mask_flags = MTD_WRITEABLE,
--	},
--	/* All else is writable (e.g. JFFS) */
--	{
--		.name = "Flash FS",
--		.offset = MTDPART_OFS_NXTBLK,
--		.size = MTDPART_SIZ_FULL,
--	}
--};
--#define NUM_PARTITIONS ARRAY_SIZE(superh_se_partitions)
--#else
--#define superh_se_partitions NULL
--#define NUM_PARTITIONS 0
--#endif /* CONFIG_MTD_SUPERH_RESERVE */
--
- static int __init init_soleng_maps(void)
- {
- 	/* First probe at offset 0 */
-@@ -92,8 +70,7 @@ static int __init init_soleng_maps(void)
- 		mtd_device_register(eprom_mtd, NULL, 0);
- 	}
- 
--	mtd_device_parse_register(flash_mtd, probes, NULL,
--				  superh_se_partitions, NUM_PARTITIONS);
-+	mtd_device_parse_register(flash_mtd, probes, NULL, NULL, 0);
- 
- 	return 0;
- }
--- 
-1.9.0
+Tony
