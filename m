@@ -1,15 +1,15 @@
-Received: from smtp.codeaurora.org ([198.145.11.231])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WnzeM-000501-TE
- for linux-mtd@lists.infradead.org; Sat, 24 May 2014 00:17:23 +0000
-From: Stephen Boyd <sboyd@codeaurora.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH] staging/mt29f_spinand: Terminate of match table
-Date: Fri, 23 May 2014 17:16:53 -0700
-Message-Id: <1400890613-5704-5-git-send-email-sboyd@codeaurora.org>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Kamlakant Patel <kamlakant.patel@broadcom.com>,
- Mona Anonuevo <manonuevo@micron.com>
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: <linux-arm-kernel@lists.infradead.org>, <linux-mtd@lists.infradead.org>,
+ Jason Cooper <jason@lakedaemon.net>
+Subject: [PATCH for v3.15 0/2] ARM: mvebu Specificy ECC scheme for A375/385
+ boards
+Date: Sat, 24 May 2014 11:17:08 -0300
+Message-Id: <1400941030-2123-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Lior Amsalem <alior@marvell.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Tawfik Bayouk <tawfik@marvell.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,29 +19,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Failure to terminate this match table can lead to boot failures
-depending on where the compiler places the match table.
+Last minute fixes, which help prevent any inconsistencies between the ECC
+scheme expected by the bootloader, and the one expected by the kernel.
 
-Cc: Kamlakant Patel <kamlakant.patel@broadcom.com>
-Cc: Mona Anonuevo <manonuevo@micron.com>
-Cc: linux-mtd@lists.infradead.org
-Signed-off-by: Stephen Boyd <sboyd@codeaurora.org>
----
- drivers/staging/mt29f_spinand/mt29f_spinand.c | 1 +
- 1 file changed, 1 insertion(+)
+Until now, the kernel was using the ONFI-provided "datasheet ECC requirement",
+and assume the bootloader did the same thing. However, this is not the case
+for these boards, where the vendor provided a bootloader with an ECC strength
+that's weaker than the required.
 
-diff --git a/drivers/staging/mt29f_spinand/mt29f_spinand.c b/drivers/staging/mt29f_spinand/mt29f_spinand.c
-index 51dbc13e757f..5a40925680ac 100644
---- a/drivers/staging/mt29f_spinand/mt29f_spinand.c
-+++ b/drivers/staging/mt29f_spinand/mt29f_spinand.c
-@@ -924,6 +924,7 @@ static int spinand_remove(struct spi_device *spi)
- 
- static const struct of_device_id spinand_dt[] = {
- 	{ .compatible = "spinand,mt29f", },
-+	{}
- };
- 
- /*
+After the introduction of the NAND ECC devicetree binding, and its support
+in the pxa3xx-nand driver, we can set these values and expect them to work.
+
+I hope it's not too late for v3.15 already.
+
+Ezequiel Garcia (2):
+  ARM: dts: Specify the NAND ECC scheme explicitly on Armada 375 DB
+    board
+  ARM: dts: Specify the NAND ECC scheme explicitly on Armada 385 DB
+    board
+
+ arch/arm/boot/dts/armada-375-db.dts | 2 ++
+ arch/arm/boot/dts/armada-385-db.dts | 2 ++
+ 2 files changed, 4 insertions(+)
+
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-hosted by The Linux Foundation
+1.9.1
