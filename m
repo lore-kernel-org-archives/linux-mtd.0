@@ -1,27 +1,15 @@
-Date: Fri, 23 May 2014 07:53:55 -0700
-From: Tony Lindgren <tony@atomide.com>
-To: Roger Quadros <rogerq@ti.com>
-Subject: Re: [RFC PATCH 00/16] OMAP: GPMC: Restructure OMAP GPMC driver
- (NAND) : DT binding change proposal
-Message-ID: <20140523145354.GE2321@atomide.com>
-References: <1400671264-10702-1-git-send-email-rogerq@ti.com>
- <20140521160818.GA1150@arch.cereza> <537DB17A.6060608@ti.com>
- <CABxcv=nbgGhVN+XYO8s=mYOpoLU9-kWuEqc+FLMaSbWS7BJNyQ@mail.gmail.com>
- <20140522144600.GA1785@arch.cereza> <537F03C8.3070101@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <537F03C8.3070101@ti.com>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, dwmw2@infradead.org,
- Jingoo Han <jg1.han@samsung.com>, nsekhar@ti.com,
- Linux Kernel <linux-kernel@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
- linux-mtd@lists.infradead.org, "Gupta, Pekon" <pekon@ti.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Grant Likely <grant.likely@linaro.org>,
- Javier Martinez Canillas <javier@dowhile0.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Robert Nelson <robertcnelson@gmail.com>
+Received: from smtp.codeaurora.org ([198.145.11.231])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WnzeM-000501-TE
+ for linux-mtd@lists.infradead.org; Sat, 24 May 2014 00:17:23 +0000
+From: Stephen Boyd <sboyd@codeaurora.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH] staging/mt29f_spinand: Terminate of match table
+Date: Fri, 23 May 2014 17:16:53 -0700
+Message-Id: <1400890613-5704-5-git-send-email-sboyd@codeaurora.org>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Kamlakant Patel <kamlakant.patel@broadcom.com>,
+ Mona Anonuevo <manonuevo@micron.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,43 +19,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Roger Quadros <rogerq@ti.com> [140523 01:17]:
-> On 05/22/2014 05:46 PM, Ezequiel Garcia wrote:
-> > On 22 May 01:51 PM, Javier Martinez Canillas wrote:
-> >> On Thu, May 22, 2014 at 10:12 AM, Roger Quadros <rogerq@ti.com> wrote:
-> >>>> On 21 May 02:20 PM, Roger Quadros wrote:
-> >>>> While I agree that the GPMC driver is a bit messy, I'm not sure it's possible
-> >>>> to go through such a complete devicetree binding re-design (breaking backwards
-> >>>> compatibility) now that the binding is already in production.
-> >>>
-> >>> Why not? especially if the existing bindings are poorly dones. Is anyone using these
-> >>> bindings burning the DT into ROM and can't change it when they update the kernel?
-> >>>
-> >>
-> >> While I do agree that your DT bindings are much better than the
-> >> current ones, there is a policy that DT bindings are an external API
-> >> and once are released with a kernel are set in stone and can't be
-> >> changed.
-> >>
-> > 
-> > Exactly. The DT binding is considered an ABI. Thus, invariant across kernel
-> > versions. Users can't be coherced into a DTB update after a kernel update.
-> > 
-> > That said, I don't really care if you break compatilibity in this case.
-> > Rather, I'm suggesting that you make sure this change is going to be accepted
-> > upstream, before doing any more work. The DT maintainers are reluctant to do
-> > so.
-> 
-> Appreciate your concern.
-> 
-> Would be really nice if you can review patches 1-12. They have nothing to do with DT changes.
-> Thanks.
+Failure to terminate this match table can lead to boot failures
+depending on where the compiler places the match table.
 
-I'm mostly concerned about keeping things working. I think the
-only way we can keep things working is to keep support for
-the old binding around in addition to the new one. That way
-we can update devices one at a time.
+Cc: Kamlakant Patel <kamlakant.patel@broadcom.com>
+Cc: Mona Anonuevo <manonuevo@micron.com>
+Cc: linux-mtd@lists.infradead.org
+Signed-off-by: Stephen Boyd <sboyd@codeaurora.org>
+---
+ drivers/staging/mt29f_spinand/mt29f_spinand.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Regards,
-
-Tony
+diff --git a/drivers/staging/mt29f_spinand/mt29f_spinand.c b/drivers/staging/mt29f_spinand/mt29f_spinand.c
+index 51dbc13e757f..5a40925680ac 100644
+--- a/drivers/staging/mt29f_spinand/mt29f_spinand.c
++++ b/drivers/staging/mt29f_spinand/mt29f_spinand.c
+@@ -924,6 +924,7 @@ static int spinand_remove(struct spi_device *spi)
+ 
+ static const struct of_device_id spinand_dt[] = {
+ 	{ .compatible = "spinand,mt29f", },
++	{}
+ };
+ 
+ /*
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+hosted by The Linux Foundation
