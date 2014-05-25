@@ -1,17 +1,11 @@
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: <linux-arm-kernel@lists.infradead.org>, <linux-mtd@lists.infradead.org>,
- Jason Cooper <jason@lakedaemon.net>
-Subject: [PATCH 2/2] ARM: dts: Specify the NAND ECC scheme explicitly on
- Armada 385 DB board
-Date: Sat, 24 May 2014 11:17:10 -0300
-Message-Id: <1400941030-2123-3-git-send-email-ezequiel.garcia@free-electrons.com>
-In-Reply-To: <1400941030-2123-1-git-send-email-ezequiel.garcia@free-electrons.com>
-References: <1400941030-2123-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Tawfik Bayouk <tawfik@marvell.com>
+From: HAIDER Christoph <Christoph.HAIDER@uki.at>
+Subject: CHARITY AID FOUNDATION
+Date: Sun, 25 May 2014 11:59:37 +0000
+Message-ID: <58AE588794FD514CB558E5F75F919CDD2997C854@SRVEXMBX01.tilak.cc>
+Content-Language: de-AT
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,27 +15,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The factory bootloader on A385-DB boards expect the ECC strength to be
-4 bits over 512 bytes. Hence, we need to specify this in the devicetree,
-to prevent the kernel from assuming any different ECC scheme.
-
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
----
- arch/arm/boot/dts/armada-385-db.dts | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/arm/boot/dts/armada-385-db.dts b/arch/arm/boot/dts/armada-385-db.dts
-index 8b004fe..0d4327b 100644
---- a/arch/arm/boot/dts/armada-385-db.dts
-+++ b/arch/arm/boot/dts/armada-385-db.dts
-@@ -98,6 +98,8 @@
- 				marvell,nand-keep-config;
- 				marvell,nand-enable-arbiter;
- 				nand-on-flash-bbt;
-+				nand-ecc-strength = <4>;
-+				nand-ecc-step-size = <512>;
- 
- 				partition@0 {
- 					label = "U-Boot";
--- 
-1.9.1
+=0A=
+=0A=
+CHARITY AID FOUNDATION,=0A=
+=0A=
+You have been selected to receive this donation award sum of "One Million U=
+K Pound" as charity donations/aid from the Qatar Foundation, held on 17th o=
+f May 2014, in Doha, Qatar. For more details on how to receive your Donatio=
+n,please contact the President of Qatar Foundation=0A=
+=0A=
+Yours Sincerely,=0A=
+Sheikh. Saad Al Muhannadi.=0A=
+Phone: +447053864158=0A=
+Replyto: qatarcharitydonation14@hotmail.com=0A=
