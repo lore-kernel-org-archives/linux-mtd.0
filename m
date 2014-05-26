@@ -1,20 +1,21 @@
-Received: from mail-pb0-x232.google.com ([2607:f8b0:400e:c01::232])
+Received: from h1446028.stratoserver.net ([85.214.92.142]
+ helo=mail.ahsoftware.de)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Woyvw-00012a-VS
- for linux-mtd@lists.infradead.org; Mon, 26 May 2014 17:43:37 +0000
-Received: by mail-pb0-f50.google.com with SMTP id ma3so7952379pbc.23
- for <linux-mtd@lists.infradead.org>; Mon, 26 May 2014 10:43:16 -0700 (PDT)
-Date: Mon, 26 May 2014 10:43:12 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: lpddr: fix Kconfig dependency, for I/O accessors
-Message-ID: <20140526174312.GD5241@norris-Latitude-E6410>
-References: <1400704153-26626-1-git-send-email-computersforpeace@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1400704153-26626-1-git-send-email-computersforpeace@gmail.com>
-Cc: Vincenzo Aliberti <vincenzo.aliberti@gmail.com>
+ id 1Wp39i-0000kT-IE
+ for linux-mtd@lists.infradead.org; Mon, 26 May 2014 22:14:07 +0000
+Received: from eiche.ahsoftware (p57B20CCF.dip0.t-ipconnect.de [87.178.12.207])
+ (using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mail.ahsoftware.de (Postfix) with ESMTPSA id DA2DB423C2F5
+ for <linux-mtd@lists.infradead.org>; Tue, 27 May 2014 00:13:41 +0200 (CEST)
+From: Alexander Holler <holler@ahsoftware.de>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH 00/27] Fix common bug in most nand drivers not showing a
+ device in sysfs
+Date: Tue, 27 May 2014 00:12:25 +0200
+Message-Id: <1401142372-14148-1-git-send-email-holler@ahsoftware.de>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,18 +25,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, May 21, 2014 at 01:29:13PM -0700, Brian Norris wrote:
-> Not all architectures implement a writel_relaxed() accessor. Hopefully
-> this will change eventually, but for now, this means lpddr2_nvm.c can't
-> compile on some architectures.
-> 
-> Let's add an ARM dependency for now, and leave a comment so maybe we can
-> change this in the future.
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Cc: Vincenzo Aliberti <vincenzo.aliberti@gmail.com>
 
-Pushed to l2-mtd.git, to stop people from reporting build failures on
-x86.
+A comment in mtdcore.c function add_mtd_device() which is called by
+mtd_device_parse_register() made me wonder:
 
-Brian
+"Caller should have set dev.parent to match the physical device."
+
+In fact this is not done by most nand drivers.
+
+What follows is a series which fixes this.
+
+Tested: orion and omap2
+Compile-Tested: atmel, gpio, fsmc, gpmi, plat, pxa3xx, s3c2410, sh_flctl,
+		sharpsl, tmio, docg4, davinci, lpc32xx_mlc, lpc32xx_slc, mxc
+Not tested at all (only be view, patches 19-27): bcm47, fsl_elbc, fsl_upm,
+		fsl_ifc, jz4740, mpc5121m, ndfc, txx9ndfmx, socrates
+
+The overall stat is
+
+27 files changed, 36 insertions(+), 80 deletions(-)
+
+and it fixes 21 of these bugs.
+
+Regards,
+
+Alexander Holler
