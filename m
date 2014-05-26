@@ -1,18 +1,18 @@
 Received: from h1446028.stratoserver.net ([85.214.92.142]
  helo=mail.ahsoftware.de)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wp3CG-0003mT-Lo
- for linux-mtd@lists.infradead.org; Mon, 26 May 2014 22:16:45 +0000
+ id 1Wp3CL-0003vY-M2
+ for linux-mtd@lists.infradead.org; Mon, 26 May 2014 22:16:50 +0000
 Received: from eiche.ahsoftware (p57B20CCF.dip0.t-ipconnect.de [87.178.12.207])
  (using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mail.ahsoftware.de (Postfix) with ESMTPSA id 0BD77423C315
- for <linux-mtd@lists.infradead.org>; Tue, 27 May 2014 00:16:22 +0200 (CEST)
+ by mail.ahsoftware.de (Postfix) with ESMTPSA id 11602423C315
+ for <linux-mtd@lists.infradead.org>; Tue, 27 May 2014 00:16:29 +0200 (CEST)
 From: Alexander Holler <holler@ahsoftware.de>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 19/27] mtd: nand: bcm47: show device structure in sysfs
-Date: Tue, 27 May 2014 00:12:44 +0200
-Message-Id: <1401142372-14148-20-git-send-email-holler@ahsoftware.de>
+Subject: [PATCH 20/27] mtd: nand: fsl_elbc: show device structure in sysfs
+Date: Tue, 27 May 2014 00:12:45 +0200
+Message-Id: <1401142372-14148-21-git-send-email-holler@ahsoftware.de>
 In-Reply-To: <1401142372-14148-1-git-send-email-holler@ahsoftware.de>
 References: <1401142372-14148-1-git-send-email-holler@ahsoftware.de>
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -32,22 +32,31 @@ the mtd-device by using a new inline function.
 
 Signed-off-by: Alexander Holler <holler@ahsoftware.de>
 ---
- drivers/mtd/nand/bcm47xxnflash/main.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/mtd/nand/fsl_elbc_nand.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/nand/bcm47xxnflash/main.c b/drivers/mtd/nand/bcm47xxnflash/main.c
-index 1074459..f995d5c 100644
---- a/drivers/mtd/nand/bcm47xxnflash/main.c
-+++ b/drivers/mtd/nand/bcm47xxnflash/main.c
-@@ -34,8 +34,7 @@ static int bcm47xxnflash_probe(struct platform_device *pdev)
- 		return -ENOMEM;
+diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
+index ec549cd..dd2df90 100644
+--- a/drivers/mtd/nand/fsl_elbc_nand.c
++++ b/drivers/mtd/nand/fsl_elbc_nand.c
+@@ -732,10 +732,6 @@ static int fsl_elbc_chip_init(struct fsl_elbc_mtd *priv)
  
- 	b47n->nand_chip.priv = b47n;
--	b47n->mtd.owner = THIS_MODULE;
--	b47n->mtd.priv = &b47n->nand_chip; /* Required */
-+	mtd_setup_common_members(&b47n->mtd, &b47n->nand_chip, pdev);
- 	b47n->cc = container_of(nflash, struct bcma_drv_cc, nflash);
+ 	dev_dbg(priv->dev, "eLBC Set Information for bank %d\n", priv->bank);
  
- 	if (b47n->cc->core->bus->chipinfo.id == BCMA_CHIP_ID_BCM4706) {
+-	/* Fill in fsl_elbc_mtd structure */
+-	priv->mtd.priv = chip;
+-	priv->mtd.owner = THIS_MODULE;
+-
+ 	/* set timeout to maximum */
+ 	priv->fmr = 15 << FMR_CWTO_SHIFT;
+ 	if (in_be32(&lbc->bank[priv->bank].or) & OR_FCM_PGS)
+@@ -873,6 +869,7 @@ static int fsl_elbc_nand_probe(struct platform_device *pdev)
+ 		goto err;
+ 	}
+ 
++	mtd_setup_common_members(&priv->mtd, &priv->chip, pdev);
+ 	priv->mtd.name = kasprintf(GFP_KERNEL, "%llx.flash", (u64)res.start);
+ 	if (!priv->mtd.name) {
+ 		ret = -ENOMEM;
 -- 
 1.8.3.2
