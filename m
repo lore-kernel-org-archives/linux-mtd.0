@@ -1,18 +1,18 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga11.intel.com ([192.55.52.93])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WpF9f-0001KL-Ab
- for linux-mtd@lists.infradead.org; Tue, 27 May 2014 11:02:52 +0000
-Message-ID: <1401188546.1304.128.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v2 for v3.15 0/3] UBI: block: Support very large volumes
+ id 1WpG9k-0003tR-D0
+ for linux-mtd@lists.infradead.org; Tue, 27 May 2014 12:07:02 +0000
+Message-ID: <1401192395.1304.129.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] UBIFS: Fix dump messages in ubifs_dump_lprops
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Date: Tue, 27 May 2014 14:02:26 +0300
-In-Reply-To: <1399284714-6283-1-git-send-email-ezequiel.garcia@free-electrons.com>
-References: <1399284714-6283-1-git-send-email-ezequiel.garcia@free-electrons.com>
+To: hujianyang <hujianyang@huawei.com>
+Date: Tue, 27 May 2014 15:06:35 +0300
+In-Reply-To: <537C6FB1.4020305@huawei.com>
+References: <537C6FB1.4020305@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,19 +23,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2014-05-05 at 07:11 -0300, Ezequiel Garcia wrote:
-> This bug was reported on #mtd IRC. I don't have to reporter name to give proper
-> credit. It should be applied as a fix for v3.15.
+On Wed, 2014-05-21 at 17:19 +0800, hujianyang wrote:
+> Function ubifs_read_one_lp will not set @lp and returns
+> an error when ubifs_read_one_lp failed. We should not
+> perform ubifs_dump_lprop in this case because @lp is not
+> initialized as we wanted.
+> 
+> Signed-off-by: hujianyang <hujianyang@huawei.com>
 
-I've taken them, thanks.
-
-However, I do not think they are important enough to send to 3.15. The
-first patch, may be, but I doubt there is really a user suffering from
-that. The second is just an optimization. The third is a fix, but I am
-not sure if anyone uses this driver with such a huge MTD device. So I
-think 3.16 should be all-right, how does this sound to you?
-
-Thanks!
+Pushed to linux-ubifs.git, thanks!
 
 -- 
 Best Regards,
