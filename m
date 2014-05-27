@@ -1,18 +1,18 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga02.intel.com ([134.134.136.20])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WpG9k-0003tR-D0
- for linux-mtd@lists.infradead.org; Tue, 27 May 2014 12:07:02 +0000
-Message-ID: <1401192395.1304.129.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] UBIFS: Fix dump messages in ubifs_dump_lprops
+ id 1WpGLZ-000275-6B
+ for linux-mtd@lists.infradead.org; Tue, 27 May 2014 12:19:13 +0000
+Message-ID: <1401193128.1304.132.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] ubifs: respect MS_SILENT mount flag
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: hujianyang <hujianyang@huawei.com>
-Date: Tue, 27 May 2014 15:06:35 +0300
-In-Reply-To: <537C6FB1.4020305@huawei.com>
-References: <537C6FB1.4020305@huawei.com>
+To: Daniel Golle <daniel@makrotopia.org>
+Date: Tue, 27 May 2014 15:18:48 +0300
+In-Reply-To: <20140517015541.GA6399@earthship.local>
+References: <20140517015541.GA6399@earthship.local>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,15 +23,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2014-05-21 at 17:19 +0800, hujianyang wrote:
-> Function ubifs_read_one_lp will not set @lp and returns
-> an error when ubifs_read_one_lp failed. We should not
-> perform ubifs_dump_lprop in this case because @lp is not
-> initialized as we wanted.
+On Sat, 2014-05-17 at 03:55 +0200, Daniel Golle wrote:
+> When attempting to mount a non-ubifs formatted volume, lots of error
+> messages (including a stack dump) are thrown to the kernel log even if
+> the MS_SILENT mount flag is set.
+> Fix this by introducing an additional parameter in ubifs_read_node and
+> use it to pass down the MS_SILENT flag in ubifs_read_sb_node.
 > 
-> Signed-off-by: hujianyang <hujianyang@huawei.com>
+> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
 
-Pushed to linux-ubifs.git, thanks!
+This looks reasonable. Could you please send v2 with checkpatch.pl
+complaints addressed?
+
+Thanks!
 
 -- 
 Best Regards,
