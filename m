@@ -1,23 +1,19 @@
-Received: from h1446028.stratoserver.net ([85.214.92.142]
- helo=mail.ahsoftware.de)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WpAt3-0007nF-Rg
- for linux-mtd@lists.infradead.org; Tue, 27 May 2014 06:29:26 +0000
-Received: from eiche.ahsoftware (p57B22414.dip0.t-ipconnect.de [87.178.36.20])
- (using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by mail.ahsoftware.de (Postfix) with ESMTPSA id 570CC423C2E3
- for <linux-mtd@lists.infradead.org>; Tue, 27 May 2014 08:29:04 +0200 (CEST)
-From: Alexander Holler <holler@ahsoftware.de>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH 09/27 v2] mtd: nand: pxa3xx: show device structure in sysfs
-Date: Tue, 27 May 2014 08:28:30 +0200
-Message-Id: <1401172110-3910-1-git-send-email-holler@ahsoftware.de>
-In-Reply-To: <1401142372-14148-1-git-send-email-holler@ahsoftware.de>
-References: <1401142372-14148-1-git-send-email-holler@ahsoftware.de>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- Alexander Shiyan <shc_work@mail.ru>, Alexander Holler <holler@ahsoftware.de>
+Received: from mga09.intel.com ([134.134.136.24])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WpF9f-0001KL-Ab
+ for linux-mtd@lists.infradead.org; Tue, 27 May 2014 11:02:52 +0000
+Message-ID: <1401188546.1304.128.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v2 for v3.15 0/3] UBI: block: Support very large volumes
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Date: Tue, 27 May 2014 14:02:26 +0300
+In-Reply-To: <1399284714-6283-1-git-send-email-ezequiel.garcia@free-electrons.com>
+References: <1399284714-6283-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,37 +23,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fix a common error in nand-drivers which do not set up a parent device for
-the mtd-device by using a new inline function.
+On Mon, 2014-05-05 at 07:11 -0300, Ezequiel Garcia wrote:
+> This bug was reported on #mtd IRC. I don't have to reporter name to give proper
+> credit. It should be applied as a fix for v3.15.
 
-Signed-off-by: Alexander Holler <holler@ahsoftware.de>
----
- Changes to v1: add owner to module
+I've taken them, thanks.
 
- drivers/mtd/nand/pxa3xx_nand.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+However, I do not think they are important enough to send to 3.15. The
+first patch, may be, but I doubt there is really a user suffering from
+that. The second is just an optimization. The third is a fix, but I am
+not sure if anyone uses this driver with such a huge MTD device. So I
+think 3.16 should be all-right, how does this sound to you?
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 7588fe2..9d4c914 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -1584,8 +1584,7 @@ static int alloc_nand_resource(struct platform_device *pdev)
- 		host->mtd = mtd;
- 		host->cs = cs;
- 		host->info_data = info;
--		mtd->priv = host;
--		mtd->owner = THIS_MODULE;
-+		mtd_setup_common_members(mtd, host, pdev);
- 
- 		chip->ecc.read_page	= pxa3xx_nand_read_page_hwecc;
- 		chip->ecc.write_page	= pxa3xx_nand_write_page_hwecc;
-@@ -1862,6 +1861,7 @@ static int pxa3xx_nand_resume(struct platform_device *pdev)
- static struct platform_driver pxa3xx_nand_driver = {
- 	.driver = {
- 		.name	= "pxa3xx-nand",
-+		.owner	= THIS_MODULE,
- 		.of_match_table = pxa3xx_nand_dt_ids,
- 	},
- 	.probe		= pxa3xx_nand_probe,
+Thanks!
+
 -- 
-1.8.3.2
+Best Regards,
+Artem Bityutskiy
