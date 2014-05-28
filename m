@@ -1,23 +1,16 @@
-Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
+Received: from mail-pa0-x233.google.com ([2607:f8b0:400e:c03::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WpZSy-0002z2-Mk
- for linux-mtd@lists.infradead.org; Wed, 28 May 2014 08:44:09 +0000
-Received: by mail-pa0-f45.google.com with SMTP id ey11so10638369pad.4
- for <linux-mtd@lists.infradead.org>; Wed, 28 May 2014 01:43:47 -0700 (PDT)
-Date: Wed, 28 May 2014 01:43:44 -0700
+ id 1WpZbd-0008MG-MX
+ for linux-mtd@lists.infradead.org; Wed, 28 May 2014 08:53:06 +0000
+Received: by mail-pa0-f51.google.com with SMTP id kq14so10699592pab.38
+ for <linux-mtd@lists.infradead.org>; Wed, 28 May 2014 01:52:44 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
-To: Alexander Holler <holler@ahsoftware.de>
-Subject: Re: [PATCH 01/27] mtd: nand: introduce function to fix a common bug
- in most nand-drivers not showing a device in sysfs
-Message-ID: <20140528084344.GB4285@norris-Latitude-E6410>
-References: <1401142372-14148-1-git-send-email-holler@ahsoftware.de>
- <1401142372-14148-2-git-send-email-holler@ahsoftware.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1401142372-14148-2-git-send-email-holler@ahsoftware.de>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: lpc32xx: drop bitflip_threshold initialization
+Date: Wed, 28 May 2014 01:52:25 -0700
+Message-Id: <1401267145-18218-1-git-send-email-computersforpeace@gmail.com>
+Cc: Roland Stigge <stigge@antcom.de>,
+ Brian Norris <computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,98 +20,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, May 27, 2014 at 12:12:26AM +0200, Alexander Holler wrote:
-> --- a/include/linux/mtd/mtd.h
-> +++ b/include/linux/mtd/mtd.h
-> @@ -23,7 +23,7 @@
->  #include <linux/types.h>
->  #include <linux/uio.h>
->  #include <linux/notifier.h>
-> -#include <linux/device.h>
-> +#include <linux/platform_device.h>
->  
->  #include <mtd/mtd-abi.h>
->  
-> @@ -366,6 +366,15 @@ static inline int mtd_can_have_bb(const struct mtd_info *mtd)
->  struct mtd_partition;
->  struct mtd_part_parser_data;
->  
-> +static inline void mtd_setup_common_members(struct mtd_info *mtd, void *priv,
-> +						struct platform_device *pdev)
+These drivers don't need to explicitly initialize their bitflip
+thresholds. The comment is no longer correct, since nand_scan_tail()
+performs this initialization as of the following commit:
 
-Thanks for the diligence on catching these issues, but I'm not sure this
-helper function is fully the correct approach here.
+    commit ea3b2ea24ef0f2ef9c6795b19cff456195b6728a
+    Author: Shmulik Ladkani <shmulik@jungo.com>
+    Date:   Fri Jun 8 18:29:06 2012 +0300
 
-> +{
-> +	mtd->priv	= priv;
+        mtd: nand: initialize bitflip_threshold prior to BBT scanning
 
-I don't think you should hide this one here. It will be quite obvious if
-a driver didn't stash its private data but tries to access it later. Are
-there any drivers that missed this?
+(It seems there were some parallel efforts on writing/submitting these
+drivers, and Shmulik's bug fix.)
 
-> +	mtd->owner	= pdev->dev.driver->owner;
-> +	mtd->dev.parent	= &pdev->dev;
-> +	mtd->name	= pdev->dev.driver->name;
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Cc: Roland Stigge <stigge@antcom.de>
+---
+Not tested
 
-I think this is a little dangerous. You're potentially clobbering the
-name that a driver already chose here. And why did you pick to use the
-driver name? This gives non-unique names if there is more than one
-device instantiated for a driver. That's why some drivers already use
-the device name, not the driver name:
+ drivers/mtd/nand/lpc32xx_mlc.c | 6 ------
+ drivers/mtd/nand/lpc32xx_slc.c | 6 ------
+ 2 files changed, 12 deletions(-)
 
-	mtd->name = dev_name(&pev->dev);
-
-And in fact, if any drivers are missing mtd->name, perhaps it's best to
-just modify the MTD registration to give them a default:
-
-	if (!mtd->name)
-		mtd->name = dev_name(&pdev->dev);
-
-> +}
-
-BTW, nothing in this function actually makes sense to require a
-platform_device, does it? And it's possible to have non-platform drivers
-that want to do basic MTD initialization. So (if we still keep this
-helper function at all), I'd recommend just a 'struct device *dev'
-parameter.
-
-> +
->  extern int mtd_device_parse_register(struct mtd_info *mtd,
->  				     const char * const *part_probe_types,
->  				     struct mtd_part_parser_data *parser_data,
-
-How about we rethink the "helper" approach, and instead just do
-validation in the core code? This would cover most of the important
-parts of your helper, I think:
-
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index d201feeb3ca6..39ba5812a5a3 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -397,6 +397,11 @@ int add_mtd_device(struct mtd_info *mtd)
- 	if (device_register(&mtd->dev) != 0)
- 		goto fail_added;
+diff --git a/drivers/mtd/nand/lpc32xx_mlc.c b/drivers/mtd/nand/lpc32xx_mlc.c
+index 687478c9f09c..7335346dc126 100644
+--- a/drivers/mtd/nand/lpc32xx_mlc.c
++++ b/drivers/mtd/nand/lpc32xx_mlc.c
+@@ -721,12 +721,6 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
+ 	nand_chip->bbt_td = &lpc32xx_nand_bbt;
+ 	nand_chip->bbt_md = &lpc32xx_nand_bbt_mirror;
  
-+	if (mtd->dev.parent)
-+		mtd->owner = mtd->dev.parent->driver->owner;
-+	else
-+		WARN_ON(1);
-+
- 	if (MTD_DEVT(i))
- 		device_create(&mtd_class, mtd->dev.parent,
- 			      MTD_DEVT(i) + 1,
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 1ca9aec141ff..9869bbef50cf 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -370,7 +370,6 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
- 	slave->mtd.subpage_sft = master->subpage_sft;
+-	/* bitflip_threshold's default is defined as ecc_strength anyway.
+-	 * Unfortunately, it is set only later at add_mtd_device(). Meanwhile
+-	 * being 0, it causes bad block table scanning errors in
+-	 * nand_scan_tail(), so preparing it here. */
+-	mtd->bitflip_threshold = nand_chip->ecc.strength;
+-
+ 	if (use_dma) {
+ 		res = lpc32xx_dma_setup(host);
+ 		if (res) {
+diff --git a/drivers/mtd/nand/lpc32xx_slc.c b/drivers/mtd/nand/lpc32xx_slc.c
+index 53a6742e3da3..8caef28e0756 100644
+--- a/drivers/mtd/nand/lpc32xx_slc.c
++++ b/drivers/mtd/nand/lpc32xx_slc.c
+@@ -840,12 +840,6 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
+ 	chip->ecc.strength = 1;
+ 	chip->ecc.hwctl = lpc32xx_nand_ecc_enable;
  
- 	slave->mtd.name = name;
--	slave->mtd.owner = master->owner;
- 	slave->mtd.backing_dev_info = master->backing_dev_info;
- 
- 	/* NOTE:  we don't arrange MTDs as a tree; it'd be error-prone
-
---
-Brian
+-	/* bitflip_threshold's default is defined as ecc_strength anyway.
+-	 * Unfortunately, it is set only later at add_mtd_device(). Meanwhile
+-	 * being 0, it causes bad block table scanning errors in
+-	 * nand_scan_tail(), so preparing it here already. */
+-	mtd->bitflip_threshold = chip->ecc.strength;
+-
+ 	/*
+ 	 * Allocate a large enough buffer for a single huge page plus
+ 	 * extra space for the spare area and ECC storage area
+-- 
+1.9.1
