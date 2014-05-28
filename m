@@ -1,25 +1,24 @@
-Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
+Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WpXxv-0004do-EB
- for linux-mtd@lists.infradead.org; Wed, 28 May 2014 07:07:59 +0000
-Received: by mail-pa0-f45.google.com with SMTP id ey11so10505433pad.4
- for <linux-mtd@lists.infradead.org>; Wed, 28 May 2014 00:07:35 -0700 (PDT)
-Received: from norris-Latitude-E6410 (5520-maca-inet1-outside.broadcom.com.
- [216.31.211.11])
- by mx.google.com with ESMTPSA id nw13sm84449664pab.37.2014.05.28.00.07.33
- for <linux-mtd@lists.infradead.org>
- (version=TLSv1.2 cipher=RC4-SHA bits=128/128);
- Wed, 28 May 2014 00:07:34 -0700 (PDT)
-Date: Wed, 28 May 2014 00:07:26 -0700
+ id 1WpYF5-0004TJ-B9
+ for linux-mtd@lists.infradead.org; Wed, 28 May 2014 07:25:43 +0000
+Received: by mail-pa0-f46.google.com with SMTP id kq14so10571680pab.33
+ for <linux-mtd@lists.infradead.org>; Wed, 28 May 2014 00:25:22 -0700 (PDT)
+Date: Wed, 28 May 2014 00:25:13 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 0/6] mtd: small cleanups
-Message-ID: <20140528070726.GF5241@norris-Latitude-E6410>
-References: <1400653023-25757-1-git-send-email-computersforpeace@gmail.com>
+To: Alexander Holler <holler@ahsoftware.de>
+Subject: Re: [PATCH 09/27] mtd: nand: pxa3xx: show device structure in sysfs
+Message-ID: <20140528072513.GA4285@norris-Latitude-E6410>
+References: <1401142372-14148-1-git-send-email-holler@ahsoftware.de>
+ <1401142372-14148-10-git-send-email-holler@ahsoftware.de>
+ <1401160341.192042842@f271.i.mail.ru>
+ <53842A53.1060404@ahsoftware.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1400653023-25757-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <53842A53.1060404@ahsoftware.de>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-kernel@vger.kernel.org, Alexander Shiyan <shc_work@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,18 +28,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, May 20, 2014 at 11:16:57PM -0700, Brian Norris wrote:
-> This series consists of miscellaneous fixes and cleanups, mostly caught through
-> some sort of static analysis (gcc warnings, sparse, Coverity, etc.).
+On Tue, May 27, 2014 at 08:01:55AM +0200, Alexander Holler wrote:
+> Am 27.05.2014 05:12, schrieb Alexander Shiyan:
+> >Should we add "driver.owner = THIS_MODULE" field for struct platform_driver in this case?
 > 
-> Brian Norris (6):
->   mtd: pfow: remove unused variable
->   mtd: slram: fix unused variable warning
->   mtd: maps: sc520cdp: fix warnings
->   mtd: nand_bbt: remove unused variable
->   mtd: nand_bbt: handle error case for nand_create_badblock_pattern()
->   mtd: nand: r852: correct write_buf loop bounds
+> Yes. I assumed all drivers/modules already had an owner. I will
+> check them all and will send a v2 for those which don't have one. I
+> wonder what this field is used for if it works without. ;)
 
-Pushed all 6 to l2-mtd.git.
+Looks like the mtd->owner essentially filters down to a try_module_get()
+(called in the get_mtd_device() API) which ensures that MTD users (e.g.,
+mtdblock, UBI, etc.) hold a refcount on the driver module. If the owner
+is not set properly by a driver, then try_module_get() just does a
+silent no-op, so the user is none the wiser... until they try to rmmod
+their MTD driver while it's being used by UBI/UBIFS!
 
+Regards,
 Brian
