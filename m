@@ -1,27 +1,23 @@
-Received: from mail-pb0-x229.google.com ([2607:f8b0:400e:c01::229])
+Received: from mail-pa0-x231.google.com ([2607:f8b0:400e:c03::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wplx7-0002WD-27
- for linux-mtd@lists.infradead.org; Wed, 28 May 2014 22:04:05 +0000
-Received: by mail-pb0-f41.google.com with SMTP id uo5so11839160pbc.14
- for <linux-mtd@lists.infradead.org>; Wed, 28 May 2014 15:03:41 -0700 (PDT)
-Date: Wed, 28 May 2014 15:03:38 -0700
+ id 1Wpm2T-0004KW-QA
+ for linux-mtd@lists.infradead.org; Wed, 28 May 2014 22:09:39 +0000
+Received: by mail-pa0-f49.google.com with SMTP id kp14so1865168pab.22
+ for <linux-mtd@lists.infradead.org>; Wed, 28 May 2014 15:09:16 -0700 (PDT)
+Date: Wed, 28 May 2014 15:09:12 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Subject: Re: [PATCH] mtd: pxa3xx_nand: make the driver work on big-endian
- systems
-Message-ID: <20140528220338.GD3599@ld-irv-0074>
-References: <1400763412-10393-1-git-send-email-thomas.petazzoni@free-electrons.com>
+To: Himangi Saraogi <himangi774@gmail.com>
+Subject: [PATCH] mtd: bf5xx_nand: use the managed version of kzalloc (Re:
+ [PATCH] mtd: Introduce the use of the managed version of kzalloc)
+Message-ID: <20140528220912.GE3599@ld-irv-0074>
+References: <20140522185848.GA15125@himangi-Dell>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1400763412-10393-1-git-send-email-thomas.petazzoni@free-electrons.com>
-Cc: Andrew Lunn <andrew@lunn.ch>, Jason Cooper <jason@lakedaemon.net>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, stable@vger.kernel.org,
- linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+In-Reply-To: <20140522185848.GA15125@himangi-Dell>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-kernel@vger.kernel.org, Mike Frysinger <vapier.adi@gmail.com>,
+ julia.lawall@lip6.fr
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,63 +27,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, May 22, 2014 at 02:56:52PM +0200, Thomas Petazzoni wrote:
-> The pxa3xx_nand driver currently uses __raw_writel() and __raw_readl()
-> to access I/O registers. However, those functions do not do any
-> endianness swapping, which means that they won't work when the CPU
-> runs in big-endian but the I/O registers are little endian, which is
-> the common situation for ARM systems running big endian.
+On Fri, May 23, 2014 at 12:28:48AM +0530, Himangi Saraogi wrote:
+> This patch moves data allocated using kzalloc to managed data allocated
+> using devm_kzalloc and cleans now unnecessary kfrees in probe and remove
+> functions. Also, the now unnecessary label out_err_hw_init is done away
+> with and the label out_err_kzalloc is renamed to out_err.
 > 
-> Since __raw_writel() and __raw_readl() do not include any memory
-> barriers and the pxa3xx_nand driver can only be compiled for ARM
-> platforms, the closest I/o accessors functions that do endianess
-> swapping are writel_relaxed() and readl_relaxed().
-
-With any luck, the *_relaxed() accessors will be implemented uniformly
-on all architectures soon. I believe there's an outstanding patch series
-for this out on LKML.
-
-> This patch has been verified to work on Armada XP GP: without the
-> patch, the NAND is not detected when the kernel runs big endian while
-> it is properly detected when the kernel runs little endian. With the
-> patch applied, the NAND is properly detected in both situations
-> (little and big endian).
+> The following Coccinelle semantic patch was used for making the change:
 > 
-> Signed-off-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-> Cc: <stable@vger.kernel.org> # v3.13+
-> ---
-> This patch does not fix a regression introduced by a previous commit,
-> but is still necessary for stable to allow NAND to work properly on
-> ARM big endian platforms. The 3.13 starting point was chosen because
-> the support for big endian on modern ARM systems was added in this
-> kernel release.
+> @platform@
+> identifier p, probefn, removefn;
+> @@
+> struct platform_driver p = {
+>   .probe = probefn,
+>   .remove = removefn,
+> };
 > 
-> Signed-off-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+> @prb@
+> identifier platform.probefn, pdev;
+> expression e, e1, e2;
+> @@
+> probefn(struct platform_device *pdev, ...) {
+>   <+...
+> - e = kzalloc(e1, e2)
+> + e = devm_kzalloc(&pdev->dev, e1, e2)
+>   ...
+> ?-kfree(e);
+>   ...+>
+> }
+> 
+> @rem depends on prb@
+> identifier platform.removefn;
+> expression e;
+> @@
+> removefn(...) {
+>   <...
+> - kfree(e);
+>   ...>
+> }
+> 
+> Signed-off-by: Himangi Saraogi <himangi774@gmail.com>
 
-Two sign-offs for the price of one! ;)
-
-Pushed to l2-mtd.git. Thanks!
+Improved the subject and pushed to l2-mtd.git. Thanks!
 
 Brian
-
-> ---
->  drivers/mtd/nand/pxa3xx_nand.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-> index 7588fe2..3003611 100644
-> --- a/drivers/mtd/nand/pxa3xx_nand.c
-> +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> @@ -127,10 +127,10 @@
->  
->  /* macros for registers read/write */
->  #define nand_writel(info, off, val)	\
-> -	__raw_writel((val), (info)->mmio_base + (off))
-> +	writel_relaxed((val), (info)->mmio_base + (off))
->  
->  #define nand_readl(info, off)		\
-> -	__raw_readl((info)->mmio_base + (off))
-> +	readl_relaxed((info)->mmio_base + (off))
->  
->  /* error code and state */
->  enum {
