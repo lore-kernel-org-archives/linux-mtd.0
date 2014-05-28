@@ -1,27 +1,27 @@
-Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
+Received: from mail-pb0-x229.google.com ([2607:f8b0:400e:c01::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WpljI-0004Wy-2r
- for linux-mtd@lists.infradead.org; Wed, 28 May 2014 21:49:48 +0000
-Received: by mail-pa0-f43.google.com with SMTP id hz1so11658082pad.16
- for <linux-mtd@lists.infradead.org>; Wed, 28 May 2014 14:49:25 -0700 (PDT)
-Date: Wed, 28 May 2014 14:49:21 -0700
+ id 1Wplx7-0002WD-27
+ for linux-mtd@lists.infradead.org; Wed, 28 May 2014 22:04:05 +0000
+Received: by mail-pb0-f41.google.com with SMTP id uo5so11839160pbc.14
+ for <linux-mtd@lists.infradead.org>; Wed, 28 May 2014 15:03:41 -0700 (PDT)
+Date: Wed, 28 May 2014 15:03:38 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Alexander Holler <holler@ahsoftware.de>
-Subject: Re: [PATCH 01/27] mtd: nand: introduce function to fix a common bug
- in most nand-drivers not showing a device in sysfs
-Message-ID: <20140528214921.GC3599@ld-irv-0074>
-References: <1401142372-14148-1-git-send-email-holler@ahsoftware.de>
- <1401142372-14148-2-git-send-email-holler@ahsoftware.de>
- <20140528084344.GB4285@norris-Latitude-E6410>
- <53863056.2070405@ahsoftware.de>
- <20140528201018.GA3599@ld-irv-0074>
- <53865071.5060501@ahsoftware.de>
+To: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Subject: Re: [PATCH] mtd: pxa3xx_nand: make the driver work on big-endian
+ systems
+Message-ID: <20140528220338.GD3599@ld-irv-0074>
+References: <1400763412-10393-1-git-send-email-thomas.petazzoni@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <53865071.5060501@ahsoftware.de>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+In-Reply-To: <1400763412-10393-1-git-send-email-thomas.petazzoni@free-electrons.com>
+Cc: Andrew Lunn <andrew@lunn.ch>, Jason Cooper <jason@lakedaemon.net>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>, stable@vger.kernel.org,
+ linux-mtd@lists.infradead.org,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,18 +31,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, May 28, 2014 at 11:09:05PM +0200, Alexander Holler wrote:
-> I'm very sorry, but I find such discussions extremly tiresome.
+On Thu, May 22, 2014 at 02:56:52PM +0200, Thomas Petazzoni wrote:
+> The pxa3xx_nand driver currently uses __raw_writel() and __raw_readl()
+> to access I/O registers. However, those functions do not do any
+> endianness swapping, which means that they won't work when the CPU
+> runs in big-endian but the I/O registers are little endian, which is
+> the common situation for ARM systems running big endian.
 > 
-> If you just would have suggested that one if to prevent that someone who
-> doesn't c&p existing code would end up with a clobbered name (which he
-> obviously can't miss if he ever would test his new or changed driver),
-> than I maybe would have send a v2 with that if. But all the other noise
-> just made me to want I never had send (again) a patch to LKML. It is
-> almost impossible to avoid such answers and it turns every patch posting
-> into a endless story where people do want to discuss every line or even
-> character of totally silly things.
+> Since __raw_writel() and __raw_readl() do not include any memory
+> barriers and the pxa3xx_nand driver can only be compiled for ARM
+> platforms, the closest I/o accessors functions that do endianess
+> swapping are writel_relaxed() and readl_relaxed().
 
-It would help if you brought a more open attitude to the table.
+With any luck, the *_relaxed() accessors will be implemented uniformly
+on all architectures soon. I believe there's an outstanding patch series
+for this out on LKML.
 
-https://lkml.org/lkml/2014/5/14/574
+> This patch has been verified to work on Armada XP GP: without the
+> patch, the NAND is not detected when the kernel runs big endian while
+> it is properly detected when the kernel runs little endian. With the
+> patch applied, the NAND is properly detected in both situations
+> (little and big endian).
+> 
+> Signed-off-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+> Cc: <stable@vger.kernel.org> # v3.13+
+> ---
+> This patch does not fix a regression introduced by a previous commit,
+> but is still necessary for stable to allow NAND to work properly on
+> ARM big endian platforms. The 3.13 starting point was chosen because
+> the support for big endian on modern ARM systems was added in this
+> kernel release.
+> 
+> Signed-off-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+
+Two sign-offs for the price of one! ;)
+
+Pushed to l2-mtd.git. Thanks!
+
+Brian
+
+> ---
+>  drivers/mtd/nand/pxa3xx_nand.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+> index 7588fe2..3003611 100644
+> --- a/drivers/mtd/nand/pxa3xx_nand.c
+> +++ b/drivers/mtd/nand/pxa3xx_nand.c
+> @@ -127,10 +127,10 @@
+>  
+>  /* macros for registers read/write */
+>  #define nand_writel(info, off, val)	\
+> -	__raw_writel((val), (info)->mmio_base + (off))
+> +	writel_relaxed((val), (info)->mmio_base + (off))
+>  
+>  #define nand_readl(info, off)		\
+> -	__raw_readl((info)->mmio_base + (off))
+> +	readl_relaxed((info)->mmio_base + (off))
+>  
+>  /* error code and state */
+>  enum {
