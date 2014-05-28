@@ -1,26 +1,17 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wpbf9-0002AQ-Di
- for linux-mtd@lists.infradead.org; Wed, 28 May 2014 11:04:51 +0000
-Message-ID: <1401275067.2118.9.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v2] mtd-utils: integck: add support for volume specific
- power-cut test
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mats =?ISO-8859-1?Q?K=E4rrman?= <Mats.Karrman@tritech.se>
-Date: Wed, 28 May 2014 14:04:27 +0300
-In-Reply-To: <ED3E0BCACD909541BA94A34C4A164D4C5B4097B0@post.tritech.se>
-References: <ED3E0BCACD909541BA94A34C4A164D4C5B401901@post.tritech.se>
- ,<1401194249.1304.140.camel@sauron.fi.intel.com>
- <ED3E0BCACD909541BA94A34C4A164D4C5B4091B2@post.tritech.se>
- ,<1401202545.1304.164.camel@sauron.fi.intel.com>
- <ED3E0BCACD909541BA94A34C4A164D4C5B4094CF@post.tritech.se>
- ,<1401269453.2118.5.camel@sauron.fi.intel.com>
- <ED3E0BCACD909541BA94A34C4A164D4C5B4097B0@post.tritech.se>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WpevL-0003lF-3M
+ for linux-mtd@lists.infradead.org; Wed, 28 May 2014 14:33:47 +0000
+Received: by mail-pa0-f50.google.com with SMTP id fb1so11171507pad.9
+ for <linux-mtd@lists.infradead.org>; Wed, 28 May 2014 07:33:26 -0700 (PDT)
+From: Ted Juan <ted.juan@gmail.com>
+To: computersforpeace@gmail.com
+Subject: [PATCH] mtd: nand: omap: fix omap_calculate_ecc_bch() for-loop error
+Date: Wed, 28 May 2014 22:33:06 +0800
+Message-Id: <1401287586-5443-1-git-send-email-ted.juan@gmail.com>
+In-Reply-To: <20140528090933.GD4285@norris-Latitude-E6410>
+References: <20140528090933.GD4285@norris-Latitude-E6410>
+Cc: Ted Juan <ted.juan@gmail.com>, linux-mtd@lists.infradead.org, pekon@ti.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,13 +21,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2014-05-28 at 10:52 +0000, Mats Kärrman wrote:
-> How about having two options, one for global and one for per-fs enable,
-> both automatically selecting the appropriate sysfs file and with an
-> improved help text?
+Hi Brian,
 
-Should work too.
+>>Sorry, this patch does not apply to l2-mtd.git. I think it conflicts
+>>with some recent changes from Pekon. Please rebase and resend.
 
+ok, this should fix it.
+
+>>Can you format your name properly, without the dot, for proper
+>>authorship attribution?
+
+ok, thank you.
+
+
+ Fixes:  2c9f2365d1e1d0e318b068f683f18c99515b80f8
+ mtd: nand: omap: ecc.calculate: merge omap3_calculate_ecc_bch4 in omap_calculate_ecc_bch
+
+ Fixes: 7bcd1dca1d587ad29f9825ba4414620440e8c8da
+ mtd: nand: omap: ecc.calculate: merge omap3_calculate_ecc_bch8 in omap_calculate_ecc_bch
+
+CC: <stable@vger.kernel.org> # 3.13.x+
+Signed-off-by: Ted Juan <ted.juan@gmail.com>
+Acked-by: Pekon Gupta <pekon@ti.com>
+---
+ drivers/mtd/nand/omap2.c |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index cbe87a8..f0ed92e 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -1180,7 +1180,7 @@ static int __maybe_unused omap_calculate_ecc_bch(struct mtd_info *mtd,
+ 	u8 *ecc_code;
+ 	unsigned long nsectors, bch_val1, bch_val2, bch_val3, bch_val4;
+ 	u32 val;
+-	int i;
++	int i, j;
+ 
+ 	nsectors = ((readl(info->reg.gpmc_ecc_config) >> 4) & 0x7) + 1;
+ 	for (i = 0; i < nsectors; i++) {
+@@ -1263,8 +1263,8 @@ static int __maybe_unused omap_calculate_ecc_bch(struct mtd_info *mtd,
+ 		case OMAP_ECC_BCH4_CODE_HW_DETECTION_SW:
+ 			/* Add constant polynomial to remainder, so that
+ 			 * ECC of blank pages results in 0x0 on reading back */
+-			for (i = 0; i < eccbytes; i++)
+-				ecc_calc[i] ^= bch4_polynomial[i];
++			for (j = 0; j < eccbytes; j++)
++				ecc_calc[j] ^= bch4_polynomial[j];
+ 			break;
+ 		case OMAP_ECC_BCH4_CODE_HW:
+ 			/* Set  8th ECC byte as 0x0 for ROM compatibility */
+@@ -1273,8 +1273,8 @@ static int __maybe_unused omap_calculate_ecc_bch(struct mtd_info *mtd,
+ 		case OMAP_ECC_BCH8_CODE_HW_DETECTION_SW:
+ 			/* Add constant polynomial to remainder, so that
+ 			 * ECC of blank pages results in 0x0 on reading back */
+-			for (i = 0; i < eccbytes; i++)
+-				ecc_calc[i] ^= bch8_polynomial[i];
++			for (j = 0; j < eccbytes; j++)
++				ecc_calc[j] ^= bch8_polynomial[j];
+ 			break;
+ 		case OMAP_ECC_BCH8_CODE_HW:
+ 			/* Set 14th ECC byte as 0x0 for ROM compatibility */
 -- 
-Best Regards,
-Artem Bityutskiy
+1.7.9.5
