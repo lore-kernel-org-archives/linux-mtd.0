@@ -1,20 +1,23 @@
-Received: from mail-pb0-x230.google.com ([2607:f8b0:400e:c01::230])
+Received: from mail-pb0-f44.google.com ([209.85.160.44])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WpZho-0003G6-77
- for linux-mtd@lists.infradead.org; Wed, 28 May 2014 08:59:28 +0000
-Received: by mail-pb0-f48.google.com with SMTP id rr13so10750060pbb.7
- for <linux-mtd@lists.infradead.org>; Wed, 28 May 2014 01:59:04 -0700 (PDT)
-Date: Wed, 28 May 2014 01:59:00 -0700
+ id 1WpZs1-0004U9-15
+ for linux-mtd@lists.infradead.org; Wed, 28 May 2014 09:10:03 +0000
+Received: by mail-pb0-f44.google.com with SMTP id rq2so10870918pbb.3
+ for <linux-mtd@lists.infradead.org>; Wed, 28 May 2014 02:09:37 -0700 (PDT)
+Date: Wed, 28 May 2014 02:09:33 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Shengzhou Liu <Shengzhou.Liu@freescale.com>
-Subject: Re: [PATCH] mtd/spi: support en25s64 device
-Message-ID: <20140528085900.GC4285@norris-Latitude-E6410>
-References: <1400830150-32026-1-git-send-email-Shengzhou.Liu@freescale.com>
+To: "ted.juan" <ted.juan@gmail.com>
+Subject: Re: [PATCH] mtd: nand: omap: fix omap_calculate_ecc_bch() for-loop
+ error
+Message-ID: <20140528090933.GD4285@norris-Latitude-E6410>
+References: <1400813650-7417-1-git-send-email-ted.juan@gmail.com>
+ <1400815474-7871-1-git-send-email-ted.juan@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1400830150-32026-1-git-send-email-Shengzhou.Liu@freescale.com>
-Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <1400815474-7871-1-git-send-email-ted.juan@gmail.com>
+Cc: "ted.juan" <ted_juan@weintek.com>, linux-mtd@lists.infradead.org,
+ pekon@ti.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,30 +27,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, May 23, 2014 at 03:29:10PM +0800, Shengzhou Liu wrote:
-> Add support for EON en25s64 spi device.
+Hi Ted,
+
+Sorry, this patch does not apply to l2-mtd.git. I think it conflicts
+with some recent changes from Pekon. Please rebase and resend.
+
+On Fri, May 23, 2014 at 11:24:34AM +0800, ted.juan wrote:
+> From: "ted.juan" <ted_juan@weintek.com>
+
+Can you format your name properly, without the dot, for proper
+authorship attribution?
+
 > 
-> Signed-off-by: Shengzhou Liu <Shengzhou.Liu@freescale.com>
+>  Fixes:  2c9f2365d1e1d0e318b068f683f18c99515b80f8
+>  mtd: nand: omap: ecc.calculate: merge omap3_calculate_ecc_bch4 in omap_calculate_ecc_bch
+> 
+>  Fixes: 7bcd1dca1d587ad29f9825ba4414620440e8c8da
+>  mtd: nand: omap: ecc.calculate: merge omap3_calculate_ecc_bch8 in omap_calculate_ecc_bch
+> 
+> CC: <stable@vger.kernel.org> # 3.13.x+
+> Signed-off-by: ted.juan <ted.juan@gmail.com>
+
+Same here.
+
+> Acked-by: Pekon Gupta <pekon@ti.com>
 > ---
->  drivers/mtd/devices/m25p80.c | 1 +
->  1 file changed, 1 insertion(+)
+>  drivers/mtd/nand/omap2.c |   10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
 > 
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 7eda71d..6989311 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -745,6 +745,7 @@ static const struct spi_device_id m25p_ids[] = {
->  	{ "en25q32b",   INFO(0x1c3016, 0, 64 * 1024,   64, 0) },
->  	{ "en25p64",    INFO(0x1c2017, 0, 64 * 1024,  128, 0) },
->  	{ "en25q64",    INFO(0x1c3017, 0, 64 * 1024,  128, SECT_4K) },
-> +	{ "en25s64",    INFO(0x1c3817, 0, 64 * 1024,  128, 0) },
->  	{ "en25qh256",  INFO(0x1c7019, 0, 64 * 1024,  512, 0) },
+> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+> index 1ff49b8..e21145a 100644
+> --- a/drivers/mtd/nand/omap2.c
+> +++ b/drivers/mtd/nand/omap2.c
+> @@ -1162,7 +1162,7 @@ static int __maybe_unused omap_calculate_ecc_bch(struct mtd_info *mtd,
+>  	struct gpmc_nand_regs	*gpmc_regs = &info->reg;
+>  	u8 *ecc_code;
+>  	unsigned long nsectors, bch_val1, bch_val2, bch_val3, bch_val4;
+> -	int i;
+> +	int i, j;
 >  
->  	/* ESMT */
-
-Please rebase on l2-mtd.git, found in linux-next and at:
-
-http://git.infradead.org/l2-mtd.git
+>  	nsectors = ((readl(info->reg.gpmc_ecc_config) >> 4) & 0x7) + 1;
+>  	for (i = 0; i < nsectors; i++) {
+> @@ -1210,8 +1210,8 @@ static int __maybe_unused omap_calculate_ecc_bch(struct mtd_info *mtd,
+>  		case OMAP_ECC_BCH4_CODE_HW_DETECTION_SW:
+>  			/* Add constant polynomial to remainder, so that
+>  			 * ECC of blank pages results in 0x0 on reading back */
+> -			for (i = 0; i < eccbytes; i++)
+> -				ecc_calc[i] ^= bch4_polynomial[i];
+> +			for (j = 0; j < eccbytes; j++)
+> +				ecc_calc[j] ^= bch4_polynomial[j];
+>  			break;
+>  		case OMAP_ECC_BCH4_CODE_HW:
+>  			/* Set  8th ECC byte as 0x0 for ROM compatibility */
+> @@ -1220,8 +1220,8 @@ static int __maybe_unused omap_calculate_ecc_bch(struct mtd_info *mtd,
+>  		case OMAP_ECC_BCH8_CODE_HW_DETECTION_SW:
+>  			/* Add constant polynomial to remainder, so that
+>  			 * ECC of blank pages results in 0x0 on reading back */
+> -			for (i = 0; i < eccbytes; i++)
+> -				ecc_calc[i] ^= bch8_polynomial[i];
+> +			for (j = 0; j < eccbytes; j++)
+> +				ecc_calc[j] ^= bch8_polynomial[j];
+>  			break;
+>  		case OMAP_ECC_BCH8_CODE_HW:
+>  			/* Set 14th ECC byte as 0x0 for ROM compatibility */
 
 Thanks,
 Brian
