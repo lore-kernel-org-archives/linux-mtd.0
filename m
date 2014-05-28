@@ -1,25 +1,22 @@
-Received: from mail-pb0-x230.google.com ([2607:f8b0:400e:c01::230])
+Received: from mail-pb0-x22f.google.com ([2607:f8b0:400e:c01::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WpkCp-0001u4-SX
- for linux-mtd@lists.infradead.org; Wed, 28 May 2014 20:12:12 +0000
-Received: by mail-pb0-f48.google.com with SMTP id rr13so11735231pbb.35
- for <linux-mtd@lists.infradead.org>; Wed, 28 May 2014 13:11:44 -0700 (PDT)
-Date: Wed, 28 May 2014 13:10:18 -0700
+ id 1WpkJ3-0004eh-VN
+ for linux-mtd@lists.infradead.org; Wed, 28 May 2014 20:18:38 +0000
+Received: by mail-pb0-f47.google.com with SMTP id rp16so11754830pbb.20
+ for <linux-mtd@lists.infradead.org>; Wed, 28 May 2014 13:18:17 -0700 (PDT)
+Date: Wed, 28 May 2014 13:18:13 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Alexander Holler <holler@ahsoftware.de>
-Subject: Re: [PATCH 01/27] mtd: nand: introduce function to fix a common bug
- in most nand-drivers not showing a device in sysfs
-Message-ID: <20140528201018.GA3599@ld-irv-0074>
-References: <1401142372-14148-1-git-send-email-holler@ahsoftware.de>
- <1401142372-14148-2-git-send-email-holler@ahsoftware.de>
- <20140528084344.GB4285@norris-Latitude-E6410>
- <53863056.2070405@ahsoftware.de>
+To: Ted Juan <ted.juan@gmail.com>
+Subject: Re: [PATCH] mtd: nand: omap: fix omap_calculate_ecc_bch() for-loop
+ error
+Message-ID: <20140528201813.GB3599@ld-irv-0074>
+References: <20140528090933.GD4285@norris-Latitude-E6410>
+ <1401287586-5443-1-git-send-email-ted.juan@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <53863056.2070405@ahsoftware.de>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+In-Reply-To: <1401287586-5443-1-git-send-email-ted.juan@gmail.com>
+Cc: linux-mtd@lists.infradead.org, pekon@ti.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,95 +26,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, May 28, 2014 at 08:52:06PM +0200, Alexander Holler wrote:
-> Am 28.05.2014 10:43, schrieb Brian Norris:
-> >On Tue, May 27, 2014 at 12:12:26AM +0200, Alexander Holler wrote:
-> >>+{
-> >>+	mtd->priv	= priv;
-> >
-> >I don't think you should hide this one here. It will be quite obvious if
-> >a driver didn't stash its private data but tries to access it later. Are
-> >there any drivers that missed this?
+Hi Ted,
+
+On Wed, May 28, 2014 at 10:33:06PM +0800, Ted Juan wrote:
+> >>Sorry, this patch does not apply to l2-mtd.git. I think it conflicts
+> >>with some recent changes from Pekon. Please rebase and resend.
 > 
-> No, it just saves a line of source in all drivers and I think it
-> fits there. I don't understand why do you think it is hidden.
+> ok, this should fix it.
 
-The function name doesn't make it obvious what it's doing. So all code
-readers will have to follow the definition to see what it's doing. But
-this point is not that important, so I won't argue.
+This is better. It still doesn't work out perfectly, since you included
+this conversation within the commit area. In the future, you might try
+testing your email by applying using 'git am' to your own tree first,
+just to see how it looks.
 
-> >>+	mtd->owner	= pdev->dev.driver->owner;
-> >>+	mtd->dev.parent	= &pdev->dev;
-> >>+	mtd->name	= pdev->dev.driver->name;
-> >
-> >I think this is a little dangerous. You're potentially clobbering the
-> >name that a driver already chose here. And why did you pick to use the
-> >driver name? This gives non-unique names if there is more than one
-> >device instantiated for a driver. That's why some drivers already use
-> >the device name, not the driver name:
-> >
-> >	mtd->name = dev_name(&pev->dev);
-> >
-> >And in fact, if any drivers are missing mtd->name, perhaps it's best to
-> >just modify the MTD registration to give them a default:
-> >
-> >	if (!mtd->name)
-> >		mtd->name = dev_name(&pdev->dev);
-> >
-> >>+}
+> >>Can you format your name properly, without the dot, for proper
+> >>authorship attribution?
 > 
-> I don't clobber any name. The name is set as default before drivers
-> might do this.
-
-At the moment this is true, but the ordering is somewhat subtle if you
-don't examine the details of mtd_setup_common_members() to see that it
-is assigning a name. I can easily imagine some new driver in which
-someone does:
-
-	mtd->name = ...;
-	[...]
-	mtd_setup_common_members(mtd, priv, pdev);
-
-And doesn't notice that the ordering matters.
-
-You could make this simpler by either
-(1) making mtd_setup_common_members() check for mtd->name==NULL first
-(2) just move the (default) name assignment to the common MTD
-    registration, like I suggested
-
-> >>+
-> >>  extern int mtd_device_parse_register(struct mtd_info *mtd,
-> >>  				     const char * const *part_probe_types,
-> >>  				     struct mtd_part_parser_data *parser_data,
-> >
-> >How about we rethink the "helper" approach, and instead just do
-> >validation in the core code? This would cover most of the important
-> >parts of your helper, I think:
+> ok, thank you.
 > 
-> Feel free to change all drivers. I like my approach with fixing 21
-> bugs by reducing code by 44 lines.
+> 
+>  Fixes:  2c9f2365d1e1d0e318b068f683f18c99515b80f8
+>  mtd: nand: omap: ecc.calculate: merge omap3_calculate_ecc_bch4 in omap_calculate_ecc_bch
+> 
+>  Fixes: 7bcd1dca1d587ad29f9825ba4414620440e8c8da
+>  mtd: nand: omap: ecc.calculate: merge omap3_calculate_ecc_bch8 in omap_calculate_ecc_bch
+> 
+> CC: <stable@vger.kernel.org> # 3.13.x+
+> Signed-off-by: Ted Juan <ted.juan@gmail.com>
+> Acked-by: Pekon Gupta <pekon@ti.com>
 
-I appreciate the bug fixes. I am just questioning the approach. Reduced
-(source) code doesn't help anyone if it makes the code less
-maintainable. My suggestions can probably make this more maintainable,
-fix the same bugs, and reduce the source by a similar (albeit smaller)
-number of lines.
+I fixed up the commit message slightly and pushed to l2-mtd.git. Thanks!
 
-> And it offers a common function where future similiarities can be
-> put into too. Of course you can just add 21 lines, but that is not
-> how I do such stuff.
+> ---
+>  drivers/mtd/nand/omap2.c |   10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+> index cbe87a8..f0ed92e 100644
+> --- a/drivers/mtd/nand/omap2.c
+> +++ b/drivers/mtd/nand/omap2.c
+> @@ -1180,7 +1180,7 @@ static int __maybe_unused omap_calculate_ecc_bch(struct mtd_info *mtd,
+>  	u8 *ecc_code;
+>  	unsigned long nsectors, bch_val1, bch_val2, bch_val3, bch_val4;
+>  	u32 val;
+> -	int i;
+> +	int i, j;
+>  
+>  	nsectors = ((readl(info->reg.gpmc_ecc_config) >> 4) & 0x7) + 1;
+>  	for (i = 0; i < nsectors; i++) {
+> @@ -1263,8 +1263,8 @@ static int __maybe_unused omap_calculate_ecc_bch(struct mtd_info *mtd,
+>  		case OMAP_ECC_BCH4_CODE_HW_DETECTION_SW:
+>  			/* Add constant polynomial to remainder, so that
+>  			 * ECC of blank pages results in 0x0 on reading back */
+> -			for (i = 0; i < eccbytes; i++)
+> -				ecc_calc[i] ^= bch4_polynomial[i];
+> +			for (j = 0; j < eccbytes; j++)
+> +				ecc_calc[j] ^= bch4_polynomial[j];
+>  			break;
+>  		case OMAP_ECC_BCH4_CODE_HW:
+>  			/* Set  8th ECC byte as 0x0 for ROM compatibility */
+> @@ -1273,8 +1273,8 @@ static int __maybe_unused omap_calculate_ecc_bch(struct mtd_info *mtd,
+>  		case OMAP_ECC_BCH8_CODE_HW_DETECTION_SW:
+>  			/* Add constant polynomial to remainder, so that
+>  			 * ECC of blank pages results in 0x0 on reading back */
+> -			for (i = 0; i < eccbytes; i++)
+> -				ecc_calc[i] ^= bch8_polynomial[i];
+> +			for (j = 0; j < eccbytes; j++)
+> +				ecc_calc[j] ^= bch8_polynomial[j];
+>  			break;
+>  		case OMAP_ECC_BCH8_CODE_HW:
+>  			/* Set 14th ECC byte as 0x0 for ROM compatibility */
 
-I don't see how your common location helps much more than putting it in
-mtdcore.c like I suggested, without the extra function.
-
-> And I did the patches. If you don't like them, feel free to ignore
-> them. I'm not playing remote keyboard but I do patches like I would
-> do them, not like some arbitrary maintainer would do them. Sorry for
-> the harsh words.
-
-Arbitrary maintainer, eh? I'm simply suggesting that this could be
-accomplished in a better way. If you don't want to take part in the
-review process, then I have no obligation to engage either.
-
-Regards,
 Brian
