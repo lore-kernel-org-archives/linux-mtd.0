@@ -1,22 +1,30 @@
-Received: from szxga01-in.huawei.com ([119.145.14.64])
+Received: from h1446028.stratoserver.net ([85.214.92.142]
+ helo=mail.ahsoftware.de)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WppbA-0003y8-Sb
- for linux-mtd@lists.infradead.org; Thu, 29 May 2014 01:57:42 +0000
-Message-ID: <538693AD.5070606@huawei.com>
-Date: Thu, 29 May 2014 09:55:57 +0800
-From: hujianyang <hujianyang@huawei.com>
+ id 1WprQD-0007Ie-S8
+ for linux-mtd@lists.infradead.org; Thu, 29 May 2014 03:54:30 +0000
+Received: from eiche.ahsoftware (p57B20DC1.dip0.t-ipconnect.de [87.178.13.193])
+ (using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mail.ahsoftware.de (Postfix) with ESMTPSA id 3B144423C29B
+ for <linux-mtd@lists.infradead.org>; Thu, 29 May 2014 05:54:06 +0200 (CEST)
+Message-ID: <5386AF53.4070403@ahsoftware.de>
+Date: Thu, 29 May 2014 05:53:55 +0200
+From: Alexander Holler <holler@ahsoftware.de>
 MIME-Version: 1.0
-To: Dolev Raviv <draviv@codeaurora.org>, Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: ubifs: assertion fails
-References: <f08bbebef039d5bb28c2fcd3022165b0.squirrel@www.codeaurora.org>
- <1396260879.9016.70.camel@sauron.fi.intel.com>
- <533A5407.4060900@codeaurora.org>
- <1396871016.17040.33.camel@sauron.fi.intel.com>
- <789ed0034a7f4aa993addb2bc8c7e914.squirrel@www.codeaurora.org>
-In-Reply-To: <789ed0034a7f4aa993addb2bc8c7e914.squirrel@www.codeaurora.org>
-Content-Type: text/plain; charset="ISO-8859-1"
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 01/27] mtd: nand: introduce function to fix a common bug
+ in most nand-drivers not showing a device in sysfs
+References: <1401142372-14148-1-git-send-email-holler@ahsoftware.de>
+ <1401142372-14148-2-git-send-email-holler@ahsoftware.de>
+ <20140528084344.GB4285@norris-Latitude-E6410>
+ <53863056.2070405@ahsoftware.de> <20140528201018.GA3599@ld-irv-0074>
+ <53865071.5060501@ahsoftware.de> <20140528214921.GC3599@ld-irv-0074>
+In-Reply-To: <20140528214921.GC3599@ld-irv-0074>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,41 +34,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Dolev and Artem,
+Am 28.05.2014 23:49, schrieb Brian Norris:
+> On Wed, May 28, 2014 at 11:09:05PM +0200, Alexander Holler wrote:
+>> I'm very sorry, but I find such discussions extremly tiresome.
+>>
+>> If you just would have suggested that one if to prevent that someone who
+>> doesn't c&p existing code would end up with a clobbered name (which he
+>> obviously can't miss if he ever would test his new or changed driver),
+>> than I maybe would have send a v2 with that if. But all the other noise
+>> just made me to want I never had send (again) a patch to LKML. It is
+>> almost impossible to avoid such answers and it turns every patch posting
+>> into a endless story where people do want to discuss every line or even
+>> character of totally silly things.
+>
+> It would help if you brought a more open attitude to the table.
 
-I hit the same assert failed in Kernel v3.10 shows like this:
-
-[ 9641.164028] UBIFS assert failed in shrink_tnc at 131 (pid 13297)
-[ 9641.234078] CPU: 1 PID: 13297 Comm: mmap.test Tainted: G           O 3.10.40 #1
-[ 9641.234116] [<c0011a6c>] (unwind_backtrace+0x0/0x12c) from [<c000d0b0>] (show_stack+0x20/0x24)
-[ 9641.234137] [<c000d0b0>] (show_stack+0x20/0x24) from [<c0311134>] (dump_stack+0x20/0x28)
-[ 9641.234188] [<c0311134>] (dump_stack+0x20/0x28) from [<bf22425c>] (shrink_tnc_trees+0x25c/0x350 [ubifs])
-[ 9641.234265] [<bf22425c>] (shrink_tnc_trees+0x25c/0x350 [ubifs]) from [<bf2245ac>] (ubifs_shrinker+0x25c/0x310 [ubifs])
-[ 9641.234307] [<bf2245ac>] (ubifs_shrinker+0x25c/0x310 [ubifs]) from [<c00cdad8>] (shrink_slab+0x1d4/0x2f8)
-[ 9641.234327] [<c00cdad8>] (shrink_slab+0x1d4/0x2f8) from [<c00d03d0>] (do_try_to_free_pages+0x300/0x544)
-[ 9641.234344] [<c00d03d0>] (do_try_to_free_pages+0x300/0x544) from [<c00d0a44>] (try_to_free_pages+0x2d0/0x398)
-[ 9641.234363] [<c00d0a44>] (try_to_free_pages+0x2d0/0x398) from [<c00c6a60>] (__alloc_pages_nodemask+0x494/0x7e8)
-[ 9641.234382] [<c00c6a60>] (__alloc_pages_nodemask+0x494/0x7e8) from [<c00f62d8>] (new_slab+0x78/0x238)
-[ 9641.234400] [<c00f62d8>] (new_slab+0x78/0x238) from [<c031081c>] (__slab_alloc.constprop.42+0x1a4/0x50c)
-[ 9641.234419] [<c031081c>] (__slab_alloc.constprop.42+0x1a4/0x50c) from [<c00f80e8>] (kmem_cache_alloc_trace+0x54/0x188)
-[ 9641.234459] [<c00f80e8>] (kmem_cache_alloc_trace+0x54/0x188) from [<bf227908>] (do_readpage+0x168/0x468 [ubifs])
-[ 9641.234553] [<bf227908>] (do_readpage+0x168/0x468 [ubifs]) from [<bf2296a0>] (ubifs_readpage+0x424/0x464 [ubifs])
-[ 9641.234606] [<bf2296a0>] (ubifs_readpage+0x424/0x464 [ubifs]) from [<c00c17c0>] (filemap_fault+0x304/0x418)
-[ 9641.234638] [<c00c17c0>] (filemap_fault+0x304/0x418) from [<c00de694>] (__do_fault+0xd4/0x530)
-[ 9641.234665] [<c00de694>] (__do_fault+0xd4/0x530) from [<c00e10c0>] (handle_pte_fault+0x480/0xf54)
-[ 9641.234690] [<c00e10c0>] (handle_pte_fault+0x480/0xf54) from [<c00e2bf8>] (handle_mm_fault+0x140/0x184)
-[ 9641.234716] [<c00e2bf8>] (handle_mm_fault+0x140/0x184) from [<c0316688>] (do_page_fault+0x150/0x3ac)
-[ 9641.234737] [<c0316688>] (do_page_fault+0x150/0x3ac) from [<c000842c>] (do_DataAbort+0x3c/0xa0)
-[ 9641.234759] [<c000842c>] (do_DataAbort+0x3c/0xa0) from [<c0314e38>] (__dabt_usr+0x38/0x40)
-
-Did you fix it in recent patches? If not, I will take some times
-on it.
-
-I hit this when I was doing stress test, only once and no other
-failed messages. I haven't do umount or rmmod until now so I
-don't know further information about it.
-
-Thanks!
-
-
-Hu
+Your doesn't accept that other people do write code different than you 
+and you want to tell me I have to bring a more open attitude to the table?
