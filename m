@@ -1,20 +1,22 @@
-Received: from mail-ig0-x232.google.com ([2607:f8b0:4001:c05::232])
+Received: from szxga01-in.huawei.com ([119.145.14.64])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WpmuT-00080T-J1
- for linux-mtd@lists.infradead.org; Wed, 28 May 2014 23:05:26 +0000
-Received: by mail-ig0-f178.google.com with SMTP id hl10so3146478igb.11
- for <linux-mtd@lists.infradead.org>; Wed, 28 May 2014 16:05:04 -0700 (PDT)
-Date: Wed, 28 May 2014 16:04:58 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH] mtd: gpmi: add gpmi support for imx6sx
-Message-ID: <20140528230443.GG3599@ld-irv-0074>
-References: <1395888202-24415-1-git-send-email-b32955@freescale.com>
+ id 1WppbA-0003y8-Sb
+ for linux-mtd@lists.infradead.org; Thu, 29 May 2014 01:57:42 +0000
+Message-ID: <538693AD.5070606@huawei.com>
+Date: Thu, 29 May 2014 09:55:57 +0800
+From: hujianyang <hujianyang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1395888202-24415-1-git-send-email-b32955@freescale.com>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
+To: Dolev Raviv <draviv@codeaurora.org>, Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: ubifs: assertion fails
+References: <f08bbebef039d5bb28c2fcd3022165b0.squirrel@www.codeaurora.org>
+ <1396260879.9016.70.camel@sauron.fi.intel.com>
+ <533A5407.4060900@codeaurora.org>
+ <1396871016.17040.33.camel@sauron.fi.intel.com>
+ <789ed0034a7f4aa993addb2bc8c7e914.squirrel@www.codeaurora.org>
+In-Reply-To: <789ed0034a7f4aa993addb2bc8c7e914.squirrel@www.codeaurora.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,33 +26,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Mar 27, 2014 at 10:43:22AM +0800, Huang Shijie wrote:
-> The gpmi's IP for imx6sx is nearly the same as the gpmi's IP for imx6q,
-> except the following two new features:
-> 
->      (1) the new BCH contoller has 62-BIT correcting ECC strength
->             (The BCH for imx6q only has 40-BIT ECC strength).
-> 
->      (2) add the hardware Randomizer support.
-> 
-> This patch does the follow changes:
-> 
->      (1) add a new macro GPMI_IS_MX6SX to represent the imx6sx's gpmi.
-> 
->      (2) add a new macro GPMI_IS_MX6.
->            We use this macro to initialize the same registers for both
->          imx6sx and imx6q, and so on.
-> 
->      (3) add a new gpmi_devdata instance, the gpmi_devdata_imx6sx, for
->          imx6sx.
-> 
-> Signed-off-by: Huang Shijie <b32955@freescale.com>
-> ---
-> 
-> This patch depends on the patch:
->    "mtd: gpmi: add gpmi_devdata{} to simplify the code"
->    http://lists.infradead.org/pipermail/linux-mtd/2014-March/052793.html
+Hi Dolev and Artem,
 
-Pushed to l2-mtd.git. Thanks!
+I hit the same assert failed in Kernel v3.10 shows like this:
 
-Brian
+[ 9641.164028] UBIFS assert failed in shrink_tnc at 131 (pid 13297)
+[ 9641.234078] CPU: 1 PID: 13297 Comm: mmap.test Tainted: G           O 3.10.40 #1
+[ 9641.234116] [<c0011a6c>] (unwind_backtrace+0x0/0x12c) from [<c000d0b0>] (show_stack+0x20/0x24)
+[ 9641.234137] [<c000d0b0>] (show_stack+0x20/0x24) from [<c0311134>] (dump_stack+0x20/0x28)
+[ 9641.234188] [<c0311134>] (dump_stack+0x20/0x28) from [<bf22425c>] (shrink_tnc_trees+0x25c/0x350 [ubifs])
+[ 9641.234265] [<bf22425c>] (shrink_tnc_trees+0x25c/0x350 [ubifs]) from [<bf2245ac>] (ubifs_shrinker+0x25c/0x310 [ubifs])
+[ 9641.234307] [<bf2245ac>] (ubifs_shrinker+0x25c/0x310 [ubifs]) from [<c00cdad8>] (shrink_slab+0x1d4/0x2f8)
+[ 9641.234327] [<c00cdad8>] (shrink_slab+0x1d4/0x2f8) from [<c00d03d0>] (do_try_to_free_pages+0x300/0x544)
+[ 9641.234344] [<c00d03d0>] (do_try_to_free_pages+0x300/0x544) from [<c00d0a44>] (try_to_free_pages+0x2d0/0x398)
+[ 9641.234363] [<c00d0a44>] (try_to_free_pages+0x2d0/0x398) from [<c00c6a60>] (__alloc_pages_nodemask+0x494/0x7e8)
+[ 9641.234382] [<c00c6a60>] (__alloc_pages_nodemask+0x494/0x7e8) from [<c00f62d8>] (new_slab+0x78/0x238)
+[ 9641.234400] [<c00f62d8>] (new_slab+0x78/0x238) from [<c031081c>] (__slab_alloc.constprop.42+0x1a4/0x50c)
+[ 9641.234419] [<c031081c>] (__slab_alloc.constprop.42+0x1a4/0x50c) from [<c00f80e8>] (kmem_cache_alloc_trace+0x54/0x188)
+[ 9641.234459] [<c00f80e8>] (kmem_cache_alloc_trace+0x54/0x188) from [<bf227908>] (do_readpage+0x168/0x468 [ubifs])
+[ 9641.234553] [<bf227908>] (do_readpage+0x168/0x468 [ubifs]) from [<bf2296a0>] (ubifs_readpage+0x424/0x464 [ubifs])
+[ 9641.234606] [<bf2296a0>] (ubifs_readpage+0x424/0x464 [ubifs]) from [<c00c17c0>] (filemap_fault+0x304/0x418)
+[ 9641.234638] [<c00c17c0>] (filemap_fault+0x304/0x418) from [<c00de694>] (__do_fault+0xd4/0x530)
+[ 9641.234665] [<c00de694>] (__do_fault+0xd4/0x530) from [<c00e10c0>] (handle_pte_fault+0x480/0xf54)
+[ 9641.234690] [<c00e10c0>] (handle_pte_fault+0x480/0xf54) from [<c00e2bf8>] (handle_mm_fault+0x140/0x184)
+[ 9641.234716] [<c00e2bf8>] (handle_mm_fault+0x140/0x184) from [<c0316688>] (do_page_fault+0x150/0x3ac)
+[ 9641.234737] [<c0316688>] (do_page_fault+0x150/0x3ac) from [<c000842c>] (do_DataAbort+0x3c/0xa0)
+[ 9641.234759] [<c000842c>] (do_DataAbort+0x3c/0xa0) from [<c0314e38>] (__dabt_usr+0x38/0x40)
+
+Did you fix it in recent patches? If not, I will take some times
+on it.
+
+I hit this when I was doing stress test, only once and no other
+failed messages. I haven't do umount or rmmod until now so I
+don't know further information about it.
+
+Thanks!
+
+
+Hu
