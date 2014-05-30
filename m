@@ -1,31 +1,20 @@
-Received: from h1446028.stratoserver.net ([85.214.92.142]
- helo=mail.ahsoftware.de)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WqJCj-0002JN-0m
- for linux-mtd@lists.infradead.org; Fri, 30 May 2014 09:34:25 +0000
-Received: from eiche.ahsoftware (p57B236CB.dip0.t-ipconnect.de [87.178.54.203])
- (using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by mail.ahsoftware.de (Postfix) with ESMTPSA id 08A4A423C100
- for <linux-mtd@lists.infradead.org>; Fri, 30 May 2014 11:34:03 +0200 (CEST)
-Message-ID: <53885076.4000804@ahsoftware.de>
-Date: Fri, 30 May 2014 11:33:42 +0200
-From: Alexander Holler <holler@ahsoftware.de>
-MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [PATCH 01/27] mtd: nand: introduce function to fix a common bug
- in most nand-drivers not showing a device in sysfs
-References: <1401142372-14148-1-git-send-email-holler@ahsoftware.de>	
- <1401142372-14148-2-git-send-email-holler@ahsoftware.de>	
- <20140528084344.GB4285@norris-Latitude-E6410>	
- <53863056.2070405@ahsoftware.de> <20140528201018.GA3599@ld-irv-0074>	
- <53865071.5060501@ahsoftware.de>
- <1401344267.11182.36.camel@sauron.fi.intel.com>
-In-Reply-To: <1401344267.11182.36.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
+Received: from mout.kundenserver.de ([212.227.17.24])
+ by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WqT3V-0007as-L3
+ for linux-mtd@lists.infradead.org; Fri, 30 May 2014 20:05:34 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+To: linux-kernel@vger.kernel.org
+Subject: [RFC 17/32] ubifs: convert to struct inode_time
+Date: Fri, 30 May 2014 22:01:41 +0200
+Message-Id: <1401480116-1973111-18-git-send-email-arnd@arndb.de>
+In-Reply-To: <1401480116-1973111-1-git-send-email-arnd@arndb.de>
+References: <1401480116-1973111-1-git-send-email-arnd@arndb.de>
+Cc: linux-arch@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+ Artem Bityutskiy <dedekind1@gmail.com>, hpa@zytor.com,
+ Adrian Hunter <adrian.hunter@intel.com>, hch@infradead.org,
+ john.stultz@linaro.org, linux-mtd@lists.infradead.org, lftan@altera.com,
+ linux-fsdevel@vger.kernel.org, geert@linux-m68k.org, tglx@linutronix.de,
+ joseph@codesourcery.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,15 +24,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 29.05.2014 08:17, schrieb Artem Bityutskiy:
-> On Wed, 2014-05-28 at 23:09 +0200, Alexander Holler wrote:
->> I'm very sorry, but I find such discussions extremly tiresome.
->
-> Why discussing then at all, just go ahead and to something else.
+ubifs uses 64-bit integers for inode timestamps, which will work
+practicall forever, but the VFS uses struct timespec for timestamps,
+which is only good until 2038 on 32-bit CPUs.
 
-Agreed. In order to maintain psychical health it's better to not get in 
-contact with this kindergarten.
+This gets us one small step closer to lifting the VFS limit by using
+struct inode_time in ubifs.
 
-Regards,
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: linux-mtd@lists.infradead.org
+---
+ fs/ubifs/dir.c  |  2 +-
+ fs/ubifs/file.c | 16 ++++++++--------
+ fs/ubifs/misc.h |  2 +-
+ 3 files changed, 10 insertions(+), 10 deletions(-)
 
-Alexander Holler
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index ea41649..a551ecc 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -965,7 +965,7 @@ static int ubifs_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 					.dirtied_ino = 3 };
+ 	struct ubifs_budget_req ino_req = { .dirtied_ino = 1,
+ 			.dirtied_ino_d = ALIGN(old_inode_ui->data_len, 8) };
+-	struct timespec time;
++	struct inode_time time;
+ 	unsigned int uninitialized_var(saved_nlink);
+ 
+ 	/*
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index ebcf15f..55cd034 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -1073,13 +1073,13 @@ static void do_attr_changes(struct inode *inode, const struct iattr *attr)
+ 	if (attr->ia_valid & ATTR_GID)
+ 		inode->i_gid = attr->ia_gid;
+ 	if (attr->ia_valid & ATTR_ATIME)
+-		inode->i_atime = timespec_trunc(attr->ia_atime,
++		inode->i_atime = inode_time_trunc(attr->ia_atime,
+ 						inode->i_sb->s_time_gran);
+ 	if (attr->ia_valid & ATTR_MTIME)
+-		inode->i_mtime = timespec_trunc(attr->ia_mtime,
++		inode->i_mtime = inode_time_trunc(attr->ia_mtime,
+ 						inode->i_sb->s_time_gran);
+ 	if (attr->ia_valid & ATTR_CTIME)
+-		inode->i_ctime = timespec_trunc(attr->ia_ctime,
++		inode->i_ctime = inode_time_trunc(attr->ia_ctime,
+ 						inode->i_sb->s_time_gran);
+ 	if (attr->ia_valid & ATTR_MODE) {
+ 		umode_t mode = attr->ia_mode;
+@@ -1353,10 +1353,10 @@ out:
+  * granularity, they are not updated. This is an optimization.
+  */
+ static inline int mctime_update_needed(const struct inode *inode,
+-				       const struct timespec *now)
++				       const struct inode_time *now)
+ {
+-	if (!timespec_equal(&inode->i_mtime, now) ||
+-	    !timespec_equal(&inode->i_ctime, now))
++	if (!inode_time_equal(&inode->i_mtime, now) ||
++	    !inode_time_equal(&inode->i_ctime, now))
+ 		return 1;
+ 	return 0;
+ }
+@@ -1371,7 +1371,7 @@ static inline int mctime_update_needed(const struct inode *inode,
+  */
+ static int update_mctime(struct inode *inode)
+ {
+-	struct timespec now = ubifs_current_time(inode);
++	struct inode_time now = ubifs_current_time(inode);
+ 	struct ubifs_inode *ui = ubifs_inode(inode);
+ 	struct ubifs_info *c = inode->i_sb->s_fs_info;
+ 
+@@ -1443,7 +1443,7 @@ static int ubifs_vm_page_mkwrite(struct vm_area_struct *vma,
+ 	struct page *page = vmf->page;
+ 	struct inode *inode = file_inode(vma->vm_file);
+ 	struct ubifs_info *c = inode->i_sb->s_fs_info;
+-	struct timespec now = ubifs_current_time(inode);
++	struct inode_time now = ubifs_current_time(inode);
+ 	struct ubifs_budget_req req = { .new_page = 1 };
+ 	int err, update_time;
+ 
+diff --git a/fs/ubifs/misc.h b/fs/ubifs/misc.h
+index ee7cb5e..ca0fcac 100644
+--- a/fs/ubifs/misc.h
++++ b/fs/ubifs/misc.h
+@@ -233,7 +233,7 @@ static inline void *ubifs_idx_key(const struct ubifs_info *c,
+  * ubifs_current_time - round current time to time granularity.
+  * @inode: inode
+  */
+-static inline struct timespec ubifs_current_time(struct inode *inode)
++static inline struct inode_time ubifs_current_time(struct inode *inode)
+ {
+ 	return (inode->i_sb->s_time_gran < NSEC_PER_SEC) ?
+ 		current_fs_time(inode->i_sb) : CURRENT_TIME_SEC;
+-- 
+1.8.3.2
