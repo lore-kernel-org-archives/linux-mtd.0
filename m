@@ -1,23 +1,31 @@
-Received: from mail-by2lp0244.outbound.protection.outlook.com
- ([207.46.163.244] helo=na01-by2-obe.outbound.protection.outlook.com)
+Received: from h1446028.stratoserver.net ([85.214.92.142]
+ helo=mail.ahsoftware.de)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WqCIH-0004Rb-Pf
- for linux-mtd@lists.infradead.org; Fri, 30 May 2014 02:11:46 +0000
-Date: Fri, 30 May 2014 08:49:30 +0800
-From: Huang Shijie <b32955@freescale.com>
-To: Marek Vasut <marex@denx.de>
-Subject: Re: [PATCH] mtd: spi-nor: read 6 bytes for the ID
-Message-ID: <20140530004928.GA31796@shlinux1.ap.freescale.net>
-References: <1397470174-27856-1-git-send-email-b32955@freescale.com>
- <5384B5EB.4050203@st.com> <20140528052237.GA7984@shlinux1.ap.freescale.net>
- <201405292258.52803.marex@denx.de>
+ id 1WqJCj-0002JN-0m
+ for linux-mtd@lists.infradead.org; Fri, 30 May 2014 09:34:25 +0000
+Received: from eiche.ahsoftware (p57B236CB.dip0.t-ipconnect.de [87.178.54.203])
+ (using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mail.ahsoftware.de (Postfix) with ESMTPSA id 08A4A423C100
+ for <linux-mtd@lists.infradead.org>; Fri, 30 May 2014 11:34:03 +0200 (CEST)
+Message-ID: <53885076.4000804@ahsoftware.de>
+Date: Fri, 30 May 2014 11:33:42 +0200
+From: Alexander Holler <holler@ahsoftware.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <201405292258.52803.marex@denx.de>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
- Christophe KERELLO <christophe.kerello@st.com>, linux-mtd@lists.infradead.org,
- angus.clark@st.com
+To: dedekind1@gmail.com
+Subject: Re: [PATCH 01/27] mtd: nand: introduce function to fix a common bug
+ in most nand-drivers not showing a device in sysfs
+References: <1401142372-14148-1-git-send-email-holler@ahsoftware.de>	
+ <1401142372-14148-2-git-send-email-holler@ahsoftware.de>	
+ <20140528084344.GB4285@norris-Latitude-E6410>	
+ <53863056.2070405@ahsoftware.de> <20140528201018.GA3599@ld-irv-0074>	
+ <53865071.5060501@ahsoftware.de>
+ <1401344267.11182.36.camel@sauron.fi.intel.com>
+In-Reply-To: <1401344267.11182.36.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,46 +35,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, May 29, 2014 at 10:58:52PM +0200, Marek Vasut wrote:
-> On Wednesday, May 28, 2014 at 07:22:40 AM, Huang Shijie wrote:
-> [...]
-> > From 7b920141899e4e7249bd23792dc8d5f1558cb7ca Mon Sep 17 00:00:00 2001
-> > From: Huang Shijie <b32955@freescale.com>
-> > Date: Mon, 14 Apr 2014 18:09:34 +0800
-> > Subject: [PATCH v2] mtd: spi-nor: read 6 bytes for the ID
-> > 
-> > Currently, we read 5 bytes for ID, but s25fl128s has the same
-> > ext_id(0x4d01) with s25fl129p1. The s25fl128s can support the DDR Quad
-> > read, while s25fl129p1 does not. So we have to distinguish the two NOR
-> > flashs.
-> > 
-> > This patch reads out 6 bytes for the ID, and use the 6 bytes ID to search
-> > the right flash_info.
-> > 
-> > The detail of the patch is:
-> >   [1] change the "ext_id" from u16 to u32.
-> >       We can store two bytes or three bytes with the @ext_id now.
-> > 
-> >   [2] search the right flash_info with the 6byte ID and the new @ext_id.
-> >       We use "matched" variable to track the legacy two bytes @ext_id.
-> >       If the flash_info's @ext_id is three bytes, we will use the
-> >       sixth byte of the ID to check it.
-> > 
-> >   [3] add the new item to spi_nor_ids for s25fl128s.
-> > 
-> > Signed-off-by: Huang Shijie <b32955@freescale.com>
-> > ---
-> >  drivers/mtd/spi-nor/spi-nor.c |   30 +++++++++++++++++++++++++-----
-> >  1 files changed, 25 insertions(+), 5 deletions(-)
-> 
-> What exactly changed here please ?
+Am 29.05.2014 08:17, schrieb Artem Bityutskiy:
+> On Wed, 2014-05-28 at 23:09 +0200, Alexander Holler wrote:
+>> I'm very sorry, but I find such discussions extremly tiresome.
+>
+> Why discussing then at all, just go ahead and to something else.
 
-This patch will reset the ext_jedec to the old value if the sixth-byte-match fails.
+Agreed. In order to maintain psychical health it's better to not get in 
+contact with this kindergarten.
 
-------------------------------------------------------------
-+				/* reset back the ext_jedec */
-+				ext_jedec >>= 8;
-------------------------------------------------------------
+Regards,
 
-thanks
-Huang Shijie
+Alexander Holler
