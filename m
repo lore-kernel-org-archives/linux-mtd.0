@@ -1,12 +1,14 @@
-Received: from fudo.makrotopia.org ([2001:41d0:8:c75d::1])
+Received: from mail-pb0-f48.google.com ([209.85.160.48])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WqUsM-0000lm-BD
- for linux-mtd@lists.infradead.org; Fri, 30 May 2014 22:02:11 +0000
-Date: Sat, 31 May 2014 00:01:56 +0200
-From: Daniel Golle <daniel@makrotopia.org>
-To: dedekind1@gmail.com, hujianyang@huawei.com, linux-mtd@lists.infradead.org
-Subject: [PATCH v3] ubifs: respect MS_SILENT mount flag
-Message-ID: <20140530220149.GA30631@earthship.lan>
+ id 1WqW6l-0003ex-3m
+ for linux-mtd@lists.infradead.org; Fri, 30 May 2014 23:21:07 +0000
+Received: by mail-pb0-f48.google.com with SMTP id rr13so2208594pbb.35
+ for <linux-mtd@lists.infradead.org>; Fri, 30 May 2014 16:20:42 -0700 (PDT)
+Date: Fri, 30 May 2014 16:20:39 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Daniel Golle <daniel@makrotopia.org>
+Subject: Re: [PATCH v3] ubifs: respect MS_SILENT mount flag
+Message-ID: <20140530232039.GH3599@ld-irv-0074>
 References: <1401265736.2118.2.camel@sauron.fi.intel.com>
  <1401193128.1304.132.camel@sauron.fi.intel.com>
  <20140527141030.GA3130@earthship.local>
@@ -15,11 +17,12 @@ References: <1401265736.2118.2.camel@sauron.fi.intel.com>
  <1401264104.983.12.camel@sauron.fi.intel.com>
  <1401264446.983.17.camel@sauron.fi.intel.com>
  <1401264889.983.19.camel@sauron.fi.intel.com>
+ <20140530220149.GA30631@earthship.lan>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="WIyZ46R2i8wDzkSu"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1401265736.2118.2.camel@sauron.fi.intel.com>
+In-Reply-To: <20140530220149.GA30631@earthship.lan>
+Cc: hujianyang@huawei.com, linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,137 +32,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Daniel,
 
---WIyZ46R2i8wDzkSu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Sat, May 31, 2014 at 12:01:56AM +0200, Daniel Golle wrote:
+> When attempting to mount a non-ubifs formatted volume, lots of error
+> messages (including a stack dump) are thrown to the kernel log even if
+> the MS_SILENT mount flag is set.
+> Fix this by introducing adding an additional state-variable in
+> struct ubifs_info and suppress error messages in ubifs_read_node if
+> MS_SILENT is set.
+> 
+> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+> ---
+> v3: use state variable in ubifs_info instead of 
 
-When attempting to mount a non-ubifs formatted volume, lots of error
-messages (including a stack dump) are thrown to the kernel log even if
-the MS_SILENT mount flag is set.
-Fix this by introducing adding an additional state-variable in
-struct ubifs_info and suppress error messages in ubifs_read_node if
-MS_SILENT is set.
+Instead of what?? I'm dying to know!
 
-Signed-off-by: Daniel Golle <daniel@makrotopia.org>
----
-v3: use state variable in ubifs_info instead of=20
- fs/ubifs/io.c    | 14 ++++++++------
- fs/ubifs/super.c |  4 ++++
- fs/ubifs/ubifs.h |  9 +++++++++
- 3 files changed, 21 insertions(+), 6 deletions(-)
+(Just kidding; I can read your previous conversations. Hint: the answer
+is "a function argument.")
 
-diff --git a/fs/ubifs/io.c b/fs/ubifs/io.c
-index e18b988..e6a31faa 100644
---- a/fs/ubifs/io.c
-+++ b/fs/ubifs/io.c
-@@ -988,30 +988,32 @@ int ubifs_read_node(const struct ubifs_info *c, void =
-*buf, int type, int len,
- 		return err;
-=20
- 	if (type !=3D ch->node_type) {
--		ubifs_err("bad node type (%d but expected %d)",
-+		ubifs_errc(c, "bad node type (%d but expected %d)",
- 			  ch->node_type, type);
- 		goto out;
- 	}
-=20
- 	err =3D ubifs_check_node(c, buf, lnum, offs, 0, 0);
- 	if (err) {
--		ubifs_err("expected node type %d", type);
-+		ubifs_errc(c, "expected node type %d", type);
- 		return err;
- 	}
-=20
- 	l =3D le32_to_cpu(ch->len);
- 	if (l !=3D len) {
--		ubifs_err("bad node length %d, expected %d", l, len);
-+		ubifs_errc(c, "bad node length %d, expected %d", l, len);
- 		goto out;
- 	}
-=20
- 	return 0;
-=20
- out:
--	ubifs_err("bad node at LEB %d:%d, LEB mapping status %d", lnum, offs,
-+	ubifs_errc(c, "bad node at LEB %d:%d, LEB mapping status %d", lnum, offs,
- 		  ubi_is_mapped(c->ubi, lnum));
--	ubifs_dump_node(c, buf);
--	dump_stack();
-+	if (!c->probing) {
-+		ubifs_dump_node(c, buf);
-+		dump_stack();
-+	}
- 	return -EINVAL;
- }
-=20
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index a81c7b5..e88bbb6 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -1149,6 +1149,8 @@ static int mount_ubifs(struct ubifs_info *c)
- 	size_t sz;
-=20
- 	c->ro_mount =3D !!(c->vfs_sb->s_flags & MS_RDONLY);
-+	c->probing =3D !!(c->vfs_sb->s_flags & MS_SILENT);
-+
- 	err =3D init_constants_early(c);
- 	if (err)
- 		return err;
-@@ -1214,6 +1216,8 @@ static int mount_ubifs(struct ubifs_info *c)
- 	if (err)
- 		goto out_free;
-=20
-+	c->probing =3D 0;
-+
- 	/*
- 	 * Make sure the compressor which is set as default in the superblock
- 	 * or overridden by mount options is actually compiled in.
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index e8c8cfe..6aa1550 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -52,6 +52,14 @@
- 	pr_warn("UBIFS warning (pid %d): %s: " fmt "\n",            \
- 		current->pid, __func__, ##__VA_ARGS__)
-=20
-+/*
-+ * A variant of 'ubifs_err()' which takes the UBIFS file-sytem description
-+ * object as an argument.
-+ */
-+#define ubifs_errc(c, fmt, ...)                                    \
-+	if (!(c)->probing)                                         \
-+		ubifs_err(fmt, ##__VA_ARGS__)
-+
- /* UBIFS file system VFS magic number */
- #define UBIFS_SUPER_MAGIC 0x24051905
-=20
-@@ -1441,6 +1449,7 @@ struct ubifs_info {
- 	unsigned int replaying:1;
- 	unsigned int mounting:1;
- 	unsigned int remounting_rw:1;
-+	unsigned int probing:1;
- 	struct list_head replay_list;
- 	struct list_head replay_buds;
- 	unsigned long long cs_sqnum;
---=20
-1.9.3
+>  fs/ubifs/io.c    | 14 ++++++++------
+>  fs/ubifs/super.c |  4 ++++
+>  fs/ubifs/ubifs.h |  9 +++++++++
+>  3 files changed, 21 insertions(+), 6 deletions(-)
+> 
+[...]
+> diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+> index e8c8cfe..6aa1550 100644
+> --- a/fs/ubifs/ubifs.h
+> +++ b/fs/ubifs/ubifs.h
+> @@ -52,6 +52,14 @@
+>  	pr_warn("UBIFS warning (pid %d): %s: " fmt "\n",            \
+>  		current->pid, __func__, ##__VA_ARGS__)
+>  
+> +/*
+> + * A variant of 'ubifs_err()' which takes the UBIFS file-sytem description
+> + * object as an argument.
+> + */
+> +#define ubifs_errc(c, fmt, ...)                                    \
+> +	if (!(c)->probing)                                         \
+> +		ubifs_err(fmt, ##__VA_ARGS__)
 
+Nitpick: might you want to wrap the whole condition in do { } while (0),
+so that a user can't shoot themselves in the foot with something like:
 
---WIyZ46R2i8wDzkSu
-Content-Type: application/pgp-signature
+	if (condition)
+		ubifs_errc(c, "hello world");
+	else
+		do_something_else();
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+which will expand to the following unexpected code:
 
-iQEcBAEBAgAGBQJTiP/NAAoJECBgbL4bcbCQvtUIAITQj/rdi6DBNbk6xDvcCvai
-kincxvffRiu76MQg6F0rzq6khf1+b994i2R1qxWe+c1sFGv+5C4NFRv9JkQ9/mrn
-HbnRil57D3fjlIEO3Dq1p+fw1A3epzy8CHE3kDGkU56vI80ATFw3PA5bmdPtR9Ng
-UNced+hkLNME1e/vczvAzXGPwUQdfU9aYP0JyN7zfOwpgs5i/FJr3SafXlFP9MYU
-/v9XpBIsTl68obTxU+POlRykqfHpjKaxXa9k35vMdojVWEh4q0Lq7EmVLNZlDaG2
-LxCX/TwHJfn5T9kIfmFAPjRW9ZQmCIbIKr7JbyiaEHKn2Tcgqtx/3ClvBoa9snc=
-=Wz1/
------END PGP SIGNATURE-----
+	if (condition)
+		if (!c->probing)
+			ubifs_err("hello world");
+		else
+			do_something_else();
 
---WIyZ46R2i8wDzkSu--
+> +
+>  /* UBIFS file system VFS magic number */
+>  #define UBIFS_SUPER_MAGIC 0x24051905
+>  
+
+Brian
