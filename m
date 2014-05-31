@@ -1,13 +1,14 @@
-Date: Sat, 31 May 2014 16:51:15 +0200
-From: Richard Cochran <richardcochran@gmail.com>
-To: Arnd Bergmann <arnd@arndb.de>
+From: Arnd Bergmann <arnd@arndb.de>
+To: Richard Cochran <richardcochran@gmail.com>
 Subject: Re: [RFC 00/32] making inode time stamps y2038 ready
-Message-ID: <20140531145114.GA3721@localhost.localdomain>
+Date: Sat, 31 May 2014 17:23:02 +0200
+Message-ID: <6347520.8jMPlVsFjM@wuerfel>
+In-Reply-To: <20140531145114.GA3721@localhost.localdomain>
 References: <1401480116-1973111-1-git-send-email-arnd@arndb.de>
+ <20140531145114.GA3721@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1401480116-1973111-1-git-send-email-arnd@arndb.de>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Cc: hch@infradead.org, linux-mtd@lists.infradead.org, hpa@zytor.com,
  linux-f2fs-devel@lists.sourceforge.net, ceph-devel@vger.kernel.org,
  joseph@codesourcery.com, linux-arch@vger.kernel.org,
@@ -29,14 +30,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, May 30, 2014 at 10:01:24PM +0200, Arnd Bergmann wrote:
+On Saturday 31 May 2014 16:51:15 Richard Cochran wrote:
+> On Fri, May 30, 2014 at 10:01:24PM +0200, Arnd Bergmann wrote:
+> > 
+> > I picked this because it is a fairly isolated problem, as the
+> > inode time stamps are rarely assigned to any other time values.
+> > As a byproduct of this work, I documented for each of the file
+> > systems we support how long the on-disk format can work[1].
 > 
-> I picked this because it is a fairly isolated problem, as the
-> inode time stamps are rarely assigned to any other time values.
-> As a byproduct of this work, I documented for each of the file
-> systems we support how long the on-disk format can work[1].
+> Why are some of the time stamp expiration dates marked as "never"?
 
-Why are some of the time stamp expiration dates marked as "never"?
+It's an approximation:
+with 64-bit timestamps, you can represent close to 300 billion
+years, which is way past the time that our planet can sustain
+life of any form[1].
 
-Thanks,
-Richard
+	Arnd
+
+[1] http://en.wikipedia.org/wiki/Timeline_of_the_far_future
