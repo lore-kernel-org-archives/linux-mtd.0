@@ -1,16 +1,19 @@
 Received: from szxga03-in.huawei.com ([119.145.14.66])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wqa9z-0008DW-4e
- for linux-mtd@lists.infradead.org; Sat, 31 May 2014 03:40:45 +0000
-Message-ID: <53894EF4.5030607@huawei.com>
-Date: Sat, 31 May 2014 11:39:32 +0800
+ id 1Wqe1j-0003eA-Ul
+ for linux-mtd@lists.infradead.org; Sat, 31 May 2014 07:48:29 +0000
+Message-ID: <538988F7.8090805@huawei.com>
+Date: Sat, 31 May 2014 15:47:03 +0800
 From: hujianyang <hujianyang@huawei.com>
 MIME-Version: 1.0
-To: Artem Bityutskiy <dedekind1@gmail.com>, Dolev Raviv <draviv@codeaurora.org>
-Subject: [PATCH] UBIFS: Remove incorrect assertion in shrink_tnc()
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH] UBIFS: Remove incorrect assertion in shrink_tnc()
+References: <53894EF4.5030607@huawei.com>
+In-Reply-To: <53894EF4.5030607@huawei.com>
 Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Cc: Dolev Raviv <draviv@codeaurora.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,101 +23,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I hit the same assert failed as Dolev Raviv reported in Kernel v3.10
-shows like this:
+Hi Artem,
 
-[ 9641.164028] UBIFS assert failed in shrink_tnc at 131 (pid 13297)
-[ 9641.234078] CPU: 1 PID: 13297 Comm: mmap.test Tainted: G           O 3.10.40 #1
-[ 9641.234116] [<c0011a6c>] (unwind_backtrace+0x0/0x12c) from [<c000d0b0>] (show_stack+0x20/0x24)
-[ 9641.234137] [<c000d0b0>] (show_stack+0x20/0x24) from [<c0311134>] (dump_stack+0x20/0x28)
-[ 9641.234188] [<c0311134>] (dump_stack+0x20/0x28) from [<bf22425c>] (shrink_tnc_trees+0x25c/0x350 [ubifs])
-[ 9641.234265] [<bf22425c>] (shrink_tnc_trees+0x25c/0x350 [ubifs]) from [<bf2245ac>] (ubifs_shrinker+0x25c/0x310 [ubifs])
-[ 9641.234307] [<bf2245ac>] (ubifs_shrinker+0x25c/0x310 [ubifs]) from [<c00cdad8>] (shrink_slab+0x1d4/0x2f8)
-[ 9641.234327] [<c00cdad8>] (shrink_slab+0x1d4/0x2f8) from [<c00d03d0>] (do_try_to_free_pages+0x300/0x544)
-[ 9641.234344] [<c00d03d0>] (do_try_to_free_pages+0x300/0x544) from [<c00d0a44>] (try_to_free_pages+0x2d0/0x398)
-[ 9641.234363] [<c00d0a44>] (try_to_free_pages+0x2d0/0x398) from [<c00c6a60>] (__alloc_pages_nodemask+0x494/0x7e8)
-[ 9641.234382] [<c00c6a60>] (__alloc_pages_nodemask+0x494/0x7e8) from [<c00f62d8>] (new_slab+0x78/0x238)
-[ 9641.234400] [<c00f62d8>] (new_slab+0x78/0x238) from [<c031081c>] (__slab_alloc.constprop.42+0x1a4/0x50c)
-[ 9641.234419] [<c031081c>] (__slab_alloc.constprop.42+0x1a4/0x50c) from [<c00f80e8>] (kmem_cache_alloc_trace+0x54/0x188)
-[ 9641.234459] [<c00f80e8>] (kmem_cache_alloc_trace+0x54/0x188) from [<bf227908>] (do_readpage+0x168/0x468 [ubifs])
-[ 9641.234553] [<bf227908>] (do_readpage+0x168/0x468 [ubifs]) from [<bf2296a0>] (ubifs_readpage+0x424/0x464 [ubifs])
-[ 9641.234606] [<bf2296a0>] (ubifs_readpage+0x424/0x464 [ubifs]) from [<c00c17c0>] (filemap_fault+0x304/0x418)
-[ 9641.234638] [<c00c17c0>] (filemap_fault+0x304/0x418) from [<c00de694>] (__do_fault+0xd4/0x530)
-[ 9641.234665] [<c00de694>] (__do_fault+0xd4/0x530) from [<c00e10c0>] (handle_pte_fault+0x480/0xf54)
-[ 9641.234690] [<c00e10c0>] (handle_pte_fault+0x480/0xf54) from [<c00e2bf8>] (handle_mm_fault+0x140/0x184)
-[ 9641.234716] [<c00e2bf8>] (handle_mm_fault+0x140/0x184) from [<c0316688>] (do_page_fault+0x150/0x3ac)
-[ 9641.234737] [<c0316688>] (do_page_fault+0x150/0x3ac) from [<c000842c>] (do_DataAbort+0x3c/0xa0)
-[ 9641.234759] [<c000842c>] (do_DataAbort+0x3c/0xa0) from [<c0314e38>] (__dabt_usr+0x38/0x40)
+In previous mail, I introduce a condition I found that may hit assert
+failed in shrink_tnc(). So I think this assertion is useless. But I
+don't know if there are any leaks in @c->clean_zn_cnt. Although I've
+done some tests and found everything is OK, I'm still not sure of that.
 
-After analyzing the code, I found a condition that may cause this failed
-in correct operations. Thus, I think this assertion is wrong and should be
-removed.
+As you said, there might be some problems in TNC sub-sys. I would like
+to add a new ubifs_assert in ubifs_tnc_close().
 
-Suppose there are two clean znodes and one dirty znode in TNC. So the
-per-filesystem atomic_t @clean_zn_cnt is (2). If commit start, dirty_znode
-is set to COW_ZNODE in get_znodes_to_commit() in case of potentially ops
-on this znode. We clear COW bit and DIRTY bit in write_index() without
-@tnc_mutex locked. We don't increase @clean_zn_cnt in this place. As the
-comments in write_index() shows, if another process hold @tnc_mutex and
-dirty this znode after we clean it, @clean_zn_cnt would be decreased to (1).
-We will increase @clean_zn_cnt to (2) with @tnc_mutex locked in
-free_obsolete_znodes() to keep it right.
+Patch 83707237 solves a problem if one per-fs @c->clean_zn_cnt is wrong,
+it will not harm the global @ubifs_clean_zn_cnt to ensure other ubifs
+partitions work well. Suppose there is only one ubifs partition, because
+we have decreased global @ubifs_clean_zn_cnt with @c->clean_zn_cnt in
+ubifs_tnc_close(), assertion in ubifs_exit() will not be hitted whether
+@c->clean_zn_cnt is wrong or not.
 
-If shrink_tnc() performs between decrease and increase, it will release
-other 2 clean znodes it holds and found @clean_zn_cnt is less than zero
-(1 - 2 = -1), then hit the assertion. Because free_obsolete_znodes() will
-soon correct @clean_zn_cnt and no harm to fs in this case, I think this
-assertion could be removed.
+diff --git a/fs/ubifs/tnc.c b/fs/ubifs/tnc.c
+index 9083bc7..61914f0 100644
+--- a/fs/ubifs/tnc.c
++++ b/fs/ubifs/tnc.c
+@@ -2859,10 +2859,11 @@ void ubifs_tnc_close(struct ubifs_info *c)
+ {
+ 	tnc_destroy_cnext(c);
+ 	if (c->zroot.znode) {
+-		long n;
++		long n, freed;
+
+-		ubifs_destroy_tnc_subtree(c->zroot.znode);
++		freed = ubifs_destroy_tnc_subtree(c->zroot.znode);
+ 		n = atomic_long_read(&c->clean_zn_cnt);
++		ubifs_assert(freed == n);
+ 		atomic_long_sub(n, &ubifs_clean_zn_cnt);
+ 	}
+ 	kfree(c->gap_lebs);
 
 
-2 clean zondes and 1 dirty znode, @clean_zn_cnt == 2
+How about adding a new ubifs_assert like this? We can know if there are
+any leaks in @c->clean_cn_cnt by it but still not know where it happens. I
+think if we are confident of TNC sub-sys, this seems not bad.
 
-Thread A (commit)         Thread B (write or others)       Thread C (shrinker)
-->write_index
-   ->clear_bit(DIRTY_NODE)
-   ->clear_bit(COW_ZNODE)
+What's your opinions? If you are not conflict with it. I would like to add
+this to the previous patch and resend it.
 
-            @clean_zn_cnt == 2
-                          ->mutex_locked(&tnc_mutex)
-                          ->dirty_cow_znode
-                              ->!ubifs_zn_cow(znode)
-                              ->!test_and_set_bit(DIRTY_NODE)
-                              ->atomic_dec(&clean_zn_cnt)
-                          ->mutex_unlocked(&tnc_mutex)
+Thanks!
 
-            @clean_zn_cnt == 1
-                                                           ->mutex_locked(&tnc_mutex)
-                                                           ->shrink_tnc
-                                                             ->destroy_tnc_subtree
-                                                             ->atomic_sub(&clean_zn_cnt, 2)
-                                                             ->ubifs_assert  <- hit
-                                                           ->mutex_unlocked(&tnc_mutex)
-
-            @clean_zn_cnt == -1
-->mutex_lock(&tnc_mutex)
-->free_obsolete_znodes
-   ->atomic_inc(&clean_zn_cnt)
-->mutux_unlock(&tnc_mutex)
-
-            @clean_zn_cnt == 0 (correct after shrink)
-
-
-Signed-off-by: hujianyang <hujianyang@huawei.com>
----
- fs/ubifs/shrinker.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/fs/ubifs/shrinker.c b/fs/ubifs/shrinker.c
-index f35135e..9a9fb94 100644
---- a/fs/ubifs/shrinker.c
-+++ b/fs/ubifs/shrinker.c
-@@ -128,7 +128,6 @@ static int shrink_tnc(struct ubifs_info *c, int nr, int age, int *contention)
- 			freed = ubifs_destroy_tnc_subtree(znode);
- 			atomic_long_sub(freed, &ubifs_clean_zn_cnt);
- 			atomic_long_sub(freed, &c->clean_zn_cnt);
--			ubifs_assert(atomic_long_read(&c->clean_zn_cnt) >= 0);
- 			total_freed += freed;
- 			znode = zprev;
- 		}
--- 
-1.8.1.4
+Hu
