@@ -1,25 +1,16 @@
-Received: from mail-pd0-x22c.google.com ([2607:f8b0:400e:c02::22c])
+Received: from szxga03-in.huawei.com ([119.145.14.66])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WqWkT-0006jj-Tb
- for linux-mtd@lists.infradead.org; Sat, 31 May 2014 00:02:10 +0000
-Received: by mail-pd0-f172.google.com with SMTP id fp1so1466337pdb.3
- for <linux-mtd@lists.infradead.org>; Fri, 30 May 2014 17:01:48 -0700 (PDT)
-Date: Fri, 30 May 2014 17:01:44 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH v2] nandtest: Introduce multiple reads & check iterations
-Message-ID: <20140531000144.GB9970@ld-irv-0074>
-References: <1399388869-5815-1-git-send-email-ezequiel@vanguardiasur.com.ar>
- <1399388869-5815-2-git-send-email-ezequiel@vanguardiasur.com.ar>
- <1401194435.1304.143.camel@sauron.fi.intel.com>
+ id 1Wqa9z-0008DW-4e
+ for linux-mtd@lists.infradead.org; Sat, 31 May 2014 03:40:45 +0000
+Message-ID: <53894EF4.5030607@huawei.com>
+Date: Sat, 31 May 2014 11:39:32 +0800
+From: hujianyang <hujianyang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1401194435.1304.143.camel@sauron.fi.intel.com>
-Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- Guido =?iso-8859-1?Q?Mart=EDnez?= <guido@vanguardiasur.com.ar>,
- Pekon Gupta <pekon@ti.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>, Dolev Raviv <draviv@codeaurora.org>
+Subject: [PATCH] UBIFS: Remove incorrect assertion in shrink_tnc()
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,32 +20,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, May 27, 2014 at 03:40:35PM +0300, Artem Bityutskiy wrote:
-> On Tue, 2014-05-06 at 12:07 -0300, Ezequiel Garcia wrote:
-> > The current nandtest performs a simple test which consists of:
-> > 
-> >   1. erase block
-> >   2. write data
-> >   3. read and verify
-> > 
-> > In order to improve the nandtest strength, this commit adds a new parameter
-> > to increase the number of "read and verify" iterations. In other words,
-> > the test now consists of:
-> > 
-> >   1. erase block
-> >   2. write data
-> >   3. read and verify (N times)
-> 
-> I think this is reasonable, but there were some skeptic replies, so
-> probably another approver's voice would not hurt. Let me give you my
-> 
-> Acked-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> 
-> and drop Brian a hint that if he things the same way, he could just push
-> this driver, or approve and then I can push.
+I hit the same assert failed as Dolev Raviv reported in Kernel v3.10
+shows like this:
 
-Thanks for the hint :)
+[ 9641.164028] UBIFS assert failed in shrink_tnc at 131 (pid 13297)
+[ 9641.234078] CPU: 1 PID: 13297 Comm: mmap.test Tainted: G           O 3.10.40 #1
+[ 9641.234116] [<c0011a6c>] (unwind_backtrace+0x0/0x12c) from [<c000d0b0>] (show_stack+0x20/0x24)
+[ 9641.234137] [<c000d0b0>] (show_stack+0x20/0x24) from [<c0311134>] (dump_stack+0x20/0x28)
+[ 9641.234188] [<c0311134>] (dump_stack+0x20/0x28) from [<bf22425c>] (shrink_tnc_trees+0x25c/0x350 [ubifs])
+[ 9641.234265] [<bf22425c>] (shrink_tnc_trees+0x25c/0x350 [ubifs]) from [<bf2245ac>] (ubifs_shrinker+0x25c/0x310 [ubifs])
+[ 9641.234307] [<bf2245ac>] (ubifs_shrinker+0x25c/0x310 [ubifs]) from [<c00cdad8>] (shrink_slab+0x1d4/0x2f8)
+[ 9641.234327] [<c00cdad8>] (shrink_slab+0x1d4/0x2f8) from [<c00d03d0>] (do_try_to_free_pages+0x300/0x544)
+[ 9641.234344] [<c00d03d0>] (do_try_to_free_pages+0x300/0x544) from [<c00d0a44>] (try_to_free_pages+0x2d0/0x398)
+[ 9641.234363] [<c00d0a44>] (try_to_free_pages+0x2d0/0x398) from [<c00c6a60>] (__alloc_pages_nodemask+0x494/0x7e8)
+[ 9641.234382] [<c00c6a60>] (__alloc_pages_nodemask+0x494/0x7e8) from [<c00f62d8>] (new_slab+0x78/0x238)
+[ 9641.234400] [<c00f62d8>] (new_slab+0x78/0x238) from [<c031081c>] (__slab_alloc.constprop.42+0x1a4/0x50c)
+[ 9641.234419] [<c031081c>] (__slab_alloc.constprop.42+0x1a4/0x50c) from [<c00f80e8>] (kmem_cache_alloc_trace+0x54/0x188)
+[ 9641.234459] [<c00f80e8>] (kmem_cache_alloc_trace+0x54/0x188) from [<bf227908>] (do_readpage+0x168/0x468 [ubifs])
+[ 9641.234553] [<bf227908>] (do_readpage+0x168/0x468 [ubifs]) from [<bf2296a0>] (ubifs_readpage+0x424/0x464 [ubifs])
+[ 9641.234606] [<bf2296a0>] (ubifs_readpage+0x424/0x464 [ubifs]) from [<c00c17c0>] (filemap_fault+0x304/0x418)
+[ 9641.234638] [<c00c17c0>] (filemap_fault+0x304/0x418) from [<c00de694>] (__do_fault+0xd4/0x530)
+[ 9641.234665] [<c00de694>] (__do_fault+0xd4/0x530) from [<c00e10c0>] (handle_pte_fault+0x480/0xf54)
+[ 9641.234690] [<c00e10c0>] (handle_pte_fault+0x480/0xf54) from [<c00e2bf8>] (handle_mm_fault+0x140/0x184)
+[ 9641.234716] [<c00e2bf8>] (handle_mm_fault+0x140/0x184) from [<c0316688>] (do_page_fault+0x150/0x3ac)
+[ 9641.234737] [<c0316688>] (do_page_fault+0x150/0x3ac) from [<c000842c>] (do_DataAbort+0x3c/0xa0)
+[ 9641.234759] [<c000842c>] (do_DataAbort+0x3c/0xa0) from [<c0314e38>] (__dabt_usr+0x38/0x40)
 
-Looks good to me. Pushed to mtd-utils.git. Thanks!
+After analyzing the code, I found a condition that may cause this failed
+in correct operations. Thus, I think this assertion is wrong and should be
+removed.
 
-Brian
+Suppose there are two clean znodes and one dirty znode in TNC. So the
+per-filesystem atomic_t @clean_zn_cnt is (2). If commit start, dirty_znode
+is set to COW_ZNODE in get_znodes_to_commit() in case of potentially ops
+on this znode. We clear COW bit and DIRTY bit in write_index() without
+@tnc_mutex locked. We don't increase @clean_zn_cnt in this place. As the
+comments in write_index() shows, if another process hold @tnc_mutex and
+dirty this znode after we clean it, @clean_zn_cnt would be decreased to (1).
+We will increase @clean_zn_cnt to (2) with @tnc_mutex locked in
+free_obsolete_znodes() to keep it right.
+
+If shrink_tnc() performs between decrease and increase, it will release
+other 2 clean znodes it holds and found @clean_zn_cnt is less than zero
+(1 - 2 = -1), then hit the assertion. Because free_obsolete_znodes() will
+soon correct @clean_zn_cnt and no harm to fs in this case, I think this
+assertion could be removed.
+
+
+2 clean zondes and 1 dirty znode, @clean_zn_cnt == 2
+
+Thread A (commit)         Thread B (write or others)       Thread C (shrinker)
+->write_index
+   ->clear_bit(DIRTY_NODE)
+   ->clear_bit(COW_ZNODE)
+
+            @clean_zn_cnt == 2
+                          ->mutex_locked(&tnc_mutex)
+                          ->dirty_cow_znode
+                              ->!ubifs_zn_cow(znode)
+                              ->!test_and_set_bit(DIRTY_NODE)
+                              ->atomic_dec(&clean_zn_cnt)
+                          ->mutex_unlocked(&tnc_mutex)
+
+            @clean_zn_cnt == 1
+                                                           ->mutex_locked(&tnc_mutex)
+                                                           ->shrink_tnc
+                                                             ->destroy_tnc_subtree
+                                                             ->atomic_sub(&clean_zn_cnt, 2)
+                                                             ->ubifs_assert  <- hit
+                                                           ->mutex_unlocked(&tnc_mutex)
+
+            @clean_zn_cnt == -1
+->mutex_lock(&tnc_mutex)
+->free_obsolete_znodes
+   ->atomic_inc(&clean_zn_cnt)
+->mutux_unlock(&tnc_mutex)
+
+            @clean_zn_cnt == 0 (correct after shrink)
+
+
+Signed-off-by: hujianyang <hujianyang@huawei.com>
+---
+ fs/ubifs/shrinker.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/fs/ubifs/shrinker.c b/fs/ubifs/shrinker.c
+index f35135e..9a9fb94 100644
+--- a/fs/ubifs/shrinker.c
++++ b/fs/ubifs/shrinker.c
+@@ -128,7 +128,6 @@ static int shrink_tnc(struct ubifs_info *c, int nr, int age, int *contention)
+ 			freed = ubifs_destroy_tnc_subtree(znode);
+ 			atomic_long_sub(freed, &ubifs_clean_zn_cnt);
+ 			atomic_long_sub(freed, &c->clean_zn_cnt);
+-			ubifs_assert(atomic_long_read(&c->clean_zn_cnt) >= 0);
+ 			total_freed += freed;
+ 			znode = zprev;
+ 		}
+-- 
+1.8.1.4
