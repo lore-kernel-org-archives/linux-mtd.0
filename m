@@ -1,30 +1,16 @@
-Date: Sun, 1 Jun 2014 06:46:09 +0200
-From: Richard Cochran <richardcochran@gmail.com>
-To: "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [RFC 00/32] making inode time stamps y2038 ready
-Message-ID: <20140601044609.GD3722@localhost.localdomain>
-References: <1401480116-1973111-1-git-send-email-arnd@arndb.de>
- <20140531145114.GA3721@localhost.localdomain>
- <6347520.8jMPlVsFjM@wuerfel>
- <20140531182237.GA5382@localhost.localdomain>
- <57071155-5a08-4579-9189-92d442cd65e7@email.android.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <57071155-5a08-4579-9189-92d442cd65e7@email.android.com>
-Cc: hch@infradead.org, linux-mtd@lists.infradead.org,
- linux-f2fs-devel@lists.sourceforge.net, ceph-devel@vger.kernel.org,
- joseph@codesourcery.com, linux-arch@vger.kernel.org,
- linux-cifs@vger.kernel.org, linux-scsi@vger.kernel.org,
- linux-afs@lists.infradead.org, cluster-devel@redhat.com, coda@cs.cmu.edu,
- geert@linux-m68k.org, linux-ext4@vger.kernel.org,
- codalist@TELEMANN.coda.cs.cmu.edu, Arnd Bergmann <arnd@arndb.de>,
- fuse-devel@lists.sourceforge.net, reiserfs-devel@vger.kernel.org,
- xfs@oss.sgi.com, john.stultz@linaro.org, tglx@linutronix.de,
- linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
- samba-technical@lists.samba.org, linux-kernel@vger.kernel.org, logfs@logfs.org,
- linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, lftan@altera.com,
- ocfs2-devel@oss.oracle.com
+Received: from mail-we0-f176.google.com ([74.125.82.176])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Wr7EP-0004F9-Cy
+ for linux-mtd@lists.infradead.org; Sun, 01 Jun 2014 14:59:30 +0000
+Received: by mail-we0-f176.google.com with SMTP id q59so4071231wes.35
+ for <linux-mtd@lists.infradead.org>; Sun, 01 Jun 2014 07:59:06 -0700 (PDT)
+From: Simon Boulay <simon.boulay@alkeona.net>
+To: Kamlakant Patel <kamlakant.patel@broadcom.com>
+Subject: [PATCH] staging/mt29f_spinand: coding style fixes
+Date: Sun,  1 Jun 2014 16:57:44 +0200
+Message-Id: <d3452f78c071d7bc1906af76e08ef5595035c472.1401633743.git.simon.boulay@alkeona.net>
+Cc: devel@driverdev.osuosl.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ linux-mtd@lists.infradead.org, Mona Anonuevo <manonuevo@micron.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,10 +20,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, May 31, 2014 at 12:34:12PM -0700, H. Peter Anvin wrote:
-> Typically they are using 64-bit signed seconds.
+This patch fixes coding style errors reported by checkpatch.pl.
+It adds new lines after declarations in two places.
 
-Okay, that is what I wanted to know.
+Signed-off-by: Simon Boulay <simon.boulay@alkeona.net>
+---
+ drivers/staging/mt29f_spinand/mt29f_spinand.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Thanks,
-Richard
+diff --git a/drivers/staging/mt29f_spinand/mt29f_spinand.c b/drivers/staging/mt29f_spinand/mt29f_spinand.c
+index 5a40925..3464e0c 100644
+--- a/drivers/staging/mt29f_spinand/mt29f_spinand.c
++++ b/drivers/staging/mt29f_spinand/mt29f_spinand.c
+@@ -699,6 +699,7 @@ static void spinand_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
+ {
+
+ 	struct spinand_state *state = mtd_to_state(mtd);
++
+ 	memcpy(state->buf + state->buf_ptr, buf, len);
+ 	state->buf_ptr += len;
+ }
+@@ -706,6 +707,7 @@ static void spinand_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
+ static void spinand_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
+ {
+ 	struct spinand_state *state = mtd_to_state(mtd);
++
+ 	memcpy(buf, state->buf + state->buf_ptr, len);
+ 	state->buf_ptr += len;
+ }
+--
+1.9.3
