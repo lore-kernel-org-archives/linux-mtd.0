@@ -1,16 +1,24 @@
-Received: from mail-we0-f176.google.com ([74.125.82.176])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wr7EP-0004F9-Cy
- for linux-mtd@lists.infradead.org; Sun, 01 Jun 2014 14:59:30 +0000
-Received: by mail-we0-f176.google.com with SMTP id q59so4071231wes.35
- for <linux-mtd@lists.infradead.org>; Sun, 01 Jun 2014 07:59:06 -0700 (PDT)
-From: Simon Boulay <simon.boulay@alkeona.net>
-To: Kamlakant Patel <kamlakant.patel@broadcom.com>
-Subject: [PATCH] staging/mt29f_spinand: coding style fixes
-Date: Sun,  1 Jun 2014 16:57:44 +0200
-Message-Id: <d3452f78c071d7bc1906af76e08ef5595035c472.1401633743.git.simon.boulay@alkeona.net>
-Cc: devel@driverdev.osuosl.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- linux-mtd@lists.infradead.org, Mona Anonuevo <manonuevo@micron.com>
+Received: from mga11.intel.com ([192.55.52.93])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WrN5I-0006Mc-E9
+ for linux-mtd@lists.infradead.org; Mon, 02 Jun 2014 07:55:09 +0000
+Message-ID: <1401695682.11182.108.camel@sauron.fi.intel.com>
+Subject: Re: [RFC 17/32] ubifs: convert to struct inode_time
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Date: Mon, 02 Jun 2014 10:54:42 +0300
+In-Reply-To: <1401480116-1973111-18-git-send-email-arnd@arndb.de>
+References: <1401480116-1973111-1-git-send-email-arnd@arndb.de>
+ <1401480116-1973111-18-git-send-email-arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-arch@vger.kernel.org, hpa@zytor.com, linux-kernel@vger.kernel.org,
+ Adrian Hunter <adrian.hunter@intel.com>, hch@infradead.org,
+ john.stultz@linaro.org, linux-mtd@lists.infradead.org, lftan@altera.com,
+ linux-fsdevel@vger.kernel.org, geert@linux-m68k.org, tglx@linutronix.de,
+ joseph@codesourcery.com
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,33 +28,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch fixes coding style errors reported by checkpatch.pl.
-It adds new lines after declarations in two places.
+On Fri, 2014-05-30 at 22:01 +0200, Arnd Bergmann wrote:
+> ubifs uses 64-bit integers for inode timestamps, which will work
+> practicall forever, but the VFS uses struct timespec for timestamps,
+> which is only good until 2038 on 32-bit CPUs.
+> 
+> This gets us one small step closer to lifting the VFS limit by using
+> struct inode_time in ubifs.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Cc: Artem Bityutskiy <dedekind1@gmail.com>
+> Cc: Adrian Hunter <adrian.hunter@intel.com>
+> Cc: linux-mtd@lists.infradead.org
 
-Signed-off-by: Simon Boulay <simon.boulay@alkeona.net>
----
- drivers/staging/mt29f_spinand/mt29f_spinand.c | 2 ++
- 1 file changed, 2 insertions(+)
+Looks fine from UBIFS POW, thanks!
 
-diff --git a/drivers/staging/mt29f_spinand/mt29f_spinand.c b/drivers/staging/mt29f_spinand/mt29f_spinand.c
-index 5a40925..3464e0c 100644
---- a/drivers/staging/mt29f_spinand/mt29f_spinand.c
-+++ b/drivers/staging/mt29f_spinand/mt29f_spinand.c
-@@ -699,6 +699,7 @@ static void spinand_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
- {
-
- 	struct spinand_state *state = mtd_to_state(mtd);
-+
- 	memcpy(state->buf + state->buf_ptr, buf, len);
- 	state->buf_ptr += len;
- }
-@@ -706,6 +707,7 @@ static void spinand_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
- static void spinand_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
- {
- 	struct spinand_state *state = mtd_to_state(mtd);
-+
- 	memcpy(buf, state->buf + state->buf_ptr, len);
- 	state->buf_ptr += len;
- }
---
-1.9.3
+-- 
+Best Regards,
+Artem Bityutskiy
