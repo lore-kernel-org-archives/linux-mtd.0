@@ -1,28 +1,19 @@
-Received: from mail-qg0-x229.google.com ([2607:f8b0:400d:c04::229])
+Received: from fudo.makrotopia.org ([2001:41d0:8:c75d::1])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WrPRc-00051S-3R
- for linux-mtd@lists.infradead.org; Mon, 02 Jun 2014 10:26:21 +0000
-Received: by mail-qg0-f41.google.com with SMTP id j5so10447268qga.0
- for <linux-mtd@lists.infradead.org>; Mon, 02 Jun 2014 03:25:58 -0700 (PDT)
+ id 1WrSeC-00021K-Ln
+ for linux-mtd@lists.infradead.org; Mon, 02 Jun 2014 13:51:33 +0000
+Date: Mon, 2 Jun 2014 15:51:10 +0200
+From: Daniel Golle <daniel@makrotopia.org>
+To: dedekind1@gmail.com, hujianyang@huawei.com, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org
+Subject: [PATCH v6] ubifs: respect MS_SILENT mount flag
+Message-ID: <20140602135102.GA5850@earthship.local>
+References: <1401695954.11182.112.camel@sauron.fi.intel.com>
 MIME-Version: 1.0
-Sender: christian.riesch@gmail.com
-In-Reply-To: <A765B125120D1346A63912DDE6D8B6315D07F7@NTXXIAMBX02.xacn.micron.com>
-References: <A765B125120D1346A63912DDE6D8B6315D03AC@NTXXIAMBX02.xacn.micron.com>
- <1400474715.883919171@f423.i.mail.ru>
- <A765B125120D1346A63912DDE6D8B6315D07F7@NTXXIAMBX02.xacn.micron.com>
-Date: Mon, 2 Jun 2014 12:25:58 +0200
-Message-ID: <CABkLOboJfc7=TyyxPGdvLgMQVH+g7FX+-ackrky-00WnaQkN_g@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mtd:nor:timeout:fix do_write_buffer() timeout error
-From: Christian Riesch <christian.riesch@omicron.at>
-To: =?UTF-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Kees Cook <keescook@chromium.org>, Alexander Shiyan <shc_work@mail.ru>,
- Jingoo Han <jg1.han@samsung.com>,
- Paul Gortmaker <paul.gortmaker@windriver.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="qDbXVdCdHGoSgWSk"
+Content-Disposition: inline
+In-Reply-To: <1401695954.11182.112.camel@sauron.fi.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,151 +23,153 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-When you send an updated version of a patch, please put version
-numbers into the subject, e.g. [PATCH v2], [PATCH v3]..., and include
-a changelog. And I think you shouldn't send the new versions as a
-reply to an earlier mail, send them as a new post instead.
 
-On Mon, May 26, 2014 at 3:01 AM, Bean Huo =E9=9C=8D=E6=96=8C=E6=96=8C (bean=
-huo)
-<beanhuo@micron.com> wrote:
-> The size of the buffer program has been increased from 256 to 512 , 2ms m=
-aximum timeout can not adapt to all the different vendor's norflash, There =
-maximum timeout information in the CFI area,so the best way is to choose th=
-e result calculated according to timeout field of struct cfi_ident that pro=
-bed from norflash's CFI aera.This is also a standard defined by CFI.
->
-> Without this change, if the size of buffer program is 512 or bigger than =
-256, due to timeout is the shorter than that the chip required,do_write_buf=
-fer sometimes fails.
->
-> Tested with Micron JS28F512M29EWx and Micron MT28EW512ABA flash devices.
+--qDbXVdCdHGoSgWSk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-What kind of device is the MT28EW512ABA? Aren't MT28 devices
-StrataFlashes that use the cfi_cmdset_0001.c driver?
+When attempting to mount a non-ubifs formatted volume, lots of error
+messages (including a stack dump) are thrown to the kernel log even if
+the MS_SILENT mount flag is set.
+Fix this by introducing adding an additional state-variable in
+struct ubifs_info and suppress error messages in ubifs_read_node if
+MS_SILENT is set.
 
->
-> Signed-off-by: bean huo <beanhuo@micron.com>
-> ---
->  drivers/mtd/chips/cfi_cmdset_0002.c |   49 +++++++++++++++++++++++++++++=
-+++---
->  1 file changed, 45 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_=
-cmdset_0002.c
-> index e21fde9..87d446a 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-> @@ -628,10 +628,42 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *m=
-ap, int primary)
->                 cfi->chips[i].word_write_time =3D 1<<cfi->cfiq->WordWrite=
-TimeoutTyp;
->                 cfi->chips[i].buffer_write_time =3D 1<<cfi->cfiq->BufWrit=
-eTimeoutTyp;
->                 cfi->chips[i].erase_time =3D 1<<cfi->cfiq->BlockEraseTime=
-outTyp;
-> +               /*
-> +                * We first calculate the timeout max according to timeou=
-t
-> +                * field of struct cfi_ident that probed from chip's CFI
-> +                * aera,If haven't probed this information,we will specif=
-y
-> +                * a default value,and the time unit is us.
-> +                */
-> +               if (cfi->cfiq->WordWriteTimeoutTyp &&
-> +                       cfi->cfiq->WordWriteTimeoutMax){
-> +                       cfi->chips[i].word_write_time_max =3D
-> +                               1<<(cfi->cfiq->WordWriteTimeoutTyp +
-> +                                       cfi->cfiq->WordWriteTimeoutMax);
-> +                       } else {
-> +               /* specify maximum timeout for byte/word program 2000us *=
-/
-> +                               cfi->chips[i].word_write_time_max =3D 200=
-0;
-> +                               }
-> +               if (cfi->cfiq->BufWriteTimeoutTyp &&
-> +                       cfi->cfiq->BufWriteTimeoutMax){
-> +                       cfi->chips[i].buffer_write_time_max =3D
-> +                               1<<(cfi->cfiq->BufWriteTimeoutTyp +
-> +                                       cfi->cfiq->BufWriteTimeoutMax);
-> +                       } else {
-> +               /* specify maximum timeout for buffer program 2000us */
-> +                               cfi->chips[i].buffer_write_time_max =3D 2=
-000;
-> +                               }
-> +               if (cfi->cfiq->BlockEraseTimeoutTyp &&
-> +                       cfi->cfiq->BlockEraseTimeoutMax){
-> +                       cfi->chips[i].erase_time_max =3D
-> +                               1<<(cfi->cfiq->BlockEraseTimeoutTyp +
-> +                                       cfi->cfiq->BlockEraseTimeoutMax);
-> +                       } else {
-> +       /* specify maximum timeout per individual block erase 3000000us *=
-/
-> +                               cfi->chips[i].erase_time_max =3D 3000000;
-> +                               }
+Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+---
+v6: added comments
+v5: added missing semi-colon and fixed a style issue
+v4: enclose conditional error printing macro by do { } while (0)
+v3: use state variable in ubifs_info instead of a function parameter
 
-You are setting several parameters here, but you only use
-buffer_write_time_max. Why?
+ fs/ubifs/io.c    | 16 +++++++++-------
+ fs/ubifs/super.c |  5 +++++
+ fs/ubifs/ubifs.h | 12 ++++++++++++
+ 3 files changed, 26 insertions(+), 7 deletions(-)
 
->                 cfi->chips[i].ref_point_counter =3D 0;
->                 init_waitqueue_head(&(cfi->chips[i].wq));
->         }
-> -
->         map->fldrv =3D &cfi_amdstd_chipdrv;
->
->         return cfi_amdstd_setup(mtd);
-> @@ -1462,8 +1494,16 @@ static int __xipram do_write_buffer(struct map_inf=
-o *map, struct flchip *chip,  {
->         struct cfi_private *cfi =3D map->fldrv_priv;
->         unsigned long timeo =3D jiffies + HZ;
-> -       /* see comments in do_write_oneword() regarding uWriteTimeo. */
-> -       unsigned long uWriteTimeout =3D ( HZ / 1000 ) + 1;
-> +       /* The size of the buffer program has been increased from 256 to =
-512,
-> +        * 2ms maximum timeout can not adapt to all the different vendor'=
-s
-> +        * norflash.There maximum timeout information in the CFI area,so =
-the
-> +        * best way is to choose the result calculated according to timeo=
-ut
-> +        * field of struct cfi_ident that probed from norflash's CFI aera=
-,see
-> +        * comments in cfi_cmdset_0002().The time unit of uWriteTimeout i=
-s ms.
-> +        */
-> +       unsigned long uWriteTimeout =3D (chip->buffer_write_time_max % 10=
-00) ?
-> +                       (chip->buffer_write_time_max / 1000 + 1) :
-> +                       (chip->buffer_write_time_max / 1000);
+diff --git a/fs/ubifs/io.c b/fs/ubifs/io.c
+index e18b988..3205929 100644
+--- a/fs/ubifs/io.c
++++ b/fs/ubifs/io.c
+@@ -988,30 +988,32 @@ int ubifs_read_node(const struct ubifs_info *c, void =
+*buf, int type, int len,
+ 		return err;
+=20
+ 	if (type !=3D ch->node_type) {
+-		ubifs_err("bad node type (%d but expected %d)",
++		ubifs_errc(c, "bad node type (%d but expected %d)",
+ 			  ch->node_type, type);
+ 		goto out;
+ 	}
+=20
+ 	err =3D ubifs_check_node(c, buf, lnum, offs, 0, 0);
+ 	if (err) {
+-		ubifs_err("expected node type %d", type);
++		ubifs_errc(c, "expected node type %d", type);
+ 		return err;
+ 	}
+=20
+ 	l =3D le32_to_cpu(ch->len);
+ 	if (l !=3D len) {
+-		ubifs_err("bad node length %d, expected %d", l, len);
++		ubifs_errc(c, "bad node length %d, expected %d", l, len);
+ 		goto out;
+ 	}
+=20
+ 	return 0;
+=20
+ out:
+-	ubifs_err("bad node at LEB %d:%d, LEB mapping status %d", lnum, offs,
+-		  ubi_is_mapped(c->ubi, lnum));
+-	ubifs_dump_node(c, buf);
+-	dump_stack();
++	ubifs_errc(c, "bad node at LEB %d:%d, LEB mapping status %d", lnum,
++		  offs, ubi_is_mapped(c->ubi, lnum));
++	if (!c->probing) {
++		ubifs_dump_node(c, buf);
++		dump_stack();
++	}
+ 	return -EINVAL;
+ }
+=20
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index a81c7b5..3904c85 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -1149,6 +1149,9 @@ static int mount_ubifs(struct ubifs_info *c)
+ 	size_t sz;
+=20
+ 	c->ro_mount =3D !!(c->vfs_sb->s_flags & MS_RDONLY);
++	/* Suppress error messages while probing if MS_SILENT is set */
++	c->probing =3D !!(c->vfs_sb->s_flags & MS_SILENT);
++
+ 	err =3D init_constants_early(c);
+ 	if (err)
+ 		return err;
+@@ -1214,6 +1217,8 @@ static int mount_ubifs(struct ubifs_info *c)
+ 	if (err)
+ 		goto out_free;
+=20
++	c->probing =3D 0;
++
+ 	/*
+ 	 * Make sure the compressor which is set as default in the superblock
+ 	 * or overridden by mount options is actually compiled in.
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index e8c8cfe..f87ab74 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -52,6 +52,16 @@
+ 	pr_warn("UBIFS warning (pid %d): %s: " fmt "\n",            \
+ 		current->pid, __func__, ##__VA_ARGS__)
+=20
++/*
++ * A variant of 'ubifs_err()' which takes the UBIFS file-sytem description
++ * object as an argument.
++ */
++#define ubifs_errc(c, fmt, ...)                                    \
++	do {                                                       \
++		if (!(c)->probing)                                 \
++			ubifs_err(fmt, ##__VA_ARGS__);             \
++	} while (0)
++
+ /* UBIFS file system VFS magic number */
+ #define UBIFS_SUPER_MAGIC 0x24051905
+=20
+@@ -1209,6 +1219,7 @@ struct ubifs_debug_info;
+  * @need_recovery: %1 if the file-system needs recovery
+  * @replaying: %1 during journal replay
+  * @mounting: %1 while mounting
++ * @probing: %1 while attempting to mount if MS_SILENT mount flag is set
+  * @remounting_rw: %1 while re-mounting from R/O mode to R/W mode
+  * @replay_list: temporary list used during journal replay
+  * @replay_buds: list of buds to replay
+@@ -1441,6 +1452,7 @@ struct ubifs_info {
+ 	unsigned int replaying:1;
+ 	unsigned int mounting:1;
+ 	unsigned int remounting_rw:1;
++	unsigned int probing:1;
+ 	struct list_head replay_list;
+ 	struct list_head replay_buds;
+ 	unsigned long long cs_sqnum;
+--=20
+1.9.3
 
-How about using usecs_to_jiffies below? Then you wouldn't need this
-conversion, right?
 
->         int ret =3D -EIO;
->         unsigned long cmd_adr;
->         int z, words;
-> @@ -1520,7 +1560,8 @@ static int __xipram do_write_buffer(struct map_info=
- *map, struct flchip *chip,
->                                 adr, map_bankwidth(map),
->                                 chip->word_write_time);
->
-> -       timeo =3D jiffies + uWriteTimeout;
-> +       /*Maximum timeout must be converted into jiffies */
-> +       timeo =3D jiffies + msecs_to_jiffies(uWriteTimeout);
->
+--qDbXVdCdHGoSgWSk
+Content-Type: application/pgp-signature
 
-A few lines below in the loop timeo is modified again, timeo =3D jiffies
-+ (HZ / 2); This line has a big /* FIXME */ comment. Any ideas what
-should be fixed here?
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
 
-Best regards,
-Christian
+iQEcBAEBAgAGBQJTjIFGAAoJECBgbL4bcbCQjM0H/j/+HAL928hEUAYpRtMb8RAh
+96Vm5YPlULhSTzBX/OPdNakgYfumzhzLFYmrf+t8L+zqXOJykjkgfW8dkZDRd+iO
+p1FDGKKsMW05xEWjIRVXa+J6HInJqJ0f05EkUgxkQzTy/k2KUNkSNVCvwLM7Tr50
+vdFPxECLZaninHIdWCRzym9Jt/ELR1cVr5ELHne933BNml34rsA95cFX8ivr5cyu
+SfHWLDPl9sRJwjnvTjmlHbVQB1NF2ZqZQZfdI2Yfz0lZwa0QiL6izbGTVThSsWvF
+Y3gyDW8t5yldHygRc8d+SY+th1CN+Snx1Fw+7qEHM+AtHsVsRxCP0+rumOagWZk=
+=wH2p
+-----END PGP SIGNATURE-----
 
->         for (;;) {
->                 if (chip->state !=3D FL_WRITING) {
-> --
-> 1.7.9.5
->
->
->
+--qDbXVdCdHGoSgWSk--
