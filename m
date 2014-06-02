@@ -1,24 +1,20 @@
-Date: Mon, 2 Jun 2014 13:52:19 +0000
-From: "Joseph S. Myers" <joseph@codesourcery.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [RFC 00/32] making inode time stamps y2038 ready
-In-Reply-To: <1401480116-1973111-1-git-send-email-arnd@arndb.de>
-Message-ID: <Pine.LNX.4.64.1406021350030.19591@digraph.polyomino.org.uk>
-References: <1401480116-1973111-1-git-send-email-arnd@arndb.de>
+Received: from smtp.codeaurora.org ([198.145.11.231])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WrT16-0006G8-Ky
+ for linux-mtd@lists.infradead.org; Mon, 02 Jun 2014 14:15:13 +0000
+Message-ID: <cb750eb1ee14601083033617f5ade99e.squirrel@www.codeaurora.org>
+In-Reply-To: <1401697826.11182.119.camel@sauron.fi.intel.com>
+References: <53894EF4.5030607@huawei.com>
+ <1401697826.11182.119.camel@sauron.fi.intel.com>
+Date: Mon, 2 Jun 2014 14:14:51 -0000
+Subject: Re: [PATCH] UBIFS: Remove incorrect assertion in shrink_tnc()
+From: "Dolev Raviv" <draviv@codeaurora.org>
+To: dedekind1@gmail.com
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Sender: Joseph Myers <joseph@codesourcery.com>
-Cc: hch@infradead.org, linux-mtd@lists.infradead.org, hpa@zytor.com,
- logfs@logfs.org, linux-afs@lists.infradead.org, linux-arch@vger.kernel.org,
- linux-cifs@vger.kernel.org, linux-scsi@vger.kernel.org,
- ceph-devel@vger.kernel.org, codalist@coda.cs.cmu.edu, cluster-devel@redhat.com,
- coda@cs.cmu.edu, geert@linux-m68k.org, linux-ext4@vger.kernel.org,
- fuse-devel@lists.sourceforge.net, reiserfs-devel@vger.kernel.org,
- xfs@oss.sgi.com, john.stultz@linaro.org, tglx@linutronix.de,
- linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
- samba-technical@lists.samba.org, linux-kernel@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, ocfs2-devel@oss.oracle.com,
- linux-fsdevel@vger.kernel.org, lftan@altera.com, linux-btrfs@vger.kernel.org
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Cc: Dolev Raviv <draviv@codeaurora.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>, hujianyang <hujianyang@huawei.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,16 +24,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 30 May 2014, Arnd Bergmann wrote:
 
-> a) is this the right approach in general? The previous discussion
->    pointed this way, but there may be other opinions.
+> On Sat, 2014-05-31 at 11:39 +0800, hujianyang wrote:
+>> I hit the same assert failed as Dolev Raviv reported in Kernel v3.10
+>> shows like this:
+>
+> ...
+>
+>> Signed-off-by: hujianyang <hujianyang@huawei.com>
+>
+> hujianyang,
+>
+> looks like you got it right, thanks for your excellent analysis.
+>
+> I think we want to include this patch to the stable tree, so I add
+>
+> Cc: stable@vger.kernel.org
+>
+> I've pushed it to the master branch of the UBIFS tree, thanks!
+>
+> Also, having a
+>
+> Tested-by: Dolev Raviv <draviv@codeaurora.org>
+>
+I'm actually testing it as we speak :)
 
-The syscall changes seem like the sort of thing I'd expect, although 
-patches adding new syscalls or otherwise affecting the kernel/userspace 
-interface (as opposed to those relating to an individual filesystem) 
-should go to linux-api as well as other relevant lists.
+> if possible, would increase our confidence in sending this patch to the
+> stable tree.
+>
+> Thank you!
+>
+> --
+> Best Regards,
+> Artem Bityutskiy
+>
+>
+
 
 -- 
-Joseph S. Myers
-joseph@codesourcery.com
+QUALCOMM ISRAEL, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
