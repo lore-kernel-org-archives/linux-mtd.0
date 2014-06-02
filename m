@@ -1,14 +1,14 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga02.intel.com ([134.134.136.20])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WrNdq-0004SB-FP
- for linux-mtd@lists.infradead.org; Mon, 02 Jun 2014 08:30:50 +0000
-Message-ID: <1401697826.11182.119.camel@sauron.fi.intel.com>
+ id 1WrNdu-0004T2-MD
+ for linux-mtd@lists.infradead.org; Mon, 02 Jun 2014 08:30:54 +0000
+Message-ID: <1401697830.11182.120.camel@sauron.fi.intel.com>
 Subject: Re: [PATCH] UBIFS: Remove incorrect assertion in shrink_tnc()
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: hujianyang <hujianyang@huawei.com>
-Date: Mon, 02 Jun 2014 11:30:26 +0300
-In-Reply-To: <53894EF4.5030607@huawei.com>
-References: <53894EF4.5030607@huawei.com>
+Date: Mon, 02 Jun 2014 11:30:30 +0300
+In-Reply-To: <538988F7.8090805@huawei.com>
+References: <53894EF4.5030607@huawei.com> <538988F7.8090805@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -24,32 +24,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2014-05-31 at 11:39 +0800, hujianyang wrote:
-> I hit the same assert failed as Dolev Raviv reported in Kernel v3.10
-> shows like this:
+On Sat, 2014-05-31 at 15:47 +0800, hujianyang wrote:
+> Hi Artem,
+> 
+> In previous mail, I introduce a condition I found that may hit assert
+> failed in shrink_tnc(). So I think this assertion is useless. But I
+> don't know if there are any leaks in @c->clean_zn_cnt. Although I've
+> done some tests and found everything is OK, I'm still not sure of that.
 
-...
-
-> Signed-off-by: hujianyang <hujianyang@huawei.com>
-
-hujianyang,
-
-looks like you got it right, thanks for your excellent analysis.
-
-I think we want to include this patch to the stable tree, so I add
-
-Cc: stable@vger.kernel.org
-
-I've pushed it to the master branch of the UBIFS tree, thanks!
-
-Also, having a
-
-Tested-by: Dolev Raviv <draviv@codeaurora.org>
-
-if possible, would increase our confidence in sending this patch to the
-stable tree.
-
-Thank you!
+Yes, this sounds like a great idea. Could you please send a proper patch
+containing this change (S-o-b, etc). Many thanks!
 
 -- 
 Best Regards,
