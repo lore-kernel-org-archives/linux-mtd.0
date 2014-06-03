@@ -1,25 +1,26 @@
-From: =?utf-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
-To: Christian Riesch <christian.riesch@omicron.at>
-Subject: RE: [PATCH 1/1] mtd:nor:timeout:fix do_write_buffer() timeout error
-Date: Tue, 3 Jun 2014 09:30:44 +0000
-Message-ID: <A765B125120D1346A63912DDE6D8B6315D0F8D@NTXXIAMBX02.xacn.micron.com>
-References: <A765B125120D1346A63912DDE6D8B6315D03AC@NTXXIAMBX02.xacn.micron.com>
- <1400474715.883919171@f423.i.mail.ru>
- <A765B125120D1346A63912DDE6D8B6315D07F7@NTXXIAMBX02.xacn.micron.com>
- <CABkLOboJfc7=TyyxPGdvLgMQVH+g7FX+-ackrky-00WnaQkN_g@mail.gmail.com>
- <A765B125120D1346A63912DDE6D8B6315D0EDB@NTXXIAMBX02.xacn.micron.com>
- <CABkLObpo0PPzHSRVVdJ5X3DtZv1QkfE-j3A6iEQ26R5GxZ2wEA@mail.gmail.com>
-In-Reply-To: <CABkLObpo0PPzHSRVVdJ5X3DtZv1QkfE-j3A6iEQ26R5GxZ2wEA@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Arnd Bergmann <arnd@arndb.de>
+To: Vyacheslav Dubeyko <slava@dubeyko.com>
+Subject: Re: [RFC 00/32] making inode time stamps y2038 ready
+Date: Tue, 03 Jun 2014 14:21:29 +0200
+Message-ID: <7080340.W1OdttOEiZ@wuerfel>
+In-Reply-To: <1401546649.2413.6.camel@slavad-CELSIUS-H720>
+References: <1401480116-1973111-1-git-send-email-arnd@arndb.de>
+ <1401546649.2413.6.camel@slavad-CELSIUS-H720>
 MIME-Version: 1.0
-Cc: Kees Cook <keescook@chromium.org>, Alexander Shiyan <shc_work@mail.ru>,
- Jingoo Han <jg1.han@samsung.com>,
- Paul Gortmaker <paul.gortmaker@windriver.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+Cc: hch@infradead.org, linux-mtd@lists.infradead.org, hpa@zytor.com,
+ logfs@logfs.org, linux-afs@lists.infradead.org, joseph@codesourcery.com,
+ linux-arch@vger.kernel.org, linux-cifs@vger.kernel.org,
+ linux-scsi@vger.kernel.org, ceph-devel@vger.kernel.org,
+ codalist@coda.cs.cmu.edu, cluster-devel@redhat.com, coda@cs.cmu.edu,
+ geert@linux-m68k.org, linux-ext4@vger.kernel.org,
+ fuse-devel@lists.sourceforge.net, reiserfs-devel@vger.kernel.org,
+ xfs@oss.sgi.com, john.stultz@linaro.org, tglx@linutronix.de,
+ linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+ samba-technical@lists.samba.org, linux-kernel@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, ocfs2-devel@oss.oracle.com,
+ linux-fsdevel@vger.kernel.org, lftan@altera.com, linux-btrfs@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,36 +30,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQpIaSxDaHJpc3RpYW4NCj4+IA0KPj4NCj4+IDHjgIFNVDI4RVc1MTJBQkEgaXMgTWljcm9uJ3Mg
-cGFyYWxsZWwgTm9yZmxhc2ggdGhhdCB1c2UgdGhlIGNmaV9jbWRzZXRfMDAwMi5jIGRyaXZlci4N
-Cg0KPklzIGl0IGEgbmV3IGRldmljZT8gSSBjYW4ndCBmaW5kIGl0IG9uIHRoZSBNaWNyb24gd2Vi
-IHNpdGUuIElmIGl0IGlzIGFscmVhZHkgdGhlcmUsIGNvdWxkIHlvdSBwbGVhc2UgcHJvdmlkZSBh
-IGxpbmsgdG8gdGhlIGRhdGEgc2hlZXQ/DQoNClllcyxpdCBpcyBhIG5ldyBkZXZpY2UgdGhhdCBy
-ZWxlYXNlIHRoaXMgeWVhci5Zb3UgbXVzdCByZWdpc3RlciBhbiBhY2NvdW50IGF0IE1pY3JvbiB3
-ZWIsYXQgdGhlIHNhbWUgdGltZSwgdGhpcyBhY2NvdW50IG11c3QgYmUgYXBwcm92ZWQgYnkgbWlj
-cm9uLCB0aGVuIHlvdSBjYW4gZmluZCBpdC4NCj4+DQo+PiAy44CBeWVzLEkgYW0gc2V0dGluZyBz
-ZXZlcmFsIHBhcmFtZXRlcnMgaGVyZSh3b3JkX3dyaXRlX3RpbWVfbWF444CBYnVmZmVyX3dyaXRl
-X3RpbWVfbWF444CBZXJhc2VfdGltZV9tYXgpLkZvciB0aGlzIHBhdGNoLEkgb25seSB1c2VkIGJ1
-ZmZlcl93cml0ZV90aW1lX21heCBwYXJhbWV0ZXIuQmVjYXVzZSB0aGlzIHBhdGNoIGlzIG1haW5s
-eSBmb2N1cyBvbiBmaXggZG9fd3JpdGVfYnVmZmVyKCkgdGltZW91dCBlcnJvci4gSWYgdGhpcyBw
-YXRjaCBpcyBhY2NlcHRlZCwgSSB3aWxsIHN1Ym1pdCBhbm90aGVyIHBhdGNoIHRoYXQgZm9yIGZp
-eCBzaW5nbGUgd29yZCBwcm9ncmFtIHRpbWVvdXQgZXJyb3IgYW5kIGVyYXNlIHRpbWVvdXQgZXJy
-b3IudGhhbmtzLg0KPg0KDQo+T2suIElNSE8geW91IHNob3VsZCBvbmx5IHNldCB0aGUgcGFyYW1l
-dGVycyB0aGF0IHlvdSBhcmUgYWN0dWFsbHkgdXNpbmcgKGFuZCBhZGQgd29yZF93cml0ZV90aW1l
-X21heCwgZXJhc2VfdGltZV9tYXggZXRjIGxhdGVyIHdpdGggdGhlIHBhdGNoZXMgdGhhdCBhY3R1
-YWxseSB1c2UgdGhlbSkuIE90aGVyd2lzZSB3ZSBjb3VsZCBlbmQgd2l0aCBsb3RzIG9mIHVudXNl
-ZCBjb2RlIGlmIHlvdXIgbGF0ZXIgcGF0Y2hlcyBhcmUgbm90IGFjY2VwdGVkLiBCdXQgSSBndWVz
-cyB0aGF0J3MgdXAgdG8gdGhlIG1haW50YWluZXIgdG8gZGVjaWRlLg0KDQpPayx0aGFua3MgZm9y
-IHlvdXIgYWR2aWNlLEkgd2lsbCBtb2RpZnkgaXQgYW5kIHRoZW4gc3VibWl0IHBhdGNoIFYyDQoN
-Cj4+IDPjgIFUaGUgdGltZSB1bml0IG9mIHVXcml0ZVRpbWVvdXQgaXMgbXMuIEluIG9yZGVyIHRv
-IGFjaGlldmUgbGFyZ2UgDQo+PiByYXRoZXIgdGhhbiBzbWFsbCB0aW1lb3V0ICxzbyB1c2luZyBm
-b2xsb3dpbmcgY29udmVyc2lvbiwNCj4+DQo+Pj4gKyAgICAgICB1bnNpZ25lZCBsb25nIHVXcml0
-ZVRpbWVvdXQgPSAoY2hpcC0+YnVmZmVyX3dyaXRlX3RpbWVfbWF4ICUgMTAwMCkgPw0KPj4+ICsg
-ICAgICAgICAgICAgICAgICAgICAgIChjaGlwLT5idWZmZXJfd3JpdGVfdGltZV9tYXggLyAxMDAw
-ICsgMSkgOg0KPj4+ICsgICAgICAgICAgICAgICAgICAgICAgIChjaGlwLT5idWZmZXJfd3JpdGVf
-dGltZV9tYXggLyAxMDAwKTsNCg0KPkJ1dCBJIHRoaW5rIHRoZSByZXN1bHQgb2YgdXNlY3NfdG9f
-amlmZmllcyB3b3VsZCBiZSB0aGUgc2FtZSwgb3IgYW0gSSB3cm9uZz8NCg0KPklmIEkgdW5kZXJz
-dG9vZCB0aGUgY29kZSBvZiB1c2Vjc190b19qaWZmaWVzIGNvcnJlY3RseSwgaXQgcmV0dXJucyBh
-dCBsZWFzdCBvbmUgamlmZnkgaWYgdGhlIHNwZWNpZmllZCB0aW1lIGlzIGxlc3MgdGhhbiBhIGpp
-ZmZ5Lg0KDQpZZXMgLHlvdSBhcmUgcmlnaHQuVGhpcyB3aWxsIGJlIG1vZGlmaWVkIGluIHBhdGNo
-IFYyLg0K
+On Saturday 31 May 2014 18:30:49 Vyacheslav Dubeyko wrote:
+> By the way, what about NILFS2? Is NILFS2 ready for suggested approach
+> without any changes?
+
+nilfs2 and a lot of other file systems don't need any changes for
+this, because they don't assign the inode time stamp fields to
+a 'struct timespec'.
+
+FWIW, nilfs2 uses a 64-bit seconds value, which is always safe and
+can represent the full range of user space timespec on all machines.
+
+	Arnd
