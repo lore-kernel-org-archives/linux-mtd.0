@@ -1,19 +1,25 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wrjuq-00037v-Cl
- for linux-mtd@lists.infradead.org; Tue, 03 Jun 2014 08:17:52 +0000
-Message-ID: <1401783447.11182.164.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] UBIFS: Add an assertion for clean_zn_cnt
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: hujianyang <hujianyang@huawei.com>
-Date: Tue, 03 Jun 2014 11:17:27 +0300
-In-Reply-To: <538D6FE7.80209@huawei.com>
-References: <538D6FE7.80209@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+From: =?utf-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
+To: Christian Riesch <christian.riesch@omicron.at>
+Subject: RE: [PATCH 1/1] mtd:nor:timeout:fix do_write_buffer() timeout error
+Date: Tue, 3 Jun 2014 09:30:44 +0000
+Message-ID: <A765B125120D1346A63912DDE6D8B6315D0F8D@NTXXIAMBX02.xacn.micron.com>
+References: <A765B125120D1346A63912DDE6D8B6315D03AC@NTXXIAMBX02.xacn.micron.com>
+ <1400474715.883919171@f423.i.mail.ru>
+ <A765B125120D1346A63912DDE6D8B6315D07F7@NTXXIAMBX02.xacn.micron.com>
+ <CABkLOboJfc7=TyyxPGdvLgMQVH+g7FX+-ackrky-00WnaQkN_g@mail.gmail.com>
+ <A765B125120D1346A63912DDE6D8B6315D0EDB@NTXXIAMBX02.xacn.micron.com>
+ <CABkLObpo0PPzHSRVVdJ5X3DtZv1QkfE-j3A6iEQ26R5GxZ2wEA@mail.gmail.com>
+In-Reply-To: <CABkLObpo0PPzHSRVVdJ5X3DtZv1QkfE-j3A6iEQ26R5GxZ2wEA@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Cc: Kees Cook <keescook@chromium.org>, Alexander Shiyan <shc_work@mail.ru>,
+ Jingoo Han <jg1.han@samsung.com>,
+ Paul Gortmaker <paul.gortmaker@windriver.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,14 +29,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2014-06-03 at 14:49 +0800, hujianyang wrote:
-> This patch adds a new ubifs_assert() in ubifs_tnc_close() to check
-> if there are any leaks of per-filesystem @clean_zn_cnt. This new
-> assert inspects whether the return value of ubifs_destroy_tnc_subtree()
-> is equal to @clean_zn_cnt or not while umount.
-
-Pushed to linux-ubifs.git, thanks!
-
--- 
-Best Regards,
-Artem Bityutskiy
+DQpIaSxDaHJpc3RpYW4NCj4+IA0KPj4NCj4+IDHjgIFNVDI4RVc1MTJBQkEgaXMgTWljcm9uJ3Mg
+cGFyYWxsZWwgTm9yZmxhc2ggdGhhdCB1c2UgdGhlIGNmaV9jbWRzZXRfMDAwMi5jIGRyaXZlci4N
+Cg0KPklzIGl0IGEgbmV3IGRldmljZT8gSSBjYW4ndCBmaW5kIGl0IG9uIHRoZSBNaWNyb24gd2Vi
+IHNpdGUuIElmIGl0IGlzIGFscmVhZHkgdGhlcmUsIGNvdWxkIHlvdSBwbGVhc2UgcHJvdmlkZSBh
+IGxpbmsgdG8gdGhlIGRhdGEgc2hlZXQ/DQoNClllcyxpdCBpcyBhIG5ldyBkZXZpY2UgdGhhdCBy
+ZWxlYXNlIHRoaXMgeWVhci5Zb3UgbXVzdCByZWdpc3RlciBhbiBhY2NvdW50IGF0IE1pY3JvbiB3
+ZWIsYXQgdGhlIHNhbWUgdGltZSwgdGhpcyBhY2NvdW50IG11c3QgYmUgYXBwcm92ZWQgYnkgbWlj
+cm9uLCB0aGVuIHlvdSBjYW4gZmluZCBpdC4NCj4+DQo+PiAy44CBeWVzLEkgYW0gc2V0dGluZyBz
+ZXZlcmFsIHBhcmFtZXRlcnMgaGVyZSh3b3JkX3dyaXRlX3RpbWVfbWF444CBYnVmZmVyX3dyaXRl
+X3RpbWVfbWF444CBZXJhc2VfdGltZV9tYXgpLkZvciB0aGlzIHBhdGNoLEkgb25seSB1c2VkIGJ1
+ZmZlcl93cml0ZV90aW1lX21heCBwYXJhbWV0ZXIuQmVjYXVzZSB0aGlzIHBhdGNoIGlzIG1haW5s
+eSBmb2N1cyBvbiBmaXggZG9fd3JpdGVfYnVmZmVyKCkgdGltZW91dCBlcnJvci4gSWYgdGhpcyBw
+YXRjaCBpcyBhY2NlcHRlZCwgSSB3aWxsIHN1Ym1pdCBhbm90aGVyIHBhdGNoIHRoYXQgZm9yIGZp
+eCBzaW5nbGUgd29yZCBwcm9ncmFtIHRpbWVvdXQgZXJyb3IgYW5kIGVyYXNlIHRpbWVvdXQgZXJy
+b3IudGhhbmtzLg0KPg0KDQo+T2suIElNSE8geW91IHNob3VsZCBvbmx5IHNldCB0aGUgcGFyYW1l
+dGVycyB0aGF0IHlvdSBhcmUgYWN0dWFsbHkgdXNpbmcgKGFuZCBhZGQgd29yZF93cml0ZV90aW1l
+X21heCwgZXJhc2VfdGltZV9tYXggZXRjIGxhdGVyIHdpdGggdGhlIHBhdGNoZXMgdGhhdCBhY3R1
+YWxseSB1c2UgdGhlbSkuIE90aGVyd2lzZSB3ZSBjb3VsZCBlbmQgd2l0aCBsb3RzIG9mIHVudXNl
+ZCBjb2RlIGlmIHlvdXIgbGF0ZXIgcGF0Y2hlcyBhcmUgbm90IGFjY2VwdGVkLiBCdXQgSSBndWVz
+cyB0aGF0J3MgdXAgdG8gdGhlIG1haW50YWluZXIgdG8gZGVjaWRlLg0KDQpPayx0aGFua3MgZm9y
+IHlvdXIgYWR2aWNlLEkgd2lsbCBtb2RpZnkgaXQgYW5kIHRoZW4gc3VibWl0IHBhdGNoIFYyDQoN
+Cj4+IDPjgIFUaGUgdGltZSB1bml0IG9mIHVXcml0ZVRpbWVvdXQgaXMgbXMuIEluIG9yZGVyIHRv
+IGFjaGlldmUgbGFyZ2UgDQo+PiByYXRoZXIgdGhhbiBzbWFsbCB0aW1lb3V0ICxzbyB1c2luZyBm
+b2xsb3dpbmcgY29udmVyc2lvbiwNCj4+DQo+Pj4gKyAgICAgICB1bnNpZ25lZCBsb25nIHVXcml0
+ZVRpbWVvdXQgPSAoY2hpcC0+YnVmZmVyX3dyaXRlX3RpbWVfbWF4ICUgMTAwMCkgPw0KPj4+ICsg
+ICAgICAgICAgICAgICAgICAgICAgIChjaGlwLT5idWZmZXJfd3JpdGVfdGltZV9tYXggLyAxMDAw
+ICsgMSkgOg0KPj4+ICsgICAgICAgICAgICAgICAgICAgICAgIChjaGlwLT5idWZmZXJfd3JpdGVf
+dGltZV9tYXggLyAxMDAwKTsNCg0KPkJ1dCBJIHRoaW5rIHRoZSByZXN1bHQgb2YgdXNlY3NfdG9f
+amlmZmllcyB3b3VsZCBiZSB0aGUgc2FtZSwgb3IgYW0gSSB3cm9uZz8NCg0KPklmIEkgdW5kZXJz
+dG9vZCB0aGUgY29kZSBvZiB1c2Vjc190b19qaWZmaWVzIGNvcnJlY3RseSwgaXQgcmV0dXJucyBh
+dCBsZWFzdCBvbmUgamlmZnkgaWYgdGhlIHNwZWNpZmllZCB0aW1lIGlzIGxlc3MgdGhhbiBhIGpp
+ZmZ5Lg0KDQpZZXMgLHlvdSBhcmUgcmlnaHQuVGhpcyB3aWxsIGJlIG1vZGlmaWVkIGluIHBhdGNo
+IFYyLg0K
