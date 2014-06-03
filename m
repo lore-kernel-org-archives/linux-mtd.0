@@ -1,15 +1,15 @@
-Date: Tue, 3 Jun 2014 14:33:10 +0000
-From: "Joseph S. Myers" <joseph@codesourcery.com>
-To: Arnd Bergmann <arnd@arndb.de>
+From: Arnd Bergmann <arnd@arndb.de>
+To: "Joseph S. Myers" <joseph@codesourcery.com>
 Subject: Re: [RFC 00/32] making inode time stamps y2038 ready
-In-Reply-To: <5011138.W0gbOc20Qp@wuerfel>
-Message-ID: <Pine.LNX.4.64.1406031427130.12421@digraph.polyomino.org.uk>
+Date: Tue, 03 Jun 2014 16:37:46 +0200
+Message-ID: <18158267.ZX0ZMPkVDT@wuerfel>
+In-Reply-To: <Pine.LNX.4.64.1406031427130.12421@digraph.polyomino.org.uk>
 References: <1401480116-1973111-1-git-send-email-arnd@arndb.de>
- <7175692.dpgYFMbTaP@wuerfel> <538CF346.2070504@zytor.com>
  <5011138.W0gbOc20Qp@wuerfel>
+ <Pine.LNX.4.64.1406031427130.12421@digraph.polyomino.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Sender: Joseph Myers <joseph@codesourcery.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Cc: hch@infradead.org, linux-mtd@lists.infradead.org,
  "H. Peter Anvin" <hpa@zytor.com>, logfs@logfs.org,
  linux-afs@lists.infradead.org, linux-arch@vger.kernel.org,
@@ -32,19 +32,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 3 Jun 2014, Arnd Bergmann wrote:
+On Tuesday 03 June 2014 14:33:10 Joseph S. Myers wrote:
+> On Tue, 3 Jun 2014, Arnd Bergmann wrote:
+> 
+> > I think John Stultz and Thomas Gleixner have already started looking
+> > at how the timekeeping code can be updated. Once that is done, we should
+> > be able to add a functional 64-bit gettimeofday/settimeofday syscall
+> > pair. While I definitely agree this is one of the most basic things to
+> > have, it's also not an area of the kernel that is easy to change.
+> 
+> 64-bit clock_gettime / clock_settime instead of gettimeofday / 
+> settimeofday should avoid the need for the kernel to have a 64-bit version 
+> of struct timeval.  (Userspace 64-bit gettimeofday / settimeofday would 
+> need to use a combination of the syscalls if the tz pointer is non-NULL.)
 
-> I think John Stultz and Thomas Gleixner have already started looking
-> at how the timekeeping code can be updated. Once that is done, we should
-> be able to add a functional 64-bit gettimeofday/settimeofday syscall
-> pair. While I definitely agree this is one of the most basic things to
-> have, it's also not an area of the kernel that is easy to change.
+Yes, that's what I meant.
 
-64-bit clock_gettime / clock_settime instead of gettimeofday / 
-settimeofday should avoid the need for the kernel to have a 64-bit version 
-of struct timeval.  (Userspace 64-bit gettimeofday / settimeofday would 
-need to use a combination of the syscalls if the tz pointer is non-NULL.)
-
--- 
-Joseph S. Myers
-joseph@codesourcery.com
+	Arnd
