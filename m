@@ -1,15 +1,15 @@
-Date: Wed, 4 Jun 2014 07:38:02 +1000
-From: Dave Chinner <david@fromorbit.com>
-To: Arnd Bergmann <arnd@arndb.de>
+From: Arnd Bergmann <arnd@arndb.de>
+To: Dave Chinner <david@fromorbit.com>
 Subject: Re: [RFC 00/32] making inode time stamps y2038 ready
-Message-ID: <20140603213802.GH14410@dastard>
+Date: Wed, 4 Jun 2014 17:03:47 +0200
 References: <1401480116-1973111-1-git-send-email-arnd@arndb.de>
- <7175692.dpgYFMbTaP@wuerfel> <538CF346.2070504@zytor.com>
- <5011138.W0gbOc20Qp@wuerfel>
+ <5011138.W0gbOc20Qp@wuerfel> <20140603213802.GH14410@dastard>
+In-Reply-To: <20140603213802.GH14410@dastard>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5011138.W0gbOc20Qp@wuerfel>
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201406041703.47592.arnd@arndb.de>
 Cc: hch@infradead.org, linux-mtd@lists.infradead.org,
  "H. Peter Anvin" <hpa@zytor.com>, logfs@logfs.org,
  linux-afs@lists.infradead.org, "Joseph S. Myers" <joseph@codesourcery.com>,
@@ -32,32 +32,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jun 03, 2014 at 04:22:19PM +0200, Arnd Bergmann wrote:
-> On Monday 02 June 2014 14:57:26 H. Peter Anvin wrote:
-> > On 06/02/2014 12:55 PM, Arnd Bergmann wrote:
-> The possible uses I can see for non-ktime_t types in the kernel are:
-> * inodes need 96 bit timestamps to represent the full range of values
->   that can be stored in a file system, you made a convincing argument
->   for that. Almost everything else can fit into 64 bit on a 32-bit
->   kernel, in theory also on a 64-bit kernel if we want that.
+On Tuesday 03 June 2014, Dave Chinner wrote:
+> On Tue, Jun 03, 2014 at 04:22:19PM +0200, Arnd Bergmann wrote:
+> > On Monday 02 June 2014 14:57:26 H. Peter Anvin wrote:
+> > > On 06/02/2014 12:55 PM, Arnd Bergmann wrote:
+> > The possible uses I can see for non-ktime_t types in the kernel are:
+> > * inodes need 96 bit timestamps to represent the full range of values
+> >   that can be stored in a file system, you made a convincing argument
+> >   for that. Almost everything else can fit into 64 bit on a 32-bit
+> >   kernel, in theory also on a 64-bit kernel if we want that.
+> 
+> Just ot be pedantic, inodes don't need 96 bit timestamps - some
+> filesystems can *support up to* 96 bit timestamps. If the kernel
+> only supports 64 bit timestamps and that's all the kernel can
+> represent, then the upper bits of the 96 bit on-disk inode
+> timestamps simply remain zero.
 
-Just ot be pedantic, inodes don't *need* 96 bit timestamps - some
-filesystems can *support up to* 96 bit timestamps. If the kernel
-only supports 64 bit timestamps and that's all the kernel can
-represent, then the upper bits of the 96 bit on-disk inode
-timestamps simply remain zero.
+I meant the reverse: since we have file systems that can store
+96-bit timestamps when using 64-bit kernels, we need to extend
+32-bit kernels to have the same internal representation so we
+can actually read those file systems correctly.
 
-If you move the filesystem between kernels with different time
-ranges, then the filesystem needs to be able to tell the kernel what
-it's supported range is.  This is where having the VFS limit the
-range of supported timestamps is important: the limit is the
-min(kernel range, filesystem range). This allows the filesystems
-to be indepenent of the kernel time representation, and the kernel
-to be independent of the physical filesystem time encoding....
+> If you move the filesystem between kernels with different time
+> ranges, then the filesystem needs to be able to tell the kernel what
+> it's supported range is.  This is where having the VFS limit the
+> range of supported timestamps is important: the limit is the
+> min(kernel range, filesystem range). This allows the filesystems
+> to be indepenent of the kernel time representation, and the kernel
+> to be independent of the physical filesystem time encoding....
 
-Cheers,
+I agree it makes sense to let the kernel know about the limits
+of the file system it accesses, but for the reverse, we're probably
+better off just making the kernel representation large enough (i.e.
+96 bits) so it can work with any known file system. We need another
+check at the user space boundary to turn that into a value that the
+user can understand, but that's another problem.
 
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+	Arnd
