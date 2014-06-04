@@ -1,27 +1,33 @@
-From: Arnd Bergmann <arnd@arndb.de>
-To: "Joseph S. Myers" <joseph@codesourcery.com>
+Received: from mail-qa0-f41.google.com ([209.85.216.41])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WsF1f-0007VD-3J
+ for linux-mtd@lists.infradead.org; Wed, 04 Jun 2014 17:31:03 +0000
+Received: by mail-qa0-f41.google.com with SMTP id dc16so7627186qab.0
+ for <linux-mtd@lists.infradead.org>; Wed, 04 Jun 2014 10:30:35 -0700 (PDT)
+Date: Wed, 4 Jun 2014 13:30:32 -0400 (EDT)
+From: Nicolas Pitre <nicolas.pitre@linaro.org>
+To: Arnd Bergmann <arnd@arndb.de>
 Subject: Re: [RFC 00/32] making inode time stamps y2038 ready
-Date: Wed, 4 Jun 2014 17:05:27 +0200
+In-Reply-To: <201406041703.47592.arnd@arndb.de>
+Message-ID: <alpine.LFD.2.11.1406041308300.17310@knanqh.ubzr>
 References: <1401480116-1973111-1-git-send-email-arnd@arndb.de>
- <4233989.Saca0ocOUr@wuerfel>
- <Pine.LNX.4.64.1406022044090.27099@digraph.polyomino.org.uk>
-In-Reply-To: <Pine.LNX.4.64.1406022044090.27099@digraph.polyomino.org.uk>
+ <5011138.W0gbOc20Qp@wuerfel> <20140603213802.GH14410@dastard>
+ <201406041703.47592.arnd@arndb.de>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201406041705.27599.arnd@arndb.de>
-Cc: hch@infradead.org, linux-mtd@lists.infradead.org, hpa@zytor.com,
- logfs@logfs.org, linux-afs@lists.infradead.org, linux-arch@vger.kernel.org,
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: hch@infradead.org, Dave Chinner <david@fromorbit.com>,
+ linux-mtd@lists.infradead.org, "H. Peter Anvin" <hpa@zytor.com>,
+ linux-f2fs-devel@lists.sourceforge.net, ceph-devel@vger.kernel.org,
+ "Joseph S. Myers" <joseph@codesourcery.com>, linux-arch@vger.kernel.org,
  linux-cifs@vger.kernel.org, linux-scsi@vger.kernel.org,
- ceph-devel@vger.kernel.org, codalist@coda.cs.cmu.edu, cluster-devel@redhat.com,
- coda@cs.cmu.edu, geert@linux-m68k.org, linux-ext4@vger.kernel.org,
- fuse-devel@lists.sourceforge.net, reiserfs-devel@vger.kernel.org,
- xfs@oss.sgi.com, john.stultz@linaro.org, tglx@linutronix.de,
- linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
- samba-technical@lists.samba.org, linux-kernel@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, ocfs2-devel@oss.oracle.com,
- linux-fsdevel@vger.kernel.org, lftan@altera.com, linux-btrfs@vger.kernel.org
+ linux-afs@lists.infradead.org, cluster-devel@redhat.com, coda@cs.cmu.edu,
+ geert@linux-m68k.org, linux-ext4@vger.kernel.org,
+ codalist@telemann.coda.cs.cmu.edu, fuse-devel@lists.sourceforge.net,
+ reiserfs-devel@vger.kernel.org, xfs@oss.sgi.com, john.stultz@linaro.org,
+ tglx@linutronix.de, linux-nfs@vger.kernel.org,
+ linux-ntfs-dev@lists.sourceforge.net, samba-technical@lists.samba.org,
+ linux-kernel@vger.kernel.org, logfs@logfs.org, linux-btrfs@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, lftan@altera.com, ocfs2-devel@oss.oracle.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,29 +37,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 02 June 2014, Joseph S. Myers wrote:
-> On Mon, 2 Jun 2014, Arnd Bergmann wrote:
-> 
-> > Ok. Sorry about missing linux-api, I confused it with linux-arch, which
-> > may not be as relevant here, except for the one question whether we
-> > actually want to have the new ABI on all 32-bit architectures or only
-> > as an opt-in for those that expect to stay around for another 24 years.
-> 
-> For glibc I think it will make the most sense to add the support for 
-> 64-bit time_t across all architectures that currently have 32-bit time_t 
-> (with the new interfaces having fallback support to implementation in 
-> terms of the 32-bit kernel interfaces, if the 64-bit syscalls are 
-> unavailable either at runtime or in the kernel headers against which glibc 
-> is compiled - this fallback code will of course need to check for overflow 
-> when passing a time value to the kernel, hopefully with error handling 
-> consistent with whatever the kernel ends up doing when a filesystem can't 
-> support a timestamp).  If some architectures don't provide the new 
-> interfaces in the kernel then that will mean the fallback code in glibc 
-> can't be removed until glibc support for those architectures is removed 
-> (as opposed to removing it when glibc no longer supports kernels predating 
-> the kernel support).
+On Wed, 4 Jun 2014, Arnd Bergmann wrote:
 
-Ok, that's a good reason to just provide the new interfaces on all
-architectures right away. Thanks for the insight!
+> On Tuesday 03 June 2014, Dave Chinner wrote:
+> > Just ot be pedantic, inodes don't need 96 bit timestamps - some
+> > filesystems can *support up to* 96 bit timestamps. If the kernel
+> > only supports 64 bit timestamps and that's all the kernel can
+> > represent, then the upper bits of the 96 bit on-disk inode
+> > timestamps simply remain zero.
+> 
+> I meant the reverse: since we have file systems that can store
+> 96-bit timestamps when using 64-bit kernels, we need to extend
+> 32-bit kernels to have the same internal representation so we
+> can actually read those file systems correctly.
+> 
+> > If you move the filesystem between kernels with different time
+> > ranges, then the filesystem needs to be able to tell the kernel what
+> > it's supported range is.  This is where having the VFS limit the
+> > range of supported timestamps is important: the limit is the
+> > min(kernel range, filesystem range). This allows the filesystems
+> > to be indepenent of the kernel time representation, and the kernel
+> > to be independent of the physical filesystem time encoding....
+> 
+> I agree it makes sense to let the kernel know about the limits
+> of the file system it accesses, but for the reverse, we're probably
+> better off just making the kernel representation large enough (i.e.
+> 96 bits) so it can work with any known file system.
 
-	Arnd
+Depends...  96 bit handling may get prohibitive on 32-bit archs.
+
+The important point here is for the kernel to be able to represent the 
+time _range_ used by any known filesystem, not necessarily the time 
+_precision_.
+
+For example, a 64 bit representation can be made of 40 bits for seconds 
+spanning 34865 years, and 24 bits for fractional seconds providing 
+precision down to 60 nanosecs.  That ought to be plenty good on 32 bit 
+systems while still being cheap to handle.
+
+
+Nicolas
