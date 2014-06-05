@@ -1,29 +1,18 @@
-Message-ID: <538FB570.8000502@zytor.com>
-Date: Wed, 04 Jun 2014 17:10:24 -0700
-From: "H. Peter Anvin" <hpa@zytor.com>
+Received: from [95.211.20.101] (helo=hosted-ip2.procor.be)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WsRMN-0006Pe-I0
+ for linux-mtd@lists.infradead.org; Thu, 05 Jun 2014 06:41:12 +0000
+Received: from h3uv3l by hosted-ip2.procor.be with local (Exim 4.80)
+ (envelope-from <h3uv3l@hosted-ip2.procor.be>) id 1WsRLz-0001Zl-DS
+ for linux-mtd@lists.infradead.org; Thu, 05 Jun 2014 08:40:47 +0200
+To: linux-mtd@lists.infradead.org
+Subject: =?UTF-8?Q?Hello_from_Lee?=
+Date: Thu, 5 Jun 2014 08:40:47 +0200
+From: =?UTF-8?Q?GC_Loans?= <marketing@gulfcapital.com>
+Message-ID: <b6f37946c5f15c3c0f73660b31b03003@www.vandenheuvel-meubelmakerij.be>
 MIME-Version: 1.0
-To: Arnd Bergmann <arnd@arndb.de>, Nicolas Pitre <nicolas.pitre@linaro.org>
-Subject: Re: [RFC 00/32] making inode time stamps y2038 ready
-References: <1401480116-1973111-1-git-send-email-arnd@arndb.de>
- <201406041703.47592.arnd@arndb.de>
- <alpine.LFD.2.11.1406041308300.17310@knanqh.ubzr>
- <8770583.6XeZxCxOY8@wuerfel>
-In-Reply-To: <8770583.6XeZxCxOY8@wuerfel>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: hch@infradead.org, Dave Chinner <david@fromorbit.com>,
- linux-mtd@lists.infradead.org, linux-f2fs-devel@lists.sourceforge.net,
- ceph-devel@vger.kernel.org, "Joseph S. Myers" <joseph@codesourcery.com>,
- linux-arch@vger.kernel.org, linux-cifs@vger.kernel.org,
- linux-scsi@vger.kernel.org, linux-afs@lists.infradead.org,
- cluster-devel@redhat.com, coda@cs.cmu.edu, geert@linux-m68k.org,
- linux-ext4@vger.kernel.org, codalist@telemann.coda.cs.cmu.edu,
- fuse-devel@lists.sourceforge.net, reiserfs-devel@vger.kernel.org,
- xfs@oss.sgi.com, john.stultz@linaro.org, tglx@linutronix.de,
- linux-nfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
- samba-technical@lists.samba.org, linux-kernel@vger.kernel.org, logfs@logfs.org,
- linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, lftan@altera.com,
- ocfs2-devel@oss.oracle.com
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,16 +22,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/04/2014 12:24 PM, Arnd Bergmann wrote:
-> 
-> For other timekeeping stuff in the kernel, I agree that using some
-> 64-bit representation (nanoseconds, 32/32 unsigned seconds/nanoseconds,
-> ...) has advantages, that's exactly the point I was making earlier
-> against simply extending the internal time_t/timespec to 64-bit
-> seconds for everything.
-> 
+We understand your desire to live your dreams.
+GCI/IIDB Personal loans and corporate loans gives you an
+Opportunity to fulfill such desires brings happiness to your loved ones thr=
+ough hassle-free loans at GCI.
+Borrow from US$100,000. To US$1 Million and above for any purpose.
+We support you to set up a business of any kind in any part of the world.  =
+ =20
 
-How much of a performance issue is it to make time_t 64 bits, and for
-the bits there are, how hard are they to fix?
+Loan repayment tenure from 12 to 120 months.
 
-	-hpa
+Attractive interest rates: 5%
+
+For inquiries and online application please contact below person.
+Mr. Imad Ali
+Email: <imadgulf@globomail.com>
+
+
+
+
+Head of Campaign Team,
+
+Mr.Jack Lee
+Gulf Capital Pvt.
+Al Sila Tower, 25th Floor
+Sowwah Square
+Al Maryah Island
+P.O.Box 27522
+Abu Dhabi, United Arab Emirates
