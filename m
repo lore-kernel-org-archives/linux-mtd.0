@@ -1,12 +1,18 @@
-From: Bo Shen <voice.shen@atmel.com>
-To: <computersforpeace@gmail.com>
-Subject: [PATCH] mtd: atmel_nand: make ecc parameters same as definition
-Date: Fri, 6 Jun 2014 16:02:08 +0800
-Message-ID: <1402041728-12056-1-git-send-email-voice.shen@atmel.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: josh.wu@atmel.com, Bo Shen <voice.shen@atmel.com>, nicolas.ferre@atmel.com,
- linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org
+Received: from mga01.intel.com ([192.55.52.88])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WtwGo-0006Md-91
+ for linux-mtd@lists.infradead.org; Mon, 09 Jun 2014 09:53:39 +0000
+Message-ID: <1402307589.20454.49.camel@sauron.fi.intel.com>
+Subject: [GIT PULL] UBIFS changes for 3.16
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Mon, 09 Jun 2014 12:53:09 +0300
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,77 +22,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If the ecc parameter is not the same as definition, when the
-mtd core check these parameters, it will give the unexpected
-result.
+Hi Linus,
 
-Signed-off-by: Bo Shen <voice.shen@atmel.com>
----
- drivers/mtd/nand/atmel_nand.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+the following changes since commit d6d211db37e75de2ddc3a4f979038c40df7cc79c:
 
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index 4ce181a..4f5348f 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -861,12 +861,11 @@ static int pmecc_correction(struct mtd_info *mtd, u32 pmecc_stat, uint8_t *buf,
- {
- 	struct nand_chip *nand_chip = mtd->priv;
- 	struct atmel_nand_host *host = nand_chip->priv;
--	int i, err_nbr, eccbytes;
-+	int i, err_nbr;
- 	uint8_t *buf_pos;
- 	int total_err = 0;
- 
--	eccbytes = nand_chip->ecc.bytes;
--	for (i = 0; i < eccbytes; i++)
-+	for (i = 0; i < nand_chip->ecc.total; i++)
- 		if (ecc[i] != 0xff)
- 			goto normal_check;
- 	/* Erased page, return OK */
-@@ -928,7 +927,7 @@ static int atmel_nand_pmecc_read_page(struct mtd_info *mtd,
- 	struct nand_chip *chip, uint8_t *buf, int oob_required, int page)
- {
- 	struct atmel_nand_host *host = chip->priv;
--	int eccsize = chip->ecc.size;
-+	int eccsize = chip->ecc.size * chip->ecc.steps;
- 	uint8_t *oob = chip->oob_poi;
- 	uint32_t *eccpos = chip->ecc.layout->eccpos;
- 	uint32_t stat;
-@@ -1169,8 +1168,7 @@ static int atmel_pmecc_nand_init_params(struct platform_device *pdev,
- 		goto err;
- 	}
- 
--	/* ECC is calculated for the whole page (1 step) */
--	nand_chip->ecc.size = mtd->writesize;
-+	nand_chip->ecc.size = sector_size;
- 
- 	/* set ECC page size and oob layout */
- 	switch (mtd->writesize) {
-@@ -1185,18 +1183,20 @@ static int atmel_pmecc_nand_init_params(struct platform_device *pdev,
- 		host->pmecc_index_of = host->pmecc_rom_base +
- 			host->pmecc_lookup_table_offset;
- 
--		nand_chip->ecc.steps = 1;
-+		nand_chip->ecc.steps = host->pmecc_sector_number;
- 		nand_chip->ecc.strength = cap;
--		nand_chip->ecc.bytes = host->pmecc_bytes_per_sector *
-+		nand_chip->ecc.bytes = host->pmecc_bytes_per_sector;
-+		nand_chip->ecc.total = host->pmecc_bytes_per_sector *
- 				       host->pmecc_sector_number;
--		if (nand_chip->ecc.bytes > mtd->oobsize - 2) {
-+		if (nand_chip->ecc.total > mtd->oobsize - 2) {
- 			dev_err(host->dev, "No room for ECC bytes\n");
- 			err_no = -EINVAL;
- 			goto err;
- 		}
- 		pmecc_config_ecc_layout(&atmel_pmecc_oobinfo,
- 					mtd->oobsize,
--					nand_chip->ecc.bytes);
-+					nand_chip->ecc.total);
-+
- 		nand_chip->ecc.layout = &atmel_pmecc_oobinfo;
- 		break;
- 	case 512:
+  Linux 3.15-rc5 (2014-05-09 13:10:52 -0700)
+
+are available in the git repository at:
+
+  git://git.infradead.org/linux-ubifs.git tags/upstream-3.16-rc1
+
+for you to fetch changes up to 380347e9ca76828ee9bac63cfc338ca99cdee4f3:
+
+  UBIFS: Add an assertion for clean_zn_cnt (2014-06-03 11:16:51 +0300)
+
+----------------------------------------------------------------
+condition between the mmap page fault path and fsync. The other
+just removes a bogus assertion from the UBIFS memory shrinker.
+
+UBIFS also started honoring the MS_SILENT mount flag, so now it won't print
+many I/O errors when user-space just tries to probe for the FS.
+
+Rest of the changes are rather minor UBI/UBIFS fixes, improvements, and
+clean-ups.
+
+----------------------------------------------------------------
+Artem Bityutskiy (1):
+      UBIFS: fix debugging check
+
+Daniel Golle (2):
+      UBIFS: add missing ui pointer in debugging code
+      UBIFS: respect MS_SILENT mount flag
+
+Ezequiel Garcia (1):
+      UBI: weaken the 'exclusive' constraint when opening volumes to rename
+
+Helmut Schaa (1):
+      UBI: block: Fix error path on alloc_workqueue failure
+
+Mike Snitzer (1):
+      UBI: fix rb_tree node comparison in add_map
+
+hujianyang (5):
+      UBIFS: fix an mmap and fsync race condition
+      UBIFS: Remove unused variables in ubifs_budget_space
+      UBIFS: Fix dump messages in ubifs_dump_lprops
+      UBIFS: Remove incorrect assertion in shrink_tnc()
+      UBIFS: Add an assertion for clean_zn_cnt
+
+ drivers/mtd/ubi/block.c   |  4 +++-
+ drivers/mtd/ubi/cdev.c    |  2 +-
+ drivers/mtd/ubi/fastmap.c |  4 ++--
+ fs/ubifs/budget.c         |  1 -
+ fs/ubifs/debug.c          |  4 +++-
+ fs/ubifs/file.c           |  6 +++---
+ fs/ubifs/io.c             | 18 ++++++++++--------
+ fs/ubifs/shrinker.c       |  1 -
+ fs/ubifs/super.c          |  5 +++++
+ fs/ubifs/tnc.c            |  5 +++--
+ fs/ubifs/ubifs.h          | 11 +++++++++++
+ 11 files changed, 41 insertions(+), 20 deletions(-)
+
 -- 
-1.8.5.2
+Best Regards,
+Artem Bityutskiy
