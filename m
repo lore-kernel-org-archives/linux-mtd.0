@@ -1,15 +1,21 @@
-Message-ID: <53958CCE.5080307@atmel.com>
-Date: Mon, 9 Jun 2014 18:30:38 +0800
-From: Josh Wu <josh.wu@atmel.com>
+Received: from mail-ve0-x22e.google.com ([2607:f8b0:400c:c01::22e])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Wu2p3-0007Ws-Vs
+ for linux-mtd@lists.infradead.org; Mon, 09 Jun 2014 16:53:26 +0000
+Received: by mail-ve0-f174.google.com with SMTP id us18so4665978veb.19
+ for <linux-mtd@lists.infradead.org>; Mon, 09 Jun 2014 09:53:03 -0700 (PDT)
 MIME-Version: 1.0
-To: Bo Shen <voice.shen@atmel.com>, <computersforpeace@gmail.com>
-Subject: Re: [PATCH] mtd: atmel_nand: make ecc parameters same as definition
-References: <1402041728-12056-1-git-send-email-voice.shen@atmel.com>
-In-Reply-To: <1402041728-12056-1-git-send-email-voice.shen@atmel.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, nicolas.ferre@atmel.com,
- linux-arm-kernel@lists.infradead.org
+Sender: linus971@gmail.com
+In-Reply-To: <1402307589.20454.49.camel@sauron.fi.intel.com>
+References: <1402307589.20454.49.camel@sauron.fi.intel.com>
+Date: Mon, 9 Jun 2014 09:53:02 -0700
+Message-ID: <CA+55aFwr9Gtgn1JssNJFUDTsvgxoDe9BAM4XLiv5g3wDqxfS_Q@mail.gmail.com>
+Subject: Re: [GIT PULL] UBIFS changes for 3.16
+From: Linus Torvalds <torvalds@linux-foundation.org>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,85 +25,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Bo
+Mind re-sending the explanations in their full form?
 
-Thanks for the patch.
+They seem to have gotten cut off, probably because some bad
+cut-and-paste that missed a line or two. And the cut-and-paste error
+happened when you wrote the tag signature, so the missing parts aren't
+in the signed tag either, it has the same problem.
 
-On 6/6/2014 4:02 PM, Bo Shen wrote:
-> If the ecc parameter is not the same as definition, when the
-> mtd core check these parameters, it will give the unexpected
-> result.
-Could you be more specific to tell what kind of result will happened?
+See how the description starts in the middle with "condition between
+..", and then goes on to talk about "The other", when it hasn't really
+said "the first" or whatever the missing part was supposed to say..
 
-Best Regards,
-Josh Wu
+             Linus
 
+On Mon, Jun 9, 2014 at 2:53 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
 >
-> Signed-off-by: Bo Shen <voice.shen@atmel.com>
-> ---
->   drivers/mtd/nand/atmel_nand.c | 20 ++++++++++----------
->   1 file changed, 10 insertions(+), 10 deletions(-)
+> ----------------------------------------------------------------
+> condition between the mmap page fault path and fsync. The other
+> just removes a bogus assertion from the UBIFS memory shrinker.
 >
-> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-> index 4ce181a..4f5348f 100644
-> --- a/drivers/mtd/nand/atmel_nand.c
-> +++ b/drivers/mtd/nand/atmel_nand.c
-> @@ -861,12 +861,11 @@ static int pmecc_correction(struct mtd_info *mtd, u32 pmecc_stat, uint8_t *buf,
->   {
->   	struct nand_chip *nand_chip = mtd->priv;
->   	struct atmel_nand_host *host = nand_chip->priv;
-> -	int i, err_nbr, eccbytes;
-> +	int i, err_nbr;
->   	uint8_t *buf_pos;
->   	int total_err = 0;
->   
-> -	eccbytes = nand_chip->ecc.bytes;
-> -	for (i = 0; i < eccbytes; i++)
-> +	for (i = 0; i < nand_chip->ecc.total; i++)
->   		if (ecc[i] != 0xff)
->   			goto normal_check;
->   	/* Erased page, return OK */
-> @@ -928,7 +927,7 @@ static int atmel_nand_pmecc_read_page(struct mtd_info *mtd,
->   	struct nand_chip *chip, uint8_t *buf, int oob_required, int page)
->   {
->   	struct atmel_nand_host *host = chip->priv;
-> -	int eccsize = chip->ecc.size;
-> +	int eccsize = chip->ecc.size * chip->ecc.steps;
->   	uint8_t *oob = chip->oob_poi;
->   	uint32_t *eccpos = chip->ecc.layout->eccpos;
->   	uint32_t stat;
-> @@ -1169,8 +1168,7 @@ static int atmel_pmecc_nand_init_params(struct platform_device *pdev,
->   		goto err;
->   	}
->   
-> -	/* ECC is calculated for the whole page (1 step) */
-> -	nand_chip->ecc.size = mtd->writesize;
-> +	nand_chip->ecc.size = sector_size;
->   
->   	/* set ECC page size and oob layout */
->   	switch (mtd->writesize) {
-> @@ -1185,18 +1183,20 @@ static int atmel_pmecc_nand_init_params(struct platform_device *pdev,
->   		host->pmecc_index_of = host->pmecc_rom_base +
->   			host->pmecc_lookup_table_offset;
->   
-> -		nand_chip->ecc.steps = 1;
-> +		nand_chip->ecc.steps = host->pmecc_sector_number;
->   		nand_chip->ecc.strength = cap;
-> -		nand_chip->ecc.bytes = host->pmecc_bytes_per_sector *
-> +		nand_chip->ecc.bytes = host->pmecc_bytes_per_sector;
-> +		nand_chip->ecc.total = host->pmecc_bytes_per_sector *
->   				       host->pmecc_sector_number;
-> -		if (nand_chip->ecc.bytes > mtd->oobsize - 2) {
-> +		if (nand_chip->ecc.total > mtd->oobsize - 2) {
->   			dev_err(host->dev, "No room for ECC bytes\n");
->   			err_no = -EINVAL;
->   			goto err;
->   		}
->   		pmecc_config_ecc_layout(&atmel_pmecc_oobinfo,
->   					mtd->oobsize,
-> -					nand_chip->ecc.bytes);
-> +					nand_chip->ecc.total);
-> +
->   		nand_chip->ecc.layout = &atmel_pmecc_oobinfo;
->   		break;
->   	case 512:
+> UBIFS also started honoring the MS_SILENT mount flag, so now it won't print
+> many I/O errors when user-space just tries to probe for the FS.
+>
+> Rest of the changes are rather minor UBI/UBIFS fixes, improvements, and
+> clean-ups.
