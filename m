@@ -1,27 +1,12 @@
-From: Arnd Bergmann <arnd@arndb.de>
-To: "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [RFC 00/32] making inode time stamps y2038 ready
-Date: Tue, 10 Jun 2014 11:54:14 +0200
-Message-ID: <10173877.4plnjUiyX8@wuerfel>
-In-Reply-To: <538FB570.8000502@zytor.com>
-References: <1401480116-1973111-1-git-send-email-arnd@arndb.de>
- <8770583.6XeZxCxOY8@wuerfel> <538FB570.8000502@zytor.com>
+From: Josh Wu <josh.wu@atmel.com>
+To: <linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH v2 1/3] mtd: atmel_nand: add NFC status error check
+Date: Tue, 10 Jun 2014 17:50:09 +0800
+Message-ID: <1402393811-24578-1-git-send-email-josh.wu@atmel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-Cc: Nicolas Pitre <nicolas.pitre@linaro.org>, hch@infradead.org,
- Dave Chinner <david@fromorbit.com>, linux-mtd@lists.infradead.org,
- linux-f2fs-devel@lists.sourceforge.net, ceph-devel@vger.kernel.org,
- "Joseph S. Myers" <joseph@codesourcery.com>, linux-arch@vger.kernel.org,
- linux-cifs@vger.kernel.org, linux-scsi@vger.kernel.org,
- linux-afs@lists.infradead.org, cluster-devel@redhat.com, coda@cs.cmu.edu,
- geert@linux-m68k.org, linux-ext4@vger.kernel.org,
- codalist@telemann.coda.cs.cmu.edu, fuse-devel@lists.sourceforge.net,
- reiserfs-devel@vger.kernel.org, xfs@oss.sgi.com, john.stultz@linaro.org,
- tglx@linutronix.de, linux-nfs@vger.kernel.org,
- linux-ntfs-dev@lists.sourceforge.net, samba-technical@lists.samba.org,
- linux-kernel@vger.kernel.org, logfs@logfs.org, linux-btrfs@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, lftan@altera.com, ocfs2-devel@oss.oracle.com
+Content-Type: text/plain
+Cc: Matthieu.CRAPET@ingenico.com, computersforpeace@gmail.com,
+ voice.shen@atmel.com, Josh Wu <josh.wu@atmel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,41 +16,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 04 June 2014 17:10:24 H. Peter Anvin wrote:
-> On 06/04/2014 12:24 PM, Arnd Bergmann wrote:
-> > 
-> > For other timekeeping stuff in the kernel, I agree that using some
-> > 64-bit representation (nanoseconds, 32/32 unsigned seconds/nanoseconds,
-> > ...) has advantages, that's exactly the point I was making earlier
-> > against simply extending the internal time_t/timespec to 64-bit
-> > seconds for everything.
-> > 
-> 
-> How much of a performance issue is it to make time_t 64 bits, and for
-> the bits there are, how hard are they to fix?
+Add a new function to read the NFC status. Meantime, this function will
+theck if there is any errors in NFC.
 
-Probably very little overhead for most uses, it's more the regression
-potential in the less common parts of the kernel I'm worried about.
+Signed-off-by: Josh Wu <josh.wu@atmel.com>
+---
+ drivers/mtd/nand/atmel_nand.c     |   24 +++++++++++++++++++++++-
+ drivers/mtd/nand/atmel_nand_nfc.h |    4 ++++
+ 2 files changed, 27 insertions(+), 1 deletion(-)
 
-There is a significant but not overwhelming number of uses of the
-main problematic types in the kernel:
-
-arnd@wuerfel:~/arm-soc$ git grep -wl time_t | wc
-    188     188    5566
-arnd@wuerfel:~/arm-soc$ git grep -wl timeval | wc
-    320     320   10353
-arnd@wuerfel:~/arm-soc$ git grep -wl timespec | wc
-    406     406   10886
-
-I believe we have to audit all of them anyway if we want to change
-the kernel to less problematic types and introduce new user
-interfaces.
-
-IMHO this work is helped if we change the uses to a new type
-as we find the problems. This lets us do the work one subsystem
-at a time and avoid accidental ABI changes. I don't care much what
-type that will be, and having a 96-bit type will certainly work
-well in a lot of cases, but I don't see a strong reason to use
-that over other types, especially when they can be more efficient.
-
-	Arnd
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index ec97ccb..25d9921 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -1572,6 +1572,25 @@ static int atmel_hw_nand_init_params(struct platform_device *pdev,
+ 	return 0;
+ }
+ 
++static inline u32 nfc_read_status(struct atmel_nand_host *host)
++{
++	u32 err_flags = NFC_SR_DTOE | NFC_SR_UNDEF | NFC_SR_AWB | NFC_SR_ASE;
++	u32 nfc_status = nfc_readl(host->nfc->hsmc_regs, SR);
++
++	if (unlikely(nfc_status & err_flags)) {
++		if (nfc_status & NFC_SR_DTOE)
++			dev_err(host->dev, "NFC: Waiting Nand R/B Timeout Error\n");
++		else if (nfc_status & NFC_SR_UNDEF)
++			dev_err(host->dev, "NFC: Access Undefined Area Error\n");
++		else if (nfc_status & NFC_SR_AWB)
++			dev_err(host->dev, "NFC: Access memory While NFC is busy\n");
++		else if (nfc_status & NFC_SR_ASE)
++			dev_err(host->dev, "NFC: Access memory Size Error\n");
++	}
++
++	return nfc_status;
++}
++
+ /* SMC interrupt service routine */
+ static irqreturn_t hsmc_interrupt(int irq, void *dev_id)
+ {
+@@ -1579,7 +1598,7 @@ static irqreturn_t hsmc_interrupt(int irq, void *dev_id)
+ 	u32 status, mask, pending;
+ 	irqreturn_t ret = IRQ_HANDLED;
+ 
+-	status = nfc_readl(host->nfc->hsmc_regs, SR);
++	status = nfc_read_status(host);
+ 	mask = nfc_readl(host->nfc->hsmc_regs, IMR);
+ 	pending = status & mask;
+ 
+@@ -2210,6 +2229,9 @@ static int atmel_nand_nfc_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
++	nfc_writel(nfc->hsmc_regs, IDR, 0xffffffff);
++	nfc_readl(nfc->hsmc_regs, SR);	/* clear the NFC_SR */
++
+ 	nfc->is_initialized = true;
+ 	dev_info(&pdev->dev, "NFC is probed.\n");
+ 	return 0;
+diff --git a/drivers/mtd/nand/atmel_nand_nfc.h b/drivers/mtd/nand/atmel_nand_nfc.h
+index 4efd117..85b8ca6 100644
+--- a/drivers/mtd/nand/atmel_nand_nfc.h
++++ b/drivers/mtd/nand/atmel_nand_nfc.h
+@@ -37,6 +37,10 @@
+ #define ATMEL_HSMC_NFC_SR	0x08		/* NFC Status Register */
+ #define		NFC_SR_XFR_DONE		(1 << 16)
+ #define		NFC_SR_CMD_DONE		(1 << 17)
++#define		NFC_SR_DTOE		(1 << 20)
++#define		NFC_SR_UNDEF		(1 << 21)
++#define		NFC_SR_AWB		(1 << 22)
++#define		NFC_SR_ASE		(1 << 23)
+ #define		NFC_SR_RB_EDGE		(1 << 24)
+ 
+ #define ATMEL_HSMC_NFC_IER	0x0c
+-- 
+1.7.9.5
