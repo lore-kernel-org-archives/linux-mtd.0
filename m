@@ -1,16 +1,27 @@
-Received: from szxga01-in.huawei.com ([119.145.14.64])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WuIAR-0006oK-CV
- for linux-mtd@lists.infradead.org; Tue, 10 Jun 2014 09:16:32 +0000
-Message-ID: <5396CCA8.7060303@huawei.com>
-Date: Tue, 10 Jun 2014 17:15:20 +0800
-From: hujianyang <hujianyang@huawei.com>
+From: Arnd Bergmann <arnd@arndb.de>
+To: "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [RFC 00/32] making inode time stamps y2038 ready
+Date: Tue, 10 Jun 2014 11:54:14 +0200
+Message-ID: <10173877.4plnjUiyX8@wuerfel>
+In-Reply-To: <538FB570.8000502@zytor.com>
+References: <1401480116-1973111-1-git-send-email-arnd@arndb.de>
+ <8770583.6XeZxCxOY8@wuerfel> <538FB570.8000502@zytor.com>
 MIME-Version: 1.0
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: ubifs: replay log error
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+Cc: Nicolas Pitre <nicolas.pitre@linaro.org>, hch@infradead.org,
+ Dave Chinner <david@fromorbit.com>, linux-mtd@lists.infradead.org,
+ linux-f2fs-devel@lists.sourceforge.net, ceph-devel@vger.kernel.org,
+ "Joseph S. Myers" <joseph@codesourcery.com>, linux-arch@vger.kernel.org,
+ linux-cifs@vger.kernel.org, linux-scsi@vger.kernel.org,
+ linux-afs@lists.infradead.org, cluster-devel@redhat.com, coda@cs.cmu.edu,
+ geert@linux-m68k.org, linux-ext4@vger.kernel.org,
+ codalist@telemann.coda.cs.cmu.edu, fuse-devel@lists.sourceforge.net,
+ reiserfs-devel@vger.kernel.org, xfs@oss.sgi.com, john.stultz@linaro.org,
+ tglx@linutronix.de, linux-nfs@vger.kernel.org,
+ linux-ntfs-dev@lists.sourceforge.net, samba-technical@lists.samba.org,
+ linux-kernel@vger.kernel.org, logfs@logfs.org, linux-btrfs@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, lftan@altera.com, ocfs2-devel@oss.oracle.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,35 +31,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
+On Wednesday 04 June 2014 17:10:24 H. Peter Anvin wrote:
+> On 06/04/2014 12:24 PM, Arnd Bergmann wrote:
+> > 
+> > For other timekeeping stuff in the kernel, I agree that using some
+> > 64-bit representation (nanoseconds, 32/32 unsigned seconds/nanoseconds,
+> > ...) has advantages, that's exactly the point I was making earlier
+> > against simply extending the internal time_t/timespec to 64-bit
+> > seconds for everything.
+> > 
+> 
+> How much of a performance issue is it to make time_t 64 bits, and for
+> the bits there are, how hard are they to fix?
 
-I meet a serious problem when I was mounting an ubifs partition in v3.10.
+Probably very little overhead for most uses, it's more the regression
+potential in the less common parts of the kernel I'm worried about.
 
-[  938.975707] UBIFS: background thread "ubifs_bgt0_0" started, PID 2222
-[  938.992994] UBIFS: recovery needed
-[  939.005971] UBIFS error (pid 2220): replay_log_leb: first log node at LEB 4:0 is not CS node
-[  939.006004] UBIFS error (pid 2220): replay_log_leb: log error detected while replaying the log at LEB 4:0
-[  939.006024]  magic          0x6101831
-[  939.006046]  crc            0x81e22cd5
-[  939.006063]  node_type      8 (reference node)
-[  939.006084]  group_type     0 (no node group)
-[  939.006105]  sqnum          2375337
-[  939.006123]  len            64
-[  939.006144]  lnum           5273
-[  939.006164]  offs           122880
-[  939.006181]  jhead          2
-[  939.006279] UBIFS: background thread "ubifs_bgt0_0" stops
+There is a significant but not overwhelming number of uses of the
+main problematic types in the kernel:
 
-I found a similar problem fixed by commit c6727932, Do you think they are
-related?
+arnd@wuerfel:~/arm-soc$ git grep -wl time_t | wc
+    188     188    5566
+arnd@wuerfel:~/arm-soc$ git grep -wl timeval | wc
+    320     320   10353
+arnd@wuerfel:~/arm-soc$ git grep -wl timespec | wc
+    406     406   10886
 
-In my environment, system will be shutdown by high temperature. So the
-filesystem would be unclean umount several times.
+I believe we have to audit all of them anyway if we want to change
+the kernel to less problematic types and introduce new user
+interfaces.
 
-Besides, do we have some tools like fsck to re-valid the partition after
-this error happen? I can't mount this partition now and format it again is
-the only way I know to deal with this situation.
+IMHO this work is helped if we change the uses to a new type
+as we find the problems. This lets us do the work one subsystem
+at a time and avoid accidental ABI changes. I don't care much what
+type that will be, and having a 96-bit type will certainly work
+well in a lot of cases, but I don't see a strong reason to use
+that over other types, especially when they can be more efficient.
 
-Thanks.
-
-Hu
+	Arnd
