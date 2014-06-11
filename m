@@ -1,8 +1,8 @@
 From: Roger Quadros <rogerq@ti.com>
 To: <tony@atomide.com>, <dwmw2@infradead.org>, <computersforpeace@gmail.com>
-Subject: [PATCH 11/36] mtd: nand: omap: Update DT binding documentation
-Date: Wed, 11 Jun 2014 11:56:16 +0300
-Message-ID: <1402477001-31132-12-git-send-email-rogerq@ti.com>
+Subject: [PATCH 12/36] ARM: dts: omap3-beagle: Add NAND device
+Date: Wed, 11 Jun 2014 11:56:17 +0300
+Message-ID: <1402477001-31132-13-git-send-email-rogerq@ti.com>
 In-Reply-To: <1402477001-31132-1-git-send-email-rogerq@ti.com>
 References: <1402477001-31132-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
@@ -20,64 +20,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add compatible id, interrupts and update reg property description.
-As the NAND controller needs access to GPMC register space, we need
-to pass a second memory resource to the NAND controller node.
-
-Due to the wierd way the reg property has been implemented (i.e.
-CS number required in 1st number of reg property) we will need to
-use a number outside the possible CS numbers for the GPMC register space.
-
-As a SoC can have fewer than 10 chip selects, 255 seems like a safe
-bet for the GPMC register space.
+The beagle board contains a 16-bit NAND device connected to
+chip select 0 of the GPMC controller.
 
 Signed-off-by: Roger Quadros <rogerq@ti.com>
 ---
- Documentation/devicetree/bindings/mtd/gpmc-nand.txt | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
+ arch/arm/boot/dts/omap3-beagle.dts | 53 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 53 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-index 5e1f31b..8831116 100644
---- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-@@ -13,7 +13,13 @@ Documentation/devicetree/bindings/mtd/nand.txt
- 
- Required properties:
- 
-+ - compatible:	"ti,omap2-nand"
-  - reg:		The CS line the peripheral is connected to
-+		Should contain 2 resource specifiers
-+		- range id (CS number), base offset and length of the
-+		  NAND I/O space
-+		- range id,  base offset and length of the GPMC register space.
-+ - interrupts:	Interrupt resource specifier for GPMC interrupt.
- 
- Optional properties:
- 
-@@ -53,17 +59,21 @@ Example for an AM33xx board:
- 	gpmc: gpmc@50000000 {
- 		compatible = "ti,am3352-gpmc";
- 		ti,hwmods = "gpmc";
--		reg = <0x50000000 0x1000000>;
-+		reg = <0x50000000 0x36c>;
- 		interrupts = <100>;
- 		gpmc,num-cs = <8>;
- 		gpmc,num-waitpins = <2>;
- 		#address-cells = <2>;
- 		#size-cells = <1>;
--		ranges = <0 0 0x08000000 0x2000>;	/* CS0: NAND */
-+		ranges = <0 0 0x08000000 0x1000000	/* CS0 space, 16MB */
-+			  255 0 0x50000000 0x36c>;	/* GPMC reg space */
- 		elm_id = <&elm>;
- 
- 		nand@0,0 {
--			reg = <0 0 0>; /* CS0, offset 0 */
-+			compatible = "ti,omap2-nand";
-+			reg = <0 0 4		/* CS0, offset 0, NAND I/O window 4 */
-+			       255 0 0x36c>;	/* GPMC reg space */
-+			interrupts = <100>;
- 			nand-bus-width = <16>;
- 			ti,nand-ecc-opt = "bch8";
- 			ti,nand-xfer-type = "polled";
+diff --git a/arch/arm/boot/dts/omap3-beagle.dts b/arch/arm/boot/dts/omap3-beagle.dts
+index 3c3e6da..fafd229 100644
+--- a/arch/arm/boot/dts/omap3-beagle.dts
++++ b/arch/arm/boot/dts/omap3-beagle.dts
+@@ -350,3 +350,56 @@
+ 		};
+ 	};
+ };
++
++&gpmc {
++	ranges = <0 0 0x30000000 0x1000000	/* CS0 space, 16MB */
++		  255 0 0x6e000000 0x02d4>;	/* register space */
++
++	/* Chip select 0 */
++	nand@0,0 {
++		compatible = "ti,omap2-nand";
++		reg = <0 0 4		/* NAND I/O window, 4 bytes */
++		       255 0 0x02d4>;	/* GPMC register space */
++		interrupts = <20>;
++		ti,nand-ecc-opt = "ham1";
++		nand-bus-width = <16>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++
++		gpmc,cs-on-ns = <0>;
++		gpmc,cs-rd-off-ns = <36>;
++		gpmc,cs-wr-off-ns = <36>;
++		gpmc,adv-on-ns = <6>;
++		gpmc,adv-rd-off-ns = <24>;
++		gpmc,adv-wr-off-ns = <36>;
++		gpmc,oe-on-ns = <6>;
++		gpmc,oe-off-ns = <48>;
++		gpmc,we-on-ns = <6>;
++		gpmc,we-off-ns = <30>;
++		gpmc,rd-cycle-ns = <72>;
++		gpmc,wr-cycle-ns = <72>;
++		gpmc,access-ns = <54>;
++		gpmc,wr-access-ns = <30>;
++
++		partition@0 {
++			label = "X-Loader";
++			reg = <0 0x80000>;
++		};
++		partition@80000 {
++			label = "U-Boot";
++			reg = <0x80000 0x1e0000>;
++		};
++		partition@1c0000 {
++			label = "U-Boot Env";
++			reg = <0x260000 0x20000>;
++		};
++		partition@280000 {
++			label = "Kernel";
++			reg = <0x280000 0x400000>;
++		};
++		partition@780000 {
++			label = "Filesystem";
++			reg = <0x680000 0xf980000>;
++		};
++	};
++};
 -- 
 1.8.3.2
