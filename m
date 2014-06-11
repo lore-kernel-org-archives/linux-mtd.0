@@ -1,9 +1,9 @@
 From: Roger Quadros <rogerq@ti.com>
 To: <tony@atomide.com>, <dwmw2@infradead.org>, <computersforpeace@gmail.com>
-Subject: [PATCH 04/36] ARM: OMAP2+: gpmc: Add gpmc timings and settings to
- platform data
-Date: Wed, 11 Jun 2014 11:56:09 +0300
-Message-ID: <1402477001-31132-5-git-send-email-rogerq@ti.com>
+Subject: [PATCH 06/36] mtd: nand: omap: Move gpmc_update_nand_reg to nand
+ driver
+Date: Wed, 11 Jun 2014 11:56:11 +0300
+Message-ID: <1402477001-31132-7-git-send-email-rogerq@ti.com>
 In-Reply-To: <1402477001-31132-1-git-send-email-rogerq@ti.com>
 References: <1402477001-31132-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
@@ -21,313 +21,331 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add device_timings, gpmc_timings and gpmc_setting to
-gpmc platform data.
+GPMC and NAND drivers share the same register space but never use the
+same registers. As there is no clear address seperation between the
+registers for GPMC and NAND, we can't easily split it up into 2 regions
+i.e. one for GPMC and other for NAND. Instead, we simply remap the entire
+register space in both the drivers. The NAND driver doesn't re-request
+the region as it is already requested by the GPMC driver (parent).
 
 Signed-off-by: Roger Quadros <rogerq@ti.com>
 ---
- arch/arm/mach-omap2/gpmc.h              | 134 ------------------------------
- include/linux/platform_data/gpmc-omap.h | 139 ++++++++++++++++++++++++++++++++
- 2 files changed, 139 insertions(+), 134 deletions(-)
+ arch/arm/mach-omap2/gpmc-nand.c              |  16 +++-
+ arch/arm/mach-omap2/gpmc.c                   |  34 +-------
+ arch/arm/mach-omap2/gpmc.h                   |   5 +-
+ drivers/mtd/nand/omap2.c                     | 123 ++++++++++++++++++++++++---
+ include/linux/platform_data/mtd-nand-omap2.h |   3 +-
+ 5 files changed, 127 insertions(+), 54 deletions(-)
 
+diff --git a/arch/arm/mach-omap2/gpmc-nand.c b/arch/arm/mach-omap2/gpmc-nand.c
+index 3e6420b..aaebd2f 100644
+--- a/arch/arm/mach-omap2/gpmc-nand.c
++++ b/arch/arm/mach-omap2/gpmc-nand.c
+@@ -26,11 +26,16 @@
+ 
+ static struct resource gpmc_nand_resource[] = {
+ 	{
++		/* GPMC I/O space */
+ 		.flags		= IORESOURCE_MEM,
+ 	},
+ 	{
+-		.flags		= IORESOURCE_IRQ,
++		/* GPMC register space */
++		.flags		= IORESOURCE_MEM,
+ 	},
++	{
++		.flags		= IORESOURCE_IRQ,
++	}
+ };
+ 
+ static struct platform_device gpmc_nand_device = {
+@@ -91,6 +96,7 @@ int gpmc_nand_init(struct omap_nand_platform_data *gpmc_nand_data,
+ 	int err	= 0;
+ 	struct gpmc_settings s;
+ 	struct device *dev = &gpmc_nand_device.dev;
++	struct resource res;
+ 
+ 	memset(&s, 0, sizeof(struct gpmc_settings));
+ 
+@@ -107,7 +113,11 @@ int gpmc_nand_init(struct omap_nand_platform_data *gpmc_nand_data,
+ 	gpmc_nand_resource[0].end = gpmc_nand_resource[0].start +
+ 							NAND_IO_SIZE - 1;
+ 
+-	gpmc_nand_resource[1].start = gpmc_get_irq();
++	gpmc_get_mem_resource(&res);
++	gpmc_nand_resource[1].start = res.start;
++	gpmc_nand_resource[1].end = res.end;
++
++	gpmc_nand_resource[2].start = gpmc_get_irq();
+ 
+ 	if (gpmc_t) {
+ 		err = gpmc_cs_set_timings(gpmc_nand_data->cs, gpmc_t);
+@@ -132,8 +142,6 @@ int gpmc_nand_init(struct omap_nand_platform_data *gpmc_nand_data,
+ 	if (err < 0)
+ 		goto out_free_cs;
+ 
+-	gpmc_update_nand_reg(&gpmc_nand_data->reg, gpmc_nand_data->cs);
+-
+ 	if (!gpmc_hwecc_bch_capable(gpmc_nand_data->ecc_opt)) {
+ 		dev_err(dev, "Unsupported NAND ECC scheme selected\n");
+ 		return -EINVAL;
+diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
+index 2524541..0a8b6ca 100644
+--- a/arch/arm/mach-omap2/gpmc.c
++++ b/arch/arm/mach-omap2/gpmc.c
+@@ -625,38 +625,10 @@ int gpmc_configure(int cmd, int wval)
+ }
+ EXPORT_SYMBOL(gpmc_configure);
+ 
+-void gpmc_update_nand_reg(struct gpmc_nand_regs *reg, int cs)
++void gpmc_get_mem_resource(struct resource *res)
+ {
+-	int i;
+-
+-	reg->gpmc_status = gpmc_base + GPMC_STATUS;
+-	reg->gpmc_irqstatus = gpmc_base + GPMC_IRQSTATUS;
+-	reg->gpmc_irqenable = gpmc_base + GPMC_IRQENABLE;
+-	reg->gpmc_nand_command = gpmc_base + GPMC_CS0_OFFSET +
+-				GPMC_CS_NAND_COMMAND + GPMC_CS_SIZE * cs;
+-	reg->gpmc_nand_address = gpmc_base + GPMC_CS0_OFFSET +
+-				GPMC_CS_NAND_ADDRESS + GPMC_CS_SIZE * cs;
+-	reg->gpmc_nand_data = gpmc_base + GPMC_CS0_OFFSET +
+-				GPMC_CS_NAND_DATA + GPMC_CS_SIZE * cs;
+-	reg->gpmc_prefetch_config1 = gpmc_base + GPMC_PREFETCH_CONFIG1;
+-	reg->gpmc_prefetch_config2 = gpmc_base + GPMC_PREFETCH_CONFIG2;
+-	reg->gpmc_prefetch_control = gpmc_base + GPMC_PREFETCH_CONTROL;
+-	reg->gpmc_prefetch_status = gpmc_base + GPMC_PREFETCH_STATUS;
+-	reg->gpmc_ecc_config = gpmc_base + GPMC_ECC_CONFIG;
+-	reg->gpmc_ecc_control = gpmc_base + GPMC_ECC_CONTROL;
+-	reg->gpmc_ecc_size_config = gpmc_base + GPMC_ECC_SIZE_CONFIG;
+-	reg->gpmc_ecc1_result = gpmc_base + GPMC_ECC1_RESULT;
+-
+-	for (i = 0; i < GPMC_BCH_NUM_REMAINDER; i++) {
+-		reg->gpmc_bch_result0[i] = gpmc_base + GPMC_ECC_BCH_RESULT_0 +
+-					   GPMC_BCH_SIZE * i;
+-		reg->gpmc_bch_result1[i] = gpmc_base + GPMC_ECC_BCH_RESULT_1 +
+-					   GPMC_BCH_SIZE * i;
+-		reg->gpmc_bch_result2[i] = gpmc_base + GPMC_ECC_BCH_RESULT_2 +
+-					   GPMC_BCH_SIZE * i;
+-		reg->gpmc_bch_result3[i] = gpmc_base + GPMC_ECC_BCH_RESULT_3 +
+-					   GPMC_BCH_SIZE * i;
+-	}
++	res->start =  phys_base;
++	res->end = res->start + mem_size - 1;
+ }
+ 
+ int gpmc_get_irq(void)
 diff --git a/arch/arm/mach-omap2/gpmc.h b/arch/arm/mach-omap2/gpmc.h
-index c476712..13554e7 100644
+index a558ebd..479ce84 100644
 --- a/arch/arm/mach-omap2/gpmc.h
 +++ b/arch/arm/mach-omap2/gpmc.h
-@@ -71,140 +71,6 @@
- #define GPMC_IRQ_FIFOEVENTENABLE	0x01
- #define GPMC_IRQ_COUNT_EVENT		0x02
+@@ -21,9 +21,6 @@
+ #define GPMC_CS_CONFIG5		0x10
+ #define GPMC_CS_CONFIG6		0x14
+ #define GPMC_CS_CONFIG7		0x18
+-#define GPMC_CS_NAND_COMMAND	0x1c
+-#define GPMC_CS_NAND_ADDRESS	0x20
+-#define GPMC_CS_NAND_DATA	0x24
  
--#define GPMC_BURST_4			4	/* 4 word burst */
--#define GPMC_BURST_8			8	/* 8 word burst */
--#define GPMC_BURST_16			16	/* 16 word burst */
--#define GPMC_DEVWIDTH_8BIT		1	/* 8-bit device width */
--#define GPMC_DEVWIDTH_16BIT		2	/* 16-bit device width */
--#define GPMC_MUX_AAD			1	/* Addr-Addr-Data multiplex */
--#define GPMC_MUX_AD			2	/* Addr-Data multiplex */
--
--/* bool type time settings */
--struct gpmc_bool_timings {
--	bool cycle2cyclediffcsen;
--	bool cycle2cyclesamecsen;
--	bool we_extra_delay;
--	bool oe_extra_delay;
--	bool adv_extra_delay;
--	bool cs_extra_delay;
--	bool time_para_granularity;
--};
--
--/*
-- * Note that all values in this struct are in nanoseconds except sync_clk
-- * (which is in picoseconds), while the register values are in gpmc_fck cycles.
-- */
--struct gpmc_timings {
--	/* Minimum clock period for synchronous mode (in picoseconds) */
--	u32 sync_clk;
--
--	/* Chip-select signal timings corresponding to GPMC_CS_CONFIG2 */
--	u32 cs_on;		/* Assertion time */
--	u32 cs_rd_off;		/* Read deassertion time */
--	u32 cs_wr_off;		/* Write deassertion time */
--
--	/* ADV signal timings corresponding to GPMC_CONFIG3 */
--	u32 adv_on;		/* Assertion time */
--	u32 adv_rd_off;		/* Read deassertion time */
--	u32 adv_wr_off;		/* Write deassertion time */
--
--	/* WE signals timings corresponding to GPMC_CONFIG4 */
--	u32 we_on;		/* WE assertion time */
--	u32 we_off;		/* WE deassertion time */
--
--	/* OE signals timings corresponding to GPMC_CONFIG4 */
--	u32 oe_on;		/* OE assertion time */
--	u32 oe_off;		/* OE deassertion time */
--
--	/* Access time and cycle time timings corresponding to GPMC_CONFIG5 */
--	u32 page_burst_access;	/* Multiple access word delay */
--	u32 access;		/* Start-cycle to first data valid delay */
--	u32 rd_cycle;		/* Total read cycle time */
--	u32 wr_cycle;		/* Total write cycle time */
--
--	u32 bus_turnaround;
--	u32 cycle2cycle_delay;
--
--	u32 wait_monitoring;
--	u32 clk_activation;
--
--	/* The following are only on OMAP3430 */
--	u32 wr_access;		/* WRACCESSTIME */
--	u32 wr_data_mux_bus;	/* WRDATAONADMUXBUS */
--
--	struct gpmc_bool_timings bool_timings;
--};
--
--/* Device timings in picoseconds */
--struct gpmc_device_timings {
--	u32 t_ceasu;	/* address setup to CS valid */
--	u32 t_avdasu;	/* address setup to ADV valid */
--	/* XXX: try to combine t_avdp_r & t_avdp_w. Issue is
--	 * of tusb using these timings even for sync whilst
--	 * ideally for adv_rd/(wr)_off it should have considered
--	 * t_avdh instead. This indirectly necessitates r/w
--	 * variations of t_avdp as it is possible to have one
--	 * sync & other async
--	 */
--	u32 t_avdp_r;	/* ADV low time (what about t_cer ?) */
--	u32 t_avdp_w;
--	u32 t_aavdh;	/* address hold time */
--	u32 t_oeasu;	/* address setup to OE valid */
--	u32 t_aa;	/* access time from ADV assertion */
--	u32 t_iaa;	/* initial access time */
--	u32 t_oe;	/* access time from OE assertion */
--	u32 t_ce;	/* access time from CS asertion */
--	u32 t_rd_cycle;	/* read cycle time */
--	u32 t_cez_r;	/* read CS deassertion to high Z */
--	u32 t_cez_w;	/* write CS deassertion to high Z */
--	u32 t_oez;	/* OE deassertion to high Z */
--	u32 t_weasu;	/* address setup to WE valid */
--	u32 t_wpl;	/* write assertion time */
--	u32 t_wph;	/* write deassertion time */
--	u32 t_wr_cycle;	/* write cycle time */
--
--	u32 clk;
--	u32 t_bacc;	/* burst access valid clock to output delay */
--	u32 t_ces;	/* CS setup time to clk */
--	u32 t_avds;	/* ADV setup time to clk */
--	u32 t_avdh;	/* ADV hold time from clk */
--	u32 t_ach;	/* address hold time from clk */
--	u32 t_rdyo;	/* clk to ready valid */
--
--	u32 t_ce_rdyz;	/* XXX: description ?, or use t_cez instead */
--	u32 t_ce_avd;	/* CS on to ADV on delay */
--
--	/* XXX: check the possibility of combining
--	 * cyc_aavhd_oe & cyc_aavdh_we
--	 */
--	u8 cyc_aavdh_oe;/* read address hold time in cycles */
--	u8 cyc_aavdh_we;/* write address hold time in cycles */
--	u8 cyc_oe;	/* access time from OE assertion in cycles */
--	u8 cyc_wpl;	/* write deassertion time in cycles */
--	u32 cyc_iaa;	/* initial access time in cycles */
--
--	/* extra delays */
--	bool ce_xdelay;
--	bool avd_xdelay;
--	bool oe_xdelay;
--	bool we_xdelay;
--};
--
--struct gpmc_settings {
--	bool burst_wrap;	/* enables wrap bursting */
--	bool burst_read;	/* enables read page/burst mode */
--	bool burst_write;	/* enables write page/burst mode */
--	bool device_nand;	/* device is NAND */
--	bool sync_read;		/* enables synchronous reads */
--	bool sync_write;	/* enables synchronous writes */
--	bool wait_on_read;	/* monitor wait on reads */
--	bool wait_on_write;	/* monitor wait on writes */
--	u32 burst_len;		/* page/burst length */
--	u32 device_width;	/* device bus width (8 or 16 bit) */
--	u32 mux_add_data;	/* multiplex address & data */
--	u32 wait_pin;		/* wait-pin to be used */
--};
--
- extern int gpmc_calc_timings(struct gpmc_timings *gpmc_t,
+ /* Control Commands */
+ #define GPMC_CONFIG_WP		0x00000005
+@@ -69,7 +66,7 @@ extern int gpmc_calc_timings(struct gpmc_timings *gpmc_t,
  			     struct gpmc_settings *gpmc_s,
  			     struct gpmc_device_timings *dev_t);
-diff --git a/include/linux/platform_data/gpmc-omap.h b/include/linux/platform_data/gpmc-omap.h
-index d32d9de..e861112 100644
---- a/include/linux/platform_data/gpmc-omap.h
-+++ b/include/linux/platform_data/gpmc-omap.h
-@@ -15,10 +15,149 @@
- /* Maximum Number of Chip Selects */
- #define GPMC_CS_NUM		8
  
-+/* bool type time settings */
-+struct gpmc_bool_timings {
-+	bool cycle2cyclediffcsen;
-+	bool cycle2cyclesamecsen;
-+	bool we_extra_delay;
-+	bool oe_extra_delay;
-+	bool adv_extra_delay;
-+	bool cs_extra_delay;
-+	bool time_para_granularity;
-+};
+-extern void gpmc_update_nand_reg(struct gpmc_nand_regs *reg, int cs);
++void gpmc_get_mem_resource(struct resource *res);
+ int gpmc_get_irq(void);
+ 
+ extern unsigned int gpmc_ticks_to_ns(unsigned int ticks);
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index 8de1660..120acee 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -140,6 +140,36 @@
+ #define GPMC_IRQ_FIFOEVENT	BIT(0)
+ #define GPMC_IRQ_TERMCOUNT	BIT(1)
+ 
++/* GPMC register offsets */
++#define GPMC_REVISION		0x00
++#define GPMC_SYSCONFIG		0x10
++#define GPMC_SYSSTATUS		0x14
++#define GPMC_IRQSTATUS		0x18
++#define GPMC_IRQENABLE		0x1c
++#define GPMC_TIMEOUT_CONTROL	0x40
++#define GPMC_ERR_ADDRESS	0x44
++#define GPMC_ERR_TYPE		0x48
++#define GPMC_CONFIG		0x50
++#define GPMC_STATUS		0x54
++#define GPMC_CS_NAND_COMMAND	0x7c
++#define GPMC_CS_NAND_ADDRESS	0x80
++#define GPMC_CS_NAND_DATA	0x84
++#define GPMC_PREFETCH_CONFIG1	0x1e0
++#define GPMC_PREFETCH_CONFIG2	0x1e4
++#define GPMC_PREFETCH_CONTROL	0x1ec
++#define GPMC_PREFETCH_STATUS	0x1f0
++#define GPMC_ECC_CONFIG		0x1f4
++#define GPMC_ECC_CONTROL	0x1f8
++#define GPMC_ECC_SIZE_CONFIG	0x1fc
++#define GPMC_ECC1_RESULT        0x200
++#define GPMC_ECC_BCH_RESULT_0   0x240   /* not available on OMAP2 */
++#define	GPMC_ECC_BCH_RESULT_1	0x244	/* not available on OMAP2 */
++#define	GPMC_ECC_BCH_RESULT_2	0x248	/* not available on OMAP2 */
++#define	GPMC_ECC_BCH_RESULT_3	0x24c	/* not available on OMAP2 */
 +
-+/*
-+ * Note that all values in this struct are in nanoseconds except sync_clk
-+ * (which is in picoseconds), while the register values are in gpmc_fck cycles.
-+ */
-+struct gpmc_timings {
-+	/* Minimum clock period for synchronous mode (in picoseconds) */
-+	u32 sync_clk;
++#define GPMC_CS_SIZE		0x30
++#define	GPMC_BCH_SIZE		0x10
 +
-+	/* Chip-select signal timings corresponding to GPMC_CS_CONFIG2 */
-+	u32 cs_on;		/* Assertion time */
-+	u32 cs_rd_off;		/* Read deassertion time */
-+	u32 cs_wr_off;		/* Write deassertion time */
+ #ifdef CONFIG_MTD_NAND_OMAP_BCH
+ static u_char bch8_vector[] = {0xf3, 0xdb, 0x14, 0x16, 0x8b, 0xd2, 0xbe, 0xcc,
+ 	0xac, 0x6b, 0xff, 0x99, 0x7b};
+@@ -158,6 +188,7 @@ struct omap_nand_info {
+ 
+ 	int				gpmc_cs;
+ 	unsigned long			phys_base;
++	void __iomem			*gpmc_base;
+ 	enum omap_ecc			ecc_opt;
+ 	struct completion		comp;
+ 	struct dma_chan			*dma;
+@@ -1584,20 +1615,58 @@ static int is_elm_present(struct omap_nand_info *info,
+ }
+ #endif /* CONFIG_MTD_NAND_ECC_BCH */
+ 
++static void gpmc_update_nand_reg(struct omap_nand_info *info)
++{
++	int i;
++	struct gpmc_nand_regs *reg = &info->reg;
++	int cs = info->gpmc_cs;
++	void __iomem *gpmc_base = info->gpmc_base;
 +
-+	/* ADV signal timings corresponding to GPMC_CONFIG3 */
-+	u32 adv_on;		/* Assertion time */
-+	u32 adv_rd_off;		/* Read deassertion time */
-+	u32 adv_wr_off;		/* Write deassertion time */
++	reg->gpmc_status = gpmc_base + GPMC_STATUS;
++	reg->gpmc_irqstatus = gpmc_base + GPMC_IRQSTATUS;
++	reg->gpmc_irqenable = gpmc_base + GPMC_IRQENABLE;
++	reg->gpmc_nand_command = gpmc_base + GPMC_CS_NAND_COMMAND +
++				 GPMC_CS_SIZE * cs;
++	reg->gpmc_nand_address = gpmc_base + GPMC_CS_NAND_ADDRESS +
++				 GPMC_CS_SIZE * cs;
++	reg->gpmc_nand_data = gpmc_base + GPMC_CS_NAND_DATA +
++				 GPMC_CS_SIZE * cs;
++	reg->gpmc_prefetch_config1 = gpmc_base + GPMC_PREFETCH_CONFIG1;
++	reg->gpmc_prefetch_config2 = gpmc_base + GPMC_PREFETCH_CONFIG2;
++	reg->gpmc_prefetch_control = gpmc_base + GPMC_PREFETCH_CONTROL;
++	reg->gpmc_prefetch_status = gpmc_base + GPMC_PREFETCH_STATUS;
++	reg->gpmc_ecc_config = gpmc_base + GPMC_ECC_CONFIG;
++	reg->gpmc_ecc_control = gpmc_base + GPMC_ECC_CONTROL;
++	reg->gpmc_ecc_size_config = gpmc_base + GPMC_ECC_SIZE_CONFIG;
++	reg->gpmc_ecc1_result = gpmc_base + GPMC_ECC1_RESULT;
 +
-+	/* WE signals timings corresponding to GPMC_CONFIG4 */
-+	u32 we_on;		/* WE assertion time */
-+	u32 we_off;		/* WE deassertion time */
++	for (i = 0; i < GPMC_BCH_NUM_REMAINDER; i++) {
++		reg->gpmc_bch_result0[i] = gpmc_base + GPMC_ECC_BCH_RESULT_0 +
++					   GPMC_BCH_SIZE * i;
++		reg->gpmc_bch_result1[i] = gpmc_base + GPMC_ECC_BCH_RESULT_1 +
++					   GPMC_BCH_SIZE * i;
++		reg->gpmc_bch_result2[i] = gpmc_base + GPMC_ECC_BCH_RESULT_2 +
++					   GPMC_BCH_SIZE * i;
++		reg->gpmc_bch_result3[i] = gpmc_base + GPMC_ECC_BCH_RESULT_3 +
++					   GPMC_BCH_SIZE * i;
++	}
++}
 +
-+	/* OE signals timings corresponding to GPMC_CONFIG4 */
-+	u32 oe_on;		/* OE assertion time */
-+	u32 oe_off;		/* OE deassertion time */
+ static int omap_nand_probe(struct platform_device *pdev)
+ {
+-	struct omap_nand_info		*info;
+-	struct omap_nand_platform_data	*pdata;
+-	struct mtd_info			*mtd;
+-	struct nand_chip		*nand_chip;
+-	struct nand_ecclayout		*ecclayout;
+-	int				err;
+-	int				i;
+-	dma_cap_mask_t			mask;
+-	unsigned			sig;
+-	unsigned			oob_index;
+-	struct resource			*res;
+-	struct mtd_part_parser_data	ppdata = {};
++	struct omap_nand_info *info;
++	struct omap_nand_platform_data *pdata;
++	struct mtd_info	*mtd;
++	struct nand_chip *nand_chip;
++	struct nand_ecclayout *ecclayout;
++	int err;
++	int i;
++	dma_cap_mask_t mask;
++	unsigned sig;
++	unsigned oob_index;
++	struct resource	*res;
++	struct mtd_part_parser_data ppdata = {};
++	struct device *dev = &pdev->dev;
+ 
+ 	pdata = dev_get_platdata(&pdev->dev);
+ 	if (pdata == NULL) {
+@@ -1617,7 +1686,6 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 
+ 	info->pdev		= pdev;
+ 	info->gpmc_cs		= pdata->cs;
+-	info->reg		= pdata->reg;
+ 	info->of_node		= pdata->of_node;
+ 	info->ecc_opt		= pdata->ecc_opt;
+ 	mtd			= &info->mtd;
+@@ -1628,8 +1696,14 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 	nand_chip->ecc.priv	= NULL;
+ 	nand_chip->options	|= NAND_SKIP_BBTSCAN;
+ 
++	/* GPMC external I/O space */
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	nand_chip->IO_ADDR_R = devm_ioremap_resource(&pdev->dev, res);
++	if (!res) {
++		dev_err(dev, "Can't get memory resource 0\n");
++		return -EINVAL;
++	}
 +
-+	/* Access time and cycle time timings corresponding to GPMC_CONFIG5 */
-+	u32 page_burst_access;	/* Multiple access word delay */
-+	u32 access;		/* Start-cycle to first data valid delay */
-+	u32 rd_cycle;		/* Total read cycle time */
-+	u32 wr_cycle;		/* Total write cycle time */
++	nand_chip->IO_ADDR_R = devm_ioremap_resource(dev, res);
+ 	if (IS_ERR(nand_chip->IO_ADDR_R))
+ 		return PTR_ERR(nand_chip->IO_ADDR_R);
+ 
+@@ -1640,6 +1714,27 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 	nand_chip->IO_ADDR_W = nand_chip->IO_ADDR_R;
+ 	nand_chip->cmd_ctrl  = omap_hwcontrol;
+ 
++	/* GPMC internal registers */
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
++	if (!res) {
++		dev_err(dev, "Can't get memory resource 1\n");
++		return -EINVAL;
++	}
 +
-+	u32 bus_turnaround;
-+	u32 cycle2cycle_delay;
-+
-+	u32 wait_monitoring;
-+	u32 clk_activation;
-+
-+	/* The following are only on OMAP3430 */
-+	u32 wr_access;		/* WRACCESSTIME */
-+	u32 wr_data_mux_bus;	/* WRDATAONADMUXBUS */
-+
-+	struct gpmc_bool_timings bool_timings;
-+};
-+
-+
-+/* Device timings in picoseconds */
-+struct gpmc_device_timings {
-+	u32 t_ceasu;	/* address setup to CS valid */
-+	u32 t_avdasu;	/* address setup to ADV valid */
-+	/* XXX: try to combine t_avdp_r & t_avdp_w. Issue is
-+	 * of tusb using these timings even for sync whilst
-+	 * ideally for adv_rd/(wr)_off it should have considered
-+	 * t_avdh instead. This indirectly necessitates r/w
-+	 * variations of t_avdp as it is possible to have one
-+	 * sync & other async
++	/*
++	 * This resource is already requested by the GPMC driver
++	 * so we can't request it again. Instead, we just ioremap it.
++	 * This driver doesn't access the same registers as the GPMC
++	 * driver so it is safe.
 +	 */
-+	u32 t_avdp_r;	/* ADV low time (what about t_cer ?) */
-+	u32 t_avdp_w;
-+	u32 t_aavdh;	/* address hold time */
-+	u32 t_oeasu;	/* address setup to OE valid */
-+	u32 t_aa;	/* access time from ADV assertion */
-+	u32 t_iaa;	/* initial access time */
-+	u32 t_oe;	/* access time from OE assertion */
-+	u32 t_ce;	/* access time from CS asertion */
-+	u32 t_rd_cycle;	/* read cycle time */
-+	u32 t_cez_r;	/* read CS deassertion to high Z */
-+	u32 t_cez_w;	/* write CS deassertion to high Z */
-+	u32 t_oez;	/* OE deassertion to high Z */
-+	u32 t_weasu;	/* address setup to WE valid */
-+	u32 t_wpl;	/* write assertion time */
-+	u32 t_wph;	/* write deassertion time */
-+	u32 t_wr_cycle;	/* write cycle time */
++	info->gpmc_base = devm_ioremap(dev, res->start, resource_size(res));
++	if (!info->gpmc_base) {
++		dev_err(dev, "Can't ioremap resource 1\n");
++		return -EADDRNOTAVAIL;
++	}
 +
-+	u32 clk;
-+	u32 t_bacc;	/* burst access valid clock to output delay */
-+	u32 t_ces;	/* CS setup time to clk */
-+	u32 t_avds;	/* ADV setup time to clk */
-+	u32 t_avdh;	/* ADV hold time from clk */
-+	u32 t_ach;	/* address hold time from clk */
-+	u32 t_rdyo;	/* clk to ready valid */
++	gpmc_update_nand_reg(info);
 +
-+	u32 t_ce_rdyz;	/* XXX: description ?, or use t_cez instead */
-+	u32 t_ce_avd;	/* CS on to ADV on delay */
+ 	/*
+ 	 * If RDY/BSY line is connected to OMAP then use the omap ready
+ 	 * function and the generic nand_wait function which reads the status
+diff --git a/include/linux/platform_data/mtd-nand-omap2.h b/include/linux/platform_data/mtd-nand-omap2.h
+index 97c9852..b71cfbdb6 100644
+--- a/include/linux/platform_data/mtd-nand-omap2.h
++++ b/include/linux/platform_data/mtd-nand-omap2.h
+@@ -62,10 +62,11 @@ struct omap_nand_platform_data {
+ 	enum nand_io		xfer_type;
+ 	int			devsize;
+ 	enum omap_ecc           ecc_opt;
+-	struct gpmc_nand_regs	reg;
+ 
+ 	/* for passing the partitions */
+ 	struct device_node	*of_node;
+ 	struct device_node	*elm_of_node;
 +
-+	/* XXX: check the possibility of combining
-+	 * cyc_aavhd_oe & cyc_aavdh_we
-+	 */
-+	u8 cyc_aavdh_oe;/* read address hold time in cycles */
-+	u8 cyc_aavdh_we;/* write address hold time in cycles */
-+	u8 cyc_oe;	/* access time from OE assertion in cycles */
-+	u8 cyc_wpl;	/* write deassertion time in cycles */
-+	u32 cyc_iaa;	/* initial access time in cycles */
-+
-+	/* extra delays */
-+	bool ce_xdelay;
-+	bool avd_xdelay;
-+	bool oe_xdelay;
-+	bool we_xdelay;
-+};
-+
-+#define GPMC_BURST_4			4	/* 4 word burst */
-+#define GPMC_BURST_8			8	/* 8 word burst */
-+#define GPMC_BURST_16			16	/* 16 word burst */
-+#define GPMC_DEVWIDTH_8BIT		1	/* 8-bit device width */
-+#define GPMC_DEVWIDTH_16BIT		2	/* 16-bit device width */
-+#define GPMC_MUX_AAD			1	/* Addr-Addr-Data multiplex */
-+#define GPMC_MUX_AD			2	/* Addr-Data multiplex */
-+
-+struct gpmc_settings {
-+	bool burst_wrap;	/* enables wrap bursting */
-+	bool burst_read;	/* enables read page/burst mode */
-+	bool burst_write;	/* enables write page/burst mode */
-+	bool device_nand;	/* device is NAND */
-+	bool sync_read;		/* enables synchronous reads */
-+	bool sync_write;	/* enables synchronous writes */
-+	bool wait_on_read;	/* monitor wait on reads */
-+	bool wait_on_write;	/* monitor wait on writes */
-+	u32 burst_len;		/* page/burst length */
-+	u32 device_width;	/* device bus width (8 or 16 bit) */
-+	u32 mux_add_data;	/* multiplex address & data */
-+	u32 wait_pin;		/* wait-pin to be used */
-+};
-+
-+
- /* Data for each chip select */
- struct gpmc_omap_cs_data {
- 	bool valid;			/* data is valid */
- 	bool is_nand;			/* device within this CS is NAND */
-+	struct gpmc_settings *settings;
-+	struct gpmc_device_timings *device_timings;
-+	struct gpmc_timings *gpmc_timings;
- 	struct platform_device *pdev;	/* device within this CS region */
- 	unsigned pdata_size;
++	struct gpmc_nand_regs	reg;		/* deprecated */
  };
+ #endif
 -- 
 1.8.3.2
