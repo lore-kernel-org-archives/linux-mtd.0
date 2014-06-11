@@ -1,9 +1,9 @@
 From: Roger Quadros <rogerq@ti.com>
 To: <tony@atomide.com>, <dwmw2@infradead.org>, <computersforpeace@gmail.com>
-Subject: [PATCH 08/36] mtd: nand: omap: Copy platform data parameters to
- omap_nand_info data
-Date: Wed, 11 Jun 2014 11:56:13 +0300
-Message-ID: <1402477001-31132-9-git-send-email-rogerq@ti.com>
+Subject: [PATCH 07/36] mtd: nand: omap: Move NAND write protect code from GPMC
+ to NAND driver
+Date: Wed, 11 Jun 2014 11:56:12 +0300
+Message-ID: <1402477001-31132-8-git-send-email-rogerq@ti.com>
 In-Reply-To: <1402477001-31132-1-git-send-email-rogerq@ti.com>
 References: <1402477001-31132-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
@@ -21,114 +21,171 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Copy all the platform data parameters to the driver's local data
-structure 'omap_nand_info' and use it in the entire driver. This will
-make it easer for device tree migration.
+The write protect (WP) pin is only used for NAND devices. So move
+the code into the NAND driver.
+
+Get rid of gpmc_configure() as it is no longer used.
 
 Signed-off-by: Roger Quadros <rogerq@ti.com>
 ---
- drivers/mtd/nand/omap2.c | 27 ++++++++++++++++++---------
- 1 file changed, 18 insertions(+), 9 deletions(-)
+ arch/arm/mach-omap2/gpmc-nand.c              |  4 ----
+ arch/arm/mach-omap2/gpmc.c                   | 29 ----------------------------
+ arch/arm/mach-omap2/gpmc.h                   |  5 -----
+ drivers/mtd/nand/omap2.c                     | 23 ++++++++++++++++++++++
+ include/linux/platform_data/mtd-nand-omap2.h |  1 +
+ 5 files changed, 24 insertions(+), 38 deletions(-)
 
+diff --git a/arch/arm/mach-omap2/gpmc-nand.c b/arch/arm/mach-omap2/gpmc-nand.c
+index aaebd2f..9649fd9 100644
+--- a/arch/arm/mach-omap2/gpmc-nand.c
++++ b/arch/arm/mach-omap2/gpmc-nand.c
+@@ -138,10 +138,6 @@ int gpmc_nand_init(struct omap_nand_platform_data *gpmc_nand_data,
+ 	if (err < 0)
+ 		goto out_free_cs;
+ 
+-	err = gpmc_configure(GPMC_CONFIG_WP, 0);
+-	if (err < 0)
+-		goto out_free_cs;
+-
+ 	if (!gpmc_hwecc_bch_capable(gpmc_nand_data->ecc_opt)) {
+ 		dev_err(dev, "Unsupported NAND ECC scheme selected\n");
+ 		return -EINVAL;
+diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
+index 0a8b6ca..a0c2194 100644
+--- a/arch/arm/mach-omap2/gpmc.c
++++ b/arch/arm/mach-omap2/gpmc.c
+@@ -596,35 +596,6 @@ void gpmc_cs_free(int cs)
+ }
+ EXPORT_SYMBOL(gpmc_cs_free);
+ 
+-/**
+- * gpmc_configure - write request to configure gpmc
+- * @cmd: command type
+- * @wval: value to write
+- * @return status of the operation
+- */
+-int gpmc_configure(int cmd, int wval)
+-{
+-	u32 regval;
+-
+-	switch (cmd) {
+-	case GPMC_CONFIG_WP:
+-		regval = gpmc_read_reg(GPMC_CONFIG);
+-		if (wval)
+-			regval &= ~GPMC_CONFIG_WRITEPROTECT; /* WP is ON */
+-		else
+-			regval |= GPMC_CONFIG_WRITEPROTECT;  /* WP is OFF */
+-		gpmc_write_reg(GPMC_CONFIG, regval);
+-		break;
+-
+-	default:
+-		pr_err("%s: command not supported\n", __func__);
+-		return -EINVAL;
+-	}
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL(gpmc_configure);
+-
+ void gpmc_get_mem_resource(struct resource *res)
+ {
+ 	res->start =  phys_base;
+diff --git a/arch/arm/mach-omap2/gpmc.h b/arch/arm/mach-omap2/gpmc.h
+index 479ce84..6204913 100644
+--- a/arch/arm/mach-omap2/gpmc.h
++++ b/arch/arm/mach-omap2/gpmc.h
+@@ -22,9 +22,6 @@
+ #define GPMC_CS_CONFIG6		0x14
+ #define GPMC_CS_CONFIG7		0x18
+ 
+-/* Control Commands */
+-#define GPMC_CONFIG_WP		0x00000005
+-
+ /* ECC commands */
+ #define GPMC_ECC_READ		0 /* Reset Hardware ECC for read */
+ #define GPMC_ECC_WRITE		1 /* Reset Hardware ECC for write */
+@@ -57,7 +54,6 @@
+ 
+ #define GPMC_DEVICETYPE_NOR		0
+ #define GPMC_DEVICETYPE_NAND		2
+-#define GPMC_CONFIG_WRITEPROTECT	0x00000010
+ #define WR_RD_PIN_MONITORING		0x00600000
+ #define GPMC_IRQ_FIFOEVENTENABLE	0x01
+ #define GPMC_IRQ_COUNT_EVENT		0x02
+@@ -79,7 +75,6 @@ extern int gpmc_cs_request(int cs, unsigned long size, unsigned long *base);
+ extern void gpmc_cs_free(int cs);
+ extern void omap3_gpmc_save_context(void);
+ extern void omap3_gpmc_restore_context(void);
+-extern int gpmc_configure(int cmd, int wval);
+ extern void gpmc_read_settings_dt(struct device_node *np,
+ 				  struct gpmc_settings *p);
+ 
 diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index bb41796..e205863 100644
+index 120acee..bb41796 100644
 --- a/drivers/mtd/nand/omap2.c
 +++ b/drivers/mtd/nand/omap2.c
-@@ -184,15 +184,19 @@ static struct nand_ecclayout omap_oobinfo;
+@@ -140,6 +140,9 @@
+ #define GPMC_IRQ_FIFOEVENT	BIT(0)
+ #define GPMC_IRQ_TERMCOUNT	BIT(1)
  
- struct omap_nand_info {
- 	struct nand_hw_control		controller;
--	struct omap_nand_platform_data	*pdata;
- 	struct mtd_info			mtd;
- 	struct nand_chip		nand;
- 	struct platform_device		*pdev;
++/* GPMC_CONFIG register bits */
++#define GPMC_CONFIG_WRITEPROTECT	BIT(4)
++
+ /* GPMC register offsets */
+ #define GPMC_REVISION		0x00
+ #define GPMC_SYSCONFIG		0x10
+@@ -206,6 +209,22 @@ struct omap_nand_info {
+ };
  
- 	int				gpmc_cs;
-+	bool				dev_ready;
-+	enum nand_io			xfer_type;
-+	int				devsize;
-+	enum omap_ecc			ecc_opt;
-+	struct device_node		*elm_of_node;
+ /**
++ * omap_nand_writeprotect - Control the WP line to the NAND chip
++ */
++static void omap_nand_writeprotect(struct omap_nand_info *info, bool on)
++{
++	u32 val;
 +
- 	unsigned long			phys_base;
- 	void __iomem			*gpmc_base;
--	enum omap_ecc			ecc_opt;
- 	struct completion		comp;
- 	struct dma_chan			*dma;
- 	int				gpmc_irq;
-@@ -1708,6 +1712,11 @@ static int omap_nand_probe(struct platform_device *pdev)
- 	info->gpmc_cs		= pdata->cs;
- 	info->of_node		= pdata->of_node;
- 	info->ecc_opt		= pdata->ecc_opt;
-+	info->dev_ready	= pdata->dev_ready;
-+	info->xfer_type = pdata->xfer_type;
-+	info->devsize = pdata->devsize;
-+	info->elm_of_node = pdata->elm_of_node;
++	val = readl(info->reg.gpmc_config);
++	if (on)
++		val |= GPMC_CONFIG_WRITEPROTECT;
++	else
++		val &= GPMC_CONFIG_WRITEPROTECT;
 +
- 	mtd			= &info->mtd;
- 	mtd->priv		= &info->nand;
- 	mtd->name		= dev_name(&pdev->dev);
-@@ -1762,7 +1771,7 @@ static int omap_nand_probe(struct platform_device *pdev)
- 	 * chip delay which is slightly more than tR (AC Timing) of the NAND
- 	 * device and read status register until you get a failure or success
- 	 */
--	if (pdata->dev_ready) {
-+	if (info->dev_ready) {
- 		nand_chip->dev_ready = omap_dev_ready;
- 		nand_chip->chip_delay = 0;
- 	} else {
-@@ -1771,7 +1780,7 @@ static int omap_nand_probe(struct platform_device *pdev)
++	writel(val, info->reg.gpmc_config);
++}
++
++/**
+  * omap_prefetch_enable - configures and starts prefetch transfer
+  * @cs: cs (chip select) number
+  * @fifo_th: fifo threshold to be used for read/ write
+@@ -1622,6 +1641,7 @@ static void gpmc_update_nand_reg(struct omap_nand_info *info)
+ 	int cs = info->gpmc_cs;
+ 	void __iomem *gpmc_base = info->gpmc_base;
+ 
++	reg->gpmc_config = gpmc_base + GPMC_CONFIG;
+ 	reg->gpmc_status = gpmc_base + GPMC_STATUS;
+ 	reg->gpmc_irqstatus = gpmc_base + GPMC_IRQSTATUS;
+ 	reg->gpmc_irqenable = gpmc_base + GPMC_IRQENABLE;
+@@ -2029,6 +2049,9 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 		goto return_error;
  	}
  
- 	/* scan NAND device connected to chip controller */
--	nand_chip->options |= pdata->devsize & NAND_BUSWIDTH_16;
-+	nand_chip->options |= info->devsize & NAND_BUSWIDTH_16;
- 	if (nand_scan_ident(mtd, 1, NULL)) {
- 		pr_err("nand device scan failed, may be bus-width mismatch\n");
++	/* turn off write protect */
++	omap_nand_writeprotect(info, false);
++
+ 	/* second phase scan */
+ 	if (nand_scan_tail(mtd)) {
  		err = -ENXIO;
-@@ -1779,14 +1788,14 @@ static int omap_nand_probe(struct platform_device *pdev)
- 	}
+diff --git a/include/linux/platform_data/mtd-nand-omap2.h b/include/linux/platform_data/mtd-nand-omap2.h
+index b71cfbdb6..62a855e 100644
+--- a/include/linux/platform_data/mtd-nand-omap2.h
++++ b/include/linux/platform_data/mtd-nand-omap2.h
+@@ -34,6 +34,7 @@ enum omap_ecc {
+ };
  
- 	/* check for small page devices */
--	if ((mtd->oobsize < 64) && (pdata->ecc_opt != OMAP_ECC_HAM1_CODE_HW)) {
-+	if ((mtd->oobsize < 64) && (info->ecc_opt != OMAP_ECC_HAM1_CODE_HW)) {
- 		pr_err("small page devices are not supported\n");
- 		err = -EINVAL;
- 		goto return_error;
- 	}
- 
- 	/* re-populate low-level callbacks based on xfer modes */
--	switch (pdata->xfer_type) {
-+	switch (info->xfer_type) {
- 	case NAND_OMAP_PREFETCH_POLLED:
- 		nand_chip->read_buf   = omap_read_buf_pref;
- 		nand_chip->write_buf  = omap_write_buf_pref;
-@@ -1849,7 +1858,7 @@ static int omap_nand_probe(struct platform_device *pdev)
- 
- 	default:
- 		dev_err(&pdev->dev,
--			"xfer_type(%d) not supported!\n", pdata->xfer_type);
-+			"xfer_type(%d) not supported!\n", info->xfer_type);
- 		err = -EINVAL;
- 		goto return_error;
- 	}
-@@ -1945,7 +1954,7 @@ static int omap_nand_probe(struct platform_device *pdev)
- 		ecclayout->oobfree->offset	=
- 				ecclayout->eccpos[ecclayout->eccbytes - 1] + 1;
- 		/* This ECC scheme requires ELM H/W block */
--		if (is_elm_present(info, pdata->elm_of_node, BCH4_ECC) < 0) {
-+		if (is_elm_present(info, info->elm_of_node, BCH4_ECC) < 0) {
- 			pr_err("nand: error: could not initialize ELM\n");
- 			err = -ENODEV;
- 			goto return_error;
-@@ -2011,7 +2020,7 @@ static int omap_nand_probe(struct platform_device *pdev)
- 		nand_chip->ecc.read_page	= omap_read_page_bch;
- 		nand_chip->ecc.write_page	= omap_write_page_bch;
- 		/* This ECC scheme requires ELM H/W block */
--		err = is_elm_present(info, pdata->elm_of_node, BCH8_ECC);
-+		err = is_elm_present(info, info->elm_of_node, BCH8_ECC);
- 		if (err < 0) {
- 			pr_err("nand: error: could not initialize ELM\n");
- 			goto return_error;
+ struct gpmc_nand_regs {
++	void __iomem	*gpmc_config;
+ 	void __iomem	*gpmc_status;
+ 	void __iomem	*gpmc_irqstatus;
+ 	void __iomem	*gpmc_irqenable;
 -- 
 1.8.3.2
