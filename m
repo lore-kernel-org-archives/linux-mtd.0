@@ -1,8 +1,9 @@
 From: Roger Quadros <rogerq@ti.com>
 To: <tony@atomide.com>, <dwmw2@infradead.org>, <computersforpeace@gmail.com>
-Subject: [PATCH 12/36] ARM: dts: omap3-beagle: Add NAND device
-Date: Wed, 11 Jun 2014 11:56:17 +0300
-Message-ID: <1402477001-31132-13-git-send-email-rogerq@ti.com>
+Subject: [PATCH 14/36] ARM: OMAP2+: gpmc: Allow drivers to reconfigure GPMC
+ settings & timings
+Date: Wed, 11 Jun 2014 11:56:19 +0300
+Message-ID: <1402477001-31132-15-git-send-email-rogerq@ti.com>
 In-Reply-To: <1402477001-31132-1-git-send-email-rogerq@ti.com>
 References: <1402477001-31132-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
@@ -20,74 +21,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The beagle board contains a 16-bit NAND device connected to
-chip select 0 of the GPMC controller.
+Some devices (e.g. TUSB6010, omap-onenand) need to reconfigure the GPMC
+timings in order to operate with different peripheral clock frequencies.
+Introduce omap_gpmc_retime() to allow them to do that. The driver
+needs to pass the chips select number, GPMC settings and Device timings to
+omap_gpmc_retime().
+
+NOTE: Device tree and board code must still pass the most conservative
+timings to GPMC so that the device can be probed by the respective driver.
+e.g. Onenand must operate in asynchronous mode at bootup. The device driver
+can then request for more optimal timings via omap_gpmc_retime().
 
 Signed-off-by: Roger Quadros <rogerq@ti.com>
 ---
- arch/arm/boot/dts/omap3-beagle.dts | 53 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 53 insertions(+)
+ arch/arm/mach-omap2/gpmc.c              | 36 +++++++++++++++++++++++++++++++++
+ include/linux/platform_data/gpmc-omap.h | 12 +++++++++++
+ 2 files changed, 48 insertions(+)
 
-diff --git a/arch/arm/boot/dts/omap3-beagle.dts b/arch/arm/boot/dts/omap3-beagle.dts
-index 3c3e6da..fafd229 100644
---- a/arch/arm/boot/dts/omap3-beagle.dts
-+++ b/arch/arm/boot/dts/omap3-beagle.dts
-@@ -350,3 +350,56 @@
- 		};
- 	};
+diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
+index 70cb6b0..90b7686 100644
+--- a/arch/arm/mach-omap2/gpmc.c
++++ b/arch/arm/mach-omap2/gpmc.c
+@@ -1542,6 +1542,42 @@ static int __init omap_gpmc_init(void)
+ }
+ omap_postcore_initcall(omap_gpmc_init);
+ 
++/**
++ * omap_gpmc_retime - Reconfigre GPMC timings for the device
++ *
++ * @cs		Chip select number
++ * @gpmc_s	GPMC settings
++ * @dev_t	New device timings to set
++ */
++int omap_gpmc_retime(int cs, struct gpmc_settings *gpmc_s,
++		     struct gpmc_device_timings *dev_t)
++{
++	struct gpmc_timings gpmc_t;
++	struct device *dev = gpmc_dev;
++
++	if (!gpmc_dev)
++		return -ENODEV;
++
++	if (cs < 0 || cs >= gpmc_cs_num) {
++		dev_err(dev, "%s: Invalid find Chip Select\n", __func__);
++		return cs;
++	}
++
++	if (gpmc_cs_program_settings(cs, gpmc_s)) {
++		dev_err(dev, "%s: Failed to set GPMC settings\n", __func__);
++		return -EINVAL;
++	}
++
++	gpmc_calc_timings(&gpmc_t, gpmc_s, dev_t);
++	if (gpmc_cs_set_timings(cs, &gpmc_t)) {
++		dev_err(dev, "%s: Failed to set GPMC timings\n", __func__);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(omap_gpmc_retime);
++
+ static struct omap3_gpmc_regs gpmc_context;
+ 
+ void omap3_gpmc_save_context(void)
+diff --git a/include/linux/platform_data/gpmc-omap.h b/include/linux/platform_data/gpmc-omap.h
+index e861112..0d40c2a 100644
+--- a/include/linux/platform_data/gpmc-omap.h
++++ b/include/linux/platform_data/gpmc-omap.h
+@@ -166,4 +166,16 @@ struct gpmc_omap_platform_data {
+ 	struct gpmc_omap_cs_data cs[GPMC_CS_NUM];
  };
+ 
++#ifdef CONFIG_ARCH_OMAP2PLUS
++int omap_gpmc_retime(int cs, struct gpmc_settings *gpmc_s,
++		     struct gpmc_device_timings *dev_t);
++#else
++static inline int omap_gpmc_retime(int cs,
++				   struct gpmc_settings *gpmc_s,
++				   struct gpmc_device_timings *dev_t)
++{
++	return 0;
++}
++#endif /* CONFIG_ARCH_OMAP2PLUS */
 +
-+&gpmc {
-+	ranges = <0 0 0x30000000 0x1000000	/* CS0 space, 16MB */
-+		  255 0 0x6e000000 0x02d4>;	/* register space */
-+
-+	/* Chip select 0 */
-+	nand@0,0 {
-+		compatible = "ti,omap2-nand";
-+		reg = <0 0 4		/* NAND I/O window, 4 bytes */
-+		       255 0 0x02d4>;	/* GPMC register space */
-+		interrupts = <20>;
-+		ti,nand-ecc-opt = "ham1";
-+		nand-bus-width = <16>;
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+
-+		gpmc,cs-on-ns = <0>;
-+		gpmc,cs-rd-off-ns = <36>;
-+		gpmc,cs-wr-off-ns = <36>;
-+		gpmc,adv-on-ns = <6>;
-+		gpmc,adv-rd-off-ns = <24>;
-+		gpmc,adv-wr-off-ns = <36>;
-+		gpmc,oe-on-ns = <6>;
-+		gpmc,oe-off-ns = <48>;
-+		gpmc,we-on-ns = <6>;
-+		gpmc,we-off-ns = <30>;
-+		gpmc,rd-cycle-ns = <72>;
-+		gpmc,wr-cycle-ns = <72>;
-+		gpmc,access-ns = <54>;
-+		gpmc,wr-access-ns = <30>;
-+
-+		partition@0 {
-+			label = "X-Loader";
-+			reg = <0 0x80000>;
-+		};
-+		partition@80000 {
-+			label = "U-Boot";
-+			reg = <0x80000 0x1e0000>;
-+		};
-+		partition@1c0000 {
-+			label = "U-Boot Env";
-+			reg = <0x260000 0x20000>;
-+		};
-+		partition@280000 {
-+			label = "Kernel";
-+			reg = <0x280000 0x400000>;
-+		};
-+		partition@780000 {
-+			label = "Filesystem";
-+			reg = <0x680000 0xf980000>;
-+		};
-+	};
-+};
+ #endif /* _GPMC_OMAP_H */
 -- 
 1.8.3.2
