@@ -1,13 +1,13 @@
 Received: from comal.ext.ti.com ([198.47.26.152])
  by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WueMm-00070R-OP
- for linux-mtd@lists.infradead.org; Wed, 11 Jun 2014 08:58:45 +0000
+ id 1WueNE-00073U-Md
+ for linux-mtd@lists.infradead.org; Wed, 11 Jun 2014 08:59:13 +0000
 From: Roger Quadros <rogerq@ti.com>
 To: <tony@atomide.com>, <dwmw2@infradead.org>, <computersforpeace@gmail.com>
-Subject: [PATCH 25/36] ARM: OMAP2+: gpmc: Support multiple Chip Selects per
- device
-Date: Wed, 11 Jun 2014 11:56:30 +0300
-Message-ID: <1402477001-31132-26-git-send-email-rogerq@ti.com>
+Subject: [PATCH 33/36] ARM: OMAP2+: board-flash: Use gpmc_generic_init() for
+ NOR
+Date: Wed, 11 Jun 2014 11:56:38 +0300
+Message-ID: <1402477001-31132-34-git-send-email-rogerq@ti.com>
 In-Reply-To: <1402477001-31132-1-git-send-email-rogerq@ti.com>
 References: <1402477001-31132-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
@@ -25,185 +25,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some devices (e.g. tusb6010) need 2 chip selects to work with
-2 separate IOMEM resources. Allow such use case. The user just
-needs to call gpmc_generic_init() for as many chip selects
-with the same platform_device pointer. The GPMC driver will
-take care of fixing up the memory resources.
+Don't access any GPMC registers here. Use gpmc_generic_init()
+to pass GPMC Chip Select settings, platform device and platform data
+to the GPMC driver.
 
 Signed-off-by: Roger Quadros <rogerq@ti.com>
 ---
- arch/arm/mach-omap2/gpmc.c | 134 ++++++++++++++++++++++++++++++---------------
- 1 file changed, 91 insertions(+), 43 deletions(-)
+ arch/arm/mach-omap2/board-flash.c | 28 +++++++++++-----------------
+ 1 file changed, 11 insertions(+), 17 deletions(-)
 
-diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
-index 5563360..34545ca 100644
---- a/arch/arm/mach-omap2/gpmc.c
-+++ b/arch/arm/mach-omap2/gpmc.c
-@@ -1388,9 +1388,14 @@ static int gpmc_nand_setup(struct platform_device *parent_pdev,
+diff --git a/arch/arm/mach-omap2/board-flash.c b/arch/arm/mach-omap2/board-flash.c
+index b6885e4..617e441 100644
+--- a/arch/arm/mach-omap2/board-flash.c
++++ b/arch/arm/mach-omap2/board-flash.c
+@@ -41,7 +41,10 @@ static struct physmap_flash_data board_nor_data = {
+ };
  
- static void gpmc_probe_legacy(struct platform_device *pdev)
- {
--	int i, rc;
-+	int i, rc, j;
- 	struct device *dev = &pdev->dev;
- 	struct gpmc_omap_platform_data *gpmc_pdata;
-+	struct resource *mem_res;
-+	unsigned long cs_base;
-+	resource_size_t size;
-+	struct gpmc_timings gpmc_timings;
-+	struct gpmc_omap_cs_data *cs;
+ static struct resource board_nor_resource = {
++	/* GPMC driver will fixup the resource, see gpmc_probe_legacy () */
+ 	.flags		= IORESOURCE_MEM,
++	.start		= 0,
++	.end		= FLASH_SIZE_SDPV1 - 1,	/* fixed @runtime for SDPV2 */
+ };
  
- 	gpmc_pdata = dev->platform_data;
- 	gpmc_cs_num = GPMC_CS_NUM;
-@@ -1400,52 +1405,10 @@ static void gpmc_probe_legacy(struct platform_device *pdev)
- 		return;
+ static struct platform_device board_nor_device = {
+@@ -62,23 +65,14 @@ __init board_nor_init(struct mtd_partition *nor_parts, u8 nr_parts, u8 cs)
+ 	board_nor_data.parts	= nor_parts;
+ 	board_nor_data.nr_parts	= nr_parts;
  
- 	for (i = 0; i < GPMC_CS_NUM; i++) {
--		struct resource *mem_res;
--		unsigned long cs_base;
--		resource_size_t size;
--		struct gpmc_timings gpmc_timings;
--		struct gpmc_omap_cs_data *cs;
--
- 		cs = &gpmc_pdata->cs[i];
- 		if (!cs->valid)
- 			continue;
+-	/* Configure start address and size of NOR device */
+-	if (omap_rev() >= OMAP3430_REV_ES1_0) {
+-		err = gpmc_cs_request(cs, FLASH_SIZE_SDPV2 - 1,
+-				(unsigned long *)&board_nor_resource.start);
+-		board_nor_resource.end = board_nor_resource.start
+-					+ FLASH_SIZE_SDPV2 - 1;
+-	} else {
+-		err = gpmc_cs_request(cs, FLASH_SIZE_SDPV1 - 1,
+-				(unsigned long *)&board_nor_resource.start);
+-		board_nor_resource.end = board_nor_resource.start
+-					+ FLASH_SIZE_SDPV1 - 1;
+-	}
+-	if (err < 0) {
+-		pr_err("NOR: Can't request GPMC CS\n");
+-		return;
+-	}
+-	if (platform_device_register(&board_nor_device) < 0)
++	/* Configure size of NOR device */
++	if (omap_rev() >= OMAP3430_REV_ES1_0)
++		board_nor_resource.end = FLASH_SIZE_SDPV2 - 1;
++
++	err = gpmc_generic_init(cs, false,
++				NULL, NULL, NULL,
++				&board_nor_device, sizeof(board_nor_data));
++	if (err)
+ 		pr_err("Unable to register NOR device\n");
+ }
  
--		/*
--		 * Request a CS space. Use size from
--		 * platform device's MEM resource
--		 */
--		if (!cs->pdev)
--			goto skip_mem;
--
--		mem_res = cs->pdev->resource;
--		if (cs->pdev->num_resources < 1 ||
--		    resource_type(mem_res) != IORESOURCE_MEM) {
--			dev_err(dev, "Invalid IOMEM resource for CS %d\n", i);
--			continue;
--		}
--
--		size = mem_res->end - mem_res->start + 1;
--		if (gpmc_cs_request(i, size, &cs_base)) {
--			dev_err(dev, "Couldn't request resource for CS %d\n",
--				i);
--			continue;
--		}
--
--		mem_res->start = cs_base;
--		mem_res->end = cs_base + size - 1;
--
--		/* FIXME: When do we need to call gpmc_cs_remap()? */
--skip_mem:
--
--		/* Customized NAND setup */
--		if (cs->is_nand) {
--			if (gpmc_nand_setup(pdev, cs)) {
--				dev_err(dev, "Error setting up NAND on CS %d\n",
--					i);
--				continue;
--			}
--		}
--
- 		if (cs->settings) {
- 			if (gpmc_cs_program_settings(i, cs->settings)) {
- 				dev_err(dev,
-@@ -1474,10 +1437,95 @@ skip_mem:
- 				continue;
- 			}
- 		}
-+	}
-+
-+	/*
-+	 * All Chip Selects must be configured before platform devices are
-+	 * created as some devices (e.g. tusb6010) can use multiple
-+	 * Chip selects.
-+	 */
-+
-+	/* Fixup Memory resources */
-+	for (i = 0; i < GPMC_CS_NUM; i++) {
-+		int required_resources;
-+
-+		cs = &gpmc_pdata->cs[i];
-+		if (!cs->valid)
-+			continue;
- 
- 		if (!cs->pdev)
- 			continue;
- 
-+		/* Customized NAND setup */
-+		if (cs->is_nand) {
-+			if (gpmc_nand_setup(pdev, cs)) {
-+				dev_err(dev, "Error setting up NAND on CS %d\n",
-+					i);
-+				continue;
-+			}
-+		}
-+
-+		mem_res = cs->pdev->resource;
-+
-+		/*
-+		 * If device is present multiple times, fix the subsequent
-+		 * resources
-+		 */
-+		required_resources = 1;
-+		for (j = 0; j < i; j++) {
-+			if (gpmc_pdata->cs[j].pdev == cs->pdev) {
-+				mem_res++;
-+				required_resources++;
-+			}
-+		}
-+
-+		if (cs->pdev->num_resources < required_resources ||
-+		    resource_type(mem_res) != IORESOURCE_MEM) {
-+			dev_err(dev, "Invalid IOMEM resource for CS %d\n", i);
-+			continue;
-+		}
-+
-+		/*
-+		 * Request a CS space. Use size from
-+		 * platform device's MEM resource
-+		 */
-+		size = mem_res->end - mem_res->start + 1;
-+		if (gpmc_cs_request(i, size, &cs_base)) {
-+			dev_err(dev, "Couldn't request resource for CS %d\n",
-+				i);
-+			continue;
-+		}
-+
-+		mem_res->start = cs_base;
-+		mem_res->end = cs_base + size - 1;
-+	}
-+
-+	/* create the platform devices */
-+	for (i = 0; i < GPMC_CS_NUM; i++) {
-+		bool registered;
-+
-+		cs = &gpmc_pdata->cs[i];
-+		if (!cs->valid)
-+			continue;
-+
-+		if (!cs->pdev)
-+			continue;
-+
-+		/*
-+		 * same device can be present on multiple CS, don't
-+		 * register device more than once.
-+		 */
-+		registered = false;
-+		for (j = 0; j < i; j++) {
-+			if (gpmc_pdata->cs[j].pdev == cs->pdev) {
-+				registered = true;
-+				break;
-+			}
-+		}
-+
-+		if (registered)
-+			continue;
-+
- 		cs->pdev->dev.parent = dev;
- 		rc = platform_device_register(cs->pdev);
- 		if (rc < 0) {
 -- 
 1.8.3.2
