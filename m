@@ -1,8 +1,8 @@
 From: Roger Quadros <rogerq@ti.com>
 To: <tony@atomide.com>, <dwmw2@infradead.org>, <computersforpeace@gmail.com>
-Subject: [PATCH 01/36] ARM: OMAP3: hwmod: Fix gpmc memory resource space
-Date: Wed, 11 Jun 2014 11:56:06 +0300
-Message-ID: <1402477001-31132-2-git-send-email-rogerq@ti.com>
+Subject: [PATCH 02/36] ARM: dts: OMAP2+: Fix GPMC register space size
+Date: Wed, 11 Jun 2014 11:56:07 +0300
+Message-ID: <1402477001-31132-3-git-send-email-rogerq@ti.com>
 In-Reply-To: <1402477001-31132-1-git-send-email-rogerq@ti.com>
 References: <1402477001-31132-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
@@ -20,23 +20,109 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Use actual register space size from Reference Manual.
+
 Signed-off-by: Roger Quadros <rogerq@ti.com>
 ---
- arch/arm/mach-omap2/omap_hwmod_3xxx_data.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/am33xx.dtsi   | 2 +-
+ arch/arm/boot/dts/am4372.dtsi   | 2 +-
+ arch/arm/boot/dts/omap2420.dtsi | 2 +-
+ arch/arm/boot/dts/omap2430.dtsi | 2 +-
+ arch/arm/boot/dts/omap3.dtsi    | 2 +-
+ arch/arm/boot/dts/omap4.dtsi    | 2 +-
+ arch/arm/boot/dts/omap5.dtsi    | 2 +-
+ 7 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/arch/arm/mach-omap2/omap_hwmod_3xxx_data.c b/arch/arm/mach-omap2/omap_hwmod_3xxx_data.c
-index 71ac7d5..f2848a8 100644
---- a/arch/arm/mach-omap2/omap_hwmod_3xxx_data.c
-+++ b/arch/arm/mach-omap2/omap_hwmod_3xxx_data.c
-@@ -3426,7 +3426,7 @@ static struct omap_hwmod_addr_space omap3xxx_counter_32k_addrs[] = {
- static struct omap_hwmod_addr_space omap3xxx_gpmc_addrs[] = {
- 	{
- 		.pa_start	= 0x6e000000,
--		.pa_end		= 0x6e000fff,
-+		.pa_end		= 0x6e0002d4,
- 		.flags		= ADDR_TYPE_RT
- 	},
- 	{ }
+diff --git a/arch/arm/boot/dts/am33xx.dtsi b/arch/arm/boot/dts/am33xx.dtsi
+index 7ad75b4..27f0b25 100644
+--- a/arch/arm/boot/dts/am33xx.dtsi
++++ b/arch/arm/boot/dts/am33xx.dtsi
+@@ -767,7 +767,7 @@
+ 			compatible = "ti,am3352-gpmc";
+ 			ti,hwmods = "gpmc";
+ 			ti,no-idle-on-init;
+-			reg = <0x50000000 0x2000>;
++			reg = <0x50000000 0x36c>;
+ 			interrupts = <100>;
+ 			gpmc,num-cs = <7>;
+ 			gpmc,num-waitpins = <2>;
+diff --git a/arch/arm/boot/dts/am4372.dtsi b/arch/arm/boot/dts/am4372.dtsi
+index d1f8707..0014d5d 100644
+--- a/arch/arm/boot/dts/am4372.dtsi
++++ b/arch/arm/boot/dts/am4372.dtsi
+@@ -727,7 +727,7 @@
+ 			ti,hwmods = "gpmc";
+ 			clocks = <&l3s_gclk>;
+ 			clock-names = "fck";
+-			reg = <0x50000000 0x2000>;
++			reg = <0x50000000 0x36c>;
+ 			interrupts = <GIC_SPI 100 IRQ_TYPE_LEVEL_HIGH>;
+ 			gpmc,num-cs = <7>;
+ 			gpmc,num-waitpins = <2>;
+diff --git a/arch/arm/boot/dts/omap2420.dtsi b/arch/arm/boot/dts/omap2420.dtsi
+index 2d99798..d0f5953 100644
+--- a/arch/arm/boot/dts/omap2420.dtsi
++++ b/arch/arm/boot/dts/omap2420.dtsi
+@@ -79,7 +79,7 @@
+ 
+ 		gpmc: gpmc@6800a000 {
+ 			compatible = "ti,omap2420-gpmc";
+-			reg = <0x6800a000 0x1000>;
++			reg = <0x6800a000 0x23c>;
+ 			#address-cells = <2>;
+ 			#size-cells = <1>;
+ 			interrupts = <20>;
+diff --git a/arch/arm/boot/dts/omap2430.dtsi b/arch/arm/boot/dts/omap2430.dtsi
+index 42d2c61..94f81e8 100644
+--- a/arch/arm/boot/dts/omap2430.dtsi
++++ b/arch/arm/boot/dts/omap2430.dtsi
+@@ -106,7 +106,7 @@
+ 
+ 		gpmc: gpmc@6e000000 {
+ 			compatible = "ti,omap2430-gpmc";
+-			reg = <0x6e000000 0x1000>;
++			reg = <0x6e000000 0x23c>;
+ 			#address-cells = <2>;
+ 			#size-cells = <1>;
+ 			interrupts = <20>;
+diff --git a/arch/arm/boot/dts/omap3.dtsi b/arch/arm/boot/dts/omap3.dtsi
+index 4231191..fc7a3e3 100644
+--- a/arch/arm/boot/dts/omap3.dtsi
++++ b/arch/arm/boot/dts/omap3.dtsi
+@@ -687,7 +687,7 @@
+ 		gpmc: gpmc@6e000000 {
+ 			compatible = "ti,omap3430-gpmc";
+ 			ti,hwmods = "gpmc";
+-			reg = <0x6e000000 0x02d0>;
++			reg = <0x6e000000 0x02d4>;
+ 			interrupts = <20>;
+ 			gpmc,num-cs = <8>;
+ 			gpmc,num-waitpins = <4>;
+diff --git a/arch/arm/boot/dts/omap4.dtsi b/arch/arm/boot/dts/omap4.dtsi
+index 649b5cd..469c699 100644
+--- a/arch/arm/boot/dts/omap4.dtsi
++++ b/arch/arm/boot/dts/omap4.dtsi
+@@ -288,7 +288,7 @@
+ 
+ 		gpmc: gpmc@50000000 {
+ 			compatible = "ti,omap4430-gpmc";
+-			reg = <0x50000000 0x1000>;
++			reg = <0x50000000 0x37c>;
+ 			#address-cells = <2>;
+ 			#size-cells = <1>;
+ 			interrupts = <GIC_SPI 20 IRQ_TYPE_LEVEL_HIGH>;
+diff --git a/arch/arm/boot/dts/omap5.dtsi b/arch/arm/boot/dts/omap5.dtsi
+index 36b4312..187c93f 100644
+--- a/arch/arm/boot/dts/omap5.dtsi
++++ b/arch/arm/boot/dts/omap5.dtsi
+@@ -317,7 +317,7 @@
+ 
+ 		gpmc: gpmc@50000000 {
+ 			compatible = "ti,omap4430-gpmc";
+-			reg = <0x50000000 0x1000>;
++			reg = <0x50000000 0x37c>;
+ 			#address-cells = <2>;
+ 			#size-cells = <1>;
+ 			interrupts = <GIC_SPI 20 IRQ_TYPE_LEVEL_HIGH>;
 -- 
 1.8.3.2
