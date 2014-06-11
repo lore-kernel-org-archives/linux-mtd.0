@@ -1,9 +1,9 @@
 From: Roger Quadros <rogerq@ti.com>
 To: <tony@atomide.com>, <dwmw2@infradead.org>, <computersforpeace@gmail.com>
-Subject: [PATCH 14/36] ARM: OMAP2+: gpmc: Allow drivers to reconfigure GPMC
- settings & timings
-Date: Wed, 11 Jun 2014 11:56:19 +0300
-Message-ID: <1402477001-31132-15-git-send-email-rogerq@ti.com>
+Subject: [PATCH 15/36] ARM: OMAP2+: gpmc: Allow drivers to query GPMC_CLK
+ period
+Date: Wed, 11 Jun 2014 11:56:20 +0300
+Message-ID: <1402477001-31132-16-git-send-email-rogerq@ti.com>
 In-Reply-To: <1402477001-31132-1-git-send-email-rogerq@ti.com>
 References: <1402477001-31132-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
@@ -21,90 +21,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some devices (e.g. TUSB6010, omap-onenand) need to reconfigure the GPMC
-timings in order to operate with different peripheral clock frequencies.
-Introduce omap_gpmc_retime() to allow them to do that. The driver
-needs to pass the chips select number, GPMC settings and Device timings to
-omap_gpmc_retime().
+GPMC_CLK is the external clock output pin that is used for syncronous
+accesses.
 
-NOTE: Device tree and board code must still pass the most conservative
-timings to GPMC so that the device can be probed by the respective driver.
-e.g. Onenand must operate in asynchronous mode at bootup. The device driver
-can then request for more optimal timings via omap_gpmc_retime().
+Device drivers need to know the fastest possible GPMC_CLK period in order
+to calculate the most optimal device timings. Add the function
+omap_gpmc_get_clk_period() to allow drivers to get the nearset possible
+(equal to or greater than) GPMC_CLK period given the minimum
+clock period supported by the attached device.
+
+This is especially needed by the onenand driver as it calculates
+device timings on the fly for various onenand speed grades.
 
 Signed-off-by: Roger Quadros <rogerq@ti.com>
 ---
- arch/arm/mach-omap2/gpmc.c              | 36 +++++++++++++++++++++++++++++++++
- include/linux/platform_data/gpmc-omap.h | 12 +++++++++++
- 2 files changed, 48 insertions(+)
+ arch/arm/mach-omap2/gpmc.c              | 38 +++++++++++++++++++++++++++++++++
+ include/linux/platform_data/gpmc-omap.h |  8 +++++++
+ 2 files changed, 46 insertions(+)
 
 diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
-index 70cb6b0..90b7686 100644
+index 90b7686..50ef1a9 100644
 --- a/arch/arm/mach-omap2/gpmc.c
 +++ b/arch/arm/mach-omap2/gpmc.c
-@@ -1542,6 +1542,42 @@ static int __init omap_gpmc_init(void)
+@@ -1578,6 +1578,44 @@ int omap_gpmc_retime(int cs, struct gpmc_settings *gpmc_s,
  }
- omap_postcore_initcall(omap_gpmc_init);
+ EXPORT_SYMBOL_GPL(omap_gpmc_retime);
  
 +/**
-+ * omap_gpmc_retime - Reconfigre GPMC timings for the device
++ * omap_gpmc_get_clk_period - Get the nearest possible (equal to or higer) GPMC
++ *				synchronous clock (GPMC_CLK) period.
 + *
 + * @cs		Chip select number
-+ * @gpmc_s	GPMC settings
-+ * @dev_t	New device timings to set
++ * @min_ps	Minimum synchronous clock period supporded by the device
++ *
++ * Returns the nearest possible GPMC clock period in picoseconds, equal to or
++ * higher than the requested period. 0 in case of error.
 + */
-+int omap_gpmc_retime(int cs, struct gpmc_settings *gpmc_s,
-+		     struct gpmc_device_timings *dev_t)
++unsigned long omap_gpmc_get_clk_period(int cs,
++				       unsigned long min_ps)
 +{
-+	struct gpmc_timings gpmc_t;
++	int div;
++	unsigned long clk_ps;
 +	struct device *dev = gpmc_dev;
 +
 +	if (!gpmc_dev)
-+		return -ENODEV;
++		return 0;
 +
 +	if (cs < 0 || cs >= gpmc_cs_num) {
-+		dev_err(dev, "%s: Invalid find Chip Select\n", __func__);
++		dev_err(dev, "%s: Invalid Chip Select\n", __func__);
 +		return cs;
 +	}
 +
-+	if (gpmc_cs_program_settings(cs, gpmc_s)) {
-+		dev_err(dev, "%s: Failed to set GPMC settings\n", __func__);
-+		return -EINVAL;
++	div = gpmc_calc_divider(min_ps);
++	if (div < 0) {
++		dev_err(dev, "%s: Can't support requested clock period %lu ps\n",
++			__func__, min_ps);
++		return 0;
 +	}
 +
-+	gpmc_calc_timings(&gpmc_t, gpmc_s, dev_t);
-+	if (gpmc_cs_set_timings(cs, &gpmc_t)) {
-+		dev_err(dev, "%s: Failed to set GPMC timings\n", __func__);
-+		return -EINVAL;
-+	}
++	clk_ps = gpmc_get_fclk_period() * div;
 +
-+	return 0;
++	return clk_ps;
 +}
-+EXPORT_SYMBOL_GPL(omap_gpmc_retime);
++EXPORT_SYMBOL_GPL(omap_gpmc_get_clk_period);
 +
  static struct omap3_gpmc_regs gpmc_context;
  
  void omap3_gpmc_save_context(void)
 diff --git a/include/linux/platform_data/gpmc-omap.h b/include/linux/platform_data/gpmc-omap.h
-index e861112..0d40c2a 100644
+index 0d40c2a..05e4b6f 100644
 --- a/include/linux/platform_data/gpmc-omap.h
 +++ b/include/linux/platform_data/gpmc-omap.h
-@@ -166,4 +166,16 @@ struct gpmc_omap_platform_data {
- 	struct gpmc_omap_cs_data cs[GPMC_CS_NUM];
- };
- 
-+#ifdef CONFIG_ARCH_OMAP2PLUS
-+int omap_gpmc_retime(int cs, struct gpmc_settings *gpmc_s,
-+		     struct gpmc_device_timings *dev_t);
-+#else
-+static inline int omap_gpmc_retime(int cs,
-+				   struct gpmc_settings *gpmc_s,
-+				   struct gpmc_device_timings *dev_t)
+@@ -169,6 +169,8 @@ struct gpmc_omap_platform_data {
+ #ifdef CONFIG_ARCH_OMAP2PLUS
+ int omap_gpmc_retime(int cs, struct gpmc_settings *gpmc_s,
+ 		     struct gpmc_device_timings *dev_t);
++unsigned long omap_gpmc_get_clk_period(int cs,
++				       unsigned long min_ps);
+ #else
+ static inline int omap_gpmc_retime(int cs,
+ 				   struct gpmc_settings *gpmc_s,
+@@ -176,6 +178,12 @@ static inline int omap_gpmc_retime(int cs,
+ {
+ 	return 0;
+ }
++
++static inline unsigned long omap_gpmc_get_clk_period(int cs,
++						     unsigned long min_ps)
 +{
 +	return 0;
 +}
-+#endif /* CONFIG_ARCH_OMAP2PLUS */
-+
+ #endif /* CONFIG_ARCH_OMAP2PLUS */
+ 
  #endif /* _GPMC_OMAP_H */
 -- 
 1.8.3.2
