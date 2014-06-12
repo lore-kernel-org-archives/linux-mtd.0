@@ -1,23 +1,16 @@
-Message-ID: <53984389.40000@ti.com>
-Date: Wed, 11 Jun 2014 14:54:49 +0300
-From: Roger Quadros <rogerq@ti.com>
+Message-ID: <539954CD.5080309@atmel.com>
+Date: Thu, 12 Jun 2014 15:20:45 +0800
+From: Josh Wu <josh.wu@atmel.com>
 MIME-Version: 1.0
-To: Javier Martinez Canillas <javier@dowhile0.org>
-Subject: Re: [PATCH 00/36] OMAP: GPMC: Restructure and move OMAP GPMC driver
- out of mach-omap2
-References: <1402477001-31132-1-git-send-email-rogerq@ti.com>
- <CABxcv=mMAnnjd=F7itDWCt5QpVr=U5_mP=xhCW-oB5c2Doo75w@mail.gmail.com>
-In-Reply-To: <CABxcv=mMAnnjd=F7itDWCt5QpVr=U5_mP=xhCW-oB5c2Doo75w@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+To: Bo Shen <voice.shen@atmel.com>
+Subject: Re: [PATCH] mtd: atmel_nand: make ecc parameters same as definition
+References: <1402041728-12056-1-git-send-email-voice.shen@atmel.com>
+ <53958CCE.5080307@atmel.com> <5397CBF9.800@atmel.com>
+In-Reply-To: <5397CBF9.800@atmel.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- Tony Lindgren <tony@atomide.com>, nsekhar@ti.com,
- Linux Kernel <linux-kernel@vger.kernel.org>, kyungmin.park@samsung.com,
- linux-mtd@lists.infradead.org, "Gupta, Pekon" <pekon@ti.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ nicolas.ferre@atmel.com, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,70 +20,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Javier,
+Hi, Bo
 
-On 06/11/2014 02:52 PM, Javier Martinez Canillas wrote:
-> Hello Roger,
-> 
-> What a great series!!
+On 6/11/2014 11:24 AM, Bo Shen wrote:
+> Hi Josh,
+>
+> On 06/09/2014 06:30 PM, Josh Wu wrote:
+>> Hi, Bo
+>>
+>> Thanks for the patch.
+>>
+>> On 6/6/2014 4:02 PM, Bo Shen wrote:
+>>> If the ecc parameter is not the same as definition, when the
+>>> mtd core check these parameters, it will give the unexpected
+>>> result.
+>> Could you be more specific to tell what kind of result will happened?
+>
+> For example:
+> When try to calculate how many bits can correct in one page according 
+> to the definition, it will give the wrong result.
+>
+> one page correct bits = (mtd->writesize * ecc->strength) / ecc->size;
+>
+> take the following use case as an example:
+> mtd->writesize = 2048 bytes,
+> ecc->strength = 4 bytes, (for 512 bytes)
+>
+> before this patch, the ecc->size = 2048, so the result is 4 bytes.
+>
+> after this patch, the ecc->size = 512, so the result is 16 bytes.
+>
+> The maximum correct bytes is 16 bytes while not 4 bytes. So, if not align
 
-Thanks :)
+That is clear enough, thanks. The patch is fine to me. so
+Acked-by: Josh Wu <josh.wu@atmel.com>
 
-> 
-> On Wed, Jun 11, 2014 at 10:56 AM, Roger Quadros <rogerq@ti.com> wrote:
->> Hi,
->>
->> This is a complete functional set to get the gpmc driver out of mach-omap2
->> and into drivers/memory. The DT binding remains the same except for the
->> following minor changes
-> 
-> I probably won't have time to do a proper review until at least next
-> week but doing a quick glance it looks very good to me.
-> 
->> - compatible property is required for NAND & OneNAND nodes
-> 
-> This is a minor ABI breakage but I agree with you that it is wrong
-> that these were not introduced in the first place and relied on the
-> dev node so I think is not that bad to break it in this case.
-> 
->> - Second register space and interrupts properties are required for
->>   NAND controller node
->> - ti,onenand-sync-rw property added for OneNAND node.
->>
->> The series does the following changes
->> - Move GPMC IRQ and NAND register handling to NAND driver.
->>   The entire GPMC register space is made available to the NAND driver.
->> - Clean up NAND device tree handling. Don't rely on legacy platform device
->>   i.e. don't call gpmc_nand_init()
->> - Add 2 public APIs omap_gpmc_retime() and omap_gpmc_get_clk_period()
->>   omap_gpmc_retime() allows to reconfigure the GPMC settings and timings
->>   for the specified Chip select region.
->>   omap_gpmc_get_clk_period() allows to query the GPMC_CLK (external clock)
->>   period, to perform timing calculations.
->>   Both functions will be needed by the OneNAND driver since it calculates
->>   device timings on the fly and needs to change from Asynchronous mode
->>   to Synchronous mode.
->> - Setup OneNAND in Asynchronous mode by default and move Synchronous
->>   setting code into OneNAND driver.
->> - Clean up OneNAND device tree handling. Don't rely on legacy platform device
->>   i.e. don't call gpmc_onenand_init()
->> - Introduce gpmc_generic_init() that should be used by board files to specify
->>   GPMC chip select setting/timing and platform device within that Chip Select.
->> - Stop using all gpmc*() that are meant to be private to GPMC driver.
->> - Move GPMC driver into drivers/memory
->>
->> Tested on:
->>
->> - beagleboard C4: NAND
->> - Nokia N900: OneNAND
->>
-> 
-> Do you have a tree somewhere that I can use it to test on the boards I
-> maintain and post patches to update the DTS according the new binding?
+>
+> Best Regards,
+> Bo Shen
 
-You can find the series at
-git@github.com:rogerq/linux.git
-gpmc-3.16-v1
-
-cheers,
--roger
+Best Regards,
+Josh Wu
