@@ -1,7 +1,7 @@
 Received: from mail.karo-electronics.de ([81.173.242.67])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wv4xJ-0005EA-PT
- for linux-mtd@lists.infradead.org; Thu, 12 Jun 2014 13:22:15 +0000
+ id 1Wv4xO-0005G1-Px
+ for linux-mtd@lists.infradead.org; Thu, 12 Jun 2014 13:22:19 +0000
 From: =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>
 To: Arnd Bergmann <arnd@arndb.de>,
  Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
@@ -25,12 +25,9 @@ To: Arnd Bergmann <arnd@arndb.de>,
  Michael Grzeschik <m.grzeschik@pengutronix.de>,
  Michael Opdenacker <michael.opdenacker@free-electrons.com>,
  Wei Yongjun <yongjun_wei@trendmicro.com.cn>
-Subject: [PATCHv4 1/5] mtd: gpmi: remove useless (void *) type casts and
- spaces between type casts and variables
-Date: Thu, 12 Jun 2014 15:20:41 +0200
-Message-Id: <1402579245-13377-2-git-send-email-LW@KARO-electronics.de>
-In-Reply-To: <1402579245-13377-1-git-send-email-LW@KARO-electronics.de>
-References: <1402579245-13377-1-git-send-email-LW@KARO-electronics.de>
+Subject: [PATCHv4 0/5] mtd: gpmi: make blockmark swapping optional
+Date: Thu, 12 Jun 2014 15:20:40 +0200
+Message-Id: <1402579245-13377-1-git-send-email-LW@KARO-electronics.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -43,45 +40,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+With a flash-based BBT there is no reason to move the Factory Bad
+Block Marker from the data area buffer (to where it is mapped by the
+GPMI NAND controller) to the OOB buffer. Thus, make this feature
+configurable via DT. This is required for the Ka-Ro electronics
+i.MX6 platforms.
 
-Signed-off-by: Lothar Waßmann <LW@KARO-electronics.de>
----
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+Changes wrt. v2:
+- added a warning for i.MX28 to the binding documentation
+- fixed the gpmi_ecc_read_subpage() routine which turned on blockmark
+  swapping unconditionally
+- use !GPMI_IS_MX23() in place of this->swap_block_mark (which were
+  synonymous the original code) in gpmi_ecc_read_oob() and
+  gpmi_block_markbad()
+- make nand-on-flash-bbt a prerequisite for this feature
 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index f638cd8..31032b1 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -1180,7 +1180,7 @@ static int gpmi_ecc_write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 
- 		/* Handle block mark swapping. */
- 		block_mark_swapping(this,
--				(void *) payload_virt, (void *) auxiliary_virt);
-+				(void *)payload_virt, (void *)auxiliary_virt);
- 	} else {
- 		/*
- 		 * If control arrives here, we're not doing block mark swapping,
-@@ -1760,16 +1760,16 @@ err_out:
- static const struct of_device_id gpmi_nand_id_table[] = {
- 	{
- 		.compatible = "fsl,imx23-gpmi-nand",
--		.data = (void *)&gpmi_devdata_imx23,
-+		.data = &gpmi_devdata_imx23,
- 	}, {
- 		.compatible = "fsl,imx28-gpmi-nand",
--		.data = (void *)&gpmi_devdata_imx28,
-+		.data = &gpmi_devdata_imx28,
- 	}, {
- 		.compatible = "fsl,imx6q-gpmi-nand",
--		.data = (void *)&gpmi_devdata_imx6q,
-+		.data = &gpmi_devdata_imx6q,
- 	}, {
- 		.compatible = "fsl,imx6sx-gpmi-nand",
--		.data = (void *)&gpmi_devdata_imx6sx,
-+		.data = &gpmi_devdata_imx6sx,
- 	}, {}
- };
- MODULE_DEVICE_TABLE(of, gpmi_nand_id_table);
--- 
-1.7.10.4
+patch added:
+- add an additional option to turn of BB mark writing
+
+Changes wrt. v3:
+- added two code cleanup patches
+- added a patch to turn of NAND_BBT_CREATE, if blockmark swapping is disabled
