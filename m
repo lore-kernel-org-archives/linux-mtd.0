@@ -1,7 +1,3 @@
-Received: from mail.karo-electronics.de ([81.173.242.67])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wv4xO-0005G1-Px
- for linux-mtd@lists.infradead.org; Thu, 12 Jun 2014 13:22:19 +0000
 From: =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>
 To: Arnd Bergmann <arnd@arndb.de>,
  Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
@@ -25,9 +21,16 @@ To: Arnd Bergmann <arnd@arndb.de>,
  Michael Grzeschik <m.grzeschik@pengutronix.de>,
  Michael Opdenacker <michael.opdenacker@free-electrons.com>,
  Wei Yongjun <yongjun_wei@trendmicro.com.cn>
-Subject: [PATCHv4 0/5] mtd: gpmi: make blockmark swapping optional
-Date: Thu, 12 Jun 2014 15:20:40 +0200
-Message-Id: <1402579245-13377-1-git-send-email-LW@KARO-electronics.de>
+Subject: [PATCHv4 5/5] mtd: gpmi: prevent creating a new BBT when blockmark
+ swapping is disabled
+Date: Thu, 12 Jun 2014 15:20:45 +0200
+Message-Id: <1402579245-13377-6-git-send-email-LW@KARO-electronics.de>
+In-Reply-To: <1402579245-13377-5-git-send-email-LW@KARO-electronics.de>
+References: <1402579245-13377-1-git-send-email-LW@KARO-electronics.de>
+ <1402579245-13377-2-git-send-email-LW@KARO-electronics.de>
+ <1402579245-13377-3-git-send-email-LW@KARO-electronics.de>
+ <1402579245-13377-4-git-send-email-LW@KARO-electronics.de>
+ <1402579245-13377-5-git-send-email-LW@KARO-electronics.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -40,24 +43,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-With a flash-based BBT there is no reason to move the Factory Bad
-Block Marker from the data area buffer (to where it is mapped by the
-GPMI NAND controller) to the OOB buffer. Thus, make this feature
-configurable via DT. This is required for the Ka-Ro electronics
-i.MX6 platforms.
+Without blockmark swapping, there is no use in creating a BBT from
+scratch, so use a BBT descriptor with NAND_BBT_CREATE unset in this
+case.
 
-Changes wrt. v2:
-- added a warning for i.MX28 to the binding documentation
-- fixed the gpmi_ecc_read_subpage() routine which turned on blockmark
-  swapping unconditionally
-- use !GPMI_IS_MX23() in place of this->swap_block_mark (which were
-  synonymous the original code) in gpmi_ecc_read_oob() and
-  gpmi_block_markbad()
-- make nand-on-flash-bbt a prerequisite for this feature
+Signed-off-by: Lothar Waßmann <LW@KARO-electronics.de>
+---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   28 +++++++++++++++++++++++++++-
+ 1 file changed, 27 insertions(+), 1 deletion(-)
 
-patch added:
-- add an additional option to turn of BB mark writing
-
-Changes wrt. v3:
-- added two code cleanup patches
-- added a patch to turn of NAND_BBT_CREATE, if blockmark swapping is disabled
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 37537b4..fc710d7 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -43,6 +43,29 @@ static struct nand_bbt_descr gpmi_bbt_descr = {
+ 	.pattern	= scan_ff_pattern
+ };
+ 
++static uint8_t bbt_pattern[] = {'B', 'b', 't', '0' };
++static uint8_t mirror_pattern[] = {'1', 't', 'b', 'B' };
++
++static struct nand_bbt_descr bbt_main_no_oob_descr = {
++	.options = NAND_BBT_LASTBLOCK | NAND_BBT_WRITE |
++	NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP |
++	NAND_BBT_NO_OOB,
++	.len = 4,
++	.veroffs = 4,
++	.maxblocks = NAND_BBT_SCAN_MAXBLOCKS,
++	.pattern = bbt_pattern,
++};
++
++static struct nand_bbt_descr bbt_mirror_no_oob_descr = {
++	.options = NAND_BBT_LASTBLOCK | NAND_BBT_WRITE |
++	NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP |
++	NAND_BBT_NO_OOB,
++	.len = 4,
++	.veroffs = 4,
++	.maxblocks = NAND_BBT_SCAN_MAXBLOCKS,
++	.pattern = mirror_pattern,
++};
++
+ /*
+  * We may change the layout if we can get the ECC info from the datasheet,
+  * else we will use all the (page + OOB).
+@@ -1728,8 +1751,11 @@ static int gpmi_nand_init(struct gpmi_nand_data *this)
+ 			chip->bbt_options |= NAND_BBT_NO_OOB_BBM;
+ 
+ 		if (of_property_read_bool(this->dev->of_node,
+-						"fsl,no-blockmark-swap"))
++						"fsl,no-blockmark-swap")) {
+ 			this->swap_block_mark = false;
++			chip->bbt_td = &bbt_main_no_oob_descr;
++			chip->bbt_md = &bbt_mirror_no_oob_descr;
++		}
+ 	}
+ 	dev_dbg(this->dev, "Blockmark swapping %sabled\n",
+ 		this->swap_block_mark ? "en" : "dis");
+-- 
+1.7.10.4
