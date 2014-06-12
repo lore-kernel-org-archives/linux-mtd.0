@@ -1,23 +1,36 @@
-Received: from mail-ob0-x229.google.com ([2607:f8b0:4003:c01::229])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wv0sZ-0001Vb-0J
- for linux-mtd@lists.infradead.org; Thu, 12 Jun 2014 09:01:07 +0000
-Received: by mail-ob0-f169.google.com with SMTP id wp18so1003712obc.28
- for <linux-mtd@lists.infradead.org>; Thu, 12 Jun 2014 02:00:40 -0700 (PDT)
+From: =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>
+To: Arnd Bergmann <arnd@arndb.de>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Fabio Estevam <fabio.estevam@freescale.com>,
+ Huang Shijie <b32955@freescale.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>,
+ =?UTF-8?q?Lothar=20Wa=C3=9Fmann?= <LW@KARO-electronics.de>,
+ Mark Rutland <mark.rutland@arm.com>, Pawel Moll <pawel.moll@arm.com>,
+ Rob Herring <robh+dt@kernel.org>, Rob Landley <rob@landley.net>,
+ Russell King <linux@arm.linux.org.uk>,
+ Sascha Hauer <kernel@pengutronix.de>, Shawn Guo <shawn.guo@freescale.com>,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Shawn Guo <shawn.guo@linaro.org>,
+ Boris BREZILLON <b.brezillon.dev@gmail.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Grant Likely <grant.likely@linaro.org>, Jingoo Han <jg1.han@samsung.com>,
+ Michael Grzeschik <m.grzeschik@pengutronix.de>,
+ Michael Opdenacker <michael.opdenacker@free-electrons.com>,
+ Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+Subject: [PATCHv4 2/5] mtd: gpmi: remove line breaks from error messages and
+ improve wording
+Date: Thu, 12 Jun 2014 15:20:42 +0200
+Message-Id: <1402579245-13377-3-git-send-email-LW@KARO-electronics.de>
+In-Reply-To: <1402579245-13377-2-git-send-email-LW@KARO-electronics.de>
+References: <1402579245-13377-1-git-send-email-LW@KARO-electronics.de>
+ <1402579245-13377-2-git-send-email-LW@KARO-electronics.de>
 MIME-Version: 1.0
-In-Reply-To: <1398925607-7482-10-git-send-email-computersforpeace@gmail.com>
-References: <1398925607-7482-1-git-send-email-computersforpeace@gmail.com>
- <1398925607-7482-10-git-send-email-computersforpeace@gmail.com>
-Date: Thu, 12 Jun 2014 17:00:40 +0800
-Message-ID: <CAMk6uBkfWTyz=yECehzVtAs=sewkQR7tS=HZQ9Qts0LEXugSRw@mail.gmail.com>
-Subject: Re: [PATCH v2 09/12] blackfin: defconfigs: add MTD_SPI_NOR (new
- dependency for M25P80)
-From: Steven Miao <realmz6@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Cc: Marek Vasut <marex@denx.de>, Huang Shijie <b32955@freescale.com>,
- linux-mtd@lists.infradead.org, Linux Kernel <linux-kernel@vger.kernel.org>,
- bfin <adi-buildroot-devel@lists.sourceforge.net>
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,170 +40,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Applied to 3.16. Thanks.
 
-On Thu, May 1, 2014 at 2:26 PM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> These defconfigs contain the CONFIG_M25P80 symbol, which is now
-> dependent on the MTD_SPI_NOR symbol. Add CONFIG_MTD_SPI_NOR to satisfy
-> the new dependency.
->
-> At the same time, drop the now-nonexistent CONFIG_MTD_CHAR symbol.
->
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Cc: Steven Miao <realmz6@gmail.com>
-> Cc: adi-buildroot-devel@lists.sourceforge.net
-> Cc: linux-kernel@vger.kernel.org
-> ---
->  arch/blackfin/configs/BF526-EZBRD_defconfig    | 2 +-
->  arch/blackfin/configs/BF527-EZKIT-V2_defconfig | 2 +-
->  arch/blackfin/configs/BF527-EZKIT_defconfig    | 2 +-
->  arch/blackfin/configs/BF548-EZKIT_defconfig    | 2 +-
->  arch/blackfin/configs/BF609-EZKIT_defconfig    | 2 +-
->  arch/blackfin/configs/BlackStamp_defconfig     | 3 +--
->  arch/blackfin/configs/H8606_defconfig          | 3 +--
->  7 files changed, 7 insertions(+), 9 deletions(-)
->
-> diff --git a/arch/blackfin/configs/BF526-EZBRD_defconfig b/arch/blackfin/configs/BF526-EZBRD_defconfig
-> index 2f2c6acf210c..530ba7a6d7b0 100644
-> --- a/arch/blackfin/configs/BF526-EZBRD_defconfig
-> +++ b/arch/blackfin/configs/BF526-EZBRD_defconfig
-> @@ -53,7 +53,6 @@ CONFIG_IP_PNP=y
->  CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
->  # CONFIG_FW_LOADER is not set
->  CONFIG_MTD=y
-> -CONFIG_MTD_CHAR=y
->  CONFIG_MTD_BLOCK=y
->  CONFIG_MTD_CFI=y
->  CONFIG_MTD_CFI_INTELEXT=y
-> @@ -63,6 +62,7 @@ CONFIG_MTD_COMPLEX_MAPPINGS=y
->  CONFIG_MTD_PHYSMAP=y
->  CONFIG_MTD_M25P80=y
->  CONFIG_MTD_NAND=m
-> +CONFIG_MTD_SPI_NOR=y
->  CONFIG_BLK_DEV_RAM=y
->  CONFIG_SCSI=y
->  # CONFIG_SCSI_PROC_FS is not set
-> diff --git a/arch/blackfin/configs/BF527-EZKIT-V2_defconfig b/arch/blackfin/configs/BF527-EZKIT-V2_defconfig
-> index 91535c38e7f2..a21c79275eae 100644
-> --- a/arch/blackfin/configs/BF527-EZKIT-V2_defconfig
-> +++ b/arch/blackfin/configs/BF527-EZKIT-V2_defconfig
-> @@ -58,7 +58,6 @@ CONFIG_BFIN_SIR0=y
->  CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
->  # CONFIG_FW_LOADER is not set
->  CONFIG_MTD=y
-> -CONFIG_MTD_CHAR=m
->  CONFIG_MTD_BLOCK=y
->  CONFIG_MTD_JEDECPROBE=m
->  CONFIG_MTD_RAM=y
-> @@ -66,6 +65,7 @@ CONFIG_MTD_ROM=m
->  CONFIG_MTD_COMPLEX_MAPPINGS=y
->  CONFIG_MTD_M25P80=y
->  CONFIG_MTD_NAND=m
-> +CONFIG_MTD_SPI_NOR=y
->  CONFIG_BLK_DEV_RAM=y
->  CONFIG_SCSI=y
->  # CONFIG_SCSI_PROC_FS is not set
-> diff --git a/arch/blackfin/configs/BF527-EZKIT_defconfig b/arch/blackfin/configs/BF527-EZKIT_defconfig
-> index af2738c7441b..5070a860d8c4 100644
-> --- a/arch/blackfin/configs/BF527-EZKIT_defconfig
-> +++ b/arch/blackfin/configs/BF527-EZKIT_defconfig
-> @@ -57,7 +57,6 @@ CONFIG_BFIN_SIR0=y
->  CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
->  # CONFIG_FW_LOADER is not set
->  CONFIG_MTD=y
-> -CONFIG_MTD_CHAR=m
->  CONFIG_MTD_BLOCK=y
->  CONFIG_MTD_JEDECPROBE=m
->  CONFIG_MTD_RAM=y
-> @@ -65,6 +64,7 @@ CONFIG_MTD_ROM=m
->  CONFIG_MTD_COMPLEX_MAPPINGS=y
->  CONFIG_MTD_M25P80=y
->  CONFIG_MTD_NAND=m
-> +CONFIG_MTD_SPI_NOR=y
->  CONFIG_BLK_DEV_RAM=y
->  CONFIG_SCSI=y
->  # CONFIG_SCSI_PROC_FS is not set
-> diff --git a/arch/blackfin/configs/BF548-EZKIT_defconfig b/arch/blackfin/configs/BF548-EZKIT_defconfig
-> index e716fdfd2cf2..efb293057287 100644
-> --- a/arch/blackfin/configs/BF548-EZKIT_defconfig
-> +++ b/arch/blackfin/configs/BF548-EZKIT_defconfig
-> @@ -64,7 +64,6 @@ CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
->  CONFIG_FW_LOADER=m
->  CONFIG_MTD=y
->  CONFIG_MTD_CMDLINE_PARTS=y
-> -CONFIG_MTD_CHAR=y
->  CONFIG_MTD_BLOCK=y
->  CONFIG_MTD_CFI=y
->  CONFIG_MTD_CFI_INTELEXT=y
-> @@ -75,6 +74,7 @@ CONFIG_MTD_M25P80=y
->  CONFIG_MTD_NAND=y
->  CONFIG_MTD_NAND_BF5XX=y
->  # CONFIG_MTD_NAND_BF5XX_HWECC is not set
-> +CONFIG_MTD_SPI_NOR=y
->  CONFIG_BLK_DEV_RAM=y
->  # CONFIG_SCSI_PROC_FS is not set
->  CONFIG_BLK_DEV_SD=y
-> diff --git a/arch/blackfin/configs/BF609-EZKIT_defconfig b/arch/blackfin/configs/BF609-EZKIT_defconfig
-> index 4ca39ab6b2bf..a7e9bfd84183 100644
-> --- a/arch/blackfin/configs/BF609-EZKIT_defconfig
-> +++ b/arch/blackfin/configs/BF609-EZKIT_defconfig
-> @@ -57,7 +57,6 @@ CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
->  CONFIG_FW_LOADER=m
->  CONFIG_MTD=y
->  CONFIG_MTD_CMDLINE_PARTS=y
-> -CONFIG_MTD_CHAR=y
->  CONFIG_MTD_BLOCK=y
->  CONFIG_MTD_CFI=y
->  CONFIG_MTD_CFI_INTELEXT=y
-> @@ -65,6 +64,7 @@ CONFIG_MTD_CFI_STAA=y
->  CONFIG_MTD_COMPLEX_MAPPINGS=y
->  CONFIG_MTD_PHYSMAP=y
->  CONFIG_MTD_M25P80=y
-> +CONFIG_MTD_SPI_NOR=y
->  CONFIG_MTD_UBI=m
->  CONFIG_SCSI=y
->  CONFIG_BLK_DEV_SD=y
-> diff --git a/arch/blackfin/configs/BlackStamp_defconfig b/arch/blackfin/configs/BlackStamp_defconfig
-> index 3853c473b443..f4a9200e1ab1 100644
-> --- a/arch/blackfin/configs/BlackStamp_defconfig
-> +++ b/arch/blackfin/configs/BlackStamp_defconfig
-> @@ -45,7 +45,6 @@ CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
->  # CONFIG_FW_LOADER is not set
->  CONFIG_MTD=y
->  CONFIG_MTD_CMDLINE_PARTS=y
-> -CONFIG_MTD_CHAR=m
->  CONFIG_MTD_BLOCK=y
->  CONFIG_MTD_CFI=m
->  CONFIG_MTD_CFI_AMDSTD=m
-> @@ -53,7 +52,7 @@ CONFIG_MTD_RAM=y
->  CONFIG_MTD_ROM=m
->  CONFIG_MTD_COMPLEX_MAPPINGS=y
->  CONFIG_MTD_M25P80=y
-> -# CONFIG_M25PXX_USE_FAST_READ is not set
-> +CONFIG_MTD_SPI_NOR=y
->  CONFIG_BLK_DEV_LOOP=y
->  CONFIG_BLK_DEV_NBD=y
->  CONFIG_BLK_DEV_RAM=y
-> diff --git a/arch/blackfin/configs/H8606_defconfig b/arch/blackfin/configs/H8606_defconfig
-> index f754e490bbfd..0ff97d8d047a 100644
-> --- a/arch/blackfin/configs/H8606_defconfig
-> +++ b/arch/blackfin/configs/H8606_defconfig
-> @@ -36,13 +36,12 @@ CONFIG_IRTTY_SIR=m
->  # CONFIG_WIRELESS is not set
->  # CONFIG_FW_LOADER is not set
->  CONFIG_MTD=y
-> -CONFIG_MTD_CHAR=y
->  CONFIG_MTD_BLOCK=y
->  CONFIG_MTD_RAM=y
->  CONFIG_MTD_ROM=y
->  CONFIG_MTD_COMPLEX_MAPPINGS=y
->  CONFIG_MTD_M25P80=y
-> -# CONFIG_M25PXX_USE_FAST_READ is not set
-> +CONFIG_MTD_SPI_NOR=y
->  CONFIG_BLK_DEV_RAM=y
->  CONFIG_MISC_DEVICES=y
->  CONFIG_EEPROM_AT25=y
-> --
-> 1.8.3.2
->
+Signed-off-by: Lothar Waßmann <LW@KARO-electronics.de>
+---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 31032b1..16a533a 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -285,9 +285,8 @@ static int legacy_set_geometry(struct gpmi_nand_data *this)
+ 	geo->ecc_strength = get_ecc_strength(this);
+ 	if (!gpmi_check_ecc(this)) {
+ 		dev_err(this->dev,
+-			"We can not support this nand chip."
+-			" Its required ecc strength(%d) is beyond our"
+-			" capability(%d).\n", geo->ecc_strength,
++			"required ecc strength of the NAND chip: %d is not supported by the GPMI controller (%d)\n",
++			geo->ecc_strength,
+ 			this->devdata->bch_max_ecc_strength);
+ 		return -EINVAL;
+ 	}
+@@ -1597,8 +1596,9 @@ static int mx23_boot_init(struct gpmi_nand_data  *this)
+ 			dev_dbg(dev, "Transcribing mark in block %u\n", block);
+ 			ret = chip->block_markbad(mtd, byte);
+ 			if (ret)
+-				dev_err(dev, "Failed to mark block bad with "
+-							"ret %d\n", ret);
++				dev_err(dev,
++					"Failed to mark block bad with ret %d\n",
++					ret);
+ 		}
+ 	}
+ 
+-- 
+1.7.10.4
