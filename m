@@ -1,12 +1,23 @@
-From: Bo Shen <voice.shen@atmel.com>
-To: <computersforpeace@gmail.com>
-Subject: [PATCH v2] mtd: atmel_nand: make ecc parameters same as definition
-Date: Thu, 12 Jun 2014 15:58:45 +0800
-Message-ID: <1402559925-20910-1-git-send-email-voice.shen@atmel.com>
+Received: from mail-ob0-x229.google.com ([2607:f8b0:4003:c01::229])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Wv0sZ-0001Vb-0J
+ for linux-mtd@lists.infradead.org; Thu, 12 Jun 2014 09:01:07 +0000
+Received: by mail-ob0-f169.google.com with SMTP id wp18so1003712obc.28
+ for <linux-mtd@lists.infradead.org>; Thu, 12 Jun 2014 02:00:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: josh.wu@atmel.com, Bo Shen <voice.shen@atmel.com>, nicolas.ferre@atmel.com,
- linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org
+In-Reply-To: <1398925607-7482-10-git-send-email-computersforpeace@gmail.com>
+References: <1398925607-7482-1-git-send-email-computersforpeace@gmail.com>
+ <1398925607-7482-10-git-send-email-computersforpeace@gmail.com>
+Date: Thu, 12 Jun 2014 17:00:40 +0800
+Message-ID: <CAMk6uBkfWTyz=yECehzVtAs=sewkQR7tS=HZQ9Qts0LEXugSRw@mail.gmail.com>
+Subject: Re: [PATCH v2 09/12] blackfin: defconfigs: add MTD_SPI_NOR (new
+ dependency for M25P80)
+From: Steven Miao <realmz6@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: Marek Vasut <marex@denx.de>, Huang Shijie <b32955@freescale.com>,
+ linux-mtd@lists.infradead.org, Linux Kernel <linux-kernel@vger.kernel.org>,
+ bfin <adi-buildroot-devel@lists.sourceforge.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,97 +27,170 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If the ecc parameter is not the same as definition, when the
-mtd core check these parameters, it will give the error result.
+Applied to 3.16. Thanks.
 
-Take the following as an example:
-
-Calculate how many bits can be corrected in one page.
-According to the ecc parameters definition,
-
-one page correct bits = (mtd->writesize * ecc->strength) / ecc->size
-
-take the following use case as an example:
-mtd->writesize = 2048 bytes
-ecc->strength = 4 bytes (for 512 bytes)
-
-before this patch, the ecc->size = 2048, so the result is 4 bytes.
-after this patch, the ecc->size = 512, so the result is 16 bytes.
-
-So, align the ecc parameters the same as definition to correct
-this kind of error.
-
-Signed-off-by: Bo Shen <voice.shen@atmel.com>
-Acked-by: Josh Wu <josh.wu@atmel.com>
----
-Changes in v2:
-  - Enhancement the commit message.
-
- drivers/mtd/nand/atmel_nand.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index 4ce181a..4f5348f 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -861,12 +861,11 @@ static int pmecc_correction(struct mtd_info *mtd, u32 pmecc_stat, uint8_t *buf,
- {
- 	struct nand_chip *nand_chip = mtd->priv;
- 	struct atmel_nand_host *host = nand_chip->priv;
--	int i, err_nbr, eccbytes;
-+	int i, err_nbr;
- 	uint8_t *buf_pos;
- 	int total_err = 0;
- 
--	eccbytes = nand_chip->ecc.bytes;
--	for (i = 0; i < eccbytes; i++)
-+	for (i = 0; i < nand_chip->ecc.total; i++)
- 		if (ecc[i] != 0xff)
- 			goto normal_check;
- 	/* Erased page, return OK */
-@@ -928,7 +927,7 @@ static int atmel_nand_pmecc_read_page(struct mtd_info *mtd,
- 	struct nand_chip *chip, uint8_t *buf, int oob_required, int page)
- {
- 	struct atmel_nand_host *host = chip->priv;
--	int eccsize = chip->ecc.size;
-+	int eccsize = chip->ecc.size * chip->ecc.steps;
- 	uint8_t *oob = chip->oob_poi;
- 	uint32_t *eccpos = chip->ecc.layout->eccpos;
- 	uint32_t stat;
-@@ -1169,8 +1168,7 @@ static int atmel_pmecc_nand_init_params(struct platform_device *pdev,
- 		goto err;
- 	}
- 
--	/* ECC is calculated for the whole page (1 step) */
--	nand_chip->ecc.size = mtd->writesize;
-+	nand_chip->ecc.size = sector_size;
- 
- 	/* set ECC page size and oob layout */
- 	switch (mtd->writesize) {
-@@ -1185,18 +1183,20 @@ static int atmel_pmecc_nand_init_params(struct platform_device *pdev,
- 		host->pmecc_index_of = host->pmecc_rom_base +
- 			host->pmecc_lookup_table_offset;
- 
--		nand_chip->ecc.steps = 1;
-+		nand_chip->ecc.steps = host->pmecc_sector_number;
- 		nand_chip->ecc.strength = cap;
--		nand_chip->ecc.bytes = host->pmecc_bytes_per_sector *
-+		nand_chip->ecc.bytes = host->pmecc_bytes_per_sector;
-+		nand_chip->ecc.total = host->pmecc_bytes_per_sector *
- 				       host->pmecc_sector_number;
--		if (nand_chip->ecc.bytes > mtd->oobsize - 2) {
-+		if (nand_chip->ecc.total > mtd->oobsize - 2) {
- 			dev_err(host->dev, "No room for ECC bytes\n");
- 			err_no = -EINVAL;
- 			goto err;
- 		}
- 		pmecc_config_ecc_layout(&atmel_pmecc_oobinfo,
- 					mtd->oobsize,
--					nand_chip->ecc.bytes);
-+					nand_chip->ecc.total);
-+
- 		nand_chip->ecc.layout = &atmel_pmecc_oobinfo;
- 		break;
- 	case 512:
--- 
-1.8.5.2
+On Thu, May 1, 2014 at 2:26 PM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> These defconfigs contain the CONFIG_M25P80 symbol, which is now
+> dependent on the MTD_SPI_NOR symbol. Add CONFIG_MTD_SPI_NOR to satisfy
+> the new dependency.
+>
+> At the same time, drop the now-nonexistent CONFIG_MTD_CHAR symbol.
+>
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Cc: Steven Miao <realmz6@gmail.com>
+> Cc: adi-buildroot-devel@lists.sourceforge.net
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>  arch/blackfin/configs/BF526-EZBRD_defconfig    | 2 +-
+>  arch/blackfin/configs/BF527-EZKIT-V2_defconfig | 2 +-
+>  arch/blackfin/configs/BF527-EZKIT_defconfig    | 2 +-
+>  arch/blackfin/configs/BF548-EZKIT_defconfig    | 2 +-
+>  arch/blackfin/configs/BF609-EZKIT_defconfig    | 2 +-
+>  arch/blackfin/configs/BlackStamp_defconfig     | 3 +--
+>  arch/blackfin/configs/H8606_defconfig          | 3 +--
+>  7 files changed, 7 insertions(+), 9 deletions(-)
+>
+> diff --git a/arch/blackfin/configs/BF526-EZBRD_defconfig b/arch/blackfin/configs/BF526-EZBRD_defconfig
+> index 2f2c6acf210c..530ba7a6d7b0 100644
+> --- a/arch/blackfin/configs/BF526-EZBRD_defconfig
+> +++ b/arch/blackfin/configs/BF526-EZBRD_defconfig
+> @@ -53,7 +53,6 @@ CONFIG_IP_PNP=y
+>  CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
+>  # CONFIG_FW_LOADER is not set
+>  CONFIG_MTD=y
+> -CONFIG_MTD_CHAR=y
+>  CONFIG_MTD_BLOCK=y
+>  CONFIG_MTD_CFI=y
+>  CONFIG_MTD_CFI_INTELEXT=y
+> @@ -63,6 +62,7 @@ CONFIG_MTD_COMPLEX_MAPPINGS=y
+>  CONFIG_MTD_PHYSMAP=y
+>  CONFIG_MTD_M25P80=y
+>  CONFIG_MTD_NAND=m
+> +CONFIG_MTD_SPI_NOR=y
+>  CONFIG_BLK_DEV_RAM=y
+>  CONFIG_SCSI=y
+>  # CONFIG_SCSI_PROC_FS is not set
+> diff --git a/arch/blackfin/configs/BF527-EZKIT-V2_defconfig b/arch/blackfin/configs/BF527-EZKIT-V2_defconfig
+> index 91535c38e7f2..a21c79275eae 100644
+> --- a/arch/blackfin/configs/BF527-EZKIT-V2_defconfig
+> +++ b/arch/blackfin/configs/BF527-EZKIT-V2_defconfig
+> @@ -58,7 +58,6 @@ CONFIG_BFIN_SIR0=y
+>  CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
+>  # CONFIG_FW_LOADER is not set
+>  CONFIG_MTD=y
+> -CONFIG_MTD_CHAR=m
+>  CONFIG_MTD_BLOCK=y
+>  CONFIG_MTD_JEDECPROBE=m
+>  CONFIG_MTD_RAM=y
+> @@ -66,6 +65,7 @@ CONFIG_MTD_ROM=m
+>  CONFIG_MTD_COMPLEX_MAPPINGS=y
+>  CONFIG_MTD_M25P80=y
+>  CONFIG_MTD_NAND=m
+> +CONFIG_MTD_SPI_NOR=y
+>  CONFIG_BLK_DEV_RAM=y
+>  CONFIG_SCSI=y
+>  # CONFIG_SCSI_PROC_FS is not set
+> diff --git a/arch/blackfin/configs/BF527-EZKIT_defconfig b/arch/blackfin/configs/BF527-EZKIT_defconfig
+> index af2738c7441b..5070a860d8c4 100644
+> --- a/arch/blackfin/configs/BF527-EZKIT_defconfig
+> +++ b/arch/blackfin/configs/BF527-EZKIT_defconfig
+> @@ -57,7 +57,6 @@ CONFIG_BFIN_SIR0=y
+>  CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
+>  # CONFIG_FW_LOADER is not set
+>  CONFIG_MTD=y
+> -CONFIG_MTD_CHAR=m
+>  CONFIG_MTD_BLOCK=y
+>  CONFIG_MTD_JEDECPROBE=m
+>  CONFIG_MTD_RAM=y
+> @@ -65,6 +64,7 @@ CONFIG_MTD_ROM=m
+>  CONFIG_MTD_COMPLEX_MAPPINGS=y
+>  CONFIG_MTD_M25P80=y
+>  CONFIG_MTD_NAND=m
+> +CONFIG_MTD_SPI_NOR=y
+>  CONFIG_BLK_DEV_RAM=y
+>  CONFIG_SCSI=y
+>  # CONFIG_SCSI_PROC_FS is not set
+> diff --git a/arch/blackfin/configs/BF548-EZKIT_defconfig b/arch/blackfin/configs/BF548-EZKIT_defconfig
+> index e716fdfd2cf2..efb293057287 100644
+> --- a/arch/blackfin/configs/BF548-EZKIT_defconfig
+> +++ b/arch/blackfin/configs/BF548-EZKIT_defconfig
+> @@ -64,7 +64,6 @@ CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
+>  CONFIG_FW_LOADER=m
+>  CONFIG_MTD=y
+>  CONFIG_MTD_CMDLINE_PARTS=y
+> -CONFIG_MTD_CHAR=y
+>  CONFIG_MTD_BLOCK=y
+>  CONFIG_MTD_CFI=y
+>  CONFIG_MTD_CFI_INTELEXT=y
+> @@ -75,6 +74,7 @@ CONFIG_MTD_M25P80=y
+>  CONFIG_MTD_NAND=y
+>  CONFIG_MTD_NAND_BF5XX=y
+>  # CONFIG_MTD_NAND_BF5XX_HWECC is not set
+> +CONFIG_MTD_SPI_NOR=y
+>  CONFIG_BLK_DEV_RAM=y
+>  # CONFIG_SCSI_PROC_FS is not set
+>  CONFIG_BLK_DEV_SD=y
+> diff --git a/arch/blackfin/configs/BF609-EZKIT_defconfig b/arch/blackfin/configs/BF609-EZKIT_defconfig
+> index 4ca39ab6b2bf..a7e9bfd84183 100644
+> --- a/arch/blackfin/configs/BF609-EZKIT_defconfig
+> +++ b/arch/blackfin/configs/BF609-EZKIT_defconfig
+> @@ -57,7 +57,6 @@ CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
+>  CONFIG_FW_LOADER=m
+>  CONFIG_MTD=y
+>  CONFIG_MTD_CMDLINE_PARTS=y
+> -CONFIG_MTD_CHAR=y
+>  CONFIG_MTD_BLOCK=y
+>  CONFIG_MTD_CFI=y
+>  CONFIG_MTD_CFI_INTELEXT=y
+> @@ -65,6 +64,7 @@ CONFIG_MTD_CFI_STAA=y
+>  CONFIG_MTD_COMPLEX_MAPPINGS=y
+>  CONFIG_MTD_PHYSMAP=y
+>  CONFIG_MTD_M25P80=y
+> +CONFIG_MTD_SPI_NOR=y
+>  CONFIG_MTD_UBI=m
+>  CONFIG_SCSI=y
+>  CONFIG_BLK_DEV_SD=y
+> diff --git a/arch/blackfin/configs/BlackStamp_defconfig b/arch/blackfin/configs/BlackStamp_defconfig
+> index 3853c473b443..f4a9200e1ab1 100644
+> --- a/arch/blackfin/configs/BlackStamp_defconfig
+> +++ b/arch/blackfin/configs/BlackStamp_defconfig
+> @@ -45,7 +45,6 @@ CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
+>  # CONFIG_FW_LOADER is not set
+>  CONFIG_MTD=y
+>  CONFIG_MTD_CMDLINE_PARTS=y
+> -CONFIG_MTD_CHAR=m
+>  CONFIG_MTD_BLOCK=y
+>  CONFIG_MTD_CFI=m
+>  CONFIG_MTD_CFI_AMDSTD=m
+> @@ -53,7 +52,7 @@ CONFIG_MTD_RAM=y
+>  CONFIG_MTD_ROM=m
+>  CONFIG_MTD_COMPLEX_MAPPINGS=y
+>  CONFIG_MTD_M25P80=y
+> -# CONFIG_M25PXX_USE_FAST_READ is not set
+> +CONFIG_MTD_SPI_NOR=y
+>  CONFIG_BLK_DEV_LOOP=y
+>  CONFIG_BLK_DEV_NBD=y
+>  CONFIG_BLK_DEV_RAM=y
+> diff --git a/arch/blackfin/configs/H8606_defconfig b/arch/blackfin/configs/H8606_defconfig
+> index f754e490bbfd..0ff97d8d047a 100644
+> --- a/arch/blackfin/configs/H8606_defconfig
+> +++ b/arch/blackfin/configs/H8606_defconfig
+> @@ -36,13 +36,12 @@ CONFIG_IRTTY_SIR=m
+>  # CONFIG_WIRELESS is not set
+>  # CONFIG_FW_LOADER is not set
+>  CONFIG_MTD=y
+> -CONFIG_MTD_CHAR=y
+>  CONFIG_MTD_BLOCK=y
+>  CONFIG_MTD_RAM=y
+>  CONFIG_MTD_ROM=y
+>  CONFIG_MTD_COMPLEX_MAPPINGS=y
+>  CONFIG_MTD_M25P80=y
+> -# CONFIG_M25PXX_USE_FAST_READ is not set
+> +CONFIG_MTD_SPI_NOR=y
+>  CONFIG_BLK_DEV_RAM=y
+>  CONFIG_MISC_DEVICES=y
+>  CONFIG_EEPROM_AT25=y
+> --
+> 1.8.3.2
+>
