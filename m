@@ -1,19 +1,17 @@
-From: =?iso-2022-jp?B?QmVhbiBIdW8gGyRCcDlJTElMGyhCIChiZWFuaHVvKQ==?=
- <beanhuo@micron.com>
-To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Alexander Shiyan <shc_work@mail.ru>,
- "Christian Riesch" <christian.riesch@omicron.at>
-Subject: [PATCH V2] mtd:nor:timeout:fix do_write_buffer() timeout error
-Date: Thu, 12 Jun 2014 07:33:07 +0000
-Message-ID: <A765B125120D1346A63912DDE6D8B6315D6050@NTXXIAMBX02.xacn.micron.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <53995A84.1090908@atmel.com>
+Date: Thu, 12 Jun 2014 15:45:08 +0800
+From: Bo Shen <voice.shen@atmel.com>
 MIME-Version: 1.0
-Cc: Paul Gortmaker <paul.gortmaker@windriver.com>,
- Jingoo Han <jg1.han@samsung.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Kees Cook <keescook@chromium.org>
+To: Nicolas Ferre <nicolas.ferre@atmel.com>
+Subject: Re: [PATCH] mtd: atmel_nand: make ecc parameters same as definition
+References: <1402041728-12056-1-git-send-email-voice.shen@atmel.com>
+ <53958CCE.5080307@atmel.com> <5397CBF9.800@atmel.com>
+ <539954CD.5080309@atmel.com> <53995630.6040902@atmel.com>
+In-Reply-To: <53995630.6040902@atmel.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Josh Wu <josh.wu@atmel.com>, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,78 +21,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The size of the buffer program has been increased from 256 to 512 , 2ms max=
-imum timeout can not adapt to all the different vendor's norflash, There ma=
-ximum timeout information in the CFI area,so the best way is to choose the =
-result calculated according to timeout field of struct cfi_ident that probe=
-d from norflash's CFI aera.This is also a standard defined by CFI.
+Hi Nicolas,
 
-Without this change, if the size of buffer program is 512 or bigger than 25=
-6, due to timeout is the shorter than that the chip required,do_write_buffe=
-r sometimes fails.
+On 06/12/2014 03:26 PM, Nicolas Ferre wrote:
+> On 12/06/2014 09:20, Josh Wu :
+>> Hi, Bo
+>>
+>> On 6/11/2014 11:24 AM, Bo Shen wrote:
+>>> Hi Josh,
+>>>
+>>> On 06/09/2014 06:30 PM, Josh Wu wrote:
+>>>> Hi, Bo
+>>>>
+>>>> Thanks for the patch.
+>>>>
+>>>> On 6/6/2014 4:02 PM, Bo Shen wrote:
+>>>>> If the ecc parameter is not the same as definition, when the
+>>>>> mtd core check these parameters, it will give the unexpected
+>>>>> result.
+>>>> Could you be more specific to tell what kind of result will happened?
+>>>
+>>> For example:
+>>> When try to calculate how many bits can correct in one page according
+>>> to the definition, it will give the wrong result.
+>>>
+>>> one page correct bits = (mtd->writesize * ecc->strength) / ecc->size;
+>>>
+>>> take the following use case as an example:
+>>> mtd->writesize = 2048 bytes,
+>>> ecc->strength = 4 bytes, (for 512 bytes)
+>>>
+>>> before this patch, the ecc->size = 2048, so the result is 4 bytes.
+>>>
+>>> after this patch, the ecc->size = 512, so the result is 16 bytes.
+>>>
+>>> The maximum correct bytes is 16 bytes while not 4 bytes. So, if not align
+>>
+>> That is clear enough, thanks. The patch is fine to me. so
+>> Acked-by: Josh Wu <josh.wu@atmel.com>
+>
+> So I advice to add this additional information to the commit message:
+> Can you send a v2 with enhanced commit message.
 
-Tested with Micron JS28F512M29EWx and Micron MT28EW512ABA flash devices.
+OK, no problem.
 
-Signed-off-by: bean huo <beanhuo@micron.com>
----
-changes v1->v2:Deleted unused parameters in this patch (word_write_time_max=
- and erase_time_max).
-Using usecs_to_jiffies instead of msecs_to_jiffies for convert timeout valu=
-e into jiffies.
+> Thanks, bye,
+>
 
- drivers/mtd/chips/cfi_cmdset_0002.c |   27 ++++++++++++++++++++++++---
- 1 file changed, 24 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cm=
-dset_0002.c
-index e21fde9..22e0b93 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -628,10 +628,24 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map=
-, int primary)
- 		cfi->chips[i].word_write_time =3D 1<<cfi->cfiq->WordWriteTimeoutTyp;
- 		cfi->chips[i].buffer_write_time =3D 1<<cfi->cfiq->BufWriteTimeoutTyp;
- 		cfi->chips[i].erase_time =3D 1<<cfi->cfiq->BlockEraseTimeoutTyp;
-+		/*
-+		 * We first calculate the timeout max according to timeout
-+		 * field of struct cfi_ident that probed from chip's CFI
-+		 * aera,If haven't probed this information,we will specify
-+		 * a default value,and the time unit is us.
-+		 */
-+		if (cfi->cfiq->BufWriteTimeoutTyp &&
-+			cfi->cfiq->BufWriteTimeoutMax){
-+			cfi->chips[i].buffer_write_time_max =3D
-+				1<<(cfi->cfiq->BufWriteTimeoutTyp +
-+					cfi->cfiq->BufWriteTimeoutMax);
-+			} else {
-+		/* specify maximum timeout for buffer program 2000us */
-+				cfi->chips[i].buffer_write_time_max =3D 2000;
-+				}
- 		cfi->chips[i].ref_point_counter =3D 0;
- 		init_waitqueue_head(&(cfi->chips[i].wq));
- 	}
--
- 	map->fldrv =3D &cfi_amdstd_chipdrv;
-=20
- 	return cfi_amdstd_setup(mtd);
-@@ -1462,8 +1476,15 @@ static int __xipram do_write_buffer(struct map_info =
-*map, struct flchip *chip,  {
- 	struct cfi_private *cfi =3D map->fldrv_priv;
- 	unsigned long timeo =3D jiffies + HZ;
--	/* see comments in do_write_oneword() regarding uWriteTimeo. */
--	unsigned long uWriteTimeout =3D ( HZ / 1000 ) + 1;
-+	/* The size of the buffer program has been increased from 256 to 512,
-+	 * 2ms maximum timeout can not adapt to all the different vendor's
-+	 * norflash.There maximum timeout information in the CFI area,so the
-+	 * best way is to choose the result calculated according to timeout
-+	 * field of struct cfi_ident that probed from norflash's CFI aera,see
-+	 * comments in cfi_cmdset_0002().uWriteTimeout is used for timeout step,
-+	 * it must be concerted into jiffies.
-+	 */
-+	unsigned long uWriteTimeout =3D=20
-+usecs_to_jiffies(chip->buffer_write_time_max);
- 	int ret =3D -EIO;
- 	unsigned long cmd_adr;
- 	int z, words;
---
-1.7.9.5
+Best Regards,
+Bo Shen
