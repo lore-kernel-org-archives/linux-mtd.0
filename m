@@ -1,16 +1,15 @@
-Message-ID: <539AACB9.5080105@ti.com>
-Date: Fri, 13 Jun 2014 10:48:09 +0300
-From: Roger Quadros <rogerq@ti.com>
-MIME-Version: 1.0
-To: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH 15/36] ARM: OMAP2+: gpmc: Allow drivers to query GPMC_CLK
- period
+Date: Fri, 13 Jun 2014 00:55:28 -0700
+From: Tony Lindgren <tony@atomide.com>
+To: Roger Quadros <rogerq@ti.com>
+Subject: Re: [PATCH 18/36] ARM: OMAP2+: gpmc-onenand: Move Synchronous
+ setting code to drivers/
+Message-ID: <20140613075527.GP17845@atomide.com>
 References: <1402477001-31132-1-git-send-email-rogerq@ti.com>
- <1402477001-31132-16-git-send-email-rogerq@ti.com>
- <20140613072645.GN17845@atomide.com>
-In-Reply-To: <20140613072645.GN17845@atomide.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
+ <1402477001-31132-19-git-send-email-rogerq@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1402477001-31132-19-git-send-email-rogerq@ti.com>
 Cc: devicetree@vger.kernel.org, linux-omap@vger.kernel.org, nsekhar@ti.com,
  linux-kernel@vger.kernel.org, kyungmin.park@samsung.com,
  linux-mtd@lists.infradead.org, pekon@ti.com,
@@ -25,26 +24,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/13/2014 10:26 AM, Tony Lindgren wrote:
-> * Roger Quadros <rogerq@ti.com> [140611 01:59]:
->> GPMC_CLK is the external clock output pin that is used for syncronous
->> accesses.
->>
->> Device drivers need to know the fastest possible GPMC_CLK period in order
->> to calculate the most optimal device timings. Add the function
->> omap_gpmc_get_clk_period() to allow drivers to get the nearset possible
->> (equal to or greater than) GPMC_CLK period given the minimum
->> clock period supported by the attached device.
->>
->> This is especially needed by the onenand driver as it calculates
->> device timings on the fly for various onenand speed grades.
+* Roger Quadros <rogerq@ti.com> [140611 01:59]:
+> Move the code that puts the onenand in synchronous mode
+> into the appropriate place i.e. drivers/mtd/onenand/omap2.c.
 > 
-> Here too this should probably still be done by the gpmc to driver
-> glue layer, not by the actual driver that shoud be Linux generic.
+> Make use of omap_gpmc_get_clk_period() and omap_gpmc_retime()
+> to calculate the necessary timings and configure the GPMC
+> parent's timings.
 
-Well, this is only needed by the omap-onenand driver to perform the timing calculations at run-time.
-Other option is to model the GPMC_CLK (external) as a clock and request the rate using the clock framework.
-But since this and the retime() is only used by 2 OMAP specific drivers, I'm not sure if it is worth the effort.
+Ideally we would just use the drivers/mtd/onenand/generic.c
+and get rid of drivers/mtd/onenand/omap2.c. We still need
+the bus glue, which should probably be in drivers/memory?
 
-cheers,
--roger
+Regards,
+
+Tony
