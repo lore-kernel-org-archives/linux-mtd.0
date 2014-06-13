@@ -1,36 +1,20 @@
-Received: from mho-03-ewr.mailhop.org ([204.13.248.66]
- helo=mho-01-ewr.mailhop.org)
+Received: from dns-bn1lp0143.outbound.protection.outlook.com ([207.46.163.143]
+ helo=na01-bn1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WvQIA-0007ga-F3
- for linux-mtd@lists.infradead.org; Fri, 13 Jun 2014 12:09:11 +0000
-Date: Fri, 13 Jun 2014 05:08:39 -0700
-From: Tony Lindgren <tony@atomide.com>
-To: Roger Quadros <rogerq@ti.com>
-Subject: Re: [PATCH 05/36] mtd: nand: omap: Move IRQ handling from GPMC to
- NAND driver
-Message-ID: <20140613120839.GV17845@atomide.com>
-References: <1402477001-31132-1-git-send-email-rogerq@ti.com>
- <1402477001-31132-6-git-send-email-rogerq@ti.com>
- <20140613071820.GI17845@atomide.com> <539AAA8C.2070709@ti.com>
- <20140613075856.GQ17845@atomide.com>
- <20980858CB6D3A4BAE95CA194937D5E73EAF51DB@DBDE04.ent.ti.com>
- <539AB4E4.6050408@ti.com> <20140613104610.GS17845@atomide.com>
- <539AE390.4080504@ti.com>
+ id 1WvVYo-0001xk-W8
+ for linux-mtd@lists.infradead.org; Fri, 13 Jun 2014 17:46:43 +0000
+From: Graham Moore <grmoore@altera.com>
+To: <ggrahammoore@gmail.com>
+Subject: [PATCH] In the Denali NAND controller driver,
+ use 8 bytes for READID command.
+Date: Fri, 13 Jun 2014 12:46:05 -0500
+Message-ID: <1402681565-7826-1-git-send-email-grmoore@altera.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <539AE390.4080504@ti.com>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Nori,
- Sekhar" <nsekhar@ti.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "kyungmin.park@samsung.com" <kyungmin.park@samsung.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
- Pekon" <pekon@ti.com>,
- "ezequiel.garcia@free-electrons.com" <ezequiel.garcia@free-electrons.com>,
- "javier@dowhile0.org" <javier@dowhile0.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+Content-Type: text/plain
+Cc: Graham Moore <grmoore@altera.com>, linux-kernel@vger.kernel.org,
+ Yves Vandervennet <rocket.yvanderv@gmail.com>, linux-mtd@lists.infradead.org,
+ Alan Tull <atull@altera.com>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen <dinguyen@altera.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,79 +24,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Roger Quadros <rogerq@ti.com> [140613 04:43]:
-> On 06/13/2014 01:46 PM, Tony Lindgren wrote:
-> > * Roger Quadros <rogerq@ti.com> [140613 01:24]:
-> >> On 06/13/2014 11:13 AM, Gupta, Pekon wrote:
-> >>>> From: Tony Lindgren [mailto:tony@atomide.com]
-> >>>>> * Roger Quadros <rogerq@ti.com> [140613 00:40]:
-> >>>>>> On 06/13/2014 10:18 AM, Tony Lindgren wrote:
-> >>>>>>> * Roger Quadros <rogerq@ti.com> [140611 01:58]:
-> >>>>>
-> >>>>> OK. But wait pin edge detection was not yet being used and I couldn't
-> >>>>> think of how it would ever be used. Any ideas?
-> >>>>
-> >>>> Maybe to wake-up the system on bus activity or something?
-> >>>>
-> >>> Sorry, I wasn't able to review this series.
-> >>> But just as pointer, GPMC driver was used for interfacing many
-> >>> non-memory devices like Ethernet (smc91x) and in past GPMC has been
-> >>> proved to work with camera devices too, but that's wasn't mainlined.
-> >>> So keeping IRQ and few other things in GPMC driver is helpful.
-> >>>
-> >>
-> >> On further study it seems that the wait pin edge detection is only used in the NAND controller use case.
-> >> see section 10.1.5.14.2.2 Ready Pin Monitored by Hardware Interrupt
-> > 
-> > It seems they can be used for anything slow like NOR and NAND.
-> 
-> But NOR driver never requests for any IRQ.
-> 
-> We should not confuse this wait pin edge interrupt with NOR bus cycle WAIT pin mechanism.
-> That is configured using GPMC_CONFIG1 register via WAITPINSELECT and WAITREAD/WRITEMONITORING bits.
-> That wait pin handling is done completely in hardware and doesn't need any software intervention.
-> Imagine using it for interrupt for every bus cycle wait. It will be dead slow and unusable.
-> 
-> The WAIT edge interrupt mechanism is exclusively for NAND use case to notify the status of READY pin after a block/page operation.
+The Denali NAND driver reads only 5 bytes of ID, but some Hynix and Samsung
+have size parameters in the 6th byte.  As a result, the page and oob size
+for a Hynix H27UAG8T2B were calculated incorrectly and the driver failed to
+load.
 
-OK thanks for clarifying it. 
- 
-> >> For memory devices, no software wait pin intervention is necessary and doesn't even make sense.
-> > 
-> > Still seems that it's use can be generic though, not limited
-> > to NAND.
-> >  
-> >> So I don't agree on managing the IRQSTATUS and IRQENABLE register in the GPMC driver. It is adding unnecessary complexity. I don't mind having a wrapper around it though like the other nand registers.
-> > 
-> > But all the consumer driver should need to do is request_irq()
-> > on it? That's pretty much the most common interface we have
-> > for drivers :)
-> 
-> the client driver side is easy, but it adds unnecessary complication to model it as IRQ chip and assign a line for each event. Since it is going to be used exclusively by NAND we should avoid IRQ chip modeling.
+The solution is to read 8 bytes of ID, as expected by the nand framework.
 
-OK up to you if there are no other users for it. 
- 
-> >> To be frank, I think it is cleaner if the NAND driver directly accesses the NAND registers.
-> >> I don't see why we should make things complicated just because the hardware designers didn't create a clear register split between GPMC and NAND.
-> > 
-> > Because they are in separate hardware modules :)
-> > 
-> > Who knows why it was set up this way. Maybe the plan was to have
-> > the common features in GPMC that then can be used by various MTD
-> > devices.
-> >  
-> >> Only the GPMC_CONFIG register needs to remain with the GPMC driver.
-> > 
-> > And managing clocks and runtime PM in general. In any case, let's
-> > not let drivers tinker with the GPMC registers directly though.
-> > Some kind of abstraction via existing frameworks or with regmap
-> > is needed.
-> 
-> OK. I agree about using some kind of abstraction instead of direct access.
+Signed-off-by: Graham Moore <grmoore@altera.com>
+---
+ drivers/mtd/nand/denali.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Yes and like we chatted on irc, adding a syscon mapping for for
-the NAND specific registers might do the trick here.
-
-Regards,
-
-Tony
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index 9f2012a..7276125 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -488,7 +488,7 @@ static uint16_t denali_nand_timing_set(struct denali_nand_info *denali)
+ 	addr = (uint32_t)MODE_11 | BANK(denali->flash_bank);
+ 	index_addr(denali, (uint32_t)addr | 0, 0x90);
+ 	index_addr(denali, (uint32_t)addr | 1, 0);
+-	for (i = 0; i < 5; i++)
++	for (i = 0; i < 8; i++)
+ 		index_addr_read_data(denali, addr | 2, &id_bytes[i]);
+ 	maf_id = id_bytes[0];
+ 	device_id = id_bytes[1];
+@@ -1276,7 +1276,7 @@ static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
+ 		addr = (uint32_t)MODE_11 | BANK(denali->flash_bank);
+ 		index_addr(denali, (uint32_t)addr | 0, 0x90);
+ 		index_addr(denali, (uint32_t)addr | 1, 0);
+-		for (i = 0; i < 5; i++) {
++		for (i = 0; i < 8; i++) {
+ 			index_addr_read_data(denali,
+ 						(uint32_t)addr | 2,
+ 						&id);
+-- 
+1.7.10.4
