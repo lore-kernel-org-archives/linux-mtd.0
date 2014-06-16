@@ -1,12 +1,12 @@
 Received: from mailrelay009.isp.belgacom.be ([195.238.6.176])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WwbCR-0004MS-8R
- for linux-mtd@lists.infradead.org; Mon, 16 Jun 2014 18:00:08 +0000
+ id 1WwbGs-0007ja-FL
+ for linux-mtd@lists.infradead.org; Mon, 16 Jun 2014 18:04:43 +0000
 From: Fabian Frederick <fabf@skynet.be>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1] fs/jffs2/acl.c: remove null test before kfree
-Date: Mon, 16 Jun 2014 19:58:07 +0200
-Message-Id: <1402941487-3941-1-git-send-email-fabf@skynet.be>
+Subject: [PATCH 1/1] fs/jffs2/xattr.c:  remove null test before kfree
+Date: Mon, 16 Jun 2014 20:02:49 +0200
+Message-Id: <1402941769-4539-1-git-send-email-fabf@skynet.be>
 Cc: Fabian Frederick <fabf@skynet.be>, linux-mtd@lists.infradead.org,
  David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,22 +25,22 @@ Cc: David Woodhouse <dwmw2@infradead.org>
 Cc: linux-mtd@lists.infradead.org
 Signed-off-by: Fabian Frederick <fabf@skynet.be>
 ---
- fs/jffs2/acl.c | 3 +--
+ fs/jffs2/xattr.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/fs/jffs2/acl.c b/fs/jffs2/acl.c
-index 009ec0b..2f7a3c0 100644
---- a/fs/jffs2/acl.c
-+++ b/fs/jffs2/acl.c
-@@ -202,8 +202,7 @@ struct posix_acl *jffs2_get_acl(struct inode *inode, int type)
- 	} else {
- 		acl = ERR_PTR(rc);
+diff --git a/fs/jffs2/xattr.c b/fs/jffs2/xattr.c
+index ad0f2e2..d72817a 100644
+--- a/fs/jffs2/xattr.c
++++ b/fs/jffs2/xattr.c
+@@ -756,8 +756,7 @@ void jffs2_clear_xattr_subsystem(struct jffs2_sb_info *c)
+ 	for (i=0; i < XATTRINDEX_HASHSIZE; i++) {
+ 		list_for_each_entry_safe(xd, _xd, &c->xattrindex[i], xindex) {
+ 			list_del(&xd->xindex);
+-			if (xd->xname)
+-				kfree(xd->xname);
++			kfree(xd->xname);
+ 			jffs2_free_xattr_datum(xd);
+ 		}
  	}
--	if (value)
--		kfree(value);
-+	kfree(value);
- 	if (!IS_ERR(acl))
- 		set_cached_acl(inode, type, acl);
- 	return acl;
 -- 
 1.8.4.5
