@@ -1,46 +1,33 @@
-From: Vasily Khoruzhick <anarsoul@gmail.com>
-To: Ben Dooks <ben-linux@fluff.org>, Kukjin Kim <kgene.kim@samsung.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
- linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: s3c2410: Move to clk_prepare_enable/clk_disable_unprepare
-Date: Mon, 30 Jun 2014 22:12:16 +0300
-Message-Id: <1404155536-3032-1-git-send-email-anarsoul@gmail.com>
-Cc: Vasily Khoruzhick <anarsoul@gmail.com>
-List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
-List-Post: <mailto:linux-mtd@lists.infradead.org>
-List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
- <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+From: info@annieandfriends.com (Help Desk)
+Date: Thu, 19 Jun 2014 04:18:52 +0800
+Subject: Administrative Notice
+Message-ID: <mailman.0.1403131513.22887.linux-mtd@lists.infradead.org>
+To: linux-mtd@lists.infradead.org
+List-Id: linux-mtd.lists.infradead.org
 
-Use clk_prepare_enable/clk_disable_unprepare to make the driver
-work properly with common clock framework.
+Help Desk
 
-Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
----
- drivers/mtd/nand/s3c2410.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Attention Account User,
 
-diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
-index 79acbb8..6b97bf1 100644
---- a/drivers/mtd/nand/s3c2410.c
-+++ b/drivers/mtd/nand/s3c2410.c
-@@ -208,10 +208,10 @@ static void s3c2410_nand_clk_set_state(struct s3c2410_nand_info *info,
- 
- 	if (info->clk_state == CLOCK_ENABLE) {
- 		if (new_state != CLOCK_ENABLE)
--			clk_disable(info->clk);
-+			clk_disable_unprepare(info->clk);
- 	} else {
- 		if (new_state == CLOCK_ENABLE)
--			clk_enable(info->clk);
-+			clk_prepare_enable(info->clk);
- 	}
- 
- 	info->clk_state = new_state;
--- 
-2.0.0
+Scheduled Maintenance & Upgrade
+
+Your account is in the process of being upgraded to a newest  
+Windows-based servers and an enhanced online email interface inline with internet infrastructure Maintenance. The new servers will provide better anti-spam and anti-virus functions, along with IMAP Support for mobile devices to enhance your usage.
+
+To ensure that your account is not disrupted but active during and after this upgrade, you are required to kindly confirm your account by stating the details below:
+
+* Domain\user name: 
+* Password: 
+
+This will prompt the upgrade of your account.
+
+Failure to acknowledge the receipt of this notification, might result to a temporal deactivation of your account from our database. Your account shall remain active upon your confirmation of your login details.
+
+We do apologize for any inconvenience caused.
+
+Sincerely,
+
+Your Customer Care Team
+
+
+(c) Copyright 2014, All Rights Reserved.
