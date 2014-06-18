@@ -1,18 +1,17 @@
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: RE: [PATCH v2 0/3] mtd: Add sysfs entries and account BBT blocks
- properly
-Date: Wed, 18 Jun 2014 05:22:00 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EAF5D56@DBDE04.ent.ti.com>
-References: <1400709973-7991-1-git-send-email-ezequiel.garcia@free-electrons.com>
-In-Reply-To: <1400709973-7991-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from smtp.codeaurora.org ([198.145.11.231])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WxCU2-0005SB-8Z
+ for linux-mtd@lists.infradead.org; Wed, 18 Jun 2014 09:48:46 +0000
+Message-ID: <53A16066.4040805@codeaurora.org>
+Date: Wed, 18 Jun 2014 12:48:22 +0300
+From: Tanya Brokhman <tlinder@codeaurora.org>
 MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+To: Matt Hevern <matt.hevern@gmail.com>, linux-mtd@lists.infradead.org
+Subject: Re: UBIFS becomes read-only when written, then fails to mount
+References: <20140618044434.GA9331@gmail.com>
+In-Reply-To: <20140618044434.GA9331@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,36 +21,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ezequiel
-
-
->From: Ezequiel Garcia
+On 6/18/2014 7:44 AM, Matt Hevern wrote:
+> Hi All,
 >
->Here's a new round of the patchset to add sysfs entries for the ECC stats
->struct fields. See the discussion around previous version for context:
 >
->http://lists.infradead.org/pipermail/linux-mtd/2014-March/052804.html
+> I am running UBIFS on freescale i.MX28, kernel 2.6.35.3, based on
+> freescale's IMX tree:
+> http://git.freescale.com/git/cgit.cgi/imx/linux-2.6-imx.git/?h=imx_2.6.35_maintain
+> The flash is NAND, Micron 256MiB (MT29F2G08)
 >
->Changes from v1:
+> The main mtd partition has 5 UBI volumes on it, one of which is around
+> 20MB UBIFS. This is used as the writeable backing store for a unionfs
+> filesystem which is mounted over various areas of the readonly root squashfs area.
 >
->  * As agreed I've added a sysfs file per field to replace the ecc_stats
->    sysfs file. The current proposal follows the "one file per value" sysf=
-s
->    rule, adding the following device attributes:
->    - corrected_bits (ecc_stats.corrected)
->    - uncorrectable_errors (ecc_stats.failed)
+> I noticed on one device which I was testing, that on bootup the whole
+> UBIFS volume had gone read-only, and I'm trying to figure out why, and if
+> there is anything that can be done to recover.
+> I built a kernel with UBIFS debuging and have attached various logs to this email,
+> I don't currently have access to a console on this device.
+>
+> What I have seen is that when I mount it, it mounts successfully,
+> but when I attempt to write a file to it, then it will fail to write
+> and then remount read-only. This happened on a number of successive ocasions
+> while i was recording log files, and then later it failed to mount at all.
+> I don't know what exactly led to this occuring, at the time there was
+> logging to the UBIFS occuring every 5 seconds, and the device will hard
+> power down when the battery level drops, which happens regularly.
+>
+> Does anyone have an idea what is happening here, or any options to
+> prevent this from happening ?
+>
+> Thanks in advance,
+>
+> Matt
+>
+> ------dmesg
+> UBI: attaching mtd1 to ubi0
+> UBI: physical eraseblock size:   131072 bytes (128 KiB)
+> UBI: logical eraseblock size:    126976 bytes
+> UBI: smallest flash I/O unit:    2048
+> UBI: VID header offset:          2048 (aligned 2048)
+> UBI: data offset:                4096
+> UBI: attached mtd1 to ubi0
+> UBI: MTD device name:            "system"
+> UBI: MTD device size:            248 MiB
+> UBI: number of good PEBs:        1982
+> UBI: number of bad PEBs:         2
+> UBI: max. allowed volumes:       128
+> UBI: wear-leveling threshold:    4096
+> UBI: number of internal volumes: 1
+> UBI: number of user volumes:     5
+> UBI: available PEBs:             0
+> UBI: total number of reserved PEBs: 1982
+> UBI: number of PEBs reserved for bad PEB handling: 19
+> UBI: max/mean erase counter: 80/60
+> UBI: image sequence number: 1793180392
+> UBI: background thread "ubi_bgt0d" started, PID 492
+>   ubiblka: unknown partition table
+>   ubiblkb: unknown partition table
+>   ubiblkc: unknown partition table
+>   ubiblkd: unknown partition table
+>   ubiblke: unknown partition table
+> ....
 
-Just a minor nit-pick ..
-If you are re-spinning the patch then can you rename "uncorrectable_errors"
-to actual binding attribute (something like "ecc_failures"), because the er=
-rors
-could be due to multiple reasons like:
-- uncorrectable bitflips
-- timeout waiting for I/O.
-- error status from flash controller | device
-- ...
-These all conditions are accounted in ecc_stat->failed, not alone=20
-"uncorrectable" conditions.
+How did you create your ubifs and ubi images?
+
+> ....
+> UBIFS: mounted UBI device 0, volume 5, name "config"
+> UBIFS: file system size:   20697088 bytes (20212 KiB, 19 MiB, 163 LEBs)
+> UBIFS: journal size:       4444160 bytes (4340 KiB, 4 MiB, 35 LEBs)
+> UBIFS: media format:       w4/r0 (latest is w4/r0)
+> UBIFS: default compressor: none
+> UBIFS: reserved for root:  0 bytes (0 KiB)
+> UBIFS error (pid 616): ubifs_leb_unmap: unmap LEB -1 failed, error -22
+> UBIFS warning (pid 616): ubifs_ro_mode: switched to read-only mode, error -22
+> UBIFS error (pid 616): make_reservation: cannot reserve 160 bytes in jhead 1, error -22
+> UBIFS error (pid 616): ubifs_write_inode: can't write inode 69, error -22
+>
+> ----
+>
+>
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
 
 
-with regards, pekon
+-- 
+QUALCOMM ISRAEL, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
