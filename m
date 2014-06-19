@@ -1,9 +1,9 @@
-Received: from szxga01-in.huawei.com ([119.145.14.64])
+Received: from szxga03-in.huawei.com ([119.145.14.66])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WxXst-0006ag-LH
- for linux-mtd@lists.infradead.org; Thu, 19 Jun 2014 08:39:53 +0000
-Message-ID: <53A2A170.80006@huawei.com>
-Date: Thu, 19 Jun 2014 16:38:08 +0800
+ id 1WxYBc-0007Y9-JH
+ for linux-mtd@lists.infradead.org; Thu, 19 Jun 2014 08:59:13 +0000
+Message-ID: <53A2A615.7070607@huawei.com>
+Date: Thu, 19 Jun 2014 16:57:57 +0800
 From: hujianyang <hujianyang@huawei.com>
 MIME-Version: 1.0
 To: Artem Bityutskiy <dedekind1@gmail.com>
@@ -22,113 +22,102 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now I have reproduced this failure many times. Once the partition
-mounted, there are lots of IOs. Power off the system several times
-may case this failure.
+I found there might be a race in do_commit(). If we perform
+ubifs_log_end_commit() before write master node, another
+process which run ubifs_add_bud_to_log() may destroy the
+old cs_node in the next or latter leb. Because log_end_commit()
+will change @c->ltail_lnum by new @ltail_lnum. If power off
+happens before we write either master node, we will read the
+old master nodes and find no cs node exist in the leb which
+master node indicate in the next mount.
 
-I dump the first node in each LOG leb and found none cs node exist.
+Am I right?
 
-[  808.022004] UBIFS error (pid 1643): replay_log_leb: first log node at LEB 6:0
- is not CS node
-[  808.121044] UBIFS error (pid 1643): replay_log_leb: log error detected while
-replaying the log at LEB 6:0
-[  808.235548]  magic          0x6101831
-[  808.279264]  crc            0x70b8d9be
-[  808.324030]  node_type      8 (reference node)
-[  808.377137]  group_type     0 (no node group)
-[  808.429181]  sqnum          536414
-[  808.469779]  len            64
-[  808.506224]  lnum           5609
-[  808.544735]  offs           124928
-[  808.585336]  jhead          1
-[  808.620762] UBIFS error (pid 1643): ubifs_show_log: HUJY: start to dump log L
-EB
-[  808.708185] UBIFS error (pid 1643): ubifs_show_log: HUJY: fs(cmt_no) = 308
-[  808.790439] UBIFS error (pid 1643): ubifs_show_log: HUJY: replay log LEB 3
-[  808.884122] UBIFS error (pid 1643): ubifs_show_log: HUJY: ref_node, sqnum = 5
-35991
-[  808.972764] UBIFS error (pid 1643): ubifs_show_log: HUJY: replay log LEB 4
-[  809.066455] UBIFS error (pid 1643): ubifs_show_log: HUJY: ref_node, sqnum = 5
-36115
-[  809.155097] UBIFS error (pid 1643): ubifs_show_log: HUJY: replay log LEB 5
-[  809.248787] UBIFS error (pid 1643): ubifs_show_log: HUJY: ref_node, sqnum = 5
-36239
-[  809.337410] UBIFS error (pid 1643): ubifs_show_log: HUJY: replay log LEB 6
-[  809.431098] UBIFS error (pid 1643): ubifs_show_log: HUJY: ref_node, sqnum = 5
-36414
-[  809.519734] UBIFS error (pid 1643): ubifs_show_log: HUJY: replay log LEB 7
-[  809.613376] UBIFS error (pid 1643): ubifs_show_log: HUJY: ref_node, sqnum = 5
-36671
-[  809.702002] UBIFS error (pid 1643): ubifs_show_log: HUJY: replay log LEB 8
-[  809.795697] UBIFS error (pid 1643): ubifs_show_log: HUJY: ref_node, sqnum = 5
-36795
-[  809.884332] UBIFS error (pid 1643): ubifs_show_log: HUJY: replay log LEB 9
-[  809.978025] UBIFS error (pid 1643): ubifs_show_log: HUJY: ref_node, sqnum = 5
-37164
-[  810.066650] UBIFS error (pid 1643): ubifs_show_log: HUJY: replay log LEB 10
-[  810.161384] UBIFS error (pid 1643): ubifs_show_log: HUJY: ref_node, sqnum = 5
-37533
-[  810.250025] UBIFS error (pid 1643): ubifs_show_log: HUJY: replay log LEB 11
-[  810.344749] UBIFS error (pid 1643): ubifs_show_log: HUJY: ref_node, sqnum = 5
-37657
-[  810.433385] UBIFS error (pid 1643): ubifs_show_log: HUJY: replay log LEB 12
-[  810.528145] UBIFS error (pid 1643): ubifs_show_log: HUJY: ref_node, sqnum = 5
-37813
-[  810.616790] UBIFS error (pid 1643): ubifs_show_log: HUJY: replay log LEB 13
-[  810.711451] UBIFS error (pid 1643): ubifs_show_log: HUJY: ref_node, sqnum = 5
-38211
-[  810.800068] UBIFS error (pid 1643): ubifs_show_log: HUJY: dump log LEB finish
+So I want to remove the operations in ubifs_log_end_commit()
+after write master nodes to avoid the old cs node being
+covered by new ref node.
+
+Now I would like to show the undone patch.
 
 
------------------------------------------------------------------------------------
 
-by this function
+--- a/fs/ubifs/commit.c
++++ b/fs/ubifs/commit.c
+@@ -108,7 +108,7 @@ static int nothing_to_commit(struct ubifs_info *c)
+  */
+ static int do_commit(struct ubifs_info *c)
+ {
+-	int err, new_ltail_lnum, old_ltail_lnum, i;
++	int err, new_ltail_lnum, i;
+ 	struct ubifs_zbranch zroot;
+ 	struct ubifs_lp_stats lst;
 
-@@ -812,6 +812,40 @@ static int validate_ref(struct ubifs_info *c, const struct ubifs_ref_node *ref)
- 	return 0;
- }
+@@ -166,10 +166,10 @@ static int do_commit(struct ubifs_info *c)
+ 	err = ubifs_orphan_end_commit(c);
+ 	if (err)
+ 		goto out;
+-	old_ltail_lnum = c->ltail_lnum;
+-	err = ubifs_log_end_commit(c, new_ltail_lnum);
+-	if (err)
+-		goto out;
++//	old_ltail_lnum = c->ltail_lnum;
++//	err = ubifs_log_end_commit(c, new_ltail_lnum);
++//	if (err)
++//		goto out;
+ 	err = dbg_check_old_index(c, &zroot);
+ 	if (err)
+ 		goto out;
+@@ -208,7 +208,7 @@ static int do_commit(struct ubifs_info *c)
+ 	if (err)
+ 		goto out;
 
-+static void ubifs_show_log(struct ubifs_info *c, void *sbuf)
-+{
-+	struct ubifs_scan_leb *sleb;
-+	struct ubifs_scan_node *snod;
-+	int lnum = UBIFS_LOG_LNUM;
+-	err = ubifs_log_post_commit(c, old_ltail_lnum);
++	err = ubifs_log_post_commit(c, new_ltail_lnum);
+ 	if (err)
+ 		goto out;
+ 	err = ubifs_gc_end_commit(c);
+diff --git a/fs/ubifs/log.c b/fs/ubifs/log.c
+index 36bd4ef..d263642 100644
+--- a/fs/ubifs/log.c
++++ b/fs/ubifs/log.c
+@@ -495,9 +495,10 @@ int ubifs_log_end_commit(struct ubifs_info *c, int ltail_lnum)
+  *
+  * This function returns %0 on success and a negative error code on failure.
+  */
+-int ubifs_log_post_commit(struct ubifs_info *c, int old_ltail_lnum)
++int ubifs_log_post_commit(struct ubifs_info *c, int new_ltail_lnum)
+ {
+ 	int lnum, err = 0;
++	int old_ltail_lnum;
+
+ 	while (!list_empty(&c->old_buds)) {
+ 		struct ubifs_bud *bud;
+@@ -510,6 +511,14 @@ int ubifs_log_post_commit(struct ubifs_info *c, int old_ltail_lnum)
+ 		kfree(bud);
+ 	}
+ 	mutex_lock(&c->log_mutex);
 +
-+	ubifs_err("HUJY: start to dump log LEB");
-+	ubifs_err("HUJY: fs(cmt_no) = %llu", c->cmt_no);
-+	do {
-+		ubifs_err("HUJY: replay log LEB %d", lnum);
-+		sleb = ubifs_scan(c, lnum, 0, sbuf, 0);
-+		if (!sleb->nodes_cnt) {
-+			ubifs_err("HUJY: empty leb");
-+			goto free;
-+		}
-+		snod = list_entry(sleb->nodes.next, struct ubifs_scan_node, list);
-+		if (snod->type == UBIFS_CS_NODE) {
-+			const struct ubifs_cs_node *node;
++	dbg_log("old tail was LEB %d:0, new tail is LEB %d:0",
++		c->ltail_lnum, new_ltail_lnum);
 +
-+			node = sleb->buf;
-+			ubifs_err("HUJY: cs_node, cmt_no = %llu", node->cmt_no);
-+			ubifs_err("HUJY: cs_sqnum = %llu", node->ch.sqnum);
-+		} else if (snod->type == UBIFS_REF_NODE) {
-+			ubifs_err("HUJY: ref_node, sqnum = %llu", snod->sqnum);
-+		} else {
-+			ubifs_err("HUJY: wrong type node");
-+		}
-+free:
-+		ubifs_scan_destroy(sleb);
-+		lnum = ubifs_next_log_lnum(c, lnum);
-+	} while (lnum != UBIFS_LOG_LNUM);
-+	ubifs_err("HUJY: dump log LEB finish");
-+}
++	old_ltail_lnum = c->ltail_lnum;
++	c->ltail_lnum = new_ltail_lnum;
++	c->min_log_bytes = c->leb_size;	
 +
- /**
-  * replay_log_leb - replay a log logical eraseblock.
-  * @c: UBIFS file-system description object
-@@ -959,6 +993,7 @@ out_dump:
- 		  lnum, offs + snod->offs);
- 	ubifs_dump_node(c, snod->node);
- 	ubifs_scan_destroy(sleb);
-+	ubifs_show_log(c, sbuf);
- 	return -EINVAL;
- }
+ 	for (lnum = old_ltail_lnum; lnum != c->ltail_lnum;
+ 	     lnum = ubifs_next_log_lnum(c, lnum)) {
+ 		dbg_log("unmap log LEB %d", lnum);
+@@ -517,6 +526,13 @@ int ubifs_log_post_commit(struct ubifs_info *c, int old_ltail_lnum)
+ 		if (err)
+ 			goto out;
+ 	}
++
++	spin_lock(&c->buds_lock);
++	c->bud_bytes -= c->cmt_bud_bytes;
++	spin_unlock(&c->buds_lock);
++
++	err = dbg_check_bud_bytes(c);
++
+ out:
+ 	mutex_unlock(&c->log_mutex);
+ 	return err;
