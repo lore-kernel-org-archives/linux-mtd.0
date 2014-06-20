@@ -1,18 +1,17 @@
-Received: from szxga03-in.huawei.com ([119.145.14.66])
+Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WxYBc-0007Y9-JH
- for linux-mtd@lists.infradead.org; Thu, 19 Jun 2014 08:59:13 +0000
-Message-ID: <53A2A615.7070607@huawei.com>
-Date: Thu, 19 Jun 2014 16:57:57 +0800
-From: hujianyang <hujianyang@huawei.com>
-MIME-Version: 1.0
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: ubifs: replay log error
-References: <5396CCA8.7060303@huawei.com>
-In-Reply-To: <5396CCA8.7060303@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+ id 1Wxury-0007sG-MI
+ for linux-mtd@lists.infradead.org; Fri, 20 Jun 2014 09:12:28 +0000
+Received: by mail-pa0-f52.google.com with SMTP id eu11so2917036pac.11
+ for <linux-mtd@lists.infradead.org>; Fri, 20 Jun 2014 02:12:01 -0700 (PDT)
+From: Ted Juan <ted.juan@gmail.com>
+To: computersforpeace@gmail.com
+Subject: [PATCH] mtd: devices: elm: fix elm_context_save() and
+ elm_context_restore() functions
+Date: Fri, 20 Jun 2014 17:11:56 +0800
+Message-Id: <1403255516-28413-1-git-send-email-ted.juan@gmail.com>
+Cc: Ted Juan <ted.juan@weintek.com>, linux-mtd@lists.infradead.org,
+ pekon@ti.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,102 +21,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I found there might be a race in do_commit(). If we perform
-ubifs_log_end_commit() before write master node, another
-process which run ubifs_add_bud_to_log() may destroy the
-old cs_node in the next or latter leb. Because log_end_commit()
-will change @c->ltail_lnum by new @ltail_lnum. If power off
-happens before we write either master node, we will read the
-old master nodes and find no cs node exist in the leb which
-master node indicate in the next mount.
+From: Ted Juan <ted.juan@weintek.com>
 
-Am I right?
-
-So I want to remove the operations in ubifs_log_end_commit()
-after write master nodes to avoid the old cs node being
-covered by new ref node.
-
-Now I would like to show the undone patch.
+ These two function's switch case lack the 'break' that make them always return error.
 
 
+Signed-off-by: Ted Juan <ted.juan@weintek.com>
+---
+ drivers/mtd/devices/elm.c  |    2 ++
+ "toreqq\033\033qq\033\033" |   20 ++++++++++++++++++++
+ 2 files changed, 22 insertions(+)
+ create mode 100644 "toreqq\033\033qq\033\033"
 
---- a/fs/ubifs/commit.c
-+++ b/fs/ubifs/commit.c
-@@ -108,7 +108,7 @@ static int nothing_to_commit(struct ubifs_info *c)
-  */
- static int do_commit(struct ubifs_info *c)
- {
--	int err, new_ltail_lnum, old_ltail_lnum, i;
-+	int err, new_ltail_lnum, i;
- 	struct ubifs_zbranch zroot;
- 	struct ubifs_lp_stats lst;
-
-@@ -166,10 +166,10 @@ static int do_commit(struct ubifs_info *c)
- 	err = ubifs_orphan_end_commit(c);
- 	if (err)
- 		goto out;
--	old_ltail_lnum = c->ltail_lnum;
--	err = ubifs_log_end_commit(c, new_ltail_lnum);
--	if (err)
--		goto out;
-+//	old_ltail_lnum = c->ltail_lnum;
-+//	err = ubifs_log_end_commit(c, new_ltail_lnum);
-+//	if (err)
-+//		goto out;
- 	err = dbg_check_old_index(c, &zroot);
- 	if (err)
- 		goto out;
-@@ -208,7 +208,7 @@ static int do_commit(struct ubifs_info *c)
- 	if (err)
- 		goto out;
-
--	err = ubifs_log_post_commit(c, old_ltail_lnum);
-+	err = ubifs_log_post_commit(c, new_ltail_lnum);
- 	if (err)
- 		goto out;
- 	err = ubifs_gc_end_commit(c);
-diff --git a/fs/ubifs/log.c b/fs/ubifs/log.c
-index 36bd4ef..d263642 100644
---- a/fs/ubifs/log.c
-+++ b/fs/ubifs/log.c
-@@ -495,9 +495,10 @@ int ubifs_log_end_commit(struct ubifs_info *c, int ltail_lnum)
-  *
-  * This function returns %0 on success and a negative error code on failure.
-  */
--int ubifs_log_post_commit(struct ubifs_info *c, int old_ltail_lnum)
-+int ubifs_log_post_commit(struct ubifs_info *c, int new_ltail_lnum)
- {
- 	int lnum, err = 0;
-+	int old_ltail_lnum;
-
- 	while (!list_empty(&c->old_buds)) {
- 		struct ubifs_bud *bud;
-@@ -510,6 +511,14 @@ int ubifs_log_post_commit(struct ubifs_info *c, int old_ltail_lnum)
- 		kfree(bud);
- 	}
- 	mutex_lock(&c->log_mutex);
-+
-+	dbg_log("old tail was LEB %d:0, new tail is LEB %d:0",
-+		c->ltail_lnum, new_ltail_lnum);
-+
-+	old_ltail_lnum = c->ltail_lnum;
-+	c->ltail_lnum = new_ltail_lnum;
-+	c->min_log_bytes = c->leb_size;	
-+
- 	for (lnum = old_ltail_lnum; lnum != c->ltail_lnum;
- 	     lnum = ubifs_next_log_lnum(c, lnum)) {
- 		dbg_log("unmap log LEB %d", lnum);
-@@ -517,6 +526,13 @@ int ubifs_log_post_commit(struct ubifs_info *c, int old_ltail_lnum)
- 		if (err)
- 			goto out;
- 	}
-+
-+	spin_lock(&c->buds_lock);
-+	c->bud_bytes -= c->cmt_bud_bytes;
-+	spin_unlock(&c->buds_lock);
-+
-+	err = dbg_check_bud_bytes(c);
-+
- out:
- 	mutex_unlock(&c->log_mutex);
- 	return err;
+diff --git a/drivers/mtd/devices/elm.c b/drivers/mtd/devices/elm.c
+index 7df8694..b4f61c7 100644
+--- a/drivers/mtd/devices/elm.c
++++ b/drivers/mtd/devices/elm.c
+@@ -475,6 +475,7 @@ static int elm_context_save(struct elm_info *info)
+ 					ELM_SYNDROME_FRAGMENT_1 + offset);
+ 			regs->elm_syndrome_fragment_0[i] = elm_read_reg(info,
+ 					ELM_SYNDROME_FRAGMENT_0 + offset);
++			break;
+ 		default:
+ 			return -EINVAL;
+ 		}
+@@ -520,6 +521,7 @@ static int elm_context_restore(struct elm_info *info)
+ 					regs->elm_syndrome_fragment_1[i]);
+ 			elm_write_reg(info, ELM_SYNDROME_FRAGMENT_0 + offset,
+ 					regs->elm_syndrome_fragment_0[i]);
++			break;
+ 		default:
+ 			return -EINVAL;
+ 		}
+diff --git "a/toreqq\033\033qq\033\033" "b/toreqq\033\033qq\033\033"
+new file mode 100644
+index 0000000..4a7b35c
+--- /dev/null
++++ "b/toreqq\033\033qq\033\033"
+@@ -0,0 +1,20 @@
++[1mdiff --git a/drivers/mtd/devices/elm.c b/drivers/mtd/devices/elm.c[m
++[1mindex 7df8694..8e6ba6c 100644[m
++[1m--- a/drivers/mtd/devices/elm.c[m
++[1m+++ b/drivers/mtd/devices/elm.c[m
++[36m@@ -475,6 +475,7 @@[m [mstatic int elm_context_save(struct elm_info *info)[m
++ 					ELM_SYNDROME_FRAGMENT_1 + offset);[m
++ 			regs->elm_syndrome_fragment_0[i] = elm_read_reg(info,[m
++ 					ELM_SYNDROME_FRAGMENT_0 + offset);[m
++[32m+[m[32m                        break;[m
++ 		default:[m
++ 			return -EINVAL;[m
++ 		}[m
++[36m@@ -520,6 +521,7 @@[m [mstatic int elm_context_restore(struct elm_info *info)[m
++ 					regs->elm_syndrome_fragment_1[i]);[m
++ 			elm_write_reg(info, ELM_SYNDROME_FRAGMENT_0 + offset,[m
++ 					regs->elm_syndrome_fragment_0[i]);[m
++[32m+[m[32m                        break;[m
++ 		default:[m
++ 			return -EINVAL;[m
++ 		}[m
+-- 
+1.7.9.5
