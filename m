@@ -1,23 +1,16 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WxvOS-0004j3-I0
- for linux-mtd@lists.infradead.org; Fri, 20 Jun 2014 09:46:01 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Ted Juan <ted.juan@gmail.com>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>
-Subject: RE: [PATCH] mtd: devices: elm: fix elm_context_save() and
- elm_context_restore() functions
-Date: Fri, 20 Jun 2014 09:45:32 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EAF6607@DBDE04.ent.ti.com>
-References: <1403255516-28413-1-git-send-email-ted.juan@gmail.com>
- <1403256725-28983-1-git-send-email-ted.juan@gmail.com>
-In-Reply-To: <1403256725-28983-1-git-send-email-ted.juan@gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: "Liu, Yan" <yan-liu@ti.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from protonic.xs4all.nl ([83.163.252.89])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Wxvol-00064p-17
+ for linux-mtd@lists.infradead.org; Fri, 20 Jun 2014 10:13:11 +0000
+From: David Jander <david@protonic.nl>
+To: linux-mtd@lists.infradead.org
+Subject: [FRC] [PATCH] MTD: nand_base.c: Enable support for Samsung E-die SLC
+ NAND
+Date: Fri, 20 Jun 2014 12:12:17 +0200
+Message-Id: <1403259137-22171-1-git-send-email-david@protonic.nl>
+Cc: sjhill@realitydiluted.com, tglx@linutronix.de,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, David Jander <david@protonic.nl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,44 +20,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From: Ted Juan [mailto:ted.juan@gmail.com]
->
-> These two function's switch case lack the 'break' that make them always r=
-eturn error.
->
->Signed-off-by: Ted Juan <ted.juan@gmail.com>
->---
-> drivers/mtd/devices/elm.c |    2 ++
-> 1 file changed, 2 insertions(+)
->
->diff --git a/drivers/mtd/devices/elm.c b/drivers/mtd/devices/elm.c
->index 7df8694..b4f61c7 100644
->--- a/drivers/mtd/devices/elm.c
->+++ b/drivers/mtd/devices/elm.c
->@@ -475,6 +475,7 @@ static int elm_context_save(struct elm_info *info)
-> 					ELM_SYNDROME_FRAGMENT_1 + offset);
-> 			regs->elm_syndrome_fragment_0[i] =3D elm_read_reg(info,
-> 					ELM_SYNDROME_FRAGMENT_0 + offset);
->+			break;
-> 		default:
-> 			return -EINVAL;
-> 		}
->@@ -520,6 +521,7 @@ static int elm_context_restore(struct elm_info *info)
-> 					regs->elm_syndrome_fragment_1[i]);
-> 			elm_write_reg(info, ELM_SYNDROME_FRAGMENT_0 + offset,
-> 					regs->elm_syndrome_fragment_0[i]);
->+			break;
-> 		default:
-> 			return -EINVAL;
-> 		}
->--
->1.7.9.5
+Samsung E-die SLC NAND doesn't support partial writes anymore and there
+seems to be no other way of detecting this than looking at bits 0 & 1
+of the 5th ID byte. Those bits were "reserved" and 00 for all older
+chips. On E-die chips, "01" seems to indicate 21nm feature size. This
+patch assumes that all later revisions (if they will ever come) will have
+this characteristic as well and disables sub-page writes in this case.
 
-Thanks for fixing this. Apologies, my bad, I didn't test this nicely.
-Also, marking it for stable, as it might break transition to low-power mode=
-s
+Signed-off-by: David Jander <david@protonic.nl>
+---
+ drivers/mtd/nand/nand_base.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-CC: <stable@vger.kernel.org> # 3.12.x+
-Acked-by: Pekon Gupta <pekon@ti.com>
-
-with regards, pekon
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 41167e9..e68e0c7 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3468,6 +3468,16 @@ static void nand_decode_ext_id(struct mtd_info *mtd, struct nand_chip *chip,
+ 			mtd->oobsize = 32 * mtd->writesize >> 9;
+ 		}
+ 
++		/*
++		 * Samsung E-die SLC NAND doesn't support partial writes
++		 * anymore. The only way to distinguish this die-revision
++		 * is by checking bits 0 and 1 of id_data[4], which seem
++		 * to indicate feature size (previous => 00, 21nm => 01).
++		 */
++		if (id_data[0] == NAND_MFR_SAMSUNG && nand_is_slc(chip) &&
++				(id_data[4] & 0x03) /* 21nm or newer */) {
++			chip->options |= NAND_NO_SUBPAGE_WRITE;
++		}
+ 	}
+ }
+ 
+-- 
+1.9.1
