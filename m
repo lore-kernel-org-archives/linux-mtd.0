@@ -1,9 +1,9 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wz2tl-00052F-LB
- for linux-mtd@lists.infradead.org; Mon, 23 Jun 2014 11:58:58 +0000
-Message-ID: <53A81663.9080305@nod.at>
-Date: Mon, 23 Jun 2014 13:58:27 +0200
+ id 1Wz3ZM-00044E-Fg
+ for linux-mtd@lists.infradead.org; Mon, 23 Jun 2014 12:41:57 +0000
+Message-ID: <53A82077.6090109@nod.at>
+Date: Mon, 23 Jun 2014 14:41:27 +0200
 From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
 To: hs@denx.de
@@ -23,58 +23,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
-
 Am 23.06.2014 13:04, schrieb Heiko Schocher:
-> Hello all,
-> 
-> I just ported the linux v3.14 MTD/UBI/UBIFS sources to U-Boot to
-> get in U-Boot also UBI fastmap support. This works now nice in
-> U-Boot with linux v3.14 kernels :-)
-> 
-> Now just booted a linux v3.16-rc1 kernel and I could not mount the
-> ubifs based rootfs anymore (using UBI Fastmap support active and
-> burned the ubi rootfs image in U-Boot) ...
-> 
-> I found this patch in the linux tree:
-> 
-> commit 604b592e6fd3c98f21435e1181ba7723ffc24715
-> Author: Mike Snitzer <snitzer@redhat.com>
-> Date:   Fri Mar 21 15:54:03 2014 -0400
-> 
->         UBI: fix rb_tree node comparison in add_map
-> 
->         The comparisons used in add_vol() shouldn't be identical.  Pretty sure
->         the following is correct but it is completely untested.
-> 
->         Signed-off-by: Mike Snitzer <snitzer@redhat.com>
->         Acked-by: Richard Weinberger <richard@nod.at>
->         Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-> 
-> Reverted it in the linux tree, and my rootfs boots again ...
-> (This patch is not yet in the u-boot sources, as they based on v3.14)
-> 
-> So, this change seems at least to break backwardcompatibility... (I
-> must admit, I am not a ubi nor ubi fastmap expert ...)
-> 
 > I tried this patch also in the U-Boot code, without getting a ubifs
 > rootfs (burned with u-boot into the ubi volume) bootable in linux ...
 > which worked before... maybe v3.14 and v3.16-rc1 are not compatible?
 > Do anybody know from such problems?
-
-No. If there is a problem it needs fixing. :)
-
+> 
 > If I revert commit 604b592e6fd3c98f21435e1181ba7723ffc24715 in
 > Linux v3.16-rc1 only (so I have the same code in U-Boot at this
 > place), I can boot Linux with the ubifs based rootfs, and after
 > a reboot the U-Boot ubi attach time is short ... all works fine,
 > as I can see it ...
-
-So, Linux can no longer attach UBI Fastmap images which are older than 3.16-rc1?
-How odd. :(
-
-Attaching newer ones works?
-
+> 
 > If I make in U-Boot and Linux in following patch [1]:
 > $ git diff
 > diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
@@ -91,28 +51,11 @@ Attaching newer ones works?
 >                 else
 >                         p = &(*p)->rb_right;
 > $
-> 
-> I can boot the ubifs based rootfs (burned with U-Boot), and after reboot
-> to U-Boot U-Boot ubi attach works again fine.
-> 
-> As in process_pool_aeb() looks:
-> [...]
->                if (be32_to_cpu(new_vh->vol_id) > tmp_av->vol_id)
->                         p = &(*p)->rb_left;
->                 else if (be32_to_cpu(new_vh->vol_id) < tmp_av->vol_id)
->                         p = &(*p)->rb_right;
-> 
-> so, I think the old code:
-> 
->                 if (vol_id > av->vol_id)
->                         p = &(*p)->rb_left;
->                 else if (vol_id > av->vol_id)
->                         p = &(*p)->rb_right;
-> 
-> is an copy&paste error ... and I think the right fix should
-> be[1] ...
 
-Forgot to attach it?
+"Found" your patch. ;)
+Looks like I need new glasses.
+
+Yes, it looks correct as the logic is now balanced with the logic in ubi_find_av().
 
 Thanks,
 //richard
