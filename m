@@ -1,19 +1,25 @@
-From: =?iso-2022-jp?B?QmVhbiBIdW8gGyRCcDlJTElMGyhCIChiZWFuaHVvKQ==?=
- <beanhuo@micron.com>
-To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Alexander Shiyan <shc_work@mail.ru>,
- "Christian Riesch" <christian.riesch@omicron.at>
-Subject: [PATCH V2] mtd:nor:timeout:fix do_write_buffer() timeout error
-Date: Mon, 23 Jun 2014 02:50:08 +0000
-Message-ID: <A765B125120D1346A63912DDE6D8B6315D6E23@NTXXIAMBX02.xacn.micron.com>
+Received: from devils.ext.ti.com ([198.47.26.153])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WyvWb-0000ks-8U
+ for linux-mtd@lists.infradead.org; Mon, 23 Jun 2014 04:06:33 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Ted Juan <ted.juan@gmail.com>, David Jander <david@protonic.nl>
+Subject: RE: [FRC] [PATCH] MTD: nand_base.c: Enable support for Samsung
+ E-die SLC NAND
+Date: Mon, 23 Jun 2014 04:05:57 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EAF6A08@DBDE04.ent.ti.com>
+References: <1403259137-22171-1-git-send-email-david@protonic.nl>
+ <CAE94FHELXgoZ9Jm1E3_YT6D1SB=VAGWthZSjbsR+qqkUWn97PA@mail.gmail.com>
+In-Reply-To: <CAE94FHELXgoZ9Jm1E3_YT6D1SB=VAGWthZSjbsR+qqkUWn97PA@mail.gmail.com>
 Content-Language: en-US
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Cc: Paul Gortmaker <paul.gortmaker@windriver.com>,
- Jingoo Han <jg1.han@samsung.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Kees Cook <keescook@chromium.org>
+Cc: "sjhill@realitydiluted.com" <sjhill@realitydiluted.com>,
+ "tglx@linutronix.de" <tglx@linutronix.de>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, David
+ Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,78 +29,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The size of the buffer program has been increased from 256 to 512 , 2ms max=
-imum timeout can not adapt to all the different vendor's norflash, There ma=
-ximum timeout information in the CFI area,so the best way is to choose the =
-result calculated according to timeout field of struct cfi_ident that probe=
-d from norflash's CFI aera.This is also a standard defined by CFI.
-
-Without this change, if the size of buffer program is 512 or bigger than 25=
-6, due to timeout is the shorter than that the chip required,do_write_buffe=
-r sometimes fails.
-
-Tested with Micron JS28F512M29EWx and Micron MT28EW512ABA flash devices.
-
-Signed-off-by: bean huo <beanhuo@micron.com>
----
-changes v1->v2:Deleted unused parameters in this patch (word_write_time_max=
- and erase_time_max).
-Using usecs_to_jiffies instead of msecs_to_jiffies for convert timeout valu=
-e into jiffies.
-
- drivers/mtd/chips/cfi_cmdset_0002.c |   27 ++++++++++++++++++++++++---
- 1 file changed, 24 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cm=
-dset_0002.c
-index e21fde9..22e0b93 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -628,10 +628,24 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map=
-, int primary)
- 		cfi->chips[i].word_write_time =3D 1<<cfi->cfiq->WordWriteTimeoutTyp;
- 		cfi->chips[i].buffer_write_time =3D 1<<cfi->cfiq->BufWriteTimeoutTyp;
- 		cfi->chips[i].erase_time =3D 1<<cfi->cfiq->BlockEraseTimeoutTyp;
-+		/*
-+		 * We first calculate the timeout max according to timeout
-+		 * field of struct cfi_ident that probed from chip's CFI
-+		 * aera,If haven't probed this information,we will specify
-+		 * a default value,and the time unit is us.
-+		 */
-+		if (cfi->cfiq->BufWriteTimeoutTyp &&
-+			cfi->cfiq->BufWriteTimeoutMax){
-+			cfi->chips[i].buffer_write_time_max =3D
-+				1<<(cfi->cfiq->BufWriteTimeoutTyp +
-+					cfi->cfiq->BufWriteTimeoutMax);
-+			} else {
-+		/* specify maximum timeout for buffer program 2000us */
-+				cfi->chips[i].buffer_write_time_max =3D 2000;
-+				}
- 		cfi->chips[i].ref_point_counter =3D 0;
- 		init_waitqueue_head(&(cfi->chips[i].wq));
- 	}
--
- 	map->fldrv =3D &cfi_amdstd_chipdrv;
-=20
- 	return cfi_amdstd_setup(mtd);
-@@ -1462,8 +1476,15 @@ static int __xipram do_write_buffer(struct map_info =
-*map, struct flchip *chip,  {
- 	struct cfi_private *cfi =3D map->fldrv_priv;
- 	unsigned long timeo =3D jiffies + HZ;
--	/* see comments in do_write_oneword() regarding uWriteTimeo. */
--	unsigned long uWriteTimeout =3D ( HZ / 1000 ) + 1;
-+	/* The size of the buffer program has been increased from 256 to 512,
-+	 * 2ms maximum timeout can not adapt to all the different vendor's
-+	 * norflash.There maximum timeout information in the CFI area,so the
-+	 * best way is to choose the result calculated according to timeout
-+	 * field of struct cfi_ident that probed from norflash's CFI aera,see
-+	 * comments in cfi_cmdset_0002().uWriteTimeout is used for timeout step,
-+	 * it must be concerted into jiffies.
-+	 */
-+	unsigned long uWriteTimeout =3D=20
-+	usecs_to_jiffies(chip->buffer_write_time_max);
- 	int ret =3D -EIO;
- 	unsigned long cmd_adr;
- 	int z, words;
---
-1.7.9.5
+SGkgVGVkLA0KDQo+SGkgQWxsLA0KPiAgIEkgcmVjZW50bHkgZG8gdGhlIHBvd2VyIGN1dCB0ZXN0
+IHdpdGggdGhpcyBTYW1zdW5nIE5BTkQgZmxhc2gNCj5LOUYxRzA4VTBFIHdpdGggVEkgQU0zMzUy
+IGNoaXAuDQo+SSBoYXZlIHNldCB0aGUgTkFORF9OT19TVUJQQUdFX1dSSVRFIHBhcmFtZXRlciBh
+bmQgY2hlY2tlZCBhbGwgdGhlDQo+Zmxhc2ggdGltaW5nIHRoYXQgYXJlIGFsbCBjb3JyZWN0Lg0K
+PkJ1dCBpdCBzdGlsbCBoYXBwZW5lZCB1bmNvcnJlY3RhYmxlIGVycm9yIHRoYXQgYml0LWZsaXAg
+bW9yZSB0aGFuIDgNCj5iaXRzIG5vIG1hdHRlciBlcmFzZSBwYWdlIG9yIG5vdC4NCj5UaGUgYmVs
+b3cgaXMgdGhlIHdyb25nIGRhdGEgd2l0aCBlcmFzZSBwYWdlIHRoYXQgYml0LWZsaXAgbW9yZSB0
+aGFuIDggYml0cyAuDQo+DQo+RG9lcyBhbnlvbmUgaGF2ZSB0aGUgc2FtZSBleHBlcmllbmNlPw0K
+Pg0KPlBTLiBUaGUgU2Ftc3VuZyBELWRpZSBTTEMgTkFORCBpcyB0ZXN0IE9LIGluIHRoZSBzYW1l
+IGVudmlyb25tZW50LiBBbmQNCj50aGUgVEkgZHJpdmVyIGNvZGUgaXMgYmFzZSBvbiB0aGUgbGF0
+ZXN0IGwyLW10ZCBnaXQgdHJlZS4NCj4NCj5yZWdhcmRzLA0KPlRlZA0KPg0KPg0KPlsgICAgNy4x
+Mjk3OTFdIFsweDAwMDBdIDB4ZmZmZmZmZmYgMHhmZmZmZmZmZiAweGZmZmZmZmZmIDB4ZmZmZmZm
+ZmYNCj5bICAgIDcuMTM2MTM4XSBbMHgwMDEwXSAweGZmZmZmZmZmIDB4ZmZmZmZmZmYgMHhmZmZm
+ZmZmZiAweGZmZmZmZmZmDQo+WyAgICA3LjE0MjQ4Nl0gWzB4MDAyMF0gMHhmYmZkZmZmZiAweGZm
+ZmZmZmZmIDB4ZmZmZmZmZmYgMHhmZmZmZmZmZg0KPlsgICAgNy4xNDg4NjRdIFsweDAwMzBdIDB4
+ZmZiZmZmZmYgMHhmZmZmN2ZmZiAweGZmZmZmZmZmIDB4ZmZmZmZmZmYNCj5bICAgIDcuMTU1MjEy
+XSBbMHgwMDQwXSAweGZmZmZmZmZmIDB4ZmZmZmZmZmYgMHhmZmZmZmZmZiAweGZmZmZmZmZmDQo+
+WyAgICA3LjE2MTU5MF0gWzB4MDA1MF0gMHhmZmZmZmZmZiAweGZmZmZmZmZmIDB4ZmZmZmZmZmYg
+MHhmZmZmZmZmZg0KPlsgICAgNy4xNjc5MzhdIFsweDAwNjBdIDB4ZmZmZmZmZmYgMHhmZmZmZmZm
+ZiAweGZmZmZmZmZmIDB4ZmZmZmZmZmYNCj5bICAgIDcuMTc0MzE2XSBbMHgwMDcwXSAweGY3ZmZm
+ZmZmIDB4ZmZmZmZjZmYgMHhmZmZmZmZmZiAweGZmZmZmZmZmDQo+WyAgICA3LjE4MDY2NF0gWzB4
+MDA4MF0gMHhmZmZmZmZmZiAweGZmZmZmZmZmIDB4ZmZmZmZmZmYgMHhmZmZmZmZmZg0KPlsgICAg
+Ny4xODcwNDJdIFsweDAwOTBdIDB4ZmZmZmZmZmYgMHhmZmZmZmZmZiAweGZmZmZmZmZmIDB4ZmZm
+ZmZmZmYNCj5bICAgIDcuMTkzMzg5XSBbMHgwMGEwXSAweGZmYmZmZmZmIDB4ZmZmZmZmZmYgMHhm
+ZmZmZmZmZiAweGZmZmZmZmZmDQo+WyAgICA3LjE5OTczN10gWzB4MDBiMF0gMHhmZmZmZmZmZiAw
+eGZmZmZmZmZmIDB4ZmZmZmZmZmYgMHhmZmZmZmZmZg0KPlsgICAgNy4yMDYxMTVdIFsweDAwYzBd
+IDB4ZmZmZmZmZmYgMHhmZmZmZmZmZiAweGZmZmZmZmZmIDB4ZmZmZmZmZmYNCj5bICAgIDcuMjEy
+NDYzXSBbMHgwMGQwXSAweGZmZmZmZmZmIDB4ZmZmZmZmZmYgMHhmZmZmZmZmZiAweGZmZmZmZmZm
+DQo+WyAgICA3LjIxODg0MV0gWzB4MDBlMF0gMHhmZmZmZmZmZiAweGZmZmZmZmZmIDB4ZmZmZmZm
+ZmYgMHhmZmZmZmZmZg0KPlsgICAgNy4yMjUxODldIFsweDAwZjBdIDB4ZmZmZmZmZmYgMHhmZmZm
+ZmZmZiAweGZmZmZmZmZmIDB4ZmZmZmZmZmYNCj5bICAgIDcuMjMxNTY3XSBbMHgwMTAwXSAweGZm
+ZmZmZmZmIDB4ZmZmZmZmZmYgMHhmZmZmZmZmZiAweGZmZmZmZmZmDQo+WyAgICA3LjIzNzkxNV0g
+WzB4MDExMF0gMHhmZmZmZmZmZiAweGZmZmZmZmZmIDB4ZmZmZmZmZmYgMHhmZmZmZmZmZg0KPlsg
+ICAgNy4yNDQyOTNdIFsweDAxMjBdIDB4ZmZkZmZmZmYgMHhmZmZmZmZmZiAweGZmZmZmZmZmIDB4
+ZmZmZmZmZmYNCj5bICAgIDcuMjUwNjQwXSBbMHgwMTMwXSAweGZmZmZmZmZmIDB4ZmZmZjdmZmYg
+MHhmZmZmZmZmZiAweGZmZmZmZmZmDQo+WyAgICA3LjI1Njk4OF0gWzB4MDE0MF0gMHhmZmZmZmZm
+ZiAweGZmZmZmZmZmIDB4ZmZmZmZmZmYgMHhmZmZmZmZmZg0KPlsgICAgNy4yNjMzNjZdIFsweDAx
+NTBdIDB4ZmZmZmZmZmYgMHhmZmZmZmZmZiAweGZmZmZmZmZmIDB4ZmZmZmZmZmYNCj5bICAgIDcu
+MjY5NzE0XSBbMHgwMTYwXSAweGZmZmZmZmZmIDB4ZmZmZmZmZmYgMHhmZmZmZmZmZiAweGZmZmZm
+ZmZmDQo+WyAgICA3LjI3NjA5Ml0gWzB4MDE3MF0gMHhmZmZmZmZmZiAweGZmZmZmZmRmIDB4ZmZm
+ZmZmZmYgMHhmZmZmZmZmZg0KPlsgICAgNy4yODI0NDBdIFsweDAxODBdIDB4ZmZmZmZmZmYgMHhm
+ZmZmZmZmZiAweGZmZmZmZmZmIDB4ZmZmZmZmZmYNCj5bICAgIDcuMjg4ODE4XSBbMHgwMTkwXSAw
+eGZmZmZmZmZmIDB4ZmZmZmZmZmYgMHhmZmZmZmZmZiAweGZmZmZmZmZmDQo+WyAgICA3LjI5NTE2
+Nl0gWzB4MDFhMF0gMHhmZmZmZmZmZiAweGZmZmZmZmZmIDB4ZmZmZmZmZmYgMHhmZmZmZmZmZg0K
+PlsgICAgNy4zMDE1NDRdIFsweDAxYjBdIDB4ZmZmZmZmZmYgMHhmZmZmZGZmZiAweGZmZmZmZmZm
+IDB4ZmZmZmZmZmYNCj5bICAgIDcuMzA3ODkxXSBbMHgwMWMwXSAweGZmZmZmZmZmIDB4ZmZmZmZm
+ZmYgMHhmZmZmZmZmZiAweGZmZmZmZmZmDQo+WyAgICA3LjMxNDI3MF0gWzB4MDFkMF0gMHhmZmZm
+ZmZmZiAweGZmZmZmZmZmIDB4ZmZmZmZmZmYgMHhmZmZmZmZmZg0KPlsgICAgNy4zMjA2MTddIFsw
+eDAxZTBdIDB4YmZmZmZmZmYgMHhmZmZmZmZmZiAweGZmZmZmZmZmIDB4ZmZmZmZmZmYNCj5bICAg
+IDcuMzI2OTk1XSBbMHgwMWYwXSAweGZmZmZmZmZmIDB4ZmZmZmY3YWYgMHhmZmZmZmZmZiAweGZm
+ZmZmZmZmDQo+DQpJcyB0aGlzIHRoZSBkdW1wIG9mIGFuIGVyYXNlZCBwYWdlICh3aXRoIEVDQyBj
+b3JyZWN0aW9uKSwNCkkgbWVhbiBOQU5EIHJhdyByZWFkIHdpdGggRUNDIGNvcnJlY3Rpb24gc3Vw
+cHJlc3NlZCA/DQpJZiB5ZXMsIA0KdGhlbiBpZiBzZWVtcyB0aGF0IHRoZSBwYWdlIHdhcyBub3Qg
+cHJvcGVybHkgZXJhc2VkLCBhcyBzbyBtYW55DQpiaXQtZmxpcHMgc2hvdWxkIG5vdCBiZSBzZWVu
+IG9uIGEgZnJlc2hseSBlcmFzaW5nIGEgYmxvY2suIHBseiBjaGVjaw0KZGV2aWNlIGRhdGFzaGVl
+dCBmb3IgIm1heCBwb3NzaWJsZSBiaXQtZmxpcHMgcGVyIHBhZ2Ugb3IgYmxvY2siLg0KDQpJZiBu
+bywNClRoZW4gdGhpcyBjYW4gYmUgYml0LWZsaXBzIGludHJvZHVjZWQgZHVlIHRvIGluY29ycmVj
+dCBpbnRlcnByZXRhdGlvbg0Kb2YgRUNDIHN5bmRyb21lLCBmb3IgdGhhdCBjYW4geW91IHBseiB1
+c2UgYmVsb3cgY29tbWFuZCB0bw0KZHVtcCByYXcgcGFnZSB1c2luZyBiZWxvdyBjb21tYW5kLg0K
+bmFuZCBkdW1wIC1OIC1sIDxwYWdlX3NpemU+IC1mIDxvdXRwdXRfZmlsZT4gPGRldmljZT4NCg0K
+DQp3aXRoIHJlZ2FyZHMsIHBla29uDQo=
