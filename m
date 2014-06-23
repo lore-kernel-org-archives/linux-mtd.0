@@ -1,25 +1,27 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
+Received: from mail-qc0-x235.google.com ([2607:f8b0:400d:c01::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WyvWb-0000ks-8U
- for linux-mtd@lists.infradead.org; Mon, 23 Jun 2014 04:06:33 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Ted Juan <ted.juan@gmail.com>, David Jander <david@protonic.nl>
-Subject: RE: [FRC] [PATCH] MTD: nand_base.c: Enable support for Samsung
- E-die SLC NAND
-Date: Mon, 23 Jun 2014 04:05:57 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EAF6A08@DBDE04.ent.ti.com>
+ id 1WyzPt-0001bv-9l
+ for linux-mtd@lists.infradead.org; Mon, 23 Jun 2014 08:15:54 +0000
+Received: by mail-qc0-f181.google.com with SMTP id x13so5687079qcv.26
+ for <linux-mtd@lists.infradead.org>; Mon, 23 Jun 2014 01:15:31 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EAF6A08@DBDE04.ent.ti.com>
 References: <1403259137-22171-1-git-send-email-david@protonic.nl>
  <CAE94FHELXgoZ9Jm1E3_YT6D1SB=VAGWthZSjbsR+qqkUWn97PA@mail.gmail.com>
-In-Reply-To: <CAE94FHELXgoZ9Jm1E3_YT6D1SB=VAGWthZSjbsR+qqkUWn97PA@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-Cc: "sjhill@realitydiluted.com" <sjhill@realitydiluted.com>,
+ <20980858CB6D3A4BAE95CA194937D5E73EAF6A08@DBDE04.ent.ti.com>
+Date: Mon, 23 Jun 2014 16:15:30 +0800
+Message-ID: <CAE94FHGNHDVygoviGgEtE2ZDyumjwa73tZiDnEBdSnnWCE03YQ@mail.gmail.com>
+Subject: Re: [FRC] [PATCH] MTD: nand_base.c: Enable support for Samsung E-die
+ SLC NAND
+From: Ted Juan <ted.juan@gmail.com>
+To: "Gupta, Pekon" <pekon@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Jander <david@protonic.nl>,
+ "sjhill@realitydiluted.com" <sjhill@realitydiluted.com>,
  "tglx@linutronix.de" <tglx@linutronix.de>,
  Brian Norris <computersforpeace@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, David
- Woodhouse <dwmw2@infradead.org>
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,64 +31,126 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgVGVkLA0KDQo+SGkgQWxsLA0KPiAgIEkgcmVjZW50bHkgZG8gdGhlIHBvd2VyIGN1dCB0ZXN0
-IHdpdGggdGhpcyBTYW1zdW5nIE5BTkQgZmxhc2gNCj5LOUYxRzA4VTBFIHdpdGggVEkgQU0zMzUy
-IGNoaXAuDQo+SSBoYXZlIHNldCB0aGUgTkFORF9OT19TVUJQQUdFX1dSSVRFIHBhcmFtZXRlciBh
-bmQgY2hlY2tlZCBhbGwgdGhlDQo+Zmxhc2ggdGltaW5nIHRoYXQgYXJlIGFsbCBjb3JyZWN0Lg0K
-PkJ1dCBpdCBzdGlsbCBoYXBwZW5lZCB1bmNvcnJlY3RhYmxlIGVycm9yIHRoYXQgYml0LWZsaXAg
-bW9yZSB0aGFuIDgNCj5iaXRzIG5vIG1hdHRlciBlcmFzZSBwYWdlIG9yIG5vdC4NCj5UaGUgYmVs
-b3cgaXMgdGhlIHdyb25nIGRhdGEgd2l0aCBlcmFzZSBwYWdlIHRoYXQgYml0LWZsaXAgbW9yZSB0
-aGFuIDggYml0cyAuDQo+DQo+RG9lcyBhbnlvbmUgaGF2ZSB0aGUgc2FtZSBleHBlcmllbmNlPw0K
-Pg0KPlBTLiBUaGUgU2Ftc3VuZyBELWRpZSBTTEMgTkFORCBpcyB0ZXN0IE9LIGluIHRoZSBzYW1l
-IGVudmlyb25tZW50LiBBbmQNCj50aGUgVEkgZHJpdmVyIGNvZGUgaXMgYmFzZSBvbiB0aGUgbGF0
-ZXN0IGwyLW10ZCBnaXQgdHJlZS4NCj4NCj5yZWdhcmRzLA0KPlRlZA0KPg0KPg0KPlsgICAgNy4x
-Mjk3OTFdIFsweDAwMDBdIDB4ZmZmZmZmZmYgMHhmZmZmZmZmZiAweGZmZmZmZmZmIDB4ZmZmZmZm
-ZmYNCj5bICAgIDcuMTM2MTM4XSBbMHgwMDEwXSAweGZmZmZmZmZmIDB4ZmZmZmZmZmYgMHhmZmZm
-ZmZmZiAweGZmZmZmZmZmDQo+WyAgICA3LjE0MjQ4Nl0gWzB4MDAyMF0gMHhmYmZkZmZmZiAweGZm
-ZmZmZmZmIDB4ZmZmZmZmZmYgMHhmZmZmZmZmZg0KPlsgICAgNy4xNDg4NjRdIFsweDAwMzBdIDB4
-ZmZiZmZmZmYgMHhmZmZmN2ZmZiAweGZmZmZmZmZmIDB4ZmZmZmZmZmYNCj5bICAgIDcuMTU1MjEy
-XSBbMHgwMDQwXSAweGZmZmZmZmZmIDB4ZmZmZmZmZmYgMHhmZmZmZmZmZiAweGZmZmZmZmZmDQo+
-WyAgICA3LjE2MTU5MF0gWzB4MDA1MF0gMHhmZmZmZmZmZiAweGZmZmZmZmZmIDB4ZmZmZmZmZmYg
-MHhmZmZmZmZmZg0KPlsgICAgNy4xNjc5MzhdIFsweDAwNjBdIDB4ZmZmZmZmZmYgMHhmZmZmZmZm
-ZiAweGZmZmZmZmZmIDB4ZmZmZmZmZmYNCj5bICAgIDcuMTc0MzE2XSBbMHgwMDcwXSAweGY3ZmZm
-ZmZmIDB4ZmZmZmZjZmYgMHhmZmZmZmZmZiAweGZmZmZmZmZmDQo+WyAgICA3LjE4MDY2NF0gWzB4
-MDA4MF0gMHhmZmZmZmZmZiAweGZmZmZmZmZmIDB4ZmZmZmZmZmYgMHhmZmZmZmZmZg0KPlsgICAg
-Ny4xODcwNDJdIFsweDAwOTBdIDB4ZmZmZmZmZmYgMHhmZmZmZmZmZiAweGZmZmZmZmZmIDB4ZmZm
-ZmZmZmYNCj5bICAgIDcuMTkzMzg5XSBbMHgwMGEwXSAweGZmYmZmZmZmIDB4ZmZmZmZmZmYgMHhm
-ZmZmZmZmZiAweGZmZmZmZmZmDQo+WyAgICA3LjE5OTczN10gWzB4MDBiMF0gMHhmZmZmZmZmZiAw
-eGZmZmZmZmZmIDB4ZmZmZmZmZmYgMHhmZmZmZmZmZg0KPlsgICAgNy4yMDYxMTVdIFsweDAwYzBd
-IDB4ZmZmZmZmZmYgMHhmZmZmZmZmZiAweGZmZmZmZmZmIDB4ZmZmZmZmZmYNCj5bICAgIDcuMjEy
-NDYzXSBbMHgwMGQwXSAweGZmZmZmZmZmIDB4ZmZmZmZmZmYgMHhmZmZmZmZmZiAweGZmZmZmZmZm
-DQo+WyAgICA3LjIxODg0MV0gWzB4MDBlMF0gMHhmZmZmZmZmZiAweGZmZmZmZmZmIDB4ZmZmZmZm
-ZmYgMHhmZmZmZmZmZg0KPlsgICAgNy4yMjUxODldIFsweDAwZjBdIDB4ZmZmZmZmZmYgMHhmZmZm
-ZmZmZiAweGZmZmZmZmZmIDB4ZmZmZmZmZmYNCj5bICAgIDcuMjMxNTY3XSBbMHgwMTAwXSAweGZm
-ZmZmZmZmIDB4ZmZmZmZmZmYgMHhmZmZmZmZmZiAweGZmZmZmZmZmDQo+WyAgICA3LjIzNzkxNV0g
-WzB4MDExMF0gMHhmZmZmZmZmZiAweGZmZmZmZmZmIDB4ZmZmZmZmZmYgMHhmZmZmZmZmZg0KPlsg
-ICAgNy4yNDQyOTNdIFsweDAxMjBdIDB4ZmZkZmZmZmYgMHhmZmZmZmZmZiAweGZmZmZmZmZmIDB4
-ZmZmZmZmZmYNCj5bICAgIDcuMjUwNjQwXSBbMHgwMTMwXSAweGZmZmZmZmZmIDB4ZmZmZjdmZmYg
-MHhmZmZmZmZmZiAweGZmZmZmZmZmDQo+WyAgICA3LjI1Njk4OF0gWzB4MDE0MF0gMHhmZmZmZmZm
-ZiAweGZmZmZmZmZmIDB4ZmZmZmZmZmYgMHhmZmZmZmZmZg0KPlsgICAgNy4yNjMzNjZdIFsweDAx
-NTBdIDB4ZmZmZmZmZmYgMHhmZmZmZmZmZiAweGZmZmZmZmZmIDB4ZmZmZmZmZmYNCj5bICAgIDcu
-MjY5NzE0XSBbMHgwMTYwXSAweGZmZmZmZmZmIDB4ZmZmZmZmZmYgMHhmZmZmZmZmZiAweGZmZmZm
-ZmZmDQo+WyAgICA3LjI3NjA5Ml0gWzB4MDE3MF0gMHhmZmZmZmZmZiAweGZmZmZmZmRmIDB4ZmZm
-ZmZmZmYgMHhmZmZmZmZmZg0KPlsgICAgNy4yODI0NDBdIFsweDAxODBdIDB4ZmZmZmZmZmYgMHhm
-ZmZmZmZmZiAweGZmZmZmZmZmIDB4ZmZmZmZmZmYNCj5bICAgIDcuMjg4ODE4XSBbMHgwMTkwXSAw
-eGZmZmZmZmZmIDB4ZmZmZmZmZmYgMHhmZmZmZmZmZiAweGZmZmZmZmZmDQo+WyAgICA3LjI5NTE2
-Nl0gWzB4MDFhMF0gMHhmZmZmZmZmZiAweGZmZmZmZmZmIDB4ZmZmZmZmZmYgMHhmZmZmZmZmZg0K
-PlsgICAgNy4zMDE1NDRdIFsweDAxYjBdIDB4ZmZmZmZmZmYgMHhmZmZmZGZmZiAweGZmZmZmZmZm
-IDB4ZmZmZmZmZmYNCj5bICAgIDcuMzA3ODkxXSBbMHgwMWMwXSAweGZmZmZmZmZmIDB4ZmZmZmZm
-ZmYgMHhmZmZmZmZmZiAweGZmZmZmZmZmDQo+WyAgICA3LjMxNDI3MF0gWzB4MDFkMF0gMHhmZmZm
-ZmZmZiAweGZmZmZmZmZmIDB4ZmZmZmZmZmYgMHhmZmZmZmZmZg0KPlsgICAgNy4zMjA2MTddIFsw
-eDAxZTBdIDB4YmZmZmZmZmYgMHhmZmZmZmZmZiAweGZmZmZmZmZmIDB4ZmZmZmZmZmYNCj5bICAg
-IDcuMzI2OTk1XSBbMHgwMWYwXSAweGZmZmZmZmZmIDB4ZmZmZmY3YWYgMHhmZmZmZmZmZiAweGZm
-ZmZmZmZmDQo+DQpJcyB0aGlzIHRoZSBkdW1wIG9mIGFuIGVyYXNlZCBwYWdlICh3aXRoIEVDQyBj
-b3JyZWN0aW9uKSwNCkkgbWVhbiBOQU5EIHJhdyByZWFkIHdpdGggRUNDIGNvcnJlY3Rpb24gc3Vw
-cHJlc3NlZCA/DQpJZiB5ZXMsIA0KdGhlbiBpZiBzZWVtcyB0aGF0IHRoZSBwYWdlIHdhcyBub3Qg
-cHJvcGVybHkgZXJhc2VkLCBhcyBzbyBtYW55DQpiaXQtZmxpcHMgc2hvdWxkIG5vdCBiZSBzZWVu
-IG9uIGEgZnJlc2hseSBlcmFzaW5nIGEgYmxvY2suIHBseiBjaGVjaw0KZGV2aWNlIGRhdGFzaGVl
-dCBmb3IgIm1heCBwb3NzaWJsZSBiaXQtZmxpcHMgcGVyIHBhZ2Ugb3IgYmxvY2siLg0KDQpJZiBu
-bywNClRoZW4gdGhpcyBjYW4gYmUgYml0LWZsaXBzIGludHJvZHVjZWQgZHVlIHRvIGluY29ycmVj
-dCBpbnRlcnByZXRhdGlvbg0Kb2YgRUNDIHN5bmRyb21lLCBmb3IgdGhhdCBjYW4geW91IHBseiB1
-c2UgYmVsb3cgY29tbWFuZCB0bw0KZHVtcCByYXcgcGFnZSB1c2luZyBiZWxvdyBjb21tYW5kLg0K
-bmFuZCBkdW1wIC1OIC1sIDxwYWdlX3NpemU+IC1mIDxvdXRwdXRfZmlsZT4gPGRldmljZT4NCg0K
-DQp3aXRoIHJlZ2FyZHMsIHBla29uDQo=
+Dear Pekon,
+
+Thanks help me to debug the issue.
+
+I need some time to reproduce the problem again since the NAND flash
+data have been covered.
+
+I add the test code to dump the data, so the data should be not the raw data.
+The dump data of last mail is erase page since I confirmed the value
+of the read_ecc2[].
+The problem not only happen in erase page, but also in some data page.
+The erase page is easily to observed for me.
+I'll try to read the raw data next time to verify the issue. Thanks much.
+
+
+@@ -1298,12 +1307,16 @@ static int omap_elm_correct_data(struct
+mtd_info *mtd, u_char *data,
+        enum omap_bch_ecc type;
+        bool is_error_reported = false;
+        int err,bitflip_count;
++        char read_ecc2[52];
++        char calc_ecc2[52];
++
++        memcpy(read_ecc2, read_ecc, 52);
++        memcpy(calc_ecc2, calc_ecc, 52);
+
+@@ -1395,24 +1406,31 @@ static int omap_elm_correct_data(struct
+mtd_info *mtd, u_char *data,
+        err = 0;
+        for (i = 0; i < eccsteps; i++) {
+        if (err_vec[i].error_uncorrectable) {
++#if 1 // debug
++                          u_char *dat = &data[0];
++                          int k=0;
++                          for (k = 0; k < 512 ; k+=16)
++                                        printk("[0x%04x] 0x%08x
+0x%08x 0x%08x 0x%08x \n",
++                                                k, *(int *)&dat[k],
+*(int *)&dat[k+4], *(int *)&dat[k+8], *(int *)&dat[k+0xc]);
++
++                                printk("i=%d read_ecc2=0x%08x 0x%08x
+0x%08x calc_ecc2=0x%08x 0x%08x 0x%08x\n",
++                                        i, *(int
+*)&read_ecc2[i*0xc+0], *(int *)&read_ecc2[i*0xc+4], *(int
+*)&read_ecc2[i*0xc+8],
++                                        *(int *)&calc_ecc2[i*0xc+0],
+*(int *)&calc_ecc2[i*0xc+4], *(int *)&calc_ecc2[i*0xc+8]);
++                                printk("nand: uncorrectable bit-flips
+found\n");
++#endif
+                          err = -EBADMSG;
+                 } else if (err_vec[i].error_reported) {
+
+
+2014-06-23 12:05 GMT+08:00 Gupta, Pekon <pekon@ti.com>:
+> Hi Ted,
+>
+>>Hi All,
+>>   I recently do the power cut test with this Samsung NAND flash
+>>K9F1G08U0E with TI AM3352 chip.
+>>I have set the NAND_NO_SUBPAGE_WRITE parameter and checked all the
+>>flash timing that are all correct.
+>>But it still happened uncorrectable error that bit-flip more than 8
+>>bits no matter erase page or not.
+>>The below is the wrong data with erase page that bit-flip more than 8 bits .
+>>
+>>Does anyone have the same experience?
+>>
+>>PS. The Samsung D-die SLC NAND is test OK in the same environment. And
+>>the TI driver code is base on the latest l2-mtd git tree.
+>>
+>>regards,
+>>Ted
+>>
+>>
+>>[    7.129791] [0x0000] 0xffffffff 0xffffffff 0xffffffff 0xffffffff
+>>[    7.136138] [0x0010] 0xffffffff 0xffffffff 0xffffffff 0xffffffff
+>>[    7.142486] [0x0020] 0xfbfdffff 0xffffffff 0xffffffff 0xffffffff
+>>[    7.148864] [0x0030] 0xffbfffff 0xffff7fff 0xffffffff 0xffffffff
+>>[    7.155212] [0x0040] 0xffffffff 0xffffffff 0xffffffff 0xffffffff
+>>[    7.161590] [0x0050] 0xffffffff 0xffffffff 0xffffffff 0xffffffff
+>>[    7.167938] [0x0060] 0xffffffff 0xffffffff 0xffffffff 0xffffffff
+>>[    7.174316] [0x0070] 0xf7ffffff 0xfffffcff 0xffffffff 0xffffffff
+>>[    7.180664] [0x0080] 0xffffffff 0xffffffff 0xffffffff 0xffffffff
+>>[    7.187042] [0x0090] 0xffffffff 0xffffffff 0xffffffff 0xffffffff
+>>[    7.193389] [0x00a0] 0xffbfffff 0xffffffff 0xffffffff 0xffffffff
+>>[    7.199737] [0x00b0] 0xffffffff 0xffffffff 0xffffffff 0xffffffff
+>>[    7.206115] [0x00c0] 0xffffffff 0xffffffff 0xffffffff 0xffffffff
+>>[    7.212463] [0x00d0] 0xffffffff 0xffffffff 0xffffffff 0xffffffff
+>>[    7.218841] [0x00e0] 0xffffffff 0xffffffff 0xffffffff 0xffffffff
+>>[    7.225189] [0x00f0] 0xffffffff 0xffffffff 0xffffffff 0xffffffff
+>>[    7.231567] [0x0100] 0xffffffff 0xffffffff 0xffffffff 0xffffffff
+>>[    7.237915] [0x0110] 0xffffffff 0xffffffff 0xffffffff 0xffffffff
+>>[    7.244293] [0x0120] 0xffdfffff 0xffffffff 0xffffffff 0xffffffff
+>>[    7.250640] [0x0130] 0xffffffff 0xffff7fff 0xffffffff 0xffffffff
+>>[    7.256988] [0x0140] 0xffffffff 0xffffffff 0xffffffff 0xffffffff
+>>[    7.263366] [0x0150] 0xffffffff 0xffffffff 0xffffffff 0xffffffff
+>>[    7.269714] [0x0160] 0xffffffff 0xffffffff 0xffffffff 0xffffffff
+>>[    7.276092] [0x0170] 0xffffffff 0xffffffdf 0xffffffff 0xffffffff
+>>[    7.282440] [0x0180] 0xffffffff 0xffffffff 0xffffffff 0xffffffff
+>>[    7.288818] [0x0190] 0xffffffff 0xffffffff 0xffffffff 0xffffffff
+>>[    7.295166] [0x01a0] 0xffffffff 0xffffffff 0xffffffff 0xffffffff
+>>[    7.301544] [0x01b0] 0xffffffff 0xffffdfff 0xffffffff 0xffffffff
+>>[    7.307891] [0x01c0] 0xffffffff 0xffffffff 0xffffffff 0xffffffff
+>>[    7.314270] [0x01d0] 0xffffffff 0xffffffff 0xffffffff 0xffffffff
+>>[    7.320617] [0x01e0] 0xbfffffff 0xffffffff 0xffffffff 0xffffffff
+>>[    7.326995] [0x01f0] 0xffffffff 0xfffff7af 0xffffffff 0xffffffff
+>>
+> Is this the dump of an erased page (with ECC correction),
+> I mean NAND raw read with ECC correction suppressed ?
+> If yes,
+> then if seems that the page was not properly erased, as so many
+> bit-flips should not be seen on a freshly erasing a block. plz check
+> device datasheet for "max possible bit-flips per page or block".
+>
+> If no,
+> Then this can be bit-flips introduced due to incorrect interpretation
+> of ECC syndrome, for that can you plz use below command to
+> dump raw page using below command.
+> nand dump -N -l <page_size> -f <output_file> <device>
+>
+>
+> with regards, pekon
