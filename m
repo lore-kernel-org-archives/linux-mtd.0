@@ -1,17 +1,15 @@
-Received: from mail-am1lp0013.outbound.protection.outlook.com
- ([213.199.154.13] helo=emea01-am1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wz5h5-0006w7-Rp
- for linux-mtd@lists.infradead.org; Mon, 23 Jun 2014 14:58:08 +0000
-From: "Riyaz R, Syed Ismail" <SyedIsmail.RiyazR@trane.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: General question about mounting mtdblock device
-Date: Mon, 23 Jun 2014 14:57:36 +0000
-Message-ID: <F7D25D0F1F13E04EA375953DC5214A6002DA4B47@DM1PRD7301MB016.mgdir.irco.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
+Received: from mailrelay007.isp.belgacom.be ([195.238.6.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Wz7Kj-0004JJ-6l
+ for linux-mtd@lists.infradead.org; Mon, 23 Jun 2014 16:43:08 +0000
+From: Fabian Frederick <fabf@skynet.be>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH 1/1] fs/ubifs/super.c: replace count*size kzalloc by kcalloc
+Date: Mon, 23 Jun 2014 18:41:23 +0200
+Message-Id: <1403541683-10898-1-git-send-email-fabf@skynet.be>
+Cc: Fabian Frederick <fabf@skynet.be>, linux-mtd@lists.infradead.org,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,28 +19,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Is it safe to do a flash_eraseall and nandwrite a jffs2 image on a mtdblock=
- that is not unmounted cleanly, then mount to a new mount point.
-i.e,
-1)mount -t jffs2 /dev/mtdblock2 /mnt/1/
-2)flash_eraseall -j /dev/mtd2
-3)nandwrite -p /dev/mtdblock2 jffs2_image
-4)mount -t jffs2 /dev/mtdblock2 /mnt/1/
+kcalloc manages count*sizeof overflow.
 
-The mount point is different. This is just a workaround to account for *if*=
- umount doesn't work.
+Cc: Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: linux-mtd@lists.infradead.org
+Signed-off-by: Fabian Frederick <fabf@skynet.be>
+---
+ fs/ubifs/super.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Will the 2nd mount result in nand corruption, since both are accessing same=
- nand space. Specifically, will reboot in such a scenario cause problems, s=
-ince both will try to sync and unmounts at the time.
-
---Ismail
-
-________________________________
-
-The information contained in this message is privileged and intended only f=
-or the recipients named. If the reader is not a representative of the inten=
-ded recipient, any review, dissemination or copying of this message or the =
-information it contains is prohibited. If you have received this message in=
- error, please immediately notify the sender, and delete the original messa=
-ge and attachments.
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 3904c85..537b91d 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -796,8 +796,8 @@ static int alloc_wbufs(struct ubifs_info *c)
+ {
+ 	int i, err;
+ 
+-	c->jheads = kzalloc(c->jhead_cnt * sizeof(struct ubifs_jhead),
+-			   GFP_KERNEL);
++	c->jheads = kcalloc(c->jhead_cnt, sizeof(struct ubifs_jhead),
++			    GFP_KERNEL);
+ 	if (!c->jheads)
+ 		return -ENOMEM;
+ 
+-- 
+1.8.4.5
