@@ -1,21 +1,19 @@
-From: =?utf-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
-To: Christian Riesch <christian.riesch@omicron.at>
-Subject: RE: [PATCH V2] mtd:nor:timeout:fix do_write_buffer() timeout error
-Date: Tue, 24 Jun 2014 00:50:08 +0000
-Message-ID: <A765B125120D1346A63912DDE6D8B6315D6EFB@NTXXIAMBX02.xacn.micron.com>
-References: <A765B125120D1346A63912DDE6D8B6315D6E23@NTXXIAMBX02.xacn.micron.com>
- <CABkLObpG0+Z6ostWZ2czieQDBkW1AD_Q5Qru6oZuao=enM9O0A@mail.gmail.com>
-In-Reply-To: <CABkLObpG0+Z6ostWZ2czieQDBkW1AD_Q5Qru6oZuao=enM9O0A@mail.gmail.com>
+From: =?iso-2022-jp?B?QmVhbiBIdW8gGyRCcDlJTElMGyhCIChiZWFuaHVvKQ==?=
+ <beanhuo@micron.com>
+To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Alexander Shiyan <shc_work@mail.ru>,
+ "Christian Riesch" <christian.riesch@omicron.at>
+Subject: [PATCH v3] mtd:nor:timeout:fix do_write_buffer() timeout error
+Date: Tue, 24 Jun 2014 02:02:12 +0000
+Message-ID: <A765B125120D1346A63912DDE6D8B6315D6F28@NTXXIAMBX02.xacn.micron.com>
 Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Cc: Kees Cook <keescook@chromium.org>, Alexander Shiyan <shc_work@mail.ru>,
- Jingoo Han <jg1.han@samsung.com>, Paul
- Gortmaker <paul.gortmaker@windriver.com>,
+Cc: Paul Gortmaker <paul.gortmaker@windriver.com>,
+ Jingoo Han <jg1.han@samsung.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+ Kees Cook <keescook@chromium.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,33 +23,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGksDQo+SSB0cmllZCB0byB0ZXN0IHRoaXMgdmVyc2lvbiBvZiB5b3VyIHBhdGNoLCBidXQgY2Fu
-bm90IGFwcGx5IGl0LiBPbiB3aGljaCBrZXJuZWwgdmVyc2lvbiBkb2VzIGl0IGFwcGx5Pw0KVGhp
-cyBwYXRjaCBjaGVja291dCBmcm9tIG1haW5saW5lIDMuMTUuMC1yYzgsYW5kIGdpdCBhZGRyZXNz
-IGFzIGJlbG93Og0KZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0
-L3RvcnZhbGRzL2xpbnV4LmdpdA0KDQo+PiAgICAgICAgIHVuc2lnbmVkIGxvbmcgdGltZW8gPSBq
-aWZmaWVzICsgSFo7DQo+PiAtICAgICAgIC8qIHNlZSBjb21tZW50cyBpbiBkb193cml0ZV9vbmV3
-b3JkKCkgcmVnYXJkaW5nIHVXcml0ZVRpbWVvLiAqLw0KPj4gLSAgICAgICB1bnNpZ25lZCBsb25n
-IHVXcml0ZVRpbWVvdXQgPSAoIEhaIC8gMTAwMCApICsgMTsNCj4+ICsgICAgICAgLyogVGhlIHNp
-emUgb2YgdGhlIGJ1ZmZlciBwcm9ncmFtIGhhcyBiZWVuIGluY3JlYXNlZCBmcm9tIDI1NiB0byA1
-MTIsDQo+PiArICAgICAgICAqIDJtcyBtYXhpbXVtIHRpbWVvdXQgY2FuIG5vdCBhZGFwdCB0byBh
-bGwgdGhlIGRpZmZlcmVudCB2ZW5kb3Incw0KPj4gKyAgICAgICAgKiBub3JmbGFzaC5UaGVyZSBt
-YXhpbXVtIHRpbWVvdXQgaW5mb3JtYXRpb24gaW4gdGhlIENGSSBhcmVhLHNvIHRoZQ0KPj4gKyAg
-ICAgICAgKiBiZXN0IHdheSBpcyB0byBjaG9vc2UgdGhlIHJlc3VsdCBjYWxjdWxhdGVkIGFjY29y
-ZGluZyB0byB0aW1lb3V0DQo+PiArICAgICAgICAqIGZpZWxkIG9mIHN0cnVjdCBjZmlfaWRlbnQg
-dGhhdCBwcm9iZWQgZnJvbSBub3JmbGFzaCdzIENGSSBhZXJhLHNlZQ0KPj4gKyAgICAgICAgKiBj
-b21tZW50cyBpbiBjZmlfY21kc2V0XzAwMDIoKS51V3JpdGVUaW1lb3V0IGlzIHVzZWQgZm9yIHRp
-bWVvdXQgc3RlcCwNCj4+ICsgICAgICAgICogaXQgbXVzdCBiZSBjb25jZXJ0ZWQgaW50byBqaWZm
-aWVzLg0KDQo+SSB0aGluayB0aGUgcmVmZXJlbmNlIHRvIHRoZSBvbGQgMm1zIHRpbWVvdXQgb25s
-eSBjb25mdXNlcyByZWFkZXJzLCBzaW5jZSB0aGV5IGRvbid0IGtub3cgdGhlIG9sZCBjb2RlLiBQ
-dXR0aW5nIHRoaXMgaW50byB0aGUgY29tbWl0IG1lc3NhZ2UgaXMgc3VmZmljaWVudC4gDQoNCkkg
-dGhpbmsgeW91IGNvdWxkIGRlbGV0ZSB0aGlzIGNvbW1lbnQgaGVyZS4NCk9LLHRoYW5rcyBmb3Ig
-eW91ciBzdWdnZXN0LEkgd2lsbCBwdXQgdGhpcyBtZXNzYWdlIGludG8gY29tbWl0IG1lc3NhZ2Uu
-IA0KDQo+PiArICAgICAgICAqLw0KPj4gKyAgICAgICB1bnNpZ25lZCBsb25nIHVXcml0ZVRpbWVv
-dXQgPQ0KDQo+VHJhaWxpbmcgd2hpdGVzcGFjZSwgcGxlYXNlIHJlbW92ZSB0aGF0LiBQbGVhc2Ug
-cnVuIHlvdXIgcGF0Y2ggdGhyb3VnaCBzY3JpcHRzL2NoZWNrcGF0Y2gucGwgdG8gZGV0ZWN0IHN1
-Y2ggZXJyb3JzLg0KDQpJIGhhdmUgY2hlY2tlZCBpdCBieSBjaGVja3BhdGNoLnBsLGJ1dCBubyBl
-cnJvciBhbmQgd2FybmluZy5pIHdpbGwgZG91YmxlIGNoZWNrIGl0IGluIHRoZSBuZXh0IHZlcnNp
-b24uaSBob3BlIHRoaXMgcGF0Y2ggY2FuIGJlIGFjY2VwdGVkIGFzIHNvb24gYXMgcG9zc2libGUu
-DQpJIHdhbnQgdG8gY29tbWl0IG90aGVyIHRpbWVvdXQgZXJyb3IgcGF0Y2hlcy50aGFua3MhDQoN
-Cg0K
+The size of the buffer program has been increased from 256 to 512 ,
+2ms maximum timeout for do_write_buffer can not adapt to all the different
+vendor's norflash.There maximum timeout information in the CFI area,so
+the best way is to choose the result calculated according to timeout field
+of struct cfi_ident that probed from norflash's CFI aera.This is also a
+standard defined by CFI.
+
+Without this change, if the size of buffer program is 512 or bigger than 25=
+6,
+due to timeout is the shorter than that the chip required,do_write_buffer
+sometimes fails.
+
+Tested with Micron JS28F512M29EWx and Micron MT28EW512ABA flash devices.
+
+Signed-off-by: bean huo <beanhuo@micron.com>
+---
+changes=20
+	v1->v2:Deleted unused parameters in this patch (word_write_time_max and er=
+ase_time_max).
+Using usecs_to_jiffies instead of msecs_to_jiffies for convert timeout valu=
+e into jiffies.
+	v2->v3:Removed unnecessary messages form comments and deleted trailing whi=
+tespace.
+
+ drivers/mtd/chips/cfi_cmdset_0002.c |   25 ++++++++++++++++++++++---
+ 1 file changed, 22 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cm=
+dset_0002.c
+index e21fde9..3ee43cf 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -628,10 +628,24 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map=
+, int primary)
+ 		cfi->chips[i].word_write_time =3D 1<<cfi->cfiq->WordWriteTimeoutTyp;
+ 		cfi->chips[i].buffer_write_time =3D 1<<cfi->cfiq->BufWriteTimeoutTyp;
+ 		cfi->chips[i].erase_time =3D 1<<cfi->cfiq->BlockEraseTimeoutTyp;
++		/*
++		 * We first calculate the timeout max according to timeout
++		 * field of struct cfi_ident that probed from chip's CFI
++		 * aera,If haven't probed this information,we will specify
++		 * a default value,and the time unit is us.
++		 */
++		if (cfi->cfiq->BufWriteTimeoutTyp &&
++			cfi->cfiq->BufWriteTimeoutMax){
++			cfi->chips[i].buffer_write_time_max =3D
++				1<<(cfi->cfiq->BufWriteTimeoutTyp +
++					cfi->cfiq->BufWriteTimeoutMax);
++			} else {
++		/* specify maximum timeout for buffer program 2000us */
++				cfi->chips[i].buffer_write_time_max =3D 2000;
++				}
+ 		cfi->chips[i].ref_point_counter =3D 0;
+ 		init_waitqueue_head(&(cfi->chips[i].wq));
+ 	}
+-
+ 	map->fldrv =3D &cfi_amdstd_chipdrv;
+=20
+ 	return cfi_amdstd_setup(mtd);
+@@ -1462,8 +1476,13 @@ static int __xipram do_write_buffer(struct map_info =
+*map, struct flchip *chip,
+ {
+ 	struct cfi_private *cfi =3D map->fldrv_priv;
+ 	unsigned long timeo =3D jiffies + HZ;
+-	/* see comments in do_write_oneword() regarding uWriteTimeo. */
+-	unsigned long uWriteTimeout =3D ( HZ / 1000 ) + 1;
++	/* There maximum timeout information in the CFI area,so the best
++	 * way is to choose the result calculated according to timeout
++	 * field of struct cfi_ident that probed from norflash's CFI aera,
++	 * see comments in cfi_cmdset_0002().uWriteTimeout is used for timeout
++	 * step,it must be concerted into jiffies.
++	 */
++	unsigned long uWriteTimeout =3D usecs_to_jiffies(chip->buffer_write_time_=
+max);
+ 	int ret =3D -EIO;
+ 	unsigned long cmd_adr;
+ 	int z, words;
+--=20
+1.7.9.5
