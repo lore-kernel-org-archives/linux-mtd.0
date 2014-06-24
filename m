@@ -1,23 +1,21 @@
-Received: from mail-by2lp0241.outbound.protection.outlook.com
- ([207.46.163.241] helo=na01-by2-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WzAIy-0003QU-DC
- for linux-mtd@lists.infradead.org; Mon, 23 Jun 2014 19:53:29 +0000
-Message-ID: <1403553015.9081.7.camel@linux-builds1>
-Subject: Re: [PATCH V2] In the Denali NAND controller driver, use 8 bytes
- for READID command.
-From: Dinh Nguyen <dinguyen@altera.com>
-To: Graham Moore <grmoore@altera.com>
-Date: Mon, 23 Jun 2014 14:50:15 -0500
-In-Reply-To: <1403551270-31873-1-git-send-email-grmoore@altera.com>
-References: <1403551270-31873-1-git-send-email-grmoore@altera.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+From: =?utf-8?B?QmVhbiBIdW8g6ZyN5paM5paMIChiZWFuaHVvKQ==?= <beanhuo@micron.com>
+To: Christian Riesch <christian.riesch@omicron.at>
+Subject: RE: [PATCH V2] mtd:nor:timeout:fix do_write_buffer() timeout error
+Date: Tue, 24 Jun 2014 00:50:08 +0000
+Message-ID: <A765B125120D1346A63912DDE6D8B6315D6EFB@NTXXIAMBX02.xacn.micron.com>
+References: <A765B125120D1346A63912DDE6D8B6315D6E23@NTXXIAMBX02.xacn.micron.com>
+ <CABkLObpG0+Z6ostWZ2czieQDBkW1AD_Q5Qru6oZuao=enM9O0A@mail.gmail.com>
+In-Reply-To: <CABkLObpG0+Z6ostWZ2czieQDBkW1AD_Q5Qru6oZuao=enM9O0A@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Cc: ggrahammoore@gmail.com, linux-kernel@vger.kernel.org, Yves
- Vandervennet <rocket.yvanderv@gmail.com>, linux-mtd@lists.infradead.org,
- Alan Tull <atull@altera.com>, Brian
- Norris <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
+Cc: Kees Cook <keescook@chromium.org>, Alexander Shiyan <shc_work@mail.ru>,
+ Jingoo Han <jg1.han@samsung.com>, Paul
+ Gortmaker <paul.gortmaker@windriver.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,25 +25,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Graham,
-
-On Mon, 2014-06-23 at 14:21 -0500, Graham Moore wrote:
-> The Denali NAND driver reads only 5 bytes of ID, but some Hynix and Samsung
-> have size parameters in the 6th byte.  As a result, the page and oob size
-> for a Hynix H27UAG8T2B were calculated incorrectly and the driver failed to
-> load.
-> 
-> The solution is to read 8 bytes of ID, as expected by the nand framework.
-> 
-> Signed-off-by: Graham Moore <grmoore@altera.com>
-> --
-> V2: Increase size of id_bytes array to 8.
-> ---
->  drivers/mtd/nand/denali.c |    6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-
-Your commit header should have "mtd: denali:"
-
-i.e: "mtd: denali: use 8 bytes for READID command"
-
-Dinh
+SGksDQo+SSB0cmllZCB0byB0ZXN0IHRoaXMgdmVyc2lvbiBvZiB5b3VyIHBhdGNoLCBidXQgY2Fu
+bm90IGFwcGx5IGl0LiBPbiB3aGljaCBrZXJuZWwgdmVyc2lvbiBkb2VzIGl0IGFwcGx5Pw0KVGhp
+cyBwYXRjaCBjaGVja291dCBmcm9tIG1haW5saW5lIDMuMTUuMC1yYzgsYW5kIGdpdCBhZGRyZXNz
+IGFzIGJlbG93Og0KZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0
+L3RvcnZhbGRzL2xpbnV4LmdpdA0KDQo+PiAgICAgICAgIHVuc2lnbmVkIGxvbmcgdGltZW8gPSBq
+aWZmaWVzICsgSFo7DQo+PiAtICAgICAgIC8qIHNlZSBjb21tZW50cyBpbiBkb193cml0ZV9vbmV3
+b3JkKCkgcmVnYXJkaW5nIHVXcml0ZVRpbWVvLiAqLw0KPj4gLSAgICAgICB1bnNpZ25lZCBsb25n
+IHVXcml0ZVRpbWVvdXQgPSAoIEhaIC8gMTAwMCApICsgMTsNCj4+ICsgICAgICAgLyogVGhlIHNp
+emUgb2YgdGhlIGJ1ZmZlciBwcm9ncmFtIGhhcyBiZWVuIGluY3JlYXNlZCBmcm9tIDI1NiB0byA1
+MTIsDQo+PiArICAgICAgICAqIDJtcyBtYXhpbXVtIHRpbWVvdXQgY2FuIG5vdCBhZGFwdCB0byBh
+bGwgdGhlIGRpZmZlcmVudCB2ZW5kb3Incw0KPj4gKyAgICAgICAgKiBub3JmbGFzaC5UaGVyZSBt
+YXhpbXVtIHRpbWVvdXQgaW5mb3JtYXRpb24gaW4gdGhlIENGSSBhcmVhLHNvIHRoZQ0KPj4gKyAg
+ICAgICAgKiBiZXN0IHdheSBpcyB0byBjaG9vc2UgdGhlIHJlc3VsdCBjYWxjdWxhdGVkIGFjY29y
+ZGluZyB0byB0aW1lb3V0DQo+PiArICAgICAgICAqIGZpZWxkIG9mIHN0cnVjdCBjZmlfaWRlbnQg
+dGhhdCBwcm9iZWQgZnJvbSBub3JmbGFzaCdzIENGSSBhZXJhLHNlZQ0KPj4gKyAgICAgICAgKiBj
+b21tZW50cyBpbiBjZmlfY21kc2V0XzAwMDIoKS51V3JpdGVUaW1lb3V0IGlzIHVzZWQgZm9yIHRp
+bWVvdXQgc3RlcCwNCj4+ICsgICAgICAgICogaXQgbXVzdCBiZSBjb25jZXJ0ZWQgaW50byBqaWZm
+aWVzLg0KDQo+SSB0aGluayB0aGUgcmVmZXJlbmNlIHRvIHRoZSBvbGQgMm1zIHRpbWVvdXQgb25s
+eSBjb25mdXNlcyByZWFkZXJzLCBzaW5jZSB0aGV5IGRvbid0IGtub3cgdGhlIG9sZCBjb2RlLiBQ
+dXR0aW5nIHRoaXMgaW50byB0aGUgY29tbWl0IG1lc3NhZ2UgaXMgc3VmZmljaWVudC4gDQoNCkkg
+dGhpbmsgeW91IGNvdWxkIGRlbGV0ZSB0aGlzIGNvbW1lbnQgaGVyZS4NCk9LLHRoYW5rcyBmb3Ig
+eW91ciBzdWdnZXN0LEkgd2lsbCBwdXQgdGhpcyBtZXNzYWdlIGludG8gY29tbWl0IG1lc3NhZ2Uu
+IA0KDQo+PiArICAgICAgICAqLw0KPj4gKyAgICAgICB1bnNpZ25lZCBsb25nIHVXcml0ZVRpbWVv
+dXQgPQ0KDQo+VHJhaWxpbmcgd2hpdGVzcGFjZSwgcGxlYXNlIHJlbW92ZSB0aGF0LiBQbGVhc2Ug
+cnVuIHlvdXIgcGF0Y2ggdGhyb3VnaCBzY3JpcHRzL2NoZWNrcGF0Y2gucGwgdG8gZGV0ZWN0IHN1
+Y2ggZXJyb3JzLg0KDQpJIGhhdmUgY2hlY2tlZCBpdCBieSBjaGVja3BhdGNoLnBsLGJ1dCBubyBl
+cnJvciBhbmQgd2FybmluZy5pIHdpbGwgZG91YmxlIGNoZWNrIGl0IGluIHRoZSBuZXh0IHZlcnNp
+b24uaSBob3BlIHRoaXMgcGF0Y2ggY2FuIGJlIGFjY2VwdGVkIGFzIHNvb24gYXMgcG9zc2libGUu
+DQpJIHdhbnQgdG8gY29tbWl0IG90aGVyIHRpbWVvdXQgZXJyb3IgcGF0Y2hlcy50aGFua3MhDQoN
+Cg0K
