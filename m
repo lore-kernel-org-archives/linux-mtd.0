@@ -1,19 +1,26 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WzRDg-0003p3-J8
- for linux-mtd@lists.infradead.org; Tue, 24 Jun 2014 13:57:09 +0000
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v3 3/3] mtd: Account for BBT blocks when a partition is being
- allocated
-Date: Tue, 24 Jun 2014 10:55:52 -0300
-Message-Id: <1403618152-4515-4-git-send-email-ezequiel.garcia@free-electrons.com>
-In-Reply-To: <1403618152-4515-1-git-send-email-ezequiel.garcia@free-electrons.com>
-References: <1403618152-4515-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Brian Norris <computersforpeace@gmail.com>, Pekon Gupta <pekon@ti.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Received: from mail-yh0-f50.google.com ([209.85.213.50])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WzSH8-0005P2-Mf
+ for linux-mtd@lists.infradead.org; Tue, 24 Jun 2014 15:04:50 +0000
+Received: by mail-yh0-f50.google.com with SMTP id t59so268599yho.9
+ for <linux-mtd@lists.infradead.org>; Tue, 24 Jun 2014 08:04:23 -0700 (PDT)
+Date: Tue, 24 Jun 2014 12:03:37 -0300
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To: Pekon Gupta <pekon@ti.com>
+Subject: Re: [PATCH v1 3/3] ARM: dts: am335x-bone: add support for beaglebone
+ LCD4 cape
+Message-ID: <20140624150336.GA10041@arch.cereza>
+References: <1403612666-31197-1-git-send-email-pekon@ti.com>
+ <1403612666-31197-4-git-send-email-pekon@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1403612666-31197-4-git-send-email-pekon@ti.com>
+Cc: Tony Lindgren <tony@atomide.com>, Jason Kridner <jkridner@gmail.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ linux-omap <linux-omap@vger.kernel.org>,
+ Robert Nelson <robertcnelson@gmail.com>,
+ Guido =?iso-8859-1?Q?Mart=EDnez?= <guido@vanguardiasur.com.ar>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,29 +30,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-With the introduction of mtd_block_isreserved(), it's now possible
-to fix the bad and reserved block distribution exposed by ecc_stats,
-instead of accounting all the bad or reserved blocks as 'bad'.
+Hello Pekon,
 
-Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
----
- drivers/mtd/mtdpart.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+On 24 Jun 05:54 PM, Pekon Gupta wrote:
+> This patch adds support for LCD4 cape as advertised on
+>   http://elinux.org/CircuitCo:BeagleBone_LCD4
+> 
+> This cape has:
+> * 480x272 TFT-LCD panel
+>  - LCD panel datasheet and timing information are sourced from [1]
+>  - LCD backlight is connected to 'EHRPWM1A' on cape board, but its used for
+>    enabling backlight power-supply. So 'gpio-backlight' driver is used instead
+>    of 'pwm-backlight' driver (Kconfig: BACKLIGHT_GPIO=y).
+> 
 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 921e8c6..a3e3a7d 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -535,7 +535,9 @@ static struct mtd_part *allocate_partition(struct mtd_info *master,
- 		uint64_t offs = 0;
- 
- 		while (offs < slave->mtd.size) {
--			if (mtd_block_isbad(master, offs + slave->offset))
-+			if (mtd_block_isreserved(master, offs + slave->offset))
-+				slave->mtd.ecc_stats.bbtblocks++;
-+			else if (mtd_block_isbad(master, offs + slave->offset))
- 				slave->mtd.ecc_stats.badblocks++;
- 			offs += slave->mtd.erasesize;
- 		}
+I'm confused about this, can you clarify why you are not using pwm-backlight?
+
 -- 
-1.9.1
+Ezequiel Garcia, VanguardiaSur
+www.vanguardiasur.com.ar
