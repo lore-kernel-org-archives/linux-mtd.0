@@ -1,16 +1,21 @@
-Received: from szxga03-in.huawei.com ([119.145.14.66])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WzHhn-0008Ba-PZ
- for linux-mtd@lists.infradead.org; Tue, 24 Jun 2014 03:47:36 +0000
-Message-ID: <53A8F49C.9000805@huawei.com>
-Date: Tue, 24 Jun 2014 11:46:36 +0800
-From: hujianyang <hujianyang@huawei.com>
-MIME-Version: 1.0
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH] UBIFS: Remove useless @ecc in struct ubifs_scan_leb
-Content-Type: text/plain; charset="ISO-8859-1"
+Received: from mga02.intel.com ([134.134.136.20])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WzIq2-0000X5-IC
+ for linux-mtd@lists.infradead.org; Tue, 24 Jun 2014 05:00:10 +0000
+Message-ID: <1403585976.7903.70.camel@sauron.fi.intel.com>
+Subject: Re: UBI: fix rb_tree node comparison in add_map commit buggy?
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Reply-To: artem.bityutskiy@linux.intel.com
+To: Richard Weinberger <richard@nod.at>
+Date: Tue, 24 Jun 2014 07:59:36 +0300
+In-Reply-To: <53A87AD5.8050305@nod.at>
+References: <53A7EF04.7040805@denx.de> <53A809A3.30703@denx.de>
+ <53A82077.6090109@nod.at> <53A82609.9090408@denx.de>
+ <53A87AD5.8050305@nod.at>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Cc: hs@denx.de, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,54 +25,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We set @ecc in ubifs_scan_leb only if leb_read returns EBADMSG and
-do not use it any more. This patch removes this variable and adds
-comments about EBADMSG handling.
+On Mon, 2014-06-23 at 21:07 +0200, Richard Weinberger wrote:
+> I think it would be better to "fix" the whole logic such that low volume ids go into
+> the left rb node instead of the right.
+> Just to avoid further confusion.
+> Artem, do you know why UBI does it the other way around for volume ids?
 
+I do not remember. Probably no particular reason.
 
-Signed-off-by: hujianyang <hujianyang@huawei.com>
----
- fs/ubifs/scan.c  | 7 +++++--
- fs/ubifs/ubifs.h | 2 --
- 2 files changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/fs/ubifs/scan.c b/fs/ubifs/scan.c
-index 58aa05d..5468836 100644
---- a/fs/ubifs/scan.c
-+++ b/fs/ubifs/scan.c
-@@ -157,8 +157,11 @@ struct ubifs_scan_leb *ubifs_start_scan(const struct ubifs_info *c, int lnum,
- 		return ERR_PTR(err);
- 	}
-
--	if (err == -EBADMSG)
--		sleb->ecc = 1;
-+	/*
-+	 * If err == -EBADMSG, we scan this leb first because we
-+	 * can detect corruptions by checking NODEs and return an
-+	 * error if it is really corruptted.
-+	 */
-
- 	return sleb;
- }
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index c1f71fe..977a01b 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -314,7 +314,6 @@ struct ubifs_scan_node {
-  * @nodes_cnt: number of nodes scanned
-  * @nodes: list of struct ubifs_scan_node
-  * @endpt: end point (and therefore the start of empty space)
-- * @ecc: read returned -EBADMSG
-  * @buf: buffer containing entire LEB scanned
-  */
- struct ubifs_scan_leb {
-@@ -322,7 +321,6 @@ struct ubifs_scan_leb {
- 	int nodes_cnt;
- 	struct list_head nodes;
- 	int endpt;
--	int ecc;
- 	void *buf;
- };
+I'd suggest to do a quick fix first and submit to Linus for 3.16, and
+then people can do whatever logic streamlining for 3.17, makes sense?
 
 -- 
-1.8.1.4
+Best Regards,
+Artem Bityutskiy
