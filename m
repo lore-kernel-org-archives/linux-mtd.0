@@ -1,23 +1,29 @@
-Received: from brvmst.brv.se ([148.160.26.95])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wzgs1-0001XR-Bw
- for linux-mtd@lists.infradead.org; Wed, 25 Jun 2014 06:39:50 +0000
-Received: from sbs.brv.local ([192.168.100.20] helo=remote.brv.se)
- by brvmst.brv.se with esmtp (Exim 4.82)
- (envelope-from <Henric.Eriksson@brv.se>) id 1WzgrV-0006Tk-Fv
- for linux-mtd@lists.infradead.org; Wed, 25 Jun 2014 08:39:27 +0200
-From: Henric Eriksson <Henric.Eriksson@brv.se>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: Flash corruption when using UBIFS filesystem on m25p80
-Date: Wed, 25 Jun 2014 06:39:16 +0000
-Message-ID: <53AA6E94.8060509@brv.se>
-References: <53A83529.9050007@brv.se>
-In-Reply-To: <53A83529.9050007@brv.se>
+Received: from bear.ext.ti.com ([192.94.94.41])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Wzk4S-0003J2-TQ
+ for linux-mtd@lists.infradead.org; Wed, 25 Jun 2014 10:04:53 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Ted Juan <ted.juan@gmail.com>
+Subject: RE: [FRC] [PATCH] MTD: nand_base.c: Enable support for Samsung
+ E-die SLC NAND
+Date: Wed, 25 Jun 2014 10:04:11 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EAF7560@DBDE04.ent.ti.com>
+References: <1403259137-22171-1-git-send-email-david@protonic.nl>
+ <CAE94FHELXgoZ9Jm1E3_YT6D1SB=VAGWthZSjbsR+qqkUWn97PA@mail.gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EAF6A08@DBDE04.ent.ti.com>
+ <CAE94FHGNHDVygoviGgEtE2ZDyumjwa73tZiDnEBdSnnWCE03YQ@mail.gmail.com>
+ <CAE94FHFvCoZyawRC=LL+PdBR3ig10crKJN6c_M_q=yGdOXnR9A@mail.gmail.com>
+In-Reply-To: <CAE94FHFvCoZyawRC=LL+PdBR3ig10crKJN6c_M_q=yGdOXnR9A@mail.gmail.com>
 Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-ID: <5A6F64816312BB49A5F513F4E01096B6@brv.se>
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Jander <david@protonic.nl>,
+ "sjhill@realitydiluted.com" <sjhill@realitydiluted.com>,
+ "tglx@linutronix.de" <tglx@linutronix.de>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,33 +33,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Henric Eriksson skrev:
-> Hello,
->
-> We have a board with a Freescale i.MX28 running Linux kernel 3.14.3
-> (Freescale mainline fork). This board has a Spansion S25FL512S Flash
-> memory connected with support for Quad SPI communication. We've been
-> working for a while now trying to use this as the main rootfs storage
-> but have run into problems of Flash corruption when using UBIFS.
->
-> $ mount -t ubifs /dev/ubi0_0 tmp/
-> UBIFS: background thread "ubifs_bgt0_0" started, PID 480
-> UBIFS error (pid 479): ubifs_scan: garbage
-> UBIFS error (pid 479): ubifs_scanned_corruption: corruption at LEB 4:0
-> UBIFS error (pid 479): ubifs_scanned_corruption: first 8192 bytes from
-> LEB 4:0
-> UBIFS error (pid 479): ubifs_scan: LEB 4 scanning failed
-> UBIFS: background thread "ubifs_bgt0_0" stops
-> mount: mounting /dev/ubi0_0 on tmp/ failed: Structure needs cleaning
->
-> Subsequent mounts cause it to attempt recovery but it always inevitably
-> fails with similar errors.
->
-
-This turned out to be an issue with the underlying SPI driver spi-mxs=20
-attempting to use DMA mxs-dma for transfers with over 32 bytes in size.=20
-For some reason, this would corrupt the data. As a workaround we have=20
-for now disabled DMA access from the SPI driver and have since not=20
-experienced any issues whatsoever.
-
-/Henric=
+SGkgVGVkLA0KDQo+RnJvbTogVGVkIEp1YW4gW21haWx0bzp0ZWQuanVhbkBnbWFpbC5jb21dDQo+
+RGVhciBQZWtvbiwNCj4NCj5JIGJhY2t1cCB0aGUgcmF3IGRhdGEgdG8gZGF0YTJbXSBiZWZvcmUg
+ZG9pbmcgZWxtX2RlY29kZV9iY2hfZXJyb3JfcGFnZSgpOw0KPkR1bXAgIGNvZGUgaXMgYXMgYmVs
+b3cuIFRoZSByYXcgZGF0YSBpcyB0aGUgc2FtZSB3aXRoIHRoZSBjb3JyZWN0aW9uDQo+ZGF0YSB0
+aGF0IGFsbCBtb3JlIHRoYW4gOCBiaXQtZmxpcHMuDQo+DQooYSkgSW4gdGhhdCBjYXNlIHlvdSBz
+aG91bGQgY29udGFjdCB0aGUgRmxhc2ggdmVuZG9yIGhlcmUuDQpGcmVzaCBOQU5EIGRldmljZSBm
+cm9tIGZhY3Rvcnkgc2hvdWxkIG5vdCB2aW9sYXRlIHRoZSBzcGVjLg0KSSBkb24ndCBzdXNwZWN0
+IGEgZHJpdmVyIGlzc3VlIGhlcmUsIGJlY2F1c2UgdGhlIHJhdyBkYXRhIHJlYWQgaXRzZWxmDQpo
+YXMgcmFuZG9tIGJpdC1mbGlwcy4NCg0KKGIpIEFsc28sIGl0IG1heSBiZSB0aGUgY2FzZSB0aGF0
+IHRoZXJlIGZldyBwYXJ0aWN1bGFyIGJsb2NrcyB3aGljaCBoYXMgZ29uZQ0KYmFkIGFuZCB0aG9z
+ZSBhcmUgaXMgc2hvd2luZyBhZ2FpbiBhbmQgYWdhaW4gYXQgZWFjaCBib290LiBIb3dldmVyLCBJ
+ZiBpdA0Kd2FzIHN1Y2ggYSBjYXNlIHRoYXQgb25seSBzb21lIGhhbmRmdWwgYmxvY2tzIG9uIE5B
+TkQgZGV2aWNlIGhhdmUgZ29uZQ0KYmFkLCB0aGVuIFVCSSB0b3J0dXJlIHRlc3QgWzFdIHNob3Vs
+ZCBoYXZlIGRldGVjdGVkIHRoZW0gYW5kIG1hcmtlZCB0aGVtDQpiYWQuIEFuZCB0aG9zZSBzaG91
+bGQgbm90IHJlLWFwcGVhciBpbiBuZXh0IHRpbWUuDQotIFlvdSBjYW4gY2hlY2sgKGIpIGJ5IHNj
+cnViYmluZyBhbGwgYmFkLWJsb2NrcyBmcm9tIHUtYm9vdA0KICAjdS1ib290PiBuYW5kIHNjcnVi
+LmNoaXAgYWxsDQogICN1LWJvb3Q+IG5hbmQgYmFkICAoc2hvdWxkIHJlcG9ydCAwIGJhZCBibG9j
+a3MpDQotIFRoZW4sIHJlLWJvb3QgYW5kIGxldCBVQkkgZGV0ZWN0IGJhZC1ibG9ja3Mgb24gaXRz
+IG93biB1c2luZyB0b3J0dXJlLXRlc3QNCi0gQW5kIHRoZW4gYWdhaW4gcmVzZXQgdGhlIHN5c3Rl
+bSAybmQgdGltZSBhbmQgY2hlY2sgbmV3bHkgZGV0ZWN0ZWQgYmFkLWJsb2Nrcw0KICAjdS1ib290
+PiBuYW5kIGJhZCAgKHNob3VsZCByZXBvcnQgW25dIGJhZCBibG9ja3MpDQoNCihjKSBZb3UgY2Fu
+IGFsc28gY2hlY2ssIGlmIHlvdSBhcmUgc2VlaW5nIGJpdC1mbGlwcyBvbmx5IGR1cmluZyBlcmFz
+ZWQtcGFnZXMgPw0KWW91IGNhbiBpZGVudGlmeSB0aGlzIGJ5IGFkZGluZyBwcmludHMgaW4gdS1i
+b290Lg0KVGhlcmUgaXMgc2xpZ2h0IGRpZmZlcmVuY2UgaW4gdS1ib290IGFuZCBrZXJuZWwgb21h
+cC1ncG1jIE5BTkQgZHJpdmVycywNCi0gdS1ib290OiBzaW1wbHkgaWdub3JlcyBlcmFzZWQtcGFn
+ZXMgYW5kIGRvZXMgbm90IGNoZWNrIGZvciBiaXQtZmxpcHMgaW4gdGhlbS4NCi0ga2VybmVsOiBj
+b3VudHMgbnVtYmVyIG9mIGJpdC1mbGlwcyBpbiBlcmFzZWQtcGFnZXMgYWxzby4NCiANCg0KPlRo
+ZSBmdWxsIGRhdGEgbG9nIGlzIHB1dCBhcyBiZWxvdyBidXQgaW5jbHVkZSBzb21lIHVzZWxlc3Mg
+ZHVtcCBkYXRhLg0KPmh0dHBzOi8vZHJpdmUuZ29vZ2xlLmNvbS9maWxlL2QvMEJ3VkdwTkZzN2wy
+MlJtWlhUSGhKV1hGWVlXcy9lZGl0P3VzcD1zaGFyaW5nDQo+DQpUaGVyZSB3aWxsIGJlIG5vIGNv
+cnJlY3Rpb24gZG9uZSBpZiAndW4tY29ycmVjdGFibGUgZXJyb3InIGZsYWcgaXMgcmFpc2VkIGJ5
+IEVMTS4NClRoZXJlZm9yZSBwcmUtY29ycmVjdGlvbiBhbmQgcG9zdC1jb3JyZWN0aW9uIGRhdGEg
+bWF0Y2hlcyBpbiBiZWxvdyBkdW1wLg0KQml0LWZsaXAgY29ycmVjdGlvbiB3aWxsIF9vbmx5XyBo
+YXBwZW4gaWYgdGhlIG51bWJlciBvZiBiaXQtZmxpcHMgYXJlIHdpdGhpbg0KY29ycmVjdGFibGUg
+cmFuZ2UgKHRoYXQgaXMgPD04IGZvciBCQ0g4IEVDQyBzY2hlbWUpLg0KDQoNClsxXSAka2VybmVs
+L2RyaXZlcnMvbXRkL3ViaS9pby5jIEBAIHRvcnR1cmVfcGViKCkNCg0Kd2l0aCByZWdhcmRzLCBw
+ZWtvbg0K
