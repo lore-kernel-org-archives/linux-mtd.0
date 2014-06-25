@@ -1,24 +1,26 @@
-Received: from mailout.micron.com ([137.201.242.129])
+Received: from bear.ext.ti.com ([192.94.94.41])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WzU8y-00007O-58
- for linux-mtd@lists.infradead.org; Tue, 24 Jun 2014 17:04:28 +0000
-From: =?iso-2022-jp?B?QmVhbiBIdW8gGyRCcDlJTElMGyhCIChiZWFuaHVvKQ==?=
- <beanhuo@micron.com>
-To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>,
- Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: [PATCH v3] mtd:nor:timeout:fix do_write_buffer() timeout error
-Date: Tue, 24 Jun 2014 17:03:54 +0000
-Message-ID: <A765B125120D1346A63912DDE6D8B6315D70C7@NTXXIAMBX02.xacn.micron.com>
+ id 1WzezS-00053c-Kj
+ for linux-mtd@lists.infradead.org; Wed, 25 Jun 2014 04:39:23 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Subject: RE: [PATCH v1 3/3] ARM: dts: am335x-bone: add support for
+ beaglebone LCD4 cape
+Date: Wed, 25 Jun 2014 04:38:53 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EAF7327@DBDE04.ent.ti.com>
+References: <1403612666-31197-1-git-send-email-pekon@ti.com>
+ <1403612666-31197-4-git-send-email-pekon@ti.com>
+ <20140624150336.GA10041@arch.cereza>
+In-Reply-To: <20140624150336.GA10041@arch.cereza>
 Content-Language: en-US
-Content-Type: text/plain; charset="iso-2022-jp"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Jingoo Han <jg1.han@samsung.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "b32955@freescale.com" <b32955@freescale.com>
+Cc: Tony Lindgren <tony@atomide.com>, Jason Kridner <jkridner@gmail.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ linux-omap <linux-omap@vger.kernel.org>,
+ Robert Nelson <robertcnelson@gmail.com>,
+ =?iso-8859-1?Q?Guido_Mart=EDnez?= <guido@vanguardiasur.com.ar>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,83 +30,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The size of the buffer program has been increased from 256 to 512 ,
-2ms maximum timeout for do_write_buffer can not adapt to all the different
-vendor's norflash.There maximum timeout information in the CFI area,so
-the best way is to choose the result calculated according to timeout field
-of struct cfi_ident that probed from norflash's CFI aera.This is also a
-standard defined by CFI.
+>From: Ezequiel Garcia
+>>On 24 Jun 05:54 PM, Pekon Gupta wrote:
+>> This patch adds support for LCD4 cape as advertised on
+>>   http://elinux.org/CircuitCo:BeagleBone_LCD4
+>>
+>> This cape has:
+>> * 480x272 TFT-LCD panel
+>>  - LCD panel datasheet and timing information are sourced from [1]
+>>  - LCD backlight is connected to 'EHRPWM1A' on cape board, but its used =
+for
+>>    enabling backlight power-supply. So 'gpio-backlight' driver is used i=
+nstead
+>>    of 'pwm-backlight' driver (Kconfig: BACKLIGHT_GPIO=3Dy).
+>>
+>
+>I'm confused about this, can you clarify why you are not using pwm-backlig=
+ht?
+>
 
-Without this change, if the size of buffer program is 512 or bigger than 25=
-6,
-due to timeout is the shorter than that the chip required,do_write_buffer
-sometimes fails.
+As per the schematics of this LCD4 cape board, "EHRPWM1A" pin controls
+enabling/disabling of the power to backlight LED. It does not control the
+voltage levels (brightness levels) of the LED. Thus it wasn't making sense
+to use pwm-backlight driver which more suitable in cases where you have
+multiple levels of brightness.
+Here, you have only 2 levels "backlight=3Doff | on", so I used gpio-backlig=
+ht driver.
+Though you can use pwm-backlight driver also, but the backlight turns ON
+only when you set the /sys/class/backlight/<backlight_device>/brighteness
+to maximum level (as set in DT).
 
-Tested with Micron JS28F512M29EWx and Micron MT28EW512ABA flash devices.
 
-Signed-off-by: bean huo <beanhuo@micron.com>
----
-changes=20
-	v1->v2:Deleted unused parameters in this patch (word_write_time_max and er=
-ase_time_max).
-Using usecs_to_jiffies instead of msecs_to_jiffies for convert timeout valu=
-e into jiffies.
-	v2->v3:Removed unnecessary messages form comments and deleted trailing whi=
-tespace.
-
- drivers/mtd/chips/cfi_cmdset_0002.c |   27 ++++++++++++++++++++++++---
- 1 file changed, 24 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cm=
-dset_0002.c
-index e21fde9..f7098d6 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -628,10 +628,24 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map=
-, int primary)
- 		cfi->chips[i].word_write_time =3D 1<<cfi->cfiq->WordWriteTimeoutTyp;
- 		cfi->chips[i].buffer_write_time =3D 1<<cfi->cfiq->BufWriteTimeoutTyp;
- 		cfi->chips[i].erase_time =3D 1<<cfi->cfiq->BlockEraseTimeoutTyp;
-+		/*
-+		 * We first calculate the timeout max according to timeout
-+		 * field of struct cfi_ident that probed from chip's CFI
-+		 * aera,If haven't probed this information,we will specify
-+		 * a default value,and the time unit is us.
-+		 */
-+		if (cfi->cfiq->BufWriteTimeoutTyp &&
-+			cfi->cfiq->BufWriteTimeoutMax){
-+			cfi->chips[i].buffer_write_time_max =3D
-+				1<<(cfi->cfiq->BufWriteTimeoutTyp +
-+					cfi->cfiq->BufWriteTimeoutMax);
-+			} else {
-+			/* specify maximum timeout for buffer program 2000us */
-+				cfi->chips[i].buffer_write_time_max =3D 2000;
-+				}
- 		cfi->chips[i].ref_point_counter =3D 0;
- 		init_waitqueue_head(&(cfi->chips[i].wq));
- 	}
--
- 	map->fldrv =3D &cfi_amdstd_chipdrv;
-=20
- 	return cfi_amdstd_setup(mtd);
-@@ -1462,8 +1476,15 @@ static int __xipram do_write_buffer(struct map_info =
-*map, struct flchip *chip,
- {
- 	struct cfi_private *cfi =3D map->fldrv_priv;
- 	unsigned long timeo =3D jiffies + HZ;
--	/* see comments in do_write_oneword() regarding uWriteTimeo. */
--	unsigned long uWriteTimeout =3D ( HZ / 1000 ) + 1;
-+	/* There maximum timeout information in the CFI area,so the
-+	 * best way is to choose the result calculated according to
-+	 * timeout field of struct cfi_ident that probed from
-+	 * norflash's CFI aera,see comments in cfi_cmdset_0002().
-+	 * uWriteTimeout is used for timeout step,it must be concerted
-+	 * into jiffies.
-+	 */
-+	unsigned long uWriteTimeout =3D
-+				usecs_to_jiffies(chip->buffer_write_time_max);
- 	int ret =3D -EIO;
- 	unsigned long cmd_adr;
- 	int z, words;
---=20
-1.7.9.5
+with regards, pekon
