@@ -1,26 +1,24 @@
 Received: from bear.ext.ti.com ([192.94.94.41])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WzezS-00053c-Kj
- for linux-mtd@lists.infradead.org; Wed, 25 Jun 2014 04:39:23 +0000
+ id 1Wzg5K-0002Px-O9
+ for linux-mtd@lists.infradead.org; Wed, 25 Jun 2014 05:49:31 +0000
 From: "Gupta, Pekon" <pekon@ti.com>
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To: Jason Kridner <jkridner@gmail.com>, Tony Lindgren <tony@atomide.com>
 Subject: RE: [PATCH v1 3/3] ARM: dts: am335x-bone: add support for
  beaglebone LCD4 cape
-Date: Wed, 25 Jun 2014 04:38:53 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EAF7327@DBDE04.ent.ti.com>
+Date: Wed, 25 Jun 2014 05:49:01 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EAF737A@DBDE04.ent.ti.com>
 References: <1403612666-31197-1-git-send-email-pekon@ti.com>
  <1403612666-31197-4-git-send-email-pekon@ti.com>
- <20140624150336.GA10041@arch.cereza>
-In-Reply-To: <20140624150336.GA10041@arch.cereza>
+ <CA+T6QP=eETQtLKs6HcCAJsZg7+tSdJyeaXdaZTv5qt9y+7+mmg@mail.gmail.com>
+In-Reply-To: <CA+T6QP=eETQtLKs6HcCAJsZg7+tSdJyeaXdaZTv5qt9y+7+mmg@mail.gmail.com>
 Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Cc: Tony Lindgren <tony@atomide.com>, Jason Kridner <jkridner@gmail.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
+Cc: Robert Nelson <robertcnelson@gmail.com>,
  linux-omap <linux-omap@vger.kernel.org>,
- Robert Nelson <robertcnelson@gmail.com>,
- =?iso-8859-1?Q?Guido_Mart=EDnez?= <guido@vanguardiasur.com.ar>
+ linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,35 +28,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From: Ezequiel Garcia
->>On 24 Jun 05:54 PM, Pekon Gupta wrote:
->> This patch adds support for LCD4 cape as advertised on
->>   http://elinux.org/CircuitCo:BeagleBone_LCD4
->>
->> This cape has:
->> * 480x272 TFT-LCD panel
->>  - LCD panel datasheet and timing information are sourced from [1]
->>  - LCD backlight is connected to 'EHRPWM1A' on cape board, but its used =
-for
->>    enabling backlight power-supply. So 'gpio-backlight' driver is used i=
-nstead
->>    of 'pwm-backlight' driver (Kconfig: BACKLIGHT_GPIO=3Dy).
->>
->
->I'm confused about this, can you clarify why you are not using pwm-backlig=
-ht?
->
-
-As per the schematics of this LCD4 cape board, "EHRPWM1A" pin controls
-enabling/disabling of the power to backlight LED. It does not control the
-voltage levels (brightness levels) of the LED. Thus it wasn't making sense
-to use pwm-backlight driver which more suitable in cases where you have
-multiple levels of brightness.
-Here, you have only 2 levels "backlight=3Doff | on", so I used gpio-backlig=
-ht driver.
-Though you can use pwm-backlight driver also, but the backlight turns ON
-only when you set the /sys/class/backlight/<backlight_device>/brighteness
-to maximum level (as set in DT).
-
-
-with regards, pekon
+PkZyb206IEphc29uIEtyaWRuZXIgW21haWx0bzpqa3JpZG5lckBnbWFpbC5jb21dDQo+T24gVHVl
+LCBKdW4gMjQsIDIwMTQgYXQgODoyNCBBTSwgUGVrb24gR3VwdGEgPHBla29uQHRpLmNvbT4gd3Jv
+dGU6DQo+PiBUaGlzIHBhdGNoIGFkZHMgc3VwcG9ydCBmb3IgTENENCBjYXBlIGFzIGFkdmVydGlz
+ZWQgb24NCj4+ICAgaHR0cDovL2VsaW51eC5vcmcvQ2lyY3VpdENvOkJlYWdsZUJvbmVfTENENA0K
+Wy4uLl0NCg0KPj4NCj4+IGRpZmYgLS1naXQgYS9hcmNoL2FybS9ib290L2R0cy9hbTMzNXgtYm9u
+ZS1kaXNwbGF5LWNhcGUuZHRzIGIvYXJjaC9hcm0vYm9vdC9kdHMvYW0zMzV4LWJvbmUtDQo+ZGlz
+cGxheS1jYXBlLmR0cw0KPg0KPklmIHRoaXMgaXMgbWVhbiB0byBiZSBpbmNsdWRlZCwgd2h5IG5v
+dCB1c2UgdGhlIC5kdHNpIGV4dGVuc2lvbiByYXRoZXINCj50aGFuIC5kdHMuIC5kdHMgaW1wbGll
+cyBpdCBpcyBhIHRvcC1sZXZlbCBmaWxlLg0KPg0KSSBmb2xsb3dlZCB0aGUgaWRlb2xvZ3kgZ2l2
+ZW4gaW4gaW4gYmVsb3cgZGlzY3Vzc2lvbg0KaHR0cDovL2NvbW1lbnRzLmdtYW5lLm9yZy9nbWFu
+ZS5saW51eC5kcml2ZXJzLmRldmljZXRyZWUvMTM5MjENCg0KQXMgSSB1bmRlcnN0b29kIC5kdHNp
+IGZpbGUgZXh0ZW5zaW9uIHNob3VsZCBiZSB1c2VkIGZvciBzaWxpY29uIERUIGRhdGEgd2hpY2gN
+CndoaWNoIHJlbWFpbnMgY29tbW9uIGZvciBhbGwgdGhlIGJvYXJkcyB1c2luZyB0aGF0IHNpbGlj
+b24gKGxpa2UgYW0zM3h4LmR0c2kpLg0KQW5kIC5kdHMgaXMgZm9yIGJvYXJkIHNwZWNpZmljIERU
+IGRhdGEuDQpIb3dldmVyLCBhbnl0aGluZyB3b3JrcyBmb3IgbWUsIGFzIGl0cyBqdXN0IG1hdHRl
+ciBvZiBmaWxlLW5hbWUtZXh0ZW5zaW9uLgkNClNvIHNob3VsZCBJIHJlbmFtZSBhbGwgZmlsZXMg
+dG8gLmR0c2kgPw0KDQpbLi4uXQ0KDQo+PiArLyB7DQo+PiArICAgICAgIGJhY2tsaWdodCB7DQo+
+PiArICAgICAgICAgICAgICAgc3RhdHVzID0gImRpc2FibGVkIjsNCj4+ICsgICAgICAgICAgICAg
+ICBjb21wYXRpYmxlID0gImdwaW8tYmFja2xpZ2h0IjsNCj4+ICsgICAgICAgICAgICAgICBwaW5j
+dHJsLW5hbWVzID0gImRlZmF1bHQiOw0KPj4gKyAgICAgICAgICAgICAgIHBpbmN0cmwtMCA9IDwm
+YmJjYXBlX2JhY2tsaWdodF9waW5zPjsNCj4+ICsgICAgICAgICAgICAgICBncGlvcyA9IDwmZ3Bp
+bzEgMTggR1BJT19BQ1RJVkVfSElHSD47DQo+PiArICAgICAgICAgICAgICAgZGVmYXVsdC1vbjsN
+Cj4+ICsgICAgICAgfTsNCj4+ICsNCj4+ICsgICAgICAgcGFuZWwgew0KPj4gKyAgICAgICAgICAg
+ICAgIHN0YXR1cyA9ICJkaXNhYmxlZCI7DQo+DQo+V2hlcmUgYXJlIHlvdSBleHBlY3RpbmcgdG8g
+ZW5hYmxlIHRoaXM/IEknbSBndWVzc2luZyB0aHJvdWdoIHlvdXINCj51LWJvb3QgaGFja2luZz8g
+Q2VydGFpbmx5IEkgY2FuIHNlZSBlZGl0aW5nIHRoZSBib290IHNjcmlwdCB0byBtYWtlDQo+dGhp
+cyB3b3JrLCBidXQgSSBkb24ndCBzZWUgaG93IHRoaXMgcmVzdWx0cyBpbiB0aGUgYXZlcmFnZSB1
+c2VyIHNpbXBseQ0KPnBsdWdnaW5nIGluIHRoZSBjYXBlIGFuZCBoYXZpbmcgaXQgd29yayB3aXRo
+b3V0IGhhdmluZyB0byBlZGl0IGZpbGVzLg0KPg0KWWVzLCB1c2luZyB1LWJvb3QgY29tbWFuZHMs
+ICp3aXRob3V0IHRvdWNoaW5nIGFueSBzb3VyY2UgZmlsZSouDQpJJ20gcGxhbm5pbmcgdG8gc2Vu
+ZCBwYXRjaCBmb3IgYWRkaW5nIGZvbGxvd2luZyBoZWxwZXIgY29tbWFuZHMgIGluIHUtYm9vdA0K
+dS1ib290PiBmZHQgbm9kZSBlbmFibGUgPG5vZGUtcGF0aD4NCnUtYm9vdD4gZmR0IG5vZGUgZGlz
+YWJsZSA8bm9kZS1wYXRoPg0KSWYgdGhhdCdzIGFjY2VwdGVkLCBlbmFibGluZyBkaXNhYmxpbmcg
+Y2FwZXMgd2lsbCBiZWNvbWUgdmVyeSBlYXN5Lg0KQW5kLCBhcyB5b3Ugc2FpZCB1c2VyIGNhbiBw
+dXQgdGhlc2UgY29tbWFuZHMgaW4gc2NyaXB0cyAobGlrZSBVZW52LnR4dCkNCm9yIGVudmlyb25t
+ZW50IHZhcmlhYmxlLCBhbmQgZXhlY3V0ZSB0aGVtIGF1dG9tYXRpY2FsbHkgYXQgZWFjaCBib290
+Lg0KDQoNCj5QZXJoYXBzIHlvdSBjYW4gcHV0IHNvbWUgcmVhbCBsb2dpYyBpbnRvIHRoZSBib290
+bG9hZGVyIHRoYXQgbG9va3MgYXQNCj50aGUgY2FwZSBFRVBST01zPw0KPg0KTm8sIEkgZG9uJ3Qg
+d2FudCB0byBnbyB0aGUgRUVQUk9NIHdheSwgYmVjYXVzZSBvZiByZWFzb25zIHN1Z2dlc3RlZA0K
+aW4gZWFybGllciBtYWlsLiBJdCdzIG5vdCBzY2FsYWJsZSwgZXNwZWNpYWxseSB3aGVuIHlvdSBk
+b24ndCBoYXZlIGNvbnRyb2wNCm92ZXIgd2hhdCB0eXBlIGFuZCBob3cgdGhpcmQtcGFydHkgaXMg
+ZGV2ZWxvcGluZyB0aGUgY2FwZXMuDQoNCg0KPkhhdmUgeW91IGNvbnNpZGVyZWQgdXNpbmcgdG9v
+bHMgbGlrZSBwaW5tdXgtaGVscGVyIGFzIGlzIGRvbmUgd2l0aCB0aGUNCj5jYXBlLXVuaXZlcnNh
+bCBvdmVybGF5Pw0KPmh0dHBzOi8vZ2l0aHViLmNvbS9iZWFnbGVib2FyZC9kZXZpY2V0cmVlLXNv
+dXJjZS9ibG9iL21hc3Rlci9hcmNoL2FybS9ib290L2R0cy9jYXBlLXVuaXZlcnNhbC0NCj4wMEEw
+LmR0cw0KPg0KWWVzLCBJIGhhdmUgc2VlbiB0aGF0LiBJbiBwaW4tbXV4IGhlbHBlciBwaW5zIGFy
+ZSBjb25maWd1cmVkIG5vdCBiYXNlZCBvbg0KdGhlaXIgYWN0dWFsIG5hbWVzIGJ1dCBhcyB0aGV5
+IGFwcGVhciBvbiBQOCBhbmQgUDkgaGVhZGVycyBvZiBCZWFnbGVib25lLg0KLSBGb3Igc2hhcmVk
+IHBpbnMsIHlvdSBoYXZlIGRlZmluZWQgYWxsIHBvc3NpYmxlIGZ1bmN0aW9uYWxpdHkuDQotIEZv
+ciBkZWRpY2F0ZWQgcGlucywgdGhlcmUgaXMgc2luZ2xlIGZyYWdtZW50Lg0KTm93IHRoZXJlIGFy
+ZSB0d28gcXVlc3Rpb25zLi4NCigxKSBEbyB3ZSBuZWVkIHRvIHVwZGF0ZSB0aGlzIGNhcGUtdW5p
+dmVyc2FsLXh4LmR0cyBldmVyeXRpbWUgYSBuZXcNCkNhcGUgaW4gbWFya2V0IHVzZXMgc29tZSBk
+ZWRpY2F0ZWQgcGluIGZvciBzb21lIG11eGVkIGZ1bmN0aW9uYWxpdHkgPw0KKDIpIEknbSBub3Qg
+c3VyZSBidXQga2VybmVsIGRvZXMgX25vdF8gZnJlZSB0aGUgbWVtb3J5IGFsbG9jYXRlZCB0byAN
+CkRUIGZyYWdtZW50LiBJZiBzbywgdGhpcyB1bml2ZXJzYWwgZnJhZ21lbnQgd2hpY2ggaGFzIHBp
+bi1tdXggZm9yIGFsbA0KUDggYW5kIFA5IHBpbnMgd2lsbCBibG9jayB0aGUgbWVtb3J5IGZvcmV2
+ZXIuIFdvdWxkIGJlIGdvb2QgdG8ga25vdw0KdGhlIGluLW1lbW9yeSBzaXplIHJlcXVpcmVkIGZv
+ciB0aGlzIHVuaXZlcnNhbCBmcmFnbWVudCA/DQoNCg0KPkkndmUgYmVlbiBoYWNraW5nIHdpdGgg
+YWRkaW5nIGFsbCBvZiB0aGVzZSBwaW5tdXggaGVscGVycyB0byB0aGUgbWFpbg0KPi5kdHMuIEkg
+dGhpbmsgeW91IGFyZSBlbmNvdXJhZ2luZyBtZSB0byBhZGQgaXQgdG8gaW5jbHVkZSBmaWxlcyB0
+bw0KPm1ha2UgaXQgYSBiaXQgbW9yZSBncmFudWxhci4NCj4NCj5odHRwOi8vcGFzdGUuZGViaWFu
+Lm5ldC8xMDYzMTkvDQo+DQpZZXMsIHVzaW5nIGluY2x1ZGUgZmlsZXMgd291bGQgYmUgZ29vZC4N
+CkFsc28gb25lIG1pbm9yIGZlZWRiYWNrLiBQbGVhc2UgdXNlIG1hY3JvcyBmb3IgUGluIGRpcmVj
+dGlvbnMsIFB1bGxzLCBldGMNCmluc3RlYWQgb2YgaGV4IG51bWJlcnMsIGl0IG1ha2UgaXQgbW9y
+ZSByZWFkYWJsZS4gQW5kIHRoZW4geW91IGRvbid0IG5lZWQNCnRvIHNwZWNpZnkgdGhhdCBpbiBj
+b21tZW50cy4NCi0gIDB4YTAgMHgwOAkvKiBsY2RfZGF0YTAubGNkX2RhdGEwLCBPTUFQX01VWF9N
+T0RFMCB8IEFNMzNYWF9QSU5fT1VUUFVUIHwgQU0zM1hYX1BVTExfRElTQSAqLw0KKyAweGEwCShP
+TUFQX01VWF9NT0RFMCB8IEFNMzNYWF9QSU5fT1VUUFVUIHwgQU0zM1hYX1BVTExfRElTQSkgICAg
+LyogbGNkX2RhdGEwLmxjZF9kYXRhMCAqLw0KDQoNCj5JIGFwcHJlY2lhdGUgdGhlIGVudGh1c2lh
+c20gdG8gZ2V0IHRoaXMgc3VwcG9ydCBpbnRvIHRoZSBtYWlubGluZS4gSWYNCj5pdCBnb2VzLCBJ
+J2xsIHRyeSB0byBmb2xsb3cgd2l0aCBhIGJ1bmNoIG9mIG90aGVyIG91dHN0YW5kaW5nIGNoYW5n
+ZXMNCj53ZSBoYXZlIHNpdHRpbmcgaW4gdGhlIHZlbmRvciB0cmVlIHJpZ2h0IG5vdy4NCj4NClRo
+YW5rcy4gV2FpdGluZyBmb3IgVG9ueSB0byBhdC1sZWFzdCAnQWNrJyBvciBzYXkgaWYgdGhpcyBp
+cyBhY2NlcHRhYmxlIGFwcHJvYWNoLg0KDQoNCj5IYXZlIHlvdSBsb29rZWQgYXQgdGhlIGZlYXR1
+cmVzIGluIHRoZSBkZXZpY2V0cmVlIGZvciB0aGlzIGNhcGUgdGhhdA0KPmlzIGN1cnJlbnRseSBw
+dXNoZWQgaW4gdGhlIHZlbmRvciB0cmVlPw0KPg0KPmh0dHBzOi8vZ2l0aHViLmNvbS9iZWFnbGVi
+b2FyZC9kZXZpY2V0cmVlLXNvdXJjZS9ibG9iL21hc3Rlci9hcmNoL2FybS9ib290L2R0cy9CQi1C
+T05FLUxDRDQtDQo+MDEtMDBBMS5kdHMNCj4NClllcywgSSBoYXZlIG5vdCBhZGRlZCB0b3VjaHNj
+cmVlbiBzdXBwb3J0Lg0KSSBkZXZlbG9wZWQgdGhpcyBEVFMgaW5kZXBlbmRlbnRseSB3aGlsZSBk
+ZWJ1Z2dpbmcgc29tZSBEaXNwbGF5IHYvcyBOQU5EIGlzc3VlLg0KSWYgdGhlc2UgRFRTIHBhdGNo
+ZXMgYXJlIGFjY2VwdGFibGUsIHRoZW4gSSdsbCByZWZpbmUgdGhlbSBmdXJ0aGVyLg0KDQoNCndp
+dGggcmVnYXJkcywgcGVrb24NCg==
