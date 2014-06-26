@@ -1,25 +1,26 @@
-Received: from mail-wi0-x234.google.com ([2a00:1450:400c:c05::234])
+Received: from comal.ext.ti.com ([198.47.26.152])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X01Kt-0002pV-Hf
- for linux-mtd@lists.infradead.org; Thu, 26 Jun 2014 04:31:00 +0000
-Received: by mail-wi0-f180.google.com with SMTP id hi2so282885wib.7
- for <linux-mtd@lists.infradead.org>; Wed, 25 Jun 2014 21:30:36 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EAF737A@DBDE04.ent.ti.com>
+ id 1X02TZ-0003qq-8H
+ for linux-mtd@lists.infradead.org; Thu, 26 Jun 2014 05:44:01 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Subject: RE: [PATCH v1 1/3] ARM: dts: am335x-bone: add support for
+ beaglebone NAND cape
+Date: Thu, 26 Jun 2014 05:43:30 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EAF79CC@DBDE04.ent.ti.com>
 References: <1403612666-31197-1-git-send-email-pekon@ti.com>
- <1403612666-31197-4-git-send-email-pekon@ti.com>
- <CA+T6QP=eETQtLKs6HcCAJsZg7+tSdJyeaXdaZTv5qt9y+7+mmg@mail.gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73EAF737A@DBDE04.ent.ti.com>
-Date: Thu, 26 Jun 2014 00:30:36 -0400
-Message-ID: <CA+T6QPnxyQJnuN3invimzOHWsBBVjsjw-V+B5Q5z8jRAmE6X7g@mail.gmail.com>
-Subject: Re: [PATCH v1 3/3] ARM: dts: am335x-bone: add support for beaglebone
- LCD4 cape
-From: Jason Kridner <jkridner@gmail.com>
-To: "Gupta, Pekon" <pekon@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: Tony Lindgren <tony@atomide.com>, Robert Nelson <robertcnelson@gmail.com>,
+ <1403612666-31197-2-git-send-email-pekon@ti.com>
+ <20140625152735.GA17792@arch.cereza>
+In-Reply-To: <20140625152735.GA17792@arch.cereza>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: Tony Lindgren <tony@atomide.com>, Jason Kridner <jkridner@gmail.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
  linux-omap <linux-omap@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>
+ Robert Nelson <robertcnelson@gmail.com>,
+ =?iso-8859-1?Q?Guido_Mart=EDnez?= <guido@vanguardiasur.com.ar>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,143 +30,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jun 25, 2014 at 1:49 AM, Gupta, Pekon <pekon@ti.com> wrote:
->>From: Jason Kridner [mailto:jkridner@gmail.com]
->>On Tue, Jun 24, 2014 at 8:24 AM, Pekon Gupta <pekon@ti.com> wrote:
->>> This patch adds support for LCD4 cape as advertised on
->>>   http://elinux.org/CircuitCo:BeagleBone_LCD4
-> [...]
+>From: Ezequiel Garcia [mailto:ezequiel@vanguardiasur.com.ar]
+>>On 24 Jun 05:54 PM, Pekon Gupta wrote:
+>> +&gpmc {
+>> +	ranges =3D <0 0 0 0x01000000>;	/* address range =3D 16MB (minimum GPMC=
+ partition) */
+>> +	nand@0,0 {
+>> +		status =3D "disabled";
+>> +		reg =3D <0 0 4>;		/* device IO registers */
+>> +		pinctrl-names =3D "default";
+>> +		pinctrl-0 =3D <&bbcape_nand_flash_pins>;
+>> +		ti,nand-ecc-opt =3D "bch8";
+>> +		ti,elm-id =3D <&elm>;
 >
->>>
->>> diff --git a/arch/arm/boot/dts/am335x-bone-display-cape.dts b/arch/arm/boot/dts/am335x-bone-
->>display-cape.dts
->>
->>If this is mean to be included, why not use the .dtsi extension rather
->>than .dts. .dts implies it is a top-level file.
->>
-> I followed the ideology given in in below discussion
-> http://comments.gmane.org/gmane.linux.drivers.devicetree/13921
+>Don't you need something like this to turn on the elm device?
 >
-> As I understood .dtsi file extension should be used for silicon DT data which
-> which remains common for all the boards using that silicon (like am33xx.dtsi).
-> And .dts is for board specific DT data.
-> However, anything works for me, as its just matter of file-name-extension.
-> So should I rename all files to .dtsi ?
+>&elm {
+>	status =3D "okay";
+>};
+>
+No, This was the intend of these patches to keep cape DTS as "disabled"
+so that:
+(1)These patches should not change the behavior of existing DTS
+ (am335x-boneblack.dts or am335x-bone.dts), or conflict with
+ any existing node or other cape DTS.
+(2) In-case of share-pin mux where multiple capes use same pins
+Cape DTS should not conflict each other.
 
-I believe the thread is not thinking of "board-level" as being add-on
-boards. I don't think it disagrees that if it is an include file, it
-should be called .dtsi. If it is called .dts, the assumption should be
-that it results in a .dtb (or .dtbo if for an overlay --- not yet a
-solution in mainline).
+Now, to enable the choice of cape without hacking any source file,
+user can use u-boot commands (refer to example in cover-letter):
+/* load DTB */
+u-boot> tftp 0x81000000 am335x-boneblack.dtb
+u-boot> fdt addr 0x81000000
+/* disabled conflicting MMC2 (eMMC) */
+u-boot> fdt set  /ocp/mmc@481d8000 status \d\i\s\a\b\l\e\d
+/* enable NAND cape*/
+u-boot> fdt set  /ocp/elm status \o\k\a\y
+u-boot> fdt set  /ocp/gpmc status \o\k\a\y
+u-boot> fdt set  /ocp/gpmc/nand status \o\k\a\y
 
->
-> [...]
->
->>> +/ {
->>> +       backlight {
->>> +               status = "disabled";
->>> +               compatible = "gpio-backlight";
->>> +               pinctrl-names = "default";
->>> +               pinctrl-0 = <&bbcape_backlight_pins>;
->>> +               gpios = <&gpio1 18 GPIO_ACTIVE_HIGH>;
->>> +               default-on;
->>> +       };
->>> +
->>> +       panel {
->>> +               status = "disabled";
->>
->>Where are you expecting to enable this? I'm guessing through your
->>u-boot hacking? Certainly I can see editing the boot script to make
->>this work, but I don't see how this results in the average user simply
->>plugging in the cape and having it work without having to edit files.
->>
-> Yes, using u-boot commands, *without touching any source file*.
-> I'm planning to send patch for adding following helper commands  in u-boot
-> u-boot> fdt node enable <node-path>
-> u-boot> fdt node disable <node-path>
-> If that's accepted, enabling disabling capes will become very easy.
-> And, as you said user can put these commands in scripts (like Uenv.txt)
-> or environment variable, and execute them automatically at each boot.
->
->
->>Perhaps you can put some real logic into the bootloader that looks at
->>the cape EEPROMs?
->>
-> No, I don't want to go the EEPROM way, because of reasons suggested
-> in earlier mail. It's not scalable, especially when you don't have control
-> over what type and how third-party is developing the capes.
+And then boot using this DTB loaded at 0x81000000
+(you can put all these commands in uEnv as part of $bootcmd)
 
-Well, I have no interest in needing to manually switch my uEnv.txt
-file based on whatever cape I have installed. Your patches to put
-by-default-disabled disabled support for various capes into the the
-main .dtb feels useful to me. I'm just going to optimize my systems to
-utilize the EEPROM (when provided) to trigger loading the
-configuration for me.
 
->
->
->>Have you considered using tools like pinmux-helper as is done with the
->>cape-universal overlay?
->>https://github.com/beagleboard/devicetree-source/blob/master/arch/arm/boot/dts/cape-universal-
->>00A0.dts
->>
-> Yes, I have seen that. In pin-mux helper pins are configured not based on
-> their actual names but as they appear on P8 and P9 headers of Beaglebone.
-> - For shared pins, you have defined all possible functionality.
-> - For dedicated pins, there is single fragment.
-> Now there are two questions..
-> (1) Do we need to update this cape-universal-xx.dts everytime a new
-> Cape in market uses some dedicated pin for some muxed functionality ?
-
-cape-universalXXX.dts needs to be moved into the main .dtb (via
-.dtsi). Can you give an example of what you mean by shared pins and
-dedicated pins here? It seems to me all the pins have multiple
-fragments except ADC pins and perhaps the I2C port used for expansion
-EEPROMs, but even that one CAN be muxed.
-
-> (2) I'm not sure but kernel does _not_ free the memory allocated to
-> DT fragment. If so, this universal fragment which has pin-mux for all
-> P8 and P9 pins will block the memory forever. Would be good to know
-> the in-memory size required for this universal fragment ?
-
-How can I check easily? Obviously loading all of these drivers is
-going to have an impact.
-
->
->
->>I've been hacking with adding all of these pinmux helpers to the main
->>.dts. I think you are encouraging me to add it to include files to
->>make it a bit more granular.
->>
->>http://paste.debian.net/106319/
->>
-> Yes, using include files would be good.
-> Also one minor feedback. Please use macros for Pin directions, Pulls, etc
-> instead of hex numbers, it make it more readable. And then you don't need
-> to specify that in comments.
-> -  0xa0 0x08    /* lcd_data0.lcd_data0, OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
-> + 0xa0  (OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA)    /* lcd_data0.lcd_data0 */
-
-If those are supported in the syntax and exist in some headers, I will use them.
-
->
->
->>I appreciate the enthusiasm to get this support into the mainline. If
->>it goes, I'll try to follow with a bunch of other outstanding changes
->>we have sitting in the vendor tree right now.
->>
-> Thanks. Waiting for Tony to at-least 'Ack' or say if this is acceptable approach.
->
->
->>Have you looked at the features in the devicetree for this cape that
->>is currently pushed in the vendor tree?
->>
->>https://github.com/beagleboard/devicetree-source/blob/master/arch/arm/boot/dts/BB-BONE-LCD4-
->>01-00A1.dts
->>
-> Yes, I have not added touchscreen support.
-> I developed this DTS independently while debugging some Display v/s NAND issue.
-> If these DTS patches are acceptable, then I'll refine them further.
->
->
-> with regards, pekon
+with regards, Pekon
