@@ -1,31 +1,25 @@
-Received: from mail-qa0-x234.google.com ([2607:f8b0:400d:c00::234])
+Received: from mail-wi0-x234.google.com ([2a00:1450:400c:c05::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X00tO-0005cW-H0
- for linux-mtd@lists.infradead.org; Thu, 26 Jun 2014 04:02:35 +0000
-Received: by mail-qa0-f52.google.com with SMTP id w8so2385887qac.11
- for <linux-mtd@lists.infradead.org>; Wed, 25 Jun 2014 21:02:12 -0700 (PDT)
+ id 1X01Kt-0002pV-Hf
+ for linux-mtd@lists.infradead.org; Thu, 26 Jun 2014 04:31:00 +0000
+Received: by mail-wi0-f180.google.com with SMTP id hi2so282885wib.7
+ for <linux-mtd@lists.infradead.org>; Wed, 25 Jun 2014 21:30:36 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EAF7560@DBDE04.ent.ti.com>
-References: <1403259137-22171-1-git-send-email-david@protonic.nl>
- <CAE94FHELXgoZ9Jm1E3_YT6D1SB=VAGWthZSjbsR+qqkUWn97PA@mail.gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73EAF6A08@DBDE04.ent.ti.com>
- <CAE94FHGNHDVygoviGgEtE2ZDyumjwa73tZiDnEBdSnnWCE03YQ@mail.gmail.com>
- <CAE94FHFvCoZyawRC=LL+PdBR3ig10crKJN6c_M_q=yGdOXnR9A@mail.gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73EAF7560@DBDE04.ent.ti.com>
-Date: Thu, 26 Jun 2014 12:02:12 +0800
-Message-ID: <CAE94FHHdznCqXMsrkFB6MDdDLaX7__v53myDgQj0yiSO-L6puw@mail.gmail.com>
-Subject: Re: [FRC] [PATCH] MTD: nand_base.c: Enable support for Samsung E-die
- SLC NAND
-From: Ted Juan <ted.juan@gmail.com>
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EAF737A@DBDE04.ent.ti.com>
+References: <1403612666-31197-1-git-send-email-pekon@ti.com>
+ <1403612666-31197-4-git-send-email-pekon@ti.com>
+ <CA+T6QP=eETQtLKs6HcCAJsZg7+tSdJyeaXdaZTv5qt9y+7+mmg@mail.gmail.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EAF737A@DBDE04.ent.ti.com>
+Date: Thu, 26 Jun 2014 00:30:36 -0400
+Message-ID: <CA+T6QPnxyQJnuN3invimzOHWsBBVjsjw-V+B5Q5z8jRAmE6X7g@mail.gmail.com>
+Subject: Re: [PATCH v1 3/3] ARM: dts: am335x-bone: add support for beaglebone
+ LCD4 cape
+From: Jason Kridner <jkridner@gmail.com>
 To: "Gupta, Pekon" <pekon@ti.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Jander <david@protonic.nl>,
- "sjhill@realitydiluted.com" <sjhill@realitydiluted.com>,
- "tglx@linutronix.de" <tglx@linutronix.de>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: Tony Lindgren <tony@atomide.com>, Robert Nelson <robertcnelson@gmail.com>,
+ linux-omap <linux-omap@vger.kernel.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,133 +29,143 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Pekon and David,
-
-Thanks your help and suggestions.
-
-Sorry David, hijacked your thread.
-
-The E-die 21nm  SLC NOP=3D1 , not 4.
-It means it doesn't support partial write.
-
-Anyone give any comment for the patch,please.
-
-
-2014-06-25 18:04 GMT+08:00 Gupta, Pekon <pekon@ti.com>:
-> Hi Ted,
+On Wed, Jun 25, 2014 at 1:49 AM, Gupta, Pekon <pekon@ti.com> wrote:
+>>From: Jason Kridner [mailto:jkridner@gmail.com]
+>>On Tue, Jun 24, 2014 at 8:24 AM, Pekon Gupta <pekon@ti.com> wrote:
+>>> This patch adds support for LCD4 cape as advertised on
+>>>   http://elinux.org/CircuitCo:BeagleBone_LCD4
+> [...]
 >
+>>>
+>>> diff --git a/arch/arm/boot/dts/am335x-bone-display-cape.dts b/arch/arm/boot/dts/am335x-bone-
+>>display-cape.dts
 >>
-> (a) In that case you should contact the Flash vendor here.
-> Fresh NAND device from factory should not violate the spec.
-> I don't suspect a driver issue here, because the raw data read itself
-> has random bit-flips.
+>>If this is mean to be included, why not use the .dtsi extension rather
+>>than .dts. .dts implies it is a top-level file.
+>>
+> I followed the ideology given in in below discussion
+> http://comments.gmane.org/gmane.linux.drivers.devicetree/13921
 >
+> As I understood .dtsi file extension should be used for silicon DT data which
+> which remains common for all the boards using that silicon (like am33xx.dtsi).
+> And .dts is for board specific DT data.
+> However, anything works for me, as its just matter of file-name-extension.
+> So should I rename all files to .dtsi ?
 
-OK, I'll try to contact Flash vendor to get more clue.
-
-
-> (b) Also, it may be the case that there few particular blocks which has g=
-one
-> bad and those are is showing again and again at each boot. However, If it
-> was such a case that only some handful blocks on NAND device have gone
-> bad, then UBI torture test [1] should have detected them and marked them
-> bad. And those should not re-appear in next time.
-> - You can check (b) by scrubbing all bad-blocks from u-boot
->   #u-boot> nand scrub.chip all
->   #u-boot> nand bad  (should report 0 bad blocks)
-> - Then, re-boot and let UBI detect bad-blocks on its own using torture-te=
-st
-> - And then again reset the system 2nd time and check newly detected bad-b=
-locks
->   #u-boot> nand bad  (should report [n] bad blocks)
->
-
-I'll do the torture test later. Does it mean torture test just can
-seriously filter the bad block, but erase command cannot?
-
-
-> (c) You can also check, if you are seeing bit-flips only during erased-pa=
-ges ?
-> You can identify this by adding prints in u-boot.
-> There is slight difference in u-boot and kernel omap-gpmc NAND drivers,
-> - u-boot: simply ignores erased-pages and does not check for bit-flips in=
- them.
-> - kernel: counts number of bit-flips in erased-pages also.
->
-
-  for (i =3D 0; i < blockCnt; i++) {
-    /* check if any ecc error */
-    eccflag =3D 0;
-    for (j =3D 0; (j < eccsize) && (eccflag =3D=3D 0); j++)
-      if (calc_ecc[j] !=3D 0)
-        eccflag =3D 1;
-
-    if (eccflag =3D=3D 1) {
-      eccflag =3D 0;
-      for (j =3D 0; (j < eccsize) && (eccflag =3D=3D 0); j++)
-        if (read_ecc[j] !=3D 0xFF)
-          eccflag =3D 1;
-    }
-   if (eccflag =3D=3D 1) {
-       count =3D decode_bch(mode, calc_ecc, err_loc);
-
-
-The above code is cut from uboot.
-In this case, it should enter the decode_bch(), and decode fail, right?
-
+I believe the thread is not thinking of "board-level" as being add-on
+boards. I don't think it disagrees that if it is an include file, it
+should be called .dtsi. If it is called .dts, the assumption should be
+that it results in a .dtb (or .dtbo if for an overlay --- not yet a
+solution in mainline).
 
 >
-> There will be no correction done if 'un-correctable error' flag is raised=
- by ELM.
-> Therefore pre-correction and post-correction data matches in below dump.
-> Bit-flip correction will _only_ happen if the number of bit-flips are wit=
-hin
-> correctable range (that is <=3D8 for BCH8 ECC scheme).
+> [...]
 >
+>>> +/ {
+>>> +       backlight {
+>>> +               status = "disabled";
+>>> +               compatible = "gpio-backlight";
+>>> +               pinctrl-names = "default";
+>>> +               pinctrl-0 = <&bbcape_backlight_pins>;
+>>> +               gpios = <&gpio1 18 GPIO_ACTIVE_HIGH>;
+>>> +               default-on;
+>>> +       };
+>>> +
+>>> +       panel {
+>>> +               status = "disabled";
+>>
+>>Where are you expecting to enable this? I'm guessing through your
+>>u-boot hacking? Certainly I can see editing the boot script to make
+>>this work, but I don't see how this results in the average user simply
+>>plugging in the cape and having it work without having to edit files.
+>>
+> Yes, using u-boot commands, *without touching any source file*.
+> I'm planning to send patch for adding following helper commands  in u-boot
+> u-boot> fdt node enable <node-path>
+> u-boot> fdt node disable <node-path>
+> If that's accepted, enabling disabling capes will become very easy.
+> And, as you said user can put these commands in scripts (like Uenv.txt)
+> or environment variable, and execute them automatically at each boot.
+>
+>
+>>Perhaps you can put some real logic into the bootloader that looks at
+>>the cape EEPROMs?
+>>
+> No, I don't want to go the EEPROM way, because of reasons suggested
+> in earlier mail. It's not scalable, especially when you don't have control
+> over what type and how third-party is developing the capes.
 
-I see. thanks.
+Well, I have no interest in needing to manually switch my uEnv.txt
+file based on whatever cape I have installed. Your patches to put
+by-default-disabled disabled support for various capes into the the
+main .dtb feels useful to me. I'm just going to optimize my systems to
+utilize the EEPROM (when provided) to trigger loading the
+configuration for me.
 
+>
+>
+>>Have you considered using tools like pinmux-helper as is done with the
+>>cape-universal overlay?
+>>https://github.com/beagleboard/devicetree-source/blob/master/arch/arm/boot/dts/cape-universal-
+>>00A0.dts
+>>
+> Yes, I have seen that. In pin-mux helper pins are configured not based on
+> their actual names but as they appear on P8 and P9 headers of Beaglebone.
+> - For shared pins, you have defined all possible functionality.
+> - For dedicated pins, there is single fragment.
+> Now there are two questions..
+> (1) Do we need to update this cape-universal-xx.dts everytime a new
+> Cape in market uses some dedicated pin for some muxed functionality ?
 
->> Plz relax timing by 10-20% and check if that makes a difference.
+cape-universalXXX.dts needs to be moved into the main .dtb (via
+.dtsi). Can you give an example of what you mean by shared pins and
+dedicated pins here? It seems to me all the pins have multiple
+fragments except ADC pins and perhaps the I2C port used for expansion
+EEPROMs, but even that one CAN be muxed.
 
-The below is my gpmc register value dump from kernel.
-gpmc cs[0] config1 =3D 0x00600800
-gpmc cs[0] config2 =3D 0x00050500
-gpmc cs[0] config3 =3D 0x00050401
-gpmc cs[0] config4 =3D 0x04010601
-gpmc cs[0] config5 =3D 0x00070808
-gpmc cs[0] config6 =3D 0x04000000
-gpmc cs[0] config7 =3D 0x00000f48
+> (2) I'm not sure but kernel does _not_ free the memory allocated to
+> DT fragment. If so, this universal fragment which has pin-mux for all
+> P8 and P9 pins will block the memory forever. Would be good to know
+> the in-memory size required for this universal fragment ?
 
+How can I check easily? Obviously loading all of these drivers is
+going to have an impact.
 
-The link is Flash timing report according the above config.
-https://drive.google.com/file/d/0BwVGpNFs7l22bkhmQ2FFcVZXQk0/edit?usp=3Dsha=
-ring
+>
+>
+>>I've been hacking with adding all of these pinmux helpers to the main
+>>.dts. I think you are encouraging me to add it to include files to
+>>make it a bit more granular.
+>>
+>>http://paste.debian.net/106319/
+>>
+> Yes, using include files would be good.
+> Also one minor feedback. Please use macros for Pin directions, Pulls, etc
+> instead of hex numbers, it make it more readable. And then you don't need
+> to specify that in comments.
+> -  0xa0 0x08    /* lcd_data0.lcd_data0, OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA */
+> + 0xa0  (OMAP_MUX_MODE0 | AM33XX_PIN_OUTPUT | AM33XX_PULL_DISA)    /* lcd_data0.lcd_data0 */
 
-I also tried to use chip->delay=3D50 to replace R/B wait, but the result
-is the same.
+If those are supported in the syntax and exist in some headers, I will use them.
 
-K9F1G08U0E vs K9F1G08U0D Timing is a little difference.
-
-                          =E3=80=80 tR t         PROG       tBERS NOP
-K9F1G08U0E Max. 40us Max. 900us Max. 16ms 1
-K9F1G08U0D Max. 40us Max. 750us Max. 10ms 4
-
-We test the D-die that never happen this issue.
-
-
->>Please bear in mind that the erase can be successful for the first few
->>(milli-)seconds. If the power supply was out of specs during erase, it is
->>perfectly possible that a few random bits flip back to "programmed" state=
- after
->>a while. That would not be caught by the status check.
->>That is a good idea to check, but I would also try to influence the
->>power-supply or -decoupling to see if that is sensible variable.
->>Do you have cold-spray? Try to use it and see if it affects the result.
-
-Thanks. But the D-die is in this environment is ok. BTW, I'll double
-check with HW guy.
-
-regards,
-
-Ted
+>
+>
+>>I appreciate the enthusiasm to get this support into the mainline. If
+>>it goes, I'll try to follow with a bunch of other outstanding changes
+>>we have sitting in the vendor tree right now.
+>>
+> Thanks. Waiting for Tony to at-least 'Ack' or say if this is acceptable approach.
+>
+>
+>>Have you looked at the features in the devicetree for this cape that
+>>is currently pushed in the vendor tree?
+>>
+>>https://github.com/beagleboard/devicetree-source/blob/master/arch/arm/boot/dts/BB-BONE-LCD4-
+>>01-00A1.dts
+>>
+> Yes, I have not added touchscreen support.
+> I developed this DTS independently while debugging some Display v/s NAND issue.
+> If these DTS patches are acceptable, then I'll refine them further.
+>
+>
+> with regards, pekon
