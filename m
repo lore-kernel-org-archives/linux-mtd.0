@@ -1,18 +1,27 @@
-Received: from [119.145.14.64] (helo=szxga01-in.huawei.com)
+Received: from mail-bn1bln0184.outbound.protection.outlook.com
+ ([2a01:111:f400:7c10::1:184]
+ helo=na01-bn1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X0M2U-0007CR-UQ
- for linux-mtd@lists.infradead.org; Fri, 27 Jun 2014 02:37:24 +0000
-Message-ID: <53ACD890.4030805@huawei.com>
-Date: Fri, 27 Jun 2014 10:36:00 +0800
-From: hujianyang <hujianyang@huawei.com>
+ id 1X0MRa-0007w3-M3
+ for linux-mtd@lists.infradead.org; Fri, 27 Jun 2014 03:03:19 +0000
+From: Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>
+To: <robh+dt@kernel.org>, <pawel.moll@arm.com>, <mark.rutland@arm.com>,
+ <ijc+devicetree@hellion.org.uk>, <galak@codeaurora.org>, <rob@landley.net>,
+ <michal.simek@xilinx.com>, <grant.likely@linaro.org>,
+ <gregkh@linuxfoundation.org>, <jason@lakedaemon.net>,
+ <ezequiel.garcia@free-electrons.com>, <arnd@arndb.de>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <artem.bityutskiy@linux.intel.com>,
+ <pekon@ti.com>, <jussi.kivilinna@iki.fi>, <acourbot@nvidia.com>,
+ <ivan.khoronzhuk@ti.com>, <joern@logfs.org>
+Subject: [PATCH RFC v3 0/2] Add arm pl353 smc driver for xilinx zynq soc
+Date: Fri, 27 Jun 2014 08:32:40 +0530
+Message-ID: <637e4278-66b3-4a40-8fe2-9dc97ea643ba@BN1AFFO11FD026.protection.gbl>
 MIME-Version: 1.0
-To: Akshay Bhat <abhat@lutron.com>
-Subject: Re: UBIFS Panic
-References: <53AC825F.7040602@lutron.com>
-In-Reply-To: <53AC825F.7040602@lutron.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain
+Cc: devicetree@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ kalluripunnaiahchoudary@gmail.com, kpc528@gmail.com,
+ Punnaiah Choudary Kalluri <punnaia@xilinx.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,36 +31,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2014/6/27 4:28, Akshay Bhat wrote:
-> Hi,
-> 
-> I was performing a stress test on UBI file system on a ARM based embedded board
-> (Beagle Bone). We have a SLC NAND flash and the MTD_UBI_WL_THRESHOLD is set to
-> 4096. I have 2 scripts running in the background in a infinite while loop:
-> Script1: dd if=/dev/zero of=/var/db/test bs=2M count=1
-> Script2: dd if=/dev/urandom of=/var/log/test bs=2M count=1 2> /dev/null
-> Note: The above directories are mounted as (sync,relatime).
-> 
+The following patches add arm pl353 static memory controller driver for
+xilinx zynq soc. The arm pl353 smc supports two interfaces i.e nand and
+nor/sram memory interfaces. The current implementation supports only a
+single SMC instance and nand specific configuration.
 
-How did you release data on the flash? What's the partitions on your system?
-Did you use MTD_UBI_FASTMAP?
+xilinx zynq TRM link:
+http://www.xilinx.com/support/documentation/user_guides/ug585-Zynq-7000-TRM.pdf
 
-> After the running the scripts for 5 days and max_ec reached the
-> MTD_UBI_WL_THRESHOLD. At this point I got panic1 (see below) and the ubi volume
-> switched to read-only mode. I rebooted the board, changed the transfer size in
-> the script from 2M to 140K and the scripts ran for 2+ days and I got panic 2 (See
-> below).
+ARM pl353 smc TRM link:
+http://infocenter.arm.com/help/topic/com.arm.doc.ddi0380g/
+DDI0380G_smc_pl350_series_r2p1_trm.pdf
 
-Did you try umount after this error happen and mount partition again, then
-re-run your scripts to see what will happen?
+Punnaiah Choudary Kalluri (2):
+  Devicetree: Add pl353 smc controller devicetree binding information
+  memory: pl353: Add driver for arm pl353 static memory controller
 
-> [81438.785011] UBIFS error (pid 31441): do_commit: commit failed, error -30
-> [81438.785034] UBIFS error (pid 31441): ubifs_write_inode: can't write inode 79,
-> error -30
->
+ .../bindings/memory-controllers/pl353-smc.txt      |   53 ++
+ drivers/memory/Kconfig                             |    6 +
+ drivers/memory/Makefile                            |    1 +
+ drivers/memory/pl353-smc.c                         |  569 ++++++++++++++++++++
+ include/linux/memory/pl353-smc.h                   |   34 ++
+ 5 files changed, 663 insertions(+), 0 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt
+ create mode 100644 drivers/memory/pl353-smc.c
+ create mode 100644 include/linux/memory/pl353-smc.h
 
-Later error -30 is caused by former error -28 which is reported by UBI layer.
-Did you run df to see how much space left on your device?
-
-I think each time you get an error -28 from UBI layer, you will see an ubi_err.
-But I didn't see it in your log. Does anyone else know something about it?
+-- 
+1.7.4
