@@ -1,32 +1,15 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X0T10-0002O7-OO
- for linux-mtd@lists.infradead.org; Fri, 27 Jun 2014 10:04:19 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: Ted Juan <ted.juan@gmail.com>
-Subject: RE: [FRC] [PATCH] MTD: nand_base.c: Enable support for Samsung
- E-die SLC NAND
-Date: Fri, 27 Jun 2014 10:03:38 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EAF7FD6@DBDE04.ent.ti.com>
-References: <1403259137-22171-1-git-send-email-david@protonic.nl>
- <CAE94FHELXgoZ9Jm1E3_YT6D1SB=VAGWthZSjbsR+qqkUWn97PA@mail.gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73EAF6A08@DBDE04.ent.ti.com>
- <CAE94FHGNHDVygoviGgEtE2ZDyumjwa73tZiDnEBdSnnWCE03YQ@mail.gmail.com>
- <CAE94FHFvCoZyawRC=LL+PdBR3ig10crKJN6c_M_q=yGdOXnR9A@mail.gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73EAF7560@DBDE04.ent.ti.com>
- <CAE94FHHdznCqXMsrkFB6MDdDLaX7__v53myDgQj0yiSO-L6puw@mail.gmail.com>
- <CAE94FHH89FYc93J8DATYW4MMOaNCbgd9sz9XUY8YgHmqX3SaeA@mail.gmail.com>
-In-Reply-To: <CAE94FHH89FYc93J8DATYW4MMOaNCbgd9sz9XUY8YgHmqX3SaeA@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Jander <david@protonic.nl>,
- "sjhill@realitydiluted.com" <sjhill@realitydiluted.com>,
- "tglx@linutronix.de" <tglx@linutronix.de>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat
+ Linux)) id 1X0TYq-0007JU-EW
+ for linux-mtd@lists.infradead.org; Fri, 27 Jun 2014 10:39:17 +0000
+From: Michael Grzeschik <m.grzeschik@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Subject: [PATH v2] mxc_nand: use our own read_page function
+Date: Fri, 27 Jun 2014 12:38:44 +0200
+Message-Id: <1403865524-25061-1-git-send-email-m.grzeschik@pengutronix.de>
+In-Reply-To: <1403815368-29469-2-git-send-email-m.grzeschik@pengutronix.de>
+References: <1403815368-29469-2-git-send-email-m.grzeschik@pengutronix.de>
+Cc: dwmw2@infradead.org, linux-kernel@vger.kernel.org, kernel@pengutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,158 +19,161 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgVGVkLA0KDQo+RnJvbTogVGVkIEp1YW4gW21haWx0bzp0ZWQuanVhbkBnbWFpbC5jb21dDQoN
-Cj4+PiAoYikgQWxzbywgaXQgbWF5IGJlIHRoZSBjYXNlIHRoYXQgdGhlcmUgZmV3IHBhcnRpY3Vs
-YXIgYmxvY2tzIHdoaWNoIGhhcyBnb25lDQo+Pj4gYmFkIGFuZCB0aG9zZSBhcmUgaXMgc2hvd2lu
-ZyBhZ2FpbiBhbmQgYWdhaW4gYXQgZWFjaCBib290LiBIb3dldmVyLCBJZiBpdA0KPj4+IHdhcyBz
-dWNoIGEgY2FzZSB0aGF0IG9ubHkgc29tZSBoYW5kZnVsIGJsb2NrcyBvbiBOQU5EIGRldmljZSBo
-YXZlIGdvbmUNCj4+PiBiYWQsIHRoZW4gVUJJIHRvcnR1cmUgdGVzdCBbMV0gc2hvdWxkIGhhdmUg
-ZGV0ZWN0ZWQgdGhlbSBhbmQgbWFya2VkIHRoZW0NCj4+PiBiYWQuIEFuZCB0aG9zZSBzaG91bGQg
-bm90IHJlLWFwcGVhciBpbiBuZXh0IHRpbWUuDQo+Pj4gLSBZb3UgY2FuIGNoZWNrIChiKSBieSBz
-Y3J1YmJpbmcgYWxsIGJhZC1ibG9ja3MgZnJvbSB1LWJvb3QNCj4+PiAgICN1LWJvb3Q+IG5hbmQg
-c2NydWIuY2hpcCBhbGwNCj4+PiAgICN1LWJvb3Q+IG5hbmQgYmFkICAoc2hvdWxkIHJlcG9ydCAw
-IGJhZCBibG9ja3MpDQo+Pj4gLSBUaGVuLCByZS1ib290IGFuZCBsZXQgVUJJIGRldGVjdCBiYWQt
-YmxvY2tzIG9uIGl0cyBvd24gdXNpbmcgdG9ydHVyZS10ZXN0DQo+Pj4gLSBBbmQgdGhlbiBhZ2Fp
-biByZXNldCB0aGUgc3lzdGVtIDJuZCB0aW1lIGFuZCBjaGVjayBuZXdseSBkZXRlY3RlZCBiYWQt
-YmxvY2tzDQo+Pj4gICAjdS1ib290PiBuYW5kIGJhZCAgKHNob3VsZCByZXBvcnQgW25dIGJhZCBi
-bG9ja3MpDQo+Pj4NCj4NCj5JIGRvIHRoZSB0b3J0dXJlIHRlc3QgaW4gdWJvb3QuDQo+DQo+U29t
-ZSBibG9jayBkYXRhIHdhcyBub3QgY29ycmVjdCBhcyBiZWxvdyAsIGFuZCBpdCBzaG91bGQgYmUg
-cGF0dGVybiAnMHg1NScuDQo+DQo+VGhpcyBibG9jayBpcyBub3QgbWFzayB0aGUgYmFkLCBhbmQg
-c29tZXRpbWVzIHRoZSBzYW1lIGJsb2NrIHBhc3MgdGhlDQo+dG9ydHVyZSB0ZXN0Lg0KPlNldmVy
-YWwgYmxvY2tzIGFsc28gaGF2ZSB0aGUgc2FtZSBwaGVub21lbm9uLg0KPg0KPlNvIGl0IHNlZW1z
-IHRoZSBOYW5kIEZsYXNoIHByb2JsZW0/DQo+DQpJZiB0aGUgc2FtZSBibG9jayBmYWlscyBhbmQg
-cGFzc2VzIHRvcnR1cmVfdGVzdCBpbmNvbnNpc3RlbnRseSwgdGhlbg0KaXRzIG1vc3RseSB0aGUg
-cHJvYmxlbSB3aXRoIE5BTkQgcGFydC4gQXMgSSBhbHNvIHNlZSB0aGF0IHRoZXJlIGFyZSBnb29k
-DQpudW1iZXIgb2YgYml0LWZsaXBzIChub24gMHhmZiBhbmQgbm9uIDB4NTUgZGF0YSkgaW4gdGhl
-IGJlbG93IGR1bXAsDQp3aGljaCBzaG91bGQgX25vdF8gYmUgdGhlIGNhc2Ugd2l0aCBmcmVzaCBO
-QU5ELiBUaGlzIGlzIHZpb2xhdGlvbiBvZg0KZGF0YXNoZWV0IHdoaWNoIHNheSBtYXggYWxsb3dh
-YmxlIGJpdC1mbGlwcyA9IDFiaXQvNTI4Ynl0ZXMuDQoNCkFsc28sIGlmIHlvdSBzZWUgb25seSBj
-b3VudGFibGUgbnVtYmVyIG9mIHN1Y2ggYmxvY2tzIGdpdmluZyBpbmNvbnNpc3RlbnQNCnJlc3Vs
-dCwgdGhlbiB5b3UgbWFudWFsbHkgbWFyayB0aGVtIGJhZCB1c2luZyBmb2xsb3dpbmcgY29tbWFu
-ZC4NCiAgICAgICB1LWJvb3Q+ICBuYW5kIG1hcmtiYWQgPGJsb2NrLW9mZnNldD4NCkFuZCByZS1y
-dW4geW91ciByZWdyZXNzaW9uIHRlc3RzLg0KSWYgYWZ0ZXIgbWFya2luZyB0aGVzZSBibG9ja3Mg
-YXMgYmFkLCB5b3UgZG9uJ3Qgc2VlIGFueSBpc3N1ZSBmb3IgbG9uZyB0aW1lDQpUaGF0IG1lYW5z
-IHRoZXNlIGJhZCBibG9ja3Mgd2VyZSBub3QgY2F1Z2h0IGR1cmluZyBmYWN0b3J5IHRlc3RzLCBB
-bmQNCnRoZXJlIGlzIHNvbWUgZ2FwIGluIGZhY3RvcnkgdGVzdCBhdCB0aGUgdmVuZG9yJ3MgZW5k
-LCBkdWUgdG8gd2hpY2ggdGhlc2UNCmJsb2NrcyB3ZXJlbid0IGNhdWdodCBkdXJpbmcgZmFjdG9y
-eSBwcm9kdWN0aW9uLg0KDQo+cmVnYXJkcywNCj5UZWQNCj4NCg0Kd2l0aCByZWdhcmRzLCBwZWtv
-bg0KDQoNCg0KPm5hbmQgZHVtcCA2NTYwMDAwDQo+UGFnZSAwNjU2MDAwMCBkdW1wOg0KPmZmIGZm
-IGZmIGZmIGZmIGZmIGZmIGZmICBmZiBmZiA1NSA1NSBmZiBmZiBmZiBmZg0KPjAxIDU1IDU1IDU1
-IDU1IDU1IGZmIGZmICBmZiBmZiA1NSA1NSBmZiBmZiBmZiBmZiAgPC0tLSAoMDEpDQo+NTUgNTUg
-NTUgNTUgZmYgZmYgZmYgZmYgIGZmIGZmIDU1IDU1IGZmIGZmIDU1IDU1DQo+ZmYgZmYgNTUgNTUg
-ZmYgZmYgZmYgZmYgIGZmIGZmIGZmIGZmIDU1IDU1IDU1IDU1DQo+ZmYgZmYgZmYgZmYgZmYgZmYg
-ZmYgZmYgIGZmIGZmIDU1IDU1IGZmIGZmIGZmIGZmDQo+NTUgNTEgNTUgNTUgNTUgNTUgZmYgZmYg
-IGZmIGZmIDU1IDU1IGZmIGZmIGZmIGZmDQo+NTUgNTUgNTUgNTUgZmYgZmYgZmYgZmYgIGZmIGZm
-IDU1IDU1IGZmIGZmIDU1IDU1DQo+ZmYgZmYgNTUgNTUgZmYgZmYgZmYgZmYgIGZmIGZmIGZmIGZm
-IDU1IDU1IDU1IDU1DQo+ZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgIGZmIGZmIDU1IDU1IGZmIGZm
-IGZmIGZmDQo+NTUgNTUgNTUgNTUgNTUgNTUgZmYgZmYgIGZmIGZmIDU1IDU1IGZmIGZmIGZmIGZm
-DQo+NTUgNTUgNTUgNTUgZmYgZmYgZmYgZmYgIGZmIGZmIDU1IDU1IGZmIGZmIDU1IDU1DQo+ZmYg
-ZmYgNTUgNTUgZmYgZmYgZmYgZmYgIGZmIGZmIGZmIGZmIDU1IDU1IDU1IDU1DQo+ZmYgZmYgZmYg
-ZmYgZmYgZmYgZmYgZmYgIGZmIGZmIDU1IDU1IGZmIGZmIGZmIGZmDQo+NTUgNTQgNTUgNTUgNDUg
-NTEgZmYgZmYgIGZmIGZmIDU1IDU1IGZmIGZmIGZmIGZmICA8LS0tICg1NCkgKDQ1KSAoNTEpDQo+
-NTUgNTUgNTUgNTUgZmYgZmYgZmYgZmYgIGZmIGZmIDU1IDU1IGZmIGZmIDU1IDU1DQo+ZmYgZmYg
-NTUgNTUgZmYgZmYgZmYgZmYgIGZmIGZmIGZmIGZmIDU1IDU1IDU1IDU1DQo+ZmYgZmYgZmYgZmYg
-ZmYgZmYgZmYgZmYgIGZmIGZmIDU1IDU1IGZmIGZmIGZmIGZmDQo+NTUgNTUgNTUgNTUgNTUgNTUg
-ZmYgZmYgIGZmIGZmIDU1IDU1IGZmIGZmIGZmIGZmDQo+NTUgNTUgNTUgNTUgZmYgZmYgZmYgZmYg
-IGZmIGZmIDU1IDU1IGZmIGZmIDU1IDU1DQo+ZmYgZmYgNTUgNTUgZmYgZmYgZmYgZmYgIGZmIGZm
-IGZmIGZmIDU1IDU1IDU1IDU1DQo+ZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgIGZmIGZmIDU1IDU1
-IGZmIGZmIGZmIGZmDQo+NDUgNTUgNTUgNTUgNTUgNTUgZmYgZmYgIGZmIGZmIDU1IDU1IGZmIGZm
-IGZmIGZmDQo+NTUgNTUgNTUgNTUgZmYgZmYgZmYgZmYgIGZmIGZmIDU1IDU1IGZmIGZmIDU1IDU1
-DQo+ZmYgZmYgNTUgNTUgZmYgZmYgZmYgZmYgIGZmIGZmIGZmIGZmIDU1IDU1IDU1IDE1DQo+ZmYg
-ZmYgZmYgZmYgZmYgZmYgZmYgZmYgIGZmIGZmIDU1IDU1IGZmIGZmIGZmIGZmDQo+NTUgNTUgNTUg
-NTUgNTUgNTEgZmYgZmYgIGZmIGZmIDU1IDU1IGZmIGZmIGZmIGZmDQo+NTUgNTUgNTUgNTUgZmYg
-ZmYgZmYgZmYgIGZmIGZmIDU1IDU1IGZmIGZmIDU1IDU1DQo+ZmYgZmYgNTUgNTUgZmYgZmYgZmYg
-ZmYgIGZmIGZmIGZmIGZmIDU1IDU1IDU1IDU1DQo+ZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgIGZm
-IGZmIDU1IDU1IGZmIGZmIGZmIGZmDQo+NTUgNTEgNTUgNTUgNTUgNTUgZmYgZmYgIGZmIGZmIDU1
-IDU1IGZmIGZmIGZmIGZmDQo+NTUgNTUgNTUgNTUgZmYgZmYgZmYgZmYgIGZmIGZmIDU1IDU1IGZm
-IGZmIDU1IDU1DQo+ZmYgZmYgNTUgNTUgZmYgZmYgZmYgZmYgIGZmIGZmIGZmIDdmIDU1IDU1IDU1
-IDU1DQo+NTUgNTUgZmYgZmYgNTUgNTUgZmYgZmYgIGZmIGZmIGZmIGZmIDU1IDU1IGZmIGZmDQo+
-ZmYgZmYgZmYgZmYgNTUgNTUgZmYgZmYgIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmDQo+NTUgNTUg
-ZmYgZmYgNTUgNTUgNTUgNTUgIDU1IDU1IDU1IDU1IDU1IDU1IGZmIGZmDQo+NTUgNTUgNTUgNTUg
-ZmYgZmYgZmYgZmYgIDU1IDU1IGZmIGZmIDU1IDU1IDU1IDU1DQo+NTUgNTUgZmYgZmYgNTUgNTUg
-ZmYgZmYgIGZmIGZmIGZmIGZmIDU1IDU1IGZmIGZmDQo+ZmYgZmYgZmYgZmYgNTUgNTUgZmYgZmYg
-IGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmDQo+NTUgNTUgZmYgZmYgNTUgNTUgNTUgNTUgIDU1IDU1
-IDU1IDU1IDU1IDU1IGZmIGZmDQo+NTUgNTUgNTUgNTUgZmYgZmYgZmYgZmYgIDU1IDU1IGZmIGZm
-IDU1IDU1IDU1IDU1DQo+NTUgNTUgZmYgZmYgNTUgNTUgZmYgZmYgIGZmIGZmIGZmIGZmIDU1IDU1
-IGZmIGZmDQo+ZmYgZmYgZmYgZmYgNTUgNTUgZmYgZmYgIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZm
-DQo+NTUgNTUgZmYgZmYgNTUgNTUgNTUgNTUgIDU1IDU1IDU1IDU1IDU1IDU1IGZmIGZmDQo+NTUg
-NTUgNTUgNTUgZmYgZmYgZmYgZmYgIDU1IDU1IGZmIGZmIDU1IDU1IDU1IDU1DQo+NTUgNTUgZmYg
-ZmYgNTUgNTUgZmYgZmYgIGZmIGZmIGZmIGZmIDU1IDU1IGZmIGZmDQo+ZmYgZmYgZmYgZmYgNTUg
-NTUgZmYgZmYgIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmDQo+NTUgNTUgZmYgZmYgNTUgNTUgNTUg
-NTUgIDU1IDU1IDU1IDU1IDU1IDU1IGZmIGZmDQo+NTUgNTUgNTUgNTUgZmYgZmYgZmYgZmYgIDU1
-IDU1IGZmIGZmIDU1IDU1IDU1IDU1DQo+NTUgNTUgZmYgZmYgNTUgNTUgZmYgZmYgIGZmIGZmIGZm
-IGZmIDU1IDU1IGZmIGZmDQo+ZmYgZmYgZmYgZmYgNTUgNTUgZmYgZmYgIGZmIGZmIGZmIGZmIGZm
-IGZmIGZmIGZmDQo+NTUgNTUgZmYgZmYgNTUgNTUgNTUgNTUgIDU1IDU1IDU1IDU1IDU1IDU1IGZm
-IGZmDQo+NTUgNTUgNTUgNTUgZmYgZmYgZmYgZmYgIDU1IDU1IGZmIGZmIDU1IDU1IDU1IDU1DQo+
-NTUgNTUgN2YgZmYgNTUgNTUgZmYgZmYgIGZmIGZmIGZmIGZmIDU1IDU1IGZmIGZmDQo+N2YgZmYg
-ZmYgZmYgNTUgNTUgZWYgZmYgIGZmIGZmIGZmIGZmIGZmIGZmIDdmIGZmDQo+NTUgNTUgZmYgZmYg
-NTUgNTUgNTUgNTUgIDU1IDU1IDU1IDU1IDU1IDU1IGZmIGZmDQo+NTUgNTUgNTUgNTUgZmYgZmYg
-ZmYgZmYgIDU1IDU1IGZmIGZmIDU1IDU1IDU1IDU1DQo+NTUgNTUgZmYgZmYgNTUgNTUgZmYgZmYg
-IGZmIGZmIDdmIGZmIDU1IDU1IGZmIGZmDQo+ZmYgZmYgZmYgZmYgNTUgNTUgZmYgZmYgIDdmIGZm
-IGZmIGZmIGZmIGZmIGZmIGZmDQo+NTUgNTUgZmYgZmYgNTUgNTUgNTUgNTUgIDU1IDU1IDU1IDU1
-IDU1IDU1IGZmIGZmDQo+NTUgNTUgNTUgNTUgN2YgZmYgZmYgZmYgIDU1IDU1IGZmIGZmIDU1IDU1
-IDU1IDU1DQo+NTUgNTUgZmYgZmYgNTUgNTUgZmYgZmYgIGZmIGZmIGY3IGZmIDU1IDU1IGZmIGZm
-DQo+ZmYgZmYgZmYgZmYgNTUgNTUgZmYgZmYgIGY3IGZmIGZmIGZmIGZmIGZiIGZmIGZmDQo+NTUg
-NTUgZmYgZmYgNTUgNTUgNTUgNTUgIDU1IDU1IDU1IDU1IDU1IDU1IGZmIGZmDQo+NTUgNTUgNTUg
-NTUgZjcgZmYgZmYgZmYgIDU1IDU1IGZmIGZmIDU1IDU1IDU1IDU1DQo+ZmYgZmYgZmYgZmYgZmYg
-ZmYgNTUgNTUgIGZmIGZmIDU1IDU1IDU1IDU1IDU1IDU1DQo+NTUgNTUgNTUgNTUgZmYgZmYgNTUg
-NTUgIGZmIGZmIGZmIGZmIDU1IDU1IDU1IDU1DQo+NTUgNTUgZmYgZmYgZmYgZmYgZmYgZmYgIDU1
-IDU1IDU1IDU1IGZmIGZmIGZmIGZmDQo+ZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgIDU1IDU1IDU1
-IDU1IDU1IDU1IGZmIGZmDQo+ZmYgZmYgZmYgZmYgZmYgZmYgNTUgNTUgIGZmIGZmIDU1IDU1IDU1
-IDU1IDU1IDU1DQo+NTUgNTUgNTUgNTUgZmYgZmYgNTUgNTUgIGZmIGZmIGZmIGZmIDU1IDU1IDU1
-IDU1DQo+NTUgNTUgZmYgZmYgZmYgZmYgZmYgZmYgIDU1IDU1IDU1IDU1IGZmIGZmIGZmIGZmDQo+
-ZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgIDU1IDU1IDU1IDU1IDU1IDU1IGZmIGZmDQo+ZmYgZmYg
-ZmYgZmYgZmYgZmYgNTUgNTUgIGZmIGZmIDU1IDU1IDU1IDU1IDU1IDU1DQo+NTUgNTUgNTUgNTUg
-ZmYgZmYgNTUgNTUgIGZmIGZmIGZmIGZmIDU1IDU1IDU1IDU1DQo+NTUgNTUgZmYgZmYgZmYgZmYg
-ZmYgZmYgIDU1IDU1IDU1IDU1IGZmIGZmIGZmIGZmDQo+ZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYg
-IDU1IDU1IDU1IDU1IDU1IDU1IGZmIGZmDQo+ZmYgZmYgZmYgZmYgZmYgZmYgNTUgNTUgIGZmIGZm
-IDU1IDU1IDU1IDU1IDU1IDU1DQo+NTUgNTUgNTUgNTUgZmYgZmYgNTUgNTUgIGZmIGZmIGZmIGZm
-IDU1IDU1IDU1IDU1DQo+NTUgNTUgZmYgZmYgZmYgZmYgZmYgZmYgIDU1IDU1IDU1IDU1IGZmIGZm
-IGZmIGZmDQo+ZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgIDU1IDU1IDU1IDU1IDU1IDU1IGZmIGZm
-DQo+ZmYgZmYgZmYgZmYgZmYgZmYgNTUgNTUgIGZmIGZmIDU1IDU1IDU1IDU1IDU1IDU1DQo+NTUg
-NTUgNTUgNTUgZmYgZmYgNTUgNTUgIGZmIGZmIGZmIGZmIDU1IDU1IDU1IDU1DQo+NTUgNTUgZmYg
-ZmYgZmYgZmYgZmYgZmYgIDU1IDU1IDU1IDU1IGZmIGZmIGZmIGZmDQo+ZmYgZmYgZmYgZmYgZmYg
-ZmYgZmYgZmYgIDU1IDU1IDU1IDU1IDU1IDU1IGZmIGZmDQo+ZmYgZmYgZmYgZmYgZmYgZmYgNTUg
-NTUgIGZmIGZmIDU1IDU1IDU1IDU1IDU1IDU1DQo+NTUgNTUgNTUgNTUgZmYgZmYgNTUgNTUgIGZm
-IGZmIGZmIGZmIDU1IDU1IDU1IDU1DQo+NTUgNTUgZmYgZmYgZmYgZmYgZmYgZmYgIDU1IDU1IDU1
-IDU1IGZmIGZmIGZmIGZmDQo+ZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgIDU1IDU1IDU1IDU1IDU1
-IDU1IGZmIGZmDQo+ZmYgZmYgZmYgZmYgZmYgZmYgNTUgNTUgIGZmIGZmIDU1IDU1IDU1IDU1IDU1
-IDU1DQo+NTUgNTUgNTUgNTUgZmYgZmYgNTUgNTUgIGZmIGZmIGZmIGZmIDU1IDU1IDU1IDU1DQo+
-NTUgNTUgZmYgZmYgZmYgZmYgZmYgZmYgIDU1IDU1IDU1IDU1IGZmIGZmIGZmIGZmDQo+ZmYgZmYg
-ZmYgZmYgZmYgZmYgZmYgZmYgIDU1IDU1IDU1IDU1IDU1IDU1IGZmIGZmDQo+ZmYgZmYgZmYgZmYg
-ZmYgZmYgNTUgNTUgIGZmIGZmIDU1IDU1IDU1IDU1IDU1IDU1DQo+NTUgNTUgNTUgNTUgZmYgZmYg
-NTUgNTUgIGZmIGZmIGZmIGZmIDU1IDU1IDU1IDU1DQo+NTUgNTUgZmYgZmYgZmYgZmYgZmYgZmYg
-IDU1IDU1IDU1IDU1IGZmIGZmIGZmIGZmDQo+ZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgIDU1IDU1
-IDU1IDU1IDU1IDU1IGZmIGZmDQo+NTUgNTUgNTUgNTUgZmYgZmYgNTUgNTUgIDU1IDU1IDU1IDU1
-IGZmIGZmIDU1IDU1DQo+NTUgNTUgZmYgZmYgZmYgZmYgZmYgZmYgIDU1IDU1IGZmIGZmIGZmIGZm
-IDU1IDU1DQo+ZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgIDU1IDU1IDU1IDU1IDU1IDU1IDU1IDU1
-DQo+ZmYgZmYgZmYgZmYgNTUgNTUgZmYgZmYgIDU1IDU1IGZmIGZmIGZmIGZmIDU1IDU1DQo+NTUg
-NTUgNTUgNTUgZmYgZmYgNTUgNTUgIDU1IDU1IDU1IDU1IGZmIGZmIDU1IDU1DQo+NTUgNTUgZmYg
-ZmYgZmYgZmYgZmYgZmYgIDU1IDU1IGZmIGZmIGZmIGZmIDU1IDU1DQo+ZmYgZmYgZmYgZmYgZmYg
-ZmYgZmYgZmYgIDU1IDU1IDU1IDU1IDU1IDU1IDU1IDU1DQo+ZmYgZmYgZmYgZmYgNTUgNTUgZmYg
-ZmYgIDU1IDU1IGZmIGZmIGZmIGZmIDU1IDU1DQo+NTUgNTUgNTUgNTUgZmYgZmYgNTUgNTUgIDU1
-IDU1IDU1IDU1IGZmIGZmIDU1IDU1DQo+NTUgNTUgZmYgZmYgZmYgZmYgZmYgZmYgIDU1IDU1IGZm
-IGZmIGZmIGZmIDU1IDU1DQo+ZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgIDU1IDU1IDU1IDU1IDU1
-IDU1IDU1IDU1DQo+ZmYgZmYgZmYgZmYgNTUgNTUgZmYgZmYgIDU1IDU1IGZmIGZmIGZmIGZmIDU1
-IDU1DQo+NTUgNTUgNTUgNTUgZmYgZmYgNTUgNTUgIDU1IDU1IDU1IDU1IGZmIGZmIDc1IDU1DQo+
-NTUgNTUgZmYgZmYgZmYgZmYgZmYgZmYgIDU1IDU1IGZmIGZmIGZmIGZmIDU1IDU1DQo+ZmYgZmYg
-ZmYgZmYgZmYgZmYgZmYgZmYgIDU1IDU1IDU1IDU1IDU1IDU1IDU1IDU1DQo+ZmYgZmYgZmYgZmYg
-NTUgNTUgZmYgZmYgIDU1IDU1IGZmIGZmIGZmIGZmIDU1IDU1DQo+NTUgNTUgNTUgNTUgZmYgZmYg
-NTUgNTUgIDE1IDU1IDU1IDU1IGZmIGZmIDU1IDU1DQo+NTUgNTUgZmYgZmYgZmYgZmYgZmYgZmYg
-IDU1IDU1IGZmIGZmIGZmIGZmIDU1IDU1DQo+ZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgIDU1IDU1
-IDU1IDU1IDU1IDU1IDU1IDU1DQo+ZmYgZmYgZmYgZmYgNTUgNTUgZmYgZmYgIDU1IDU1IGZmIGZm
-IGZmIGZmIDU1IDU1DQo+NTUgNTUgNTUgNTUgZmYgZmYgNTUgNTUgIDU1IDU1IDU1IDU1IGZmIGZm
-IDU1IDU1DQo+NTUgNTUgZmYgZmYgZmYgZmYgZmYgZmYgIDU1IDU1IGZmIGZmIGZmIGZmIDU1IDU1
-DQo+ZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgIDU1IDU1IDU1IDU1IDU1IDU1IDU1IDU1DQo+ZmYg
-ZmYgZmYgZmYgNTUgNTUgZmYgZmYgIDU1IDU1IGZmIGZmIGZmIGZmIDU1IDU1DQo+NTUgNTUgNTUg
-NTUgZmYgZmYgNTUgNTUgIDU1IDU1IDU1IDU1IGZmIGZmIDU1IDU1DQo+NTUgNTUgZmYgZmYgZmYg
-ZmYgZmYgZmYgIDU1IDU1IGZmIGZmIGZmIGZmIDU1IDU1DQo+ZmYgZmYgZmYgZmYgZmYgZmYgZmYg
-ZmYgIDU1IDU1IDU1IDU1IDU1IDU1IDU1IDU1DQo+ZmYgZmYgZmYgZmYgNTUgNTUgZmYgZmYgIDU1
-IDU1IGZmIGZmIGZmIGZmIDU1IDU1DQo+NTUgNTUgNTUgNTUgZmYgZmYgNTUgNTUgIDU1IDU1IDU1
-IDU1IGZmIGZmIDU1IDU1DQo+NTUgNTUgZmYgZmYgZmYgZmYgZmYgZmYgIDU1IDU1IGZmIGZmIGZm
-IGZmIDU1IDU1DQo+ZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgIDU1IDU1IDU1IDU1IDU1IDU1IDU1
-IDU1DQo+ZmYgZmYgZmYgZmYgNTUgNTUgZmYgZmYgIDU1IDU1IGZmIGZmIGZmIGZmIDU1IDU1DQo+
-T09COg0KPmZmIGZmIGZmIGRkIDU3IGZmIGZmIGRmDQo+ZmYgN2QgZWYgM2UgZjUgZWEgZmYgMDAN
-Cj5mZSBjZCBlYiBhZiBkOCBmZiBmZiBlYg0KPmZmIDdmIGJmIGZmIGZmIGFhIGZmIGNkDQo+NDMg
-YWYgZmEgZmYgZDcgZmYgZjcgZmYNCj5mNSBlMCAyNyAwMCBmZCBkZCBlYiA1ZA0KPmRkIGZmIGQy
-IGZmIGZmIDdmIGZmIGZmDQo+MDUgMDAgZmYgZmYgZmYgZmYgZmYgZmYNCg==
+The current approach of the read_page function is to iterate over all
+subpages and call the correct_data function. The correct_data function
+currently does the same. It iterates over all subpages and checks for
+correctable and uncorrectable data. This redundant call for each
+subpage leads to miscalculations.
+
+This patch changes the driver to use its own read_page function in which
+we call the correct_data function only once per page. With that we do
+the failure and correct statistics counting inside this function.
+
+Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+---
+fixed printk to pr_debug
+
+ drivers/mtd/nand/mxc_nand.c | 73 ++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 69 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index a72d508..5f9e36d 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -141,6 +141,8 @@ struct mxc_nand_host;
+ 
+ struct mxc_nand_devtype_data {
+ 	void (*preset)(struct mtd_info *);
++	int (*read_page)(struct mtd_info *mtd, struct nand_chip *chip,
++			uint8_t *buf, int oob_required, int page);
+ 	void (*send_cmd)(struct mxc_nand_host *, uint16_t, int);
+ 	void (*send_addr)(struct mxc_nand_host *, uint16_t, int);
+ 	void (*send_page)(struct mtd_info *, unsigned int);
+@@ -649,6 +651,59 @@ static int mxc_nand_correct_data_v1(struct mtd_info *mtd, u_char *dat,
+ 	return 0;
+ }
+ 
++/**
++ * mxc_nand_read_page_hwecc_v2_v3 - [REPLACEABLE] hardware ECC based page read function
++ * @mtd: mtd info structure
++ * @chip: nand chip info structure
++ * @buf: buffer to store read data
++ * @oob_required: caller requires OOB data read to chip->oob_poi
++ * @page: page number to read
++ *
++ * Not for syndrome calculating ECC controllers which need a special oob layout.
++ */
++static int
++mxc_nand_read_page_hwecc_v2_v3(struct mtd_info *mtd,
++			       struct nand_chip *chip,
++			       uint8_t *buf, int oob_required, int page)
++{
++	int i, eccsize = chip->ecc.size;
++	struct nand_chip *nand_chip = mtd->priv;
++	struct mxc_nand_host *host = nand_chip->priv;
++	int eccbytes = chip->ecc.bytes;
++	int eccsteps = chip->ecc.steps;
++	uint8_t *p = buf;
++	uint8_t *ecc_calc = chip->buffers->ecccalc;
++	uint8_t *ecc_code = chip->buffers->ecccode;
++	uint32_t *eccpos = chip->ecc.layout->eccpos;
++	unsigned int max_bitflips = 0;
++	u32 ecc_stat, err;
++	int stat;
++
++	ecc_stat = host->devtype_data->get_ecc_status(host);
++	for (i = 0; eccsteps; eccsteps--, i += eccbytes, p += eccsize) {
++		err = ecc_stat & 0xf;
++		chip->ecc.hwctl(mtd, NAND_ECC_READ);
++		chip->read_buf(mtd, p, eccsize);
++		chip->ecc.calculate(mtd, p, &ecc_calc[i]);
++		ecc_stat >>= 4;
++
++	}
++	ecc_stat = host->devtype_data->get_ecc_status(host);
++	chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
++
++	for (i = 0; i < chip->ecc.total; i++)
++		ecc_code[i] = chip->oob_poi[eccpos[i]];
++
++	eccsteps = chip->ecc.steps;
++	p = buf;
++
++	stat = chip->ecc.correct(mtd, p, &ecc_code[i], &ecc_calc[i]);
++	max_bitflips = max_t(unsigned int, max_bitflips, stat);
++
++	return max_bitflips;
++}
++
++
+ static int mxc_nand_correct_data_v2_v3(struct mtd_info *mtd, u_char *dat,
+ 				 u_char *read_ecc, u_char *calc_ecc)
+ {
+@@ -656,7 +711,7 @@ static int mxc_nand_correct_data_v2_v3(struct mtd_info *mtd, u_char *dat,
+ 	struct mxc_nand_host *host = nand_chip->priv;
+ 	u32 ecc_stat, err;
+ 	int no_subpages = 1;
+-	int ret = 0;
++	int ret = 0, broken = 0;
+ 	u8 ecc_bit_mask, err_limit = 0x1;
+ 
+ 	ecc_bit_mask = 0xf;
+@@ -673,15 +728,21 @@ static int mxc_nand_correct_data_v2_v3(struct mtd_info *mtd, u_char *dat,
+ 	do {
+ 		err = ecc_stat & ecc_bit_mask;
+ 		if (err > err_limit) {
+-			printk(KERN_WARNING "UnCorrectable RS-ECC Error\n");
+-			return -1;
++			broken++;
+ 		} else {
+ 			ret += err;
+ 		}
+ 		ecc_stat >>= 4;
+ 	} while (--no_subpages);
+ 
+-	pr_debug("%d Symbol Correctable RS-ECC Error\n", ret);
++	mtd->ecc_stats.corrected += ret;
++	if (ret)
++		pr_debug("%d Symbol Correctable RS-ECC Error\n", ret);
++
++	mtd->ecc_stats.failed += broken;
++	if (broken)
++		printk(KERN_WARNING "%d Symbol UnCorrectable RS-ECC Error\n",
++			 broken);
+ 
+ 	return ret;
+ }
+@@ -1216,6 +1277,7 @@ static const struct mxc_nand_devtype_data imx27_nand_devtype_data = {
+ /* v21: i.MX25, i.MX35 */
+ static const struct mxc_nand_devtype_data imx25_nand_devtype_data = {
+ 	.preset = preset_v2,
++	.read_page = mxc_nand_read_page_hwecc_v2_v3,
+ 	.send_cmd = send_cmd_v1_v2,
+ 	.send_addr = send_addr_v1_v2,
+ 	.send_page = send_page_v2,
+@@ -1242,6 +1304,7 @@ static const struct mxc_nand_devtype_data imx25_nand_devtype_data = {
+ /* v3.2a: i.MX51 */
+ static const struct mxc_nand_devtype_data imx51_nand_devtype_data = {
+ 	.preset = preset_v3,
++	.read_page = mxc_nand_read_page_hwecc_v2_v3,
+ 	.send_cmd = send_cmd_v3,
+ 	.send_addr = send_addr_v3,
+ 	.send_page = send_page_v3,
+@@ -1269,6 +1332,7 @@ static const struct mxc_nand_devtype_data imx51_nand_devtype_data = {
+ /* v3.2b: i.MX53 */
+ static const struct mxc_nand_devtype_data imx53_nand_devtype_data = {
+ 	.preset = preset_v3,
++	.read_page = mxc_nand_read_page_hwecc_v2_v3,
+ 	.send_cmd = send_cmd_v3,
+ 	.send_addr = send_addr_v3,
+ 	.send_page = send_page_v3,
+@@ -1483,6 +1547,7 @@ static int mxcnd_probe(struct platform_device *pdev)
+ 	this->ecc.layout = host->devtype_data->ecclayout_512;
+ 
+ 	if (host->pdata.hw_ecc) {
++		this->ecc.read_page = host->devtype_data->read_page;
+ 		this->ecc.calculate = mxc_nand_calculate_ecc;
+ 		this->ecc.hwctl = mxc_nand_enable_hwecc;
+ 		this->ecc.correct = host->devtype_data->correct_data;
+-- 
+2.0.0
