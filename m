@@ -1,14 +1,14 @@
 Received: from mail.linuxfoundation.org ([140.211.169.12])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X0wka-0004oc-4e
- for linux-mtd@lists.infradead.org; Sat, 28 Jun 2014 17:49:20 +0000
+ id 1X0wml-0006Bk-GR
+ for linux-mtd@lists.infradead.org; Sat, 28 Jun 2014 17:51:35 +0000
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 3.14 012/110] staging/mt29f_spinand: Terminate of match table
-Date: Sat, 28 Jun 2014 10:46:09 -0700
-Message-Id: <20140628174546.029035397@linuxfoundation.org>
-In-Reply-To: <20140628174545.354748696@linuxfoundation.org>
-References: <20140628174545.354748696@linuxfoundation.org>
+Subject: [PATCH 3.15 012/139] staging/mt29f_spinand: Terminate of match table
+Date: Sat, 28 Jun 2014 10:46:13 -0700
+Message-Id: <20140628174605.931829574@linuxfoundation.org>
+In-Reply-To: <20140628174605.352098823@linuxfoundation.org>
+References: <20140628174605.352098823@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Cc: Kamlakant Patel <kamlakant.patel@broadcom.com>,
@@ -24,7 +24,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-3.14-stable review patch.  If anyone has any objections, please let me know.
+3.15-stable review patch.  If anyone has any objections, please let me know.
 
 ------------------
 
