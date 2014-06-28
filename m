@@ -1,20 +1,17 @@
-Received: from mail.linuxfoundation.org ([140.211.169.12])
+Received: from mail1317.opentransfer.com ([76.162.254.113])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X0wml-0006Bk-GR
- for linux-mtd@lists.infradead.org; Sat, 28 Jun 2014 17:51:35 +0000
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH 3.15 012/139] staging/mt29f_spinand: Terminate of match table
-Date: Sat, 28 Jun 2014 10:46:13 -0700
-Message-Id: <20140628174605.931829574@linuxfoundation.org>
-In-Reply-To: <20140628174605.352098823@linuxfoundation.org>
-References: <20140628174605.352098823@linuxfoundation.org>
+ id 1X0xcR-0006Xp-Jd
+ for linux-mtd@lists.infradead.org; Sat, 28 Jun 2014 18:45:00 +0000
+Message-ID: <53AF0D12.6040604@GlueLogix.com>
+Date: Sat, 28 Jun 2014 14:44:34 -0400
+From: Larry Martin <Larry@GlueLogix.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Cc: Kamlakant Patel <kamlakant.patel@broadcom.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Stephen Boyd <sboyd@codeaurora.org>, stable@vger.kernel.org,
- linux-mtd@lists.infradead.org, Mona Anonuevo <manonuevo@micron.com>
+To: linux-mtd@lists.infradead.org
+Subject: Re: Request for help booting Gumstix from MTD Flash
+References: <53AEC7C9.5070408@GlueLogix.com>
+In-Reply-To: <53AEC7C9.5070408@GlueLogix.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,34 +21,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-3.15-stable review patch.  If anyone has any objections, please let me know.
+On 6/28/2014 9:48 AM, Larry Martin wrote:
+> Hello, I am writing this list because my question is not being
+> answered on the Gumstix list, so I am turning to the subsystem
+> developers. I have a u-boot, kernel and rootfs all booting properly
+> from MMC, but when I try to boot the set from NAND the kernel says
+> the rootfs superblock is empty.
+>
 
-------------------
+I think I just answered my own question.  The last image I made worked 
+ok.  The difference was that I changed the -c 1996 to -c 4010 in the 
+mkfs.ubifs call.  My flash segment has 4011 blocks.  1996 was too few. 
+I think the image was getting truncated.  I can't explain why the 
+superblock was coming up empty, but the image is working now.
 
-From: Stephen Boyd <sboyd@codeaurora.org>
-
-commit ffd07de65ef5315053ea16356cd533b7f47c17e9 upstream.
-
-Failure to terminate this match table can lead to boot failures
-depending on where the compiler places the match table.
-
-Cc: Kamlakant Patel <kamlakant.patel@broadcom.com>
-Cc: Mona Anonuevo <manonuevo@micron.com>
-Cc: linux-mtd@lists.infradead.org
-Signed-off-by: Stephen Boyd <sboyd@codeaurora.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- drivers/staging/mt29f_spinand/mt29f_spinand.c |    1 +
- 1 file changed, 1 insertion(+)
-
---- a/drivers/staging/mt29f_spinand/mt29f_spinand.c
-+++ b/drivers/staging/mt29f_spinand/mt29f_spinand.c
-@@ -924,6 +924,7 @@ static int spinand_remove(struct spi_dev
- 
- static const struct of_device_id spinand_dt[] = {
- 	{ .compatible = "spinand,mt29f", },
-+	{}
- };
- 
- /*
+Thanks,
+Larry
