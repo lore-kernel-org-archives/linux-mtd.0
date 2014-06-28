@@ -1,14 +1,20 @@
-Received: from mv-drv-hcb004.ocn.ad.jp ([118.23.109.134])
+Received: from mail.linuxfoundation.org ([140.211.169.12])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X0u8R-0001ja-4k
- for linux-mtd@lists.infradead.org; Sat, 28 Jun 2014 15:01:48 +0000
-From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: maps: rbtx4939-flash: delete an unused variable in
- rbtx4939_flash_remove
-Date: Sun, 29 Jun 2014 00:01:18 +0900
-Message-Id: <1403967678-4216-1-git-send-email-anemo@mba.ocn.ne.jp>
-Cc: dwmw2@infradead.org, ralf@linux-mips.org
+ id 1X0wka-0004oc-4e
+ for linux-mtd@lists.infradead.org; Sat, 28 Jun 2014 17:49:20 +0000
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH 3.14 012/110] staging/mt29f_spinand: Terminate of match table
+Date: Sat, 28 Jun 2014 10:46:09 -0700
+Message-Id: <20140628174546.029035397@linuxfoundation.org>
+In-Reply-To: <20140628174545.354748696@linuxfoundation.org>
+References: <20140628174545.354748696@linuxfoundation.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Cc: Kamlakant Patel <kamlakant.patel@broadcom.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Stephen Boyd <sboyd@codeaurora.org>, stable@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Mona Anonuevo <manonuevo@micron.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,23 +24,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
----
- drivers/mtd/maps/rbtx4939-flash.c |    2 --
- 1 file changed, 2 deletions(-)
+3.14-stable review patch.  If anyone has any objections, please let me know.
 
-diff --git a/drivers/mtd/maps/rbtx4939-flash.c b/drivers/mtd/maps/rbtx4939-flash.c
-index 146b604..a84fdfb 100644
---- a/drivers/mtd/maps/rbtx4939-flash.c
-+++ b/drivers/mtd/maps/rbtx4939-flash.c
-@@ -35,8 +35,6 @@ static int rbtx4939_flash_remove(struct platform_device *dev)
- 		return 0;
+------------------
+
+From: Stephen Boyd <sboyd@codeaurora.org>
+
+commit ffd07de65ef5315053ea16356cd533b7f47c17e9 upstream.
+
+Failure to terminate this match table can lead to boot failures
+depending on where the compiler places the match table.
+
+Cc: Kamlakant Patel <kamlakant.patel@broadcom.com>
+Cc: Mona Anonuevo <manonuevo@micron.com>
+Cc: linux-mtd@lists.infradead.org
+Signed-off-by: Stephen Boyd <sboyd@codeaurora.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+---
+ drivers/staging/mt29f_spinand/mt29f_spinand.c |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/drivers/staging/mt29f_spinand/mt29f_spinand.c
++++ b/drivers/staging/mt29f_spinand/mt29f_spinand.c
+@@ -924,6 +924,7 @@ static int spinand_remove(struct spi_dev
  
- 	if (info->mtd) {
--		struct rbtx4939_flash_data *pdata = dev_get_platdata(&dev->dev);
--
- 		mtd_device_unregister(info->mtd);
- 		map_destroy(info->mtd);
- 	}
--- 
-1.7.9.5
+ static const struct of_device_id spinand_dt[] = {
+ 	{ .compatible = "spinand,mt29f", },
++	{}
+ };
+ 
+ /*
