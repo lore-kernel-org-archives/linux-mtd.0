@@ -1,13 +1,12 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from mga01.intel.com ([192.55.52.88])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X1FuH-0000vs-1Z
- for linux-mtd@lists.infradead.org; Sun, 29 Jun 2014 14:16:38 +0000
+ id 1X1G2N-0007QK-Le
+ for linux-mtd@lists.infradead.org; Sun, 29 Jun 2014 14:25:00 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: hujianyang <hujianyang@huawei.com>
-Subject: [PATCH v2 1/2] UBIFS: remove mst_mutex
-Date: Sun, 29 Jun 2014 17:16:10 +0300
-Message-Id: <1404051371-29756-1-git-send-email-dedekind1@gmail.com>
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>
+To: MTD Maling List <linux-mtd@lists.infradead.org>
+Subject: [PATCH] UBIFS: remove unnecessary check
+Date: Sun, 29 Jun 2014 17:24:31 +0300
+Message-Id: <1404051871-29990-1-git-send-email-dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,92 +18,421 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 
-The 'mst_mutex' is not needed since because 'ubifs_write_master()' is only
-called on the mount path and commit path. The mount path is sequential and
-there is no parallelism, and the commit path is also serialized - there is only
-one commit going on at a time.
-
-This patch is CCed to -stable because it is required to make the next fix
-apply.
+Remove the "if (c->lhead_offs == 0)" check because is unnecessary, since
+at that point the log head offset is guaranteed to be zero due to the previous
+operation.
 
 Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Cc: stable@vger.kernel.org
 ---
- fs/ubifs/commit.c | 2 --
- fs/ubifs/master.c | 7 +++----
- fs/ubifs/super.c  | 1 -
- fs/ubifs/ubifs.h  | 2 --
- 4 files changed, 3 insertions(+), 9 deletions(-)
+ arch/x86/configs/x86_64_defconfig | 310 +++++++++++++-------------------------
+ fs/ubifs/log.c                    |  10 +-
+ 2 files changed, 107 insertions(+), 213 deletions(-)
 
-diff --git a/fs/ubifs/commit.c b/fs/ubifs/commit.c
-index ff82293..aa13ad0 100644
---- a/fs/ubifs/commit.c
-+++ b/fs/ubifs/commit.c
-@@ -174,7 +174,6 @@ static int do_commit(struct ubifs_info *c)
- 	if (err)
- 		goto out;
+diff --git a/arch/x86/configs/x86_64_defconfig b/arch/x86/configs/x86_64_defconfig
+index a481dd4..a19f258 100644
+--- a/arch/x86/configs/x86_64_defconfig
++++ b/arch/x86/configs/x86_64_defconfig
+@@ -1,15 +1,8 @@
+-CONFIG_EXPERIMENTAL=y
+ # CONFIG_LOCALVERSION_AUTO is not set
+ CONFIG_SYSVIPC=y
+-CONFIG_POSIX_MQUEUE=y
+-CONFIG_BSD_PROCESS_ACCT=y
+-CONFIG_TASKSTATS=y
+-CONFIG_TASK_DELAY_ACCT=y
+-CONFIG_TASK_XACCT=y
+-CONFIG_TASK_IO_ACCOUNTING=y
+-CONFIG_AUDIT=y
+ CONFIG_NO_HZ=y
+ CONFIG_HIGH_RES_TIMERS=y
++CONFIG_BSD_PROCESS_ACCT=y
+ CONFIG_LOG_BUF_SHIFT=18
+ CONFIG_CGROUPS=y
+ CONFIG_CGROUP_FREEZER=y
+@@ -35,29 +28,24 @@ CONFIG_UNIXWARE_DISKLABEL=y
+ CONFIG_SGI_PARTITION=y
+ CONFIG_SUN_PARTITION=y
+ CONFIG_KARMA_PARTITION=y
+-CONFIG_EFI_PARTITION=y
+ CONFIG_SMP=y
+-CONFIG_CALGARY_IOMMU=y
+-CONFIG_NR_CPUS=64
+ CONFIG_SCHED_SMT=y
+ CONFIG_PREEMPT_VOLUNTARY=y
+ CONFIG_X86_REROUTE_FOR_BROKEN_BOOT_IRQS=y
+-CONFIG_X86_MCE=y
+ CONFIG_MICROCODE=y
+ CONFIG_MICROCODE_AMD=y
+ CONFIG_X86_MSR=y
+ CONFIG_X86_CPUID=y
+-CONFIG_NUMA=y
+ CONFIG_X86_CHECK_BIOS_CORRUPTION=y
+ # CONFIG_MTRR_SANITIZER is not set
+ CONFIG_EFI=y
+ CONFIG_HZ_1000=y
+ CONFIG_KEXEC=y
+ CONFIG_CRASH_DUMP=y
+-# CONFIG_COMPAT_VDSO is not set
+ CONFIG_HIBERNATION=y
+ CONFIG_PM_DEBUG=y
+ CONFIG_PM_TRACE_RTC=y
++CONFIG_ACPI_PROCFS=y
+ CONFIG_ACPI_DOCK=y
+ CONFIG_CPU_FREQ=y
+ # CONFIG_CPU_FREQ_STAT is not set
+@@ -65,126 +53,96 @@ CONFIG_CPU_FREQ_DEFAULT_GOV_USERSPACE=y
+ CONFIG_CPU_FREQ_GOV_PERFORMANCE=y
+ CONFIG_CPU_FREQ_GOV_ONDEMAND=y
+ CONFIG_X86_ACPI_CPUFREQ=y
+-CONFIG_PCI_MMCONFIG=y
+ CONFIG_PCIEPORTBUS=y
++CONFIG_PCI_MSI=y
+ CONFIG_PCCARD=y
+ CONFIG_YENTA=y
+ CONFIG_HOTPLUG_PCI=y
+ CONFIG_BINFMT_MISC=y
+-CONFIG_IA32_EMULATION=y
+ CONFIG_NET=y
+-CONFIG_PACKET=y
+-CONFIG_UNIX=y
+-CONFIG_XFRM_USER=y
+-CONFIG_INET=y
+-CONFIG_IP_MULTICAST=y
+-CONFIG_IP_ADVANCED_ROUTER=y
+-CONFIG_IP_MULTIPLE_TABLES=y
+-CONFIG_IP_ROUTE_MULTIPATH=y
+-CONFIG_IP_ROUTE_VERBOSE=y
+-CONFIG_IP_PNP=y
+-CONFIG_IP_PNP_DHCP=y
+-CONFIG_IP_PNP_BOOTP=y
+-CONFIG_IP_PNP_RARP=y
+-CONFIG_IP_MROUTE=y
+-CONFIG_IP_PIMSM_V1=y
+-CONFIG_IP_PIMSM_V2=y
+-CONFIG_SYN_COOKIES=y
+-# CONFIG_INET_XFRM_MODE_TRANSPORT is not set
+-# CONFIG_INET_XFRM_MODE_TUNNEL is not set
+-# CONFIG_INET_XFRM_MODE_BEET is not set
+-# CONFIG_INET_DIAG is not set
+-CONFIG_TCP_CONG_ADVANCED=y
+-# CONFIG_TCP_CONG_BIC is not set
+-# CONFIG_TCP_CONG_WESTWOOD is not set
+-# CONFIG_TCP_CONG_HTCP is not set
+-CONFIG_TCP_MD5SIG=y
+-CONFIG_IPV6=y
+-CONFIG_INET6_AH=y
+-CONFIG_INET6_ESP=y
+-CONFIG_NETLABEL=y
+-CONFIG_NETFILTER=y
+-# CONFIG_NETFILTER_ADVANCED is not set
+-CONFIG_NF_CONNTRACK=y
+-CONFIG_NF_CONNTRACK_FTP=y
+-CONFIG_NF_CONNTRACK_IRC=y
+-CONFIG_NF_CONNTRACK_SIP=y
+-CONFIG_NF_CT_NETLINK=y
+-CONFIG_NETFILTER_XT_TARGET_CONNSECMARK=y
+-CONFIG_NETFILTER_XT_TARGET_NFLOG=y
+-CONFIG_NETFILTER_XT_TARGET_SECMARK=y
+-CONFIG_NETFILTER_XT_TARGET_TCPMSS=y
+-CONFIG_NETFILTER_XT_MATCH_CONNTRACK=y
+-CONFIG_NETFILTER_XT_MATCH_POLICY=y
+-CONFIG_NETFILTER_XT_MATCH_STATE=y
+-CONFIG_NF_CONNTRACK_IPV4=y
+-CONFIG_IP_NF_IPTABLES=y
+-CONFIG_IP_NF_FILTER=y
+-CONFIG_IP_NF_TARGET_REJECT=y
+-CONFIG_IP_NF_TARGET_ULOG=y
+-CONFIG_NF_NAT=y
+-CONFIG_IP_NF_TARGET_MASQUERADE=y
+-CONFIG_IP_NF_MANGLE=y
+-CONFIG_NF_CONNTRACK_IPV6=y
+-CONFIG_IP6_NF_IPTABLES=y
+-CONFIG_IP6_NF_MATCH_IPV6HEADER=y
+-CONFIG_IP6_NF_FILTER=y
+-CONFIG_IP6_NF_TARGET_REJECT=y
+-CONFIG_IP6_NF_MANGLE=y
+-CONFIG_NET_SCHED=y
+-CONFIG_NET_EMATCH=y
+-CONFIG_NET_CLS_ACT=y
+-CONFIG_HAMRADIO=y
+-CONFIG_CFG80211=y
+-CONFIG_MAC80211=y
+-CONFIG_MAC80211_LEDS=y
+-CONFIG_RFKILL=y
+ CONFIG_UEVENT_HELPER_PATH="/sbin/hotplug"
+-CONFIG_DEVTMPFS=y
+-CONFIG_DEVTMPFS_MOUNT=y
+ CONFIG_DEBUG_DEVRES=y
+-CONFIG_CONNECTOR=y
++CONFIG_MTD=y
++CONFIG_MTD_TESTS=m
++CONFIG_MTD_REDBOOT_PARTS=y
++CONFIG_MTD_CMDLINE_PARTS=y
++CONFIG_MTD_AR7_PARTS=y
++CONFIG_MTD_BLOCK=y
++CONFIG_FTL=y
++CONFIG_NFTL=y
++CONFIG_INFTL=y
++CONFIG_RFD_FTL=y
++CONFIG_SSFDC=y
++CONFIG_SM_FTL=y
++CONFIG_MTD_OOPS=y
++CONFIG_MTD_SWAP=y
++CONFIG_MTD_CFI=y
++CONFIG_MTD_CFI_INTELEXT=y
++CONFIG_MTD_CFI_STAA=y
++CONFIG_MTD_ROM=y
++CONFIG_MTD_ABSENT=y
++CONFIG_MTD_COMPLEX_MAPPINGS=y
++CONFIG_MTD_PHYSMAP=y
++CONFIG_MTD_PHYSMAP_COMPAT=y
++CONFIG_MTD_SC520CDP=y
++CONFIG_MTD_NETSC520=y
++CONFIG_MTD_TS5500=y
++CONFIG_MTD_SBC_GXX=y
++CONFIG_MTD_AMD76XROM=y
++CONFIG_MTD_ICHXROM=y
++CONFIG_MTD_ESB2ROM=y
++CONFIG_MTD_CK804XROM=y
++CONFIG_MTD_SCB2_FLASH=y
++CONFIG_MTD_NETtel=y
++CONFIG_MTD_L440GX=y
++CONFIG_MTD_PCI=y
++CONFIG_MTD_PCMCIA=y
++CONFIG_MTD_PCMCIA_ANONYMOUS=y
++CONFIG_MTD_INTEL_VR_NOR=y
++CONFIG_MTD_PLATRAM=y
++CONFIG_MTD_LATCH_ADDR=y
++CONFIG_MTD_PMC551=y
++CONFIG_MTD_PMC551_BUGFIX=y
++CONFIG_MTD_PMC551_DEBUG=y
++CONFIG_MTD_DATAFLASH=y
++CONFIG_MTD_DATAFLASH_WRITE_VERIFY=y
++CONFIG_MTD_DATAFLASH_OTP=y
++CONFIG_MTD_M25P80=y
++CONFIG_MTD_SLRAM=y
++CONFIG_MTD_PHRAM=y
++CONFIG_MTD_MTDRAM=y
++CONFIG_MTD_BLOCK2MTD=y
++CONFIG_MTD_DOCG3=y
++CONFIG_MTD_NAND_ECC_SMC=y
++CONFIG_MTD_NAND=y
++CONFIG_MTD_NAND_ECC_BCH=y
++CONFIG_MTD_NAND_DENALI=y
++CONFIG_MTD_NAND_DENALI_PCI=y
++CONFIG_MTD_NAND_RICOH=y
++CONFIG_MTD_NAND_DISKONCHIP=y
++CONFIG_MTD_NAND_DISKONCHIP_BBTWRITE=y
++CONFIG_MTD_NAND_DOCG4=y
++CONFIG_MTD_NAND_CAFE=y
++CONFIG_MTD_NAND_NANDSIM=y
++CONFIG_MTD_NAND_PLATFORM=y
++CONFIG_MTD_ALAUDA=m
++CONFIG_MTD_ONENAND=y
++CONFIG_MTD_ONENAND_VERIFY_WRITE=y
++CONFIG_MTD_ONENAND_GENERIC=y
++CONFIG_MTD_ONENAND_OTP=y
++CONFIG_MTD_ONENAND_2X_PROGRAM=y
++CONFIG_MTD_LPDDR=y
++CONFIG_MTD_UBI=y
++CONFIG_MTD_UBI_FASTMAP=y
++CONFIG_MTD_UBI_GLUEBI=y
+ CONFIG_BLK_DEV_LOOP=y
+-CONFIG_BLK_DEV_SD=y
+-CONFIG_BLK_DEV_SR=y
+-CONFIG_BLK_DEV_SR_VENDOR=y
+-CONFIG_CHR_DEV_SG=y
+-CONFIG_SCSI_CONSTANTS=y
+-CONFIG_SCSI_SPI_ATTRS=y
+-# CONFIG_SCSI_LOWLEVEL is not set
+-CONFIG_ATA=y
+-CONFIG_SATA_AHCI=y
+-CONFIG_ATA_PIIX=y
+-CONFIG_PATA_AMD=y
+-CONFIG_PATA_OLDPIIX=y
+-CONFIG_PATA_SCH=y
+-CONFIG_MD=y
+-CONFIG_BLK_DEV_MD=y
+-CONFIG_BLK_DEV_DM=y
+-CONFIG_DM_MIRROR=y
+-CONFIG_DM_ZERO=y
+-CONFIG_MACINTOSH_DRIVERS=y
+-CONFIG_MAC_EMUMOUSEBTN=y
+-CONFIG_NETDEVICES=y
+-CONFIG_NETCONSOLE=y
+-CONFIG_TIGON3=y
+-CONFIG_NET_TULIP=y
+-CONFIG_E100=y
+-CONFIG_E1000=y
+-CONFIG_SKY2=y
+-CONFIG_FORCEDETH=y
+-CONFIG_8139TOO=y
+-CONFIG_FDDI=y
+-CONFIG_INPUT_POLLDEV=y
++CONFIG_BLK_DEV_RAM=y
+ # CONFIG_INPUT_MOUSEDEV_PSAUX is not set
+-CONFIG_INPUT_EVDEV=y
+-CONFIG_INPUT_JOYSTICK=y
+-CONFIG_INPUT_TABLET=y
+-CONFIG_INPUT_TOUCHSCREEN=y
+-CONFIG_INPUT_MISC=y
++# CONFIG_INPUT_MOUSE is not set
++# CONFIG_SERIO_SERPORT is not set
+ CONFIG_VT_HW_CONSOLE_BINDING=y
+ # CONFIG_LEGACY_PTYS is not set
+-CONFIG_SERIAL_NONSTANDARD=y
++# CONFIG_DEVKMEM is not set
+ CONFIG_SERIAL_8250=y
+ CONFIG_SERIAL_8250_CONSOLE=y
+ CONFIG_SERIAL_8250_NR_UARTS=32
+@@ -193,91 +151,25 @@ CONFIG_SERIAL_8250_MANY_PORTS=y
+ CONFIG_SERIAL_8250_SHARE_IRQ=y
+ CONFIG_SERIAL_8250_DETECT_IRQ=y
+ CONFIG_SERIAL_8250_RSA=y
+-CONFIG_HW_RANDOM=y
+-# CONFIG_HW_RANDOM_INTEL is not set
+-# CONFIG_HW_RANDOM_AMD is not set
+-CONFIG_NVRAM=y
+-CONFIG_HPET=y
+-# CONFIG_HPET_MMAP is not set
+-CONFIG_I2C_I801=y
+-CONFIG_WATCHDOG=y
+-CONFIG_AGP=y
+-CONFIG_AGP_AMD64=y
+-CONFIG_AGP_INTEL=y
+-CONFIG_DRM=y
+-CONFIG_DRM_I915=y
+-CONFIG_DRM_I915_KMS=y
+-CONFIG_FB_MODE_HELPERS=y
+-CONFIG_FB_TILEBLITTING=y
+-CONFIG_FB_EFI=y
+-# CONFIG_LCD_CLASS_DEVICE is not set
+-CONFIG_VGACON_SOFT_SCROLLBACK=y
+-CONFIG_LOGO=y
+-# CONFIG_LOGO_LINUX_MONO is not set
+-# CONFIG_LOGO_LINUX_VGA16 is not set
+-CONFIG_SOUND=y
+-CONFIG_SND=y
+-CONFIG_SND_SEQUENCER=y
+-CONFIG_SND_SEQ_DUMMY=y
+-CONFIG_SND_MIXER_OSS=y
+-CONFIG_SND_PCM_OSS=y
+-CONFIG_SND_SEQUENCER_OSS=y
+-CONFIG_SND_HRTIMER=y
+-CONFIG_SND_HDA_INTEL=y
+-CONFIG_SND_HDA_HWDEP=y
+-CONFIG_HIDRAW=y
+-CONFIG_HID_GYRATION=y
+-CONFIG_LOGITECH_FF=y
+-CONFIG_HID_NTRIG=y
+-CONFIG_HID_PANTHERLORD=y
+-CONFIG_PANTHERLORD_FF=y
+-CONFIG_HID_PETALYNX=y
+-CONFIG_HID_SAMSUNG=y
+-CONFIG_HID_SONY=y
+-CONFIG_HID_SUNPLUS=y
+-CONFIG_HID_TOPSEED=y
+-CONFIG_HID_PID=y
+-CONFIG_USB_HIDDEV=y
++# CONFIG_HW_RANDOM is not set
++CONFIG_SPI=y
++# CONFIG_HWMON is not set
+ CONFIG_USB=y
+-CONFIG_USB_ANNOUNCE_NEW_DEVICES=y
+-CONFIG_USB_MON=y
+-CONFIG_USB_EHCI_HCD=y
+-# CONFIG_USB_EHCI_TT_NEWSCHED is not set
+-CONFIG_USB_OHCI_HCD=y
+-CONFIG_USB_UHCI_HCD=y
+-CONFIG_USB_PRINTER=y
+-CONFIG_USB_STORAGE=y
+-CONFIG_USB_LIBUSUAL=y
+-CONFIG_EDAC=y
+-CONFIG_RTC_CLASS=y
+-# CONFIG_RTC_HCTOSYS is not set
+-CONFIG_DMADEVICES=y
+-CONFIG_EEEPC_LAPTOP=y
+-CONFIG_AMD_IOMMU=y
+-CONFIG_AMD_IOMMU_STATS=y
+-CONFIG_INTEL_IOMMU=y
+-# CONFIG_INTEL_IOMMU_DEFAULT_ON is not set
+-CONFIG_EFI_VARS=y
+-CONFIG_EXT4_FS=y
+-CONFIG_EXT4_FS_POSIX_ACL=y
+-CONFIG_EXT4_FS_SECURITY=y
+-CONFIG_QUOTA=y
+-CONFIG_QUOTA_NETLINK_INTERFACE=y
+-# CONFIG_PRINT_QUOTA_WARNING is not set
+-CONFIG_QFMT_V2=y
+-CONFIG_AUTOFS4_FS=y
+-CONFIG_ISO9660_FS=y
+-CONFIG_JOLIET=y
+-CONFIG_ZISOFS=y
+-CONFIG_MSDOS_FS=y
+-CONFIG_VFAT_FS=y
++CONFIG_USB_GADGET=y
++# CONFIG_X86_PLATFORM_DEVICES is not set
++# CONFIG_IOMMU_SUPPORT is not set
++# CONFIG_DMIID is not set
++# CONFIG_DNOTIFY is not set
++# CONFIG_INOTIFY_USER is not set
+ CONFIG_PROC_KCORE=y
++CONFIG_TMPFS=y
+ CONFIG_TMPFS_POSIX_ACL=y
+-CONFIG_HUGETLBFS=y
+-CONFIG_NFS_FS=y
+-CONFIG_NFS_V3_ACL=y
+-CONFIG_NFS_V4=y
+-CONFIG_ROOT_NFS=y
++CONFIG_JFFS2_FS=y
++CONFIG_JFFS2_SUMMARY=y
++CONFIG_JFFS2_FS_XATTR=y
++CONFIG_UBIFS_FS=y
++CONFIG_LOGFS=y
++# CONFIG_NETWORK_FILESYSTEMS is not set
+ CONFIG_NLS_DEFAULT="utf8"
+ CONFIG_NLS_CODEPAGE_437=y
+ CONFIG_NLS_ASCII=y
+@@ -297,12 +189,16 @@ CONFIG_PROVIDE_OHCI1394_DMA_INIT=y
+ CONFIG_EARLY_PRINTK_DBGP=y
+ CONFIG_DEBUG_STACKOVERFLOW=y
+ # CONFIG_DEBUG_RODATA_TEST is not set
++CONFIG_DEBUG_NX_TEST=m
+ CONFIG_DEBUG_BOOT_PARAMS=y
+ CONFIG_OPTIMIZE_INLINING=y
++CONFIG_KEYS=y
+ CONFIG_KEYS_DEBUG_PROC_KEYS=y
+ CONFIG_SECURITY=y
+ CONFIG_SECURITY_NETWORK=y
+-CONFIG_SECURITY_SELINUX=y
+-CONFIG_SECURITY_SELINUX_BOOTPARAM=y
+-CONFIG_SECURITY_SELINUX_DISABLE=y
++CONFIG_CRYPTO_MANAGER=y
++# CONFIG_CRYPTO_MANAGER_DISABLE_TESTS is not set
+ # CONFIG_CRYPTO_ANSI_CPRNG is not set
++# CONFIG_CRYPTO_HW is not set
++# CONFIG_VIRTUALIZATION is not set
++CONFIG_AVERAGE=y
+diff --git a/fs/ubifs/log.c b/fs/ubifs/log.c
+index 3edc4a3..ed24422 100644
+--- a/fs/ubifs/log.c
++++ b/fs/ubifs/log.c
+@@ -407,12 +407,10 @@ int ubifs_log_start_commit(struct ubifs_info *c, int *ltail_lnum)
+ 		c->lhead_offs = 0;
+ 	}
  
--	mutex_lock(&c->mst_mutex);
- 	c->mst_node->cmt_no      = cpu_to_le64(c->cmt_no);
- 	c->mst_node->log_lnum    = cpu_to_le32(new_ltail_lnum);
- 	c->mst_node->root_lnum   = cpu_to_le32(zroot.lnum);
-@@ -204,7 +203,6 @@ static int do_commit(struct ubifs_info *c)
- 	else
- 		c->mst_node->flags &= ~cpu_to_le32(UBIFS_MST_NO_ORPHS);
- 	err = ubifs_write_master(c);
--	mutex_unlock(&c->mst_mutex);
- 	if (err)
- 		goto out;
+-	if (c->lhead_offs == 0) {
+-		/* Must ensure next LEB has been unmapped */
+-		err = ubifs_leb_unmap(c, c->lhead_lnum);
+-		if (err)
+-			goto out;
+-	}
++	/* Must ensure next LEB has been unmapped */
++	err = ubifs_leb_unmap(c, c->lhead_lnum);
++	if (err)
++		goto out;
  
-diff --git a/fs/ubifs/master.c b/fs/ubifs/master.c
-index ab83ace..1a4bb9e 100644
---- a/fs/ubifs/master.c
-+++ b/fs/ubifs/master.c
-@@ -352,10 +352,9 @@ int ubifs_read_master(struct ubifs_info *c)
-  * ubifs_write_master - write master node.
-  * @c: UBIFS file-system description object
-  *
-- * This function writes the master node. The caller has to take the
-- * @c->mst_mutex lock before calling this function. Returns zero in case of
-- * success and a negative error code in case of failure. The master node is
-- * written twice to enable recovery.
-+ * This function writes the master node. Returns zero in case of success and a
-+ * negative error code in case of failure. The master node is written twice to
-+ * enable recovery.
-  */
- int ubifs_write_master(struct ubifs_info *c)
- {
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 3904c85..eb25aa9 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -1963,7 +1963,6 @@ static struct ubifs_info *alloc_ubifs_info(struct ubi_volume_desc *ubi)
- 		mutex_init(&c->lp_mutex);
- 		mutex_init(&c->tnc_mutex);
- 		mutex_init(&c->log_mutex);
--		mutex_init(&c->mst_mutex);
- 		mutex_init(&c->umount_mutex);
- 		mutex_init(&c->bu_mutex);
- 		mutex_init(&c->write_reserve_mutex);
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index c1f71fe..2a18270 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -1051,7 +1051,6 @@ struct ubifs_debug_info;
-  *
-  * @mst_node: master node
-  * @mst_offs: offset of valid master node
-- * @mst_mutex: protects the master node area, @mst_node, and @mst_offs
-  *
-  * @max_bu_buf_len: maximum bulk-read buffer length
-  * @bu_mutex: protects the pre-allocated bulk-read buffer and @c->bu
-@@ -1292,7 +1291,6 @@ struct ubifs_info {
- 
- 	struct ubifs_mst_node *mst_node;
- 	int mst_offs;
--	struct mutex mst_mutex;
- 
- 	int max_bu_buf_len;
- 	struct mutex bu_mutex;
+ 	len = ALIGN(len, c->min_io_size);
+ 	dbg_log("writing commit start at LEB %d:0, len %d", c->lhead_lnum, len);
 -- 
 1.9.3
