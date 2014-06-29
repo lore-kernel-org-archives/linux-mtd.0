@@ -1,17 +1,19 @@
-Received: from mail1317.opentransfer.com ([76.162.254.113])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X0xcR-0006Xp-Jd
- for linux-mtd@lists.infradead.org; Sat, 28 Jun 2014 18:45:00 +0000
-Message-ID: <53AF0D12.6040604@GlueLogix.com>
-Date: Sat, 28 Jun 2014 14:44:34 -0400
-From: Larry Martin <Larry@GlueLogix.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: Request for help booting Gumstix from MTD Flash
-References: <53AEC7C9.5070408@GlueLogix.com>
-In-Reply-To: <53AEC7C9.5070408@GlueLogix.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Received: from mail-wg0-x234.google.com ([2a00:1450:400c:c00::234])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X1CFM-0006oN-9w
+ for linux-mtd@lists.infradead.org; Sun, 29 Jun 2014 10:22:08 +0000
+Received: by mail-wg0-f52.google.com with SMTP id b13so6862226wgh.11
+ for <linux-mtd@lists.infradead.org>; Sun, 29 Jun 2014 03:21:45 -0700 (PDT)
+Sender: Geert Uytterhoeven <geert.uytterhoeven@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Jiri Kosina <trivial@kernel.org>
+Subject: [PATCH -trivial 2/4] mtd: cmdlinepart: Spelling s/trucate/truncate/
+Date: Sun, 29 Jun 2014 12:21:37 +0200
+Message-Id: <1404037299-31570-2-git-send-email-geert@linux-m68k.org>
+In-Reply-To: <1404037299-31570-1-git-send-email-geert@linux-m68k.org>
+References: <1404037299-31570-1-git-send-email-geert@linux-m68k.org>
+Cc: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
+ Geert Uytterhoeven <geert@linux-m68k.org>, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,19 +23,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 6/28/2014 9:48 AM, Larry Martin wrote:
-> Hello, I am writing this list because my question is not being
-> answered on the Gumstix list, so I am turning to the subsystem
-> developers. I have a u-boot, kernel and rootfs all booting properly
-> from MMC, but when I try to boot the set from NAND the kernel says
-> the rootfs superblock is empty.
->
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: linux-mtd@lists.infradead.org
+---
+ drivers/mtd/cmdlinepart.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I think I just answered my own question.  The last image I made worked 
-ok.  The difference was that I changed the -c 1996 to -c 4010 in the 
-mkfs.ubifs call.  My flash segment has 4011 blocks.  1996 was too few. 
-I think the image was getting truncated.  I can't explain why the 
-superblock was coming up empty, but the image is working now.
-
-Thanks,
-Larry
+diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
+index 3e829b37af8d..c8503006f17a 100644
+--- a/drivers/mtd/cmdlinepart.c
++++ b/drivers/mtd/cmdlinepart.c
+@@ -26,7 +26,7 @@
+  * <mtd-id>  := unique name used in mapping driver/device (mtd->name)
+  * <size>    := standard linux memsize OR "-" to denote all remaining space
+  *              size is automatically truncated at end of device
+- *              if specified or trucated size is 0 the part is skipped
++ *              if specified or truncated size is 0 the part is skipped
+  * <offset>  := standard linux memsize
+  *              if omitted the part will immediately follow the previous part
+  *              or 0 if the first part
+-- 
+1.9.1
