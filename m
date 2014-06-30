@@ -1,33 +1,18 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
+Received: from p01c12o143.mxlogic.net ([208.65.145.66])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X1ZQc-0003sp-Ks
- for linux-mtd@lists.infradead.org; Mon, 30 Jun 2014 11:07:19 +0000
-From: "Gupta, Pekon" <pekon@ti.com>
-To: David Jander <david.jander@protonic.nl>, Brian Norris
- <computersforpeace@gmail.com>
-Subject: RE: [FRC] [PATCH] MTD: nand_base.c: Enable support for Samsung
- E-die SLC NAND
-Date: Mon, 30 Jun 2014 11:06:39 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EAF856A@DBDE04.ent.ti.com>
-References: <1403259137-22171-1-git-send-email-david@protonic.nl>
- <CAE94FHELXgoZ9Jm1E3_YT6D1SB=VAGWthZSjbsR+qqkUWn97PA@mail.gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73EAF6A08@DBDE04.ent.ti.com>
- <CAE94FHGNHDVygoviGgEtE2ZDyumjwa73tZiDnEBdSnnWCE03YQ@mail.gmail.com>
- <CAE94FHFvCoZyawRC=LL+PdBR3ig10crKJN6c_M_q=yGdOXnR9A@mail.gmail.com>
- <20980858CB6D3A4BAE95CA194937D5E73EAF7560@DBDE04.ent.ti.com>
- <20140625133129.060cd535@archvile>
- <20980858CB6D3A4BAE95CA194937D5E73EAF7689@DBDE04.ent.ti.com>
- <20140625141133.247d62a3@archvile>
-In-Reply-To: <20140625141133.247d62a3@archvile>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1X1bDQ-0007NL-2n
+ for linux-mtd@lists.infradead.org; Mon, 30 Jun 2014 13:01:52 +0000
+Message-ID: <53B15F8E.3030309@lutron.com>
+Date: Mon, 30 Jun 2014 09:01:02 -0400
+From: Akshay Bhat <abhat@lutron.com>
 MIME-Version: 1.0
-Cc: Ted Juan <ted.juan@gmail.com>,
- "sjhill@realitydiluted.com" <sjhill@realitydiluted.com>,
- "tglx@linutronix.de" <tglx@linutronix.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>
+To: hujianyang <hujianyang@huawei.com>
+Subject: Re: UBIFS Panic
+References: <53AC825F.7040602@lutron.com> <53ACD890.4030805@huawei.com>
+In-Reply-To: <53ACD890.4030805@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,33 +22,162 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi David,
+Thanks for your response. Answers in-line.
 
->From: David Jander [mailto:david.jander@protonic.nl]
-[...]
+On Thu 26 Jun 2014 10:36:00 PM EDT, hujianyang wrote:
+> How did you release data on the flash? What's the partitions on your system?
+> Did you use MTD_UBI_FASTMAP?
+
+Image was flashed using the below command:
+ubiformat /dev/mtd11 -f rootfs.ubi -s 512 -O 2048
+
+UBI fastmap is enabled.
+CONFIG_MTD_UBI_FASTMAP=y
+
+mtd11 is for Rootfs and it has 6 volumes. Contents of ubinize.cfg:
+[rootfs]
+mode=ubi
+#image=
+vol_id=0
+vol_size=100MiB
+vol_type=dynamic
+vol_name=rootfs
+
+[rootfs2]
+mode=ubi
+vol_id=1
+vol_size=100MiB
+vol_type=dynamic
+vol_name=rootfs2
+
+[database]
+mode=ubi
+vol_id=2
+vol_size=7MiB
+vol_type=dynamic
+vol_name=database
+
+[database2]
+mode=ubi
+vol_id=3
+vol_size=7MiB
+vol_type=dynamic
+vol_name=database2
+
+[logging]
+mode=ubi
+vol_id=4
+vol_size=7MiB
+vol_type=dynamic
+vol_name=logging
+
+[firmware]
+mode=ubi
+vol_id=5
+vol_size=7MiB
+vol_type=dynamic
+vol_name=firmware
+vol_flags=autoresize
+
+> Did you try umount after this error happen and mount partition again, then
+> re-run your scripts to see what will happen?
+
+I am not able mount the partition again after getting the error
+
+######At the time of panic############
+# df
+Filesystem           1024-blocks    Used Available Use% Mounted on
+rootfs                   92780     32792     59988  35% /
+ubi0:rootfs              92780     32792     59988  35% /
+tmpfs                   125800        36    125764   0% /tmp
+tmpfs                   125800         0    125800   0% /dev/shm
+tmpfs                   125800        68    125732   0% /var/run
+ubi0:logging              4816      1984      2548  44% /var/log
+ubi0:database             4816       456      4080  10% /var/db
+tmpfs                   125800         4    125796   0% /var/spool/cron
+tmpfs                   125800         0    125800   0% /var/sftp
+
+# mount
+rootfs on / type rootfs (rw)
+ubi0:rootfs on / type ubifs (ro,relatime)
+proc on /proc type proc (rw,relatime)
+sysfs on /sys type sysfs (rw,relatime)
+tmpfs on /tmp type tmpfs (rw,relatime)
+none on /dev/pts type devpts (rw,relatime,mode=600)
+tmpfs on /dev/shm type tmpfs (rw,relatime,mode=777)
+tmpfs on /var/run type tmpfs (rw,relatime,mode=777)
+ubi0:logging on /var/log type ubifs (ro,sync,relatime)
+ubi0:database on /var/db type ubifs (ro,sync,relatime)
+tmpfs on /var/spool/cron type tmpfs (rw,relatime,mode=755)
+tmpfs on /var/sftp type tmpfs (rw,relatime,mode=755)
+
+# umount /var/log
+# umount /var/db
+# mount -t ubifs ubi0:logging /var/log
+mount: mounting ubi0:logging on /var/log failed: No space left on device
+# mount -t ubifs ubi0:database /var/db
+mount: mounting ubi0:database on /var/db failed: No space left on device
+
+# mount
+rootfs on / type rootfs (rw)
+ubi0:rootfs on / type ubifs (ro,relatime)
+proc on /proc type proc (rw,relatime)
+sysfs on /sys type sysfs (rw,relatime)
+tmpfs on /tmp type tmpfs (rw,relatime)
+none on /dev/pts type devpts (rw,relatime,mode=600)
+tmpfs on /dev/shm type tmpfs (rw,relatime,mode=777)
+tmpfs on /var/run type tmpfs (rw,relatime,mode=777)
+tmpfs on /var/spool/cron type tmpfs (rw,relatime,mode=755)
+tmpfs on /var/sftp type tmpfs (rw,relatime,mode=755)
+
+# df
+Filesystem           1024-blocks    Used Available Use% Mounted on
+rootfs                   92780     32792     59988  35% /
+ubi0:rootfs              92780     32792     59988  35% /
+tmpfs                   125800        36    125764   0% /tmp
+tmpfs                   125800         0    125800   0% /dev/shm
+tmpfs                   125800        60    125740   0% /var/run
+tmpfs                   125800         4    125796   0% /var/spool/cron
+tmpfs                   125800         0    125800   0% /var/sftp
+
+>> [81438.785011] UBIFS error (pid 31441): do_commit: commit failed, error -30
+>> [81438.785034] UBIFS error (pid 31441): ubifs_write_inode: can't write inode 79,
+>> error -30
+>>
 >
->P.S.: Anyone care to give comment on my patch? Not that you two effectivel=
-y
->hijacked this thread for only slightly tangentially related issues... ;-)
+> Later error -30 is caused by former error -28 which is reported by UBI layer.
+> Did you run df to see how much space left on your device?
+
+Before running the scripts (right after boot)
+# df
+Filesystem           1024-blocks    Used Available Use% Mounted on
+rootfs                   92780     32780     60000  35% /
+ubi0:rootfs              92780     32780     60000  35% /
+tmpfs                   125800        36    125764   0% /tmp
+tmpfs                   125800         0    125800   0% /dev/shm
+tmpfs                   125800        68    125732   0% /var/run
+ubi0:logging              4816       324      4212   7% /var/log
+ubi0:database             4816       248      4288   5% /var/db
+tmpfs                   125800         4    125796   0% /var/spool/cron
+tmpfs                   125800         0    125800   0% /var/sftp
+
+At the time of the panic:
+# df
+Filesystem           1024-blocks    Used Available Use% Mounted on
+rootfs                   92780     32792     59988  35% /
+ubi0:rootfs              92780     32792     59988  35% /
+tmpfs                   125800        36    125764   0% /tmp
+tmpfs                   125800         0    125800   0% /dev/shm
+tmpfs                   125800        68    125732   0% /var/run
+ubi0:logging              4816      1984      2548  44% /var/log
+ubi0:database             4816       456      4080  10% /var/db
+tmpfs                   125800         4    125796   0% /var/spool/cron
+tmpfs                   125800         0    125800   0% /var/sftp
+
+
 >
-Sorry for diverting from the main patch discussion, somehow I'm unable to
-find the original PATCH email from mtd-list.
-As per Samsung Device (K9F1G08U0E) datasheet, which is
-"1Gb E-die SLC NAND Flash". This device support 'Random Input' (0x85) comma=
-nd.
-This means driver can change the column-address during page-program
-operation and write to any partial page in between. Isn't that sufficient
-to support subpage writes ?
-
-Earlier implementation of nand_write_subpage_hwecc() has some limitations,
-I have recently sent a patch-series [1] which uses alternate approach, can =
-you
-check if subpage writes work with this.
-Also which controller driver are you using for this device ? There may be s=
-ome
-controller limitation too, prohibiting use of subpages.
-
-
-with regards, pekon
-
-[1] http://lists.infradead.org/pipermail/linux-mtd/2014-June/054446.html
+> I think each time you get an error -28 from UBI layer, you will see an ubi_err.
+> But I didn't see it in your log. Does anyone else know something about it?
+>
+> .
+>
