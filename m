@@ -1,35 +1,17 @@
-Date: Mon, 30 Jun 2014 11:00:25 +0100
-From: Mark Rutland <mark.rutland@arm.com>
-To: Zhou Wang <wangzhou.bry@gmail.com>
-Subject: Re: [PATCH 2/3] mtd: hisilicon: add a new nand controller driver for
- hisilicon hip04 Soc
-Message-ID: <20140630100025.GA7262@leverpostej>
-References: <1404115409-20200-1-git-send-email-wangzhou.bry@gmail.com>
- <1404115409-20200-3-git-send-email-wangzhou.bry@gmail.com>
+Received: from arroyo.ext.ti.com ([192.94.94.40])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X1Yv0-0007TF-Vu
+ for linux-mtd@lists.infradead.org; Mon, 30 Jun 2014 10:34:40 +0000
+From: Pekon Gupta <pekon@ti.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: [RFC PATCH 0/2] mtd: nand: optimize subpage writes
+Date: Mon, 30 Jun 2014 16:03:59 +0530
+Message-ID: <1404124441-26038-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1404115409-20200-3-git-send-email-wangzhou.bry@gmail.com>
-Cc: Jussi Kivilinna <jussi.kivilinna@iki.fi>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Russell King <linux@arm.linux.org.uk>, Alexander Shiyan <shc_work@mail.ru>,
+Content-Type: text/plain
+Cc: linux-mtd <linux-mtd@lists.infradead.org>, Pekon Gupta <pekon@ti.com>,
  Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- "grant.likely@linaro.org" <grant.likely@linaro.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Pawel Moll <Pawel.Moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Joern Engel <joern@logfs.org>, Rob Herring <robh+dt@kernel.org>,
- Pekon Gupta <pekon@ti.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- Randy Dunlap <rdunlap@infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "wangzhou1@hisilicon.com" <wangzhou1@hisilicon.com>,
- Kumar Gala <galak@codeaurora.org>,
- "caizhiyong@huawei.com" <caizhiyong@huawei.com>,
- Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,70 +21,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jun 30, 2014 at 09:03:28AM +0100, Zhou Wang wrote:
-> Signed-off-by: Zhou Wang <wangzhou.bry@gmail.com>
-> ---
->  drivers/mtd/nand/Kconfig     |    5 +
->  drivers/mtd/nand/Makefile    |    1 +
->  drivers/mtd/nand/hisi_nand.c |  847 ++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 853 insertions(+)
->  create mode 100644 drivers/mtd/nand/hisi_nand.c
+This patch cleans and fixes nand_write_subpage_hwecc() for devices supporting
+subpages. Devices supporting subpage write must support NAND_CMD_RNDIN(0x80)
 
-[...]
+As per datasheet following devices support above command
+Macronix	MX30LF1G08	Figure 13. AC Waveforms for Random Data In (For Page Program)
+Samsung		K9F1G08U0E	Figure 4.9 Page Program Operation with Random Data Input
+Micron		MT29F[2G|4G]xx	Section RANDOM DATA INPUT 85h
+Spansion	S34ML[xx]G2	Figure 6.11 Page Program Operation with Random Data Input
+Toshiba		TC58NVG1S3ETAI0	Section: Random Column Address Change in Auto Page Program Operation
 
-> +struct hinfc_host {
-> +       struct nand_chip        *chip;
-> +       struct mtd_info         *mtd;
-> +       struct device           *dev;
-> +       void __iomem            *iobase;
-> +       struct completion       cmd_complete;
-> +       unsigned int            offset;
-> +       unsigned int            command;
-> +       int                     chipselect;
-> +       unsigned int            addr_cycle;
-> +       unsigned int            addr_value[2];
-> +       unsigned int            cache_addr_value[2];
-> +       char                    *buffer;
-> +       dma_addr_t              dma_buffer;
-> +       dma_addr_t              dma_oob;
-> +       int                     version;
-> +       unsigned int            ecc_bits;
-> +       unsigned int            irq_status; /* interrupt status */
-> +
-> +       int (*send_cmd_pageprog)(struct hinfc_host *host);
-> +       int (*send_cmd_status)(struct hinfc_host *host);
-> +       int (*send_cmd_readstart)(struct hinfc_host *host);
-> +       int (*send_cmd_erase)(struct hinfc_host *host);
-> +       int (*send_cmd_readid)(struct hinfc_host *host);
-> +       int (*send_cmd_reset)(struct hinfc_host *host, int chipselect);
-> +};
+- This series needs testing with multiple drivers and above devices to check
+  full compliance and working of subpage writes.
+- Use 'ubiformat -s <subpage-size>' option to format a UBIFS image on subpages
+  supporting device
 
-[...]
+Pekon Gupta (2):
+  mtd: nand: clean nand_write_subpage_hwecc to reduce local variables
+  mtd: nand: refactor nand_write_subpage_hwecc to write only relevant
+    subpage data
 
-> +static int hisi_nfc_probe(struct platform_device *pdev)
-> +{
-> +       int ret = 0, irq, buswidth, flag, max_chips = HINFC504_MAX_CHIP;
-> +       struct device *dev = &pdev->dev;
-> +       struct hinfc_host *host;
-> +       struct nand_chip  *chip;
-> +       struct mtd_info   *mtd;
-> +       struct resource   *res;
-> +       struct device_node *np = dev->of_node;
-> +       struct mtd_part_parser_data ppdata;
-> +
-> +       host = devm_kzalloc(dev, sizeof(*host) + sizeof(*chip) + sizeof(*mtd),
-> +                       GFP_KERNEL);
-> +       if (!host)
-> +               return -ENOMEM;
-> +       host->dev = dev;
-> +
-> +       platform_set_drvdata(pdev, host);
-> +       chip = (struct nand_chip *)&host[1];
-> +       mtd  = (struct mtd_info *)&chip[1];
+ drivers/mtd/nand/nand_base.c | 51 +++++++++++++++++++-------------------------
+ 1 file changed, 22 insertions(+), 29 deletions(-)
 
-Why not embed the whole struct rather than pointers? Then you can
-allocate just the host and extract pointers to the chip and mtd sub
-structures.
-
-Thanks,
-Mark.
+-- 
+1.8.5.1.163.gd7aced9
