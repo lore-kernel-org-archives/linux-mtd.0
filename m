@@ -1,21 +1,19 @@
-Received: from mail-bn1lp0139.outbound.protection.outlook.com
- ([207.46.163.139] helo=na01-bn1-obe.outbound.protection.outlook.com)
+Received: from szxga02-in.huawei.com ([119.145.14.65])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X1QZj-0006em-DK
- for linux-mtd@lists.infradead.org; Mon, 30 Jun 2014 01:40:08 +0000
-Received: from NWD2HUBCAS9.ad.analog.com (nwd2hubcas9.ad.analog.com
- [10.64.72.142])
- by nwd2mta2.analog.com (8.13.8/8.13.8) with ESMTP id s5U4BFio004160
- (version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=FAIL)
- for <linux-mtd@lists.infradead.org>; Mon, 30 Jun 2014 00:11:15 -0400
-From: Aaron Wu <Aaron.wu@analog.com>
-To: <linux-mtd@lists.infradead.org>, <sonic.zhang@analog.com>
-Subject: [PATCH] gpio_flash: fix the CPLB miss bug for gpio expanded flash
-Date: Mon, 30 Jun 2014 09:36:20 +0800
-Message-ID: <1404092180-10623-1-git-send-email-Aaron.wu@analog.com>
+ id 1X1RFE-0004dp-Hz
+ for linux-mtd@lists.infradead.org; Mon, 30 Jun 2014 02:23:01 +0000
+Message-ID: <53B0C9CB.8080208@huawei.com>
+Date: Mon, 30 Jun 2014 10:22:03 +0800
+From: hujianyang <hujianyang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Aaron Wu <Aaron.wu@analog.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH v2 2/2] UBIFS: fix fatal race condition
+References: <1404051371-29756-1-git-send-email-dedekind1@gmail.com>
+ <1404051371-29756-2-git-send-email-dedekind1@gmail.com>
+In-Reply-To: <1404051371-29756-2-git-send-email-dedekind1@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,73 +23,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In this bug, the address operation range may exceed the
-window size defined by gpio expanded flash MTD partition.
+Hi Artem,
 
-Signed-off-by: Aaron Wu <Aaron.wu@analog.com>
----
- drivers/mtd/maps/gpio-addr-flash.c |   34 ++++++++++++++++++++++++++++------
- 1 file changed, 28 insertions(+), 6 deletions(-)
+It's better than mine. I've tested some cases to reproduce this race
+and found "> c->max_bud_bytes" is mostly hit in add_bud_to_log() but
+'< c->min_log_bytes' is hardly hit. I think this race condition merely
+occur and power cut frequently must be one of reasons.
 
-diff --git a/drivers/mtd/maps/gpio-addr-flash.c b/drivers/mtd/maps/gpio-addr-flash.c
-index a4c477b..ca9282f 100644
---- a/drivers/mtd/maps/gpio-addr-flash.c
-+++ b/drivers/mtd/maps/gpio-addr-flash.c
-@@ -108,13 +108,24 @@ static void gf_copy_from(struct map_info *map, void *to, unsigned long from, ssi
- {
- 	struct async_state *state = gf_map_info_to_state(map);
- 
--	gf_set_gpios(state, from);
-+	int this_len;
- 
- 	/* BUG if operation crosses the win_size */
- 	BUG_ON(!((from + len) % state->win_size <= (from + len)));
- 
--	/* operation does not cross the win_size, so one shot it */
--	memcpy_fromio(to, map->virt + (from % state->win_size), len);
-+	while (len) {
-+		if ((from % state->win_size) + len > state->win_size)
-+			this_len = state->win_size - (from % state->win_size);
-+		else
-+			this_len = len;
-+
-+		gf_set_gpios(state, from);
-+		memcpy_fromio(to, map->virt + (from % state->win_size)
-+			, this_len);
-+		len -= this_len;
-+		from += this_len;
-+		to += this_len;
-+	}
- }
- 
- /**
-@@ -147,13 +158,24 @@ static void gf_copy_to(struct map_info *map, unsigned long to,
- {
- 	struct async_state *state = gf_map_info_to_state(map);
- 
--	gf_set_gpios(state, to);
-+	int this_len;
- 
- 	/* BUG if operation crosses the win_size */
- 	BUG_ON(!((to + len) % state->win_size <= (to + len)));
- 
--	/* operation does not cross the win_size, so one shot it */
--	memcpy_toio(map->virt + (to % state->win_size), from, len);
-+	while (len) {
-+		if ((to % state->win_size) + len > state->win_size)
-+			this_len = state->win_size - (to % state->win_size);
-+		else
-+			this_len = len;
-+
-+		gf_set_gpios(state, to);
-+		memcpy_toio(map->virt + (to % state->win_size), from, len);
-+
-+		len -= this_len;
-+		to += this_len;
-+		from += this_len;
-+	}
- }
- 
- static const char * const part_probe_types[] = {
--- 
-1.7.9.5
+Our fixes harm the performance a bit. Other process should wait for
+write_mst_node() done before writing a new bud even if this commit is
+not triggered by log lebs full. I don't know how to avoid this but
+I think current version is enough. Flash is very fast.
+
+I would like to test these patches now and report to you soon.
+
+Thanks a lot!
+
+Hu
