@@ -1,35 +1,22 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
+Received: from devils.ext.ti.com ([198.47.26.153])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X1v2m-0007rG-JF
- for linux-mtd@lists.infradead.org; Tue, 01 Jul 2014 10:12:09 +0000
-Message-ID: <53B2893E.5020306@ti.com>
-Date: Tue, 1 Jul 2014 13:11:10 +0300
-From: Roger Quadros <rogerq@ti.com>
+ id 1X1vMr-0006wv-I3
+ for linux-mtd@lists.infradead.org; Tue, 01 Jul 2014 10:32:54 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Subject: RE: [PATCH v3 0/3] mtd: Add sysfs entries and account BBT blocks
+ properly
+Date: Tue, 1 Jul 2014 10:32:23 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EAF8995@DBDE04.ent.ti.com>
+References: <1403618152-4515-1-git-send-email-ezequiel.garcia@free-electrons.com>
+In-Reply-To: <1403618152-4515-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-To: Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 05/36] mtd: nand: omap: Move IRQ handling from GPMC to
- NAND driver
-References: <1402477001-31132-1-git-send-email-rogerq@ti.com>
- <1402477001-31132-6-git-send-email-rogerq@ti.com>
- <20140613071820.GI17845@atomide.com> <539AAA8C.2070709@ti.com>
- <20140613075856.GQ17845@atomide.com>
- <20980858CB6D3A4BAE95CA194937D5E73EAF51DB@DBDE04.ent.ti.com>
- <539AB4E4.6050408@ti.com> <20140613104610.GS17845@atomide.com>
- <539AE390.4080504@ti.com> <20140613120839.GV17845@atomide.com>
-In-Reply-To: <20140613120839.GV17845@atomide.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- Alexander Shiyan <shc_work@mail.ru>, "Nori, Sekhar" <nsekhar@ti.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "kyungmin.park@samsung.com" <kyungmin.park@samsung.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
- Pekon" <pekon@ti.com>,
- "ezequiel.garcia@free-electrons.com" <ezequiel.garcia@free-electrons.com>,
- ivan.khoronzhuk@ti.com, "javier@dowhile0.org" <javier@dowhile0.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,94 +26,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+Mark, Alexander, Ivan
+>From: Ezequiel Garcia [mailto:ezequiel.garcia@free-electrons.com]
+>
+>Here's a new round of the patchset to add sysfs entries for the ECC stats
+>struct fields. See the discussion around previous version for context:
+>
+>http://lists.infradead.org/pipermail/linux-mtd/2014-March/052804.html
+>
+>Changes from v2:
+>
+>  * As suggested by Pekon Gupta, use "ecc_failures" instead of
+>    "uncorrectable_errors".
+>
+>  * Added documentation for the new sysfs ABI as requested by Greg KH.
+>
+>Changes from v1:
+>
+>  * As agreed I've added a sysfs file per field to replace the ecc_stats
+>    sysfs file. The current proposal follows the "one file per value" sysf=
+s
+>    rule, adding the following device attributes:
+>    - corrected_bits (ecc_stats.corrected)
+>    - uncorrectable_errors (ecc_stats.failed)
+>    - bad_blocks (ecc_stats.badblocks)
+>    - bbt_blocks (ecc_stats.bbtblocks)
+>
+>  * Following Brian's request, added small wrapper nand_block_isreserved()
+>    that checks if the NAND has a bad block table before querying the numb=
+er
+>    of reserved blocks.
+>
+>  * Finally, this new series drops patch: "nand: Account the blocks used b=
+y
+>    the BBT in the ecc_stats". It's not yet clear how to best deal with th=
+e
+>    current inconsistencies in MTD master and partition handling.
+>
+>The first patch adds the sysfs entries. The rest of the patches fixes the
+>bbtblock accounting and allows to keep track of the reserved blocks correc=
+tly.
+>
+>This is a very old issue, probably around since the dawn of time,
+>and nobody seemed to care much about it. However, with the introduction of
+>the sysfs access, it's easier to access this stats and easier to
+>see the issue.
+>
+>Ezequiel Garcia (3):
+>  mtd: Add sysfs attributes to expose the ECC stats fields
+>  mtd: Introduce mtd_block_isreserved()
+>  mtd: Account for BBT blocks when a partition is being allocated
+>
+> Documentation/ABI/testing/sysfs-class-mtd | 38 ++++++++++++++++++++
+> drivers/mtd/mtdcore.c                     | 59 ++++++++++++++++++++++++++=
++++--
+> drivers/mtd/mtdpart.c                     | 13 ++++++-
+> drivers/mtd/nand/nand_base.c              | 18 ++++++++++
+> drivers/mtd/nand/nand_bbt.c               | 14 ++++++++
+> include/linux/mtd/mtd.h                   |  2 ++
+> include/linux/mtd/nand.h                  |  1 +
+> 7 files changed, 142 insertions(+), 3 deletions(-)
+>
+>--
+>1.9.1
 
-Hi Tony,
+- Thanks Ezequiel, This will be helpful for NAND Flash users while debuggin=
+g issues,
+   And checking NAND flash quality (bit-flips numbers) during production.
+- Tested on Beaglebone-Black using 4K NAND cape..
+- Needed following fix in OMAP NAND driver to enable BBT creation and scann=
+ing.
+-------------=20
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index f0ed92e..2ad7451 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -1663,7 +1663,7 @@ static int omap_nand_probe(struct platform_device *pd=
+ev)
+        mtd->owner              =3D THIS_MODULE;
+        nand_chip               =3D &info->nand;
+        nand_chip->ecc.priv     =3D NULL;
+-       nand_chip->options      |=3D NAND_SKIP_BBTSCAN;
++       nand_chip->bbt_options  |=3D NAND_BBT_USE_FLASH;
 
-On 06/13/2014 03:08 PM, Tony Lindgren wrote:
-> * Roger Quadros <rogerq@ti.com> [140613 04:43]:
->> On 06/13/2014 01:46 PM, Tony Lindgren wrote:
->>> * Roger Quadros <rogerq@ti.com> [140613 01:24]:
->>>> On 06/13/2014 11:13 AM, Gupta, Pekon wrote:
->>>>>> From: Tony Lindgren [mailto:tony@atomide.com]
->>>>>>> * Roger Quadros <rogerq@ti.com> [140613 00:40]:
->>>>>>>> On 06/13/2014 10:18 AM, Tony Lindgren wrote:
->>>>>>>>> * Roger Quadros <rogerq@ti.com> [140611 01:58]:
->>>>>>>
->>>>>>> OK. But wait pin edge detection was not yet being used and I couldn't
->>>>>>> think of how it would ever be used. Any ideas?
->>>>>>
->>>>>> Maybe to wake-up the system on bus activity or something?
->>>>>>
->>>>> Sorry, I wasn't able to review this series.
->>>>> But just as pointer, GPMC driver was used for interfacing many
->>>>> non-memory devices like Ethernet (smc91x) and in past GPMC has been
->>>>> proved to work with camera devices too, but that's wasn't mainlined.
->>>>> So keeping IRQ and few other things in GPMC driver is helpful.
->>>>>
->>>>
->>>> On further study it seems that the wait pin edge detection is only used in the NAND controller use case.
->>>> see section 10.1.5.14.2.2 Ready Pin Monitored by Hardware Interrupt
->>>
->>> It seems they can be used for anything slow like NOR and NAND.
->>
->> But NOR driver never requests for any IRQ.
->>
->> We should not confuse this wait pin edge interrupt with NOR bus cycle WAIT pin mechanism.
->> That is configured using GPMC_CONFIG1 register via WAITPINSELECT and WAITREAD/WRITEMONITORING bits.
->> That wait pin handling is done completely in hardware and doesn't need any software intervention.
->> Imagine using it for interrupt for every bus cycle wait. It will be dead slow and unusable.
->>
->> The WAIT edge interrupt mechanism is exclusively for NAND use case to notify the status of READY pin after a block/page operation.
-> 
-> OK thanks for clarifying it. 
->  
->>>> For memory devices, no software wait pin intervention is necessary and doesn't even make sense.
->>>
->>> Still seems that it's use can be generic though, not limited
->>> to NAND.
->>>  
->>>> So I don't agree on managing the IRQSTATUS and IRQENABLE register in the GPMC driver. It is adding unnecessary complexity. I don't mind having a wrapper around it though like the other nand registers.
->>>
->>> But all the consumer driver should need to do is request_irq()
->>> on it? That's pretty much the most common interface we have
->>> for drivers :)
->>
->> the client driver side is easy, but it adds unnecessary complication to model it as IRQ chip and assign a line for each event. Since it is going to be used exclusively by NAND we should avoid IRQ chip modeling.
-> 
-> OK up to you if there are no other users for it. 
->  
->>>> To be frank, I think it is cleaner if the NAND driver directly accesses the NAND registers.
->>>> I don't see why we should make things complicated just because the hardware designers didn't create a clear register split between GPMC and NAND.
->>>
->>> Because they are in separate hardware modules :)
->>>
->>> Who knows why it was set up this way. Maybe the plan was to have
->>> the common features in GPMC that then can be used by various MTD
->>> devices.
->>>  
->>>> Only the GPMC_CONFIG register needs to remain with the GPMC driver.
->>>
->>> And managing clocks and runtime PM in general. In any case, let's
->>> not let drivers tinker with the GPMC registers directly though.
->>> Some kind of abstraction via existing frameworks or with regmap
->>> is needed.
->>
->> OK. I agree about using some kind of abstraction instead of direct access.
-> 
-> Yes and like we chatted on irc, adding a syscon mapping for for
-> the NAND specific registers might do the trick here.
+        res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+        nand_chip->IO_ADDR_R =3D devm_ioremap_resource(&pdev->dev, res);
+-------------=20
 
-After looking at the syscon driver, which relies on regmap, it seems that regmap was designed for slow control busses like I2C/SPI and using it for NAND controller register access will have a significant negative impact on performance. In the NAND case the register writes are used for each NAND command cycle and the reads for ECC checks (every page).
+So for whole series
+Tested-by: Pekon Gupta <pekon@ti.com>
 
-See how much code regmap_read and regmap_mmio_read() translates to for a simple register read i.e. readl().
-http://lxr.free-electrons.com/source/drivers/base/regmap/regmap.c#L1944
-http://lxr.free-electrons.com/source/drivers/base/regmap/regmap-mmio.c#L129
 
-So I'm not so sure of using regmap/syscon for NAND controller register access.
-
-Could there be any other abstraction method of sharing the register space between GPMC and NAND driver?
-I've also added Ivan to the thread, the author of memory/ti-aemif.c driver, to check if he faced any issues with shared register access of the AEMIF/NAND registers.
-
-cheers,
--roger
+with regards, pekon
