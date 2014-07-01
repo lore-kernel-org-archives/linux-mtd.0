@@ -1,15 +1,15 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga11.intel.com ([192.55.52.93])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X1xKJ-0002e0-DX
- for linux-mtd@lists.infradead.org; Tue, 01 Jul 2014 12:38:23 +0000
-Message-ID: <1404218279.6841.43.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 4/4] UBIFS: Remove useless statements
+ id 1X1xKO-0002fJ-4i
+ for linux-mtd@lists.infradead.org; Tue, 01 Jul 2014 12:38:28 +0000
+Message-ID: <1404218285.6841.44.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 0/4] UBIFS: Fix code issues detected by Fortify
 From: Artem Bityutskiy <dedekind1@gmail.com>
 Reply-To: dedekind1@gmail.com
 To: hujianyang <hujianyang@huawei.com>
-Date: Tue, 01 Jul 2014 15:37:59 +0300
-In-Reply-To: <5397C22C.70305@huawei.com>
-References: <5397C0E7.9070602@huawei.com> <5397C22C.70305@huawei.com>
+Date: Tue, 01 Jul 2014 15:38:05 +0300
+In-Reply-To: <5397C0E7.9070602@huawei.com>
+References: <5397C0E7.9070602@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -23,29 +23,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2014-06-11 at 10:42 +0800, hujianyang wrote:
-> diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-> index 0e045e7..f68e088 100644
-> --- a/fs/ubifs/journal.c
-> +++ b/fs/ubifs/journal.c
-> @@ -389,6 +389,9 @@ out:
->  		ubifs_dump_budg(c, &c->bi);
->  		ubifs_dump_lprops(c);
->  		cmt_retries = dbg_check_lprops(c);
-> +		if (cmt_retries)
-> +			ubifs_err("fail to check lprops, error %d",
-> +				  cmt_retries);
->  		up_write(&c->commit_sem);
+On Wed, 2014-06-11 at 10:37 +0800, hujianyang wrote:
+> With the help of Fortify, I found some problems in source
+> code. I would like to fix them in this series of patches.
+> 
+> hujianyang (4):
+>   UBIFS: Add missing error handling in create_default_filesystem()
+>   UBIFS: Add missing error handling in dump_lpt_leb()
+>   UBIFS: Add missing break in dbg_chk_pnode()
+>   UBIFS: Remove useless statements
 
-The general approach we took in UBIFS is that the function prints about
-its own problems itself. We tend to avoid not make calling function
-print an error message for the called function.
-
-Please, add an error message to 'dbg_check_lprops()' instead.
-
-I've dropped this change. The other ones look OK, so I applied them.
-
-Thanks!
+Pushed patches 1-3 as is, but removed one change from patch 4, and
+pushed too.
 
 -- 
 Best Regards,
