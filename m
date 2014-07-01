@@ -1,23 +1,17 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-pd0-x229.google.com ([2607:f8b0:400e:c02::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X1z7G-0001Xf-3d
- for linux-mtd@lists.infradead.org; Tue, 01 Jul 2014 14:33:03 +0000
-Message-ID: <53B2C682.7080605@nod.at>
-Date: Tue, 01 Jul 2014 16:32:34 +0200
-From: Richard Weinberger <richard@nod.at>
-MIME-Version: 1.0
-To: Akshay Bhat <abhat@lutron.com>
-Subject: Re: UBIFS Panic
-References: <53AC825F.7040602@lutron.com> <53ACD890.4030805@huawei.com>
- <53B15F8E.3030309@lutron.com>
- <CAFLxGvzQpaLvLda8dXdVzvc00EYc9TpsLjJhsCjEBy28RsL=_w@mail.gmail.com>
- <53B19D09.2000007@lutron.com> <53B20A42.6020008@huawei.com>
- <53B267E6.7060708@nod.at> <53B2C321.4050407@lutron.com>
-In-Reply-To: <53B2C321.4050407@lutron.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
- hujianyang <hujianyang@huawei.com>
+ id 1X1zJl-0004P1-Gv
+ for linux-mtd@lists.infradead.org; Tue, 01 Jul 2014 14:45:58 +0000
+Received: by mail-pd0-f169.google.com with SMTP id g10so10297849pdj.0
+ for <linux-mtd@lists.infradead.org>; Tue, 01 Jul 2014 07:45:36 -0700 (PDT)
+From: Seunghun Lee <waydi1@gmail.com>
+To: dedekind1@gmail.com,
+	adrian.hunter@intel.com
+Subject: [PATCH] UBIFS: fix some comments
+Date: Tue,  1 Jul 2014 23:45:25 +0900
+Message-Id: <1404225925-3347-1-git-send-email-waydi1@gmail.com>
+Cc: linux-fsdevel@vger.kernel.org, Seunghun Lee <waydi1@gmail.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,29 +21,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 01.07.2014 16:18, schrieb Akshay Bhat:
-> 
-> 
-> On Tue 01 Jul 2014 03:48:54 AM EDT, Richard Weinberger wrote:
->> Am 01.07.2014 03:09, schrieb hujianyang:
->>>>
->>>> Is enabling UBI_FASTMAP the cause for the panic? If so I can disabled the
->>>> feature and re-test. Do you see any compatibility issue going from:
->>>> Current config -> New config -> Failsafe config
->>>>
->>>
->>> I don't know. But I found func ubi_wl_get_peb() in drivers/mtd/ubi/wl.c
->>> will return an error ENOSPC without any error messages. And this func
->>> seems related with fastmap feature.
->>
->> I have sort of an idea what could going on.
->> Akshay, can you please confirm that you face the issue only with UBI_FASTMAP=y?
-> 
-> I have not been able to recreate the issue with UBI_FASTMAP=n
+This patch fixes some comments about return type.
 
-Okay, you test case basically fills the filesystem over and over?
-And after some time you face the said issue.
-Is this correct?
+Signed-off-by: Seunghun Lee <waydi1@gmail.com>
+---
+ fs/ubifs/recovery.c |    4 ++--
+ fs/ubifs/scan.c     |    5 ++---
+ 2 files changed, 4 insertions(+), 5 deletions(-)
 
-Thanks,
-//richard
+diff --git a/fs/ubifs/recovery.c b/fs/ubifs/recovery.c
+index c14adb2..933dda5 100644
+--- a/fs/ubifs/recovery.c
++++ b/fs/ubifs/recovery.c
+@@ -629,8 +629,8 @@ static void drop_last_node(struct ubifs_scan_leb *sleb, int *offs)
+  *
+  * This function does a scan of a LEB, but caters for errors that might have
+  * been caused by the unclean unmount from which we are attempting to recover.
+- * Returns %0 in case of success, %-EUCLEAN if an unrecoverable corruption is
+- * found, and a negative error code in case of failure.
++ * Returns the scaned information on success and a negative error code on
++ * failure.
+  */
+ struct ubifs_scan_leb *ubifs_recover_leb(struct ubifs_info *c, int lnum,
+ 					 int offs, void *sbuf, int jhead)
+diff --git a/fs/ubifs/scan.c b/fs/ubifs/scan.c
+index 58aa05d..327d84a 100644
+--- a/fs/ubifs/scan.c
++++ b/fs/ubifs/scan.c
+@@ -131,7 +131,8 @@ int ubifs_scan_a_node(const struct ubifs_info *c, void *buf, int len, int lnum,
+  * @offs: offset to start at (usually zero)
+  * @sbuf: scan buffer (must be c->leb_size)
+  *
+- * This function returns %0 on success and a negative error code on failure.
++ * This function returns the scaned information on success and a negative error
++ * code on failure.
+  */
+ struct ubifs_scan_leb *ubifs_start_scan(const struct ubifs_info *c, int lnum,
+ 					int offs, void *sbuf)
+@@ -169,8 +170,6 @@ struct ubifs_scan_leb *ubifs_start_scan(const struct ubifs_info *c, int lnum,
+  * @sleb: scanning information
+  * @lnum: logical eraseblock number
+  * @offs: offset to start at (usually zero)
+- *
+- * This function returns %0 on success and a negative error code on failure.
+  */
+ void ubifs_end_scan(const struct ubifs_info *c, struct ubifs_scan_leb *sleb,
+ 		    int lnum, int offs)
+-- 
+1.7.9.5
