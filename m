@@ -1,21 +1,23 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X1zmB-0002ca-SO
- for linux-mtd@lists.infradead.org; Tue, 01 Jul 2014 15:15:20 +0000
-Message-ID: <1404227693.6841.129.camel@sauron.fi.intel.com>
-Subject: Re: Does UBI still place a just-tortured block first in the free
+Received: from mail.dekaresearch.com ([208.65.175.196]
+ helo=dekaexchange07.deka.local)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X1zxr-0005Ac-65
+ for linux-mtd@lists.infradead.org; Tue, 01 Jul 2014 15:27:23 +0000
+From: Atlant Schmidt <aschmidt@dekaresearch.com>
+To: "'dedekind1@gmail.com'" <dedekind1@gmail.com>
+Date: Tue, 1 Jul 2014 11:27:00 -0400
+Subject: RE: Does UBI still place a just-tortured block first in the free
  block list?
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Atlant Schmidt <aschmidt@dekaresearch.com>
-Date: Tue, 01 Jul 2014 18:14:53 +0300
-In-Reply-To: <0A40042D85E7C84DB443060EC44B3FD36D986A2F0B@dekaexchange07.deka.local>
+Message-ID: <0A40042D85E7C84DB443060EC44B3FD36D986A2F0E@dekaexchange07.deka.local>
 References: <0A40042D85E7C84DB443060EC44B3FD36D986A2F0A@dekaexchange07.deka.local>
  <1404226404.6841.120.camel@sauron.fi.intel.com>
  <0A40042D85E7C84DB443060EC44B3FD36D986A2F0B@dekaexchange07.deka.local>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+ <1404227693.6841.129.camel@sauron.fi.intel.com>
+In-Reply-To: <1404227693.6841.129.camel@sauron.fi.intel.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>,
  Cale Surgen <csurgen@dekaresearch.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,28 +29,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2014-07-01 at 11:02 -0400, Atlant Schmidt wrote:
->   I guess I'll go find that tree and see how we might
->   change things so that a different block would win
->   the next election. Any suggestions?
-
-What you say sounds like the problem is not in the PEB selection
-algorithm. The problem is in the "bad/good" criteria that we use.
-
-What you say is that currently UBI is unable to reliably tell whether a
-PEB is good or bad. And instead of just marking a PEB as bad, we keep
-try to re-use it.
-
-If I got it right, then I'd suggest 2 solutions.
-
-1. Improve the 'torture' function and make it work for your case. It
-would not solve the problem in general, but would solve your problem.
-
-2. Try to detect situations when a PEB is tortured "too often". I am not
-sure how to do this reliably, though, but may be you can invent
-something. I guess the right way is to introduce a counter and store it
-in the EC header. We have plenty of unused space there.
-
--- 
-Best Regards,
-Artem Bityutskiy
+QXJ0ZW06DQoNCiAgVGhhbmtzIQ0KDQogIFdlJ2xsIGNvbnNpZGVyIHRoZXNlIHN1Z2dlc3Rpb25z
+IGFuZCBzZWUgaWYgd2UgY2FuDQogIGRldmlzZSBhIGdlbmVyYWxseS11c2VmdWwgcGF0Y2ghDQoN
+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIEF0bGFudA0KDQotLS0tLU9yaWdpbmFs
+IE1lc3NhZ2UtLS0tLQ0KRnJvbTogQXJ0ZW0gQml0eXV0c2tpeSBbbWFpbHRvOmRlZGVraW5kMUBn
+bWFpbC5jb21dDQpTZW50OiBUdWVzZGF5LCBKdWx5IDAxLCAyMDE0IDExOjE1IEFNDQpUbzogQXRs
+YW50IFNjaG1pZHQNCkNjOiAnbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcnOyBDYWxlIFN1
+cmdlbg0KU3ViamVjdDogUmU6IERvZXMgVUJJIHN0aWxsIHBsYWNlIGEganVzdC10b3J0dXJlZCBi
+bG9jayBmaXJzdCBpbiB0aGUgZnJlZSBibG9jayBsaXN0Pw0KDQpPbiBUdWUsIDIwMTQtMDctMDEg
+YXQgMTE6MDIgLTA0MDAsIEF0bGFudCBTY2htaWR0IHdyb3RlOg0KPiAgIEkgZ3Vlc3MgSSdsbCBn
+byBmaW5kIHRoYXQgdHJlZSBhbmQgc2VlIGhvdyB3ZSBtaWdodA0KPiAgIGNoYW5nZSB0aGluZ3Mg
+c28gdGhhdCBhIGRpZmZlcmVudCBibG9jayB3b3VsZCB3aW4NCj4gICB0aGUgbmV4dCBlbGVjdGlv
+bi4gQW55IHN1Z2dlc3Rpb25zPw0KDQpXaGF0IHlvdSBzYXkgc291bmRzIGxpa2UgdGhlIHByb2Js
+ZW0gaXMgbm90IGluIHRoZSBQRUIgc2VsZWN0aW9uDQphbGdvcml0aG0uIFRoZSBwcm9ibGVtIGlz
+IGluIHRoZSAiYmFkL2dvb2QiIGNyaXRlcmlhIHRoYXQgd2UgdXNlLg0KDQpXaGF0IHlvdSBzYXkg
+aXMgdGhhdCBjdXJyZW50bHkgVUJJIGlzIHVuYWJsZSB0byByZWxpYWJseSB0ZWxsIHdoZXRoZXIg
+YQ0KUEVCIGlzIGdvb2Qgb3IgYmFkLiBBbmQgaW5zdGVhZCBvZiBqdXN0IG1hcmtpbmcgYSBQRUIg
+YXMgYmFkLCB3ZSBrZWVwDQp0cnkgdG8gcmUtdXNlIGl0Lg0KDQpJZiBJIGdvdCBpdCByaWdodCwg
+dGhlbiBJJ2Qgc3VnZ2VzdCAyIHNvbHV0aW9ucy4NCg0KMS4gSW1wcm92ZSB0aGUgJ3RvcnR1cmUn
+IGZ1bmN0aW9uIGFuZCBtYWtlIGl0IHdvcmsgZm9yIHlvdXIgY2FzZS4gSXQNCndvdWxkIG5vdCBz
+b2x2ZSB0aGUgcHJvYmxlbSBpbiBnZW5lcmFsLCBidXQgd291bGQgc29sdmUgeW91ciBwcm9ibGVt
+Lg0KDQoyLiBUcnkgdG8gZGV0ZWN0IHNpdHVhdGlvbnMgd2hlbiBhIFBFQiBpcyB0b3J0dXJlZCAi
+dG9vIG9mdGVuIi4gSSBhbSBub3QNCnN1cmUgaG93IHRvIGRvIHRoaXMgcmVsaWFibHksIHRob3Vn
+aCwgYnV0IG1heSBiZSB5b3UgY2FuIGludmVudA0Kc29tZXRoaW5nLiBJIGd1ZXNzIHRoZSByaWdo
+dCB3YXkgaXMgdG8gaW50cm9kdWNlIGEgY291bnRlciBhbmQgc3RvcmUgaXQNCmluIHRoZSBFQyBo
+ZWFkZXIuIFdlIGhhdmUgcGxlbnR5IG9mIHVudXNlZCBzcGFjZSB0aGVyZS4NCg0KLS0NCkJlc3Qg
+UmVnYXJkcywNCkFydGVtIEJpdHl1dHNraXkNCg0KDQpUaGlzIGUtbWFpbCBhbmQgdGhlIGluZm9y
+bWF0aW9uLCBpbmNsdWRpbmcgYW55IGF0dGFjaG1lbnRzIGl0IGNvbnRhaW5zLCBhcmUgaW50ZW5k
+ZWQgdG8gYmUgYSBjb25maWRlbnRpYWwgY29tbXVuaWNhdGlvbiBvbmx5IHRvIHRoZSBwZXJzb24g
+b3IgZW50aXR5IHRvIHdob20gaXQgaXMgYWRkcmVzc2VkIGFuZCBtYXkgY29udGFpbiBpbmZvcm1h
+dGlvbiB0aGF0IGlzIHByaXZpbGVnZWQuIElmIHRoZSByZWFkZXIgb2YgdGhpcyBtZXNzYWdlIGlz
+IG5vdCB0aGUgaW50ZW5kZWQgcmVjaXBpZW50LCB5b3UgYXJlIGhlcmVieSBub3RpZmllZCB0aGF0
+IGFueSBkaXNzZW1pbmF0aW9uLCBkaXN0cmlidXRpb24gb3IgY29weWluZyBvZiB0aGlzIGNvbW11
+bmljYXRpb24gaXMgc3RyaWN0bHkgcHJvaGliaXRlZC4gSWYgeW91IGhhdmUgcmVjZWl2ZWQgdGhp
+cyBjb21tdW5pY2F0aW9uIGluIGVycm9yLCBwbGVhc2UgaW1tZWRpYXRlbHkgbm90aWZ5IHRoZSBz
+ZW5kZXIgYW5kIGRlc3Ryb3kgdGhlIG9yaWdpbmFsIG1lc3NhZ2UuDQoNClRoYW5rIHlvdS4NCg0K
+UGxlYXNlIGNvbnNpZGVyIHRoZSBlbnZpcm9ubWVudCBiZWZvcmUgcHJpbnRpbmcgdGhpcyBlbWFp
+bC4NCg==
