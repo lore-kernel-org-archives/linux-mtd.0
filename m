@@ -1,25 +1,16 @@
-Received: from mail.dekaresearch.com ([208.65.175.196]
- helo=dekaexchange07.deka.local)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X1zxr-0005Ac-65
- for linux-mtd@lists.infradead.org; Tue, 01 Jul 2014 15:27:23 +0000
-From: Atlant Schmidt <aschmidt@dekaresearch.com>
-To: "'dedekind1@gmail.com'" <dedekind1@gmail.com>
-Date: Tue, 1 Jul 2014 11:27:00 -0400
-Subject: RE: Does UBI still place a just-tortured block first in the free
- block list?
-Message-ID: <0A40042D85E7C84DB443060EC44B3FD36D986A2F0E@dekaexchange07.deka.local>
-References: <0A40042D85E7C84DB443060EC44B3FD36D986A2F0A@dekaexchange07.deka.local>
- <1404226404.6841.120.camel@sauron.fi.intel.com>
- <0A40042D85E7C84DB443060EC44B3FD36D986A2F0B@dekaexchange07.deka.local>
- <1404227693.6841.129.camel@sauron.fi.intel.com>
-In-Reply-To: <1404227693.6841.129.camel@sauron.fi.intel.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Message-ID: <53B2D378.7010006@infradead.org>
+Date: Tue, 01 Jul 2014 08:27:52 -0700
+From: Randy Dunlap <rdunlap@infradead.org>
 MIME-Version: 1.0
-Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>,
- Cale Surgen <csurgen@dekaresearch.com>
+To: Seunghun Lee <waydi1@gmail.com>, dedekind1@gmail.com,
+ adrian.hunter@intel.com
+Subject: Re: [PATCH] UBIFS: fix some comments
+References: <1404225925-3347-1-git-send-email-waydi1@gmail.com>
+In-Reply-To: <1404225925-3347-1-git-send-email-waydi1@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,40 +20,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-QXJ0ZW06DQoNCiAgVGhhbmtzIQ0KDQogIFdlJ2xsIGNvbnNpZGVyIHRoZXNlIHN1Z2dlc3Rpb25z
-IGFuZCBzZWUgaWYgd2UgY2FuDQogIGRldmlzZSBhIGdlbmVyYWxseS11c2VmdWwgcGF0Y2ghDQoN
-CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIEF0bGFudA0KDQotLS0tLU9yaWdpbmFs
-IE1lc3NhZ2UtLS0tLQ0KRnJvbTogQXJ0ZW0gQml0eXV0c2tpeSBbbWFpbHRvOmRlZGVraW5kMUBn
-bWFpbC5jb21dDQpTZW50OiBUdWVzZGF5LCBKdWx5IDAxLCAyMDE0IDExOjE1IEFNDQpUbzogQXRs
-YW50IFNjaG1pZHQNCkNjOiAnbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcnOyBDYWxlIFN1
-cmdlbg0KU3ViamVjdDogUmU6IERvZXMgVUJJIHN0aWxsIHBsYWNlIGEganVzdC10b3J0dXJlZCBi
-bG9jayBmaXJzdCBpbiB0aGUgZnJlZSBibG9jayBsaXN0Pw0KDQpPbiBUdWUsIDIwMTQtMDctMDEg
-YXQgMTE6MDIgLTA0MDAsIEF0bGFudCBTY2htaWR0IHdyb3RlOg0KPiAgIEkgZ3Vlc3MgSSdsbCBn
-byBmaW5kIHRoYXQgdHJlZSBhbmQgc2VlIGhvdyB3ZSBtaWdodA0KPiAgIGNoYW5nZSB0aGluZ3Mg
-c28gdGhhdCBhIGRpZmZlcmVudCBibG9jayB3b3VsZCB3aW4NCj4gICB0aGUgbmV4dCBlbGVjdGlv
-bi4gQW55IHN1Z2dlc3Rpb25zPw0KDQpXaGF0IHlvdSBzYXkgc291bmRzIGxpa2UgdGhlIHByb2Js
-ZW0gaXMgbm90IGluIHRoZSBQRUIgc2VsZWN0aW9uDQphbGdvcml0aG0uIFRoZSBwcm9ibGVtIGlz
-IGluIHRoZSAiYmFkL2dvb2QiIGNyaXRlcmlhIHRoYXQgd2UgdXNlLg0KDQpXaGF0IHlvdSBzYXkg
-aXMgdGhhdCBjdXJyZW50bHkgVUJJIGlzIHVuYWJsZSB0byByZWxpYWJseSB0ZWxsIHdoZXRoZXIg
-YQ0KUEVCIGlzIGdvb2Qgb3IgYmFkLiBBbmQgaW5zdGVhZCBvZiBqdXN0IG1hcmtpbmcgYSBQRUIg
-YXMgYmFkLCB3ZSBrZWVwDQp0cnkgdG8gcmUtdXNlIGl0Lg0KDQpJZiBJIGdvdCBpdCByaWdodCwg
-dGhlbiBJJ2Qgc3VnZ2VzdCAyIHNvbHV0aW9ucy4NCg0KMS4gSW1wcm92ZSB0aGUgJ3RvcnR1cmUn
-IGZ1bmN0aW9uIGFuZCBtYWtlIGl0IHdvcmsgZm9yIHlvdXIgY2FzZS4gSXQNCndvdWxkIG5vdCBz
-b2x2ZSB0aGUgcHJvYmxlbSBpbiBnZW5lcmFsLCBidXQgd291bGQgc29sdmUgeW91ciBwcm9ibGVt
-Lg0KDQoyLiBUcnkgdG8gZGV0ZWN0IHNpdHVhdGlvbnMgd2hlbiBhIFBFQiBpcyB0b3J0dXJlZCAi
-dG9vIG9mdGVuIi4gSSBhbSBub3QNCnN1cmUgaG93IHRvIGRvIHRoaXMgcmVsaWFibHksIHRob3Vn
-aCwgYnV0IG1heSBiZSB5b3UgY2FuIGludmVudA0Kc29tZXRoaW5nLiBJIGd1ZXNzIHRoZSByaWdo
-dCB3YXkgaXMgdG8gaW50cm9kdWNlIGEgY291bnRlciBhbmQgc3RvcmUgaXQNCmluIHRoZSBFQyBo
-ZWFkZXIuIFdlIGhhdmUgcGxlbnR5IG9mIHVudXNlZCBzcGFjZSB0aGVyZS4NCg0KLS0NCkJlc3Qg
-UmVnYXJkcywNCkFydGVtIEJpdHl1dHNraXkNCg0KDQpUaGlzIGUtbWFpbCBhbmQgdGhlIGluZm9y
-bWF0aW9uLCBpbmNsdWRpbmcgYW55IGF0dGFjaG1lbnRzIGl0IGNvbnRhaW5zLCBhcmUgaW50ZW5k
-ZWQgdG8gYmUgYSBjb25maWRlbnRpYWwgY29tbXVuaWNhdGlvbiBvbmx5IHRvIHRoZSBwZXJzb24g
-b3IgZW50aXR5IHRvIHdob20gaXQgaXMgYWRkcmVzc2VkIGFuZCBtYXkgY29udGFpbiBpbmZvcm1h
-dGlvbiB0aGF0IGlzIHByaXZpbGVnZWQuIElmIHRoZSByZWFkZXIgb2YgdGhpcyBtZXNzYWdlIGlz
-IG5vdCB0aGUgaW50ZW5kZWQgcmVjaXBpZW50LCB5b3UgYXJlIGhlcmVieSBub3RpZmllZCB0aGF0
-IGFueSBkaXNzZW1pbmF0aW9uLCBkaXN0cmlidXRpb24gb3IgY29weWluZyBvZiB0aGlzIGNvbW11
-bmljYXRpb24gaXMgc3RyaWN0bHkgcHJvaGliaXRlZC4gSWYgeW91IGhhdmUgcmVjZWl2ZWQgdGhp
-cyBjb21tdW5pY2F0aW9uIGluIGVycm9yLCBwbGVhc2UgaW1tZWRpYXRlbHkgbm90aWZ5IHRoZSBz
-ZW5kZXIgYW5kIGRlc3Ryb3kgdGhlIG9yaWdpbmFsIG1lc3NhZ2UuDQoNClRoYW5rIHlvdS4NCg0K
-UGxlYXNlIGNvbnNpZGVyIHRoZSBlbnZpcm9ubWVudCBiZWZvcmUgcHJpbnRpbmcgdGhpcyBlbWFp
-bC4NCg==
+On 07/01/14 07:45, Seunghun Lee wrote:
+> This patch fixes some comments about return type.
+> 
+> Signed-off-by: Seunghun Lee <waydi1@gmail.com>
+> ---
+>  fs/ubifs/recovery.c |    4 ++--
+>  fs/ubifs/scan.c     |    5 ++---
+>  2 files changed, 4 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/ubifs/recovery.c b/fs/ubifs/recovery.c
+> index c14adb2..933dda5 100644
+> --- a/fs/ubifs/recovery.c
+> +++ b/fs/ubifs/recovery.c
+> @@ -629,8 +629,8 @@ static void drop_last_node(struct ubifs_scan_leb *sleb, int *offs)
+>   *
+>   * This function does a scan of a LEB, but caters for errors that might have
+>   * been caused by the unclean unmount from which we are attempting to recover.
+> - * Returns %0 in case of success, %-EUCLEAN if an unrecoverable corruption is
+> - * found, and a negative error code in case of failure.
+> + * Returns the scaned information on success and a negative error code on
+
+                  scanned
+
+> + * failure.
+>   */
+>  struct ubifs_scan_leb *ubifs_recover_leb(struct ubifs_info *c, int lnum,
+>  					 int offs, void *sbuf, int jhead)
+> diff --git a/fs/ubifs/scan.c b/fs/ubifs/scan.c
+> index 58aa05d..327d84a 100644
+> --- a/fs/ubifs/scan.c
+> +++ b/fs/ubifs/scan.c
+> @@ -131,7 +131,8 @@ int ubifs_scan_a_node(const struct ubifs_info *c, void *buf, int len, int lnum,
+>   * @offs: offset to start at (usually zero)
+>   * @sbuf: scan buffer (must be c->leb_size)
+>   *
+> - * This function returns %0 on success and a negative error code on failure.
+> + * This function returns the scaned information on success and a negative error
+
+                                scanned
+
+> + * code on failure.
+>   */
+>  struct ubifs_scan_leb *ubifs_start_scan(const struct ubifs_info *c, int lnum,
+>  					int offs, void *sbuf)
+
+
+-- 
+~Randy
