@@ -1,17 +1,19 @@
-Received: from mail-pd0-x229.google.com ([2607:f8b0:400e:c02::229])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X1zJl-0004P1-Gv
- for linux-mtd@lists.infradead.org; Tue, 01 Jul 2014 14:45:58 +0000
-Received: by mail-pd0-f169.google.com with SMTP id g10so10297849pdj.0
- for <linux-mtd@lists.infradead.org>; Tue, 01 Jul 2014 07:45:36 -0700 (PDT)
-From: Seunghun Lee <waydi1@gmail.com>
-To: dedekind1@gmail.com,
-	adrian.hunter@intel.com
-Subject: [PATCH] UBIFS: fix some comments
-Date: Tue,  1 Jul 2014 23:45:25 +0900
-Message-Id: <1404225925-3347-1-git-send-email-waydi1@gmail.com>
-Cc: linux-fsdevel@vger.kernel.org, Seunghun Lee <waydi1@gmail.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Received: from mga09.intel.com ([134.134.136.24])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X1zK5-0004Tk-Nd
+ for linux-mtd@lists.infradead.org; Tue, 01 Jul 2014 14:46:18 +0000
+Message-ID: <1404225954.6841.114.camel@sauron.fi.intel.com>
+Subject: Re: Request for help booting Gumstix from MTD Flash
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Larry Martin <Larry@GlueLogix.com>
+Date: Tue, 01 Jul 2014 17:45:54 +0300
+In-Reply-To: <53AEC7C9.5070408@GlueLogix.com>
+References: <53AEC7C9.5070408@GlueLogix.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,51 +23,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch fixes some comments about return type.
+On Sat, 2014-06-28 at 09:48 -0400, Larry Martin wrote:
+> Hello, I am writing this list because my question is not being answered 
+> on the Gumstix list, so I am turning to the subsystem developers.  I 
+> have a u-boot, kernel and rootfs all booting properly from MMC, but when 
+> I try to boot the set from NAND the kernel says the rootfs superblock is 
+> empty.
 
-Signed-off-by: Seunghun Lee <waydi1@gmail.com>
----
- fs/ubifs/recovery.c |    4 ++--
- fs/ubifs/scan.c     |    5 ++---
- 2 files changed, 4 insertions(+), 5 deletions(-)
+I'd try to mark every eraseblock with its number. Then try to boot, and
+see what is the number of the block where UBIFS searches for the
+superblock.
 
-diff --git a/fs/ubifs/recovery.c b/fs/ubifs/recovery.c
-index c14adb2..933dda5 100644
---- a/fs/ubifs/recovery.c
-+++ b/fs/ubifs/recovery.c
-@@ -629,8 +629,8 @@ static void drop_last_node(struct ubifs_scan_leb *sleb, int *offs)
-  *
-  * This function does a scan of a LEB, but caters for errors that might have
-  * been caused by the unclean unmount from which we are attempting to recover.
-- * Returns %0 in case of success, %-EUCLEAN if an unrecoverable corruption is
-- * found, and a negative error code in case of failure.
-+ * Returns the scaned information on success and a negative error code on
-+ * failure.
-  */
- struct ubifs_scan_leb *ubifs_recover_leb(struct ubifs_info *c, int lnum,
- 					 int offs, void *sbuf, int jhead)
-diff --git a/fs/ubifs/scan.c b/fs/ubifs/scan.c
-index 58aa05d..327d84a 100644
---- a/fs/ubifs/scan.c
-+++ b/fs/ubifs/scan.c
-@@ -131,7 +131,8 @@ int ubifs_scan_a_node(const struct ubifs_info *c, void *buf, int len, int lnum,
-  * @offs: offset to start at (usually zero)
-  * @sbuf: scan buffer (must be c->leb_size)
-  *
-- * This function returns %0 on success and a negative error code on failure.
-+ * This function returns the scaned information on success and a negative error
-+ * code on failure.
-  */
- struct ubifs_scan_leb *ubifs_start_scan(const struct ubifs_info *c, int lnum,
- 					int offs, void *sbuf)
-@@ -169,8 +170,6 @@ struct ubifs_scan_leb *ubifs_start_scan(const struct ubifs_info *c, int lnum,
-  * @sleb: scanning information
-  * @lnum: logical eraseblock number
-  * @offs: offset to start at (usually zero)
-- *
-- * This function returns %0 on success and a negative error code on failure.
-  */
- void ubifs_end_scan(const struct ubifs_info *c, struct ubifs_scan_leb *sleb,
- 		    int lnum, int offs)
+Probably if you take your 'rootfs.ubifs', then modify it like this:
+
+for each 128KiB-2KiB block
+      fill the block with its number
+
+Then you ubinize it and to the same as you did.
+
+And in the mount failure you should see the block number instead of
+zeros, I'd assume.
+
+Or you may hack ubinize and make it put the block number to the 'sqnum'
+field. And then hack the UBI driver and make it print sqnum for you.
+
+Basically this is an idea how to detect misplaced partitioning.
+
 -- 
-1.7.9.5
+Best Regards,
+Artem Bityutskiy
