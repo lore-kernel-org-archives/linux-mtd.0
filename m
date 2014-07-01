@@ -1,22 +1,19 @@
-Received: from mail-ve0-x22e.google.com ([2607:f8b0:400c:c01::22e])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X1yJ6-0000CH-FM
- for linux-mtd@lists.infradead.org; Tue, 01 Jul 2014 13:41:12 +0000
-Received: by mail-ve0-f174.google.com with SMTP id jx11so9504607veb.5
- for <linux-mtd@lists.infradead.org>; Tue, 01 Jul 2014 06:40:51 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <0A40042D85E7C84DB443060EC44B3FD36D986A2F0A@dekaexchange07.deka.local>
-References: <0A40042D85E7C84DB443060EC44B3FD36D986A2F0A@dekaexchange07.deka.local>
-Date: Tue, 1 Jul 2014 15:40:50 +0200
-Message-ID: <CAFLxGvxaj=P02RvrJazWUP54tkLjwqXbwn7bPELRjTnWEzM7Dw@mail.gmail.com>
-Subject: Re: Does UBI still place a just-tortured block first in the free
- block list?
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: Atlant Schmidt <aschmidt@dekaresearch.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Cale Surgen <csurgen@dekaresearch.com>
+Received: from mga01.intel.com ([192.55.52.88])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X1yXg-0001Ei-A8
+ for linux-mtd@lists.infradead.org; Tue, 01 Jul 2014 13:56:16 +0000
+Message-ID: <1404222952.6841.92.camel@sauron.fi.intel.com>
+Subject: Re: UBIFS becomes read-only when written, then fails to mount
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Matt Hevern <matt.hevern@gmail.com>
+Date: Tue, 01 Jul 2014 16:55:52 +0300
+In-Reply-To: <20140618044434.GA9331@gmail.com>
+References: <20140618044434.GA9331@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,18 +23,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jul 1, 2014 at 3:11 PM, Atlant Schmidt
-<aschmidt@dekaresearch.com> wrote:
-> This e-mail and the information, including any attachments it contains, a=
-re intended to be a confidential communication only to the person or entity=
- to whom it is addressed and may contain information that is privileged. If=
- the reader of this message is not the intended recipient, you are hereby n=
-otified that any dissemination, distribution or copying of this communicati=
-on is strictly prohibited. If you have received this communication in error=
-, please immediately notify the sender and destroy the original message.
+On Wed, 2014-06-18 at 14:44 +1000, Matt Hevern wrote:
+> Hi All,
+> 
+> 
+> I am running UBIFS on freescale i.MX28, kernel 2.6.35.3, based on
+> freescale's IMX tree:
+> http://git.freescale.com/git/cgit.cgi/imx/linux-2.6-imx.git/?h=imx_2.6.35_maintain
+> The flash is NAND, Micron 256MiB (MT29F2G08)
 
-Sorry, I'm not allowed to answer you.
+In your dumps I see that there are errors related to UBIFS not being
+able to find an LEB for the garbage collector. And I remember we fixed
+bugs in this area.
 
---=20
-Thanks,
-//richard
+For example, "6fb4374 UBIFS: fix GC LEB recovery", and there were more.
+Search for 'ubifs_rcvry_gc_commit' in 'git log -p fs/ubifs/recovery.c'.
+
+-- 
+Best Regards,
+Artem Bityutskiy
