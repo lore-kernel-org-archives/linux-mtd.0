@@ -1,28 +1,19 @@
-Received: from mho-02-ewr.mailhop.org ([204.13.248.72])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X1y7E-0000o9-1c
- for linux-mtd@lists.infradead.org; Tue, 01 Jul 2014 13:28:56 +0000
-Date: Tue, 1 Jul 2014 06:28:34 -0700
-From: Tony Lindgren <tony@atomide.com>
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [PATCH v1 1/3] ARM: dts: am335x-bone: add support for beaglebone
- NAND cape
-Message-ID: <20140701132834.GR28884@atomide.com>
-References: <1403612666-31197-1-git-send-email-pekon@ti.com>
- <1403612666-31197-2-git-send-email-pekon@ti.com>
- <20140626194824.GA18814@fox>
- <20980858CB6D3A4BAE95CA194937D5E73EAF8248@DBDE04.ent.ti.com>
- <20140701084709.GO28884@atomide.com>
- <20980858CB6D3A4BAE95CA194937D5E73EAF88FF@DBDE04.ent.ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EAF88FF@DBDE04.ent.ti.com>
-Cc: Jason Kridner <jkridner@gmail.com>, Robert Nelson <robertcnelson@gmail.com>,
- linux-omap <linux-omap@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Guido =?utf-8?B?TWFydMOtbmV6?= <guido@vanguardiasur.com.ar>
+Received: from mga02.intel.com ([134.134.136.20])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X1yFT-0005vv-Bh
+ for linux-mtd@lists.infradead.org; Tue, 01 Jul 2014 13:37:28 +0000
+Message-ID: <1404221801.6841.88.camel@sauron.fi.intel.com>
+Subject: Re: ubi_io_read -74 and ubifs_scanned_corruption errors with i.MX28
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: "Voytovich, Mike" <mvoytovich@paypal.com>
+Date: Tue, 01 Jul 2014 16:36:41 +0300
+In-Reply-To: <CFC49DF0.A141%mvoytovich@paypal.com>
+References: <CFC49DF0.A141%mvoytovich@paypal.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,87 +23,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Gupta, Pekon <pekon@ti.com> [140701 02:09]:
-> >From: Tony Lindgren [mailto:tony@atomide.com]
-> >>* Gupta, Pekon <pekon@ti.com> [140627 14:08]:
-> >> >From: Guido Martínez [mailto:guido@vanguardiasur.com.ar]
-> >> >>On Tue, Jun 24, 2014 at 05:54:24PM +0530, Pekon Gupta wrote:
-> >>
-> >> [...]
-> >>
-> >> >> +&gpmc {
-> >> >> +	ranges = <0 0 0 0x01000000>;	/* address range = 16MB (minimum GPMC partition) */
-> >> >> +	nand@0,0 {
-> >> >> +		status = "disabled";
-> >> >> +		reg = <0 0 4>;		/* device IO registers */
-> >> >> +		pinctrl-names = "default";
-> >> >> +		pinctrl-0 = <&bbcape_nand_flash_pins>;
-> >> >This doesn't seem to work as pinctrl properties are not parsed for
-> >> >childs of the gpmc node. Did this work for you?
-> >> >Putting this in the gpmc node makes it work, but how will we control
-> >> >pins for the nand and nor independently? I believe there is currently no
-> >> >support for muxing individual gpmc devices. If we want to add both
-> >> >devices to the DT and enable them as needed we'd need to add support for
-> >> >this, right?
-> >> >
-> >> Yes, And that should be the case, because different devices would be
-> >> connected to different chip-selects, so there should be support of
-> >> providing individual pin-mux for different GPMC devices.
-> >>
-> >> Currently both NAND and NOR cape share GPMC_CS0, so both NAND and NOR
-> >> capes will not work simultaneously. But I'm planning to modify NOR cape
-> >> hardware at my end to use GPMC_CS1 instead of GPMC_CS0.
-> >> - NAND on GPMC_CS0
-> >> - NOR on GPMC_CS1
-> >
-> >Hmm but we should have these working with both using CS0 without
-> >any need to modify the hardware though?
-> >
-> Yes, but one at a time. That mean either of 'NAND cape' or 'NOR cape'.
-> If you need both working simultaneously as 2 separate devices attached
-> to GPMC, then you need 2 separate chip-selects, which is what I'm trying
-> to test with [1].
+Hi Mike,
 
-Right only one enabled at a time, not both enabled at the same time :)
- 
-> >In that case we should make sure we always set large enough GPMC
-> >partition
-> Yes, this is taken care with introduction of NOR cape in
-> [PATCH v1 2/3] ARM: dts: am335x-bone: add support for beaglebone NOR cape
->  &gpmc {
-> -	ranges = <0 0 0 0x01000000>;	/* address range = 16MB (minimum GPMC partition) */
-> +	ranges = <0 0 0x08000000 0x01000000>;	/* address offset=128MB, range=128Mb=16MB */
-> This GPMC partition suffices for both NAND and NOR requirements.
+On Mon, 2014-06-16 at 20:13 +0000, Voytovich, Mike wrote:
+> [   28.266307] 00000000: ffffffbf ffffffff ffffffff ffffffff ffffffff
+> ffffffff ffffffff ffffffff  ................................
 
-OK
- 
-> > and that the pins are muxed for the connected GPMC
-> >devices only.
-> >
-> Pin mux is something I need to re-work, because currently
-> I've tested either NAND or NOR individually, not together.
-> 
-> Also as mentioned above by Guido, pin-ctrl property is not parsed individually
-> for GPMC children, Instead pin-ctrl is set once for GPMC as a whole.
+The problem is here - there is a bit-flip in the empty space, notice
+that all the bytes are "f" and one is "b".
 
-Yes, drivers/base/pinctrl.c should already take care of that though?
- 
-> Do you have any suggestions on how pin-ctrl should be set if we have
-> multiple devices connected to GPMC like;
-> All these devices will share:
-> - control lines (gpmc_wait, gpmc_ben_cle, gpmc_advn_ale, gpmc_we, gpmc_oe_ren)
-> - *some* data lines (gpmc_ad[])
-> - *some* address lines (gpmc_a[])
-> - but chip-selects will be different:
-> 	gpmc_cs0: NAND
-> 	gpmc_cs1: NOR
-> 	gpmc_cs2: SMSC91xx
-> 	gpmc_cs3: Camera
+This problem was brought up many times before, but no one came up with a
+solution so far. Let me provide you some back-ground information.
 
-Well the pinctrl settings should be done a the child driver level
-when it probes so drivers/base/pinctrl.c does what it's supposed
-to do.
+Flash consists of erasable blocks, which we call 'eraseblocks', or
+"LEBs" in UBI/UBIFS
 
-Regards,
+UBIFS writes data to LEBs sequentially, from the beginning to the end.
 
-Tony
+UBIFS has the "journal", which is essentially a set of LEBs which UBIFS
+has to scan during mount. These LEBs contain the data that were written
+to the file-system last.
+
+In case of a clean unmount, the journal is empty. There are data only in
+case of a power cut.
+
+Power cuts cause unfinished writes, so the journal may contain corrupted
+nodes, and UBIFS is trying to be very careful about them - it detects
+them and drops them.
+
+Corrupted nodes may also appear for other reasons, not because of power
+cuts. E.g., just faulty media, worn-out media, radiation, unstable power
+supply, etc.
+
+All the corruptions caused by power cuts are not fatal, and UBIFS should
+be able to recover from all of them. The non-power cut corruptions are,
+in contrast, fatal, and UBIFS has no way to automatically recover from
+them.
+
+UBIFS tries hard to distinguish between these 2 types of corruptions.
+The power cut-related corruptions may only happen in the end of the
+journal, because UBIFS writes sequentially. Namely, power cut-related
+corruptions may only be at the end of the last written journal LEB. And
+the corruption may span only 1 write unit, because UBIFS writes 1 write
+unit at a time. For NAND flash write unit is usually 1 NAND page, which
+is 2KiB in your case.
+
+Scanning works like this. We take the first journal LEB and read each
+UBIFS node one-by-one from the very beginning. This continues as long as
+CRC matches and everything is fine.
+
+If we find a corrupted node (CRC mismatch), we drop it, and we drop
+everything else in this write unit. And we expect that the area _after_
+this write unit contains _only_ empty space. Simply because UBIFS starts
+with empty LEBs.
+
+If there is something else but not just empty space the write-unit
+containing corrupted nodes, then someone wrote something there, and the
+corrupted node is not at the end of the journal, but somewhere in the
+middle. And this means we are dealing with some other type of
+corruption, not a corruption caused by a power cut. And we just refuse
+mounting.
+
+Now what is empty space? For current UBIFS it is the space at the end of
+an LEB containing only "0xFF" bytes, and nothing else. This worked well
+in the past, but does not always work nowadays.
+
+In your case you have a single bit-flip in the empty space. UBIFS
+detects it, and says that there is a corruption in an area which should
+only contain empty space, and it refuses mounting.
+
+How could this be fixed. We discussed 2 possibilities at this forum in
+the past.
+
+One possibility is to make the NAND driver/controller _protect_ the
+empty NAND pages with ECC and correct bit-flips in the empty space, just
+like for written-to pages. Empty NAND pages are those which were never
+written to. If I write all 0xFFs to a NAND page, it is is _not_ and
+empty NAND page anymore.
+
+This is the preferable solution, but it is not necessarily the easiest
+one and not always possible.
+
+The other way is to change UBIFS's definition of empty space. Make UBIFS
+be aware of bit-flips in empty space. Make UBIFS allow for a number of
+bit-flips there, and this number would depend on the how strong is the
+ECC. This would be a much much less plausible solution, because
+_architecturally_ it breaks layering. Today we have the MTD layer taking
+care of all the bit-flip stuff for upper layers. But this solution would
+make UBIFS kind of duplicate MTD efforts, and have its own additional
+bit-flip logic. But hey, if there is a good reason, why not?
+
+HTH.
+
+-- 
+Best Regards,
+Artem Bityutskiy
