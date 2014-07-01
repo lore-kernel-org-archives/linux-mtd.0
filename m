@@ -1,33 +1,43 @@
-From: info@annieandfriends.com (Help Desk)
-Date: Thu, 19 Jun 2014 04:18:52 +0800
-Subject: Administrative Notice
-Message-ID: <mailman.0.1403131513.22887.linux-mtd@lists.infradead.org>
-To: linux-mtd@lists.infradead.org
-List-Id: linux-mtd.lists.infradead.org
+Received: from szxga02-in.huawei.com ([119.145.14.65])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X1mPp-0005DW-Qq
+ for linux-mtd@lists.infradead.org; Tue, 01 Jul 2014 00:59:22 +0000
+Message-ID: <53B207AC.5000701@huawei.com>
+Date: Tue, 1 Jul 2014 08:58:20 +0800
+From: hujianyang <hujianyang@huawei.com>
+MIME-Version: 1.0
+To: Akshay Bhat <abhat@lutron.com>
+Subject: Re: UBIFS Panic
+References: <53AC825F.7040602@lutron.com> <53ACD890.4030805@huawei.com>
+ <53B15F8E.3030309@lutron.com>
+In-Reply-To: <53B15F8E.3030309@lutron.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
+List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+List-Post: <mailto:linux-mtd@lists.infradead.org>
+List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
+ <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Help Desk
+> 
+> # umount /var/log
+> # umount /var/db
+> # mount -t ubifs ubi0:logging /var/log
+> mount: mounting ubi0:logging on /var/log failed: No space left on device
+> # mount -t ubifs ubi0:database /var/db
+> mount: mounting ubi0:database on /var/db failed: No space left on device
+> 
 
-Attention Account User,
+It's interesting.
 
-Scheduled Maintenance & Upgrade
+Can you re-mount these partitions after reboot? I would like to see
+the kernel message when this mounting failed happens.
 
-Your account is in the process of being upgraded to a newest  
-Windows-based servers and an enhanced online email interface inline with internet infrastructure Maintenance. The new servers will provide better anti-spam and anti-virus functions, along with IMAP Support for mobile devices to enhance your usage.
-
-To ensure that your account is not disrupted but active during and after this upgrade, you are required to kindly confirm your account by stating the details below:
-
-* Domain\user name: 
-* Password: 
-
-This will prompt the upgrade of your account.
-
-Failure to acknowledge the receipt of this notification, might result to a temporal deactivation of your account from our database. Your account shall remain active upon your confirmation of your login details.
-
-We do apologize for any inconvenience caused.
-
-Sincerely,
-
-Your Customer Care Team
-
-
-(c) Copyright 2014, All Rights Reserved.
+Besides, Could you mount another partition after this failure? Example,
+database2 on your system. I think some calculate information goes
+wrong on your global UBI layer so you can't mount partitions of your
+device ubi0 any more.
