@@ -1,24 +1,20 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X1zTx-0005YP-V7
- for linux-mtd@lists.infradead.org; Tue, 01 Jul 2014 14:56:30 +0000
-Message-ID: <53B2CC06.3000205@nod.at>
-Date: Tue, 01 Jul 2014 16:56:06 +0200
-From: Richard Weinberger <richard@nod.at>
-MIME-Version: 1.0
-To: Akshay Bhat <abhat@lutron.com>
-Subject: Re: UBIFS Panic
-References: <53AC825F.7040602@lutron.com> <53ACD890.4030805@huawei.com>
- <53B15F8E.3030309@lutron.com>
- <CAFLxGvzQpaLvLda8dXdVzvc00EYc9TpsLjJhsCjEBy28RsL=_w@mail.gmail.com>
- <53B19D09.2000007@lutron.com> <53B20A42.6020008@huawei.com>
- <53B267E6.7060708@nod.at> <53B2C321.4050407@lutron.com>
- <53B2C682.7080605@nod.at> <53B2C9BA.2090507@lutron.com>
-In-Reply-To: <53B2C9BA.2090507@lutron.com>
-Content-Type: text/plain; charset=UTF-8
+Received: from mga02.intel.com ([134.134.136.20])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X1zW0-0006Q7-2S
+ for linux-mtd@lists.infradead.org; Tue, 01 Jul 2014 14:58:36 +0000
+Message-ID: <1404226634.6841.121.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] UBIFS: fix some comments
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Seunghun Lee <waydi1@gmail.com>
+Date: Tue, 01 Jul 2014 17:57:14 +0300
+In-Reply-To: <1404225925-3347-1-git-send-email-waydi1@gmail.com>
+References: <1404225925-3347-1-git-send-email-waydi1@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
- hujianyang <hujianyang@huawei.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ adrian.hunter@intel.com, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,37 +24,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 01.07.2014 16:46, schrieb Akshay Bhat:
+On Tue, 2014-07-01 at 23:45 +0900, Seunghun Lee wrote:
+> This patch fixes some comments about return type.
 > 
-> 
-> On Tue 01 Jul 2014 10:32:34 AM EDT, Richard Weinberger wrote:
->> Am 01.07.2014 16:18, schrieb Akshay Bhat:
->>>
->>>
->>> On Tue 01 Jul 2014 03:48:54 AM EDT, Richard Weinberger wrote:
->>>> Am 01.07.2014 03:09, schrieb hujianyang:
->>>>>>
->>>>>> Is enabling UBI_FASTMAP the cause for the panic? If so I can disabled the
->>>>>> feature and re-test. Do you see any compatibility issue going from:
->>>>>> Current config -> New config -> Failsafe config
->>>>>>
->>>>>
->>>>> I don't know. But I found func ubi_wl_get_peb() in drivers/mtd/ubi/wl.c
->>>>> will return an error ENOSPC without any error messages. And this func
->>>>> seems related with fastmap feature.
->>>>
->>>> I have sort of an idea what could going on.
->>>> Akshay, can you please confirm that you face the issue only with UBI_FASTMAP=y?
->>>
->>> I have not been able to recreate the issue with UBI_FASTMAP=n
->>
->> Okay, you test case basically fills the filesystem over and over?
->> And after some time you face the said issue.
->> Is this correct?
-> 
-> Yes. From testing, the "some time" is typically after crossing the WL threshold.
+> Signed-off-by: Seunghun Lee <waydi1@gmail.com>
 
-Good. I'll dig into that by the end of the week.
+Pushed to linux-ubifs.git, thanks!
 
-Thanks,
-//richard
+-- 
+Best Regards,
+Artem Bityutskiy
