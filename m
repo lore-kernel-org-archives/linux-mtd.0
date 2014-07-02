@@ -1,14 +1,13 @@
-Message-ID: <53B36B4F.90505@gmail.com>
-Date: Wed, 02 Jul 2014 10:15:43 +0800
+Message-ID: <53B37284.9060902@gmail.com>
+Date: Wed, 02 Jul 2014 10:46:28 +0800
 From: Zhou Wang <wangzhou.bry@gmail.com>
 MIME-Version: 1.0
 To: Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH 2/3] mtd: hisilicon: add a new nand controller driver
- for hisilicon hip04 Soc
+Subject: Re: [PATCH 3/3] mtd: hisilicon: add device tree binding documentation
 References: <1404115409-20200-1-git-send-email-wangzhou.bry@gmail.com>
- <1404115409-20200-3-git-send-email-wangzhou.bry@gmail.com>
- <20140630100025.GA7262@leverpostej>
-In-Reply-To: <20140630100025.GA7262@leverpostej>
+ <1404115409-20200-4-git-send-email-wangzhou.bry@gmail.com>
+ <20140630095234.GZ7262@leverpostej>
+In-Reply-To: <20140630095234.GZ7262@leverpostej>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Cc: Jussi Kivilinna <jussi.kivilinna@iki.fi>,
@@ -40,78 +39,102 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2014年06月30日 18:00, Mark Rutland wrote:
-> On Mon, Jun 30, 2014 at 09:03:28AM +0100, Zhou Wang wrote:
+On 2014年06月30日 17:52, Mark Rutland wrote:
+> On Mon, Jun 30, 2014 at 09:03:29AM +0100, Zhou Wang wrote:
 >> Signed-off-by: Zhou Wang <wangzhou.bry@gmail.com>
 >> ---
->>   drivers/mtd/nand/Kconfig     |    5 +
->>   drivers/mtd/nand/Makefile    |    1 +
->>   drivers/mtd/nand/hisi_nand.c |  847 ++++++++++++++++++++++++++++++++++++++++++
->>   3 files changed, 853 insertions(+)
->>   create mode 100644 drivers/mtd/nand/hisi_nand.c
->
-> [...]
->
->> +struct hinfc_host {
->> +       struct nand_chip        *chip;
->> +       struct mtd_info         *mtd;
->> +       struct device           *dev;
->> +       void __iomem            *iobase;
->> +       struct completion       cmd_complete;
->> +       unsigned int            offset;
->> +       unsigned int            command;
->> +       int                     chipselect;
->> +       unsigned int            addr_cycle;
->> +       unsigned int            addr_value[2];
->> +       unsigned int            cache_addr_value[2];
->> +       char                    *buffer;
->> +       dma_addr_t              dma_buffer;
->> +       dma_addr_t              dma_oob;
->> +       int                     version;
->> +       unsigned int            ecc_bits;
->> +       unsigned int            irq_status; /* interrupt status */
+>>   .../devicetree/bindings/mtd/hisi-nand.txt          |   38 ++++++++++++++++++++
+>>   1 file changed, 38 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/mtd/hisi-nand.txt
+>>
+>> diff --git a/Documentation/devicetree/bindings/mtd/hisi-nand.txt b/Documentation/devicetree/bindings/mtd/hisi-nand.txt
+>> new file mode 100644
+>> index 0000000..1cc6470
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/mtd/hisi-nand.txt
+>> @@ -0,0 +1,38 @@
+>> +Hisilicon Hip04 Soc NAND controller DT binding
 >> +
->> +       int (*send_cmd_pageprog)(struct hinfc_host *host);
->> +       int (*send_cmd_status)(struct hinfc_host *host);
->> +       int (*send_cmd_readstart)(struct hinfc_host *host);
->> +       int (*send_cmd_erase)(struct hinfc_host *host);
->> +       int (*send_cmd_readid)(struct hinfc_host *host);
->> +       int (*send_cmd_reset)(struct hinfc_host *host, int chipselect);
->> +};
+>> +Required properties:
+>> +- compatible:          Should be "hisilicon,nfc504".
+>> +- reg:                 Contain registers location and length for reg and data.
 >
-> [...]
+> I'm not sure I follow. The example below has two reg entries. What does
+> each entry represent, and what does the presence of multiple entries
+> mean?
 >
->> +static int hisi_nfc_probe(struct platform_device *pdev)
->> +{
->> +       int ret = 0, irq, buswidth, flag, max_chips = HINFC504_MAX_CHIP;
->> +       struct device *dev = &pdev->dev;
->> +       struct hinfc_host *host;
->> +       struct nand_chip  *chip;
->> +       struct mtd_info   *mtd;
->> +       struct resource   *res;
->> +       struct device_node *np = dev->of_node;
->> +       struct mtd_part_parser_data ppdata;
->> +
->> +       host = devm_kzalloc(dev, sizeof(*host) + sizeof(*chip) + sizeof(*mtd),
->> +                       GFP_KERNEL);
->> +       if (!host)
->> +               return -ENOMEM;
->> +       host->dev = dev;
->> +
->> +       platform_set_drvdata(pdev, host);
->> +       chip = (struct nand_chip *)&host[1];
->> +       mtd  = (struct mtd_info *)&chip[1];
+
+Maybe I could not express it clearly here. The first reg entry 
+represents the basic address of registers of NAND controller, and the 
+second represents the basic address of buffer of NAND controller.
+
+>> +- interrupts:          Interrupt number for nfc.
 >
-> Why not embed the whole struct rather than pointers? Then you can
-> allocate just the host and extract pointers to the chip and mtd sub
-> structures.
+> Just the one?
+>
+
+Yes, Just one interrupt number. And there is an interrupt relative 
+register in the NAND controller, we can get information about interrupt 
+from the register after an interrupt triggered.
+
+>> +- nand-bus-width:      See nand.txt.
+>> +- nand-ecc-mode:       See nand.txt.
+>> +- hisi,nand-ecc-bits:  ECC bits type support.
+>> +		<0>:   none ecc
+>> +		<1>:   Can correct 1bit per 512byte.
+>> +		<6>:   Can correct 16bits per 1K byte.
+>
+> Is this an enumeration, or a number of bits?
+>
+
+This is an enumeration which is just relative register configure, so we 
+can directly use it to configure relative register bits in driver.
+
+>> +- #address-cells:      partition address.
+>> +- #size-cells:         partition size.
+>
+> Are these only allowed to be 1 cell, or can they be more?
 >
 > Thanks,
 > Mark.
 >
 
-I will change this as your comment, thanks.
+These are only allowed to be 1 cell. Address-cells represents basic 
+address of a partition, and size-cells represents the size of a partition.
 
+I will rewrite the unclear parts as your comments. Thanks for your comments.
+
+-Zhou Wang
+
+>> +
+>> +Flash chip may optionally contain additional sub-nodes describing partitions of
+>> +the address space. See partition.txt for more detail.
+>> +
+>> +Example:
+>> +
+>> +	nand: nand@4020000 {
+>> +		compatible = "hisilicon,nfc504";
+>> +		reg = <0x4020000 0x10000>, <0x5000000 0x1000>;
+>> +		interrupts = <0 379 4>;
+>> +		nand-bus-width = <8>;
+>> +		nand-ecc-mode = "hw";
+>> +		hisi,nand-ecc-bits = <1>;
+>> +		#address-cells = <1>;
+>> +		#size-cells = <1>;
+>> +
+>> +		partition@0 {
+>> +			label = "nand_text";
+>> +			reg = <0x00000000 0x00400000>;
+>> +		};
+>> +
+>> +		...
+>> +
+>> +	};
+>> --
+>> 1.7.9.5
+>>
+>>
+>
 > _______________________________________________
 > linux-arm-kernel mailing list
 > linux-arm-kernel@lists.infradead.org
