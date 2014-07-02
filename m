@@ -1,19 +1,21 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X2KPd-0002jS-Cs
- for linux-mtd@lists.infradead.org; Wed, 02 Jul 2014 13:17:26 +0000
-From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH] mtd: nand: reduce the warning noise when the ECC is too weak
-Date: Wed,  2 Jul 2014 15:16:32 +0200
-Message-Id: <1404306992-28968-1-git-send-email-thomas.petazzoni@free-electrons.com>
-Cc: Lior Amsalem <alior@marvell.com>,
- Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Tawfik Bayouk <tawfik@marvell.com>, Nadav Haklai <nadavh@marvell.com>,
- linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Received: from mail1.bemta8.messagelabs.com ([216.82.243.201])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X2UQl-0002bt-S6
+ for linux-mtd@lists.infradead.org; Wed, 02 Jul 2014 23:59:16 +0000
+From: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>
+Date: Thu, 3 Jul 2014 09:58:33 +1000
+Subject: RE: Correct behaviour of ubiattach / ubiformat in the face of ECC
+ errors?
+Message-ID: <EACD232272DA4849B060F0828564D13B0AA3DB913B@ntcex01.corp.netcomm.com.au>
+References: <EACD232272DA4849B060F0828564D13B0AA3DB90FC@ntcex01.corp.netcomm.com.au>,
+ <1404223553.6841.100.camel@sauron.fi.intel.com>
+In-Reply-To: <1404223553.6841.100.camel@sauron.fi.intel.com>
+Content-Language: en-AU
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,76 +25,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In commit 67a9ad9b8a6f ("mtd: nand: Warn the user if the selected ECC
-strength is too weak"), a check was added to inform the user when the
-ECC used for a NAND device is weaker than the recommended ECC
-advertised by the NAND chip. However, the warning uses WARN_ON(),
-which has two undesirable side-effects:
+On Wed, 2 Jul 2014 00:05:53 +1000
+Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> On Thu, 2014-06-19 at 13:15 +1000, Iwo Mergler wrote:
 
- - It just prints to the kernel log the fact that there is a warning
-   in this file, at this line, but it doesn't explain anything about
-   the warning itself.
+> > My question is, what is ubiattach / ubiformat supposed to do if a
+> > non-correctable ECC error occurs in a block during the scan?
+>=20
+> Generally, 'ubiformat' is about to destroy all the data, so should
+> ignore errors and just go on, generally speaking.
+>=20
+> 'ubiattach' asks the kernel to attach the media. And generally, it
+> should do something about ECC errors.
 
- - It dumps a stack trace which is very noisy, for something that the
-   user is most likely not able to fix. If a certain ECC used by the
-   kernel is weaker than the advertised one, it's most likely to make
-   sure the kernel uses an ECC that is compatible with the one used by
-   the bootloader, and changing the bootloader may not necessarily be
-   easy. Therefore, normal users would not be able to do anything to
-   fix this very noisy warning, and will have to suffer from it at
-   every kernel boot. At least every time I see this stack trace in my
-   kernel boot log, I wonder what new thing is broken, just to realize
-   that it's once again this NAND ECC warning.
+Hi Artem,
 
-Therefore, this commit turns:
+thanks for answering. I have found out what I was doing wrong
+and meant to reply to myself documenting that any day now.. ;-)
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 1 at /home/thomas/projets/linux-2.6/drivers/mtd/nand/nand_base.c:4051 nand_scan_tail+0x538/0x780()
-Modules linked in:
-CPU: 0 PID: 1 Comm: swapper Not tainted 3.16.0-rc3-dirty #4
-[<c000e3dc>] (unwind_backtrace) from [<c000bee4>] (show_stack+0x10/0x14)
-[<c000bee4>] (show_stack) from [<c0018180>] (warn_slowpath_common+0x6c/0x8c)
-[<c0018180>] (warn_slowpath_common) from [<c001823c>] (warn_slowpath_null+0x1c/0x24)
-[<c001823c>] (warn_slowpath_null) from [<c02c50cc>] (nand_scan_tail+0x538/0x780)
-[<c02c50cc>] (nand_scan_tail) from [<c0639f78>] (orion_nand_probe+0x224/0x2e4)
-[<c0639f78>] (orion_nand_probe) from [<c026da00>] (platform_drv_probe+0x18/0x4c)
-[<c026da00>] (platform_drv_probe) from [<c026c1f4>] (really_probe+0x80/0x218)
-[<c026c1f4>] (really_probe) from [<c026c47c>] (__driver_attach+0x98/0x9c)
-[<c026c47c>] (__driver_attach) from [<c026a8f0>] (bus_for_each_dev+0x64/0x94)
-[<c026a8f0>] (bus_for_each_dev) from [<c026bae4>] (bus_add_driver+0x144/0x1ec)
-[<c026bae4>] (bus_add_driver) from [<c026cb00>] (driver_register+0x78/0xf8)
-[<c026cb00>] (driver_register) from [<c026da5c>] (platform_driver_probe+0x20/0xb8)
-[<c026da5c>] (platform_driver_probe) from [<c00088b8>] (do_one_initcall+0x80/0x1d8)
-[<c00088b8>] (do_one_initcall) from [<c0620c9c>] (kernel_init_freeable+0xf4/0x1b4)
-[<c0620c9c>] (kernel_init_freeable) from [<c049a098>] (kernel_init+0x8/0xec)
-[<c049a098>] (kernel_init) from [<c00095f0>] (ret_from_fork+0x14/0x24)
----[ end trace 62f87d875aceccb4 ]---
+You are right, and UBI/UBIFS do indeed behave correctly, if the right
+error codes arrive from MTD.
 
-Into the much shorter, and much more useful:
+For the 2.6.35 kernel, the chain of return values goes like this:
 
-nand: WARNING: MT29F2G08ABAEAWP: the ECC used on your system is too weak compared to the one required by the NAND chip
+Low-level ECC functions: return the number of corrected bit errors
+(>=3D0) or -EBADMSG when uncorrectable.
 
-Signed-off-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
----
- drivers/mtd/nand/nand_base.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Page read functions: return 0 for correctable errors, -EBADMSG
+for uncorrectable. Also increments ecc_stats.corrected with the
+number of corrected bit errors.
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 41167e9..4f3e80c 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -4047,8 +4047,10 @@ int nand_scan_tail(struct mtd_info *mtd)
- 		ecc->layout->oobavail += ecc->layout->oobfree[i].length;
- 	mtd->oobavail = ecc->layout->oobavail;
- 
--	/* ECC sanity check: warn noisily if it's too weak */
--	WARN_ON(!nand_ecc_strength_good(mtd));
-+	/* ECC sanity check: warn if it's too weak */
-+	if (!nand_ecc_strength_good(mtd))
-+		pr_warn("WARNING: %s: the ECC used on your system is too weak compared to the one required by the NAND chip\n",
-+			mtd->name);
- 
- 	/*
- 	 * Set the number of read / write steps for one page depending on ECC
--- 
-2.0.0
+MTD core read: Checks ecc_stats.corrected difference (after-before)
+and returns -EUCLEAN if any bit errors were corrected. Error codes
+(-EBADMSG) get passed through.
+
+In newer kernels (~v3.9?) , the page read can also return
+-EUCLEAN directly to signal a threshold of corrected bit errors
+worth worrying about.
+
+In all cases, the read must report having read all requested bytes,
+even if the buffer may contain some garbage. Various things (e.g.
+jffs2, UBI) have checksums for some data and can independently
+verify and maybe recover correct information.
+
+In my system, I did return -EUCLEAN from the page read function,
+which was treated as a fatal error by MTD (i.e. it wasn't 0 or -EBADMSG).
+This led to MTD-char returning 0 bytes read and the C-library retrying
+endlessly.
+
+
+Best regards,
+
+Iwo
+
+______________________________________________________________________
+This communication contains information which may be confidential or privi=
+leged. The information is intended solely for the use of the individual or=
+ entity named above.  If you are not the intended recipient, be aware that=
+ any disclosure, copying, distribution or use of the contents of this info=
+rmation is prohibited.  If you have received this communication in error, =
+please notify me by telephone immediately.
+______________________________________________________________________
