@@ -1,17 +1,21 @@
-Date: Wed, 2 Jul 2014 17:50:16 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH] mtd: nand: stm_nand_bch: add new driver
-Message-ID: <20140703005016.GB7537@ld-irv-0074>
-References: <1401268805-26043-1-git-send-email-lee.jones@linaro.org>
+Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X2Vi2-0007rw-2Z
+ for linux-mtd@lists.infradead.org; Thu, 03 Jul 2014 01:21:10 +0000
+Received: by mail-pa0-f52.google.com with SMTP id eu11so13514542pac.39
+ for <linux-mtd@lists.infradead.org>; Wed, 02 Jul 2014 18:20:48 -0700 (PDT)
+Date: Thu, 3 Jul 2014 11:20:42 +1000
+From: Matt Hevern <matt.hevern@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: UBIFS becomes read-only when written, then fails to mount
+Message-ID: <20140703012041.GB19950@gmail.com>
+References: <20140618044434.GA9331@gmail.com>
+ <1404222952.6841.92.camel@sauron.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1401268805-26043-1-git-send-email-lee.jones@linaro.org>
-Cc: kernel@stlinux.com, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, "Gupta, Pekon\"" <pekon@ti.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- linux-arm-kernel@lists.infradead.org
+In-Reply-To: <1404222952.6841.92.camel@sauron.fi.intel.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,22 +25,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-BTW, there are a few checkpatch.pl complaints. Please fix these for the
-next version (v2 or v3?)
-
-On Wed, May 28, 2014 at 10:20:05AM +0100, Lee Jones wrote:
-> This is a squashed version of the submission to avoid re-sending the
-> entire set over and over, essentially clogging up the MLs.
+On Tue, Jul 01, 2014 at 04:55:52PM +0300, Artem Bityutskiy wrote:
+> On Wed, 2014-06-18 at 14:44 +1000, Matt Hevern wrote:
+> > Hi All,
+> > 
+> > 
+> > I am running UBIFS on freescale i.MX28, kernel 2.6.35.3, based on
+> > freescale's IMX tree:
+> > http://git.freescale.com/git/cgit.cgi/imx/linux-2.6-imx.git/?h=imx_2.6.35_maintain
+> > The flash is NAND, Micron 256MiB (MT29F2G08)
 > 
-> Cc: computersforpeace@gmail.com
-> Cc: Gupta, Pekon" <pekon@ti.com>
+> In your dumps I see that there are errors related to UBIFS not being
+> able to find an LEB for the garbage collector. And I remember we fixed
+> bugs in this area.
+> 
+> For example, "6fb4374 UBIFS: fix GC LEB recovery", and there were more.
+> Search for 'ubifs_rcvry_gc_commit' in 'git log -p fs/ubifs/recovery.c'.
 
-Stray/unbalanced quote character?
 
-> Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> Cc: linux-mtd@lists.infradead.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Thanks for your response. I can see that I don't currently have this commit.
+I'll attempt to pull in this and any others that look relevant.
 
-[...]
+Thanks,
 
-Brian
+
+Matt
