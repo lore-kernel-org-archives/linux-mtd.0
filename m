@@ -1,22 +1,17 @@
-Received: from mail-yh0-x22f.google.com ([2607:f8b0:4002:c01::22f])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X2V7n-0002gc-Gv
- for linux-mtd@lists.infradead.org; Thu, 03 Jul 2014 00:43:44 +0000
-Received: by mail-yh0-f47.google.com with SMTP id v1so7241078yhn.34
- for <linux-mtd@lists.infradead.org>; Wed, 02 Jul 2014 17:43:21 -0700 (PDT)
-Date: Wed, 2 Jul 2014 17:43:12 -0700
+Date: Wed, 2 Jul 2014 17:50:16 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: bf5xx_nand: drop no-op PM support
-Message-ID: <20140703004312.GA7537@ld-irv-0074>
-References: <1400613386-8502-1-git-send-email-computersforpeace@gmail.com>
+To: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH] mtd: nand: stm_nand_bch: add new driver
+Message-ID: <20140703005016.GB7537@ld-irv-0074>
+References: <1401268805-26043-1-git-send-email-lee.jones@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1400613386-8502-1-git-send-email-computersforpeace@gmail.com>
-Cc: Julia Lawall <Julia.Lawall@lip6.fr>, Fabio Estevam <festevam@gmail.com>,
- Mike Frysinger <vapier.adi@gmail.com>,
- Dan Carpenter <dan.carpenter@oracle.com>
+In-Reply-To: <1401268805-26043-1-git-send-email-lee.jones@linaro.org>
+Cc: kernel@stlinux.com, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, "Gupta, Pekon\"" <pekon@ti.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,15 +21,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, May 20, 2014 at 12:16:26PM -0700, Brian Norris wrote:
-> This driver's suspend/resume hooks are no-ops, so just remove them.
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Cc: Julia Lawall <Julia.Lawall@lip6.fr>
-> Cc: Fabio Estevam <festevam@gmail.com>
-> Cc: Dan Carpenter <dan.carpenter@oracle.com>
-> Cc: Mike Frysinger <vapier.adi@gmail.com>
+BTW, there are a few checkpatch.pl complaints. Please fix these for the
+next version (v2 or v3?)
 
-Pushed to l2-mtd.git.
+On Wed, May 28, 2014 at 10:20:05AM +0100, Lee Jones wrote:
+> This is a squashed version of the submission to avoid re-sending the
+> entire set over and over, essentially clogging up the MLs.
+> 
+> Cc: computersforpeace@gmail.com
+> Cc: Gupta, Pekon" <pekon@ti.com>
+
+Stray/unbalanced quote character?
+
+> Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+> Cc: linux-mtd@lists.infradead.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+
+[...]
 
 Brian
