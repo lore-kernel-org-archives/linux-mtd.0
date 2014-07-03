@@ -1,20 +1,23 @@
-Received: from mail-pa0-x22c.google.com ([2607:f8b0:400e:c03::22c])
+Received: from mail-pd0-x22a.google.com ([2607:f8b0:400e:c02::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X2Uq6-0002G6-Gp
- for linux-mtd@lists.infradead.org; Thu, 03 Jul 2014 00:25:27 +0000
-Received: by mail-pa0-f44.google.com with SMTP id rd3so13468531pab.3
- for <linux-mtd@lists.infradead.org>; Wed, 02 Jul 2014 17:25:04 -0700 (PDT)
-Date: Wed, 2 Jul 2014 17:25:01 -0700
+ id 1X2Ur5-0002ys-UU
+ for linux-mtd@lists.infradead.org; Thu, 03 Jul 2014 00:26:28 +0000
+Received: by mail-pd0-f170.google.com with SMTP id z10so12776782pdj.15
+ for <linux-mtd@lists.infradead.org>; Wed, 02 Jul 2014 17:26:05 -0700 (PDT)
+Date: Wed, 2 Jul 2014 17:26:02 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: lpc32xx: drop bitflip_threshold initialization
-Message-ID: <20140703002501.GN3599@ld-irv-0074>
-References: <1401267145-18218-1-git-send-email-computersforpeace@gmail.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH -trivial 2/4] mtd: cmdlinepart: Spelling
+ s/trucate/truncate/
+Message-ID: <20140703002602.GO3599@ld-irv-0074>
+References: <1404037299-31570-1-git-send-email-geert@linux-m68k.org>
+ <1404037299-31570-2-git-send-email-geert@linux-m68k.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1401267145-18218-1-git-send-email-computersforpeace@gmail.com>
-Cc: Roland Stigge <stigge@antcom.de>
+In-Reply-To: <1404037299-31570-2-git-send-email-geert@linux-m68k.org>
+Cc: linux-mtd@lists.infradead.org, Jiri Kosina <trivial@kernel.org>,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,23 +27,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, May 28, 2014 at 01:52:25AM -0700, Brian Norris wrote:
-> These drivers don't need to explicitly initialize their bitflip
-> thresholds. The comment is no longer correct, since nand_scan_tail()
-> performs this initialization as of the following commit:
-> 
->     commit ea3b2ea24ef0f2ef9c6795b19cff456195b6728a
->     Author: Shmulik Ladkani <shmulik@jungo.com>
->     Date:   Fri Jun 8 18:29:06 2012 +0300
-> 
->         mtd: nand: initialize bitflip_threshold prior to BBT scanning
-> 
-> (It seems there were some parallel efforts on writing/submitting these
-> drivers, and Shmulik's bug fix.)
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Cc: Roland Stigge <stigge@antcom.de>
+On Sun, Jun 29, 2014 at 12:21:37PM +0200, Geert Uytterhoeven wrote:
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: Brian Norris <computersforpeace@gmail.com>
+> Cc: linux-mtd@lists.infradead.org
 
-Pushed to l2-mtd.git.
+Pushed to l2-mtd.git. Thanks!
 
 Brian
