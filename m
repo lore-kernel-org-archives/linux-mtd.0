@@ -1,20 +1,21 @@
-Received: from mail.dekaresearch.com ([208.65.175.196]
- helo=dekaexchange07.deka.local)
+Received: from mail-bn1blp0184.outbound.protection.outlook.com
+ ([207.46.163.184] helo=na01-bn1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X2hgP-0005SY-FW
- for linux-mtd@lists.infradead.org; Thu, 03 Jul 2014 14:08:17 +0000
-From: Atlant Schmidt <aschmidt@dekaresearch.com>
-To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Date: Thu, 3 Jul 2014 10:07:51 -0400
-Subject: Where is the "scrubbing" threshold set in UBI? Can it be easily
- varied?
-Message-ID: <0A40042D85E7C84DB443060EC44B3FD36D986A2F14@dekaexchange07.deka.local>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1X2pD4-0005Vl-1A
+ for linux-mtd@lists.infradead.org; Thu, 03 Jul 2014 22:10:31 +0000
+Message-ID: <1404425400.21434.89.camel@snotra.buserror.net>
+Subject: Re: [PATCH] devicetree/bindings: Add binding for micron n25q512a
+ memory
+From: Scott Wood <scottwood@freescale.com>
+To: Priyanka Jain <Priyanka.Jain@freescale.com>
+Date: Thu, 3 Jul 2014 17:10:00 -0500
+In-Reply-To: <1404382376-3115-1-git-send-email-Priyanka.Jain@freescale.com>
+References: <1404382376-3115-1-git-send-email-Priyanka.Jain@freescale.com>
+Content-Type: text/plain; charset="UTF-8"
 MIME-Version: 1.0
-Cc: Andrew Coll <acoll@dekaresearch.com>,
- Cale Surgen <csurgen@dekaresearch.com>
+Content-Transfer-Encoding: 7bit
+Cc: devicetree@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,49 +25,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Folks:
+On Thu, 2014-07-03 at 15:42 +0530, Priyanka Jain wrote:
+> -Micron n25q512a memory is supported by m25p80 driver.
+>  Add compatible field required to support n25q512a in m25p80.txt
+> -Add micron to the vendor-prefixes.txt file
+> 
+> Signed-off-by: Priyanka Jain <Priyanka.Jain@freescale.com>
+> ---
+>  Documentation/devicetree/bindings/mtd/m25p80.txt   |    1 +
+>  .../devicetree/bindings/vendor-prefixes.txt        |    1 +
+>  2 files changed, 2 insertions(+), 0 deletions(-)
 
-  Within the UBI layer, where is the threshold set that
-  determines how many bit-flips must occur on a read
-  before the block is "scrubbed" (stored into another
-  location)?
+Why did you send this to the ppc list but not the spi or mtd lists?
 
-  And is this done on a page-by-page basis or on a
-  whole-LEB/PEB basis? That is, if a single page has
-  more than threshold number of bit flips, will just
-  that page be relocated or will the entire LEB be
-  relocated to another PEB? (I'd assume the later
-  because that's the level at which UBI understands
-  the organization of the storage.)
+I'm having a hard time following the flow of how these SPI devices get
+bound -- is the compatible involved at all?  I don't see this string
+(with vendor prefix included) in the driver.  I do see a table that
+contains what looks like device IDs.  If the device can report its id,
+shouldn't we rely on that rather than device tree compatible?
 
-  Also:
-
-  It's a shame there doesn't seem to be a UBI ioctl()
-  to control this; it would be nice to be able to run
-  routinely with the threshold set high but be able to
-  easily enter "scrubbing" mode where even single bit-
-  flips could be scrubbed away.
-
-  I've notice that our NAND flashes acquire persistent
-  bit flips and I'd love to be able to scrub those blocks
-  clean by just temporarily setting the threshold low and
-  then reading through the whole device (and watching the
-  ECC statistics to see when I should stop).
-
-  This would make the NAND more immune to suddenly ending
-  up with too many bit flips for the ECC to correct.
-
-                          Atlant
+-Scott
 
 
-This e-mail and the information, including any attachments it contains, are=
- intended to be a confidential communication only to the person or entity t=
-o whom it is addressed and may contain information that is privileged. If t=
-he reader of this message is not the intended recipient, you are hereby not=
-ified that any dissemination, distribution or copying of this communication=
- is strictly prohibited. If you have received this communication in error, =
-please immediately notify the sender and destroy the original message.
-
-Thank you.
-
-Please consider the environment before printing this email.
+> diff --git a/Documentation/devicetree/bindings/mtd/m25p80.txt b/Documentation/devicetree/bindings/mtd/m25p80.txt
+> index 4611aa8..ce02e81 100644
+> --- a/Documentation/devicetree/bindings/mtd/m25p80.txt
+> +++ b/Documentation/devicetree/bindings/mtd/m25p80.txt
+> @@ -7,6 +7,7 @@ Required properties:
+>                 the DT binding is not Linux-only, but in case of Linux, see the
+>                 "spi_nor_ids" table in drivers/mtd/spi-nor/spi-nor.c for the list
+>                 of supported chips.
+> +               example: "micron,n25q512a"
+>  - reg : Chip-Select number
+>  - spi-max-frequency : Maximum frequency of the SPI bus the chip can operate at
+>  
+> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.txt b/Documentation/devicetree/bindings/vendor-prefixes.txt
+> index 4d7f375..a44cfee 100644
+> --- a/Documentation/devicetree/bindings/vendor-prefixes.txt
+> +++ b/Documentation/devicetree/bindings/vendor-prefixes.txt
+> @@ -79,6 +79,7 @@ marvell	Marvell Technology Group Ltd.
+>  maxim	Maxim Integrated Products
+>  micrel	Micrel Inc.
+>  microchip	Microchip Technology Inc.
+> +micron	Micron Technology Inc.
+>  mosaixtech	Mosaix Technologies, Inc.
+>  moxa	Moxa
+>  mpl	MPL AG
