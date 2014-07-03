@@ -1,19 +1,21 @@
-Received: from mail-pd0-x22a.google.com ([2607:f8b0:400e:c02::22a])
+Received: from mail1.bemta7.messagelabs.com ([216.82.254.97])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X2WsS-0000VO-5L
- for linux-mtd@lists.infradead.org; Thu, 03 Jul 2014 02:36:00 +0000
-Received: by mail-pd0-f170.google.com with SMTP id z10so12938251pdj.15
- for <linux-mtd@lists.infradead.org>; Wed, 02 Jul 2014 19:35:39 -0700 (PDT)
-From: Kevin Hao <haokexin@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH v2 2/2] mtd/ftl: fix the double free of the buffers allocated
- in build_maps()
-Date: Thu,  3 Jul 2014 10:35:26 +0800
-Message-Id: <1404354926-25930-1-git-send-email-haokexin@gmail.com>
-In-Reply-To: <1402905157-10330-3-git-send-email-haokexin@gmail.com>
-References: <1402905157-10330-3-git-send-email-haokexin@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+ id 1X2Y7N-0003Hd-6r
+ for linux-mtd@lists.infradead.org; Thu, 03 Jul 2014 03:55:30 +0000
+From: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>, "Voytovich, Mike"
+ <mvoytovich@paypal.com>
+Date: Thu, 3 Jul 2014 13:55:01 +1000
+Subject: RE: ubi_io_read -74 and ubifs_scanned_corruption errors with i.MX28
+Message-ID: <EACD232272DA4849B060F0828564D13B0AA3DB913C@ntcex01.corp.netcomm.com.au>
+References: <CFC49DF0.A141%mvoytovich@paypal.com>,
+ <1404221801.6841.88.camel@sauron.fi.intel.com>
+In-Reply-To: <1404221801.6841.88.camel@sauron.fi.intel.com>
+Content-Language: en-AU
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,96 +25,201 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I got the following panic on my fsl p5020ds board.
+On Tue, 1 Jul 2014 23:36:41 +1000
+Artem Bityutskiy <dedekind1@gmail.com> wrote:
 
-  Unable to handle kernel paging request for data at address 0x7375627379737465
-  Faulting instruction address: 0xc000000000100778
-  Oops: Kernel access of bad area, sig: 11 [#1]
-  SMP NR_CPUS=24 CoreNet Generic
-  Modules linked in:
-  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 3.15.0-next-20140613 #145
-  task: c0000000fe080000 ti: c0000000fe088000 task.ti: c0000000fe088000
-  NIP: c000000000100778 LR: c00000000010073c CTR: 0000000000000000
-  REGS: c0000000fe08aa00 TRAP: 0300   Not tainted  (3.15.0-next-20140613)
-  MSR: 0000000080029000 <CE,EE,ME>  CR: 24ad2e24  XER: 00000000
-  DEAR: 7375627379737465 ESR: 0000000000000000 SOFTE: 1
-  GPR00: c0000000000c99b0 c0000000fe08ac80 c0000000009598e0 c0000000fe001d80
-  GPR04: 00000000000000d0 0000000000000913 c000000007902b20 0000000000000000
-  GPR08: c0000000feaae888 0000000000000000 0000000007091000 0000000000200200
-  GPR12: 0000000028ad2e28 c00000000fff4000 c0000000007abe08 0000000000000000
-  GPR16: c0000000007ab160 c0000000007aaf98 c00000000060ba68 c0000000007abda8
-  GPR20: c0000000007abde8 c0000000feaea6f8 c0000000feaea708 c0000000007abd10
-  GPR24: c000000000989370 c0000000008c6228 00000000000041ed c0000000fe00a400
-  GPR28: c00000000017c1cc 00000000000000d0 7375627379737465 c0000000fe001d80
-  NIP [c000000000100778] .__kmalloc_track_caller+0x70/0x168
-  LR [c00000000010073c] .__kmalloc_track_caller+0x34/0x168
-  Call Trace:
-  [c0000000fe08ac80] [c00000000087e6b8] uevent_sock_list+0x0/0x10 (unreliable)
-  [c0000000fe08ad20] [c0000000000c99b0] .kstrdup+0x44/0x90
-  [c0000000fe08adc0] [c00000000017c1cc] .__kernfs_new_node+0x4c/0x130
-  [c0000000fe08ae70] [c00000000017d7e4] .kernfs_new_node+0x2c/0x64
-  [c0000000fe08aef0] [c00000000017db00] .kernfs_create_dir_ns+0x34/0xc8
-  [c0000000fe08af80] [c00000000018067c] .sysfs_create_dir_ns+0x58/0xcc
-  [c0000000fe08b010] [c0000000002c711c] .kobject_add_internal+0xc8/0x384
-  [c0000000fe08b0b0] [c0000000002c7644] .kobject_add+0x64/0xc8
-  [c0000000fe08b140] [c000000000355ebc] .device_add+0x11c/0x654
-  [c0000000fe08b200] [c0000000002b5988] .add_disk+0x20c/0x4b4
-  [c0000000fe08b2c0] [c0000000003a21d4] .add_mtd_blktrans_dev+0x340/0x514
-  [c0000000fe08b350] [c0000000003a3410] .mtdblock_add_mtd+0x74/0xb4
-  [c0000000fe08b3e0] [c0000000003a32cc] .blktrans_notify_add+0x64/0x94
-  [c0000000fe08b470] [c00000000039b5b4] .add_mtd_device+0x1d4/0x368
-  [c0000000fe08b520] [c00000000039b830] .mtd_device_parse_register+0xe8/0x104
-  [c0000000fe08b5c0] [c0000000003b8408] .of_flash_probe+0x72c/0x734
-  [c0000000fe08b750] [c00000000035ba40] .platform_drv_probe+0x38/0x84
-  [c0000000fe08b7d0] [c0000000003599a4] .really_probe+0xa4/0x29c
-  [c0000000fe08b870] [c000000000359d3c] .__driver_attach+0x100/0x104
-  [c0000000fe08b900] [c00000000035746c] .bus_for_each_dev+0x84/0xe4
-  [c0000000fe08b9a0] [c0000000003593c0] .driver_attach+0x24/0x38
-  [c0000000fe08ba10] [c000000000358f24] .bus_add_driver+0x1c8/0x2ac
-  [c0000000fe08bab0] [c00000000035a3a4] .driver_register+0x8c/0x158
-  [c0000000fe08bb30] [c00000000035b9f4] .__platform_driver_register+0x6c/0x80
-  [c0000000fe08bba0] [c00000000084e080] .of_flash_driver_init+0x1c/0x30
-  [c0000000fe08bc10] [c000000000001864] .do_one_initcall+0xbc/0x238
-  [c0000000fe08bd00] [c00000000082cdc0] .kernel_init_freeable+0x188/0x268
-  [c0000000fe08bdb0] [c0000000000020a0] .kernel_init+0x1c/0xf7c
-  [c0000000fe08be30] [c000000000000884] .ret_from_kernel_thread+0x58/0xd4
-  Instruction dump:
-  41bd0010 480000c8 4bf04eb5 60000000 e94d0028 e93f0000 7cc95214 e8a60008
-  7fc9502a 2fbe0000 419e00c8 e93f0022 <7f7e482a> 39200000 88ed06b2 992d06b2
-  ---[ end trace b4c9a94804a42d40 ]---
+> This problem was brought up many times before, but no one came up
+> with a solution so far. Let me provide you some back-ground
+> information.
+<snip>=20
+> One possibility is to make the NAND driver/controller _protect_ the
+> empty NAND pages with ECC and correct bit-flips in the empty space,
+> just like for written-to pages. Empty NAND pages are those which were
+> never written to. If I write all 0xFFs to a NAND page, it is is _not_
+> and empty NAND page anymore.
+>=20
+> This is the preferable solution, but it is not necessarily the easiest
+> one and not always possible.
 
-It seems that the corrupted partition header on my mtd device triggers
-a bug in the ftl. In function build_maps() it will allocate the buffers
-needed by the mtd partition, but if something goes wrong such as kmalloc
-failure, mtd read error or invalid partition header parameter, it will
-free all allocated buffers and then return non-zero. In my case, it
-seems that partition header parameter 'NumTransferUnits' is invalid.
+Below is an analysis of the interactions between hardware ECC, driver
+and reality with a view towards the erased page problem.
 
-And the ftl_freepart() is a function which free all the partition
-buffers allocated by build_maps(). Given the build_maps() is a self
-cleaning function, so there is no need to invoke this function even
-if build_maps() return with error. Otherwise it will causes the
-buffers to be freed twice and then weird things would happen.
+You probably know most of this already, but some may still be useful.
+I wanted to write this down for a while, sorry about the length.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Kevin Hao <haokexin@gmail.com>
----
-v2: Just update the commit log and add Cc stable.
 
- drivers/mtd/ftl.c | 1 -
- 1 file changed, 1 deletion(-)
+Good hardware
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-diff --git a/drivers/mtd/ftl.c b/drivers/mtd/ftl.c
-index 19d637266fcd..71e4f6ccae2f 100644
---- a/drivers/mtd/ftl.c
-+++ b/drivers/mtd/ftl.c
-@@ -1075,7 +1075,6 @@ static void ftl_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
- 			return;
- 	}
- 
--	ftl_freepart(partition);
- 	kfree(partition);
- }
- 
--- 
-1.9.3
+The easy way to deal with the erased-page issue is to have an
+ECC controller that produces all-1 parity bits for an all-1 page.
+
+This would mean that there is no distinction between an erased
+page and one written all-1, and ECC will correct both the same way.
+
+While ridiculously easy to implement in hardware (constant XOR),
+very few real world controllers do it. Pretty much anything more
+powerful than a 1-bit correcting Hamming code has lost that property.
+
+
+Making bad hardware do the right thing
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+
+The next best thing is to do the above mentioned XOR operation
+in the NAND driver. However, this can be made complicated or
+impossible by the specific ECC hardware implementation.
+
+Typically, a hardware ECC controller is implemented by listening
+on the incoming and outgoing data (and sometimes command)
+traffic between the NAND controller and the external NAND chip.
+
+This usually means that the driver resets the ECC controller before
+writing a sub-page, writes the sub-page, and then reads the parity
+bits from a few registers in the ECC controller. After all parity bits
+for all such ECC steps are collected, the driver writes them to the
+OOB.
+
+In theory, this would allow the driver to XOR the resulting parity bits
+with a constant, chosen such that the parity bits for an all-1 page are
+transformed into all-1 themselves.
+
+Some overly helpful ECC implementations force automatic writing
+of ecc bits (e.g. Freescale). This leads to crazy layouts like interleaved=
+
+data and parity blocks within the page, with data spilling into the OOB.
+
+On those, there is not much hope to work around the problem, since
+the presence of the fully automated mechanism usually implies the
+absence of a way to side-load the registers via software instead.
+
+The real trouble (and most hardware bugs) start when it comes to
+reading the data.
+
+Again, the ECC controller listens on the bus for the incoming data,
+computing on the fly. After a subpage worth of data, it must read
+the corresponding parity bits. This results in a syndrome in the ECC
+registers which will typically be all-0 for no errors. If there are errors=
+,
+the location of correctable bit errors can be extracted from the (non-0)
+syndrome.
+
+If we have XOR-ed the parity bits during write, we must undo that
+operation (another XOR) before the ECC controller gets to see
+them.
+
+Some controllers can be fed data directly through the register
+interface, in which case it's easy - read the parity bits (OOB) first,
+then read the data followed by side-loading the XORed parity bits.
+
+Unfortunately those controllers are rare and most can only read
+the parity bits in the data stream directly.
+
+
+Getting desperate
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+Depending on the specifics of the ECC scheme, it can be possible to
+transform the incorrect syndrome caused by the XORed parity bits after
+the fact, but that usually means rather heavy software calculations in
+the case of bit errors.
+
+Worst case, the heavy calculations have to be performed for every
+page, errors or not, which almost certainly makes the scheme
+impractical - software ECC may be faster.
+
+
+When all else fails
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+In the special case of erased pages, it is possible to fake the above sugg=
+estion
+without to much effort. This is for situations where we can't massage the =
+ECC
+controller to operate with the correct parity pattern, and we can't cheapl=
+y
+fix the last, incorrect ECC steps.
+
+A fully erased, error free page, with an all-1 parity pattern usually repo=
+rts
+ECC errors. These may be correctable, or, more likely, uncorrectable bit
+errors. Of course, even correctable bit errors are bogus in this case.
+
+If there are no actual errors, the syndrome is always going to be the
+same, and can be recognised as the specific syndrome of a fully erased pag=
+e.
+In this case, we simply return the data and ignore the reported errors.
+
+If there is a small number of 0-bits in the erased page, the syndrome will=
+
+be different. We can't recognise them all, but if an error is reported on
+read, we can start looking into the data.
+
+The software simply scans the page data for 0-bits. This can be done quite=
+
+efficiently by looking for non 0xffffffff words, etc. If the number of
+encountered 0-bits (including parity bits) exceeds to correction power of =
+the
+ECC, we decide the page wasn't erased and handle the error as normal.
+
+If the number of allowed 0-bits isn't exceeded, we decide that we're deali=
+ng
+with an erased page with correctable bit errors. We ensure that the read
+buffer is now all-1 and report an appropriate number of 'corrected' bit er=
+rors
+to MTD.
+
+There is a possible failure mode with all this. If there is a valid ECC co=
+de
+word (data+ECC) which contains less than, say, 4 0-bits, we could
+mis-diagnose it as an erased page.
+
+There is a high likelihood that this isn't in fact the case with,
+say, a 4-bit ECC implementation. A 4-bit BCH scheme would use 52 ECC
+bits per 512 bytes of data. Without detailed knowledge of the specific
+implementation, we can estimate the likelihood of the existence of the
+above failure mode in a specific implementation as being less than (lots
+of handwaving)...
+
+    Number of ECC bits: 52
+    Number of possible ECC bit combinations: 2^52
+    Number of possible ECC bit combinations with up to 4 0-bits ~ 2*10^5
+
+about 6*10^-11. Rather unlikely.=20
+
+If you want to be sure, there are 'only' about 10^12 possible data pattern=
+s
+with up to 4 0-bits within 512 bytes. If you have a few flash chips to bur=
+n
+(and a little time ;-) you could exhaustively test all possibilities and c=
+heck
+for parity bits having less than the remaining number of 0-bits.
+
+
+And if that was too complicated...
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+... pick an unused OOB byte or two and always write them as 0 on any write=
+.
+If those bytes are mostly 1 on read we are dealing with an erased page.
+
+If OOB space is tight, spare bytes or sometimes spare bits are available b=
+etween
+the ECC blocks as the exact number of ECC bits doesn't always fit into an
+exact number of bytes or 16-bit words. If it's just spare bits, chances ar=
+e that
+they are already written as 0.
+
+
+Best regards,
+
+Iwo
+
+______________________________________________________________________
+This communication contains information which may be confidential or privi=
+leged. The information is intended solely for the use of the individual or=
+ entity named above.  If you are not the intended recipient, be aware that=
+ any disclosure, copying, distribution or use of the contents of this info=
+rmation is prohibited.  If you have received this communication in error, =
+please notify me by telephone immediately.
+______________________________________________________________________
