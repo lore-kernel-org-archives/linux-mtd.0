@@ -1,25 +1,22 @@
-Received: from mail-bn1ln0175.outbound.protection.outlook.com
- ([2a01:111:f400:7c10::175] helo=na01-bn1-obe.outbound.protection.outlook.com)
+Received: from bear.ext.ti.com ([192.94.94.41])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X2unn-0001bC-EP
- for linux-mtd@lists.infradead.org; Fri, 04 Jul 2014 04:08:48 +0000
-From: Priyanka Jain <Priyanka.Jain@freescale.com>
-To: Scott Wood <scottwood@freescale.com>
-Subject: RE: [PATCH] devicetree/bindings: Add binding for micron n25q512a
- memory
-Date: Fri, 4 Jul 2014 04:08:16 +0000
-Message-ID: <b7e1d3bf1675492585121d9e7950f05a@BLUPR03MB135.namprd03.prod.outlook.com>
-References: <1404382376-3115-1-git-send-email-Priyanka.Jain@freescale.com>
- <1404425400.21434.89.camel@snotra.buserror.net>
-In-Reply-To: <1404425400.21434.89.camel@snotra.buserror.net>
+ id 1X2vIt-0004iW-TS
+ for linux-mtd@lists.infradead.org; Fri, 04 Jul 2014 04:40:56 +0000
+From: "Gupta, Pekon" <pekon@ti.com>
+To: Atlant Schmidt <aschmidt@dekaresearch.com>,
+ "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Subject: RE: Where is the "scrubbing" threshold set in UBI? Can it be easily
+ varied?
+Date: Fri, 4 Jul 2014 04:40:26 +0000
+Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EAFB2E4@DBDE04.ent.ti.com>
+References: <0A40042D85E7C84DB443060EC44B3FD36D986A2F14@dekaexchange07.deka.local>
+In-Reply-To: <0A40042D85E7C84DB443060EC44B3FD36D986A2F14@dekaexchange07.deka.local>
 Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
+Cc: Andrew Coll <acoll@dekaresearch.com>,
+ Cale Surgen <csurgen@dekaresearch.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,54 +26,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogV29vZCBTY290dC1CMDc0
-MjENCj4gU2VudDogRnJpZGF5LCBKdWx5IDA0LCAyMDE0IDM6NDAgQU0NCj4gVG86IEphaW4gUHJp
-eWFua2EtQjMyMTY3DQo+IENjOiBkZXZpY2V0cmVlQHZnZXIua2VybmVsLm9yZzsgbGludXhwcGMt
-ZGV2QGxpc3RzLm96bGFicy5vcmc7IGxpbnV4LQ0KPiBzcGlAdmdlci5rZXJuZWwub3JnOyBsaW51
-eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPiBTdWJqZWN0OiBSZTogW1BBVENIXSBkZXZpY2V0
-cmVlL2JpbmRpbmdzOiBBZGQgYmluZGluZyBmb3IgbWljcm9uIG4yNXE1MTJhDQo+IG1lbW9yeQ0K
-PiANCj4gT24gVGh1LCAyMDE0LTA3LTAzIGF0IDE1OjQyICswNTMwLCBQcml5YW5rYSBKYWluIHdy
-b3RlOg0KPiA+IC1NaWNyb24gbjI1cTUxMmEgbWVtb3J5IGlzIHN1cHBvcnRlZCBieSBtMjVwODAg
-ZHJpdmVyLg0KPiA+ICBBZGQgY29tcGF0aWJsZSBmaWVsZCByZXF1aXJlZCB0byBzdXBwb3J0IG4y
-NXE1MTJhIGluIG0yNXA4MC50eHQgLUFkZA0KPiA+IG1pY3JvbiB0byB0aGUgdmVuZG9yLXByZWZp
-eGVzLnR4dCBmaWxlDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBQcml5YW5rYSBKYWluIDxQcml5
-YW5rYS5KYWluQGZyZWVzY2FsZS5jb20+DQo+ID4gLS0tDQo+ID4gIERvY3VtZW50YXRpb24vZGV2
-aWNldHJlZS9iaW5kaW5ncy9tdGQvbTI1cDgwLnR4dCAgIHwgICAgMSArDQo+ID4gIC4uLi9kZXZp
-Y2V0cmVlL2JpbmRpbmdzL3ZlbmRvci1wcmVmaXhlcy50eHQgICAgICAgIHwgICAgMSArDQo+ID4g
-IDIgZmlsZXMgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAwIGRlbGV0aW9ucygtKQ0KPiANCj4g
-V2h5IGRpZCB5b3Ugc2VuZCB0aGlzIHRvIHRoZSBwcGMgbGlzdCBidXQgbm90IHRoZSBzcGkgb3Ig
-bXRkIGxpc3RzPw0KPiANCltKYWluIFByaXlhbmthLUIzMjE2N10gU29ycnksIEkgbWlzc2VkIHRo
-YXQNCj4gSSdtIGhhdmluZyBhIGhhcmQgdGltZSBmb2xsb3dpbmcgdGhlIGZsb3cgb2YgaG93IHRo
-ZXNlIFNQSSBkZXZpY2VzIGdldA0KPiBib3VuZCAtLSBpcyB0aGUgY29tcGF0aWJsZSBpbnZvbHZl
-ZCBhdCBhbGw/ICBJIGRvbid0IHNlZSB0aGlzIHN0cmluZw0KPiAod2l0aCB2ZW5kb3IgcHJlZml4
-IGluY2x1ZGVkKSBpbiB0aGUgZHJpdmVyLiAgSSBkbyBzZWUgYSB0YWJsZSB0aGF0DQo+IGNvbnRh
-aW5zIHdoYXQgbG9va3MgbGlrZSBkZXZpY2UgSURzLiAgSWYgdGhlIGRldmljZSBjYW4gcmVwb3J0
-IGl0cyBpZCwNCj4gc2hvdWxkbid0IHdlIHJlbHkgb24gdGhhdCByYXRoZXIgdGhhbiBkZXZpY2Ug
-dHJlZSBjb21wYXRpYmxlPw0KPiANCj4gLVNjb3R0DQpbSmFpbiBQcml5YW5rYS1CMzIxNjddDQpT
-cGkgZHJpdmVyIGhhcyBhIGNoZWNrIHRvIGRldmljZSBuYW1lIGNvcnJlc3BvbmRpbmcgdG8gZGV2
-aWNlLWlkIGFuZCBjb21wYXJlIHRvIHdoYXQgaXMgcGFzc2VkIGluIGR0cyBzdHJpbmcuDQpOZXcg
-Y2hlY2twYXRjaCBzY3JpcHQgc2VhcmNoIGZvciBleGFjdCBzdHJpbmcgbWF0Y2ggaW4gYmluZGlu
-ZyBmb2xkZXIuIFNvLCBJIGhhdmUgYWRkZWQgdGhpcyBpbiBleGFtcGxlLg0KPiANCj4gDQo+ID4g
-ZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvbTI1cDgw
-LnR4dA0KPiA+IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9tMjVwODAu
-dHh0DQo+ID4gaW5kZXggNDYxMWFhOC4uY2UwMmU4MSAxMDA2NDQNCj4gPiAtLS0gYS9Eb2N1bWVu
-dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL20yNXA4MC50eHQNCj4gPiArKysgYi9Eb2N1
-bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL20yNXA4MC50eHQNCj4gPiBAQCAtNyw2
-ICs3LDcgQEAgUmVxdWlyZWQgcHJvcGVydGllczoNCj4gPiAgICAgICAgICAgICAgICAgdGhlIERU
-IGJpbmRpbmcgaXMgbm90IExpbnV4LW9ubHksIGJ1dCBpbiBjYXNlIG9mIExpbnV4LA0KPiBzZWUg
-dGhlDQo+ID4gICAgICAgICAgICAgICAgICJzcGlfbm9yX2lkcyIgdGFibGUgaW4gZHJpdmVycy9t
-dGQvc3BpLW5vci9zcGktbm9yLmMNCj4gZm9yIHRoZSBsaXN0DQo+ID4gICAgICAgICAgICAgICAg
-IG9mIHN1cHBvcnRlZCBjaGlwcy4NCj4gPiArICAgICAgICAgICAgICAgZXhhbXBsZTogIm1pY3Jv
-bixuMjVxNTEyYSINCj4gPiAgLSByZWcgOiBDaGlwLVNlbGVjdCBudW1iZXINCj4gPiAgLSBzcGkt
-bWF4LWZyZXF1ZW5jeSA6IE1heGltdW0gZnJlcXVlbmN5IG9mIHRoZSBTUEkgYnVzIHRoZSBjaGlw
-IGNhbg0KPiA+IG9wZXJhdGUgYXQNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9u
-L2RldmljZXRyZWUvYmluZGluZ3MvdmVuZG9yLXByZWZpeGVzLnR4dA0KPiA+IGIvRG9jdW1lbnRh
-dGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3ZlbmRvci1wcmVmaXhlcy50eHQNCj4gPiBpbmRleCA0
-ZDdmMzc1Li5hNDRjZmVlIDEwMDY0NA0KPiA+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJl
-ZS9iaW5kaW5ncy92ZW5kb3ItcHJlZml4ZXMudHh0DQo+ID4gKysrIGIvRG9jdW1lbnRhdGlvbi9k
-ZXZpY2V0cmVlL2JpbmRpbmdzL3ZlbmRvci1wcmVmaXhlcy50eHQNCj4gPiBAQCAtNzksNiArNzks
-NyBAQCBtYXJ2ZWxsCU1hcnZlbGwgVGVjaG5vbG9neSBHcm91cCBMdGQuDQo+ID4gIG1heGltCU1h
-eGltIEludGVncmF0ZWQgUHJvZHVjdHMNCj4gPiAgbWljcmVsCU1pY3JlbCBJbmMuDQo+ID4gIG1p
-Y3JvY2hpcAlNaWNyb2NoaXAgVGVjaG5vbG9neSBJbmMuDQo+ID4gK21pY3JvbglNaWNyb24gVGVj
-aG5vbG9neSBJbmMuDQo+ID4gIG1vc2FpeHRlY2gJTW9zYWl4IFRlY2hub2xvZ2llcywgSW5jLg0K
-PiA+ICBtb3hhCU1veGENCj4gPiAgbXBsCU1QTCBBRw0KPiANCg0K
+>From: Atlant Schmidt
+>
+>Folks:
+>
+>  Within the UBI layer, where is the threshold set that
+>  determines how many bit-flips must occur on a read
+>  before the block is "scrubbed" (stored into another
+>  location)?
+>
+>  And is this done on a page-by-page basis or on a
+>  whole-LEB/PEB basis? That is, if a single page has
+>  more than threshold number of bit flips, will just
+>  that page be relocated or will the entire LEB be
+>  relocated to another PEB? (I'd assume the later
+>  because that's the level at which UBI understands
+>  the organization of the storage.)
+>
+>  Also:
+>
+>  It's a shame there doesn't seem to be a UBI ioctl()
+>  to control this; it would be nice to be able to run
+>  routinely with the threshold set high but be able to
+>  easily enter "scrubbing" mode where even single bit-
+>  flips could be scrubbed away.
+>
+No, it's not at all shameful, Instead NAND framework gives controllability
+to set bitflip threshold via following sysfs entry.
+$KERNEL/Documentation/ABI/testing/sysfs-class-mtd
+	/sys/class/mtd/mtdX/bitflip_threshold
+
+And there patch for observing the bitflips via sysfs too.
+	[PATCH v3 0/3] mtd: Add sysfs entries and account BBT blocks properly
+	http://lists.infradead.org/pipermail/linux-mtd/2014-June/054376.html
+
+
+with regards, pekon
