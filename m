@@ -1,22 +1,44 @@
-Received: from mail-qc0-x22b.google.com ([2607:f8b0:400d:c01::22b])
+Received: from mail-lb0-x231.google.com ([2a00:1450:4010:c04::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X47ww-000327-14
- for linux-mtd@lists.infradead.org; Mon, 07 Jul 2014 12:23:15 +0000
-Received: by mail-qc0-f171.google.com with SMTP id w7so3756738qcr.30
- for <linux-mtd@lists.infradead.org>; Mon, 07 Jul 2014 05:22:52 -0700 (PDT)
+ id 1X4C3G-0005pe-L1
+ for linux-mtd@lists.infradead.org; Mon, 07 Jul 2014 16:46:03 +0000
+Received: by mail-lb0-f177.google.com with SMTP id u10so3026886lbd.22
+ for <linux-mtd@lists.infradead.org>; Mon, 07 Jul 2014 09:45:38 -0700 (PDT)
 MIME-Version: 1.0
-Sender: christian.riesch@gmail.com
-In-Reply-To: <817d0c27-e4a8-45e2-b2c8-89fe64256268@mary.at.omicron.at>
-References: <817d0c27-e4a8-45e2-b2c8-89fe64256268@mary.at.omicron.at>
-Date: Mon, 7 Jul 2014 14:22:51 +0200
-Message-ID: <CABkLObpxdSpCCebbtD8jnNYiavoTg3Xroo5YoG36Nz=fJO62sQ@mail.gmail.com>
-Subject: Re: [RESEND PATCH v4 0/4] mtd: cfi_cmdset_0002: Add OTP support for
- Micron M29EW NOR flashes
-From: Christian Riesch <christian.riesch@omicron.at>
-To: Brian Norris <computersforpeace@gmail.com>
+Sender: kalluripunnaiahchoudary@gmail.com
+In-Reply-To: <4355153.EcMz3bZZ97@wuerfel>
+References: <1403838162-18756-1-git-send-email-punnaia@xilinx.com>
+ <4e814a4c-64f9-4dc0-abbb-0f8e87d94a94@BY2FFO11FD003.protection.gbl>
+ <4355153.EcMz3bZZ97@wuerfel>
+Date: Mon, 7 Jul 2014 22:15:38 +0530
+Message-ID: <CAGnW=BaU6iS6BNa_MQNAK_Sck-Cv=Z3iL87gMENPQOq2otMjKg@mail.gmail.com>
+Subject: Re: [PATCH RFC v3 2/2] memory: pl353: Add driver for arm pl353 static
+ memory controller
+From: punnaiah choudary kalluri <punnaia@xilinx.com>
+To: Arnd Bergmann <arnd@arndb.de>
 Content-Type: text/plain; charset=UTF-8
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Christian Riesch <christian.riesch@omicron.at>
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>,
+ "jussi.kivilinna@iki.fi" <jussi.kivilinna@iki.fi>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "michal.simek@xilinx.com" <michal.simek@xilinx.com>,
+ "ezequiel.garcia@free-electrons.com" <ezequiel.garcia@free-electrons.com>,
+ Grant Likely <grant.likely@linaro.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "jason@lakedaemon.net" <jason@lakedaemon.net>,
+ "pawel.moll@arm.com" <pawel.moll@arm.com>,
+ "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>,
+ "joern@logfs.org" <joern@logfs.org>,
+ Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>,
+ "robh+dt@kernel.org" <robh+dt@kernel.org>,
+ "acourbot@nvidia.com" <acourbot@nvidia.com>, "Gupta, Pekon" <pekon@ti.com>,
+ Punnaiah Choudary <kpc528@gmail.com>,
+ "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Rob Landley <rob@landley.net>, Kumar Gala <galak@codeaurora.org>, "Khoronzhuk,
+ Ivan" <ivan.khoronzhuk@ti.com>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,71 +48,126 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Brian,
+On Thu, Jul 3, 2014 at 4:09 PM, Arnd Bergmann <arnd@arndb.de> wrote:
+> On Friday 27 June 2014 08:32:42 Punnaiah Choudary Kalluri wrote:
+>
+>> +/**
+>> + * struct pl353_smc_data - Private smc driver structure
+>> + * @devclk:          Pointer to the peripheral clock
+>> + * @aperclk:         Pointer to the APER clock
+>> + */
+>> +struct pl353_smc_data {
+>> +     struct clk              *memclk;
+>> +     struct clk              *aclk;
+>> +};
+>> +
+>> +/* SMC virtual register base */
+>> +static void __iomem *pl353_smc_base;
+>
+> Drivers should not assume that there is only a single instance of the
+> hardware in the system. Please remove this global variable and
+> change the code to pass around a pointer to a structure containing
+> it.
 
-On Mon, May 5, 2014 at 8:14 AM, Christian Riesch
-<christian.riesch@omicron.at> wrote:
-> Hello Brian,
->
-> The first version of this patchset was posted to the list in February 2013.
-> There were a few comments to these patches (from Artem), which I have
-> addressed in separate patches (merged by you on March 9).
->
-> Since there are no further objections against these patches (after a review
-> time of more than a year), I would like to ask you to merge them as well.
+Since, the pl353 nand driver has dependency with this driver for configuring the
+bus width,operational parameters and ecc specific settings.
+So, i didnt find any mechanism for passing this instance from other driver other
+than exporting this instance.
+http://lists.infradead.org/pipermail/linux-mtd/2014-April/053432.html
 
-Since you didn't take this patchset for the 3.16 merge window, I'd
-like to know if there is anything I should change here. Otherwise I
-would like to ask you to apply this patchset.
-Thanks, Christian
+Please suggest the better option if you want it to be not global.
+
+>> +/**
+>> + * pl353_smc_set_buswidth - Set memory buswidth
+>> + * @bw:      Memory buswidth (8 | 16)
+>> + * Return: 0 on success or negative errno.
+>> + */
+>> +int pl353_smc_set_buswidth(unsigned int bw)
+>> +{
+>> +
+>> +     if (bw != PL353_SMC_MEM_WIDTH_8  && bw != PL353_SMC_MEM_WIDTH_16)
+>> +             return -EINVAL;
+>> +
+>> +     writel(bw, pl353_smc_base + PL353_SMC_SET_OPMODE_OFFS);
+>> +     writel(PL353_SMC_DC_UPT_NAND_REGS, pl353_smc_base +
+>> +            PL353_SMC_DIRECT_CMD_OFFS);
+>> +
+>> +     return 0;
+>> +}
+>> +EXPORT_SYMBOL_GPL(pl353_smc_set_buswidth);
+>
+> Why is this an exported interface? Wouldn't that setting just be
+> determined from DT when the device is probed?
+
+Nand driver rely on auto bus width detection mechanism for identifying
+the bus width using onfi parameter page settings. So, once the driver
+finds the bus width, updates accordingly using this API
 
 >
-> Best regards,
-> Christian
+>> +/**
+>> + * pl353_smc_get_nand_int_status_raw - Get NAND interrupt status bit
+>> + * Return: the raw_int_status1 bit from the memc_status register
+>> + */
+>> +int pl353_smc_get_nand_int_status_raw(void)
+>> +{
+>> +     u32 reg;
+>> +
+>> +     reg = readl(pl353_smc_base + PL353_SMC_MEMC_STATUS_OFFS);
+>> +     reg >>= PL353_SMC_MEMC_STATUS_RAW_INT_1_SHIFT;
+>> +     reg &= 1;
+>> +
+>> +     return reg;
+>> +}
+>> +EXPORT_SYMBOL_GPL(pl353_smc_get_nand_int_status_raw);
+>> +
+>> +/**
+>> + * pl353_smc_clr_nand_int - Clear NAND interrupt
+>> + */
+>> +void pl353_smc_clr_nand_int(void)
+>> +{
+>> +     writel(PL353_SMC_CFG_CLR_INT_CLR_1,
+>> +             pl353_smc_base + PL353_SMC_CFG_CLR_OFFS);
+>> +}
+>> +EXPORT_SYMBOL_GPL(pl353_smc_clr_nand_int);
 >
+> Why aren't these just part of the NAND driver?
+
+As mentioned, SMC supports two interfaces and most of the register contains
+the control/status bits for both the interfaces. so, the smc driver
+provides relevant
+APIs for controlling the nand and nor/sram interfaces. The current
+version of the
+driver supports nand interface but the future versions include
+nor/sram interface.
+
 >
-> This patchset adds support for the reading, writing, and locking of the
-> one time programmable (OTP) memory of Micron M29EW NOR flashes.
+>> +     pl353_smc_set_cycles(t_rc, t_wc, t_rea, t_wp, t_clr, t_ar, t_rr);
+>> +     writel(PL353_SMC_CFG_CLR_INT_CLR_1,
+>> +             pl353_smc_base + PL353_SMC_CFG_CLR_OFFS);
+>> +     writel(PL353_SMC_DC_UPT_NAND_REGS, pl353_smc_base +
+>> +            PL353_SMC_DIRECT_CMD_OFFS);
+>> +     /* Wait till the ECC operation is complete */
+>> +     do {
+>> +             if (pl353_smc_ecc_is_busy_noirq())
+>> +                     cpu_relax();
+>> +             else
+>> +                     break;
+>> +     } while (!time_after_eq(jiffies, timeout));
 >
-> These flashes have a 256 byte OTP memory, which is called extended
-> memory region in its datasheet. The flash is compatible to Spansion S29GL
-> and Macronix MX29GL devices, so support for the OTP memory of these
-> flashes should also be possible.
+> This blocks the CPU for up to a second (the timeout value). Since you are
+> not in atomic context, you can instead sleep here, e.g. using msleep(1)
+> or some other appropriate timeout.
 >
-> Tests with this patchset were done with a single Micron M29EW device
-> (512 Mbit, 16 bit) on a custom board with a Texas Instruments AM1808
-> system on chip.
+> What is the expected average duration of the loop?
+
+The expected duration of the loop depends on the given timing parameters.
+In the worst case it should not be more than 2-3 milli seconds and in the best
+case it should be 2-3 micro seconds. I agree your point to use msleep rather
+than the busy wait using cpu_relax. I will fix this in next version.
+
+Please provide your inputs for my above answers.
+
+Thanks for the review
+Punnaiah
 >
-> Prerequisites:
-> - Applies on linux-mtd.git
->
-> Changes for v2:
-> - dropped one patch that changes the detection of M29EW devices,
->   this patch is currently not required
-> - added support for locking
-> - fixed a few bugs in the loop that walks through the OTP memory
->
-> Changes for v3:
-> - Added retlet parameter to cfi_amdstd_get_{fact,user}_prot_info
-> - Fixed partial write of words
->
-> Changes for v4:
-> - Updated prerequisites in cover letter
->
-> Christian Riesch (4):
->   mtd: cfi_cmdset_0002: Add support for reading OTP
->   mtd: cfi_cmdset_0002: Invalidate cache after entering/exiting OTP
->     memory
->   mtd: cfi_cmdset_0002: Add support for writing OTP memory
->   mtd: cfi_cmdset_0002: Add support for locking OTP memory
->
->  drivers/mtd/chips/cfi_cmdset_0002.c |  350 +++++++++++++++++++++++++++++++++--
->  1 file changed, 331 insertions(+), 19 deletions(-)
->
-> --
-> 1.7.9.5
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>         Arnd
