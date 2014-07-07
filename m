@@ -1,20 +1,24 @@
-Received: from mail-lb0-x22e.google.com ([2a00:1450:4010:c04::22e])
+Received: from mailout.micron.com ([137.201.242.129])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X3aiw-0003kx-Gs
- for linux-mtd@lists.infradead.org; Sun, 06 Jul 2014 00:54:35 +0000
-Received: by mail-lb0-f174.google.com with SMTP id u10so1938823lbd.19
- for <linux-mtd@lists.infradead.org>; Sat, 05 Jul 2014 17:54:10 -0700 (PDT)
+ id 1X424E-0005BO-Jn
+ for linux-mtd@lists.infradead.org; Mon, 07 Jul 2014 06:06:23 +0000
+From: =?iso-2022-jp?B?QmVhbiBIdW8gGyRCcDlJTElMGyhCIChiZWFuaHVvKQ==?=
+ <beanhuo@micron.com>
+To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>,
+ Paul Gortmaker <paul.gortmaker@windriver.com>
+Subject: [PATCH v3] mtd:nor:timeout:fix do_write_buffer() timeout error
+Date: Mon, 7 Jul 2014 06:05:12 +0000
+Message-ID: <A765B125120D1346A63912DDE6D8B6315D7C21@NTXXIAMBX02.xacn.micron.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <87egy189tw.fsf@nbsps.com>
-References: <CAAQYJAs6ky1CvZWoh9NjPLYbUVcjQCh7SW3NrFUzLcXvcHLZRw@mail.gmail.com>
- <87egy189tw.fsf@nbsps.com>
-Date: Sun, 6 Jul 2014 02:54:10 +0200
-Message-ID: <CAAQYJAuEV=d=6QnEvua4nFuuy9BHQuuTgSQmqWtLFxaGFRLXfQ@mail.gmail.com>
-Subject: Re: [RFC] ubi-utils: improve compatibility with klibc
-From: Andrea Adami <andrea.adami@gmail.com>
-To: Bill Pringlemeir <bpringlemeir@nbsps.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Jingoo Han <jg1.han@samsung.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "b32955@freescale.com" <b32955@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,64 +28,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jul 4, 2014 at 4:42 PM, Bill Pringlemeir <bpringlemeir@nbsps.com> wrote:
-> On  3 Jul 2014, andrea.adami at gmail.com wrote:
->
->> I have put together a patchset allowing to compile the ubi utils
->> statically against klibc.
->
->> The patches are based on today's mtd-utils master, please have a
->> preview here:
->
->> https://github.com/andrea-adami/meta-openembedded/tree/master/meta-initramfs/recipes-devtools/mtd/ubi-utils-klibc
->
->> Please let me know if there is something to change before sending them
->> to the mailing list.
->
-> I am no authority, but I appreciate your work.  I have tried to get the
-> ubi tools working with klibc and I think these patches have been around
-> for some time; I seem to remember seeing them.
->
-Bill,
-thanks for your review.
-Yes, it's me again insisting to pack a small ubiattach in a little cpio...
+The size of the buffer program has been increased from 256 to 512 , 2ms max=
+imum timeout for do_write_buffer can not adapt to all the different vendor'=
+s norflash.There maximum timeout information in the CFI area,so the best wa=
+y is to choose the result calculated according to timeout field of struct c=
+fi_ident that probed from norflash's CFI aera.This is also a standard defin=
+ed by CFI.
 
-> I would suggest to modify '0001-Makefile-only-build-ubi-utils.patch' to
-> use the over-ride.  So we could have,
->
->   UBI_ONLY ?= 0
->
-> And then modify the make rules on this conditional.  That way, people
-> using a default commandline/environment will get the full tools suite as
-> per normal.  It may even be best to split the functionality.  There is
-> 'ftl', 'nand', 'jffs2' and 'ubi' and maybe the 'otp'.  So, someway to
-> pass a make variable through the environment or command line to change
-> what is built is probably better? (lacking 'configure' or 'menuconfig').
->
-This is an interesting approach.
-Anyhway, patch 0001 is not meant for upstream, I've marked its
-Upstream-Status: Inappropriate
+Without this change, if the size of buffer program is 512 or bigger than 25=
+6, due to timeout is the shorter than that the chip required,do_write_buffe=
+r sometimes fails.
 
-> For '0003-libubi.c-add-klibc-specific-fixes.patch', why can't 'klibc'
-> fix the 'ioctl' definition?  I think that updating 'common.h' to handle
-> the peculiarities of 'klibc' and redefine the 'ioctl()' would be better,
-> if 'klibc' can't change.
->
-Yes, definitely.
-I'm in contact with couple of klibc developers (got patch 4 from one
-of them) and will bother them...
-So I'll add to patch 0003: Upstream-Status: Inappropriate
+Tested with Micron JS28F512M29EWx and Micron MT28EW512ABA flash devices.
 
-> I don't see issues with the other patches.
->
-> Fwiw,
-> Bill Pringlemeir.
+Signed-off-by: bean huo <beanhuo@micron.com>
+---
+changes=20
+	v1->v2:Deleted unused parameters in this patch (word_write_time_max and er=
+ase_time_max).
+Using usecs_to_jiffies instead of msecs_to_jiffies for convert timeout valu=
+e into jiffies.
+	v2->v3:Removed unnecessary messages form comments and deleted trailing whi=
+tespace.
 
-Thanks.
-I was thinking about maybe splitting patch 0005 in two parts, one for
-getline() and another for rpmatch().
-Or on the opposite squash 0004 and 0005 together. It's little stuff anyway.
-Opinions?
+ drivers/mtd/chips/cfi_cmdset_0002.c |   27 ++++++++++++++++++++++++---
+ 1 file changed, 24 insertions(+), 3 deletions(-)
 
-Regards
-Andrea
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cm=
+dset_0002.c
+index e21fde9..f7098d6 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -628,10 +628,24 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map=
+, int primary)
+ 		cfi->chips[i].word_write_time =3D 1<<cfi->cfiq->WordWriteTimeoutTyp;
+ 		cfi->chips[i].buffer_write_time =3D 1<<cfi->cfiq->BufWriteTimeoutTyp;
+ 		cfi->chips[i].erase_time =3D 1<<cfi->cfiq->BlockEraseTimeoutTyp;
++		/*
++		 * We first calculate the timeout max according to timeout
++		 * field of struct cfi_ident that probed from chip's CFI
++		 * aera,If haven't probed this information,we will specify
++		 * a default value,and the time unit is us.
++		 */
++		if (cfi->cfiq->BufWriteTimeoutTyp &&
++			cfi->cfiq->BufWriteTimeoutMax){
++			cfi->chips[i].buffer_write_time_max =3D
++				1<<(cfi->cfiq->BufWriteTimeoutTyp +
++					cfi->cfiq->BufWriteTimeoutMax);
++			} else {
++			/* specify maximum timeout for buffer program 2000us */
++				cfi->chips[i].buffer_write_time_max =3D 2000;
++				}
+ 		cfi->chips[i].ref_point_counter =3D 0;
+ 		init_waitqueue_head(&(cfi->chips[i].wq));
+ 	}
+-
+ 	map->fldrv =3D &cfi_amdstd_chipdrv;
+=20
+ 	return cfi_amdstd_setup(mtd);
+@@ -1462,8 +1476,15 @@ static int __xipram do_write_buffer(struct map_info =
+*map, struct flchip *chip,  {
+ 	struct cfi_private *cfi =3D map->fldrv_priv;
+ 	unsigned long timeo =3D jiffies + HZ;
+-	/* see comments in do_write_oneword() regarding uWriteTimeo. */
+-	unsigned long uWriteTimeout =3D ( HZ / 1000 ) + 1;
++	/* There maximum timeout information in the CFI area,so the
++	 * best way is to choose the result calculated according to
++	 * timeout field of struct cfi_ident that probed from
++	 * norflash's CFI aera,see comments in cfi_cmdset_0002().
++	 * uWriteTimeout is used for timeout step,it must be concerted
++	 * into jiffies.
++	 */
++	unsigned long uWriteTimeout =3D
++				usecs_to_jiffies(chip->buffer_write_time_max);
+ 	int ret =3D -EIO;
+ 	unsigned long cmd_adr;
+ 	int z, words;
+--
+1.7.9.5
