@@ -1,18 +1,19 @@
 Received: from szxga01-in.huawei.com ([119.145.14.64])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X43LT-0002ib-Mu
- for linux-mtd@lists.infradead.org; Mon, 07 Jul 2014 07:28:16 +0000
-Message-ID: <53BA4BD7.5070201@huawei.com>
-Date: Mon, 7 Jul 2014 15:27:19 +0800
+ id 1X43yb-00060E-PH
+ for linux-mtd@lists.infradead.org; Mon, 07 Jul 2014 08:08:42 +0000
+Message-ID: <53BA554E.1030804@huawei.com>
+Date: Mon, 7 Jul 2014 16:07:42 +0800
 From: hujianyang <hujianyang@huawei.com>
 MIME-Version: 1.0
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: [PATCH 7/7] Compile support
-References: <53BA491E.8060502@huawei.com>
-In-Reply-To: <53BA491E.8060502@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-1"
+To: <dedekind1@gmail.com>
+Subject: Re: [PATCH 4/4] UBIFS: Remove useless statements
+References: <5397C0E7.9070602@huawei.com> <5397C22C.70305@huawei.com>
+ <1404218279.6841.43.camel@sauron.fi.intel.com>
+In-Reply-To: <1404218279.6841.43.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Cc: Artem Bityutskiy <dedekind1@gmail.com>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,42 +23,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Compile enable.
+On 2014/7/1 20:37, Artem Bityutskiy wrote:
+> On Wed, 2014-06-11 at 10:42 +0800, hujianyang wrote:
+>> diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+>> index 0e045e7..f68e088 100644
+>> --- a/fs/ubifs/journal.c
+>> +++ b/fs/ubifs/journal.c
+>> @@ -389,6 +389,9 @@ out:
+>>  		ubifs_dump_budg(c, &c->bi);
+>>  		ubifs_dump_lprops(c);
+>>  		cmt_retries = dbg_check_lprops(c);
+>> +		if (cmt_retries)
+>> +			ubifs_err("fail to check lprops, error %d",
+>> +				  cmt_retries);
+>>  		up_write(&c->commit_sem);
+> 
+> The general approach we took in UBIFS is that the function prints about
+> its own problems itself. We tend to avoid not make calling function
+> print an error message for the called function.
+> 
+> Please, add an error message to 'dbg_check_lprops()' instead.
 
+I think error messages in 'dbg_check_lprops' is good enough.
 
-Signed-off-by: hujianyang <hujianyang@huawei.com>
----
- Makefile | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> I've dropped this change. The other ones look OK, so I applied them.
+> 
+> Thanks!
+> 
 
-diff --git a/Makefile b/Makefile
-index eade234..171976c 100644
---- a/Makefile
-+++ b/Makefile
-@@ -28,7 +28,8 @@ MTD_BINS = \
- 	sumtool jffs2reader
- UBI_BINS = \
- 	ubiupdatevol ubimkvol ubirmvol ubicrc32 ubinfo ubiattach \
--	ubidetach ubinize ubiformat ubirename mtdinfo ubirsvol ubiblock
-+	ubidetach ubinize ubiformat ubirename mtdinfo ubirsvol ubiblock \
-+	ubidump
+I add the return value check because a value-never-read warn. We set
+this cmt_retries and never read it. But it is really no nead check it
+as you said.
 
- BINS = $(MTD_BINS)
- BINS += mkfs.ubifs/mkfs.ubifs
-@@ -114,11 +115,12 @@ $(call mkdep,mkfs.ubifs/,mkfs.ubifs,,ubi-utils/libubi.a)
- obj-libiniparser.a = libiniparser.o dictionary.o
- obj-libscan.a      = libscan.o
- obj-libubi.a       = libubi.o
-+obj-libubifs.a     = libubifs.o
- obj-libubigen.a    = libubigen.o
+I think this is better.
 
- obj-mtdinfo   = libubigen.a
- obj-ubinize   = libubigen.a libiniparser.a
- obj-ubiformat = libubigen.a libscan.a
+- 		cmt_retries = dbg_check_lprops(c);
++		dbg_check_lprops(c);
 
--$(foreach v,libubi.a libubigen.a libiniparser.a libscan.a,$(eval $(call _mkdep,ubi-utils/,$(v))))
--$(foreach v,$(UBI_BINS),$(eval $(call mkdep,ubi-utils/,$(v),libubi.a ubiutils-common.o)))
-+$(foreach v,libubi.a libubigen.a libiniparser.a libscan.a libubifs,$(eval $(call _mkdep,ubi-utils/,$(v))))
-+$(foreach v,$(UBI_BINS),$(eval $(call mkdep,ubi-utils/,$(v),libubi.a libubifs.a ubiutils-common.o)))
--- 
-1.8.1.4
+There is not need to change this by a separate patch. Just leave it
+behind.
