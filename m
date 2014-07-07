@@ -1,13 +1,15 @@
-Received: from szxga03-in.huawei.com ([119.145.14.66])
+Received: from szxga01-in.huawei.com ([119.145.14.64])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X43AJ-0004cZ-8R
- for linux-mtd@lists.infradead.org; Mon, 07 Jul 2014 07:16:44 +0000
-Message-ID: <53BA491E.8060502@huawei.com>
-Date: Mon, 7 Jul 2014 15:15:42 +0800
+ id 1X43CJ-0005e6-4p
+ for linux-mtd@lists.infradead.org; Mon, 07 Jul 2014 07:18:48 +0000
+Message-ID: <53BA499B.5090206@huawei.com>
+Date: Mon, 7 Jul 2014 15:17:47 +0800
 From: hujianyang <hujianyang@huawei.com>
 MIME-Version: 1.0
 To: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: [PATCH RFC] ubi-utils:  Add a new utility ubidump
+Subject: [PATCH 1/7] UBI: Add a new ioctl to support ubidump
+References: <53BA491E.8060502@huawei.com>
+In-Reply-To: <53BA491E.8060502@huawei.com>
 Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
 Cc: Artem Bityutskiy <dedekind1@gmail.com>
@@ -20,111 +22,112 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+Add a new ioctl to dump EC header and VID header to user space. This
+ioctl is called without lock so I think users *should not* run ubidump
+when volume is mounted.
 
-I would like to show my work about a new utility named ubidump.
-This utility is different from jffs2dump. It can dump a specific
-leb to user space(maybe a arrange of lebs in the future).
-
-We have two logic layers in UBIFS and data on the eraseblocks
-is separated into two parts: UBI header which include EC header
-and VID header, UBIFS filesystem data which is formatted as
-different kinds of NODEs.
-
-We don't have a direct way to get both UBI info and UBIFS info
-in the past(really?) because these two layers are transparent to
-each other. Furthermore, when debugging with UBIFS, I found some
-key information is invisible and I need to modify the kernel to
-get them. For example, when I was dealing with commit 642f63e
-(UBIFS: fix fatal race condition), I can't find a way to dump the
-whole LOG area.
-
-I think dynamic debug is a helpful mechanism but in some embedded
-environment, kernel messages are stored in a ring buffer and are
-wrapped commonly.
-
-So I want to make a new utility to get data on eraseblocks in
-user space and analysis filesystem behaviors in an easy way.
-This utility can dump both UBI info and UBIFS info and all the
-prints are formatted as UBI or UBIFS style.
-
-I just want to make it a lighter utility but I have to copy lots
-of ubifs-media codes and debug codes to mtd-utils. UBI headers are
-got from a new ioctl(is there other way?) and UBIFS NODEs are got
-from a simply read(), then print them by functions copied from
-UBI/UBIFS debug.c in kernel.
+Struct ubi_ebdump_req is used to transfer data between user space and
+kernel space. Can I find a way to set buffer length from '64' to
+UBI_VID_HDR_SIZE and UBI_EC_HDR_SIZE?
 
 
-Usage: ubidump <UBI volume node file name> [-l <lnum>] [-i]
-			[--help] [--version]
+Signed-off-by: hujianyang <hujianyang@huawei.com>
+---
+ drivers/mtd/ubi/cdev.c      | 50 +++++++++++++++++++++++++++++++++++++++++++++
+ include/uapi/mtd/ubi-user.h | 15 ++++++++++++++
+ 2 files changed, 65 insertions(+)
 
-Example 1: ubidump /dev/ubi0_1 -n 2 - dump leb 2 in volume 1
-Example 2: ubidump /dev/ubi0_0 -n 1234 -i - dump leb 1234 with explicit info
+diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
+index 7646220..5b94323 100644
+--- a/drivers/mtd/ubi/cdev.c
++++ b/drivers/mtd/ubi/cdev.c
+@@ -581,6 +581,56 @@ static long vol_cdev_ioctl(struct file *file, unsigned int cmd,
+ 		break;
+ 	}
 
++	case UBI_IOCEBDUMP:
++	{
++		int pnum;
++		struct ubi_ebdump_req req;
++		struct ubi_ec_hdr *ec_hdr;
++		struct ubi_vid_hdr *vid_hdr;
++
++		err = copy_from_user(&req, argp,
++				     sizeof(struct ubi_ebdump_req));
++		if (err) {
++			err = -EFAULT;
++			break;
++		}
++
++		err = ubi_is_mapped(desc, req.lnum);
++		if (err <= 0)
++			break;
++		pnum = vol->eba_tbl[req.lnum];
++		req.pnum = pnum;
++
++		/*
++		 * No need to check return value of ubi_io_read(),
++		 * we will confirm the date in user space.
++		 */
++		ec_hdr = kzalloc(ubi->ec_hdr_alsize, GFP_NOFS);
++		if (!ec_hdr) {
++			err = -ENOMEM;
++			break;
++		}
++		ubi_io_read_ec_hdr(ubi, pnum, ec_hdr, 0);
++		memcpy(req.ec_hdr, ec_hdr, UBI_EC_HDR_SIZE);
++		kfree(ec_hdr);
++
++		vid_hdr = ubi_zalloc_vid_hdr(ubi, GFP_NOFS);
++		if (!vid_hdr) {
++			err = -ENOMEM;
++			break;
++		}
++		ubi_io_read_vid_hdr(ubi, pnum, vid_hdr, 1);
++		memcpy(req.vid_hdr, vid_hdr, UBI_VID_HDR_SIZE);
++		ubi_free_vid_hdr(ubi, vid_hdr);
++
++		err = copy_to_user(argp, &req,
++				   sizeof(struct ubi_ebdump_req));
++		if (err)
++			err = -EFAULT;
++
++		break;
++	}
++
+ 	default:
+ 		err = -ENOTTY;
+ 		break;
+diff --git a/include/uapi/mtd/ubi-user.h b/include/uapi/mtd/ubi-user.h
+index 1927b0d..76ff035 100644
+--- a/include/uapi/mtd/ubi-user.h
++++ b/include/uapi/mtd/ubi-user.h
+@@ -205,6 +205,8 @@
+ #define UBI_IOCVOLCRBLK _IOW(UBI_VOL_IOC_MAGIC, 7, struct ubi_blkcreate_req)
+ /* Remove the R/O block device */
+ #define UBI_IOCVOLRMBLK _IO(UBI_VOL_IOC_MAGIC, 8)
++/* Dump LEB header */
++#define UBI_IOCEBDUMP _IOW(UBI_VOL_IOC_MAGIC, 9, struct ubi_ebdump_req)
 
--h, --help		print help message
--n, --lnum		logic eraseblock num to dump
--i, --info		show explicit information about NODEs
--H, --header		show only header information
--N, --node		show only NODEs information
--V, --version		print program version
+ /* Maximum MTD device name length supported by UBI */
+ #define MAX_UBI_MTD_NAME_LEN 127
+@@ -442,4 +444,17 @@ struct ubi_blkcreate_req {
+ 	__s8  padding[128];
+ }  __packed;
 
-
-# ./ubidump /dev/ubi0_0 -n 0 -i
-lnum 0 is mapped to pnum 2054
-Erase counter header dump:
-	magic          0x55424923
-	version        1
-	ec             1
-	vid_hdr_offset 256
-	data_offset    512
-	image_seq      1256176231
-	hdr_crc        0x7758fc8b
-Volume identifier header dump:
-	magic     55424921
-	version   1
-	vol_type  1
-	copy_flag 0
-	compat    0
-	vol_id    0
-	lnum      0
-	data_size 0
-	used_ebs  0
-	data_pad  0
-	sqnum     8
-	hdr_crc   29b2783a
-scan LEB 0:0
-look at LEB 0:0 (15872 bytes left)
-scanning superblock node at LEB 0:0
-	magic          0x6101831
-	crc            0x88b345d6
-	node_type      6 (superblock node)
-	group_type     0 (no node group)
-	sqnum          1
-	len            4096
-	key_hash       0 (R5)
-	key_fmt        0 (simple)
-	flags          0x2
-	big_lpt      1
-	space_fixup  0
-	min_io_size    512
-	leb_size       15872
-	leb_cnt        8028
-	max_leb_cnt    8028
-	max_bud_bytes  5920256
-	log_lebs       28
-	lpt_lebs       11
-	orph_lebs      2
-	jhead_cnt      1
-	fanout         8
-	lsave_cnt      256
-	default_compr  1
-	rp_size        5242880
-	rp_uid         0
-	rp_gid         0
-	fmt_version    4
-	time_gran      1000000000
-	UUID           0x105248cUB
-look at LEB 0:4096 (11776 bytes left)
-hit empty space at LEB 0:4096
-stop scanning LEB 0 at offset 15872
++/**
++ * struct ubi_ebdump_req - a data structure used in dump eraseblock header.
++ * @lnum: logical eraseblock num to dump
++ * @ec_hdr: ec_hdr to set
++ * @vid_hdr: vid_hdr to set
++ */
++struct ubi_ebdump_req {
++	__s32	lnum;
++	__s32	pnum;
++	char	ec_hdr[64];
++	char	vid_hdr[64];
++}  __packed;
++
+ #endif /* __UBI_USER_H__ */
+-- 
+1.8.1.4
