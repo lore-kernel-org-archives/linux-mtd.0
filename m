@@ -1,44 +1,25 @@
-Received: from mail-lb0-x231.google.com ([2a00:1450:4010:c04::231])
+Received: from mail-bl2lp0212.outbound.protection.outlook.com
+ ([207.46.163.212] helo=na01-bl2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X4C3G-0005pe-L1
- for linux-mtd@lists.infradead.org; Mon, 07 Jul 2014 16:46:03 +0000
-Received: by mail-lb0-f177.google.com with SMTP id u10so3026886lbd.22
- for <linux-mtd@lists.infradead.org>; Mon, 07 Jul 2014 09:45:38 -0700 (PDT)
+ id 1X4GQe-0007pY-Oj
+ for linux-mtd@lists.infradead.org; Mon, 07 Jul 2014 21:26:29 +0000
+Message-ID: <1404768354.21434.191.camel@snotra.buserror.net>
+Subject: Re: [PATCH] devicetree/bindings: Add binding for micron n25q512a
+ memory
+From: Scott Wood <scottwood@freescale.com>
+To: Jain Priyanka-B32167 <Priyanka.Jain@freescale.com>
+Date: Mon, 7 Jul 2014 16:25:54 -0500
+In-Reply-To: <b7e1d3bf1675492585121d9e7950f05a@BLUPR03MB135.namprd03.prod.outlook.com>
+References: <1404382376-3115-1-git-send-email-Priyanka.Jain@freescale.com>
+ <1404425400.21434.89.camel@snotra.buserror.net>
+ <b7e1d3bf1675492585121d9e7950f05a@BLUPR03MB135.namprd03.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
 MIME-Version: 1.0
-Sender: kalluripunnaiahchoudary@gmail.com
-In-Reply-To: <4355153.EcMz3bZZ97@wuerfel>
-References: <1403838162-18756-1-git-send-email-punnaia@xilinx.com>
- <4e814a4c-64f9-4dc0-abbb-0f8e87d94a94@BY2FFO11FD003.protection.gbl>
- <4355153.EcMz3bZZ97@wuerfel>
-Date: Mon, 7 Jul 2014 22:15:38 +0530
-Message-ID: <CAGnW=BaU6iS6BNa_MQNAK_Sck-Cv=Z3iL87gMENPQOq2otMjKg@mail.gmail.com>
-Subject: Re: [PATCH RFC v3 2/2] memory: pl353: Add driver for arm pl353 static
- memory controller
-From: punnaiah choudary kalluri <punnaia@xilinx.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset=UTF-8
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>,
- "jussi.kivilinna@iki.fi" <jussi.kivilinna@iki.fi>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
+Content-Transfer-Encoding: 7bit
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "michal.simek@xilinx.com" <michal.simek@xilinx.com>,
- "ezequiel.garcia@free-electrons.com" <ezequiel.garcia@free-electrons.com>,
- Grant Likely <grant.likely@linaro.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "jason@lakedaemon.net" <jason@lakedaemon.net>,
- "pawel.moll@arm.com" <pawel.moll@arm.com>,
- "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>,
- "joern@logfs.org" <joern@logfs.org>,
- Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>,
- "robh+dt@kernel.org" <robh+dt@kernel.org>,
- "acourbot@nvidia.com" <acourbot@nvidia.com>, "Gupta, Pekon" <pekon@ti.com>,
- Punnaiah Choudary <kpc528@gmail.com>,
- "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Rob Landley <rob@landley.net>, Kumar Gala <galak@codeaurora.org>, "Khoronzhuk,
- Ivan" <ivan.khoronzhuk@ti.com>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -48,126 +29,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jul 3, 2014 at 4:09 PM, Arnd Bergmann <arnd@arndb.de> wrote:
-> On Friday 27 June 2014 08:32:42 Punnaiah Choudary Kalluri wrote:
->
->> +/**
->> + * struct pl353_smc_data - Private smc driver structure
->> + * @devclk:          Pointer to the peripheral clock
->> + * @aperclk:         Pointer to the APER clock
->> + */
->> +struct pl353_smc_data {
->> +     struct clk              *memclk;
->> +     struct clk              *aclk;
->> +};
->> +
->> +/* SMC virtual register base */
->> +static void __iomem *pl353_smc_base;
->
-> Drivers should not assume that there is only a single instance of the
-> hardware in the system. Please remove this global variable and
-> change the code to pass around a pointer to a structure containing
-> it.
+On Thu, 2014-07-03 at 23:08 -0500, Jain Priyanka-B32167 wrote:
+> 
+> > -----Original Message-----
+> > From: Wood Scott-B07421
+> > Sent: Friday, July 04, 2014 3:40 AM
+> > To: Jain Priyanka-B32167
+> > Cc: devicetree@vger.kernel.org; linuxppc-dev@lists.ozlabs.org; linux-
+> > spi@vger.kernel.org; linux-mtd@lists.infradead.org
+> > Subject: Re: [PATCH] devicetree/bindings: Add binding for micron n25q512a
+> > memory
+> > 
+> > On Thu, 2014-07-03 at 15:42 +0530, Priyanka Jain wrote:
+> > > -Micron n25q512a memory is supported by m25p80 driver.
+> > >  Add compatible field required to support n25q512a in m25p80.txt -Add
+> > > micron to the vendor-prefixes.txt file
+> > >
+> > > Signed-off-by: Priyanka Jain <Priyanka.Jain@freescale.com>
+> > > ---
+> > >  Documentation/devicetree/bindings/mtd/m25p80.txt   |    1 +
+> > >  .../devicetree/bindings/vendor-prefixes.txt        |    1 +
+> > >  2 files changed, 2 insertions(+), 0 deletions(-)
+> > 
+> > Why did you send this to the ppc list but not the spi or mtd lists?
+> > 
+> [Jain Priyanka-B32167] Sorry, I missed that
+> > I'm having a hard time following the flow of how these SPI devices get
+> > bound -- is the compatible involved at all?  I don't see this string
+> > (with vendor prefix included) in the driver.  I do see a table that
+> > contains what looks like device IDs.  If the device can report its id,
+> > shouldn't we rely on that rather than device tree compatible?
+> > 
+> > -Scott
+> [Jain Priyanka-B32167]
+> Spi driver has a check to device name corresponding to device-id and compare to what is passed in dts string.
 
-Since, the pl353 nand driver has dependency with this driver for configuring the
-bus width,operational parameters and ecc specific settings.
-So, i didnt find any mechanism for passing this instance from other driver other
-than exporting this instance.
-http://lists.infradead.org/pipermail/linux-mtd/2014-April/053432.html
+Please go into more detail.  I don't see where the string
+"micron,n25q512a" appears in the current kernel.  I do see "n25q512a",
+but how does that compare successfully with the version of the string
+that has a vendor compatible?
 
-Please suggest the better option if you want it to be not global.
+Again, is there a device ID that can be read at runtime?  Is there a
+compatible string that represents a common programming interface?
 
->> +/**
->> + * pl353_smc_set_buswidth - Set memory buswidth
->> + * @bw:      Memory buswidth (8 | 16)
->> + * Return: 0 on success or negative errno.
->> + */
->> +int pl353_smc_set_buswidth(unsigned int bw)
->> +{
->> +
->> +     if (bw != PL353_SMC_MEM_WIDTH_8  && bw != PL353_SMC_MEM_WIDTH_16)
->> +             return -EINVAL;
->> +
->> +     writel(bw, pl353_smc_base + PL353_SMC_SET_OPMODE_OFFS);
->> +     writel(PL353_SMC_DC_UPT_NAND_REGS, pl353_smc_base +
->> +            PL353_SMC_DIRECT_CMD_OFFS);
->> +
->> +     return 0;
->> +}
->> +EXPORT_SYMBOL_GPL(pl353_smc_set_buswidth);
->
-> Why is this an exported interface? Wouldn't that setting just be
-> determined from DT when the device is probed?
+> New checkpatch script search for exact string match in binding folder. So, I have added this in example.
 
-Nand driver rely on auto bus width detection mechanism for identifying
-the bus width using onfi parameter page settings. So, once the driver
-finds the bus width, updates accordingly using this API
+That check has a lot of false positives when it comes to compatible
+strings for specific chips that don't need to be specifically mentioned
+in a more generic binding.
 
->
->> +/**
->> + * pl353_smc_get_nand_int_status_raw - Get NAND interrupt status bit
->> + * Return: the raw_int_status1 bit from the memc_status register
->> + */
->> +int pl353_smc_get_nand_int_status_raw(void)
->> +{
->> +     u32 reg;
->> +
->> +     reg = readl(pl353_smc_base + PL353_SMC_MEMC_STATUS_OFFS);
->> +     reg >>= PL353_SMC_MEMC_STATUS_RAW_INT_1_SHIFT;
->> +     reg &= 1;
->> +
->> +     return reg;
->> +}
->> +EXPORT_SYMBOL_GPL(pl353_smc_get_nand_int_status_raw);
->> +
->> +/**
->> + * pl353_smc_clr_nand_int - Clear NAND interrupt
->> + */
->> +void pl353_smc_clr_nand_int(void)
->> +{
->> +     writel(PL353_SMC_CFG_CLR_INT_CLR_1,
->> +             pl353_smc_base + PL353_SMC_CFG_CLR_OFFS);
->> +}
->> +EXPORT_SYMBOL_GPL(pl353_smc_clr_nand_int);
->
-> Why aren't these just part of the NAND driver?
-
-As mentioned, SMC supports two interfaces and most of the register contains
-the control/status bits for both the interfaces. so, the smc driver
-provides relevant
-APIs for controlling the nand and nor/sram interfaces. The current
-version of the
-driver supports nand interface but the future versions include
-nor/sram interface.
-
->
->> +     pl353_smc_set_cycles(t_rc, t_wc, t_rea, t_wp, t_clr, t_ar, t_rr);
->> +     writel(PL353_SMC_CFG_CLR_INT_CLR_1,
->> +             pl353_smc_base + PL353_SMC_CFG_CLR_OFFS);
->> +     writel(PL353_SMC_DC_UPT_NAND_REGS, pl353_smc_base +
->> +            PL353_SMC_DIRECT_CMD_OFFS);
->> +     /* Wait till the ECC operation is complete */
->> +     do {
->> +             if (pl353_smc_ecc_is_busy_noirq())
->> +                     cpu_relax();
->> +             else
->> +                     break;
->> +     } while (!time_after_eq(jiffies, timeout));
->
-> This blocks the CPU for up to a second (the timeout value). Since you are
-> not in atomic context, you can instead sleep here, e.g. using msleep(1)
-> or some other appropriate timeout.
->
-> What is the expected average duration of the loop?
-
-The expected duration of the loop depends on the given timing parameters.
-In the worst case it should not be more than 2-3 milli seconds and in the best
-case it should be 2-3 micro seconds. I agree your point to use msleep rather
-than the busy wait using cpu_relax. I will fix this in next version.
-
-Please provide your inputs for my above answers.
-
-Thanks for the review
-Punnaiah
->
->         Arnd
+-Scott
