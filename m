@@ -1,25 +1,21 @@
-Received: from mail-bl2lp0212.outbound.protection.outlook.com
- ([207.46.163.212] helo=na01-bl2-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X4GQe-0007pY-Oj
- for linux-mtd@lists.infradead.org; Mon, 07 Jul 2014 21:26:29 +0000
-Message-ID: <1404768354.21434.191.camel@snotra.buserror.net>
-Subject: Re: [PATCH] devicetree/bindings: Add binding for micron n25q512a
- memory
-From: Scott Wood <scottwood@freescale.com>
-To: Jain Priyanka-B32167 <Priyanka.Jain@freescale.com>
-Date: Mon, 7 Jul 2014 16:25:54 -0500
-In-Reply-To: <b7e1d3bf1675492585121d9e7950f05a@BLUPR03MB135.namprd03.prod.outlook.com>
-References: <1404382376-3115-1-git-send-email-Priyanka.Jain@freescale.com>
- <1404425400.21434.89.camel@snotra.buserror.net>
- <b7e1d3bf1675492585121d9e7950f05a@BLUPR03MB135.namprd03.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 7 Jul 2014 16:52:22 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Boris BREZILLON <boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH] mtd: nand: stm_nand_bch: add new driver
+Message-ID: <20140707235222.GC7537@ld-irv-0074>
+References: <1401268805-26043-1-git-send-email-lee.jones@linaro.org>
+ <20140703002237.GM3599@ld-irv-0074>
+ <20140703100522.756f9715@bbrezillon>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20140703100522.756f9715@bbrezillon>
+Cc: devicetree@vger.kernel.org, Boris BREZILLON <b.brezillon.dev@gmail.com>,
+ kernel@stlinux.com, linux-kernel@vger.kernel.org,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ linux-mtd@lists.infradead.org, "Gupta, Pekon\"" <pekon@ti.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Lee Jones <lee.jones@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,53 +25,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2014-07-03 at 23:08 -0500, Jain Priyanka-B32167 wrote:
+Hi Boris,
+
+On Thu, Jul 03, 2014 at 10:05:22AM +0200, Boris BREZILLON wrote:
+> On Wed, 2 Jul 2014 17:22:37 -0700 Brian Norris <computersforpeace@gmail.com> wrote:
+> > On Wed, May 28, 2014 at 10:20:05AM +0100, Lee Jones wrote:
+> > > +
+> > > +	nand_timing0: nand-timing {
+> > > +		sig-setup	= <10>;
+> > > +		sig-hold	= <10>;
+> > > +		CE-deassert	= <0>;
+> > > +		WE-to-RBn	= <100>;
+> > > +		wr-on		= <10>;
+> > > +		wr-off		= <30>;
+> > > +		rd-on		= <10>;
+> > > +		rd-off		= <30>;
+> > > +		chip-delay	= <30>;		/* delay in us */
+> > > +	};
+> > 
+> > You didn't document any of this node. And I don't think we want to
+> > specify every single timing parameter in DT; it may make sense to use
+> > Boris Brezillon's approach (I note this further down, in the driver
+> > code) for mapping non-ONFI NAND timings into a compatible ONFI timing
+> > mode. This will greatly simplify the bindings needed, since it's
+> > standardized and auto-detectable in many cases.
 > 
-> > -----Original Message-----
-> > From: Wood Scott-B07421
-> > Sent: Friday, July 04, 2014 3:40 AM
-> > To: Jain Priyanka-B32167
-> > Cc: devicetree@vger.kernel.org; linuxppc-dev@lists.ozlabs.org; linux-
-> > spi@vger.kernel.org; linux-mtd@lists.infradead.org
-> > Subject: Re: [PATCH] devicetree/bindings: Add binding for micron n25q512a
-> > memory
-> > 
-> > On Thu, 2014-07-03 at 15:42 +0530, Priyanka Jain wrote:
-> > > -Micron n25q512a memory is supported by m25p80 driver.
-> > >  Add compatible field required to support n25q512a in m25p80.txt -Add
-> > > micron to the vendor-prefixes.txt file
-> > >
-> > > Signed-off-by: Priyanka Jain <Priyanka.Jain@freescale.com>
-> > > ---
-> > >  Documentation/devicetree/bindings/mtd/m25p80.txt   |    1 +
-> > >  .../devicetree/bindings/vendor-prefixes.txt        |    1 +
-> > >  2 files changed, 2 insertions(+), 0 deletions(-)
-> > 
-> > Why did you send this to the ppc list but not the spi or mtd lists?
-> > 
-> [Jain Priyanka-B32167] Sorry, I missed that
-> > I'm having a hard time following the flow of how these SPI devices get
-> > bound -- is the compatible involved at all?  I don't see this string
-> > (with vendor prefix included) in the driver.  I do see a table that
-> > contains what looks like device IDs.  If the device can report its id,
-> > shouldn't we rely on that rather than device tree compatible?
-> > 
-> > -Scott
-> [Jain Priyanka-B32167]
-> Spi driver has a check to device name corresponding to device-id and compare to what is passed in dts string.
+> 
+> AFAIR, the NAND timing representation for non-ONFI chips question was
+> left unanswered:
+> 
+> https://lkml.org/lkml/2014/5/20/581
+> 
+> I can definitely respin my NAND timings series, but I'd like to be sure
+> this is how you want it done before doing so.
 
-Please go into more detail.  I don't see where the string
-"micron,n25q512a" appears in the current kernel.  I do see "n25q512a",
-but how does that compare successfully with the version of the string
-that has a vendor compatible?
+Can we start by supporting ONFI-only (or ONFI-only, plus entries in
+nand_flash_ids[]), and have nand_base provide the translation so drivers
+can retrieve the info? Then we can begin supporting new drivers like
+Lee's, and worry about the DT question separately.
 
-Again, is there a device ID that can be read at runtime?  Is there a
-compatible string that represents a common programming interface?
+BTW, Lee: you're completely missing the definitions for
+'struct nand_sdr_timings' in this patch, so it doesn't compile.
 
-> New checkpatch script search for exact string match in binding folder. So, I have added this in example.
+> Just as a reminder, you and Jason thought NAND timings for non-ONFI
+> chips could be auto detected thanks to READID informations (by storing
+> some sort of "NANDID <-> timings" association table).
 
-That check has a lot of false positives when it comes to compatible
-strings for specific chips that don't need to be specifically mentioned
-in a more generic binding.
+Yes, thanks for the reminder. I knew there was more than one reason I
+was wary of Lee's patch (first, that it was duplication of another patch
+set; and second, than I'm not sure it belongs in DT at all).
 
--Scott
+I think we should attempt to solve this without any need for DT
+bindings, as most other parameters are auto-detectable in some sense
+(even if we have to store some NANDID <-> timings tables). I think going
+forward, we can expect that new NAND will use a JEDEC or ONFI spec, and
+that we shouldn't have to scale nand_flash_ids[] to include too many
+flash chip timings.
+
+Brian
