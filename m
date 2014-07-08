@@ -1,23 +1,27 @@
-Date: Mon, 7 Jul 2014 17:16:51 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: "Gupta, Pekon" <pekon@ti.com>
-Subject: Re: [PATCH] mtd: nand: stm_nand_bch: add new driver
-Message-ID: <20140708001651.GD7537@ld-irv-0074>
-References: <1401268805-26043-1-git-send-email-lee.jones@linaro.org>
- <20140703002237.GM3599@ld-irv-0074>
- <20980858CB6D3A4BAE95CA194937D5E73EAFAFF1@DBDE04.ent.ti.com>
+Received: from dns-bn1lp0143.outbound.protection.outlook.com ([207.46.163.143]
+ helo=na01-bn1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X4NDw-00079J-Ce
+ for linux-mtd@lists.infradead.org; Tue, 08 Jul 2014 04:41:49 +0000
+From: Priyanka Jain <Priyanka.Jain@freescale.com>
+To: Scott Wood <scottwood@freescale.com>
+Subject: RE: [PATCH] devicetree/bindings: Add binding for micron n25q512a
+ memory
+Date: Tue, 8 Jul 2014 04:41:23 +0000
+Message-ID: <a9ac5cbcdb554bedbda35594740e320d@BLUPR03MB135.namprd03.prod.outlook.com>
+References: <1404382376-3115-1-git-send-email-Priyanka.Jain@freescale.com>
+ <1404425400.21434.89.camel@snotra.buserror.net>
+ <b7e1d3bf1675492585121d9e7950f05a@BLUPR03MB135.namprd03.prod.outlook.com>
+ <1404768354.21434.191.camel@snotra.buserror.net>
+In-Reply-To: <1404768354.21434.191.camel@snotra.buserror.net>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EAFAFF1@DBDE04.ent.ti.com>
 Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Boris BREZILLON <b.brezillon.dev@gmail.com>,
- "kernel@stlinux.com" <kernel@stlinux.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Lee Jones <lee.jones@linaro.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,129 +31,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Lee, Pekon,
-
-A few additions/corrections to Pekon's comments.
-
-On Thu, Jul 03, 2014 at 09:09:27AM +0000, Pekon Gupta wrote:
-> >From: Brian Norris [mailto:computersforpeace@gmail.com]
-> >On Wed, May 28, 2014 at 10:20:05AM +0100, Lee Jones wrote:
-> >> diff --git a/arch/arm/boot/dts/stih41x-b2020.dtsi b/arch/arm/boot/dts/stih41x-b2020.dtsi
-> >> index bc5818d..7a6a6e8 100644
-> >> --- a/arch/arm/boot/dts/stih41x-b2020.dtsi
-> >> +++ b/arch/arm/boot/dts/stih41x-b2020.dtsi
-> >> @@ -52,5 +52,45 @@
-> >>  			pinctrl-0	= <&pinctrl_rgmii1>;
-> >>  		};
-> >>
-> >> +		nandbch: nand-bch {
-> >
-> >Shouldn't this be named 'nand@xxxxxxxx', 'flash@xxxxxxxx', or similar?
-> >
-> >> +			compatible = "st,nand-bch";
-> >> +			reg = <0xfe901000 0x1000>, <0xfef00800 0x0800>;
-> >> +			reg-names = "nand_mem", "nand_dma";
-> >> +			interrupts = <0 139 0x0>;
-> >> +			interrupt-names = "nand_irq";
-> >> +			st,nand-banks = <&nand_banks>;
-> >> +			nand-ecc-strength = <0xFF>;
-> 
-> nit-pick to save yourself from another patch re-spin, Please use lower-case hex :-)
-
-Or in this case, drop the property altogether. I believe
-nand-ecc-strength = 255 is a misuse of the binding, as Lee intended it
-to mean "automatic". (It makes more sense to say that a missing
-"nand-ecc-strength" property means Linux can 'automatically' choose.)
-
-> >> +
-> >> +			status = "okay";
-> >> +		};
-> >> +
-...
-
-> >> +static void bch_wait_seq(struct nandi_controller *nandi)
-> >> +{
-> >> +	int ret;
-> >> +
-> >> +	ret = wait_for_completion_timeout(&nandi->seq_completed, HZ/2);
-> 
-> Are you sure you want to use same timeout value for all operations
-> like ERASE, READ, WRITE ? because
-> (1) There is wide variance between:
-> - BLOCK_ERASE:  max(tBER) = 10ms) for MT29F4G08 Micron NAND
-> - PAGE_ERASE: max(tPROG) = 600usec for same Micron part.
-> 
-> (2) The value of HZ varies across kernel versions and hardware platforms.
-
-Lee's use of HZ is correct. HZ represents one second, and it is useful
-for giving an (approximate) timeout that is independent of timer tick
-rate. It is equivalent to msecs_to_jiffies(1000), for example.
-
-> I suggest you pass the timeout value in call to bch_wait_seq().
-> And this timeout value should be like 2x of typical value of which you found
-> during ONFI parsing, or from DT
-
-I'm not sure it's very important to get a precise timeout value. It's
-especially not worth a DT binding. Timeouts should be the exception, not
-the rule, and should not be relied on (for example) for good performance.
-
-> >> +	if (!ret)
-> >> +		dev_err(nandi->dev, "BCH Seq timeout\n");
-> >> +}
-> >> +
-...
-> >> +	/* Load last page of block */
-> >> +	offs = (loff_t)block << chip->phys_erase_shift;
-> >> +	offs += mtd->erasesize - mtd->writesize;
-> >> +	if (bch_read_page(nandi, offs, buf) < 0) {
-> 
-> *Important*: You shouldn't call internal functions directly here..
-> Instead use chip->_read() OR mtd-read() that will:
-
-Probably looking for mtd_read()?
-
-> - keep this code independent of ECC modes added in your driver in future.
-> - implicitly handle updating mtd->ecc_stat (like ecc_failed, bits_corrected).
-> - implicitly take care of address alignments checks and offset calculations.
-> 
-> <Same applies to other places where you have directly used bch_read_page())
-
-I agree. And this would help with my request that you separate your ST
-BBT code from the rest of your driver.
-
-> >> +struct stm_plat_nand_bch_data {
-> >> +	struct stm_nand_bank_data *bank;
-> >> +	enum stm_nand_bch_ecc_config bch_ecc_cfg;
-> >> +
-> >> +	/* The threshold at which the number of corrected bit-flips per sector
-> >> +	 * is deemed to have reached an excessive level (triggers '-EUCLEAN' to
-> >> +	 * be returned to the caller).  The value should be in the range 1 to
-> >> +	 * <ecc-strength> where <ecc-strength> is 18 or 30, depending on the BCH
-> >> +	 * ECC mode in operation.  A value of 0 is interpreted by the driver as
-> >> +	 * <ecc-strength>.
-> >> +	 */
-> >> +	unsigned int bch_bitflip_threshold;
-> >
-> >This field is never set or used...
-> >
-> >> +	bool flashss;
-> >
-> >Ditto.
-> >
-> Probably answered in [2]
-
-OK, then mark it with a FIXME or TODO comment. Don't let every reader
-come across this driver with the same questions.
-
-> Please re-send the next version in similar squashed format, as its easy for review.
-
-Yes.
-
-> And once Brian is okay, may be then you can re-send individual patches.
-
-I don't see any need to send individual sub-patches for the driver (you
-do, however, need to split out the DTS and Documentation/ portions as
-separate patches). If you want to include the splitting, just link to a
-git tree where patches can be found.
-
-Brian
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogV29vZCBTY290dC1CMDc0
+MjENCj4gU2VudDogVHVlc2RheSwgSnVseSAwOCwgMjAxNCAyOjU2IEFNDQo+IFRvOiBKYWluIFBy
+aXlhbmthLUIzMjE2Nw0KPiBDYzogZGV2aWNldHJlZUB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4cHBj
+LWRldkBsaXN0cy5vemxhYnMub3JnOyBsaW51eC0NCj4gc3BpQHZnZXIua2VybmVsLm9yZzsgbGlu
+dXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcNCj4gU3ViamVjdDogUmU6IFtQQVRDSF0gZGV2aWNl
+dHJlZS9iaW5kaW5nczogQWRkIGJpbmRpbmcgZm9yIG1pY3JvbiBuMjVxNTEyYQ0KPiBtZW1vcnkN
+Cj4gDQo+IE9uIFRodSwgMjAxNC0wNy0wMyBhdCAyMzowOCAtMDUwMCwgSmFpbiBQcml5YW5rYS1C
+MzIxNjcgd3JvdGU6DQo+ID4NCj4gPiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4g
+PiBGcm9tOiBXb29kIFNjb3R0LUIwNzQyMQ0KPiA+ID4gU2VudDogRnJpZGF5LCBKdWx5IDA0LCAy
+MDE0IDM6NDAgQU0NCj4gPiA+IFRvOiBKYWluIFByaXlhbmthLUIzMjE2Nw0KPiA+ID4gQ2M6IGRl
+dmljZXRyZWVAdmdlci5rZXJuZWwub3JnOyBsaW51eHBwYy1kZXZAbGlzdHMub3psYWJzLm9yZzsN
+Cj4gPiA+IGxpbnV4LSBzcGlAdmdlci5rZXJuZWwub3JnOyBsaW51eC1tdGRAbGlzdHMuaW5mcmFk
+ZWFkLm9yZw0KPiA+ID4gU3ViamVjdDogUmU6IFtQQVRDSF0gZGV2aWNldHJlZS9iaW5kaW5nczog
+QWRkIGJpbmRpbmcgZm9yIG1pY3Jvbg0KPiA+ID4gbjI1cTUxMmEgbWVtb3J5DQo+ID4gPg0KPiA+
+ID4gT24gVGh1LCAyMDE0LTA3LTAzIGF0IDE1OjQyICswNTMwLCBQcml5YW5rYSBKYWluIHdyb3Rl
+Og0KPiA+ID4gPiAtTWljcm9uIG4yNXE1MTJhIG1lbW9yeSBpcyBzdXBwb3J0ZWQgYnkgbTI1cDgw
+IGRyaXZlci4NCj4gPiA+ID4gIEFkZCBjb21wYXRpYmxlIGZpZWxkIHJlcXVpcmVkIHRvIHN1cHBv
+cnQgbjI1cTUxMmEgaW4gbTI1cDgwLnR4dA0KPiA+ID4gPiAtQWRkIG1pY3JvbiB0byB0aGUgdmVu
+ZG9yLXByZWZpeGVzLnR4dCBmaWxlDQo+ID4gPiA+DQo+ID4gPiA+IFNpZ25lZC1vZmYtYnk6IFBy
+aXlhbmthIEphaW4gPFByaXlhbmthLkphaW5AZnJlZXNjYWxlLmNvbT4NCj4gPiA+ID4gLS0tDQo+
+ID4gPiA+ICBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL20yNXA4MC50eHQg
+ICB8ICAgIDEgKw0KPiA+ID4gPiAgLi4uL2RldmljZXRyZWUvYmluZGluZ3MvdmVuZG9yLXByZWZp
+eGVzLnR4dCAgICAgICAgfCAgICAxICsNCj4gPiA+ID4gIDIgZmlsZXMgY2hhbmdlZCwgMiBpbnNl
+cnRpb25zKCspLCAwIGRlbGV0aW9ucygtKQ0KPiA+ID4NCj4gPiA+IFdoeSBkaWQgeW91IHNlbmQg
+dGhpcyB0byB0aGUgcHBjIGxpc3QgYnV0IG5vdCB0aGUgc3BpIG9yIG10ZCBsaXN0cz8NCj4gPiA+
+DQo+ID4gW0phaW4gUHJpeWFua2EtQjMyMTY3XSBTb3JyeSwgSSBtaXNzZWQgdGhhdA0KPiA+ID4g
+SSdtIGhhdmluZyBhIGhhcmQgdGltZSBmb2xsb3dpbmcgdGhlIGZsb3cgb2YgaG93IHRoZXNlIFNQ
+SSBkZXZpY2VzDQo+ID4gPiBnZXQgYm91bmQgLS0gaXMgdGhlIGNvbXBhdGlibGUgaW52b2x2ZWQg
+YXQgYWxsPyAgSSBkb24ndCBzZWUgdGhpcw0KPiA+ID4gc3RyaW5nICh3aXRoIHZlbmRvciBwcmVm
+aXggaW5jbHVkZWQpIGluIHRoZSBkcml2ZXIuICBJIGRvIHNlZSBhDQo+ID4gPiB0YWJsZSB0aGF0
+IGNvbnRhaW5zIHdoYXQgbG9va3MgbGlrZSBkZXZpY2UgSURzLiAgSWYgdGhlIGRldmljZSBjYW4N
+Cj4gPiA+IHJlcG9ydCBpdHMgaWQsIHNob3VsZG4ndCB3ZSByZWx5IG9uIHRoYXQgcmF0aGVyIHRo
+YW4gZGV2aWNlIHRyZWUNCj4gY29tcGF0aWJsZT8NCj4gPiA+DQo+ID4gPiAtU2NvdHQNCj4gPiBb
+SmFpbiBQcml5YW5rYS1CMzIxNjddDQo+ID4gU3BpIGRyaXZlciBoYXMgYSBjaGVjayB0byBkZXZp
+Y2UgbmFtZSBjb3JyZXNwb25kaW5nIHRvIGRldmljZS1pZCBhbmQNCj4gY29tcGFyZSB0byB3aGF0
+IGlzIHBhc3NlZCBpbiBkdHMgc3RyaW5nLg0KPiANCj4gUGxlYXNlIGdvIGludG8gbW9yZSBkZXRh
+aWwuICBJIGRvbid0IHNlZSB3aGVyZSB0aGUgc3RyaW5nDQo+ICJtaWNyb24sbjI1cTUxMmEiIGFw
+cGVhcnMgaW4gdGhlIGN1cnJlbnQga2VybmVsLiAgSSBkbyBzZWUgIm4yNXE1MTJhIiwNCj4gYnV0
+IGhvdyBkb2VzIHRoYXQgY29tcGFyZSBzdWNjZXNzZnVsbHkgd2l0aCB0aGUgdmVyc2lvbiBvZiB0
+aGUgc3RyaW5nDQo+IHRoYXQgaGFzIGEgdmVuZG9yIGNvbXBhdGlibGU/DQo+IA0KPiBBZ2Fpbiwg
+aXMgdGhlcmUgYSBkZXZpY2UgSUQgdGhhdCBjYW4gYmUgcmVhZCBhdCBydW50aW1lPyAgSXMgdGhl
+cmUgYQ0KPiBjb21wYXRpYmxlIHN0cmluZyB0aGF0IHJlcHJlc2VudHMgYSBjb21tb24gcHJvZ3Jh
+bW1pbmcgaW50ZXJmYWNlPw0KW0phaW4gUHJpeWFua2EtQjMyMTY3XSANClNwaSBkcml2ZXIgKG9m
+X3JlZ2lzdGVyX3NwaV9kZXZpY2VzKCkpIHNlYXJjaCBmb3IgY29tcGF0aWJsZSBzdHJpbmcgaW4g
+ZGV2aWNlLXRyZWUuIEl0IHNlbGVjdHMgdGhlIGZsYXNoIGRldmljZSBkcml2ZXIgYmFzZWQgb24g
+dGhlIGNvbXBhdGlibGUgc3RyaW5nIChuMjVxNTEyYSkuIFRoaXMgY29tcGF0aWJsZSBzdHJpbmcg
+aXMgZXNzZW50aWFsLCBlbHNlIGRldmljZSBwcm9iZSB3b250IGNvbnRpbnVlLiAgVGhlbiBEZXZp
+Y2UtaWQgb2YgZmxhc2ggaXMgcmVhZCBhdCBydW50aW1lIGluIHByb2JlIGFuZCBjb21wYXJlZCB3
+aXRoIHRoZSBjb3JyZXNwb25kaW5nIGRldmljZS1pZCBvZiBmbGFzaCAobjI1cTUxMmEpLiBEZXZp
+Y2UtaWQgKG1haW50YWluZWQgYXMgZmlyc3QgZWxlbWVudCBpbiBJTkZPIHN0cmluZyBpbiBzcGlf
+bm9yX2lkc1tdIGluIGRyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jIGZpbGUpDQpPbmx5IGlm
+IGJvdGggZGV2aWNlLWlkcyBtYXRjaCwgdGhlIGRldmljZSBpcyB0YWtlbiBhcyBzdWNjZXNzZnVs
+bHkgZGV0ZWN0ZWQuDQpSZWdhcmRpbmcgdmVuZG9yICJtaWNyb24iLCB5b3UgYXJlIHJpZ2h0IGN1
+cnJlbnRseSB0aGUgdmVuZG9yIGluZm9ybWF0aW9uIGlzIG5vdCBtYWludGFpbmVkIGFzIHN1Y2gg
+aW4gZGV2aWNlLWlkLCBidXQgdGhlIGNvbnZlbnRpb24gdGhhdCBpcyBmb2xsb3dlZCBmb3IgY29t
+cGF0aWJsZSBzdHJpbmcgaXMgInZlbmRvci1pZCwgZGV2aWNlLWlkIg0KPiANCj4gPiBOZXcgY2hl
+Y2twYXRjaCBzY3JpcHQgc2VhcmNoIGZvciBleGFjdCBzdHJpbmcgbWF0Y2ggaW4gYmluZGluZyBm
+b2xkZXIuDQo+IFNvLCBJIGhhdmUgYWRkZWQgdGhpcyBpbiBleGFtcGxlLg0KPiANCj4gVGhhdCBj
+aGVjayBoYXMgYSBsb3Qgb2YgZmFsc2UgcG9zaXRpdmVzIHdoZW4gaXQgY29tZXMgdG8gY29tcGF0
+aWJsZQ0KPiBzdHJpbmdzIGZvciBzcGVjaWZpYyBjaGlwcyB0aGF0IGRvbid0IG5lZWQgdG8gYmUg
+c3BlY2lmaWNhbGx5IG1lbnRpb25lZA0KPiBpbiBhIG1vcmUgZ2VuZXJpYyBiaW5kaW5nLg0KPiAN
+Cj4gLVNjb3R0DQo+IA0KW0phaW4gUHJpeWFua2EtQjMyMTY3XSBFdmVuIHRob3VnaCAibWljcm9u
+LG4yNXE1MTJhIiBpcyBpbiBzeW5jIHdpdGggYmluZGluZyBtZW50aW9uZWQgaW4gIiBEb2N1bWVu
+dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL20yNXA4MC50eHQgICAiLCBJIGhhdmUgdG8g
+YWRkIHRoaXMgYXMgYW4gYSBleGFtcGxlLCBqdXN0IHRvIGF2b2lkIGNoZWNrcGF0Y2ggZXJyb3Iu
+IFdoYXQgc2hvdWxkIGJlIHRoZSBhcHByb2FjaCBnb2luZyBmb3J3YXJkOiBTaG91bGQgc3VjaCBj
+aGVja3BhdGNoIHdhcm5pbmdzIGJlIGlnbm9yZWQ/DQoNCg0KDQoNCg==
