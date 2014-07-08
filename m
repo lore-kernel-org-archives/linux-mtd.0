@@ -1,23 +1,21 @@
-Received: from galois.linutronix.de ([2001:470:1f0b:db:abcd:42:0:1])
+Received: from mail-la0-x229.google.com ([2a00:1450:4010:c03::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X4Pmm-0007P7-Em
- for linux-mtd@lists.infradead.org; Tue, 08 Jul 2014 07:25:57 +0000
-Message-ID: <53BB9CEE.4060408@linutronix.de>
-Date: Tue, 08 Jul 2014 09:25:34 +0200
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+ id 1X4Pz8-00057c-05
+ for linux-mtd@lists.infradead.org; Tue, 08 Jul 2014 07:38:42 +0000
+Received: by mail-la0-f41.google.com with SMTP id hz20so3727210lab.0
+ for <linux-mtd@lists.infradead.org>; Tue, 08 Jul 2014 00:38:19 -0700 (PDT)
 MIME-Version: 1.0
-To: "Gupta, Pekon" <pekon@ti.com>, Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] mtd: denali: disable usage of subpages
-References: <1398862001-29785-1-git-send-email-bigeasy@linutronix.de>
- <20140430222353.GE2497@norris-Latitude-E6410>
- <536925C0.4060809@linutronix.de>
- <20980858CB6D3A4BAE95CA194937D5E73EAFC0FE@DBDE04.ent.ti.com>
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EAFC0FE@DBDE04.ent.ti.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen <dinguyen@altera.com>,
- Huang Shijie <shijie8@gmail.com>, Josh Triplett <josh@joshtriplett.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <1404795285-2929-1-git-send-email-Priyanka.Jain@freescale.com>
+References: <1404795285-2929-1-git-send-email-Priyanka.Jain@freescale.com>
+Date: Tue, 8 Jul 2014 09:38:19 +0200
+Message-ID: <CAMuHMdV52qwThCezu=4NCpVBwbM2AjSK4cKXA+BdO=v_Yy2sBQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd: spi-nor: Correct device-id for n25q512a device
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Priyanka Jain <Priyanka.Jain@freescale.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
+ linux-spi <linux-spi@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,18 +25,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 07/08/2014 09:22 AM, Gupta, Pekon wrote:
-> Hi Sebastien,
+CC linux-mtd
 
-Hi Pekon,
+On Tue, Jul 8, 2014 at 6:54 AM, Priyanka Jain
+<Priyanka.Jain@freescale.com> wrote:
+> Signed-off-by: Priyanka Jain <Priyanka.Jain@freescale.com>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+>
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index c713c86..148bb51d 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -487,7 +487,7 @@ const struct spi_device_id spi_nor_ids[] = {
+>         { "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, 0) },
+>         { "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, 0) },
+>         { "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K) },
+> -       { "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K) },
+> +       { "n25q512a",    INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K) },
+>
+>         /* PMC */
+>         { "pm25lv512",   INFO(0,        0, 32 * 1024,    2, SECT_4K_PMC) },
+> --
+> 1.7.4.1
 
-> I have tried fixing the write_subpage generic interface to write only relevant
-> subpage data to NAND device. However I wasn't able to test it much.
-> Would it be possible for you to test these?
+Gr{oetje,eeting}s,
 
-No, I don't have the hardware anymore.
+                        Geert
 
-> 
-> with regards, pekon
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Sebastian
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
