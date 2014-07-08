@@ -1,21 +1,27 @@
-Received: from mail-la0-x229.google.com ([2a00:1450:4010:c03::229])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X4Pz8-00057c-05
- for linux-mtd@lists.infradead.org; Tue, 08 Jul 2014 07:38:42 +0000
-Received: by mail-la0-f41.google.com with SMTP id hz20so3727210lab.0
- for <linux-mtd@lists.infradead.org>; Tue, 08 Jul 2014 00:38:19 -0700 (PDT)
-MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <1404795285-2929-1-git-send-email-Priyanka.Jain@freescale.com>
-References: <1404795285-2929-1-git-send-email-Priyanka.Jain@freescale.com>
-Date: Tue, 8 Jul 2014 09:38:19 +0200
-Message-ID: <CAMuHMdV52qwThCezu=4NCpVBwbM2AjSK4cKXA+BdO=v_Yy2sBQ@mail.gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: Correct device-id for n25q512a device
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Priyanka Jain <Priyanka.Jain@freescale.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
- linux-spi <linux-spi@vger.kernel.org>
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X4QJ4-0000xE-H1
+ for linux-mtd@lists.infradead.org; Tue, 08 Jul 2014 07:59:19 +0000
+Date: Tue, 8 Jul 2014 09:58:55 +0200
+From: Boris BREZILLON <boris.brezillon@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH] mtd: nand: stm_nand_bch: add new driver
+Message-ID: <20140708095855.29c2fb87@bbrezillon>
+In-Reply-To: <20140707235222.GC7537@ld-irv-0074>
+References: <1401268805-26043-1-git-send-email-lee.jones@linaro.org>
+ <20140703002237.GM3599@ld-irv-0074>
+ <20140703100522.756f9715@bbrezillon>
+ <20140707235222.GC7537@ld-irv-0074>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: devicetree@vger.kernel.org, Boris BREZILLON <b.brezillon.dev@gmail.com>,
+ kernel@stlinux.com, linux-kernel@vger.kernel.org,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ linux-mtd@lists.infradead.org, "Gupta,
+ Pekon\"" <pekon@ti.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Lee Jones <lee.jones@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,38 +31,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-CC linux-mtd
+Hi Brian,
 
-On Tue, Jul 8, 2014 at 6:54 AM, Priyanka Jain
-<Priyanka.Jain@freescale.com> wrote:
-> Signed-off-by: Priyanka Jain <Priyanka.Jain@freescale.com>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
->
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index c713c86..148bb51d 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -487,7 +487,7 @@ const struct spi_device_id spi_nor_ids[] = {
->         { "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, 0) },
->         { "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, 0) },
->         { "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K) },
-> -       { "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K) },
-> +       { "n25q512a",    INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K) },
->
->         /* PMC */
->         { "pm25lv512",   INFO(0,        0, 32 * 1024,    2, SECT_4K_PMC) },
-> --
-> 1.7.4.1
+On Mon, 7 Jul 2014 16:52:22 -0700
+Brian Norris <computersforpeace@gmail.com> wrote:
 
-Gr{oetje,eeting}s,
+> Hi Boris,
+> 
+> On Thu, Jul 03, 2014 at 10:05:22AM +0200, Boris BREZILLON wrote:
+> > On Wed, 2 Jul 2014 17:22:37 -0700 Brian Norris <computersforpeace@gmail.com> wrote:
+> > > On Wed, May 28, 2014 at 10:20:05AM +0100, Lee Jones wrote:
+> > > > +
+> > > > +	nand_timing0: nand-timing {
+> > > > +		sig-setup	= <10>;
+> > > > +		sig-hold	= <10>;
+> > > > +		CE-deassert	= <0>;
+> > > > +		WE-to-RBn	= <100>;
+> > > > +		wr-on		= <10>;
+> > > > +		wr-off		= <30>;
+> > > > +		rd-on		= <10>;
+> > > > +		rd-off		= <30>;
+> > > > +		chip-delay	= <30>;		/* delay in us */
+> > > > +	};
+> > > 
+> > > You didn't document any of this node. And I don't think we want to
+> > > specify every single timing parameter in DT; it may make sense to use
+> > > Boris Brezillon's approach (I note this further down, in the driver
+> > > code) for mapping non-ONFI NAND timings into a compatible ONFI timing
+> > > mode. This will greatly simplify the bindings needed, since it's
+> > > standardized and auto-detectable in many cases.
+> > 
+> > 
+> > AFAIR, the NAND timing representation for non-ONFI chips question was
+> > left unanswered:
+> > 
+> > https://lkml.org/lkml/2014/5/20/581
+> > 
+> > I can definitely respin my NAND timings series, but I'd like to be sure
+> > this is how you want it done before doing so.
+> 
+> Can we start by supporting ONFI-only (or ONFI-only, plus entries in
+> nand_flash_ids[]), and have nand_base provide the translation so drivers
+> can retrieve the info? Then we can begin supporting new drivers like
+> Lee's, and worry about the DT question separately.
 
-                        Geert
+So, basically, I just send a new series with patch 1 and 2 from my sunxi
+NAND series [1] (including the fixes you suggested, of course), right ?
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+[1] http://thread.gmane.org/gmane.comp.hardware.netbook.arm.sunxi/7977
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
