@@ -1,8 +1,11 @@
 From: Roger Quadros <rogerq@ti.com>
 To: <tony@atomide.com>, <computersforpeace@gmail.com>
-Subject: [RFC PATCH 00/10] OMAP: GPMC: NAND: Introduce GPMC APIs for OMAP NAND
-Date: Wed, 9 Jul 2014 15:37:20 +0300
-Message-ID: <1404909450-11970-1-git-send-email-rogerq@ti.com>
+Subject: [RFC PATCH 02/10] mtd: nand: omap: Always use chip->ecc.steps for BCH
+ sector count
+Date: Wed, 9 Jul 2014 15:37:22 +0300
+Message-ID: <1404909450-11970-3-git-send-email-rogerq@ti.com>
+In-Reply-To: <1404909450-11970-1-git-send-email-rogerq@ti.com>
+References: <1404909450-11970-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: jg1.han@samsung.com, nsekhar@ti.com, linux-kernel@vger.kernel.org,
@@ -18,82 +21,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Instead of hardcoding use the pre-calculated chip->ecc.steps for
+configuring number of sectors to process with the BCH algorithm.
 
-The following hardware modules/registers are meant for NAND controller driver
-usage:
-- NAND I/O control (NAND address, data, command registers)
-- Prefetch/Write-post engine
-- ECC/BCH engine
+This also avoids unnecessary access to the ECC_CONFIG register in
+omap_calculate_ecc_bch().
 
-However, these registers sit in the GPMC controller's register space and there
-need to be some sane way to access them from the OMAP NAND controller driver.
-
-Till now the GPMC driver was populating a data structure (struct gpmc_nand_regs)
-with the register addresses and passing it to the OMAP NAND driver via platform
-data. This mechanism cannot be used for true Device tree support as custom
-platform data passing mechanism doesn't seem to work. Moreover, direct
-access to these registers must be limited to the GPMC driver. This calls for
-a few custom OMAP GPMC specific APIs that the OMAP NAND driver can use
-to access these GPMC space registers.
-
-This series attempts to add the following new APIs and gets rid of
-'struct gpmc_nand_regs' and 'gpmc_update_nand_regs()'.
-
--For NAND I/O control registers
-u32 omap_gpmc_read_reg(int cs, enum omap_gpmc_reg reg);
-void omap_gpmc_write_reg(int cs, enum omap_gpmc_reg reg, u32 val);
-
--For Prefetch engine
-int omap_gpmc_prefetch_start(int cs, int fifo_th, bool dma,
-			     u32 count, int is_write);
-int omap_gpmc_prefetch_stop(int cs);
-u32 omap_gpmc_get_prefetch_count(void);
-u32 omap_gpmc_get_prefetch_fifo_count(void);
-
--For ECC/BCH engine
-void omap_gpmc_ecc_disable(void);
-void omap_gpmc_ecc_configure_enable(int cs, bool ecc16, u8 ecc_size0,
-				    u8 ecc_size1, bool use_bch,
-				    enum omap_gpmc_bch_type bch_type,
-				    u8 bch_sectors, u8 bch_wrap_mode);
-void omap_gpmc_ecc_get_result(int length, u32 *result);
-void omap_gpmc_ecc_get_bch_result(int length, u8 sector, u32 *result);
-
-These APIs don't implement any logic to serialize access to the
-NAND/Prefetch/ECC registers. It is upto the NAND controller driver
-to ensure that. As these modules can only handle one NAND controller context
-at a time, we set the nand_chip->hwcontrol to point to a single
-controller instance even if there are multiple NAND chips on different
-Chip select spaces. The NAND base driver then takes care of serializing
-access to the NAND controller (and ECC) through nandchip->hwcontrol->lock.
-
-NOTE: Patches are still untested and only meant for review.
-
-cheers,
--roger
+Signed-off-by: Roger Quadros <rogerq@ti.com>
 ---
-Roger Quadros (10):
-  mtd: nand: omap: Use a single hardware controller instance
-  mtd: nand: omap: Always use chip->ecc.steps for BCH sector count
-  OMAP: GPMC: Introduce APIs to access NAND control registers
-  mtd: nand: omap: Use GPMC APIs for NAND control
-  OMAP: GPMC: Introduce APIs for accessing Prefetch/Write-post engine
-  mtd: nand: omap: Use GPMC APIs for accessing Prefetch engine
-  OMAP: GPMC: Introduce APIs for Configuring ECC Engine
-  OMAP: GPMC: Introduce APIs to get ECC/BCH results
-  mtd: nand: omap: Use GPMC APIs for accessing ECC/BCH engine
-  OMAP: GPMC: NAND: Don't pass NAND/ECC/BCH register adresses to NAND
-    driver
+ drivers/mtd/nand/omap2.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
- arch/arm/mach-omap2/gpmc-nand.c              |   2 -
- arch/arm/mach-omap2/gpmc.c                   | 464 +++++++++++++++++++++++----
- arch/arm/mach-omap2/gpmc.h                   |   1 -
- drivers/mtd/nand/omap2.c                     | 397 +++++++++--------------
- include/linux/omap-gpmc-nand.h               | 106 ++++++
- include/linux/platform_data/mtd-nand-omap2.h |   5 +-
- 6 files changed, 663 insertions(+), 312 deletions(-)
- create mode 100644 include/linux/omap-gpmc-nand.h
-
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index 5b8739c..6f3d7cd 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -1066,10 +1066,10 @@ static void __maybe_unused omap_enable_hwecc_bch(struct mtd_info *mtd, int mode)
+ 	unsigned int ecc_size1, ecc_size0;
+ 
+ 	/* GPMC configurations for calculating ECC */
++	nsectors = chip->ecc.steps;
+ 	switch (ecc_opt) {
+ 	case OMAP_ECC_BCH4_CODE_HW_DETECTION_SW:
+ 		bch_type = 0;
+-		nsectors = 1;
+ 		if (mode == NAND_ECC_READ) {
+ 			wr_mode	  = BCH_WRAPMODE_6;
+ 			ecc_size0 = BCH_ECC_SIZE0;
+@@ -1082,7 +1082,6 @@ static void __maybe_unused omap_enable_hwecc_bch(struct mtd_info *mtd, int mode)
+ 		break;
+ 	case OMAP_ECC_BCH4_CODE_HW:
+ 		bch_type = 0;
+-		nsectors = chip->ecc.steps;
+ 		if (mode == NAND_ECC_READ) {
+ 			wr_mode	  = BCH_WRAPMODE_1;
+ 			ecc_size0 = BCH4R_ECC_SIZE0;
+@@ -1095,7 +1094,6 @@ static void __maybe_unused omap_enable_hwecc_bch(struct mtd_info *mtd, int mode)
+ 		break;
+ 	case OMAP_ECC_BCH8_CODE_HW_DETECTION_SW:
+ 		bch_type = 1;
+-		nsectors = 1;
+ 		if (mode == NAND_ECC_READ) {
+ 			wr_mode	  = BCH_WRAPMODE_6;
+ 			ecc_size0 = BCH_ECC_SIZE0;
+@@ -1108,7 +1106,6 @@ static void __maybe_unused omap_enable_hwecc_bch(struct mtd_info *mtd, int mode)
+ 		break;
+ 	case OMAP_ECC_BCH8_CODE_HW:
+ 		bch_type = 1;
+-		nsectors = chip->ecc.steps;
+ 		if (mode == NAND_ECC_READ) {
+ 			wr_mode	  = BCH_WRAPMODE_1;
+ 			ecc_size0 = BCH8R_ECC_SIZE0;
+@@ -1121,7 +1118,6 @@ static void __maybe_unused omap_enable_hwecc_bch(struct mtd_info *mtd, int mode)
+ 		break;
+ 	case OMAP_ECC_BCH16_CODE_HW:
+ 		bch_type = 0x2;
+-		nsectors = chip->ecc.steps;
+ 		if (mode == NAND_ECC_READ) {
+ 			wr_mode	  = 0x01;
+ 			ecc_size0 = 52; /* ECC bits in nibbles per sector */
+@@ -1176,6 +1172,7 @@ static int __maybe_unused omap_calculate_ecc_bch(struct mtd_info *mtd,
+ {
+ 	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
+ 						   mtd);
++	struct nand_chip *chip = mtd->priv;
+ 	int eccbytes	= info->nand.ecc.bytes;
+ 	struct gpmc_nand_regs	*gpmc_regs = &info->reg;
+ 	u8 *ecc_code;
+@@ -1183,7 +1180,7 @@ static int __maybe_unused omap_calculate_ecc_bch(struct mtd_info *mtd,
+ 	u32 val;
+ 	int i, j;
+ 
+-	nsectors = ((readl(info->reg.gpmc_ecc_config) >> 4) & 0x7) + 1;
++	nsectors = chip->ecc.steps;
+ 	for (i = 0; i < nsectors; i++) {
+ 		ecc_code = ecc_calc;
+ 		switch (info->ecc_opt) {
 -- 
 1.8.3.2
