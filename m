@@ -1,21 +1,23 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
- by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X4r9G-0000SB-TJ
- for linux-mtd@lists.infradead.org; Wed, 09 Jul 2014 12:38:59 +0000
-From: Roger Quadros <rogerq@ti.com>
-To: <tony@atomide.com>, <computersforpeace@gmail.com>
-Subject: [RFC PATCH 10/10] OMAP: GPMC: NAND: Don't pass NAND/ECC/BCH register
- adresses to NAND driver
-Date: Wed, 9 Jul 2014 15:37:30 +0300
-Message-ID: <1404909450-11970-11-git-send-email-rogerq@ti.com>
-In-Reply-To: <1404909450-11970-1-git-send-email-rogerq@ti.com>
-References: <1404909450-11970-1-git-send-email-rogerq@ti.com>
+Date: Wed, 9 Jul 2014 10:22:29 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Boris BREZILLON <boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH] mtd: nand: stm_nand_bch: add new driver
+Message-ID: <20140709172229.GH7537@ld-irv-0074>
+References: <1401268805-26043-1-git-send-email-lee.jones@linaro.org>
+ <20140703002237.GM3599@ld-irv-0074>
+ <20140703100522.756f9715@bbrezillon>
+ <20140707235222.GC7537@ld-irv-0074>
+ <20140708095855.29c2fb87@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: jg1.han@samsung.com, nsekhar@ti.com, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, pekon@ti.com,
- ezequiel.garcia@free-electrons.com, javier@dowhile0.org,
- linux-omap@vger.kernel.org, dwmw2@infradead.org, Roger Quadros <rogerq@ti.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20140708095855.29c2fb87@bbrezillon>
+Cc: devicetree@vger.kernel.org, Boris BREZILLON <b.brezillon.dev@gmail.com>,
+ kernel@stlinux.com, linux-kernel@vger.kernel.org,
+ Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+ linux-mtd@lists.infradead.org, "Gupta, Pekon\"" <pekon@ti.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Lee Jones <lee.jones@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,138 +27,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The NAND driver now relies completely on the GPMC APIs to access
-the NAND control lines and ECC/BCH engine. We no longer need
-gpmc_update_nand_reg() and struct gpmc_nand_regs, so get rid of them.
+Hi Boris,
 
-Signed-off-by: Roger Quadros <rogerq@ti.com>
----
- arch/arm/mach-omap2/gpmc-nand.c              |  2 --
- arch/arm/mach-omap2/gpmc.c                   | 38 ----------------------------
- arch/arm/mach-omap2/gpmc.h                   |  1 -
- drivers/mtd/nand/omap2.c                     |  2 --
- include/linux/platform_data/mtd-nand-omap2.h |  5 +++-
- 5 files changed, 4 insertions(+), 44 deletions(-)
+On Tue, Jul 08, 2014 at 09:58:55AM +0200, Boris BREZILLON wrote:
+> On Mon, 7 Jul 2014 16:52:22 -0700 Brian Norris <computersforpeace@gmail.com> wrote:
+> > On Thu, Jul 03, 2014 at 10:05:22AM +0200, Boris BREZILLON wrote:
+> > > On Wed, 2 Jul 2014 17:22:37 -0700 Brian Norris <computersforpeace@gmail.com> wrote:
+> > > 
+> > > AFAIR, the NAND timing representation for non-ONFI chips question was
+> > > left unanswered:
+> > > 
+> > > https://lkml.org/lkml/2014/5/20/581
+> > > 
+> > > I can definitely respin my NAND timings series, but I'd like to be sure
+> > > this is how you want it done before doing so.
+> > 
+> > Can we start by supporting ONFI-only (or ONFI-only, plus entries in
+> > nand_flash_ids[]), and have nand_base provide the translation so drivers
+> > can retrieve the info? Then we can begin supporting new drivers like
+> > Lee's, and worry about the DT question separately.
+> 
+> So, basically, I just send a new series with patch 1 and 2 from my sunxi
+> NAND series [1] (including the fixes you suggested, of course), right ?
+> 
+> [1] http://thread.gmane.org/gmane.comp.hardware.netbook.arm.sunxi/7977
 
-diff --git a/arch/arm/mach-omap2/gpmc-nand.c b/arch/arm/mach-omap2/gpmc-nand.c
-index 17cd393..565bd15 100644
---- a/arch/arm/mach-omap2/gpmc-nand.c
-+++ b/arch/arm/mach-omap2/gpmc-nand.c
-@@ -138,8 +138,6 @@ int gpmc_nand_init(struct omap_nand_platform_data *gpmc_nand_data,
- 	if (err < 0)
- 		goto out_free_cs;
- 
--	gpmc_update_nand_reg(&gpmc_nand_data->reg, gpmc_nand_data->cs);
--
- 	if (!gpmc_hwecc_bch_capable(gpmc_nand_data->ecc_opt)) {
- 		dev_err(dev, "Unsupported NAND ECC scheme selected\n");
- 		return -EINVAL;
-diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
-index 9222244..fbd651e 100644
---- a/arch/arm/mach-omap2/gpmc.c
-+++ b/arch/arm/mach-omap2/gpmc.c
-@@ -724,44 +724,6 @@ int gpmc_configure(int cmd, int wval)
- }
- EXPORT_SYMBOL(gpmc_configure);
- 
--void gpmc_update_nand_reg(struct gpmc_nand_regs *reg, int cs)
--{
--	int i;
--
--	reg->gpmc_status = gpmc_base + GPMC_STATUS;
--	reg->gpmc_nand_command = gpmc_base + GPMC_CS0_OFFSET +
--				GPMC_CS_NAND_COMMAND + GPMC_CS_SIZE * cs;
--	reg->gpmc_nand_address = gpmc_base + GPMC_CS0_OFFSET +
--				GPMC_CS_NAND_ADDRESS + GPMC_CS_SIZE * cs;
--	reg->gpmc_nand_data = gpmc_base + GPMC_CS0_OFFSET +
--				GPMC_CS_NAND_DATA + GPMC_CS_SIZE * cs;
--	reg->gpmc_prefetch_config1 = gpmc_base + GPMC_PREFETCH_CONFIG1;
--	reg->gpmc_prefetch_config2 = gpmc_base + GPMC_PREFETCH_CONFIG2;
--	reg->gpmc_prefetch_control = gpmc_base + GPMC_PREFETCH_CONTROL;
--	reg->gpmc_prefetch_status = gpmc_base + GPMC_PREFETCH_STATUS;
--	reg->gpmc_ecc_config = gpmc_base + GPMC_ECC_CONFIG;
--	reg->gpmc_ecc_control = gpmc_base + GPMC_ECC_CONTROL;
--	reg->gpmc_ecc_size_config = gpmc_base + GPMC_ECC_SIZE_CONFIG;
--	reg->gpmc_ecc1_result = gpmc_base + GPMC_ECC1_RESULT;
--
--	for (i = 0; i < GPMC_BCH_NUM_REMAINDER; i++) {
--		reg->gpmc_bch_result0[i] = gpmc_base + GPMC_ECC_BCH_RESULT_0 +
--					   GPMC_BCH_SIZE * i;
--		reg->gpmc_bch_result1[i] = gpmc_base + GPMC_ECC_BCH_RESULT_1 +
--					   GPMC_BCH_SIZE * i;
--		reg->gpmc_bch_result2[i] = gpmc_base + GPMC_ECC_BCH_RESULT_2 +
--					   GPMC_BCH_SIZE * i;
--		reg->gpmc_bch_result3[i] = gpmc_base + GPMC_ECC_BCH_RESULT_3 +
--					   GPMC_BCH_SIZE * i;
--		reg->gpmc_bch_result4[i] = gpmc_base + GPMC_ECC_BCH_RESULT_4 +
--					   i * GPMC_BCH_SIZE;
--		reg->gpmc_bch_result5[i] = gpmc_base + GPMC_ECC_BCH_RESULT_5 +
--					   i * GPMC_BCH_SIZE;
--		reg->gpmc_bch_result6[i] = gpmc_base + GPMC_ECC_BCH_RESULT_6 +
--					   i * GPMC_BCH_SIZE;
--	}
--}
--
- int gpmc_get_client_irq(unsigned irq_config)
- {
- 	int i;
-diff --git a/arch/arm/mach-omap2/gpmc.h b/arch/arm/mach-omap2/gpmc.h
-index 707f6d5..a91fab7 100644
---- a/arch/arm/mach-omap2/gpmc.h
-+++ b/arch/arm/mach-omap2/gpmc.h
-@@ -211,7 +211,6 @@ extern int gpmc_calc_timings(struct gpmc_timings *gpmc_t,
- 			     struct gpmc_settings *gpmc_s,
- 			     struct gpmc_device_timings *dev_t);
- 
--extern void gpmc_update_nand_reg(struct gpmc_nand_regs *reg, int cs);
- extern int gpmc_get_client_irq(unsigned irq_config);
- 
- extern unsigned int gpmc_ticks_to_ns(unsigned int ticks);
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 6b0f953..e894e65 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -163,7 +163,6 @@ struct omap_nand_info {
- 	} iomode;
- 	u_char				*buf;
- 	int					buf_len;
--	struct gpmc_nand_regs		reg;
- 	/* fields specific for BCHx_HW ECC scheme */
- 	struct device			*elm_dev;
- 	struct device_node		*of_node;
-@@ -1547,7 +1546,6 @@ static int omap_nand_probe(struct platform_device *pdev)
- 
- 	info->pdev		= pdev;
- 	info->gpmc_cs		= pdata->cs;
--	info->reg		= pdata->reg;
- 	info->of_node		= pdata->of_node;
- 	info->ecc_opt		= pdata->ecc_opt;
- 	mtd			= &info->mtd;
-diff --git a/include/linux/platform_data/mtd-nand-omap2.h b/include/linux/platform_data/mtd-nand-omap2.h
-index 660c029..44198be 100644
---- a/include/linux/platform_data/mtd-nand-omap2.h
-+++ b/include/linux/platform_data/mtd-nand-omap2.h
-@@ -35,6 +35,7 @@ enum omap_ecc {
- 	OMAP_ECC_BCH16_CODE_HW,
- };
- 
-+/* Deprecated - Don't use */
- struct gpmc_nand_regs {
- 	void __iomem	*gpmc_status;
- 	void __iomem	*gpmc_nand_command;
-@@ -65,10 +66,12 @@ struct omap_nand_platform_data {
- 	enum nand_io		xfer_type;
- 	int			devsize;
- 	enum omap_ecc           ecc_opt;
--	struct gpmc_nand_regs	reg;
- 
- 	/* for passing the partitions */
- 	struct device_node	*of_node;
- 	struct device_node	*elm_of_node;
-+
-+
-+	struct gpmc_nand_regs	reg;	/* Deprecated. Don't use */
- };
- #endif
--- 
-1.8.3.2
+Yes, please send 1 and 2 on their own. I think that would be a good
+start for supporting these drivers.
+
+Brian
