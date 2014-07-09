@@ -1,23 +1,22 @@
-Date: Wed, 9 Jul 2014 10:22:29 -0700
+Date: Wed, 9 Jul 2014 10:25:55 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Boris BREZILLON <boris.brezillon@free-electrons.com>
-Subject: Re: [PATCH] mtd: nand: stm_nand_bch: add new driver
-Message-ID: <20140709172229.GH7537@ld-irv-0074>
-References: <1401268805-26043-1-git-send-email-lee.jones@linaro.org>
- <20140703002237.GM3599@ld-irv-0074>
- <20140703100522.756f9715@bbrezillon>
- <20140707235222.GC7537@ld-irv-0074>
- <20140708095855.29c2fb87@bbrezillon>
+To: Boris BREZILLON <b.brezillon.dev@gmail.com>
+Subject: Re: [PATCH v3 2/9] mtd: nand: add ONFI timing mode to nand_timings
+ converter
+Message-ID: <20140709172555.GI7537@ld-irv-0074>
+References: <1394647664-8258-1-git-send-email-b.brezillon.dev@gmail.com>
+ <1394647664-8258-3-git-send-email-b.brezillon.dev@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20140708095855.29c2fb87@bbrezillon>
-Cc: devicetree@vger.kernel.org, Boris BREZILLON <b.brezillon.dev@gmail.com>,
- kernel@stlinux.com, linux-kernel@vger.kernel.org,
+In-Reply-To: <1394647664-8258-3-git-send-email-b.brezillon.dev@gmail.com>
+Cc: devicetree@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+ linux-doc@vger.kernel.org, dev@linux-sunxi.org, linux-kernel@vger.kernel.org,
  Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
- linux-mtd@lists.infradead.org, "Gupta, Pekon\"" <pekon@ti.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Lee Jones <lee.jones@linaro.org>, linux-arm-kernel@lists.infradead.org
+ Rob Herring <robherring2@gmail.com>, Grant Likely <grant.likely@linaro.org>,
+ linux-mtd@lists.infradead.org,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,30 +28,31 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Boris,
 
-On Tue, Jul 08, 2014 at 09:58:55AM +0200, Boris BREZILLON wrote:
-> On Mon, 7 Jul 2014 16:52:22 -0700 Brian Norris <computersforpeace@gmail.com> wrote:
-> > On Thu, Jul 03, 2014 at 10:05:22AM +0200, Boris BREZILLON wrote:
-> > > On Wed, 2 Jul 2014 17:22:37 -0700 Brian Norris <computersforpeace@gmail.com> wrote:
-> > > 
-> > > AFAIR, the NAND timing representation for non-ONFI chips question was
-> > > left unanswered:
-> > > 
-> > > https://lkml.org/lkml/2014/5/20/581
-> > > 
-> > > I can definitely respin my NAND timings series, but I'd like to be sure
-> > > this is how you want it done before doing so.
-> > 
-> > Can we start by supporting ONFI-only (or ONFI-only, plus entries in
-> > nand_flash_ids[]), and have nand_base provide the translation so drivers
-> > can retrieve the info? Then we can begin supporting new drivers like
-> > Lee's, and worry about the DT question separately.
-> 
-> So, basically, I just send a new series with patch 1 and 2 from my sunxi
-> NAND series [1] (including the fixes you suggested, of course), right ?
-> 
-> [1] http://thread.gmane.org/gmane.comp.hardware.netbook.arm.sunxi/7977
+Since I think you were planning on revisiting this soon, I have one more
+comment:
 
-Yes, please send 1 and 2 on their own. I think that would be a good
-start for supporting these drivers.
+On Wed, Mar 12, 2014 at 07:07:37PM +0100, Boris BREZILLON wrote:
+> diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+> index c970ce7..0b8a822 100644
+> --- a/drivers/mtd/nand/Makefile
+> +++ b/drivers/mtd/nand/Makefile
+> @@ -2,7 +2,7 @@
+>  # linux/drivers/nand/Makefile
+>  #
+>  
+> -obj-$(CONFIG_MTD_NAND)			+= nand.o
+> +obj-$(CONFIG_MTD_NAND)			+= nand.o nand_timings.o
 
+This is not the right place, as it will generate a new module
+'nand_timings' (nand_timings.ko, if CONFIG_MTD_NAND=m). You probably
+want to just add nand_timings.o to the 'nand-objs' list at the bottom of
+the Makefile, like this:
+
+	nand-objs := nand_base.o nand_bbt.o nand_timings.o
+
+>  obj-$(CONFIG_MTD_NAND_ECC)		+= nand_ecc.o
+>  obj-$(CONFIG_MTD_NAND_BCH)		+= nand_bch.o
+>  obj-$(CONFIG_MTD_NAND_IDS)		+= nand_ids.o nand_hynix.o
+
+Thanks,
 Brian
