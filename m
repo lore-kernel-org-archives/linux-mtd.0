@@ -1,19 +1,17 @@
-Received: from mail-lb0-f180.google.com ([209.85.217.180])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X4mF1-00027P-Rv
- for linux-mtd@lists.infradead.org; Wed, 09 Jul 2014 07:24:36 +0000
-Received: by mail-lb0-f180.google.com with SMTP id w7so4764584lbi.11
- for <linux-mtd@lists.infradead.org>; Wed, 09 Jul 2014 00:24:08 -0700 (PDT)
+From: Roger Quadros <rogerq@ti.com>
+To: <tony@atomide.com>, <computersforpeace@gmail.com>
+Subject: [RFC PATCH 01/10] mtd: nand: omap: Use a single hardware controller
+ instance
+Date: Wed, 9 Jul 2014 15:37:21 +0300
+Message-ID: <1404909450-11970-2-git-send-email-rogerq@ti.com>
+In-Reply-To: <1404909450-11970-1-git-send-email-rogerq@ti.com>
+References: <1404909450-11970-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <53BC9221.1030708@huawei.com>
-References: <53BBC39F.7010307@gmail.com> <53BC9221.1030708@huawei.com>
-From: Richard Genoud <richard.genoud@gmail.com>
-Date: Wed, 9 Jul 2014 09:23:48 +0200
-Message-ID: <CACQ1gAimr_Thv2=_jYf2s138sSqeeVzfO1bE62-a3YTor1cRUA@mail.gmail.com>
-Subject: Re: ubifs error at boot "bad node type"
-To: hujianyang <hujianyang@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain
+Cc: jg1.han@samsung.com, nsekhar@ti.com, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, pekon@ti.com,
+ ezequiel.garcia@free-electrons.com, javier@dowhile0.org,
+ linux-omap@vger.kernel.org, dwmw2@infradead.org, Roger Quadros <rogerq@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,24 +21,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2014-07-09 2:51 GMT+02:00 hujianyang <hujianyang@huawei.com>:
->>
->> # ls -l /mnt/rfs/
->> [   87.054687] UBIFS error (pid 652): ubifs_read_node: bad node type (255 but expected 0)
->> [   87.062500] UBIFS error (pid 652): ubifs_read_node: bad node at LEB 405:39728, LEB mapping status 1
->> [   87.070312] Not a node, first 24 bytes:
->> [   87.078125] 00000000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff                          ........................
->
-> Seems LEB 405 is empty? This is not the first time I saw
-> an error like this.
->
-> Is this happen after an unclean umount like power cut?
-I'm only guessing that it happened after a power cut, I wasn't there
-when it happened...
+There is only one NAND controller (ECC generator) that needs to be
+shared among multiple devices. So point nand_chip->hwcontrol to
+a single omap_hw_controller instance.
+This way the NAND base driver can take care of serializing access
+to this single controller (via nand_chip->controller->lock)
+when multiple NAND devices are present.
 
-For now, it's the 1st and only time.
-I'll wait and see if it happens again.
+Signed-off-by: Roger Quadros <rogerq@ti.com>
+---
+ drivers/mtd/nand/omap2.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-
-> Artem, do you have any ideas?
->
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index f0ed92e..5b8739c 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -149,8 +149,9 @@ static u_char bch4_vector[] = {0x00, 0x6b, 0x31, 0xdd, 0x41, 0xbc, 0x10};
+ /* oob info generated runtime depending on ecc algorithm and layout selected */
+ static struct nand_ecclayout omap_oobinfo;
+ 
++static struct nand_hw_control omap_hw_controller;
++
+ struct omap_nand_info {
+-	struct nand_hw_control		controller;
+ 	struct omap_nand_platform_data	*pdata;
+ 	struct mtd_info			mtd;
+ 	struct nand_chip		nand;
+@@ -1649,9 +1650,6 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, info);
+ 
+-	spin_lock_init(&info->controller.lock);
+-	init_waitqueue_head(&info->controller.wq);
+-
+ 	info->pdev		= pdev;
+ 	info->gpmc_cs		= pdata->cs;
+ 	info->reg		= pdata->reg;
+@@ -1672,7 +1670,13 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 
+ 	info->phys_base = res->start;
+ 
+-	nand_chip->controller = &info->controller;
++	/*
++	 * There is only one NAND controller (ECC generator) that needs to be
++	 * shared among multiple devices. The NAND base driver takes care of
++	 * serializing access to this single controller when multiple NAND
++	 * devices are present.
++	 */
++	nand_chip->hwcontrol = omap_hw_controller;
+ 
+ 	nand_chip->IO_ADDR_W = nand_chip->IO_ADDR_R;
+ 	nand_chip->cmd_ctrl  = omap_hwcontrol;
+-- 
+1.8.3.2
