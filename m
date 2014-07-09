@@ -1,15 +1,19 @@
-Date: Wed, 9 Jul 2014 10:25:55 -0700
+Date: Wed, 9 Jul 2014 10:46:03 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Boris BREZILLON <b.brezillon.dev@gmail.com>
-Subject: Re: [PATCH v3 2/9] mtd: nand: add ONFI timing mode to nand_timings
- converter
-Message-ID: <20140709172555.GI7537@ld-irv-0074>
+To: Boris BREZILLON <boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH v3 4/9] of: mtd: add documentation for the ONFI NAND
+ timing mode property
+Message-ID: <20140709174603.GJ7537@ld-irv-0074>
 References: <1394647664-8258-1-git-send-email-b.brezillon.dev@gmail.com>
- <1394647664-8258-3-git-send-email-b.brezillon.dev@gmail.com>
+ <1394647664-8258-5-git-send-email-b.brezillon.dev@gmail.com>
+ <20140520182542.GS28907@ld-irv-0074>
+ <537BAD59.3060902@free-electrons.com>
+ <20140520195240.GW28907@ld-irv-0074>
+ <537BC9D4.6070200@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1394647664-8258-3-git-send-email-b.brezillon.dev@gmail.com>
+In-Reply-To: <537BC9D4.6070200@free-electrons.com>
 Cc: devicetree@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
  linux-doc@vger.kernel.org, dev@linux-sunxi.org, linux-kernel@vger.kernel.org,
  Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
@@ -28,31 +32,44 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Boris,
 
-Since I think you were planning on revisiting this soon, I have one more
-comment:
+Looking back at this thread, there's at least one or two things I forgot
+to answer. Sorry.
 
-On Wed, Mar 12, 2014 at 07:07:37PM +0100, Boris BREZILLON wrote:
-> diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-> index c970ce7..0b8a822 100644
-> --- a/drivers/mtd/nand/Makefile
-> +++ b/drivers/mtd/nand/Makefile
-> @@ -2,7 +2,7 @@
->  # linux/drivers/nand/Makefile
->  #
->  
-> -obj-$(CONFIG_MTD_NAND)			+= nand.o
-> +obj-$(CONFIG_MTD_NAND)			+= nand.o nand_timings.o
+On Tue, May 20, 2014 at 11:32:04PM +0200, Boris BREZILLON wrote:
+> On 20/05/2014 21:52, Brian Norris wrote:
+[...]
+> If the ECC bindings don't encode the "minimum required ECC strength" but
+> rather the "ECC config on a specific board" then I guess "minimum
+> required ECC strength" for non-ONFI chips should be defined somewhere
+> else (stored in the device ID table ?).
 
-This is not the right place, as it will generate a new module
-'nand_timings' (nand_timings.ko, if CONFIG_MTD_NAND=m). You probably
-want to just add nand_timings.o to the 'nand-objs' list at the bottom of
-the Makefile, like this:
+They are. See nand_flash_dev::ecc, which holds fields for
+ecc_strength_ds and step_ds. If we have to, we can add a "timing mode"
+field to this struct.
 
-	nand-objs := nand_base.o nand_bbt.o nand_timings.o
+> > So you're saying that even though the chip actually specifies a single
+> > set of timings, you would describe this as a bitmask of several
+> > supported ONFI timing modes, up to the "max performance"?
+> >
+> > Is there ever a case where (for instance) a non-ONFI flash supports the
+> > equivalent of timing mode 3, but it does not support mode 2 or 1?
+> 
+> I don't think so.
 
->  obj-$(CONFIG_MTD_NAND_ECC)		+= nand_ecc.o
->  obj-$(CONFIG_MTD_NAND_BCH)		+= nand_bch.o
->  obj-$(CONFIG_MTD_NAND_IDS)		+= nand_ids.o nand_hynix.o
+OK, then I don't think the mask approach is necessary, if we do ever
+settle on using a DT binding here. (I hope we can avoid this.)
+
+> >> But I can modify the bindings to just encode the maximum supported
+> >> timing mode.
+> > AIUI, the non-ONFI datasheets really only specify a single timing mode,
+> > so I think we should only specify the "max." And as a bonus, this
+> > actually makes the binding easier to use. A driver does not care about
+> > how many different modes are supported; it only needs to know what the
+> > max is.
+> 
+> Agreed, actually my first binding was defining it this way.
+
+Was there a good reason for changing it?
 
 Thanks,
 Brian
