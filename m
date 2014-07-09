@@ -1,30 +1,19 @@
-Message-ID: <53BCEA77.2080004@huawei.com>
-Date: Wed, 9 Jul 2014 09:08:39 +0200
-From: Jerome FORISSIER <jerome.forissier@huawei.com>
+Received: from mail-lb0-f180.google.com ([209.85.217.180])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X4mF1-00027P-Rv
+ for linux-mtd@lists.infradead.org; Wed, 09 Jul 2014 07:24:36 +0000
+Received: by mail-lb0-f180.google.com with SMTP id w7so4764584lbi.11
+ for <linux-mtd@lists.infradead.org>; Wed, 09 Jul 2014 00:24:08 -0700 (PDT)
 MIME-Version: 1.0
-To: Zhou Wang <wangzhou.bry@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, "Ian
- Campbell" <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, Russell King <linux@arm.linux.org.uk>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Grant Likely
- <grant.likely@linaro.org>, Ezequiel Garcia
- <ezequiel.garcia@free-electrons.com>, Pekon Gupta <pekon@ti.com>, "Artem
- Bityutskiy" <artem.bityutskiy@linux.intel.com>, Alexander Shiyan
- <shc_work@mail.ru>, Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>,
- Jussi Kivilinna <jussi.kivilinna@iki.fi>,
- Joern Engel <joern@logfs.org>, Randy Dunlap <rdunlap@infradead.org>,
- <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
- <linux-mtd@lists.infradead.org>, <linux-doc@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/3] mtd: hisilicon: add device tree node for nand
- controller
-References: <1404115409-20200-1-git-send-email-wangzhou.bry@gmail.com>
- <1404115409-20200-2-git-send-email-wangzhou.bry@gmail.com>
-In-Reply-To: <1404115409-20200-2-git-send-email-wangzhou.bry@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Cc: caizhiyong@huawei.com, wangzhou1@hisilicon.com
+In-Reply-To: <53BC9221.1030708@huawei.com>
+References: <53BBC39F.7010307@gmail.com> <53BC9221.1030708@huawei.com>
+From: Richard Genoud <richard.genoud@gmail.com>
+Date: Wed, 9 Jul 2014 09:23:48 +0200
+Message-ID: <CACQ1gAimr_Thv2=_jYf2s138sSqeeVzfO1bE62-a3YTor1cRUA@mail.gmail.com>
+Subject: Re: ubifs error at boot "bad node type"
+To: hujianyang <hujianyang@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,57 +23,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 30-Jun-14 10:03, Zhou Wang wrote:
-> Signed-off-by: Zhou Wang <wangzhou.bry@gmail.com>
-> ---
->  arch/arm/boot/dts/hip04.dtsi |   31 +++++++++++++++++++++++++++++++
->  1 file changed, 31 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/hip04.dtsi b/arch/arm/boot/dts/hip04.dtsi
-> index abb42ca..e63fc61 100644
-> --- a/arch/arm/boot/dts/hip04.dtsi
-> +++ b/arch/arm/boot/dts/hip04.dtsi
-> @@ -386,5 +386,36 @@
->  				interrupts = <0 389 4>;
->  			};
->  		};
-> +
-> +		nand: nand@4020000 {
-> +			compatible = "hisilicon,504-nfc";
+2014-07-09 2:51 GMT+02:00 hujianyang <hujianyang@huawei.com>:
+>>
+>> # ls -l /mnt/rfs/
+>> [   87.054687] UBIFS error (pid 652): ubifs_read_node: bad node type (255 but expected 0)
+>> [   87.062500] UBIFS error (pid 652): ubifs_read_node: bad node at LEB 405:39728, LEB mapping status 1
+>> [   87.070312] Not a node, first 24 bytes:
+>> [   87.078125] 00000000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff                          ........................
+>
+> Seems LEB 405 is empty? This is not the first time I saw
+> an error like this.
+>
+> Is this happen after an unclean umount like power cut?
+I'm only guessing that it happened after a power cut, I wasn't there
+when it happened...
 
-In PATCH 2/3 and 3/3 you are using "hisilicon,nfc504".
+For now, it's the 1st and only time.
+I'll wait and see if it happens again.
 
-> +			reg = <0x4020000 0x10000>, <0x5000000 0x1000>;
-> +			interrupts = <0 379 4>;
-> +			nand-bus-width = <8>;
-> +			nand-ecc-mode = "none";
-> +			hisi,nand-ecc-bits = <0>;
-> +			#address-cells = <1>;
-> +			#size-cells = <1>;
-> +
-> +			partition@0 {
-> +				label = "nand_text";
-> +				reg = <0x00000000 0x00400000>;
-> +			};
-> +
-> +			partition@00400000 {
-> +				label = "nand_monitor";
-> +				reg = <0x00400000 0x00400000>;
-> +			};
-> +
-> +			partition@00800000 {
-> +				label = "nand_kernel";
-> +				reg = <0x00800000 0x00800000>;
-> +			};
-> +
-> +			partition@01000000 {
-> +				label = "nand_fs";
-> +				reg = <0x01000000 0x1f000000>;
-> +			};
-> +		};
->  	};
->  };
-> 
 
--- 
-Jerome
+> Artem, do you have any ideas?
+>
