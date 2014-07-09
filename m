@@ -1,22 +1,27 @@
-Received: from mail-qa0-x22f.google.com ([2607:f8b0:400d:c00::22f])
+Received: from mail-bl2lp0211.outbound.protection.outlook.com
+ ([207.46.163.211] helo=na01-bl2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X4guz-0004QV-5M
- for linux-mtd@lists.infradead.org; Wed, 09 Jul 2014 01:43:33 +0000
-Received: by mail-qa0-f47.google.com with SMTP id i13so297692qae.34
- for <linux-mtd@lists.infradead.org>; Tue, 08 Jul 2014 18:43:11 -0700 (PDT)
-Date: Tue, 8 Jul 2014 18:43:07 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH v3 0/3] mtd: Add sysfs entries and account BBT blocks
- properly
-Message-ID: <20140709014307.GF7537@ld-irv-0074>
-References: <1403618152-4515-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ id 1X4h5E-0008OO-20
+ for linux-mtd@lists.infradead.org; Wed, 09 Jul 2014 01:54:09 +0000
+Message-ID: <1404870818.21434.291.camel@snotra.buserror.net>
+Subject: Re: [PATCH] devicetree/bindings: Add binding for micron n25q512a
+ memory
+From: Scott Wood <scottwood@freescale.com>
+To: Jain Priyanka-B32167 <Priyanka.Jain@freescale.com>
+Date: Tue, 8 Jul 2014 20:53:38 -0500
+In-Reply-To: <a9ac5cbcdb554bedbda35594740e320d@BLUPR03MB135.namprd03.prod.outlook.com>
+References: <1404382376-3115-1-git-send-email-Priyanka.Jain@freescale.com>
+ <1404425400.21434.89.camel@snotra.buserror.net>
+ <b7e1d3bf1675492585121d9e7950f05a@BLUPR03MB135.namprd03.prod.outlook.com>
+ <1404768354.21434.191.camel@snotra.buserror.net>
+ <a9ac5cbcdb554bedbda35594740e320d@BLUPR03MB135.namprd03.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1403618152-4515-1-git-send-email-ezequiel.garcia@free-electrons.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- linux-mtd@lists.infradead.org, Pekon Gupta <pekon@ti.com>
+Content-Transfer-Encoding: 7bit
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,45 +31,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jun 24, 2014 at 10:55:49AM -0300, Ezequiel Garcia wrote:
-> Here's a new round of the patchset to add sysfs entries for the ECC stats
-> struct fields. See the discussion around previous version for context:
+On Mon, 2014-07-07 at 23:41 -0500, Jain Priyanka-B32167 wrote:
 > 
-> http://lists.infradead.org/pipermail/linux-mtd/2014-March/052804.html
-> 
-> Changes from v2:
-> 
->   * As suggested by Pekon Gupta, use "ecc_failures" instead of
->     "uncorrectable_errors".
-> 
->   * Added documentation for the new sysfs ABI as requested by Greg KH.
-> 
-> Changes from v1:
-> 
->   * As agreed I've added a sysfs file per field to replace the ecc_stats
->     sysfs file. The current proposal follows the "one file per value" sysfs
->     rule, adding the following device attributes:
->     - corrected_bits (ecc_stats.corrected)
->     - uncorrectable_errors (ecc_stats.failed)
->     - bad_blocks (ecc_stats.badblocks)
->     - bbt_blocks (ecc_stats.bbtblocks)
-> 
->   * Following Brian's request, added small wrapper nand_block_isreserved()
->     that checks if the NAND has a bad block table before querying the number
->     of reserved blocks.
-> 
->   * Finally, this new series drops patch: "nand: Account the blocks used by
->     the BBT in the ecc_stats". It's not yet clear how to best deal with the
->     current inconsistencies in MTD master and partition handling.
-> 
-> The first patch adds the sysfs entries. The rest of the patches fixes the
-> bbtblock accounting and allows to keep track of the reserved blocks correctly.
-> 
-> This is a very old issue, probably around since the dawn of time,
-> and nobody seemed to care much about it. However, with the introduction of
-> the sysfs access, it's easier to access this stats and easier to
-> see the issue.
+> > -----Original Message-----
+> > From: Wood Scott-B07421
+> > Sent: Tuesday, July 08, 2014 2:56 AM
+> > To: Jain Priyanka-B32167
+> > Cc: devicetree@vger.kernel.org; linuxppc-dev@lists.ozlabs.org; linux-
+> > spi@vger.kernel.org; linux-mtd@lists.infradead.org
+> > Subject: Re: [PATCH] devicetree/bindings: Add binding for micron n25q512a
+> > memory
+> > 
+> > On Thu, 2014-07-03 at 23:08 -0500, Jain Priyanka-B32167 wrote:
+> > >
+> > > > -----Original Message-----
+> > > > From: Wood Scott-B07421
+> > > > Sent: Friday, July 04, 2014 3:40 AM
+> > > > To: Jain Priyanka-B32167
+> > > > Cc: devicetree@vger.kernel.org; linuxppc-dev@lists.ozlabs.org;
+> > > > linux- spi@vger.kernel.org; linux-mtd@lists.infradead.org
+> > > > Subject: Re: [PATCH] devicetree/bindings: Add binding for micron
+> > > > n25q512a memory
+> > > >
+> > > > On Thu, 2014-07-03 at 15:42 +0530, Priyanka Jain wrote:
+> > > > > -Micron n25q512a memory is supported by m25p80 driver.
+> > > > >  Add compatible field required to support n25q512a in m25p80.txt
+> > > > > -Add micron to the vendor-prefixes.txt file
+> > > > >
+> > > > > Signed-off-by: Priyanka Jain <Priyanka.Jain@freescale.com>
+> > > > > ---
+> > > > >  Documentation/devicetree/bindings/mtd/m25p80.txt   |    1 +
+> > > > >  .../devicetree/bindings/vendor-prefixes.txt        |    1 +
+> > > > >  2 files changed, 2 insertions(+), 0 deletions(-)
+> > > >
+> > > > Why did you send this to the ppc list but not the spi or mtd lists?
+> > > >
+> > > [Jain Priyanka-B32167] Sorry, I missed that
+> > > > I'm having a hard time following the flow of how these SPI devices
+> > > > get bound -- is the compatible involved at all?  I don't see this
+> > > > string (with vendor prefix included) in the driver.  I do see a
+> > > > table that contains what looks like device IDs.  If the device can
+> > > > report its id, shouldn't we rely on that rather than device tree
+> > compatible?
+> > > >
+> > > > -Scott
+> > > [Jain Priyanka-B32167]
+> > > Spi driver has a check to device name corresponding to device-id and
+> > compare to what is passed in dts string.
+> > 
+> > Please go into more detail.  I don't see where the string
+> > "micron,n25q512a" appears in the current kernel.  I do see "n25q512a",
+> > but how does that compare successfully with the version of the string
+> > that has a vendor compatible?
+> > 
+> > Again, is there a device ID that can be read at runtime?  Is there a
+> > compatible string that represents a common programming interface?
+> [Jain Priyanka-B32167] 
+>
+> Spi driver (of_register_spi_devices()) search for compatible string in
+> device-tree. It selects the flash device driver based on the compatible
+> string (n25q512a). This compatible string is essential, else device
+> probe wont continue.  Then Device-id of flash is read at runtime in
+> probe and compared with the corresponding device-id of flash
+> (n25q512a). Device-id (maintained as first element in INFO string in
+> spi_nor_ids[] in drivers/mtd/spi-nor/spi-nor.c file)
 
-Pushed to l2-mtd.git, with the small tweaks I noted for patch 1. Thanks!
+By "device id" I'm talking about 0x20bb20, not "n25q512a".  Where does
+that come from?
 
-Brian
+> Only if both device-ids match, the device is taken as successfully
+> detected. Regarding vendor "micron", you are right currently the vendor
+> information is not maintained as such in device-id, but the convention
+> that is followed for compatible string is "vendor-id, device-id"
+
+Is there going to be a patch to the driver to accept the string with
+vendor id?
+
+> > > New checkpatch script search for exact string match in binding folder.
+> > So, I have added this in example.
+> > 
+> > That check has a lot of false positives when it comes to compatible
+> > strings for specific chips that don't need to be specifically mentioned
+> > in a more generic binding.
+> > 
+> > -Scott
+> > 
+> [Jain Priyanka-B32167] Even though "micron,n25q512a" is in sync with
+> binding mentioned in "
+> Documentation/devicetree/bindings/mtd/m25p80.txt   ", I have to add
+> this as an a example, just to avoid checkpatch error. What should be
+> the approach going forward: Should such checkpatch warnings be ignored?
+
+They shouldn't be ignored nor blindly remedied.  You should look at the
+message and decide whether a binding is needed and whether it is
+present.  There probably should be a binding here, but I don't have
+enough information to say whether it should be specific to n25q512a or
+if spi nor can be described more generically.
+
+-Scott
