@@ -1,22 +1,30 @@
-Received: from mail-yk0-x22c.google.com ([2607:f8b0:4002:c07::22c])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X4h9m-0001Xa-Da
- for linux-mtd@lists.infradead.org; Wed, 09 Jul 2014 01:58:51 +0000
-Received: by mail-yk0-f172.google.com with SMTP id 142so2620210ykq.3
- for <linux-mtd@lists.infradead.org>; Tue, 08 Jul 2014 18:58:28 -0700 (PDT)
-Date: Tue, 8 Jul 2014 18:58:24 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH] UBI: fastmap: correct error check
-Message-ID: <20140709015824.GG7537@ld-irv-0074>
-References: <1400650538-11234-1-git-send-email-computersforpeace@gmail.com>
- <537C55DC.6090808@nod.at> <20140609170139.GI3599@ld-irv-0074>
- <1402383372.20454.57.camel@sauron.fi.intel.com>
+Message-ID: <53BCEA77.2080004@huawei.com>
+Date: Wed, 9 Jul 2014 09:08:39 +0200
+From: Jerome FORISSIER <jerome.forissier@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1402383372.20454.57.camel@sauron.fi.intel.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+To: Zhou Wang <wangzhou.bry@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, "Ian
+ Campbell" <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, Russell King <linux@arm.linux.org.uk>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Grant Likely
+ <grant.likely@linaro.org>, Ezequiel Garcia
+ <ezequiel.garcia@free-electrons.com>, Pekon Gupta <pekon@ti.com>, "Artem
+ Bityutskiy" <artem.bityutskiy@linux.intel.com>, Alexander Shiyan
+ <shc_work@mail.ru>, Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>,
+ Jussi Kivilinna <jussi.kivilinna@iki.fi>,
+ Joern Engel <joern@logfs.org>, Randy Dunlap <rdunlap@infradead.org>,
+ <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+ <linux-mtd@lists.infradead.org>, <linux-doc@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] mtd: hisilicon: add device tree node for nand
+ controller
+References: <1404115409-20200-1-git-send-email-wangzhou.bry@gmail.com>
+ <1404115409-20200-2-git-send-email-wangzhou.bry@gmail.com>
+In-Reply-To: <1404115409-20200-2-git-send-email-wangzhou.bry@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Cc: caizhiyong@huawei.com, wangzhou1@hisilicon.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,30 +34,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
-
-On Tue, Jun 10, 2014 at 09:56:12AM +0300, Artem Bityutskiy wrote:
-> On Mon, 2014-06-09 at 10:01 -0700, Brian Norris wrote:
-> > On Wed, May 21, 2014 at 09:29:32AM +0200, Richard Weinberger wrote:
-> > > Am 21.05.2014 07:35, schrieb Brian Norris:
-> > > > The return value from ubi_io_read_ec_hdr() was stored in 'err', not in
-> > > > 'ret'.
-> > > > 
-> > > > This issue was reported by Coverity Scan.
-> > > 
-> > > I begin to love Coverity. :-)
-> > > Thanks for the patch, Brian!
-> > > 
-> > > > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> > > > Cc: Richard Weinberger <richard@nod.at>
-> > > 
-> > > Acked-by: Richard Weinberger <richard@nod.at>
-> > 
-> > Ping.
+On 30-Jun-14 10:03, Zhou Wang wrote:
+> Signed-off-by: Zhou Wang <wangzhou.bry@gmail.com>
+> ---
+>  arch/arm/boot/dts/hip04.dtsi |   31 +++++++++++++++++++++++++++++++
+>  1 file changed, 31 insertions(+)
 > 
-> Ooops, missed this completely. Let me merge it a bit later, after
-> 3.16-rc1. Thanks!
+> diff --git a/arch/arm/boot/dts/hip04.dtsi b/arch/arm/boot/dts/hip04.dtsi
+> index abb42ca..e63fc61 100644
+> --- a/arch/arm/boot/dts/hip04.dtsi
+> +++ b/arch/arm/boot/dts/hip04.dtsi
+> @@ -386,5 +386,36 @@
+>  				interrupts = <0 389 4>;
+>  			};
+>  		};
+> +
+> +		nand: nand@4020000 {
+> +			compatible = "hisilicon,504-nfc";
 
-'Tis after 3.16-rc1!
+In PATCH 2/3 and 3/3 you are using "hisilicon,nfc504".
 
-Brian
+> +			reg = <0x4020000 0x10000>, <0x5000000 0x1000>;
+> +			interrupts = <0 379 4>;
+> +			nand-bus-width = <8>;
+> +			nand-ecc-mode = "none";
+> +			hisi,nand-ecc-bits = <0>;
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +
+> +			partition@0 {
+> +				label = "nand_text";
+> +				reg = <0x00000000 0x00400000>;
+> +			};
+> +
+> +			partition@00400000 {
+> +				label = "nand_monitor";
+> +				reg = <0x00400000 0x00400000>;
+> +			};
+> +
+> +			partition@00800000 {
+> +				label = "nand_kernel";
+> +				reg = <0x00800000 0x00800000>;
+> +			};
+> +
+> +			partition@01000000 {
+> +				label = "nand_fs";
+> +				reg = <0x01000000 0x1f000000>;
+> +			};
+> +		};
+>  	};
+>  };
+> 
+
+-- 
+Jerome
