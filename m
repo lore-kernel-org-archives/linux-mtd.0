@@ -1,9 +1,12 @@
+Received: from comal.ext.ti.com ([198.47.26.152])
+ by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X4r9D-0000Qd-M9
+ for linux-mtd@lists.infradead.org; Wed, 09 Jul 2014 12:38:56 +0000
 From: Roger Quadros <rogerq@ti.com>
 To: <tony@atomide.com>, <computersforpeace@gmail.com>
-Subject: [RFC PATCH 07/10] OMAP: GPMC: Introduce APIs for Configuring ECC
- Engine
-Date: Wed, 9 Jul 2014 15:37:27 +0300
-Message-ID: <1404909450-11970-8-git-send-email-rogerq@ti.com>
+Subject: [RFC PATCH 08/10] OMAP: GPMC: Introduce APIs to get ECC/BCH results
+Date: Wed, 9 Jul 2014 15:37:28 +0300
+Message-ID: <1404909450-11970-9-git-send-email-rogerq@ti.com>
 In-Reply-To: <1404909450-11970-1-git-send-email-rogerq@ti.com>
 References: <1404909450-11970-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
@@ -22,194 +25,207 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Even though the ECC/BCH engine is meant for exclusive use by
-the OMAP NAND controller, the ECC/BCH registers belong
-to the GPMC controller's register space
+the OMAP NAND controller, the ECC/BCH result registers belong
+to the GPMC controller's register space.
 
-Add omap_gpmc_ecc_configure_enable() and omap_gpmc_ecc_disable()
-to manage the ECC engine. OMAP NAND driver must use these APIs
-instead of directly accessing the ECC Engine registers.
+Introduce 2 APIs to access the ECC/BCH results.
+void omap_gpmc_ecc_get_result(int length, u32 *result);
+void omap_gpmc_ecc_get_bch_result(int length, u8 sector, u32 *result);
+
+The first one is to get the Hamming code ECC result registers
+and the second one is to get the BCH ECC result registers.
 
 Signed-off-by: Roger Quadros <rogerq@ti.com>
 ---
- arch/arm/mach-omap2/gpmc.c     | 109 ++++++++++++++++++++++++++++++++++++-----
- include/linux/omap-gpmc-nand.h |  25 ++++++++++
- 2 files changed, 121 insertions(+), 13 deletions(-)
+ arch/arm/mach-omap2/gpmc.c     | 97 +++++++++++++++++++++++++++++++++++++++---
+ include/linux/omap-gpmc-nand.h | 11 +++++
+ 2 files changed, 101 insertions(+), 7 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
-index 43e2a9d..8befd16 100644
+index 8befd16..9222244 100644
 --- a/arch/arm/mach-omap2/gpmc.c
 +++ b/arch/arm/mach-omap2/gpmc.c
-@@ -73,19 +73,6 @@
- #define	GPMC_ECC_BCH_RESULT_5	0x304	/* not available on OMAP2 */
- #define	GPMC_ECC_BCH_RESULT_6	0x308	/* not available on OMAP2 */
+@@ -65,6 +65,7 @@
+ #define GPMC_ECC_CONTROL	0x1f8
+ #define GPMC_ECC_SIZE_CONFIG	0x1fc
+ #define GPMC_ECC1_RESULT        0x200
++#define GPMC_ECC9_RESULT        0x220
+ #define GPMC_ECC_BCH_RESULT_0   0x240   /* not available on OMAP2 */
+ #define	GPMC_ECC_BCH_RESULT_1	0x244	/* not available on OMAP2 */
+ #define	GPMC_ECC_BCH_RESULT_2	0x248	/* not available on OMAP2 */
+@@ -83,6 +84,7 @@
+ #define GPMC_CS0_OFFSET		0x60
+ #define GPMC_CS_SIZE		0x30
+ #define	GPMC_BCH_SIZE		0x10
++#define GPMC_BCH_NUM		7	/* Max no. of BCH registers 0-6 */
  
--/* GPMC ECC control settings */
--#define GPMC_ECC_CTRL_ECCCLEAR		0x100
--#define GPMC_ECC_CTRL_ECCDISABLE	0x000
--#define GPMC_ECC_CTRL_ECCREG1		0x001
--#define GPMC_ECC_CTRL_ECCREG2		0x002
--#define GPMC_ECC_CTRL_ECCREG3		0x003
--#define GPMC_ECC_CTRL_ECCREG4		0x004
--#define GPMC_ECC_CTRL_ECCREG5		0x005
--#define GPMC_ECC_CTRL_ECCREG6		0x006
--#define GPMC_ECC_CTRL_ECCREG7		0x007
--#define GPMC_ECC_CTRL_ECCREG8		0x008
--#define GPMC_ECC_CTRL_ECCREG9		0x009
--
- #define	GPMC_CONFIG2_CSEXTRADELAY		BIT(7)
- #define	GPMC_CONFIG3_ADVEXTRADELAY		BIT(7)
- #define	GPMC_CONFIG4_OEEXTRADELAY		BIT(7)
-@@ -129,6 +116,28 @@
- #define GPMC_PREFETCH_STATUS_COUNT(val)		(val & 0x00003fff)
- #define GPMC_PREFETCH_STATUS_FIFO_CNT(val)	((val >> 24) & 0x7F)
+ #define GPMC_MEM_END		0x3FFFFFFF
  
-+/* GPMC ECC config */
-+#define GPMC_ECC_CONFIG_ECCENABLE		BIT(0)
-+#define GPMC_ECC_CONFIG_ECCCS_MASK		GENMASK(3, 1)
-+#define GPMC_ECC_CONFIG_ECCCS_SHIFT		1
-+#define GPMC_ECC_CONFIG_ECCNSECTOR_MASK		GENMASK(6, 4)
-+#define GPMC_ECC_CONFIG_ECCNSECTOR_SHIFT	4
-+#define GPMC_ECC_CONFIG_ECC16B			BIT(7)
-+#define GPMC_ECC_CONFIG_ECCWRAPMODE_MASK	GENMASK(11, 8)
-+#define GPMC_ECC_CONFIG_ECCWRAPMODE_SHIFT	8
-+#define GPMC_ECC_CONFIG_ECCBCHTSEL_MASK		GENMASK(13, 12)
-+#define GPMC_ECC_CONFIG_ECCBCHTSEL_SHIFT	12
-+#define GPMC_ECC_CONFIG_ECCALGBCH		BIT(16)
+@@ -96,9 +98,10 @@
+ #define	GPMC_REVISION_MAJOR(l)		((l >> 4) & 0xf)
+ #define	GPMC_REVISION_MINOR(l)		(l & 0xf)
+ 
+-#define	GPMC_HAS_WR_ACCESS		0x1
+-#define	GPMC_HAS_WR_DATA_MUX_BUS	0x2
+-#define	GPMC_HAS_MUX_AAD		0x4
++#define	GPMC_HAS_WR_ACCESS		BIT(0)
++#define	GPMC_HAS_WR_DATA_MUX_BUS	BIT(1)
++#define	GPMC_HAS_MUX_AAD		BIT(2)
++#define	GPMC_HAS_BCH			BIT(3)
+ 
+ #define GPMC_NR_WAITPINS		4
+ 
+@@ -185,6 +188,7 @@ static DEFINE_SPINLOCK(gpmc_mem_lock);
+ static unsigned int gpmc_cs_map = ((1 << GPMC_CS_NUM) - 1);
+ static unsigned int gpmc_cs_num = GPMC_CS_NUM;
+ static unsigned int gpmc_nr_waitpins;
++static unsigned int gpmc_bch_num = GPMC_BCH_NUM;
+ static struct device *gpmc_dev;
+ static int gpmc_irq;
+ static resource_size_t phys_base, mem_size;
+@@ -198,6 +202,7 @@ struct gpmc_nand_reg {
+ };
+ 
+ static struct gpmc_nand_reg gpmc_nand_reg_map[GPMC_CS_NUM];
++void __iomem *gpmc_bch_reg_map[GPMC_BCH_NUM][GPMC_BCH_NUM_REMAINDER];
+ 
+ static struct clk *gpmc_l3_clk;
+ 
+@@ -205,7 +210,7 @@ static irqreturn_t gpmc_handle_irq(int irq, void *dev);
+ 
+ static void gpmc_fill_nand_reg_map(void)
+ {
+-	int i;
++	int i, j;
+ 
+ 	for (i = 0; i < gpmc_cs_num; i++) {
+ 		gpmc_nand_reg_map[i].command = gpmc_base + GPMC_CS0_OFFSET +
+@@ -215,6 +220,28 @@ static void gpmc_fill_nand_reg_map(void)
+ 		gpmc_nand_reg_map[i].data  = gpmc_base + GPMC_CS0_OFFSET +
+ 				GPMC_CS_NAND_DATA + GPMC_CS_SIZE * i;
+ 	}
 +
-+/* GPMC ECC control */
-+#define	GPMC_ECC_CONTROL_ECCCLEAR		BIT(8)
-+#define GPMC_ECC_CONTROL_ECCPOINTER_MASK	GENMASK(3, 0)
-+#define GPMC_ECC_CONTROL_ECCPOINTER_SHIFT	0
++	if (!(gpmc_capability & GPMC_HAS_BCH))
++		return;
 +
-+/* GPMC ECC size */
-+#define GPMC_ECC_SIZE_ECCSIZE0_SHIFT	12
-+#define GPMC_ECC_SIZE_ECCSIZE1_SHIFT	22
 +
- /* XXX: Only NAND irq has been considered,currently these are the only ones used
-  */
- #define	GPMC_NR_IRQ		2
-@@ -2105,3 +2114,77 @@ u32 omap_gpmc_get_prefetch_fifo_count(void)
- 	count = GPMC_PREFETCH_STATUS_FIFO_CNT(count);
- 	return count;
++	for (i = 0; i < 4; i++) {
++		for (j = 0; j < 8; j++) {
++			gpmc_bch_reg_map[i][j] = gpmc_base +
++						 GPMC_ECC_BCH_RESULT_0 +
++						 i * 4 + GPMC_BCH_SIZE * j;
++		}
++	}
++
++	/* 2nd for loop for BCH4 onwards due to non-consecutive address */
++	for (i = 4; i < gpmc_bch_num; i++) {
++		for (j = 0; j < 8; j++) {
++			gpmc_bch_reg_map[i][j] = gpmc_base +
++						 GPMC_ECC_BCH_RESULT_4 +
++						 (i - 4) * 4 +
++						 GPMC_BCH_SIZE * j;
++		}
++	}
+ }
+ 
+ static void gpmc_write_reg(int idx, u32 val)
+@@ -1738,10 +1765,17 @@ static int gpmc_probe(struct platform_device *pdev)
+ 	 * - OMAP3xxx			= 5.0
+ 	 * - OMAP44xx/54xx/AM335x	= 6.0
+ 	 */
+-	if (GPMC_REVISION_MAJOR(l) > 0x4)
+-		gpmc_capability = GPMC_HAS_WR_ACCESS | GPMC_HAS_WR_DATA_MUX_BUS;
+-	if (GPMC_REVISION_MAJOR(l) > 0x5)
++	if (GPMC_REVISION_MAJOR(l) >= 5) {
++		gpmc_capability = GPMC_HAS_WR_ACCESS |
++				  GPMC_HAS_WR_DATA_MUX_BUS | GPMC_HAS_BCH;
++		gpmc_bch_num = 4;
++	}
++
++	if (GPMC_REVISION_MAJOR(l) >= 6) {
+ 		gpmc_capability |= GPMC_HAS_MUX_AAD;
++		gpmc_bch_num = GPMC_BCH_NUM;
++	}
++
+ 	dev_info(gpmc_dev, "GPMC revision %d.%d\n", GPMC_REVISION_MAJOR(l),
+ 		 GPMC_REVISION_MINOR(l));
+ 
+@@ -2188,3 +2222,52 @@ void omap_gpmc_ecc_configure_enable(int cs, bool ecc16, u8 ecc_size0,
+ 	val |= GPMC_ECC_CONFIG_ECCENABLE;
+ 	gpmc_write_reg(GPMC_ECC_CONFIG, val);
  }
 +
 +/**
-+ * omap_gpmc_ecc_disable - Disables the ECC engine
-+ * but doesn't clear the ECC result registers.
++ * omap_gpmc_ecc_get_result - reads out the Hamming code ECC result registers
++ *
++ * @length: Number of 32-bit registers to read
++ * @result: pointer to 32-bit buffer where results should be copied into
 + */
-+void omap_gpmc_ecc_disable(void)
++void omap_gpmc_ecc_get_result(int length, u32 *result)
 +{
-+	u32 val;
++	u32 reg_addr;
++	int i;
 +
-+	/* Disable ECC engine if running */
-+	val = gpmc_read_reg(GPMC_ECC_CONFIG);
-+	if (val & GPMC_ECC_CONFIG_ECCENABLE) {
-+		val &= ~GPMC_ECC_CONFIG_ECCENABLE;
-+		gpmc_write_reg(GPMC_ECC_CONFIG, val);
++	if (!gpmc_dev)
++		return;
++
++	reg_addr = GPMC_ECC1_RESULT;
++	for (i = 0; i < length; i++) {
++		*result++ = gpmc_read_reg(reg_addr);
++		reg_addr += 4;
++		/* Don't read past ECC_RESULT region */
++		if (reg_addr > GPMC_ECC9_RESULT)
++			break;
 +	}
 +}
 +
 +/**
-+ * omap_gpmc_ecc_configure_enable - Configures and enables the ECC-BCH engine
++ * omap_gpmc_ecc_get_bch_result - reads out the BCH result registers
 + *
-+ * @cs: chip select number
-+ * @ecc16: true for 16-bit ECC column, false for 8-bit ECC columna
-+ * @ecc_size0: This value is written to ECCSIZE0 of GPMC_ECC_SIZE_CONFIG reg.
-+ * @ecc_size1: This value is written to ECCSIZE1 of GPMC_ECC_SIZE_CONFIG reg.
-+ * @use_bch: true for BCH algorithm, false for 1-bit Hamming code algorithm
-+ * @bch_type: enum omap_gpmc_bch_type, 4-bit, 8-bit or 16-bit BCH error
-+ *	      correction cabability. Ignored if use_bch is false.
-+ * @bch_sectors: No. of sectors to process with BCH. Ignored if use_bch false.
-+ * @bch_wrap_mode: pre defined spare area defination for BCH calculation.
-+ *		   Ignored if use_bch is false
++ * @length: Number of 32-bit registers to read
++ * @sector: Which sector's results to read (0 to 7)
++ * @result: pointer to 32-bit buffer where results should be copied into
 + */
-+void omap_gpmc_ecc_configure_enable(int cs, bool ecc16, u8 ecc_size0,
-+				    u8 ecc_size1, bool use_bch,
-+				    enum omap_gpmc_bch_type bch_type,
-+				    u8 bch_sectors, u8 bch_wrap_mode)
++void omap_gpmc_ecc_get_bch_result(int length, u8 sector, u32 *result)
 +{
-+	u32 val, valx;
++	int i;
 +
-+	/* Disable ECC engine if running */
-+	omap_gpmc_ecc_disable();
++	if (!gpmc_dev)
++		return;
 +
-+	/* Clear all ECC/BCH result registers */
-+	gpmc_write_reg(GPMC_ECC_CONTROL, GPMC_ECC_CONTROL_ECCCLEAR);
++	if (sector > GPMC_BCH_NUM_REMAINDER)
++		return;
 +
-+	/* ECC size */
-+	val = (ecc_size1 << GPMC_ECC_SIZE_ECCSIZE1_SHIFT) |
-+	      (ecc_size0 << GPMC_ECC_SIZE_ECCSIZE0_SHIFT);
-+	gpmc_write_reg(GPMC_ECC_SIZE_CONFIG, val);
++	/* Don't read past BCH_RESULT region */
++	if (length > gpmc_bch_num)
++		length = gpmc_bch_num;
 +
-+	/* ECC config */
-+	val = (cs << GPMC_ECC_CONFIG_ECCCS_SHIFT) & GPMC_ECC_CONFIG_ECCCS_MASK;
-+
-+	if (ecc16)
-+		val |= GPMC_ECC_CONFIG_ECC16B;
-+
-+	if (use_bch) {
-+		val |= GPMC_ECC_CONFIG_ECCALGBCH;
-+		val |= (bch_type << GPMC_ECC_CONFIG_ECCBCHTSEL_SHIFT) &
-+		       GPMC_ECC_CONFIG_ECCBCHTSEL_MASK;
-+		val |= (bch_sectors << GPMC_ECC_CONFIG_ECCNSECTOR_SHIFT) &
-+		       GPMC_ECC_CONFIG_ECCNSECTOR_MASK;
-+		val |= (bch_wrap_mode << GPMC_ECC_CONFIG_ECCWRAPMODE_SHIFT) &
-+		       GPMC_ECC_CONFIG_ECCWRAPMODE_MASK;
-+	} else {
-+		/* Reset ECC result pointer to 1 */
-+		valx = (1 << GPMC_ECC_CONTROL_ECCPOINTER_SHIFT) &
-+		       GPMC_ECC_CONTROL_ECCPOINTER_MASK;
-+		gpmc_write_reg(GPMC_ECC_CONTROL, valx);
-+	}
-+
-+	/* Enable ECC engine */
-+	val |= GPMC_ECC_CONFIG_ECCENABLE;
-+	gpmc_write_reg(GPMC_ECC_CONFIG, val);
++	for (i = 0; i < length; i++)
++		*result++ = readl_relaxed(gpmc_bch_reg_map[i][sector]);
 +}
 diff --git a/include/linux/omap-gpmc-nand.h b/include/linux/omap-gpmc-nand.h
-index c445d89..f08cd05 100644
+index f08cd05..d0ef165 100644
 --- a/include/linux/omap-gpmc-nand.h
 +++ b/include/linux/omap-gpmc-nand.h
-@@ -23,6 +23,12 @@ enum omap_gpmc_reg {
- 	OMAP_GPMC_NAND_DATA,
- };
- 
-+enum omap_gpmc_bch_type {
-+	OMAP_GPMC_BCH4,
-+	OMAP_GPMC_BCH8,
-+	OMAP_GPMC_BCH16,
-+};
-+
- #ifdef CONFIG_ARCH_OMAP2PLUS
- u32 omap_gpmc_read_reg(int cs, enum omap_gpmc_reg reg);
- void omap_gpmc_write_reg(int cs, enum omap_gpmc_reg reg, u32 val);
-@@ -32,6 +38,11 @@ int omap_gpmc_prefetch_start(int cs, int fifo_th, bool dma,
- int omap_gpmc_prefetch_stop(int cs);
- u32 omap_gpmc_get_prefetch_count(void);
- u32 omap_gpmc_get_prefetch_fifo_count(void);
-+void omap_gpmc_ecc_disable(void);
-+void omap_gpmc_ecc_configure_enable(int cs, bool ecc16, u8 ecc_size0,
-+				    u8 ecc_size1, bool use_bch,
-+				    enum omap_gpmc_bch_type bch_type,
-+				    u8 bch_sectors, u8 bch_wrap_mode);
+@@ -43,6 +43,8 @@ void omap_gpmc_ecc_configure_enable(int cs, bool ecc16, u8 ecc_size0,
+ 				    u8 ecc_size1, bool use_bch,
+ 				    enum omap_gpmc_bch_type bch_type,
+ 				    u8 bch_sectors, u8 bch_wrap_mode);
++void omap_gpmc_ecc_get_result(int length, u32 *result);
++void omap_gpmc_ecc_get_bch_result(int length, u8 sector, u32 *result);
  #else
  static inline u32 omap_gpmc_read_reg(int cs, enum omap_gpmc_reg reg)
  {
-@@ -62,6 +73,20 @@ static inline u32 omap_gpmc_get_prefetch_fifo_count(void)
+@@ -87,6 +89,15 @@ static inline void omap_gpmc_ecc_configure_enable(int cs, bool ecc16,
  {
- 	return 0;
  }
-+
-+static inline void omap_gpmc_ecc_disable(void)
+ 
++static inline void omap_gpmc_ecc_get_result(int length, u32 *result)
 +{
 +}
 +
-+static inline void omap_gpmc_ecc_configure_enable(int cs, bool ecc16,
-+						  u8 ecc_size0, u8 ecc_size1,
-+						  bool use_bch,
-+						  enum omap_gpmc_bch_type bch_type,
-+						  u8 bch_sectors,
-+						  u8 bch_wrap_mode)
++static inline void omap_gpmc_ecc_get_bch_result(int length, u8 sector,
++						u32 *result)
 +{
 +}
 +
