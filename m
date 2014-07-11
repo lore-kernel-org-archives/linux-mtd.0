@@ -1,25 +1,16 @@
-From: "Gupta, Pekon" <pekon@ti.com>
-To: "Quadros, Roger" <rogerq@ti.com>, "tony@atomide.com" <tony@atomide.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>
-Subject: RE: [RFC PATCH 07/10] OMAP: GPMC: Introduce APIs for Configuring
- ECC Engine
-Date: Fri, 11 Jul 2014 07:54:04 +0000
-Message-ID: <20980858CB6D3A4BAE95CA194937D5E73EB01E0E@DBDE04.ent.ti.com>
-References: <1404909450-11970-1-git-send-email-rogerq@ti.com>
- <1404909450-11970-8-git-send-email-rogerq@ti.com>
-In-Reply-To: <1404909450-11970-8-git-send-email-rogerq@ti.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: "jg1.han@samsung.com" <jg1.han@samsung.com>, "Nori,
- Sekhar" <nsekhar@ti.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "ezequiel.garcia@free-electrons.com" <ezequiel.garcia@free-electrons.com>,
- "javier@dowhile0.org" <javier@dowhile0.org>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X5Vgj-0001OP-K2
+ for linux-mtd@lists.infradead.org; Fri, 11 Jul 2014 07:56:14 +0000
+From: Boris BREZILLON <boris.brezillon@free-electrons.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Subject: [PATCH 0/2] mtd: nand: add basic SDR NAND timings infrastructure
+Date: Fri, 11 Jul 2014 09:49:40 +0200
+Message-Id: <1405064982-11456-1-git-send-email-boris.brezillon@free-electrons.com>
+Cc: Boris BREZILLON <boris.brezillon@free-electrons.com>,
+ Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,33 +20,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Roger,
+Hello,
 
->From: Quadros, Roger
->
->Even though the ECC/BCH engine is meant for exclusive use by
->the OMAP NAND controller, the ECC/BCH registers belong
->to the GPMC controller's register space
->
->Add omap_gpmc_ecc_configure_enable() and omap_gpmc_ecc_disable()
->to manage the ECC engine. OMAP NAND driver must use these APIs
->instead of directly accessing the ECC Engine registers.
->
->Signed-off-by: Roger Quadros <rogerq@ti.com>
->---
-As suggested in=20
-http://lists.infradead.org/pipermail/linux-mtd/2014-July/054595.html
+These two patches add SDR NAND timings definition and ONFI timing mode to
+NAND timings converter.
 
-Please try to move chip->ecc.calculate() implementations like
-- omap_calculate_ecc_bch()
-- omap_calculate_ecc()
+This infrastructure will be used by NAND controller drivers to configure
+their signal timings according to NAND chip capabilities.
 
->From NAND driver To GPMC driver, as that should be easy, And solve
-most of your work (no need to export GPMC registers).
-- You may rename them appropriately and change the argument list
-   if needed.
-- And NAND driver can just have some wrapper functions to match
-  the MTD interface arguments.
+Best Regards,
 
+Boris
 
-with regards, pekon
+Boris BREZILLON (2):
+  mtd: nand: define struct nand_timings
+  mtd: nand: add ONFI timing mode to nand_timings converter
+
+ drivers/mtd/nand/Makefile       |   2 +-
+ drivers/mtd/nand/nand_timings.c | 250 ++++++++++++++++++++++++++++++++++++++++
+ include/linux/mtd/nand.h        |  52 +++++++++
+ 3 files changed, 303 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/mtd/nand/nand_timings.c
+
+-- 
+1.8.3.2
