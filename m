@@ -1,18 +1,31 @@
-Received: from smtp.mei.co.jp ([133.183.100.20])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X5QN3-0002bO-5o
- for linux-mtd@lists.infradead.org; Fri, 11 Jul 2014 02:15:33 +0000
-From: Masahiro Yamada <yamada.m@jp.panasonic.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: denali: avoid using a magic number
-Date: Fri, 11 Jul 2014 11:14:05 +0900
-Message-Id: <1405044846-21447-1-git-send-email-yamada.m@jp.panasonic.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Josh Triplett <josh@joshtriplett.org>, Akinobu Mita <akinobu.mita@gmail.com>,
- Masahiro Yamada <yamada.m@jp.panasonic.com>,
- Rashika Kheria <rashika.kheria@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>, Huang Shijie <shijie8@gmail.com>,
- open list <linux-kernel@vger.kernel.org>
+Message-ID: <53BF4E94.7030104@gmail.com>
+Date: Fri, 11 Jul 2014 10:40:20 +0800
+From: Zhou Wang <wangzhou.bry@gmail.com>
+MIME-Version: 1.0
+To: Jerome FORISSIER <jerome.forissier@huawei.com>
+Subject: Re: [PATCH 1/3] mtd: hisilicon: add device tree node for nand
+ controller
+References: <1404115409-20200-1-git-send-email-wangzhou.bry@gmail.com>
+ <1404115409-20200-2-git-send-email-wangzhou.bry@gmail.com>
+ <53BCEA77.2080004@huawei.com>
+In-Reply-To: <53BCEA77.2080004@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ Jussi Kivilinna <jussi.kivilinna@iki.fi>, linux-doc@vger.kernel.org,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-mtd@lists.infradead.org, Russell King <linux@arm.linux.org.uk>,
+ Alexander Shiyan <shc_work@mail.ru>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Grant Likely <grant.likely@linaro.org>, devicetree@vger.kernel.org,
+ Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Joern Engel <joern@logfs.org>, Rob Herring <robh+dt@kernel.org>,
+ Pekon Gupta <pekon@ti.com>, linux-arm-kernel@lists.infradead.org,
+ Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+ wangzhou1@hisilicon.com, Kumar Gala <galak@codeaurora.org>,
+ caizhiyong@huawei.com, Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,33 +35,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-MAP10 command with '0x2000' data sets up a read-ahead/write access.
+On 2014年07月09日 15:08, Jerome FORISSIER wrote:
+> On 30-Jun-14 10:03, Zhou Wang wrote:
+>> Signed-off-by: Zhou Wang <wangzhou.bry@gmail.com>
+>> ---
+>>   arch/arm/boot/dts/hip04.dtsi |   31 +++++++++++++++++++++++++++++++
+>>   1 file changed, 31 insertions(+)
+>>
+>> diff --git a/arch/arm/boot/dts/hip04.dtsi b/arch/arm/boot/dts/hip04.dtsi
+>> index abb42ca..e63fc61 100644
+>> --- a/arch/arm/boot/dts/hip04.dtsi
+>> +++ b/arch/arm/boot/dts/hip04.dtsi
+>> @@ -386,5 +386,36 @@
+>>   				interrupts = <0 389 4>;
+>>   			};
+>>   		};
+>> +
+>> +		nand: nand@4020000 {
+>> +			compatible = "hisilicon,504-nfc";
+>
+> In PATCH 2/3 and 3/3 you are using "hisilicon,nfc504".
+>
 
-Signed-off-by: Masahiro Yamada <yamada.m@jp.panasonic.com>
----
- drivers/mtd/nand/denali.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+It was my mistake. All should be "hisilicon,504-nfc". Thanks a lot.
 
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 9f2012a..7c1c1ab 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -74,6 +74,7 @@ MODULE_PARM_DESC(onfi_timing_mode, "Overrides default ONFI setting."
- #define SPARE_ACCESS		0x41
- #define MAIN_ACCESS		0x42
- #define MAIN_SPARE_ACCESS	0x43
-+#define PIPELINE_ACCESS		0x2000
- 
- #define DENALI_READ	0
- #define DENALI_WRITE	0x100
-@@ -765,7 +766,7 @@ static int denali_send_pipeline_cmd(struct denali_nand_info *denali,
- 			iowrite32(cmd, denali->flash_mem);
- 		} else {
- 			index_addr(denali, (uint32_t)cmd,
--					0x2000 | op | page_count);
-+					PIPELINE_ACCESS | op | page_count);
- 
- 			/* wait for command to be accepted
- 			 * can always use status0 bit as the
--- 
-1.9.1
+>> +			reg = <0x4020000 0x10000>, <0x5000000 0x1000>;
+>> +			interrupts = <0 379 4>;
+>> +			nand-bus-width = <8>;
+>> +			nand-ecc-mode = "none";
+>> +			hisi,nand-ecc-bits = <0>;
+>> +			#address-cells = <1>;
+>> +			#size-cells = <1>;
+>> +
+>> +			partition@0 {
+>> +				label = "nand_text";
+>> +				reg = <0x00000000 0x00400000>;
+>> +			};
+>> +
+>> +			partition@00400000 {
+>> +				label = "nand_monitor";
+>> +				reg = <0x00400000 0x00400000>;
+>> +			};
+>> +
+>> +			partition@00800000 {
+>> +				label = "nand_kernel";
+>> +				reg = <0x00800000 0x00800000>;
+>> +			};
+>> +
+>> +			partition@01000000 {
+>> +				label = "nand_fs";
+>> +				reg = <0x01000000 0x1f000000>;
+>> +			};
+>> +		};
+>>   	};
+>>   };
+>>
+>
