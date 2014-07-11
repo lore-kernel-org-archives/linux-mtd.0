@@ -1,27 +1,24 @@
-Message-ID: <53BFCFC3.1090402@ti.com>
-Date: Fri, 11 Jul 2014 14:51:31 +0300
-From: Roger Quadros <rogerq@ti.com>
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X5hi0-00078h-HA
+ for linux-mtd@lists.infradead.org; Fri, 11 Jul 2014 20:46:21 +0000
+Message-ID: <53C04D02.9080002@nod.at>
+Date: Fri, 11 Jul 2014 22:45:54 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-To: "Gupta, Pekon" <pekon@ti.com>, "tony@atomide.com" <tony@atomide.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>
-Subject: Re: [RFC PATCH 02/10] mtd: nand: omap: Always use chip->ecc.steps
- for BCH sector count
-References: <1404909450-11970-1-git-send-email-rogerq@ti.com>
- <1404909450-11970-3-git-send-email-rogerq@ti.com>
- <20980858CB6D3A4BAE95CA194937D5E73EB01DF7@DBDE04.ent.ti.com>
- <53BFBDFA.8040901@ti.com>
- <20980858CB6D3A4BAE95CA194937D5E73EB01F7E@DBDE04.ent.ti.com>
-In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EB01F7E@DBDE04.ent.ti.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: "jg1.han@samsung.com" <jg1.han@samsung.com>, "Nori,
- Sekhar" <nsekhar@ti.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "ezequiel.garcia@free-electrons.com" <ezequiel.garcia@free-electrons.com>,
- "javier@dowhile0.org" <javier@dowhile0.org>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+To: Akshay Bhat <abhat@lutron.com>
+Subject: Re: UBIFS Panic
+References: <53AC825F.7040602@lutron.com> <53ACD890.4030805@huawei.com>
+ <53B15F8E.3030309@lutron.com>
+ <CAFLxGvzQpaLvLda8dXdVzvc00EYc9TpsLjJhsCjEBy28RsL=_w@mail.gmail.com>
+ <53B19D09.2000007@lutron.com> <53B20A42.6020008@huawei.com>
+ <53B267E6.7060708@nod.at> <53B2C321.4050407@lutron.com>
+ <53B2C682.7080605@nod.at> <53B2C9BA.2090507@lutron.com>
+ <53B2CC06.3000205@nod.at> <53BF07E4.4010302@lutron.com>
+In-Reply-To: <53BF07E4.4010302@lutron.com>
+Content-Type: multipart/mixed; boundary="------------070403030009070808040804"
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ hujianyang <hujianyang@huawei.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,113 +28,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 07/11/2014 02:27 PM, Gupta, Pekon wrote:
->> From: Quadros, Roger
->>> On 07/11/2014 10:43 AM, Gupta, Pekon wrote:
->>>> From: Quadros, Roger
-> [...]
+This is a multi-part message in MIME format.
+--------------070403030009070808040804
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+Am 10.07.2014 23:38, schrieb Akshay Bhat:
 > 
->>>> @@ -1176,6 +1172,7 @@ static int __maybe_unused omap_calculate_ecc_bch(struct mtd_info
->> *mtd,
->>>> {
->>>> 	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
->>>> 						   mtd);
->>>> +	struct nand_chip *chip = mtd->priv;
->>>> 	int eccbytes	= info->nand.ecc.bytes;
->>>> 	struct gpmc_nand_regs	*gpmc_regs = &info->reg;
->>>> 	u8 *ecc_code;
->>>> @@ -1183,7 +1180,7 @@ static int __maybe_unused omap_calculate_ecc_bch(struct mtd_info
->> *mtd,
->>>> 	u32 val;
->>>> 	int i, j;
+> 
+> On Tue 01 Jul 2014 10:56:06 AM EDT, Richard Weinberger wrote:
+>> Am 01.07.2014 16:46, schrieb Akshay Bhat:
+>>>
+>>>
+>>> On Tue 01 Jul 2014 10:32:34 AM EDT, Richard Weinberger wrote:
+>>>> Am 01.07.2014 16:18, schrieb Akshay Bhat:
+>>>>>
+>>>>>
+>>>>> On Tue 01 Jul 2014 03:48:54 AM EDT, Richard Weinberger wrote:
+>>>>>> Am 01.07.2014 03:09, schrieb hujianyang:
+>>>>>>>>
+>>>>>>>> Is enabling UBI_FASTMAP the cause for the panic? If so I can disabled the
+>>>>>>>> feature and re-test. Do you see any compatibility issue going from:
+>>>>>>>> Current config -> New config -> Failsafe config
+>>>>>>>>
+>>>>>>>
+>>>>>>> I don't know. But I found func ubi_wl_get_peb() in drivers/mtd/ubi/wl.c
+>>>>>>> will return an error ENOSPC without any error messages. And this func
+>>>>>>> seems related with fastmap feature.
+>>>>>>
+>>>>>> I have sort of an idea what could going on.
+>>>>>> Akshay, can you please confirm that you face the issue only with UBI_FASTMAP=y?
+>>>>>
+>>>>> I have not been able to recreate the issue with UBI_FASTMAP=n
 >>>>
->>>> -	nsectors = ((readl(info->reg.gpmc_ecc_config) >> 4) & 0x7) + 1;
->>>> +	nsectors = chip->ecc.steps;
+>>>> Okay, you test case basically fills the filesystem over and over?
+>>>> And after some time you face the said issue.
+>>>> Is this correct?
 >>>
->>> Sorry NAK.. I'm sure you are breaking something here :-)
->>>
->>> NAND driver supports multiple ECC schemes like;
->>> OMAP_ECC_CODE_HAM1_HW (support for legacy reasons)
->>> OMAP_ECC_CODE_BCH4_HW_DETECTION_SW (needed for OMAP3 and AM35xx)
->>> OMAP_ECC_CODE_BCH4_HW
->>> OMAP_ECC_CODE_BCH8_HW
->>> OMAP_ECC_CODE_BCH8_HW_DETECTION_SW  (needed for OMAP3 and AM35xx)
->>> OMAP_ECC_CODE_BCH16_HW
->>>
->>> IIRC ..
->>> - software based ecc-schemes OMAP_ECC_CODE_BCHx_HW_DETECTION_SW
->>>   Reads/Write in per-sector granularity. (here nsector != chip->ecc.steps)
+>>> Yes. From testing, the "some time" is typically after crossing the WL threshold.
 >>
->> OK. I still don't have a full understanding about the ECC schemes so to ensure we
->> don't break anything I can just leave nsectors as it is and probably just store a
->> copy of it in omap_nand_info to avoid reading it back from gpmc_ecc_config.
->>
->> I still have a few questions to clarify my understanding.
->>
->> The only difference between OMAP_ECC_CODE_BCHx_HW_DETECTION_SW and
->> OMAP_ECC_CODE_BCHx_HW is that in the former the _correction_ is done by software
->> and in the latter the _correction_ is done by hardware (i.e. ELM module).
->> In both cases the _detection_ is done by the same hardware IP via ecc.calculate(),
->> i.e. omap_calculate_ecc_bch().
->>
->> so why should nsector be different for both in the _detection_ stage?
->>
-> Again IIRC, That is because of ELM driver.
-> ELM hardware engine has 8 channels with each of them having 512Bytes capacity.
-> Now, there can be two approaches:
-> (1) SECTOR_MODE:  Process only one sector of 512 bytes at a time, and iterate
->       chip->ecc.steps times.
-> (2) PAGE_MODE: Process complete page at a time, enabling multiple channels
->     simultaneously. This improves some throughput, especially for large-page
->    NAND devices and MLC NAND where bit-flips are common.
+>> Good. I'll dig into that by the end of the week.
 > 
-> As ELM uses (2)nd approach, so the GPMC also has to calculate and store
-> ECC for complete page at a time. That is why trace NAND driver you will find
-> -  OMAP_ECC_CODE_BCHx_HW_DETECTION_SW use generic implementation
->          chip->ecc.read_page= nand_read_page_hwecc() defined in nand_base.c
-> whereas,
-> -  OMAP_ECC_CODE_BCHx_HW use custom implementation
->          chip->ecc.read_page= omap_read_page_bch() defined in omap.c
-> 
-> 
->> An I right that ecc_steps is nothing but number of sub-blocks ECC calculation and correction
->> needs to be done for larger pages. This is a function of ECC hw capability (chip->ecc.size)
->> and NAND flash capability (mtd->writesize). i.e. ecc_steps = mtd->writesize / chip->ecc.size
->>
->> We hardcode chip->ecc.size to 512 for all the ECC schemes in omap_nand_probe() so
->> calculate and correct will always be called for 512 byte sized blocks. So when does
->> the usecase for nsector > 1 come in?
->>
-> Ok.. I'll try to explain above details again in probably simplified version
-> - OMAP_ECC_CODE_BCHx_HW_DETECTION_SW
->   uses lib/bch.c (via nand_bch.c) to correct ECC. And is generic implementation
->   so here each sector  (data chunk of ecc_size) is corrected independently.
->   So nsector = 1;
->   
-> - OMAP_ECC_CODE_BCHx_HW
->   Uses ELM to correct ECC. But the way ELM driver is written today. It corrects
->   the whole page in single go. Not individual sectors (ecc_size chunks).
+> Hi Richard, wanted to check if you got a chance to dig into this? Thanks.
 
-Then shouldn't chip->ecc.size be equal page size and chip->ecc.steps be equal to 1 for upto 4KB pages?
-For larger pages it can be a multiple of 4KB page size. i.e. 2 for 8KB, 4 for 16KB and so on.
+Can you please rerun with the attached patch applied?
+Maybe it can give use a hint. :)
 
-So nsectors is not necessarily equal to ecc.steps but equal to how many 512 byte blocks are there in
-one step. i.e. [min(4096, page_size) / 512]. And it must be local to omap NAND driver.
+Thanks,
+//richard
 
+--------------070403030009070808040804
+Content-Type: text/x-patch;
+ name="debug.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="debug.diff"
 
->   So, its doable to make it same like OMAP_ECC_CODE_BCHx_HW_DETECTION_SW
->   But then you _may_ have performance penalty for new technology NAND and MLC
->   NAND on which bit-flips are very common.
->   So to keep ELM driver as it is (performance tweaked), we use different
->   configurations in GPMC to read complete page in single go. This is where
->    nsector = chip->ecc.steps;
-> 
-> Hope that clarifies the implementation..
-> 
-> Good to document this detail somewhere for OMAP drivers both (u-boot and kernel).
-> Any thoughts ?
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index 0f3425d..90588d4 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -575,8 +575,10 @@ static void refill_wl_pool(struct ubi_device *ubi)
+ 
+ 	for (pool->size = 0; pool->size < pool->max_size; pool->size++) {
+ 		if (!ubi->free.rb_node ||
+-		   (ubi->free_count - ubi->beb_rsvd_pebs < 5))
++		   (ubi->free_count - ubi->beb_rsvd_pebs < 5)) {
++			ubi_err("didn't get all pebs I wanted!");
+ 			break;
++		}
+ 
+ 		e = find_wl_entry(ubi, &ubi->free, WL_FREE_MAX_DIFF);
+ 		self_check_in_wl_tree(ubi, e, &ubi->free);
+@@ -600,8 +602,10 @@ static void refill_wl_user_pool(struct ubi_device *ubi)
+ 
+ 	for (pool->size = 0; pool->size < pool->max_size; pool->size++) {
+ 		pool->pebs[pool->size] = __wl_get_peb(ubi);
+-		if (pool->pebs[pool->size] < 0)
++		if (pool->pebs[pool->size] < 0) {
++			ubi_err("didn't get all pebs I wanted!");
+ 			break;
++		}
+ 	}
+ 	pool->used = 0;
+ }
+@@ -632,9 +636,10 @@ int ubi_wl_get_peb(struct ubi_device *ubi)
+ 		ubi_update_fastmap(ubi);
+ 
+ 	/* we got not a single free PEB */
+-	if (!pool->size)
++	if (!pool->size) {
++		ubi_err("User WL pool is empty!");
+ 		ret = -ENOSPC;
+-	else {
++	} else {
+ 		spin_lock(&ubi->wl_lock);
+ 		ret = pool->pebs[pool->used++];
+ 		prot_queue_add(ubi, ubi->lookuptbl[ret]);
+@@ -654,6 +659,7 @@ static struct ubi_wl_entry *get_peb_for_wl(struct ubi_device *ubi)
+ 	int pnum;
+ 
+ 	if (pool->used == pool->size || !pool->size) {
++		ubi_err("WL pool is empty!");
+ 		/* We cannot update the fastmap here because this
+ 		 * function is called in atomic context.
+ 		 * Let's fail here and refill/update it as soon as possible. */
 
-Sure. we have the processors wiki. That should be a good place.
-
-cheers,
--roger
+--------------070403030009070808040804--
