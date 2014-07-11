@@ -1,31 +1,18 @@
-Message-ID: <53BF4E94.7030104@gmail.com>
-Date: Fri, 11 Jul 2014 10:40:20 +0800
-From: Zhou Wang <wangzhou.bry@gmail.com>
+Date: Thu, 10 Jul 2014 23:52:12 -0700
+From: Tony Lindgren <tony@atomide.com>
+To: Roger Quadros <rogerq@ti.com>
+Subject: Re: [RFC PATCH 00/10] OMAP: GPMC: NAND: Introduce GPMC APIs for OMAP
+ NAND
+Message-ID: <20140711065211.GK28884@atomide.com>
+References: <1404909450-11970-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
-To: Jerome FORISSIER <jerome.forissier@huawei.com>
-Subject: Re: [PATCH 1/3] mtd: hisilicon: add device tree node for nand
- controller
-References: <1404115409-20200-1-git-send-email-wangzhou.bry@gmail.com>
- <1404115409-20200-2-git-send-email-wangzhou.bry@gmail.com>
- <53BCEA77.2080004@huawei.com>
-In-Reply-To: <53BCEA77.2080004@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: Mark Rutland <mark.rutland@arm.com>,
- Jussi Kivilinna <jussi.kivilinna@iki.fi>, linux-doc@vger.kernel.org,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- linux-mtd@lists.infradead.org, Russell King <linux@arm.linux.org.uk>,
- Alexander Shiyan <shc_work@mail.ru>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Grant Likely <grant.likely@linaro.org>, devicetree@vger.kernel.org,
- Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Joern Engel <joern@logfs.org>, Rob Herring <robh+dt@kernel.org>,
- Pekon Gupta <pekon@ti.com>, linux-arm-kernel@lists.infradead.org,
- Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
- wangzhou1@hisilicon.com, Kumar Gala <galak@codeaurora.org>,
- caizhiyong@huawei.com, Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1404909450-11970-1-git-send-email-rogerq@ti.com>
+Cc: linux-omap@vger.kernel.org, jg1.han@samsung.com, nsekhar@ti.com,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, pekon@ti.com,
+ ezequiel.garcia@free-electrons.com, javier@dowhile0.org,
+ computersforpeace@gmail.com, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,59 +22,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2014年07月09日 15:08, Jerome FORISSIER wrote:
-> On 30-Jun-14 10:03, Zhou Wang wrote:
->> Signed-off-by: Zhou Wang <wangzhou.bry@gmail.com>
->> ---
->>   arch/arm/boot/dts/hip04.dtsi |   31 +++++++++++++++++++++++++++++++
->>   1 file changed, 31 insertions(+)
->>
->> diff --git a/arch/arm/boot/dts/hip04.dtsi b/arch/arm/boot/dts/hip04.dtsi
->> index abb42ca..e63fc61 100644
->> --- a/arch/arm/boot/dts/hip04.dtsi
->> +++ b/arch/arm/boot/dts/hip04.dtsi
->> @@ -386,5 +386,36 @@
->>   				interrupts = <0 389 4>;
->>   			};
->>   		};
->> +
->> +		nand: nand@4020000 {
->> +			compatible = "hisilicon,504-nfc";
->
-> In PATCH 2/3 and 3/3 you are using "hisilicon,nfc504".
->
+* Roger Quadros <rogerq@ti.com> [140709 05:39]:
+> Hi,
+> 
+> The following hardware modules/registers are meant for NAND controller driver
+> usage:
+> - NAND I/O control (NAND address, data, command registers)
+> - Prefetch/Write-post engine
+> - ECC/BCH engine
+> 
+> However, these registers sit in the GPMC controller's register space and there
+> need to be some sane way to access them from the OMAP NAND controller driver.
+> 
+> Till now the GPMC driver was populating a data structure (struct gpmc_nand_regs)
+> with the register addresses and passing it to the OMAP NAND driver via platform
+> data. This mechanism cannot be used for true Device tree support as custom
+> platform data passing mechanism doesn't seem to work. Moreover, direct
+> access to these registers must be limited to the GPMC driver. This calls for
+> a few custom OMAP GPMC specific APIs that the OMAP NAND driver can use
+> to access these GPMC space registers.
+> 
+> This series attempts to add the following new APIs and gets rid of
+> 'struct gpmc_nand_regs' and 'gpmc_update_nand_regs()'.
+> 
+> -For NAND I/O control registers
+> u32 omap_gpmc_read_reg(int cs, enum omap_gpmc_reg reg);
+> void omap_gpmc_write_reg(int cs, enum omap_gpmc_reg reg, u32 val);
+> 
+> -For Prefetch engine
+> int omap_gpmc_prefetch_start(int cs, int fifo_th, bool dma,
+> 			     u32 count, int is_write);
+> int omap_gpmc_prefetch_stop(int cs);
+> u32 omap_gpmc_get_prefetch_count(void);
+> u32 omap_gpmc_get_prefetch_fifo_count(void);
+> 
+> -For ECC/BCH engine
+> void omap_gpmc_ecc_disable(void);
+> void omap_gpmc_ecc_configure_enable(int cs, bool ecc16, u8 ecc_size0,
+> 				    u8 ecc_size1, bool use_bch,
+> 				    enum omap_gpmc_bch_type bch_type,
+> 				    u8 bch_sectors, u8 bch_wrap_mode);
+> void omap_gpmc_ecc_get_result(int length, u32 *result);
+> void omap_gpmc_ecc_get_bch_result(int length, u8 sector, u32 *result);
 
-It was my mistake. All should be "hisilicon,504-nfc". Thanks a lot.
+These seem fine to me. At least I don't have any better ideas to
+expose these GPMC registers to the NAND driver(s).
+ 
+> These APIs don't implement any logic to serialize access to the
+> NAND/Prefetch/ECC registers. It is upto the NAND controller driver
+> to ensure that. As these modules can only handle one NAND controller context
+> at a time, we set the nand_chip->hwcontrol to point to a single
+> controller instance even if there are multiple NAND chips on different
+> Chip select spaces. The NAND base driver then takes care of serializing
+> access to the NAND controller (and ECC) through nandchip->hwcontrol->lock.
+> 
+> NOTE: Patches are still untested and only meant for review.
 
->> +			reg = <0x4020000 0x10000>, <0x5000000 0x1000>;
->> +			interrupts = <0 379 4>;
->> +			nand-bus-width = <8>;
->> +			nand-ecc-mode = "none";
->> +			hisi,nand-ecc-bits = <0>;
->> +			#address-cells = <1>;
->> +			#size-cells = <1>;
->> +
->> +			partition@0 {
->> +				label = "nand_text";
->> +				reg = <0x00000000 0x00400000>;
->> +			};
->> +
->> +			partition@00400000 {
->> +				label = "nand_monitor";
->> +				reg = <0x00400000 0x00400000>;
->> +			};
->> +
->> +			partition@00800000 {
->> +				label = "nand_kernel";
->> +				reg = <0x00800000 0x00800000>;
->> +			};
->> +
->> +			partition@01000000 {
->> +				label = "nand_fs";
->> +				reg = <0x01000000 0x1f000000>;
->> +			};
->> +		};
->>   	};
->>   };
->>
->
+Regards,
+
+Tony
