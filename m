@@ -1,27 +1,22 @@
-Received: from mail-ie0-x232.google.com ([2607:f8b0:4001:c03::232])
+Received: from mail-ie0-x229.google.com ([2607:f8b0:4001:c03::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X5mnr-0008QC-1v
- for linux-mtd@lists.infradead.org; Sat, 12 Jul 2014 02:12:43 +0000
-Received: by mail-ie0-f178.google.com with SMTP id tp5so1495512ieb.23
- for <linux-mtd@lists.infradead.org>; Fri, 11 Jul 2014 19:12:21 -0700 (PDT)
-Date: Fri, 11 Jul 2014 19:12:17 -0700
+ id 1X5nNj-00021G-Tt
+ for linux-mtd@lists.infradead.org; Sat, 12 Jul 2014 02:49:49 +0000
+Received: by mail-ie0-f169.google.com with SMTP id tp5so1575983ieb.0
+ for <linux-mtd@lists.infradead.org>; Fri, 11 Jul 2014 19:49:26 -0700 (PDT)
+Date: Fri, 11 Jul 2014 19:49:23 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Graham Moore <grmoore@altera.com>
-Subject: Re: [PATCH V4] Add support for flag status register on Micron chips.
-Message-ID: <20140712021217.GM7537@ld-irv-0074>
-References: <1398785391-10744-1-git-send-email-grmoore@altera.com>
+To: Christian Riesch <christian.riesch@omicron.at>
+Subject: Re: [RESEND PATCH v4 0/4] mtd: cfi_cmdset_0002: Add OTP support for
+ Micron M29EW NOR flashes
+Message-ID: <20140712024923.GO7537@ld-irv-0074>
+References: <817d0c27-e4a8-45e2-b2c8-89fe64256268@mary.at.omicron.at>
+ <CABkLObpxdSpCCebbtD8jnNYiavoTg3Xroo5YoG36Nz=fJO62sQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1398785391-10744-1-git-send-email-grmoore@altera.com>
-Cc: ZY - marex <marex@denx.de>, ggrahammoore@gmail.com,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Sascha Hauer <s.hauer@pengutronix.de>, Jingoo Han <jg1.han@samsung.com>,
- Geert Uytterhoeven <geert+renesas@linux-m68k.org>,
- linux-kernel@vger.kernel.org, Yves Vandervennet <rocket.yvanderv@gmail.com>,
- linux-mtd@lists.infradead.org, Insop Song <insop.song@gainspeed.com>,
- Alan Tull <atull@altera.com>, Sourav Poddar <sourav.poddar@ti.com>,
- David Woodhouse <dwmw2@infradead.org>, Dinh Nguyen <dinguyen@altera.com>
+In-Reply-To: <CABkLObpxdSpCCebbtD8jnNYiavoTg3Xroo5YoG36Nz=fJO62sQ@mail.gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,29 +26,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Graham,
+Hi Christian,
 
-On Tue, Apr 29, 2014 at 10:29:51AM -0500, Graham Moore wrote:
-> Some new Micron flash chips require reading the flag
-> status register to determine when operations have completed.
+On Mon, Jul 07, 2014 at 02:22:51PM +0200, Christian Riesch wrote:
+> On Mon, May 5, 2014 at 8:14 AM, Christian Riesch <christian.riesch@omicron.at> wrote:
+> > The first version of this patchset was posted to the list in February 2013.
+> > There were a few comments to these patches (from Artem), which I have
+> > addressed in separate patches (merged by you on March 9).
+> >
+> > Since there are no further objections against these patches (after a review
+> > time of more than a year), I would like to ask you to merge them as well.
 > 
-> Furthermore, chips with multi-die stacks of the 65nm 256Mb QSPI also
-> require reading the status register before reading the flag status register.
-> 
-> This patch adds support for the flag status register in the n25q512ax3 and n25q00
-> Micron QSPI flash chips.
-> 
-> Signed-off-by: Graham Moore <grmoore@altera.com>
-> ---
-> V4:
-> Do not set nor->wait_till_ready if driver has already set it.
-> V3:
-> Rebase to l2-mtd spinor branch.
-> V2:
-> Remove leading underscore in function names.
-> Remove type cast in dev_err call and use the proper format
-> specifier instead.
+> Since you didn't take this patchset for the 3.16 merge window, I'd
+> like to know if there is anything I should change here. Otherwise I
+> would like to ask you to apply this patchset.
 
-Sorry for the delay... pushed to l2-mtd.git. Thanks!
+Overlooked again, sorry.
+
+> >
+> > Best regards,
+> > Christian
+> >
+> >
+> > This patchset adds support for the reading, writing, and locking of the
+> > one time programmable (OTP) memory of Micron M29EW NOR flashes.
+> >
+> > These flashes have a 256 byte OTP memory, which is called extended
+> > memory region in its datasheet. The flash is compatible to Spansion S29GL
+> > and Macronix MX29GL devices, so support for the OTP memory of these
+> > flashes should also be possible.
+> >
+> > Tests with this patchset were done with a single Micron M29EW device
+> > (512 Mbit, 16 bit) on a custom board with a Texas Instruments AM1808
+> > system on chip.
+> >
+> > Prerequisites:
+> > - Applies on linux-mtd.git
+> >
+> > Changes for v2:
+> > - dropped one patch that changes the detection of M29EW devices,
+> >   this patch is currently not required
+> > - added support for locking
+> > - fixed a few bugs in the loop that walks through the OTP memory
+> >
+> > Changes for v3:
+> > - Added retlet parameter to cfi_amdstd_get_{fact,user}_prot_info
+> > - Fixed partial write of words
+> >
+> > Changes for v4:
+> > - Updated prerequisites in cover letter
+> >
+> > Christian Riesch (4):
+> >   mtd: cfi_cmdset_0002: Add support for reading OTP
+> >   mtd: cfi_cmdset_0002: Invalidate cache after entering/exiting OTP
+> >     memory
+> >   mtd: cfi_cmdset_0002: Add support for writing OTP memory
+> >   mtd: cfi_cmdset_0002: Add support for locking OTP memory
+> >
+> >  drivers/mtd/chips/cfi_cmdset_0002.c |  350 +++++++++++++++++++++++++++++++++--
+> >  1 file changed, 331 insertions(+), 19 deletions(-)
+
+Pushed to l2-mtd.git. Thanks!
 
 Brian
