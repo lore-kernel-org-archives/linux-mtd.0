@@ -1,24 +1,22 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-qa0-x234.google.com ([2607:f8b0:400d:c00::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X5hi0-00078h-HA
- for linux-mtd@lists.infradead.org; Fri, 11 Jul 2014 20:46:21 +0000
-Message-ID: <53C04D02.9080002@nod.at>
-Date: Fri, 11 Jul 2014 22:45:54 +0200
-From: Richard Weinberger <richard@nod.at>
+ id 1X5lPz-0002jz-JE
+ for linux-mtd@lists.infradead.org; Sat, 12 Jul 2014 00:44:00 +0000
+Received: by mail-qa0-f52.google.com with SMTP id j15so1487160qaq.11
+ for <linux-mtd@lists.infradead.org>; Fri, 11 Jul 2014 17:43:36 -0700 (PDT)
+Date: Fri, 11 Jul 2014 17:43:29 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Daniel Ehrenberg <dehrenberg@google.com>
+Subject: Re: Synchronization of per-partition ecc_stats
+Message-ID: <20140712004329.GK7537@ld-irv-0074>
+References: <CAAK6Zt3273ZtojeESH_sNPoP1G7d_JQJKbCbhWHqj08y1kT98g@mail.gmail.com>
+ <CAAK6Zt3xTHZBuD2aBpKWZ+BjwC3fw_1SuyVjW9CNOK9KQG7jPQ@mail.gmail.com>
 MIME-Version: 1.0
-To: Akshay Bhat <abhat@lutron.com>
-Subject: Re: UBIFS Panic
-References: <53AC825F.7040602@lutron.com> <53ACD890.4030805@huawei.com>
- <53B15F8E.3030309@lutron.com>
- <CAFLxGvzQpaLvLda8dXdVzvc00EYc9TpsLjJhsCjEBy28RsL=_w@mail.gmail.com>
- <53B19D09.2000007@lutron.com> <53B20A42.6020008@huawei.com>
- <53B267E6.7060708@nod.at> <53B2C321.4050407@lutron.com>
- <53B2C682.7080605@nod.at> <53B2C9BA.2090507@lutron.com>
- <53B2CC06.3000205@nod.at> <53BF07E4.4010302@lutron.com>
-In-Reply-To: <53BF07E4.4010302@lutron.com>
-Content-Type: multipart/mixed; boundary="------------070403030009070808040804"
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
- hujianyang <hujianyang@huawei.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAK6Zt3xTHZBuD2aBpKWZ+BjwC3fw_1SuyVjW9CNOK9KQG7jPQ@mail.gmail.com>
+Cc: Gwendal Grignou <gwendal@chromium.org>, olofj@chromium.org,
+ linux-mtd@lists.infradead.org, David.Woodhouse@intel.com, jekhor@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,110 +26,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
---------------070403030009070808040804
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
++ Ezequiel, who's been looking at ecc_stats
 
-Am 10.07.2014 23:38, schrieb Akshay Bhat:
-> 
-> 
-> On Tue 01 Jul 2014 10:56:06 AM EDT, Richard Weinberger wrote:
->> Am 01.07.2014 16:46, schrieb Akshay Bhat:
->>>
->>>
->>> On Tue 01 Jul 2014 10:32:34 AM EDT, Richard Weinberger wrote:
->>>> Am 01.07.2014 16:18, schrieb Akshay Bhat:
->>>>>
->>>>>
->>>>> On Tue 01 Jul 2014 03:48:54 AM EDT, Richard Weinberger wrote:
->>>>>> Am 01.07.2014 03:09, schrieb hujianyang:
->>>>>>>>
->>>>>>>> Is enabling UBI_FASTMAP the cause for the panic? If so I can disabled the
->>>>>>>> feature and re-test. Do you see any compatibility issue going from:
->>>>>>>> Current config -> New config -> Failsafe config
->>>>>>>>
->>>>>>>
->>>>>>> I don't know. But I found func ubi_wl_get_peb() in drivers/mtd/ubi/wl.c
->>>>>>> will return an error ENOSPC without any error messages. And this func
->>>>>>> seems related with fastmap feature.
->>>>>>
->>>>>> I have sort of an idea what could going on.
->>>>>> Akshay, can you please confirm that you face the issue only with UBI_FASTMAP=y?
->>>>>
->>>>> I have not been able to recreate the issue with UBI_FASTMAP=n
->>>>
->>>> Okay, you test case basically fills the filesystem over and over?
->>>> And after some time you face the said issue.
->>>> Is this correct?
->>>
->>> Yes. From testing, the "some time" is typically after crossing the WL threshold.
->>
->> Good. I'll dig into that by the end of the week.
-> 
-> Hi Richard, wanted to check if you got a chance to dig into this? Thanks.
+Hi Daniel,
 
-Can you please rerun with the attached patch applied?
-Maybe it can give use a hint. :)
+On Thu, Jul 10, 2014 at 10:08:16AM -0700, Daniel Ehrenberg wrote:
+> On Tue, Jul 8, 2014 at 2:26 PM, Daniel Ehrenberg <dehrenberg@google.com> wrote:
+> > I'm working on a patch to add some more counters to MTD for monitoring
+> > write and erase errors. I was looking at the way ECC stats are
+> > recorded, in particular how each partition gets its ecc_stats.failures
+> > counter.
+> >
+> > Globally, for NAND, this counter is synchronized by
+> > nand_get_device/nand_release_device. For individual partitions, it
+> > looks like ecc_stats.failures is calculated by looking at how the
+> > global stat changes across an operation sent down to the lower layer.
+> > Here's the main place it happens:
+> >
+> > static int part_read(struct mtd_info *mtd, loff_t from, size_t len,
+> >                 size_t *retlen, u_char *buf)
+> > {
+> >         struct mtd_part *part = PART(mtd);
+> >         struct mtd_ecc_stats stats;
+> >         int res;
+> >
+> >         stats = part->master->ecc_stats;
+> >         res = part->master->_read(part->master, from + part->offset, len,
+> >                                   retlen, buf);
+> >         if (unlikely(mtd_is_eccerr(res)))
+> >                 mtd->ecc_stats.failed +=
+> >                         part->master->ecc_stats.failed - stats.failed;
+> >         else
+> >                 mtd->ecc_stats.corrected +=
+> >                         part->master->ecc_stats.corrected - stats.corrected;
+> >         return res;
+> > }
+> >
+> > I'm having trouble seeing how the MTD code prevents a race: it seems
+> > to me that if a read to either the same or different partition occurs
+> > and also changes master->ecc_stats, the stats could be double counted.
+> > Is there any synchronization mechanism that I'm missing?
 
-Thanks,
-//richard
+Your analysis looks correct to me. The ecc_stats locking looks pretty
+sloppy (practically non-existent).
 
---------------070403030009070808040804
-Content-Type: text/x-patch;
- name="debug.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="debug.diff"
+I think there is also potential for mild races with ioctl(ECCGETSTATS).
+Since it is read-only, this simply means that we could have atomicity
+issues (for instance, if we have a machine with non-atomic 32-bit memory
+accesses). And now we'll have one more, with Ezequiel's patches to
+expose ecc_stats in sysfs.
 
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index 0f3425d..90588d4 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -575,8 +575,10 @@ static void refill_wl_pool(struct ubi_device *ubi)
- 
- 	for (pool->size = 0; pool->size < pool->max_size; pool->size++) {
- 		if (!ubi->free.rb_node ||
--		   (ubi->free_count - ubi->beb_rsvd_pebs < 5))
-+		   (ubi->free_count - ubi->beb_rsvd_pebs < 5)) {
-+			ubi_err("didn't get all pebs I wanted!");
- 			break;
-+		}
- 
- 		e = find_wl_entry(ubi, &ubi->free, WL_FREE_MAX_DIFF);
- 		self_check_in_wl_tree(ubi, e, &ubi->free);
-@@ -600,8 +602,10 @@ static void refill_wl_user_pool(struct ubi_device *ubi)
- 
- 	for (pool->size = 0; pool->size < pool->max_size; pool->size++) {
- 		pool->pebs[pool->size] = __wl_get_peb(ubi);
--		if (pool->pebs[pool->size] < 0)
-+		if (pool->pebs[pool->size] < 0) {
-+			ubi_err("didn't get all pebs I wanted!");
- 			break;
-+		}
- 	}
- 	pool->used = 0;
- }
-@@ -632,9 +636,10 @@ int ubi_wl_get_peb(struct ubi_device *ubi)
- 		ubi_update_fastmap(ubi);
- 
- 	/* we got not a single free PEB */
--	if (!pool->size)
-+	if (!pool->size) {
-+		ubi_err("User WL pool is empty!");
- 		ret = -ENOSPC;
--	else {
-+	} else {
- 		spin_lock(&ubi->wl_lock);
- 		ret = pool->pebs[pool->used++];
- 		prot_queue_add(ubi, ubi->lookuptbl[ret]);
-@@ -654,6 +659,7 @@ static struct ubi_wl_entry *get_peb_for_wl(struct ubi_device *ubi)
- 	int pnum;
- 
- 	if (pool->used == pool->size || !pool->size) {
-+		ubi_err("WL pool is empty!");
- 		/* We cannot update the fastmap here because this
- 		 * function is called in atomic context.
- 		 * Let's fail here and refill/update it as soon as possible. */
+FWIW, I noticed a related issue when dealing entirely with user-space
+mtdchar access:
 
---------------070403030009070808040804--
+  http://lists.infradead.org/pipermail/linux-mtd/2014-February/052062.html
+
+On a related note, I think 'master' vs. 'partition' ecc_stats are broken
+in a few cases, where low-level "mark block bad" functions might be
+called, updating master->ecc_stats.badblocks, but not
+partition->ecc_stats.badblocks.
+
+Patches are welcome!
+
+Regards,
+Brian
