@@ -1,21 +1,19 @@
-Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
+Received: from szxga02-in.huawei.com ([119.145.14.65])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X6Yzi-0003Hi-9V
- for linux-mtd@lists.infradead.org; Mon, 14 Jul 2014 05:40:11 +0000
-Received: by mail-pa0-f52.google.com with SMTP id eu11so4791711pac.11
- for <linux-mtd@lists.infradead.org>; Sun, 13 Jul 2014 22:39:49 -0700 (PDT)
-Date: Sun, 13 Jul 2014 22:39:45 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Terry Chia <terrycwk1994@gmail.com>
-Subject: Re: [PATCH] Add MODULE_DESCRIPTION to various modules in drivers/mtd
-Message-ID: <20140714053945.GE29385@norris-Latitude-E6410>
-References: <1404370542-14357-1-git-send-email-terrycwk1994@gmail.com>
- <1404370542-14357-2-git-send-email-terrycwk1994@gmail.com>
+ id 1X6cl8-0007IG-7I
+ for linux-mtd@lists.infradead.org; Mon, 14 Jul 2014 09:41:23 +0000
+Message-ID: <53C3A576.70305@huawei.com>
+Date: Mon, 14 Jul 2014 17:40:06 +0800
+From: hujianyang <hujianyang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1404370542-14357-2-git-send-email-terrycwk1994@gmail.com>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
+To: =?UTF-8?B?546L5LiB?= <walklook@gmail.com>
+Subject: Re: ubifs issue about xattr node when replay journal
+References: <CAEGnBBSC=k5kkQYkLn37Q8KLLC+n43KiNr9ZZ-8NPJaGkGf0Qg@mail.gmail.com>
+In-Reply-To: <CAEGnBBSC=k5kkQYkLn37Q8KLLC+n43KiNr9ZZ-8NPJaGkGf0Qg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,76 +23,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Terry,
+Hi Wang,
 
-I'm not sure the descriptions are all quite right. A few suggestions:
+I have researched into the code but I still have some problems:
 
-On Thu, Jul 03, 2014 at 02:55:42PM +0800, Terry Chia wrote:
-> This starts to address
-> https://bugzilla.kernel.org/show_bug.cgi?id=10770
+1) What's your kernel version?
+2) Is the mechanism of removing XENT_NODE as same as removing
+   DATA_NODE?
+3) Is the mechanism of removing XENT_NODE same on ubifs_removexattr()
+   and ubifs_jnl_delete_inode().
+
+On 2014/7/12 21:36, 王丁 wrote:
+> Hi all,
 > 
-> Signed-off-by: Terry Chia <terrycwk1994@gmail.com>
-> ---
->  drivers/mtd/chips/cfi_cmdset_0020.c | 1 +
->  drivers/mtd/chips/cfi_util.c        | 1 +
->  drivers/mtd/maps/map_funcs.c        | 1 +
->  drivers/mtd/nand/denali.c           | 1 +
->  4 files changed, 4 insertions(+)
+> Now we use xattr based on ubifs, and find some issues about it.
+> Situation like that:
+> 1.poweron ->2.create a file -> 3.set xattr -> 4.delete the file -> 5.power cut
+> After several cycles with above steps, we can not boot up the device
+> with the error below.
 > 
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0020.c b/drivers/mtd/chips/cfi_cmdset_0020.c
-> index 423666b..55f3586 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0020.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0020.c
-> @@ -1398,3 +1398,4 @@ static void cfi_staa_destroy(struct mtd_info *mtd)
->  }
+> 
+> Analysis:
+> when delete a file, ubifs will remove the xent node from tnc, if gc
+> happend, it will remove the xent node data from the GCed LEB because
+> of it has been removed form tnc ,
+> then if a power cut happen, the journal replay may also try to remove
+> the related xattr node, the error occurred because of it has been
+> GCed.
+> 
+> 
+> Now I run commit when ubifs_jnl_delete_inode called, and it's OK.
+> Does anyone have a better way for the issue?
 >  
->  MODULE_LICENSE("GPL");
-> +MODULE_DESCRIPTION("MTD chip driver for ST (Advanced Architecture) flash chips");
 
-Already a bit long, but can you include "CFI" in there somewhere? I
-think that's an important bit. Maybe:
+Can you draw a figure of this race? According to your description,
+I think the race is removing XENT_NODE twice. Is that true?
 
-  "MTD CFI driver for ST flash chips"
+> 
+> diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+> index f755a24..eba555e 100755
+> --- a/fs/ubifs/journal.c
+> +++ b/fs/ubifs/journal.c
+> @@ -900,6 +900,9 @@ int ubifs_jnl_delete_inode(struct ubifs_info *c,
+> const struct inode *inode)
+>         else
+>                 ubifs_delete_orphan(c, inode->i_ino);
+>         up_read(&c->commit_sem);
+> +
+> +       ubifs_run_commit(c);
+> +
+>         return err;
+> }
 
-> diff --git a/drivers/mtd/chips/cfi_util.c b/drivers/mtd/chips/cfi_util.c
-> index 09c79bd..c064484 100644
-> --- a/drivers/mtd/chips/cfi_util.c
-> +++ b/drivers/mtd/chips/cfi_util.c
-> @@ -249,3 +249,4 @@ int cfi_varsize_frob(struct mtd_info *mtd, varsize_frob_t frob,
->  EXPORT_SYMBOL(cfi_varsize_frob);
->  
->  MODULE_LICENSE("GPL");
-> +MODULE_DESCRIPTION("MTD chip driver for generic utility functions");
+Run commit after each deletion is not a good choice and I think this
+fix is just decreasing the rate of error happening.
 
-It's not exactly a full driver, just a few utility functions. Perhaps:
+Let's find out a better solution.
 
-  "MTD CFI utility library"
+Thanks,
 
-> diff --git a/drivers/mtd/maps/map_funcs.c b/drivers/mtd/maps/map_funcs.c
-> index 3f26837..089906a 100644
-> --- a/drivers/mtd/maps/map_funcs.c
-> +++ b/drivers/mtd/maps/map_funcs.c
-> @@ -41,3 +41,4 @@ void simple_map_init(struct map_info *map)
->  
->  EXPORT_SYMBOL(simple_map_init);
->  MODULE_LICENSE("GPL");
-> +MODULE_DESCRIPTION("Out-of-line map I/O functions for simple maps");
-> diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-> index 9f2012a..d373ed2 100644
-> --- a/drivers/mtd/nand/denali.c
-> +++ b/drivers/mtd/nand/denali.c
-> @@ -28,6 +28,7 @@
->  #include "denali.h"
->  
->  MODULE_LICENSE("GPL");
-> +MODULE_DESCRIPTION("NAND Flash Controller Device Driver");
-
-You probably want "Denali" in there (although it is in the module
-name...):
-
-  "MTD driver for Denali NAND flash controller"
->  
->  /* We define a module parameter that allows the user to override
->   * the hardware and decide what timing mode should be used.
-
-Brian
+Hu
