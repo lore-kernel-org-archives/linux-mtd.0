@@ -1,22 +1,16 @@
-Received: from smtprelay04.ispgateway.de ([80.67.31.42])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X76SV-00005b-8q
- for linux-mtd@lists.infradead.org; Tue, 15 Jul 2014 17:24:09 +0000
-Received: from [178.26.58.240] (helo=remote.symeo.com)
- by smtprelay04.ispgateway.de with esmtpsa (TLSv1:AES128-SHA:128)
- (Exim 4.68) (envelope-from <christoph.mammitzsch@symeo.com>)
- id 1X76Rv-0004hQ-LE
- for linux-mtd@lists.infradead.org; Tue, 15 Jul 2014 19:23:31 +0200
-Message-ID: <53C56392.2070306@symeo.com>
-Date: Tue, 15 Jul 2014 19:23:30 +0200
-From: Christoph Mammitzsch <Christoph.Mammitzsch@symeo.com>
-MIME-Version: 1.0
-To: <linux-mtd@lists.infradead.org>
-Subject: Re: Disappearing directories (jffs2 on nand flash)
-References: <53B6DDA2.7000508@symeo.com>
-In-Reply-To: <53B6DDA2.7000508@symeo.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+Received: from mailrelay007.isp.belgacom.be ([195.238.6.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X78NI-0004FI-MX
+ for linux-mtd@lists.infradead.org; Tue, 15 Jul 2014 19:26:53 +0000
+From: Fabian Frederick <fabf@skynet.be>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH 1/1] fs/ubifs/super.c: replace seq_printf by seq_puts
+Date: Tue, 15 Jul 2014 21:26:35 +0200
+Message-Id: <1405452395-9296-1-git-send-email-fabf@skynet.be>
+Cc: Fabian Frederick <fabf@skynet.be>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-mtd@lists.infradead.org,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,17 +20,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 04.07.2014 19:00, schrieb Christoph Mammitzsch:
+Fix checkpatch warnings:
+"WARNING: Prefer seq_puts to seq_printf"
 
-> The embedded system in question was running on linux 2.6.38.2, but using
-> the nandsim module, I was able to recreate the bug on workstations
-> running linux 3.0.0 as well as linux 3.2.0.
+Cc: Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mtd@lists.infradead.org
+Signed-off-by: Fabian Frederick <fabf@skynet.be>
+---
+ fs/ubifs/super.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-Update: I compiled the newest linux kernel (commit
-812c5fa82bae9f377f49000d7636c19a8b61735c) and ran the test script on
-that kernel. The bug still showed 9 out of 10 times.
-
-
-Regards,
-
-Christoph Mammitzsch
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 3904c85..e5bd068 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -424,19 +424,19 @@ static int ubifs_show_options(struct seq_file *s, struct dentry *root)
+ 	struct ubifs_info *c = root->d_sb->s_fs_info;
+ 
+ 	if (c->mount_opts.unmount_mode == 2)
+-		seq_printf(s, ",fast_unmount");
++		seq_puts(s, ",fast_unmount");
+ 	else if (c->mount_opts.unmount_mode == 1)
+-		seq_printf(s, ",norm_unmount");
++		seq_puts(s, ",norm_unmount");
+ 
+ 	if (c->mount_opts.bulk_read == 2)
+-		seq_printf(s, ",bulk_read");
++		seq_puts(s, ",bulk_read");
+ 	else if (c->mount_opts.bulk_read == 1)
+-		seq_printf(s, ",no_bulk_read");
++		seq_puts(s, ",no_bulk_read");
+ 
+ 	if (c->mount_opts.chk_data_crc == 2)
+-		seq_printf(s, ",chk_data_crc");
++		seq_puts(s, ",chk_data_crc");
+ 	else if (c->mount_opts.chk_data_crc == 1)
+-		seq_printf(s, ",no_chk_data_crc");
++		seq_puts(s, ",no_chk_data_crc");
+ 
+ 	if (c->mount_opts.override_compr) {
+ 		seq_printf(s, ",compr=%s",
+-- 
+1.8.4.5
