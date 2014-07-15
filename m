@@ -1,26 +1,22 @@
-From: Zhou Wang <wangzhou.bry@gmail.com>
-To: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
- Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, Russell King <linux@arm.linux.org.uk>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Grant Likely <grant.likely@linaro.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Pekon Gupta <pekon@ti.com>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Alexander Shiyan <shc_work@mail.ru>,
- Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>,
- Jussi Kivilinna <jussi.kivilinna@iki.fi>, Joern Engel <joern@logfs.org>,
- Randy Dunlap <rdunlap@infradead.org>, linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 0/3] mtd: hisilicon: add a new driver for NAND controller
- of hisilicon hip04 Soc
-Date: Tue, 15 Jul 2014 18:58:23 +0800
-Message-Id: <1405421906-660-1-git-send-email-wangzhou.bry@gmail.com>
-Cc: caizhiyong@huawei.com, Zhou Wang <wangzhou.bry@gmail.com>,
- wangzhou1@hisilicon.com
+Received: from smtprelay04.ispgateway.de ([80.67.31.42])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X76SV-00005b-8q
+ for linux-mtd@lists.infradead.org; Tue, 15 Jul 2014 17:24:09 +0000
+Received: from [178.26.58.240] (helo=remote.symeo.com)
+ by smtprelay04.ispgateway.de with esmtpsa (TLSv1:AES128-SHA:128)
+ (Exim 4.68) (envelope-from <christoph.mammitzsch@symeo.com>)
+ id 1X76Rv-0004hQ-LE
+ for linux-mtd@lists.infradead.org; Tue, 15 Jul 2014 19:23:31 +0200
+Message-ID: <53C56392.2070306@symeo.com>
+Date: Tue, 15 Jul 2014 19:23:30 +0200
+From: Christoph Mammitzsch <Christoph.Mammitzsch@symeo.com>
+MIME-Version: 1.0
+To: <linux-mtd@lists.infradead.org>
+Subject: Re: Disappearing directories (jffs2 on nand flash)
+References: <53B6DDA2.7000508@symeo.com>
+In-Reply-To: <53B6DDA2.7000508@symeo.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,39 +26,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This series patches add the support for NAND controller of hisilicon
-hip04 Soc. These patches are base on branch integration-hilt-working-v3.14 
-in linaro landing-team git repository[1].
+Am 04.07.2014 19:00, schrieb Christoph Mammitzsch:
 
-The NAND controller IP was developed by hisilicon and need a new driver
-to support. The driver is usable and I tested it on hisilicon hip04-d01
-board.
+> The embedded system in question was running on linux 2.6.38.2, but using
+> the nandsim module, I was able to recreate the bug on workstations
+> running linux 3.0.0 as well as linux 3.2.0.
 
-Changes in v1:
-- Remove callback functions out of struct hinfc_host, and call them directly
-  in relative functions.
-- Change hinfc_read and hinfc_write from macros to inline functions.
-- Instead of putting pointers, embed struct nand_chip and struct mtd_info in
-  struct hinfc_host directly.
-- rewrite some unclear lines in device tree binding document, correct some
-  code style error.
-
-[1] ssh://git@git.linaro.org/landing-teams/working/hisilicon/kernel.git
+Update: I compiled the newest linux kernel (commit
+812c5fa82bae9f377f49000d7636c19a8b61735c) and ran the test script on
+that kernel. The bug still showed 9 out of 10 times.
 
 
-Zhou Wang (3):
-  mtd: hisilicon: add device tree node for nand controller
-  mtd: hisilicon: add a new nand controller driver for hisilicon hip04 Soc
-  mtd: hisilicon: add device tree binding documentation
+Regards,
 
- .../devicetree/bindings/mtd/hisi-nand.txt          |   40 +
- arch/arm/boot/dts/hip04.dtsi                       |   31 +
- drivers/mtd/nand/Kconfig                           |    5 +
- drivers/mtd/nand/Makefile                          |    1 +
- drivers/mtd/nand/hisi_nand.c                       |  836 ++++++++++++++++++++
- 5 files changed, 913 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/hisi-nand.txt
- create mode 100644 drivers/mtd/nand/hisi_nand.c
-
--- 
-1.7.9.5
+Christoph Mammitzsch
