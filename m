@@ -15,11 +15,10 @@ To: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
  Randy Dunlap <rdunlap@infradead.org>, linux-arm-kernel@lists.infradead.org,
  devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
  linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 3/3] mtd: hisilicon: add device tree binding documentation
-Date: Tue, 15 Jul 2014 18:58:26 +0800
-Message-Id: <1405421906-660-4-git-send-email-wangzhou.bry@gmail.com>
-In-Reply-To: <1405421906-660-1-git-send-email-wangzhou.bry@gmail.com>
-References: <1405421906-660-1-git-send-email-wangzhou.bry@gmail.com>
+Subject: [PATCH v1 0/3] mtd: hisilicon: add a new driver for NAND controller
+ of hisilicon hip04 Soc
+Date: Tue, 15 Jul 2014 18:58:23 +0800
+Message-Id: <1405421906-660-1-git-send-email-wangzhou.bry@gmail.com>
 Cc: caizhiyong@huawei.com, Zhou Wang <wangzhou.bry@gmail.com>,
  wangzhou1@hisilicon.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,57 +30,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Zhou Wang <wangzhou.bry@gmail.com>
----
- .../devicetree/bindings/mtd/hisi-nand.txt          |   40 ++++++++++++++++++++
- 1 file changed, 40 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/hisi-nand.txt
+This series patches add the support for NAND controller of hisilicon
+hip04 Soc. These patches are base on branch integration-hilt-working-v3.14 
+in linaro landing-team git repository[1].
 
-diff --git a/Documentation/devicetree/bindings/mtd/hisi-nand.txt b/Documentation/devicetree/bindings/mtd/hisi-nand.txt
-new file mode 100644
-index 0000000..c8b3988
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/hisi-nand.txt
-@@ -0,0 +1,40 @@
-+Hisilicon Hip04 Soc NAND controller DT binding
-+
-+Required properties:
-+- compatible:          Should be "hisilicon,504-nfc".
-+- reg:                 The first contains base physical address and size of
-+                       NAND controller's registers. The second contains base
-+                       physical address and size of NAND controller's buffer.
-+- interrupts:          Interrupt number for nfc.
-+- nand-bus-width:      See nand.txt.
-+- nand-ecc-mode:       See nand.txt.
-+- hisi,nand-ecc-bits:  ECC bits type support.
-+                 <0>:  none ecc
-+                 <1>:  Can correct 1bit per 512byte.
-+                 <6>:  Can correct 16bits per 1K byte.
-+- #address-cells:      partition address, should be set 1.
-+- #size-cells:         partition size, should be set 1.
-+
-+Flash chip may optionally contain additional sub-nodes describing partitions of
-+the address space. See partition.txt for more detail.
-+
-+Example:
-+
-+	nand: nand@4020000 {
-+		compatible = "hisilicon,504-nfc";
-+		reg = <0x4020000 0x10000>, <0x5000000 0x1000>;
-+		interrupts = <0 379 4>;
-+		nand-bus-width = <8>;
-+		nand-ecc-mode = "hw";
-+		hisi,nand-ecc-bits = <1>;
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+
-+		partition@0 {
-+			label = "nand_text";
-+			reg = <0x00000000 0x00400000>;
-+		};
-+
-+		...
-+
-+	};
+The NAND controller IP was developed by hisilicon and need a new driver
+to support. The driver is usable and I tested it on hisilicon hip04-d01
+board.
+
+Changes in v1:
+- Remove callback functions out of struct hinfc_host, and call them directly
+  in relative functions.
+- Change hinfc_read and hinfc_write from macros to inline functions.
+- Instead of putting pointers, embed struct nand_chip and struct mtd_info in
+  struct hinfc_host directly.
+- rewrite some unclear lines in device tree binding document, correct some
+  code style error.
+
+[1] ssh://git@git.linaro.org/landing-teams/working/hisilicon/kernel.git
+
+
+Zhou Wang (3):
+  mtd: hisilicon: add device tree node for nand controller
+  mtd: hisilicon: add a new nand controller driver for hisilicon hip04 Soc
+  mtd: hisilicon: add device tree binding documentation
+
+ .../devicetree/bindings/mtd/hisi-nand.txt          |   40 +
+ arch/arm/boot/dts/hip04.dtsi                       |   31 +
+ drivers/mtd/nand/Kconfig                           |    5 +
+ drivers/mtd/nand/Makefile                          |    1 +
+ drivers/mtd/nand/hisi_nand.c                       |  836 ++++++++++++++++++++
+ 5 files changed, 913 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/hisi-nand.txt
+ create mode 100644 drivers/mtd/nand/hisi_nand.c
+
 -- 
 1.7.9.5
