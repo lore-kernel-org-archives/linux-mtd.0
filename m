@@ -1,19 +1,15 @@
-Received: from szxga02-in.huawei.com ([119.145.14.65])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X7KzH-0004Sj-DG
- for linux-mtd@lists.infradead.org; Wed, 16 Jul 2014 08:54:55 +0000
-Message-ID: <53C63DA2.5080200@huawei.com>
-Date: Wed, 16 Jul 2014 16:53:54 +0800
-From: hujianyang <hujianyang@huawei.com>
+Message-ID: <53C64EA2.3050703@atmel.com>
+Date: Wed, 16 Jul 2014 18:06:26 +0800
+From: Josh Wu <josh.wu@atmel.com>
 MIME-Version: 1.0
-To: <dedekind1@gmail.com>
-Subject: Re: [PATCH 6/7] New utility ubidump
-References: <53BA491E.8060502@huawei.com> <53BA4B98.1080000@huawei.com>
- <1405497907.1920.27.camel@sauron.fi.intel.com>
-In-Reply-To: <1405497907.1920.27.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+To: <linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v2 1/3] mtd: atmel_nand: add NFC status error check
+References: <1402393811-24578-1-git-send-email-josh.wu@atmel.com>
+In-Reply-To: <1402393811-24578-1-git-send-email-josh.wu@atmel.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Cc: Matthieu.CRAPET@ingenico.com, computersforpeace@gmail.com,
+ voice.shen@atmel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,31 +19,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> I envision that in the future people may want to specify PEB number
-> instead of LEB number, and '-n' becomes a confusing name for the option.
-> Could you please only support '--lnum', and drop '-n' altogether. Then
-> in the future someone may add '--pnum' support.
+On 6/10/2014 5:50 PM, Josh Wu wrote:
+> Add a new function to read the NFC status. Meantime, this function will
+> theck if there is any errors in NFC.
+>
+> Signed-off-by: Josh Wu <josh.wu@atmel.com>
 
-Yes, you are right. I'll change it in next version.
+Tested-by: Matthieu Crapet <Matthieu.Crapet@ingenico.com>
 
-> 
->> +"-i, --info		show explicit information about NODEs\n"
-> 
-> I do not understand what this means from the description. Would you
-> please try to describe it better in the help text?
-> 
->> +"-H, --header		show only header information\n"
->> +"-N, --node		show only NODEs information\n"
-> 
-> Same for these.
-> 
-> Thanks!
-> 
+I add a Tested-by tag from Matthieu Crapet.
+He didn't reply this email thread directly. His test-by tag is in 
+email:http://lists.infradead.org/pipermail/linux-mtd/2014-June/054443.html
 
--H for UBI-level info and -N for UBIFS-level info.
--i means dump UBIFS Nodes by function ubifs_dump_node, not just
-scan them.
+Best Regards,
+Josh Wu
 
-I will re-describe them.
-
-Thanks.
+> ---
+>   drivers/mtd/nand/atmel_nand.c     |   24 +++++++++++++++++++++++-
+>   drivers/mtd/nand/atmel_nand_nfc.h |    4 ++++
+>   2 files changed, 27 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+> index ec97ccb..25d9921 100644
+> --- a/drivers/mtd/nand/atmel_nand.c
+> +++ b/drivers/mtd/nand/atmel_nand.c
+> @@ -1572,6 +1572,25 @@ static int atmel_hw_nand_init_params(struct platform_device *pdev,
+>   	return 0;
+>   }
+>   
+> +static inline u32 nfc_read_status(struct atmel_nand_host *host)
+> +{
+> +	u32 err_flags = NFC_SR_DTOE | NFC_SR_UNDEF | NFC_SR_AWB | NFC_SR_ASE;
+> +	u32 nfc_status = nfc_readl(host->nfc->hsmc_regs, SR);
+> +
+> +	if (unlikely(nfc_status & err_flags)) {
+> +		if (nfc_status & NFC_SR_DTOE)
+> +			dev_err(host->dev, "NFC: Waiting Nand R/B Timeout Error\n");
+> +		else if (nfc_status & NFC_SR_UNDEF)
+> +			dev_err(host->dev, "NFC: Access Undefined Area Error\n");
+> +		else if (nfc_status & NFC_SR_AWB)
+> +			dev_err(host->dev, "NFC: Access memory While NFC is busy\n");
+> +		else if (nfc_status & NFC_SR_ASE)
+> +			dev_err(host->dev, "NFC: Access memory Size Error\n");
+> +	}
+> +
+> +	return nfc_status;
+> +}
+> +
+>   /* SMC interrupt service routine */
+>   static irqreturn_t hsmc_interrupt(int irq, void *dev_id)
+>   {
+> @@ -1579,7 +1598,7 @@ static irqreturn_t hsmc_interrupt(int irq, void *dev_id)
+>   	u32 status, mask, pending;
+>   	irqreturn_t ret = IRQ_HANDLED;
+>   
+> -	status = nfc_readl(host->nfc->hsmc_regs, SR);
+> +	status = nfc_read_status(host);
+>   	mask = nfc_readl(host->nfc->hsmc_regs, IMR);
+>   	pending = status & mask;
+>   
+> @@ -2210,6 +2229,9 @@ static int atmel_nand_nfc_probe(struct platform_device *pdev)
+>   		}
+>   	}
+>   
+> +	nfc_writel(nfc->hsmc_regs, IDR, 0xffffffff);
+> +	nfc_readl(nfc->hsmc_regs, SR);	/* clear the NFC_SR */
+> +
+>   	nfc->is_initialized = true;
+>   	dev_info(&pdev->dev, "NFC is probed.\n");
+>   	return 0;
+> diff --git a/drivers/mtd/nand/atmel_nand_nfc.h b/drivers/mtd/nand/atmel_nand_nfc.h
+> index 4efd117..85b8ca6 100644
+> --- a/drivers/mtd/nand/atmel_nand_nfc.h
+> +++ b/drivers/mtd/nand/atmel_nand_nfc.h
+> @@ -37,6 +37,10 @@
+>   #define ATMEL_HSMC_NFC_SR	0x08		/* NFC Status Register */
+>   #define		NFC_SR_XFR_DONE		(1 << 16)
+>   #define		NFC_SR_CMD_DONE		(1 << 17)
+> +#define		NFC_SR_DTOE		(1 << 20)
+> +#define		NFC_SR_UNDEF		(1 << 21)
+> +#define		NFC_SR_AWB		(1 << 22)
+> +#define		NFC_SR_ASE		(1 << 23)
+>   #define		NFC_SR_RB_EDGE		(1 << 24)
+>   
+>   #define ATMEL_HSMC_NFC_IER	0x0c
