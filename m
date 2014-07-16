@@ -1,25 +1,19 @@
-Received: from mail-lb0-x22a.google.com ([2a00:1450:4010:c04::22a])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X7QNT-0001Qx-TD
- for linux-mtd@lists.infradead.org; Wed, 16 Jul 2014 14:40:16 +0000
-Received: by mail-lb0-f170.google.com with SMTP id 10so728524lbg.15
- for <linux-mtd@lists.infradead.org>; Wed, 16 Jul 2014 07:39:53 -0700 (PDT)
+Received: from blu004-omc3s35.hotmail.com ([65.55.116.110])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X7Ril-0005Zy-ET
+ for linux-mtd@lists.infradead.org; Wed, 16 Jul 2014 16:06:20 +0000
+Message-ID: <BLU436-SMTP223B6F83933407357F0FF3BA6F70@phx.gbl>
+From: Bean Huo <beanhuo@outlook.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH v6] mtd:nor:timeout:fix do_write_buffer() timeout error
+Date: Wed, 16 Jul 2014 09:05:26 -0700
 MIME-Version: 1.0
-In-Reply-To: <53C670DF.5010209@nod.at>
-References: <53BBC39F.7010307@gmail.com>
- <1405499347.1906.2.camel@sauron.fi.intel.com>
- <CAFLxGvwzzAAswamDJVq0UW7DLdHdgA4N_KOY9K5FhAREaFit+g@mail.gmail.com>
- <CACQ1gAjM-=ZnjFQocXq1Ygg0gN-D-1G1Q-=kZqsfm-Du7jmFow@mail.gmail.com>
- <53C670DF.5010209@nod.at>
-From: Richard Genoud <richard.genoud@gmail.com>
-Date: Wed, 16 Jul 2014 16:39:33 +0200
-Message-ID: <CACQ1gAgz1dmHn6a_ncC4HwungMK3GWZ-K+-Tfj45LLR6rHzBMw@mail.gmail.com>
-Subject: Re: ubifs error at boot "bad node type"
-To: Richard Weinberger <richard@nod.at>
-Content-Type: text/plain; charset=UTF-8
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain
+Cc: bean huo <beanhuo@outlook.com>, Huang Shijie <b32955@freescale.com>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Jingoo Han <jg1.han@samsung.com>, linux-kernel@vger.kernel.org,
+ Paul Gortmaker <paul.gortmaker@windriver.com>, linux-mtd@lists.infradead.org,
+ christian.riesch@omicron.at
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,39 +23,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2014-07-16 14:32 GMT+02:00 Richard Weinberger <richard@nod.at>:
-> Am 16.07.2014 14:26, schrieb Richard Genoud:
->> 2014-07-16 14:02 GMT+02:00 Richard Weinberger <richard.weinberger@gmail.com>:
->>> On Wed, Jul 16, 2014 at 10:29 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
->>>> On Tue, 2014-07-08 at 12:10 +0200, Richard Genoud wrote:
->>>>> ubiattach is ok:
->>>>> # ubiattach -m 3
->>>>> [   50.164062] UBI: default fastmap pool size: 95
->>>>> [   50.164062] UBI: default fastmap WL pool size: 25
->>>>
->>>> I do not know why this happened, I never saw reports like this before.
->>>> Most probably this is because of fastmap. I did not hear any report that
->>>> it was extensively verified WRT power cuts, and my theory is that there
->>>> is a bug in fastmap which causes this, and this may be related to power
->>>> cuts. I do not have proves, but suggest you to dig in this direction.
->>>> E.g., setup power-cut testing.
->>>
->>> The logs don't show the "attached by fastmap" message. So UBI got
->>> attached by scanning.
->>> So, fastmap support is here but not used.
->>>
->>> Only the fastmap pools are used.
->>
->> Well, actually, fastmap is used on this volume when I boot from NAND.
->> (and I must say, It's fast !)
->> Just this time, as I boot from nfsroot, or from a unclean state,
->> fastmap didn't attached UBI.
->> I'll check if it's still operational.
->
-> Okay, this explains your logs.
-> I fear you don't have the original image anymore?
-> Just thinking of how to understand/analyze this issue... :-\
-Actually (after digging a little bit), I found the rootfs.ubifs image used.
-It was flashed with ubiupdatevol
+From: bean huo <beanhuo@outlook.com>
 
-And, as Artem suggested, I'm going to save the entire flash.
+For some Norflashes,the size of the buffer program has been
+increased from 256 bytes to 512 bytes,2ms maximum timeout can
+not adapt to all the different vendor's norflash.There maximum
+timeout information in the CFI area,so the best way is to choose
+the result calculated according to timeout field of struct cfi_ident
+that probed from norflash's CFI aera.This is also a standard defined
+by CFI.If haven't probed this information,or smaller than 2000us,then
+specify a defualt value 2000us.
+
+Tested with Micron JS28F512M29EWx and Micron MT28EW512ABA flash devices.
+
+Signed-off-by: bean huo <beanhuo@outlook.com>
+---
+	v1->v2:Deleted unused parameters in this patch(word_write_time_max and erase_time_max).
+	Using usecs_to_jiffies instead of msecs_to_jiffies for convert timeout value into jiffies.
+	v2->v3:Removed unnecessary messages form comments and deleted trailing whitespace.
+	V3->v4:If haven't probed timeout information,or smaller than 2000us,specify default 2000us.
+	v4->v5:Add space before '>='
+	v5->v6:Add the same indentation as 'if' at the front of 'else'
+
+ drivers/mtd/chips/cfi_cmdset_0002.c |   29 +++++++++++++++++++++++++++--
+ 1 file changed, 27 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index e21fde9..aed6f9e 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -628,6 +628,25 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
+ 		cfi->chips[i].word_write_time = 1<<cfi->cfiq->WordWriteTimeoutTyp;
+ 		cfi->chips[i].buffer_write_time = 1<<cfi->cfiq->BufWriteTimeoutTyp;
+ 		cfi->chips[i].erase_time = 1<<cfi->cfiq->BlockEraseTimeoutTyp;
++		/*
++		 * First calculate the timeout max according to timeout
++		 * field of struct cfi_ident that probed from chip's CFI
++		 * aera.If haven't probed this information,or smaller than
++		 * 2000us,we will specify defualt value 2000us,and the time
++		 * unit is us.
++		 */
++		if (cfi->cfiq->BufWriteTimeoutTyp &&
++		    cfi->cfiq->BufWriteTimeoutMax)
++			cfi->chips[i].buffer_write_time_max =
++				1<<(cfi->cfiq->BufWriteTimeoutTyp +
++				    cfi->cfiq->BufWriteTimeoutMax);
++		else
++			cfi->chips[i].buffer_write_time_max = 0;
++
++		cfi->chips[i].buffer_write_time_max =
++			((cfi->chips[i].buffer_write_time_max >= 2000)
++			 ? cfi->chips[i].buffer_write_time_max : 2000);
++
+ 		cfi->chips[i].ref_point_counter = 0;
+ 		init_waitqueue_head(&(cfi->chips[i].wq));
+ 	}
+@@ -1462,8 +1481,14 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
+ {
+ 	struct cfi_private *cfi = map->fldrv_priv;
+ 	unsigned long timeo = jiffies + HZ;
+-	/* see comments in do_write_oneword() regarding uWriteTimeo. */
+-	unsigned long uWriteTimeout = ( HZ / 1000 ) + 1;
++	/*
++	 * Use the result that calculated according to timeout field
++	 * of struct cfi_ident that probed from norflash's CFI aera.
++	 * See more comments in cfi_cmdset_0002().uWriteTimeout is
++	 * used for timeout step,it must be concerted into jiffies.
++	 */
++	unsigned long uWriteTimeout =
++				usecs_to_jiffies(chip->buffer_write_time_max);
+ 	int ret = -EIO;
+ 	unsigned long cmd_adr;
+ 	int z, words;
+-- 
+1.7.9.5
