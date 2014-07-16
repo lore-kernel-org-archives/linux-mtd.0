@@ -1,15 +1,15 @@
 Received: from mga09.intel.com ([134.134.136.24])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X7K7p-0006TI-He
- for linux-mtd@lists.infradead.org; Wed, 16 Jul 2014 07:59:43 +0000
-Message-ID: <1405497558.1920.23.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 1/7] UBI: Add a new ioctl to support ubidump
+ id 1X7KDS-0001ZD-VD
+ for linux-mtd@lists.infradead.org; Wed, 16 Jul 2014 08:05:32 +0000
+Message-ID: <1405497907.1920.27.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 6/7] New utility ubidump
 From: Artem Bityutskiy <dedekind1@gmail.com>
 Reply-To: dedekind1@gmail.com
 To: hujianyang <hujianyang@huawei.com>
-Date: Wed, 16 Jul 2014 10:59:18 +0300
-In-Reply-To: <53BA499B.5090206@huawei.com>
-References: <53BA491E.8060502@huawei.com> <53BA499B.5090206@huawei.com>
+Date: Wed, 16 Jul 2014 11:05:07 +0300
+In-Reply-To: <53BA4B98.1080000@huawei.com>
+References: <53BA491E.8060502@huawei.com> <53BA4B98.1080000@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -23,29 +23,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Mon, 2014-07-07 at 15:26 +0800, hujianyang wrote:
+> +"-h, --help		print help message\n"
+> +"-n, --lnum		logic eraseblock num to dump\n"
 
-On Mon, 2014-07-07 at 15:17 +0800, hujianyang wrote:
-> Add a new ioctl to dump EC header and VID header to user space. This
-> ioctl is called without lock so I think users *should not* run ubidump
-> when volume is mounted.
-> 
-> Struct ubi_ebdump_req is used to transfer data between user space and
-> kernel space. Can I find a way to set buffer length from '64' to
-> UBI_VID_HDR_SIZE and UBI_EC_HDR_SIZE?
-> 
-> 
-> Signed-off-by: hujianyang <hujianyang@huawei.com>
+I envision that in the future people may want to specify PEB number
+instead of LEB number, and '-n' becomes a confusing name for the option.
+Could you please only support '--lnum', and drop '-n' altogether. Then
+in the future someone may add '--pnum' support.
 
-I've never seen an ioctl for retrieving an on-the-media data structure,
-do you have any examples? I think the traditional way is that the
-user-space reads all the information from the disk itself.
+> +"-i, --info		show explicit information about NODEs\n"
 
-Do you really need to dump UBI headers?
+I do not understand what this means from the description. Would you
+please try to describe it better in the help text?
 
-Could you please drop this functionality for now, and provide an ubidump
-which only dumps UBIFS data structures for now.
+> +"-H, --header		show only header information\n"
+> +"-N, --node		show only NODEs information\n"
 
-Then we can talk and think about the UBI-level headers dumping.
+Same for these.
+
+Thanks!
 
 -- 
 Best Regards,
