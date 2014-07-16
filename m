@@ -1,20 +1,19 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X7Kcr-0001Jp-Lk
- for linux-mtd@lists.infradead.org; Wed, 16 Jul 2014 08:31:45 +0000
-Message-ID: <1405499481.1906.3.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] UBI: init_volumes: Ignore volumes with no LEBs
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Richard Weinberger <richard@nod.at>
-Date: Wed, 16 Jul 2014 11:31:21 +0300
-In-Reply-To: <1404828284-32643-1-git-send-email-richard@nod.at>
-References: <1404828284-32643-1-git-send-email-richard@nod.at>
+Received: from szxga01-in.huawei.com ([119.145.14.64])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X7Kt1-0008VF-7o
+ for linux-mtd@lists.infradead.org; Wed, 16 Jul 2014 08:48:28 +0000
+Message-ID: <53C63C15.1020803@huawei.com>
+Date: Wed, 16 Jul 2014 16:47:17 +0800
+From: hujianyang <hujianyang@huawei.com>
+MIME-Version: 1.0
+To: <dedekind1@gmail.com>
+Subject: Re: [PATCH 1/7] UBI: Add a new ioctl to support ubidump
+References: <53BA491E.8060502@huawei.com> <53BA499B.5090206@huawei.com>
+ <1405497558.1920.23.camel@sauron.fi.intel.com>
+In-Reply-To: <1405497558.1920.23.camel@sauron.fi.intel.com>
 Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-kernel@vger.kernel.org
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,14 +23,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2014-07-08 at 16:04 +0200, Richard Weinberger wrote:
-> UBI assumes that ubi_attach_info will only contain ubi_ainf_volume
-> structures for volumes with at least one LEB.
-> In scanning mode this is true because UBI can nicely create a ubi_ainf_volume
-> on demand while creating the EBA table.
+Hi Artem,
 
-Applied to linux-ubifs.git, thanks!
+Thank you for reviewing these patches.
 
--- 
-Best Regards,
-Artem Bityutskiy
+> 
+> Do you really need to dump UBI headers?
+>
+
+Yes, because I think ec_counter in ec_hdr and copy_flag, sqnum
+in vid_hdr are useful.
+
+Current ->read() can just read data from data_offset where the
+leb located. And reading UBI headers by mtd functionality are
+very complicated, we don't know pnum either.
+
+Maybe we can try other way instead of this ioctl, by adding an
+new function which can read the hole peb specified by lnum to
+user space.
