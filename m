@@ -1,15 +1,15 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga11.intel.com ([192.55.52.93])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X7N0D-0006N5-9P
- for linux-mtd@lists.infradead.org; Wed, 16 Jul 2014 11:04:01 +0000
-Message-ID: <1405508618.1906.26.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] UBIFS: Fix empty_log_bytes()  computing error
+ id 1X7N2d-0008NX-Qn
+ for linux-mtd@lists.infradead.org; Wed, 16 Jul 2014 11:06:33 +0000
+Message-ID: <1405508755.1906.27.camel@sauron.fi.intel.com>
+Subject: Re: ubifs issue about xattr node when replay journal
 From: Artem Bityutskiy <dedekind1@gmail.com>
 Reply-To: dedekind1@gmail.com
-To: hujianyang <hujianyang@huawei.com>
-Date: Wed, 16 Jul 2014 14:03:38 +0300
-In-Reply-To: <53BF4851.4040105@huawei.com>
-References: <53BF4851.4040105@huawei.com>
+To: look wang <walklook@gmail.com>
+Date: Wed, 16 Jul 2014 14:05:55 +0300
+In-Reply-To: <7590973538024349719@unknownmsgid>
+References: <7590973538024349719@unknownmsgid>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -23,100 +23,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2014-07-11 at 10:13 +0800, hujianyang wrote:
-> Hi Artem,
+On Fri, 2014-07-11 at 16:37 +0800, look wang wrote:
+> Hi all,
 > 
-> After several days testing, the error we fixed in commit 642f63ed10,
-> "UBIFS: fix fatal race condition" comes out again. This commit seems
-> not working for my problem and I have to research into it again.
+> Now we use xattr based on ubifs, and find some issues about it.
+> Situation like that:
+> 1.poweron ->2.create a file -> 3.set xattr -> 4.delete the file ->
+> 5.power cut
+> After several cycles with above steps, we can not boot up the device
+> with the error below.
 
-Do you say that your original patch fixed the problem, and the re-worked
-"fix fatal race condition" patch does not fix it, so it is incorrect?
-
-Or do you say that probably the original patch also did not fix the
-problem, so both do not really fix the issue?
-
-Or do you say that "fix fatal race condition" fixes only part of the
-problem, and there is another problem, which needs fixing too?
-
-Or you are not sure?
-
-> With the help of my ubidump tool this time, I got the detailed info
-> of log area and mst nodes and found a terrible mistake in function
-> empty_log_bytes().
-
-OK.
-
-> I used to think this helper function was correct but it truns out I
-> was wrong. We set @c->min_log_bytes to 0 in ubifs_log_start_commit()
-> and suppose empty_log_bytes() will return 0 when the log area is full.
-
-Yes.
-
-> But it's not true.
-
-> If lhead_lnum + 1 == ltail_lnum and c->lhead_offs == c->leb_size, @h
-> would equal to @t and empty_log_bytes() will return log_bytes expect 0.
-
-Well-spotted!
-
-> 
-> I prefer to add a patch like:
-> 
-> +       if (h == t && c->lhead_offs == c->leb_size)
-> +               return 0;
-
-Yeah. Or something which may be slightly easier to read:
-
-diff --git a/fs/ubifs/log.c b/fs/ubifs/log.c
-index ed24422..7e818ec 100644
---- a/fs/ubifs/log.c
-+++ b/fs/ubifs/log.c
-@@ -106,10 +106,14 @@ static inline long long empty_log_bytes(const struct ubifs_info *c)
-        h = (long long)c->lhead_lnum * c->leb_size + c->lhead_offs;
-        t = (long long)c->ltail_lnum * c->leb_size;
- 
--       if (h >= t)
-+       if (h > t)
-                return c->log_bytes - h + t;
--       else
-+       else if (h != t)
-                return t - h;
-+       else if (c->lhead_lnum != c->ltail_lnum)
-+               return 0;
-+       else
-+               return c->log_bytes;
- }
-
-> but I think there may be no other situation that lead @h equal to @t.
-> So just make this helper function return 0 if @h equal to @t.
-
-Even though there is always something in the log, it is safer to make
-sure the function works correctly for empty log too...
-
-> -	if (h >= t)
-> +	if (h > t)
->  		return c->log_bytes - h + t;
-
-... so I think this is not good enough.
-
->  	else
->  		return t - h;
-> @@ -240,6 +240,7 @@ int ubifs_add_bud_to_log(struct ubifs_info *c, int jhead, int lnum, int offs)
-> 
->  	if (c->lhead_offs > c->leb_size - c->ref_node_alsz) {
->  		c->lhead_lnum = ubifs_next_log_lnum(c, c->lhead_lnum);
-> +		ubifs_assert(c->lhead_lnum != c->ltail_lnum);
->  		c->lhead_offs = 0;
->  	}
-
-Let's have it as a separate patch.
-
-Do you want me to create 2 patches based on this information and send
-them to you, our you submit them? They should have 'Cc:
-stable@vger.kernel.org'.
-
-Thanks!
+Do you use the UBI fastmap feature?
 
 -- 
 Best Regards,
