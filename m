@@ -1,24 +1,26 @@
-Received: from mail-ig0-x235.google.com ([2607:f8b0:4001:c05::235])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X7TZR-0003vR-4v
- for linux-mtd@lists.infradead.org; Wed, 16 Jul 2014 18:04:49 +0000
-Received: by mail-ig0-f181.google.com with SMTP id h3so1151406igd.8
- for <linux-mtd@lists.infradead.org>; Wed, 16 Jul 2014 11:04:27 -0700 (PDT)
-Date: Wed, 16 Jul 2014 11:04:23 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Bean Huo <beanhuo@outlook.com>
-Subject: Re: [PATCH v6] mtd:nor:timeout:fix do_write_buffer() timeout error
-Message-ID: <20140716180423.GV7537@ld-irv-0074>
-References: <BLU436-SMTP223B6F83933407357F0FF3BA6F70@phx.gbl>
+ id 1X7WKB-0001cX-7y
+ for linux-mtd@lists.infradead.org; Wed, 16 Jul 2014 21:01:16 +0000
+Message-ID: <53C6E800.1030409@nod.at>
+Date: Wed, 16 Jul 2014 23:00:48 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BLU436-SMTP223B6F83933407357F0FF3BA6F70@phx.gbl>
-Cc: Paul Gortmaker <paul.gortmaker@windriver.com>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Jingoo Han <jg1.han@samsung.com>, linux-kernel@vger.kernel.org,
- christian.riesch@omicron.at, Huang Shijie <b32955@freescale.com>,
- linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+To: Akshay Bhat <abhat@lutron.com>
+Subject: Re: UBIFS Panic
+References: <53AC825F.7040602@lutron.com> <53ACD890.4030805@huawei.com>
+ <53B15F8E.3030309@lutron.com>
+ <CAFLxGvzQpaLvLda8dXdVzvc00EYc9TpsLjJhsCjEBy28RsL=_w@mail.gmail.com>
+ <53B19D09.2000007@lutron.com> <53B20A42.6020008@huawei.com>
+ <53B267E6.7060708@nod.at> <53B2C321.4050407@lutron.com>
+ <53B2C682.7080605@nod.at> <53B2C9BA.2090507@lutron.com>
+ <53B2CC06.3000205@nod.at> <53BF07E4.4010302@lutron.com>,
+ <53C04D02.9080002@nod.at>
+ <CE1A3161FE28A24FA02F0C9A95F25FA3AEA99BB6F0@MB003.cb.intra.lutron.com>
+In-Reply-To: <CE1A3161FE28A24FA02F0C9A95F25FA3AEA99BB6F0@MB003.cb.intra.lutron.com>
+Content-Type: multipart/mixed; boundary="------------010608000401030608030000"
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ hujianyang <hujianyang@huawei.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,118 +30,106 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Bean,
+This is a multi-part message in MIME format.
+--------------010608000401030608030000
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jul 16, 2014 at 09:05:26AM -0700, Bean Huo wrote:
-> From: bean huo <beanhuo@outlook.com>
+Akshay,
+
+Am 16.07.2014 19:31, schrieb Akshay Bhat:
 > 
-> For some Norflashes,the size of the buffer program has been
-> increased from 256 bytes to 512 bytes,2ms maximum timeout can
-> not adapt to all the different vendor's norflash.There maximum
-> timeout information in the CFI area,so the best way is to choose
-> the result calculated according to timeout field of struct cfi_ident
-> that probed from norflash's CFI aera.This is also a standard defined
-> by CFI.If haven't probed this information,or smaller than 2000us,then
-> specify a defualt value 2000us.
+>>>
+>>> Hi Richard, wanted to check if you got a chance to dig into this? Thanks.
 > 
-> Tested with Micron JS28F512M29EWx and Micron MT28EW512ABA flash devices.
+>> Can you please rerun with the attached patch applied?
+>> Maybe it can give use a hint. :)
 > 
-> Signed-off-by: bean huo <beanhuo@outlook.com>
-> ---
-> 	v1->v2:Deleted unused parameters in this patch(word_write_time_max and erase_time_max).
-> 	Using usecs_to_jiffies instead of msecs_to_jiffies for convert timeout value into jiffies.
-> 	v2->v3:Removed unnecessary messages form comments and deleted trailing whitespace.
-> 	V3->v4:If haven't probed timeout information,or smaller than 2000us,specify default 2000us.
-> 	v4->v5:Add space before '>='
-> 	v5->v6:Add the same indentation as 'if' at the front of 'else'
-> 
->  drivers/mtd/chips/cfi_cmdset_0002.c |   29 +++++++++++++++++++++++++++--
->  1 file changed, 27 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-> index e21fde9..aed6f9e 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-> @@ -628,6 +628,25 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
-[...]
-> +		cfi->chips[i].buffer_write_time_max =
-> +			((cfi->chips[i].buffer_write_time_max >= 2000)
-> +			 ? cfi->chips[i].buffer_write_time_max : 2000);
+> I ran the tests with the patch, below is the dmesg log (note: the first kernel panic resulted in the log running over since I wasn't around, so I had to reboot and re-run the test to capture a new panic).
 
-This should just use the 'max()' macro, from <linux/kernel.h>.
+Thanks a lot for the log!
 
-> +
->  		cfi->chips[i].ref_point_counter = 0;
->  		init_waitqueue_head(&(cfi->chips[i].wq));
->  	}
+> # dmesg
+> [ 1571.338966] UBI error: refill_wl_pool: didn't get all pebs I wanted!
+> [ 1571.367128] UBI error: refill_wl_pool: didn't get all pebs I wanted!
+> [ 1571.367159] UBI error: ubi_wl_get_peb: User WL pool is empty!
 
-I have just fixed up your patch myself, to use max() and to improve some
-of the language. Let me know if the below works for you.
+This is interesting.
+Looks like a race in ubi_wl_get_peb(), two threads enter the function and the pool needs refilling.
+While T1 triggers a ubi_refill_pools(), T2 goes immediately to " if (!pool->size) {" this triggers
+as T1 resets pool->size to 0 while refilling.
 
->From 6534e6809e6c9d48114b537afe03bee3fd33bf01 Mon Sep 17 00:00:00 2001
-From: Bean Huo <beanhuo@outlook.com>
-Date: Wed, 16 Jul 2014 09:05:26 -0700
-Subject: [PATCH] mtd: cfi_cmdset_0002: fix do_write_buffer() timeout error
+Please test the updated debug patch.
 
-For some NOR flashes, the size of the buffer program has been increased
-from 256 bytes to 512 bytes, and so 2ms maximum timeout can may not be
-sufficient for all different vendor's NOR flash. There is maximum
-timeout information in the CFI area, so we instead of picking a fixed
-value, we can calculate this according to the standard CFI parameters
-parsed at probe time. If we haven't probed this information, or it is
-smaller than 2000us, then specify a minimum value 2000us.
+Can you also please share your test script with me?
+So far none of my boards run into that issue. :(
 
-Tested with Micron JS28F512M29EWx and Micron MT28EW512ABA flash devices.
+Thanks,
+//richard
 
-Signed-off-by: Bean Huo <beanhuo@outlook.com>
-[Brian: fix up comments, use 'max()']
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
- drivers/mtd/chips/cfi_cmdset_0002.c | 25 +++++++++++++++++++++++--
- 1 file changed, 23 insertions(+), 2 deletions(-)
+--------------010608000401030608030000
+Content-Type: text/x-patch;
+ name="debug.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="debug.diff"
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index bf313be6ee26..5a4bfe33112a 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -645,6 +645,23 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
- 		cfi->chips[i].word_write_time = 1<<cfi->cfiq->WordWriteTimeoutTyp;
- 		cfi->chips[i].buffer_write_time = 1<<cfi->cfiq->BufWriteTimeoutTyp;
- 		cfi->chips[i].erase_time = 1<<cfi->cfiq->BlockEraseTimeoutTyp;
-+		/*
-+		 * First calculate the timeout max according to timeout field
-+		 * of struct cfi_ident that probed from chip's CFI aera, if
-+		 * available. Specify a minimum of 2000us, in case the CFI data
-+		 * is wrong.
-+		 */
-+		if (cfi->cfiq->BufWriteTimeoutTyp &&
-+		    cfi->cfiq->BufWriteTimeoutMax)
-+			cfi->chips[i].buffer_write_time_max =
-+				1 << (cfi->cfiq->BufWriteTimeoutTyp +
-+				      cfi->cfiq->BufWriteTimeoutMax);
-+		else
-+			cfi->chips[i].buffer_write_time_max = 0;
-+
-+		cfi->chips[i].buffer_write_time_max =
-+			max(cfi->chips[i].buffer_write_time_max, 2000);
-+
- 		cfi->chips[i].ref_point_counter = 0;
- 		init_waitqueue_head(&(cfi->chips[i].wq));
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index 0f3425d..d02b5f9 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -575,8 +575,10 @@ static void refill_wl_pool(struct ubi_device *ubi)
+ 
+ 	for (pool->size = 0; pool->size < pool->max_size; pool->size++) {
+ 		if (!ubi->free.rb_node ||
+-		   (ubi->free_count - ubi->beb_rsvd_pebs < 5))
++		   (ubi->free_count - ubi->beb_rsvd_pebs < 5)) {
++			ubi_err("didn't get all pebs I wanted!");
+ 			break;
++		}
+ 
+ 		e = find_wl_entry(ubi, &ubi->free, WL_FREE_MAX_DIFF);
+ 		self_check_in_wl_tree(ubi, e, &ubi->free);
+@@ -600,8 +602,10 @@ static void refill_wl_user_pool(struct ubi_device *ubi)
+ 
+ 	for (pool->size = 0; pool->size < pool->max_size; pool->size++) {
+ 		pool->pebs[pool->size] = __wl_get_peb(ubi);
+-		if (pool->pebs[pool->size] < 0)
++		if (pool->pebs[pool->size] < 0) {
++			ubi_err("didn't get all pebs I wanted!");
+ 			break;
++		}
  	}
-@@ -1774,8 +1791,12 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
- {
- 	struct cfi_private *cfi = map->fldrv_priv;
- 	unsigned long timeo = jiffies + HZ;
--	/* see comments in do_write_oneword() regarding uWriteTimeo. */
--	unsigned long uWriteTimeout = ( HZ / 1000 ) + 1;
-+	/*
-+	 * Timeout is calculated according to CFI data, if available.
-+	 * See more comments in cfi_cmdset_0002().
-+	 */
-+	unsigned long uWriteTimeout =
-+				usecs_to_jiffies(chip->buffer_write_time_max);
- 	int ret = -EIO;
- 	unsigned long cmd_adr;
- 	int z, words;
--- 
-1.9.1
+ 	pool->used = 0;
+ }
+@@ -631,15 +635,16 @@ int ubi_wl_get_peb(struct ubi_device *ubi)
+ 	    wl_pool->used == wl_pool->size)
+ 		ubi_update_fastmap(ubi);
+ 
++	spin_lock(&ubi->wl_lock);
+ 	/* we got not a single free PEB */
+-	if (!pool->size)
++	if (!pool->size) {
++		ubi_err("User WL pool is empty!");
+ 		ret = -ENOSPC;
+-	else {
+-		spin_lock(&ubi->wl_lock);
++	} else {
+ 		ret = pool->pebs[pool->used++];
+ 		prot_queue_add(ubi, ubi->lookuptbl[ret]);
+-		spin_unlock(&ubi->wl_lock);
+ 	}
++	spin_unlock(&ubi->wl_lock);
+ 
+ 	return ret;
+ }
+@@ -654,6 +659,7 @@ static struct ubi_wl_entry *get_peb_for_wl(struct ubi_device *ubi)
+ 	int pnum;
+ 
+ 	if (pool->used == pool->size || !pool->size) {
++		ubi_err("WL pool is empty!");
+ 		/* We cannot update the fastmap here because this
+ 		 * function is called in atomic context.
+ 		 * Let's fail here and refill/update it as soon as possible. */
+
+--------------010608000401030608030000--
