@@ -1,13 +1,22 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga02.intel.com ([134.134.136.20])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X7OXZ-00065A-Bk
- for linux-mtd@lists.infradead.org; Wed, 16 Jul 2014 12:42:33 +0000
+ id 1X7OZ8-0006S4-SO
+ for linux-mtd@lists.infradead.org; Wed, 16 Jul 2014 12:44:11 +0000
+Message-ID: <1405514626.5423.24.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] UBIFS: Fix empty_log_bytes()  computing error
 From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
 To: hujianyang <hujianyang@huawei.com>
-Subject: [PATCH 1/2] UBIFS: fix free log space calculation
-Date: Wed, 16 Jul 2014 15:42:07 +0300
-Message-Id: <1405514528-14649-1-git-send-email-dedekind1@gmail.com>
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>
+Date: Wed, 16 Jul 2014 15:43:46 +0300
+In-Reply-To: <1405514327.5423.23.camel@sauron.fi.intel.com>
+References: <53BF4851.4040105@huawei.com>
+ <1405508618.1906.26.camel@sauron.fi.intel.com>
+ <53C6658F.3020605@huawei.com>
+ <1405514327.5423.23.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,48 +26,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+On Wed, 2014-07-16 at 15:38 +0300, Artem Bityutskiy wrote:
+> I guess you will continue testing, right? Please, use these patches and
+> let me know if they are wrong, if they help or not, etc. I'll send the 2
+> patches shortly.
 
-Hu (hujianyang <hujianyang@huawei.com>) discovered an issue in the
-'empty_log_bytes()' function, which calculates how many bytes are left in the
-log:
+By the way, you may try making the log smaller or larger, instead of
+using the default size - may be it'll help making the issue easier to
+reproduce?
 
-"
-If 'c->lhead_lnum + 1 == c->ltail_lnum' and 'c->lhead_offs == c->leb_size', 'h'
-would equalent to 't' and 'empty_log_bytes()' would return 'c->log_bytes'
-instead of 0.
-"
-
-At this point it is not clear what would be the consequences of this, and
-whether this may lead to any problems, but this patch addresses the issue just
-in case.
-
-Reported-by: hujianyang <hujianyang@huawei.com>
-Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
----
- fs/ubifs/log.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/fs/ubifs/log.c b/fs/ubifs/log.c
-index ed24422..7e818ec 100644
---- a/fs/ubifs/log.c
-+++ b/fs/ubifs/log.c
-@@ -106,10 +106,14 @@ static inline long long empty_log_bytes(const struct ubifs_info *c)
- 	h = (long long)c->lhead_lnum * c->leb_size + c->lhead_offs;
- 	t = (long long)c->ltail_lnum * c->leb_size;
- 
--	if (h >= t)
-+	if (h > t)
- 		return c->log_bytes - h + t;
--	else
-+	else if (h != t)
- 		return t - h;
-+	else if (c->lhead_lnum != c->ltail_lnum)
-+		return 0;
-+	else
-+		return c->log_bytes;
- }
- 
- /**
 -- 
-1.9.3
+Best Regards,
+Artem Bityutskiy
