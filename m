@@ -1,13 +1,15 @@
-Received: from blu004-omc3s11.hotmail.com ([65.55.116.86])
+Received: from blu004-omc3s5.hotmail.com ([65.55.116.80])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X7JLL-0006OD-8M
- for linux-mtd@lists.infradead.org; Wed, 16 Jul 2014 07:09:36 +0000
-Message-ID: <BLU185-W10713E955F9530C4D53490A6F70@phx.gbl>
+ id 1X7JVG-0003DN-HI
+ for linux-mtd@lists.infradead.org; Wed, 16 Jul 2014 07:19:51 +0000
+Message-ID: <BLU185-W62B0858FCD7D3A71127B41A6F70@phx.gbl>
 From: Bean Huo <beanhuo@outlook.com>
 To: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
  <computersforpeace@gmail.com>
-Subject: [PATCH v4] mtd:nor:timeout:fix do_write_buffer() timeout error
-Date: Wed, 16 Jul 2014 07:09:13 +0000
+Subject: [PATCH v5] mtd:nor:timeout:fix do_write_buffer() timeout error
+Date: Wed, 16 Jul 2014 07:19:28 +0000
+In-Reply-To: <BLU185-W10713E955F9530C4D53490A6F70@phx.gbl>
+References: <BLU185-W10713E955F9530C4D53490A6F70@phx.gbl>
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
@@ -50,7 +52,7 @@ tespace.=0A=
 	V3->v4:If haven't probed timeout information=2Cor smaller than 2000us=2Csp=
 ecify default=0A=
 	 =A0 =A0 =A0 2000us.=0A=
-=0A=
+	v4->v5:add one whitespace=0A=
 =A0drivers/mtd/chips/cfi_cmdset_0002.c | =A0 28 ++++++++++++++++++++++++++-=
 -=0A=
 =A01 file changed=2C 26 insertions(+)=2C 2 deletions(-)=0A=
