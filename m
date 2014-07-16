@@ -1,16 +1,18 @@
-Received: from szxga01-in.huawei.com ([119.145.14.64])
+Received: from szxga03-in.huawei.com ([119.145.14.66])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X7Ne5-0001Ml-NP
- for linux-mtd@lists.infradead.org; Wed, 16 Jul 2014 11:45:14 +0000
-Message-ID: <53C6658F.3020605@huawei.com>
-Date: Wed, 16 Jul 2014 19:44:15 +0800
+ id 1X7Nr8-0008AG-FX
+ for linux-mtd@lists.infradead.org; Wed, 16 Jul 2014 11:58:43 +0000
+Message-ID: <53C668B7.4090804@huawei.com>
+Date: Wed, 16 Jul 2014 19:57:43 +0800
 From: hujianyang <hujianyang@huawei.com>
 MIME-Version: 1.0
 To: <dedekind1@gmail.com>
-Subject: Re: [PATCH] UBIFS: Fix empty_log_bytes()  computing error
-References: <53BF4851.4040105@huawei.com>
- <1405508618.1906.26.camel@sauron.fi.intel.com>
-In-Reply-To: <1405508618.1906.26.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 6/7] New utility ubidump
+References: <53BA491E.8060502@huawei.com> <53BA4B98.1080000@huawei.com>
+ <1405497907.1920.27.camel@sauron.fi.intel.com> <53C63DA2.5080200@huawei.com>
+ <1405507040.1906.18.camel@sauron.fi.intel.com> <53C6618F.3010707@huawei.com>
+ <1405511021.5423.12.camel@sauron.fi.intel.com>
+In-Reply-To: <1405511021.5423.12.camel@sauron.fi.intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd <linux-mtd@lists.infradead.org>
@@ -23,51 +25,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2014/7/16 19:03, Artem Bityutskiy wrote:
-> On Fri, 2014-07-11 at 10:13 +0800, hujianyang wrote:
->> Hi Artem,
->>
->> After several days testing, the error we fixed in commit 642f63ed10,
->> "UBIFS: fix fatal race condition" comes out again. This commit seems
->> not working for my problem and I have to research into it again.
 > 
-> Do you say that your original patch fixed the problem, and the re-worked
-> "fix fatal race condition" patch does not fix it, so it is incorrect?
-> 
-> Or do you say that probably the original patch also did not fix the
-> problem, so both do not really fix the issue?
-> 
-> Or do you say that "fix fatal race condition" fixes only part of the
-> problem, and there is another problem, which needs fixing too?
-> 
-> Or you are not sure?
-> 
+> This is why I suggest to start small, do just the UBIFS nodes dump,
+> nothing else. Just forget about UBI. Then let's review that and make
+> part of mtd-utils. This will clarify the vision, and we may add UBI
+> support then separately.
+>
 
-First, I think the re-worked patch and my origin patch fix same
-problem. Once I think the error 'not CS node' is caused by power
-cut, so I research the code and find this race.
+So just use simple way to do UBIFS dump and then step by step
+make it a strong utility.
 
-But, after several days test, this error came out again and I
-think we don't catch the true cause. Then I find the error below.
-
-I think previous fixes(commit 642f63ed10) are useful but not solve
-my problem. Maybe you can change the commit log or just keep them
-because they can really fix a problem like that.
-
-> 
-> Do you want me to create 2 patches based on this information and send
-> them to you, our you submit them? They should have 'Cc:
-> stable@vger.kernel.org'.
-> 
-> Thanks!
-> 
-
-Yes, I'm not sure how to fix it is better and I was busy these
-days. You can fix this error in your way and cc the patch to me.
-
-But I don't know if this error is the true cause of my problem. I
-would like to report to you if I get something new.
-
-Thanks~!
-
-Hu
+It's not too hard. I will first realize an UBIFS dump as you
+showed by mtd driver.
