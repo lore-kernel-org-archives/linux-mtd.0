@@ -1,25 +1,30 @@
-Received: from blu004-omc3s5.hotmail.com ([65.55.116.80])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X7JVG-0003DN-HI
- for linux-mtd@lists.infradead.org; Wed, 16 Jul 2014 07:19:51 +0000
-Message-ID: <BLU185-W62B0858FCD7D3A71127B41A6F70@phx.gbl>
-From: Bean Huo <beanhuo@outlook.com>
-To: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>
-Subject: [PATCH v5] mtd:nor:timeout:fix do_write_buffer() timeout error
-Date: Wed, 16 Jul 2014 07:19:28 +0000
-In-Reply-To: <BLU185-W10713E955F9530C4D53490A6F70@phx.gbl>
+Received: from mailout2.samsung.com ([203.254.224.25])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X7K0F-0003AX-49
+ for linux-mtd@lists.infradead.org; Wed, 16 Jul 2014 07:51:52 +0000
+Received: from epcpsbgr1.samsung.com
+ (u141.gpu120.samsung.co.kr [203.254.230.141])
+ by mailout2.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ (7.0.4.24.0) 64bit (built Nov 17 2011))
+ with ESMTP id <0N8S003RNOHPLK80@mailout2.samsung.com> for
+ linux-mtd@lists.infradead.org; Wed, 16 Jul 2014 16:51:26 +0900 (KST)
+From: Jingoo Han <jg1.han@samsung.com>
+To: 'Bean Huo' <beanhuo@outlook.com>, dwmw2@infradead.org,
+ computersforpeace@gmail.com
 References: <BLU185-W10713E955F9530C4D53490A6F70@phx.gbl>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: "b32955@freescale.com" <b32955@freescale.com>,
- "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
- "jg1.han@samsung.com" <jg1.han@samsung.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "paul.gortmaker@windriver.com" <paul.gortmaker@windriver.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "christian.riesch@omicron.at" <christian.riesch@omicron.at>
+ <BLU185-W62B0858FCD7D3A71127B41A6F70@phx.gbl>
+In-reply-to: <BLU185-W62B0858FCD7D3A71127B41A6F70@phx.gbl>
+Subject: Re: [PATCH v5] mtd:nor:timeout:fix do_write_buffer() timeout error
+Date: Wed, 16 Jul 2014 16:51:25 +0900
+Message-id: <002201cfa0ca$be634b10$3b29e130$%han@samsung.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=iso-8859-1
+Content-transfer-encoding: quoted-printable
+Content-language: ko
+Cc: b32955@freescale.com, artem.bityutskiy@linux.intel.com,
+ 'Jingoo Han' <jg1.han@samsung.com>, linux-kernel@vger.kernel.org,
+ paul.gortmaker@windriver.com, linux-mtd@lists.infradead.org,
+ christian.riesch@omicron.at
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,84 +34,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-For some Norflashes=2Cthe size of the buffer program has been=0A=
-increased from 256 bytes to 512 bytes=2C2ms maximum timeout can=0A=
-not adapt to all the different vendor's norflash.There maximum=0A=
-timeout information in the CFI area=2Cso the best way is to choose=0A=
-the result calculated according to timeout field of struct cfi_ident=0A=
-that probed from norflash's CFI aera.This is also a standard defined=0A=
-by CFI.If haven't probed this information=2Cor smaller than 2000us=2Cthen=
-=0A=
-specify a defualt value 2000us.=0A=
-=0A=
-Tested with Micron JS28F512M29EWx and Micron MT28EW512ABA flash devices.=0A=
-=0A=
-Signed-off-by: bean huo <beanhuo@outlook.com>=0A=
----=0A=
-changes=0A=
-	v1->v2:Deleted unused parameters in this patch=A0=0A=
-		(word_write_time_max and erase_time_max).Using usecs_to_jiffies=0A=
-		instead of msecs_to_jiffies for convert timeout value into jiffies.=0A=
-	v2->v3:Removed unnecessary messages form comments and deleted trailing whi=
-tespace.=0A=
-	V3->v4:If haven't probed timeout information=2Cor smaller than 2000us=2Csp=
-ecify default=0A=
-	 =A0 =A0 =A0 2000us.=0A=
-	v4->v5:add one whitespace=0A=
-=A0drivers/mtd/chips/cfi_cmdset_0002.c | =A0 28 ++++++++++++++++++++++++++-=
--=0A=
-=A01 file changed=2C 26 insertions(+)=2C 2 deletions(-)=0A=
-=0A=
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cm=
-dset_0002.c=0A=
-index e21fde9..c248a8c 100644=0A=
---- a/drivers/mtd/chips/cfi_cmdset_0002.c=0A=
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c=0A=
-@@ -628=2C6 +628=2C24 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *=
-map=2C int primary)=0A=
-=A0		cfi->chips[i].word_write_time =3D 1<<cfi->cfiq->WordWriteTimeoutTyp=3B=
-=0A=
-=A0		cfi->chips[i].buffer_write_time =3D 1<<cfi->cfiq->BufWriteTimeoutTyp=
-=3B=0A=
-=A0		cfi->chips[i].erase_time =3D 1<<cfi->cfiq->BlockEraseTimeoutTyp=3B=0A=
-+		/*=0A=
-+		 * First calculate the timeout max according to timeout=0A=
-+		 * field of struct cfi_ident that probed from chip's CFI=0A=
-+		 * aera.If haven't probed this information=2Cor smaller than=0A=
-+		 * 2000us=2Cwe will specify defualt value 2000us=2Cand the time=0A=
-+		 * unit is us.=0A=
-+		 */=0A=
-+		if (cfi->cfiq->BufWriteTimeoutTyp &&=0A=
-+			cfi->cfiq->BufWriteTimeoutMax){=0A=
-+			cfi->chips[i].buffer_write_time_max =3D=0A=
-+				1<<(cfi->cfiq->BufWriteTimeoutTyp +=0A=
-+					cfi->cfiq->BufWriteTimeoutMax)=3B=0A=
-+			} else {=0A=
-+				cfi->chips[i].buffer_write_time_max =3D 0=3B=0A=
-+				}=0A=
-+		cfi->chips[i].buffer_write_time_max =3D=0A=
-+			((cfi->chips[i].buffer_write_time_max>=3D 2000)=0A=
-+			 ? cfi->chips[i].buffer_write_time_max : 2000)=3B=0A=
-=A0		cfi->chips[i].ref_point_counter =3D 0=3B=0A=
-=A0		init_waitqueue_head(&(cfi->chips[i].wq))=3B=0A=
-=A0	}=0A=
-@@ -1462=2C8 +1480=2C14 @@ static int __xipram do_write_buffer(struct map_i=
-nfo *map=2C struct flchip *chip=2C=0A=
-=A0{=0A=
-=A0	struct cfi_private *cfi =3D map->fldrv_priv=3B=0A=
-=A0	unsigned long timeo =3D jiffies + HZ=3B=0A=
--	/* see comments in do_write_oneword() regarding uWriteTimeo. */=0A=
--	unsigned long uWriteTimeout =3D ( HZ / 1000 ) + 1=3B=0A=
-+	/*=0A=
-+	 * Use the result that calculated according to timeout field=0A=
-+	 * of struct cfi_ident that probed from norflash's CFI aera.=0A=
-+	 * See more comments in cfi_cmdset_0002().uWriteTimeout is=0A=
-+	 * used for timeout step=2Cit must be concerted into jiffies.=0A=
-+	 */=0A=
-+	unsigned long uWriteTimeout =3D=0A=
-+				usecs_to_jiffies(chip->buffer_write_time_max)=3B=0A=
-=A0	int ret =3D -EIO=3B=0A=
-=A0	unsigned long cmd_adr=3B=0A=
-=A0	int z=2C words=3B=0A=
---=A0=0A=
-1.7.9.5 		 	   		  =
+On Wednesday, July 16, 2014 4:19 PM, Bean Huo wrote:
+>=20
+> For some Norflashes,the size of the buffer program has been
+> increased from 256 bytes to 512 bytes,2ms maximum timeout can
+> not adapt to all the different vendor's norflash.There maximum
+> timeout information in the CFI area,so the best way is to choose
+> the result calculated according to timeout field of struct cfi_ident
+> that probed from norflash's CFI aera.This is also a standard defined
+> by CFI.If haven't probed this information,or smaller than 2000us,then
+> specify a defualt value 2000us.
+>=20
+> Tested with Micron JS28F512M29EWx and Micron MT28EW512ABA flash =
+devices.
+>=20
+> Signed-off-by: bean huo <beanhuo@outlook.com>
+> ---
+> changes
+> 	v1->v2:Deleted unused parameters in this patch
+> 		(word_write_time_max and erase_time_max).Using usecs_to_jiffies
+> 		instead of msecs_to_jiffies for convert timeout value into jiffies.
+> 	v2->v3:Removed unnecessary messages form comments and deleted =
+trailing whitespace.
+> 	V3->v4:If haven't probed timeout information,or smaller than =
+2000us,specify default
+> 	 =A0 =A0 =A0 2000us.
+> 	v4->v5:add one whitespace
+> =A0drivers/mtd/chips/cfi_cmdset_0002.c | =A0 28 =
+++++++++++++++++++++++++++--
+> =A01 file changed, 26 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c =
+b/drivers/mtd/chips/cfi_cmdset_0002.c
+> index e21fde9..c248a8c 100644
+> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
+> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+> @@ -628,6 +628,24 @@ struct mtd_info *cfi_cmdset_0002(struct map_info =
+*map, int primary)
+> =A0		cfi->chips[i].word_write_time =3D =
+1<<cfi->cfiq->WordWriteTimeoutTyp;
+> =A0		cfi->chips[i].buffer_write_time =3D =
+1<<cfi->cfiq->BufWriteTimeoutTyp;
+> =A0		cfi->chips[i].erase_time =3D 1<<cfi->cfiq->BlockEraseTimeoutTyp;
+> +		/*
+> +		 * First calculate the timeout max according to timeout
+> +		 * field of struct cfi_ident that probed from chip's CFI
+> +		 * aera.If haven't probed this information,or smaller than
+> +		 * 2000us,we will specify defualt value 2000us,and the time
+> +		 * unit is us.
+> +		 */
+> +		if (cfi->cfiq->BufWriteTimeoutTyp &&
+> +			cfi->cfiq->BufWriteTimeoutMax){
+> +			cfi->chips[i].buffer_write_time_max =3D
+> +				1<<(cfi->cfiq->BufWriteTimeoutTyp +
+> +					cfi->cfiq->BufWriteTimeoutMax);
+> +			} else {
+> +				cfi->chips[i].buffer_write_time_max =3D 0;
+> +				}
+
+Please keep the coding style as below.
+
+		if ( ) {
+			...
+		} else {
+			...
+		}
+
+Best regards,
+Jingoo Han
+
+> +		cfi->chips[i].buffer_write_time_max =3D
+> +			((cfi->chips[i].buffer_write_time_max>=3D 2000)
+> +			 ? cfi->chips[i].buffer_write_time_max : 2000);
+> =A0		cfi->chips[i].ref_point_counter =3D 0;
+> =A0		init_waitqueue_head(&(cfi->chips[i].wq));
+> =A0	}
+> @@ -1462,8 +1480,14 @@ static int __xipram do_write_buffer(struct =
+map_info *map, struct flchip *chip,
+> =A0{
+> =A0	struct cfi_private *cfi =3D map->fldrv_priv;
+> =A0	unsigned long timeo =3D jiffies + HZ;
+> -	/* see comments in do_write_oneword() regarding uWriteTimeo. */
+> -	unsigned long uWriteTimeout =3D ( HZ / 1000 ) + 1;
+> +	/*
+> +	 * Use the result that calculated according to timeout field
+> +	 * of struct cfi_ident that probed from norflash's CFI aera.
+> +	 * See more comments in cfi_cmdset_0002().uWriteTimeout is
+> +	 * used for timeout step,it must be concerted into jiffies.
+> +	 */
+> +	unsigned long uWriteTimeout =3D
+> +				usecs_to_jiffies(chip->buffer_write_time_max);
+> =A0	int ret =3D -EIO;
+> =A0	unsigned long cmd_adr;
+> =A0	int z, words;
+> --
+> 1.7.9.5 		 	   		  =3D
