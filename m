@@ -1,17 +1,15 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga02.intel.com ([134.134.136.20])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X7Mal-0003MA-To
- for linux-mtd@lists.infradead.org; Wed, 16 Jul 2014 10:37:44 +0000
-Message-ID: <1405507040.1906.18.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 6/7] New utility ubidump
+ id 1X7N0D-0006N5-9P
+ for linux-mtd@lists.infradead.org; Wed, 16 Jul 2014 11:04:01 +0000
+Message-ID: <1405508618.1906.26.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] UBIFS: Fix empty_log_bytes()  computing error
 From: Artem Bityutskiy <dedekind1@gmail.com>
 Reply-To: dedekind1@gmail.com
 To: hujianyang <hujianyang@huawei.com>
-Date: Wed, 16 Jul 2014 13:37:20 +0300
-In-Reply-To: <53C63DA2.5080200@huawei.com>
-References: <53BA491E.8060502@huawei.com> <53BA4B98.1080000@huawei.com>
- <1405497907.1920.27.camel@sauron.fi.intel.com>
- <53C63DA2.5080200@huawei.com>
+Date: Wed, 16 Jul 2014 14:03:38 +0300
+In-Reply-To: <53BF4851.4040105@huawei.com>
+References: <53BF4851.4040105@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -25,49 +23,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2014-07-16 at 16:53 +0800, hujianyang wrote:
-> > I envision that in the future people may want to specify PEB number
-> > instead of LEB number, and '-n' becomes a confusing name for the option.
-> > Could you please only support '--lnum', and drop '-n' altogether. Then
-> > in the future someone may add '--pnum' support.
+On Fri, 2014-07-11 at 10:13 +0800, hujianyang wrote:
+> Hi Artem,
 > 
-> Yes, you are right. I'll change it in next version.
-> 
-> > 
-> >> +"-i, --info		show explicit information about NODEs\n"
-> > 
-> > I do not understand what this means from the description. Would you
-> > please try to describe it better in the help text?
-> > 
-> >> +"-H, --header		show only header information\n"
-> >> +"-N, --node		show only NODEs information\n"
-> > 
-> > Same for these.
-> > 
-> > Thanks!
-> > 
-> 
-> -H for UBI-level info and -N for UBIFS-level info.
-> -i means dump UBIFS Nodes by function ubifs_dump_node, not just
-> scan them.
-> 
-> I will re-describe them.
+> After several days testing, the error we fixed in commit 642f63ed10,
+> "UBIFS: fix fatal race condition" comes out again. This commit seems
+> not working for my problem and I have to research into it again.
 
-Things like UBI volume table, UBI fast-map stuff are not "headers", so I
-am not sure if using word "headers" a good idea. Probably we want
-options like --ubifs and --ubi to denote ubi and ubifs-level stuff. The
-default would be "everything".
+Do you say that your original patch fixed the problem, and the re-worked
+"fix fatal race condition" patch does not fix it, so it is incorrect?
 
-But again, if you start smaller, and upstream a good tool for
-UBIFS-level stuff, it will be easier to add UBI stuff separately.
+Or do you say that probably the original patch also did not fix the
+problem, so both do not really fix the issue?
 
-Besides, I have some additional vision, which you do not have to
-implement, but which should be taken into account. E.g., ubidump which
-does not need UBI/UBIFS drivers, ubidump which can deal with an image
-generated with nanddump without "mounting" it, etc. So I was thinking
-doing small steps at a time would make it easier for me and for you to
-make a tool which has limited functionality today, but which can be
-later extended to support more functionality.
+Or do you say that "fix fatal race condition" fixes only part of the
+problem, and there is another problem, which needs fixing too?
+
+Or you are not sure?
+
+> With the help of my ubidump tool this time, I got the detailed info
+> of log area and mst nodes and found a terrible mistake in function
+> empty_log_bytes().
+
+OK.
+
+> I used to think this helper function was correct but it truns out I
+> was wrong. We set @c->min_log_bytes to 0 in ubifs_log_start_commit()
+> and suppose empty_log_bytes() will return 0 when the log area is full.
+
+Yes.
+
+> But it's not true.
+
+> If lhead_lnum + 1 == ltail_lnum and c->lhead_offs == c->leb_size, @h
+> would equal to @t and empty_log_bytes() will return log_bytes expect 0.
+
+Well-spotted!
+
+> 
+> I prefer to add a patch like:
+> 
+> +       if (h == t && c->lhead_offs == c->leb_size)
+> +               return 0;
+
+Yeah. Or something which may be slightly easier to read:
+
+diff --git a/fs/ubifs/log.c b/fs/ubifs/log.c
+index ed24422..7e818ec 100644
+--- a/fs/ubifs/log.c
++++ b/fs/ubifs/log.c
+@@ -106,10 +106,14 @@ static inline long long empty_log_bytes(const struct ubifs_info *c)
+        h = (long long)c->lhead_lnum * c->leb_size + c->lhead_offs;
+        t = (long long)c->ltail_lnum * c->leb_size;
+ 
+-       if (h >= t)
++       if (h > t)
+                return c->log_bytes - h + t;
+-       else
++       else if (h != t)
+                return t - h;
++       else if (c->lhead_lnum != c->ltail_lnum)
++               return 0;
++       else
++               return c->log_bytes;
+ }
+
+> but I think there may be no other situation that lead @h equal to @t.
+> So just make this helper function return 0 if @h equal to @t.
+
+Even though there is always something in the log, it is safer to make
+sure the function works correctly for empty log too...
+
+> -	if (h >= t)
+> +	if (h > t)
+>  		return c->log_bytes - h + t;
+
+... so I think this is not good enough.
+
+>  	else
+>  		return t - h;
+> @@ -240,6 +240,7 @@ int ubifs_add_bud_to_log(struct ubifs_info *c, int jhead, int lnum, int offs)
+> 
+>  	if (c->lhead_offs > c->leb_size - c->ref_node_alsz) {
+>  		c->lhead_lnum = ubifs_next_log_lnum(c, c->lhead_lnum);
+> +		ubifs_assert(c->lhead_lnum != c->ltail_lnum);
+>  		c->lhead_offs = 0;
+>  	}
+
+Let's have it as a separate patch.
+
+Do you want me to create 2 patches based on this information and send
+them to you, our you submit them? They should have 'Cc:
+stable@vger.kernel.org'.
+
+Thanks!
 
 -- 
 Best Regards,
