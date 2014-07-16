@@ -1,16 +1,23 @@
-Received: from blu004-omc3s8.hotmail.com ([65.55.116.83])
+Received: from blu004-omc3s11.hotmail.com ([65.55.116.86])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X7J42-0000VQ-Hk
- for linux-mtd@lists.infradead.org; Wed, 16 Jul 2014 06:51:43 +0000
-Message-ID: <BLU185-W11C4857F0149224171239EA6F70@phx.gbl>
+ id 1X7JLL-0006OD-8M
+ for linux-mtd@lists.infradead.org; Wed, 16 Jul 2014 07:09:36 +0000
+Message-ID: <BLU185-W10713E955F9530C4D53490A6F70@phx.gbl>
 From: Bean Huo <beanhuo@outlook.com>
 To: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
  <computersforpeace@gmail.com>
 Subject: [PATCH v4] mtd:nor:timeout:fix do_write_buffer() timeout error
-Date: Wed, 16 Jul 2014 06:51:20 +0000
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+Date: Wed, 16 Jul 2014 07:09:13 +0000
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
+Cc: "b32955@freescale.com" <b32955@freescale.com>,
+ "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
+ "jg1.han@samsung.com" <jg1.han@samsung.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "paul.gortmaker@windriver.com" <paul.gortmaker@windriver.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "christian.riesch@omicron.at" <christian.riesch@omicron.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,59 +27,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Rm9yIHNvbWUgTm9yZmxhc2hlcyx0aGUgc2l6ZSBvZiB0aGUgYnVmZmVyIHByb2dyYW0gaGFzIGJl
-ZW4NCmluY3JlYXNlZCBmcm9tIDI1NiBieXRlcyB0byA1MTIgYnl0ZXMsMm1zIG1heGltdW0gdGlt
-ZW91dCBjYW4NCm5vdCBhZGFwdCB0byBhbGwgdGhlIGRpZmZlcmVudCB2ZW5kb3IncyBub3JmbGFz
-aC5UaGVyZSBtYXhpbXVtDQp0aW1lb3V0IGluZm9ybWF0aW9uIGluIHRoZSBDRkkgYXJlYSxzbyB0
-aGUgYmVzdCB3YXkgaXMgdG8gY2hvb3NlDQp0aGUgcmVzdWx0IGNhbGN1bGF0ZWQgYWNjb3JkaW5n
-IHRvIHRpbWVvdXQgZmllbGQgb2Ygc3RydWN0IGNmaV9pZGVudA0KdGhhdCBwcm9iZWQgZnJvbSBu
-b3JmbGFzaCdzIENGSSBhZXJhLlRoaXMgaXMgYWxzbyBhIHN0YW5kYXJkIGRlZmluZWQNCmJ5IENG
-SS5JZiBoYXZlbid0IHByb2JlZCB0aGlzIGluZm9ybWF0aW9uLG9yIHNtYWxsZXIgdGhhbiAyMDAw
-dXMsdGhlbg0Kc3BlY2lmeSBhIGRlZnVhbHQgdmFsdWUgMjAwMHVzLg0KVGVzdGVkIHdpdGggTWlj
-cm9uIEpTMjhGNTEyTTI5RVd4IGFuZCBNaWNyb24gTVQyOEVXNTEyQUJBIGZsYXNoIGRldmljZXMu
-DQpTaWduZWQtb2ZmLWJ5OiBiZWFuIGh1byBiZWFuaHVvQG91dGxvb2suY29tDQotLS0NCmNoYW5n
-ZXMNCiB2MS0+djI6RGVsZXRlZCB1bnVzZWQgcGFyYW1ldGVycyBpbiB0aGlzIHBhdGNoIA0KICAo
-d29yZF93cml0ZV90aW1lX21heCBhbmQgZXJhc2VfdGltZV9tYXgpLlVzaW5nIHVzZWNzX3RvX2pp
-ZmZpZXMNCiAgaW5zdGVhZCBvZiBtc2Vjc190b19qaWZmaWVzIGZvciBjb252ZXJ0IHRpbWVvdXQg
-dmFsdWUgaW50byBqaWZmaWVzLg0KIHYyLT52MzpSZW1vdmVkIHVubmVjZXNzYXJ5IG1lc3NhZ2Vz
-IGZvcm0gY29tbWVudHMgYW5kIGRlbGV0ZWQgdHJhaWxpbmcgd2hpdGVzcGFjZS4NCiBWMy0+djQ6
-SWYgaGF2ZW4ndCBwcm9iZWQgdGltZW91dCBpbmZvcm1hdGlvbixvciBzbWFsbGVyIHRoYW4gMjAw
-MHVzLHNwZWNpZnkgZGVmYXVsdA0KICAgICAgICAyMDAwdXMuDQogZHJpdmVycy9tdGQvY2hpcHMv
-Y2ZpX2NtZHNldF8wMDAyLmMgfCAgIDI4ICsrKysrKysrKysrKysrKysrKysrKysrKysrLS0NCiAx
-IGZpbGUgY2hhbmdlZCwgMjYgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkNCmRpZmYgLS1n
-aXQgYS9kcml2ZXJzL210ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDIuYyBiL2RyaXZlcnMvbXRkL2No
-aXBzL2NmaV9jbWRzZXRfMDAwMi5jDQppbmRleCBlMjFmZGU5Li5jMjQ4YThjIDEwMDY0NA0KLS0t
-IGEvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAyLmMNCisrKyBiL2RyaXZlcnMvbXRk
-L2NoaXBzL2NmaV9jbWRzZXRfMDAwMi5jDQpAQCAtNjI4LDYgKzYyOCwyNCBAQCBzdHJ1Y3QgbXRk
-X2luZm8gKmNmaV9jbWRzZXRfMDAwMihzdHJ1Y3QgbWFwX2luZm8gKm1hcCwgaW50IHByaW1hcnkp
-DQogICBjZmktPmNoaXBzW2ldLndvcmRfd3JpdGVfdGltZSA9IDE8PGNmaS0+Y2ZpcS0+V29yZFdy
-aXRlVGltZW91dFR5cDsNCiAgIGNmaS0+Y2hpcHNbaV0uYnVmZmVyX3dyaXRlX3RpbWUgPSAxPDxj
-ZmktPmNmaXEtPkJ1ZldyaXRlVGltZW91dFR5cDsNCiAgIGNmaS0+Y2hpcHNbaV0uZXJhc2VfdGlt
-ZSA9IDE8PGNmaS0+Y2ZpcS0+QmxvY2tFcmFzZVRpbWVvdXRUeXA7DQorICAvKg0KKyAgICogRmly
-c3QgY2FsY3VsYXRlIHRoZSB0aW1lb3V0IG1heCBhY2NvcmRpbmcgdG8gdGltZW91dA0KKyAgICog
-ZmllbGQgb2Ygc3RydWN0IGNmaV9pZGVudCB0aGF0IHByb2JlZCBmcm9tIGNoaXAncyBDRkkNCisg
-ICAqIGFlcmEuSWYgaGF2ZW4ndCBwcm9iZWQgdGhpcyBpbmZvcm1hdGlvbixvciBzbWFsbGVyIHRo
-YW4NCisgICAqIDIwMDB1cyx3ZSB3aWxsIHNwZWNpZnkgZGVmdWFsdCB2YWx1ZSAyMDAwdXMsYW5k
-IHRoZSB0aW1lDQorICAgKiB1bml0IGlzIHVzLg0KKyAgICovDQorICBpZiAoY2ZpLT5jZmlxLT5C
-dWZXcml0ZVRpbWVvdXRUeXAgJiYNCisgICBjZmktPmNmaXEtPkJ1ZldyaXRlVGltZW91dE1heCl7
-DQorICAgY2ZpLT5jaGlwc1tpXS5idWZmZXJfd3JpdGVfdGltZV9tYXggPQ0KKyAgICAxPDwoY2Zp
-LT5jZmlxLT5CdWZXcml0ZVRpbWVvdXRUeXAgKw0KKyAgICAgY2ZpLT5jZmlxLT5CdWZXcml0ZVRp
-bWVvdXRNYXgpOw0KKyAgIH0gZWxzZSB7DQorICAgIGNmaS0+Y2hpcHNbaV0uYnVmZmVyX3dyaXRl
-X3RpbWVfbWF4ID0gMDsNCisgICAgfQ0KKyAgY2ZpLT5jaGlwc1tpXS5idWZmZXJfd3JpdGVfdGlt
-ZV9tYXggPQ0KKyAgICgoY2ZpLT5jaGlwc1tpXS5idWZmZXJfd3JpdGVfdGltZV9tYXg+PSAyMDAw
-KQ0KKyAgICA/IGNmaS0+Y2hpcHNbaV0uYnVmZmVyX3dyaXRlX3RpbWVfbWF4IDogMjAwMCk7DQog
-ICBjZmktPmNoaXBzW2ldLnJlZl9wb2ludF9jb3VudGVyID0gMDsNCiAgIGluaXRfd2FpdHF1ZXVl
-X2hlYWQoJihjZmktPmNoaXBzW2ldLndxKSk7DQogIH0NCkBAIC0xNDYyLDggKzE0ODAsMTQgQEAg
-c3RhdGljIGludCBfX3hpcHJhbSBkb193cml0ZV9idWZmZXIoc3RydWN0IG1hcF9pbmZvICptYXAs
-IHN0cnVjdCBmbGNoaXAgKmNoaXAsDQogew0KICBzdHJ1Y3QgY2ZpX3ByaXZhdGUgKmNmaSA9IG1h
-cC0+ZmxkcnZfcHJpdjsNCiAgdW5zaWduZWQgbG9uZyB0aW1lbyA9IGppZmZpZXMgKyBIWjsNCi0g
-Lyogc2VlIGNvbW1lbnRzIGluIGRvX3dyaXRlX29uZXdvcmQoKSByZWdhcmRpbmcgdVdyaXRlVGlt
-ZW8uICovDQotIHVuc2lnbmVkIGxvbmcgdVdyaXRlVGltZW91dCA9ICggSFogLyAxMDAwICkgKyAx
-Ow0KKyAvKg0KKyAgKiBVc2UgdGhlIHJlc3VsdCB0aGF0IGNhbGN1bGF0ZWQgYWNjb3JkaW5nIHRv
-IHRpbWVvdXQgZmllbGQNCisgICogb2Ygc3RydWN0IGNmaV9pZGVudCB0aGF0IHByb2JlZCBmcm9t
-IG5vcmZsYXNoJ3MgQ0ZJIGFlcmEuDQorICAqIFNlZSBtb3JlIGNvbW1lbnRzIGluIGNmaV9jbWRz
-ZXRfMDAwMigpLnVXcml0ZVRpbWVvdXQgaXMNCisgICogdXNlZCBmb3IgdGltZW91dCBzdGVwLGl0
-IG11c3QgYmUgY29uY2VydGVkIGludG8gamlmZmllcy4NCisgICovDQorIHVuc2lnbmVkIGxvbmcg
-dVdyaXRlVGltZW91dCA9DQorICAgIHVzZWNzX3RvX2ppZmZpZXMoY2hpcC0+YnVmZmVyX3dyaXRl
-X3RpbWVfbWF4KTsNCiAgaW50IHJldCA9IC1FSU87DQogIHVuc2lnbmVkIGxvbmcgY21kX2FkcjsN
-CiAgaW50IHosIHdvcmRzOw0KLS0gDQoxLjcuOS41IAkJIAkgICAJCSAg
+For some Norflashes=2Cthe size of the buffer program has been=0A=
+increased from 256 bytes to 512 bytes=2C2ms maximum timeout can=0A=
+not adapt to all the different vendor's norflash.There maximum=0A=
+timeout information in the CFI area=2Cso the best way is to choose=0A=
+the result calculated according to timeout field of struct cfi_ident=0A=
+that probed from norflash's CFI aera.This is also a standard defined=0A=
+by CFI.If haven't probed this information=2Cor smaller than 2000us=2Cthen=
+=0A=
+specify a defualt value 2000us.=0A=
+=0A=
+Tested with Micron JS28F512M29EWx and Micron MT28EW512ABA flash devices.=0A=
+=0A=
+Signed-off-by: bean huo <beanhuo@outlook.com>=0A=
+---=0A=
+changes=0A=
+	v1->v2:Deleted unused parameters in this patch=A0=0A=
+		(word_write_time_max and erase_time_max).Using usecs_to_jiffies=0A=
+		instead of msecs_to_jiffies for convert timeout value into jiffies.=0A=
+	v2->v3:Removed unnecessary messages form comments and deleted trailing whi=
+tespace.=0A=
+	V3->v4:If haven't probed timeout information=2Cor smaller than 2000us=2Csp=
+ecify default=0A=
+	 =A0 =A0 =A0 2000us.=0A=
+=0A=
+=A0drivers/mtd/chips/cfi_cmdset_0002.c | =A0 28 ++++++++++++++++++++++++++-=
+-=0A=
+=A01 file changed=2C 26 insertions(+)=2C 2 deletions(-)=0A=
+=0A=
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cm=
+dset_0002.c=0A=
+index e21fde9..c248a8c 100644=0A=
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c=0A=
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c=0A=
+@@ -628=2C6 +628=2C24 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *=
+map=2C int primary)=0A=
+=A0		cfi->chips[i].word_write_time =3D 1<<cfi->cfiq->WordWriteTimeoutTyp=3B=
+=0A=
+=A0		cfi->chips[i].buffer_write_time =3D 1<<cfi->cfiq->BufWriteTimeoutTyp=
+=3B=0A=
+=A0		cfi->chips[i].erase_time =3D 1<<cfi->cfiq->BlockEraseTimeoutTyp=3B=0A=
++		/*=0A=
++		 * First calculate the timeout max according to timeout=0A=
++		 * field of struct cfi_ident that probed from chip's CFI=0A=
++		 * aera.If haven't probed this information=2Cor smaller than=0A=
++		 * 2000us=2Cwe will specify defualt value 2000us=2Cand the time=0A=
++		 * unit is us.=0A=
++		 */=0A=
++		if (cfi->cfiq->BufWriteTimeoutTyp &&=0A=
++			cfi->cfiq->BufWriteTimeoutMax){=0A=
++			cfi->chips[i].buffer_write_time_max =3D=0A=
++				1<<(cfi->cfiq->BufWriteTimeoutTyp +=0A=
++					cfi->cfiq->BufWriteTimeoutMax)=3B=0A=
++			} else {=0A=
++				cfi->chips[i].buffer_write_time_max =3D 0=3B=0A=
++				}=0A=
++		cfi->chips[i].buffer_write_time_max =3D=0A=
++			((cfi->chips[i].buffer_write_time_max>=3D 2000)=0A=
++			 ? cfi->chips[i].buffer_write_time_max : 2000)=3B=0A=
+=A0		cfi->chips[i].ref_point_counter =3D 0=3B=0A=
+=A0		init_waitqueue_head(&(cfi->chips[i].wq))=3B=0A=
+=A0	}=0A=
+@@ -1462=2C8 +1480=2C14 @@ static int __xipram do_write_buffer(struct map_i=
+nfo *map=2C struct flchip *chip=2C=0A=
+=A0{=0A=
+=A0	struct cfi_private *cfi =3D map->fldrv_priv=3B=0A=
+=A0	unsigned long timeo =3D jiffies + HZ=3B=0A=
+-	/* see comments in do_write_oneword() regarding uWriteTimeo. */=0A=
+-	unsigned long uWriteTimeout =3D ( HZ / 1000 ) + 1=3B=0A=
++	/*=0A=
++	 * Use the result that calculated according to timeout field=0A=
++	 * of struct cfi_ident that probed from norflash's CFI aera.=0A=
++	 * See more comments in cfi_cmdset_0002().uWriteTimeout is=0A=
++	 * used for timeout step=2Cit must be concerted into jiffies.=0A=
++	 */=0A=
++	unsigned long uWriteTimeout =3D=0A=
++				usecs_to_jiffies(chip->buffer_write_time_max)=3B=0A=
+=A0	int ret =3D -EIO=3B=0A=
+=A0	unsigned long cmd_adr=3B=0A=
+=A0	int z=2C words=3B=0A=
+--=A0=0A=
+1.7.9.5 		 	   		  =
