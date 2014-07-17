@@ -1,30 +1,20 @@
-Received: from mail-qa0-x230.google.com ([2607:f8b0:400d:c00::230])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X7aKV-0003yY-Tg
- for linux-mtd@lists.infradead.org; Thu, 17 Jul 2014 01:17:53 +0000
-Received: by mail-qa0-f48.google.com with SMTP id m5so1333085qaj.21
- for <linux-mtd@lists.infradead.org>; Wed, 16 Jul 2014 18:17:28 -0700 (PDT)
-Date: Wed, 16 Jul 2014 18:17:24 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Bean Huo <beanhuo@outlook.com>
-Subject: Re: [PATCH v6] mtd:nor:timeout:fix do_write_buffer() timeout error
-Message-ID: <20140717011724.GW7537@ld-irv-0074>
-References: <BLU436-SMTP223B6F83933407357F0FF3BA6F70@phx.gbl>
- <20140716180423.GV7537@ld-irv-0074>
- <BLU185-W53748517956B27745D7033A6F40@phx.gbl>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <BLU185-W53748517956B27745D7033A6F40@phx.gbl>
-Cc: Paul Gortmaker <paul.gortmaker@windriver.com>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Jingoo Han <jg1.han@samsung.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "christian.riesch@omicron.at" <christian.riesch@omicron.at>,
- Huang Shijie <b32955@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>
+Received: from mga02.intel.com ([134.134.136.20])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X7eLC-0004EC-UC
+ for linux-mtd@lists.infradead.org; Thu, 17 Jul 2014 05:34:51 +0000
+Message-ID: <1405575253.5423.110.camel@sauron.fi.intel.com>
+Subject: Re: [RFC] ubi: updatevol: Support volume to volume update
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Date: Thu, 17 Jul 2014 08:34:13 +0300
+In-Reply-To: <1405527597-11394-1-git-send-email-ezequiel@vanguardiasur.com.ar>
+References: <1405527597-11394-1-git-send-email-ezequiel@vanguardiasur.com.ar>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ Guido =?ISO-8859-1?Q?Mart=EDnez?= <guido@vanguardiasur.com.ar>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,23 +24,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jul 17, 2014 at 12:54:17AM +0000, Bean Huo wrote:
-> > I have just fixed up your patch myself, to use max() and to improve some
-> > of the language. Let me know if the below works for you.
-> 
-> hi,Brian
->  Thanks once again.I test and it works Ok.It can be accepted now? 		 	   		  
+On Wed, 2014-07-16 at 13:19 -0300, Ezequiel Garcia wrote:
+> This commit adds the support for ubiupdatevol to recieve a UBI volume
+> as the second parameter. This could be useful to update a UBI volume,
+> from another UBI volume present in the system, for instance when
+> a redundant scheme is used.
 
-Yes. Pushed to l2-mtd.git.
-
-Please be more diligent next time to follow CodingStyle and email
-submission practices next time. Even if your company email gives
-trouble, I'm sure you can find some way to send patches properly. For
-instance, a quick search shows me that your outlook.com email supports
-sending email via SMTP:
-
-  http://windows.microsoft.com/en-us/windows/outlook/send-receive-from-app
-
-That means you can, for instance, use git-send-email to send patches.
-
-Brian
+No objections to adding such functionality.
