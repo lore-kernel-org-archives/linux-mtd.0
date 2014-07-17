@@ -1,18 +1,22 @@
-Received: from blu004-omc2s4.hotmail.com ([65.55.111.79])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X7Zy3-0004G3-73
- for linux-mtd@lists.infradead.org; Thu, 17 Jul 2014 00:54:39 +0000
-Message-ID: <BLU185-W53748517956B27745D7033A6F40@phx.gbl>
-From: Bean Huo <beanhuo@outlook.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: RE: [PATCH v6] mtd:nor:timeout:fix do_write_buffer() timeout error
-Date: Thu, 17 Jul 2014 00:54:17 +0000
-In-Reply-To: <20140716180423.GV7537@ld-irv-0074>
-References: <BLU436-SMTP223B6F83933407357F0FF3BA6F70@phx.gbl>,
+Received: from mail-qa0-x230.google.com ([2607:f8b0:400d:c00::230])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X7aKV-0003yY-Tg
+ for linux-mtd@lists.infradead.org; Thu, 17 Jul 2014 01:17:53 +0000
+Received: by mail-qa0-f48.google.com with SMTP id m5so1333085qaj.21
+ for <linux-mtd@lists.infradead.org>; Wed, 16 Jul 2014 18:17:28 -0700 (PDT)
+Date: Wed, 16 Jul 2014 18:17:24 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Bean Huo <beanhuo@outlook.com>
+Subject: Re: [PATCH v6] mtd:nor:timeout:fix do_write_buffer() timeout error
+Message-ID: <20140717011724.GW7537@ld-irv-0074>
+References: <BLU436-SMTP223B6F83933407357F0FF3BA6F70@phx.gbl>
  <20140716180423.GV7537@ld-irv-0074>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+ <BLU185-W53748517956B27745D7033A6F40@phx.gbl>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <BLU185-W53748517956B27745D7033A6F40@phx.gbl>
 Cc: Paul Gortmaker <paul.gortmaker@windriver.com>,
  Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
  Jingoo Han <jg1.han@samsung.com>,
@@ -30,21 +34,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=0A=
-=0A=
-=0A=
-> Hi Bean=2C=0A=
-=0A=
->> + cfi->chips[i].buffer_write_time_max =3D=0A=
->> + ((cfi->chips[i].buffer_write_time_max>=3D 2000)=0A=
->> + ? cfi->chips[i].buffer_write_time_max : 2000)=3B=0A=
->=0A=
-> This should just use the 'max()' macro=2C from <linux/kernel.h>.=0A=
-=0A=
-> I have just fixed up your patch myself=2C to use max() and to improve som=
-e=0A=
-> of the language. Let me know if the below works for you.=0A=
-=0A=
-hi=2CBrian=0A=
-=A0Thanks once again.I test and it works Ok.It can be accepted now? 		 	   =
-		  =
+On Thu, Jul 17, 2014 at 12:54:17AM +0000, Bean Huo wrote:
+> > I have just fixed up your patch myself, to use max() and to improve some
+> > of the language. Let me know if the below works for you.
+> 
+> hi,Brian
+>  Thanks once again.I test and it works Ok.It can be accepted now? 		 	   		  
+
+Yes. Pushed to l2-mtd.git.
+
+Please be more diligent next time to follow CodingStyle and email
+submission practices next time. Even if your company email gives
+trouble, I'm sure you can find some way to send patches properly. For
+instance, a quick search shows me that your outlook.com email supports
+sending email via SMTP:
+
+  http://windows.microsoft.com/en-us/windows/outlook/send-receive-from-app
+
+That means you can, for instance, use git-send-email to send patches.
+
+Brian
