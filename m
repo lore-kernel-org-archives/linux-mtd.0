@@ -1,18 +1,27 @@
-Received: from mail-la0-x233.google.com ([2a00:1450:4010:c03::233])
+Received: from mail-ie0-x22e.google.com ([2607:f8b0:4001:c03::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X8ACR-00012B-M0
- for linux-mtd@lists.infradead.org; Fri, 18 Jul 2014 15:35:56 +0000
-Received: by mail-la0-f51.google.com with SMTP id el20so2936486lab.24
- for <linux-mtd@lists.infradead.org>; Fri, 18 Jul 2014 08:35:30 -0700 (PDT)
-From: Andrey Utkin <andrey.krieger.utkin@gmail.com>
-To: linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
- linux-mtd@lists.infradead.org
-Subject: [PATCH 5/5] fs/ubifs/{sb,
- super}.c: drop negativity check on unsigned value
-Date: Fri, 18 Jul 2014 18:35:25 +0300
-Message-Id: <1405697725-23866-1-git-send-email-andrey.krieger.utkin@gmail.com>
-Cc: Andrey Utkin <andrey.krieger.utkin@gmail.com>, adrian.hunter@intel.com,
- dcb314@hotmail.com, dedekind1@gmail.com
+ id 1X8BQt-0006Fi-8x
+ for linux-mtd@lists.infradead.org; Fri, 18 Jul 2014 16:54:55 +0000
+Received: by mail-ie0-f174.google.com with SMTP id rp18so4611428iec.5
+ for <linux-mtd@lists.infradead.org>; Fri, 18 Jul 2014 09:54:33 -0700 (PDT)
+Date: Fri, 18 Jul 2014 09:54:30 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Josh Wu <josh.wu@atmel.com>
+Subject: Re: [PATCH] mtd: nand: reduce the warning noise when the ECC is too
+ weak
+Message-ID: <20140718165430.GY7537@ld-irv-0074>
+References: <1404306992-28968-1-git-send-email-thomas.petazzoni@free-electrons.com>
+ <20140714052259.GD29385@norris-Latitude-E6410>
+ <53C8F011.7020507@atmel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <53C8F011.7020507@atmel.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+ Lior Amsalem <alior@marvell.com>, Tawfik Bayouk <tawfik@marvell.com>,
+ Nadav Haklai <nadavh@marvell.com>, linux-mtd@lists.infradead.org,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,39 +31,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=80581
-Reported-by: David Binderman <dcb314@hotmail.com>
-Signed-off-by: Andrey Utkin <andrey.krieger.utkin@gmail.com>
----
- fs/ubifs/sb.c    | 2 +-
- fs/ubifs/super.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+On Fri, Jul 18, 2014 at 05:59:45PM +0800, Josh Wu wrote:
+> On 7/14/2014 1:22 PM, Brian Norris wrote:
+> >Pushed to linux-mtd.git, for 3.16 I think. Thanks!
+> 
+> Excuse me that to ask a question which is not related with the code.
+> 
+> I find this fix is not in l2-mtd.git but only in linux-mtd.git. So I
+> wondering how the patch is merged in linux mainline and stable tree.
+> 
+> Will the linux-mtd.git be merged in linux mainline and stable git
+> tree before v3.16 release? So the l2-mtd.git can rebase on the
+> merged tag.
 
-diff --git a/fs/ubifs/sb.c b/fs/ubifs/sb.c
-index 4c37607..c2c3d13 100644
---- a/fs/ubifs/sb.c
-+++ b/fs/ubifs/sb.c
-@@ -447,7 +447,7 @@ static int validate_sb(struct ubifs_info *c, struct ubifs_sb_node *sup)
- 		goto failed;
- 	}
- 
--	if (c->default_compr < 0 || c->default_compr >= UBIFS_COMPR_TYPES_CNT) {
-+	if (c->default_compr >= UBIFS_COMPR_TYPES_CNT) {
- 		err = 13;
- 		goto failed;
- 	}
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index e5bd068..9c59c10 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -75,7 +75,7 @@ static int validate_inode(struct ubifs_info *c, const struct inode *inode)
- 		return 1;
- 	}
- 
--	if (ui->compr_type < 0 || ui->compr_type >= UBIFS_COMPR_TYPES_CNT) {
-+	if (ui->compr_type >= UBIFS_COMPR_TYPES_CNT) {
- 		ubifs_err("unknown compression type %d", ui->compr_type);
- 		return 2;
- 	}
--- 
-1.8.5.5
+I'm still working out what the *best* process is, but linux-mtd.git is
+used as the official tree for pull requests to Linus, and I try hard to
+make sure it doesn't need rebased. l2-mtd.git has historically served a
+little more of a staging role, allowing rebases and is typically aimed
+for the next merge window.
+
+In this case, I specifically applied the patch to linux-mtd.git since I
+planned to (and did, already) send it to Linus for 3.16. I will probably
+merge it back into l2-mtd.git soon, to keep the 'next' tree (l2-mtd.git)
+up-to-date.
+
+If you're looking to send patches for -next, please use l2-mtd.git (or
+even linux-next.git).
+
+NB: linux-mtd.git and l2-mtd.git are both in linux-next. Perhaps
+l2-mtd.git should be in MAINTAINERS?
+
+Regards,
+Brian
