@@ -1,18 +1,18 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X86EJ-00012L-4V
- for linux-mtd@lists.infradead.org; Fri, 18 Jul 2014 11:21:35 +0000
-Message-ID: <1405682471.28207.1.camel@sauron.fi.intel.com>
-Subject: [GIT PULL] UBI fixes for 3.16-rc6
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Fri, 18 Jul 2014 14:21:11 +0300
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Received: from mail-la0-x233.google.com ([2a00:1450:4010:c03::233])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X8ACR-00012B-M0
+ for linux-mtd@lists.infradead.org; Fri, 18 Jul 2014 15:35:56 +0000
+Received: by mail-la0-f51.google.com with SMTP id el20so2936486lab.24
+ for <linux-mtd@lists.infradead.org>; Fri, 18 Jul 2014 08:35:30 -0700 (PDT)
+From: Andrey Utkin <andrey.krieger.utkin@gmail.com>
+To: linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+Subject: [PATCH 5/5] fs/ubifs/{sb,
+ super}.c: drop negativity check on unsigned value
+Date: Fri, 18 Jul 2014 18:35:25 +0300
+Message-Id: <1405697725-23866-1-git-send-email-andrey.krieger.utkin@gmail.com>
+Cc: Andrey Utkin <andrey.krieger.utkin@gmail.com>, adrian.hunter@intel.com,
+ dcb314@hotmail.com, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,40 +22,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Linus,
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=80581
+Reported-by: David Binderman <dcb314@hotmail.com>
+Signed-off-by: Andrey Utkin <andrey.krieger.utkin@gmail.com>
+---
+ fs/ubifs/sb.c    | 2 +-
+ fs/ubifs/super.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-please, pull a couple of UBI fixes.
-
-The following changes since commit a497c3ba1d97fc69c1e78e7b96435ba8c2cb42ee:
-
-  Linux 3.16-rc2 (2014-06-21 19:02:54 -1000)
-
-are available in the git repository at:
-
-  git://git.infradead.org/linux-ubifs.git tags/upstream-3.16-rc6
-
-for you to fetch changes up to 44305ebde243a7cce2c592cc89afe5041d8bf884:
-
-  UBI: fastmap: do not miss bit-flips (2014-07-16 08:32:00 +0300)
-
-----------------------------------------------------------------
-Two UBI fastmap-related fixes for v3.16:
-
-1. Fix UBI fastmap support which we broke in 3.16-rc1 by reversing the
-   volumes RB-tree sorting criteria.
-2. Make sure that we scrub all PEBs where we see bit-flips - we were missing
-   some of them when the fastmap feature was enabled.
-
-----------------------------------------------------------------
-Brian Norris (1):
-      UBI: fastmap: do not miss bit-flips
-
-Heiko Schocher (1):
-      UBI: fix the volumes tree sorting criteria
-
- drivers/mtd/ubi/fastmap.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
+diff --git a/fs/ubifs/sb.c b/fs/ubifs/sb.c
+index 4c37607..c2c3d13 100644
+--- a/fs/ubifs/sb.c
++++ b/fs/ubifs/sb.c
+@@ -447,7 +447,7 @@ static int validate_sb(struct ubifs_info *c, struct ubifs_sb_node *sup)
+ 		goto failed;
+ 	}
+ 
+-	if (c->default_compr < 0 || c->default_compr >= UBIFS_COMPR_TYPES_CNT) {
++	if (c->default_compr >= UBIFS_COMPR_TYPES_CNT) {
+ 		err = 13;
+ 		goto failed;
+ 	}
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index e5bd068..9c59c10 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -75,7 +75,7 @@ static int validate_inode(struct ubifs_info *c, const struct inode *inode)
+ 		return 1;
+ 	}
+ 
+-	if (ui->compr_type < 0 || ui->compr_type >= UBIFS_COMPR_TYPES_CNT) {
++	if (ui->compr_type >= UBIFS_COMPR_TYPES_CNT) {
+ 		ubifs_err("unknown compression type %d", ui->compr_type);
+ 		return 2;
+ 	}
 -- 
-Best Regards,
-Artem Bityutskiy
+1.8.5.5
