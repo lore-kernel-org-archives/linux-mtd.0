@@ -1,24 +1,41 @@
-Received: from nasmtp02.atmel.com ([204.2.163.16] helo=SJOEDG01.corp.atmel.com)
+Received: from mail-lb0-x22c.google.com ([2a00:1450:4010:c04::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X97AJ-0007lH-9y
- for linux-mtd@lists.infradead.org; Mon, 21 Jul 2014 06:33:39 +0000
-Message-ID: <53CCB427.3090400@atmel.com>
-Date: Mon, 21 Jul 2014 14:33:11 +0800
-From: Josh Wu <josh.wu@atmel.com>
+ id 1X9EMt-0003wm-HJ
+ for linux-mtd@lists.infradead.org; Mon, 21 Jul 2014 14:15:09 +0000
+Received: by mail-lb0-f172.google.com with SMTP id z11so4828049lbi.31
+ for <linux-mtd@lists.infradead.org>; Mon, 21 Jul 2014 07:14:41 -0700 (PDT)
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] mtd: nand: reduce the warning noise when the ECC is too
- weak
-References: <1404306992-28968-1-git-send-email-thomas.petazzoni@free-electrons.com>
- <20140714052259.GD29385@norris-Latitude-E6410> <53C8F011.7020507@atmel.com>
- <20140718165430.GY7537@ld-irv-0074>
-In-Reply-To: <20140718165430.GY7537@ld-irv-0074>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- Lior Amsalem <alior@marvell.com>, Tawfik Bayouk <tawfik@marvell.com>,
- Nadav Haklai <nadavh@marvell.com>, linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+Sender: kalluripunnaiahchoudary@gmail.com
+In-Reply-To: <e15ea1f7-ac67-49b3-aff4-7c388a5616cf@BL2FFO11FD021.protection.gbl>
+References: <e15ea1f7-ac67-49b3-aff4-7c388a5616cf@BL2FFO11FD021.protection.gbl>
+Date: Mon, 21 Jul 2014 19:44:41 +0530
+Message-ID: <CAGnW=BY5Ox5Y5FeqaSYb-fwcHyBwH=wGL+W8JRtMVqs9w_hogQ@mail.gmail.com>
+Subject: Re: [PATCH RFC v3 0/4] Add arm pl353 smc nand driver for xilinx zynq
+ soc
+From: punnaiah choudary kalluri <punnaia@xilinx.com>
+To: Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>,
+ "jussi.kivilinna@iki.fi" <jussi.kivilinna@iki.fi>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Arnd Bergmann <arnd@arndb.de>, svemula@xilinx.com,
+ "michal.simek@xilinx.com" <michal.simek@xilinx.com>,
+ "ezequiel.garcia@free-electrons.com" <ezequiel.garcia@free-electrons.com>,
+ Grant Likely <grant.likely@linaro.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "jason@lakedaemon.net" <jason@lakedaemon.net>,
+ "pawel.moll@arm.com" <pawel.moll@arm.com>,
+ "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>,
+ anirudh@xilinx.com, "joern@logfs.org" <joern@logfs.org>,
+ Punnaiah Choudary <kpc528@gmail.com>,
+ "robh+dt@kernel.org" <robh+dt@kernel.org>,
+ "acourbot@nvidia.com" <acourbot@nvidia.com>, "Gupta, Pekon" <pekon@ti.com>,
+ "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Rob Landley <rob@landley.net>, Kumar Gala <galak@codeaurora.org>, "Khoronzhuk,
+ Ivan" <ivan.khoronzhuk@ti.com>, Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,46 +46,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Brian
+Hi Brian and Pekon,
 
-On 7/19/2014 12:54 AM, Brian Norris wrote:
-> On Fri, Jul 18, 2014 at 05:59:45PM +0800, Josh Wu wrote:
->> On 7/14/2014 1:22 PM, Brian Norris wrote:
->>> Pushed to linux-mtd.git, for 3.16 I think. Thanks!
->> Excuse me that to ask a question which is not related with the code.
->>
->> I find this fix is not in l2-mtd.git but only in linux-mtd.git. So I
->> wondering how the patch is merged in linux mainline and stable tree.
->>
->> Will the linux-mtd.git be merged in linux mainline and stable git
->> tree before v3.16 release? So the l2-mtd.git can rebase on the
->> merged tag.
-> I'm still working out what the *best* process is, but linux-mtd.git is
-> used as the official tree for pull requests to Linus, and I try hard to
-> make sure it doesn't need rebased. l2-mtd.git has historically served a
-> little more of a staging role, allowing rebases and is typically aimed
-> for the next merge window.
->
-> In this case, I specifically applied the patch to linux-mtd.git since I
-> planned to (and did, already) send it to Linus for 3.16.
-yes. I see the pull request.
+  Do you have any further comments for this nand driver?
 
-> I will probably
-> merge it back into l2-mtd.git soon, to keep the 'next' tree (l2-mtd.git)
-> up-to-date.
->
-> If you're looking to send patches for -next, please use l2-mtd.git (or
-> even linux-next.git).
-Thank you very much for the clear information. That's helpful.
 
->
-> NB: linux-mtd.git and l2-mtd.git are both in linux-next. Perhaps
-> l2-mtd.git should be in MAINTAINERS?
-yes, I think so. The l2-mtd.git is used more often. It should be in 
-MAINTAINERS as well.
+Regards,
+Punnaiah
 
+On Fri, Jun 27, 2014 at 8:33 AM, Punnaiah Choudary Kalluri
+<punnaiah.choudary.kalluri@xilinx.com> wrote:
+> The following patches add arm pl353 static memory controller driver for
+> xilinx zynq soc. The arm pl353 smc supports two interfaces i.e nand and
+> nor/sram memory interfaces. The current implementation supports only a
+> single SMC instance and nand specific configuration.
 >
-> Regards,
-> Brian
-Best Regards,
-Josh Wu
+> xilinx zynq TRM link:
+> http://www.xilinx.com/support/documentation/user_guides/ug585-Zynq-7000-TRM.pdf
+>
+> ARM pl353 smc TRM link:
+> http://infocenter.arm.com/help/topic/com.arm.doc.ddi0380g/
+> DDI0380G_smc_pl350_series_r2p1_trm.pdf
+>
+> Punnaiah Choudary Kalluri (4):
+>   nand: pl353: Add basic driver for arm pl353 smc nand interface
+>   nand: pl353: Add software ecc support
+>   nand: pl353: Add ONDIE ECC support
+>   Documentation: nand: pl353: Add documentation for controller and
+>     driver
+>
+>  Documentation/mtd/nand/pl353-nand.txt |   92 +++
+>  drivers/mtd/nand/Kconfig              |    7 +
+>  drivers/mtd/nand/Makefile             |    1 +
+>  drivers/mtd/nand/pl353_nand.c         | 1141 +++++++++++++++++++++++++++++++++
+>  4 files changed, 1241 insertions(+), 0 deletions(-)
+>  create mode 100644 Documentation/mtd/nand/pl353-nand.txt
+>  create mode 100644 drivers/mtd/nand/pl353_nand.c
+>
+> --
+> 1.7.4
+>
+>
