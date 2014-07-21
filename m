@@ -1,12 +1,13 @@
 Received: from arrakis.dune.hu ([78.24.191.176])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X9KV7-0008OO-92
- for linux-mtd@lists.infradead.org; Mon, 21 Jul 2014 20:48:01 +0000
+ id 1X9KV7-0008OM-MZ
+ for linux-mtd@lists.infradead.org; Mon, 21 Jul 2014 20:48:02 +0000
 From: Jonas Gorski <jogo@openwrt.org>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 2/3] mtd: physmap: allow setting no_unaligned_access for !OF
-Date: Mon, 21 Jul 2014 22:47:27 +0200
-Message-Id: <1405975648-25375-3-git-send-email-jogo@openwrt.org>
+Subject: [PATCH 1/3] mtd: simple_map: make NO_XIP actually prevent unaligned
+ accesses
+Date: Mon, 21 Jul 2014 22:47:26 +0200
+Message-Id: <1405975648-25375-2-git-send-email-jogo@openwrt.org>
 In-Reply-To: <1405975648-25375-1-git-send-email-jogo@openwrt.org>
 References: <1405975648-25375-1-git-send-email-jogo@openwrt.org>
 Cc: Artem Bityutskiy <dedekind1@gmail.com>, Kevin Cernekee <cernekee@gmail.com>,
@@ -22,40 +23,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Similar to physmap_of, allow preventing unaligned accesses to physmap
-also for non OF enabled platforms.
+Some mapping drivers set the map->phys pointer to NO_XIP intending to
+mean "no unaligned accesses" (see also the DT property of physmap_of).
+But simple mapping read_from/write_to still just call memcpy, which will
+do unaligned reads/writes at least on mips.
+
+To work around this, make the inline version check for NO_XIP and do a byte
+wise copy if "to" or "from" is unaligned.
 
 Signed-off-by: Jonas Gorski <jogo@openwrt.org>
 ---
- drivers/mtd/maps/physmap.c  | 3 +++
- include/linux/mtd/physmap.h | 1 +
- 2 files changed, 4 insertions(+)
+ include/linux/mtd/map.h | 26 +++++++++++++++++++++++---
+ 1 file changed, 23 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/maps/physmap.c b/drivers/mtd/maps/physmap.c
-index f73cd46..410190c 100644
---- a/drivers/mtd/maps/physmap.c
-+++ b/drivers/mtd/maps/physmap.c
-@@ -153,6 +153,9 @@ static int physmap_flash_probe(struct platform_device *dev)
+diff --git a/include/linux/mtd/map.h b/include/linux/mtd/map.h
+index 5f487d7..92a8a0a 100644
+--- a/include/linux/mtd/map.h
++++ b/include/linux/mtd/map.h
+@@ -435,15 +435,35 @@ static inline void inline_map_write(struct map_info *map, const map_word datum,
  
- 		simple_map_init(&info->map[i]);
- 
-+		if (physmap_data->no_unaligned_access)
-+			info->map[i].phys = NO_XIP;
+ static inline void inline_map_copy_from(struct map_info *map, void *to, unsigned long from, ssize_t len)
+ {
+-	if (map->cached)
++	if (map->cached) {
+ 		memcpy(to, (char *)map->cached + from, len);
+-	else
++	} else if (map->phys != NO_XIP ||
++		   (IS_ALIGNED((unsigned long)to, sizeof(long)) &&
++		    IS_ALIGNED((unsigned long)map->virt + from,
++			       sizeof(long)))) {
+ 		memcpy_fromio(to, map->virt + from, len);
++	} else {
++		void __iomem *src = map->virt + from;
++		char *dst = (char *)to;
 +
- 		probe_type = rom_probe_types;
- 		if (physmap_data->probe_type == NULL) {
- 			for (; info->mtd[i] == NULL && *probe_type != NULL; probe_type++)
-diff --git a/include/linux/mtd/physmap.h b/include/linux/mtd/physmap.h
-index aa6a263..719889d 100644
---- a/include/linux/mtd/physmap.h
-+++ b/include/linux/mtd/physmap.h
-@@ -31,6 +31,7 @@ struct physmap_flash_data {
- 	char                    *probe_type;
- 	struct mtd_partition	*parts;
- 	const char * const	*part_probe_types;
-+	int			no_unaligned_access;
- };
++		while (len--)
++			*dst++ = readb(src++);
++	}
+ }
  
- #endif /* __LINUX_MTD_PHYSMAP__ */
+ static inline void inline_map_copy_to(struct map_info *map, unsigned long to, const void *from, ssize_t len)
+ {
+-	memcpy_toio(map->virt + to, from, len);
++	if (map->phys != NO_XIP ||
++	    (IS_ALIGNED((unsigned long)map->virt + to, sizeof(long)) &&
++	     IS_ALIGNED((unsigned long)from, sizeof(long)))) {
++		memcpy_toio(map->virt + to, from, len);
++	} else {
++		char *src = (char *)from;
++		void __iomem *dst = map->virt + to;
++
++		while (len--)
++			writeb(*src++, dst++);
++	}
+ }
+ 
+ #ifdef CONFIG_MTD_COMPLEX_MAPPINGS
 -- 
 2.0.0
