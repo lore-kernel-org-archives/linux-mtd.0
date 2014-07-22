@@ -1,14 +1,14 @@
-Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
+Received: from mail-pa0-x22c.google.com ([2607:f8b0:400e:c03::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X9PV3-0007vu-Rr
- for linux-mtd@lists.infradead.org; Tue, 22 Jul 2014 02:08:18 +0000
-Received: by mail-pa0-f50.google.com with SMTP id et14so10955398pad.37
- for <linux-mtd@lists.infradead.org>; Mon, 21 Jul 2014 19:07:56 -0700 (PDT)
+ id 1X9PVA-00085F-1Z
+ for linux-mtd@lists.infradead.org; Tue, 22 Jul 2014 02:08:24 +0000
+Received: by mail-pa0-f44.google.com with SMTP id eu11so11056211pac.3
+ for <linux-mtd@lists.infradead.org>; Mon, 21 Jul 2014 19:08:03 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd: nandsim: fix integer widening
-Date: Mon, 21 Jul 2014 19:07:44 -0700
-Message-Id: <1405994864-19532-1-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH] mtd: maps: solutionengine: drop excess dependency
+Date: Mon, 21 Jul 2014 19:07:56 -0700
+Message-Id: <1405994876-19571-1-git-send-email-computersforpeace@gmail.com>
 Cc: Brian Norris <computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -19,27 +19,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This multiplication should be done in 64-bit, not 32-bit.
-
-Caught by Coverity.
+Already depends on SOLUTION_ENGINE, so we don't need the SUPERH
+dependency too.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/nand/nandsim.c | 2 +-
+ drivers/mtd/maps/Kconfig | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index 4f0d83648e5a..7dc1dd28d896 100644
---- a/drivers/mtd/nand/nandsim.c
-+++ b/drivers/mtd/nand/nandsim.c
-@@ -827,7 +827,7 @@ static int parse_badblocks(struct nandsim *ns, struct mtd_info *mtd)
- 			NS_ERR("invalid badblocks.\n");
- 			return -EINVAL;
- 		}
--		offset = erase_block_no * ns->geom.secsz;
-+		offset = (loff_t)erase_block_no * ns->geom.secsz;
- 		if (mtd_block_markbad(mtd, offset)) {
- 			NS_ERR("invalid badblocks.\n");
- 			return -EINVAL;
+diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+index 21b2874a303b..ba801d2c6dcc 100644
+--- a/drivers/mtd/maps/Kconfig
++++ b/drivers/mtd/maps/Kconfig
+@@ -249,7 +249,7 @@ config MTD_CFI_FLAGADM
+ 
+ config MTD_SOLUTIONENGINE
+ 	tristate "CFI Flash device mapped on Hitachi SolutionEngine"
+-	depends on SUPERH && SOLUTION_ENGINE && MTD_CFI && MTD_REDBOOT_PARTS
++	depends on SOLUTION_ENGINE && MTD_CFI && MTD_REDBOOT_PARTS
+ 	help
+ 	  This enables access to the flash chips on the Hitachi SolutionEngine and
+ 	  similar boards. Say 'Y' if you are building a kernel for such a board.
 -- 
 1.9.1
