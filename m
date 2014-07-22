@@ -1,21 +1,20 @@
-Received: from mail-pa0-x22f.google.com ([2607:f8b0:400e:c03::22f])
+Received: from szxga01-in.huawei.com ([119.145.14.64])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X9Qf2-0004G5-5a
- for linux-mtd@lists.infradead.org; Tue, 22 Jul 2014 03:22:40 +0000
-Received: by mail-pa0-f47.google.com with SMTP id kx10so10880752pab.20
- for <linux-mtd@lists.infradead.org>; Mon, 21 Jul 2014 20:22:19 -0700 (PDT)
-Date: Mon, 21 Jul 2014 20:21:14 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Michael Grzeschik <m.grzeschik@pengutronix.de>
-Subject: Re: [PATCH 1/2] mxc_nand: fix err_limit and err_mask
-Message-ID: <20140722032114.GA28323@ld-irv-0074>
-References: <1403815368-29469-1-git-send-email-m.grzeschik@pengutronix.de>
+ id 1X9SYS-00067a-P5
+ for linux-mtd@lists.infradead.org; Tue, 22 Jul 2014 05:24:02 +0000
+Message-ID: <53CDF537.1040104@huawei.com>
+Date: Tue, 22 Jul 2014 13:23:03 +0800
+From: Zhang Zhen <zhenzhang.zhang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1403815368-29469-1-git-send-email-m.grzeschik@pengutronix.de>
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, kernel@pengutronix.de
+To: Adrian Hunter <adrian.hunter@intel.com>, Artem Bityutskiy
+ <dedekind1@gmail.com>
+Subject: [PATCH] ubifs: refactor ubifs_file_mmap()
+References: <53CDE6AB.2090703@huawei.com>
+In-Reply-To: <53CDE6AB.2090703@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: wangnan0@huawei.com, MTD Maling
+ List <linux-mtd@lists.infradead.org>, Hu Jianyang <hujianyang@huawei.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,48 +24,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Michael,
+generic_file_mmap() set vma->vm_ops = &generic_file_vm_ops,
+then ubifs_file_mmap set vma->vm_ops = &ubifs_file_vm_ops.
+So it is redundant.
+And there is no kind of file does not supply page reading function
+in ubifs. The readpage() check up for mmap file in generic_file_mmap()
+is not needed.
 
-Since I had a few comments for changes on patch 2, might as well comment
-here...
+So remove the call of generic_file_mmap().
 
-On Thu, Jun 26, 2014 at 10:42:47PM +0200, Michael Grzeschik wrote:
-> This patch fixes the error detection limits for the used
-> eccsize of the 1, 4 and 8 bit eccmode.
-> 
-> Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
-> ---
->  drivers/mtd/nand/mxc_nand.c | 10 +++++++---
->  1 file changed, 7 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-> index cb6c845..7fd495e 100644
-> --- a/drivers/mtd/nand/mxc_nand.c
-> +++ b/drivers/mtd/nand/mxc_nand.c
-> @@ -657,10 +657,14 @@ static int mxc_nand_correct_data_v2_v3(struct mtd_info *mtd, u_char *dat,
->  	u32 ecc_stat, err;
->  	int no_subpages = 1;
->  	int ret = 0;
-> -	u8 ecc_bit_mask, err_limit;
-> +	u8 ecc_bit_mask, err_limit = 0x1;
->  
-> -	ecc_bit_mask = (host->eccsize == 4) ? 0x7 : 0xf;
-> -	err_limit = (host->eccsize == 4) ? 0x4 : 0x8;
-> +	ecc_bit_mask = 0xf;
-> +
-> +	if (host->eccsize == 4)
-> +		err_limit = 0x2;
-> +	else if (host->eccsize == 8)
-> +		err_limit = 0x4;
+Signed-off-by: Zhang Zhen <zhenzhang.zhang@huawei.com>
+---
+ fs/ubifs/file.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-This would be a little more obvious as a switch statement.
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index b5b593c..c7f1af6 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -1540,11 +1540,9 @@ static const struct vm_operations_struct ubifs_file_vm_ops = {
 
-But please do address my comments on patch 2 (or at least reply, if you
-have questions).
+ static int ubifs_file_mmap(struct file *file, struct vm_area_struct *vma)
+ {
+-	int err;
++	struct address_space *mapping = file->f_mapping;
 
->  
->  	no_subpages = mtd->writesize >> 9;
->  
+-	err = generic_file_mmap(file, vma);
+-	if (err)
+-		return err;
++	file_accessed(file);
+ 	vma->vm_ops = &ubifs_file_vm_ops;
+ 	return 0;
+ }
+-- 
+1.8.1.2
 
-Thanks,
-Brian
+
+.
