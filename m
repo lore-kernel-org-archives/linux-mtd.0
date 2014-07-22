@@ -1,21 +1,15 @@
-Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X9Q1s-0005Ko-Mr
- for linux-mtd@lists.infradead.org; Tue, 22 Jul 2014 02:42:13 +0000
-Received: by mail-pa0-f42.google.com with SMTP id lf10so11019775pab.15
- for <linux-mtd@lists.infradead.org>; Mon, 21 Jul 2014 19:41:51 -0700 (PDT)
-Date: Mon, 21 Jul 2014 19:41:48 -0700
+Date: Mon, 21 Jul 2014 19:56:03 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Boris BREZILLON <boris.brezillon@free-electrons.com>
-Subject: Re: [PATCH 0/2] mtd: nand: add basic SDR NAND timings infrastructure
-Message-ID: <20140722024148.GA7537@ld-irv-0074>
-References: <1405064982-11456-1-git-send-email-boris.brezillon@free-electrons.com>
+To: Bo Shen <voice.shen@atmel.com>
+Subject: Re: [PATCH v2] mtd: atmel_nand: make ecc parameters same as definition
+Message-ID: <20140722025603.GC7537@ld-irv-0074>
+References: <1402559925-20910-1-git-send-email-voice.shen@atmel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1405064982-11456-1-git-send-email-boris.brezillon@free-electrons.com>
-Cc: linux-mtd@lists.infradead.org, Lee Jones <lee.jones@linaro.org>,
- David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
+In-Reply-To: <1402559925-20910-1-git-send-email-voice.shen@atmel.com>
+Cc: josh.wu@atmel.com, nicolas.ferre@atmel.com,
+ linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,14 +19,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jul 11, 2014 at 09:49:40AM +0200, Boris BREZILLON wrote:
-> These two patches add SDR NAND timings definition and ONFI timing mode to
-> NAND timings converter.
+On Thu, Jun 12, 2014 at 03:58:45PM +0800, Bo Shen wrote:
+> If the ecc parameter is not the same as definition, when the
+> mtd core check these parameters, it will give the error result.
 > 
-> This infrastructure will be used by NAND controller drivers to configure
-> their signal timings according to NAND chip capabilities.
+> Take the following as an example:
+> 
+> Calculate how many bits can be corrected in one page.
+> According to the ecc parameters definition,
+> 
+> one page correct bits = (mtd->writesize * ecc->strength) / ecc->size
+> 
+> take the following use case as an example:
+> mtd->writesize = 2048 bytes
+> ecc->strength = 4 bytes (for 512 bytes)
+> 
+> before this patch, the ecc->size = 2048, so the result is 4 bytes.
+> after this patch, the ecc->size = 512, so the result is 16 bytes.
+> 
+> So, align the ecc parameters the same as definition to correct
+> this kind of error.
+> 
+> Signed-off-by: Bo Shen <voice.shen@atmel.com>
+> Acked-by: Josh Wu <josh.wu@atmel.com>
+> ---
+> Changes in v2:
+>   - Enhancement the commit message.
 
-Pushed both to l2-mtd.git, with the modification I noted in patch 2.
-Thanks!
+Pushed to l2-mtd.git. Thanks!
 
 Brian
