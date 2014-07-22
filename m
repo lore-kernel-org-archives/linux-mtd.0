@@ -1,20 +1,19 @@
-Received: from szxga01-in.huawei.com ([119.145.14.64])
+Received: from szxga02-in.huawei.com ([119.145.14.65])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X9SYS-00067a-P5
- for linux-mtd@lists.infradead.org; Tue, 22 Jul 2014 05:24:02 +0000
-Message-ID: <53CDF537.1040104@huawei.com>
-Date: Tue, 22 Jul 2014 13:23:03 +0800
+ id 1X9Ta1-0003ij-Ld
+ for linux-mtd@lists.infradead.org; Tue, 22 Jul 2014 06:29:42 +0000
+Message-ID: <53CE049B.7050801@huawei.com>
+Date: Tue, 22 Jul 2014 14:28:43 +0800
 From: Zhang Zhen <zhenzhang.zhang@huawei.com>
 MIME-Version: 1.0
 To: Adrian Hunter <adrian.hunter@intel.com>, Artem Bityutskiy
  <dedekind1@gmail.com>
-Subject: [PATCH] ubifs: refactor ubifs_file_mmap()
-References: <53CDE6AB.2090703@huawei.com>
-In-Reply-To: <53CDE6AB.2090703@huawei.com>
+Subject: [PATCH v2] ubifs: refactor ubifs_file_mmap()
+References: <1406010548-13996-1-git-send-email-zhenzhang.zhang@huawei.com>
+In-Reply-To: <1406010548-13996-1-git-send-email-zhenzhang.zhang@huawei.com>
 Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Cc: wangnan0@huawei.com, MTD Maling
- List <linux-mtd@lists.infradead.org>, Hu Jianyang <hujianyang@huawei.com>
+Cc: wangnan0@huawei.com, MTD Maling List <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,22 +32,23 @@ is not needed.
 
 So remove the call of generic_file_mmap().
 
+Change v1 -> v2:
+- deleted the mapping variable
 Signed-off-by: Zhang Zhen <zhenzhang.zhang@huawei.com>
 ---
- fs/ubifs/file.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ fs/ubifs/file.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
 diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index b5b593c..c7f1af6 100644
+index b5b593c..f7b6958 100644
 --- a/fs/ubifs/file.c
 +++ b/fs/ubifs/file.c
-@@ -1540,11 +1540,9 @@ static const struct vm_operations_struct ubifs_file_vm_ops = {
+@@ -1540,11 +1540,7 @@ static const struct vm_operations_struct ubifs_file_vm_ops = {
 
  static int ubifs_file_mmap(struct file *file, struct vm_area_struct *vma)
  {
 -	int err;
-+	struct address_space *mapping = file->f_mapping;
-
+-
 -	err = generic_file_mmap(file, vma);
 -	if (err)
 -		return err;
