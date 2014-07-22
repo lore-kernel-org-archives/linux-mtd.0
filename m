@@ -1,13 +1,13 @@
-Received: from nasmtp02.atmel.com ([204.2.163.16] helo=SJOEDG01.corp.atmel.com)
+Received: from eusmtp01.atmel.com ([212.144.249.242])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X9W8Q-0005RO-Su
- for linux-mtd@lists.infradead.org; Tue, 22 Jul 2014 09:13:24 +0000
+ id 1X9WJS-0004Tc-J7
+ for linux-mtd@lists.infradead.org; Tue, 22 Jul 2014 09:24:47 +0000
 From: Josh Wu <josh.wu@atmel.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd: atmel_nand: incease the chip_delay to support some
- 4k-page flash
-Date: Tue, 22 Jul 2014 17:12:31 +0800
-Message-ID: <1406020351-23280-1-git-send-email-josh.wu@atmel.com>
+Subject: [PATCH] mtd: atmel_nand: add pmecc support for 512, 1k, 4k,
+ 8k page size
+Date: Tue, 22 Jul 2014 17:24:18 +0800
+Message-ID: <1406021058-5490-1-git-send-email-josh.wu@atmel.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: Josh Wu <josh.wu@atmel.com>, computersforpeace@gmail.com
@@ -20,30 +20,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-For MT29F8G08ABABA nand flash, the time read a page (tR) is 25us.
-To support it, we need increase the chip_delay to 25us.
+PMECC can support 512, 1k, 2k, 4k, 8k page size.
+The driver currently only support 2k page size nand flash. So this patch
+add support to 512, 1k, 4k and 8k page size nand flash.
 
 Signed-off-by: Josh Wu <josh.wu@atmel.com>
 ---
- drivers/mtd/nand/atmel_nand.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/atmel_nand.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index e321c56..371afdd 100644
+index 371afdd..33826a0 100644
 --- a/drivers/mtd/nand/atmel_nand.c
 +++ b/drivers/mtd/nand/atmel_nand.c
-@@ -2099,7 +2099,11 @@ static int atmel_nand_probe(struct platform_device *pdev)
- 	}
+@@ -1174,7 +1174,17 @@ static int atmel_pmecc_nand_init_params(struct platform_device *pdev,
  
- 	nand_chip->ecc.mode = host->board.ecc_mode;
--	nand_chip->chip_delay = 20;		/* 20us command delay time */
+ 	/* set ECC page size and oob layout */
+ 	switch (mtd->writesize) {
++	case 512:
++	case 1024:
+ 	case 2048:
++	case 4096:
++	case 8192:
++		if (sector_size > mtd->writesize) {
++			dev_err(host->dev, "pmecc sector size is bigger than the page size!\n");
++			err_no = -EINVAL;
++			goto err;
++		}
 +
-+	/* For support 4k-page flash, incease the delay time to 25us.
-+	 * In P.108 of MT29F8G08ABABA datasheet, tR max is 25us.
-+	 */
-+	nand_chip->chip_delay = 25;
+ 		host->pmecc_degree = (sector_size == 512) ?
+ 			PMECC_GF_DIMENSION_13 : PMECC_GF_DIMENSION_14;
+ 		host->pmecc_cw_len = (1 << host->pmecc_degree) - 1;
+@@ -1201,13 +1211,9 @@ static int atmel_pmecc_nand_init_params(struct platform_device *pdev,
  
- 	if (host->board.bus_width_16)	/* 16-bit bus width */
- 		nand_chip->options |= NAND_BUSWIDTH_16;
+ 		nand_chip->ecc.layout = &atmel_pmecc_oobinfo;
+ 		break;
+-	case 512:
+-	case 1024:
+-	case 4096:
+-		/* TODO */
++	default:
+ 		dev_warn(host->dev,
+ 			"Unsupported page size for PMECC, use Software ECC\n");
+-	default:
+ 		/* page size not handled by HW ECC */
+ 		/* switching back to soft ECC */
+ 		nand_chip->ecc.mode = NAND_ECC_SOFT;
 -- 
 1.9.1
