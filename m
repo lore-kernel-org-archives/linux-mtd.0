@@ -1,30 +1,17 @@
-Message-ID: <53CF5E4A.8050306@gmail.com>
-Date: Wed, 23 Jul 2014 15:03:38 +0800
-From: Zhou Wang <wangzhou.bry@gmail.com>
+Received: from comal.ext.ti.com ([198.47.26.152])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X9uGV-0007IA-Dd
+ for linux-mtd@lists.infradead.org; Wed, 23 Jul 2014 10:59:22 +0000
+From: Pekon Gupta <pekon@ti.com>
+To: Tony Lindgren <tony@atomide.com>
+Subject: [PATCH] ARM: dts: dra7-evm: add parallel NOR flash support
+Date: Wed, 23 Jul 2014 16:28:50 +0530
+Message-ID: <1406113130-23939-1-git-send-email-pekon@ti.com>
 MIME-Version: 1.0
-To: Zhou Wang <wangzhou.bry@gmail.com>
-Subject: Re: [PATCH v1 3/3] mtd: hisilicon: add device tree binding
- documentation
-References: <1405421906-660-1-git-send-email-wangzhou.bry@gmail.com>
- <1405421906-660-4-git-send-email-wangzhou.bry@gmail.com>
-In-Reply-To: <1405421906-660-4-git-send-email-wangzhou.bry@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: Mark Rutland <mark.rutland@arm.com>,
- Jussi Kivilinna <jussi.kivilinna@iki.fi>, linux-doc@vger.kernel.org,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- linux-mtd@lists.infradead.org, Russell King <linux@arm.linux.org.uk>,
- Alexander Shiyan <shc_work@mail.ru>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Grant Likely <grant.likely@linaro.org>, devicetree@vger.kernel.org,
- Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Joern Engel <joern@logfs.org>, Rob Herring <robh+dt@kernel.org>,
- Pekon Gupta <pekon@ti.com>, linux-arm-kernel@lists.infradead.org,
- Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
- wangzhou1@hisilicon.com, Kumar Gala <galak@codeaurora.org>,
- caizhiyong@huawei.com, Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain
+Cc: linux-omap <linux-omap@vger.kernel.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>, Pekon Gupta <pekon@ti.com>,
+ Roger Quadros <rogerq@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,66 +21,199 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2014年07月15日 18:58, Zhou Wang wrote:
-> Signed-off-by: Zhou Wang <wangzhou.bry@gmail.com>
-> ---
->   .../devicetree/bindings/mtd/hisi-nand.txt          |   40 ++++++++++++++++++++
->   1 file changed, 40 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/mtd/hisi-nand.txt
->
+This patch adds support for parallel NOR device (S29GL512S10) present on J6-EVM.
+The Flash device is connected to GPMC controller on chip-select[0] and accessed
+as memory-mapped device. It has data-witdh=x16, capacity-64MBytes(512Mbits) and
+is CFI compatible.
+As multiple devices are share GPMC pins on this board, so following board
+settings are required to detect NOR device:
+     SW5.1 (NAND_BOOTn) = OFF (logic-1)
+     SW5.2 (NOR_BOOTn)  = ON  (logic-0) /* Active-low */
+     SW5.3 (eMMC_BOOTn) = OFF (logic-1)
+     SW5.4 (QSPI_BOOTn) = OFF (logic-1)
 
-Hi Randy Dunlap,
+Also to maintain NAND Boot functionality, following setting are kept as default
+- NAND status="enabled"
+- NOR status="disabled"
 
-Is there anything that should be modified about this binding document? 
-It would be very appreciated that I could get some comments from you.
+Signed-off-by: Pekon Gupta <pekon@ti.com>
+---
 
-Best regards,
-Zhou
+/* Flash read/write access tested after enabling NOR sub-node in DT */
+   linux#> flash_erase /dev/mtd9 0 0
+   linux#> dd if=/dev/urandom of=/tmp/source.hex  bs=1c count=2048
+   linux#> mtd_debug write /dev/mtd9 0x0 2048 /tmp/source.hex
+   linux#> mtd_debug read  /dev/mtd9 0x0 2048 /tmp/destination.hex
+   linux#> diff /tmp/source.hex  /tmp/destination.hex
 
-> diff --git a/Documentation/devicetree/bindings/mtd/hisi-nand.txt b/Documentation/devicetree/bindings/mtd/hisi-nand.txt
-> new file mode 100644
-> index 0000000..c8b3988
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/hisi-nand.txt
-> @@ -0,0 +1,40 @@
-> +Hisilicon Hip04 Soc NAND controller DT binding
-> +
-> +Required properties:
-> +- compatible:          Should be "hisilicon,504-nfc".
-> +- reg:                 The first contains base physical address and size of
-> +                       NAND controller's registers. The second contains base
-> +                       physical address and size of NAND controller's buffer.
-> +- interrupts:          Interrupt number for nfc.
-> +- nand-bus-width:      See nand.txt.
-> +- nand-ecc-mode:       See nand.txt.
-> +- hisi,nand-ecc-bits:  ECC bits type support.
-> +                 <0>:  none ecc
-> +                 <1>:  Can correct 1bit per 512byte.
-> +                 <6>:  Can correct 16bits per 1K byte.
-> +- #address-cells:      partition address, should be set 1.
-> +- #size-cells:         partition size, should be set 1.
-> +
-> +Flash chip may optionally contain additional sub-nodes describing partitions of
-> +the address space. See partition.txt for more detail.
-> +
-> +Example:
-> +
-> +	nand: nand@4020000 {
-> +		compatible = "hisilicon,504-nfc";
-> +		reg = <0x4020000 0x10000>, <0x5000000 0x1000>;
-> +		interrupts = <0 379 4>;
-> +		nand-bus-width = <8>;
-> +		nand-ecc-mode = "hw";
-> +		hisi,nand-ecc-bits = <1>;
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +
-> +		partition@0 {
-> +			label = "nand_text";
-> +			reg = <0x00000000 0x00400000>;
-> +		};
-> +
-> +		...
-> +
-> +	};
->
+ 
+ arch/arm/boot/dts/dra7-evm.dts | 141 ++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 140 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm/boot/dts/dra7-evm.dts b/arch/arm/boot/dts/dra7-evm.dts
+index 4adc280..1ee9727 100644
+--- a/arch/arm/boot/dts/dra7-evm.dts
++++ b/arch/arm/boot/dts/dra7-evm.dts
+@@ -151,6 +151,66 @@
+ 			0xd0	(PIN_OUTPUT | MUX_MODE0)	/* gpmc_be0n_cle */
+ 		>;
+ 	};
++
++	nor_flash_x16: nor_flash_x16 {
++		/* On DRA7 EVM, NOR_BOOTn comes from DIP switch
++		 * So NOR flash requires following switch settings:
++		 * SW5.1 (NAND_BOOTn) = OFF (logic-1)
++		 * SW5.2 (NOR_BOOTn)  = ON  (logic-0) Active-low
++		 * SW5.3 (eMMC_BOOTn) = OFF (logic-1)
++		 * SW5.4 (QSPI_BOOTn) = OFF (logic-1)
++		 */
++		pinctrl-single,pins = <
++			0x00	(PIN_INPUT  | MUX_MODE0)	/* gpmc_ad0  */
++			0x04	(PIN_INPUT  | MUX_MODE0)	/* gpmc_ad1  */
++			0x08	(PIN_INPUT  | MUX_MODE0)	/* gpmc_ad2  */
++			0x0c	(PIN_INPUT  | MUX_MODE0)	/* gpmc_ad3  */
++			0x10	(PIN_INPUT  | MUX_MODE0)	/* gpmc_ad4  */
++			0x14	(PIN_INPUT  | MUX_MODE0)	/* gpmc_ad5  */
++			0x18	(PIN_INPUT  | MUX_MODE0)	/* gpmc_ad6  */
++			0x1c	(PIN_INPUT  | MUX_MODE0)	/* gpmc_ad7  */
++			0x20	(PIN_INPUT  | MUX_MODE0)	/* gpmc_ad8  */
++			0x24	(PIN_INPUT  | MUX_MODE0)	/* gpmc_ad9  */
++			0x28	(PIN_INPUT  | MUX_MODE0)	/* gpmc_ad10 */
++			0x2c	(PIN_INPUT  | MUX_MODE0)	/* gpmc_ad11 */
++			0x30	(PIN_INPUT  | MUX_MODE0)	/* gpmc_ad12 */
++			0x34	(PIN_INPUT  | MUX_MODE0)	/* gpmc_ad13 */
++			0x38	(PIN_INPUT  | MUX_MODE0)	/* gpmc_ad14 */
++			0x3c	(PIN_INPUT  | MUX_MODE0)	/* gpmc_ad15 */
++			0x40	(PIN_INPUT  | MUX_MODE0)	/* gpmc_a0   */
++			0x44	(PIN_INPUT  | MUX_MODE0)	/* gpmc_a1   */
++			0x48	(PIN_INPUT  | MUX_MODE0)	/* gpmc_a2   */
++			0x4c	(PIN_INPUT  | MUX_MODE0)	/* gpmc_a3   */
++			0x50	(PIN_INPUT  | MUX_MODE0)	/* gpmc_a4   */
++			0x54	(PIN_INPUT  | MUX_MODE0)	/* gpmc_a5   */
++			0x58	(PIN_INPUT  | MUX_MODE0)	/* gpmc_a6   */
++			0x5c	(PIN_INPUT  | MUX_MODE0)	/* gpmc_a7   */
++			0x60	(PIN_INPUT  | MUX_MODE0)	/* gpmc_a8   */
++			0x64	(PIN_INPUT  | MUX_MODE0)	/* gpmc_a9   */
++			0x68	(PIN_INPUT  | MUX_MODE0)	/* gpmc_a10  */
++			0x6c	(PIN_INPUT  | MUX_MODE0)	/* gpmc_a11  */
++			0x70	(PIN_INPUT  | MUX_MODE0)	/* gpmc_a12  */
++			0x74	(PIN_INPUT  | MUX_MODE0)	/* gpmc_a13  */
++			0x78	(PIN_INPUT  | MUX_MODE0)	/* gpmc_a14  */
++			0x7c	(PIN_INPUT  | MUX_MODE0)	/* gpmc_a15  */
++			0x80	(PIN_INPUT  | MUX_MODE0)	/* gpmc_a16  */
++			0x84	(PIN_INPUT  | MUX_MODE0)	/* gpmc_a17  */
++			0x88	(PIN_INPUT  | MUX_MODE0)	/* gpmc_a18  */
++			0x8c	(PIN_INPUT  | MUX_MODE0)	/* gpmc_a19  */
++			0x90	(PIN_INPUT  | MUX_MODE0)	/* gpmc_a20  */
++			0x94	(PIN_INPUT  | MUX_MODE0)	/* gpmc_a21  */
++			0x98	(PIN_INPUT  | MUX_MODE0)	/* gpmc_a22  */
++			0x9c	(PIN_INPUT  | MUX_MODE0)	/* gpmc_a23  */
++			0xa0	(PIN_INPUT  | MUX_MODE0)	/* gpmc_a24  */
++			0xa4	(PIN_INPUT  | MUX_MODE0)	/* gpmc_a25  */
++			0xd8	(PIN_INPUT  | MUX_MODE0)	/* gpmc_wait0    */
++			0xcc	(PIN_OUTPUT | MUX_MODE0)	/* gpmc_wen      */
++			0xb4	(PIN_OUTPUT | MUX_MODE0)	/* gpmc_csn0     */
++			0xc4	(PIN_OUTPUT | MUX_MODE0)	/* gpmc_advn_ale */
++			0xc8	(PIN_OUTPUT | MUX_MODE0)	/* gpmc_oen_ren	 */
++			0xd0	(PIN_OUTPUT | MUX_MODE0)	/* gpmc_be0n_cle */
++		>;
++	};
+ };
+ 
+ &i2c1 {
+@@ -417,8 +477,9 @@
+ 	status = "okay";
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&nand_flash_x16>;
+-	ranges = <0 0 0 0x01000000>;	/* minimum GPMC partition = 16MB */
++	ranges = <0 0 0x08000000 0x04000000>;	/* address offset=128MB, range=512Mb=64MB */
+ 	nand@0,0 {
++		status = "okay";
+ 		reg = <0 0 4>;		/* device IO registers */
+ 		ti,nand-ecc-opt = "bch8";
+ 		ti,elm-id = <&elm>;
+@@ -494,4 +555,82 @@
+ 			reg = <0x00a00000 0x0f600000>;
+ 		};
+ 	};
++
++	nor@0,0 {
++		status = "disabled";
++		compatible = "cfi-flash";
++		reg = <0 0 0x04000000>;		/* device memory map = 64MB (actual capacity) */
++		/* generic bindings */
++		linux,mtd-name = "Spansion,S29GL512";
++		bank-width = <2>;
++		/* vendor specific bindings */
++		gpmc,device-width = <2>;
++		gpmc,sync-clk-ps = <0>;
++		gpmc,cs-on-ns = <0>;
++		gpmc,cs-rd-off-ns = <100>;
++		gpmc,cs-wr-off-ns = <100>;
++		gpmc,adv-on-ns = <10>;
++		gpmc,adv-rd-off-ns = <100>;
++		gpmc,adv-wr-off-ns = <100>;
++		gpmc,we-on-ns = <10>;
++		gpmc,we-off-ns = <100>;
++		gpmc,oe-on-ns = <10>;
++		gpmc,oe-off-ns = <100>;
++		gpmc,access-ns = <75>;
++		gpmc,rd-cycle-ns = <100>;
++		gpmc,wr-cycle-ns = <100>;
++		gpmc,page-burst-access-ns = <10>;
++		gpmc,cycle2cycle-samecsen;
++		gpmc,bus-turnaround-ns = <10>;
++		gpmc,cycle2cycle-delay-ns = <20>;
++		/* gpmc,clk-activation-ns = <0>; */
++		gpmc,wait-monitoring-ns = <0>;
++		gpmc,wr-access-ns = <75>;
++		gpmc,wr-data-mux-bus-ns = <100>;
++		/* MTD partition table */
++		/* All SPL-* partitions are sized to minimal length
++		 * which can be independently programmable */
++		#address-cells = <1>;
++		#size-cells = <1>;
++		partition@0x00000000 {
++			label = "NOR.SPL";
++			reg = <0x00000000 0x00040000>;
++		};
++		partition@0x00040000 {
++			label = "NOR.SPL.backup1";
++			reg = <0x00040000 0x00040000>;
++		};
++		partition@0x00080000 {
++			label = "NOR.SPL.backup2";
++			reg = <0x00080000 0x00040000>;
++		};
++		partition@0x000c0000 {
++			label = "NOR.SPL.backup3";
++			reg = <0x000c0000 0x00040000>;
++		};
++		partition@0x00100000 {
++			label = "NOR.u-boot-spl-os";
++			reg = <0x00100000 0x00080000>;
++		};
++		partition@0x00180000 {
++			label = "NOR.u-boot";
++			reg = <0x00180000 0x00100000>;
++		};
++		partition@0x00280000 {
++			label = "NOR.u-boot-env";
++			reg = <0x00280000 0x00040000>;
++		};
++		partition@0x002c0000 {
++			label = "NOR.u-boot-env.backup1";
++			reg = <0x002c0000 0x00040000>;
++		};
++		partition@0x00300000 {
++			label = "NOR.kernel";
++			reg = <0x00300000 0x00700000>;
++		};
++		partition@0x00a00000 {
++			label = "NOR.file-system";
++			reg = <0x00a00000 0x00600000>;
++		};
++	};
+ };
+-- 
+1.8.5.1.163.gd7aced9
