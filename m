@@ -1,43 +1,23 @@
-Received: from mout.kundenserver.de ([212.227.17.24])
+Received: from mail-yh0-f48.google.com ([209.85.213.48])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XA2Xa-00065S-Sx
- for linux-mtd@lists.infradead.org; Wed, 23 Jul 2014 19:49:31 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-To: punnaiah choudary kalluri <punnaia@xilinx.com>
-Subject: Re: [PATCH RFC v3 2/2] memory: pl353: Add driver for arm pl353 static
- memory controller
-Date: Wed, 23 Jul 2014 21:48:15 +0200
-References: <1403838162-18756-1-git-send-email-punnaia@xilinx.com>
- <CAGnW=BaU6iS6BNa_MQNAK_Sck-Cv=Z3iL87gMENPQOq2otMjKg@mail.gmail.com>
- <CAGnW=BbiMQchQeWPE8gKsr8QuGPkurt7kb3hGcqf+fjyrVi0ww@mail.gmail.com>
-In-Reply-To: <CAGnW=BbiMQchQeWPE8gKsr8QuGPkurt7kb3hGcqf+fjyrVi0ww@mail.gmail.com>
+ id 1XA39u-0003CP-9M
+ for linux-mtd@lists.infradead.org; Wed, 23 Jul 2014 20:29:07 +0000
+Received: by mail-yh0-f48.google.com with SMTP id i57so1191811yha.7
+ for <linux-mtd@lists.infradead.org>; Wed, 23 Jul 2014 13:28:43 -0700 (PDT)
+Date: Wed, 23 Jul 2014 17:27:46 -0300
+From: ezequiel@vanguardiasur.com.ar
+To: "Gupta, Pekon" <pekon@ti.com>
+Subject: Re: [PATCH] mtd: nand: omap: save Bad-Block-Table (BBT) on device
+Message-ID: <20140723202746.GA26346@arch.cereza>
+References: <1406116461-27089-1-git-send-email-pekon@ti.com>
+ <20140723120510.GA19677@arch.cereza>
+ <20980858CB6D3A4BAE95CA194937D5E73EB064F3@DBDE04.ent.ti.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201407232148.15419.arnd@arndb.de>
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>,
- "jussi.kivilinna@iki.fi" <jussi.kivilinna@iki.fi>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- svemula@xilinx.com, "michal.simek@xilinx.com" <michal.simek@xilinx.com>,
- "ezequiel.garcia@free-electrons.com" <ezequiel.garcia@free-electrons.com>,
- Grant Likely <grant.likely@linaro.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "jason@lakedaemon.net" <jason@lakedaemon.net>,
- "pawel.moll@arm.com" <pawel.moll@arm.com>,
- "ijc+devicetree@hellion.org.uk" <ijc+devicetree@hellion.org.uk>,
- anirudh@xilinx.com, "joern@logfs.org" <joern@logfs.org>,
- Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>,
- "robh+dt@kernel.org" <robh+dt@kernel.org>,
- "acourbot@nvidia.com" <acourbot@nvidia.com>, "Gupta, Pekon" <pekon@ti.com>,
- Punnaiah Choudary <kpc528@gmail.com>,
- "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Rob Landley <rob@landley.net>, Kumar Gala <galak@codeaurora.org>, "Khoronzhuk,
- Ivan" <ivan.khoronzhuk@ti.com>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20980858CB6D3A4BAE95CA194937D5E73EB064F3@DBDE04.ent.ti.com>
+Cc: "Nori, Sekhar" <nsekhar@ti.com>, Brian Norris <computersforpeace@gmail.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>, "Quadros, Roger" <rogerq@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -47,69 +27,109 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 21 July 2014, punnaiah choudary kalluri wrote:
-> On Mon, Jul 7, 2014 at 10:15 PM, punnaiah choudary kalluri
-> <punnaia@xilinx.com> wrote:
-> > On Thu, Jul 3, 2014 at 4:09 PM, Arnd Bergmann <arnd@arndb.de> wrote:
-> >> On Friday 27 June 2014 08:32:42 Punnaiah Choudary Kalluri wrote:
+(Brian, correct me if I'm wrong here, you're the BBT expert).
+
+On 23 Jul 04:26 PM, Gupta, Pekon wrote:
+> >From: Ezequiel Garcia [mailto:ezequiel@vanguardiasur.com.ar]
+> >>On 23 Jul 05:24 PM, Pekon Gupta wrote:
+> >> This patch makes OMAP NAND driver to
+> >> - save Bad-Block-Table (BBT) on NAND Flash device
+> >> - scan on device BBT during probe
 > >>
-> >>> +/**
-> >>> + * struct pl353_smc_data - Private smc driver structure
-> >>> + * @devclk:          Pointer to the peripheral clock
-> >>> + * @aperclk:         Pointer to the APER clock
-> >>> + */
-> >>> +struct pl353_smc_data {
-> >>> +     struct clk              *memclk;
-> >>> +     struct clk              *aclk;
-> >>> +};
-> >>> +
-> >>> +/* SMC virtual register base */
-> >>> +static void __iomem *pl353_smc_base;
-> >>
-> >> Drivers should not assume that there is only a single instance of the
-> >> hardware in the system. Please remove this global variable and
-> >> change the code to pass around a pointer to a structure containing
-> >> it.
 > >
-> > Since, the pl353 nand driver has dependency with this driver for configuring the
-> > bus width,operational parameters and ecc specific settings.
-> > So, i didnt find any mechanism for passing this instance from other driver other
-> > than exporting this instance.
-> > http://lists.infradead.org/pipermail/linux-mtd/2014-April/053432.html
-> >
-> > Please suggest the better option if you want it to be not global.
+> >Doesn't this break backward compatibility? Please correct me if I'm wrong
+> >here, but if I apply this patch, and boot with my current NAND flash
+> >contents, the kernel won't have any place to store the BBT (assuming
+> >there are no blocks reserved).
+> 
+> Good point. I'll rather like your opinion to judge my below understanding
+> as you were recently involved in some NAND BBT features additions..
+> 
+> When bbt_options "NAND_BBT_USE_FLASH" is enabled, default BBT
+> options will be used which are:
+> 
+> $KERNEL/drivers/mtd/nand_bbt.c
+> static struct nand_bbt_descr bbt_main_descr = {
+> 	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
+> 		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP,
+> 
+> As default options have NAND_BBT_CREATE and NAND_BBT_WRITE,
+> so kernel will try to reserve erase-blocks for main-BBT and mirror-BBT
+> towards end of NAND device.
+> 
+> - Case-1: If there is un-allocated space (not allocated to any partition)
+>   at end of Flash device then it will be used. And there is no problem.
+> 
 
-I would expect the nand device to be a child of the smc device. In this case,
-the nand driver can just pass a pointer to its own 'struct device', and the
-smc driver can find its data using dev_get_drvdata(dev->parent).
+Yes, so far, so good.
 
-> >>> +/**
-> >>> + * pl353_smc_set_buswidth - Set memory buswidth
-> >>> + * @bw:      Memory buswidth (8 | 16)
-> >>> + * Return: 0 on success or negative errno.
-> >>> + */
-> >>> +int pl353_smc_set_buswidth(unsigned int bw)
-> >>> +{
-> >>> +
-> >>> +     if (bw != PL353_SMC_MEM_WIDTH_8  && bw != PL353_SMC_MEM_WIDTH_16)
-> >>> +             return -EINVAL;
-> >>> +
-> >>> +     writel(bw, pl353_smc_base + PL353_SMC_SET_OPMODE_OFFS);
-> >>> +     writel(PL353_SMC_DC_UPT_NAND_REGS, pl353_smc_base +
-> >>> +            PL353_SMC_DIRECT_CMD_OFFS);
-> >>> +
-> >>> +     return 0;
-> >>> +}
-> >>> +EXPORT_SYMBOL_GPL(pl353_smc_set_buswidth);
-> >>
-> >> Why is this an exported interface? Wouldn't that setting just be
-> >> determined from DT when the device is probed?
-> >
-> > Nand driver rely on auto bus width detection mechanism for identifying
-> > the bus width using onfi parameter page settings. So, once the driver
-> > finds the bus width, updates accordingly using this API
+> - Case-2: If there is no free space towards the end of flash, then ...
+> As per my understanding, the create_bbt() would try scanning whole
+> NAND to find empty blocks and then it creates BBT wherever it finds
+> empty blocks. And those blocks are marked as BAD with BBT signature
+> to prevent getting erased or over-written by any user-data.
+> 
 
-This should at least pass the device pointer then.
+OK, I just went through the BBT code, trying to see if I was missing
+something. I can't see any place where the kernel scans the device
+and searches for empty space for the BBT.
 
+Instead, what create_bbt() seem to do is scan the whole device, searching
+for bad blocks to fill an in-memory BBT. I presume that if I have some
+blocks marked as bad in the OOB region, they are identified as bad
+and the BBT is filled.
 
-	Arnd
+I think that write_bbt() is where the (previously created, in-memory) BBT
+is written to flash. It goes like this:
+
+write_bbt()
+{
+[..]
+                /*
+                 * Automatic placement of the bad block table. Search direction
+                 * top -> down?
+                 */
+                if (td->options & NAND_BBT_LASTBLOCK) {
+                        startblock = numblocks * (chip + 1) - 1;
+                        dir = -1;
+                } else {
+                        startblock = chip * numblocks;
+                        dir = 1;
+                }
+
+                for (i = 0; i < td->maxblocks; i++) {
+                        int block = startblock + dir * i;
+                        /* Check, if the block is bad */
+                        switch (bbt_get_entry(this, block)) {
+                        case BBT_BLOCK_WORN:
+                        case BBT_BLOCK_FACTORY_BAD:
+                                continue;
+                        }
+                        page = block <<
+                                (this->bbt_erase_shift - this->page_shift);
+                        /* Check, if the block is used by the mirror table */
+                        if (!md || md->pages[chip] != page)
+                                goto write;
+                }
+                pr_err("No space left to write bad block table\n");
+                return -ENOSPC;
+		[..]
+}
+
+which fails if there's no room left for the BBT. This will happen on every
+boot, so it's not an ideal situation.
+ 
+> Is my understanding correct?
+> If yes, then this will not break backward compatibility, as on upgrading
+> the kernel new BBT will be automatically written on first boot. And
+> it will be used in subsequent boots.
+> Need feedbacks ...
+> 
+
+In fact, you do have a simple way to solve this. Just support BBT through
+the "nand-on-flash-bbt" devicetree property, so a user can tell if his flash
+has a BBT or not. See pxa3xx-nand.c, which should be correct.
+
+-- 
+Ezequiel Garcia, VanguardiaSur
+www.vanguardiasur.com.ar
