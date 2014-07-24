@@ -1,26 +1,36 @@
-Received: from mail-pd0-x229.google.com ([2607:f8b0:400e:c02::229])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XA8FL-0001Vc-Gn
- for linux-mtd@lists.infradead.org; Thu, 24 Jul 2014 01:55:05 +0000
-Received: by mail-pd0-f169.google.com with SMTP id y10so2681144pdj.28
- for <linux-mtd@lists.infradead.org>; Wed, 23 Jul 2014 18:54:42 -0700 (PDT)
-Date: Wed, 23 Jul 2014 18:54:38 -0700
+Date: Wed, 23 Jul 2014 19:06:27 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: ezequiel@vanguardiasur.com.ar
-Subject: Re: [PATCH] mtd: nand: omap: save Bad-Block-Table (BBT) on device
-Message-ID: <20140724015438.GC3711@ld-irv-0074>
-References: <1406116461-27089-1-git-send-email-pekon@ti.com>
- <20140723120510.GA19677@arch.cereza>
- <20980858CB6D3A4BAE95CA194937D5E73EB064F3@DBDE04.ent.ti.com>
- <20140723202746.GA26346@arch.cereza>
+To: Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
+Subject: Re: [PATCHv4 4/5] of/mtd/nand: add generic binding and helper for
+ NAND_BBT_NO_OOB_BBM
+Message-ID: <20140724020627.GD3711@ld-irv-0074>
+References: <1402579245-13377-1-git-send-email-LW@KARO-electronics.de>
+ <1402579245-13377-2-git-send-email-LW@KARO-electronics.de>
+ <1402579245-13377-3-git-send-email-LW@KARO-electronics.de>
+ <1402579245-13377-4-git-send-email-LW@KARO-electronics.de>
+ <1402579245-13377-5-git-send-email-LW@KARO-electronics.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20140723202746.GA26346@arch.cereza>
-Cc: "Nori, Sekhar" <nsekhar@ti.com>, Huang Shijie <b32955@freescale.com>,
- linux-mtd <linux-mtd@lists.infradead.org>, "Gupta, Pekon" <pekon@ti.com>,
- "Quadros, Roger" <rogerq@ti.com>,
- Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@karo-electronics.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1402579245-13377-5-git-send-email-LW@KARO-electronics.de>
+Cc: Mark Rutland <mark.rutland@arm.com>,
+ Boris BREZILLON <b.brezillon.dev@gmail.com>, linux-doc@vger.kernel.org,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Wei Yongjun <yongjun_wei@trendmicro.com.cn>, linux-mtd@lists.infradead.org,
+ Michael Grzeschik <m.grzeschik@pengutronix.de>,
+ Russell King <linux@arm.linux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
+ Jingoo Han <jg1.han@samsung.com>, Shawn Guo <shawn.guo@freescale.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Michael Opdenacker <michael.opdenacker@free-electrons.com>,
+ Grant Likely <grant.likely@linaro.org>, devicetree@vger.kernel.org,
+ Sascha Hauer <kernel@pengutronix.de>, Pawel Moll <pawel.moll@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>, Rob Herring <robh+dt@kernel.org>,
+ linux-arm-kernel@lists.infradead.org,
+ Fabio Estevam <fabio.estevam@freescale.com>, linux-kernel@vger.kernel.org,
+ Huang Shijie <b32955@freescale.com>, Rob Landley <rob@landley.net>,
+ Kumar Gala <galak@codeaurora.org>, Shawn Guo <shawn.guo@linaro.org>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,152 +40,123 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jul 23, 2014 at 05:27:46PM -0300, ezequiel@vanguardiasur.com.ar wrote:
-> On 23 Jul 04:26 PM, Gupta, Pekon wrote:
-> > >From: Ezequiel Garcia [mailto:ezequiel@vanguardiasur.com.ar]
-> > >>On 23 Jul 05:24 PM, Pekon Gupta wrote:
-> > >> This patch makes OMAP NAND driver to
-> > >> - save Bad-Block-Table (BBT) on NAND Flash device
-> > >> - scan on device BBT during probe
-> > >>
-> > >
-> > >Doesn't this break backward compatibility? Please correct me if I'm wrong
-> > >here, but if I apply this patch, and boot with my current NAND flash
-> > >contents, the kernel won't have any place to store the BBT (assuming
-> > >there are no blocks reserved).
-> > 
-> > Good point. I'll rather like your opinion to judge my below understanding
-> > as you were recently involved in some NAND BBT features additions..
-> > 
-> > When bbt_options "NAND_BBT_USE_FLASH" is enabled, default BBT
-> > options will be used which are:
-> > 
-> > $KERNEL/drivers/mtd/nand_bbt.c
-> > static struct nand_bbt_descr bbt_main_descr = {
-> > 	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
-> > 		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP,
-> > 
-> > As default options have NAND_BBT_CREATE and NAND_BBT_WRITE,
-> > so kernel will try to reserve erase-blocks for main-BBT and mirror-BBT
-> > towards end of NAND device.
-> > 
-> > - Case-1: If there is un-allocated space (not allocated to any partition)
+(BTW, that's a mighty CC list you have! I'm not sure all CC'd parties
+are interested in this series; e.g., Russel and the ARM list seem
+unrelated)
 
-Partitioning has no effect on the BBT process. BBT is run only for the
-'master' MTD, and it has no regard for previous data on the flash. Given
-that...
+Hi Lothar,
 
-> >   at end of Flash device then it will be used. And there is no problem.
-> > 
-> 
-> Yes, so far, so good.
+Sorry for the delay on this. I get busy enough that I can't/don't reply
+to everything quickly...
 
-Agreed. It is especially safe because that area was not partitioned, and
-therefore should not contain important data.
+On Thu, Jun 12, 2014 at 03:20:44PM +0200, Lothar Waﬂmann wrote:
+> add a boolean property 'nand-no-oob-bbm' and helper function to be
+> able to set the NAND_BBT_NO_OOB_BBM flag in DT capable NAND drivers
+> and use it for i.MX and MXS nand drivers.
 
-> > - Case-2: If there is no free space towards the end of flash, then ...
-> > As per my understanding, the create_bbt() would try scanning whole
-> > NAND to find empty blocks and then it creates BBT wherever it finds
-> > empty blocks. And those blocks are marked as BAD with BBT signature
-> > to prevent getting erased or over-written by any user-data.
-> > 
-> 
-> OK, I just went through the BBT code, trying to see if I was missing
-> something. I can't see any place where the kernel scans the device
-> and searches for empty space for the BBT.
+If I'm understanding your previous conversations with Huang correctly,
+you *must* use NAND_BBT_NO_OOB_BBM if you're going to use the
+fsl,no-blockmark-swap option. Correct? If so, then you might not need
+a separate 'nand-no-oob-bbm' binding; your driver should imply from
+'fsl,no-blockmark-swap' that it must also enable NAND_BBT_NO_OOB_BBM.
 
-Right, on-flash BBT has no notion of "empty space", really; it just
-knows what region is reserved for its use (the last few blocks of the
-device).
-
-> Instead, what create_bbt() seem to do is scan the whole device, searching
-> for bad blocks to fill an in-memory BBT. I presume that if I have some
-> blocks marked as bad in the OOB region, they are identified as bad
-> and the BBT is filled.
-> 
-> I think that write_bbt() is where the (previously created, in-memory) BBT
-> is written to flash. It goes like this:
-> 
-> write_bbt()
-> {
-> [..]
->                 /*
->                  * Automatic placement of the bad block table. Search direction
->                  * top -> down?
->                  */
->                 if (td->options & NAND_BBT_LASTBLOCK) {
->                         startblock = numblocks * (chip + 1) - 1;
->                         dir = -1;
->                 } else {
->                         startblock = chip * numblocks;
->                         dir = 1;
->                 }
-> 
->                 for (i = 0; i < td->maxblocks; i++) {
->                         int block = startblock + dir * i;
->                         /* Check, if the block is bad */
->                         switch (bbt_get_entry(this, block)) {
->                         case BBT_BLOCK_WORN:
->                         case BBT_BLOCK_FACTORY_BAD:
->                                 continue;
->                         }
->                         page = block <<
->                                 (this->bbt_erase_shift - this->page_shift);
->                         /* Check, if the block is used by the mirror table */
->                         if (!md || md->pages[chip] != page)
->                                 goto write;
->                 }
->                 pr_err("No space left to write bad block table\n");
->                 return -ENOSPC;
-> 		[..]
-> }
-> 
-> which fails if there's no room left for the BBT. This will happen on every
-> boot, so it's not an ideal situation.
-
-BTW, td->maxblocks==4 by default. There's no 'scanning the whole
-device'; it only scans the last 4 blocks. But you're correct that it's
-not ideal, since it will fail if there are 4 bad blocks at the end.
-
-> > Is my understanding correct?
-> > If yes, then this will not break backward compatibility, as on upgrading
-> > the kernel new BBT will be automatically written on first boot. And
-> > it will be used in subsequent boots.
-> > Need feedbacks ...
-> > 
-> 
-> In fact, you do have a simple way to solve this. Just support BBT through
-> the "nand-on-flash-bbt" devicetree property, so a user can tell if his flash
-> has a BBT or not. See pxa3xx-nand.c, which should be correct.
-
-Yes, you can use the 'nand-on-flash-bbt' property, and that probably
-makes the most sense.
-
-The only real backwards-compatibility concern you'd have for
-unconditionally enabling on-flash BBT (like in this patch) is if you had
-previous file system data in the last 4 blocks; nand_bbt will just
-clobber it, breaking your file system. For this reason, using DT is
-probably a good idea -- you're opting in, rather than being forced in by
-a kernel upgrade.
-
-Beyond the backwards-compatibility concern, you still have other
-concerns about on-flash BBT's robustness. Limiting yourself to a region
-of 4 blocks is one potential issue. There are others (e.g., lack of CRC
-protection), but none that have been real show-stoppers. I have a few
-generations of products running it here.
-
-BTW, there's a recent thread about GPMI and its "bad block mark
-swapping", which has led to somebody wanting a new DT binding for
-'on-flash-bbt-no-oob-bbm' or something like that, to mirror the
-(excellently named -- by me) NAND_BBT_NO_OOB_BBM option. I'm not real
-happy with adding a random assortment of configurable BBT flags into the
-DT ABI, without fully describing and standardizing the BBT format. It's
-kind of a vacuous target right now, which is just defined by the
-70%-baked solution in our current implementation... (I guess I need to
-go reply to the GPMI/NO_OOB_BBM thread soon!)
+Also, as I noted in [1], I don't really like exposing a ton of
+individual boolean DT properties like this. (At least this property is
+orthogonal to the bad block table; I was a little off-base in [1].)
 
 Brian
 
-[1] http://lists.infradead.org/pipermail/linux-mtd/2014-March/052666.html
-    http://lists.infradead.org/pipermail/linux-mtd/2014-March/052796.html
-    http://lists.infradead.org/pipermail/linux-mtd/2014-March/052988.html
+[1] http://lists.infradead.org/pipermail/linux-mtd/2014-July/054764.html
+
+> Signed-off-by: Lothar Waﬂmann <LW@KARO-electronics.de>
+> ---
+>  Documentation/devicetree/bindings/mtd/nand.txt |    1 +
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c         |    3 +++
+>  drivers/mtd/nand/mxc_nand.c                    |    2 ++
+>  drivers/of/of_mtd.c                            |   12 ++++++++++++
+>  include/linux/of_mtd.h                         |    6 ++++++
+>  5 files changed, 24 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/nand.txt b/Documentation/devicetree/bindings/mtd/nand.txt
+> index b53f92e..e46bfbe 100644
+> --- a/Documentation/devicetree/bindings/mtd/nand.txt
+> +++ b/Documentation/devicetree/bindings/mtd/nand.txt
+> @@ -5,6 +5,7 @@
+>    "soft_bch".
+>  - nand-bus-width : 8 or 16 bus width if not present 8
+>  - nand-on-flash-bbt: boolean to enable on flash bbt option if not present false
+> +- nand-no-oob-bbm: boolean to disable writing bad block markers to flash
+>  
+>  - nand-ecc-strength: integer representing the number of bits to correct
+>  		     per ECC step.
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> index 959cb9b..37537b4 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> @@ -1724,6 +1724,9 @@ static int gpmi_nand_init(struct gpmi_nand_data *this)
+>  	if (of_get_nand_on_flash_bbt(this->dev->of_node)) {
+>  		chip->bbt_options |= NAND_BBT_USE_FLASH | NAND_BBT_NO_OOB;
+>  
+> +		if (of_get_nand_no_oob_bbm(this->dev->of_node))
+> +			chip->bbt_options |= NAND_BBT_NO_OOB_BBM;
+> +
+>  		if (of_property_read_bool(this->dev->of_node,
+>  						"fsl,no-blockmark-swap"))
+>  			this->swap_block_mark = false;
+> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+> index dba262b..bb54a2a 100644
+> --- a/drivers/mtd/nand/mxc_nand.c
+> +++ b/drivers/mtd/nand/mxc_nand.c
+> @@ -1496,6 +1496,8 @@ static int mxcnd_probe(struct platform_device *pdev)
+>  		this->bbt_md = &bbt_mirror_descr;
+>  		/* update flash based bbt */
+>  		this->bbt_options |= NAND_BBT_USE_FLASH;
+> +		if (of_get_nand_no_oob_bbm(pdev->dev.of_node))
+> +			this->bbt_options |= NAND_BBT_NO_OOB_BBM;
+>  	}
+>  
+>  	init_completion(&host->op_completion);
+> diff --git a/drivers/of/of_mtd.c b/drivers/of/of_mtd.c
+> index b7361ed..d947acc 100644
+> --- a/drivers/of/of_mtd.c
+> +++ b/drivers/of/of_mtd.c
+> @@ -117,3 +117,15 @@ bool of_get_nand_on_flash_bbt(struct device_node *np)
+>  	return of_property_read_bool(np, "nand-on-flash-bbt");
+>  }
+>  EXPORT_SYMBOL_GPL(of_get_nand_on_flash_bbt);
+> +
+> +/**
+> + * of_get_nand_no_oob_bbm - Get nand no oob bbm for given device_node
+> + * @np:	Pointer to the given device_node
+> + *
+> + * return true if present, false otherwise
+> + */
+> +bool of_get_nand_no_oob_bbm(struct device_node *np)
+> +{
+> +	return of_property_read_bool(np, "nand-no-oob-bbm");
+> +}
+> +EXPORT_SYMBOL_GPL(of_get_nand_no_oob_bbm);
+> diff --git a/include/linux/of_mtd.h b/include/linux/of_mtd.h
+> index e266caa..6ece1a9 100644
+> --- a/include/linux/of_mtd.h
+> +++ b/include/linux/of_mtd.h
+> @@ -17,6 +17,7 @@ int of_get_nand_ecc_step_size(struct device_node *np);
+>  int of_get_nand_ecc_strength(struct device_node *np);
+>  int of_get_nand_bus_width(struct device_node *np);
+>  bool of_get_nand_on_flash_bbt(struct device_node *np);
+> +bool of_get_nand_no_oob_bbm(struct device_node *np);
+>  
+>  #else /* CONFIG_OF_MTD */
+>  
+> @@ -45,6 +46,11 @@ static inline bool of_get_nand_on_flash_bbt(struct device_node *np)
+>  	return false;
+>  }
+>  
+> +static inline bool of_get_nand_no_oob_bbm(struct device_node *np)
+> +{
+> +	return false;
+> +}
+> +
+>  #endif /* CONFIG_OF_MTD */
+>  
+>  #endif /* __LINUX_OF_MTD_H */
