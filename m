@@ -1,25 +1,27 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XAG4y-0008HI-3W
- for linux-mtd@lists.infradead.org; Thu, 24 Jul 2014 10:16:55 +0000
-Date: Thu, 24 Jul 2014 12:16:07 +0200
-From: Boris BREZILLON <boris.brezillon@free-electrons.com>
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-Subject: Re: [PATCH 1/2] mtd: nand: define struct nand_timings
-Message-ID: <20140724121607.135631aa@bbrezillon>
-In-Reply-To: <20140724115650.46cbb3cf@parrot.com>
-References: <1405064982-11456-1-git-send-email-boris.brezillon@free-electrons.com>
- <1405064982-11456-2-git-send-email-boris.brezillon@free-electrons.com>
- <20140722120346.0f2d0e77@parrot.com>
- <20140722141219.7f2c2890@bbrezillon>
- <20140724115650.46cbb3cf@parrot.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Lee Jones <lee.jones@linaro.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
+Received: from mail-yk0-f172.google.com ([209.85.160.172])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XAJH6-0003TU-RD
+ for linux-mtd@lists.infradead.org; Thu, 24 Jul 2014 13:41:41 +0000
+Received: by mail-yk0-f172.google.com with SMTP id 10so1792728ykt.17
+ for <linux-mtd@lists.infradead.org>; Thu, 24 Jul 2014 06:41:13 -0700 (PDT)
+Date: Thu, 24 Jul 2014 10:40:18 -0300
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH] mtd: nand: omap: save Bad-Block-Table (BBT) on device
+Message-ID: <20140724134018.GA711@arch.cereza>
+References: <1406116461-27089-1-git-send-email-pekon@ti.com>
+ <20140723120510.GA19677@arch.cereza>
+ <20980858CB6D3A4BAE95CA194937D5E73EB064F3@DBDE04.ent.ti.com>
+ <20140723202746.GA26346@arch.cereza>
+ <20140724015438.GC3711@ld-irv-0074>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20140724015438.GC3711@ld-irv-0074>
+Cc: "Nori, Sekhar" <nsekhar@ti.com>, Huang Shijie <b32955@freescale.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>, "Gupta, Pekon" <pekon@ti.com>,
+ "Quadros, Roger" <rogerq@ti.com>,
+ Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@karo-electronics.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,82 +31,132 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Matthieu,
-
-On Thu, 24 Jul 2014 11:56:50 +0200
-Matthieu CASTET <matthieu.castet@parrot.com> wrote:
-
-[...]
+On 23 Jul 06:54 PM, Brian Norris wrote:
 > > > 
-> > > I did a similar patch [1] (that wasn't merged :( ), and I used reduced
-> > > timing info.
-> > 
-> > I'm sorry it didn't make it to mainline, do you know why ?
-> For the omap part there was a gpmc code rewrite that conflict with the
-> patch.
-> For the mtd stuff, I don't know/remember (I think for was no reply).
-
-Okay.
-
+> > > - Case-1: If there is un-allocated space (not allocated to any partition)
 > 
-> > Could you point out where "reduced timing info" is defined in the ONFI
-> > specification ?
-> It is not defined on onfi.
-> This was more a simplification of timings in order to simplify the
-> driver side (avoid code duplication). Most controller allow to control
-> nRE and nWE pulse and the setup time.
+> Partitioning has no effect on the BBT process. BBT is run only for the
+> 'master' MTD, and it has no regard for previous data on the flash. Given
+> that...
 > 
-> Do you have drivers that use onfi timings ?
 
-Hopefully, I will have one soon, if I manage to get some time to respin
-my sunxi NAND series [1] (I'm using nand timings in the
-sunxi_nand_chip_set_timings function) :-)
+Right.
 
-IIRC, the atmel NAND driver configure its timings through the SMC
-(Static Memory Controller) block and this one use the timings you
-described.
-
-> > 
+> > >   at end of Flash device then it will be used. And there is no problem.
 > > > 
-> > > I also have support for the omap driver
-> > > (http://article.gmane.org/gmane.linux.ports.arm.omap/88606/match=) and
-> > > a controller we use in our chip (not upstream).
 > > 
-> > It should be pretty easy to convert the full timings list into a
-> > reduced one (actually, that's what your patch is doing), and you can
-> > thus port your work on top of these patches.
-> Yes I think an helper will be useful in order to help driver to use
-> these timings.
-> It can be a function that return the reduced version for a onfi mode
-> and edo support.
-
-I'm not against the helper function (Brian, any opinion), but I'm not
-sure we should call these timings "reduced onfi timings" as they are
-not defined in the ONFI spec.
-
+> > Yes, so far, so good.
 > 
+> Agreed. It is especially safe because that area was not partitioned, and
+> therefore should not contain important data.
+> 
+> > > - Case-2: If there is no free space towards the end of flash, then ...
+> > > As per my understanding, the create_bbt() would try scanning whole
+> > > NAND to find empty blocks and then it creates BBT wherever it finds
+> > > empty blocks. And those blocks are marked as BAD with BBT signature
+> > > to prevent getting erased or over-written by any user-data.
+> > > 
 > > 
-> > Anyway, I'm not sure what you have in mind, but unless there is a strong
-> > reason to drop full timings in favor of reduced ones I'd like to
-> > keep them (even if this implies adding a new converter to get reduced
-> > timings list).
-> > 
-> No problem. I have nothing special in mind. I hope this could give ideas
-> how to use the onfi timings in mtd drivers (understanding how to use
-> ONFI timings can be tricky).
+> > OK, I just went through the BBT code, trying to see if I was missing
+> > something. I can't see any place where the kernel scans the device
+> > and searches for empty space for the BBT.
+> 
+> Right, on-flash BBT has no notion of "empty space", really; it just
+> knows what region is reserved for its use (the last few blocks of the
+> device).
 > 
 
-Okay, as I said I'm not opposed to a new helper function that provide
-what you called "reduced timings", so feel free to propose
-something ;-).
+Right. And in fact, that's clear from the snippet I pasted below.
 
-Best Regards,
+> > Instead, what create_bbt() seem to do is scan the whole device, searching
+> > for bad blocks to fill an in-memory BBT. I presume that if I have some
+> > blocks marked as bad in the OOB region, they are identified as bad
+> > and the BBT is filled.
+> > 
+> > I think that write_bbt() is where the (previously created, in-memory) BBT
+> > is written to flash. It goes like this:
+> > 
+> > write_bbt()
+> > {
+> > [..]
+> >                 /*
+> >                  * Automatic placement of the bad block table. Search direction
+> >                  * top -> down?
+> >                  */
+> >                 if (td->options & NAND_BBT_LASTBLOCK) {
+> >                         startblock = numblocks * (chip + 1) - 1;
+> >                         dir = -1;
+> >                 } else {
+> >                         startblock = chip * numblocks;
+> >                         dir = 1;
+> >                 }
+> > 
+> >                 for (i = 0; i < td->maxblocks; i++) {
+> >                         int block = startblock + dir * i;
+> >                         /* Check, if the block is bad */
+> >                         switch (bbt_get_entry(this, block)) {
+> >                         case BBT_BLOCK_WORN:
+> >                         case BBT_BLOCK_FACTORY_BAD:
+> >                                 continue;
+> >                         }
+> >                         page = block <<
+> >                                 (this->bbt_erase_shift - this->page_shift);
+> >                         /* Check, if the block is used by the mirror table */
+> >                         if (!md || md->pages[chip] != page)
+> >                                 goto write;
+> >                 }
+> >                 pr_err("No space left to write bad block table\n");
+> >                 return -ENOSPC;
+> > 		[..]
+> > }
+> > 
+> > which fails if there's no room left for the BBT. This will happen on every
+> > boot, so it's not an ideal situation.
+> 
+> BTW, td->maxblocks==4 by default. There's no 'scanning the whole
+> device'; it only scans the last 4 blocks. But you're correct that it's
+> not ideal, since it will fail if there are 4 bad blocks at the end.
+> 
 
-Boris
+Yeah, I was completely wrong. Thanks for the insight!
 
-[1]http://lists.infradead.org/pipermail/linux-mtd/2014-March/052558.html
+> > > Is my understanding correct?
+> > > If yes, then this will not break backward compatibility, as on upgrading
+> > > the kernel new BBT will be automatically written on first boot. And
+> > > it will be used in subsequent boots.
+> > > Need feedbacks ...
+> > > 
+> > 
+> > In fact, you do have a simple way to solve this. Just support BBT through
+> > the "nand-on-flash-bbt" devicetree property, so a user can tell if his flash
+> > has a BBT or not. See pxa3xx-nand.c, which should be correct.
+> 
+> Yes, you can use the 'nand-on-flash-bbt' property, and that probably
+> makes the most sense.
+> 
+> The only real backwards-compatibility concern you'd have for
+> unconditionally enabling on-flash BBT (like in this patch) is if you had
+> previous file system data in the last 4 blocks; nand_bbt will just
+> clobber it, breaking your file system. For this reason, using DT is
+> probably a good idea -- you're opting in, rather than being forced in by
+> a kernel upgrade.
+> 
 
+FWIW, having the kernel wipe your precious data, is even worse than having
+him fail; which means this represents a much more serious drawback.
+This is why any modification to a NAND driver that involves a different
+'view' of the flash, should be considered with a lot of care!
+
+> Beyond the backwards-compatibility concern, you still have other
+> concerns about on-flash BBT's robustness. Limiting yourself to a region
+> of 4 blocks is one potential issue. There are others (e.g., lack of CRC
+> protection), but none that have been real show-stoppers. I have a few
+> generations of products running it here.
+> 
+
+Hm.. Can you guys mention what's the benefit of using a BBT, against keeping
+the bad block mark in the OOB region? (Other than the fact that some ECC
+strength may not leave any available OOB).
 -- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Ezequiel Garcia, VanguardiaSur
+www.vanguardiasur.com.ar
