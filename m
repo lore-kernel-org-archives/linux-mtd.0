@@ -1,21 +1,22 @@
-Received: from mga14.intel.com ([192.55.52.115])
+Received: from mga11.intel.com ([192.55.52.93])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XBnkC-0008I6-Gp
- for linux-mtd@lists.infradead.org; Mon, 28 Jul 2014 16:25:48 +0000
-Message-ID: <1406564713.23376.39.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v2] ubifs: refactor ubifs_file_mmap()
+ id 1XBnpo-0003DD-1K
+ for linux-mtd@lists.infradead.org; Mon, 28 Jul 2014 16:31:36 +0000
+Message-ID: <1406565071.23376.44.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] ubiblock: Support UBI volume name or volume ID
+ parameter passing
 From: Artem Bityutskiy <dedekind1@gmail.com>
 Reply-To: dedekind1@gmail.com
-To: Zhang Zhen <zhenzhang.zhang@huawei.com>
-Date: Mon, 28 Jul 2014 19:25:13 +0300
-In-Reply-To: <53CE049B.7050801@huawei.com>
-References: <1406010548-13996-1-git-send-email-zhenzhang.zhang@huawei.com>
- <53CE049B.7050801@huawei.com>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Date: Mon, 28 Jul 2014 19:31:11 +0300
+In-Reply-To: <20140721205306.GA24056@arch.cereza>
+References: <1397141020-6363-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1397472124.3287.6.camel@karhu> <20140721205306.GA24056@arch.cereza>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: wangnan0@huawei.com, MTD Maling List <linux-mtd@lists.infradead.org>,
- Adrian Hunter <adrian.hunter@intel.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ Guido =?ISO-8859-1?Q?Mart=EDnez?= <guido@vanguardiasur.com.ar>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,24 +26,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2014-07-22 at 14:28 +0800, Zhang Zhen wrote:
-> generic_file_mmap() set vma->vm_ops = &generic_file_vm_ops,
-> then ubifs_file_mmap set vma->vm_ops = &ubifs_file_vm_ops.
-> So it is redundant.
-> And there is no kind of file does not supply page reading function
-> in ubifs. The readpage() check up for mmap file in generic_file_mmap()
-> is not needed.
+On Mon, 2014-07-21 at 17:53 -0300, Ezequiel Garcia wrote:
+> Sorry for the delay on this one.
 > 
-> So remove the call of generic_file_mmap().
+> On 14 Apr 01:42 PM, Artem Bityutskiy wrote:
+> > On Thu, 2014-04-10 at 11:43 -0300, Ezequiel Garcia wrote:
+> > > +static int ubi_open_volume_by_id(libubi_t desc, const char *node, int vol_id, int mode)
+> > >  {
+> > > +       char file[256];
+> > > +       struct ubi_dev_info dev_info;
+> > >         int err, fd;
+> > > -       libubi_t libubi;
+> > >  
+> > > -       err = parse_opt(argc, argv);
+> > > +       err = ubi_get_dev_info(desc, node, &dev_info);
+> > >         if (err)
+> > > +               return errmsg("cannot get information about UBI device \"%s\"", node);
+> > > +
+> > > +       sprintf(file, "/dev/ubi%d_%d", dev_info.dev_num, vol_id);
+> > 
+> > Device node names may ve anything. Please, do not rely on the "/dev/ubi%
+> > d_%d" naming scheme in the tool.
+> > 
+> > I think device node can be found out by scanning "/dev" and looking at
+> > the device node major/minor numbers. This is more work of course.
+> > 
 > 
-> Change v1 -> v2:
-> - deleted the mapping variable
-> Signed-off-by: Zhang Zhen <zhenzhang.zhang@huawei.com>
+> Yeah, but the UBI major is allocated dynamically so we can't rely on that.
+> We would have to call an ioctl on each /dev device, which seems like a bit
+> heavy to me.
+> 
+> How about scanning out the sysfs and associate a name to the UBI device
+> and volume ID?
 
-Hi, I am not sure about this patch. 'generic_file_mmap()' covers !
-CONFIG_MMU case too, for example.
+What I meant is that you have these:
 
-Thanks!
+/sys/class/ubi/ubiX/dev
+
+and these
+
+/sys/class/ubi/ubiX/ubiX_Y/dev
+
+containing the "major:minor" pairs.
+
+For for any X:Y you can find major:minor. Then you scan "/dev" and find
+the device nodes, if they exist. If they do not exist, you may ask the
+user to create a device node with these major:minor in your error
+message.
+
 
 -- 
 Best Regards,
