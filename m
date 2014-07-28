@@ -1,8 +1,8 @@
-Received: from mail-by2lp0238.outbound.protection.outlook.com
- ([207.46.163.238] helo=na01-by2-obe.outbound.protection.outlook.com)
+Received: from mail-bl2lp0206.outbound.protection.outlook.com
+ ([207.46.163.206] helo=na01-bl2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XBmuM-000667-7K
- for linux-mtd@lists.infradead.org; Mon, 28 Jul 2014 15:32:14 +0000
+ id 1XBmuM-00066B-D0
+ for linux-mtd@lists.infradead.org; Mon, 28 Jul 2014 15:32:15 +0000
 From: Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>
 To: <robh+dt@kernel.org>, <pawel.moll@arm.com>, <mark.rutland@arm.com>,
  <ijc+devicetree@hellion.org.uk>, <galak@codeaurora.org>, <rob@landley.net>,
@@ -12,9 +12,11 @@ To: <robh+dt@kernel.org>, <pawel.moll@arm.com>, <mark.rutland@arm.com>,
  <computersforpeace@gmail.com>, <artem.bityutskiy@linux.intel.com>,
  <pekon@ti.com>, <jussi.kivilinna@iki.fi>, <acourbot@nvidia.com>,
  <ivan.khoronzhuk@ti.com>, <joern@logfs.org>
-Subject: [PATCH RFC v4 0/4] Add arm pl353 smc nand driver for xilinx zynq soc
-Date: Mon, 28 Jul 2014 21:01:36 +0530
-Message-ID: <5d452894-346b-45e7-afe4-28c67c59e563@BY2FFO11FD019.protection.gbl>
+Subject: [PATCH RFC v4 3/4] nand: pl353: Add ONDIE ECC support
+Date: Mon, 28 Jul 2014 21:01:39 +0530
+In-Reply-To: <1406561500-18264-1-git-send-email-punnaia@xilinx.com>
+References: <1406561500-18264-1-git-send-email-punnaia@xilinx.com>
+Message-ID: <27fce982-6598-44a0-ad80-c13d02a952ee@BN1AFFO11FD042.protection.gbl>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: devicetree@vger.kernel.org, linux-doc@vger.kernel.org, svemula@xilinx.com,
@@ -30,32 +32,237 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The following patches add arm pl353 static memory controller driver for
-xilinx zynq soc. The arm pl353 smc supports two interfaces i.e nand and
-nor/sram memory interfaces. The current implementation supports only a
-single SMC instance and nand specific configuration.
+Added ONDIE ECC support. Currently this ecc mode is supported for
+specific micron parts with oob size 64 bytes.
 
-xilinx zynq TRM link:
-http://www.xilinx.com/support/documentation/user_guides/ug585-Zynq-7000-TRM.pdf
+Signed-off-by: Punnaiah Choudary Kalluri <punnaia@xilinx.com>
+---
+Changes in v4:
+- Updated the driver to sync with pl353_smc driver APIs
+---
+ drivers/mtd/nand/pl353_nand.c |  162 ++++++++++++++++++++++++++++++++++++-----
+ 1 files changed, 144 insertions(+), 18 deletions(-)
 
-ARM pl353 smc TRM link:
-http://infocenter.arm.com/help/topic/com.arm.doc.ddi0380g/
-DDI0380G_smc_pl350_series_r2p1_trm.pdf
-
-Punnaiah Choudary Kalluri (4):
-  nand: pl353: Add basic driver for arm pl353 smc nand interface
-  nand: pl353: Add software ecc support
-  nand: pl353: Add ONDIE ECC support
-  Documentation: nand: pl353: Add documentation for controller and
-    driver
-
- Documentation/mtd/nand/pl353-nand.txt |   92 +++
- drivers/mtd/nand/Kconfig              |    7 +
- drivers/mtd/nand/Makefile             |    1 +
- drivers/mtd/nand/pl353_nand.c         | 1147 +++++++++++++++++++++++++++++++++
- 4 files changed, 1247 insertions(+), 0 deletions(-)
- create mode 100644 Documentation/mtd/nand/pl353-nand.txt
- create mode 100644 drivers/mtd/nand/pl353_nand.c
-
+diff --git a/drivers/mtd/nand/pl353_nand.c b/drivers/mtd/nand/pl353_nand.c
+index 93dc4ca..5c9b60d 100644
+--- a/drivers/mtd/nand/pl353_nand.c
++++ b/drivers/mtd/nand/pl353_nand.c
+@@ -140,6 +140,48 @@ static struct nand_ecclayout nand_oob_64 = {
+ 		 .length = 50} }
+ };
+ 
++static struct nand_ecclayout ondie_nand_oob_64 = {
++	.eccbytes = 32,
++
++	.eccpos = {
++		8, 9, 10, 11, 12, 13, 14, 15,
++		24, 25, 26, 27, 28, 29, 30, 31,
++		40, 41, 42, 43, 44, 45, 46, 47,
++		56, 57, 58, 59, 60, 61, 62, 63
++	},
++
++	.oobfree = {
++		{ .offset = 4, .length = 4 },
++		{ .offset = 20, .length = 4 },
++		{ .offset = 36, .length = 4 },
++		{ .offset = 52, .length = 4 }
++	}
++};
++
++/* Generic flash bbt decriptors */
++static uint8_t bbt_pattern[] = { 'B', 'b', 't', '0' };
++static uint8_t mirror_pattern[] = { '1', 't', 'b', 'B' };
++
++static struct nand_bbt_descr bbt_main_descr = {
++	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
++		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP,
++	.offs = 4,
++	.len = 4,
++	.veroffs = 20,
++	.maxblocks = 4,
++	.pattern = bbt_pattern
++};
++
++static struct nand_bbt_descr bbt_mirror_descr = {
++	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
++		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP,
++	.offs = 4,
++	.len = 4,
++	.veroffs = 20,
++	.maxblocks = 4,
++	.pattern = mirror_pattern
++};
++
+ /**
+  * pl353_nand_calculate_hwecc - Calculate Hardware ECC
+  * @mtd:	Pointer to the mtd_info structure
+@@ -816,15 +858,74 @@ static int pl353_nand_device_ready(struct mtd_info *mtd)
+ }
+ 
+ /**
++ * pl353_nand_detect_ondie_ecc - Get the flash ondie ecc state
++ * @mtd:	Pointer to the mtd_info structure
++ *
++ * This function enables the ondie ecc for the Micron ondie ecc capable devices
++ *
++ * Return:	1 on detect, 0 if fail to detect
++ */
++static int pl353_nand_detect_ondie_ecc(struct mtd_info *mtd)
++{
++	struct nand_chip *nand_chip = mtd->priv;
++	u8 maf_id, dev_id, i, get_feature;
++	u8 set_feature[4] = { 0x08, 0x00, 0x00, 0x00 };
++
++	/* Check if On-Die ECC flash */
++	nand_chip->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
++	nand_chip->cmdfunc(mtd, NAND_CMD_READID, 0x00, -1);
++
++	/* Read manufacturer and device IDs */
++	maf_id = readb(nand_chip->IO_ADDR_R);
++	dev_id = readb(nand_chip->IO_ADDR_R);
++
++	if ((maf_id == NAND_MFR_MICRON) &&
++	    ((dev_id == 0xf1) || (dev_id == 0xa1) ||
++	     (dev_id == 0xb1) || (dev_id == 0xaa) ||
++	     (dev_id == 0xba) || (dev_id == 0xda) ||
++	     (dev_id == 0xca) || (dev_id == 0xac) ||
++	     (dev_id == 0xbc) || (dev_id == 0xdc) ||
++	     (dev_id == 0xcc) || (dev_id == 0xa3) ||
++	     (dev_id == 0xb3) ||
++	     (dev_id == 0xd3) || (dev_id == 0xc3))) {
++
++		nand_chip->cmdfunc(mtd, NAND_CMD_GET_FEATURES,
++				   ONDIE_ECC_FEATURE_ADDR, -1);
++		get_feature = readb(nand_chip->IO_ADDR_R);
++
++		if (get_feature & 0x08) {
++			return 1;
++		} else {
++			nand_chip->cmdfunc(mtd, NAND_CMD_SET_FEATURES,
++					   ONDIE_ECC_FEATURE_ADDR, -1);
++			for (i = 0; i < 4; i++)
++				writeb(set_feature[i], nand_chip->IO_ADDR_W);
++
++			ndelay(1000);
++
++			nand_chip->cmdfunc(mtd, NAND_CMD_GET_FEATURES,
++					   ONDIE_ECC_FEATURE_ADDR, -1);
++			get_feature = readb(nand_chip->IO_ADDR_R);
++
++			if (get_feature & 0x08)
++				return 1;
++		}
++	}
++
++	return 0;
++}
++
++/**
+  * pl353_nand_ecc_init - Initialize the ecc information as per the ecc mode
+  * @mtd:	Pointer to the mtd_info structure
++ * @ondie_ecc_state:	ondie ecc status
+  *
+  * This function initializes the ecc block and functional pointers as per the
+  * ecc mode
+  *
+  * Return:	Zero on success and error on failure.
+  */
+-static int pl353_nand_ecc_init(struct mtd_info *mtd)
++static int pl353_nand_ecc_init(struct mtd_info *mtd, int ondie_ecc_state)
+ {
+ 	struct nand_chip *nand_chip = mtd->priv;
+ 	struct pl353_nand_info *xnand =
+@@ -838,27 +939,50 @@ static int pl353_nand_ecc_init(struct mtd_info *mtd)
+ 
+ 	switch (xnand->ecc_mode) {
+ 	case NAND_ECC_HW:
+-		if (mtd->writesize > 2048) {
++		if ((mtd->writesize > 2048) || ((ondie_ecc_state) &&
++						(mtd->oobsize != 64))) {
+ 			pr_warn("hardware ECC not possible\n");
+ 			return -ENOTSUPP;
+ 		}
+ 
+ 		nand_chip->ecc.mode = NAND_ECC_HW;
+-		nand_chip->ecc.calculate = pl353_nand_calculate_hwecc;
+-		nand_chip->ecc.correct = pl353_nand_correct_data;
+-		nand_chip->ecc.hwctl = NULL;
+-		nand_chip->ecc.read_page = pl353_nand_read_page_hwecc;
+-		nand_chip->ecc.size = PL353_NAND_ECC_SIZE;
+-		nand_chip->ecc.write_page = pl353_nand_write_page_hwecc;
+-		pl353_smc_set_ecc_pg_size(mtd->dev.parent, mtd->writesize);
+-		pl353_smc_set_ecc_mode(mtd->dev.parent, PL353_SMC_ECCMODE_APB);
+-		/* Hardware ECC generates 3 bytes ECC code for each 512 bytes */
+-		nand_chip->ecc.bytes = 3;
+-
+-		if (mtd->oobsize == 16)
+-			nand_chip->ecc.layout = &nand_oob_16;
+-		else
+-			nand_chip->ecc.layout = &nand_oob_64;
++		if (ondie_ecc_state) {
++			/* Bypass the controller ECC block */
++			pl353_smc_set_ecc_mode(mtd->dev.parent,
++						PL353_SMC_ECCMODE_BYPASS);
++			nand_chip->ecc.bytes = 0;
++			nand_chip->ecc.layout = &ondie_nand_oob_64;
++			nand_chip->ecc.read_page = pl353_nand_read_page_raw;
++			nand_chip->ecc.write_page = pl353_nand_write_page_raw;
++			nand_chip->ecc.size = mtd->writesize;
++			/*
++			 * On-Die ECC spare bytes offset 8 is used for ECC codes
++			 * Use the BBT pattern descriptors
++			 */
++			nand_chip->bbt_td = &bbt_main_descr;
++			nand_chip->bbt_md = &bbt_mirror_descr;
++		} else {
++			nand_chip->ecc.calculate = pl353_nand_calculate_hwecc;
++			nand_chip->ecc.correct = pl353_nand_correct_data;
++			nand_chip->ecc.hwctl = NULL;
++			nand_chip->ecc.read_page = pl353_nand_read_page_hwecc;
++			nand_chip->ecc.size = PL353_NAND_ECC_SIZE;
++			nand_chip->ecc.write_page = pl353_nand_write_page_hwecc;
++			pl353_smc_set_ecc_pg_size(mtd->dev.parent,
++							mtd->writesize);
++			pl353_smc_set_ecc_mode(mtd->dev.parent,
++							PL353_SMC_ECCMODE_APB);
++			/*
++			 * Hardware ECC generates 3 bytes ECC code for each
++			 * 512 bytes
++			 */
++			nand_chip->ecc.bytes = 3;
++
++			if (mtd->oobsize == 16)
++				nand_chip->ecc.layout = &nand_oob_16;
++			else
++				nand_chip->ecc.layout = &nand_oob_64;
++		}
+ 
+ 		break;
+ 	case NAND_ECC_SOFT:
+@@ -901,6 +1025,7 @@ static int pl353_nand_probe(struct platform_device *pdev)
+ 	struct nand_chip *nand_chip;
+ 	struct resource *res;
+ 	struct mtd_part_parser_data ppdata;
++	int ondie_ecc_state;
+ 
+ 	xnand = devm_kzalloc(&pdev->dev, sizeof(*xnand), GFP_KERNEL);
+ 	if (!xnand)
+@@ -944,6 +1069,7 @@ static int pl353_nand_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, xnand);
+ 
++	ondie_ecc_state = pl353_nand_detect_ondie_ecc(mtd);
+ 	/* first scan to find the device and get the page size */
+ 	if (nand_scan_ident(mtd, 1, NULL)) {
+ 		dev_err(&pdev->dev, "nand_scan_ident for NAND failed\n");
+@@ -954,7 +1080,7 @@ static int pl353_nand_probe(struct platform_device *pdev)
+ 	if (xnand->ecc_mode < 0)
+ 		xnand->ecc_mode = NAND_ECC_HW;
+ 
+-	if (pl353_nand_ecc_init(mtd))
++	if (pl353_nand_ecc_init(mtd, ondie_ecc_state))
+ 		return -ENOTSUPP;
+ 
+ 	if (nand_chip->options & NAND_BUSWIDTH_16)
 -- 
 1.7.4
