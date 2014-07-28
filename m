@@ -1,22 +1,19 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga02.intel.com ([134.134.136.20])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XBnpo-0003DD-1K
- for linux-mtd@lists.infradead.org; Mon, 28 Jul 2014 16:31:36 +0000
-Message-ID: <1406565071.23376.44.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] ubiblock: Support UBI volume name or volume ID
- parameter passing
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Date: Mon, 28 Jul 2014 19:31:11 +0300
-In-Reply-To: <20140721205306.GA24056@arch.cereza>
-References: <1397141020-6363-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1397472124.3287.6.camel@karhu> <20140721205306.GA24056@arch.cereza>
+ id 1XBoBz-0004kB-US
+ for linux-mtd@lists.infradead.org; Mon, 28 Jul 2014 16:54:33 +0000
+Message-ID: <1406566449.23376.61.camel@sauron.fi.intel.com>
+Subject: Re: Using UBIFS as an FTL
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Reply-To: artem.bityutskiy@linux.intel.com
+To: Daniel Ehrenberg <dehrenberg@google.com>
+Date: Mon, 28 Jul 2014 19:54:09 +0300
+In-Reply-To: <CAAK6Zt03J=0=tv5rPvZH0pTZWM8ha5eu0gqFbZ6P_FgSrgwW-A@mail.gmail.com>
+References: <CAAK6Zt03J=0=tv5rPvZH0pTZWM8ha5eu0gqFbZ6P_FgSrgwW-A@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- Guido =?ISO-8859-1?Q?Mart=EDnez?= <guido@vanguardiasur.com.ar>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,54 +23,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2014-07-21 at 17:53 -0300, Ezequiel Garcia wrote:
-> Sorry for the delay on this one.
+On Fri, 2014-07-25 at 11:21 -0700, Daniel Ehrenberg wrote:
+> Hi Artem, others,
 > 
-> On 14 Apr 01:42 PM, Artem Bityutskiy wrote:
-> > On Thu, 2014-04-10 at 11:43 -0300, Ezequiel Garcia wrote:
-> > > +static int ubi_open_volume_by_id(libubi_t desc, const char *node, int vol_id, int mode)
-> > >  {
-> > > +       char file[256];
-> > > +       struct ubi_dev_info dev_info;
-> > >         int err, fd;
-> > > -       libubi_t libubi;
-> > >  
-> > > -       err = parse_opt(argc, argv);
-> > > +       err = ubi_get_dev_info(desc, node, &dev_info);
-> > >         if (err)
-> > > +               return errmsg("cannot get information about UBI device \"%s\"", node);
-> > > +
-> > > +       sprintf(file, "/dev/ubi%d_%d", dev_info.dev_num, vol_id);
-> > 
-> > Device node names may ve anything. Please, do not rely on the "/dev/ubi%
-> > d_%d" naming scheme in the tool.
-> > 
-> > I think device node can be found out by scanning "/dev" and looking at
-> > the device node major/minor numbers. This is more work of course.
-> > 
-> 
-> Yeah, but the UBI major is allocated dynamically so we can't rely on that.
-> We would have to call an ioctl on each /dev device, which seems like a bit
-> heavy to me.
-> 
-> How about scanning out the sysfs and associate a name to the UBI device
-> and volume ID?
+> For my project, I'm looking into using ext4 on top of NAND flash, in
+> order to use some fancy ext4 features. For this, I need an FTL in the
+> middle. I'm wondering which would be good to use. Options that I've
+> looked at are:
+> - ubiblock--the read-modify-write sounds unacceptable to me, even if
+> wear leveling and atomicity are handled.
 
-What I meant is that you have these:
+This may not give you the optimal performance.
 
-/sys/class/ubi/ubiX/dev
+> - Some coworkers have suggested a new effort to build a new block
+> device, but that that's a huge project and takes a long time to get
+> right.
 
-and these
+Yes.
 
-/sys/class/ubi/ubiX/ubiX_Y/dev
+> - loopback-mounting a file on ubifs--From skimming the code, it looks
+> to me like ubifs uses some nice datastructures to handle writes within
+> a file without doing read-modify-writes all the time as ubiblock
+> forces. ubifs authors/maintainers, do you see any downside to using
+> ubifs this way?
 
-containing the "major:minor" pairs.
+I never tried loopback over UBIFS. Should work in theory.
+Synchronization (as in 'fsync()') is something which comes to mind.
 
-For for any X:Y you can find major:minor. Then you scan "/dev" and find
-the device nodes, if they exist. If they do not exist, you may ask the
-user to create a device node with these major:minor in your error
-message.
+What I mean is that when ext4 handles an fsync(), or a commit, it
+eventually needs to make sure the data goes to the underlying media. It
+sends REQ_FLUSH bios, and it seems that the loopback driver will map
+that to UBIFS's 'vfs_fsync()'. That should be fine, but may be too
+coarse? You could just write the right pages instead, to gain better
+performance?
 
+Then ext4 commit has various ordering requirements, and I do not know
+how this works with loopback.
+
+This all matters if you need to have some kind of power-cut tolerance.
+
+Thanks!
 
 -- 
 Best Regards,
