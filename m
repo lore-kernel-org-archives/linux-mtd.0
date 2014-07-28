@@ -1,31 +1,27 @@
-Date: Sun, 27 Jul 2014 22:31:15 -0700
+Received: from mail-pa0-x236.google.com ([2607:f8b0:400e:c03::236])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XBe8m-0007gS-Vf
+ for linux-mtd@lists.infradead.org; Mon, 28 Jul 2014 06:10:37 +0000
+Received: by mail-pa0-f54.google.com with SMTP id fa1so9942865pad.27
+ for <linux-mtd@lists.infradead.org>; Sun, 27 Jul 2014 23:10:10 -0700 (PDT)
+Date: Sun, 27 Jul 2014 23:10:06 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Lothar =?iso-8859-1?Q?Wa=DFmann?= <LW@KARO-electronics.de>
-Subject: Re: [PATCHv4 0/5] mtd: gpmi: make blockmark swapping optional
-Message-ID: <20140728053115.GB3095@norris-Latitude-E6410>
-References: <1402579245-13377-1-git-send-email-LW@KARO-electronics.de>
+To: bpqw <bpqw@micron.com>
+Subject: Re: Subject: [PATCH 1/1] mtd:nand:fix nand_lock/unlock() function
+Message-ID: <20140728061006.GC3095@norris-Latitude-E6410>
+References: <CB9F11E856CFD04BB18EC1C68F2598931B1112@NTXXIAMBX01.xacn.micron.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1402579245-13377-1-git-send-email-LW@KARO-electronics.de>
-Cc: Mark Rutland <mark.rutland@arm.com>,
- Boris BREZILLON <b.brezillon.dev@gmail.com>, linux-doc@vger.kernel.org,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Wei Yongjun <yongjun_wei@trendmicro.com.cn>, linux-mtd@lists.infradead.org,
- Michael Grzeschik <m.grzeschik@pengutronix.de>,
- Russell King <linux@arm.linux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
- Jingoo Han <jg1.han@samsung.com>, Shawn Guo <shawn.guo@freescale.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Michael Opdenacker <michael.opdenacker@free-electrons.com>,
- Grant Likely <grant.likely@linaro.org>, devicetree@vger.kernel.org,
- Sascha Hauer <kernel@pengutronix.de>, Pawel Moll <pawel.moll@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>, Rob Herring <robh+dt@kernel.org>,
- linux-arm-kernel@lists.infradead.org,
- Fabio Estevam <fabio.estevam@freescale.com>, linux-kernel@vger.kernel.org,
- Huang Shijie <b32955@freescale.com>, Rob Landley <rob@landley.net>,
- Kumar Gala <galak@codeaurora.org>, Shawn Guo <shawn.guo@linaro.org>,
- David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <CB9F11E856CFD04BB18EC1C68F2598931B1112@NTXXIAMBX01.xacn.micron.com>
+Cc: "ron@debian.org" <ron@debian.org>,
+ "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "b32955@freescale.com" <b32955@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "ezequiel.garcia@free-electrons.com" <ezequiel.garcia@free-electrons.com>,
+ "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,13 +31,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jun 12, 2014 at 03:20:40PM +0200, Lothar Waßmann wrote:
-> With a flash-based BBT there is no reason to move the Factory Bad
-> Block Marker from the data area buffer (to where it is mapped by the
-> GPMI NAND controller) to the OOB buffer. Thus, make this feature
-> configurable via DT. This is required for the Ka-Ro electronics
-> i.MX6 platforms.
+Hi White,
 
-Pushed patches 1-3 to l2-mtd.git. Thanks!
+You've responded to one of my messages, but your mail server is also
+sending bounce replies. You might want to contact your I.T. about this.
+(I'll let you know if I ever stop getting bounces.)
+
+On Thu, Jul 24, 2014 at 01:00:01AM +0000, bpqw wrote:
+> Do nand reset before write protect check
+> If we want to check the WP# low or high through STATUS READ and check bit 7,
+> we must reset the device, other operation (eg.erase/program a locked block) can
+> also clear the bit 7 of status register.
+
+This description doesn't really tell me why we need this patch.
+
+First of all, where is the 'lock' sequence specified? I see the commit
+that introduced nand_lock() (without any users) which says Micron parts
+support it, but I don't see it documented in the datasheet:
+
+  commit 7d70f334ad2bf1b3aaa1f0699c0f442e14bcc9e0
+  Author: Vimal Singh <vimal.newwork@gmail.com>
+  Date:   Mon Feb 8 15:50:49 2010 +0530
+
+      mtd: nand: add lock/unlock routines
+
+Now, supposing this is documented somewhere, are you seeing some kind of
+out-of-spec behavior? Is this a controller quirk you're seeing? Why
+should I need to reset the chip? I would presume that 
+
+  chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
+
+would refresh the status properly. Is that not the case?
+
+> Signed-off-by: White Ding <bpqw@micron.com>
+> ---
+>  drivers/mtd/nand/nand_base.c |   18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+> 
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 41167e9..22dd3aa 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -965,6 +965,15 @@ int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+>  
+>  	chip->select_chip(mtd, chipnr);
+>  
+> +	/*
+> +	 * Reset the chip.
+> +	 * If we want to check the WP through READ STATUS and check the bit 7
+> +	 * we must reset the chip
+> +	 * some operation can also clear the bit 7 of status register
+> +	 * eg. erase/program a locked block
+> +	 */
+> +	chip->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
+> +
+>  	/* Check, if it is write protected */
+>  	if (nand_check_wp(mtd)) {
+>  		pr_debug("%s: device is write protected!\n",
+> @@ -1015,6 +1024,15 @@ int nand_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+>  
+>  	chip->select_chip(mtd, chipnr);
+>  
+> +	/*
+> +	 * Reset the chip.
+> +	 * If we want to check the WP through READ STATUS and check the bit 7
+> +	 * we must reset the chip
+> +	 * some operation can also clear the bit 7 of status register
+> +	 * eg. erase/program a locked block
+> +	 */
+> +	chip->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
+> +
+>  	/* Check, if it is write protected */
+>  	if (nand_check_wp(mtd)) {
+>  		pr_debug("%s: device is write protected!\n",
 
 Brian
