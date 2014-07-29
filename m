@@ -1,21 +1,23 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga01.intel.com ([192.55.52.88])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XC1eH-0000NF-4s
- for linux-mtd@lists.infradead.org; Tue, 29 Jul 2014 07:16:37 +0000
-Message-ID: <1406618172.23376.78.camel@sauron.fi.intel.com>
-Subject: Re: Using UBIFS as an FTL
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Reply-To: artem.bityutskiy@linux.intel.com
-To: Daniel Ehrenberg <dehrenberg@google.com>
-Date: Tue, 29 Jul 2014 10:16:12 +0300
-In-Reply-To: <CAAK6Zt0NHgyiRCGxpdbFgJ49P2bd8nKhqm13uP8pzHCFmjNgJQ@mail.gmail.com>
-References: <CAAK6Zt03J=0=tv5rPvZH0pTZWM8ha5eu0gqFbZ6P_FgSrgwW-A@mail.gmail.com>
- <1406566449.23376.61.camel@sauron.fi.intel.com>
- <CAAK6Zt0NHgyiRCGxpdbFgJ49P2bd8nKhqm13uP8pzHCFmjNgJQ@mail.gmail.com>
+ id 1XC1iR-0002sh-Ne
+ for linux-mtd@lists.infradead.org; Tue, 29 Jul 2014 07:20:56 +0000
+Message-ID: <1406618431.23376.81.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v2] ubifs: refactor ubifs_file_mmap()
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Zhang Zhen <zhenzhang.zhang@huawei.com>
+Date: Tue, 29 Jul 2014 10:20:31 +0300
+In-Reply-To: <53D71A0F.9070008@huawei.com>
+References: <1406010548-13996-1-git-send-email-zhenzhang.zhang@huawei.com>
+ <53CE049B.7050801@huawei.com>
+ <1406564713.23376.39.camel@sauron.fi.intel.com>
+ <53D71A0F.9070008@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: wangnan0@huawei.com, MTD Maling List <linux-mtd@lists.infradead.org>,
+ Adrian Hunter <adrian.hunter@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,49 +27,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2014-07-28 at 10:47 -0700, Daniel Ehrenberg wrote:
-> My understanding of ubiblock is that, when you do 4k writes scattered
-> around the device, they will magnify into block-sized
-> read-modify-writes. This causes ~64x as much wear (depending on the
-> device type) and goes at 1/64th the speed.
+On Tue, 2014-07-29 at 11:50 +0800, Zhang Zhen wrote:
+> On 2014/7/29 0:25, Artem Bityutskiy wrote:
+> > On Tue, 2014-07-22 at 14:28 +0800, Zhang Zhen wrote:
+> >> generic_file_mmap() set vma->vm_ops = &generic_file_vm_ops,
+> >> then ubifs_file_mmap set vma->vm_ops = &ubifs_file_vm_ops.
+> >> So it is redundant.
+> >> And there is no kind of file does not supply page reading function
+> >> in ubifs. The readpage() check up for mmap file in generic_file_mmap()
+> >> is not needed.
+> >>
+> >> So remove the call of generic_file_mmap().
+> >>
+> >> Change v1 -> v2:
+> >> - deleted the mapping variable
+> >> Signed-off-by: Zhang Zhen <zhenzhang.zhang@huawei.com>
+> > 
+> > Hi, I am not sure about this patch. 'generic_file_mmap()' covers !
+> > CONFIG_MMU case too, for example.
+> > 
+> Yes, I missed that. We can add #ifdef CONFIG_MMU in ubifs_file_mmap().
+> Considering the patch itself is not important changes, we can give up
+> this patch, remain the same.
+> 
+> What do you think?
 
-Yes, I think so.
-
->  I don't think I could
-> change ubiblock to not have this property because that wouldn't be
-> backwards-compatible--I'd need an extra layer of indirection to
-> separate logical pages from logical erase blocks.
-
-Say, ext4 can mount ancient ext3 images, and it supports many media
-formats, etc. Some thing like this could in theory be done with
-ubiblock. But this is not necessarily the _best_ way to go.
-
->  Isn't ubiblock
-> usable for, say, copying off or on a ubifs filesystem image?
-
-To copy the UBIFS image you can just read from the underlying UBI device
-(/dev/ubiX_Y).
-
->  I
-> wouldn't want to remove that functionality (and maybe I'll end up
-> using it). It just seems like ubiblock and a real FTL need totally
-> different pieces of software.
-
-There are many aspects in FTL - how it scales WRT mount time, memory
-consumption, etc. If someone decides to tackle only one small aspect at
-a time, may be it makes sense to keep adding relatively small
-improvements to ubiblock, maintain backward compatibility, several
-on-the-media formats, etc. Keep adding features and keep doing
-improvements.
-
-But if a couple of smart folks decide to spend a year and create
-something several orders of magnitude more superior, it is probably more
-feasible to just implement a separate driver, say ubiftl or whatever.
-
-If you ask me, I'd say it is largely up to the people doing the actual
-work. Although talking to the community is a good idea in any case :-)
-
-Thanks!
+I think it is better to leave it as it is, because that's not too bad
+and works. Changing this has a risk of breaking something. UBIFS does
+not enjoy a huge user base like, say, ext4, so the breakage could easily
+go unnoticed for long time.
 
 -- 
 Best Regards,
