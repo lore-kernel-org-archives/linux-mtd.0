@@ -1,41 +1,21 @@
-Received: from mail.karo-electronics.de ([81.173.242.67])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XC0zM-000740-Uj
- for linux-mtd@lists.infradead.org; Tue, 29 Jul 2014 06:34:21 +0000
-Date: Tue, 29 Jul 2014 08:31:45 +0200
-From: Lothar =?UTF-8?B?V2HDn21hbm4=?= <LW@KARO-electronics.de>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCHv4 5/5] mtd: gpmi: prevent creating a new BBT when
- blockmark swapping is disabled
-Message-ID: <20140729083145.647b77fc@ipc1.ka-ro>
-In-Reply-To: <20140728052906.GA3095@norris-Latitude-E6410>
-References: <1402579245-13377-1-git-send-email-LW@KARO-electronics.de>
- <1402579245-13377-2-git-send-email-LW@KARO-electronics.de>
- <1402579245-13377-3-git-send-email-LW@KARO-electronics.de>
- <1402579245-13377-4-git-send-email-LW@KARO-electronics.de>
- <1402579245-13377-5-git-send-email-LW@KARO-electronics.de>
- <1402579245-13377-6-git-send-email-LW@KARO-electronics.de>
- <20140728052906.GA3095@norris-Latitude-E6410>
+Received: from mga02.intel.com ([134.134.136.20])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XC1eH-0000NF-4s
+ for linux-mtd@lists.infradead.org; Tue, 29 Jul 2014 07:16:37 +0000
+Message-ID: <1406618172.23376.78.camel@sauron.fi.intel.com>
+Subject: Re: Using UBIFS as an FTL
+From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Reply-To: artem.bityutskiy@linux.intel.com
+To: Daniel Ehrenberg <dehrenberg@google.com>
+Date: Tue, 29 Jul 2014 10:16:12 +0300
+In-Reply-To: <CAAK6Zt0NHgyiRCGxpdbFgJ49P2bd8nKhqm13uP8pzHCFmjNgJQ@mail.gmail.com>
+References: <CAAK6Zt03J=0=tv5rPvZH0pTZWM8ha5eu0gqFbZ6P_FgSrgwW-A@mail.gmail.com>
+ <1406566449.23376.61.camel@sauron.fi.intel.com>
+ <CAAK6Zt0NHgyiRCGxpdbFgJ49P2bd8nKhqm13uP8pzHCFmjNgJQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Mark Rutland <mark.rutland@arm.com>,
- Boris BREZILLON <b.brezillon.dev@gmail.com>, linux-doc@vger.kernel.org,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Wei Yongjun <yongjun_wei@trendmicro.com.cn>, linux-mtd@lists.infradead.org,
- Michael Grzeschik <m.grzeschik@pengutronix.de>,
- Russell King <linux@arm.linux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
- Jingoo Han <jg1.han@samsung.com>, Shawn Guo <shawn.guo@freescale.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Michael Opdenacker <michael.opdenacker@free-electrons.com>,
- Grant Likely <grant.likely@linaro.org>, devicetree@vger.kernel.org,
- Sascha Hauer <kernel@pengutronix.de>, Pawel Moll <pawel.moll@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>, Rob Herring <robh+dt@kernel.org>,
- linux-arm-kernel@lists.infradead.org,
- Fabio Estevam <fabio.estevam@freescale.com>, linux-kernel@vger.kernel.org,
- Huang Shijie <b32955@freescale.com>, Rob Landley <rob@landley.net>,
- Kumar Gala <galak@codeaurora.org>, Shawn Guo <shawn.guo@linaro.org>,
- David Woodhouse <dwmw2@infradead.org>
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -45,118 +25,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Mon, 2014-07-28 at 10:47 -0700, Daniel Ehrenberg wrote:
+> My understanding of ubiblock is that, when you do 4k writes scattered
+> around the device, they will magnify into block-sized
+> read-modify-writes. This causes ~64x as much wear (depending on the
+> device type) and goes at 1/64th the speed.
 
-Brian Norris wrote:
-> Hi Lothar,
->=20
-> On Thu, Jun 12, 2014 at 03:20:45PM +0200, Lothar Wa=C3=9Fmann wrote:
-> > Without blockmark swapping, there is no use in creating a BBT from
-> > scratch, so use a BBT descriptor with NAND_BBT_CREATE unset in this
-> > case.
->=20
-> I'm curious: what is your plan if there is no BBT available on your
-> device, or if it ever gets corrupted? IIUC, nand_bbt will just assume
-> you have no bad blocks, and it will never write a bad block table to
-> flash. This also means no subsequent discoverable bad blocks can be
-> recorded across power cycles, I believe.
->=20
-That won't happen (unless it's not possible to create a BBT because all
-the possible blocks for the BBT are bad), because the bootloader will
-have created one before Linux is started.
+Yes, I think so.
 
-> Maybe you don't want to specify your own nand_bbt_descr's at all, but
-> you just need to set:
->=20
-> 	chip->bbt_options |=3D NAND_BBT_CREATE_EMPTY | NAND_BBT_NO_OOB;
->=20
-> (Note: there's a little bit of fuzziness about NAND_BBT_* flags, where
-> some are targeted for the nand_chip::bbt_options field, and others
-> belong in struct nand_bbt_descr::options.)
->=20
-> But if for some reason we need to keep this patch, a comment below:
->=20
-> > Signed-off-by: Lothar Wa=C3=9Fmann <LW@KARO-electronics.de>
-> > ---
-> >  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |   28 ++++++++++++++++++++++++=
-+++-
-> >  1 file changed, 27 insertions(+), 1 deletion(-)
-> >=20
-> > diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/=
-gpmi-nand/gpmi-nand.c
-> > index 37537b4..fc710d7 100644
-> > --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> > +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> > @@ -43,6 +43,29 @@ static struct nand_bbt_descr gpmi_bbt_descr =3D {
-> >  	.pattern	=3D scan_ff_pattern
-> >  };
-> > =20
-> > +static uint8_t bbt_pattern[] =3D {'B', 'b', 't', '0' };
-> > +static uint8_t mirror_pattern[] =3D {'1', 't', 'b', 'B' };
-> > +
-> > +static struct nand_bbt_descr bbt_main_no_oob_descr =3D {
-> > +	.options =3D NAND_BBT_LASTBLOCK | NAND_BBT_WRITE |
-> > +	NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP |
-> > +	NAND_BBT_NO_OOB,
->=20
-> Please indent the above two lines a bit, preferably matching the
-> indentation of NAND_BBT_LASTBLOCK. It should be clear that this is a
-> continuation of the '.options' initialization.
->=20
-OK.
+>  I don't think I could
+> change ubiblock to not have this property because that wouldn't be
+> backwards-compatible--I'd need an extra layer of indirection to
+> separate logical pages from logical erase blocks.
 
-> > +	.len =3D 4,
-> > +	.veroffs =3D 4,
-> > +	.maxblocks =3D NAND_BBT_SCAN_MAXBLOCKS,
-> > +	.pattern =3D bbt_pattern,
-> > +};
-> > +
-> > +static struct nand_bbt_descr bbt_mirror_no_oob_descr =3D {
-> > +	.options =3D NAND_BBT_LASTBLOCK | NAND_BBT_WRITE |
-> > +	NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP |
-> > +	NAND_BBT_NO_OOB,
->=20
-> Same here.
->=20
-> > +	.len =3D 4,
-> > +	.veroffs =3D 4,
-> > +	.maxblocks =3D NAND_BBT_SCAN_MAXBLOCKS,
-> > +	.pattern =3D mirror_pattern,
-> > +};
-> > +
-> >  /*
-> >   * We may change the layout if we can get the ECC info from the datash=
-eet,
-> >   * else we will use all the (page + OOB).
-> > @@ -1728,8 +1751,11 @@ static int gpmi_nand_init(struct gpmi_nand_data =
-*this)
-> >  			chip->bbt_options |=3D NAND_BBT_NO_OOB_BBM;
-> > =20
-> >  		if (of_property_read_bool(this->dev->of_node,
-> > -						"fsl,no-blockmark-swap"))
-> > +						"fsl,no-blockmark-swap")) {
-> >  			this->swap_block_mark =3D false;
-> > +			chip->bbt_td =3D &bbt_main_no_oob_descr;
-> > +			chip->bbt_md =3D &bbt_mirror_no_oob_descr;
->=20
-> My initial recommendation for this patch and the previous patch means
-> that you could just drop both patches and replace them with the
-> following:
->=20
-> 			/* Comment here to explain why... */
-> 			chip->bbt_options |=3D NAND_BBT_CREATE_EMPTY |
-> 					     NAND_BBT_NO_OOB |
-> 					     NAND_BBT_NO_OOB_BBM;
-OK.
+Say, ext4 can mount ancient ext3 images, and it supports many media
+formats, etc. Some thing like this could in theory be done with
+ubiblock. But this is not necessarily the _best_ way to go.
 
-Lothar Wa=C3=9Fmann
---=20
-___________________________________________________________
+>  Isn't ubiblock
+> usable for, say, copying off or on a ubifs filesystem image?
 
-Ka-Ro electronics GmbH | Pascalstra=C3=9Fe 22 | D - 52076 Aachen
-Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
-Gesch=C3=A4ftsf=C3=BChrer: Matthias Kaussen
-Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
+To copy the UBIFS image you can just read from the underlying UBI device
+(/dev/ubiX_Y).
 
-www.karo-electronics.de | info@karo-electronics.de
-___________________________________________________________
+>  I
+> wouldn't want to remove that functionality (and maybe I'll end up
+> using it). It just seems like ubiblock and a real FTL need totally
+> different pieces of software.
+
+There are many aspects in FTL - how it scales WRT mount time, memory
+consumption, etc. If someone decides to tackle only one small aspect at
+a time, may be it makes sense to keep adding relatively small
+improvements to ubiblock, maintain backward compatibility, several
+on-the-media formats, etc. Keep adding features and keep doing
+improvements.
+
+But if a couple of smart folks decide to spend a year and create
+something several orders of magnitude more superior, it is probably more
+feasible to just implement a separate driver, say ubiftl or whatever.
+
+If you ask me, I'd say it is largely up to the people doing the actual
+work. Although talking to the community is a good idea in any case :-)
+
+Thanks!
+
+-- 
+Best Regards,
+Artem Bityutskiy
