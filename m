@@ -1,20 +1,33 @@
-Received: from szxga01-in.huawei.com ([119.145.14.64])
+Received: from mho-03-ewr.mailhop.org ([204.13.248.66]
+ helo=mho-01-ewr.mailhop.org)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XC4db-0007xc-Si
- for linux-mtd@lists.infradead.org; Tue, 29 Jul 2014 10:28:08 +0000
-Message-ID: <53D776FB.1040301@huawei.com>
-Date: Tue, 29 Jul 2014 18:27:07 +0800
-From: hujianyang <hujianyang@huawei.com>
+ id 1XC4ps-0007Wm-Mb
+ for linux-mtd@lists.infradead.org; Tue, 29 Jul 2014 10:40:49 +0000
+Date: Tue, 29 Jul 2014 03:39:00 -0700
+From: Tony Lindgren <tony@atomide.com>
+To: Roger Quadros <rogerq@ti.com>
+Subject: Re: [RFC PATCH 00/10] OMAP: GPMC: NAND: Introduce GPMC APIs for OMAP
+ NAND
+Message-ID: <20140729103900.GL29045@atomide.com>
+References: <1404909450-11970-1-git-send-email-rogerq@ti.com>
+ <20140711065211.GK28884@atomide.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EB01DD5@DBDE04.ent.ti.com>
+ <53BFA038.5010903@ti.com>
+ <20980858CB6D3A4BAE95CA194937D5E73EB01EC6@DBDE04.ent.ti.com>
+ <53BFBB1F.9000901@ti.com>
 MIME-Version: 1.0
-To: <dedekind1@gmail.com>
-Subject: Re: [PATCH 2/2] UBIFS: add a log overlap assertion
-References: <1405514528-14649-1-git-send-email-dedekind1@gmail.com>
- <1405514528-14649-2-git-send-email-dedekind1@gmail.com>
- <53CDBFDB.6080300@huawei.com> <1406564281.23376.35.camel@sauron.fi.intel.com>
-In-Reply-To: <1406564281.23376.35.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <53BFBB1F.9000901@ti.com>
+Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ "jg1.han@samsung.com" <jg1.han@samsung.com>, "Nori, Sekhar" <nsekhar@ti.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Gupta,
+ Pekon" <pekon@ti.com>,
+ "ezequiel.garcia@free-electrons.com" <ezequiel.garcia@free-electrons.com>,
+ "javier@dowhile0.org" <javier@dowhile0.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,16 +37,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+* Roger Quadros <rogerq@ti.com> [140711 03:25]:
+> On 07/11/2014 12:42 PM, Gupta, Pekon wrote:
+> >
+> > Therefore, I suggest you to move following code from NAND driver to
+> > GPMC driver, nothing other than. And this exported function does not
+> > need any NAND framework information, except number_of_sectors.
 > 
-> Would you please re-send your patch with proper commit message, etc, so
-> that I could 'git am' it. This time I'd like to apply a patch which has
-> been tested. Thanks!
->
+> Well I you have still not pointed out what is the benefit of that approach or what are the problems with the approach I am suggesting.
+> 
+> I am suggesting that the API just return the ECC/BCH result registers as it is.
+> You are suggesting that the API do the calculations and return the NAND ready ECC buffer.
+> 
+> To do the calculations it needs to know about the ECC scheme which is NAND controller specific and this is unnecessary in the GPMC driver.
+> 
+> Tony, what is your opinion?
 
-I've tested this patch and resend it.
+As long as the GPMC registers are exposed to drivers in a controlled
+way and we have only one driver using the ECC registers, I don't care.
 
-I don't think you can just am it because you know, I'm not very
-good at English. So I think you should change some comments as
-before. Sorry for that, and thanks for your help these days.
+Regards,
 
-I'd like to improve my English but it needs some time. -.-
+Tony
