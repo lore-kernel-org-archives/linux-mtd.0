@@ -1,19 +1,20 @@
-Received: from szxga03-in.huawei.com ([119.145.14.66])
+Received: from szxga02-in.huawei.com ([119.145.14.65])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XCJEK-0007OR-NY
- for linux-mtd@lists.infradead.org; Wed, 30 Jul 2014 02:03:01 +0000
-Message-ID: <53D85203.7030302@huawei.com>
-Date: Wed, 30 Jul 2014 10:01:39 +0800
+ id 1XCJVJ-000526-HE
+ for linux-mtd@lists.infradead.org; Wed, 30 Jul 2014 02:20:34 +0000
+Message-ID: <53D85633.1020603@huawei.com>
+Date: Wed, 30 Jul 2014 10:19:31 +0800
 From: hujianyang <hujianyang@huawei.com>
 MIME-Version: 1.0
-To: Bill Pringlemeir <bpringlemeir@nbsps.com>
+To: Richard Weinberger <richard.weinberger@gmail.com>
 Subject: Re: [PATCH RFC v2] UBI: New ioctl() to support ubidump
 References: <53D7677A.6000905@huawei.com> <53D768B5.6090409@huawei.com>
- <87vbqgb4re.fsf@nbsps.com>
-In-Reply-To: <87vbqgb4re.fsf@nbsps.com>
-Content-Type: text/plain; charset="ISO-8859-1"
+ <CAFLxGvy6tYQnPMA2VKw8frfAQf7rN6jk72eDZ18n9sAp3Zq8XQ@mail.gmail.com>
+In-Reply-To: <CAFLxGvy6tYQnPMA2VKw8frfAQf7rN6jk72eDZ18n9sAp3Zq8XQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ Bill Pringlemeir <bpringlemeir@nbsps.com>,
  Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,24 +26,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 > 
-> I think a patch to 'ubi_scan()' to create an 'pmap' array might be
-> better or more accepted than a Linux/MTD/UBI patch?  Then only the
-> 'ubidump' code is needed and not a properly configured/versioned kernel;
-> or at least only the nandsim module which is similar to some other
-> utilities.  If you had a 'ubi_scan()' which has an 'info->pmap[leb]'
-> which had,
+> Isn't this racy?
+> i.e. If a LEB change happens between ubi_is_mapped() and "pnum =
+> vol->eba_tbl[req.lnum]".
 > 
 
-Yes, I think you are right~! I don't want this utility can't be run
-without a properly configured kernel and this full-scan method will
-be used again when we dumping with an image file.
+As I was writing this code, I used this ubi_is_mapped() to make sure
+lnum is less than @vol->reserved_pebs and !@vol->upd_marker in order
+to avoid kernel panic when we get pnum from eba_tbl.
 
-But I'm worry about the performance. As we dump one specified peb
-now, we can't record the mapping table and need to do full scan
-each time running this utility.
+Even we locked this ioctl, peb may also be changed before we read it
+from MTD. That's why I didn't focus on this race. We can use some
+condition check to make sure this vol is not mounted but user may use
+this utility on rootfs.
 
-Anyway, I will try what you said first~!
+Bill showed me a new method to get pnum without UBI driver. I will
+try that first but this new method can't avoid peb changes before
+we read it either. We should consider more on it.
 
-Thanks~!
+Thanks!
 
 Hu
