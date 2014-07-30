@@ -1,24 +1,22 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XCUwL-00022N-SV
- for linux-mtd@lists.infradead.org; Wed, 30 Jul 2014 14:33:14 +0000
-Date: Wed, 30 Jul 2014 11:31:06 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH v2 for v3.15 0/3] UBI: block: Support very large volumes
-Message-ID: <20140730143106.GB3576@arch.cereza>
-References: <1399284714-6283-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1401188546.1304.128.camel@sauron.fi.intel.com>
- <20140527123017.GA1655@arch.cereza>
- <20140725231001.GA29798@arch.cereza>
- <1406563525.23376.32.camel@sauron.fi.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1406563525.23376.32.camel@sauron.fi.intel.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+ id 1XCVLs-0004dv-5d
+ for linux-mtd@lists.infradead.org; Wed, 30 Jul 2014 14:59:36 +0000
+Date: Wed, 30 Jul 2014 16:59:12 +0200
+From: Boris BREZILLON <boris.brezillon@free-electrons.com>
+To: Boris BREZILLON <boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH 2/2] mtd: nand: add Hynix's H27UCG8T2ATR-BC to nand_ids
+ table
+Message-ID: <20140730165912.74e81f4c@bbrezillon>
+In-Reply-To: <1406539012-16320-3-git-send-email-boris.brezillon@free-electrons.com>
+References: <1406539012-16320-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1406539012-16320-3-git-send-email-boris.brezillon@free-electrons.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,56 +26,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 28 Jul 07:05 PM, Artem Bityutskiy wrote:
-> On Fri, 2014-07-25 at 20:10 -0300, Ezequiel Garcia wrote:
-> > I think this series got lost :-(
-> > 
-> > It's not in today's -next, and I'm looking at your pull for v3.16 and it's
-> > not there either. It seems I overlooked it, and realised just now, just before
-> > sending a new fix.
-> > 
-> > Any idea what happened?
+On Mon, 28 Jul 2014 11:16:52 +0200
+Boris BREZILLON <boris.brezillon@free-electrons.com> wrote:
+
+> Add the full description of the Hynix H27UCG8T2ATR-BC NAND chip in the
+> nand_ids table so that we can later use the NAND ECC infos and ONFI timings
+> mode in controller drivers.
 > 
-> Shame, but no idea. May be I applied them on a laptop, and forgot to
-> push, and then never noticed. Anyway, sorry, just applied and pushed
-> out.
+> Signed-off-by: Boris BREZILLON <boris.brezillon@free-electrons.com>
+> ---
+>  drivers/mtd/nand/nand_ids.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
+> diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
+> index 3d7c89f..19d4168 100644
+> --- a/drivers/mtd/nand/nand_ids.c
+> +++ b/drivers/mtd/nand/nand_ids.c
+> @@ -46,6 +46,10 @@ struct nand_flash_dev nand_flash_ids[] = {
+>  	{"SDTNRGAMA 64G 3.3V 8-bit",
+>  		{ .id = {0x45, 0xde, 0x94, 0x93, 0x76, 0x50} },
+>  		  SZ_16K, SZ_8K, SZ_4M, 0, 6, 1280, NAND_ECC_INFO(40, SZ_1K) },
+> +	{"H27UCG8T2ATR-BC 64G 3.3V 8-bit",
+> +		{ .id = {0xad, 0xde, 0x94, 0xda, 0x74, 0xc4} },
+> +		  SZ_8K, SZ_8K, SZ_4M, 0, 6, 640, NAND_ECC_INFO(40, SZ_1K),
 
-Cool, no problem.
+There is a big mistake here ------^
 
-> >  	return 0;
-> > @@ -412,7 +412,7 @@ int ubiblock_create(struct ubi_volume_info *vi)
-> >  	gd->first_minor = dev->ubi_num * UBI_MAX_VOLUMES + dev->vol_id;
-> >  	gd->private_data = dev;
-> >  	sprintf(gd->disk_name, "ubiblock%d_%d", dev->ubi_num, dev->vol_id);
-> > -	disk_capacity = (vi->size * vi->usable_leb_size) >> 9;
-> > +	disk_capacity = vi->used_bytes >> 9;
-> 
-> I think you should first align up and then divide.  Something like
-> 
-> disk_capacity = ALIGN(vi->used_bytes, 512) / 512
-> 
-> may be?
-> 
+It should be SZ_2M not SZ_4M, I'll fix that.
 
-Yeah, of course.
-
-> By the way, do you really need to shift instead of just dividing, which
-> is more readable. I think with nowadays' compilers ">> 9" and "/ 512"
-> will give the same code, and the latter seems a bit more readable, no?
-> 
-
-Probably. I'm not sure I was thinking in any compiler optimization, but rather
-trying to follow current practice in other block code:
-
-  $ git grep ">> 9" block/ drivers/block/ | wc -l
-  133
-
-  $ git grep "/ 512" block/ drivers/block/ | wc -l
-  12
-
-It sounds like ">> 9" is a frequent enough idiom for "block sector translation".
 -- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
 http://free-electrons.com
