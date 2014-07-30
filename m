@@ -1,21 +1,16 @@
-Received: from mail-we0-x231.google.com ([2a00:1450:400c:c03::231])
+Received: from mail-qg0-x243.google.com ([2607:f8b0:400d:c04::243])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XCZjs-0003EI-Ub
- for linux-mtd@lists.infradead.org; Wed, 30 Jul 2014 19:40:41 +0000
-Received: by mail-we0-f177.google.com with SMTP id w62so1706858wes.8
- for <linux-mtd@lists.infradead.org>; Wed, 30 Jul 2014 12:40:18 -0700 (PDT)
+ id 1XCdjM-00045b-EQ
+ for linux-mtd@lists.infradead.org; Wed, 30 Jul 2014 23:56:24 +0000
+Received: by mail-qg0-f67.google.com with SMTP id f51so800772qge.6
+ for <linux-mtd@lists.infradead.org>; Wed, 30 Jul 2014 16:56:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <53D7904C.20600@ti.com>
-References: <1406113130-23939-1-git-send-email-pekon@ti.com>
- <53D7904C.20600@ti.com>
-Date: Thu, 31 Jul 2014 01:10:17 +0530
-Message-ID: <CAK1JQxoJMAGqRCYxJBCLp0_0QN+t7COmxU01wSWVjPR0AY0LdQ@mail.gmail.com>
-Subject: Re: [PATCH] ARM: dts: dra7-evm: add parallel NOR flash support
-From: Pekon Gupta <pekon.gupta@gmail.com>
-To: Roger Quadros <rogerq@ti.com>
+Date: Thu, 31 Jul 2014 01:27:03 +0200
+Message-ID: <CABfGM6_nBUSgO_4D4Wi_h67VQOty+jYQXqE0JDvRx0gL-rj_bw@mail.gmail.com>
+Subject: -- Re: Very Urgent............
+From: Fabian Morision <fmorision1@gmail.com>
+To: undisclosed-recipients:;
 Content-Type: text/plain; charset=UTF-8
-Cc: Tony Lindgren <tony@atomide.com>, linux-omap <linux-omap@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,104 +20,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Roger,
+Greetings from gulf region
 
-On Tue, Jul 29, 2014 at 5:45 PM, Roger Quadros <rogerq@ti.com> wrote:
-> On 07/23/2014 01:58 PM, Pekon Gupta wrote:
-> > This patch adds support for parallel NOR device (S29GL512S10) present on J6-EVM.
-> > The Flash device is connected to GPMC controller on chip-select[0] and accessed
-> > as memory-mapped device. It has data-witdh=x16, capacity-64MBytes(512Mbits) and
-> > is CFI compatible.
-> > As multiple devices are share GPMC pins on this board, so following board
-> > settings are required to detect NOR device:
-> >      SW5.1 (NAND_BOOTn) = OFF (logic-1)
-> >      SW5.2 (NOR_BOOTn)  = ON  (logic-0) /* Active-low */
-> >      SW5.3 (eMMC_BOOTn) = OFF (logic-1)
-> >      SW5.4 (QSPI_BOOTn) = OFF (logic-1)
->
-> Why does NOR have any dependency on states of eMMC_BOOTn and QSPI_BOOTn?
->
-If you see the schematics of J6-EVM, GPMC data and control lines are shared
-between NAND, NOR, eMMC (and probably QSPI also).
-I don't have access to TI's hardaware or board schematics anymore, so
-please double check.
+Thanks for the e-mail. I am very interested on funding lucrative
+business partnership with you acting as the manager and sole
+controller of the investment while i remain a silent investor for a
+period of ten yrs , though I am only looking at investment
+opportunities within the range you specified for a start. You can
+reply me here (fmorision@yahoo.com)
 
-> >
-> > Also to maintain NAND Boot functionality, following setting are kept as default
-> > - NAND status="enabled"
-> > - NOR status="disabled"
->
-> Too bad they designed the hardware so that either NOR or NAND can be used at a time.
-> Better to mention about this limitation by stating that CS0 is shared between NOR and NAND
-> and only one can be used at a time.
->
-NAND/NOR/eMMC/QSPI effectively all are storage devices, so users may
-not use all of
-them at once, so may be to optimize usage of pins they added multiple
-devices on CS0.
-Sorry, I may not be able to re-spin this patch anytime soon, as I have
-no access to TI
-resources so request you to please re-send it with appropriate commit
-log change as you wish.
+Let me know your thought asap
 
-> >
-> > Signed-off-by: Pekon Gupta <pekon@ti.com>
-> > ---
-> >
-> > /* Flash read/write access tested after enabling NOR sub-node in DT */
-> >    linux#> flash_erase /dev/mtd9 0 0
-> >    linux#> dd if=/dev/urandom of=/tmp/source.hex  bs=1c count=2048
-> >    linux#> mtd_debug write /dev/mtd9 0x0 2048 /tmp/source.hex
-> >    linux#> mtd_debug read  /dev/mtd9 0x0 2048 /tmp/destination.hex
-> >    linux#> diff /tmp/source.hex  /tmp/destination.hex
-> >
-> >
-> >  arch/arm/boot/dts/dra7-evm.dts | 141 ++++++++++++++++++++++++++++++++++++++++-
-> >  1 file changed, 140 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/arch/arm/boot/dts/dra7-evm.dts b/arch/arm/boot/dts/dra7-evm.dts
-> > index 4adc280..1ee9727 100644
-> > --- a/arch/arm/boot/dts/dra7-evm.dts
-> > +++ b/arch/arm/boot/dts/dra7-evm.dts
-> > @@ -151,6 +151,66 @@
-> >                       0xd0    (PIN_OUTPUT | MUX_MODE0)        /* gpmc_be0n_cle */
-> >               >;
-> >       };
-> > +
-> > +     nor_flash_x16: nor_flash_x16 {
-> > +             /* On DRA7 EVM, NOR_BOOTn comes from DIP switch
-> > +              * So NOR flash requires following switch settings:
-> > +              * SW5.1 (NAND_BOOTn) = OFF (logic-1)
-> > +              * SW5.2 (NOR_BOOTn)  = ON  (logic-0) Active-low
-> > +              * SW5.3 (eMMC_BOOTn) = OFF (logic-1)
-> > +              * SW5.4 (QSPI_BOOTn) = OFF (logic-1)
-> > +              */
->
-> The only requirement for NOR_BOOTn is SW5.2 = ON and SW5.1 (NAND_BOOTn) = OFF.
->
-As mentioned above, please check board schematics
-IIRC, GPMC lines pass through various levels of on-board
-bi-directional multiplexers,
-And 'select' lines of these multiplexers are controlled indirectly via
-these xxx_BOOTn switches.
+Regards
 
-[...]
+Financial Consultant
 
-> >  &i2c1 {
-> > @@ -417,8 +477,9 @@
-> >       status = "okay";
-> >       pinctrl-names = "default";
-> >       pinctrl-0 = <&nand_flash_x16>;
-> > -     ranges = <0 0 0 0x01000000>;    /* minimum GPMC partition = 16MB */
-> > +     ranges = <0 0 0x08000000 0x04000000>;   /* address offset=128MB, range=512Mb=64MB */
-> >       nand@0,0 {
-> > +             status = "okay";
->
-> Not needed. If it is not explicitly disabled it is always enabled by default.
->
-Yes, but good to have clarity in DTS, as most users will just copy-paste TI-EVM
-DTS and then tweak it for their own custom board DTS. So better to have this
-mentioned explicitely.
-
-
-with regards, pekon
+Mr.Fabian Morision
