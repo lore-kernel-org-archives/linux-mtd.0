@@ -1,25 +1,24 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XCUnP-0004v4-CK
- for linux-mtd@lists.infradead.org; Wed, 30 Jul 2014 14:24:00 +0000
-Date: Wed, 30 Jul 2014 11:22:28 -0300
+ id 1XCUwL-00022N-SV
+ for linux-mtd@lists.infradead.org; Wed, 30 Jul 2014 14:33:14 +0000
+Date: Wed, 30 Jul 2014 11:31:06 -0300
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH] ubiblock: Support UBI volume name or volume ID parameter
- passing
-Message-ID: <20140730142228.GA3576@arch.cereza>
-References: <1397141020-6363-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1397472124.3287.6.camel@karhu>
- <20140721205306.GA24056@arch.cereza>
- <1406565071.23376.44.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v2 for v3.15 0/3] UBI: block: Support very large volumes
+Message-ID: <20140730143106.GB3576@arch.cereza>
+References: <1399284714-6283-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1401188546.1304.128.camel@sauron.fi.intel.com>
+ <20140527123017.GA1655@arch.cereza>
+ <20140725231001.GA29798@arch.cereza>
+ <1406563525.23376.32.camel@sauron.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1406565071.23376.44.camel@sauron.fi.intel.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- Guido =?iso-8859-1?Q?Mart=EDnez?= <guido@vanguardiasur.com.ar>
+In-Reply-To: <1406563525.23376.32.camel@sauron.fi.intel.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,60 +28,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 28 Jul 07:31 PM, Artem Bityutskiy wrote:
-> On Mon, 2014-07-21 at 17:53 -0300, Ezequiel Garcia wrote:
-> > Sorry for the delay on this one.
+On 28 Jul 07:05 PM, Artem Bityutskiy wrote:
+> On Fri, 2014-07-25 at 20:10 -0300, Ezequiel Garcia wrote:
+> > I think this series got lost :-(
 > > 
-> > On 14 Apr 01:42 PM, Artem Bityutskiy wrote:
-> > > On Thu, 2014-04-10 at 11:43 -0300, Ezequiel Garcia wrote:
-> > > > +static int ubi_open_volume_by_id(libubi_t desc, const char *node, int vol_id, int mode)
-> > > >  {
-> > > > +       char file[256];
-> > > > +       struct ubi_dev_info dev_info;
-> > > >         int err, fd;
-> > > > -       libubi_t libubi;
-> > > >  
-> > > > -       err = parse_opt(argc, argv);
-> > > > +       err = ubi_get_dev_info(desc, node, &dev_info);
-> > > >         if (err)
-> > > > +               return errmsg("cannot get information about UBI device \"%s\"", node);
-> > > > +
-> > > > +       sprintf(file, "/dev/ubi%d_%d", dev_info.dev_num, vol_id);
-> > > 
-> > > Device node names may ve anything. Please, do not rely on the "/dev/ubi%
-> > > d_%d" naming scheme in the tool.
-> > > 
-> > > I think device node can be found out by scanning "/dev" and looking at
-> > > the device node major/minor numbers. This is more work of course.
-> > > 
+> > It's not in today's -next, and I'm looking at your pull for v3.16 and it's
+> > not there either. It seems I overlooked it, and realised just now, just before
+> > sending a new fix.
 > > 
-> > Yeah, but the UBI major is allocated dynamically so we can't rely on that.
-> > We would have to call an ioctl on each /dev device, which seems like a bit
-> > heavy to me.
-> > 
-> > How about scanning out the sysfs and associate a name to the UBI device
-> > and volume ID?
+> > Any idea what happened?
 > 
-> What I meant is that you have these:
-> 
-> /sys/class/ubi/ubiX/dev
-> 
-> and these
-> 
-> /sys/class/ubi/ubiX/ubiX_Y/dev
-> 
-> containing the "major:minor" pairs.
-> 
-> For for any X:Y you can find major:minor. Then you scan "/dev" and find
-> the device nodes, if they exist. If they do not exist, you may ask the
-> user to create a device node with these major:minor in your error
-> message.
+> Shame, but no idea. May be I applied them on a laptop, and forgot to
+> push, and then never noticed. Anyway, sorry, just applied and pushed
+> out.
 > 
 
-Right. That sounds a nice solution. I'll implement something upstreamable
-as time permits.
+Cool, no problem.
 
-Thanks!
+> >  	return 0;
+> > @@ -412,7 +412,7 @@ int ubiblock_create(struct ubi_volume_info *vi)
+> >  	gd->first_minor = dev->ubi_num * UBI_MAX_VOLUMES + dev->vol_id;
+> >  	gd->private_data = dev;
+> >  	sprintf(gd->disk_name, "ubiblock%d_%d", dev->ubi_num, dev->vol_id);
+> > -	disk_capacity = (vi->size * vi->usable_leb_size) >> 9;
+> > +	disk_capacity = vi->used_bytes >> 9;
+> 
+> I think you should first align up and then divide.  Something like
+> 
+> disk_capacity = ALIGN(vi->used_bytes, 512) / 512
+> 
+> may be?
+> 
+
+Yeah, of course.
+
+> By the way, do you really need to shift instead of just dividing, which
+> is more readable. I think with nowadays' compilers ">> 9" and "/ 512"
+> will give the same code, and the latter seems a bit more readable, no?
+> 
+
+Probably. I'm not sure I was thinking in any compiler optimization, but rather
+trying to follow current practice in other block code:
+
+  $ git grep ">> 9" block/ drivers/block/ | wc -l
+  133
+
+  $ git grep "/ 512" block/ drivers/block/ | wc -l
+  12
+
+It sounds like ">> 9" is a frequent enough idiom for "block sector translation".
 -- 
 Ezequiel García, Free Electrons
 Embedded Linux, Kernel and Android Engineering
