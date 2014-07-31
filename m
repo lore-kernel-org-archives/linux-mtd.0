@@ -1,32 +1,21 @@
-Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
+Received: from bear.ext.ti.com ([192.94.94.41])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XCkiF-0003um-QH
- for linux-mtd@lists.infradead.org; Thu, 31 Jul 2014 07:23:44 +0000
-Received: by mail-pa0-f50.google.com with SMTP id et14so3065215pad.23
- for <linux-mtd@lists.infradead.org>; Thu, 31 Jul 2014 00:23:21 -0700 (PDT)
-Date: Thu, 31 Jul 2014 00:23:17 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Punnaiah Choudary Kalluri <punnaiah.choudary.kalluri@xilinx.com>
-Subject: Re: [PATCH RFC v4 3/4] nand: pl353: Add ONDIE ECC support
-Message-ID: <20140731072317.GI11952@brian-ubuntu>
-References: <1406561500-18264-1-git-send-email-punnaia@xilinx.com>
- <27fce982-6598-44a0-ad80-c13d02a952ee@BN1AFFO11FD042.protection.gbl>
- <20140731070643.GG11952@brian-ubuntu>
+ id 1XComJ-0003t1-RS
+ for linux-mtd@lists.infradead.org; Thu, 31 Jul 2014 11:44:13 +0000
+Message-ID: <53DA2BF1.3030008@ti.com>
+Date: Thu, 31 Jul 2014 14:43:45 +0300
+From: Roger Quadros <rogerq@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20140731070643.GG11952@brian-ubuntu>
-Cc: mark.rutland@arm.com, jussi.kivilinna@iki.fi, linux-doc@vger.kernel.org,
- artem.bityutskiy@linux.intel.com, linux-mtd@lists.infradead.org,
- Punnaiah Choudary Kalluri <punnaia@xilinx.com>, arnd@arndb.de,
- svemula@xilinx.com, michal.simek@xilinx.com,
- ezequiel.garcia@free-electrons.com, grant.likely@linaro.org,
- devicetree@vger.kernel.org, jason@lakedaemon.net, pawel.moll@arm.com,
- ijc+devicetree@hellion.org.uk, anirudh@xilinx.com, joern@logfs.org,
- kpc528@gmail.com, robh+dt@kernel.org, acourbot@nvidia.com, pekon@ti.com,
- kalluripunnaiahchoudary@gmail.com, gregkh@linuxfoundation.org,
- linux-kernel@vger.kernel.org, rob@landley.net, galak@codeaurora.org,
- ivan.khoronzhuk@ti.com, dwmw2@infradead.org
+To: Pekon Gupta <pekon.gupta@gmail.com>, Sourav Poddar <sourav.poddar@ti.com>,
+ Balaji T Krishnamoorthy <balajitk@ti.com>, "Nori, Sekhar" <nsekhar@ti.com>
+Subject: Re: [PATCH] ARM: dts: dra7-evm: add parallel NOR flash support
+References: <1406113130-23939-1-git-send-email-pekon@ti.com>	<53D7904C.20600@ti.com>
+ <CAK1JQxoJMAGqRCYxJBCLp0_0QN+t7COmxU01wSWVjPR0AY0LdQ@mail.gmail.com>
+In-Reply-To: <CAK1JQxoJMAGqRCYxJBCLp0_0QN+t7COmxU01wSWVjPR0AY0LdQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Cc: Tony Lindgren <tony@atomide.com>, linux-omap <linux-omap@vger.kernel.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,40 +25,127 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jul 31, 2014 at 12:06:43AM -0700, Brian Norris wrote:
-> On Mon, Jul 28, 2014 at 09:01:39PM +0530, Punnaiah Choudary Kalluri wrote:
-> > +/* Generic flash bbt decriptors */
-> > +static uint8_t bbt_pattern[] = { 'B', 'b', 't', '0' };
-> > +static uint8_t mirror_pattern[] = { '1', 't', 'b', 'B' };
-> > +
-> > +static struct nand_bbt_descr bbt_main_descr = {
-> > +	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
-> > +		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP,
-> > +	.offs = 4,
-> > +	.len = 4,
-> > +	.veroffs = 20,
-> > +	.maxblocks = 4,
-> > +	.pattern = bbt_pattern
-> > +};
-> > +
-> > +static struct nand_bbt_descr bbt_mirror_descr = {
-> > +	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
-> > +		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP,
-> > +	.offs = 4,
-> > +	.len = 4,
-> > +	.veroffs = 20,
-> > +	.maxblocks = 4,
-> > +	.pattern = mirror_pattern
-> > +};
++Sourav for QSPI and Balaji for mmc
+
+On 07/30/2014 10:40 PM, Pekon Gupta wrote:
+> Hi Roger,
 > 
-> Why do you need a custom BBT descriptor? It's much better to use the
-> standard ones. Perhaps you just want the NAND_BBT_NO_OOB_BBM option, so
-> you get the bbt_{main,mirror}_no_oob_descr structs from nand_bbt.c.
+> On Tue, Jul 29, 2014 at 5:45 PM, Roger Quadros <rogerq@ti.com> wrote:
+>> On 07/23/2014 01:58 PM, Pekon Gupta wrote:
+>>> This patch adds support for parallel NOR device (S29GL512S10) present on J6-EVM.
+>>> The Flash device is connected to GPMC controller on chip-select[0] and accessed
+>>> as memory-mapped device. It has data-witdh=x16, capacity-64MBytes(512Mbits) and
+>>> is CFI compatible.
+>>> As multiple devices are share GPMC pins on this board, so following board
+>>> settings are required to detect NOR device:
+>>>      SW5.1 (NAND_BOOTn) = OFF (logic-1)
+>>>      SW5.2 (NOR_BOOTn)  = ON  (logic-0) /* Active-low */
+>>>      SW5.3 (eMMC_BOOTn) = OFF (logic-1)
+>>>      SW5.4 (QSPI_BOOTn) = OFF (logic-1)
+>>
+>> Why does NOR have any dependency on states of eMMC_BOOTn and QSPI_BOOTn?
+>>
+> If you see the schematics of J6-EVM, GPMC data and control lines are shared
+> between NAND, NOR, eMMC (and probably QSPI also).
+> I don't have access to TI's hardaware or board schematics anymore, so
+> please double check.
 
-I see you answered this:
+I just took a deeper look in the schematics.
+It has nothing to do with GPMC Data and control lines but with the address lines.
+The GPMC address lines are muxed on the same pins of the SoC as QSPI and MMC2.
+i.e. A13-A18,CS2 for QSPI and A19-A27,CS1 for MMC2
 
- http://lists.infradead.org/pipermail/linux-mtd/2014-April/053451.html
+NAND can probably work simultaneously with QSPI and MMC2 but for NOR case, QSPI and MMC2
+need to be disabled.
 
-That's unfortunate.
+This is starting to look ugly where apart from changing the DIP switch the DTS has to be
+hand modified to support a certain case.
 
-Brian
+Lets leave the most usable configuration for default case i.e. NAND, QSPI and MMC2 enabled and keep NOR information in the dts but keep it disabled with a note that if NOR is enabled then NAND, QSPI, and MMC2 nodes need to be disabled.
+
+I will resend this patch with the relevant changes.
+
+cheers,
+-roger
+
+> 
+>>>
+>>> Also to maintain NAND Boot functionality, following setting are kept as default
+>>> - NAND status="enabled"
+>>> - NOR status="disabled"
+>>
+>> Too bad they designed the hardware so that either NOR or NAND can be used at a time.
+>> Better to mention about this limitation by stating that CS0 is shared between NOR and NAND
+>> and only one can be used at a time.
+>>
+> NAND/NOR/eMMC/QSPI effectively all are storage devices, so users may
+> not use all of
+> them at once, so may be to optimize usage of pins they added multiple
+> devices on CS0.
+> Sorry, I may not be able to re-spin this patch anytime soon, as I have
+> no access to TI
+> resources so request you to please re-send it with appropriate commit
+> log change as you wish.
+> 
+>>>
+>>> Signed-off-by: Pekon Gupta <pekon@ti.com>
+>>> ---
+>>>
+>>> /* Flash read/write access tested after enabling NOR sub-node in DT */
+>>>    linux#> flash_erase /dev/mtd9 0 0
+>>>    linux#> dd if=/dev/urandom of=/tmp/source.hex  bs=1c count=2048
+>>>    linux#> mtd_debug write /dev/mtd9 0x0 2048 /tmp/source.hex
+>>>    linux#> mtd_debug read  /dev/mtd9 0x0 2048 /tmp/destination.hex
+>>>    linux#> diff /tmp/source.hex  /tmp/destination.hex
+>>>
+>>>
+>>>  arch/arm/boot/dts/dra7-evm.dts | 141 ++++++++++++++++++++++++++++++++++++++++-
+>>>  1 file changed, 140 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/arch/arm/boot/dts/dra7-evm.dts b/arch/arm/boot/dts/dra7-evm.dts
+>>> index 4adc280..1ee9727 100644
+>>> --- a/arch/arm/boot/dts/dra7-evm.dts
+>>> +++ b/arch/arm/boot/dts/dra7-evm.dts
+>>> @@ -151,6 +151,66 @@
+>>>                       0xd0    (PIN_OUTPUT | MUX_MODE0)        /* gpmc_be0n_cle */
+>>>               >;
+>>>       };
+>>> +
+>>> +     nor_flash_x16: nor_flash_x16 {
+>>> +             /* On DRA7 EVM, NOR_BOOTn comes from DIP switch
+>>> +              * So NOR flash requires following switch settings:
+>>> +              * SW5.1 (NAND_BOOTn) = OFF (logic-1)
+>>> +              * SW5.2 (NOR_BOOTn)  = ON  (logic-0) Active-low
+>>> +              * SW5.3 (eMMC_BOOTn) = OFF (logic-1)
+>>> +              * SW5.4 (QSPI_BOOTn) = OFF (logic-1)
+>>> +              */
+>>
+>> The only requirement for NOR_BOOTn is SW5.2 = ON and SW5.1 (NAND_BOOTn) = OFF.
+>>
+> As mentioned above, please check board schematics
+> IIRC, GPMC lines pass through various levels of on-board
+> bi-directional multiplexers,
+> And 'select' lines of these multiplexers are controlled indirectly via
+> these xxx_BOOTn switches.
+> 
+> [...]
+> 
+>>>  &i2c1 {
+>>> @@ -417,8 +477,9 @@
+>>>       status = "okay";
+>>>       pinctrl-names = "default";
+>>>       pinctrl-0 = <&nand_flash_x16>;
+>>> -     ranges = <0 0 0 0x01000000>;    /* minimum GPMC partition = 16MB */
+>>> +     ranges = <0 0 0x08000000 0x04000000>;   /* address offset=128MB, range=512Mb=64MB */
+>>>       nand@0,0 {
+>>> +             status = "okay";
+>>
+>> Not needed. If it is not explicitly disabled it is always enabled by default.
+>>
+> Yes, but good to have clarity in DTS, as most users will just copy-paste TI-EVM
+> DTS and then tweak it for their own custom board DTS. So better to have this
+> mentioned explicitely.
+> 
+> 
+> with regards, pekon
+> 
