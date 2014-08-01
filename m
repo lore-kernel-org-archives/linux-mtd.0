@@ -1,24 +1,25 @@
-Received: from mail-bl2lp0211.outbound.protection.outlook.com
- ([207.46.163.211] helo=na01-bl2-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XD6qW-0005jb-HK
- for linux-mtd@lists.infradead.org; Fri, 01 Aug 2014 07:01:45 +0000
-From: "Wu, Aaron" <Aaron.Wu@analog.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: RE: [PATCH] gpio_flash: fix the CPLB miss bug for gpio expanded flash
-Date: Fri, 1 Aug 2014 06:59:56 +0000
-Message-ID: <649EF91064D35D40B9C93A225BF416746123CBBB@NWD2MBX7.ad.analog.com>
-References: <1404375214-3736-1-git-send-email-Aaron.wu@analog.com>
- <20140801063449.GD3095@norris-Latitude-E6410>
-In-Reply-To: <20140801063449.GD3095@norris-Latitude-E6410>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: Mike Frysinger <vapier@gentoo.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>, "Zhang,
- Sonic" <Sonic.Zhang@analog.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from mga11.intel.com ([192.55.52.93])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XD7J9-0000P3-6O
+ for linux-mtd@lists.infradead.org; Fri, 01 Aug 2014 07:31:19 +0000
+Message-ID: <1406878239.20616.65.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH RFC v2] UBI: New ioctl() to support ubidump
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: hujianyang <hujianyang@huawei.com>
+Date: Fri, 01 Aug 2014 10:30:39 +0300
+In-Reply-To: <53DB0081.1040905@huawei.com>
+References: <53D7677A.6000905@huawei.com> <53D768B5.6090409@huawei.com>
+ <87vbqgb4re.fsf@nbsps.com> <53D85203.7030302@huawei.com>
+ <87siliu9lm.fsf@nbsps.com> <53D9B1A0.8080300@huawei.com>
+ <1406813088.20616.32.camel@sauron.fi.intel.com>
+ <53DB0081.1040905@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Richard Weinberger <richard.weinberger@gmail.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Bill Pringlemeir <bpringlemeir@nbsps.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,140 +29,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+On Fri, 2014-08-01 at 10:50 +0800, hujianyang wrote:
+> On 2014/7/31 21:24, Artem Bityutskiy wrote:
+> > 
+> > Hujianyang, AFAIU, right now you need an ability to dump UBIFS stuff.
+> 
+> Yes, but not all of what I want. I need this utility dumping UBI-level
+> stuff too. The ability, not only to dump UBIFS stuff but also to dump
+> UBI stuff will make it a useful tool.
 
-Thanks for your time and comments.
+OK.
 
-This patch originally intend to solve the issue that Flash operation addres=
-s passed in from upper layer may exceed the maxim address boundary allowed =
-by the window size defined by the gpio style of flash.
+> > You do not really need to know PEB number. So ubidump may
+> > analyze /dev/ubiX_Y without knowing the PEB number, right? It can just
+> > read from /dev/ubiX_Y directly. And print you all the UBIFS nodes.
+> > 
+> 
+> Last version I sent to this maillist was reading data from UBI driver
+> directly. But our .read() function in UBI driver jump over UBI stuff, so
+> I read UBI stuff from an ioctl(). This isn't a common way as you said.
 
-Take the read, memcpy_fromio for example, this address is described by (map=
-->virt + (from % state->win_size)  +  this_len), where this_len varies in d=
-ifferent situation.  If the address do exceed the boundary then we repeat r=
-ead to work around it.
+There are 2 layers involved: MTD and UBI.
 
-I actually did not pay enough attention on the BUG_ON condition from Mike, =
-I will check later and be back.
+On the MTD level, the entire flash contents is available (/dev/mtdX)
+On the UBI level, only UBI volumes are available (/dev/ubiX_Y)
 
-At last this patch fixed a customer reported issue so I suppose this "cross=
- the boundary" bug do exits and this patch roughly fixed it.
+If I give you an UBI volume dump (cp /dev/ubiX_Y ubi.img), you will only
+see the contents of the UBI volume. If there was UBIFS file-system, you
+will see UBIFS nodes in the "ubi.img" file. You will not see UBI headers
+there.
 
-Best regards,
-Aaron  =20
+The ideal design would be treating /dev/ubiX_Y the same way as
+'ubi.img'. IOW:
 
------Original Message-----
-From: Brian Norris [mailto:computersforpeace@gmail.com]=20
-Sent: Friday, August 01, 2014 2:35 PM
-To: Wu, Aaron
-Cc: linux-mtd@lists.infradead.org; dwmw2@infradead.org; Zhang, Sonic; Mike =
-Frysinger
-Subject: Re: [PATCH] gpio_flash: fix the CPLB miss bug for gpio expanded fl=
-ash
+ubidump ubi.img
+and
+ubidump /dev/ubiX_Y
 
-+ Mike Frysinger
+should give the same results.
 
-Hi Aaron,
+If I give you an MTD image (nanddump -o mtd.img /dev/mtdX), you should
+be able to see both UBIFS and UBI stuff in 'mtd.img'. You may see the
+same information in /dev/mtdX. To get the LEB<->PEB mapping, you need to
+do scanning, etc. So
 
-I'm trying to judge the quality of your patch, but I'm very distracted from=
- this by trying to figure out the original intent of this code.
-Perhaps Mike can comment.
+ubidump mtd.img
+and
+ubidump /dev/mtdX
 
-On Thu, Jul 03, 2014 at 04:13:34PM +0800, Aaron Wu wrote:
-> In this bug, the address operation range may exceed the window size=20
-> defined by gpio expanded flash MTD partition.
->=20
-> Signed-off-by: Aaron Wu <Aaron.wu@analog.com>
-> ---
->  drivers/mtd/maps/gpio-addr-flash.c |   34 ++++++++++++++++++++++++++++--=
-----
->  1 file changed, 28 insertions(+), 6 deletions(-)
->=20
-> diff --git a/drivers/mtd/maps/gpio-addr-flash.c=20
-> b/drivers/mtd/maps/gpio-addr-flash.c
-> index a4c477b..ca9282f 100644
-> --- a/drivers/mtd/maps/gpio-addr-flash.c
-> +++ b/drivers/mtd/maps/gpio-addr-flash.c
-> @@ -108,13 +108,24 @@ static void gf_copy_from(struct map_info *map,=20
-> void *to, unsigned long from, ssi  {
->  	struct async_state *state =3D gf_map_info_to_state(map);
-> =20
-> -	gf_set_gpios(state, from);
-> +	int this_len;
-> =20
->  	/* BUG if operation crosses the win_size */
->  	BUG_ON(!((from + len) % state->win_size <=3D (from + len)));
+should be the same.
 
-What do you think of this BUG_ON()? AFAICT, the BUG_ON() predicate is prova=
-bly false [1], at least whenever
+This is the basic picture.
 
-	from >=3D 0 && len >=3D 0 && state->win_size > 0.
+Now what you want is to add an exception to this scheme. Namely, for the
+'ubidump /dev/ubiX_Y' case: you want to get help from the driver, using
+the ioctl you introduced.
 
-Was the intent more like this?
+Frankly, I am not 100% sure this is a good idea, would be nice to hear
+from other people. I'd need to think a bit on this.
 
-	BUG_ON((from + len - 1) / state->win_size !=3D from / state->win_size);
+So what I suggested is the you do not submit this exception so far. Just
+teach ubidump to handle UBI volumes. I.e., make it work with
 
-If so, then it seems like maybe this patch is trying to address the case th=
-at was previously considered a BUG()?
+ubidump ubi.img
+ubidump /dev/ubiX_Y
 
-In any case, if we can't figure out what the BUG_ON() really should have be=
-en, then maybe we should kill it and take something like your patch to fix =
-the case you're looking at, Aaron.
+yes, these 2 will dump only ubifs stuff. Limited functionality.
 
-> =20
-> -	/* operation does not cross the win_size, so one shot it */
-> -	memcpy_fromio(to, map->virt + (from % state->win_size), len);
-> +	while (len) {
-> +		if ((from % state->win_size) + len > state->win_size)
-> +			this_len =3D state->win_size - (from % state->win_size);
-> +		else
-> +			this_len =3D len;
-> +
-> +		gf_set_gpios(state, from);
-> +		memcpy_fromio(to, map->virt + (from % state->win_size)
-> +			, this_len);
-> +		len -=3D this_len;
-> +		from +=3D this_len;
-> +		to +=3D this_len;
-> +	}
->  }
-> =20
->  /**
-> @@ -147,13 +158,24 @@ static void gf_copy_to(struct map_info *map,=20
-> unsigned long to,  {
->  	struct async_state *state =3D gf_map_info_to_state(map);
-> =20
-> -	gf_set_gpios(state, to);
-> +	int this_len;
-> =20
->  	/* BUG if operation crosses the win_size */
->  	BUG_ON(!((to + len) % state->win_size <=3D (to + len)));
+> 1) No UBI stuff and read UBIFS stuff from UBI-driver
+> This is a easiest way and we don't need any ioctl either. We can't get
+> UBI-level stuff right now but we can put this into our design of dumping
+> an image file.
 
-Same here. I think the BUG_ON() condition is a no-op (always false).
+Yes. That's a good first step.
 
-> =20
-> -	/* operation does not cross the win_size, so one shot it */
-> -	memcpy_toio(map->virt + (to % state->win_size), from, len);
-> +	while (len) {
-> +		if ((to % state->win_size) + len > state->win_size)
-> +			this_len =3D state->win_size - (to % state->win_size);
-> +		else
-> +			this_len =3D len;
-> +
-> +		gf_set_gpios(state, to);
-> +		memcpy_toio(map->virt + (to % state->win_size), from, len);
-> +
-> +		len -=3D this_len;
-> +		to +=3D this_len;
-> +		from +=3D this_len;
-> +	}
->  }
-> =20
->  static const char * const part_probe_types[] =3D {
+> 2) Read data from MTD-driver and find a way to get pnum
+> This way is basing on my v2 work. We can put an ioctl() to kernel and
+> if kernel don't support this ioctl(), this tool will do a full-scan on
+> MTD device. It's transparent to user. But we should take some time to
+> consider how to do this full-scan.
 
-Brian
+I guess, I'd need to think some more about the ioctl(), and may be
+someone else suggests something.
 
-[1] If it was provably false, then I should be able to write out a proof! I=
-t relies on something like this:
+> 3) Re-design this tool about dropping UBI driver based dumping.
+> This way is like the exist ubiformat utility. We don't use UBI driver
+> and just do read/write(maybe we can do some repairing later) with MTD
+> device or image files. It's not small.
 
-	If x >=3D 0 and y > 0, then x % y <=3D x.
+Probably, we'll think about this when we are done with 1) and may be 2).
+
+-- 
+Best Regards,
+Artem Bityutskiy
