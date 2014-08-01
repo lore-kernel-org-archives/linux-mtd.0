@@ -1,21 +1,23 @@
-Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
+Received: from mho-02-ewr.mailhop.org ([204.13.248.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XD6Qy-0002v9-FK
- for linux-mtd@lists.infradead.org; Fri, 01 Aug 2014 06:35:21 +0000
-Received: by mail-pa0-f45.google.com with SMTP id eu11so5178480pac.18
- for <linux-mtd@lists.infradead.org>; Thu, 31 Jul 2014 23:34:59 -0700 (PDT)
-Date: Thu, 31 Jul 2014 23:34:49 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Aaron Wu <Aaron.wu@analog.com>
-Subject: Re: [PATCH] gpio_flash: fix the CPLB miss bug for gpio expanded flash
-Message-ID: <20140801063449.GD3095@norris-Latitude-E6410>
-References: <1404375214-3736-1-git-send-email-Aaron.wu@analog.com>
+ id 1XD6Vl-00059j-RO
+ for linux-mtd@lists.infradead.org; Fri, 01 Aug 2014 06:40:18 +0000
+Date: Thu, 31 Jul 2014 23:38:31 -0700
+From: Tony Lindgren <tony@atomide.com>
+To: Roger Quadros <rogerq@ti.com>
+Subject: Re: [PATCH] ARM: dts: dra7-evm: add parallel NOR flash support
+Message-ID: <20140801063830.GC29045@atomide.com>
+References: <1406113130-23939-1-git-send-email-pekon@ti.com>
+ <53D7904C.20600@ti.com>
+ <CAK1JQxoJMAGqRCYxJBCLp0_0QN+t7COmxU01wSWVjPR0AY0LdQ@mail.gmail.com>
+ <53DA2BF1.3030008@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1404375214-3736-1-git-send-email-Aaron.wu@analog.com>
-Cc: Mike Frysinger <vapier@gentoo.org>, dwmw2@infradead.org,
- sonic.zhang@analog.com, linux-mtd@lists.infradead.org
+In-Reply-To: <53DA2BF1.3030008@ti.com>
+Cc: Balaji T Krishnamoorthy <balajitk@ti.com>, "Nori, Sekhar" <nsekhar@ti.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>, Pekon Gupta <pekon.gupta@gmail.com>,
+ linux-omap <linux-omap@vger.kernel.org>, Sourav Poddar <sourav.poddar@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,107 +27,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ Mike Frysinger
-
-Hi Aaron,
-
-I'm trying to judge the quality of your patch, but I'm very distracted
-from this by trying to figure out the original intent of this code.
-Perhaps Mike can comment.
-
-On Thu, Jul 03, 2014 at 04:13:34PM +0800, Aaron Wu wrote:
-> In this bug, the address operation range may exceed the
-> window size defined by gpio expanded flash MTD partition.
+* Roger Quadros <rogerq@ti.com> [140731 04:46]:
+> +Sourav for QSPI and Balaji for mmc
 > 
-> Signed-off-by: Aaron Wu <Aaron.wu@analog.com>
-> ---
->  drivers/mtd/maps/gpio-addr-flash.c |   34 ++++++++++++++++++++++++++++------
->  1 file changed, 28 insertions(+), 6 deletions(-)
+> On 07/30/2014 10:40 PM, Pekon Gupta wrote:
+> > Hi Roger,
+> > 
+> > On Tue, Jul 29, 2014 at 5:45 PM, Roger Quadros <rogerq@ti.com> wrote:
+> >> On 07/23/2014 01:58 PM, Pekon Gupta wrote:
+> >>> This patch adds support for parallel NOR device (S29GL512S10) present on J6-EVM.
+> >>> The Flash device is connected to GPMC controller on chip-select[0] and accessed
+> >>> as memory-mapped device. It has data-witdh=x16, capacity-64MBytes(512Mbits) and
+> >>> is CFI compatible.
+> >>> As multiple devices are share GPMC pins on this board, so following board
+> >>> settings are required to detect NOR device:
+> >>>      SW5.1 (NAND_BOOTn) = OFF (logic-1)
+> >>>      SW5.2 (NOR_BOOTn)  = ON  (logic-0) /* Active-low */
+> >>>      SW5.3 (eMMC_BOOTn) = OFF (logic-1)
+> >>>      SW5.4 (QSPI_BOOTn) = OFF (logic-1)
+> >>
+> >> Why does NOR have any dependency on states of eMMC_BOOTn and QSPI_BOOTn?
+> >>
+> > If you see the schematics of J6-EVM, GPMC data and control lines are shared
+> > between NAND, NOR, eMMC (and probably QSPI also).
+> > I don't have access to TI's hardaware or board schematics anymore, so
+> > please double check.
 > 
-> diff --git a/drivers/mtd/maps/gpio-addr-flash.c b/drivers/mtd/maps/gpio-addr-flash.c
-> index a4c477b..ca9282f 100644
-> --- a/drivers/mtd/maps/gpio-addr-flash.c
-> +++ b/drivers/mtd/maps/gpio-addr-flash.c
-> @@ -108,13 +108,24 @@ static void gf_copy_from(struct map_info *map, void *to, unsigned long from, ssi
->  {
->  	struct async_state *state = gf_map_info_to_state(map);
->  
-> -	gf_set_gpios(state, from);
-> +	int this_len;
->  
->  	/* BUG if operation crosses the win_size */
->  	BUG_ON(!((from + len) % state->win_size <= (from + len)));
+> I just took a deeper look in the schematics.
+> It has nothing to do with GPMC Data and control lines but with the address lines.
+> The GPMC address lines are muxed on the same pins of the SoC as QSPI and MMC2.
+> i.e. A13-A18,CS2 for QSPI and A19-A27,CS1 for MMC2
+> 
+> NAND can probably work simultaneously with QSPI and MMC2 but for NOR case, QSPI and MMC2
+> need to be disabled.
+> 
+> This is starting to look ugly where apart from changing the DIP switch the DTS has to be
+> hand modified to support a certain case.
+> 
+> Lets leave the most usable configuration for default case i.e. NAND, QSPI and MMC2 enabled and keep NOR information in the dts but keep it disabled with a note that if NOR is enabled then NAND, QSPI, and MMC2 nodes need to be disabled.
+> 
+> I will resend this patch with the relevant changes.
 
-What do you think of this BUG_ON()? AFAICT, the BUG_ON() predicate is
-provably false [1], at least whenever
+It might make sense for the gpmc driver to manage the pins in some
+cases. That would allow dynamic muxing of the pins depending which
+driver is loaded, or even during runtime if needed.
 
-	from >= 0 && len >= 0 && state->win_size > 0.
+Regards,
 
-Was the intent more like this?
-
-	BUG_ON((from + len - 1) / state->win_size != from / state->win_size);
-
-If so, then it seems like maybe this patch is trying to address the case
-that was previously considered a BUG()?
-
-In any case, if we can't figure out what the BUG_ON() really should have
-been, then maybe we should kill it and take something like your patch to
-fix the case you're looking at, Aaron.
-
->  
-> -	/* operation does not cross the win_size, so one shot it */
-> -	memcpy_fromio(to, map->virt + (from % state->win_size), len);
-> +	while (len) {
-> +		if ((from % state->win_size) + len > state->win_size)
-> +			this_len = state->win_size - (from % state->win_size);
-> +		else
-> +			this_len = len;
-> +
-> +		gf_set_gpios(state, from);
-> +		memcpy_fromio(to, map->virt + (from % state->win_size)
-> +			, this_len);
-> +		len -= this_len;
-> +		from += this_len;
-> +		to += this_len;
-> +	}
->  }
->  
->  /**
-> @@ -147,13 +158,24 @@ static void gf_copy_to(struct map_info *map, unsigned long to,
->  {
->  	struct async_state *state = gf_map_info_to_state(map);
->  
-> -	gf_set_gpios(state, to);
-> +	int this_len;
->  
->  	/* BUG if operation crosses the win_size */
->  	BUG_ON(!((to + len) % state->win_size <= (to + len)));
-
-Same here. I think the BUG_ON() condition is a no-op (always false).
-
->  
-> -	/* operation does not cross the win_size, so one shot it */
-> -	memcpy_toio(map->virt + (to % state->win_size), from, len);
-> +	while (len) {
-> +		if ((to % state->win_size) + len > state->win_size)
-> +			this_len = state->win_size - (to % state->win_size);
-> +		else
-> +			this_len = len;
-> +
-> +		gf_set_gpios(state, to);
-> +		memcpy_toio(map->virt + (to % state->win_size), from, len);
-> +
-> +		len -= this_len;
-> +		to += this_len;
-> +		from += this_len;
-> +	}
->  }
->  
->  static const char * const part_probe_types[] = {
-
-Brian
-
-[1] If it was provably false, then I should be able to write out a
-proof! It relies on something like this:
-
-	If x >= 0 and y > 0, then x % y <= x.
+Tony
