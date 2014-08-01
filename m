@@ -1,25 +1,23 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XD7J9-0000P3-6O
- for linux-mtd@lists.infradead.org; Fri, 01 Aug 2014 07:31:19 +0000
-Message-ID: <1406878239.20616.65.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH RFC v2] UBI: New ioctl() to support ubidump
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: hujianyang <hujianyang@huawei.com>
-Date: Fri, 01 Aug 2014 10:30:39 +0300
-In-Reply-To: <53DB0081.1040905@huawei.com>
-References: <53D7677A.6000905@huawei.com> <53D768B5.6090409@huawei.com>
- <87vbqgb4re.fsf@nbsps.com> <53D85203.7030302@huawei.com>
- <87siliu9lm.fsf@nbsps.com> <53D9B1A0.8080300@huawei.com>
- <1406813088.20616.32.camel@sauron.fi.intel.com>
- <53DB0081.1040905@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
+Received: from arroyo.ext.ti.com ([192.94.94.40])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XD7YN-0005Xf-1r
+ for linux-mtd@lists.infradead.org; Fri, 01 Aug 2014 07:47:03 +0000
+Message-ID: <53DB45DB.1020308@ti.com>
+Date: Fri, 1 Aug 2014 10:46:35 +0300
+From: Roger Quadros <rogerq@ti.com>
+MIME-Version: 1.0
+To: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH] ARM: dts: dra7-evm: add parallel NOR flash support
+References: <1406113130-23939-1-git-send-email-pekon@ti.com>
+ <53D7904C.20600@ti.com>
+ <CAK1JQxoJMAGqRCYxJBCLp0_0QN+t7COmxU01wSWVjPR0AY0LdQ@mail.gmail.com>
+ <53DA2BF1.3030008@ti.com> <20140801063830.GC29045@atomide.com>
+In-Reply-To: <20140801063830.GC29045@atomide.com>
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Cc: Richard Weinberger <richard.weinberger@gmail.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Bill Pringlemeir <bpringlemeir@nbsps.com>
+Cc: Balaji T Krishnamoorthy <balajitk@ti.com>, "Nori, Sekhar" <nsekhar@ti.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>, Pekon Gupta <pekon.gupta@gmail.com>,
+ linux-omap <linux-omap@vger.kernel.org>, Sourav Poddar <sourav.poddar@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,96 +27,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2014-08-01 at 10:50 +0800, hujianyang wrote:
-> On 2014/7/31 21:24, Artem Bityutskiy wrote:
-> > 
-> > Hujianyang, AFAIU, right now you need an ability to dump UBIFS stuff.
+On 08/01/2014 09:38 AM, Tony Lindgren wrote:
+> * Roger Quadros <rogerq@ti.com> [140731 04:46]:
+>> +Sourav for QSPI and Balaji for mmc
+>>
+>> On 07/30/2014 10:40 PM, Pekon Gupta wrote:
+>>> Hi Roger,
+>>>
+>>> On Tue, Jul 29, 2014 at 5:45 PM, Roger Quadros <rogerq@ti.com> wrote:
+>>>> On 07/23/2014 01:58 PM, Pekon Gupta wrote:
+>>>>> This patch adds support for parallel NOR device (S29GL512S10) present on J6-EVM.
+>>>>> The Flash device is connected to GPMC controller on chip-select[0] and accessed
+>>>>> as memory-mapped device. It has data-witdh=x16, capacity-64MBytes(512Mbits) and
+>>>>> is CFI compatible.
+>>>>> As multiple devices are share GPMC pins on this board, so following board
+>>>>> settings are required to detect NOR device:
+>>>>>      SW5.1 (NAND_BOOTn) = OFF (logic-1)
+>>>>>      SW5.2 (NOR_BOOTn)  = ON  (logic-0) /* Active-low */
+>>>>>      SW5.3 (eMMC_BOOTn) = OFF (logic-1)
+>>>>>      SW5.4 (QSPI_BOOTn) = OFF (logic-1)
+>>>>
+>>>> Why does NOR have any dependency on states of eMMC_BOOTn and QSPI_BOOTn?
+>>>>
+>>> If you see the schematics of J6-EVM, GPMC data and control lines are shared
+>>> between NAND, NOR, eMMC (and probably QSPI also).
+>>> I don't have access to TI's hardaware or board schematics anymore, so
+>>> please double check.
+>>
+>> I just took a deeper look in the schematics.
+>> It has nothing to do with GPMC Data and control lines but with the address lines.
+>> The GPMC address lines are muxed on the same pins of the SoC as QSPI and MMC2.
+>> i.e. A13-A18,CS2 for QSPI and A19-A27,CS1 for MMC2
+>>
+>> NAND can probably work simultaneously with QSPI and MMC2 but for NOR case, QSPI and MMC2
+>> need to be disabled.
+>>
+>> This is starting to look ugly where apart from changing the DIP switch the DTS has to be
+>> hand modified to support a certain case.
+>>
+>> Lets leave the most usable configuration for default case i.e. NAND, QSPI and MMC2 enabled and keep NOR information in the dts but keep it disabled with a note that if NOR is enabled then NAND, QSPI, and MMC2 nodes need to be disabled.
+>>
+>> I will resend this patch with the relevant changes.
 > 
-> Yes, but not all of what I want. I need this utility dumping UBI-level
-> stuff too. The ability, not only to dump UBIFS stuff but also to dump
-> UBI stuff will make it a useful tool.
+> It might make sense for the gpmc driver to manage the pins in some
+> cases. That would allow dynamic muxing of the pins depending which
+> driver is loaded, or even during runtime if needed.
 
-OK.
+It is more like a board configuration so something more generic than the gpmc driver has to manage.
+Also, QSPI and MMC don't fall under GPMC scope.
 
-> > You do not really need to know PEB number. So ubidump may
-> > analyze /dev/ubiX_Y without knowing the PEB number, right? It can just
-> > read from /dev/ubiX_Y directly. And print you all the UBIFS nodes.
-> > 
-> 
-> Last version I sent to this maillist was reading data from UBI driver
-> directly. But our .read() function in UBI driver jump over UBI stuff, so
-> I read UBI stuff from an ioctl(). This isn't a common way as you said.
+There are 2 things that need to change to update the hardware configuration.
+1) The pinmux via the enabling/disabling (or plugging in/out) of relevant nodes in the DT.
+2) The I2C GPIOs which reconfigure the DIP Switch lines in order to reconfigure external Muxes.
 
-There are 2 layers involved: MTD and UBI.
-
-On the MTD level, the entire flash contents is available (/dev/mtdX)
-On the UBI level, only UBI volumes are available (/dev/ubiX_Y)
-
-If I give you an UBI volume dump (cp /dev/ubiX_Y ubi.img), you will only
-see the contents of the UBI volume. If there was UBIFS file-system, you
-will see UBIFS nodes in the "ubi.img" file. You will not see UBI headers
-there.
-
-The ideal design would be treating /dev/ubiX_Y the same way as
-'ubi.img'. IOW:
-
-ubidump ubi.img
-and
-ubidump /dev/ubiX_Y
-
-should give the same results.
-
-If I give you an MTD image (nanddump -o mtd.img /dev/mtdX), you should
-be able to see both UBIFS and UBI stuff in 'mtd.img'. You may see the
-same information in /dev/mtdX. To get the LEB<->PEB mapping, you need to
-do scanning, etc. So
-
-ubidump mtd.img
-and
-ubidump /dev/mtdX
-
-should be the same.
-
-This is the basic picture.
-
-Now what you want is to add an exception to this scheme. Namely, for the
-'ubidump /dev/ubiX_Y' case: you want to get help from the driver, using
-the ioctl you introduced.
-
-Frankly, I am not 100% sure this is a good idea, would be nice to hear
-from other people. I'd need to think a bit on this.
-
-So what I suggested is the you do not submit this exception so far. Just
-teach ubidump to handle UBI volumes. I.e., make it work with
-
-ubidump ubi.img
-ubidump /dev/ubiX_Y
-
-yes, these 2 will dump only ubifs stuff. Limited functionality.
-
-> 1) No UBI stuff and read UBIFS stuff from UBI-driver
-> This is a easiest way and we don't need any ioctl either. We can't get
-> UBI-level stuff right now but we can put this into our design of dumping
-> an image file.
-
-Yes. That's a good first step.
-
-> 2) Read data from MTD-driver and find a way to get pnum
-> This way is basing on my v2 work. We can put an ioctl() to kernel and
-> if kernel don't support this ioctl(), this tool will do a full-scan on
-> MTD device. It's transparent to user. But we should take some time to
-> consider how to do this full-scan.
-
-I guess, I'd need to think some more about the ioctl(), and may be
-someone else suggests something.
-
-> 3) Re-design this tool about dropping UBI driver based dumping.
-> This way is like the exist ubiformat utility. We don't use UBI driver
-> and just do read/write(maybe we can do some repairing later) with MTD
-> device or image files. It's not small.
-
-Probably, we'll think about this when we are done with 1) and may be 2).
-
--- 
-Best Regards,
-Artem Bityutskiy
+cheers,
+-roger
