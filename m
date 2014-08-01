@@ -1,23 +1,21 @@
-Received: from szxga01-in.huawei.com ([119.145.14.64])
+Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XD2wk-0002xq-Hr
- for linux-mtd@lists.infradead.org; Fri, 01 Aug 2014 02:51:55 +0000
-Message-ID: <53DB0081.1040905@huawei.com>
-Date: Fri, 1 Aug 2014 10:50:41 +0800
-From: hujianyang <hujianyang@huawei.com>
+ id 1XD6Qy-0002v9-FK
+ for linux-mtd@lists.infradead.org; Fri, 01 Aug 2014 06:35:21 +0000
+Received: by mail-pa0-f45.google.com with SMTP id eu11so5178480pac.18
+ for <linux-mtd@lists.infradead.org>; Thu, 31 Jul 2014 23:34:59 -0700 (PDT)
+Date: Thu, 31 Jul 2014 23:34:49 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Aaron Wu <Aaron.wu@analog.com>
+Subject: Re: [PATCH] gpio_flash: fix the CPLB miss bug for gpio expanded flash
+Message-ID: <20140801063449.GD3095@norris-Latitude-E6410>
+References: <1404375214-3736-1-git-send-email-Aaron.wu@analog.com>
 MIME-Version: 1.0
-To: <dedekind1@gmail.com>
-Subject: Re: [PATCH RFC v2] UBI: New ioctl() to support ubidump
-References: <53D7677A.6000905@huawei.com> <53D768B5.6090409@huawei.com>
- <87vbqgb4re.fsf@nbsps.com> <53D85203.7030302@huawei.com>
- <87siliu9lm.fsf@nbsps.com> <53D9B1A0.8080300@huawei.com>
- <1406813088.20616.32.camel@sauron.fi.intel.com>
-In-Reply-To: <1406813088.20616.32.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Cc: Richard Weinberger <richard.weinberger@gmail.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Bill Pringlemeir <bpringlemeir@nbsps.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1404375214-3736-1-git-send-email-Aaron.wu@analog.com>
+Cc: Mike Frysinger <vapier@gentoo.org>, dwmw2@infradead.org,
+ sonic.zhang@analog.com, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,54 +25,107 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2014/7/31 21:24, Artem Bityutskiy wrote:
++ Mike Frysinger
+
+Hi Aaron,
+
+I'm trying to judge the quality of your patch, but I'm very distracted
+from this by trying to figure out the original intent of this code.
+Perhaps Mike can comment.
+
+On Thu, Jul 03, 2014 at 04:13:34PM +0800, Aaron Wu wrote:
+> In this bug, the address operation range may exceed the
+> window size defined by gpio expanded flash MTD partition.
 > 
-> Hujianyang, AFAIU, right now you need an ability to dump UBIFS stuff.
-
-Yes, but not all of what I want. I need this utility dumping UBI-level
-stuff too. The ability, not only to dump UBIFS stuff but also to dump
-UBI stuff will make it a useful tool.
-
-> You do not really need to know PEB number. So ubidump may
-> analyze /dev/ubiX_Y without knowing the PEB number, right? It can just
-> read from /dev/ubiX_Y directly. And print you all the UBIFS nodes.
+> Signed-off-by: Aaron Wu <Aaron.wu@analog.com>
+> ---
+>  drivers/mtd/maps/gpio-addr-flash.c |   34 ++++++++++++++++++++++++++++------
+>  1 file changed, 28 insertions(+), 6 deletions(-)
 > 
+> diff --git a/drivers/mtd/maps/gpio-addr-flash.c b/drivers/mtd/maps/gpio-addr-flash.c
+> index a4c477b..ca9282f 100644
+> --- a/drivers/mtd/maps/gpio-addr-flash.c
+> +++ b/drivers/mtd/maps/gpio-addr-flash.c
+> @@ -108,13 +108,24 @@ static void gf_copy_from(struct map_info *map, void *to, unsigned long from, ssi
+>  {
+>  	struct async_state *state = gf_map_info_to_state(map);
+>  
+> -	gf_set_gpios(state, from);
+> +	int this_len;
+>  
+>  	/* BUG if operation crosses the win_size */
+>  	BUG_ON(!((from + len) % state->win_size <= (from + len)));
 
-Last version I sent to this maillist was reading data from UBI driver
-directly. But our .read() function in UBI driver jump over UBI stuff, so
-I read UBI stuff from an ioctl(). This isn't a common way as you said.
+What do you think of this BUG_ON()? AFAICT, the BUG_ON() predicate is
+provably false [1], at least whenever
 
-I have to say I am about to leave Beijing for at least 3 months and
-have no time for the development of this tool. I aspire if we can push
-some of my work to ubi-utils before my leaving. So we should hurry up~!
+	from >= 0 && len >= 0 && state->win_size > 0.
 
-First, we can leave UBI/UBIFS format dumping behind, just dump binary
-data, that will make initial submission smaller.
+Was the intent more like this?
 
-Then, think about what we want at this time.
+	BUG_ON((from + len - 1) / state->win_size != from / state->win_size);
 
-1) No UBI stuff and read UBIFS stuff from UBI-driver
-This is a easiest way and we don't need any ioctl either. We can't get
-UBI-level stuff right now but we can put this into our design of dumping
-an image file.
+If so, then it seems like maybe this patch is trying to address the case
+that was previously considered a BUG()?
 
-2) Read data from MTD-driver and find a way to get pnum
-This way is basing on my v2 work. We can put an ioctl() to kernel and
-if kernel don't support this ioctl(), this tool will do a full-scan on
-MTD device. It's transparent to user. But we should take some time to
-consider how to do this full-scan.
+In any case, if we can't figure out what the BUG_ON() really should have
+been, then maybe we should kill it and take something like your patch to
+fix the case you're looking at, Aaron.
 
-3) Re-design this tool about dropping UBI driver based dumping.
-This way is like the exist ubiformat utility. We don't use UBI driver
-and just do read/write(maybe we can do some repairing later) with MTD
-device or image files. It's not small.
+>  
+> -	/* operation does not cross the win_size, so one shot it */
+> -	memcpy_fromio(to, map->virt + (from % state->win_size), len);
+> +	while (len) {
+> +		if ((from % state->win_size) + len > state->win_size)
+> +			this_len = state->win_size - (from % state->win_size);
+> +		else
+> +			this_len = len;
+> +
+> +		gf_set_gpios(state, from);
+> +		memcpy_fromio(to, map->virt + (from % state->win_size)
+> +			, this_len);
+> +		len -= this_len;
+> +		from += this_len;
+> +		to += this_len;
+> +	}
+>  }
+>  
+>  /**
+> @@ -147,13 +158,24 @@ static void gf_copy_to(struct map_info *map, unsigned long to,
+>  {
+>  	struct async_state *state = gf_map_info_to_state(map);
+>  
+> -	gf_set_gpios(state, to);
+> +	int this_len;
+>  
+>  	/* BUG if operation crosses the win_size */
+>  	BUG_ON(!((to + len) % state->win_size <= (to + len)));
 
+Same here. I think the BUG_ON() condition is a no-op (always false).
 
-I think you will prefer to solution 1. Although it's not fit all my
-desires, I will agree with it if you insist. Or do you have any other
-suggestions?
+>  
+> -	/* operation does not cross the win_size, so one shot it */
+> -	memcpy_toio(map->virt + (to % state->win_size), from, len);
+> +	while (len) {
+> +		if ((to % state->win_size) + len > state->win_size)
+> +			this_len = state->win_size - (to % state->win_size);
+> +		else
+> +			this_len = len;
+> +
+> +		gf_set_gpios(state, to);
+> +		memcpy_toio(map->virt + (to % state->win_size), from, len);
+> +
+> +		len -= this_len;
+> +		to += this_len;
+> +		from += this_len;
+> +	}
+>  }
+>  
+>  static const char * const part_probe_types[] = {
 
+Brian
 
-Thanks~!
+[1] If it was provably false, then I should be able to write out a
+proof! It relies on something like this:
 
-Hu
+	If x >= 0 and y > 0, then x % y <= x.
