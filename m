@@ -1,27 +1,22 @@
+Received: from smtprelay01.ispgateway.de ([80.67.31.24])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XDesn-0000PN-GG
+ for linux-mtd@lists.infradead.org; Sat, 02 Aug 2014 19:22:26 +0000
+Received: from [178.26.58.240] (helo=remote.symeo.com)
+ by smtprelay01.ispgateway.de with esmtpsa (TLSv1:AES128-SHA:128)
+ (Exim 4.68) (envelope-from <christoph.mammitzsch@symeo.com>)
+ id 1XDesA-0001qI-7H
+ for linux-mtd@lists.infradead.org; Sat, 02 Aug 2014 21:21:42 +0200
+Message-ID: <53DD3A45.7000802@symeo.com>
+Date: Sat, 2 Aug 2014 21:21:41 +0200
+From: Christoph Mammitzsch <Christoph.Mammitzsch@symeo.com>
 MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <20140802020617.GS3711@ld-irv-0074>
-References: <1398657227-20721-1-git-send-email-b32955@freescale.com>
- <1398657227-20721-4-git-send-email-b32955@freescale.com>
- <20140730050843.GE11952@brian-ubuntu>
- <20140730064413.GA15547@shldeISGChi005.sh.intel.com>
- <20140730074500.GF11952@brian-ubuntu>
- <20140730104607.GQ17528@sirena.org.uk>
- <20140802020617.GS3711@ld-irv-0074>
-Date: Sat, 2 Aug 2014 11:09:09 +0200
-Message-ID: <CAMuHMdWxzKG1TTUVgYqfRP0Prp85HPwVxH7NQp7S-pNeLfFqjA@mail.gmail.com>
-Subject: Re: [PATCH v2 03/10] mtd: spi-nor: add DDR quad read support
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marex@denx.de>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- linux-spi <linux-spi@vger.kernel.org>, Huang Shijie <b32955@freescale.com>,
- Mark Brown <broonie@kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Huang Shijie <shijie.huang@intel.com>, David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: <linux-mtd@lists.infradead.org>
+Subject: Re: Disappearing directories (jffs2 on nand flash)
+References: <53B6DDA2.7000508@symeo.com> <53C56392.2070306@symeo.com>
+In-Reply-To: <53C56392.2070306@symeo.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,50 +26,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Aug 2, 2014 at 4:06 AM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> On Wed, Jul 30, 2014 at 11:46:07AM +0100, Mark Brown wrote:
->> On Wed, Jul 30, 2014 at 12:45:00AM -0700, Brian Norris wrote:
->> > On Wed, Jul 30, 2014 at 02:44:13PM +0800, Huang Shijie wrote:
->> > > IMHO, the DDR modes can _NOT_ be handled by the driver/spi/*.
->>
->> > I agree to some extent, but I wanted to confirm with the SPI guys that
->> > DDR is truly unique to SPI NOR. (I know it doesn't currently support
->> > it.)
->>
->> I don't know what DDR is in this context, sorry.
->
-> I think it's just the ability to latch data on both the rising and
-> falling edges of the SPI clock. For SPI flash, it seems to be used for
-> the data portion of the opcode/address/data sequence.
->
->> I'm guessing you're
->> right since it sounds like something to do with extra clocks and this is
->> probably not something used by generic SPI devices at present (if it
->> ends up being widely implemented by sufficiently generic controllers
->> that might change but the trend seems to be to flash specific
->> controllers).
->
-> OK, thanks for chiming in.
->
-> Yeah, I suppose it could be wedged in later if drivers/spi/ ever adopts
-> a solution.
+Hello,
 
-I think this can just be another SPI_* spi_device.mode flag.
+I am a little astonished at the amount of feedback I got for my
+bugreport. Apparently jffs2 losing entire directories is not as big a
+deal as I thought. Does that mean that JFFS2 is dead and I should use
+another flash filesystem instead, or did I simply post on the wrong
+mailing list?
 
-Do we need bindings for this in
-Documentation/devicetree/bindings/spi/spi-bus.txt?
-Unlike Quad SPI transfer support, this doesn't need special wiring, so DDR
-capability is an intrinsic property of the SPI slave, and the mode bit can just
-be set in the SPI slave driver, without any DT magic?
 
-Gr{oetje,eeting}s,
+Regards,
 
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Christoph Mammitzsch
