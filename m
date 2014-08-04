@@ -1,30 +1,23 @@
-Date: Mon, 4 Aug 2014 15:25:07 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Message-ID: <20140804142507.GP30458@sirena.org.uk>
-References: <1398657227-20721-1-git-send-email-b32955@freescale.com>
- <1398657227-20721-4-git-send-email-b32955@freescale.com>
- <20140730050843.GE11952@brian-ubuntu>
- <20140730064413.GA15547@shldeISGChi005.sh.intel.com>
- <20140730074500.GF11952@brian-ubuntu>
- <20140730104607.GQ17528@sirena.org.uk>
- <20140802020617.GS3711@ld-irv-0074>
- <CAMuHMdWxzKG1TTUVgYqfRP0Prp85HPwVxH7NQp7S-pNeLfFqjA@mail.gmail.com>
+Received: from mail-lb0-f180.google.com ([209.85.217.180])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XEMar-0004zU-6r
+ for linux-mtd@lists.infradead.org; Mon, 04 Aug 2014 18:02:45 +0000
+Received: by mail-lb0-f180.google.com with SMTP id v6so5576899lbi.25
+ for <linux-mtd@lists.infradead.org>; Mon, 04 Aug 2014 11:02:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="ltihE5wS63FR6l1A"
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdWxzKG1TTUVgYqfRP0Prp85HPwVxH7NQp7S-pNeLfFqjA@mail.gmail.com>
-Subject: Re: [PATCH v2 03/10] mtd: spi-nor: add DDR quad read support
-Cc: Marek =?utf-8?B?VmHFoXV0?= <marex@denx.de>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- linux-spi <linux-spi@vger.kernel.org>, Huang Shijie <b32955@freescale.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Huang Shijie <shijie.huang@intel.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+In-Reply-To: <20140801191340.GN18016@ZenIV.linux.org.uk>
+References: <1406909172-7219-1-git-send-email-jharris@westell.com>
+ <20140801165607.GM18016@ZenIV.linux.org.uk>
+ <CAGMfbUPOMKVkZuZtzoN-w5pTpjHMzYhrdaM2WuBdm7RSMsNYAw@mail.gmail.com>
+ <20140801191340.GN18016@ZenIV.linux.org.uk>
+Date: Mon, 4 Aug 2014 14:02:19 -0400
+Message-ID: <CAGMfbUMua7uZR16G1-r4+DwoPP2k5C3TQDNQkvbCO4RFwRm-+A@mail.gmail.com>
+Subject: Re: [PATCH] jffs2: Re-enable write-buffering after filesystem sync
+From: Jeff Harris <jefftharris@gmail.com>
+To: Al Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-kernel@vger.kernel.org, Jeff Harris <jharris@westell.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,60 +27,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, Aug 1, 2014 at 3:13 PM, Al Viro <viro@zeniv.linux.org.uk> wrote:
+> Why do we need ->wbuf_queued, anyway?  It's not as if queue_delayed_work()
+> wouldn't do the right thing - if the sucker already has WORK_STRUCT_PENDING_BIT
+> set it'll simply do nothing.  And it won't spend much time finding that
+> out - in fact, it'll be cheaper than what we do right now.
+>
+> IOW, how about the following (completely untested):
+>
 
---ltihE5wS63FR6l1A
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I tested the patch against our 3.13 device, and it appears to resolve
+the original
+write-buffering after sync problem we were having.  I did not do any
+other regression
+testing, though.
 
-On Sat, Aug 02, 2014 at 11:09:09AM +0200, Geert Uytterhoeven wrote:
-> On Sat, Aug 2, 2014 at 4:06 AM, Brian Norris
-> > On Wed, Jul 30, 2014 at 11:46:07AM +0100, Mark Brown wrote:
-
-> >> I don't know what DDR is in this context, sorry.
-
-> > I think it's just the ability to latch data on both the rising and
-> > falling edges of the SPI clock. For SPI flash, it seems to be used for
-> > the data portion of the opcode/address/data sequence.
-
-> > Yeah, I suppose it could be wedged in later if drivers/spi/ ever adopts
-> > a solution.
-
-> I think this can just be another SPI_* spi_device.mode flag.
-
-Sounds like it yes - I was wondering if this might be one of the modes
-with extra clock cycles that I've heard mentioned before which might be
-a little more fun.
-
-> Do we need bindings for this in
-> Documentation/devicetree/bindings/spi/spi-bus.txt?
-> Unlike Quad SPI transfer support, this doesn't need special wiring, so DDR
-> capability is an intrinsic property of the SPI slave, and the mode bit can just
-> be set in the SPI slave driver, without any DT magic?
-
-Right, unless we run into things like board design issues causing
-constraints this is something that can be enabled by the two drivers
-without needing DT configuration.
-
---ltihE5wS63FR6l1A
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJT35e5AAoJELSic+t+oim9v7oP/14Fi6f3pZRNyWiweEg5TIa9
-dIqLJtpNOnrG8lVdoQNScYA5Z3rlNtUzI+iQWf/z6nNGl494XhH05fZ8sJr33NW8
-bF3a9VXoFVmsQN1GBq3LAlPQgIf4q1C+N3Dn0PUmU3Klt2+XZEuYVj11P/AxFroo
-dZHAwSjf1w+LIQ6IPYOiMNNpxgnUuqYz9nGfG1MEP1zYd+7dO6j2RzmZF3bjxgem
-1eg8J+G/qg0LZxFdEEEFUOz65Q41onT9sPaNRSwYNLfKBa9v4dPCXHPJowOWfDWr
-ULKZBb+eJgCxPvpflr2JtbxM7yvvGCjupHVPNc0PVd1B4qWxJfyX7V6/jwMhHrUW
-E4oenAalLQwWBncptgKASXbNoIBP4LUuz96t6jB0mbYuDHHCL/uHDW179riVwbjy
-gaqQUEaWKm6OL2B6bQ5cJXPPacRRnltzkmp4ls2fiJU3qtDlObOEXPDUuvP18O5d
-hFfJBofkknXwoKZUqTYlXp7Hm3FXTFGxqX6T/QAcdA5cyGwmLEks8ZEZZzlNTRB5
-2qZDPBtc3sYyopBYChvay80x6rp7sGW2esRaehQ3KKoSSbGOQcNzbJhnTxc6eXJ/
-ADpztiLyAUcr2igvo5gzmRZwDqoOtyEy2mAyB5mXmg4ftSoNCpvka/XJ8wlXQTSm
-fgyLqXqimL13PQ5CEZf9
-=37w8
------END PGP SIGNATURE-----
-
---ltihE5wS63FR6l1A--
+Jeff
