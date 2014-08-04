@@ -1,28 +1,30 @@
-Received: from mailout.micron.com ([137.201.242.129])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XEB2p-0006fc-D3
- for linux-mtd@lists.infradead.org; Mon, 04 Aug 2014 05:42:52 +0000
-From: bpqw <bpqw@micron.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: RE: Subject: [PATCH 1/1] mtd:nand:fix nand_lock/unlock() function
-Date: Mon, 4 Aug 2014 05:41:54 +0000
-Message-ID: <CB9F11E856CFD04BB18EC1C68F2598931B16E2@NTXXIAMBX01.xacn.micron.com>
-References: <CB9F11E856CFD04BB18EC1C68F2598931B1112@NTXXIAMBX01.xacn.micron.com>
- <20140728061006.GC3095@norris-Latitude-E6410>
- <CB9F11E856CFD04BB18EC1C68F2598931B1342@NTXXIAMBX01.xacn.micron.com>
-In-Reply-To: <CB9F11E856CFD04BB18EC1C68F2598931B1342@NTXXIAMBX01.xacn.micron.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Date: Mon, 4 Aug 2014 15:25:07 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Message-ID: <20140804142507.GP30458@sirena.org.uk>
+References: <1398657227-20721-1-git-send-email-b32955@freescale.com>
+ <1398657227-20721-4-git-send-email-b32955@freescale.com>
+ <20140730050843.GE11952@brian-ubuntu>
+ <20140730064413.GA15547@shldeISGChi005.sh.intel.com>
+ <20140730074500.GF11952@brian-ubuntu>
+ <20140730104607.GQ17528@sirena.org.uk>
+ <20140802020617.GS3711@ld-irv-0074>
+ <CAMuHMdWxzKG1TTUVgYqfRP0Prp85HPwVxH7NQp7S-pNeLfFqjA@mail.gmail.com>
 MIME-Version: 1.0
-Cc: "ron@debian.org" <ron@debian.org>,
- "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "b32955@freescale.com" <b32955@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "ezequiel.garcia@free-electrons.com" <ezequiel.garcia@free-electrons.com>,
- "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="ltihE5wS63FR6l1A"
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdWxzKG1TTUVgYqfRP0Prp85HPwVxH7NQp7S-pNeLfFqjA@mail.gmail.com>
+Subject: Re: [PATCH v2 03/10] mtd: spi-nor: add DDR quad read support
+Cc: Marek =?utf-8?B?VmHFoXV0?= <marex@denx.de>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ linux-spi <linux-spi@vger.kernel.org>, Huang Shijie <b32955@freescale.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Huang Shijie <shijie.huang@intel.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,164 +34,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brain,
-How about my patch? Do you have any other doubts?
 
-Br
-White Ding=20
------Original Message-----
-From: bpqw=20
-Sent: Monday, July 28, 2014 3:47 PM
-To: Brian Norris; bpqw
-Cc: dwmw2@infradead.org; b32955@freescale.com; artem.bityutskiy@linux.intel=
-.com; ron@debian.org; u.kleine-koenig@pengutronix.de; ezequiel.garcia@free-=
-electrons.com; linux-mtd@lists.infradead.org; linux-kernel@vger.kernel.org
-Subject: RE: Subject: [PATCH 1/1] mtd:nand:fix nand_lock/unlock() function
+--ltihE5wS63FR6l1A
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hi Brain,
+On Sat, Aug 02, 2014 at 11:09:09AM +0200, Geert Uytterhoeven wrote:
+> On Sat, Aug 2, 2014 at 4:06 AM, Brian Norris
+> > On Wed, Jul 30, 2014 at 11:46:07AM +0100, Mark Brown wrote:
 
->> Do nand reset before write protect check If we want to check the WP#=20
->> low or high through STATUS READ and check bit 7, we must reset the=20
->> device, other operation (eg.erase/program a locked block) can also=20
->> clear the bit 7 of status register.
->This description doesn't really tell me why we need this patch.
-If we want to use the lock/unlock function, we must confirm the WP# is high=
-, if the WP# is low, the write protect is provided by WP#, we don't need LO=
-KC/UNLOCK function.
-So before we use the LOCK/UNLOCK function we must confirm the WP# is high.
-We can check the WP# is high or low through READ STATUS and check the bit 7=
-, but this only correct when we READ STATUS directly after RESET or Power O=
-n.
-If we don't add this patch, We can't check the WP# high or low just through=
- READ STATUS and check bit7.=20
+> >> I don't know what DDR is in this context, sorry.
 
->First of all, where is the 'lock' sequence specified? I see the commit tha=
-t introduced nand_lock() (without any users) which says Micron parts suppor=
-t it, but I don't see it documented in the datasheet:
-The LOCK/UNLOCK feature not apply all micron nand, only 1.8V device have th=
-is feature.
+> > I think it's just the ability to latch data on both the rising and
+> > falling edges of the SPI clock. For SPI flash, it seems to be used for
+> > the data portion of the opcode/address/data sequence.
 
->  commit 7d70f334ad2bf1b3aaa1f0699c0f442e14bcc9e0
->  Author: Vimal Singh <vimal.newwork@gmail.com>
->  Date:   Mon Feb 8 15:50:49 2010 +0530
+> > Yeah, I suppose it could be wedged in later if drivers/spi/ ever adopts
+> > a solution.
 
->      mtd: nand: add lock/unlock routines
+> I think this can just be another SPI_* spi_device.mode flag.
 
->Now, supposing this is documented somewhere, are you seeing some kind=20
->of out-of-spec behavior? Is this a controller quirk you're seeing? Why=20
->should I need to reset the chip? I would presume that
+Sounds like it yes - I was wondering if this might be one of the modes
+with extra clock cycles that I've heard mentioned before which might be
+a little more fun.
 
->  chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
+> Do we need bindings for this in
+> Documentation/devicetree/bindings/spi/spi-bus.txt?
+> Unlike Quad SPI transfer support, this doesn't need special wiring, so DDR
+> capability is an intrinsic property of the SPI slave, and the mode bit can just
+> be set in the SPI slave driver, without any DT magic?
 
->would refresh the status properly. Is that not the case?
-chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1) can refresh the status properly=
-, but we must do some operation to trigger it.
-For example if we do rease/program operation to a block that is locked, the=
-n READ STATUS, the bit 7 will be 0 that indicate the device is write protec=
-t.
-Then if we do erase/program operation to another block that is unlocked, th=
-e bit 7 of READ STATUS will be 1 indicate that the device is not write prot=
-ect.
+Right, unless we run into things like board design issues causing
+constraints this is something that can be enabled by the two drivers
+without needing DT configuration.
 
-Now if we don't do any operation just through chip->cmdfunc(mtd, NAND_CMD_S=
-TATUS, -1, -1); to check the WP# is high or low.
-Suppose we check the bit 7 of READ STATUS is 0 then we judge the WP# is low=
- (write protect), but in this case the WP# may be high if we do erase/progr=
-am operation to a locked block.
+--ltihE5wS63FR6l1A
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
+iQIcBAEBAgAGBQJT35e5AAoJELSic+t+oim9v7oP/14Fi6f3pZRNyWiweEg5TIa9
+dIqLJtpNOnrG8lVdoQNScYA5Z3rlNtUzI+iQWf/z6nNGl494XhH05fZ8sJr33NW8
+bF3a9VXoFVmsQN1GBq3LAlPQgIf4q1C+N3Dn0PUmU3Klt2+XZEuYVj11P/AxFroo
+dZHAwSjf1w+LIQ6IPYOiMNNpxgnUuqYz9nGfG1MEP1zYd+7dO6j2RzmZF3bjxgem
+1eg8J+G/qg0LZxFdEEEFUOz65Q41onT9sPaNRSwYNLfKBa9v4dPCXHPJowOWfDWr
+ULKZBb+eJgCxPvpflr2JtbxM7yvvGCjupHVPNc0PVd1B4qWxJfyX7V6/jwMhHrUW
+E4oenAalLQwWBncptgKASXbNoIBP4LUuz96t6jB0mbYuDHHCL/uHDW179riVwbjy
+gaqQUEaWKm6OL2B6bQ5cJXPPacRRnltzkmp4ls2fiJU3qtDlObOEXPDUuvP18O5d
+hFfJBofkknXwoKZUqTYlXp7Hm3FXTFGxqX6T/QAcdA5cyGwmLEks8ZEZZzlNTRB5
+2qZDPBtc3sYyopBYChvay80x6rp7sGW2esRaehQ3KKoSSbGOQcNzbJhnTxc6eXJ/
+ADpztiLyAUcr2igvo5gzmRZwDqoOtyEy2mAyB5mXmg4ftSoNCpvka/XJ8wlXQTSm
+fgyLqXqimL13PQ5CEZf9
+=37w8
+-----END PGP SIGNATURE-----
 
-Br
-White Ding
-____________________________
-EBU APAC Application Engineering
-Tel:86-21-38997078
-Mobile: 86-13761729112
-Address: No 601 Fasai Rd, Waigaoqiao Free Trade Zone Pudong, Shanghai, Chin=
-a
-
------Original Message-----
-From: Brian Norris [mailto:computersforpeace@gmail.com]
-Sent: Monday, July 28, 2014 2:10 PM
-To: bpqw
-Cc: dwmw2@infradead.org; b32955@freescale.com; artem.bityutskiy@linux.intel=
-.com; ron@debian.org; u.kleine-koenig@pengutronix.de; ezequiel.garcia@free-=
-electrons.com; linux-mtd@lists.infradead.org; linux-kernel@vger.kernel.org
-Subject: Re: Subject: [PATCH 1/1] mtd:nand:fix nand_lock/unlock() function
-
-Hi White,
-
-You've responded to one of my messages, but your mail server is also sendin=
-g bounce replies. You might want to contact your I.T. about this.
-(I'll let you know if I ever stop getting bounces.)
-
-On Thu, Jul 24, 2014 at 01:00:01AM +0000, bpqw wrote:
-> Do nand reset before write protect check If we want to check the WP#=20
-> low or high through STATUS READ and check bit 7, we must reset the=20
-> device, other operation (eg.erase/program a locked block) can also=20
-> clear the bit 7 of status register.
-
-This description doesn't really tell me why we need this patch.
-
-First of all, where is the 'lock' sequence specified? I see the commit that=
- introduced nand_lock() (without any users) which says Micron parts support=
- it, but I don't see it documented in the datasheet:
-
-  commit 7d70f334ad2bf1b3aaa1f0699c0f442e14bcc9e0
-  Author: Vimal Singh <vimal.newwork@gmail.com>
-  Date:   Mon Feb 8 15:50:49 2010 +0530
-
-      mtd: nand: add lock/unlock routines
-
-Now, supposing this is documented somewhere, are you seeing some kind of ou=
-t-of-spec behavior? Is this a controller quirk you're seeing? Why should I =
-need to reset the chip? I would presume that=20
-
-  chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
-
-would refresh the status properly. Is that not the case?
-
-> Signed-off-by: White Ding <bpqw@micron.com>
-> ---
->  drivers/mtd/nand/nand_base.c |   18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
->=20
-> diff --git a/drivers/mtd/nand/nand_base.c=20
-> b/drivers/mtd/nand/nand_base.c index 41167e9..22dd3aa 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -965,6 +965,15 @@ int nand_unlock(struct mtd_info *mtd, loff_t ofs,=20
-> uint64_t len)
-> =20
->  	chip->select_chip(mtd, chipnr);
-> =20
-> +	/*
-> +	 * Reset the chip.
-> +	 * If we want to check the WP through READ STATUS and check the bit 7
-> +	 * we must reset the chip
-> +	 * some operation can also clear the bit 7 of status register
-> +	 * eg. erase/program a locked block
-> +	 */
-> +	chip->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
-> +
->  	/* Check, if it is write protected */
->  	if (nand_check_wp(mtd)) {
->  		pr_debug("%s: device is write protected!\n", @@ -1015,6 +1024,15 @@=20
-> int nand_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
-> =20
->  	chip->select_chip(mtd, chipnr);
-> =20
-> +	/*
-> +	 * Reset the chip.
-> +	 * If we want to check the WP through READ STATUS and check the bit 7
-> +	 * we must reset the chip
-> +	 * some operation can also clear the bit 7 of status register
-> +	 * eg. erase/program a locked block
-> +	 */
-> +	chip->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
-> +
->  	/* Check, if it is write protected */
->  	if (nand_check_wp(mtd)) {
->  		pr_debug("%s: device is write protected!\n",
-
-Brian
+--ltihE5wS63FR6l1A--
