@@ -1,29 +1,25 @@
-Received: from mail-pd0-x230.google.com ([2607:f8b0:400e:c02::230])
+Received: from mail-pd0-x229.google.com ([2607:f8b0:400e:c02::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XER3G-0002EZ-Ex
- for linux-mtd@lists.infradead.org; Mon, 04 Aug 2014 22:48:22 +0000
-Received: by mail-pd0-f176.google.com with SMTP id y10so130813pdj.21
- for <linux-mtd@lists.infradead.org>; Mon, 04 Aug 2014 15:48:01 -0700 (PDT)
-Date: Mon, 4 Aug 2014 15:47:57 -0700
+ id 1XERcG-0005ki-Do
+ for linux-mtd@lists.infradead.org; Mon, 04 Aug 2014 23:24:33 +0000
+Received: by mail-pd0-f169.google.com with SMTP id y10so174507pdj.14
+ for <linux-mtd@lists.infradead.org>; Mon, 04 Aug 2014 16:24:10 -0700 (PDT)
+Date: Mon, 4 Aug 2014 16:24:07 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: bpqw <bpqw@micron.com>
-Subject: Re: Subject: [PATCH 1/1] mtd:nand:fix nand_lock/unlock() function
-Message-ID: <20140804224757.GH3711@ld-irv-0074>
-References: <CB9F11E856CFD04BB18EC1C68F2598931B1112@NTXXIAMBX01.xacn.micron.com>
- <20140728061006.GC3095@norris-Latitude-E6410>
- <CB9F11E856CFD04BB18EC1C68F2598931B1342@NTXXIAMBX01.xacn.micron.com>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH] mtd: spi-nor: read 6 bytes for the ID
+Message-ID: <20140804232407.GI3711@ld-irv-0074>
+References: <1397470174-27856-1-git-send-email-b32955@freescale.com>
+ <20140527011231.GA5876@shlinux1.ap.freescale.net>
+ <5384B5EB.4050203@st.com>
+ <20140528052237.GA7984@shlinux1.ap.freescale.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CB9F11E856CFD04BB18EC1C68F2598931B1342@NTXXIAMBX01.xacn.micron.com>
-Cc: "ron@debian.org" <ron@debian.org>,
- "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "b32955@freescale.com" <b32955@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "ezequiel.garcia@free-electrons.com" <ezequiel.garcia@free-electrons.com>,
- "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+In-Reply-To: <20140528052237.GA7984@shlinux1.ap.freescale.net>
+Cc: marex@denx.de, dwmw2@infradead.org,
+ Christophe KERELLO <christophe.kerello@st.com>, linux-mtd@lists.infradead.org,
+ angus.clark@st.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,42 +29,118 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi Huang,
 
-On Mon, Jul 28, 2014 at 07:46:51AM +0000, bpqw wrote:
-> >> Do nand reset before write protect check If we want to check the WP# 
-> >> low or high through STATUS READ and check bit 7, we must reset the 
-> >> device, other operation (eg.erase/program a locked block) can also 
-> >> clear the bit 7 of status register.
-> >This description doesn't really tell me why we need this patch.
-> If we want to use the lock/unlock function, we must confirm the WP# is high, if the WP# is low, the write protect is provided by WP#, we don't need LOKC/UNLOCK function.
-> So before we use the LOCK/UNLOCK function we must confirm the WP# is high.
-> We can check the WP# is high or low through READ STATUS and check the bit 7, but this only correct when we READ STATUS directly after RESET or Power On.
-> If we don't add this patch, We can't check the WP# high or low just through READ STATUS and check bit7. 
-> 
-> >First of all, where is the 'lock' sequence specified? I see the commit that introduced nand_lock() (without any users) which says Micron parts support it, but I don't see it documented in the datasheet:
-> The LOCK/UNLOCK feature not apply all micron nand, only 1.8V device have this feature.
-> 
-> >  commit 7d70f334ad2bf1b3aaa1f0699c0f442e14bcc9e0
-> >  Author: Vimal Singh <vimal.newwork@gmail.com>
-> >  Date:   Mon Feb 8 15:50:49 2010 +0530
-> 
-> >      mtd: nand: add lock/unlock routines
-> 
-> >Now, supposing this is documented somewhere, are you seeing some kind of out-of-spec behavior? Is this a controller quirk you're seeing? Why should I need to reset the chip? I would presume that 
-> 
-> >  chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
-> 
-> >would refresh the status properly. Is that not the case?
-> chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1) can refresh the status properly, but we must do some operation to trigger it.
-> For example if we do rease/program operation to a block that is locked, then READ STATUS, the bit 7 will be 0 that indicate the device is write protect.
-> Then if we do erase/program operation to another block that is unlocked, the bit 7 of READ STATUS will be 1 indicate that the device is not write protect.
-> 
-> Now if we don't do any operation just through chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1); to check the WP# is high or low.
-> Suppose we check the bit 7 of READ STATUS is 0 then we judge the WP# is low (write protect), but in this case the WP# may be high if we do erase/program operation to a locked block.
+You asked for a review of this patch...
 
-Thanks for the explanations. I think the patch is probably OK, then. Can
-you send a new version with a more complete description in the commit
-message?
+On Wed, May 28, 2014 at 01:22:40PM +0800, Huang Shijie wrote:
+> From 7b920141899e4e7249bd23792dc8d5f1558cb7ca Mon Sep 17 00:00:00 2001
+> From: Huang Shijie <b32955@freescale.com>
+> Date: Mon, 14 Apr 2014 18:09:34 +0800
+> Subject: [PATCH v2] mtd: spi-nor: read 6 bytes for the ID
+> 
+> Currently, we read 5 bytes for ID, but s25fl128s has the same ext_id(0x4d01)
+> with s25fl129p1. The s25fl128s can support the DDR Quad read, while s25fl129p1
+> does not. So we have to distinguish the two NOR flashs.
+> 
+> This patch reads out 6 bytes for the ID, and use the 6 bytes ID to search the
+> right flash_info.
+> 
+> The detail of the patch is:
+>   [1] change the "ext_id" from u16 to u32.
+>       We can store two bytes or three bytes with the @ext_id now.
+> 
+>   [2] search the right flash_info with the 6byte ID and the new @ext_id.
+>       We use "matched" variable to track the legacy two bytes @ext_id.
+>       If the flash_info's @ext_id is three bytes, we will use the
+>       sixth byte of the ID to check it.
+> 
+>   [3] add the new item to spi_nor_ids for s25fl128s.
+> 
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c |   30 +++++++++++++++++++++++++-----
+>  1 files changed, 25 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index c713c86..f21d3ef 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -383,7 +383,7 @@ struct flash_info {
+>  	 * then a two byte device id.
+>  	 */
+>  	u32		jedec_id;
+> -	u16             ext_id;
+> +	u32		ext_id;
+>  
+>  	/* The size listed here is what works with SPINOR_OP_SE, which isn't
+>  	 * necessarily called a "sector" by the vendor.
+> @@ -505,6 +505,7 @@ const struct spi_device_id spi_nor_ids[] = {
+>  	{ "s70fl01gs",  INFO(0x010221, 0x4d00, 256 * 1024, 256, 0) },
+>  	{ "s25sl12800", INFO(0x012018, 0x0300, 256 * 1024,  64, 0) },
+>  	{ "s25sl12801", INFO(0x012018, 0x0301,  64 * 1024, 256, 0) },
+> +	{ "s25fl128s",	INFO(0x012018, 0x4d0180, 64 * 1024, 256, SPI_NOR_QUAD_READ) },
+>  	{ "s25fl129p0", INFO(0x012018, 0x4d00, 256 * 1024,  64, 0) },
+>  	{ "s25fl129p1", INFO(0x012018, 0x4d01,  64 * 1024, 256, 0) },
+>  	{ "s25sl004a",  INFO(0x010212,      0,  64 * 1024,   8, 0) },
+> @@ -593,12 +594,13 @@ EXPORT_SYMBOL_GPL(spi_nor_ids);
+>  static const struct spi_device_id *spi_nor_read_id(struct spi_nor *nor)
+>  {
+>  	int			tmp;
+> -	u8			id[5];
+> +	u8			id[6];
+>  	u32			jedec;
+> -	u16                     ext_jedec;
+> +	u32                     ext_jedec;
+>  	struct flash_info	*info;
+> +	int			matched = -1;
+>  
+> -	tmp = nor->read_reg(nor, SPINOR_OP_RDID, id, 5);
+> +	tmp = nor->read_reg(nor, SPINOR_OP_RDID, id, 6);
+>  	if (tmp < 0) {
+>  		dev_dbg(nor->dev, " error %d reading JEDEC ID\n", tmp);
+>  		return ERR_PTR(tmp);
+> @@ -614,8 +616,26 @@ static const struct spi_device_id *spi_nor_read_id(struct spi_nor *nor)
+>  	for (tmp = 0; tmp < ARRAY_SIZE(spi_nor_ids) - 1; tmp++) {
+>  		info = (void *)spi_nor_ids[tmp].driver_data;
+>  		if (info->jedec_id == jedec) {
+> -			if (info->ext_id == 0 || info->ext_id == ext_jedec)
+> +			if (info->ext_id == 0)
+>  				return &spi_nor_ids[tmp];
+> +
+> +			/* the legacy two bytes ext_id */
+> +			if ((info->ext_id >> 16) == 0) {
+> +				if (info->ext_id == ext_jedec)
+> +					matched = tmp;
+> +			} else {
+> +				/* check the sixth byte now */
+> +				ext_jedec = ext_jedec << 8 | id[5];
+> +				if (info->ext_id == ext_jedec)
+> +					return &spi_nor_ids[tmp];
+> +
+> +				/* reset back the ext_jedec */
+> +				ext_jedec >>= 8;
+
+As Marek already noted, this is very ad-hoc.
+
+The logic here is just plain convoluted, because we haven't updated the
+flash_info struct to contain the ID length. Please fix this. Just like
+struct nand_flash_dev, we probably need an 'id_len' field. Bonus points
+if you can extend the structure properly without having to modify the
+entire existing table... Maybe a new INFO6() macro? (Better name
+suggestions are welcome.)
+
+Another reason for adding this field: what if we need to match to a
+6-byte ID where the 6th byte is 0x00? I already see a 5-byte ID in our
+table where the 5th byte is 0x00.
+
+> +			}
+> +		} else {
+> +			/* shortcut */
+> +			if (matched != -1)
+> +				return &spi_nor_ids[matched];
+>  		}
+>  	}
+>  	dev_err(nor->dev, "unrecognized JEDEC id %06x\n", jedec);
 
 Brian
