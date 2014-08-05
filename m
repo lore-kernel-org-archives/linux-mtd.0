@@ -1,21 +1,23 @@
-Received: from mailout.micron.com ([137.201.242.129])
+Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XETxk-0004iA-Aa
- for linux-mtd@lists.infradead.org; Tue, 05 Aug 2014 01:54:56 +0000
-From: bpqw <bpqw@micron.com>
-To: Brian Norris <computersforpeace@gmail.com>, bpqw <bpqw@micron.com>
-Subject: RE: Subject: [PATCH 1/1] mtd:nand:fix nand_lock/unlock() function
-Date: Tue, 5 Aug 2014 01:54:07 +0000
-Message-ID: <CB9F11E856CFD04BB18EC1C68F2598931B1724@NTXXIAMBX01.xacn.micron.com>
+ id 1XEV0n-00028B-DM
+ for linux-mtd@lists.infradead.org; Tue, 05 Aug 2014 03:02:07 +0000
+Received: by mail-pa0-f52.google.com with SMTP id bj1so479936pad.25
+ for <linux-mtd@lists.infradead.org>; Mon, 04 Aug 2014 20:01:43 -0700 (PDT)
+Date: Mon, 4 Aug 2014 20:01:40 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: bpqw <bpqw@micron.com>
+Subject: Re: Subject: [PATCH 1/1] mtd:nand:fix nand_lock/unlock() function
+Message-ID: <20140805030140.GJ3711@ld-irv-0074>
 References: <CB9F11E856CFD04BB18EC1C68F2598931B1112@NTXXIAMBX01.xacn.micron.com>
  <20140728061006.GC3095@norris-Latitude-E6410>
  <CB9F11E856CFD04BB18EC1C68F2598931B1342@NTXXIAMBX01.xacn.micron.com>
  <20140804224757.GH3711@ld-irv-0074>
-In-Reply-To: <20140804224757.GH3711@ld-irv-0074>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ <CB9F11E856CFD04BB18EC1C68F2598931B1724@NTXXIAMBX01.xacn.micron.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CB9F11E856CFD04BB18EC1C68F2598931B1724@NTXXIAMBX01.xacn.micron.com>
 Cc: "ron@debian.org" <ron@debian.org>,
  "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
@@ -33,148 +35,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From 0304e9618d8c3ef5360b611f881f1b1bed08be06 Mon Sep 17 00:00:00 2001
-From: White Ding <bpqw@micron.com>
-Date: Thu, 24 Jul 2014 00:10:45 +0800
-Subject: [PATCH 1/1] mtd:nand:fix nand_lock/unlock() function
+On Tue, Aug 05, 2014 at 01:54:07AM +0000, bpqw wrote:
+> From 0304e9618d8c3ef5360b611f881f1b1bed08be06 Mon Sep 17 00:00:00 2001
+> From: White Ding <bpqw@micron.com>
+> Date: Thu, 24 Jul 2014 00:10:45 +0800
+> Subject: [PATCH 1/1] mtd:nand:fix nand_lock/unlock() function
+> 
+> Do nand reset before write protect check.
+> 
+> If we want to check the WP# low or high through STATUS READ and check bit 7,
+> we must reset the device, other operation (eg.erase/program a locked block) can
+> also clear the bit 7 of status register.
+> 
+> As we know the status register can be refreshed, if we do some operation to trigger it,
+> for example if we do erase/program operation to one block that is locked, then READ STATUS,
+> the bit 7 of READ STATUS will be 0 indicate the device in write protect, then if we do
+> erase/program operation to another block that is unlocked, the bit 7 of READ STATUS will
+> be 1 indicate the device is not write protect.
+> Suppose we checked the bit 7 of READ STATUS is 0 then judge the WP# is low (write protect),
+> but in this case the WP# maybe high if we do erase/program operation to a locked block, 
+> so we must reset the device if we want to check the WP# low or high through STATUS READ and 
+> check bit 7.
+> 
+> Signed-off-by: White Ding <bpqw@micron.com>
 
-Do nand reset before write protect check.
-
-If we want to check the WP# low or high through STATUS READ and check bit 7=
-,
-we must reset the device, other operation (eg.erase/program a locked block)=
- can
-also clear the bit 7 of status register.
-
-As we know the status register can be refreshed, if we do some operation to=
- trigger it,
-for example if we do erase/program operation to one block that is locked, t=
-hen READ STATUS,
-the bit 7 of READ STATUS will be 0 indicate the device in write protect, th=
-en if we do
-erase/program operation to another block that is unlocked, the bit 7 of REA=
-D STATUS will
-be 1 indicate the device is not write protect.
-Suppose we checked the bit 7 of READ STATUS is 0 then judge the WP# is low =
-(write protect),
-but in this case the WP# maybe high if we do erase/program operation to a l=
-ocked block,=20
-so we must reset the device if we want to check the WP# low or high through=
- STATUS READ and=20
-check bit 7.
-
-Signed-off-by: White Ding <bpqw@micron.com>
----
- drivers/mtd/nand/nand_base.c |   18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
-
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 41167e9..22dd3aa 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -965,6 +965,15 @@ int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint=
-64_t len)
-=20
- 	chip->select_chip(mtd, chipnr);
-=20
-+	/*
-+	 * Reset the chip.
-+	 * If we want to check the WP through READ STATUS and check the bit 7
-+	 * we must reset the chip
-+	 * some operation can also clear the bit 7 of status register
-+	 * eg. erase/program a locked block
-+	 */
-+	chip->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
-+
- 	/* Check, if it is write protected */
- 	if (nand_check_wp(mtd)) {
- 		pr_debug("%s: device is write protected!\n",
-@@ -1015,6 +1024,15 @@ int nand_lock(struct mtd_info *mtd, loff_t ofs, uint=
-64_t len)
-=20
- 	chip->select_chip(mtd, chipnr);
-=20
-+	/*
-+	 * Reset the chip.
-+	 * If we want to check the WP through READ STATUS and check the bit 7
-+	 * we must reset the chip
-+	 * some operation can also clear the bit 7 of status register
-+	 * eg. erase/program a locked block
-+	 */
-+	chip->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
-+
- 	/* Check, if it is write protected */
- 	if (nand_check_wp(mtd)) {
- 		pr_debug("%s: device is write protected!\n",
---=20
-1.7.9.5
-
-White
-
------Original Message-----
-From: Brian Norris [mailto:computersforpeace@gmail.com]=20
-Sent: Tuesday, August 05, 2014 6:48 AM
-To: bpqw
-Cc: dwmw2@infradead.org; b32955@freescale.com; artem.bityutskiy@linux.intel=
-.com; ron@debian.org; u.kleine-koenig@pengutronix.de; ezequiel.garcia@free-=
-electrons.com; linux-mtd@lists.infradead.org; linux-kernel@vger.kernel.org
-Subject: Re: Subject: [PATCH 1/1] mtd:nand:fix nand_lock/unlock() function
-
-Hi,
-
-On Mon, Jul 28, 2014 at 07:46:51AM +0000, bpqw wrote:
-> >> Do nand reset before write protect check If we want to check the=20
-> >> WP# low or high through STATUS READ and check bit 7, we must reset=20
-> >> the device, other operation (eg.erase/program a locked block) can=20
-> >> also clear the bit 7 of status register.
-> >This description doesn't really tell me why we need this patch.
-> If we want to use the lock/unlock function, we must confirm the WP# is hi=
-gh, if the WP# is low, the write protect is provided by WP#, we don't need =
-LOKC/UNLOCK function.
-> So before we use the LOCK/UNLOCK function we must confirm the WP# is high=
-.
-> We can check the WP# is high or low through READ STATUS and check the bit=
- 7, but this only correct when we READ STATUS directly after RESET or Power=
- On.
-> If we don't add this patch, We can't check the WP# high or low just throu=
-gh READ STATUS and check bit7.=20
->=20
-> >First of all, where is the 'lock' sequence specified? I see the commit t=
-hat introduced nand_lock() (without any users) which says Micron parts supp=
-ort it, but I don't see it documented in the datasheet:
-> The LOCK/UNLOCK feature not apply all micron nand, only 1.8V device have =
-this feature.
->=20
-> >  commit 7d70f334ad2bf1b3aaa1f0699c0f442e14bcc9e0
-> >  Author: Vimal Singh <vimal.newwork@gmail.com>
-> >  Date:   Mon Feb 8 15:50:49 2010 +0530
->=20
-> >      mtd: nand: add lock/unlock routines
->=20
-> >Now, supposing this is documented somewhere, are you seeing some kind=20
-> >of out-of-spec behavior? Is this a controller quirk you're seeing?=20
-> >Why should I need to reset the chip? I would presume that
->=20
-> >  chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
->=20
-> >would refresh the status properly. Is that not the case?
-> chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1) can refresh the status proper=
-ly, but we must do some operation to trigger it.
-> For example if we do rease/program operation to a block that is locked, t=
-hen READ STATUS, the bit 7 will be 0 that indicate the device is write prot=
-ect.
-> Then if we do erase/program operation to another block that is unlocked, =
-the bit 7 of READ STATUS will be 1 indicate that the device is not write pr=
-otect.
->=20
-> Now if we don't do any operation just through chip->cmdfunc(mtd, NAND_CMD=
-_STATUS, -1, -1); to check the WP# is high or low.
-> Suppose we check the bit 7 of READ STATUS is 0 then we judge the WP# is l=
-ow (write protect), but in this case the WP# may be high if we do erase/pro=
-gram operation to a locked block.
-
-Thanks for the explanations. I think the patch is probably OK, then. Can yo=
-u send a new version with a more complete description in the commit message=
-?
+Thanks. Queued to l2-mtd.git/next.
 
 Brian
