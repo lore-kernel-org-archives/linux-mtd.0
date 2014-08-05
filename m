@@ -1,20 +1,19 @@
-Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
+Received: from smtprelay01.ispgateway.de ([80.67.31.24])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XEaGM-0000RP-S5
- for linux-mtd@lists.infradead.org; Tue, 05 Aug 2014 08:38:35 +0000
-From: Gerhard Sittig <gsi@denx.de>
-To: devicetree@vger.kernel.org, Jamie Iles <jamie@jamieiles.com>,
- linux-mtd@lists.infradead.org, Mike Rapoport <mike@compulab.co.il>,
- Alexander Shiyan <shc_work@mail.ru>
-Subject: [PATCH v1 1/2] devicetree: bindings: improve description for GPIO
- assisted NAND flash
-Date: Tue,  5 Aug 2014 10:37:25 +0200
-Message-Id: <1407227846-3257-1-git-send-email-gsi@denx.de>
-Cc: Mark Rutland <mark.rutland@arm.com>, Pawel Moll <pawel.moll@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>, Gerhard Sittig <gsi@denx.de>,
- Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+ id 1XEaww-0008Pp-Hf
+ for linux-mtd@lists.infradead.org; Tue, 05 Aug 2014 09:22:34 +0000
+Message-ID: <53E0A239.8060209@symeo.com>
+Date: Tue, 5 Aug 2014 11:22:01 +0200
+From: Christoph Mammitzsch <Christoph.Mammitzsch@symeo.com>
+MIME-Version: 1.0
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Subject: Re: Disappearing directories (jffs2 on nand flash)
+References: <53B6DDA2.7000508@symeo.com>	<53C56392.2070306@symeo.com>	<53DD3A45.7000802@symeo.com>
+ <CAFLxGvx2s0dZeRUruhQUPQAVDUrdMTFY7bPCH2-2D6Kg4Lv9bw@mail.gmail.com>
+In-Reply-To: <CAFLxGvx2s0dZeRUruhQUPQAVDUrdMTFY7bPCH2-2D6Kg4Lv9bw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,49 +23,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Expand the description of the 'gpios' property in the GPIO assisted
-NAND flash binding, to explicitly list the required GPIO pin references
-and their order.
+Am 03.08.2014 01:13, schrieb Richard Weinberger:
+> On Sat, Aug 2, 2014 at 9:21 PM, Christoph Mammitzsch
+> <Christoph.Mammitzsch@symeo.com> wrote:
+>> Hello,
+>>
+>> I am a little astonished at the amount of feedback I got for my
+>> bugreport. Apparently jffs2 losing entire directories is not as big a
+>> deal as I thought. Does that mean that JFFS2 is dead and I should use
+>> another flash filesystem instead, or did I simply post on the wrong
+>> mailing list?
+> 
+> Is there any reason why you are not using UBIFS?
 
-Update the example section to individually bracket the GPIO references,
-and capitalize the signal names for improved readability.
+We introduced our first linux based product 2006, so UBIFS was not an
+option. Our second linux based product was designed in 2011. Back then
+UBIFS was still relatively new, and it seemed beneficial to keep
+differences between our two products minimal, so we kept using JFFS2.
 
-Signed-off-by: Gerhard Sittig <gsi@denx.de>
----
- .../devicetree/bindings/mtd/gpio-control-nand.txt        |   14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+Switching to UBIFS now means we would have to update and test quite a
+lot of scripts. And providing an update for existing stations would be
+even more problematic. Therefore I was hoping for a bugfix, so we could
+just deliver a new kernel image and be done with it.
 
-diff --git a/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt b/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
-index 36ef07d3c90f..af8915b41ccf 100644
---- a/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
-@@ -11,8 +11,8 @@ Required properties:
-   are made in native endianness.
- - #address-cells, #size-cells : Must be present if the device has sub-nodes
-   representing partitions.
--- gpios : specifies the gpio pins to control the NAND device.  nwp is an
--  optional gpio and may be set to 0 if not present.
-+- gpios : Specifies the GPIO pins to control the NAND device.  The order of
-+  GPIO references is:  RDY, nCE, ALE, CLE, and an optional nWP.
- 
- Optional properties:
- - bank-width : Width (in bytes) of the device.  If not present, the width
-@@ -35,11 +35,11 @@ gpio-nand@1,0 {
- 	reg = <1 0x0000 0x2>;
- 	#address-cells = <1>;
- 	#size-cells = <1>;
--	gpios = <&banka 1 0	/* rdy */
--		 &banka 2 0 	/* nce */
--		 &banka 3 0 	/* ale */
--		 &banka 4 0 	/* cle */
--		 0		/* nwp */>;
-+	gpios = <&banka 1 0>,	/* RDY */
-+		<&banka 2 0>, 	/* nCE */
-+		<&banka 3 0>, 	/* ALE */
-+		<&banka 4 0>, 	/* CLE */
-+		<0>;		/* nWP */
- 
- 	partition@0 {
- 	...
--- 
-1.7.10.4
+
+Regards,
+
+Christoph Mammitzsch
