@@ -1,12 +1,14 @@
 Received: from arroyo.ext.ti.com ([192.94.94.40])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XEbjN-0006fC-Ji
- for linux-mtd@lists.infradead.org; Tue, 05 Aug 2014 10:12:38 +0000
+ id 1XEbjN-0006fU-4n
+ for linux-mtd@lists.infradead.org; Tue, 05 Aug 2014 10:12:39 +0000
 From: Roger Quadros <rogerq@ti.com>
 To: <computersforpeace@gmail.com>, <tony@atomide.com>
-Subject: [PATCH 0/3] [PATCH 0/3] mtd: nand: omap: Use Software ECC by default
-Date: Tue, 5 Aug 2014 13:11:19 +0300
-Message-ID: <1407233482-11642-1-git-send-email-rogerq@ti.com>
+Subject: [PATCH 2/3] ARM: OMAP2+: GPMC: Support Software ECC scheme via DT
+Date: Tue, 5 Aug 2014 13:11:21 +0300
+Message-ID: <1407233482-11642-3-git-send-email-rogerq@ti.com>
+In-Reply-To: <1407233482-11642-1-git-send-email-rogerq@ti.com>
+References: <1407233482-11642-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: artem.bityutskiy@linux.intel.com, jg1.han@samsung.com,
@@ -22,45 +24,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+For v3.14 and prior, 1-bit Hamming code ECC via software was the
+default choice for some boards e.g. 3430sdp.
+Commit ac65caf514ec in v3.15 changed the behaviour
+to use 1-bit Hamming code via Hardware using a different ECC layout
+i.e. (ROM code layout) than what is used by software ECC.
 
-In Linux v3.12 and earlier some boards [1] used Software based ECC as
-the NAND ECC scheme. In 3.13 commit c66d039197e4 changed that to
-Hardware ECC using ROM code ECC layout. This will cause NAND filesystems
-created in 3.12 and earlier to be unreadable in v3.13 and later till
-they are erased and re-created.
+This ECC layout change causes NAND filesystems created in v3.14
+and prior to be unusable in v3.15 and later. So don't mark "sw" scheme
+as deperecated and support it.
 
-This series fixes this issue by using Software ECC as the default ECC
-scheme for the affected boards.
-
-Tested on omap3beagle.
-
-[1] - Affected boards
--omap3beagle
--omap3touchbook
--overo
--am3517crane
--devkit8000
--ldp
--3430sdp
-
-cheers,
--roger
-
+Signed-off-by: Roger Quadros <rogerq@ti.com>
 ---
-Roger Quadros (3):
-  mtd: nand: omap: Revert to using software ECC by default
-  ARM: OMAP2+: GPMC: Support Software ECC scheme via DT
-  ARM: dts: omap3430-sdp: Revert to using software ECC for NAND
+ Documentation/devicetree/bindings/mtd/gpmc-nand.txt | 2 +-
+ arch/arm/mach-omap2/gpmc.c                          | 7 +++++--
+ 2 files changed, 6 insertions(+), 3 deletions(-)
 
- Documentation/devicetree/bindings/mtd/gpmc-nand.txt |  2 +-
- arch/arm/boot/dts/omap3430-sdp.dts                  |  2 +-
- arch/arm/mach-omap2/board-flash.c                   |  2 +-
- arch/arm/mach-omap2/gpmc-nand.c                     |  3 ++-
- arch/arm/mach-omap2/gpmc.c                          |  7 +++++--
- drivers/mtd/nand/omap2.c                            | 14 +++++++++++---
- include/linux/platform_data/mtd-nand-omap2.h        | 13 +++++++++++--
- 7 files changed, 32 insertions(+), 11 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+index 65f4f7c..ee654e9 100644
+--- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+@@ -22,7 +22,7 @@ Optional properties:
+ 				width of 8 is assumed.
+ 
+  - ti,nand-ecc-opt:		A string setting the ECC layout to use. One of:
+-		"sw"		<deprecated> use "ham1" instead
++		"sw"		1-bit Hamming ecc code via software
+ 		"hw"		<deprecated> use "ham1" instead
+ 		"hw-romcode"	<deprecated> use "ham1" instead
+ 		"ham1"		1-bit Hamming ecc code
+diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
+index 8bc1338..9f42d54 100644
+--- a/arch/arm/mach-omap2/gpmc.c
++++ b/arch/arm/mach-omap2/gpmc.c
+@@ -1403,8 +1403,11 @@ static int gpmc_probe_nand_child(struct platform_device *pdev,
+ 		pr_err("%s: ti,nand-ecc-opt not found\n", __func__);
+ 		return -ENODEV;
+ 	}
+-	if (!strcmp(s, "ham1") || !strcmp(s, "sw") ||
+-		!strcmp(s, "hw") || !strcmp(s, "hw-romcode"))
++
++	if (!strcmp(s, "sw"))
++		gpmc_nand_data->ecc_opt = OMAP_ECC_HAM1_CODE_SW;
++	else if (!strcmp(s, "ham1") ||
++		 !strcmp(s, "hw") || !strcmp(s, "hw-romcode"))
+ 		gpmc_nand_data->ecc_opt =
+ 				OMAP_ECC_HAM1_CODE_HW;
+ 	else if (!strcmp(s, "bch4"))
 -- 
 1.8.3.2
