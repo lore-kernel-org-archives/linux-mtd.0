@@ -1,21 +1,21 @@
 Received: from mail-pd0-x22a.google.com ([2607:f8b0:400e:c02::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XEmfj-0004IX-I7
- for linux-mtd@lists.infradead.org; Tue, 05 Aug 2014 21:53:35 +0000
-Received: by mail-pd0-f170.google.com with SMTP id g10so2051205pdj.1
- for <linux-mtd@lists.infradead.org>; Tue, 05 Aug 2014 14:53:09 -0700 (PDT)
-Date: Tue, 5 Aug 2014 14:53:05 -0700
+ id 1XEmvA-0000Pv-Gr
+ for linux-mtd@lists.infradead.org; Tue, 05 Aug 2014 22:09:28 +0000
+Received: by mail-pd0-f170.google.com with SMTP id g10so2040893pdj.29
+ for <linux-mtd@lists.infradead.org>; Tue, 05 Aug 2014 15:09:06 -0700 (PDT)
+Date: Tue, 5 Aug 2014 15:09:02 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: cfi_cmdset_0002: allow retry/timeout loop to exit
-Message-ID: <20140805215305.GK3711@ld-irv-0074>
-References: <1405994779-19207-1-git-send-email-computersforpeace@gmail.com>
+To: Josh Wu <josh.wu@atmel.com>
+Subject: Re: [PATCH v2] mtd: atmel_nand: NFC: fix mtd_nandbiterrs.ko test
+ fail when using sram write
+Message-ID: <20140805220902.GL3711@ld-irv-0074>
+References: <1407235132-4757-1-git-send-email-josh.wu@atmel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1405994779-19207-1-git-send-email-computersforpeace@gmail.com>
-Cc: Bean Huo <beanhuo@outlook.com>,
- Christian Riesch <christian.riesch@omicron.at>
+In-Reply-To: <1407235132-4757-1-git-send-email-josh.wu@atmel.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,17 +25,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jul 21, 2014 at 07:06:19PM -0700, Brian Norris wrote:
-> The variable 'retries' is never modified, so if the reset operation
-> never is going to complete, we'll get stuck in an infinite loop.
+On Tue, Aug 05, 2014 at 06:38:52PM +0800, Josh Wu wrote:
+> When enable NFC sram write, it will failed the mtd_nandbiterrs.ko test.
 > 
-> It looks like the intention was to decrement 'retries' on every loop.
-> Untested.
+> As in driver's nfc_sram_write_page(), if ops->mode equal to MTD_OSP_RAW,
+> driver assumes the data buffer contains one page data and one oob data
+> followed. And driver will write the page data and oob data to nand.
 > 
-> Caught by Coverity.
+> But this is wrong implementation. Since the data buffer don't contains the
+> oob data to write. We should write the chip->oob_poi to nand's oob.
 > 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> So this patch fix it by writing the oob data from chip->oob_poi.
+> 
+> Signed-off-by: Josh Wu <josh.wu@atmel.com>
+> ---
+> v1 -> v2:
+>   drop the sanity check for if write_page will write more than 1 page. As
+> NAND layer will guarantees that.
 
-Pushed this and my other Coverity-inspired patches to l2-mtd.git/next.
+Queued to l2-mtd.git/next. Thanks!
 
 Brian
