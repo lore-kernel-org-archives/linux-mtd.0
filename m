@@ -1,21 +1,16 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
+Received: from eusmtp01.atmel.com ([212.144.249.242])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XEbjS-0006fw-Qe
- for linux-mtd@lists.infradead.org; Tue, 05 Aug 2014 10:12:42 +0000
-From: Roger Quadros <rogerq@ti.com>
-To: <computersforpeace@gmail.com>, <tony@atomide.com>
-Subject: [PATCH 3/3] ARM: dts: omap3430-sdp: Revert to using software ECC for
- NAND
-Date: Tue, 5 Aug 2014 13:11:22 +0300
-Message-ID: <1407233482-11642-4-git-send-email-rogerq@ti.com>
-In-Reply-To: <1407233482-11642-1-git-send-email-rogerq@ti.com>
-References: <1407233482-11642-1-git-send-email-rogerq@ti.com>
+ id 1XEc9B-0008QA-Tl
+ for linux-mtd@lists.infradead.org; Tue, 05 Aug 2014 10:39:14 +0000
+From: Josh Wu <josh.wu@atmel.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH v2] mtd: atmel_nand: NFC: fix mtd_nandbiterrs.ko test fail
+ when using sram write
+Date: Tue, 5 Aug 2014 18:38:52 +0800
+Message-ID: <1407235132-4757-1-git-send-email-josh.wu@atmel.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Cc: artem.bityutskiy@linux.intel.com, jg1.han@samsung.com,
- linux-kernel@vger.kernel.org, balbi@ti.com, linux-mtd@lists.infradead.org,
- ezequiel.garcia@free-electrons.com, pekon.gupta@gmail.com,
- linux-omap@vger.kernel.org, dwmw2@infradead.org, Roger Quadros <rogerq@ti.com>
+Cc: Josh Wu <josh.wu@atmel.com>, computersforpeace@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,33 +20,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-For v3.14 and prior, 1-bit Hamming code ECC via software was used
-for NAND on this board.
-Commit c06c52701695 in v3.15 changed the behaviour
-to use 1-bit Hamming code via Hardware using a different ECC layout
-i.e. (ROM code layout) than what is used by software ECC.
+When enable NFC sram write, it will failed the mtd_nandbiterrs.ko test.
 
-This ECC layout change causes NAND filesystems created in v3.14
-and prior to be unusable in v3.15 and later. So revert back to
-using software ECC scheme.
+As in driver's nfc_sram_write_page(), if ops->mode equal to MTD_OSP_RAW,
+driver assumes the data buffer contains one page data and one oob data
+followed. And driver will write the page data and oob data to nand.
 
-Signed-off-by: Roger Quadros <rogerq@ti.com>
+But this is wrong implementation. Since the data buffer don't contains the
+oob data to write. We should write the chip->oob_poi to nand's oob.
+
+So this patch fix it by writing the oob data from chip->oob_poi.
+
+Signed-off-by: Josh Wu <josh.wu@atmel.com>
 ---
- arch/arm/boot/dts/omap3430-sdp.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v1 -> v2:
+  drop the sanity check for if write_page will write more than 1 page. As
+NAND layer will guarantees that.
 
-diff --git a/arch/arm/boot/dts/omap3430-sdp.dts b/arch/arm/boot/dts/omap3430-sdp.dts
-index 02f69f4..9bad94e 100644
---- a/arch/arm/boot/dts/omap3430-sdp.dts
-+++ b/arch/arm/boot/dts/omap3430-sdp.dts
-@@ -107,7 +107,7 @@
- 		#address-cells = <1>;
- 		#size-cells = <1>;
- 		reg = <1 0 0x08000000>;
--		ti,nand-ecc-opt = "ham1";
-+		ti,nand-ecc-opt = "sw";
- 		nand-bus-width = <8>;
- 		gpmc,cs-on-ns = <0>;
- 		gpmc,cs-rd-off-ns = <36>;
+ drivers/mtd/nand/atmel_nand.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index fa3fb47..003f661 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -1907,15 +1907,7 @@ static int nfc_sram_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 	if (offset || (data_len < mtd->writesize))
+ 		return -EINVAL;
+ 
+-	cfg = nfc_readl(host->nfc->hsmc_regs, CFG);
+ 	len = mtd->writesize;
+-
+-	if (unlikely(raw)) {
+-		len += mtd->oobsize;
+-		nfc_writel(host->nfc->hsmc_regs, CFG, cfg | NFC_CFG_WSPARE);
+-	} else
+-		nfc_writel(host->nfc->hsmc_regs, CFG, cfg & ~NFC_CFG_WSPARE);
+-
+ 	/* Copy page data to sram that will write to nand via NFC */
+ 	if (use_dma) {
+ 		if (atmel_nand_dma_op(mtd, (void *)buf, len, 0) != 0)
+@@ -1925,6 +1917,15 @@ static int nfc_sram_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 		memcpy32_toio(sram, buf, len);
+ 	}
+ 
++	cfg = nfc_readl(host->nfc->hsmc_regs, CFG);
++	if (unlikely(raw) && oob_required) {
++		memcpy32_toio(sram + len, chip->oob_poi, mtd->oobsize);
++		len += mtd->oobsize;
++		nfc_writel(host->nfc->hsmc_regs, CFG, cfg | NFC_CFG_WSPARE);
++	} else {
++		nfc_writel(host->nfc->hsmc_regs, CFG, cfg & ~NFC_CFG_WSPARE);
++	}
++
+ 	if (chip->ecc.mode == NAND_ECC_HW && host->has_pmecc)
+ 		/*
+ 		 * When use NFC sram, need set up PMECC before send
 -- 
-1.8.3.2
+1.9.1
