@@ -1,20 +1,27 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XElFD-0007V4-Jl
- for linux-mtd@lists.infradead.org; Tue, 05 Aug 2014 20:22:05 +0000
-Message-ID: <53E13CD2.6010000@nod.at>
-Date: Tue, 05 Aug 2014 22:21:38 +0200
-From: Richard Weinberger <richard@nod.at>
+Received: from us2.outbound.mailhostbox.com ([208.91.199.217])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XElOR-0003hm-0T
+ for linux-mtd@lists.infradead.org; Tue, 05 Aug 2014 20:31:36 +0000
 MIME-Version: 1.0
-To: Christoph Mammitzsch <Christoph.Mammitzsch@symeo.com>
-Subject: Re: Disappearing directories (jffs2 on nand flash)
-References: <53B6DDA2.7000508@symeo.com>	<53C56392.2070306@symeo.com>	<53DD3A45.7000802@symeo.com>
- <CAFLxGvx2s0dZeRUruhQUPQAVDUrdMTFY7bPCH2-2D6Kg4Lv9bw@mail.gmail.com>
- <53E0A239.8060209@symeo.com>
-In-Reply-To: <53E0A239.8060209@symeo.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Wed, 06 Aug 2014 02:00:54 +0530
+From: pekon@pek-sem.com
+To: Grazvydas Ignotas <notasas@gmail.com>, Roger Quadros <rogerq@ti.com>
+Subject: Re: [PATCH 1/3] mtd: nand: omap: Revert to using software ECC by
+ default
+In-Reply-To: <CANOLnOM-Q4b8N5T522Vc_gXTSj2C-mxV6GV0hRTDPscpPgXO6A@mail.gmail.com>
+References: <1407233482-11642-1-git-send-email-rogerq@ti.com>
+ <1407233482-11642-2-git-send-email-rogerq@ti.com>
+ <CANOLnOM-Q4b8N5T522Vc_gXTSj2C-mxV6GV0hRTDPscpPgXO6A@mail.gmail.com>
+Message-ID: <099046e951bd70b9bfb638d2ac9d539a@pek-sem.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Tony Lindgren <tony@atomide.com>, artem.bityutskiy@linux.intel.com,
+ jg1.han@samsung.com, linux-kernel@vger.kernel.org, Felipe Balbi <balbi@ti.com>,
+ linux-mtd@lists.infradead.org,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ linux-omap@vger.kernel.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,36 +31,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 05.08.2014 11:22, schrieb Christoph Mammitzsch:
-> Am 03.08.2014 01:13, schrieb Richard Weinberger:
->> On Sat, Aug 2, 2014 at 9:21 PM, Christoph Mammitzsch
->> <Christoph.Mammitzsch@symeo.com> wrote:
->>> Hello,
->>>
->>> I am a little astonished at the amount of feedback I got for my
->>> bugreport. Apparently jffs2 losing entire directories is not as big a
->>> deal as I thought. Does that mean that JFFS2 is dead and I should use
->>> another flash filesystem instead, or did I simply post on the wrong
->>> mailing list?
+Hi Roger,
+
+On Tuesday 05 August 2014 09:45 PM, Grazvydas Ignotas wrote:
+> On Tue, Aug 5, 2014 at 1:11 PM, Roger Quadros <rogerq@ti.com> wrote:
+>> For v3.12 and prior, 1-bit Hamming code ECC via software was the
+>> default choice. Commit c66d039197e4 in v3.13 changed the behavior
+>> to use 1-bit Hamming code via Hardware using a different ECC layout
+>> i.e. (ROM code layout) than what is used by software ECC.
 >>
->> Is there any reason why you are not using UBIFS?
-> 
-> We introduced our first linux based product 2006, so UBIFS was not an
-> option. Our second linux based product was designed in 2011. Back then
-> UBIFS was still relatively new, and it seemed beneficial to keep
-> differences between our two products minimal, so we kept using JFFS2.
-> 
-> Switching to UBIFS now means we would have to update and test quite a
-> lot of scripts. And providing an update for existing stations would be
-> even more problematic. Therefore I was hoping for a bugfix, so we could
-> just deliver a new kernel image and be done with it.
+As per OMAP3 TRM [1], the NAND ECC layout required for
+NAND boot is same as that of OMAP_ECC_HAM1_CODE_HW. So
+above mentioned 'commit c66d039197e4' does not break
+backward compatibility as far as NAND boot is concerned.
 
-I can understand your decisions.
-TBH jffs2 is more of less abandoned, don't expect anyone to fix issues fast.
+AFAIK, all users on OMAP3 used HAM1_HW which is same
+as HAM1 today. So unless we have a real OMAP3 user who
+(1) had created file-system using HAM1_SW &&
+(2) now wants to migrate to new kernel, I don't think
+its wise to re-introduce HAM1_SW4 ECC schemes.
 
-Is the issue you see a regression?
-If you can find the first bad commit it might give someone a hint...
-git bisect will help you.
+Instead we are trying to push OMAP3 users to migrate to
+BCH4_SW (supported by ROM) or BCH8_SW ECC schemes.
 
-Thanks,
-//richard
+Please understand
+commit c66d039197e42af8867e5d0d9b904daf0fb9e6bc
+was part of larger series to clean-up NAND driver and
+remove obsolete or redundant code. So this was
+intentional change.
+
+
+
+>> This ECC layout change causes NAND filesystems created in v3.12
+>> and prior to be unusable in v3.13 and later. So revert back to
+>> using software ECC by default if an ECC scheme is not explicitely
+>> specified.
+>>
+>> This defect can be observed on the following boards during legacy 
+>> boot
+>>
+>> -omap3beagle
+>> -omap3touchbook
+>> -overo
+>> -am3517crane
+>> -devkit8000
+>> -ldp
+>> -3430sdp
+>
+> omap3pandora is also using sw ecc, with ubifs. Some time ago I tried
+> booting mainline (I think it was 3.14) with rootfs on NAND, and while
+> it did boot and reached a shell, there were lots of ubifs errors, fs
+> got corrupted and I lost all my data. I used to be able to boot
+> mainline this way fine sometime ~3.8 release. It's interesting that
+> 3.14 was able to read the data, even with wrong ecc setup.
+>
+> Do you think it's safe again to boot ubifs created on 3.2 after
+> applying this series?
+>
+Are you sure you are using "sw" ECC scheme ?
+Can you please share the ecc-layout of the NAND page, because
+as per [1] you should not be able to Boot from NAND then.
+
+IIRC..
+- ECC layout of HAM1_SW has ECC bytes towards end of OOB-section.
+- ECC layout of HAM1_HW has ECC bytes towards staring of OOB section.
+
+
+with regards, pekon
+
+
+[1] http://www.ti.com/product/omap3530
+http://www.ti.com/lit/pdf/spruf98  (Revision Y)
+Chapter 25: Initialization
+Section: 25.4.7 Memory Booting
+	Sub-Section: NAND
+	Figure 25-19. ECC Locations in NAND Spare Areas
+
+
+------------------------
+Powered by BigRock.com
