@@ -1,31 +1,24 @@
-Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
+Received: from mail-out.m-online.net ([212.18.0.9])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XEV0n-00028B-DM
- for linux-mtd@lists.infradead.org; Tue, 05 Aug 2014 03:02:07 +0000
-Received: by mail-pa0-f52.google.com with SMTP id bj1so479936pad.25
- for <linux-mtd@lists.infradead.org>; Mon, 04 Aug 2014 20:01:43 -0700 (PDT)
-Date: Mon, 4 Aug 2014 20:01:40 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: bpqw <bpqw@micron.com>
-Subject: Re: Subject: [PATCH 1/1] mtd:nand:fix nand_lock/unlock() function
-Message-ID: <20140805030140.GJ3711@ld-irv-0074>
-References: <CB9F11E856CFD04BB18EC1C68F2598931B1112@NTXXIAMBX01.xacn.micron.com>
- <20140728061006.GC3095@norris-Latitude-E6410>
- <CB9F11E856CFD04BB18EC1C68F2598931B1342@NTXXIAMBX01.xacn.micron.com>
- <20140804224757.GH3711@ld-irv-0074>
- <CB9F11E856CFD04BB18EC1C68F2598931B1724@NTXXIAMBX01.xacn.micron.com>
+ id 1XEaGM-0000Ts-6n
+ for linux-mtd@lists.infradead.org; Tue, 05 Aug 2014 08:38:35 +0000
+From: Gerhard Sittig <gsi@denx.de>
+To: devicetree@vger.kernel.org, Jamie Iles <jamie@jamieiles.com>,
+ linux-mtd@lists.infradead.org, Mike Rapoport <mike@compulab.co.il>,
+ Alexander Shiyan <shc_work@mail.ru>
+Subject: =?UTF-8?q?=5BPATCH=20v1=202/2=5D=20mtd=3A=20nand=3A=20gpio=3A=20improve=20comments=20about=20GPIO=20assisted=20operation?=
+Date: Tue,  5 Aug 2014 10:37:26 +0200
+Message-Id: <1407227846-3257-2-git-send-email-gsi@denx.de>
+In-Reply-To: <1407227846-3257-1-git-send-email-gsi@denx.de>
+References: <1407227846-3257-1-git-send-email-gsi@denx.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CB9F11E856CFD04BB18EC1C68F2598931B1724@NTXXIAMBX01.xacn.micron.com>
-Cc: "ron@debian.org" <ron@debian.org>,
- "artem.bityutskiy@linux.intel.com" <artem.bityutskiy@linux.intel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "b32955@freescale.com" <b32955@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "ezequiel.garcia@free-electrons.com" <ezequiel.garcia@free-electrons.com>,
- "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Mark Rutland <mark.rutland@arm.com>, Pawel Moll <pawel.moll@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>, Gerhard Sittig <gsi@denx.de>,
+ Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,30 +28,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Aug 05, 2014 at 01:54:07AM +0000, bpqw wrote:
-> From 0304e9618d8c3ef5360b611f881f1b1bed08be06 Mon Sep 17 00:00:00 2001
-> From: White Ding <bpqw@micron.com>
-> Date: Thu, 24 Jul 2014 00:10:45 +0800
-> Subject: [PATCH 1/1] mtd:nand:fix nand_lock/unlock() function
-> 
-> Do nand reset before write protect check.
-> 
-> If we want to check the WP# low or high through STATUS READ and check bit 7,
-> we must reset the device, other operation (eg.erase/program a locked block) can
-> also clear the bit 7 of status register.
-> 
-> As we know the status register can be refreshed, if we do some operation to trigger it,
-> for example if we do erase/program operation to one block that is locked, then READ STATUS,
-> the bit 7 of READ STATUS will be 0 indicate the device in write protect, then if we do
-> erase/program operation to another block that is unlocked, the bit 7 of READ STATUS will
-> be 1 indicate the device is not write protect.
-> Suppose we checked the bit 7 of READ STATUS is 0 then judge the WP# is low (write protect),
-> but in this case the WP# maybe high if we do erase/program operation to a locked block, 
-> so we must reset the device if we want to check the WP# low or high through STATUS READ and 
-> check bit 7.
-> 
-> Signed-off-by: White Ding <bpqw@micron.com>
+The drivers/mtd/nand/gpio.c driver does not GPIO bitbang the complete
+NAND protocol, but instead is GPIO _assisted_ -- a memory mapped interface
+communicates commands and data, and only few control signals are connected
+to GPIO pins.
 
-Thanks. Queued to l2-mtd.git/next.
+Expand comments in the driver source and in the Kconfig description to
+better reflect the very nature of the driver.  The previous text could be
+mistaken for complete GPIO bitbanging.
 
-Brian
+Signed-off-by: Gerhard Sittig <gsi@denx.de>
+---
+ drivers/mtd/nand/Kconfig |    6 ++++--
+ drivers/mtd/nand/gpio.c  |    4 +++-
+ 2 files changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index f1cf503517fd..0ef8b35b459f 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -75,10 +75,12 @@ config MTD_NAND_DENALI_SCRATCH_REG_ADDR
+           boards, the scratch register is at 0xFF108018.
+ 
+ config MTD_NAND_GPIO
+-	tristate "GPIO NAND Flash driver"
++	tristate "GPIO assisted NAND Flash driver"
+ 	depends on GPIOLIB
+ 	help
+-	  This enables a GPIO based NAND flash driver.
++	  This enables a NAND flash driver where control signals are
++	  connected to GPIO pins, and commands and data are communicated
++	  via a memory mapped interface.
+ 
+ config MTD_NAND_AMS_DELTA
+ 	tristate "NAND Flash device on Amstrad E3"
+diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
+index 117ce333fdd4..226eda6f2eee 100644
+--- a/drivers/mtd/nand/gpio.c
++++ b/drivers/mtd/nand/gpio.c
+@@ -8,7 +8,9 @@
+  *
+  * © 2004 Simtec Electronics
+  *
+- * Device driver for NAND connected via GPIO
++ * Device driver for NAND flash that uses a memory mapped interface to
++ * read/write the NAND commands and data, and GPIO pins for control signals
++ * (the DT binding refers to this as "GPIO assisted NAND flash")
+  *
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License version 2 as
+-- 
+1.7.10.4
