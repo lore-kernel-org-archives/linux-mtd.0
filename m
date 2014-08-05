@@ -1,29 +1,20 @@
-Received: from mail-oi0-x236.google.com ([2607:f8b0:4003:c06::236])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XEhP3-00048I-GG
- for linux-mtd@lists.infradead.org; Tue, 05 Aug 2014 16:15:58 +0000
-Received: by mail-oi0-f54.google.com with SMTP id i138so753016oig.41
- for <linux-mtd@lists.infradead.org>; Tue, 05 Aug 2014 09:15:31 -0700 (PDT)
+ id 1XElFD-0007V4-Jl
+ for linux-mtd@lists.infradead.org; Tue, 05 Aug 2014 20:22:05 +0000
+Message-ID: <53E13CD2.6010000@nod.at>
+Date: Tue, 05 Aug 2014 22:21:38 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-In-Reply-To: <1407233482-11642-2-git-send-email-rogerq@ti.com>
-References: <1407233482-11642-1-git-send-email-rogerq@ti.com>
- <1407233482-11642-2-git-send-email-rogerq@ti.com>
-Date: Tue, 5 Aug 2014 19:15:31 +0300
-Message-ID: <CANOLnOM-Q4b8N5T522Vc_gXTSj2C-mxV6GV0hRTDPscpPgXO6A@mail.gmail.com>
-Subject: Re: [PATCH 1/3] mtd: nand: omap: Revert to using software ECC by
- default
-From: Grazvydas Ignotas <notasas@gmail.com>
-To: Roger Quadros <rogerq@ti.com>
+To: Christoph Mammitzsch <Christoph.Mammitzsch@symeo.com>
+Subject: Re: Disappearing directories (jffs2 on nand flash)
+References: <53B6DDA2.7000508@symeo.com>	<53C56392.2070306@symeo.com>	<53DD3A45.7000802@symeo.com>
+ <CAFLxGvx2s0dZeRUruhQUPQAVDUrdMTFY7bPCH2-2D6Kg4Lv9bw@mail.gmail.com>
+ <53E0A239.8060209@symeo.com>
+In-Reply-To: <53E0A239.8060209@symeo.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- Tony Lindgren <tony@atomide.com>, artem.bityutskiy@linux.intel.com,
- jg1.han@samsung.com,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Felipe Balbi <balbi@ti.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, pekon.gupta@gmail.com,
- Brian Norris <computersforpeace@gmail.com>, dwmw2@infradead.org
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,36 +24,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Aug 5, 2014 at 1:11 PM, Roger Quadros <rogerq@ti.com> wrote:
-> For v3.12 and prior, 1-bit Hamming code ECC via software was the
-> default choice. Commit c66d039197e4 in v3.13 changed the behaviour
-> to use 1-bit Hamming code via Hardware using a different ECC layout
-> i.e. (ROM code layout) than what is used by software ECC.
->
-> This ECC layout change causes NAND filesystems created in v3.12
-> and prior to be unusable in v3.13 and later. So revert back to
-> using software ECC by default if an ECC scheme is not explicitely
-> specified.
->
-> This defect can be observed on the following boards during legacy boot
->
-> -omap3beagle
-> -omap3touchbook
-> -overo
-> -am3517crane
-> -devkit8000
-> -ldp
-> -3430sdp
+Am 05.08.2014 11:22, schrieb Christoph Mammitzsch:
+> Am 03.08.2014 01:13, schrieb Richard Weinberger:
+>> On Sat, Aug 2, 2014 at 9:21 PM, Christoph Mammitzsch
+>> <Christoph.Mammitzsch@symeo.com> wrote:
+>>> Hello,
+>>>
+>>> I am a little astonished at the amount of feedback I got for my
+>>> bugreport. Apparently jffs2 losing entire directories is not as big a
+>>> deal as I thought. Does that mean that JFFS2 is dead and I should use
+>>> another flash filesystem instead, or did I simply post on the wrong
+>>> mailing list?
+>>
+>> Is there any reason why you are not using UBIFS?
+> 
+> We introduced our first linux based product 2006, so UBIFS was not an
+> option. Our second linux based product was designed in 2011. Back then
+> UBIFS was still relatively new, and it seemed beneficial to keep
+> differences between our two products minimal, so we kept using JFFS2.
+> 
+> Switching to UBIFS now means we would have to update and test quite a
+> lot of scripts. And providing an update for existing stations would be
+> even more problematic. Therefore I was hoping for a bugfix, so we could
+> just deliver a new kernel image and be done with it.
 
-omap3pandora is also using sw ecc, with ubifs. Some time ago I tried
-booting mainline (I think it was 3.14) with rootfs on NAND, and while
-it did boot and reached a shell, there were lots of ubifs errors, fs
-got corrupted and I lost all my data. I used to be able to boot
-mainline this way fine sometime ~3.8 release. It's interesting that
-3.14 was able to read the data, even with wrong ecc setup.
+I can understand your decisions.
+TBH jffs2 is more of less abandoned, don't expect anyone to fix issues fast.
 
-Do you think it's safe again to boot ubifs created on 3.2 after
-applying this series?
+Is the issue you see a regression?
+If you can find the first bad commit it might give someone a hint...
+git bisect will help you.
 
---=20
-Gra=C5=BEvydas
+Thanks,
+//richard
