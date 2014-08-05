@@ -1,19 +1,18 @@
-Received: from smtprelay01.ispgateway.de ([80.67.31.24])
+Received: from arroyo.ext.ti.com ([192.94.94.40])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XEaww-0008Pp-Hf
- for linux-mtd@lists.infradead.org; Tue, 05 Aug 2014 09:22:34 +0000
-Message-ID: <53E0A239.8060209@symeo.com>
-Date: Tue, 5 Aug 2014 11:22:01 +0200
-From: Christoph Mammitzsch <Christoph.Mammitzsch@symeo.com>
+ id 1XEbjN-0006fC-Ji
+ for linux-mtd@lists.infradead.org; Tue, 05 Aug 2014 10:12:38 +0000
+From: Roger Quadros <rogerq@ti.com>
+To: <computersforpeace@gmail.com>, <tony@atomide.com>
+Subject: [PATCH 0/3] [PATCH 0/3] mtd: nand: omap: Use Software ECC by default
+Date: Tue, 5 Aug 2014 13:11:19 +0300
+Message-ID: <1407233482-11642-1-git-send-email-rogerq@ti.com>
 MIME-Version: 1.0
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Subject: Re: Disappearing directories (jffs2 on nand flash)
-References: <53B6DDA2.7000508@symeo.com>	<53C56392.2070306@symeo.com>	<53DD3A45.7000802@symeo.com>
- <CAFLxGvx2s0dZeRUruhQUPQAVDUrdMTFY7bPCH2-2D6Kg4Lv9bw@mail.gmail.com>
-In-Reply-To: <CAFLxGvx2s0dZeRUruhQUPQAVDUrdMTFY7bPCH2-2D6Kg4Lv9bw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain
+Cc: artem.bityutskiy@linux.intel.com, jg1.han@samsung.com,
+ linux-kernel@vger.kernel.org, balbi@ti.com, linux-mtd@lists.infradead.org,
+ ezequiel.garcia@free-electrons.com, pekon.gupta@gmail.com,
+ linux-omap@vger.kernel.org, dwmw2@infradead.org, Roger Quadros <rogerq@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,30 +22,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 03.08.2014 01:13, schrieb Richard Weinberger:
-> On Sat, Aug 2, 2014 at 9:21 PM, Christoph Mammitzsch
-> <Christoph.Mammitzsch@symeo.com> wrote:
->> Hello,
->>
->> I am a little astonished at the amount of feedback I got for my
->> bugreport. Apparently jffs2 losing entire directories is not as big a
->> deal as I thought. Does that mean that JFFS2 is dead and I should use
->> another flash filesystem instead, or did I simply post on the wrong
->> mailing list?
-> 
-> Is there any reason why you are not using UBIFS?
+Hi,
 
-We introduced our first linux based product 2006, so UBIFS was not an
-option. Our second linux based product was designed in 2011. Back then
-UBIFS was still relatively new, and it seemed beneficial to keep
-differences between our two products minimal, so we kept using JFFS2.
+In Linux v3.12 and earlier some boards [1] used Software based ECC as
+the NAND ECC scheme. In 3.13 commit c66d039197e4 changed that to
+Hardware ECC using ROM code ECC layout. This will cause NAND filesystems
+created in 3.12 and earlier to be unreadable in v3.13 and later till
+they are erased and re-created.
 
-Switching to UBIFS now means we would have to update and test quite a
-lot of scripts. And providing an update for existing stations would be
-even more problematic. Therefore I was hoping for a bugfix, so we could
-just deliver a new kernel image and be done with it.
+This series fixes this issue by using Software ECC as the default ECC
+scheme for the affected boards.
 
+Tested on omap3beagle.
 
-Regards,
+[1] - Affected boards
+-omap3beagle
+-omap3touchbook
+-overo
+-am3517crane
+-devkit8000
+-ldp
+-3430sdp
 
-Christoph Mammitzsch
+cheers,
+-roger
+
+---
+Roger Quadros (3):
+  mtd: nand: omap: Revert to using software ECC by default
+  ARM: OMAP2+: GPMC: Support Software ECC scheme via DT
+  ARM: dts: omap3430-sdp: Revert to using software ECC for NAND
+
+ Documentation/devicetree/bindings/mtd/gpmc-nand.txt |  2 +-
+ arch/arm/boot/dts/omap3430-sdp.dts                  |  2 +-
+ arch/arm/mach-omap2/board-flash.c                   |  2 +-
+ arch/arm/mach-omap2/gpmc-nand.c                     |  3 ++-
+ arch/arm/mach-omap2/gpmc.c                          |  7 +++++--
+ drivers/mtd/nand/omap2.c                            | 14 +++++++++++---
+ include/linux/platform_data/mtd-nand-omap2.h        | 13 +++++++++++--
+ 7 files changed, 32 insertions(+), 11 deletions(-)
+
+-- 
+1.8.3.2
