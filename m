@@ -1,25 +1,25 @@
-Received: from mail-pd0-x229.google.com ([2607:f8b0:400e:c02::229])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XERcG-0005ki-Do
- for linux-mtd@lists.infradead.org; Mon, 04 Aug 2014 23:24:33 +0000
-Received: by mail-pd0-f169.google.com with SMTP id y10so174507pdj.14
- for <linux-mtd@lists.infradead.org>; Mon, 04 Aug 2014 16:24:10 -0700 (PDT)
-Date: Mon, 4 Aug 2014 16:24:07 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Huang Shijie <b32955@freescale.com>
+Received: from mga11.intel.com ([192.55.52.93])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XESz7-00008d-QY
+ for linux-mtd@lists.infradead.org; Tue, 05 Aug 2014 00:52:14 +0000
+Date: Tue, 5 Aug 2014 08:52:00 +0800
+From: Huang Shijie <shijie.huang@intel.com>
+To: Brian Norris <computersforpeace@gmail.com>
 Subject: Re: [PATCH] mtd: spi-nor: read 6 bytes for the ID
-Message-ID: <20140804232407.GI3711@ld-irv-0074>
+Message-ID: <20140805005200.GA19643@shldeISGChi005.sh.intel.com>
 References: <1397470174-27856-1-git-send-email-b32955@freescale.com>
  <20140527011231.GA5876@shlinux1.ap.freescale.net>
  <5384B5EB.4050203@st.com>
  <20140528052237.GA7984@shlinux1.ap.freescale.net>
+ <20140804232407.GI3711@ld-irv-0074>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20140528052237.GA7984@shlinux1.ap.freescale.net>
-Cc: marex@denx.de, dwmw2@infradead.org,
- Christophe KERELLO <christophe.kerello@st.com>, linux-mtd@lists.infradead.org,
- angus.clark@st.com
+In-Reply-To: <20140804232407.GI3711@ld-irv-0074>
+Cc: marex@denx.de, angus.clark@st.com,
+ Christophe KERELLO <christophe.kerello@st.com>,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,118 +29,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Huang,
-
-You asked for a review of this patch...
-
-On Wed, May 28, 2014 at 01:22:40PM +0800, Huang Shijie wrote:
-> From 7b920141899e4e7249bd23792dc8d5f1558cb7ca Mon Sep 17 00:00:00 2001
-> From: Huang Shijie <b32955@freescale.com>
-> Date: Mon, 14 Apr 2014 18:09:34 +0800
-> Subject: [PATCH v2] mtd: spi-nor: read 6 bytes for the ID
+On Mon, Aug 04, 2014 at 04:24:07PM -0700, Brian Norris wrote:
 > 
-> Currently, we read 5 bytes for ID, but s25fl128s has the same ext_id(0x4d01)
-> with s25fl129p1. The s25fl128s can support the DDR Quad read, while s25fl129p1
-> does not. So we have to distinguish the two NOR flashs.
-> 
-> This patch reads out 6 bytes for the ID, and use the 6 bytes ID to search the
-> right flash_info.
-> 
-> The detail of the patch is:
->   [1] change the "ext_id" from u16 to u32.
->       We can store two bytes or three bytes with the @ext_id now.
-> 
->   [2] search the right flash_info with the 6byte ID and the new @ext_id.
->       We use "matched" variable to track the legacy two bytes @ext_id.
->       If the flash_info's @ext_id is three bytes, we will use the
->       sixth byte of the ID to check it.
-> 
->   [3] add the new item to spi_nor_ids for s25fl128s.
-> 
-> Signed-off-by: Huang Shijie <b32955@freescale.com>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c |   30 +++++++++++++++++++++++++-----
->  1 files changed, 25 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index c713c86..f21d3ef 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -383,7 +383,7 @@ struct flash_info {
->  	 * then a two byte device id.
->  	 */
->  	u32		jedec_id;
-> -	u16             ext_id;
-> +	u32		ext_id;
->  
->  	/* The size listed here is what works with SPINOR_OP_SE, which isn't
->  	 * necessarily called a "sector" by the vendor.
-> @@ -505,6 +505,7 @@ const struct spi_device_id spi_nor_ids[] = {
->  	{ "s70fl01gs",  INFO(0x010221, 0x4d00, 256 * 1024, 256, 0) },
->  	{ "s25sl12800", INFO(0x012018, 0x0300, 256 * 1024,  64, 0) },
->  	{ "s25sl12801", INFO(0x012018, 0x0301,  64 * 1024, 256, 0) },
-> +	{ "s25fl128s",	INFO(0x012018, 0x4d0180, 64 * 1024, 256, SPI_NOR_QUAD_READ) },
->  	{ "s25fl129p0", INFO(0x012018, 0x4d00, 256 * 1024,  64, 0) },
->  	{ "s25fl129p1", INFO(0x012018, 0x4d01,  64 * 1024, 256, 0) },
->  	{ "s25sl004a",  INFO(0x010212,      0,  64 * 1024,   8, 0) },
-> @@ -593,12 +594,13 @@ EXPORT_SYMBOL_GPL(spi_nor_ids);
->  static const struct spi_device_id *spi_nor_read_id(struct spi_nor *nor)
->  {
->  	int			tmp;
-> -	u8			id[5];
-> +	u8			id[6];
->  	u32			jedec;
-> -	u16                     ext_jedec;
-> +	u32                     ext_jedec;
->  	struct flash_info	*info;
-> +	int			matched = -1;
->  
-> -	tmp = nor->read_reg(nor, SPINOR_OP_RDID, id, 5);
-> +	tmp = nor->read_reg(nor, SPINOR_OP_RDID, id, 6);
->  	if (tmp < 0) {
->  		dev_dbg(nor->dev, " error %d reading JEDEC ID\n", tmp);
->  		return ERR_PTR(tmp);
-> @@ -614,8 +616,26 @@ static const struct spi_device_id *spi_nor_read_id(struct spi_nor *nor)
->  	for (tmp = 0; tmp < ARRAY_SIZE(spi_nor_ids) - 1; tmp++) {
->  		info = (void *)spi_nor_ids[tmp].driver_data;
->  		if (info->jedec_id == jedec) {
-> -			if (info->ext_id == 0 || info->ext_id == ext_jedec)
-> +			if (info->ext_id == 0)
->  				return &spi_nor_ids[tmp];
-> +
-> +			/* the legacy two bytes ext_id */
-> +			if ((info->ext_id >> 16) == 0) {
-> +				if (info->ext_id == ext_jedec)
-> +					matched = tmp;
-> +			} else {
-> +				/* check the sixth byte now */
-> +				ext_jedec = ext_jedec << 8 | id[5];
-> +				if (info->ext_id == ext_jedec)
-> +					return &spi_nor_ids[tmp];
-> +
-> +				/* reset back the ext_jedec */
-> +				ext_jedec >>= 8;
+> The logic here is just plain convoluted, because we haven't updated the
+> flash_info struct to contain the ID length. Please fix this. Just like
+> struct nand_flash_dev, we probably need an 'id_len' field. Bonus points
+> if you can extend the structure properly without having to modify the
+> entire existing table... Maybe a new INFO6() macro? (Better name
+> suggestions are welcome.)
 
-As Marek already noted, this is very ad-hoc.
+ok. I will try to add a "id_len" field in the next patch.
+> 
+> Another reason for adding this field: what if we need to match to a
+> 6-byte ID where the 6th byte is 0x00? I already see a 5-byte ID in our
+> table where the 5th byte is 0x00.
+I think it is okay if the 6the byte is 0x00. 
+Anyway, we do not meet such NOR. If we meet such NOR in future, we
+can check it carefully, and see if we need to change the code a little.
 
-The logic here is just plain convoluted, because we haven't updated the
-flash_info struct to contain the ID length. Please fix this. Just like
-struct nand_flash_dev, we probably need an 'id_len' field. Bonus points
-if you can extend the structure properly without having to modify the
-entire existing table... Maybe a new INFO6() macro? (Better name
-suggestions are welcome.)
-
-Another reason for adding this field: what if we need to match to a
-6-byte ID where the 6th byte is 0x00? I already see a 5-byte ID in our
-table where the 5th byte is 0x00.
-
-> +			}
-> +		} else {
-> +			/* shortcut */
-> +			if (matched != -1)
-> +				return &spi_nor_ids[matched];
->  		}
->  	}
->  	dev_err(nor->dev, "unrecognized JEDEC id %06x\n", jedec);
-
-Brian
+thanks
+Huang Shijie
