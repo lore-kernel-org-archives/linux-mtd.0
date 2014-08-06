@@ -1,23 +1,16 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XEp1I-0006rb-OL
- for linux-mtd@lists.infradead.org; Wed, 06 Aug 2014 00:23:57 +0000
-Date: Wed, 6 Aug 2014 08:23:46 +0800
-From: Huang Shijie <shijie.huang@intel.com>
-To: Marek Vasut <marex@denx.de>
-Subject: Re: [PATCH] mtd: spi-nor: read 6 bytes for the ID
-Message-ID: <20140806002346.GA5692@shldeISGChi005.sh.intel.com>
-References: <1397470174-27856-1-git-send-email-b32955@freescale.com>
- <20140804232407.GI3711@ld-irv-0074>
- <20140805005200.GA19643@shldeISGChi005.sh.intel.com>
- <201408050914.11864.marex@denx.de>
+Received: from mail.windriver.com ([147.11.1.11])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XErTZ-00040r-6F
+ for linux-mtd@lists.infradead.org; Wed, 06 Aug 2014 03:01:17 +0000
+From: <Wei.Yang@windriver.com>
+To: <computersforpeace@gmail.com>, <dedekind1@gmail.com>
+Subject: [PATCH v1] mtdinfo: Initialize reginfo variable before invoking
+ mtd_regioninfo
+Date: Wed, 6 Aug 2014 11:00:15 +0800
+Message-ID: <1407294015-27884-1-git-send-email-Wei.Yang@windriver.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <201408050914.11864.marex@denx.de>
-Cc: angus.clark@st.com, Christophe KERELLO <christophe.kerello@st.com>,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- Brian Norris <computersforpeace@gmail.com>, dwmw2@infradead.org
+Content-Type: text/plain
+Cc: linux-mtd@lists.infradead.org, wei.yang@windriver.com, w90p710@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,32 +20,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Aug 05, 2014 at 09:14:11AM +0200, Marek Vasut wrote:
-> On Tuesday, August 05, 2014 at 02:52:00 AM, Huang Shijie wrote:
-> > On Mon, Aug 04, 2014 at 04:24:07PM -0700, Brian Norris wrote:
-> > > The logic here is just plain convoluted, because we haven't updated the
-> > > flash_info struct to contain the ID length. Please fix this. Just like
-> > > struct nand_flash_dev, we probably need an 'id_len' field. Bonus points
-> > > if you can extend the structure properly without having to modify the
-> > > entire existing table... Maybe a new INFO6() macro? (Better name
-> > > suggestions are welcome.)
-> > 
-> > ok. I will try to add a "id_len" field in the next patch.
-> > 
-> > > Another reason for adding this field: what if we need to match to a
-> > > 6-byte ID where the 6th byte is 0x00? I already see a 5-byte ID in our
-> > > table where the 5th byte is 0x00.
-> > 
-> > I think it is okay if the 6the byte is 0x00.
-> > Anyway, we do not meet such NOR. If we meet such NOR in future, we
-> > can check it carefully, and see if we need to change the code a little.
-> 
-> Well, I expressed my disagreement on that matter a few times already. Like Brian 
-> mentioned, adding an id_len field would be the way to go. It would prevent all 
-> kinds of crazy wrap-arounds when reading the IDs and other such strange 
-> behavior.
-thanks Marek, but i need to collect more comments to change patch.
-Brian was busy in the past month.. 
+From: Yang Wei <Wei.Yang@windriver.com>
 
-thanks again.
-Huang Shijie
+If not initializing this variable, its value would be random. So
+once the value of the regionindex field of region_info_user structure
+is greater than mtd->numeraseregions. ioctl,which comes with MEMGETREGIONINFO,
+would return -EINVAL
+
+Signed-off-by: Yang Wei <Wei.Yang@windriver.com>
+---
+ ubi-utils/mtdinfo.c |    2 ++
+ 1 file changed, 2 insertions(+)
+
+		Hi Guys,
+
+		I got the following errors when running "mtdinfo /dev/mtd0" on Cavium 6100 board,
+
+
+		root@CN61XX:~# mtdinfo /dev/mtd0
+		mtd0
+		Name:                           phys_mapped_flash
+		Type:                           nor
+		Eraseblock size:                65536 bytes, 64.0 KiB
+		Amount of eraseblocks:          128 (8388608 bytes, 8.0 MiB)
+		Minimum input/output unit size: 1 byte
+		Sub-page size:                  1 byte
+		Additional erase regions:       0
+		Character device major/minor:   90:0
+		Bad blocks are allowed:         false
+		Device is writable:             true
+		libmtd: error!: MEMGETREGIONINFO ioctl failed for erase region 0
+		        error 22 (Invalid argument)
+		Eraseblock region 0:  info is unavailable
+		libmtd: error!: MEMGETREGIONINFO ioctl failed for erase region 1
+		        error 22 (Invalid argument)
+		Eraseblock region 1:  info is unavailable
+
+		This patch is to fix the above errors. I have already verified it
+
+		root@CN61XX:~# ./mtdinfo /dev/mtd0
+		mtd0
+		Name:                           phys_mapped_flash
+		Type:                           nor
+		Eraseblock size:                65536 bytes, 64.0 KiB
+		Amount of eraseblocks:          128 (8388608 bytes, 8.0 MiB)
+		Minimum input/output unit size: 1 byte
+		Sub-page size:                  1 byte
+		Additional erase regions:       0
+		Character device major/minor:   90:0
+		Bad blocks are allowed:         false
+		Device is writable:             true
+		Eraseblock region 0:  offset: 0 size: 0x10000 numblocks: 0x7f
+		Eraseblock region 1:  offset: 0 size: 0x10000 numblocks: 0x7f
+
+		root@CN61XX:~#
+
+
+diff --git a/ubi-utils/mtdinfo.c b/ubi-utils/mtdinfo.c
+index 5ac95aa..a70db00 100644
+--- a/ubi-utils/mtdinfo.c
++++ b/ubi-utils/mtdinfo.c
+@@ -253,6 +253,8 @@ static void print_region_info(const struct mtd_dev_info *mtd)
+ 	if (!args.node || (!args.map && mtd->region_cnt == 0))
+ 		return;
+ 
++	memset(&reginfo, 0, sizeof(region_info_t));
++
+ 	/* First open the device so we can query it */
+ 	fd = open(args.node, O_RDONLY | O_CLOEXEC);
+ 	if (fd == -1) {
+-- 
+1.7.9.5
