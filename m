@@ -1,21 +1,21 @@
-Received: from mail-ig0-f175.google.com ([209.85.213.175])
+Received: from mail-ig0-f177.google.com ([209.85.213.177])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XEyR2-0004JD-8t
- for linux-mtd@lists.infradead.org; Wed, 06 Aug 2014 10:27:08 +0000
-Received: by mail-ig0-f175.google.com with SMTP id uq10so8457079igb.14
- for <linux-mtd@lists.infradead.org>; Wed, 06 Aug 2014 03:26:47 -0700 (PDT)
-Date: Wed, 6 Aug 2014 11:26:41 +0100
+ id 1XEyiS-0004AK-9I
+ for linux-mtd@lists.infradead.org; Wed, 06 Aug 2014 10:45:08 +0000
+Received: by mail-ig0-f177.google.com with SMTP id hn18so2619935igb.10
+ for <linux-mtd@lists.infradead.org>; Wed, 06 Aug 2014 03:44:45 -0700 (PDT)
+Date: Wed, 6 Aug 2014 11:44:40 +0100
 From: Lee Jones <lee.jones@linaro.org>
 To: Brian Norris <computersforpeace@gmail.com>
 Subject: Re: [PATCH] mtd: nand: stm_nand_bch: add new driver
-Message-ID: <20140806102641.GB10136@lee--X1>
+Message-ID: <20140806104440.GC10136@lee--X1>
 References: <1401268805-26043-1-git-send-email-lee.jones@linaro.org>
- <20140703002237.GM3599@ld-irv-0074>
+ <20140703002237.GM3599@ld-irv-0074> <20140731164709.GK9030@lee--X1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20140703002237.GM3599@ld-irv-0074>
+In-Reply-To: <20140731164709.GK9030@lee--X1>
 Cc: devicetree@vger.kernel.org, Boris BREZILLON <b.brezillon.dev@gmail.com>,
  kernel@stlinux.com, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, "Gupta, Pekon\"" <pekon@ti.com>,
@@ -30,32 +30,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 02 Jul 2014, Brian Norris wrote:
-> On Wed, May 28, 2014 at 10:20:05AM +0100, Lee Jones wrote:
+On Thu, 31 Jul 2014, Lee Jones wrote:
+> On Wed, 02 Jul 2014, Brian Norris wrote:
+> > On Wed, May 28, 2014 at 10:20:05AM +0100, Lee Jones wrote:
 
 [...]
 
-> > +	if (((unsigned int)buf & (NANDI_BCH_DMA_ALIGNMENT - 1)) ||
-> > +	    (!virt_addr_valid(buf))) /* vmalloc'd buffer! */
-> > +		bounce = true;
-> > +
-> > +	p = bounce ? nandi->page_buf : buf;
+> > > +	if (IS_ERR(pdata))
+> > > +		return PTR_ERR(pdata);
+> > > +
+> > > +	ppdata.of_node = stm_of_get_partitions_node(np, 0);
+> > 
+> > So you only support a single bank, at chip-select 0? Is this a
+> > hardware limitation, or simply software? You might consider whether this
+> > needs to be noted in the DT binding too -- it currently suggests that
+> > this can be plural.
 > 
-> It looks like you're reimplementing NAND_USE_BOUNCE_BUFFER. Can you try
-> using that flag? (You may need to extend it to account for your DMA
-> alignment, too.)
+> Yes, only one bank.  Chip select is not possible.
 
-NAND_USE_BOUNCE_BUFFER won't work for us unless we can guarantee that
-the bounce buffer will always be 64 Byte aligned, which I don't think
-we can.  Another way to do it would be to assign all of our own
-buffers, but I'm really not comfortable fiddling with those as there
-are a lot of controller specific intricacies which a) I'm not familiar
-with and b) no longer have Angus to fire questions off to and/or
-review.
+Sorry, not only one bank.
 
-So if you don't mind, I'd really rather use Angus' implementation.
-It's only an extra couple of lines and Angus has already tested it to
-a high level.
+We can have multiple banks, but only one chip.
 
 -- 
 Lee Jones
