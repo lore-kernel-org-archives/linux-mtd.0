@@ -1,31 +1,16 @@
-Received: from mail-oi0-x233.google.com ([2607:f8b0:4003:c06::233])
+Received: from mail-pd0-x234.google.com ([2607:f8b0:400e:c02::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XFA7F-0004Ti-MF
- for linux-mtd@lists.infradead.org; Wed, 06 Aug 2014 22:55:30 +0000
-Received: by mail-oi0-f51.google.com with SMTP id g201so2143909oib.24
- for <linux-mtd@lists.infradead.org>; Wed, 06 Aug 2014 15:55:06 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <53E1E122.4050308@ti.com>
-References: <1407233482-11642-1-git-send-email-rogerq@ti.com>
- <1407233482-11642-2-git-send-email-rogerq@ti.com>
- <CANOLnOM-Q4b8N5T522Vc_gXTSj2C-mxV6GV0hRTDPscpPgXO6A@mail.gmail.com>
- <53E1E122.4050308@ti.com>
-Date: Thu, 7 Aug 2014 01:55:06 +0300
-Message-ID: <CANOLnOOA5c-B9rn5LR2HGyfUW+D1UzjRE7EAL-cYsZ4NYuCaXg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] mtd: nand: omap: Revert to using software ECC by
- default
-From: Grazvydas Ignotas <notasas@gmail.com>
-To: Roger Quadros <rogerq@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- Tony Lindgren <tony@atomide.com>, artem.bityutskiy@linux.intel.com,
- jg1.han@samsung.com,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Felipe Balbi <balbi@ti.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, pekon.gupta@gmail.com,
- Brian Norris <computersforpeace@gmail.com>, dwmw2@infradead.org
+ id 1XFCO3-0002zP-Dl
+ for linux-mtd@lists.infradead.org; Thu, 07 Aug 2014 01:20:59 +0000
+Received: by mail-pd0-f180.google.com with SMTP id v10so2504899pde.39
+ for <linux-mtd@lists.infradead.org>; Wed, 06 Aug 2014 18:20:37 -0700 (PDT)
+From: Brian Norris <computersforpeace@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH 0/8] mtd: spi-nor: refactor wait-till-ready
+Date: Wed,  6 Aug 2014 18:16:54 -0700
+Message-Id: <1407374222-8448-1-git-send-email-computersforpeace@gmail.com>
+Cc: Marek Vasut <marex@denx.de>, Huang Shijie <b32955@freescale.com>,
+ Brian Norris <computersforpeace@gmail.com>, zajec5@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,72 +20,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Aug 6, 2014 at 11:02 AM, Roger Quadros <rogerq@ti.com> wrote:
-> Hi Gra=C5=BEvydas,
->
-> On 08/05/2014 07:15 PM, Grazvydas Ignotas wrote:
->> On Tue, Aug 5, 2014 at 1:11 PM, Roger Quadros <rogerq@ti.com> wrote:
->>> For v3.12 and prior, 1-bit Hamming code ECC via software was the
->>> default choice. Commit c66d039197e4 in v3.13 changed the behaviour
->>> to use 1-bit Hamming code via Hardware using a different ECC layout
->>> i.e. (ROM code layout) than what is used by software ECC.
->>>
->>> This ECC layout change causes NAND filesystems created in v3.12
->>> and prior to be unusable in v3.13 and later. So revert back to
->>> using software ECC by default if an ECC scheme is not explicitely
->>> specified.
->>>
->>> This defect can be observed on the following boards during legacy boot
->>>
->>> -omap3beagle
->>> -omap3touchbook
->>> -overo
->>> -am3517crane
->>> -devkit8000
->>> -ldp
->>> -3430sdp
->>
->> omap3pandora is also using sw ecc, with ubifs. Some time ago I tried
->> booting mainline (I think it was 3.14) with rootfs on NAND, and while
->> it did boot and reached a shell, there were lots of ubifs errors, fs
->> got corrupted and I lost all my data. I used to be able to boot
->> mainline this way fine sometime ~3.8 release. It's interesting that
->> 3.14 was able to read the data, even with wrong ecc setup.
->
-> This is due to another bug introduced in 3.7 by commit 65b97cf6b8deca3ad7=
-a3e00e8316bb89617190fb.
-> Because of that bug (i.e. inverted CS_MASK in omap_calculate_ecc), omap_c=
-alculate_ecc() always fails with -EINVAL and calculated ECC bytes are alway=
-s 0. I'll be sending a patch to fix that as well. But that will only affect=
- the cases where OMAP_ECC_HAM1_CODE_HW is used which happened for pandora f=
-rom 3.13 onwards.
->
->>
->> Do you think it's safe again to boot ubifs created on 3.2 after
->> applying this series?
->>
->
-> Yes. If you boot pandora using legacy boot (non DT method), it passes 0 f=
-or .ecc_opt in pandora_nand_data. This used to mean OMAP_ECC_HAMMING_CODE_D=
-EFAULT which is software ecc. i.e. NAND_ECC_SOFT with default ECC layout. U=
-ntil the above mentioned commits changed the meaning. We now call that opti=
-on OMAP_ECC_HAM1_CODE_SW.
->
-> Please let me know if it works for you. Thanks.
+Hi all,
 
-Yes it does, thank you.
-Tested-by: Grazvydas Ignotas <notasas@gmail.com>
+This patch series tackles a few pieces of the spi-nor framework that weren't
+abstracted very well. I did some limited testing on m25p80.c, and you can see
+patch 8, which adds a few test BUG_ON()'s. If any of them fail for you, please
+holler. I don't plan to merge that patch, although I could be convinced to
+rework it if it adds value to someone...
 
-Found something new in dmesg though:
-[    1.542755] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xbc
-[    1.549621] nand: Micron MT29F4G16ABBDA3W
-[    1.553894] nand: 512MiB, SLC, page size: 2048, OOB size: 64
-[    1.560058] nand: WARNING: omap2-nand.0: the ECC used on your
-system is too weak compared to the one required by the NAND chip
+I'm especially interested in getting test coverage on fsl-quadspi.
 
-Do you think it's best to migrate to different ECC scheme? It would be
-better to avoid that so that users can freely change kernels and the
-bootloader wouldn't have to be changed..
+Thanks,
+Brian
 
---=20
-Gra=C5=BEvydas
+Brian Norris (8):
+  mtd: spi-nor: eliminate duplicate spi_nor_wait_till_{,fsr}_ready()
+    code
+  mtd: spi-nor: handle timeout errors in spi_nor_write()
+  mtd: spi-nor: move "wait-till-ready" checks into erase/write functions
+  mtd: m25p80: drop wait-till-ready checks
+  mtd: fsl-quadspi: drop wait-till-ready checks
+  mtd: spi-nor: drop replaceable wait-till-ready function pointer
+  mtd: spi-nor: factor out write_enable() for erase commands
+  debug: mtd: spi-nor: add BUG_ON() prints to check for !ready
+
+ drivers/mtd/devices/m25p80.c      |  17 -----
+ drivers/mtd/spi-nor/fsl-quadspi.c |  16 -----
+ drivers/mtd/spi-nor/spi-nor.c     | 145 ++++++++++++++++++--------------------
+ include/linux/mtd/spi-nor.h       |   8 ++-
+ 4 files changed, 76 insertions(+), 110 deletions(-)
+
+-- 
+1.9.1
