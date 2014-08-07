@@ -1,35 +1,26 @@
+Received: from mail-pd0-x232.google.com ([2607:f8b0:400e:c02::232])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XFWSJ-0006qN-5l
+ for linux-mtd@lists.infradead.org; Thu, 07 Aug 2014 22:46:43 +0000
+Received: by mail-pd0-f178.google.com with SMTP id w10so5963027pde.9
+ for <linux-mtd@lists.infradead.org>; Thu, 07 Aug 2014 15:46:22 -0700 (PDT)
+Date: Thu, 7 Aug 2014 15:46:18 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Nick Krause <xerofoify@gmail.com>
+Subject: Re: [sbc_gxx] kernel BUG at include/linux/mtd/map.h:148!
+Message-ID: <20140807224618.GQ3711@ld-irv-0074>
+References: <20140805135947.GA5593@localhost>
+ <CAPDOMVgN=tc_o7E19ss4j5FAG4vpgUSzuUXYLSNGfpWCvPsAwA@mail.gmail.com>
 MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <1398925607-7482-1-git-send-email-computersforpeace@gmail.com>
-References: <1398925607-7482-1-git-send-email-computersforpeace@gmail.com>
-Date: Thu, 7 Aug 2014 23:36:10 +0200
-Message-ID: <CAMuHMdVZmJR=Cu1Wvpyx+KqgdKRRtnAO94k4imXChUwfC_GPTw@mail.gmail.com>
-Subject: Re: [PATCH v2 00/12] defconfigs: add MTD_SPI_NOR (new subsystem
- dependency for M25P80)
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: Andrew Lunn <andrew@lunn.ch>, Stephen Warren <swarren@wwwdotorg.org>,
- Linux MIPS Mailing List <linux-mips@linux-mips.org>,
- Nicolas Ferre <nicolas.ferre@atmel.com>,
- Thierry Reding <thierry.reding@gmail.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>, Marek Vasut <marex@denx.de>,
- Russell King <linux@arm.linux.org.uk>,
- Linux-sh list <linux-sh@vger.kernel.org>, Shawn Guo <shawn.guo@freescale.com>,
- Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- Roland Stigge <stigge@antcom.de>, Jason Cooper <jason@lakedaemon.net>,
- Arnd Bergmann <arnd@arndb.de>, Steven Miao <realmz6@gmail.com>,
- "adi-buildroot-devel@lists.sourceforge.net"
- <adi-buildroot-devel@lists.sourceforge.net>, Simon Horman <horms@verge.net.au>,
- linux-tegra@vger.kernel.org, Andrew Victor <linux@maxim.org.za>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- Linux Kernel <linux-kernel@vger.kernel.org>,
- Ralf Baechle <ralf@linux-mips.org>, Huang Shijie <b32955@freescale.com>,
- Santosh Shilimkar <santosh.shilimkar@ti.com>,
- Sascha Hauer <kernel@pengutronix.de>, Olof Johansson <olof@lixom.net>,
- Paul Mackerras <paulus@samba.org>,
- "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPDOMVgN=tc_o7E19ss4j5FAG4vpgUSzuUXYLSNGfpWCvPsAwA@mail.gmail.com>
+Cc: Yuanhan Liu <yuanhan.liu@intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ dri-devel@lists.freedesktop.org, Su Tao <tao.su@intel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Fengguang Wu <fengguang.wu@intel.com>, LKP <lkp@01.org>,
+ Jet Chen <jet.chen@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,116 +30,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+Hi,
 
-On Thu, May 1, 2014 at 8:26 AM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> v1 --> v2: split ARM defconfig changes into their sub-architectures. No change
->            in the overall diff.
+On Tue, Aug 05, 2014 at 08:08:57PM -0400, Nick Krause wrote:
+> On Tue, Aug 5, 2014 at 9:59 AM, Fengguang Wu <fengguang.wu@intel.com> wrote:
+> > Hello,
+> >
+> > This is an old BUG that still lives in linux-next.
+> >
+> > [    4.284620] device id = 2670
+> > [    4.286157] SBC-GXx flash: IO:0x258-0x259 MEM:0xdc000-0xdffff
+> > [    4.287060] ------------[ cut here ]------------
+> > [    4.287722] kernel BUG at include/linux/mtd/map.h:148!
+> > [    4.288048] invalid opcode: 0000 [#1] PREEMPT SMP
 >
-> Hi all,
->
-> We are introducing a new SPI-NOR subsystem/framework for MTD, to support
-> various types of SPI-NOR flash controllers which require (or benefit from)
-> intimate knowledge of the flash interface, rather than just the relatively dumb
-> SPI interface. This framework borrows much of the m25p80 driver for its
-> abstraction and moves this code into a spi-nor module.
->
-> This means CONFIG_M25P80 now has a dependency on CONFIG_MTD_SPI_NOR, which
-> should be added to the defconfigs. I expect that each (sub)architecture
-> maintainer can merge these patches to their own tree.
->
-> Note that without the new CONFIG_MTD_SPI_NOR symbol in your defconfig, Kconfig
-> will automatically drop M25P80 for you.
->
-> Please keep general comments to the cover letter, so all parties can see.
->
-> This series is based on 3.15-rc1.
->
-> The SPI-NOR development code (in -next, queued for 3.16) is here:
->
->   git://git.infradead.org/l2-mtd.git +spinor
->
-> This defconfig series is available in the same repo at:
->
->   git://git.infradead.org/l2-mtd.git +defconfigs
->
-> Thanks,
-> Brian
->
-> Brian Norris (12):
->   ARM: imx/mxs defconfigs: add MTD_SPI_NOR (new dependency for M25P80)
->   ARM: defconfigs: add MTD_SPI_NOR (new dependency for M25P80)
->   ARM: keystone: add MTD_SPI_NOR (new dependency for M25P80)
->   ARM: tegra: add MTD_SPI_NOR (new dependency for M25P80)
->   ARM: lpc32xx: add MTD_SPI_NOR (new dependency for M25P80)
->   ARM: at91: add MTD_SPI_NOR (new dependency for M25P80)
->   ARM: shmobile: add MTD_SPI_NOR (new dependency for M25P80)
->   ARM: marvell: add MTD_SPI_NOR (new dependency for M25P80)
->   blackfin: defconfigs: add MTD_SPI_NOR (new dependency for M25P80)
->   mips: defconfigs: add MTD_SPI_NOR (new dependency for M25P80)
->   powerpc: defconfigs: add MTD_SPI_NOR (new dependency for M25P80)
->   sh: defconfig: add MTD_SPI_NOR (new dependency for M25P80)
->
->  arch/arm/configs/bockw_defconfig               | 2 +-
->  arch/arm/configs/dove_defconfig                | 2 +-
->  arch/arm/configs/imx_v6_v7_defconfig           | 1 +
->  arch/arm/configs/keystone_defconfig            | 1 +
->  arch/arm/configs/kirkwood_defconfig            | 1 +
->  arch/arm/configs/koelsch_defconfig             | 1 +
->  arch/arm/configs/lager_defconfig               | 1 +
->  arch/arm/configs/lpc32xx_defconfig             | 2 +-
->  arch/arm/configs/multi_v5_defconfig            | 1 +
->  arch/arm/configs/multi_v7_defconfig            | 1 +
->  arch/arm/configs/mvebu_v5_defconfig            | 1 +
->  arch/arm/configs/mvebu_v7_defconfig            | 1 +
->  arch/arm/configs/mxs_defconfig                 | 1 +
->  arch/arm/configs/sama5_defconfig               | 2 +-
->  arch/arm/configs/shmobile_defconfig            | 1 +
->  arch/arm/configs/tegra_defconfig               | 1 +
->  arch/blackfin/configs/BF526-EZBRD_defconfig    | 2 +-
->  arch/blackfin/configs/BF527-EZKIT-V2_defconfig | 2 +-
->  arch/blackfin/configs/BF527-EZKIT_defconfig    | 2 +-
->  arch/blackfin/configs/BF548-EZKIT_defconfig    | 2 +-
->  arch/blackfin/configs/BF609-EZKIT_defconfig    | 2 +-
->  arch/blackfin/configs/BlackStamp_defconfig     | 3 +--
->  arch/blackfin/configs/H8606_defconfig          | 3 +--
->  arch/mips/configs/ath79_defconfig              | 3 +--
->  arch/mips/configs/db1xxx_defconfig             | 1 +
->  arch/mips/configs/rt305x_defconfig             | 2 +-
->  arch/powerpc/configs/corenet32_smp_defconfig   | 2 +-
->  arch/powerpc/configs/corenet64_smp_defconfig   | 2 +-
->  arch/powerpc/configs/mpc85xx_defconfig         | 2 +-
->  arch/powerpc/configs/mpc85xx_smp_defconfig     | 2 +-
->  arch/sh/configs/sh7757lcr_defconfig            | 2 +-
->  31 files changed, 31 insertions(+), 21 deletions(-)
+> I am new , here and will try to trace your issue on linus's tree
+> unless there is a major difference between Linus's tree and
+> linux-next.
+> If there is please let me known before I start tracing this.
 
-FWIW, this change still hasn't propagated to the following defconfigs:
+This is a known issue, and Fengguang has reported this before:
 
-arch/arm/configs/axm55xx_defconfig
-arch/arm/configs/bockw_defconfig
-arch/arm/configs/koelsch_defconfig
-arch/arm/configs/lager_defconfig
-arch/arm/configs/lpc32xx_defconfig
-arch/arm/configs/multi_v5_defconfig
-arch/arm/configs/multi_v7_defconfig
-arch/arm/configs/qcom_defconfig
-arch/arm/configs/sama5_defconfig
-arch/arm/configs/shmobile_defconfig
-arch/powerpc/configs/85xx/kmp204x_defconfig
-arch/powerpc/configs/corenet32_smp_defconfig
-arch/powerpc/configs/corenet64_smp_defconfig
-arch/powerpc/configs/mpc85xx_defconfig
-arch/powerpc/configs/mpc85xx_smp_defconfig
-arch/sh/configs/sh7757lcr_defconfig
+  http://lists.infradead.org/pipermail/linux-mtd/2014-March/053019.html
 
-Gr{oetje,eeting}s,
+I'm still not quite sure how to solve this one. It seems to be a
+limitation of the kconfig language.
 
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Brian
