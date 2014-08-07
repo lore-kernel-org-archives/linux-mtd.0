@@ -1,15 +1,14 @@
-Received: from mail-pd0-x230.google.com ([2607:f8b0:400e:c02::230])
+Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XFCO7-0002zZ-GG
- for linux-mtd@lists.infradead.org; Thu, 07 Aug 2014 01:21:04 +0000
-Received: by mail-pd0-f176.google.com with SMTP id y10so4240397pdj.35
- for <linux-mtd@lists.infradead.org>; Wed, 06 Aug 2014 18:20:43 -0700 (PDT)
+ id 1XFCO9-0002za-FQ
+ for linux-mtd@lists.infradead.org; Thu, 07 Aug 2014 01:21:05 +0000
+Received: by mail-pa0-f53.google.com with SMTP id rd3so4414669pab.12
+ for <linux-mtd@lists.infradead.org>; Wed, 06 Aug 2014 18:20:44 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 6/8] mtd: spi-nor: drop replaceable wait-till-ready function
- pointer
-Date: Wed,  6 Aug 2014 18:17:00 -0700
-Message-Id: <1407374222-8448-7-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 7/8] mtd: spi-nor: factor out write_enable() for erase commands
+Date: Wed,  6 Aug 2014 18:17:01 -0700
+Message-Id: <1407374222-8448-8-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1407374222-8448-1-git-send-email-computersforpeace@gmail.com>
 References: <1407374222-8448-1-git-send-email-computersforpeace@gmail.com>
 Cc: Marek Vasut <marex@denx.de>, Huang Shijie <b32955@freescale.com>,
@@ -23,129 +22,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We don't need to expose a 'wait-till-ready' interface to drivers. Status
-register polling should be handled by the core spi-nor.c library, and as
-of now, I see no need to provide a special driver-specific hook for it.
+write_enable() was being duplicated to both m25p80.c and fsl-quadspi.c.
+But this should be handled within the spi-nor abstraction layer.
+
+At the same time, let's add write_disable() after erasing, so we don't
+leave the flash in a write-enabled state afterward.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/spi-nor/spi-nor.c | 27 ++++++++++-----------------
- include/linux/mtd/spi-nor.h   |  2 --
- 2 files changed, 10 insertions(+), 19 deletions(-)
+ drivers/mtd/devices/m25p80.c      | 5 -----
+ drivers/mtd/spi-nor/fsl-quadspi.c | 5 -----
+ drivers/mtd/spi-nor/spi-nor.c     | 7 ++++---
+ 3 files changed, 4 insertions(+), 13 deletions(-)
 
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 96226ea69f90..116d979ffdb9 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -158,11 +158,6 @@ static int m25p80_erase(struct spi_nor *nor, loff_t offset)
+ 	dev_dbg(nor->dev, "%dKiB at 0x%08x\n",
+ 		flash->mtd.erasesize / 1024, (u32)offset);
+ 
+-	/* Send write enable, then erase commands. */
+-	ret = nor->write_reg(nor, SPINOR_OP_WREN, NULL, 0, 0);
+-	if (ret)
+-		return ret;
+-
+ 	/* Set up command buffer. */
+ 	flash->command[0] = nor->erase_opcode;
+ 	m25p_addr2cmd(nor, offset, flash->command);
+diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+index 9c13622a0c7a..07fbfb0a7738 100644
+--- a/drivers/mtd/spi-nor/fsl-quadspi.c
++++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+@@ -738,11 +738,6 @@ static int fsl_qspi_erase(struct spi_nor *nor, loff_t offs)
+ 	dev_dbg(nor->dev, "%dKiB at 0x%08x:0x%08x\n",
+ 		nor->mtd->erasesize / 1024, q->chip_base_addr, (u32)offs);
+ 
+-	/* Send write enable, then erase commands. */
+-	ret = nor->write_reg(nor, SPINOR_OP_WREN, NULL, 0, 0);
+-	if (ret)
+-		return ret;
+-
+ 	ret = fsl_qspi_runcmd(q, nor->erase_opcode, offs, 0);
+ 	if (ret)
+ 		return ret;
 diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 227e2743203e..874e6d9a0b02 100644
+index 874e6d9a0b02..d08d9f8bb9bd 100644
 --- a/drivers/mtd/spi-nor/spi-nor.c
 +++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -193,6 +193,10 @@ static int spi_nor_ready(struct spi_nor *nor)
- 	return sr && fsr;
- }
- 
-+/*
-+ * Service routine to read status register until ready, or timeout occurs.
-+ * Returns non-zero if error.
-+ */
- static int spi_nor_wait_till_ready(struct spi_nor *nor)
+@@ -226,9 +226,6 @@ static int erase_chip(struct spi_nor *nor)
  {
- 	unsigned long deadline;
-@@ -214,15 +218,6 @@ static int spi_nor_wait_till_ready(struct spi_nor *nor)
- }
+ 	dev_dbg(nor->dev, " %lldKiB\n", (long long)(nor->mtd->size >> 10));
  
- /*
-- * Service routine to read status register until ready, or timeout occurs.
-- * Returns non-zero if error.
-- */
--static int wait_till_ready(struct spi_nor *nor)
--{
--	return nor->wait_till_ready(nor);
--}
+-	/* Send write enable, then erase commands. */
+-	write_enable(nor);
 -
--/*
-  * Erase the whole flash memory
-  *
-  * Returns 0 if successful, non-zero otherwise.
-@@ -712,7 +707,7 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
- 
- 		/* write one byte. */
- 		nor->write(nor, to, 1, retlen, buf);
--		ret = wait_till_ready(nor);
-+		ret = spi_nor_wait_till_ready(nor);
- 		if (ret)
- 			goto time_out;
- 	}
-@@ -724,7 +719,7 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
- 
- 		/* write two bytes. */
- 		nor->write(nor, to, 2, retlen, buf + actual);
--		ret = wait_till_ready(nor);
-+		ret = spi_nor_wait_till_ready(nor);
- 		if (ret)
- 			goto time_out;
- 		to += 2;
-@@ -733,7 +728,7 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	nor->sst_write_second = false;
- 
- 	write_disable(nor);
--	ret = wait_till_ready(nor);
-+	ret = spi_nor_wait_till_ready(nor);
- 	if (ret)
- 		goto time_out;
- 
-@@ -744,7 +739,7 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
- 		nor->program_opcode = SPINOR_OP_BP;
- 		nor->write(nor, to, 1, retlen, buf + actual);
- 
--		ret = wait_till_ready(nor);
-+		ret = spi_nor_wait_till_ready(nor);
- 		if (ret)
- 			goto time_out;
- 		write_disable(nor);
-@@ -790,7 +785,7 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
- 			if (page_size > nor->page_size)
- 				page_size = nor->page_size;
- 
--			ret = wait_till_ready(nor);
-+			ret = spi_nor_wait_till_ready(nor);
- 			if (ret)
- 				goto write_err;
- 
-@@ -816,7 +811,7 @@ static int macronix_quad_enable(struct spi_nor *nor)
- 	nor->cmd_buf[0] = val | SR_QUAD_EN_MX;
- 	nor->write_reg(nor, SPINOR_OP_WRSR, nor->cmd_buf, 1, 0);
- 
--	if (wait_till_ready(nor))
-+	if (spi_nor_wait_till_ready(nor))
- 		return 1;
- 
- 	ret = read_sr(nor);
-@@ -898,8 +893,6 @@ static int spi_nor_check(struct spi_nor *nor)
- 
- 	if (!nor->read_id)
- 		nor->read_id = spi_nor_read_id;
--	if (!nor->wait_till_ready)
--		nor->wait_till_ready = spi_nor_wait_till_ready;
- 
- 	return 0;
+ 	return nor->write_reg(nor, SPINOR_OP_CHIP_ERASE, NULL, 0, 0);
  }
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index 603ac0306663..d7c12506d7ed 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -146,7 +146,6 @@ enum spi_nor_option_flags {
-  * @write_reg:		[DRIVER-SPECIFIC] write data to the register
-  * @read_id:		[REPLACEABLE] read out the ID data, and find
-  *			the proper spi_device_id
-- * @wait_till_ready:	[REPLACEABLE] wait till the NOR becomes ready
-  * @read:		[DRIVER-SPECIFIC] read data from the SPI NOR
-  * @write:		[DRIVER-SPECIFIC] write data to the SPI NOR
-  * @erase:		[DRIVER-SPECIFIC] erase a sector of the SPI NOR
-@@ -179,7 +178,6 @@ struct spi_nor {
- 	int (*write_reg)(struct spi_nor *nor, u8 opcode, u8 *buf, int len,
- 			int write_enable);
- 	const struct spi_device_id *(*read_id)(struct spi_nor *nor);
--	int (*wait_till_ready)(struct spi_nor *nor);
  
- 	int (*read)(struct spi_nor *nor, loff_t from,
- 			size_t len, size_t *retlen, u_char *read_buf);
+@@ -281,6 +278,8 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 	if (ret)
+ 		return ret;
+ 
++	write_enable(nor);
++
+ 	/* whole-chip erase? */
+ 	if (len == mtd->size) {
+ 		if (erase_chip(nor)) {
+@@ -314,6 +313,8 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+ 		}
+ 	}
+ 
++	write_disable(nor);
++
+ 	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_ERASE);
+ 
+ 	instr->state = MTD_ERASE_DONE;
 -- 
 1.9.1
