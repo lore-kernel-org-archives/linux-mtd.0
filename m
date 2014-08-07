@@ -1,14 +1,14 @@
-Received: from mail-pd0-x232.google.com ([2607:f8b0:400e:c02::232])
+Received: from mail-pd0-x233.google.com ([2607:f8b0:400e:c02::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XFCO6-0002zT-Er
- for linux-mtd@lists.infradead.org; Thu, 07 Aug 2014 01:21:02 +0000
-Received: by mail-pd0-f178.google.com with SMTP id w10so4262558pde.9
- for <linux-mtd@lists.infradead.org>; Wed, 06 Aug 2014 18:20:41 -0700 (PDT)
+ id 1XFCO7-0002zU-5y
+ for linux-mtd@lists.infradead.org; Thu, 07 Aug 2014 01:21:03 +0000
+Received: by mail-pd0-f179.google.com with SMTP id ft15so4262809pdb.10
+ for <linux-mtd@lists.infradead.org>; Wed, 06 Aug 2014 18:20:42 -0700 (PDT)
 From: Brian Norris <computersforpeace@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 4/8] mtd: m25p80: drop wait-till-ready checks
-Date: Wed,  6 Aug 2014 18:16:58 -0700
-Message-Id: <1407374222-8448-5-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 2/8] mtd: spi-nor: handle timeout errors in spi_nor_write()
+Date: Wed,  6 Aug 2014 18:16:56 -0700
+Message-Id: <1407374222-8448-3-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1407374222-8448-1-git-send-email-computersforpeace@gmail.com>
 References: <1407374222-8448-1-git-send-email-computersforpeace@gmail.com>
 Cc: Marek Vasut <marex@denx.de>, Huang Shijie <b32955@freescale.com>,
@@ -22,46 +22,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-spi-nor.c should be taking care of these now.
+The error label was unused here. It looks like we're missing at least
+one case that should be doing 'goto write_err'.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mtd/devices/m25p80.c | 12 ------------
- 1 file changed, 12 deletions(-)
+ drivers/mtd/spi-nor/spi-nor.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index ed7e0a1bed3c..96226ea69f90 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -129,12 +129,6 @@ static int m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
- 	struct spi_transfer t[2];
- 	struct spi_message m;
- 	int dummy = nor->read_dummy;
--	int ret;
--
--	/* Wait till previous write/erase is done. */
--	ret = nor->wait_till_ready(nor);
--	if (ret)
--		return ret;
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 5825b8a12cee..d77c93232b76 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -809,7 +809,10 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 			if (page_size > nor->page_size)
+ 				page_size = nor->page_size;
  
- 	spi_message_init(&m);
- 	memset(t, 0, (sizeof t));
-@@ -160,16 +154,10 @@ static int m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
- static int m25p80_erase(struct spi_nor *nor, loff_t offset)
- {
- 	struct m25p *flash = nor->priv;
--	int ret;
+-			wait_till_ready(nor);
++			ret = wait_till_ready(nor);
++			if (ret)
++				goto write_err;
++
+ 			write_enable(nor);
  
- 	dev_dbg(nor->dev, "%dKiB at 0x%08x\n",
- 		flash->mtd.erasesize / 1024, (u32)offset);
+ 			nor->write(nor, to + i, page_size, retlen, buf + i);
+@@ -818,7 +821,7 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
  
--	/* Wait until finished previous write command. */
--	ret = nor->wait_till_ready(nor);
--	if (ret)
--		return ret;
--
- 	/* Send write enable, then erase commands. */
- 	ret = nor->write_reg(nor, SPINOR_OP_WREN, NULL, 0, 0);
- 	if (ret)
+ write_err:
+ 	spi_nor_unlock_and_unprep(nor, SPI_NOR_OPS_WRITE);
+-	return 0;
++	return ret;
+ }
+ 
+ static int macronix_quad_enable(struct spi_nor *nor)
 -- 
 1.9.1
