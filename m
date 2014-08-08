@@ -1,26 +1,25 @@
-Received: from mail-pd0-x232.google.com ([2607:f8b0:400e:c02::232])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XFWSJ-0006qN-5l
- for linux-mtd@lists.infradead.org; Thu, 07 Aug 2014 22:46:43 +0000
-Received: by mail-pd0-f178.google.com with SMTP id w10so5963027pde.9
- for <linux-mtd@lists.infradead.org>; Thu, 07 Aug 2014 15:46:22 -0700 (PDT)
-Date: Thu, 7 Aug 2014 15:46:18 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Nick Krause <xerofoify@gmail.com>
-Subject: Re: [sbc_gxx] kernel BUG at include/linux/mtd/map.h:148!
-Message-ID: <20140807224618.GQ3711@ld-irv-0074>
-References: <20140805135947.GA5593@localhost>
- <CAPDOMVgN=tc_o7E19ss4j5FAG4vpgUSzuUXYLSNGfpWCvPsAwA@mail.gmail.com>
+Received: from na3sys009aog105.obsmtp.com ([74.125.149.75])
+ by bombadil.infradead.org with smtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XFXhs-0006ME-Nq
+ for linux-mtd@lists.infradead.org; Fri, 08 Aug 2014 00:06:53 +0000
+Received: by mail-pa0-f51.google.com with SMTP id ey11so6262191pad.38
+ for <linux-mtd@lists.infradead.org>; Thu, 07 Aug 2014 17:06:30 -0700 (PDT)
+Received: from dbowen3 (c-71-199-15-226.hsd1.ut.comcast.net. [71.199.15.226])
+ by mx.google.com with ESMTPSA id
+ jf8sm1034678pbd.5.2014.08.07.17.06.28
+ for <linux-mtd@lists.infradead.org>
+ (version=TLSv1 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+ Thu, 07 Aug 2014 17:06:29 -0700 (PDT)
+From: "Daniel Bowen" <dbowen@logitech.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: Question about ubiformat
+Date: Thu, 7 Aug 2014 18:06:27 -0600
+Message-ID: <1a5301cfb29c$9a4ec6d0$ceec5470$@com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPDOMVgN=tc_o7E19ss4j5FAG4vpgUSzuUXYLSNGfpWCvPsAwA@mail.gmail.com>
-Cc: Yuanhan Liu <yuanhan.liu@intel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- dri-devel@lists.freedesktop.org, Su Tao <tao.su@intel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Fengguang Wu <fengguang.wu@intel.com>, LKP <lkp@01.org>,
- Jet Chen <jet.chen@intel.com>
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-language: en-us
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,30 +29,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Let's say that I've prepared an image using mkfs.ubifs and ubinize.  Is
+there any advantage, disadvantage or difference to doing ubiformat twice -
+once without specifying an image file, then running it a second time with an
+image file?  In other words, is there a difference between these two
+sequences:
 
-On Tue, Aug 05, 2014 at 08:08:57PM -0400, Nick Krause wrote:
-> On Tue, Aug 5, 2014 at 9:59 AM, Fengguang Wu <fengguang.wu@intel.com> wrote:
-> > Hello,
-> >
-> > This is an old BUG that still lives in linux-next.
-> >
-> > [    4.284620] device id = 2670
-> > [    4.286157] SBC-GXx flash: IO:0x258-0x259 MEM:0xdc000-0xdffff
-> > [    4.287060] ------------[ cut here ]------------
-> > [    4.287722] kernel BUG at include/linux/mtd/map.h:148!
-> > [    4.288048] invalid opcode: 0000 [#1] PREEMPT SMP
->
-> I am new , here and will try to trace your issue on linus's tree
-> unless there is a major difference between Linus's tree and
-> linux-next.
-> If there is please let me known before I start tracing this.
+ubiformat /dev/mtd4
+ubiformat /dev/mtd4 -f /mnt/source/ubi.img
 
-This is a known issue, and Fengguang has reported this before:
+and
 
-  http://lists.infradead.org/pipermail/linux-mtd/2014-March/053019.html
+ubiformat /dev/mtd4 -f /mnt/source/ubi.img
 
-I'm still not quite sure how to solve this one. It seems to be a
-limitation of the kconfig language.
-
-Brian
+Thanks!
+-Daniel
