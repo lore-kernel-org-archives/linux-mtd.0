@@ -1,16 +1,18 @@
-Received: from eusmtp01.atmel.com ([212.144.249.242])
+Received: from nasmtp02.atmel.com ([204.2.163.16] helo=SJOEDG01.corp.atmel.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XFgH6-0006Y0-5f
- for linux-mtd@lists.infradead.org; Fri, 08 Aug 2014 09:15:49 +0000
+ id 1XFgTz-0003Ux-KE
+ for linux-mtd@lists.infradead.org; Fri, 08 Aug 2014 09:29:08 +0000
 From: Josh Wu <josh.wu@atmel.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd: atmel_nand: make PMECC lookup table and offset property
- optional
-Date: Fri, 8 Aug 2014 17:15:34 +0800
-Message-ID: <1407489334-16626-1-git-send-email-josh.wu@atmel.com>
+Subject: [PATCH][resend] mtd: atmel_nand: make PMECC lookup table and offset
+ property optional
+Date: Fri, 8 Aug 2014 17:28:30 +0800
+Message-ID: <1407490110-16735-1-git-send-email-josh.wu@atmel.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Cc: Josh Wu <josh.wu@atmel.com>, computersforpeace@gmail.com
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, pawel.moll@arm.com,
+ ijc+devicetree@hellion.org.uk, Josh Wu <josh.wu@atmel.com>, robh+dt@kernel.org,
+ galak@codeaurora.org, computersforpeace@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,7 +29,16 @@ That make the PMECC driver work for some board which doesn't has PMECC
 lookup table in ROM.
 
 Signed-off-by: Josh Wu <josh.wu@atmel.com>
+Cc: devicetree@vger.kernel.org
 ---
+Hi, 
+
+In this resend patch, I add devicetree mail-list in CC.
+Sorry for the previou patch which forget put devicetree in cc list.
+
+Best Regards,
+Josh Wu
+
  .../devicetree/bindings/mtd/atmel-nand.txt         |   6 +-
  drivers/mtd/nand/atmel_nand.c                      | 136 ++++++++++++++++++++-
  2 files changed, 136 insertions(+), 6 deletions(-)
