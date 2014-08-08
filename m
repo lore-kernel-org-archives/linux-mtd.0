@@ -1,22 +1,21 @@
-Received: from mail-pa0-x236.google.com ([2607:f8b0:400e:c03::236])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XFn0q-0003AE-V6
- for linux-mtd@lists.infradead.org; Fri, 08 Aug 2014 16:27:29 +0000
-Received: by mail-pa0-f54.google.com with SMTP id fa1so7525640pad.41
- for <linux-mtd@lists.infradead.org>; Fri, 08 Aug 2014 09:27:07 -0700 (PDT)
-Date: Fri, 8 Aug 2014 09:27:04 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Daniel Bowen <dbowen@logitech.com>
+Received: from mga14.intel.com ([192.55.52.115])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XFn8F-0005hD-7d
+ for linux-mtd@lists.infradead.org; Fri, 08 Aug 2014 16:35:07 +0000
+Message-ID: <1407515643.25561.28.camel@sauron.fi.intel.com>
 Subject: Re: Question about ubiformat
-Message-ID: <20140808162704.GR3711@ld-irv-0074>
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Fri, 08 Aug 2014 19:34:03 +0300
+In-Reply-To: <20140808162704.GR3711@ld-irv-0074>
 References: <1a5301cfb29c$9a4ec6d0$ceec5470$@com>
  <20140808061936.GA3246@norris-Latitude-E6410>
- <1b4901cfb31a$ee57b240$cb0716c0$@com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1b4901cfb31a$ee57b240$cb0716c0$@com>
-Cc: linux-mtd@lists.infradead.org
+ <1b4901cfb31a$ee57b240$cb0716c0$@com> <20140808162704.GR3711@ld-irv-0074>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, Daniel Bowen <dbowen@logitech.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,21 +25,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Aug 08, 2014 at 09:10:44AM -0600, Daniel Bowen wrote:
-> Great, thanks for the response!  So, if the mtd partition were say 500 erase
-> blocks large, and the image was 300 erase blocks large, would "ubiformat
-> /dev/mtd4 -f /mnt/source/ubi.img" 
-> 1. only touch the first 300 blocks of the partition, and leave the other 200
-> unmodified?  Or 
-> 2. would it write the image into the first 300 blocks, and erase the
-> remaining 200 blocks?
+On Fri, 2014-08-08 at 09:27 -0700, Brian Norris wrote:
+> It erases every block, writes the image to the first 300, and programs
+> EC headers to the last 200.
 
-It erases every block, writes the image to the first 300, and programs
-EC headers to the last 200.
+Yes, confirmed.
 
-The source for ubiformat is actually pretty simple and easy to read.
-Check it out yourself!
-
-  http://git.infradead.org/mtd-utils.git
-
-Brian
+-- 
+Best Regards,
+Artem Bityutskiy
