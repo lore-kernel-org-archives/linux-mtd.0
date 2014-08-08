@@ -1,20 +1,23 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XFl9N-0000rv-2L
- for linux-mtd@lists.infradead.org; Fri, 08 Aug 2014 14:28:09 +0000
-From: Roger Quadros <rogerq@ti.com>
-To: <computersforpeace@gmail.com>, <tony@atomide.com>,
- <gregkh@linuxfoundation.org>
-Subject: [PATCH] mtd: nand: omap: Fix 1-bit Hamming code scheme,
- omap_calculate_ecc()
-Date: Fri, 8 Aug 2014 17:27:08 +0300
-Message-ID: <1407508028-12973-1-git-send-email-rogerq@ti.com>
+Received: from na3sys009aog116.obsmtp.com ([74.125.149.240])
+ by bombadil.infradead.org with smtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XFlpr-0007Na-1D
+ for linux-mtd@lists.infradead.org; Fri, 08 Aug 2014 15:12:03 +0000
+Received: by mail-pa0-f54.google.com with SMTP id fa1so7505561pad.27
+ for <linux-mtd@lists.infradead.org>; Fri, 08 Aug 2014 08:10:47 -0700 (PDT)
+From: "Daniel Bowen" <dbowen@logitech.com>
+To: "'Brian Norris'" <computersforpeace@gmail.com>
+References: <1a5301cfb29c$9a4ec6d0$ceec5470$@com>
+ <20140808061936.GA3246@norris-Latitude-E6410>
+In-Reply-To: <20140808061936.GA3246@norris-Latitude-E6410>
+Subject: RE: Question about ubiformat
+Date: Fri, 8 Aug 2014 09:10:44 -0600
+Message-ID: <1b4901cfb31a$ee57b240$cb0716c0$@com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: artem.bityutskiy@linux.intel.com, jg1.han@samsung.com, nsekhar@ti.com,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org, pekon@pek-sem.com,
- linux-mtd@lists.infradead.org, ezequiel.garcia@free-electrons.com,
- linux-omap@vger.kernel.org, dwmw2@infradead.org, Roger Quadros <rogerq@ti.com>
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-language: en-us
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,41 +27,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-commit 65b97cf6b8de introduced in v3.7 caused a regression
-by using a reversed CS_MASK thus causing omap_calculate_ecc to
-always fail. As the NAND base driver never checks for .calculate()'s
-return value, the zeroed ECC values are used as is without showing
-any error to the user. However, this won't work and the NAND device
-won't be guarded by any error code.
+Great, thanks for the response!  So, if the mtd partition were say 500 erase
+blocks large, and the image was 300 erase blocks large, would "ubiformat
+/dev/mtd4 -f /mnt/source/ubi.img" 
+1. only touch the first 300 blocks of the partition, and leave the other 200
+unmodified?  Or 
+2. would it write the image into the first 300 blocks, and erase the
+remaining 200 blocks?
 
-Fix the issue by using the correct mask.
+Thanks!
+-Daniel
 
-Code was tested on omap3beagle using the following procedure
-- flash the primary bootloader (MLO) from the kernel to the first
-NAND partition using nandwrite.
-- boot the board from NAND. This utilizes OMAP ROM loader that
-relies on 1-bit Hamming code ECC.
+-----Original Message-----
+From: Brian Norris [mailto:computersforpeace@gmail.com] 
+Sent: Friday, August 08, 2014 12:20 AM
+To: Daniel Bowen
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Question about ubiformat
 
-Fixes: 65b97cf6b8de (mtd: nand: omap2: handle nand on gpmc)
+Hi Daniel,
 
-Cc: <stable@vger.kernel.org>	[3.7+]
-Signed-off-by: Roger Quadros <rogerq@ti.com>
----
- drivers/mtd/nand/omap2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Thu, Aug 07, 2014 at 06:06:27PM -0600, Daniel Bowen wrote:
+> Let's say that I've prepared an image using mkfs.ubifs and ubinize.  Is
+> there any advantage, disadvantage or difference to doing ubiformat twice -
+> once without specifying an image file, then running it a second time with
+an
+> image file?  In other words, is there a difference between these two
+> sequences:
+> 
+> ubiformat /dev/mtd4
+> ubiformat /dev/mtd4 -f /mnt/source/ubi.img
+> 
+> and
+> 
+> ubiformat /dev/mtd4 -f /mnt/source/ubi.img
 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index f0ed92e..e2b9b34 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -931,7 +931,7 @@ static int omap_calculate_ecc(struct mtd_info *mtd, const u_char *dat,
- 	u32 val;
- 
- 	val = readl(info->reg.gpmc_ecc_config);
--	if (((val >> ECC_CONFIG_CS_SHIFT)  & ~CS_MASK) != info->gpmc_cs)
-+	if (((val >> ECC_CONFIG_CS_SHIFT) & CS_MASK) != info->gpmc_cs)
- 		return -EINVAL;
- 
- 	/* read ecc result */
--- 
-1.8.3.2
+ubiformat always saves erase counters, so running it twice should not be
+extra-destructive. The primary effect is that you will put the whole
+device through an extra erase cycle unnecessarily (slightly reducing the
+flash's lifetime), because ubiformat.c's format() function loops through
+all eraseblocks and erases them.
+
+But I think either sequence should have the same functional result.
+
+Brian
