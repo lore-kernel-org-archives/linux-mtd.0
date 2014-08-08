@@ -1,29 +1,21 @@
-Received: from h1446028.stratoserver.net ([85.214.92.142]
- helo=mail.ahsoftware.de)
+Received: from mail-pd0-x234.google.com ([2607:f8b0:400e:c02::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XFqpo-0006pW-T6
- for linux-mtd@lists.infradead.org; Fri, 08 Aug 2014 20:32:21 +0000
-Received: from eiche.ahsoftware (p57B22910.dip0.t-ipconnect.de [87.178.41.16])
- (using TLSv1 with cipher ADH-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by mail.ahsoftware.de (Postfix) with ESMTPSA id A97032C9C6BB
- for <linux-mtd@lists.infradead.org>; Fri,  8 Aug 2014 22:31:54 +0200 (CEST)
-Message-ID: <53E533B1.4020306@ahsoftware.de>
-Date: Fri, 08 Aug 2014 22:31:45 +0200
-From: Alexander Holler <holler@ahsoftware.de>
+ id 1XFtqx-0004y9-BF
+ for linux-mtd@lists.infradead.org; Fri, 08 Aug 2014 23:45:44 +0000
+Received: by mail-pd0-f180.google.com with SMTP id v10so6035354pde.39
+ for <linux-mtd@lists.infradead.org>; Fri, 08 Aug 2014 16:45:22 -0700 (PDT)
+Date: Fri, 8 Aug 2014 16:45:18 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [GIT PULL] MTD updates for 3.17-rc1
+Message-ID: <20140808234518.GT3711@ld-irv-0074>
 MIME-Version: 1.0
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 09/27] mtd: nand: pxa3xx: show device structure in sysfs
-References: <1401142372-14148-1-git-send-email-holler@ahsoftware.de>
- <1401142372-14148-10-git-send-email-holler@ahsoftware.de>
- <1401160341.192042842@f271.i.mail.ru> <20140808170428.GA6094@arch.cereza>
- <20140808171650.GS3711@ld-irv-0074> <20140808181157.GA16575@arch.cereza>
-In-Reply-To: <20140808181157.GA16575@arch.cereza>
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Alexander Shiyan <shc_work@mail.ru>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ Linux Kernel <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,23 +25,134 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 08.08.2014 20:11, schrieb Ezequiel Garcia:
-> On 08 Aug 10:16 AM, Brian Norris wrote:
->> On Fri, Aug 08, 2014 at 02:04:28PM -0300, Ezequiel Garcia wrote:
->
->>> If there's anything left to fix for this driver, please let me know.
->>
->> pxa3xx_nand is still missing a parent for its MTD's (mtd->dev.parent). I
->> have a follow-up patch queued up locally that I need to send out
->> sometime.
->>
->
-> Maybe we can trade... you provide the reason for such parent, and I'll cook
-> a patch in exchange :)
+Hi Linus,
 
-Just read the subject.and the introductory mail to the simple 20+ 
-pathches I wasted my time with.
+The following changes since commit 9a3c4145af32125c5ee39c0272662b47307a8323:
 
-Regards,
+  Linux 3.16-rc6 (2014-07-20 21:04:16 -0700)
 
-Alexander Holler
+are available in the git repository at:
+
+  git://git.infradead.org/linux-mtd.git tags/for-linus-20140808
+
+for you to fetch changes up to 2a500afe1e0e84c7a126df693dbd01353756dcfa:
+
+  mtd: gpmi: make blockmark swapping optional (2014-07-27 22:06:31 -0700)
+
+----------------------------------------------------------------
+MTD updates for 3.17-rc1
+
+AMD-compatible CFI driver:
+ - Support OTP programming for Micron M29EW family
+ - Increase buffer write timeout, according to detected flash parameter info
+
+NAND
+ - Add helpers for retrieving ONFI timing modes
+ - GPMI: provide option to disable bad block marker swapping (required for
+     Ka-On electronics platforms)
+
+SPI NOR
+ - EON EN25QH128 support
+ - Support new Flag Status Register (FSR) on a few Micron flash
+
+Common
+ - New sysfs entries for bad block and ECC stats
+
+And a few miscellaneous refactorings, cleanups, and driver improvements
+
+----------------------------------------------------------------
+Atsushi Nemoto (1):
+      mtd: maps: rbtx4939-flash: delete an unused variable in rbtx4939_flash_remove
+
+Bean Huo (1):
+      mtd: cfi_cmdset_0002: fix do_write_buffer() timeout error
+
+Bo Shen (1):
+      mtd: atmel_nand: make ecc parameters same as definition
+
+Boris BREZILLON (2):
+      mtd: nand: define struct nand_timings
+      mtd: nand: add ONFI timing mode to nand_timings converter
+
+Brian Norris (3):
+      mtd: lpc32xx: drop bitflip_threshold initialization
+      mtd: bf5xx_nand: drop no-op PM support
+      Merge tag 'v3.16-rc6' into MTD development branch
+
+Christian Riesch (4):
+      mtd: cfi_cmdset_0002: Add support for reading OTP
+      mtd: cfi_cmdset_0002: Invalidate cache after entering/exiting OTP memory
+      mtd: cfi_cmdset_0002: Add support for writing OTP memory
+      mtd: cfi_cmdset_0002: Add support for locking OTP memory
+
+Ezequiel Garcia (3):
+      mtd: Add sysfs attributes to expose the ECC stats fields
+      mtd: Introduce mtd_block_isreserved()
+      mtd: Account for BBT blocks when a partition is being allocated
+
+Fabian Frederick (3):
+      fs/jffs2/acl.c: remove null test before kfree
+      fs/jffs2/xattr.c: remove null test before kfree
+      mtd: phram: replace kmalloc/strcpy by kstrdup
+
+Geert Uytterhoeven (1):
+      mtd: cmdlinepart: Spelling s/trucate/truncate/
+
+Josh Wu (1):
+      mtd: atmel_nand: NFC: support multiple interrupt handling
+
+Kevin Hao (2):
+      mtd/ftl: drop the useless VirtualPageMap in partition_t
+      mtd/ftl: fix the double free of the buffers allocated in build_maps()
+
+Lothar Waﬂmann (3):
+      mtd: gpmi: remove useless (void *) type casts and spaces between type casts and variables
+      mtd: gpmi: remove line breaks from error messages and improve wording
+      mtd: gpmi: make blockmark swapping optional
+
+Rob Ward (1):
+      mtd: phram: Fix whitespace issues
+
+Sergey Ryazanov (1):
+      mtd: spi-nor: add support for EON EN25QH128
+
+Vasily Khoruzhick (1):
+      mtd: s3c2410: Move to clk_prepare_enable/clk_disable_unprepare
+
+Wu, Josh (2):
+      mtd: atmel_nand: add NFC status error check
+      mtd: atmel_nand: implement the nfc_device_ready() by checking the R/B bit
+
+grmoore@altera.com (2):
+      mtd: spi-nor: add support for flag status register on Micron chips
+      mtd: denali: use 8 bytes for READID command
+
+ Documentation/ABI/testing/sysfs-class-mtd          |  38 +++
+ .../devicetree/bindings/mtd/gpmi-nand.txt          |  10 +
+ drivers/mtd/chips/cfi_cmdset_0002.c                | 375 +++++++++++++++++++--
+ drivers/mtd/cmdlinepart.c                          |   2 +-
+ drivers/mtd/devices/phram.c                        |   7 +-
+ drivers/mtd/ftl.c                                  |   4 -
+ drivers/mtd/maps/rbtx4939-flash.c                  |   2 -
+ drivers/mtd/mtdcore.c                              |  59 +++-
+ drivers/mtd/mtdpart.c                              |  13 +-
+ drivers/mtd/nand/Makefile                          |   2 +-
+ drivers/mtd/nand/atmel_nand.c                      | 142 ++++++--
+ drivers/mtd/nand/atmel_nand_nfc.h                  |   4 +
+ drivers/mtd/nand/bf5xx_nand.c                      |  24 --
+ drivers/mtd/nand/denali.c                          |   6 +-
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c             |  71 ++--
+ drivers/mtd/nand/lpc32xx_mlc.c                     |   6 -
+ drivers/mtd/nand/lpc32xx_slc.c                     |   6 -
+ drivers/mtd/nand/nand_base.c                       |  18 +
+ drivers/mtd/nand/nand_bbt.c                        |  14 +
+ drivers/mtd/nand/nand_timings.c                    | 253 ++++++++++++++
+ drivers/mtd/nand/s3c2410.c                         |   4 +-
+ drivers/mtd/spi-nor/spi-nor.c                      |  53 +++
+ fs/jffs2/acl.c                                     |   3 +-
+ fs/jffs2/xattr.c                                   |   3 +-
+ include/linux/mtd/mtd.h                            |   2 +
+ include/linux/mtd/nand.h                           |  53 +++
+ include/linux/mtd/spi-nor.h                        |   4 +
+ 27 files changed, 1032 insertions(+), 146 deletions(-)
+ create mode 100644 drivers/mtd/nand/nand_timings.c
