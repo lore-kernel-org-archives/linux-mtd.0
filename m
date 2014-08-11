@@ -1,17 +1,18 @@
-Received: from mail-pa0-x231.google.com ([2607:f8b0:400e:c03::231])
+Received: from szxga03-in.huawei.com ([119.145.14.66])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XGcZD-0003aH-0z
- for linux-mtd@lists.infradead.org; Sun, 10 Aug 2014 23:30:23 +0000
-Received: by mail-pa0-f49.google.com with SMTP id hz1so9964211pad.22
- for <linux-mtd@lists.infradead.org>; Sun, 10 Aug 2014 16:29:59 -0700 (PDT)
-From: Akinobu Mita <akinobu.mita@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] nandsim: add id_bytes module parameter
-Date: Mon, 11 Aug 2014 08:29:01 +0900
-Message-Id: <1407713341-4446-1-git-send-email-akinobu.mita@gmail.com>
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Akinobu Mita <akinobu.mita@gmail.com>
+ id 1XGgBg-00046E-5W
+ for linux-mtd@lists.infradead.org; Mon, 11 Aug 2014 03:22:21 +0000
+Message-ID: <53E836A7.8040806@huawei.com>
+Date: Mon, 11 Aug 2014 11:21:11 +0800
+From: hujianyang <hujianyang@huawei.com>
+MIME-Version: 1.0
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH 1/2] UBIFS: fix free log space calculation
+References: <1405514528-14649-1-git-send-email-dedekind1@gmail.com>
+In-Reply-To: <1405514528-14649-1-git-send-email-dedekind1@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: MTD Maling List <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,107 +22,160 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-nandsim can simulate NAND Flash which returns the ID bytes specified
-by first_id_byte, ..., fourth_id_byte module parameters.
+> ---
+>  fs/ubifs/log.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/ubifs/log.c b/fs/ubifs/log.c
+> index ed24422..7e818ec 100644
+> --- a/fs/ubifs/log.c
+> +++ b/fs/ubifs/log.c
+> @@ -106,10 +106,14 @@ static inline long long empty_log_bytes(const struct ubifs_info *c)
+>  	h = (long long)c->lhead_lnum * c->leb_size + c->lhead_offs;
+>  	t = (long long)c->ltail_lnum * c->leb_size;
+>  
+> -	if (h >= t)
+> +	if (h > t)
+>  		return c->log_bytes - h + t;
+> -	else
+> +	else if (h != t)
+>  		return t - h;
+> +	else if (c->lhead_lnum != c->ltail_lnum)
+> +		return 0;
+> +	else
+> +		return c->log_bytes;
+>  }
+>  
+>  /**
+> 
 
-In order to simulate NAND flash which returns more than four ID bytes,
-this adds id_bytes module parameter which is specified by the array of
-byte like this:
+Hi Artem,
 
- # modprobe nandsim id_bytes=0x98,0xdc,0x90,0x26,0x76,0x15,0x01,0x08 bch=1
+After almost one month test, the error I've reported
 
-This doesn't add fifth_id_byte, ..., seventh_id_byte module parameters,
-becuase they are redundant.  But the existing first_id_byte, ...,
-fourth_id_byte module parameters are preserved.
+UBIFS: background thread "ubifs_bgt0_0" started, PID 2222
+UBIFS: recovery needed
+UBIFS error (pid 2220): replay_log_leb: first log node at LEB 4:0 is not CS node
+UBIFS error (pid 2220): replay_log_leb: log error detected while replaying the log at LEB 4:0
+ magic          0x6101831
+ crc            0x81e22cd5
+ node_type      8 (reference node)
+ group_type     0 (no node group)
+ sqnum          2375337
+ len            64
+ lnum           5273
+ offs           122880
+ jhead          2
+UBIFS: background thread "ubifs_bgt0_0" stops
 
-Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: linux-mtd@lists.infradead.org
-Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
----
- drivers/mtd/nand/nandsim.c | 34 ++++++++++++++++++++--------------
- 1 file changed, 20 insertions(+), 14 deletions(-)
+never came out again.
 
-diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index 4c0ada3..8b4a48e 100644
---- a/drivers/mtd/nand/nandsim.c
-+++ b/drivers/mtd/nand/nandsim.c
-@@ -89,10 +89,6 @@
- #define CONFIG_NANDSIM_MAX_PARTS  32
- #endif
- 
--static uint first_id_byte  = CONFIG_NANDSIM_FIRST_ID_BYTE;
--static uint second_id_byte = CONFIG_NANDSIM_SECOND_ID_BYTE;
--static uint third_id_byte  = CONFIG_NANDSIM_THIRD_ID_BYTE;
--static uint fourth_id_byte = CONFIG_NANDSIM_FOURTH_ID_BYTE;
- static uint access_delay   = CONFIG_NANDSIM_ACCESS_DELAY;
- static uint programm_delay = CONFIG_NANDSIM_PROGRAMM_DELAY;
- static uint erase_delay    = CONFIG_NANDSIM_ERASE_DELAY;
-@@ -113,11 +109,19 @@ static unsigned int overridesize = 0;
- static char *cache_file = NULL;
- static unsigned int bbt;
- static unsigned int bch;
-+static u_char id_bytes[8] = {
-+	[0] = CONFIG_NANDSIM_FIRST_ID_BYTE,
-+	[1] = CONFIG_NANDSIM_SECOND_ID_BYTE,
-+	[2] = CONFIG_NANDSIM_THIRD_ID_BYTE,
-+	[3] = CONFIG_NANDSIM_FOURTH_ID_BYTE,
-+	[4 ... 7] = 0xFF,
-+};
- 
--module_param(first_id_byte,  uint, 0400);
--module_param(second_id_byte, uint, 0400);
--module_param(third_id_byte,  uint, 0400);
--module_param(fourth_id_byte, uint, 0400);
-+module_param_array(id_bytes, byte, NULL, 0400);
-+module_param_cb(first_id_byte, &param_ops_byte, &id_bytes[0], 0400);
-+module_param_cb(second_id_byte, &param_ops_byte, &id_bytes[1], 0400);
-+module_param_cb(third_id_byte, &param_ops_byte, &id_bytes[2], 0400);
-+module_param_cb(fourth_id_byte, &param_ops_byte, &id_bytes[3], 0400);
- module_param(access_delay,   uint, 0400);
- module_param(programm_delay, uint, 0400);
- module_param(erase_delay,    uint, 0400);
-@@ -138,6 +142,7 @@ module_param(cache_file,     charp, 0400);
- module_param(bbt,	     uint, 0400);
- module_param(bch,	     uint, 0400);
- 
-+MODULE_PARM_DESC(id_bytes,       "The ID bytes returned by NAND Flash 'read ID' command");
- MODULE_PARM_DESC(first_id_byte,  "The first byte returned by NAND Flash 'read ID' command (manufacturer ID)");
- MODULE_PARM_DESC(second_id_byte, "The second byte returned by NAND Flash 'read ID' command (chip ID)");
- MODULE_PARM_DESC(third_id_byte,  "The third byte returned by NAND Flash 'read ID' command");
-@@ -306,7 +311,7 @@ struct nandsim {
- 	unsigned int nbparts;
- 
- 	uint busw;              /* flash chip bus width (8 or 16) */
--	u_char ids[4];          /* chip's ID bytes */
-+	u_char ids[8];          /* chip's ID bytes */
- 	uint32_t options;       /* chip's characteristic bits */
- 	uint32_t state;         /* current chip state */
- 	uint32_t nxstate;       /* next expected state */
-@@ -2214,17 +2219,18 @@ static int __init ns_init_module(void)
- 	 * Perform minimum nandsim structure initialization to handle
- 	 * the initial ID read command correctly
- 	 */
--	if (third_id_byte != 0xFF || fourth_id_byte != 0xFF)
-+	if (id_bytes[6] != 0xFF || id_bytes[7] != 0xFF)
-+		nand->geom.idbytes = 8;
-+	else if (id_bytes[4] != 0xFF || id_bytes[5] != 0xFF)
-+		nand->geom.idbytes = 6;
-+	else if (id_bytes[2] != 0xFF || id_bytes[3] != 0xFF)
- 		nand->geom.idbytes = 4;
- 	else
- 		nand->geom.idbytes = 2;
- 	nand->regs.status = NS_STATUS_OK(nand);
- 	nand->nxstate = STATE_UNKNOWN;
- 	nand->options |= OPT_PAGE512; /* temporary value */
--	nand->ids[0] = first_id_byte;
--	nand->ids[1] = second_id_byte;
--	nand->ids[2] = third_id_byte;
--	nand->ids[3] = fourth_id_byte;
-+	memcpy(nand->ids, id_bytes, sizeof(nand->ids));
- 	if (bus_width == 16) {
- 		nand->busw = 16;
- 		chip->options |= NAND_BUSWIDTH_16;
--- 
-1.9.1
+I think this patch really solve that problem. Now I want to show my
+analysis and wish you add "Cc stable" for this patch.
+
+With the help of ubidump tool, I got the MST NODEs and LOG NODEs of
+the image which is broken.
+
+master node:
+
+look at LEB 1:20480 (106496 bytes left)
+scanning master node at LEB 1:20480
+	magic          0x6101831
+	crc            0x38ff5c67
+	node_type      7 (master node)
+	group_type     0 (no node group)
+	sqnum          15799802
+	len            512
+	highest_inum   161
+	commit number  7954
+	flags          0x3
+	log_lnum       4
+	root_lnum      2258
+	root_offs      7048
+	root_len       148
+	gc_lnum        2324
+	ihead_lnum     2258
+	ihead_offs     8192
+	index_size     2511408
+	lpt_lnum       15
+	lpt_offs       113571
+	nhead_lnum     15
+	nhead_offs     114688
+	ltab_lnum      15
+	ltab_offs      110592
+	lsave_lnum     0
+	lsave_offs     0
+	lscan_lnum     2930
+	leb_cnt        6844
+	empty_lebs     3362
+	idx_lebs       23
+	total_free     430188544
+	total_dirty    56069504
+	total_used     377968720
+	total_dead     7032
+	total_dark     31196320
+look at LEB 1:20992 (105984 bytes left)
+scanning padding node at LEB 1:20992
+1508 bytes padded at LEB 1:20992, offset now 22528
+look at LEB 1:22528 (104448 bytes left)
+hit empty space at LEB 1:22528
+stop scanning LEB 1 at offset 126976
+
+log nodes:
+
+leb number     first sqnum   first node type    full/not full
+   3            15801163         ref node           full
+   4            15801288         ref node           full
+   5            15801433         ref node           full
+   6            15801598         ref node           full
+   7            15801966         ref node         not full
+   8            15800414         ref node           full
+   9            15800538         ref node           full
+  10            15800664         ref node           full
+  11            15800789         ref node           full
+  12            15800915         ref node           full
+  13            15801039         ref node           full
+
+The min_io_size of this device is 2048 and the leb_size of it is
+126976. Each of leb is full except 7 means no frequently power
+cutting happen because log leb will change into next one if the
+volume is remount.
+
+We know cs node must in leb 4 as @log_lnum is 4 in mst node. But
+it is a ref node as we see it in leb 4. What happened?
+
+Leb 7 has the highest sqnum and it is not full, that means it is
+the last log leb before an unclean power off. So we know leb 8 is
+the oldest log leb exist. But it has a higher sqnum than mst node,
+15799802, that means mst node is written before the oldest node
+in current log area.
+
+Each time we write a cs node, we write a new mst node. The sqnum
+of this mst node should higher than cs node. So the cs node in
+leb 4 is overlapped.
+
+We keep an empty leb in log area by @min_log_bytes to start-up a
+new commit. When commit start, we may use this leb and set
+@min_log_bytes to zero.
+
+Suppose old ltail_lnum is 5 and lhead_lnum is 3, leb 3 is full and
+a new commit start. We write a new cs node at the beginning of leb
+4 and set @min_log_bytes to zero. Now, as empty_log_bytes() is wrong,
+ubifs_add_bud_to_log() may wrap leb 5, leb 6... At last, overlap
+the leb 4 which has the newest cs node and mst_node would point to,
+why not? we don't have any assertion or any protection to void this
+except the check of empty_log_bytes() with an error shows above.
+
+Now an unfortunately power cut happens, this volume is broken.
+
+I think this patch fixed this problem by correctly protect the log
+area. So maybe you can add "Cc stable" before you send it to mainline.
+
+By the way, commit 8989cd69b9d2 "UBIFS: fix a race condition" fix
+a real potential race and useful for avoiding errors in log area.
+Could you please add "Cc stable" for it too?
+
+
+Thanks,
+
+Hu
