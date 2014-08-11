@@ -1,22 +1,22 @@
-Received: from mail-pa0-x22f.google.com ([2607:f8b0:400e:c03::22f])
+Received: from mail-pa0-x22b.google.com ([2607:f8b0:400e:c03::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XGuFk-0000pR-Ci
- for linux-mtd@lists.infradead.org; Mon, 11 Aug 2014 18:23:28 +0000
-Received: by mail-pa0-f47.google.com with SMTP id kx10so11555290pab.34
- for <linux-mtd@lists.infradead.org>; Mon, 11 Aug 2014 11:23:07 -0700 (PDT)
-Date: Mon, 11 Aug 2014 11:23:04 -0700
+ id 1XGuZD-0000Ei-U3
+ for linux-mtd@lists.infradead.org; Mon, 11 Aug 2014 18:43:36 +0000
+Received: by mail-pa0-f43.google.com with SMTP id lf10so11592397pab.30
+ for <linux-mtd@lists.infradead.org>; Mon, 11 Aug 2014 11:43:15 -0700 (PDT)
+Date: Mon, 11 Aug 2014 11:43:11 -0700
 From: Brian Norris <computersforpeace@gmail.com>
 To: Huang Shijie <shijie8@gmail.com>
-Subject: Re: [PATCH 3/8] mtd: spi-nor: move "wait-till-ready" checks into
- erase/write functions
-Message-ID: <20140811182304.GW3711@ld-irv-0074>
+Subject: Re: [PATCH 6/8] mtd: spi-nor: drop replaceable wait-till-ready
+ function pointer
+Message-ID: <20140811184311.GX3711@ld-irv-0074>
 References: <1407374222-8448-1-git-send-email-computersforpeace@gmail.com>
- <1407374222-8448-4-git-send-email-computersforpeace@gmail.com>
- <20140809084221.GA32664@localhost.localdomain>
+ <1407374222-8448-7-git-send-email-computersforpeace@gmail.com>
+ <20140809095301.GA1076@localhost.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20140809084221.GA32664@localhost.localdomain>
+In-Reply-To: <20140809095301.GA1076@localhost.localdomain>
 Cc: Marek Vasut <marex@denx.de>, Huang Shijie <b32955@freescale.com>,
  zajec5@gmail.com, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,43 +28,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Aug 09, 2014 at 04:42:24PM +0800, Huang Shijie wrote:
-> On Wed, Aug 06, 2014 at 06:16:57PM -0700, Brian Norris wrote:
-> > We shouldn't have *every* function checking if a previous write is
-> > complete; this should be done synchronously after each write/erase.
+On Sat, Aug 09, 2014 at 05:53:03PM +0800, Huang Shijie wrote:
+> On Wed, Aug 06, 2014 at 06:17:00PM -0700, Brian Norris wrote:
+> > We don't need to expose a 'wait-till-ready' interface to drivers. Status
+> > register polling should be handled by the core spi-nor.c library, and as
+> > of now, I see no need to provide a special driver-specific hook for it.
 > 
-> IMHO, this is not a good idea. :(
+> Please do not drop this hook, please see why we add this hook:
+> http://lists.infradead.org/pipermail/linux-mtd/2013-December/050561.html
+> 
+> "
+> The default implementation would do just as you suggest, and I would
+> expect most H/W drivers to use the default implementation.  However, some H/W
+> Controllers can automate the polling of status registers, so having a hook allows
+> the driver override the default behaviour.
+> "
+> 
+> The spi-nor framework will used by more drivers besides the m25p80 and
+> fsl-quadspi. Some NOR flash controller may be very strange.
 
-Do you mean you think it is a good idea for every unrelated function to
-check if the previous erase/write is complete?
+OK, but the wait-till-ready hook should not look like the current one.
+If it is used as an optimization of sorts, then we can provide it in
+*addition* to the checks we do, but not *instead of*. I sincerely doubt
+that any specialized SPI NOR controller will know how to check both SR
+and FSR where appropriate, and it probably won't understand other
+specialized sequences as they are developed / thrown on our lap by flash
+vendors.
 
-> this patch prevents the erase-suspend and program-suspend.
-> We should add these two features for spi-nor in future.
+So, the spi-nor.c "wait until ready" might have a sequence like this:
 
-OK, how would you propose that such features be implemented, and how
-would they be used to the benefit of higher layers?
+1. (Optionally) use low-level driver's "wait" function; skip if not
+   present
 
-Directed toward the former: specifically, how does leaving the
-SR/FSR-checking burden on all subsequent commands benefit a potential
-erase/program suspend implementation? The code is not written at all
-with erase/program suspend in mind, and the current patch solves a
-current problem; that we perform checking in all the wrong places.
+2. use the read register hooks to check SR/FSR to confirm completion
 
-To the latter: are file systems (e.g., UBIFS) aware of suspend-able
-program/erase? Would they have the knowledge to take advantage of
-suspend-able program/erase? i.e., could they suspend an unimportant
-erase command in order to prioritize a read or write?
+I do not want to toss #2 into the low-level driver, so if there is a
+need for #1, it should be done in addition to our spi-nor.c code, not
+instead. (To this end, I believe Marek also complained about this when
+we were adding the FSR-checking code; we should not have drivers and
+spi-nor.c fighting over callback functions.)
 
-Finally, this patch mostly prepares for elimination of code from
-lower-level drivers (m25p80.c and fsl-quadspi, in the following two
-patches). These drivers should *not* be worrying about the details of
-command statuses; this should be handled by the generic code
-(spi-nor.c).
+So I'm inclined to at most address #1 through an optional callback, and
+possibly even to ignore that until we see an actual driver that needs
+it.
 
-So, unless you can provide some outline as to how program/erase suspend
-can be implemented reasonably within this framework, and how this
-particular patch makes that so much more difficult, I plan to move
-forward with this.
-
-Thanks,
 Brian
