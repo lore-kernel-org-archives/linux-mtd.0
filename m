@@ -1,21 +1,21 @@
 Received: from mga11.intel.com ([192.55.52.93])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XH0R1-00040v-B6
- for linux-mtd@lists.infradead.org; Tue, 12 Aug 2014 00:59:31 +0000
-Date: Tue, 12 Aug 2014 08:59:12 +0800
+ id 1XH0hO-0003Wi-0l
+ for linux-mtd@lists.infradead.org; Tue, 12 Aug 2014 01:16:26 +0000
+Date: Tue, 12 Aug 2014 09:16:07 +0800
 From: Huang Shijie <shijie.huang@intel.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 7/8] mtd: spi-nor: factor out write_enable() for erase
- commands
-Message-ID: <20140812005912.GA1850@shldeISGChi005.sh.intel.com>
+Subject: Re: [PATCH 6/8] mtd: spi-nor: drop replaceable wait-till-ready
+ function pointer
+Message-ID: <20140812011607.GA2065@shldeISGChi005.sh.intel.com>
 References: <1407374222-8448-1-git-send-email-computersforpeace@gmail.com>
- <1407374222-8448-8-git-send-email-computersforpeace@gmail.com>
- <20140809105232.GA1571@localhost.localdomain>
- <20140811184818.GY3711@ld-irv-0074>
+ <1407374222-8448-7-git-send-email-computersforpeace@gmail.com>
+ <20140809095301.GA1076@localhost.localdomain>
+ <20140811184311.GX3711@ld-irv-0074>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20140811184818.GY3711@ld-irv-0074>
+In-Reply-To: <20140811184311.GX3711@ld-irv-0074>
 Cc: Marek Vasut <marex@denx.de>, Huang Shijie <b32955@freescale.com>,
  zajec5@gmail.com, Huang Shijie <shijie8@gmail.com>,
  linux-mtd@lists.infradead.org
@@ -28,91 +28,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 11, 2014 at 11:48:18AM -0700, Brian Norris wrote:
-> On Sat, Aug 09, 2014 at 06:52:34PM +0800, Huang Shijie wrote:
-> > On Wed, Aug 06, 2014 at 06:17:01PM -0700, Brian Norris wrote:
-> > > write_enable() was being duplicated to both m25p80.c and fsl-quadspi.c.
-> > > But this should be handled within the spi-nor abstraction layer.
-> > > 
-> > > At the same time, let's add write_disable() after erasing, so we don't
-> > > leave the flash in a write-enabled state afterward.
-> > > 
-> > > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> > > ---
-> > >  drivers/mtd/devices/m25p80.c      | 5 -----
-> > >  drivers/mtd/spi-nor/fsl-quadspi.c | 5 -----
-> > >  drivers/mtd/spi-nor/spi-nor.c     | 7 ++++---
-> > >  3 files changed, 4 insertions(+), 13 deletions(-)
-> > > 
-> > > diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> > > index 96226ea69f90..116d979ffdb9 100644
-> > > --- a/drivers/mtd/devices/m25p80.c
-> > > +++ b/drivers/mtd/devices/m25p80.c
-> > > @@ -158,11 +158,6 @@ static int m25p80_erase(struct spi_nor *nor, loff_t offset)
-> > >  	dev_dbg(nor->dev, "%dKiB at 0x%08x\n",
-> > >  		flash->mtd.erasesize / 1024, (u32)offset);
-> > >  
-> > > -	/* Send write enable, then erase commands. */
-> > > -	ret = nor->write_reg(nor, SPINOR_OP_WREN, NULL, 0, 0);
-> > > -	if (ret)
-> > > -		return ret;
-> > > -
-> > >  	/* Set up command buffer. */
-> > >  	flash->command[0] = nor->erase_opcode;
-> > >  	m25p_addr2cmd(nor, offset, flash->command);
-> > > diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-> > > index 9c13622a0c7a..07fbfb0a7738 100644
-> > > --- a/drivers/mtd/spi-nor/fsl-quadspi.c
-> > > +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-> > > @@ -738,11 +738,6 @@ static int fsl_qspi_erase(struct spi_nor *nor, loff_t offs)
-> > >  	dev_dbg(nor->dev, "%dKiB at 0x%08x:0x%08x\n",
-> > >  		nor->mtd->erasesize / 1024, q->chip_base_addr, (u32)offs);
-> > >  
-> > > -	/* Send write enable, then erase commands. */
-> > > -	ret = nor->write_reg(nor, SPINOR_OP_WREN, NULL, 0, 0);
-> > > -	if (ret)
-> > > -		return ret;
-> > > -
-> > This write-enable is used for per-sector-erase, not for the whole chip
-> > erase.
+On Mon, Aug 11, 2014 at 11:43:11AM -0700, Brian Norris wrote:
+> On Sat, Aug 09, 2014 at 05:53:03PM +0800, Huang Shijie wrote:
+> > On Wed, Aug 06, 2014 at 06:17:00PM -0700, Brian Norris wrote:
+> > > We don't need to expose a 'wait-till-ready' interface to drivers. Status
+> > > register polling should be handled by the core spi-nor.c library, and as
+> > > of now, I see no need to provide a special driver-specific hook for it.
 > > 
-> > So if you really want to remove this code, you should add an extra write-enable
-> > in the spi_nor_erase.
+> > Please do not drop this hook, please see why we add this hook:
+> > http://lists.infradead.org/pipermail/linux-mtd/2013-December/050561.html
+> > 
+> > "
+> > The default implementation would do just as you suggest, and I would
+> > expect most H/W drivers to use the default implementation.  However, some H/W
+> > Controllers can automate the polling of status registers, so having a hook allows
+> > the driver override the default behaviour.
+> > "
+> > 
+> > The spi-nor framework will used by more drivers besides the m25p80 and
+> > fsl-quadspi. Some NOR flash controller may be very strange.
 > 
-> I don't understand your comment.
+> OK, but the wait-till-ready hook should not look like the current one.
+> If it is used as an optimization of sorts, then we can provide it in
+> *addition* to the checks we do, but not *instead of*. I sincerely doubt
+> that any specialized SPI NOR controller will know how to check both SR
+> and FSR where appropriate, and it probably won't understand other
+> specialized sequences as they are developed / thrown on our lap by flash
+> vendors.
 > 
-> Before this patch, there is a write-enable command in:
->  * m25p80.c, per-sector erase
->  * fsl-quadspi, per-sector erase
->  * spi-nor.c, whole-chip erase
+> So, the spi-nor.c "wait until ready" might have a sequence like this:
 > 
-> With this patch, I am factoring all of these out into spi_nor_erase().
+> 1. (Optionally) use low-level driver's "wait" function; skip if not
+>    present
 > 
-> What is the problem?
-Hi Brian:
-   For the spi_nor_erase(), the patch should like this:
+> 2. use the read register hooks to check SR/FSR to confirm completion
+> 
+> I do not want to toss #2 into the low-level driver, so if there is a
+> need for #1, it should be done in addition to our spi-nor.c code, not
+> instead. (To this end, I believe Marek also complained about this when
+> we were adding the FSR-checking code; we should not have drivers and
+> spi-nor.c fighting over callback functions.)
+> 
+> So I'm inclined to at most address #1 through an optional callback, and
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index c130bf7..26c48bc 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -324,6 +324,7 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
- 
- 	/* whole-chip erase? */
- 	if (len == mtd->size) {
-+		write_enable(nor);
- 		if (erase_chip(nor)) {
- 			ret = -EIO;
- 			goto erase_err;
-@@ -337,6 +338,7 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
- 	/* "sector"-at-a-time erase */
- 	} else {
- 		while (len) {
-+			write_enable(nor);
- 			if (nor->erase(nor, addr)) {
- 				ret = -EIO;
- 				goto erase_err;
-
+but where to put the optional callback? in the spi_nor{} ?
+> possibly even to ignore that until we see an actual driver that needs
+> it.
+If you insist to remove it, i will be okay too.
+anyway, we can add it back when an actual driver appears.
 
 thanks
-Huang Shijie	
+Huang Shijie
