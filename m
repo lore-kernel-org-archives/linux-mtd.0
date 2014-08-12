@@ -1,25 +1,14 @@
-Received: from mail-la0-x231.google.com ([2a00:1450:4010:c03::231])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XGvDi-0002kz-ME
- for linux-mtd@lists.infradead.org; Mon, 11 Aug 2014 19:25:27 +0000
-Received: by mail-la0-f49.google.com with SMTP id hz20so7024080lab.22
- for <linux-mtd@lists.infradead.org>; Mon, 11 Aug 2014 12:25:03 -0700 (PDT)
-MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <20140811190644.GA3711@ld-irv-0074>
-References: <1407604073-7484-1-git-send-email-geert@linux-m68k.org>
- <20140811175036.GU3711@ld-irv-0074>
- <CAMuHMdUNoD5qFhfVP2jJvgqPi=c6xe6YAbmQWYt_ir7rtqp_OQ@mail.gmail.com>
- <20140811190644.GA3711@ld-irv-0074>
-Date: Mon, 11 Aug 2014 21:25:03 +0200
-Message-ID: <CAMuHMdVaNsd6dO0rNNiP2GxekQdeJQ1mLhoppR=WrRPJ=uUawg@mail.gmail.com>
-Subject: Re: [PATCH] mtd: nand: Use ULL-suffix for big u64 constant
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: Boris BREZILLON <boris.brezillon@free-electrons.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Received: from mga02.intel.com ([134.134.136.20])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XH0My-0002FJ-6u
+ for linux-mtd@lists.infradead.org; Tue, 12 Aug 2014 00:55:21 +0000
+From: Huang Shijie <shijie.huang@intel.com>
+To: computersforpeace@gmail.com
+Subject: [PATCH 1/3] mtd: spi-nor: add id/id_len for flash_info{}
+Date: Tue, 12 Aug 2014 08:54:54 +0800
+Message-Id: <1407804896-1808-1-git-send-email-shijie.huang@intel.com>
+Cc: marex@denx.de, linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+ Huang Shijie <shijie.huang@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,40 +18,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
+This patch adds the id/id_len fields for flash_info{}, and rewrite the
+INFO to fill them. And at last, we read out 6 bytes in the spi_nor_read_id(),
+and we use these new fields to parse out the correct flash_info.
 
-On Mon, Aug 11, 2014 at 9:06 PM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> I'm curious: do your broken compilers also generate broken code/data?
-> i.e., does gcc 4.4.7 give 250000000000 its proper ULL value still?
+Signed-off-by: Huang Shijie <shijie.huang@intel.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c |   39 +++++++++++++++++++++++++--------------
+ 1 files changed, 25 insertions(+), 14 deletions(-)
 
-Yes it does (checked the assembler output).
-
->> > However, I could be convinced to apply this, if only to satisfy broken
->> > tools and to avoid addressing this question over and over...
->>
->> So please apply. Too many people are still using 32-bit targets and
->> gcc < 4.6.
->
-> OK, you've convinced me ;) Applied to l2-mtd.git/next, with an editorial
-> comment.
-
-Thanks!
-
-BTW, I had some faint memories of integer constants never being 64-bit
-without the "LL" suffix, but that's no longer true in c99 (I did check that a
-few days ago).
-
-The warning does go away when adding -std=c99 with gcc-4.4.
-Interestingly, it doesn't appear with -std=c89 with gcc 4.6.2 or 4.8.2.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index b5ad6be..0b69072 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -422,6 +422,8 @@ err:
+ 	return ret;
+ }
+ 
++#define SPI_NOR_MAX_ID_LEN	6
++
+ struct flash_info {
+ 	/* JEDEC id zero means "no ID" (most older chips); otherwise it has
+ 	 * a high byte of zero plus three data bytes: the manufacturer id,
+@@ -430,6 +432,14 @@ struct flash_info {
+ 	u32		jedec_id;
+ 	u16             ext_id;
+ 
++	/*
++	 * This array stores the ID bytes.
++	 * The first three bytes are the JEDIC id.
++	 * JEDEC id zero means "no ID" (most older chips);
++	 */
++	u8		id[SPI_NOR_MAX_ID_LEN];
++	u8		id_len;
++
+ 	/* The size listed here is what works with SPINOR_OP_SE, which isn't
+ 	 * necessarily called a "sector" by the vendor.
+ 	 */
+@@ -450,10 +460,19 @@ struct flash_info {
+ #define	USE_FSR			0x80	/* use flag status register */
+ };
+ 
++/* Used when the "_ext_id" is two bytes at most */
+ #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)	\
+ 	((kernel_ulong_t)&(struct flash_info) {				\
+ 		.jedec_id = (_jedec_id),				\
+ 		.ext_id = (_ext_id),					\
++		.id = {							\
++			((_jedec_id) >> 16) & 0xff,			\
++			((_jedec_id) >> 8) & 0xff,			\
++			(_jedec_id) & 0xff,				\
++			((_ext_id) >> 8) & 0xff,			\
++			(_ext_id) & 0xff,				\
++			},						\
++		.id_len = (!(_jedec_id) ? 0 : (3 + ((_ext_id) ? 2 : 0))),	\
+ 		.sector_size = (_sector_size),				\
+ 		.n_sectors = (_n_sectors),				\
+ 		.page_size = 256,					\
+@@ -642,32 +661,24 @@ EXPORT_SYMBOL_GPL(spi_nor_ids);
+ static const struct spi_device_id *spi_nor_read_id(struct spi_nor *nor)
+ {
+ 	int			tmp;
+-	u8			id[5];
+-	u32			jedec;
+-	u16                     ext_jedec;
++	u8			id[SPI_NOR_MAX_ID_LEN];
+ 	struct flash_info	*info;
+ 
+-	tmp = nor->read_reg(nor, SPINOR_OP_RDID, id, 5);
++	tmp = nor->read_reg(nor, SPINOR_OP_RDID, id, SPI_NOR_MAX_ID_LEN);
+ 	if (tmp < 0) {
+ 		dev_dbg(nor->dev, " error %d reading JEDEC ID\n", tmp);
+ 		return ERR_PTR(tmp);
+ 	}
+-	jedec = id[0];
+-	jedec = jedec << 8;
+-	jedec |= id[1];
+-	jedec = jedec << 8;
+-	jedec |= id[2];
+-
+-	ext_jedec = id[3] << 8 | id[4];
+ 
+ 	for (tmp = 0; tmp < ARRAY_SIZE(spi_nor_ids) - 1; tmp++) {
+ 		info = (void *)spi_nor_ids[tmp].driver_data;
+-		if (info->jedec_id == jedec) {
+-			if (info->ext_id == 0 || info->ext_id == ext_jedec)
++		if (info->id_len) {
++			if (!strncmp(info->id, id, info->id_len))
+ 				return &spi_nor_ids[tmp];
+ 		}
+ 	}
+-	dev_err(nor->dev, "unrecognized JEDEC id %06x\n", jedec);
++	dev_err(nor->dev, "unrecognized JEDEC id bytes: %02x, %2x, %2x\n",
++		id[0], id[1], id[2]);
+ 	return ERR_PTR(-ENODEV);
+ }
+ 
+-- 
+1.7.7.6
