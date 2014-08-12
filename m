@@ -1,12 +1,14 @@
 Received: from mga02.intel.com ([134.134.136.20])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XH0My-0002FJ-6u
+ id 1XH0Mz-0002FJ-8M
  for linux-mtd@lists.infradead.org; Tue, 12 Aug 2014 00:55:21 +0000
 From: Huang Shijie <shijie.huang@intel.com>
 To: computersforpeace@gmail.com
-Subject: [PATCH 1/3] mtd: spi-nor: add id/id_len for flash_info{}
-Date: Tue, 12 Aug 2014 08:54:54 +0800
-Message-Id: <1407804896-1808-1-git-send-email-shijie.huang@intel.com>
+Subject: [PATCH 3/3] mtd: spi-nor: add support for s25fl128s
+Date: Tue, 12 Aug 2014 08:54:56 +0800
+Message-Id: <1407804896-1808-3-git-send-email-shijie.huang@intel.com>
+In-Reply-To: <1407804896-1808-1-git-send-email-shijie.huang@intel.com>
+References: <1407804896-1808-1-git-send-email-shijie.huang@intel.com>
 Cc: marex@denx.de, linux-mtd@lists.infradead.org, dwmw2@infradead.org,
  Huang Shijie <shijie.huang@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -18,101 +20,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds the id/id_len fields for flash_info{}, and rewrite the
-INFO to fill them. And at last, we read out 6 bytes in the spi_nor_read_id(),
-and we use these new fields to parse out the correct flash_info.
+We need to store the six bytes ID for s25fl128s, since it shares the same
+five bytes with s25fl129p1.
+
+This patch adds a macro INFO6 which is used for the six bytes ID flash, and adds
+a new item for the s25fl128s.
 
 Signed-off-by: Huang Shijie <shijie.huang@intel.com>
 ---
- drivers/mtd/spi-nor/spi-nor.c |   39 +++++++++++++++++++++++++--------------
- 1 files changed, 25 insertions(+), 14 deletions(-)
+ drivers/mtd/spi-nor/spi-nor.c |   18 ++++++++++++++++++
+ 1 files changed, 18 insertions(+), 0 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index b5ad6be..0b69072 100644
+index a0923b0..c130bf7 100644
 --- a/drivers/mtd/spi-nor/spi-nor.c
 +++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -422,6 +422,8 @@ err:
- 	return ret;
- }
+@@ -471,6 +471,23 @@ err:
+ 		.flags = (_flags),					\
+ 	})
  
-+#define SPI_NOR_MAX_ID_LEN	6
-+
- struct flash_info {
- 	/* JEDEC id zero means "no ID" (most older chips); otherwise it has
- 	 * a high byte of zero plus three data bytes: the manufacturer id,
-@@ -430,6 +432,14 @@ struct flash_info {
- 	u32		jedec_id;
- 	u16             ext_id;
- 
-+	/*
-+	 * This array stores the ID bytes.
-+	 * The first three bytes are the JEDIC id.
-+	 * JEDEC id zero means "no ID" (most older chips);
-+	 */
-+	u8		id[SPI_NOR_MAX_ID_LEN];
-+	u8		id_len;
-+
- 	/* The size listed here is what works with SPINOR_OP_SE, which isn't
- 	 * necessarily called a "sector" by the vendor.
- 	 */
-@@ -450,10 +460,19 @@ struct flash_info {
- #define	USE_FSR			0x80	/* use flag status register */
- };
- 
-+/* Used when the "_ext_id" is two bytes at most */
- #define INFO(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)	\
- 	((kernel_ulong_t)&(struct flash_info) {				\
- 		.jedec_id = (_jedec_id),				\
- 		.ext_id = (_ext_id),					\
++#define INFO6(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)	\
++	((kernel_ulong_t)&(struct flash_info) {				\
 +		.id = {							\
 +			((_jedec_id) >> 16) & 0xff,			\
 +			((_jedec_id) >> 8) & 0xff,			\
 +			(_jedec_id) & 0xff,				\
++			((_ext_id) >> 16) & 0xff,			\
 +			((_ext_id) >> 8) & 0xff,			\
 +			(_ext_id) & 0xff,				\
 +			},						\
-+		.id_len = (!(_jedec_id) ? 0 : (3 + ((_ext_id) ? 2 : 0))),	\
++		.id_len = 6,						\
++		.sector_size = (_sector_size),				\
++		.n_sectors = (_n_sectors),				\
++		.page_size = 256,					\
++		.flags = (_flags),					\
++	})
++
+ #define CAT25_INFO(_sector_size, _n_sectors, _page_size, _addr_width, _flags)	\
+ 	((kernel_ulong_t)&(struct flash_info) {				\
  		.sector_size = (_sector_size),				\
- 		.n_sectors = (_n_sectors),				\
- 		.page_size = 256,					\
-@@ -642,32 +661,24 @@ EXPORT_SYMBOL_GPL(spi_nor_ids);
- static const struct spi_device_id *spi_nor_read_id(struct spi_nor *nor)
- {
- 	int			tmp;
--	u8			id[5];
--	u32			jedec;
--	u16                     ext_jedec;
-+	u8			id[SPI_NOR_MAX_ID_LEN];
- 	struct flash_info	*info;
- 
--	tmp = nor->read_reg(nor, SPINOR_OP_RDID, id, 5);
-+	tmp = nor->read_reg(nor, SPINOR_OP_RDID, id, SPI_NOR_MAX_ID_LEN);
- 	if (tmp < 0) {
- 		dev_dbg(nor->dev, " error %d reading JEDEC ID\n", tmp);
- 		return ERR_PTR(tmp);
- 	}
--	jedec = id[0];
--	jedec = jedec << 8;
--	jedec |= id[1];
--	jedec = jedec << 8;
--	jedec |= id[2];
--
--	ext_jedec = id[3] << 8 | id[4];
- 
- 	for (tmp = 0; tmp < ARRAY_SIZE(spi_nor_ids) - 1; tmp++) {
- 		info = (void *)spi_nor_ids[tmp].driver_data;
--		if (info->jedec_id == jedec) {
--			if (info->ext_id == 0 || info->ext_id == ext_jedec)
-+		if (info->id_len) {
-+			if (!strncmp(info->id, id, info->id_len))
- 				return &spi_nor_ids[tmp];
- 		}
- 	}
--	dev_err(nor->dev, "unrecognized JEDEC id %06x\n", jedec);
-+	dev_err(nor->dev, "unrecognized JEDEC id bytes: %02x, %2x, %2x\n",
-+		id[0], id[1], id[2]);
- 	return ERR_PTR(-ENODEV);
- }
- 
+@@ -565,6 +582,7 @@ const struct spi_device_id spi_nor_ids[] = {
+ 	{ "s70fl01gs",  INFO(0x010221, 0x4d00, 256 * 1024, 256, 0) },
+ 	{ "s25sl12800", INFO(0x012018, 0x0300, 256 * 1024,  64, 0) },
+ 	{ "s25sl12801", INFO(0x012018, 0x0301,  64 * 1024, 256, 0) },
++	{ "s25fl128s",	INFO6(0x012018, 0x4d0180, 64 * 1024, 256, SPI_NOR_QUAD_READ) },
+ 	{ "s25fl129p0", INFO(0x012018, 0x4d00, 256 * 1024,  64, 0) },
+ 	{ "s25fl129p1", INFO(0x012018, 0x4d01,  64 * 1024, 256, 0) },
+ 	{ "s25sl004a",  INFO(0x010212,      0,  64 * 1024,   8, 0) },
 -- 
 1.7.7.6
