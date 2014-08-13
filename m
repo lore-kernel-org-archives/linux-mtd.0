@@ -1,22 +1,17 @@
-Received: from mail-ig0-x22f.google.com ([2607:f8b0:4001:c05::22f])
+Received: from mail-ig0-f169.google.com ([209.85.213.169])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XH4WG-0007GY-HA
- for linux-mtd@lists.infradead.org; Tue, 12 Aug 2014 05:21:12 +0000
-Received: by mail-ig0-f175.google.com with SMTP id uq10so5646215igb.14
- for <linux-mtd@lists.infradead.org>; Mon, 11 Aug 2014 22:20:51 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1407374222-8448-7-git-send-email-computersforpeace@gmail.com>
-References: <1407374222-8448-1-git-send-email-computersforpeace@gmail.com>
- <1407374222-8448-7-git-send-email-computersforpeace@gmail.com>
-Date: Tue, 12 Aug 2014 07:13:37 +0200
-Message-ID: <CACna6rwi81Po66pi1GYf-Z93kkwP7XubTtux-GJjdOwFxosTtA@mail.gmail.com>
-Subject: Re: [PATCH 6/8] mtd: spi-nor: drop replaceable wait-till-ready
- function pointer
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: Marek Vasut <marex@denx.de>, Huang Shijie <b32955@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+ id 1XHUbq-0001Mn-9X
+ for linux-mtd@lists.infradead.org; Wed, 13 Aug 2014 09:12:42 +0000
+Received: by mail-ig0-f169.google.com with SMTP id r2so10583956igi.4
+ for <linux-mtd@lists.infradead.org>; Wed, 13 Aug 2014 02:12:20 -0700 (PDT)
+From: Lee Jones <lee.jones@linaro.org>
+To: linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/8] mtd: nand: Support for new DT NAND driver
+Date: Wed, 13 Aug 2014 10:11:59 +0100
+Message-Id: <1407921127-8590-1-git-send-email-lee.jones@linaro.org>
+Cc: pekon@pek-sem.com, computersforpeace@gmail.com, lee.jones@linaro.org,
+ kernel@stlinux.com, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,16 +21,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 7 August 2014 03:17, Brian Norris <computersforpeace@gmail.com> wrote:
-> We don't need to expose a 'wait-till-ready' interface to drivers. Status
-> register polling should be handled by the core spi-nor.c library, and as
-> of now, I see no need to provide a special driver-specific hook for it.
+Hi Brian, Pekon,
 
-Do you think we could use spi-nor for Broadcom's SPI Atmel flashes? If
-so, we could need this.
+I believe all of your queries have either been answered or addressed
+and I am hoping this will be the last submission. :)
 
-Broadcom's code includes support for two Atmel flashes: AT25F512 and AT25F2048.
+/me crosses fingers!
 
->From what I can see, Atmel-specific code uses command 0xD7 (checking
-for bit 0x80 to be unset). That is a bit different from "standard"
-flashes using command 0xD7 (checking for bit 0x80 to be unset).
+Kind regards,
+Lee
+
+Lee Jones (8):
+  ARM: multi-v7: Enable ST BCH NAND
+  ARM: sti: Add two new clock definitions for use with ST's NAND
+    controllers
+  ARM: sti: Add BCH (NAND Flash) Controller support for STiH41x (Orly)
+    SoCs
+  ARM: sti: Enable BCH NAND for STiH416 B2020-RevE
+  mtd: nand: stm_nand_bch: provide Device Tree documentation
+  mtd: nand: add shared register defines for ST's NAND Controller
+    drivers
+  mtd: nand: stm_nand_bch: add support for ST's BCH NAND controller
+  mtd: nand: stm_nand_bch: provide ST's implementation of Back Block
+    Table
+
+ Documentation/devicetree/bindings/mtd/stm-nand.txt |   74 +
+ arch/arm/boot/dts/stih416-b2020e.dts               |    8 +
+ arch/arm/boot/dts/stih41x-b2020.dtsi               |   38 +
+ arch/arm/configs/multi_v7_defconfig                |    2 +
+ drivers/mtd/nand/Kconfig                           |   15 +
+ drivers/mtd/nand/Makefile                          |    2 +
+ drivers/mtd/nand/stm_nand_bbt.c                    |  601 ++++++++
+ drivers/mtd/nand/stm_nand_bch.c                    | 1618 ++++++++++++++++++++
+ drivers/mtd/nand/stm_nand_dt.c                     |  109 ++
+ drivers/mtd/nand/stm_nand_dt.h                     |   24 +
+ drivers/mtd/nand/stm_nand_regs.h                   |  304 ++++
+ include/dt-bindings/clock/stih416-clks.h           |    2 +
+ include/linux/mtd/stm_nand.h                       |  147 ++
+ include/linux/mtd/stm_nand_bbt.h                   |   17 +
+ 14 files changed, 2961 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/stm-nand.txt
+ create mode 100644 drivers/mtd/nand/stm_nand_bbt.c
+ create mode 100644 drivers/mtd/nand/stm_nand_bch.c
+ create mode 100644 drivers/mtd/nand/stm_nand_dt.c
+ create mode 100644 drivers/mtd/nand/stm_nand_dt.h
+ create mode 100644 drivers/mtd/nand/stm_nand_regs.h
+ create mode 100644 include/linux/mtd/stm_nand.h
+ create mode 100644 include/linux/mtd/stm_nand_bbt.h
+
+-- 
+1.9.1
