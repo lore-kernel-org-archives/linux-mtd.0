@@ -1,17 +1,16 @@
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date: Wed, 13 Aug 2014 21:14:14 +0530
-From: pekon@pek-sem.com
-To: Lee Jones <lee.jones@linaro.org>,
- <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/8] mtd: nand: Support for new DT NAND driver
-In-Reply-To: <1407921127-8590-1-git-send-email-lee.jones@linaro.org>
-References: <1407921127-8590-1-git-send-email-lee.jones@linaro.org>
-Message-ID: <a8fa82ea68d837e52306e6df62f2ed23@pek-sem.com>
-Cc: computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
- kernel@stlinux.com
+Received: from mail-pa0-x22c.google.com ([2607:f8b0:400e:c03::22c])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XHoe6-0002DA-PB
+ for linux-mtd@lists.infradead.org; Thu, 14 Aug 2014 06:36:24 +0000
+Received: by mail-pa0-f44.google.com with SMTP id eu11so1078549pac.3
+ for <linux-mtd@lists.infradead.org>; Wed, 13 Aug 2014 23:36:01 -0700 (PDT)
+From: Brian Norris <computersforpeace@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: cfi_cmdset_0002: check return code for get_chip()
+Date: Wed, 13 Aug 2014 23:35:24 -0700
+Message-Id: <1407998124-3166-1-git-send-email-computersforpeace@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Christian Riesch <christian.riesch@omicron.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,43 +20,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Lee,
+Untested
 
-On Wednesday 13 August 2014 02:41 PM, Lee Jones wrote:
-> Hi Brian, Pekon,
->
-> I believe all of your queries have either been answered or addressed
-> and I am hoping this will be the last submission. :)
->
-> /me crosses fingers!
->
-> Kind regards,
-> Lee
->
-> Lee Jones (8):
->    ARM: multi-v7: Enable ST BCH NAND
->    ARM: sti: Add two new clock definitions for use with ST's NAND
->      controllers
->    ARM: sti: Add BCH (NAND Flash) Controller support for STiH41x 
-> (Orly)
->      SoCs
->    ARM: sti: Enable BCH NAND for STiH416 B2020-RevE
->    mtd: nand: stm_nand_bch: provide Device Tree documentation
->    mtd: nand: add shared register defines for ST's NAND Controller
->      drivers
->    mtd: nand: stm_nand_bch: add support for ST's BCH NAND controller
->    mtd: nand: stm_nand_bch: provide ST's implementation of Back Block
->      Table
->
+Coverity CID 1230633
 
-Couldn't review the last [Patch 8/8] for ST's BBT implementation as
-I'm not familiar with it. But other patches look good. So for them
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+Cc: Christian Riesch <christian.riesch@omicron.at>
+---
+ drivers/mtd/chips/cfi_cmdset_0002.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-Reviewed-By: Pekon Gupta <pekon@pek-sem.com>
-
-
-with regards, pekon
-
-
-------------------------
-Powered by BigRock.com
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index 6da141af9cba..c50d8cf0f60d 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -1434,6 +1434,10 @@ static int cfi_amdstd_otp_walk(struct mtd_info *mtd, loff_t from, size_t len,
+ 
+ 				mutex_lock(&chip->mutex);
+ 				ret = get_chip(map, chip, base, FL_LOCKING);
++				if (ret) {
++					mutex_unlock(&chip->mutex);
++					return ret;
++				}
+ 
+ 				/* Enter lock register command */
+ 				cfi_send_gen_cmd(0xAA, cfi->addr_unlock1,
+-- 
+1.7.9.5
