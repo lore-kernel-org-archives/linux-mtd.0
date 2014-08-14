@@ -1,20 +1,16 @@
-Received: from mail-yh0-f52.google.com ([209.85.213.52])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XHy0L-0001av-6Z
- for linux-mtd@lists.infradead.org; Thu, 14 Aug 2014 16:35:59 +0000
-Received: by mail-yh0-f52.google.com with SMTP id t59so1229725yho.25
- for <linux-mtd@lists.infradead.org>; Thu, 14 Aug 2014 09:35:30 -0700 (PDT)
-From: =?UTF-8?q?Guido=20Mart=C3=ADnez?= <guido@vanguardiasur.com.ar>
-To: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH] nandtest: fix --reads argument
-Date: Thu, 14 Aug 2014 13:29:45 -0300
-Message-Id: <1408033785-20264-1-git-send-email-guido@vanguardiasur.com.ar>
+Date: Thu, 14 Aug 2014 15:40:13 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 0/8] mtd: nand: Support for new DT NAND driver
+Message-ID: <20140814224013.GE18411@ld-irv-0074>
+References: <1407921127-8590-1-git-send-email-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: =?UTF-8?q?Ezequiel=20Garc=C3=ADa?= <ezequiel@vanguardiasur.com.ar>,
- =?UTF-8?q?Guido=20Mart=C3=ADnez?= <guido@vanguardiasur.com.ar>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1407921127-8590-1-git-send-email-lee.jones@linaro.org>
+Cc: pekon@pek-sem.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ kernel@stlinux.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,40 +20,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The --reads option specifies the argument as optional, but doesn't check
-for a null optarg, which means that nandtest segfaults when run as
-"nandtest --reads".
+On Wed, Aug 13, 2014 at 10:11:59AM +0100, Lee Jones wrote:
+> Hi Brian, Pekon,
+> 
+> I believe all of your queries have either been answered or addressed
+> and I am hoping this will be the last submission. :)
+> 
+> /me crosses fingers!
+> 
+> Kind regards,
+> Lee
 
-Fix this by making the argument required, and changing the help text to
-not specify it as optional. Argument -r already specifies the argument
-as required, so we fix this inconsistency too.
+I didn't look through the patches yet, but my build tools tell me you
+didn't compile-test this. Please compile, test, and resend your patches.
 
-Signed-off-by: Guido Martínez <guido@vanguardiasur.com.ar>
----
- nandtest.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+In file included from drivers/mtd/nand/stm_nand_bch.c:26:0:
+include/linux/mtd/stm_nand_bbt.h:16:13: warning: no previous prototype for 'nandi_dump_bad_blocks' [-Wmissing-prototypes]
+drivers/mtd/nand/stm_nand_bch.c: In function 'nandi_set_mtd_defaults':
+drivers/mtd/nand/stm_nand_bch.c:870:19: error: 'bch_scan_bbt' undeclared (first use in this function)
+drivers/mtd/nand/stm_nand_bch.c:870:19: note: each undeclared identifier is reported only once for each function it appears in
+drivers/mtd/nand/stm_nand_bch.c:871:20: error: 'bch_block_isbad' undeclared (first use in this function)
+drivers/mtd/nand/stm_nand_bch.c:872:24: error: 'bch_block_markbad' undeclared (first use in this function)
+drivers/mtd/nand/stm_nand_bch.c: In function 'bch_calc_timing_registers':
+drivers/mtd/nand/stm_nand_bch.c:1022:6: warning: variable 'ren_half_off' set but not used [-Wunused-but-set-variable]
+drivers/mtd/nand/stm_nand_bch.c:1021:6: warning: variable 'ren_half_on' set but not used [-Wunused-but-set-variable]
 
-diff --git a/nandtest.c b/nandtest.c
-index 8ea39d3..0805387 100644
---- a/nandtest.c
-+++ b/nandtest.c
-@@ -24,7 +24,7 @@ void usage(int status)
- 		"  -m, --markbad        Mark blocks bad if they appear so\n"
- 		"  -s, --seed           Supply random seed\n"
- 		"  -p, --passes         Number of passes\n"
--		"  -r, --reads          Read & check iterations per pass (default=4)\n"
-+		"  -r <n>, --reads=<n>  Read & check <n> times per pass\n"
- 		"  -o, --offset         Start offset on flash\n"
- 		"  -l, --length         Length of flash to test\n"
- 		"  -k, --keep           Restore existing contents after test\n",
-@@ -166,7 +166,7 @@ int main(int argc, char **argv)
- 			{ "passes", required_argument, 0, 'p' },
- 			{ "offset", required_argument, 0, 'o' },
- 			{ "length", required_argument, 0, 'l' },
--			{ "reads", optional_argument, 0, 'r' },
-+			{ "reads", required_argument, 0, 'r' },
- 			{ "keep", no_argument, 0, 'k' },
- 			{0, 0, 0, 0},
- 		};
--- 
-2.0.1
+Particularly, take a hard look at rewriting
+include/linux/mtd/stm_nand_bbt.h.
+
+Thanks,
+Brian
