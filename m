@@ -1,11 +1,12 @@
-From: Colin King <colin.king@canonical.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH] UBI: block: fix dereference on uninitialized dev
-Date: Sat, 16 Aug 2014 17:49:53 +0100
-Message-Id: <1408207793-11536-1-git-send-email-colin.king@canonical.com>
-Cc: linux-kernel@vger.kernel.org
+Message-ID: <53EF9C23.1050006@infradead.org>
+Date: Sat, 16 Aug 2014 11:00:03 -0700
+From: Randy Dunlap <rdunlap@infradead.org>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
+ Boris BREZILLON <boris.brezillon@free-electrons.com>
+Subject: struct nand_sdr_timings kernel-doc
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -15,35 +16,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Colin Ian King <colin.king@canonical.com>
+Hi,
 
-commit 4df38926f337 ("UBI: block: Avoid disk size integer overflow")
-introduced a dereference on dev (which is not initialized at that
-point) when printing a warning message.  Remove the reference to
-the dev's disk_name.
+Current DocBook complains as follows:
 
-Found by cppcheck:
- [drivers/mtd/ubi/block.c:509]: (error) Uninitialized variable: dev
+Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tALH_min'
+Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tADL_min'
+Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tALS_min'
+Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tAR_min'
+Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tCEA_max'
+Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tCEH_min'
+Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tCH_min'
+Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tCHZ_max'
+Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tCLH_min'
+Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tCLR_min'
+Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tCLS_min'
+Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tCOH_min'
+Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tCS_min'
+Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tDH_min'
+Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tDS_min'
+Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tFEAT_max'
+Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tIR_min'
+Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tITC_max'
+Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tRC_min'
+Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tREA_max'
+Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tREH_min'
+Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tRHOH_min'
+Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tRHW_min'
+Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tRHZ_max'
+Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tRLOH_min'
+Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tRP_min'
+Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tRR_min'
+Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tRST_max'
+Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tWB_max'
+Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tWC_min'
+Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tWH_min'
+Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tWHR_min'
+Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tWP_min'
+Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tWW_min'
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/mtd/ubi/block.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
-index 33c6495..944bdbd 100644
---- a/drivers/mtd/ubi/block.c
-+++ b/drivers/mtd/ubi/block.c
-@@ -505,8 +505,8 @@ static int ubiblock_resize(struct ubi_volume_info *vi)
- 	u64 disk_capacity = ((u64)vi->size * vi->usable_leb_size) >> 9;
- 
- 	if ((sector_t)disk_capacity != disk_capacity) {
--		ubi_warn("%s: the volume is too big, cannot resize (%d LEBs)",
--			 dev->gd->disk_name, vi->size);
-+		ubi_warn("block: the volume is too big, cannot resize (%d LEBs)",
-+			vi->size);
- 		return -EFBIG;
- 	}
- 	/*
+Please eliminate all of those warnings by:
+a. adding kernel-doc notation for each struct field; or
+b. changing the beginning /** to /*; or
+c. add /* private */ before the first struct member so that each struct item
+   does not need to be described; or
+d. some other way that suits you.
+
+Thanks.
+
+
 -- 
-2.1.0.rc1
+~Randy
