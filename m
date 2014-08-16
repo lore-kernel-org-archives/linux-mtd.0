@@ -1,14 +1,21 @@
-Date: Fri, 15 Aug 2014 19:47:39 -0500 (CDT)
-From: Aaron Sierra <asierra@xes-inc.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Message-ID: <251532766.70336.1408150059026.JavaMail.zimbra@xes-inc.com>
-In-Reply-To: <2056273149.70335.1408150004992.JavaMail.zimbra@xes-inc.com>
-Subject: [PATCH 2/2] mtd: fsl_ifc_nand: Probe partitions OF node
+Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XISc6-0003wK-RK
+ for linux-mtd@lists.infradead.org; Sat, 16 Aug 2014 01:17:00 +0000
+Received: by mail-pa0-f52.google.com with SMTP id bj1so4374855pad.11
+ for <linux-mtd@lists.infradead.org>; Fri, 15 Aug 2014 18:16:37 -0700 (PDT)
+Date: Fri, 15 Aug 2014 18:16:33 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Christian Riesch <christian.riesch@omicron.at>
+Subject: Re: [PATCH] mtd: cfi_cmdset_0002: check return code for get_chip()
+Message-ID: <20140816011633.GH18411@ld-irv-0074>
+References: <1407998124-3166-1-git-send-email-computersforpeace@gmail.com>
+ <CABkLOboi7YQhuDjLPeyyf5dDV1mQu02faTe9j8Y8ppH8Tzi+1g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Prabhakar Kushwaha <prabhakar@freescale.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABkLOboi7YQhuDjLPeyyf5dDV1mQu02faTe9j8Y8ppH8Tzi+1g@mail.gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,40 +25,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Previously, the OF node defining the IFC NAND controller was being
-passed to mtd_device_parse_register(), not the node defining the
-partitions. This resulted in no OF-defined partitions being created.
+On Thu, Aug 14, 2014 at 10:30:32AM +0200, Christian Riesch wrote:
+> Hi Brian,
+> Thanks for catching this!
 
-Signed-off-by: Aaron Sierra <asierra@xes-inc.com>
----
- drivers/mtd/nand/fsl_ifc_nand.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Don't thank me, thank Coverity (TM)! (And Dave Jones, I guess, since he
+maintains the project instance.)
 
-diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
-index 7861909..9aeb146 100644
---- a/drivers/mtd/nand/fsl_ifc_nand.c
-+++ b/drivers/mtd/nand/fsl_ifc_nand.c
-@@ -1029,7 +1029,6 @@ static int fsl_ifc_nand_probe(struct platform_device *dev)
- 	struct device_node *node = dev->dev.of_node;
- 	struct mtd_part_parser_data ppdata;
- 
--	ppdata.of_node = dev->dev.of_node;
- 	if (!fsl_ifc_ctrl_dev || !fsl_ifc_ctrl_dev->regs)
- 		return -ENODEV;
- 	ifc = fsl_ifc_ctrl_dev->regs;
-@@ -1126,9 +1125,13 @@ static int fsl_ifc_nand_probe(struct platform_device *dev)
- 
- 	/* First look for RedBoot table or partitions on the command
- 	 * line, these take precedence over device tree information */
-+	ppdata.of_node = of_get_next_child(dev->dev.of_node, NULL);
- 	mtd_device_parse_register(&priv->mtd, part_probe_types, &ppdata,
- 						NULL, 0);
- 
-+	if (ppdata.of_node)
-+		of_node_put(ppdata.of_node);
-+
- 	dev_info(priv->dev, "IFC NAND device at 0x%llx, bank %d\n",
- 		 (unsigned long long)res.start, priv->bank);
- 	return 0;
--- 
-1.9.1
+> On Thu, Aug 14, 2014 at 8:35 AM, Brian Norris
+> <computersforpeace@gmail.com> wrote:
+> > Untested
+> >
+> > Coverity CID 1230633
+> >
+> > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> > Cc: Christian Riesch <christian.riesch@omicron.at>
+> > ---
+> >  drivers/mtd/chips/cfi_cmdset_0002.c |    4 ++++
+> >  1 file changed, 4 insertions(+)
+> 
+> Tested-by: Christian Riesch <christian.riesch@omicron.at>
+
+Thanks! Queued to linux-mtd.git/master. It'll probably go in 3.16, as
+it's a fix for a new feature.
+
+Brian
+
+[1] http://codemonkey.org.uk/2014/08/05/linux-316-coverity-stats/
