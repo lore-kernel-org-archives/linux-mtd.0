@@ -1,24 +1,19 @@
-Received: from mezzanine.sirena.org.uk ([2400:8900::f03c:91ff:fedb:4f4])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XIlg3-0002NV-6z
- for linux-mtd@lists.infradead.org; Sat, 16 Aug 2014 21:38:19 +0000
-Date: Sat, 16 Aug 2014 17:33:15 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Brian Norris <computersforpeace@gmail.com>
-Message-ID: <20140816163315.GX28623@sirena.org.uk>
-References: <CACna6rzhD9=Pkb5gRqd9A23gfaqnHmYe_vm0fwT_mefAibmhYQ@mail.gmail.com>
- <20140802020036.GR3711@ld-irv-0074>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="sL7C0a98p/u5aVah"
-Content-Disposition: inline
-In-Reply-To: <20140802020036.GR3711@ld-irv-0074>
-Subject: Re: Writing SPI flash driver for Broadcom BCM53xx ARM SoC
-Cc: Hauke Mehrtens <hauke@hauke-m.de>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, linux-spi@vger.kernel.org,
- Huang Shijie <b32955@freescale.com>, Andre Renaud <andre@bluewatersys.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XIveU-0001sb-SM
+ for linux-mtd@lists.infradead.org; Sun, 17 Aug 2014 08:17:23 +0000
+Date: Sun, 17 Aug 2014 10:16:59 +0200
+From: Boris BREZILLON <boris.brezillon@free-electrons.com>
+To: Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: struct nand_sdr_timings kernel-doc
+Message-ID: <20140817101659.55176635@bbrezillon>
+In-Reply-To: <53EF9C23.1050006@infradead.org>
+References: <53EF9C23.1050006@infradead.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,60 +23,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Randy,
 
---sL7C0a98p/u5aVah
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Sat, 16 Aug 2014 11:00:03 -0700
+Randy Dunlap <rdunlap@infradead.org> wrote:
 
-On Fri, Aug 01, 2014 at 07:00:36PM -0700, Brian Norris wrote:
+> Hi,
+> 
+> Current DocBook complains as follows:
+> 
+> Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tALH_min'
+> Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tADL_min'
+> Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tALS_min'
+> Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tAR_min'
+> Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tCEA_max'
+> Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tCEH_min'
+> Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tCH_min'
+> Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tCHZ_max'
+> Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tCLH_min'
+> Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tCLR_min'
+> Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tCLS_min'
+> Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tCOH_min'
+> Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tCS_min'
+> Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tDH_min'
+> Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tDS_min'
+> Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tFEAT_max'
+> Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tIR_min'
+> Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tITC_max'
+> Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tRC_min'
+> Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tREA_max'
+> Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tREH_min'
+> Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tRHOH_min'
+> Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tRHW_min'
+> Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tRHZ_max'
+> Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tRLOH_min'
+> Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tRP_min'
+> Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tRR_min'
+> Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tRST_max'
+> Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tWB_max'
+> Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tWC_min'
+> Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tWH_min'
+> Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tWHR_min'
+> Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tWP_min'
+> Warning(..//include/linux/mtd/nand.h:999): No description found for parameter 'tWW_min'
+> 
+> 
+> Please eliminate all of those warnings by:
+> a. adding kernel-doc notation for each struct field; or
+> b. changing the beginning /** to /*; or
 
-> You can probably write a pure SPI driver (drivers/spi/) that uses only
-> the MSPI hardware to do (slow, single-I/O) true SPI, and hooks into
-> m25p80.c.
+If you don't mind I'll go for this solution.
+Brian, is that okay for you ?
 
-This seems like a good first pass at any rate, it's uncontroversial and
-at least functional even if slow.
+> c. add /* private */ before the first struct member so that each struct item
+>    does not need to be described; or
+> d. some other way that suits you.
+> 
 
-> But if you want to integrate the accelerated BSPI for reads, it gets
-> harder. You might be able to export a kind of 'lock' API from the MSPI
-> driver, so that a BSPI driver can utilize the MSPI for most
-> transactions, but then lock it down when doing BSPI/read operations. I
-> think with a little bit of work, spi-nor.c can accomodate the right kind
-> of callbacks to allow you to do this. But the coordination between
-> drivers/spi/<MSPI> and drivers/mtd/spi-nor/<BSPI> would be the hardest
-> to architect, I think.
+Best Regards,
 
-Right, I think we'd need something that allowed the MTD controller to
-take ownership of the device, lock out other users and then do what it
-wants with the controller.  If we provide a way for the SPI and MTD
-drivers to get hold of each other and pass around the underlying device
-we probably don't even need to architect the interface too much, we can
-just say it's a private arrangement between the two drivers, given that
-I don't think we have a good picture of what a standard interface would
-look like and the hardware seems to have a reasonable amount of
-variation in how things are split this may actually be the most tasteful
-thin we can do for the time being.
+Boris
 
---sL7C0a98p/u5aVah
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
 
-iQIcBAEBAgAGBQJT74fIAAoJELSic+t+oim9bhAP/3+R5/tY9jm+awrweAXldKuh
-qN2Q1r+huRkr5NwvY+Md5GJLkWMza9D19qMC8qdAVBKHTVeR/1iWdhHqCV7KBOwU
-/8JqgYhObao1EcT0ZUvpXnYf2kkX0P6eEQ02gMNYxfyw+R8idDirwup5AON0sqxy
-ezC9ohFhfM09q98HMjbsTGGmvgFBekzseBYJEpZX4k/XhE5KZy9iPvtqXx+vxyZf
-d5iIU+r1MSfch5Ldbbc0DxIdrcPI3i1oImUqHmEHYLqhwmxUaLdyWqII/MZwcOtB
-GJewmozxE/1uNkaqW9W6C1HPz9egf4tQKFH7qTBYz9htbogLy3ymvCSFn0AeOgIR
-eGpdIB5UUjQZYMvqI12b7v9c98XqmnwIwxjvviDh0IMA+ua0d60YBmfTdUGmPjF8
-YAGbqkOQIpNVkqzjCiIxuDj3Y3lNNO4AO7+PNJT2QgGs7EqiarYFVOJll/cF7UN1
-HN6WtGiE7UsA93mEBra+G19Omw0wzg/u6vlVtIMBuiKBTZiAhSNtockzk1gU6kYR
-hjPYvRLN77vwBFSNxc7PbL9fKoXJO2E/6oCbrksV8cHiUj8gzHNqu6PSXOlfVc1A
-pI7to7aFMeTu9aa5d8ocOFTSQ5x5IQImYSj0CkfQ/hRJAcytRx70x2QCX1QcXwtq
-PHtgUy7+bvbgRFE/hpcd
-=IKL5
------END PGP SIGNATURE-----
-
---sL7C0a98p/u5aVah--
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
