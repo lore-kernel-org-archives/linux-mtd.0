@@ -1,25 +1,17 @@
-Received: from mail-ig0-f178.google.com ([209.85.213.178])
+Received: from mail-ig0-f175.google.com ([209.85.213.175])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XJJqB-0007YK-Jj
- for linux-mtd@lists.infradead.org; Mon, 18 Aug 2014 10:07:03 +0000
-Received: by mail-ig0-f178.google.com with SMTP id uq10so7268689igb.5
- for <linux-mtd@lists.infradead.org>; Mon, 18 Aug 2014 03:06:41 -0700 (PDT)
-Date: Mon, 18 Aug 2014 11:06:36 +0100
+ id 1XJKEn-0008Kb-68
+ for linux-mtd@lists.infradead.org; Mon, 18 Aug 2014 10:32:29 +0000
+Received: by mail-ig0-f175.google.com with SMTP id uq10so7661926igb.14
+ for <linux-mtd@lists.infradead.org>; Mon, 18 Aug 2014 03:32:07 -0700 (PDT)
 From: Lee Jones <lee.jones@linaro.org>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 0/8] mtd: nand: Support for new DT NAND driver
-Message-ID: <20140818100636.GB4266@lee--X1>
-References: <1407921127-8590-1-git-send-email-lee.jones@linaro.org>
- <20140814224013.GE18411@ld-irv-0074>
- <20140818083953.GA4266@lee--X1>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20140818083953.GA4266@lee--X1>
-Cc: pekon@pek-sem.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- kernel@stlinux.com
+To: linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/8] mtd: nand: Support for new DT NAND driver
+Date: Mon, 18 Aug 2014 11:31:51 +0100
+Message-Id: <1408357919-19793-1-git-send-email-lee.jones@linaro.org>
+Cc: pekon@pek-sem.com, computersforpeace@gmail.com, lee.jones@linaro.org,
+ kernel@stlinux.com, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,21 +21,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> > Particularly, take a hard look at rewriting
-> > include/linux/mtd/stm_nand_bbt.h.
-> 
-> I don't think there is any need - although this change is required:
-> 
-> -#if defined(MTD_NAND_STM_BBT)
-> +#if defined(MTD_NAND_STM_BCH_BBT)
+Hi Brian,
 
-Sorry, I mean this:
+I believe all of your queries have either been answered or addressed
+and I am hoping this will be the last submission. :)
 
--#if defined(MTD_NAND_STM_BBT)
-+#if defined(CONFIG_MTD_NAND_STM_BCH_BBT)
+This is v2 of the squashed submission.  v1 had a small typo which
+prevented the BBT code from being truly configurable.  This has now
+been rectified and build tested with and without MTD_NAND_STM_BCH_BBT
+support.
+
+Kind regards,
+Lee
+
+Lee Jones (8):
+  ARM: multi-v7: Enable ST BCH NAND
+  ARM: sti: Add two new clock definitions for use with ST's NAND
+    controllers
+  ARM: sti: Add BCH (NAND Flash) Controller support for STiH41x (Orly)
+    SoCs
+  ARM: sti: Enable BCH NAND for STiH416 B2020-RevE
+  mtd: nand: stm_nand_bch: provide Device Tree documentation
+  mtd: nand: add shared register defines for ST's NAND Controller
+    drivers
+  mtd: nand: stm_nand_bch: add support for ST's BCH NAND controller
+  mtd: nand: stm_nand_bch: provide ST's implementation of Back Block
+    Table
+
+ Documentation/devicetree/bindings/mtd/stm-nand.txt |   74 +
+ arch/arm/boot/dts/stih416-b2020e.dts               |    8 +
+ arch/arm/boot/dts/stih41x-b2020.dtsi               |   38 +
+ arch/arm/configs/multi_v7_defconfig                |    2 +
+ drivers/mtd/nand/Kconfig                           |   15 +
+ drivers/mtd/nand/Makefile                          |    2 +
+ drivers/mtd/nand/stm_nand_bbt.c                    |  601 ++++++++
+ drivers/mtd/nand/stm_nand_bch.c                    | 1618 ++++++++++++++++++++
+ drivers/mtd/nand/stm_nand_dt.c                     |  109 ++
+ drivers/mtd/nand/stm_nand_dt.h                     |   24 +
+ drivers/mtd/nand/stm_nand_regs.h                   |  304 ++++
+ include/dt-bindings/clock/stih416-clks.h           |    2 +
+ include/linux/mtd/stm_nand.h                       |  147 ++
+ include/linux/mtd/stm_nand_bbt.h                   |   17 +
+ 14 files changed, 2961 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/stm-nand.txt
+ create mode 100644 drivers/mtd/nand/stm_nand_bbt.c
+ create mode 100644 drivers/mtd/nand/stm_nand_bch.c
+ create mode 100644 drivers/mtd/nand/stm_nand_dt.c
+ create mode 100644 drivers/mtd/nand/stm_nand_dt.h
+ create mode 100644 drivers/mtd/nand/stm_nand_regs.h
+ create mode 100644 include/linux/mtd/stm_nand.h
+ create mode 100644 include/linux/mtd/stm_nand_bbt.h
 
 -- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+1.9.1
