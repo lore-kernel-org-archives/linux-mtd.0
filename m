@@ -1,23 +1,23 @@
-Received: from mail-wi0-x22c.google.com ([2a00:1450:400c:c05::22c])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XJRYD-0007G5-Q4
- for linux-mtd@lists.infradead.org; Mon, 18 Aug 2014 18:21:02 +0000
-Received: by mail-wi0-f172.google.com with SMTP id n3so4205977wiv.17
- for <linux-mtd@lists.infradead.org>; Mon, 18 Aug 2014 11:20:38 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: linux-mtd@lists.infradead.org, David Woodhouse <David.Woodhouse@intel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH V2] mtd: bcm47xxpart: find NVRAM partitions in middle blocks
-Date: Mon, 18 Aug 2014 20:20:27 +0200
-Message-Id: <1408386027-12120-1-git-send-email-zajec5@gmail.com>
-In-Reply-To: <1408004566-22271-1-git-send-email-zajec5@gmail.com>
-References: <1408004566-22271-1-git-send-email-zajec5@gmail.com>
+Date: Mon, 18 Aug 2014 20:58:10 +0200
+From: Maxime Ripard <maxime.ripard@free-electrons.com>
+To: Boris BREZILLON <boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH v4 2/2] mtd: nand: add sunxi NFC dt bindings doc
+Message-ID: <20140818185810.GG15297@lukather>
+References: <1408382788-32153-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1408382788-32153-3-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Hauke Mehrtens <hauke@hauke-m.de>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="6S+CllbbV/7E5K18"
+Content-Disposition: inline
+In-Reply-To: <1408382788-32153-3-git-send-email-boris.brezillon@free-electrons.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ "Dmitriy B." <rzk333@gmail.com>, Jonas Meyer <quitte@gmail.com>,
+ linux-kernel@vger.kernel.org, Yassin Jaffer <yassinjaffer@gmail.com>,
+ linux-sunxi@googlegroups.com, Rob Herring <robh+dt@kernel.org>,
+ linux-mtd@lists.infradead.org, Kumar Gala <galak@codeaurora.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,39 +27,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Old devices used to have NVRAM at the very end of flash and they could
-be unaligned (starting at some offset in a block).
-In new devices NVRAM can be located quite randomly, however it seems to
-always start at the beginning of a block. For example Netgear R6250 has
-NVRAM located right after the bootloader, before the kernel partition.
 
-Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
----
-V2: Ignore last block to avoid having two "nvram" partitions.
----
- drivers/mtd/bcm47xxpart.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+--6S+CllbbV/7E5K18
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
-index 035690e..da641ac 100644
---- a/drivers/mtd/bcm47xxpart.c
-+++ b/drivers/mtd/bcm47xxpart.c
-@@ -224,6 +224,16 @@ static int bcm47xxpart_parse(struct mtd_info *master,
- 			continue;
- 		}
- 
-+		/* New (ARM?) devices may have NVRAM in some middle block. Last
-+		 * block will be checked later, so skip it.
-+		 */
-+		if (offset != master->size - blocksize &&
-+		    buf[0x000 / 4] == NVRAM_HEADER) {
-+			bcm47xxpart_add_part(&parts[curr_part++], "nvram",
-+					     offset, 0);
-+			continue;
-+		}
-+
- 		/* Read middle of the block */
- 		if (mtd_read(master, offset + 0x8000, 0x4,
- 			     &bytes_read, (uint8_t *)buf) < 0) {
--- 
-1.8.4.5
+Hi Boris,
+
+On Mon, Aug 18, 2014 at 07:26:28PM +0200, Boris BREZILLON wrote:
+> Add the sunxi NAND Flash Controller dt bindings documentation.
+>=20
+> Signed-off-by: Boris BREZILLON <boris.brezillon@free-electrons.com>
+> ---
+>  .../devicetree/bindings/mtd/sunxi-nand.txt         | 45 ++++++++++++++++=
+++++++
+>  1 file changed, 45 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/sunxi-nand.txt
+>=20
+> diff --git a/Documentation/devicetree/bindings/mtd/sunxi-nand.txt b/Docum=
+entation/devicetree/bindings/mtd/sunxi-nand.txt
+> new file mode 100644
+> index 0000000..798c691
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/sunxi-nand.txt
+> @@ -0,0 +1,45 @@
+> +Allwinner NAND Flash Controller (NFC)
+> +
+> +Required properties:
+> +- compatible : "allwinner,sun4i-nand".
+
+The pattern we usually have for the sunxi SoCs is
+allwinner,family-soc-*, which would be allwinner,sun4i-a10-nand in
+this case.
+
+> +- reg : shall contain registers location and length for data and reg.
+> +- interrupts : shall define the nand controller interrupt.
+> +- #address-cells: shall be set to 1. Encode the nand CS.
+> +- #size-cells : shall be set to 0.
+> +- clocks : shall reference nand controller clocks.
+> +- clock-names : nand controller internal clock names. Shall contain :
+> +    * "ahb_clk" : AHB gating clock
+> +    * "sclk" : nand controller clock
+
+And we're usually using "ahb" and "mod" in such a case.
+
+It looks fine otherwise.
+
+Thanks!
+Maxime
+
+--=20
+Maxime Ripard, Free Electrons
+Embedded Linux, Kernel and Android engineering
+http://free-electrons.com
+
+--6S+CllbbV/7E5K18
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJT8kzCAAoJEBx+YmzsjxAgovsQAKVS7HRggRv6xTKlPP+3jzTx
+I3nWydlAfO9HJ5U9lxJ1CUZeuptXVq+rfqNmNqrMNyJzFYjrYAIqryaKeM4CP0b6
+WV6rTX2u6nBJ2mmRi4lx1WRnAaCBrqsl7QOMAyPhdAJQzd23vidvDLXKB1XnFLhQ
+jDFC5bO00XhCOoCrtVlVekWUu18s5aY28VjcaJP/xxok2aQsh/DVqoHPNrh8Fx4d
+kEcI8MscDOsbpSz5PugHo7B4vuKfJ7Rd86B76oYXqHi5FbInj1xwqVb69gGvO/AX
+qkizphhrmDJGvGHR7xTE3K6m1nx6eCLdfP2PQpPSwePRsZ4m0tO3NooNbgnhOdhN
+I8LVjZzgL0Kn9VP+JNVqDY15hEoFRrdjKYPTZh5/1TcEA0pwEOX6TydCVviAko5e
+G95+H6meVCKEPuxGP5zO0S5CL1Cv+kyfVXGm89CWp3Vp46uU9Xc+UW0aBh2BeVsB
+IHxfwKCg8S7ThVPOYtK/0x52XPW+psfFrnDieCFwfckOkAFiVu4LA5RNipWHn0ad
+w5lxIUutIwmNlcXw2PwwekTIL6h6P6mqPT9O+JyPlrxtdHvsOiFR0x09RiV7Rhv4
+O89ArjzKtT103BVMDc+EQeSbkg4Q3lGHSryL1mnomZDdzPZJNrwhrxS2m/0vxyv4
+HCFs0yjEqw26oNACMB6k
+=CIrS
+-----END PGP SIGNATURE-----
+
+--6S+CllbbV/7E5K18--
