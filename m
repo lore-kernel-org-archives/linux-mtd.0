@@ -1,15 +1,15 @@
-Message-ID: <53F0D88E.3040300@infradead.org>
-Date: Sun, 17 Aug 2014 09:30:06 -0700
-From: Randy Dunlap <rdunlap@infradead.org>
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XJChP-0002cj-S1
+ for linux-mtd@lists.infradead.org; Mon, 18 Aug 2014 02:29:32 +0000
+From: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+To: <computersforpeace@gmail.com>, <dwmw2@infradead.org>
+Subject: [PATCH] mtdtest: Check bbt at index of (eb + 1) when we access 2 EBs.
+Date: Mon, 18 Aug 2014 10:27:59 +0800
+Message-ID: <1408328879-22771-1-git-send-email-yangds.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-To: Boris BREZILLON <boris.brezillon@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: nand: fix DocBook warnings on nand_sdr_timings doc
-References: <1408264182-31830-1-git-send-email-boris.brezillon@free-electrons.com>
-In-Reply-To: <1408264182-31830-1-git-send-email-boris.brezillon@free-electrons.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+Cc: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,41 +19,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/17/14 01:29, Boris BREZILLON wrote:
-> Change the comment type (from /** to /*) to prevent DocBook from
-> complaining about missing description for nand_sdr_timings fields.
-> 
-> There is currently no need in documenting those fields because they are
-> fully described in the ONFI specification (which is pointed out in the
-> comment).
-> 
-> Signed-off-by: Boris BREZILLON <boris.brezillon@free-electrons.com>
+When we want to access 2 eraseblocks, we need to make sure the
+two eraseblocks both are not bad.
 
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-Tested-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
+---
+ drivers/mtd/tests/stresstest.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks.
-
-> ---
->  include/linux/mtd/nand.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> index 3083c53..c300db3 100644
-> --- a/include/linux/mtd/nand.h
-> +++ b/include/linux/mtd/nand.h
-> @@ -949,7 +949,7 @@ static inline int jedec_feature(struct nand_chip *chip)
->  		: 0;
->  }
->  
-> -/**
-> +/*
->   * struct nand_sdr_timings - SDR NAND chip timings
->   *
->   * This struct defines the timing requirements of a SDR NAND chip.
-> 
-
-
+diff --git a/drivers/mtd/tests/stresstest.c b/drivers/mtd/tests/stresstest.c
+index c9d42cc..076d409 100644
+--- a/drivers/mtd/tests/stresstest.c
++++ b/drivers/mtd/tests/stresstest.c
+@@ -60,7 +60,7 @@ again:
+ 	eb = prandom_u32();
+ 	/* Read or write up 2 eraseblocks at a time - hence 'ebcnt - 1' */
+ 	eb %= (ebcnt - 1);
+-	if (bbt[eb])
++	if (bbt[eb] || bbt[eb + 1])
+ 		goto again;
+ 	return eb;
+ }
 -- 
-~Randy
+1.8.4.2
