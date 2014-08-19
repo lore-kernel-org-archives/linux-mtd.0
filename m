@@ -1,21 +1,23 @@
-Received: from mail-wg0-x229.google.com ([2a00:1450:400c:c00::229])
+Received: from mail-wg0-x22d.google.com ([2a00:1450:400c:c00::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XJfin-0007NC-Eu
- for linux-mtd@lists.infradead.org; Tue, 19 Aug 2014 09:28:54 +0000
-Received: by mail-wg0-f41.google.com with SMTP id z12so6045988wgg.0
- for <linux-mtd@lists.infradead.org>; Tue, 19 Aug 2014 02:28:31 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: linux-mtd@lists.infradead.org, David Woodhouse <David.Woodhouse@intel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH] mtd: bcm47xxnflash: replace some magic numbers
-Date: Tue, 19 Aug 2014 11:28:24 +0200
-Message-Id: <1408440504-6802-1-git-send-email-zajec5@gmail.com>
+ id 1XJhh7-0003Bh-4X
+ for linux-mtd@lists.infradead.org; Tue, 19 Aug 2014 11:35:17 +0000
+Received: by mail-wg0-f45.google.com with SMTP id x12so6184840wgg.28
+ for <linux-mtd@lists.infradead.org>; Tue, 19 Aug 2014 04:34:55 -0700 (PDT)
+Received: from [192.168.0.2]
+ (host223-232-dynamic.41-79-r.retail.telecomitalia.it. [79.41.232.223])
+ by mx.google.com with ESMTPSA id cx5sm49748840wjb.8.2014.08.19.04.28.26
+ for <linux-mtd@lists.infradead.org>
+ (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
+ Tue, 19 Aug 2014 04:28:26 -0700 (PDT)
+Message-ID: <53F334D9.5030902@gmail.com>
+Date: Tue, 19 Aug 2014 13:28:25 +0200
+From: Angelo Dureghello <angelo70@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Hauke Mehrtens <hauke@hauke-m.de>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: UBI, no sub-pages support
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,57 +27,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
----
- drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+Dear all,
 
-diff --git a/drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c b/drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c
-index 82844ef..592befc 100644
---- a/drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c
-+++ b/drivers/mtd/nand/bcm47xxnflash/ops_bcm4706.c
-@@ -24,6 +24,8 @@
- #define NFLASH_SECTOR_SIZE		512
- 
- #define NCTL_CMD0			0x00010000
-+#define NCTL_COL			0x00020000	/* Update column with value from BCMA_CC_NFLASH_COL_ADDR */
-+#define NCTL_ROW			0x00040000	/* Update row (page) with value from BCMA_CC_NFLASH_ROW_ADDR */
- #define NCTL_CMD1W			0x00080000
- #define NCTL_READ			0x00100000
- #define NCTL_WRITE			0x00200000
-@@ -110,7 +112,7 @@ static void bcm47xxnflash_ops_bcm4706_read(struct mtd_info *mtd, uint8_t *buf,
- 				b47n->curr_page_addr);
- 
- 		/* Prepare to read */
--		ctlcode = NCTL_CSA | NCTL_CMD1W | 0x00040000 | 0x00020000 |
-+		ctlcode = NCTL_CSA | NCTL_CMD1W | NCTL_ROW | NCTL_COL |
- 			  NCTL_CMD0;
- 		ctlcode |= NAND_CMD_READSTART << 8;
- 		if (bcm47xxnflash_ops_bcm4706_ctl_cmd(b47n->cc, ctlcode))
-@@ -274,7 +276,7 @@ static void bcm47xxnflash_ops_bcm4706_cmdfunc(struct mtd_info *mtd,
- 	case NAND_CMD_ERASE1:
- 		bcma_cc_write32(cc, BCMA_CC_NFLASH_ROW_ADDR,
- 				b47n->curr_page_addr);
--		ctlcode = 0x00040000 | NCTL_CMD1W | NCTL_CMD0 |
-+		ctlcode = NCTL_ROW | NCTL_CMD1W | NCTL_CMD0 |
- 			  NAND_CMD_ERASE1 | (NAND_CMD_ERASE2 << 8);
- 		if (bcm47xxnflash_ops_bcm4706_ctl_cmd(cc, ctlcode))
- 			pr_err("ERASE1 failed\n");
-@@ -289,13 +291,13 @@ static void bcm47xxnflash_ops_bcm4706_cmdfunc(struct mtd_info *mtd,
- 				b47n->curr_page_addr);
- 
- 		/* Prepare to write */
--		ctlcode = 0x40000000 | 0x00040000 | 0x00020000 | 0x00010000;
-+		ctlcode = 0x40000000 | NCTL_ROW | NCTL_COL | NCTL_CMD0;
- 		ctlcode |= NAND_CMD_SEQIN;
- 		if (bcm47xxnflash_ops_bcm4706_ctl_cmd(cc, ctlcode))
- 			pr_err("SEQIN failed\n");
- 		break;
- 	case NAND_CMD_PAGEPROG:
--		if (bcm47xxnflash_ops_bcm4706_ctl_cmd(cc, 0x00010000 |
-+		if (bcm47xxnflash_ops_bcm4706_ctl_cmd(cc, NCTL_CMD0 |
- 							  NAND_CMD_PAGEPROG))
- 			pr_err("PAGEPROG failed\n");
- 		if (bcm47xxnflash_ops_bcm4706_poll(cc))
--- 
-1.8.4.5
+i am running UBI/UBIFS on a TI AM1808 / OPAM-L cpu, MT29F1G08 NAND and
+kernel 3.5.1.
+
+MT29F1G08 has 128KB pages, and 2048B PEB's.
+
+After first attempt to create UBI/UBIFS image using 512B sub-pages, i
+had several UBI errors, so i realized sub-pages are not supported in the
+OMAP-L driver at this kernel version (seems to start to be supported
+form 3.10.x).
+
+So i prepare the image from buildroot without subpage now, with these
+settings:
+
+      [ ] jffs2 root filesystem
+      [*] ubifs root filesystem
+      (0x1f000) UBI logical erase block size
+      (0x800) UBI minimum I/O size
+      (1024) Maximum LEB count
+         ubifs runtime compression (gzip)  --->
+         Compression method (no compression)  --->
+      [*]   Embed into an UBI image
+      (0x20000) UBI physical erase block size
+      (0)     UBI sub-page size
+
+buildroot/output/host/usr/sbin/mkfs.ubifs --space-fixup -d
+buildroot/output/target -e 0x1f000 -c 1024 -m 0x800 -x zlib -o
+buildroot/output/images/rootfs.ubifs
+
+
+buildroot/output/host/usr/sbin/ubinize -o
+buildroot/output/images/rootfs.ubi -m 0x800 -p 0x20000 ubinize.cfg
+
+I executed both mtd-utils "runtest.sh" and integck, and had no issues.
+Could you maybe confirm this settings are correct and i am not going
+trough issues using the fs ?
+
+Another question is: is there a UBI performance loss using pages as
+minimal I/O (no subpages) or i can consider it insignificant ?
+
+Many Thanks
+Angelo Dureghello
