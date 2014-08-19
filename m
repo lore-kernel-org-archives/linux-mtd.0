@@ -1,18 +1,21 @@
-Date: Tue, 19 Aug 2014 12:06:53 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 0/8] mtd: nand: Support for new DT NAND driver
-Message-ID: <20140819190653.GV18411@ld-irv-0074>
-References: <1407921127-8590-1-git-send-email-lee.jones@linaro.org>
- <20140814224013.GE18411@ld-irv-0074>
- <20140818083953.GA4266@lee--X1>
+Received: from mail-qa0-x235.google.com ([2607:f8b0:400d:c00::235])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XJopf-0005I5-Ad
+ for linux-mtd@lists.infradead.org; Tue, 19 Aug 2014 19:12:35 +0000
+Received: by mail-qa0-f53.google.com with SMTP id v10so5922867qac.40
+ for <linux-mtd@lists.infradead.org>; Tue, 19 Aug 2014 12:12:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20140818083953.GA4266@lee--X1>
-Cc: pekon@pek-sem.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- kernel@stlinux.com
+In-Reply-To: <20140816011633.GH18411@ld-irv-0074>
+References: <1407998124-3166-1-git-send-email-computersforpeace@gmail.com>
+ <CABkLOboi7YQhuDjLPeyyf5dDV1mQu02faTe9j8Y8ppH8Tzi+1g@mail.gmail.com>
+ <20140816011633.GH18411@ld-irv-0074>
+Date: Tue, 19 Aug 2014 12:12:11 -0700
+Message-ID: <CAN8TOE9OzvfUNryo_yke159bCtBk+XgeRxbBHkJrRaxQxbgNCg@mail.gmail.com>
+Subject: Re: [PATCH] mtd: cfi_cmdset_0002: check return code for get_chip()
+From: Brian Norris <computersforpeace@gmail.com>
+To: Christian Riesch <christian.riesch@omicron.at>
+Content-Type: text/plain; charset=UTF-8
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,25 +25,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 18, 2014 at 09:39:53AM +0100, Lee Jones wrote:
-> On Thu, 14 Aug 2014, Brian Norris wrote:
-> > drivers/mtd/nand/stm_nand_bch.c: In function 'bch_calc_timing_registers':
-> > drivers/mtd/nand/stm_nand_bch.c:1022:6: warning: variable 'ren_half_off' set but not used [-Wunused-but-set-variable]
-> > drivers/mtd/nand/stm_nand_bch.c:1021:6: warning: variable 'ren_half_on' set but not used [-Wunused-but-set-variable]
-> 
-> This I have never seen.  I guess -Wunused-but-set-variable is normally
-> off.  This issue has been present since the beginning of this endeavour
-> and exists in the original (internal) code.
+On Fri, Aug 15, 2014 at 6:16 PM, Brian Norris
+<computersforpeace@gmail.com> wrote:
+> Thanks! Queued to linux-mtd.git/master. It'll probably go in 3.16, as
+> it's a fix for a new feature.
 
-BTW, you can get extra warnings by building with the W=[123] option to
-the Makefile (e.g., 'make W=1').
-
-$ make help
-[...]
-  make W=n   [targets] Enable extra gcc checks, n=1,2,3 where
-		1: warnings which may be relevant and do not occur too often
-		2: warnings which occur quite often but may still be relevant
-		3: more obscure warnings, can most likely be ignored
-		Multiple levels can be combined with W=12 or W=123
+Just noticed my typo: this is of course for 3.17, not 3.16 :)
 
 Brian
