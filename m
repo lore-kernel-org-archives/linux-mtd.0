@@ -1,20 +1,13 @@
-Received: from mail-wi0-x229.google.com ([2a00:1450:400c:c05::229])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XJi1E-0004G6-C5
- for linux-mtd@lists.infradead.org; Tue, 19 Aug 2014 11:56:05 +0000
-Received: by mail-wi0-f169.google.com with SMTP id n3so5060700wiv.0
- for <linux-mtd@lists.infradead.org>; Tue, 19 Aug 2014 04:55:42 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: linux-mtd@lists.infradead.org, David Woodhouse <David.Woodhouse@intel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH] mtd: nand: don't break long print messages
-Date: Tue, 19 Aug 2014 13:55:34 +0200
-Message-Id: <1408449334-6440-1-git-send-email-zajec5@gmail.com>
+From: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
+To: <computersforpeace@gmail.com>, <dwmw2@infradead.org>
+Subject: [Patch v2] nand: davinci: add support for 4K page size nand devices
+Date: Tue, 19 Aug 2014 15:31:54 +0300
+Message-ID: <1408451514-4204-1-git-send-email-ivan.khoronzhuk@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+Content-Type: text/plain
+Cc: grygorii.strashko@ti.com, santosh.shilimkar@ti.com,
+ linux-kernel@vger.kernel.org, m-karicheri2@ti.com,
+ linux-mtd@lists.infradead.org, ivan.khoronzhuk@ti.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,120 +17,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This follows Chapter 2 of Linux's CodingStyle:
-> However, never break user-visible strings such as printk messages,
-> because that breaks the ability to grep for them.
+From: Sandeep Paulraj <s-paulraj@ti.com>
 
-Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+It is needed for k2l keystone2 EVM which uses NAND flash with 4K page
+size, hence add support for 4K page size nand devices.
+
+Signed-off-by: Sandeep Paulraj <s-paulraj@ti.com>
+Signed-off-by: Ivan Khoronzhuk <ivan.khoronzhuk@ti.com>
 ---
- drivers/mtd/nand/nand_base.c | 14 +++++---------
- drivers/mtd/nand/nand_bbt.c  | 23 ++++++++++-------------
- 2 files changed, 15 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index ae6e7c4..801cad1 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -3936,8 +3936,7 @@ int nand_scan_tail(struct mtd_info *mtd)
- 	case NAND_ECC_HW_OOB_FIRST:
- 		/* Similar to NAND_ECC_HW, but a separate read_page handle */
- 		if (!ecc->calculate || !ecc->correct || !ecc->hwctl) {
--			pr_warn("No ECC functions supplied; "
--				   "hardware ECC not possible\n");
-+			pr_warn("No ECC functions supplied; hardware ECC not possible\n");
- 			BUG();
+Based on l2-mtd/master
+
+v1..v2:
+- fixed comment style, no functional changes
+
+ drivers/mtd/nand/davinci_nand.c | 42 ++++++++++++++++++++++++++++++-----------
+ 1 file changed, 31 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
+index b922c8e..d7df32c 100644
+--- a/drivers/mtd/nand/davinci_nand.c
++++ b/drivers/mtd/nand/davinci_nand.c
+@@ -520,6 +520,32 @@ static struct nand_ecclayout hwecc4_2048 = {
+ 	},
+ };
+ 
++/*
++ * An ECC layout for using 4-bit ECC with large-page (4096bytes) flash,
++ * storing ten ECC bytes plus the manufacturer's bad block marker byte,
++ * and not overlapping the default BBT markers.
++ */
++static struct nand_ecclayout hwecc4_4096 = {
++	.eccbytes = 80,
++	.eccpos = {
++		/* at the end of spare sector */
++		48, 49, 50, 51, 52, 53, 54, 55, 56, 57,
++		58, 59, 60, 61, 62, 63, 64, 65, 66, 67,
++		68, 69, 70, 71, 72, 73, 74, 75, 76, 77,
++		78, 79, 80, 81, 82, 83, 84, 85, 86, 87,
++		88, 89, 90, 91, 92, 93, 94, 95, 96, 97,
++		98, 99, 100, 101, 102, 103, 104, 105, 106, 107,
++		108, 109, 110, 111, 112, 113, 114, 115, 116, 117,
++		118, 119, 120, 121, 122, 123, 124, 125, 126, 127,
++	},
++	.oobfree = {
++		/* 2 bytes at offset 0 hold manufacturer badblock markers */
++		{.offset = 2, .length = 46, },
++		/* 5 bytes at offset 8 hold BBT markers */
++		/* 8 bytes at offset 16 hold JFFS2 clean markers */
++	},
++};
++
+ #if defined(CONFIG_OF)
+ static const struct of_device_id davinci_nand_of_match[] = {
+ 	{.compatible = "ti,davinci-nand", },
+@@ -796,18 +822,12 @@ static int nand_davinci_probe(struct platform_device *pdev)
+ 			info->chip.ecc.mode = NAND_ECC_HW_OOB_FIRST;
+ 			goto syndrome_done;
  		}
- 		if (!ecc->read_page)
-@@ -3968,8 +3967,7 @@ int nand_scan_tail(struct mtd_info *mtd)
- 		     ecc->read_page == nand_read_page_hwecc ||
- 		     !ecc->write_page ||
- 		     ecc->write_page == nand_write_page_hwecc)) {
--			pr_warn("No ECC functions supplied; "
--				   "hardware ECC not possible\n");
-+			pr_warn("No ECC functions supplied; hardware ECC not possible\n");
- 			BUG();
- 		}
- 		/* Use standard syndrome read/write page function? */
-@@ -3993,9 +3991,8 @@ int nand_scan_tail(struct mtd_info *mtd)
- 			}
- 			break;
- 		}
--		pr_warn("%d byte HW ECC not possible on "
--			   "%d byte page size, fallback to SW ECC\n",
--			   ecc->size, mtd->writesize);
-+		pr_warn("%d byte HW ECC not possible on %d byte page size, fallback to SW ECC\n",
-+			ecc->size, mtd->writesize);
- 		ecc->mode = NAND_ECC_SOFT;
++		if (chunks == 8) {
++			info->ecclayout = hwecc4_4096;
++			info->chip.ecc.mode = NAND_ECC_HW_OOB_FIRST;
++			goto syndrome_done;
++		}
  
- 	case NAND_ECC_SOFT:
-@@ -4048,8 +4045,7 @@ int nand_scan_tail(struct mtd_info *mtd)
- 		break;
+-		/* 4KiB page chips are not yet supported. The eccpos from
+-		 * nand_ecclayout cannot hold 80 bytes and change to eccpos[]
+-		 * breaks userspace ioctl interface with mtd-utils. Once we
+-		 * resolve this issue, NAND_ECC_HW_OOB_FIRST mode can be used
+-		 * for the 4KiB page chips.
+-		 *
+-		 * TODO: Note that nand_ecclayout has now been expanded and can
+-		 *  hold plenty of OOB entries.
+-		 */
+-		dev_warn(&pdev->dev, "no 4-bit ECC support yet "
+-				"for 4KiB-page NAND\n");
+ 		ret = -EIO;
+ 		goto err;
  
- 	case NAND_ECC_NONE:
--		pr_warn("NAND_ECC_NONE selected by board driver. "
--			   "This is not recommended!\n");
-+		pr_warn("NAND_ECC_NONE selected by board driver. This is not recommended!\n");
- 		ecc->read_page = nand_read_page_raw;
- 		ecc->write_page = nand_write_page_raw;
- 		ecc->read_oob = nand_read_oob_std;
-diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-index 443fa82..9bb8453 100644
---- a/drivers/mtd/nand/nand_bbt.c
-+++ b/drivers/mtd/nand/nand_bbt.c
-@@ -201,12 +201,12 @@ static int read_bbt(struct mtd_info *mtd, uint8_t *buf, int page, int num,
- 		res = mtd_read(mtd, from, len, &retlen, buf);
- 		if (res < 0) {
- 			if (mtd_is_eccerr(res)) {
--				pr_info("nand_bbt: ECC error in BBT at "
--					"0x%012llx\n", from & ~mtd->writesize);
-+				pr_info("nand_bbt: ECC error in BBT at 0x%012llx\n",
-+					from & ~mtd->writesize);
- 				return res;
- 			} else if (mtd_is_bitflip(res)) {
--				pr_info("nand_bbt: corrected error in BBT at "
--					"0x%012llx\n", from & ~mtd->writesize);
-+				pr_info("nand_bbt: corrected error in BBT at 0x%012llx\n",
-+					from & ~mtd->writesize);
- 				ret = res;
- 			} else {
- 				pr_info("nand_bbt: error reading BBT\n");
-@@ -580,8 +580,8 @@ static int search_bbt(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_descr
- 		if (td->pages[i] == -1)
- 			pr_warn("Bad block table not found for chip %d\n", i);
- 		else
--			pr_info("Bad block table found at page %d, version "
--				 "0x%02X\n", td->pages[i], td->version[i]);
-+			pr_info("Bad block table found at page %d, version 0x%02X\n",
-+				td->pages[i], td->version[i]);
- 	}
- 	return 0;
- }
-@@ -725,12 +725,10 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
- 			res = mtd_read(mtd, to, len, &retlen, buf);
- 			if (res < 0) {
- 				if (retlen != len) {
--					pr_info("nand_bbt: error reading block "
--						"for writing the bad block table\n");
-+					pr_info("nand_bbt: error reading block for writing the bad block table\n");
- 					return res;
- 				}
--				pr_warn("nand_bbt: ECC error while reading "
--					"block for writing bad block table\n");
-+				pr_warn("nand_bbt: ECC error while reading block for writing bad block table\n");
- 			}
- 			/* Read oob data */
- 			ops.ooblen = (len >> this->page_shift) * mtd->oobsize;
-@@ -1338,9 +1336,8 @@ int nand_isbad_bbt(struct mtd_info *mtd, loff_t offs, int allowbbt)
- 	block = (int)(offs >> this->bbt_erase_shift);
- 	res = bbt_get_entry(this, block);
- 
--	pr_debug("nand_isbad_bbt(): bbt info for offs 0x%08x: "
--			"(block %d) 0x%02x\n",
--			(unsigned int)offs, block, res);
-+	pr_debug("nand_isbad_bbt(): bbt info for offs 0x%08x: (block %d) 0x%02x\n",
-+		 (unsigned int)offs, block, res);
- 
- 	switch (res) {
- 	case BBT_BLOCK_GOOD:
 -- 
-1.8.4.5
+1.8.3.2
