@@ -1,15 +1,23 @@
-Received: from youngberry.canonical.com ([91.189.89.112])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XK23n-0001sX-41
- for linux-mtd@lists.infradead.org; Wed, 20 Aug 2014 09:20:03 +0000
-From: Colin King <colin.king@canonical.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH][V2] UBI: block: fix dereference on uninitialized dev
-Date: Wed, 20 Aug 2014 10:19:38 +0100
-Message-Id: <1408526378-12972-1-git-send-email-colin.king@canonical.com>
-Cc: linux-kernel@vger.kernel.org, ezequiel.garcia@free-electrons.com
+Message-ID: <53F4E2BD.5080205@pek-sem.com>
+Date: Wed, 20 Aug 2014 23:32:37 +0530
+From: pekon <pekon@pek-sem.com>
+MIME-Version: 1.0
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH] mtd: nand: stm_nand_bch: add new driver
+References: <1401268805-26043-1-git-send-email-lee.jones@linaro.org>
+ <20140703002237.GM3599@ld-irv-0074>
+ <20980858CB6D3A4BAE95CA194937D5E73EAFAFF1@DBDE04.ent.ti.com>
+ <20140805142324.GA10136@lee--X1>
+ <d4ba973a22bd71eaff94be1f479c5334@pek-sem.com>
+ <20140819021248.GR18411@ld-irv-0074>
+In-Reply-To: <20140819021248.GR18411@ld-irv-0074>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: devicetree@vger.kernel.org, Boris BREZILLON <b.brezillon.dev@gmail.com>,
+ kernel@stlinux.com, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Lee Jones <lee.jones@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,49 +27,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Colin Ian King <colin.king@canonical.com>
+On Tuesday 19 August 2014 07:42 AM, Brian Norris wrote:
+> On Wed, Aug 06, 2014 at 02:32:18AM +0530, pekon@pek-sem.com wrote:
+>> On Tuesday 05 August 2014 07:53 PM, Lee Jones wrote:
+>>> On Thu, 03 Jul 2014, Gupta, Pekon wrote:
+>>>>>> +	/* Load last page of block */
+>>>>>> +	offs = (loff_t)block << chip->phys_erase_shift;
+>>>>>> +	offs += mtd->erasesize - mtd->writesize;
+>>>>>> +	if (bch_read_page(nandi, offs, buf) < 0) {
+>>>>
+>>>> *Important*: You shouldn't call internal functions directly here..
+>>>> Instead use chip->_read() OR mtd-read() that will:
+>
+> I'm not sure exactly what you're saying in the above line (chip->_read()
+> is not a function, and and mtd-read() is syntactically incorrect),
+> but...
+>
+> You most certainly do *not* want to call mtd->_read() directly (or any
+> of the callbacks prefixed with underscores). That is one of the main
+> purposes of:
+>
+>      commit 3c3c10bba1e4ccb75b41442e45c1a072f6cded19
+>      Author: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+>      Date:   Mon Jan 30 14:58:32 2012 +0200
+>
+>          mtd: add leading underscore to all mtd functions
+>
+Makes sense. Thanks for pointing this.
 
-commit 4df38926f337 ("UBI: block: Avoid disk size integer overflow")
-introduced a dereference on dev (which is not initialized at that
-point) when printing a warning message.  Re-order disk_capacity check
-after the dev is found.
+[...]
 
-Found by cppcheck:
- [drivers/mtd/ubi/block.c:509]: (error) Uninitialized variable: dev
+>
+>> I think somewhere in earlier comments, Brian also supported
+>> to use high-level function like mtd_read(). Also, nand_bbt.c
+>> itself uses 'mtd_read(), mtd_read_oob() and mtd_write_oob()
+>> at many places. So I'll let Brain decide here.
+>> But having low-level function will add redundant code for
+>> re-checking and aligning the addresses boundaries to block
+>> and page/sector sizes.
+>
+> Not all checks are redundant. It's redundant to have the direct
+> descendant doing the same checks that the parent does, like:
+>
+>    mtd_read() (checks boundaries)
+>    |_ mtd->_read() (e.g., nand_read())
+>
+> So nand_read() and nand_do_read_ops() don't need the checking.
+>
+> But for a BBT implementation, it can help to make sure that its
+> page/block/etc. arithmetic fits the right bounds when it ends up
+> deciding to scan a block.
+>
+> Now, it still may be easy to prove that the checks are
+> redundant/unnecessary for correctly-written code, but if the layering
+> makes sense, then it still may be a better choice to simply use the
+> high-level, self-checking API than to try to dig deeper. For instance,
+> I'm pretty sure UBI does some checks to make sure it's not reading off
+> the end of an MTD, but it still calls mtd_read() because it's The Right
+> Thing (TM).
+>
+> Brian
+>
+Agree.. re-using mtd_*() API for non-critical paths is justified.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/mtd/ubi/block.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
-index 33c6495..7a9805a 100644
---- a/drivers/mtd/ubi/block.c
-+++ b/drivers/mtd/ubi/block.c
-@@ -504,11 +504,6 @@ static int ubiblock_resize(struct ubi_volume_info *vi)
- 	struct ubiblock *dev;
- 	u64 disk_capacity = ((u64)vi->size * vi->usable_leb_size) >> 9;
- 
--	if ((sector_t)disk_capacity != disk_capacity) {
--		ubi_warn("%s: the volume is too big, cannot resize (%d LEBs)",
--			 dev->gd->disk_name, vi->size);
--		return -EFBIG;
--	}
- 	/*
- 	 * Need to lock the device list until we stop using the device,
- 	 * otherwise the device struct might get released in
-@@ -520,6 +515,12 @@ static int ubiblock_resize(struct ubi_volume_info *vi)
- 		mutex_unlock(&devices_mutex);
- 		return -ENODEV;
- 	}
-+	if ((sector_t)disk_capacity != disk_capacity) {
-+		mutex_unlock(&devices_mutex);
-+		ubi_warn("%s: the volume is too big, cannot resize (%d LEBs)",
-+			dev->gd->disk_name, vi->size);
-+		return -EFBIG;
-+	}
- 
- 	mutex_lock(&dev->dev_mutex);
- 	set_capacity(dev->gd, disk_capacity);
--- 
-2.1.0
+with regards, pekon
+
+------------------------
+Powered by BigRock.com
