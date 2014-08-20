@@ -1,23 +1,21 @@
-Received: from mail-ie0-f170.google.com ([209.85.223.170])
+Received: from mail-ie0-f175.google.com ([209.85.223.175])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XJzhH-0005NS-VL
- for linux-mtd@lists.infradead.org; Wed, 20 Aug 2014 06:48:40 +0000
-Received: by mail-ie0-f170.google.com with SMTP id rl12so2390890iec.1
- for <linux-mtd@lists.infradead.org>; Tue, 19 Aug 2014 23:48:18 -0700 (PDT)
-Date: Wed, 20 Aug 2014 07:48:13 +0100
+ id 1XJzqV-0002Z6-GB
+ for linux-mtd@lists.infradead.org; Wed, 20 Aug 2014 06:58:12 +0000
+Received: by mail-ie0-f175.google.com with SMTP id x19so2289383ier.6
+ for <linux-mtd@lists.infradead.org>; Tue, 19 Aug 2014 23:57:49 -0700 (PDT)
+Date: Wed, 20 Aug 2014 07:57:44 +0100
 From: Lee Jones <lee.jones@linaro.org>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 0/8] mtd: nand: Support for new DT NAND driver
-Message-ID: <20140820064813.GD4266@lee--X1>
-References: <1407921127-8590-1-git-send-email-lee.jones@linaro.org>
- <20140814224013.GE18411@ld-irv-0074>
- <20140818083953.GA4266@lee--X1>
- <20140819190653.GV18411@ld-irv-0074>
+Subject: Re: [PATCH v2 0/8] mtd: nand: Support for new DT NAND driver
+Message-ID: <20140820065744.GE4266@lee--X1>
+References: <1408357919-19793-1-git-send-email-lee.jones@linaro.org>
+ <20140819013729.GP18411@ld-irv-0074>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20140819190653.GV18411@ld-irv-0074>
+In-Reply-To: <20140819013729.GP18411@ld-irv-0074>
 Cc: pekon@pek-sem.com, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  kernel@stlinux.com
@@ -30,32 +28,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 19 Aug 2014, Brian Norris wrote:
-
-> On Mon, Aug 18, 2014 at 09:39:53AM +0100, Lee Jones wrote:
-> > On Thu, 14 Aug 2014, Brian Norris wrote:
-> > > drivers/mtd/nand/stm_nand_bch.c: In function 'bch_calc_timing_registers':
-> > > drivers/mtd/nand/stm_nand_bch.c:1022:6: warning: variable 'ren_half_off' set but not used [-Wunused-but-set-variable]
-> > > drivers/mtd/nand/stm_nand_bch.c:1021:6: warning: variable 'ren_half_on' set but not used [-Wunused-but-set-variable]
-> > 
-> > This I have never seen.  I guess -Wunused-but-set-variable is normally
-> > off.  This issue has been present since the beginning of this endeavour
-> > and exists in the original (internal) code.
+On Mon, 18 Aug 2014, Brian Norris wrote:
+> On Mon, Aug 18, 2014 at 11:31:51AM +0100, Lee Jones wrote:
+> > I believe all of your queries have either been answered or addressed
+> > and I am hoping this will be the last submission. :)
 > 
-> BTW, you can get extra warnings by building with the W=[123] option to
-> the Makefile (e.g., 'make W=1').
+> Sorry, no. I can't review code that doesn't compile, so I'm only now
+> getting to some of the review.
 > 
-> $ make help
-> [...]
->   make W=n   [targets] Enable extra gcc checks, n=1,2,3 where
-> 		1: warnings which may be relevant and do not occur too often
-> 		2: warnings which occur quite often but may still be relevant
-> 		3: more obscure warnings, can most likely be ignored
-> 		Multiple levels can be combined with W=12 or W=123
+> > This is v2 of the squashed submission.  v1 had a small typo which
+> > prevented the BBT code from being truly configurable.  This has now
+> > been rectified and build tested with and without MTD_NAND_STM_BCH_BBT
+> > support.
+> 
+> From smatch:
+> 
+>   drivers/mtd/nand/stm_nand_bch.c:1556 stm_nand_bch_probe() error:
+>   we previously assumed 'bank' could be null (see line 1482)
+>   [smatch] 
 
-Already taken care of.
+I have now built and installed smatch - it is now part of my built
+scripts.
 
-I will reply in more detail to your other (build warnings) email.
+> From GCC (extra warnings):
+> 
+>   drivers/mtd/nand/stm_nand_dt.c:39:21: warning: no previous
+>   prototype for 'stm_of_get_partitions_node' [-Wmissing-prototypes] 
+>   drivers/mtd/nand/stm_nand_dt.c:68:5: warning: no previous
+>   prototype for 'stm_of_get_nand_banks' [-Wmissing-prototypes] 
+
+My build scripts now support extended warnings to level 1.  This was a
+pain to get working, as my scripts also build DTBS, which has a side
+effect of re-compiling everything, every time.  This was fixed by also
+issuing W=1 on the `make $(make_options) $(extra_build_options) dtbs`
+line.
+
+> Looks like you forgot to include <linux/mtd/stm_nand_bbt.h>.
+
+This had me confused for a little while.  I think you mean:
+
+  #include "stm_nand_dt.h".
+
+Basically, the DT code wasn't including its own header file.
+
+Caught and fixed.
+
+> And your code is not bisectable. I think patch 7 and 8 should be
+> reordered (with some tweaks, perhaps):
+
+Now fixed.
+
+I have split out the BBT header file and applied it first.
+
+> Bisectability test results for configuration
+> "arm-multi_v7_defconfig,arm,arm-unknown-linux-gnueabi-" 
+> 
+> Failed to build patch #7: 5936df30f5e1 mtd: nand: stm_nand_bch: add
+> support for ST's BCH NAND controller 
+> Configuration: "arm-multi_v7_defconfig, architecture arm".
+
+How do _you_ test for bisectability?  Do you have a script?
+
+What outputs "Failed to build patch #7: ..."?
+
+[...]
+
+> drivers/mtd/nand/stm_nand_bch.c:26:36: fatal error:
+> linux/mtd/stm_nand_bbt.h: No such file or directory 
+> compilation terminated.
+> make[4]: *** [drivers/mtd/nand/stm_nand_bch.o] Error 1
+
+Fixed.
 
 -- 
 Lee Jones
