@@ -1,22 +1,26 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XJtzr-0005GZ-Ob
- for linux-mtd@lists.infradead.org; Wed, 20 Aug 2014 00:43:28 +0000
-Date: Tue, 19 Aug 2014 21:41:58 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Colin King <colin.king@canonical.com>
-Subject: Re: [PATCH] UBI: block: fix dereference on uninitialized dev
-Message-ID: <20140820004158.GA4650@arch.cereza>
-References: <1408207793-11536-1-git-send-email-colin.king@canonical.com>
+Received: from mail-ie0-f172.google.com ([209.85.223.172])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XJzgE-0004tO-Ul
+ for linux-mtd@lists.infradead.org; Wed, 20 Aug 2014 06:47:36 +0000
+Received: by mail-ie0-f172.google.com with SMTP id lx4so2365525iec.3
+ for <linux-mtd@lists.infradead.org>; Tue, 19 Aug 2014 23:47:13 -0700 (PDT)
+Date: Wed, 20 Aug 2014 07:47:08 +0100
+From: Lee Jones <lee.jones@linaro.org>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 0/8] mtd: nand: Support for new DT NAND driver
+Message-ID: <20140820064708.GC4266@lee--X1>
+References: <1407921127-8590-1-git-send-email-lee.jones@linaro.org>
+ <20140814224013.GE18411@ld-irv-0074>
+ <20140818083953.GA4266@lee--X1>
+ <20140819013110.GO18411@ld-irv-0074>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1408207793-11536-1-git-send-email-colin.king@canonical.com>
-Cc: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
- Artem Bityutskiy <dedekind1@gmail.com>
+In-Reply-To: <20140819013110.GO18411@ld-irv-0074>
+Cc: pekon@pek-sem.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ kernel@stlinux.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,45 +30,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Colin,
+On Mon, 18 Aug 2014, Brian Norris wrote:
 
-Thanks for the fix.
+> On Mon, Aug 18, 2014 at 09:39:53AM +0100, Lee Jones wrote:
+> > On Thu, 14 Aug 2014, Brian Norris wrote:
+> > > Particularly, take a hard look at rewriting
+> > > include/linux/mtd/stm_nand_bbt.h.
+> > 
+> > I don't think there is any need - although this change is required:
+> > 
+> > -#if defined(MTD_NAND_STM_BBT)
+> > +#if defined(MTD_NAND_STM_BCH_BBT)
+> 
+> You're still missing a GPL header and #include guards.
+> 
+> Your whole patch series (both v1 and v2) also has a few legit
+> checkpatch.pl warnings. Please fix these.
 
-On 16 Aug 05:49 PM, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> commit 4df38926f337 ("UBI: block: Avoid disk size integer overflow")
-> introduced a dereference on dev (which is not initialized at that
-> point) when printing a warning message.  Remove the reference to
-> the dev's disk_name.
-> 
-> Found by cppcheck:
->  [drivers/mtd/ubi/block.c:509]: (error) Uninitialized variable: dev
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/mtd/ubi/block.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
-> index 33c6495..944bdbd 100644
-> --- a/drivers/mtd/ubi/block.c
-> +++ b/drivers/mtd/ubi/block.c
-> @@ -505,8 +505,8 @@ static int ubiblock_resize(struct ubi_volume_info *vi)
->  	u64 disk_capacity = ((u64)vi->size * vi->usable_leb_size) >> 9;
->  
->  	if ((sector_t)disk_capacity != disk_capacity) {
-> -		ubi_warn("%s: the volume is too big, cannot resize (%d LEBs)",
-> -			 dev->gd->disk_name, vi->size);
-> +		ubi_warn("block: the volume is too big, cannot resize (%d LEBs)",
-> +			vi->size);
-
-Do you think you can resend this adding the name of the volume to the warning?
-
->  		return -EFBIG;
->  	}
+Will fix all of the above.
 
 -- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org â”‚ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
