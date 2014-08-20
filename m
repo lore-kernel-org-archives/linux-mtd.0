@@ -1,24 +1,15 @@
-Received: from mail-ie0-f175.google.com ([209.85.223.175])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XJzqV-0002Z6-GB
- for linux-mtd@lists.infradead.org; Wed, 20 Aug 2014 06:58:12 +0000
-Received: by mail-ie0-f175.google.com with SMTP id x19so2289383ier.6
- for <linux-mtd@lists.infradead.org>; Tue, 19 Aug 2014 23:57:49 -0700 (PDT)
-Date: Wed, 20 Aug 2014 07:57:44 +0100
-From: Lee Jones <lee.jones@linaro.org>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v2 0/8] mtd: nand: Support for new DT NAND driver
-Message-ID: <20140820065744.GE4266@lee--X1>
-References: <1408357919-19793-1-git-send-email-lee.jones@linaro.org>
- <20140819013729.GP18411@ld-irv-0074>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20140819013729.GP18411@ld-irv-0074>
-Cc: pekon@pek-sem.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- kernel@stlinux.com
+Received: from youngberry.canonical.com ([91.189.89.112])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XK23n-0001sX-41
+ for linux-mtd@lists.infradead.org; Wed, 20 Aug 2014 09:20:03 +0000
+From: Colin King <colin.king@canonical.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Subject: [PATCH][V2] UBI: block: fix dereference on uninitialized dev
+Date: Wed, 20 Aug 2014 10:19:38 +0100
+Message-Id: <1408526378-12972-1-git-send-email-colin.king@canonical.com>
+Cc: linux-kernel@vger.kernel.org, ezequiel.garcia@free-electrons.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,80 +19,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 18 Aug 2014, Brian Norris wrote:
-> On Mon, Aug 18, 2014 at 11:31:51AM +0100, Lee Jones wrote:
-> > I believe all of your queries have either been answered or addressed
-> > and I am hoping this will be the last submission. :)
-> 
-> Sorry, no. I can't review code that doesn't compile, so I'm only now
-> getting to some of the review.
-> 
-> > This is v2 of the squashed submission.  v1 had a small typo which
-> > prevented the BBT code from being truly configurable.  This has now
-> > been rectified and build tested with and without MTD_NAND_STM_BCH_BBT
-> > support.
-> 
-> From smatch:
-> 
->   drivers/mtd/nand/stm_nand_bch.c:1556 stm_nand_bch_probe() error:
->   we previously assumed 'bank' could be null (see line 1482)
->   [smatch] 
+From: Colin Ian King <colin.king@canonical.com>
 
-I have now built and installed smatch - it is now part of my built
-scripts.
+commit 4df38926f337 ("UBI: block: Avoid disk size integer overflow")
+introduced a dereference on dev (which is not initialized at that
+point) when printing a warning message.  Re-order disk_capacity check
+after the dev is found.
 
-> From GCC (extra warnings):
-> 
->   drivers/mtd/nand/stm_nand_dt.c:39:21: warning: no previous
->   prototype for 'stm_of_get_partitions_node' [-Wmissing-prototypes] 
->   drivers/mtd/nand/stm_nand_dt.c:68:5: warning: no previous
->   prototype for 'stm_of_get_nand_banks' [-Wmissing-prototypes] 
+Found by cppcheck:
+ [drivers/mtd/ubi/block.c:509]: (error) Uninitialized variable: dev
 
-My build scripts now support extended warnings to level 1.  This was a
-pain to get working, as my scripts also build DTBS, which has a side
-effect of re-compiling everything, every time.  This was fixed by also
-issuing W=1 on the `make $(make_options) $(extra_build_options) dtbs`
-line.
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/mtd/ubi/block.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-> Looks like you forgot to include <linux/mtd/stm_nand_bbt.h>.
-
-This had me confused for a little while.  I think you mean:
-
-  #include "stm_nand_dt.h".
-
-Basically, the DT code wasn't including its own header file.
-
-Caught and fixed.
-
-> And your code is not bisectable. I think patch 7 and 8 should be
-> reordered (with some tweaks, perhaps):
-
-Now fixed.
-
-I have split out the BBT header file and applied it first.
-
-> Bisectability test results for configuration
-> "arm-multi_v7_defconfig,arm,arm-unknown-linux-gnueabi-" 
-> 
-> Failed to build patch #7: 5936df30f5e1 mtd: nand: stm_nand_bch: add
-> support for ST's BCH NAND controller 
-> Configuration: "arm-multi_v7_defconfig, architecture arm".
-
-How do _you_ test for bisectability?  Do you have a script?
-
-What outputs "Failed to build patch #7: ..."?
-
-[...]
-
-> drivers/mtd/nand/stm_nand_bch.c:26:36: fatal error:
-> linux/mtd/stm_nand_bbt.h: No such file or directory 
-> compilation terminated.
-> make[4]: *** [drivers/mtd/nand/stm_nand_bch.o] Error 1
-
-Fixed.
-
+diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
+index 33c6495..7a9805a 100644
+--- a/drivers/mtd/ubi/block.c
++++ b/drivers/mtd/ubi/block.c
+@@ -504,11 +504,6 @@ static int ubiblock_resize(struct ubi_volume_info *vi)
+ 	struct ubiblock *dev;
+ 	u64 disk_capacity = ((u64)vi->size * vi->usable_leb_size) >> 9;
+ 
+-	if ((sector_t)disk_capacity != disk_capacity) {
+-		ubi_warn("%s: the volume is too big, cannot resize (%d LEBs)",
+-			 dev->gd->disk_name, vi->size);
+-		return -EFBIG;
+-	}
+ 	/*
+ 	 * Need to lock the device list until we stop using the device,
+ 	 * otherwise the device struct might get released in
+@@ -520,6 +515,12 @@ static int ubiblock_resize(struct ubi_volume_info *vi)
+ 		mutex_unlock(&devices_mutex);
+ 		return -ENODEV;
+ 	}
++	if ((sector_t)disk_capacity != disk_capacity) {
++		mutex_unlock(&devices_mutex);
++		ubi_warn("%s: the volume is too big, cannot resize (%d LEBs)",
++			dev->gd->disk_name, vi->size);
++		return -EFBIG;
++	}
+ 
+ 	mutex_lock(&dev->dev_mutex);
+ 	set_capacity(dev->gd, disk_capacity);
 -- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.1.0
