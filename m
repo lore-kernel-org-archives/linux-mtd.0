@@ -1,21 +1,21 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XKXoO-0001Cs-1a
- for linux-mtd@lists.infradead.org; Thu, 21 Aug 2014 19:14:16 +0000
-Date: Thu, 21 Aug 2014 16:12:46 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Colin King <colin.king@canonical.com>
-Subject: Re: [PATCH][V2] UBI: block: fix dereference on uninitialized dev
-Message-ID: <20140821191246.GA13322@arch.cereza>
-References: <1408526378-12972-1-git-send-email-colin.king@canonical.com>
+Received: from mail-vc0-f177.google.com ([209.85.220.177])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XKXq0-0002nX-Kz
+ for linux-mtd@lists.infradead.org; Thu, 21 Aug 2014 19:15:57 +0000
+Received: by mail-vc0-f177.google.com with SMTP id hy4so11063365vcb.22
+ for <linux-mtd@lists.infradead.org>; Thu, 21 Aug 2014 12:15:34 -0700 (PDT)
+Date: Thu, 21 Aug 2014 16:14:29 -0300
+From: Ezequiel =?iso-8859-1?Q?Garc=EDa?= <ezequiel@vanguardiasur.com.ar>
+To: Guido =?iso-8859-1?Q?Mart=EDnez?= <guido@vanguardiasur.com.ar>
+Subject: Re: [PATCH] nandtest: fix --reads argument
+Message-ID: <20140821191428.GA17199@arch.cereza>
+References: <1408033785-20264-1-git-send-email-guido@vanguardiasur.com.ar>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1408526378-12972-1-git-send-email-colin.king@canonical.com>
-Cc: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
+In-Reply-To: <1408033785-20264-1-git-send-email-guido@vanguardiasur.com.ar>
+Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
  Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,23 +26,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 20 Aug 10:19 AM, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On 14 Aug 01:29 PM, Guido Martínez wrote:
+> The --reads option specifies the argument as optional, but doesn't check
+> for a null optarg, which means that nandtest segfaults when run as
+> "nandtest --reads".
 > 
-> commit 4df38926f337 ("UBI: block: Avoid disk size integer overflow")
-> introduced a dereference on dev (which is not initialized at that
-> point) when printing a warning message.  Re-order disk_capacity check
-> after the dev is found.
+> Fix this by making the argument required, and changing the help text to
+> not specify it as optional. Argument -r already specifies the argument
+> as required, so we fix this inconsistency too.
 > 
-> Found by cppcheck:
->  [drivers/mtd/ubi/block.c:509]: (error) Uninitialized variable: dev
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> Signed-off-by: Guido Martínez <guido@vanguardiasur.com.ar>
 
-Acked-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Nice catch!
 
-Thanks a lot,
+Acked-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 -- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+Ezequiel Garcia, VanguardiaSur
+www.vanguardiasur.com.ar
