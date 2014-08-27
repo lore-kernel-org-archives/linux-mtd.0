@@ -1,20 +1,14 @@
-Received: from mail-qa0-x233.google.com ([2607:f8b0:400d:c00::233])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XMcnw-0006hz-Ic
- for linux-mtd@lists.infradead.org; Wed, 27 Aug 2014 12:58:24 +0000
-Received: by mail-qa0-f51.google.com with SMTP id k15so149908qaq.24
- for <linux-mtd@lists.infradead.org>; Wed, 27 Aug 2014 05:58:03 -0700 (PDT)
+Date: Wed, 27 Aug 2014 12:45:36 -0500 (CDT)
+From: Aaron Sierra <asierra@xes-inc.com>
+To: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+Message-ID: <677105509.189583.1409161536993.JavaMail.zimbra@xes-inc.com>
+In-Reply-To: <930617930.480758.1409098152001.JavaMail.zimbra@xes-inc.com>
+Subject: [PATCH 1/2] mtd: nand: Base BCH ECC bytes on required strength
 MIME-Version: 1.0
-In-Reply-To: <CAFLxGvxyha5jtDOo1yhahfAM9Lqfns9MWZtjh2vCP875-n3ewg@mail.gmail.com>
-References: <CABmZeav_Zir3oEKNProQsG0c-oHKTv=CEVXQ33sVB4mPKsnBjA@mail.gmail.com>
- <CAFLxGvxyha5jtDOo1yhahfAM9Lqfns9MWZtjh2vCP875-n3ewg@mail.gmail.com>
-Date: Wed, 27 Aug 2014 20:58:03 +0800
-Message-ID: <CABmZeavY6_5ciiNieE+A+4aJVtX3rJY8FpMBHSOz6YYDDrET7Q@mail.gmail.com>
-Subject: Re: Question about ubifs license
-From: "xinyuan.wang81" <xinyuan.wang81@gmail.com>
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: Jordan Friendshuh <jfriendshuh@xes-inc.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,25 +18,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi RiChard,
+From: Jordan Friendshuh <jfriendshuh@xes-inc.com>
 
-Got it. Thanks for your response.
+NAND devices with page sizes over 4 KiB require more than 4-bits of ECC
+coverage. This patch calculates the value of ecc_bytes based on a still
+assumed 512-byte step size (13-bits) and the ecc_strength.
 
-________________________________
-David Wang
+Example:
+Micron M73A devices (8 KiB page) require 8-bit ECC per 512-byte
 
+Signed-off-by: Jordan Friendshuh <jfriendshuh@xes-inc.com>
+Signed-off-by: Aaron Sierra <asierra@xes-inc.com>
+---
+ drivers/mtd/nand/nand_base.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-From: Richard Weinberger
-Date: 2014-08-27 03:53
-To: xinyuan.wang81
-CC: linux-mtd
-Subject: Re: Question about ubifs license
-On Tue, Aug 26, 2014 at 6:01 PM, xinyuan.wang81
-<xinyuan.wang81@gmail.com> wrote:
-> Do I have a license problem if I use ubifs on other OS such as VxWorks?
-
-UBIFS is GPLv2, for more details please consult your lawyer.
-
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 4f3e80c..9fdfed4 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -4001,7 +4001,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 		 */
+ 		if (!ecc->size && (mtd->oobsize >= 64)) {
+ 			ecc->size = 512;
+-			ecc->bytes = 7;
++			ecc->bytes = DIV_ROUND_UP(13 * ecc->strength, 8);
+ 		}
+ 		ecc->priv = nand_bch_init(mtd, ecc->size, ecc->bytes,
+ 					       &ecc->layout);
 -- 
-Thanks,
-//richard
+1.9.1
