@@ -1,14 +1,14 @@
-Date: Wed, 27 Aug 2014 12:45:36 -0500 (CDT)
+Date: Wed, 27 Aug 2014 12:45:43 -0500 (CDT)
 From: Aaron Sierra <asierra@xes-inc.com>
 To: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>
-Message-ID: <677105509.189583.1409161536993.JavaMail.zimbra@xes-inc.com>
-In-Reply-To: <930617930.480758.1409098152001.JavaMail.zimbra@xes-inc.com>
-Subject: [PATCH 1/2] mtd: nand: Base BCH ECC bytes on required strength
+Message-ID: <716589480.189636.1409161543701.JavaMail.zimbra@xes-inc.com>
+In-Reply-To: <2135487545.481347.1409098562105.JavaMail.zimbra@xes-inc.com>
+Subject: [PATCH 2/2] mtd: fsl_upm: Support NAND ECC DTS properties
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: Jordan Friendshuh <jfriendshuh@xes-inc.com>
+Cc: devicetree@vger.kernel.org, Jordan Friendshuh <jfriendshuh@xes-inc.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,31 +20,102 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Jordan Friendshuh <jfriendshuh@xes-inc.com>
 
-NAND devices with page sizes over 4 KiB require more than 4-bits of ECC
-coverage. This patch calculates the value of ecc_bytes based on a still
-assumed 512-byte step size (13-bits) and the ecc_strength.
+Support the generic nand-ecc-mode and nand-ecc-strength device-tree
+properties with the Freescale UPM NAND driver.
 
-Example:
-Micron M73A devices (8 KiB page) require 8-bit ECC per 512-byte
+This patch preserves the default software ECC mode while adding the
+ability to use BCH ECC for larger NAND devices.
 
 Signed-off-by: Jordan Friendshuh <jfriendshuh@xes-inc.com>
 Signed-off-by: Aaron Sierra <asierra@xes-inc.com>
 ---
- drivers/mtd/nand/nand_base.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../devicetree/bindings/mtd/fsl-upm-nand.txt       |  2 ++
+ drivers/mtd/nand/Kconfig                           |  1 +
+ drivers/mtd/nand/fsl_upm.c                         | 33 ++++++++++++++++++----
+ 3 files changed, 31 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 4f3e80c..9fdfed4 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -4001,7 +4001,7 @@ int nand_scan_tail(struct mtd_info *mtd)
- 		 */
- 		if (!ecc->size && (mtd->oobsize >= 64)) {
- 			ecc->size = 512;
--			ecc->bytes = 7;
-+			ecc->bytes = DIV_ROUND_UP(13 * ecc->strength, 8);
- 		}
- 		ecc->priv = nand_bch_init(mtd, ecc->size, ecc->bytes,
- 					       &ecc->layout);
+diff --git a/Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt b/Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt
+index fce4894..a9906f6 100644
+--- a/Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt
+@@ -18,6 +18,8 @@ Optional properties:
+ - chip-delay : chip dependent delay for transferring data from array to
+ 	read registers (tR). Required if property "gpios" is not used
+ 	(R/B# pins not connected).
++- nand-ecc-mode : as defined by nand.txt ("soft" and "soft_bch", only).
++- nand-ecc-strength : as defined by nand.txt.
+ 
+ Each flash chip described may optionally contain additional sub-nodes
+ describing partitions of the address space. See partition.txt for more
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index f1cf503..85c0243 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -439,6 +439,7 @@ config MTD_NAND_FSL_UPM
+ 	tristate "Support for NAND on Freescale UPM"
+ 	depends on PPC_83xx || PPC_85xx
+ 	select FSL_LBC
++	select MTD_NAND_ECC_BCH
+ 	help
+ 	  Enables support for NAND Flash chips wired onto Freescale PowerPC
+ 	  processor localbus with User-Programmable Machine support.
+diff --git a/drivers/mtd/nand/fsl_upm.c b/drivers/mtd/nand/fsl_upm.c
+index 4d203e8..1fea897 100644
+--- a/drivers/mtd/nand/fsl_upm.c
++++ b/drivers/mtd/nand/fsl_upm.c
+@@ -160,6 +160,12 @@ static int fun_chip_init(struct fsl_upm_nand *fun,
+ 	int ret;
+ 	struct device_node *flash_np;
+ 	struct mtd_part_parser_data ppdata;
++	const char *mode;
++	u32 strength;
++
++	flash_np = of_get_next_child(upm_np, NULL);
++	if (!flash_np)
++		return -ENODEV;
+ 
+ 	fun->chip.IO_ADDR_R = fun->io_base;
+ 	fun->chip.IO_ADDR_W = fun->io_base;
+@@ -168,7 +174,28 @@ static int fun_chip_init(struct fsl_upm_nand *fun,
+ 	fun->chip.read_byte = fun_read_byte;
+ 	fun->chip.read_buf = fun_read_buf;
+ 	fun->chip.write_buf = fun_write_buf;
+-	fun->chip.ecc.mode = NAND_ECC_SOFT;
++
++	if (of_property_read_string(flash_np, "nand-ecc-mode", &mode) ||
++	    !strcmp(mode, "soft")) {
++		fun->chip.ecc.mode = NAND_ECC_SOFT;
++	} else if (!strcmp(mode, "soft_bch")) {
++		fun->chip.ecc.mode = NAND_ECC_SOFT_BCH;
++	} else {
++		dev_err(fun->dev, "ECC mode '%s' unsupported", mode);
++		goto err;
++	}
++
++	if (of_property_read_u32(flash_np, "nand-ecc-strength", &strength)) {
++		if (fun->chip.ecc.mode == NAND_ECC_SOFT_BCH) {
++			dev_err(fun->dev, "BCH ECC strength unspecified\n");
++			goto err;
++		}
++	} else if (fun->chip.ecc.mode == NAND_ECC_SOFT) {
++		dev_warn(fun->dev, "Ignoring %d-bit software ECC\n", strength);
++	} else if (fun->chip.ecc.mode == NAND_ECC_SOFT_BCH) {
++		fun->chip.ecc.strength = strength;
++	}
++
+ 	if (fun->mchip_count > 1)
+ 		fun->chip.select_chip = fun_select_chip;
+ 
+@@ -178,10 +205,6 @@ static int fun_chip_init(struct fsl_upm_nand *fun,
+ 	fun->mtd.priv = &fun->chip;
+ 	fun->mtd.owner = THIS_MODULE;
+ 
+-	flash_np = of_get_next_child(upm_np, NULL);
+-	if (!flash_np)
+-		return -ENODEV;
+-
+ 	fun->mtd.name = kasprintf(GFP_KERNEL, "0x%llx.%s", (u64)io_res->start,
+ 				  flash_np->name);
+ 	if (!fun->mtd.name) {
 -- 
 1.9.1
