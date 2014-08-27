@@ -1,22 +1,17 @@
-Received: from mail-ig0-x231.google.com ([2607:f8b0:4001:c05::231])
+Received: from mail-ig0-f171.google.com ([209.85.213.171])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XMWcm-0007Aa-RF
- for linux-mtd@lists.infradead.org; Wed, 27 Aug 2014 06:22:29 +0000
-Received: by mail-ig0-f177.google.com with SMTP id hn18so5700701igb.16
- for <linux-mtd@lists.infradead.org>; Tue, 26 Aug 2014 23:22:07 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CACna6rwb1whM51=wOSWy-60+TogjB+wesMpO6y=pt7q0t4jfFg@mail.gmail.com>
-References: <CACna6rwb1whM51=wOSWy-60+TogjB+wesMpO6y=pt7q0t4jfFg@mail.gmail.com>
-Date: Wed, 27 Aug 2014 08:22:07 +0200
-Message-ID: <CACna6rxxk1j4z6Rf35Wmf4TAd9rDmu2LGwxn4X47s2ED+sNYyQ@mail.gmail.com>
-Subject: Re: NAND flashes in Broadcom routers: bad blocks, ECC
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: OpenWrt Development List <openwrt-devel@lists.openwrt.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Hauke Mehrtens <hauke@hauke-m.de>,
- Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+ id 1XMcZ1-0004kd-CY
+ for linux-mtd@lists.infradead.org; Wed, 27 Aug 2014 12:42:59 +0000
+Received: by mail-ig0-f171.google.com with SMTP id l13so6131495iga.4
+ for <linux-mtd@lists.infradead.org>; Wed, 27 Aug 2014 05:42:36 -0700 (PDT)
+From: Lee Jones <lee.jones@linaro.org>
+To: linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/9] mtd: nand: Support for new DT NAND driver
+Date: Wed, 27 Aug 2014 13:42:15 +0100
+Message-Id: <1409143344-22458-1-git-send-email-lee.jones@linaro.org>
+Cc: pekon@pek-sem.com, computersforpeace@gmail.com, lee.jones@linaro.org,
+ kernel@stlinux.com, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,28 +21,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 19 August 2014 20:45, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
-> I wanted to finally switch from NAND_ECC_NONE to NAND_ECC_SOFT (there
-> is no hw ECC) but it appears it won't be that straightforward. The
-> problem is NAND implementation in Broadcom's CFE bootloader.
->
-> It appears that all the bootloader cares about is if block is good or
-> bad. I think it doesn't even use BBT. It simply checks for oob[0x0]
-> (or oob[0x5] for small flashes) being 0xff. Then it writes to the
-> block or skips it. The bootloader doesn't seem to even calculate ECC
-> when writing! So after installing firmware using bootloader all OOB
-> content is 0xFF. Of course enableing NAND_ECC_SOFT results in
-> uncorrectable errors:
-> bcm47xxnflash: NAND_CMD_RNDOUT len:0x0F
-> bcm47xxnflash: NAND_CMD_RNDOUT data FF FF FF FF FF FF FF FF FF FF FF
-> FF FF FF FF FF
-> __nand_correct_data: uncorrectable ECC error
-> __nand_correct_data: uncorrectable ECC error
-> __nand_correct_data: uncorrectable ECC error
-> mtd_read error while reading (offset: 0x60000)!
->
-> So I wonder how we could deal with that. Should I somehow detect if
-> this is first boot after installation and calculate ECCs on my own?
-> Hoping nothing wrong will happen of the first read?
+Hi Brian,
+ 
+I believe all of your queries have either been answered or addressed
+and I am hoping this will be the last submission. :)
+ 
+This is v3 of the squashed submission.  v1 had a small typo which
+prevented the BBT code from being truly configurable and v2 had some
+build issues due to a silly 'post testing' fixup mistake.  This has now
+been rectified.
 
-Any ideas?
+Also:
+
+  Builds	Pass
+  Smatch	Pass
+  Sparse	Pass
+  Bisectability	Pass
+  NAND Test	Pass
+  MTD Tests	Pass (accept OOB test which is not applicable with
+      		      this controller.  I will rectify this in the
+		      near future though, as it _can be_ useful for
+		      debugging/testing.)
+
+Kind regards,
+Lee
+
+Lee Jones (9):
+  ARM: multi-v7: Enable ST BCH NAND
+  ARM: sti: Add two new clock definitions for use with ST's NAND
+    controllers
+  ARM: sti: Add BCH (NAND Flash) Controller support for STiH41x (Orly)
+    SoCs
+  ARM: sti: Enable BCH NAND for STiH416 B2020-RevE
+  mtd: nand: stm_nand_bch: provide Device Tree documentation
+  mtd: nand: stm_nand_bch: add shared register defines for ST's NAND
+    Controller drivers
+  mtd: nand: stm_nand_bch: adding BBT header
+  mtd: nand: stm_nand_bch: add support for ST's BCH NAND controller
+  mtd: nand: stm_nand_bch: provide ST's implementation of Back Block
+    Table
+
+ Documentation/devicetree/bindings/mtd/stm-nand.txt |   74 +
+ arch/arm/boot/dts/stih416-b2020e.dts               |    8 +
+ arch/arm/boot/dts/stih41x-b2020.dtsi               |   38 +
+ arch/arm/configs/multi_v7_defconfig                |    2 +
+ drivers/mtd/nand/Kconfig                           |   15 +
+ drivers/mtd/nand/Makefile                          |    2 +
+ drivers/mtd/nand/stm_nand_bbt.c                    |  601 ++++++++
+ drivers/mtd/nand/stm_nand_bch.c                    | 1616 ++++++++++++++++++++
+ drivers/mtd/nand/stm_nand_dt.c                     |  110 ++
+ drivers/mtd/nand/stm_nand_dt.h                     |   24 +
+ drivers/mtd/nand/stm_nand_regs.h                   |  304 ++++
+ include/dt-bindings/clock/stih416-clks.h           |    2 +
+ include/linux/mtd/stm_nand.h                       |  147 ++
+ include/linux/mtd/stm_nand_bbt.h                   |   17 +
+ 14 files changed, 2960 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/stm-nand.txt
+ create mode 100644 drivers/mtd/nand/stm_nand_bbt.c
+ create mode 100644 drivers/mtd/nand/stm_nand_bch.c
+ create mode 100644 drivers/mtd/nand/stm_nand_dt.c
+ create mode 100644 drivers/mtd/nand/stm_nand_dt.h
+ create mode 100644 drivers/mtd/nand/stm_nand_regs.h
+ create mode 100644 include/linux/mtd/stm_nand.h
+ create mode 100644 include/linux/mtd/stm_nand_bbt.h
+
+-- 
+1.9.1
