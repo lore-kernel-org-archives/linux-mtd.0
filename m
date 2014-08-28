@@ -1,16 +1,16 @@
-Received: from nm7-vm3.bullet.mail.gq1.yahoo.com ([98.136.218.210])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XMnN5-0003DY-9a
- for linux-mtd@lists.infradead.org; Thu, 28 Aug 2014 00:15:23 +0000
-Message-ID: <1409184900.23876.YahooMailBasic@web163805.mail.gq1.yahoo.com>
-Date: Wed, 27 Aug 2014 17:15:00 -0700
-From: "Miss.Maryam Zakaria" <ouroffice56@yahoo.com.pe>
-Reply-To: miss.maryam_zakaria@yahoo.com
-Subject: Hello
-To: undisclosed recipients: ;
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <1409230554.31489.29.camel@infradead.org>
+Subject: Re: jffs2 about highest_ino
+From: David Woodhouse <dwmw2@infradead.org>
+To: =?UTF-8?Q?=E8=93=9D=E5=AE=87=E3=81=AE=E5=B9=BD=E6=B7=B1?=
+ <249768522@qq.com>
+Date: Thu, 28 Aug 2014 13:55:54 +0100
+In-Reply-To: <tencent_0114D0675EC98B941DE329CD@qq.com>
+References: <tencent_0114D0675EC98B941DE329CD@qq.com>
+Content-Type: multipart/signed; micalg="sha-1";
+ protocol="application/x-pkcs7-signature";
+ boundary="=-4XaxFF2eTuxLECLVIdB6"
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,12 +21,240 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-My Dear,
-I want to establish a charity foundation in your country with this sum
-which I inherited from my late fathers (Mr kumar Zakaria) it is my desire t=
-o see that this money is invested to any business /organization of your cho=
-ice in your country, motherless baby=E2=80=99s home, mosques, churches,Scho=
-ol,Destitute
-aged men and women or whatever you may have in mind that will be to the ben=
-efit of the less fortunate
-Miss.Maryam Zakaria (miss.maryam_zakaria@yahoo.com)
+--=-4XaxFF2eTuxLECLVIdB6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, 2014-08-28 at 16:49 +0800, =E8=93=9D=E5=AE=87=E3=81=AE=E5=B9=BD=E6=
+=B7=B1 wrote:
+> according to the jffs2 source code when creat a new file
+> the highest_ino will be add one,I used sqlite-3 in my system
+> linux2.6.30 and cpu sam9260 ,when "update" or "insert" sqlite-3 will
+> creat a Statement Journal file and delete it after finish,so once
+> operate will be increase  "highest_ino",after the "highest_ino" more
+> than 10 million,I reset my system run to =E2=80=8D=E2=80=8D=E2=80=8D
+>=20
+>=20
+> if (!xattr)
+> xattr =3D jffs2_verify_xattr(c);
+>=20
+>=20
+> spin_lock(&c->inocache_lock);
+>=20
+>=20
+> ic =3D jffs2_get_ino_cache(c, c->checked_ino++);
+>=20
+>=20
+> if (!ic) {
+> spin_unlock(&c->inocache_lock);
+> continue;
+> }=E2=80=8D
+> the jffs2 will eat cpu 100% for about 10 seconds and can not feed
+> watchdog, case the system reset again . so my problem is that whether
+> the "highest_ino" will  decrease ???
+
+Hm, at the very least there ought to be a cond_resched() in there
+somewhere. But really, the problem is that the iteration over inodes to
+be checked is *entirely* na=C3=AFve.
+
+We have a hash table with all the existing inodes in it; we should just
+iterate over its contents, instead of iterating through the available
+number space from 1 to c->highest_ino and doing all the lookups in the
+hash table.
+
+Something like this...
+
+diff --git a/fs/jffs2/gc.c b/fs/jffs2/gc.c
+index 5a2dec2..6ef5246 100644
+--- a/fs/jffs2/gc.c
++++ b/fs/jffs2/gc.c
+@@ -135,6 +135,8 @@ int jffs2_garbage_collect_pass(struct jffs2_sb_info *c)
+ 		return -EINTR;
+=20
+ 	for (;;) {
++		int bucket, want_ino;
++
+ 		spin_lock(&c->erase_completion_lock);
+ 		if (!c->unchecked_size)
+ 			break;
+@@ -142,29 +144,37 @@ int jffs2_garbage_collect_pass(struct jffs2_sb_info *=
+c)
+ 		/* We can't start doing GC yet. We haven't finished checking
+ 		   the node CRCs etc. Do it now. */
+=20
+-		/* checked_ino is protected by the alloc_sem */
+-		if (c->checked_ino > c->highest_ino && xattr) {
+-			pr_crit("Checked all inodes but still 0x%x bytes of unchecked space?\n"=
+,
+-				c->unchecked_size);
+-			jffs2_dbg_dump_block_lists_nolock(c);
+-			spin_unlock(&c->erase_completion_lock);
+-			mutex_unlock(&c->alloc_sem);
+-			return -ENOSPC;
+-		}
+-
+ 		spin_unlock(&c->erase_completion_lock);
+=20
+ 		if (!xattr)
+ 			xattr =3D jffs2_verify_xattr(c);
+=20
+ 		spin_lock(&c->inocache_lock);
++		want_ino =3D c->checked_ino;
++		for (bucket =3D c->checked_ino % c->inocache_hashsize ; bucket < c->inoc=
+ache_hashsize; bucket++) {
++			for (ic =3D c->inocache_list[bucket]; ic; ic =3D ic->next) {
++				if (ic->ino >=3D want_ino)
++					goto got_next;
++			}
++			want_ino =3D 0;
++		}
+=20
+-		ic =3D jffs2_get_ino_cache(c, c->checked_ino++);
++		/* Point c->checked_ino past the end of the last bucket. */
++		c->checked_ino =3D c->highest_ino + c->inocache_hashsize;
++		c->checked_ino -=3D (c->checked_ino % c->inocache_hashsize) + 1;
+=20
+-		if (!ic) {
+-			spin_unlock(&c->inocache_lock);
+-			continue;
+-		}
++		spin_unlock(&c->inocache_lock);
++
++		pr_crit("Checked all inodes but still 0x%x bytes of unchecked space?\n",
++			c->unchecked_size);
++		jffs2_dbg_dump_block_lists_nolock(c);
++		mutex_unlock(&c->alloc_sem);
++		return -ENOSPC;
++
++	got_next:
++		/* c->checked_ino is actually the *next* one we want to check. And since
++		   we're walking the buckets rather than doing it sequentially, it's: */
++		c->checked_ino =3D ic->ino + c->inocache_hashsize;
+=20
+ 		if (!ic->pino_nlink) {
+ 			jffs2_dbg(1, "Skipping check of ino #%d with nlink/pino zero\n",
+@@ -196,7 +206,7 @@ int jffs2_garbage_collect_pass(struct jffs2_sb_info *c)
+ 				  ic->ino);
+ 			/* We need to come back again for the _same_ inode. We've
+ 			 made no progress in this case, but that should be OK */
+-			c->checked_ino--;
++			c->checked_ino =3D ic->ino;
+=20
+ 			mutex_unlock(&c->alloc_sem);
+ 			sleep_on_spinunlock(&c->inocache_wq, &c->inocache_lock);
+
+
+
+--=20
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
+
+--=-4XaxFF2eTuxLECLVIdB6
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIISxDCCBjQw
+ggQcoAMCAQICAR4wDQYJKoZIhvcNAQEFBQAwfTELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0
+Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxKTAn
+BgNVBAMTIFN0YXJ0Q29tIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MB4XDTA3MTAyNDIxMDE1NVoX
+DTE3MTAyNDIxMDE1NVowgYwxCzAJBgNVBAYTAklMMRYwFAYDVQQKEw1TdGFydENvbSBMdGQuMSsw
+KQYDVQQLEyJTZWN1cmUgRGlnaXRhbCBDZXJ0aWZpY2F0ZSBTaWduaW5nMTgwNgYDVQQDEy9TdGFy
+dENvbSBDbGFzcyAxIFByaW1hcnkgSW50ZXJtZWRpYXRlIENsaWVudCBDQTCCASIwDQYJKoZIhvcN
+AQEBBQADggEPADCCAQoCggEBAMcJg8zOLdgasSmkLhOrlr6KMoOMpohBllVHrdRvEg/q6r8jR+EK
+75xCGhR8ToREoqe7zM9/UnC6TS2y9UKTpT1v7RSMzR0t6ndl0TWBuUr/UXBhPk+Kmy7bI4yW4urC
++y7P3/1/X7U8ocb8VpH/Clt+4iq7nirMcNh6qJR+xjOhV+VHzQMALuGYn5KZmc1NbJQYclsGkDxD
+z2UbFqE2+6vIZoL+jb9x4Pa5gNf1TwSDkOkikZB1xtB4ZqtXThaABSONdfmv/Z1pua3FYxnCFmdr
+/+N2JLKutIxMYqQOJebr/f/h5t95m4JgrM3Y/w7YX9d7YAL9jvN4SydHsU6n65cCAwEAAaOCAa0w
+ggGpMA8GA1UdEwEB/wQFMAMBAf8wDgYDVR0PAQH/BAQDAgEGMB0GA1UdDgQWBBRTcu2SnODaywFc
+fH6WNU7y1LhRgjAfBgNVHSMEGDAWgBROC+8apEBbpRdphzDKNGhD0EGu8jBmBggrBgEFBQcBAQRa
+MFgwJwYIKwYBBQUHMAGGG2h0dHA6Ly9vY3NwLnN0YXJ0c3NsLmNvbS9jYTAtBggrBgEFBQcwAoYh
+aHR0cDovL3d3dy5zdGFydHNzbC5jb20vc2ZzY2EuY3J0MFsGA1UdHwRUMFIwJ6AloCOGIWh0dHA6
+Ly93d3cuc3RhcnRzc2wuY29tL3Nmc2NhLmNybDAnoCWgI4YhaHR0cDovL2NybC5zdGFydHNzbC5j
+b20vc2ZzY2EuY3JsMIGABgNVHSAEeTB3MHUGCysGAQQBgbU3AQIBMGYwLgYIKwYBBQUHAgEWImh0
+dHA6Ly93d3cuc3RhcnRzc2wuY29tL3BvbGljeS5wZGYwNAYIKwYBBQUHAgEWKGh0dHA6Ly93d3cu
+c3RhcnRzc2wuY29tL2ludGVybWVkaWF0ZS5wZGYwDQYJKoZIhvcNAQEFBQADggIBAAqDCH14qywG
+XLhjjF6uHLkjd02hcdh9hrw+VUsv+q1eeQWB21jWj3kJ96AUlPCoEGZ/ynJNScWy6QMVQjbbMXlt
+UfO4n4bGGdKo3awPWp61tjAFgraLJgDk+DsSvUD6EowjMTNx25GQgyYJ5RPIzKKR9tQW8gGK+2+R
+HxkUCTbYFnL6kl8Ch507rUdPPipJ9CgJFws3kDS3gOS5WFMxcjO5DwKfKSETEPrHh7p5shuuNktv
+sv6hxHTLhiMKX893gxdT3XLS9OKmCv87vkINQcNEcIIoFWbP9HORz9v3vQwR4e3ksLc2JZOAFK+s
+sS5XMEoznzpihEP0PLc4dCBYjbvSD7kxgDwZ+Aj8Q9PkbvE9sIPP7ON0fz095HdThKjiVJe6vofq
++n6b1NBc8XdrQvBmunwxD5nvtTW4vtN6VY7mUCmxsCieuoBJ9OlqmsVWQvifIYf40dJPZkk9YgGT
+zWLpXDSfLSplbY2LL9C9U0ptvjcDjefLTvqSFc7tw1sEhF0n/qpA2r0GpvkLRDmcSwVyPvmjFBGq
+Up/pNy8ZuPGQmHwFi2/14+xeSUDG2bwnsYJQG2EdJCB6luQ57GEnTA/yKZSTKI8dDQa8Sd3zfXb1
+9mOgSF0bBdXbuKhEpuP9wirslFe6fQ1t5j5R0xi72MZ8ikMu1RQZKCyDbMwazlHiMIIGQjCCBSqg
+AwIBAgIDCdkyMA0GCSqGSIb3DQEBBQUAMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRD
+b20gTHRkLjErMCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYG
+A1UEAxMvU3RhcnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0EwHhcN
+MTQwNTA0MTczMDIyWhcNMTUwNTA0MjM0MTAxWjBdMRkwFwYDVQQNExAzODNCMTVkSHFQSUR0cDZO
+MRwwGgYDVQQDDBNkd213MkBpbmZyYWRlYWQub3JnMSIwIAYJKoZIhvcNAQkBFhNkd213MkBpbmZy
+YWRlYWQub3JnMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAy7K+t+REIdZGFUfgR8Io
+QrJ/VLZil9I00JcwqTo8BiGy1dqSIB2y923siya5SDKMh1YurtCPsX96cNzwPmmN2cs0MKeVPQWz
+iQhHk3uKcB6LvvS7pzTahRWMRmTyW3CH+RphRM9plvyClY23GEeEnpBnGz4GaJJiPcJjGgzyZ/tI
+q473pOlSrDPZnZk43vt/5CJN46nIZOZ2I+PzlgINI+EbiwsXVn3VohHB7nVTwGaRLk5oywGt8ZT7
+tDdxn3BQ3inO1sr5MtkV1o2cHlenIC8mlU8nL/mrqqVve7Vib1YQUycW+Pj4CBYm4FTeuctAvNzK
+U/daeBclOZ8ofgQe2wIDAQABo4IC2TCCAtUwCQYDVR0TBAIwADALBgNVHQ8EBAMCBLAwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMB0GA1UdDgQWBBRAjCSCV70BpLBeXge5DXi+mPhHTTAf
+BgNVHSMEGDAWgBRTcu2SnODaywFcfH6WNU7y1LhRgjAeBgNVHREEFzAVgRNkd213MkBpbmZyYWRl
+YWQub3JnMIIBTAYDVR0gBIIBQzCCAT8wggE7BgsrBgEEAYG1NwECAzCCASowLgYIKwYBBQUHAgEW
+Imh0dHA6Ly93d3cuc3RhcnRzc2wuY29tL3BvbGljeS5wZGYwgfcGCCsGAQUFBwICMIHqMCcWIFN0
+YXJ0Q29tIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MAMCAQEagb5UaGlzIGNlcnRpZmljYXRlIHdh
+cyBpc3N1ZWQgYWNjb3JkaW5nIHRvIHRoZSBDbGFzcyAxIFZhbGlkYXRpb24gcmVxdWlyZW1lbnRz
+IG9mIHRoZSBTdGFydENvbSBDQSBwb2xpY3ksIHJlbGlhbmNlIG9ubHkgZm9yIHRoZSBpbnRlbmRl
+ZCBwdXJwb3NlIGluIGNvbXBsaWFuY2Ugb2YgdGhlIHJlbHlpbmcgcGFydHkgb2JsaWdhdGlvbnMu
+MDYGA1UdHwQvMC0wK6ApoCeGJWh0dHA6Ly9jcmwuc3RhcnRzc2wuY29tL2NydHUxLWNybC5jcmww
+gY4GCCsGAQUFBwEBBIGBMH8wOQYIKwYBBQUHMAGGLWh0dHA6Ly9vY3NwLnN0YXJ0c3NsLmNvbS9z
+dWIvY2xhc3MxL2NsaWVudC9jYTBCBggrBgEFBQcwAoY2aHR0cDovL2FpYS5zdGFydHNzbC5jb20v
+Y2VydHMvc3ViLmNsYXNzMS5jbGllbnQuY2EuY3J0MCMGA1UdEgQcMBqGGGh0dHA6Ly93d3cuc3Rh
+cnRzc2wuY29tLzANBgkqhkiG9w0BAQUFAAOCAQEAWS2KNN7O3vZVtNHXVqgbmijeptKwt+8b6yiF
+wT3kJoywInPl5U+OeKRZfQKTHghM4Ohof6lF244ZMxhir/xp7l/zkZ/BUbxLwp6kIL27Gi5pgP4D
+KLnTZheQL9N5Yi/vMONxMWcpcW+ZNv5hnDCfEsfVcLXC8sNLPjx2ezfMIhSSPwBuJpmOun70te4E
+P0YBqjSalPfvc5fC5KgaYtqTDFwo9Mw25X5HHDC0r6BK5aNrF1nD/xYTX7cdvZZWl7cUApr4PCrn
+uI2DEn7OWQ/rY407ytV1c5pjvmuv/IT/ZUb/kXV6Q47UvrJp2Ifi2VhsBcnHHasKavjtRCmpDsGM
+rTCCBkIwggUqoAMCAQICAwnZMjANBgkqhkiG9w0BAQUFADCBjDELMAkGA1UEBhMCSUwxFjAUBgNV
+BAoTDVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNp
+Z25pbmcxODA2BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xp
+ZW50IENBMB4XDTE0MDUwNDE3MzAyMloXDTE1MDUwNDIzNDEwMVowXTEZMBcGA1UEDRMQMzgzQjE1
+ZEhxUElEdHA2TjEcMBoGA1UEAwwTZHdtdzJAaW5mcmFkZWFkLm9yZzEiMCAGCSqGSIb3DQEJARYT
+ZHdtdzJAaW5mcmFkZWFkLm9yZzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMuyvrfk
+RCHWRhVH4EfCKEKyf1S2YpfSNNCXMKk6PAYhstXakiAdsvdt7IsmuUgyjIdWLq7Qj7F/enDc8D5p
+jdnLNDCnlT0Fs4kIR5N7inAei770u6c02oUVjEZk8ltwh/kaYUTPaZb8gpWNtxhHhJ6QZxs+BmiS
+Yj3CYxoM8mf7SKuO96TpUqwz2Z2ZON77f+QiTeOpyGTmdiPj85YCDSPhG4sLF1Z91aIRwe51U8Bm
+kS5OaMsBrfGU+7Q3cZ9wUN4pztbK+TLZFdaNnB5XpyAvJpVPJy/5q6qlb3u1Ym9WEFMnFvj4+AgW
+JuBU3rnLQLzcylP3WngXJTmfKH4EHtsCAwEAAaOCAtkwggLVMAkGA1UdEwQCMAAwCwYDVR0PBAQD
+AgSwMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDBDAdBgNVHQ4EFgQUQIwkgle9AaSwXl4H
+uQ14vpj4R00wHwYDVR0jBBgwFoAUU3Ltkpzg2ssBXHx+ljVO8tS4UYIwHgYDVR0RBBcwFYETZHdt
+dzJAaW5mcmFkZWFkLm9yZzCCAUwGA1UdIASCAUMwggE/MIIBOwYLKwYBBAGBtTcBAgMwggEqMC4G
+CCsGAQUFBwIBFiJodHRwOi8vd3d3LnN0YXJ0c3NsLmNvbS9wb2xpY3kucGRmMIH3BggrBgEFBQcC
+AjCB6jAnFiBTdGFydENvbSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTADAgEBGoG+VGhpcyBjZXJ0
+aWZpY2F0ZSB3YXMgaXNzdWVkIGFjY29yZGluZyB0byB0aGUgQ2xhc3MgMSBWYWxpZGF0aW9uIHJl
+cXVpcmVtZW50cyBvZiB0aGUgU3RhcnRDb20gQ0EgcG9saWN5LCByZWxpYW5jZSBvbmx5IGZvciB0
+aGUgaW50ZW5kZWQgcHVycG9zZSBpbiBjb21wbGlhbmNlIG9mIHRoZSByZWx5aW5nIHBhcnR5IG9i
+bGlnYXRpb25zLjA2BgNVHR8ELzAtMCugKaAnhiVodHRwOi8vY3JsLnN0YXJ0c3NsLmNvbS9jcnR1
+MS1jcmwuY3JsMIGOBggrBgEFBQcBAQSBgTB/MDkGCCsGAQUFBzABhi1odHRwOi8vb2NzcC5zdGFy
+dHNzbC5jb20vc3ViL2NsYXNzMS9jbGllbnQvY2EwQgYIKwYBBQUHMAKGNmh0dHA6Ly9haWEuc3Rh
+cnRzc2wuY29tL2NlcnRzL3N1Yi5jbGFzczEuY2xpZW50LmNhLmNydDAjBgNVHRIEHDAahhhodHRw
+Oi8vd3d3LnN0YXJ0c3NsLmNvbS8wDQYJKoZIhvcNAQEFBQADggEBAFktijTezt72VbTR11aoG5oo
+3qbSsLfvG+sohcE95CaMsCJz5eVPjnikWX0Ckx4ITODoaH+pRduOGTMYYq/8ae5f85GfwVG8S8Ke
+pCC9uxouaYD+Ayi502YXkC/TeWIv7zDjcTFnKXFvmTb+YZwwnxLH1XC1wvLDSz48dns3zCIUkj8A
+biaZjrp+9LXuBD9GAao0mpT373OXwuSoGmLakwxcKPTMNuV+RxwwtK+gSuWjaxdZw/8WE1+3Hb2W
+Vpe3FAKa+Dwq57iNgxJ+zlkP62ONO8rVdXOaY75rr/yE/2VG/5F1ekOO1L6yadiH4tlYbAXJxx2r
+Cmr47UQpqQ7BjK0xggNvMIIDawIBATCBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0
+Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2
+BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgMJ
+2TIwCQYFKw4DAhoFAKCCAa8wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUx
+DxcNMTQwODI4MTI1NTU0WjAjBgkqhkiG9w0BCQQxFgQUEbl47OIKx5HC8SBOVfAzoD/DNfwwgaUG
+CSsGAQQBgjcQBDGBlzCBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0ZC4x
+KzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2BgNVBAMTL1N0
+YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgMJ2TIwgacGCyqG
+SIb3DQEJEAILMYGXoIGUMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjEr
+MCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYGA1UEAxMvU3Rh
+cnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0ECAwnZMjANBgkqhkiG
+9w0BAQEFAASCAQC+cGsLuoW+zk7VaaI5v7yvW9XeHV4FuH1uRCwxj4Jmw89pEQORmqKAvIBbyPKO
+2FVu6GP2rajdfA6Pm50IVbLHjB6dkpCq297bT9QpMGSVbYzHo9iwE1uctEGSonfY/FJmzpmtYNAe
+zv7sxBnyIMB2ZD6UB1B9ejCMvt6vjqkyUFM/337e5mYozrHXNrKkU/QH+hEIuZy3ubVi57w+N179
+2w4iFXj5E2z4JsSVCZbHbwijZ/MPnb39mdrFyXhQGH3EMo0Tj3lq8Fei7B4pMlbEa2gvwKOHglU5
+y8rxXksF1jjKOXYFhdSgXdac0lPnJPrUKIoLvxOt2PVlHSHHJNuWAAAAAAAA
+
+
+--=-4XaxFF2eTuxLECLVIdB6--
