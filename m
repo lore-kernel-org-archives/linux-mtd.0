@@ -1,14 +1,17 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XNTxl-0006K6-Ct
+ id 1XNTxl-0006K8-Cs
  for linux-mtd@lists.infradead.org; Fri, 29 Aug 2014 21:44:05 +0000
 From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 To: <linux-mtd@lists.infradead.org>,
 	Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH 0/3] UBI: block: Some fixes for static volumes
-Date: Fri, 29 Aug 2014 18:42:27 -0300
-Message-Id: <1409348550-27768-1-git-send-email-ezequiel.garcia@free-electrons.com>
+Subject: [PATCH 2/3] UBI: block: Add support for the UBI_VOLUME_UPDATED
+ notification
+Date: Fri, 29 Aug 2014 18:42:29 -0300
+Message-Id: <1409348550-27768-3-git-send-email-ezequiel.garcia@free-electrons.com>
+In-Reply-To: <1409348550-27768-1-git-send-email-ezequiel.garcia@free-electrons.com>
+References: <1409348550-27768-1-git-send-email-ezequiel.garcia@free-electrons.com>
 Cc: Brian Norris <computersforpeace@gmail.com>,
  Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
  =?UTF-8?q?Guido=20Mart=C3=ADnez?= <guido@vanguardiasur.com.ar>
@@ -21,39 +24,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+Static volumes can change its 'used_bytes' when they get updated,
+and so the block interface must listen to the UBI_VOLUME_UPDATED
+notification to resize the block device accordingly.
 
-This patchset addresses some issues found when using static volumes
-and playing with volume resize, update, and truncate operations.
+Signed-off-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+---
+ drivers/mtd/ubi/block.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-The first patch changes the block interface to use the volume 'used_bytes'
-which is the actual data size. It fixes a current issue with static volumes
-which produces a nasty error when they are read past the data offset.
-
-$ cat /dev/ubiblock0_0 > /dev/null
-UBI error: ubiblock_read_to_buf: ubiblock0_0 ubi_read error -22
-end_request: I/O error, dev ubiblock0_0, sector 9536
-Buffer I/O error on device ubiblock0_0, logical block 2384
-[snip]
-
-It's an annoying error, but on the other side, it should never be produced
-if the block is used to mount a file system, so I'm not sure it's serious
-enough to go the -stable.
-
-The second and third patches add the required changes for the block interface
-to catch the "volume updated" notification. For static volumes, the
-'used_bytes' parameter can be changed when updating the volume.
-
-Comments and feedback welcome!
-
-Ezequiel Garcia (3):
-  UBI: block: Fix block device size setting
-  UBI: block: Add support for the UBI_VOLUME_UPDATED notification
-  UBI: Dispatch update notification if the volume is updated
-
- drivers/mtd/ubi/block.c | 24 ++++++++++++++++++------
- drivers/mtd/ubi/cdev.c  |  4 +++-
- 2 files changed, 21 insertions(+), 7 deletions(-)
-
+diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
+index a29d41c..4fafd49 100644
+--- a/drivers/mtd/ubi/block.c
++++ b/drivers/mtd/ubi/block.c
+@@ -522,8 +522,12 @@ static int ubiblock_resize(struct ubi_volume_info *vi)
+ 	}
+ 
+ 	mutex_lock(&dev->dev_mutex);
+-	set_capacity(dev->gd, disk_capacity);
+-	ubi_msg("%s resized to %lld bytes", dev->gd->disk_name, vi->used_bytes);
++
++	if (get_capacity(dev->gd) != disk_capacity) {
++		set_capacity(dev->gd, disk_capacity);
++		ubi_msg("%s resized to %lld bytes", dev->gd->disk_name,
++			vi->used_bytes);
++	}
+ 	mutex_unlock(&dev->dev_mutex);
+ 	mutex_unlock(&devices_mutex);
+ 	return 0;
+@@ -547,6 +551,14 @@ static int ubiblock_notify(struct notifier_block *nb,
+ 	case UBI_VOLUME_RESIZED:
+ 		ubiblock_resize(&nt->vi);
+ 		break;
++	case UBI_VOLUME_UPDATED:
++		/*
++		 * If the volume is static, a content update might mean the
++		 * size (i.e. used_bytes) was also changed.
++		 */
++		if (nt->vi.vol_type == UBI_STATIC_VOLUME)
++			ubiblock_resize(&nt->vi);
++		break;
+ 	default:
+ 		break;
+ 	}
 -- 
 2.0.1
