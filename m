@@ -1,23 +1,19 @@
-Received: from relay5-d.mail.gandi.net ([2001:4b98:c:538::197])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XOA45-0007gd-Dm
- for linux-mtd@lists.infradead.org; Sun, 31 Aug 2014 18:41:26 +0000
-Date: Sun, 31 Aug 2014 11:40:50 -0700
-From: Josh Triplett <josh@joshtriplett.org>
-To: Joe Perches <joe@perches.com>
-Subject: Re: [PATCH] mtd: denali: fix include guard and license block of
- denali.h
-Message-ID: <20140831184050.GA4975@thin>
-References: <1409310051-25726-1-git-send-email-yamada.m@jp.panasonic.com>
- <20140829183050.GA1532@thin> <1409407766.2664.0.camel@joe-AO725>
+From: bpqw <bpqw@micron.com>
+To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>
+Subject: [PATCH 1/1] mtd: cfi_cmdset_0002:add fixup for Micron M29EW after
+ erase operation
+Date: Mon, 1 Sep 2014 02:20:52 +0000
+Message-ID: <A765B125120D1346A63912DDE6D8B6315DB7BE@NTXXIAMBX02.xacn.micron.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1409407766.2664.0.camel@joe-AO725>
-Cc: Huang Shijie <shijie8@gmail.com>, linux-kernel@vger.kernel.org,
- Masahiro Yamada <yamada.m@jp.panasonic.com>, linux-mtd@lists.infradead.org,
- apw@canonical.com, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: Paul Gortmaker <paul.gortmaker@windriver.com>,
+ Jingoo Han <jg1.han@samsung.com>,
+ Christian Riesch <christian.riesch@omicron.at>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,16 +23,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Aug 30, 2014 at 07:09:26AM -0700, Joe Perches wrote:
-> On Fri, 2014-08-29 at 11:30 -0700, Josh Triplett wrote:
-> > (Side note: could we get checkpatch to complain about comment headers
-> > containing the name of the file they appear in?  They're always either
-> > redundant or wrong.)
-> 
-> Sure, if you can write a regex to determine an
-> incorrect filename.
+For Micron M29EW,20ms delay is needed after erase operation.
 
-I was thinking more about matching the current filename, which seems
-quite easy.
+Signed-off-by: BeanHuo <bpqw@micron.com>
+---
+ drivers/mtd/chips/cfi_cmdset_0002.c |   11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-- Josh Triplett
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cm=
+dset_0002.c
+index 5a4bfe3..9b0de91 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -509,6 +509,16 @@ static void cfi_fixup_m29ew_delay_after_resume(struct =
+cfi_private *cfi)
+ 		cfi_udelay(500);
+ }
+=20
++static void cfi_fixup_m29ew_delay_after_erase(struct cfi_private *cfi)=20
++{
++	/*
++	 * Resolving the Delay After ERASE Issue @low temperature.
++	 * 20ms delay is needed after erase operation.
++	 */
++	if (is_m29ew(cfi))
++		cfi_udelay(20000);
++}
++
+ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)  {
+ 	struct cfi_private *cfi =3D map->fldrv_priv; @@ -2397,6 +2407,7 @@ static=
+ int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
+ 		ret =3D -EIO;
+ 	}
+=20
++	cfi_fixup_m29ew_delay_after_erase(cfi);
+ 	chip->state =3D FL_READY;
+ 	DISABLE_VPP(map);
+ 	put_chip(map, chip, adr);
+--
+1.7.9.5
