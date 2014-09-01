@@ -1,15 +1,15 @@
-Received: from mail-qg0-x235.google.com ([2607:f8b0:400d:c04::235])
+Received: from mail-qg0-x234.google.com ([2607:f8b0:400d:c04::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XOMXz-0007I8-Os
- for linux-mtd@lists.infradead.org; Mon, 01 Sep 2014 08:01:09 +0000
-Received: by mail-qg0-f53.google.com with SMTP id z107so4896747qgd.12
- for <linux-mtd@lists.infradead.org>; Mon, 01 Sep 2014 01:00:45 -0700 (PDT)
+ id 1XOMbA-0008Pg-Rw
+ for linux-mtd@lists.infradead.org; Mon, 01 Sep 2014 08:04:25 +0000
+Received: by mail-qg0-f52.google.com with SMTP id z60so4821670qgd.39
+ for <linux-mtd@lists.infradead.org>; Mon, 01 Sep 2014 01:04:03 -0700 (PDT)
 MIME-Version: 1.0
 Sender: christian.riesch@gmail.com
 In-Reply-To: <A765B125120D1346A63912DDE6D8B6315DB7BE@NTXXIAMBX02.xacn.micron.com>
 References: <A765B125120D1346A63912DDE6D8B6315DB7BE@NTXXIAMBX02.xacn.micron.com>
-Date: Mon, 1 Sep 2014 10:00:45 +0200
-Message-ID: <CABkLObp7h4goCjgFVfXEgXtJ-Mv+gXbUqgxoY23udt9D3tNFKA@mail.gmail.com>
+Date: Mon, 1 Sep 2014 10:04:03 +0200
+Message-ID: <CABkLObrmngUycLrseRiP3bNR6XSpxfFH=E=k64XxKTofDsnj2Q@mail.gmail.com>
 Subject: Re: [PATCH 1/1] mtd: cfi_cmdset_0002:add fixup for Micron M29EW after
  erase operation
 From: Christian Riesch <christian.riesch@omicron.at>
@@ -30,18 +30,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
 On Mon, Sep 1, 2014 at 4:20 AM, bpqw <bpqw@micron.com> wrote:
 > For Micron M29EW,20ms delay is needed after erase operation.
-
-Is there a datasheet/application note/technical note from Micron
-describing this issue? Like the TN-13-07 for the other M29EW fixes?
-Are all M29EW types affected?
-
-Thanks,
-Christian
-
 >
 > Signed-off-by: BeanHuo <bpqw@micron.com>
 > ---
