@@ -1,15 +1,15 @@
-Received: from mail-qg0-x234.google.com ([2607:f8b0:400d:c04::234])
+Received: from mail-qg0-x22f.google.com ([2607:f8b0:400d:c04::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XOMbA-0008Pg-Rw
- for linux-mtd@lists.infradead.org; Mon, 01 Sep 2014 08:04:25 +0000
-Received: by mail-qg0-f52.google.com with SMTP id z60so4821670qgd.39
- for <linux-mtd@lists.infradead.org>; Mon, 01 Sep 2014 01:04:03 -0700 (PDT)
+ id 1XOMcK-0001Rr-On
+ for linux-mtd@lists.infradead.org; Mon, 01 Sep 2014 08:05:37 +0000
+Received: by mail-qg0-f47.google.com with SMTP id z60so4887226qgd.34
+ for <linux-mtd@lists.infradead.org>; Mon, 01 Sep 2014 01:05:15 -0700 (PDT)
 MIME-Version: 1.0
 Sender: christian.riesch@gmail.com
 In-Reply-To: <A765B125120D1346A63912DDE6D8B6315DB7BE@NTXXIAMBX02.xacn.micron.com>
 References: <A765B125120D1346A63912DDE6D8B6315DB7BE@NTXXIAMBX02.xacn.micron.com>
-Date: Mon, 1 Sep 2014 10:04:03 +0200
-Message-ID: <CABkLObrmngUycLrseRiP3bNR6XSpxfFH=E=k64XxKTofDsnj2Q@mail.gmail.com>
+Date: Mon, 1 Sep 2014 10:05:15 +0200
+Message-ID: <CABkLObq7N-_tD-RB+Z0R_DgGYETq-S+UucggFeyY6oK77xAbow@mail.gmail.com>
 Subject: Re: [PATCH 1/1] mtd: cfi_cmdset_0002:add fixup for Micron M29EW after
  erase operation
 From: Christian Riesch <christian.riesch@omicron.at>
@@ -58,6 +58,10 @@ On Mon, Sep 1, 2014 at 4:20 AM, bpqw <bpqw@micron.com> wrote:
 > +
 >  struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)  {
 >         struct cfi_private *cfi = map->fldrv_priv; @@ -2397,6 +2407,7 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
+
+Missing line break? The patch does not apply.
+Christian
+
 >                 ret = -EIO;
 >         }
 >
