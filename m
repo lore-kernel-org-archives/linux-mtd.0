@@ -1,24 +1,20 @@
-Received: from out1-smtp.messagingengine.com ([66.111.4.25])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XOZh6-0002WS-Hy
- for linux-mtd@lists.infradead.org; Mon, 01 Sep 2014 22:03:25 +0000
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
- by gateway2.nyi.internal (Postfix) with ESMTP id 6589E202E9
- for <linux-mtd@lists.infradead.org>; Mon,  1 Sep 2014 18:02:59 -0400 (EDT)
-Date: Mon, 1 Sep 2014 15:02:58 -0700
-From: Greg KH <greg@kroah.com>
-To: Richard Weinberger <richard@nod.at>
-Subject: Re: Ubi patch proposition for 3.10.y
-Message-ID: <20140901220258.GA28791@kroah.com>
-References: <CAGGh5h0KjexqaoEt8vvVXAEqCr625675XG4d71KdEuhrQVPr3w@mail.gmail.com>
- <5404EA4F.1040508@nod.at>
+Message-ID: <540581AB.6020101@atmel.com>
+Date: Tue, 2 Sep 2014 10:36:59 +0200
+From: Nicolas Ferre <nicolas.ferre@atmel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5404EA4F.1040508@nod.at>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- jean-philippe francois <jp.francois@cynove.com>, stable@vger.kernel.org,
- Artem Bityutskiy <dedekind1@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>, Linux Kernel
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 06/12] ARM: at91: add MTD_SPI_NOR (new dependency for
+ M25P80)
+References: <1398925607-7482-1-git-send-email-computersforpeace@gmail.com>
+ <1398925607-7482-7-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1398925607-7482-7-git-send-email-computersforpeace@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: Marek Vasut <marex@denx.de>, Huang Shijie <b32955@freescale.com>,
+ linux-mtd@lists.infradead.org,
+ Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
+ Andrew Victor <linux@maxim.org.za>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,25 +24,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Sep 01, 2014 at 11:51:11PM +0200, Richard Weinberger wrote:
-> Am 29.08.2014 14:26, schrieb jean-philippe francois:
-> > I think commit 4b3e0a25... [1] (UBI: Call scan_all() with correct
-> > offset in error case) should be added to 3.10.y stable branch.
-> > 
-> > It solves an ubifs corruption problem on my board. Edited bootlog for
-> > each case are attached.
-> > 
-> > ubifs corruption can be easily reproduced on this board :
-> > 1) format nand partition and flash rootfs
-> > 2) record h264 stream on nand
-> > 3) scp a file from host pc to rootfs while 2 is ongoing
-> > 4) unplug power
+On 01/05/2014 08:26, Brian Norris :
+> This defconfig contains the CONFIG_M25P80 symbol, which is now
+> dependent on the MTD_SPI_NOR symbol. Add CONFIG_MTD_SPI_NOR to satisfy
+> the new dependency.
 > 
-> Hmm, I think this is a good point to bite the bullet and backport all
-> UBI fastmap related fixes to -stable.
+> At the same time, drop the now-nonexistent CONFIG_MTD_CHAR symbol.
+> 
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Cc: Andrew Victor <linux@maxim.org.za>
+> Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
 
-And what exactly would those commits be?
+Okay, now taken in at91-3.18-defconfig, thanks:
 
-thanks,
+Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
 
-greg k-h
+
+> Cc: Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>  arch/arm/configs/sama5_defconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm/configs/sama5_defconfig b/arch/arm/configs/sama5_defconfig
+> index dc3881e07630..8282ebab6e52 100644
+> --- a/arch/arm/configs/sama5_defconfig
+> +++ b/arch/arm/configs/sama5_defconfig
+> @@ -65,12 +65,12 @@ CONFIG_DEVTMPFS_MOUNT=y
+>  # CONFIG_PREVENT_FIRMWARE_BUILD is not set
+>  CONFIG_MTD=y
+>  CONFIG_MTD_CMDLINE_PARTS=y
+> -CONFIG_MTD_CHAR=y
+>  CONFIG_MTD_BLOCK=y
+>  CONFIG_MTD_CFI=y
+>  CONFIG_MTD_M25P80=y
+>  CONFIG_MTD_NAND=y
+>  CONFIG_MTD_NAND_ATMEL=y
+> +CONFIG_MTD_SPI_NOR=y
+>  CONFIG_MTD_UBI=y
+>  CONFIG_MTD_UBI_GLUEBI=y
+>  CONFIG_PROC_DEVICETREE=y
+> 
+
+
+-- 
+Nicolas Ferre
