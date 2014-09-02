@@ -1,20 +1,21 @@
-Message-ID: <540581AB.6020101@atmel.com>
-Date: Tue, 2 Sep 2014 10:36:59 +0200
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
+Received: from us2.outbound.mailhostbox.com ([162.210.70.55])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XOtM1-0000wL-O0
+ for linux-mtd@lists.infradead.org; Tue, 02 Sep 2014 19:02:58 +0000
+Message-ID: <54061439.1030909@pek-sem.com>
+Date: Wed, 03 Sep 2014 00:32:17 +0530
+From: pekon <pekon@pek-sem.com>
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>, Linux Kernel
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 06/12] ARM: at91: add MTD_SPI_NOR (new dependency for
- M25P80)
-References: <1398925607-7482-1-git-send-email-computersforpeace@gmail.com>
- <1398925607-7482-7-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1398925607-7482-7-git-send-email-computersforpeace@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
+To: Roger Quadros <rogerq@ti.com>, tony@atomide.com
+Subject: Re: [PATCH 3/6] ARM: dts: am437x-gp-evm: Don't use read/write wait
+ monitoring
+References: <1409666227-20622-1-git-send-email-rogerq@ti.com>
+ <1409666227-20622-4-git-send-email-rogerq@ti.com>
+In-Reply-To: <1409666227-20622-4-git-send-email-rogerq@ti.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Marek Vasut <marex@denx.de>, Huang Shijie <b32955@freescale.com>,
- linux-mtd@lists.infradead.org,
- Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
- Andrew Victor <linux@maxim.org.za>, linux-arm-kernel@lists.infradead.org
+Cc: linux-omap@vger.kernel.org, linux-mtd <linux-mtd@lists.infradead.org>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,49 +25,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/05/2014 08:26, Brian Norris :
-> This defconfig contains the CONFIG_M25P80 symbol, which is now
-> dependent on the MTD_SPI_NOR symbol. Add CONFIG_MTD_SPI_NOR to satisfy
-> the new dependency.
-> 
-> At the same time, drop the now-nonexistent CONFIG_MTD_CHAR symbol.
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> Cc: Andrew Victor <linux@maxim.org.za>
-> Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
-
-Okay, now taken in at91-3.18-defconfig, thanks:
-
-Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+Hi Roger,
 
 
-> Cc: Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> ---
->  arch/arm/configs/sama5_defconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/configs/sama5_defconfig b/arch/arm/configs/sama5_defconfig
-> index dc3881e07630..8282ebab6e52 100644
-> --- a/arch/arm/configs/sama5_defconfig
-> +++ b/arch/arm/configs/sama5_defconfig
-> @@ -65,12 +65,12 @@ CONFIG_DEVTMPFS_MOUNT=y
->  # CONFIG_PREVENT_FIRMWARE_BUILD is not set
->  CONFIG_MTD=y
->  CONFIG_MTD_CMDLINE_PARTS=y
-> -CONFIG_MTD_CHAR=y
->  CONFIG_MTD_BLOCK=y
->  CONFIG_MTD_CFI=y
->  CONFIG_MTD_M25P80=y
->  CONFIG_MTD_NAND=y
->  CONFIG_MTD_NAND_ATMEL=y
-> +CONFIG_MTD_SPI_NOR=y
->  CONFIG_MTD_UBI=y
->  CONFIG_MTD_UBI_GLUEBI=y
->  CONFIG_PROC_DEVICETREE=y
-> 
+On Tuesday 02 September 2014 07:27 PM, Roger Quadros wrote:
+> NAND uses wait pin only to indicate device readiness after
+> a block/page operation. It is not use to extend individual
+> read/write cycle and so read/write wait pin monitoring must
+> be disabled for NAND.
+>
+I think this is incorrect assumption. NAND framework allows
+wait-pin monitoring at end of each read/write cycle. Please
+refer following code in drivers/mtd/nand/nand_base.c
+	@@ void nand_wait_ready(...)
+
+- nand_wait_ready() calls controller-driver specific call-back
+   for chip->dev_ready().
+
+- chip->dev_ready in-case of OMAP NAND drivers is set in
+   drivers/mtd/nand/omap2.c  during probe.
+	if (pdata->dev_ready) {
+		nand_chip->dev_ready = omap_dev_ready;
+		nand_chip->chip_delay = 0;
+	}
+
+Problem is we don't set pdata->dev_ready correctly as part
+of platform-data dring GPMC initialization. This was what my
+earlier patch for wait-pin monitoring about. But it was a
+quick fix for NAND devices.
+
+So, I suggest to fix wait-pin monitoring instead of de-scoping
+it from DTS as wait-pin monitoring should boast the NAND
+performance significantly.
+(please see if you can find an old mail thread which had some
+good feedbacks from Ezequiel and Javier about wait-pin monitoring).
+
+[...]
+
+> This patch also gets rid of the below warning when NAND is
+> accessed for the first time.
+>
+> omap_l3_noc 44000000.ocp: L3 application error: target 13 mod:1 (unclearable)
+>
+Can you debug this further.
+This warning probably comes when driver tries to access some
+"reserved" addresses. Or violate read/write bits.
 
 
--- 
-Nicolas Ferre
+with regards, pekon
+
+------------------------
+Powered by BigRock.com
