@@ -1,23 +1,21 @@
-Received: from us2.outbound.mailhostbox.com ([162.210.70.53])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XPENk-0005iu-B1
- for linux-mtd@lists.infradead.org; Wed, 03 Sep 2014 17:30:09 +0000
-Message-ID: <54074FFA.2020406@pek-sem.com>
-Date: Wed, 03 Sep 2014 22:59:30 +0530
-From: pekon <pekon@pek-sem.com>
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XPIjI-0006tB-2x
+ for linux-mtd@lists.infradead.org; Wed, 03 Sep 2014 22:08:41 +0000
+Message-ID: <5407914B.302@nod.at>
+Date: Thu, 04 Sep 2014 00:08:11 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-To: Roger Quadros <rogerq@ti.com>
-Subject: Re: [PATCH 3/6] ARM: dts: am437x-gp-evm: Don't use read/write wait
- monitoring
-References: <1409666227-20622-1-git-send-email-rogerq@ti.com>
- <1409666227-20622-4-git-send-email-rogerq@ti.com>
- <54061439.1030909@pek-sem.com> <5406D213.6020603@ti.com>
-In-Reply-To: <5406D213.6020603@ti.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Greg KH <greg@kroah.com>
+Subject: Re: Ubi patch proposition for 3.10.y
+References: <CAGGh5h0KjexqaoEt8vvVXAEqCr625675XG4d71KdEuhrQVPr3w@mail.gmail.com>
+ <5404EA4F.1040508@nod.at> <20140901220258.GA28791@kroah.com>
+In-Reply-To: <20140901220258.GA28791@kroah.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 8bit
-Cc: tony@atomide.com, linux-omap@vger.kernel.org,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ jean-philippe francois <jp.francois@cynove.com>, stable@vger.kernel.org,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,145 +25,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Roger,
-
-On Wednesday 03 September 2014 02:02 PM, Roger Quadros wrote:
-> Hi Pekon,
->
-> On 09/02/2014 10:02 PM, pekon wrote:
->> Hi Roger,
->>
->>
->> On Tuesday 02 September 2014 07:27 PM, Roger Quadros wrote:
->>> NAND uses wait pin only to indicate device readiness after
->>> a block/page operation. It is not use to extend individual
->>> read/write cycle and so read/write wait pin monitoring must
->>> be disabled for NAND.
+Am 02.09.2014 00:02, schrieb Greg KH:
+> On Mon, Sep 01, 2014 at 11:51:11PM +0200, Richard Weinberger wrote:
+>> Am 29.08.2014 14:26, schrieb jean-philippe francois:
+>>> I think commit 4b3e0a25... [1] (UBI: Call scan_all() with correct
+>>> offset in error case) should be added to 3.10.y stable branch.
 >>>
->> I think this is incorrect assumption. NAND framework allows
->> wait-pin monitoring at end of each read/write cycle. Please
->> refer following code in drivers/mtd/nand/nand_base.c
->>      @@ void nand_wait_ready(...)
->>
->> - nand_wait_ready() calls controller-driver specific call-back
->>    for chip->dev_ready().
->
-> It is important to note that this NAND device ready mechanism is different from
-> GPMC inter cycle wait state mechanism controlled by the read/write monitoring
-> bits. The same WAIT pin is used in both the cases.
->
-> For more details about NAND use case refer to
->
-> AM437x TRM:
-> Section: 9.1.3.3.12.2 NAND Device-Ready Pin
->
-> below excerpt from there
-> "To avoid a time-out caused by a block/page opening delay in NAND flash, disable the wait pin monitoring
-> for read and write accesses (that is, set the GPMC_CONFIG1_i[[21] WAITWRITEMONITORING and
-> GPMC_CONFIG1_i[[22] WAITREADMONITORING bits to 0):
->
-
-I re-read the AM437x TRM, and the section you mentioned above.
-
------------------
-*9.1.3.3.12.2 NAND Device-Ready Pin*
-The NAND memory device provides a ready pin to indicate data 
-availability after a block/page opening and to indicate that data 
-programming is complete. The ready pin can be connected to one of the 
-WAIT GPMC input pins; data read accesses must not be tried when the 
-ready pin is sampled inactive (device is not ready) even if the 
-associated chip-select WAITREADMONITORING bit field is set. The duration 
-of the NAND device busy state after the block/page opening is so long 
-(up to 50 μs) that accesses occurring when the ready pin is sampled 
-inactive can stall GPMC access and eventually cause a system time-out.
-If a read access to a NAND flash is done using the wait monitoring mode, 
-the device is blocked during a page opening, and so is the GPMC. If the 
-correct settings are used, other chip-selects can be used while
-the memory processes the page opening command.
-...
------------------
-
-It's clearly written that wait-pin monitoring is used for read/write 
-(programs) access, and GPMC is blocked till wait signal is asserted 
-during reads.
-Also, on NAND there can be no read/write access except at page-level
-so wait-pin monitoring is implicitly related to read/write accesses.
-However, whether you use it or not is purely user's choice, but it
-has performance impact.
-
-You are probably seeing timeout condition when enabling wait-pin
-monitoring, and this can be due to multiple reasons like;
-(1) incorrect pin-mux configuration (like directions, pull-up etc)
-(2) incorrect board-level pull-up
-(3) incorrect driver setting, like though wait-pin is enabled but
-     wrong wait-pin is being monitored.
-
-I request you to fix this instead of disabling it completely,
-as you should see significant NAND throughput increase once this
-feature works correctly.
-
->>
->> - chip->dev_ready in-case of OMAP NAND drivers is set in
->>    drivers/mtd/nand/omap2.c  during probe.
->>      if (pdata->dev_ready) {
->>          nand_chip->dev_ready = omap_dev_ready;
->>          nand_chip->chip_delay = 0;
->>      }
->>
->> Problem is we don't set pdata->dev_ready correctly as part
->> of platform-data dring GPMC initialization. This was what my
->> earlier patch for wait-pin monitoring about. But it was a
->> quick fix for NAND devices.
->>
->> So, I suggest to fix wait-pin monitoring instead of de-scoping
->> it from DTS as wait-pin monitoring should boast the NAND
->> performance significantly.
->> (please see if you can find an old mail thread which had some
->> good feedbacks from Ezequiel and Javier about wait-pin monitoring).
->
-> This is to get the device ready mechanism work and has nothing to do with
-> GPMC wait monitoring. Instead the WAIT pin is used to generate the GPMC
-> interrupt based on the WAIT pin polarity.
->
-> To monitor NAND device ready status
-> from TRM
-> "-Use software to poll the WAITnSTS bit (n = 0 to 1) of the GPMC_STS register.
-> OR
-> -Configure an interrupt that is generated on the WAIT signal change (through the GPMC_IRQEN [11-8] bits)"
->
->>
->> [...]
->>
->>> This patch also gets rid of the below warning when NAND is
->>> accessed for the first time.
+>>> It solves an ubifs corruption problem on my board. Edited bootlog for
+>>> each case are attached.
 >>>
->>> omap_l3_noc 44000000.ocp: L3 application error: target 13 mod:1 (unclearable)
->>>
->> Can you debug this further.
->> This warning probably comes when driver tries to access some
->> "reserved" addresses. Or violate read/write bits.
->
-> It is caused because of incorrectly enabled the GPMC wait monitoring. Disabling the
-> wait monitoring gets rid of this error. I don't understand what else I should debug
+>>> ubifs corruption can be easily reproduced on this board :
+>>> 1) format nand partition and flash rootfs
+>>> 2) record h264 stream on nand
+>>> 3) scp a file from host pc to rootfs while 2 is ongoing
+>>> 4) unplug power
+>>
+>> Hmm, I think this is a good point to bite the bullet and backport all
+>> UBI fastmap related fixes to -stable.
 
-I'm not sure how a NAND or GPMC feature can cause omap_l3_noc: L3 
-application error ?
-But now as I re-read the text, its probably the L3 interconnect timeout
-error due to no response from GPMC. There is a timer in L3 which 
-monitors if the L3 interconnect is stalled/blocked waiting for response
-from a target. I think it's that timer which is getting timeout. (but 
-just my guess).
+Actually I meant, I need to sit down and go through the changelog and locate
+them all. :)
 
+> And what exactly would those commits be?
 
- > and why.
- >
-As there were number of users on linux-mtd list wanted to use
-NAND wait-pin monitoring on OMAP devices, so I have just looped
-them if they see any concerns.
-Otherwise, no further concerns from me.
+There you go:
 
+e8c235b UBI: init_volumes: Ignore volumes with no LEBs
+44305eb UBI: fastmap: do not miss bit-flips
+604b592 UBI: fix rb_tree node comparison in add_map
+5547fec UBI: fix some use after free bugs
+fe24c6e UBI: Fix memory leak in ubi_attach_fastmap() error path
+c22301a UBI: fastmap: fix backward compatibility with image_seq
+4b3e0a2 UBI: Call scan_all() with correct offset in error case
+f240dca UBI: Fix error path in scan_pool()
+fb10e4d UBI: fix refill_wl_user_pool()
+8930fa5 UBI: Fix invalidate_fastmap()
 
-with regards, pekon
-
-------------------------
-Powered by BigRock.com
+Thanks,
+//richard
