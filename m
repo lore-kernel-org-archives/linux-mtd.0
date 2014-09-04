@@ -1,21 +1,18 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XPIjI-0006tB-2x
- for linux-mtd@lists.infradead.org; Wed, 03 Sep 2014 22:08:41 +0000
-Message-ID: <5407914B.302@nod.at>
-Date: Thu, 04 Sep 2014 00:08:11 +0200
-From: Richard Weinberger <richard@nod.at>
-MIME-Version: 1.0
-To: Greg KH <greg@kroah.com>
-Subject: Re: Ubi patch proposition for 3.10.y
-References: <CAGGh5h0KjexqaoEt8vvVXAEqCr625675XG4d71KdEuhrQVPr3w@mail.gmail.com>
- <5404EA4F.1040508@nod.at> <20140901220258.GA28791@kroah.com>
-In-Reply-To: <20140901220258.GA28791@kroah.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- jean-philippe francois <jp.francois@cynove.com>, stable@vger.kernel.org,
- Artem Bityutskiy <dedekind1@gmail.com>
+Message-ID: <1409796689.27524.34.camel@decadent.org.uk>
+Subject: Re: Autoloading of SPI/nor driver on kirkwood (qnap devices)
+From: Ben Hutchings <ben@decadent.org.uk>
+To: Ian Campbell <ijc@hellion.org.uk>, Huang Shijie <b32955@freescale.com>
+Date: Thu, 04 Sep 2014 03:11:29 +0100
+In-Reply-To: <1409673299.14324.43.camel@dagon.hellion.org.uk>
+References: <1409673299.14324.43.camel@dagon.hellion.org.uk>
+Content-Type: multipart/signed; micalg="pgp-sha512";
+ protocol="application/pgp-signature"; boundary="=-GE2BA4lK9Aiz0+lL9T0z"
+Mime-Version: 1.0
+Cc: Andrew Lunn <andrew@lunn.ch>, Jason Cooper <jason@lakedaemon.net>,
+ linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ linux-arm-kernel@lists.infradead.org,
+ debian-kernel <debian-kernel@lists.debian.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,41 +22,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 02.09.2014 00:02, schrieb Greg KH:
-> On Mon, Sep 01, 2014 at 11:51:11PM +0200, Richard Weinberger wrote:
->> Am 29.08.2014 14:26, schrieb jean-philippe francois:
->>> I think commit 4b3e0a25... [1] (UBI: Call scan_all() with correct
->>> offset in error case) should be added to 3.10.y stable branch.
->>>
->>> It solves an ubifs corruption problem on my board. Edited bootlog for
->>> each case are attached.
->>>
->>> ubifs corruption can be easily reproduced on this board :
->>> 1) format nand partition and flash rootfs
->>> 2) record h264 stream on nand
->>> 3) scp a file from host pc to rootfs while 2 is ongoing
->>> 4) unplug power
->>
->> Hmm, I think this is a good point to bite the bullet and backport all
->> UBI fastmap related fixes to -stable.
 
-Actually I meant, I need to sit down and go through the changelog and locate
-them all. :)
+--=-GE2BA4lK9Aiz0+lL9T0z
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> And what exactly would those commits be?
+On Tue, 2014-09-02 at 16:54 +0100, Ian Campbell wrote:
+> Hello,
+>=20
+> I recently tried to switch to using the DT based kirkwood stuff with
+> v3.16.1 on a QNAP TS-419 for the Debian kernel. Most things seemed ok
+> except that the flash driver was not autoloaded -- as well as spi-nor.ko
+> I had to manually modprobe m25p80.ko. Once I loaded both the flash was
+> detected.
+>=20
+> I noticed that many platforms declare the flash chip as compatible =3D
+> "st,m25pXXX" whereas the ts219.dtsi just said m25p128 but I tried
+> changing that and it didn't help. In any case without spi-nor.ko being
+> autoloaded I don't support m25p80.ko ever would be.
 
-There you go:
+m25p80.c has:
 
-e8c235b UBI: init_volumes: Ignore volumes with no LEBs
-44305eb UBI: fastmap: do not miss bit-flips
-604b592 UBI: fix rb_tree node comparison in add_map
-5547fec UBI: fix some use after free bugs
-fe24c6e UBI: Fix memory leak in ubi_attach_fastmap() error path
-c22301a UBI: fastmap: fix backward compatibility with image_seq
-4b3e0a2 UBI: Call scan_all() with correct offset in error case
-f240dca UBI: Fix error path in scan_pool()
-fb10e4d UBI: fix refill_wl_user_pool()
-8930fa5 UBI: Fix invalidate_fastmap()
+static struct spi_driver m25p80_driver =3D {
+	...
+	.id_table	=3D spi_nor_ids,
+	...
+};
 
-Thanks,
-//richard
+while spi_nor_ids is defined in spi-nor.c.  Since they end up as two
+separate modules, modpost can't read the ID table and add the device ID
+aliases to m25p80.ko.
+
+It looks like m25p80 has been split up in order that the new fsl-qspi
+driver can share its code (bypassing the SPI core and its device
+model!).  Why doesn't fsl-qspi implement an SPI controller device?  I
+think it is totally unacceptable to regress m25p80 in this way for the
+sake of a new driver.
+
+> I could set these things to =3Dm for the Debian kirkwood flavour, but
+> since this is supposed to be a distro-style kernel.
+>=20
+> I'm not entirely sure how module loading of this SPI stuff is supposed
+> to fit together -- anyone got any hints?
+
+Same as for any bus driver.
+
+Ben.
+
+--=20
+Ben Hutchings
+Experience is directly proportional to the value of equipment destroyed.
+                                                         - Carolyn Scheppne=
+r
+
+--=-GE2BA4lK9Aiz0+lL9T0z
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIVAwUAVAfKVue/yOyVhhEJAQqz0Q/+KUKj3uLlkTqhHKrYLHveL+w19w4RBB3w
+43ECTRpCxJAbC7OkjLcd8UW5GYSIXgekPFVujhHek3D/RUUcJTlSy3DLg9g77+B2
+iAmfl/VLpao8LxsBYEDs1p1ywZ2TJLFl2KqxixyG86x9ufLpC2Qun4Sp229hf8qu
++LzvDvGdlFSZ5uEtHvbQ0LVOuan5ZoJcK4o0Uhbh0b4YIgjQ34uAjrtzOaXmeBjT
+BCL0uDvZRnRm1NWKOwzsAJDSPGj4fMR4AJsvrbGzme6Ez9Rj9FFYcKPQC1RGxvgD
+bCa8ESWZpJtKc46efVxSVS06A33rA8LH7gtcFIgHYoM0Fz4nA5QjmUxNL69da/8h
+V06copYYvQUhfCnjS4OJ01txgHTwCFbw6Bh0EPNl3H6NLPMIQTZVzXBw5PPOhzAQ
+sXkI3Ke9nOY/ImUIm0e7maNC2cfvKl7QTr37y0VITH2hxIbftC7QrPNBuz79YmLc
+Zh63LIA9nwE3t6hstHXLCB24rr3Pq/BGxLsD82HQj/bWlPsGGhWj2NW6YvRoxla5
+kprAQBmyrvb8qiP4+4H9h4kqzd8+324bw4YgAHbc2GP1e/NSVxzwUU2vdBYqICgK
+/mUPmn3tJGBa4RTvCCxY5mU7AOVaRu7rWHk1uBhJ2fuuiQct6NlEpOXg7WlTjcZx
+jUWl8+q9CBk=
+=CQFt
+-----END PGP SIGNATURE-----
+
+--=-GE2BA4lK9Aiz0+lL9T0z--
