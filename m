@@ -1,19 +1,20 @@
-From: arno@natisbad.org (Arnaud Ebalard)
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Subject: Re: [PATCH] ARM: MVEBU: Netgear RN102: Use Hardware BCH ECC
-References: <1409898233-9273-1-git-send-email-klightspeed@killerwolves.net>
- <20140905154140.GA1377@arch.hh.imgtec.org>
-Date: Fri, 05 Sep 2014 22:49:58 +0200
-Message-ID: <87ha0l23nt.fsf@natisbad.org>
+Received: from mail-pd0-x234.google.com ([2607:f8b0:400e:c02::234])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XQ3Io-0002k1-HN
+ for linux-mtd@lists.infradead.org; Fri, 05 Sep 2014 23:52:26 +0000
+Received: by mail-pd0-f180.google.com with SMTP id ft15so1026110pdb.39
+ for <linux-mtd@lists.infradead.org>; Fri, 05 Sep 2014 16:52:04 -0700 (PDT)
+Date: Fri, 5 Sep 2014 16:52:01 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [GIT PULL] MTD fixes for 3.17-rc4
+Message-ID: <20140905235201.GG18411@ld-irv-0074>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- devicetree@vger.kernel.org, klightspeed@killerwolves.net,
- Jason Cooper <jason@lakedaemon.net>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ Linux Kernel <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,111 +24,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi Linus,
 
-Ezequiel Garcia <ezequiel.garcia@free-electrons.com> writes:
+The following changes since commit 2a500afe1e0e84c7a126df693dbd01353756dcfa:
 
-> (Fixing Cc list: dropping devicetree guys, and adding Brian and MTD instead)
->
-> On 05 Sep 04:23 PM, klightspeed@killerwolves.net wrote:
->> The bootloader on the Netgear ReadyNAS RN102 uses Hardware BCH ECC
->> (strength = 4), while the pxa3xx NAND driver by default uses 
->> Hamming ECC (strength = 1).
->> 
->
-> Hm, I guess the device (Hynix H27U1G8F2BTR) does not support ONFI,
-> and the kernel is just taking the legacy ECC. The flash specs makes no
-> mention to ONFI, so probably no ONFI here.
->
->> This patch changes the ECC mode on these machines to match that
->> of the bootloader and of the stock firmware, so that for example
->> updating the kernel is possible without requiring a serial
->> connection.
->> 
->> This patch depends on commit 5b3e507 (mtd: nand: pxa3xx: Use ECC
->> strength and step size devicetree binding)
->> 
->> Signed-off-by: Ben Peddell <klightspeed@killerwolves.net>
->
-> Looks good to me, since Arnaud reports this is the correct ECC scheme:
-> http://natisbad.org/NAS2/index.html#hw-nand
->
-> Acked-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
->
-> Thanks for the fix,
+  mtd: gpmi: make blockmark swapping optional (2014-07-27 22:06:31 -0700)
 
-w/o the patch, you can write data to the flash using userland tools from
-mtd-utils package (flash_erase and nandwrite); data can then be read
-again using userland tools (say using dd). But - as reported by Ben - if
-you nandwrite an uImage from userland, here is what you indeed get from
-u-boot when you try and boot that image:
+are available in the git repository at:
 
-  root@humble:~# flash_erase /dev/mtd2 0 0
-  Erasing 128 Kibyte @ 5e0000 -- 100 % complete 
-  
-  root@humble:~# nandwrite -p /dev/mtd2 /tmp/uImage-3.16.1.rn102
-  Writing data to block 0 at offset 0x0
-  Writing data to block 1 at offset 0x20000
-  Writing data to block 2 at offset 0x40000
-  Writing data to block 3 at offset 0x60000
-  Writing data to block 4 at offset 0x80000
-  
-  ...
-  
-  reboot 
-  
-  ...
-  
-  Marvell>> nand read 0x1200000 0x200000 0x600000
-  
-  NAND read: device 0 offset 0x200000, size 0x600000
-   6291456 bytes read: OK
-  
-  Marvell>> bootm 0x1200000
-  ## Booting kernel from Legacy Image at 01200000 ...
-     Image Name:   Linux-3.16.1.rn102
-     Created:      2014-08-14  13:33:46 UTC
-     Image Type:   ARM Linux Kernel Image (uncompressed)
-     Data Size:    4423998 Bytes =  4.2 MB
-     Load Address: 00008000
-     Entry Point:  00008000
-     Verifying Checksum ... Bad Data CRC
-  ERROR: can't get kernel image!
-  
+  git://git.infradead.org/linux-mtd.git tags/for-linus-20140905
 
-Now, w/ the patch submitted by Ben, here is what you get:
+for you to fetch changes up to b25046b1e5e3f1423434da77ccc859f2f779d1ce:
 
-  With the patch applied, this indeed works has 
-  ## Booting kernel from Legacy Image at 01200000 ...
-     Image Name:   Linux-3.16.1.rn102
-     Created:      2014-09-05  20:25:34 UTC
-     Image Type:   ARM Linux Kernel Image (uncompressed)
-     Data Size:    4424067 Bytes =  4.2 MB
-     Load Address: 00008000
-     Entry Point:  00008000
-     Verifying Checksum ... OK
-     Loading Kernel Image ... OK
-  OK
-  
-  Starting kernel ...
+  mtd: nand: fix DocBook warnings on nand_sdr_timings doc (2014-08-19 11:55:38 -0700)
 
-i.e. it works.  
+----------------------------------------------------------------
+Two trivial MTD updates for 3.17-rc4:
 
-So, thanks for reporting this, Ben. I must confess I got used to update
-my kernels from u-boot and did not take enough attention to that
-aspect when I updated the .dts to add access to NAND after Ezequiel
-wrote the NAND driver. I will take a look at RN104 and RN2120 to check
-if something similar is needed for those two.
+ * A tiny comment tweak, to kill a bunch of DocBook warnings added during the
+   merge window
 
-FWIW, you can add my:
+ * A small fixup to the OTP routines' error handling
 
- Tested-by: Arnaud Ebalard <arno@natisbad.org>
- 
-Additionally, Ezequiel, would anything prevent pushing the patch to
-stable team (nand entry in .dts was added in 3.14):
+----------------------------------------------------------------
+Boris BREZILLON (1):
+      mtd: nand: fix DocBook warnings on nand_sdr_timings doc
 
- Fixes: 92beaccd8b49 ("ARM: mvebu: Enable NAND controller in ReadyNAS 102 .dts file")
+Brian Norris (1):
+      mtd: cfi_cmdset_0002: check return code for get_chip()
 
-Cheers,
-
-a+
+ drivers/mtd/chips/cfi_cmdset_0002.c | 4 ++++
+ include/linux/mtd/nand.h            | 2 +-
+ 2 files changed, 5 insertions(+), 1 deletion(-)
