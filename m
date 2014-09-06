@@ -1,14 +1,14 @@
-Received: from mail-qa0-f44.google.com ([209.85.216.44])
+Received: from mail-qg0-f50.google.com ([209.85.192.50])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XQM7a-0002kz-Iz
- for linux-mtd@lists.infradead.org; Sat, 06 Sep 2014 19:58:07 +0000
-Received: by mail-qa0-f44.google.com with SMTP id j7so12577441qaq.31
- for <linux-mtd@lists.infradead.org>; Sat, 06 Sep 2014 12:57:45 -0700 (PDT)
+ id 1XQM7c-0002l1-QI
+ for linux-mtd@lists.infradead.org; Sat, 06 Sep 2014 19:58:09 +0000
+Received: by mail-qg0-f50.google.com with SMTP id q108so13090692qgd.37
+ for <linux-mtd@lists.infradead.org>; Sat, 06 Sep 2014 12:57:47 -0700 (PDT)
 From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 To: Brian Norris <computersforpeace@gmail.com>, Roger Quadros <rogerq@ti.com>
-Subject: [PATCH 1/3] nand: omap2: Add support for a flash-based bad block table
-Date: Sat,  6 Sep 2014 16:56:27 -0300
-Message-Id: <1410033389-32357-2-git-send-email-ezequiel@vanguardiasur.com.ar>
+Subject: [PATCH 2/3] nand: omap2: Remove horrible ifdefs to fix module probe
+Date: Sat,  6 Sep 2014 16:56:28 -0300
+Message-Id: <1410033389-32357-3-git-send-email-ezequiel@vanguardiasur.com.ar>
 In-Reply-To: <1410033389-32357-1-git-send-email-ezequiel@vanguardiasur.com.ar>
 References: <1410033389-32357-1-git-send-email-ezequiel@vanguardiasur.com.ar>
 Cc: Tony Lindgren <tony@atomide.com>, linux-mtd@lists.infradead.org,
@@ -23,85 +23,304 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This commit adds a new platform-data boolean property that enables use
-of a flash-based bad block table. This can also be enabled by setting
-the 'nand-on-flash-bbt' devicetree property.
+The current code abuses ifdefs to determine if the selected ECC scheme
+is supported by the running kernel. As a result the code is hard to read,
+and it also fails to load as a module.
 
-If the flash BBT is not enabled, the driver falls back to use OOB
-bad block markers only, as before. If the flash BBT is enabled the
-kernel will keep track of bad blocks using a BBT, in addition to
-the OOB markers.
+This commit removes all the ifdefs and instead introduces a function
+omap2_nand_ecc_check() to check if the ECC is supported by using
+IS_ENABLED(CONFIG_xxx).
 
-As explained by Brian Norris the reasons for using a BBT are:
-
-""
-The primary reason would be that NAND datasheets specify it these days.
-A better argument is that nobody guarantees that you can write a
-bad block marker to a worn out block; you may just get program failures.
-
-This has been acknowledged by several developers over the last several
-years.
-
-Additionally, you get a boot-time performance improvement if you only
-have to read a few pages, instead of a page or two from every block on
-the flash.
-""
+Since IS_ENABLED() is true when a config is =y or =m, this change fixes the
+module so it can be loaded with no issues.
 
 Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 ---
- arch/arm/mach-omap2/gpmc.c                   | 2 ++
- drivers/mtd/nand/omap2.c                     | 6 +++++-
- include/linux/platform_data/mtd-nand-omap2.h | 1 +
- 3 files changed, 8 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/omap2.c          | 134 +++++++++++++++++++++-----------------
+ include/linux/platform_data/elm.h |  14 ++++
+ 2 files changed, 87 insertions(+), 61 deletions(-)
 
-diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
-index 8bc1338..bafe190 100644
---- a/arch/arm/mach-omap2/gpmc.c
-+++ b/arch/arm/mach-omap2/gpmc.c
-@@ -1438,6 +1438,8 @@ static int gpmc_probe_nand_child(struct platform_device *pdev,
- 				break;
- 			}
- 
-+	gpmc_nand_data->flash_bbt = of_get_nand_on_flash_bbt(child);
-+
- 	val = of_get_nand_bus_width(child);
- 	if (val == 16)
- 		gpmc_nand_data->devsize = NAND_BUSWIDTH_16;
 diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index f0ed92e..1170389 100644
+index 1170389..987dd94 100644
 --- a/drivers/mtd/nand/omap2.c
 +++ b/drivers/mtd/nand/omap2.c
-@@ -1663,7 +1663,6 @@ static int omap_nand_probe(struct platform_device *pdev)
- 	mtd->owner		= THIS_MODULE;
- 	nand_chip		= &info->nand;
- 	nand_chip->ecc.priv	= NULL;
--	nand_chip->options	|= NAND_SKIP_BBTSCAN;
+@@ -136,7 +136,6 @@
  
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	nand_chip->IO_ADDR_R = devm_ioremap_resource(&pdev->dev, res);
-@@ -1692,6 +1691,11 @@ static int omap_nand_probe(struct platform_device *pdev)
- 		nand_chip->chip_delay = 50;
+ #define BADBLOCK_MARKER_LENGTH		2
+ 
+-#ifdef CONFIG_MTD_NAND_OMAP_BCH
+ static u_char bch16_vector[] = {0xf5, 0x24, 0x1c, 0xd0, 0x61, 0xb3, 0xf1, 0x55,
+ 				0x2e, 0x2c, 0x86, 0xa3, 0xed, 0x36, 0x1b, 0x78,
+ 				0x48, 0x76, 0xa9, 0x3b, 0x97, 0xd1, 0x7a, 0x93,
+@@ -144,7 +143,6 @@ static u_char bch16_vector[] = {0xf5, 0x24, 0x1c, 0xd0, 0x61, 0xb3, 0xf1, 0x55,
+ static u_char bch8_vector[] = {0xf3, 0xdb, 0x14, 0x16, 0x8b, 0xd2, 0xbe, 0xcc,
+ 	0xac, 0x6b, 0xff, 0x99, 0x7b};
+ static u_char bch4_vector[] = {0x00, 0x6b, 0x31, 0xdd, 0x41, 0xbc, 0x10};
+-#endif
+ 
+ /* oob info generated runtime depending on ecc algorithm and layout selected */
+ static struct nand_ecclayout omap_oobinfo;
+@@ -1292,7 +1290,6 @@ static int __maybe_unused omap_calculate_ecc_bch(struct mtd_info *mtd,
+ 	return 0;
+ }
+ 
+-#ifdef CONFIG_MTD_NAND_OMAP_BCH
+ /**
+  * erased_sector_bitflips - count bit flips
+  * @data:	data sector buffer
+@@ -1593,33 +1590,71 @@ static int omap_read_page_bch(struct mtd_info *mtd, struct nand_chip *chip,
+ /**
+  * is_elm_present - checks for presence of ELM module by scanning DT nodes
+  * @omap_nand_info: NAND device structure containing platform data
+- * @bch_type: 0x0=BCH4, 0x1=BCH8, 0x2=BCH16
+  */
+-static int is_elm_present(struct omap_nand_info *info,
+-			struct device_node *elm_node, enum bch_ecc bch_type)
++static bool is_elm_present(struct omap_nand_info *info,
++			   struct device_node *elm_node)
+ {
+ 	struct platform_device *pdev;
+-	struct nand_ecc_ctrl *ecc = &info->nand.ecc;
+-	int err;
++
+ 	/* check whether elm-id is passed via DT */
+ 	if (!elm_node) {
+-		pr_err("nand: error: ELM DT node not found\n");
+-		return -ENODEV;
++		dev_err(&info->pdev->dev, "ELM devicetree node not found\n");
++		return false;
+ 	}
+ 	pdev = of_find_device_by_node(elm_node);
+ 	/* check whether ELM device is registered */
+ 	if (!pdev) {
+-		pr_err("nand: error: ELM device not found\n");
+-		return -ENODEV;
++		dev_err(&info->pdev->dev, "ELM device not found\n");
++		return false;
+ 	}
+ 	/* ELM module available, now configure it */
+ 	info->elm_dev = &pdev->dev;
+-	err = elm_config(info->elm_dev, bch_type,
+-		(info->mtd.writesize / ecc->size), ecc->size, ecc->bytes);
++	return true;
++}
+ 
+-	return err;
++static bool omap2_nand_ecc_check(struct omap_nand_info *info,
++				 struct omap_nand_platform_data	*pdata)
++{
++	bool ecc_needs_bch, ecc_needs_omap_bch, ecc_needs_elm;
++
++	switch (info->ecc_opt) {
++	case OMAP_ECC_BCH4_CODE_HW_DETECTION_SW:
++	case OMAP_ECC_BCH8_CODE_HW_DETECTION_SW:
++		ecc_needs_omap_bch = false;
++		ecc_needs_bch = true;
++		ecc_needs_elm = false;
++		break;
++	case OMAP_ECC_BCH4_CODE_HW:
++	case OMAP_ECC_BCH8_CODE_HW:
++	case OMAP_ECC_BCH16_CODE_HW:
++		ecc_needs_omap_bch = true;
++		ecc_needs_bch = false;
++		ecc_needs_elm = true;
++		break;
++	default:
++		ecc_needs_omap_bch = false;
++		ecc_needs_bch = false;
++		ecc_needs_elm = false;
++		break;
++	}
++
++	if (ecc_needs_bch && !IS_ENABLED(CONFIG_MTD_NAND_ECC_BCH)) {
++		dev_err(&info->pdev->dev,
++			"CONFIG_MTD_NAND_ECC_BCH not enabled\n");
++		return false;
++	}
++	if (ecc_needs_omap_bch && !IS_ENABLED(CONFIG_MTD_NAND_OMAP_BCH)) {
++		dev_err(&info->pdev->dev,
++			"CONFIG_MTD_NAND_OMAP_BCH not enabled\n");
++		return false;
++	}
++	if (ecc_needs_elm && !is_elm_present(info, pdata->elm_of_node)) {
++		dev_err(&info->pdev->dev, "ELM not available\n");
++		return false;
++	}
++
++	return true;
+ }
+-#endif /* CONFIG_MTD_NAND_ECC_BCH */
+ 
+ static int omap_nand_probe(struct platform_device *pdev)
+ {
+@@ -1797,6 +1832,11 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 		goto return_error;
  	}
  
-+	if (pdata->flash_bbt)
-+		nand_chip->bbt_options |= NAND_BBT_USE_FLASH | NAND_BBT_NO_OOB;
-+	else
-+		nand_chip->options |= NAND_SKIP_BBTSCAN;
++	if (!omap2_nand_ecc_check(info, pdata)) {
++		err = -EINVAL;
++		goto return_error;
++	}
 +
- 	/* scan NAND device connected to chip controller */
- 	nand_chip->options |= pdata->devsize & NAND_BUSWIDTH_16;
- 	if (nand_scan_ident(mtd, 1, NULL)) {
-diff --git a/include/linux/platform_data/mtd-nand-omap2.h b/include/linux/platform_data/mtd-nand-omap2.h
-index 660c029..781e9e6 100644
---- a/include/linux/platform_data/mtd-nand-omap2.h
-+++ b/include/linux/platform_data/mtd-nand-omap2.h
-@@ -62,6 +62,7 @@ struct omap_nand_platform_data {
- 	struct mtd_partition	*parts;
- 	int			nr_parts;
- 	bool			dev_ready;
-+	bool			flash_bbt;
- 	enum nand_io		xfer_type;
- 	int			devsize;
- 	enum omap_ecc           ecc_opt;
+ 	/* populate MTD interface based on ECC scheme */
+ 	nand_chip->ecc.layout	= &omap_oobinfo;
+ 	ecclayout		= &omap_oobinfo;
+@@ -1826,7 +1866,6 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 		break;
+ 
+ 	case OMAP_ECC_BCH4_CODE_HW_DETECTION_SW:
+-#ifdef CONFIG_MTD_NAND_ECC_BCH
+ 		pr_info("nand: using OMAP_ECC_BCH4_CODE_HW_DETECTION_SW\n");
+ 		nand_chip->ecc.mode		= NAND_ECC_HW;
+ 		nand_chip->ecc.size		= 512;
+@@ -1858,14 +1897,8 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 			err = -EINVAL;
+ 		}
+ 		break;
+-#else
+-		pr_err("nand: error: CONFIG_MTD_NAND_ECC_BCH not enabled\n");
+-		err = -EINVAL;
+-		goto return_error;
+-#endif
+ 
+ 	case OMAP_ECC_BCH4_CODE_HW:
+-#ifdef CONFIG_MTD_NAND_OMAP_BCH
+ 		pr_info("nand: using OMAP_ECC_BCH4_CODE_HW ECC scheme\n");
+ 		nand_chip->ecc.mode		= NAND_ECC_HW;
+ 		nand_chip->ecc.size		= 512;
+@@ -1887,21 +1920,15 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 		/* reserved marker already included in ecclayout->eccbytes */
+ 		ecclayout->oobfree->offset	=
+ 				ecclayout->eccpos[ecclayout->eccbytes - 1] + 1;
+-		/* This ECC scheme requires ELM H/W block */
+-		if (is_elm_present(info, pdata->elm_of_node, BCH4_ECC) < 0) {
+-			pr_err("nand: error: could not initialize ELM\n");
+-			err = -ENODEV;
++
++		err = elm_config(info->elm_dev, BCH4_ECC,
++				 info->mtd.writesize / nand_chip->ecc.size,
++				 nand_chip->ecc.size, nand_chip->ecc.bytes);
++		if (err < 0)
+ 			goto return_error;
+-		}
+ 		break;
+-#else
+-		pr_err("nand: error: CONFIG_MTD_NAND_OMAP_BCH not enabled\n");
+-		err = -EINVAL;
+-		goto return_error;
+-#endif
+ 
+ 	case OMAP_ECC_BCH8_CODE_HW_DETECTION_SW:
+-#ifdef CONFIG_MTD_NAND_ECC_BCH
+ 		pr_info("nand: using OMAP_ECC_BCH8_CODE_HW_DETECTION_SW\n");
+ 		nand_chip->ecc.mode		= NAND_ECC_HW;
+ 		nand_chip->ecc.size		= 512;
+@@ -1934,14 +1961,8 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 			goto return_error;
+ 		}
+ 		break;
+-#else
+-		pr_err("nand: error: CONFIG_MTD_NAND_ECC_BCH not enabled\n");
+-		err = -EINVAL;
+-		goto return_error;
+-#endif
+ 
+ 	case OMAP_ECC_BCH8_CODE_HW:
+-#ifdef CONFIG_MTD_NAND_OMAP_BCH
+ 		pr_info("nand: using OMAP_ECC_BCH8_CODE_HW ECC scheme\n");
+ 		nand_chip->ecc.mode		= NAND_ECC_HW;
+ 		nand_chip->ecc.size		= 512;
+@@ -1953,12 +1974,13 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 		nand_chip->ecc.calculate	= omap_calculate_ecc_bch;
+ 		nand_chip->ecc.read_page	= omap_read_page_bch;
+ 		nand_chip->ecc.write_page	= omap_write_page_bch;
+-		/* This ECC scheme requires ELM H/W block */
+-		err = is_elm_present(info, pdata->elm_of_node, BCH8_ECC);
+-		if (err < 0) {
+-			pr_err("nand: error: could not initialize ELM\n");
++
++		err = elm_config(info->elm_dev, BCH8_ECC,
++				 info->mtd.writesize / nand_chip->ecc.size,
++				 nand_chip->ecc.size, nand_chip->ecc.bytes);
++		if (err < 0)
+ 			goto return_error;
+-		}
++
+ 		/* define ECC layout */
+ 		ecclayout->eccbytes		= nand_chip->ecc.bytes *
+ 							(mtd->writesize /
+@@ -1970,14 +1992,8 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 		ecclayout->oobfree->offset	=
+ 				ecclayout->eccpos[ecclayout->eccbytes - 1] + 1;
+ 		break;
+-#else
+-		pr_err("nand: error: CONFIG_MTD_NAND_OMAP_BCH not enabled\n");
+-		err = -EINVAL;
+-		goto return_error;
+-#endif
+ 
+ 	case OMAP_ECC_BCH16_CODE_HW:
+-#ifdef CONFIG_MTD_NAND_OMAP_BCH
+ 		pr_info("using OMAP_ECC_BCH16_CODE_HW ECC scheme\n");
+ 		nand_chip->ecc.mode		= NAND_ECC_HW;
+ 		nand_chip->ecc.size		= 512;
+@@ -1988,12 +2004,13 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 		nand_chip->ecc.calculate	= omap_calculate_ecc_bch;
+ 		nand_chip->ecc.read_page	= omap_read_page_bch;
+ 		nand_chip->ecc.write_page	= omap_write_page_bch;
+-		/* This ECC scheme requires ELM H/W block */
+-		err = is_elm_present(info, pdata->elm_of_node, BCH16_ECC);
+-		if (err < 0) {
+-			pr_err("ELM is required for this ECC scheme\n");
++
++		err = elm_config(info->elm_dev, BCH16_ECC,
++				 info->mtd.writesize / nand_chip->ecc.size,
++				 nand_chip->ecc.size, nand_chip->ecc.bytes);
++		if (err < 0)
+ 			goto return_error;
+-		}
++
+ 		/* define ECC layout */
+ 		ecclayout->eccbytes		= nand_chip->ecc.bytes *
+ 							(mtd->writesize /
+@@ -2005,11 +2022,6 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 		ecclayout->oobfree->offset	=
+ 				ecclayout->eccpos[ecclayout->eccbytes - 1] + 1;
+ 		break;
+-#else
+-		pr_err("nand: error: CONFIG_MTD_NAND_OMAP_BCH not enabled\n");
+-		err = -EINVAL;
+-		goto return_error;
+-#endif
+ 	default:
+ 		pr_err("nand: error: invalid or unsupported ECC scheme\n");
+ 		err = -EINVAL;
+diff --git a/include/linux/platform_data/elm.h b/include/linux/platform_data/elm.h
+index 780d1e9..25d1bca 100644
+--- a/include/linux/platform_data/elm.h
++++ b/include/linux/platform_data/elm.h
+@@ -42,8 +42,22 @@ struct elm_errorvec {
+ 	int error_loc[16];
+ };
+ 
++#if IS_ENABLED(CONFIG_MTD_NAND_OMAP_BCH)
+ void elm_decode_bch_error_page(struct device *dev, u8 *ecc_calc,
+ 		struct elm_errorvec *err_vec);
+ int elm_config(struct device *dev, enum bch_ecc bch_type,
+ 	int ecc_steps, int ecc_step_size, int ecc_syndrome_size);
++#else
++void elm_decode_bch_error_page(struct device *dev, u8 *ecc_calc,
++		struct elm_errorvec *err_vec)
++{
++}
++
++int elm_config(struct device *dev, enum bch_ecc bch_type,
++	int ecc_steps, int ecc_step_size, int ecc_syndrome_size)
++{
++	return -ENOSYS;
++}
++#endif /* CONFIG_MTD_NAND_ECC_BCH */
++
+ #endif /* __ELM_H */
 -- 
 2.0.1
