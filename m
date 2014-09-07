@@ -1,27 +1,21 @@
-Received: from mail-qc0-f178.google.com ([209.85.216.178])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XQPG3-0003DK-EC
- for linux-mtd@lists.infradead.org; Sat, 06 Sep 2014 23:19:04 +0000
-Received: by mail-qc0-f178.google.com with SMTP id x13so13835692qcv.23
- for <linux-mtd@lists.infradead.org>; Sat, 06 Sep 2014 16:18:40 -0700 (PDT)
-Date: Sat, 6 Sep 2014 20:17:28 -0300
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To: pekon <pekon@pek-sem.com>
-Subject: Re: [PATCH 2/3] nand: omap2: Remove horrible ifdefs to fix module
- probe
-Message-ID: <20140906231728.GA4663@arch.cereza>
-References: <1410033389-32357-1-git-send-email-ezequiel@vanguardiasur.com.ar>
- <1410033389-32357-3-git-send-email-ezequiel@vanguardiasur.com.ar>
- <540B785C.3070400@pek-sem.com>
+Date: Sun, 7 Sep 2014 09:38:51 +0200
+From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+To: Arnaud Ebalard <arno@natisbad.org>
+Subject: Re: [PATCH 1/2] ARM: mvebu: Netgear RN104: Use Hardware BCH ECC
+Message-ID: <20140907093851.377ddd29@free-electrons.com>
+In-Reply-To: <920c7e7169dc6aaaa3eb4bced2336d38e77b8864.1410035142.git.arno@natisbad.org>
+References: <cover.1410035142.git.arno@natisbad.org>
+ <920c7e7169dc6aaaa3eb4bced2336d38e77b8864.1410035142.git.arno@natisbad.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <540B785C.3070400@pek-sem.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Tony Lindgren <tony@atomide.com>, linux-mtd@lists.infradead.org,
- linux-omap <linux-omap@vger.kernel.org>,
- Guido =?iso-8859-1?Q?Mart=EDnez?= <guido@vanguardiasur.com.ar>,
- Roger Quadros <rogerq@ti.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: devicetree@vger.kernel.org, Ben Peddell <klightspeed@killerwolves.net>,
+ Jason Cooper <jason@lakedaemon.net>, linux-mtd@lists.infradead.org,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Gregory Clement <gregory.clement@free-electrons.com>,
+ Russell King <linux@arm.linux.org.uk>,
+ Brian Norris <computersforpeace@gmail.com>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,122 +25,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 07 Sep 02:40 AM, pekon wrote:
-[..]
-> >+static bool omap2_nand_ecc_check(struct omap_nand_info *info,
-> >+				 struct omap_nand_platform_data	*pdata)
-> >+{
-> >+	bool ecc_needs_bch, ecc_needs_omap_bch, ecc_needs_elm;
-> >+
-> >+	switch (info->ecc_opt) {
-> >+	case OMAP_ECC_BCH4_CODE_HW_DETECTION_SW:
-> >+	case OMAP_ECC_BCH8_CODE_HW_DETECTION_SW:
-> >+		ecc_needs_omap_bch = false;
-> >+		ecc_needs_bch = true;
-> >+		ecc_needs_elm = false;
-> >+		break;
-> >+	case OMAP_ECC_BCH4_CODE_HW:
-> >+	case OMAP_ECC_BCH8_CODE_HW:
-> >+	case OMAP_ECC_BCH16_CODE_HW:
-> >+		ecc_needs_omap_bch = true;
-> >+		ecc_needs_bch = false;
-> >+		ecc_needs_elm = true;
-> >+		break;
-> >+	default:
-> >+		ecc_needs_omap_bch = false;
-> >+		ecc_needs_bch = false;
-> >+		ecc_needs_elm = false;
-> >+		break;
-> >+	}
-> >+
-> >+	if (ecc_needs_bch && !IS_ENABLED(CONFIG_MTD_NAND_ECC_BCH)) {
-> >+		dev_err(&info->pdev->dev,
-> >+			"CONFIG_MTD_NAND_ECC_BCH not enabled\n");
-> >+		return false;
-> >+	}
-> >+	if (ecc_needs_omap_bch && !IS_ENABLED(CONFIG_MTD_NAND_OMAP_BCH)) {
-> >+		dev_err(&info->pdev->dev,
-> >+			"CONFIG_MTD_NAND_OMAP_BCH not enabled\n");
-> >+		return false;
-> >+	}
-> >+	if (ecc_needs_elm && !is_elm_present(info, pdata->elm_of_node)) {
-> >+		dev_err(&info->pdev->dev, "ELM not available\n");
-> >+		return false;
-> >+	}
-> >+
-> >+	return true;
-> >  }
-> 
-> Actually this new function is not required.
-> We already have this check in GPMC driver when we select the ecc-scheme.
-> Plz refer: File: /arch/arm/mach-omap2/gpmc.c
-> 	@@ static int gpmc_probe_nand_child(...)
-> 	...
-> 	/* select ecc-scheme for NAND */
-> 
-> is_elm_enabled() is a misnomer here. It actually does not check
-> for ELM DTS node, because that check is already done in GPMC driver.
-> It rather checks if ELM device is correctly binded and driver
-> "initialized" before NAND driver is probed.
-> 
-> Though ELM is not required during NAND probe because there is no error
-> checking/correction required during NAND probe, but this again comes
-> from the history of maintaining back-ward compatibility with board-file
-> (non DTS) approach. Once we move to all DTS approach may be this can be
-> removed (but on case-by case basis).
-> 
-> [...]
-> 
-> >diff --git a/include/linux/platform_data/elm.h b/include/linux/platform_data/elm.h
-> >index 780d1e9..25d1bca 100644
-> >--- a/include/linux/platform_data/elm.h
-> >+++ b/include/linux/platform_data/elm.h
-> >@@ -42,8 +42,22 @@ struct elm_errorvec {
-> >  	int error_loc[16];
-> >  };
-> >
-> >+#if IS_ENABLED(CONFIG_MTD_NAND_OMAP_BCH)
-> >  void elm_decode_bch_error_page(struct device *dev, u8 *ecc_calc,
-> >  		struct elm_errorvec *err_vec);
-> >  int elm_config(struct device *dev, enum bch_ecc bch_type,
-> >  	int ecc_steps, int ecc_step_size, int ecc_syndrome_size);
-> >+#else
-> >+void elm_decode_bch_error_page(struct device *dev, u8 *ecc_calc,
-> >+		struct elm_errorvec *err_vec)
-> >+{
-> >+}
-> >+
-> >+int elm_config(struct device *dev, enum bch_ecc bch_type,
-> >+	int ecc_steps, int ecc_step_size, int ecc_syndrome_size)
-> >+{
-> >+	return -ENOSYS;
-> >+}
-> >+#endif /* CONFIG_MTD_NAND_ECC_BCH */
-> >+
-> >  #endif /* __ELM_H */
-> >
-> If I'm not wrong, this is all you need in this patch
-> empty functions for CONFIG_MTD_NAND_ECC_BCH exposed symbols are already
-> handled in /include/linux/mtd/nand_bch.h
-> 
-> So, after this change, you can most of #ifdefs and IS_ENABLED()
-> and this patch should be simplified.
-> 
+Dear Arnaud Ebalard,
 
-If I understand your proposal correctly you are suggesting to drop the
-checks for CONFIG_MTD_NAND_ECC_BCH, CONFIG_MTD_NAND_OMAP_BCH, and the ELM
-devicetree node.
+On Sat, 06 Sep 2014 22:49:25 +0200, Arnaud Ebalard wrote:
 
-However, I'd say that change is even more invasive than this one. This commit
-merely replaces the current #ifdefs check with IS_ENABLED and tries to do so
-in a cleaner way.
+> Fixes: 0373a558bd79 ("ARM: mvebu: Enable NAND controller in ReadyNAS 104 .dts file")
+> Depends-on: 5b3e507820c6 ("mtd: nand: pxa3xx: Use ECC strength and step size devicetree binding")
 
-This is done on purpose, to keep the current behavior as much as possible.
+Maybe it's worth noting that it's not a build dependency: your commit
+changing the Device Tree files can perfectly be applied without the
+NAND ECC strength and step size bindings. Of course, it will have no
+effect on an older kernel that doesn't support those bindings, but it
+will not cause a build failure.
 
-In addition, if we don't check for the configs explicitly at probe time,
-we would only defer the error until some later point, for instance in the call to
-nand_chip->ecc.correct(). I don't think that's user-friendly.
+Thanks!
 
+Thomas
 -- 
-Ezequiel Garcia, VanguardiaSur
-www.vanguardiasur.com.ar
+Thomas Petazzoni, CTO, Free Electrons
+Embedded Linux, Kernel and Android engineering
+http://free-electrons.com
