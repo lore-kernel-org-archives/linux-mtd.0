@@ -1,22 +1,21 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XQvbw-0007HM-Rt
- for linux-mtd@lists.infradead.org; Mon, 08 Sep 2014 09:51:49 +0000
-Message-ID: <540D7C18.2060104@nod.at>
-Date: Mon, 08 Sep 2014 11:51:20 +0200
-From: Richard Weinberger <richard@nod.at>
-MIME-Version: 1.0
-To: dedekind1@gmail.com
+Received: from mga09.intel.com ([134.134.136.24])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XQviv-0001TF-QY
+ for linux-mtd@lists.infradead.org; Mon, 08 Sep 2014 09:59:02 +0000
+Message-ID: <1410170318.10764.119.camel@sauron.fi.intel.com>
 Subject: Re: Ubi patch proposition for 3.10.y
-References: <CAGGh5h0KjexqaoEt8vvVXAEqCr625675XG4d71KdEuhrQVPr3w@mail.gmail.com>	
- <5404EA4F.1040508@nod.at> <20140901220258.GA28791@kroah.com>	
- <5407914B.302@nod.at> <1410169630.10764.109.camel@sauron.fi.intel.com>
-In-Reply-To: <1410169630.10764.109.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: jean-philippe francois <jp.francois@cynove.com>
+Date: Mon, 08 Sep 2014 12:58:38 +0300
+In-Reply-To: <CAGGh5h0KjexqaoEt8vvVXAEqCr625675XG4d71KdEuhrQVPr3w@mail.gmail.com>
+References: <CAGGh5h0KjexqaoEt8vvVXAEqCr625675XG4d71KdEuhrQVPr3w@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Greg KH <greg@kroah.com>,
+Cc: richard@nod.at,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- jean-philippe francois <jp.francois@cynove.com>, stable@vger.kernel.org
+ stable@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,29 +25,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem,
-
-Am 08.09.2014 11:47, schrieb Artem Bityutskiy:
-> On Thu, 2014-09-04 at 00:08 +0200, Richard Weinberger wrote:
->> e8c235b UBI: init_volumes: Ignore volumes with no LEBs
->> 44305eb UBI: fastmap: do not miss bit-flips
->> 604b592 UBI: fix rb_tree node comparison in add_map
->> 5547fec UBI: fix some use after free bugs
->> fe24c6e UBI: Fix memory leak in ubi_attach_fastmap() error path
->> c22301a UBI: fastmap: fix backward compatibility with image_seq
->> 4b3e0a2 UBI: Call scan_all() with correct offset in error case
->> f240dca UBI: Fix error path in scan_pool()
->> fb10e4d UBI: fix refill_wl_user_pool()
->> 8930fa5 UBI: Fix invalidate_fastmap()
+On Fri, 2014-08-29 at 14:26 +0200, jean-philippe francois wrote:
+> Hi,
 > 
-> The entire "fastmap" feature is classified as "experimental", why would
-> we need to be submit these to stable? I mean, we do not treat the
-> feature as bullet proof anyway yet.
+> I think commit 4b3e0a25... [1] (UBI: Call scan_all() with correct
+> offset in error case) should be added to 3.10.y stable branch.
 
-but people want to test it.
-And we can get Fastmap only stable by having users.
-As you know embedded folks tend to use rather old kernels.
-Let's give them a chance to use the most current version of Fastmap on these kernels.
+This is the "fastmap" fix, and fastmap is called experimental. We do not
+have enough confidence it is production ready. Specifically, I'd like to
+hear someone doing extensive power-cut testing with this feature. The
+power-cut tolerance is one of the "selling features" of UBI/UBIFS, after
+all.
 
-Thanks,
-//richard
+Therefore I never added fastmap fixes to the stable queue.
+
+But if someone is willing to put all the fastmap fixes together, add the
+"stable tags" with the right kernel version "markings", and test for few
+older kernels, then I will recommend them to be included to the stable.
+Although I am not sure the stable maintainers would like accept them.
+
+But I do not recommend adding this single patch to the stable queue.
+
+But better, if people started paying more attention to "fastmap", we may
+agree that from now on we are careful about the sending the fixes to the
+stable queue.
+
+Thanks!
+
+-- 
+Best Regards,
+Artem Bityutskiy
