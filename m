@@ -1,19 +1,24 @@
 Received: from mga01.intel.com ([192.55.52.88])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XQxls-0000nH-21
- for linux-mtd@lists.infradead.org; Mon, 08 Sep 2014 12:10:12 +0000
-Message-ID: <1410178188.10764.159.camel@sauron.fi.intel.com>
-Subject: Re: mtd-utils-1.5.1 bug report
+ id 1XQyMW-0003Zs-HC
+ for linux-mtd@lists.infradead.org; Mon, 08 Sep 2014 12:48:04 +0000
+Message-ID: <1410180460.10764.163.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 2/3] UBI: block: Add support for the UBI_VOLUME_UPDATED
+ notification
 From: Artem Bityutskiy <dedekind1@gmail.com>
 Reply-To: dedekind1@gmail.com
-To: David Binderman <dcb314@hotmail.com>
-Date: Mon, 08 Sep 2014 15:09:48 +0300
-In-Reply-To: <DUB128-W61F274D19C6B54433EDD629CC00@phx.gbl>
-References: <DUB128-W61F274D19C6B54433EDD629CC00@phx.gbl>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+Date: Mon, 08 Sep 2014 15:47:40 +0300
+In-Reply-To: <20140908111832.GA1676@arch.hh.imgtec.org>
+References: <1409348550-27768-1-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1409348550-27768-3-git-send-email-ezequiel.garcia@free-electrons.com>
+ <1410173657.10764.148.camel@sauron.fi.intel.com>
+ <20140908111832.GA1676@arch.hh.imgtec.org>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ Guido =?ISO-8859-1?Q?Mart=EDnez?= <guido@vanguardiasur.com.ar>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,57 +28,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2014-09-07 at 14:58 +0000, David Binderman wrote:
-> Hello there,
-> 
-> ubi-utils/ubiformat.c:636:28: warning: logical not is only applied to the left hand side of comparison [-Wlogical-not-parentheses]
-> 
->                 if (!args.subpage_size != mtd->min_io_size)
->                     normsg("may be sub-page size is "
->                            "incorrect?");
+On Mon, 2014-09-08 at 08:18 -0300, Ezequiel Garcia wrote:
+> Regarding -stable, I think it's worth to pull the whole series.
 
-Hi,
+I've checked and the patches do not apply to 3.16 with many conflicts. 
+Are you enthusiastic enough to try this and fined out the missing
+dependencies?
 
-I'd propose this patch to fix the issue:
+The we could add the "Cc: stable@vger.kernel.org # v3.16+" tags, and
+also mentioned the commits we depend on in the commit messages.
 
-Subject: [PATCH] ubiformat: fix the subpage size hint on the error path
-
-David Binderman <dcb314@hotmail.com> reports that the following piece of looks
-wrong:
-
-if (!args.subpage_size != mtd->min_io_size)
-    normsg("may be sub-page size is incorrect?");
-
-I totally agree with him and I believe that we actually meant to have no
-negation in fron to f 'args.subpage_size', so instead, the code should look
-like this:
-
-if (args.subpage_size != mtd->min_io_size)
-    normsg("may be sub-page size is incorrect?");
-
-Signed-off-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
----
- ubi-utils/ubiformat.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/ubi-utils/ubiformat.c b/ubi-utils/ubiformat.c
-index 1b8f6fb..21409ca 100644
---- a/ubi-utils/ubiformat.c
-+++ b/ubi-utils/ubiformat.c
-@@ -633,9 +633,8 @@ static int format(libmtd_t libmtd, const struct mtd_dev_info *mtd,
-                                   write_size, eb);
- 
-                        if (errno != EIO) {
--                               if (!args.subpage_size != mtd->min_io_size)
--                                       normsg("may be sub-page size is "
--                                              "incorrect?");
-+                               if (args.subpage_size != mtd->min_io_size)
-+                                       normsg("may be sub-page size is incorrect?");
-                                goto out_free;
-                        }
- 
--- 
-1.9.3
+At this point I pushed your patches to the master branch. If you are
+going to check the stable story, please, use this branch.
 
 -- 
 Best Regards,
