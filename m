@@ -1,18 +1,18 @@
-Received: from relay5-d.mail.gandi.net ([2001:4b98:c:538::197])
+Received: from relay3-d.mail.gandi.net ([2001:4b98:c:538::195])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XQuMk-000512-7E
- for linux-mtd@lists.infradead.org; Mon, 08 Sep 2014 08:32:03 +0000
-Date: Mon, 8 Sep 2014 01:30:57 -0700
+ id 1XQuQ2-0006xT-2i
+ for linux-mtd@lists.infradead.org; Mon, 08 Sep 2014 08:35:27 +0000
+Date: Mon, 8 Sep 2014 01:34:48 -0700
 From: Josh Triplett <josh@joshtriplett.org>
 To: Masahiro Yamada <yamada.m@jp.panasonic.com>
-Subject: Re: [PATCH 5/7] mtd: denali: remove a set-but-unused variable
-Message-ID: <20140908083057.GB5361@thin>
+Subject: Re: [PATCH 6/7] mtd: denali: remove unnecessary parentheses
+Message-ID: <20140908083443.GC5361@thin>
 References: <1410163813-31783-1-git-send-email-yamada.m@jp.panasonic.com>
- <1410163813-31783-6-git-send-email-yamada.m@jp.panasonic.com>
+ <1410163813-31783-7-git-send-email-yamada.m@jp.panasonic.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1410163813-31783-6-git-send-email-yamada.m@jp.panasonic.com>
+In-Reply-To: <1410163813-31783-7-git-send-email-yamada.m@jp.panasonic.com>
 Cc: Huang Shijie <shijie8@gmail.com>, linux-kernel@vger.kernel.org,
  Rashika Kheria <rashika.kheria@gmail.com>, linux-mtd@lists.infradead.org,
  "grmoore@altera.com" <grmoore@altera.com>,
@@ -27,39 +27,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Sep 08, 2014 at 05:10:11PM +0900, Masahiro Yamada wrote:
-> The variable "retry" in wait_for_irq() is set, but not referenced.
+On Mon, Sep 08, 2014 at 05:10:12PM +0900, Masahiro Yamada wrote:
+> We should use parentheses only when they are necessary
+> or they really improve the readability.
 > 
 > Signed-off-by: Masahiro Yamada <yamada.m@jp.panasonic.com>
 
-Sure enough.
+This seems fine; none of these parentheses are needed, since the
+relative precedence of the relevant operators is always clear.
 
 Reviewed-by: Josh Triplett <josh@joshtriplett.org>
 
 > 
->  drivers/mtd/nand/denali.c | 2 --
->  1 file changed, 2 deletions(-)
+>  drivers/mtd/nand/denali.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
 > 
 > diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-> index 259ca0ba..d37c2e1 100644
+> index d37c2e1..ed37b76 100644
 > --- a/drivers/mtd/nand/denali.c
 > +++ b/drivers/mtd/nand/denali.c
-> @@ -697,7 +697,6 @@ static uint32_t wait_for_irq(struct denali_nand_info *denali, uint32_t irq_mask)
+> @@ -267,10 +267,10 @@ static void nand_onfi_timing_set(struct denali_nand_info *denali,
+>  
+>  	acc_clks = CEIL_DIV(Trea[mode], CLK_X);
+>  
+> -	while (((acc_clks * CLK_X) - Trea[mode]) < 3)
+> +	while (acc_clks * CLK_X - Trea[mode] < 3)
+>  		acc_clks++;
+>  
+> -	if ((data_invalid - acc_clks * CLK_X) < 2)
+> +	if (data_invalid - acc_clks * CLK_X < 2)
+>  		dev_warn(denali->dev, "%s, Line %d: Warning!\n",
+>  			__FILE__, __LINE__);
+>  
+> @@ -285,7 +285,7 @@ static void nand_onfi_timing_set(struct denali_nand_info *denali,
+>  		cs_cnt = 1;
+>  
+>  	if (Tcea[mode]) {
+> -		while (((cs_cnt * CLK_X) + Trea[mode]) < Tcea[mode])
+> +		while (cs_cnt * CLK_X + Trea[mode] < Tcea[mode])
+>  			cs_cnt++;
+>  	}
+>  
+> @@ -295,8 +295,8 @@ static void nand_onfi_timing_set(struct denali_nand_info *denali,
+>  #endif
+>  
+>  	/* Sighting 3462430: Temporary hack for MT29F128G08CJABAWP:B */
+> -	if ((ioread32(denali->flash_reg + MANUFACTURER_ID) == 0) &&
+> -		(ioread32(denali->flash_reg + DEVICE_ID) == 0x88))
+> +	if (ioread32(denali->flash_reg + MANUFACTURER_ID) == 0 &&
+> +		ioread32(denali->flash_reg + DEVICE_ID) == 0x88)
+>  		acc_clks = 6;
+>  
+>  	iowrite32(acc_clks, denali->flash_reg + ACC_CLKS);
+> @@ -577,7 +577,7 @@ static void denali_set_intr_modes(struct denali_nand_info *denali,
+>   */
+>  static inline bool is_flash_bank_valid(int flash_bank)
 >  {
->  	unsigned long comp_res;
->  	uint32_t intr_status;
-> -	bool retry = false;
->  	unsigned long timeout = msecs_to_jiffies(1000);
+> -	return (flash_bank >= 0 && flash_bank < 4);
+> +	return flash_bank >= 0 && flash_bank < 4;
+>  }
 >  
->  	do {
-> @@ -717,7 +716,6 @@ static uint32_t wait_for_irq(struct denali_nand_info *denali, uint32_t irq_mask)
->  			 * need to wait again
->  			 */
->  			spin_unlock_irq(&denali->irq_lock);
-> -			retry = true;
->  		}
->  	} while (comp_res != 0);
+>  static void denali_irq_init(struct denali_nand_info *denali)
+> @@ -1103,7 +1103,7 @@ static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
+>  				"timeout on write_page (type = %d)\n",
+>  				raw_xfer);
+>  		denali->status =
+> -			(irq_status & INTR_STATUS__PROGRAM_FAIL) ?
+> +			irq_status & INTR_STATUS__PROGRAM_FAIL ?
+>  			NAND_STATUS_FAIL : PASS;
+>  	}
 >  
+> @@ -1296,7 +1296,7 @@ static int denali_erase(struct mtd_info *mtd, int page)
+>  	irq_status = wait_for_irq(denali, INTR_STATUS__ERASE_COMP |
+>  					INTR_STATUS__ERASE_FAIL);
+>  
+> -	return (irq_status & INTR_STATUS__ERASE_FAIL) ? NAND_STATUS_FAIL : PASS;
+> +	return irq_status & INTR_STATUS__ERASE_FAIL ? NAND_STATUS_FAIL : PASS;
+>  }
+>  
+>  static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
 > -- 
 > 1.9.1
 > 
