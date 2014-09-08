@@ -1,28 +1,20 @@
-Received: from mail-qg0-f47.google.com ([209.85.192.47])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XQeEX-0005RU-CB
- for linux-mtd@lists.infradead.org; Sun, 07 Sep 2014 15:18:30 +0000
-Received: by mail-qg0-f47.google.com with SMTP id i50so125337qgf.6
- for <linux-mtd@lists.infradead.org>; Sun, 07 Sep 2014 08:18:07 -0700 (PDT)
-Date: Sun, 7 Sep 2014 12:16:56 -0300
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To: pekon <pekon@pek-sem.com>
-Subject: Re: [PATCH 2/3] nand: omap2: Remove horrible ifdefs to fix module
- probe
-Message-ID: <20140907151656.GA1048@arch.cereza>
-References: <1410033389-32357-1-git-send-email-ezequiel@vanguardiasur.com.ar>
- <1410033389-32357-3-git-send-email-ezequiel@vanguardiasur.com.ar>
- <540B785C.3070400@pek-sem.com> <20140906231728.GA4663@arch.cereza>
- <540C26F7.7020005@pek-sem.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <540C26F7.7020005@pek-sem.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- Tony Lindgren <tony@atomide.com>, linux-mtd@lists.infradead.org,
- linux-omap <linux-omap@vger.kernel.org>,
- Guido =?iso-8859-1?Q?Mart=EDnez?= <guido@vanguardiasur.com.ar>,
- Roger Quadros <rogerq@ti.com>
+Received: from smtp.mei.co.jp ([133.183.100.20])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XQu2f-00046K-KR
+ for linux-mtd@lists.infradead.org; Mon, 08 Sep 2014 08:11:18 +0000
+From: Masahiro Yamada <yamada.m@jp.panasonic.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 4/7] mtd: denali: change the type of iterators to int
+Date: Mon,  8 Sep 2014 17:10:10 +0900
+Message-Id: <1410163813-31783-5-git-send-email-yamada.m@jp.panasonic.com>
+In-Reply-To: <1410163813-31783-1-git-send-email-yamada.m@jp.panasonic.com>
+References: <1410163813-31783-1-git-send-email-yamada.m@jp.panasonic.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Josh Triplett <josh@joshtriplett.org>, linux-kernel@vger.kernel.org,
+ Masahiro Yamada <yamada.m@jp.panasonic.com>,
+ Rashika Kheria <rashika.kheria@gmail.com>,
+ "grmoore@altera.com" <grmoore@altera.com>,
+ Brian Norris <computersforpeace@gmail.com>, Huang Shijie <shijie8@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,31 +24,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 07 Sep 03:05 PM, pekon wrote:
-[..]
-> As ECC-scheme is selected in GPMC driver based on DTS settings, so
-> any mis-match is easily handled there.
-> Moreover, error will occur when we change ECC-scheme on-the-fly,
-> which is still not supported by framework, and require many other
-> updates if we plan to support that in near future.
-> So considering ECC-scheme as static configuration is a safe assumption.
-> 
-> But surely you can drop new check in omap2_nand_ecc_check(), which
-> is already covered in @@gpmc_probe_nand_child(...)
-> 
-> However, I leave it to you and rogerq@ti.com (as he currently
-> maintains OMAP NAND driver from TI side) to decide how to go about it.
-> 
+We should rathar use "int" type for loop iterators.
 
-As far as I can see, your proposal only cover the devicetree-probed case
-and it won't work for legacy boards.
+Signed-off-by: Masahiro Yamada <yamada.m@jp.panasonic.com>
+---
 
-Given it seems we still support legacy, I'd say your proposal would break
-things.
+ drivers/mtd/nand/denali.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-Not to mention that I still prefer to fail at probe time if the driver cannot
-deal with the selected ECC, and that's exactly what  omap2_nand_ecc_check()
-does.
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index dcd6771..259ca0ba 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -178,7 +178,7 @@ static void reset_bank(struct denali_nand_info *denali)
+ /* Reset the flash controller */
+ static uint16_t denali_nand_reset(struct denali_nand_info *denali)
+ {
+-	uint32_t i;
++	int i;
+ 
+ 	dev_dbg(denali->dev, "%s, Line %d, Function: %s\n",
+ 		       __FILE__, __LINE__, __func__);
+@@ -499,7 +499,8 @@ static uint16_t denali_nand_timing_set(struct denali_nand_info *denali)
+ {
+ 	uint16_t status = PASS;
+ 	uint32_t id_bytes[8], addr;
+-	uint8_t i, maf_id, device_id;
++	uint8_t maf_id, device_id;
++	int i;
+ 
+ 	dev_dbg(denali->dev,
+ 			"%s, Line %d, Function: %s\n",
+@@ -830,7 +831,8 @@ static int write_data_to_flash_mem(struct denali_nand_info *denali,
+ 							const uint8_t *buf,
+ 							int len)
+ {
+-	uint32_t i, *buf32;
++	uint32_t *buf32;
++	int i;
+ 
+ 	/*
+ 	 * verify that the len is a multiple of 4.
+@@ -850,7 +852,8 @@ static int read_data_from_flash_mem(struct denali_nand_info *denali,
+ 								uint8_t *buf,
+ 								int len)
+ {
+-	uint32_t i, *buf32;
++	uint32_t *buf32;
++	int i;
+ 
+ 	/*
+ 	 * we assume that len will be a multiple of 4, if not it would be nice
 -- 
-Ezequiel Garcia, VanguardiaSur
-www.vanguardiasur.com.ar
+1.9.1
