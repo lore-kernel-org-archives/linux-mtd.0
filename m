@@ -1,24 +1,21 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga02.intel.com ([134.134.136.20])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XQyMW-0003Zs-HC
- for linux-mtd@lists.infradead.org; Mon, 08 Sep 2014 12:48:04 +0000
-Message-ID: <1410180460.10764.163.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 2/3] UBI: block: Add support for the UBI_VOLUME_UPDATED
- notification
+ id 1XQyV7-00077I-AF
+ for linux-mtd@lists.infradead.org; Mon, 08 Sep 2014 12:56:57 +0000
+Message-ID: <1410180990.10764.164.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH][V2] UBI: block: fix dereference on uninitialized dev
 From: Artem Bityutskiy <dedekind1@gmail.com>
 Reply-To: dedekind1@gmail.com
-To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Date: Mon, 08 Sep 2014 15:47:40 +0300
-In-Reply-To: <20140908111832.GA1676@arch.hh.imgtec.org>
-References: <1409348550-27768-1-git-send-email-ezequiel.garcia@free-electrons.com>
- <1409348550-27768-3-git-send-email-ezequiel.garcia@free-electrons.com>
- <1410173657.10764.148.camel@sauron.fi.intel.com>
- <20140908111832.GA1676@arch.hh.imgtec.org>
+To: Colin King <colin.king@canonical.com>
+Date: Mon, 08 Sep 2014 15:56:30 +0300
+In-Reply-To: <1408526378-12972-1-git-send-email-colin.king@canonical.com>
+References: <1408526378-12972-1-git-send-email-colin.king@canonical.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- Guido =?ISO-8859-1?Q?Mart=EDnez?= <guido@vanguardiasur.com.ar>
+Cc: linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
+ ezequiel.garcia@free-electrons.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,18 +25,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2014-09-08 at 08:18 -0300, Ezequiel Garcia wrote:
-> Regarding -stable, I think it's worth to pull the whole series.
+On Wed, 2014-08-20 at 10:19 +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> commit 4df38926f337 ("UBI: block: Avoid disk size integer overflow")
+> introduced a dereference on dev (which is not initialized at that
+> point) when printing a warning message.  Re-order disk_capacity check
+> after the dev is found.
+> 
+> Found by cppcheck:
+>  [drivers/mtd/ubi/block.c:509]: (error) Uninitialized variable: dev
 
-I've checked and the patches do not apply to 3.16 with many conflicts. 
-Are you enthusiastic enough to try this and fined out the missing
-dependencies?
-
-The we could add the "Cc: stable@vger.kernel.org # v3.16+" tags, and
-also mentioned the commits we depend on in the commit messages.
-
-At this point I pushed your patches to the master branch. If you are
-going to check the stable story, please, use this branch.
+Picked this one, thanks!
 
 -- 
 Best Regards,
