@@ -1,15 +1,14 @@
-Received: from mail-qc0-f175.google.com ([209.85.216.175])
+Received: from mail-qg0-f51.google.com ([209.85.192.51])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XQx81-00050X-Gl
- for linux-mtd@lists.infradead.org; Mon, 08 Sep 2014 11:29:02 +0000
-Received: by mail-qc0-f175.google.com with SMTP id c9so15270668qcz.6
- for <linux-mtd@lists.infradead.org>; Mon, 08 Sep 2014 04:28:40 -0700 (PDT)
+ id 1XQx87-00052f-Px
+ for linux-mtd@lists.infradead.org; Mon, 08 Sep 2014 11:29:08 +0000
+Received: by mail-qg0-f51.google.com with SMTP id e89so1642093qgf.38
+ for <linux-mtd@lists.infradead.org>; Mon, 08 Sep 2014 04:28:46 -0700 (PDT)
 From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 To: Brian Norris <computersforpeace@gmail.com>, Roger Quadros <rogerq@ti.com>
-Subject: [PATCH v2 1/3] nand: omap2: Add support for flash-based bad block
- table
-Date: Mon,  8 Sep 2014 08:27:14 -0300
-Message-Id: <1410175636-4036-2-git-send-email-ezequiel@vanguardiasur.com.ar>
+Subject: [PATCH v2 3/3] nand: omap2: Replace pr_err with dev_err
+Date: Mon,  8 Sep 2014 08:27:16 -0300
+Message-Id: <1410175636-4036-4-git-send-email-ezequiel@vanguardiasur.com.ar>
 In-Reply-To: <1410175636-4036-1-git-send-email-ezequiel@vanguardiasur.com.ar>
 References: <1410175636-4036-1-git-send-email-ezequiel@vanguardiasur.com.ar>
 Cc: Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
@@ -24,85 +23,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This commit adds a new platform-data boolean property that enables use
-of a flash-based bad block table. This can also be enabled by setting
-the 'nand-on-flash-bbt' devicetree property.
-
-If the flash BBT is not enabled, the driver falls back to use OOB
-bad block markers only, as before. If the flash BBT is enabled the
-kernel will keep track of bad blocks using a BBT, in addition to
-the OOB markers.
-
-As explained by Brian Norris the reasons for using a BBT are:
-
-""
-The primary reason would be that NAND datasheets specify it these days.
-A better argument is that nobody guarantees that you can write a
-bad block marker to a worn out block; you may just get program failures.
-
-This has been acknowledged by several developers over the last several
-years.
-
-Additionally, you get a boot-time performance improvement if you only
-have to read a few pages, instead of a page or two from every block on
-the flash.
-""
+Usage of pr_err is frowned upon, so replace it with dev_err.
+Aditionally, the message on nand_bch_init() error is redundant,
+since proper error is showed if the function fails.
 
 Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 ---
- arch/arm/mach-omap2/gpmc.c                   | 2 ++
- drivers/mtd/nand/omap2.c                     | 6 +++++-
- include/linux/platform_data/mtd-nand-omap2.h | 1 +
- 3 files changed, 8 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/omap2.c | 26 ++++++++++++++------------
+ 1 file changed, 14 insertions(+), 12 deletions(-)
 
-diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
-index 2f97228..b55a225 100644
---- a/arch/arm/mach-omap2/gpmc.c
-+++ b/arch/arm/mach-omap2/gpmc.c
-@@ -1440,6 +1440,8 @@ static int gpmc_probe_nand_child(struct platform_device *pdev,
- 				break;
- 			}
- 
-+	gpmc_nand_data->flash_bbt = of_get_nand_on_flash_bbt(child);
-+
- 	val = of_get_nand_bus_width(child);
- 	if (val == 16)
- 		gpmc_nand_data->devsize = NAND_BUSWIDTH_16;
 diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 5967b38..e1a9b31 100644
+index f97a4ff..eb5e898 100644
 --- a/drivers/mtd/nand/omap2.c
 +++ b/drivers/mtd/nand/omap2.c
-@@ -1663,7 +1663,6 @@ static int omap_nand_probe(struct platform_device *pdev)
- 	mtd->owner		= THIS_MODULE;
- 	nand_chip		= &info->nand;
- 	nand_chip->ecc.priv	= NULL;
--	nand_chip->options	|= NAND_SKIP_BBTSCAN;
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	nand_chip->IO_ADDR_R = devm_ioremap_resource(&pdev->dev, res);
-@@ -1692,6 +1691,11 @@ static int omap_nand_probe(struct platform_device *pdev)
- 		nand_chip->chip_delay = 50;
+@@ -1375,7 +1375,7 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
+ 		erased_ecc_vec = bch16_vector;
+ 		break;
+ 	default:
+-		pr_err("invalid driver configuration\n");
++		dev_err(&info->pdev->dev, "invalid driver configuration\n");
+ 		return -EINVAL;
  	}
  
-+	if (pdata->flash_bbt)
-+		nand_chip->bbt_options |= NAND_BBT_USE_FLASH | NAND_BBT_NO_OOB;
-+	else
-+		nand_chip->options |= NAND_SKIP_BBTSCAN;
-+
+@@ -1446,7 +1446,8 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
+ 	err = 0;
+ 	for (i = 0; i < eccsteps; i++) {
+ 		if (err_vec[i].error_uncorrectable) {
+-			pr_err("nand: uncorrectable bit-flips found\n");
++			dev_err(&info->pdev->dev,
++				"uncorrectable bit-flips found\n");
+ 			err = -EBADMSG;
+ 		} else if (err_vec[i].error_reported) {
+ 			for (j = 0; j < err_vec[i].error_count; j++) {
+@@ -1483,8 +1484,9 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
+ 							1 << bit_pos;
+ 					}
+ 				} else {
+-					pr_err("invalid bit-flip @ %d:%d\n",
+-							 byte_pos, bit_pos);
++					dev_err(&info->pdev->dev,
++						"invalid bit-flip @ %d:%d\n",
++						byte_pos, bit_pos);
+ 					err = -EBADMSG;
+ 				}
+ 			}
+@@ -1598,13 +1600,13 @@ static bool is_elm_present(struct omap_nand_info *info,
+ 
+ 	/* check whether elm-id is passed via DT */
+ 	if (!elm_node) {
+-		pr_err("nand: error: ELM DT node not found\n");
++		dev_err(&info->pdev->dev, "ELM devicetree node not found\n");
+ 		return false;
+ 	}
+ 	pdev = of_find_device_by_node(elm_node);
+ 	/* check whether ELM device is registered */
+ 	if (!pdev) {
+-		pr_err("nand: error: ELM device not found\n");
++		dev_err(&info->pdev->dev, "ELM device not found\n");
+ 		return false;
+ 	}
+ 	/* ELM module available, now configure it */
+@@ -1734,14 +1736,14 @@ static int omap_nand_probe(struct platform_device *pdev)
  	/* scan NAND device connected to chip controller */
  	nand_chip->options |= pdata->devsize & NAND_BUSWIDTH_16;
  	if (nand_scan_ident(mtd, 1, NULL)) {
-diff --git a/include/linux/platform_data/mtd-nand-omap2.h b/include/linux/platform_data/mtd-nand-omap2.h
-index 16ec262..090bbab 100644
---- a/include/linux/platform_data/mtd-nand-omap2.h
-+++ b/include/linux/platform_data/mtd-nand-omap2.h
-@@ -71,6 +71,7 @@ struct omap_nand_platform_data {
- 	struct mtd_partition	*parts;
- 	int			nr_parts;
- 	bool			dev_ready;
-+	bool			flash_bbt;
- 	enum nand_io		xfer_type;
- 	int			devsize;
- 	enum omap_ecc           ecc_opt;
+-		pr_err("nand device scan failed, may be bus-width mismatch\n");
++		dev_err(&info->pdev->dev, "scan failed, may be bus-width mismatch\n");
+ 		err = -ENXIO;
+ 		goto return_error;
+ 	}
+ 
+ 	/* check for small page devices */
+ 	if ((mtd->oobsize < 64) && (pdata->ecc_opt != OMAP_ECC_HAM1_CODE_HW)) {
+-		pr_err("small page devices are not supported\n");
++		dev_err(&info->pdev->dev, "small page devices are not supported\n");
+ 		err = -EINVAL;
+ 		goto return_error;
+ 	}
+@@ -1959,7 +1961,6 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 							nand_chip->ecc.bytes,
+ 							&ecclayout);
+ 		if (!nand_chip->ecc.priv) {
+-			pr_err("nand: error: unable to use s/w BCH library\n");
+ 			err = -EINVAL;
+ 			goto return_error;
+ 		}
+@@ -2026,7 +2027,7 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 				ecclayout->eccpos[ecclayout->eccbytes - 1] + 1;
+ 		break;
+ 	default:
+-		pr_err("nand: error: invalid or unsupported ECC scheme\n");
++		dev_err(&info->pdev->dev, "invalid or unsupported ECC scheme\n");
+ 		err = -EINVAL;
+ 		goto return_error;
+ 	}
+@@ -2038,8 +2039,9 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 	ecclayout->oobfree->length = mtd->oobsize - ecclayout->oobfree->offset;
+ 	/* check if NAND device's OOB is enough to store ECC signatures */
+ 	if (mtd->oobsize < (ecclayout->eccbytes + BADBLOCK_MARKER_LENGTH)) {
+-		pr_err("not enough OOB bytes required = %d, available=%d\n",
+-					   ecclayout->eccbytes, mtd->oobsize);
++		dev_err(&info->pdev->dev,
++			"not enough OOB bytes required = %d, available=%d\n",
++			ecclayout->eccbytes, mtd->oobsize);
+ 		err = -EINVAL;
+ 		goto return_error;
+ 	}
 -- 
 2.0.1
