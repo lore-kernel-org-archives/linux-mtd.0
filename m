@@ -1,23 +1,19 @@
-Received: from mail-qc0-f178.google.com ([209.85.216.178])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XQxBb-0007v7-UY
- for linux-mtd@lists.infradead.org; Mon, 08 Sep 2014 11:32:44 +0000
-Received: by mail-qc0-f178.google.com with SMTP id x13so15576887qcv.9
- for <linux-mtd@lists.infradead.org>; Mon, 08 Sep 2014 04:32:22 -0700 (PDT)
-Date: Mon, 8 Sep 2014 08:31:09 -0300
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To: Roger Quadros <rogerq@ti.com>
-Subject: Re: [PATCH 0/3] nand: omap2: Two and a half improvements
-Message-ID: <20140908113109.GC1676@arch.hh.imgtec.org>
-References: <1410033389-32357-1-git-send-email-ezequiel@vanguardiasur.com.ar>
- <540D691B.2060202@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <540D691B.2060202@ti.com>
-Cc: Tony Lindgren <tony@atomide.com>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- Guido =?iso-8859-1?Q?Mart=EDnez?= <guido@vanguardiasur.com.ar>
+Received: from mga01.intel.com ([192.55.52.88])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XQxMu-0001AF-MQ
+ for linux-mtd@lists.infradead.org; Mon, 08 Sep 2014 11:44:25 +0000
+Message-ID: <1410176639.10764.157.camel@sauron.fi.intel.com>
+Subject: Re: Question about ubiformat and how to better use UBIFS
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: t kevin <kevint324@gmail.com>
+Date: Mon, 08 Sep 2014 14:43:59 +0300
+In-Reply-To: <CAOx4H9BopH3F5xwmQ-B5AckTS65SUss_mxjWi2N6ibXovnm61g@mail.gmail.com>
+References: <CAOx4H9BopH3F5xwmQ-B5AckTS65SUss_mxjWi2N6ibXovnm61g@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,24 +23,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08 Sep 11:30 AM, Roger Quadros wrote:
-[..]
-> > 
-> > And speaking of modules, the driver loads as "modprobe omap2". And it's not
-> > the only one with a clumsy name: "modprobe elm". I guess we cannot fix it now,
-> > but it would be great to be more careful with driver naming in the future.
-> 
-> Why can't we fix it now? It seems nobody ever used it as a module before so now
-> is the right time to fix. Unless Tony has any objections.
-> 
+On Thu, 2014-09-04 at 20:17 +0800, t kevin wrote:
+> So here are my questions.
+> 1. (Generally speaking) Which one is better? I know ubiformat is going
+> to erase every PEB  so right now I prefer the second approach since I
+> don't have to do ubiformat everytime. It sounds like the erase counter
+> grows slower.
 
-That would be great. "omap2-nand" or something like that would be optimal.
+If the second way works for you, you may stick to it.
 
-Regarding the ELM driver, I agree with your suggestion in the other thread,
-we could just move it into drivers/mtd/nand and rework it to not be a module
-but just a pack of helpers for the NAND driver.
+Back when I was working in Nokia, where we had to flash newly produced
+devices in the factory pipeline, we had to have a flash-able image. So
+we used the mkfs.ubifs approach.
 
-Do you think that would work?
+So generally, the mkfs.ubifs approach was designed for real production,
+and the mount approach was originally supported just to make developers'
+life easier.
+
+But use whatever is better for your needs.
+
+> 2. I'm working on an embedded device which has limited CPU power so
+> I'd like to use compressed_method=none. It can be done by passing -x
+> none to mkfs.ubifs. But I don't see similar option in ubiformat or
+> ubimkvol.
+
+Well, there is no compression involved in the UBI level, and both of
+these tools work on the UBI level, they do not know anything about
+UBIFS. That's why you do not see this option.
+
+>  So when I go to the 2nd approach the mounted rootfs is
+> always compressed.
+
+Use 'mount -o compr=none', check Documentation/filesystems/ubifs.txt.
+
+> http://www.linux-mtd.infradead.org/faq/ubifs.html#L_comproff
+> This method is not helping much. I want to disable compression on the
+> entire fs, just like mkfs.ubifs -x none did.
+
+Yeah, that section misses -o compre=none. I've just fixed it up, thanks!
+
 -- 
-Ezequiel Garcia, VanguardiaSur
-www.vanguardiasur.com.ar
+Best Regards,
+Artem Bityutskiy
