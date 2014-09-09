@@ -1,23 +1,17 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
+Received: from mail-wi0-x230.google.com ([2a00:1450:400c:c05::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XRGuV-0005PC-1n
- for linux-mtd@lists.infradead.org; Tue, 09 Sep 2014 08:36:23 +0000
-Message-ID: <540EBBEC.0@ti.com>
-Date: Tue, 9 Sep 2014 11:35:56 +0300
-From: Roger Quadros <rogerq@ti.com>
-MIME-Version: 1.0
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, Brian Norris
- <computersforpeace@gmail.com>
-Subject: Re: [PATCH v2 1/3] nand: omap2: Add support for flash-based bad block
- table
-References: <1410175636-4036-1-git-send-email-ezequiel@vanguardiasur.com.ar>
- <1410175636-4036-2-git-send-email-ezequiel@vanguardiasur.com.ar>
-In-Reply-To: <1410175636-4036-2-git-send-email-ezequiel@vanguardiasur.com.ar>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
- linux-mtd@lists.infradead.org,
- =?ISO-8859-1?Q?Guido_Mart=EDnez?= <guido@vanguardiasur.com.ar>
+ id 1XRKUu-0000dC-M9
+ for linux-mtd@lists.infradead.org; Tue, 09 Sep 2014 12:26:13 +0000
+Received: by mail-wi0-f176.google.com with SMTP id bs8so4331321wib.9
+ for <linux-mtd@lists.infradead.org>; Tue, 09 Sep 2014 05:25:48 -0700 (PDT)
+From: Richard Genoud <richard.genoud@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Subject: [PATCH] UBI: add missing kmem_cache_free() in process_pool_aeb error
+ path
+Date: Tue,  9 Sep 2014 14:25:01 +0200
+Message-Id: <1410265519-25111-1-git-send-email-richard.genoud@gmail.com>
+Cc: Richard Genoud <richard.genoud@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,96 +21,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ezequiel,
+I ran into this error after a ubiupdatevol, because I forgot to backport
+e9110361a9a4 UBI: fix the volumes tree sorting criteria.
 
-On 09/08/2014 02:27 PM, Ezequiel Garcia wrote:
-> This commit adds a new platform-data boolean property that enables use
-> of a flash-based bad block table. This can also be enabled by setting
-> the 'nand-on-flash-bbt' devicetree property.
+UBI error: process_pool_aeb: orphaned volume in fastmap pool
+UBI error: ubi_scan_fastmap: Attach by fastmap failed, doing a full scan!
+kmem_cache_destroy ubi_ainf_peb_slab: Slab cache still has objects
+CPU: 0 PID: 1 Comm: swapper Not tainted 3.14.18-00053-gf05cac8dbf85 #1
+[<c000d298>] (unwind_backtrace) from [<c000baa8>] (show_stack+0x10/0x14)
+[<c000baa8>] (show_stack) from [<c01b7a68>] (destroy_ai+0x230/0x244)
+[<c01b7a68>] (destroy_ai) from [<c01b8fd4>] (ubi_attach+0x98/0x1ec)
+[<c01b8fd4>] (ubi_attach) from [<c01ade90>] (ubi_attach_mtd_dev+0x2b8/0x868)
+[<c01ade90>] (ubi_attach_mtd_dev) from [<c038b510>] (ubi_init+0x1dc/0x2ac)
+[<c038b510>] (ubi_init) from [<c0008860>] (do_one_initcall+0x94/0x140)
+[<c0008860>] (do_one_initcall) from [<c037aadc>] (kernel_init_freeable+0xe8/0x1b0)
+[<c037aadc>] (kernel_init_freeable) from [<c02730ac>] (kernel_init+0x8/0xe4)
+[<c02730ac>] (kernel_init) from [<c00093f0>] (ret_from_fork+0x14/0x24)
+UBI: scanning is finished
 
-I'm not much aware of how on-flash-BBT works internally, but will it break things if
-we keep on-flash-BBT "enabled" as the default option and add a DT property only to
-explicitly disable the on-flash-BBT?
+Freeing the cache in the error path fixes the Slab error.
 
-> 
-> If the flash BBT is not enabled, the driver falls back to use OOB
-> bad block markers only, as before. If the flash BBT is enabled the
-> kernel will keep track of bad blocks using a BBT, in addition to
-> the OOB markers.
-> 
-> As explained by Brian Norris the reasons for using a BBT are:
-> 
-> ""
-> The primary reason would be that NAND datasheets specify it these days.
-> A better argument is that nobody guarantees that you can write a
-> bad block marker to a worn out block; you may just get program failures.
-> 
-> This has been acknowledged by several developers over the last several
-> years.
-> 
-> Additionally, you get a boot-time performance improvement if you only
-> have to read a few pages, instead of a page or two from every block on
-> the flash.
-> ""
+Tested on at91sam9g35 (3.14.18+fastmap backports)
 
-cheers,
--roger
+Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
+Cc: stable <stable@vger.kernel.org> # >= 3.10
+---
+ drivers/mtd/ubi/fastmap.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> 
-> Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-> ---
->  arch/arm/mach-omap2/gpmc.c                   | 2 ++
->  drivers/mtd/nand/omap2.c                     | 6 +++++-
->  include/linux/platform_data/mtd-nand-omap2.h | 1 +
->  3 files changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
-> index 2f97228..b55a225 100644
-> --- a/arch/arm/mach-omap2/gpmc.c
-> +++ b/arch/arm/mach-omap2/gpmc.c
-> @@ -1440,6 +1440,8 @@ static int gpmc_probe_nand_child(struct platform_device *pdev,
->  				break;
->  			}
->  
-> +	gpmc_nand_data->flash_bbt = of_get_nand_on_flash_bbt(child);
-> +
->  	val = of_get_nand_bus_width(child);
->  	if (val == 16)
->  		gpmc_nand_data->devsize = NAND_BUSWIDTH_16;
-> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> index 5967b38..e1a9b31 100644
-> --- a/drivers/mtd/nand/omap2.c
-> +++ b/drivers/mtd/nand/omap2.c
-> @@ -1663,7 +1663,6 @@ static int omap_nand_probe(struct platform_device *pdev)
->  	mtd->owner		= THIS_MODULE;
->  	nand_chip		= &info->nand;
->  	nand_chip->ecc.priv	= NULL;
-> -	nand_chip->options	|= NAND_SKIP_BBTSCAN;
->  
->  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->  	nand_chip->IO_ADDR_R = devm_ioremap_resource(&pdev->dev, res);
-> @@ -1692,6 +1691,11 @@ static int omap_nand_probe(struct platform_device *pdev)
->  		nand_chip->chip_delay = 50;
->  	}
->  
-> +	if (pdata->flash_bbt)
-> +		nand_chip->bbt_options |= NAND_BBT_USE_FLASH | NAND_BBT_NO_OOB;
-> +	else
-> +		nand_chip->options |= NAND_SKIP_BBTSCAN;
-> +
->  	/* scan NAND device connected to chip controller */
->  	nand_chip->options |= pdata->devsize & NAND_BUSWIDTH_16;
->  	if (nand_scan_ident(mtd, 1, NULL)) {
-> diff --git a/include/linux/platform_data/mtd-nand-omap2.h b/include/linux/platform_data/mtd-nand-omap2.h
-> index 16ec262..090bbab 100644
-> --- a/include/linux/platform_data/mtd-nand-omap2.h
-> +++ b/include/linux/platform_data/mtd-nand-omap2.h
-> @@ -71,6 +71,7 @@ struct omap_nand_platform_data {
->  	struct mtd_partition	*parts;
->  	int			nr_parts;
->  	bool			dev_ready;
-> +	bool			flash_bbt;
->  	enum nand_io		xfer_type;
->  	int			devsize;
->  	enum omap_ecc           ecc_opt;
-> 
+diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+index 0431b46d9fd9..c701369090fb 100644
+--- a/drivers/mtd/ubi/fastmap.c
++++ b/drivers/mtd/ubi/fastmap.c
+@@ -330,6 +330,7 @@ static int process_pool_aeb(struct ubi_device *ubi, struct ubi_attach_info *ai,
+ 		av = tmp_av;
+ 	else {
+ 		ubi_err("orphaned volume in fastmap pool!");
++		kmem_cache_free(ai->aeb_slab_cache, new_aeb);
+ 		return UBI_BAD_FASTMAP;
+ 	}
+ 
+-- 
+2.0.0
