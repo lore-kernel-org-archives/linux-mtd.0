@@ -1,12 +1,12 @@
 Received: from smtp.mei.co.jp ([133.183.100.20])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XRAlS-0006I8-Fj
+ id 1XRAlS-0006IM-K0
  for linux-mtd@lists.infradead.org; Tue, 09 Sep 2014 02:02:39 +0000
 From: Masahiro Yamada <yamada.m@jp.panasonic.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH v2 3/7] mtd: denali: remove unnecessary casts
-Date: Tue,  9 Sep 2014 11:01:53 +0900
-Message-Id: <1410228117-14820-4-git-send-email-yamada.m@jp.panasonic.com>
+Subject: [PATCH v2 6/7] mtd: denali: remove unnecessary parentheses
+Date: Tue,  9 Sep 2014 11:01:56 +0900
+Message-Id: <1410228117-14820-7-git-send-email-yamada.m@jp.panasonic.com>
 In-Reply-To: <1410228117-14820-1-git-send-email-yamada.m@jp.panasonic.com>
 References: <1410228117-14820-1-git-send-email-yamada.m@jp.panasonic.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -24,129 +24,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Useless casts result in unreadable source code.
+We should use parentheses only when they are necessary
+or they really improve the readability.
 
 Signed-off-by: Masahiro Yamada <yamada.m@jp.panasonic.com>
+Reviewed-by: Josh Triplett <josh@joshtriplett.org>
 ---
 
 Changes in v2: None
 
- drivers/mtd/nand/denali.c | 36 ++++++++++++++++++------------------
- 1 file changed, 18 insertions(+), 18 deletions(-)
+ drivers/mtd/nand/denali.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 3836828..dcd6771 100644
+index d37c2e1..ed37b76 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -423,10 +423,10 @@ static void find_valid_banks(struct denali_nand_info *denali)
+@@ -267,10 +267,10 @@ static void nand_onfi_timing_set(struct denali_nand_info *denali,
  
- 	denali->total_used_banks = 1;
- 	for (i = 0; i < denali->max_banks; i++) {
--		index_addr(denali, (uint32_t)(MODE_11 | (i << 24) | 0), 0x90);
--		index_addr(denali, (uint32_t)(MODE_11 | (i << 24) | 1), 0);
-+		index_addr(denali, MODE_11 | (i << 24) | 0, 0x90);
-+		index_addr(denali, MODE_11 | (i << 24) | 1, 0);
- 		index_addr_read_data(denali,
--				(uint32_t)(MODE_11 | (i << 24) | 2), &id[i]);
-+				MODE_11 | (i << 24) | 2, &id[i]);
+ 	acc_clks = CEIL_DIV(Trea[mode], CLK_X);
  
- 		dev_dbg(denali->dev,
- 			"Return 1st ID for bank[%d]: %x\n", i, id[i]);
-@@ -510,9 +510,9 @@ static uint16_t denali_nand_timing_set(struct denali_nand_info *denali)
- 	 * For some NAND chips, controller can't report the correct
- 	 * device ID by reading from DEVICE_ID register
- 	 */
--	addr = (uint32_t)MODE_11 | BANK(denali->flash_bank);
--	index_addr(denali, (uint32_t)addr | 0, 0x90);
--	index_addr(denali, (uint32_t)addr | 1, 0);
-+	addr = MODE_11 | BANK(denali->flash_bank);
-+	index_addr(denali, addr | 0, 0x90);
-+	index_addr(denali, addr | 1, 0);
- 	for (i = 0; i < 8; i++)
- 		index_addr_read_data(denali, addr | 2, &id_bytes[i]);
- 	maf_id = id_bytes[0];
-@@ -782,14 +782,14 @@ static int denali_send_pipeline_cmd(struct denali_nand_info *denali,
- 	} else if (op == DENALI_WRITE && access_type == SPARE_ACCESS) {
- 		/* read spare area */
- 		cmd = MODE_10 | addr;
--		index_addr(denali, (uint32_t)cmd, access_type);
-+		index_addr(denali, cmd, access_type);
+-	while (((acc_clks * CLK_X) - Trea[mode]) < 3)
++	while (acc_clks * CLK_X - Trea[mode] < 3)
+ 		acc_clks++;
  
- 		cmd = MODE_01 | addr;
- 		iowrite32(cmd, denali->flash_mem);
- 	} else if (op == DENALI_READ) {
- 		/* setup page read request for access type */
- 		cmd = MODE_10 | addr;
--		index_addr(denali, (uint32_t)cmd, access_type);
-+		index_addr(denali, cmd, access_type);
+-	if ((data_invalid - acc_clks * CLK_X) < 2)
++	if (data_invalid - acc_clks * CLK_X < 2)
+ 		dev_warn(denali->dev, "%s, Line %d: Warning!\n",
+ 			__FILE__, __LINE__);
  
- 		/*
- 		 * page 33 of the NAND controller spec indicates we should not
-@@ -800,7 +800,7 @@ static int denali_send_pipeline_cmd(struct denali_nand_info *denali,
- 			cmd = MODE_01 | addr;
- 			iowrite32(cmd, denali->flash_mem);
- 		} else {
--			index_addr(denali, (uint32_t)cmd,
-+			index_addr(denali, cmd,
- 					PIPELINE_ACCESS | op | page_count);
+@@ -285,7 +285,7 @@ static void nand_onfi_timing_set(struct denali_nand_info *denali,
+ 		cs_cnt = 1;
  
- 			/*
-@@ -929,7 +929,7 @@ static void read_oob_data(struct mtd_info *mtd, uint8_t *buf, int page)
- 		 */
- 		addr = BANK(denali->flash_bank) | denali->page;
- 		cmd = MODE_10 | addr;
--		index_addr(denali, (uint32_t)cmd, MAIN_ACCESS);
-+		index_addr(denali, cmd, MAIN_ACCESS);
+ 	if (Tcea[mode]) {
+-		while (((cs_cnt * CLK_X) + Trea[mode]) < Tcea[mode])
++		while (cs_cnt * CLK_X + Trea[mode] < Tcea[mode])
+ 			cs_cnt++;
  	}
+ 
+@@ -295,8 +295,8 @@ static void nand_onfi_timing_set(struct denali_nand_info *denali,
+ #endif
+ 
+ 	/* Sighting 3462430: Temporary hack for MT29F128G08CJABAWP:B */
+-	if ((ioread32(denali->flash_reg + MANUFACTURER_ID) == 0) &&
+-		(ioread32(denali->flash_reg + DEVICE_ID) == 0x88))
++	if (ioread32(denali->flash_reg + MANUFACTURER_ID) == 0 &&
++		ioread32(denali->flash_reg + DEVICE_ID) == 0x88)
+ 		acc_clks = 6;
+ 
+ 	iowrite32(acc_clks, denali->flash_reg + ACC_CLKS);
+@@ -577,7 +577,7 @@ static void denali_set_intr_modes(struct denali_nand_info *denali,
+  */
+ static inline bool is_flash_bank_valid(int flash_bank)
+ {
+-	return (flash_bank >= 0 && flash_bank < 4);
++	return flash_bank >= 0 && flash_bank < 4;
  }
  
-@@ -1035,7 +1035,7 @@ static void denali_setup_dma(struct denali_nand_info *denali, int op)
- {
- 	uint32_t mode;
- 	const int page_count = 1;
--	dma_addr_t addr = denali->buf.dma_buf;
-+	uint32_t addr = denali->buf.dma_buf;
+ static void denali_irq_init(struct denali_nand_info *denali)
+@@ -1103,7 +1103,7 @@ static int write_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 				"timeout on write_page (type = %d)\n",
+ 				raw_xfer);
+ 		denali->status =
+-			(irq_status & INTR_STATUS__PROGRAM_FAIL) ?
++			irq_status & INTR_STATUS__PROGRAM_FAIL ?
+ 			NAND_STATUS_FAIL : PASS;
+ 	}
  
- 	mode = MODE_10 | BANK(denali->flash_bank);
- 
-@@ -1045,10 +1045,10 @@ static void denali_setup_dma(struct denali_nand_info *denali, int op)
- 	index_addr(denali, mode | denali->page, 0x2000 | op | page_count);
- 
- 	/* 2. set memory high address bits 23:8 */
--	index_addr(denali, mode | ((uint16_t)(addr >> 16) << 8), 0x2200);
-+	index_addr(denali, mode | ((addr >> 16) << 8), 0x2200);
- 
- 	/* 3. set memory low address bits 23:8 */
--	index_addr(denali, mode | ((uint16_t)addr << 8), 0x2300);
-+	index_addr(denali, mode | ((addr & 0xff) << 8), 0x2300);
- 
- 	/* 4. interrupt when complete, burst len = 64 bytes */
- 	index_addr(denali, mode | 0x14000, 0x2400);
-@@ -1289,7 +1289,7 @@ static int denali_erase(struct mtd_info *mtd, int page)
- 
- 	/* setup page read request for access type */
- 	cmd = MODE_10 | BANK(denali->flash_bank) | page;
--	index_addr(denali, (uint32_t)cmd, 0x1);
-+	index_addr(denali, cmd, 0x1);
- 
- 	/* wait for erase to complete or failure to occur */
+@@ -1296,7 +1296,7 @@ static int denali_erase(struct mtd_info *mtd, int page)
  	irq_status = wait_for_irq(denali, INTR_STATUS__ERASE_COMP |
-@@ -1319,12 +1319,12 @@ static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
- 		 * e.g. some of Micron MT29F32G08QAA MLC NAND chips
- 		 * So here we send READID cmd to NAND insteand
- 		 */
--		addr = (uint32_t)MODE_11 | BANK(denali->flash_bank);
--		index_addr(denali, (uint32_t)addr | 0, 0x90);
--		index_addr(denali, (uint32_t)addr | 1, 0);
-+		addr = MODE_11 | BANK(denali->flash_bank);
-+		index_addr(denali, addr | 0, 0x90);
-+		index_addr(denali, addr | 1, 0);
- 		for (i = 0; i < 8; i++) {
- 			index_addr_read_data(denali,
--						(uint32_t)addr | 2,
-+						addr | 2,
- 						&id);
- 			write_byte_to_buf(denali, id);
- 		}
+ 					INTR_STATUS__ERASE_FAIL);
+ 
+-	return (irq_status & INTR_STATUS__ERASE_FAIL) ? NAND_STATUS_FAIL : PASS;
++	return irq_status & INTR_STATUS__ERASE_FAIL ? NAND_STATUS_FAIL : PASS;
+ }
+ 
+ static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
 -- 
 1.9.1
