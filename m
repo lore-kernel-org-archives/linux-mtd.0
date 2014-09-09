@@ -1,21 +1,20 @@
-Received: from longford.logfs.org ([213.229.74.203])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XROsm-0005rt-IM
- for linux-mtd@lists.infradead.org; Tue, 09 Sep 2014 17:07:09 +0000
-Date: Tue, 9 Sep 2014 13:02:31 -0400
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Rodrigo Freire <rfreire@redhat.com>
-Subject: Re: [PATCH] block2mtd: mtd: Present block2mtd timely on boot time
-Message-ID: <20140909170231.GA14429@logfs.org>
-References: <371358190.34795877.1410204429882.JavaMail.zimbra@redhat.com>
- <1444809468.34812041.1410206680931.JavaMail.zimbra@redhat.com>
+ id 1XRTD8-00075I-Df
+ for linux-mtd@lists.infradead.org; Tue, 09 Sep 2014 21:44:27 +0000
+Message-ID: <540F749B.6080607@nod.at>
+Date: Tue, 09 Sep 2014 23:43:55 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1444809468.34812041.1410206680931.JavaMail.zimbra@redhat.com>
-Cc: linux-mtd@lists.infradead.org, Felix Fietkau <nbd@openwrt.org>,
- dwmw2@infradead.org, linux-kernel@vger.kernel.org
+To: Richard Genoud <richard.genoud@gmail.com>
+Subject: Re: [PATCH] UBI: add missing kmem_cache_free() in process_pool_aeb
+ error path
+References: <1410265519-25111-1-git-send-email-richard.genoud@gmail.com>
+In-Reply-To: <1410265519-25111-1-git-send-email-richard.genoud@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,227 +24,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 8 September 2014 16:04:40 -0400, Rodrigo Freire wrote:
+Am 09.09.2014 14:25, schrieb Richard Genoud:
+> I ran into this error after a ubiupdatevol, because I forgot to backport
+> e9110361a9a4 UBI: fix the volumes tree sorting criteria.
 > 
-> From: Felix Fietkau <nbd@openwrt.org>
+> UBI error: process_pool_aeb: orphaned volume in fastmap pool
+> UBI error: ubi_scan_fastmap: Attach by fastmap failed, doing a full scan!
+> kmem_cache_destroy ubi_ainf_peb_slab: Slab cache still has objects
+> CPU: 0 PID: 1 Comm: swapper Not tainted 3.14.18-00053-gf05cac8dbf85 #1
+> [<c000d298>] (unwind_backtrace) from [<c000baa8>] (show_stack+0x10/0x14)
+> [<c000baa8>] (show_stack) from [<c01b7a68>] (destroy_ai+0x230/0x244)
+> [<c01b7a68>] (destroy_ai) from [<c01b8fd4>] (ubi_attach+0x98/0x1ec)
+> [<c01b8fd4>] (ubi_attach) from [<c01ade90>] (ubi_attach_mtd_dev+0x2b8/0x868)
+> [<c01ade90>] (ubi_attach_mtd_dev) from [<c038b510>] (ubi_init+0x1dc/0x2ac)
+> [<c038b510>] (ubi_init) from [<c0008860>] (do_one_initcall+0x94/0x140)
+> [<c0008860>] (do_one_initcall) from [<c037aadc>] (kernel_init_freeable+0xe8/0x1b0)
+> [<c037aadc>] (kernel_init_freeable) from [<c02730ac>] (kernel_init+0x8/0xe4)
+> [<c02730ac>] (kernel_init) from [<c00093f0>] (ret_from_fork+0x14/0x24)
+> UBI: scanning is finished
 > 
-> block2mtd: Ensure that block2mtd is presented in a timely fashion 
+> Freeing the cache in the error path fixes the Slab error.
 > 
-> Currently, a block MTD device is not presented to the system on time, in 
-> order to start mounting the filesystems. This patch ensures that block2mtd 
-> is presented at the right time, so filesystems can be mounted on boot time.
-> This issue was seen on BCM2708 (Raspberry Pi) systems when mounting JFFS2 
-> block2mtd filesystems.
-> This patchset also adds a MTD device name and a timeout option to the driver.
-
-Looks fine once the comments below are addressed.
-
-> Original patchset:
-> https://dev.openwrt.org/browser/trunk/target/linux/generic/patches-3.12/440-block2mtd_init.patch?rev=40444
-> https://dev.openwrt.org/browser/trunk/target/linux/generic/patches-3.12/441-block2mtd_probe.patch?rev=40444
+> Tested on at91sam9g35 (3.14.18+fastmap backports)
 > 
-> Signed-off-by: Felix Fietkau <nbd@openwrt.org>
-> Signed-off-by: Rodrigo Freire <rfreire@redhat.com> 
-> 
-> --- a/drivers/mtd/devices/block2mtd.c	2014-09-05 11:13:39.143698413 -0300
-> +++ b/drivers/mtd/devices/block2mtd.c	2014-09-05 17:50:28.107366433 -0300
-> @@ -9,7 +9,15 @@
->  
->  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
->  
-> +/*
-> +* When the first attempt at device initialization fails, we may need to
-> +* wait a little bit and retry. This timeout, by default 3 seconds, gives
-> +* device time to start up. Required on BCM2708 and a few other chipsets.
-> +*/
-> +#define MTD_DEFAULT_TIMEOUT	3
-> +
->  #include <linux/module.h>
-> +#include <linux/delay.h>
->  #include <linux/fs.h>
->  #include <linux/blkdev.h>
->  #include <linux/bio.h>
-> @@ -17,6 +25,7 @@
->  #include <linux/list.h>
->  #include <linux/init.h>
->  #include <linux/mtd/mtd.h>
-> +#include <linux/mtd/partitions.h>
->  #include <linux/mutex.h>
->  #include <linux/mount.h>
->  #include <linux/slab.h>
-> @@ -209,12 +218,14 @@ static void block2mtd_free_device(struct
->  }
->  
->  
-> -static struct block2mtd_dev *add_device(char *devname, int erase_size)
-> +static struct block2mtd_dev *add_device(char *devname, int erase_size, const char *mtdname, int timeout)
->  {
->  	const fmode_t mode = FMODE_READ | FMODE_WRITE | FMODE_EXCL;
-> -	struct block_device *bdev;
-> +	struct block_device *bdev = ERR_PTR(-ENODEV);
->  	struct block2mtd_dev *dev;
-> +	struct mtd_partition *part;
->  	char *name;
-> +	int i;
->  
->  	if (!devname)
->  		return NULL;
-> @@ -225,15 +236,28 @@ static struct block2mtd_dev *add_device(
->  
->  	/* Get a handle on the device */
->  	bdev = blkdev_get_by_path(devname, mode, dev);
-> -#ifndef MODULE
-> -	if (IS_ERR(bdev)) {
->  
-> -		/* We might not have rootfs mounted at this point. Try
-> -		   to resolve the device name by other means. */
-> -
-> -		dev_t devt = name_to_dev_t(devname);
-> -		if (devt)
-> -			bdev = blkdev_get_by_dev(devt, mode, dev);
-> +#ifndef MODULE
-> +/*
-> +* We might not have the root device mounted at this point.
-> +* Try to resolve the device name by other means.
-> +*/
-> +	for (i = 0; IS_ERR(bdev) && i <= timeout; i++) {
-> +		dev_t devt;
-> +
-> +		if (i)
-> +			/*
-> +			 * Calling wait_for_device_probe in the first loop 
-> +			 * was not enough, sleep for a bit in subsequent
-> +			 * go-arounds.
-> +			*/
-> +			msleep(1000);
-> +		wait_for_device_probe();
-> +
-> +		devt = name_to_dev_t(devname);
-> +		if (!devt)
-> +			continue;
-> +		bdev = blkdev_get_by_dev(devt, mode, dev);
->  	}
->  #endif
->  
-> @@ -257,13 +281,15 @@ static struct block2mtd_dev *add_device(
->  
->  	/* Setup the MTD structure */
->  	/* make the name contain the block device in */
-> -	name = kasprintf(GFP_KERNEL, "block2mtd: %s", devname);
-> +	if (!mtdname)
-> +		mtdname = devname;
-> +	name = kmalloc(strlen(mtdname) + 1, GFP_KERNEL);
->  	if (!name)
->  		goto err_destroy_mutex;
->  
-> +	strcpy(name, mtdname);
+> Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
+> Cc: stable <stable@vger.kernel.org> # >= 3.10
 
-kstrdup.
+I guess you wrote 3.10 because there is no stable kernel between >= 3.7 and < 3.10?
+Patch looks good otherwise.
 
-And see below for the ABI change.
+Acked-by: Richard Weinberger <richard@nod.at>
 
->  	dev->mtd.name = name;
-> -
-> -	dev->mtd.size = dev->blkdev->bd_inode->i_size & PAGE_MASK;
-> +	dev->mtd.size = dev->blkdev->bd_inode->i_size & PAGE_MASK & ~(erase_size - 1);
-
-PAGE_MASK is no longer needed with the new term.  Or does anyone
-seriously want to support erase_size < PAGE_SIZE?
-
->  	dev->mtd.erasesize = erase_size;
->  	dev->mtd.writesize = 1;
->  	dev->mtd.writebufsize = PAGE_SIZE;
-> @@ -276,15 +302,19 @@ static struct block2mtd_dev *add_device(
->  	dev->mtd.priv = dev;
->  	dev->mtd.owner = THIS_MODULE;
->  
-> -	if (mtd_device_register(&dev->mtd, NULL, 0)) {
-> +	part = kzalloc(sizeof(struct mtd_partition), GFP_KERNEL);
-> +	part->name = name;
-> +	part->offset = 0;
-> +	part->size = dev->mtd.size;
-> +	if (mtd_device_register(&dev->mtd, part, 1)) {
->  		/* Device didn't get added, so free the entry */
->  		goto err_destroy_mutex;
->  	}
-> +
->  	list_add(&dev->list, &blkmtd_device_list);
->  	pr_info("mtd%d: [%s] erase_size = %dKiB [%d]\n",
->  		dev->mtd.index,
-> -		dev->mtd.name + strlen("block2mtd: "),
-> -		dev->mtd.erasesize >> 10, dev->mtd.erasesize);
-> +		mtdname, dev->mtd.erasesize >> 10, dev->mtd.erasesize);
->  	return dev;
->  
->  err_destroy_mutex:
-> @@ -353,11 +383,12 @@ static char block2mtd_paramline[80 + 12]
->  
->  static int block2mtd_setup2(const char *val)
->  {
-> -	char buf[80 + 12]; /* 80 for device, 12 for erase size */
-> +	char buf[80 + 12 + 80 + 8]; /* 80 for device, 12 for erase size, 80 for name, 8 for timeout */
->  	char *str = buf;
-> -	char *token[2];
-> +	char *token[4];
->  	char *name;
->  	size_t erase_size = PAGE_SIZE;
-> +	unsigned long timeout = MTD_DEFAULT_TIMEOUT;
->  	int i, ret;
->  
->  	if (strnlen(val, sizeof(buf)) >= sizeof(buf)) {
-> @@ -368,7 +399,7 @@ static int block2mtd_setup2(const char *
->  	strcpy(str, val);
->  	kill_final_newline(str);
->  
-> -	for (i = 0; i < 2; i++)
-> +	for (i = 0; i < 4; i++)
->  		token[i] = strsep(&str, ",");
->  
->  	if (str) {
-> @@ -395,7 +426,13 @@ static int block2mtd_setup2(const char *
->  		}
->  	}
->  
-> -	add_device(name, erase_size);
-> +	if (token[2] && (strlen(token[2]) + 1 > 80))
-> +		pr_err("mtd device name too long");
-
-Timeout has a default value, but name defaults to NULL.  Add three
-devices without specifying the name and you get funny results.
-
-If we handled the NULL case by doing what the driver used to do before
-this patch, I think this would be fine.
-
-> +
-> +	if (token[3] && kstrtoul(token[3], 0, &timeout))
-> +		pr_err("invalid timeout");
-> +	add_device(name, erase_size, token[2], timeout);
->  
->  	return 0;
->  }
-> @@ -429,7 +466,7 @@ static int block2mtd_setup(const char *v
->  
->  
->  module_param_call(block2mtd, block2mtd_setup, NULL, NULL, 0200);
-> -MODULE_PARM_DESC(block2mtd, "Device to use. \"block2mtd=<dev>[,<erasesize>]\"");
-> +MODULE_PARM_DESC(block2mtd, "Device to use. \"block2mtd=<dev>[,<erasesize>[,<name>[,<timeout>]]]\"");
->  
->  static int __init block2mtd_init(void)
->  {
-> @@ -463,8 +500,7 @@ static void block2mtd_exit(void)
->  	}
->  }
->  
-> -
-> -module_init(block2mtd_init);
-> +late_initcall(block2mtd_init);
->  module_exit(block2mtd_exit);
->  
->  MODULE_LICENSE("GPL");
-
-Jörn
-
---
-Most compromises I've seen have been have been a result of gross stupidity,
-not incredible technical skill on the part of the attacker.
--- pr0f
+Thanks,
+//richard
