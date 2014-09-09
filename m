@@ -1,17 +1,25 @@
-Received: from mail-wi0-x230.google.com ([2a00:1450:400c:c05::230])
+Received: from mail-qc0-f170.google.com ([209.85.216.170])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XRKUu-0000dC-M9
- for linux-mtd@lists.infradead.org; Tue, 09 Sep 2014 12:26:13 +0000
-Received: by mail-wi0-f176.google.com with SMTP id bs8so4331321wib.9
- for <linux-mtd@lists.infradead.org>; Tue, 09 Sep 2014 05:25:48 -0700 (PDT)
-From: Richard Genoud <richard.genoud@gmail.com>
-To: Richard Weinberger <richard@nod.at>
-Subject: [PATCH] UBI: add missing kmem_cache_free() in process_pool_aeb error
- path
-Date: Tue,  9 Sep 2014 14:25:01 +0200
-Message-Id: <1410265519-25111-1-git-send-email-richard.genoud@gmail.com>
-Cc: Richard Genoud <richard.genoud@gmail.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Artem Bityutskiy <dedekind1@gmail.com>
+ id 1XRLTU-0003qE-9T
+ for linux-mtd@lists.infradead.org; Tue, 09 Sep 2014 13:28:48 +0000
+Received: by mail-qc0-f170.google.com with SMTP id r5so17818214qcx.29
+ for <linux-mtd@lists.infradead.org>; Tue, 09 Sep 2014 06:28:22 -0700 (PDT)
+Date: Tue, 9 Sep 2014 10:27:08 -0300
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To: Roger Quadros <rogerq@ti.com>
+Subject: Re: [PATCH v2 1/3] nand: omap2: Add support for flash-based bad
+ block table
+Message-ID: <20140909132708.GA3315@arch.hh.imgtec.org>
+References: <1410175636-4036-1-git-send-email-ezequiel@vanguardiasur.com.ar>
+ <1410175636-4036-2-git-send-email-ezequiel@vanguardiasur.com.ar>
+ <540EBBEC.0@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <540EBBEC.0@ti.com>
+Cc: Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ Guido =?iso-8859-1?Q?Mart=EDnez?= <guido@vanguardiasur.com.ar>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,45 +29,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I ran into this error after a ubiupdatevol, because I forgot to backport
-e9110361a9a4 UBI: fix the volumes tree sorting criteria.
+On 09 Sep 11:35 AM, Roger Quadros wrote:
+> Ezequiel,
+> 
+> On 09/08/2014 02:27 PM, Ezequiel Garcia wrote:
+> > This commit adds a new platform-data boolean property that enables use
+> > of a flash-based bad block table. This can also be enabled by setting
+> > the 'nand-on-flash-bbt' devicetree property.
+> 
+> I'm not much aware of how on-flash-BBT works internally, but will it break things if
+> we keep on-flash-BBT "enabled" as the default option and add a DT property only to
+> explicitly disable the on-flash-BBT?
+> 
 
-UBI error: process_pool_aeb: orphaned volume in fastmap pool
-UBI error: ubi_scan_fastmap: Attach by fastmap failed, doing a full scan!
-kmem_cache_destroy ubi_ainf_peb_slab: Slab cache still has objects
-CPU: 0 PID: 1 Comm: swapper Not tainted 3.14.18-00053-gf05cac8dbf85 #1
-[<c000d298>] (unwind_backtrace) from [<c000baa8>] (show_stack+0x10/0x14)
-[<c000baa8>] (show_stack) from [<c01b7a68>] (destroy_ai+0x230/0x244)
-[<c01b7a68>] (destroy_ai) from [<c01b8fd4>] (ubi_attach+0x98/0x1ec)
-[<c01b8fd4>] (ubi_attach) from [<c01ade90>] (ubi_attach_mtd_dev+0x2b8/0x868)
-[<c01ade90>] (ubi_attach_mtd_dev) from [<c038b510>] (ubi_init+0x1dc/0x2ac)
-[<c038b510>] (ubi_init) from [<c0008860>] (do_one_initcall+0x94/0x140)
-[<c0008860>] (do_one_initcall) from [<c037aadc>] (kernel_init_freeable+0xe8/0x1b0)
-[<c037aadc>] (kernel_init_freeable) from [<c02730ac>] (kernel_init+0x8/0xe4)
-[<c02730ac>] (kernel_init) from [<c00093f0>] (ret_from_fork+0x14/0x24)
-UBI: scanning is finished
+No, that wouldn't work because the DT property already exists and it works to
+enable the flash BBT when it's present.
 
-Freeing the cache in the error path fixes the Slab error.
+Documentation/devicetree/bindings/mtd/nand.txt
 
-Tested on at91sam9g35 (3.14.18+fastmap backports)
+Of course, we can add a new no-nand-on-flash-bbt, but I really don't see the
+point. Users can just put the property in all the devicetree board files where
+it's needed.
 
-Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
-Cc: stable <stable@vger.kernel.org> # >= 3.10
----
- drivers/mtd/ubi/fastmap.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index 0431b46d9fd9..c701369090fb 100644
---- a/drivers/mtd/ubi/fastmap.c
-+++ b/drivers/mtd/ubi/fastmap.c
-@@ -330,6 +330,7 @@ static int process_pool_aeb(struct ubi_device *ubi, struct ubi_attach_info *ai,
- 		av = tmp_av;
- 	else {
- 		ubi_err("orphaned volume in fastmap pool!");
-+		kmem_cache_free(ai->aeb_slab_cache, new_aeb);
- 		return UBI_BAD_FASTMAP;
- 	}
- 
+And moreover, I don't want to change the default behavior of the driver; it's
+better to allow to *add* a new feature, if such feature is desired.
+Otherwise, users with some data in a flash's last blocks would be wiped and
+replaced with the BBT.
 -- 
-2.0.0
+Ezequiel Garcia, VanguardiaSur
+www.vanguardiasur.com.ar
