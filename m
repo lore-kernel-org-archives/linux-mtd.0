@@ -1,20 +1,20 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-ob0-x22a.google.com ([2607:f8b0:4003:c01::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XRTD8-00075I-Df
- for linux-mtd@lists.infradead.org; Tue, 09 Sep 2014 21:44:27 +0000
-Message-ID: <540F749B.6080607@nod.at>
-Date: Tue, 09 Sep 2014 23:43:55 +0200
-From: Richard Weinberger <richard@nod.at>
+ id 1XRUnG-0000Aa-90
+ for linux-mtd@lists.infradead.org; Tue, 09 Sep 2014 23:25:50 +0000
+Received: by mail-ob0-f170.google.com with SMTP id wo20so171786obc.29
+ for <linux-mtd@lists.infradead.org>; Tue, 09 Sep 2014 16:25:28 -0700 (PDT)
 MIME-Version: 1.0
-To: Richard Genoud <richard.genoud@gmail.com>
-Subject: Re: [PATCH] UBI: add missing kmem_cache_free() in process_pool_aeb
- error path
-References: <1410265519-25111-1-git-send-email-richard.genoud@gmail.com>
-In-Reply-To: <1410265519-25111-1-git-send-email-richard.genoud@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Artem Bityutskiy <dedekind1@gmail.com>
+In-Reply-To: <1410173401.10764.145.camel@sauron.fi.intel.com>
+References: <CAE2F3rC0Pm+xoJeBmU3Qoq25QoQ2ME1n+SHJHq9R3OA+uDPYPA@mail.gmail.com>
+ <1410173401.10764.145.camel@sauron.fi.intel.com>
+Date: Tue, 9 Sep 2014 16:25:28 -0700
+Message-ID: <CAE2F3rAZp1w4mJTAjAwLo7TT=6YQ=ANiJEngB8WRM73occSV=g@mail.gmail.com>
+Subject: Re: ubifs_dump_node must bounds check ubifs_ch->len
+From: Daniel Mentz <danielmentz@google.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,36 +24,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 09.09.2014 14:25, schrieb Richard Genoud:
-> I ran into this error after a ubiupdatevol, because I forgot to backport
-> e9110361a9a4 UBI: fix the volumes tree sorting criteria.
-> 
-> UBI error: process_pool_aeb: orphaned volume in fastmap pool
-> UBI error: ubi_scan_fastmap: Attach by fastmap failed, doing a full scan!
-> kmem_cache_destroy ubi_ainf_peb_slab: Slab cache still has objects
-> CPU: 0 PID: 1 Comm: swapper Not tainted 3.14.18-00053-gf05cac8dbf85 #1
-> [<c000d298>] (unwind_backtrace) from [<c000baa8>] (show_stack+0x10/0x14)
-> [<c000baa8>] (show_stack) from [<c01b7a68>] (destroy_ai+0x230/0x244)
-> [<c01b7a68>] (destroy_ai) from [<c01b8fd4>] (ubi_attach+0x98/0x1ec)
-> [<c01b8fd4>] (ubi_attach) from [<c01ade90>] (ubi_attach_mtd_dev+0x2b8/0x868)
-> [<c01ade90>] (ubi_attach_mtd_dev) from [<c038b510>] (ubi_init+0x1dc/0x2ac)
-> [<c038b510>] (ubi_init) from [<c0008860>] (do_one_initcall+0x94/0x140)
-> [<c0008860>] (do_one_initcall) from [<c037aadc>] (kernel_init_freeable+0xe8/0x1b0)
-> [<c037aadc>] (kernel_init_freeable) from [<c02730ac>] (kernel_init+0x8/0xe4)
-> [<c02730ac>] (kernel_init) from [<c00093f0>] (ret_from_fork+0x14/0x24)
-> UBI: scanning is finished
-> 
-> Freeing the cache in the error path fixes the Slab error.
-> 
-> Tested on at91sam9g35 (3.14.18+fastmap backports)
-> 
-> Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
-> Cc: stable <stable@vger.kernel.org> # >= 3.10
+On Mon, Sep 8, 2014 at 3:50 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> On Thu, 2014-08-28 at 15:37 -0700, Daniel Mentz wrote:
+>> I believe that ubifs_dump_node() must bounds check ch->len in the
+>> UBIFS_DATA_NODE case. It currently does not which resulted in a crash
+>> on a system. See below.
+> Will I feel lucky asking you whether you was going to send a patch? :-)
 
-I guess you wrote 3.10 because there is no stable kernel between >= 3.7 and < 3.10?
-Patch looks good otherwise.
-
-Acked-by: Richard Weinberger <richard@nod.at>
-
-Thanks,
-//richard
+Thanks for your comments. Yes I'm working on a patch, but I'm not sure
+when it's going to be ready.
