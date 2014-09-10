@@ -1,20 +1,23 @@
-Received: from mail-ob0-x22a.google.com ([2607:f8b0:4003:c01::22a])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XRUnG-0000Aa-90
- for linux-mtd@lists.infradead.org; Tue, 09 Sep 2014 23:25:50 +0000
-Received: by mail-ob0-f170.google.com with SMTP id wo20so171786obc.29
- for <linux-mtd@lists.infradead.org>; Tue, 09 Sep 2014 16:25:28 -0700 (PDT)
+Date: Tue, 9 Sep 2014 23:00:04 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: Autoloading of SPI/nor driver on kirkwood (qnap devices)
+Message-ID: <20140910060004.GA5732@norris-Latitude-E6410>
+References: <1409673299.14324.43.camel@dagon.hellion.org.uk>
+ <1409796689.27524.34.camel@decadent.org.uk>
+ <CAMuHMdWBr=B0_Xivti9K5ReryHHEunQj2P26FjhmzhO-L9t+9g@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1410173401.10764.145.camel@sauron.fi.intel.com>
-References: <CAE2F3rC0Pm+xoJeBmU3Qoq25QoQ2ME1n+SHJHq9R3OA+uDPYPA@mail.gmail.com>
- <1410173401.10764.145.camel@sauron.fi.intel.com>
-Date: Tue, 9 Sep 2014 16:25:28 -0700
-Message-ID: <CAE2F3rAZp1w4mJTAjAwLo7TT=6YQ=ANiJEngB8WRM73occSV=g@mail.gmail.com>
-Subject: Re: ubifs_dump_node must bounds check ubifs_ch->len
-From: Daniel Mentz <danielmentz@google.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdWBr=B0_Xivti9K5ReryHHEunQj2P26FjhmzhO-L9t+9g@mail.gmail.com>
+Cc: Andrew Lunn <andrew@lunn.ch>, Jason Cooper <jason@lakedaemon.net>,
+ linux-spi <linux-spi@vger.kernel.org>, Huang Shijie <b32955@freescale.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Ian Campbell <ijc@hellion.org.uk>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ Ben Hutchings <ben@decadent.org.uk>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ debian-kernel <debian-kernel@lists.debian.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,12 +27,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Sep 8, 2014 at 3:50 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Thu, 2014-08-28 at 15:37 -0700, Daniel Mentz wrote:
->> I believe that ubifs_dump_node() must bounds check ch->len in the
->> UBIFS_DATA_NODE case. It currently does not which resulted in a crash
->> on a system. See below.
-> Will I feel lucky asking you whether you was going to send a patch? :-)
+On Thu, Sep 04, 2014 at 09:02:04AM +0200, Geert Uytterhoeven wrote:
+> On Thu, Sep 4, 2014 at 4:11 AM, Ben Hutchings <ben@decadent.org.uk> wrote:
+> >> I noticed that many platforms declare the flash chip as compatible =
+> >> "st,m25pXXX" whereas the ts219.dtsi just said m25p128 but I tried
+> >> changing that and it didn't help. In any case without spi-nor.ko being
+> >> autoloaded I don't support m25p80.ko ever would be.
+> >
+> > m25p80.c has:
+> >
+> > static struct spi_driver m25p80_driver = {
+> >         ...
+> >         .id_table       = spi_nor_ids,
+> >         ...
+> > };
+> >
+> > while spi_nor_ids is defined in spi-nor.c.  Since they end up as two
+> > separate modules, modpost can't read the ID table and add the device ID
+> > aliases to m25p80.ko.
+> 
+> Woops. This indeed doesn't work.
+> Note that the MODULE_DEVICE_TABLE() is also gone from m25p80.c
+> 
+> So m25p80.c needs to contain the IDs, while spi-nor.c also needs the IDs
+> because it's a framework/library.
 
-Thanks for your comments. Yes I'm working on a patch, but I'm not sure
-when it's going to be ready.
+Actually, m25p80.c only needs the strings (i.e., the named aliases --
+character data), and for the most part, spi-nor.c only needs the IDs (i.e.,
+the identification bytes).
+
+What's more, I don't think that any modern SPI NOR user really needs to
+be specifying exactly which SPI device it is via a specific string. Our
+driver code pretty much always re-detects the device by reading its
+device ID. All the SPI NOR code needs to know is how to read its ID.
+
+> A quick solution would be to move the ID table to a header file, and include
+> that by both, and re-add the lost MODULE_DEVICE_TABLE() to m25p80.c.
+> That duplicates the data, though.
+> 
+> Hmm, for the built-in case, we can avoid the duplication by letting m25p80.c
+> refer to the table in spi-nor.c if !MODULE.
+> Does anyone see a better solution?
+
+A little bit of a shot in the dark, as I haven't fleshed this one out:
+
+Would it work to just copy the SPI ID strings into m25p80.c, keep the
+full table in spi-nor.c, stop adding SPI ID string (and DT) bindings to
+the m25p80 table (force platforms to use "m25p80"-compatible probing, or
+maybe something generic like "spi-nor-rdid", "spi-nor-sfdp", etc.) and
+eventually kill the strings from spi-nor.c entirely? I really don't want
+to propagate string-binding much further into the SPI NOR library, since
+everything should be auto-detectable--partly just by an ID table as we
+have now, but eventually we can use CFI or SFDP parameters provided by
+relatively new SPI NOR chips.
+
+I'm not sure if this is great for the short-term problem of fixing
+module-autoloading. Perhaps we should do a short-term hack to duplicate
+the SPI ID strings to m25p80.c by including them in a header (and
+backport for 3.16.y stable?), but I'd like to disentangle this.
+
+Brian
