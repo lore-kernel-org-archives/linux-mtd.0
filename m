@@ -1,23 +1,27 @@
-Received: from mail-lb0-x233.google.com ([2a00:1450:4010:c04::233])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XRcwG-0001EG-Lw
- for linux-mtd@lists.infradead.org; Wed, 10 Sep 2014 08:07:41 +0000
-Received: by mail-lb0-f179.google.com with SMTP id p9so7434648lbv.38
- for <linux-mtd@lists.infradead.org>; Wed, 10 Sep 2014 01:07:18 -0700 (PDT)
+Received: from mga01.intel.com ([192.55.52.88])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XRd3l-0004oT-DK
+ for linux-mtd@lists.infradead.org; Wed, 10 Sep 2014 08:15:26 +0000
+Date: Thu, 11 Sep 2014 00:12:37 +0800
+From: Huang Shijie <shijie.huang@intel.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH 7/8] mtd: spi-nor: factor out write_enable() for erase
+ commands
+Message-ID: <20140910161237.GB13736@shldeISGChi005.sh.intel.com>
+References: <1407374222-8448-1-git-send-email-computersforpeace@gmail.com>
+ <1407374222-8448-8-git-send-email-computersforpeace@gmail.com>
+ <20140809105232.GA1571@localhost.localdomain>
+ <20140811184818.GY3711@ld-irv-0074>
+ <20140812005912.GA1850@shldeISGChi005.sh.intel.com>
+ <20140910070537.GC5732@norris-Latitude-E6410>
+ <20140910152021.GB13016@shldeISGChi005.sh.intel.com>
+ <20140910074708.GD5732@norris-Latitude-E6410>
 MIME-Version: 1.0
-In-Reply-To: <540F749B.6080607@nod.at>
-References: <1410265519-25111-1-git-send-email-richard.genoud@gmail.com>
- <540F749B.6080607@nod.at>
-From: Richard Genoud <richard.genoud@gmail.com>
-Date: Wed, 10 Sep 2014 10:06:58 +0200
-Message-ID: <CACQ1gAgtwANFzkxBrJ4OoYRvk1RLe4_W=VEK5=t3dYbSd_gZRA@mail.gmail.com>
-Subject: Re: [PATCH] UBI: add missing kmem_cache_free() in process_pool_aeb
- error path
-To: Richard Weinberger <richard@nod.at>
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20140910074708.GD5732@norris-Latitude-E6410>
+Cc: Marek Vasut <marex@denx.de>, linux-mtd@lists.infradead.org,
+ zajec5@gmail.com, Huang Shijie <shijie8@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,44 +31,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2014-09-09 23:43 GMT+02:00 Richard Weinberger <richard@nod.at>:
-> Am 09.09.2014 14:25, schrieb Richard Genoud:
->> I ran into this error after a ubiupdatevol, because I forgot to backport
->> e9110361a9a4 UBI: fix the volumes tree sorting criteria.
->>
->> UBI error: process_pool_aeb: orphaned volume in fastmap pool
->> UBI error: ubi_scan_fastmap: Attach by fastmap failed, doing a full scan!
->> kmem_cache_destroy ubi_ainf_peb_slab: Slab cache still has objects
->> CPU: 0 PID: 1 Comm: swapper Not tainted 3.14.18-00053-gf05cac8dbf85 #1
->> [<c000d298>] (unwind_backtrace) from [<c000baa8>] (show_stack+0x10/0x14)
->> [<c000baa8>] (show_stack) from [<c01b7a68>] (destroy_ai+0x230/0x244)
->> [<c01b7a68>] (destroy_ai) from [<c01b8fd4>] (ubi_attach+0x98/0x1ec)
->> [<c01b8fd4>] (ubi_attach) from [<c01ade90>] (ubi_attach_mtd_dev+0x2b8/0x868)
->> [<c01ade90>] (ubi_attach_mtd_dev) from [<c038b510>] (ubi_init+0x1dc/0x2ac)
->> [<c038b510>] (ubi_init) from [<c0008860>] (do_one_initcall+0x94/0x140)
->> [<c0008860>] (do_one_initcall) from [<c037aadc>] (kernel_init_freeable+0xe8/0x1b0)
->> [<c037aadc>] (kernel_init_freeable) from [<c02730ac>] (kernel_init+0x8/0xe4)
->> [<c02730ac>] (kernel_init) from [<c00093f0>] (ret_from_fork+0x14/0x24)
->> UBI: scanning is finished
->>
->> Freeing the cache in the error path fixes the Slab error.
->>
->> Tested on at91sam9g35 (3.14.18+fastmap backports)
->>
->> Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
->> Cc: stable <stable@vger.kernel.org> # >= 3.10
->
-> I guess you wrote 3.10 because there is no stable kernel between >= 3.7 and < 3.10?
-Yes, that's right.
-I checked that
-git am 0001-UBI-add-missing-kmem_cache_free-in-process_pool_aeb-.patch
-Applied correctly on 3.10.54, 3.12.28, 3.14.18, 3.16.2 and 3.17-rc4
+On Wed, Sep 10, 2014 at 12:47:08AM -0700, Brian Norris wrote:
+> On Wed, Sep 10, 2014 at 11:20:21PM +0800, Huang Shijie wrote:
+> > On Wed, Sep 10, 2014 at 12:05:37AM -0700, Brian Norris wrote:
+> > > On Tue, Aug 12, 2014 at 08:59:12AM +0800, Huang Shijie wrote:
+> > > >    For the spi_nor_erase(), the patch should like this:
+> > > > 
+> > > > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> > > > index c130bf7..26c48bc 100644
+> > > > --- a/drivers/mtd/spi-nor/spi-nor.c
+> > > > +++ b/drivers/mtd/spi-nor/spi-nor.c
+> > > > @@ -324,6 +324,7 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+> > > >  
+> > > >  	/* whole-chip erase? */
+> > > >  	if (len == mtd->size) {
+> > > > +		write_enable(nor);
+> > > >  		if (erase_chip(nor)) {
+> > > >  			ret = -EIO;
+> > > >  			goto erase_err;
+> > > > @@ -337,6 +338,7 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+> > > >  	/* "sector"-at-a-time erase */
+> > > >  	} else {
+> > > >  		while (len) {
+> > > > +			write_enable(nor);
+> > The difference is here.
+> 
+> OK.
+> 
+> > you miss a write_enable for each sector's erase. 
+> 
+> But is that necessary? I thought 'write-enabled' was retained across
+> operations, so why would you have to perform it before each sector's
+> erase?
+The legacy code did so.
 
+> 
+> Or do you have a flash datasheet which says you must send WREN before
+> each sector erase?
+See the belowing from Spansion Nor S25fl129:
 
+"
+The Sector Erase (SE) command sets all bits at all addresses within a
+specified sector to a logic 1. A WREN
+command is required prior to writing the SE command.
+"
 
-> Patch looks good otherwise.
->
-> Acked-by: Richard Weinberger <richard@nod.at>
->
-> Thanks,
-> //richard
+It does not tell we send a WREN for each sector erase, but i am not sure if we can remove it.
+
+thanks
+Huang Shijie
+
+> 
+> I do see, now that I'm looking a little closer, that spi-nor doesn't
+> actually have any concurrency protection (!). So it looks like we could
+> potentially have other operations interleaved in this sequence of sector
+> erasures, potentially running a write_disable() in the midst of this loop.
+> 
+> I really hope I'm wrong about that last paragraph.
+> 
+> If I'm correct though, the solution to this is not, AIUI, to add more
+> write_enable() calls in this loop; the solution is to add some kind of
+> concurrency protections, a la nand_get_device().
