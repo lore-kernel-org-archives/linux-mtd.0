@@ -1,20 +1,28 @@
-Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
+Received: from mail-pa0-x22f.google.com ([2607:f8b0:400e:c03::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XRcJ0-0004ck-2F
- for linux-mtd@lists.infradead.org; Wed, 10 Sep 2014 07:27:06 +0000
-Received: by mail-pa0-f46.google.com with SMTP id kq14so4088685pab.33
- for <linux-mtd@lists.infradead.org>; Wed, 10 Sep 2014 00:26:44 -0700 (PDT)
+ id 1XRccm-0007R9-RA
+ for linux-mtd@lists.infradead.org; Wed, 10 Sep 2014 07:47:33 +0000
+Received: by mail-pa0-f47.google.com with SMTP id ey11so8865858pad.20
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Sep 2014 00:47:11 -0700 (PDT)
+Date: Wed, 10 Sep 2014 00:47:08 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH v2 1/10] mtd: spi-nor: eliminate duplicate spi_nor_wait_till_{,
- fsr}_ready() code
-Date: Wed, 10 Sep 2014 00:26:16 -0700
-Message-Id: <1410333976-19252-1-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1407374222-8448-2-git-send-email-computersforpeace@gmail.com>
-References: <1407374222-8448-2-git-send-email-computersforpeace@gmail.com>
-Cc: Marek Vasut <marex@denx.de>, Graham Moore <grmoore@altera.com>,
- Brian Norris <computersforpeace@gmail.com>, Huang Shijie <shijie8@gmail.com>,
- zajec5@gmail.com
+To: Huang Shijie <shijie.huang@intel.com>
+Subject: Re: [PATCH 7/8] mtd: spi-nor: factor out write_enable() for erase
+ commands
+Message-ID: <20140910074708.GD5732@norris-Latitude-E6410>
+References: <1407374222-8448-1-git-send-email-computersforpeace@gmail.com>
+ <1407374222-8448-8-git-send-email-computersforpeace@gmail.com>
+ <20140809105232.GA1571@localhost.localdomain>
+ <20140811184818.GY3711@ld-irv-0074>
+ <20140812005912.GA1850@shldeISGChi005.sh.intel.com>
+ <20140910070537.GC5732@norris-Latitude-E6410>
+ <20140910152021.GB13016@shldeISGChi005.sh.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20140910152021.GB13016@shldeISGChi005.sh.intel.com>
+Cc: Marek Vasut <marex@denx.de>, linux-mtd@lists.infradead.org,
+ zajec5@gmail.com, Huang Shijie <shijie8@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,153 +32,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-These functions were near-carbon-copies due to a small per-flash quirk.
-Let's add a new spi_nor::flags bitfield to support these types of
-quirks.
+On Wed, Sep 10, 2014 at 11:20:21PM +0800, Huang Shijie wrote:
+> On Wed, Sep 10, 2014 at 12:05:37AM -0700, Brian Norris wrote:
+> > On Tue, Aug 12, 2014 at 08:59:12AM +0800, Huang Shijie wrote:
+> > >    For the spi_nor_erase(), the patch should like this:
+> > > 
+> > > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> > > index c130bf7..26c48bc 100644
+> > > --- a/drivers/mtd/spi-nor/spi-nor.c
+> > > +++ b/drivers/mtd/spi-nor/spi-nor.c
+> > > @@ -324,6 +324,7 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+> > >  
+> > >  	/* whole-chip erase? */
+> > >  	if (len == mtd->size) {
+> > > +		write_enable(nor);
+> > >  		if (erase_chip(nor)) {
+> > >  			ret = -EIO;
+> > >  			goto erase_err;
+> > > @@ -337,6 +338,7 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+> > >  	/* "sector"-at-a-time erase */
+> > >  	} else {
+> > >  		while (len) {
+> > > +			write_enable(nor);
+> The difference is here.
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-Reviewed-by: Marek Vasut <marex@denx.de>
-Cc: Graham Moore <grmoore@altera.com>
-Cc: Huang Shijie <shijie8@gmail.com>
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
-v2: replace 'sr' with 'fsr' (typo)
+OK.
 
-I think this was the only patch (of the first 7) that required changes due to
-review. I may rework patch 8 eventually, but it was not meant for inclusion in
-its current form.
+> you miss a write_enable for each sector's erase. 
 
- drivers/mtd/spi-nor/spi-nor.c | 66 ++++++++++++++++++++++---------------------
- include/linux/mtd/spi-nor.h   |  6 ++++
- 2 files changed, 40 insertions(+), 32 deletions(-)
+But is that necessary? I thought 'write-enabled' was retained across
+operations, so why would you have to perform it before each sector's
+erase?
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 03e0ab8b2086..ba324e293645 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -163,48 +163,51 @@ static inline int set_4byte(struct spi_nor *nor, u32 jedec_id, int enable)
- 		return nor->write_reg(nor, SPINOR_OP_BRWR, nor->cmd_buf, 1, 0);
- 	}
- }
--
--static int spi_nor_wait_till_ready(struct spi_nor *nor)
-+static inline int spi_nor_sr_ready(struct spi_nor *nor)
- {
--	unsigned long deadline;
--	int sr;
--
--	deadline = jiffies + MAX_READY_WAIT_JIFFIES;
--
--	do {
--		cond_resched();
-+	int sr = read_sr(nor);
-+	if (sr < 0)
-+		return sr;
-+	else
-+		return !(sr & SR_WIP);
-+}
- 
--		sr = read_sr(nor);
--		if (sr < 0)
--			break;
--		else if (!(sr & SR_WIP))
--			return 0;
--	} while (!time_after_eq(jiffies, deadline));
-+static inline int spi_nor_fsr_ready(struct spi_nor *nor)
-+{
-+	int fsr = read_fsr(nor);
-+	if (fsr < 0)
-+		return fsr;
-+	else
-+		return fsr & FSR_READY;
-+}
- 
--	return -ETIMEDOUT;
-+static int spi_nor_ready(struct spi_nor *nor)
-+{
-+	int sr, fsr;
-+	sr = spi_nor_sr_ready(nor);
-+	if (sr < 0)
-+		return sr;
-+	fsr = nor->flags & SNOR_F_USE_FSR ? spi_nor_fsr_ready(nor) : 1;
-+	if (fsr < 0)
-+		return fsr;
-+	return sr && fsr;
- }
- 
--static int spi_nor_wait_till_fsr_ready(struct spi_nor *nor)
-+static int spi_nor_wait_till_ready(struct spi_nor *nor)
- {
- 	unsigned long deadline;
--	int sr;
--	int fsr;
-+	int ret;
- 
- 	deadline = jiffies + MAX_READY_WAIT_JIFFIES;
- 
- 	do {
- 		cond_resched();
- 
--		sr = read_sr(nor);
--		if (sr < 0) {
--			break;
--		} else if (!(sr & SR_WIP)) {
--			fsr = read_fsr(nor);
--			if (fsr < 0)
--				break;
--			if (fsr & FSR_READY)
--				return 0;
--		}
-+		ret = spi_nor_ready(nor);
-+		if (ret < 0)
-+			return ret;
-+		if (ret)
-+			return 0;
- 	} while (!time_after_eq(jiffies, deadline));
- 
- 	return -ETIMEDOUT;
-@@ -1009,9 +1012,8 @@ int spi_nor_scan(struct spi_nor *nor, const struct spi_device_id *id,
- 	else
- 		mtd->_write = spi_nor_write;
- 
--	if ((info->flags & USE_FSR) &&
--	    nor->wait_till_ready == spi_nor_wait_till_ready)
--		nor->wait_till_ready = spi_nor_wait_till_fsr_ready;
-+	if (info->flags & USE_FSR)
-+		nor->flags |= SNOR_F_USE_FSR;
- 
- 	/* prefer "small sector" erase if possible */
- 	if (info->flags & SECT_4K) {
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index 9e6294f32ba8..603ac0306663 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -116,6 +116,10 @@ enum spi_nor_ops {
- 	SPI_NOR_OPS_UNLOCK,
- };
- 
-+enum spi_nor_option_flags {
-+	SNOR_F_USE_FSR		= BIT(0),
-+};
-+
- /**
-  * struct spi_nor - Structure for defining a the SPI NOR layer
-  * @mtd:		point to a mtd_info structure
-@@ -129,6 +133,7 @@ enum spi_nor_ops {
-  * @program_opcode:	the program opcode
-  * @flash_read:		the mode of the read
-  * @sst_write_second:	used by the SST write operation
-+ * @flags:		flag options for the current SPI-NOR (SNOR_F_*)
-  * @cfg:		used by the read_xfer/write_xfer
-  * @cmd_buf:		used by the write_reg
-  * @prepare:		[OPTIONAL] do some preparations for the
-@@ -160,6 +165,7 @@ struct spi_nor {
- 	u8			program_opcode;
- 	enum read_mode		flash_read;
- 	bool			sst_write_second;
-+	u32			flags;
- 	struct spi_nor_xfer_cfg	cfg;
- 	u8			cmd_buf[SPI_NOR_MAX_CMD_SIZE];
- 
--- 
-1.9.1
+Or do you have a flash datasheet which says you must send WREN before
+each sector erase?
+
+I do see, now that I'm looking a little closer, that spi-nor doesn't
+actually have any concurrency protection (!). So it looks like we could
+potentially have other operations interleaved in this sequence of sector
+erasures, potentially running a write_disable() in the midst of this loop.
+
+I really hope I'm wrong about that last paragraph.
+
+If I'm correct though, the solution to this is not, AIUI, to add more
+write_enable() calls in this loop; the solution is to add some kind of
+concurrency protections, a la nand_get_device().
+
+> > >  			if (nor->erase(nor, addr)) {
+> > >  				ret = -EIO;
+> > >  				goto erase_err;
+> > > 
+> > 
+> > How is your patch any different than mine? Mine has the exact same code,
+> > except it covers both paths by putting the write_enable() outside the
+> > conditional entirely.
+
+Brian
