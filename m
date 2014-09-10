@@ -1,28 +1,23 @@
+Received: from mail-lb0-x233.google.com ([2a00:1450:4010:c04::233])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XRcwG-0001EG-Lw
+ for linux-mtd@lists.infradead.org; Wed, 10 Sep 2014 08:07:41 +0000
+Received: by mail-lb0-f179.google.com with SMTP id p9so7434648lbv.38
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Sep 2014 01:07:18 -0700 (PDT)
 MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <CAN8TOE_BRyg=Ww0oOxGeRr5Xkwh5hTq0UKQAR2dFjRVfwcBZoQ@mail.gmail.com>
-References: <1409673299.14324.43.camel@dagon.hellion.org.uk>
- <1409796689.27524.34.camel@decadent.org.uk>
- <CAMuHMdWBr=B0_Xivti9K5ReryHHEunQj2P26FjhmzhO-L9t+9g@mail.gmail.com>
- <20140910060004.GA5732@norris-Latitude-E6410>
- <CAN8TOE_BRyg=Ww0oOxGeRr5Xkwh5hTq0UKQAR2dFjRVfwcBZoQ@mail.gmail.com>
-Date: Wed, 10 Sep 2014 09:59:49 +0200
-Message-ID: <CAMuHMdXO8+9UWgYTv-fcostAipoqjZ=wQe56L4L-SR09L33Ydw@mail.gmail.com>
-Subject: Re: Autoloading of SPI/nor driver on kirkwood (qnap devices)
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Brian Norris <computersforpeace@gmail.com>
+In-Reply-To: <540F749B.6080607@nod.at>
+References: <1410265519-25111-1-git-send-email-richard.genoud@gmail.com>
+ <540F749B.6080607@nod.at>
+From: Richard Genoud <richard.genoud@gmail.com>
+Date: Wed, 10 Sep 2014 10:06:58 +0200
+Message-ID: <CACQ1gAgtwANFzkxBrJ4OoYRvk1RLe4_W=VEK5=t3dYbSd_gZRA@mail.gmail.com>
+Subject: Re: [PATCH] UBI: add missing kmem_cache_free() in process_pool_aeb
+ error path
+To: Richard Weinberger <richard@nod.at>
 Content-Type: text/plain; charset=UTF-8
-Cc: Andrew Lunn <andrew@lunn.ch>, Jason Cooper <jason@lakedaemon.net>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- Huang Shijie <shijie8@gmail.com>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- linux-spi <linux-spi@vger.kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Ian Campbell <ijc@hellion.org.uk>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- Ben Hutchings <ben@decadent.org.uk>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- debian-kernel <debian-kernel@lists.debian.org>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,95 +27,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ devicetree, as the names are used in DTS file.
-
-On Wed, Sep 10, 2014 at 8:11 AM, Brian Norris
-<computersforpeace@gmail.com> wrote:
-> + Huang (his Freescale address is bouncing), Rafal
+2014-09-09 23:43 GMT+02:00 Richard Weinberger <richard@nod.at>:
+> Am 09.09.2014 14:25, schrieb Richard Genoud:
+>> I ran into this error after a ubiupdatevol, because I forgot to backport
+>> e9110361a9a4 UBI: fix the volumes tree sorting criteria.
+>>
+>> UBI error: process_pool_aeb: orphaned volume in fastmap pool
+>> UBI error: ubi_scan_fastmap: Attach by fastmap failed, doing a full scan!
+>> kmem_cache_destroy ubi_ainf_peb_slab: Slab cache still has objects
+>> CPU: 0 PID: 1 Comm: swapper Not tainted 3.14.18-00053-gf05cac8dbf85 #1
+>> [<c000d298>] (unwind_backtrace) from [<c000baa8>] (show_stack+0x10/0x14)
+>> [<c000baa8>] (show_stack) from [<c01b7a68>] (destroy_ai+0x230/0x244)
+>> [<c01b7a68>] (destroy_ai) from [<c01b8fd4>] (ubi_attach+0x98/0x1ec)
+>> [<c01b8fd4>] (ubi_attach) from [<c01ade90>] (ubi_attach_mtd_dev+0x2b8/0x868)
+>> [<c01ade90>] (ubi_attach_mtd_dev) from [<c038b510>] (ubi_init+0x1dc/0x2ac)
+>> [<c038b510>] (ubi_init) from [<c0008860>] (do_one_initcall+0x94/0x140)
+>> [<c0008860>] (do_one_initcall) from [<c037aadc>] (kernel_init_freeable+0xe8/0x1b0)
+>> [<c037aadc>] (kernel_init_freeable) from [<c02730ac>] (kernel_init+0x8/0xe4)
+>> [<c02730ac>] (kernel_init) from [<c00093f0>] (ret_from_fork+0x14/0x24)
+>> UBI: scanning is finished
+>>
+>> Freeing the cache in the error path fixes the Slab error.
+>>
+>> Tested on at91sam9g35 (3.14.18+fastmap backports)
+>>
+>> Signed-off-by: Richard Genoud <richard.genoud@gmail.com>
+>> Cc: stable <stable@vger.kernel.org> # >= 3.10
 >
-> On Tue, Sep 9, 2014 at 11:00 PM, Brian Norris
-> <computersforpeace@gmail.com> wrote:
->> On Thu, Sep 04, 2014 at 09:02:04AM +0200, Geert Uytterhoeven wrote:
->>> On Thu, Sep 4, 2014 at 4:11 AM, Ben Hutchings <ben@decadent.org.uk> wrote:
->>> >> I noticed that many platforms declare the flash chip as compatible =
->>> >> "st,m25pXXX" whereas the ts219.dtsi just said m25p128 but I tried
->>> >> changing that and it didn't help. In any case without spi-nor.ko being
->>> >> autoloaded I don't support m25p80.ko ever would be.
->>> >
->>> > m25p80.c has:
->>> >
->>> > static struct spi_driver m25p80_driver = {
->>> >         ...
->>> >         .id_table       = spi_nor_ids,
->>> >         ...
->>> > };
->>> >
->>> > while spi_nor_ids is defined in spi-nor.c.  Since they end up as two
->>> > separate modules, modpost can't read the ID table and add the device ID
->>> > aliases to m25p80.ko.
->>>
->>> Woops. This indeed doesn't work.
->>> Note that the MODULE_DEVICE_TABLE() is also gone from m25p80.c
->>>
->>> So m25p80.c needs to contain the IDs, while spi-nor.c also needs the IDs
->>> because it's a framework/library.
->>
->> Actually, m25p80.c only needs the strings (i.e., the named aliases --
->> character data), and for the most part, spi-nor.c only needs the IDs (i.e.,
->> the identification bytes).
->>
->> What's more, I don't think that any modern SPI NOR user really needs to
->> be specifying exactly which SPI device it is via a specific string. Our
->> driver code pretty much always re-detects the device by reading its
->> device ID. All the SPI NOR code needs to know is how to read its ID.
+> I guess you wrote 3.10 because there is no stable kernel between >= 3.7 and < 3.10?
+Yes, that's right.
+I checked that
+git am 0001-UBI-add-missing-kmem_cache_free-in-process_pool_aeb-.patch
+Applied correctly on 3.10.54, 3.12.28, 3.14.18, 3.16.2 and 3.17-rc4
 
-But the proper name should be in the compatible property.
 
->>> A quick solution would be to move the ID table to a header file, and include
->>> that by both, and re-add the lost MODULE_DEVICE_TABLE() to m25p80.c.
->>> That duplicates the data, though.
->>>
->>> Hmm, for the built-in case, we can avoid the duplication by letting m25p80.c
->>> refer to the table in spi-nor.c if !MODULE.
->>> Does anyone see a better solution?
->>
->> A little bit of a shot in the dark, as I haven't fleshed this one out:
->>
->> Would it work to just copy the SPI ID strings into m25p80.c, keep the
->> full table in spi-nor.c, stop adding SPI ID string (and DT) bindings to
->> the m25p80 table (force platforms to use "m25p80"-compatible probing, or
->> maybe something generic like "spi-nor-rdid", "spi-nor-sfdp", etc.) and
->> eventually kill the strings from spi-nor.c entirely? I really don't want
->> to propagate string-binding much further into the SPI NOR library, since
->> everything should be auto-detectable--partly just by an ID table as we
->> have now, but eventually we can use CFI or SFDP parameters provided by
->> relatively new SPI NOR chips.
 
-How does the SPI core know to use m25p80? From the ids, and the compatible
-value. If you won't add new names, all devices should declare compatiblity
-with "m25p80" (that's "spansion,m25p80", right?) as a fallback.
-However, are all devices really compatible with m25p80?
-I.e. does m25p80.c work will all devices, in the absense of support for the
-real device? If not, the fallback must not be there, and new device names
-must be added.
-
->> I'm not sure if this is great for the short-term problem of fixing
->> module-autoloading. Perhaps we should do a short-term hack to duplicate
->> the SPI ID strings to m25p80.c by including them in a header (and
->> backport for 3.16.y stable?), but I'd like to disentangle this.
->>
->> Brian
-
-Autoloading is based on "spi:<name>". If new names aren't added, m25p80
-won't be loaded for new SPI FLASHes, unless I'm missing something?
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> Patch looks good otherwise.
+>
+> Acked-by: Richard Weinberger <richard@nod.at>
+>
+> Thanks,
+> //richard
