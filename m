@@ -1,24 +1,21 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
+Received: from mail-qa0-f50.google.com ([209.85.216.50])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XRhbZ-0005k1-2y
- for linux-mtd@lists.infradead.org; Wed, 10 Sep 2014 13:06:38 +0000
-Message-ID: <54104CB4.4020703@ti.com>
-Date: Wed, 10 Sep 2014 16:05:56 +0300
-From: Roger Quadros <rogerq@ti.com>
+ id 1XRjKk-0008HL-Ia
+ for linux-mtd@lists.infradead.org; Wed, 10 Sep 2014 14:57:23 +0000
+Received: by mail-qa0-f50.google.com with SMTP id cm18so17111017qab.23
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Sep 2014 07:56:59 -0700 (PDT)
+From: =?UTF-8?q?Guido=20Mart=C3=ADnez?= <guido@vanguardiasur.com.ar>
+To: linux-mtd@lists.infradead.org,
+	Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH] libmtd: fix mtd_dev_present return value on legacy systems
+Date: Wed, 10 Sep 2014 11:56:40 -0300
+Message-Id: <1410361000-4821-1-git-send-email-guido@vanguardiasur.com.ar>
 MIME-Version: 1.0
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Subject: Re: [PATCH 2/3] nand: omap2: Remove horrible ifdefs to fix module
- probe
-References: <1410033389-32357-1-git-send-email-ezequiel@vanguardiasur.com.ar>
- <1410033389-32357-3-git-send-email-ezequiel@vanguardiasur.com.ar>
- <540D6CAB.7020501@ti.com> <540D8A92.2040209@ti.com>
- <20140910124849.GA25308@arch.hh.imgtec.org>
-In-Reply-To: <20140910124849.GA25308@arch.hh.imgtec.org>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: Tony Lindgren <tony@atomide.com>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- =?ISO-8859-1?Q?Guido_Mart=EDnez?= <guido@vanguardiasur.com.ar>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ =?UTF-8?q?Ezequiel=20Garc=C3=ADa?= <ezequiel@vanguardiasur.com.ar>,
+ =?UTF-8?q?Guido=20Mart=C3=ADnez?= <guido@vanguardiasur.com.ar>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,32 +25,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09/10/2014 03:48 PM, Ezequiel Garcia wrote:
-> On 08 Sep 01:53 PM, Roger Quadros wrote:
->> On 09/08/2014 11:45 AM, Roger Quadros wrote:
->>> On 09/06/2014 10:56 PM, Ezequiel Garcia wrote:
-> [..]
->>>> diff --git a/include/linux/platform_data/elm.h b/include/linux/platform_data/elm.h
->>>> index 780d1e9..25d1bca 100644
->>>> --- a/include/linux/platform_data/elm.h
->>>> +++ b/include/linux/platform_data/elm.h
->>>> @@ -42,8 +42,22 @@ struct elm_errorvec {
->>>>  	int error_loc[16];
->>>>  };
->>>>  
->>>> +#if IS_ENABLED(CONFIG_MTD_NAND_OMAP_BCH)
->>
->> I still get the following error if I set CONFIG_MTD_NAND_OMAP2 to y and
->> CONFIG_MTD_NAND_OMAP_BCH to m.
->>
->> CONFIG_MTD_NAND_OMAP_BCH is used to select the ELM driver and it must be limited to
->> be built-in if CONFIG_MTD_NAND_OMAP2 is built-in.
->>
-> 
-> Hm, yup. Any ideas on how to accomplish that? My Kconfig-foo is not strong enough :(
->  
-> 
-Mine neither ;). I'm unaware of any other method than making CONFIG_MTD_NAND_OMAP_BCH to bool.
+On legacy systems, if "/proc/mtd" doesn't exist or gives a read error,
+mtd_dev_present returns -1 (since it calls legacy_dev_present), contrary
+to what's specified in the header file.
 
-cheers,
--roger
+This causes checks like
+
+  if (mtd_dev_present(n)) {
+    ...
+  }
+
+to give false positives. Fix this by comparing the return value to 1.
+
+Signed-off-by: Guido Martínez <guido@vanguardiasur.com.ar>
+---
+ lib/libmtd.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/lib/libmtd.c b/lib/libmtd.c
+index 2089373..aff4c8b 100644
+--- a/lib/libmtd.c
++++ b/lib/libmtd.c
+@@ -647,9 +647,9 @@ int mtd_dev_present(libmtd_t desc, int mtd_num) {
+ 	struct stat st;
+ 	struct libmtd *lib = (struct libmtd *)desc;
+ 
+-	if (!lib->sysfs_supported)
+-		return legacy_dev_present(mtd_num);
+-	else {
++	if (!lib->sysfs_supported) {
++		return legacy_dev_present(mtd_num) == 1;
++	} else {
+ 		char file[strlen(lib->mtd) + 10];
+ 
+ 		sprintf(file, lib->mtd, mtd_num);
+-- 
+2.1.0
