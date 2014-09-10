@@ -1,16 +1,25 @@
-From: klightspeed@killerwolves.net
-To: Jason Cooper <jason@lakedaemon.net>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Russell King <linux@arm.linux.org.uk>
-Subject: [PATCH reword] ARM: MVEBU: Netgear RN102: Use Hardware BCH ECC
-Date: Wed, 10 Sep 2014 18:55:41 +1000
-Message-Id: <1410339341-3372-1-git-send-email-klightspeed@killerwolves.net>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- devicetree@vger.kernel.org, Ben Peddell <klightspeed@killerwolves.net>,
- Arnaud Ebalard <arno@natisbad.org>, linux-mtd@lists.infradead.org,
- Gregory Clement <gregory.clement@free-electrons.com>,
- linux-arm-kernel@lists.infradead.org
+Received: from mail-qc0-f172.google.com ([209.85.216.172])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XRhLs-000554-EQ
+ for linux-mtd@lists.infradead.org; Wed, 10 Sep 2014 12:50:25 +0000
+Received: by mail-qc0-f172.google.com with SMTP id o8so19579287qcw.3
+ for <linux-mtd@lists.infradead.org>; Wed, 10 Sep 2014 05:50:01 -0700 (PDT)
+Date: Wed, 10 Sep 2014 09:48:49 -0300
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To: Roger Quadros <rogerq@ti.com>
+Subject: Re: [PATCH 2/3] nand: omap2: Remove horrible ifdefs to fix module
+ probe
+Message-ID: <20140910124849.GA25308@arch.hh.imgtec.org>
+References: <1410033389-32357-1-git-send-email-ezequiel@vanguardiasur.com.ar>
+ <1410033389-32357-3-git-send-email-ezequiel@vanguardiasur.com.ar>
+ <540D6CAB.7020501@ti.com> <540D8A92.2040209@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <540D8A92.2040209@ti.com>
+Cc: Tony Lindgren <tony@atomide.com>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ Guido =?iso-8859-1?Q?Mart=EDnez?= <guido@vanguardiasur.com.ar>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,38 +29,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The bootloader on the Netgear ReadyNAS RN102 uses Hardware BCH ECC
-(strength = 4), while the pxa3xx NAND driver by default uses 
-Hamming ECC (strength = 1).
+On 08 Sep 01:53 PM, Roger Quadros wrote:
+> On 09/08/2014 11:45 AM, Roger Quadros wrote:
+> > On 09/06/2014 10:56 PM, Ezequiel Garcia wrote:
+[..]
+> >> diff --git a/include/linux/platform_data/elm.h b/include/linux/platform_data/elm.h
+> >> index 780d1e9..25d1bca 100644
+> >> --- a/include/linux/platform_data/elm.h
+> >> +++ b/include/linux/platform_data/elm.h
+> >> @@ -42,8 +42,22 @@ struct elm_errorvec {
+> >>  	int error_loc[16];
+> >>  };
+> >>  
+> >> +#if IS_ENABLED(CONFIG_MTD_NAND_OMAP_BCH)
+> 
+> I still get the following error if I set CONFIG_MTD_NAND_OMAP2 to y and
+> CONFIG_MTD_NAND_OMAP_BCH to m.
+> 
+> CONFIG_MTD_NAND_OMAP_BCH is used to select the ELM driver and it must be limited to
+> be built-in if CONFIG_MTD_NAND_OMAP2 is built-in.
+>
 
-This patch changes the ECC mode on these machines to match that
-of the bootloader and of the stock firmware. That way, it is
-now possible to update the kernel from userland (e.g. using
-standard tools from mtd-utils package); u-boot will happily
-load and boot it.
-
-Fixes: 92beaccd8b49 ("ARM: mvebu: Enable NAND controller in ReadyNAS 102 .dts file")
-Signed-off-by: Ben Peddell <klightspeed@killerwolves.net>
-Acked-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-Tested-by: Arnaud Ebalard <arno@natisbad.org>
----
- arch/arm/boot/dts/armada-370-netgear-rn102.dts | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/arch/arm/boot/dts/armada-370-netgear-rn102.dts b/arch/arm/boot/dts/armada-370-netgear-rn102.dts
-index d6d572e..285524f 100644
---- a/arch/arm/boot/dts/armada-370-netgear-rn102.dts
-+++ b/arch/arm/boot/dts/armada-370-netgear-rn102.dts
-@@ -143,6 +143,10 @@
- 				marvell,nand-enable-arbiter;
- 				nand-on-flash-bbt;
+Hm, yup. Any ideas on how to accomplish that? My Kconfig-foo is not strong enough :(
  
-+				/* Use Hardware BCH ECC */
-+				nand-ecc-strength = <4>;
-+				nand-ecc-step-size = <512>;
-+
- 				partition@0 {
- 					label = "u-boot";
- 					reg = <0x0000000 0x180000>;  /* 1.5MB */
 -- 
-1.8.5.5
+Ezequiel Garcia, VanguardiaSur
+www.vanguardiasur.com.ar
