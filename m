@@ -1,19 +1,19 @@
-Received: from mail-qg0-f45.google.com ([209.85.192.45])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XS4kN-000834-LF
- for linux-mtd@lists.infradead.org; Thu, 11 Sep 2014 13:49:16 +0000
-Received: by mail-qg0-f45.google.com with SMTP id j107so7422447qga.4
- for <linux-mtd@lists.infradead.org>; Thu, 11 Sep 2014 06:48:50 -0700 (PDT)
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To: Roger Quadros <rogerq@ti.com>, Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH 3/3] mtd: nand: Force omap_elm to be built as a module if
- omap2_nand is a module
-Date: Thu, 11 Sep 2014 10:47:04 -0300
-Message-Id: <1410443224-18477-4-git-send-email-ezequiel@vanguardiasur.com.ar>
-In-Reply-To: <1410443224-18477-1-git-send-email-ezequiel@vanguardiasur.com.ar>
-References: <1410443224-18477-1-git-send-email-ezequiel@vanguardiasur.com.ar>
-Cc: Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
- linux-mtd@lists.infradead.org, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Date: Thu, 11 Sep 2014 22:25:13 +0800
+From: Huang Shijie <shijie8@gmail.com>
+To: Boris BREZILLON <boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH] mtd: nand: gpmi: add proper raw access support
+Message-ID: <20140911142511.GA2543@localhost.localdomain>
+References: <1410339339-25561-1-git-send-email-boris.brezillon@free-electrons.com>
+ <20140911120928.GA1585@localhost.localdomain>
+ <20140911143616.3ebb025a@bbrezillon>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20140911143616.3ebb025a@bbrezillon>
+Cc: Mike Voytovich <mvoytovich@paypal.com>, linux-kernel@vger.kernel.org,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ Roy Lee <roylee@paypal.com>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,63 +23,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This commit adds a hidden option to build the omap_elm as a module, if
-omap2_nand is a module (and similarly in the built-in case).
+Hi Boris,
 
-This fixes the following build error when omap2_nand is chosen built-in,
-and omap_elm is chosen as a module:
+On Thu, Sep 11, 2014 at 02:36:16PM +0200, Boris BREZILLON wrote:
+> Hi Huang,
+> 
+> On Thu, 11 Sep 2014 20:09:30 +0800
+> Huang Shijie <shijie8@gmail.com> wrote:
+> 
+> > On Wed, Sep 10, 2014 at 10:55:39AM +0200, Boris BREZILLON wrote:
+> > > Several MTD users (either in user or kernel space) expect a valid raw
+> > > access support to NAND chip devices.
+> > > This is particularly true for testing tools which are often touching the
+> > > data stored in a NAND chip in raw mode to artificially generate errors.
+> > > 
+> > > The GPMI drivers do not implemenent raw access functions, and thus rely on
+> > > default HW_ECC scheme implementation.
+> > > The default implementation consider the data and OOB area as properly
+> > > separated in their respective NAND section, which is not true for the GPMI
+> > > controller.
+> > > In this driver/controller some OOB data are stored at the beginning of the
+> > > NAND data area (these data are called metadata in the driver), then ECC
+> > > bytes are interleaved with data chunk (which is similar to the
+> > > HW_ECC_SYNDROME scheme), and eventually the remaining bytes are used as
+> > > OOB data.
+> > > 
+> > > Signed-off-by: Boris BREZILLON <boris.brezillon@free-electrons.com>
+> > > ---
+> > > Hello,
+> > > 
+> > > This patch is providing raw access support to the GPMI driver which is
+> > > particularly useful to run some tests on the NAND (the one coming in
+> > > mind is the mtd_nandbiterrs testsuite).
+> > > 
+> > > I know this rework might break several user space tools which are relying
+> > > on the default raw access implementation (I already experienced an issue
+> > > with the kobs-ng tool provided by freescale), but many other tools will
+> > > now work as expected.
+> > If the kobs-ng can not works, there is no meaning that other tools
+> > works.  So I do not think we need to implement these hooks.
+> 
+> Well, I don't know about freescale specific tools, but at least I have
+> an example with mtd_nandbiterrs module.
 
-drivers/built-in.o: In function `omap_nand_probe':
-/work/linux-2.6/drivers/mtd/nand/omap2.c:2010: undefined reference to `elm_config'
-/work/linux-2.6/drivers/mtd/nand/omap2.c:1980: undefined reference to `elm_config'
-/work/linux-2.6/drivers/mtd/nand/omap2.c:1927: undefined reference to `elm_config'
-drivers/built-in.o: In function `omap_elm_correct_data':
-/work/linux-2.6/drivers/mtd/nand/omap2.c:1444: undefined reference to `elm_decode_bch_error_page'
+The gpmi uses the hardware ECC for the bitflips.
+I really do not know why the mtd_nandbiterrs is needed.
+IMHO, the mtd_nandbiterrs is useless for the gpmi.
 
-Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
----
- drivers/mtd/nand/Kconfig  | 8 +++++++-
- drivers/mtd/nand/Makefile | 2 +-
- 2 files changed, 8 insertions(+), 2 deletions(-)
+> This module is assuming it can write only the data part of a NAND page
+> without modifying the OOB area (see [1]), which in GPMI controller case
+> is impossible because raw write function store the data as if there
+> were no specific scheme, while there is one:
+> (metadata + n x (data_chunk + ECC bytes) + remaining_bytes).
+> 
+> Moreover, IMHO, nanddump and nandwrite tools (which can use raw
+> access mode when passing the appropriate option) should always return
+> the same kind of data no matter what NAND controller is in use on the
+> system => (DATA + OOB_DATA), and this is definitely not the case with
+> the GPMI driver.
+> 
+> See how raw access on HW_ECC_SYNDROME scheme is implemented in
+The gpmi uses the NAND_ECC_HW, not the NAND_ECC_HW_SYNDROME.
+Even you really want to support the nanddump, i do not agree to add the
+write hook, it may crash the system.
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index f1cf503..12e8ee8 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -96,7 +96,7 @@ config MTD_NAND_OMAP2
- 
- config MTD_NAND_OMAP_BCH
- 	depends on MTD_NAND_OMAP2
--	tristate "Support hardware based BCH error correction"
-+	bool "Support hardware based BCH error correction"
- 	default n
- 	select BCH
- 	help
-@@ -106,6 +106,12 @@ config MTD_NAND_OMAP_BCH
- 	  legacy OMAP families like OMAP2xxx, OMAP3xxx do not have ELM engine
- 	  so they should not enable this config symbol.
- 
-+config MTD_NAND_OMAP_BCH_BUILD
-+	tristate
-+	depends on MTD_NAND_OMAP2
-+	default m if MTD_NAND_OMAP2=m && MTD_NAND_OMAP_BCH
-+	default y if MTD_NAND_OMAP2=y && MTD_NAND_OMAP_BCH
-+
- config MTD_NAND_IDS
- 	tristate
- 
-diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-index 4bcdeb0..3580188 100644
---- a/drivers/mtd/nand/Makefile
-+++ b/drivers/mtd/nand/Makefile
-@@ -27,7 +27,7 @@ obj-$(CONFIG_MTD_NAND_NDFC)		+= ndfc.o
- obj-$(CONFIG_MTD_NAND_ATMEL)		+= atmel_nand.o
- obj-$(CONFIG_MTD_NAND_GPIO)		+= gpio.o
- obj-$(CONFIG_MTD_NAND_OMAP2) 		+= omap2_nand.o
--obj-$(CONFIG_MTD_NAND_OMAP_BCH)		+= omap_elm.o
-+obj-$(CONFIG_MTD_NAND_OMAP_BCH_BUILD)	+= omap_elm.o
- obj-$(CONFIG_MTD_NAND_CM_X270)		+= cmx270_nand.o
- obj-$(CONFIG_MTD_NAND_PXA3xx)		+= pxa3xx_nand.o
- obj-$(CONFIG_MTD_NAND_TMIO)		+= tmio_nand.o
--- 
-2.1.0
+thanks
+Huang Shijie
