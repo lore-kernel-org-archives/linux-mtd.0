@@ -1,30 +1,17 @@
-Received: from mail-pd0-x22e.google.com ([2607:f8b0:400e:c02::22e])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XRrGp-00036C-KM
- for linux-mtd@lists.infradead.org; Wed, 10 Sep 2014 23:25:52 +0000
-Received: by mail-pd0-f174.google.com with SMTP id v10so12038478pde.33
- for <linux-mtd@lists.infradead.org>; Wed, 10 Sep 2014 16:25:29 -0700 (PDT)
-Date: Wed, 10 Sep 2014 16:25:26 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Huang Shijie <shijie.huang@intel.com>
-Subject: Re: [PATCH 7/8] mtd: spi-nor: factor out write_enable() for erase
- commands
-Message-ID: <20140910232526.GI18411@ld-irv-0074>
-References: <1407374222-8448-1-git-send-email-computersforpeace@gmail.com>
- <1407374222-8448-8-git-send-email-computersforpeace@gmail.com>
- <20140809105232.GA1571@localhost.localdomain>
- <20140811184818.GY3711@ld-irv-0074>
- <20140812005912.GA1850@shldeISGChi005.sh.intel.com>
- <20140910070537.GC5732@norris-Latitude-E6410>
- <20140910152021.GB13016@shldeISGChi005.sh.intel.com>
- <20140910074708.GD5732@norris-Latitude-E6410>
- <20140910161237.GB13736@shldeISGChi005.sh.intel.com>
+Date: Thu, 11 Sep 2014 20:09:30 +0800
+From: Huang Shijie <shijie8@gmail.com>
+To: Boris BREZILLON <boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH] mtd: nand: gpmi: add proper raw access support
+Message-ID: <20140911120928.GA1585@localhost.localdomain>
+References: <1410339339-25561-1-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20140910161237.GB13736@shldeISGChi005.sh.intel.com>
-Cc: Marek Vasut <marex@denx.de>, linux-mtd@lists.infradead.org,
- zajec5@gmail.com, Huang Shijie <shijie8@gmail.com>
+In-Reply-To: <1410339339-25561-1-git-send-email-boris.brezillon@free-electrons.com>
+Cc: Mike Voytovich <mvoytovich@paypal.com>, linux-kernel@vger.kernel.org,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ Roy Lee <roylee@paypal.com>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,43 +21,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Sep 11, 2014 at 12:12:37AM +0800, Huang Shijie wrote:
-> On Wed, Sep 10, 2014 at 12:47:08AM -0700, Brian Norris wrote:
-> > On Wed, Sep 10, 2014 at 11:20:21PM +0800, Huang Shijie wrote:
-> > > On Wed, Sep 10, 2014 at 12:05:37AM -0700, Brian Norris wrote:
-> > > > On Tue, Aug 12, 2014 at 08:59:12AM +0800, Huang Shijie wrote:
-> > > you miss a write_enable for each sector's erase. 
-> > 
-> > But is that necessary? I thought 'write-enabled' was retained across
-> > operations, so why would you have to perform it before each sector's
-> > erase?
-> The legacy code did so.
+On Wed, Sep 10, 2014 at 10:55:39AM +0200, Boris BREZILLON wrote:
+> Several MTD users (either in user or kernel space) expect a valid raw
+> access support to NAND chip devices.
+> This is particularly true for testing tools which are often touching the
+> data stored in a NAND chip in raw mode to artificially generate errors.
 > 
-> > 
-> > Or do you have a flash datasheet which says you must send WREN before
-> > each sector erase?
-> See the belowing from Spansion Nor S25fl129:
+> The GPMI drivers do not implemenent raw access functions, and thus rely on
+> default HW_ECC scheme implementation.
+> The default implementation consider the data and OOB area as properly
+> separated in their respective NAND section, which is not true for the GPMI
+> controller.
+> In this driver/controller some OOB data are stored at the beginning of the
+> NAND data area (these data are called metadata in the driver), then ECC
+> bytes are interleaved with data chunk (which is similar to the
+> HW_ECC_SYNDROME scheme), and eventually the remaining bytes are used as
+> OOB data.
 > 
-> "
-> The Sector Erase (SE) command sets all bits at all addresses within a
-> specified sector to a logic 1. A WREN
-> command is required prior to writing the SE command.
-> "
+> Signed-off-by: Boris BREZILLON <boris.brezillon@free-electrons.com>
+> ---
+> Hello,
 > 
-> It does not tell we send a WREN for each sector erase, but i am not sure if we can remove it.
+> This patch is providing raw access support to the GPMI driver which is
+> particularly useful to run some tests on the NAND (the one coming in
+> mind is the mtd_nandbiterrs testsuite).
+> 
+> I know this rework might break several user space tools which are relying
+> on the default raw access implementation (I already experienced an issue
+> with the kobs-ng tool provided by freescale), but many other tools will
+> now work as expected.
+If the kobs-ng can not works, there is no meaning that other tools
+works.  So I do not think we need to implement these hooks. 
 
-OK, well I guess I can rework this to retain the original behavior. That
-was in fact, an oversight (thanks for catching), although I'm not
-convinced it's actually necessary.
+sorry, I will not Ack this patch.
 
-(Edit: I think you may be right that WREN is necessary before every
-erased command. From a Micron N25Q256 datasheet:
-
-  The write enable latch bit must be set before every PROGRAM, ERASE,
-  WRITE, ENTER 4-BYTE ADDRESS MODE, and EXIT 4-BYTE ADDRESS MODE
-  command.
-  
-But I don't recall seeing any ill effects last time I tested this on my
-Micron SPI flash, so I'm still mildly confused.)
-
-Brian
+thanks
+Huang Shijie
