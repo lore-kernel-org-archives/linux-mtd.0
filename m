@@ -1,25 +1,27 @@
-Received: from mail-wi0-f176.google.com ([209.85.212.176])
+Received: from mail-yk0-f178.google.com ([209.85.160.178])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XSUAj-0001vk-Rc
- for linux-mtd@lists.infradead.org; Fri, 12 Sep 2014 16:58:10 +0000
-Received: by mail-wi0-f176.google.com with SMTP id ex7so982275wid.15
- for <linux-mtd@lists.infradead.org>; Fri, 12 Sep 2014 09:57:47 -0700 (PDT)
-Date: Fri, 12 Sep 2014 17:56:36 +0100
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To: Roger Quadros <rogerq@ti.com>
-Subject: Re: [PATCH 3/3] mtd: nand: Force omap_elm to be built as a module if
- omap2_nand is a module
-Message-ID: <20140912165636.GA7276@arch>
-References: <1410443224-18477-1-git-send-email-ezequiel@vanguardiasur.com.ar>
- <1410443224-18477-4-git-send-email-ezequiel@vanguardiasur.com.ar>
- <5412B66F.8050505@ti.com>
+ id 1XSUIz-00068V-CU
+ for linux-mtd@lists.infradead.org; Fri, 12 Sep 2014 17:06:41 +0000
+Received: by mail-yk0-f178.google.com with SMTP id 20so577537yks.37
+ for <linux-mtd@lists.infradead.org>; Fri, 12 Sep 2014 10:06:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5412B66F.8050505@ti.com>
-Cc: Tony Lindgren <tony@atomide.com>, pekon <pekon@pek-sem.com>,
- linux-omap@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
- linux-mtd@lists.infradead.org
+In-Reply-To: <1410514809-25650-1-git-send-email-alexandre.belloni@free-electrons.com>
+References: <1410514809-25650-1-git-send-email-alexandre.belloni@free-electrons.com>
+Date: Fri, 12 Sep 2014 18:06:19 +0100
+Message-ID: <CAAEAJfBgUkSErSe80_VROKSGY_J9PoUgaCE0R5Rh+1uKRovXJA@mail.gmail.com>
+Subject: Re: [PATCHv4] mtd: nand: atmel_nand: retrieve NFC clock
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Nicolas Ferre <nicolas.ferre@atmel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Josh Wu <josh.wu@atmel.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,97 +31,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12 Sep 12:01 PM, Roger Quadros wrote:
-> On 09/11/2014 04:47 PM, Ezequiel Garcia wrote:
-> > This commit adds a hidden option to build the omap_elm as a module, if
-> > omap2_nand is a module (and similarly in the built-in case).
-> > 
-> > This fixes the following build error when omap2_nand is chosen built-in,
-> > and omap_elm is chosen as a module:
-> > 
-> > drivers/built-in.o: In function `omap_nand_probe':
-> > /work/linux-2.6/drivers/mtd/nand/omap2.c:2010: undefined reference to `elm_config'
-> > /work/linux-2.6/drivers/mtd/nand/omap2.c:1980: undefined reference to `elm_config'
-> > /work/linux-2.6/drivers/mtd/nand/omap2.c:1927: undefined reference to `elm_config'
-> > drivers/built-in.o: In function `omap_elm_correct_data':
-> > /work/linux-2.6/drivers/mtd/nand/omap2.c:1444: undefined reference to `elm_decode_bch_error_page'
-> > 
-> > Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-> > ---
-> >  drivers/mtd/nand/Kconfig  | 8 +++++++-
-> >  drivers/mtd/nand/Makefile | 2 +-
-> >  2 files changed, 8 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-> > index f1cf503..12e8ee8 100644
-> > --- a/drivers/mtd/nand/Kconfig
-> > +++ b/drivers/mtd/nand/Kconfig
-> > @@ -96,7 +96,7 @@ config MTD_NAND_OMAP2
-> >  
-> >  config MTD_NAND_OMAP_BCH
-> >  	depends on MTD_NAND_OMAP2
-> > -	tristate "Support hardware based BCH error correction"
-> > +	bool "Support hardware based BCH error correction"
-> >  	default n
-> >  	select BCH
-> >  	help
-> > @@ -106,6 +106,12 @@ config MTD_NAND_OMAP_BCH
-> >  	  legacy OMAP families like OMAP2xxx, OMAP3xxx do not have ELM engine
-> >  	  so they should not enable this config symbol.
-> >  
-> > +config MTD_NAND_OMAP_BCH_BUILD
-> > +	tristate
-> > +	depends on MTD_NAND_OMAP2
-> > +	default m if MTD_NAND_OMAP2=m && MTD_NAND_OMAP_BCH
-> > +	default y if MTD_NAND_OMAP2=y && MTD_NAND_OMAP_BCH
-> > +
-> >  config MTD_NAND_IDS
-> >  	tristate
-> >  
-> > diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-> > index 4bcdeb0..3580188 100644
-> > --- a/drivers/mtd/nand/Makefile
-> > +++ b/drivers/mtd/nand/Makefile
-> > @@ -27,7 +27,7 @@ obj-$(CONFIG_MTD_NAND_NDFC)		+= ndfc.o
-> >  obj-$(CONFIG_MTD_NAND_ATMEL)		+= atmel_nand.o
-> >  obj-$(CONFIG_MTD_NAND_GPIO)		+= gpio.o
-> >  obj-$(CONFIG_MTD_NAND_OMAP2) 		+= omap2_nand.o
-> > -obj-$(CONFIG_MTD_NAND_OMAP_BCH)		+= omap_elm.o
-> > +obj-$(CONFIG_MTD_NAND_OMAP_BCH_BUILD)	+= omap_elm.o
-> >  obj-$(CONFIG_MTD_NAND_CM_X270)		+= cmx270_nand.o
-> >  obj-$(CONFIG_MTD_NAND_PXA3xx)		+= pxa3xx_nand.o
-> >  obj-$(CONFIG_MTD_NAND_TMIO)		+= tmio_nand.o
-> > 
-> 
-> The overall logic seems to work but I still see the following issue.
-> 
-> In menuconfig, the OMAP_BCH option is still visible as a boolean even though
-> the ELM module finally gets built as a module.
-> This can be confusing to the user and I'd avoid that behaviour.
-> 
+On 12 September 2014 10:40, Alexandre Belloni
+<alexandre.belloni@free-electrons.com> wrote:
+> From: Boris BREZILLON <boris.brezillon@free-electrons.com>
+>
 
-Yes, I know. But it's either this solution or no solution at all, I think.
+This patch needs a commit log.
 
-Let me give some further context about this patch, so we can have more
-information to decide.
+> Signed-off-by: Boris BREZILLON <boris.brezillon@free-electrons.com>
+> Signed-off-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+> ---
+>
 
-First of all (and IMO) the user doesn't have to know about the ELM being
-a module or not, because modprobe will load it (since omap2_nand depends
-on omap_elm's symbols).
-
-So, the new way seems a bit more intuitive for me. The user choses if he
-wants to have hardware BCH support, and such support gets built the right
-way.
-
-If we still consider this highly confusing, and we want to avoid it,
-then it seems we can only make omap_elm a boolean, which means it'll always
-be built-in. I crafted this patch in an effort to avoid making it boolean.
-
-Finally, the solution is taken from media/usb/stk1160. For good or for bad,
-we have a precedent in doing things this way.
-
-Ultimately, I don't care much as I don't think anyone will build it as a module,
-except maybe for testing the driver under probe/remove cycles.
--- 
-Ezequiel Garcia, VanguardiaSur
+--=20
+Ezequiel Garc=C3=ADa, VanguardiaSur
 www.vanguardiasur.com.ar
