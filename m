@@ -1,19 +1,20 @@
-Date: Fri, 12 Sep 2014 00:05:00 +0200
-From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Date: Fri, 12 Sep 2014 08:40:47 +0800
+From: Huang Shijie <shijie.huang@intel.com>
 To: Boris BREZILLON <boris.brezillon@free-electrons.com>
-Subject: Re: [PATCH] mtd: nand: atmel_nand: retrieve NFC clock
-Message-ID: <20140912000500.5a1d5f75@free-electrons.com>
-In-Reply-To: <20140911173854.73b201e7@bbrezillon>
-References: <1410446617-29572-1-git-send-email-alexandre.belloni@free-electrons.com>
- <20140911152029.GA16666@arch> <20140911173854.73b201e7@bbrezillon>
+Subject: Re: [PATCH] mtd: nand: gpmi: add proper raw access support
+Message-ID: <20140912004047.GA26904@shldeISGChi005.sh.intel.com>
+References: <1410339339-25561-1-git-send-email-boris.brezillon@free-electrons.com>
+ <20140911142930.GB2543@localhost.localdomain>
+ <20140911164536.796f1012@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: Nicolas Ferre <nicolas.ferre@atmel.com>, linux-kernel@vger.kernel.org,
- Alexandre Belloni <alexandre.belloni@free-electrons.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20140911164536.796f1012@bbrezillon>
+Cc: Mike Voytovich <mvoytovich@paypal.com>, linux-kernel@vger.kernel.org,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ Roy Lee <roylee@paypal.com>, Brian Norris <computersforpeace@gmail.com>,
+ Huang Shijie <shijie8@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,28 +24,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Boris BREZILLON,
-
-On Thu, 11 Sep 2014 17:38:54 +0200, Boris BREZILLON wrote:
-
-> > Anyway, with or without the docs I think this patch breaks DT backward
-> > compatibility.
+On Thu, Sep 11, 2014 at 04:45:36PM +0200, Boris BREZILLON wrote:
+> On Thu, 11 Sep 2014 22:29:32 +0800
+> Huang Shijie <shijie8@gmail.com> wrote:
+> 
+> > On Wed, Sep 10, 2014 at 10:55:39AM +0200, Boris BREZILLON wrote:
+> >  +static int gpmi_ecc_read_page_raw(struct mtd_info *mtd,
+> > > +				  struct nand_chip *chip, uint8_t *buf,
+> > > +				  int oob_required, int page)
+> > > +{
+> > > +	struct gpmi_nand_data *this = chip->priv;
+> > > +	struct bch_geometry *nfc_geo = &this->bch_geometry;
+> > > +	int eccsize = nfc_geo->ecc_chunk_size;
+> > > +	int eccbytes = DIV_ROUND_UP(nfc_geo->ecc_strength * nfc_geo->gf_len,
+> > > +				    8);
 > > 
-> > Or am I missing something?
+> > In actually, the ECC can be _NOT_ bytes aligned.
+> > you should not round up to byte.
 > 
-> Indeed, this block of code should be placed at the end of the probe
-> function. I'll fix that.
-> 
-> Note that if the clk is missing it just print a warning message and
-> return 0, so after moving the code, it should not break DT backward
-> compat ;-).
+> You mean, on the NAND storage ? That would be weird, but I'll check.
 
-You may want to use:
+yes. it is weird. 
 
-	dev_warn(FW_WARN "NFC clock missing, update your Device	Tree\n");
-
-Thomas
--- 
-Thomas Petazzoni, CTO, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
+thanks
+Huang Shijie
