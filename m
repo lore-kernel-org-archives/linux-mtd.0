@@ -1,22 +1,14 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XSMkk-0007E6-DB
- for linux-mtd@lists.infradead.org; Fri, 12 Sep 2014 09:02:51 +0000
-Message-ID: <5412B66F.8050505@ti.com>
-Date: Fri, 12 Sep 2014 12:01:35 +0300
-From: Roger Quadros <rogerq@ti.com>
-MIME-Version: 1.0
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, Brian Norris
- <computersforpeace@gmail.com>
-Subject: Re: [PATCH 3/3] mtd: nand: Force omap_elm to be built as a module
- if omap2_nand is a module
-References: <1410443224-18477-1-git-send-email-ezequiel@vanguardiasur.com.ar>
- <1410443224-18477-4-git-send-email-ezequiel@vanguardiasur.com.ar>
-In-Reply-To: <1410443224-18477-4-git-send-email-ezequiel@vanguardiasur.com.ar>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: Tony Lindgren <tony@atomide.com>, pekon <pekon@pek-sem.com>,
- linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org
+From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+To: Josh Wu <josh.wu@atmel.com>,
+	Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCHv3] mtd: nand: atmel_nand: retrieve NFC clock
+Date: Fri, 12 Sep 2014 11:07:46 +0200
+Message-Id: <1410512866-24546-1-git-send-email-alexandre.belloni@free-electrons.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Nicolas Ferre <nicolas.ferre@atmel.com>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org,
+ Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,72 +18,106 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09/11/2014 04:47 PM, Ezequiel Garcia wrote:
-> This commit adds a hidden option to build the omap_elm as a module, if
-> omap2_nand is a module (and similarly in the built-in case).
-> 
-> This fixes the following build error when omap2_nand is chosen built-in,
-> and omap_elm is chosen as a module:
-> 
-> drivers/built-in.o: In function `omap_nand_probe':
-> /work/linux-2.6/drivers/mtd/nand/omap2.c:2010: undefined reference to `elm_config'
-> /work/linux-2.6/drivers/mtd/nand/omap2.c:1980: undefined reference to `elm_config'
-> /work/linux-2.6/drivers/mtd/nand/omap2.c:1927: undefined reference to `elm_config'
-> drivers/built-in.o: In function `omap_elm_correct_data':
-> /work/linux-2.6/drivers/mtd/nand/omap2.c:1444: undefined reference to `elm_decode_bch_error_page'
-> 
-> Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-> ---
->  drivers/mtd/nand/Kconfig  | 8 +++++++-
->  drivers/mtd/nand/Makefile | 2 +-
->  2 files changed, 8 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-> index f1cf503..12e8ee8 100644
-> --- a/drivers/mtd/nand/Kconfig
-> +++ b/drivers/mtd/nand/Kconfig
-> @@ -96,7 +96,7 @@ config MTD_NAND_OMAP2
->  
->  config MTD_NAND_OMAP_BCH
->  	depends on MTD_NAND_OMAP2
-> -	tristate "Support hardware based BCH error correction"
-> +	bool "Support hardware based BCH error correction"
->  	default n
->  	select BCH
->  	help
-> @@ -106,6 +106,12 @@ config MTD_NAND_OMAP_BCH
->  	  legacy OMAP families like OMAP2xxx, OMAP3xxx do not have ELM engine
->  	  so they should not enable this config symbol.
->  
-> +config MTD_NAND_OMAP_BCH_BUILD
-> +	tristate
-> +	depends on MTD_NAND_OMAP2
-> +	default m if MTD_NAND_OMAP2=m && MTD_NAND_OMAP_BCH
-> +	default y if MTD_NAND_OMAP2=y && MTD_NAND_OMAP_BCH
-> +
->  config MTD_NAND_IDS
->  	tristate
->  
-> diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-> index 4bcdeb0..3580188 100644
-> --- a/drivers/mtd/nand/Makefile
-> +++ b/drivers/mtd/nand/Makefile
-> @@ -27,7 +27,7 @@ obj-$(CONFIG_MTD_NAND_NDFC)		+= ndfc.o
->  obj-$(CONFIG_MTD_NAND_ATMEL)		+= atmel_nand.o
->  obj-$(CONFIG_MTD_NAND_GPIO)		+= gpio.o
->  obj-$(CONFIG_MTD_NAND_OMAP2) 		+= omap2_nand.o
-> -obj-$(CONFIG_MTD_NAND_OMAP_BCH)		+= omap_elm.o
-> +obj-$(CONFIG_MTD_NAND_OMAP_BCH_BUILD)	+= omap_elm.o
->  obj-$(CONFIG_MTD_NAND_CM_X270)		+= cmx270_nand.o
->  obj-$(CONFIG_MTD_NAND_PXA3xx)		+= pxa3xx_nand.o
->  obj-$(CONFIG_MTD_NAND_TMIO)		+= tmio_nand.o
-> 
+From: Boris BREZILLON <boris.brezillon@free-electrons.com>
 
-The overall logic seems to work but I still see the following issue.
+Signed-off-by: Boris BREZILLON <boris.brezillon@free-electrons.com>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+---
 
-In menuconfig, the OMAP_BCH option is still visible as a boolean even though
-the ELM module finally gets built as a module.
-This can be confusing to the user and I'd avoid that behaviour.
+Changes in v3:
+ - changed the warning message to ask to update the DT
+ - made the clocks property mandatory in the documentation
+ - Stop claiming the NFC is probed if there is an issue when enabling the clock
 
-cheers,
--roger
+ .../devicetree/bindings/mtd/atmel-nand.txt         |  2 ++
+ drivers/mtd/nand/atmel_nand.c                      | 25 ++++++++++++++++++++++
+ 2 files changed, 27 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand.txt b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+index c4728839d0c1..cb6cd4f8ae7a 100644
+--- a/Documentation/devicetree/bindings/mtd/atmel-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+@@ -36,6 +36,7 @@ Optional properties:
+     - reg : should specify the address and size used for NFC command registers,
+             NFC registers and NFC Sram. NFC Sram address and size can be absent
+             if don't want to use it.
++    - clocks: phandle to the peripheral clock
+   - Optional properties:
+     - atmel,write-by-sram: boolean to enable NFC write by sram.
+ 
+@@ -98,6 +99,7 @@ nand0: nand@40000000 {
+ 		compatible = "atmel,sama5d3-nfc";
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
++		clocks = <&&hsmc_clk>
+ 		reg = <
+ 			0x70000000 0x10000000	/* NFC Command Registers */
+ 			0xffffc000 0x00000070	/* NFC HSMC regs */
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index 9c5f717bda54..d1e502f8dbd0 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -27,6 +27,7 @@
+  *
+  */
+ 
++#include <linux/clk.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/slab.h>
+ #include <linux/module.h>
+@@ -96,6 +97,8 @@ struct atmel_nfc {
+ 	bool			use_nfc_sram;
+ 	bool			write_by_sram;
+ 
++	struct clk		*clk;
++
+ 	bool			is_initialized;
+ 	struct completion	comp_ready;
+ 	struct completion	comp_cmd_done;
+@@ -2248,6 +2251,7 @@ static int atmel_nand_nfc_probe(struct platform_device *pdev)
+ {
+ 	struct atmel_nfc *nfc = &nand_nfc;
+ 	struct resource *nfc_cmd_regs, *nfc_hsmc_regs, *nfc_sram;
++	int ret;
+ 
+ 	nfc_cmd_regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	nfc->base_cmd_regs = devm_ioremap_resource(&pdev->dev, nfc_cmd_regs);
+@@ -2279,8 +2283,28 @@ static int atmel_nand_nfc_probe(struct platform_device *pdev)
+ 	nfc_writel(nfc->hsmc_regs, IDR, 0xffffffff);
+ 	nfc_readl(nfc->hsmc_regs, SR);	/* clear the NFC_SR */
+ 
++	nfc->clk = devm_clk_get(&pdev->dev, NULL);
++	if (!IS_ERR(nfc->clk)) {
++		ret = clk_prepare_enable(nfc->clk);
++		if (ret)
++			return ret;
++	} else {
++		dev_warn(&pdev->dev, "NFC clock missing, update your Device Tree");
++	}
++
+ 	nfc->is_initialized = true;
+ 	dev_info(&pdev->dev, "NFC is probed.\n");
++
++	return 0;
++}
++
++static int atmel_nand_nfc_remove(struct platform_device *pdev)
++{
++	struct atmel_nfc *nfc = &nand_nfc;
++
++	if (!IS_ERR(nfc->clk))
++		clk_disable_unprepare(nfc->clk);
++
+ 	return 0;
+ }
+ 
+@@ -2297,6 +2321,7 @@ static struct platform_driver atmel_nand_nfc_driver = {
+ 		.of_match_table = of_match_ptr(atmel_nand_nfc_match),
+ 	},
+ 	.probe = atmel_nand_nfc_probe,
++	.remove = atmel_nand_nfc_remove,
+ };
+ 
+ static struct platform_driver atmel_nand_driver = {
+-- 
+1.9.1
