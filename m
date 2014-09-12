@@ -1,22 +1,17 @@
-Date: Fri, 12 Sep 2014 08:45:50 +0800
-From: Huang Shijie <shijie.huang@intel.com>
-To: Boris BREZILLON <boris.brezillon@free-electrons.com>
-Subject: Re: [PATCH] mtd: nand: gpmi: add proper raw access support
-Message-ID: <20140912004550.GB26904@shldeISGChi005.sh.intel.com>
-References: <1410339339-25561-1-git-send-email-boris.brezillon@free-electrons.com>
- <20140911120928.GA1585@localhost.localdomain>
- <20140911143616.3ebb025a@bbrezillon>
- <20140911142511.GA2543@localhost.localdomain>
- <20140911163847.5e2f85c7@bbrezillon>
+Message-ID: <5412A650.60102@atmel.com>
+Date: Fri, 12 Sep 2014 09:52:48 +0200
+From: Nicolas Ferre <nicolas.ferre@atmel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20140911163847.5e2f85c7@bbrezillon>
-Cc: Mike Voytovich <mvoytovich@paypal.com>, linux-kernel@vger.kernel.org,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- Roy Lee <roylee@paypal.com>, Brian Norris <computersforpeace@gmail.com>,
- Huang Shijie <shijie8@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- linux-arm-kernel@lists.infradead.org
+To: Alexandre Belloni <alexandre.belloni@free-electrons.com>, Brian Norris
+ <computersforpeace@gmail.com>, "Wu, Josh" <Josh.wu@atmel.com>
+Subject: Re: [PATCHv2] mtd: nand: atmel_nand: retrieve NFC clock
+References: <1410457937-14575-1-git-send-email-alexandre.belloni@free-electrons.com>
+In-Reply-To: <1410457937-14575-1-git-send-email-alexandre.belloni@free-electrons.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,101 +21,105 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Sep 11, 2014 at 04:38:47PM +0200, Boris BREZILLON wrote:
-> Hi Huang,
+On 11/09/2014 19:52, Alexandre Belloni :
+> From: Boris BREZILLON <boris.brezillon@free-electrons.com>
 > 
-> On Thu, 11 Sep 2014 22:25:13 +0800
-> Huang Shijie <shijie8@gmail.com> wrote:
-> 
-> > Hi Boris,
-> > 
-> > On Thu, Sep 11, 2014 at 02:36:16PM +0200, Boris BREZILLON wrote:
-> > > Hi Huang,
-> > > 
-> > > On Thu, 11 Sep 2014 20:09:30 +0800
-> > > Huang Shijie <shijie8@gmail.com> wrote:
-> > > 
-> > > > On Wed, Sep 10, 2014 at 10:55:39AM +0200, Boris BREZILLON wrote:
-> > > > > Several MTD users (either in user or kernel space) expect a valid raw
-> > > > > access support to NAND chip devices.
-> > > > > This is particularly true for testing tools which are often touching the
-> > > > > data stored in a NAND chip in raw mode to artificially generate errors.
-> > > > > 
-> > > > > The GPMI drivers do not implemenent raw access functions, and thus rely on
-> > > > > default HW_ECC scheme implementation.
-> > > > > The default implementation consider the data and OOB area as properly
-> > > > > separated in their respective NAND section, which is not true for the GPMI
-> > > > > controller.
-> > > > > In this driver/controller some OOB data are stored at the beginning of the
-> > > > > NAND data area (these data are called metadata in the driver), then ECC
-> > > > > bytes are interleaved with data chunk (which is similar to the
-> > > > > HW_ECC_SYNDROME scheme), and eventually the remaining bytes are used as
-> > > > > OOB data.
-> > > > > 
-> > > > > Signed-off-by: Boris BREZILLON <boris.brezillon@free-electrons.com>
-> > > > > ---
-> > > > > Hello,
-> > > > > 
-> > > > > This patch is providing raw access support to the GPMI driver which is
-> > > > > particularly useful to run some tests on the NAND (the one coming in
-> > > > > mind is the mtd_nandbiterrs testsuite).
-> > > > > 
-> > > > > I know this rework might break several user space tools which are relying
-> > > > > on the default raw access implementation (I already experienced an issue
-> > > > > with the kobs-ng tool provided by freescale), but many other tools will
-> > > > > now work as expected.
-> > > > If the kobs-ng can not works, there is no meaning that other tools
-> > > > works.  So I do not think we need to implement these hooks.
-> > > 
-> > > Well, I don't know about freescale specific tools, but at least I have
-> > > an example with mtd_nandbiterrs module.
-> > 
-> > The gpmi uses the hardware ECC for the bitflips.
-> > I really do not know why the mtd_nandbiterrs is needed.
-> > IMHO, the mtd_nandbiterrs is useless for the gpmi.
-> 
-> Because some folks would like to test their NAND controller/chip on
-> their system.
-> 
-> Just because you don't need it, doesn't mean others won't, and actually
-> the reason I worked on these raw function is becaused I needed to
-> validate the ECC capabilities of the GPMI ECC controller.
-The BCH's algorithm is confidential to Freescale. 
-How can you validate the ECC capabilities?
-So You can not emulate the BCH to create the ECC data, even you can fake
-some bitflips in the data chunk. 
+> Signed-off-by: Boris BREZILLON <boris.brezillon@free-electrons.com>
+> Signed-off-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
 
-> 
-> > 
-> > > This module is assuming it can write only the data part of a NAND page
-> > > without modifying the OOB area (see [1]), which in GPMI controller case
-> > > is impossible because raw write function store the data as if there
-> > > were no specific scheme, while there is one:
-> > > (metadata + n x (data_chunk + ECC bytes) + remaining_bytes).
-> > > 
-> > > Moreover, IMHO, nanddump and nandwrite tools (which can use raw
-> > > access mode when passing the appropriate option) should always return
-> > > the same kind of data no matter what NAND controller is in use on the
-> > > system => (DATA + OOB_DATA), and this is definitely not the case with
-> > > the GPMI driver.
-> > > 
-> > > See how raw access on HW_ECC_SYNDROME scheme is implemented in
-> > The gpmi uses the NAND_ECC_HW, not the NAND_ECC_HW_SYNDROME.
-> 
-> Yes I know. I pointed out the NAND_ECC_HW_SYNDROME scheme as an example
-> to show you that NAND controller specific layout should be hidden to
-> the MTD user.
-> 
-> > Even you really want to support the nanddump, i do not agree to add the
-> > write hook, it may crash the system.
-> 
-> We can't have an asymetric behaviour here, either we move both read and
-> write raw functions or none. Moving only one of them would make the MTD
-> user work even more complicated.
-> 
-> I really don't get your point here. What's really bothering you (BTW, I
-> fixed kobs-ng to handle this new behaviour) ?
-see the comment above.
+You may need to add Josh Wu to the list because he is the "de-facto"
+Maintainer of this driver.
 
-thanks
-Huang Shijie
+Bye,
+
+> ---
+> 
+> Changes in v2:
+>  - reworked the error path to really make the clock optional
+>  - Documented the new optional property
+> 
+>  .../devicetree/bindings/mtd/atmel-nand.txt         |  1 +
+>  drivers/mtd/nand/atmel_nand.c                      | 25 ++++++++++++++++++++++
+>  2 files changed, 26 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand.txt b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+> index c4728839d0c1..f71e2ebab15b 100644
+> --- a/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+> +++ b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+> @@ -38,6 +38,7 @@ Optional properties:
+>              if don't want to use it.
+>    - Optional properties:
+>      - atmel,write-by-sram: boolean to enable NFC write by sram.
+> +    - clocks: phandle to the peripheral clock if it exists
+>  
+>  Examples:
+>  nand0: nand@40000000,0 {
+> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+> index 9c5f717bda54..69e0eb1ace54 100644
+> --- a/drivers/mtd/nand/atmel_nand.c
+> +++ b/drivers/mtd/nand/atmel_nand.c
+> @@ -27,6 +27,7 @@
+>   *
+>   */
+>  
+> +#include <linux/clk.h>
+>  #include <linux/dma-mapping.h>
+>  #include <linux/slab.h>
+>  #include <linux/module.h>
+> @@ -96,6 +97,8 @@ struct atmel_nfc {
+>  	bool			use_nfc_sram;
+>  	bool			write_by_sram;
+>  
+> +	struct clk		*clk;
+> +
+>  	bool			is_initialized;
+>  	struct completion	comp_ready;
+>  	struct completion	comp_cmd_done;
+> @@ -2248,6 +2251,7 @@ static int atmel_nand_nfc_probe(struct platform_device *pdev)
+>  {
+>  	struct atmel_nfc *nfc = &nand_nfc;
+>  	struct resource *nfc_cmd_regs, *nfc_hsmc_regs, *nfc_sram;
+> +	int ret;
+>  
+>  	nfc_cmd_regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>  	nfc->base_cmd_regs = devm_ioremap_resource(&pdev->dev, nfc_cmd_regs);
+> @@ -2281,6 +2285,26 @@ static int atmel_nand_nfc_probe(struct platform_device *pdev)
+>  
+>  	nfc->is_initialized = true;
+>  	dev_info(&pdev->dev, "NFC is probed.\n");
+> +
+> +	nfc->clk = devm_clk_get(&pdev->dev, NULL);
+> +	if (!IS_ERR(nfc->clk)) {
+> +		ret = clk_prepare_enable(nfc->clk);
+> +		if (ret)
+> +			return ret;
+> +	} else {
+> +		dev_warn(&pdev->dev, "NFC clock is missing");
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int atmel_nand_nfc_remove(struct platform_device *pdev)
+> +{
+> +	struct atmel_nfc *nfc = &nand_nfc;
+> +
+> +	if (!IS_ERR(nfc->clk))
+> +		clk_disable_unprepare(nfc->clk);
+> +
+>  	return 0;
+>  }
+>  
+> @@ -2297,6 +2321,7 @@ static struct platform_driver atmel_nand_nfc_driver = {
+>  		.of_match_table = of_match_ptr(atmel_nand_nfc_match),
+>  	},
+>  	.probe = atmel_nand_nfc_probe,
+> +	.remove = atmel_nand_nfc_remove,
+>  };
+>  
+>  static struct platform_driver atmel_nand_driver = {
+> 
+
+
+-- 
+Nicolas Ferre
