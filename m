@@ -1,22 +1,24 @@
-Date: Sat, 13 Sep 2014 12:59:14 +0200
-From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Subject: Re: [PATCHv5] mtd: nand: atmel_nand: retrieve NFC clock
-Message-ID: <20140913105914.GD26281@piout.net>
-References: <1410564239-8411-1-git-send-email-alexandre.belloni@free-electrons.com>
- <CAAEAJfD_Kujcf7m9RAbRrjA82A08N81rVwy6sXY_PORdrH0VkA@mail.gmail.com>
+Date: Sat, 13 Sep 2014 23:36:24 +0800
+From: Huang Shijie <shijie8@gmail.com>
+To: Boris BREZILLON <boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH] mtd: nand: gpmi: add proper raw access support
+Message-ID: <20140913153622.GA10132@localhost.localdomain>
+References: <1410339339-25561-1-git-send-email-boris.brezillon@free-electrons.com>
+ <20140911120928.GA1585@localhost.localdomain>
+ <20140911143616.3ebb025a@bbrezillon>
+ <20140911142511.GA2543@localhost.localdomain>
+ <20140911163847.5e2f85c7@bbrezillon>
+ <20140912004550.GB26904@shldeISGChi005.sh.intel.com>
+ <20140912143050.014ad4c3@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAAEAJfD_Kujcf7m9RAbRrjA82A08N81rVwy6sXY_PORdrH0VkA@mail.gmail.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- Nicolas Ferre <nicolas.ferre@atmel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Josh Wu <josh.wu@atmel.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+In-Reply-To: <20140912143050.014ad4c3@bbrezillon>
+Cc: Mike Voytovich <mvoytovich@paypal.com>, linux-kernel@vger.kernel.org,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ Roy Lee <roylee@paypal.com>, Huang Shijie <shijie.huang@intel.com>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,31 +28,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-On 13/09/2014 at 10:26:18 +0100, Ezequiel Garcia wrote :
-> > +       nfc->clk = devm_clk_get(&pdev->dev, NULL);
-> > +       if (!IS_ERR(nfc->clk)) {
-> > +               ret = clk_prepare_enable(nfc->clk);
-> > +               if (ret)
-> > +                       return ret;
-> > +       } else {
-> > +               dev_warn(&pdev->dev, "NFC clock missing, update your Device Tree");
+On Fri, Sep 12, 2014 at 02:30:50PM +0200, Boris BREZILLON wrote:
+> On Fri, 12 Sep 2014 08:45:50 +0800
 > 
-> Looks much better now thanks. If the clock is not really optional, you
-> can consider this a firmware bug. We've used FW_BUG messages for these
-> cases
-> (see vim drivers/watchdog/orion_wdt.c), so you could write something like:
+> My bad, capabilities might not be the appropriate word in this context.
+> I meant ECC algorithm strength, and that's exactly the purpose of
+> nandbiterrs testsuite: insert bitflips in in-band data until the MTD
+> layer complains about uncorrectable errors.
+okay. 
+
+> This test validates what's returned by ecc_strength file in sysfs
+> (which in turn is specified by the NAND controller when initializing
+> the NAND chip).
 > 
-> dev_warn(..., FW_BUG "devicetree clock missing");
-> 
+> Doing this should not imply knowing the ECC algorithm in use in the
+> NAND controller or the layout used to store data on NAND.
+the difficulty is that the ECC parity area can be not byte aligned.
 
-Yeah, I've considered using FW_WARN like Thomas suggested but I'm not
-sure it really relates to device tree. Apart from x86, FW_WARN and
-FW_BUG are only used on mvebu stuff ;)
+As I ever said, it is hard to implement the two hooks.
 
-
--- 
-Alexandre Belloni, Free Electrons
-Embedded Linux, Kernel and Android engineering
-http://free-electrons.com
+thanks
+Huang Shijie
