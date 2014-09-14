@@ -1,21 +1,25 @@
-Date: Sun, 14 Sep 2014 00:18:47 -0400
-From: Jason Cooper <jason@lakedaemon.net>
-To: Ben Peddell <klightspeed@killerwolves.net>
-Subject: Re: [PATCH reword] ARM: MVEBU: Netgear RN102: Use Hardware BCH ECC
-Message-ID: <20140914041847.GB21986@titan.lakedaemon.net>
-References: <1410339341-3372-1-git-send-email-klightspeed@killerwolves.net>
- <20140913210829.GI30828@titan.lakedaemon.net>
- <54150349.7050503@killerwolves.net>
+Date: Sun, 14 Sep 2014 16:07:52 +0200
+From: Boris BREZILLON <boris.brezillon@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH] mtd: nand: gpmi: add proper raw access support
+Message-ID: <20140914160752.1cb404cc@bbrezillon>
+In-Reply-To: <20140913173841.GA18093@brian-ubuntu>
+References: <1410339339-25561-1-git-send-email-boris.brezillon@free-electrons.com>
+ <20140911120928.GA1585@localhost.localdomain>
+ <20140911143616.3ebb025a@bbrezillon>
+ <20140911142511.GA2543@localhost.localdomain>
+ <20140911163847.5e2f85c7@bbrezillon>
+ <20140912004550.GB26904@shldeISGChi005.sh.intel.com>
+ <20140912143050.014ad4c3@bbrezillon>
+ <20140913153622.GA10132@localhost.localdomain>
+ <20140913173841.GA18093@brian-ubuntu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <54150349.7050503@killerwolves.net>
-Cc: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
- devicetree@vger.kernel.org, Russell King <linux@arm.linux.org.uk>,
- Arnaud Ebalard <arno@natisbad.org>, linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Gregory Clement <gregory.clement@free-electrons.com>,
- Brian Norris <computersforpeace@gmail.com>,
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: Mike Voytovich <mvoytovich@paypal.com>, linux-kernel@vger.kernel.org,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ Roy Lee <roylee@paypal.com>, Huang Shijie <shijie.huang@intel.com>,
+ Huang Shijie <shijie8@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
  linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,37 +30,134 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Sep 14, 2014 at 12:54:01PM +1000, Ben Peddell wrote:
-> On 14/09/14 07:08, Jason Cooper wrote:
-> > On Wed, Sep 10, 2014 at 06:55:41PM +1000, klightspeed@killerwolves.net wrote:
-> >> The bootloader on the Netgear ReadyNAS RN102 uses Hardware BCH ECC
-> >> (strength = 4), while the pxa3xx NAND driver by default uses 
-> >> Hamming ECC (strength = 1).
-> >>
-> >> This patch changes the ECC mode on these machines to match that
-> >> of the bootloader and of the stock firmware. That way, it is
-> >> now possible to update the kernel from userland (e.g. using
-> >> standard tools from mtd-utils package); u-boot will happily
-> >> load and boot it.
-> >>
-> >> Fixes: 92beaccd8b49 ("ARM: mvebu: Enable NAND controller in ReadyNAS 102 .dts file")
-> >> Signed-off-by: Ben Peddell <klightspeed@killerwolves.net>
-> >> Acked-by: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-> >> Tested-by: Arnaud Ebalard <arno@natisbad.org>
-> >> ---
-> >>  arch/arm/boot/dts/armada-370-netgear-rn102.dts | 4 ++++
-> >>  1 file changed, 4 insertions(+)
-> > 
-> > I've already applied this the mvebu/fixes:
-> > 
-> >   500abb6ccb9e ARM: mvebu: Netgear RN2120: Use Hardware BCH ECC
+Hi Brian, Huang,
+
+On Sat, 13 Sep 2014 10:38:41 -0700
+Brian Norris <computersforpeace@gmail.com> wrote:
+
+> On Sat, Sep 13, 2014 at 11:36:24PM +0800, Huang Shijie wrote:
+> > On Fri, Sep 12, 2014 at 02:30:50PM +0200, Boris BREZILLON wrote:
+> > > This test validates what's returned by ecc_strength file in sysfs
+> > > (which in turn is specified by the NAND controller when initializing
+> > > the NAND chip).
+> > > 
+> > > Doing this should not imply knowing the ECC algorithm in use in the
+> > > NAND controller or the layout used to store data on NAND.
+> > the difficulty is that the ECC parity area can be not byte aligned.
 > 
-> That patch only affects arch/arm/boot/dts/armada-xp-netgear-rn2120.dts
+> Is there a problem with just rounding up to the nearest byte alignment
+> and ignoring the few bits that are wasted?
 > 
-> The patch I posted affects arch/arm/boot/dts/armada-370-netgear-rn102.dts
+> > As I ever said, it is hard to implement the two hooks.
+> 
+> "Hard" doesn't mean we shouldn't. I really would like to encourage more
+> NAND drivers to be programmed against the expected MTD behavior -- that
+> (if possible with the given hardware) they can pass the MTD tests
+> (drivers/mtd/tests/*).
 
-Gah!  You're right.  Applied to mvebu/fixes and Cc'd the stable v3.14+
+Here is a draft for a gpmi_move_bits function we could use to move bits
+(not bytes :-) from one memory region to another:
 
-thx,
+void gpmi_move_bits(u8 *dst, size_t dst_bit_off,
+		    const u8 *src, size_t src_bit_off,
+		    size_t nbits)
+{
+	size_t i;
+	size_t nbytes;
+	u32 src_byte = 0;
 
-Jason.
+	src += src_bit_off / 8;
+	src_bit_off %= 8;
+
+	dst += dst_bit_off / 8;
+	dst_bit_off %= 8;
+
+	if (src_bit_off) {
+		src_byte = src[0] >> src_bit_off;
+		nbits -= 8 - src_bit_off;
+		src++;
+	}
+
+	nbytes = nbits / 8;
+
+	if (src_bit_off <= dst_bit_off) {
+		dst[0] &= GENMASK(dst_bit_off - 1, 0);
+		dst[0] |= src_byte << dst_bit_off;
+		src_bit_off += (8 - dst_bit_off);
+		src_byte >>= (8 - dst_bit_off);
+		dst_bit_off = 0;
+		dst++;
+	} else if (nbytes) {
+		src_byte |= src[0] << (8 - src_bit_off);
+		dst[0] &= GENMASK(dst_bit_off - 1, 0);
+		dst[0] |= src_byte << dst_bit_off;
+		src_bit_off += dst_bit_off;
+		src_byte >>= (8 - dst_bit_off);
+		dst_bit_off = 0;
+		dst++;
+		nbytes--;
+		src++;
+		if (src_bit_off > 7) {
+			src_bit_off -= 8;
+			dst[0] = src_byte;
+			dst++;
+			src_byte >>= 8;
+		}
+	}
+
+	if (!src_bit_off && !dst_bit_off) {
+		if (nbytes)
+			memcpy(dst, src, nbytes);
+	} else {
+		for (i = 0; i < nbytes; i++) {
+			src_byte |= src[i] << (8 - src_bit_off);
+			dst[i] = src_byte;
+			src_byte >>= 8;
+		}
+	}
+
+	dst += nbytes;
+	src += nbytes;
+	nbits %= 8;
+
+	if (!nbits && !src_bit_off)
+		return;
+
+	if (nbits)
+		src_byte |= (*src & GENMASK(nbits - 1, 0)) <<
+			    ((8 - src_bit_off) % 8);
+	nbits += (8 - src_bit_off) % 8;
+
+	if (dst_bit_off)
+		src_byte = (src_byte << dst_bit_off) |
+			   (*dst & GENMASK(dst_bit_off - 1, 0));
+	nbits += dst_bit_off;
+
+	if (nbits % 8)
+		src_byte |= (dst[nbits / 8] & GENMASK(7, nbits % 8)) <<
+			    (nbits / 8);
+
+	nbytes = DIV_ROUND_UP(nbits, 8);
+	for (i = 0; i < nbytes; i++) {
+		dst[i] = src_byte;
+		src_byte >>= 8;
+	}
+}
+
+I haven't tested it, and I think there is room for optimization.
+
+My point is that performance is not a key aspect of raw functions
+(those are often used by testing and debugging tools), hence we could
+rely on this move_bits function to address the ECC bit alignment
+problem.
+
+Let me know what's your opinion on this approach.
+
+Best Regards,
+
+Boris
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
