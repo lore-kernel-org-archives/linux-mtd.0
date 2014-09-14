@@ -1,26 +1,18 @@
-Date: Sun, 14 Sep 2014 16:07:52 +0200
-From: Boris BREZILLON <boris.brezillon@free-electrons.com>
+Message-ID: <1410714624.3040.38.camel@decadent.org.uk>
+Subject: [PATCH 0/5] m25p80,spi-nor: Fix module aliases for m25p80; clean up
+ chip identification
+From: Ben Hutchings <ben@decadent.org.uk>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] mtd: nand: gpmi: add proper raw access support
-Message-ID: <20140914160752.1cb404cc@bbrezillon>
-In-Reply-To: <20140913173841.GA18093@brian-ubuntu>
-References: <1410339339-25561-1-git-send-email-boris.brezillon@free-electrons.com>
- <20140911120928.GA1585@localhost.localdomain>
- <20140911143616.3ebb025a@bbrezillon>
- <20140911142511.GA2543@localhost.localdomain>
- <20140911163847.5e2f85c7@bbrezillon>
- <20140912004550.GB26904@shldeISGChi005.sh.intel.com>
- <20140912143050.014ad4c3@bbrezillon>
- <20140913153622.GA10132@localhost.localdomain>
- <20140913173841.GA18093@brian-ubuntu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: Mike Voytovich <mvoytovich@paypal.com>, linux-kernel@vger.kernel.org,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- Roy Lee <roylee@paypal.com>, Huang Shijie <shijie.huang@intel.com>,
- Huang Shijie <shijie8@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- linux-arm-kernel@lists.infradead.org
+Date: Sun, 14 Sep 2014 18:10:24 +0100
+Content-Type: multipart/signed; micalg="pgp-sha512";
+ protocol="application/pgp-signature"; boundary="=-WyED6Tz+auDGCieAXHHx"
+Mime-Version: 1.0
+Cc: Andrew Lunn <andrew@lunn.ch>, Jason Cooper <jason@lakedaemon.net>,
+ linux-spi <linux-spi@vger.kernel.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Ian Campbell <ijc@hellion.org.uk>, Geert Uytterhoeven <geert@linux-m68k.org>,
+ Huang Shijie <shijie8@gmail.com>, linux-arm-kernel@lists.infradead.org,
+ debian-kernel <debian-kernel@lists.debian.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,134 +22,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian, Huang,
 
-On Sat, 13 Sep 2014 10:38:41 -0700
-Brian Norris <computersforpeace@gmail.com> wrote:
+--=-WyED6Tz+auDGCieAXHHx
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> On Sat, Sep 13, 2014 at 11:36:24PM +0800, Huang Shijie wrote:
-> > On Fri, Sep 12, 2014 at 02:30:50PM +0200, Boris BREZILLON wrote:
-> > > This test validates what's returned by ecc_strength file in sysfs
-> > > (which in turn is specified by the NAND controller when initializing
-> > > the NAND chip).
-> > > 
-> > > Doing this should not imply knowing the ECC algorithm in use in the
-> > > NAND controller or the layout used to store data on NAND.
-> > the difficulty is that the ECC parity area can be not byte aligned.
-> 
-> Is there a problem with just rounding up to the nearest byte alignment
-> and ignoring the few bits that are wasted?
-> 
-> > As I ever said, it is hard to implement the two hooks.
-> 
-> "Hard" doesn't mean we shouldn't. I really would like to encourage more
-> NAND drivers to be programmed against the expected MTD behavior -- that
-> (if possible with the given hardware) they can pass the MTD tests
-> (drivers/mtd/tests/*).
+The first patch in the series restores the module aliases to m25p80, but
+it does so by duplicating the list of names.  This should be suitable
+for stable, but it isn't viable in the longer term.
 
-Here is a draft for a gpmi_move_bits function we could use to move bits
-(not bytes :-) from one memory region to another:
+The following patches change the spi-nor interface so that this
+duplication is no longer necessary.  This includes removing
+spi_nor::read_id, but it could be re-added after this with a different
+interface, e.g. returning a flash_info structure (which would need to be
+defined in spi_nor.h).
 
-void gpmi_move_bits(u8 *dst, size_t dst_bit_off,
-		    const u8 *src, size_t src_bit_off,
-		    size_t nbits)
-{
-	size_t i;
-	size_t nbytes;
-	u32 src_byte = 0;
+Ben.
 
-	src += src_bit_off / 8;
-	src_bit_off %= 8;
+Ben Hutchings (5):
+  m25p80,spi-nor: Fix module aliases for m25p80
+  spi-nor: Remove spi_nor::read_id operation
+  spi-nor: Make spi_nor_scan() take a chip type name, not an
+    spi_device_id
+  spi-nor: Replace struct spi_device_id with struct flash_info
+  m25p80,spi-nor: Share the list of supported chip type names again
 
-	dst += dst_bit_off / 8;
-	dst_bit_off %= 8;
+ drivers/mtd/devices/m25p80.c      |  13 +-
+ drivers/mtd/spi-nor/fsl-quadspi.c |   7 +-
+ drivers/mtd/spi-nor/spi-nor.c     | 383 +++++++++++++++++++---------------=
+----
+ include/linux/mtd/spi-nor.h       |  87 +++++++--
+ 4 files changed, 279 insertions(+), 211 deletions(-)
 
-	if (src_bit_off) {
-		src_byte = src[0] >> src_bit_off;
-		nbits -= 8 - src_bit_off;
-		src++;
-	}
 
-	nbytes = nbits / 8;
+--=20
+Ben Hutchings
+The world is coming to an end.	Please log off.
 
-	if (src_bit_off <= dst_bit_off) {
-		dst[0] &= GENMASK(dst_bit_off - 1, 0);
-		dst[0] |= src_byte << dst_bit_off;
-		src_bit_off += (8 - dst_bit_off);
-		src_byte >>= (8 - dst_bit_off);
-		dst_bit_off = 0;
-		dst++;
-	} else if (nbytes) {
-		src_byte |= src[0] << (8 - src_bit_off);
-		dst[0] &= GENMASK(dst_bit_off - 1, 0);
-		dst[0] |= src_byte << dst_bit_off;
-		src_bit_off += dst_bit_off;
-		src_byte >>= (8 - dst_bit_off);
-		dst_bit_off = 0;
-		dst++;
-		nbytes--;
-		src++;
-		if (src_bit_off > 7) {
-			src_bit_off -= 8;
-			dst[0] = src_byte;
-			dst++;
-			src_byte >>= 8;
-		}
-	}
+--=-WyED6Tz+auDGCieAXHHx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
 
-	if (!src_bit_off && !dst_bit_off) {
-		if (nbytes)
-			memcpy(dst, src, nbytes);
-	} else {
-		for (i = 0; i < nbytes; i++) {
-			src_byte |= src[i] << (8 - src_bit_off);
-			dst[i] = src_byte;
-			src_byte >>= 8;
-		}
-	}
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-	dst += nbytes;
-	src += nbytes;
-	nbits %= 8;
+iQIVAwUAVBXMB+e/yOyVhhEJAQr8IBAAthtsIxne5LGnVF5d7wdXYL8GDsM4GuqS
+0b5WQ/YK9zXm9mwPqu0kBi4cRTR2mglnTXzJ07GVR7bKkWlPTYq7r0NvS+chX0oO
+GzKMHwz2KYBxGik7gQKRYiKdJkx1s83/c64TiY8YwJmi62xi2nrZvJRFML900SCU
+0SQDF0KtIVQVJbjd0esgT/tf3peWiHDrZfW76selhbTMcNWILaut0HgJNfopKJrZ
+ujN5ngWNwmOhN170TLP/gjGWVmtujyTN/groeEYr4htOeOAMzUmLIRjtPgO+OQda
+w+6nJ9Dq16Q7gnFXsnsv3L3kC9vDe7rAi/ILxL8ys/cM6QCcFTLfoqEYK+iEfEO4
+muVEa9WEURk1duQDq2PPhc1AL4ejoLxJgKBI00VWfEI4gbIS3LOdU6oQ+Ynl/WnK
+M0Q5iXEdbypf6W/GiJ8M7cgx32ukVsnNI/RanKI2LnrKsq+NA03wiGBeg3cjpNEc
+5WeYouI8S0r2nPvfK5qIEo3nff9eK8XLcsTmb2N79feRBDpEh0scF7atSewNm9t6
+6+uX8+YIZEPZ4Dz9c0/r4uS1LpRCdj/jwPRHADPyfATfgaEomkNbouWGPEAkwA1+
+DH/gqoccOSR4S/Y0ACGS859/+q/grM4QWlAFcQTae9nkvQw8fjmoBdJfh6gQ8rZm
+9dR2fbU6438=
+=SdVx
+-----END PGP SIGNATURE-----
 
-	if (!nbits && !src_bit_off)
-		return;
-
-	if (nbits)
-		src_byte |= (*src & GENMASK(nbits - 1, 0)) <<
-			    ((8 - src_bit_off) % 8);
-	nbits += (8 - src_bit_off) % 8;
-
-	if (dst_bit_off)
-		src_byte = (src_byte << dst_bit_off) |
-			   (*dst & GENMASK(dst_bit_off - 1, 0));
-	nbits += dst_bit_off;
-
-	if (nbits % 8)
-		src_byte |= (dst[nbits / 8] & GENMASK(7, nbits % 8)) <<
-			    (nbits / 8);
-
-	nbytes = DIV_ROUND_UP(nbits, 8);
-	for (i = 0; i < nbytes; i++) {
-		dst[i] = src_byte;
-		src_byte >>= 8;
-	}
-}
-
-I haven't tested it, and I think there is room for optimization.
-
-My point is that performance is not a key aspect of raw functions
-(those are often used by testing and debugging tools), hence we could
-rely on this move_bits function to address the ECC bit alignment
-problem.
-
-Let me know what's your opinion on this approach.
-
-Best Regards,
-
-Boris
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+--=-WyED6Tz+auDGCieAXHHx--
