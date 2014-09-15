@@ -1,23 +1,27 @@
-Received: from mail-pa0-x22f.google.com ([2607:f8b0:400e:c03::22f])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XTaPn-0001Gz-2k
- for linux-mtd@lists.infradead.org; Mon, 15 Sep 2014 17:50:18 +0000
-Received: by mail-pa0-f47.google.com with SMTP id ey11so6923380pad.6
- for <linux-mtd@lists.infradead.org>; Mon, 15 Sep 2014 10:49:53 -0700 (PDT)
-Date: Mon, 15 Sep 2014 10:49:49 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Guido =?iso-8859-1?Q?Mart=EDnez?= <guido@vanguardiasur.com.ar>
-Subject: Re: [PATCH] libmtd: fix mtd_dev_present return value on legacy systems
-Message-ID: <20140915174949.GC14832@ld-irv-0074>
-References: <1410361000-4821-1-git-send-email-guido@vanguardiasur.com.ar>
+Date: Mon, 15 Sep 2014 22:12:10 +0200
+From: Boris BREZILLON <boris.brezillon@free-electrons.com>
+To: Huang Shijie <shijie8@gmail.com>
+Subject: Re: [PATCH] mtd: nand: gpmi: add proper raw access support
+Message-ID: <20140915221210.5d9871fb@bbrezillon>
+In-Reply-To: <20140915144259.GA1947@localhost.localdomain>
+References: <1410339339-25561-1-git-send-email-boris.brezillon@free-electrons.com>
+ <20140911120928.GA1585@localhost.localdomain>
+ <20140911143616.3ebb025a@bbrezillon>
+ <20140911142511.GA2543@localhost.localdomain>
+ <20140911163847.5e2f85c7@bbrezillon>
+ <20140912004550.GB26904@shldeISGChi005.sh.intel.com>
+ <20140912143050.014ad4c3@bbrezillon>
+ <20140913153622.GA10132@localhost.localdomain>
+ <20140913173841.GA18093@brian-ubuntu>
+ <20140915144259.GA1947@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1410361000-4821-1-git-send-email-guido@vanguardiasur.com.ar>
-Cc: linux-mtd@lists.infradead.org,
- Ezequiel =?iso-8859-1?Q?Garc=EDa?= <ezequiel@vanguardiasur.com.ar>,
- Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: Mike Voytovich <mvoytovich@paypal.com>, linux-kernel@vger.kernel.org,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ Roy Lee <roylee@paypal.com>, Huang Shijie <shijie.huang@intel.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,21 +31,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Sep 10, 2014 at 11:56:40AM -0300, Guido Martínez wrote:
-> On legacy systems, if "/proc/mtd" doesn't exist or gives a read error,
-> mtd_dev_present returns -1 (since it calls legacy_dev_present), contrary
-> to what's specified in the header file.
-> 
-> This causes checks like
-> 
->   if (mtd_dev_present(n)) {
->     ...
->   }
-> 
-> to give false positives. Fix this by comparing the return value to 1.
-> 
-> Signed-off-by: Guido Martínez <guido@vanguardiasur.com.ar>
+On Mon, 15 Sep 2014 22:43:02 +0800
+Huang Shijie <shijie8@gmail.com> wrote:
 
-Pushed to mtd-utils.git. Thanks!
+> On Sat, Sep 13, 2014 at 10:38:41AM -0700, Brian Norris wrote:
+> > On Sat, Sep 13, 2014 at 11:36:24PM +0800, Huang Shijie wrote:
+> > > On Fri, Sep 12, 2014 at 02:30:50PM +0200, Boris BREZILLON wrote:
+> > > > This test validates what's returned by ecc_strength file in sysfs
+> > > > (which in turn is specified by the NAND controller when initializing
+> > > > the NAND chip).
+> > > > 
+> > > > Doing this should not imply knowing the ECC algorithm in use in the
+> > > > NAND controller or the layout used to store data on NAND.
+> > > the difficulty is that the ECC parity area can be not byte aligned.
+> > 
+> > Is there a problem with just rounding up to the nearest byte alignment
+> > and ignoring the few bits that are wasted?
+> 
+> I feel a little confused with the two hooks.
+> 
+> does the ecc->write_page_raw need to write the ECC parity data?
 
-Brian
+Depending on the oob_required argument, it might be allowed to
+overwrite the ECC bytes even if this implies breaking page reliability
+(which is exactly what's expected).
+
+When using raw write with with oob write option the writer should take
+care of regenerating ECC bytes (which you said was impossible in GPMI
+case) or copying them from a previous raw read.
+
+Here is a real example of what one could test with raw write + oob:
+1) read a page in raw mode
+2) flip some bits in the generated ECC bytes (or what you references as
+   parity data) (this case can actually happen in real life)
+3) write the modified page in raw mode
+4) read back the same page in normal and check that ECC correction still
+   works as expected
+
+> 
+> The page's layout after an ecc->write_page  will look like this:
+>                                               (Block Mark)
+>                                                     |      |
+>                                                     |  D   |
+>                                                     |<---->|
+>                                                     V      V
+>      +---+----------+-+----------+-+----------+-+----------+-+
+>      | M |   data   |E|   data   |E|   data   |E|   data   |E|
+>      +---+----------+-+----------+-+----------+-+----------+-+
+> 
+> What will the page's layout look like after the ecc->write_page_raw?
+
+The same, but the user won't see this specific layout when reading a
+page in raw mode, and won't have to bother about disposing data a
+described above when writing in raw mode.
+
+Here is the layout as seen by an MTD user, even though the real one is
+the one you previously described.
+
+                                             (Block Mark)
+                                                  |
+                                                  |
+                                                  |
+                                                  V
+      +------------------------------------------+-----+-------+---+
+      |                     data                 |  M  |   E   | R |
+      +------------------------------------------+-----+-------+---+
+
+                                                  <------OOB------->
+
+
+Best Regards,
+
+Boris
+
+
+-- 
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
