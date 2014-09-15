@@ -1,22 +1,22 @@
+Received: from devils.ext.ti.com ([198.47.26.153])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XTRXH-0001w3-3b
+ for linux-mtd@lists.infradead.org; Mon, 15 Sep 2014 08:21:24 +0000
+Message-ID: <5416A168.2040604@ti.com>
+Date: Mon, 15 Sep 2014 11:20:56 +0300
+From: Roger Quadros <rogerq@ti.com>
 MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <1410714708.3040.43.camel@decadent.org.uk>
-References: <1410714624.3040.38.camel@decadent.org.uk>
- <1410714708.3040.43.camel@decadent.org.uk>
-Date: Mon, 15 Sep 2014 09:55:36 +0200
-Message-ID: <CAMuHMdUs+7uidcD6tivnq6+TbD4_piixLVqwuSa0Z1u3sF7EoA@mail.gmail.com>
-Subject: Re: [PATCH 5/5] m25p80, spi-nor: Share the list of supported chip type
- names again
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Ben Hutchings <ben@decadent.org.uk>
-Content-Type: text/plain; charset=UTF-8
-Cc: Andrew Lunn <andrew@lunn.ch>, Jason Cooper <jason@lakedaemon.net>,
- linux-spi <linux-spi@vger.kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Ian Campbell <ijc@hellion.org.uk>, Brian Norris <computersforpeace@gmail.com>,
- Huang Shijie <shijie8@gmail.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- debian-kernel <debian-kernel@lists.debian.org>
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Subject: Re: [PATCH 0/3] nand: Renaming, moving and fixing NAND and ELM drivers
+References: <1410443224-18477-1-git-send-email-ezequiel@vanguardiasur.com.ar>	<5412B4C0.505@ti.com>
+ <CAAEAJfCJNN_rOm7dp1crohuD7or1D7RN3bLqu6WzLW32goX8kA@mail.gmail.com>
+In-Reply-To: <CAAEAJfCJNN_rOm7dp1crohuD7or1D7RN3bLqu6WzLW32goX8kA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Cc: Tony Lindgren <tony@atomide.com>,
+ "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,96 +26,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ben,
+On 09/12/2014 07:46 PM, Ezequiel Garcia wrote:
+> On 12 September 2014 09:54, Roger Quadros <rogerq@ti.com> wrote:
+>> Hi Ezequiel,
+>>
+>> On 09/11/2014 04:47 PM, Ezequiel Garcia wrote:
+>>> Following the recent discussion with Roger, here's a few patches that
+>>> (hopefully) fix all the issues.
+>>>
+>>> The first patches rename the OMAP NAND drivers, so they are now called
+>>> omap2_nand and omap_elm.
+>>>
+>>> The last patch picks an idea from Yann E. Morin and fixes the build issue
+>>> reported by Roger. Quoting Roger:
+>>>
+>>> ""
+>>> I still get the following error if I set CONFIG_MTD_NAND_OMAP2 to y and
+>>> CONFIG_MTD_NAND_OMAP_BCH to m.
+>>>
+>>> CONFIG_MTD_NAND_OMAP_BCH is used to select the ELM driver and it must be limited to
+>>> be built-in if CONFIG_MTD_NAND_OMAP2 is built-in.
+>>>
+>>> Maybe it should be a sub option of CONFIG_MTD_NAND_OMAP2.
+>>> IMHO the elm.c file must be moved from mtd/devices to mtd/nand and renamed to omap_elm.c
+>>>
+>>> drivers/built-in.o: In function `omap_nand_probe':
+>>> /work/linux-2.6/drivers/mtd/nand/omap2.c:2010: undefined reference to `elm_config'
+>>> /work/linux-2.6/drivers/mtd/nand/omap2.c:1980: undefined reference to `elm_config'
+>>> /work/linux-2.6/drivers/mtd/nand/omap2.c:1927: undefined reference to `elm_config'
+>>> drivers/built-in.o: In function `omap_elm_correct_data':
+>>> /work/linux-2.6/drivers/mtd/nand/omap2.c:1444: undefined reference to `elm_decode_bch_error_page'
+>>> make: *** [vmlinux] Error 1
+>>> ""
+>>>
+>>> [1] https://lkml.org/lkml/2013/5/4/84
+>>>
+>>> Ezequiel Garcia (3):
+>>>   mtd: nand: Move ELM driver and rename as omap_elm
+>>>   mtd: nand: Rename OMAP NAND driver
+>>>   mtd: nand: Force omap_elm to be built as a module if omap2_nand is a
+>>>     module
+>>
+>> Thanks for the patches. I see a lot of errors reported by checkpatch.pl which need fixing.
+>>
+> 
+> You mean on these patches or across the file?
+> 
+Just in these patches.
 
-On Sun, Sep 14, 2014 at 7:11 PM, Ben Hutchings <ben@decadent.org.uk> wrote:
-> Move the list of chip type names to spi-nor.h.  To avoid putting all
-> the chip type information there, we define this list as a macro
-> SPI_NOR_ENUM_TYPES() that invokes another macro SPI_NOR_ENUM_TYPE()
-> that must be defined to expand each name to whatever form it's needed.
->
-> In spi-nor.c, use it to define enumerators, then use the enumerators
-> as indices when defining spi_nor_info so that we cannot accidentally
-> use a name that's not on the list.
->
-> This is somewhat complicated by the fact that some names include
-> hyphens.  SPI_NOR_ENUM_TYPE() therefore takes separate string and C
-> identifier parameters.
-
-Thanks for doing this!
-
-However, the table generation still looks overly complicated to me, with
-too much duplication which needs to be kept in sync.
-
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -245,51 +245,10 @@ static int m25p_remove(struct spi_device *spi)
->  }
->
->
-> -/*
-> - * XXX This needs to be kept in sync with spi_nor_info.  We can't share
-> - * it with spi-nor, because if this is built as a module then modpost
-> - * won't be able to read it and add appropriate aliases.
-> - */
->  static const struct spi_device_id m25p_ids[] = {
-
-[...]
-
-> +#define SPI_NOR_ENUM_TYPE(s, c) { s },
-> +       SPI_NOR_ENUM_TYPES()
-> +#undef SPI_NOR_ENUM_TYPE
->         { },
-
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-
->  /* NOTE: double check command sets and memory organization when you add
->   * more nor chips.  This current list focusses on newer chips, which
->   * have been converging on command sets which including JEDEC ID.
-> + *
-> + * All chip type names must be added to __SPI_NOR_ENUM_TYPES in
-
-Oops... These will get out of sync.
-
-> + * spi-nor.h before they can be used here (enforced by using the
-> + * names to index this array).
->   */
->  static const struct flash_info spi_nor_info[] = {
->         /* Atmel -- some are (confusingly) marketed as "DataFlash" */
-> -       INFO("at25fs010",  0x1f6601, 0, 32 * 1024,   4, SECT_4K),
-> -       INFO("at25fs040",  0x1f6604, 0, 64 * 1024,   8, SECT_4K),
-> +       INFO(at25fs010,  0x1f6601, 0, 32 * 1024,   4, SECT_4K),
-> +       INFO(at25fs040,  0x1f6604, 0, 64 * 1024,   8, SECT_4K),
-
-[...]
-
-
-> --- a/include/linux/mtd/spi-nor.h
-> +++ b/include/linux/mtd/spi-nor.h
-> @@ -198,4 +198,76 @@ struct spi_nor {
->   */
->  int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode);
->
-> +#define __SPI_NOR_ENUM_TYPES(c_id, str_and_c_id)                         \
-> +       c_id(at25fs010)         c_id(at25fs040)         c_id(at25df041a)  \
-> +       c_id(at25df321a)        c_id(at25df641)         c_id(at26f004)    \
-
-Can't you just have the IDs in a header file only, and let the header file
-generate either a struct flash_info or a struct spi_device_id table, using
-a macro defined by the file that includes it?
-Cfr. include/uapi/asm-generic/unistd.h and its use of __SYSCALL()?
-
-Or am I missing something (e.g. this is impossible due to the hyphens in the
-names?).
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+cheers,
+-roger
