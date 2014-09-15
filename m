@@ -1,19 +1,13 @@
-Message-ID: <5416A2FF.3050503@ti.com>
-Date: Mon, 15 Sep 2014 11:27:43 +0300
-From: Roger Quadros <rogerq@ti.com>
-MIME-Version: 1.0
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH 3/3] mtd: nand: Force omap_elm to be built as a module
- if omap2_nand is a module
-References: <1410443224-18477-1-git-send-email-ezequiel@vanguardiasur.com.ar>
- <1410443224-18477-4-git-send-email-ezequiel@vanguardiasur.com.ar>
- <5412B66F.8050505@ti.com> <20140912165636.GA7276@arch>
-In-Reply-To: <20140912165636.GA7276@arch>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: Tony Lindgren <tony@atomide.com>, pekon <pekon@pek-sem.com>,
- linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XTSK8-0005zf-WC
+ for linux-mtd@lists.infradead.org; Mon, 15 Sep 2014 09:11:54 +0000
+From: Richard Weinberger <richard@nod.at>
+To: fstests@vger.kernel.org
+Subject: [PATCH] Add UBIFS support
+Date: Mon, 15 Sep 2014 11:11:20 +0200
+Message-Id: <1410772280-9771-1-git-send-email-richard@nod.at>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,104 +17,120 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09/12/2014 07:56 PM, Ezequiel Garcia wrote:
-> On 12 Sep 12:01 PM, Roger Quadros wrote:
->> On 09/11/2014 04:47 PM, Ezequiel Garcia wrote:
->>> This commit adds a hidden option to build the omap_elm as a module, if
->>> omap2_nand is a module (and similarly in the built-in case).
->>>
->>> This fixes the following build error when omap2_nand is chosen built-in,
->>> and omap_elm is chosen as a module:
->>>
->>> drivers/built-in.o: In function `omap_nand_probe':
->>> /work/linux-2.6/drivers/mtd/nand/omap2.c:2010: undefined reference to `elm_config'
->>> /work/linux-2.6/drivers/mtd/nand/omap2.c:1980: undefined reference to `elm_config'
->>> /work/linux-2.6/drivers/mtd/nand/omap2.c:1927: undefined reference to `elm_config'
->>> drivers/built-in.o: In function `omap_elm_correct_data':
->>> /work/linux-2.6/drivers/mtd/nand/omap2.c:1444: undefined reference to `elm_decode_bch_error_page'
->>>
->>> Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
->>> ---
->>>  drivers/mtd/nand/Kconfig  | 8 +++++++-
->>>  drivers/mtd/nand/Makefile | 2 +-
->>>  2 files changed, 8 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
->>> index f1cf503..12e8ee8 100644
->>> --- a/drivers/mtd/nand/Kconfig
->>> +++ b/drivers/mtd/nand/Kconfig
->>> @@ -96,7 +96,7 @@ config MTD_NAND_OMAP2
->>>  
->>>  config MTD_NAND_OMAP_BCH
->>>  	depends on MTD_NAND_OMAP2
->>> -	tristate "Support hardware based BCH error correction"
->>> +	bool "Support hardware based BCH error correction"
->>>  	default n
->>>  	select BCH
->>>  	help
->>> @@ -106,6 +106,12 @@ config MTD_NAND_OMAP_BCH
->>>  	  legacy OMAP families like OMAP2xxx, OMAP3xxx do not have ELM engine
->>>  	  so they should not enable this config symbol.
->>>  
->>> +config MTD_NAND_OMAP_BCH_BUILD
->>> +	tristate
->>> +	depends on MTD_NAND_OMAP2
->>> +	default m if MTD_NAND_OMAP2=m && MTD_NAND_OMAP_BCH
->>> +	default y if MTD_NAND_OMAP2=y && MTD_NAND_OMAP_BCH
->>> +
->>>  config MTD_NAND_IDS
->>>  	tristate
->>>  
->>> diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
->>> index 4bcdeb0..3580188 100644
->>> --- a/drivers/mtd/nand/Makefile
->>> +++ b/drivers/mtd/nand/Makefile
->>> @@ -27,7 +27,7 @@ obj-$(CONFIG_MTD_NAND_NDFC)		+= ndfc.o
->>>  obj-$(CONFIG_MTD_NAND_ATMEL)		+= atmel_nand.o
->>>  obj-$(CONFIG_MTD_NAND_GPIO)		+= gpio.o
->>>  obj-$(CONFIG_MTD_NAND_OMAP2) 		+= omap2_nand.o
->>> -obj-$(CONFIG_MTD_NAND_OMAP_BCH)		+= omap_elm.o
->>> +obj-$(CONFIG_MTD_NAND_OMAP_BCH_BUILD)	+= omap_elm.o
->>>  obj-$(CONFIG_MTD_NAND_CM_X270)		+= cmx270_nand.o
->>>  obj-$(CONFIG_MTD_NAND_PXA3xx)		+= pxa3xx_nand.o
->>>  obj-$(CONFIG_MTD_NAND_TMIO)		+= tmio_nand.o
->>>
->>
->> The overall logic seems to work but I still see the following issue.
->>
->> In menuconfig, the OMAP_BCH option is still visible as a boolean even though
->> the ELM module finally gets built as a module.
->> This can be confusing to the user and I'd avoid that behaviour.
->>
-> 
-> Yes, I know. But it's either this solution or no solution at all, I think.
-> 
-> Let me give some further context about this patch, so we can have more
-> information to decide.
-> 
-> First of all (and IMO) the user doesn't have to know about the ELM being
-> a module or not, because modprobe will load it (since omap2_nand depends
-> on omap_elm's symbols).
-> 
-> So, the new way seems a bit more intuitive for me. The user choses if he
-> wants to have hardware BCH support, and such support gets built the right
-> way.
-> 
-> If we still consider this highly confusing, and we want to avoid it,
-> then it seems we can only make omap_elm a boolean, which means it'll always
-> be built-in. I crafted this patch in an effort to avoid making it boolean.
-> 
-> Finally, the solution is taken from media/usb/stk1160. For good or for bad,
-> we have a precedent in doing things this way.
-> 
-> Ultimately, I don't care much as I don't think anyone will build it as a module,
-> except maybe for testing the driver under probe/remove cycles.
-> 
-OK. I personally prefer boolean than the Kconfig magic as it makes my life a bit
-easier and less confusing to the user i.e. wysiwyg ;).
+UBIFS needs some extra care, the device node is of type character and
+it has no fsck tool.
 
-Let's see what the MTD maintainers prefer.
-Brian and David, any insights on this problem?
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ README        |  1 +
+ check         |  2 ++
+ common/config |  4 ++--
+ common/rc     | 18 ++++++++++++++++++
+ 4 files changed, 23 insertions(+), 2 deletions(-)
 
-cheers,
--roger
+diff --git a/README b/README
+index 8a362bd..96adc44 100644
+--- a/README
++++ b/README
+@@ -100,6 +100,7 @@ Running tests:
+       Running all the udf tests: ./check -udf -g udf
+     - for running nfs tests: ./check -nfs [test(s)]
+     - for running cifs/smb3 tests: ./check -cifs [test(s)]
++    - for running ubifs tests: ./check -ubifs [test(s)]
+     - To randomize test order: ./check -r [test(s)]
+ 
+     
+diff --git a/check b/check
+index 42a1ac2..57ec612 100755
+--- a/check
++++ b/check
+@@ -70,6 +70,7 @@ check options
+     -nfs                test NFS
+     -cifs               test CIFS
+     -tmpfs              test TMPFS
++    -ubifs              test UBIFS
+     -l			line mode diff
+     -udiff		show unified diff (default)
+     -n			show me, do not run tests
+@@ -208,6 +209,7 @@ while [ $# -gt 0 ]; do
+ 	-nfs)	FSTYP=nfs ;;
+ 	-cifs)	FSTYP=cifs ;;
+ 	-tmpfs)	FSTYP=tmpfs ;;
++	-ubifs)	FSTYP=ubifs ;;
+ 
+ 	-g)	group=$2 ; shift ;
+ 		GROUP_LIST="$GROUP_LIST $group"
+diff --git a/common/config b/common/config
+index fc21b37..af082ea 100644
+--- a/common/config
++++ b/common/config
+@@ -430,7 +430,7 @@ get_next_config() {
+ 		exit 1
+ 	fi
+ 
+-	echo $TEST_DEV | grep -qE ":|//" > /dev/null 2>&1
++	echo $TEST_DEV | grep -qE ":|//|ubi" > /dev/null 2>&1
+ 	if [ ! -b "$TEST_DEV" -a "$?" != "0" ]; then
+ 		echo "common/config: Error: \$TEST_DEV ($TEST_DEV) is not a block device or a network filesystem"
+ 		exit 1
+@@ -453,7 +453,7 @@ get_next_config() {
+ 		export SCRATCH_DEV_NOT_SET=true
+ 	fi
+ 
+-	echo $SCRATCH_DEV | grep -qE ":|//" > /dev/null 2>&1
++	echo $SCRATCH_DEV | grep -qE ":|//|ubi" > /dev/null 2>&1
+ 	if [ ! -z "$SCRATCH_DEV" -a ! -b "$SCRATCH_DEV" -a "$?" != "0" ]; then
+ 		echo "common/config: Error: \$SCRATCH_DEV ($SCRATCH_DEV) is not a block device or a network filesystem"
+ 		exit 1
+diff --git a/common/rc b/common/rc
+index b8f711a..064b987 100644
+--- a/common/rc
++++ b/common/rc
+@@ -1034,6 +1034,12 @@ _require_scratch_nocheck()
+ 		    _notrun "this test requires a valid \$SCRATCH_MNT and unique $SCRATCH_DEV"
+ 		fi
+ 		;;
++	ubifs)
++		if [ -z "$SCRATCH_DEV" -o ! -c "$SCRATCH_DEV" -o ! -d "$SCRATCH_MNT" ];
++		then
++		    _notrun "this test requires a valid \$SCRATCH_MNT and unique $SCRATCH_DEV"
++		fi
++		;;
+ 	*)
+ 		 if [ -z "$SCRATCH_DEV" -o "`_is_block_dev $SCRATCH_DEV`" = "" ]
+ 		 then
+@@ -1100,6 +1106,12 @@ _require_test()
+ 		    _notrun "this test requires a valid \$TEST_DIR and unique $TEST_DEV"
+ 		fi
+ 		;;
++	ubifs)
++		if [ -z "$TEST_DEV" -o ! -c "$TEST_DEV" -o ! -d "$TEST_DIR" ];
++		then
++		    _notrun "this test requires a valid \$TEST_DIR and a valid $TEST_DEV"
++		fi
++		;;
+ 	*)
+ 		 if [ -z "$TEST_DEV" -o "`_is_block_dev $TEST_DEV`" = "" ]
+ 		 then
+@@ -1897,6 +1909,9 @@ _check_test_fs()
+     tmpfs)
+ 	# no way to check consistency for tmpfs
+ 	;;
++    ubifs)
++	# ubifs has no fsck :-(
++	;;
+     *)
+ 	_check_generic_filesystem $TEST_DEV
+ 	;;
+@@ -1935,6 +1950,9 @@ _check_scratch_fs()
+     tmpfs)
+ 	# no way to check consistency for tmpfs
+ 	;;
++    ubifs)
++	# ubifs has no fsck :-(
++	;;
+     *)
+ 	_check_generic_filesystem $device
+ 	;;
+-- 
+1.8.4.5
