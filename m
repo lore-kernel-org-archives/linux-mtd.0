@@ -1,16 +1,18 @@
-From: Boris BREZILLON <boris.brezillon@free-electrons.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- Huang Shijie <shijie8@gmail.com>
-Subject: [PATCH v2 1/2] mtd: nand: gpmi: add gpmi_move_bits function
-Date: Mon, 15 Sep 2014 22:24:02 +0200
-Message-Id: <1410812643-14041-2-git-send-email-boris.brezillon@free-electrons.com>
-In-Reply-To: <1410812643-14041-1-git-send-email-boris.brezillon@free-electrons.com>
-References: <1410812643-14041-1-git-send-email-boris.brezillon@free-electrons.com>
-Cc: Mike Voytovich <mvoytovich@paypal.com>,
- Boris BREZILLON <boris.brezillon@free-electrons.com>,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- Roy Lee <roylee@paypal.com>
+Received: from ipmail04.adl6.internode.on.net ([150.101.137.141])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XTeEV-0000G1-R3
+ for linux-mtd@lists.infradead.org; Mon, 15 Sep 2014 21:54:52 +0000
+Date: Tue, 16 Sep 2014 07:52:18 +1000
+From: Dave Chinner <david@fromorbit.com>
+To: Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH] Add UBIFS support
+Message-ID: <20140915215218.GH4322@dastard>
+References: <1410772280-9771-1-git-send-email-richard@nod.at>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1410772280-9771-1-git-send-email-richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, fstests@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,126 +22,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add a new function to move bits (not bytes) from a memory region to
-another one.
-This function is similar to memmove except it acts at bit level.
-This function is needed to implement GPMI raw access functions, given the
-fact that ECC engine does not pad ECC bits to the next byte boundary.
+On Mon, Sep 15, 2014 at 11:11:20AM +0200, Richard Weinberger wrote:
+> UBIFS needs some extra care, the device node is of type character and
+> it has no fsck tool.
 
-Signed-off-by: Boris BREZILLON <boris.brezillon@free-electrons.com>
----
- drivers/mtd/nand/gpmi-nand/gpmi-lib.c  | 86 ++++++++++++++++++++++++++++++++++
- drivers/mtd/nand/gpmi-nand/gpmi-nand.h |  4 ++
- 2 files changed, 90 insertions(+)
+Not being familiar with UBIFS, the explaination is rather brief and
+doesn't explain anything to me. Can you document how where supposed
+to treat a filesystem that doesn't exist on a block device for all
+the tests that assume that the local fileystem is on a block device?
+e.g. how do all the generic tests that use loopback devices work?
+What about dm-flakey?
 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-index 87e658c..5a83f0f 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-@@ -1353,3 +1353,89 @@ int gpmi_read_page(struct gpmi_nand_data *this,
- 	set_dma_type(this, DMA_FOR_READ_ECC_PAGE);
- 	return start_dma_with_bch_irq(this, desc);
- }
-+
-+void gpmi_move_bits(u8 *dst, size_t dst_bit_off,
-+		    const u8 *src, size_t src_bit_off,
-+		    size_t nbits)
-+{
-+	size_t i;
-+	size_t nbytes;
-+	u32 src_byte = 0;
-+
-+	src += src_bit_off / 8;
-+	src_bit_off %= 8;
-+
-+	dst += dst_bit_off / 8;
-+	dst_bit_off %= 8;
-+
-+	if (src_bit_off) {
-+		src_byte = src[0] >> src_bit_off;
-+		nbits -= 8 - src_bit_off;
-+		src++;
-+	}
-+
-+	nbytes = nbits / 8;
-+
-+	if (src_bit_off <= dst_bit_off) {
-+		dst[0] &= GENMASK(dst_bit_off - 1, 0);
-+		dst[0] |= src_byte << dst_bit_off;
-+		src_bit_off += (8 - dst_bit_off);
-+		src_byte >>= (8 - dst_bit_off);
-+		dst_bit_off = 0;
-+		dst++;
-+	} else if (nbytes) {
-+		src_byte |= src[0] << (8 - src_bit_off);
-+		dst[0] &= GENMASK(dst_bit_off - 1, 0);
-+		dst[0] |= src_byte << dst_bit_off;
-+		src_bit_off += dst_bit_off;
-+		src_byte >>= (8 - dst_bit_off);
-+		dst_bit_off = 0;
-+		dst++;
-+		nbytes--;
-+		src++;
-+		if (src_bit_off > 7) {
-+			src_bit_off -= 8;
-+			dst[0] = src_byte;
-+			dst++;
-+			src_byte >>= 8;
-+		}
-+	}
-+
-+	if (!src_bit_off && !dst_bit_off) {
-+		if (nbytes)
-+			memcpy(dst, src, nbytes);
-+	} else {
-+		for (i = 0; i < nbytes; i++) {
-+			src_byte |= src[i] << (8 - src_bit_off);
-+			dst[i] = src_byte;
-+			src_byte >>= 8;
-+		}
-+	}
-+
-+	dst += nbytes;
-+	src += nbytes;
-+	nbits %= 8;
-+
-+	if (!nbits && !src_bit_off)
-+		return;
-+
-+	if (nbits)
-+		src_byte |= (*src & GENMASK(nbits - 1, 0)) <<
-+			    ((8 - src_bit_off) % 8);
-+	nbits += (8 - src_bit_off) % 8;
-+
-+	if (dst_bit_off)
-+		src_byte = (src_byte << dst_bit_off) |
-+			   (*dst & GENMASK(dst_bit_off - 1, 0));
-+	nbits += dst_bit_off;
-+
-+	if (nbits % 8)
-+		src_byte |= (dst[nbits / 8] & GENMASK(7, nbits % 8)) <<
-+			    (nbits / 8);
-+
-+	nbytes = DIV_ROUND_UP(nbits, 8);
-+	for (i = 0; i < nbytes; i++) {
-+		dst[i] = src_byte;
-+		src_byte >>= 8;
-+	}
-+}
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-index 32c6ba4..17d0736 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-@@ -290,6 +290,10 @@ extern int gpmi_send_page(struct gpmi_nand_data *,
- extern int gpmi_read_page(struct gpmi_nand_data *,
- 			dma_addr_t payload, dma_addr_t auxiliary);
- 
-+void gpmi_move_bits(u8 *dst, size_t dst_bit_off,
-+		    const u8 *src, size_t src_bit_off,
-+		    size_t nbits);
-+
- /* BCH : Status Block Completion Codes */
- #define STATUS_GOOD		0x00
- #define STATUS_ERASED		0xff
+> Signed-off-by: Richard Weinberger <richard@nod.at>
+> ---
+>  README        |  1 +
+>  check         |  2 ++
+>  common/config |  4 ++--
+>  common/rc     | 18 ++++++++++++++++++
+>  4 files changed, 23 insertions(+), 2 deletions(-)
+> 
+> diff --git a/README b/README
+> index 8a362bd..96adc44 100644
+> --- a/README
+> +++ b/README
+> @@ -100,6 +100,7 @@ Running tests:
+>        Running all the udf tests: ./check -udf -g udf
+>      - for running nfs tests: ./check -nfs [test(s)]
+>      - for running cifs/smb3 tests: ./check -cifs [test(s)]
+> +    - for running ubifs tests: ./check -ubifs [test(s)]
+>      - To randomize test order: ./check -r [test(s)]
+>  
+>      
+> diff --git a/check b/check
+> index 42a1ac2..57ec612 100755
+> --- a/check
+> +++ b/check
+> @@ -70,6 +70,7 @@ check options
+>      -nfs                test NFS
+>      -cifs               test CIFS
+>      -tmpfs              test TMPFS
+> +    -ubifs              test UBIFS
+>      -l			line mode diff
+>      -udiff		show unified diff (default)
+>      -n			show me, do not run tests
+
+I'd like to avoid adding command line switches for random filesystem
+types if at all possible. I'd much prefer that it be derived from
+the current TEST_DEV if at all possible. Can you probe for UBIFS
+similar to using blkid for local filesystems?
+
+> diff --git a/common/config b/common/config
+> index fc21b37..af082ea 100644
+> --- a/common/config
+> +++ b/common/config
+> @@ -430,7 +430,7 @@ get_next_config() {
+>  		exit 1
+>  	fi
+>  
+> -	echo $TEST_DEV | grep -qE ":|//" > /dev/null 2>&1
+> +	echo $TEST_DEV | grep -qE ":|//|ubi" > /dev/null 2>&1
+>  	if [ ! -b "$TEST_DEV" -a "$?" != "0" ]; then
+>  		echo "common/config: Error: \$TEST_DEV ($TEST_DEV) is not a block device or a network filesystem"
+>  		exit 1
+
+Needs a comment explaining what format we are searching for there?
+
+> @@ -453,7 +453,7 @@ get_next_config() {
+>  		export SCRATCH_DEV_NOT_SET=true
+>  	fi
+>  
+> -	echo $SCRATCH_DEV | grep -qE ":|//" > /dev/null 2>&1
+> +	echo $SCRATCH_DEV | grep -qE ":|//|ubi" > /dev/null 2>&1
+>  	if [ ! -z "$SCRATCH_DEV" -a ! -b "$SCRATCH_DEV" -a "$?" != "0" ]; then
+>  		echo "common/config: Error: \$SCRATCH_DEV ($SCRATCH_DEV) is not a block device or a network filesystem"
+>  		exit 1
+> diff --git a/common/rc b/common/rc
+> index b8f711a..064b987 100644
+> --- a/common/rc
+> +++ b/common/rc
+> @@ -1034,6 +1034,12 @@ _require_scratch_nocheck()
+>  		    _notrun "this test requires a valid \$SCRATCH_MNT and unique $SCRATCH_DEV"
+>  		fi
+>  		;;
+> +	ubifs)
+> +		if [ -z "$SCRATCH_DEV" -o ! -c "$SCRATCH_DEV" -o ! -d "$SCRATCH_MNT" ];
+> +		then
+> +		    _notrun "this test requires a valid \$SCRATCH_MNT and unique $SCRATCH_DEV"
+> +		fi
+> +		;;
+
+s/unique/valid/
+
+Cheers,
+
+Dave.
 -- 
-1.9.1
+Dave Chinner
+david@fromorbit.com
