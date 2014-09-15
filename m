@@ -1,15 +1,22 @@
-Received: from hauke-m.de ([2001:41d0:8:b27b::1])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XTHdU-0003qN-EA
- for linux-mtd@lists.infradead.org; Sun, 14 Sep 2014 21:47:08 +0000
-From: Hauke Mehrtens <hauke@hauke-m.de>
-To: dwmw2@infradead.org,
-	computersforpeace@gmail.com
-Subject: [PATCH] mtd: spi-nor: add support for the Winbond W25X05 flash
-Date: Sun, 14 Sep 2014 23:46:41 +0200
-Message-Id: <1410731201-27521-1-git-send-email-hauke@hauke-m.de>
-Cc: Hauke Mehrtens <hauke@hauke-m.de>, linux-mtd@lists.infradead.org,
- Gabor Juhos <juhosg@openwrt.org>
+MIME-Version: 1.0
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <1410714708.3040.43.camel@decadent.org.uk>
+References: <1410714624.3040.38.camel@decadent.org.uk>
+ <1410714708.3040.43.camel@decadent.org.uk>
+Date: Mon, 15 Sep 2014 09:55:36 +0200
+Message-ID: <CAMuHMdUs+7uidcD6tivnq6+TbD4_piixLVqwuSa0Z1u3sF7EoA@mail.gmail.com>
+Subject: Re: [PATCH 5/5] m25p80, spi-nor: Share the list of supported chip type
+ names again
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Ben Hutchings <ben@decadent.org.uk>
+Content-Type: text/plain; charset=UTF-8
+Cc: Andrew Lunn <andrew@lunn.ch>, Jason Cooper <jason@lakedaemon.net>,
+ linux-spi <linux-spi@vger.kernel.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Ian Campbell <ijc@hellion.org.uk>, Brian Norris <computersforpeace@gmail.com>,
+ Huang Shijie <shijie8@gmail.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ debian-kernel <debian-kernel@lists.debian.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,23 +26,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
-Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
----
- drivers/mtd/spi-nor/spi-nor.c | 1 +
- 1 file changed, 1 insertion(+)
+Hi Ben,
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 03e0ab8..7a08076 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -614,6 +614,7 @@ const struct spi_device_id spi_nor_ids[] = {
- 	{ "m25px80",    INFO(0x207114,  0, 64 * 1024, 16, 0) },
- 
- 	/* Winbond -- w25x "blocks" are 64K, "sectors" are 4KiB */
-+	{ "w25x05", INFO(0xef3010, 0, 64 * 1024,  1,  SECT_4K) },
- 	{ "w25x10", INFO(0xef3011, 0, 64 * 1024,  2,  SECT_4K) },
- 	{ "w25x20", INFO(0xef3012, 0, 64 * 1024,  4,  SECT_4K) },
- 	{ "w25x40", INFO(0xef3013, 0, 64 * 1024,  8,  SECT_4K) },
--- 
-1.9.1
+On Sun, Sep 14, 2014 at 7:11 PM, Ben Hutchings <ben@decadent.org.uk> wrote:
+> Move the list of chip type names to spi-nor.h.  To avoid putting all
+> the chip type information there, we define this list as a macro
+> SPI_NOR_ENUM_TYPES() that invokes another macro SPI_NOR_ENUM_TYPE()
+> that must be defined to expand each name to whatever form it's needed.
+>
+> In spi-nor.c, use it to define enumerators, then use the enumerators
+> as indices when defining spi_nor_info so that we cannot accidentally
+> use a name that's not on the list.
+>
+> This is somewhat complicated by the fact that some names include
+> hyphens.  SPI_NOR_ENUM_TYPE() therefore takes separate string and C
+> identifier parameters.
+
+Thanks for doing this!
+
+However, the table generation still looks overly complicated to me, with
+too much duplication which needs to be kept in sync.
+
+> --- a/drivers/mtd/devices/m25p80.c
+> +++ b/drivers/mtd/devices/m25p80.c
+> @@ -245,51 +245,10 @@ static int m25p_remove(struct spi_device *spi)
+>  }
+>
+>
+> -/*
+> - * XXX This needs to be kept in sync with spi_nor_info.  We can't share
+> - * it with spi-nor, because if this is built as a module then modpost
+> - * won't be able to read it and add appropriate aliases.
+> - */
+>  static const struct spi_device_id m25p_ids[] = {
+
+[...]
+
+> +#define SPI_NOR_ENUM_TYPE(s, c) { s },
+> +       SPI_NOR_ENUM_TYPES()
+> +#undef SPI_NOR_ENUM_TYPE
+>         { },
+
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+
+>  /* NOTE: double check command sets and memory organization when you add
+>   * more nor chips.  This current list focusses on newer chips, which
+>   * have been converging on command sets which including JEDEC ID.
+> + *
+> + * All chip type names must be added to __SPI_NOR_ENUM_TYPES in
+
+Oops... These will get out of sync.
+
+> + * spi-nor.h before they can be used here (enforced by using the
+> + * names to index this array).
+>   */
+>  static const struct flash_info spi_nor_info[] = {
+>         /* Atmel -- some are (confusingly) marketed as "DataFlash" */
+> -       INFO("at25fs010",  0x1f6601, 0, 32 * 1024,   4, SECT_4K),
+> -       INFO("at25fs040",  0x1f6604, 0, 64 * 1024,   8, SECT_4K),
+> +       INFO(at25fs010,  0x1f6601, 0, 32 * 1024,   4, SECT_4K),
+> +       INFO(at25fs040,  0x1f6604, 0, 64 * 1024,   8, SECT_4K),
+
+[...]
+
+
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -198,4 +198,76 @@ struct spi_nor {
+>   */
+>  int spi_nor_scan(struct spi_nor *nor, const char *name, enum read_mode mode);
+>
+> +#define __SPI_NOR_ENUM_TYPES(c_id, str_and_c_id)                         \
+> +       c_id(at25fs010)         c_id(at25fs040)         c_id(at25df041a)  \
+> +       c_id(at25df321a)        c_id(at25df641)         c_id(at26f004)    \
+
+Can't you just have the IDs in a header file only, and let the header file
+generate either a struct flash_info or a struct spi_device_id table, using
+a macro defined by the file that includes it?
+Cfr. include/uapi/asm-generic/unistd.h and its use of __SYSCALL()?
+
+Or am I missing something (e.g. this is impossible due to the hyphens in the
+names?).
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
