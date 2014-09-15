@@ -1,26 +1,21 @@
-Date: Mon, 15 Sep 2014 22:43:02 +0800
+Date: Mon, 15 Sep 2014 22:55:24 +0800
 From: Huang Shijie <shijie8@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH] mtd: nand: gpmi: add proper raw access support
-Message-ID: <20140915144259.GA1947@localhost.localdomain>
-References: <1410339339-25561-1-git-send-email-boris.brezillon@free-electrons.com>
- <20140911120928.GA1585@localhost.localdomain>
- <20140911143616.3ebb025a@bbrezillon>
- <20140911142511.GA2543@localhost.localdomain>
- <20140911163847.5e2f85c7@bbrezillon>
- <20140912004550.GB26904@shldeISGChi005.sh.intel.com>
- <20140912143050.014ad4c3@bbrezillon>
- <20140913153622.GA10132@localhost.localdomain>
- <20140913173841.GA18093@brian-ubuntu>
+To: Ben Hutchings <ben@decadent.org.uk>
+Subject: Re: [PATCH 2/5] spi-nor: Remove spi_nor::read_id operation
+Message-ID: <20140915145523.GA1963@localhost.localdomain>
+References: <1410714624.3040.38.camel@decadent.org.uk>
+ <1410714676.3040.40.camel@decadent.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20140913173841.GA18093@brian-ubuntu>
-Cc: Boris BREZILLON <boris.brezillon@free-electrons.com>,
- Mike Voytovich <mvoytovich@paypal.com>, linux-kernel@vger.kernel.org,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- Roy Lee <roylee@paypal.com>, Huang Shijie <shijie.huang@intel.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <1410714676.3040.40.camel@decadent.org.uk>
+Cc: Andrew Lunn <andrew@lunn.ch>, Jason Cooper <jason@lakedaemon.net>,
+ linux-spi <linux-spi@vger.kernel.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>, Ian Campbell <ijc@hellion.org.uk>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ linux-arm-kernel@lists.infradead.org,
+ debian-kernel <debian-kernel@lists.debian.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,36 +25,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Sep 13, 2014 at 10:38:41AM -0700, Brian Norris wrote:
-> On Sat, Sep 13, 2014 at 11:36:24PM +0800, Huang Shijie wrote:
-> > On Fri, Sep 12, 2014 at 02:30:50PM +0200, Boris BREZILLON wrote:
-> > > This test validates what's returned by ecc_strength file in sysfs
-> > > (which in turn is specified by the NAND controller when initializing
-> > > the NAND chip).
-> > > 
-> > > Doing this should not imply knowing the ECC algorithm in use in the
-> > > NAND controller or the layout used to store data on NAND.
-> > the difficulty is that the ECC parity area can be not byte aligned.
+On Sun, Sep 14, 2014 at 06:11:16PM +0100, Ben Hutchings wrote:
+> There is currently no useful way to override the default
+> implementation of this operation.  The returned struct spi_device_id
+> must have a pointer to struct flash_info in its private data, but this
+> structure is defined inside spi-nor.
 > 
-> Is there a problem with just rounding up to the nearest byte alignment
-> and ignoring the few bits that are wasted?
+> Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 4 +---
+>  include/linux/mtd/spi-nor.h   | 3 ---
+>  2 files changed, 1 insertion(+), 6 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 6b1bda2..6f699c5 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -902,8 +902,6 @@ static int spi_nor_check(struct spi_nor *nor)
+>  		return -EINVAL;
+>  	}
+>  
+> -	if (!nor->read_id)
+> -		nor->read_id = spi_nor_read_id;
+>  	if (!nor->wait_till_ready)
+>  		nor->wait_till_ready = spi_nor_wait_till_ready;
+>  
+> @@ -952,7 +950,7 @@ int spi_nor_scan(struct spi_nor *nor, const struct spi_device_id *id,
+>  	if (info->jedec_id) {
+>  		const struct spi_device_id *jid;
+>  
+> -		jid = nor->read_id(nor);
+> +		jid = spi_nor_read_id(nor);
+>  		if (IS_ERR(jid)) {
+>  			return PTR_ERR(jid);
+>  		} else if (jid != id) {
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> index 5ec84cc..66af67a 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -139,8 +139,6 @@ enum spi_nor_ops {
+>   * @write_xfer:		[OPTIONAL] the writefundamental primitive
+>   * @read_reg:		[DRIVER-SPECIFIC] read out the register
+>   * @write_reg:		[DRIVER-SPECIFIC] write data to the register
+> - * @read_id:		[REPLACEABLE] read out the ID data, and find
+> - *			the proper spi_device_id
+If we remove this hook, i guess we will add it back in the later.
+Other new drivers will use this hook.
 
-I feel a little confused with the two hooks.
-
-does the ecc->write_page_raw need to write the ECC parity data?
-
-The page's layout after an ecc->write_page  will look like this:
-                                              (Block Mark)
-                                                    |      |
-                                                    |  D   |
-                                                    |<---->|
-                                                    V      V
-     +---+----------+-+----------+-+----------+-+----------+-+
-     | M |   data   |E|   data   |E|   data   |E|   data   |E|
-     +---+----------+-+----------+-+----------+-+----------+-+
-
-What will the page's layout look like after the ecc->write_page_raw?
-
+so i suggest to keep it as it is.
 
 thanks
 Huang Shijie
