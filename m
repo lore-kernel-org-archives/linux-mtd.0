@@ -1,22 +1,21 @@
-Message-ID: <1410793680.3040.62.camel@decadent.org.uk>
-Subject: Re: [PATCH 2/5] spi-nor: Remove spi_nor::read_id operation
-From: Ben Hutchings <ben@decadent.org.uk>
-To: Huang Shijie <shijie8@gmail.com>
-Date: Mon, 15 Sep 2014 16:08:00 +0100
-In-Reply-To: <20140915145523.GA1963@localhost.localdomain>
-References: <1410714624.3040.38.camel@decadent.org.uk>
- <1410714676.3040.40.camel@decadent.org.uk>
- <20140915145523.GA1963@localhost.localdomain>
-Content-Type: multipart/signed; micalg="pgp-sha512";
- protocol="application/pgp-signature"; boundary="=-m5tAeoflddnc9OWIxp2r"
-Mime-Version: 1.0
-Cc: Andrew Lunn <andrew@lunn.ch>, Jason Cooper <jason@lakedaemon.net>,
- linux-spi <linux-spi@vger.kernel.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>, Ian Campbell <ijc@hellion.org.uk>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- linux-arm-kernel@lists.infradead.org,
- debian-kernel <debian-kernel@lists.debian.org>
+Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XTa8W-0003jB-Sn
+ for linux-mtd@lists.infradead.org; Mon, 15 Sep 2014 17:32:28 +0000
+Received: by mail-pa0-f46.google.com with SMTP id kq14so6873101pab.5
+ for <linux-mtd@lists.infradead.org>; Mon, 15 Sep 2014 10:32:03 -0700 (PDT)
+Date: Mon, 15 Sep 2014 10:31:52 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Wei.Yang@windriver.com
+Subject: Re: [PATCH v1] mtdinfo: Initialize reginfo variable before invoking
+ mtd_regioninfo
+Message-ID: <20140915173152.GA14832@ld-irv-0074>
+References: <1407294015-27884-1-git-send-email-Wei.Yang@windriver.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1407294015-27884-1-git-send-email-Wei.Yang@windriver.com>
+Cc: linux-mtd@lists.infradead.org, w90p710@gmail.com, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,92 +25,124 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Yang,
 
---=-m5tAeoflddnc9OWIxp2r
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Wed, Aug 06, 2014 at 11:00:15AM +0800, Wei.Yang@windriver.com wrote:
+> From: Yang Wei <Wei.Yang@windriver.com>
+> 
+> If not initializing this variable, its value would be random. So
+> once the value of the regionindex field of region_info_user structure
+> is greater than mtd->numeraseregions. ioctl,which comes with MEMGETREGIONINFO,
+> would return -EINVAL
+> 
+> Signed-off-by: Yang Wei <Wei.Yang@windriver.com>
+> ---
+>  ubi-utils/mtdinfo.c |    2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> 		Hi Guys,
+> 
+> 		I got the following errors when running "mtdinfo /dev/mtd0" on Cavium 6100 board,
+> 
+> 
+> 		root@CN61XX:~# mtdinfo /dev/mtd0
+> 		mtd0
+> 		Name:                           phys_mapped_flash
+> 		Type:                           nor
+> 		Eraseblock size:                65536 bytes, 64.0 KiB
+> 		Amount of eraseblocks:          128 (8388608 bytes, 8.0 MiB)
+> 		Minimum input/output unit size: 1 byte
+> 		Sub-page size:                  1 byte
+> 		Additional erase regions:       0
+> 		Character device major/minor:   90:0
+> 		Bad blocks are allowed:         false
+> 		Device is writable:             true
+> 		libmtd: error!: MEMGETREGIONINFO ioctl failed for erase region 0
+> 		        error 22 (Invalid argument)
+> 		Eraseblock region 0:  info is unavailable
+> 		libmtd: error!: MEMGETREGIONINFO ioctl failed for erase region 1
+> 		        error 22 (Invalid argument)
+> 		Eraseblock region 1:  info is unavailable
 
-On Mon, 2014-09-15 at 22:55 +0800, Huang Shijie wrote:
-> On Sun, Sep 14, 2014 at 06:11:16PM +0100, Ben Hutchings wrote:
-> > There is currently no useful way to override the default
-> > implementation of this operation.  The returned struct spi_device_id
-> > must have a pointer to struct flash_info in its private data, but this
-> > structure is defined inside spi-nor.
-> >=20
-> > Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
-> > ---
-> >  drivers/mtd/spi-nor/spi-nor.c | 4 +---
-> >  include/linux/mtd/spi-nor.h   | 3 ---
-> >  2 files changed, 1 insertion(+), 6 deletions(-)
-> >=20
-> > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-no=
-r.c
-> > index 6b1bda2..6f699c5 100644
-> > --- a/drivers/mtd/spi-nor/spi-nor.c
-> > +++ b/drivers/mtd/spi-nor/spi-nor.c
-> > @@ -902,8 +902,6 @@ static int spi_nor_check(struct spi_nor *nor)
-> >  		return -EINVAL;
-> >  	}
-> > =20
-> > -	if (!nor->read_id)
-> > -		nor->read_id =3D spi_nor_read_id;
-> >  	if (!nor->wait_till_ready)
-> >  		nor->wait_till_ready =3D spi_nor_wait_till_ready;
-> > =20
-> > @@ -952,7 +950,7 @@ int spi_nor_scan(struct spi_nor *nor, const struct =
-spi_device_id *id,
-> >  	if (info->jedec_id) {
-> >  		const struct spi_device_id *jid;
-> > =20
-> > -		jid =3D nor->read_id(nor);
-> > +		jid =3D spi_nor_read_id(nor);
-> >  		if (IS_ERR(jid)) {
-> >  			return PTR_ERR(jid);
-> >  		} else if (jid !=3D id) {
-> > diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-> > index 5ec84cc..66af67a 100644
-> > --- a/include/linux/mtd/spi-nor.h
-> > +++ b/include/linux/mtd/spi-nor.h
-> > @@ -139,8 +139,6 @@ enum spi_nor_ops {
-> >   * @write_xfer:		[OPTIONAL] the writefundamental primitive
-> >   * @read_reg:		[DRIVER-SPECIFIC] read out the register
-> >   * @write_reg:		[DRIVER-SPECIFIC] write data to the register
-> > - * @read_id:		[REPLACEABLE] read out the ID data, and find
-> > - *			the proper spi_device_id
-> If we remove this hook, i guess we will add it back in the later.
-> Other new drivers will use this hook.
->=20
-> so i suggest to keep it as it is.
+These error messages look deceptive. The problem is that while
+mtd_regioninfo() takes a region index parameter, it only uses it for
+printing the error message; its value is not actually propagated to the
+ioctl().
 
-It may well be needed, but it can't be implemented in its current form.
+> 
+> 		This patch is to fix the above errors. I have already verified it
+> 
+> 		root@CN61XX:~# ./mtdinfo /dev/mtd0
+> 		mtd0
+> 		Name:                           phys_mapped_flash
+> 		Type:                           nor
+> 		Eraseblock size:                65536 bytes, 64.0 KiB
+> 		Amount of eraseblocks:          128 (8388608 bytes, 8.0 MiB)
+> 		Minimum input/output unit size: 1 byte
+> 		Sub-page size:                  1 byte
+> 		Additional erase regions:       0
+> 		Character device major/minor:   90:0
+> 		Bad blocks are allowed:         false
+> 		Device is writable:             true
+> 		Eraseblock region 0:  offset: 0 size: 0x10000 numblocks: 0x7f
+> 		Eraseblock region 1:  offset: 0 size: 0x10000 numblocks: 0x7f
 
-Ben.
+These last two lines look wrong. Why would the device have two identical
+erase regions? In fact, it looks like your patch just means that we'll
+call ioctl(MEMGETREGIONINFO) repeatedly for region 0, instead of once
+for each indexed region.
 
---=20
-Ben Hutchings
-Make three consecutive correct guesses and you will be considered an expert=
-.
+> 
+> 		root@CN61XX:~#
+> 
+> 
+> diff --git a/ubi-utils/mtdinfo.c b/ubi-utils/mtdinfo.c
+> index 5ac95aa..a70db00 100644
+> --- a/ubi-utils/mtdinfo.c
+> +++ b/ubi-utils/mtdinfo.c
+> @@ -253,6 +253,8 @@ static void print_region_info(const struct mtd_dev_info *mtd)
+>  	if (!args.node || (!args.map && mtd->region_cnt == 0))
+>  		return;
+>  
+> +	memset(&reginfo, 0, sizeof(region_info_t));
+> +
 
---=-m5tAeoflddnc9OWIxp2r
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
+This might be good for security (to make sure that we never leak garbage
+or use garbage stack data), but it doesn't actually fix anything.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
 
-iQIVAwUAVBcA0Oe/yOyVhhEJAQqtOQ/9FLTuhartT7l6IQPmqKTaLP+bXIytkFQO
-7VsBu0WkiQorpqxcOZXN2kv0KFXBTmC+xGh6FdrbSqvDH6G+qAE0uMGxWKAkTX+k
-7SKyVEZ9x+fkiA3P3r2CdeGo0X9cYpjtT2XfDnJVjJBui7ti+3d1mt0I0Hq6lJXO
-P294LojD5imePO0tvNXRzfTBteZ7KwYgsnTHEEsELeYMYhG1/YX+7EFLVL9TYrIl
-Dtw+chFaoc5CpvCazKEzIzUIYdXXXdcieAMHNJQkZRUZskaO0eLXTH7HH/XNlr2d
-OsiKTIv7hdfC+Xv4RgxcF0ZSMs1gXckkjYwifbO4zGctxRAIjxVepdWazY7mhAie
-+mN/vBuWrm7GaPwcOvSlM3lY6jnzxlT6u++1GuAAdfKZuILREhFVx1npw14s1/je
-idOePXKzhWUrZizCPhLfjEjJorauLW4kJYhUnQLsSP+ZF5EStLvGZfqQGQTeLQia
-Wpfsk3axVsCWOboFBz2TCEssIhw/DNfmGoMV4bmfLNRyp8Ry9VzZ0IfdcJgGnAmY
-oPGlKbDv/MDZJBrb6+as8aLQU34Z9FQ5WnUQAd10CwLivJyZAlBC0J556PB5D8zJ
-PNUgpAgmptWj57IvYRSK/0pKjUlNvbBqwj677tHpIReRQA4872qtWJjQKj/rTBQa
-zg8gq9+gDPU=
-=QYMC
------END PGP SIGNATURE-----
+>  	/* First open the device so we can query it */
+>  	fd = open(args.node, O_RDONLY | O_CLOEXEC);
+>  	if (fd == -1) {
 
---=-m5tAeoflddnc9OWIxp2r--
+I think you need a patch like this instead (untested):
+
+diff --git a/lib/libmtd.c b/lib/libmtd.c
+index aff4c8be01b5..a6665f08018e 100644
+--- a/lib/libmtd.c
++++ b/lib/libmtd.c
+@@ -901,6 +901,8 @@ int mtd_regioninfo(int fd, int regidx, struct region_info_user *reginfo)
+ 		return -1;
+ 	}
+ 
++	reginfo->regionindex = regidx;
++
+ 	ret = ioctl(fd, MEMGETREGIONINFO, reginfo);
+ 	if (ret < 0)
+ 		return sys_errmsg("%s ioctl failed for erase region %d",
+diff --git a/ubi-utils/mtdinfo.c b/ubi-utils/mtdinfo.c
+index 5ac95aaabb8a..cd61105c5c01 100644
+--- a/ubi-utils/mtdinfo.c
++++ b/ubi-utils/mtdinfo.c
+@@ -253,6 +253,9 @@ static void print_region_info(const struct mtd_dev_info *mtd)
+ 	if (!args.node || (!args.map && mtd->region_cnt == 0))
+ 		return;
+ 
++	/* Just in case */
++	memset(&reginfo, 0, sizeof(reginfo));
++
+ 	/* First open the device so we can query it */
+ 	fd = open(args.node, O_RDONLY | O_CLOEXEC);
+ 	if (fd == -1) {
+
+Brian
