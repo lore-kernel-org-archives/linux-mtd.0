@@ -1,14 +1,14 @@
 Received: from mail.sigma-star.at ([95.130.255.111])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XTsml-0000XM-EQ
- for linux-mtd@lists.infradead.org; Tue, 16 Sep 2014 13:27:12 +0000
+ id 1XTsqZ-0004tG-8Y
+ for linux-mtd@lists.infradead.org; Tue, 16 Sep 2014 13:31:07 +0000
 From: Richard Weinberger <richard@nod.at>
 To: dedekind1@gmail.com
-Subject: [PATCH 2/2] UBI: Get rid of __schedule_ubi_work()
-Date: Tue, 16 Sep 2014 15:26:38 +0200
-Message-Id: <1410873998-2955-3-git-send-email-richard@nod.at>
-In-Reply-To: <1410873998-2955-1-git-send-email-richard@nod.at>
-References: <1410873998-2955-1-git-send-email-richard@nod.at>
+Subject: [PATCH 2/2] UBIFS: Fix trivial typo in power_cut_emulated()
+Date: Tue, 16 Sep 2014 15:30:36 +0200
+Message-Id: <1410874236-3125-3-git-send-email-richard@nod.at>
+In-Reply-To: <1410874236-3125-1-git-send-email-richard@nod.at>
+References: <1410874236-3125-1-git-send-email-richard@nod.at>
 Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,112 +20,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-As we got rid of work_sem held in workers we can remove
-__schedule_ubi_work() too.
+s/withing/within/
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/wl.c | 35 +++++++++--------------------------
- 1 file changed, 9 insertions(+), 26 deletions(-)
+ fs/ubifs/debug.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index b1e2ed1..ba15d33 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -830,15 +830,16 @@ repeat:
- }
+diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
+index 177b015..b439e84 100644
+--- a/fs/ubifs/debug.c
++++ b/fs/ubifs/debug.c
+@@ -2462,7 +2462,7 @@ static int power_cut_emulated(struct ubifs_info *c, int lnum, int write)
  
- /**
-- * __schedule_ubi_work - schedule a work.
-+ * schedule_ubi_work - schedule a work.
-  * @ubi: UBI device description object
-  * @wrk: the work to schedule
-  *
-  * This function adds a work defined by @wrk to the tail of the pending works
-- * list. Can only be used of ubi->work_sem is already held in read mode!
-+ * list.
-  */
--static void __schedule_ubi_work(struct ubi_device *ubi, struct ubi_work *wrk)
-+static void schedule_ubi_work(struct ubi_device *ubi, struct ubi_work *wrk)
- {
-+	down_read(&ubi->work_sem);
- 	spin_lock(&ubi->wl_lock);
- 	list_add_tail(&wrk->list, &ubi->works);
- 	ubi_assert(ubi->works_count >= 0);
-@@ -846,20 +847,6 @@ static void __schedule_ubi_work(struct ubi_device *ubi, struct ubi_work *wrk)
- 	if (ubi->thread_enabled && !ubi_dbg_is_bgt_disabled(ubi))
- 		wake_up_process(ubi->bgt_thread);
- 	spin_unlock(&ubi->wl_lock);
--}
--
--/**
-- * schedule_ubi_work - schedule a work.
-- * @ubi: UBI device description object
-- * @wrk: the work to schedule
-- *
-- * This function adds a work defined by @wrk to the tail of the pending works
-- * list.
-- */
--static void schedule_ubi_work(struct ubi_device *ubi, struct ubi_work *wrk)
--{
--	down_read(&ubi->work_sem);
--	__schedule_ubi_work(ubi, wrk);
- 	up_read(&ubi->work_sem);
- }
- 
-@@ -1304,13 +1291,12 @@ out_cancel:
- /**
-  * ensure_wear_leveling - schedule wear-leveling if it is needed.
-  * @ubi: UBI device description object
-- * @nested: set to non-zero if this function is called from UBI worker
-  *
-  * This function checks if it is time to start wear-leveling and schedules it
-  * if yes. This function returns zero in case of success and a negative error
-  * code in case of failure.
-  */
--static int ensure_wear_leveling(struct ubi_device *ubi, int nested)
-+static int ensure_wear_leveling(struct ubi_device *ubi)
- {
- 	int err = 0;
- 	struct ubi_wl_entry *e1;
-@@ -1357,10 +1343,7 @@ static int ensure_wear_leveling(struct ubi_device *ubi, int nested)
- 
- 	wrk->anchor = 0;
- 	wrk->func = &wear_leveling_worker;
--	if (nested)
--		__schedule_ubi_work(ubi, wrk);
--	else
--		schedule_ubi_work(ubi, wrk);
-+	schedule_ubi_work(ubi, wrk);
- 	return err;
- 
- out_cancel:
-@@ -1452,7 +1435,7 @@ static int erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk,
- 		serve_prot_queue(ubi);
- 
- 		/* And take care about wear-leveling */
--		err = ensure_wear_leveling(ubi, 0);
-+		err = ensure_wear_leveling(ubi);
- 		return err;
- 	}
- 
-@@ -1690,7 +1673,7 @@ retry:
- 	 * Technically scrubbing is the same as wear-leveling, so it is done
- 	 * by the WL worker.
- 	 */
--	return ensure_wear_leveling(ubi, 0);
-+	return ensure_wear_leveling(ubi);
- }
- 
- /**
-@@ -1991,7 +1974,7 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
- 	ubi->rsvd_pebs += reserved_pebs;
- 
- 	/* Schedule wear-leveling if needed */
--	err = ensure_wear_leveling(ubi, 0);
-+	err = ensure_wear_leveling(ubi);
- 	if (err)
- 		goto out_free;
- 
+ 			if (chance(1, 2)) {
+ 				d->pc_delay = 1;
+-				/* Fail withing 1 minute */
++				/* Fail within 1 minute */
+ 				delay = prandom_u32() % 60000;
+ 				d->pc_timeout = jiffies;
+ 				d->pc_timeout += msecs_to_jiffies(delay);
 -- 
 1.8.4.5
