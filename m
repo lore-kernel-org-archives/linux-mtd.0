@@ -1,18 +1,25 @@
-Received: from ipmail04.adl6.internode.on.net ([150.101.137.141])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XTeEV-0000G1-R3
- for linux-mtd@lists.infradead.org; Mon, 15 Sep 2014 21:54:52 +0000
-Date: Tue, 16 Sep 2014 07:52:18 +1000
-From: Dave Chinner <david@fromorbit.com>
-To: Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH] Add UBIFS support
-Message-ID: <20140915215218.GH4322@dastard>
-References: <1410772280-9771-1-git-send-email-richard@nod.at>
+Received: from mail-pa0-x234.google.com ([2607:f8b0:400e:c03::234])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XTglR-000391-Ro
+ for linux-mtd@lists.infradead.org; Tue, 16 Sep 2014 00:37:03 +0000
+Received: by mail-pa0-f52.google.com with SMTP id kq14so7472253pab.11
+ for <linux-mtd@lists.infradead.org>; Mon, 15 Sep 2014 17:36:40 -0700 (PDT)
+Date: Mon, 15 Sep 2014 17:36:20 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Masahiro Yamada <yamada.m@jp.panasonic.com>
+Subject: Re: [PATCH v2 0/7] mtd: denali: A collection of trivial coding style
+ fixes
+Message-ID: <20140916003620.GA1193@ld-irv-0074>
+References: <1410228117-14820-1-git-send-email-yamada.m@jp.panasonic.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1410772280-9771-1-git-send-email-richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, fstests@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1410228117-14820-1-git-send-email-yamada.m@jp.panasonic.com>
+Cc: Jiri Kosina <trivial@kernel.org>, David Woodhouse <dwmw2@infradead.org>,
+ linux-kernel@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>,
+ Rashika Kheria <rashika.kheria@gmail.com>, linux-mtd@lists.infradead.org,
+ "grmoore@altera.com" <grmoore@altera.com>, Huang Shijie <shijie8@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,100 +29,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Sep 15, 2014 at 11:11:20AM +0200, Richard Weinberger wrote:
-> UBIFS needs some extra care, the device node is of type character and
-> it has no fsck tool.
-
-Not being familiar with UBIFS, the explaination is rather brief and
-doesn't explain anything to me. Can you document how where supposed
-to treat a filesystem that doesn't exist on a block device for all
-the tests that assume that the local fileystem is on a block device?
-e.g. how do all the generic tests that use loopback devices work?
-What about dm-flakey?
-
-> Signed-off-by: Richard Weinberger <richard@nod.at>
-> ---
->  README        |  1 +
->  check         |  2 ++
->  common/config |  4 ++--
->  common/rc     | 18 ++++++++++++++++++
->  4 files changed, 23 insertions(+), 2 deletions(-)
+On Tue, Sep 09, 2014 at 11:01:50AM +0900, Masahiro Yamada wrote:
+> Changes in v2:
+>   - Join quotes strings into a single line
 > 
-> diff --git a/README b/README
-> index 8a362bd..96adc44 100644
-> --- a/README
-> +++ b/README
-> @@ -100,6 +100,7 @@ Running tests:
->        Running all the udf tests: ./check -udf -g udf
->      - for running nfs tests: ./check -nfs [test(s)]
->      - for running cifs/smb3 tests: ./check -cifs [test(s)]
-> +    - for running ubifs tests: ./check -ubifs [test(s)]
->      - To randomize test order: ./check -r [test(s)]
->  
->      
-> diff --git a/check b/check
-> index 42a1ac2..57ec612 100755
-> --- a/check
-> +++ b/check
-> @@ -70,6 +70,7 @@ check options
->      -nfs                test NFS
->      -cifs               test CIFS
->      -tmpfs              test TMPFS
-> +    -ubifs              test UBIFS
->      -l			line mode diff
->      -udiff		show unified diff (default)
->      -n			show me, do not run tests
+> Masahiro Yamada (7):
+>   mtd: denali: fix the format of comment blocks
+>   mtd: denali: remove unnecessary variable initializations
+>   mtd: denali: remove unnecessary casts
+>   mtd: denali: change the type of iterators to int
+>   mtd: denali: remove a set-but-unused variable
+>   mtd: denali: remove unnecessary parentheses
+>   mtd: denali: fix indents and other trivial things
+> 
+>  drivers/mtd/nand/denali.c | 562 +++++++++++++++++++++++++---------------------
+>  1 file changed, 303 insertions(+), 259 deletions(-)
 
-I'd like to avoid adding command line switches for random filesystem
-types if at all possible. I'd much prefer that it be derived from
-the current TEST_DEV if at all possible. Can you probe for UBIFS
-similar to using blkid for local filesystems?
+Pushed patches 1 to 5 to l2-mtd.git. Thanks!
 
-> diff --git a/common/config b/common/config
-> index fc21b37..af082ea 100644
-> --- a/common/config
-> +++ b/common/config
-> @@ -430,7 +430,7 @@ get_next_config() {
->  		exit 1
->  	fi
->  
-> -	echo $TEST_DEV | grep -qE ":|//" > /dev/null 2>&1
-> +	echo $TEST_DEV | grep -qE ":|//|ubi" > /dev/null 2>&1
->  	if [ ! -b "$TEST_DEV" -a "$?" != "0" ]; then
->  		echo "common/config: Error: \$TEST_DEV ($TEST_DEV) is not a block device or a network filesystem"
->  		exit 1
+Patch 6 has a conflict with another fix already in l2-mtd.git. Can you
+rebase and resend?
 
-Needs a comment explaining what format we are searching for there?
+BTW, my automatic build tests show that there's at least one other
+'unused' warning left, in case you want to tackle it too:
 
-> @@ -453,7 +453,7 @@ get_next_config() {
->  		export SCRATCH_DEV_NOT_SET=true
->  	fi
->  
-> -	echo $SCRATCH_DEV | grep -qE ":|//" > /dev/null 2>&1
-> +	echo $SCRATCH_DEV | grep -qE ":|//|ubi" > /dev/null 2>&1
->  	if [ ! -z "$SCRATCH_DEV" -a ! -b "$SCRATCH_DEV" -a "$?" != "0" ]; then
->  		echo "common/config: Error: \$SCRATCH_DEV ($SCRATCH_DEV) is not a block device or a network filesystem"
->  		exit 1
-> diff --git a/common/rc b/common/rc
-> index b8f711a..064b987 100644
-> --- a/common/rc
-> +++ b/common/rc
-> @@ -1034,6 +1034,12 @@ _require_scratch_nocheck()
->  		    _notrun "this test requires a valid \$SCRATCH_MNT and unique $SCRATCH_DEV"
->  		fi
->  		;;
-> +	ubifs)
-> +		if [ -z "$SCRATCH_DEV" -o ! -c "$SCRATCH_DEV" -o ! -d "$SCRATCH_MNT" ];
-> +		then
-> +		    _notrun "this test requires a valid \$SCRATCH_MNT and unique $SCRATCH_DEV"
-> +		fi
-> +		;;
+    drivers/mtd/nand/denali.c: In function ‘denali_read_page_raw’:
+    drivers/mtd/nand/denali.c:1221:11: warning: variable ‘irq_status’ set but not used [-Wunused-but-set-variable]
+          uint32_t irq_status;
 
-s/unique/valid/
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Brian
