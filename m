@@ -1,17 +1,17 @@
-Received: from mail-pd0-x231.google.com ([2607:f8b0:400e:c02::231])
+Received: from mail.dekaresearch.com ([208.65.175.196]
+ helo=dekaexchange07.deka.local)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XTtGp-0000Sw-Np
- for linux-mtd@lists.infradead.org; Tue, 16 Sep 2014 13:58:16 +0000
-Received: by mail-pd0-f177.google.com with SMTP id y10so8698879pdj.22
- for <linux-mtd@lists.infradead.org>; Tue, 16 Sep 2014 06:57:52 -0700 (PDT)
+ id 1XTtNJ-0002YQ-8A
+ for linux-mtd@lists.infradead.org; Tue, 16 Sep 2014 14:04:57 +0000
+From: Atlant Schmidt <aschmidt@dekaresearch.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Tue, 16 Sep 2014 10:04:29 -0400
+Subject: Does UBI LEB-level access interlock happily with UBIfs access?
+Message-ID: <0A40042D85E7C84DB443060EC44B3FD36D986A3009@dekaexchange07.deka.local>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-From: Yegor Yefremov <yegorslists@googlemail.com>
-Date: Tue, 16 Sep 2014 15:57:32 +0200
-Message-ID: <CAGm1_ktgNoGkxNn-FVuE5nW2pSpXwWX+1Q4D+juMJJBhgUkm-w@mail.gmail.com>
-Subject: MTD autorepartitioning
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
-Cc: roman.tereshonkov@nokia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,13 +21,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I've found an old discussion, that references following commits (mtd:
-add BLKPG API based repartition support) and also this patch
-https://patchwork.ozlabs.org/patch/60224/.
+Folks:
 
-What user space tool can I use to repartition my NAND flash? There is
-no "master" /dev/mtdblock device, that I can pass to fdisk or do I see
-it wrong?
+  We use the ordinary MTD/UBI/UBIfs stack on our
+  Embedded Linux system.
 
-Regards,
-Yegor
+  For the purposes of scrubbing-out single bit errors,
+  I'd like to read through all of the LEBs stored in the
+  UBI device and whenever the ECC information indicates
+  that any correctable errors occurred, I'd like to
+  *RE-WRITE* that LEB (thereby forcing it to be scrubbed).
+  (Note: I might do this page-by-page rather than LEB-
+  by-LEB.)
+
+  But I would expect that because I'd have a hard
+  (impossible?) time doing an atomic read/re-write of a
+  LEB (or page), the UBIfs and my scrubber would interact
+  badly with my scrubber eventually corrupting the UBIfs
+  file system. Is there any easy way to interlock these
+  accesses (from the UBIfs and from my UBI-level scrubber)?
+  A way to temporarily suspend activity from the UBIfs?
+
+  One kludge that might work is that I'm operating in a
+  real-time environment. If I made my scrubbing requests
+  from a very high priority (higher than the "System"
+  tasks that run around Priority 50), could I be sure
+  my read + rewrite scrubbing requests would at least
+  enter the UBI's work queue immediately adjacent to
+  each other (and without UBIfs requests intermingled)?
+
+  Alternatively, I could probably dismount the UBIfs
+  before doing scrubbing, but I'd rather not have to
+  do that.
+                          Atlant
+
+
+This e-mail and the information, including any attachments it contains, are=
+ intended to be a confidential communication only to the person or entity t=
+o whom it is addressed and may contain information that is privileged. If t=
+he reader of this message is not the intended recipient, you are hereby not=
+ified that any dissemination, distribution or copying of this communication=
+ is strictly prohibited. If you have received this communication in error, =
+please immediately notify the sender and destroy the original message.
+
+Thank you.
+
+Please consider the environment before printing this email.
