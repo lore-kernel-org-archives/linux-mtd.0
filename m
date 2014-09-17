@@ -1,24 +1,20 @@
-MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <1410793627.3040.61.camel@decadent.org.uk>
-References: <1410714624.3040.38.camel@decadent.org.uk>
- <1410714708.3040.43.camel@decadent.org.uk>
- <CAMuHMdUs+7uidcD6tivnq6+TbD4_piixLVqwuSa0Z1u3sF7EoA@mail.gmail.com>
- <1410793627.3040.61.camel@decadent.org.uk>
-Date: Wed, 17 Sep 2014 10:23:26 +0200
-Message-ID: <CAMuHMdVSYvUh3qVRhw15KmOn0MYocbJVQBr9TkHtebM19c8dJA@mail.gmail.com>
-Subject: Re: [PATCH 5/5] m25p80, spi-nor: Share the list of supported chip type
- names again
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Ben Hutchings <ben@decadent.org.uk>
-Content-Type: text/plain; charset=UTF-8
-Cc: Andrew Lunn <andrew@lunn.ch>, Jason Cooper <jason@lakedaemon.net>,
- linux-spi <linux-spi@vger.kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Ian Campbell <ijc@hellion.org.uk>, Brian Norris <computersforpeace@gmail.com>,
- Huang Shijie <shijie8@gmail.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- debian-kernel <debian-kernel@lists.debian.org>
+Received: from mga11.intel.com ([192.55.52.93])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XUAbc-0005NM-7b
+ for linux-mtd@lists.infradead.org; Wed, 17 Sep 2014 08:28:52 +0000
+Message-ID: <1410942507.28850.78.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH] UBI: Fix possible deadlock in erase_worker()
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Richard Weinberger <richard@nod.at>
+Date: Wed, 17 Sep 2014 11:28:27 +0300
+In-Reply-To: <1410853702-11616-1-git-send-email-richard@nod.at>
+References: <1410853702-11616-1-git-send-email-richard@nod.at>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,67 +24,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ben,
+On Tue, 2014-09-16 at 09:48 +0200, Richard Weinberger wrote:
+> If sync_erase() failes with EINTR, ENOMEM, EAGAIN or
+> EBUSY erase_worker() re-schedules the failed work.
+> This will lead to a deadlock because erase_worker() is called
+> with work_sem held in read mode. And schedule_erase() will take
+> this lock again.
 
-On Mon, Sep 15, 2014 at 5:07 PM, Ben Hutchings <ben@decadent.org.uk> wrote:
->> >
->> > +#define __SPI_NOR_ENUM_TYPES(c_id, str_and_c_id)                         \
->> > +       c_id(at25fs010)         c_id(at25fs040)         c_id(at25df041a)  \
->> > +       c_id(at25df321a)        c_id(at25df641)         c_id(at26f004)    \
->>
->> Can't you just have the IDs in a header file only, and let the header file
->> generate either a struct flash_info or a struct spi_device_id table, using
->> a macro defined by the file that includes it?
->
-> How would we match up the rest of the struct flash_info to the name?
+IIRC, the assumption was that the R/W semaphore may be taken in read
+mode many times, so it wouldn't hurt to do:
 
-Ah, you use the enums to match the names to the rest of the flash_info.
-But you can do it in one-shot, can't you?
+down_read()
+down_read()
+up_read()
+up_read()
 
-spi-nor-data.h:
+If this is right, then the lockdep warning is incorrect.
 
-FLASH_ENTRY("at25fs010", 0x1f6601, 0, 32 * 1024,   4, SECT_4K),
-FLASH_ENTRY("at25fs040", 0x1f6604, 0, 64 * 1024,   8, SECT_4K),
-...
-
-m25p80.c:
-
-#define FLASH_ENTRY(_name, _jedec_id, _ext_id, _sector_size,
-_n_sectors, _flags) \
-        { .name = _name },
-
-static const struct spi_device_id m25p_ids[] = {
-#include "spi-nor-data.h"
-};
-
-spi-nor.c:
-
-#define FLASH_ENTRY(_name, _jedec_id, _ext_id, _sector_size,
-_n_sectors, _flags) \
-        { \
-                 .name = _name, \
-                .jedec_id = (_jedec_id), \
-                .ext_id = (_ext_id), \
-                .sector_size = (_sector_size), \
-                .n_sectors = (_n_sectors), \
-                .page_size = 256, \
-                .flags = (_flags), \
-        }
-
-static const struct flash_info spi_nor_info[] = {
-#include "spi-nor-data.h"
-};
-
-Then the whole table data in contained in one place (spi-nor-data.h).
-Am I still missing something?
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+Best Regards,
+Artem Bityutskiy
