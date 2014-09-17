@@ -1,20 +1,27 @@
-Received: from nasmtp01.atmel.com ([192.199.1.246]
- helo=DVREDG02.corp.atmel.com)
+Received: from mail-pa0-x22c.google.com ([2607:f8b0:400e:c03::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XUAgN-0008GE-Q1
- for linux-mtd@lists.infradead.org; Wed, 17 Sep 2014 08:33:48 +0000
-Message-ID: <5419473D.7060007@atmel.com>
-Date: Wed, 17 Sep 2014 16:33:01 +0800
-From: Josh Wu <josh.wu@atmel.com>
+ id 1XUAgr-00007G-2s
+ for linux-mtd@lists.infradead.org; Wed, 17 Sep 2014 08:34:17 +0000
+Received: by mail-pa0-f44.google.com with SMTP id kx10so1746509pab.3
+ for <linux-mtd@lists.infradead.org>; Wed, 17 Sep 2014 01:33:56 -0700 (PDT)
+Date: Wed, 17 Sep 2014 01:33:53 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Roger Quadros <rogerq@ti.com>
+Subject: Re: [PATCH 2/3] nand: omap2: Remove horrible ifdefs to fix module
+ probe
+Message-ID: <20140917083353.GB7362@norris-Latitude-E6410>
+References: <1410033389-32357-1-git-send-email-ezequiel@vanguardiasur.com.ar>
+ <1410033389-32357-3-git-send-email-ezequiel@vanguardiasur.com.ar>
+ <540D6CAB.7020501@ti.com> <540D8A92.2040209@ti.com>
+ <20140910124849.GA25308@arch.hh.imgtec.org>
+ <54104CB4.4020703@ti.com>
 MIME-Version: 1.0
-To: <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH 1/2] mtd: atmel_nand: remove pmecc_sector_number, use
- ecc.steps instead
-References: <1407489155-16545-1-git-send-email-josh.wu@atmel.com>
-In-Reply-To: <1407489155-16545-1-git-send-email-josh.wu@atmel.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: computersforpeace@gmail.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <54104CB4.4020703@ti.com>
+Cc: Tony Lindgren <tony@atomide.com>, linux-mtd@lists.infradead.org,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+ Guido =?iso-8859-1?Q?Mart=EDnez?= <guido@vanguardiasur.com.ar>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,80 +31,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Brian
-
-Any feedback for this patch series?
-
-Best Regards,
-Josh Wu
-
-On 8/8/2014 5:12 PM, Josh Wu wrote:
-> For PMECC, the pmecc_sector_number has same meaning as ecc.steps.
-> So use ecc.steps to replace the pmecc_sector_number.
+On Wed, Sep 10, 2014 at 04:05:56PM +0300, Roger Quadros wrote:
+> On 09/10/2014 03:48 PM, Ezequiel Garcia wrote:
+> > On 08 Sep 01:53 PM, Roger Quadros wrote:
+> >> On 09/08/2014 11:45 AM, Roger Quadros wrote:
+> >>> On 09/06/2014 10:56 PM, Ezequiel Garcia wrote:
+> >> I still get the following error if I set CONFIG_MTD_NAND_OMAP2 to y and
+> >> CONFIG_MTD_NAND_OMAP_BCH to m.
+> >>
+> >> CONFIG_MTD_NAND_OMAP_BCH is used to select the ELM driver and it must be limited to
+> >> be built-in if CONFIG_MTD_NAND_OMAP2 is built-in.
+> >>
+> > 
+> > Hm, yup. Any ideas on how to accomplish that? My Kconfig-foo is not strong enough :(
 >
-> Signed-off-by: Josh Wu <josh.wu@atmel.com>
-> ---
->   drivers/mtd/nand/atmel_nand.c | 14 ++++++--------
->   1 file changed, 6 insertions(+), 8 deletions(-)
->
-> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-> index 9c5f717..1dc3988 100644
-> --- a/drivers/mtd/nand/atmel_nand.c
-> +++ b/drivers/mtd/nand/atmel_nand.c
-> @@ -129,7 +129,6 @@ struct atmel_nand_host {
->   	u32			pmecc_lookup_table_offset_1024;
->   
->   	int			pmecc_bytes_per_sector;
-> -	int			pmecc_sector_number;
->   	int			pmecc_degree;	/* Degree of remainders */
->   	int			pmecc_cw_len;	/* Length of codeword */
->   
-> @@ -874,7 +873,7 @@ static int pmecc_correction(struct mtd_info *mtd, u32 pmecc_stat, uint8_t *buf,
->   	return 0;
->   
->   normal_check:
-> -	for (i = 0; i < host->pmecc_sector_number; i++) {
-> +	for (i = 0; i < nand_chip->ecc.steps; i++) {
->   		err_nbr = 0;
->   		if (pmecc_stat & 0x1) {
->   			buf_pos = buf + i * host->pmecc_sector_size;
-> @@ -984,7 +983,7 @@ static int atmel_nand_pmecc_write_page(struct mtd_info *mtd,
->   		cpu_relax();
->   	}
->   
-> -	for (i = 0; i < host->pmecc_sector_number; i++) {
-> +	for (i = 0; i < chip->ecc.steps; i++) {
->   		for (j = 0; j < host->pmecc_bytes_per_sector; j++) {
->   			int pos;
->   
-> @@ -1031,7 +1030,7 @@ static void atmel_pmecc_core_init(struct mtd_info *mtd)
->   	else if (host->pmecc_sector_size == 1024)
->   		val |= PMECC_CFG_SECTOR1024;
->   
-> -	switch (host->pmecc_sector_number) {
-> +	switch (nand_chip->ecc.steps) {
->   	case 1:
->   		val |= PMECC_CFG_PAGE_1SECTOR;
->   		break;
-> @@ -1184,18 +1183,17 @@ static int atmel_pmecc_nand_init_params(struct platform_device *pdev,
->   		host->pmecc_degree = (sector_size == 512) ?
->   			PMECC_GF_DIMENSION_13 : PMECC_GF_DIMENSION_14;
->   		host->pmecc_cw_len = (1 << host->pmecc_degree) - 1;
-> -		host->pmecc_sector_number = mtd->writesize / sector_size;
->   		host->pmecc_bytes_per_sector = pmecc_get_ecc_bytes(
->   			cap, sector_size);
->   		host->pmecc_alpha_to = pmecc_get_alpha_to(host);
->   		host->pmecc_index_of = host->pmecc_rom_base +
->   			host->pmecc_lookup_table_offset;
->   
-> -		nand_chip->ecc.steps = host->pmecc_sector_number;
->   		nand_chip->ecc.strength = cap;
->   		nand_chip->ecc.bytes = host->pmecc_bytes_per_sector;
-> -		nand_chip->ecc.total = host->pmecc_bytes_per_sector *
-> -				       host->pmecc_sector_number;
-> +		nand_chip->ecc.steps = mtd->writesize / sector_size;
-> +		nand_chip->ecc.total = nand_chip->ecc.bytes *
-> +			nand_chip->ecc.steps;
->   		if (nand_chip->ecc.total > mtd->oobsize - 2) {
->   			dev_err(host->dev, "No room for ECC bytes\n");
->   			err_no = -EINVAL;
+> Mine neither ;). I'm unaware of any other method than making CONFIG_MTD_NAND_OMAP_BCH to bool.
+
+That could be part of the solution. Does the following patch work? It
+now forces elm and omap to be built the same -- either both as modules
+or both built-in -- but it solves the rest of the problem I think.
+
+(This also has the side effect of causing transition pains for any
+.config file that had CONFIG_MTD_NAND_OMAP_BCH=m, since this becomes
+boolean now.)
+
+diff --git a/drivers/mtd/devices/Makefile b/drivers/mtd/devices/Makefile
+index c68868f60588..4dc8990898dc 100644
+--- a/drivers/mtd/devices/Makefile
++++ b/drivers/mtd/devices/Makefile
+@@ -12,7 +12,7 @@ obj-$(CONFIG_MTD_LART)		+= lart.o
+ obj-$(CONFIG_MTD_BLOCK2MTD)	+= block2mtd.o
+ obj-$(CONFIG_MTD_DATAFLASH)	+= mtd_dataflash.o
+ obj-$(CONFIG_MTD_M25P80)	+= m25p80.o
+-obj-$(CONFIG_MTD_NAND_OMAP_BCH)	+= elm.o
++obj-$(CONFIG_MTD_NAND_OMAP_BCH_BUILD) += elm.o
+ obj-$(CONFIG_MTD_SPEAR_SMI)	+= spear_smi.o
+ obj-$(CONFIG_MTD_SST25L)	+= sst25l.o
+ obj-$(CONFIG_MTD_BCM47XXSFLASH)	+= bcm47xxsflash.o
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index f1cf503517fd..6390b2b58edb 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -96,9 +96,8 @@ config MTD_NAND_OMAP2
+ 
+ config MTD_NAND_OMAP_BCH
+ 	depends on MTD_NAND_OMAP2
+-	tristate "Support hardware based BCH error correction"
++	bool "Support hardware based BCH error correction"
+ 	default n
+-	select BCH
+ 	help
+ 	  This config enables the ELM hardware engine, which can be used to
+ 	  locate and correct errors when using BCH ECC scheme. This offloads
+@@ -106,6 +105,12 @@ config MTD_NAND_OMAP_BCH
+ 	  legacy OMAP families like OMAP2xxx, OMAP3xxx do not have ELM engine
+ 	  so they should not enable this config symbol.
+ 
++config MTD_NAND_OMAP_BCH_BUILD
++	tristate
++	depends on MTD_NAND_OMAP_BCH
++	default MTD_NAND_OMAP2
++	select BCH
++
+ config MTD_NAND_IDS
+ 	tristate
+ 
