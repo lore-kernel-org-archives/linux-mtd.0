@@ -1,20 +1,22 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XUAbc-0005NM-7b
- for linux-mtd@lists.infradead.org; Wed, 17 Sep 2014 08:28:52 +0000
-Message-ID: <1410942507.28850.78.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] UBI: Fix possible deadlock in erase_worker()
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Richard Weinberger <richard@nod.at>
-Date: Wed, 17 Sep 2014 11:28:27 +0300
-In-Reply-To: <1410853702-11616-1-git-send-email-richard@nod.at>
-References: <1410853702-11616-1-git-send-email-richard@nod.at>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
+Received: from nasmtp01.atmel.com ([192.199.1.245]
+ helo=DVREDG01.corp.atmel.com)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XUAfT-0007sZ-JW
+ for linux-mtd@lists.infradead.org; Wed, 17 Sep 2014 08:32:52 +0000
+Message-ID: <541946E1.1070808@atmel.com>
+Date: Wed, 17 Sep 2014 16:31:29 +0800
+From: Josh Wu <josh.wu@atmel.com>
+MIME-Version: 1.0
+To: <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH v2] mtd: atmel_nand: make PMECC lookup table and offset
+ property optional
+References: <1408345720-5402-1-git-send-email-josh.wu@atmel.com>
+In-Reply-To: <1408345720-5402-1-git-send-email-josh.wu@atmel.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, pawel.moll@arm.com,
+ ijc+devicetree@hellion.org.uk, robh+dt@kernel.org, galak@codeaurora.org,
+ Brian Norris <computersforpeace@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,23 +26,230 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2014-09-16 at 09:48 +0200, Richard Weinberger wrote:
-> If sync_erase() failes with EINTR, ENOMEM, EAGAIN or
-> EBUSY erase_worker() re-schedules the failed work.
-> This will lead to a deadlock because erase_worker() is called
-> with work_sem held in read mode. And schedule_erase() will take
-> this lock again.
+Hi,
 
-IIRC, the assumption was that the R/W semaphore may be taken in read
-mode many times, so it wouldn't hurt to do:
+Ping...
 
-down_read()
-down_read()
-up_read()
-up_read()
+Is it any feedback for the patch?
 
-If this is right, then the lockdep warning is incorrect.
-
--- 
 Best Regards,
-Artem Bityutskiy
+Josh Wu
+
+On 8/18/2014 3:08 PM, Josh Wu wrote:
+> If there is no PMECC lookup table stored in ROM, or lookup table offset is
+> not specified, PMECC driver should build it in DDR by itself.
+>
+> That make the PMECC driver work for some board which doesn't has PMECC
+> lookup table in ROM.
+>
+> Signed-off-by: Josh Wu <josh.wu@atmel.com>
+> Cc: devicetree@vger.kernel.org
+> ---
+> This patch is based on mtd-l2/next branch
+>
+> v1 -> v2:
+>    make create_lookup_table() static.
+>
+>
+>   .../devicetree/bindings/mtd/atmel-nand.txt         |   6 +-
+>   drivers/mtd/nand/atmel_nand.c                      | 136 ++++++++++++++++++++-
+>   2 files changed, 136 insertions(+), 6 deletions(-)
+>
+> diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand.txt b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+> index c472883..75d1847 100644
+> --- a/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+> +++ b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+> @@ -5,7 +5,9 @@ Required properties:
+>   - reg : should specify localbus address and size used for the chip,
+>   	and hardware ECC controller if available.
+>   	If the hardware ECC is PMECC, it should contain address and size for
+> -	PMECC, PMECC Error Location controller and ROM which has lookup tables.
+> +	PMECC and PMECC Error Location controller.
+> +	The PMECC lookup table address and size in ROM is optional. If not
+> +	specified, driver will build it in runtime.
+>   - atmel,nand-addr-offset : offset for the address latch.
+>   - atmel,nand-cmd-offset : offset for the command latch.
+>   - #address-cells, #size-cells : Must be present if the device has sub-nodes
+> @@ -27,7 +29,7 @@ Optional properties:
+>     are: 512, 1024.
+>   - atmel,pmecc-lookup-table-offset : includes two offsets of lookup table in ROM
+>     for different sector size. First one is for sector size 512, the next is for
+> -  sector size 1024.
+> +  sector size 1024. If not specified, driver will build the table in runtime.
+>   - nand-bus-width : 8 or 16 bus width if not present 8
+>   - nand-on-flash-bbt: boolean to enable on flash bbt option if not present false
+>   - Nand Flash Controller(NFC) is a slave driver under Atmel nand flash
+> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+> index effa7a29..84af313 100644
+> --- a/drivers/mtd/nand/atmel_nand.c
+> +++ b/drivers/mtd/nand/atmel_nand.c
+> @@ -124,6 +124,7 @@ struct atmel_nand_host {
+>   	bool			has_pmecc;
+>   	u8			pmecc_corr_cap;
+>   	u16			pmecc_sector_size;
+> +	bool			has_no_lookup_table;
+>   	u32			pmecc_lookup_table_offset;
+>   	u32			pmecc_lookup_table_offset_512;
+>   	u32			pmecc_lookup_table_offset_1024;
+> @@ -1109,12 +1110,121 @@ static int pmecc_choose_ecc(struct atmel_nand_host *host,
+>   	return 0;
+>   }
+>   
+> +static int pmecc_build_galois_table(int mm,
+> +		int16_t *index_of, int16_t *alpha_to)
+> +{
+> +	unsigned int i, mask, nn;
+> +	unsigned int p[PMECC_GF_DIMENSION_14 + 1];
+> +
+> +	nn = (1 << mm) - 1;
+> +	/* set default value */
+> +	for (i = 1; i < mm; i++)
+> +		p[i] = 0;
+> +
+> +	/* 1 + X^mm */
+> +	p[0]  = 1;
+> +	p[mm] = 1;
+> +
+> +	/* others  */
+> +	switch (mm) {
+> +	case 3:
+> +	case 4:
+> +	case 6:
+> +	case 15:
+> +		p[1] = 1;
+> +		break;
+> +	case 5:
+> +	case 11:
+> +		p[2] = 1;
+> +		break;
+> +	case 7:
+> +	case 10:
+> +		p[3] = 1;
+> +		break;
+> +	case 8:
+> +		p[2] = p[3] = p[4] = 1;
+> +		break;
+> +	case 9:
+> +		p[4] = 1;
+> +		break;
+> +	case 12:
+> +		p[1] = p[4] = p[6] = 1;
+> +		break;
+> +	case 13:
+> +		p[1] = p[3] = p[4] = 1;
+> +		break;
+> +	case 14:
+> +		p[1] = p[6] = p[10] = 1;
+> +		break;
+> +	default:
+> +		/* Error */
+> +		return -EINVAL;
+> +	}
+> +
+> +	/* Build alpha ^ mm it will help to generate the field (primitiv) */
+> +	alpha_to[mm] = 0;
+> +	for (i = 0; i < mm; i++)
+> +		if (p[i])
+> +			alpha_to[mm] |= 1 << i;
+> +
+> +	/*
+> +	 * Then build elements from 0 to mm - 1. As degree is less than mm
+> +	 * so it is just a logical shift.
+> +	 */
+> +	mask = 1;
+> +	for (i = 0; i < mm; i++) {
+> +		alpha_to[i] = mask;
+> +		index_of[alpha_to[i]] = i;
+> +		mask <<= 1;
+> +	}
+> +
+> +	index_of[alpha_to[mm]] = mm;
+> +
+> +	/* use a mask to select the MSB bit of the LFSR */
+> +	mask >>= 1;
+> +
+> +	/* then finish the building */
+> +	for (i = mm + 1; i <= nn; i++) {
+> +		/* check if the msb bit of the lfsr is set */
+> +		if (alpha_to[i - 1] & mask)
+> +			alpha_to[i] = alpha_to[mm] ^
+> +				((alpha_to[i - 1] ^ mask) << 1);
+> +		else
+> +			alpha_to[i] = alpha_to[i - 1] << 1;
+> +
+> +		index_of[alpha_to[i]] = i % nn;
+> +	}
+> +
+> +	/* index of 0 is undefined in a multiplicative field */
+> +	index_of[0] = -1;
+> +
+> +	return 0;
+> +}
+> +
+> +static uint16_t *create_lookup_table(struct device *dev, int sector_size)
+> +{
+> +	int table_size = (sector_size == 512) ?
+> +			PMECC_LOOKUP_TABLE_SIZE_512 :
+> +			PMECC_LOOKUP_TABLE_SIZE_1024;
+> +	int degree = (sector_size == 512) ?
+> +			PMECC_GF_DIMENSION_13 :
+> +			PMECC_GF_DIMENSION_14;
+> +	uint16_t *addr = devm_kzalloc(dev, 2 * table_size * sizeof(uint16_t),
+> +			GFP_KERNEL);
+> +
+> +	if (addr)
+> +		pmecc_build_galois_table(degree, addr, addr + table_size);
+> +
+> +	return addr;
+> +}
+> +
+>   static int atmel_pmecc_nand_init_params(struct platform_device *pdev,
+>   					 struct atmel_nand_host *host)
+>   {
+>   	struct mtd_info *mtd = &host->mtd;
+>   	struct nand_chip *nand_chip = &host->nand_chip;
+>   	struct resource *regs, *regs_pmerr, *regs_rom;
+> +	uint16_t *galois_table;
+>   	int cap, sector_size, err_no;
+>   
+>   	err_no = pmecc_choose_ecc(host, &cap, &sector_size);
+> @@ -1160,8 +1270,24 @@ static int atmel_pmecc_nand_init_params(struct platform_device *pdev,
+>   	regs_rom = platform_get_resource(pdev, IORESOURCE_MEM, 3);
+>   	host->pmecc_rom_base = devm_ioremap_resource(&pdev->dev, regs_rom);
+>   	if (IS_ERR(host->pmecc_rom_base)) {
+> -		err_no = PTR_ERR(host->pmecc_rom_base);
+> -		goto err;
+> +		if (!host->has_no_lookup_table)
+> +			/* Don't display the information again */
+> +			dev_err(host->dev, "Can not get I/O resource for ROM, will build a lookup table in runtime!\n");
+> +
+> +		host->has_no_lookup_table = true;
+> +	}
+> +
+> +	if (host->has_no_lookup_table) {
+> +		/* Build the look-up table in runtime */
+> +		galois_table = create_lookup_table(host->dev, sector_size);
+> +		if (!galois_table) {
+> +			dev_err(host->dev, "Failed to build a lookup table in runtime!\n");
+> +			err_no = -ENOMEM;
+> +			goto err;
+> +		}
+> +
+> +		host->pmecc_rom_base = galois_table;
+> +		host->pmecc_lookup_table_offset = 0;
+>   	}
+>   
+>   	nand_chip->ecc.size = sector_size;
+> @@ -1498,8 +1624,10 @@ static int atmel_of_init_port(struct atmel_nand_host *host,
+>   
+>   	if (of_property_read_u32_array(np, "atmel,pmecc-lookup-table-offset",
+>   			offset, 2) != 0) {
+> -		dev_err(host->dev, "Cannot get PMECC lookup table offset\n");
+> -		return -EINVAL;
+> +		dev_err(host->dev, "Cannot get PMECC lookup table offset, will build a lookup table in runtime.\n");
+> +		host->has_no_lookup_table = true;
+> +		/* Will build a lookup table and initialize the offset later */
+> +		return 0;
+>   	}
+>   	if (!offset[0] && !offset[1]) {
+>   		dev_err(host->dev, "Invalid PMECC lookup table offset\n");
