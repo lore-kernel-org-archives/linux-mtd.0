@@ -1,21 +1,16 @@
-Date: Wed, 17 Sep 2014 17:41:54 -0400 (EDT)
-From: Rodrigo Freire <rfreire@redhat.com>
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Message-ID: <86761077.40163293.1410990114756.JavaMail.zimbra@redhat.com>
-In-Reply-To: <CAAEAJfDAG8KrPKqVC5NujGnbSyxmrAtFcLvhScYsNm8RT59Gnw@mail.gmail.com>
-References: <371358190.34795877.1410204429882.JavaMail.zimbra@redhat.com>
- <1444809468.34812041.1410206680931.JavaMail.zimbra@redhat.com>
- <20140909170231.GA14429@logfs.org>
- <1807144344.40128259.1410985683342.JavaMail.zimbra@redhat.com>
- <CAAEAJfDAG8KrPKqVC5NujGnbSyxmrAtFcLvhScYsNm8RT59Gnw@mail.gmail.com>
-Subject: Re: [PATCH V2] mtd: block2mtd: Present block2mtd timely on boot time
+Received: from email.rugged.com ([64.60.45.211])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XUNHw-0003UD-P1
+ for linux-mtd@lists.infradead.org; Wed, 17 Sep 2014 22:01:25 +0000
+From: Robert Hurdle <RHurdle@Rugged.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Wed, 17 Sep 2014 14:59:22 -0700
+Subject: Question about adding a NAND device
+Message-ID: <5498E86A4A68B14A8A06D0380640D04A01FA6854E73D@atca01em01.adsi.aitech.ent>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Cc: Felix Fietkau <nbd@openwrt.org>,
- =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>,
- Herton Krzesinski <hkrzesin@redhat.com>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,37 +20,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Holas Ezequiel,
+Hello,
 
------ Original Message ----- 
-From: "Ezequiel Garcia" <ezequiel@vanguardiasur.com.ar> 
-> On 17 September 2014 21:28, Rodrigo Freire <rfreire@redhat.com> wrote: 
-> 
-> Using block2mtd sounds a bit unusual. I see that you are trying to get 
-> a more robust fs.... have you tried using f2fs instead of jffs2? 
+	I have ported some of u-boot to our board, and I am booting successfully f=
+rom EEPROM.
+	I am now in the process of adding the NAND and flash file system support f=
+or our non-standard
+	flash interface (there's an FPGA interface between the software and the 1 =
+giga-byte NAND) to
+	u-boot and also to the Linux kernel.  In addition, it is our intention to =
+support UBIFS on our board.
 
-I see that it is still marked as Experimental as of latest (3.17-RC5)
-kernel. But will take a look in the future, thanks for pointing.
+	It appears that I need to understand how the structures mtd_info and nand_=
+chip (and whatever
+	they point at) and code in nand_base.c work, in order to provide working r=
+outines at the NAND
+	level.  I have looked at some of the files in u-boot/drivers/mtd/nand for =
+other boards, and see
+	a wide variety of models, no doubt based on the hardware differences.   Be=
+cause of our FPGA
+	interface, I need to have all commands to the NAND chip get re-packaged in=
+to commands that
+	get passed to the FPGA.  Am I on the right path? =20
 
+	My other question is how long would one guess that this task would take fo=
+r someone fairly
+	competent, but uninitiated in UBIFS, UBI, MTD, NAND, etc. ?
 
-> > Currently, a block MTD device is not presented to the system on time, in 
-> > order to start mounting the filesystems. This patch ensures that block2mtd 
-> > is presented at the right time, so filesystems can be mounted on boot time. 
-> 
-> It worries me a bit to add such a long delay to the boot. If for some 
-> reason the SD is not working, then the kernel will wait (by default) 3 
-> seconds now? 
+	Any advice is appreciated.
 
-Not really; see the decision path:
-IF block2mtd is not a module (is builtin), AND
-   IF there is a valid block2mtd= clause on kernel cmdline, AND
-      IF the device specified device on block2mtd= clause is still not present
-      THEN wait *up to* 3 seconds (or seconds=n if specified on block2mtd=
-           cmdline) to the device to show up. If the device shows up earlier,
-           the device is created and boot proceeds.
-      ELSE Fail to create the block2mtd device.
-ELSE keep booting the kernel normally, without any further delays.
+	Thank you,
 
-Best regards,
-
-- RF.
+	Robert Hurdle
+	Aitech Defense Systems (Space Division)
