@@ -1,19 +1,20 @@
-Received: from ipmail07.adl2.internode.on.net ([150.101.137.131])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XU7Bv-0000Iy-IE
- for linux-mtd@lists.infradead.org; Wed, 17 Sep 2014 04:50:08 +0000
-Date: Wed, 17 Sep 2014 14:47:23 +1000
-From: Dave Chinner <david@fromorbit.com>
-To: Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH] Add UBIFS support
-Message-ID: <20140917044723.GH4267@dastard>
-References: <1410772280-9771-1-git-send-email-richard@nod.at>
- <20140915215218.GH4322@dastard> <5418403A.8020004@nod.at>
+Received: from mail-pd0-x22e.google.com ([2607:f8b0:400e:c02::22e])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XUAA8-0007x6-9O
+ for linux-mtd@lists.infradead.org; Wed, 17 Sep 2014 08:00:28 +0000
+Received: by mail-pd0-f174.google.com with SMTP id v10so1609404pde.5
+ for <linux-mtd@lists.infradead.org>; Wed, 17 Sep 2014 01:00:07 -0700 (PDT)
+Date: Wed, 17 Sep 2014 01:00:00 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Hauke Mehrtens <hauke@hauke-m.de>
+Subject: Re: [PATCH] mtd: nand: fix return code for uncorrectable error
+Message-ID: <20140917080000.GA7362@norris-Latitude-E6410>
+References: <1410731102-26765-1-git-send-email-hauke@hauke-m.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5418403A.8020004@nod.at>
-Cc: linux-mtd@lists.infradead.org, fstests@vger.kernel.org
+In-Reply-To: <1410731102-26765-1-git-send-email-hauke@hauke-m.de>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,150 +24,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Sep 16, 2014 at 03:50:50PM +0200, Richard Weinberger wrote:
-> Am 15.09.2014 23:52, schrieb Dave Chinner:
-> > On Mon, Sep 15, 2014 at 11:11:20AM +0200, Richard Weinberger wrote:
-> >> UBIFS needs some extra care, the device node is of type character and
-> >> it has no fsck tool.
-> > 
-> > Not being familiar with UBIFS, the explaination is rather brief and
-> > doesn't explain anything to me. Can you document how where supposed
-> > to treat a filesystem that doesn't exist on a block device for all
-> > the tests that assume that the local fileystem is on a block device?
-> > e.g. how do all the generic tests that use loopback devices work?
-> > What about dm-flakey?
+On Sun, Sep 14, 2014 at 11:45:02PM +0200, Hauke Mehrtens wrote:
+> nand_correct_data() should return -EBADMSG when it finds an
+> uncorrectable error and not just -1.
+
+Why should it? Is there any bug here, or is this just a cosmetic fix
+along the lines of "we should use meaningful error codes"?
+
+> This is based on OpenWrt patch:
+> https://dev.openwrt.org/browser/trunk/target/linux/generic/patches-3.10/451-mtd-nand-fix-return-code-of-nand_correct_data-function.patcht
 > 
-> UBIFS is a filesystem designed for MTD devices.
-> It works on top of UBI which is kind of a LVM for NAND and NOR flashes.
-> On Linux MTD devices are represented as character devices, this is why
-> the UBI device nodes are of type character.
-
-Ok, so that needs to be in the commit message, and a comment
-where we validate the device config on startup.  ;)
-
-> For more details please see:
-> http://www.linux-mtd.infradead.org/doc/ubi.html
-> http://www.linux-mtd.infradead.org/doc/ubifs.html
+> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+> ---
+>  drivers/mtd/nand/nand_ecc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Of course UBIFS will not work on top of loop or dm-flakey.
-> AFAIK the generic tests don't use them anyway.
+> diff --git a/drivers/mtd/nand/nand_ecc.c b/drivers/mtd/nand/nand_ecc.c
+> index 97c4c02..244a634 100644
+> --- a/drivers/mtd/nand/nand_ecc.c
+> +++ b/drivers/mtd/nand/nand_ecc.c
+> @@ -507,7 +507,7 @@ int __nand_correct_data(unsigned char *buf,
+>  		return 1;	/* error in ECC data; no action needed */
+>  
+>  	pr_err("%s: uncorrectable ECC error\n", __func__);
+> -	return -1;
+> +	return -EBADMSG;
 
-Generic tests do use dm-flakey:
+I think this will break at least one piece of code which relies on the
+fact that the implicit standard for the correct() function is that it
+returns -1 for ECC errors; see drivers/mtd/tests/mtd_nandecctest.c:
 
-$ git grep _require_dm_flakey tests/generic
-tests/generic/311:_require_dm_flakey
-tests/generic/321:_require_dm_flakey
-tests/generic/322:_require_dm_flakey
-tests/generic/325:_require_dm_flakey
-$
+static int double_bit_error_detect(void *error_data, void *error_ecc,
+                                void *correct_data, const size_t size)
+{
+        unsigned char calc_ecc[3];
+        int ret;
 
-There's no reason why generic tests can't use the loop device,
-either. Indeed, 10 days ago we added an abstraction to allow generic
-tests to easily use the loop device (i.e. added _mkfs_dev).
+        __nand_calculate_ecc(error_data, size, calc_ecc);
+        ret = __nand_correct_data(error_data, error_ecc, calc_ecc, size);
 
-> I'd like to have UBIFS tested with xfstests because xfstests has a very
-> good set of generic fs tests.
+        return (ret == -1) ? 0 : -EINVAL;
+}
 
-Understood - all I'm trying to do is work out what exactly what the
-impact of TEST_DEV/SCRATCH_DEV not being block devices on a local
-filesystem. Network filesystems are sufficiently different that this
-isn't an issue, but char vs block local devices is a little more
-subtle.
+So, if you're going to change error codes like this, I'd prefer a little
+more explanation and a more comprehensive look at the existing body of
+code.
 
-> Currently UBIFS fails 20 out of 76 generic tests.
+>  }
+>  EXPORT_SYMBOL(__nand_correct_data);
+>  
 
-Hmmm - there's ~140 generic tests in the auto group - I would have
-expected a lot more of them to run than 76....
-
-> At least one issue is real. As soon I have the time I'll
-> inspect all other failures in detail.
-
-... and what I'm particularly interested in is how many of those
-are a result of tests assumes that they are running on a block or
-network device.
-
-> >> diff --git a/check b/check
-> >> index 42a1ac2..57ec612 100755
-> >> --- a/check
-> >> +++ b/check
-> >> @@ -70,6 +70,7 @@ check options
-> >>      -nfs                test NFS
-> >>      -cifs               test CIFS
-> >>      -tmpfs              test TMPFS
-> >> +    -ubifs              test UBIFS
-> >>      -l			line mode diff
-> >>      -udiff		show unified diff (default)
-> >>      -n			show me, do not run tests
-> > 
-> > I'd like to avoid adding command line switches for random filesystem
-> > types if at all possible. I'd much prefer that it be derived from
-> > the current TEST_DEV if at all possible. Can you probe for UBIFS
-> > similar to using blkid for local filesystems?
-> 
-> I fear blkid does not detect UBIFS, but we can match it from the device node name.
-> UBIFS can only work on top of an UBI volume. UBI volumes have names like /dev/ubiX_Y.
-> Where X is the UBI image number and Y the volume number.
-
-Ok, so that probing can be done fairly easily. Right at the end of
-common/config there's a blkid command run to grab the FSTYP value
-from the $TEST_DEV. If returns a null, then we can check for it
-being a UBI volume and set FSTYP automatically.
-
-> >> diff --git a/common/config b/common/config
-> >> index fc21b37..af082ea 100644
-> >> --- a/common/config
-> >> +++ b/common/config
-> >> @@ -430,7 +430,7 @@ get_next_config() {
-> >>  		exit 1
-> >>  	fi
-> >>  
-> >> -	echo $TEST_DEV | grep -qE ":|//" > /dev/null 2>&1
-> >> +	echo $TEST_DEV | grep -qE ":|//|ubi" > /dev/null 2>&1
-> >>  	if [ ! -b "$TEST_DEV" -a "$?" != "0" ]; then
-> >>  		echo "common/config: Error: \$TEST_DEV ($TEST_DEV) is not a block device or a network filesystem"
-> >>  		exit 1
-> > 
-> > Needs a comment explaining what format we are searching for there?
-> 
-> See above. I match the string "ubi" in /dev/ubiX_Y.
-
-Ok, I can see the match, but you're not validating that it is a char
-device once you have a match, and so that will accept anything with
-"/ubi" in it....
-
-> >> @@ -453,7 +453,7 @@ get_next_config() {
-> >>  		export SCRATCH_DEV_NOT_SET=true
-> >>  	fi
-> >>  
-> >> -	echo $SCRATCH_DEV | grep -qE ":|//" > /dev/null 2>&1
-> >> +	echo $SCRATCH_DEV | grep -qE ":|//|ubi" > /dev/null 2>&1
-> >>  	if [ ! -z "$SCRATCH_DEV" -a ! -b "$SCRATCH_DEV" -a "$?" != "0" ]; then
-> >>  		echo "common/config: Error: \$SCRATCH_DEV ($SCRATCH_DEV) is not a block device or a network filesystem"
-> >>  		exit 1
-> >> diff --git a/common/rc b/common/rc
-> >> index b8f711a..064b987 100644
-> >> --- a/common/rc
-> >> +++ b/common/rc
-> >> @@ -1034,6 +1034,12 @@ _require_scratch_nocheck()
-> >>  		    _notrun "this test requires a valid \$SCRATCH_MNT and unique $SCRATCH_DEV"
-> >>  		fi
-> >>  		;;
-> >> +	ubifs)
-> >> +		if [ -z "$SCRATCH_DEV" -o ! -c "$SCRATCH_DEV" -o ! -d "$SCRATCH_MNT" ];
-> >> +		then
-> >> +		    _notrun "this test requires a valid \$SCRATCH_MNT and unique $SCRATCH_DEV"
-> >> +		fi
-> >> +		;;
-
-Hmmm, now I see you check for char device here - it shouldn't be
-necessary as we shouldn't even have got to this statement if the
-SCRATCH_DEV is not a char device. i.e. validate it when pulling in
-the config, then it can simply be assumed valid everywhere else if
-it is set.
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Brian
