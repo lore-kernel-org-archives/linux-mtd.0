@@ -1,29 +1,27 @@
-Received: from mail-qa0-f51.google.com ([209.85.216.51])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XUBwQ-0004Qc-4L
- for linux-mtd@lists.infradead.org; Wed, 17 Sep 2014 09:54:26 +0000
-Received: by mail-qa0-f51.google.com with SMTP id i13so1475019qae.24
- for <linux-mtd@lists.infradead.org>; Wed, 17 Sep 2014 02:54:04 -0700 (PDT)
+Date: Wed, 17 Sep 2014 23:26:11 +0800
+From: Huang Shijie <shijie8@gmail.com>
+To: Boris BREZILLON <boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH] mtd: nand: gpmi: add proper raw access support
+Message-ID: <20140917152609.GA2111@localhost.localdomain>
+References: <20140911120928.GA1585@localhost.localdomain>
+ <20140911143616.3ebb025a@bbrezillon>
+ <20140911142511.GA2543@localhost.localdomain>
+ <20140911163847.5e2f85c7@bbrezillon>
+ <20140912004550.GB26904@shldeISGChi005.sh.intel.com>
+ <20140912143050.014ad4c3@bbrezillon>
+ <20140913153622.GA10132@localhost.localdomain>
+ <20140913173841.GA18093@brian-ubuntu>
+ <20140915144259.GA1947@localhost.localdomain>
+ <20140915221210.5d9871fb@bbrezillon>
 MIME-Version: 1.0
-In-Reply-To: <20140917083353.GB7362@norris-Latitude-E6410>
-References: <1410033389-32357-1-git-send-email-ezequiel@vanguardiasur.com.ar>
- <1410033389-32357-3-git-send-email-ezequiel@vanguardiasur.com.ar>
- <540D6CAB.7020501@ti.com> <540D8A92.2040209@ti.com>
- <20140910124849.GA25308@arch.hh.imgtec.org>
- <54104CB4.4020703@ti.com>
- <20140917083353.GB7362@norris-Latitude-E6410>
-Date: Wed, 17 Sep 2014 10:54:03 +0100
-Message-ID: <CAAEAJfDPnYZJbryFqDkBbq3p0CBFgwP9v9PG_j9cv-5T2Ymdnw@mail.gmail.com>
-Subject: Re: [PATCH 2/3] nand: omap2: Remove horrible ifdefs to fix module
- probe
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Tony Lindgren <tony@atomide.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- =?UTF-8?Q?Guido_Mart=C3=ADnez?= <guido@vanguardiasur.com.ar>,
- Roger Quadros <rogerq@ti.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20140915221210.5d9871fb@bbrezillon>
+Cc: Mike Voytovich <mvoytovich@paypal.com>, linux-kernel@vger.kernel.org,
+ Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+ Roy Lee <roylee@paypal.com>, Huang Shijie <shijie.huang@intel.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,41 +31,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 17 September 2014 09:33, Brian Norris <computersforpeace@gmail.com> wrot=
-e:
-> On Wed, Sep 10, 2014 at 04:05:56PM +0300, Roger Quadros wrote:
->> On 09/10/2014 03:48 PM, Ezequiel Garcia wrote:
->> > On 08 Sep 01:53 PM, Roger Quadros wrote:
->> >> On 09/08/2014 11:45 AM, Roger Quadros wrote:
->> >>> On 09/06/2014 10:56 PM, Ezequiel Garcia wrote:
->> >> I still get the following error if I set CONFIG_MTD_NAND_OMAP2 to y a=
-nd
->> >> CONFIG_MTD_NAND_OMAP_BCH to m.
->> >>
->> >> CONFIG_MTD_NAND_OMAP_BCH is used to select the ELM driver and it must=
- be limited to
->> >> be built-in if CONFIG_MTD_NAND_OMAP2 is built-in.
->> >>
->> >
->> > Hm, yup. Any ideas on how to accomplish that? My Kconfig-foo is not st=
-rong enough :(
->>
->> Mine neither ;). I'm unaware of any other method than making CONFIG_MTD_=
-NAND_OMAP_BCH to bool.
->
-> That could be part of the solution. Does the following patch work? It
-> now forces elm and omap to be built the same -- either both as modules
-> or both built-in -- but it solves the rest of the problem I think.
->
-> (This also has the side effect of causing transition pains for any
-> .config file that had CONFIG_MTD_NAND_OMAP_BCH=3Dm, since this becomes
-> boolean now.)
->
+On Mon, Sep 15, 2014 at 10:12:10PM +0200, Boris BREZILLON wrote:
+> On Mon, 15 Sep 2014 22:43:02 +0800
+> Huang Shijie <shijie8@gmail.com> wrote:
+> 
+> > On Sat, Sep 13, 2014 at 10:38:41AM -0700, Brian Norris wrote:
+> > > On Sat, Sep 13, 2014 at 11:36:24PM +0800, Huang Shijie wrote:
+> > > > On Fri, Sep 12, 2014 at 02:30:50PM +0200, Boris BREZILLON wrote:
+> > > > > This test validates what's returned by ecc_strength file in sysfs
+> > > > > (which in turn is specified by the NAND controller when initializing
+> > > > > the NAND chip).
+> > > > > 
+> > > > > Doing this should not imply knowing the ECC algorithm in use in the
+> > > > > NAND controller or the layout used to store data on NAND.
+> > > > the difficulty is that the ECC parity area can be not byte aligned.
+> > > 
+> > > Is there a problem with just rounding up to the nearest byte alignment
+> > > and ignoring the few bits that are wasted?
+> > 
+> > I feel a little confused with the two hooks.
+> > 
+> > does the ecc->write_page_raw need to write the ECC parity data?
+> 
+> Depending on the oob_required argument, it might be allowed to
+> overwrite the ECC bytes even if this implies breaking page reliability
+> (which is exactly what's expected).
+> 
+> When using raw write with with oob write option the writer should take
+> care of regenerating ECC bytes (which you said was impossible in GPMI
+> case) or copying them from a previous raw read.
+Thanks for the explanation.
 
-http://patchwork.ozlabs.org/patch/388249/
+If we do not write the OOB, should we write the ECC bytes?
+The hooks should comment clearly about how to implement them :(
 
-I used my time-machine to go back in time and submitted the patch for you :=
--)
---=20
-Ezequiel Garc=C3=ADa, VanguardiaSur
-www.vanguardiasur.com.ar
+> 
+> Here is a real example of what one could test with raw write + oob:
+> 1) read a page in raw mode
+> 2) flip some bits in the generated ECC bytes (or what you references as
+>    parity data) (this case can actually happen in real life)
+> 3) write the modified page in raw mode
+> 4) read back the same page in normal and check that ECC correction still
+>    works as expected
+the nandbiterr test mode does the test as above.
+But i think the multi-writes to the same page should occur only for the
+SLC nand. 
+
+I will read your new patch set carefully in this weekend.
+
+thanks
+Huang Shijie
