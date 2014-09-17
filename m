@@ -1,27 +1,23 @@
-Date: Wed, 17 Sep 2014 23:26:11 +0800
-From: Huang Shijie <shijie8@gmail.com>
-To: Boris BREZILLON <boris.brezillon@free-electrons.com>
-Subject: Re: [PATCH] mtd: nand: gpmi: add proper raw access support
-Message-ID: <20140917152609.GA2111@localhost.localdomain>
-References: <20140911120928.GA1585@localhost.localdomain>
- <20140911143616.3ebb025a@bbrezillon>
- <20140911142511.GA2543@localhost.localdomain>
- <20140911163847.5e2f85c7@bbrezillon>
- <20140912004550.GB26904@shldeISGChi005.sh.intel.com>
- <20140912143050.014ad4c3@bbrezillon>
- <20140913153622.GA10132@localhost.localdomain>
- <20140913173841.GA18093@brian-ubuntu>
- <20140915144259.GA1947@localhost.localdomain>
- <20140915221210.5d9871fb@bbrezillon>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20140915221210.5d9871fb@bbrezillon>
-Cc: Mike Voytovich <mvoytovich@paypal.com>, linux-kernel@vger.kernel.org,
- Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
- Roy Lee <roylee@paypal.com>, Huang Shijie <shijie.huang@intel.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Received: from mail-we0-x232.google.com ([2a00:1450:400c:c03::232])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XUHCq-00074R-0x
+ for linux-mtd@lists.infradead.org; Wed, 17 Sep 2014 15:31:44 +0000
+Received: by mail-we0-f178.google.com with SMTP id q58so1635611wes.37
+ for <linux-mtd@lists.infradead.org>; Wed, 17 Sep 2014 08:31:21 -0700 (PDT)
+Message-ID: <1410967880.5542.8.camel@lp-lvrv.comap.cz>
+Subject: Re: Destructive nandtest?
+From: Rostislav Lisovy <lisovy@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Wed, 17 Sep 2014 17:31:20 +0200
+In-Reply-To: <20140916192610.GB1193@ld-irv-0074>
+References: <1410884555.23903.13.camel@lp-lvrv.comap.cz>
+ <20140916192610.GB1193@ld-irv-0074>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: David Woodhouse <dwmw2@infradead.org>, Michal Vokac <michal.vokac@comap.cz>,
+ linux-mtd@lists.infradead.org,
+ Ezequiel =?ISO-8859-1?Q?Garc=EDa?= <ezequiel@vanguardiasur.com.ar>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,53 +27,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Sep 15, 2014 at 10:12:10PM +0200, Boris BREZILLON wrote:
-> On Mon, 15 Sep 2014 22:43:02 +0800
-> Huang Shijie <shijie8@gmail.com> wrote:
-> 
-> > On Sat, Sep 13, 2014 at 10:38:41AM -0700, Brian Norris wrote:
-> > > On Sat, Sep 13, 2014 at 11:36:24PM +0800, Huang Shijie wrote:
-> > > > On Fri, Sep 12, 2014 at 02:30:50PM +0200, Boris BREZILLON wrote:
-> > > > > This test validates what's returned by ecc_strength file in sysfs
-> > > > > (which in turn is specified by the NAND controller when initializing
-> > > > > the NAND chip).
-> > > > > 
-> > > > > Doing this should not imply knowing the ECC algorithm in use in the
-> > > > > NAND controller or the layout used to store data on NAND.
-> > > > the difficulty is that the ECC parity area can be not byte aligned.
-> > > 
-> > > Is there a problem with just rounding up to the nearest byte alignment
-> > > and ignoring the few bits that are wasted?
-> > 
-> > I feel a little confused with the two hooks.
-> > 
-> > does the ecc->write_page_raw need to write the ECC parity data?
-> 
-> Depending on the oob_required argument, it might be allowed to
-> overwrite the ECC bytes even if this implies breaking page reliability
-> (which is exactly what's expected).
-> 
-> When using raw write with with oob write option the writer should take
-> care of regenerating ECC bytes (which you said was impossible in GPMI
-> case) or copying them from a previous raw read.
-Thanks for the explanation.
+Hello Brian;
+Thanks for your reply.
 
-If we do not write the OOB, should we write the ECC bytes?
-The hooks should comment clearly about how to implement them :(
+On Út, 2014-09-16 at 12:26 -0700, Brian Norris wrote:
+> All of your analysis looks accurate to me. Personally, I never used
+> 'nandtest' much myself, because of glaring ommissions like you've
+> noticed. I wouldn't mind just dropping the '--keep' option, since it's
+> a lot of work to try to do correctly, and in its current state, it is
+> completely broken and misleading.
 
-> 
-> Here is a real example of what one could test with raw write + oob:
-> 1) read a page in raw mode
-> 2) flip some bits in the generated ECC bytes (or what you references as
->    parity data) (this case can actually happen in real life)
-> 3) write the modified page in raw mode
-> 4) read back the same page in normal and check that ECC correction still
->    works as expected
-the nandbiterr test mode does the test as above.
-But i think the multi-writes to the same page should occur only for the
-SLC nand. 
+I have some proof-of-concept code that does store the OOB (and restores
+it later) and is able to distinguish if the page is erased or not (in a
+bit naive manner -- if the page is all 0xff and particular ECCs as well)
+and decide is the data should be restored or not.
+I hope I will be able to post the code soon.
 
-I will read your new patch set carefully in this weekend.
-
-thanks
-Huang Shijie
+Best regards;
+Rostislav
