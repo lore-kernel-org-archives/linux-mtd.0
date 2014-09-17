@@ -1,16 +1,15 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga09.intel.com ([134.134.136.24])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XUAqL-0005jJ-S2
- for linux-mtd@lists.infradead.org; Wed, 17 Sep 2014 08:44:06 +0000
-Message-ID: <1410943421.28850.93.camel@sauron.fi.intel.com>
+ id 1XUBej-0006CA-FE
+ for linux-mtd@lists.infradead.org; Wed, 17 Sep 2014 09:36:09 +0000
+Message-ID: <1410946526.28850.120.camel@sauron.fi.intel.com>
 Subject: Re: [PATCH] UBI: Fix possible deadlock in erase_worker()
 From: Artem Bityutskiy <dedekind1@gmail.com>
 Reply-To: dedekind1@gmail.com
 To: Richard Weinberger <richard@nod.at>
-Date: Wed, 17 Sep 2014 11:43:41 +0300
-In-Reply-To: <541948E3.3080602@nod.at>
+Date: Wed, 17 Sep 2014 12:35:26 +0300
+In-Reply-To: <1410853702-11616-1-git-send-email-richard@nod.at>
 References: <1410853702-11616-1-git-send-email-richard@nod.at>
- <1410942507.28850.78.camel@sauron.fi.intel.com> <541948E3.3080602@nod.at>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -25,25 +24,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2014-09-17 at 10:40 +0200, Richard Weinberger wrote:
-> /*
->  * nested locking. NOTE: rwsems are not allowed to recurse
->  * (which occurs if the same task tries to acquire the same
->  * lock instance multiple times), but multiple locks of the
->  * same lock class might be taken, if the order of the locks
->  * is always the same. This ordering rule can be expressed
->  * to lockdep via the _nested() APIs, but enumerating the
->  * subclasses that are used. (If the nesting relationship is
->  * static then another method for expressing nested locking is
->  * the explicit definition of lock class keys and the use of
->  * lockdep_set_class() at lock initialization time.
->  * See Documentation/lockdep-design.txt for more details.)
->  */
-> 
-> In this case the same task is taking the same lock multiple times,
-> which is not allowed according to rwsem.h.
+On Tue, 2014-09-16 at 09:48 +0200, Richard Weinberger wrote:
+> If sync_erase() failes with EINTR, ENOMEM, EAGAIN or
+> EBUSY erase_worker() re-schedules the failed work.
+> This will lead to a deadlock because erase_worker() is called
+> with work_sem held in read mode. And schedule_erase() will take
+> this lock again.
 
-Yes, this part was missed, thanks.
+There is this code snippet:
+
+        ubi_err("failed to erase PEB %d, error %d", pnum, err);
+        kfree(wl_wrk);
+
+        if (err == -EINTR || err == -ENOMEM || err == -EAGAIN ||
+            err == -EBUSY) {
+                int err1;
+
+                /* Re-schedule the LEB for erasure */
+                err1 = schedule_erase(ubi, e, vol_id, lnum, 0);
+                if (err1) {
+                        err = err1;
+                        goto out_ro;
+                }
+                return err;
+        }
+
+How about move 'kfree(wl_wrk)' down, and execute
+
+        __schedule_ubi_work(ubi, wl_wrk)
+
+inside the 'if' clause instead? The fix would seem to be more elegant
+then.
+
+Hmm?
 
 -- 
 Best Regards,
