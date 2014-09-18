@@ -1,26 +1,26 @@
-Received: from mail-pd0-x233.google.com ([2607:f8b0:400e:c02::233])
+Received: from mail-pa0-x22f.google.com ([2607:f8b0:400e:c03::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XURy6-0004jv-IX
- for linux-mtd@lists.infradead.org; Thu, 18 Sep 2014 03:01:15 +0000
-Received: by mail-pd0-f179.google.com with SMTP id g10so415520pdj.38
- for <linux-mtd@lists.infradead.org>; Wed, 17 Sep 2014 20:00:53 -0700 (PDT)
-Date: Wed, 17 Sep 2014 20:00:49 -0700
+ id 1XUS11-000586-9j
+ for linux-mtd@lists.infradead.org; Thu, 18 Sep 2014 03:04:16 +0000
+Received: by mail-pa0-f47.google.com with SMTP id ey11so450752pad.34
+ for <linux-mtd@lists.infradead.org>; Wed, 17 Sep 2014 20:03:53 -0700 (PDT)
+Date: Wed, 17 Sep 2014 20:03:50 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Roger Quadros <rogerq@ti.com>
-Subject: Re: [PATCH 3/3] mtd: nand: Force omap_elm to be built as a module if
- omap2_nand is a module
-Message-ID: <20140918030049.GB8127@brian-ubuntu>
-References: <1410443224-18477-1-git-send-email-ezequiel@vanguardiasur.com.ar>
- <1410443224-18477-4-git-send-email-ezequiel@vanguardiasur.com.ar>
- <5412B66F.8050505@ti.com> <20140912165636.GA7276@arch>
- <5416A2FF.3050503@ti.com>
+To: Masahiro Yamada <yamada.m@jp.panasonic.com>
+Subject: Re: [PATCH v3 0/7] mtd: denali: A collection of trivial coding style
+ fixes
+Message-ID: <20140918030350.GC8127@brian-ubuntu>
+References: <1410865465-17941-1-git-send-email-yamada.m@jp.panasonic.com>
+ <20140917171308.GC1193@ld-irv-0074>
+ <20140918113135.70D0.AA925319@jp.panasonic.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5416A2FF.3050503@ti.com>
-Cc: Tony Lindgren <tony@atomide.com>, pekon <pekon@pek-sem.com>,
- linux-mtd@lists.infradead.org, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- linux-omap@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <20140918113135.70D0.AA925319@jp.panasonic.com>
+Cc: Jiri Kosina <trivial@kernel.org>, "grmoore@altera.com" <grmoore@altera.com>,
+ linux-kernel@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>,
+ Rashika Kheria <rashika.kheria@gmail.com>, linux-mtd@lists.infradead.org,
+ Huang Shijie <shijie8@gmail.com>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,119 +30,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Sep 15, 2014 at 11:27:43AM +0300, Roger Quadros wrote:
-> On 09/12/2014 07:56 PM, Ezequiel Garcia wrote:
-> > On 12 Sep 12:01 PM, Roger Quadros wrote:
-> >> On 09/11/2014 04:47 PM, Ezequiel Garcia wrote:
-> >>> This commit adds a hidden option to build the omap_elm as a module, if
-> >>> omap2_nand is a module (and similarly in the built-in case).
-> >>>
-> >>> This fixes the following build error when omap2_nand is chosen built-in,
-> >>> and omap_elm is chosen as a module:
-> >>>
-> >>> drivers/built-in.o: In function `omap_nand_probe':
-> >>> /work/linux-2.6/drivers/mtd/nand/omap2.c:2010: undefined reference to `elm_config'
-> >>> /work/linux-2.6/drivers/mtd/nand/omap2.c:1980: undefined reference to `elm_config'
-> >>> /work/linux-2.6/drivers/mtd/nand/omap2.c:1927: undefined reference to `elm_config'
-> >>> drivers/built-in.o: In function `omap_elm_correct_data':
-> >>> /work/linux-2.6/drivers/mtd/nand/omap2.c:1444: undefined reference to `elm_decode_bch_error_page'
-> >>>
-> >>> Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-> >>> ---
-> >>>  drivers/mtd/nand/Kconfig  | 8 +++++++-
-> >>>  drivers/mtd/nand/Makefile | 2 +-
-> >>>  2 files changed, 8 insertions(+), 2 deletions(-)
-> >>>
-> >>> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-> >>> index f1cf503..12e8ee8 100644
-> >>> --- a/drivers/mtd/nand/Kconfig
-> >>> +++ b/drivers/mtd/nand/Kconfig
-> >>> @@ -96,7 +96,7 @@ config MTD_NAND_OMAP2
-> >>>  
-> >>>  config MTD_NAND_OMAP_BCH
-> >>>  	depends on MTD_NAND_OMAP2
-> >>> -	tristate "Support hardware based BCH error correction"
-> >>> +	bool "Support hardware based BCH error correction"
-> >>>  	default n
-> >>>  	select BCH
-> >>>  	help
-> >>> @@ -106,6 +106,12 @@ config MTD_NAND_OMAP_BCH
-> >>>  	  legacy OMAP families like OMAP2xxx, OMAP3xxx do not have ELM engine
-> >>>  	  so they should not enable this config symbol.
-> >>>  
-> >>> +config MTD_NAND_OMAP_BCH_BUILD
-> >>> +	tristate
-> >>> +	depends on MTD_NAND_OMAP2
-> >>> +	default m if MTD_NAND_OMAP2=m && MTD_NAND_OMAP_BCH
-> >>> +	default y if MTD_NAND_OMAP2=y && MTD_NAND_OMAP_BCH
-
-I think the last 2 lines could be combined:
-
-	default MTD_NAND_OMAP2 if MTD_NAND_OMAP_BCH
-
-> >>> +
-> >>>  config MTD_NAND_IDS
-> >>>  	tristate
-> >>>  
-> >>> diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-> >>> index 4bcdeb0..3580188 100644
-> >>> --- a/drivers/mtd/nand/Makefile
-> >>> +++ b/drivers/mtd/nand/Makefile
-> >>> @@ -27,7 +27,7 @@ obj-$(CONFIG_MTD_NAND_NDFC)		+= ndfc.o
-> >>>  obj-$(CONFIG_MTD_NAND_ATMEL)		+= atmel_nand.o
-> >>>  obj-$(CONFIG_MTD_NAND_GPIO)		+= gpio.o
-> >>>  obj-$(CONFIG_MTD_NAND_OMAP2) 		+= omap2_nand.o
-> >>> -obj-$(CONFIG_MTD_NAND_OMAP_BCH)		+= omap_elm.o
-> >>> +obj-$(CONFIG_MTD_NAND_OMAP_BCH_BUILD)	+= omap_elm.o
-> >>>  obj-$(CONFIG_MTD_NAND_CM_X270)		+= cmx270_nand.o
-> >>>  obj-$(CONFIG_MTD_NAND_PXA3xx)		+= pxa3xx_nand.o
-> >>>  obj-$(CONFIG_MTD_NAND_TMIO)		+= tmio_nand.o
-
-Apparently I came up with a nearly identical solution, so it must be
-good! ;)
-
-> >> The overall logic seems to work but I still see the following issue.
-> >>
-> >> In menuconfig, the OMAP_BCH option is still visible as a boolean even though
-> >> the ELM module finally gets built as a module.
-> >> This can be confusing to the user and I'd avoid that behaviour.
-> >>
+On Thu, Sep 18, 2014 at 11:31:35AM +0900, Masahiro Yamada wrote:
+> On Wed, 17 Sep 2014 10:13:08 -0700 Brian Norris <computersforpeace@gmail.com> wrote:
+> > On Tue, Sep 16, 2014 at 08:04:18PM +0900, Masahiro Yamada wrote:
+> > > Masahiro Yamada (7):
+> > >   mtd: denali: fix the format of comment blocks
+> > >   mtd: denali: remove unnecessary variable initializations
+> > >   mtd: denali: remove unnecessary casts
+> > >   mtd: denali: change the type of iterators to int
+> > >   mtd: denali: remove a set-but-unused variable
+> > >   mtd: denali: remove unnecessary parentheses
+> > >   mtd: denali: fix indents and other trivial things
 > > 
-> > Yes, I know. But it's either this solution or no solution at all, I think.
-> > 
-> > Let me give some further context about this patch, so we can have more
-> > information to decide.
-> > 
-> > First of all (and IMO) the user doesn't have to know about the ELM being
-> > a module or not, because modprobe will load it (since omap2_nand depends
-> > on omap_elm's symbols).
-> > 
-> > So, the new way seems a bit more intuitive for me. The user choses if he
-> > wants to have hardware BCH support, and such support gets built the right
-> > way.
-> > 
-> > If we still consider this highly confusing, and we want to avoid it,
-> > then it seems we can only make omap_elm a boolean, which means it'll always
-> > be built-in. I crafted this patch in an effort to avoid making it boolean.
-> > 
-> > Finally, the solution is taken from media/usb/stk1160. For good or for bad,
-> > we have a precedent in doing things this way.
-> > 
-> > Ultimately, I don't care much as I don't think anyone will build it as a module,
-> > except maybe for testing the driver under probe/remove cycles.
-> > 
-> OK. I personally prefer boolean than the Kconfig magic as it makes my life a bit
-> easier and less confusing to the user i.e. wysiwyg ;).
+> > This series still doesn't apply to l2-mtd.git.
 > 
-> Let's see what the MTD maintainers prefer.
-> Brian and David, any insights on this problem?
+> I resent the last three patches as v3.
+> 
+> v3 5/7 mtd: denali: remove a set-but-unused variable
+> v3 6/7 mtd: denali: remove unnecessary parentheses
+> v3 7/7 mtd: denali: fix indents and other trivial things
+> 
+> I confirmed they are applicable onto
+> commit 93e3c8adf6fcf2204ca334237b92c7f8cdafce6f
+> of l2-mtd.git
+> 
+> You said as follow:
+> 
+> On Mon, 15 Sep 2014 22:07:32 -0700
+> Brian Norris <computersforpeace@gmail.com> wrote:
+> 
+> > > Is there a chance for me to resend 5/7 to include this fix?
+> > > Or is it too late?
+> > 
+> > Just send a new patch, please.
 
-It seems like 'elm' serves more as an accessory piece of omap2.{o,ko},
-not really a separate module, so it's possible it'd make your life even
-easier to just link elm.o into omap2.o. There's no requirement that two
-source files create two separate kernel modules. I think this would
-present the simplest possible interface to the user.
+I mean "a new patch [on top of l2-mtd.git]", but I see that wasn't
+clear.
 
-Thoughts?
+> That's why I sent a new patch (v3 5/7) to replace
+> commit 55ab9ec99bbfb4450dfa9bc0fd9e2c5052f4c3f7
+> 
+> 
+> Did I do wrong?
+
+Eh, just miscommunication from my end.
+
+I don't like to back out patches for no good reason, but I suppose I can
+back out patch 5/7 v2, and look at applying v3 instead.
 
 Brian
