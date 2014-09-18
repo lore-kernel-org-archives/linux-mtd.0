@@ -1,20 +1,20 @@
-Message-ID: <541A9AEF.7090606@ti.com>
-Date: Thu, 18 Sep 2014 11:42:23 +0300
-From: Roger Quadros <rogerq@ti.com>
+Received: from email.rugged.com ([64.60.45.211])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XUeOu-00013j-Di
+ for linux-mtd@lists.infradead.org; Thu, 18 Sep 2014 16:17:45 +0000
+From: Robert Hurdle <RHurdle@Rugged.com>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Date: Thu, 18 Sep 2014 09:17:56 -0700
+Subject: RE: Question about adding a NAND device
+Message-ID: <5498E86A4A68B14A8A06D0380640D04A01FA685FDFDD@atca01em01.adsi.aitech.ent>
+References: <5498E86A4A68B14A8A06D0380640D04A01FA6854E73D@atca01em01.adsi.aitech.ent>
+ <alpine.DEB.2.02.1409180954450.15431@lnxricardw1.se.axis.com>
+In-Reply-To: <alpine.DEB.2.02.1409180954450.15431@lnxricardw1.se.axis.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, Brian Norris
- <computersforpeace@gmail.com>
-Subject: Re: [PATCH 3/3] mtd: nand: Force omap_elm to be built as a module
- if omap2_nand is a module
-References: <1410443224-18477-1-git-send-email-ezequiel@vanguardiasur.com.ar>	<1410443224-18477-4-git-send-email-ezequiel@vanguardiasur.com.ar>	<5412B66F.8050505@ti.com>	<20140912165636.GA7276@arch>	<5416A2FF.3050503@ti.com>	<20140918030049.GB8127@brian-ubuntu>
- <CAAEAJfAQq=Nb6mBE=XX89-8ZptXWjMt2Nz-Sb9SDSKEUT0QFrg@mail.gmail.com>
-In-Reply-To: <CAAEAJfAQq=Nb6mBE=XX89-8ZptXWjMt2Nz-Sb9SDSKEUT0QFrg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Cc: Tony Lindgren <tony@atomide.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
- David Woodhouse <dwmw2@infradead.org>, pekon <pekon@pek-sem.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,132 +24,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09/18/2014 11:40 AM, Ezequiel Garcia wrote:
-> On 18 September 2014 04:00, Brian Norris <computersforpeace@gmail.com> wrote:
->> On Mon, Sep 15, 2014 at 11:27:43AM +0300, Roger Quadros wrote:
->>> On 09/12/2014 07:56 PM, Ezequiel Garcia wrote:
->>>> On 12 Sep 12:01 PM, Roger Quadros wrote:
->>>>> On 09/11/2014 04:47 PM, Ezequiel Garcia wrote:
->>>>>> This commit adds a hidden option to build the omap_elm as a module, if
->>>>>> omap2_nand is a module (and similarly in the built-in case).
->>>>>>
->>>>>> This fixes the following build error when omap2_nand is chosen built-in,
->>>>>> and omap_elm is chosen as a module:
->>>>>>
->>>>>> drivers/built-in.o: In function `omap_nand_probe':
->>>>>> /work/linux-2.6/drivers/mtd/nand/omap2.c:2010: undefined reference to `elm_config'
->>>>>> /work/linux-2.6/drivers/mtd/nand/omap2.c:1980: undefined reference to `elm_config'
->>>>>> /work/linux-2.6/drivers/mtd/nand/omap2.c:1927: undefined reference to `elm_config'
->>>>>> drivers/built-in.o: In function `omap_elm_correct_data':
->>>>>> /work/linux-2.6/drivers/mtd/nand/omap2.c:1444: undefined reference to `elm_decode_bch_error_page'
->>>>>>
->>>>>> Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
->>>>>> ---
->>>>>>  drivers/mtd/nand/Kconfig  | 8 +++++++-
->>>>>>  drivers/mtd/nand/Makefile | 2 +-
->>>>>>  2 files changed, 8 insertions(+), 2 deletions(-)
->>>>>>
->>>>>> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
->>>>>> index f1cf503..12e8ee8 100644
->>>>>> --- a/drivers/mtd/nand/Kconfig
->>>>>> +++ b/drivers/mtd/nand/Kconfig
->>>>>> @@ -96,7 +96,7 @@ config MTD_NAND_OMAP2
->>>>>>
->>>>>>  config MTD_NAND_OMAP_BCH
->>>>>>   depends on MTD_NAND_OMAP2
->>>>>> - tristate "Support hardware based BCH error correction"
->>>>>> + bool "Support hardware based BCH error correction"
->>>>>>   default n
->>>>>>   select BCH
->>>>>>   help
->>>>>> @@ -106,6 +106,12 @@ config MTD_NAND_OMAP_BCH
->>>>>>     legacy OMAP families like OMAP2xxx, OMAP3xxx do not have ELM engine
->>>>>>     so they should not enable this config symbol.
->>>>>>
->>>>>> +config MTD_NAND_OMAP_BCH_BUILD
->>>>>> + tristate
->>>>>> + depends on MTD_NAND_OMAP2
->>>>>> + default m if MTD_NAND_OMAP2=m && MTD_NAND_OMAP_BCH
->>>>>> + default y if MTD_NAND_OMAP2=y && MTD_NAND_OMAP_BCH
->>
->> I think the last 2 lines could be combined:
->>
->>         default MTD_NAND_OMAP2 if MTD_NAND_OMAP_BCH
->>
->>>>>> +
->>>>>>  config MTD_NAND_IDS
->>>>>>   tristate
->>>>>>
->>>>>> diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
->>>>>> index 4bcdeb0..3580188 100644
->>>>>> --- a/drivers/mtd/nand/Makefile
->>>>>> +++ b/drivers/mtd/nand/Makefile
->>>>>> @@ -27,7 +27,7 @@ obj-$(CONFIG_MTD_NAND_NDFC)             += ndfc.o
->>>>>>  obj-$(CONFIG_MTD_NAND_ATMEL)             += atmel_nand.o
->>>>>>  obj-$(CONFIG_MTD_NAND_GPIO)              += gpio.o
->>>>>>  obj-$(CONFIG_MTD_NAND_OMAP2)             += omap2_nand.o
->>>>>> -obj-$(CONFIG_MTD_NAND_OMAP_BCH)          += omap_elm.o
->>>>>> +obj-$(CONFIG_MTD_NAND_OMAP_BCH_BUILD)    += omap_elm.o
->>>>>>  obj-$(CONFIG_MTD_NAND_CM_X270)           += cmx270_nand.o
->>>>>>  obj-$(CONFIG_MTD_NAND_PXA3xx)            += pxa3xx_nand.o
->>>>>>  obj-$(CONFIG_MTD_NAND_TMIO)              += tmio_nand.o
->>
->> Apparently I came up with a nearly identical solution, so it must be
->> good! ;)
->>
->>>>> The overall logic seems to work but I still see the following issue.
->>>>>
->>>>> In menuconfig, the OMAP_BCH option is still visible as a boolean even though
->>>>> the ELM module finally gets built as a module.
->>>>> This can be confusing to the user and I'd avoid that behaviour.
->>>>>
->>>>
->>>> Yes, I know. But it's either this solution or no solution at all, I think.
->>>>
->>>> Let me give some further context about this patch, so we can have more
->>>> information to decide.
->>>>
->>>> First of all (and IMO) the user doesn't have to know about the ELM being
->>>> a module or not, because modprobe will load it (since omap2_nand depends
->>>> on omap_elm's symbols).
->>>>
->>>> So, the new way seems a bit more intuitive for me. The user choses if he
->>>> wants to have hardware BCH support, and such support gets built the right
->>>> way.
->>>>
->>>> If we still consider this highly confusing, and we want to avoid it,
->>>> then it seems we can only make omap_elm a boolean, which means it'll always
->>>> be built-in. I crafted this patch in an effort to avoid making it boolean.
->>>>
->>>> Finally, the solution is taken from media/usb/stk1160. For good or for bad,
->>>> we have a precedent in doing things this way.
->>>>
->>>> Ultimately, I don't care much as I don't think anyone will build it as a module,
->>>> except maybe for testing the driver under probe/remove cycles.
->>>>
->>> OK. I personally prefer boolean than the Kconfig magic as it makes my life a bit
->>> easier and less confusing to the user i.e. wysiwyg ;).
->>>
->>> Let's see what the MTD maintainers prefer.
->>> Brian and David, any insights on this problem?
->>
->> It seems like 'elm' serves more as an accessory piece of omap2.{o,ko},
->> not really a separate module, so it's possible it'd make your life even
->> easier to just link elm.o into omap2.o. There's no requirement that two
->> source files create two separate kernel modules. I think this would
->> present the simplest possible interface to the user.
->>
->> Thoughts?
->>
-> 
-> Yeah, but that means a larger refactoring, because now you'd have to
-> call the ELM driver probe() from the NAND driver probe().
-> 
-> It'd be a nice cleanup, but maybe this is the second step?
-> 
+Thank you.  Robert Hurdle
 
-Yes, let's do this as a next step. For now I prefer OMAP_BCH to be boolean over
-module. Keeping BCH as module gives no added benefit.
+-----Original Message-----
+From: Ricard Wanderlof [mailto:ricard.wanderlof@axis.com]=20
+Sent: Thursday, September 18, 2014 1:03 AM
+To: Robert Hurdle
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Question about adding a NAND device
 
-cheers,
--roger
+
+On Wed, 17 Sep 2014, Robert Hurdle wrote:
+
+> Hello,
+>
+> 	I have ported some of u-boot to our board, and I am booting successfully=
+ from EEPROM.
+> 	I am now in the process of adding the NAND and flash file system support=
+ for our non-standard
+> 	flash interface (there's an FPGA interface between the software and the =
+1 giga-byte NAND) to
+> 	u-boot and also to the Linux kernel.  In addition, it is our intention t=
+o support UBIFS on our board.
+>
+> 	It appears that I need to understand how the structures mtd_info and nan=
+d_chip (and whatever
+> 	they point at) and code in nand_base.c work, in order to provide working=
+ routines at the NAND
+> 	level.  I have looked at some of the files in u-boot/drivers/mtd/nand fo=
+r other boards, and see
+> 	a wide variety of models, no doubt based on the hardware differences.   =
+Because of our FPGA
+> 	interface, I need to have all commands to the NAND chip get re-packaged =
+into commands that
+> 	get passed to the FPGA.  Am I on the right path?
+>
+> 	My other question is how long would one guess that this task would take =
+for someone fairly
+> 	competent, but uninitiated in UBIFS, UBI, MTD, NAND, etc. ?
+
+It's very hard to predict any form of time frame, especially when not=20
+knowing much about the hardware.
+
+If your FPGA basically just passes data between the CPU and flash on a=20
+byte-by-byte level, then you can probably take some simple driver and=20
+rewrite that. If the FPGA contains a more advanced NAND flash controller,=20
+which performs ECC, or does something else on a higher level you need to=20
+study the way nand_base.c goes about things and also of course the=20
+controller implementation in the FPGA.
+
+Basically, mtd was originally written with a byte-by-byte interface in=20
+mind. So that case is fairly easy to implement: your driver will just have=
+=20
+to be able to send data to and read from the flash via FPGA (in this=20
+case), and also control the NAND flash CLE and ALE lines, as well as read=20
+the READY/BUSY line from the flash. All command sequencing, data transfer=20
+and ECC will be handled in software by the mtd layer.
+
+For more advanced cases, there are numerous hooks which can be used where=20
+the NAND flash controller accelerate specific functions. In my experience=20
+though it requires a lot more understanding of exactly how nand_base.c=20
+goes about things, and there is often more than one way to implement the=20
+required functionality. Looking at driver code for other NAND flash=20
+controllers also helps.
+
+/Ricard
+--=20
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
