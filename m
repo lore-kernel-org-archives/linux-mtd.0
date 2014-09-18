@@ -1,22 +1,23 @@
-Received: from mail-pd0-x235.google.com ([2607:f8b0:400e:c02::235])
+Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XUVFD-0000LS-Qj
- for linux-mtd@lists.infradead.org; Thu, 18 Sep 2014 06:31:08 +0000
-Received: by mail-pd0-f181.google.com with SMTP id w10so749190pde.12
- for <linux-mtd@lists.infradead.org>; Wed, 17 Sep 2014 23:30:47 -0700 (PDT)
-Date: Wed, 17 Sep 2014 23:30:43 -0700
+ id 1XUVHq-0001AZ-St
+ for linux-mtd@lists.infradead.org; Thu, 18 Sep 2014 06:33:51 +0000
+Received: by mail-pa0-f42.google.com with SMTP id lj1so806044pab.1
+ for <linux-mtd@lists.infradead.org>; Wed, 17 Sep 2014 23:33:29 -0700 (PDT)
+Date: Wed, 17 Sep 2014 23:33:26 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Subject: Re: [PATCH] mtd: nand: don't break long print messages
-Message-ID: <20140918063043.GK7362@norris-Latitude-E6410>
-References: <1408449334-6440-1-git-send-email-zajec5@gmail.com>
+To: Masahiro Yamada <yamada.m@jp.panasonic.com>
+Subject: Re: [PATCH] mtd: denali: fix include guard and license block of
+ denali.h
+Message-ID: <20140918063326.GL7362@norris-Latitude-E6410>
+References: <1409310051-25726-1-git-send-email-yamada.m@jp.panasonic.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1408449334-6440-1-git-send-email-zajec5@gmail.com>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <David.Woodhouse@intel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>
+In-Reply-To: <1409310051-25726-1-git-send-email-yamada.m@jp.panasonic.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Josh Triplett <josh@joshtriplett.org>, Huang Shijie <shijie8@gmail.com>,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,12 +27,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Aug 19, 2014 at 01:55:34PM +0200, Rafał Miłecki wrote:
-> This follows Chapter 2 of Linux's CodingStyle:
-> > However, never break user-visible strings such as printk messages,
-> > because that breaks the ability to grep for them.
+On Fri, Aug 29, 2014 at 08:00:51PM +0900, Masahiro Yamada wrote:
+> It looks like this header file is a concatenation of two headers.
+> Anyway, the include guard should be renamed and placed at the correct
+> postion and the license block in the middle should be deleted.
 > 
-> Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+> Signed-off-by: Masahiro Yamada <yamada.m@jp.panasonic.com>
 
 Pushed to l2-mtd.git. Thanks!
 
