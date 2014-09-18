@@ -1,23 +1,21 @@
-Received: from mail-pd0-x22a.google.com ([2607:f8b0:400e:c02::22a])
+Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XUUoy-0004QF-Fd
- for linux-mtd@lists.infradead.org; Thu, 18 Sep 2014 06:04:00 +0000
-Received: by mail-pd0-f170.google.com with SMTP id fp1so712889pdb.29
- for <linux-mtd@lists.infradead.org>; Wed, 17 Sep 2014 23:03:39 -0700 (PDT)
-Date: Wed, 17 Sep 2014 23:03:36 -0700
+ id 1XUUxl-0000PN-He
+ for linux-mtd@lists.infradead.org; Thu, 18 Sep 2014 06:13:06 +0000
+Received: by mail-pa0-f42.google.com with SMTP id lj1so770924pab.1
+ for <linux-mtd@lists.infradead.org>; Wed, 17 Sep 2014 23:12:44 -0700 (PDT)
+Date: Wed, 17 Sep 2014 23:12:41 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Subject: Re: [PATCH v3 2/3] nand: omap2: Remove horrible ifdefs to fix module
- probe
-Message-ID: <20140918060336.GE7362@norris-Latitude-E6410>
-References: <1410447730-16087-1-git-send-email-ezequiel@vanguardiasur.com.ar>
- <1410447730-16087-3-git-send-email-ezequiel@vanguardiasur.com.ar>
+To: Josh Wu <josh.wu@atmel.com>
+Subject: Re: [PATCH 1/2] mtd: atmel_nand: remove pmecc_sector_number, use
+ ecc.steps instead
+Message-ID: <20140918061241.GF7362@norris-Latitude-E6410>
+References: <1407489155-16545-1-git-send-email-josh.wu@atmel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1410447730-16087-3-git-send-email-ezequiel@vanguardiasur.com.ar>
-Cc: Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
- linux-mtd@lists.infradead.org, Roger Quadros <rogerq@ti.com>
+In-Reply-To: <1407489155-16545-1-git-send-email-josh.wu@atmel.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,57 +25,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Sep 11, 2014 at 12:02:09PM -0300, Ezequiel Garcia wrote:
-> The current code abuses ifdefs to determine if the selected ECC scheme
-> is supported by the running kernel. As a result the code is hard to read,
-> and it also fails to load as a module.
-
-Yes, a real eyesore, with little benefit from the #ifdef's.
-
-> This commit removes all the ifdefs and instead introduces a function
-> omap2_nand_ecc_check() to check if the ECC is supported by using
-> IS_ENABLED(CONFIG_xxx).
+On Fri, Aug 08, 2014 at 05:12:34PM +0800, Josh Wu wrote:
+> For PMECC, the pmecc_sector_number has same meaning as ecc.steps.
+> So use ecc.steps to replace the pmecc_sector_number.
 > 
-> Since IS_ENABLED() is true when a config is =y or =m, this change fixes the
-> module so it can be loaded with no issues.
+> Signed-off-by: Josh Wu <josh.wu@atmel.com>
+
+Pushed both to l2-mtd.git. Thanks!
+
+One comment below.
+
+> ---
+>  drivers/mtd/nand/atmel_nand.c | 14 ++++++--------
+>  1 file changed, 6 insertions(+), 8 deletions(-)
 > 
-> Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-[...]
-> diff --git a/include/linux/platform_data/elm.h b/include/linux/platform_data/elm.h
-> index 780d1e9..25d1bca 100644
-> --- a/include/linux/platform_data/elm.h
-> +++ b/include/linux/platform_data/elm.h
-> @@ -42,8 +42,22 @@ struct elm_errorvec {
->  	int error_loc[16];
->  };
+> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+> index 9c5f717..1dc3988 100644
+> --- a/drivers/mtd/nand/atmel_nand.c
+> +++ b/drivers/mtd/nand/atmel_nand.c
+> @@ -129,7 +129,6 @@ struct atmel_nand_host {
+>  	u32			pmecc_lookup_table_offset_1024;
 >  
-> +#if IS_ENABLED(CONFIG_MTD_NAND_OMAP_BCH)
->  void elm_decode_bch_error_page(struct device *dev, u8 *ecc_calc,
->  		struct elm_errorvec *err_vec);
->  int elm_config(struct device *dev, enum bch_ecc bch_type,
->  	int ecc_steps, int ecc_step_size, int ecc_syndrome_size);
-> +#else
-> +void elm_decode_bch_error_page(struct device *dev, u8 *ecc_calc,
-> +		struct elm_errorvec *err_vec)
+>  	int			pmecc_bytes_per_sector;
+> -	int			pmecc_sector_number;
+>  	int			pmecc_degree;	/* Degree of remainders */
+>  	int			pmecc_cw_len;	/* Length of codeword */
+>  
+> @@ -874,7 +873,7 @@ static int pmecc_correction(struct mtd_info *mtd, u32 pmecc_stat, uint8_t *buf,
+>  	return 0;
+>  
+>  normal_check:
+> -	for (i = 0; i < host->pmecc_sector_number; i++) {
+> +	for (i = 0; i < nand_chip->ecc.steps; i++) {
+>  		err_nbr = 0;
+>  		if (pmecc_stat & 0x1) {
+>  			buf_pos = buf + i * host->pmecc_sector_size;
+> @@ -984,7 +983,7 @@ static int atmel_nand_pmecc_write_page(struct mtd_info *mtd,
+>  		cpu_relax();
+>  	}
+>  
+> -	for (i = 0; i < host->pmecc_sector_number; i++) {
+> +	for (i = 0; i < chip->ecc.steps; i++) {
+>  		for (j = 0; j < host->pmecc_bytes_per_sector; j++) {
+>  			int pos;
+>  
+> @@ -1031,7 +1030,7 @@ static void atmel_pmecc_core_init(struct mtd_info *mtd)
+>  	else if (host->pmecc_sector_size == 1024)
+>  		val |= PMECC_CFG_SECTOR1024;
+>  
+> -	switch (host->pmecc_sector_number) {
+> +	switch (nand_chip->ecc.steps) {
+>  	case 1:
+>  		val |= PMECC_CFG_PAGE_1SECTOR;
+>  		break;
+> @@ -1184,18 +1183,17 @@ static int atmel_pmecc_nand_init_params(struct platform_device *pdev,
+>  		host->pmecc_degree = (sector_size == 512) ?
+>  			PMECC_GF_DIMENSION_13 : PMECC_GF_DIMENSION_14;
+>  		host->pmecc_cw_len = (1 << host->pmecc_degree) - 1;
+> -		host->pmecc_sector_number = mtd->writesize / sector_size;
+>  		host->pmecc_bytes_per_sector = pmecc_get_ecc_bytes(
+>  			cap, sector_size);
+>  		host->pmecc_alpha_to = pmecc_get_alpha_to(host);
+>  		host->pmecc_index_of = host->pmecc_rom_base +
+>  			host->pmecc_lookup_table_offset;
+>  
+> -		nand_chip->ecc.steps = host->pmecc_sector_number;
+>  		nand_chip->ecc.strength = cap;
+>  		nand_chip->ecc.bytes = host->pmecc_bytes_per_sector;
+> -		nand_chip->ecc.total = host->pmecc_bytes_per_sector *
+> -				       host->pmecc_sector_number;
+> +		nand_chip->ecc.steps = mtd->writesize / sector_size;
+> +		nand_chip->ecc.total = nand_chip->ecc.bytes *
+> +			nand_chip->ecc.steps;
 
-You should not be defining non-static functions in a header. Now these
-functions will be uselessly placed in every compilation unit that
-includes this header. You should probably make this function 'static
-inline'.
+Do you really need to do all this initialization here? nand_scan_tail()
+would do most of this for you.
 
-> +{
-> +}
-> +
-> +int elm_config(struct device *dev, enum bch_ecc bch_type,
-> +	int ecc_steps, int ecc_step_size, int ecc_syndrome_size)
-
-And same here.
-
-> +{
-> +	return -ENOSYS;
-> +}
-> +#endif /* CONFIG_MTD_NAND_ECC_BCH */
-> +
->  #endif /* __ELM_H */
+>  		if (nand_chip->ecc.total > mtd->oobsize - 2) {
+>  			dev_err(host->dev, "No room for ECC bytes\n");
+>  			err_no = -EINVAL;
 
 Brian
