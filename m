@@ -1,23 +1,25 @@
-Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
+Received: from mail-ie0-x22d.google.com ([2607:f8b0:4001:c03::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XUVHq-0001AZ-St
- for linux-mtd@lists.infradead.org; Thu, 18 Sep 2014 06:33:51 +0000
-Received: by mail-pa0-f42.google.com with SMTP id lj1so806044pab.1
- for <linux-mtd@lists.infradead.org>; Wed, 17 Sep 2014 23:33:29 -0700 (PDT)
-Date: Wed, 17 Sep 2014 23:33:26 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Masahiro Yamada <yamada.m@jp.panasonic.com>
-Subject: Re: [PATCH] mtd: denali: fix include guard and license block of
- denali.h
-Message-ID: <20140918063326.GL7362@norris-Latitude-E6410>
-References: <1409310051-25726-1-git-send-email-yamada.m@jp.panasonic.com>
+ id 1XUVR8-0005vE-HH
+ for linux-mtd@lists.infradead.org; Thu, 18 Sep 2014 06:43:27 +0000
+Received: by mail-ie0-f173.google.com with SMTP id tr6so578798ieb.32
+ for <linux-mtd@lists.infradead.org>; Wed, 17 Sep 2014 23:43:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1409310051-25726-1-git-send-email-yamada.m@jp.panasonic.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Josh Triplett <josh@joshtriplett.org>, Huang Shijie <shijie8@gmail.com>,
- linux-kernel@vger.kernel.org
+In-Reply-To: <20140918062722.GI7362@norris-Latitude-E6410>
+References: <1408432456-27280-1-git-send-email-zajec5@gmail.com>
+ <1408432456-27280-2-git-send-email-zajec5@gmail.com>
+ <20140918062722.GI7362@norris-Latitude-E6410>
+Date: Thu, 18 Sep 2014 08:43:05 +0200
+Message-ID: <CACna6rynUEkid+6dJ0ev0r9wfCE7T-2KBz3irk7FWH_fi3=UcQ@mail.gmail.com>
+Subject: Re: [PATCH 2/4] mtd: bcm47xxnflash: add dev_ready and fill chip_delay
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Hauke Mehrtens <hauke@hauke-m.de>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <David.Woodhouse@intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,13 +29,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Aug 29, 2014 at 08:00:51PM +0900, Masahiro Yamada wrote:
-> It looks like this header file is a concatenation of two headers.
-> Anyway, the include guard should be renamed and placed at the correct
-> postion and the license block in the middle should be deleted.
-> 
-> Signed-off-by: Masahiro Yamada <yamada.m@jp.panasonic.com>
+On 18 September 2014 08:27, Brian Norris <computersforpeace@gmail.com> wrot=
+e:
+> On Tue, Aug 19, 2014 at 09:14:14AM +0200, Rafa=C5=82 Mi=C5=82ecki wrote:
+>> +
+>> +     nand_chip->chip_delay =3D 50;
+>
+> I'm curious, did you have a good reason to use something other than the
+> default provided by nand_base?
 
-Pushed to l2-mtd.git. Thanks!
+I simply followed what Broadcom used in their ugly code (don't look to
+deep into that file, or you'll go crazy):
+http://svn.dd-wrt.com/browser/src/linux/universal/linux-3.8/drivers/mtd/bcm=
+947xx/nand/brcmnand_47xx.c?rev=3D22249#L2240
 
-Brian
+They set "dev_ready" as well as "chip_delay" (to the 50), so the only
+case where they use this delay is
+NAND_CMD_STATUS_ERROR
+NAND_CMD_STATUS_ERROR[0-3]
+
+Do you think we should try to stay with the default value?
+
+--=20
+Rafa=C5=82
