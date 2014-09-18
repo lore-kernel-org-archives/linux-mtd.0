@@ -1,23 +1,30 @@
-Received: from smtp.mei.co.jp ([133.183.100.20])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XURWW-00030G-KL
- for linux-mtd@lists.infradead.org; Thu, 18 Sep 2014 02:32:45 +0000
-Date: Thu, 18 Sep 2014 11:31:35 +0900
-From: Masahiro Yamada <yamada.m@jp.panasonic.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v3 0/7] mtd: denali: A collection of trivial coding style
- fixes
-In-Reply-To: <20140917171308.GC1193@ld-irv-0074>
-References: <1410865465-17941-1-git-send-email-yamada.m@jp.panasonic.com>
- <20140917171308.GC1193@ld-irv-0074>
-Message-Id: <20140918113135.70D0.AA925319@jp.panasonic.com>
+Received: from mail-pd0-x22b.google.com ([2607:f8b0:400e:c02::22b])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XURsK-0001rC-HO
+ for linux-mtd@lists.infradead.org; Thu, 18 Sep 2014 02:55:17 +0000
+Received: by mail-pd0-f171.google.com with SMTP id p10so408929pdj.16
+ for <linux-mtd@lists.infradead.org>; Wed, 17 Sep 2014 19:54:54 -0700 (PDT)
+Date: Wed, 17 Sep 2014 19:54:47 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Subject: Re: [PATCH 2/3] nand: omap2: Remove horrible ifdefs to fix module
+ probe
+Message-ID: <20140918025447.GA8127@brian-ubuntu>
+References: <1410033389-32357-1-git-send-email-ezequiel@vanguardiasur.com.ar>
+ <1410033389-32357-3-git-send-email-ezequiel@vanguardiasur.com.ar>
+ <540D6CAB.7020501@ti.com> <540D8A92.2040209@ti.com>
+ <20140910124849.GA25308@arch.hh.imgtec.org>
+ <54104CB4.4020703@ti.com>
+ <20140917083353.GB7362@norris-Latitude-E6410>
+ <CAAEAJfDPnYZJbryFqDkBbq3p0CBFgwP9v9PG_j9cv-5T2Ymdnw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-Cc: Jiri Kosina <trivial@kernel.org>, "grmoore@altera.com" <grmoore@altera.com>,
- linux-kernel@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>,
- Rashika Kheria <rashika.kheria@gmail.com>, linux-mtd@lists.infradead.org,
- Huang Shijie <shijie8@gmail.com>, David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAEAJfDPnYZJbryFqDkBbq3p0CBFgwP9v9PG_j9cv-5T2Ymdnw@mail.gmail.com>
+Cc: Tony Lindgren <tony@atomide.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Guido =?iso-8859-1?Q?Mart=EDnez?= <guido@vanguardiasur.com.ar>,
+ Roger Quadros <rogerq@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,61 +34,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
-
-
-
-On Wed, 17 Sep 2014 10:13:08 -0700
-Brian Norris <computersforpeace@gmail.com> wrote:
-
-> On Tue, Sep 16, 2014 at 08:04:18PM +0900, Masahiro Yamada wrote:
-> > 
-> > 
-> > Masahiro Yamada (7):
-> >   mtd: denali: fix the format of comment blocks
-> >   mtd: denali: remove unnecessary variable initializations
-> >   mtd: denali: remove unnecessary casts
-> >   mtd: denali: change the type of iterators to int
-> >   mtd: denali: remove a set-but-unused variable
-> >   mtd: denali: remove unnecessary parentheses
-> >   mtd: denali: fix indents and other trivial things
+On Wed, Sep 17, 2014 at 10:54:03AM +0100, Ezequiel Garcia wrote:
+> On 17 September 2014 09:33, Brian Norris <computersforpeace@gmail.com> wrote:
+> > On Wed, Sep 10, 2014 at 04:05:56PM +0300, Roger Quadros wrote:
+> >> On 09/10/2014 03:48 PM, Ezequiel Garcia wrote:
+> >> > On 08 Sep 01:53 PM, Roger Quadros wrote:
+> >> >> On 09/08/2014 11:45 AM, Roger Quadros wrote:
+> >> >>> On 09/06/2014 10:56 PM, Ezequiel Garcia wrote:
+> >> >> I still get the following error if I set CONFIG_MTD_NAND_OMAP2 to y and
+> >> >> CONFIG_MTD_NAND_OMAP_BCH to m.
+> >> >>
+> >> >> CONFIG_MTD_NAND_OMAP_BCH is used to select the ELM driver and it must be limited to
+> >> >> be built-in if CONFIG_MTD_NAND_OMAP2 is built-in.
+> >> >>
+> >> >
+> >> > Hm, yup. Any ideas on how to accomplish that? My Kconfig-foo is not strong enough :(
+> >>
+> >> Mine neither ;). I'm unaware of any other method than making CONFIG_MTD_NAND_OMAP_BCH to bool.
+> >
+> > That could be part of the solution. Does the following patch work? It
+> > now forces elm and omap to be built the same -- either both as modules
+> > or both built-in -- but it solves the rest of the problem I think.
+> >
+> > (This also has the side effect of causing transition pains for any
+> > .config file that had CONFIG_MTD_NAND_OMAP_BCH=m, since this becomes
+> > boolean now.)
+> >
 > 
-> This series still doesn't apply to l2-mtd.git.
+> http://patchwork.ozlabs.org/patch/388249/
 > 
-> Brian
+> I used my time-machine to go back in time and submitted the patch for you :-)
 
+I'm glad you prioritized MTD over all the other cool things you could do
+with your time machine. But I guess, you really don't need to prioritize
+much when you have infinite time, do you?
 
-I resent the last three patches as v3.
+</joke>
 
-v3 5/7 mtd: denali: remove a set-but-unused variable
-v3 6/7 mtd: denali: remove unnecessary parentheses
-v3 7/7 mtd: denali: fix indents and other trivial things
+I can get lost when I only pay 50% attention for a few weeks, then try
+to sort through the accumulated pile of email.
 
-
-I confirmed they are applicable onto
-commit 93e3c8adf6fcf2204ca334237b92c7f8cdafce6f
-of l2-mtd.git
-
-
-
-You said as follow:
-
-On Mon, 15 Sep 2014 22:07:32 -0700
-Brian Norris <computersforpeace@gmail.com> wrote:
-
-> > Is there a chance for me to resend 5/7 to include this fix?
-> > Or is it too late?
-> 
-> Just send a new patch, please.
-
-
-That's why I sent a new patch (v3 5/7) to replace
-commit 55ab9ec99bbfb4450dfa9bc0fd9e2c5052f4c3f7
-
-
-Did I do wrong?
-
-
-
-Best Regards
-Masahiro Yamada
+Brian
