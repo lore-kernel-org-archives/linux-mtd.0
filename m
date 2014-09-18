@@ -1,21 +1,23 @@
-From: Bill Pringlemeir <bpringlemeir@nbsps.com>
-To: Stefan Agner <stefan@agner.ch>
-Subject: Re: [RFC 2/5] mtd:fsl_nfc: Add hardware 45 byte BHC-ECC support for
- 24 bit corrections.
-References: <87siupheou.fsf@nbsps.com>
- <1389222441-4322-1-git-send-email-bpringlemeir@nbsps.com>
- <1389222441-4322-3-git-send-email-bpringlemeir@nbsps.com>
- <127db6b73356442d2ba12e8c011038cc@agner.ch> <87r3zaxgtr.fsf@nbsps.com>
- <c444059de888a661fadf3d6be598a98d@agner.ch>
-Date: Wed, 17 Sep 2014 18:21:35 -0400
-In-Reply-To: <c444059de888a661fadf3d6be598a98d@agner.ch> (Stefan Agner's
- message of "Wed, 17 Sep 2014 22:08:04 +0200")
-Message-ID: <87lhphyjkg.fsf@nbsps.com>
+Received: from mail-pa0-x233.google.com ([2607:f8b0:400e:c03::233])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XUPf3-0004do-GE
+ for linux-mtd@lists.infradead.org; Thu, 18 Sep 2014 00:33:26 +0000
+Received: by mail-pa0-f51.google.com with SMTP id eu11so205843pac.24
+ for <linux-mtd@lists.infradead.org>; Wed, 17 Sep 2014 17:33:01 -0700 (PDT)
+Date: Wed, 17 Sep 2014 17:32:58 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Josh Wu <josh.wu@atmel.com>
+Subject: Re: [PATCH v2] mtd: atmel_nand: make PMECC lookup table and offset
+ property optional
+Message-ID: <20140918003258.GD1193@ld-irv-0074>
+References: <1408345720-5402-1-git-send-email-josh.wu@atmel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Cc: b21989@freescale.com, linux-mtd@lists.infradead.org,
- Jason.jin@freescale.com, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1408345720-5402-1-git-send-email-josh.wu@atmel.com>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, pawel.moll@arm.com,
+ ijc+devicetree@hellion.org.uk, robh+dt@kernel.org,
+ linux-mtd@lists.infradead.org, galak@codeaurora.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,201 +27,240 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 17 Sep 2014, stefan@agner.ch wrote:
+On Mon, Aug 18, 2014 at 03:08:40PM +0800, Josh Wu wrote:
+> If there is no PMECC lookup table stored in ROM, or lookup table offset is
+> not specified, PMECC driver should build it in DDR by itself.
+> 
+> That make the PMECC driver work for some board which doesn't has PMECC
+> lookup table in ROM.
+> 
+> Signed-off-by: Josh Wu <josh.wu@atmel.com>
+> Cc: devicetree@vger.kernel.org
+> ---
+> This patch is based on mtd-l2/next branch
+> 
+> v1 -> v2:
+>   make create_lookup_table() static.
 
-> Am 2014-09-17 20:06, schrieb Bill Pringlemeir:
->> On 17 Sep 2014, stefan@agner.ch wrote:
+sparse gives me several new complaints:
 
->>> On one of our Colibri VF61 modules I discovered an issue using this
->>> driver:
++drivers/mtd/nand/atmel_nand.c:1219:50: warning: incorrect type in argument 2 (different signedness) [sparse]
++drivers/mtd/nand/atmel_nand.c:1219:50:    expected signed short [usertype] *index_of [sparse]
++drivers/mtd/nand/atmel_nand.c:1219:50:    got unsigned short [usertype] *addr [sparse]
++drivers/mtd/nand/atmel_nand.c:1219:61: warning: incorrect type in argument 3 (different signedness) [sparse]
++drivers/mtd/nand/atmel_nand.c:1219:61:    expected signed short [usertype] *alpha_to [sparse]
++drivers/mtd/nand/atmel_nand.c:1219:61:    got unsigned short [usertype] * [sparse]
++drivers/mtd/nand/atmel_nand.c:1292:38: warning: incorrect type in assignment (different address spaces) [sparse]
++drivers/mtd/nand/atmel_nand.c:1292:38:    expected void [noderef] <asn:2>*pmecc_rom_base [sparse]
++drivers/mtd/nand/atmel_nand.c:1292:38:    got unsigned short [usertype] *[assigned] galois_table [sparse]
 
->>> [    0.758327] ECC failed to correct all errors (ebd9fd80)
->>> [    0.767005] ECC failed to correct all errors (ebd9fd80)
->>> [    0.775525] ECC failed to correct all errors (ebd9fd80)
->>> [    0.784004] ECC failed to correct all errors (ebd9fd80)
->>> [    0.791938] UBI error: ubi_io_read: error -74 (ECC error) while
->>> reading 2048 bytes from PEB 28:2048,
->>> read 2048 bytes
+The third one might be a false positive. I suppose it's safe to use
+regular memory with __iomem accessors (but not vice versa).
 
-[snip]
+>  .../devicetree/bindings/mtd/atmel-nand.txt         |   6 +-
+>  drivers/mtd/nand/atmel_nand.c                      | 136 ++++++++++++++++++++-
+>  2 files changed, 136 insertions(+), 6 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/atmel-nand.txt b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+> index c472883..75d1847 100644
+> --- a/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+> +++ b/Documentation/devicetree/bindings/mtd/atmel-nand.txt
+> @@ -5,7 +5,9 @@ Required properties:
+>  - reg : should specify localbus address and size used for the chip,
+>  	and hardware ECC controller if available.
+>  	If the hardware ECC is PMECC, it should contain address and size for
+> -	PMECC, PMECC Error Location controller and ROM which has lookup tables.
+> +	PMECC and PMECC Error Location controller.
+> +	The PMECC lookup table address and size in ROM is optional. If not
+> +	specified, driver will build it in runtime.
+>  - atmel,nand-addr-offset : offset for the address latch.
+>  - atmel,nand-cmd-offset : offset for the command latch.
+>  - #address-cells, #size-cells : Must be present if the device has sub-nodes
+> @@ -27,7 +29,7 @@ Optional properties:
+>    are: 512, 1024.
+>  - atmel,pmecc-lookup-table-offset : includes two offsets of lookup table in ROM
+>    for different sector size. First one is for sector size 512, the next is for
+> -  sector size 1024.
+> +  sector size 1024. If not specified, driver will build the table in runtime.
+>  - nand-bus-width : 8 or 16 bus width if not present 8
+>  - nand-on-flash-bbt: boolean to enable on flash bbt option if not present false
+>  - Nand Flash Controller(NFC) is a slave driver under Atmel nand flash
+> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+> index effa7a29..84af313 100644
+> --- a/drivers/mtd/nand/atmel_nand.c
+> +++ b/drivers/mtd/nand/atmel_nand.c
+> @@ -124,6 +124,7 @@ struct atmel_nand_host {
+>  	bool			has_pmecc;
+>  	u8			pmecc_corr_cap;
+>  	u16			pmecc_sector_size;
+> +	bool			has_no_lookup_table;
+>  	u32			pmecc_lookup_table_offset;
+>  	u32			pmecc_lookup_table_offset_512;
+>  	u32			pmecc_lookup_table_offset_1024;
+> @@ -1109,12 +1110,121 @@ static int pmecc_choose_ecc(struct atmel_nand_host *host,
+>  	return 0;
+>  }
+>  
+> +static int pmecc_build_galois_table(int mm,
+> +		int16_t *index_of, int16_t *alpha_to)
+> +{
+> +	unsigned int i, mask, nn;
+> +	unsigned int p[PMECC_GF_DIMENSION_14 + 1];
+> +
+> +	nn = (1 << mm) - 1;
+> +	/* set default value */
+> +	for (i = 1; i < mm; i++)
+> +		p[i] = 0;
+> +
+> +	/* 1 + X^mm */
+> +	p[0]  = 1;
+> +	p[mm] = 1;
+> +
+> +	/* others  */
+> +	switch (mm) {
+> +	case 3:
+> +	case 4:
+> +	case 6:
+> +	case 15:
+> +		p[1] = 1;
+> +		break;
+> +	case 5:
+> +	case 11:
+> +		p[2] = 1;
+> +		break;
+> +	case 7:
+> +	case 10:
+> +		p[3] = 1;
+> +		break;
+> +	case 8:
+> +		p[2] = p[3] = p[4] = 1;
+> +		break;
+> +	case 9:
+> +		p[4] = 1;
+> +		break;
+> +	case 12:
+> +		p[1] = p[4] = p[6] = 1;
+> +		break;
+> +	case 13:
+> +		p[1] = p[3] = p[4] = 1;
+> +		break;
+> +	case 14:
+> +		p[1] = p[6] = p[10] = 1;
+> +		break;
+> +	default:
+> +		/* Error */
+> +		return -EINVAL;
+> +	}
+> +
+> +	/* Build alpha ^ mm it will help to generate the field (primitiv) */
+> +	alpha_to[mm] = 0;
+> +	for (i = 0; i < mm; i++)
+> +		if (p[i])
+> +			alpha_to[mm] |= 1 << i;
+> +
+> +	/*
+> +	 * Then build elements from 0 to mm - 1. As degree is less than mm
+> +	 * so it is just a logical shift.
+> +	 */
+> +	mask = 1;
+> +	for (i = 0; i < mm; i++) {
+> +		alpha_to[i] = mask;
+> +		index_of[alpha_to[i]] = i;
+> +		mask <<= 1;
+> +	}
+> +
+> +	index_of[alpha_to[mm]] = mm;
+> +
+> +	/* use a mask to select the MSB bit of the LFSR */
+> +	mask >>= 1;
+> +
+> +	/* then finish the building */
+> +	for (i = mm + 1; i <= nn; i++) {
+> +		/* check if the msb bit of the lfsr is set */
+> +		if (alpha_to[i - 1] & mask)
+> +			alpha_to[i] = alpha_to[mm] ^
+> +				((alpha_to[i - 1] ^ mask) << 1);
+> +		else
+> +			alpha_to[i] = alpha_to[i - 1] << 1;
+> +
+> +		index_of[alpha_to[i]] = i % nn;
+> +	}
+> +
+> +	/* index of 0 is undefined in a multiplicative field */
+> +	index_of[0] = -1;
+> +
+> +	return 0;
+> +}
 
->>> Also, I could not find that the reference manual states that
->>> ecc_count represents the amount of flipped byte in a empty page. Is
->>> this given by the ECC algorithm?
+Is this algorithm documented? How did you come up with this?
 
->> I was using this information.
->>
->> Table 31-18. ECC Status Word Field Definition
->>
->> 7            0 Page has been successfully corrected
->> CORFAIL      1 Page is uncorrectable
->>
->> 5=E2=80=930          Number of errors that have been corrected in this p=
-age
->> ERROR_COUNT
->>
->> This is from the Vybrid RM, but the MPC5125RM has the same
->> information.
->>
->> I have definitely tested the detection of 'erased pages'.  However, I
->> don't know that I ever had actual bit flips.
+> +
+> +static uint16_t *create_lookup_table(struct device *dev, int sector_size)
+> +{
+> +	int table_size = (sector_size == 512) ?
+> +			PMECC_LOOKUP_TABLE_SIZE_512 :
+> +			PMECC_LOOKUP_TABLE_SIZE_1024;
+> +	int degree = (sector_size == 512) ?
+> +			PMECC_GF_DIMENSION_13 :
+> +			PMECC_GF_DIMENSION_14;
+> +	uint16_t *addr = devm_kzalloc(dev, 2 * table_size * sizeof(uint16_t),
+> +			GFP_KERNEL);
+> +
+> +	if (addr)
+> +		pmecc_build_galois_table(degree, addr, addr + table_size);
+> +
+> +	return addr;
+> +}
+> +
+>  static int atmel_pmecc_nand_init_params(struct platform_device *pdev,
+>  					 struct atmel_nand_host *host)
+>  {
+>  	struct mtd_info *mtd = &host->mtd;
+>  	struct nand_chip *nand_chip = &host->nand_chip;
+>  	struct resource *regs, *regs_pmerr, *regs_rom;
+> +	uint16_t *galois_table;
+>  	int cap, sector_size, err_no;
+>  
+>  	err_no = pmecc_choose_ecc(host, &cap, &sector_size);
+> @@ -1160,8 +1270,24 @@ static int atmel_pmecc_nand_init_params(struct platform_device *pdev,
+>  	regs_rom = platform_get_resource(pdev, IORESOURCE_MEM, 3);
+>  	host->pmecc_rom_base = devm_ioremap_resource(&pdev->dev, regs_rom);
+>  	if (IS_ERR(host->pmecc_rom_base)) {
+> -		err_no = PTR_ERR(host->pmecc_rom_base);
+> -		goto err;
+> +		if (!host->has_no_lookup_table)
+> +			/* Don't display the information again */
+> +			dev_err(host->dev, "Can not get I/O resource for ROM, will build a lookup table in runtime!\n");
+> +
+> +		host->has_no_lookup_table = true;
+> +	}
+> +
+> +	if (host->has_no_lookup_table) {
+> +		/* Build the look-up table in runtime */
+> +		galois_table = create_lookup_table(host->dev, sector_size);
+> +		if (!galois_table) {
+> +			dev_err(host->dev, "Failed to build a lookup table in runtime!\n");
+> +			err_no = -ENOMEM;
+> +			goto err;
+> +		}
+> +
+> +		host->pmecc_rom_base = galois_table;
+> +		host->pmecc_lookup_table_offset = 0;
+>  	}
+>  
+>  	nand_chip->ecc.size = sector_size;
+> @@ -1498,8 +1624,10 @@ static int atmel_of_init_port(struct atmel_nand_host *host,
+>  
+>  	if (of_property_read_u32_array(np, "atmel,pmecc-lookup-table-offset",
+>  			offset, 2) != 0) {
+> -		dev_err(host->dev, "Cannot get PMECC lookup table offset\n");
+> -		return -EINVAL;
+> +		dev_err(host->dev, "Cannot get PMECC lookup table offset, will build a lookup table in runtime.\n");
+> +		host->has_no_lookup_table = true;
+> +		/* Will build a lookup table and initialize the offset later */
+> +		return 0;
+>  	}
+>  	if (!offset[0] && !offset[1]) {
+>  		dev_err(host->dev, "Invalid PMECC lookup table offset\n");
 
->> The ECC controller has no idea whether the page is empty or not.  Are
->> you saying you have an erased page with bit flips?  I have definitely
->> not tested this.
-
-> Yes, that's what it looks like. Note that this output is on first boot
-> after flashing the device (with the UBI auto-grow option). I guess UBI
-> is reading all pages once to verify that they are empty.
-
->>>> + /* If 'ecc_count' zero or less then buffer is all 0xff or
->>>> erased. */ + flip =3D count_written_bits(dat, nfc->chip.ecc.size,
->>>> ecc_count);
->>
->> There are two issues.
->>
->> 1) erased page with some physical flipped bits (zero).
->> 2) erased page were controller flipped some bits.
-
-> I did not know that issue 2 exists. How can 2 happen on a erased page?
-> With a 'stuck at zero' in OOB?
-
-Issue 2 is always an issue when reading an erased page with hardware
-ECC.  So we have,
-
-                    Main         Spare
-    Good program:   Data    OOB-data+HW-ECC
-    Good erased:    FF      FF  FF
-    Stuck erased1:  FF      FF  xx
-    Stuck erased2:  xx      xx  FF
-
-For the 'good erased' the controller goes about like it is case 'good
-program'.  It reads a sector (raw read or software ECC case) and a the
-same time, the error corrector is running.  This examines the 'OOB
-data', which is 0xff for the erased sector and it blindly begins to
-apply the error correction to the main data section.  The 'correction'
-for an erased block will always flip '1' to '0'.  So for 'good erased',
-the 'error_count' will equal the flipped bits.
-
-Now, your sectors aren't that bad.  I believe you only have one bit
-error on an erase.  However, it is really hairy to know what the ECC
-logic will do when you have bit flips in the ECC code.  It is also next
-to impossible to examine the buffer and know if zero bits are due to the
-ECC engine flipping the bits and/or the actual physical flash having the
-stuck bit.  It appears that the ECC engine runs from start to finish.
-So most of the ECC corrections should be at the start; use this info for
-diagnostics, but not coding!
-
-The best course IMHO is to do what Brian (and other) did and do a 'raw'
-read, so you take the ECC engine out of the picture and stop it from
-flipping bits.  You can experiment with always doing the raw read, but I
-believe you will see a decrease in performance (as others mentioned and
-I saw).
-
->> Currently, the code is only handling case 2 (that is what the
->> controller counts).  I believe that your physical page has actual
->> 'stuck at zero' bits.  The current driver gives up.  If you want to
->> handle this then we should replace the lines,
-
-> I assumed that your code assumes that the controller returns the
-> flipped bit count when reading an erase page (case 1), which I did not
-> found in the documentation.
-
->>> +	/* ECC failed. */
->>> +	if (flip > ecc_count)
->>> +		return -1;
-
->> With something like,
->>
->> +	/* Not completely empty. */
->> +	if (flip > ecc_count) {
->> +           re_read_page_w_ecc_off();
->> +           if (count_written_bits() > strength) /* strength/2 ? */
->> +		return -1;
->> +      }
->>
->> There is also a discussion on this here,
->>
->> http://lists.infradead.org/pipermail/linux-mtd/2014-March/052507.html
->> http://lists.infradead.org/pipermail/linux-mtd/2014-March/052508.html
->> http://lists.infradead.org/pipermail/linux-mtd/2014-March/052509.html
->> http://lists.infradead.org/pipermail/linux-mtd/2014-March/052526.html
->> http://lists.infradead.org/pipermail/linux-mtd/2014-March/052527.html
->> http://lists.infradead.org/pipermail/linux-mtd/2014-March/052619.html
->> ... etc.  Use the view thread.
->>
->> Especially,
->> http://lists.infradead.org/pipermail/linux-mtd/2014-March/052647.html
->>
->> Here Brian says that 3b applies to SLC NAND.  I guess this is you :).
-
-> Yes, we are using Macronix SLC NAND.
-
-Well, it is everyone.  Sorry, I made the assumption this wouldn't
-happen, but apparently it does.
-
->> It is fairly common to read an erased page.  Doing 'raw reads' all
->> the time on an erased page will slow the file system.  However, doing
->> re-reads for an erased page with bit flips is probably fairly
->> uncommon.  A flash in this state maybe near EOL or the sector was bad
->> from the factory but not marked so.
-
-> This is a new device, but its one out of several dozens. The device
-> had two factory marked bad page. This four page would then be 6 bad
-> pages. I would say that your guess is probably the case at hand
-> (should be considered bad, but were marked by factory).
-
->> I am chasing an DDR2 issue on another CPU and haven't had much more
->> time to the look at the Vybrid nor follow the MTD mailing list.  I
->> don't know if the 'NAND_ECC_NEED_CHECK_FF' feature has been merged?
->> It may also solve the issue.
->
-> A quick search through 3.17-rc3 didn't found that string.
-
-> I will read the pages using raw again and check how many bit flips it
-> shows. But I guess regarding Brian's comment to 3b, the driver
-> actually behaves correct and return -1, because we have bit flips on
-> erased page which is not good...
-
-Hmm.  No, it should be ok; I think Brian meant we should accept and
-expect this.  We had this conversation after the RFC.  However, we
-should probably only accept strength/2 zero values at most; I believe
-what to accept was kind of hanging in that conversation.  If the zeros
-are below our threshold with a raw read, then we can report the page is
-all '\xff' and return a 'bit flip' count as the number of zeros found in
-a raw read.  Also, in the 'all FFs' case we should probably memset the
-OOB data.  I see that other patches mentioned in the MTD threads above
-do this.
-
- +	/* Not completely empty. */
- +	if (flip > ecc_count) {
- +           re_read_page_w_ecc_off();
- +           ecc_count =3D count_zero_bits();
- +           if (ecc_count > strength/2)
- +		return -1;
- +      } else
- +          ecc_count =3D 0;  /* 'normal' case all ff */
- +
- +	/* Erased page. */
- +	memset(dat, 0xff, nfc->chip.ecc.size);
- +	memset(oob, 0xff, ???);  /* ??? */
- +	return ecc_count;
-
-I don't think that UBI/UbiFs use the OOB data at all, but that is
-something that I don't think is completely correct in this path?
-
-> UBI starts to scrub & torture those 4 pages then, but starts doing
-> this with other pages too. All the pages start to fail then! I'm still
-> investigating that issue.
-
-Arg.  I am not quite sure.  It seems ok to have a few 'stuck at one'
-errors.  As you move closer to the ECC strength this seems a little
-crazy.  At some point the sector/erase block is becoming useless.  I am
-not sure if this is an issue with this device; it seems a little
-suspect.  Maybe you could code something that emulates the stuck bits on
-a good device and see if it still behaves the same; triggers a software
-condition.  You might also reduce the NFC bus clock just to see on the
-'stuck zero' device.
-
-Hth,
-Bill Pringlemeir.
+Brian
