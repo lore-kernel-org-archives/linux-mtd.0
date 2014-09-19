@@ -1,14 +1,20 @@
-Received: from mailrelay007.isp.belgacom.be ([195.238.6.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XUgj3-00043b-N7
- for linux-mtd@lists.infradead.org; Thu, 18 Sep 2014 18:46:42 +0000
-From: Fabian Frederick <fabf@skynet.be>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1] jffs2: fix sparse warning: unexpected unlock
-Date: Thu, 18 Sep 2014 20:46:16 +0200
-Message-Id: <1411065976-20386-1-git-send-email-fabf@skynet.be>
-Cc: Fabian Frederick <fabf@skynet.be>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XUum8-00042M-Oa
+ for linux-mtd@lists.infradead.org; Fri, 19 Sep 2014 09:46:49 +0000
+Message-ID: <541BFB6D.3040903@nod.at>
+Date: Fri, 19 Sep 2014 11:46:21 +0200
+From: Richard Weinberger <richard@nod.at>
+MIME-Version: 1.0
+To: dedekind1@gmail.com
+Subject: Re: [PATCH] UBI: Fix possible deadlock in erase_worker()
+References: <1410853702-11616-1-git-send-email-richard@nod.at>
+ <1410946526.28850.120.camel@sauron.fi.intel.com>
+In-Reply-To: <1410946526.28850.120.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,25 +24,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-fs/jffs2/summary.c:846:5: warning: context imbalance in 'jffs2_sum_write_sumnode' - unexpected unlock
+Am 17.09.2014 11:35, schrieb Artem Bityutskiy:
+> On Tue, 2014-09-16 at 09:48 +0200, Richard Weinberger wrote:
+>> If sync_erase() failes with EINTR, ENOMEM, EAGAIN or
+>> EBUSY erase_worker() re-schedules the failed work.
+>> This will lead to a deadlock because erase_worker() is called
+>> with work_sem held in read mode. And schedule_erase() will take
+>> this lock again.
+> 
+> There is this code snippet:
+> 
+>         ubi_err("failed to erase PEB %d, error %d", pnum, err);
+>         kfree(wl_wrk);
+> 
+>         if (err == -EINTR || err == -ENOMEM || err == -EAGAIN ||
+>             err == -EBUSY) {
+>                 int err1;
+> 
+>                 /* Re-schedule the LEB for erasure */
+>                 err1 = schedule_erase(ubi, e, vol_id, lnum, 0);
+>                 if (err1) {
+>                         err = err1;
+>                         goto out_ro;
+>                 }
+>                 return err;
+>         }
+> 
+> How about move 'kfree(wl_wrk)' down, and execute
+> 
+>         __schedule_ubi_work(ubi, wl_wrk)
+> 
+> inside the 'if' clause instead? The fix would seem to be more elegant
+> then.
+> 
+> Hmm?
 
-Signed-off-by: Fabian Frederick <fabf@skynet.be>
----
- fs/jffs2/summary.c | 2 ++
- 1 file changed, 2 insertions(+)
+Yes, that would work too.
+Or we apply "[PATCH 1/2] UBI: Call worker functions without work_sem held". :)
 
-diff --git a/fs/jffs2/summary.c b/fs/jffs2/summary.c
-index c522d09..a0bac7b 100644
---- a/fs/jffs2/summary.c
-+++ b/fs/jffs2/summary.c
-@@ -844,6 +844,8 @@ static int jffs2_sum_write_data(struct jffs2_sb_info *c, struct jffs2_eraseblock
- /* Write out summary information - called from jffs2_do_reserve_space */
- 
- int jffs2_sum_write_sumnode(struct jffs2_sb_info *c)
-+	__releases(&c->erase_completion_lock)
-+	__acquires(&c->erase_completion_lock)
- {
- 	int datasize, infosize, padsize;
- 	struct jffs2_eraseblock *jeb;
--- 
-1.9.1
+Thanks,
+//richard
