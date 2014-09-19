@@ -1,20 +1,22 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XV1lX-0003F6-0Q
- for linux-mtd@lists.infradead.org; Fri, 19 Sep 2014 17:14:39 +0000
-Message-ID: <1411146833.23429.11.camel@sauron.fi.intel.com>
-Subject: Re: Does UBI LEB-level access interlock happily with UBIfs access?
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Atlant Schmidt <aschmidt@dekaresearch.com>
-Date: Fri, 19 Sep 2014 20:13:53 +0300
-In-Reply-To: <0A40042D85E7C84DB443060EC44B3FD36D986A301A@dekaexchange07.deka.local>
+Received: from mail.dekaresearch.com ([208.65.175.196]
+ helo=dekaexchange07.deka.local)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XV1od-00056e-Rp
+ for linux-mtd@lists.infradead.org; Fri, 19 Sep 2014 17:17:52 +0000
+From: Atlant Schmidt <aschmidt@dekaresearch.com>
+To: "'dedekind1@gmail.com'" <dedekind1@gmail.com>
+Date: Fri, 19 Sep 2014 13:17:30 -0400
+Subject: RE: Does UBI LEB-level access interlock happily with UBIfs access?
+Message-ID: <0A40042D85E7C84DB443060EC44B3FD36D986A301C@dekaexchange07.deka.local>
 References: <0A40042D85E7C84DB443060EC44B3FD36D986A3009@dekaexchange07.deka.local>
  <1411140449.28850.152.camel@sauron.fi.intel.com>
  <0A40042D85E7C84DB443060EC44B3FD36D986A301A@dekaexchange07.deka.local>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+ <1411146833.23429.11.camel@sauron.fi.intel.com>
+In-Reply-To: <1411146833.23429.11.camel@sauron.fi.intel.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,73 +27,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2014-09-19 at 12:58 -0400, Atlant Schmidt wrote:
-> Artem:
-> 
->   Thanks, but the key was in this line of my question:
-> 
-> > For the purposes of scrubbing-out *SINGLE BIT* errors,
-> 
-> 
->   Single bit errors are below the threshold set by either
->   current UBI software or newer NAND Flash chips that
->   contain on-board ECC and set a "Rewrite recommended"
->   Status Register bit.
-
-This is MTD hiding these bit-flips from UBI. The idea is that depending
-on the flash/controller, you may want to scrub or ignore bit-flips lower
-than certain level.
-
-Indeed, for some NANDs 1-bit flips happen on nearly every read,
-scrubbing them all is not feasible.
-
-Sow what you say sounds like you want to lower the bit-flip handling
-threshold.
-
-To do this, you either need to amend your driver to have the default
-threshold that you need, or change the
-/sys/class/mtd/mtdX/bitflip_threshold value (do not remember for sure,
-but I believe it is writable).
-
-Please, refer to the documentation here:
-
-Documentation/ABI/testing/sysfs-class-mtd
-
-
->   That's why I proposed doing the UBI-level LEB rewrites
->   myself, any time even a single bit-flip was reported as
->   being corrected.
-
-Well, if you feel comfortable with this, go ahead, but without knowing
-the particulars of your systems, this sounds like asking for troubles.
-
-Indeed, changing something underneath the live volume manager (UBI) and
-file-system (UBIFS) is error-prone at the very least.
-
-Asking UBI to do this sounds a lot better.
-
-But again, I do not know the specific of the system you are designing.
-
->   For software ECC done in the UBI code, I guess one
->   strategy (as we discussed a few months back) is to
->   modify the UBI code so it schedules a block for
->   scrubbing even if a single-bit correctable error
->   occurs.
-
-All you need to do is to lower 'bitflip_threshold' instead.
-
-But note, this will be "passive" scrubbing, meaning that UBI will scrub
-only when there is a read operation. But the read operation may be
-extremely rare for certain LEBs, and the data may bit-rot due to various
-"radiation" effects (doing I/O on the neighbor PEBs).
-
-So I suggested you to just read all volumes periodically from the
-user-space, may be from a background cron task.
-
-But as I pointed, this will not force re-read of the volume table LEBs.
-To address this, you'd need to do some additional, not very difficult
-work.
-
--- 
-Best Regards,
-Artem Bityutskiy
+QXJ0ZW06DQoNCiAgVGhhbmtzIC0tIHRoYXQncyBhbGwgY29uc2lzdGVudCB3aXRoIG15IGN1cnJl
+bnQgdGhpbmtpbmcuDQoNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICBBdGxhbnQNCg0KLS0t
+LS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IEFydGVtIEJpdHl1dHNraXkgW21haWx0bzpk
+ZWRla2luZDFAZ21haWwuY29tXQ0KU2VudDogRnJpZGF5LCBTZXB0ZW1iZXIgMTksIDIwMTQgMTox
+NCBQTQ0KVG86IEF0bGFudCBTY2htaWR0DQpDYzogbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5v
+cmcNClN1YmplY3Q6IFJlOiBEb2VzIFVCSSBMRUItbGV2ZWwgYWNjZXNzIGludGVybG9jayBoYXBw
+aWx5IHdpdGggVUJJZnMgYWNjZXNzPw0KDQpPbiBGcmksIDIwMTQtMDktMTkgYXQgMTI6NTggLTA0
+MDAsIEF0bGFudCBTY2htaWR0IHdyb3RlOg0KPiBBcnRlbToNCj4NCj4gICBUaGFua3MsIGJ1dCB0
+aGUga2V5IHdhcyBpbiB0aGlzIGxpbmUgb2YgbXkgcXVlc3Rpb246DQo+DQo+ID4gRm9yIHRoZSBw
+dXJwb3NlcyBvZiBzY3J1YmJpbmctb3V0ICpTSU5HTEUgQklUKiBlcnJvcnMsDQo+DQo+DQo+ICAg
+U2luZ2xlIGJpdCBlcnJvcnMgYXJlIGJlbG93IHRoZSB0aHJlc2hvbGQgc2V0IGJ5IGVpdGhlcg0K
+PiAgIGN1cnJlbnQgVUJJIHNvZnR3YXJlIG9yIG5ld2VyIE5BTkQgRmxhc2ggY2hpcHMgdGhhdA0K
+PiAgIGNvbnRhaW4gb24tYm9hcmQgRUNDIGFuZCBzZXQgYSAiUmV3cml0ZSByZWNvbW1lbmRlZCIN
+Cj4gICBTdGF0dXMgUmVnaXN0ZXIgYml0Lg0KDQpUaGlzIGlzIE1URCBoaWRpbmcgdGhlc2UgYml0
+LWZsaXBzIGZyb20gVUJJLiBUaGUgaWRlYSBpcyB0aGF0IGRlcGVuZGluZw0Kb24gdGhlIGZsYXNo
+L2NvbnRyb2xsZXIsIHlvdSBtYXkgd2FudCB0byBzY3J1YiBvciBpZ25vcmUgYml0LWZsaXBzIGxv
+d2VyDQp0aGFuIGNlcnRhaW4gbGV2ZWwuDQoNCkluZGVlZCwgZm9yIHNvbWUgTkFORHMgMS1iaXQg
+ZmxpcHMgaGFwcGVuIG9uIG5lYXJseSBldmVyeSByZWFkLA0Kc2NydWJiaW5nIHRoZW0gYWxsIGlz
+IG5vdCBmZWFzaWJsZS4NCg0KU293IHdoYXQgeW91IHNheSBzb3VuZHMgbGlrZSB5b3Ugd2FudCB0
+byBsb3dlciB0aGUgYml0LWZsaXAgaGFuZGxpbmcNCnRocmVzaG9sZC4NCg0KVG8gZG8gdGhpcywg
+eW91IGVpdGhlciBuZWVkIHRvIGFtZW5kIHlvdXIgZHJpdmVyIHRvIGhhdmUgdGhlIGRlZmF1bHQN
+CnRocmVzaG9sZCB0aGF0IHlvdSBuZWVkLCBvciBjaGFuZ2UgdGhlDQovc3lzL2NsYXNzL210ZC9t
+dGRYL2JpdGZsaXBfdGhyZXNob2xkIHZhbHVlIChkbyBub3QgcmVtZW1iZXIgZm9yIHN1cmUsDQpi
+dXQgSSBiZWxpZXZlIGl0IGlzIHdyaXRhYmxlKS4NCg0KUGxlYXNlLCByZWZlciB0byB0aGUgZG9j
+dW1lbnRhdGlvbiBoZXJlOg0KDQpEb2N1bWVudGF0aW9uL0FCSS90ZXN0aW5nL3N5c2ZzLWNsYXNz
+LW10ZA0KDQoNCj4gICBUaGF0J3Mgd2h5IEkgcHJvcG9zZWQgZG9pbmcgdGhlIFVCSS1sZXZlbCBM
+RUIgcmV3cml0ZXMNCj4gICBteXNlbGYsIGFueSB0aW1lIGV2ZW4gYSBzaW5nbGUgYml0LWZsaXAg
+d2FzIHJlcG9ydGVkIGFzDQo+ICAgYmVpbmcgY29ycmVjdGVkLg0KDQpXZWxsLCBpZiB5b3UgZmVl
+bCBjb21mb3J0YWJsZSB3aXRoIHRoaXMsIGdvIGFoZWFkLCBidXQgd2l0aG91dCBrbm93aW5nDQp0
+aGUgcGFydGljdWxhcnMgb2YgeW91ciBzeXN0ZW1zLCB0aGlzIHNvdW5kcyBsaWtlIGFza2luZyBm
+b3IgdHJvdWJsZXMuDQoNCkluZGVlZCwgY2hhbmdpbmcgc29tZXRoaW5nIHVuZGVybmVhdGggdGhl
+IGxpdmUgdm9sdW1lIG1hbmFnZXIgKFVCSSkgYW5kDQpmaWxlLXN5c3RlbSAoVUJJRlMpIGlzIGVy
+cm9yLXByb25lIGF0IHRoZSB2ZXJ5IGxlYXN0Lg0KDQpBc2tpbmcgVUJJIHRvIGRvIHRoaXMgc291
+bmRzIGEgbG90IGJldHRlci4NCg0KQnV0IGFnYWluLCBJIGRvIG5vdCBrbm93IHRoZSBzcGVjaWZp
+YyBvZiB0aGUgc3lzdGVtIHlvdSBhcmUgZGVzaWduaW5nLg0KDQo+ICAgRm9yIHNvZnR3YXJlIEVD
+QyBkb25lIGluIHRoZSBVQkkgY29kZSwgSSBndWVzcyBvbmUNCj4gICBzdHJhdGVneSAoYXMgd2Ug
+ZGlzY3Vzc2VkIGEgZmV3IG1vbnRocyBiYWNrKSBpcyB0bw0KPiAgIG1vZGlmeSB0aGUgVUJJIGNv
+ZGUgc28gaXQgc2NoZWR1bGVzIGEgYmxvY2sgZm9yDQo+ICAgc2NydWJiaW5nIGV2ZW4gaWYgYSBz
+aW5nbGUtYml0IGNvcnJlY3RhYmxlIGVycm9yDQo+ICAgb2NjdXJzLg0KDQpBbGwgeW91IG5lZWQg
+dG8gZG8gaXMgdG8gbG93ZXIgJ2JpdGZsaXBfdGhyZXNob2xkJyBpbnN0ZWFkLg0KDQpCdXQgbm90
+ZSwgdGhpcyB3aWxsIGJlICJwYXNzaXZlIiBzY3J1YmJpbmcsIG1lYW5pbmcgdGhhdCBVQkkgd2ls
+bCBzY3J1Yg0Kb25seSB3aGVuIHRoZXJlIGlzIGEgcmVhZCBvcGVyYXRpb24uIEJ1dCB0aGUgcmVh
+ZCBvcGVyYXRpb24gbWF5IGJlDQpleHRyZW1lbHkgcmFyZSBmb3IgY2VydGFpbiBMRUJzLCBhbmQg
+dGhlIGRhdGEgbWF5IGJpdC1yb3QgZHVlIHRvIHZhcmlvdXMNCiJyYWRpYXRpb24iIGVmZmVjdHMg
+KGRvaW5nIEkvTyBvbiB0aGUgbmVpZ2hib3IgUEVCcykuDQoNClNvIEkgc3VnZ2VzdGVkIHlvdSB0
+byBqdXN0IHJlYWQgYWxsIHZvbHVtZXMgcGVyaW9kaWNhbGx5IGZyb20gdGhlDQp1c2VyLXNwYWNl
+LCBtYXkgYmUgZnJvbSBhIGJhY2tncm91bmQgY3JvbiB0YXNrLg0KDQpCdXQgYXMgSSBwb2ludGVk
+LCB0aGlzIHdpbGwgbm90IGZvcmNlIHJlLXJlYWQgb2YgdGhlIHZvbHVtZSB0YWJsZSBMRUJzLg0K
+VG8gYWRkcmVzcyB0aGlzLCB5b3UnZCBuZWVkIHRvIGRvIHNvbWUgYWRkaXRpb25hbCwgbm90IHZl
+cnkgZGlmZmljdWx0DQp3b3JrLg0KDQotLQ0KQmVzdCBSZWdhcmRzLA0KQXJ0ZW0gQml0eXV0c2tp
+eQ0KDQoNClRoaXMgZS1tYWlsIGFuZCB0aGUgaW5mb3JtYXRpb24sIGluY2x1ZGluZyBhbnkgYXR0
+YWNobWVudHMgaXQgY29udGFpbnMsIGFyZSBpbnRlbmRlZCB0byBiZSBhIGNvbmZpZGVudGlhbCBj
+b21tdW5pY2F0aW9uIG9ubHkgdG8gdGhlIHBlcnNvbiBvciBlbnRpdHkgdG8gd2hvbSBpdCBpcyBh
+ZGRyZXNzZWQgYW5kIG1heSBjb250YWluIGluZm9ybWF0aW9uIHRoYXQgaXMgcHJpdmlsZWdlZC4g
+SWYgdGhlIHJlYWRlciBvZiB0aGlzIG1lc3NhZ2UgaXMgbm90IHRoZSBpbnRlbmRlZCByZWNpcGll
+bnQsIHlvdSBhcmUgaGVyZWJ5IG5vdGlmaWVkIHRoYXQgYW55IGRpc3NlbWluYXRpb24sIGRpc3Ry
+aWJ1dGlvbiBvciBjb3B5aW5nIG9mIHRoaXMgY29tbXVuaWNhdGlvbiBpcyBzdHJpY3RseSBwcm9o
+aWJpdGVkLiBJZiB5b3UgaGF2ZSByZWNlaXZlZCB0aGlzIGNvbW11bmljYXRpb24gaW4gZXJyb3Is
+IHBsZWFzZSBpbW1lZGlhdGVseSBub3RpZnkgdGhlIHNlbmRlciBhbmQgZGVzdHJveSB0aGUgb3Jp
+Z2luYWwgbWVzc2FnZS4NCg0KVGhhbmsgeW91Lg0KDQpQbGVhc2UgY29uc2lkZXIgdGhlIGVudmly
+b25tZW50IGJlZm9yZSBwcmludGluZyB0aGlzIGVtYWlsLg0K
