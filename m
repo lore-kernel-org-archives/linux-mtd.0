@@ -1,21 +1,19 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XUvwb-0000UH-NH
- for linux-mtd@lists.infradead.org; Fri, 19 Sep 2014 11:01:42 +0000
-Message-ID: <541C0CFE.2090609@nod.at>
-Date: Fri, 19 Sep 2014 13:01:18 +0200
-From: Richard Weinberger <richard@nod.at>
-MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [PATCH] UBI: Fix possible deadlock in erase_worker()
-References: <1410853702-11616-1-git-send-email-richard@nod.at>	
- <1410946526.28850.120.camel@sauron.fi.intel.com> <541BFB6D.3040903@nod.at>
- <1411123647.28850.138.camel@sauron.fi.intel.com>
-In-Reply-To: <1411123647.28850.138.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
+Received: from mga11.intel.com ([192.55.52.93])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XUzue-0001Z5-37
+ for linux-mtd@lists.infradead.org; Fri, 19 Sep 2014 15:15:56 +0000
+Message-ID: <1411139731.28850.145.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 1/2] UBIFS: Remove bogus assert
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Richard Weinberger <richard@nod.at>
+Date: Fri, 19 Sep 2014 18:15:31 +0300
+In-Reply-To: <1411120127-18787-1-git-send-email-richard@nod.at>
+References: <1411120127-18787-1-git-send-email-richard@nod.at>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,15 +23,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 19.09.2014 12:47, schrieb Artem Bityutskiy:
-> On Fri, 2014-09-19 at 11:46 +0200, Richard Weinberg
->> Or we apply "[PATCH 1/2] UBI: Call worker functions without work_sem held". :)
+On Fri, 2014-09-19 at 11:48 +0200, Richard Weinberger wrote:
+> This assertion was only correct before UBIFS had xattr support.
+> Now with xattr support also a directory node can carry data
+> and can act as host node.
 > 
-> But I explained in the other e-mail that the semaphore is needed, and
-> why.
+> Suggested-by: Artem Bityutskiy <dedekind1@gmail.com>
+> Signed-off-by: Richard Weinberger <richard@nod.at>
 
-Sorry, I completely misunderstood your mail.
-Rereading it now.
+Pushed both, thank you!
 
-Thanks,
-//richard
+-- 
+Best Regards,
+Artem Bityutskiy
