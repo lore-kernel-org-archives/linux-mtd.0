@@ -1,24 +1,21 @@
-Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
+Received: from mail.dekaresearch.com ([208.65.175.196]
+ helo=dekaexchange07.deka.local)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XV197-0000Co-1M
- for linux-mtd@lists.infradead.org; Fri, 19 Sep 2014 16:34:57 +0000
-Received: by mail-pa0-f50.google.com with SMTP id fa1so418997pad.23
- for <linux-mtd@lists.infradead.org>; Fri, 19 Sep 2014 09:34:35 -0700 (PDT)
-Date: Fri, 19 Sep 2014 09:34:31 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Josh Wu <josh.wu@atmel.com>
-Subject: Re: [PATCH v2] mtd: atmel_nand: make PMECC lookup table and offset
- property optional
-Message-ID: <20140919163431.GE1193@ld-irv-0074>
-References: <1408345720-5402-1-git-send-email-josh.wu@atmel.com>
- <20140918003258.GD1193@ld-irv-0074> <541A92E3.60906@atmel.com>
+ id 1XV1WX-0004vx-4A
+ for linux-mtd@lists.infradead.org; Fri, 19 Sep 2014 16:59:09 +0000
+From: Atlant Schmidt <aschmidt@dekaresearch.com>
+To: "'dedekind1@gmail.com'" <dedekind1@gmail.com>
+Date: Fri, 19 Sep 2014 12:58:45 -0400
+Subject: RE: Does UBI LEB-level access interlock happily with UBIfs access?
+Message-ID: <0A40042D85E7C84DB443060EC44B3FD36D986A301A@dekaexchange07.deka.local>
+References: <0A40042D85E7C84DB443060EC44B3FD36D986A3009@dekaexchange07.deka.local>
+ <1411140449.28850.152.camel@sauron.fi.intel.com>
+In-Reply-To: <1411140449.28850.152.camel@sauron.fi.intel.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <541A92E3.60906@atmel.com>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, pawel.moll@arm.com,
- ijc+devicetree@hellion.org.uk, robh+dt@kernel.org,
- linux-mtd@lists.infradead.org, galak@codeaurora.org
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,22 +25,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Sep 18, 2014 at 04:08:03PM +0800, Josh Wu wrote:
-> On 9/18/2014 8:32 AM, Brian Norris wrote:
-> >On Mon, Aug 18, 2014 at 03:08:40PM +0800, Josh Wu wrote:
-> >>+static int pmecc_build_galois_table(int mm,
-> >>+		int16_t *index_of, int16_t *alpha_to)
-> >>+{
-...
-> >>+}
-> >Is this algorithm documented? How did you come up with this?
-> 
-> It is not documented in datasheet. It is based BCH algorithm. But do
-> you know if the soft BCH use a same table like this?
-
-I haven't delved into the algorithms here too much. Other BCH/ECC codes
-do similar steps, but either (1) there's usually a few comments about
-their origin or else (2) they're transparently handled by hardware ECC
-engines and software doesn't need to care about the details much.
-
-Brian
+QXJ0ZW06DQoNCiAgVGhhbmtzLCBidXQgdGhlIGtleSB3YXMgaW4gdGhpcyBsaW5lIG9mIG15IHF1
+ZXN0aW9uOg0KDQo+IEZvciB0aGUgcHVycG9zZXMgb2Ygc2NydWJiaW5nLW91dCAqU0lOR0xFIEJJ
+VCogZXJyb3JzLA0KDQoNCiAgU2luZ2xlIGJpdCBlcnJvcnMgYXJlIGJlbG93IHRoZSB0aHJlc2hv
+bGQgc2V0IGJ5IGVpdGhlcg0KICBjdXJyZW50IFVCSSBzb2Z0d2FyZSBvciBuZXdlciBOQU5EIEZs
+YXNoIGNoaXBzIHRoYXQNCiAgY29udGFpbiBvbi1ib2FyZCBFQ0MgYW5kIHNldCBhICJSZXdyaXRl
+IHJlY29tbWVuZGVkIg0KICBTdGF0dXMgUmVnaXN0ZXIgYml0Lg0KDQogIFRoYXQncyB3aHkgSSBw
+cm9wb3NlZCBkb2luZyB0aGUgVUJJLWxldmVsIExFQiByZXdyaXRlcw0KICBteXNlbGYsIGFueSB0
+aW1lIGV2ZW4gYSBzaW5nbGUgYml0LWZsaXAgd2FzIHJlcG9ydGVkIGFzDQogIGJlaW5nIGNvcnJl
+Y3RlZC4NCg0KICBGb3Igc29mdHdhcmUgRUNDIGRvbmUgaW4gdGhlIFVCSSBjb2RlLCBJIGd1ZXNz
+IG9uZQ0KICBzdHJhdGVneSAoYXMgd2UgZGlzY3Vzc2VkIGEgZmV3IG1vbnRocyBiYWNrKSBpcyB0
+bw0KICBtb2RpZnkgdGhlIFVCSSBjb2RlIHNvIGl0IHNjaGVkdWxlcyBhIGJsb2NrIGZvcg0KICBz
+Y3J1YmJpbmcgZXZlbiBpZiBhIHNpbmdsZS1iaXQgY29ycmVjdGFibGUgZXJyb3INCiAgb2NjdXJz
+Lg0KDQogIEZvciBPTkZJIEZsYXNoIHdpdGggaGFyZHdhcmUgRUNDLCBJJ20gbm90IHN1cmUgdGhl
+cmUNCiAgaXMgYSBzb2x1dGlvbjsgSSBkb24ndCBzZWUgd2hlcmUgdGhlIE9ORkkgRmxhc2ggcmVw
+b3J0cw0KICAiY29ycmVjdGFibGUgZXJyb3IgYnV0IG5vdCBhdCB0aGUgcmV3cml0ZSB0aHJlc2hv
+bGQiOw0KICBhIHJlYWQgc2VlbXMgdG8gZWl0aGVyOg0KDQogICAgbyBTdWNjZWVkICh3aXRoIG5v
+IG9yIGZldyBjb3JyZWN0aW9uczsNCiAgICAgICAgICAgICAgIG5vIHNwZWNpYWwgcmVwb3J0IGdl
+bmVyYXRlZCkNCg0KICAgIG8gU3VjY2VlZCAod2l0aCAiUmV3cml0ZSIgYmVpbmcgcmVjb21tZW5k
+ZWQpDQoNCiAgICBvIEZhaWwNCg0KDQogIE1heWJlIEknbGwgYXNrIE1pY3JvbidzIHRlY2gtc3Vw
+cG9ydCBmb2xrcyBpZiB0aGVyZSdzDQogIG1vcmUgaW5mbyBhdmFpbGFibGUgdGhhbiBpcyBtYWRl
+IG9idmlvdXMgaW4gdGhlDQogIGRhdGFzaGVldC4NCg0KICAgICAgICAgICAgICAgICAgICAgIEF0
+bGFudA0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogQXJ0ZW0gQml0eXV0c2tp
+eSBbbWFpbHRvOmRlZGVraW5kMUBnbWFpbC5jb21dDQpTZW50OiBGcmlkYXksIFNlcHRlbWJlciAx
+OSwgMjAxNCAxMToyNyBBTQ0KVG86IEF0bGFudCBTY2htaWR0DQpDYzogbGludXgtbXRkQGxpc3Rz
+LmluZnJhZGVhZC5vcmcNClN1YmplY3Q6IFJlOiBEb2VzIFVCSSBMRUItbGV2ZWwgYWNjZXNzIGlu
+dGVybG9jayBoYXBwaWx5IHdpdGggVUJJZnMgYWNjZXNzPw0KDQpPbiBUdWUsIDIwMTQtMDktMTYg
+YXQgMTA6MDQgLTA0MDAsIEF0bGFudCBTY2htaWR0IHdyb3RlOg0KPiBGb2xrczoNCj4NCj4gICBX
+ZSB1c2UgdGhlIG9yZGluYXJ5IE1URC9VQkkvVUJJZnMgc3RhY2sgb24gb3VyDQo+ICAgRW1iZWRk
+ZWQgTGludXggc3lzdGVtLg0KPg0KPiAgIEZvciB0aGUgcHVycG9zZXMgb2Ygc2NydWJiaW5nLW91
+dCBzaW5nbGUgYml0IGVycm9ycywNCj4gICBJJ2QgbGlrZSB0byByZWFkIHRocm91Z2ggYWxsIG9m
+IHRoZSBMRUJzIHN0b3JlZCBpbiB0aGUNCj4gICBVQkkgZGV2aWNlIGFuZCB3aGVuZXZlciB0aGUg
+RUNDIGluZm9ybWF0aW9uIGluZGljYXRlcw0KPiAgIHRoYXQgYW55IGNvcnJlY3RhYmxlIGVycm9y
+cyBvY2N1cnJlZCwgSSdkIGxpa2UgdG8NCj4gICAqUkUtV1JJVEUqIHRoYXQgTEVCICh0aGVyZWJ5
+IGZvcmNpbmcgaXQgdG8gYmUgc2NydWJiZWQpLg0KPiAgIChOb3RlOiBJIG1pZ2h0IGRvIHRoaXMg
+cGFnZS1ieS1wYWdlIHJhdGhlciB0aGFuIExFQi0NCj4gICBieS1MRUIuKQ0KDQpXZWxsLCB5b3Ug
+bWF5IGRvIHNvbWV0aGluZyBsaWtlDQoNCmRkIGlmPS9kZXYvdWJpWF9ZIG9mPS9kZXYvbnVsbA0K
+DQpGb3IgYWxsIHZvbHVtZXMsIGFuZCB0aGlzIHdpbGwgbWFrZSBVQkkgcmVhbCBhbGwgcGFnZXMg
+ZnJvbSBhbGwgdm9sdW1lcw0KYW5kIHdoZW5ldmVyIHRoZXJlIHdhcyBhIGJpdC1mbGlwLCBzY2hl
+ZHVsZSB0aGUgTEVCIGZvciBzY3J1YmJpbmcuDQoNClRoZSB2b2x1bWUgdGFibGUgTEVCcyB3b250
+J2QgYmUgcmVhZCwgdGhvdWdoLiBUbyBjb3ZlciBldmVuIHRoYXQsIHlvdQ0Kb25lIGNvdWxkIGlu
+dHJvZHVjZSBhIHNwZWNpYWwgaW9jdGwuDQoNCkluIGNhc2Ugb2YgZmFzdG1hcCwgdGhpcyBpb2N0
+bCB3b3VsZCBjb3ZlciBhbGwgdGhlIGZhdG1hcCBzcGVjaWFsIExFQnMNCnRvby4NCg0KPiAgIEJ1
+dCBJIHdvdWxkIGV4cGVjdCB0aGF0IGJlY2F1c2UgSSdkIGhhdmUgYSBoYXJkDQo+ICAgKGltcG9z
+c2libGU/KSB0aW1lIGRvaW5nIGFuIGF0b21pYyByZWFkL3JlLXdyaXRlIG9mIGENCj4gICBMRUIg
+KG9yIHBhZ2UpLCB0aGUgVUJJZnMgYW5kIG15IHNjcnViYmVyIHdvdWxkIGludGVyYWN0DQo+ICAg
+YmFkbHkgd2l0aCBteSBzY3J1YmJlciBldmVudHVhbGx5IGNvcnJ1cHRpbmcgdGhlIFVCSWZzDQo+
+ICAgZmlsZSBzeXN0ZW0uIElzIHRoZXJlIGFueSBlYXN5IHdheSB0byBpbnRlcmxvY2sgdGhlc2UN
+Cj4gICBhY2Nlc3NlcyAoZnJvbSB0aGUgVUJJZnMgYW5kIGZyb20gbXkgVUJJLWxldmVsIHNjcnVi
+YmVyKT8NCj4gICBBIHdheSB0byB0ZW1wb3JhcmlseSBzdXNwZW5kIGFjdGl2aXR5IGZyb20gdGhl
+IFVCSWZzPw0KPg0KPiAgIE9uZSBrbHVkZ2UgdGhhdCBtaWdodCB3b3JrIGlzIHRoYXQgSSdtIG9w
+ZXJhdGluZyBpbiBhDQo+ICAgcmVhbC10aW1lIGVudmlyb25tZW50LiBJZiBJIG1hZGUgbXkgc2Ny
+dWJiaW5nIHJlcXVlc3RzDQo+ICAgZnJvbSBhIHZlcnkgaGlnaCBwcmlvcml0eSAoaGlnaGVyIHRo
+YW4gdGhlICJTeXN0ZW0iDQo+ICAgdGFza3MgdGhhdCBydW4gYXJvdW5kIFByaW9yaXR5IDUwKSwg
+Y291bGQgSSBiZSBzdXJlDQo+ICAgbXkgcmVhZCArIHJld3JpdGUgc2NydWJiaW5nIHJlcXVlc3Rz
+IHdvdWxkIGF0IGxlYXN0DQo+ICAgZW50ZXIgdGhlIFVCSSdzIHdvcmsgcXVldWUgaW1tZWRpYXRl
+bHkgYWRqYWNlbnQgdG8NCj4gICBlYWNoIG90aGVyIChhbmQgd2l0aG91dCBVQklmcyByZXF1ZXN0
+cyBpbnRlcm1pbmdsZWQpPw0KPg0KPiAgIEFsdGVybmF0aXZlbHksIEkgY291bGQgcHJvYmFibHkg
+ZGlzbW91bnQgdGhlIFVCSWZzDQo+ICAgYmVmb3JlIGRvaW5nIHNjcnViYmluZywgYnV0IEknZCBy
+YXRoZXIgbm90IGhhdmUgdG8NCj4gICBkbyB0aGF0Lg0KDQpZb3UgZG8gbm90IG5lZWQgdG8gZG8g
+dW5tb3VudCBhbnl0aGluZyB3aXRoIHRoZSBhYm92ZSB0ZWNobmlxdWUuIElmLA0Kc2F5LCBVQkkg
+c2NoZWR1bGVkIGFuIExFQiAwOjEgKHZvbHVtZSAwLCBMRUIgMSkgZm9yIHNjcnViYmluZywgYW5k
+IFVCSUZTDQood2hpY2ggaGFzIHZvbHVtZSAwIG1vdW50ZWQpIHdyaXRlcyB0byBMRUIgMSwgVUJJ
+IHdpbGwgYmxvY2sgdGhlIHdyaXRlcg0KdW50aWwgdGhlIHNjcnViYmluZyBmaW5pc2hlcywgc28g
+eW91IGRvIG5vdCBoYXZlIHRvIHdvcnJ5Lg0KDQpIVEguDQoNCi0tDQpCZXN0IFJlZ2FyZHMsDQpB
+cnRlbSBCaXR5dXRza2l5DQoNCg0KVGhpcyBlLW1haWwgYW5kIHRoZSBpbmZvcm1hdGlvbiwgaW5j
+bHVkaW5nIGFueSBhdHRhY2htZW50cyBpdCBjb250YWlucywgYXJlIGludGVuZGVkIHRvIGJlIGEg
+Y29uZmlkZW50aWFsIGNvbW11bmljYXRpb24gb25seSB0byB0aGUgcGVyc29uIG9yIGVudGl0eSB0
+byB3aG9tIGl0IGlzIGFkZHJlc3NlZCBhbmQgbWF5IGNvbnRhaW4gaW5mb3JtYXRpb24gdGhhdCBp
+cyBwcml2aWxlZ2VkLiBJZiB0aGUgcmVhZGVyIG9mIHRoaXMgbWVzc2FnZSBpcyBub3QgdGhlIGlu
+dGVuZGVkIHJlY2lwaWVudCwgeW91IGFyZSBoZXJlYnkgbm90aWZpZWQgdGhhdCBhbnkgZGlzc2Vt
+aW5hdGlvbiwgZGlzdHJpYnV0aW9uIG9yIGNvcHlpbmcgb2YgdGhpcyBjb21tdW5pY2F0aW9uIGlz
+IHN0cmljdGx5IHByb2hpYml0ZWQuIElmIHlvdSBoYXZlIHJlY2VpdmVkIHRoaXMgY29tbXVuaWNh
+dGlvbiBpbiBlcnJvciwgcGxlYXNlIGltbWVkaWF0ZWx5IG5vdGlmeSB0aGUgc2VuZGVyIGFuZCBk
+ZXN0cm95IHRoZSBvcmlnaW5hbCBtZXNzYWdlLg0KDQpUaGFuayB5b3UuDQoNClBsZWFzZSBjb25z
+aWRlciB0aGUgZW52aXJvbm1lbnQgYmVmb3JlIHByaW50aW5nIHRoaXMgZW1haWwuDQo=
