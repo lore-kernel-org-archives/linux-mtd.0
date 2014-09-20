@@ -1,22 +1,23 @@
-Date: Sat, 20 Sep 2014 13:03:15 +0200
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XVIre-00041H-8c
+ for linux-mtd@lists.infradead.org; Sat, 20 Sep 2014 11:30:07 +0000
+Date: Sat, 20 Sep 2014 13:29:43 +0200
 From: Boris BREZILLON <boris.brezillon@free-electrons.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v4 0/2] mtd: nand: add sunxi NAND flash controller support
-Message-ID: <20140920130315.197ab359@bbrezillon>
-In-Reply-To: <20140920043438.GD8127@brian-ubuntu>
-References: <1408382788-32153-1-git-send-email-boris.brezillon@free-electrons.com>
- <20140920043438.GD8127@brian-ubuntu>
+Subject: Re: [PATCH 1/2] mtd: nand: support ONFI timings mode retrieval for
+ non-ONFI NANDs
+Message-ID: <20140920132943.7775f318@bbrezillon>
+In-Reply-To: <20140920044607.GE8127@brian-ubuntu>
+References: <1406539012-16320-1-git-send-email-boris.brezillon@free-electrons.com>
+ <1406539012-16320-2-git-send-email-boris.brezillon@free-electrons.com>
+ <20140920044607.GE8127@brian-ubuntu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
- "Dmitriy B." <rzk333@gmail.com>, Jonas Meyer <quitte@gmail.com>,
- linux-kernel@vger.kernel.org, Yassin Jaffer <yassinjaffer@gmail.com>,
- linux-sunxi@googlegroups.com, Rob Herring <robh+dt@kernel.org>,
- linux-mtd@lists.infradead.org, Kumar Gala <galak@codeaurora.org>,
- Maxime Ripard <maxime.ripard@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,40 +27,125 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
-
-On Fri, 19 Sep 2014 21:34:38 -0700
+On Fri, 19 Sep 2014 21:46:07 -0700
 Brian Norris <computersforpeace@gmail.com> wrote:
 
-> Hi Boris,
+> Since you were asking about this series, I have a comment:
 > 
-> On Mon, Aug 18, 2014 at 07:26:26PM +0200, Boris BREZILLON wrote:
-> > This patch series adds support for the sunxi NAND Flash Controller (NFC)
-> > block.
+> On Mon, Jul 28, 2014 at 11:16:51AM +0200, Boris BREZILLON wrote:
+> > Add an onfi_timing_mode_ds field to nand_chip and nand_flash_dev in order
+> > to support NAND timings definition for non-ONFI NAND.
 > > 
-> > These two patches only add support for the basic NAND stuff:
-> >  - NAND controller operations
-> >  - SW and HW ECC handling (with both syndrome and normal ECC scheme)
+> > NAND that support better timings mode than the default one (timings mode 0)
+> > have to define a new entry in the nand_ids table.
 > > 
-> > If you want support for advanced features you can find it on my github
-> > repo [1]:
-> >  - HW randomization support
-> >  - per partition ECC/Randomizer to handle bootloader partitions
+> > The timings mode should be deduced from timings description from the
+> > datasheet and the ONFI specification
+> > (www.onfi.org/~/media/ONFI/specs/onfi_3_1_spec.pdf, chapter 4.15
+> > "Timing Parameters").
+> > You should choose the closest mode that fit the timings requirements of
+> > your NAND chip.
 > > 
-> > DMA transfers are not supported yet, but I have reworked the OOB layout
-> > when using the HW ECC scheme to match the one used when accessing the NAND
-> > with DMA transfers (the available OOB bytes are placed at the end of the
-> > OOB area).
+> > Signed-off-by: Boris BREZILLON <boris.brezillon@free-electrons.com>
+> > ---
+> >  drivers/mtd/nand/nand_base.c | 1 +
+> >  include/linux/mtd/nand.h     | 7 +++++++
+> >  2 files changed, 8 insertions(+)
 > > 
-> > This patch series depends on this other one [2] which adds support for ONFI
-> > timing mode retrieval on non-ONFI NANDs.
+> > diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> > index d8cdf06..c952c21 100644
+> > --- a/drivers/mtd/nand/nand_base.c
+> > +++ b/drivers/mtd/nand/nand_base.c
+> > @@ -3576,6 +3576,7 @@ static bool find_full_id_nand(struct mtd_info *mtd, struct nand_chip *chip,
+> >  		chip->options |= type->options;
+> >  		chip->ecc_strength_ds = NAND_ECC_STRENGTH(type);
+> >  		chip->ecc_step_ds = NAND_ECC_STEP(type);
+> > +		chip->onfi_timing_mode_ds = type->onfi_timing_mode_ds;
+> >  
+> >  		*busw = type->options & NAND_BUSWIDTH_16;
+> >  
+> > diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> > index 3083c53..435c005 100644
+> > --- a/include/linux/mtd/nand.h
+> > +++ b/include/linux/mtd/nand.h
+> > @@ -587,6 +587,7 @@ struct nand_buffers {
+> >   * @ecc_step_ds:	[INTERN] ECC step required by the @ecc_strength_ds,
+> >   *                      also from the datasheet. It is the recommended ECC step
+> >   *			size, if known; if unknown, set to zero.
+> > + * @onfi_timing_mode_ds:[INTERN] ONFI timing mode deduced from datasheet.
 > 
-> Were you planning to send v2 of your series [2]? I see you made a
-> mistake you were planning on fixing:
-> 
->   https://lkml.org/lkml/2014/7/30/423
+> Might want at least one space between '[INTERN]' and 'ONFI'?
 
-Yep, I was just waiting for your feedback before fixing it ;-).
+You mean between the colon and '[INTERN]', right ?
+
+> 
+> >   * @numchips:		[INTERN] number of physical chips
+> >   * @chipsize:		[INTERN] the size of one chip for multichip arrays
+> >   * @pagemask:		[INTERN] page number mask = number of (pages / chip) - 1
+> > @@ -671,6 +672,7 @@ struct nand_chip {
+> >  	uint8_t bits_per_cell;
+> >  	uint16_t ecc_strength_ds;
+> >  	uint16_t ecc_step_ds;
+> > +	int onfi_timing_mode_ds;
+> 
+> I'm not sure if we'll just want a field specific to non-ONFI chips,
+> faking an ONFI timing mode; can we make this into a more generally
+> useful field, that represents something consistent across all NAND
+> types? I was thinking a "highest mode supported", but that actually
+> isn't great, since for true ONFI modes (except mode 0) require a SET
+> FEATURES command to change to a higher mode.
+> 
+> Maybe just something like onfi_timing_mode_default, which we could then
+> use as mode 0 for ONFI chips.
+> 
+> Ideally, we could centralize as much of this as possible, so that a NAND
+> driver only has to know the mechanics of "how do I translate an ONFI
+> mode to a timing configuration for my NAND controller,"
+
+I guess you meant "how do I translate a NAND timing config given by
+nand_sdr_timings to my specific NAND controller config", right ?
+
+> instead of any
+> details of how to choose from one of many supported ONFI modes. i.e., it
+> could implement something like the following hook:
+> 
+> 	int (*set_timing_mode)(struct nand_sdr_timings *timing);
+
+I'm not opposed to this solution (I actually think this is how it
+should be done :-), and, IIRC, Jason proposed to do the same kind of
+things a while ago), but this means the conversion would be done by the
+NAND FW and passed to the NAND driver, and this implies reworking the
+drivers already directly using ONFI modes to configure their NAND
+timings to make use nand_sdr_timings instead.
+
+Moreover, I think we should define a union to handle several kind of
+timings (ddr NAND are coming :-P):
+
+enum nand_timings_type /* or nand_bus_type or something else ;-) */ {
+	SDR_NAND,
+	DDR_NAND,
+}
+
+struct nand_timings {
+	enum nand_timings_type type;
+	union {
+		struct nand_sdr_timings sdr;
+		struct nand_ddr_timings ddr;
+	} timings;
+};
+
+But this is another story ;-).
+
+> 
+> But anyway, that's out of the scope of this series, and it may be harder
+> than I make it sound. I just wanted to throw that out there.
+
+If you don't mind I'd like to get something simple first: just renaming
+onfi_timing_mode_ds is fine, but adding the whole conversion stuff to
+the core implies much more changes. And I can work on a more
+integrated solution as a second step.
+
+Let me know what you think. 
 
 Best Regards,
 
