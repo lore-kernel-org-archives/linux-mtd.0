@@ -1,13 +1,13 @@
-Received: from szxga03-in.huawei.com ([119.145.14.66])
+Received: from szxga02-in.huawei.com ([119.145.14.65])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XVCqS-0001Cc-VI
- for linux-mtd@lists.infradead.org; Sat, 20 Sep 2014 05:04:29 +0000
-Message-ID: <541D0AA1.60006@huawei.com>
-Date: Sat, 20 Sep 2014 13:03:29 +0800
+ id 1XVCtP-0002k8-OF
+ for linux-mtd@lists.infradead.org; Sat, 20 Sep 2014 05:07:34 +0000
+Message-ID: <541D0B12.9050703@huawei.com>
+Date: Sat, 20 Sep 2014 13:05:22 +0800
 From: hujianyang <hujianyang@huawei.com>
 MIME-Version: 1.0
 To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH 1/4] ubi-utils: ubidump compile enable
+Subject: [PATCH 2/4] ubi-utils: ubidump add libdump
 References: <541D09C9.4080004@huawei.com>
 In-Reply-To: <541D09C9.4080004@huawei.com>
 Content-Type: text/plain; charset="ISO-8859-1"
@@ -26,36 +26,509 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Signed-off-by: hujianyang <hujianyang@huawei.com>
 ---
- Makefile |    7 +++++--
- 1 files changed, 5 insertions(+), 2 deletions(-)
+ ubi-utils/include/libdump.h |   72 ++++++++
+ ubi-utils/libdump.c         |  414 +++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 486 insertions(+), 0 deletions(-)
+ create mode 100644 ubi-utils/include/libdump.h
+ create mode 100644 ubi-utils/libdump.c
 
-diff --git a/Makefile b/Makefile
-index eade234..9dc9645 100644
---- a/Makefile
-+++ b/Makefile
-@@ -28,7 +28,8 @@ MTD_BINS = \
- 	sumtool jffs2reader
- UBI_BINS = \
- 	ubiupdatevol ubimkvol ubirmvol ubicrc32 ubinfo ubiattach \
--	ubidetach ubinize ubiformat ubirename mtdinfo ubirsvol ubiblock
-+	ubidetach ubinize ubiformat ubirename mtdinfo ubirsvol ubiblock \
-+	ubidump
-
- BINS = $(MTD_BINS)
- BINS += mkfs.ubifs/mkfs.ubifs
-@@ -115,10 +116,12 @@ obj-libiniparser.a = libiniparser.o dictionary.o
- obj-libscan.a      = libscan.o
- obj-libubi.a       = libubi.o
- obj-libubigen.a    = libubigen.o
-+obj-libdump.a      = libdump.o
-
- obj-mtdinfo   = libubigen.a
- obj-ubinize   = libubigen.a libiniparser.a
- obj-ubiformat = libubigen.a libscan.a
-+obj-ubidump   = libdump.a
-
--$(foreach v,libubi.a libubigen.a libiniparser.a libscan.a,$(eval $(call _mkdep,ubi-utils/,$(v))))
-+$(foreach v,libubi.a libubigen.a libiniparser.a libscan.a libdump.a,$(eval $(call _mkdep,ubi-utils/,$(v))))
- $(foreach v,$(UBI_BINS),$(eval $(call mkdep,ubi-utils/,$(v),libubi.a ubiutils-common.o)))
+diff --git a/ubi-utils/include/libdump.h b/ubi-utils/include/libdump.h
+new file mode 100644
+index 0000000..ee0ff77
+--- /dev/null
++++ b/ubi-utils/include/libdump.h
+@@ -0,0 +1,72 @@
++/*
++ * Copyright (c) International Business Machines Corp., 2006
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
++ * the GNU General Public License for more details.
++ *
++ * Author: Hu Jianyang <hujianyang@huawei.com>
++ *
++ * UBIFS library.
++ */
++
++#ifndef __LIBDUMP_H__
++#define __LIBDUMP_H__
++
++#include <mtd/ubifs-media.h>
++#include <mtd/ubi-media.h>
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++#define ALIGN(x,a) __ALIGN_MASK(x,(typeof(x))(a)-1)
++#define __ALIGN_MASK(x,mask) (((x)+(mask))&~(mask))
++
++#define min_t(t,x,y) ({ \
++	typeof((x)) _x = (x); \
++	typeof((y)) _y = (y); \
++	(_x < _y) ? _x : _y; \
++})
++
++/**
++ * ubidump - dump ubi/ubifs information
++ * @lnum: logical eraseblock number
++ * @buf: buffer to dump
++ * @leb_size: size of buffer/logical eraseblock size
++ * @info: print NODEs detailed info
++ *
++ * This function dump ubi/ubifs information on the buffer.
++ */
++int ubi_dump(int lnum, void *buf, int leb_size, int info);
++
++/*
++ * 'ubifs_scan_a_node()' return values.
++ *
++ * SCANNED_GARBAGE:  scanned garbage
++ * SCANNED_EMPTY_SPACE: scanned empty space
++ * SCANNED_A_NODE: scanned a valid node
++ * SCANNED_A_CORRUPT_NODE: scanned a corrupted node
++ * SCANNED_A_BAD_PAD_NODE: scanned a padding node with invalid pad length
++ *
++ * Greater than zero means: 'scanned that number of padding bytes'
++ */
++enum {
++	SCANNED_GARBAGE        = 0,
++	SCANNED_EMPTY_SPACE    = -1,
++	SCANNED_A_NODE         = -2,
++	SCANNED_A_CORRUPT_NODE = -3,
++	SCANNED_A_BAD_PAD_NODE = -4,
++};
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif /*!__LIBDUMP_H__ */
+diff --git a/ubi-utils/libdump.c b/ubi-utils/libdump.c
+new file mode 100644
+index 0000000..72cda0c
+--- /dev/null
++++ b/ubi-utils/libdump.c
+@@ -0,0 +1,414 @@
++/*
++ * Copyright (c) International Business Machines Corp., 2006
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
++ * the GNU General Public License for more details.
++ *
++ * Author: Hu Jianyang <hujianyang@huawei.com>
++ *
++ * UBIFS library.
++ */
++
++#define PROGRAM_NAME "libdump"
++
++#include <stdlib.h>
++#include <stdio.h>
++#include <libdump.h>
++#include <mtd_swab.h>
++#include "common.h"
++
++static const char *get_key_fmt(int fmt)
++{
++	switch (fmt) {
++	case UBIFS_SIMPLE_KEY_FMT:
++		return "simple";
++	default:
++		return "unknown/invalid format";
++	}
++}
++
++static const char *get_key_hash(int hash)
++{
++	switch (hash) {
++	case UBIFS_KEY_HASH_R5:
++		return "R5";
++	case UBIFS_KEY_HASH_TEST:
++		return "test";
++	default:
++		return "unknown/invalid name hash";
++	}
++}
++
++static const char *node_ntype(int type)
++{
++	switch (type) {
++	case UBIFS_PAD_NODE:
++		return "padding node";
++	case UBIFS_SB_NODE:
++		return "superblock node";
++	case UBIFS_MST_NODE:
++		return "master node";
++	case UBIFS_REF_NODE:
++		return "reference node";
++	case UBIFS_INO_NODE:
++		return "inode node";
++	case UBIFS_DENT_NODE:
++		return "direntry node";
++	case UBIFS_XENT_NODE:
++		return "xentry node";
++	case UBIFS_DATA_NODE:
++		return "data node";
++	case UBIFS_TRUN_NODE:
++		return "truncate node";
++	case UBIFS_IDX_NODE:
++		return "indexing node";
++	case UBIFS_CS_NODE:
++		return "commit start node";
++	case UBIFS_ORPH_NODE:
++		return "orphan node";
++	default:
++		return "unknown node";
++	}
++}
++
++static const char *node_gtype(int type)
++{
++	switch (type) {
++	case UBIFS_NO_NODE_GROUP:
++		return "no node group";
++	case UBIFS_IN_NODE_GROUP:
++		return "in node group";
++	case UBIFS_LAST_OF_NODE_GROUP:
++		return "last of node group";
++	default:
++		return "unknown";
++	}
++}
++
++static void dump_ch(const struct ubifs_ch *ch)
++{
++	printf("\tmagic          %#x\n", le32_to_cpu(ch->magic));
++	printf("\tcrc            %#x\n", le32_to_cpu(ch->crc));
++	printf("\tnode_type      %d (%s)\n", ch->node_type,
++	       node_ntype(ch->node_type));
++	printf("\tgroup_type     %d (%s)\n", ch->group_type,
++	       node_gtype(ch->group_type));
++	printf("\tsqnum          %llu\n",
++	       (unsigned long long)le64_to_cpu(ch->sqnum));
++	printf("\tlen            %u\n", le32_to_cpu(ch->len));
++}
++
++static void ubifs_dump_node(const void *node)
++{
++	const struct ubifs_ch *ch = node;
++
++	if (le32_to_cpu(ch->magic) != UBIFS_NODE_MAGIC) {
++		printf("Not a node, first %zu bytes:\n", UBIFS_CH_SZ);
++		return;
++	}
++
++	dump_ch(node);
++
++	switch (ch->node_type) {
++	case UBIFS_PAD_NODE:
++	{
++		const struct ubifs_pad_node *pad = node;
++
++		printf("\tpad_len        %u\n", le32_to_cpu(pad->pad_len));
++		break;
++	}
++	case UBIFS_SB_NODE:
++	{
++		const struct ubifs_sb_node *sup = node;
++		unsigned int sup_flags = le32_to_cpu(sup->flags);
++
++		printf("\tkey_hash       %d (%s)\n",
++		       (int)sup->key_hash, get_key_hash(sup->key_hash));
++		printf("\tkey_fmt        %d (%s)\n",
++		       (int)sup->key_fmt, get_key_fmt(sup->key_fmt));
++		printf("\tflags          %#x\n", sup_flags);
++		printf("\tbig_lpt        %u\n",
++		       !!(sup_flags & UBIFS_FLG_BIGLPT));
++		printf("\tspace_fixup    %u\n",
++		       !!(sup_flags & UBIFS_FLG_SPACE_FIXUP));
++		printf("\tmin_io_size    %u\n", le32_to_cpu(sup->min_io_size));
++		printf("\tleb_size       %u\n", le32_to_cpu(sup->leb_size));
++		printf("\tleb_cnt        %u\n", le32_to_cpu(sup->leb_cnt));
++		printf("\tmax_leb_cnt    %u\n", le32_to_cpu(sup->max_leb_cnt));
++		printf("\tmax_bud_bytes  %llu\n",
++		       (unsigned long long)le64_to_cpu(sup->max_bud_bytes));
++		printf("\tlog_lebs       %u\n", le32_to_cpu(sup->log_lebs));
++		printf("\tlpt_lebs       %u\n", le32_to_cpu(sup->lpt_lebs));
++		printf("\torph_lebs      %u\n", le32_to_cpu(sup->orph_lebs));
++		printf("\tjhead_cnt      %u\n", le32_to_cpu(sup->jhead_cnt));
++		printf("\tfanout         %u\n", le32_to_cpu(sup->fanout));
++		printf("\tlsave_cnt      %u\n", le32_to_cpu(sup->lsave_cnt));
++		printf("\tdefault_compr  %u\n",
++		       (int)le16_to_cpu(sup->default_compr));
++		printf("\trp_size        %llu\n",
++		       (unsigned long long)le64_to_cpu(sup->rp_size));
++		printf("\trp_uid         %u\n", le32_to_cpu(sup->rp_uid));
++		printf("\trp_gid         %u\n", le32_to_cpu(sup->rp_gid));
++		printf("\tfmt_version    %u\n", le32_to_cpu(sup->fmt_version));
++		printf("\ttime_gran      %u\n", le32_to_cpu(sup->time_gran));
++		printf("\tUUID           %pUB\n", sup->uuid);
++		break;
++	}
++	case UBIFS_MST_NODE:
++	{
++		const struct ubifs_mst_node *mst = node;
++
++		printf("\thighest_inum   %llu\n",
++		       (unsigned long long)le64_to_cpu(mst->highest_inum));
++		printf("\tcommit number  %llu\n",
++		       (unsigned long long)le64_to_cpu(mst->cmt_no));
++		printf("\tflags          %#x\n", le32_to_cpu(mst->flags));
++		printf("\tlog_lnum       %u\n", le32_to_cpu(mst->log_lnum));
++		printf("\troot_lnum      %u\n", le32_to_cpu(mst->root_lnum));
++		printf("\troot_offs      %u\n", le32_to_cpu(mst->root_offs));
++		printf("\troot_len       %u\n", le32_to_cpu(mst->root_len));
++		printf("\tgc_lnum        %u\n", le32_to_cpu(mst->gc_lnum));
++		printf("\tihead_lnum     %u\n", le32_to_cpu(mst->ihead_lnum));
++		printf("\tihead_offs     %u\n", le32_to_cpu(mst->ihead_offs));
++		printf("\tindex_size     %llu\n",
++		       (unsigned long long)le64_to_cpu(mst->index_size));
++		printf("\tlpt_lnum       %u\n", le32_to_cpu(mst->lpt_lnum));
++		printf("\tlpt_offs       %u\n", le32_to_cpu(mst->lpt_offs));
++		printf("\tnhead_lnum     %u\n", le32_to_cpu(mst->nhead_lnum));
++		printf("\tnhead_offs     %u\n", le32_to_cpu(mst->nhead_offs));
++		printf("\tltab_lnum      %u\n", le32_to_cpu(mst->ltab_lnum));
++		printf("\tltab_offs      %u\n", le32_to_cpu(mst->ltab_offs));
++		printf("\tlsave_lnum     %u\n", le32_to_cpu(mst->lsave_lnum));
++		printf("\tlsave_offs     %u\n", le32_to_cpu(mst->lsave_offs));
++		printf("\tlscan_lnum     %u\n", le32_to_cpu(mst->lscan_lnum));
++		printf("\tleb_cnt        %u\n", le32_to_cpu(mst->leb_cnt));
++		printf("\tempty_lebs     %u\n", le32_to_cpu(mst->empty_lebs));
++		printf("\tidx_lebs       %u\n", le32_to_cpu(mst->idx_lebs));
++		printf("\ttotal_free     %llu\n",
++		       (unsigned long long)le64_to_cpu(mst->total_free));
++		printf("\ttotal_dirty    %llu\n",
++		       (unsigned long long)le64_to_cpu(mst->total_dirty));
++		printf("\ttotal_used     %llu\n",
++		       (unsigned long long)le64_to_cpu(mst->total_used));
++		printf("\ttotal_dead     %llu\n",
++		       (unsigned long long)le64_to_cpu(mst->total_dead));
++		printf("\ttotal_dark     %llu\n",
++		       (unsigned long long)le64_to_cpu(mst->total_dark));
++		break;
++	}
++	case UBIFS_REF_NODE:
++	{
++		const struct ubifs_ref_node *ref = node;
++
++		printf("\tlnum           %u\n", le32_to_cpu(ref->lnum));
++		printf("\toffs           %u\n", le32_to_cpu(ref->offs));
++		printf("\tjhead          %u\n", le32_to_cpu(ref->jhead));
++		break;
++	}
++	case UBIFS_CS_NODE:
++		break;
++	case UBIFS_INO_NODE:
++	case UBIFS_DENT_NODE:
++	case UBIFS_XENT_NODE:
++	case UBIFS_DATA_NODE:
++	case UBIFS_TRUN_NODE:
++	case UBIFS_IDX_NODE:
++	case UBIFS_ORPH_NODE:
++		printf("cannot dump node, type not support\n");
++	default:
++		printf("node type %d was not recognized\n",
++		       (int)ch->node_type);
++	}
++}
++
++/**
++ * scan_padding_bytes - scan for padding bytes.
++ * @buf: buffer to scan
++ * @len: length of buffer
++ *
++ * This function returns the number of padding bytes on success and
++ * %SCANNED_GARBAGE on failure.
++ */
++static int scan_padding_bytes(void *buf, int len)
++{
++	int pad_len = 0, max_pad_len = min_t(int, UBIFS_PAD_NODE_SZ, len);
++	uint8_t *p = buf;
++
++	printf("not a node\n");
++
++	while (pad_len < max_pad_len && *p++ == UBIFS_PADDING_BYTE)
++		pad_len += 1;
++
++	if (!pad_len || (pad_len & 7))
++		return SCANNED_GARBAGE;
++
++	printf("%d padding bytes\n", pad_len);
++
++	return pad_len;
++}
++
++/**
++ * ubifs_scan_a_node - scan for a node or padding.
++ * @buf: buffer to scan
++ * @size: logical eraseblock size
++ * @len: length of buffer
++ * @lnum: logical eraseblock number
++ * @offs: offset within the logical eraseblock
++ *
++ * This function returns a scanning code to indicate what was scanned.
++ */
++static int ubifs_scan_a_node(void *buf, int leb_size, int len, int lnum, int offs)
++{
++	struct ubifs_ch *ch = buf;
++	uint32_t magic;
++
++	magic = le32_to_cpu(ch->magic);
++
++	if (magic == 0xFFFFFFFF) {
++		printf("hit empty space at LEB %d:%d\n", lnum, offs);
++		return SCANNED_EMPTY_SPACE;
++	}
++
++	if (magic != UBIFS_NODE_MAGIC)
++		return scan_padding_bytes(buf, len);
++
++	if (len < UBIFS_CH_SZ)
++		return SCANNED_GARBAGE;
++
++	printf("scanning %s at LEB %d:%d\n",
++	       node_ntype(ch->node_type), lnum, offs);
++
++	/* No ubifs_check_nodei() perform here */
++
++	if (ch->node_type == UBIFS_PAD_NODE) {
++		struct ubifs_pad_node *pad = buf;
++		int pad_len = le32_to_cpu(pad->pad_len);
++		int node_len = le32_to_cpu(ch->len);
++
++		/* Validate the padding node */
++		if (pad_len < 0 ||
++		    offs + node_len + pad_len > leb_size) {
++			printf("bad pad node at LEB %d:%d\n", lnum, offs);
++			ubifs_dump_node(pad);
++			return SCANNED_A_BAD_PAD_NODE;
++		}
++
++		/* Make the node pads to 8-byte boundary */
++		if ((node_len + pad_len) & 7) {
++			printf("bad padding length %d - %d\n",
++			       offs, offs + node_len + pad_len);
++			return SCANNED_A_BAD_PAD_NODE;
++		}
++
++		printf("%d bytes padded at LEB %d:%d, offset now %d\n", pad_len,
++			lnum, offs, ALIGN(offs + node_len + pad_len, 8));
++
++		return node_len + pad_len;
++	}
++
++	return SCANNED_A_NODE;
++}
++
++/**
++ * ubifs_scan - scan a logical eraseblock.
++ * @lnum: logical eraseblock number
++ * @sbuf: scan buffer
++ * @size: size of @buf in bytes
++ * @offs: offset to start at (usually zero)
++ * @info: print NODEs detailed info
++ *
++ * This function scans LEB and prints complete information about
++ * its contents.
++ */
++static void ubifs_scan(int lnum, void *sbuf, int leb_size, int offs, int info)
++{
++	void *buf = sbuf + offs;
++	int err, len = leb_size - offs;
++
++	printf("scan LEB %d:%d\n", lnum, offs);
++
++	while (len >= 8) {
++		struct ubifs_ch *ch = buf;
++		int node_len, ret;
++
++		printf("look at LEB %d:%d (%d bytes left)\n",
++		       lnum, offs, len);
++
++		ret = ubifs_scan_a_node(buf, leb_size, len, lnum, offs);
++		if (ret > 0) {
++			/* Padding bytes or a valid padding node */
++			offs += ret;
++			buf += ret;
++			len -= ret;
++			continue;
++		}
++
++		if (ret == SCANNED_EMPTY_SPACE)
++			/* Empty space is checked later */
++			break;
++
++		switch (ret) {
++		case SCANNED_GARBAGE:
++			printf("garbage\n");
++			goto corrupted;
++		case SCANNED_A_NODE:
++			if (info)
++				ubifs_dump_node(buf);
++			break;
++		case SCANNED_A_CORRUPT_NODE:
++		case SCANNED_A_BAD_PAD_NODE:
++			printf("bad node\n");
++			goto corrupted;
++		default:
++			printf("unknown\n");
++			err = -EINVAL;
++			goto error;
++		}
++
++		node_len = ALIGN(le32_to_cpu(ch->len), 8);
++		offs += node_len;
++		buf += node_len;
++		len -= node_len;
++	}
++
++	for (; len > 4; offs += 4, buf = buf + 4, len -= 4)
++		if (*(uint32_t *)buf != 0xffffffff)
++			break;
++	for (; len; offs++, buf++, len--)
++		if (*(uint8_t *)buf != 0xff) {
++			printf("corrupt empty space at LEB %d:%d\n",
++			       lnum, offs);
++			goto corrupted;
++		}
++
++	printf("stop scanning LEB %d at offset %d\n", lnum, offs);
++	return;
++
++corrupted:
++	printf("corruption at LEB %d:%d\n", lnum, offs);
++	err = -EUCLEAN;
++error:
++	printf("LEB %d scanning failed, error %d\n", lnum, err);
++}
++
++/**
++ * ubidump - dump ubi/ubifs information
++ * @lnum: logical eraseblock number
++ * @buf: buffer to dump
++ * @leb_size: size of buffer/logical eraseblock size
++ * @info: print NODEs detailed info
++ *
++ * This function dump ubi/ubifs information on the buffer.
++ */
++int ubi_dump(int lnum, void *buf, int leb_size, int info)
++{
++	ubifs_scan(lnum, buf, leb_size, 0, info);
++	return 0;
++}
 -- 
 1.6.0.2
