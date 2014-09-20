@@ -1,14 +1,14 @@
-Received: from mail-wg0-f48.google.com ([74.125.82.48])
+Received: from mail-wi0-f180.google.com ([209.85.212.180])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XVNw1-0005L5-Rh
- for linux-mtd@lists.infradead.org; Sat, 20 Sep 2014 16:54:58 +0000
-Received: by mail-wg0-f48.google.com with SMTP id z12so955303wgg.7
- for <linux-mtd@lists.infradead.org>; Sat, 20 Sep 2014 09:54:35 -0700 (PDT)
+ id 1XVNw4-0005L9-Nu
+ for linux-mtd@lists.infradead.org; Sat, 20 Sep 2014 16:55:01 +0000
+Received: by mail-wi0-f180.google.com with SMTP id q5so965664wiv.7
+ for <linux-mtd@lists.infradead.org>; Sat, 20 Sep 2014 09:54:37 -0700 (PDT)
 From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 To: Brian Norris <computersforpeace@gmail.com>, Roger Quadros <rogerq@ti.com>
-Subject: [PATCH v4 2/5] nand: omap2: Replace pr_err with dev_err
-Date: Sat, 20 Sep 2014 17:53:13 +0100
-Message-Id: <1411231996-6387-3-git-send-email-ezequiel@vanguardiasur.com.ar>
+Subject: [PATCH v4 3/5] mtd: nand: Move ELM driver and rename as omap_elm
+Date: Sat, 20 Sep 2014 17:53:14 +0100
+Message-Id: <1411231996-6387-4-git-send-email-ezequiel@vanguardiasur.com.ar>
 In-Reply-To: <1411231996-6387-1-git-send-email-ezequiel@vanguardiasur.com.ar>
 References: <1411231996-6387-1-git-send-email-ezequiel@vanguardiasur.com.ar>
 Cc: Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
@@ -22,122 +22,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Usage of pr_err is frowned upon, so replace it with dev_err.
+The ELM driver is only used by the OMAP NAND driver, so let's move it
+to the nand/ directory. Additionally, let's rename it to a less confusing
+name, so the module is built with a meaningful name, instead of the previous
+'elm.ko'.
 
 Acked-by: Roger Quadros <rogerq@ti.com>
 Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
 ---
- drivers/mtd/nand/omap2.c | 30 +++++++++++++++++-------------
- 1 file changed, 17 insertions(+), 13 deletions(-)
+ drivers/mtd/devices/Makefile                   | 1 -
+ drivers/mtd/nand/Makefile                      | 1 +
+ drivers/mtd/{devices/elm.c => nand/omap_elm.c} | 0
+ 3 files changed, 1 insertion(+), 1 deletion(-)
+ rename drivers/mtd/{devices/elm.c => nand/omap_elm.c} (100%)
 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index f97a4ff..3b357e9 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -1375,7 +1375,7 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
- 		erased_ecc_vec = bch16_vector;
- 		break;
- 	default:
--		pr_err("invalid driver configuration\n");
-+		dev_err(&info->pdev->dev, "invalid driver configuration\n");
- 		return -EINVAL;
- 	}
- 
-@@ -1446,7 +1446,8 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
- 	err = 0;
- 	for (i = 0; i < eccsteps; i++) {
- 		if (err_vec[i].error_uncorrectable) {
--			pr_err("nand: uncorrectable bit-flips found\n");
-+			dev_err(&info->pdev->dev,
-+				"uncorrectable bit-flips found\n");
- 			err = -EBADMSG;
- 		} else if (err_vec[i].error_reported) {
- 			for (j = 0; j < err_vec[i].error_count; j++) {
-@@ -1483,8 +1484,9 @@ static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
- 							1 << bit_pos;
- 					}
- 				} else {
--					pr_err("invalid bit-flip @ %d:%d\n",
--							 byte_pos, bit_pos);
-+					dev_err(&info->pdev->dev,
-+						"invalid bit-flip @ %d:%d\n",
-+						byte_pos, bit_pos);
- 					err = -EBADMSG;
- 				}
- 			}
-@@ -1598,13 +1600,13 @@ static bool is_elm_present(struct omap_nand_info *info,
- 
- 	/* check whether elm-id is passed via DT */
- 	if (!elm_node) {
--		pr_err("nand: error: ELM DT node not found\n");
-+		dev_err(&info->pdev->dev, "ELM devicetree node not found\n");
- 		return false;
- 	}
- 	pdev = of_find_device_by_node(elm_node);
- 	/* check whether ELM device is registered */
- 	if (!pdev) {
--		pr_err("nand: error: ELM device not found\n");
-+		dev_err(&info->pdev->dev, "ELM device not found\n");
- 		return false;
- 	}
- 	/* ELM module available, now configure it */
-@@ -1734,14 +1736,14 @@ static int omap_nand_probe(struct platform_device *pdev)
- 	/* scan NAND device connected to chip controller */
- 	nand_chip->options |= pdata->devsize & NAND_BUSWIDTH_16;
- 	if (nand_scan_ident(mtd, 1, NULL)) {
--		pr_err("nand device scan failed, may be bus-width mismatch\n");
-+		dev_err(&info->pdev->dev, "scan failed, may be bus-width mismatch\n");
- 		err = -ENXIO;
- 		goto return_error;
- 	}
- 
- 	/* check for small page devices */
- 	if ((mtd->oobsize < 64) && (pdata->ecc_opt != OMAP_ECC_HAM1_CODE_HW)) {
--		pr_err("small page devices are not supported\n");
-+		dev_err(&info->pdev->dev, "small page devices are not supported\n");
- 		err = -EINVAL;
- 		goto return_error;
- 	}
-@@ -1896,8 +1898,9 @@ static int omap_nand_probe(struct platform_device *pdev)
- 							nand_chip->ecc.bytes,
- 							&ecclayout);
- 		if (!nand_chip->ecc.priv) {
--			pr_err("nand: error: unable to use s/w BCH library\n");
-+			dev_err(&info->pdev->dev, "unable to use BCH library\n");
- 			err = -EINVAL;
-+			goto return_error;
- 		}
- 		break;
- 
-@@ -1959,7 +1962,7 @@ static int omap_nand_probe(struct platform_device *pdev)
- 							nand_chip->ecc.bytes,
- 							&ecclayout);
- 		if (!nand_chip->ecc.priv) {
--			pr_err("nand: error: unable to use s/w BCH library\n");
-+			dev_err(&info->pdev->dev, "unable to use BCH library\n");
- 			err = -EINVAL;
- 			goto return_error;
- 		}
-@@ -2026,7 +2029,7 @@ static int omap_nand_probe(struct platform_device *pdev)
- 				ecclayout->eccpos[ecclayout->eccbytes - 1] + 1;
- 		break;
- 	default:
--		pr_err("nand: error: invalid or unsupported ECC scheme\n");
-+		dev_err(&info->pdev->dev, "invalid or unsupported ECC scheme\n");
- 		err = -EINVAL;
- 		goto return_error;
- 	}
-@@ -2038,8 +2041,9 @@ static int omap_nand_probe(struct platform_device *pdev)
- 	ecclayout->oobfree->length = mtd->oobsize - ecclayout->oobfree->offset;
- 	/* check if NAND device's OOB is enough to store ECC signatures */
- 	if (mtd->oobsize < (ecclayout->eccbytes + BADBLOCK_MARKER_LENGTH)) {
--		pr_err("not enough OOB bytes required = %d, available=%d\n",
--					   ecclayout->eccbytes, mtd->oobsize);
-+		dev_err(&info->pdev->dev,
-+			"not enough OOB bytes required = %d, available=%d\n",
-+			ecclayout->eccbytes, mtd->oobsize);
- 		err = -EINVAL;
- 		goto return_error;
- 	}
+diff --git a/drivers/mtd/devices/Makefile b/drivers/mtd/devices/Makefile
+index c68868f..f0b0e61 100644
+--- a/drivers/mtd/devices/Makefile
++++ b/drivers/mtd/devices/Makefile
+@@ -12,7 +12,6 @@ obj-$(CONFIG_MTD_LART)		+= lart.o
+ obj-$(CONFIG_MTD_BLOCK2MTD)	+= block2mtd.o
+ obj-$(CONFIG_MTD_DATAFLASH)	+= mtd_dataflash.o
+ obj-$(CONFIG_MTD_M25P80)	+= m25p80.o
+-obj-$(CONFIG_MTD_NAND_OMAP_BCH)	+= elm.o
+ obj-$(CONFIG_MTD_SPEAR_SMI)	+= spear_smi.o
+ obj-$(CONFIG_MTD_SST25L)	+= sst25l.o
+ obj-$(CONFIG_MTD_BCM47XXSFLASH)	+= bcm47xxsflash.o
+diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+index a035e7c..b3237b7 100644
+--- a/drivers/mtd/nand/Makefile
++++ b/drivers/mtd/nand/Makefile
+@@ -27,6 +27,7 @@ obj-$(CONFIG_MTD_NAND_NDFC)		+= ndfc.o
+ obj-$(CONFIG_MTD_NAND_ATMEL)		+= atmel_nand.o
+ obj-$(CONFIG_MTD_NAND_GPIO)		+= gpio.o
+ obj-$(CONFIG_MTD_NAND_OMAP2) 		+= omap2.o
++obj-$(CONFIG_MTD_NAND_OMAP_BCH)		+= omap_elm.o
+ obj-$(CONFIG_MTD_NAND_CM_X270)		+= cmx270_nand.o
+ obj-$(CONFIG_MTD_NAND_PXA3xx)		+= pxa3xx_nand.o
+ obj-$(CONFIG_MTD_NAND_TMIO)		+= tmio_nand.o
+diff --git a/drivers/mtd/devices/elm.c b/drivers/mtd/nand/omap_elm.c
+similarity index 100%
+rename from drivers/mtd/devices/elm.c
+rename to drivers/mtd/nand/omap_elm.c
 -- 
 2.1.0
