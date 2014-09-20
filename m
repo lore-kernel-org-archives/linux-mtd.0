@@ -1,16 +1,22 @@
-Received: from szxga02-in.huawei.com ([119.145.14.65])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XVEaT-00056b-Ii
- for linux-mtd@lists.infradead.org; Sat, 20 Sep 2014 06:56:06 +0000
-Message-ID: <541D24CF.1040705@huawei.com>
-Date: Sat, 20 Sep 2014 14:55:11 +0800
-From: hujianyang <hujianyang@huawei.com>
+Date: Sat, 20 Sep 2014 13:03:15 +0200
+From: Boris BREZILLON <boris.brezillon@free-electrons.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v4 0/2] mtd: nand: add sunxi NAND flash controller support
+Message-ID: <20140920130315.197ab359@bbrezillon>
+In-Reply-To: <20140920043438.GD8127@brian-ubuntu>
+References: <1408382788-32153-1-git-send-email-boris.brezillon@free-electrons.com>
+ <20140920043438.GD8127@brian-ubuntu>
 MIME-Version: 1.0
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH] UBIFS: Align the dump messages of SB_NODE
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ "Dmitriy B." <rzk333@gmail.com>, Jonas Meyer <quitte@gmail.com>,
+ linux-kernel@vger.kernel.org, Yassin Jaffer <yassinjaffer@gmail.com>,
+ linux-sunxi@googlegroups.com, Rob Herring <robh+dt@kernel.org>,
+ linux-mtd@lists.infradead.org, Kumar Gala <galak@codeaurora.org>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,30 +26,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I found the dump messages of UBIFS_SB_NODE is not aligned. This
-patch remove the extra space from the line which is retracted.
+Hi Brian,
+
+On Fri, 19 Sep 2014 21:34:38 -0700
+Brian Norris <computersforpeace@gmail.com> wrote:
+
+> Hi Boris,
+> 
+> On Mon, Aug 18, 2014 at 07:26:26PM +0200, Boris BREZILLON wrote:
+> > This patch series adds support for the sunxi NAND Flash Controller (NFC)
+> > block.
+> > 
+> > These two patches only add support for the basic NAND stuff:
+> >  - NAND controller operations
+> >  - SW and HW ECC handling (with both syndrome and normal ECC scheme)
+> > 
+> > If you want support for advanced features you can find it on my github
+> > repo [1]:
+> >  - HW randomization support
+> >  - per partition ECC/Randomizer to handle bootloader partitions
+> > 
+> > DMA transfers are not supported yet, but I have reworked the OOB layout
+> > when using the HW ECC scheme to match the one used when accessing the NAND
+> > with DMA transfers (the available OOB bytes are placed at the end of the
+> > OOB area).
+> > 
+> > This patch series depends on this other one [2] which adds support for ONFI
+> > timing mode retrieval on non-ONFI NANDs.
+> 
+> Were you planning to send v2 of your series [2]? I see you made a
+> mistake you were planning on fixing:
+> 
+>   https://lkml.org/lkml/2014/7/30/423
+
+Yep, I was just waiting for your feedback before fixing it ;-).
+
+Best Regards,
+
+Boris
 
 
-Signed-off-by: hujianyang <hujianyang@huawei.com>
----
- fs/ubifs/debug.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
-index 177b015..d0bcf92 100644
---- a/fs/ubifs/debug.c
-+++ b/fs/ubifs/debug.c
-@@ -334,9 +334,9 @@ void ubifs_dump_node(const struct ubifs_info *c, const void *node)
- 		pr_err("\tkey_fmt        %d (%s)\n",
- 		       (int)sup->key_fmt, get_key_fmt(sup->key_fmt));
- 		pr_err("\tflags          %#x\n", sup_flags);
--		pr_err("\t  big_lpt      %u\n",
-+		pr_err("\tbig_lpt        %u\n",
- 		       !!(sup_flags & UBIFS_FLG_BIGLPT));
--		pr_err("\t  space_fixup  %u\n",
-+		pr_err("\tspace_fixup    %u\n",
- 		       !!(sup_flags & UBIFS_FLG_SPACE_FIXUP));
- 		pr_err("\tmin_io_size    %u\n", le32_to_cpu(sup->min_io_size));
- 		pr_err("\tleb_size       %u\n", le32_to_cpu(sup->leb_size));
 -- 
-1.6.0.2
+Boris Brezillon, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
