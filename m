@@ -1,13 +1,13 @@
-Received: from szxga02-in.huawei.com ([119.145.14.65])
+Received: from szxga01-in.huawei.com ([119.145.14.64])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XVCua-0002zO-3s
- for linux-mtd@lists.infradead.org; Sat, 20 Sep 2014 05:08:45 +0000
-Message-ID: <541D0B5C.2080802@huawei.com>
-Date: Sat, 20 Sep 2014 13:06:36 +0800
+ id 1XVCwV-0003Kb-Pi
+ for linux-mtd@lists.infradead.org; Sat, 20 Sep 2014 05:10:53 +0000
+Message-ID: <541D0BD2.9080908@huawei.com>
+Date: Sat, 20 Sep 2014 13:08:34 +0800
 From: hujianyang <hujianyang@huawei.com>
 MIME-Version: 1.0
 To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH 3/4] ubi-utils: ubidump add ubifs-media
+Subject: [PATCH 4/4] ubi-utils: introduce ubidump
 References: <541D09C9.4080004@huawei.com>
 In-Reply-To: <541D09C9.4080004@huawei.com>
 Content-Type: text/plain; charset="ISO-8859-1"
@@ -26,19 +26,17 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Signed-off-by: hujianyang <hujianyang@huawei.com>
 ---
- include/mtd/ubifs-media.h |  295 +++++++++++++++++++++++++++++++++++++++++++++
- 1 files changed, 295 insertions(+), 0 deletions(-)
- create mode 100644 include/mtd/ubifs-media.h
+ ubi-utils/ubidump.c |  217 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 217 insertions(+), 0 deletions(-)
+ create mode 100644 ubi-utils/ubidump.c
 
-diff --git a/include/mtd/ubifs-media.h b/include/mtd/ubifs-media.h
+diff --git a/ubi-utils/ubidump.c b/ubi-utils/ubidump.c
 new file mode 100644
-index 0000000..e1767fb
+index 0000000..d96d7fb
 --- /dev/null
-+++ b/include/mtd/ubifs-media.h
-@@ -0,0 +1,295 @@
++++ b/ubi-utils/ubidump.c
+@@ -0,0 +1,217 @@
 +/*
-+ * Copyright (c) International Business Machines Corp., 2006
-+ *
 + * This program is free software; you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License as published by
 + * the Free Software Foundation; either version 2 of the License, or
@@ -48,288 +46,212 @@ index 0000000..e1767fb
 + * but WITHOUT ANY WARRANTY; without even the implied warranty of
 + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
 + * the GNU General Public License for more details.
++ */
++
++/*
++ * An utility to dump UBI/UBIFS format data in eraseblock
 + *
 + * Author: Hu Jianyang <hujianyang@huawei.com>
-+ *
-+ * UBIFS library.
 + */
 +
-+/*
-+ * This file defines the layout of UBI headers and all the other UBIiFS
-+ * on-flash data structures.
-+ */
++#define PROGRAM_NAME	"ubidump"
 +
-+#ifndef __UBIFS_MEDIA_H__
-+#define __UBIFS_MEDIA_H__
++#include <stdlib.h>
++#include <getopt.h>
++#include <unistd.h>
 +
-+#include <asm/byteorder.h>
++#include <libubi.h>
++#include <libdump.h>
++#include <libmtd.h>
++#include "common.h"
++#include "ubiutils-common.h"
 +
-+/* UBIFS node magic number (must not have the padding byte first or last) */
-+#define UBIFS_NODE_MAGIC  0x06101831
-+
-+/* UBIFS padding byte pattern (must not be first or last byte of node magic) */
-+#define UBIFS_PADDING_BYTE 0xCE
-+
-+/* Node sizes (N.B. these are guaranteed to be multiples of 8) */
-+#define UBIFS_CH_SZ        sizeof(struct ubifs_ch)
-+#define UBIFS_PAD_NODE_SZ  sizeof(struct ubifs_pad_node)
-+
-+/*
-+ * UBIFS node types.
-+ *
-+ * UBIFS_INO_NODE: inode node
-+ * UBIFS_DATA_NODE: data node
-+ * UBIFS_DENT_NODE: directory entry node
-+ * UBIFS_XENT_NODE: extended attribute node
-+ * UBIFS_TRUN_NODE: truncation node
-+ * UBIFS_PAD_NODE: padding node
-+ * UBIFS_SB_NODE: superblock node
-+ * UBIFS_MST_NODE: master node
-+ * UBIFS_REF_NODE: LEB reference node
-+ * UBIFS_IDX_NODE: index node
-+ * UBIFS_CS_NODE: commit start node
-+ * UBIFS_ORPH_NODE: orphan node
-+ * UBIFS_NODE_TYPES_CNT: count of supported node types
-+ *
-+ * Note, we index arrays by these numbers, so keep them low and contiguous.
-+ * Node type constants for inodes, direntries and so on have to be the same as
-+ * corresponding key type constants.
-+ */
-+enum {
-+	UBIFS_INO_NODE,
-+	UBIFS_DATA_NODE,
-+	UBIFS_DENT_NODE,
-+	UBIFS_XENT_NODE,
-+	UBIFS_TRUN_NODE,
-+	UBIFS_PAD_NODE,
-+	UBIFS_SB_NODE,
-+	UBIFS_MST_NODE,
-+	UBIFS_REF_NODE,
-+	UBIFS_IDX_NODE,
-+	UBIFS_CS_NODE,
-+	UBIFS_ORPH_NODE,
-+	UBIFS_NODE_TYPES_CNT,
++/* The variables below are set by command line arguments */
++struct args {
++	const char *vol;
++	int lnum;
++	int info:1;
 +};
 +
-+/*
-+ * Supported key hash functions.
-+ *
-+ * UBIFS_KEY_HASH_R5: R5 hash
-+ * UBIFS_KEY_HASH_TEST: test hash which just returns first 4 bytes of the name
-+ */
-+enum {
-+	UBIFS_KEY_HASH_R5,
-+	UBIFS_KEY_HASH_TEST,
++static struct args args =
++{
++	.vol	= NULL,
++	.lnum	= -1,
++	.info	= 0,
 +};
 +
-+/*
-+ * Supported key formats.
-+ *
-+ * UBIFS_SIMPLE_KEY_FMT: simple key format
-+ */
-+enum {
-+	UBIFS_SIMPLE_KEY_FMT,
++static const char doc[] = PROGRAM_NAME " version " VERSION
++		" - an utility to dump UBI/UBIFS format data in eraseblock";
++
++static const char optionsstr[] =
++"-h, --help		print help message\n"
++"-l, --lnum		logic eraseblock num to dump\n"
++"-i, --info		show explicit information about ubifs-level\n"
++"-V, --version		print program version";
++
++static const char usage[] =
++"Usage: " PROGRAM_NAME " <UBI volume node file name> [-l <lnum>] [-i]\n"
++"\t\t\t[--help] [--version]\n\n"
++"Example 1: " PROGRAM_NAME " /dev/ubi0_1 --lnum 2 - dump leb 2 in volume 1\n"
++"Example 2: " PROGRAM_NAME " /dev/ubi0_0 -l 1234 -i - dump leb 1234 with explicit info\n";
++
++static const struct option long_options[] = {
++	{ .name = "help",    .has_arg = 0, .flag = NULL, .val = 'h' },
++	{ .name = "lnum",    .has_arg = 1, .flag = NULL, .val = 'l' },
++	{ .name = "info",    .has_arg = 0, .flag = NULL, .val = 'i' },
++	{ .name = "version", .has_arg = 0, .flag = NULL, .val = 'V' },
++	{ NULL, 0, NULL, 0}
 +};
 +
-+/*
-+ * Node group type (used by recovery to recover whole group or none).
-+ *
-+ * UBIFS_NO_NODE_GROUP: this node is not part of a group
-+ * UBIFS_IN_NODE_GROUP: this node is a part of a group
-+ * UBIFS_LAST_OF_NODE_GROUP: this node is the last in a group
-+ */
-+enum {
-+	UBIFS_NO_NODE_GROUP = 0,
-+	UBIFS_IN_NODE_GROUP,
-+	UBIFS_LAST_OF_NODE_GROUP,
-+};
++static int parse_opt(int argc, char * const argv[])
++{
++	while (1) {
++		int key, error = 0;
 +
-+/*
-+ * Superblock flags.
-+ *
-+ * UBIFS_FLG_BIGLPT: if "big" LPT model is used if set
-+ * UBIFS_FLG_SPACE_FIXUP: first-mount "fixup" of free space within LEBs needed
-+ */
-+enum {
-+	UBIFS_FLG_BIGLPT = 0x02,
-+	UBIFS_FLG_SPACE_FIXUP = 0x04,
-+};
++		key = getopt_long(argc, argv, "h?il:", long_options, NULL);
++		if (key == -1)
++			break;
 +
-+/**
-+ * struct ubifs_ch - common header node.
-+ * @magic: UBIFS node magic number (%UBIFS_NODE_MAGIC)
-+ * @crc: CRC-32 checksum of the node header
-+ * @sqnum: sequence number
-+ * @len: full node length
-+ * @node_type: node type
-+ * @group_type: node group type
-+ * @padding: reserved for future, zeroes
-+ *
-+ * Every UBIFS node starts with this common part. If the node has a key, the
-+ * key always goes next.
-+ */
-+struct ubifs_ch {
-+	__le32 magic;
-+	__le32 crc;
-+	__le64 sqnum;
-+	__le32 len;
-+	__u8 node_type;
-+	__u8 group_type;
-+	__u8 padding[2];
-+} __attribute__ ((packed));
++		switch (key) {
++		case 'l':
++			args.lnum = simple_strtoul(optarg, &error);
++			if (error || args.lnum < 0)
++				return errmsg("bad lnum: \"%s\"", optarg);
++			break;
 +
-+/**
-+ * struct ubifs_pad_node - padding node.
-+ * @ch: common header
-+ * @pad_len: how many bytes after this node are unused (because padded)
-+ * @padding: reserved for future, zeroes
-+ */
-+struct ubifs_pad_node {
-+	struct ubifs_ch ch;
-+	__le32 pad_len;
-+} __attribute__ ((packed));
++		case 'i':
++			args.info = 1;
++			break;
 +
-+/**
-+ * struct ubifs_sb_node - superblock node.
-+ * @ch: common header
-+ * @padding: reserved for future, zeroes
-+ * @key_hash: type of hash function used in keys
-+ * @key_fmt: format of the key
-+ * @flags: file-system flags (%UBIFS_FLG_BIGLPT, etc)
-+ * @min_io_size: minimal input/output unit size
-+ * @leb_size: logical eraseblock size in bytes
-+ * @leb_cnt: count of LEBs used by file-system
-+ * @max_leb_cnt: maximum count of LEBs used by file-system
-+ * @max_bud_bytes: maximum amount of data stored in buds
-+ * @log_lebs: log size in logical eraseblocks
-+ * @lpt_lebs: number of LEBs used for lprops table
-+ * @orph_lebs: number of LEBs used for recording orphans
-+ * @jhead_cnt: count of journal heads
-+ * @fanout: tree fanout (max. number of links per indexing node)
-+ * @lsave_cnt: number of LEB numbers in LPT's save table
-+ * @fmt_version: UBIFS on-flash format version
-+ * @default_compr: default compression algorithm (%UBIFS_COMPR_LZO, etc)
-+ * @padding1: reserved for future, zeroes
-+ * @rp_uid: reserve pool UID
-+ * @rp_gid: reserve pool GID
-+ * @rp_size: size of the reserved pool in bytes
-+ * @padding2: reserved for future, zeroes
-+ * @time_gran: time granularity in nanoseconds
-+ * @uuid: UUID generated when the file system image was created
-+ * @ro_compat_version: UBIFS R/O compatibility version
-+ */
-+struct ubifs_sb_node {
-+	struct ubifs_ch ch;
-+	__u8 padding[2];
-+	__u8 key_hash;
-+	__u8 key_fmt;
-+	__le32 flags;
-+	__le32 min_io_size;
-+	__le32 leb_size;
-+	__le32 leb_cnt;
-+	__le32 max_leb_cnt;
-+	__le64 max_bud_bytes;
-+	__le32 log_lebs;
-+	__le32 lpt_lebs;
-+	__le32 orph_lebs;
-+	__le32 jhead_cnt;
-+	__le32 fanout;
-+	__le32 lsave_cnt;
-+	__le32 fmt_version;
-+	__le16 default_compr;
-+	__u8 padding1[2];
-+	__le32 rp_uid;
-+	__le32 rp_gid;
-+	__le64 rp_size;
-+	__le32 time_gran;
-+	__u8 uuid[16];
-+	__le32 ro_compat_version;
-+	__u8 padding2[3968];
-+} __attribute__ ((packed));
++		case 'h':
++		case '?':
++			printf("%s\n\n", doc);
++			printf("%s\n\n", usage);
++			printf("%s\n", optionsstr);
++			exit(EXIT_SUCCESS);
 +
-+/**
-+ * struct ubifs_mst_node - master node.
-+ * @ch: common header
-+ * @highest_inum: highest inode number in the committed index
-+ * @cmt_no: commit number
-+ * @flags: various flags (%UBIFS_MST_DIRTY, etc)
-+ * @log_lnum: start of the log
-+ * @root_lnum: LEB number of the root indexing node
-+ * @root_offs: offset within @root_lnum
-+ * @root_len: root indexing node length
-+ * @gc_lnum: LEB reserved for garbage collection (%-1 value means the LEB was
-+ * not reserved and should be reserved on mount)
-+ * @ihead_lnum: LEB number of index head
-+ * @ihead_offs: offset of index head
-+ * @index_size: size of index on flash
-+ * @total_free: total free space in bytes
-+ * @total_dirty: total dirty space in bytes
-+ * @total_used: total used space in bytes (includes only data LEBs)
-+ * @total_dead: total dead space in bytes (includes only data LEBs)
-+ * @total_dark: total dark space in bytes (includes only data LEBs)
-+ * @lpt_lnum: LEB number of LPT root nnode
-+ * @lpt_offs: offset of LPT root nnode
-+ * @nhead_lnum: LEB number of LPT head
-+ * @nhead_offs: offset of LPT head
-+ * @ltab_lnum: LEB number of LPT's own lprops table
-+ * @ltab_offs: offset of LPT's own lprops table
-+ * @lsave_lnum: LEB number of LPT's save table (big model only)
-+ * @lsave_offs: offset of LPT's save table (big model only)
-+ * @lscan_lnum: LEB number of last LPT scan
-+ * @empty_lebs: number of empty logical eraseblocks
-+ * @idx_lebs: number of indexing logical eraseblocks
-+ * @leb_cnt: count of LEBs used by file-system
-+ * @padding: reserved for future, zeroes
-+ */
-+struct ubifs_mst_node {
-+	struct ubifs_ch ch;
-+	__le64 highest_inum;
-+	__le64 cmt_no;
-+	__le32 flags;
-+	__le32 log_lnum;
-+	__le32 root_lnum;
-+	__le32 root_offs;
-+	__le32 root_len;
-+	__le32 gc_lnum;
-+	__le32 ihead_lnum;
-+	__le32 ihead_offs;
-+	__le64 index_size;
-+	__le64 total_free;
-+	__le64 total_dirty;
-+	__le64 total_used;
-+	__le64 total_dead;
-+	__le64 total_dark;
-+	__le32 lpt_lnum;
-+	__le32 lpt_offs;
-+	__le32 nhead_lnum;
-+	__le32 nhead_offs;
-+	__le32 ltab_lnum;
-+	__le32 ltab_offs;
-+	__le32 lsave_lnum;
-+	__le32 lsave_offs;
-+	__le32 lscan_lnum;
-+	__le32 empty_lebs;
-+	__le32 idx_lebs;
-+	__le32 leb_cnt;
-+	__u8 padding[344];
-+} __attribute__ ((packed));
++		case 'V':
++			common_print_version();
++			exit(EXIT_SUCCESS);
 +
-+/**
-+ * struct ubifs_ref_node - logical eraseblock reference node.
-+ * @ch: common header
-+ * @lnum: the referred logical eraseblock number
-+ * @offs: start offset in the referred LEB
-+ * @jhead: journal head number
-+ * @padding: reserved for future, zeroes
-+ */
-+struct ubifs_ref_node {
-+	struct ubifs_ch ch;
-+	__le32 lnum;
-+	__le32 offs;
-+	__le32 jhead;
-+	__u8 padding[28];
-+} __attribute__ ((packed));
++		case ':':
++			return errmsg("parameter is missing");
 +
-+#endif /*!__UBIFS_MEDIA_H__ */
++		default:
++			fprintf(stderr, "Use -h for help\n");
++			return -1;
++		}
++	}
++	if (optind == argc)
++		return errmsg("UBI device name was not specified (use -h for help)");
++	else if (optind != argc - 1)
++		return errmsg("more then one UBI device specified (use -h for help)");
++
++	args.vol = argv[optind];
++
++	if (args.lnum < 0)
++		return errmsg("lnum was not specified (use -h for help)");
++
++	return 0;
++}
++
++static int dump_eraseblock(int fd, struct ubi_vol_info *vol_info)
++{
++	int ret, leb_size, lnum;
++	off_t offs;
++	char *buf;
++
++	leb_size = vol_info->leb_size;
++	lnum = args.lnum;
++
++	ret = ubi_is_mapped(fd, lnum);
++	if (ret == 0) {
++		errmsg("lnum %d is not mapped", lnum);
++		goto out;
++	} else if (ret < 0) {
++		sys_errmsg("ubi_is_mapped() failed");
++		goto out;
++	}
++
++	buf = malloc(leb_size);
++	if (!buf)
++		return errmsg("cannot allocate %d bytes of memory",
++			      leb_size);
++	offs = lnum * leb_size;
++
++	ret = pread(fd, buf, leb_size, offs);
++	if (ret != leb_size) {
++		errmsg("cannot read %d bytes at lnum %d, read %d",
++		       leb_size, lnum, ret);
++		goto out_free;
++	}
++
++	ret = ubi_dump(lnum, buf, leb_size, args.info);
++
++out_free:
++	free(buf);
++out:
++	return ret;
++}
++
++int main(int argc, char * const argv[])
++{
++	int err, fd;
++	libubi_t libubi;
++	struct ubi_vol_info vol_info;
++
++	err = parse_opt(argc, argv);
++	if (err)
++		return -1;
++
++	libubi = libubi_open();
++	if (!libubi) {
++		if (errno == 0)
++			errmsg("UBI is not present in the system");
++		else
++			sys_errmsg("cannot open libubi");
++		goto out_libubi;
++	}
++
++	err = ubi_probe_node(libubi, args.vol);
++	if (err == 1) {
++		errmsg("\"%s\" is an UBI device node, not an UBI volume node",
++		       args.vol);
++		goto out_libubi;
++	} else if (err < 0) {
++		if (errno == ENODEV)
++			errmsg("\"%s\" is not an UBI volume node", args.vol);
++		else
++			sys_errmsg("error while probing \"%s\"", args.vol);
++		goto out_libubi;
++	}
++
++	err = ubi_get_vol_info(libubi, args.vol, &vol_info);
++	if (err) {
++		sys_errmsg("cannot get information about UBI volume \"%s\"",
++			   args.vol);
++		goto out_libubi;
++	}
++
++	fd = open(args.vol, O_RDONLY);
++	if (fd == -1) {
++		sys_errmsg("cannot open UBI volume \"%s\"", args.vol);
++		goto out_libubi;
++	}
++
++	err = dump_eraseblock(fd, &vol_info);
++	if (err)
++		goto out_fd;
++
++	close(fd);
++	libubi_close(libubi);
++	return 0;
++
++out_fd:
++	close(fd);
++out_libubi:
++	libubi_close(libubi);
++	return -1;
++}
 -- 
 1.6.0.2
