@@ -1,18 +1,28 @@
-Received: from mail-wg0-f47.google.com ([74.125.82.47])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XVNw6-0005LI-Kx
- for linux-mtd@lists.infradead.org; Sat, 20 Sep 2014 16:55:03 +0000
-Received: by mail-wg0-f47.google.com with SMTP id y10so1084132wgg.30
- for <linux-mtd@lists.infradead.org>; Sat, 20 Sep 2014 09:54:40 -0700 (PDT)
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-To: Brian Norris <computersforpeace@gmail.com>, Roger Quadros <rogerq@ti.com>
-Subject: [PATCH v4 5/5] mtd: nand: Constrain omap_elm to built-in
-Date: Sat, 20 Sep 2014 17:53:16 +0100
-Message-Id: <1411231996-6387-6-git-send-email-ezequiel@vanguardiasur.com.ar>
-In-Reply-To: <1411231996-6387-1-git-send-email-ezequiel@vanguardiasur.com.ar>
-References: <1411231996-6387-1-git-send-email-ezequiel@vanguardiasur.com.ar>
-Cc: Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
- linux-mtd@lists.infradead.org, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Received: from web100516.mail.kks.yahoo.co.jp ([183.79.28.146])
+ by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XVOs9-00041z-Qx
+ for linux-mtd@lists.infradead.org; Sat, 20 Sep 2014 17:55:03 +0000
+Message-ID: <194336.15596.qm@web100516.mail.kks.yahoo.co.jp>
+Date: Sun, 21 Sep 2014 02:54:38 +0900 (JST)
+From: Obuariver Goldmines <heart_breaker_0708@yahoo.co.jp>
+Reply-To: Obuariver Goldmines <obuarivergoldmines@gmail.com>
+Subject: Dear Sir,
+ We are gold mining company located in sub region of West Africa in
+ San Pedro-Cote D'Ivoire looking for real and potential gold buyers and
+ mandates to buy or market our gold nuggets,
+ dust and Dore bars. We have been in the mining business in Cote D' Ivoire for
+ many years and have good experience in international trade from West Africa.
+ You can expect good clean deals through us as we have built a loyal clientele
+ all across the world who are seeking gold from the West Africa region. Our
+ prices are very attractive in the International market.We look forward to a
+ good business relationship with your company. If you have any questions
+ please call or email us anytime. We look forward to your prompt reply and are
+ ready, willing and able to deliver upon your request.  Best Regards,
+ CHIEF.YAPI AMAN
+To: undisclosed recipients: ;
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,33 +32,4 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This fixes the following build error when omap2_nand is chosen built-in,
-and omap_elm is chosen as a module:
-
-  drivers/mtd/nand/omap2.c:2010: undefined reference to `elm_config'
-  drivers/mtd/nand/omap2.c:1980: undefined reference to `elm_config'
-  drivers/mtd/nand/omap2.c:1927: undefined reference to `elm_config'
-  drivers/mtd/nand/omap2.c:1444: undefined reference to `elm_decode_bch_error_page'
-
-Fix this by making omap_elm a 'bool' driver.
-
-Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
----
- drivers/mtd/nand/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index f1cf503..549c0cb 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -96,7 +96,7 @@ config MTD_NAND_OMAP2
- 
- config MTD_NAND_OMAP_BCH
- 	depends on MTD_NAND_OMAP2
--	tristate "Support hardware based BCH error correction"
-+	bool "Support hardware based BCH error correction"
- 	default n
- 	select BCH
- 	help
--- 
-2.1.0
+=0A
