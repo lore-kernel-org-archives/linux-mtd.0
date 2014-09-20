@@ -1,23 +1,18 @@
-Received: from mail-pa0-x236.google.com ([2607:f8b0:400e:c03::236])
+Received: from szxga03-in.huawei.com ([119.145.14.66])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XVCZA-0004iU-Iq
- for linux-mtd@lists.infradead.org; Sat, 20 Sep 2014 04:46:37 +0000
-Received: by mail-pa0-f54.google.com with SMTP id fb1so1344861pad.27
- for <linux-mtd@lists.infradead.org>; Fri, 19 Sep 2014 21:46:15 -0700 (PDT)
-Date: Fri, 19 Sep 2014 21:46:07 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Boris BREZILLON <boris.brezillon@free-electrons.com>
-Subject: Re: [PATCH 1/2] mtd: nand: support ONFI timings mode retrieval for
- non-ONFI NANDs
-Message-ID: <20140920044607.GE8127@brian-ubuntu>
-References: <1406539012-16320-1-git-send-email-boris.brezillon@free-electrons.com>
- <1406539012-16320-2-git-send-email-boris.brezillon@free-electrons.com>
+ id 1XVCn7-0000n3-Ki
+ for linux-mtd@lists.infradead.org; Sat, 20 Sep 2014 05:01:02 +0000
+Message-ID: <541D09C9.4080004@huawei.com>
+Date: Sat, 20 Sep 2014 12:59:53 +0800
+From: hujianyang <hujianyang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1406539012-16320-2-git-send-email-boris.brezillon@free-electrons.com>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
- linux-kernel@vger.kernel.org
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH RFC v3] ubi-utils: Introduce a utility ubidump
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: Richard Weinberger <richard.weinberger@gmail.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Bill Pringlemeir <bpringlemeir@nbsps.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,103 +22,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Since you were asking about this series, I have a comment:
+Hi all,
 
-On Mon, Jul 28, 2014 at 11:16:51AM +0200, Boris BREZILLON wrote:
-> Add an onfi_timing_mode_ds field to nand_chip and nand_flash_dev in order
-> to support NAND timings definition for non-ONFI NAND.
-> 
-> NAND that support better timings mode than the default one (timings mode 0)
-> have to define a new entry in the nand_ids table.
-> 
-> The timings mode should be deduced from timings description from the
-> datasheet and the ONFI specification
-> (www.onfi.org/~/media/ONFI/specs/onfi_3_1_spec.pdf, chapter 4.15
-> "Timing Parameters").
-> You should choose the closest mode that fit the timings requirements of
-> your NAND chip.
-> 
-> Signed-off-by: Boris BREZILLON <boris.brezillon@free-electrons.com>
-> ---
->  drivers/mtd/nand/nand_base.c | 1 +
->  include/linux/mtd/nand.h     | 7 +++++++
->  2 files changed, 8 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index d8cdf06..c952c21 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -3576,6 +3576,7 @@ static bool find_full_id_nand(struct mtd_info *mtd, struct nand_chip *chip,
->  		chip->options |= type->options;
->  		chip->ecc_strength_ds = NAND_ECC_STRENGTH(type);
->  		chip->ecc_step_ds = NAND_ECC_STEP(type);
-> +		chip->onfi_timing_mode_ds = type->onfi_timing_mode_ds;
->  
->  		*busw = type->options & NAND_BUSWIDTH_16;
->  
-> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> index 3083c53..435c005 100644
-> --- a/include/linux/mtd/nand.h
-> +++ b/include/linux/mtd/nand.h
-> @@ -587,6 +587,7 @@ struct nand_buffers {
->   * @ecc_step_ds:	[INTERN] ECC step required by the @ecc_strength_ds,
->   *                      also from the datasheet. It is the recommended ECC step
->   *			size, if known; if unknown, set to zero.
-> + * @onfi_timing_mode_ds:[INTERN] ONFI timing mode deduced from datasheet.
+It's about two months after the pushing of my v2 patches. I'd like
+to resend these v3 patches and discuss with you about the debugging
+of UBIFS. I wish you are not tried with this stuff.
 
-Might want at least one space between '[INTERN]' and 'ONFI'?
+I have to say these v3 patches don't make a great difference with
+the previous versions. Just simplify, I've removed ubi-level dump.
+So the lpt-leb dump is not supported as before. I want to know if
+we could start at this version and add other functionality step by
+step.
 
->   * @numchips:		[INTERN] number of physical chips
->   * @chipsize:		[INTERN] the size of one chip for multichip arrays
->   * @pagemask:		[INTERN] page number mask = number of (pages / chip) - 1
-> @@ -671,6 +672,7 @@ struct nand_chip {
->  	uint8_t bits_per_cell;
->  	uint16_t ecc_strength_ds;
->  	uint16_t ecc_step_ds;
-> +	int onfi_timing_mode_ds;
+Thanks~!
 
-I'm not sure if we'll just want a field specific to non-ONFI chips,
-faking an ONFI timing mode; can we make this into a more generally
-useful field, that represents something consistent across all NAND
-types? I was thinking a "highest mode supported", but that actually
-isn't great, since for true ONFI modes (except mode 0) require a SET
-FEATURES command to change to a higher mode.
+v1:
+http://lists.infradead.org/pipermail/linux-mtd/2014-July/054541.html
 
-Maybe just something like onfi_timing_mode_default, which we could then
-use as mode 0 for ONFI chips.
+v2:
+http://lists.infradead.org/pipermail/linux-mtd/2014-July/054831.html
 
-Ideally, we could centralize as much of this as possible, so that a NAND
-driver only has to know the mechanics of "how do I translate an ONFI
-mode to a timing configuration for my NAND controller," instead of any
-details of how to choose from one of many supported ONFI modes. i.e., it
-could implement something like the following hook:
-
-	int (*set_timing_mode)(struct nand_sdr_timings *timing);
-
-But anyway, that's out of the scope of this series, and it may be harder
-than I make it sound. I just wanted to throw that out there.
-
->  	int badblockpos;
->  	int badblockbits;
->  
-> @@ -772,6 +774,10 @@ struct nand_chip {
->   *               @ecc_step_ds in nand_chip{}, also from the datasheet.
->   *               For example, the "4bit ECC for each 512Byte" can be set with
->   *               NAND_ECC_INFO(4, 512).
-> + * @onfi_timing_mode_ds: the ONFI timing mode supported by this NAND chip. This
-> + *                       should be deduced from timings described in the
-> + *                       datasheet.
-> + *
->   */
->  struct nand_flash_dev {
->  	char *name;
-> @@ -792,6 +798,7 @@ struct nand_flash_dev {
->  		uint16_t strength_ds;
->  		uint16_t step_ds;
->  	} ecc;
-> +	int onfi_timing_mode_ds;
->  };
->  
->  /**
-
-Brian
+Changes in v3:
+ - Remove ubi-level dump so we don't need to worry about how to
+   get ubi-level info from an UBI device.
+ - Read ubifs stuff by read() ops which is provided by UBI driver.
