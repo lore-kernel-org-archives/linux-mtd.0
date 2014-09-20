@@ -1,23 +1,21 @@
-Received: from mga14.intel.com ([192.55.52.115])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XV1wu-0002fZ-TY
- for linux-mtd@lists.infradead.org; Fri, 19 Sep 2014 17:26:25 +0000
-Message-ID: <1411147451.23429.20.camel@sauron.fi.intel.com>
-Subject: Re: Does UBI LEB-level access interlock happily with UBIfs access?
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Atlant Schmidt <aschmidt@dekaresearch.com>
-Date: Fri, 19 Sep 2014 20:24:11 +0300
-In-Reply-To: <0A40042D85E7C84DB443060EC44B3FD36D986A301C@dekaexchange07.deka.local>
-References: <0A40042D85E7C84DB443060EC44B3FD36D986A3009@dekaexchange07.deka.local>
- <1411140449.28850.152.camel@sauron.fi.intel.com>
- <0A40042D85E7C84DB443060EC44B3FD36D986A301A@dekaexchange07.deka.local>
- <1411146833.23429.11.camel@sauron.fi.intel.com>
- <0A40042D85E7C84DB443060EC44B3FD36D986A301C@dekaexchange07.deka.local>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Fri, 19 Sep 2014 21:34:38 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Boris BREZILLON <boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH v4 0/2] mtd: nand: add sunxi NAND flash controller support
+Message-ID: <20140920043438.GD8127@brian-ubuntu>
+References: <1408382788-32153-1-git-send-email-boris.brezillon@free-electrons.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1408382788-32153-1-git-send-email-boris.brezillon@free-electrons.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ "Dmitriy B." <rzk333@gmail.com>, Jonas Meyer <quitte@gmail.com>,
+ linux-kernel@vger.kernel.org, Yassin Jaffer <yassinjaffer@gmail.com>,
+ linux-sunxi@googlegroups.com, Rob Herring <robh+dt@kernel.org>,
+ linux-mtd@lists.infradead.org, Kumar Gala <galak@codeaurora.org>,
+ Maxime Ripard <maxime.ripard@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,20 +25,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2014-09-19 at 13:17 -0400, Atlant Schmidt wrote:
-> But as I pointed, this will not force re-read of the volume table LEBs.
-> To address this, you'd need to do some additional, not very difficult
-> work.
+Hi Boris,
 
-Oh, and this won't make UBI re-read the EC and VID headers, so they may
-bit-rot too.
+On Mon, Aug 18, 2014 at 07:26:26PM +0200, Boris BREZILLON wrote:
+> This patch series adds support for the sunxi NAND Flash Controller (NFC)
+> block.
+> 
+> These two patches only add support for the basic NAND stuff:
+>  - NAND controller operations
+>  - SW and HW ECC handling (with both syndrome and normal ECC scheme)
+> 
+> If you want support for advanced features you can find it on my github
+> repo [1]:
+>  - HW randomization support
+>  - per partition ECC/Randomizer to handle bootloader partitions
+> 
+> DMA transfers are not supported yet, but I have reworked the OOB layout
+> when using the HW ECC scheme to match the one used when accessing the NAND
+> with DMA transfers (the available OOB bytes are placed at the end of the
+> OOB area).
+> 
+> This patch series depends on this other one [2] which adds support for ONFI
+> timing mode retrieval on non-ONFI NANDs.
 
-So indeed it sounds like UBI needs a separate interface for this kind of
-"scrub all bit-flips" issues. I do not think it is hard to do - all the
-mechanisms are already implemented, so this would mostly be about
-inventing good API.
+Were you planning to send v2 of your series [2]? I see you made a
+mistake you were planning on fixing:
 
+  https://lkml.org/lkml/2014/7/30/423
 
--- 
-Best Regards,
-Artem Bityutskiy
+Brian
+
+> Best Regards,
+> 
+> Boris
+> 
+> [1]https://github.com/bbrezillon/linux-sunxi/tree/sunxi-nand-v4
+> [2]https://lkml.org/lkml/2014/7/28/156
+> 
+> Changes since v3:
+>  - removed nand core code modifications from the patch series (submitted
+>    separately)
+>  - added documentation to the code
+>  - forced timeout (a default timeout is used when none is provided by the
+>    caller) on controller operations
+>  - fixed coding style issues
+>  - removed unneeded irq field from the sunxi_nfc struct
+>  - fixed several memory leaks
+>  - reworked the NFC reset code (to avoid potential garbage config from the
+>    bootloader)
+>  - made use of ECC_EXCEPTION flag to prevent erased page from generating
+>    ECC errors
+>  - changed the OOB layout for HW ECC scheme
+> 
+> Changes since v2:
+>  - merge HW ECC implementation in base implementation patch
+>  - fix timing config when interfacing with an ONFI compatible chip
+> 
+> Changes since v1:
+>  - add HW ECC support
+>  - rework NAND timings retrieval (use ONFI timing mode instead of raw timings)
+>  - add nand-ecc-level property to specify NAND ECC requirements from DT
+> 
+> Boris BREZILLON (2):
+>   mtd: nand: add sunxi NAND flash controller support
+>   mtd: nand: add sunxi NFC dt bindings doc
+> 
+>  .../devicetree/bindings/mtd/sunxi-nand.txt         |   45 +
+>  drivers/mtd/nand/Kconfig                           |    6 +
+>  drivers/mtd/nand/Makefile                          |    1 +
+>  drivers/mtd/nand/sunxi_nand.c                      | 1362 ++++++++++++++++++++
+>  4 files changed, 1414 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/sunxi-nand.txt
+>  create mode 100644 drivers/mtd/nand/sunxi_nand.c
+> 
