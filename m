@@ -1,16 +1,23 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XVzG1-0003UA-30
- for linux-mtd@lists.infradead.org; Mon, 22 Sep 2014 08:46:06 +0000
-From: Richard Weinberger <richard@nod.at>
-To: dedekind1@gmail.com
-Subject: [PATCH 2/3] UBI: wl: Rename cancel flag to shutdown
-Date: Mon, 22 Sep 2014 10:45:35 +0200
-Message-Id: <1411375536-20067-2-git-send-email-richard@nod.at>
-In-Reply-To: <1411375536-20067-1-git-send-email-richard@nod.at>
-References: <1411375536-20067-1-git-send-email-richard@nod.at>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+Received: from mail-qg0-f45.google.com ([209.85.192.45])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XW36s-0006nc-SD
+ for linux-mtd@lists.infradead.org; Mon, 22 Sep 2014 12:52:55 +0000
+Received: by mail-qg0-f45.google.com with SMTP id q108so2784425qgd.4
+ for <linux-mtd@lists.infradead.org>; Mon, 22 Sep 2014 05:52:32 -0700 (PDT)
+Message-ID: <54201B3B.50007@vanguardiasur.com.ar>
+Date: Mon, 22 Sep 2014 13:51:07 +0100
+From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+MIME-Version: 1.0
+To: Roger Quadros <rogerq@ti.com>, Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v4 0/5] nand: OMAP collected fixes
+References: <1411231996-6387-1-git-send-email-ezequiel@vanguardiasur.com.ar>
+ <541FDC2F.4020103@ti.com>
+In-Reply-To: <541FDC2F.4020103@ti.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="RQB3TlkrKJm0mOEELp6IvHeB2PPome04e"
+Cc: Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,141 +27,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It confused me more than once that the cancel flag of the
-work function does not indicate the cancellation of a single work.
-In fact it indicates the WL sub-system shutdown and therefore
-worker functions have to free their wl_entries too.
-That's why you cannot cancel a single work, you can only shutdown
-all works.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--RQB3TlkrKJm0mOEELp6IvHeB2PPome04e
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- drivers/mtd/ubi/ubi.h |  9 +++++----
- drivers/mtd/ubi/wl.c  | 24 +++++++++++++-----------
- 2 files changed, 18 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index 7bf4163..7dad704 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -713,14 +713,15 @@ struct ubi_attach_info {
-  * @torture: if the physical eraseblock has to be tortured
-  * @anchor: produce a anchor PEB to by used by fastmap
-  *
-- * The @func pointer points to the worker function. If the @cancel argument is
-- * not zero, the worker has to free the resources and exit immediately. The
-- * worker has to return zero in case of success and a negative error code in
-+ * The @func pointer points to the worker function. If the @shutdown argument is
-+ * not zero, the worker has to free the resources and exit immediately as the
-+ * WL sub-system is shutting down.
-+ * The worker has to return zero in case of success and a negative error code in
-  * case of failure.
-  */
- struct ubi_work {
- 	struct list_head list;
--	int (*func)(struct ubi_device *ubi, struct ubi_work *wrk, int cancel);
-+	int (*func)(struct ubi_device *ubi, struct ubi_work *wrk, int shutdown);
- 	/* The below fields are only relevant to erasure works */
- 	struct ubi_wl_entry *e;
- 	int vol_id;
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index 20f4917..253ec9b 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -864,7 +864,7 @@ static void schedule_ubi_work(struct ubi_device *ubi, struct ubi_work *wrk)
- }
- 
- static int erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk,
--			int cancel);
-+			int shutdown);
- 
- #ifdef CONFIG_MTD_UBI_FASTMAP
- /**
-@@ -990,14 +990,15 @@ int ubi_wl_put_fm_peb(struct ubi_device *ubi, struct ubi_wl_entry *fm_e,
-  * wear_leveling_worker - wear-leveling worker function.
-  * @ubi: UBI device description object
-  * @wrk: the work object
-- * @cancel: non-zero if the worker has to free memory and exit
-+ * @shutdown: non-zero if the worker has to free memory and exit
-+ * because the WL-subsystem is shutting down
-  *
-  * This function copies a more worn out physical eraseblock to a less worn out
-  * one. Returns zero in case of success and a negative error code in case of
-  * failure.
-  */
- static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
--				int cancel)
-+				int shutdown)
- {
- 	int err, scrubbing = 0, torture = 0, protect = 0, erroneous = 0;
- 	int vol_id = -1, uninitialized_var(lnum);
-@@ -1008,7 +1009,7 @@ static int wear_leveling_worker(struct ubi_device *ubi, struct ubi_work *wrk,
- 	struct ubi_vid_hdr *vid_hdr;
- 
- 	kfree(wrk);
--	if (cancel)
-+	if (shutdown)
- 		return 0;
- 
- 	vid_hdr = ubi_zalloc_vid_hdr(ubi, GFP_NOFS);
-@@ -1407,7 +1408,8 @@ int ubi_ensure_anchor_pebs(struct ubi_device *ubi)
-  * erase_worker - physical eraseblock erase worker function.
-  * @ubi: UBI device description object
-  * @wl_wrk: the work object
-- * @cancel: non-zero if the worker has to free memory and exit
-+ * @shutdown: non-zero if the worker has to free memory and exit
-+ * because the WL sub-system is shutting down
-  *
-  * This function erases a physical eraseblock and perform torture testing if
-  * needed. It also takes care about marking the physical eraseblock bad if
-@@ -1415,7 +1417,7 @@ int ubi_ensure_anchor_pebs(struct ubi_device *ubi)
-  * failure.
-  */
- static int erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk,
--			int cancel)
-+			int shutdown)
- {
- 	struct ubi_wl_entry *e = wl_wrk->e;
- 	int pnum = e->pnum;
-@@ -1423,7 +1425,7 @@ static int erase_worker(struct ubi_device *ubi, struct ubi_work *wl_wrk,
- 	int lnum = wl_wrk->lnum;
- 	int err, available_consumed = 0;
- 
--	if (cancel) {
-+	if (shutdown) {
- 		dbg_wl("cancel erasure of PEB %d EC %d", pnum, e->ec);
- 		kfree(wl_wrk);
- 		kmem_cache_free(ubi_wl_entry_slab, e);
-@@ -1845,10 +1847,10 @@ int ubi_thread(void *u)
- }
- 
- /**
-- * cancel_pending - cancel all pending works.
-+ * shutdown_work - shutdown all pending works.
-  * @ubi: UBI device description object
-  */
--static void cancel_pending(struct ubi_device *ubi)
-+static void shutdown_work(struct ubi_device *ubi)
- {
- 	while (!list_empty(&ubi->works)) {
- 		struct ubi_work *wrk;
-@@ -1997,7 +1999,7 @@ int ubi_wl_init(struct ubi_device *ubi, struct ubi_attach_info *ai)
- 	return 0;
- 
- out_free:
--	cancel_pending(ubi);
-+	shutdown_work(ubi);
- 	tree_destroy(&ubi->used);
- 	tree_destroy(&ubi->free);
- 	tree_destroy(&ubi->scrub);
-@@ -2029,7 +2031,7 @@ static void protection_queue_destroy(struct ubi_device *ubi)
- void ubi_wl_close(struct ubi_device *ubi)
- {
- 	dbg_wl("close the WL sub-system");
--	cancel_pending(ubi);
-+	shutdown_work(ubi);
- 	protection_queue_destroy(ubi);
- 	tree_destroy(&ubi->used);
- 	tree_destroy(&ubi->erroneous);
--- 
-1.8.4.5
+
+On 09/22/2014 09:22 AM, Roger Quadros wrote:
+> Hi Ezequiel,
+>=20
+> On 09/20/2014 07:53 PM, Ezequiel Garcia wrote:
+>> I've collected all the changes recently discussed in a whole patchset.=
+
+>> If you are just reading this for the first time please take a look at:=
+
+>>
+>> [1] http://www.spinics.net/lists/linux-omap/msg110965.html
+>> [2] http://www.spinics.net/lists/linux-omap/msg110958.html=20
+>>
+>> As requested by Roger, the omap_elm is a 'bool' driver now. The plan
+>> is to merge it inside omap2_nand, but my queue is really filled, so
+>> if anyone feels like doing, please be my guest.
+>>
+>> Although I'm hoping this to be the last round, feedback and testing
+>> is welcome.
+>=20
+> Patches 3 and 4 still have checkpatch issues.
+>=20
+
+I think you didn't look at them in detail. Unless I'm missing something,
+it's just warning about MAINTAINERS update:
+
+WARNING: added, moved or deleted file(s), does MAINTAINERS need updating?=
+
+#16:
+ drivers/mtd/{devices/elm.c =3D> nand/omap_elm.c} | 0
+
+WARNING: added, moved or deleted file(s), does MAINTAINERS need updating?=
+
+#13:
+ drivers/mtd/nand/{omap2.c =3D> omap2_nand.c} | 0
+
+This driver is not in MAINTAINERS. If you want to start maintaining it,
+it'd be good to add you to MAINTAINERS so people Cc you properly on patch=
+es.
+
+--=20
+Ezequiel Garcia, VanguardiaSur
+www.vanguardiasur.com.ar
+
+
+--RQB3TlkrKJm0mOEELp6IvHeB2PPome04e
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJUIBtCAAoJEIOKbhOEIHKi1EgP+wc65+lRyux/x5pTq3ifT0MY
+2rviakOvR93A0yMZmeD6O5csKL1Q5WECDwP4L8xgMPoSAHN0gFQ9yaiFZxX5hBr/
+QEgaY4oDh6+VoYaxaQXcVVB0bDVCEU295oU3IKuOsJtQtbu+xh3OKck3XGiS+5ys
+/q6BtXQkaUknac4ig8UfaLgFeIQ6QwdFNFJnLMOC+3YFkVMQZ5E0saD+JBBd6saF
+lBjJxY4a5YrettrK81eD5QG5bA/s6rNvUabqMXYKKaTUEenNUGurwkrfsKfzaQYv
+Y/5gycQI2XJ30whMJoHuxOoHWQbCKyH103dOeSoZn+3jJcI3C/mNLP1G+B8yv04U
+v17hpndPprpgwrw/TU2lm1heN+rtCCgM39TTBy9V6a2zX/Ou2DijuiWyiLpTJQEq
+HYFktN7f4cH1kQx83xLRrqD+gLX+I4eL7vGFt/cG3mmZPZWwgPDhxCnkyTsi6hnh
+WREaZkOnnLdi6CnTChDIYSxQxXMDP11f+LwCojn1L0ssQsiaCkFDF3FP6xFwD33B
+e0FqZKvFd2ONrlje91XsMGH3ax464ET9nrvBlxSOyDKhsUUhHLi+PbgoYQm2IpXT
+nbucPm/Cl3Vcd8LLqCHfRU6W9d+paWw3wYx3xvgqwrVDjSMpu92xORwRtyxljJXv
+2gJ+0e4fU2TyD9zv8xcN
+=Vwvi
+-----END PGP SIGNATURE-----
+
+--RQB3TlkrKJm0mOEELp6IvHeB2PPome04e--
