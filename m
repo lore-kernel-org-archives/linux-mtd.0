@@ -1,23 +1,18 @@
-Received: from mail-qg0-f45.google.com ([209.85.192.45])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XW36s-0006nc-SD
- for linux-mtd@lists.infradead.org; Mon, 22 Sep 2014 12:52:55 +0000
-Received: by mail-qg0-f45.google.com with SMTP id q108so2784425qgd.4
- for <linux-mtd@lists.infradead.org>; Mon, 22 Sep 2014 05:52:32 -0700 (PDT)
-Message-ID: <54201B3B.50007@vanguardiasur.com.ar>
-Date: Mon, 22 Sep 2014 13:51:07 +0100
-From: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-MIME-Version: 1.0
-To: Roger Quadros <rogerq@ti.com>, Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v4 0/5] nand: OMAP collected fixes
-References: <1411231996-6387-1-git-send-email-ezequiel@vanguardiasur.com.ar>
- <541FDC2F.4020103@ti.com>
-In-Reply-To: <541FDC2F.4020103@ti.com>
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="RQB3TlkrKJm0mOEELp6IvHeB2PPome04e"
-Cc: Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
- linux-mtd@lists.infradead.org
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XW4Ya-00007y-Ap
+ for linux-mtd@lists.infradead.org; Mon, 22 Sep 2014 14:25:36 +0000
+From: Boris BREZILLON <boris.brezillon@free-electrons.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Subject: [PATCH v2 0/2] mtd: nand: support ONFI timings mode retrieval for
+ non-ONFI NANDs
+Date: Mon, 22 Sep 2014 16:25:09 +0200
+Message-Id: <1411395911-30365-1-git-send-email-boris.brezillon@free-electrons.com>
+Cc: Boris BREZILLON <boris.brezillon@free-electrons.com>,
+ linux-sunxi@googlegroups.com, linux-kernel@vger.kernel.org,
+ Yassin Jaffer <yassinjaffer@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,78 +22,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---RQB3TlkrKJm0mOEELp6IvHeB2PPome04e
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
+Following the series adding ONFI timing mode support, here is a series
+adding support for timing mode retrieval on non-ONFI NANDs.
 
+It just adds a new field to the nand_chip and nand_flash_dev struct so
+that anyone can define its chip requirements in the nand_ids table.
 
-On 09/22/2014 09:22 AM, Roger Quadros wrote:
-> Hi Ezequiel,
->=20
-> On 09/20/2014 07:53 PM, Ezequiel Garcia wrote:
->> I've collected all the changes recently discussed in a whole patchset.=
+The 2nd patch serves as an example and adds an entry for the Hynix
+H27UCG8T2ATR-BC NAND chip used on the Cubietruck board.
 
->> If you are just reading this for the first time please take a look at:=
+Best Regards,
 
->>
->> [1] http://www.spinics.net/lists/linux-omap/msg110965.html
->> [2] http://www.spinics.net/lists/linux-omap/msg110958.html=20
->>
->> As requested by Roger, the omap_elm is a 'bool' driver now. The plan
->> is to merge it inside omap2_nand, but my queue is really filled, so
->> if anyone feels like doing, please be my guest.
->>
->> Although I'm hoping this to be the last round, feedback and testing
->> is welcome.
->=20
-> Patches 3 and 4 still have checkpatch issues.
->=20
+Boris
 
-I think you didn't look at them in detail. Unless I'm missing something,
-it's just warning about MAINTAINERS update:
+Changes since v1:
+- fix H27UCG8T2ATR-BC definition
+- rename onfi_timing_mode_ds field into onfi_timing_mode_default
 
-WARNING: added, moved or deleted file(s), does MAINTAINERS need updating?=
+Boris BREZILLON (2):
+  mtd: nand: support ONFI timing mode retrieval for non-ONFI NANDs
+  mtd: nand: add Hynix's H27UCG8T2ATR-BC to nand_ids table
 
-#16:
- drivers/mtd/{devices/elm.c =3D> nand/omap_elm.c} | 0
+ drivers/mtd/nand/nand_base.c |  2 ++
+ drivers/mtd/nand/nand_ids.c  |  4 ++++
+ include/linux/mtd/nand.h     | 11 +++++++++++
+ 3 files changed, 17 insertions(+)
 
-WARNING: added, moved or deleted file(s), does MAINTAINERS need updating?=
-
-#13:
- drivers/mtd/nand/{omap2.c =3D> omap2_nand.c} | 0
-
-This driver is not in MAINTAINERS. If you want to start maintaining it,
-it'd be good to add you to MAINTAINERS so people Cc you properly on patch=
-es.
-
---=20
-Ezequiel Garcia, VanguardiaSur
-www.vanguardiasur.com.ar
-
-
---RQB3TlkrKJm0mOEELp6IvHeB2PPome04e
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBAgAGBQJUIBtCAAoJEIOKbhOEIHKi1EgP+wc65+lRyux/x5pTq3ifT0MY
-2rviakOvR93A0yMZmeD6O5csKL1Q5WECDwP4L8xgMPoSAHN0gFQ9yaiFZxX5hBr/
-QEgaY4oDh6+VoYaxaQXcVVB0bDVCEU295oU3IKuOsJtQtbu+xh3OKck3XGiS+5ys
-/q6BtXQkaUknac4ig8UfaLgFeIQ6QwdFNFJnLMOC+3YFkVMQZ5E0saD+JBBd6saF
-lBjJxY4a5YrettrK81eD5QG5bA/s6rNvUabqMXYKKaTUEenNUGurwkrfsKfzaQYv
-Y/5gycQI2XJ30whMJoHuxOoHWQbCKyH103dOeSoZn+3jJcI3C/mNLP1G+B8yv04U
-v17hpndPprpgwrw/TU2lm1heN+rtCCgM39TTBy9V6a2zX/Ou2DijuiWyiLpTJQEq
-HYFktN7f4cH1kQx83xLRrqD+gLX+I4eL7vGFt/cG3mmZPZWwgPDhxCnkyTsi6hnh
-WREaZkOnnLdi6CnTChDIYSxQxXMDP11f+LwCojn1L0ssQsiaCkFDF3FP6xFwD33B
-e0FqZKvFd2ONrlje91XsMGH3ax464ET9nrvBlxSOyDKhsUUhHLi+PbgoYQm2IpXT
-nbucPm/Cl3Vcd8LLqCHfRU6W9d+paWw3wYx3xvgqwrVDjSMpu92xORwRtyxljJXv
-2gJ+0e4fU2TyD9zv8xcN
-=Vwvi
------END PGP SIGNATURE-----
-
---RQB3TlkrKJm0mOEELp6IvHeB2PPome04e--
+-- 
+1.9.1
