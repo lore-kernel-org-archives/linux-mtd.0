@@ -1,23 +1,21 @@
-Received: from smtp.mei.co.jp ([133.183.100.20])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XVsFk-0005Qu-AJ
- for linux-mtd@lists.infradead.org; Mon, 22 Sep 2014 01:17:20 +0000
-Date: Mon, 22 Sep 2014 10:15:56 +0900
-From: Masahiro Yamada <yamada.m@jp.panasonic.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v3 0/7] mtd: denali: A collection of trivial coding style
- fixes
-In-Reply-To: <20140919170020.GF1193@ld-irv-0074>
-References: <1410865465-17941-1-git-send-email-yamada.m@jp.panasonic.com>
- <20140919170020.GF1193@ld-irv-0074>
-Message-Id: <20140922101555.0A05.AA925319@jp.panasonic.com>
+Received: from arroyo.ext.ti.com ([192.94.94.40])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XVyoW-0002Pn-2Z
+ for linux-mtd@lists.infradead.org; Mon, 22 Sep 2014 08:17:40 +0000
+Message-ID: <541FDB09.1080209@ti.com>
+Date: Mon, 22 Sep 2014 11:17:13 +0300
+From: Roger Quadros <rogerq@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, Brian Norris
+ <computersforpeace@gmail.com>
+Subject: Re: [PATCH v4 5/5] mtd: nand: Constrain omap_elm to built-in
+References: <1411231996-6387-1-git-send-email-ezequiel@vanguardiasur.com.ar>
+ <1411231996-6387-6-git-send-email-ezequiel@vanguardiasur.com.ar>
+In-Reply-To: <1411231996-6387-6-git-send-email-ezequiel@vanguardiasur.com.ar>
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Cc: Jiri Kosina <trivial@kernel.org>, David Woodhouse <dwmw2@infradead.org>,
- linux-kernel@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>,
- Rashika Kheria <rashika.kheria@gmail.com>, linux-mtd@lists.infradead.org,
- "grmoore@altera.com" <grmoore@altera.com>, Huang Shijie <shijie8@gmail.com>
+Cc: Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,39 +25,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brian,
-
-
-On Fri, 19 Sep 2014 10:00:20 -0700
-Brian Norris <computersforpeace@gmail.com> wrote:
-
-> On Tue, Sep 16, 2014 at 08:04:18PM +0900, Masahiro Yamada wrote:
-> > 
-> > 
-> > Masahiro Yamada (7):
-> >   mtd: denali: fix the format of comment blocks
-> >   mtd: denali: remove unnecessary variable initializations
-> >   mtd: denali: remove unnecessary casts
-> >   mtd: denali: change the type of iterators to int
+On 09/20/2014 07:53 PM, Ezequiel Garcia wrote:
+> This fixes the following build error when omap2_nand is chosen built-in,
+> and omap_elm is chosen as a module:
 > 
-> I already merged these 4.
+>   drivers/mtd/nand/omap2.c:2010: undefined reference to `elm_config'
+>   drivers/mtd/nand/omap2.c:1980: undefined reference to `elm_config'
+>   drivers/mtd/nand/omap2.c:1927: undefined reference to `elm_config'
+>   drivers/mtd/nand/omap2.c:1444: undefined reference to `elm_decode_bch_error_page'
 > 
-> >   mtd: denali: remove a set-but-unused variable
+> Fix this by making omap_elm a 'bool' driver.
 > 
-> This one was merged but you changed it (and falsely kept the
-> 'Reviewed-by' tag). So I split it out into its own patch and dropped the
-> 'Reviewed-by'.
+> Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+
+Acked-by: <rogerq@ti.com>
+
+--
+cheers,
+-roger
+
+> ---
+>  drivers/mtd/nand/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> >   mtd: denali: remove unnecessary parentheses
-> >   mtd: denali: fix indents and other trivial things
+> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+> index f1cf503..549c0cb 100644
+> --- a/drivers/mtd/nand/Kconfig
+> +++ b/drivers/mtd/nand/Kconfig
+> @@ -96,7 +96,7 @@ config MTD_NAND_OMAP2
+>  
+>  config MTD_NAND_OMAP_BCH
+>  	depends on MTD_NAND_OMAP2
+> -	tristate "Support hardware based BCH error correction"
+> +	bool "Support hardware based BCH error correction"
+>  	default n
+>  	select BCH
+>  	help
 > 
-> Applied a modified version of the last three, to l2-mtd.git. Feel free
-> to check my work, but git tells me that the end result is identical.
-
-
-Everything looks good.
-Many thanks!!
-
-
-Best Regards
-Masahiro Yamada
