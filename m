@@ -1,15 +1,23 @@
-Received: from hauke-m.de ([2001:41d0:8:b27b::1])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XVphZ-0007aZ-CT
- for linux-mtd@lists.infradead.org; Sun, 21 Sep 2014 22:33:54 +0000
-From: Hauke Mehrtens <hauke@hauke-m.de>
-To: computersforpeace@gmail.com
-Subject: [PATCH] mtd: bcm47xxpart: only register partitions if the trx header
- was filled
-Date: Mon, 22 Sep 2014 00:33:13 +0200
-Message-Id: <1411338793-21245-1-git-send-email-hauke@hauke-m.de>
-Cc: Hauke Mehrtens <hauke@hauke-m.de>, zajec5@gmail.com,
- linux-mtd@lists.infradead.org, David.Woodhouse@intel.com, dedekind1@gmail.com
+Received: from smtp.mei.co.jp ([133.183.100.20])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XVsFk-0005Qu-AJ
+ for linux-mtd@lists.infradead.org; Mon, 22 Sep 2014 01:17:20 +0000
+Date: Mon, 22 Sep 2014 10:15:56 +0900
+From: Masahiro Yamada <yamada.m@jp.panasonic.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH v3 0/7] mtd: denali: A collection of trivial coding style
+ fixes
+In-Reply-To: <20140919170020.GF1193@ld-irv-0074>
+References: <1410865465-17941-1-git-send-email-yamada.m@jp.panasonic.com>
+ <20140919170020.GF1193@ld-irv-0074>
+Message-Id: <20140922101555.0A05.AA925319@jp.panasonic.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+Cc: Jiri Kosina <trivial@kernel.org>, David Woodhouse <dwmw2@infradead.org>,
+ linux-kernel@vger.kernel.org, Josh Triplett <josh@joshtriplett.org>,
+ Rashika Kheria <rashika.kheria@gmail.com>, linux-mtd@lists.infradead.org,
+ "grmoore@altera.com" <grmoore@altera.com>, Huang Shijie <shijie8@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,46 +27,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Sometimes the trx offsets are 0, in that case there is no partition and
-we should not try to add one.
+Hi Brian,
 
-Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
----
- drivers/mtd/bcm47xxpart.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
-index 8057f52..c3f4454 100644
---- a/drivers/mtd/bcm47xxpart.c
-+++ b/drivers/mtd/bcm47xxpart.c
-@@ -168,18 +168,22 @@ static int bcm47xxpart_parse(struct mtd_info *master,
- 				i++;
- 			}
- 
--			bcm47xxpart_add_part(&parts[curr_part++], "linux",
--					     offset + trx->offset[i], 0);
--			i++;
-+			if (trx->offset[i]) {
-+				bcm47xxpart_add_part(&parts[curr_part++], "linux",
-+						     offset + trx->offset[i], 0);
-+				i++;
-+			}
- 
- 			/*
- 			 * Pure rootfs size is known and can be calculated as:
- 			 * trx->length - trx->offset[i]. We don't fill it as
- 			 * we want to have jffs2 (overlay) in the same mtd.
- 			 */
--			bcm47xxpart_add_part(&parts[curr_part++], "rootfs",
--					     offset + trx->offset[i], 0);
--			i++;
-+			if (trx->offset[i]) {
-+				bcm47xxpart_add_part(&parts[curr_part++], "rootfs",
-+						     offset + trx->offset[i], 0);
-+				i++;
-+			}
- 
- 			last_trx_part = curr_part - 1;
- 
--- 
-1.9.1
+On Fri, 19 Sep 2014 10:00:20 -0700
+Brian Norris <computersforpeace@gmail.com> wrote:
+
+> On Tue, Sep 16, 2014 at 08:04:18PM +0900, Masahiro Yamada wrote:
+> > 
+> > 
+> > Masahiro Yamada (7):
+> >   mtd: denali: fix the format of comment blocks
+> >   mtd: denali: remove unnecessary variable initializations
+> >   mtd: denali: remove unnecessary casts
+> >   mtd: denali: change the type of iterators to int
+> 
+> I already merged these 4.
+> 
+> >   mtd: denali: remove a set-but-unused variable
+> 
+> This one was merged but you changed it (and falsely kept the
+> 'Reviewed-by' tag). So I split it out into its own patch and dropped the
+> 'Reviewed-by'.
+> 
+> >   mtd: denali: remove unnecessary parentheses
+> >   mtd: denali: fix indents and other trivial things
+> 
+> Applied a modified version of the last three, to l2-mtd.git. Feel free
+> to check my work, but git tells me that the end result is identical.
+
+
+Everything looks good.
+Many thanks!!
+
+
+Best Regards
+Masahiro Yamada
