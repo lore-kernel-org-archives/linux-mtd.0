@@ -1,15 +1,15 @@
 Received: from top.free-electrons.com ([176.31.233.9]
  helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XW4Ya-000084-Al
- for linux-mtd@lists.infradead.org; Mon, 22 Sep 2014 14:25:36 +0000
+ id 1XW4Ya-000080-Am
+ for linux-mtd@lists.infradead.org; Mon, 22 Sep 2014 14:25:37 +0000
 From: Boris BREZILLON <boris.brezillon@free-electrons.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH v2 2/2] mtd: nand: add Hynix's H27UCG8T2ATR-BC to nand_ids
- table
-Date: Mon, 22 Sep 2014 16:25:11 +0200
-Message-Id: <1411395911-30365-3-git-send-email-boris.brezillon@free-electrons.com>
+Subject: [PATCH v2 1/2] mtd: nand: support ONFI timing mode retrieval for
+ non-ONFI NANDs
+Date: Mon, 22 Sep 2014 16:25:10 +0200
+Message-Id: <1411395911-30365-2-git-send-email-boris.brezillon@free-electrons.com>
 In-Reply-To: <1411395911-30365-1-git-send-email-boris.brezillon@free-electrons.com>
 References: <1411395911-30365-1-git-send-email-boris.brezillon@free-electrons.com>
 Cc: Boris BREZILLON <boris.brezillon@free-electrons.com>,
@@ -24,29 +24,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add the full description of the Hynix H27UCG8T2ATR-BC NAND chip in the
-nand_ids table so that we can later use the NAND ECC infos and ONFI timings
-mode in controller drivers.
+Add an onfi_timing_mode_default field to nand_chip and nand_flash_dev in
+order to support NAND timings definition for non-ONFI NAND.
+
+NAND that support better timings mode than the default one have to define
+a new entry in the nand_ids table.
+
+The default timing mode should be deduced from timings description from
+the datasheet and the ONFI specification
+(www.onfi.org/~/media/ONFI/specs/onfi_3_1_spec.pdf, chapter 4.15
+"Timing Parameters").
+You should choose the closest mode that fit the timings requirements of
+your NAND chip.
 
 Signed-off-by: Boris BREZILLON <boris.brezillon@free-electrons.com>
 ---
- drivers/mtd/nand/nand_ids.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/mtd/nand/nand_base.c |  2 ++
+ include/linux/mtd/nand.h     | 11 +++++++++++
+ 2 files changed, 13 insertions(+)
 
-diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
-index 3d7c89f..fbde8910 100644
---- a/drivers/mtd/nand/nand_ids.c
-+++ b/drivers/mtd/nand/nand_ids.c
-@@ -46,6 +46,10 @@ struct nand_flash_dev nand_flash_ids[] = {
- 	{"SDTNRGAMA 64G 3.3V 8-bit",
- 		{ .id = {0x45, 0xde, 0x94, 0x93, 0x76, 0x50} },
- 		  SZ_16K, SZ_8K, SZ_4M, 0, 6, 1280, NAND_ECC_INFO(40, SZ_1K) },
-+	{"H27UCG8T2ATR-BC 64G 3.3V 8-bit",
-+		{ .id = {0xad, 0xde, 0x94, 0xda, 0x74, 0xc4} },
-+		  SZ_8K, SZ_8K, SZ_2M, 0, 6, 640, NAND_ECC_INFO(40, SZ_1K),
-+		  4 },
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index ae6e7c4..c37fa2a 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3594,6 +3594,8 @@ static bool find_full_id_nand(struct mtd_info *mtd, struct nand_chip *chip,
+ 		chip->options |= type->options;
+ 		chip->ecc_strength_ds = NAND_ECC_STRENGTH(type);
+ 		chip->ecc_step_ds = NAND_ECC_STEP(type);
++		chip->onfi_timing_mode_default =
++					type->onfi_timing_mode_default;
  
- 	LEGACY_ID_NAND("NAND 4MiB 5V 8-bit",   0x6B, 4, SZ_8K, SP_OPTIONS),
- 	LEGACY_ID_NAND("NAND 4MiB 3,3V 8-bit", 0xE3, 4, SZ_8K, SP_OPTIONS),
+ 		*busw = type->options & NAND_BUSWIDTH_16;
+ 
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index b7c1199..e795fbf 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -587,6 +587,11 @@ struct nand_buffers {
+  * @ecc_step_ds:	[INTERN] ECC step required by the @ecc_strength_ds,
+  *                      also from the datasheet. It is the recommended ECC step
+  *			size, if known; if unknown, set to zero.
++ * @onfi_timing_mode_default: [INTERN] default ONFI timing mode. This field is
++ * 			      either deduced from the datasheet if the NAND
++ * 			      chip is not ONFI compliant or set to 0 if it is
++ * 			      (an ONFI chip is always configured in mode 0
++ * 			      after a NAND reset)
+  * @numchips:		[INTERN] number of physical chips
+  * @chipsize:		[INTERN] the size of one chip for multichip arrays
+  * @pagemask:		[INTERN] page number mask = number of (pages / chip) - 1
+@@ -671,6 +676,7 @@ struct nand_chip {
+ 	uint8_t bits_per_cell;
+ 	uint16_t ecc_strength_ds;
+ 	uint16_t ecc_step_ds;
++	int onfi_timing_mode_default;
+ 	int badblockpos;
+ 	int badblockbits;
+ 
+@@ -773,6 +779,10 @@ struct nand_chip {
+  *               @ecc_step_ds in nand_chip{}, also from the datasheet.
+  *               For example, the "4bit ECC for each 512Byte" can be set with
+  *               NAND_ECC_INFO(4, 512).
++ * @onfi_timing_mode_default: the default ONFI timing mode entered after a NAND
++ *			      reset. Should be deduced from timings described
++ *			      in the datasheet.
++ *
+  */
+ struct nand_flash_dev {
+ 	char *name;
+@@ -793,6 +803,7 @@ struct nand_flash_dev {
+ 		uint16_t strength_ds;
+ 		uint16_t step_ds;
+ 	} ecc;
++	int onfi_timing_mode_default;
+ };
+ 
+ /**
 -- 
 1.9.1
