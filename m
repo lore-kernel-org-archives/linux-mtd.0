@@ -1,22 +1,22 @@
-Received: from mail-pa0-x22c.google.com ([2607:f8b0:400e:c03::22c])
+Received: from mail-pa0-x22a.google.com ([2607:f8b0:400e:c03::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XW8DG-0003jA-6h
- for linux-mtd@lists.infradead.org; Mon, 22 Sep 2014 18:19:50 +0000
-Received: by mail-pa0-f44.google.com with SMTP id eu11so4086658pac.3
- for <linux-mtd@lists.infradead.org>; Mon, 22 Sep 2014 11:19:29 -0700 (PDT)
-Date: Mon, 22 Sep 2014 11:19:26 -0700
+ id 1XW8M9-00079E-Jc
+ for linux-mtd@lists.infradead.org; Mon, 22 Sep 2014 18:29:02 +0000
+Received: by mail-pa0-f42.google.com with SMTP id et14so4996320pad.15
+ for <linux-mtd@lists.infradead.org>; Mon, 22 Sep 2014 11:28:40 -0700 (PDT)
+Date: Mon, 22 Sep 2014 11:28:37 -0700
 From: Brian Norris <computersforpeace@gmail.com>
-To: Aaron Sierra <asierra@xes-inc.com>
-Subject: Re: [PATCH 1/2] mtd: physmap_of: Fix ROM support via OF
-Message-ID: <20140922181926.GO1193@ld-irv-0074>
-References: <1388169775.233775.1410977001530.JavaMail.zimbra@xes-inc.com>
- <1456841230.234377.1410977298299.JavaMail.zimbra@xes-inc.com>
+To: Hauke Mehrtens <hauke@hauke-m.de>
+Subject: Re: [PATCH] mtd: bcm47xxpart: only register partitions if the trx
+ header was filled
+Message-ID: <20140922182837.GP1193@ld-irv-0074>
+References: <1411338793-21245-1-git-send-email-hauke@hauke-m.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1456841230.234377.1410977298299.JavaMail.zimbra@xes-inc.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+In-Reply-To: <1411338793-21245-1-git-send-email-hauke@hauke-m.de>
+Cc: zajec5@gmail.com, linux-mtd@lists.infradead.org, David.Woodhouse@intel.com,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,13 +26,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Sep 17, 2014 at 01:08:18PM -0500, Aaron Sierra wrote:
-> The "ROM" and unknown probe types within the obsolete "direct-mapped"
-> probe function used the nonexistent "mtd_rom" probe instead of the
-> intended "map_rom".
+On Mon, Sep 22, 2014 at 12:33:13AM +0200, Hauke Mehrtens wrote:
+> Sometimes the trx offsets are 0, in that case there is no partition and
+> we should not try to add one.
 > 
-> Signed-off-by: Aaron Sierra <asierra@xes-inc.com>
+> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+> ---
+>  drivers/mtd/bcm47xxpart.c | 16 ++++++++++------
+>  1 file changed, 10 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
+> index 8057f52..c3f4454 100644
+> --- a/drivers/mtd/bcm47xxpart.c
+> +++ b/drivers/mtd/bcm47xxpart.c
+> @@ -168,18 +168,22 @@ static int bcm47xxpart_parse(struct mtd_info *master,
+>  				i++;
+>  			}
+>  
+> -			bcm47xxpart_add_part(&parts[curr_part++], "linux",
+> -					     offset + trx->offset[i], 0);
+> -			i++;
+> +			if (trx->offset[i]) {
+> +				bcm47xxpart_add_part(&parts[curr_part++], "linux",
+> +						     offset + trx->offset[i], 0);
 
-Pushed both to l2-mtd.git. Thanks!
+Hmm, this indentation is getting large, and it fails checkpatch now.
+But I'm not sure the alternatives are much better right now.
+
+> +				i++;
+> +			}
+>  
+>  			/*
+>  			 * Pure rootfs size is known and can be calculated as:
+>  			 * trx->length - trx->offset[i]. We don't fill it as
+>  			 * we want to have jffs2 (overlay) in the same mtd.
+>  			 */
+> -			bcm47xxpart_add_part(&parts[curr_part++], "rootfs",
+> -					     offset + trx->offset[i], 0);
+> -			i++;
+> +			if (trx->offset[i]) {
+> +				bcm47xxpart_add_part(&parts[curr_part++], "rootfs",
+> +						     offset + trx->offset[i], 0);
+
+Same here.
+
+> +				i++;
+> +			}
+>  
+>  			last_trx_part = curr_part - 1;
+>  
+
+I'll take this soon if there are no other complaints.
 
 Brian
