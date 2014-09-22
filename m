@@ -1,24 +1,22 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XW87G-0000M5-7T
- for linux-mtd@lists.infradead.org; Mon, 22 Sep 2014 18:13:38 +0000
-Date: Mon, 22 Sep 2014 20:13:15 +0200
-From: Boris BREZILLON <boris.brezillon@free-electrons.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v2 1/2] mtd: nand: support ONFI timing mode retrieval
- for non-ONFI NANDs
-Message-ID: <20140922201315.022fefea@bbrezillon>
-In-Reply-To: <20140922175834.GM1193@ld-irv-0074>
-References: <1411395911-30365-1-git-send-email-boris.brezillon@free-electrons.com>
- <1411395911-30365-2-git-send-email-boris.brezillon@free-electrons.com>
- <20140922175834.GM1193@ld-irv-0074>
+Received: from mail-pa0-x22c.google.com ([2607:f8b0:400e:c03::22c])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XW8DG-0003jA-6h
+ for linux-mtd@lists.infradead.org; Mon, 22 Sep 2014 18:19:50 +0000
+Received: by mail-pa0-f44.google.com with SMTP id eu11so4086658pac.3
+ for <linux-mtd@lists.infradead.org>; Mon, 22 Sep 2014 11:19:29 -0700 (PDT)
+Date: Mon, 22 Sep 2014 11:19:26 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Aaron Sierra <asierra@xes-inc.com>
+Subject: Re: [PATCH 1/2] mtd: physmap_of: Fix ROM support via OF
+Message-ID: <20140922181926.GO1193@ld-irv-0074>
+References: <1388169775.233775.1410977001530.JavaMail.zimbra@xes-inc.com>
+ <1456841230.234377.1410977298299.JavaMail.zimbra@xes-inc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linux-sunxi@googlegroups.com,
- David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org,
- Yassin Jaffer <yassinjaffer@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1456841230.234377.1410977298299.JavaMail.zimbra@xes-inc.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,35 +26,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 22 Sep 2014 10:58:34 -0700
-Brian Norris <computersforpeace@gmail.com> wrote:
-
-> On Mon, Sep 22, 2014 at 04:25:10PM +0200, Boris BREZILLON wrote:
-> > Add an onfi_timing_mode_default field to nand_chip and nand_flash_dev in
-> > order to support NAND timings definition for non-ONFI NAND.
-> > 
-> > NAND that support better timings mode than the default one have to define
-> > a new entry in the nand_ids table.
-> > 
-> > The default timing mode should be deduced from timings description from
-> > the datasheet and the ONFI specification
-> > (www.onfi.org/~/media/ONFI/specs/onfi_3_1_spec.pdf, chapter 4.15
-> > "Timing Parameters").
-> > You should choose the closest mode that fit the timings requirements of
-> > your NAND chip.
-> > 
-> > Signed-off-by: Boris BREZILLON <boris.brezillon@free-electrons.com>
+On Wed, Sep 17, 2014 at 01:08:18PM -0500, Aaron Sierra wrote:
+> The "ROM" and unknown probe types within the obsolete "direct-mapped"
+> probe function used the nonexistent "mtd_rom" probe instead of the
+> intended "map_rom".
 > 
-> You have some (new?) checkpatch warnings:
-> 
+> Signed-off-by: Aaron Sierra <asierra@xes-inc.com>
 
-Sorry for that. I just sent a new version fixing those warnings.
+Pushed both to l2-mtd.git. Thanks!
 
-Best Regards,
-
-Boris
-
--- 
-Boris Brezillon, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Brian
