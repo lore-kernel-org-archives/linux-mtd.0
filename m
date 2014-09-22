@@ -1,21 +1,19 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
+Received: from guitar.tcltek.co.il ([192.115.133.116] helo=mx.tkos.co.il)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XW5Jp-0006wg-80
- for linux-mtd@lists.infradead.org; Mon, 22 Sep 2014 15:14:25 +0000
-Message-ID: <54203CB6.8080702@ti.com>
-Date: Mon, 22 Sep 2014 18:13:58 +0300
-From: Roger Quadros <rogerq@ti.com>
+ id 1XW5pA-0003qQ-V3
+ for linux-mtd@lists.infradead.org; Mon, 22 Sep 2014 15:46:50 +0000
+Received: from [192.168.22.77] (unknown [82.166.146.90])
+ (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mx.tkos.co.il (Postfix) with ESMTPSA id 8561C440BCA
+ for <linux-mtd@lists.infradead.org>; Mon, 22 Sep 2014 18:46:24 +0300 (IDT)
+Date: Mon, 22 Sep 2014 18:47:16 +0300 (IDT)
+From: Jonathan Ben Avraham <yba@tkos.co.il>
+To: linux-mtd@lists.infradead.org
+Subject: Question: Why not build libmtd as shared object?
+Message-ID: <alpine.DEB.2.02.1409221836340.5333@tavas.tkos.co.il>
 MIME-Version: 1.0
-To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, Brian Norris
- <computersforpeace@gmail.com>
-Subject: Re: [PATCH v4 0/5] nand: OMAP collected fixes
-References: <1411231996-6387-1-git-send-email-ezequiel@vanguardiasur.com.ar>
- <541FDC2F.4020103@ti.com> <54201B3B.50007@vanguardiasur.com.ar>
-In-Reply-To: <54201B3B.50007@vanguardiasur.com.ar>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-Cc: Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
- linux-mtd@lists.infradead.org
+Content-Type: TEXT/PLAIN; format=flowed; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,46 +23,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09/22/2014 03:51 PM, Ezequiel Garcia wrote:
-> 
-> 
-> On 09/22/2014 09:22 AM, Roger Quadros wrote:
->> Hi Ezequiel,
->>
->> On 09/20/2014 07:53 PM, Ezequiel Garcia wrote:
->>> I've collected all the changes recently discussed in a whole patchset.
->>> If you are just reading this for the first time please take a look at:
->>>
->>> [1] http://www.spinics.net/lists/linux-omap/msg110965.html
->>> [2] http://www.spinics.net/lists/linux-omap/msg110958.html 
->>>
->>> As requested by Roger, the omap_elm is a 'bool' driver now. The plan
->>> is to merge it inside omap2_nand, but my queue is really filled, so
->>> if anyone feels like doing, please be my guest.
->>>
->>> Although I'm hoping this to be the last round, feedback and testing
->>> is welcome.
->>
->> Patches 3 and 4 still have checkpatch issues.
->>
-> 
-> I think you didn't look at them in detail. Unless I'm missing something,
-> it's just warning about MAINTAINERS update:
-> 
-> WARNING: added, moved or deleted file(s), does MAINTAINERS need updating?
-> #16:
->  drivers/mtd/{devices/elm.c => nand/omap_elm.c} | 0
-> 
-> WARNING: added, moved or deleted file(s), does MAINTAINERS need updating?
-> #13:
->  drivers/mtd/nand/{omap2.c => omap2_nand.c} | 0
-> 
-> This driver is not in MAINTAINERS. If you want to start maintaining it,
-> it'd be good to add you to MAINTAINERS so people Cc you properly on patches.
-> 
+Dear colleagues,
+In order to do MTD operations in-process rather than forking a shell to 
+run an mdt-utils command line utility, I am using my own functions written 
+on top of libmtd. Is there any reason then not to build and install libmtd 
+as a shared object? Is there a specific reason that the command line 
+utils are statically linked?
+Best regards,
 
-Sorry for the noise. I was re-generating the patch without the rename detection flag
-causing errors which are present in the original file itself.
+  - yba
 
-cheers,
--roger
+
+-- 
+  9590 8E58 D30D 1660 C349  673D B205 4FC4 B8F5 B7F9  ~. .~  Tk Open Systems
+=}-------- Jonathan Ben-Avraham ("yba") ----------ooO--U--Ooo------------{=
+mailto:yba@tkos.co.il tel:+972.52.486.3386 http://tkos.co.il skype:benavrhm
