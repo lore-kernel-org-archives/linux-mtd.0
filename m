@@ -1,17 +1,17 @@
-Date: Tue, 23 Sep 2014 17:25:58 +0200
+Date: Tue, 23 Sep 2014 17:34:36 +0200
 From: Boris BREZILLON <boris.brezillon@free-electrons.com>
-To: Boris BREZILLON <boris.brezillon@free-electrons.com>
-Subject: Re: [PATCH v3 1/3] mtd: nand: gpmi: add gpmi_move_bits function
-Message-ID: <20140923172558.3f6a161c@bbrezillon>
-In-Reply-To: <1411481256-29141-2-git-send-email-boris.brezillon@free-electrons.com>
+To: Huang Shijie <shijie8@gmail.com>
+Subject: Re: [PATCH v3 2/3] mtd: nand: gpmi: add proper raw access support
+Message-ID: <20140923173436.17ab0d36@bbrezillon>
+In-Reply-To: <20140923151739.GA1791@localhost.localdomain>
 References: <1411481256-29141-1-git-send-email-boris.brezillon@free-electrons.com>
- <1411481256-29141-2-git-send-email-boris.brezillon@free-electrons.com>
+ <1411481256-29141-3-git-send-email-boris.brezillon@free-electrons.com>
+ <20140923151739.GA1791@localhost.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: Huang Shijie <shijie8@gmail.com>, linux-kernel@vger.kernel.org,
+Cc: Mike Voytovich <mvoytovich@paypal.com>, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, Roy Lee <roylee@paypal.com>,
- Mike Voytovich <mvoytovich@paypal.com>,
  Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,206 +23,148 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Huang,
+On Tue, 23 Sep 2014 23:17:41 +0800
+Huang Shijie <shijie8@gmail.com> wrote:
 
-I've added some code comments inline (and I'll squash them in my next
-version).
+> On Tue, Sep 23, 2014 at 04:07:35PM +0200, Boris BREZILLON wrote:
+> > Several MTD users (either in user or kernel space) expect a valid raw
+> > access support to NAND chip devices.
+> > This is particularly true for testing tools which are often touching the
+> > data stored in a NAND chip in raw mode to artificially generate errors.
+> > 
+> > The GPMI drivers do not implemenent raw access functions, and thus rely on
+> > default HW_ECC scheme implementation.
+> > The default implementation consider the data and OOB area as properly
+> > separated in their respective NAND section, which is not true for the GPMI
+> > controller.
+> > In this driver/controller some OOB data are stored at the beginning of the
+> > NAND data area (these data are called metadata in the driver), then ECC
+> > bytes are interleaved with data chunk (which is similar to the
+> > HW_ECC_SYNDROME scheme), and eventually the remaining bytes are used as
+> > OOB data.
+> > 
+> > Signed-off-by: Boris BREZILLON <boris.brezillon@free-electrons.com>
+> > ---
+> >  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 126 +++++++++++++++++++++++++++++++++
+> >  drivers/mtd/nand/gpmi-nand/gpmi-nand.h |   2 +
+> >  2 files changed, 128 insertions(+)
+> > 
+> > diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> > index 959cb9b..7921ba7 100644
+> > --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> > +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> > @@ -791,6 +791,7 @@ static void gpmi_free_dma_buffer(struct gpmi_nand_data *this)
+> >  					this->page_buffer_phys);
+> >  	kfree(this->cmd_buffer);
+> >  	kfree(this->data_buffer_dma);
+> > +	kfree(this->raw_buffer);
+> >  
+> >  	this->cmd_buffer	= NULL;
+> >  	this->data_buffer_dma	= NULL;
+> > @@ -837,6 +838,9 @@ static int gpmi_alloc_dma_buffer(struct gpmi_nand_data *this)
+> >  	if (!this->page_buffer_virt)
+> >  		goto error_alloc;
+> >  
+> > +	this->raw_buffer = kzalloc(mtd->writesize + mtd->oobsize, GFP_KERNEL);
+> why add this buffer?
 
-On Tue, 23 Sep 2014 16:07:34 +0200
-Boris BREZILLON <boris.brezillon@free-electrons.com> wrote:
+I don't why, but I experienced memory corruptions (triggering kernel
+panics) when using the page_buffer_virt, even though I had resized it
+according to the NAND writesize and oobsize (see my previous version).
 
-> Add a new function to move bits (not bytes) from a memory region to
-> another one.
-> This function is similar to memmove except it acts at bit level.
-> This function is needed to implement GPMI raw access functions, given the
-> fact that ECC engine does not pad ECC bits to the next byte boundary.
+Do you see anything that could generate an overflow ?
+
+It seems to work when I allocate my own buffer...
+
 > 
-> Signed-off-by: Boris BREZILLON <boris.brezillon@free-electrons.com>
-> ---
->  drivers/mtd/nand/gpmi-nand/gpmi-lib.c  | 88 ++++++++++++++++++++++++++++++++++
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.h |  4 ++
->  2 files changed, 92 insertions(+)
+> did you meet some data overlapped?
 > 
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> index 87e658c..e2f706a 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-lib.c
-> @@ -1353,3 +1353,91 @@ int gpmi_read_page(struct gpmi_nand_data *this,
->  	set_dma_type(this, DMA_FOR_READ_ECC_PAGE);
->  	return start_dma_with_bch_irq(this, desc);
->  }
-> +
-> +void gpmi_move_bits(u8 *dst, size_t dst_bit_off,
-> +		    const u8 *src, size_t src_bit_off,
-> +		    size_t nbits)
-> +{
-> +	size_t i;
-> +	size_t nbytes;
-> +	u32 src_byte = 0;
-> +
+> 
+> > +	if (!this->raw_buffer)
+> > +		goto error_alloc;
+> >  
+> >  	/* Slice up the page buffer. */
+> >  	this->payload_virt = this->page_buffer_virt;
+> > @@ -1347,6 +1351,126 @@ gpmi_ecc_write_oob(struct mtd_info *mtd, struct nand_chip *chip, int page)
+> >  	return status & NAND_STATUS_FAIL ? -EIO : 0;
+> >  }
+> >  
+> > +static int gpmi_ecc_read_page_raw(struct mtd_info *mtd,
+> > +				  struct nand_chip *chip, uint8_t *buf,
+> > +				  int oob_required, int page)
+> > +{
+> > +	struct gpmi_nand_data *this = chip->priv;
+> > +	struct bch_geometry *nfc_geo = &this->bch_geometry;
+> > +	int eccsize = nfc_geo->ecc_chunk_size;
+> > +	int eccbits = nfc_geo->ecc_strength * nfc_geo->gf_len;
+> > +	u8 *tmp_buf = this->raw_buffer;
+> > +	size_t src_bit_off;
+> > +	size_t oob_bit_off;
+> > +	size_t oob_byte_off;
+> > +	uint8_t *oob = chip->oob_poi;
+> > +	int step;
+> > +
+> > +	chip->read_buf(mtd, tmp_buf,
+> > +		       mtd->writesize + mtd->oobsize);
+> > +
+> > +	if (this->swap_block_mark) {
+> > +		u8 swap = tmp_buf[0];
+> > +
+> > +		tmp_buf[0] = tmp_buf[mtd->writesize];
+> > +		tmp_buf[mtd->writesize] = swap;
+> > +	}
+> > +
+> > +	if (oob_required)
+> > +		memcpy(oob, tmp_buf, nfc_geo->metadata_size);
+> > +
+> > +	oob_bit_off = nfc_geo->metadata_size * 8;
+> > +	src_bit_off = oob_bit_off;
+> > +
+> > +	for (step = 0; step < nfc_geo->ecc_chunk_count; step++) {
+> > +		if (buf)
+> 	could this @buf become NULL?
 
+It's just a check to later support raw OOB accesses (see patch
+3) ;-).
 
-	/*
-	 * Move src and dst pointers to the closest byte pointer and
-	 * store bit offsets within a byte.
-	 */
+> 
+> 
+> > +			gpmi_move_bits(buf, step * eccsize * 8,
+> > +				       tmp_buf, src_bit_off,
+> > +				       eccsize * 8);
+> > +		src_bit_off += eccsize * 8;
+> > +
+> > +		if (oob_required)
+> > +			gpmi_move_bits(oob, oob_bit_off,
+> > +				       tmp_buf, src_bit_off,
+> > +				       eccbits);
+> > +
+> > +		src_bit_off += eccbits;
+> > +		oob_bit_off += eccbits;
+> > +	}
+> > +
+> > +	if (oob_required && oob_bit_off % 8)
+> > +		oob[oob_bit_off / 8] &= GENMASK(oob_bit_off - 1, 0);
+> > +
+> > +	oob_byte_off = DIV_ROUND_UP(oob_bit_off, 8);
+> > +
+> > +	if (oob_required && oob_byte_off  < mtd->oobsize)
+> > +		memcpy(oob + oob_byte_off,
+> > +		       tmp_buf + mtd->writesize + oob_byte_off,
+> > +		       mtd->oobsize - oob_byte_off);
+> 
+> For the above 9 lines, we'd better add a condition check here to make code more clear:
+> 	if (oob_required) {
+> 
+> 		....
+> 
+> 	}
 
-> +	src += src_bit_off / 8;
-> +	src_bit_off %= 8;
-> +
-> +	dst += dst_bit_off / 8;
-> +	dst_bit_off %= 8;
-> +
-	/*
-	 * Initialize the src_byte value with bits available in the
-	 * first byte of data so that we end up with a byte aligned
-	 * src pointer.
-	 */
-> +	if (src_bit_off) {
-> +		src_byte = src[0] >> src_bit_off;
-> +		nbits -= 8 - src_bit_off;
-> +		src++;
-> +	}
-> +
-	/*
-	 * Calculate the number of bytes that can be copied from src to
-	 * dst.
-	 */
-> +	nbytes = nbits / 8;
-> +
+Absolutely, I'll change that.
 
-	/*
-	 * Try to align dst to a byte boundary by peeking some bits
-	 * from the source.
-	 */
+Thanks,
 
-> +	if (dst_bit_off) {
-> +		if (src_bit_off <= dst_bit_off) {
-> +			dst[0] &= GENMASK(dst_bit_off - 1, 0);
-> +			dst[0] |= src_byte << dst_bit_off;
-> +			src_bit_off += (8 - dst_bit_off);
-> +			src_byte >>= (8 - dst_bit_off);
-> +			dst_bit_off = 0;
-> +			dst++;
-> +		} else if (nbytes) {
-> +			src_byte |= src[0] << (8 - src_bit_off);
-> +			dst[0] &= GENMASK(dst_bit_off - 1, 0);
-> +			dst[0] |= src_byte << dst_bit_off;
-> +			src_bit_off += dst_bit_off;
-> +			src_byte >>= (8 - dst_bit_off);
-> +			dst_bit_off = 0;
-> +			dst++;
-> +			nbytes--;
-> +			src++;
-> +			if (src_bit_off > 7) {
-> +				src_bit_off -= 8;
-> +				dst[0] = src_byte;
-> +				dst++;
-> +				src_byte >>= 8;
-> +			}
-> +		}
-> +	}
-> +
-> +	if (!src_bit_off && !dst_bit_off) {
-		/*
-		 * Both src and dst pointers are byte aligned, thus we
-		 * can just use the optimized memcpy function
-		 */
-> +		if (nbytes)
-> +			memcpy(dst, src, nbytes);
-> +	} else {
-
-		/*
-		 * src buffer is not byte aligned, hence we have to copy
-		 * each src byte to the src_byte variable (after
-		 * applying the appropriate shift depending on the
-		 * src bit offset).
-		 * We still try to work on bytes until there's not
-		 * enough available data in the src buffer.
-		 */
-
-> +		for (i = 0; i < nbytes; i++) {
-> +			src_byte |= src[i] << (8 - src_bit_off);
-> +			dst[i] = src_byte;
-> +			src_byte >>= 8;
-> +		}
-> +	}
-> +
-	/* move dst and src buffers */
-> +	dst += nbytes;
-> +	src += nbytes;
-
-	/*
-	 * nbits is the number of remaining bits. It should not exceed
-	 * 8 as we've already worked on bytes as much as possible.
-	 */
-
-
-> +	nbits %= 8;
-> +
-
-	/*
-	 * if there's no more bits to copy to the destination and src
-	 * buffer was already byte aligned, then we're done.
-	 */
-> +	if (!nbits && !src_bit_off)
-> +		return;
-> +
-	/* Copy the remaining bits to the src_byte variable */
-> +	if (nbits)
-> +		src_byte |= (*src & GENMASK(nbits - 1, 0)) <<
-> +			    ((8 - src_bit_off) % 8);
-> +	nbits += (8 - src_bit_off) % 8;
-> +
-
-	/*
-	 * There were not enough bits to copy from src to dst to get a
-	 * byte aligned dst buffer. In this case prepare the src_byte
-	 * variable to match the dst organization (just shift src_byte
-	 * by dst bit offset and retrieve least significant bits from
-	 * dst).
-	 */
-
-> +	if (dst_bit_off)
-> +		src_byte = (src_byte << dst_bit_off) |
-> +			   (*dst & GENMASK(dst_bit_off - 1, 0));
-> +	nbits += dst_bit_off;
-> +
-
-	/*
-	 * Keep most significant bits from dst if we end up with an
-	 * unaligned number bits.
-	 */
-
-> +	if (nbits % 8)
-> +		src_byte |= (dst[nbits / 8] & GENMASK(7, nbits % 8)) <<
-> +			    (nbits / 8);
-> +
-
-	/* Copy the remaining bytes to the destination */
-
-> +	nbytes = DIV_ROUND_UP(nbits, 8);
-> +	for (i = 0; i < nbytes; i++) {
-> +		dst[i] = src_byte;
-> +		src_byte >>= 8;
-> +	}
-> +}
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-> index 32c6ba4..17d0736 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.h
-> @@ -290,6 +290,10 @@ extern int gpmi_send_page(struct gpmi_nand_data *,
->  extern int gpmi_read_page(struct gpmi_nand_data *,
->  			dma_addr_t payload, dma_addr_t auxiliary);
->  
-> +void gpmi_move_bits(u8 *dst, size_t dst_bit_off,
-> +		    const u8 *src, size_t src_bit_off,
-> +		    size_t nbits);
-> +
->  /* BCH : Status Block Completion Codes */
->  #define STATUS_GOOD		0x00
->  #define STATUS_ERASED		0xff
-
+Boris
 
 
 -- 
