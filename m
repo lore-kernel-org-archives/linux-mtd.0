@@ -1,22 +1,23 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
+Received: from mail-ig0-x235.google.com ([2607:f8b0:4001:c05::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XWLp9-0000S6-Kk
- for linux-mtd@lists.infradead.org; Tue, 23 Sep 2014 08:51:52 +0000
-Message-ID: <5421348D.90606@ti.com>
-Date: Tue, 23 Sep 2014 11:51:25 +0300
-From: Roger Quadros <rogerq@ti.com>
+ id 1XWPCf-0004gI-AH
+ for linux-mtd@lists.infradead.org; Tue, 23 Sep 2014 12:28:21 +0000
+Received: by mail-ig0-f181.google.com with SMTP id h18so4438192igc.2
+ for <linux-mtd@lists.infradead.org>; Tue, 23 Sep 2014 05:28:00 -0700 (PDT)
 MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>, Ezequiel Garcia
- <ezequiel@vanguardiasur.com.ar>
-Subject: Re: [PATCH v4 5/5] mtd: nand: Constrain omap_elm to built-in
-References: <1411231996-6387-1-git-send-email-ezequiel@vanguardiasur.com.ar>
- <1411231996-6387-6-git-send-email-ezequiel@vanguardiasur.com.ar>
- <20140922185849.GT1193@ld-irv-0074>
-In-Reply-To: <20140922185849.GT1193@ld-irv-0074>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
- linux-mtd@lists.infradead.org
+In-Reply-To: <1411338793-21245-1-git-send-email-hauke@hauke-m.de>
+References: <1411338793-21245-1-git-send-email-hauke@hauke-m.de>
+Date: Tue, 23 Sep 2014 14:27:59 +0200
+Message-ID: <CACna6rw+DmGzKhg-YKot8n+w-cYt9XoPzcUc5eK42WnDbPU39g@mail.gmail.com>
+Subject: Re: [PATCH] mtd: bcm47xxpart: only register partitions if the trx
+ header was filled
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: Hauke Mehrtens <hauke@hauke-m.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Woodhouse,
+ David" <David.Woodhouse@intel.com>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,62 +27,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09/22/2014 09:58 PM, Brian Norris wrote:
-> On Sat, Sep 20, 2014 at 05:53:16PM +0100, Ezequiel Garcia wrote:
->> This fixes the following build error when omap2_nand is chosen built-in,
->> and omap_elm is chosen as a module:
->>
->>   drivers/mtd/nand/omap2.c:2010: undefined reference to `elm_config'
->>   drivers/mtd/nand/omap2.c:1980: undefined reference to `elm_config'
->>   drivers/mtd/nand/omap2.c:1927: undefined reference to `elm_config'
->>   drivers/mtd/nand/omap2.c:1444: undefined reference to `elm_decode_bch_error_page'
->>
->> Fix this by making omap_elm a 'bool' driver.
-> 
-> Hmm, so we're sacrificing a "feature" (that omap2 + omap_elm can both be
-> built as modules) because we haven't solved one particular developer UI
-> inconsistency (that we don't prevent the config combination of
-> MTD_NAND_OMAP2=y and MTD_NAND_OMAP_BCH=m)? I wouldn't tend to sacrifice
-> the feature for the sake of a bad config.
-> 
-> Do you have any guesstimate as to whether the linker failure affects
-> many people? Are people just hitting this with randconfig?
+On 22 September 2014 00:33, Hauke Mehrtens <hauke@hauke-m.de> wrote:
+> diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
+> index 8057f52..c3f4454 100644
+> --- a/drivers/mtd/bcm47xxpart.c
+> +++ b/drivers/mtd/bcm47xxpart.c
+> @@ -168,18 +168,22 @@ static int bcm47xxpart_parse(struct mtd_info *maste=
+r,
+>                                 i++;
+>                         }
+>
+> -                       bcm47xxpart_add_part(&parts[curr_part++], "linux"=
+,
+> -                                            offset + trx->offset[i], 0);
+> -                       i++;
+> +                       if (trx->offset[i]) {
+> +                               bcm47xxpart_add_part(&parts[curr_part++],=
+ "linux",
+> +                                                    offset + trx->offset=
+[i], 0);
 
-I think this issue was hit only during a manual menuconfig setting.
+You may at least move "linux" to the next line to don't exceed 80
+chars limit. Same for "rootfs" below.
 
-> 
-> Do you know if anyone ships loadable modules for this driver? e.g., any
-> embedded distros?
-
-Not sure about other distros but TI releases always set both
-OMAP_NAND and OMAP_BCH as built-in.
-
-
-cheers,
--roger
-
-> 
-> I could go either way on this, but I just wasn't sure if these sorts of
-> questions had been asked/answered.
-> 
->> Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
->> ---
->>  drivers/mtd/nand/Kconfig | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
->> index f1cf503..549c0cb 100644
->> --- a/drivers/mtd/nand/Kconfig
->> +++ b/drivers/mtd/nand/Kconfig
->> @@ -96,7 +96,7 @@ config MTD_NAND_OMAP2
->>  
->>  config MTD_NAND_OMAP_BCH
->>  	depends on MTD_NAND_OMAP2
->> -	tristate "Support hardware based BCH error correction"
->> +	bool "Support hardware based BCH error correction"
->>  	default n
->>  	select BCH
->>  	help
-> 
-> Brian
-> 
+--=20
+Rafa=C5=82
