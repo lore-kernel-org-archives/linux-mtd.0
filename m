@@ -1,15 +1,14 @@
-Date: Tue, 23 Sep 2014 14:07:24 -0500 (CDT)
-From: Aaron Sierra <asierra@xes-inc.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Message-ID: <1931039891.303225.1411499244022.JavaMail.zimbra@xes-inc.com>
-In-Reply-To: <1106241329.302591.1411499010840.JavaMail.zimbra@xes-inc.com>
-Subject: [PATCH] mtd: bfin-async-flash: Remove unused variable
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, adi-buildroot-devel@lists.sourceforge.net,
- Steven Miao <realmz6@gmail.com>
+Received: from mail.sigma-star.at ([95.130.255.111])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XWYEe-0001wy-OO
+ for linux-mtd@lists.infradead.org; Tue, 23 Sep 2014 22:07:01 +0000
+From: Richard Weinberger <richard@nod.at>
+To: dedekind1@gmail.com
+Subject: [RFC] UBI bitrot checking
+Date: Wed, 24 Sep 2014 00:06:15 +0200
+Message-Id: <1411509976-12636-1-git-send-email-richard@nod.at>
+Cc: ricard.wanderlof@axis.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, aschmidt@dekaresearch.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,27 +18,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Avoid the following compile warning:
+This is a very initial draft for one possibility of bitrot checking in UBI.
+The basic idea is to have a worker function which reads a complete PEB and
+schedules scrubbing if bit flips are detected.
+Currently this check is triggered by accessing any UBI debugfs file (yes, I'm lazy!).
+We have to agree on an interface first.
+Do we want a debugfs file? Another ioctl()?
+Automatic in-kernel schedules?
+Of course this interface has to return EBUSY if currently a check is running...
 
-drivers/mtd/maps/bfin-async-flash.c: In function 'bfin_flash_probe':
-drivers/mtd/maps/bfin-async-flash.c:129: warning: unused variable 'ret'
+The current implementation has one limitation, it can only check PEBs which are used.
+As of now ubi_wl_scrub_peb() works only for used PEBs but I think we could change that.
 
-Signed-off-by: Aaron Sierra <asierra@xes-inc.com>
----
- drivers/mtd/maps/bfin-async-flash.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/mtd/maps/bfin-async-flash.c b/drivers/mtd/maps/bfin-async-flash.c
-index 6ea51e5..41730fe 100644
---- a/drivers/mtd/maps/bfin-async-flash.c
-+++ b/drivers/mtd/maps/bfin-async-flash.c
-@@ -126,7 +126,6 @@ static const char * const part_probe_types[] = {
- 
- static int bfin_flash_probe(struct platform_device *pdev)
- {
--	int ret;
- 	struct physmap_flash_data *pdata = dev_get_platdata(&pdev->dev);
- 	struct resource *memory = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	struct resource *flash_ambctl = platform_get_resource(pdev, IORESOURCE_MEM, 1);
--- 
-1.9.1
+Thanks,
+//richard
