@@ -1,19 +1,22 @@
-Received: from mail-wi0-x22e.google.com ([2a00:1450:400c:c05::22e])
+Received: from devils.ext.ti.com ([198.47.26.153])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XWLHm-0000Zh-GD
- for linux-mtd@lists.infradead.org; Tue, 23 Sep 2014 08:17:23 +0000
-Received: by mail-wi0-f174.google.com with SMTP id fb4so4333778wid.7
- for <linux-mtd@lists.infradead.org>; Tue, 23 Sep 2014 01:16:55 -0700 (PDT)
-From: Rostislav Lisovy <lisovy@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND] mtd: spi-nor: Add support for Fujitsu MB85RS1MT FRAM
-Date: Tue, 23 Sep 2014 10:16:42 +0200
-Message-Id: <1411460202-457-1-git-send-email-lisovy@merica.cz>
-Cc: Marek Vasut <marex@denx.de>, Rostislav Lisovy <lisovy@merica.cz>,
- Huang Shijie <b32955@freescale.com>, lisovy@gmail.com, michal.vokac@comap.cz,
- sojkam1@fel.cvut.cz
+ id 1XWLp9-0000S6-Kk
+ for linux-mtd@lists.infradead.org; Tue, 23 Sep 2014 08:51:52 +0000
+Message-ID: <5421348D.90606@ti.com>
+Date: Tue, 23 Sep 2014 11:51:25 +0300
+From: Roger Quadros <rogerq@ti.com>
+MIME-Version: 1.0
+To: Brian Norris <computersforpeace@gmail.com>, Ezequiel Garcia
+ <ezequiel@vanguardiasur.com.ar>
+Subject: Re: [PATCH v4 5/5] mtd: nand: Constrain omap_elm to built-in
+References: <1411231996-6387-1-git-send-email-ezequiel@vanguardiasur.com.ar>
+ <1411231996-6387-6-git-send-email-ezequiel@vanguardiasur.com.ar>
+ <20140922185849.GT1193@ld-irv-0074>
+In-Reply-To: <20140922185849.GT1193@ld-irv-0074>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,27 +26,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Tested with this particular FRAM chip
+On 09/22/2014 09:58 PM, Brian Norris wrote:
+> On Sat, Sep 20, 2014 at 05:53:16PM +0100, Ezequiel Garcia wrote:
+>> This fixes the following build error when omap2_nand is chosen built-in,
+>> and omap_elm is chosen as a module:
+>>
+>>   drivers/mtd/nand/omap2.c:2010: undefined reference to `elm_config'
+>>   drivers/mtd/nand/omap2.c:1980: undefined reference to `elm_config'
+>>   drivers/mtd/nand/omap2.c:1927: undefined reference to `elm_config'
+>>   drivers/mtd/nand/omap2.c:1444: undefined reference to `elm_decode_bch_error_page'
+>>
+>> Fix this by making omap_elm a 'bool' driver.
+> 
+> Hmm, so we're sacrificing a "feature" (that omap2 + omap_elm can both be
+> built as modules) because we haven't solved one particular developer UI
+> inconsistency (that we don't prevent the config combination of
+> MTD_NAND_OMAP2=y and MTD_NAND_OMAP_BCH=m)? I wouldn't tend to sacrifice
+> the feature for the sake of a bad config.
+> 
+> Do you have any guesstimate as to whether the linker failure affects
+> many people? Are people just hitting this with randconfig?
 
-Signed-off-by: Rostislav Lisovy <lisovy@merica.cz>
-Acked-by: Marek Vasut <marex@denx.de>
----
- drivers/mtd/spi-nor/spi-nor.c | 3 +++
- 1 file changed, 3 insertions(+)
+I think this issue was hit only during a manual menuconfig setting.
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index b5ad6be..a914be9 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -505,6 +505,9 @@ const struct spi_device_id spi_nor_ids[] = {
- 	{ "mr25h256", CAT25_INFO( 32 * 1024, 1, 256, 2, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
- 	{ "mr25h10",  CAT25_INFO(128 * 1024, 1, 256, 3, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
- 
-+	/* Fujitsu */
-+	{ "mb85rs1mt", INFO(0x047f27, 0, 128 * 1024, 1, SPI_NOR_NO_ERASE) },
-+
- 	/* GigaDevice */
- 	{ "gd25q32", INFO(0xc84016, 0, 64 * 1024,  64, SECT_4K) },
- 	{ "gd25q64", INFO(0xc84017, 0, 64 * 1024, 128, SECT_4K) },
--- 
-1.9.1
+> 
+> Do you know if anyone ships loadable modules for this driver? e.g., any
+> embedded distros?
+
+Not sure about other distros but TI releases always set both
+OMAP_NAND and OMAP_BCH as built-in.
+
+
+cheers,
+-roger
+
+> 
+> I could go either way on this, but I just wasn't sure if these sorts of
+> questions had been asked/answered.
+> 
+>> Signed-off-by: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+>> ---
+>>  drivers/mtd/nand/Kconfig | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+>> index f1cf503..549c0cb 100644
+>> --- a/drivers/mtd/nand/Kconfig
+>> +++ b/drivers/mtd/nand/Kconfig
+>> @@ -96,7 +96,7 @@ config MTD_NAND_OMAP2
+>>  
+>>  config MTD_NAND_OMAP_BCH
+>>  	depends on MTD_NAND_OMAP2
+>> -	tristate "Support hardware based BCH error correction"
+>> +	bool "Support hardware based BCH error correction"
+>>  	default n
+>>  	select BCH
+>>  	help
+> 
+> Brian
+> 
