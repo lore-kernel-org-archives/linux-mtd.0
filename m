@@ -1,16 +1,19 @@
-Received: from email.rugged.com ([64.60.45.211])
+Received: from mail-wi0-x22e.google.com ([2a00:1450:400c:c05::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XWExs-0006J3-PA
- for linux-mtd@lists.infradead.org; Tue, 23 Sep 2014 01:32:25 +0000
-From: Robert Hurdle <RHurdle@Rugged.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Mon, 22 Sep 2014 18:32:06 -0700
-Subject: MTD Commands
-Message-ID: <5498E86A4A68B14A8A06D0380640D04A01FA685FE455@atca01em01.adsi.aitech.ent>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
+ id 1XWLHm-0000Zh-GD
+ for linux-mtd@lists.infradead.org; Tue, 23 Sep 2014 08:17:23 +0000
+Received: by mail-wi0-f174.google.com with SMTP id fb4so4333778wid.7
+ for <linux-mtd@lists.infradead.org>; Tue, 23 Sep 2014 01:16:55 -0700 (PDT)
+From: Rostislav Lisovy <lisovy@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH RESEND] mtd: spi-nor: Add support for Fujitsu MB85RS1MT FRAM
+Date: Tue, 23 Sep 2014 10:16:42 +0200
+Message-Id: <1411460202-457-1-git-send-email-lisovy@merica.cz>
+Cc: Marek Vasut <marex@denx.de>, Rostislav Lisovy <lisovy@merica.cz>,
+ Huang Shijie <b32955@freescale.com>, lisovy@gmail.com, michal.vokac@comap.cz,
+ sojkam1@fel.cvut.cz
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,28 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Tested with this particular FRAM chip
 
-	I am trying to port a NAND flash driver for a board that has an FPGA betwe=
-en the software and the
-	NAND flash.  I have made some progress, but now I am stuck because I don't=
- know how the
-	command NAND_CMD_RNDOUT should be implemented. So far I have not found any=
- detailed
-	documentation on any of the commands (NAND_CMD_ERASE1, NAND_CMD_ERASE2, et=
-c.)
-	processed by cmdfunc() in the hardware specific driver files.  The driver =
-file I chose to copy did
-	not support NAND_CMD_RNDOUT, but even examining other driver files in the =
-drivers/mtd/nand
-	directory, it looks sort of cryptic.
+Signed-off-by: Rostislav Lisovy <lisovy@merica.cz>
+Acked-by: Marek Vasut <marex@denx.de>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-	What does MTD expect the command NAND_CMD_RNDOUT to accomplish?
-
-	Is there a reference on-line that describes the what these various NAND co=
-mmands are expected
-	to accomplish, how data is provided to MTD, inputs and outputs, etc. ?
-
-	Thanks for any advice.
-=09
-	Robert Hurdle
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index b5ad6be..a914be9 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -505,6 +505,9 @@ const struct spi_device_id spi_nor_ids[] = {
+ 	{ "mr25h256", CAT25_INFO( 32 * 1024, 1, 256, 2, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
+ 	{ "mr25h10",  CAT25_INFO(128 * 1024, 1, 256, 3, SPI_NOR_NO_ERASE | SPI_NOR_NO_FR) },
+ 
++	/* Fujitsu */
++	{ "mb85rs1mt", INFO(0x047f27, 0, 128 * 1024, 1, SPI_NOR_NO_ERASE) },
++
+ 	/* GigaDevice */
+ 	{ "gd25q32", INFO(0xc84016, 0, 64 * 1024,  64, SECT_4K) },
+ 	{ "gd25q64", INFO(0xc84017, 0, 64 * 1024, 128, SECT_4K) },
+-- 
+1.9.1
