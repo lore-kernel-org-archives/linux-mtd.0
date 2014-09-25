@@ -1,16 +1,20 @@
-Received: from mail-la0-x244.google.com ([2a00:1450:4010:c03::244])
+Received: from mail-out.m-online.net ([212.18.0.9])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XXDCy-0007iS-1q
- for linux-mtd@lists.infradead.org; Thu, 25 Sep 2014 17:52:00 +0000
-Received: by mail-la0-f68.google.com with SMTP id q1so395904lam.3
- for <linux-mtd@lists.infradead.org>; Thu, 25 Sep 2014 10:51:37 -0700 (PDT)
-MIME-Version: 1.0
-Date: Thu, 25 Sep 2014 19:51:37 +0200
-Message-ID: <CALBbqb==UfUzBJU315U71e15TiHh0JXZC8q7h3gLtjuKca2WMg@mail.gmail.com>
-Subject: NOR Flash regions mapped to non contiguous physical memory
-From: Rams Subramanian <rams.rsu@gmail.com>
+ id 1XXF8d-000311-7j
+ for linux-mtd@lists.infradead.org; Thu, 25 Sep 2014 19:55:40 +0000
+From: Marek Vasut <marex@denx.de>
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH] spi-nor: Fix for Freescale i.MX6 reboot issue when using
+ a N25Q00A boot device.
+Date: Thu, 25 Sep 2014 19:09:41 +0200
+References: <CAKbvp-NuFWzCCT+eo-WO47kazNuHbcA4KxhjDLYGR9p9Jh9FRg@mail.gmail.com>
+In-Reply-To: <CAKbvp-NuFWzCCT+eo-WO47kazNuHbcA4KxhjDLYGR9p9Jh9FRg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201409251909.41740.marex@denx.de>
+Cc: Jeremy Garff <jer@jers.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,39 +24,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Saturday, August 16, 2014 at 08:14:05 PM, Jeremy Garff wrote:
+> This is my first submission to the linux-mtd list.  I found
 
-We have a special case where the chip selects for external memory
-interface has the addressing range of 32MB per chip select.  We have
-interfaced 128MB NOR flash and our addressable regions are
-non-contiguous.
+Found yes
 
- E.g Flash Map
+> and fixed
 
-       * CS0 : 0x30000000 - 0x32000000 : (32MB)
+Fixed no ;-)
 
-       * CS1 : 0x34000000 - 0x36000000 : (32MB)
+> a issue related to the i.MX6 when using a N25Q00A spi-nor as the boot
+> device.  The following is a patch and more detailed description.  As
+> this is my first submission to this list, so please let me know you
+> have any questions or concerns.
 
-       * CS2 : 0x38000000 - 0x3A000000 : (32MB)
+Well, the problem is that the SPI NOR ends in undefined state when you reset the 
+board. The problem is not in Linux, the problem is in your board. You should use 
+the RESET-OUTPUT pin of your MX6 to implement proper reset sequencing for the 
+SPI NOR.
 
-       * CS3 : 0x3C000000 - 0x3E000000 : (32MB)
+This patch would not work in case you were doing a PageProgram operation and I 
+came around and mashed the 'reset' button on your board. The SPI NOR would be 
+somewhere in the middle of the PP and your MX6 would simply not boot.
 
+So the solution here is to fix your hardware ;-)
 
+btw this is a common issue, we should really document this before more people 
+get hurt.
 
-We tried to define mtd map to force it to detect 4 physical chips so
-that mtdconcat can handle the rest.  But mtdconcat does not work well
-for this case as we dont have 4 physical chips.  The mtd driver does
-parallel accesses assuming 4 physical chips.  So we could not have
-flash file system spanning over 4 regions.  It is fine to work with
-single region at a time.
+btw2 Spansion does much better job, their SPI NORs have RESET pin, so you don't 
+need to implement logic to power cycle the SPI NOR.
 
-What we actually want is to define a flash which has 4 non contiguous
-regions.  Can this be done with existing mtd drivers?
-
-Is that possible to get contiguous virtual memory from non contiguous
-physical memory?
-
-
-
-Thanks in advance
-Rams
+Best regards,
+Marek Vasut
