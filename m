@@ -1,19 +1,19 @@
-Received: from mga14.intel.com ([192.55.52.115])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XWloj-0003ke-EF
- for linux-mtd@lists.infradead.org; Wed, 24 Sep 2014 12:37:09 +0000
-Message-ID: <1411562205.23429.40.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] UBI: Fix livelock in produce_free_peb()
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Richard Weinberger <richard@nod.at>
-Date: Wed, 24 Sep 2014 15:36:45 +0300
-In-Reply-To: <1411141076-21489-1-git-send-email-richard@nod.at>
-References: <1411141076-21489-1-git-send-email-richard@nod.at>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+From: bpqw <bpqw@micron.com>
+To: "dwmw2@infradead.org" <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>
+Subject: [PATCH 1/1] driver:mtd:spi-nor: Add Micron quad I/O support
+Date: Thu, 25 Sep 2014 06:20:35 +0000
+Message-ID: <A765B125120D1346A63912DDE6D8B6315DCC46@NTXXIAMBX02.xacn.micron.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: "marex@denx.de" <marex@denx.de>,
+ "geert+renesas@glider.be" <geert+renesas@glider.be>,
+ "grmoore@altera.com" <grmoore@altera.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "b32955@freescale.com" <b32955@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,18 +23,104 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2014-09-19 at 17:37 +0200, Richard Weinberger wrote:
-> The while loop in produce_free_peb() assumes that each work will produce a
-> free PEB. This is not true.
-> If ubi->works_count is 1 and the only scheduled work is the
-> wear_leveling_worker() produce_free_peb() can loop forever in case
-> nobody schedules an erase work.
-> Fix this issue by checking in the while loop whether work is scheduled.
-> 
-> Signed-off-by: Richard Weinberger <richard@nod.at>
+For Micron spi norflash,you can enable Quad spi transfer
+by clear EVCR(Enhanced Volatile Configuration Register)
+Quad I/O protocol bit.
 
-Pushed, thanks!
+Signed-off-by: bean huo <beanhuo@micron.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c |   45 +++++++++++++++++++++++++++++++++++++=
+++++
+ include/linux/mtd/spi-nor.h   |    6 ++++++
+ 2 files changed, 51 insertions(+)
 
--- 
-Best Regards,
-Artem Bityutskiy
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index b5ad6be..e72894f 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -878,6 +878,44 @@ static int spansion_quad_enable(struct spi_nor *nor)
+ 	return 0;
+ }
+=20
++static int micron_quad_enable(struct spi_nor *nor)
++{
++	int ret, val;
++
++	ret =3D nor->read_reg(nor, SPINOR_OP_RD_EVCR, &val, 1);
++	if (ret < 0) {
++		dev_err(nor->dev, "error %d reading EVCR\n", ret);
++		return -EINVAL;
++	}
++
++	write_enable(nor);
++
++	/* set EVCR ,enable quad I/O */
++	nor->cmd_buf[0] =3D val & ~EVCR_QUAD_EN_MICRON;
++	ret =3D nor->write_reg(nor, SPINOR_OP_WD_EVCR, nor->cmd_buf, 1, 0);
++	if (ret < 0) {
++		dev_err(nor->dev,
++			"error while writing EVCR register\n");
++		return -EINVAL;
++	}
++
++	if (wait_till_ready(nor))
++		return 1;
++
++	/* read EVCR and check it */
++	ret =3D nor->read_reg(nor, SPINOR_OP_RD_EVCR, &val, 1);
++	if (ret < 0) {
++		dev_err(nor->dev, "error %d reading EVCR\n", ret);
++		return -EINVAL;
++	}
++	if (val & EVCR_QUAD_EN_MICRON) {
++		dev_err(nor->dev, "Micron EVCR Quad bit not clear\n");
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
+ static int set_quad_mode(struct spi_nor *nor, u32 jedec_id)
+ {
+ 	int status;
+@@ -890,6 +928,13 @@ static int set_quad_mode(struct spi_nor *nor, u32 jede=
+c_id)
+ 			return -EINVAL;
+ 		}
+ 		return status;
++	case CFI_MFR_ST:
++		status =3D micron_quad_enable(nor);
++		if (status) {
++			dev_err(nor->dev, "Micron quad-read not enabled\n");
++			return -EINVAL;
++		}
++		return status;
+ 	default:
+ 		status =3D spansion_quad_enable(nor);
+ 		if (status) {
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index 9e6294f..d71b659 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -56,6 +56,10 @@
+ /* Used for Spansion flashes only. */
+ #define SPINOR_OP_BRWR		0x17	/* Bank register write */
+=20
++/* Used for Micron flashes only. */
++#define SPINOR_OP_RD_EVCR	0x65	/* Read EVCR register */
++#define SPINOR_OP_WD_EVCR	0x61	/* Write EVCR register */
++
+ /* Status Register bits. */
+ #define SR_WIP			1	/* Write in progress */
+ #define SR_WEL			2	/* Write enable latch */
+@@ -67,6 +71,8 @@
+=20
+ #define SR_QUAD_EN_MX		0x40	/* Macronix Quad I/O */
+=20
++#define EVCR_QUAD_EN_MICRON	0x80	/* Micron Quad I/O */
++
+ /* Flag Status Register bits */
+ #define FSR_READY		0x80
+=20
+--=20
+1.7.9.5
