@@ -1,19 +1,20 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga11.intel.com ([192.55.52.93])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XXStT-0007bh-AC
- for linux-mtd@lists.infradead.org; Fri, 26 Sep 2014 10:36:55 +0000
-Message-ID: <1411727765.23429.61.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] UBIFS: Align the dump messages of SB_NODE
+ id 1XXSxM-0001rs-VZ
+ for linux-mtd@lists.infradead.org; Fri, 26 Sep 2014 10:40:57 +0000
+Message-ID: <1411728032.23429.63.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 3/3] UBI: Fix possible deadlock in erase_worker()
 From: Artem Bityutskiy <dedekind1@gmail.com>
 Reply-To: dedekind1@gmail.com
-To: hujianyang <hujianyang@huawei.com>
-Date: Fri, 26 Sep 2014 13:36:05 +0300
-In-Reply-To: <541D24CF.1040705@huawei.com>
-References: <541D24CF.1040705@huawei.com>
+To: Richard Weinberger <richard@nod.at>
+Date: Fri, 26 Sep 2014 13:40:32 +0300
+In-Reply-To: <1411375536-20067-3-git-send-email-richard@nod.at>
+References: <1411375536-20067-1-git-send-email-richard@nod.at>
+ <1411375536-20067-3-git-send-email-richard@nod.at>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,18 +24,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2014-09-20 at 14:55 +0800, hujianyang wrote:
-> I found the dump messages of UBIFS_SB_NODE is not aligned. This
-> patch remove the extra space from the line which is retracted.
+On Mon, 2014-09-22 at 10:45 +0200, Richard Weinberger wrote:
+> If sync_erase() fails with EINTR, ENOMEM, EAGAIN or
+> EBUSY erase_worker() re-schedules the failed work.
+> This will lead to a deadlock because erase_worker() is called
+> with work_sem held in read mode. And schedule_erase() will take
+> this lock again.
 > 
-> 
-> Signed-off-by: hujianyang <hujianyang@huawei.com>
+> Signed-off-by: Richard Weinberger <richard@nod.at>
 
-This was not a typo, this was intentional. We first print the all flags
-in a hex format, and then we "decode" it and print the values of the
-individual flags with an additional indent. The indent is to make it
-clear that these line belong to the flags, and they are not independent
-values.
+Did you manage to test it?
+
+Why no -stable this time? Not that important, or just something
+theoretical and you never actually hit this bug?
+
+Thanks!
 
 -- 
 Best Regards,
