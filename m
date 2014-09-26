@@ -1,16 +1,16 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from mga02.intel.com ([134.134.136.20])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XXSxM-0001rs-VZ
- for linux-mtd@lists.infradead.org; Fri, 26 Sep 2014 10:40:57 +0000
-Message-ID: <1411728032.23429.63.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH 3/3] UBI: Fix possible deadlock in erase_worker()
+ id 1XXT3V-0004w9-8X
+ for linux-mtd@lists.infradead.org; Fri, 26 Sep 2014 10:47:18 +0000
+Message-ID: <1411728368.23429.64.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 1/3] UBI: ubi_eba_read_leb: Remove in vain variable
+ assignment
 From: Artem Bityutskiy <dedekind1@gmail.com>
 Reply-To: dedekind1@gmail.com
 To: Richard Weinberger <richard@nod.at>
-Date: Fri, 26 Sep 2014 13:40:32 +0300
-In-Reply-To: <1411375536-20067-3-git-send-email-richard@nod.at>
+Date: Fri, 26 Sep 2014 13:46:08 +0300
+In-Reply-To: <1411375536-20067-1-git-send-email-richard@nod.at>
 References: <1411375536-20067-1-git-send-email-richard@nod.at>
- <1411375536-20067-3-git-send-email-richard@nod.at>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -25,20 +25,14 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Mon, 2014-09-22 at 10:45 +0200, Richard Weinberger wrote:
-> If sync_erase() fails with EINTR, ENOMEM, EAGAIN or
-> EBUSY erase_worker() re-schedules the failed work.
-> This will lead to a deadlock because erase_worker() is called
-> with work_sem held in read mode. And schedule_erase() will take
-> this lock again.
+> There is no need to set err, it will be overwritten in any case
+> later at:
+>         if (scrub)
+>                 err = ubi_wl_scrub_peb(ubi, pnum);
 > 
 > Signed-off-by: Richard Weinberger <richard@nod.at>
 
-Did you manage to test it?
-
-Why no -stable this time? Not that important, or just something
-theoretical and you never actually hit this bug?
-
-Thanks!
+Pushed the first 2 patches, thanks!
 
 -- 
 Best Regards,
