@@ -1,14 +1,22 @@
-Received: from smtp09.smtpout.orange.fr ([80.12.242.131]
- helo=smtp.smtpout.orange.fr)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XXHbe-0002bM-4T
- for linux-mtd@lists.infradead.org; Thu, 25 Sep 2014 22:33:47 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH v1 1/2] mtd: docg3: add device-tree support
-Date: Fri, 26 Sep 2014 00:33:15 +0200
-Message-Id: <1411684396-12094-1-git-send-email-robert.jarzmik@free.fr>
-Cc: devicetree@vger.kernel.org, Robert Jarzmik <robert.jarzmik@free.fr>
+From: bpqw <bpqw@micron.com>
+To: Marek Vasut <marex@denx.de>
+Subject: RE: [PATCH 1/1] driver:mtd:spi-nor: Add Micron quad I/O support
+Date: Fri, 26 Sep 2014 08:39:38 +0000
+Message-ID: <A765B125120D1346A63912DDE6D8B6315DCDF1@NTXXIAMBX02.xacn.micron.com>
+References: <A765B125120D1346A63912DDE6D8B6315DCC46@NTXXIAMBX02.xacn.micron.com>
+ <201409251211.57183.marex@denx.de>
+In-Reply-To: <201409251211.57183.marex@denx.de>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: "geert+renesas@glider.be" <geert+renesas@glider.be>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "grmoore@altera.com" <grmoore@altera.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "shijie8@gmail.com" <shijie8@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,44 +26,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add device-tree support. This is straightforward as docg3 only uses the
-standard IOMEM resources.
+>> +	/* set EVCR ,enable quad I/O */
+>> +	nor->cmd_buf[0] =3D val & ~EVCR_QUAD_EN_MICRON;
+>> +	ret =3D nor->write_reg(nor, SPINOR_OP_WD_EVCR, nor->cmd_buf, 1, 0);
+>> +	if (ret < 0) {
+>> +		dev_err(nor->dev,
+>> +			"error while writing EVCR register\n");
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	if (wait_till_ready(nor))
+>> +		return 1;
 
-Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: devicetree@vger.kernel.org
----
- drivers/mtd/devices/docg3.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+>Why does this not return proper error code or even better, return value fr=
+om
+>wait_till_ready() ?
+>
+>Other than that, there's nothing wrong with the patch I think.
 
-diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
-index 91a169c..fc05f81 100644
---- a/drivers/mtd/devices/docg3.c
-+++ b/drivers/mtd/devices/docg3.c
-@@ -22,6 +22,7 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/errno.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/string.h>
- #include <linux/slab.h>
-@@ -2126,10 +2127,17 @@ static int __exit docg3_release(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static struct of_device_id docg3_dt_ids[] = {
-+	{ .compatible = "sandisk,docg3" },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, docg3_dt_ids);
-+
- static struct platform_driver g3_driver = {
- 	.driver		= {
- 		.name	= "docg3",
- 		.owner	= THIS_MODULE,
-+		.of_match_table = of_match_ptr(docg3_dt_ids),
- 	},
- 	.suspend	= docg3_suspend,
- 	.resume		= docg3_resume,
--- 
-2.0.0.rc2
+Hi,Marek
+Thanks for your review,you can find the same usage in the spi-nor.c.
+Below method is OK? Or you can give me some suggestion.
+
+if (wait_till_ready(nor))
+	return - EINVAL;
