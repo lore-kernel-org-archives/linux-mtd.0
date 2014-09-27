@@ -1,23 +1,19 @@
-From: bpqw <bpqw@micron.com>
-To: Marek Vasut <marex@denx.de>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH 1/1 v2] driver:mtd:spi-nor: Add Micron quad I/O support
-Date: Sun, 28 Sep 2014 01:59:42 +0000
-Message-ID: <A765B125120D1346A63912DDE6D8B6315DCED6@NTXXIAMBX02.xacn.micron.com>
-References: <A765B125120D1346A63912DDE6D8B6315DCC46@NTXXIAMBX02.xacn.micron.com>
- <201409251211.57183.marex@denx.de>
- <A765B125120D1346A63912DDE6D8B6315DCDF1@NTXXIAMBX02.xacn.micron.com>
- <201409261046.07132.marex@denx.de>
-In-Reply-To: <201409261046.07132.marex@denx.de>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: quoted-printable
+Received: from s13.nzusatechgroup.com ([108.168.131.219])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XY484-0002zF-3C
+ for linux-mtd@lists.infradead.org; Sun, 28 Sep 2014 02:22:28 +0000
+Received: from isalife by s13.nzusatechgroup.com with local (Exim 4.82)
+ (envelope-from <isalife@s13.nzusatechgroup.com>) id 1XXzpY-0000no-Ag
+ for linux-mtd@lists.infradead.org; Sat, 27 Sep 2014 15:47:04 -0600
+To: linux-mtd@lists.infradead.org
+Subject: JOB VACANCY IN CANADA, 2014
+From: Sedna Oil Refineries <recruitment@sednaoilrefineries.com>
+Reply-To: recruitment@sednaoilrefineries.com
 MIME-Version: 1.0
-Cc: "grmoore@altera.com" <grmoore@altera.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "shijie8@gmail.com" <shijie8@gmail.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "geert+renesas@glider.be" <geert+renesas@glider.be>
+Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+Message-Id: <E1XXzpY-0000no-Ag@s13.nzusatechgroup.com>
+Date: Sat, 27 Sep 2014 15:47:04 -0600
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,110 +23,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-For Micron spi norflash,you can enable
-Quad spi transfer by clear EVCR(Enhanced
-Volatile Configuration Register) Quad I/O
-protocol bit.
+JOB VACANCY IN CANADA, 2014
 
-Signed-off-by: bean huo <beanhuo@micron.com>
----
- v1-v2:modified to that capture wait_till_ready()
-	return value,if error,directly return its
-	the value.
-=20
- drivers/mtd/spi-nor/spi-nor.c |   46 +++++++++++++++++++++++++++++++++++++=
-++++
- include/linux/mtd/spi-nor.h   |    6 ++++++
- 2 files changed, 52 insertions(+)
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index b5ad6be..0c3b4fd 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -878,6 +878,45 @@ static int spansion_quad_enable(struct spi_nor *nor)
- 	return 0;
- }
-=20
-+static int micron_quad_enable(struct spi_nor *nor)
-+{
-+	int ret, val;
-+
-+	ret =3D nor->read_reg(nor, SPINOR_OP_RD_EVCR, &val, 1);
-+	if (ret < 0) {
-+		dev_err(nor->dev, "error %d reading EVCR\n", ret);
-+		return -EINVAL;
-+	}
-+
-+	write_enable(nor);
-+
-+	/* set EVCR ,enable quad I/O */
-+	nor->cmd_buf[0] =3D val & ~EVCR_QUAD_EN_MICRON;
-+	ret =3D nor->write_reg(nor, SPINOR_OP_WD_EVCR, nor->cmd_buf, 1, 0);
-+	if (ret < 0) {
-+		dev_err(nor->dev,
-+			"error while writing EVCR register\n");
-+		return -EINVAL;
-+	}
-+
-+	ret =3D wait_till_ready(nor);
-+	if (ret)
-+		return ret;
-+
-+	/* read EVCR and check it */
-+	ret =3D nor->read_reg(nor, SPINOR_OP_RD_EVCR, &val, 1);
-+	if (ret < 0) {
-+		dev_err(nor->dev, "error %d reading EVCR\n", ret);
-+		return -EINVAL;
-+	}
-+	if (val & EVCR_QUAD_EN_MICRON) {
-+		dev_err(nor->dev, "Micron EVCR Quad bit not clear\n");
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- static int set_quad_mode(struct spi_nor *nor, u32 jedec_id)
- {
- 	int status;
-@@ -890,6 +929,13 @@ static int set_quad_mode(struct spi_nor *nor, u32 jede=
-c_id)
- 			return -EINVAL;
- 		}
- 		return status;
-+	case CFI_MFR_ST:
-+		status =3D micron_quad_enable(nor);
-+		if (status) {
-+			dev_err(nor->dev, "Micron quad-read not enabled\n");
-+			return -EINVAL;
-+		}
-+		return status;
- 	default:
- 		status =3D spansion_quad_enable(nor);
- 		if (status) {
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index 9e6294f..d71b659 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -56,6 +56,10 @@
- /* Used for Spansion flashes only. */
- #define SPINOR_OP_BRWR		0x17	/* Bank register write */
-=20
-+/* Used for Micron flashes only. */
-+#define SPINOR_OP_RD_EVCR	0x65	/* Read EVCR register */
-+#define SPINOR_OP_WD_EVCR	0x61	/* Write EVCR register */
-+
- /* Status Register bits. */
- #define SR_WIP			1	/* Write in progress */
- #define SR_WEL			2	/* Write enable latch */
-@@ -67,6 +71,8 @@
-=20
- #define SR_QUAD_EN_MX		0x40	/* Macronix Quad I/O */
-=20
-+#define EVCR_QUAD_EN_MICRON	0x80	/* Micron Quad I/O */
-+
- /* Flag Status Register bits */
- #define FSR_READY		0x80
-=20
---=20
-1.7.9.5
+Sedna Oil Refinery is a leading global resources company in oil refining.   We are now creating new career opportunities for both experienced and fresh graduates outside Australia.  We offer challenging job opportunities to the right people on our latest career and job opportunities. With a global portfolio of businesses and commodities, we are always seeking talented, skilled and enthusiastic people to join our team.  It is a diverse and challenging environment offering great career opportunities for people who share our values.
+
+Sedna Oil Refinery will be responsible for applicants Flight Ticket and also assist in securing successful applicants and directs on how to obtain work permit with visa through Canadian Immigration CIC office in Canada and United Kingdom. Interested applicants should contact Sedna Oil Refinery. Any interested applicants, should kindly send his or her CV/resume. Email id: recruitment@sednaoilrefineries.com
+
+
+
+Regards,
+Vincent Hugo
+Senior Manager
+Human Resources
+Sedna Oil Refineries
+Canada
