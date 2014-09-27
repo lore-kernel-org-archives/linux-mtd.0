@@ -1,21 +1,16 @@
-Received: from mailsec108.isp.belgacom.be ([195.238.20.104])
+Received: from smtp06.smtpout.orange.fr ([80.12.242.128]
+ helo=smtp.smtpout.orange.fr)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XXna9-0007vW-NT
- for linux-mtd@lists.infradead.org; Sat, 27 Sep 2014 08:42:23 +0000
-Date: Sat, 27 Sep 2014 10:41:55 +0200 (CEST)
-From: Fabian Frederick <fabf@skynet.be>
-Reply-To: Fabian Frederick <fabf@skynet.be>
-To: josh@joshtriplett.org, Brian Norris <computersforpeace@gmail.com>
-Message-ID: <1745266822.710655.1411807315752.open-xchange@webmail.nmp.skynet.be>
-In-Reply-To: <20140926231727.GD20917@cloud>
-References: <1411065976-20386-1-git-send-email-fabf@skynet.be>
- <20140922181250.GN1193@ld-irv-0074> <20140926231727.GD20917@cloud>
-Subject: Re: [PATCH 1/1] jffs2: fix sparse warning: unexpected unlock
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-sparse@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+ id 1XXxlz-0003f1-0K
+ for linux-mtd@lists.infradead.org; Sat, 27 Sep 2014 19:35:15 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Mark Rutland <mark.rutland@arm.com>
+Subject: [PATCH v2 1/2] mtd: docg3: add device-tree support
+Date: Sat, 27 Sep 2014 21:34:29 +0200
+Message-Id: <1411846470-30041-1-git-send-email-robert.jarzmik@free.fr>
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,75 +20,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Add device-tree support. This is straightforward as docg3 only uses the
+standard IOMEM resources.
 
+Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: devicetree@vger.kernel.org
+Cc: Mark Rutland <mark.rutland@arm.com>
 
-> On 27 September 2014 at 01:17 josh@joshtriplett.org wrote:
->
->
-> On Mon, Sep 22, 2014 at 11:12:50AM -0700, Brian Norris wrote:
-> > + linux-sparse
-> >
-> > On Thu, Sep 18, 2014 at 08:46:16PM +0200, Fabian Frederick wrote:
-> > > fs/jffs2/summary.c:846:5: warning: context imbalance in
-> > > 'jffs2_sum_write_sumnode' - unexpected unlock
-> > >
-> > > Signed-off-by: Fabian Frederick <fabf@skynet.be>
-> > > ---
-> > >=C2=A0 fs/jffs2/summary.c | 2 ++
-> > >=C2=A0 1 file changed, 2 insertions(+)
-> > >
-> > > diff --git a/fs/jffs2/summary.c b/fs/jffs2/summary.c
-> > > index c522d09..a0bac7b 100644
-> > > --- a/fs/jffs2/summary.c
-> > > +++ b/fs/jffs2/summary.c
-> > > @@ -844,6 +844,8 @@ static int jffs2_sum_write_data(struct jffs2_sb_i=
-nfo
-> > > *c, struct jffs2_eraseblock
-> > >=C2=A0 /* Write out summary information - called from jffs2_do_reserve=
-_space */
-> > >=C2=A0
-> > >=C2=A0 int jffs2_sum_write_sumnode(struct jffs2_sb_info *c)
-> > > + __releases(&c->erase_completion_lock)
-> > > + __acquires(&c->erase_completion_lock)
-> >
-> > I'm not too familiar with sparse notations, but Documentation/sparse.tx=
-t
-> > suggests the above is wrong, and the following is more accurate:
-> >
-> >=C2=A0 =C2=A0 =C2=A0__must_hold(&c->erase_completion_lock)
-> >
-> > But it looks like there are several other examples which do this.
-> > Anyway, here's the relevant doc text, in case someone wants to clarify
-> > it for me, or else tell me the documentation is wrong:
-> >
-> >=C2=A0 =C2=A0 =C2=A0__must_hold - The specified lock is held on function=
- entry and exit.
-> >
-> >=C2=A0 =C2=A0 =C2=A0__acquires - The specified lock is held on function =
-exit, but not entry.
-> >
-> >=C2=A0 =C2=A0 =C2=A0__releases - The specified lock is held on function =
-entry, but not exit.
-> >
-> > So __acquires and __releases look mutually exclusive, but it's not clea=
-r
-> > if __must_hold will actually cover what we want. (I haven't tested it.)
->
-> __must_hold is indeed the correct annotation.=C2=A0 (There isn't currentl=
-y
-> anything enforcing that, though.)
->
-> - Josh Triplett
+---
+Since v1: Mark's review: changed compatible string
+---
+ drivers/mtd/devices/docg3.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-There are 137 __releases && __acquires annotated functions in stable.
-
-AFAICS those are based on lock held on function entry / lock held on exit
-
-See
-fs/fuse/file.c:1527
-fs/kernfs/dir.c:341
-drivers/block/nbd.c:564
-
-Does it mean that all of these should be updated to __must_hold ?
-
-Fabian
+diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
+index 91a169c..e2e0713 100644
+--- a/drivers/mtd/devices/docg3.c
++++ b/drivers/mtd/devices/docg3.c
+@@ -22,6 +22,7 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/errno.h>
++#include <linux/of.h>
+ #include <linux/platform_device.h>
+ #include <linux/string.h>
+ #include <linux/slab.h>
+@@ -2126,10 +2127,17 @@ static int __exit docg3_release(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++static struct of_device_id docg3_dt_ids[] = {
++	{ .compatible = "m-systems,diskonchip-g3" },
++	{}
++};
++MODULE_DEVICE_TABLE(of, docg3_dt_ids);
++
+ static struct platform_driver g3_driver = {
+ 	.driver		= {
+ 		.name	= "docg3",
+ 		.owner	= THIS_MODULE,
++		.of_match_table = of_match_ptr(docg3_dt_ids),
+ 	},
+ 	.suspend	= docg3_suspend,
+ 	.resume		= docg3_resume,
+-- 
+2.1.0
