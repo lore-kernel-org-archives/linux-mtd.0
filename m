@@ -1,22 +1,20 @@
-Received: from smtp.codeaurora.org ([198.145.11.231])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XYAFK-0005zj-Ua
- for linux-mtd@lists.infradead.org; Sun, 28 Sep 2014 08:54:23 +0000
-Message-ID: <5427CCA4.6060909@codeaurora.org>
-Date: Sun, 28 Sep 2014 11:53:56 +0300
-From: Tanya Brokhman <tlinder@codeaurora.org>
+ id 1XYAG7-0006DI-Pl
+ for linux-mtd@lists.infradead.org; Sun, 28 Sep 2014 08:55:12 +0000
+Message-ID: <5427CCD8.2090605@nod.at>
+Date: Sun, 28 Sep 2014 10:54:48 +0200
+From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Subject: Re: [RFC/PATCH 5/5] mtd: ubi: Add sysfs entry to force all pebs' scan
-References: <1411886287-8947-1-git-send-email-tlinder@codeaurora.org>
- <CAFLxGvz5RXmC3vuCWkNSiAn91j6dC_9Q9XF3njObb_jBbL-ohw@mail.gmail.com>
-In-Reply-To: <CAFLxGvz5RXmC3vuCWkNSiAn91j6dC_9Q9XF3njObb_jBbL-ohw@mail.gmail.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+To: Tanya Brokhman <tlinder@codeaurora.org>, dedeking1@gmail.com
+Subject: Re: [RFC/PATCH 1/5] mtd: ubi: Read disturb infrastructure
+References: <1411886220-8208-1-git-send-email-tlinder@codeaurora.org>
+ <5427C45C.2080506@nod.at> <5427CB6E.7010007@codeaurora.org>
+In-Reply-To: <5427CB6E.7010007@codeaurora.org>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Cc: Pratibhasagar V <pratibha@codeaurora.org>, linux-arm-msm@vger.kernel.org,
- Artem Bityutskiy <dedekind1@gmail.com>,
- open list <linux-kernel@vger.kernel.org>, dedeking1@gmail.com,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, linux-arm-msm@vger.kernel.org,
+ open list <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
  Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,34 +26,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 9/28/2014 11:42 AM, Richard Weinberger wrote:
-> Tanya,
->
-> On Sun, Sep 28, 2014 at 8:38 AM, Tanya Brokhman <tlinder@codeaurora.org> wrote:
->> A given eraseblock can be read many times or not at all.
->> We do not have the account of such eraseblocks that have
->> not been accessed since a pre-defined threshold interval.
->> By means of scanning the entire flash device it is possible to identify
->> all such eraseblocks.
+Am 28.09.2014 10:48, schrieb Tanya Brokhman:
+>>> @@ -424,6 +440,8 @@ struct ubi_fm_sb {
+>>>       __be32 used_blocks;
+>>>       __be32 block_loc[UBI_FM_MAX_BLOCKS];
+>>>       __be32 block_ec[UBI_FM_MAX_BLOCKS];
+>>> +    __be32 block_rc[UBI_FM_MAX_BLOCKS];
+>>> +    __be64 block_let[UBI_FM_MAX_BLOCKS];
 >>
->> Add a sysfs entry to force scan on all the PEBs on demand basis.
->>
->> The sysfs entry would be available under /sys/class/ubi/ubiX/peb_scan
->>   - echo 1 to this entry would trigger the scan, ignored if in progress
->>   - On reading returns the scan status (1 = Scan executing, 0 = Scan not
->>     executing)
->
-> Did you see that?
-> http://linux-kernel.2935.n7.nabble.com/RFC-UBI-bitrot-checking-td949453.html
-> Maybe we can combine our work.
-> Although your patch seems to be in better shape than mine. :)
+>> Doesn't this break the fastmap on-disk layout?
+> 
+> What do you mean "break"? I verified fastmap feature is working. the whole read-disturb depends on it so I tested this thoroughly.
 
-oh, I'm sorry, missed that (its new :) )
-this patch was tested thoroughly and working. I would appreciate if you 
-could review this patch and perhaps we could improve it if required.
+Did you write a fastmap with your changes applied and then an attach using a fastmap implementation *without*
+you changes?
+I bet it will not work because the disk layout is now different.
+Linux is not the only user of fastmap. We need to be very careful here.
 
-
--- 
-Employee of Qualcomm Innovation Center, Inc.
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, 
-hosted by The Linux Foundation
+Thanks,
+//richard
