@@ -1,22 +1,20 @@
-Received: from mail-vc0-x231.google.com ([2607:f8b0:400c:c03::231])
+Received: from smtp.codeaurora.org ([198.145.11.231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XYA4U-0001We-NU
- for linux-mtd@lists.infradead.org; Sun, 28 Sep 2014 08:43:11 +0000
-Received: by mail-vc0-f177.google.com with SMTP id hq11so2076489vcb.36
- for <linux-mtd@lists.infradead.org>; Sun, 28 Sep 2014 01:42:48 -0700 (PDT)
+ id 1XYAAK-0003bT-FC
+ for linux-mtd@lists.infradead.org; Sun, 28 Sep 2014 08:49:13 +0000
+Message-ID: <5427CB6E.7010007@codeaurora.org>
+Date: Sun, 28 Sep 2014 11:48:46 +0300
+From: Tanya Brokhman <tlinder@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <1411886287-8947-1-git-send-email-tlinder@codeaurora.org>
-References: <1411886287-8947-1-git-send-email-tlinder@codeaurora.org>
-Date: Sun, 28 Sep 2014 10:42:48 +0200
-Message-ID: <CAFLxGvz5RXmC3vuCWkNSiAn91j6dC_9Q9XF3njObb_jBbL-ohw@mail.gmail.com>
-Subject: Re: [RFC/PATCH 5/5] mtd: ubi: Add sysfs entry to force all pebs' scan
-From: Richard Weinberger <richard.weinberger@gmail.com>
-To: Tanya Brokhman <tlinder@codeaurora.org>
-Content-Type: text/plain; charset=UTF-8
+To: Richard Weinberger <richard@nod.at>, dedeking1@gmail.com
+Subject: Re: [RFC/PATCH 1/5] mtd: ubi: Read disturb infrastructure
+References: <1411886220-8208-1-git-send-email-tlinder@codeaurora.org>
+ <5427C45C.2080506@nod.at>
+In-Reply-To: <5427C45C.2080506@nod.at>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Cc: Artem Bityutskiy <dedekind1@gmail.com>, linux-arm-msm@vger.kernel.org,
- Pratibhasagar V <pratibha@codeaurora.org>,
- open list <linux-kernel@vger.kernel.org>, dedeking1@gmail.com,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ open list <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
  Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,338 +26,195 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Tanya,
 
-On Sun, Sep 28, 2014 at 8:38 AM, Tanya Brokhman <tlinder@codeaurora.org> wrote:
-> A given eraseblock can be read many times or not at all.
-> We do not have the account of such eraseblocks that have
-> not been accessed since a pre-defined threshold interval.
-> By means of scanning the entire flash device it is possible to identify
-> all such eraseblocks.
->
-> Add a sysfs entry to force scan on all the PEBs on demand basis.
->
-> The sysfs entry would be available under /sys/class/ubi/ubiX/peb_scan
->  - echo 1 to this entry would trigger the scan, ignored if in progress
->  - On reading returns the scan status (1 = Scan executing, 0 = Scan not
->    executing)
+Hi Richard
 
-Did you see that?
-http://linux-kernel.2935.n7.nabble.com/RFC-UBI-bitrot-checking-td949453.html
-Maybe we can combine our work.
-Although your patch seems to be in better shape than mine. :)
+On 9/28/2014 11:18 AM, Richard Weinberger wrote:
 
-> Signed-off-by: Pratibhasagar V <pratibha@codeaurora.org>
-> Signed-off-by: Tatyana Brokhman <tlinder@codeaurora.org>
-> ---
->  drivers/mtd/ubi/build.c |  32 +++++++++--
->  drivers/mtd/ubi/ubi.h   |   3 +
->  drivers/mtd/ubi/wl.c    | 143 +++++++++++++++++++++++++++++++++++++++++++++++-
->  3 files changed, 171 insertions(+), 7 deletions(-)
+>> index 0431b46..5399aa2 100644
+>> --- a/drivers/mtd/ubi/fastmap.c
+>> +++ b/drivers/mtd/ubi/fastmap.c
+>> @@ -1,5 +1,7 @@
+>>   /*
+>>    * Copyright (c) 2012 Linutronix GmbH
+>> + * Copyright (c) 2014, Linux Foundation. All rights reserved.
+>> + *
 >
-> diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-> index 34fe23a..a7464f8 100644
-> --- a/drivers/mtd/ubi/build.c
-> +++ b/drivers/mtd/ubi/build.c
-> @@ -154,6 +154,9 @@ static struct device_attribute dev_dt_threshold =
->  static struct device_attribute dev_rd_threshold =
->         __ATTR(rd_threshold, (S_IWUSR | S_IRUGO), dev_attribute_show,
->                    dev_attribute_store);
-> +static struct device_attribute dev_mtd_trigger_scan =
-> +       __ATTR(peb_scan, (S_IWUSR | S_IRUGO),
-> +               dev_attribute_show, dev_attribute_store);
+> Diffstat says "drivers/mtd/ubi/fastmap.c   | 14 +++++++----", does this really justify
+> a new copyright line?
+> If so I'll have to add the new company I work for here too.
+
+You're right. my bad. added it at the beginning but decides against it 
+later on. Will remove.
+
 >
->  /**
->   * ubi_volume_notify - send a volume change notification.
-> @@ -395,6 +398,8 @@ static ssize_t dev_attribute_show(struct device *dev,
->                 ret = sprintf(buf, "%d\n", ubi->dt_threshold);
->         else if (attr == &dev_rd_threshold)
->                 ret = sprintf(buf, "%d\n", ubi->rd_threshold);
-> +       else if (attr == &dev_mtd_trigger_scan)
-> +               ret = sprintf(buf, "%d\n", ubi->scan_in_progress);
->         else
->                 ret = -EINVAL;
+>>    * Author: Richard Weinberger <richard@nod.at>
+>>    *
+>>    * This program is free software; you can redistribute it and/or modify
+>> @@ -727,9 +729,9 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
+>>   		}
+>>
+>>   		for (j = 0; j < be32_to_cpu(fm_eba->reserved_pebs); j++) {
+>> -			int pnum = be32_to_cpu(fm_eba->pnum[j]);
+>> +			int pnum = be32_to_cpu(fm_eba->peb_data[j].pnum);
+>>
+>> -			if ((int)be32_to_cpu(fm_eba->pnum[j]) < 0)
+>> +			if ((int)be32_to_cpu(fm_eba->peb_data[j].pnum) < 0)
+>>   				continue;
+>>
+>>   			aeb = NULL;
+>> @@ -757,7 +759,8 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
+>>   				}
+>>
+>>   				aeb->lnum = j;
+>> -				aeb->pnum = be32_to_cpu(fm_eba->pnum[j]);
+>> +				aeb->pnum =
+>> +					be32_to_cpu(fm_eba->peb_data[j].pnum);
+>>   				aeb->ec = -1;
+>>   				aeb->scrub = aeb->copy_flag = aeb->sqnum = 0;
+>>   				list_add_tail(&aeb->u.list, &eba_orphans);
+>> @@ -1250,11 +1253,12 @@ static int ubi_write_fastmap(struct ubi_device *ubi,
+>>   			vol->vol_type == UBI_STATIC_VOLUME);
+>>
+>>   		feba = (struct ubi_fm_eba *)(fm_raw + fm_pos);
+>> -		fm_pos += sizeof(*feba) + (sizeof(__be32) * vol->reserved_pebs);
+>> +		fm_pos += sizeof(*feba) +
+>> +			2 * (sizeof(__be32) * vol->reserved_pebs);
+>>   		ubi_assert(fm_pos <= ubi->fm_size);
+>>
+>>   		for (j = 0; j < vol->reserved_pebs; j++)
+>> -			feba->pnum[j] = cpu_to_be32(vol->eba_tbl[j]);
+>> +			feba->peb_data[j].pnum = cpu_to_be32(vol->eba_tbl[j]);
+>>
+>>   		feba->reserved_pebs = cpu_to_be32(j);
+>>   		feba->magic = cpu_to_be32(UBI_FM_EBA_MAGIC);
+>> diff --git a/drivers/mtd/ubi/ubi-media.h b/drivers/mtd/ubi/ubi-media.h
+>> index ac2b24d..da418ad 100644
+>> --- a/drivers/mtd/ubi/ubi-media.h
+>> +++ b/drivers/mtd/ubi/ubi-media.h
+>> @@ -1,5 +1,8 @@
+>>   /*
+>>    * Copyright (c) International Business Machines Corp., 2006
+>> + * Copyright (c) 2014, Linux Foundation. All rights reserved.
+>> + * Linux Foundation chooses to take subject only to the GPLv2
+>> + * license terms, and distributes only under these terms.
+>>    *
+>>    * This program is free software; you can redistribute it and/or modify
+>>    * it under the terms of the GNU General Public License as published by
+>> @@ -38,6 +41,15 @@
+>>   /* The highest erase counter value supported by this implementation */
+>>   #define UBI_MAX_ERASECOUNTER 0x7FFFFFFF
+>>
+>> +/* The highest read counter value supported by this implementation */
+>> +#define UBI_MAX_READCOUNTER 0x7FFFFFFD /* (0x7FFFFFFF - 2)*/
+>> +
+>> +/*
+>> + * The highest data retention threshold value supported
+>> + * by this implementation
+>> + */
+>> +#define UBI_MAX_DT_THRESHOLD 0x7FFFFFFF
+>> +
+>>   /* The initial CRC32 value used when calculating CRC checksums */
+>>   #define UBI_CRC32_INIT 0xFFFFFFFFU
+>>
+>> @@ -130,6 +142,7 @@ enum {
+>>    * @vid_hdr_offset: where the VID header starts
+>>    * @data_offset: where the user data start
+>>    * @image_seq: image sequence number
+>> + * @last_erase_time: time stamp of the last erase operation
+>>    * @padding2: reserved for future, zeroes
+>>    * @hdr_crc: erase counter header CRC checksum
+>>    *
+>> @@ -162,7 +175,8 @@ struct ubi_ec_hdr {
+>>   	__be32  vid_hdr_offset;
+>>   	__be32  data_offset;
+>>   	__be32  image_seq;
+>> -	__u8    padding2[32];
+>> +	__be64  last_erase_time; /*curr time in sec == unsigned long time_t*/
+>> +	__u8    padding2[24];
+>>   	__be32  hdr_crc;
+>>   } __packed;
+>>
+>> @@ -413,6 +427,8 @@ struct ubi_vtbl_record {
+>>    * @used_blocks: number of PEBs used by this fastmap
+>>    * @block_loc: an array containing the location of all PEBs of the fastmap
+>>    * @block_ec: the erase counter of each used PEB
+>> + * @block_rc: the read counter of each used PEB
+>> + * @block_let: the last erase timestamp of each used PEB
+>>    * @sqnum: highest sequence number value at the time while taking the fastmap
+>>    *
+>>    */
+>> @@ -424,6 +440,8 @@ struct ubi_fm_sb {
+>>   	__be32 used_blocks;
+>>   	__be32 block_loc[UBI_FM_MAX_BLOCKS];
+>>   	__be32 block_ec[UBI_FM_MAX_BLOCKS];
+>> +	__be32 block_rc[UBI_FM_MAX_BLOCKS];
+>> +	__be64 block_let[UBI_FM_MAX_BLOCKS];
 >
-> @@ -406,7 +411,7 @@ static ssize_t dev_attribute_store(struct device *dev,
->                            struct device_attribute *attr,
->                            const char *buf, size_t count)
->  {
-> -       int value;
-> +       int value, ret;
->         struct ubi_device *ubi;
+> Doesn't this break the fastmap on-disk layout?
+
+What do you mean "break"? I verified fastmap feature is working. the 
+whole read-disturb depends on it so I tested this thoroughly.
+
 >
->         ubi = container_of(dev, struct ubi_device, dev);
-> @@ -414,8 +419,11 @@ static ssize_t dev_attribute_store(struct device *dev,
->         if (!ubi)
->                 return -ENODEV;
+>>   	__be64 sqnum;
+>>   	__u8 padding2[32];
+>>   } __packed;
+>> @@ -469,13 +487,17 @@ struct ubi_fm_scan_pool {
+>>   /* ubi_fm_scan_pool is followed by nfree+nused struct ubi_fm_ec records */
+>>
+>>   /**
+>> - * struct ubi_fm_ec - stores the erase counter of a PEB
+>> + * struct ubi_fm_ec - stores the erase/read counter of a PEB
+>>    * @pnum: PEB number
+>>    * @ec: ec of this PEB
+>> + * @rc: rc of this PEB
+>> + * @last_erase_time: last erase time stamp of this PEB
+>>    */
+>>   struct ubi_fm_ec {
+>>   	__be32 pnum;
+>>   	__be32 ec;
+>> +	__be32 rc;
+>> +	__be64 last_erase_time;
 >
-> -       if (kstrtos32(buf, 10, &value))
-> -               return -EINVAL;
-> +       ret = count;
-> +       if (kstrtos32(buf, 10, &value)) {
-> +               ret = -EINVAL;
-> +               goto out;
-> +       }
->         /* Consider triggering full scan if threshods change */
->         else if (attr == &dev_dt_threshold) {
->                 if (value < UBI_MAX_DT_THRESHOLD)
-> @@ -429,9 +437,21 @@ static ssize_t dev_attribute_store(struct device *dev,
->                 else
->                         pr_err("Max supported threshold value is %d",
->                                    UBI_MAX_READCOUNTER);
-> +       } else if (attr == &dev_mtd_trigger_scan) {
-> +               if (value != 1) {
-> +                       pr_err("Invalid input. Echo 1 to start trigger");
-> +                       goto out;
-> +               }
-> +               if (!ubi->lookuptbl) {
-> +                       pr_err("lookuptbl is null");
-> +                       goto out;
-> +               }
-> +               ret = ubi_wl_scan_all(ubi);
->         }
+> Same here.
+
+fastmap was thoroughly tested. all works.
+
 >
-> -       return count;
-> +out:
-> +       ubi_put_device(ubi);
-> +       return ret;
->  }
+>>   } __packed;
+>>
+>>   /**
+>> @@ -506,10 +528,14 @@ struct ubi_fm_volhdr {
+>>    * @magic: EBA table magic number
+>>    * @reserved_pebs: number of table entries
+>>    * @pnum: PEB number of LEB (LEB is the index)
+>> + * @rc: Read counter of the LEBs PEB (LEB is the index)
+>>    */
+>>   struct ubi_fm_eba {
+>>   	__be32 magic;
+>>   	__be32 reserved_pebs;
+>> -	__be32 pnum[0];
+>> +	struct {
+>> +		__be32 pnum;
+>> +		__be32 rc;
+>> +	} peb_data[0];
 >
->  static void dev_release(struct device *dev)
-> @@ -500,6 +520,9 @@ static int ubi_sysfs_init(struct ubi_device *ubi, int *ref)
->         if (err)
->                 return err;
->         err = device_create_file(&ubi->dev, &dev_rd_threshold);
-> +       if (err)
-> +               return err;
-> +       err = device_create_file(&ubi->dev, &dev_mtd_trigger_scan);
->         return err;
->  }
+> And here.
+
+fastmap was thoroughly tested. all works.
+
 >
-> @@ -509,6 +532,7 @@ static int ubi_sysfs_init(struct ubi_device *ubi, int *ref)
->   */
->  static void ubi_sysfs_close(struct ubi_device *ubi)
->  {
-> +       device_remove_file(&ubi->dev, &dev_mtd_trigger_scan);
->         device_remove_file(&ubi->dev, &dev_mtd_num);
->         device_remove_file(&ubi->dev, &dev_dt_threshold);
->         device_remove_file(&ubi->dev, &dev_rd_threshold);
-> diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-> index ed04de2..1079517 100644
-> --- a/drivers/mtd/ubi/ubi.h
-> +++ b/drivers/mtd/ubi/ubi.h
-> @@ -491,6 +491,7 @@ struct ubi_debug_info {
->   *                             for more info
->   * @dt_threshold: data retention threshold. See UBI_DT_THRESHOLD
->   *                             for more info
-> + * @scan_in_progress: true if scanning of device PEBs is in progress
->   *
->   * @flash_size: underlying MTD device size (in bytes)
->   * @peb_count: count of physical eraseblocks on the MTD device
-> @@ -595,6 +596,7 @@ struct ubi_device {
->         char bgt_name[sizeof(UBI_BGT_NAME_PATTERN)+2];
->         int rd_threshold;
->         int dt_threshold;
-> +       bool scan_in_progress;
->
->
->         /* I/O sub-system's stuff */
-> @@ -873,6 +875,7 @@ int ubi_is_erase_work(struct ubi_work *wrk);
->  void ubi_refill_pools(struct ubi_device *ubi);
->  int ubi_ensure_anchor_pebs(struct ubi_device *ubi);
->  int ubi_in_wl_tree(struct ubi_wl_entry *e, struct rb_root *root);
-> +int ubi_wl_scan_all(struct ubi_device *ubi);
->
->  /* io.c */
->  int ubi_io_read(const struct ubi_device *ubi, void *buf, int pnum, int offset,
-> diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-> index a5d754f..4edbb4c 100644
-> --- a/drivers/mtd/ubi/wl.c
-> +++ b/drivers/mtd/ubi/wl.c
-> @@ -143,6 +143,8 @@ static int self_check_in_wl_tree(const struct ubi_device *ubi,
->                                  struct ubi_wl_entry *e, struct rb_root *root);
->  static int self_check_in_pq(const struct ubi_device *ubi,
->                             struct ubi_wl_entry *e);
-> +static int schedule_erase(struct ubi_device *ubi, struct ubi_wl_entry *e,
-> +                         int vol_id, int lnum, int torture);
->
->  #ifdef CONFIG_MTD_UBI_FASTMAP
->  /**
-> @@ -555,8 +557,11 @@ retry:
->  static void return_unused_pool_pebs(struct ubi_device *ubi,
->                                     struct ubi_fm_pool *pool)
->  {
-> -       int i;
-> +       int i, err;
->         struct ubi_wl_entry *e;
-> +       struct timeval tv;
-> +
-> +       do_gettimeofday(&tv);
->
->         for (i = pool->used; i < pool->size; i++) {
->                 e = ubi->lookuptbl[pool->pebs[i]];
-> @@ -566,8 +571,22 @@ static void return_unused_pool_pebs(struct ubi_device *ubi,
->                         self_check_in_wl_tree(ubi, e, &ubi->scrub);
->                         rb_erase(&e->u.rb, &ubi->scrub);
->                 }
-> -               wl_tree_add(e, &ubi->free);
-> -               ubi->free_count++;
-> +               if (e->last_erase_time + UBI_DT_THRESHOLD <
-> +                        (tv.tv_sec / NUM_SEC_IN_DAY)) {
-> +                       spin_unlock(&ubi->wl_lock);
-> +                       err = schedule_erase(ubi, e, UBI_UNKNOWN,
-> +                                        UBI_UNKNOWN, 0);
-> +                       spin_lock(&ubi->wl_lock);
-> +                       if (err) {
-> +                               ubi_err(
-> +                               "Failed to schedule erase for PEB %d (err=%d)",
-> +                                       e->pnum, err);
-> +                               ubi_ro_mode(ubi);
-> +                       }
-> +               } else {
-> +                       wl_tree_add(e, &ubi->free);
-> +                       ubi->free_count++;
-> +               }
->         }
->  }
->
-> @@ -711,6 +730,124 @@ int ubi_wl_get_peb(struct ubi_device *ubi)
->  #endif
->
->  /**
-> + * ubi_wl_scan_all - Scan all PEB's
-> + * @ubi: UBI device description object
-> + *
-> + * This function scans all device PEBs in order to locate once
-> + * need scrubbing; due to read disturb threashold or last erase
-> + * timestamp.
-> + *
-> + * Return 0 in case of sucsess, (negative) error code otherwise
-> + *
-> + */
-> +int ubi_wl_scan_all(struct ubi_device *ubi)
-> +{
-> +       struct timeval tv;
-> +       struct rb_node *node;
-> +       struct ubi_wl_entry *wl_e, *tmp;
-> +       int used_cnt, free_cnt;
-> +       int err;
-> +
-> +       do_gettimeofday(&tv);
-> +       if (!ubi->lookuptbl) {
-> +               ubi_err("lookuptbl is null");
-> +               return -ENOENT;
-> +       }
-> +
-> +       spin_lock(&ubi->wl_lock);
-> +       if (ubi->scan_in_progress) {
-> +               ubi_err("Scan already in progress, ignoring the trigger");
-> +               err = -EPERM;
-> +               goto out;
-> +       }
-> +       ubi->scan_in_progress = true;
-> +
-> +       ubi_msg("Scanning all PEBs for read-disturb/erasures");
-> +       /* For PEBs in free list rc=0 */
-> +       free_cnt = 0;
-> +       node = rb_first(&ubi->free);
-> +       while (node) {
-> +               wl_e = rb_entry(node, struct ubi_wl_entry, u.rb);
-> +               node = rb_next(node);
-> +               if (wl_e->last_erase_time + UBI_DT_THRESHOLD <
-> +                        (tv.tv_sec / NUM_SEC_IN_DAY)) {
-> +                       if (self_check_in_wl_tree(ubi, wl_e, &ubi->free)) {
-> +                               ubi_err("PEB %d moved from free tree",
-> +                                       wl_e->pnum);
-> +                               err = -EAGAIN;
-> +                               goto out;
-> +                       }
-> +                       rb_erase(&wl_e->u.rb, &ubi->free);
-> +                       ubi->free_count--;
-> +                       spin_unlock(&ubi->wl_lock);
-> +                       err = schedule_erase(ubi, wl_e, UBI_UNKNOWN,
-> +                                        UBI_UNKNOWN, 0);
-> +                       spin_lock(&ubi->wl_lock);
-> +                       if (err) {
-> +                               ubi_err(
-> +                               "Failed to schedule erase for PEB %d (err=%d)",
-> +                                       wl_e->pnum, err);
-> +                               ubi_ro_mode(ubi);
-> +                               goto out;
-> +                       }
-> +                       free_cnt++;
-> +               }
-> +       }
-> +
-> +       used_cnt = 0;
-> +       node = rb_first(&ubi->used);
-> +       while (node) {
-> +               wl_e = rb_entry(node, struct ubi_wl_entry, u.rb);
-> +               node = rb_next(node);
-> +               if ((wl_e->rc >= UBI_RD_THRESHOLD) ||
-> +                       (wl_e->last_erase_time +
-> +                        UBI_DT_THRESHOLD < (tv.tv_sec / NUM_SEC_IN_DAY))) {
-> +                       spin_unlock(&ubi->wl_lock);
-> +                       err = ubi_wl_scrub_peb(ubi, wl_e->pnum);
-> +                       if (err)
-> +                               ubi_err(
-> +                               "Failed to schedule scrub for PEB %d (err=%d)",
-> +                                       wl_e->pnum, err);
-> +                       else
-> +                               used_cnt++;
-> +                       spin_lock(&ubi->wl_lock);
-> +               }
-> +       }
-> +
-> +       /* Go over protection queue */
-> +       list_for_each_entry_safe(wl_e, tmp, &ubi->pq[ubi->pq_head], u.list) {
-> +               if ((wl_e->rc >= UBI_RD_THRESHOLD) ||
-> +                       (wl_e->last_erase_time +
-> +                        UBI_DT_THRESHOLD < (tv.tv_sec / NUM_SEC_IN_DAY))) {
-> +                       spin_unlock(&ubi->wl_lock);
-> +                       err = ubi_wl_scrub_peb(ubi, wl_e->pnum);
-> +                       if (err)
-> +                               ubi_err(
-> +                               "Failed to schedule scrub for PEB %d (err=%d)",
-> +                                       wl_e->pnum, err);
-> +                       else
-> +                               used_cnt++;
-> +                       spin_lock(&ubi->wl_lock);
-> +               }
-> +       }
-> +       spin_unlock(&ubi->wl_lock);
-> +       ubi_msg("Scheduled %d for erasure", free_cnt);
-> +       ubi_msg("Scehduled %d for scrubbing", used_cnt);
-> +       err = ubi_wl_flush(ubi, UBI_ALL, UBI_ALL);
-> +       if (err)
-> +               ubi_err("Failed to flush ubi wq. err = %d", err);
-> +       else
-> +               ubi_msg("Flashed ubi wq");
-> +
-> +       spin_lock(&ubi->wl_lock);
-> +out:
-> +       ubi->scan_in_progress = false;
-> +       spin_unlock(&ubi->wl_lock);
-> +       ubi_msg("Scanning all PEBs completed. err = %d", err);
-> +       return err;
-> +}
-> +
-> +/**
->   * prot_queue_del - remove a physical eraseblock from the protection queue.
->   * @ubi: UBI device description object
->   * @pnum: the physical eraseblock to remove
-> --
-> 1.8.5.2
-> --
-> QUALCOMM ISRAEL, on behalf of Qualcomm Innovation Center, Inc. is a member
-> of Code Aurora Forum, hosted by The Linux Foundation
+> Thanks,
+> //richard
 >
 > ______________________________________________________
 > Linux MTD discussion mailing list
 > http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
+>
 
 
 -- 
-Thanks,
-//richard
+Employee of Qualcomm Innovation Center, Inc.
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, 
+hosted by The Linux Foundation
