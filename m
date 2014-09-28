@@ -1,25 +1,19 @@
-Received: from mail-qg0-x232.google.com ([2607:f8b0:400d:c04::232])
+Received: from szxga01-in.huawei.com ([119.145.14.64])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XY2kU-0001NA-U8
- for linux-mtd@lists.infradead.org; Sun, 28 Sep 2014 00:54:03 +0000
-Received: by mail-qg0-f50.google.com with SMTP id q107so10363910qgd.23
- for <linux-mtd@lists.infradead.org>; Sat, 27 Sep 2014 17:53:41 -0700 (PDT)
+ id 1XY3ld-0000ge-92
+ for linux-mtd@lists.infradead.org; Sun, 28 Sep 2014 01:59:18 +0000
+Message-ID: <54276B39.6000603@huawei.com>
+Date: Sun, 28 Sep 2014 09:58:17 +0800
+From: hujianyang <hujianyang@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20140803101707.GA8018@himangi-Dell>
-References: <20140803101707.GA8018@himangi-Dell>
-Date: Sat, 27 Sep 2014 17:53:41 -0700
-Message-ID: <CAN8TOE9phK0ghUTm4b9Pj4R8h_CmGA8-GGi0zs84mkhx2nzgPQ@mail.gmail.com>
-Subject: Re: [PATCH] mtd: fsl_ifc_nand: use devm_ functions consistently
-From: Brian Norris <computersforpeace@gmail.com>
-To: Himangi Saraogi <himangi774@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: Sachin Kamat <sachin.kamat@linaro.org>,
- Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
- Linux Kernel <linux-kernel@vger.kernel.org>,
- Joe Schultz <jschultz@xes-inc.com>, Julia Lawall <julia.lawall@lip6.fr>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Aaron Sierra <asierra@xes-inc.com>,
- Prabhakar Kushwaha <prabhakar@freescale.com>
+To: <dedekind1@gmail.com>
+Subject: Re: [PATCH] UBIFS: Align the dump messages of SB_NODE
+References: <541D24CF.1040705@huawei.com>
+ <1411727765.23429.61.camel@sauron.fi.intel.com>
+In-Reply-To: <1411727765.23429.61.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,102 +23,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+ linux-mtd
+On 2014/9/26 18:36, Artem Bityutskiy wrote:
+> On Sat, 2014-09-20 at 14:55 +0800, hujianyang wrote:
+>> I found the dump messages of UBIFS_SB_NODE is not aligned. This
+>> patch remove the extra space from the line which is retracted.
+>>
+>>
+>> Signed-off-by: hujianyang <hujianyang@huawei.com>
+> 
+> This was not a typo, this was intentional. We first print the all flags
+> in a hex format, and then we "decode" it and print the values of the
+> individual flags with an additional indent. The indent is to make it
+> clear that these line belong to the flags, and they are not independent
+> values.
+> 
 
-FYI, I addressed a similar patch over here:
+Oh, thanks for your explanation~!
 
-http://lists.infradead.org/pipermail/linux-mtd/2014-September/055563.html
 
-I'm pretty sure this patch is wrong, and the semantic match is
-incorrect (or at least, it has false positives). Just because devm_*
-is used in some part of the driver doesn't mean that all allocations
-should be. Admittedly, this driver is not the best written (this patch
-drew my attention to at least one bug), but I just wanted to let y'all
-know.
-
-Regards,
-Brian
-
-On Sun, Aug 3, 2014 at 3:17 AM, Himangi Saraogi <himangi774@gmail.com> wrote:
-> Use devm_kzalloc for all calls to kzalloc and not just the first.  Use
-> devm functions for other allocations as well. The calls to free the
-> allocated memory in the remove function are done away with.
->
-> The semantic match that finds the inconsistency is as follows:
->
-> // <smpl>
-> @@
-> @@
->
-> *devm_kzalloc(...)
-> ...
-> *kzalloc(...)
-> // </smpl>
->
-> Signed-off-by: Himangi Saraogi <himangi774@gmail.com>
-> Acked-by: Julia Lawall <julia.lawall@lip6.fr>
-> ---
-> Not compile tested.
->  drivers/mtd/nand/fsl_ifc_nand.c | 17 ++++++-----------
->  1 file changed, 6 insertions(+), 11 deletions(-)
->
-> diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
-> index 2338124..b403a77 100644
-> --- a/drivers/mtd/nand/fsl_ifc_nand.c
-> +++ b/drivers/mtd/nand/fsl_ifc_nand.c
-> @@ -995,11 +995,6 @@ static int fsl_ifc_chip_remove(struct fsl_ifc_mtd *priv)
->  {
->         nand_release(&priv->mtd);
->
-> -       kfree(priv->mtd.name);
-> -
-> -       if (priv->vbase)
-> -               iounmap(priv->vbase);
-> -
->         ifc_nand_ctrl->chips[priv->bank] = NULL;
->
->         return 0;
-> @@ -1062,7 +1057,8 @@ static int fsl_ifc_nand_probe(struct platform_device *dev)
->
->         mutex_lock(&fsl_ifc_nand_mutex);
->         if (!fsl_ifc_ctrl_dev->nand) {
-> -               ifc_nand_ctrl = kzalloc(sizeof(*ifc_nand_ctrl), GFP_KERNEL);
-> +               ifc_nand_ctrl = devm_kzalloc(&dev->dev, sizeof(*ifc_nand_ctrl),
-> +                                            GFP_KERNEL);
->                 if (!ifc_nand_ctrl) {
->                         mutex_unlock(&fsl_ifc_nand_mutex);
->                         return -ENOMEM;
-> @@ -1085,7 +1081,7 @@ static int fsl_ifc_nand_probe(struct platform_device *dev)
->         priv->ctrl = fsl_ifc_ctrl_dev;
->         priv->dev = &dev->dev;
->
-> -       priv->vbase = ioremap(res.start, resource_size(&res));
-> +       priv->vbase = devm_ioremap(&dev->dev, res.start, resource_size(&res));
->         if (!priv->vbase) {
->                 dev_err(priv->dev, "%s: failed to map chip region\n", __func__);
->                 ret = -ENOMEM;
-> @@ -1104,7 +1100,8 @@ static int fsl_ifc_nand_probe(struct platform_device *dev)
->                     IFC_NAND_EVTER_INTR_FTOERIR_EN |
->                     IFC_NAND_EVTER_INTR_WPERIR_EN,
->                     &ifc->ifc_nand.nand_evter_intr_en);
-> -       priv->mtd.name = kasprintf(GFP_KERNEL, "%llx.flash", (u64)res.start);
-> +       priv->mtd.name = devm_kasprintf(&dev->dev, GFP_KERNEL, "%llx.flash",
-> +                                       (u64)res.start);
->         if (!priv->mtd.name) {
->                 ret = -ENOMEM;
->                 goto err;
-> @@ -1148,10 +1145,8 @@ static int fsl_ifc_nand_remove(struct platform_device *dev)
->
->         mutex_lock(&fsl_ifc_nand_mutex);
->         ifc_nand_ctrl->counter--;
-> -       if (!ifc_nand_ctrl->counter) {
-> +       if (!ifc_nand_ctrl->counter)
->                 fsl_ifc_ctrl_dev->nand = NULL;
-> -               kfree(ifc_nand_ctrl);
-> -       }
->         mutex_unlock(&fsl_ifc_nand_mutex);
->
->         return 0;
-> --
-> 1.9.1
->
+Hu
