@@ -1,22 +1,23 @@
-Date: Sun, 28 Sep 2014 12:35:11 +0100
-From: Mark Brown <broonie@debian.org>
-To: Ben Hutchings <ben@decadent.org.uk>
-Message-ID: <20140928113511.GX27755@sirena.org.uk>
-References: <1410714624.3040.38.camel@decadent.org.uk>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="PpfQBwiAIZcuDX26"
-Content-Disposition: inline
-In-Reply-To: <1410714624.3040.38.camel@decadent.org.uk>
-Subject: Re: [PATCH 0/5] m25p80,spi-nor: Fix module aliases for m25p80; clean
- up chip identification
-Cc: Andrew Lunn <andrew@lunn.ch>, Jason Cooper <jason@lakedaemon.net>,
- linux-spi <linux-spi@vger.kernel.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>, Ian Campbell <ijc@hellion.org.uk>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Huang Shijie <shijie8@gmail.com>,
- linux-arm-kernel@lists.infradead.org,
- debian-kernel <debian-kernel@lists.debian.org>
+Received: from mga14.intel.com ([192.55.52.115])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XYDAp-00070W-Cp
+ for linux-mtd@lists.infradead.org; Sun, 28 Sep 2014 12:01:55 +0000
+Message-ID: <1411905665.11836.15.camel@karhu>
+Subject: Re: [PATCH] mtd: ubi: Extend UBI layer debug/messaging capabilities
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Tanya Brokhman <tlinder@codeaurora.org>
+Date: Sun, 28 Sep 2014 15:01:05 +0300
+In-Reply-To: <1411886185-7838-1-git-send-email-tlinder@codeaurora.org>
+References: <1411886185-7838-1-git-send-email-tlinder@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-arm-msm@vger.kernel.org, open list <linux-kernel@vger.kernel.org>,
+ dedeking1@gmail.com, linux-mtd@lists.infradead.org,
+ Richard Weinberger <richard@nod.at>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,33 +27,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Sun, 2014-09-28 at 09:36 +0300, Tanya Brokhman wrote:
+> If there is more then one UBI device mounted, there is no way to
+> distinguish between messages from different UBI devices.
+> Add device number to all ubi layer message types.
 
---PpfQBwiAIZcuDX26
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Hi, the goal looks legit to me, but the patch is so large that I do not
+think that I can really review it in this form.
 
-On Sun, Sep 14, 2014 at 06:10:24PM +0100, Ben Hutchings wrote:
-> The first patch in the series restores the module aliases to m25p80, but
-> it does so by duplicating the list of names.  This should be suitable
-> for stable, but it isn't viable in the longer term.
+a) A patch which changes the macros (ubi_err(), etc)
+b) A set of patches which do not change messages at all, but add the
+'ubi' parameter to the places where it is missing.
+c) A patch which changes the messages.
 
-Please don't CC patches not for the SPI subsystem to linux-spi, they
-just clog up patchwork for no benefit.
+So a) will be the most important patch for the reviewer. b) - more or
+less mechanical changes of a similar kind. c) - the same.
 
---PpfQBwiAIZcuDX26
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Also, if you add a parameter to 'ubi_err()' and the other printing
+wrappers, add 'ubi' there, not 'ubi_num'. This will allow to prefix
+messages with vary different things, not just the device number in the
+future. So the calls would look like
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+ubi_err(ubi, "inconsistent used_ebs");
 
-iQEcBAEBAgAGBQJUJ/JuAAoJECTWi3JdVIfQ40oH/ivrIeotI6hkkh/1jCCF4kWk
-VTJS8gB9pdoWBkuHwOSPBbS+VW83CzzGABp5I9noxMGTtzLQZWH0gcNrrwXhFj4a
-OY9sDiqWS4lhX7oh1g6myD/7ll5AoXoJ69+B1Y8v+JqIWqoTGzU/qC4/raoSU1EW
-pt8VV02kMrrXIAqs53pZ4WcfCj7e6y2aQC/xt2tj/2W0r4dukre4Xv0cgmwNUiU1
-qoobzVTZtCHbuYHdhMvKjufrSHYHiQiuWLhU61inxLV6oOd4GYWGmqWKBjTLrF2E
-c+ofNShOnb6AoOrWfLEtY5Z+nXeNZ0Xg5AJMaEyiYZhPmTS2NprPJNpEmBVoCk8=
-=kpAW
------END PGP SIGNATURE-----
+Once this is done, the series should be more reviewable. The next thing
+I'd check is whether we really need to change all the messages, or most
+of them, or we actually need to change only a small part of them. In the
+former case, it is OK to do what you do, I guess. In the latter case we
+probably better off with introducing a separate set of printing macros
+and leave the existing ones as they are.
 
---PpfQBwiAIZcuDX26--
+Thanks!
+
+-- 
+Best Regards,
+Artem Bityutskiy
