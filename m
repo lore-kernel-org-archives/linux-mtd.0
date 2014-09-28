@@ -1,21 +1,25 @@
-Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
+Received: from mail-qg0-x232.google.com ([2607:f8b0:400d:c04::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XY2Y9-00064P-IT
- for linux-mtd@lists.infradead.org; Sun, 28 Sep 2014 00:41:18 +0000
-Received: by mail-pa0-f41.google.com with SMTP id fa1so7075022pad.14
- for <linux-mtd@lists.infradead.org>; Sat, 27 Sep 2014 17:40:56 -0700 (PDT)
-Date: Sat, 27 Sep 2014 17:40:52 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-Subject: Re: [PATCH] mtdtest: Check bbt at index of (eb + 1) when we access 2
- EBs.
-Message-ID: <20140928004052.GQ7362@norris-Latitude-E6410>
-References: <1408328879-22771-1-git-send-email-yangds.fnst@cn.fujitsu.com>
+ id 1XY2kU-0001NA-U8
+ for linux-mtd@lists.infradead.org; Sun, 28 Sep 2014 00:54:03 +0000
+Received: by mail-qg0-f50.google.com with SMTP id q107so10363910qgd.23
+ for <linux-mtd@lists.infradead.org>; Sat, 27 Sep 2014 17:53:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1408328879-22771-1-git-send-email-yangds.fnst@cn.fujitsu.com>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org, akinobu.mita@gmail.com
+In-Reply-To: <20140803101707.GA8018@himangi-Dell>
+References: <20140803101707.GA8018@himangi-Dell>
+Date: Sat, 27 Sep 2014 17:53:41 -0700
+Message-ID: <CAN8TOE9phK0ghUTm4b9Pj4R8h_CmGA8-GGi0zs84mkhx2nzgPQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd: fsl_ifc_nand: use devm_ functions consistently
+From: Brian Norris <computersforpeace@gmail.com>
+To: Himangi Saraogi <himangi774@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: Sachin Kamat <sachin.kamat@linaro.org>,
+ Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Linux Kernel <linux-kernel@vger.kernel.org>,
+ Joe Schultz <jschultz@xes-inc.com>, Julia Lawall <julia.lawall@lip6.fr>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Aaron Sierra <asierra@xes-inc.com>,
+ Prabhakar Kushwaha <prabhakar@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,54 +29,102 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 18, 2014 at 10:27:59AM +0800, Dongsheng Yang wrote:
-> When we want to access 2 eraseblocks, we need to make sure the
-> two eraseblocks both are not bad.
-> 
-> Signed-off-by: Dongsheng Yang <yangds.fnst@cn.fujitsu.com>
-> ---
->  drivers/mtd/tests/stresstest.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/tests/stresstest.c b/drivers/mtd/tests/stresstest.c
-> index c9d42cc..076d409 100644
-> --- a/drivers/mtd/tests/stresstest.c
-> +++ b/drivers/mtd/tests/stresstest.c
-> @@ -60,7 +60,7 @@ again:
->  	eb = prandom_u32();
->  	/* Read or write up 2 eraseblocks at a time - hence 'ebcnt - 1' */
->  	eb %= (ebcnt - 1);
-> -	if (bbt[eb])
-> +	if (bbt[eb] || bbt[eb + 1])
++ linux-mtd
 
-Was this change actually needed? Did you see some kind of test failure
-without it?
+FYI, I addressed a similar patch over here:
 
->From what I can see, stresstest.c already handles the second block just
-fine; it skips the block with code like this:
+http://lists.infradead.org/pipermail/linux-mtd/2014-September/055563.html
 
-static int do_read(void)
-{
-...
-        if (bbt[eb + 1]) {
-                if (offs >= mtd->erasesize)
-                        offs -= mtd->erasesize;
-                if (offs + len > mtd->erasesize)
-                        len = mtd->erasesize - offs;
-        }
-...
-}
-
-and similar in do_write().
-
-Plus, your patch actually skips *any* block where the subsequent block
-is bad. That is not ideal, as it skews the randomness.
-
-So unless I'm missing something, I will not take this patch.
-
->  		goto again;
->  	return eb;
->  }
+I'm pretty sure this patch is wrong, and the semantic match is
+incorrect (or at least, it has false positives). Just because devm_*
+is used in some part of the driver doesn't mean that all allocations
+should be. Admittedly, this driver is not the best written (this patch
+drew my attention to at least one bug), but I just wanted to let y'all
+know.
 
 Regards,
 Brian
+
+On Sun, Aug 3, 2014 at 3:17 AM, Himangi Saraogi <himangi774@gmail.com> wrote:
+> Use devm_kzalloc for all calls to kzalloc and not just the first.  Use
+> devm functions for other allocations as well. The calls to free the
+> allocated memory in the remove function are done away with.
+>
+> The semantic match that finds the inconsistency is as follows:
+>
+> // <smpl>
+> @@
+> @@
+>
+> *devm_kzalloc(...)
+> ...
+> *kzalloc(...)
+> // </smpl>
+>
+> Signed-off-by: Himangi Saraogi <himangi774@gmail.com>
+> Acked-by: Julia Lawall <julia.lawall@lip6.fr>
+> ---
+> Not compile tested.
+>  drivers/mtd/nand/fsl_ifc_nand.c | 17 ++++++-----------
+>  1 file changed, 6 insertions(+), 11 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
+> index 2338124..b403a77 100644
+> --- a/drivers/mtd/nand/fsl_ifc_nand.c
+> +++ b/drivers/mtd/nand/fsl_ifc_nand.c
+> @@ -995,11 +995,6 @@ static int fsl_ifc_chip_remove(struct fsl_ifc_mtd *priv)
+>  {
+>         nand_release(&priv->mtd);
+>
+> -       kfree(priv->mtd.name);
+> -
+> -       if (priv->vbase)
+> -               iounmap(priv->vbase);
+> -
+>         ifc_nand_ctrl->chips[priv->bank] = NULL;
+>
+>         return 0;
+> @@ -1062,7 +1057,8 @@ static int fsl_ifc_nand_probe(struct platform_device *dev)
+>
+>         mutex_lock(&fsl_ifc_nand_mutex);
+>         if (!fsl_ifc_ctrl_dev->nand) {
+> -               ifc_nand_ctrl = kzalloc(sizeof(*ifc_nand_ctrl), GFP_KERNEL);
+> +               ifc_nand_ctrl = devm_kzalloc(&dev->dev, sizeof(*ifc_nand_ctrl),
+> +                                            GFP_KERNEL);
+>                 if (!ifc_nand_ctrl) {
+>                         mutex_unlock(&fsl_ifc_nand_mutex);
+>                         return -ENOMEM;
+> @@ -1085,7 +1081,7 @@ static int fsl_ifc_nand_probe(struct platform_device *dev)
+>         priv->ctrl = fsl_ifc_ctrl_dev;
+>         priv->dev = &dev->dev;
+>
+> -       priv->vbase = ioremap(res.start, resource_size(&res));
+> +       priv->vbase = devm_ioremap(&dev->dev, res.start, resource_size(&res));
+>         if (!priv->vbase) {
+>                 dev_err(priv->dev, "%s: failed to map chip region\n", __func__);
+>                 ret = -ENOMEM;
+> @@ -1104,7 +1100,8 @@ static int fsl_ifc_nand_probe(struct platform_device *dev)
+>                     IFC_NAND_EVTER_INTR_FTOERIR_EN |
+>                     IFC_NAND_EVTER_INTR_WPERIR_EN,
+>                     &ifc->ifc_nand.nand_evter_intr_en);
+> -       priv->mtd.name = kasprintf(GFP_KERNEL, "%llx.flash", (u64)res.start);
+> +       priv->mtd.name = devm_kasprintf(&dev->dev, GFP_KERNEL, "%llx.flash",
+> +                                       (u64)res.start);
+>         if (!priv->mtd.name) {
+>                 ret = -ENOMEM;
+>                 goto err;
+> @@ -1148,10 +1145,8 @@ static int fsl_ifc_nand_remove(struct platform_device *dev)
+>
+>         mutex_lock(&fsl_ifc_nand_mutex);
+>         ifc_nand_ctrl->counter--;
+> -       if (!ifc_nand_ctrl->counter) {
+> +       if (!ifc_nand_ctrl->counter)
+>                 fsl_ifc_ctrl_dev->nand = NULL;
+> -               kfree(ifc_nand_ctrl);
+> -       }
+>         mutex_unlock(&fsl_ifc_nand_mutex);
+>
+>         return 0;
+> --
+> 1.9.1
+>
