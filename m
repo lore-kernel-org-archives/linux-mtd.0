@@ -1,24 +1,24 @@
+Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XYYZj-00081L-Fy
+ for linux-mtd@lists.infradead.org; Mon, 29 Sep 2014 10:53:03 +0000
+Received: by mail-pa0-f41.google.com with SMTP id eu11so1915062pac.14
+ for <linux-mtd@lists.infradead.org>; Mon, 29 Sep 2014 03:52:41 -0700 (PDT)
+Message-ID: <54293975.9040402@gmail.com>
+Date: Mon, 29 Sep 2014 16:20:29 +0530
+From: Kiran Padwal <kiran.padwal21@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CACna6ry91b3wcHsG4C-td+STPuiaH7oaAcQuKiKdhud+jctUeA@mail.gmail.com>
-References: <1410714624.3040.38.camel@decadent.org.uk>
- <1410714670.3040.39.camel@decadent.org.uk>
- <20140928222150.GC3248@norris-Latitude-E6410>
- <CACna6rx=GyZ-4JpDix==WKszABseQXK6qCCkfiKCm9-WzBmM3A@mail.gmail.com>
- <CACna6ry91b3wcHsG4C-td+STPuiaH7oaAcQuKiKdhud+jctUeA@mail.gmail.com>
-Date: Mon, 29 Sep 2014 12:25:05 +0200
-Message-ID: <CACna6rwz6e0Hc_Ho+dRBTzwNu6_J0Xn9B_76FH0YWDosV-meiQ@mail.gmail.com>
-Subject: Re: [PATCH 1/5] m25p80,spi-nor: Fix module aliases for m25p80
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Andrew Lunn <andrew@lunn.ch>, Jason Cooper <jason@lakedaemon.net>,
- Huang Shijie <shijie8@gmail.com>, linux-spi <linux-spi@vger.kernel.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>, Ian Campbell <ijc@hellion.org.uk>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Ben Hutchings <ben@decadent.org.uk>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- debian-kernel <debian-kernel@lists.debian.org>
+To: Tanya Brokhman <tlinder@codeaurora.org>
+Subject: Re: [PATCH] mtd: ubi: Extend UBI layer debug/messaging capabilities
+References: <1411886185-7838-1-git-send-email-tlinder@codeaurora.org>
+In-Reply-To: <1411886185-7838-1-git-send-email-tlinder@codeaurora.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, linux-arm-msm@vger.kernel.org,
+ open list <linux-kernel@vger.kernel.org>, dedeking1@gmail.com,
+ linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,44 +28,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 29 September 2014 11:53, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrot=
-e:
-> On 29 September 2014 08:36, Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wr=
-ote:
->> 1) The main urgent issue: broken auto-loading
->> Tracked in the thread: http://www.spinics.net/lists/linux-spi/msg01726.h=
-tml
->> Problem: m25p80.c references spi_nor_ids (from external file)
->> Short-term solution: duplicate IDs in the m25p80.c
->>
->> Ben: just like Brian, I think the patch like this one (
->> [PATCH 1/5] m25p80,spi-nor: Fix module aliases for m25p80
->> ) is the way to go. However few comments:
->
-> I started wondering... would this be possible to fix all m25p80 users
-> instead? Make them always specify modalias as "m25p80" and then
-> provide platform_data if needed?
->
-> Has anyone checked in how many places we use "wrong" (or should I say
-> "weird") modaliases? I guess some would need to grep kernel for all
-> possible names.
+Hi Tanya,
 
-I did some (e)grepping, it seems we have:
-1) Only 6 references (modalias) in arch/mips/ath79/
-2) About 57 references (compatible) in arch/arm/boot/dts/
-3) About 32 references (compatible) in arch/powerpc/boot/dts/
+On Sunday 28 September 2014 12:06 PM, Tanya Brokhman wrote:
+> If there is more then one UBI device mounted, there is no way to
+> distinguish between messages from different UBI devices.
+> Add device number to all ubi layer message types.
+> 
+> 
+> Signed-off-by: Tanya Brokhman <tlinder@codeaurora.org>
+> 
+> ---
+>  drivers/mtd/ubi/attach.c  | 138 ++++++++++++++++++++----------------
+>  drivers/mtd/ubi/build.c   | 130 ++++++++++++++++++++--------------
+>  drivers/mtd/ubi/cdev.c    |  37 +++++-----
+>  drivers/mtd/ubi/debug.c   |   9 +--
+>  drivers/mtd/ubi/eba.c     |  54 +++++++-------
+>  drivers/mtd/ubi/fastmap.c | 108 ++++++++++++++++------------
+>  drivers/mtd/ubi/io.c      | 177 +++++++++++++++++++++++++++-------------------
+>  drivers/mtd/ubi/kapi.c    |   6 +-
+>  drivers/mtd/ubi/misc.c    |   6 +-
+>  drivers/mtd/ubi/ubi.h     |  13 ++--
+>  drivers/mtd/ubi/vmt.c     |  76 +++++++++++---------
+>  drivers/mtd/ubi/vtbl.c    |  54 ++++++++------
+>  drivers/mtd/ubi/wl.c      |  87 +++++++++++++++--------
+>  13 files changed, 521 insertions(+), 374 deletions(-)
 
-However it seems there is no way to provide platform_data in Device
-Tree files. So we have to support compatible (modalias) for now I
-guess.
+Compilation breaks while I try to compile with this patch.
+May be you need to update remaining ubi layer messages also.
 
-The list (if someone would like to check) of used names in archs:
-m25p128 m25p16 m25p32 m25p40 m25p64
-mx25l12805d mx25l1606e mx25l25635e mx25l4005a mx25l6405d mx66l51235l
-n25q128a11 n25q128a13 n25q512a
-s25fl008k s25fl256s1 s25fl512s s25sl064a s25sl12801
-sst25vf016b sst25vf032b sst25vf040b sst25wf040
-w25q128 w25q256 w25q32 w25q32dw w25q80bl w25x80
-
---=20
-Rafa=C5=82
+Thanks,
+--Kiran
