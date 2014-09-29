@@ -1,20 +1,24 @@
-Received: from relay3-d.mail.gandi.net ([2001:4b98:c:538::195])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XYOQx-0007cv-Q4
- for linux-mtd@lists.infradead.org; Mon, 29 Sep 2014 00:03:20 +0000
-Date: Sun, 28 Sep 2014 17:02:44 -0700
-From: Josh Triplett <josh@joshtriplett.org>
-To: Fabian Frederick <fabf@skynet.be>
-Subject: Re: [PATCH V2 linux-next] jffs2: fix sparse warning: unexpected unlock
-Message-ID: <20140929000243.GA1353@thin>
-References: <1411932392-7751-1-git-send-email-fabf@skynet.be>
+From: bpqw <bpqw@micron.com>
+To: Marek Vasut <marex@denx.de>
+Subject: RE: [PATCH 1/1 v2] driver:mtd:spi-nor: Add Micron quad I/O support
+Date: Mon, 29 Sep 2014 00:30:04 +0000
+Message-ID: <A765B125120D1346A63912DDE6D8B6315DCF74@NTXXIAMBX02.xacn.micron.com>
+References: <A765B125120D1346A63912DDE6D8B6315DCC46@NTXXIAMBX02.xacn.micron.com>
+ <201409261046.07132.marex@denx.de>
+ <A765B125120D1346A63912DDE6D8B6315DCED6@NTXXIAMBX02.xacn.micron.com>
+ <201409290043.43750.marex@denx.de>
+In-Reply-To: <201409290043.43750.marex@denx.de>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1411932392-7751-1-git-send-email-fabf@skynet.be>
-Cc: linux-mtd@lists.infradead.org, linux-sparse@vger.kernel.org,
+Cc: "geert+renesas@glider.be" <geert+renesas@glider.be>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "grmoore@altera.com" <grmoore@altera.com>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
+ "shijie8@gmail.com" <shijie8@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,37 +28,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Sep 28, 2014 at 09:26:32PM +0200, Fabian Frederick wrote:
-> fs/jffs2/summary.c:846:5: warning: context imbalance in 'jffs2_sum_write_sumnode' - unexpected unlock
-> 
-> Suggested-by: Brian Norris <computersforpeace@gmail.com>
-> Suggested-by: Josh Triplett <josh@joshtriplett.org>
-> Signed-off-by: Fabian Frederick <fabf@skynet.be>
+>> For Micron spi norflash,you can enable Quad spi transfer by clear=20
+>> EVCR(Enhanced Volatile Configuration Register) Quad I/O protocol bit.
+>
+>OK, this information is nice and all, but what does this patch do? I can't=
+ learn this information from the commit message as it is, can I ?=20
+>And , the purpose of the commit message is exactly to summarize the change=
+ the patch implements.
 
-Reviewed-by: Josh Triplett <josh@joshtriplett.org>
 
-> V2: use __must_hold instead of __releases / __acquires
-> (suggested by Brian Norris and Josh Triplett)
-> 
->  fs/jffs2/summary.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/fs/jffs2/summary.c b/fs/jffs2/summary.c
-> index c522d09..bc53854 100644
-> --- a/fs/jffs2/summary.c
-> +++ b/fs/jffs2/summary.c
-> @@ -844,6 +844,7 @@ static int jffs2_sum_write_data(struct jffs2_sb_info *c, struct jffs2_eraseblock
->  /* Write out summary information - called from jffs2_do_reserve_space */
->  
->  int jffs2_sum_write_sumnode(struct jffs2_sb_info *c)
-> +	__must_hold(&c->erase_completion_block)
->  {
->  	int datasize, infosize, padsize;
->  	struct jffs2_eraseblock *jeb;
-> -- 
-> 1.9.1
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-sparse" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+you don't understand what purpose of this patch! just as subject and commit=
+ message described,
+it is for enable Micron Quad spi transfer mode.do you read the spi-nor.c fi=
+le? please pay attention
+to the set_quad_mode() function.by the way,I can add more commit message fo=
+r it,but I think
+it is redundant,don't need.
+
+>> +static int micron_quad_enable(struct spi_nor *nor) {
+>> +	int ret, val;
+>> +
+>> +	ret =3D nor->read_reg(nor, SPINOR_OP_RD_EVCR, &val, 1);
+>> +	if (ret < 0) {
+>> +		dev_err(nor->dev, "error %d reading EVCR\n", ret);
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	write_enable(nor);
+>> +
+>> +	/* set EVCR ,enable quad I/O */
+>> +	nor->cmd_buf[0] =3D val & ~EVCR_QUAD_EN_MICRON;
+>> +	ret =3D nor->write_reg(nor, SPINOR_OP_WD_EVCR, nor->cmd_buf, 1, 0);
+>> +	if (ret < 0) {
+>> +		dev_err(nor->dev,
+>> +			"error while writing EVCR register\n");
+>> +		return -EINVAL;
+
+>Why not just "return ret;" ?
+>[...]
+
+Ok,this is good,I will modify it in the next patch version.thanks.
