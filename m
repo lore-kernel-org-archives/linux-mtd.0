@@ -1,16 +1,15 @@
-Message-ID: <54291A84.5080109@atmel.com>
-Date: Mon, 29 Sep 2014 10:38:28 +0200
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
-MIME-Version: 1.0
-To: Josh Wu <josh.wu@atmel.com>, <computersforpeace@gmail.com>,
- <akpm@linux-foundation.org>
-Subject: Re: [PATCH] MAINTAINERS: add atmel nand driver maintainer entry
-References: <1411979763-1449-1-git-send-email-josh.wu@atmel.com>
-In-Reply-To: <1411979763-1449-1-git-send-email-josh.wu@atmel.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: gregkh@linuxfoundation.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Received: from webbox1416.server-home.net ([77.236.96.61])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XYXTu-00035u-I7
+ for linux-mtd@lists.infradead.org; Mon, 29 Sep 2014 09:42:59 +0000
+From: Alexander Stein <alexander.stein@systec-electronic.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCH 1/1 RFC] mtd: spi-nor: Fix ID for Spansion s70fl01gs
+Date: Mon, 29 Sep 2014 11:43:15 +0200
+Message-Id: <1411983795-6444-1-git-send-email-alexander.stein@systec-electronic.com>
+Cc: linux-mtd@lists.infradead.org,
+ Alexander Stein <alexander.stein@systec-electronic.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,36 +19,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 29/09/2014 10:36, Josh Wu :
-> This patch adds an entry in MAINTAINERS file for ATMEL nand driver.
-> 
-> Signed-off-by: Josh Wu <josh.wu@atmel.com>
+The Device ID is the same as with s25fl512s as stated in datasheet:
+6. Identification (RDID)
+The Read Identification (RDID) command outputs the one-byte manufacturer
+identification, followed by the two-byte device identification and the
+bytes for the Common Flash Interface (CFI) tables. Each die of the FL01GS
+dual die stack will have identical identification data as the FL512S die,
+with the exception of the CFI data at byte 27h, as shown in Table 6.1.
 
-Acked-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+If DT is configured with 's70fl01gs' I get the following warnings (on a 3.12
+kernel, but that shouldn't matter):
+m25p80 spi32766.0: found s25fl512s, expected s70fl01gs
+m25p80 spi32766.1: found s25fl512s, expected s70fl01gs
 
-> ---
->  MAINTAINERS | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 3705430..1bdf3bf 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -1698,6 +1698,12 @@ M:	Nicolas Ferre <nicolas.ferre@atmel.com>
->  S:	Supported
->  F:	drivers/net/ethernet/cadence/
->  
-> +ATMEL NAND DRIVER
-> +M:	Josh Wu <josh.wu@atmel.com>
-> +L:	linux-mtd@lists.infradead.org
-> +S:	Supported
-> +F:	drivers/mtd/nand/atmel_nand*
-> +
->  ATMEL SPI DRIVER
->  M:	Nicolas Ferre <nicolas.ferre@atmel.com>
->  S:	Supported
-> 
+Signed-off-by: Alexander Stein <alexander.stein@systec-electronic.com>
+---
+I am aware that there is now an ID conflict. But this is due that the
+s70fl01gs simply uses two separate chips. How to handle that?
 
+ drivers/mtd/spi-nor/spi-nor.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index b5ad6be..0c34968 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -551,7 +551,7 @@ const struct spi_device_id spi_nor_ids[] = {
+ 	{ "s25fl256s0", INFO(0x010219, 0x4d00, 256 * 1024, 128, 0) },
+ 	{ "s25fl256s1", INFO(0x010219, 0x4d01,  64 * 1024, 512, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "s25fl512s",  INFO(0x010220, 0x4d00, 256 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+-	{ "s70fl01gs",  INFO(0x010221, 0x4d00, 256 * 1024, 256, 0) },
++	{ "s70fl01gs",  INFO(0x010220, 0x4d00, 256 * 1024, 256, 0) },
+ 	{ "s25sl12800", INFO(0x012018, 0x0300, 256 * 1024,  64, 0) },
+ 	{ "s25sl12801", INFO(0x012018, 0x0301,  64 * 1024, 256, 0) },
+ 	{ "s25fl129p0", INFO(0x012018, 0x4d00, 256 * 1024,  64, 0) },
 -- 
-Nicolas Ferre
+1.8.5.5
