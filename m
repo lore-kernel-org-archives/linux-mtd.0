@@ -1,23 +1,17 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XYZe1-0003OG-3b
- for linux-mtd@lists.infradead.org; Mon, 29 Sep 2014 12:01:34 +0000
-Message-ID: <54294A01.8070505@nod.at>
-Date: Mon, 29 Sep 2014 14:01:05 +0200
-From: Richard Weinberger <richard@nod.at>
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] ARM: don't set unused name in struct flash_platform_data
+Date: Mon, 29 Sep 2014 14:30:53 +0200
+Message-Id: <1411993853-6309-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
-To: Kiran Padwal <kiran.padwal21@gmail.com>,
- Tanya Brokhman <tlinder@codeaurora.org>
-Subject: Re: [PATCH] mtd: ubi: Extend UBI layer debug/messaging capabilities
-References: <1411886185-7838-1-git-send-email-tlinder@codeaurora.org>
- <54293975.9040402@gmail.com>
-In-Reply-To: <54293975.9040402@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: Artem Bityutskiy <dedekind1@gmail.com>, linux-arm-msm@vger.kernel.org,
- open list <linux-kernel@vger.kernel.org>, dedeking1@gmail.com,
- linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Wan ZongShun <mcuos.com@gmail.com>, linux-sh@vger.kernel.org,
+ Kevin Hilman <khilman@deeprootsystems.com>,
+ Magnus Damm <magnus.damm@gmail.com>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
+ Sekhar Nori <nsekhar@ti.com>, Simon Horman <horms@verge.net.au>,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,38 +21,104 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 29.09.2014 12:50, schrieb Kiran Padwal:
-> Hi Tanya,
-> 
-> On Sunday 28 September 2014 12:06 PM, Tanya Brokhman wrote:
->> If there is more then one UBI device mounted, there is no way to
->> distinguish between messages from different UBI devices.
->> Add device number to all ubi layer message types.
->>
->>
->> Signed-off-by: Tanya Brokhman <tlinder@codeaurora.org>
->>
->> ---
->>  drivers/mtd/ubi/attach.c  | 138 ++++++++++++++++++++----------------
->>  drivers/mtd/ubi/build.c   | 130 ++++++++++++++++++++--------------
->>  drivers/mtd/ubi/cdev.c    |  37 +++++-----
->>  drivers/mtd/ubi/debug.c   |   9 +--
->>  drivers/mtd/ubi/eba.c     |  54 +++++++-------
->>  drivers/mtd/ubi/fastmap.c | 108 ++++++++++++++++------------
->>  drivers/mtd/ubi/io.c      | 177 +++++++++++++++++++++++++++-------------------
->>  drivers/mtd/ubi/kapi.c    |   6 +-
->>  drivers/mtd/ubi/misc.c    |   6 +-
->>  drivers/mtd/ubi/ubi.h     |  13 ++--
->>  drivers/mtd/ubi/vmt.c     |  76 +++++++++++---------
->>  drivers/mtd/ubi/vtbl.c    |  54 ++++++++------
->>  drivers/mtd/ubi/wl.c      |  87 +++++++++++++++--------
->>  13 files changed, 521 insertions(+), 374 deletions(-)
-> 
-> Compilation breaks while I try to compile with this patch.
-> May be you need to update remaining ubi layer messages also.
+Loading correct SPI driver (m25p80) is handled using modalias from the
+struct spi_board_info. There is no point of setting name in the
+platform_data, m25p80 ignores it anyway.
 
-Please always share the errors you face.
-Maybe you have a different config.
+Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
+---
+ arch/arm/mach-davinci/board-da830-evm.c    | 1 -
+ arch/arm/mach-davinci/board-da850-evm.c    | 1 -
+ arch/arm/mach-davinci/board-mityomapl138.c | 1 -
+ arch/arm/mach-shmobile/board-bockw.c       | 1 -
+ arch/arm/mach-shmobile/board-koelsch.c     | 1 -
+ arch/arm/mach-shmobile/board-lager.c       | 1 -
+ arch/arm/mach-w90x900/dev.c                | 1 -
+ 7 files changed, 7 deletions(-)
 
-Thanks,
-//richard
+diff --git a/arch/arm/mach-davinci/board-da830-evm.c b/arch/arm/mach-davinci/board-da830-evm.c
+index 5623131..263004a 100644
+--- a/arch/arm/mach-davinci/board-da830-evm.c
++++ b/arch/arm/mach-davinci/board-da830-evm.c
+@@ -567,7 +567,6 @@ static struct mtd_partition da830evm_spiflash_part[] = {
+ };
+ 
+ static struct flash_platform_data da830evm_spiflash_data = {
+-	.name		= "m25p80",
+ 	.parts		= da830evm_spiflash_part,
+ 	.nr_parts	= ARRAY_SIZE(da830evm_spiflash_part),
+ 	.type		= "w25x32",
+diff --git a/arch/arm/mach-davinci/board-da850-evm.c b/arch/arm/mach-davinci/board-da850-evm.c
+index 234c5bb..721ff2b 100644
+--- a/arch/arm/mach-davinci/board-da850-evm.c
++++ b/arch/arm/mach-davinci/board-da850-evm.c
+@@ -104,7 +104,6 @@ static struct mtd_partition da850evm_spiflash_part[] = {
+ };
+ 
+ static struct flash_platform_data da850evm_spiflash_data = {
+-	.name		= "m25p80",
+ 	.parts		= da850evm_spiflash_part,
+ 	.nr_parts	= ARRAY_SIZE(da850evm_spiflash_part),
+ 	.type		= "m25p64",
+diff --git a/arch/arm/mach-davinci/board-mityomapl138.c b/arch/arm/mach-davinci/board-mityomapl138.c
+index 96fc00a..3c93b65 100644
+--- a/arch/arm/mach-davinci/board-mityomapl138.c
++++ b/arch/arm/mach-davinci/board-mityomapl138.c
+@@ -350,7 +350,6 @@ static struct mtd_partition spi_flash_partitions[] = {
+ };
+ 
+ static struct flash_platform_data mityomapl138_spi_flash_data = {
+-	.name		= "m25p80",
+ 	.parts		= spi_flash_partitions,
+ 	.nr_parts	= ARRAY_SIZE(spi_flash_partitions),
+ 	.type		= "m24p64",
+diff --git a/arch/arm/mach-shmobile/board-bockw.c b/arch/arm/mach-shmobile/board-bockw.c
+index 8a83eb3..e25af56 100644
+--- a/arch/arm/mach-shmobile/board-bockw.c
++++ b/arch/arm/mach-shmobile/board-bockw.c
+@@ -266,7 +266,6 @@ static struct mtd_partition m25p80_spi_flash_partitions[] = {
+ };
+ 
+ static struct flash_platform_data spi_flash_data = {
+-	.name		= "m25p80",
+ 	.type		= "s25fl008k",
+ 	.parts		= m25p80_spi_flash_partitions,
+ 	.nr_parts	= ARRAY_SIZE(m25p80_spi_flash_partitions),
+diff --git a/arch/arm/mach-shmobile/board-koelsch.c b/arch/arm/mach-shmobile/board-koelsch.c
+index b7d5bc7..a494a00 100644
+--- a/arch/arm/mach-shmobile/board-koelsch.c
++++ b/arch/arm/mach-shmobile/board-koelsch.c
+@@ -207,7 +207,6 @@ static struct mtd_partition spi_flash_part[] = {
+ };
+ 
+ static const struct flash_platform_data spi_flash_data = {
+-	.name		= "m25p80",
+ 	.parts		= spi_flash_part,
+ 	.nr_parts	= ARRAY_SIZE(spi_flash_part),
+ 	.type		= "s25fl512s",
+diff --git a/arch/arm/mach-shmobile/board-lager.c b/arch/arm/mach-shmobile/board-lager.c
+index e1d8215..3575731 100644
+--- a/arch/arm/mach-shmobile/board-lager.c
++++ b/arch/arm/mach-shmobile/board-lager.c
+@@ -315,7 +315,6 @@ static struct mtd_partition spi_flash_part[] = {
+ };
+ 
+ static const struct flash_platform_data spi_flash_data = {
+-	.name           = "m25p80",
+ 	.parts          = spi_flash_part,
+ 	.nr_parts       = ARRAY_SIZE(spi_flash_part),
+ 	.type           = "s25fl512s",
+diff --git a/arch/arm/mach-w90x900/dev.c b/arch/arm/mach-w90x900/dev.c
+index e65a80a..9745a73 100644
+--- a/arch/arm/mach-w90x900/dev.c
++++ b/arch/arm/mach-w90x900/dev.c
+@@ -249,7 +249,6 @@ static struct mtd_partition nuc900_spi_flash_partitions[] = {
+ };
+ 
+ static struct flash_platform_data nuc900_spi_flash_data = {
+-	.name = "m25p80",
+ 	.parts =  nuc900_spi_flash_partitions,
+ 	.nr_parts = ARRAY_SIZE(nuc900_spi_flash_partitions),
+ 	.type = "w25x16",
+-- 
+1.8.4.5
