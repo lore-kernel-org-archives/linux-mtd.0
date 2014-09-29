@@ -1,24 +1,24 @@
-From: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
-To: Boris BREZILLON <boris.brezillon@free-electrons.com>, Huang Shijie
- <shijie8@gmail.com>
-Date: Mon, 29 Sep 2014 11:22:11 +1000
-Subject: RE: [PATCH] mtd: nand: gpmi: add proper raw access support
-Message-ID: <EACD232272DA4849B060F0828564D13B44955ABD82@ntcex01.corp.netcomm.com.au>
-References: <1410339339-25561-1-git-send-email-boris.brezillon@free-electrons.com>
- <20140911120928.GA1585@localhost.localdomain>,
- <20140911143616.3ebb025a@bbrezillon>
-In-Reply-To: <20140911143616.3ebb025a@bbrezillon>
-Content-Language: en-AU
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from mx5.zte.com.cn ([63.217.80.70])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XYPw5-0001Ez-30
+ for linux-mtd@lists.infradead.org; Mon, 29 Sep 2014 01:39:34 +0000
+Received: from mse01.zte.com.cn (unknown [10.30.3.20])
+ by Websense Email Security Gateway with ESMTPS id 403C61250670
+ for <linux-mtd@lists.infradead.org>; Mon, 29 Sep 2014 09:39:03 +0800 (CST)
+Received: from notes_smtp.zte.com.cn ([10.30.1.239])
+ by mse01.zte.com.cn with ESMTP id s8T1csld024307
+ for <linux-mtd@lists.infradead.org>; Mon, 29 Sep 2014 09:38:54 +0800 (GMT-8)
+ (envelope-from wang.bo116@zte.com.cn)
+Subject: JFFS2 when rename a directory there maybe occur hard link between
+ directories
+To: linux-mtd@lists.infradead.org
+Message-ID: <OFCCD78E56.0F02D93D-ON48257D62.00088BDA-48257D62.00090DA4@zte.com.cn>
+From: wang.bo116@zte.com.cn
+Date: Mon, 29 Sep 2014 09:38:43 +0800
 MIME-Version: 1.0
-Cc: Mike Voytovich <mvoytovich@paypal.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Huang Shijie <b32955@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Roy Lee <roylee@paypal.com>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-type: text/plain; charset=GB2312
+Content-transfer-encoding: base64
+Cc: liu.song11@zte.com.cn
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,38 +28,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 11 Sep 2014 22:36:16 +1000
-Boris BREZILLON <boris.brezillon@free-electrons.com> wrote:
->=20
-> Well, I don't know about freescale specific tools, but at least I have
-> an example with mtd_nandbiterrs module.
-> This module is assuming it can write only the data part of a NAND page
-> without modifying the OOB area (see [1]), which in GPMI controller
-> case is impossible because raw write function store the data as if
-> there were no specific scheme, while there is one:
-> (metadata + n x (data_chunk + ECC bytes) + remaining_bytes).
->=20
-
-Hi Boris,
-
-
-just as an aside, only the incremental bit errors test in nandbiterrs
-positively requires raw data write.
-
-The overwrite test (re-write the same page data repeatedly without
-erase), only uses raw access because I was lazy. A normal ECC write
-would do just as well.
-
-
-Best regards,
-
-Iwo
-
-______________________________________________________________________
-This communication contains information which may be confidential or privi=
-leged. The information is intended=20solely for the use of the individual =
-or entity named above.  If you are not the intended recipient, be aware th=
-at any disclosure, copying, distribution or use of the contents of this in=
-formation is prohibited.  If you have received this communication in error=
-, please notify me by telephone immediately.
-______________________________________________________________________
+DQpIaaOsZXZlcnlvbmUNCg0KT3VyIGtlcm5lbCB2ZXJzaW9uIGlzIDIuNi4yMS43LCBhbmQgd2Ug
+dXBkYXRlIHRoZSBqZmZzMiBwYXJ0IHRvIHZlcnNpb24gMy4xNi4zLA0Kb3VyIG1hY2hpbmUgaGFz
+IDI1Nk1CIG5vciBmbGFzaCwgYW5kIHdlIHVzZSAyMzZNQiBmb3IgamZmczIuKENPTkZJR19KRkZT
+Ml9TVU1NQVJZID0geSkNCg0KV2UgZG8gdGhlIHRlc3QgbGlrZSB0aGlzLg0KMS4gY3JlYXRlIHNv
+bWUgZGlyZWN0b3JpZXMgdW5kZXIgcm9vdCwgbGlrZSAvU1cxLCAvU1cyLA0KMi4gY3JlYXRlIGRp
+cmVjdG9yeSB1bmRlciByb290LCBuYW1lZCBvbGQsIHRoZSBkaXJlbnQgaXMgL29sZA0KMy4gbXYo
+cmVuYW1lKSAvU1cxIC9TVzIgdW5kZXIgL29sZCAgdGhlbiBub3cgaXMgL29sZC9TVzEgL29sZC9T
+VzIgLA0KIHRoZW4gZG8gc29tZSBvdGhlciB0aGluZ3MgYnV0IGRvbid0IHRvdWNoIC9vbGQvU1cx
+IC9vbGQvU1cyDQo0LiBtdihyZW5hbWUpIC9vbGQvU1cxIC9vbGQvU1cyIHVuZGVyIHJvb3QsIHNv
+IHRoZXJlIGlzIC9TVzEgL1NXMiwNCmFuZCB0aGUgL29sZCBpcyBlbXB0eQ0KNS4gZGVsZXRlKHJl
+bW92ZSkgL29sZA0KNi4gcmVib290DQoNCk5vdywgYWZ0ZXIgdGhlIG1hY2hpbmUgcmVib290ZWQs
+IHdlIGZvdW5kIC9TVzEgYW5kIC9vbGQvU1cxIGJlY29tZSBoYXJkbGluaywNCmJ1dCAvb2xkL1NX
+MSBzaG91bGRuJ3QgZXhpc3QuIFNvIHdlIGNhdGNoZWQgc29tZSBsb2dzLg0KLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KaW5v
+ID0gMCwgbmFtZSA9IFNXMSwgdmVyc2lvbiA9IDYsIHBpbm8gPSA3MSwgb2ZzID0gMHgwNTY4MDNl
+NA0KaW5vID0gMCwgbmFtZSA9IFNXMiwgdmVyc2lvbiA9IDcsIHBpbm8gPSA3MSwgb2ZzID0gMHgw
+NTY4MDQzYw0KDQppbm8gPSAyLCBuYW1lID0gU1cxLCB2ZXJzaW9uID0gMiwgcGlubyA9IDcxLCBv
+ZnMgPSAweDBlNjE4NmU4DQppbm8gPSAzLCBuYW1lID0gU1cyLCB2ZXJzaW9uID0gMywgcGlubyA9
+IDcxLCBvZnMgPSAweDBlNjE4NzQwDQppbm8gPSAwLCBuYW1lID0gb2xkLCB2ZXJzaW9uID0gMjk4
+LCBwaW5vID0gMSwgb2ZzID0gMHgwZTYxODVjNA0KaW5vID0gNzEsIG5hbWUgPSBvbGQsIHZlcnNp
+b24gPSAyOTksIHBpbm8gPSAxLCBvZnMgPSAweDBlNjE4NmJjDQotLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KZnJvbSB0aGUg
+bG9nLCB3ZSBjYW4gc2VlIHRoZSBvbGQoaW5vIDcxKSBoYXMgZGVsZXRlZCAsYW5kIFNXMSBTVzIg
+c2VlbSBnb29kLA0KdGhleSBhbGwgaGF2ZSB0aGVpciBkZWxldGlvbiBkaXJlbnQsIGV2ZXJ5dGhp
+bmcncyBvay4NCg0KVGhlbix3ZSByZWJvb3QgdGhlIG1hY2hpbmUgYW5kIGFsc28gY2F0Y2hlZCBz
+b21lIGxvZ3MuDQotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLQ0KaW5vID0gMiwgbmFtZSA9IFNXMSwgdmVyc2lvbiA9IDIsIHBp
+bm8gPSA3MSwgb2ZzID0gMHgwZTYxODZlOA0KaW5vID0gMywgbmFtZSA9IFNXMiwgdmVyc2lvbiA9
+IDMsIHBpbm8gPSA3MSwgb2ZzID0gMHgwZTYxODc0MA0KY2hpbGQgZGlyICJTVzEiIChpbm8gIzIp
+IG9mIGRpciBpbm8gIzcxIGFwcGVhcnMgdG8gYmUgYSBoYXJkIGxpbmsNCmNoaWxkIGRpciAiU1cy
+IiAoaW5vICMzKSBvZiBkaXIgaW5vICM3MSBhcHBlYXJzIHRvIGJlIGEgaGFyZCBsaW5rDQotLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLQ0KDQovb2xkL1NXMSBhbmQgL29sZC9TVzIgJ3MgZGVsZXRpb24gZGlyZW50IGhhcyBnb25l
+LA0KYW5kIC9TVzEgPC0+IC9vbGQvU1cxIC9TVzIgPC0+L29sZC9TVzIgYmVjb21lIGhhcmQgbGlu
+ay4NCg0KV2UgZm91bmQsIGFmdGVyIHJlYm9vdCAsIGR1cmluZyBtb3VudCBKRkZTMiwgaW4gamZm
+czJfYnVpbGRfcmVtb3ZlX3VubGlua2VkX2lub2RlDQoNCnN0YXRpYyB2b2lkIGpmZnMyX2J1aWxk
+X3JlbW92ZV91bmxpbmtlZF9pbm9kZShzdHJ1Y3QgamZmczJfc2JfaW5mbyAqYywNCgkJCQkJc3Ry
+dWN0IGpmZnMyX2lub2RlX2NhY2hlICppYywNCgkJCQkJc3RydWN0IGpmZnMyX2Z1bGxfZGlyZW50
+ICoqZGVhZF9mZHMpDQp7DQoJLi4uDQoJd2hpbGUgKHJhdyAhPSAodm9pZCAqKWljKSB7DQoJCXN0
+cnVjdCBqZmZzMl9yYXdfbm9kZV9yZWYgKm5leHQgPSByYXctPm5leHRfaW5faW5vOw0KCQlkYmdf
+ZnNidWlsZCgib2Jzb2xldGluZyBub2RlIGF0IDB4JTA4eFxuIiwgcmVmX29mZnNldChyYXcpKTsN
+CgkJamZmczJfbWFya19ub2RlX29ic29sZXRlKGMsIHJhdyk7DQoJCXJhdyA9IG5leHQ7DQoJfQ0K
+CS4uLg0KfQ0KDQpCZWNhdXNlIC9vbGQvU1cxIGFuZCAvb2xkL1NXMSBkZWxldGlvbiBkaXJlbnQg
+c3RpbGwgZXhpc3QgaW4gdGhlIGZsYXNoLCBkdXJpbmcgc2NhbiwNCmNvdWxkIGNyZWF0ZSBpdHMg
+cGFyZW50J3MgaW5vZGUgY2FjaGUuIC9vbGQgaGFzIGRlbGV0ZWQsdGhlbiBzaG91bGQgZG8NCmpm
+ZnMyX2J1aWxkX3JlbW92ZV91bmxpbmtlZF9pbm9kZSwgYW5kIG1ha2UgZXZlcnkgdW5kZXIgL29s
+ZCB0byBvYnNvbGV0ZSwNCmluY2x1ZGUgL29sZC9TVzEncyBkZWxldGlvbiBkaXJlbnQuSWYgdGhl
+IGRlbGV0aW9uIGRpcmVudCdzIGVyYXNlYmxvY2sgaXMgdG90YWxseSBkaXJ0eSwNCnRoZW4gd2ls
+bCBlcmFzZSBpdC5TbywgdGhlIG9ic29sZXRlIC9vbGQvU1cxIGlzIHN0aWxsIGluIGZsYXNoLg0K
+L29sZC9TVzEgaXMgb2Jzb2xldGVkIGJ1dCBqdXN0IHJlY29yZCBpbiByYW0sIGlmIHdlIHJlYm9v
+dCBiZWZvcmUgdGhlIG9ic29sZXRlZCAvb2xkL1NXMSBlcmFzZWQsDQphZnRlciByZWJvb3QsIHRo
+ZXJlIHdpbGwgYmUgYSBoYXJkIGxpbmsgYmV0d2VlbiAvb2xkL1NXMSBhbmQgL1NXMS4NClRoZW4s
+IC9vbGQvU1cxIGFuZCAvU1cxIHNoYXJlIGlub2RlLGJ1dCBpbiBqZmZzMl9idWlsZF9yZW1vdmVf
+dW5saW5rZWRfaW5vZGUgd2lsbA0KbWFrZSAvb2xkL1NXMSdzIGlub2RlIG9ic29sZXRlLlNvLCBp
+ZiB3ZSB3YW50IHRvIGVudGVyIC9TVzEsDQp3ZSdsbCBmb3VuZCAvU1cxIGhhcyBub25lIHZhbGlk
+IG5vZGVzIGFuZCBnb3QgLUVJTy4gL1NXMSBkaXJlbnQgY2FuIG5vdCBhY2Nlc3MuDQoNClRoYW5r
+cyENCg0KQmVzdCBSZWdhcmRz
