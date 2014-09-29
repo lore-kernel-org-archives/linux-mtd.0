@@ -1,17 +1,20 @@
-Received: from mail.sigma-star.at ([95.130.255.111])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XYjJo-0002bR-IP
- for linux-mtd@lists.infradead.org; Mon, 29 Sep 2014 22:21:22 +0000
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XYjLj-0003Vu-MS
+ for linux-mtd@lists.infradead.org; Mon, 29 Sep 2014 22:23:20 +0000
+Message-ID: <5429DBC0.1010801@nod.at>
+Date: Tue, 30 Sep 2014 00:22:56 +0200
 From: Richard Weinberger <richard@nod.at>
+MIME-Version: 1.0
 To: dedekind1@gmail.com
-Subject: [PATCH 4/4] UBI: Fastmap: Ensure that only one fastmap work is
- scheduled
-Date: Tue, 30 Sep 2014 00:20:48 +0200
-Message-Id: <1412029248-22454-5-git-send-email-richard@nod.at>
-In-Reply-To: <1412029248-22454-1-git-send-email-richard@nod.at>
-References: <1412029248-22454-1-git-send-email-richard@nod.at>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] UBI: Fix possible deadlock in erase_worker()
+References: <1411375536-20067-1-git-send-email-richard@nod.at>	
+ <1411375536-20067-3-git-send-email-richard@nod.at>
+ <1411728032.23429.63.camel@sauron.fi.intel.com>
+In-Reply-To: <1411728032.23429.63.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,63 +24,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If the WL pool runs out of PEBs we schedule a fastmap write
-to refill it was soon as possible.
-Ensure that only one at a time is scheduled otherwise we might end in
-a fastmap write storm was writing the fastmap can schedule another
-write if bitflips were detected.
+Am 26.09.2014 12:40, schrieb Artem Bityutskiy:
+> On Mon, 2014-09-22 at 10:45 +0200, Richard Weinberger wrote:
+>> If sync_erase() fails with EINTR, ENOMEM, EAGAIN or
+>> EBUSY erase_worker() re-schedules the failed work.
+>> This will lead to a deadlock because erase_worker() is called
+>> with work_sem held in read mode. And schedule_erase() will take
+>> this lock again.
+>>
+>> Signed-off-by: Richard Weinberger <richard@nod.at>
+> 
+> Did you manage to test it?
+> 
+> Why no -stable this time? Not that important, or just something
+> theoretical and you never actually hit this bug?
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- drivers/mtd/ubi/ubi.h | 2 ++
- drivers/mtd/ubi/wl.c  | 8 +++++++-
- 2 files changed, 9 insertions(+), 1 deletion(-)
+It is something theoretical, I was only able to trigger it by injecting
+ENOMEM by hand.
 
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index 7bf4163..529dfb0 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -426,6 +426,7 @@ struct ubi_debug_info {
-  * @fm_size: fastmap size in bytes
-  * @fm_sem: allows ubi_update_fastmap() to block EBA table changes
-  * @fm_work: fastmap work queue
-+ * @fm_work_scheduled: non-zero if fastmap work was scheduled
-  *
-  * @used: RB-tree of used physical eraseblocks
-  * @erroneous: RB-tree of erroneous used physical eraseblocks
-@@ -531,6 +532,7 @@ struct ubi_device {
- 	void *fm_buf;
- 	size_t fm_size;
- 	struct work_struct fm_work;
-+	int fm_work_scheduled;
- 
- 	/* Wear-leveling sub-system's stuff */
- 	struct rb_root used;
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index dc01b1f..4c02a6e 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -149,6 +149,9 @@ static void update_fastmap_work_fn(struct work_struct *wrk)
- {
- 	struct ubi_device *ubi = container_of(wrk, struct ubi_device, fm_work);
- 	ubi_update_fastmap(ubi);
-+	spin_lock(&ubi->wl_lock);
-+	ubi->fm_work_scheduled = 0;
-+	spin_unlock(&ubi->wl_lock);
- }
- 
- /**
-@@ -657,7 +660,10 @@ static struct ubi_wl_entry *get_peb_for_wl(struct ubi_device *ubi)
- 		/* We cannot update the fastmap here because this
- 		 * function is called in atomic context.
- 		 * Let's fail here and refill/update it as soon as possible. */
--		schedule_work(&ubi->fm_work);
-+		if (!ubi->fm_work_scheduled) {
-+			ubi->fm_work_scheduled = 1;
-+			schedule_work(&ubi->fm_work);
-+		}
- 		return NULL;
- 	} else {
- 		pnum = pool->pebs[pool->used++];
--- 
-2.1.0
+Thanks,
+//richard
