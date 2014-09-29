@@ -1,25 +1,19 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mail-wi0-x235.google.com ([2a00:1450:400c:c05::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XYaCr-0001r8-Fa
- for linux-mtd@lists.infradead.org; Mon, 29 Sep 2014 12:37:34 +0000
-Message-ID: <54295274.4020805@nod.at>
-Date: Mon, 29 Sep 2014 14:37:08 +0200
-From: Richard Weinberger <richard@nod.at>
+ id 1XYbVD-0003Kr-94
+ for linux-mtd@lists.infradead.org; Mon, 29 Sep 2014 14:00:36 +0000
+Received: by mail-wi0-f181.google.com with SMTP id n3so2051186wiv.14
+ for <linux-mtd@lists.infradead.org>; Mon, 29 Sep 2014 07:00:13 -0700 (PDT)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: Steven Miao <realmz6@gmail.com>, adi-buildroot-devel@lists.sourceforge.net
+Subject: [PATCH] blackfin: don't set unused name in struct flash_platform_data
+Date: Mon, 29 Sep 2014 15:59:59 +0200
+Message-Id: <1411999199-7390-1-git-send-email-zajec5@gmail.com>
 MIME-Version: 1.0
-To: Kiran Padwal <kiran.padwal@smartplayin.com>
-Subject: Re: [PATCH] mtd: ubi: Extend UBI layer debug/messaging capabilities
-References: <1411886185-7838-1-git-send-email-tlinder@codeaurora.org>
- <54293975.9040402@gmail.com> <54294A01.8070505@nod.at>
- <54295165.4030201@smartplayin.com>
-In-Reply-To: <54295165.4030201@smartplayin.com>
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: Artem Bityutskiy <dedekind1@gmail.com>, linux-arm-msm@vger.kernel.org,
- Tanya Brokhman <tlinder@codeaurora.org>,
- open list <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
- Kiran Padwal <kiran.padwal21@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
+ linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,51 +23,312 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 29.09.2014 14:32, schrieb Kiran Padwal:
-> On Monday 29 September 2014 05:31 PM, Richard Weinberger wrote:
->> Am 29.09.2014 12:50, schrieb Kiran Padwal:
->>> Hi Tanya,
->>>
->>> On Sunday 28 September 2014 12:06 PM, Tanya Brokhman wrote:
->>>> If there is more then one UBI device mounted, there is no way to
->>>> distinguish between messages from different UBI devices.
->>>> Add device number to all ubi layer message types.
->>>>
->>>>
->>>> Signed-off-by: Tanya Brokhman <tlinder@codeaurora.org>
->>>>
->>>> ---
->>>>  drivers/mtd/ubi/attach.c  | 138 ++++++++++++++++++++----------------
->>>>  drivers/mtd/ubi/build.c   | 130 ++++++++++++++++++++--------------
->>>>  drivers/mtd/ubi/cdev.c    |  37 +++++-----
->>>>  drivers/mtd/ubi/debug.c   |   9 +--
->>>>  drivers/mtd/ubi/eba.c     |  54 +++++++-------
->>>>  drivers/mtd/ubi/fastmap.c | 108 ++++++++++++++++------------
->>>>  drivers/mtd/ubi/io.c      | 177 +++++++++++++++++++++++++++-------------------
->>>>  drivers/mtd/ubi/kapi.c    |   6 +-
->>>>  drivers/mtd/ubi/misc.c    |   6 +-
->>>>  drivers/mtd/ubi/ubi.h     |  13 ++--
->>>>  drivers/mtd/ubi/vmt.c     |  76 +++++++++++---------
->>>>  drivers/mtd/ubi/vtbl.c    |  54 ++++++++------
->>>>  drivers/mtd/ubi/wl.c      |  87 +++++++++++++++--------
->>>>  13 files changed, 521 insertions(+), 374 deletions(-)
->>>
->>> Compilation breaks while I try to compile with this patch.
->>> May be you need to update remaining ubi layer messages also.
->>
->> Please always share the errors you face.
->> Maybe you have a different config.
-> 
-> Sure, I will take care of this next time.
-> 
-> Macros have been changed but some instances of older macros still remained, which caused many errors like,
-> 
-> drivers/mtd/ubi/build.c: In function ëubi_inití:
-> drivers/mtd/ubi/build.c:1322:49: error: expected ë)í before ëerrí
->    ubi_err("block: cannot initialize, error %d", err);
+Loading correct SPI driver (m25p80) is handled using modalias from the
+struct spi_board_info. There is no point of setting name in this
+platform_data, m25p80 ignores it anyway.
 
-Ohh. :(
-Tanya, did you test your patch?
+Signed-off-by: Rafa≈Ç Mi≈Çecki <zajec5@gmail.com>
+---
+ arch/blackfin/mach-bf518/boards/ezbrd.c      | 1 -
+ arch/blackfin/mach-bf518/boards/tcm-bf518.c  | 1 -
+ arch/blackfin/mach-bf527/boards/ad7160eval.c | 1 -
+ arch/blackfin/mach-bf527/boards/cm_bf527.c   | 1 -
+ arch/blackfin/mach-bf527/boards/ezbrd.c      | 1 -
+ arch/blackfin/mach-bf527/boards/ezkit.c      | 1 -
+ arch/blackfin/mach-bf527/boards/tll6527m.c   | 1 -
+ arch/blackfin/mach-bf533/boards/H8606.c      | 1 -
+ arch/blackfin/mach-bf533/boards/blackstamp.c | 1 -
+ arch/blackfin/mach-bf533/boards/cm_bf533.c   | 1 -
+ arch/blackfin/mach-bf533/boards/ezkit.c      | 1 -
+ arch/blackfin/mach-bf533/boards/stamp.c      | 1 -
+ arch/blackfin/mach-bf537/boards/cm_bf537e.c  | 1 -
+ arch/blackfin/mach-bf537/boards/cm_bf537u.c  | 1 -
+ arch/blackfin/mach-bf537/boards/minotaur.c   | 1 -
+ arch/blackfin/mach-bf537/boards/pnav10.c     | 1 -
+ arch/blackfin/mach-bf537/boards/stamp.c      | 1 -
+ arch/blackfin/mach-bf537/boards/tcm_bf537.c  | 1 -
+ arch/blackfin/mach-bf538/boards/ezkit.c      | 1 -
+ arch/blackfin/mach-bf548/boards/cm_bf548.c   | 1 -
+ arch/blackfin/mach-bf548/boards/ezkit.c      | 1 -
+ arch/blackfin/mach-bf561/boards/cm_bf561.c   | 1 -
+ arch/blackfin/mach-bf609/boards/ezkit.c      | 1 -
+ 23 files changed, 23 deletions(-)
 
-Thanks,
-//richard
+diff --git a/arch/blackfin/mach-bf518/boards/ezbrd.c b/arch/blackfin/mach-bf518/boards/ezbrd.c
+index d022112..e12e883 100644
+--- a/arch/blackfin/mach-bf518/boards/ezbrd.c
++++ b/arch/blackfin/mach-bf518/boards/ezbrd.c
+@@ -180,7 +180,6 @@ static struct mtd_partition bfin_spi_flash_partitions[] = {
+ };
+ 
+ static struct flash_platform_data bfin_spi_flash_data = {
+-	.name = "m25p80",
+ 	.parts = bfin_spi_flash_partitions,
+ 	.nr_parts = ARRAY_SIZE(bfin_spi_flash_partitions),
+ 	.type = "m25p16",
+diff --git a/arch/blackfin/mach-bf518/boards/tcm-bf518.c b/arch/blackfin/mach-bf518/boards/tcm-bf518.c
+index 240d5cb..c304134 100644
+--- a/arch/blackfin/mach-bf518/boards/tcm-bf518.c
++++ b/arch/blackfin/mach-bf518/boards/tcm-bf518.c
+@@ -128,7 +128,6 @@ static struct mtd_partition bfin_spi_flash_partitions[] = {
+ };
+ 
+ static struct flash_platform_data bfin_spi_flash_data = {
+-	.name = "m25p80",
+ 	.parts = bfin_spi_flash_partitions,
+ 	.nr_parts = ARRAY_SIZE(bfin_spi_flash_partitions),
+ 	.type = "m25p16",
+diff --git a/arch/blackfin/mach-bf527/boards/ad7160eval.c b/arch/blackfin/mach-bf527/boards/ad7160eval.c
+index 00b3eb4..98ad4f9 100644
+--- a/arch/blackfin/mach-bf527/boards/ad7160eval.c
++++ b/arch/blackfin/mach-bf527/boards/ad7160eval.c
+@@ -256,7 +256,6 @@ static struct mtd_partition bfin_spi_flash_partitions[] = {
+ };
+ 
+ static struct flash_platform_data bfin_spi_flash_data = {
+-	.name = "m25p80",
+ 	.parts = bfin_spi_flash_partitions,
+ 	.nr_parts = ARRAY_SIZE(bfin_spi_flash_partitions),
+ 	.type = "m25p16",
+diff --git a/arch/blackfin/mach-bf527/boards/cm_bf527.c b/arch/blackfin/mach-bf527/boards/cm_bf527.c
+index 4e4f8b6..b24ceda 100644
+--- a/arch/blackfin/mach-bf527/boards/cm_bf527.c
++++ b/arch/blackfin/mach-bf527/boards/cm_bf527.c
+@@ -345,7 +345,6 @@ static struct mtd_partition bfin_spi_flash_partitions[] = {
+ };
+ 
+ static struct flash_platform_data bfin_spi_flash_data = {
+-	.name = "m25p80",
+ 	.parts = bfin_spi_flash_partitions,
+ 	.nr_parts = ARRAY_SIZE(bfin_spi_flash_partitions),
+ 	.type = "m25p16",
+diff --git a/arch/blackfin/mach-bf527/boards/ezbrd.c b/arch/blackfin/mach-bf527/boards/ezbrd.c
+index 0674fdc..f92c038 100644
+--- a/arch/blackfin/mach-bf527/boards/ezbrd.c
++++ b/arch/blackfin/mach-bf527/boards/ezbrd.c
+@@ -244,7 +244,6 @@ static struct mtd_partition bfin_spi_flash_partitions[] = {
+ };
+ 
+ static struct flash_platform_data bfin_spi_flash_data = {
+-	.name = "m25p80",
+ 	.parts = bfin_spi_flash_partitions,
+ 	.nr_parts = ARRAY_SIZE(bfin_spi_flash_partitions),
+ 	.type = "sst25wf040",
+diff --git a/arch/blackfin/mach-bf527/boards/ezkit.c b/arch/blackfin/mach-bf527/boards/ezkit.c
+index e7ca793..439cb78 100644
+--- a/arch/blackfin/mach-bf527/boards/ezkit.c
++++ b/arch/blackfin/mach-bf527/boards/ezkit.c
+@@ -442,7 +442,6 @@ static struct mtd_partition bfin_spi_flash_partitions[] = {
+ };
+ 
+ static struct flash_platform_data bfin_spi_flash_data = {
+-	.name = "m25p80",
+ 	.parts = bfin_spi_flash_partitions,
+ 	.nr_parts = ARRAY_SIZE(bfin_spi_flash_partitions),
+ 	.type = "m25p16",
+diff --git a/arch/blackfin/mach-bf527/boards/tll6527m.c b/arch/blackfin/mach-bf527/boards/tll6527m.c
+index 22f876c..7ed6547 100644
+--- a/arch/blackfin/mach-bf527/boards/tll6527m.c
++++ b/arch/blackfin/mach-bf527/boards/tll6527m.c
+@@ -304,7 +304,6 @@ static struct mtd_partition bfin_spi_flash_partitions[] = {
+ };
+ 
+ static struct flash_platform_data bfin_spi_flash_data = {
+-	.name = "m25p80",
+ 	.parts = bfin_spi_flash_partitions,
+ 	.nr_parts = ARRAY_SIZE(bfin_spi_flash_partitions),
+ 	.type = "m25p16",
+diff --git a/arch/blackfin/mach-bf533/boards/H8606.c b/arch/blackfin/mach-bf533/boards/H8606.c
+index 01300f4..0c8ad43 100644
+--- a/arch/blackfin/mach-bf533/boards/H8606.c
++++ b/arch/blackfin/mach-bf533/boards/H8606.c
+@@ -151,7 +151,6 @@ static struct mtd_partition bfin_spi_flash_partitions[] = {
+ };
+ 
+ static struct flash_platform_data bfin_spi_flash_data = {
+-	.name = "m25p80",
+ 	.parts = bfin_spi_flash_partitions,
+ 	.nr_parts = ARRAY_SIZE(bfin_spi_flash_partitions),
+ 	.type = "m25p64",
+diff --git a/arch/blackfin/mach-bf533/boards/blackstamp.c b/arch/blackfin/mach-bf533/boards/blackstamp.c
+index 0ccf0cf..179155f 100644
+--- a/arch/blackfin/mach-bf533/boards/blackstamp.c
++++ b/arch/blackfin/mach-bf533/boards/blackstamp.c
+@@ -94,7 +94,6 @@ static struct mtd_partition bfin_spi_flash_partitions[] = {
+ };
+ 
+ static struct flash_platform_data bfin_spi_flash_data = {
+-	.name = "m25p80",
+ 	.parts = bfin_spi_flash_partitions,
+ 	.nr_parts = ARRAY_SIZE(bfin_spi_flash_partitions),
+ 	.type = "m25p64",
+diff --git a/arch/blackfin/mach-bf533/boards/cm_bf533.c b/arch/blackfin/mach-bf533/boards/cm_bf533.c
+index 4ef2fb0..4bf4a89 100644
+--- a/arch/blackfin/mach-bf533/boards/cm_bf533.c
++++ b/arch/blackfin/mach-bf533/boards/cm_bf533.c
+@@ -50,7 +50,6 @@ static struct mtd_partition bfin_spi_flash_partitions[] = {
+ };
+ 
+ static struct flash_platform_data bfin_spi_flash_data = {
+-	.name = "m25p80",
+ 	.parts = bfin_spi_flash_partitions,
+ 	.nr_parts = ARRAY_SIZE(bfin_spi_flash_partitions),
+ 	.type = "m25p64",
+diff --git a/arch/blackfin/mach-bf533/boards/ezkit.c b/arch/blackfin/mach-bf533/boards/ezkit.c
+index 3625e9e..5d2f7dd 100644
+--- a/arch/blackfin/mach-bf533/boards/ezkit.c
++++ b/arch/blackfin/mach-bf533/boards/ezkit.c
+@@ -201,7 +201,6 @@ static struct mtd_partition bfin_spi_flash_partitions[] = {
+ };
+ 
+ static struct flash_platform_data bfin_spi_flash_data = {
+-	.name = "m25p80",
+ 	.parts = bfin_spi_flash_partitions,
+ 	.nr_parts = ARRAY_SIZE(bfin_spi_flash_partitions),
+ 	.type = "m25p64",
+diff --git a/arch/blackfin/mach-bf533/boards/stamp.c b/arch/blackfin/mach-bf533/boards/stamp.c
+index 6ec3a79..8254213 100644
+--- a/arch/blackfin/mach-bf533/boards/stamp.c
++++ b/arch/blackfin/mach-bf533/boards/stamp.c
+@@ -167,7 +167,6 @@ static struct mtd_partition bfin_spi_flash_partitions[] = {
+ };
+ 
+ static struct flash_platform_data bfin_spi_flash_data = {
+-	.name = "m25p80",
+ 	.parts = bfin_spi_flash_partitions,
+ 	.nr_parts = ARRAY_SIZE(bfin_spi_flash_partitions),
+ 	.type = "m25p64",
+diff --git a/arch/blackfin/mach-bf537/boards/cm_bf537e.c b/arch/blackfin/mach-bf537/boards/cm_bf537e.c
+index 1e7290e..da69165 100644
+--- a/arch/blackfin/mach-bf537/boards/cm_bf537e.c
++++ b/arch/blackfin/mach-bf537/boards/cm_bf537e.c
+@@ -55,7 +55,6 @@ static struct mtd_partition bfin_spi_flash_partitions[] = {
+ };
+ 
+ static struct flash_platform_data bfin_spi_flash_data = {
+-	.name = "m25p80",
+ 	.parts = bfin_spi_flash_partitions,
+ 	.nr_parts = ARRAY_SIZE(bfin_spi_flash_partitions),
+ 	.type = "m25p64",
+diff --git a/arch/blackfin/mach-bf537/boards/cm_bf537u.c b/arch/blackfin/mach-bf537/boards/cm_bf537u.c
+index c7495dc..de05f7d 100644
+--- a/arch/blackfin/mach-bf537/boards/cm_bf537u.c
++++ b/arch/blackfin/mach-bf537/boards/cm_bf537u.c
+@@ -55,7 +55,6 @@ static struct mtd_partition bfin_spi_flash_partitions[] = {
+ };
+ 
+ static struct flash_platform_data bfin_spi_flash_data = {
+-	.name = "m25p80",
+ 	.parts = bfin_spi_flash_partitions,
+ 	.nr_parts = ARRAY_SIZE(bfin_spi_flash_partitions),
+ 	.type = "m25p64",
+diff --git a/arch/blackfin/mach-bf537/boards/minotaur.c b/arch/blackfin/mach-bf537/boards/minotaur.c
+index dd7bda0..b2c9938 100644
+--- a/arch/blackfin/mach-bf537/boards/minotaur.c
++++ b/arch/blackfin/mach-bf537/boards/minotaur.c
+@@ -149,7 +149,6 @@ static struct mtd_partition bfin_spi_flash_partitions[] = {
+ };
+ 
+ static struct flash_platform_data bfin_spi_flash_data = {
+-	.name = "m25p80",
+ 	.parts = bfin_spi_flash_partitions,
+ 	.nr_parts = ARRAY_SIZE(bfin_spi_flash_partitions),
+ 	.type = "m25p64",
+diff --git a/arch/blackfin/mach-bf537/boards/pnav10.c b/arch/blackfin/mach-bf537/boards/pnav10.c
+index 06a50dd..74d86d1 100644
+--- a/arch/blackfin/mach-bf537/boards/pnav10.c
++++ b/arch/blackfin/mach-bf537/boards/pnav10.c
+@@ -175,7 +175,6 @@ static struct mtd_partition bfin_spi_flash_partitions[] = {
+ };
+ 
+ static struct flash_platform_data bfin_spi_flash_data = {
+-	.name = "m25p80",
+ 	.parts = bfin_spi_flash_partitions,
+ 	.nr_parts = ARRAY_SIZE(bfin_spi_flash_partitions),
+ 	.type = "m25p64",
+diff --git a/arch/blackfin/mach-bf537/boards/stamp.c b/arch/blackfin/mach-bf537/boards/stamp.c
+index d5a4be8..b55355d 100644
+--- a/arch/blackfin/mach-bf537/boards/stamp.c
++++ b/arch/blackfin/mach-bf537/boards/stamp.c
+@@ -529,7 +529,6 @@ static struct mtd_partition bfin_spi_flash_partitions[] = {
+ };
+ 
+ static struct flash_platform_data bfin_spi_flash_data = {
+-	.name = "m25p80",
+ 	.parts = bfin_spi_flash_partitions,
+ 	.nr_parts = ARRAY_SIZE(bfin_spi_flash_partitions),
+ 	/* .type = "m25p64", */
+diff --git a/arch/blackfin/mach-bf537/boards/tcm_bf537.c b/arch/blackfin/mach-bf537/boards/tcm_bf537.c
+index 6b988ad..bf5ec13 100644
+--- a/arch/blackfin/mach-bf537/boards/tcm_bf537.c
++++ b/arch/blackfin/mach-bf537/boards/tcm_bf537.c
+@@ -55,7 +55,6 @@ static struct mtd_partition bfin_spi_flash_partitions[] = {
+ };
+ 
+ static struct flash_platform_data bfin_spi_flash_data = {
+-	.name = "m25p80",
+ 	.parts = bfin_spi_flash_partitions,
+ 	.nr_parts = ARRAY_SIZE(bfin_spi_flash_partitions),
+ 	.type = "m25p64",
+diff --git a/arch/blackfin/mach-bf538/boards/ezkit.c b/arch/blackfin/mach-bf538/boards/ezkit.c
+index f4b5274..e09714c 100644
+--- a/arch/blackfin/mach-bf538/boards/ezkit.c
++++ b/arch/blackfin/mach-bf538/boards/ezkit.c
+@@ -508,7 +508,6 @@ static struct mtd_partition bfin_spi_flash_partitions[] = {
+ };
+ 
+ static struct flash_platform_data bfin_spi_flash_data = {
+-	.name = "m25p80",
+ 	.parts = bfin_spi_flash_partitions,
+ 	.nr_parts = ARRAY_SIZE(bfin_spi_flash_partitions),
+ 	.type = "m25p16",
+diff --git a/arch/blackfin/mach-bf548/boards/cm_bf548.c b/arch/blackfin/mach-bf548/boards/cm_bf548.c
+index 35fcdf8..af5b4a1 100644
+--- a/arch/blackfin/mach-bf548/boards/cm_bf548.c
++++ b/arch/blackfin/mach-bf548/boards/cm_bf548.c
+@@ -875,7 +875,6 @@ static struct mtd_partition bfin_spi_flash_partitions[] = {
+ };
+ 
+ static struct flash_platform_data bfin_spi_flash_data = {
+-	.name = "m25p80",
+ 	.parts = bfin_spi_flash_partitions,
+ 	.nr_parts = ARRAY_SIZE(bfin_spi_flash_partitions),
+ 	.type = "m25p16",
+diff --git a/arch/blackfin/mach-bf548/boards/ezkit.c b/arch/blackfin/mach-bf548/boards/ezkit.c
+index a19c151..77ed055 100644
+--- a/arch/blackfin/mach-bf548/boards/ezkit.c
++++ b/arch/blackfin/mach-bf548/boards/ezkit.c
+@@ -1061,7 +1061,6 @@ static struct mtd_partition bfin_spi_flash_partitions[] = {
+ };
+ 
+ static struct flash_platform_data bfin_spi_flash_data = {
+-	.name = "m25p80",
+ 	.parts = bfin_spi_flash_partitions,
+ 	.nr_parts = ARRAY_SIZE(bfin_spi_flash_partitions),
+ 	.type = "m25p16",
+diff --git a/arch/blackfin/mach-bf561/boards/cm_bf561.c b/arch/blackfin/mach-bf561/boards/cm_bf561.c
+index e862f78..89d3990 100644
+--- a/arch/blackfin/mach-bf561/boards/cm_bf561.c
++++ b/arch/blackfin/mach-bf561/boards/cm_bf561.c
+@@ -52,7 +52,6 @@ static struct mtd_partition bfin_spi_flash_partitions[] = {
+ };
+ 
+ static struct flash_platform_data bfin_spi_flash_data = {
+-	.name = "m25p80",
+ 	.parts = bfin_spi_flash_partitions,
+ 	.nr_parts = ARRAY_SIZE(bfin_spi_flash_partitions),
+ 	.type = "m25p64",
+diff --git a/arch/blackfin/mach-bf609/boards/ezkit.c b/arch/blackfin/mach-bf609/boards/ezkit.c
+index 2d547b2..c600027 100644
+--- a/arch/blackfin/mach-bf609/boards/ezkit.c
++++ b/arch/blackfin/mach-bf609/boards/ezkit.c
+@@ -758,7 +758,6 @@ static struct mtd_partition bfin_spi_flash_partitions[] = {
+ };
+ 
+ static struct flash_platform_data bfin_spi_flash_data = {
+-	.name = "m25p80",
+ 	.parts = bfin_spi_flash_partitions,
+ 	.nr_parts = ARRAY_SIZE(bfin_spi_flash_partitions),
+ 	.type = "w25q32",
+-- 
+1.8.4.5
