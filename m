@@ -1,23 +1,21 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XYs2U-0002jv-FU
- for linux-mtd@lists.infradead.org; Tue, 30 Sep 2014 07:40:02 +0000
-From: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
-To: "richard@nod.at" <richard@nod.at>
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XYs7J-0006dT-B6
+ for linux-mtd@lists.infradead.org; Tue, 30 Sep 2014 07:45:02 +0000
+Message-ID: <542A5F64.5000302@nod.at>
+Date: Tue, 30 Sep 2014 09:44:36 +0200
+From: Richard Weinberger <richard@nod.at>
+MIME-Version: 1.0
+To: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
 Subject: Re: [PATCH 4/4] UBI: Fastmap: Ensure that only one fastmap work is
  scheduled
-Date: Tue, 30 Sep 2014 07:39:23 +0000
-Message-ID: <1412062762.2379.2.camel@sauron.fi.intel.com>
-References: <1412029248-22454-1-git-send-email-richard@nod.at>
- <1412029248-22454-5-git-send-email-richard@nod.at>
+References: <1412029248-22454-1-git-send-email-richard@nod.at>		
+ <1412029248-22454-5-git-send-email-richard@nod.at>	
  <1412059523.3904.11.camel@sauron.fi.intel.com> <542A54E4.2060407@nod.at>
-In-Reply-To: <542A54E4.2060407@nod.at>
-Reply-To: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <F9DC0D1863988D498340914385FE4AD1@intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
+ <1412062762.2379.2.camel@sauron.fi.intel.com>
+In-Reply-To: <1412062762.2379.2.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  "dedekind1@gmail.com" <dedekind1@gmail.com>
@@ -30,24 +28,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gVHVlLCAyMDE0LTA5LTMwIGF0IDA4OjU5ICswMjAwLCBSaWNoYXJkIFdlaW5iZXJnZXIgd3Jv
-dGU6DQo+IEFtIDMwLjA5LjIwMTQgMDg6NDUsIHNjaHJpZWIgQml0eXV0c2tpeSwgQXJ0ZW06DQo+
-ID4gT24gVHVlLCAyMDE0LTA5LTMwIGF0IDAwOjIwICswMjAwLCBSaWNoYXJkIFdlaW5iZXJnZXIg
-d3JvdGU6DQo+ID4+ICsgICAgICAgc3Bpbl9sb2NrKCZ1YmktPndsX2xvY2spOw0KPiA+PiArICAg
-ICAgIHViaS0+Zm1fd29ya19zY2hlZHVsZWQgPSAwOw0KPiA+PiArICAgICAgIHNwaW5fdW5sb2Nr
-KCZ1YmktPndsX2xvY2spOw0KPiA+IA0KPiA+IEFuZHJldyBNb3J0b24gb25jZSBzYWlkIG1lIHRo
-YXQgaWYgSSBhbSBwcm90ZWN0aW5nIGFuIGludGVnZXIgY2hhbmdlDQo+ID4gbGlrZSB0aGlzIHdp
-dGggYSBzcGlubG9jaywgSSBoYXZlIGEgcHJvYmxlbSBpbiBteSBsb2NraW5nIGRlc2lnbi4gSGUg
-d2FzDQo+ID4gcmlnaHQgZm9yIG15IHBhcnRpY3VsYXIgY2FzZS4NCj4gPiANCj4gPiBJbnRlZ2Vy
-IGlzIGNoYW5nZXMgYXRvbWljLiBUaGUgb25seSBvdGhlciB0aGluZyBzcGlubG9jayBhZGRzIGFy
-ZSB0aGUNCj4gPiBiYXJyaWVycy4NCj4gDQo+IEkndmUgYWRkZWQgdGhlIHNwaW5sb2NrIHRvIGhh
-dmUgYSBiYXJyaWVyIGluIGFueSBjYXNlLg0KDQpFeGFtcGxlcyBvZiBhbnk/DQoNCi0tIA0KQmVz
-dCBSZWdhcmRzLA0KQXJ0ZW0gQml0eXV0c2tpeQ0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkludGVsIEZpbmxhbmQg
-T3kKUmVnaXN0ZXJlZCBBZGRyZXNzOiBQTCAyODEsIDAwMTgxIEhlbHNpbmtpIApCdXNpbmVzcyBJ
-ZGVudGl0eSBDb2RlOiAwMzU3NjA2IC0gNCAKRG9taWNpbGVkIGluIEhlbHNpbmtpIAoKVGhpcyBl
-LW1haWwgYW5kIGFueSBhdHRhY2htZW50cyBtYXkgY29udGFpbiBjb25maWRlbnRpYWwgbWF0ZXJp
-YWwgZm9yCnRoZSBzb2xlIHVzZSBvZiB0aGUgaW50ZW5kZWQgcmVjaXBpZW50KHMpLiBBbnkgcmV2
-aWV3IG9yIGRpc3RyaWJ1dGlvbgpieSBvdGhlcnMgaXMgc3RyaWN0bHkgcHJvaGliaXRlZC4gSWYg
-eW91IGFyZSBub3QgdGhlIGludGVuZGVkCnJlY2lwaWVudCwgcGxlYXNlIGNvbnRhY3QgdGhlIHNl
-bmRlciBhbmQgZGVsZXRlIGFsbCBjb3BpZXMuCg==
+Am 30.09.2014 09:39, schrieb Bityutskiy, Artem:
+> On Tue, 2014-09-30 at 08:59 +0200, Richard Weinberger wrote:
+>> Am 30.09.2014 08:45, schrieb Bityutskiy, Artem:
+>>> On Tue, 2014-09-30 at 00:20 +0200, Richard Weinberger wrote:
+>>>> +       spin_lock(&ubi->wl_lock);
+>>>> +       ubi->fm_work_scheduled = 0;
+>>>> +       spin_unlock(&ubi->wl_lock);
+>>>
+>>> Andrew Morton once said me that if I am protecting an integer change
+>>> like this with a spinlock, I have a problem in my locking design. He was
+>>> right for my particular case.
+>>>
+>>> Integer is changes atomic. The only other thing spinlock adds are the
+>>> barriers.
+>>
+>> I've added the spinlock to have a barrier in any case.
+> 
+> Examples of any?
+
+You mean a case where the compiler would reorder code and the barrier is needed?
+I don't have one, but I'm not that creative as a modern C compiler.
+If you say that no barrier is needed I'll trust you. :-)
+
+Thanks,
+//richard
