@@ -1,27 +1,26 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XYnk5-0007hL-PX
- for linux-mtd@lists.infradead.org; Tue, 30 Sep 2014 03:04:46 +0000
-From: Marek Vasut <marex@denx.de>
-To: bpqw <bpqw@micron.com>
-Subject: Re: [PATCH 1/1 v2] driver:mtd:spi-nor: Add Micron quad I/O support
-Date: Mon, 29 Sep 2014 20:57:31 +0200
-References: <A765B125120D1346A63912DDE6D8B6315DCC46@NTXXIAMBX02.xacn.micron.com>
- <201409290043.43750.marex@denx.de>
- <A765B125120D1346A63912DDE6D8B6315DCF74@NTXXIAMBX02.xacn.micron.com>
-In-Reply-To: <A765B125120D1346A63912DDE6D8B6315DCF74@NTXXIAMBX02.xacn.micron.com>
+Date: Mon, 29 Sep 2014 20:55:58 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Ben Hutchings <ben@decadent.org.uk>
+Subject: Re: [PATCH 1/5] m25p80,spi-nor: Fix module aliases for m25p80
+Message-ID: <20140930035558.GA8687@brian-ubuntu>
+References: <1410714624.3040.38.camel@decadent.org.uk>
+ <1410714670.3040.39.camel@decadent.org.uk>
+ <20140928222150.GC3248@norris-Latitude-E6410>
+ <CACna6rx=GyZ-4JpDix==WKszABseQXK6qCCkfiKCm9-WzBmM3A@mail.gmail.com>
+ <1412042858.9388.79.camel@decadent.org.uk>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201409292057.31274.marex@denx.de>
-Cc: "geert+renesas@glider.be" <geert+renesas@glider.be>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "grmoore@altera.com" <grmoore@altera.com>,
- Brian Norris <computersforpeace@gmail.com>,
- "shijie8@gmail.com" <shijie8@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1412042858.9388.79.camel@decadent.org.uk>
+Cc: Andrew Lunn <andrew@lunn.ch>, Jason Cooper <jason@lakedaemon.net>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ linux-spi <linux-spi@vger.kernel.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>, Ian Campbell <ijc@hellion.org.uk>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Huang Shijie <shijie8@gmail.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ debian-kernel <debian-kernel@lists.debian.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,59 +30,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday, September 29, 2014 at 02:30:04 AM, bpqw wrote:
-> >> For Micron spi norflash,you can enable Quad spi transfer by clear
-> >> EVCR(Enhanced Volatile Configuration Register) Quad I/O protocol bit.
-> >
-> >OK, this information is nice and all, but what does this patch do? I can't
-> >learn this information from the commit message as it is, can I ? And ,
-> >the purpose of the commit message is exactly to summarize the change the
-> >patch implements.
+On Tue, Sep 30, 2014 at 03:07:38AM +0100, Ben Hutchings wrote:
+> On Mon, 2014-09-29 at 08:36 +0200, Rafał Miłecki wrote:
+> > b) I don't think the described clean solution (you described it in the
+> > commit message):
+> > > A clean solution to this will involve defining the list of device
+> > > IDs in spi-nor.h and removing struct spi_device_id from the spi-nor
+> > > API, but this is quite a large change.
+> > is the correct one. I think there should be a single string to trigger
+> > m25p80 load and the rest should be handled using JEDEC, with some
+> > workarounds for incompatible devices only.
 > 
-> you don't understand what purpose of this patch!
+> That certainly makes sense for Linux-specific platform data, but I don't
+> think it works for Device Tree "compatible" strings (see
+> <http://mid.gmane.org/1410660009.3040.29.camel@decadent.org.uk>).
 
-Well, I dare to say, reacting to feedback like you just did won't make you many 
-allies around here.
+I think it might work.
 
-> just as subject and commit
-> message described, it is for enable Micron Quad spi transfer mode.
+Your quote from that thread:
 
-I understand the subject part. The commit message, on the other hand, just 
-states that it is possible to frob with a certain register to achieve a certain 
-effect ; the commit message does not state what this patch does or how is the 
-patch useful.
+  "I think that a DT node is always supposed to include a compatible
+  string for the specific device.  It could also include a generic
+  compatible string for SPI NOR chips, but the *only* thing a driver can
+  do with that is to use the JEDEC ID command.  It can't even
+  generically read a single byte, since addresses may be either 3 or 4
+  bytes long!  So I think that if a generic compatible string is
+  defined, the DT binding must also define the properties that spi-nor
+  currently reads out of its static table."
 
-Does this patch enable the bit or does it disable the bit ? I cannot tell 
-without looking into the code , I really have no clue just by reading the 
-subject and the commit message.
+For every current entry (except the "*-nonjedec" entries; I don't think
+we should be supporting any more entries like this, and I'd like to kill
+the existing ones if possible), we can do just that; read out the JEDEC
+ID and go from there. (Rafal is also looking at non-JEDEC RDID commands,
+but that would just require a different type of binding.)
 
-> do you
-> read the spi-nor.c file?
+In fact, for most of these entries, we'll read out the ID and override
+the match provided by the driver anyway. See:
 
-No, I didn't even look at the code.
+int spi_nor_scan(...)
+{
+...
+	[Note: almost all 'info' entries provide a non-zero jedec_id field]
+	if (info->jedec_id) {
+		const struct spi_device_id *jid;
 
-> please pay attention to the set_quad_mode()
-> function.
+		jid = nor->read_id(nor);
+		if (IS_ERR(jid)) {
+			return PTR_ERR(jid);
+		} else if (jid != id) {
+			/*
+			 * JEDEC knows better, so overwrite platform ID. We
+			 * can't trust partitions any longer, but we'll let
+			 * mtd apply them anyway, since some partitions may be
+			 * marked read-only, and we don't want to lose that
+			 * information, even if it's not 100% accurate.
+			 */
+			dev_warn(dev, "found %s, expected %s\n",
+				 jid->name, id->name);
+			id = jid;
+			info = (void *)jid->driver_data;
+		}
+	}
+...
+}
 
-No, what set_quad_mode_function() are you talking about ...
+I think this chunk might be reworked (or at least, modify the comments)
+to note how we primarily expect to override the input ID. We might even
+drop the dev_warn() eventually, and make it more informative instead.
 
-> by the way,I can add more commit message for it,but I think it is
-> redundant,don't need.
+> [...]
+> > b) Removing spi_nor::read_id
+> > https://patchwork.ozlabs.org/patch/389073/
+> > Ben: I think this one has a NACK from me, because I'm going to use
+> > custom read_id in the bcm53xxspiflash driver.
+> > See following thread for bcm53xxspiflash description:
+> > http://comments.gmane.org/gmane.linux.drivers.mtd/54578
+> > Initial commit (it uses read_id): https://patchwork.ozlabs.org/patch/381902/
+> [...]
+> 
+> But it has to use spi_nor_match_id() because of the driver_data
+> requirement.  This just illustrates that the read_id operation doesn't
+> make sense as currently defined.
 
-The commit message shall state what the patch does in the first place, what the 
-hardware can do is ortogonal to that. The commit message can be as short as:
+Right. I think it may turn out better to drop it and force a redesign
+for the next user.
 
-The hardware supports 4-bit I/O when bit FOO is set in register BAR. This patch 
-adds function that sets bit FOO in register BAR to enable 4-bit I/O if condition 
-BAZ and QUUX are met.
+> I accept that there will be a need for a read_id operation, but I think
+> it should fill in a struct flash_info rather than requiring every chip
+> to be described and named in spi-nor.c.
 
-Then I do not even have to look at the code if I want to just get the high-level 
-overview of what the patch does. If I want to know the details, I will look into 
-the code.
+Maybe struct flash_info, but this still leaks more spi-nor.c internal
+info into drivers. Perhaps Rafal's use case could be served by a
+select-able 'READ ID' opcode, with his flash_info structs still stored
+in spi_nor_ids[] -- or possibly as a separate ID table within spi-nor.c.
 
-Do you know what I'm getting at ?
+But either way, I agree the current read_id() hook is not satisfactory.
 
-[...]
-
-Best regards,
-Marek Vasut
+Brian
