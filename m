@@ -1,18 +1,23 @@
-Date: Tue, 30 Sep 2014 11:21:07 +0900
-From: Simon Horman <horms@verge.net.au>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Subject: Re: [PATCH] ARM: don't set unused name in struct flash_platform_data
-Message-ID: <20140930022107.GG10373@verge.net.au>
-References: <1411993853-6309-1-git-send-email-zajec5@gmail.com>
+From: =?iso-2022-jp?B?QmVhbiBIdW8gGyRCcDlJTElMGyhCIChiZWFuaHVvKQ==?=
+ <beanhuo@micron.com>
+To: Marek Vasut <marex@denx.de>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCH 1/1 v3] driver:mtd:spi-nor: Add Micron quad I/O support
+Date: Tue, 30 Sep 2014 02:47:39 +0000
+Message-ID: <A765B125120D1346A63912DDE6D8B6315E3C79@NTXXIAMBX02.xacn.micron.com>
+References: <A765B125120D1346A63912DDE6D8B6315DCC46@NTXXIAMBX02.xacn.micron.com>
+ <201409251211.57183.marex@denx.de>
+ <A765B125120D1346A63912DDE6D8B6315DCDF1@NTXXIAMBX02.xacn.micron.com>
+ <201409261046.07132.marex@denx.de>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1411993853-6309-1-git-send-email-zajec5@gmail.com>
-Cc: Wan ZongShun <mcuos.com@gmail.com>, linux-sh@vger.kernel.org,
- Kevin Hilman <khilman@deeprootsystems.com>,
- Magnus Damm <magnus.damm@gmail.com>, Sekhar Nori <nsekhar@ti.com>,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Cc: "grmoore@altera.com" <grmoore@altera.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "shijie8@gmail.com" <shijie8@gmail.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "geert+renesas@glider.be" <geert+renesas@glider.be>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,117 +27,115 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Sep 29, 2014 at 02:30:53PM +0200, Rafał Miłecki wrote:
-> Loading correct SPI driver (m25p80) is handled using modalias from the
-> struct spi_board_info. There is no point of setting name in the
-> platform_data, m25p80 ignores it anyway.
-> 
-> Signed-off-by: Rafał Miłecki <zajec5@gmail.com>
-> ---
->  arch/arm/mach-davinci/board-da830-evm.c    | 1 -
->  arch/arm/mach-davinci/board-da850-evm.c    | 1 -
->  arch/arm/mach-davinci/board-mityomapl138.c | 1 -
->  arch/arm/mach-shmobile/board-bockw.c       | 1 -
->  arch/arm/mach-shmobile/board-koelsch.c     | 1 -
->  arch/arm/mach-shmobile/board-lager.c       | 1 -
->  arch/arm/mach-w90x900/dev.c                | 1 -
->  7 files changed, 7 deletions(-)
+For Micron spi norflash,enables or disables quad I/O
+protocol ,which controled by EVCR(Enhanced
+Volatile Configuration Register) Quad I/O
+protocol bit 7.When EVCR bit 7 is reset to 0,
+the spi norflash will operate in quad I/O following
+the next WRITE ENHANCED VOLATILE CONFIGURATION
+command.
 
-Hi,
+Signed-off-by: bean huo <beanhuo@micron.com>
+---
+ v1-v2:modified to that capture wait_till_ready()
+	 return value,if error,directly return its
+	 the value.
+ v2-v3:directly use the reurning error value of
+	 read_reg and write_reg,instead of -EINVAL.
 
-I am happy to queue up the mach-shmobile portion of this change
-if you break it out into a separate patch, one per board.
+ drivers/mtd/spi-nor/spi-nor.c |   46 +++++++++++++++++++++++++++++++++++++=
+++++
+ include/linux/mtd/spi-nor.h   |    6 ++++++
+ 2 files changed, 52 insertions(+)
 
-> 
-> diff --git a/arch/arm/mach-davinci/board-da830-evm.c b/arch/arm/mach-davinci/board-da830-evm.c
-> index 5623131..263004a 100644
-> --- a/arch/arm/mach-davinci/board-da830-evm.c
-> +++ b/arch/arm/mach-davinci/board-da830-evm.c
-> @@ -567,7 +567,6 @@ static struct mtd_partition da830evm_spiflash_part[] = {
->  };
->  
->  static struct flash_platform_data da830evm_spiflash_data = {
-> -	.name		= "m25p80",
->  	.parts		= da830evm_spiflash_part,
->  	.nr_parts	= ARRAY_SIZE(da830evm_spiflash_part),
->  	.type		= "w25x32",
-> diff --git a/arch/arm/mach-davinci/board-da850-evm.c b/arch/arm/mach-davinci/board-da850-evm.c
-> index 234c5bb..721ff2b 100644
-> --- a/arch/arm/mach-davinci/board-da850-evm.c
-> +++ b/arch/arm/mach-davinci/board-da850-evm.c
-> @@ -104,7 +104,6 @@ static struct mtd_partition da850evm_spiflash_part[] = {
->  };
->  
->  static struct flash_platform_data da850evm_spiflash_data = {
-> -	.name		= "m25p80",
->  	.parts		= da850evm_spiflash_part,
->  	.nr_parts	= ARRAY_SIZE(da850evm_spiflash_part),
->  	.type		= "m25p64",
-> diff --git a/arch/arm/mach-davinci/board-mityomapl138.c b/arch/arm/mach-davinci/board-mityomapl138.c
-> index 96fc00a..3c93b65 100644
-> --- a/arch/arm/mach-davinci/board-mityomapl138.c
-> +++ b/arch/arm/mach-davinci/board-mityomapl138.c
-> @@ -350,7 +350,6 @@ static struct mtd_partition spi_flash_partitions[] = {
->  };
->  
->  static struct flash_platform_data mityomapl138_spi_flash_data = {
-> -	.name		= "m25p80",
->  	.parts		= spi_flash_partitions,
->  	.nr_parts	= ARRAY_SIZE(spi_flash_partitions),
->  	.type		= "m24p64",
-> diff --git a/arch/arm/mach-shmobile/board-bockw.c b/arch/arm/mach-shmobile/board-bockw.c
-> index 8a83eb3..e25af56 100644
-> --- a/arch/arm/mach-shmobile/board-bockw.c
-> +++ b/arch/arm/mach-shmobile/board-bockw.c
-> @@ -266,7 +266,6 @@ static struct mtd_partition m25p80_spi_flash_partitions[] = {
->  };
->  
->  static struct flash_platform_data spi_flash_data = {
-> -	.name		= "m25p80",
->  	.type		= "s25fl008k",
->  	.parts		= m25p80_spi_flash_partitions,
->  	.nr_parts	= ARRAY_SIZE(m25p80_spi_flash_partitions),
-> diff --git a/arch/arm/mach-shmobile/board-koelsch.c b/arch/arm/mach-shmobile/board-koelsch.c
-> index b7d5bc7..a494a00 100644
-> --- a/arch/arm/mach-shmobile/board-koelsch.c
-> +++ b/arch/arm/mach-shmobile/board-koelsch.c
-> @@ -207,7 +207,6 @@ static struct mtd_partition spi_flash_part[] = {
->  };
->  
->  static const struct flash_platform_data spi_flash_data = {
-> -	.name		= "m25p80",
->  	.parts		= spi_flash_part,
->  	.nr_parts	= ARRAY_SIZE(spi_flash_part),
->  	.type		= "s25fl512s",
-> diff --git a/arch/arm/mach-shmobile/board-lager.c b/arch/arm/mach-shmobile/board-lager.c
-> index e1d8215..3575731 100644
-> --- a/arch/arm/mach-shmobile/board-lager.c
-> +++ b/arch/arm/mach-shmobile/board-lager.c
-> @@ -315,7 +315,6 @@ static struct mtd_partition spi_flash_part[] = {
->  };
->  
->  static const struct flash_platform_data spi_flash_data = {
-> -	.name           = "m25p80",
->  	.parts          = spi_flash_part,
->  	.nr_parts       = ARRAY_SIZE(spi_flash_part),
->  	.type           = "s25fl512s",
-> diff --git a/arch/arm/mach-w90x900/dev.c b/arch/arm/mach-w90x900/dev.c
-> index e65a80a..9745a73 100644
-> --- a/arch/arm/mach-w90x900/dev.c
-> +++ b/arch/arm/mach-w90x900/dev.c
-> @@ -249,7 +249,6 @@ static struct mtd_partition nuc900_spi_flash_partitions[] = {
->  };
->  
->  static struct flash_platform_data nuc900_spi_flash_data = {
-> -	.name = "m25p80",
->  	.parts =  nuc900_spi_flash_partitions,
->  	.nr_parts = ARRAY_SIZE(nuc900_spi_flash_partitions),
->  	.type = "w25x16",
-> -- 
-> 1.8.4.5
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-sh" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index b5ad6be..486b167 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -878,6 +878,45 @@ static int spansion_quad_enable(struct spi_nor *nor)
+ 	return 0;
+ }
+=20
++static int micron_quad_enable(struct spi_nor *nor)
++{
++	int ret, val;
++
++	ret =3D nor->read_reg(nor, SPINOR_OP_RD_EVCR, &val, 1);
++	if (ret < 0) {
++		dev_err(nor->dev, "error %d reading EVCR\n", ret);
++		return ret;
++	}
++
++	write_enable(nor);
++
++	/* set EVCR ,enable quad I/O */
++	nor->cmd_buf[0] =3D val & ~EVCR_QUAD_EN_MICRON;
++	ret =3D nor->write_reg(nor, SPINOR_OP_WD_EVCR, nor->cmd_buf, 1, 0);
++	if (ret < 0) {
++		dev_err(nor->dev,
++			"error while writing EVCR register\n");
++		return ret;
++	}
++
++	ret =3D wait_till_ready(nor);
++	if (ret)
++		return ret;
++
++	/* read EVCR and check it */
++	ret =3D nor->read_reg(nor, SPINOR_OP_RD_EVCR, &val, 1);
++	if (ret < 0) {
++		dev_err(nor->dev, "error %d reading EVCR\n", ret);
++		return ret;
++	}
++	if (val & EVCR_QUAD_EN_MICRON) {
++		dev_err(nor->dev, "Micron EVCR Quad bit not clear\n");
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
+ static int set_quad_mode(struct spi_nor *nor, u32 jedec_id)
+ {
+ 	int status;
+@@ -890,6 +929,13 @@ static int set_quad_mode(struct spi_nor *nor, u32 jede=
+c_id)
+ 			return -EINVAL;
+ 		}
+ 		return status;
++	case CFI_MFR_ST:
++		status =3D micron_quad_enable(nor);
++		if (status) {
++			dev_err(nor->dev, "Micron quad-read not enabled\n");
++			return -EINVAL;
++		}
++		return status;
+ 	default:
+ 		status =3D spansion_quad_enable(nor);
+ 		if (status) {
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index 9e6294f..d71b659 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -56,6 +56,10 @@
+ /* Used for Spansion flashes only. */
+ #define SPINOR_OP_BRWR		0x17	/* Bank register write */
+=20
++/* Used for Micron flashes only. */
++#define SPINOR_OP_RD_EVCR	0x65	/* Read EVCR register */
++#define SPINOR_OP_WD_EVCR	0x61	/* Write EVCR register */
++
+ /* Status Register bits. */
+ #define SR_WIP			1	/* Write in progress */
+ #define SR_WEL			2	/* Write enable latch */
+@@ -67,6 +71,8 @@
+=20
+ #define SR_QUAD_EN_MX		0x40	/* Macronix Quad I/O */
+=20
++#define EVCR_QUAD_EN_MICRON	0x80	/* Micron Quad I/O */
++
+ /* Flag Status Register bits */
+ #define FSR_READY		0x80
+=20
+--=20
+1.7.9.5
