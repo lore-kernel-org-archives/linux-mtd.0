@@ -1,21 +1,23 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XYs7J-0006dT-B6
- for linux-mtd@lists.infradead.org; Tue, 30 Sep 2014 07:45:02 +0000
-Message-ID: <542A5F64.5000302@nod.at>
-Date: Tue, 30 Sep 2014 09:44:36 +0200
-From: Richard Weinberger <richard@nod.at>
+Received: from mga11.intel.com ([192.55.52.93])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XYsGJ-00035m-CN
+ for linux-mtd@lists.infradead.org; Tue, 30 Sep 2014 07:54:19 +0000
+From: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
+To: "richard@nod.at" <richard@nod.at>
+Subject: Re: [PATCH 1/4] UBI: Ensure that all fastmap work is done upon WL
+ shutdown
+Date: Tue, 30 Sep 2014 07:53:40 +0000
+Message-ID: <1412063620.2379.12.camel@sauron.fi.intel.com>
+References: <1412029248-22454-1-git-send-email-richard@nod.at>
+ <1412029248-22454-2-git-send-email-richard@nod.at>
+ <1412058366.23429.77.camel@sauron.fi.intel.com> <542A548A.7040308@nod.at>
+In-Reply-To: <542A548A.7040308@nod.at>
+Reply-To: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <05B235C330B34B47BE87DEF9256E872A@intel.com>
 MIME-Version: 1.0
-To: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
-Subject: Re: [PATCH 4/4] UBI: Fastmap: Ensure that only one fastmap work is
- scheduled
-References: <1412029248-22454-1-git-send-email-richard@nod.at>		
- <1412029248-22454-5-git-send-email-richard@nod.at>	
- <1412059523.3904.11.camel@sauron.fi.intel.com> <542A54E4.2060407@nod.at>
- <1412062762.2379.2.camel@sauron.fi.intel.com>
-In-Reply-To: <1412062762.2379.2.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  "dedekind1@gmail.com" <dedekind1@gmail.com>
@@ -28,28 +30,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 30.09.2014 09:39, schrieb Bityutskiy, Artem:
-> On Tue, 2014-09-30 at 08:59 +0200, Richard Weinberger wrote:
->> Am 30.09.2014 08:45, schrieb Bityutskiy, Artem:
->>> On Tue, 2014-09-30 at 00:20 +0200, Richard Weinberger wrote:
->>>> +       spin_lock(&ubi->wl_lock);
->>>> +       ubi->fm_work_scheduled = 0;
->>>> +       spin_unlock(&ubi->wl_lock);
->>>
->>> Andrew Morton once said me that if I am protecting an integer change
->>> like this with a spinlock, I have a problem in my locking design. He was
->>> right for my particular case.
->>>
->>> Integer is changes atomic. The only other thing spinlock adds are the
->>> barriers.
->>
->> I've added the spinlock to have a barrier in any case.
-> 
-> Examples of any?
-
-You mean a case where the compiler would reorder code and the barrier is needed?
-I don't have one, but I'm not that creative as a modern C compiler.
-If you say that no barrier is needed I'll trust you. :-)
-
-Thanks,
-//richard
+T24gVHVlLCAyMDE0LTA5LTMwIGF0IDA4OjU4ICswMjAwLCBSaWNoYXJkIFdlaW5iZXJnZXIgd3Jv
+dGU6DQo+IEFtIDMwLjA5LjIwMTQgMDg6MjYsIHNjaHJpZWIgQXJ0ZW0gQml0eXV0c2tpeToNCj4g
+PiBPbiBUdWUsIDIwMTQtMDktMzAgYXQgMDA6MjAgKzAyMDAsIFJpY2hhcmQgV2VpbmJlcmdlciB3
+cm90ZToNCj4gPj4gLi4ub3RoZXJ3aXNlIHRoZSBkZWZlcnJlZCB3b3JrIG1pZ2h0IHJ1biBhZnRl
+ciBkYXRhc3RydWN0dXJlcw0KPiA+PiBnb3QgZnJlZWQgYW5kIGNvcnJ1cHQgbWVtb3J5Lg0KPiA+
+IA0KPiA+IEhvdyBjYW4gdGhpcyBoYXBwZW5kPyBUaGUgYmFja2dyb3VuZCB0aHJlYWQgaXMgc3Rv
+cHBlZCBieSB0aGlzIHRpbWUNCj4gPiBhbHJlYWR5LCBzbyB3aGF0IGFyZSB0aGUgb3RoZXIgcG9z
+c2liaWxpdGllcz8gQW5kIHdoeSBpcyB0aGlzDQo+ID4gZmFzdG1hcC1vbmx5Pw0KPiANCj4gVGhp
+cyBoYXMgbm90aGluZyBkbyB0byB3aXRoIHRoZSBiYWNrZ3JvdW5kIHRocmVhZC4NCj4gRmFzdG1h
+cCBoYXMgYSB3b3JrIHF1ZXVlLiBJZiBvbmUgZmFzdG1hcCB3b3JrIGhhcyBiZWVuDQo+IHNjaGV1
+bGVkIHdlIGhhdmUgdG8gd2FpdCBmb3IgaXQuDQoNCkkgZXhwZWN0ZWQgYSBiaXQgbW9yZSBleHBs
+YW5hdGlvbi4gQnV0IE9LLCBoZXJlIGlzIHdoYXQgSSB0aGluay4NCg0KVUJJIGNvbnNpc3RzIG9m
+IHN1YnN5c3RlbXMuIFN1YnN5c3RlbXMgdHJ5IHRvIGJlIG1vcmUgb3IgbGVzcw0KaW5kZXBlbmRl
+bnQsIHdoZW5ldmVyIHBvc3NpYmxlLiBUaGV5IGV4cG9zZSBpbnRlcmZhY2UgZnVuY3Rpb25zIGZv
+cg0Kb3RoZXIgc3Vic3lzdGVtcy4gT2YgY291cnNlIHRoZSBzcGxpdCBpcyBub3QgaWRlYWwsIGJ1
+dCB3ZSBkbyBvdXIgYmVzdC4NCg0KKiB3bC5jIGRvZXMgd2Vhci1sZXZlbGxpbmcuDQoqIHdsLmMg
+ZG9lcyBub3QgZG8gZmFzdG1hcC4NCiogZmFzdG1hcC5jIGRvZXMgZmFzdG1hcC4NCiogSSBhbSB1
+bmhhcHB5IHNlZWluZyB5ZXQgYW5vdGhlciBpZmRlZiB0byB3bC5jDQoqIEkgYW0gdW5oYXBweSBz
+ZWVpbmcgd2wuYyBjYWxsaW5nICdmbHVzaF93b3JrKCZ1YmktPmZtX3dvcmspJywgYmVjYXVzZQ0K
+ZmFzdG1hcC5jIHNob3VsZCBkZWFsIHdpdGggJ2ZtX3dvcmsnLiBPciBzYWlkIGRpZmZlcmVudGx5
+LCB3bC5jIGlzIG5vdCBhDQpmYXN0bWFwIHF1ZXVlIGJhYnktc2l0dGVyLiBmYXN0bWFwLmMgaXMu
+DQoNCk1vc3QgVUIgc3Vic3lzdGVtcyBoYXZlIHRoZSBpbml0IGFuZCBjbG9zZSBmdW5jdGlvbi4g
+TWF5IGJlIGFkZGluZyBvbmUNCmZvciBmYXN0bWFwIHdvdWxkIGhlbHA/IFRoZW4geW91IGNvdWxk
+IGZsdXNoIHdoYXRldmVyIGZyb20NCid1Ymlfd2xfY2xvc2UoKScgPw0KDQpIaXN0b3JpY2FsbHkg
+dGhlIHdvcmsgcXVldWUgd2FzIGltcGxlbWVudGVkIGluIHdsLmMgYmVjYXVzZSB3bC5jIHdhcyB0
+aGUNCm9ubHkgdXNlciBvZiBpdC4NCg0KSWYgdGhpcyBsYXlvdXQgaXMgbm90IGdvb2QgZW5vdWdo
+LCB3ZSBzaG91bGQgcHJvYmFibHkgZXh0ZW5kIGl0LCBtYXkgYmUNCnNlcGFyYXRlIHdvcmsgcXVl
+dWUgbWFuYWdlbWVudCBvdXQgb2Ygd2wuYy4NCg0KQnV0IHBvcHVsYXRpbmcgd2wuYyB3aXRoIG1h
+Y3JvcyBhbmQgbGl0dGxlICJ0YWtlIGNhcmUgb2YgdGhpcyBmYXRtYXANCmJpdCIgc3R1ZmYgaXMg
+YSBub3QgZ29pbmcgdG8gbGVhZCB0byBiZXR0ZXIgY29kZSBzdHJ1Y3R1cmUuDQoNCi0tIA0KQmVz
+dCBSZWdhcmRzLA0KQXJ0ZW0gQml0eXV0c2tpeQ0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkludGVsIEZpbmxhbmQg
+T3kKUmVnaXN0ZXJlZCBBZGRyZXNzOiBQTCAyODEsIDAwMTgxIEhlbHNpbmtpIApCdXNpbmVzcyBJ
+ZGVudGl0eSBDb2RlOiAwMzU3NjA2IC0gNCAKRG9taWNpbGVkIGluIEhlbHNpbmtpIAoKVGhpcyBl
+LW1haWwgYW5kIGFueSBhdHRhY2htZW50cyBtYXkgY29udGFpbiBjb25maWRlbnRpYWwgbWF0ZXJp
+YWwgZm9yCnRoZSBzb2xlIHVzZSBvZiB0aGUgaW50ZW5kZWQgcmVjaXBpZW50KHMpLiBBbnkgcmV2
+aWV3IG9yIGRpc3RyaWJ1dGlvbgpieSBvdGhlcnMgaXMgc3RyaWN0bHkgcHJvaGliaXRlZC4gSWYg
+eW91IGFyZSBub3QgdGhlIGludGVuZGVkCnJlY2lwaWVudCwgcGxlYXNlIGNvbnRhY3QgdGhlIHNl
+bmRlciBhbmQgZGVsZXRlIGFsbCBjb3BpZXMuCg==
