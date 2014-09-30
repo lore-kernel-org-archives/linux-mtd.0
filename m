@@ -1,15 +1,28 @@
-From: Arnd Bergmann <arnd@arndb.de>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH] nand: omap2: fix building with CONFIG_MTD_NAND_OMAP_BCH=m
-Date: Tue, 30 Sep 2014 14:04:17 +0200
-Message-ID: <1811108.CcWEs0vKNL@wuerfel>
+Received: from mail-out.m-online.net ([212.18.0.9])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XYxe1-0002Lo-37
+ for linux-mtd@lists.infradead.org; Tue, 30 Sep 2014 13:39:10 +0000
+From: Marek Vasut <marex@denx.de>
+To: "Bean Huo =?utf-8?q?=E9=9C=8D=E6=96=8C=E6=96=8C?= (beanhuo)"
+ <beanhuo@micron.com>
+Subject: Re: [PATCH 1/1 v3] driver:mtd:spi-nor: Add Micron quad I/O support
+Date: Tue, 30 Sep 2014 15:38:40 +0200
+References: <A765B125120D1346A63912DDE6D8B6315DCC46@NTXXIAMBX02.xacn.micron.com>
+ <201409261046.07132.marex@denx.de>
+ <A765B125120D1346A63912DDE6D8B6315E3C79@NTXXIAMBX02.xacn.micron.com>
+In-Reply-To: <A765B125120D1346A63912DDE6D8B6315E3C79@NTXXIAMBX02.xacn.micron.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-Cc: linux-mtd@lists.infradead.org, pekon gupta <pekon@ti.com>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org,
- Roger Quadros <rogerq@ti.com>
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <201409301538.40466.marex@denx.de>
+Cc: "geert+renesas@glider.be" <geert+renesas@glider.be>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "grmoore@altera.com" <grmoore@altera.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "shijie8@gmail.com" <shijie8@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,35 +32,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If the OMAP nand driver is built-in but the BCH driver is a module,
-we get a link-time error:
+On Tuesday, September 30, 2014 at 04:47:39 AM, Bean Huo =E9=9C=8D=E6=96=8C=
+=E6=96=8C (beanhuo) wrote:
+> For Micron spi norflash,enables or disables quad I/O
+> protocol ,which controled by EVCR(Enhanced
+> Volatile Configuration Register) Quad I/O
+> protocol bit 7.When EVCR bit 7 is reset to 0,
+> the spi norflash will operate in quad I/O following
+> the next WRITE ENHANCED VOLATILE CONFIGURATION
+> command.
 
-drivers/built-in.o: In function `omap_elm_correct_data':
-:(.text+0x174e88): undefined reference to `elm_decode_bch_error_page'
-drivers/built-in.o: In function `omap_nand_probe':
-:(.text+0x175b48): undefined reference to `elm_config'
+You only do one WRITE ENHANCED VOLATILE CONFIGURATION command in the patch,=
+ so
+this text doesn't add up.
 
-There are two possible ways to deal with this, either prevent that
-configuration in Kconfig or make sure we don't reference the ELM
-driver in this case.
+Try something like this:
+=2D->8--
+This patch adds code which enables Quad I/O mode on Micron SPI NOR
+flashes.
 
-This patch picks the second approach, which makes it possible to
-use the ELM driver in other modules while still having the OMAP
-NAND driver built-in.
+=46or Micron SPI NOR flash, enabling or disabling quad I/O protocol
+is controled by EVCR (Enhanced Volatile Configuration Register),
+Quad I/O protocol bit 7. When EVCR bit 7 is reset to 0, the SPI
+NOR flash will operate in quad I/O mode.
+=2D-8<--
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Fixes: 93af53b8633c ("nand: omap2: Remove horrible ifdefs to fix module probe")
+What do you think ?
 
-diff --git a/include/linux/platform_data/elm.h b/include/linux/platform_data/elm.h
-index b8686c00f15f..cbca66ce7c10 100644
---- a/include/linux/platform_data/elm.h
-+++ b/include/linux/platform_data/elm.h
-@@ -42,7 +42,7 @@ struct elm_errorvec {
- 	int error_loc[16];
- };
- 
--#if IS_ENABLED(CONFIG_MTD_NAND_OMAP_BCH)
-+#if defined(CONFIG_MTD_NAND_OMAP_BCH) || (defined(CONFIG_MTD_NAND_OMAP_BCH_MODULE) && defined(MODULE))
- void elm_decode_bch_error_page(struct device *dev, u8 *ecc_calc,
- 		struct elm_errorvec *err_vec);
- int elm_config(struct device *dev, enum bch_ecc bch_type,
+Brian, am I bitching too much about pointless things ? Please stop me if yo=
+u=20
+think I do.
+
+[...]
+
+Best regards,
+Marek Vasut
