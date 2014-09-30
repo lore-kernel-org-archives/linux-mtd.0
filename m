@@ -1,24 +1,21 @@
-MIME-Version: 1.0
-In-Reply-To: <1412042858.9388.79.camel@decadent.org.uk>
-References: <1410714624.3040.38.camel@decadent.org.uk>
- <1410714670.3040.39.camel@decadent.org.uk>
- <20140928222150.GC3248@norris-Latitude-E6410>
- <CACna6rx=GyZ-4JpDix==WKszABseQXK6qCCkfiKCm9-WzBmM3A@mail.gmail.com>
- <1412042858.9388.79.camel@decadent.org.uk>
-Date: Tue, 30 Sep 2014 07:09:38 +0200
-Message-ID: <CACna6rxBFNvF5bouv9KkS-3=TxcXVMrs30KMTS0mCjDAva4jiA@mail.gmail.com>
-Subject: Re: [PATCH 1/5] m25p80,spi-nor: Fix module aliases for m25p80
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-To: Ben Hutchings <ben@decadent.org.uk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Andrew Lunn <andrew@lunn.ch>, Jason Cooper <jason@lakedaemon.net>,
- linux-spi <linux-spi@vger.kernel.org>,
- Geert Uytterhoeven <geert@linux-m68k.org>, Ian Campbell <ijc@hellion.org.uk>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Huang Shijie <shijie8@gmail.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- debian-kernel <debian-kernel@lists.debian.org>
+Received: from mga14.intel.com ([192.55.52.115])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XYqtL-0002u4-0y
+ for linux-mtd@lists.infradead.org; Tue, 30 Sep 2014 06:26:31 +0000
+Message-ID: <1412058366.23429.77.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH 1/4] UBI: Ensure that all fastmap work is done upon WL
+ shutdown
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Richard Weinberger <richard@nod.at>
+Date: Tue, 30 Sep 2014 09:26:06 +0300
+In-Reply-To: <1412029248-22454-2-git-send-email-richard@nod.at>
+References: <1412029248-22454-1-git-send-email-richard@nod.at>
+ <1412029248-22454-2-git-send-email-richard@nod.at>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,89 +25,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 30 September 2014 04:07, Ben Hutchings <ben@decadent.org.uk> wrote:
-> On Mon, 2014-09-29 at 08:36 +0200, Rafa=C5=82 Mi=C5=82ecki wrote:
->> On 29 September 2014 00:21, Brian Norris <computersforpeace@gmail.com> w=
-rote:
->> > + Rafal
->> >
->> > Rafal has been looking at the same area of code. I'd really like to ge=
-t
->> > this patch into 3.18 if possible, so the more eyes the better.
->>
->> Thanks Brian.
->>
->> I took me a while to follow this issue, too bad I wasn't subscribed to
->> the ML earlier. Let me try to sum it up.
->>
->>
->>
->> 1) The main urgent issue: broken auto-loading
->> Tracked in the thread: http://www.spinics.net/lists/linux-spi/msg01726.h=
-tml
->> Problem: m25p80.c references spi_nor_ids (from external file)
->> Short-term solution: duplicate IDs in the m25p80.c
->>
->> Ben: just like Brian, I think the patch like this one (
->> [PATCH 1/5] m25p80,spi-nor: Fix module aliases for m25p80
->> ) is the way to go. However few comments:
->>
->> a) I don't see why you modify m25p_probe in it.
->
-> Because spi_nor_scan() requires a struct spi_device_id with the
-> driver_data field pointing to a struct flash_info.
+On Tue, 2014-09-30 at 00:20 +0200, Richard Weinberger wrote:
+> ...otherwise the deferred work might run after datastructures
+> got freed and corrupt memory.
 
-More friendly explanation: because spi_get_device_id uses driver's
-id_table (that was now changes to pure strings).
-I see the point.
+How can this happend? The background thread is stopped by this time
+already, so what are the other possibilities? And why is this
+fastmap-only?
 
-
->> b) I don't think the described clean solution (you described it in the
->> commit message):
->> > A clean solution to this will involve defining the list of device
->> > IDs in spi-nor.h and removing struct spi_device_id from the spi-nor
->> > API, but this is quite a large change.
->> is the correct one. I think there should be a single string to trigger
->> m25p80 load and the rest should be handled using JEDEC, with some
->> workarounds for incompatible devices only.
->
-> That certainly makes sense for Linux-specific platform data, but I don't
-> think it works for Device Tree "compatible" strings (see
-> <http://mid.gmane.org/1410660009.3040.29.camel@decadent.org.uk>).
-
-We could simply follow the way Linux-specific platform data works. We
-could always use
-compatible =3D "m25p80";
-and then for some rare cases (where JEDEC fails) add something like
-model =3D "at25df321a";
-
-
->> b) Removing spi_nor::read_id
->> https://patchwork.ozlabs.org/patch/389073/
->> Ben: I think this one has a NACK from me, because I'm going to use
->> custom read_id in the bcm53xxspiflash driver.
->> See following thread for bcm53xxspiflash description:
->> http://comments.gmane.org/gmane.linux.drivers.mtd/54578
->> Initial commit (it uses read_id): https://patchwork.ozlabs.org/patch/381=
-902/
-> [...]
->
-> But it has to use spi_nor_match_id() because of the driver_data
-> requirement.  This just illustrates that the read_id operation doesn't
-> make sense as currently defined.
-
-I agree, however there is already a patch in progress handling that:
-https://patchwork.ozlabs.org/patch/377917/
-
-
-> I accept that there will be a need for a read_id operation, but I think
-> it should fill in a struct flash_info rather than requiring every chip
-> to be described and named in spi-nor.c.
-
-Flashes not supporting JEDEC are usually some weird versions of normal
-flashes with JEDEC support. So I think we could still have them in the
-spi-nor database and let users provide the name instead of filling the
-whole struct flash_info.
-
---=20
-Rafa=C5=82
+-- 
+Best Regards,
+Artem Bityutskiy
