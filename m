@@ -1,26 +1,20 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XYsGJ-00035m-CN
- for linux-mtd@lists.infradead.org; Tue, 30 Sep 2014 07:54:19 +0000
-From: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
-To: "richard@nod.at" <richard@nod.at>
-Subject: Re: [PATCH 1/4] UBI: Ensure that all fastmap work is done upon WL
- shutdown
-Date: Tue, 30 Sep 2014 07:53:40 +0000
-Message-ID: <1412063620.2379.12.camel@sauron.fi.intel.com>
-References: <1412029248-22454-1-git-send-email-richard@nod.at>
- <1412029248-22454-2-git-send-email-richard@nod.at>
- <1412058366.23429.77.camel@sauron.fi.intel.com> <542A548A.7040308@nod.at>
-In-Reply-To: <542A548A.7040308@nod.at>
-Reply-To: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <05B235C330B34B47BE87DEF9256E872A@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>
+In-Reply-To: <1412043352.9388.86.camel@decadent.org.uk>
+References: <1412043222.9388.81.camel@decadent.org.uk>
+ <1412043352.9388.86.camel@decadent.org.uk>
+Date: Tue, 30 Sep 2014 10:02:25 +0200
+Message-ID: <CACna6ry3=+1GLRCvd_xOGBHjQmEGdYT-eM4YFfzO2Fkw9BHSTA@mail.gmail.com>
+Subject: Re: [PATCH v2 5/5] m25p80,spi-nor: Share the list of supported chip
+ type names again
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: Ben Hutchings <ben@decadent.org.uk>
+Content-Type: text/plain; charset=UTF-8
+Cc: Andrew Lunn <andrew@lunn.ch>, Jason Cooper <jason@lakedaemon.net>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Ian Campbell <ijc@hellion.org.uk>, Geert Uytterhoeven <geert@linux-m68k.org>,
+ Brian Norris <computersforpeace@gmail.com>, Huang Shijie <shijie8@gmail.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ debian-kernel <debian-kernel@lists.debian.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,42 +24,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gVHVlLCAyMDE0LTA5LTMwIGF0IDA4OjU4ICswMjAwLCBSaWNoYXJkIFdlaW5iZXJnZXIgd3Jv
-dGU6DQo+IEFtIDMwLjA5LjIwMTQgMDg6MjYsIHNjaHJpZWIgQXJ0ZW0gQml0eXV0c2tpeToNCj4g
-PiBPbiBUdWUsIDIwMTQtMDktMzAgYXQgMDA6MjAgKzAyMDAsIFJpY2hhcmQgV2VpbmJlcmdlciB3
-cm90ZToNCj4gPj4gLi4ub3RoZXJ3aXNlIHRoZSBkZWZlcnJlZCB3b3JrIG1pZ2h0IHJ1biBhZnRl
-ciBkYXRhc3RydWN0dXJlcw0KPiA+PiBnb3QgZnJlZWQgYW5kIGNvcnJ1cHQgbWVtb3J5Lg0KPiA+
-IA0KPiA+IEhvdyBjYW4gdGhpcyBoYXBwZW5kPyBUaGUgYmFja2dyb3VuZCB0aHJlYWQgaXMgc3Rv
-cHBlZCBieSB0aGlzIHRpbWUNCj4gPiBhbHJlYWR5LCBzbyB3aGF0IGFyZSB0aGUgb3RoZXIgcG9z
-c2liaWxpdGllcz8gQW5kIHdoeSBpcyB0aGlzDQo+ID4gZmFzdG1hcC1vbmx5Pw0KPiANCj4gVGhp
-cyBoYXMgbm90aGluZyBkbyB0byB3aXRoIHRoZSBiYWNrZ3JvdW5kIHRocmVhZC4NCj4gRmFzdG1h
-cCBoYXMgYSB3b3JrIHF1ZXVlLiBJZiBvbmUgZmFzdG1hcCB3b3JrIGhhcyBiZWVuDQo+IHNjaGV1
-bGVkIHdlIGhhdmUgdG8gd2FpdCBmb3IgaXQuDQoNCkkgZXhwZWN0ZWQgYSBiaXQgbW9yZSBleHBs
-YW5hdGlvbi4gQnV0IE9LLCBoZXJlIGlzIHdoYXQgSSB0aGluay4NCg0KVUJJIGNvbnNpc3RzIG9m
-IHN1YnN5c3RlbXMuIFN1YnN5c3RlbXMgdHJ5IHRvIGJlIG1vcmUgb3IgbGVzcw0KaW5kZXBlbmRl
-bnQsIHdoZW5ldmVyIHBvc3NpYmxlLiBUaGV5IGV4cG9zZSBpbnRlcmZhY2UgZnVuY3Rpb25zIGZv
-cg0Kb3RoZXIgc3Vic3lzdGVtcy4gT2YgY291cnNlIHRoZSBzcGxpdCBpcyBub3QgaWRlYWwsIGJ1
-dCB3ZSBkbyBvdXIgYmVzdC4NCg0KKiB3bC5jIGRvZXMgd2Vhci1sZXZlbGxpbmcuDQoqIHdsLmMg
-ZG9lcyBub3QgZG8gZmFzdG1hcC4NCiogZmFzdG1hcC5jIGRvZXMgZmFzdG1hcC4NCiogSSBhbSB1
-bmhhcHB5IHNlZWluZyB5ZXQgYW5vdGhlciBpZmRlZiB0byB3bC5jDQoqIEkgYW0gdW5oYXBweSBz
-ZWVpbmcgd2wuYyBjYWxsaW5nICdmbHVzaF93b3JrKCZ1YmktPmZtX3dvcmspJywgYmVjYXVzZQ0K
-ZmFzdG1hcC5jIHNob3VsZCBkZWFsIHdpdGggJ2ZtX3dvcmsnLiBPciBzYWlkIGRpZmZlcmVudGx5
-LCB3bC5jIGlzIG5vdCBhDQpmYXN0bWFwIHF1ZXVlIGJhYnktc2l0dGVyLiBmYXN0bWFwLmMgaXMu
-DQoNCk1vc3QgVUIgc3Vic3lzdGVtcyBoYXZlIHRoZSBpbml0IGFuZCBjbG9zZSBmdW5jdGlvbi4g
-TWF5IGJlIGFkZGluZyBvbmUNCmZvciBmYXN0bWFwIHdvdWxkIGhlbHA/IFRoZW4geW91IGNvdWxk
-IGZsdXNoIHdoYXRldmVyIGZyb20NCid1Ymlfd2xfY2xvc2UoKScgPw0KDQpIaXN0b3JpY2FsbHkg
-dGhlIHdvcmsgcXVldWUgd2FzIGltcGxlbWVudGVkIGluIHdsLmMgYmVjYXVzZSB3bC5jIHdhcyB0
-aGUNCm9ubHkgdXNlciBvZiBpdC4NCg0KSWYgdGhpcyBsYXlvdXQgaXMgbm90IGdvb2QgZW5vdWdo
-LCB3ZSBzaG91bGQgcHJvYmFibHkgZXh0ZW5kIGl0LCBtYXkgYmUNCnNlcGFyYXRlIHdvcmsgcXVl
-dWUgbWFuYWdlbWVudCBvdXQgb2Ygd2wuYy4NCg0KQnV0IHBvcHVsYXRpbmcgd2wuYyB3aXRoIG1h
-Y3JvcyBhbmQgbGl0dGxlICJ0YWtlIGNhcmUgb2YgdGhpcyBmYXRtYXANCmJpdCIgc3R1ZmYgaXMg
-YSBub3QgZ29pbmcgdG8gbGVhZCB0byBiZXR0ZXIgY29kZSBzdHJ1Y3R1cmUuDQoNCi0tIA0KQmVz
-dCBSZWdhcmRzLA0KQXJ0ZW0gQml0eXV0c2tpeQ0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkludGVsIEZpbmxhbmQg
-T3kKUmVnaXN0ZXJlZCBBZGRyZXNzOiBQTCAyODEsIDAwMTgxIEhlbHNpbmtpIApCdXNpbmVzcyBJ
-ZGVudGl0eSBDb2RlOiAwMzU3NjA2IC0gNCAKRG9taWNpbGVkIGluIEhlbHNpbmtpIAoKVGhpcyBl
-LW1haWwgYW5kIGFueSBhdHRhY2htZW50cyBtYXkgY29udGFpbiBjb25maWRlbnRpYWwgbWF0ZXJp
-YWwgZm9yCnRoZSBzb2xlIHVzZSBvZiB0aGUgaW50ZW5kZWQgcmVjaXBpZW50KHMpLiBBbnkgcmV2
-aWV3IG9yIGRpc3RyaWJ1dGlvbgpieSBvdGhlcnMgaXMgc3RyaWN0bHkgcHJvaGliaXRlZC4gSWYg
-eW91IGFyZSBub3QgdGhlIGludGVuZGVkCnJlY2lwaWVudCwgcGxlYXNlIGNvbnRhY3QgdGhlIHNl
-bmRlciBhbmQgZGVsZXRlIGFsbCBjb3BpZXMuCg==
+On 30 September 2014 04:15, Ben Hutchings <ben@decadent.org.uk> wrote:
+> Move the list of chip type information to a macro in spi-nor.h, but
+> leave the definitions of INFO and CAT25_INFO in spi-nor.
+>
+> In m25p80, define the INFO and CAT25_INFO macros to initialise a
+> struct spi_device_id with the name, ignoring the remaining parameters.
+
+Anyone would consider my idea proposed in 1/5 thread?
+
+We could simply follow the way Linux-specific platform data works. We
+could always use
+compatible = "m25p80";
+and then for some rare cases (where JEDEC fails) add something like
+model = "at25df321a";
+
+Using above way we could use a one single "compatible" in m25p80.c and
+avoid this messy share of id_table.
