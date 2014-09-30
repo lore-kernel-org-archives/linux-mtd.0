@@ -1,22 +1,22 @@
-Received: from smtprelay0024.hostedemail.com ([216.40.44.24]
- helo=smtprelay.hostedemail.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XYk4U-0008VG-H9
- for linux-mtd@lists.infradead.org; Mon, 29 Sep 2014 23:09:35 +0000
-From: Joe Perches <joe@perches.com>
-To: Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCH 7/7] docg3: Fix miuse of seq_printf return value
-Date: Mon, 29 Sep 2014 16:08:27 -0700
-Message-Id: <c1a1138f1b05e87a3fbd8737af2f2c0be6e2724b.1412031505.git.joe@perches.com>
-In-Reply-To: <cover.1412031505.git.joe@perches.com>
-References: <20140929124246.3e39dac8@gandalf.local.home>
- <cover.1412031505.git.joe@perches.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
- linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.cz>,
- linux-mtd@lists.infradead.org, Al Viro <viro@ZenIV.linux.org.uk>,
- Andrew Morton <akpm@linux-foundation.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Message-ID: <1412041673.9388.75.camel@decadent.org.uk>
+Subject: Re: [PATCH 0/5] m25p80,spi-nor: Fix module aliases for m25p80;
+ clean up chip identification
+From: Ben Hutchings <ben@decadent.org.uk>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Tue, 30 Sep 2014 02:47:53 +0100
+In-Reply-To: <20140928220300.GB3248@norris-Latitude-E6410>
+References: <1410714624.3040.38.camel@decadent.org.uk>
+ <1410714795.3040.45.camel@decadent.org.uk>
+ <20140928220300.GB3248@norris-Latitude-E6410>
+Content-Type: multipart/signed; micalg="pgp-sha512";
+ protocol="application/pgp-signature"; boundary="=-af4rIWq8laF++TYmV1B/"
+Mime-Version: 1.0
+Cc: Andrew Lunn <andrew@lunn.ch>, Jason Cooper <jason@lakedaemon.net>,
+ linux-spi <linux-spi@vger.kernel.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Ian Campbell <ijc@hellion.org.uk>, Geert Uytterhoeven <geert@linux-m68k.org>,
+ Huang Shijie <shijie8@gmail.com>, linux-arm-kernel@lists.infradead.org,
+ debian-kernel <debian-kernel@lists.debian.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,197 +26,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-seq_printf doesn't return a useful value, so remove
-these misuses.
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- drivers/mtd/devices/docg3.c | 112 ++++++++++++++++++++------------------------
- 1 file changed, 52 insertions(+), 60 deletions(-)
+--=-af4rIWq8laF++TYmV1B/
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
-index 21cc4b6..68ff83c 100644
---- a/drivers/mtd/devices/docg3.c
-+++ b/drivers/mtd/devices/docg3.c
-@@ -1655,22 +1655,21 @@ static int dbg_flashctrl_show(struct seq_file *s, void *p)
- {
- 	struct docg3 *docg3 = (struct docg3 *)s->private;
- 
--	int pos = 0;
- 	u8 fctrl;
- 
- 	mutex_lock(&docg3->cascade->lock);
- 	fctrl = doc_register_readb(docg3, DOC_FLASHCONTROL);
- 	mutex_unlock(&docg3->cascade->lock);
- 
--	pos += seq_printf(s,
--		 "FlashControl : 0x%02x (%s,CE# %s,%s,%s,flash %s)\n",
--		 fctrl,
--		 fctrl & DOC_CTRL_VIOLATION ? "protocol violation" : "-",
--		 fctrl & DOC_CTRL_CE ? "active" : "inactive",
--		 fctrl & DOC_CTRL_PROTECTION_ERROR ? "protection error" : "-",
--		 fctrl & DOC_CTRL_SEQUENCE_ERROR ? "sequence error" : "-",
--		 fctrl & DOC_CTRL_FLASHREADY ? "ready" : "not ready");
--	return pos;
-+	seq_printf(s, "FlashControl : 0x%02x (%s,CE# %s,%s,%s,flash %s)\n",
-+		   fctrl,
-+		   fctrl & DOC_CTRL_VIOLATION ? "protocol violation" : "-",
-+		   fctrl & DOC_CTRL_CE ? "active" : "inactive",
-+		   fctrl & DOC_CTRL_PROTECTION_ERROR ? "protection error" : "-",
-+		   fctrl & DOC_CTRL_SEQUENCE_ERROR ? "sequence error" : "-",
-+		   fctrl & DOC_CTRL_FLASHREADY ? "ready" : "not ready");
-+
-+	return 0;
- }
- DEBUGFS_RO_ATTR(flashcontrol, dbg_flashctrl_show);
- 
-@@ -1678,58 +1677,56 @@ static int dbg_asicmode_show(struct seq_file *s, void *p)
- {
- 	struct docg3 *docg3 = (struct docg3 *)s->private;
- 
--	int pos = 0, pctrl, mode;
-+	int pctrl, mode;
- 
- 	mutex_lock(&docg3->cascade->lock);
- 	pctrl = doc_register_readb(docg3, DOC_ASICMODE);
- 	mode = pctrl & 0x03;
- 	mutex_unlock(&docg3->cascade->lock);
- 
--	pos += seq_printf(s,
--			 "%04x : RAM_WE=%d,RSTIN_RESET=%d,BDETCT_RESET=%d,WRITE_ENABLE=%d,POWERDOWN=%d,MODE=%d%d (",
--			 pctrl,
--			 pctrl & DOC_ASICMODE_RAM_WE ? 1 : 0,
--			 pctrl & DOC_ASICMODE_RSTIN_RESET ? 1 : 0,
--			 pctrl & DOC_ASICMODE_BDETCT_RESET ? 1 : 0,
--			 pctrl & DOC_ASICMODE_MDWREN ? 1 : 0,
--			 pctrl & DOC_ASICMODE_POWERDOWN ? 1 : 0,
--			 mode >> 1, mode & 0x1);
-+	seq_printf(s,
-+		   "%04x : RAM_WE=%d,RSTIN_RESET=%d,BDETCT_RESET=%d,WRITE_ENABLE=%d,POWERDOWN=%d,MODE=%d%d (",
-+		   pctrl,
-+		   pctrl & DOC_ASICMODE_RAM_WE ? 1 : 0,
-+		   pctrl & DOC_ASICMODE_RSTIN_RESET ? 1 : 0,
-+		   pctrl & DOC_ASICMODE_BDETCT_RESET ? 1 : 0,
-+		   pctrl & DOC_ASICMODE_MDWREN ? 1 : 0,
-+		   pctrl & DOC_ASICMODE_POWERDOWN ? 1 : 0,
-+		   mode >> 1, mode & 0x1);
- 
- 	switch (mode) {
- 	case DOC_ASICMODE_RESET:
--		pos += seq_puts(s, "reset");
-+		seq_puts(s, "reset");
- 		break;
- 	case DOC_ASICMODE_NORMAL:
--		pos += seq_puts(s, "normal");
-+		seq_puts(s, "normal");
- 		break;
- 	case DOC_ASICMODE_POWERDOWN:
--		pos += seq_puts(s, "powerdown");
-+		seq_puts(s, "powerdown");
- 		break;
- 	}
--	pos += seq_puts(s, ")\n");
--	return pos;
-+	seq_puts(s, ")\n");
-+	return 0;
- }
- DEBUGFS_RO_ATTR(asic_mode, dbg_asicmode_show);
- 
- static int dbg_device_id_show(struct seq_file *s, void *p)
- {
- 	struct docg3 *docg3 = (struct docg3 *)s->private;
--	int pos = 0;
- 	int id;
- 
- 	mutex_lock(&docg3->cascade->lock);
- 	id = doc_register_readb(docg3, DOC_DEVICESELECT);
- 	mutex_unlock(&docg3->cascade->lock);
- 
--	pos += seq_printf(s, "DeviceId = %d\n", id);
--	return pos;
-+	seq_printf(s, "DeviceId = %d\n", id);
-+	return 0;
- }
- DEBUGFS_RO_ATTR(device_id, dbg_device_id_show);
- 
- static int dbg_protection_show(struct seq_file *s, void *p)
- {
- 	struct docg3 *docg3 = (struct docg3 *)s->private;
--	int pos = 0;
- 	int protect, dps0, dps0_low, dps0_high, dps1, dps1_low, dps1_high;
- 
- 	mutex_lock(&docg3->cascade->lock);
-@@ -1742,45 +1739,40 @@ static int dbg_protection_show(struct seq_file *s, void *p)
- 	dps1_high = doc_register_readw(docg3, DOC_DPS1_ADDRHIGH);
- 	mutex_unlock(&docg3->cascade->lock);
- 
--	pos += seq_printf(s, "Protection = 0x%02x (",
--			 protect);
-+	seq_printf(s, "Protection = 0x%02x (", protect);
- 	if (protect & DOC_PROTECT_FOUNDRY_OTP_LOCK)
--		pos += seq_puts(s, "FOUNDRY_OTP_LOCK,");
-+		seq_puts(s, "FOUNDRY_OTP_LOCK,");
- 	if (protect & DOC_PROTECT_CUSTOMER_OTP_LOCK)
--		pos += seq_puts(s, "CUSTOMER_OTP_LOCK,");
-+		seq_puts(s, "CUSTOMER_OTP_LOCK,");
- 	if (protect & DOC_PROTECT_LOCK_INPUT)
--		pos += seq_puts(s, "LOCK_INPUT,");
-+		seq_puts(s, "LOCK_INPUT,");
- 	if (protect & DOC_PROTECT_STICKY_LOCK)
--		pos += seq_puts(s, "STICKY_LOCK,");
-+		seq_puts(s, "STICKY_LOCK,");
- 	if (protect & DOC_PROTECT_PROTECTION_ENABLED)
--		pos += seq_puts(s, "PROTECTION ON,");
-+		seq_puts(s, "PROTECTION ON,");
- 	if (protect & DOC_PROTECT_IPL_DOWNLOAD_LOCK)
--		pos += seq_puts(s, "IPL_DOWNLOAD_LOCK,");
-+		seq_puts(s, "IPL_DOWNLOAD_LOCK,");
- 	if (protect & DOC_PROTECT_PROTECTION_ERROR)
--		pos += seq_puts(s, "PROTECT_ERR,");
-+		seq_puts(s, "PROTECT_ERR,");
- 	else
--		pos += seq_puts(s, "NO_PROTECT_ERR");
--	pos += seq_puts(s, ")\n");
--
--	pos += seq_printf(s, "DPS0 = 0x%02x : "
--			 "Protected area [0x%x - 0x%x] : OTP=%d, READ=%d, "
--			 "WRITE=%d, HW_LOCK=%d, KEY_OK=%d\n",
--			 dps0, dps0_low, dps0_high,
--			 !!(dps0 & DOC_DPS_OTP_PROTECTED),
--			 !!(dps0 & DOC_DPS_READ_PROTECTED),
--			 !!(dps0 & DOC_DPS_WRITE_PROTECTED),
--			 !!(dps0 & DOC_DPS_HW_LOCK_ENABLED),
--			 !!(dps0 & DOC_DPS_KEY_OK));
--	pos += seq_printf(s, "DPS1 = 0x%02x : "
--			 "Protected area [0x%x - 0x%x] : OTP=%d, READ=%d, "
--			 "WRITE=%d, HW_LOCK=%d, KEY_OK=%d\n",
--			 dps1, dps1_low, dps1_high,
--			 !!(dps1 & DOC_DPS_OTP_PROTECTED),
--			 !!(dps1 & DOC_DPS_READ_PROTECTED),
--			 !!(dps1 & DOC_DPS_WRITE_PROTECTED),
--			 !!(dps1 & DOC_DPS_HW_LOCK_ENABLED),
--			 !!(dps1 & DOC_DPS_KEY_OK));
--	return pos;
-+		seq_puts(s, "NO_PROTECT_ERR");
-+	seq_puts(s, ")\n");
-+
-+	seq_printf(s, "DPS0 = 0x%02x : Protected area [0x%x - 0x%x] : OTP=%d, READ=%d, WRITE=%d, HW_LOCK=%d, KEY_OK=%d\n",
-+		   dps0, dps0_low, dps0_high,
-+		   !!(dps0 & DOC_DPS_OTP_PROTECTED),
-+		   !!(dps0 & DOC_DPS_READ_PROTECTED),
-+		   !!(dps0 & DOC_DPS_WRITE_PROTECTED),
-+		   !!(dps0 & DOC_DPS_HW_LOCK_ENABLED),
-+		   !!(dps0 & DOC_DPS_KEY_OK));
-+	seq_printf(s, "DPS1 = 0x%02x : Protected area [0x%x - 0x%x] : OTP=%d, READ=%d, WRITE=%d, HW_LOCK=%d, KEY_OK=%d\n",
-+		   dps1, dps1_low, dps1_high,
-+		   !!(dps1 & DOC_DPS_OTP_PROTECTED),
-+		   !!(dps1 & DOC_DPS_READ_PROTECTED),
-+		   !!(dps1 & DOC_DPS_WRITE_PROTECTED),
-+		   !!(dps1 & DOC_DPS_HW_LOCK_ENABLED),
-+		   !!(dps1 & DOC_DPS_KEY_OK));
-+	return 0;
- }
- DEBUGFS_RO_ATTR(protection, dbg_protection_show);
- 
--- 
-1.8.1.2.459.gbcd45b4.dirty
+On Sun, 2014-09-28 at 15:03 -0700, Brian Norris wrote:
+> On Sun, Sep 14, 2014 at 06:13:15PM +0100, Ben Hutchings wrote:
+> > On Sun, 2014-09-14 at 18:10 +0100, Ben Hutchings wrote:
+> > > The first patch in the series restores the module aliases to m25p80, =
+but
+> > > it does so by duplicating the list of names.  This should be suitable
+> > > for stable, but it isn't viable in the longer term.
+> > >=20
+> > > The following patches change the spi-nor interface so that this
+> > > duplication is no longer necessary.  This includes removing
+> > > spi_nor::read_id, but it could be re-added after this with a differen=
+t
+> > > interface, e.g. returning a flash_info structure (which would need to=
+ be
+> > > defined in spi_nor.h).
+> >=20
+> > Note that these patch are:
+> > - Based on your 'testing' branch
+>=20
+> Which testing branch? These two are the only official
+> repos for MTD:
+>=20
+>     git git://git.infradead.org/linux-mtd.git
+>     git git://git.infradead.org/l2-mtd.git
+
+You had a testing branch in
+git://git.infradead.org/users/norris/linux-mtd.git, and that included
+commit af249c3a0ca8 ('mtd: spi-nor: remove duplicated w25q128 entry')
+which this patch series depended on.
+
+Ben.
+
+> > - Untested by me, aside from compiling and checking that m25p80 has the
+> >   expected module aliases
+>=20
+> Brian
+
+--=20
+Ben Hutchings
+The two most common things in the universe are hydrogen and stupidity.
+
+--=-af4rIWq8laF++TYmV1B/
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIVAwUAVCoLz+e/yOyVhhEJAQq6UhAA0jcXyFfWvhrrztz2B2rSCojXniQy13cs
+lIrCKn4afHCMvEviWRnRkwQDd8MyEkpdPwoMMXUEWlBjbBtuw0rDwH6LqJpfg15Y
+KRjOh/l1A2vRDMztzkDnD/VyKykQI9kwT5JAMBZzhcUS4LpdHzLppzwEr0lP9hdz
+KkI1XxH1DGK4w+PHjoQaRbvwR8GzTUqy25D1hJNF0ACZrkoM+JrLzNUgrJ2h3q7j
+VMD15oSwgVjM1888DMbdtfqRcvO9znPoYYTa41WwbYe4nSqpyKMGaUekqyYNQ462
+lFLt8uDdfDxpCqVMOvhxhA9aFTgRVeBgo2AsJ0El7jhBXWPO0dympIl8/YisJSoT
+775PtOSdBnQdDRpHGYj6qaWzgVCezPUfE2jl/mrKNE38apQ4FCI3vgmejAyyfUNK
+Wh/6lzm+/5Q0dJeE/c072bnqe14NXD1fokuAFi16fEApvr4CP0Q0M8En4Yl7hLQx
+SDDqU0s4CYB5vmt5q3D9Sn3pkwg5mvosuEKIHcmHJ1/6RE4k45qtk/SWgpUBBY0i
+H6xpx/yEUFE8RbUnAq25AMv/XsXzI2iIeKbOKhE99NlKXXmOcFLwhLXGnU3F4rtR
+XO4vEa++SZemYrrZodH+CfntlUC5swT1D0tW+Vf8o3aybTF+uZs4MPO2MqzUKkab
+beqOz9eaYII=
+=Rfr4
+-----END PGP SIGNATURE-----
+
+--=-af4rIWq8laF++TYmV1B/--
