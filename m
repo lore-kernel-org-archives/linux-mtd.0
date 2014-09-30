@@ -1,24 +1,26 @@
-Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+Received: from mdfmta004.mxout.tbr.inty.net ([91.221.168.45]
+ helo=smtp.demon.co.uk)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XYsTM-0003b5-M5
- for linux-mtd@lists.infradead.org; Tue, 30 Sep 2014 08:07:49 +0000
-Message-ID: <542A64BB.7060904@nod.at>
-Date: Tue, 30 Sep 2014 10:07:23 +0200
-From: Richard Weinberger <richard@nod.at>
+ id 1XYvFz-0001EI-OY
+ for linux-mtd@lists.infradead.org; Tue, 30 Sep 2014 11:06:12 +0000
+Received: from mdfmta004.tbr.inty.net (unknown [127.0.0.1])
+ by mdfmta004.tbr.inty.net (Postfix) with ESMTP id 2FFDDA0C086
+ for <linux-mtd@lists.infradead.org>; Tue, 30 Sep 2014 12:04:42 +0100 (BST)
+Received: from mdfmta004.tbr.inty.net (unknown [127.0.0.1])
+ by mdfmta004.tbr.inty.net (Postfix) with ESMTP id D95E2A0C08E
+ for <linux-mtd@lists.infradead.org>; Tue, 30 Sep 2014 12:04:41 +0100 (BST)
+Received: from [192.168.0.200] (unknown [80.176.156.169])
+ (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mdfmta004.tbr.inty.net (Postfix) with ESMTP
+ for <linux-mtd@lists.infradead.org>; Tue, 30 Sep 2014 12:04:41 +0100 (BST)
+Date: Tue, 30 Sep 2014 12:00:49 +0100 (BST)
+From: steve <steve@baconbits.demon.co.uk>
+To: linux-mtd@lists.infradead.org
+Subject: UBI: Question about error checking in ubi_eba_write_leb()
+Message-ID: <alpine.DEB.2.02.1409301158370.2556@ubuntu>
 MIME-Version: 1.0
-To: "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
-Subject: Re: [PATCH 1/4] UBI: Ensure that all fastmap work is done upon WL
- shutdown
-References: <1412029248-22454-1-git-send-email-richard@nod.at>		
- <1412029248-22454-2-git-send-email-richard@nod.at>	
- <1412058366.23429.77.camel@sauron.fi.intel.com> <542A548A.7040308@nod.at>
- <1412063620.2379.12.camel@sauron.fi.intel.com>
-In-Reply-To: <1412063620.2379.12.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>
+Content-Type: TEXT/PLAIN; format=flowed; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,76 +30,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 30.09.2014 09:53, schrieb Bityutskiy, Artem:
-> On Tue, 2014-09-30 at 08:58 +0200, Richard Weinberger wrote:
->> Am 30.09.2014 08:26, schrieb Artem Bityutskiy:
->>> On Tue, 2014-09-30 at 00:20 +0200, Richard Weinberger wrote:
->>>> ...otherwise the deferred work might run after datastructures
->>>> got freed and corrupt memory.
->>>
->>> How can this happend? The background thread is stopped by this time
->>> already, so what are the other possibilities? And why is this
->>> fastmap-only?
->>
->> This has nothing do to with the background thread.
->> Fastmap has a work queue. If one fastmap work has been
->> scheuled we have to wait for it.
-> 
-> I expected a bit more explanation. But OK, here is what I think.
-> 
-> UBI consists of subsystems. Subsystems try to be more or less
-> independent, whenever possible. They expose interface functions for
-> other subsystems. Of course the split is not ideal, but we do our best.
-> 
-> * wl.c does wear-levelling.
-> * wl.c does not do fastmap.
-> * fastmap.c does fastmap.
-> * I am unhappy seeing yet another ifdef to wl.c
 
-I can warp it.
+This is my first post to this mailing list, I think this is the right place for
+  my question.
 
-> * I am unhappy seeing wl.c calling 'flush_work(&ubi->fm_work)', because
-> fastmap.c should deal with 'fm_work'. Or said differently, wl.c is not a
-> fastmap queue baby-sitter. fastmap.c is.
+I think the error checking in ubi_eba_write_leb() may be wrong and may cause 
+incorrect behaviour when extra checking is enabled in debugfs, here's the 
+scenario I have a problem with:
 
-But wl.c has to trigger the deferred fastmap work as only wl.c detects when it is
-needed. I you want I can implement a ubi_fastmap_shutdown() in fastmap.c which
-calls flush_work().
-But I did it in wl.c to have it balanced. wl.c triggers and stops the fastmap work.
+ubi_eba_write_leb() calls  ubi_io_write_data() -> ubi_io_write() -> 
+ubi_dbg_check_all_ff()
 
-> Most UB subsystems have the init and close function. May be adding one
-> for fastmap would help? Then you could flush whatever from
-> 'ubi_wl_close()' ?
-> 
-> Historically the work queue was implemented in wl.c because wl.c was the
-> only user of it.
+ubi_dbg_check_all_ff() will perform an mtd_read() which can fail with EBADMSG 
+(if there is a failure to correct using ECC as in my case). This error code 
+will bubble back up to ubi_eba_write_leb(), but recover_peb() will only be 
+called if the error code was EIO. The question is should recover_peb() be 
+called in this case as well?
 
-What work queue are you talking about?
-The fastmap work queue was added by me and has nothing to do with the UBI background
-worker thread.
-
-> If this layout is not good enough, we should probably extend it, may be
-> separate work queue management out of wl.c.
-
-One thing I can think of is getting completely rid of the UBI background thread
-and convert it to a work queue. But I'm not sure if this would make things easier
-for fastmap.
-
-> But populating wl.c with macros and little "take care of this fatmap
-> bit" stuff is a not going to lead to better code structure.
-
-s/fatmap/fastmap. A Freudian slip? ;)
-
-I spent already a full week on refactoring that code. My goal was
-making ubi_update_fastmap() callable from within the wear_leveling_worker() to get
-rid of the fastmap work queue completely.
-After one week the new code was more complicated and ugly than the current one. :-\
-
-Some background info:
-Fastmap needs to create a snapshot of the UBI state.
-This is why you cannot call it within an UBI work. As UBI works can run in parallel.
-The fastmap creation does many things which can sleep. Most stuff in the wear_leveling_worker()
-happens in atmoic context.
-
-Thanks,
-//richard
+Thanks for any help with this,
+Steve
