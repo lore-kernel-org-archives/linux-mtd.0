@@ -1,20 +1,20 @@
-Received: from szxga02-in.huawei.com ([119.145.14.65])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XYomo-0007fh-0W
- for linux-mtd@lists.infradead.org; Tue, 30 Sep 2014 04:11:38 +0000
-Message-ID: <542A2D43.3060107@huawei.com>
-Date: Tue, 30 Sep 2014 12:10:43 +0800
-From: hujianyang <hujianyang@huawei.com>
 MIME-Version: 1.0
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH v4 4/4] ubi-utils: ubidump: compile enable
-References: <542A2C57.3090401@huawei.com>
-In-Reply-To: <542A2C57.3090401@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: Richard Weinberger <richard.weinberger@gmail.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Bill Pringlemeir <bpringlemeir@nbsps.com>
+In-Reply-To: <1412043317.9388.84.camel@decadent.org.uk>
+References: <1412043222.9388.81.camel@decadent.org.uk>
+ <1412043317.9388.84.camel@decadent.org.uk>
+Date: Tue, 30 Sep 2014 07:14:15 +0200
+Message-ID: <CACna6ryNp7+4y7oSs60atDZhUwFhiAyV4Oq5ELi1gyen45zhVw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] spi-nor: Make spi_nor_scan() take a chip type
+ name, not an spi_device_id
+From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+To: Ben Hutchings <ben@decadent.org.uk>
+Content-Type: text/plain; charset=UTF-8
+Cc: Andrew Lunn <andrew@lunn.ch>, Jason Cooper <jason@lakedaemon.net>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ Ian Campbell <ijc@hellion.org.uk>, Geert Uytterhoeven <geert@linux-m68k.org>,
+ Brian Norris <computersforpeace@gmail.com>, Huang Shijie <shijie8@gmail.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ debian-kernel <debian-kernel@lists.debian.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,41 +24,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch is the last part of ubidump. We enable the compile of this
-new utility by it.
+On 30 September 2014 04:15, Ben Hutchings <ben@decadent.org.uk> wrote:
+> @@ -236,16 +236,13 @@ static int m25p_probe(struct spi_device *spi)
+>          * If that's the case, respect "type" and ignore a "name".
+>          */
+>         if (data && data->type)
+> -               id = spi_nor_match_id(data->type);
+> +               name = data->type;
+>
+>         /* If we didn't get name from platform, simply use "modalias". */
+> -       if (!id) {
+> -               id = spi_nor_match_id(spi_get_device_id(spi)->name);
+> -               if (WARN_ON(!id))
+> -                       return -ENODEV;
+> -       }
+> +       if (!name)
+> +               name = spi_get_device_id(spi)->name;
 
-Signed-off-by: hujianyang <hujianyang@huawei.com>
----
- Makefile |    7 +++++--
- 1 files changed, 5 insertions(+), 2 deletions(-)
+Huh? Iterating the whole id_table, checking the entries (looking for
+one with name equal to the spi->modalias) and then... getting that
+name?
 
-diff --git a/Makefile b/Makefile
-index eade234..9dc9645 100644
---- a/Makefile
-+++ b/Makefile
-@@ -28,7 +28,8 @@ MTD_BINS = \
- 	sumtool jffs2reader
- UBI_BINS = \
- 	ubiupdatevol ubimkvol ubirmvol ubicrc32 ubinfo ubiattach \
--	ubidetach ubinize ubiformat ubirename mtdinfo ubirsvol ubiblock
-+	ubidetach ubinize ubiformat ubirename mtdinfo ubirsvol ubiblock \
-+	ubidump
-
- BINS = $(MTD_BINS)
- BINS += mkfs.ubifs/mkfs.ubifs
-@@ -115,10 +116,12 @@ obj-libiniparser.a = libiniparser.o dictionary.o
- obj-libscan.a      = libscan.o
- obj-libubi.a       = libubi.o
- obj-libubigen.a    = libubigen.o
-+obj-libdump.a      = libdump.o
-
- obj-mtdinfo   = libubigen.a
- obj-ubinize   = libubigen.a libiniparser.a
- obj-ubiformat = libubigen.a libscan.a
-+obj-ubidump   = libdump.a
-
--$(foreach v,libubi.a libubigen.a libiniparser.a libscan.a,$(eval $(call _mkdep,ubi-utils/,$(v))))
-+$(foreach v,libubi.a libubigen.a libiniparser.a libscan.a libdump.a,$(eval $(call _mkdep,ubi-utils/,$(v))))
- $(foreach v,$(UBI_BINS),$(eval $(call mkdep,ubi-utils/,$(v),libubi.a ubiutils-common.o)))
--- 
-1.6.0.2
+Did it hurt to use the patch I've sent
+mtd: m25p80: get rid of spi_get_device_id
+https://patchwork.ozlabs.org/patch/394328/
