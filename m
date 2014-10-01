@@ -1,15 +1,14 @@
-Date: Wed, 1 Oct 2014 07:25:45 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Arnd Bergmann <arnd@arndb.de>
+From: Arnd Bergmann <arnd@arndb.de>
+To: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
 Subject: Re: [PATCH] nand: omap2: fix building with CONFIG_MTD_NAND_OMAP_BCH=m
-Message-ID: <20141001102545.GB2085@arch.hh.imgtec.org>
+Date: Wed, 01 Oct 2014 12:46:39 +0200
+Message-ID: <2061777.ebdfGlRHlL@wuerfel>
+In-Reply-To: <20141001102419.GA2085@arch.hh.imgtec.org>
 References: <1811108.CcWEs0vKNL@wuerfel> <1943672.dOtqDNIvT0@wuerfel>
- <542BD277.6070509@ti.com> <2306426.hFH1ds3Hiv@wuerfel>
+ <20141001102419.GA2085@arch.hh.imgtec.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2306426.hFH1ds3Hiv@wuerfel>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Cc: pekon <pekon@pek-sem.com>, linux-mtd@lists.infradead.org,
  Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org,
@@ -23,35 +22,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01 Oct 12:13 PM, Arnd Bergmann wrote:
-> On Wednesday 01 October 2014 13:07:51 Roger Quadros wrote:
-> > On 10/01/2014 12:56 PM, Arnd Bergmann wrote:
-> > > On Wednesday 01 October 2014 12:32:09 Roger Quadros wrote:
-> > >>
-> > >> With this patch NAND probe on DRA7xx fails like so
-> > >>
-> > >> [    2.077313] omap-gpmc 50000000.gpmc: GPMC revision 6.0
-> > >> [    2.083842] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xca
-> > >> [    2.090524] nand: Micron MT29F2G16ABAEAWP
-> > >> [    2.094728] nand: 256MiB, SLC, page size: 2048, OOB size: 64
-> > >> [    2.100745] nand: using OMAP_ECC_BCH8_CODE_HW ECC scheme
-> > >> [    2.109764] omap2-nand: probe of omap2-nand.0 failed with error -38
-> > >>
-> > >> OMAP NAND driver is the only user of the ELM module and we want it
-> > >> to be usable in all possible configurations when enabled.
-> > > 
-> > > I don't understand. Is the BCH driver optional or not?
-> > > 
-> > It is optional. If it is disabled we error out on platforms that have
-> > the ELM IP. But if it is enabled, we don't want to fail probe on such platforms.
+On Wednesday 01 October 2014 07:24:19 Ezequiel Garcia wrote:
+> > 
+> > config MTD_NAND_OMAP_BCH_BUILD
+> >       def_tristate MTD_NAND_OMAP2 && MTD_NAND_OMAP_BCH
+> > 
+> > which makes it 'm' if MTD_NAND_OMAP_BCH is set to m.
+> > 
 > 
-> Wouldn't it be better to treat the absence of the ELM driver the
-> same way as the absence of the ELM hardware?
+> Just to clarify, you are talking about this one being the correct one,
+> right?
+> 
+> http://article.gmane.org/gmane.linux.ports.arm.omap/118488
+> "[PATCH 3/3] mtd: nand: Force omap_elm to be built as a module if omap2_nand is a module"
+> 
 > 
 
-Indeed, it would be better to provide a fallback to the non-ELM behavior
-if *anything* prevents initializing it.
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+Yes. The four lines you have in there
+
++config MTD_NAND_OMAP_BCH_BUILD
++	tristate
++	depends on MTD_NAND_OMAP2
++	default m if MTD_NAND_OMAP2=m && MTD_NAND_OMAP_BCH
++	default y if MTD_NAND_OMAP2=y && MTD_NAND_OMAP_BCH
+
+should be entirely equivalent to the two lines I wrote above, so my version
+is just a readability change, functionally they both are correct as far as
+I can tell.
+
+	Arnd
