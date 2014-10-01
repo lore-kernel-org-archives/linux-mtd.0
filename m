@@ -1,16 +1,17 @@
-Message-ID: <542BCA19.8050603@ti.com>
-Date: Wed, 1 Oct 2014 12:32:09 +0300
-From: Roger Quadros <rogerq@ti.com>
-MIME-Version: 1.0
-To: Arnd Bergmann <arnd@arndb.de>, Brian Norris <computersforpeace@gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
+To: Roger Quadros <rogerq@ti.com>
 Subject: Re: [PATCH] nand: omap2: fix building with CONFIG_MTD_NAND_OMAP_BCH=m
-References: <1811108.CcWEs0vKNL@wuerfel>
-In-Reply-To: <1811108.CcWEs0vKNL@wuerfel>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
+Date: Wed, 01 Oct 2014 11:56:07 +0200
+Message-ID: <1943672.dOtqDNIvT0@wuerfel>
+In-Reply-To: <542BCA19.8050603@ti.com>
+References: <1811108.CcWEs0vKNL@wuerfel> <542BCA19.8050603@ti.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Cc: pekon <pekon@pek-sem.com>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,61 +21,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Arnd & Brian,
-
-On 09/30/2014 03:04 PM, Arnd Bergmann wrote:
-> If the OMAP nand driver is built-in but the BCH driver is a module,
-> we get a link-time error:
+On Wednesday 01 October 2014 12:32:09 Roger Quadros wrote:
 > 
-> drivers/built-in.o: In function `omap_elm_correct_data':
-> :(.text+0x174e88): undefined reference to `elm_decode_bch_error_page'
-> drivers/built-in.o: In function `omap_nand_probe':
-> :(.text+0x175b48): undefined reference to `elm_config'
+> With this patch NAND probe on DRA7xx fails like so
 > 
-> There are two possible ways to deal with this, either prevent that
-> configuration in Kconfig or make sure we don't reference the ELM
-> driver in this case.
+> [    2.077313] omap-gpmc 50000000.gpmc: GPMC revision 6.0
+> [    2.083842] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xca
+> [    2.090524] nand: Micron MT29F2G16ABAEAWP
+> [    2.094728] nand: 256MiB, SLC, page size: 2048, OOB size: 64
+> [    2.100745] nand: using OMAP_ECC_BCH8_CODE_HW ECC scheme
+> [    2.109764] omap2-nand: probe of omap2-nand.0 failed with error -38
 > 
-> This patch picks the second approach, which makes it possible to
-> use the ELM driver in other modules while still having the OMAP
-> NAND driver built-in.
+> OMAP NAND driver is the only user of the ELM module and we want it
+> to be usable in all possible configurations when enabled.
 
-With this patch NAND probe on DRA7xx fails like so
+I don't understand. Is the BCH driver optional or not?
 
-[    2.077313] omap-gpmc 50000000.gpmc: GPMC revision 6.0
-[    2.083842] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xca
-[    2.090524] nand: Micron MT29F2G16ABAEAWP
-[    2.094728] nand: 256MiB, SLC, page size: 2048, OOB size: 64
-[    2.100745] nand: using OMAP_ECC_BCH8_CODE_HW ECC scheme
-[    2.109764] omap2-nand: probe of omap2-nand.0 failed with error -38
+The help text says:
 
-OMAP NAND driver is the only user of the ELM module and we want it
-to be usable in all possible configurations when enabled.
+          This config enables the ELM hardware engine, which can be used to
+          locate and correct errors when using BCH ECC scheme. This offloads
+          the cpu from doing ECC error searching and correction. However some
+          legacy OMAP families like OMAP2xxx, OMAP3xxx do not have ELM engine
+          so they should not enable this config symbol.
 
-Let's pick either one of the below patches instead
+which adds more to the confusion. The help text sounds like everything should
+work even if ELM is disabled (which contradicts your finding above) but you
+must not enable the driver if you are on an older machine (which would
+break multiplatform builds).
 
-http://article.gmane.org/gmane.linux.ports.arm.omap/118488
-OR
-http://article.gmane.org/gmane.linux.ports.arm.omap/118847
-
-cheers,
--roger
-
+> Let's pick either one of the below patches instead
 > 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> Fixes: 93af53b8633c ("nand: omap2: Remove horrible ifdefs to fix module probe")
-> 
-> diff --git a/include/linux/platform_data/elm.h b/include/linux/platform_data/elm.h
-> index b8686c00f15f..cbca66ce7c10 100644
-> --- a/include/linux/platform_data/elm.h
-> +++ b/include/linux/platform_data/elm.h
-> @@ -42,7 +42,7 @@ struct elm_errorvec {
->  	int error_loc[16];
->  };
->  
-> -#if IS_ENABLED(CONFIG_MTD_NAND_OMAP_BCH)
-> +#if defined(CONFIG_MTD_NAND_OMAP_BCH) || (defined(CONFIG_MTD_NAND_OMAP_BCH_MODULE) && defined(MODULE))
->  void elm_decode_bch_error_page(struct device *dev, u8 *ecc_calc,
->  		struct elm_errorvec *err_vec);
->  int elm_config(struct device *dev, enum bch_ecc bch_type,
-> 
+> http://article.gmane.org/gmane.linux.ports.arm.omap/118488
+
+This doesn't let you have the BCH driver as a module, which seems
+wrong.
+
+> http://article.gmane.org/gmane.linux.ports.arm.omap/118847
+
+Looks good, although I think you can simplify this to
+
+config MTD_NAND_OMAP_BCH_BUILD
+	def_tristate MTD_NAND_OMAP2 && MTD_NAND_OMAP_BCH
+
+which makes it 'm' if MTD_NAND_OMAP_BCH is set to m.
+
+	Arnd
