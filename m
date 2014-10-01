@@ -1,19 +1,23 @@
-Received: from mail-wi0-x22f.google.com ([2a00:1450:400c:c05::22f])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XZLNm-0004EP-RD
- for linux-mtd@lists.infradead.org; Wed, 01 Oct 2014 15:00:00 +0000
-Received: by mail-wi0-f175.google.com with SMTP id d1so856372wiv.8
- for <linux-mtd@lists.infradead.org>; Wed, 01 Oct 2014 07:59:34 -0700 (PDT)
-From: Rostislav Lisovy <lisovy@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, pekon gupta <pekon@ti.com>,
- Tony Lindgren <tony@atomide.com>, Roger Quadros <rogerq@ti.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] mtd: nand: omap: Do not use global variables
-Date: Wed,  1 Oct 2014 16:59:13 +0200
-Message-Id: <1412175554-19391-1-git-send-email-lisovy@merica.cz>
-Cc: michal.vokac@comap.cz, lisovy@gmail.com,
- Rostislav Lisovy <lisovy@merica.cz>, sojkam1@fel.cvut.cz
+Date: Wed, 1 Oct 2014 19:20:03 +0100
+From: Mark Brown <broonie@debian.org>
+To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Message-ID: <20141001182003.GB17974@sirena.org.uk>
+References: <1411984074-3850-1-git-send-email-zajec5@gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="6sX45UoQRIJXqkqR"
+Content-Disposition: inline
+In-Reply-To: <1411984074-3850-1-git-send-email-zajec5@gmail.com>
+Subject: Re: [PATCH 1/2] mtd: m25p80: get rid of spi_get_device_id
+Cc: Andrew Lunn <andrew@lunn.ch>, David Woodhouse <David.Woodhouse@intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Hauke Mehrtens <hauke@hauke-m.de>,
+ linux-spi <linux-spi@vger.kernel.org>, linux-mtd@lists.infradead.org,
+ Huang Shijie <shijie8@gmail.com>, Ian Campbell <ijc@hellion.org.uk>,
+ debian-kernel <debian-kernel@lists.debian.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Ben Hutchings <ben@decadent.org.uk>, linux-arm-kernel@lists.infradead.org,
+ Jason Cooper <jason@lakedaemon.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,37 +27,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Since the commit 97a288ba2cfa ("ARM: omap2+: gpmc-nand: Use
-dynamic platform_device_alloc()") gpmc-nand driver supports
-multiple NAND flash devices connected to the single controller.
-Remove global variable to make the code thread-safe.
 
-Signed-off-by: Rostislav Lisovy <lisovy@merica.cz>
----
- drivers/mtd/nand/omap2.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+--6sX45UoQRIJXqkqR
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 5967b38..24d5c6a 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -146,8 +146,6 @@ static u_char bch8_vector[] = {0xf3, 0xdb, 0x14, 0x16, 0x8b, 0xd2, 0xbe, 0xcc,
- static u_char bch4_vector[] = {0x00, 0x6b, 0x31, 0xdd, 0x41, 0xbc, 0x10};
- #endif
- 
--/* oob info generated runtime depending on ecc algorithm and layout selected */
--static struct nand_ecclayout omap_oobinfo;
- 
- struct omap_nand_info {
- 	struct nand_hw_control		controller;
-@@ -1794,7 +1792,7 @@ static int omap_nand_probe(struct platform_device *pdev)
- 	}
- 
- 	/* populate MTD interface based on ECC scheme */
--	ecclayout		= &omap_oobinfo;
-+	ecclayout		= kzalloc(sizeof(*ecclayout), GFP_KERNEL);
- 	switch (info->ecc_opt) {
- 	case OMAP_ECC_HAM1_CODE_SW:
- 		nand_chip->ecc.mode = NAND_ECC_SOFT;
--- 
-1.9.1
+On Mon, Sep 29, 2014 at 11:47:53AM +0200, Rafa=C5=82 Mi=C5=82ecki wrote:
+> This simplifies the way we use spi_nor framework and will allow us to
+> drop spi_nor_match_id.
+
+Please don't CC linux-spi on spi-nor patches that don't have SPI level
+changes, it just clogs up patchwork.
+
+--6sX45UoQRIJXqkqR
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBAgAGBQJULEXSAAoJECTWi3JdVIfQ2roH/0OaqzUv/QRZUlaWQtUih6CX
+vHdg2Uy2SHZR9xCIOUXypgHKhGbHIH+BLD4bdwXd5Vwtus4V2Ah+46OjXGNzCi12
+s6y+ycNDDWrAeAB5EqoxIFLtffV4WxyQiR0kCGismyoWOlRPLx8yTo6mVU+viTw9
+qIJxmAkqwUOqkHAj8Wr0Vhbjpj/uQ6Vf405nnW/Zbo+jdVHTWf88tOoR6DAkNVvu
+DcsXICE2T9JzNxRJn4Vz7dDYpy1UT4l1pAo53/+g6tMIa4FxviFBvZN0PifwfrzZ
+eJx7NubePA5rCckz33Xj8pN/DBo3SsDjtEzz3X4PYWhhCQkMlT2e3XZh6kw7oDw=
+=ef0F
+-----END PGP SIGNATURE-----
+
+--6sX45UoQRIJXqkqR--
