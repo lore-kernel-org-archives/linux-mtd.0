@@ -1,17 +1,18 @@
 Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XZgHA-00064p-9K
- for linux-mtd@lists.infradead.org; Thu, 02 Oct 2014 13:18:33 +0000
-Message-ID: <542D508B.9070002@nod.at>
-Date: Thu, 02 Oct 2014 15:18:03 +0200
+ id 1XZgHM-0006FL-0g
+ for linux-mtd@lists.infradead.org; Thu, 02 Oct 2014 13:18:44 +0000
+Message-ID: <542D50A0.1080802@nod.at>
+Date: Thu, 02 Oct 2014 15:18:24 +0200
 From: Richard Weinberger <richard@nod.at>
 MIME-Version: 1.0
 To: Tanya Brokhman <tlinder@codeaurora.org>, dedekind1@gmail.com
-Subject: Re: [PATCH 2/4] UBI: Fastmap: Calc fastmap size correctly
+Subject: Re: [PATCH 1/4] UBI: Ensure that all fastmap work is done upon WL
+ shutdown
 References: <1412029248-22454-1-git-send-email-richard@nod.at>
- <1412029248-22454-3-git-send-email-richard@nod.at>
- <542D4FD0.9050606@codeaurora.org>
-In-Reply-To: <542D4FD0.9050606@codeaurora.org>
+ <1412029248-22454-2-git-send-email-richard@nod.at>
+ <542D4D95.6000503@codeaurora.org>
+In-Reply-To: <542D4D95.6000503@codeaurora.org>
 Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
@@ -24,35 +25,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 02.10.2014 15:14, schrieb Tanya Brokhman:
-> On 9/30/2014 1:20 AM, Richard Weinberger wrote:
->> We need to add fm_sb too.
->>
->> Signed-off-by: Richard Weinberger <richard@nod.at>
->> ---
->>   drivers/mtd/ubi/fastmap.c | 3 ++-
->>   1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
->> index 0431b46..2b0d8d6 100644
->> --- a/drivers/mtd/ubi/fastmap.c
->> +++ b/drivers/mtd/ubi/fastmap.c
->> @@ -24,7 +24,8 @@ size_t ubi_calc_fm_size(struct ubi_device *ubi)
->>   {
->>       size_t size;
->>
->> -    size = sizeof(struct ubi_fm_hdr) + \
->> +    size = sizeof(struct ubi_fm_sb) + \
->> +        sizeof(struct ubi_fm_hdr) + \
->>           sizeof(struct ubi_fm_scan_pool) + \
->>           sizeof(struct ubi_fm_scan_pool) + \
->>           (ubi->peb_count * sizeof(struct ubi_fm_ec)) + \
->>
+Am 02.10.2014 15:05, schrieb Tanya Brokhman:
+>> +#ifdef CONFIG_MTD_UBI_FASTMAP
+>> +    flush_work(&ubi->fm_work);
 > 
-> Not sure what's the proper way doing this (Reviewed-by/Acked-by) but I agree this patch is required. I would just elaborate a bit more on the commit message.
+> flush_work returns bool. It might be useful to print that value for debugging.
 
-If you read this patch and find it good, please add your Reviewed-by.
-Thanks a lot for reviewing my patches!
+Why would this be useful?
+The sole purpose of this flush is having a barrier.
+If flush_work() had to wait (returns true) for a pending work, fine.
+If where was no work (returns false) to wait for, also fine. :)
 
 Thanks,
 //richard
