@@ -1,17 +1,16 @@
 Received: from smtp.codeaurora.org ([198.145.11.231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XZg4s-00048F-Db
- for linux-mtd@lists.infradead.org; Thu, 02 Oct 2014 13:05:51 +0000
-Message-ID: <542D4D95.6000503@codeaurora.org>
-Date: Thu, 02 Oct 2014 16:05:25 +0300
+ id 1XZgE4-0002Yz-I5
+ for linux-mtd@lists.infradead.org; Thu, 02 Oct 2014 13:15:20 +0000
+Message-ID: <542D4FD0.9050606@codeaurora.org>
+Date: Thu, 02 Oct 2014 16:14:56 +0300
 From: Tanya Brokhman <tlinder@codeaurora.org>
 MIME-Version: 1.0
 To: Richard Weinberger <richard@nod.at>, dedekind1@gmail.com
-Subject: Re: [PATCH 1/4] UBI: Ensure that all fastmap work is done upon WL
- shutdown
+Subject: Re: [PATCH 2/4] UBI: Fastmap: Calc fastmap size correctly
 References: <1412029248-22454-1-git-send-email-richard@nod.at>
- <1412029248-22454-2-git-send-email-richard@nod.at>
-In-Reply-To: <1412029248-22454-2-git-send-email-richard@nod.at>
+ <1412029248-22454-3-git-send-email-richard@nod.at>
+In-Reply-To: <1412029248-22454-3-git-send-email-richard@nod.at>
 Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
@@ -24,38 +23,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Richard,
-
 On 9/30/2014 1:20 AM, Richard Weinberger wrote:
-> ...otherwise the deferred work might run after datastructures
-> got freed and corrupt memory.
+> We need to add fm_sb too.
 >
 > Signed-off-by: Richard Weinberger <richard@nod.at>
 > ---
->   drivers/mtd/ubi/wl.c | 3 +++
->   1 file changed, 3 insertions(+)
+>   drivers/mtd/ubi/fastmap.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
 >
-> diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-> index 20f491713..dc01b1f 100644
-> --- a/drivers/mtd/ubi/wl.c
-> +++ b/drivers/mtd/ubi/wl.c
-> @@ -2029,6 +2029,9 @@ static void protection_queue_destroy(struct ubi_device *ubi)
->   void ubi_wl_close(struct ubi_device *ubi)
+> diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+> index 0431b46..2b0d8d6 100644
+> --- a/drivers/mtd/ubi/fastmap.c
+> +++ b/drivers/mtd/ubi/fastmap.c
+> @@ -24,7 +24,8 @@ size_t ubi_calc_fm_size(struct ubi_device *ubi)
 >   {
->   	dbg_wl("close the WL sub-system");
-> +#ifdef CONFIG_MTD_UBI_FASTMAP
-> +	flush_work(&ubi->fm_work);
-
-flush_work returns bool. It might be useful to print that value for 
-debugging.
-
-> +#endif
->   	cancel_pending(ubi);
->   	protection_queue_destroy(ubi);
->   	tree_destroy(&ubi->used);
+>   	size_t size;
+>
+> -	size = sizeof(struct ubi_fm_hdr) + \
+> +	size = sizeof(struct ubi_fm_sb) + \
+> +		sizeof(struct ubi_fm_hdr) + \
+>   		sizeof(struct ubi_fm_scan_pool) + \
+>   		sizeof(struct ubi_fm_scan_pool) + \
+>   		(ubi->peb_count * sizeof(struct ubi_fm_ec)) + \
 >
 
-Thanks
+Not sure what's the proper way doing this (Reviewed-by/Acked-by) but I 
+agree this patch is required. I would just elaborate a bit more on the 
+commit message.
+
+Thanks,
 Tanya Brokhman
 -- 
 Employee of Qualcomm Innovation Center, Inc.
