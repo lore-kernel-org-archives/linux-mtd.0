@@ -1,18 +1,25 @@
-Message-ID: <542CF446.6090608@ti.com>
-Date: Thu, 2 Oct 2014 09:44:22 +0300
-From: Roger Quadros <rogerq@ti.com>
+From: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
+To: Boris Brezillon <boris.brezillon@free-electrons.com>
+Date: Thu, 2 Oct 2014 16:52:29 +1000
+Subject: RE: [PATCH] mtd: nand: gpmi: add proper raw access support
+Message-ID: <EACD232272DA4849B060F0828564D13B44955ABD8A@ntcex01.corp.netcomm.com.au>
+References: <1410339339-25561-1-git-send-email-boris.brezillon@free-electrons.com>
+ <20140911120928.GA1585@localhost.localdomain>
+ <20140911143616.3ebb025a@bbrezillon>
+ <EACD232272DA4849B060F0828564D13B44955ABD82@ntcex01.corp.netcomm.com.au>,
+ <20140930100415.4834971d@bbrezillon>
+In-Reply-To: <20140930100415.4834971d@bbrezillon>
+Content-Language: en-AU
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-To: Rostislav Lisovy <lisovy@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, pekon <pekon@pek-sem.com>,
- Tony Lindgren <tony@atomide.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] mtd: nand: omap: Do not use global variables
-References: <1412175554-19391-1-git-send-email-lisovy@merica.cz>
-In-Reply-To: <1412175554-19391-1-git-send-email-lisovy@merica.cz>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: michal.vokac@comap.cz, Rostislav Lisovy <lisovy@merica.cz>,
- sojkam1@fel.cvut.cz
+Cc: Mike Voytovich <mvoytovich@paypal.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Huang Shijie <b32955@freescale.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Roy Lee <roylee@paypal.com>, Brian Norris <computersforpeace@gmail.com>,
+ Huang Shijie <shijie8@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,48 +29,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Tue, 30 Sep 2014 18:04:15 +1000
+Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
 
-On 10/01/2014 05:59 PM, Rostislav Lisovy wrote:
-> Since the commit 97a288ba2cfa ("ARM: omap2+: gpmc-nand: Use
-> dynamic platform_device_alloc()") gpmc-nand driver supports
-> multiple NAND flash devices connected to the single controller.
-> Remove global variable to make the code thread-safe.
-> 
-> Signed-off-by: Rostislav Lisovy <lisovy@merica.cz>
-> ---
->  drivers/mtd/nand/omap2.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> index 5967b38..24d5c6a 100644
-> --- a/drivers/mtd/nand/omap2.c
-> +++ b/drivers/mtd/nand/omap2.c
-> @@ -146,8 +146,6 @@ static u_char bch8_vector[] = {0xf3, 0xdb, 0x14, 0x16, 0x8b, 0xd2, 0xbe, 0xcc,
->  static u_char bch4_vector[] = {0x00, 0x6b, 0x31, 0xdd, 0x41, 0xbc, 0x10};
->  #endif
->  
-> -/* oob info generated runtime depending on ecc algorithm and layout selected */
-> -static struct nand_ecclayout omap_oobinfo;
->  
->  struct omap_nand_info {
->  	struct nand_hw_control		controller;
-> @@ -1794,7 +1792,7 @@ static int omap_nand_probe(struct platform_device *pdev)
->  	}
->  
->  	/* populate MTD interface based on ECC scheme */
-> -	ecclayout		= &omap_oobinfo;
-> +	ecclayout		= kzalloc(sizeof(*ecclayout), GFP_KERNEL);
+> Hi Iwo,
+>=20
+> On Mon, 29 Sep 2014 11:22:11 +1000
+> Iwo Mergler <Iwo.Mergler@netcommwireless.com> wrote:
+>=20
+> > On Thu, 11 Sep 2014 22:36:16 +1000
+> > Boris BREZILLON <boris.brezillon@free-electrons.com> wrote:
+> > >=20
+> > > Well, I don't know about freescale specific tools, but at least I
+> > > have an example with mtd_nandbiterrs module.
+> > > This module is assuming it can write only the data part of a NAND
+> > > page without modifying the OOB area (see [1]), which in GPMI
+> > > controller case is impossible because raw write function store
+> > > the data as if there were no specific scheme, while there is one:
+> > > (metadata + n x (data_chunk + ECC bytes) + remaining_bytes).
+> > >=20
+> >=20
+> > Hi Boris,
+> >=20
+> >=20
+> > just as an aside, only the incremental bit errors test in
+> > nandbiterrs positively requires raw data write.
+> >=20
+> > The overwrite test (re-write the same page data repeatedly without
+> > erase), only uses raw access because I was lazy. A normal ECC write
+> > would do just as well.
+>=20
+> Okay.
+> Anyway, the test I'm really interested in is the incremental bit
+> errors test :-).
+>=20
+> BTW, any reason you chose to implement this test/testsuite as a
+> module ?
+> From my understanding (and tell me if I'm wrong) we could do the same
+> from user-space.
+>=20
+> Best Regards,
+>=20
+> Boris
+>=20
 
-We should free this in failure path or omap_nand_remove(), or use devm_kzalloc().
+Hi Boris,
 
-How about making "struct nand_ecclayout" a part of omap_nand_info, so that it gets allocated
-without a separate devm_kzalloc() call?
 
->  	switch (info->ecc_opt) {
->  	case OMAP_ECC_HAM1_CODE_SW:
->  		nand_chip->ecc.mode = NAND_ECC_SOFT;
-> 
+can't say I have good excuses, but here goes. :-)
 
-cheers,
--roger
+I was writing a NAND driver, so my brain was in kernel mode. It made it
+slightly easier to trace the operations from end-to-end.
+
+It's also possible that I didn't have an userspace at the time and had the=
+
+test compiled in, my memory is a little fuzzy...
+
+Otherwise, yes, you could probably do it from userspace. I'm not sure
+if there is a way to determine the number of corrected bit errors for
+a specific page read. ECCGETSTATS seems to be global.
+
+
+Best regards,
+
+Iwo
+
+______________________________________________________________________
+This communication contains information which may be confidential or privi=
+leged. The information is intended solely for the use of the individual or=
+ entity named above.  If you are not the intended recipient, be aware that=
+ any disclosure, copying, distribution or use of the contents of this info=
+rmation is prohibited.  If you have received this communication in error, =
+please notify me by telephone immediately.
+______________________________________________________________________
