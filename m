@@ -1,22 +1,25 @@
-Received: from mail-wi0-x233.google.com ([2a00:1450:400c:c05::233])
+Received: from smtp.codeaurora.org ([198.145.11.231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XZhC3-0001wq-F5
- for linux-mtd@lists.infradead.org; Thu, 02 Oct 2014 14:17:20 +0000
-Received: by mail-wi0-f179.google.com with SMTP id d1so4219951wiv.12
- for <linux-mtd@lists.infradead.org>; Thu, 02 Oct 2014 07:16:54 -0700 (PDT)
-From: Rostislav Lisovy <lisovy@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Tony Lindgren <tony@atomide.com>, Roger Quadros <rogerq@ti.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/2] mtd: nand: omap: Synchronize the access to the ECC
- engine
-Date: Thu,  2 Oct 2014 16:16:44 +0200
-Message-Id: <1412259404-5202-1-git-send-email-lisovy@merica.cz>
-In-Reply-To: <542D46A1.9090905@ti.com>
-References: <542D46A1.9090905@ti.com>
-Cc: michal.vokac@comap.cz, lisovy@gmail.com,
- Rostislav Lisovy <lisovy@merica.cz>, sojkam1@fel.cvut.cz
+ id 1XZhHd-0005SS-NP
+ for linux-mtd@lists.infradead.org; Thu, 02 Oct 2014 14:23:06 +0000
+Message-ID: <542D5FB1.3090307@codeaurora.org>
+Date: Thu, 02 Oct 2014 17:22:41 +0300
+From: Tanya Brokhman <tlinder@codeaurora.org>
+MIME-Version: 1.0
+To: Richard Weinberger <richard@nod.at>,
+ "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
+Subject: Re: [PATCH 4/4] UBI: Fastmap: Ensure that only one fastmap work is
+ scheduled
+References: <1412029248-22454-1-git-send-email-richard@nod.at>		
+ <1412029248-22454-5-git-send-email-richard@nod.at>	
+ <1412059523.3904.11.camel@sauron.fi.intel.com> <542A54E4.2060407@nod.at>
+ <1412062762.2379.2.camel@sauron.fi.intel.com> <542A5F64.5000302@nod.at>
+In-Reply-To: <542A5F64.5000302@nod.at>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,74 +29,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The AM335x Technical Reference Manual (spruh73j.pdf) says
-"Because the ECC engine includes only one accumulation context,
-it can be allocated to only one chip-select at a time ... "
-(7.1.3.3.12.3). Since the commit 97a288ba2cfa ("ARM: omap2+:
-gpmc-nand: Use dynamic platform_device_alloc()") gpmc-nand
-driver supports multiple NAND flash devices connected to
-the single controller.
-Use global 'struct nand_hw_control' among multiple NAND
-instances to synchronize the access to the single ECC Engine.
+On 9/30/2014 10:44 AM, Richard Weinberger wrote:
+> Am 30.09.2014 09:39, schrieb Bityutskiy, Artem:
+>> On Tue, 2014-09-30 at 08:59 +0200, Richard Weinberger wrote:
+>>> Am 30.09.2014 08:45, schrieb Bityutskiy, Artem:
+>>>> On Tue, 2014-09-30 at 00:20 +0200, Richard Weinberger wrote:
+>>>>> +       spin_lock(&ubi->wl_lock);
+>>>>> +       ubi->fm_work_scheduled = 0;
+>>>>> +       spin_unlock(&ubi->wl_lock);
+>>>>
+>>>> Andrew Morton once said me that if I am protecting an integer change
+>>>> like this with a spinlock, I have a problem in my locking design. He was
+>>>> right for my particular case.
+>>>>
+>>>> Integer is changes atomic. The only other thing spinlock adds are the
+>>>> barriers.
+>>>
+>>> I've added the spinlock to have a barrier in any case.
+>>
+>> Examples of any?
+>
+> You mean a case where the compiler would reorder code and the barrier is needed?
+> I don't have one, but I'm not that creative as a modern C compiler.
+> If you say that no barrier is needed I'll trust you. :-)
 
-Tested with custom AM335x board using 2x NAND flash chips.
+we just implemented the same thing :) It's being tested....
+Why not use atomic_t fm_work_scheduled and save the spin_lock?
 
-Signed-off-by: Rostislav Lisovy <lisovy@merica.cz>
----
-Changes since v2:
-* Do not use custom locks. Use global 'struct nand_hw_control'
-  among multiple NAND instances and it will do the work for us
-  (Roger Quadros)
-
-Changes since v1:
-* Since not all the read/write operations are performed by the
-  omap_read(write)_page_bch() functions use the locks directly on
-  those places that configure the ECC engine (take the lock) and
-  read the result from the ECC engine (release the lock).
-  This approach should cover read/write operations with all
-  possible ECC modes. (Roger Quadros)
+>
+> Thanks,
+> //richard
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
 
 
- drivers/mtd/nand/omap2.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index f0dcdb6..dfae46f 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -144,8 +144,13 @@ static u_char bch8_vector[] = {0xf3, 0xdb, 0x14, 0x16, 0x8b, 0xd2, 0xbe, 0xcc,
- 	0xac, 0x6b, 0xff, 0x99, 0x7b};
- static u_char bch4_vector[] = {0x00, 0x6b, 0x31, 0xdd, 0x41, 0xbc, 0x10};
- 
-+/* Shared among all NAND instances to synchronize the access to the ECC Engine */
-+struct nand_hw_control omap_gpmc_controller = {
-+	.lock = __SPIN_LOCK_UNLOCKED(omap_gpmc_controller.lock),
-+	.wq = __WAIT_QUEUE_HEAD_INITIALIZER(omap_gpmc_controller.wq),
-+};
-+
- struct omap_nand_info {
--	struct nand_hw_control		controller;
- 	struct omap_nand_platform_data	*pdata;
- 	struct mtd_info			mtd;
- 	struct nand_chip		nand;
-@@ -1685,9 +1690,6 @@ static int omap_nand_probe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, info);
- 
--	spin_lock_init(&info->controller.lock);
--	init_waitqueue_head(&info->controller.wq);
--
- 	info->pdev		= pdev;
- 	info->gpmc_cs		= pdata->cs;
- 	info->reg		= pdata->reg;
-@@ -1707,7 +1709,7 @@ static int omap_nand_probe(struct platform_device *pdev)
- 
- 	info->phys_base = res->start;
- 
--	nand_chip->controller = &info->controller;
-+	nand_chip->controller = &omap_gpmc_controller;
- 
- 	nand_chip->IO_ADDR_W = nand_chip->IO_ADDR_R;
- 	nand_chip->cmd_ctrl  = omap_hwcontrol;
 -- 
-1.9.1
+Employee of Qualcomm Innovation Center, Inc.
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, 
+hosted by The Linux Foundation
