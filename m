@@ -1,24 +1,20 @@
-Received: from smtp.codeaurora.org ([198.145.11.231])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XZfq5-0005L7-RX
- for linux-mtd@lists.infradead.org; Thu, 02 Oct 2014 12:50:34 +0000
-Message-ID: <542D49FD.7040204@codeaurora.org>
-Date: Thu, 02 Oct 2014 15:50:05 +0300
-From: Tanya Brokhman <tlinder@codeaurora.org>
+Message-ID: <542D4A51.9060907@ti.com>
+Date: Thu, 2 Oct 2014 15:51:29 +0300
+From: Roger Quadros <rogerq@ti.com>
 MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>, dedeking1@gmail.com
-Subject: Re: [RFC/PATCH 1/5] mtd: ubi: Read disturb infrastructure
-References: <1411886220-8208-1-git-send-email-tlinder@codeaurora.org>
- <5427C45C.2080506@nod.at> <5427CB6E.7010007@codeaurora.org>
- <5427CCD8.2090605@nod.at> <5427E6FE.3090906@codeaurora.org>
- <5427E8CA.8000904@nod.at>
-In-Reply-To: <5427E8CA.8000904@nod.at>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+To: Rostislav Lisovy <lisovy@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Tony
+ Lindgren <tony@atomide.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 2/2] mtd: nand: omap: Synchronize access to the ECC
+ engine
+References: <1412252173-20454-1-git-send-email-lisovy@merica.cz>
+ <1412252173-20454-2-git-send-email-lisovy@merica.cz>
+In-Reply-To: <1412252173-20454-2-git-send-email-lisovy@merica.cz>
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Cc: Artem Bityutskiy <dedekind1@gmail.com>, linux-arm-msm@vger.kernel.org,
- open list <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: michal.vokac@comap.cz, Rostislav Lisovy <lisovy@merica.cz>,
+ sojkam1@fel.cvut.cz
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,66 +24,155 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Richard,
+On 10/02/2014 03:16 PM, Rostislav Lisovy wrote:
+> The AM335x Technical Reference Manual (spruh73j.pdf) says
+> "Because the ECC engine includes only one accumulation context,
+> it can be allocated to only one chip-select at a time ... "
+> (7.1.3.3.12.3). Since the commit 97a288ba2cfa ("ARM: omap2+:
+> gpmc-nand: Use dynamic platform_device_alloc()") gpmc-nand
+> driver supports multiple NAND flash devices connected to
+> the single controller. Use mutexes to restrict access
+> to the ECC engine for single read/write operation at a time.
+> 
+> Tested with custom AM335x board using 2x NAND flash chips.
+> 
+> Signed-off-by: Rostislav Lisovy <lisovy@merica.cz>
+> ---
+> Changes since v1:
+> * Since not all the read/write operations are performed by the
+>   omap_read(write)_page_bch() functions use the locks directly on
+>   those places that configure the ECC engine (take the lock) and
+>   read the result from the ECC engine (release the lock).
+>   This approach should cover read/write operations with all
+>   possible ECC modes. (Roger Quadros)
+> 
 
-Sorry it took me some time to answer, got per-occupied with some urgent 
-staff.
+Don't you think this approach is racy?
 
-On 9/28/2014 1:54 PM, Richard Weinberger wrote:
-> Am 28.09.2014 12:46, schrieb Tanya Brokhman:
->> On 9/28/2014 11:54 AM, Richard Weinberger wrote:
->>> Am 28.09.2014 10:48, schrieb Tanya Brokhman:
->>>>>> @@ -424,6 +440,8 @@ struct ubi_fm_sb {
->>>>>>         __be32 used_blocks;
->>>>>>         __be32 block_loc[UBI_FM_MAX_BLOCKS];
->>>>>>         __be32 block_ec[UBI_FM_MAX_BLOCKS];
->>>>>> +    __be32 block_rc[UBI_FM_MAX_BLOCKS];
->>>>>> +    __be64 block_let[UBI_FM_MAX_BLOCKS];
->>>>>
->>>>> Doesn't this break the fastmap on-disk layout?
->>>>
->>>> What do you mean "break"? I verified fastmap feature is working. the whole read-disturb depends on it so I tested this thoroughly.
->>>
->>> Did you write a fastmap with your changes applied and then an attach using a fastmap implementation *without*
->>> you changes?
->>> I bet it will not work because the disk layout is now different.
->>
->> you're right, it wont work. I did a set of attach/detach tests to verify fastmap, but of course with my changes.
->>
->>> Linux is not the only user of fastmap. We need to be very careful here.
->>
->> Could you please elaborate here? I'm not sure I understand the use case you're referring to.
->
-> Consider the case where you have a board with a fastmap enabled bootloader and a Linux OS.
-> The bootloader does a fastmap attach and boots the kernel from UBI and the kernel it self has the rootfs
-> on UBI too. If you install a new kernel with your changes applied it will write the fastmap in a different
-> format and the bootloader will fail badly. In worst case the board bricks, in best case the bootloader can fall back
-> to scanning mode but it will be slow and the customer unhappy.
->
+IMHO the lock must be held across the entire page operation
+i.e.
+hold ecc lock
+ecc.hwctl
+chip->read/write_buf
+ecc.calculate
+ecc.correct
+release ecc lock
 
-Ok, I understand the problem now. I wanted to discuss a possible 
-solution before implementing it:
-We have a "fastmap version" in fm_sb. At the moment UBI_FM_FMT_VERSION = 
-1 and any other is not supported. We can use that; Add another fm 
-version (UBI_FM_FMT_VERSION_RD = 2) and then decide according to it. 
-Meaning, if during attach process we find fm superblock we check it's 
-version, if it's != UBI_FM_FMT_VERSION_RD, we fall back to full scan. 
-The next fastmap will be written with the new layout (and new version 
-number) so second boot will attach from fastmap without any issues.
+else we risk simultaneous NAND operations on multiple chips
+stomping on each other in between the entire sequence.
 
->
-> Thanks,
-> //richard
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+Then on further investigation isn't nand_get_device() already doing the same
+thing as you are attempting here?
 
-Thanks,
-Tanya Brokhman
--- 
-Employee of Qualcomm Innovation Center, Inc.
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, 
-hosted by The Linux Foundation
+The chip->controller->lock is meant for serializing NAND controller access.
+
+so instead of adding a new lock in the omap2 nand driver we need to ensure that
+we are maintaining the same nand_hw_control (controller) structure across multiple NAND chips.
+
+Let's move this controller structure out of omap_nand_info and keep it global to the driver
+and make sure every NAND instance uses it.
+
+cheers,
+-roger
+
+> 
+>  drivers/mtd/nand/omap2.c | 28 +++++++++++++++++++++++++---
+>  1 file changed, 25 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+> index f0dcdb6..898cb44 100644
+> --- a/drivers/mtd/nand/omap2.c
+> +++ b/drivers/mtd/nand/omap2.c
+> @@ -24,6 +24,7 @@
+>  #include <linux/slab.h>
+>  #include <linux/of.h>
+>  #include <linux/of_device.h>
+> +#include <linux/mutex.h>
+>  
+>  #include <linux/mtd/nand_bch.h>
+>  #include <linux/platform_data/elm.h>
+> @@ -144,6 +145,12 @@ static u_char bch8_vector[] = {0xf3, 0xdb, 0x14, 0x16, 0x8b, 0xd2, 0xbe, 0xcc,
+>  	0xac, 0x6b, 0xff, 0x99, 0x7b};
+>  static u_char bch4_vector[] = {0x00, 0x6b, 0x31, 0xdd, 0x41, 0xbc, 0x10};
+>  
+> +/*
+> + * Because the ECC engine includes only one accumulation context,
+> + * it can be allocated to only one chip-select at a time
+> + */
+> +static DEFINE_MUTEX(omap_eccengine_lock);
+> +
+>  struct omap_nand_info {
+>  	struct nand_hw_control		controller;
+>  	struct omap_nand_platform_data	*pdata;
+> @@ -926,10 +933,13 @@ static int omap_calculate_ecc(struct mtd_info *mtd, const u_char *dat,
+>  	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
+>  							mtd);
+>  	u32 val;
+> +	int ret = 0;
+>  
+>  	val = readl(info->reg.gpmc_ecc_config);
+> -	if (((val >> ECC_CONFIG_CS_SHIFT) & CS_MASK) != info->gpmc_cs)
+> -		return -EINVAL;
+> +	if (((val >> ECC_CONFIG_CS_SHIFT) & CS_MASK) != info->gpmc_cs) {
+> +		ret = -EINVAL;
+> +		goto leave;
+> +	}
+>  
+>  	/* read ecc result */
+>  	val = readl(info->reg.gpmc_ecc1_result);
+> @@ -938,7 +948,10 @@ static int omap_calculate_ecc(struct mtd_info *mtd, const u_char *dat,
+>  	/* P2048o, P1024o, P512o, P256o, P2048e, P1024e, P512e, P256e */
+>  	*ecc_code++ = ((val >> 8) & 0x0f) | ((val >> 20) & 0xf0);
+>  
+> -	return 0;
+> +leave:
+> +	/* Release the ECC engine */
+> +	mutex_unlock(&omap_eccengine_lock);
+> +	return ret;
+>  }
+>  
+>  /**
+> @@ -954,6 +967,9 @@ static void omap_enable_hwecc(struct mtd_info *mtd, int mode)
+>  	unsigned int dev_width = (chip->options & NAND_BUSWIDTH_16) ? 1 : 0;
+>  	u32 val;
+>  
+> +	/* ECC Engine is shared among multiple NAND devices */
+> +	mutex_lock(&omap_eccengine_lock);
+> +
+>  	/* clear ecc and enable bits */
+>  	val = ECCCLEAR | ECC1;
+>  	writel(val, info->reg.gpmc_ecc_control);
+> @@ -1132,6 +1148,9 @@ static void __maybe_unused omap_enable_hwecc_bch(struct mtd_info *mtd, int mode)
+>  		return;
+>  	}
+>  
+> +	/* ECC Engine is shared among multiple NAND devices */
+> +	mutex_lock(&omap_eccengine_lock);
+> +
+>  	writel(ECC1, info->reg.gpmc_ecc_control);
+>  
+>  	/* Configure ecc size for BCH */
+> @@ -1252,6 +1271,7 @@ static int __maybe_unused omap_calculate_ecc_bch(struct mtd_info *mtd,
+>  			ecc_code[25] = ((val >>  0) & 0xFF);
+>  			break;
+>  		default:
+> +			mutex_unlock(&omap_eccengine_lock);
+>  			return -EINVAL;
+>  		}
+>  
+> @@ -1280,12 +1300,14 @@ static int __maybe_unused omap_calculate_ecc_bch(struct mtd_info *mtd,
+>  		case OMAP_ECC_BCH16_CODE_HW:
+>  			break;
+>  		default:
+> +			mutex_unlock(&omap_eccengine_lock);
+>  			return -EINVAL;
+>  		}
+>  
+>  	ecc_calc += eccbytes;
+>  	}
+>  
+> +	mutex_unlock(&omap_eccengine_lock);
+>  	return 0;
+>  }
+>  
+> 
