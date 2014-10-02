@@ -1,25 +1,25 @@
-Received: from smtp.codeaurora.org ([198.145.11.231])
+Received: from mail-wg0-x22a.google.com ([2a00:1450:400c:c00::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XZhHd-0005SS-NP
- for linux-mtd@lists.infradead.org; Thu, 02 Oct 2014 14:23:06 +0000
-Message-ID: <542D5FB1.3090307@codeaurora.org>
-Date: Thu, 02 Oct 2014 17:22:41 +0300
-From: Tanya Brokhman <tlinder@codeaurora.org>
+ id 1XZk9l-0006lC-Jc
+ for linux-mtd@lists.infradead.org; Thu, 02 Oct 2014 17:27:10 +0000
+Received: by mail-wg0-f42.google.com with SMTP id z12so3791350wgg.1
+ for <linux-mtd@lists.infradead.org>; Thu, 02 Oct 2014 10:26:47 -0700 (PDT)
+Received: from [192.168.0.2]
+ (host36-238-dynamic.248-95-r.retail.telecomitalia.it. [95.248.238.36])
+ by mx.google.com with ESMTPSA id w14sm1903008wia.11.2014.10.02.10.26.46
+ for <linux-mtd@lists.infradead.org>
+ (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
+ Thu, 02 Oct 2014 10:26:46 -0700 (PDT)
+Message-ID: <542D8AD5.5030704@gmail.com>
+Date: Thu, 02 Oct 2014 19:26:45 +0200
+From: Angelo Dureghello <angelo70@gmail.com>
 MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>,
- "Bityutskiy, Artem" <artem.bityutskiy@intel.com>
-Subject: Re: [PATCH 4/4] UBI: Fastmap: Ensure that only one fastmap work is
- scheduled
-References: <1412029248-22454-1-git-send-email-richard@nod.at>		
- <1412029248-22454-5-git-send-email-richard@nod.at>	
- <1412059523.3904.11.camel@sauron.fi.intel.com> <542A54E4.2060407@nod.at>
- <1412062762.2379.2.camel@sauron.fi.intel.com> <542A5F64.5000302@nod.at>
-In-Reply-To: <542A5F64.5000302@nod.at>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: UBI ECC errors on kernel 3.16.2
+References: <542D18B6.3020906@gmail.com>
+In-Reply-To: <542D18B6.3020906@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,45 +29,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 9/30/2014 10:44 AM, Richard Weinberger wrote:
-> Am 30.09.2014 09:39, schrieb Bityutskiy, Artem:
->> On Tue, 2014-09-30 at 08:59 +0200, Richard Weinberger wrote:
->>> Am 30.09.2014 08:45, schrieb Bityutskiy, Artem:
->>>> On Tue, 2014-09-30 at 00:20 +0200, Richard Weinberger wrote:
->>>>> +       spin_lock(&ubi->wl_lock);
->>>>> +       ubi->fm_work_scheduled = 0;
->>>>> +       spin_unlock(&ubi->wl_lock);
->>>>
->>>> Andrew Morton once said me that if I am protecting an integer change
->>>> like this with a spinlock, I have a problem in my locking design. He was
->>>> right for my particular case.
->>>>
->>>> Integer is changes atomic. The only other thing spinlock adds are the
->>>> barriers.
->>>
->>> I've added the spinlock to have a barrier in any case.
->>
->> Examples of any?
->
-> You mean a case where the compiler would reorder code and the barrier is needed?
-> I don't have one, but I'm not that creative as a modern C compiler.
-> If you say that no barrier is needed I'll trust you. :-)
+Hi all,
 
-we just implemented the same thing :) It's being tested....
-Why not use atomic_t fm_work_scheduled and save the spin_lock?
+still some updated on these -74 EBADMSG i am receiving.
 
->
-> Thanks,
-> //richard
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+well, seems the first ecc error is detected as soon as the kernel driver 
+starts to
+read the ubifs (so file system) data part of the rootfs.ubi image.
+
+Before reading the file system data, so attaching, there is no ecc error 
+detected at all.
+I added traces on some kernel file as nand_base.c.
 
 
--- 
-Employee of Qualcomm Innovation Center, Inc.
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, 
-hosted by The Linux Foundation
+Ubi scanning / attaching  ...
+
+nand_read_page_hwecc_oob_first page    :3659
+nand_read_page_hwecc_oob_first correct p:c883d800 p[0]:p[1] 00:00 i:0 
+eccpos[i]:06 ecc_code[i]:0b;
+nand_read_page_hwecc_oob_first correct p:c883da00 p[0]:p[1] 00:00 i:10 
+eccpos[i]:16 ecc_code[i]:58;
+nand_read_page_hwecc_oob_first correct p:c883dc00 p[0]:p[1] 00:00 i:20 
+eccpos[i]:26 ecc_code[i]:cf;
+nand_read_page_hwecc_oob_first correct p:c883de00 p[0]:p[1] 00:00 i:30 
+eccpos[i]:36 ecc_code[i]:8b;
+nand_read_page_hwecc_oob_first page    :3660
+nand_read_page_hwecc_oob_first correct p:c883e000 p[0]:p[1] 00:00 i:0 
+eccpos[i]:06 ecc_code[i]:9b;
+nand_read_page_hwecc_oob_first correct p:c883e200 p[0]:p[1] 00:00 i:10 
+eccpos[i]:16 ecc_code[i]:f1;
+nand_read_page_hwecc_oob_first correct p:c883e400 p[0]:p[1] 00:00 i:20 
+eccpos[i]:26 ecc_code[i]:26;
+nand_read_page_hwecc_oob_first correct p:c883e600 p[0]:p[1] ff:ff i:30 
+eccpos[i]:36 ecc_code[i]:3f;
+UBI: volume 0 ("rootfs") re-sized from 205 to 456 LEBs
+UBI: attached mtd6 (name "rootfs", size 60 MiB) to ubi0
+UBI: PEB size: 131072 bytes (128 KiB), LEB size: 126976 bytes
+UBI: min./max. I/O unit sizes: 2048/2048, sub-page size 512
+UBI: VID header offset: 2048 (aligned 2048), data offset: 4096
+UBI: good PEBs: 480, bad PEBs: 0, corrupted PEBs: 0
+UBI: user volume: 1, internal volumes: 1, max. volumes count: 128
+UBI: max/mean erase counter: 1/0, WL threshold: 4096, image sequence 
+number: 272604537
+UBI: available PEBs: 0, total reserved PEBs: 480, PEBs reserved for bad 
+PEB handling: 20
+UBI: background thread "ubi_bgt0d" started, PID 995
+gpio-keys gpio-keys.0: Failed to request GPIO 126, error -517
+platform gpio-keys.0: Driver gpio-keys requests probe deferral
+omap_rtc da830-rtc: setting system clock to 2014-10-02 15:59:28 UTC 
+(1412265568)
+ALSA device list:
+   No soundcards found.
+
+*** reading the file system here ***
+
+At page 3712 there is the first of the file system blocks
+3712        3713           3714         3715
+EC HEADER  |  VID HEADER  |  fs data   |   fs data   etc
+                            ^
+                            ^
+
+nand_read_page_hwecc_oob_first page    :3714
+nand_read_page_hwecc_oob_first error   p:c7906000 p[0]:p[1] 31:18 i:0 
+eccpos[i]:06 ecc_code[i]:1f;    <<< ERROR
+nand_read_page_hwecc_oob_first correct p:c7906200 p[0]:p[1] 00:00 i:10 
+eccpos[i]:16 ecc_code[i]:00;
+nand_read_page_hwecc_oob_first correct p:c7906400 p[0]:p[1] 00:00 i:20 
+eccpos[i]:26 ecc_code[i]:00;
+nand_read_page_hwecc_oob_first correct p:c7906600 p[0]:p[1] 00:00 i:30 
+eccpos[i]:36 ecc_code[i]:00;
+ecc_failed !!
+nand_read_page_hwecc_oob_first page    :3715
+nand_read_page_hwecc_oob_first correct p:c7906800 p[0]:p[1] 00:00 i:0 
+eccpos[i]:06 ecc_code[i]:00;
+nand_read_page_hwecc_oob_first correct p:c7906a00 p[0]:p[1] 00:00 i:10 
+eccpos[i]:16 ecc_code[i]:00;
+nand_read_page_hwecc_oob_first correct p:c7906c00 p[0]:p[1] 00:00 i:20 
+eccpos[i]:26 ecc_code[i]:00;
+nand_read_page_hwecc_oob_first correct p:c7906e00 p[0]:p[1] 00:00 i:30 
+eccpos[i]:36 ecc_code[i]:00;
+UBI warning: ubi_io_read: error -74 (ECC error) while reading 4096 bytes 
+from PEB 2:4096, read only 4096 bytes, retry
+
+
+I am tracing the first 2 bytes only of each 512B eccblock.
+I verified, first 2 bytes with errors (0x31, 0x18) are sane, as in the 
+rootfs.ubi file.
+
+So, i am supposing these errors are caused from a misalignment from 
+u-boot and kernel davinci / nand drivers
+that calculate the ecc values.
+
+U-Boot 2014.07-03397-gab92542 (Oct 02 2014 - 16:14:43)
+Kernel is 3.16.2
+
+What do you think ?
+
+Regards angelo
