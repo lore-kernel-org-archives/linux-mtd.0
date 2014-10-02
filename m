@@ -1,20 +1,22 @@
-Received: from smtp.codeaurora.org ([198.145.11.231])
+Received: from mail-wi0-x233.google.com ([2a00:1450:400c:c05::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XZh9l-0008TS-EU
- for linux-mtd@lists.infradead.org; Thu, 02 Oct 2014 14:14:57 +0000
-Message-ID: <542D5DC9.1000206@codeaurora.org>
-Date: Thu, 02 Oct 2014 17:14:33 +0300
-From: Tanya Brokhman <tlinder@codeaurora.org>
-MIME-Version: 1.0
-To: Richard Weinberger <richard@nod.at>, dedekind1@gmail.com
-Subject: Re: [PATCH 3/4] UBI: Fastmap: Care about the protection queue
-References: <1412029248-22454-1-git-send-email-richard@nod.at>
- <1412029248-22454-4-git-send-email-richard@nod.at>
- <542D5314.3050701@codeaurora.org> <542D540B.5010808@nod.at>
-In-Reply-To: <542D540B.5010808@nod.at>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+ id 1XZhC3-0001wq-F5
+ for linux-mtd@lists.infradead.org; Thu, 02 Oct 2014 14:17:20 +0000
+Received: by mail-wi0-f179.google.com with SMTP id d1so4219951wiv.12
+ for <linux-mtd@lists.infradead.org>; Thu, 02 Oct 2014 07:16:54 -0700 (PDT)
+From: Rostislav Lisovy <lisovy@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Tony Lindgren <tony@atomide.com>, Roger Quadros <rogerq@ti.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 2/2] mtd: nand: omap: Synchronize the access to the ECC
+ engine
+Date: Thu,  2 Oct 2014 16:16:44 +0200
+Message-Id: <1412259404-5202-1-git-send-email-lisovy@merica.cz>
+In-Reply-To: <542D46A1.9090905@ti.com>
+References: <542D46A1.9090905@ti.com>
+Cc: michal.vokac@comap.cz, lisovy@gmail.com,
+ Rostislav Lisovy <lisovy@merica.cz>, sojkam1@fel.cvut.cz
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,61 +26,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/2/2014 4:32 PM, Richard Weinberger wrote:
-> Am 02.10.2014 15:28, schrieb Tanya Brokhman:
->> Hi Richard
->>
->> On 9/30/2014 1:20 AM, Richard Weinberger wrote:
->>> Fastmap can miss a PEB if it is in the protection queue
->>> and not jet in the used tree.
->>> Treat every protected PEB as used.
->>>
->>> Signed-off-by: Richard Weinberger <richard@nod.at>
->>> ---
->>>    drivers/mtd/ubi/fastmap.c | 13 +++++++++++++
->>>    1 file changed, 13 insertions(+)
->>>
->>> diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
->>> index 2b0d8d6..2853a69 100644
->>> --- a/drivers/mtd/ubi/fastmap.c
->>> +++ b/drivers/mtd/ubi/fastmap.c
->>> @@ -1195,6 +1195,19 @@ static int ubi_write_fastmap(struct ubi_device *ubi,
->>>            fm_pos += sizeof(*fec);
->>>            ubi_assert(fm_pos <= ubi->fm_size);
->>>        }
->>> +
->>> +    for (i = 0; i < UBI_PROT_QUEUE_LEN; i++) {
->>> +        list_for_each_entry(wl_e, &ubi->pq[i], u.list) {
->>
->> why not list_for_each_entry_safe?
->
-> Because we don't delete elements from this list while iterating over it.
->
->>> +            fec = (struct ubi_fm_ec *)(fm_raw + fm_pos);
->>> +
->>> +            fec->pnum = cpu_to_be32(wl_e->pnum);
->>> +            fec->ec = cpu_to_be32(wl_e->ec);
->>> +
->>> +            used_peb_count++;
->>> +            fm_pos += sizeof(*fec);
->>> +            ubi_assert(fm_pos <= ubi->fm_size);
->>
->> Is fm_size ok with this addition or does it needs updating as well?
->
-> It is okay. The fastmap size calculation reserves enough space for all possible
-> PEBs.
->
-> Thanks,
-> //richard
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+The AM335x Technical Reference Manual (spruh73j.pdf) says
+"Because the ECC engine includes only one accumulation context,
+it can be allocated to only one chip-select at a time ... "
+(7.1.3.3.12.3). Since the commit 97a288ba2cfa ("ARM: omap2+:
+gpmc-nand: Use dynamic platform_device_alloc()") gpmc-nand
+driver supports multiple NAND flash devices connected to
+the single controller.
+Use global 'struct nand_hw_control' among multiple NAND
+instances to synchronize the access to the single ECC Engine.
 
-Reviewed-by: Tanya Brokhman <tlinder@codeaurora.org>
+Tested with custom AM335x board using 2x NAND flash chips.
 
+Signed-off-by: Rostislav Lisovy <lisovy@merica.cz>
+---
+Changes since v2:
+* Do not use custom locks. Use global 'struct nand_hw_control'
+  among multiple NAND instances and it will do the work for us
+  (Roger Quadros)
+
+Changes since v1:
+* Since not all the read/write operations are performed by the
+  omap_read(write)_page_bch() functions use the locks directly on
+  those places that configure the ECC engine (take the lock) and
+  read the result from the ECC engine (release the lock).
+  This approach should cover read/write operations with all
+  possible ECC modes. (Roger Quadros)
+
+
+ drivers/mtd/nand/omap2.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index f0dcdb6..dfae46f 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -144,8 +144,13 @@ static u_char bch8_vector[] = {0xf3, 0xdb, 0x14, 0x16, 0x8b, 0xd2, 0xbe, 0xcc,
+ 	0xac, 0x6b, 0xff, 0x99, 0x7b};
+ static u_char bch4_vector[] = {0x00, 0x6b, 0x31, 0xdd, 0x41, 0xbc, 0x10};
+ 
++/* Shared among all NAND instances to synchronize the access to the ECC Engine */
++struct nand_hw_control omap_gpmc_controller = {
++	.lock = __SPIN_LOCK_UNLOCKED(omap_gpmc_controller.lock),
++	.wq = __WAIT_QUEUE_HEAD_INITIALIZER(omap_gpmc_controller.wq),
++};
++
+ struct omap_nand_info {
+-	struct nand_hw_control		controller;
+ 	struct omap_nand_platform_data	*pdata;
+ 	struct mtd_info			mtd;
+ 	struct nand_chip		nand;
+@@ -1685,9 +1690,6 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, info);
+ 
+-	spin_lock_init(&info->controller.lock);
+-	init_waitqueue_head(&info->controller.wq);
+-
+ 	info->pdev		= pdev;
+ 	info->gpmc_cs		= pdata->cs;
+ 	info->reg		= pdata->reg;
+@@ -1707,7 +1709,7 @@ static int omap_nand_probe(struct platform_device *pdev)
+ 
+ 	info->phys_base = res->start;
+ 
+-	nand_chip->controller = &info->controller;
++	nand_chip->controller = &omap_gpmc_controller;
+ 
+ 	nand_chip->IO_ADDR_W = nand_chip->IO_ADDR_R;
+ 	nand_chip->cmd_ctrl  = omap_hwcontrol;
 -- 
-Employee of Qualcomm Innovation Center, Inc.
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, 
-hosted by The Linux Foundation
+1.9.1
