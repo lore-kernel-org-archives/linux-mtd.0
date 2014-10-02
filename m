@@ -1,25 +1,19 @@
-From: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Date: Thu, 2 Oct 2014 16:52:29 +1000
-Subject: RE: [PATCH] mtd: nand: gpmi: add proper raw access support
-Message-ID: <EACD232272DA4849B060F0828564D13B44955ABD8A@ntcex01.corp.netcomm.com.au>
-References: <1410339339-25561-1-git-send-email-boris.brezillon@free-electrons.com>
- <20140911120928.GA1585@localhost.localdomain>
- <20140911143616.3ebb025a@bbrezillon>
- <EACD232272DA4849B060F0828564D13B44955ABD82@ntcex01.corp.netcomm.com.au>,
- <20140930100415.4834971d@bbrezillon>
-In-Reply-To: <20140930100415.4834971d@bbrezillon>
-Content-Language: en-AU
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <542CFAEB.3040905@ti.com>
+Date: Thu, 2 Oct 2014 10:12:43 +0300
+From: Roger Quadros <rogerq@ti.com>
 MIME-Version: 1.0
-Cc: Mike Voytovich <mvoytovich@paypal.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Huang Shijie <b32955@freescale.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Roy Lee <roylee@paypal.com>, Brian Norris <computersforpeace@gmail.com>,
- Huang Shijie <shijie8@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Rostislav Lisovy <lisovy@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, pekon <pekon@pek-sem.com>,
+ Tony Lindgren <tony@atomide.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] mtd: nand: omap: Synchronize access to the ECC engine
+References: <1412175554-19391-1-git-send-email-lisovy@merica.cz>
+ <1412175554-19391-2-git-send-email-lisovy@merica.cz>
+In-Reply-To: <1412175554-19391-2-git-send-email-lisovy@merica.cz>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: michal.vokac@comap.cz, Rostislav Lisovy <lisovy@merica.cz>,
+ sojkam1@fel.cvut.cz
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,76 +23,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 30 Sep 2014 18:04:15 +1000
-Boris Brezillon <boris.brezillon@free-electrons.com> wrote:
+On 10/01/2014 05:59 PM, Rostislav Lisovy wrote:
+> The AM335x Technical Reference Manual (spruh73j.pdf) says
+> "Because the ECC engine includes only one accumulation context,
+> it can be allocated to only one chip-select at a time ... "
+> (7.1.3.3.12.3). Since the commit 97a288ba2cfa ("ARM: omap2+:
+> gpmc-nand: Use dynamic platform_device_alloc()") gpmc-nand
+> driver supports multiple NAND flash devices connected to
+> the single controller. Use spinlocks to restrict access
+> to the ECC engine for single read/write operation at a time.
+> 
+> Tested with custom AM335x board using 2x NAND flash chips.
+> 
+> Signed-off-by: Rostislav Lisovy <lisovy@merica.cz>
+> ---
+>  drivers/mtd/nand/omap2.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+> index 24d5c6a..8761a5b 100644
+> --- a/drivers/mtd/nand/omap2.c
+> +++ b/drivers/mtd/nand/omap2.c
+> @@ -24,6 +24,7 @@
+>  #include <linux/slab.h>
+>  #include <linux/of.h>
+>  #include <linux/of_device.h>
+> +#include <linux/spinlock.h>
+>  
+>  #include <linux/mtd/nand_bch.h>
+>  #include <linux/platform_data/elm.h>
+> @@ -146,6 +147,7 @@ static u_char bch8_vector[] = {0xf3, 0xdb, 0x14, 0x16, 0x8b, 0xd2, 0xbe, 0xcc,
+>  static u_char bch4_vector[] = {0x00, 0x6b, 0x31, 0xdd, 0x41, 0xbc, 0x10};
+>  #endif
+>  
+> +static DEFINE_SPINLOCK(omap_eccengine_lock);
+>  
+>  struct omap_nand_info {
+>  	struct nand_hw_control		controller;
+> @@ -1518,6 +1520,7 @@ static int omap_write_page_bch(struct mtd_info *mtd, struct nand_chip *chip,
+>  	uint8_t *ecc_calc = chip->buffers->ecccalc;
+>  	uint32_t *eccpos = chip->ecc.layout->eccpos;
+>  
+> +	spin_lock(&omap_eccengine_lock);
+>  	/* Enable GPMC ecc engine */
+>  	chip->ecc.hwctl(mtd, NAND_ECC_WRITE);
+>  
+> @@ -1526,6 +1529,7 @@ static int omap_write_page_bch(struct mtd_info *mtd, struct nand_chip *chip,
+>  
+>  	/* Update ecc vector from GPMC result registers */
+>  	chip->ecc.calculate(mtd, buf, &ecc_calc[0]);
+> +	spin_unlock(&omap_eccengine_lock);
+>  
+>  	for (i = 0; i < chip->ecc.total; i++)
+>  		chip->oob_poi[eccpos[i]] = ecc_calc[i];
+> @@ -1561,6 +1565,7 @@ static int omap_read_page_bch(struct mtd_info *mtd, struct nand_chip *chip,
+>  	int stat;
+>  	unsigned int max_bitflips = 0;
+>  
+> +	spin_lock(&omap_eccengine_lock);
+>  	/* Enable GPMC ecc engine */
+>  	chip->ecc.hwctl(mtd, NAND_ECC_READ);
+>  
+> @@ -1573,6 +1578,7 @@ static int omap_read_page_bch(struct mtd_info *mtd, struct nand_chip *chip,
+>  
+>  	/* Calculate ecc bytes */
+>  	chip->ecc.calculate(mtd, buf, ecc_calc);
+> +	spin_unlock(&omap_eccengine_lock);
+>  
+>  	memcpy(ecc_code, &chip->oob_poi[eccpos[0]], chip->ecc.total);
+>  
+> 
+The access to the BCH/ELM engine is still not serialized for ecc->read_subpage and ecc->write_subpage() in case of
+OMAP_ECC_BCH4_CODE_HW
+OMAP_ECC_BCH8_CODE_HW
+OMAP_ECC_BCH16_CODE_HW
 
-> Hi Iwo,
->=20
-> On Mon, 29 Sep 2014 11:22:11 +1000
-> Iwo Mergler <Iwo.Mergler@netcommwireless.com> wrote:
->=20
-> > On Thu, 11 Sep 2014 22:36:16 +1000
-> > Boris BREZILLON <boris.brezillon@free-electrons.com> wrote:
-> > >=20
-> > > Well, I don't know about freescale specific tools, but at least I
-> > > have an example with mtd_nandbiterrs module.
-> > > This module is assuming it can write only the data part of a NAND
-> > > page without modifying the OOB area (see [1]), which in GPMI
-> > > controller case is impossible because raw write function store
-> > > the data as if there were no specific scheme, while there is one:
-> > > (metadata + n x (data_chunk + ECC bytes) + remaining_bytes).
-> > >=20
-> >=20
-> > Hi Boris,
-> >=20
-> >=20
-> > just as an aside, only the incremental bit errors test in
-> > nandbiterrs positively requires raw data write.
-> >=20
-> > The overwrite test (re-write the same page data repeatedly without
-> > erase), only uses raw access because I was lazy. A normal ECC write
-> > would do just as well.
->=20
-> Okay.
-> Anyway, the test I'm really interested in is the incremental bit
-> errors test :-).
->=20
-> BTW, any reason you chose to implement this test/testsuite as a
-> module ?
-> From my understanding (and tell me if I'm wrong) we could do the same
-> from user-space.
->=20
-> Best Regards,
->=20
-> Boris
->=20
+What about serializing access to BCH engine for read/write_page() and read/write_subpage() in case of
+OMAP_ECC_BCH4_CODE_HW_DETECTION_SW
+OMAP_ECC_BCH8_CODE_HW_DETECTION_SW
 
-Hi Boris,
+and finally we should also serialize access to ECC engine for read/write_page() and read/write_subpage() in case of
+OMAP_ECC_HAM1_CODE_HW
 
-
-can't say I have good excuses, but here goes. :-)
-
-I was writing a NAND driver, so my brain was in kernel mode. It made it
-slightly easier to trace the operations from end-to-end.
-
-It's also possible that I didn't have an userspace at the time and had the=
-
-test compiled in, my memory is a little fuzzy...
-
-Otherwise, yes, you could probably do it from userspace. I'm not sure
-if there is a way to determine the number of corrected bit errors for
-a specific page read. ECCGETSTATS seems to be global.
-
-
-Best regards,
-
-Iwo
-
-______________________________________________________________________
-This communication contains information which may be confidential or privi=
-leged. The information is intended solely for the use of the individual or=
- entity named above.  If you are not the intended recipient, be aware that=
- any disclosure, copying, distribution or use of the contents of this info=
-rmation is prohibited.  If you have received this communication in error, =
-please notify me by telephone immediately.
-______________________________________________________________________
+cheers,
+-roger
