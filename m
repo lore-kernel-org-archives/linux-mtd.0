@@ -1,26 +1,18 @@
-Received: from mail-wi0-x234.google.com ([2a00:1450:400c:c05::234])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XZRZA-0004SN-RD
- for linux-mtd@lists.infradead.org; Wed, 01 Oct 2014 21:36:09 +0000
-Received: by mail-wi0-f180.google.com with SMTP id em10so2095897wid.13
- for <linux-mtd@lists.infradead.org>; Wed, 01 Oct 2014 14:35:46 -0700 (PDT)
-Received: from [192.168.0.2]
- (host36-238-dynamic.248-95-r.retail.telecomitalia.it. [95.248.238.36])
- by mx.google.com with ESMTPSA id wk5sm2467829wjb.12.2014.10.01.14.35.45
- for <linux-mtd@lists.infradead.org>
- (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
- Wed, 01 Oct 2014 14:35:46 -0700 (PDT)
-Message-ID: <542C73B0.7000602@gmail.com>
-Date: Wed, 01 Oct 2014 23:35:44 +0200
-From: Angelo Dureghello <angelo70@gmail.com>
+Date: Wed, 1 Oct 2014 23:18:41 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH v2 0/8] mtd: nand: Support for new DT NAND driver
+Message-ID: <20141002061841.GE3248@norris-Latitude-E6410>
+References: <1408357919-19793-1-git-send-email-lee.jones@linaro.org>
+ <20140819013729.GP18411@ld-irv-0074>
+ <20140820065744.GE4266@lee--X1>
 MIME-Version: 1.0
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: UBI ECC errors on kernel 3.16.2
-References: <542C66EB.5000105@gmail.com>
- <CAFLxGvz0cKDdUNjQHyNcW3VbtQGW5FkamSJv+vx786TRBqDCkA@mail.gmail.com>
-In-Reply-To: <CAFLxGvz0cKDdUNjQHyNcW3VbtQGW5FkamSJv+vx786TRBqDCkA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20140820065744.GE4266@lee--X1>
+Cc: pekon@pek-sem.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ kernel@stlinux.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,44 +22,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 01/10/2014 22:51, Richard Weinberger wrote:
->
-> Do mtd and ubi tests pass?
->
-I have successfully executed all mtd tests under old kernel 3.5.1.
-Now, with this new  kernel 3.16.2 i can't boot, and i don't know how i 
-could test it.
+I guess I never answered this one:
 
-Only thing that i can do is to minimally verify the flashed image from 
-u-boot
+On Wed, Aug 20, 2014 at 07:57:44AM +0100, Lee Jones wrote:
+> On Mon, 18 Aug 2014, Brian Norris wrote:
+> > Bisectability test results for configuration
+> > "arm-multi_v7_defconfig,arm,arm-unknown-linux-gnueabi-" 
+> > 
+> > Failed to build patch #7: 5936df30f5e1 mtd: nand: stm_nand_bch: add
+> > support for ST's BCH NAND controller 
+> > Configuration: "arm-multi_v7_defconfig, architecture arm".
+> 
+> How do _you_ test for bisectability?  Do you have a script?
+> 
+> What outputs "Failed to build patch #7: ..."?
 
-U-Boot > ubi part rootfs 2048
-UBI: attaching mtd1 to ubi0
-UBI: physical eraseblock size:   131072 bytes (128 KiB)
-UBI: logical eraseblock size:    126976 bytes
-UBI: smallest flash I/O unit:    2048
-UBI: sub-page size:              512
-UBI: VID header offset:          2048 (aligned 2048)
-UBI: data offset:                4096
-UBI: volume 0 ("rootfs") re-sized from 205 to 472 LEBs
-UBI: attached mtd1 to ubi0
-UBI: MTD device name:            "mtd=6"
-UBI: MTD device size:            60 MiB
-UBI: number of good PEBs:        480
-UBI: number of bad PEBs:         0
-UBI: max. allowed volumes:       128
-UBI: wear-leveling threshold:    4096
-UBI: number of internal volumes: 1
-UBI: number of user volumes:     1
-UBI: available PEBs:             0
-UBI: total number of reserved PEBs: 480
-UBI: number of PEBs reserved for bad PEB handling: 4
-UBI: max/mean erase counter: 1/0
-U-Boot >
+I use aiaiai [1]. But you could easily test bisectability without it.
+e.g.
 
-It seems sane.
+	#!/bin/sh
+	for c in `git rev-list origin/master..HEAD`
+	do
+		git checkout $c
+		make || break
+	done
 
-Also, once loaded the system and get the errors, the ubi get damaged
-(check from U.boot shows ecc errors
+Brian
 
-Regards
+[1] http://lwn.net/Articles/488992/
+    http://git.infradead.org/aiaiai.git
