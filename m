@@ -1,26 +1,24 @@
-Received: from mail-wi0-x22b.google.com ([2a00:1450:400c:c05::22b])
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XZgJY-0008Nz-0A
- for linux-mtd@lists.infradead.org; Thu, 02 Oct 2014 13:21:00 +0000
-Received: by mail-wi0-f171.google.com with SMTP id em10so1356724wid.4
- for <linux-mtd@lists.infradead.org>; Thu, 02 Oct 2014 06:20:38 -0700 (PDT)
-Message-ID: <1412256036.20895.10.camel@lp-lvrv.comap.cz>
-Subject: Re: [PATCH v2 2/2] mtd: nand: omap: Synchronize access to the ECC
- engine
-From: Rostislav Lisovy <lisovy@gmail.com>
-To: Roger Quadros <rogerq@ti.com>
-Date: Thu, 02 Oct 2014 15:20:36 +0200
-In-Reply-To: <542D4A51.9060907@ti.com>
-References: <1412252173-20454-1-git-send-email-lisovy@merica.cz>
- <1412252173-20454-2-git-send-email-lisovy@merica.cz>
- <542D4A51.9060907@ti.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
+ id 1XZgN8-0000ej-TQ
+ for linux-mtd@lists.infradead.org; Thu, 02 Oct 2014 13:24:43 +0000
+Message-ID: <542D5203.2080601@nod.at>
+Date: Thu, 02 Oct 2014 15:24:19 +0200
+From: Richard Weinberger <richard@nod.at>
+MIME-Version: 1.0
+To: Tanya Brokhman <tlinder@codeaurora.org>, dedeking1@gmail.com
+Subject: Re: [RFC/PATCH 1/5] mtd: ubi: Read disturb infrastructure
+References: <1411886220-8208-1-git-send-email-tlinder@codeaurora.org>
+ <5427C45C.2080506@nod.at> <5427CB6E.7010007@codeaurora.org>
+ <5427CCD8.2090605@nod.at> <5427E6FE.3090906@codeaurora.org>
+ <5427E8CA.8000904@nod.at> <542D49FD.7040204@codeaurora.org>
+In-Reply-To: <542D49FD.7040204@codeaurora.org>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 8bit
-Cc: Rostislav Lisovy <lisovy@merica.cz>, Tony Lindgren <tony@atomide.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- michal.vokac@comap.cz, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, sojkam1@fel.cvut.cz
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, linux-arm-msm@vger.kernel.org,
+ open list <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,57 +28,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Roger;
-Thanks for the review.
-
-On Čt, 2014-10-02 at 15:51 +0300, Roger Quadros wrote:
-> Don't you think this approach is racy?
+Am 02.10.2014 14:50, schrieb Tanya Brokhman:
+>> Consider the case where you have a board with a fastmap enabled bootloader and a Linux OS.
+>> The bootloader does a fastmap attach and boots the kernel from UBI and the kernel it self has the rootfs
+>> on UBI too. If you install a new kernel with your changes applied it will write the fastmap in a different
+>> format and the bootloader will fail badly. In worst case the board bricks, in best case the bootloader can fall back
+>> to scanning mode but it will be slow and the customer unhappy.
+>>
 > 
-> IMHO the lock must be held across the entire page operation
+> Ok, I understand the problem now. I wanted to discuss a possible solution before implementing it:
+> We have a "fastmap version" in fm_sb. At the moment UBI_FM_FMT_VERSION = 1 and any other is not supported. We can use that; Add another fm version (UBI_FM_FMT_VERSION_RD = 2) and
+> then decide according to it. Meaning, if during attach process we find fm superblock we check it's version, if it's != UBI_FM_FMT_VERSION_RD, we fall back to full scan. The next
+> fastmap will be written with the new layout (and new version number) so second boot will attach from fastmap without any issues.
 
-I still think it is done in this way.
+Yes, if we change the fastmap on-disk layout we need to change UBI_FM_FMT_VERSION.
+Then other fastmap implementations will notice the change and can hopefully recover.
+Implementations which do not evaluate UBI_FM_FMT_VERSION deserve breaking. ;-)
 
-> i.e.
-> hold ecc lock
-> ecc.hwctl
-> chip->read/write_buf
-> ecc.calculate
-> ecc.correct
-> release ecc lock
+That said, I'll not block a layout change but we have to be sure that it is *really* needed.
+I'm currently heavily working on fastmap and my local queue with fastmap fixes keeps growing.
+If I find a horror bug which needs a fastmap layout change I want to change the layout only once,
+not twice.
 
-According to my understanding of the code 'ecc.correct' does not access
-the ECC engine directly, it gets the '*read_ecc' and '*calc_ecc' from
-the 'ecc.calculate'.
-
-Once again the work flow you described + my locking approach:
-* ecc.hwctl       <-- mutex_lock() just before accessing the ECC engine
-* chip->read/write_buf
-* ecc.calculate   <-- mutex_unlock() just after reading from ECC engine
-* ecc.correct
-
-> 
-> else we risk simultaneous NAND operations on multiple chips
-> stomping on each other in between the entire sequence.
-> 
-> Then on further investigation isn't nand_get_device() already doing
-> the same
-> thing as you are attempting here?
-> 
-> The chip->controller->lock is meant for serializing NAND controller
-> access.
-> 
-> so instead of adding a new lock in the omap2 nand driver we need to
-> ensure that
-> we are maintaining the same nand_hw_control (controller) structure
-> across multiple NAND chips.
-> 
-> Let's move this controller structure out of omap_nand_info and keep it
-> global to the driver
-> and make sure every NAND instance uses it.
-
-Ok; I will take a look at it. It looks like the appropriate lock to use.
-I am just a bit unsure if the 'spinlock' is the correct synchronization
-primitive here.
-
-Best regards;
-Rostislav
+Thanks,
+//richard
