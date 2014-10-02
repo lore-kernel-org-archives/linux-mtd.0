@@ -1,19 +1,25 @@
-Message-ID: <542CFAEB.3040905@ti.com>
-Date: Thu, 2 Oct 2014 10:12:43 +0300
-From: Roger Quadros <rogerq@ti.com>
+Received: from mail-wi0-x22d.google.com ([2a00:1450:400c:c05::22d])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XZcYY-00046h-Hw
+ for linux-mtd@lists.infradead.org; Thu, 02 Oct 2014 09:20:15 +0000
+Received: by mail-wi0-f173.google.com with SMTP id bs8so3269970wib.6
+ for <linux-mtd@lists.infradead.org>; Thu, 02 Oct 2014 02:19:51 -0700 (PDT)
+Received: from [192.168.0.2]
+ (host36-238-dynamic.248-95-r.retail.telecomitalia.it. [95.248.238.36])
+ by mx.google.com with ESMTPSA id iy10sm580930wic.5.2014.10.02.02.19.50
+ for <linux-mtd@lists.infradead.org>
+ (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
+ Thu, 02 Oct 2014 02:19:51 -0700 (PDT)
+Message-ID: <542D18B6.3020906@gmail.com>
+Date: Thu, 02 Oct 2014 11:19:50 +0200
+From: Angelo Dureghello <angelo70@gmail.com>
 MIME-Version: 1.0
-To: Rostislav Lisovy <lisovy@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, pekon <pekon@pek-sem.com>,
- Tony Lindgren <tony@atomide.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] mtd: nand: omap: Synchronize access to the ECC engine
-References: <1412175554-19391-1-git-send-email-lisovy@merica.cz>
- <1412175554-19391-2-git-send-email-lisovy@merica.cz>
-In-Reply-To: <1412175554-19391-2-git-send-email-lisovy@merica.cz>
-Content-Type: text/plain; charset="ISO-8859-1"
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Fwd: Re: UBI ECC errors on kernel 3.16.2
+References: <542C73B0.7000602@gmail.com>
+In-Reply-To: <542C73B0.7000602@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: michal.vokac@comap.cz, Rostislav Lisovy <lisovy@merica.cz>,
- sojkam1@fel.cvut.cz
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,87 +29,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/01/2014 05:59 PM, Rostislav Lisovy wrote:
-> The AM335x Technical Reference Manual (spruh73j.pdf) says
-> "Because the ECC engine includes only one accumulation context,
-> it can be allocated to only one chip-select at a time ... "
-> (7.1.3.3.12.3). Since the commit 97a288ba2cfa ("ARM: omap2+:
-> gpmc-nand: Use dynamic platform_device_alloc()") gpmc-nand
-> driver supports multiple NAND flash devices connected to
-> the single controller. Use spinlocks to restrict access
-> to the ECC engine for single read/write operation at a time.
-> 
-> Tested with custom AM335x board using 2x NAND flash chips.
-> 
-> Signed-off-by: Rostislav Lisovy <lisovy@merica.cz>
-> ---
->  drivers/mtd/nand/omap2.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> index 24d5c6a..8761a5b 100644
-> --- a/drivers/mtd/nand/omap2.c
-> +++ b/drivers/mtd/nand/omap2.c
-> @@ -24,6 +24,7 @@
->  #include <linux/slab.h>
->  #include <linux/of.h>
->  #include <linux/of_device.h>
-> +#include <linux/spinlock.h>
->  
->  #include <linux/mtd/nand_bch.h>
->  #include <linux/platform_data/elm.h>
-> @@ -146,6 +147,7 @@ static u_char bch8_vector[] = {0xf3, 0xdb, 0x14, 0x16, 0x8b, 0xd2, 0xbe, 0xcc,
->  static u_char bch4_vector[] = {0x00, 0x6b, 0x31, 0xdd, 0x41, 0xbc, 0x10};
->  #endif
->  
-> +static DEFINE_SPINLOCK(omap_eccengine_lock);
->  
->  struct omap_nand_info {
->  	struct nand_hw_control		controller;
-> @@ -1518,6 +1520,7 @@ static int omap_write_page_bch(struct mtd_info *mtd, struct nand_chip *chip,
->  	uint8_t *ecc_calc = chip->buffers->ecccalc;
->  	uint32_t *eccpos = chip->ecc.layout->eccpos;
->  
-> +	spin_lock(&omap_eccengine_lock);
->  	/* Enable GPMC ecc engine */
->  	chip->ecc.hwctl(mtd, NAND_ECC_WRITE);
->  
-> @@ -1526,6 +1529,7 @@ static int omap_write_page_bch(struct mtd_info *mtd, struct nand_chip *chip,
->  
->  	/* Update ecc vector from GPMC result registers */
->  	chip->ecc.calculate(mtd, buf, &ecc_calc[0]);
-> +	spin_unlock(&omap_eccengine_lock);
->  
->  	for (i = 0; i < chip->ecc.total; i++)
->  		chip->oob_poi[eccpos[i]] = ecc_calc[i];
-> @@ -1561,6 +1565,7 @@ static int omap_read_page_bch(struct mtd_info *mtd, struct nand_chip *chip,
->  	int stat;
->  	unsigned int max_bitflips = 0;
->  
-> +	spin_lock(&omap_eccengine_lock);
->  	/* Enable GPMC ecc engine */
->  	chip->ecc.hwctl(mtd, NAND_ECC_READ);
->  
-> @@ -1573,6 +1578,7 @@ static int omap_read_page_bch(struct mtd_info *mtd, struct nand_chip *chip,
->  
->  	/* Calculate ecc bytes */
->  	chip->ecc.calculate(mtd, buf, ecc_calc);
-> +	spin_unlock(&omap_eccengine_lock);
->  
->  	memcpy(ecc_code, &chip->oob_poi[eccpos[0]], chip->ecc.total);
->  
-> 
-The access to the BCH/ELM engine is still not serialized for ecc->read_subpage and ecc->write_subpage() in case of
-OMAP_ECC_BCH4_CODE_HW
-OMAP_ECC_BCH8_CODE_HW
-OMAP_ECC_BCH16_CODE_HW
+I have some additional info:
+i added some traces in the mtd nand driver, and see that until a certain
+point of the boot, mtddriver reads without any ecc error.
 
-What about serializing access to BCH engine for read/write_page() and read/write_subpage() in case of
-OMAP_ECC_BCH4_CODE_HW_DETECTION_SW
-OMAP_ECC_BCH8_CODE_HW_DETECTION_SW
+Then, after some other driver inits, the same offset read gives ecc error.
 
-and finally we should also serialize access to ECC engine for read/write_page() and read/write_subpage() in case of
-OMAP_ECC_HAM1_CODE_HW
 
-cheers,
--roger
+nand_davinci_read_buf: buf c791588c, len 64
+nand_davinci_read_buf: buf c883d000, len 512
+nand_davinci_read_buf: buf c883d200, len 512
+nand_davinci_read_buf: buf c883d400, len 512
+nand_davinci_read_buf: buf c883d600, len 512
+nand_davinci_read_buf: buf c791588c, len 64
+nand_davinci_read_buf: buf c883d800, len 512
+nand_davinci_read_buf: buf c883da00, len 512
+nand_davinci_read_buf: buf c883dc00, len 512
+nand_davinci_read_buf: buf c883de00, len 512
+nand_davinci_read_buf: buf c791588c, len 64
+nand_davinci_read_buf: buf c883e000, len 512
+nand_davinci_read_buf: buf c883e200, len 512
+nand_davinci_read_buf: buf c883e400, len 512
+nand_davinci_read_buf: buf c883e600, len 512
+nand_read(): ret=0
+UBI: volume 0 ("rootfs") re-sized from 205 to 456 LEBs
+UBI: attached mtd6 (name "rootfs", size 60 MiB) to ubi0
+UBI: PEB size: 131072 bytes (128 KiB), LEB size: 126976 bytes
+UBI: min./max. I/O unit sizes: 2048/2048, sub-page size 512
+UBI: VID header offset: 2048 (aligned 2048), data offset: 4096
+UBI: good PEBs: 480, bad PEBs: 0, corrupted PEBs: 0
+UBI: user volume: 1, internal volumes: 1, max. volumes count: 128
+UBI: max/mean erase counter: 1/0, WL threshold: 4096, image sequence 
+number: 1641262122
+UBI: available PEBs: 0, total reserved PEBs: 480, PEBs reserved for bad 
+PEB handling: 20
+UBI: background thread "ubi_bgt0d" started, PID 1025
+davinci_emac 1e20000.ethernet: failed to get EMAC clock
+davinci_emac: probe of 1e20000.ethernet failed with error -16
+davinci_emac davinci_emac.1: Runtime PM disabled, clock forced on.
+davinci_emac davinci_emac.1: Runtime PM disabled, clock forced on.
+davinci_emac davinci_emac.1: Runtime PM disabled, clock forced on.
+gpio-keys gpio-keys.0: Unable to get irq number for GPIO 126, error -6
+omap_rtc da830-rtc: setting system clock to 2014-10-02 09:06:57 UTC 
+(1412240817)
+barix-ipam390 barix-ipam390.0: ASoC: platform davinci-pcm-audio not 
+registered
+ALSA device list:
+   No soundcards found.
+platform barix-ipam390.0: Driver barix-ipam390 requests probe deferral
+nand_davinci_read_buf: buf c791588c, len 64
+nand_davinci_read_buf: buf c791b000, len 512
+nand_davinci_read_buf: buf c791b200, len 512
+nand_davinci_read_buf: buf c791b400, len 512
+nand_davinci_read_buf: buf c791b600, len 512
+ecc_failed !!
+nand_davinci_read_buf: buf c791588c, len 64
+nand_davinci_read_buf: buf c791b800, len 512
+nand_davinci_read_buf: buf c791ba00, len 512
+nand_davinci_read_buf: buf c791bc00, len 512
+nand_davinci_read_buf: buf c791be00, len 512
+nand_read(): ret=-74
+
+
+So seems some of the latest driver probe or the ubi attach someway mess 
+up the next mtd read.
+
+Regards
+angelo
