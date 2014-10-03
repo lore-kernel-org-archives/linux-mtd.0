@@ -1,21 +1,26 @@
 Received: from mga01.intel.com ([192.55.52.88])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xa4ll-0007xp-N9
- for linux-mtd@lists.infradead.org; Fri, 03 Oct 2014 15:27:46 +0000
-Message-ID: <1412350035.3795.101.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v2] mtd: ubi: Extend UBI layer debug/messaging capabilities
+ id 1Xa4wT-0003hc-KJ
+ for linux-mtd@lists.infradead.org; Fri, 03 Oct 2014 15:38:50 +0000
+Message-ID: <1412350705.3795.105.camel@sauron.fi.intel.com>
+Subject: Re: [RFC/PATCH 1/5] mtd: ubi: Read disturb infrastructure
 From: Artem Bityutskiy <dedekind1@gmail.com>
 Reply-To: dedekind1@gmail.com
-To: Tanya Brokhman <tlinder@codeaurora.org>
-Date: Fri, 03 Oct 2014 18:27:15 +0300
-In-Reply-To: <1412089998-18978-1-git-send-email-tlinder@codeaurora.org>
-References: <1412089998-18978-1-git-send-email-tlinder@codeaurora.org>
+To: Richard Weinberger <richard@nod.at>
+Date: Fri, 03 Oct 2014 18:38:25 +0300
+In-Reply-To: <542D5BC0.5040207@nod.at>
+References: <1411886220-8208-1-git-send-email-tlinder@codeaurora.org>
+ <5427C45C.2080506@nod.at> <5427CB6E.7010007@codeaurora.org>
+ <5427CCD8.2090605@nod.at> <5427E6FE.3090906@codeaurora.org>
+ <5427E8CA.8000904@nod.at> <542D49FD.7040204@codeaurora.org>
+ <542D5203.2080601@nod.at> <542D5657.3060208@codeaurora.org>
+ <542D5BC0.5040207@nod.at>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-arm-msm@vger.kernel.org, open list <linux-kernel@vger.kernel.org>,
- linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
- Brian Norris <computersforpeace@gmail.com>,
+Cc: Tanya Brokhman <tlinder@codeaurora.org>, linux-arm-msm@vger.kernel.org,
+ open list <linux-kernel@vger.kernel.org>, dedeking1@gmail.com,
+ linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,65 +31,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Yes, I guess a single patch is indeed OK. I have few nit-picks, though.
+On Thu, 2014-10-02 at 16:05 +0200, Richard Weinberger wrote:
+> The question is, do we really need all this values on-flash?
 
-On Tue, 2014-09-30 at 18:13 +0300, Tanya Brokhman wrote:
-> -		ubi_err("'ubi_io_read_ec_hdr()' returned unknown code %d", err);
-> +		ubi_err(ubi,
-> +		  "'ubi_io_read_ec_hdr()' returned unknown code %d", err);
->  		return -EINVAL;
+Good question, this is why I requested some kind of design description,
+which would clearly explain the problem.
 
-I think it is fine if the line is long in these cases, let's keep the
-message on the same line, this split does not contribute to better
-readability, quite the opposite, in my opinion.
-
-One line:
-ubi_err(ubi, "long line")
-
-Multiple lines:
-ubi_err(ubi, "long line,
-        parameters)
-
-> -				ubi_msg("\"delete\" compatible internal volume %d:%d found, will remove it",
-> +				ubi_msg(ubi,
-> +				   "\"delete\" compatible internal volume %d:%d found, will remove it",
->  					vol_id, lnum);
-
-Ditto.
-
-> -			ubi_msg("read-only compatible internal volume %d:%d found, switch to read-only mode",
-> +			ubi_msg(ubi,
-> +				"read-only compatible internal volume %d:%d found, switch to read-only mode",
->  				vol_id, lnum);
-
-Ditto. And so on, in many places.
-
-> -				ubi_err("bad compat %d", vidh->compat);
-> +				ubi_err(ubi,
-> +					"bad compat %d", vidh->compat);
-
-And for consistency, places like this would be:
-
-				ubi_err(ubi, bad compat %d",
-				        vidh->compat);
->  			if (av->used_ebs != be32_to_cpu(vidh->used_ebs)) {
-> -				ubi_err("bad used_ebs %d", av->used_ebs);
-> +				ubi_err(ubi,
-> +					"bad used_ebs %d", av->used_ebs);
-
-Ditto for all the similar cases.
-
-
-> -	ubi_msg("volume %d (\"%s\") re-sized from %d to %d LEBs", vol_id,
-> +	ubi_msg(ubi, "volume %d (\"%s\") re-sized from %d to %d LEBs",
-> +		vol_id,
->  		vol->name, old_reserved_pebs, vol->reserved_pebs);
-
-Please, in cases like this, try to pack more arguments to the second
-line, and move those which do not fit there to the third line. So this
-would be like:
-
-	ubi_msg(ubi, "volume %d (\"%s\") re-sized from %d to %d LEBs",
-		vol_id,	vol->name, old_reserved_pebs,
-		vol->reserved_pebs);
- 
+Just off-the top of my head, may be it could be enough to keep the
+counters only in the UBI headers, may be it is enough to work with some
+kind of averages. But it is hard to tell without clearly understanding
+the problem we are solving.
