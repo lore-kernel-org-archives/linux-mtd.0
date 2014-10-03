@@ -1,15 +1,15 @@
-Received: from mga03.intel.com ([134.134.136.65])
+Received: from mga02.intel.com ([134.134.136.20])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xa46l-0001lR-Ap
- for linux-mtd@lists.infradead.org; Fri, 03 Oct 2014 14:45:23 +0000
-Message-ID: <1412347489.3795.68.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v4 1/4] ubi-utils: ubidump: add ubifs-media
+ id 1Xa4FF-0006nZ-El
+ for linux-mtd@lists.infradead.org; Fri, 03 Oct 2014 14:54:09 +0000
+Message-ID: <1412348025.3795.73.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v4 2/4] ubi-utils: ubidump: add libdump
 From: Artem Bityutskiy <dedekind1@gmail.com>
 Reply-To: dedekind1@gmail.com
 To: hujianyang <hujianyang@huawei.com>
-Date: Fri, 03 Oct 2014 17:44:49 +0300
-In-Reply-To: <542A2C57.3090401@huawei.com>
-References: <542A2C57.3090401@huawei.com>
+Date: Fri, 03 Oct 2014 17:53:45 +0300
+In-Reply-To: <542A2CBE.1050304@huawei.com>
+References: <542A2C57.3090401@huawei.com> <542A2CBE.1050304@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -25,35 +25,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2014-09-30 at 12:06 +0800, hujianyang wrote:
-> @@ -0,0 +1,298 @@
-> +/*
-> + * Copyright (c) International Business Machines Corp., 2006
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation; either version 2 of the License, or
-> + * (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-> + * the GNU General Public License for more details.
-> + */
+A small nit-pick.
 
-Hu,
+On Tue, 2014-09-30 at 12:08 +0800, hujianyang wrote:
+> +#define ALIGN(x,a) __ALIGN_MASK(x,(typeof(x))(a)-1)
+> +#define __ALIGN_MASK(x,mask) (((x)+(mask))&~(mask))
+> +
+> +#define min_t(t,x,y) ({ \
+> +	typeof((x)) _x = (x); \
+> +	typeof((y)) _y = (y); \
+> +	(_x < _y) ? _x : _y; \
+> +})
 
-probably I was not clear enough when commenting on the previous version
-of your patches.
+These ones do not look like they are in any way specific to the UBI
+dumping library.
 
-Bu this is a copy of the kernel fs/ubifs/ubifs-media.h file.I see you
-stripped it down a little bit. But nevertheless, this is still a
-_copy_. 
+In fact, we already have these in mkfs.ubifs/defs.h, which is also not
+very good.
 
-You _absolutely_ must preserve the original license and copyright.
+Would you please instead use "include/common.h". Put the ALIGN and min_t
+definitions there, and include that file from "libdump.h"?
 
-In this patch you just threw away original license and the copyright and
-put a different license and copyright. You cannot do this.
-
-Please, preserve the original header from fs/ubifs/ubifs-media.h intact,
-as it is. Do not change it.
+As a completely independent patch, you could also clean things up by
+removing the definitions from 'mkfs.ubifs/defs.h' and using
+'include/common.h' in mkfs.ubifs too.
