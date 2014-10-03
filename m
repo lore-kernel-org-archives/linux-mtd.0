@@ -1,19 +1,22 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga01.intel.com ([192.55.52.88])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xa4Zt-000078-Mo
- for linux-mtd@lists.infradead.org; Fri, 03 Oct 2014 15:15:30 +0000
-Message-ID: <1412349293.3795.91.camel@sauron.fi.intel.com>
-Subject: Re: UBI: Question about error checking in ubi_eba_write_leb()
+ id 1Xa4ll-0007xp-N9
+ for linux-mtd@lists.infradead.org; Fri, 03 Oct 2014 15:27:46 +0000
+Message-ID: <1412350035.3795.101.camel@sauron.fi.intel.com>
+Subject: Re: [PATCH v2] mtd: ubi: Extend UBI layer debug/messaging capabilities
 From: Artem Bityutskiy <dedekind1@gmail.com>
 Reply-To: dedekind1@gmail.com
-To: steve <steve@baconbits.demon.co.uk>
-Date: Fri, 03 Oct 2014 18:14:53 +0300
-In-Reply-To: <alpine.DEB.2.02.1409301158370.2556@ubuntu>
-References: <alpine.DEB.2.02.1409301158370.2556@ubuntu>
+To: Tanya Brokhman <tlinder@codeaurora.org>
+Date: Fri, 03 Oct 2014 18:27:15 +0300
+In-Reply-To: <1412089998-18978-1-git-send-email-tlinder@codeaurora.org>
+References: <1412089998-18978-1-git-send-email-tlinder@codeaurora.org>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-arm-msm@vger.kernel.org, open list <linux-kernel@vger.kernel.org>,
+ linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,71 +26,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2014-09-30 at 12:00 +0100, steve wrote:
-> This is my first post to this mailing list, I think this is the right place for
->   my question.
-> 
-> I think the error checking in ubi_eba_write_leb() may be wrong and may cause 
-> incorrect behaviour when extra checking is enabled in debugfs, here's the 
-> scenario I have a problem with:
-> 
-> ubi_eba_write_leb() calls  ubi_io_write_data() -> ubi_io_write() -> 
-> ubi_dbg_check_all_ff()
-> 
-> ubi_dbg_check_all_ff() will perform an mtd_read() which can fail with EBADMSG 
-> (if there is a failure to correct using ECC as in my case).
+Yes, I guess a single patch is indeed OK. I have few nit-picks, though.
 
-Yep, this is possible.
+On Tue, 2014-09-30 at 18:13 +0300, Tanya Brokhman wrote:
+> -		ubi_err("'ubi_io_read_ec_hdr()' returned unknown code %d", err);
+> +		ubi_err(ubi,
+> +		  "'ubi_io_read_ec_hdr()' returned unknown code %d", err);
+>  		return -EINVAL;
 
->  This error code 
-> will bubble back up to ubi_eba_write_leb()
+I think it is fine if the line is long in these cases, let's keep the
+message on the same line, this split does not contribute to better
+readability, quite the opposite, in my opinion.
 
-And the question is - is this the right thing to do? Original intention
-was to catch I/O problems and report about them promptly by dumping the
-information to the log and returning an error.
+One line:
+ubi_err(ubi, "long line")
 
-The error we return is -EINVAL exactly in because we did not want the
-upper layers try to 'deal' with the problem. All we wanted to do is to
-catch the problems.
+Multiple lines:
+ubi_err(ubi, "long line,
+        parameters)
 
-> , but recover_peb() will only be 
-> called if the error code was EIO.
+> -				ubi_msg("\"delete\" compatible internal volume %d:%d found, will remove it",
+> +				ubi_msg(ubi,
+> +				   "\"delete\" compatible internal volume %d:%d found, will remove it",
+>  					vol_id, lnum);
 
-Yeah, and we never meant the recover_peb() to actually try doing
-anything about that.
+Ditto.
 
->  The question is should recover_peb() be 
-> called in this case as well?
+> -			ubi_msg("read-only compatible internal volume %d:%d found, switch to read-only mode",
+> +			ubi_msg(ubi,
+> +				"read-only compatible internal volume %d:%d found, switch to read-only mode",
+>  				vol_id, lnum);
 
-Good question - this was not meant to be.
+Ditto. And so on, in many places.
 
-So see, you are now talking about the debugging code. It was written
-basically to make developers' live simpler. This is just a tool to catch
-bugs during the R&D.
+> -				ubi_err("bad compat %d", vidh->compat);
+> +				ubi_err(ubi,
+> +					"bad compat %d", vidh->compat);
 
-So if during the R&D phase we see that the driver returns an "ECC
-error" (-EBADMSG) when we read the data we just wrote - this is a
-problem, and we _do not_ want to hide it by starting the recovery
-mechanism - we want the write request to actually fail and the developer
-to actually notice this.
+And for consistency, places like this would be:
 
-The non-debug case is a completely different thing. Here we actually
-would be interested to handle the issue transparently - move the data to
-a different PEB, and mark the failing PEB as bad.
+				ubi_err(ubi, bad compat %d",
+				        vidh->compat);
+>  			if (av->used_ebs != be32_to_cpu(vidh->used_ebs)) {
+> -				ubi_err("bad used_ebs %d", av->used_ebs);
+> +				ubi_err(ubi,
+> +					"bad used_ebs %d", av->used_ebs);
 
-But the assumption is that the write() path never returns -EBADMSG. If a
-driver internally does write-read-verify, we assume it should return
--EIO if there is an ECC error. But not -EBADMSG.
-
-This is why we do not handle this error code in eba.c.
-
-Now, what I see is that you are looking at some old code. In the new
-code the function is named 'ubi_self_check_all_ff()', and if I read the
-code correctly, it will return -EINVAL if mtd_read() returns -EBADMSG:
+Ditto for all the similar cases.
 
 
-        err = mtd_read(ubi->mtd, addr, len, &read, buf);
-        if (err && !mtd_is_bitflip(err)) {
-                ubi_err("error %d while reading %d bytes from PEB %d:%d, read %zd bytes",
-                        err, len, pnum, offset, read);
-                goto error;
+> -	ubi_msg("volume %d (\"%s\") re-sized from %d to %d LEBs", vol_id,
+> +	ubi_msg(ubi, "volume %d (\"%s\") re-sized from %d to %d LEBs",
+> +		vol_id,
+>  		vol->name, old_reserved_pebs, vol->reserved_pebs);
+
+Please, in cases like this, try to pack more arguments to the second
+line, and move those which do not fit there to the third line. So this
+would be like:
+
+	ubi_msg(ubi, "volume %d (\"%s\") re-sized from %d to %d LEBs",
+		vol_id,	vol->name, old_reserved_pebs,
+		vol->reserved_pebs);
+ 
