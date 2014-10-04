@@ -1,24 +1,15 @@
-From: bpqw <bpqw@micron.com>
-To: Marek Vasut <marex@denx.de>, Brian Norris <computersforpeace@gmail.com>
-Subject: RE: [PATCH 1/1 v3] driver:mtd:spi-nor: Add Micron quad I/O support
-Date: Sat, 4 Oct 2014 05:55:47 +0000
-Message-ID: <A765B125120D1346A63912DDE6D8B6315E4E8A@NTXXIAMBX02.xacn.micron.com>
-References: <A765B125120D1346A63912DDE6D8B6315DCC46@NTXXIAMBX02.xacn.micron.com>
- <201409261046.07132.marex@denx.de>
- <A765B125120D1346A63912DDE6D8B6315E3D45@NTXXIAMBX02.xacn.micron.com>
- <201410011633.18150.marex@denx.de>
-In-Reply-To: <201410011633.18150.marex@denx.de>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: quoted-printable
+Received: from mailhost.mfa.gr ([84.205.251.31])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XaXwF-00044M-KG
+ for linux-mtd@lists.infradead.org; Sat, 04 Oct 2014 22:36:32 +0000
+Date: Sun, 5 Oct 2014 01:36:00 +0300 (EEST)
+From: "MRS. BOZENA" <ecocom-chicago@mfa.gr>
+Reply-To: MRSBOZENA@MIT.TC
+Message-ID: <1622537174.357605.1412462160848.JavaMail.zimbra@mfa.gr>
+Subject: Re
 MIME-Version: 1.0
-Cc: "geert+renesas@glider.be" <geert+renesas@glider.be>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "grmoore@altera.com" <grmoore@altera.com>,
- Brian Norris <computersforpeace@gmail.com>,
- "shijie8@gmail.com" <shijie8@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,12 +19,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->> Signed-off-by: bean huo <beanhuo@micron.com>
 
->I don't see anything obviously wrong.
 
->Acked-by: Marek Vasut <marex@denx.de>
+-- 
+PLEASE CAN I BRING THIS PROPOSAL TO YOU.
+REPLY MRSBOZENA@MIT.TC
+THANKS
+MRS. BOZENA
 
-Hi,Brian
-
-How do you think about this patch?
+-- 
+This message has been scanned for viruses and
+dangerous content by MailScanner, and is
+believed to be clean.
