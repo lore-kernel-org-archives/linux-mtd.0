@@ -1,18 +1,23 @@
-Date: Sun, 5 Oct 2014 10:13:36 +0800
-From: Huang Shijie <shijie.huang@intel.com>
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: Re: [PATCH v3 0/3] mtd: nand: gpmi: add proper raw access support
-Message-ID: <20141005021335.GA14640@shldeISGChi005.sh.intel.com>
-References: <1411481256-29141-1-git-send-email-boris.brezillon@free-electrons.com>
- <20140930100720.45625804@bbrezillon>
+Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Xaevz-0000Mu-IP
+ for linux-mtd@lists.infradead.org; Sun, 05 Oct 2014 06:04:43 +0000
+Received: by mail-pa0-f46.google.com with SMTP id fa1so3576995pad.19
+ for <linux-mtd@lists.infradead.org>; Sat, 04 Oct 2014 23:04:22 -0700 (PDT)
+Received: from [100.64.43.127] ([1.46.47.205])
+ by mx.google.com with ESMTPSA id bv5sm10156230pbc.20.2014.10.04.23.04.20
+ for <linux-mtd@lists.infradead.org>
+ (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
+ Sat, 04 Oct 2014 23:04:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20140930100720.45625804@bbrezillon>
-Cc: Mike Voytovich <mvoytovich@paypal.com>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Roy Lee <roylee@paypal.com>,
- Brian Norris <computersforpeace@gmail.com>, Huang Shijie <shijie8@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+ charset=UTF-8
+Subject: Block numbers of BEB
+From: Woody Wu <narkewoody@gmail.com>
+Date: Sun, 05 Oct 2014 13:04:16 +0700
+To: linux-mtd@lists.infradead.org
+Message-ID: <e8d296e4-0194-4e0f-8f4d-1defe17bdd65@email.android.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,32 +27,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Sep 30, 2014 at 10:07:20AM +0200, Boris Brezillon wrote:
-> Hi,
-> 
-> On Tue, 23 Sep 2014 16:07:33 +0200
-> Boris BREZILLON <boris.brezillon@free-electrons.com> wrote:
-> 
-> > Hello Huang, Brian,
-> > 
-> > This is just a new proposal to support raw accesses in a more standard way
-> > in the GPMI driver.
-> > This series has been tested on an imx28 board.
-> > 
-> > Any suggestions are welcome.
-> 
-> Brian, any chance you could take a look at this series and give your
-> opinion and/or suggest a new approach ?
-> 
-> Huang, did you have time to think about a better way to implement these
-> raw access functions ?
-> 
-sorry for the later reply. I was busy recently.
-You can send out the new version. Please do not forget add a patch to
-add
-more comments for these hooks.
+Hi,
 
-I will test your patch(or your new patch set) on Oct 7 and Oct 8.
+I can see how many bad erase blocks it had developed from the /proc directory, but where can I get know what block numbers these bad blocks on?
 
-thanks
-Huang Shijie
+Any hint from you will be appreciated.
+
+-- 
+sent from mobile
