@@ -1,23 +1,21 @@
-Received: from bastet.se.axis.com ([195.60.68.11])
+Received: from bes.se.axis.com ([195.60.68.10])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xb3GY-0005tg-JL
- for linux-mtd@lists.infradead.org; Mon, 06 Oct 2014 08:03:35 +0000
-Date: Mon, 6 Oct 2014 09:55:56 +0200
+ id 1Xb3Gd-0005uE-Sb
+ for linux-mtd@lists.infradead.org; Mon, 06 Oct 2014 08:03:40 +0000
+Date: Mon, 6 Oct 2014 09:53:01 +0200
 From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH v2] mtd: ubi: Extend UBI layer debug/messaging capabilities
-In-Reply-To: <1412353168.10105.5.camel@sauron.fi.intel.com>
-Message-ID: <alpine.DEB.2.02.1410060954360.17221@lnxricardw1.se.axis.com>
-References: <1412089998-18978-1-git-send-email-tlinder@codeaurora.org>
- <1412350035.3795.101.camel@sauron.fi.intel.com>
- <CACna6ryws=d_7NXhzWyu34TaV+Yv8y0+D4Q0ewuzDEv=8xDxRg@mail.gmail.com>
- <1412353168.10105.5.camel@sauron.fi.intel.com>
+To: Woody Wu <narkewoody@gmail.com>
+Subject: Re: Block numbers of BEB
+In-Reply-To: <db3c3c22-b896-4b73-bece-99a1db7d602a@email.android.com>
+Message-ID: <alpine.DEB.2.02.1410060950270.17221@lnxricardw1.se.axis.com>
+References: <e8d296e4-0194-4e0f-8f4d-1defe17bdd65@email.android.com>
+ <CAFLxGvxm7RU-_5r658pA2C5EJ6NGGX2sfErNB9Hosq98QP8G2A@mail.gmail.com>
+ <db3c3c22-b896-4b73-bece-99a1db7d602a@email.android.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="ISO-8859-15"
 Content-Transfer-Encoding: 8BIT
-Cc: "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- open list <linux-kernel@vger.kernel.org>
+Cc: Richard Weinberger <richard.weinberger@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,18 +26,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-On Fri, 3 Oct 2014, Artem Bityutskiy wrote:
+On Sun, 5 Oct 2014, Woody Wu wrote:
 
-> I respect checkpatch.pl, and uniformity / consistency, but in this
-> particular case I put my maintainer hat on and say that for this kernel
-> subsystem it is fine, because the maintainer will be more efficient in
-> maintaining this code when the code is a bit mere readable for him.
+> What I said of checking /proc is wrong. What I indeed checked was 
+> /sys/class/ubi as you mentioned. The problem is, under the 
+> /sys/class/ubi, there is no information about what blocks are marked as 
+> bad, there is only information about the total number of bad blocks.
 
-I believe checkpatch.pl flags long lines as a warning, not as an error, 
-indicating some relaxation on the severity to start with.
+I was thinking the mtd tool nanddump displayed which blocks were bad when 
+dumping, but a quick test just now revealed that that doesn't seem to be 
+the case.
+
+The information is available to userspace though, so it's fairly easy to 
+hack together a userspace tool that gets the bad block information via 
+ioctls.
 
 /Ricard
 -- 
-Ricard Wolf WanderlÃ¶f                           ricardw(at)axis.com
+Ricard Wolf Wanderlöf                           ricardw(at)axis.com
 Axis Communications AB, Lund, Sweden            www.axis.com
 Phone +46 46 272 2016                           Fax +46 46 13 61 30
