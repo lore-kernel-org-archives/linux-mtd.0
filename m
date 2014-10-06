@@ -1,18 +1,23 @@
-Date: Sun, 5 Oct 2014 23:40:30 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH 8/9] mtd: nand: stm_nand_bch: add support for ST's BCH
- NAND controller
-Message-ID: <20141006064030.GA20598@norris-Latitude-E6410>
-References: <1409143344-22458-1-git-send-email-lee.jones@linaro.org>
- <1409143344-22458-9-git-send-email-lee.jones@linaro.org>
+Received: from bastet.se.axis.com ([195.60.68.11])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Xb3GY-0005tg-JL
+ for linux-mtd@lists.infradead.org; Mon, 06 Oct 2014 08:03:35 +0000
+Date: Mon, 6 Oct 2014 09:55:56 +0200
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH v2] mtd: ubi: Extend UBI layer debug/messaging capabilities
+In-Reply-To: <1412353168.10105.5.camel@sauron.fi.intel.com>
+Message-ID: <alpine.DEB.2.02.1410060954360.17221@lnxricardw1.se.axis.com>
+References: <1412089998-18978-1-git-send-email-tlinder@codeaurora.org>
+ <1412350035.3795.101.camel@sauron.fi.intel.com>
+ <CACna6ryws=d_7NXhzWyu34TaV+Yv8y0+D4Q0ewuzDEv=8xDxRg@mail.gmail.com>
+ <1412353168.10105.5.camel@sauron.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1409143344-22458-9-git-send-email-lee.jones@linaro.org>
-Cc: pekon@pek-sem.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- kernel@stlinux.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8BIT
+Cc: "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ open list <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,26 +27,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Aug 27, 2014 at 01:42:23PM +0100, Lee Jones wrote:
-> Reviewed-By: Pekon Gupta <pekon@pek-sem.com>
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/mtd/nand/Kconfig        |    7 +
->  drivers/mtd/nand/Makefile       |    1 +
->  drivers/mtd/nand/stm_nand_bch.c | 1616 +++++++++++++++++++++++++++++++++++++++
->  drivers/mtd/nand/stm_nand_dt.c  |  110 +++
->  drivers/mtd/nand/stm_nand_dt.h  |   24 +
->  include/linux/mtd/stm_nand.h    |  147 ++++
->  6 files changed, 1905 insertions(+)
->  create mode 100644 drivers/mtd/nand/stm_nand_bch.c
->  create mode 100644 drivers/mtd/nand/stm_nand_dt.c
->  create mode 100644 drivers/mtd/nand/stm_nand_dt.h
->  create mode 100644 include/linux/mtd/stm_nand.h
 
-One more thing: you never answered my question from [1]: 
+On Fri, 3 Oct 2014, Artem Bityutskiy wrote:
 
-Does your driver pass the MTD tests? (drivers/mtd/tests/)
+> I respect checkpatch.pl, and uniformity / consistency, but in this
+> particular case I put my maintainer hat on and say that for this kernel
+> subsystem it is fine, because the maintainer will be more efficient in
+> maintaining this code when the code is a bit mere readable for him.
 
-Brian
+I believe checkpatch.pl flags long lines as a warning, not as an error, 
+indicating some relaxation on the severity to start with.
 
-[1] http://lists.infradead.org/pipermail/linux-mtd/2014-August/055084.html
+/Ricard
+-- 
+Ricard Wolf Wanderlöf                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
