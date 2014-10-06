@@ -1,20 +1,18 @@
-Received: from us2.outbound.mailhostbox.com ([162.210.70.53])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xb0Fb-0007Hn-Ia
- for linux-mtd@lists.infradead.org; Mon, 06 Oct 2014 04:50:28 +0000
+Date: Sun, 5 Oct 2014 22:06:26 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 5/9] mtd: nand: stm_nand_bch: provide Device Tree
+ documentation
+Message-ID: <20141006050626.GF3248@norris-Latitude-E6410>
+References: <1409143344-22458-1-git-send-email-lee.jones@linaro.org>
+ <1409143344-22458-6-git-send-email-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date: Mon, 06 Oct 2014 10:19:49 +0530
-From: Pekon Gupta <pekon@pek-sem.com>
-To: <angelo70@gmail.com>
-Subject: Re: UBI ECC errors on kernel 3.16.2
-Reply-To: <pekon@pek-sem.com>
-In-Reply-To: <542D8AD5.5030704@gmail.com>
-References: <542D18B6.3020906@gmail.com> <542D8AD5.5030704@gmail.com>
-Message-ID: <61e344ea352a9e20fef952b44b18ea74@pek-sem.com>
-Cc: richard.weinberger@gmail.com, linux-mtd@lists.infradead.org, rogerq@ti.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1409143344-22458-6-git-send-email-lee.jones@linaro.org>
+Cc: devicetree@vger.kernel.org, kernel@stlinux.com,
+ linux-kernel@vger.kernel.org, pekon@pek-sem.com, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,122 +22,137 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Angelo,
+On Wed, Aug 27, 2014 at 01:42:20PM +0100, Lee Jones wrote:
+> This is where we describe the different new and generic options used by
+> the ST BCH driver.
+> 
+> Cc: devicetree@vger.kernel.org
+> Reviewed-By: Pekon Gupta <pekon@pek-sem.com>
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  Documentation/devicetree/bindings/mtd/stm-nand.txt | 74 ++++++++++++++++++++++
+>  1 file changed, 74 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/stm-nand.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/stm-nand.txt b/Documentation/devicetree/bindings/mtd/stm-nand.txt
+> new file mode 100644
+> index 0000000..5872a39
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/stm-nand.txt
+> @@ -0,0 +1,74 @@
+> +STM BCH NAND Support
+> +--------------------
+> +
+> +Required properties:
+> +
+> +- compatible		: Should be "st,nand-bch"
+> +- reg			: Should contain register's location and length
+> +- reg-names		: "emi_nand" - NAND Controller register map
+> +			  "emiss" - External Memory Interface Subsystem base
+> +- interrupts		: Interrupt number
+> +- interrupt-names	: "nand_irq" - NAND Controller IRQ
+> +- st,nand-banks		: Subnode representing one or more "banks" of NAND
+> +			  Flash, connected to an STM NAND Controller (see
+> +			  description below).
 
+Why plural? Shouldn't you have one node for each bank, as they are
+independent? Also, I don't see this property being used anywhere, even
+though it's listed as "required".
 
-On 02-10-2014, Angelo Dureghello wrote:
-> Hi all,
->
-> still some updated on these -74 EBADMSG i am receiving.
->
-> well, seems the first ecc error is detected as soon as the kernel
-> driver starts to
-> read the ubifs (so file system) data part of the rootfs.ubi image.
->
-> Before reading the file system data, so attaching, there is no ecc
-> error detected at all.
-> I added traces on some kernel file as nand_base.c.
->
->
-> Ubi scanning / attaching  ...
->
-> nand_read_page_hwecc_oob_first page    :3659
-> nand_read_page_hwecc_oob_first correct p:c883d800 p[0]:p[1] 00:00 i:0
-> eccpos[i]:06 ecc_code[i]:0b;
-> nand_read_page_hwecc_oob_first correct p:c883da00 p[0]:p[1] 00:00
-> i:10 eccpos[i]:16 ecc_code[i]:58;
-> nand_read_page_hwecc_oob_first correct p:c883dc00 p[0]:p[1] 00:00
-> i:20 eccpos[i]:26 ecc_code[i]:cf;
-> nand_read_page_hwecc_oob_first correct p:c883de00 p[0]:p[1] 00:00
-> i:30 eccpos[i]:36 ecc_code[i]:8b;
-> nand_read_page_hwecc_oob_first page    :3660
-> nand_read_page_hwecc_oob_first correct p:c883e000 p[0]:p[1] 00:00 i:0
-> eccpos[i]:06 ecc_code[i]:9b;
-> nand_read_page_hwecc_oob_first correct p:c883e200 p[0]:p[1] 00:00
-> i:10 eccpos[i]:16 ecc_code[i]:f1;
-> nand_read_page_hwecc_oob_first correct p:c883e400 p[0]:p[1] 00:00
-> i:20 eccpos[i]:26 ecc_code[i]:26;
-> nand_read_page_hwecc_oob_first correct p:c883e600 p[0]:p[1] ff:ff
-> i:30 eccpos[i]:36 ecc_code[i]:3f;
-> UBI: volume 0 ("rootfs") re-sized from 205 to 456 LEBs
-> UBI: attached mtd6 (name "rootfs", size 60 MiB) to ubi0
-> UBI: PEB size: 131072 bytes (128 KiB), LEB size: 126976 bytes
-> UBI: min./max. I/O unit sizes: 2048/2048, sub-page size 512
-> UBI: VID header offset: 2048 (aligned 2048), data offset: 4096
-> UBI: good PEBs: 480, bad PEBs: 0, corrupted PEBs: 0
-> UBI: user volume: 1, internal volumes: 1, max. volumes count: 128
-> UBI: max/mean erase counter: 1/0, WL threshold: 4096, image sequence
-> number: 272604537
-> UBI: available PEBs: 0, total reserved PEBs: 480, PEBs reserved for
-> bad PEB handling: 20
-> UBI: background thread "ubi_bgt0d" started, PID 995
-> gpio-keys gpio-keys.0: Failed to request GPIO 126, error -517
-> platform gpio-keys.0: Driver gpio-keys requests probe deferral
-> omap_rtc da830-rtc: setting system clock to 2014-10-02 15:59:28 UTC
-> (1412265568)
-> ALSA device list:
->   No soundcards found.
->
-> *** reading the file system here ***
->
-> At page 3712 there is the first of the file system blocks
-> 3712        3713           3714         3715
-> EC HEADER  |  VID HEADER  |  fs data   |   fs data   etc
->                            ^
->                            ^
->
-> nand_read_page_hwecc_oob_first page    :3714
-> nand_read_page_hwecc_oob_first error   p:c7906000 p[0]:p[1] 31:18 i:0
-> eccpos[i]:06 ecc_code[i]:1f;    <<< ERROR
-> nand_read_page_hwecc_oob_first correct p:c7906200 p[0]:p[1] 00:00
-> i:10 eccpos[i]:16 ecc_code[i]:00;
-> nand_read_page_hwecc_oob_first correct p:c7906400 p[0]:p[1] 00:00
-> i:20 eccpos[i]:26 ecc_code[i]:00;
-> nand_read_page_hwecc_oob_first correct p:c7906600 p[0]:p[1] 00:00
-> i:30 eccpos[i]:36 ecc_code[i]:00;
-> ecc_failed !!
-> nand_read_page_hwecc_oob_first page    :3715
-> nand_read_page_hwecc_oob_first correct p:c7906800 p[0]:p[1] 00:00 i:0
-> eccpos[i]:06 ecc_code[i]:00;
-> nand_read_page_hwecc_oob_first correct p:c7906a00 p[0]:p[1] 00:00
-> i:10 eccpos[i]:16 ecc_code[i]:00;
-> nand_read_page_hwecc_oob_first correct p:c7906c00 p[0]:p[1] 00:00
-> i:20 eccpos[i]:26 ecc_code[i]:00;
-> nand_read_page_hwecc_oob_first correct p:c7906e00 p[0]:p[1] 00:00
-> i:30 eccpos[i]:36 ecc_code[i]:00;
-> UBI warning: ubi_io_read: error -74 (ECC error) while reading 4096
-> bytes from PEB 2:4096, read only 4096 bytes, retry
->
->
-> I am tracing the first 2 bytes only of each 512B eccblock.
-> I verified, first 2 bytes with errors (0x31, 0x18) are sane, as in
-> the rootfs.ubi file.
->
-> So, i am supposing these errors are caused from a misalignment from
-> u-boot and kernel davinci / nand drivers
-> that calculate the ecc values.
->
-> U-Boot 2014.07-03397-gab92542 (Oct 02 2014 - 16:14:43)
-> Kernel is 3.16.2
->
-> What do you think ?
->
-> Regards angelo
->
-Yes, this seems to be mis-alignment in ecc-scheme (or layout)
+Really, this property shouldn't be listed here (under the NAND
+controller node), but should only be listed under the bank description
+below (and it should actually be *used* there).
 
-+ rogerq@ti.com
+> +- nand-ecc-strength	: Generic NAND property (See mtd/nand.txt)
+> +			  Options are; 0, 18 or 30. If not present, the driver
+> +			  will choose the strongest scheme compatible if the
+> +			  OOB size.
 
-Also following User-Guides for *OMAP* processors (not davinci)
-may help you narrow down the cause.
+nand-ecc-strength is optional, not required.
 
+Also, this is probably where you should add a paragraph about how the
+NAND controller node should contain one or more banks, each of which
+represents an attached NAND flash and can be described using the
+following:
 
-with regards, pekon
+> +
+> +Properties describing Bank of NAND Flash ("st,nand-banks"):
+> +
 
-[1] 
-http://processors.wiki.ti.com/index.php/Linux_Core_NAND_User%27s_Guide#ECC_schemes_support
-[2] http://processors.wiki.ti.com/index.php/UBIFS_Support
+You should list a "compatible" property here (i.e., "st,nand-bank" or
+"st,nand-banks").
 
+> +- st,nand-csn		: Chip select associated with the Bank.
 
-------------------------
-Powered by BigRock.com
+I'm pretty sure a chip select is not very specific to ST. Maybe we
+should have a generic "nand-chip-select" or "nand-cs" property for
+Documentation/devicetree/bindings/mtd/nand.txt. I know of at least one
+other piece of hardware that could use this property.
+
+> +
+> +- st,nand-timing-relax	: [Optional] Number of IP clock cycles by which to
+> +			  "relax" timing configuration.  Required on some boards
+> +			  to accommodate board-level limitations. Applies to
+> +			  ONFI timing mode configuration.
+> +
+> +- nand-on-flash-bbt	: Generic NAND property (See mtd/nand.txt)
+> +
+> +- partitions		: [Optional] Subnode describing MTD partition map
+> +			  (see mtd/partition.txt)
+
+Hmm, does this really need a separate subnode? That doesn't seem to be
+the best description, and it doesn't match standard practice AFAICT.
+Can't you just have the partition nodes be direct subnodes of the NAND
+bank?
+
+> +
+> +Note, during initialisation, the NAND Controller timing registers are configured
+> +according to one of the following methods, in order of precedence:
+> +
+> +	   1. Configuration based on ONFI timing mode, as advertised by the
+> +	      device during ONFI-probing (ONFI-compliant NAND only).
+> +
+> +	   2. Use reset/safe timing values
+> +
+> +Example:
+> +
+> +	nand@fe901000 {
+> +		compatible = "st,nand-bch";
+> +		reg = <0xfe901000 0x1000>, <0xfef00800 0x0800>;
+> +		reg-names = "emi_nand", "emiss";
+> +		interrupts = <0 139 0x0>;
+> +		interrupt-names = "nand_irq";
+> +		nand-ecc-strength = <30>;
+> +
+> +		status = "okay";
+> +
+> +		bank0 {
+
+No "compatible" property? (BTW, be sure to update the *.dts* files if
+we're updating this binding doc.)
+
+> +			/* NAND_BBT_USE_FLASH */
+
+This comment doesn't belong here.
+
+> +			nand-on-flash-bbt;
+> +			st,nand-csn		= <0>;
+> +
+> +			partitions {
+> +				#address-cells = <1>;
+> +				#size-cells = <1>;
+> +
+> +				partition@0{
+> +					label = "NANDFlash1";
+> +					reg = <0x00000000 0x00800000>;
+> +				};
+> +
+> +				partition@800000{
+> +					label = "NANDFlash2";
+> +					reg = <0x00800000 0x0f800000>;
+> +				};
+> +			};
+> +		};
+> +	};
+
+Brian
