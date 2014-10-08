@@ -1,26 +1,17 @@
-Received: from mail-vc0-f176.google.com ([209.85.220.176])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XbopD-0006Hd-T7
- for linux-mtd@lists.infradead.org; Wed, 08 Oct 2014 10:50:32 +0000
-Received: by mail-vc0-f176.google.com with SMTP id hq11so6393409vcb.35
- for <linux-mtd@lists.infradead.org>; Wed, 08 Oct 2014 03:50:10 -0700 (PDT)
-Date: Wed, 8 Oct 2014 11:50:05 +0100
-From: Lee Jones <lee.jones@linaro.org>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH 8/9] mtd: nand: stm_nand_bch: add support for ST's BCH
- NAND controller
-Message-ID: <20141008105005.GH20647@lee--X1>
-References: <1409143344-22458-1-git-send-email-lee.jones@linaro.org>
- <1409143344-22458-9-git-send-email-lee.jones@linaro.org>
- <20141006064030.GA20598@norris-Latitude-E6410>
+Date: Wed, 8 Oct 2014 22:24:40 +0800
+From: Huang Shijie <shijie8@gmail.com>
+To: Boris BREZILLON <boris.brezillon@free-electrons.com>
+Subject: Re: [PATCH v3 0/3] mtd: nand: gpmi: add proper raw access support
+Message-ID: <20141008142437.GA9912@localhost.localdomain>
+References: <1411481256-29141-1-git-send-email-boris.brezillon@free-electrons.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20141006064030.GA20598@norris-Latitude-E6410>
-Cc: pekon@pek-sem.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- kernel@stlinux.com
+In-Reply-To: <1411481256-29141-1-git-send-email-boris.brezillon@free-electrons.com>
+Cc: Mike Voytovich <mvoytovich@paypal.com>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Roy Lee <roylee@paypal.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,35 +21,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 05 Oct 2014, Brian Norris wrote:
-
-> On Wed, Aug 27, 2014 at 01:42:23PM +0100, Lee Jones wrote:
-> > Reviewed-By: Pekon Gupta <pekon@pek-sem.com>
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> >  drivers/mtd/nand/Kconfig        |    7 +
-> >  drivers/mtd/nand/Makefile       |    1 +
-> >  drivers/mtd/nand/stm_nand_bch.c | 1616 +++++++++++++++++++++++++++++++++++++++
-> >  drivers/mtd/nand/stm_nand_dt.c  |  110 +++
-> >  drivers/mtd/nand/stm_nand_dt.h  |   24 +
-> >  include/linux/mtd/stm_nand.h    |  147 ++++
-> >  6 files changed, 1905 insertions(+)
-> >  create mode 100644 drivers/mtd/nand/stm_nand_bch.c
-> >  create mode 100644 drivers/mtd/nand/stm_nand_dt.c
-> >  create mode 100644 drivers/mtd/nand/stm_nand_dt.h
-> >  create mode 100644 include/linux/mtd/stm_nand.h
+On Tue, Sep 23, 2014 at 04:07:33PM +0200, Boris BREZILLON wrote:
+> Hello Huang, Brian,
 > 
-> One more thing: you never answered my question from [1]: 
+> This is just a new proposal to support raw accesses in a more standard way
+> in the GPMI driver.
+> This series has been tested on an imx28 board.
 > 
-> Does your driver pass the MTD tests? (drivers/mtd/tests/)
+> Any suggestions are welcome.
+> 
+> Best Regards,
+> 
+> Boris
+> 
+> Changes since v2:
+>  - fixed a bug in gpmi_move_bits
+>  - add a raw_buffer field to be used when using raw access methods
+>    (experienced memory corruptions when directly using page_buffer_virt
+>    buffer)
+>  - add raw OOB access functions
 
-It does.  Apart from the ones which insist on reading the OOB area,
-which isn't allowed via the normal call-backs supplied.
+I tested this patch set today with the imx6dl-sabreauto board.
 
-> [1] http://lists.infradead.org/pipermail/linux-mtd/2014-August/055084.html
+    NAND: Micron MT29F64G08CBABAWP
+	8192MiB, MLC, page size: 8192, OOB size: 744
 
--- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+    ECC: 40bit
+
+The result:
+
+[ 3672.779009] ==================================================
+[ 3672.784974] mtd_nandbiterrs: MTD device: 0
+[ 3672.789480] mtd_nandbiterrs: MTD device size 16777216, eraseblock=2097152, page=8192, oob=744
+[ 3672.798169] mtd_nandbiterrs: Device uses 1 subpages of 8192 bytes
+[ 3672.804554] mtd_nandbiterrs: Using page=0, offset=0, eraseblock=0
+[ 3672.812497] mtd_nandbiterrs: incremental biterrors test
+[ 3672.818688] mtd_nandbiterrs: write_page
+[ 3672.825529] mtd_nandbiterrs: rewrite page
+[ 3672.837290] mtd_nandbiterrs: read_page
+[ 3672.848407] mtd_nandbiterrs: error: read failed at 0x0
+[ 3672.853644] mtd_nandbiterrs: After 0 biterrors per subpage, read reported error -74
+[ 3672.862932] mtd_nandbiterrs: finished successfully.
+[ 3672.867837] ==================================================
+
+[ 3745.282368] ==================================================
+[ 3745.288227] mtd_nandbiterrs: MTD device: 0
+[ 3745.292913] mtd_nandbiterrs: MTD device size 16777216, eraseblock=2097152, page=8192, oob=744
+[ 3745.301897] mtd_nandbiterrs: Device uses 1 subpages of 8192 bytes
+[ 3745.308023] mtd_nandbiterrs: Using page=1, offset=8192, eraseblock=0
+[ 3745.316778] mtd_nandbiterrs: incremental biterrors test
+[ 3745.323017] mtd_nandbiterrs: write_page
+[ 3745.328616] mtd_nandbiterrs: rewrite page
+[ 3745.334191] mtd_nandbiterrs: read_page
+[ 3745.346878] mtd_nandbiterrs: error: read failed at 0x2000
+[ 3745.352352] mtd_nandbiterrs: After 0 biterrors per subpage, read reported error -74
+[ 3745.361281] mtd_nandbiterrs: finished successfully.
+[ 3745.366173] ==================================================
+
+
+Is this okay? 
+
+thanks
+Huang Shijie
