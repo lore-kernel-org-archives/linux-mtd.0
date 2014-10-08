@@ -1,21 +1,20 @@
-Received: from smtp06.smtpout.orange.fr ([80.12.242.128]
- helo=smtp.smtpout.orange.fr)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XbvbS-0003g1-85
- for linux-mtd@lists.infradead.org; Wed, 08 Oct 2014 18:04:47 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH v2 1/2] mtd: docg3: add device-tree support
-References: <1411846470-30041-1-git-send-email-robert.jarzmik@free.fr>
-Date: Wed, 08 Oct 2014 20:04:15 +0200
-In-Reply-To: <1411846470-30041-1-git-send-email-robert.jarzmik@free.fr>
- (Robert Jarzmik's message of "Sat, 27 Sep 2014 21:34:29 +0200")
-Message-ID: <87oatma15s.fsf@free.fr>
+Received: from mail-wi0-x231.google.com ([2a00:1450:400c:c05::231])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Xc0t1-0002eY-5K
+ for linux-mtd@lists.infradead.org; Wed, 08 Oct 2014 23:43:15 +0000
+Received: by mail-wi0-f177.google.com with SMTP id fb4so381697wid.4
+ for <linux-mtd@lists.infradead.org>; Wed, 08 Oct 2014 16:42:52 -0700 (PDT)
+Date: Thu, 9 Oct 2014 01:42:48 +0200
+From: Aya Mahfouz <mahfouz.saif.elyazal@gmail.com>
+To: kamlakant.patel@broadcom.com
+Subject: [3.17.0-rc6] staging: drivers: staging: mt29f_spinand:
+ mt29f_spinand.c: compatible string
+Message-ID: <20141008234248.GA15086@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: gregkh@linuxfoundation.org, linux-mtd@lists.infradead.org,
+ manonuevo@micron.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,13 +24,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Robert Jarzmik <robert.jarzmik@free.fr> writes:
+Hello Everyone,
 
-> Add device-tree support. This is straightforward as docg3 only uses the
-> standard IOMEM resources.
-Brian, David, ping ?
+My name is Aya Mahfouz. I'm new to the Linux Kernel development
+process and I'm working on fixing some warnings as part of my
+application process to the Gnome OPW program. 
 
-Cheers.
+When using checkpatch.pl, I get the following warning:
+WARNING: DT compatible string "spinand,mt29f" appears un-documented
+-- check ./Documentation/devicetree/bindings/
+#926:FILE: drivers/staging/mt29f_spinand/mt29f_spinand.c:926:
++       { .compatible = "spinand,mt29f", },
 
---
-Robert
+If I place the string "spinand,mt29f" in 
+./Documentation/devicetree/bindings/vendor-prefixes.txt 
+with any name the warning will be silenced. Are there
+any means to knowing the vendor? A quick google search
+states that it is "Micron Technology Inc" and that 
+"spinand" is a shorthand for a device by Micron.
+
+Thank you all,
+
+Kind Regards,
+Aya Saif El-yazal Mahfouz
