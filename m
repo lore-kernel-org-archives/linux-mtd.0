@@ -1,21 +1,21 @@
-Received: from szxga02-in.huawei.com ([119.145.14.65])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xc3Cg-0002FO-1b
- for linux-mtd@lists.infradead.org; Thu, 09 Oct 2014 02:11:43 +0000
-Message-ID: <5435EE9B.8040403@huawei.com>
-Date: Thu, 9 Oct 2014 10:10:35 +0800
-From: hujianyang <hujianyang@huawei.com>
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XcAwX-0003pE-2i
+ for linux-mtd@lists.infradead.org; Thu, 09 Oct 2014 10:27:33 +0000
+Date: Thu, 9 Oct 2014 07:25:46 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Andrew Murray <amurray@embedded-bits.co.uk>
+Subject: Re: UBI_READWRITE constraint when opening volumes to rename
+Message-ID: <20141009102546.GA2755@arch.hh.imgtec.org>
+References: <CAPcvp5E=MgV0-f8q9SFuMCzCEt-WVQiEu4XGJXj2QLyf5L1ohw@mail.gmail.com>
 MIME-Version: 1.0
-To: <dedekind1@gmail.com>
-Subject: Re: [PATCH v4 2/4] ubi-utils: ubidump: add libdump
-References: <542A2C57.3090401@huawei.com> <542A2CBE.1050304@huawei.com>
- <1412348025.3795.73.camel@sauron.fi.intel.com>
-In-Reply-To: <1412348025.3795.73.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Cc: Richard Weinberger <richard.weinberger@gmail.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Bill Pringlemeir <bpringlemeir@nbsps.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPcvp5E=MgV0-f8q9SFuMCzCEt-WVQiEu4XGJXj2QLyf5L1ohw@mail.gmail.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,149 +25,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On 07 Oct 03:31 PM, Andrew Murray wrote:
+> Hello,
 > 
-> These ones do not look like they are in any way specific to the UBI
-> dumping library.
+> I'd like to be able to safely rename a UBI volume that contains a
+> mounted UBIFS volume.
 > 
-> In fact, we already have these in mkfs.ubifs/defs.h, which is also not
-> very good.
+> This allows for firmware upgrade via the following steps:
 > 
-> Would you please instead use "include/common.h". Put the ALIGN and min_t
-> definitions there, and include that file from "libdump.h"?
+> - ubimkvol rootfs_new
+> - ubiupdatevol rootfs_new
+> - ubirename rootfs rootfs_old rootfs_new rootfs
+> - reboot
+> - ubirmvol rootfs_old
 > 
-> As a completely independent patch, you could also clean things up by
-> removing the definitions from 'mkfs.ubifs/defs.h' and using
-> 'include/common.h' in mkfs.ubifs too.
+> Such an approach makes upgrade of a root filesystem simple as there is
+> no need to unmount the root filesystem. I believe this question has
+> been asked before on this mailing list
+> (http://lists.infradead.org/pipermail/linux-mtd/2012-February/039743.html).
 > 
+> This process isn't possible at the moment as 'rename_volumes' opens
+> the UBI volume with UBI_READWRITE. Unfortunately UBIFS always opens
+> UBI with UBI_READWRITE regardless to if the user mounts as read-only.
 
-Hi Artem,
+How about making UBIFS honour the read-only mount flag?
 
-I met a problem when I was doing this moving. The macros define in
-mkfs.ubifs/defs.h are used in mkfs.ubifs/key.h and both of them are
-included in mkfs.ubifs.h which is widely included by .c files in the
-directory "mkfs.ubifs/". If these macros upon are moved into
-include/common.h, I have to include "common.h" before "key.h" in
-mkfs.ubifs/mkfs.ubifs.h. Then here comes a problem, each file includes
-common.h must define a PROGRAM_NAME. So I have to add PROGRAM_NAME
-for the file which includes "mkfs.ubifs.h" and get a patch below.
+A quick look to fs/ubifs/io.c shows that UBIFS will show an error message
+if a LEB erase/write operation is attempted on a read-only mounted or
+read-only media. So, hopefully, this is reasonable (the patch is completely
+untested!):
 
-I don't think it's quite good, What's your opinion? Or can we put
-these macros in libubi.h? But I think "common.h" is a suitable place
-to locate these macros.
-
-
-Signed-off-by: hujianyang <hujianyang@huawei.com>
----
- include/common.h        |   15 +++++++++++++++
- mkfs.ubifs/compr.c      |    2 ++
- mkfs.ubifs/defs.h       |   15 ---------------
- mkfs.ubifs/devtable.c   |    2 ++
- mkfs.ubifs/lpt.c        |    2 ++
- mkfs.ubifs/mkfs.ubifs.h |    1 +
- 6 files changed, 22 insertions(+), 15 deletions(-)
-
-diff --git a/include/common.h b/include/common.h
-index 6895e5c..9b8804a 100644
---- a/include/common.h
-+++ b/include/common.h
-@@ -47,6 +47,21 @@ extern "C" {
- #define min(a, b) MIN(a, b) /* glue for linux kernel source */
- #define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
-
-+#define ALIGN(x,a) __ALIGN_MASK(x,(typeof(x))(a)-1)
-+#define __ALIGN_MASK(x,mask) (((x)+(mask))&~(mask))
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 106bf20..ce445ce 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -1998,11 +1998,16 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
+ {
+        struct ubifs_info *c = sb->s_fs_info;
+        struct inode *root;
+-       int err;
++       int err, mode;
 +
-+#define min_t(t,x,y) ({ \
-+	typeof((x)) _x = (x); \
-+	typeof((y)) _y = (y); \
-+	(_x < _y) ? _x : _y; \
-+})
-+
-+#define max_t(t,x,y) ({ \
-+	typeof((x)) _x = (x); \
-+	typeof((y)) _y = (y); \
-+	(_x > _y) ? _x : _y; \
-+})
-+
- #ifndef O_CLOEXEC
- #define O_CLOEXEC 0
- #endif
-diff --git a/mkfs.ubifs/compr.c b/mkfs.ubifs/compr.c
-index 4152b6a..6d62033 100644
---- a/mkfs.ubifs/compr.c
-+++ b/mkfs.ubifs/compr.c
-@@ -20,6 +20,8 @@
-  *          Zoltan Sogor
-  */
++       /*
++        * Re-open the UBI device in read-write mode, or keep it read-only if
++        * explicitly requested.
++        */
++       mode = (sb->s_flags & MS_RDONLY) ? UBI_READONLY : UBI_READWRITE;
+ 
+        c->vfs_sb = sb;
+-       /* Re-open the UBI device in read-write mode */
+-       c->ubi = ubi_open_volume(c->vi.ubi_num, c->vi.vol_id, UBI_READWRITE);
++       c->ubi = ubi_open_volume(c->vi.ubi_num, c->vi.vol_id, mode);
+        if (IS_ERR(c->ubi)) {
+                err = PTR_ERR(c->ubi);
+                goto out;
 
-+#define PROGRAM_NAME "compr"
-+
- #include <stdlib.h>
- #include <stdio.h>
- #include <stdint.h>
-diff --git a/mkfs.ubifs/defs.h b/mkfs.ubifs/defs.h
-index 06cf9e5..1fa3316 100644
---- a/mkfs.ubifs/defs.h
-+++ b/mkfs.ubifs/defs.h
-@@ -29,21 +29,6 @@
- #define le32_to_cpu(x) (t32((x)))
- #define le64_to_cpu(x) (t64((x)))
-
--#define ALIGN(x,a) __ALIGN_MASK(x,(typeof(x))(a)-1)
--#define __ALIGN_MASK(x,mask) (((x)+(mask))&~(mask))
--
--#define min_t(t,x,y) ({ \
--	typeof((x)) _x = (x); \
--	typeof((y)) _y = (y); \
--	(_x < _y) ? _x : _y; \
--})
--
--#define max_t(t,x,y) ({ \
--	typeof((x)) _x = (x); \
--	typeof((y)) _y = (y); \
--	(_x > _y) ? _x : _y; \
--})
--
- #define unlikely(x) (x)
-
- #define ubifs_assert(x) ({})
-diff --git a/mkfs.ubifs/devtable.c b/mkfs.ubifs/devtable.c
-index dee035d..2358197 100644
---- a/mkfs.ubifs/devtable.c
-+++ b/mkfs.ubifs/devtable.c
-@@ -44,6 +44,8 @@
-  * for more information about what the device table is.
-  */
-
-+#define PROGRAM_NAME "devtable"
-+
- #include "mkfs.ubifs.h"
- #include "hashtable/hashtable.h"
- #include "hashtable/hashtable_itr.h"
-diff --git a/mkfs.ubifs/lpt.c b/mkfs.ubifs/lpt.c
-index f6d4352..94e8f9d 100644
---- a/mkfs.ubifs/lpt.c
-+++ b/mkfs.ubifs/lpt.c
-@@ -20,6 +20,8 @@
-  *          Artem Bityutskiy
-  */
-
-+#define PROGRAM_NAME "lpt"
-+
- #include "mkfs.ubifs.h"
-
- /**
-diff --git a/mkfs.ubifs/mkfs.ubifs.h b/mkfs.ubifs/mkfs.ubifs.h
-index 6030c48..6f6feb8 100644
---- a/mkfs.ubifs/mkfs.ubifs.h
-+++ b/mkfs.ubifs/mkfs.ubifs.h
-@@ -51,6 +51,7 @@
- #include "crc16.h"
- #include "ubifs-media.h"
- #include "ubifs.h"
-+#include "common.h"
- #include "key.h"
- #include "lpt.h"
- #include "compr.h"
 -- 
-1.6.0.2
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
