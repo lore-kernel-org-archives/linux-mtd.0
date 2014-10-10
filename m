@@ -1,25 +1,15 @@
-Date: Thu, 9 Oct 2014 21:55:24 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Ben Hutchings <ben@decadent.org.uk>
-Subject: Re: [PATCH v2 5/5] m25p80,spi-nor: Share the list of supported chip
- type names again
-Message-ID: <20141010045524.GD22169@norris-Latitude-E6410>
-References: <1412043222.9388.81.camel@decadent.org.uk>
- <1412043352.9388.86.camel@decadent.org.uk>
- <CACna6ry3=+1GLRCvd_xOGBHjQmEGdYT-eM4YFfzO2Fkw9BHSTA@mail.gmail.com>
- <1412076963.9388.96.camel@decadent.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1412076963.9388.96.camel@decadent.org.uk>
-Cc: Andrew Lunn <andrew@lunn.ch>, Jason Cooper <jason@lakedaemon.net>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Ian Campbell <ijc@hellion.org.uk>, Geert Uytterhoeven <geert@linux-m68k.org>,
- Huang Shijie <shijie8@gmail.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
- debian-kernel <debian-kernel@lists.debian.org>
+Received: from max.feld.cvut.cz ([147.32.192.36])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XcZxD-0006v6-Sz
+ for linux-mtd@lists.infradead.org; Fri, 10 Oct 2014 13:09:57 +0000
+From: Michal Sojka <sojkam1@fel.cvut.cz>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH] Update help of CONFIG_MTD_OF_PARTS
+Date: Fri, 10 Oct 2014 15:06:17 +0200
+Message-Id: <1412946377-18933-1-git-send-email-sojkam1@fel.cvut.cz>
+Cc: Michal Sojka <sojkam1@fel.cvut.cz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,40 +19,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Sep 30, 2014 at 12:36:03PM +0100, Ben Hutchings wrote:
-> On Tue, 2014-09-30 at 10:02 +0200, Rafał Miłecki wrote:
-> > On 30 September 2014 04:15, Ben Hutchings <ben@decadent.org.uk> wrote:
-> > > Move the list of chip type information to a macro in spi-nor.h, but
-> > > leave the definitions of INFO and CAT25_INFO in spi-nor.
-> > >
-> > > In m25p80, define the INFO and CAT25_INFO macros to initialise a
-> > > struct spi_device_id with the name, ignoring the remaining parameters.
-> > 
-> > Anyone would consider my idea proposed in 1/5 thread?
-> > 
-> > We could simply follow the way Linux-specific platform data works. We
-> > could always use
-> > compatible = "m25p80";
-> > and then for some rare cases (where JEDEC fails) add something like
-> > model = "at25df321a";
-> > 
-> > Using above way we could use a one single "compatible" in m25p80.c and
-> > avoid this messy share of id_table.
-> 
-> You *cannot* define a DT compatible string by reference to out-of-band
-> information about all the chips that has to be updated for each new
-> chip.
-> 
-> That is not 'compatible'.
+The help text of CONFIG_MTD_OF_PARTS refers to additional documentation
+in booting-without-of.txt but this documentation was moved to another
+file in commit efcc2da3fd148c9acb7d7cf1d9800e0649f950fc (Stefan Roese:
+Factor MTD physmap bindings out of booting-without-of). This updates the
+help text to point to the right place.
 
-Well, for the DT case at least, what is the problem with including two
-(or more) compatible strings in the board DT, but the driver only
-binding against the common one ("m25p80" or something like
-"spi-nor,jedec-id") unless necessary? You can still follow best DT
-practices formally without always binding to the most specific string
-when that doesn't buy you anything.
+Signed-off-by: Michal Sojka <sojkam1@fel.cvut.cz>
+---
+ drivers/mtd/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The true board file / platform data cases are slightly different, but in
-those cases, the board file can evolve in sync with drivers, I think.
-
-Brian
+diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
+index 94b8210..fa8371a 100644
+--- a/drivers/mtd/Kconfig
++++ b/drivers/mtd/Kconfig
+@@ -133,7 +133,7 @@ config MTD_OF_PARTS
+ 	help
+ 	  This provides a partition parsing function which derives
+ 	  the partition map from the children of the flash node,
+-	  as described in Documentation/devicetree/booting-without-of.txt.
++	  as described in Documentation/devicetree/bindings/mtd/mtd-physmap.txt.
+ 
+ config MTD_AR7_PARTS
+ 	tristate "TI AR7 partitioning support"
+-- 
+2.1.1
