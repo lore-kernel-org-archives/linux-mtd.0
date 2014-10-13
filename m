@@ -1,24 +1,22 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xdi26-0002Of-Tl
- for linux-mtd@lists.infradead.org; Mon, 13 Oct 2014 15:59:39 +0000
-Message-ID: <1413215953.7906.63.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH v3] mtd: ubi: Extend UBI layer debug/messaging capabilities
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Tanya Brokhman <tlinder@codeaurora.org>, Ezequiel Garcia
- <ezequiel.garcia@free-electrons.com>
-Date: Mon, 13 Oct 2014 18:59:13 +0300
-In-Reply-To: <1413214637.7906.49.camel@sauron.fi.intel.com>
-References: <1412593268-12377-1-git-send-email-tlinder@codeaurora.org>
- <1413214637.7906.49.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-arm-msm@vger.kernel.org, open list <linux-kernel@vger.kernel.org>,
- linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Xdmnb-0008Os-Ql
+ for linux-mtd@lists.infradead.org; Mon, 13 Oct 2014 21:05:00 +0000
+Message-ID: <543C3E60.4080507@nod.at>
+Date: Mon, 13 Oct 2014 23:04:32 +0200
+From: Richard Weinberger <richard@nod.at>
+MIME-Version: 1.0
+To: dedekind1@gmail.com
+Subject: Re: [PATCH 3/4] UBI: Fastmap: Care about the protection queue
+References: <1412029248-22454-1-git-send-email-richard@nod.at>			
+ <1412029248-22454-4-git-send-email-richard@nod.at>		
+ <1412346676.3795.62.camel@sauron.fi.intel.com> <542EF3BF.1070401@nod.at>	
+ <1413206263.7906.18.camel@sauron.fi.intel.com> <543BE21F.5020504@nod.at>
+ <1413213803.7906.45.camel@sauron.fi.intel.com>
+In-Reply-To: <1413213803.7906.45.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,40 +26,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2014-10-13 at 18:37 +0300, Artem Bityutskiy wrote:
-> On Mon, 2014-10-06 at 14:01 +0300, Tanya Brokhman wrote:
-> > If there is more then one UBI device mounted, there is no way to
-> > distinguish between messages from different UBI devices.
-> > Add device number to all ubi layer message types.
+Am 13.10.2014 um 17:23 schrieb Artem Bityutskiy:
+> Well, used and free are RB-trees, looking them up is slow.
+
+This is true but we'd have to look it up in multiple trees and the protection queue...
+
+> If what you need is to go through all used and free PEBs, then you can
+> introduce some kind of
 > 
-> Looks good to me, pushed to the master branch of the linux-ubifs.git
-> tree. Later, when the merge window is closed, I'll merge this patch to
-> the linux-next branch too.
+> struct ubi_wl_entry *ubi_wl_get_next_used(struct ubi_wl_entry *prev)
+> 
+> function, and similar functions for the free.
+> 
+> I would return you the next entry (or NULL would indicate the end), and
+> it would take the previous entry as the input, or NULL for the first
+> call.
+> 
+> We'd need to take the locks before calling this function. This is
+> cleaner than what we do now, right?
 
-Tanya,
+ubi_update_fastmap() takes ubi->wl_lock anyway to block any changes in the free, used, etc. trees
+to make sure that the to be taken state snapshot is consistent.
 
-sorry, I was not careful enough, I merged it and tested against the
-Linuses head, it is fine.
+>> But we could add the state information to struct ubi_wl_entry by adding a single integer attribute called "state" or "flags".
+> 
+> But there is a price - memory consumption. We do not want to pay it just
+> for making the inter-subsystems boundaries better, there ought to be a
+> better reason.
+> 
+> Say, for an (imaginary) 8GiB NAND chip with 128KiB PEB size this would
+> cost 256KiB of RAM.
 
-But it does not apply the the linux-ubifs.git tree. There are conflicts.
+Is 128KiB PEB size still realistic on modern NANDs?
+Even if, 256KiB are not much and the kernel consumes this additionally with
+every new release.
+But I can understand your concerns.
 
-But more importantly, you did not get the 'block.c' right. There we use
-the same printing macros, but we do not have 'struct ubi_info' there at
-all.
+> Squeezing the state into the last 2 bits a memory reference would be
+> another possibility, BTW. Not elegant, though...
+> 
+>> Would this make you happy? :)
+> 
+> Not very, I'd save this for the last resort solution.
 
-Please, enable the R/O block layer feature and try to compile, it'll
-fail.
+Okay, I'll try harder to make you happy.
 
-The block driver is in 'drivers/mtd/ubi', but it is kind of a separate
-driver - it does not access the internal UBI data structures.
-
-I guess the solution would be to just use pr_* functions there instead.
-
-CCing Ezequiel.
-
-Please, submit a patch against the 'linux-next' branch of this tree:
-
-git://git.infradead.org/linux-ubifs.git
-
-
-Artem.
+Thanks,
+//richard
