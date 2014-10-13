@@ -1,20 +1,20 @@
-Received: from mga03.intel.com ([134.134.136.65])
+Received: from mga11.intel.com ([192.55.52.93])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xdg06-0001ws-3m
- for linux-mtd@lists.infradead.org; Mon, 13 Oct 2014 13:49:26 +0000
-Message-ID: <1413208135.7906.24.camel@sauron.fi.intel.com>
-Subject: Re: [PATCH] nandsim: add id_bytes module parameter
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Reply-To: artem.bityutskiy@linux.intel.com
-To: Akinobu Mita <akinobu.mita@gmail.com>
-Date: Mon, 13 Oct 2014 16:48:55 +0300
-In-Reply-To: <1407713341-4446-1-git-send-email-akinobu.mita@gmail.com>
-References: <1407713341-4446-1-git-send-email-akinobu.mita@gmail.com>
+ id 1XdgCL-0007G5-Qo
+ for linux-mtd@lists.infradead.org; Mon, 13 Oct 2014 14:02:06 +0000
+Message-ID: <1413208834.7906.30.camel@sauron.fi.intel.com>
+Subject: Re: [GIT PULL] UBI/UBIFS fixes for 3.18-rc1
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Mon, 13 Oct 2014 17:00:34 +0300
+In-Reply-To: <1413208012.7906.23.camel@sauron.fi.intel.com>
+References: <1413208012.7906.23.camel@sauron.fi.intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,23 +24,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2014-08-11 at 08:29 +0900, Akinobu Mita wrote:
-> nandsim can simulate NAND Flash which returns the ID bytes specified
-> by first_id_byte, ..., fourth_id_byte module parameters.
-> 
-> In order to simulate NAND flash which returns more than four ID bytes,
-> this adds id_bytes module parameter which is specified by the array of
-> byte like this:
-> 
->  # modprobe nandsim id_bytes=0x98,0xdc,0x90,0x26,0x76,0x15,0x01,0x08 bch=1
-> 
-> This doesn't add fifth_id_byte, ..., seventh_id_byte module parameters,
-> becuase they are redundant.  But the existing first_id_byte, ...,
-> fourth_id_byte module parameters are preserved.
+On Mon, 2014-10-13 at 16:46 +0300, Artem Bityutskiy wrote:
+> Hi Linus,
 
-Hi, I missed this patch, sorry. It looks good to me, I'll take it to my
-tree.
+Please, disregard this pull request in favor of the following request.
+The issue is that I did not update my local 'linux-next' git branch with
+the remote branch, which had more stuff comparing to what I had in the
+local branch, so my pull request missed several patches.
 
--- 
-Best Regards,
-Artem Bityutskiy
+Here is the v2 pull request. Thanks, and apologies for my mistake.
+
+
+The following changes since commit 2ce7598c9a453e0acd0e07be7be3f5eb39608ebd:
+
+  Linux 3.17-rc4 (2014-09-07 16:09:43 -0700)
+
+are available in the git repository at:
+
+  git://git.infradead.org/linux-ubifs.git tags/upstream-3.18-rc1-v2
+
+for you to fetch changes up to 91401a34038e614076dbfb5c4969a052e72fb296:
+
+  UBI: Fastmap: Calc fastmap size correctly (2014-10-03 17:33:28 +0300)
+
+----------------------------------------------------------------
+* Fix for a theoretical race condition which could lead to a situation when
+  UBIFS is unable to mount a file-system (Hujianyang)
+* Few fixes for the ubiblock sybsystem, error path fixes
+* The ubiblock subsystem has had the volume size change handling improved
+* Few fixes and nicifications in the fastmap subsystem
+
+----------------------------------------------------------------
+Artem Bityutskiy (2):
+      UBIFS: fix a race condition
+      UBIFS: fix free log space calculation
+
+Colin Ian King (1):
+      UBI: block: fix dereference on uninitialized dev
+
+Dan Carpenter (1):
+      UBI: return on error in rename_volumes()
+
+Ezequiel Garcia (3):
+      UBI: block: Fix block device size setting
+      UBI: block: Add support for the UBI_VOLUME_UPDATED notification
+      UBI: Dispatch update notification if the volume is updated
+
+Richard Genoud (1):
+      UBI: add missing kmem_cache_free() in process_pool_aeb error path
+
+Richard Weinberger (8):
+      UBIFS: Remove bogus assert
+      UBI: Improve comment on work_sem
+      UBI: Fix livelock in produce_free_peb()
+      UBI: ubi_eba_read_leb: Remove in vain variable assignment
+      UBI: wl: Rename cancel flag to shutdown
+      UBI: Fix trivial typo in __schedule_ubi_work
+      UBIFS: Fix trivial typo in power_cut_emulated()
+      UBI: Fastmap: Calc fastmap size correctly
+
+hujianyang (1):
+      UBIFS: Align the dump messages of SB_NODE
+
+ drivers/mtd/ubi/block.c   | 36 +++++++++++++++++++++++++-----------
+ drivers/mtd/ubi/cdev.c    |  6 ++++--
+ drivers/mtd/ubi/eba.c     |  5 ++---
+ drivers/mtd/ubi/fastmap.c |  4 +++-
+ drivers/mtd/ubi/ubi.h     | 12 +++++++-----
+ drivers/mtd/ubi/wl.c      | 28 +++++++++++++++-------------
+ fs/ubifs/commit.c         |  8 +++-----
+ fs/ubifs/debug.c          |  6 +++---
+ fs/ubifs/journal.c        |  7 +++----
+ fs/ubifs/log.c            | 19 ++++++++++++++-----
+ 10 files changed, 79 insertions(+), 52 deletions(-)
+
+--
+Artem
