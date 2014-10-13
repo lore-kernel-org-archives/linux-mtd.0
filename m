@@ -1,20 +1,21 @@
-Received: from mga11.intel.com ([192.55.52.93])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XdgCL-0007G5-Qo
- for linux-mtd@lists.infradead.org; Mon, 13 Oct 2014 14:02:06 +0000
-Message-ID: <1413208834.7906.30.camel@sauron.fi.intel.com>
-Subject: Re: [GIT PULL] UBI/UBIFS fixes for 3.18-rc1
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Mon, 13 Oct 2014 17:00:34 +0300
-In-Reply-To: <1413208012.7906.23.camel@sauron.fi.intel.com>
-References: <1413208012.7906.23.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Received: from a.ns.miles-group.at ([95.130.255.143] helo=radon.swed.at)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Xdgl7-0005U9-E9
+ for linux-mtd@lists.infradead.org; Mon, 13 Oct 2014 14:38:02 +0000
+Message-ID: <543BE21F.5020504@nod.at>
+Date: Mon, 13 Oct 2014 16:30:55 +0200
+From: Richard Weinberger <richard@nod.at>
+MIME-Version: 1.0
+To: dedekind1@gmail.com
+Subject: Re: [PATCH 3/4] UBI: Fastmap: Care about the protection queue
+References: <1412029248-22454-1-git-send-email-richard@nod.at>		
+ <1412029248-22454-4-git-send-email-richard@nod.at>	
+ <1412346676.3795.62.camel@sauron.fi.intel.com> <542EF3BF.1070401@nod.at>
+ <1413206263.7906.18.camel@sauron.fi.intel.com>
+In-Reply-To: <1413206263.7906.18.camel@sauron.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,79 +25,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2014-10-13 at 16:46 +0300, Artem Bityutskiy wrote:
-> Hi Linus,
+Am 13.10.2014 um 15:17 schrieb Artem Bityutskiy:
+> On Fri, 2014-10-03 at 21:06 +0200, Richard Weinberger wrote:
+>> Fastmap needs basically access to all internal state of UBI, which
+>> lives mostly
+>> within wl.c
+> 
+> Sounds like a very strong assertion, smells a bit fishy, need the
+> details.
 
-Please, disregard this pull request in favor of the following request.
-The issue is that I did not update my local 'linux-next' git branch with
-the remote branch, which had more stuff comparing to what I had in the
-local branch, so my pull request missed several patches.
+Fastmap need to know the exact state of each PEB.
+I.e. is it free, used, scheduled for erase, etc...
 
-Here is the v2 pull request. Thanks, and apologies for my mistake.
+>> It needs to iterate over the used, free, erase, scrub RB-trees, the
+>> protection queue, etc. to
+>> collect the exact state of all PEBs.
+> 
+> When? In 'ubi_write_fastmap()' when forming the FM pool data structures?
 
+Yes.
 
-The following changes since commit 2ce7598c9a453e0acd0e07be7be3f5eb39608ebd:
+> I think you can just add a function like this to wl.c:
+> 
+> int ubi_wl_get_peb_info(int pnum, struct ubi_wl_peb_info *pebinfo)
+> 
+> Yoy will give it the PEB number you are interested in, it will return
+> you the information you need in 'pebinfo'. The information will contain
+> the EC, the state (used, free, etc).
+> 
+> If you need just the EC, then you do not even need the ubi_wl_peb_info
+> data structure.
+> 
+> Then you just iterate over all PEBs and fill the FM pool data
+> structures.
+> 
+> Would something like this work?
 
-  Linux 3.17-rc4 (2014-09-07 16:09:43 -0700)
+The interface would work but some work in wl.c is needed.
+For example if I want to find out in which state PEB 1 is wl.c would have to
+look int free free, used free, protection queue, etc.. to tell me the state. This is slow.
 
-are available in the git repository at:
+But we could add the state information to struct ubi_wl_entry by adding a single integer attribute called "state" or "flags".
+Then wl.c can set the state every time the PEB moves between internal data structures.
+I.e. upon it moves from the used to free rb tree the flag UBI_STATE_FREE will be cleared and UBI_STATE_USED set.
+This will also give us a very efficient way to ensure a sane state.
+In fact, I have already written such a feature. I needed it to hunt down a Fastmap bug which lead to a state where a PEB existed
+in both the used tree and the protection queue. Using the ->state attribute in ubi_wl_entry I was able to add various
+cheap asserts to the code and found the incorrect transaction.
 
-  git://git.infradead.org/linux-ubifs.git tags/upstream-3.18-rc1-v2
+The cost of this bloating the ubi_wl_entry struct by sizeof(int) bytes.
+But we'll get very efficient variants of self_check_in_wl_tree() and friends.
 
-for you to fetch changes up to 91401a34038e614076dbfb5c4969a052e72fb296:
+Also the implementation of ubi_wl_get_peb_info() would be easy.
+It will be mostly like:
+int ubi_wl_get_peb_info(int pnum, struct ubi_wl_peb_info *pebinfo)
+{
+...
+e = ubi->lookuptbl[pnum];
+fill_pebinfo(pebinfo, e->state);
+...
+}
 
-  UBI: Fastmap: Calc fastmap size correctly (2014-10-03 17:33:28 +0300)
+Would this make you happy? :)
 
-----------------------------------------------------------------
-* Fix for a theoretical race condition which could lead to a situation when
-  UBIFS is unable to mount a file-system (Hujianyang)
-* Few fixes for the ubiblock sybsystem, error path fixes
-* The ubiblock subsystem has had the volume size change handling improved
-* Few fixes and nicifications in the fastmap subsystem
-
-----------------------------------------------------------------
-Artem Bityutskiy (2):
-      UBIFS: fix a race condition
-      UBIFS: fix free log space calculation
-
-Colin Ian King (1):
-      UBI: block: fix dereference on uninitialized dev
-
-Dan Carpenter (1):
-      UBI: return on error in rename_volumes()
-
-Ezequiel Garcia (3):
-      UBI: block: Fix block device size setting
-      UBI: block: Add support for the UBI_VOLUME_UPDATED notification
-      UBI: Dispatch update notification if the volume is updated
-
-Richard Genoud (1):
-      UBI: add missing kmem_cache_free() in process_pool_aeb error path
-
-Richard Weinberger (8):
-      UBIFS: Remove bogus assert
-      UBI: Improve comment on work_sem
-      UBI: Fix livelock in produce_free_peb()
-      UBI: ubi_eba_read_leb: Remove in vain variable assignment
-      UBI: wl: Rename cancel flag to shutdown
-      UBI: Fix trivial typo in __schedule_ubi_work
-      UBIFS: Fix trivial typo in power_cut_emulated()
-      UBI: Fastmap: Calc fastmap size correctly
-
-hujianyang (1):
-      UBIFS: Align the dump messages of SB_NODE
-
- drivers/mtd/ubi/block.c   | 36 +++++++++++++++++++++++++-----------
- drivers/mtd/ubi/cdev.c    |  6 ++++--
- drivers/mtd/ubi/eba.c     |  5 ++---
- drivers/mtd/ubi/fastmap.c |  4 +++-
- drivers/mtd/ubi/ubi.h     | 12 +++++++-----
- drivers/mtd/ubi/wl.c      | 28 +++++++++++++++-------------
- fs/ubifs/commit.c         |  8 +++-----
- fs/ubifs/debug.c          |  6 +++---
- fs/ubifs/journal.c        |  7 +++----
- fs/ubifs/log.c            | 19 ++++++++++++++-----
- 10 files changed, 79 insertions(+), 52 deletions(-)
-
---
-Artem
+Thanks,
+//richard
