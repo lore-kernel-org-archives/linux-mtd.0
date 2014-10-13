@@ -1,25 +1,19 @@
-Received: from galahad.ideasonboard.com ([2001:4b98:dc2:45:216:3eff:febb:480d])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xd0Kp-0002di-AK
- for linux-mtd@lists.infradead.org; Sat, 11 Oct 2014 17:20:04 +0000
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 05/12] mtd: sh_flctl: use dmaengine_terminate_all() API
-Date: Sat, 11 Oct 2014 20:19:50 +0300
-Message-ID: <4775968.otKQDIzYx4@avalon>
-In-Reply-To: <1413042040-28222-5-git-send-email-vinod.koul@intel.com>
-References: <1413041973-28146-1-git-send-email-vinod.koul@intel.com>
- <1413042040-28222-5-git-send-email-vinod.koul@intel.com>
+From: bpqw <bpqw@micron.com>
+To: Marek Vasut <marex@denx.de>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>
+Subject: [PATCH 1/1] driver:mtd:spi-nor:fix spi_nor_scan overwrite platform
+ ID point
+Date: Mon, 13 Oct 2014 05:53:11 +0000
+Message-ID: <A765B125120D1346A63912DDE6D8B6315E6272@NTXXIAMBX02.xacn.micron.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-Cc: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
- "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
- Jingoo Han <jg1.han@samsung.com>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- dmaengine@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
+Cc: "grmoore@altera.com" <grmoore@altera.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "shijie8@gmail.com" <shijie8@gmail.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "geert+renesas@glider.be" <geert+renesas@glider.be>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,32 +23,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Saturday 11 October 2014 21:10:33 Vinod Koul wrote:
-> The drivers should use dmaengine_terminate_all() API instead of
-> accessing the device_control which will be deprecated soon
-> 
-> Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+This patch used to modify the method of spi_nor_scan overwrite platform Id.
 
-Acked-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+If type of platform data match with the name of spi_nor_ids set,
+and JEDEC ID also match with INFO ID of spi_nor_ids set,spi device
+ID point(this is before probed according to device name) shouldn't be
+overwrote.Otherwise,this point will be overwrote by new spi_nor_ids
+set point that probed according to JEDEC ID.
 
-> ---
->  drivers/mtd/nand/sh_flctl.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
-> index c067023..0ed7c60 100644
-> --- a/drivers/mtd/nand/sh_flctl.c
-> +++ b/drivers/mtd/nand/sh_flctl.c
-> @@ -395,7 +395,7 @@ static int flctl_dma_fifo0_transfer(struct sh_flctl
-> *flctl, unsigned long *buf, msecs_to_jiffies(3000));
-> 
->  	if (ret <= 0) {
-> -		chan->device->device_control(chan, DMA_TERMINATE_ALL, 0);
-> +		dmaengine_terminate_all(chan);
->  		dev_err(&flctl->pdev->dev, "wait_for_completion_timeout\n");
->  	}
+Signed-off-by: bean huo <beanhuo@micron.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c |   19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
 
--- 
-Regards,
-
-Laurent Pinchart
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index b5ad6be..3675503 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -963,16 +963,21 @@ int spi_nor_scan(struct spi_nor *nor, const struct sp=
+i_device_id *id,
+ 			return PTR_ERR(jid);
+ 		} else if (jid !=3D id) {
+ 			/*
+-			 * JEDEC knows better, so overwrite platform ID. We
+-			 * can't trust partitions any longer, but we'll let
+-			 * mtd apply them anyway, since some partitions may be
+-			 * marked read-only, and we don't want to lose that
+-			 * information, even if it's not 100% accurate.
++			 * If type of platform data match with the name of
++			 * spi_nor_ids set,and JEDEC ID also match with
++			 * INFO ID of spi_nor_ids set,shouldn't overwrite
++			 * spi device info point.Otherwise,will overwrite
++			 * it.
+ 			 */
+-			dev_warn(dev, "found %s, expected %s\n",
+-				 jid->name, id->name);
++			struct flash_info *tmpinfo;
++
++			tmpinfo =3D (void *)jid->driver_data;
++			if (tmpinfo->jedec_id !=3D info->jedec_id) {
++				dev_warn(dev, "found %s, expected %s\n",
++						jid->name, id->name);
+ 			id =3D jid;
+ 			info =3D (void *)jid->driver_data;
++			}
+ 		}
+ 	}
+=20
+--=20
+1.7.9.5
