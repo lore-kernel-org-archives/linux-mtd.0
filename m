@@ -1,21 +1,26 @@
-Received: from smtprelay0112.hostedemail.com ([216.40.44.112]
- helo=smtprelay.hostedemail.com)
+Received: from top.free-electrons.com ([176.31.233.9]
+ helo=mail.free-electrons.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xe5LP-0001vH-Oa
- for linux-mtd@lists.infradead.org; Tue, 14 Oct 2014 16:53:08 +0000
-Message-ID: <1413305557.3269.21.camel@joe-AO725>
-Subject: Re: [PATCH 1/1 linux-next] fs/jffs2/nodelist.h: remove unnecessary
- __constant_ prefix
-From: Joe Perches <joe@perches.com>
-To: Fabian Frederick <fabf@skynet.be>
-Date: Tue, 14 Oct 2014 09:52:37 -0700
-In-Reply-To: <1413305085-7318-1-git-send-email-fabf@skynet.be>
-References: <1413305085-7318-1-git-send-email-fabf@skynet.be>
-Content-Type: text/plain; charset="ISO-8859-1"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
- David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
+ id 1Xe79Y-0006Uw-TH
+ for linux-mtd@lists.infradead.org; Tue, 14 Oct 2014 18:49:01 +0000
+Date: Tue, 14 Oct 2014 15:47:02 -0300
+From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH v4] mtd: ubi: Extend UBI layer debug/messaging capabilities
+Message-ID: <20141014184702.GA12662@arch.hh.imgtec.org>
+References: <1413296037-22346-1-git-send-email-tlinder@codeaurora.org>
+ <20141014143902.GA9768@arch.hh.imgtec.org>
+ <1413299343.7906.103.camel@sauron.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1413299343.7906.103.camel@sauron.fi.intel.com>
+Cc: Tanya Brokhman <tlinder@codeaurora.org>,
+ Richard Weinberger <richard@nod.at>, open list <linux-kernel@vger.kernel.org>,
+ linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,26 +30,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2014-10-14 at 18:44 +0200, Fabian Frederick wrote:
-> See commit fbdb8138cf0c
-> ("checkpatch: warn on uses of __constant_<foo> functions")
+On 14 Oct 06:09 PM, Artem Bityutskiy wrote:
+> On Tue, 2014-10-14 at 11:39 -0300, Ezequiel Garcia wrote:
+> > Please use some pr_fmt for this. Something like this before the headers
+> > should be enough:
+> > 
+> > #define pr_fmt(fmt) "UBI: block:" fmt
+> 
+> Sinc ubiblock is a device, there should be a 'struct device' somewhere,
+> so probably dev_printk() and other dev_*() printing functions would be a
+> better choice?
+> 
 
-Perhaps it'd be better to use the same
-__builtin_constant_p test as swab.h and use
-just one pattern instead
+A quick code dig shows you should get the struct device associated
+to the struct gendisk, with the disk_to_dev() macro.
 
-> diff --git a/fs/jffs2/nodelist.h b/fs/jffs2/nodelist.h
-> index fa35ff7..9f0d547 100644
-> --- a/fs/jffs2/nodelist.h
-> +++ b/fs/jffs2/nodelist.h
-> @@ -48,8 +48,8 @@
->  #define cpu_to_je32(x) ((jint32_t){cpu_to_be32(x)})
->  #define cpu_to_jemode(x) ((jmode_t){cpu_to_be32(os_to_jffs2_mode(x))})
->  
-> -#define constant_cpu_to_je16(x) ((jint16_t){__constant_cpu_to_be16(x)})
-> -#define constant_cpu_to_je32(x) ((jint32_t){__constant_cpu_to_be32(x)})
-> +#define constant_cpu_to_je16(x) ((jint16_t){cpu_to_be16(x)})
-> +#define constant_cpu_to_je32(x) ((jint32_t){cpu_to_be32(x)})
+In other words, something like this should work, provided 'dev' is defined
+in the scope as a struct ubiblock:
 
-So none of these constant_<foo> things would be here
-at all.
+  #define ubiblock_err(x) dev_err(disk_to_dev(dev->gd), x)
+
+When the gendisk is not available, a simple pr_{} would work.
+-- 
+Ezequiel García, Free Electrons
+Embedded Linux, Kernel and Android Engineering
+http://free-electrons.com
