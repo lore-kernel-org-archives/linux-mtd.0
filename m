@@ -1,21 +1,27 @@
 Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xe9wp-0002iu-Mu
- for linux-mtd@lists.infradead.org; Tue, 14 Oct 2014 21:48:05 +0000
+ id 1XeAtA-0002XR-4Q
+ for linux-mtd@lists.infradead.org; Tue, 14 Oct 2014 22:48:21 +0000
 From: Marek Vasut <marex@denx.de>
-To: Chao Fu <b44548@freescale.com>
-Subject: Re: [PATCH] spi-nor:fsl-quadspi:Add LS1021 support for fsl_quadspi
-Date: Tue, 14 Oct 2014 23:10:13 +0200
-References: <1413268581-9106-1-git-send-email-b44548@freescale.com>
-In-Reply-To: <1413268581-9106-1-git-send-email-b44548@freescale.com>
+To: "Bean Huo =?utf-8?q?=E9=9C=8D=E6=96=8C=E6=96=8C?= (beanhuo)"
+ <beanhuo@micron.com>
+Subject: Re: [PATCH 1/1 v2] driver:mtd:spi-nor:fix spi_nor_scan overwrite
+ platform ID point
+Date: Wed, 15 Oct 2014 00:45:53 +0200
+References: <A765B125120D1346A63912DDE6D8B6315E62CB@NTXXIAMBX02.xacn.micron.com>
+In-Reply-To: <A765B125120D1346A63912DDE6D8B6315E62CB@NTXXIAMBX02.xacn.micron.com>
 MIME-Version: 1.0
 Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201410142310.13832.marex@denx.de>
-Cc: ryazanov.s.a@gmail.com, geert+renesas@glider.be, zajec5@gmail.com,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- shijie.huang@intel.com, computersforpeace@gmail.com, dwmw2@infradead.org
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <201410150045.53976.marex@denx.de>
+Cc: "geert+renesas@glider.be" <geert+renesas@glider.be>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "grmoore@altera.com" <grmoore@altera.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ "shijie8@gmail.com" <shijie8@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,68 +31,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday, October 14, 2014 at 08:36:21 AM, Chao Fu wrote:
-> From: Chao Fu <B44548@freescale.com>
-> 
-> FSL Quadspi module register bitwise is big-endian, but on ohter paltform
-> is little endian.
-> Add functions for Quadspi register read/write for bitwise:
-> qspi_readl
-> qpsi_writel
-
-The commit message really needs fixing ;-)
-
-> Add devtype for LS1021:
-> struct fsl_qspi_devtype_data ls1_data
-
-A devtype ?
-
+On Tuesday, October 14, 2014 at 03:26:49 AM, Bean Huo =E9=9C=8D=E6=96=8C=E6=
+=96=8C (beanhuo) wrote:
 [...]
 
-> @@ -242,6 +250,23 @@ static inline int is_imx6sx_qspi(struct fsl_qspi *q)
->  	return q->devtype_data->devtype == FSL_QUADSPI_IMX6SX;
->  }
-> 
-> +static inline int is_ls1_qspi(struct fsl_qspi *q)
-
-Drop the inline and rename the function to be something like 
-"fsl_qspi_is_bigendian()", so once a new LS2 enters the market,
-this function won't have to be renamed . Future proof the driver ;-)
-
-> +{
-> +	return q->devtype_data->devtype == FSL_QUADSPI_LS1;
-> +}
+> -			dev_warn(dev, "found %s, expected %s\n",
+> -				 jid->name, id->name);
+> -			id =3D jid;
+> -			info =3D (void *)jid->driver_data;
+> +			struct flash_info *tmpinfo;
 > +
-> +static inline void qspi_writel(struct fsl_qspi *q, u32 val, void __iomem
-> *addr) +{
+> +			tmpinfo =3D (void *)jid->driver_data;
+> +			if (tmpinfo->jedec_id !=3D info->jedec_id ||
+> +					(info->ext_id !=3D 0 &&
+> +					 tmpinfo->ext_id !=3D info->ext_id)) {
+> +				dev_warn(dev, "found %s, expected %s\n",
+> +						jid->name, id->name);
+> +				id =3D jid;
+> +				info =3D (void *)jid->driver_data;
+> +			}
 
-Drop the inline.
+Won't $info contain an undefined value in case the newly added condition is=
+n't=20
+met ? The old code initialized $info to a certain value always, the new cod=
+e=20
+does not do that.
 
-> +	is_ls1_qspi(q) ? __raw_writel(cpu_to_be32(val), addr) :
-> +			__raw_writel(cpu_to_le32(val), addr);
-
-You're changing the behavior here, you're replacing writel() with __raw_writel() 
-and you are not documenting it anywhere. Nonetheless, such a change should be in
-a separate patch anyway .
-
-Besides, it's only the value that's bitwise-swapped here, so just do:
-
-if (fsl_qspi_is_be())
-	val = cpu_to_be32()
-else
-	val = cpu_to_le32()
-writel(val, addr);
-
-That's much more readable.
-
-> +}
-> +
-> +static inline u32 qspi_readl(struct fsl_qspi *q, void __iomem *addr)
-> +{
-> +	return is_ls1_qspi(q) ? cpu_to_be32((__force u32) __raw_readl(addr)) :
-> +				cpu_to_le32((__force u32) __raw_readl(addr));
-
-DTTO as above. Furthermore, drop the __force u32 nonsense. Furthermore, here
-the bitwise swaps go the other way around, thus it should be [lb]e32_to_cpu()
-instead.
-[...]
+Best regards,
+Marek Vasut
