@@ -1,20 +1,21 @@
-Received: from vps0.lunn.ch ([178.209.37.122])
+Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xe9lE-0006zP-Ua
- for linux-mtd@lists.infradead.org; Tue, 14 Oct 2014 21:36:05 +0000
-Date: Tue, 14 Oct 2014 23:35:03 +0200
-From: Andrew Lunn <andrew@lunn.ch>
-To: Michael Opdenacker <michael.opdenacker@free-electrons.com>
-Subject: Re: [PATCH] mtd: orion_nand: fix error code path in probe
-Message-ID: <20141014213503.GD5331@lunn.ch>
-References: <1413296198-29486-1-git-send-email-michael.opdenacker@free-electrons.com>
+ id 1Xe9wp-0002iu-Mu
+ for linux-mtd@lists.infradead.org; Tue, 14 Oct 2014 21:48:05 +0000
+From: Marek Vasut <marex@denx.de>
+To: Chao Fu <b44548@freescale.com>
+Subject: Re: [PATCH] spi-nor:fsl-quadspi:Add LS1021 support for fsl_quadspi
+Date: Tue, 14 Oct 2014 23:10:13 +0200
+References: <1413268581-9106-1-git-send-email-b44548@freescale.com>
+In-Reply-To: <1413268581-9106-1-git-send-email-b44548@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1413296198-29486-1-git-send-email-michael.opdenacker@free-electrons.com>
-Cc: andrew@lunn.ch, jg1.han@samsung.com, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201410142310.13832.marex@denx.de>
+Cc: ryazanov.s.a@gmail.com, geert+renesas@glider.be, zajec5@gmail.com,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ shijie.huang@intel.com, computersforpeace@gmail.com, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,90 +25,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 14, 2014 at 04:16:38PM +0200, Michael Opdenacker wrote:
-> This replaces kzalloc() and ioremap() calls by
-> the corresponding devm_ functions in the probe() routine,
-> which automatically release the corresponding resources
-> when probe() fails or when the device is removed.
+On Tuesday, October 14, 2014 at 08:36:21 AM, Chao Fu wrote:
+> From: Chao Fu <B44548@freescale.com>
 > 
-> This simplifies the error management code and
-> fixes a bug reported by "make coccicheck":
+> FSL Quadspi module register bitwise is big-endian, but on ohter paltform
+> is little endian.
+> Add functions for Quadspi register read/write for bitwise:
+> qspi_readl
+> qpsi_writel
+
+The commit message really needs fixing ;-)
+
+> Add devtype for LS1021:
+> struct fsl_qspi_devtype_data ls1_data
+
+A devtype ?
+
+[...]
+
+> @@ -242,6 +250,23 @@ static inline int is_imx6sx_qspi(struct fsl_qspi *q)
+>  	return q->devtype_data->devtype == FSL_QUADSPI_IMX6SX;
+>  }
 > 
-> if "board = devm_kzalloc()" fails, the probe()
-> function jumps incorrectly to label "no_res" and
-> therefore returns without running "iounmap()"
-> 
-> Signed-off-by: Michael Opdenacker <michael.opdenacker@free-electrons.com>
-> ---
->  drivers/mtd/nand/orion_nand.c | 28 +++++++++-------------------
->  1 file changed, 9 insertions(+), 19 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nand.c
-> index 471b4df3a5ac..a9c2bde16c25 100644
-> --- a/drivers/mtd/nand/orion_nand.c
-> +++ b/drivers/mtd/nand/orion_nand.c
-> @@ -19,7 +19,7 @@
->  #include <linux/mtd/partitions.h>
->  #include <linux/clk.h>
->  #include <linux/err.h>
-> -#include <asm/io.h>
-> +#include <linux/io.h>
->  #include <asm/sizes.h>
->  #include <linux/platform_data/mtd-orion_nand.h>
->  
-> @@ -85,32 +85,30 @@ static int __init orion_nand_probe(struct platform_device *pdev)
->  	int ret = 0;
->  	u32 val = 0;
->  
-> -	nc = kzalloc(sizeof(struct nand_chip) + sizeof(struct mtd_info), GFP_KERNEL);
-> +	nc = devm_kzalloc(&pdev->dev,
-> +			sizeof(struct nand_chip) + sizeof(struct mtd_info),
-> +			GFP_KERNEL);
->  	if (!nc) {
-> -		ret = -ENOMEM;
-> -		goto no_res;
-> +		return -ENOMEM;
->  	}
->  	mtd = (struct mtd_info *)(nc + 1);
->  
->  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->  	if (!res) {
-> -		ret = -ENODEV;
-> -		goto no_res;
-> +		return -ENODEV;
->  	}
->  
-> -	io_base = ioremap(res->start, resource_size(res));
-> +	io_base = devm_ioremap(&pdev->dev, res->start, resource_size(res));
->  	if (!io_base) {
->  		dev_err(&pdev->dev, "ioremap failed\n");
-> -		ret = -EIO;
-> -		goto no_res;
-> +		return -EIO;
->  	}
+> +static inline int is_ls1_qspi(struct fsl_qspi *q)
 
-Hi Michael
+Drop the inline and rename the function to be something like 
+"fsl_qspi_is_bigendian()", so once a new LS2 enters the market,
+this function won't have to be renamed . Future proof the driver ;-)
 
-It is quite a common pattern to use:
+> +{
+> +	return q->devtype_data->devtype == FSL_QUADSPI_LS1;
+> +}
+> +
+> +static inline void qspi_writel(struct fsl_qspi *q, u32 val, void __iomem
+> *addr) +{
 
-        res = platform_get_resource(dev, IORESOURCE_MEM, 0);
-        c->membase = devm_ioremap_resource(&dev->dev, res);
-        if (IS_ERR(c->membase))
-	   return PTR_ERR(c->membase)
+Drop the inline.
 
-which is more compact.
+> +	is_ls1_qspi(q) ? __raw_writel(cpu_to_be32(val), addr) :
+> +			__raw_writel(cpu_to_le32(val), addr);
 
->  
->  	if (pdev->dev.of_node) {
->  		board = devm_kzalloc(&pdev->dev, sizeof(struct orion_nand_data),
->  					GFP_KERNEL);
->  		if (!board) {
-> -			ret = -ENOMEM;
-> -			goto no_res;
-> +			return -ENOMEM;
->  		}
+You're changing the behavior here, you're replacing writel() with __raw_writel() 
+and you are not documenting it anywhere. Nonetheless, such a change should be in
+a separate patch anyway .
 
-Doesn't this now break the coding style? No need to have the {} since
-it is a single statement.
+Besides, it's only the value that's bitwise-swapped here, so just do:
 
-   Andrew
+if (fsl_qspi_is_be())
+	val = cpu_to_be32()
+else
+	val = cpu_to_le32()
+writel(val, addr);
+
+That's much more readable.
+
+> +}
+> +
+> +static inline u32 qspi_readl(struct fsl_qspi *q, void __iomem *addr)
+> +{
+> +	return is_ls1_qspi(q) ? cpu_to_be32((__force u32) __raw_readl(addr)) :
+> +				cpu_to_le32((__force u32) __raw_readl(addr));
+
+DTTO as above. Furthermore, drop the __force u32 nonsense. Furthermore, here
+the bitwise swaps go the other way around, thus it should be [lb]e32_to_cpu()
+instead.
+[...]
