@@ -1,22 +1,23 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
+Received: from mga01.intel.com ([192.55.52.88])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xe3HO-0003a5-Mv
- for linux-mtd@lists.infradead.org; Tue, 14 Oct 2014 14:40:51 +0000
-Date: Tue, 14 Oct 2014 11:39:02 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Tanya Brokhman <tlinder@codeaurora.org>
+ id 1Xe3jf-0004BW-7G
+ for linux-mtd@lists.infradead.org; Tue, 14 Oct 2014 15:10:04 +0000
+Message-ID: <1413299231.7906.101.camel@sauron.fi.intel.com>
 Subject: Re: [PATCH v4] mtd: ubi: Extend UBI layer debug/messaging capabilities
-Message-ID: <20141014143902.GA9768@arch.hh.imgtec.org>
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Joe Perches <joe@perches.com>
+Date: Tue, 14 Oct 2014 18:07:11 +0300
+In-Reply-To: <1413297205.3269.11.camel@joe-AO725>
 References: <1413296037-22346-1-git-send-email-tlinder@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1413296037-22346-1-git-send-email-tlinder@codeaurora.org>
-Cc: dedekind1@gmail.com, Richard Weinberger <richard@nod.at>,
+ <543D304C.5000607@codeaurora.org> <1413297205.3269.11.camel@joe-AO725>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Tanya Brokhman <tlinder@codeaurora.org>, linux-arm-msm@vger.kernel.org,
  open list <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
- linux-arm-msm@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
+ ezequiel.garcia@free-electrons.com, Richard Weinberger <richard@nod.at>,
+ Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,45 +28,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 14 Oct 05:13 PM, Tanya Brokhman wrote:
-> diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
-> index 8876c7d..3532f8a 100644
-> --- a/drivers/mtd/ubi/block.c
-> +++ b/drivers/mtd/ubi/block.c
-> @@ -111,12 +111,12 @@ static int __init ubiblock_set_param(const char *val,
->  
->  	len = strnlen(val, UBIBLOCK_PARAM_LEN);
->  	if (len == 0) {
-> -		ubi_warn("block: empty 'block=' parameter - ignored\n");
-> +		pr_warn("block: empty 'block=' parameter - ignored\n");
+On Tue, 2014-10-14 at 07:33 -0700, Joe Perches wrote:
+> If you are going to change all the ubi_<level> calls,
+> can you also please add a terminating newline to all
+> the uses for consistency with all the other
+> pr_<level>/dev_<level>/<etc>_<level> calls?
 
-No, this is wrong. The message should say something like "UBI: block", or
-otherwise the user will think this comes from the block subsystem.
+I get the consistency argument.
 
-Please use some pr_fmt for this. Something like this before the headers
-should be enough:
+On the other hand, this is about printing a single line. It is gets
+prefixed (with "UBI: ") automatically, why wouldn't we append the
+newline character automatically too?
 
-#define pr_fmt(fmt) "UBI: block:" fmt
+In the generic functions this is for flexibility: rarely, people to want
+to print a multi-line message with those. The first line will be
+prefixed, the following line won't be prefixed.
 
-You can then use pr_{info,warn,err} without the prefix like this:
+We do not need that flexibility. And I think that adding hundreds of
+'\n's just for the sake of consistency to be not very attractive option.
 
-  pr_info("whatever");
+IOW, I do not support this suggestion.
 
-Which prints "UBI: block: whatever".
+> > >   /* UBI error messages */
+> > > -#define ubi_err(fmt, ...) pr_err("UBI error: %s: " fmt "\n",      \
+> > > -				 __func__, ##__VA_ARGS__)
+> > > +#define ubi_err(ubi, fmt, ...) pr_err("UBI-%d error: %s: " fmt "\n",      \
+> > > +				 ubi->ubi_num, __func__, ##__VA_ARGS__)
+> 
+> Converting these macros to functions using "%pV"
+> will save quite a bit of text space by removing
+> a lot of "UBI-%d <foo>: " duplication.
 
-See arch/arm/kernel/perf_event.c for an example of how this works.
+These were added before '%pV' existed, I think. I never used this printk
+extension, but if it results in a more concise code, sounds like a good
+idea. But I'd do this separately.
 
-Also:
+> Using ubi_notice instead of ubi_msg would be a
+> lot more standard too.
 
->       if (len == UBIBLOCK_PARAM_LEN) {
-> -             ubi_err("block: parameter \"%s\" is too long, max. is %d\n",
-> +             pr_warn("block: parameter \"%s\" is too long, max. is %d\n",
->                       val, UBIBLOCK_PARAM_LEN);
->               return -EINVAL;
->       }
+Yes, this could be an OK separate nicification, I think, if someone is
+willing to do this work. I would not put this item to my TODO list,
+since this is a lot of changes for with little gain. But I would accept
+such a patch, sure.
 
-Please replace the level properly ubi_err -> pr_err, ubi_warn -> pr_warn, etc.
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+Thanks!
+
+--
+Artem.
