@@ -1,23 +1,26 @@
-Received: from smtp.codeaurora.org ([198.145.11.231])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xe16s-0002qu-Bl
- for linux-mtd@lists.infradead.org; Tue, 14 Oct 2014 12:21:51 +0000
-Message-ID: <543D1545.8090209@codeaurora.org>
-Date: Tue, 14 Oct 2014 15:21:25 +0300
-From: Tanya Brokhman <tlinder@codeaurora.org>
-MIME-Version: 1.0
-To: dedekind1@gmail.com, Richard Weinberger <richard@nod.at>
+Received: from mga14.intel.com ([192.55.52.115])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Xe1ku-0001vI-1t
+ for linux-mtd@lists.infradead.org; Tue, 14 Oct 2014 13:03:16 +0000
+Message-ID: <1413291739.7906.88.camel@sauron.fi.intel.com>
 Subject: Re: [PATCH 3/4] UBI: Fastmap: Care about the protection queue
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Tanya Brokhman <tlinder@codeaurora.org>
+Date: Tue, 14 Oct 2014 16:02:19 +0300
+In-Reply-To: <543D1545.8090209@codeaurora.org>
 References: <1412029248-22454-1-git-send-email-richard@nod.at>
  <1412029248-22454-4-git-send-email-richard@nod.at>
  <1412346676.3795.62.camel@sauron.fi.intel.com> <542EF3BF.1070401@nod.at>
  <1413206263.7906.18.camel@sauron.fi.intel.com> <543BE21F.5020504@nod.at>
  <1413213803.7906.45.camel@sauron.fi.intel.com> <543C3E60.4080507@nod.at>
  <1413282203.7906.72.camel@sauron.fi.intel.com>
-In-Reply-To: <1413282203.7906.72.camel@sauron.fi.intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+ <543D1545.8090209@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,74 +30,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/14/2014 1:23 PM, Artem Bityutskiy wrote:
-> On Mon, 2014-10-13 at 23:04 +0200, Richard Weinberger wrote:
->> Am 13.10.2014 um 17:23 schrieb Artem Bityutskiy:
->>> Well, used and free are RB-trees, looking them up is slow.
->>
->> This is true but we'd have to look it up in multiple trees and the protection queue...
->
-> Right. 2 RB-trees, and one list. The list is empty most of the time, or
-> contains one element.
->
-> So we'd look-up 2 RB-trees most of the time. Very rarely we'd need to
-> look at the list containing very few elements.
->
-> Not that bad, I think.
->
->> ubi_update_fastmap() takes ubi->wl_lock anyway to block any changes in the free, used, etc. trees
->> to make sure that the to be taken state snapshot is consistent.
->
-> I think this is fine.
->
->>> But there is a price - memory consumption. We do not want to pay it just
->>> for making the inter-subsystems boundaries better, there ought to be a
->>> better reason.
->>>
->>> Say, for an (imaginary) 8GiB NAND chip with 128KiB PEB size this would
->>> cost 256KiB of RAM.
->>
->> Is 128KiB PEB size still realistic on modern NANDs?
->> Even if, 256KiB are not much and the kernel consumes this additionally with
->> every new release.
->
-> Right, but the point is that bigger systems use eMMC and wouldn't bother
-> with raw flash. Raw flash trending down the smaller systems, where a
-> hundred of kilobytes matters.
->
->> But I can understand your concerns.
->
-> Thanks, yes, my point is to be careful about the RAM we consume, and try
-> to avoid growing this data structure, an only do it if we have to.
->
->> Okay, I'll try harder to make you happy.
->
-> Well, making me happy is not the point of course :-)
->
-> Thanks!
->
-> --
-> Artem
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+On Tue, 2014-10-14 at 15:21 +0300, Tanya Brokhman wrote:
+> Hi Artem/Richard
+> 
+> I think your discussion here stopped being relevant to this specific 
+> patch but went on to the fastmap feature design in general :)
+> This patch fixes a real bug in the current implementation of the 
+> feature. What you're discussing requires a re-writing and re-design of 
+> the feature. Perhaps this one can be merged and will be "fixed" later on 
+> when you agree on how you would like FM to access WL data structures in 
+> general?
 
-Hi Artem/Richard
+First of all, "re-writing and re-design of the feature" is an
+overstatement. So far this is on the "cleaning things up" side of the
+spectrum, closer to the "re-factoring" area.
 
-I think your discussion here stopped being relevant to this specific 
-patch but went on to the fastmap feature design in general :)
-This patch fixes a real bug in the current implementation of the 
-feature. What you're discussing requires a re-writing and re-design of 
-the feature. Perhaps this one can be merged and will be "fixed" later on 
-when you agree on how you would like FM to access WL data structures in 
-general?
+WRT "merge the fix now and improve later" - this is a good argument for
+an "inside a company" discussion, where the primary TTM is the driving
+factor.
 
-Thanks,
-Tanya Brokhman
--- 
-Qualcomm Israel, on behalf of Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+For the community TTM is a good thing, but quality comes first.
+
+Now, if this was about a regression, one could apply time pressure on
+the maintainer. But we are talking about a problem which was there from
+day 0.
+
+It is completely normal for the maintainer to push back various
+hot-fixes for the problem and request some reasonable re-factoring
+first. This is what I do. This is very very usual thing in the Linux
+community.
+
+So far I did not ask anything huge and unreasonable, I think. Just
+cleaner inter-subsystem APIs, less of the "fastmap uses the other
+subsystems' internals" kind of things.
+
+--
+Artem.
