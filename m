@@ -1,20 +1,24 @@
-From: =?iso-2022-jp?B?QmVhbiBIdW8gGyRCcDlJTElMGyhCIChiZWFuaHVvKQ==?=
- <beanhuo@micron.com>
-To: Marek Vasut <marex@denx.de>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Subject: [PATCH 1/1 v2] driver:mtd:spi-nor:fix spi_nor_scan overwrite
- platform ID point
-Date: Tue, 14 Oct 2014 01:26:49 +0000
-Message-ID: <A765B125120D1346A63912DDE6D8B6315E62CB@NTXXIAMBX02.xacn.micron.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-2022-jp"
+From: Iwo Mergler <Iwo.Mergler@netcommwireless.com>
+To: Huang Shijie <shijie8@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>
+Date: Tue, 14 Oct 2014 16:50:27 +1100
+Subject: RE: [PATCH v3 0/3] mtd: nand: gpmi: add proper raw access support
+Message-ID: <EACD232272DA4849B060F0828564D13B44955ABE1F@ntcex01.corp.netcomm.com.au>
+References: <1411481256-29141-1-git-send-email-boris.brezillon@free-electrons.com>
+ <20141008142437.GA9912@localhost.localdomain>
+ <20141008171034.1506550f@bbrezillon>,
+ <20141010144248.GA5107@localhost.localdomain>
+In-Reply-To: <20141010144248.GA5107@localhost.localdomain>
+Content-Language: en-AU
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Cc: "grmoore@altera.com" <grmoore@altera.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "shijie8@gmail.com" <shijie8@gmail.com>,
+Cc: Mike Voytovich <mvoytovich@paypal.com>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "geert+renesas@glider.be" <geert+renesas@glider.be>
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Roy Lee <roylee@paypal.com>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,60 +28,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch used to modify the method of spi_nor_scan overwrite platform ID =
-point.
 
-If type of platform data match with the name of spi_nor_ids set,
-and JEDEC ID also match with INFO ID of spi_nor_ids set,spi device
-ID point(this is before probed according to device name) shouldn't be
-overwrote.Otherwise,this point will be overwrote by new spi_nor_ids
-set point that probed according to JEDEC ID.
+>
+> No, it doesn't seem to be correct.
+> But it's an MLC flash, so you'll most probably need to apply this patch
+> to nandbiterrs testsuite:
+>
+> http://code.bulix.org/f69wuu-87021
+>
+> This patch is flashing the block between each bitflip insertion to
+> avoid multiple write without erasure (which, AFAIK, is not supported
+> by MLC flashes).
 
-Signed-off-by: bean huo <beanhuo@micron.com>
----
-v1-v2:
-	add extended ID match judgment.
+Hi Huang,
 
- drivers/mtd/spi-nor/spi-nor.c |   25 ++++++++++++++++---------
- 1 file changed, 16 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index b5ad6be..3bb8077 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -963,16 +963,23 @@ int spi_nor_scan(struct spi_nor *nor, const struct sp=
-i_device_id *id,
- 			return PTR_ERR(jid);
- 		} else if (jid !=3D id) {
- 			/*
--			 * JEDEC knows better, so overwrite platform ID. We
--			 * can't trust partitions any longer, but we'll let
--			 * mtd apply them anyway, since some partitions may be
--			 * marked read-only, and we don't want to lose that
--			 * information, even if it's not 100% accurate.
-+			 * If type of platform data match with the name of
-+			 * spi_nor_ids set,and JEDEC ID also match with
-+			 * INFO ID of spi_nor_ids set,shouldn't overwrite
-+			 * spi device info point.Otherwise,will overwrite
-+			 * it.
- 			 */
--			dev_warn(dev, "found %s, expected %s\n",
--				 jid->name, id->name);
--			id =3D jid;
--			info =3D (void *)jid->driver_data;
-+			struct flash_info *tmpinfo;
-+
-+			tmpinfo =3D (void *)jid->driver_data;
-+			if (tmpinfo->jedec_id !=3D info->jedec_id ||
-+					(info->ext_id !=3D 0 &&
-+					 tmpinfo->ext_id !=3D info->ext_id)) {
-+				dev_warn(dev, "found %s, expected %s\n",
-+						jid->name, id->name);
-+				id =3D jid;
-+				info =3D (void *)jid->driver_data;
-+			}
- 		}
- 	}
-=20
---=20
-1.7.9.5
+just out of interest, have you tried this on the MLC NAND without the patc=
+h?
+
+I'm aware that MLC says you shouldn't write multiple times, but that is
+with a view towards specified data endurance. I would only expect a few
+additional bit errors during the test.
+
+Did you try the overwrite test?
+
+I'm curious how MLC NAND does when subjected to multiple writes.
+
+
+Best regards,
+
+Iwo
+
+______________________________________________________________________
+This communication contains information which may be confidential or privi=
+leged. The information is intended solely for the use of the individual or=
+ entity named above.  If you are not the intended recipient, be aware that=
+ any disclosure, copying, distribution or use of the contents of this info=
+rmation is prohibited.  If you have received this communication in error, =
+please notify me by telephone immediately.
+______________________________________________________________________
