@@ -1,24 +1,20 @@
-Received: from top.free-electrons.com ([176.31.233.9]
- helo=mail.free-electrons.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XeWKE-0006WL-1k
- for linux-mtd@lists.infradead.org; Wed, 15 Oct 2014 21:41:43 +0000
-Date: Wed, 15 Oct 2014 18:39:53 -0300
-From: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
-To: Andrew Lunn <andrew@lunn.ch>
-Subject: Re: [PATCH] mtd: orion_nand: fix error code path in probe
-Message-ID: <20141015213953.GB23155@arch.hh.imgtec.org>
-References: <1413296198-29486-1-git-send-email-michael.opdenacker@free-electrons.com>
- <20141014213503.GD5331@lunn.ch>
+Date: Wed, 15 Oct 2014 16:02:13 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 8/9] mtd: nand: stm_nand_bch: add support for ST's BCH
+ NAND controller
+Message-ID: <20141015230213.GY1193@ld-irv-0074>
+References: <1409143344-22458-1-git-send-email-lee.jones@linaro.org>
+ <1409143344-22458-9-git-send-email-lee.jones@linaro.org>
+ <20141006062127.GH3248@norris-Latitude-E6410>
+ <20141009143923.GR20647@lee--X1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20141014213503.GD5331@lunn.ch>
-Cc: Michael Opdenacker <michael.opdenacker@free-electrons.com>,
- jg1.han@samsung.com, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org
+In-Reply-To: <20141009143923.GR20647@lee--X1>
+Cc: pekon@pek-sem.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ kernel@stlinux.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,89 +24,201 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 14 Oct 11:35 PM, Andrew Lunn wrote:
-> On Tue, Oct 14, 2014 at 04:16:38PM +0200, Michael Opdenacker wrote:
-> > This replaces kzalloc() and ioremap() calls by
-> > the corresponding devm_ functions in the probe() routine,
-> > which automatically release the corresponding resources
-> > when probe() fails or when the device is removed.
+On Thu, Oct 09, 2014 at 03:39:23PM +0100, Lee Jones wrote:
+> > > +static int check_erased_page(uint8_t *data, uint32_t page_size, int max_zeros)
+> > > +{
+> > > +	uint8_t *b = data;
+> > > +	int zeros = 0;
+> > > +	int i;
+> > > +
+> > > +	for (i = 0; i < page_size; i++) {
+> > > +		zeros += hweight8(~*b++);
+> > > +		if (zeros > max_zeros)
+> > > +			return -1;
+> > > +	}
+> > > +
+> > > +	if (zeros)
+> > > +		memset(data, 0xff, page_size);
+> > > +
+> > > +	return zeros;
+> > > +}
 > > 
-> > This simplifies the error management code and
-> > fixes a bug reported by "make coccicheck":
-> > 
-> > if "board = devm_kzalloc()" fails, the probe()
-> > function jumps incorrectly to label "no_res" and
-> > therefore returns without running "iounmap()"
-> > 
-> > Signed-off-by: Michael Opdenacker <michael.opdenacker@free-electrons.com>
-> > ---
-> >  drivers/mtd/nand/orion_nand.c | 28 +++++++++-------------------
-> >  1 file changed, 9 insertions(+), 19 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nand.c
-> > index 471b4df3a5ac..a9c2bde16c25 100644
-> > --- a/drivers/mtd/nand/orion_nand.c
-> > +++ b/drivers/mtd/nand/orion_nand.c
-> > @@ -19,7 +19,7 @@
-> >  #include <linux/mtd/partitions.h>
-> >  #include <linux/clk.h>
-> >  #include <linux/err.h>
-> > -#include <asm/io.h>
-> > +#include <linux/io.h>
-> >  #include <asm/sizes.h>
-> >  #include <linux/platform_data/mtd-orion_nand.h>
-> >  
-> > @@ -85,32 +85,30 @@ static int __init orion_nand_probe(struct platform_device *pdev)
-> >  	int ret = 0;
-> >  	u32 val = 0;
-> >  
-> > -	nc = kzalloc(sizeof(struct nand_chip) + sizeof(struct mtd_info), GFP_KERNEL);
-> > +	nc = devm_kzalloc(&pdev->dev,
-> > +			sizeof(struct nand_chip) + sizeof(struct mtd_info),
-> > +			GFP_KERNEL);
-> >  	if (!nc) {
-> > -		ret = -ENOMEM;
-> > -		goto no_res;
-> > +		return -ENOMEM;
-> >  	}
-> >  	mtd = (struct mtd_info *)(nc + 1);
-> >  
-> >  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> >  	if (!res) {
-> > -		ret = -ENODEV;
-> > -		goto no_res;
-> > +		return -ENODEV;
-> >  	}
-> >  
-> > -	io_base = ioremap(res->start, resource_size(res));
-> > +	io_base = devm_ioremap(&pdev->dev, res->start, resource_size(res));
-> >  	if (!io_base) {
-> >  		dev_err(&pdev->dev, "ioremap failed\n");
-> > -		ret = -EIO;
-> > -		goto no_res;
-> > +		return -EIO;
-> >  	}
+> > I pointed out some flaws in this function back in July [1]. You said
+> > you'd look into this one [2]. I really don't want to accept yet another
+> > custom, unsound erased-page check if at all possible.
 > 
-> Hi Michael
-> 
-> It is quite a common pattern to use:
-> 
->         res = platform_get_resource(dev, IORESOURCE_MEM, 0);
->         c->membase = devm_ioremap_resource(&dev->dev, res);
->         if (IS_ERR(c->membase))
-> 	   return PTR_ERR(c->membase)
-> 
-> which is more compact.
-> 
+> That's not quite true.  I said that I think it doesn't matter about
+> not taking the OOB area into consideration, which I still believe is
+> the case.  This controller does not allow access into the OOB area.
 
-Be careful with this. devm_ioremap and devm_ioremap_resource are not
-the same thing, as the former requests the region as well.
+Perhaps I'm not being clear enough.
 
-It can break things if the region is shared across several drivers.
-I don't think this is the case, so in fact adding the request is correct,
-but it's a more intrusive change than just "code cleanup".
+While the controller may not allow you to program the spare area
+directly, you do so implicitly by allowing the controller to program BCH
+parity bytes to the spare area, right? So when you want to check if the
+page is blank, you have to consider ALL areas that will be used -- both
+in-band and out-of-band.
 
--- 
-Ezequiel García, Free Electrons
-Embedded Linux, Kernel and Android Engineering
-http://free-electrons.com
+So, I'll repeat my question and try to elaborate:
+
+  "What if this is a mostly-blank page, with ECC data, but most of the
+  bitflips are in the spare area? Then you will "correct" this page to
+  all 0xFF, not noticing that this was really not a blank page at all."
+
+More specifically:
+
+  1. Suppose you program a page with just a single byte of non-0xff
+  data, and your correction strength is at least 8 bits per sector
+
+  2. When programming this page, your BCH controller writes parity bytes
+  to the spare area
+
+  3. Over time (a lot of reads, for example), suppose you develop a lot
+  of bit flips in the spare area, such that your controller cannot
+  correct them any longer
+
+Now consider two algorithms:
+
+  (A) Your current proposal, to just check the in-band data that you can
+  easily access. If there are more than X zero-bits in the page, return
+  an error. Otherwise, clear the page and log a correctable error.
+
+  (B) My suggestion, to check both the in-band and out-of-band. Same as
+  algorithm (A), except you check for X total zero-bits in both the
+  in-band and out-of-band
+
+In the scenario I described, algorithm A will only notice up to 8 zero
+bits (in that single byte we programmed), so if X is greater than 8,
+algorithm A will falsely declare this an erased page and silently
+clobber the data we programmed to it.
+
+Algorithm B would notice that there are many zero bits in the spare area
+(due to the programmed parity bytes) and will correctly declare this a
+corrupt, non-erased page.
+
+If I've made any false assumptions in here, please point them out. But
+otherwise, I'd say that any erased-page detection algorithm that ignores
+the spare area is incorrect.
+
+If you agree with me, then you have at least two options:
+
+(1) Remove this erased page check entirely from the initial driver, with
+    a TODO item to add spare area read support and to improve this
+    algorithm
+
+(2) Keep the check as-is, but put a large FIXME warning which notes why
+    the algorithm is wrong. It's possible the wrong algorithm is still
+    marginally better than no erased-page detection at all. I'm not sure
+    what the probability distributions are like for this sort of error.
+
+> > > +/* Returns the number of ECC errors, or '-1' for uncorrectable error */
+> > > +int bch_read_page(struct nandi_controller *nandi,
+> > > +		  loff_t offs,
+> > > +		  uint8_t *buf)
+> > > +{
+> > > +	struct nand_chip *chip = &nandi->info.chip;
+> > > +	struct bch_prog *prog = &bch_prog_read_page;
+> > > +	uint32_t page_size = nandi->info.mtd.writesize;
+> > > +	unsigned long list_phys;
+> > 
+> > Please use dma_addr_t. This is an intentionally opaque (to some degree)
+> > type.
+> > 
+> > > +	unsigned long buf_phys;
+> > 
+> > Ditto.
+> > 
+> > BTW, is your hardware actually restricted to a 32-bit address space? If
+> > it has some expanded registers for larger physical address ranges, it'd
+> > be good to handle the upper bits of the DMA address when mapping. Or
+> > else, it would be good to reflect this in your driver with
+> > dma_set_mask() I think.
+> 
+> Yes, it's 32bit only.  I will add a call to dma_set_mask() to reflect
+> this.
+> 
+> ... or not.  See below.
+> 
+> > > +	uint32_t ecc_err;
+> > > +	int ret = 0;
+> > > +
+> > > +	dev_dbg(nandi->dev, "%s: offs = 0x%012llx\n", __func__, offs);
+> > > +
+> > > +	BUG_ON(offs & (NANDI_BCH_DMA_ALIGNMENT - 1));
+> > > +
+> > > +	emiss_nandi_select(nandi, STM_NANDI_BCH);
+> > > +
+> > > +	nandi_enable_interrupts(nandi, NANDBCH_INT_SEQNODESOVER);
+> > > +	reinit_completion(&nandi->seq_completed);
+> > > +
+> > > +	/* Reset ECC stats */
+> > > +	writel(CFG_RESET_ECC_ALL | CFG_ENABLE_AFM,
+> > > +	       nandi->base + NANDBCH_CONTROLLER_CFG);
+> > > +	writel(CFG_ENABLE_AFM, nandi->base + NANDBCH_CONTROLLER_CFG);
+> > > +
+> > > +	prog->addr = (uint32_t)((offs >> (chip->page_shift - 8)) & 0xffffff00);
+> > > +
+> > > +	buf_phys = dma_map_single(NULL, buf, page_size, DMA_FROM_DEVICE);
+> > 
+> > Why NULL for the first arg? You should use the proper device (which will
+> > help with the 32-bit / 64-bit masking, I think.
+> > 
+> > Also, dma_map_single() can fail. It's good practice to check the return
+> > value with dma_mapping_error(). Same in a few other places.
+> 
+> If you do not supply the first parameter here, it falls back to
+> arm_dma_ops, which is what we want.  I guess this is also why we do
+> not have to set the DMA mask, as we're running on ARM32, rather than
+> AARCH64.
+
+I think it's standard practice to make your hardware limitations
+explicit when writing a driver. From Documentation/DMA-API-HOWTO.txt
+under "DMA addressing limitations":
+
+  "It is good style to do this even if your device holds the default
+  setting, because this shows that you did think about these issues wrt.
+  your device."
+
+But I won't press this issue.
+
+> > > +static int bch_mtd_read_oob(struct mtd_info *mtd,
+> > > +			    struct nand_chip *chip, int page)
+> > > +{
+> > > +	BUG();
+> > 
+> > Are you sure this can't be implemented, even if it's not the expected
+> > mode of operation? That's really unforunate.
+> 
+> It can.  We have a 'special' function for it using the extended
+> flexible mode.  Trying to upstream this has been hard enough already,
+> without more crud to deal with.  I will hopefully be adding this
+> functionality as small, succinct patches subsequently.
+
+OK. But this is relevant to my points above -- particularly, you might
+want the 'read OOB' functionality to properly implement the erased page
+check.
+
+> > > +	for_each_child_of_node(np, banknp) {
+> > 
+> > If you change the DT binding to require a proper compatible property,
+> > you'll need of_device_is_compatible() here.
+> 
+> I see no reason to allocate a compatible property to the bank
+> descriptors.  They're not being registered/actioned through
+> of_platform_populate(), so ...
+
+Well, this is all dependent on my comments on your DT binding patches. I
+commented there that you did, at times, list a "compatible" property,
+but you never actually used it and/or it was put in the wrong place. If
+you determine that you do not need the property, then this comment is
+also not applicable.
+
+One reason for a "compatible" property might be if you have different
+types of subnodes eventually, and you'll need to differentiate them. I
+only see a need for a single type of subnode right now (the "bank"), but
+it's possible you'd need to plan for the future.
+
+> > [1] http://lists.infradead.org/pipermail/linux-mtd/2014-July/054500.html
+> > [2] http://lists.infradead.org/pipermail/linux-mtd/2014-July/054881.html
+
+Brian
